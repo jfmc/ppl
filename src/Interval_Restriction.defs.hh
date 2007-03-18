@@ -123,10 +123,14 @@ output_restriction(std::ostream&, const Interval_Restriction_None_Base&) {
 
 template <typename Base>
 class Interval_Restriction_None : public Interval_Restriction_None_Base,
-				 public Base {
+				  public Base {
 public:
   Interval_Restriction_None() {
   };
+  template <typename T>
+  Interval_Restriction_None(const T& init)
+    : Base(init) {
+  }
 };
 
 class Interval_Restriction_Integer_Base {
@@ -526,10 +530,10 @@ join_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to, const From1& 
     DIRTY_TEMP(typename Boundary_Value<From1>::type, a);
     DIRTY_TEMP(typename Boundary_Value<From2>::type, b);
     Result r;
-    r = abs_assign_r(a, lower(x), ROUND_CHECK);
+    r = abs_assign_r(a, f_lower(x), ROUND_CHECK);
     if (r != V_EQ)
       return set_integer(to);
-    r = abs_assign_r(b, lower(y), ROUND_CHECK);
+    r = abs_assign_r(b, f_lower(y), ROUND_CHECK);
     if (r != V_EQ)
       return set_integer(to);
     if (a > b)
@@ -675,14 +679,14 @@ add_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to, const From1& x
   if (is_singleton(x)) {
     if (is_singleton(y))
       return set_integer(to);
-    if (!assign_rem(rem, lower(x), ry.divisor))
+    if (!assign_rem(rem, f_lower(x), ry.divisor))
       return set_integer(to);
     r = assign_r(to.divisor, ry.divisor, ROUND_NOT_NEEDED);
     assert(r == V_EQ);
     addmod(to.remainder, rem, ry.remainder, to.divisor, ry.divisor);
   }
   else if (is_singleton(y)) {
-    if (!assign_rem(rem, lower(y), rx.divisor))
+    if (!assign_rem(rem, f_lower(y), rx.divisor))
       return set_integer(to);
     r = assign_r(to.divisor, rx.divisor, ROUND_NOT_NEEDED);
     assert(r == V_EQ);
@@ -730,14 +734,14 @@ sub_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to, const From1& x
   if (is_singleton(x)) {
     if (is_singleton(y))
       return set_integer(to);
-    if (!assign_rem(rem, lower(x), ry.divisor))
+    if (!assign_rem(rem, f_lower(x), ry.divisor))
       return set_integer(to);
     r = assign_r(to.divisor, ry.divisor, ROUND_NOT_NEEDED);
     assert(r == V_EQ);
     submod(to.remainder, rem, ry.remainder, to.divisor, ry.divisor);
   }
   else if (is_singleton(y)) {
-    if (!assign_rem(rem, lower(y), rx.divisor))
+    if (!assign_rem(rem, f_lower(y), rx.divisor))
       return set_integer(to);
     r = assign_r(to.divisor, rx.divisor, ROUND_NOT_NEEDED);
     assert(r == V_EQ);
@@ -797,7 +801,7 @@ mul_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to, const From1& x
     if (is_singleton(y))
       return set_integer(to);
     DIRTY_TEMP(typename Boundary_Value<From1>::type, n);
-    r = abs_assign_r(n, lower(x), ROUND_CHECK);
+    r = abs_assign_r(n, f_lower(x), ROUND_CHECK);
     if (r != V_EQ)
       return set_integer(to);
     r = assign_r(mul, n, ROUND_CHECK);
@@ -812,7 +816,7 @@ mul_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to, const From1& x
   }
   else if (is_singleton(y)) {
     DIRTY_TEMP(typename Boundary_Value<From2>::type, n);
-    r = abs_assign_r(n, lower(y), ROUND_CHECK);
+    r = abs_assign_r(n, f_lower(y), ROUND_CHECK);
     if (r != V_EQ)
       return set_integer(to);
     r = assign_r(mul, n, ROUND_CHECK);

@@ -483,10 +483,28 @@ inline Result
 assign_int_float(To& to, const From from, Rounding_Dir dir) {
   if (is_nan<From_Policy>(from))
     return set_special<To_Policy>(to, VC_NAN);
-  else if (is_minf<From_Policy>(from))
-    return assign<To_Policy, void>(to, MINUS_INFINITY, dir);
-  else if (is_pinf<From_Policy>(from))
-    return assign<To_Policy, void>(to, PLUS_INFINITY, dir);
+  else if (is_minf<From_Policy>(from)) {
+    if (To_Policy::has_infinity) {
+      to = Extended_Int<To_Policy, To>::minus_infinity;
+      return V_EQ;
+    }
+    if (round_up(dir)) {
+      to = Extended_Int<To_Policy, To>::min;
+      return V_LT;
+    }
+    return VC_MINUS_INFINITY;
+  }
+  else if (is_pinf<From_Policy>(from)) {
+    if (To_Policy::has_infinity) {
+      to = Extended_Int<To_Policy, To>::plus_infinity;
+      return V_EQ;
+    }
+    if (round_down(dir)) {
+      to = Extended_Int<To_Policy, To>::max;
+      return V_GT;
+    }
+    return VC_PLUS_INFINITY;
+  }
   if (CHECK_P(To_Policy::check_overflow, (from < Extended_Int<To_Policy, To>::min)))
     return set_neg_overflow_int<To_Policy>(to, dir);
   if (CHECK_P(To_Policy::check_overflow, (from > Extended_Int<To_Policy, To>::max)))
@@ -668,77 +686,6 @@ SPECIALIZE_ASSIGN(assign_int_mpq, unsigned short, mpq_class)
 SPECIALIZE_ASSIGN(assign_int_mpq, unsigned int, mpq_class)
 SPECIALIZE_ASSIGN(assign_int_mpq, unsigned long, mpq_class)
 SPECIALIZE_ASSIGN(assign_int_mpq, unsigned long long, mpq_class)
-
-template <typename To_Policy, typename From_Policy, typename To>
-inline Result
-assign_int_minf(To& to, const Minus_Infinity&, Rounding_Dir dir) {
-  if (To_Policy::has_infinity) {
-    to = Extended_Int<To_Policy, To>::minus_infinity;
-    return V_EQ;
-  }
-  if (round_up(dir)) {
-    to = Extended_Int<To_Policy, To>::min;
-    return V_LT;
-  }
-  return VC_MINUS_INFINITY;
-}
-
-template <typename To_Policy, typename From_Policy, typename To>
-inline Result
-assign_int_pinf(To& to, const Plus_Infinity&, Rounding_Dir dir) {
-  if (To_Policy::has_infinity) {
-    to = Extended_Int<To_Policy, To>::plus_infinity;
-    return V_EQ;
-  }
-  if (round_down(dir)) {
-    to = Extended_Int<To_Policy, To>::max;
-    return V_GT;
-  }
-  return VC_PLUS_INFINITY;
-}
-
-template <typename To_Policy, typename From_Policy, typename To>
-inline Result
-assign_int_nan(To& to, const Not_A_Number&, Rounding_Dir) {
-  if (To_Policy::has_nan) {
-    to = Extended_Int<To_Policy, To>::not_a_number;
-    return V_EQ;
-  }
-  return VC_NAN;
-}
-
-SPECIALIZE_ASSIGN(assign_int_minf, signed char, Minus_Infinity)
-SPECIALIZE_ASSIGN(assign_int_minf, signed short, Minus_Infinity)
-SPECIALIZE_ASSIGN(assign_int_minf, signed int, Minus_Infinity)
-SPECIALIZE_ASSIGN(assign_int_minf, signed long, Minus_Infinity)
-SPECIALIZE_ASSIGN(assign_int_minf, signed long long, Minus_Infinity)
-SPECIALIZE_ASSIGN(assign_int_minf, unsigned char, Minus_Infinity)
-SPECIALIZE_ASSIGN(assign_int_minf, unsigned short, Minus_Infinity)
-SPECIALIZE_ASSIGN(assign_int_minf, unsigned int, Minus_Infinity)
-SPECIALIZE_ASSIGN(assign_int_minf, unsigned long, Minus_Infinity)
-SPECIALIZE_ASSIGN(assign_int_minf, unsigned long long, Minus_Infinity)
-
-SPECIALIZE_ASSIGN(assign_int_pinf, signed char, Plus_Infinity)
-SPECIALIZE_ASSIGN(assign_int_pinf, signed short, Plus_Infinity)
-SPECIALIZE_ASSIGN(assign_int_pinf, signed int, Plus_Infinity)
-SPECIALIZE_ASSIGN(assign_int_pinf, signed long, Plus_Infinity)
-SPECIALIZE_ASSIGN(assign_int_pinf, signed long long, Plus_Infinity)
-SPECIALIZE_ASSIGN(assign_int_pinf, unsigned char, Plus_Infinity)
-SPECIALIZE_ASSIGN(assign_int_pinf, unsigned short, Plus_Infinity)
-SPECIALIZE_ASSIGN(assign_int_pinf, unsigned int, Plus_Infinity)
-SPECIALIZE_ASSIGN(assign_int_pinf, unsigned long, Plus_Infinity)
-SPECIALIZE_ASSIGN(assign_int_pinf, unsigned long long, Plus_Infinity)
-
-SPECIALIZE_ASSIGN(assign_int_nan, signed char, Not_A_Number)
-SPECIALIZE_ASSIGN(assign_int_nan, signed short, Not_A_Number)
-SPECIALIZE_ASSIGN(assign_int_nan, signed int, Not_A_Number)
-SPECIALIZE_ASSIGN(assign_int_nan, signed long, Not_A_Number)
-SPECIALIZE_ASSIGN(assign_int_nan, signed long long, Not_A_Number)
-SPECIALIZE_ASSIGN(assign_int_nan, unsigned char, Not_A_Number)
-SPECIALIZE_ASSIGN(assign_int_nan, unsigned short, Not_A_Number)
-SPECIALIZE_ASSIGN(assign_int_nan, unsigned int, Not_A_Number)
-SPECIALIZE_ASSIGN(assign_int_nan, unsigned long, Not_A_Number)
-SPECIALIZE_ASSIGN(assign_int_nan, unsigned long long, Not_A_Number)
 
 #if UCHAR_MAX == 0xff
 #define CHAR_BITS 8

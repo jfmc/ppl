@@ -315,7 +315,7 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
     if (x.marked_empty() == y.marked_empty())
       assign_r(r, 0, ROUND_NOT_NEEDED);
     else
-      r = PLUS_INFINITY;
+      assign_r(r, PLUS_INFINITY, ROUND_NOT_NEEDED);
     return true;
   }
 
@@ -329,7 +329,7 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
    if (x.marked_empty() == y.marked_empty())
       assign_r(r, 0, ROUND_NOT_NEEDED);
     else
-      r = PLUS_INFINITY;
+      assign_r(r, PLUS_INFINITY, ROUND_NOT_NEEDED);
    return true;
   }
 
@@ -379,7 +379,7 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
     if (x.marked_empty() == y.marked_empty())
       assign_r(r, 0, ROUND_NOT_NEEDED);
     else
-      r = PLUS_INFINITY;
+      assign_r(r, PLUS_INFINITY, ROUND_NOT_NEEDED);
     return true;
   }
 
@@ -393,7 +393,7 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
    if (x.marked_empty() == y.marked_empty())
       assign_r(r, 0, ROUND_NOT_NEEDED);
     else
-      r = PLUS_INFINITY;
+      assign_r(r, PLUS_INFINITY, ROUND_NOT_NEEDED);
    return true;
   }
 
@@ -443,7 +443,7 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
     if (x.marked_empty() == y.marked_empty())
       assign_r(r, 0, ROUND_NOT_NEEDED);
     else
-      r = PLUS_INFINITY;
+      assign_r(r, PLUS_INFINITY, ROUND_NOT_NEEDED);
     return true;
   }
 
@@ -457,7 +457,7 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
    if (x.marked_empty() == y.marked_empty())
       assign_r(r, 0, ROUND_NOT_NEEDED);
     else
-      r = PLUS_INFINITY;
+      assign_r(r, PLUS_INFINITY, ROUND_NOT_NEEDED);
    return true;
   }
 

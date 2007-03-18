@@ -23,7 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_checked_float_inlines_hh
 #define PPL_checked_float_inlines_hh 1
 
-#include "Float.defs.hh"
 #ifndef __alpha
 #include <cmath>
 #endif
@@ -845,36 +844,6 @@ output_float(std::ostream& os, const Type from, const Numeric_Format&,
   return V_EQ;
 }
 
-template <typename To_Policy, typename From_Policy, typename To>
-inline Result
-assign_float_minf(To& to, const Minus_Infinity&, Rounding_Dir) {
-  to = -HUGE_VAL;
-  if (To_Policy::has_infinity)
-    return V_EQ;
-  else
-    return VC_MINUS_INFINITY;
-}
-
-template <typename To_Policy, typename From_Policy, typename To>
-inline Result
-assign_float_pinf(To& to, const Plus_Infinity&, Rounding_Dir) {
-  to = HUGE_VAL;
-  if (To_Policy::has_infinity)
-    return V_EQ;
-  else
-    return VC_PLUS_INFINITY;
-}
-
-template <typename To_Policy, typename From_Policy, typename To>
-inline Result
-assign_float_nan(To& to, const Not_A_Number&, Rounding_Dir) {
-  to = NAN;
-  if (To_Policy::has_nan)
-    return V_EQ;
-  else
-    return VC_NAN;
-}
-
 #if PPL_SUPPORTED_FLOAT
 SPECIALIZE_ASSIGN(assign_float_float_exact, float, float)
 #if PPL_SUPPORTED_DOUBLE
@@ -919,9 +888,6 @@ SPECIALIZE_ASSIGN(assign_float_mpz, float, mpz_class)
 SPECIALIZE_ASSIGN(assign_float_mpq, float, mpq_class)
 SPECIALIZE_COPY(copy_generic, float)
 SPECIALIZE_IS_INT(is_int_float, float)
-SPECIALIZE_ASSIGN(assign_float_minf, float, Minus_Infinity)
-SPECIALIZE_ASSIGN(assign_float_pinf, float, Plus_Infinity)
-SPECIALIZE_ASSIGN(assign_float_nan, float, Not_A_Number)
 SPECIALIZE_FLOOR(floor_float, float, float)
 SPECIALIZE_CEIL(ceil_float, float, float)
 SPECIALIZE_TRUNC(trunc_float, float, float)
@@ -966,9 +932,6 @@ SPECIALIZE_ASSIGN(assign_float_mpz, double, mpz_class)
 SPECIALIZE_ASSIGN(assign_float_mpq, double, mpq_class)
 SPECIALIZE_COPY(copy_generic, double)
 SPECIALIZE_IS_INT(is_int_float, double)
-SPECIALIZE_ASSIGN(assign_float_minf, double, Minus_Infinity)
-SPECIALIZE_ASSIGN(assign_float_pinf, double, Plus_Infinity)
-SPECIALIZE_ASSIGN(assign_float_nan, double, Not_A_Number)
 SPECIALIZE_FLOOR(floor_float, double, double)
 SPECIALIZE_CEIL(ceil_float, double, double)
 SPECIALIZE_TRUNC(trunc_float, double, double)
@@ -1013,9 +976,6 @@ SPECIALIZE_ASSIGN(assign_float_mpz, long double, mpz_class)
 SPECIALIZE_ASSIGN(assign_float_mpq, long double, mpq_class)
 SPECIALIZE_COPY(copy_generic, long double)
 SPECIALIZE_IS_INT(is_int_float, long double)
-SPECIALIZE_ASSIGN(assign_float_minf, long double, Minus_Infinity)
-SPECIALIZE_ASSIGN(assign_float_pinf, long double, Plus_Infinity)
-SPECIALIZE_ASSIGN(assign_float_nan, long double, Not_A_Number)
 SPECIALIZE_FLOOR(floor_float, long double, long double)
 SPECIALIZE_CEIL(ceil_float, long double, long double)
 SPECIALIZE_TRUNC(trunc_float, long double, long double)

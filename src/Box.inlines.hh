@@ -98,10 +98,7 @@ Box<Interval>::get_interval(const Variable var) const {
     throw_dimension_incompatible("get_interval(v)", "v", var);
 
   if (is_empty()) {
-    // FIXME: when we will have the right Interval constructors, this
-    // must be simplified.
-    static Interval empty_interval;
-    empty_interval.set_empty();
+    static Interval empty_interval(EMPTY);
     return empty_interval;
   }
 

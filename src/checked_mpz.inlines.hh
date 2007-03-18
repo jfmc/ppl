@@ -186,6 +186,34 @@ SPECIALIZE_CONSTRUCT(construct_mpz_base, mpz_class, unsigned short)
 SPECIALIZE_CONSTRUCT(construct_mpz_base, mpz_class, unsigned int)
 SPECIALIZE_CONSTRUCT(construct_mpz_base, mpz_class, unsigned long)
 
+template <typename To_Policy, typename From_Policy, typename From>
+inline Result
+construct_mpz_float(mpz_class& to, const From& from, Rounding_Dir dir) {
+  if (is_nan<From_Policy>(from))
+    return set_special<To_Policy>(to, VC_NAN);
+  else if (is_minf<From_Policy>(from)) {
+    if (To_Policy::has_infinity) {
+      set_special<To_Policy>(to, VC_MINUS_INFINITY);
+      return V_EQ;
+    }
+    else
+      return VC_MINUS_INFINITY;
+  }
+  else if (is_pinf<From_Policy>(from)) {
+    if (To_Policy::has_infinity) {
+      set_special<To_Policy>(to, VC_PLUS_INFINITY);
+      return V_EQ;
+    }
+    else
+      return VC_PLUS_INFINITY;
+  }
+  new (&to) mpz_class(from);
+  return V_EQ;
+}
+
+SPECIALIZE_CONSTRUCT(construct_mpz_float, mpz_class, float)
+SPECIALIZE_CONSTRUCT(construct_mpz_float, mpz_class, double)
+
 SPECIALIZE_ASSIGN(assign_exact, mpz_class, mpz_class)
 SPECIALIZE_ASSIGN(assign_exact, mpz_class, signed char)
 SPECIALIZE_ASSIGN(assign_exact, mpz_class, signed short)
@@ -233,10 +261,22 @@ inline Result
 assign_mpz_float(mpz_class& to, const From from, Rounding_Dir dir) {
   if (is_nan<From_Policy>(from))
     return set_special<To_Policy>(to, VC_NAN);
-  else if (is_minf<From_Policy>(from))
-    return assign<To_Policy, void>(to, MINUS_INFINITY, dir);
-  else if (is_pinf<From_Policy>(from))
-    return assign<To_Policy, void>(to, PLUS_INFINITY, dir);
+  else if (is_minf<From_Policy>(from)) {
+    if (To_Policy::has_infinity) {
+      set_special<To_Policy>(to, VC_MINUS_INFINITY);
+      return V_EQ;
+    }
+    else
+      return VC_MINUS_INFINITY;
+  }
+  else if (is_pinf<From_Policy>(from)) {
+    if (To_Policy::has_infinity) {
+      set_special<To_Policy>(to, VC_PLUS_INFINITY);
+      return V_EQ;
+    }
+    else
+      return VC_PLUS_INFINITY;
+  }
   if (round_ignore(dir)) {
     to = from;
     return V_LGE;
@@ -260,9 +300,9 @@ assign_mpz_long_double(mpz_class& to, const From& from, Rounding_Dir dir) {
   if (is_nan<From_Policy>(from))
     return set_special<To_Policy>(to, VC_NAN);
   else if (is_minf<From_Policy>(from))
-    return assign<To_Policy, void>(to, MINUS_INFINITY, dir);
+    return assign<To_Policy, Special_Float_Policy>(to, MINUS_INFINITY, dir);
   else if (is_pinf<From_Policy>(from))
-    return assign<To_Policy, void>(to, PLUS_INFINITY, dir);
+    return assign<To_Policy, Special_Float_Policy>(to, PLUS_INFINITY, dir);
   // FIXME: this is an incredibly inefficient implementation!
   std::stringstream ss;
   output<From_Policy>(ss, from, Numeric_Format(), dir);
@@ -295,45 +335,6 @@ assign_mpz_mpq(mpz_class& to, const mpq_class& from, Rounding_Dir dir) {
 }
 
 SPECIALIZE_ASSIGN(assign_mpz_mpq, mpz_class, mpq_class)
-
-template <typename To_Policy, typename From_Policy, typename To>
-inline Result
-assign_mp_minf(To& to, const Minus_Infinity&, Rounding_Dir) {
-  if (To_Policy::has_infinity) {
-    set_special<To_Policy>(to, VC_MINUS_INFINITY);
-    return V_EQ;
-  }
-  else
-    return VC_MINUS_INFINITY;
-}
-
-template <typename To_Policy, typename From_Policy, typename To>
-inline Result
-assign_mp_pinf(To& to, const Plus_Infinity&, Rounding_Dir) {
-  if (To_Policy::has_infinity) {
-    set_special<To_Policy>(to, VC_PLUS_INFINITY);
-    return V_EQ;
-  }
-  else
-    return VC_PLUS_INFINITY;
-}
-
-template <typename To_Policy, typename From_Policy, typename To>
-inline Result
-assign_mp_nan(To& to, const Not_A_Number&, Rounding_Dir) {
-  if (To_Policy::has_nan) {
-    set_special<To_Policy>(to, VC_NAN);
-    return V_EQ;
-  }
-  return VC_NAN;
-}
-
-SPECIALIZE_ASSIGN(assign_mp_minf, mpz_class, Minus_Infinity)
-SPECIALIZE_ASSIGN(assign_mp_pinf, mpz_class, Plus_Infinity)
-SPECIALIZE_ASSIGN(assign_mp_nan, mpz_class, Not_A_Number)
-SPECIALIZE_ASSIGN(assign_mp_minf, mpq_class, Minus_Infinity)
-SPECIALIZE_ASSIGN(assign_mp_pinf, mpq_class, Plus_Infinity)
-SPECIALIZE_ASSIGN(assign_mp_nan, mpq_class, Not_A_Number)
 
 SPECIALIZE_FLOOR(assign_exact, mpz_class, mpz_class)
 SPECIALIZE_CEIL(assign_exact, mpz_class, mpz_class)

@@ -604,7 +604,7 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 	continue;
       else {
       pinf:
-	r = PLUS_INFINITY;
+	assign_r(r, PLUS_INFINITY, ROUND_NOT_NEEDED);
 	return true;
       }
     }

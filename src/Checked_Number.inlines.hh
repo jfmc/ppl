@@ -184,78 +184,6 @@ Checked_Number<T, Policy>::Checked_Number(const char* x) {
 				     dir));
 }
 
-template <typename T, typename Policy>
-inline
-Checked_Number<T, Policy>::Checked_Number(const Not_A_Number& x,
-					  Rounding_Dir dir) {
-  // TODO: avoid default construction of value member
-  Policy
-    ::handle_result(check_result(Checked::assign<Policy, void>(v,
-							 x,
-							 rounding_dir(dir)),
-				 dir));
-}
-
-template <typename T, typename Policy>
-inline
-Checked_Number<T, Policy>::Checked_Number(const Not_A_Number& x) {
-  // TODO: avoid default construction of value member
-  Rounding_Dir dir = ROUND_IGNORE;
-  Policy
-    ::handle_result(check_result(Checked::assign<Policy, void>(v,
-							 x,
-							 rounding_dir(dir)),
-				 dir));
-}
-
-template <typename T, typename Policy>
-inline
-Checked_Number<T, Policy>::Checked_Number(const Minus_Infinity& x,
-					  Rounding_Dir dir) {
-  // TODO: avoid default construction of value member
-  Policy
-    ::handle_result(check_result(Checked::assign<Policy, void>(v,
-							 x,
-							 rounding_dir(dir)),
-				 dir));
-}
-
-template <typename T, typename Policy>
-inline
-Checked_Number<T, Policy>::Checked_Number(const Minus_Infinity& x) {
-  // TODO: avoid default construction of value member
-  Rounding_Dir dir = Policy::ROUND_DEFAULT_CONSTRUCTOR_INF;
-  Policy
-    ::handle_result(check_result(Checked::assign<Policy, void>(v,
-							 x,
-							 rounding_dir(dir)),
-				 dir));
-}
-
-template <typename T, typename Policy>
-inline
-Checked_Number<T, Policy>::Checked_Number(const Plus_Infinity& x,
-					  Rounding_Dir dir) {
-  // TODO: avoid default construction of value member
-  Policy
-    ::handle_result(check_result(Checked::assign<Policy, void>(v,
-							 x,
-							 rounding_dir(dir)),
-				 dir));
-}
-
-template <typename T, typename Policy>
-inline
-Checked_Number<T, Policy>::Checked_Number(const Plus_Infinity& x) {
-  // TODO: avoid default construction of value member
-  Rounding_Dir dir = Policy::ROUND_DEFAULT_CONSTRUCTOR_INF;
-  Policy
-    ::handle_result(check_result(Checked::assign<Policy, void>(v,
-							 x,
-							 rounding_dir(dir)),
-				 dir));
-}
-
 template <typename T>
 inline typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type
 is_minus_infinity(const T& x) {
@@ -367,38 +295,6 @@ external_memory_in_bytes(const Checked_Number<T, Policy>& x) {
   return Checked::external_memory_in_bytes(x.raw_value());
 }
 
-/*! \relates Checked_Number */
-template <typename To>
-inline typename Enable_If<Is_Native_Or_Checked<To>::value, Result>::type
-assign_r(To& to, const Minus_Infinity& x, Rounding_Dir dir) {
-  return check_result(Checked::assign<typename Native_Checked_To_Wrapper<To>
-		      ::Policy, void>(Native_Checked_To_Wrapper<To>::raw_value(to),
-				x,
-				rounding_dir(dir)),
-		      dir);
-}
-
-/*! \relates Checked_Number */
-template <typename To>
-inline typename Enable_If<Is_Native_Or_Checked<To>::value, Result>::type
-assign_r(To& to, const Plus_Infinity& x, Rounding_Dir dir) {
-  return check_result(Checked::assign<typename Native_Checked_To_Wrapper<To>
-		      ::Policy, void>(Native_Checked_To_Wrapper<To>::raw_value(to),
-				x,
-				rounding_dir(dir)),
-		      dir);
-}
-
-/*! \relates Checked_Number */
-template <typename To>
-inline typename Enable_If<Is_Native_Or_Checked<To>::value, Result>::type
-assign_r(To& to, const Not_A_Number& x, Rounding_Dir dir) {
-  return check_result(Checked::assign<typename Native_Checked_To_Wrapper<To>
-		      ::Policy, void>(Native_Checked_To_Wrapper<To>::raw_value(to),
-				x,
-				rounding_dir(dir)),
-		      dir);
-}
 
 /*! \relates Checked_Number */
 template <typename To>
@@ -555,24 +451,6 @@ template <typename From>
 inline Checked_Number<T, Policy>&
 Checked_Number<T, Policy>::operator=(const From& y) {
   Policy::handle_result(assign_r(*this, y, Policy::ROUND_DEFAULT_OPERATOR));
-  return *this;
-}
-template <typename T, typename Policy>
-inline Checked_Number<T, Policy>&
-Checked_Number<T, Policy>::operator=(const Not_A_Number& y) {
-  Policy::handle_result(assign_r(*this, y, ROUND_IGNORE));
-  return *this;
-}
-template <typename T, typename Policy>
-inline Checked_Number<T, Policy>&
-Checked_Number<T, Policy>::operator=(const Minus_Infinity& y) {
-  Policy::handle_result(assign_r(*this, y, Policy::ROUND_DEFAULT_ASSIGN_INF));
-  return *this;
-}
-template <typename T, typename Policy>
-inline Checked_Number<T, Policy>&
-Checked_Number<T, Policy>::operator=(const Plus_Infinity& y) {
-  Policy::handle_result(assign_r(*this, y, Policy::ROUND_DEFAULT_ASSIGN_INF));
   return *this;
 }
 

@@ -132,6 +132,26 @@ public:
   void swap(Interval_Info_Null& y);
 };
 
+template <typename Policy>
+class Interval_Info_Null_Open : public Interval_Info_Null<Policy> {
+public:
+  const_bool_nodef(store_open, true);
+  Interval_Info_Null_Open(bool o)
+    : open(o) {
+  }
+  bool get_boundary_property(Boundary_Type, const Boundary_NS::Property& p) const {
+    switch (p.type) {
+    case Boundary_NS::Property::OPEN_:
+      return open;
+    default:
+      return Boundary_NS::Property::unsupported_value;
+    }
+  }
+private:
+  bool open;
+};
+
+
 template <typename T, typename Policy>
 class Interval_Info_Bitset {
 public:

@@ -249,6 +249,11 @@ template <bool b, typename T = void>
 struct Enable_If {
 };
 
+template <typename Type, Type, typename T = void>
+struct Enable_If_Is {
+  typedef T type;
+};
+
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief
   A class that provides a type member called <CODE>type</CODE> equivalent

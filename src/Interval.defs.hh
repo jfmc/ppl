@@ -87,7 +87,7 @@ private:
   bool is_singleton_nocache() const {
     return eq(LOWER, lower(), info(), UPPER, upper(), info());
   }
-  Result normalize_lower() const {
+  Result lower_normalize() const {
     Result r;
     if (info().get_boundary_property(LOWER, NORMALIZED)
 	|| info().get_boundary_property(LOWER, SPECIAL))
@@ -107,7 +107,7 @@ private:
     }
     return r;
   }
-  Result normalize_upper() const {
+  Result upper_normalize() const {
     Result r;
     if (info().get_boundary_property(UPPER, NORMALIZED)
 	|| info().get_boundary_property(UPPER, SPECIAL))
@@ -135,7 +135,32 @@ public:
 
   typedef Interval_NS::Property Property;
 
-  Interval() {
+  void lower_load() {
+#ifdef PPL_ABI_BREAKING_EXTRA_DEBUG
+    lower_loaded = 1;
+#endif
+  }
+
+  void upper_load() {
+#ifdef PPL_ABI_BREAKING_EXTRA_DEBUG
+    upper_loaded = 1;
+#endif
+  }
+
+  void complete_init() {
+#ifdef PPL_ABI_BREAKING_EXTRA_DEBUG
+    assert(lower_loaded);
+    assert(upper_loaded);
+    completed = 1;
+#endif
+  }
+
+  void complete_init_internal() {
+#ifdef PPL_ABI_BREAKING_EXTRA_DEBUG
+    lower_loaded = 1;
+    upper_loaded = 1;
+    completed = 1;
+#endif
   }
 
   template <typename T>
@@ -212,15 +237,6 @@ public:
     else
       return T_MAYBE;
   }
-  I_Result set_empty() {
-    assign_r(lower(), 1, ROUND_NOT_NEEDED);
-    assign_r(upper(), 0, ROUND_NOT_NEEDED);
-    info().clear();
-    info().set_interval_property(CARDINALITY_IS);
-    info().set_interval_property(CARDINALITY_0);
-    assert(OK());
-    return I_EMPTY;
-  }
   bool is_empty() const {
     switch (is_empty_cached()) {
     case T_NO:
@@ -261,9 +277,10 @@ public:
     return info().has_restriction();
   }
   I_Result normalize() const {
+    assert(OK());
     if (has_restriction()) {
-      Result rl = normalize_lower();
-      Result ru = normalize_upper();
+      Result rl = lower_normalize();
+      Result ru = upper_normalize();
       // FIXME: this invalidation is not needed if interval is unchanged
       invalidate_cardinality_cache();
       info().normalize();
@@ -274,27 +291,35 @@ public:
       return combine(V_EQ, V_EQ);
   }
   bool lower_is_open() const {
+    assert(OK());
     return is_open(LOWER, lower(), info());
   }
   bool upper_is_open() const {
+    assert(OK());
     return is_open(UPPER, upper(), info());
   }
   Result lower_shrink() {
+    assert(OK());
     return shrink(LOWER, lower(), info());
   }
   Result upper_shrink() {
+    assert(OK());
     return shrink(UPPER, upper(), info());
   }
   bool lower_is_unbounded() const {
+    assert(OK());
     return Boundary_NS::is_unbounded(LOWER, lower(), info());
   }
   bool upper_is_unbounded() const {
+    assert(OK());
     return Boundary_NS::is_unbounded(UPPER, upper(), info());
   }
   bool is_unbounded() const {
+    assert(OK());
     return lower_is_unbounded() || upper_is_unbounded();
   }
   bool is_universe() const {
+    assert(OK());
     return lower_is_unbounded() && upper_is_unbounded()
       && !has_restriction();
   }
@@ -303,46 +328,136 @@ public:
     w_info().set_interval_property(CARDINALITY_0, false);
     w_info().set_interval_property(CARDINALITY_1, false);
   }
-  I_Result set_universe() {
-    info().clear();
-    info().set_interval_property(CARDINALITY_0, true);
-    info().set_interval_property(CARDINALITY_1, true);
-    Result rl = set_unbounded(LOWER, lower(), info());
-    Result ru = set_unbounded(UPPER, upper(), info());
-    assert(OK());
-    return combine(rl, ru);
+  template <typename T>
+  I_Result lower_set_uninit(const T& x, bool open = false) {
+    info().clear_boundary_properties(LOWER);
+    Result rl = Boundary_NS::assign(LOWER, lower(), info(), LOWER, x, f_info(x, open));
+    lower_load();
+    return combine(rl, V_EQ);
   }
-  I_Result lower_set_unbounded() {
+  I_Result lower_set_uninit(const Unbounded&) {
+    info().clear_boundary_properties(LOWER);
+    Result rl = set_unbounded(LOWER, lower(), info());
+    lower_load();
+    return combine(rl, V_EQ);
+  }
+  template <typename T>
+  I_Result lower_set(const T& x, bool open = false) {
+    assert(OK());
+    info().clear_boundary_properties(LOWER);
+    Result rl = Boundary_NS::assign(LOWER, lower(), info(), LOWER, x, f_info(x, open));
+    invalidate_cardinality_cache();
+    assert(OK());
+    return combine(rl, V_EQ);
+  }
+  I_Result lower_set(const Unbounded&) {
+    assert(OK());
     info().clear_boundary_properties(LOWER);
     Result rl = set_unbounded(LOWER, lower(), info());
     invalidate_cardinality_cache();
     assert(OK());
     return combine(rl, V_EQ);
   }
-  I_Result upper_set_unbounded() {
-    info().clear_boundary_properties(UPPER);
-    Result ru = set_unbounded(UPPER, upper(), info());
+  template <typename T>
+  I_Result lower_narrow(const T& x, bool open = false) {
+    assert(OK());
+    if (ge(LOWER, lower(), info(), LOWER, x, f_info(x, open)))
+      return combine(V_EQ, V_EQ);
+    return lower_set(x, open);
+  }
+  template <typename T>
+  I_Result lower_widen(const T& x, bool open = false) {
+    assert(OK());
+    if (le(LOWER, lower(), info(), LOWER, x, f_info(x, open)))
+      return combine(V_EQ, V_EQ);
+    return lower_set(x, open);
+  }
+  I_Result lower_widen(const Unbounded&) {
+    assert(OK());
+    if (lower_is_unbounded())
+      return combine(V_EQ, V_EQ);
+    info().clear_boundary_properties(LOWER);
+    Result rl = set_unbounded(LOWER, lower(), info());
     invalidate_cardinality_cache();
     assert(OK());
-    return combine(V_EQ, ru);
+    return combine(rl, V_EQ);
   }
-  I_Result set_minus_infinity() {
-    info().clear();
-    info().set_interval_property(CARDINALITY_IS, true);
-    info().set_interval_property(CARDINALITY_1, true);
-    Result rl = Boundary_NS::set_minus_infinity(LOWER, lower(), info());
-    Result ru = Boundary_NS::set_minus_infinity(UPPER, upper(), info());
-    assert(OK());
-    return combine(rl, ru);
+  template <typename T>
+  I_Result upper_set_uninit(const T& x, bool open = false) {
+    info().clear_boundary_properties(UPPER);
+    Result rl = Boundary_NS::assign(UPPER, upper(), info(), UPPER, x, f_info(x, open));
+    upper_load();
+    return combine(rl, V_EQ);
   }
-  I_Result set_plus_infinity() {
-    info().clear();
-    info().set_interval_property(CARDINALITY_IS, true);
-    info().set_interval_property(CARDINALITY_1, true);
-    Result rl = Boundary_NS::set_plus_infinity(LOWER, lower(), info());
-    Result ru = Boundary_NS::set_plus_infinity(UPPER, upper(), info());
+  I_Result upper_set_uninit(const Unbounded&) {
+    info().clear_boundary_properties(UPPER);
+    Result rl = set_unbounded(UPPER, upper(), info());
+    upper_load();
+    return combine(rl, V_EQ);
+  }
+  template <typename T>
+  I_Result upper_set(const T& x, bool open = false) {
     assert(OK());
-    return combine(rl, ru);
+    info().clear_boundary_properties(UPPER);
+    Result rl = Boundary_NS::assign(UPPER, upper(), info(), UPPER, x, f_info(x, open));
+    invalidate_cardinality_cache();
+    assert(OK());
+    return combine(rl, V_EQ);
+  }
+  I_Result upper_set(const Unbounded&) {
+    assert(OK());
+    info().clear_boundary_properties(UPPER);
+    Result rl = set_unbounded(UPPER, upper(), info());
+    invalidate_cardinality_cache();
+    assert(OK());
+    return combine(rl, V_EQ);
+  }
+  template <typename T>
+  I_Result upper_narrow(const T& x, bool open = false) {
+    assert(OK());
+    if (le(UPPER, upper(), info(), UPPER, x, f_info(x, open)))
+      return combine(V_EQ, V_EQ);
+    return upper_set(x, open);
+  }
+  template <typename T>
+  I_Result upper_widen(const T& x, bool open = false) {
+    assert(OK());
+    if (ge(UPPER, upper(), info(), UPPER, x, f_info(x, open)))
+      return combine(V_EQ, V_EQ);
+    return upper_set(x, open);
+  }
+  I_Result upper_widen(const Unbounded&) {
+    assert(OK());
+    if (upper_is_unbounded())
+      return combine(V_EQ, V_EQ);
+    info().clear_boundary_properties(UPPER);
+    Result rl = set_unbounded(UPPER, upper(), info());
+    invalidate_cardinality_cache();
+    assert(OK());
+    return combine(rl, V_EQ);
+  }
+  I_Result assign(Degenerate_Element e) {
+    info().clear();
+    switch (e) {
+    case EMPTY:
+      info().set_interval_property(CARDINALITY_IS);
+      info().set_interval_property(CARDINALITY_0);
+      lower_set_uninit(1);
+      upper_set_uninit(0);
+      break;
+    case UNIVERSE:
+      info().set_interval_property(CARDINALITY_0, true);
+      info().set_interval_property(CARDINALITY_1, true);
+      lower_set_uninit(UNBOUNDED);
+      upper_set_uninit(UNBOUNDED);
+      break;
+    default:
+      assert(0);
+      break;
+    }
+    complete_init();
+    assert(OK());
+    return I_EMPTY;
   }
   I_Result set_infinities() {
     info().clear();
@@ -351,16 +466,19 @@ public:
     // FIXME: what about restrictions?
     Result rl = Boundary_NS::set_minus_infinity(LOWER, lower(), info());
     Result ru = Boundary_NS::set_plus_infinity(UPPER, upper(), info());
+    complete_init_internal();
     assert(OK());
     return combine(rl, ru);
   }
   bool is_topologically_closed() const {
+    assert(OK());
     // FIXME: review
     return is_empty() ||
       ((lower_is_unbounded() || !lower_is_open())
        && (upper_is_unbounded() || !upper_is_open()));
   }
   bool is_infinity() const {
+    assert(OK());
     if (is_reverse_infinity(LOWER, lower(), info()))
       return 1;
     else if (is_reverse_infinity(UPPER, upper(), info()))
@@ -369,6 +487,7 @@ public:
       return 0;
   }
   bool contains_integer_point() const {
+    assert(OK());
     if (is_empty())
       return false;
     if (is_unbounded())
@@ -399,6 +518,12 @@ public:
   }
 
   bool OK() const {
+#ifdef PPL_ABI_BREAKING_EXTRA_DEBUG
+    if (!completed) {
+	std::cerr << "The interval initialization has not been completed." << std::endl;
+	return false;
+    }
+#endif
 #if 0
     if (!Info::may_be_empty && is_empty()) {
 #ifndef NDEBUG
@@ -524,9 +649,30 @@ public:
     return true;
   }
 
+  Interval()
+#ifdef PPL_ABI_BREAKING_EXTRA_DEBUG
+    : lower_loaded(0), upper_loaded(0), completed(0)
+#endif
+  {
+  }
+
+  template <typename T>
+  explicit Interval(const T& x)
+#ifdef PPL_ABI_BREAKING_EXTRA_DEBUG
+    : lower_loaded(0), upper_loaded(0), completed(0)
+#endif
+  {
+    assign(x);
+  }
+
 private:
   Boundary lower_;
   Boundary upper_;
+#ifdef PPL_ABI_BREAKING_EXTRA_DEBUG
+  unsigned int lower_loaded:1;
+  unsigned int upper_loaded:1;
+  unsigned int completed:1;
+#endif
 };
 
 
@@ -550,17 +696,17 @@ namespace Interval_NS {
 
 template <typename Boundary, typename Info>
 inline const Boundary&
-lower(const Interval<Boundary, Info>& x) {
+f_lower(const Interval<Boundary, Info>& x) {
   return x.lower();
 }
 template <typename Boundary, typename Info>
 inline const Boundary&
-upper(const Interval<Boundary, Info>& x) {
+f_upper(const Interval<Boundary, Info>& x) {
   return x.upper();
 }
 template <typename Boundary, typename Info>
 inline const Info&
-info(const Interval<Boundary, Info>& x) {
+f_info(const Interval<Boundary, Info>& x) {
   return x.info();
 }
 
@@ -575,21 +721,29 @@ typedef Interval_Restriction_None<Interval_Info_Null<Scalar_As_Interval_Policy> 
 
 const Scalar_As_Interval_Info SCALAR_INFO;
 
+typedef Interval_Restriction_None<Interval_Info_Null_Open<Scalar_As_Interval_Policy> > Scalar_As_Interval_Info_Open;
+
 template <typename T>
 inline typename Enable_If<Is_Native_Or_Checked<T>::value, const T&>::type
-lower(const T& x) {
+f_lower(const T& x) {
   return x;
 }
 template <typename T>
 inline typename Enable_If<Is_Native_Or_Checked<T>::value, const T&>::type
-upper(const T& x) {
+f_upper(const T& x) {
   return x;
 }
 template <typename T>
 inline typename Enable_If<Is_Native_Or_Checked<T>::value, const Scalar_As_Interval_Info&>::type
-info(const T&) {
+f_info(const T&) {
   return SCALAR_INFO;
 }
+template <typename T>
+inline typename Enable_If<Is_Native_Or_Checked<T>::value, Scalar_As_Interval_Info_Open>::type
+f_info(const T&, bool open) {
+  return Scalar_As_Interval_Info_Open(open);
+}
+
 template <typename T>
 inline typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type
 is_empty(const T& x) {
@@ -605,8 +759,8 @@ is_singleton(const T& x) {
 template <typename T>
 inline typename Enable_If<Is_Singleton_Or_Interval<T>::value, Ternary>::type
 is_empty_lazy(const T& x) {
-  if (info(x).get_interval_property(CARDINALITY_0))
-    return info(x).get_interval_property(CARDINALITY_IS) ? T_YES : T_NO;
+  if (f_info(x).get_interval_property(CARDINALITY_0))
+    return f_info(x).get_interval_property(CARDINALITY_IS) ? T_YES : T_NO;
   else
     return T_MAYBE;
 }
@@ -628,7 +782,7 @@ is_not_a_number(const char*) {
 template <typename T>
 inline typename Enable_If<Is_Singleton_Or_Interval<T>::value, bool>::type
 is_singleton_integer(const T& x) {
-  return is_singleton(x) && is_integer(lower(x));
+  return is_singleton(x) && is_integer(f_lower(x));
 }
 
 template <typename T1, typename T2>
@@ -646,7 +800,7 @@ same_object(const T& x, const T& y) {
 template <typename T>
 inline typename Enable_If<Is_Singleton_Or_Interval<T>::value, bool>::type
 check_empty_arg(const T& x) {
-  if (info(x).may_be_empty)
+  if (f_info(x).may_be_empty)
     return is_empty(x);
   else {
     assert(!is_empty(x));
@@ -670,13 +824,15 @@ inline typename Enable_If<((Is_Singleton_Or_Interval<T1>::value
 			       || Is_Same_Or_Derived<Interval_Base, T2>::value)),
 			  bool>::type
 operator==(const T1& x, const T2& y) {
+  assert(f_OK(x));
+  assert(f_OK(y));
   if (check_empty_arg(x))
     return check_empty_arg(y);
   else if (check_empty_arg(y))
     return false;
-  return eq_restriction(info(x), info(y))
-    && eq(LOWER, lower(x), info(x), LOWER, lower(y), info(y))
-    && eq(UPPER, upper(x), info(x), UPPER, upper(y), info(y));
+  return eq_restriction(f_info(x), f_info(y))
+    && eq(LOWER, f_lower(x), f_info(x), LOWER, f_lower(y), f_info(y))
+    && eq(UPPER, f_upper(x), f_info(x), UPPER, f_upper(y), f_info(y));
 }
 
 template <typename T1, typename T2>
@@ -693,20 +849,24 @@ template <typename Boundary, typename Info,
 	  typename T>
 inline typename Enable_If<Is_Singleton_Or_Interval<T>::value, bool>::type
 contains(const Interval<Boundary, Info>& x, const T& y) {
+  assert(x.OK());
+  assert(f_OK(y));
   if (check_empty_arg(y))
     return true;
   if (check_empty_arg(x))
     return false;
-  if (!contains_restriction(x.info(), info(y)))
+  if (!contains_restriction(x.info(), f_info(y)))
       return false;
-  return le(LOWER, x.lower(), x.info(), LOWER, lower(y), info(y))
-    && ge(UPPER, x.upper(), x.info(), UPPER, upper(y), info(y));
+  return le(LOWER, x.lower(), x.info(), LOWER, f_lower(y), f_info(y))
+    && ge(UPPER, x.upper(), x.info(), UPPER, f_upper(y), f_info(y));
 }
 
 template <typename Boundary, typename Info,
 	  typename T>
 inline typename Enable_If<Is_Singleton_Or_Interval<T>::value, bool>::type
 strictly_contains(const Interval<Boundary, Info>& x, const T& y) {
+  assert(x.OK());
+  assert(f_OK(y));
   if (check_empty_arg(y))
     return !check_empty_arg(x);
   if (check_empty_arg(x))
@@ -714,25 +874,27 @@ strictly_contains(const Interval<Boundary, Info>& x, const T& y) {
   if (!contains_restriction(x, y))
       return false;
   else if (!eq_restriction(x, y))
-    return le(LOWER, x.lower(), x.info(), LOWER, lower(y), info(y))
-      && ge(UPPER, x.upper(), x.info(), UPPER, upper(y), info(y));
-  return (lt(LOWER, x.lower(), x.info(), LOWER, lower(y), info(y))
-	  && ge(UPPER, x.upper(), x.info(), UPPER, upper(y), info(y)))
-    || (le(LOWER, x.lower(), x.info(), LOWER, lower(y), info(y))
-	&& gt(UPPER, x.upper(), x.info(), UPPER, upper(y), info(y)));
+    return le(LOWER, x.lower(), x.info(), LOWER, f_lower(y), f_info(y))
+      && ge(UPPER, x.upper(), x.info(), UPPER, f_upper(y), f_info(y));
+  return (lt(LOWER, x.lower(), x.info(), LOWER, f_lower(y), f_info(y))
+	  && ge(UPPER, x.upper(), x.info(), UPPER, f_upper(y), f_info(y)))
+    || (le(LOWER, x.lower(), x.info(), LOWER, f_lower(y), f_info(y))
+	&& gt(UPPER, x.upper(), x.info(), UPPER, f_upper(y), f_info(y)));
 }
 
 template <typename Boundary, typename Info,
 	  typename T>
 inline typename Enable_If<Is_Singleton_Or_Interval<T>::value, bool>::type
 is_disjoint_from(const Interval<Boundary, Info>& x, const T& y) {
+  assert(x.OK());
+  assert(f_OK(y));
   if (check_empty_arg(x) || check_empty_arg(y))
     return true;
 //   CHECKME.
-//   if (!contains_restriction(x.info(), info(y)))
+//   if (!contains_restriction(x.info(), f_info(y)))
 //       return false;
-  return gt(LOWER, x.lower(), x.info(), UPPER, upper(y), info(y))
-    || lt(UPPER, x.upper(), x.info(), LOWER, lower(y), info(y));
+  return gt(LOWER, x.lower(), x.info(), UPPER, f_upper(y), f_info(y))
+    || lt(UPPER, x.upper(), x.info(), LOWER, f_lower(y), f_info(y));
 }
 
 template <typename To_Boundary, typename To_Info,
@@ -740,8 +902,9 @@ template <typename To_Boundary, typename To_Info,
 inline I_Result
 assign(Interval<To_Boundary, To_Info>& to, const From1& l, const From2& u) {
   to.info().clear();
-  Result rl = assign(LOWER, to.lower(), to.info(), LOWER, l, info(l));
-  Result ru = assign(UPPER, to.upper(), to.info(), UPPER, u, info(u));
+  Result rl = assign(LOWER, to.lower(), to.info(), LOWER, l, f_info(l));
+  Result ru = assign(UPPER, to.upper(), to.info(), UPPER, u, f_info(u));
+  to.complete_init_internal();
   assert(to.OK());
   return check_empty_result(to, combine(rl, ru));
 }
@@ -750,17 +913,19 @@ template <typename To_Boundary, typename To_Info,
 	  typename From>
 inline typename Enable_If<Is_Singleton_Or_Interval<From>::value, I_Result>::type
 assign(Interval<To_Boundary, To_Info>& to, const From& x) {
+  assert(f_OK(x));
   if (check_empty_arg(x))
-    return to.set_empty();
+    return to.assign(EMPTY);
   DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
   if (!assign_restriction(to_info, x))
-    return to.set_empty();
+    return to.assign(EMPTY);
   Result rl = assign(LOWER, to.lower(), to_info,
-		     LOWER, lower(x), info(x));
+		     LOWER, f_lower(x), f_info(x));
   Result ru = assign(UPPER, to.upper(), to_info,
-		     UPPER, upper(x), info(x));
+		     UPPER, f_upper(x), f_info(x));
   assign_or_swap(to.info(), to_info);
+  to.complete_init_internal();
   assert(to.OK());
   return combine(rl, ru);
 }
@@ -769,18 +934,19 @@ template <typename To_Boundary, typename To_Info,
 	  typename From>
 inline typename Enable_If<Is_Singleton_Or_Interval<From>::value, I_Result>::type
 join_assign(Interval<To_Boundary, To_Info>& to, const From& x) {
+  assert(f_OK(x));
   if (check_empty_arg(to))
     return assign(to, x);
   if (check_empty_arg(x))
     return combine(V_EQ, V_EQ);
   if (!join_restriction(to.info(), to, x))
-    return to.set_empty();
+    return to.assign(EMPTY);
   to.info().set_interval_property(CARDINALITY_IS, false);
   to.info().set_interval_property(CARDINALITY_0);
   to.info().set_interval_property(CARDINALITY_1, false);
   Result rl, ru;
-  rl = min_assign(LOWER, to.lower(), to.info(), LOWER, lower(x), info(x));
-  ru = max_assign(UPPER, to.upper(), to.info(), UPPER, upper(x), info(x));
+  rl = min_assign(LOWER, to.lower(), to.info(), LOWER, f_lower(x), f_info(x));
+  ru = max_assign(UPPER, to.upper(), to.info(), UPPER, f_upper(x), f_info(x));
   assert(to.OK());
   return combine(rl, ru);
 }
@@ -790,6 +956,8 @@ template <typename To_Boundary, typename To_Info,
 inline typename Enable_If<(Is_Singleton_Or_Interval<From1>::value
 			   || Is_Singleton_Or_Interval<From2>::value), I_Result>::type
 join_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
+  assert(f_OK(x));
+  assert(f_OK(y));
   if (check_empty_arg(x))
     return assign(to, y);
   if (check_empty_arg(y))
@@ -797,16 +965,17 @@ join_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) 
   DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
   if (!join_restriction(to_info, x, y))
-    return to.set_empty();
+    return to.assign(EMPTY);
   to_info.set_interval_property(CARDINALITY_0);
   Result rl, ru;
   rl = min_assign(LOWER, to.lower(), to_info,
-		  LOWER, lower(x), info(x),
-		  LOWER, lower(y), info(y));
+		  LOWER, f_lower(x), f_info(x),
+		  LOWER, f_lower(y), f_info(y));
   ru = max_assign(UPPER, to.upper(), to_info,
-		  UPPER, upper(x), info(x),
-		  UPPER, upper(y), info(y));
+		  UPPER, f_upper(x), f_info(x),
+		  UPPER, f_upper(y), f_info(y));
   assign_or_swap(to.info(), to_info);
+  to.complete_init_internal();
   assert(to.OK());
   return combine(rl, ru);
 }
@@ -815,13 +984,14 @@ template <typename To_Boundary, typename To_Info,
 	  typename From>
 inline typename Enable_If<Is_Singleton_Or_Interval<From>::value, I_Result>::type
 intersect_assign(Interval<To_Boundary, To_Info>& to, const From& x) {
+  assert(f_OK(x));
   if (!intersect_restriction(to.info(), to, x))
-    return to.set_empty();
+    return to.assign(EMPTY);
   // FIXME: more accurate?
   to.invalidate_cardinality_cache();
   Result rl, ru;
-  rl = max_assign(LOWER, to.lower(), to.info(), LOWER, lower(x), info(x));
-  ru = min_assign(UPPER, to.upper(), to.info(), UPPER, upper(x), info(x));
+  rl = max_assign(LOWER, to.lower(), to.info(), LOWER, f_lower(x), f_info(x));
+  ru = min_assign(UPPER, to.upper(), to.info(), UPPER, f_upper(x), f_info(x));
   assert(to.OK());
   return check_empty_result(to, combine(rl, ru));
 }
@@ -831,18 +1001,21 @@ template <typename To_Boundary, typename To_Info,
 inline typename Enable_If<(Is_Singleton_Or_Interval<From1>::value
 			   || Is_Singleton_Or_Interval<From2>::value), I_Result>::type
 intersect_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
+  assert(f_OK(x));
+  assert(f_OK(y));
   DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
   if (!intersect_restriction(to_info, x, y))
-    return to.set_empty();
+    return to.assign(EMPTY);
   Result rl, ru;
   rl = max_assign(LOWER, to.lower(), to_info,
-		  LOWER, lower(x), info(x),
-		  LOWER, lower(y), info(y));
+		  LOWER, f_lower(x), f_info(x),
+		  LOWER, f_lower(y), f_info(y));
   ru = min_assign(UPPER, to.upper(), to_info,
-		  UPPER, upper(x), info(x),
-		  UPPER, upper(y), info(y));
+		  UPPER, f_upper(x), f_info(x),
+		  UPPER, f_upper(y), f_info(y));
   assign_or_swap(to.info(), to_info);
+  to.complete_init_internal();
   assert(to.OK());
   return check_empty_result(to, combine(rl, ru));
 }
@@ -867,49 +1040,51 @@ template <typename To_Boundary, typename To_Info,
 	  typename From>
 inline typename Enable_If<Is_Singleton_Or_Interval<From>::value, I_Result>::type
 refine_existential(Interval<To_Boundary, To_Info>& to, Relation_Symbol rel, const From& x) {
+  assert(to.OK());
+  assert(f_OK(x));
   if (check_empty_arg(x))
-    return to.set_empty();
+    return to.assign(EMPTY);
   switch (rel) {
   case LESS_THAN:
     {
-      if (lt(UPPER, to.upper(), to.info(), UPPER, upper(x), info(x)))
+      if (lt(UPPER, to.upper(), to.info(), UPPER, f_upper(x), f_info(x)))
 	return combine(V_EQ, V_EQ);
       to.info().clear_boundary_properties(UPPER);
       Result ru = assign(UPPER, to.upper(), to.info(),
-			 UPPER, upper(x), info(x), true);
+			 UPPER, f_upper(x), f_info(x), true);
       to.invalidate_cardinality_cache();
       to.normalize();
       return check_empty_result(to, combine(V_EQ, ru));
     }
   case LESS_OR_EQUAL:
     {
-      if (le(UPPER, to.upper(), to.info(), UPPER, upper(x), info(x)))
+      if (le(UPPER, to.upper(), to.info(), UPPER, f_upper(x), f_info(x)))
 	return combine(V_EQ, V_EQ);
       to.info().clear_boundary_properties(UPPER);
       Result ru = assign(UPPER, to.upper(), to.info(),
-			 UPPER, upper(x), info(x));
+			 UPPER, f_upper(x), f_info(x));
       to.invalidate_cardinality_cache();
       to.normalize();
       return check_empty_result(to, combine(V_EQ, ru));
     }
   case GREATER_THAN:
     {
-      if (gt(LOWER, to.lower(), to.info(), LOWER, lower(x), info(x)))
+      if (gt(LOWER, to.lower(), to.info(), LOWER, f_lower(x), f_info(x)))
 	return combine(V_EQ, V_EQ);
       to.info().clear_boundary_properties(LOWER);
       Result rl = assign(LOWER, to.lower(), to.info(),
-			 LOWER, lower(x), info(x), true);
+			 LOWER, f_lower(x), f_info(x), true);
       to.invalidate_cardinality_cache();
       to.normalize();
       return check_empty_result(to, combine(rl, V_EQ));
     }
   case GREATER_OR_EQUAL:
     {
-      if (ge(LOWER, to.lower(), to.info(), LOWER, lower(x), info(x)))
+      if (ge(LOWER, to.lower(), to.info(), LOWER, f_lower(x), f_info(x)))
 	return combine(V_EQ, V_EQ);
       to.info().clear_boundary_properties(LOWER);
       Result rl = assign(LOWER, to.lower(), to.info(),
-			 LOWER, lower(x), info(x));
+			 LOWER, f_lower(x), f_info(x));
       to.invalidate_cardinality_cache();
       to.normalize();
       return check_empty_result(to, combine(rl, V_EQ));
@@ -922,9 +1097,9 @@ refine_existential(Interval<To_Boundary, To_Info>& to, Relation_Symbol rel, cons
 	return combine(V_EQ, V_EQ);
       if (check_empty_arg(to))
 	return I_EMPTY;
-      if (eq(LOWER, to.lower(), to.info(), LOWER, lower(x), info(x)))
+      if (eq(LOWER, to.lower(), to.info(), LOWER, f_lower(x), f_info(x)))
 	to.lower_shrink();
-      if (eq(UPPER, to.upper(), to.info(), UPPER, upper(x), info(x)))
+      if (eq(UPPER, to.upper(), to.info(), UPPER, f_upper(x), f_info(x)))
 	to.upper_shrink();
       to.invalidate_cardinality_cache();
       to.normalize();
@@ -956,64 +1131,66 @@ template <typename To_Boundary, typename To_Info,
 	  typename From>
 inline typename Enable_If<Is_Singleton_Or_Interval<From>::value, I_Result>::type
 refine_universal(Interval<To_Boundary, To_Info>& to, Relation_Symbol rel, const From& x) {
+  assert(to.OK());
+  assert(f_OK(x));
   if (check_empty_arg(x))
     return combine(V_EQ, V_EQ);
   switch (rel) {
   case LESS_THAN:
     {
-      if (lt(UPPER, to.upper(), to.info(), LOWER, lower(x), info(x)))
+      if (lt(UPPER, to.upper(), to.info(), LOWER, f_lower(x), f_info(x)))
 	return combine(V_EQ, V_EQ);
       to.info().clear_boundary_properties(UPPER);
       Result ru = assign(UPPER, to.upper(), to.info(),
-			 LOWER, lower(x), info(x), true);
+			 LOWER, f_lower(x), f_info(x), true);
       to.invalidate_cardinality_cache();
       to.normalize();
       return check_empty_result(to, combine(V_EQ, ru));
     }
   case LESS_OR_EQUAL:
     {
-      if (le(UPPER, to.upper(), to.info(), LOWER, lower(x), info(x)))
+      if (le(UPPER, to.upper(), to.info(), LOWER, f_lower(x), f_info(x)))
 	return combine(V_EQ, V_EQ);
       to.info().clear_boundary_properties(UPPER);
       Result ru = assign(UPPER, to.upper(), to.info(),
-			 LOWER, lower(x), info(x));
+			 LOWER, f_lower(x), f_info(x));
       to.invalidate_cardinality_cache();
       to.normalize();
       return check_empty_result(to, combine(V_EQ, ru));
     }
   case GREATER_THAN:
     {
-      if (gt(LOWER, to.lower(), to.info(), UPPER, upper(x), info(x)))
+      if (gt(LOWER, to.lower(), to.info(), UPPER, f_upper(x), f_info(x)))
 	return combine(V_EQ, V_EQ);
       to.info().clear_boundary_properties(LOWER);
       Result rl = assign(LOWER, to.lower(), to.info(),
-			 UPPER, upper(x), info(x), true);
+			 UPPER, f_upper(x), f_info(x), true);
       to.invalidate_cardinality_cache();
       to.normalize();
       return check_empty_result(to, combine(rl, V_EQ));
     }
   case GREATER_OR_EQUAL:
     {
-      if (ge(LOWER, to.lower(), to.info(), UPPER, upper(x), info(x)))
+      if (ge(LOWER, to.lower(), to.info(), UPPER, f_upper(x), f_info(x)))
 	return combine(V_EQ, V_EQ);
       to.info().clear_boundary_properties(LOWER);
       Result rl = assign(LOWER, to.lower(), to.info(),
-			 UPPER, upper(x), info(x));
+			 UPPER, f_upper(x), f_info(x));
       to.invalidate_cardinality_cache();
       to.normalize();
       return check_empty_result(to, combine(rl, V_EQ));
     }
   case EQUAL:
     if (!is_singleton(x))
-      return to.set_empty();
+      return to.assign(EMPTY);
     return intersect_assign(to, x);
   case NOT_EQUAL:
     {
       if (check_empty_arg(to))
 	return I_EMPTY;
-      if (eq(LOWER, to.lower(), to.info(), LOWER, lower(x), info(x)))
+      if (eq(LOWER, to.lower(), to.info(), LOWER, f_lower(x), f_info(x)))
 	to.lower_shrink();
-      if (eq(UPPER, to.upper(), to.info(), UPPER, upper(x), info(x)))
+      if (eq(UPPER, to.upper(), to.info(), UPPER, f_upper(x), f_info(x)))
 	to.upper_shrink();
       to.invalidate_cardinality_cache();
       to.normalize();
@@ -1029,18 +1206,20 @@ template <typename To_Boundary, typename To_Info,
 	  typename T>
 inline typename Enable_If<Is_Singleton_Or_Interval<T>::value, I_Result>::type
 neg_assign(Interval<To_Boundary, To_Info>& to, const T& x) {
+  assert(f_OK(x));
   if (check_empty_arg(x))
-    return to.set_empty();
+    return to.assign(EMPTY);
   DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
   if (!neg_restriction(to_info, x))
-    return to.set_empty();
+    return to.assign(EMPTY);
   Result rl, ru;
   DIRTY_TEMP(To_Boundary, to_lower);
-  rl = neg_assign(LOWER, to_lower, to_info, UPPER, upper(x), info(x));
-  ru = neg_assign(UPPER, to.upper(), to_info, LOWER, lower(x), info(x));
+  rl = neg_assign(LOWER, to_lower, to_info, UPPER, f_upper(x), f_info(x));
+  ru = neg_assign(UPPER, to.upper(), to_info, LOWER, f_lower(x), f_info(x));
   assign_or_swap(to.lower(), to_lower);
   assign_or_swap(to.info(), to_info);
+  to.complete_init_internal();
   assert(to.OK());
   return combine(rl, ru);
 }
@@ -1050,30 +1229,33 @@ template <typename To_Boundary, typename To_Info,
 inline typename Enable_If<(Is_Singleton_Or_Interval<From1>::value
 			   || Is_Singleton_Or_Interval<From2>::value), I_Result>::type
 add_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
+  assert(f_OK(x));
+  assert(f_OK(y));
   if (check_empty_arg(x) || check_empty_arg(y))
-    return to.set_empty();
+    return to.assign(EMPTY);
   int inf = is_infinity(x);
   if (inf) {
     if (is_infinity(y) == -inf)
-      return to.set_empty();
+      return to.assign(EMPTY);
   }
   else
     inf = is_infinity(y);
   if (inf < 0)
-    return to.set_minus_infinity();
+    return assign(to, MINUS_INFINITY);
   else if (inf > 0)
-    return to.set_plus_infinity();
+    return assign(to, PLUS_INFINITY);
   DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
   if (!add_restriction(to_info, x, y))
-    return to.set_empty();
+    return to.assign(EMPTY);
   Result rl = add_assign(LOWER, to.lower(), to_info,
-			 LOWER, lower(x), info(x),
-			 LOWER, lower(y), info(y));
+			 LOWER, f_lower(x), f_info(x),
+			 LOWER, f_lower(y), f_info(y));
   Result ru = add_assign(UPPER, to.upper(), to_info,
-			 UPPER, upper(x), info(x),
-			 UPPER, upper(y), info(y));
+			 UPPER, f_upper(x), f_info(x),
+			 UPPER, f_upper(y), f_info(y));
   assign_or_swap(to.info(), to_info);
+  to.complete_init_internal();
   assert(to.OK());
   return combine(rl, ru);
 }
@@ -1083,34 +1265,37 @@ template <typename To_Boundary, typename To_Info,
 inline typename Enable_If<(Is_Singleton_Or_Interval<From1>::value
 			   || Is_Singleton_Or_Interval<From2>::value), I_Result>::type
 sub_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
+  assert(f_OK(x));
+  assert(f_OK(y));
   if (check_empty_arg(x) || check_empty_arg(y))
-    return to.set_empty();
+    return to.assign(EMPTY);
   int inf = is_infinity(x);
   if (inf) {
     if (is_infinity(y) == inf)
-      return to.set_empty();
+      return to.assign(EMPTY);
   }
   else
     inf = -is_infinity(y);
   if (inf < 0)
-    return to.set_minus_infinity();
+    return assign(to, MINUS_INFINITY);
   else if (inf > 0)
-    return to.set_plus_infinity();
+    return assign(to, PLUS_INFINITY);
 
   DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
   if (!sub_restriction(to_info, x, y))
-    return to.set_empty();
+    return to.assign(EMPTY);
   Result rl, ru;
   DIRTY_TEMP(To_Boundary, to_lower);
   rl = sub_assign(LOWER, to_lower, to_info,
-		  LOWER, lower(x), info(x),
-		  UPPER, upper(y), info(y));
+		  LOWER, f_lower(x), f_info(x),
+		  UPPER, f_upper(y), f_info(y));
   ru = sub_assign(UPPER, to.upper(), to_info,
-		  UPPER, upper(x), info(x),
-		  LOWER, lower(y), info(y));
+		  UPPER, f_upper(x), f_info(x),
+		  LOWER, f_lower(y), f_info(y));
   assign_or_swap(to.lower(), to_lower);
   assign_or_swap(to.info(), to_info);
+  to.complete_init_internal();
   assert(to.OK());
   return combine(rl, ru);
 }
@@ -1132,12 +1317,14 @@ template <typename To_Boundary, typename To_Info,
 inline typename Enable_If<(Is_Singleton_Or_Interval<From1>::value
 			   || Is_Singleton_Or_Interval<From2>::value), I_Result>::type
 mul_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
+  assert(f_OK(x));
+  assert(f_OK(y));
   if (check_empty_arg(x) || check_empty_arg(y))
-    return to.set_empty();
-  int xls = sgn_b(LOWER, lower(x), info(x));
-  int xus = xls > 0 ? 1 : sgn_b(UPPER, upper(x), info(x));
-  int yls = sgn_b(LOWER, lower(y), info(y));
-  int yus = yls > 0 ? 1 : sgn_b(UPPER, upper(y), info(y));
+    return to.assign(EMPTY);
+  int xls = sgn_b(LOWER, f_lower(x), f_info(x));
+  int xus = xls > 0 ? 1 : sgn_b(UPPER, f_upper(x), f_info(x));
+  int yls = sgn_b(LOWER, f_lower(y), f_info(y));
+  int yus = yls > 0 ? 1 : sgn_b(UPPER, f_upper(y), f_info(y));
   int inf = is_infinity(x);
   int ls, us;
   if (inf) {
@@ -1152,22 +1339,22 @@ mul_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
       us = xus;
     inf:
       if (ls == 0 && us == 0)
-	return to.set_empty();
+	return to.assign(EMPTY);
       if (ls == -us)
 	return to.set_infinities();
       if (ls < 0 || us < 0)
 	inf = -inf;
       if (inf < 0)
-	return to.set_minus_infinity();
+	return assign(to, MINUS_INFINITY);
       else
-	return to.set_plus_infinity();
+	return assign(to, PLUS_INFINITY);
     }
   }
 
   DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
   if (!mul_restriction(to_info, x, y))
-    return to.set_empty();
+    return to.assign(EMPTY);
   Result rl, ru;
   DIRTY_TEMP(To_Boundary, to_lower);
 
@@ -1175,77 +1362,77 @@ mul_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
     if (yls >= 0) {
       // 0 <= xl <= xu, 0 <= yl <= yu
       rl = mul_assign_z(LOWER, to_lower, to_info,
-			LOWER, lower(x), info(x), xls,
-			LOWER, lower(y), info(y), yls);
+			LOWER, f_lower(x), f_info(x), xls,
+			LOWER, f_lower(y), f_info(y), yls);
       ru = mul_assign_z(UPPER, to.upper(), to_info,
-			UPPER, upper(x), info(x), xus,
-			UPPER, upper(y), info(y), yus);
+			UPPER, f_upper(x), f_info(x), xus,
+			UPPER, f_upper(y), f_info(y), yus);
     }
     else if (yus <= 0) {
       // 0 <= xl <= xu, yl <= yu <= 0
       rl = mul_assign_z(LOWER, to_lower, to_info,
-			UPPER, upper(x), info(x), xus,
-			LOWER, lower(y), info(y), yls);
+			UPPER, f_upper(x), f_info(x), xus,
+			LOWER, f_lower(y), f_info(y), yls);
       ru = mul_assign_z(UPPER, to.upper(), to_info,
-			LOWER, lower(x), info(x), xls,
-			UPPER, upper(y), info(y), yus);
+			LOWER, f_lower(x), f_info(x), xls,
+			UPPER, f_upper(y), f_info(y), yus);
     }
     else {
       // 0 <= xl <= xu, yl < 0 < yu
       rl = mul_assign_z(LOWER, to_lower, to_info,
-			UPPER, upper(x), info(x), xus,
-			LOWER, lower(y), info(y), yls);
+			UPPER, f_upper(x), f_info(x), xus,
+			LOWER, f_lower(y), f_info(y), yls);
       ru = mul_assign_z(UPPER, to.upper(), to_info,
-			UPPER, upper(x), info(x), xus,
-			UPPER, upper(y), info(y), yus);
+			UPPER, f_upper(x), f_info(x), xus,
+			UPPER, f_upper(y), f_info(y), yus);
     }
   }
   else if (xus <= 0) {
     if (yls >= 0) {
       // xl <= xu <= 0, 0 <= yl <= yu
       rl = mul_assign_z(LOWER, to_lower, to_info,
-			LOWER, lower(x), info(x), xls,
-			UPPER, upper(y), info(y), yus);
+			LOWER, f_lower(x), f_info(x), xls,
+			UPPER, f_upper(y), f_info(y), yus);
       ru = mul_assign_z(UPPER, to.upper(), to_info,
-			UPPER, upper(x), info(x), xus,
-			LOWER, lower(y), info(y), yls);
+			UPPER, f_upper(x), f_info(x), xus,
+			LOWER, f_lower(y), f_info(y), yls);
     }
     else if (yus <= 0) {
       // xl <= xu <= 0, yl <= yu <= 0
       rl = mul_assign_z(LOWER, to_lower, to_info,
-			UPPER, upper(x), info(x), xus,
-			UPPER, upper(y), info(y), yus);
+			UPPER, f_upper(x), f_info(x), xus,
+			UPPER, f_upper(y), f_info(y), yus);
       ru = mul_assign_z(UPPER, to.upper(), to_info,
-			LOWER, lower(x), info(x), xls,
-			LOWER, lower(y), info(y), yls);
+			LOWER, f_lower(x), f_info(x), xls,
+			LOWER, f_lower(y), f_info(y), yls);
     }
     else {
       // xl <= xu <= 0, yl < 0 < yu
       rl = mul_assign_z(LOWER, to_lower, to_info,
-			LOWER, lower(x), info(x), xls,
-			UPPER, upper(y), info(y), yus);
+			LOWER, f_lower(x), f_info(x), xls,
+			UPPER, f_upper(y), f_info(y), yus);
       ru = mul_assign_z(UPPER, to.upper(), to_info,
-			LOWER, lower(x), info(x), xls,
-			LOWER, lower(y), info(y), yls);
+			LOWER, f_lower(x), f_info(x), xls,
+			LOWER, f_lower(y), f_info(y), yls);
     }
   }
   else if (yls >= 0) {
     // xl < 0 < xu, 0 <= yl <= yu
     rl = mul_assign_z(LOWER, to_lower, to_info,
-		      LOWER, lower(x), info(x), xls,
-		      UPPER, upper(y), info(y), yus);
+		      LOWER, f_lower(x), f_info(x), xls,
+		      UPPER, f_upper(y), f_info(y), yus);
     ru = mul_assign_z(UPPER, to.upper(), to_info,
-		      UPPER, upper(x), info(x), xus,
-		      UPPER, upper(y), info(y), yus);
+		      UPPER, f_upper(x), f_info(x), xus,
+		      UPPER, f_upper(y), f_info(y), yus);
   }
   else if (yus <= 0) {
     // xl < 0 < xu, yl <= yu <= 0
     rl = mul_assign_z(LOWER, to_lower, to_info,
-		      UPPER, upper(x), info(x), xus,
-		      LOWER, lower(y), info(y), yls);
+		      UPPER, f_upper(x), f_info(x), xus,
+		      LOWER, f_lower(y), f_info(y), yls);
     ru = mul_assign_z(UPPER, to.upper(), to_info,
-		      LOWER, lower(x), info(x), xls,
-		      LOWER, lower(y), info(y), yls);
+		      LOWER, f_lower(x), f_info(x), xls,
+		      LOWER, f_lower(y), f_info(y), yls);
   }
   else {
     // xl < 0 < xu, yl < 0 < yu
@@ -1254,22 +1441,22 @@ mul_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
     tmp_info.clear();
     Result tmp_r;
     tmp_r = mul_assign(LOWER, tmp, tmp_info,
-		       UPPER, upper(x), info(x),
-		       LOWER, lower(y), info(y));
+		       UPPER, f_upper(x), f_info(x),
+		       LOWER, f_lower(y), f_info(y));
     rl = mul_assign(LOWER, to_lower, to_info,
-		    LOWER, lower(x), info(x),
-		    UPPER, upper(y), info(y));
+		    LOWER, f_lower(x), f_info(x),
+		    UPPER, f_upper(y), f_info(y));
     if (gt(LOWER, to_lower, to_info, LOWER, tmp, tmp_info)) {
       to_lower = tmp;
       rl = tmp_r;
     }
     tmp_info.clear();
     tmp_r = mul_assign(UPPER, tmp, tmp_info,
-		       UPPER, upper(x), info(x),
-		       UPPER, upper(y), info(y));
+		       UPPER, f_upper(x), f_info(x),
+		       UPPER, f_upper(y), f_info(y));
     ru = mul_assign(UPPER, to.upper(), to_info,
-		    LOWER, lower(x), info(x),
-		    LOWER, lower(y), info(y));
+		    LOWER, f_lower(x), f_info(x),
+		    LOWER, f_lower(y), f_info(y));
     if (lt(UPPER, to.upper(), to_info, UPPER, tmp, tmp_info)) {
       to.upper() = tmp;
       ru = tmp_r;
@@ -1277,6 +1464,7 @@ mul_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   }
   assign_or_swap(to.lower(), to_lower);
   assign_or_swap(to.info(), to_info);
+  to.complete_init_internal();
   assert(to.OK());
   return combine(rl, ru);
 }
@@ -1297,92 +1485,95 @@ template <typename To_Boundary, typename To_Info,
 inline typename Enable_If<(Is_Singleton_Or_Interval<From1>::value
 			   || Is_Singleton_Or_Interval<From2>::value), I_Result>::type
 div_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
+  assert(f_OK(x));
+  assert(f_OK(y));
   if (check_empty_arg(x) || check_empty_arg(y))
-    return to.set_empty();
-  int yls = sgn_b(LOWER, lower(y), info(y));
-  int yus = yls > 0 ? 1 : sgn_b(UPPER, upper(y), info(y));
+    return to.assign(EMPTY);
+  int yls = sgn_b(LOWER, f_lower(y), f_info(y));
+  int yus = yls > 0 ? 1 : sgn_b(UPPER, f_upper(y), f_info(y));
   if (yls == 0 && yus == 0)
-    return to.set_empty();
+    return to.assign(EMPTY);
   int inf = is_infinity(x);
   if (inf) {
     if (is_infinity(y))
-      return to.set_empty();
+      return to.assign(EMPTY);
     if (yls == -yus)
       return to.set_infinities();
     if (yls < 0 || yus < 0)
       inf = -inf;
     if (inf < 0)
-      return to.set_minus_infinity();
+      return assign(to, MINUS_INFINITY);
     else
-      return to.set_plus_infinity();
+      return assign(to, PLUS_INFINITY);
   }
-  int xls = sgn_b(LOWER, lower(x), info(x));
-  int xus = xls > 0 ? 1 : sgn_b(UPPER, upper(x), info(x));
+  int xls = sgn_b(LOWER, f_lower(x), f_info(x));
+  int xus = xls > 0 ? 1 : sgn_b(UPPER, f_upper(x), f_info(x));
 
   DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
   if (!div_restriction(to_info, x, y))
-    return to.set_empty();
+    return to.assign(EMPTY);
   Result rl, ru;
   DIRTY_TEMP(To_Boundary, to_lower);
   if (yls >= 0) {
     if (xls >= 0) {
       rl = div_assign_z(LOWER, to_lower, to_info,
-			LOWER, lower(x), info(x), xls,
-			UPPER, upper(y), info(y), yus);
+			LOWER, f_lower(x), f_info(x), xls,
+			UPPER, f_upper(y), f_info(y), yus);
       ru = div_assign_z(UPPER, to.upper(), to_info,
-			UPPER, upper(x), info(x), xus,
-			LOWER, lower(y), info(y), yls);
+			UPPER, f_upper(x), f_info(x), xus,
+			LOWER, f_lower(y), f_info(y), yls);
     }
     else if (xus <= 0) {
       rl = div_assign_z(LOWER, to_lower, to_info,
-			LOWER, lower(x), info(x), xls,
-			LOWER, lower(y), info(y), yls);
+			LOWER, f_lower(x), f_info(x), xls,
+			LOWER, f_lower(y), f_info(y), yls);
       ru = div_assign_z(UPPER, to.upper(), to_info,
-			UPPER, upper(x), info(x), xus,
-			UPPER, upper(y), info(y), yus);
+			UPPER, f_upper(x), f_info(x), xus,
+			UPPER, f_upper(y), f_info(y), yus);
     }
     else {
       rl = div_assign_z(LOWER, to_lower, to_info,
-			LOWER, lower(x), info(x), xls,
-			LOWER, lower(y), info(y), yls);
+			LOWER, f_lower(x), f_info(x), xls,
+			LOWER, f_lower(y), f_info(y), yls);
       ru = div_assign_z(UPPER, to.upper(), to_info,
-			UPPER, upper(x), info(x), xus,
-			LOWER, lower(y), info(y), yls);
+			UPPER, f_upper(x), f_info(x), xus,
+			LOWER, f_lower(y), f_info(y), yls);
     }
   }
   else if (yus <= 0) {
     if (xls >= 0) {
       rl = div_assign_z(LOWER, to_lower, to_info,
-			UPPER, upper(x), info(x), xus,
-			UPPER, upper(y), info(y), yus);
+			UPPER, f_upper(x), f_info(x), xus,
+			UPPER, f_upper(y), f_info(y), yus);
       ru = div_assign_z(UPPER, to.upper(), to_info,
-			LOWER, lower(x), info(x), xls,
-			LOWER, lower(y), info(y), yls);
+			LOWER, f_lower(x), f_info(x), xls,
+			LOWER, f_lower(y), f_info(y), yls);
     }
     else if (xus <= 0) {
       rl = div_assign_z(LOWER, to_lower, to_info,
-			UPPER, upper(x), info(x), xus,
-			LOWER, lower(y), info(y), yls);
+			UPPER, f_upper(x), f_info(x), xus,
+			LOWER, f_lower(y), f_info(y), yls);
       ru = div_assign_z(UPPER, to.upper(), to_info,
-			LOWER, lower(x), info(x), xls,
-			UPPER, upper(y), info(y), yus);
+			LOWER, f_lower(x), f_info(x), xls,
+			UPPER, f_upper(y), f_info(y), yus);
     }
     else {
       rl = div_assign_z(LOWER, to_lower, to_info,
-			UPPER, upper(x), info(x), xus,
-			UPPER, upper(y), info(y), yus);
+			UPPER, f_upper(x), f_info(x), xus,
+			UPPER, f_upper(y), f_info(y), yus);
       ru = div_assign_z(UPPER, to.upper(), to_info,
-			LOWER, lower(x), info(x), xls,
-			UPPER, upper(y), info(y), yus);
+			LOWER, f_lower(x), f_info(x), xls,
+			UPPER, f_upper(y), f_info(y), yus);
     }
   }
   else {
     // FIXME: restrictions
-    return static_cast<I_Result>(to.set_universe() | I_SINGULARITIES);
+    return static_cast<I_Result>(to.assign(UNIVERSE) | I_SINGULARITIES);
   }
   assign_or_swap(to.lower(), to_lower);
   assign_or_swap(to.info(), to_info);
+  to.complete_init_internal();
   assert(to.OK());
   return combine(rl, ru);
 }
@@ -1486,6 +1677,7 @@ operator/(const Interval<B, Info>& x, const Interval<B, Info>& y) {
 template <typename Boundary, typename Info>
 inline std::ostream&
 operator<<(std::ostream& os, const Interval<Boundary, Info>& x) {
+  assert(x.OK());
   if (check_empty_arg(x))
     return os << "[]";
   if (x.is_singleton()) {
@@ -1524,7 +1716,7 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
     c = is.get();
     if (c == ']') {
       // Empty interval.
-      x.set_empty();
+      x.assign(EMPTY);
       return is;
     }
     else
@@ -1591,9 +1783,9 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
   case VC_PLUS_INFINITY:
   case V_POS_OVERFLOW:
     if (upper_r == VC_PLUS_INFINITY || upper_r == V_POS_OVERFLOW)
-      x.set_universe();
+      x.assign(UNIVERSE);
     else
-      x.set_empty();
+      x.assign(EMPTY);
     return is;
   default:
     assert(false);
@@ -1607,9 +1799,9 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
   case VC_MINUS_INFINITY:
   case V_NEG_OVERFLOW:
     if (lower_r == VC_MINUS_INFINITY || lower_r == V_NEG_OVERFLOW)
-      x.set_universe();
+      x.assign(UNIVERSE);
     else
-      x.set_empty();
+      x.assign(EMPTY);
     return is;
   case VC_PLUS_INFINITY:
   case V_POS_OVERFLOW:
@@ -1623,9 +1815,9 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
       && !upper_unbounded
       && (lower_bound > upper_bound
 	  || (lower_open && lower_bound == upper_bound)))
-    x.set_empty();
+    x.assign(EMPTY);
   else {
-    x.set_universe();
+    x.assign(UNIVERSE);
     if (!lower_unbounded)
       refine_existential(x,
 			 (lower_open ? GREATER_THAN : GREATER_OR_EQUAL),

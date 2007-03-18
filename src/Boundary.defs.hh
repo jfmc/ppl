@@ -29,6 +29,13 @@ namespace Parma_Polyhedra_Library {
 
 namespace Boundary_NS {
 
+struct Unbounded {
+  Unbounded() {
+  }
+};
+
+const Unbounded UNBOUNDED;
+
 struct Property {
   enum Type {
     SPECIAL_,

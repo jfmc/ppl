@@ -29,37 +29,39 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace std {
 
+using namespace Parma_Polyhedra_Library;
+
 #define PPL_SPECIALIZE_LIMITS_INT(T)					\
 /*! \brief Partial specialization of std::numeric_limits. */		\
 template <typename Policy>						\
-class numeric_limits<Parma_Polyhedra_Library::Checked_Number<T, Policy> > \
+class numeric_limits<Checked_Number<T, Policy> > \
   : public numeric_limits<T> {						\
  private:								\
-  typedef Parma_Polyhedra_Library::Checked_Number<T, Policy> Type;	\
+  typedef Checked_Number<T, Policy> Type;	\
 									\
  public:								\
   static const bool has_infinity = Policy::has_infinity;		\
   static const bool has_quiet_NaN =  Policy::has_nan;		\
 									\
   static Type min() {							\
-    return Parma_Polyhedra_Library::Checked::Extended_Int<Policy, T>::min; \
+    return Checked::Extended_Int<Policy, T>::min; \
   }									\
 									\
   static Type max() {							\
-    return Parma_Polyhedra_Library::Checked::Extended_Int<Policy, T>::max; \
+    return Checked::Extended_Int<Policy, T>::max; \
   }									\
 									\
   static Type infinity() {						\
     return								\
       Policy::has_infinity						\
-      ? Parma_Polyhedra_Library::PLUS_INFINITY				\
+      ? PLUS_INFINITY				\
       : static_cast<Type>(0);						\
   }									\
 									\
   static Type quiet_NaN() {						\
     return								\
       Policy::has_nan						\
-      ? Parma_Polyhedra_Library::NOT_A_NUMBER				\
+      ? NOT_A_NUMBER				\
       : static_cast<Type>(0);						\
   }									\
 };
@@ -81,7 +83,7 @@ PPL_SPECIALIZE_LIMITS_INT(unsigned long long)
 #define PPL_SPECIALIZE_LIMITS_FLOAT(T)					\
 /*! \brief Partial specialization of std::numeric_limits. */		\
 template <typename Policy>						\
-struct numeric_limits<Parma_Polyhedra_Library::Checked_Number<T, Policy> > \
+struct numeric_limits<Checked_Number<T, Policy> > \
   : public numeric_limits<T> {						\
 };
 
@@ -102,10 +104,10 @@ PPL_SPECIALIZE_LIMITS_FLOAT(long double)
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Policy>
 class
-numeric_limits<Parma_Polyhedra_Library::Checked_Number<mpz_class, Policy> >
+numeric_limits<Checked_Number<mpz_class, Policy> >
   : public numeric_limits<mpz_class> {
 private:
-  typedef Parma_Polyhedra_Library::Checked_Number<mpz_class, Policy> Type;
+  typedef Checked_Number<mpz_class, Policy> Type;
 
 public:
   static const bool has_infinity = Policy::has_infinity;
@@ -114,14 +116,14 @@ public:
   static Type infinity() {
     return
       Policy::has_infinity
-      ? Parma_Polyhedra_Library::PLUS_INFINITY
+      ? PLUS_INFINITY
       : static_cast<Type>(0);
   }
 
   static Type quiet_NaN() {
     return
       Policy::has_nan
-      ? Parma_Polyhedra_Library::NOT_A_NUMBER
+      ? NOT_A_NUMBER
       : static_cast<Type>(0);
   }
 };
@@ -131,10 +133,10 @@ public:
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Policy>
 class
-numeric_limits<Parma_Polyhedra_Library::Checked_Number<mpq_class, Policy> >
+numeric_limits<Checked_Number<mpq_class, Policy> >
 : public numeric_limits<mpq_class> {
 private:
-  typedef Parma_Polyhedra_Library::Checked_Number<mpq_class, Policy> Type;
+  typedef Checked_Number<mpq_class, Policy> Type;
 
 public:
   static const bool has_infinity = Policy::has_infinity;
@@ -143,14 +145,14 @@ public:
   static Type infinity() {
     return
       Policy::has_infinity
-      ? Parma_Polyhedra_Library::PLUS_INFINITY
+      ? PLUS_INFINITY
       : static_cast<Type>(0);
   }
 
   static Type quiet_NaN() {
     return
       Policy::has_nan
-      ? Parma_Polyhedra_Library::NOT_A_NUMBER
+      ? NOT_A_NUMBER
       : static_cast<Type>(0);
   }
 };

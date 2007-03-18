@@ -62,7 +62,7 @@ Impl::expand_within_capacity(const dimension_type new_size) {
 #endif
   // Construct in direct order: will destroy in reverse order.
   for (dimension_type i = size(); i < new_size; ++i) {
-    new (&vec_[i]) T(PLUS_INFINITY);
+    new (&vec_[i]) T(PLUS_INFINITY, ROUND_NOT_NEEDED);
     bump_size();
   }
 }

@@ -29,6 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Temp.defs.hh"
 #include "Rounding_Dir.defs.hh"
 #include "Numeric_Format.defs.hh"
+#include "Float.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -359,22 +360,66 @@ Result input_mpq(mpq_class& to, std::istream& is);
 
 } // namespace Checked
 
-struct Minus_Infinity {
-};
-
-struct Plus_Infinity {
-};
-
-struct Not_A_Number {
-};
-
-extern Minus_Infinity MINUS_INFINITY;
-extern Plus_Infinity PLUS_INFINITY;
-extern Not_A_Number NOT_A_NUMBER;
+#define MINUS_INFINITY float(-HUGE_VAL)
+#define PLUS_INFINITY float(HUGE_VAL)
+#define NOT_A_NUMBER float(NAN)
 
 template <typename T>
 struct Is_Native : public False {
 };
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \ingroup PPL_CXX_interface */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+template <typename T>
+struct Checked_Number_Transparent_Policy {
+  //! Checks for overflowed result.
+  const_bool_nodef(check_overflow, false);
+
+  //! Checks for attempts to add infinities with different sign.
+  const_bool_nodef(check_inf_add_inf, false);
+
+  //! Checks for attempts to subtract infinities with same sign.
+  const_bool_nodef(check_inf_sub_inf, false);
+
+  //! Checks for attempts to multiply infinities by zero.
+  const_bool_nodef(check_inf_mul_zero, false);
+
+  //! Checks for attempts to divide by zero.
+  const_bool_nodef(check_div_zero, false);
+
+  //! Checks for attempts to divide infinities.
+  const_bool_nodef(check_inf_div_inf, false);
+
+  //! Checks for attempts to compute remainder of infinities.
+  const_bool_nodef(check_inf_mod, false);
+
+  //! Checks for attempts to take the square root of a negative number.
+  const_bool_nodef(check_sqrt_neg, false);
+
+  //! Handles not-a-number special value.
+  const_bool_nodef(has_nan, std::numeric_limits<T>::has_quiet_NaN);
+
+  //! Handles infinity special values.
+  const_bool_nodef(has_infinity, std::numeric_limits<T>::has_infinity);
+
+  //! Representation is identical to primitive.
+  const_bool_nodef(convertible, true);
+
+  //! When true, requests to check for FPU inexact result are honored.
+  const_bool_nodef(fpu_check_inexact, false);
+
+  //! Return VC_NAN on NaN result also for native extended.
+  const_bool_nodef(check_nan_result, false);
+  static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR = ROUND_NATIVE;
+  static const Rounding_Dir ROUND_DEFAULT_OPERATOR = ROUND_NATIVE;
+  static const Rounding_Dir ROUND_DEFAULT_FUNCTION = ROUND_NATIVE;
+  static const Rounding_Dir ROUND_DEFAULT_INPUT = ROUND_NATIVE;
+  static const Rounding_Dir ROUND_DEFAULT_OUTPUT = ROUND_NATIVE;
+  static void handle_result(Result r);
+};
+
+typedef Checked_Number_Transparent_Policy<float> Special_Float_Policy;
 
 } // namespace Parma_Polyhedra_Library
 

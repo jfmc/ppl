@@ -139,13 +139,13 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
 	// The loop correctly handles the case when i == j.
 	for (dimension_type j = space_dim; j > 0; --j)
 	  if (g_i != g.coefficient(Variable(j-1)))
-	    dbm_i[j] = PLUS_INFINITY;
+	    assign_r(dbm_i[j], PLUS_INFINITY, ROUND_NOT_NEEDED);
 	if (g_i != 0)
-	  dbm_i[0] = PLUS_INFINITY;
+	  assign_r(dbm_i[0], PLUS_INFINITY, ROUND_NOT_NEEDED);
       }
       for (dimension_type j = space_dim; j > 0; --j)
 	if (g.coefficient(Variable(j-1)) != 0)
-	  dbm_0[j] = PLUS_INFINITY;
+	  assign_r(dbm_0[j], PLUS_INFINITY, ROUND_NOT_NEEDED);
       break;
     case Generator::RAY:
       for (dimension_type i = space_dim; i > 0; --i) {
@@ -154,13 +154,13 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
 	// The loop correctly handles the case when i == j.
 	for (dimension_type j = space_dim; j > 0; --j)
 	  if (g_i < g.coefficient(Variable(j-1)))
-	    dbm_i[j] = PLUS_INFINITY;
+	    assign_r(dbm_i[j], PLUS_INFINITY, ROUND_NOT_NEEDED);
 	if (g_i < 0)
-	  dbm_i[0] = PLUS_INFINITY;
+	  assign_r(dbm_i[0], PLUS_INFINITY, ROUND_NOT_NEEDED);
       }
       for (dimension_type j = space_dim; j > 0; --j)
 	if (g.coefficient(Variable(j-1)) > 0)
-	  dbm_0[j] = PLUS_INFINITY;
+	  assign_r(dbm_0[j], PLUS_INFINITY, ROUND_NOT_NEEDED);
       break;
     default:
       // Points and closure points already dealt with.
@@ -1339,7 +1339,7 @@ BD_Shape<T>::shortest_path_closure_assign() const {
     else {
       assert(sgn(x_dbm_hh) == 0);
       // Restore PLUS_INFINITY on the main diagonal.
-      x_dbm_hh = PLUS_INFINITY;
+      assign_r(x_dbm_hh, PLUS_INFINITY, ROUND_NOT_NEEDED);
     }
   }
 
@@ -1897,7 +1897,7 @@ BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y,
 	    assign_r(dbm_ij, *k, ROUND_UP);
 	}
 	else
-	  dbm_ij = PLUS_INFINITY;
+	  assign_r(dbm_ij, PLUS_INFINITY, ROUND_NOT_NEEDED);
       }
     }
   }
@@ -2069,7 +2069,7 @@ BD_Shape<T>::BHMZ05_widening_assign(const BD_Shape& y, unsigned* tp) {
       // the use of `<' that would seem -but is not- equivalent) is
       // intentional.
       if (y_redundancy_i[j] || y_dbm_i[j] != dbm_ij)
-	dbm_ij = PLUS_INFINITY;
+	assign_r(dbm_ij, PLUS_INFINITY, ROUND_NOT_NEEDED);
     }
   }
   // NOTE: this will also reset the shortest-path reduction flag,
@@ -2309,8 +2309,8 @@ BD_Shape<T>::forget_all_dbm_constraints(const dimension_type v) {
   assert(0 < v && v <= dbm.num_rows());
   DB_Row<N>& dbm_v = dbm[v];
   for (dimension_type i = dbm.num_rows(); i-- > 0; ) {
-    dbm_v[i] = PLUS_INFINITY;
-    dbm[i][v] = PLUS_INFINITY;
+    assign_r(dbm_v[i], PLUS_INFINITY, ROUND_NOT_NEEDED);
+    assign_r(dbm[i][v], PLUS_INFINITY, ROUND_NOT_NEEDED);
   }
 }
 
@@ -2320,8 +2320,8 @@ BD_Shape<T>::forget_binary_dbm_constraints(const dimension_type v) {
   assert(0 < v && v <= dbm.num_rows());
   DB_Row<N>& dbm_v = dbm[v];
   for (dimension_type i = dbm.num_rows()-1; i > 0; --i) {
-    dbm_v[i] = PLUS_INFINITY;
-    dbm[i][v] = PLUS_INFINITY;
+    assign_r(dbm_v[i], PLUS_INFINITY, ROUND_NOT_NEEDED);
+    assign_r(dbm[i][v], PLUS_INFINITY, ROUND_NOT_NEEDED);
   }
 }
 
@@ -3580,7 +3580,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	    for (dimension_type i = space_dim + 1; i-- > 0; ) {
 	      N& dbm_iv = dbm[i][v];
 	      add_assign_r(dbm_iv, dbm_iv, d, ROUND_UP);
-	      dbm_v[i] = PLUS_INFINITY;
+	      assign_r(dbm_v[i], PLUS_INFINITY, ROUND_NOT_NEEDED);
 	    }
 	  }
 	  else {
@@ -3590,7 +3590,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	    N& dbm_v0 = dbm_v[0];
 	    add_assign_r(dbm_0[v], dbm_v0, d, ROUND_UP);
 	    // Forget all the other constraints on `v'.
-	    dbm_v0 = PLUS_INFINITY;
+	    assign_r(dbm_v0, PLUS_INFINITY, ROUND_NOT_NEEDED);
 	    forget_binary_dbm_constraints(v);
 	  }
 	}
@@ -3633,7 +3633,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	    for (dimension_type i = space_dim + 1; i-- > 0; ) {
 	      N& dbm_vi = dbm_v[i];
 	      add_assign_r(dbm_vi, dbm_vi, d, ROUND_UP);
-	      dbm[i][v] = PLUS_INFINITY;
+	      assign_r(dbm[i][v], PLUS_INFINITY, ROUND_NOT_NEEDED);
 	    }
 	  }
 	  else {
@@ -3643,7 +3643,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	    N& dbm_0v = dbm_0[v];
 	    add_assign_r(dbm_v[0], dbm_0v, d, ROUND_UP);
 	    // Forget all the other constraints on `v'.
-	    dbm_0v = PLUS_INFINITY;
+	    assign_r(dbm_0v, PLUS_INFINITY, ROUND_NOT_NEEDED);
 	    forget_binary_dbm_constraints(v);
 	  }
 	}

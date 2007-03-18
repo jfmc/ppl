@@ -317,19 +317,19 @@ Octagonal_Shape<T>::Octagonal_Shape(const Generator_System& gs)
 	    // Set for any line the right limit.
 	    if (g_i != g_j) {
 	      // Hyperplane: X_i - X_j <=/>= +Inf.
-	      x_i[dj] = PLUS_INFINITY;
-	      x_ii[dj+1] = PLUS_INFINITY;
+	      assign_r(x_i[dj], PLUS_INFINITY, ROUND_NOT_NEEDED);
+	      assign_r(x_ii[dj+1], PLUS_INFINITY, ROUND_NOT_NEEDED);
 	    }
 	    if (g_i != -g_j) {
 	      // Hyperplane: X_i + X_j <=/>= +Inf.
-	      x_i[dj+1] = PLUS_INFINITY;
-	      x_ii[dj] = PLUS_INFINITY;
+	      assign_r(x_i[dj+1], PLUS_INFINITY, ROUND_NOT_NEEDED);
+	      assign_r(x_ii[dj], PLUS_INFINITY, ROUND_NOT_NEEDED);
 	    }
 	  }
 	  if (g_i != 0) {
 	    // Hyperplane: X_i <=/>= +Inf.
-	    x_i[di+1] = PLUS_INFINITY;
-	    x_ii[di] = PLUS_INFINITY;
+	    assign_r(x_i[di+1], PLUS_INFINITY, ROUND_NOT_NEEDED);
+	    assign_r(x_ii[di], PLUS_INFINITY, ROUND_NOT_NEEDED);
 	  }
 	}
       break;
@@ -346,24 +346,24 @@ Octagonal_Shape<T>::Octagonal_Shape(const Generator_System& gs)
 	    // of the binary constraints.
 	    if (g_i < g_j)
 	      // Hyperplane: X_i - X_j >= +Inf.
-	      x_i[dj] = PLUS_INFINITY;
+	      assign_r(x_i[dj], PLUS_INFINITY, ROUND_NOT_NEEDED);
 	    if (g_i > g_j)
 	      // Hyperplane: X_i - X_j <= +Inf.
-	      x_ii[dj+1] = PLUS_INFINITY;
+	      assign_r(x_ii[dj+1], PLUS_INFINITY, ROUND_NOT_NEEDED);
 	    if (g_i < -g_j)
 	      // Hyperplane: X_i + X_j >= +Inf.
-	      x_i[dj+1] = PLUS_INFINITY;
+	      assign_r(x_i[dj+1], PLUS_INFINITY, ROUND_NOT_NEEDED);
 	    if (g_i > -g_j)
 	      // Hyperplane: X_i + X_j <= +Inf.
-	      x_ii[dj] = PLUS_INFINITY;
+	      assign_r(x_ii[dj], PLUS_INFINITY, ROUND_NOT_NEEDED);
 	  }
 	  // Case: unary constraints.
 	  if (g_i < 0)
 	    // Hyperplane: X_i  = +Inf.
-	    x_i[di+1] = PLUS_INFINITY;
+	    assign_r(x_i[di+1], PLUS_INFINITY, ROUND_NOT_NEEDED);
 	  if (g_i > 0)
 	    // Hyperplane: X_i  = +Inf.
-	    x_ii[di] = PLUS_INFINITY;
+	    assign_r(x_ii[di], PLUS_INFINITY, ROUND_NOT_NEEDED);
 	}
       break;
     default:
@@ -793,7 +793,7 @@ Octagonal_Shape<T>::is_strongly_reduced() const {
     for (dimension_type j = iter.row_size(); j-- > 0; ) {
       if (!is_plus_infinity(m_i[j])) {
 	Octagonal_Shape x_copy = *this;
-	x_copy.matrix[i][j] = PLUS_INFINITY;
+assign_r(	x_copy.matrix[i][j], PLUS_INFINITY, ROUND_NOT_NEEDED);
 	if (x == x_copy)
 	  return false;
       }
@@ -1551,7 +1551,7 @@ Octagonal_Shape<T>::strong_closure_assign() const {
     else {
       assert(sgn(x_i_i) == 0);
       // Restore PLUS_INFINITY on the main diagonal.
-      x_i_i = PLUS_INFINITY;
+      assign_r(x_i_i, PLUS_INFINITY, ROUND_NOT_NEEDED);
     }
   }
 
@@ -1743,7 +1743,7 @@ Octagonal_Shape<T>
     else {
       // Restore PLUS_INFINITY on the main diagonal.
       assert(sgn(x_i_i) == 0);
-      x_i_i = PLUS_INFINITY;
+      assign_r(x_i_i, PLUS_INFINITY, ROUND_NOT_NEEDED);
     }
   }
 
@@ -2413,7 +2413,7 @@ Octagonal_Shape<T>::CC76_extrapolation_assign(const Octagonal_Shape& y,
 	  assign_r(elem, *k, ROUND_UP);
       }
       else
-	elem = PLUS_INFINITY;
+assign_r(	elem, PLUS_INFINITY, ROUND_NOT_NEEDED);
     }
   }
 
@@ -2603,7 +2603,7 @@ Octagonal_Shape<T>::BHMZ05_widening_assign(const Octagonal_Shape& y,
       // the use of `<' that would seem -but is not- equivalent) is
       // intentional.
     if (*j != elem)
-      elem = PLUS_INFINITY;
+      assign_r(elem, PLUS_INFINITY, ROUND_NOT_NEEDED);
   }
   status.reset_strongly_closed();
   assert(OK());
@@ -2954,15 +2954,15 @@ Octagonal_Shape<T>
   typename OR_Matrix<N>::row_reference_type r_v = *m_iter;
   typename OR_Matrix<N>::row_reference_type r_cv = *(++m_iter);
   for (dimension_type h = m_iter.row_size(); h-- > 0; ) {
-    r_v[h] = PLUS_INFINITY;
-    r_cv[h] = PLUS_INFINITY;
+    assign_r(r_v[h], PLUS_INFINITY, ROUND_NOT_NEEDED);
+    assign_r(r_cv[h], PLUS_INFINITY, ROUND_NOT_NEEDED);
   }
   ++m_iter;
   for (typename OR_Matrix<N>::row_iterator m_end = matrix.row_end();
        m_iter != m_end; ++m_iter) {
     typename OR_Matrix<N>::row_reference_type r = *m_iter;
-    r[n_v] = PLUS_INFINITY;
-    r[n_v+1] = PLUS_INFINITY;
+    assign_r(r[n_v], PLUS_INFINITY, ROUND_NOT_NEEDED);
+    assign_r(r[n_v+1], PLUS_INFINITY, ROUND_NOT_NEEDED);
   }
 }
 
@@ -2976,15 +2976,15 @@ Octagonal_Shape<T>
   typename OR_Matrix<N>::row_reference_type r_v = *m_iter;
   typename OR_Matrix<N>::row_reference_type r_cv = *(++m_iter);
   for (dimension_type k = n_v; k-- > 0; ) {
-    r_v[k] = PLUS_INFINITY;
-    r_cv[k] = PLUS_INFINITY;
+    assign_r(r_v[k], PLUS_INFINITY, ROUND_NOT_NEEDED);
+    assign_r(r_cv[k], PLUS_INFINITY, ROUND_NOT_NEEDED);
   }
   ++m_iter;
   for (typename OR_Matrix<N>::row_iterator m_end = matrix.row_end();
        m_iter != m_end; ++m_iter) {
     typename OR_Matrix<N>::row_reference_type r = *m_iter;
-    r[n_v] = PLUS_INFINITY;
-    r[n_v+1] = PLUS_INFINITY;
+    assign_r(r[n_v], PLUS_INFINITY, ROUND_NOT_NEEDED);
+    assign_r(r[n_v+1], PLUS_INFINITY, ROUND_NOT_NEEDED);
   }
 }
 
@@ -4190,15 +4190,15 @@ Octagonal_Shape<T>
 		Row_Reference m_i = *m_iter;
 		N& m_i_v = m_i[n_var];
 		add_assign_r(m_i_v, m_i_v, d, ROUND_UP);
-		m_i[n_var+1] = PLUS_INFINITY;
+assign_r(		m_i[n_var+1], PLUS_INFINITY, ROUND_NOT_NEEDED);
 	      }
 	      for (dimension_type k = n_var; k-- > 0; ) {
-		m_v[k] = PLUS_INFINITY;
+assign_r(		m_v[k], PLUS_INFINITY, ROUND_NOT_NEEDED);
 		add_assign_r(m_cv[k], m_cv[k], d, ROUND_UP);
 	      }
 	      mul2exp_assign_r(d, d, 1, ROUND_IGNORE);
 	      add_assign_r(m_cv_v, m_cv_v, d, ROUND_UP);
-	      m_v_cv = PLUS_INFINITY;
+	      assign_r(m_v_cv, PLUS_INFINITY, ROUND_NOT_NEEDED);
 	    }
 	    else {
 	      // Here `w_coeff == -denominator'.
@@ -4206,7 +4206,7 @@ Octagonal_Shape<T>
 	      N& m_v_cv = matrix[n_var][n_var+1];
 	      mul2exp_assign_r(d, d, 1, ROUND_IGNORE);
 	      add_assign_r(matrix[n_var+1][n_var], m_v_cv, d, ROUND_UP);
-	      m_v_cv = PLUS_INFINITY;
+	      assign_r(m_v_cv, PLUS_INFINITY, ROUND_NOT_NEEDED);
 	      forget_binary_octagonal_constraints(var_id);
 	    }
 	  }
@@ -4256,16 +4256,16 @@ Octagonal_Shape<T>
 	      // NOTE: delay update of m_v_cv and m_cv_v.
 	      for ( ;m_iter != m_end; ++m_iter) {
 		Row_Reference m_i = *m_iter;
-		m_i[n_var] = PLUS_INFINITY;
+assign_r(		m_i[n_var], PLUS_INFINITY, ROUND_NOT_NEEDED);
 		add_assign_r(m_i[n_var+1], m_i[n_var+1], d, ROUND_UP);
 	      }
 	      for (dimension_type k = n_var; k-- > 0; ) {
 		add_assign_r(m_v[k], m_v[k], d, ROUND_UP);
-		m_cv[k] = PLUS_INFINITY;
+assign_r(		m_cv[k], PLUS_INFINITY, ROUND_NOT_NEEDED);
 	      }
 	      mul2exp_assign_r(d, d, 1, ROUND_IGNORE);
 	      add_assign_r(m_v_cv, m_v_cv, d, ROUND_UP);
-	      m_cv_v = PLUS_INFINITY;
+	      assign_r(m_cv_v, PLUS_INFINITY, ROUND_NOT_NEEDED);
 	    }
 	    else {
 	      // Here `w_coeff == -denominator'.
@@ -4273,7 +4273,7 @@ Octagonal_Shape<T>
 	      N& m_cv_v = matrix[n_var+1][n_var];
 	      mul2exp_assign_r(d, d, 1, ROUND_IGNORE);
 	      add_assign_r(matrix[n_var][n_var+1], m_cv_v, d, ROUND_UP);
-	      m_cv_v = PLUS_INFINITY;
+	      assign_r(m_cv_v, PLUS_INFINITY, ROUND_NOT_NEEDED);
 	      forget_binary_octagonal_constraints(var_id);
 	    }
 	  }

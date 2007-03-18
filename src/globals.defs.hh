@@ -28,6 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "C_Integer.hh"
 #include "meta_programming.hh"
 #include <exception>
+#include <gmpxx.h>
 
 namespace Parma_Polyhedra_Library {
 
@@ -400,6 +401,40 @@ template <typename T, typename Policy>
 inline bool
 is_additive_inverse(const Checked_Number<T, Policy>& x,
 		    const Checked_Number<T, Policy>& y);
+
+
+template <typename T, typename Enable = void>
+struct Has_OK : public False { };
+
+template <typename T>
+struct Has_OK<T, typename Enable_If_Is<bool (T::*)() const, &T::OK>::type>
+  : public True {
+};
+
+template <typename T>
+inline typename Enable_If<Has_OK<T>::value, bool>::type
+f_OK(const T& to) {
+  return to.OK();
+}
+
+#define FOK(T) inline bool f_OK(const T&) { return true; }
+
+FOK(char)
+FOK(signed char)
+FOK(unsigned char)
+FOK(signed short)
+FOK(unsigned short)
+FOK(signed int)
+FOK(unsigned int)
+FOK(signed long)
+FOK(unsigned long)
+FOK(signed long long)
+FOK(unsigned long long)
+FOK(float)
+FOK(double)
+FOK(long double)
+FOK(mpz_class)
+FOK(mpq_class)
 
 } // namespace Parma_Polyhedra_Library
 

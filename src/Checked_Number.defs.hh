@@ -32,57 +32,6 @@ namespace Parma_Polyhedra_Library {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \ingroup PPL_CXX_interface */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-template <typename T>
-struct Checked_Number_Transparent_Policy {
-  //! Checks for overflowed result.
-  const_bool_nodef(check_overflow, false);
-
-  //! Checks for attempts to add infinities with different sign.
-  const_bool_nodef(check_inf_add_inf, false);
-
-  //! Checks for attempts to subtract infinities with same sign.
-  const_bool_nodef(check_inf_sub_inf, false);
-
-  //! Checks for attempts to multiply infinities by zero.
-  const_bool_nodef(check_inf_mul_zero, false);
-
-  //! Checks for attempts to divide by zero.
-  const_bool_nodef(check_div_zero, false);
-
-  //! Checks for attempts to divide infinities.
-  const_bool_nodef(check_inf_div_inf, false);
-
-  //! Checks for attempts to compute remainder of infinities.
-  const_bool_nodef(check_inf_mod, false);
-
-  //! Checks for attempts to take the square root of a negative number.
-  const_bool_nodef(check_sqrt_neg, false);
-
-  //! Handles not-a-number special value.
-  const_bool_nodef(has_nan, std::numeric_limits<T>::has_quiet_NaN);
-
-  //! Handles infinity special values.
-  const_bool_nodef(has_infinity, std::numeric_limits<T>::has_infinity);
-
-  //! Representation is identical to primitive.
-  const_bool_nodef(convertible, true);
-
-  //! When true, requests to check for FPU inexact result are honored.
-  const_bool_nodef(fpu_check_inexact, false);
-
-  //! Return VC_NAN on NaN result also for native extended.
-  const_bool_nodef(check_nan_result, false);
-  static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR = ROUND_NATIVE;
-  static const Rounding_Dir ROUND_DEFAULT_OPERATOR = ROUND_NATIVE;
-  static const Rounding_Dir ROUND_DEFAULT_FUNCTION = ROUND_NATIVE;
-  static const Rounding_Dir ROUND_DEFAULT_INPUT = ROUND_NATIVE;
-  static const Rounding_Dir ROUND_DEFAULT_OUTPUT = ROUND_NATIVE;
-  static void handle_result(Result r);
-};
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-/*! \ingroup PPL_CXX_interface */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 struct Checked_Number_Default_Policy {
   const_bool_nodef(check_overflow, true);
   const_bool_nodef(check_inf_add_inf, false);
@@ -315,15 +264,6 @@ public:
   //! Direct initialization from a C string and rounding mode.
   Checked_Number(const char* y, Rounding_Dir dir);
 
-  //! Direct initialization from minus infinity and rounding mode.
-  Checked_Number(const Minus_Infinity& y, Rounding_Dir dir);
-
-  //! Direct initialization from plus infinity and rounding mode.
-  Checked_Number(const Plus_Infinity& y, Rounding_Dir dir);
-
-  //! Direct initialization from NAN and rounding mode.
-  Checked_Number(const Not_A_Number& y, Rounding_Dir dir);
-
   //! Direct initialization from a Checked_Number, default rounding mode.
   template <typename From, typename From_Policy>
   explicit Checked_Number(const Checked_Number<From, From_Policy>& y);
@@ -376,15 +316,6 @@ public:
   //! Direct initialization from a C string, default rounding mode.
   Checked_Number(const char* y);
 
-  //! Direct initialization from minus infinity, default rounding mode.
-  Checked_Number(const Minus_Infinity& y);
-
-  //! Direct initialization from plus infinity, default rounding mode.
-  Checked_Number(const Plus_Infinity& y);
-
-  //! Direct initialization from NAN, default rounding mode.
-  Checked_Number(const Not_A_Number& y);
-
   //@} // Constructors
 
   //! \name Accessors and Conversions
@@ -429,15 +360,6 @@ public:
   //! Assignment operator.
   template <typename From>
   Checked_Number& operator=(const From& y);
-
-  //! Assignment operator.
-  Checked_Number& operator=(const Not_A_Number& y);
-
-  //! Assignment operator.
-  Checked_Number& operator=(const Minus_Infinity& y);
-
-  //! Assignment operator.
-  Checked_Number& operator=(const Plus_Infinity& y);
 
   //! Add and assign operator.
   template <typename From_Policy>
@@ -543,12 +465,6 @@ typename Enable_If<Is_Native_Or_Checked<T>::value, int>::type is_infinity(const 
 template <typename T>
 typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type is_integer(const T& x);
 
-template <typename To>
-typename Enable_If<Is_Native_Or_Checked<To>::value, Result>::type assign_r(To& to, const Minus_Infinity& x, Rounding_Dir dir);
-template <typename To>
-typename Enable_If<Is_Native_Or_Checked<To>::value, Result>::type assign_r(To& to, const Plus_Infinity& x, Rounding_Dir dir);
-template <typename To>
-typename Enable_If<Is_Native_Or_Checked<To>::value, Result>::type assign_r(To& to, const Not_A_Number& x, Rounding_Dir dir);
 template <typename To>
 typename Enable_If<Is_Native_Or_Checked<To>::value, Result>::type assign_r(To& to, const char* x, Rounding_Dir dir);
 template <typename To, typename To_Policy>

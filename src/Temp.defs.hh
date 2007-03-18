@@ -38,11 +38,6 @@ swap(T&, T&) {
   // A swap specialization for this type is missing and needed.
 }
 
-template <typename Type, Type, typename T = void>
-struct Enable_If_Is {
-  typedef T type;
-};
-
 template <typename T, typename Enable = void>
 struct Has_Assign_Or_Swap : public False { };
 

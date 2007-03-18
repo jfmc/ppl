@@ -43,9 +43,8 @@ template <typename Interval>
 inline
 Box<Interval>::Box(dimension_type num_dimensions, Degenerate_Element kind)
   : seq(num_dimensions), empty(kind == EMPTY), empty_up_to_date(true) {
-  // FIXME: use UNIVERSE when initializing `seq'.
   for (dimension_type i = num_dimensions; i-- > 0; )
-    seq[i].set_universe();
+    seq[i].assign(UNIVERSE);
   assert(OK());
 }
 
@@ -53,9 +52,8 @@ template <typename Interval>
 inline
 Box<Interval>::Box(const Constraint_System& cs)
   : seq(cs.space_dimension()), empty_up_to_date(false) {
-  // FIXME: use UNIVERSE when initializing `seq'.
   for (dimension_type i = cs.space_dimension(); i-- > 0; )
-    seq[i].set_universe();
+    seq[i].assign(UNIVERSE);
   add_constraints_no_check(cs);
 }
 
@@ -68,9 +66,8 @@ Box<Interval>::Box(const Box<Other_Interval>& y)
     empty_up_to_date(y.empty_up_to_date) {
   Box& x = *this;
   if (y.marked_empty()) {
-    // FIXME: use UNIVERSE when initializing `seq'.
     for (dimension_type i = space_dimension(); i-- > 0; )
-      seq[i].set_universe();
+      seq[i].assign(UNIVERSE);
     x.set_empty();
   }
   else {
@@ -84,9 +81,8 @@ Box<Interval>::Box(const Box<Other_Interval>& y)
 template <typename Interval>
 Box<Interval>::Box(const Generator_System& gs)
   : seq(gs.space_dimension()), empty(false), empty_up_to_date(true) {
-  // FIXME: use UNIVERSE when initializing `seq'.
   for (dimension_type i = space_dimension(); i-- > 0; )
-    seq[i].set_universe();
+    seq[i].assign(UNIVERSE);
 
   const Generator_System::const_iterator gs_begin = gs.begin();
   const Generator_System::const_iterator gs_end = gs.end();
@@ -143,16 +139,16 @@ Box<Interval>::Box(const Generator_System& gs)
     case Generator::LINE:
       for (dimension_type i = space_dim; i-- > 0; )
 	if (g.coefficient(Variable(i)) != 0)
-	  seq[i].set_universe();
+	  seq[i].assign(UNIVERSE);
       break;
     case Generator::RAY:
       for (dimension_type i = space_dim; i-- > 0; )
 	switch (sgn(g.coefficient(Variable(i)))) {
 	case 1:
-	  seq[i].upper_set_unbounded();
+	  seq[i].upper_set(UNBOUNDED);
 	  break;
 	case -1:
-	  seq[i].lower_set_unbounded();
+	  seq[i].lower_set(UNBOUNDED);
 	  break;
 	default:
 	  break;
@@ -168,18 +164,18 @@ Box<Interval>::Box(const Generator_System& gs)
 	  Interval& seq_i = seq[i];
 	  if (!seq_i.upper_is_unbounded()) {
 	    const typename Interval::boundary_type& upper_i = seq_i.upper();
-	    q_interval.set_universe();
+	    q_interval.assign(UNIVERSE);
 	    refine_existential(q_interval, LESS_THAN, q);
-	    if (upper_i < upper(q_interval)) {
+	    if (upper_i < q_interval.upper()) {
 	      refine_existential(q_interval, GREATER_OR_EQUAL, upper_i);
 	      join_assign(seq_i, q_interval);
 	    }
 	  }
 	  if (!seq_i.lower_is_unbounded()) {
 	    const typename Interval::boundary_type& lower_i = seq_i.lower();
-	    q_interval.set_universe();
+	    q_interval.assign(UNIVERSE);
 	    refine_existential(q_interval, GREATER_THAN, q);
-	    if (lower_i > lower(q_interval)) {
+	    if (lower_i > q_interval.lower()) {
 	      refine_existential(q_interval, LESS_OR_EQUAL, lower_i);
 	      join_assign(seq_i, q_interval);
 	    }
@@ -199,9 +195,8 @@ template <typename Interval>
 template <typename T>
 Box<Interval>::Box(const BD_Shape<T>& bds, Complexity_Class)
   : seq(bds.space_dimension()), empty(false), empty_up_to_date(true) {
-  // FIXME: use UNIVERSE when initializing `seq'.
   for (dimension_type i = space_dimension(); i-- > 0; )
-    seq[i].set_universe();
+    seq[i].assign(UNIVERSE);
 
   // Expose all the interval constraints.
   bds.shortest_path_closure_assign();
@@ -219,13 +214,13 @@ Box<Interval>::Box(const BD_Shape<T>& bds, Complexity_Class)
   for (dimension_type i = space_dim; i-- > 0; ) {
     Interval& seq_i = seq[i];
     // Set the upper bound.
-    seq_i.upper_set_unbounded();
+    seq_i.upper_set(UNBOUNDED);
     if (!is_plus_infinity(dbm_0[i+1])) {
       assign_r(bound, dbm_0[i+1], ROUND_NOT_NEEDED);
       refine_existential(seq_i, LESS_OR_EQUAL, bound);
     }
     // Set the lower bound.
-    seq_i.lower_set_unbounded();
+    seq_i.lower_set(UNBOUNDED);
     if (!is_plus_infinity(bds.dbm[i+1][0])) {
       assign_r(bound, bds.dbm[i+1][0], ROUND_NOT_NEEDED);
       neg_assign_r(bound, bound, ROUND_NOT_NEEDED);
@@ -238,9 +233,8 @@ template <typename Interval>
 template <typename T>
 Box<Interval>::Box(const Octagonal_Shape<T>& oct, Complexity_Class)
   : seq(oct.space_dimension()), empty(false), empty_up_to_date(true) {
-  // FIXME: use UNIVERSE when initializing `seq'.
   for (dimension_type i = space_dimension(); i-- > 0; )
-    seq[i].set_universe();
+    seq[i].assign(UNIVERSE);
 
   // Expose all the interval constraints.
   oct.strong_closure_assign();
@@ -266,11 +260,11 @@ Box<Interval>::Box(const Octagonal_Shape<T>& oct, Complexity_Class)
       assign_r(bound, twice_ub, ROUND_NOT_NEEDED);
       div2exp_assign_r(bound, bound, 1, ROUND_NOT_NEEDED);
       // FIXME: how to directly set the upper bound?
-      seq_i.upper_set_unbounded();
+      seq_i.upper_set(UNBOUNDED);
       refine_existential(seq_i, LESS_OR_EQUAL, bound);
     }
     else
-      seq_i.upper_set_unbounded();
+      seq_i.upper_set(UNBOUNDED);
 
     // Set the lower bound.
     const typename Octagonal_Shape<T>::coefficient_type& twice_lb
@@ -280,20 +274,19 @@ Box<Interval>::Box(const Octagonal_Shape<T>& oct, Complexity_Class)
       neg_assign_r(bound, bound, ROUND_NOT_NEEDED);
       div2exp_assign_r(bound, bound, 1, ROUND_NOT_NEEDED);
       // FIXME: how to directly set the lower bound?
-      seq_i.lower_set_unbounded();
+      seq_i.lower_set(UNBOUNDED);
       refine_existential(seq_i, GREATER_OR_EQUAL, bound);
     }
     else
-      seq_i.lower_set_unbounded();
+      seq_i.lower_set(UNBOUNDED);
   }
 }
 
 template <typename Interval>
 Box<Interval>::Box(const Polyhedron& ph, Complexity_Class complexity)
   : seq(ph.space_dimension()), empty(false), empty_up_to_date(true) {
-  // FIXME: use UNIVERSE when initializing `seq'.
   for (dimension_type i = space_dimension(); i-- > 0; )
-    seq[i].set_universe();
+    seq[i].assign(UNIVERSE);
   // We do not need to bother about `complexity' if:
   // a) the polyhedron is already marked empty; or ...
   if (ph.marked_empty()) {
@@ -350,7 +343,7 @@ Box<Interval>::Box(const Polyhedron& ph, Complexity_Class complexity)
       Interval& seq_i = seq[i];
       lp.set_objective_function(Variable(i));
       // Evaluate upper bound.
-      seq_i.upper_set_unbounded();
+      seq_i.upper_set(UNBOUNDED);
       lp.set_optimization_mode(MAXIMIZATION);
       if (lp.solve() == OPTIMIZED_MIP_PROBLEM) {
 	g = lp.optimizing_point();
@@ -360,7 +353,7 @@ Box<Interval>::Box(const Polyhedron& ph, Complexity_Class complexity)
 	refine_existential(seq_i, LESS_OR_EQUAL, bound);
       }
       // Evaluate optimal lower bound.
-      seq_i.lower_set_unbounded();
+      seq_i.lower_set(UNBOUNDED);
       lp.set_optimization_mode(MINIMIZATION);
       if (lp.solve() == OPTIMIZED_MIP_PROBLEM) {
 	g = lp.optimizing_point();
@@ -386,9 +379,8 @@ Box<Interval>::Box(const Polyhedron& ph, Complexity_Class complexity)
 template <typename Interval>
 Box<Interval>::Box(const Grid& gr, Complexity_Class)
   : seq(gr.space_dimension()), empty(false), empty_up_to_date(true) {
-  // FIXME: use UNIVERSE when initializing `seq'.
   for (dimension_type i = space_dimension(); i-- > 0; )
-    seq[i].set_universe();
+    seq[i].assign(UNIVERSE);
 
   // FIXME: here we are not taking advantage of intervals with restrictions!
 
@@ -448,7 +440,7 @@ Box<Interval>::Box(const Grid& gr, Complexity_Class)
   const Coefficient& divisor = point.divisor();
   for (dimension_type i = space_dim; i-- > 0; ) {
     Interval& seq_i = seq[i];
-    seq_i.set_universe();
+    seq_i.assign(UNIVERSE);
     if (bounded_interval[i]) {
       assign_r(bound.get_num(), point[i+1], ROUND_NOT_NEEDED);
       assign_r(bound.get_den(), divisor, ROUND_NOT_NEEDED);
@@ -463,9 +455,8 @@ template <typename D1, typename D2>
 Box<Interval>::Box(const Direct_Product<D1, D2>& dp,
 		   Complexity_Class complexity)
   : seq(dp.space_dimension()), empty(false), empty_up_to_date(true) {
-  // FIXME: use UNIVERSE when initializing `seq'.
   for (dimension_type i = dp.space_dimension(); i-- > 0; )
-    seq[i].set_universe();
+    seq[i].assign(UNIVERSE);
   {
     Box tmp(dp.domain1(), complexity);
     intersection_assign(tmp);
@@ -487,7 +478,7 @@ Box<Interval>::add_space_dimensions_and_embed(const dimension_type m) {
   // we just add `m' new (universe) elements to the sequence.
   seq.insert(seq.end(), m, Interval());
   for (dimension_type sz = seq.size(), i = sz - m; i < sz; ++i)
-    seq[i].set_universe();
+    seq[i].assign(UNIVERSE);
   assert(OK());
 }
 
@@ -1327,10 +1318,10 @@ Box<Interval>::time_elapse_assign(const Box& y) {
     const Interval& y_seq_i = y.seq[i];
     if (!x_seq_i.lower_is_unbounded())
       if (y_seq_i.lower_is_unbounded() || y_seq_i.lower() < 0)
-	x_seq_i.lower_set_unbounded();
+	x_seq_i.lower_set(UNBOUNDED);
     if (!x_seq_i.upper_is_unbounded())
       if (y_seq_i.upper_is_unbounded() || y_seq_i.upper() > 0)
-	x_seq_i.upper_set_unbounded();
+	x_seq_i.upper_set(UNBOUNDED);
   }
   assert(x.OK());
 }
@@ -2041,7 +2032,7 @@ Box<Interval>::affine_preimage(const Variable var,
     if (expr_value.is_empty())
       set_empty();
     else
-      x_seq_v.set_universe();
+      x_seq_v.assign(UNIVERSE);
   }
   else {
     // The affine transformation is invertible.
@@ -2081,7 +2072,7 @@ Box<Interval>::CC76_widening_assign(const Box& y,
 	    x_ub = *k;
 	}
 	else
-	  x_seq_i.upper_set_unbounded();
+	  x_seq_i.upper_set(UNBOUNDED);
       }
     }
 
@@ -2097,7 +2088,7 @@ Box<Interval>::CC76_widening_assign(const Box& y,
 	    if (k != first)
 	      x_lb = *--k;
 	    else
-	      x_seq_i.lower_set_unbounded();
+	      x_seq_i.lower_set(UNBOUNDED);
 	}
 	else
 	  x_lb = *--k;
@@ -2465,7 +2456,7 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
     if (x.marked_empty() == y.marked_empty())
       assign_r(r, 0, ROUND_NOT_NEEDED);
     else
-      r = PLUS_INFINITY;
+      assign_r(r, PLUS_INFINITY, ROUND_NOT_NEEDED);
     return true;
   }
 
@@ -2538,7 +2529,7 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   return true;
 
  pinf:
-  r = PLUS_INFINITY;
+  assign_r(r, PLUS_INFINITY, ROUND_NOT_NEEDED);
   return true;
 }
 
