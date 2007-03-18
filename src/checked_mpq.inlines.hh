@@ -414,7 +414,7 @@ SPECIALIZE_SQRT(sqrt_mpq, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result
-input_mpq(mpq_class& to, std::istream& is, Rounding_Dir dir) {
+input_mpq(mpq_class& to, std::istream& is, Rounding_Dir) {
   Result r = input_mpq(to, is);
   switch (classify(r)) {
   case VC_MINUS_INFINITY:
