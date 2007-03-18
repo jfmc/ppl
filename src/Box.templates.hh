@@ -248,8 +248,14 @@ Box<Interval>::Box(const BD_Shape<T>& bds, Complexity_Class)
 template <typename Interval>
 template <typename T>
 Box<Interval>::Box(const Octagonal_Shape<T>& oct, Complexity_Class)
-  : seq(oct.space_dimension()), empty(false), empty_up_to_date(true) {
-
+  : seq(oct.space_dimension() <= max_space_dimension()
+	? oct.space_dimension()
+	: (throw_space_dimension_overflow("Box(oct)",
+					  "oct exceeds the maximum "
+					  "allowed space dimension"),
+	   oct.space_dimension())),
+    empty(false),
+    empty_up_to_date(true) {
   // Expose all the interval constraints.
   oct.strong_closure_assign();
   if (oct.marked_empty()) {
@@ -392,7 +398,14 @@ Box<Interval>::Box(const Polyhedron& ph, Complexity_Class complexity)
 
 template <typename Interval>
 Box<Interval>::Box(const Grid& gr, Complexity_Class)
-  : seq(gr.space_dimension()), empty(false), empty_up_to_date(true) {
+  : seq(gr.space_dimension() <= max_space_dimension()
+	? gr.space_dimension()
+	: (throw_space_dimension_overflow("Box(gr)",
+					  "gr exceeds the maximum "
+					  "allowed space dimension"),
+	   gr.space_dimension())),
+    empty(false),
+    empty_up_to_date(true) {
 
   // FIXME: here we are not taking advantage of intervals with restrictions!
 
@@ -495,10 +508,25 @@ Box<Interval>::add_space_dimensions_and_embed(const dimension_type m) {
     return;
 
   // To embed an n-dimension space box in a (n+m)-dimension space,
-  // we just add `m' new (universe) elements to the sequence.
+  // we just add `m' new universe elements to the sequence.
   seq.insert(seq.end(), m, Interval());
   for (dimension_type sz = seq.size(), i = sz - m; i < sz; ++i)
     seq[i].assign(UNIVERSE);
+  assert(OK());
+}
+
+template <typename Interval>
+inline void
+Box<Interval>::add_space_dimensions_and_project(const dimension_type m) {
+  // Adding no dimensions is a no-op.
+  if (m == 0)
+    return;
+
+  // A add `m' new zero elements to the sequence.
+  seq.insert(seq.end(), m, Interval());
+  for (dimension_type sz = seq.size(), i = sz - m; i < sz; ++i)
+    assign(seq[i], 0);
+
   assert(OK());
 }
 
@@ -1349,21 +1377,6 @@ Box<Interval>::time_elapse_assign(const Box& y) {
 	x_seq_i.upper_set(UNBOUNDED);
   }
   assert(x.OK());
-}
-
-template <typename Interval>
-inline void
-Box<Interval>::add_space_dimensions_and_project(const dimension_type m) {
-  // Adding no dimensions is a no-op.
-  if (m == 0)
-    return;
-
-  const dimension_type old_space_dim = space_dimension();
-  add_space_dimensions_and_embed(m);
-  for (dimension_type k = m; k-- > 0; )
-    assign(seq[old_space_dim+k], 0);
-
-  assert(OK());
 }
 
 template <typename Interval>
