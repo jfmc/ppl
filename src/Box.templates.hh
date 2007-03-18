@@ -61,6 +61,7 @@ template <typename Interval>
 inline
 Box<Interval>::Box(const Constraint_System& cs)
   : seq(cs.space_dimension()), empty_up_to_date(false) {
+  // FIXME: check whether we can avoid the double initialization.
   for (dimension_type i = cs.space_dimension(); i-- > 0; )
     seq[i].assign(UNIVERSE);
   add_constraints_no_check(cs);
@@ -73,18 +74,10 @@ Box<Interval>::Box(const Box<Other_Interval>& y)
   : seq(y.space_dimension()),
     empty(y.empty),
     empty_up_to_date(y.empty_up_to_date) {
-  Box& x = *this;
-  if (y.marked_empty()) {
-    for (dimension_type i = space_dimension(); i-- > 0; )
-      seq[i].assign(UNIVERSE);
-    x.set_empty();
-  }
-  else {
-    x.empty_up_to_date = false;
+  if (!y.marked_empty())
     for (dimension_type k = y.space_dimension(); k-- > 0; )
-      assign(x.seq[k], y.seq[k]);
-  }
-  assert(x.OK());
+      assign(seq[k], y.seq[k]);
+  assert(OK());
 }
 
 template <typename Interval>
