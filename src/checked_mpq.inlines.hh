@@ -148,7 +148,7 @@ SPECIALIZE_CONSTRUCT(construct_mpq_base, mpq_class, unsigned long)
 
 template <typename To_Policy, typename From_Policy, typename From>
 inline Result
-construct_mpq_float(mpq_class& to, const From& from, Rounding_Dir dir) {
+construct_mpq_float(mpq_class& to, const From& from, Rounding_Dir) {
   if (is_nan<From_Policy>(from))
     return set_special<To_Policy>(to, VC_NAN);
   else if (is_minf<From_Policy>(from)) {
