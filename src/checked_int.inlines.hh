@@ -319,10 +319,10 @@ set_special_int(Type& v, Result r) {
     switch (t) {
     case VC_MINUS_INFINITY:
       v = Extended_Int<Policy, Type>::minus_infinity;
-      break;
+      return V_EQ;
     case VC_PLUS_INFINITY:
       v = Extended_Int<Policy, Type>::plus_infinity;
-      break;
+      return V_EQ;
     default:
       break;
     }

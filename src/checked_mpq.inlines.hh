@@ -113,11 +113,11 @@ set_special_mpq(mpq_class& v, Result r) {
     case VC_MINUS_INFINITY:
       v.get_num() = -1;
       v.get_den() = 0;
-      break;
+      return V_EQ;
     case VC_PLUS_INFINITY:
       v.get_num() = 1;
       v.get_den() = 0;
-      break;
+      return V_EQ;
     default:
       break;
     }
@@ -149,20 +149,26 @@ SPECIALIZE_CONSTRUCT(construct_mpq_base, mpq_class, unsigned long)
 template <typename To_Policy, typename From_Policy, typename From>
 inline Result
 construct_mpq_float(mpq_class& to, const From& from, Rounding_Dir) {
-  if (is_nan<From_Policy>(from))
-    return set_special<To_Policy>(to, VC_NAN);
+  if (is_nan<From_Policy>(from)) {
+    if (To_Policy::has_nan) {
+      new (&to) mpq_class();
+      return set_special<To_Policy>(to, VC_NAN);
+    }
+    else
+      return VC_NAN;
+  }
   else if (is_minf<From_Policy>(from)) {
     if (To_Policy::has_infinity) {
-      set_special<To_Policy>(to, VC_MINUS_INFINITY);
-      return V_EQ;
+      new (&to) mpq_class();
+      return set_special<To_Policy>(to, VC_MINUS_INFINITY);
     }
     else
       return VC_MINUS_INFINITY;
   }
   else if (is_pinf<From_Policy>(from)) {
     if (To_Policy::has_infinity) {
-      set_special<To_Policy>(to, VC_PLUS_INFINITY);
-      return V_EQ;
+      new (&to) mpq_class();
+      return set_special<To_Policy>(to, VC_PLUS_INFINITY);
     }
     else
       return VC_PLUS_INFINITY;
@@ -190,22 +196,10 @@ inline Result
 assign_mpq_float(mpq_class& to, const From& from, Rounding_Dir) {
   if (is_nan<From_Policy>(from))
     return set_special<To_Policy>(to, VC_NAN);
-  else if (is_minf<From_Policy>(from)) {
-    if (To_Policy::has_infinity) {
-      set_special<To_Policy>(to, VC_MINUS_INFINITY);
-      return V_EQ;
-    }
-    else
-      return VC_MINUS_INFINITY;
-  }
-  else if (is_pinf<From_Policy>(from)) {
-    if (To_Policy::has_infinity) {
-      set_special<To_Policy>(to, VC_PLUS_INFINITY);
-      return V_EQ;
-    }
-    else
-      return VC_PLUS_INFINITY;
-  }
+  else if (is_minf<From_Policy>(from))
+    return set_special<To_Policy>(to, VC_MINUS_INFINITY);
+  else if (is_pinf<From_Policy>(from))
+    return set_special<To_Policy>(to, VC_PLUS_INFINITY);
   to = from;
   return V_EQ;
 }
@@ -424,9 +418,7 @@ input_mpq(mpq_class& to, std::istream& is, Rounding_Dir dir) {
   Result r = input_mpq(to, is);
   switch (classify(r)) {
   case VC_MINUS_INFINITY:
-    return assign<Policy, Special_Float_Policy>(to, MINUS_INFINITY, dir);
   case VC_PLUS_INFINITY:
-    return assign<Policy, Special_Float_Policy>(to, PLUS_INFINITY, dir);
   case VC_NAN:
     return set_special<Policy>(to, r);
   default:

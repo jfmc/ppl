@@ -141,10 +141,10 @@ set_special_mpz(mpz_class& v, Result r) {
     switch (c) {
     case VC_MINUS_INFINITY:
       set_mp_size(v, C_Integer<mp_size_field_t>::min);
-      break;
+      return V_EQ;
     case VC_PLUS_INFINITY:
       set_mp_size(v, C_Integer<mp_size_field_t>::max);
-      break;
+      return V_EQ;
     default:
       break;
     }
@@ -189,20 +189,26 @@ SPECIALIZE_CONSTRUCT(construct_mpz_base, mpz_class, unsigned long)
 template <typename To_Policy, typename From_Policy, typename From>
 inline Result
 construct_mpz_float(mpz_class& to, const From& from, Rounding_Dir dir) {
-  if (is_nan<From_Policy>(from))
-    return set_special<To_Policy>(to, VC_NAN);
+  if (is_nan<From_Policy>(from)) {
+    if (To_Policy::has_nan) {
+      new (&to) mpz_class();
+      return set_special<To_Policy>(to, VC_NAN);
+    }
+    else
+      return VC_NAN;
+  }
   else if (is_minf<From_Policy>(from)) {
     if (To_Policy::has_infinity) {
-      set_special<To_Policy>(to, VC_MINUS_INFINITY);
-      return V_EQ;
+      new (&to) mpz_class();
+      return set_special<To_Policy>(to, VC_MINUS_INFINITY);
     }
     else
       return VC_MINUS_INFINITY;
   }
   else if (is_pinf<From_Policy>(from)) {
     if (To_Policy::has_infinity) {
-      set_special<To_Policy>(to, VC_PLUS_INFINITY);
-      return V_EQ;
+      new (&to) mpz_class();
+      return set_special<To_Policy>(to, VC_PLUS_INFINITY);
     }
     else
       return VC_PLUS_INFINITY;
@@ -261,22 +267,10 @@ inline Result
 assign_mpz_float(mpz_class& to, const From from, Rounding_Dir dir) {
   if (is_nan<From_Policy>(from))
     return set_special<To_Policy>(to, VC_NAN);
-  else if (is_minf<From_Policy>(from)) {
-    if (To_Policy::has_infinity) {
-      set_special<To_Policy>(to, VC_MINUS_INFINITY);
-      return V_EQ;
-    }
-    else
-      return VC_MINUS_INFINITY;
-  }
-  else if (is_pinf<From_Policy>(from)) {
-    if (To_Policy::has_infinity) {
-      set_special<To_Policy>(to, VC_PLUS_INFINITY);
-      return V_EQ;
-    }
-    else
-      return VC_PLUS_INFINITY;
-  }
+  else if (is_minf<From_Policy>(from))
+    return set_special<To_Policy>(to, VC_MINUS_INFINITY);
+  else if (is_pinf<From_Policy>(from))
+    return set_special<To_Policy>(to, VC_PLUS_INFINITY);
   if (round_ignore(dir)) {
     to = from;
     return V_LGE;
