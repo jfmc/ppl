@@ -967,6 +967,15 @@ not_a_number();
 template <typename T, typename Policy>
 void swap(Checked_Number<T, Policy>& x, Checked_Number<T, Policy>& y);
 
+template <typename T, typename Policy>
+struct FPU_Related<Checked_Number<T, Policy> > : public FPU_Related<T> {};
+
+template <typename T>
+void maybe_reset_fpu_inexact();
+
+template <typename T>
+int maybe_check_fpu_inexact();
+
 } // namespace Parma_Polyhedra_Library
 
 #include "Checked_Number.inlines.hh"

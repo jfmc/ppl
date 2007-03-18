@@ -1607,8 +1607,7 @@ Box<Interval>::refine_no_check(const Constraint& c) {
     if (sgn_a_k > 0) {
       open = (c_type == Constraint::STRICT_INEQUALITY) ? T_YES : T_NO;
       if (open == T_NO)
-	// FIXME: reset the inexact flag here.
-	;
+	maybe_reset_fpu_inexact<Temp_Boundary_Type>();
       r = assign_r(t_bound, c_inhomogeneous_term, ROUND_UP);
       if (refine_no_check_check_result(r, open))
 	goto maybe_refine_upper_1;
@@ -1663,9 +1662,9 @@ Box<Interval>::refine_no_check(const Constraint& c) {
 	goto maybe_refine_upper_1;
 
       // Refine the lower bound of `seq[k]' with `t_bound'.
-      if (open == T_MAYBE)
-	// FIXME: check the inexact flag here.
-	;
+      if (open == T_MAYBE
+	  && maybe_check_fpu_inexact<Temp_Boundary_Type>() == 1)
+	open = T_YES;
       refine_existential(seq[k],
 			 (open == T_YES ? GREATER_THAN : GREATER_OR_EQUAL),
 			 t_bound);
@@ -1674,7 +1673,7 @@ Box<Interval>::refine_no_check(const Constraint& c) {
       if (c_type != Constraint::EQUALITY)
 	continue;
       open = T_NO;
-      // FIXME: reset the inexact flag here.
+      maybe_reset_fpu_inexact<Temp_Boundary_Type>();
       r = assign_r(t_bound, c_inhomogeneous_term, ROUND_DOWN);
       if (refine_no_check_check_result(r, open))
 	goto next_k;
@@ -1729,9 +1728,9 @@ Box<Interval>::refine_no_check(const Constraint& c) {
 	goto next_k;
 
       // Refine the upper bound of seq[k] with t_bound.
-      if (open == T_MAYBE)
-	// FIXME: check the inexact flag here.
-	;
+      if (open == T_MAYBE
+	  && maybe_check_fpu_inexact<Temp_Boundary_Type>() == 1)
+	open = T_YES;
       refine_existential(seq[k],
 			 (open == T_YES ? LESS_THAN : LESS_OR_EQUAL),
 			 t_bound);
@@ -1741,8 +1740,7 @@ Box<Interval>::refine_no_check(const Constraint& c) {
       assert(sgn_a_k < 0);
       open = (c_type == Constraint::STRICT_INEQUALITY) ? T_YES : T_NO;
       if (open == T_NO)
-	// FIXME: reset the inexact flag here.
-	;
+	maybe_reset_fpu_inexact<Temp_Boundary_Type>();
       r = assign_r(t_bound, c_inhomogeneous_term, ROUND_UP);
       if (refine_no_check_check_result(r, open))
 	goto maybe_refine_upper_2;
@@ -1797,9 +1795,9 @@ Box<Interval>::refine_no_check(const Constraint& c) {
 	goto maybe_refine_upper_2;
 
       // Refine the upper bound of seq[k] with t_bound.
-      if (open == T_MAYBE)
-	// FIXME: check the inexact flag here.
-	;
+      if (open == T_MAYBE
+	  && maybe_check_fpu_inexact<Temp_Boundary_Type>() == 1)
+	open = T_YES;
       refine_existential(seq[k],
 			 (open == T_YES ? LESS_THAN : LESS_OR_EQUAL),
 			 t_bound);
@@ -1808,7 +1806,7 @@ Box<Interval>::refine_no_check(const Constraint& c) {
       if (c_type != Constraint::EQUALITY)
 	continue;
       open = T_NO;
-      // FIXME: reset the inexact flag here.
+      maybe_reset_fpu_inexact<Temp_Boundary_Type>();
       r = assign_r(t_bound, c_inhomogeneous_term, ROUND_DOWN);
       if (refine_no_check_check_result(r, open))
 	goto next_k;
@@ -1863,9 +1861,9 @@ Box<Interval>::refine_no_check(const Constraint& c) {
 	goto next_k;
 
       // Refine the lower bound of seq[k] with t_bound.
-      if (open == T_MAYBE)
-	// FIXME: check the inexact flag here.
-	;
+      if (open == T_MAYBE
+	  && maybe_check_fpu_inexact<Temp_Boundary_Type>() == 1)
+	open = T_YES;
       refine_existential(seq[k],
 			 (open == T_YES ? GREATER_THAN : GREATER_OR_EQUAL),
 			 t_bound);

@@ -756,6 +756,24 @@ swap(Checked_Number<T, Policy>& x, Checked_Number<T, Policy>& y) {
   swap(x.raw_value(), y.raw_value());
 }
 
+template <typename T>
+inline void
+maybe_reset_fpu_inexact() {
+  if (FPU_Related<T>::value)
+    return fpu_reset_inexact();
+}
+
+template <typename T>
+inline int
+maybe_check_fpu_inexact() {
+  if (FPU_Related<T>::value)
+    return fpu_check_inexact();
+  else
+    return 0;
+}
+
+
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Checked_Number_inlines_hh)

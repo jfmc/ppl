@@ -292,8 +292,14 @@ template <typename Policy>
 inline Result
 result_relation(Rounding_Dir dir) {
   if (Policy::fpu_check_inexact && round_fpu_check_inexact(dir)) {
-    if (!fpu_check_inexact())
+    switch (fpu_check_inexact()) {
+    case 0:
       return V_EQ;
+    case -1:
+      goto unknown;
+    case 1:
+      break;
+    }
     switch (round_dir(dir)) {
     case ROUND_DOWN:
       return V_GT;
@@ -304,6 +310,7 @@ result_relation(Rounding_Dir dir) {
     }
   }
   else {
+  unknown:
     switch (round_dir(dir)) {
     case ROUND_DOWN:
       return V_GE;

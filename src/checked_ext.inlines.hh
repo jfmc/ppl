@@ -22,24 +22,17 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+template <typename T> struct FPU_Related : public False {};
+template <> struct FPU_Related<float> : public True {};
+template <> struct FPU_Related<double> : public True {};
+template <> struct FPU_Related<long double> : public True {};
+
 namespace Checked {
 
 template <typename T>
 inline bool
 handle_ext_natively(const T&) {
-  return false;
-}
-inline bool
-handle_ext_natively(const float&) {
-  return true;
-}
-inline bool
-handle_ext_natively(const double&) {
-  return true;
-}
-inline bool
-handle_ext_natively(const long double&) {
-  return true;
+  return FPU_Related<T>::value;
 }
 
 template <typename Policy, typename Type>
