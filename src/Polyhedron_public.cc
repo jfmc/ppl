@@ -541,6 +541,7 @@ PPL::Polyhedron::contains_integer_point() const {
 	  assign_r(rational_inhomogeneous.get_den(),
 		   homogeneous_gcd, ROUND_NOT_NEEDED);
 	  // Note: canonicalization is not needed (as gcd == 1).
+	  assert(is_canonical(rational_inhomogeneous));
 	  assign_r(tightened_inhomogeneous,
 		   rational_inhomogeneous, ROUND_DOWN);
 	  tightened_inhomogeneous *= homogeneous_gcd;
