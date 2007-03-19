@@ -228,20 +228,25 @@ Box<Interval>::Box(const BD_Shape<T>& bds, Complexity_Class)
     return;
   }
 
+  DIRTY_TEMP(typename BD_Shape<T>::coefficient_type, tmp);
   const DB_Row<typename BD_Shape<T>::coefficient_type>& dbm_0 = bds.dbm[0];
   for (dimension_type i = space_dim; i-- > 0; ) {
     Interval& seq_i = seq[i];
     // Set the upper bound.
-    if (is_plus_infinity(dbm_0[i+1]))
+    const typename BD_Shape<T>::coefficient_type& u = dbm_0[i+1];
+    if (is_plus_infinity(u))
       seq_i.upper_set_uninit(UNBOUNDED);
     else
-      seq_i.upper_set_uninit(dbm_0[i+1]);
+      seq_i.upper_set_uninit(u);
 
     // Set the lower bound.
-    if (is_plus_infinity(bds.dbm[i+1][0]))
+    const typename BD_Shape<T>::coefficient_type& negated_l = bds.dbm[i+1][0];
+    if (is_plus_infinity(negated_l))
       seq_i.lower_set_uninit(UNBOUNDED);
-    else
-      seq_i.lower_set_uninit(bds.dbm[i+1][0]);
+    else {
+      neg_assign_r(tmp, negated_l, ROUND_DOWN);
+      seq_i.lower_set_uninit(tmp);
+    }
 
     // Complete the interval initialization.
     seq_i.complete_init();
