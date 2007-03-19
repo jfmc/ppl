@@ -1527,7 +1527,7 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
     lp.evaluate_objective_function(p, tmp_coeff1, tmp_coeff2);
     assign_r(tmp_rational.get_num(), tmp_coeff1, ROUND_NOT_NEEDED);
     assign_r(tmp_rational.get_den(), tmp_coeff2, ROUND_NOT_NEEDED);
-    tmp_rational.canonicalize();
+    assert(is_canonical(tmp_rational));
     if (have_incumbent_solution
 	&& ((lp.optimization_mode() == MAXIMIZATION
  	     && tmp_rational <= incumbent_solution_value)
@@ -1580,7 +1580,7 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
 	   ROUND_NOT_NEEDED);
   assign_r(tmp_rational.get_den(), p_divisor,
 	   ROUND_NOT_NEEDED);
-  tmp_rational.canonicalize();
+  assert(is_canonical(tmp_rational));
   assign_r(tmp_coeff1, tmp_rational, ROUND_DOWN);
   assign_r(tmp_coeff2, tmp_rational, ROUND_UP);
   {
@@ -1692,7 +1692,7 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp, Generator& p,
 	   ROUND_NOT_NEEDED);
   assign_r(tmp_rational.get_den(), p_divisor,
 	   ROUND_NOT_NEEDED);
-  tmp_rational.canonicalize();
+  assert(is_canonical(tmp_rational));
   assign_r(tmp_coeff1, tmp_rational, ROUND_DOWN);
   assign_r(tmp_coeff2, tmp_rational, ROUND_UP);
   {
