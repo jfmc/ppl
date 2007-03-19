@@ -31,3 +31,13 @@ namespace PPL = Parma_Polyhedra_Library;
 PPL::Coefficient_free_list_element* PPL::Coefficient_free_list_first = 0;
 
 const PPL::Throwable* volatile PPL::abandon_expensive_computations = 0;
+
+bool
+PPL::is_canonical(const mpq_class& x) {
+  if (x.get_den() <= 0)
+    return false;
+  mpq_class temp = x;
+  temp.canonicalize();
+  return temp.get_num() == x.get_num();
+}
+

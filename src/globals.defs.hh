@@ -360,7 +360,7 @@ struct Constant : public Constant_<long long, v, prefer_signed> {
 //! Extract the numerator and denominator components of \p from.
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T, typename Policy>
-inline void
+void
 numer_denom(const Checked_Number<T, Policy>& from,
 	    Coefficient& num, Coefficient& den);
 
@@ -368,7 +368,7 @@ numer_denom(const Checked_Number<T, Policy>& from,
 //! Divides \p x by \p y into \p to, rounding the result towards plus infinity.
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T, typename Policy>
-inline void
+void
 div_round_up(Checked_Number<T, Policy>& to,
 	     Coefficient_traits::const_reference x,
 	     Coefficient_traits::const_reference y);
@@ -377,28 +377,28 @@ div_round_up(Checked_Number<T, Policy>& to,
 //! Assigns to \p x the minimum between \p x and \p y.
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename N>
-inline void
+void
 min_assign(N& x, const N& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Assigns to \p x the maximum between \p x and \p y.
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename N>
-inline void
+void
 max_assign(N& x, const N& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x is an even number.
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T, typename Policy>
-inline bool
+bool
 is_even(const Checked_Number<T, Policy>& x);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \f$x = -y\f$.
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T, typename Policy>
-inline bool
+bool
 is_additive_inverse(const Checked_Number<T, Policy>& x,
 		    const Checked_Number<T, Policy>& y);
 
@@ -435,6 +435,12 @@ FOK(double)
 FOK(long double)
 FOK(mpz_class)
 FOK(mpq_class)
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Returns <CODE>true</CODE> if and only if \p x is in canonical form.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+bool
+is_canonical(const mpq_class& x);
 
 } // namespace Parma_Polyhedra_Library
 
