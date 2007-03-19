@@ -118,7 +118,7 @@ Box<Interval>::Box(const Generator_System& gs)
 	for (dimension_type i = space_dim; i-- > 0; ) {
 	  assign_r(q.get_num(), g.coefficient(Variable(i)), ROUND_NOT_NEEDED);
 	  assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
-	  assert(is_canonical(q));
+	  q.canonicalize();
 	  join_assign(seq[i], q);
 	}
       }
@@ -128,7 +128,7 @@ Box<Interval>::Box(const Generator_System& gs)
 	for (dimension_type i = space_dim; i-- > 0; ) {
 	  assign_r(q.get_num(), g.coefficient(Variable(i)), ROUND_NOT_NEEDED);
 	  assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
-	  assert(is_canonical(q));
+	  q.canonicalize();
 	  assign(seq[i], q);
 	}
       }
@@ -171,7 +171,7 @@ Box<Interval>::Box(const Generator_System& gs)
 	for (dimension_type i = space_dim; i-- > 0; ) {
 	  assign_r(q.get_num(), g.coefficient(Variable(i)), ROUND_NOT_NEEDED);
 	  assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
-	  assert(is_canonical(q));
+	  q.canonicalize();
 	  Interval& seq_i = seq[i];
 	  seq_i.lower_widen(q, true);
 	  seq_i.upper_widen(q, true);
@@ -351,6 +351,8 @@ Box<Interval>::Box(const Polyhedron& ph, Complexity_Class complexity)
     // Get all the bounds for the space dimensions.
     Generator g(point());
     DIRTY_TEMP(mpq_class, bound);
+    DIRTY_TEMP(Coefficient, bound_num);
+    DIRTY_TEMP(Coefficient, bound_den);
     for (dimension_type i = space_dim; i-- > 0; ) {
       Interval& seq_i = seq[i];
       lp.set_objective_function(Variable(i));
@@ -358,7 +360,9 @@ Box<Interval>::Box(const Polyhedron& ph, Complexity_Class complexity)
       lp.set_optimization_mode(MAXIMIZATION);
       if (lp.solve() == OPTIMIZED_MIP_PROBLEM) {
 	g = lp.optimizing_point();
-	lp.evaluate_objective_function(g, bound.get_num(), bound.get_den());
+	lp.evaluate_objective_function(g, bound_num, bound_den);
+	assign_r(bound.get_num(), bound_num, ROUND_NOT_NEEDED);
+	assign_r(bound.get_den(), bound_den, ROUND_NOT_NEEDED);
 	assert(is_canonical(bound));
 	seq_i.upper_set_uninit(bound);
       }
@@ -368,7 +372,9 @@ Box<Interval>::Box(const Polyhedron& ph, Complexity_Class complexity)
       lp.set_optimization_mode(MINIMIZATION);
       if (lp.solve() == OPTIMIZED_MIP_PROBLEM) {
 	g = lp.optimizing_point();
-	lp.evaluate_objective_function(g, bound.get_num(), bound.get_den());
+	lp.evaluate_objective_function(g, bound_num, bound_den);
+	assign_r(bound.get_num(), bound_num, ROUND_NOT_NEEDED);
+	assign_r(bound.get_den(), bound_den, ROUND_NOT_NEEDED);
 	assert(is_canonical(bound));
 	seq_i.lower_set_uninit(bound);
       }
@@ -460,7 +466,7 @@ Box<Interval>::Box(const Grid& gr, Complexity_Class)
     if (bounded_interval[i]) {
       assign_r(bound.get_num(), point[i+1], ROUND_NOT_NEEDED);
       assign_r(bound.get_den(), divisor, ROUND_NOT_NEEDED);
-      assert(is_canonical(bound));
+      bound.canonicalize();
       assign(seq_i, bound);
     }
     else
@@ -867,7 +873,7 @@ Box<Interval>::relation_with(const Generator& g) const {
       continue;
     assign_r(g_coord.get_num(), g.coefficient(Variable(i)), ROUND_NOT_NEEDED);
     assign_r(g_coord.get_den(), g_divisor, ROUND_NOT_NEEDED);
-    assert(is_canonical(g_coord));
+    g_coord.canonicalize();
     // Check lower bound.
     if (!seq_i.lower_is_unbounded()) {
       assign_r(bound, seq_i.lower(), ROUND_NOT_NEEDED);
