@@ -218,12 +218,15 @@ Box<Interval>::Box(const BD_Shape<T>& bds, Complexity_Class)
   bds.shortest_path_closure_assign();
   if (bds.marked_empty()) {
     set_empty();
+    assert(OK());
     return;
   }
 
   const dimension_type space_dim = space_dimension();
-  if (space_dim == 0)
+  if (space_dim == 0) {
+    assert(OK());
     return;
+  }
 
   const DB_Row<typename BD_Shape<T>::coefficient_type>& dbm_0 = bds.dbm[0];
   for (dimension_type i = space_dim; i-- > 0; ) {
@@ -236,13 +239,14 @@ Box<Interval>::Box(const BD_Shape<T>& bds, Complexity_Class)
 
     // Set the lower bound.
     if (is_plus_infinity(bds.dbm[i+1][0]))
-      seq_i.lower_set(UNBOUNDED);
+      seq_i.lower_set_uninit(UNBOUNDED);
     else
       seq_i.lower_set_uninit(bds.dbm[i+1][0]);
 
     // Complete the interval initialization.
     seq_i.complete_init();
   }
+  assert(OK());
 }
 
 template <typename Interval>
