@@ -519,7 +519,7 @@ public:
     allowed space dimension.
   */
   template <typename Interval>
-  Grid(const Box<Interval>& box);
+  explicit Grid(const Box<Interval>& box);
 
   //! Builds a grid out of a generic, interval-based covering box.
   /*!
