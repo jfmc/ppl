@@ -1578,9 +1578,8 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
 
   assign_r(tmp_rational.get_num(), p.coefficient(Variable(nonint_dim)),
 	   ROUND_NOT_NEEDED);
-  assign_r(tmp_rational.get_den(), p_divisor,
-	   ROUND_NOT_NEEDED);
-  assert(is_canonical(tmp_rational));
+  assign_r(tmp_rational.get_den(), p_divisor, ROUND_NOT_NEEDED);
+  tmp_rational.canonicalize();
   assign_r(tmp_coeff1, tmp_rational, ROUND_DOWN);
   assign_r(tmp_coeff2, tmp_rational, ROUND_UP);
   {
@@ -1690,9 +1689,8 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp, Generator& p,
 
   assign_r(tmp_rational.get_num(), p.coefficient(Variable(nonint_dim)),
 	   ROUND_NOT_NEEDED);
-  assign_r(tmp_rational.get_den(), p_divisor,
-	   ROUND_NOT_NEEDED);
-  assert(is_canonical(tmp_rational));
+  assign_r(tmp_rational.get_den(), p_divisor, ROUND_NOT_NEEDED);
+  tmp_rational.canonicalize();
   assign_r(tmp_coeff1, tmp_rational, ROUND_DOWN);
   assign_r(tmp_coeff2, tmp_rational, ROUND_UP);
   {
