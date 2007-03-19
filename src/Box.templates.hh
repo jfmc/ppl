@@ -118,7 +118,7 @@ Box<Interval>::Box(const Generator_System& gs)
 	for (dimension_type i = space_dim; i-- > 0; ) {
 	  assign_r(q.get_num(), g.coefficient(Variable(i)), ROUND_NOT_NEEDED);
 	  assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
-	  q.canonicalize();
+	  assert(is_canonical(q));
 	  join_assign(seq[i], q);
 	}
       }
@@ -128,7 +128,7 @@ Box<Interval>::Box(const Generator_System& gs)
 	for (dimension_type i = space_dim; i-- > 0; ) {
 	  assign_r(q.get_num(), g.coefficient(Variable(i)), ROUND_NOT_NEEDED);
 	  assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
-	  q.canonicalize();
+	  assert(is_canonical(q));
 	  assign(seq[i], q);
 	}
       }
@@ -166,32 +166,15 @@ Box<Interval>::Box(const Generator_System& gs)
 	}
       break;
     case Generator::CLOSURE_POINT:
-      // FIXME: this can probably be improved.
       {
 	const Coefficient& d = g.divisor();
 	for (dimension_type i = space_dim; i-- > 0; ) {
 	  assign_r(q.get_num(), g.coefficient(Variable(i)), ROUND_NOT_NEEDED);
 	  assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
-	  q.canonicalize();
+	  assert(is_canonical(q));
 	  Interval& seq_i = seq[i];
-	  if (!seq_i.upper_is_unbounded()) {
-	    const typename Interval::boundary_type& upper_i = seq_i.upper();
-	    q_interval.assign(UNIVERSE);
-	    refine_existential(q_interval, LESS_THAN, q);
-	    if (upper_i < q_interval.upper()) {
-	      refine_existential(q_interval, GREATER_OR_EQUAL, upper_i);
-	      join_assign(seq_i, q_interval);
-	    }
-	  }
-	  if (!seq_i.lower_is_unbounded()) {
-	    const typename Interval::boundary_type& lower_i = seq_i.lower();
-	    q_interval.assign(UNIVERSE);
-	    refine_existential(q_interval, GREATER_THAN, q);
-	    if (lower_i > q_interval.lower()) {
-	      refine_existential(q_interval, LESS_OR_EQUAL, lower_i);
-	      join_assign(seq_i, q_interval);
-	    }
-	  }
+	  seq_i.lower_widen(q, true);
+	  seq_i.upper_widen(q, true);
 	}
       }
       break;
@@ -376,7 +359,7 @@ Box<Interval>::Box(const Polyhedron& ph, Complexity_Class complexity)
       if (lp.solve() == OPTIMIZED_MIP_PROBLEM) {
 	g = lp.optimizing_point();
 	lp.evaluate_objective_function(g, bound.get_num(), bound.get_den());
-	bound.canonicalize();
+	assert(is_canonical(bound));
 	seq_i.upper_set_uninit(bound);
       }
       else
@@ -386,7 +369,7 @@ Box<Interval>::Box(const Polyhedron& ph, Complexity_Class complexity)
       if (lp.solve() == OPTIMIZED_MIP_PROBLEM) {
 	g = lp.optimizing_point();
 	lp.evaluate_objective_function(g, bound.get_num(), bound.get_den());
-	bound.canonicalize();
+	assert(is_canonical(bound));
 	seq_i.lower_set_uninit(bound);
       }
       else
@@ -477,7 +460,7 @@ Box<Interval>::Box(const Grid& gr, Complexity_Class)
     if (bounded_interval[i]) {
       assign_r(bound.get_num(), point[i+1], ROUND_NOT_NEEDED);
       assign_r(bound.get_den(), divisor, ROUND_NOT_NEEDED);
-      bound.canonicalize();
+      assert(is_canonical(bound));
       assign(seq_i, bound);
     }
     else
@@ -884,6 +867,7 @@ Box<Interval>::relation_with(const Generator& g) const {
       continue;
     assign_r(g_coord.get_num(), g.coefficient(Variable(i)), ROUND_NOT_NEEDED);
     assign_r(g_coord.get_den(), g_divisor, ROUND_NOT_NEEDED);
+    assert(is_canonical(g_coord));
     // Check lower bound.
     if (!seq_i.lower_is_unbounded()) {
       assign_r(bound, seq_i.lower(), ROUND_NOT_NEEDED);
@@ -973,7 +957,7 @@ Box<Interval>::max_min(const Linear_Expression& expr,
     }
   }
   // Extract output info.
-  result.canonicalize();
+  assert(is_canonical(result));
   ext_n = result.get_num();
   ext_d = result.get_den();
   included = is_included;
@@ -996,8 +980,6 @@ Box<Interval>::max_min(const Linear_Expression& expr,
   g_divisor = 1;
   const int maximize_sign = maximize ? 1 : -1;
   mpq_class g_coord;
-  TEMP_INTEGER(g_coord_num);
-  TEMP_INTEGER(g_coord_den);
   TEMP_INTEGER(lcm);
   TEMP_INTEGER(factor);
   for (dimension_type i = space_dimension(); i-- > 0; ) {
@@ -1048,14 +1030,12 @@ Box<Interval>::max_min(const Linear_Expression& expr,
       break;
     }
     // Add g_coord * Variable(i) to the generator.
-    g_coord_num = g_coord.get_num();
-    g_coord_den = g_coord.get_den();
-    lcm_assign(lcm, g_divisor, g_coord_den);
+    lcm_assign(lcm, g_divisor, g_coord.get_den());
     exact_div_assign(factor, lcm, g_divisor);
     g_expr *= factor;
-    exact_div_assign(factor, lcm, g_coord_den);
-    g_coord_num *= factor;
-    g_expr += g_coord_num * Variable(i);
+    exact_div_assign(factor, lcm, g_coord.get_den());
+    g_coord.get_num() *= factor;
+    g_expr += g_coord.get_num() * Variable(i);
     g_divisor = lcm;
   }
   g = Generator::point(g_expr, g_divisor);
