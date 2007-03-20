@@ -105,7 +105,7 @@ Box<Interval>::Box(const Generator_System& gs)
   }
 
   const dimension_type space_dim = space_dimension();
-  mpq_class q;
+  DIRTY_TEMP(mpq_class, q);
   bool point_seen = false;
   // Going through all the points.
   for (Generator_System::const_iterator
@@ -644,7 +644,7 @@ Box<Interval>::relation_with(const Constraint& c) const {
   if (seq_var.is_universe())
     return Poly_Con_Relation::strictly_intersects();
 
-  mpq_class c_bound;
+  DIRTY_TEMP(mpq_class, c_bound);
   assign_r(c_bound.get_num(), c.inhomogeneous_term(), ROUND_NOT_NEEDED);
   const Coefficient& d = c.coefficient(Variable(c_only_var));
   assign_r(c_bound.get_den(), d, ROUND_NOT_NEEDED);
@@ -652,7 +652,7 @@ Box<Interval>::relation_with(const Constraint& c) const {
   neg_assign_r(c_bound, c_bound, ROUND_NOT_NEEDED);
   const bool c_is_lower_bound = (d > 0);
 
-  mpq_class bound_diff;
+  DIRTY_TEMP(mpq_class, bound_diff);
   if (c.is_equality()) {
     if (seq_var.lower_is_unbounded()) {
       assert(!seq_var.upper_is_unbounded());
@@ -865,8 +865,8 @@ Box<Interval>::relation_with(const Generator& g) const {
 
   // Here `g' is a point or closure point.
   const Coefficient& g_divisor = g.divisor();
-  mpq_class g_coord;
-  mpq_class bound;
+  DIRTY_TEMP(mpq_class, g_coord);
+  DIRTY_TEMP(mpq_class, bound);
   for (dimension_type i = g_space_dim; i-- > 0; ) {
     const Interval& seq_i = seq[i];
     if (seq_i.is_universe())
@@ -931,12 +931,12 @@ Box<Interval>::max_min(const Linear_Expression& expr,
   if (is_empty())
     return false;
 
-  mpq_class result;
+  DIRTY_TEMP(mpq_class, result);
   assign_r(result, expr.inhomogeneous_term(), ROUND_NOT_NEEDED);
   bool is_included = true;
   const int maximize_sign = maximize ? 1 : -1;
-  mpq_class bound_i;
-  mpq_class expr_i;
+  DIRTY_TEMP(mpq_class, bound_i);
+  DIRTY_TEMP(mpq_class, expr_i);
   for (dimension_type i = expr_space_dim; i-- > 0; ) {
     const Interval& seq_i = seq[i];
     assign_r(expr_i, expr.coefficient(Variable(i)), ROUND_NOT_NEEDED);
@@ -982,12 +982,14 @@ Box<Interval>::max_min(const Linear_Expression& expr,
 
   // Compute generator `g'.
   Linear_Expression g_expr;
-  TEMP_INTEGER(g_divisor);
+  DIRTY_TEMP(Coefficient, g_divisor);
   g_divisor = 1;
   const int maximize_sign = maximize ? 1 : -1;
-  mpq_class g_coord;
-  TEMP_INTEGER(lcm);
-  TEMP_INTEGER(factor);
+  DIRTY_TEMP(mpq_class, g_coord);
+  DIRTY_TEMP(Coefficient, num);
+  DIRTY_TEMP(Coefficient, den);
+  DIRTY_TEMP(Coefficient, lcm);
+  DIRTY_TEMP(Coefficient, factor);
   for (dimension_type i = space_dimension(); i-- > 0; ) {
     const Interval& seq_i = seq[i];
     switch (sgn(expr.coefficient(Variable(i))) * maximize_sign) {
@@ -1006,7 +1008,7 @@ Box<Interval>::max_min(const Linear_Expression& expr,
 	    if (seq_i.upper_is_open()) {
 	      // Bounded and open interval: compute middle point.
 	      assign_r(g_coord, seq_i.lower(), ROUND_NOT_NEEDED);
-	      mpq_class q_seq_i_upper;
+	      DIRTY_TEMP(mpq_class, q_seq_i_upper);
 	      assign_r(q_seq_i_upper, seq_i.upper(), ROUND_NOT_NEEDED);
 	      g_coord += q_seq_i_upper;
 	      g_coord /= 2;
@@ -1036,12 +1038,14 @@ Box<Interval>::max_min(const Linear_Expression& expr,
       break;
     }
     // Add g_coord * Variable(i) to the generator.
-    lcm_assign(lcm, g_divisor, g_coord.get_den());
+    assign_r(den, g_coord.get_den(), ROUND_NOT_NEEDED);
+    lcm_assign(lcm, g_divisor, den);
     exact_div_assign(factor, lcm, g_divisor);
     g_expr *= factor;
-    exact_div_assign(factor, lcm, g_coord.get_den());
-    g_coord.get_num() *= factor;
-    g_expr += g_coord.get_num() * Variable(i);
+    exact_div_assign(factor, lcm, den);
+    assign_r(num, g_coord.get_num(), ROUND_NOT_NEEDED);
+    num *= factor;
+    g_expr += num * Variable(i);
     g_divisor = lcm;
   }
   g = Generator::point(g_expr, g_divisor);
@@ -1544,7 +1548,7 @@ Box<Interval>::add_constraint_no_check(const Constraint& c) {
   // `rel' is either the relation `==', `>=', or `>'.
   // For the purpose of refining intervals, this is
   // (morally) turned into `Variable(c_only_var-1) rel -n/d'.
-  mpq_class q;
+  DIRTY_TEMP(mpq_class, q);
   assign_r(q.get_num(), n, ROUND_NOT_NEEDED);
   assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
   q.canonicalize();
@@ -2231,8 +2235,8 @@ Box<Interval>::constraints() const {
 
     for (dimension_type k = 0; k < space_dim; ++k) {
       bool closed = false;
-      Coefficient n;
-      Coefficient d;
+      DIRTY_TEMP(Coefficient, n);
+      DIRTY_TEMP(Coefficient, d);
       if (get_lower_bound(k, closed, n, d)) {
 	if (closed)
 	  cs.insert(d*Variable(k) >= n);
@@ -2269,8 +2273,8 @@ Box<Interval>::minimized_constraints() const {
 
     for (dimension_type k = 0; k < space_dim; ++k) {
       bool closed = false;
-      Coefficient n;
-      Coefficient d;
+      DIRTY_TEMP(Coefficient, n);
+      DIRTY_TEMP(Coefficient, d);
       if (get_lower_bound(k, closed, n, d)) {
 	if (closed)
 	  // Make sure equality constraints are detected.
