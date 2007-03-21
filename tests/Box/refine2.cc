@@ -437,5 +437,5 @@ test02() {
 
 BEGIN_MAIN
   DO_TEST(test01);
-  DO_TEST_F64(test02);
+  DO_TEST_F32(test02);
 END_MAIN
