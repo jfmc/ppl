@@ -138,15 +138,20 @@ bool test01() {
     nout << "timeout, as expected" << endl;
     return true;
   }
+  catch (const std::overflow_error&) {
+    abandon_expensive_computations = 0;
+    // Overflow errors should be propagated.
+    throw;
+  }
   catch (...) {
     abandon_expensive_computations = 0;
     nout << "unexpected exception" << endl;
-      return false;
+    return false;
   }
 }
 
 } // namespace
 
 BEGIN_MAIN
-  DO_TEST(test01);
+  DO_TEST_F8(test01);
 END_MAIN
