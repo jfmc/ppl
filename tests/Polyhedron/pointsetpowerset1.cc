@@ -403,44 +403,60 @@ test17() {
 bool
 test18() {
   Variable x(0);
-  Pointset_Powerset<C_Polyhedron> c_ps(1);
+  Pointset_Powerset<C_Polyhedron> c_ps1(1);
   Constraint_System cs;
   cs.insert(x >= 5);
   cs.insert(x <= 3);
-  c_ps.add_constraints(cs);
+  c_ps1.add_constraints(cs);
 
-  Pointset_Powerset<C_Polyhedron> c_ps1(1, EMPTY);
+  Pointset_Powerset<C_Polyhedron> c_ps2(1, EMPTY);
 
-  // c_ps.ascii_dump();
-  // c_ps1.ascii_dump();
+  bool ok1 = c_ps1.geometrically_equals(c_ps2);
+  bool ok2 = c_ps2.geometrically_equals(c_ps1);
 
-  bool ok = c_ps.geometrically_equals(c_ps1);
-  bool ok1 = c_ps.geometrically_equals(c_ps1);
-
-  return ok && ok1;
+  return ok1 && ok2;
 }
 
 bool
 test19() {
   Variable x(0);
-  Pointset_Powerset<C_Polyhedron> c_ps(1);
+  Pointset_Powerset<C_Polyhedron> c_ps1(1);
   Constraint_System cs;
   cs.insert(x >= 5);
   cs.insert(x >= 8);
-  c_ps.add_constraints(cs);
-
-  Pointset_Powerset<C_Polyhedron> c_ps1(1);
-  cs.clear();
-  cs.insert(x >= 8);
   c_ps1.add_constraints(cs);
 
-  // c_ps.ascii_dump();
-  // c_ps1.ascii_dump();
+  Pointset_Powerset<C_Polyhedron> c_ps2(1);
+  cs.clear();
+  cs.insert(x >= 8);
+  c_ps2.add_constraints(cs);
 
-  bool ok = c_ps.geometrically_equals(c_ps1);
-  bool ok1 = c_ps.geometrically_equals(c_ps1);
+  bool ok1 = c_ps1.geometrically_equals(c_ps2);
+  bool ok2 = c_ps2.geometrically_equals(c_ps1);
 
-  return ok && ok1;
+  return ok1 && ok2;
+}
+
+bool
+test20() {
+  Variable x(0);
+  Variable y(1);
+  Pointset_Powerset<C_Polyhedron> c_ps1(2, UNIVERSE);
+
+  Pointset_Powerset<C_Polyhedron> c_ps2(2);
+  Constraint_System cs;
+  cs.insert(x >= 0);
+  cs.insert(x <= 1);
+  cs.insert(y >= 0);
+  cs.insert(y <= 1);
+  c_ps2.add_constraints(cs);
+
+  using namespace IO_Operators;
+  c_ps1.poly_difference_assign(c_ps2);
+
+  nout << c_ps1 << endl;
+
+  return true;
 }
 
 } // namespace
@@ -465,4 +481,5 @@ BEGIN_MAIN
   DO_TEST(test17);
   DO_TEST(test18);
   DO_TEST(test19);
+  DO_TEST(test20);
 END_MAIN
