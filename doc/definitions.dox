@@ -851,7 +851,7 @@ the affine relation defined by
     \itc
       (\vect{v}, \vect{w}) \in \phi
         \iff
-          (w_0 + w_2 \geq 2 v_0 - v_1) \land (w_1 = v_1).
+          (w_0 - w_2 \geq 2 v_0 - v_1) \land (w_1 = v_1).
 \f]
 The same relation is specified by
 \f$x'_0 + 0 \cdot x'_1 - x'_2 \geq 2 x_0 - x_1\f$,
