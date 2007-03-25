@@ -511,8 +511,11 @@ AC_CHECK_SIZEOF(long double)
 # Use C++ for the remaining checks.
 AC_LANG(C++)
 
-dnl Check for the possibility to control the FPU.
+# Check for the possibility to control the FPU.
 AC_CHECK_FPU_CONTROL
+
+# Check whether the C++ compiler provides proper long doubles.
+AC_CXX_PROVIDES_PROPER_LONG_DOUBLE
 
 # Detect the binary format used by C++ floats.
 AC_CXX_FLOAT_BINARY_FORMAT

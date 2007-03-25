@@ -33,6 +33,7 @@ ac_check_sicstus_prolog.m4 \
 ac_check_swi_prolog.m4 \
 ac_check_xsb_prolog.m4 \
 ac_cxx_attribute_weak.m4 \
+ac_cxx_proper_long_double.m4 \
 ac_cxx_double_binary_format.m4 \
 ac_cxx_flexible_arrays.m4 \
 ac_cxx_float_binary_format.m4 \
