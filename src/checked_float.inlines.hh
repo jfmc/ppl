@@ -85,6 +85,13 @@ inline long double
 rint(long double x) {
   return ::rintl(x);
 }
+#elif !CXX_PROVIDES_PROPER_LONG_DOUBLE
+// If proper long doubles are not provided, this is most likely
+// because long double and double are the same type: use rint().
+inline long double
+rint(long double x) {
+  return ::rint(x);
+}
 #endif
 
 inline bool
