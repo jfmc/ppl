@@ -2,6 +2,24 @@
 Enhancements for PPL 0.10
 =========================
 
+- Suppose we want to sum three numbers, and suppose we do it by
+
+    add(T& to, T x, T y, T z) {
+      add(to, x, y);
+      add(to, to, z);
+    }
+
+  Now suppose that &to == &z, so that we compute the wrong result.
+  Perform a code audit to ensure that the above situation never happens.
+  In order to ensure that, ensure that the following rule (to be added
+  to STANDARDS) is always obeyed:
+
+    if an argument of type T and passed by reference is changed,
+    after the change no argument of type U sholud be read unless
+    U is incompatible with T (i.e., unless we are 100% sure that
+    the changed argument and the argument that is read afterward
+    are not aliases).
+
 - Define functions rem() and remp() to compute the remainder of division
   in the general case, for rem(), and in the case where the second
   argument is known to be positive, for remp().  In the implementation
