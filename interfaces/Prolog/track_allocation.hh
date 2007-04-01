@@ -150,16 +150,16 @@ poly_tracker() {
 
 
 #define REGISTER(x) Parma_Polyhedra_Library::poly_tracker().insert(x)
-#define WEAK_REGISTER(x) Parma_Polyhedra_Library::poly_tracker().weak_insert(x)
-#define UNREGISTER(x) Parma_Polyhedra_Library::poly_tracker().remove(x)
-#define CHECK(x) Parma_Polyhedra_Library::poly_tracker().check(x)
+#define PPL_WEAK_REGISTER(x) Parma_Polyhedra_Library::poly_tracker().weak_insert(x)
+#define PPL_UNREGISTER(x) Parma_Polyhedra_Library::poly_tracker().remove(x)
+#define PPL_CHECK(x) Parma_Polyhedra_Library::poly_tracker().check(x)
 
 #else
 
-#define REGISTER(x)
-#define WEAK_REGISTER(x)
-#define UNREGISTER(x)
-#define CHECK(x)
+#define PPL_REGISTER(x)
+#define PPL_WEAK_REGISTER(x)
+#define PPL_UNREGISTER(x)
+#define PPL_CHECK(x)
 
 #endif
 
