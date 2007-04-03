@@ -1047,10 +1047,10 @@ Octagonal_Shape<T>::relation_with(const Constraint& c) const {
   dimension_type i = 0;
   dimension_type j = 0;
   Coefficient coeff;
-  Coefficient term = c.inhomogeneous_term();
+  Coefficient c_term;
   // Constraints that are not octagonal differences are ignored.
   if (!extract_octagonal_difference(c, c_space_dim, num_vars,
-				    i, j, coeff, term))
+				    i, j, coeff, c_term))
     throw_constraint_incompatible("relation_with(c)");
 
   if (num_vars == 0) {
@@ -1066,7 +1066,10 @@ Octagonal_Shape<T>::relation_with(const Constraint& c) const {
 	return Poly_Con_Relation::saturates()
 	  && Poly_Con_Relation::is_included();
     case 1:
-      return Poly_Con_Relation::is_included();
+      if (c.is_equality())
+        return Poly_Con_Relation::is_disjoint();
+      else
+	return Poly_Con_Relation::is_included();
     }
   }
 
@@ -1078,54 +1081,88 @@ Octagonal_Shape<T>::relation_with(const Constraint& c) const {
   if (coeff < 0)
     coeff = -coeff;
 
-  // Compute the bound for `r_j', rounding the result towards plus infinity.
-  N d;
-  div_round_up(d, term, coeff);
-  N d1;
-  div_round_up(d1, -term, coeff);
-
   // Select the cell to be checked for the ">=" part of constraint.
   // Select the right row of the cell.
   if (i%2 == 0)
     ++i_iter;
   else
     --i_iter;
-    typename OR_Matrix<N>::const_row_reference_type m_ci = *i_iter;
-  // Select the right column of the cell.
-  dimension_type cj = coherent_index(j);
-  const N& m_ci_cj = m_ci[cj];
-  switch (c.type()) {
-  case Constraint::EQUALITY:
-    if (d == m_i_j && d1 == m_ci_cj)
-      return Poly_Con_Relation::saturates()
-	&& Poly_Con_Relation::is_included();
-    else if (d > m_i_j || d1 > m_ci_cj)
-      return Poly_Con_Relation::is_disjoint();
-    else
-      return Poly_Con_Relation::strictly_intersects();
-  case Constraint::NONSTRICT_INEQUALITY:
-    if (d >= m_i_j && d1 >= m_ci_cj)
-      return Poly_Con_Relation::saturates()
-	&& Poly_Con_Relation::is_included();
-    else if (d >= m_i_j)
-      return Poly_Con_Relation::is_included();
-    else if (d < m_i_j && d1 > m_ci_cj)
-      return Poly_Con_Relation::is_disjoint();
-    else
-      return Poly_Con_Relation::strictly_intersects();
-  case Constraint::STRICT_INEQUALITY:
-    if (d >= m_i_j && d1 >= m_ci_cj)
-      return Poly_Con_Relation::saturates()
-	&& Poly_Con_Relation::is_disjoint();
-    else if (d > m_i_j)
-      return Poly_Con_Relation::is_included();
-    else if (d <= m_i_j && d1 >= m_ci_cj)
-      return Poly_Con_Relation::is_disjoint();
-    else
-      return Poly_Con_Relation::strictly_intersects();
+  typename OR_Matrix<N>::const_row_reference_type m_ci = *i_iter;
+  const N& m_ci_cj = m_ci[coherent_index(j)];
+  Coefficient numer, denom;
+  Coefficient minus_c_term = -c_term;
+  // The variables mpq_class are used to be precise when
+  // the octagon is defined by integer constraints.
+  mpq_class q_x, q_y, d, d1, c_den, q_den;
+  assign_r(c_den, coeff, ROUND_NOT_NEEDED);
+  assign_r(d, c_term, ROUND_NOT_NEEDED);
+  div_assign_r(d, d, c_den, ROUND_NOT_NEEDED);
+  assign_r(d1, minus_c_term, ROUND_NOT_NEEDED);
+  div_assign_r(d1, d1, c_den, ROUND_NOT_NEEDED);
+
+  if (is_plus_infinity(m_i_j)) {
+    if (!is_plus_infinity(m_ci_cj)) {
+      // `*this' is in the following form:
+      // `-m_ci_cj <= v - u'.
+      // In this case `*this' is disjoint from `c' if
+      // `-m_ci_cj > d' (`-m_ci_cj >= d' if c is a strict inequality),
+      // i.e. if `m_ci_cj < d1' (`m_ci_cj <= d1' if c is a strict inequality).
+      numer_denom(m_ci_cj, numer, denom);
+      assign_r(q_den, denom, ROUND_NOT_NEEDED);
+      assign_r(q_y, numer, ROUND_NOT_NEEDED);
+      div_assign_r(q_y, q_y, q_den, ROUND_NOT_NEEDED);
+      if (q_y < d1)
+        return Poly_Con_Relation::is_disjoint();
+      if (q_y == d1 && c.is_strict_inequality())
+        return Poly_Con_Relation::is_disjoint();
+    }
+
+    // In all other cases `*this' intersects `c'.
+    return Poly_Con_Relation::strictly_intersects();
   }
-  // Quiet a compiler warning: this program point is unreachable.
-  throw std::runtime_error("PPL internal error");
+
+  // Here `m_i_j' is not plus-infinity.
+  numer_denom(m_i_j, numer, denom);
+  assign_r(q_den, denom, ROUND_NOT_NEEDED);
+  assign_r(q_x, numer, ROUND_NOT_NEEDED);
+  div_assign_r(q_x, q_x, q_den, ROUND_NOT_NEEDED);
+
+  if (!is_plus_infinity(m_ci_cj)) {
+    numer_denom(m_ci_cj, numer, denom);
+    assign_r(q_den, denom, ROUND_NOT_NEEDED);
+    assign_r(q_y, numer, ROUND_NOT_NEEDED);
+    div_assign_r(q_y, q_y, q_den, ROUND_NOT_NEEDED);
+    if (q_x == d && q_y == d1) {
+      if (c.is_strict_inequality())
+        return Poly_Con_Relation::saturates()
+	  && Poly_Con_Relation::is_disjoint();
+      else
+        return Poly_Con_Relation::saturates()
+	  && Poly_Con_Relation::is_included();
+    }
+    // `*this' is disjoint from `c' when
+    // `m_ci_cj < d1' (`m_ci_cj <= d1' if `c' is a strict inequality).
+    if (q_y < d1)
+      return Poly_Con_Relation::is_disjoint();
+    if (q_y == d1 && c.is_strict_inequality())
+      return Poly_Con_Relation::is_disjoint();
+  }
+
+  // Here `m_ci_cj' can be also plus-infinity.
+  // If `c' is an equality, `*this' is disjoint from `c' if
+  // `m_i_j < d'.
+  if (d > q_x) {
+    if (c.is_equality())
+      return Poly_Con_Relation::is_disjoint();
+    else
+      return Poly_Con_Relation::is_included();
+  }
+
+  if (d == q_x && c.is_nonstrict_inequality())
+    return Poly_Con_Relation::is_included();
+
+  // In all other cases `*this' intersects `c'.
+  return Poly_Con_Relation::strictly_intersects();
 }
 
 #if 0
