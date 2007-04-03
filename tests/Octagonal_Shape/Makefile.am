@@ -41,52 +41,61 @@ $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
 check_PROGRAMS = \
-	addspacedims1 \
-	affinedimension1 \
-	affineimage1 affineimage2 \
-	affinepreimage1 affinepreimage2 \
-	ascii_dump_load1 \
-	bhz03widening1 \
-	bhmz05widening1 \
-	bounded1 \
-	boundedaffineimage1 \
-	boundedaffinepreimage1 \
-	bounds1 \
-	cc76extrapolation1 \
-	cc76narrowing1 \
-	chinainit \
-	concatenate1 \
-	constraints1 \
-	contains1 \
-	containsintegerpoint1 \
-	discrete1 \
-	disjoint1 \
-	empty1 \
-	expandspacedim1 \
-	foldspacedims1 \
-	fromgensys1 \
-	frompolyhedron1 \
-	generalizedaffineimage1 generalizedaffineimage2 \
-	generalizedaffineimage3 generalizedaffineimage4 \
-	generalizedaffineimage5 \
-	generalizedaffinepreimage1 generalizedaffinepreimage2 \
-	generalizedaffinepreimage3 generalizedaffinepreimage4 \
-	intersection1 \
-	limitedbhmz05extrapolation1 \
-	limitedcc76extrapolation1 \
-	mapspacedims1 \
-	max_min1 max_min2 \
-	maxspacedim1 \
-	membytes1 \
-	minconstraints1 \
-	octdifference1 \
-	octhull1 \
-	relatwithcons1 relatwithcons2 \
-	relatwithgen1 \
-	removespacedims1 \
-	timeelapse1 \
-	universe1 \
-	writeoctagon1
+addspacedims1 \
+affinedimension1 \
+affineimage1 \
+affineimage2 \
+affinepreimage1 \
+affinepreimage2 \
+ascii_dump_load1 \
+bhz03widening1 \
+bhmz05widening1 \
+bounded1 \
+boundedaffineimage1 \
+boundedaffinepreimage1 \
+bounds1 \
+cc76extrapolation1 \
+cc76narrowing1 \
+chinainit \
+concatenate1 \
+constraints1 \
+contains1 \
+containsintegerpoint1 \
+discrete1 \
+disjoint1 \
+empty1 \
+expandspacedim1 \
+foldspacedims1 \
+fromgensys1 \
+frompolyhedron1 \
+fromspacedim1 \
+generalizedaffineimage1 \
+generalizedaffineimage2 \
+generalizedaffineimage3 \
+generalizedaffineimage4 \
+generalizedaffineimage5 \
+generalizedaffinepreimage1 \
+generalizedaffinepreimage2 \
+generalizedaffinepreimage3 \
+generalizedaffinepreimage4 \
+intersection1 \
+limitedbhmz05extrapolation1 \
+limitedcc76extrapolation1 \
+mapspacedims1 \
+max_min1 \
+max_min2 \
+maxspacedim1 \
+membytes1 \
+minconstraints1 \
+octdifference1 \
+octhull1 \
+relatwithcons1 \
+relatwithcons2 \
+relatwithgen1 \
+removespacedims1 \
+timeelapse1 \
+universe1 \
+writeoctagon1
 
 
 # This will be overridden by the `run_tests' script.
@@ -186,6 +195,8 @@ foldspacedims1_SOURCES = foldspacedims1.cc
 fromgensys1_SOURCES = fromgensys1.cc
 
 frompolyhedron1_SOURCES = frompolyhedron1.cc
+
+fromspacedim1_SOURCES = fromspacedim1.cc
 
 generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
 generalizedaffineimage2_SOURCES = generalizedaffineimage2.cc
