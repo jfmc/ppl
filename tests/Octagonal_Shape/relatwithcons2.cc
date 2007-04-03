@@ -361,24 +361,70 @@ test16() {
   return rel == known_result;
 }
 
+bool
+test17() {
+  // A single point does not subsume another (different) point.
+  Variable A(0);
+
+  Octagonal_Shape<mpz_class> oc(1);
+  oc.add_constraint(A >= 0);
+  oc.add_constraint(A <= 1);
+
+  Constraint c(2*A == 1);
+  Poly_Con_Relation rel = oc.relation_with(c);
+
+  print_constraints(oc, "--- oc ---");
+  print_constraint(c, "--- c ---");
+  using namespace IO_Operators;
+  nout << "oc.relation_with(c) == " << rel << endl;
+
+  Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
+
+  return rel == known_result;
+}
+
+bool
+test18() {
+  Variable A(0);
+
+  TOctagonal_Shape oc(1);
+  oc.add_constraint(A >= 0);
+  oc.add_constraint(A <= 1);
+
+  Constraint c(Linear_Expression(1) == 0);
+  Poly_Con_Relation rel = oc.relation_with(c);
+
+  print_constraints(oc, "--- oc ---");
+  print_constraint(c, "--- c ---");
+  using namespace IO_Operators;
+  nout << "oc.relation_with(1 == 0) == " << rel << endl;
+
+  Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
+
+  return rel == known_result;
+}
+
+
 } // namespace
 
 BEGIN_MAIN
-  DO_TEST(test01);
-  DO_TEST(test02);
-  DO_TEST(test03);
-  DO_TEST(test04);
-  DO_TEST(test05);
-  DO_TEST(test06);
-  DO_TEST(test07);
-  DO_TEST(test08);
-  DO_TEST(test09);
-  DO_TEST(test10);
-  DO_TEST(test11);
-  DO_TEST(test12);
-  DO_TEST(test13);
-  DO_TEST(test14);
-  DO_TEST(test15);
-  DO_TEST(test16);
+//   DO_TEST(test01);
+//   DO_TEST(test02);
+//   DO_TEST(test03);
+//   DO_TEST(test04);
+//   DO_TEST(test05);
+//   DO_TEST(test06);
+//   DO_TEST(test07);
+//   DO_TEST(test08);
+//   DO_TEST(test09);
+//   DO_TEST(test10);
+//   DO_TEST(test11);
+//   DO_TEST(test12);
+//   DO_TEST(test13);
+//   DO_TEST(test14);
+//   DO_TEST(test15);
+//   DO_TEST(test16);
+  DO_TEST(test17);
+//  DO_TEST(test18);
 END_MAIN
 
