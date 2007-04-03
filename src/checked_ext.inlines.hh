@@ -536,6 +536,63 @@ div_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 	  typename To, typename From1, typename From2>
 inline Result
+idiv_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
+  if (!ext_to_handle<From1_Policy>(x) && !ext_to_handle<From2_Policy>(y))
+    goto native;
+  if (is_nan<From1_Policy>(x) || is_nan<From2_Policy>(y))
+    return set_special<To_Policy>(to, VC_NAN);
+  if (is_minf<From1_Policy>(x)) {
+    if (CHECK_P(To_Policy::check_inf_div_inf, is_minf<From2_Policy>(y)
+		|| is_pinf<From2_Policy>(y)))
+      goto inf_div_inf;
+    else {
+      switch (sgn<From2_Policy>(y)) {
+      case V_LT:
+	goto pinf;
+      case V_GT:
+	goto minf;
+      default:
+	goto div_zero;
+      }
+    }
+  }
+  else if (is_pinf<From1_Policy>(x)) {
+    if (CHECK_P(To_Policy::check_inf_div_inf, is_minf<From2_Policy>(y)
+		|| is_pinf<From2_Policy>(y))) {
+    inf_div_inf:
+      return set_special<To_Policy>(to, V_INF_DIV_INF);
+    }
+    else {
+      switch (sgn<From2_Policy>(y)) {
+      case V_LT:
+      minf:
+	return assign<To_Policy, Special_Float_Policy>(to, MINUS_INFINITY, dir);
+      case V_GT:
+      pinf:
+	return assign<To_Policy, Special_Float_Policy>(to, PLUS_INFINITY, dir);
+      default:
+      div_zero:
+	assert(To_Policy::check_div_zero);
+	return set_special<To_Policy>(to, V_DIV_ZERO);
+      }
+    }
+  }
+  else {
+    if (is_minf<From2_Policy>(y) || is_pinf<From2_Policy>(y)) {
+      to = 0;
+      return V_EQ;
+    }
+    else {
+    native:
+      return idiv<To_Policy, From1_Policy, From2_Policy>(to, x, y, dir);
+    }
+  }
+}
+
+
+template <typename To_Policy, typename From1_Policy, typename From2_Policy,
+	  typename To, typename From1, typename From2>
+inline Result
 rem_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   if (!ext_to_handle<From1_Policy>(x) && !ext_to_handle<From2_Policy>(y))
     goto native;

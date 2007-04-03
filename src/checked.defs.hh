@@ -299,6 +299,8 @@ struct FUNCTION_CLASS(name) <Policy1, Policy2, Policy3, type1, type2, type3> { \
   SPECIALIZE_FUN3_0_1(div, func, Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
 #define SPECIALIZE_REM(func, To, From1, From2) \
   SPECIALIZE_FUN3_0_1(rem, func, Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+#define SPECIALIZE_IDIV(func, To, From1, From2) \
+  SPECIALIZE_FUN3_0_1(idiv, func, Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
 #define SPECIALIZE_MUL2EXP(func, To, From) \
   SPECIALIZE_FUN2_0_2(mul2exp, func, Result, nonconst, To, const, From, int, Rounding_Dir)
 #define SPECIALIZE_DIV2EXP(func, To, From) \
@@ -342,6 +344,7 @@ DECLARE_FUN3_0_1(sub,         Result, nonconst, To, const, From1, const, From2, 
 DECLARE_FUN3_0_1(mul,         Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
 DECLARE_FUN3_0_1(div,         Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
 DECLARE_FUN3_0_1(rem,         Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+DECLARE_FUN3_0_1(idiv,        Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
 DECLARE_FUN2_0_2(mul2exp,     Result, nonconst, To, const, From, int, Rounding_Dir)
 DECLARE_FUN2_0_2(div2exp,     Result, nonconst, To, const, From, int, Rounding_Dir)
 DECLARE_FUN3_0_1(add_mul,     Result, nonconst, To, const, From1, const, From2, Rounding_Dir)

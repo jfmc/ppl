@@ -411,9 +411,9 @@ trunc_float(Type& to, const Type from, Rounding_Dir dir) {
   if (To_Policy::check_nan_result && is_nan<From_Policy>(from))
     return set_special<To_Policy>(to, VC_NAN);
   if (from >= 0)
-    return floor<To_Policy, From_Policy>(from, dir);
+    return floor<To_Policy, From_Policy>(to, from, dir);
   else
-    return ceil<To_Policy, From_Policy>(from, dir);
+    return ceil<To_Policy, From_Policy>(to, from, dir);
 }
 
 template <typename To_Policy, typename From_Policy, typename Type>
@@ -526,6 +526,26 @@ div_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (To_Policy::check_nan_result && is_nan<To_Policy>(to))
     return VC_NAN;
   return result_relation<To_Policy>(dir);
+}
+
+template <typename To_Policy, typename From1_Policy, typename From2_Policy,
+	  typename Type>
+inline Result
+idiv_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
+  Type temp;
+  // The inexact check is useless
+  dir = round_dir(dir);
+  Result r = div<To_Policy, From1_Policy, From2_Policy>(temp, x, y, dir);
+  if (is_special(r)) {
+    to = temp;
+    return r;
+  }
+  Result r1 = trunc<To_Policy, To_Policy>(to, temp, ROUND_NOT_NEEDED);
+  assert(r1 == V_EQ);
+  if (r == V_EQ || to != temp)
+    return r1;
+  // FIXME: Prove that it's impossibile to return a strict relation
+  return dir == ROUND_UP ? V_LE : V_GE;
 }
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,

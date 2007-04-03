@@ -1055,7 +1055,36 @@ div_unsigned_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename Type>
 inline Result
-rem_int(Type& to, const Type x, const Type y, Rounding_Dir) {
+idiv_signed_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
+  if (CHECK_P(To_Policy::check_div_zero, y == 0))
+    return set_special<To_Policy>(to, V_DIV_ZERO);
+  if (To_Policy::check_overflow && y == -1)
+    return neg_signed_int<To_Policy, From1_Policy>(to, x, dir);
+  to = x / y;
+  return V_EQ;
+}
+
+template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename Type>
+inline Result
+idiv_unsigned_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
+  if (CHECK_P(To_Policy::check_div_zero, y == 0))
+    return set_special<To_Policy>(to, V_DIV_ZERO);
+  to = x / y;
+  return V_EQ;
+}
+
+template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename Type>
+inline Result
+rem_signed_int(Type& to, const Type x, const Type y, Rounding_Dir) {
+  if (CHECK_P(To_Policy::check_div_zero, y == 0))
+    return set_special<To_Policy>(to, V_MOD_ZERO);
+  to = x % y;
+  return V_EQ;
+}
+
+template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename Type>
+inline Result
+rem_unsigned_int(Type& to, const Type x, const Type y, Rounding_Dir) {
   if (CHECK_P(To_Policy::check_div_zero, y == 0))
     return set_special<To_Policy>(to, V_MOD_ZERO);
   to = x % y;
@@ -1380,16 +1409,27 @@ SPECIALIZE_DIV(div_unsigned_int, unsigned int, unsigned int, unsigned int)
 SPECIALIZE_DIV(div_unsigned_int, unsigned long, unsigned long, unsigned long)
 SPECIALIZE_DIV(div_unsigned_int, unsigned long long, unsigned long long, unsigned long long)
 
-SPECIALIZE_REM(rem_int, signed char, signed char, signed char)
-SPECIALIZE_REM(rem_int, signed short, signed short, signed short)
-SPECIALIZE_REM(rem_int, signed int, signed int, signed int)
-SPECIALIZE_REM(rem_int, signed long, signed long, signed long)
-SPECIALIZE_REM(rem_int, signed long long, signed long long, signed long long)
-SPECIALIZE_REM(rem_int, unsigned char, unsigned char, unsigned char)
-SPECIALIZE_REM(rem_int, unsigned short, unsigned short, unsigned short)
-SPECIALIZE_REM(rem_int, unsigned int, unsigned int, unsigned int)
-SPECIALIZE_REM(rem_int, unsigned long, unsigned long, unsigned long)
-SPECIALIZE_REM(rem_int, unsigned long long, unsigned long long, unsigned long long)
+SPECIALIZE_IDIV(idiv_signed_int, signed char, signed char, signed char)
+SPECIALIZE_IDIV(idiv_signed_int, signed short, signed short, signed short)
+SPECIALIZE_IDIV(idiv_signed_int, signed int, signed int, signed int)
+SPECIALIZE_IDIV(idiv_signed_int, signed long, signed long, signed long)
+SPECIALIZE_IDIV(idiv_signed_int, signed long long, signed long long, signed long long)
+SPECIALIZE_IDIV(idiv_unsigned_int, unsigned char, unsigned char, unsigned char)
+SPECIALIZE_IDIV(idiv_unsigned_int, unsigned short, unsigned short, unsigned short)
+SPECIALIZE_IDIV(idiv_unsigned_int, unsigned int, unsigned int, unsigned int)
+SPECIALIZE_IDIV(idiv_unsigned_int, unsigned long, unsigned long, unsigned long)
+SPECIALIZE_IDIV(idiv_unsigned_int, unsigned long long, unsigned long long, unsigned long long)
+
+SPECIALIZE_REM(rem_signed_int, signed char, signed char, signed char)
+SPECIALIZE_REM(rem_signed_int, signed short, signed short, signed short)
+SPECIALIZE_REM(rem_signed_int, signed int, signed int, signed int)
+SPECIALIZE_REM(rem_signed_int, signed long, signed long, signed long)
+SPECIALIZE_REM(rem_signed_int, signed long long, signed long long, signed long long)
+SPECIALIZE_REM(rem_unsigned_int, unsigned char, unsigned char, unsigned char)
+SPECIALIZE_REM(rem_unsigned_int, unsigned short, unsigned short, unsigned short)
+SPECIALIZE_REM(rem_unsigned_int, unsigned int, unsigned int, unsigned int)
+SPECIALIZE_REM(rem_unsigned_int, unsigned long, unsigned long, unsigned long)
+SPECIALIZE_REM(rem_unsigned_int, unsigned long long, unsigned long long, unsigned long long)
 
 SPECIALIZE_MUL2EXP(mul2exp_signed_int, signed char, signed char)
 SPECIALIZE_MUL2EXP(mul2exp_signed_int, signed short, signed short)

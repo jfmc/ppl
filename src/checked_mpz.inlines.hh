@@ -379,6 +379,7 @@ div_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y,
   mpz_srcptr n = x.get_mpz_t();
   mpz_srcptr d = y.get_mpz_t();
   if (round_ignore(dir)) {
+    // FIXME: is this correct?
     mpz_divexact(to.get_mpz_t(), n, d);
     return V_LGE;
   }
@@ -394,6 +395,20 @@ div_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y,
 }
 
 SPECIALIZE_DIV(div_mpz, mpz_class, mpz_class, mpz_class)
+
+template <typename To_Policy, typename From1_Policy, typename From2_Policy>
+inline Result
+idiv_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y,
+	Rounding_Dir) {
+  if (CHECK_P(To_Policy::check_div_zero, ::sgn(y) == 0))
+    return set_special<To_Policy>(to, V_DIV_ZERO);
+  mpz_srcptr n = x.get_mpz_t();
+  mpz_srcptr d = y.get_mpz_t();
+  mpz_tdiv_q(to.get_mpz_t(), n, d);
+  return V_EQ;
+}
+
+SPECIALIZE_IDIV(idiv_mpz, mpz_class, mpz_class, mpz_class)
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy>
 inline Result

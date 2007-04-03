@@ -324,6 +324,17 @@ SPECIALIZE_DIV(div_mpq, mpq_class, mpq_class, mpq_class)
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy>
 inline Result
+idiv_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, Rounding_Dir dir) {
+  if (CHECK_P(To_Policy::check_div_zero, sgn(y) == 0))
+    return set_special<To_Policy>(to, V_DIV_ZERO);
+  to = x / y;
+  return trunc<To_Policy, To_Policy>(to, to, dir);
+}
+
+SPECIALIZE_IDIV(idiv_mpq, mpq_class, mpq_class, mpq_class)
+
+template <typename To_Policy, typename From1_Policy, typename From2_Policy>
+inline Result
 rem_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, Rounding_Dir) {
   if (CHECK_P(To_Policy::check_div_zero, sgn(y) == 0))
     return set_special<To_Policy>(to, V_MOD_ZERO);
