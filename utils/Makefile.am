@@ -29,13 +29,13 @@ timings.cc
 
 dist_noinst_SCRIPTS = \
 build_header.in \
-text2cxxarray.in
+text2cxxarray.in \
+cm_cleaner.sh \
+cm_splitter.sh
 
 noinst_SCRIPTS = \
 build_header \
-text2cxxarray \
-cm_cleaner.sh \
-cm_splitter.sh
+text2cxxarray
 
 # Even if the scripts listed in noinst_SCRIPTS are not distributed
 # (only the corresponding *.in files are), we need them to actually
