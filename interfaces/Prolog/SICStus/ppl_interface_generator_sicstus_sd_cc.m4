@@ -237,8 +237,10 @@ m4_divert(1)
 extern "C" void
 ppl_sicstus_init(int /* when */) {
   ppl_initialize();
-  for (size_t i = 0; i < sizeof(prolog_atoms)/sizeof(prolog_atoms[0]); ++i) {
-    if (SP_register_atom(*prolog_atoms[i].p_atom) == 0) {
+  for (size_t i = 0;
+       i < sizeof(prolog_interface_atoms)/sizeof(prolog_interface_atoms[0]);
+       ++i) {
+    if (SP_register_atom(*prolog_interface_atoms[i].p_atom) == 0) {
       Prolog_term_ref et = Prolog_new_term_ref();
       Prolog_put_atom_chars(et, "Cannot initialize the PPL interface");
       Prolog_raise_exception(et);
@@ -250,10 +252,12 @@ m4_divert(2)dnl
 
 extern "C" void
 ppl_sicstus_deinit(int /* when */) {
-  for (size_t i = 0; i < sizeof(prolog_atoms)/sizeof(prolog_atoms[0]); ++i)
+  for (size_t i = 0;
+       i < sizeof(prolog_interface_atoms)/sizeof(prolog_interface_atoms[0]);
+       ++i)
     // SP_unregister_atom can fail.
     // We ignore such failures: what else can we do?
-    (void) SP_unregister_atom(*prolog_atoms[i].p_atom);
+    (void) SP_unregister_atom(*prolog_interface_atoms[i].p_atom);
   ppl_finalize();
 }
 dnl
