@@ -420,6 +420,43 @@ test12() {
   return ok;
 }
 
+bool
+test13() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+
+  Partial_Function function;
+  function.insert(0, 2);
+  function.insert(1, 3);
+
+  Generator_System gs;
+  gs.insert(point());
+  gs.insert(point(A));
+  gs.insert(point(2*B));
+  gs.insert(point(A + 2*B));
+
+  C_Polyhedron ph1(gs);
+
+  print_function(function, "*** function ***");
+  print_generators(ph1, "*** ph1 ***");
+
+  ph1.map_space_dimensions(function);
+
+  C_Polyhedron known_result(4, EMPTY);
+  known_result.add_generator(point());
+  known_result.add_generator(point(C));
+  known_result.add_generator(point(2*D));
+  known_result.add_generator(point(C + 2*D));
+
+  bool ok = (ph1 == known_result);
+
+  print_generators(ph1, "*** after ph1.map_space_dimensions(function) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -440,4 +477,5 @@ BEGIN_MAIN
 #endif // !defined(DERIVED_TEST)
   DO_TEST(test11);
   DO_TEST(test12);
+  DO_TEST(test13);
 END_MAIN
