@@ -102,8 +102,10 @@ endif
 INCLUDE_FILES = \
 namespaces.hh \
 compiler.hh \
+meta_programming.hh \
 mp_std_bits.defs.hh \
 mp_std_bits.inlines.hh \
+Temp.defs.hh \
 Coefficient_traits_template.hh \
 Checked_Number.types.hh \
 $(COEFFICIENT_TYPES_INCLUDE_FILES) \
