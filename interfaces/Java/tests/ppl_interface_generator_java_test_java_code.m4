@@ -149,7 +149,7 @@ m4_define(`ppl_Grid_generalized_@AFFIMAGE@_code', `
 m4_define(`ppl_@CLASS@_equals_@CLASS@_code', `
 @LTOPOLOGY@@LCLASS@1.equals(@LTOPOLOGY@@LCLASS@1);
 if (!@LTOPOLOGY@@LCLASS@1.equals(new Object()))
-   System.out.println("An generic object is not equal to @LTOPOLOGY@@LCLASS@1");
+   System.out.println("A generic object is not equal to @LTOPOLOGY@@LCLASS@1");
 ')
 
 m4_define(`ppl_@CLASS@_OK_code', `
