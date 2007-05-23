@@ -152,6 +152,14 @@ public:
   */
   memory_size_type external_memory_in_bytes() const;
 
+  /*! \brief
+    Returns a 32-bit hash code for \p *this.
+
+    If \p x and \p y are such that <CODE>x == y</CODE>,
+    then <CODE>x.hash_code() == y.hash_code()</CODE>.
+  */
+  int32_t hash_code() const;
+
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 

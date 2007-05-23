@@ -1099,6 +1099,14 @@ public:
   //! Returns the size in bytes of the memory managed by \p *this.
   virtual memory_size_type external_memory_in_bytes() const = 0;
 
+  /*! \brief
+    Returns a 32-bit hash code for \p *this.
+
+    If \p x and \p y are such that <CODE>x == y</CODE>,
+    then <CODE>x.hash_code() == y.hash_code()</CODE>.
+  */
+  virtual int32_t hash_code() const = 0;
+
   //@} // Miscellaneous Member Functions
 };
 
@@ -1299,6 +1307,10 @@ class WRAPPER_NAME : public Any_Pointset {				\
   }									\
   memory_size_type external_memory_in_bytes() const {			\
     return x.total_memory_in_bytes();					\
+  }									\
+									\
+  int32_t hash_code() const {						\
+    return x.hash_code();						\
   }									\
 									\
   bool OK() const {							\

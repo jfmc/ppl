@@ -1396,6 +1396,14 @@ public:
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
 
+  /*! \brief
+    Returns a 32-bit hash code for \p *this.
+
+    If \p x and \p y are such that <CODE>x == y</CODE>,
+    then <CODE>x.hash_code() == y.hash_code()</CODE>.
+  */
+  int32_t hash_code() const;
+
   friend bool
   Parma_Polyhedra_Library::operator==<T>(const Octagonal_Shape<T>& x,
 					 const Octagonal_Shape<T>& y);

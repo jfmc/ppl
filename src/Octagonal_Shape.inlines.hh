@@ -630,6 +630,12 @@ Octagonal_Shape<T>::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
 }
 
+template <typename T>
+inline int32_t
+Octagonal_Shape<T>::hash_code() const {
+  return space_dimension() & 0x7fffffff;
+}
+
 } // namespace Parma_Polyhedra_Library
 
 namespace std {

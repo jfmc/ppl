@@ -174,6 +174,11 @@ Grid::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
 }
 
+inline int32_t
+Grid::hash_code() const {
+  return space_dimension() & 0x7fffffff;
+}
+
 inline Constraint_System
 Grid::constraints() const {
   return Constraint_System(congruences());;
