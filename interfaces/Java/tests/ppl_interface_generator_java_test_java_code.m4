@@ -52,6 +52,22 @@ m4_define(`ppl_@CLASS@_@HAS_PROPERTY@_code', `
 
 ')
 
+m4_define(`ppl_@CLASS@_hashcode_code', `
+              System.out.println("The hash is : " + @LTOPOLOGY@@LCLASS@1.hashCode());
+
+')
+
+m4_define(`ppl_@CLASS@_@HAS_PROPERTY@_code', `
+        if (@LTOPOLOGY@@LCLASS@1.@HAS_PROPERTY@())
+           System.out.println(
+             "@HAS_PROPERTY@ is true for @LTOPOLOGY@@LCLASS@1.");
+        else
+           System.out.println(
+             "@HAS_PROPERTY@ is false for @LTOPOLOGY@@LCLASS@1.");
+
+')
+
+
 m4_define(`ppl_@CLASS@_@DIMENSION@_code', `
            System.out.print("@DIMENSION@ of @LTOPOLOGY@@LCLASS@1 = ");
            System.out.println(@LTOPOLOGY@@LCLASS@1.@DIMENSION@());
@@ -132,7 +148,8 @@ m4_define(`ppl_Grid_generalized_@AFFIMAGE@_code', `
 
 m4_define(`ppl_@CLASS@_equals_@CLASS@_code', `
 @LTOPOLOGY@@LCLASS@1.equals(@LTOPOLOGY@@LCLASS@1);
-
+if (!@LTOPOLOGY@@LCLASS@1.equals(new Object()))
+   System.out.println("An generic object is not equal to @LTOPOLOGY@@LCLASS@1");
 ')
 
 m4_define(`ppl_@CLASS@_OK_code', `

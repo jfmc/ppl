@@ -428,6 +428,22 @@ JNIEXPORT jboolean JNICALL Java_ppl_1java_@1CLASS@_equals
 
 ')
 
+m4_define(`ppl_@CLASS@_hashcode_code',
+`dnl
+JNIEXPORT jint JNICALL Java_ppl_1java_@1CLASS@_hashCode
+(JNIEnv* env , jobject j_this_@LCLASS@) {
+  try {
+  jlong ptr = get_ptr(env, j_this_@LCLASS@);
+  @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(ptr);
+  return (*this_@LCLASS@).hash_code();
+  }
+  CATCH_ALL;
+  return 0;
+}
+
+')
+
+
 m4_define(`ppl_@CLASS@_OK_code',
 `dnl
 JNIEXPORT jboolean JNICALL Java_ppl_1java_@1CLASS@_OK

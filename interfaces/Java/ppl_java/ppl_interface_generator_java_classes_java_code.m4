@@ -175,7 +175,22 @@ m4_define(`ppl_@CLASS@_equals_@CLASS@_code',
 %<--%<--%<-- @CLASS@.java
     public native boolean equals(@CLASS@ p);
 
+    public boolean equals(Object y) {
+   if (this == y)
+     return true;
+   if (y == null || y.getClass() != this.getClass())
+     return false;
+   return this.equals((@CLASS@) y);
+  }
 ')
+
+m4_define(`ppl_@CLASS@_hashcode_code',
+`dnl
+%<--%<--%<-- @CLASS@.java
+    public native int hashCode();
+
+')
+
 
 m4_define(`ppl_@CLASS@_OK_code',
 `dnl
