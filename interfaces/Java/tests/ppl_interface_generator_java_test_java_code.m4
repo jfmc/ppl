@@ -53,7 +53,7 @@ m4_define(`ppl_@CLASS@_@HAS_PROPERTY@_code', `
 ')
 
 m4_define(`ppl_@CLASS@_hashcode_code', `
-              System.out.println("The hash is : " + @LTOPOLOGY@@LCLASS@1.hashCode());
+              System.out.println("The hashcode is: " + @LTOPOLOGY@@LCLASS@1.hashCode());
 
 ')
 
