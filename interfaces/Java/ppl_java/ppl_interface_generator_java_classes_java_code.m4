@@ -119,7 +119,7 @@ m4_define(`ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_code',
 m4_define(`ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
-    public native Poly_Con_Relation relation_with(@URELATION_REPRESENT@ c);
+    public native Poly_@UALT_RELATION_REPRESENT@_Relation relation_with(@URELATION_REPRESENT@ c);
 
 ')
 
