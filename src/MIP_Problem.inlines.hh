@@ -159,11 +159,6 @@ MIP_Problem::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
 }
 
-inline int32_t
-MIP_Problem::hash_code() const {
-  return space_dimension() & 0x7fffffff;
-}
-
 } // namespace Parma_Polyhedra_Library
 
 namespace std {
