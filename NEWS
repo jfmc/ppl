@@ -26,6 +26,13 @@ o  The class LP_Problem has been renamed MIP_Problem and now supports
 
 o  contains_integer_point() ...
 
+o  All PPL semantic objects now provide the method
+
+     int32_t hash_code() const
+
+   returning a 32-bit hash code for *this.  If x and y are such that
+   x == y evaluates to true, so does x.hash_code() == y.hash_code().
+
 o  Direct_Product ...
 
 o  Ask_Tell ...
@@ -36,7 +43,7 @@ o  Box ...
 
 o  shrink_bounding_box has gone ...
 
-o  As all PPL semantics objects can now be constructed from boxes,
+o  As all PPL semantic objects can now be constructed from boxes,
    the constructors
 
      template <typename Box> C_Polyhedron(const Box&, From_Bounding_Box),
