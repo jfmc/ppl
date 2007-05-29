@@ -38,7 +38,7 @@ m4_define(`m4_new_class_element_code',
 ')
 
 m4_define(`ppl_@CLASS@_bounds_from_@ABOVEBELOW@_code',`
- @LTOPOLOGY@@LCLASS@1.bounds_from_@ABOVEBELOW@(le);
+boolean @LTOPOLOGY@@CLASS@1_bounds_from_@ABOVEBELOW@ = @LTOPOLOGY@@LCLASS@1.bounds_from_@ABOVEBELOW@(le);
 ')
 
 
@@ -75,22 +75,25 @@ m4_define(`ppl_@CLASS@_@DIMENSION@_code', `
 ')
 
 m4_define(`ppl_@CLASS@_@BINOP@_code',`
- @LTOPOLOGY@@LCLASS@1.@BINOP@(@LTOPOLOGY@@LCLASS@1);
+@LTOPOLOGY@@LCLASS@1.@BINOP@(@LTOPOLOGY@@LCLASS@1);
 
 ')
 
 m4_define(`ppl_@CLASS@_@BINMINOP@_code',`
- @LTOPOLOGY@@LCLASS@1.@BINMINOP@(@LTOPOLOGY@@LCLASS@1);
+boolean @LTOPOLOGY@@LCLASS@1_@BINMINOP@
+  = @LTOPOLOGY@@LCLASS@1.@BINMINOP@(@LTOPOLOGY@@LCLASS@1);
 
 ')
 
 m4_define(`ppl_@CLASS@_get_@GET_REPRESENT@s_code', `
-	  @LTOPOLOGY@@LCLASS@1.@GET_REPRESENT@s();
+@UGET_REPRESENT@_System @LTOPOLOGY@@LCLASS@1_@GET_REPRESENT@
+  = @LTOPOLOGY@@LCLASS@1.@GET_REPRESENT@s();
 
 ')
 
 m4_define(`ppl_@CLASS@_@COMPARISON@_@CLASS@_code', `
-@LTOPOLOGY@@LCLASS@2.@COMPARISON@(@LTOPOLOGY@@LCLASS@1);
+boolean @LTOPOLOGY@@LCLASS@1_@COMPARISON@
+  = @LTOPOLOGY@@LCLASS@2.@COMPARISON@(@LTOPOLOGY@@LCLASS@1);
 
 ')
 
@@ -100,7 +103,8 @@ m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign_code', `
 ')
 
 m4_define(`ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_code', `
- 	  @LTOPOLOGY@@LCLASS@1.relation_with(@RELATION_REPRESENT@1);
+Poly_@UALT_RELATION_REPRESENT@_Relation @LTOPOLOGY@@LCLASS@1_@UALT_RELATION_REPRESENT@_Relation_with_@RELATION_REPRESENT@
+  = @LTOPOLOGY@@LCLASS@1.relation_with(@RELATION_REPRESENT@1);
 
  ')
 
@@ -116,27 +120,29 @@ m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code', `
 
  m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_code', `
 
- @LTOPOLOGY@@LCLASS@1.add_@ADD_REPRESENT@s(@ADD_REPRESENT@s1);
+@LTOPOLOGY@@LCLASS@1.add_@ADD_REPRESENT@s(@ADD_REPRESENT@s1);
 
  ')
 
 m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize_code', `
- @LTOPOLOGY@@LCLASS@1.add_@ADD_REPRESENT@s_and_minimize(@ADD_REPRESENT@s1);
+boolean @LTOPOLOGY@@LCLASS@1_add_@ADD_REPRESENT@s_and_minimize
+  = @LTOPOLOGY@@LCLASS@1.add_@ADD_REPRESENT@s_and_minimize(@ADD_REPRESENT@s1);
 
 ')
 
 m4_define(`ppl_@CLASS@_@AFFIMAGE@_code', `
- @LTOPOLOGY@@LCLASS@1.@AFFIMAGE@(var, le, coeff1);
+@LTOPOLOGY@@LCLASS@1.@AFFIMAGE@(var, le, coeff1);
 
 ')
 
 m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_code', `
- @LTOPOLOGY@@LCLASS@1.generalized_@AFFIMAGE@(le, Relation_Symbol.EQUAL , le);
+@LTOPOLOGY@@LCLASS@1.generalized_@AFFIMAGE@(le, Relation_Symbol.EQUAL , le);
 
 ')
 
  m4_define(`ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@_code', `
- @LTOPOLOGY@@LCLASS@1.@UB_EXACT@(@LTOPOLOGY@@LCLASS@1);
+boolean @LTOPOLOGY@@LCLASS@1_@UB_EXACT@
+  = @LTOPOLOGY@@LCLASS@1.@UB_EXACT@(@LTOPOLOGY@@LCLASS@1);
 
 ')
 
@@ -147,13 +153,16 @@ m4_define(`ppl_Grid_generalized_@AFFIMAGE@_code', `
 ')
 
 m4_define(`ppl_@CLASS@_equals_@CLASS@_code', `
-@LTOPOLOGY@@LCLASS@1.equals(@LTOPOLOGY@@LCLASS@1);
+boolean @LTOPOLOGY@@LCLASS@1_equals
+  = @LTOPOLOGY@@LCLASS@1.equals(@LTOPOLOGY@@LCLASS@1);
+
 if (!@LTOPOLOGY@@LCLASS@1.equals(new Object()))
    System.out.println("A generic object is not equal to @LTOPOLOGY@@LCLASS@1");
 ')
 
 m4_define(`ppl_@CLASS@_OK_code', `
-@LTOPOLOGY@@LCLASS@1.OK();
+boolean @LTOPOLOGY@@LCLASS@1_OK
+  = @LTOPOLOGY@@LCLASS@1.OK();
 
 ')
 
@@ -169,18 +178,16 @@ m4_define(`ppl_@CLASS@_@SIMPLIFY@_code',`
 
 ')
 
-m4_define(`ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@_code', `
-@LTOPOLOGY@@LCLASS@1.@UB_EXACT@(@LTOPOLOGY@@LCLASS@1);
-
-')
 
 m4_define(`ppl_@CLASS@_@MAXMIN@_code', `
-@LTOPOLOGY@@LCLASS@1.@MAXMIN@(le, coeff0, coeff1, bool_by_ref1);
+boolean @LTOPOLOGY@@LCLASS@1_@MAXMIN@
+  = @LTOPOLOGY@@LCLASS@1.@MAXMIN@(le, coeff0, coeff1, bool_by_ref1);
 
 ')
 
 m4_define(`ppl_@CLASS@_@MAXMIN@_with_point_code', `
-@LTOPOLOGY@@LCLASS@1.@MAXMIN@(le, coeff0, coeff1, bool_by_ref1, @GENERATOR@1);
+boolean @LTOPOLOGY@@LCLASS@1_@MAXMIN@_with_point
+  = @LTOPOLOGY@@LCLASS@1.@MAXMIN@(le, coeff0, coeff1, bool_by_ref1, @GENERATOR@1);
 
 ');
 
