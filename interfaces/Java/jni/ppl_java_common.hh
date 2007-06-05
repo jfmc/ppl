@@ -344,13 +344,13 @@ get_linear_expression(JNIEnv* env, const R& r) {
       if (varid >= space_dimension)
 	break;
       else {
- 	jobject j_coefficient = build_java_coeff(env, coefficient);
- 	jobject j_variable = env->NewObject(j_variable_class,
-					    j_variable_ctr_id,
-					    varid);
-  	jobject j_le_variable = env->NewObject(j_le_variable_class,
-					       j_le_variable_ctr_id,
-					       j_variable);
+ 	j_coefficient = build_java_coeff(env, coefficient);
+ 	j_variable = env->NewObject(j_variable_class,
+				    j_variable_ctr_id,
+				    varid);
+  	j_le_variable = env->NewObject(j_le_variable_class,
+				       j_le_variable_ctr_id,
+				       j_variable);
  	jobject j_le_term2 = env->CallObjectMethod(j_le_variable,
 						   j_le_times_id,
 						   j_coefficient);
