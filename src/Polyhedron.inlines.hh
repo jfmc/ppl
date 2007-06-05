@@ -35,6 +35,11 @@ Polyhedron::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
 }
 
+inline dimension_type
+Polyhedron::space_dimension() const {
+  return space_dim;
+}
+
 inline int32_t
 Polyhedron::hash_code() const {
   return space_dimension() & 0x7fffffff;
@@ -69,11 +74,6 @@ Polyhedron::is_necessarily_closed() const {
   // We can check either one of the two matrices.
   // (`con_sys' is slightly better, since it is placed at offset 0.)
   return con_sys.is_necessarily_closed();
-}
-
-inline dimension_type
-Polyhedron::space_dimension() const {
-  return space_dim;
 }
 
 inline void
