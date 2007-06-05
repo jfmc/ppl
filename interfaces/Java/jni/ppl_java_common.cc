@@ -329,76 +329,59 @@ build_ppl_optimization_mode(JNIEnv* env, const jobject& j_opt_mode) {
 
 jobject
 build_java_optimization_mode(JNIEnv* env, const Optimization_Mode& opt_mode) {
- jclass j_optimization_mode_class
-   = env->FindClass("ppl_java/Optimization_Mode");
- jfieldID optimization_mode_min_get_id
-   = env->GetStaticFieldID(j_optimization_mode_class,
-			   "MINIMIZATION",
-			   "Lppl_java/Optimization_Mode;");
- jfieldID optimization_mode_max_get_id
-   = env->GetStaticFieldID(j_optimization_mode_class,
-			   "MAXIMIZATION",
- 			   "Lppl_java/Optimization_Mode;");
- switch (opt_mode) {
+  jclass j_optimization_mode_class
+    = env->FindClass("ppl_java/Optimization_Mode");
+  jfieldID optimization_mode_min_get_id
+    = env->GetStaticFieldID(j_optimization_mode_class,
+			    "MINIMIZATION",
+			    "Lppl_java/Optimization_Mode;");
+  jfieldID optimization_mode_max_get_id
+    = env->GetStaticFieldID(j_optimization_mode_class,
+			    "MAXIMIZATION",
+			    "Lppl_java/Optimization_Mode;");
+  switch (opt_mode) {
   case MINIMIZATION:
-    {
-  return env->GetStaticObjectField(j_optimization_mode_class,
-				      optimization_mode_min_get_id);
-  break;
-    }
+    return env->GetStaticObjectField(j_optimization_mode_class,
+				     optimization_mode_min_get_id);
   case MAXIMIZATION:
-    {
     return  env->GetStaticObjectField(j_optimization_mode_class,
 				      optimization_mode_max_get_id);
-    break;
-    }
- default:
-   throw std::runtime_error("PPL Java interface internal error");
- }
+  default:
+    throw std::runtime_error("PPL Java interface internal error");
+  }
 }
 
 jobject
 build_java_mip_status(JNIEnv* env, const MIP_Problem_Status& mip_status) {
- jclass j_mip_status_class
-   = env->FindClass("ppl_java/MIP_Problem_Status");
- jfieldID mip_status_unfeasible_get_id
-   = env->GetStaticFieldID(j_mip_status_class,
-			   "UNFEASIBLE_MIP_PROBLEM",
-			   "Lppl_java/MIP_Problem_Status;");
- jfieldID mip_status_unbounded_get_id
-   = env->GetStaticFieldID(j_mip_status_class,
-			   "UNBOUNDED_MIP_PROBLEM",
- 			   "Lppl_java/MIP_Problem_Status;");
- jfieldID mip_status_optimized_get_id
-   = env->GetStaticFieldID(j_mip_status_class,
-			   "OPTIMIZED_MIP_PROBLEM",
- 			   "Lppl_java/MIP_Problem_Status;");
+  jclass j_mip_status_class
+    = env->FindClass("ppl_java/MIP_Problem_Status");
+  jfieldID mip_status_unfeasible_get_id
+    = env->GetStaticFieldID(j_mip_status_class,
+			    "UNFEASIBLE_MIP_PROBLEM",
+			    "Lppl_java/MIP_Problem_Status;");
+  jfieldID mip_status_unbounded_get_id
+    = env->GetStaticFieldID(j_mip_status_class,
+			    "UNBOUNDED_MIP_PROBLEM",
+			    "Lppl_java/MIP_Problem_Status;");
+  jfieldID mip_status_optimized_get_id
+    = env->GetStaticFieldID(j_mip_status_class,
+			    "OPTIMIZED_MIP_PROBLEM",
+			    "Lppl_java/MIP_Problem_Status;");
 
-switch (mip_status) {
+  switch (mip_status) {
   case UNFEASIBLE_MIP_PROBLEM:
-    {
-  return env->GetStaticObjectField(j_mip_status_class,
-				   mip_status_unfeasible_get_id);
-  break;
-    }
+    return env->GetStaticObjectField(j_mip_status_class,
+				     mip_status_unfeasible_get_id);
   case UNBOUNDED_MIP_PROBLEM:
-    {
     return  env->GetStaticObjectField(j_mip_status_class,
 				      mip_status_unbounded_get_id);
-    break;
-    }
- case OPTIMIZED_MIP_PROBLEM:
-    {
+  case OPTIMIZED_MIP_PROBLEM:
     return  env->GetStaticObjectField(j_mip_status_class,
 				      mip_status_optimized_get_id);
-    break;
-    }
-
- default:
-   throw std::runtime_error("PPL Java interface internal error");
- }
+  default:
+    throw std::runtime_error("PPL Java interface internal error");
+  }
 }
-
 
 Coefficient
 build_ppl_coeff(JNIEnv* env, const jobject& j_coeff) {
@@ -602,24 +585,31 @@ build_ppl_generator(JNIEnv* env, const jobject& j_generator) {
 Grid_Generator
 build_ppl_grid_generator(JNIEnv* env, const jobject& j_grid_generator) {
   jclass grid_generator_class = env->FindClass("ppl_java/Grid_Generator");
-  jclass grid_generator_type_class = env->FindClass("ppl_java/Grid_Generator_Type");
+  jclass grid_generator_type_class
+    = env->FindClass("ppl_java/Grid_Generator_Type");
 
-  jfieldID j_le_field = env->GetFieldID(grid_generator_class, "le",
+  jfieldID j_le_field = env->GetFieldID(grid_generator_class,
+					"le",
 					"Lppl_java/Linear_Expression;");
   jobject j_le = env->GetObjectField(j_grid_generator, j_le_field);
-  jfieldID j_coeff_field = env->GetFieldID(grid_generator_class, "coeff",
+  jfieldID j_coeff_field = env->GetFieldID(grid_generator_class,
+					   "coeff",
 					   "Lppl_java/Coefficient;");
   jobject j_coeff = env->GetObjectField(j_grid_generator, j_coeff_field);
 
-  jfieldID grid_generator_type_field = env->GetFieldID(grid_generator_class, "gt",
-						  "Lppl_java/Grid_Generator_Type;");
+  jfieldID grid_generator_type_field
+    = env->GetFieldID(grid_generator_class,
+		      "gt",
+		      "Lppl_java/Grid_Generator_Type;");
   jobject grid_generator_type = env->GetObjectField(j_grid_generator,
-					       grid_generator_type_field);
-  jmethodID grid_generator_type_ordinal_id = env->GetMethodID(grid_generator_type_class,
-							 "ordinal",
-							 "()I");
-  jint grid_generator_type_ordinal = env->CallIntMethod(grid_generator_type,
-						   grid_generator_type_ordinal_id);
+						    grid_generator_type_field);
+  jmethodID grid_generator_type_ordinal_id
+    = env->GetMethodID(grid_generator_type_class,
+		       "ordinal",
+		       "()I");
+  jint grid_generator_type_ordinal
+    = env->CallIntMethod(grid_generator_type,
+			 grid_generator_type_ordinal_id);
   switch (grid_generator_type_ordinal) {
   case 0:
     return grid_line(build_linear_expression(env, j_le));
@@ -875,19 +865,21 @@ build_java_constraint(JNIEnv* env, const Constraint& c) {
    jobject rhs = get_le_inhomogeneous_term(env, -c.inhomogeneous_term());
    jobject relation;
    switch (c.type()) {
-  case Constraint::EQUALITY: {
-    relation = env->GetStaticObjectField(j_rel_sym_class, rel_sym_eq_get_id);
-    break;
-  }
-  case Constraint::NONSTRICT_INEQUALITY:
-    relation = env->GetStaticObjectField(j_rel_sym_class, rel_sym_gtoeq_get_id);
-    break;
+   case Constraint::EQUALITY:
+     relation = env->GetStaticObjectField(j_rel_sym_class,
+					  rel_sym_eq_get_id);
+     break;
+   case Constraint::NONSTRICT_INEQUALITY:
+     relation = env->GetStaticObjectField(j_rel_sym_class,
+					  rel_sym_gtoeq_get_id);
+     break;
   case Constraint::STRICT_INEQUALITY:
-    relation = env->GetStaticObjectField(j_rel_sym_class, rel_sym_gt_get_id);
+    relation = env->GetStaticObjectField(j_rel_sym_class,
+					 rel_sym_gt_get_id);
     break;
-  default:
-      throw std::runtime_error("PPL Java interface internal error");
-  }
+   default:
+     throw std::runtime_error("PPL Java interface internal error");
+   }
    return env->NewObject(j_constraint_class,j_constraint_ctr_id,
 			 lhs, relation, rhs);
 }
@@ -925,51 +917,49 @@ build_java_generator(JNIEnv* env, const Generator& g) {
 			   "ray",
 			   "(Lppl_java/Linear_Expression;)"
 			   "Lppl_java/Generator;");
- jmethodID point_ctr_id =
+  jmethodID point_ctr_id =
     env->GetStaticMethodID(j_generator_class,
 			   "point",
 			   "(Lppl_java/Linear_Expression;"
 			   "Lppl_java/Coefficient;)"
 			   "Lppl_java/Generator;");
- jmethodID closure_point_ctr_id =
-   env->GetStaticMethodID(j_generator_class,
-			  "closure_point",
-			  "(Lppl_java/Linear_Expression;"
-			  "Lppl_java/Coefficient;)"
-			  "Lppl_java/Generator;");
+  jmethodID closure_point_ctr_id =
+    env->GetStaticMethodID(j_generator_class,
+			   "closure_point",
+			   "(Lppl_java/Linear_Expression;"
+			   "Lppl_java/Coefficient;)"
+			   "Lppl_java/Generator;");
 
- jfieldID gen_type_line_get_id
+  jfieldID gen_type_line_get_id
     = env->GetStaticFieldID(j_gen_type_class,
 			    "LINE",
 			    "Lppl_java/Generator_Type;");
- jfieldID gen_type_ray_get_id
-   = env->GetStaticFieldID(j_gen_type_class,
-			   "RAY",
-			   "Lppl_java/Generator_Type;");
- jfieldID gen_type_point_get_id
-   = env->GetStaticFieldID(j_gen_type_class,
-			   "POINT",
-			   "Lppl_java/Generator_Type;");
- jfieldID gen_type_closure_point_get_id
-   = env->GetStaticFieldID(j_gen_type_class,
-			   "CLOSURE_POINT",
-			   "Lppl_java/Generator_Type;");
- jobject j_g_type;
- jobject j_g_le = get_linear_expression(env, g);
- jobject jcoeff = build_java_coeff(env, Coefficient(1));
- switch (g.type()) {
+  jfieldID gen_type_ray_get_id
+    = env->GetStaticFieldID(j_gen_type_class,
+			    "RAY",
+			    "Lppl_java/Generator_Type;");
+  jfieldID gen_type_point_get_id
+    = env->GetStaticFieldID(j_gen_type_class,
+			    "POINT",
+			    "Lppl_java/Generator_Type;");
+  jfieldID gen_type_closure_point_get_id
+    = env->GetStaticFieldID(j_gen_type_class,
+			    "CLOSURE_POINT",
+			    "Lppl_java/Generator_Type;");
+  jobject j_g_type;
+  jobject j_g_le = get_linear_expression(env, g);
+  jobject jcoeff = build_java_coeff(env, Coefficient(1));
+  switch (g.type()) {
   case Generator::LINE:
     j_g_type
       = env->GetStaticObjectField(j_gen_type_class, gen_type_line_get_id);
     return env->CallStaticObjectMethod(j_generator_class,
 				       line_ctr_id, j_g_le);
-    break;
   case Generator::RAY:
     j_g_type
       = env->GetStaticObjectField(j_gen_type_class, gen_type_ray_get_id);
     return env->CallStaticObjectMethod(j_generator_class,
 				       ray_ctr_id, j_g_le);
-    break;
   case Generator::POINT:
     {
       j_g_type
@@ -983,7 +973,7 @@ build_java_generator(JNIEnv* env, const Generator& g) {
   case Generator::CLOSURE_POINT:
     {
       j_g_type = env->GetStaticObjectField(j_gen_type_class,
-					  gen_type_closure_point_get_id);
+					   gen_type_closure_point_get_id);
       const Coefficient& divisor = g.divisor();
       j_g_le = get_linear_expression(env, g);
       jcoeff = build_java_coeff(env, divisor);
@@ -1033,23 +1023,21 @@ build_java_grid_generator(JNIEnv* env, const Grid_Generator& g) {
   jobject j_g_le = get_linear_expression(env, g);
   jobject jcoeff = build_java_coeff(env, Coefficient(1));
   switch (g.type()) {
-  case Grid_Generator::LINE: {
+  case Grid_Generator::LINE:
     j_g_type
       = env->GetStaticObjectField(j_gen_type_class, gen_type_line_get_id);
     return env->CallStaticObjectMethod(j_grid_generator_class,
 				       line_ctr_id, j_g_le);
-    break;
-  }
-  case Grid_Generator::PARAMETER: {
-    j_g_type
-      = env->GetStaticObjectField(j_gen_type_class, gen_type_parameter_get_id);
+  case Grid_Generator::PARAMETER:
+    {
+      j_g_type = env->GetStaticObjectField(j_gen_type_class,
+					   gen_type_parameter_get_id);
       const Coefficient& divisor = g.divisor();
       j_g_le = get_linear_expression(env, g);
       jcoeff = build_java_coeff(env, divisor);
-    return env->CallStaticObjectMethod(j_grid_generator_class,
-				       parameter_ctr_id, j_g_le, jcoeff);
-    break;
-  }
+      return env->CallStaticObjectMethod(j_grid_generator_class,
+					 parameter_ctr_id, j_g_le, jcoeff);
+    }
   case Grid_Generator::POINT:
     {
       j_g_type
@@ -1071,13 +1059,13 @@ build_java_constraint_system(JNIEnv* env, const Constraint_System& cs) {
   jmethodID j_cs_ctr_id = env->GetMethodID(j_cs_class, "<init>", "()V");
   jmethodID j_cs_add_id = env->GetMethodID(j_cs_class, "add",
 					   "(Ljava/lang/Object;)Z");
-   jobject j_cs = env->NewObject(j_cs_class, j_cs_ctr_id);
-   for (Constraint_System::const_iterator v_begin = cs.begin(),
+  jobject j_cs = env->NewObject(j_cs_class, j_cs_ctr_id);
+  for (Constraint_System::const_iterator v_begin = cs.begin(),
  	 v_end = cs.end(); v_begin != v_end; ++v_begin) {
-     jobject j_constraint = build_java_constraint(env, *v_begin);
-     env->CallBooleanMethod(j_cs, j_cs_add_id, j_constraint);
-   }
-   return j_cs;
+    jobject j_constraint = build_java_constraint(env, *v_begin);
+    env->CallBooleanMethod(j_cs, j_cs_add_id, j_constraint);
+  }
+  return j_cs;
 }
 
 jobject
@@ -1086,13 +1074,13 @@ build_java_generator_system(JNIEnv* env, const Generator_System& gs) {
   jmethodID j_gs_ctr_id = env->GetMethodID(j_gs_class, "<init>", "()V");
   jmethodID j_gs_add_id = env->GetMethodID(j_gs_class, "add",
 					   "(Ljava/lang/Object;)Z");
-   jobject j_gs = env->NewObject(j_gs_class, j_gs_ctr_id);
-   for (Generator_System::const_iterator v_begin = gs.begin(),
+  jobject j_gs = env->NewObject(j_gs_class, j_gs_ctr_id);
+  for (Generator_System::const_iterator v_begin = gs.begin(),
  	 v_end = gs.end(); v_begin != v_end; ++v_begin) {
-     jobject j_generator = build_java_generator(env, *v_begin);
-     env->CallBooleanMethod(j_gs, j_gs_add_id, j_generator);
-   }
-   return j_gs;
+    jobject j_generator = build_java_generator(env, *v_begin);
+    env->CallBooleanMethod(j_gs, j_gs_add_id, j_generator);
+  }
+  return j_gs;
 }
 
 jobject
@@ -1102,26 +1090,26 @@ build_java_grid_generator_system(JNIEnv* env,
   jmethodID j_gs_ctr_id = env->GetMethodID(j_gs_class, "<init>", "()V");
   jmethodID j_gs_add_id = env->GetMethodID(j_gs_class, "add",
 					   "(Ljava/lang/Object;)Z");
-   jobject j_gs = env->NewObject(j_gs_class, j_gs_ctr_id);
-   for (Grid_Generator_System::const_iterator v_begin = gs.begin(),
+  jobject j_gs = env->NewObject(j_gs_class, j_gs_ctr_id);
+  for (Grid_Generator_System::const_iterator v_begin = gs.begin(),
  	 v_end = gs.end(); v_begin != v_end; ++v_begin) {
-     jobject j_generator = build_java_grid_generator(env, *v_begin);
-     env->CallBooleanMethod(j_gs, j_gs_add_id, j_generator);
-   }
-   return j_gs;
+    jobject j_generator = build_java_grid_generator(env, *v_begin);
+    env->CallBooleanMethod(j_gs, j_gs_add_id, j_generator);
+  }
+  return j_gs;
 }
 
 jobject
 build_java_congruence_system(JNIEnv* env, const Congruence_System& cgs) {
-   jclass j_cgs_class = env->FindClass("ppl_java/Congruence_System");
-   jmethodID j_cgs_ctr_id = env->GetMethodID(j_cgs_class, "<init>", "()V");
-   jmethodID j_cgs_add_id = env->GetMethodID(j_cgs_class, "add",
- 					   "(Ljava/lang/Object;)Z");
-    jobject j_cgs = env->NewObject(j_cgs_class, j_cgs_ctr_id);
-    for (Congruence_System::const_iterator v_begin = cgs.begin(),
+  jclass j_cgs_class = env->FindClass("ppl_java/Congruence_System");
+  jmethodID j_cgs_ctr_id = env->GetMethodID(j_cgs_class, "<init>", "()V");
+  jmethodID j_cgs_add_id = env->GetMethodID(j_cgs_class, "add",
+					    "(Ljava/lang/Object;)Z");
+  jobject j_cgs = env->NewObject(j_cgs_class, j_cgs_ctr_id);
+  for (Congruence_System::const_iterator v_begin = cgs.begin(),
   	 v_end = cgs.end(); v_begin != v_end; ++v_begin) {
-      jobject j_congruence = build_java_congruence(env,*v_begin);
-      env->CallBooleanMethod(j_cgs, j_cgs_add_id, j_congruence);
-    }
-    return j_cgs;
+    jobject j_congruence = build_java_congruence(env,*v_begin);
+    env->CallBooleanMethod(j_cgs, j_cgs_add_id, j_congruence);
+  }
+  return j_cgs;
 }
