@@ -1,6 +1,6 @@
 Name:		ppl
 Version:	@VERSION@
-Release:	4%{?dist}
+Release:	5%{?dist}
 
 Summary:	The Parma Polyhedra Library: a library of numerical abstractions
 Group:		Development/Libraries
@@ -105,7 +105,7 @@ applications using the Parma Watchdog Library.
 %patch -p1
 
 %build
-%configure --enable-shared --disable-rpath CPPFLAGS="-I/usr/include/glpk -I/usr/lib/gprolog-`gprolog --version 2>&1 | head -1 | sed -e "s/.* \([^ ]*\)$/\1/g"`/include -I/usr/include/Yap"
+%configure --enable-shared --disable-rpath CPPFLAGS="-I%{_includedir}/glpk -I%{_libdir}/gprolog-`gprolog --version 2>&1 | head -1 | sed -e "s/.* \([^ ]*\)$/\1/g"`/include -I%{_includedir}/Yap"
 make %{?_smp_mflags}
 
 %install
@@ -113,22 +113,22 @@ rm -rf $RPM_BUILD_ROOT
 make DESTDIR=$RPM_BUILD_ROOT install
 
 %files
-%defattr(-,root,root)
-%doc /usr/share/doc/ppl/BUGS
-%doc /usr/share/doc/ppl/COPYING
-%doc /usr/share/doc/ppl/CREDITS
-%doc /usr/share/doc/ppl/ChangeLog
-%doc /usr/share/doc/ppl/NEWS
-%doc /usr/share/doc/ppl/README
-%doc /usr/share/doc/ppl/gpl.*
+%defattr(-,root,root,-)
+%doc %{_datadir}/doc/%{name}/BUGS
+%doc %{_datadir}/doc/%{name}/COPYING
+%doc %{_datadir}/doc/%{name}/CREDITS
+%doc %{_datadir}/doc/%{name}/ChangeLog
+%doc %{_datadir}/doc/%{name}/NEWS
+%doc %{_datadir}/doc/%{name}/README
+%doc %{_datadir}/doc/%{name}/gpl.*
 %{_libdir}/libppl.so.*
 %{_libdir}/libppl_c.so.*
 
 %dir %{_libdir}/ppl
 
 %files devel
-%defattr(-,root,root)
-%doc /usr/share/doc/ppl/README.configure
+%defattr(-,root,root,-)
+%doc %{_datadir}/doc/%{name}/README.configure
 %{_includedir}/ppl.hh
 %{_includedir}/ppl_c.h
 %{_libdir}/libppl.so
@@ -140,14 +140,14 @@ make DESTDIR=$RPM_BUILD_ROOT install
 %{_datadir}/aclocal/ppl.m4
 
 %files utils
-%defattr(-,root,root)
+%defattr(-,root,root,-)
 %{_bindir}/ppl_lcdd
 %{_bindir}/ppl_lpsol
 %{_mandir}/man1/ppl_lcdd.1.gz
 %{_mandir}/man1/ppl_lpsol.1.gz
 
 %files gprolog-devel
-%defattr(-,root,root)
+%defattr(-,root,root,-)
 %doc interfaces/Prolog/GNU/README.gprolog
 %{_bindir}/ppl_gprolog
 %{_libdir}/ppl/ppl_gprolog.pl
@@ -155,7 +155,7 @@ make DESTDIR=$RPM_BUILD_ROOT install
 %{_libdir}/ppl/libppl_gprolog.so
 
 %files swiprolog-devel
-%defattr(-,root,root)
+%defattr(-,root,root,-)
 %doc interfaces/Prolog/SWI/README.swiprolog
 %{_bindir}/ppl_pl
 %{_libdir}/ppl/libppl_swiprolog.a
@@ -163,27 +163,27 @@ make DESTDIR=$RPM_BUILD_ROOT install
 %{_libdir}/ppl/ppl_swiprolog.pl
 
 %files yap-devel
-%defattr(-,root,root)
+%defattr(-,root,root,-)
 %doc interfaces/Prolog/YAP/README.yap
 %{_libdir}/ppl/ppl_yap.a
 %{_libdir}/ppl/ppl_yap.pl
 %{_libdir}/ppl/ppl_yap.so
 
 %files docs
-%defattr(-,root,root)
-%doc /usr/share/doc/ppl/README.doc
-%doc /usr/share/doc/ppl/ppl-user-0.9-html/*
-%doc /usr/share/doc/ppl/fdl.*
-%doc /usr/share/doc/ppl/ppl-user-0.9.pdf
-%doc /usr/share/doc/ppl/ppl-user-0.9.ps.gz
+%defattr(-,root,root,-)
+%doc %{_datadir}/doc/%{name}/README.doc
+%doc %{_datadir}/doc/%{name}/ppl-user-0.9-html/*
+%doc %{_datadir}/doc/%{name}/fdl.*
+%doc %{_datadir}/doc/%{name}/ppl-user-0.9.pdf
+%doc %{_datadir}/doc/%{name}/ppl-user-0.9.ps.gz
 
 %files pwl
-%defattr(-,root,root)
+%defattr(-,root,root,-)
 %doc Watchdog/BUGS Watchdog/COPYING Watchdog/CREDITS Watchdog/ChangeLog Watchdog/NEWS Watchdog/README
 %{_libdir}/libpwl.so.*
 
 %files pwl-devel
-%defattr(-,root,root)
+%defattr(-,root,root,-)
 %doc Watchdog/README.doc
 %{_includedir}/pwl.hh
 %{_libdir}/libpwl.so
@@ -198,6 +198,12 @@ make DESTDIR=$RPM_BUILD_ROOT install
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Wed Jun 06 2007 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-5
+- Use `%%{_includedir}' and `%%{_libdir}' instead of `/usr/include'
+  and `/usr/lib', respectively.
+- Use `%%{_datadir}/doc/%%{name}' instead of `/usr/share/doc/ppl'.
+- Replaced `%%defattr(-,root,root)' with `%%defattr(-,root,root,-)'.
+
 * Fri Feb 23 2007 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-4
 - The user manual (in various formats) is now in the `docs' package.
 
