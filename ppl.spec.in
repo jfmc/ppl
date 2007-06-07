@@ -143,7 +143,8 @@ This package contains the static archive for the Parma Watchdog Library.
 
 %prep
 %setup -q
-%patch -p1
+%patch0 -p1
+%patch1 -p1
 
 %build
 %configure --enable-shared --disable-rpath CPPFLAGS="-I%{_includedir}/glpk -I%{_libdir}/gprolog-`gprolog --version 2>&1 | head -1 | sed -e "s/.* \([^ ]*\)$/\1/g"`/include -I%{_includedir}/Yap"
