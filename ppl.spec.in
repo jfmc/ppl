@@ -7,7 +7,8 @@ Group:		Development/Libraries
 License:	GPL
 URL:		http://www.cs.unipr.it/ppl/
 Source:		ftp://ftp.cs.unipr.it/pub/ppl/releases/%{version}/%{name}-%{version}.tar.gz
-Patch:		ppl-0.9-docfiles.patch
+Patch0:		ppl-0.9-docfiles.patch
+Patch1:		ppl-0.9-configure.patch
 #Icon:
 #Requires:
 BuildRequires:	gmp-devel >= 4.1.3
@@ -72,7 +73,7 @@ of the Parma Polyhedra Library.
 %package swiprolog
 Summary:	The SWI-Prolog interface of the Parma Polyhedra Library
 Group:		Development/Libraries
-BuildRequires:	pl >= 5.6.0
+BuildRequires:	pl >= 5.6.0, readline-devel
 Requires:	ppl = %{version}-%{release}, ppl-pwl = %{version}-%{release}, pl >= 5.6.0, readline-devel
 %description swiprolog
 This package adds SWI-Prolog support to the Parma Polyhedra Library.
@@ -151,6 +152,7 @@ make %{?_smp_mflags}
 %install
 rm -rf $RPM_BUILD_ROOT
 make DESTDIR=$RPM_BUILD_ROOT install
+rm -f %{buildroot}%{_libdir}/*.la %{buildroot}%{_libdir}/%{name}
 
 %files
 %defattr(-,root,root,-)
@@ -164,7 +166,7 @@ make DESTDIR=$RPM_BUILD_ROOT install
 %{_libdir}/libppl.so.*
 %{_libdir}/libppl_c.so.*
 
-%dir %{_libdir}/ppl
+%dir %{_libdir}/%{name}
 %dir %{_datadir}/doc/%{name}
 
 %files devel
@@ -194,33 +196,33 @@ make DESTDIR=$RPM_BUILD_ROOT install
 %defattr(-,root,root,-)
 %doc interfaces/Prolog/GNU/README.gprolog
 %{_bindir}/ppl_gprolog
-%{_libdir}/ppl/ppl_gprolog.pl
-%{_libdir}/ppl/libppl_gprolog.so
+%{_libdir}/%{name}/ppl_gprolog.pl
+%{_libdir}/%{name}/libppl_gprolog.so
 
 %files gprolog-static
 %defattr(-,root,root,-)
-%{_libdir}/ppl/libppl_gprolog.a
+%{_libdir}/%{name}/libppl_gprolog.a
 
 %files swiprolog
 %defattr(-,root,root,-)
 %doc interfaces/Prolog/SWI/README.swiprolog
 %{_bindir}/ppl_pl
-%{_libdir}/ppl/libppl_swiprolog.so
-%{_libdir}/ppl/ppl_swiprolog.pl
+%{_libdir}/%{name}/libppl_swiprolog.so
+%{_libdir}/%{name}/ppl_swiprolog.pl
 
 %files swiprolog-static
 %defattr(-,root,root,-)
-%{_libdir}/ppl/libppl_swiprolog.a
+%{_libdir}/%{name}/libppl_swiprolog.a
 
 %files yap
 %defattr(-,root,root,-)
 %doc interfaces/Prolog/YAP/README.yap
-%{_libdir}/ppl/ppl_yap.pl
-%{_libdir}/ppl/ppl_yap.so
+%{_libdir}/%{name}/ppl_yap.pl
+%{_libdir}/%{name}/ppl_yap.so
 
 %files yap-static
 %defattr(-,root,root,-)
-%{_libdir}/ppl/ppl_yap.a
+%{_libdir}/%{name}/ppl_yap.a
 
 %files docs
 %defattr(-,root,root,-)
@@ -259,10 +261,12 @@ rm -rf $RPM_BUILD_ROOT
 - Packages `ppl-gprolog-devel', `ppl-swiprolog-devel' and `ppl-yap-devel'
   renamed `ppl-gprolog', `ppl-swiprolog' and `ppl-yap',
   respectively.
-- As a workaround for a bug in the `pl' package (Bugzilla Bug 243084)
+- As a workaround for a bug in the `pl' package (Bugzilla Bug 243084),
   `ppl-swiprolog' is now dependent on `readline-devel'.
 - Added `%%dir %%{_datadir}/doc/%%{name}'.
 - The `ppl-user-0.9-html' documentation directory is now properly listed.
+- Remove installed *.la files.
+- Added a `ppl-0.9-configure.patch' to avoid overriding CFLAGS and CXXFLAGS.
 
 * Wed Jun 06 2007 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-5
 - Use `%%{_includedir}' and `%%{_libdir}' instead of `/usr/include'
