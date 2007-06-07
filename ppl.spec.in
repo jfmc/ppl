@@ -152,7 +152,7 @@ make %{?_smp_mflags}
 %install
 rm -rf $RPM_BUILD_ROOT
 make DESTDIR=$RPM_BUILD_ROOT install
-rm -f %{buildroot}%{_libdir}/*.la %{buildroot}%{_libdir}/%{name}
+rm -f %{buildroot}%{_libdir}/*.la %{buildroot}%{_libdir}/%{name}/*.la
 
 %files
 %defattr(-,root,root,-)
