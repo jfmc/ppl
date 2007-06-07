@@ -1,6 +1,6 @@
 Name:		ppl
 Version:	@VERSION@
-Release:	5%{?dist}
+Release:	6%{?dist}
 
 Summary:	The Parma Polyhedra Library: a library of numerical abstractions
 Group:		Development/Libraries
@@ -36,6 +36,13 @@ The header files, documentation and static libraries for developing
 applications using the Parma Polyhedra Library through its C and C++
 interfaces.
 
+%package static
+Summary:	Static archives for the Parma Polyhedra Library C and C++ interfaces
+Group:		Development/Libraries
+Requires:	ppl-devel = %{version}-%{release}
+%description static
+The static archives for the Parma Polyhedra Library C and C++ interfaces.
+
 %package utils
 Summary:	Utilities using the Parma Polyhedra Library
 Group:		Development/Libraries
@@ -45,32 +52,58 @@ BuildRequires:	glpk-devel >= 4.13
 This package contains the (mixed integer) linear programming solver ppl_lpsol
 and the program ppl_lcdd for vertex/facet enumeration of convex polyhedra.
 
-%package gprolog-devel
+%package gprolog
 Summary:	The GNU Prolog interface of the Parma Polyhedra Library
 Group:		Development/Libraries
 BuildRequires:	gprolog >= 1.2.19
 Requires:	ppl = %{version}-%{release}, ppl-pwl = %{version}-%{release}, gprolog >= 1.2.19
-%description gprolog-devel
+%description gprolog
 This package adds GNU Prolog support to the Parma Polyhedra Library (PPL).
 Install this package if you want to use the library in GNU Prolog programs.
 
-%package swiprolog-devel
+%package gprolog-static
+Summary:	The static archive for the GNU Prolog interface of the Parma Polyhedra Library
+Group:		Development/Libraries
+Requires:	ppl-gprolog = %{version}-%{release}
+%description gprolog-static
+This package contains the static archive for the GNU Prolog interface
+of the Parma Polyhedra Library.
+
+%package swiprolog
 Summary:	The SWI-Prolog interface of the Parma Polyhedra Library
 Group:		Development/Libraries
 BuildRequires:	pl >= 5.6.0
-Requires:	ppl = %{version}-%{release}, ppl-pwl = %{version}-%{release}, pl >= 5.6.0
-%description swiprolog-devel
+Requires:	ppl = %{version}-%{release}, ppl-pwl = %{version}-%{release}, pl >= 5.6.0, readline-devel
+%description swiprolog
 This package adds SWI-Prolog support to the Parma Polyhedra Library.
 Install this package if you want to use the library in SWI Prolog programs.
 
-%package yap-devel
+%package swiprolog-static
+Summary:	The static archive for the SWI-Prolog interface of the Parma Polyhedra Library
+Group:		Development/Libraries
+BuildRequires:	pl >= 5.6.0
+Requires:	ppl-swiprolog = %{version}-%{release}
+%description swiprolog-static
+This package contains the static archive for the SWI-Prolog interface
+of the Parma Polyhedra Library.
+
+%package yap
 Summary:	The YAP Prolog interface of the Parma Polyhedra Library
 Group:		Development/Libraries
 BuildRequires:	yap-devel >= 5.1.1
 Requires:	ppl = %{version}-%{release}, ppl-pwl = %{version}-%{release}, yap >= 5.1.1
-%description yap-devel
+%description yap
 This package adds YAP Prolog support to the Parma Polyhedra Library (PPL).
 Install this package if you want to use the library in YAP Prolog programs.
+
+%package yap-static
+Summary:	The static archive for the YAP Prolog interface of the Parma Polyhedra Library
+Group:		Development/Libraries
+BuildRequires:	yap-devel >= 5.1.1
+Requires:	ppl-yap = %{version}-%{release}
+%description yap-static
+This package contains the static archive for the YAP Prolog interface
+of the Parma Polyhedra Library.
 
 %package docs
 Summary:	Documentation for the Parma Polyhedra Library
@@ -99,6 +132,13 @@ Requires:	ppl-pwl = %{version}-%{release}
 The header files, documentation and static libraries for developing
 applications using the Parma Watchdog Library.
 
+%package pwl-static
+Summary:	Static archive for the Parma Watchdog Library
+Group:		Development/Libraries
+Requires:	ppl-pwl-devel = %{version}-%{release}
+%description pwl-static
+This package contains the static archive for the Parma Watchdog Library.
+
 
 %prep
 %setup -q
@@ -125,6 +165,7 @@ make DESTDIR=$RPM_BUILD_ROOT install
 %{_libdir}/libppl_c.so.*
 
 %dir %{_libdir}/ppl
+%dir %{_datadir}/doc/%{name}
 
 %files devel
 %defattr(-,root,root,-)
@@ -132,12 +173,15 @@ make DESTDIR=$RPM_BUILD_ROOT install
 %{_includedir}/ppl.hh
 %{_includedir}/ppl_c.h
 %{_libdir}/libppl.so
-%{_libdir}/libppl.a
 %{_libdir}/libppl_c.so
-%{_libdir}/libppl_c.a
 %{_bindir}/ppl-config
 %{_mandir}/man1/ppl-config.1.gz
 %{_datadir}/aclocal/ppl.m4
+
+%files static
+%defattr(-,root,root,-)
+%{_libdir}/libppl.a
+%{_libdir}/libppl_c.a
 
 %files utils
 %defattr(-,root,root,-)
@@ -146,33 +190,42 @@ make DESTDIR=$RPM_BUILD_ROOT install
 %{_mandir}/man1/ppl_lcdd.1.gz
 %{_mandir}/man1/ppl_lpsol.1.gz
 
-%files gprolog-devel
+%files gprolog
 %defattr(-,root,root,-)
 %doc interfaces/Prolog/GNU/README.gprolog
 %{_bindir}/ppl_gprolog
 %{_libdir}/ppl/ppl_gprolog.pl
-%{_libdir}/ppl/libppl_gprolog.a
 %{_libdir}/ppl/libppl_gprolog.so
 
-%files swiprolog-devel
+%files gprolog-static
+%defattr(-,root,root,-)
+%{_libdir}/ppl/libppl_gprolog.a
+
+%files swiprolog
 %defattr(-,root,root,-)
 %doc interfaces/Prolog/SWI/README.swiprolog
 %{_bindir}/ppl_pl
-%{_libdir}/ppl/libppl_swiprolog.a
 %{_libdir}/ppl/libppl_swiprolog.so
 %{_libdir}/ppl/ppl_swiprolog.pl
 
-%files yap-devel
+%files swiprolog-static
+%defattr(-,root,root,-)
+%{_libdir}/ppl/libppl_swiprolog.a
+
+%files yap
 %defattr(-,root,root,-)
 %doc interfaces/Prolog/YAP/README.yap
-%{_libdir}/ppl/ppl_yap.a
 %{_libdir}/ppl/ppl_yap.pl
 %{_libdir}/ppl/ppl_yap.so
+
+%files yap-static
+%defattr(-,root,root,-)
+%{_libdir}/ppl/ppl_yap.a
 
 %files docs
 %defattr(-,root,root,-)
 %doc %{_datadir}/doc/%{name}/README.doc
-%doc %{_datadir}/doc/%{name}/ppl-user-0.9-html/*
+%doc %{_datadir}/doc/%{name}/ppl-user-0.9-html/
 %doc %{_datadir}/doc/%{name}/fdl.*
 %doc %{_datadir}/doc/%{name}/ppl-user-0.9.pdf
 %doc %{_datadir}/doc/%{name}/ppl-user-0.9.ps.gz
@@ -187,6 +240,9 @@ make DESTDIR=$RPM_BUILD_ROOT install
 %doc Watchdog/README.doc
 %{_includedir}/pwl.hh
 %{_libdir}/libpwl.so
+
+%files pwl-static
+%defattr(-,root,root,-)
 %{_libdir}/libpwl.a
 
 %post -p /sbin/ldconfig
@@ -198,6 +254,16 @@ make DESTDIR=$RPM_BUILD_ROOT install
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Thu Jun 07 2007 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-6
+- All the static archives are now in `*-static' packages.
+- Packages `ppl-gprolog-devel', `ppl-swiprolog-devel' and `ppl-yap-devel'
+  renamed `ppl-gprolog', `ppl-swiprolog' and `ppl-yap',
+  respectively.
+- As a workaround for a bug in the `pl' package (Bugzilla Bug 243084)
+  `ppl-swiprolog' is now dependent on `readline-devel'.
+- Added `%%dir %%{_datadir}/doc/%%{name}'.
+- The `ppl-user-0.9-html' documentation directory is now properly listed.
+
 * Wed Jun 06 2007 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-5
 - Use `%%{_includedir}' and `%%{_libdir}' instead of `/usr/include'
   and `/usr/lib', respectively.
