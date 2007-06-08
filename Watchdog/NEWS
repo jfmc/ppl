@@ -4,6 +4,14 @@ Parma Watchdog Library NEWS -- history of user-visible changes
 
 
 --------------------------------------------------------------------------
+NEWS for version 0.6  (release date to be decided)
+--------------------------------------------------------------------------
+
+o  The `pwl.hh' header file no longer defines macros not prefixed
+   by "PWL_".
+
+
+--------------------------------------------------------------------------
 NEWS for version 0.5  (released on January 20, 2006)
 --------------------------------------------------------------------------
 

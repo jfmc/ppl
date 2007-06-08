@@ -23,7 +23,7 @@
 # Process this file with autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Watchdog Library],[0.4],[bagnara@cs.unipr.it],[watchdog])
+AC_INIT([the Parma Watchdog Library],[0.6],[bagnara@cs.unipr.it],[pwl])
 
 # Minimum autoconf version required.
 AC_PREREQ(2.59)
@@ -37,6 +37,18 @@ AC_SUBST(VERSION)
 
 # Generate a configuration header file.
 AC_CONFIG_HEADER([config.h])
+
+# Generate prefixed defines.
+AX_PREFIX_CONFIG_H
+
+ISODATE=`date +%Y-%m-%d`
+AC_SUBST(ISODATE)
+
+AH_BOTTOM([
+#ifdef PWL_NDEBUG
+# define NDEBUG PWL_NDEBUG
+#endif
+])
 
 # C compiler
 
@@ -99,7 +111,7 @@ case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
   OPT_FLAGS="-g"
-  COMP_FLAGS="$COMP_FLAGS -pg -DPROFILING=1"
+  COMP_FLAGS="$COMP_FLAGS -pg -DPWL_PROFILING=1"
   ;;
 no)
   AC_MSG_RESULT(no)
@@ -295,6 +307,7 @@ AC_SUBST(debug_flag)
 
 AC_CONFIG_FILES(Makefile
                 src/Makefile
+                m4/Makefile
                 doc/Makefile
                 doc/user.doxyconf-latex
                 doc/devref.doxyconf-latex

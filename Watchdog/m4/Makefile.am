@@ -20,14 +20,12 @@
 # For the most up-to-date information see the CS@Parma software
 # site: http://www.cs.unipr.it/Software/ . */
 
-# Tell aclocal where to find `.m4' files.
-ACLOCAL_AMFLAGS = -I m4
+# M4 macro files to be used by the client applications with Autoconf.
+m4datadir = $(datadir)/aclocal
+m4data_DATA =
 
-SUBDIRS = utils src doc
+# M4 macro files for internal use.
+m4macros = \
+ax_prefix_config_h.m4
 
-dist_noinst_SCRIPTS = \
-configure
-
-EXTRA_DIST = \
-BUGS \
-CREDITS
+EXTRA_DIST = $(m4macros) $(m4data_DATA)

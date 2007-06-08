@@ -20,7 +20,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see
 http://www.cs.unipr.it/Software/ . */
 
-#include <config.h>
+#include <pwl-config.h>
 
 #include "Pending_List.defs.hh"
 #include <iostream>

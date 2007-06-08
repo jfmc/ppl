@@ -86,8 +86,10 @@ if BUILD_WATCHDOG_LIBRARY
 #	    0.2			0.5		    1:0:0
 #	    0.3			0.6		    2:0:0
 #	    0.4			0.7		    3:0:0
+#	    0.5			0.8		    3:0:0
+#	    0.6			0.10		    4:0:0
 
-LIBPWL_LT_CURRENT =  3
+LIBPWL_LT_CURRENT =  4
 LIBPWL_LT_REVISION = 0
 LIBPWL_LT_AGE =      0
 

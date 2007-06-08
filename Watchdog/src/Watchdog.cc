@@ -20,7 +20,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the CS@Parma software
 site: http://www.cs.unipr.it/Software/ . */
 
-#include <config.h>
+#include <pwl-config.h>
 
 #include "Watchdog.defs.hh"
 
@@ -31,11 +31,11 @@ site: http://www.cs.unipr.it/Software/ . */
 #include <string>
 #include <string.h>
 
-#ifdef TIME_WITH_SYS_TIME
+#ifdef PWL_TIME_WITH_SYS_TIME
 # include <sys/time.h>
 # include <ctime>
 #else
-# ifdef HAVE_SYS_TIME_H
+# ifdef PWL_HAVE_SYS_TIME_H
 #  include <sys/time.h>
 # else
 #  include <ctime>
@@ -44,7 +44,7 @@ site: http://www.cs.unipr.it/Software/ . */
 
 // Cygwin only supports ITIMER_REAL.
 // Profiling does not work on programs that use the ITIMER_PROF timer.
-#if defined(__CYGWIN__) || defined(PROFILING)
+#if defined(__CYGWIN__) || defined(PWL_PROFILING)
 #define THE_TIMER  ITIMER_REAL
 #define THE_SIGNAL SIGALRM
 #else

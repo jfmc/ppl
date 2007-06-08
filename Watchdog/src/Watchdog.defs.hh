@@ -29,7 +29,7 @@ http://www.cs.unipr.it/Software/ . */
 #include "Pending_List.defs.hh"
 #include <cassert>
 
-#ifdef HAVE_SYS_TIME_H
+#ifdef PWL_HAVE_SYS_TIME_H
 # include <sys/time.h>
 #endif
 
