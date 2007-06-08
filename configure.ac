@@ -371,8 +371,8 @@ no)
 esac
 AM_CONDITIONAL(USE_PRECOMPILED_HEADERS, test x"$enableval" = xyes)
 
-CFLAGS="$COMP_FLAGS $OPT_FLAGS"
-CXXFLAGS="$COMP_FLAGS $OPT_FLAGS"
+CFLAGS="$COMP_FLAGS $OPT_FLAGS $CFLAGS"
+CXXFLAGS="$COMP_FLAGS $OPT_FLAGS $CXXFLAGS"
 
 enableval=mpz
 AC_MSG_CHECKING([the type of integral values to use as coefficients])

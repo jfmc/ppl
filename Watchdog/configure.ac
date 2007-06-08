@@ -224,8 +224,8 @@ no)
   ;;
 esac
 
-CFLAGS="$COMP_FLAGS $OPT_FLAGS"
-CXXFLAGS="$COMP_FLAGS $OPT_FLAGS"
+CFLAGS="$COMP_FLAGS $OPT_FLAGS $CFLAGS"
+CXXFLAGS="$COMP_FLAGS $OPT_FLAGS $CXXFLAGS"
 
 # Allow additions to C and C++ compilation flags
 
