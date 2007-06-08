@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <limits>
 
 // If GMP does not support exceptions the test is pointless.
-#if !GMP_SUPPORTS_EXCEPTIONS
+#if !PPL_GMP_SUPPORTS_EXCEPTIONS
 
 int
 main() TRY {
@@ -33,7 +33,7 @@ main() TRY {
 }
 CATCH
 
-#else // GMP_SUPPORTS_EXCEPTIONS
+#else // PPL_GMP_SUPPORTS_EXCEPTIONS
 
 namespace {
 
@@ -219,4 +219,4 @@ main() TRY {
 }
 CATCH
 
-#endif // GMP_SUPPORTS_EXCEPTIONS
+#endif // PPL_GMP_SUPPORTS_EXCEPTIONS

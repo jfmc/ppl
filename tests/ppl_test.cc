@@ -22,7 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 #include <csignal>
-#ifdef HAVE_FENV_H
+#ifdef PPL_HAVE_FENV_H
 #include <fenv.h>
 #endif
 
@@ -87,7 +87,7 @@ fpe_handler(int sig, siginfo_t* sip, void*) {
   else {
     std::cerr << "SIGFPE caught (unknown si_code " << sip->si_code << ")"
 	      << std::endl;
-#ifdef HAVE_FENV_H
+#ifdef PPL_HAVE_FENV_H
     std::cerr << "Inquire with fetestexcept(): ";
     if (fetestexcept(FE_INEXACT))
       std::cerr << "FE_INEXACT ";

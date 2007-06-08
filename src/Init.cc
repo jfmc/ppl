@@ -20,7 +20,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
+#include <ppl-config.h>
 
 #include "Init.defs.hh"
 #include "Variable.defs.hh"
@@ -35,7 +35,7 @@ PPL::fpu_rounding_direction_type PPL::Init::old_rounding_direction;
 
 extern "C" void
 set_GMP_memory_allocation_functions(void)
-#if CXX_SUPPORTS_ATTRIBUTE_WEAK
+#if PPL_CXX_SUPPORTS_ATTRIBUTE_WEAK
   __attribute__((weak));
 
 void

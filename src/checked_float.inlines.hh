@@ -43,7 +43,7 @@ namespace Checked {
 
 inline float
 fma(float x, float y, float z) {
-#if HAVE_DECL_FMAF && !defined(__alpha)
+#if PPL_HAVE_DECL_FMAF && !defined(__alpha)
   return ::fmaf(x, y, z);
 #else
   return x*y + z;
@@ -52,7 +52,7 @@ fma(float x, float y, float z) {
 
 inline double
 fma(double x, double y, double z) {
-#if HAVE_DECL_FMA && !defined(__alpha)
+#if PPL_HAVE_DECL_FMA && !defined(__alpha)
   return ::fma(x, y, z);
 #else
   return x*y + z;
@@ -61,14 +61,14 @@ fma(double x, double y, double z) {
 
 inline long double
 fma(long double x, long double y, long double z) {
-#if HAVE_DECL_FMAL && !defined(__alpha)
+#if PPL_HAVE_DECL_FMAL && !defined(__alpha)
   return ::fmal(x, y, z);
 #else
   return x*y + z;
 #endif
 }
 
-#if HAVE_DECL_RINTF
+#if PPL_HAVE_DECL_RINTF
 inline float
 rint(float x) {
   return ::rintf(x);
@@ -80,12 +80,12 @@ rint(double x) {
   return ::rint(x);
 }
 
-#if HAVE_DECL_RINTL
+#if PPL_HAVE_DECL_RINTL
 inline long double
 rint(long double x) {
   return ::rintl(x);
 }
-#elif !CXX_PROVIDES_PROPER_LONG_DOUBLE
+#elif !PPL_CXX_PROVIDES_PROPER_LONG_DOUBLE
 // If proper long doubles are not provided, this is most likely
 // because long double and double are the same type: use rint().
 inline long double

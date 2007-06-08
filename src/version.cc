@@ -20,17 +20,17 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
+#include <ppl-config.h>
 #include "version.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
 
 namespace {
 
-const char version_string[] = PACKAGE_VERSION;
+const char version_string[] = PPL_PACKAGE_VERSION;
 
 const char banner_string[] =
-"This is "PACKAGE_NAME" (PPL) version "PACKAGE_VERSION".\n"
+"This is "PPL_PACKAGE_NAME" (PPL) version "PPL_PACKAGE_VERSION".\n"
 "Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>.\n"
 "The PPL is free software; see the source for copying conditions.\n"
 "There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A\n"
@@ -46,7 +46,7 @@ const char banner_string[] =
 #define xstr(s) str(s)
 "Compiled by the Comeau C++ compiler version "xstr(__COMO_VERSION__)".\n"
 #endif
-"Report bugs to "PACKAGE_BUGREPORT".\n"
+"Report bugs to "PPL_PACKAGE_BUGREPORT".\n"
 "For the most up-to-date information see the Parma Polyhedra Library\n"
 "site: http://www.cs.unipr.it/ppl/ .\n";
 

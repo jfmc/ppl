@@ -40,29 +40,29 @@ struct Safe_Conversion<T, T> : public True {
   template <> struct Safe_Conversion<To, From> : public True { }
 
 safe_conversion(signed short, signed char);
-#if SIZEOF_CHAR < SIZEOF_SHORT
+#if PPL_SIZEOF_CHAR < PPL_SIZEOF_SHORT
 safe_conversion(signed short, unsigned char);
 #endif
 
 safe_conversion(signed int, signed char);
 safe_conversion(signed int, signed short);
-#if SIZEOF_CHAR < SIZEOF_INT
+#if PPL_SIZEOF_CHAR < PPL_SIZEOF_INT
 safe_conversion(signed int, unsigned char);
 #endif
-#if SIZEOF_SHORT < SIZEOF_INT
+#if PPL_SIZEOF_SHORT < PPL_SIZEOF_INT
 safe_conversion(signed int, unsigned short);
 #endif
 
 safe_conversion(signed long, signed char);
 safe_conversion(signed long, signed short);
 safe_conversion(signed long, signed int);
-#if SIZEOF_CHAR < SIZEOF_LONG
+#if PPL_SIZEOF_CHAR < PPL_SIZEOF_LONG
 safe_conversion(signed long, unsigned char);
 #endif
-#if SIZEOF_SHORT < SIZEOF_LONG
+#if PPL_SIZEOF_SHORT < PPL_SIZEOF_LONG
 safe_conversion(signed long, unsigned short);
 #endif
-#if SIZEOF_INT < SIZEOF_LONG
+#if PPL_SIZEOF_INT < PPL_SIZEOF_LONG
 safe_conversion(signed long, unsigned int);
 #endif
 
@@ -70,16 +70,16 @@ safe_conversion(signed long long, signed char);
 safe_conversion(signed long long, signed short);
 safe_conversion(signed long long, signed int);
 safe_conversion(signed long long, signed long);
-#if SIZEOF_CHAR < SIZEOF_LONG_LONG
+#if PPL_SIZEOF_CHAR < PPL_SIZEOF_LONG_LONG
 safe_conversion(signed long long, unsigned char);
 #endif
-#if SIZEOF_SHORT < SIZEOF_LONG_LONG
+#if PPL_SIZEOF_SHORT < PPL_SIZEOF_LONG_LONG
 safe_conversion(signed long long, unsigned short);
 #endif
-#if SIZEOF_INT < SIZEOF_LONG_LONG
+#if PPL_SIZEOF_INT < PPL_SIZEOF_LONG_LONG
 safe_conversion(signed long long, unsigned int);
 #endif
-#if SIZEOF_LONG < SIZEOF_LONG_LONG
+#if PPL_SIZEOF_LONG < PPL_SIZEOF_LONG_LONG
 safe_conversion(signed long long, unsigned long);
 #endif
 
@@ -98,66 +98,66 @@ safe_conversion(unsigned long long, unsigned int);
 safe_conversion(unsigned long long, unsigned long);
 
 
-#if SIZEOF_CHAR <= SIZEOF_FLOAT - 2
+#if PPL_SIZEOF_CHAR <= PPL_SIZEOF_FLOAT - 2
 safe_conversion(float, signed char);
 safe_conversion(float, unsigned char);
 #endif
-#if SIZEOF_SHORT <= SIZEOF_FLOAT - 2
+#if PPL_SIZEOF_SHORT <= PPL_SIZEOF_FLOAT - 2
 safe_conversion(float, signed short);
 safe_conversion(float, unsigned short);
 #endif
-#if SIZEOF_INT <= SIZEOF_FLOAT - 2
+#if PPL_SIZEOF_INT <= PPL_SIZEOF_FLOAT - 2
 safe_conversion(float, signed int);
 safe_conversion(float, unsigned int);
 #endif
-#if SIZEOF_LONG <= SIZEOF_FLOAT - 2
+#if PPL_SIZEOF_LONG <= PPL_SIZEOF_FLOAT - 2
 safe_conversion(float, signed long);
 safe_conversion(float, unsigned long);
 #endif
-#if SIZEOF_LONG_LONG <= SIZEOF_FLOAT - 2
+#if PPL_SIZEOF_LONG_LONG <= PPL_SIZEOF_FLOAT - 2
 safe_conversion(float, signed long long);
 safe_conversion(float, unsigned long long);
 #endif
 
-#if SIZEOF_CHAR <= SIZEOF_DOUBLE - 4
+#if PPL_SIZEOF_CHAR <= PPL_SIZEOF_DOUBLE - 4
 safe_conversion(double, signed char);
 safe_conversion(double, unsigned char);
 #endif
-#if SIZEOF_SHORT <= SIZEOF_DOUBLE - 4
+#if PPL_SIZEOF_SHORT <= PPL_SIZEOF_DOUBLE - 4
 safe_conversion(double, signed short);
 safe_conversion(double, unsigned short);
 #endif
-#if SIZEOF_INT <= SIZEOF_DOUBLE - 4
+#if PPL_SIZEOF_INT <= PPL_SIZEOF_DOUBLE - 4
 safe_conversion(double, signed int);
 safe_conversion(double, unsigned int);
 #endif
-#if SIZEOF_LONG <= SIZEOF_DOUBLE - 4
+#if PPL_SIZEOF_LONG <= PPL_SIZEOF_DOUBLE - 4
 safe_conversion(double, signed long);
 safe_conversion(double, unsigned long);
 #endif
-#if SIZEOF_LONG_LONG <= SIZEOF_DOUBLE - 4
+#if PPL_SIZEOF_LONG_LONG <= PPL_SIZEOF_DOUBLE - 4
 safe_conversion(double, signed long long);
 safe_conversion(double, unsigned long long);
 #endif
 safe_conversion(double, float);
 
-#if SIZEOF_CHAR <= SIZEOF_LONG_DOUBLE - 4
+#if PPL_SIZEOF_CHAR <= PPL_SIZEOF_LONG_DOUBLE - 4
 safe_conversion(long double, signed char);
 safe_conversion(long double, unsigned char);
 #endif
-#if SIZEOF_SHORT <= SIZEOF_LONG_DOUBLE - 4
+#if PPL_SIZEOF_SHORT <= PPL_SIZEOF_LONG_DOUBLE - 4
 safe_conversion(long double, signed short);
 safe_conversion(long double, unsigned short);
 #endif
-#if SIZEOF_INT <= SIZEOF_LONG_DOUBLE - 4
+#if PPL_SIZEOF_INT <= PPL_SIZEOF_LONG_DOUBLE - 4
 safe_conversion(long double, signed int);
 safe_conversion(long double, unsigned int);
 #endif
-#if SIZEOF_LONG <= SIZEOF_LONG_DOUBLE - 4
+#if PPL_SIZEOF_LONG <= PPL_SIZEOF_LONG_DOUBLE - 4
 safe_conversion(long double, signed long);
 safe_conversion(long double, unsigned long);
 #endif
-#if SIZEOF_LONG_LONG <= SIZEOF_LONG_DOUBLE - 4
+#if PPL_SIZEOF_LONG_LONG <= PPL_SIZEOF_LONG_DOUBLE - 4
 safe_conversion(long double, signed long long);
 safe_conversion(long double, unsigned long long);
 #endif

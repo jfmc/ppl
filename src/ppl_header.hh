@@ -28,24 +28,20 @@ site: http://www.cs.unipr.it/ppl/ . */
 # undef NDEBUG
 #endif
 
-#include "config.h"
+#include "ppl-config.h"
 #include "version.hh"
 #include "ppl_include_files.hh"
 
 #ifdef PPL_SAVE_NDEBUG
-# define NDEBUG 1
+# ifndef NDEBUG
+#  define NDEBUG 1
+# endif
 # undef PPL_SAVE_NDEBUG
 #else
-# undef NDEBUG
+# ifdef NDEBUG
+#  undef NDEBUG
+# endif
 #endif
 #include <cassert>
-
-#undef PACKAGE
-#undef PACKAGE_BUGREPORT
-#undef PACKAGE_NAME
-#undef PACKAGE_STRING
-#undef PACKAGE_TARNAME
-#undef PACKAGE_VERSION
-#undef VERSION
 
 #endif

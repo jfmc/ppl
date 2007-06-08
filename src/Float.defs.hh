@@ -27,10 +27,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <gmp.h>
 #include <cassert>
 #include <cmath>
-#ifdef HAVE_STDINT_H
+#ifdef PPL_HAVE_STDINT_H
 #include <stdint.h>
 #endif
-#ifdef HAVE_INTTYPES_H
+#ifdef PPL_HAVE_INTTYPES_H
 #include <inttypes.h>
 #endif
 
@@ -75,7 +75,7 @@ struct float_ieee754_single {
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
 struct float_ieee754_double {
-#ifdef WORDS_BIGENDIAN
+#ifdef PPL_WORDS_BIGENDIAN
   uint32_t msp;
   uint32_t lsp;
 #else
@@ -113,7 +113,7 @@ struct float_ieee754_double {
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
 struct float_intel_double_extended {
-#ifdef WORDS_BIGENDIAN
+#ifdef PPL_WORDS_BIGENDIAN
   uint32_t msp;
   uint64_t lsp;
 #else
@@ -152,7 +152,7 @@ struct float_intel_double_extended {
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
 struct float_ieee754_quad {
-#ifdef WORDS_BIGENDIAN
+#ifdef PPL_WORDS_BIGENDIAN
   uint64_t msp;
   uint64_t lsp;
 #else
@@ -195,7 +195,7 @@ class Float;
 template <>
 class Float<float> {
 public:
-  typedef CXX_FLOAT_BINARY_FORMAT Binary;
+  typedef PPL_CXX_FLOAT_BINARY_FORMAT Binary;
   union {
     float number;
     Binary binary;
@@ -210,7 +210,7 @@ public:
 template <>
 class Float<double> {
 public:
-  typedef CXX_DOUBLE_BINARY_FORMAT Binary;
+  typedef PPL_CXX_DOUBLE_BINARY_FORMAT Binary;
   union {
     double number;
     Binary binary;
@@ -225,7 +225,7 @@ public:
 template <>
 class Float<long double> {
 public:
-  typedef CXX_LONG_DOUBLE_BINARY_FORMAT Binary;
+  typedef PPL_CXX_LONG_DOUBLE_BINARY_FORMAT Binary;
   union {
     long double number;
     Binary binary;

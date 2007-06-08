@@ -43,9 +43,9 @@ ac_prog_jar.m4 \
 ac_prog_java.m4 \
 ac_prog_javac.m4 \
 ac_prog_javah.m4 \
+ax_prefix_config_h.m4 \
 lib-ld.m4 \
 lib-link.m4 \
 lib-prefix.m4
 
 EXTRA_DIST = $(m4macros) $(m4data_DATA)
-

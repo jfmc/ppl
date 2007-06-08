@@ -130,13 +130,13 @@ namespace {
 
 extern "C" const char*
 c_variable_default_output_function(ppl_dimension_type var) {
-#if SIZEOF_SIZE_T == SIZEOF_INT
+#if PPL_SIZEOF_SIZE_T == PPL_SIZEOF_INT
 # define FORMAT "%u"
 # define CONVERSION (unsigned)
-#elif SIZEOF_SIZE_T == SIZEOF_LONG
+#elif PPL_SIZEOF_SIZE_T == PPL_SIZEOF_LONG
 # define FORMAT "%lu"
 # define CONVERSION (unsigned long)
-#elif SIZEOF_SIZE_T == SIZEOF_LONG_LONG
+#elif PPL_SIZEOF_SIZE_T == PPL_SIZEOF_LONG_LONG
 # define FORMAT "%llu"
 # define CONVERSION (unsigned long long)
 #else

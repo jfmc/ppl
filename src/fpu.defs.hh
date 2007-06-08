@@ -71,12 +71,12 @@ fpu_check_inexact();
 
 #if defined(__i386__)
 #include "fpu-ia32.inlines.hh"
-#elif defined(HAVE_IEEEFP_H)						\
+#elif defined(PPL_HAVE_IEEEFP_H)					\
   && (defined(__sparc)							\
       || defined(sparc)							\
       || defined(__sparc__))
 #include "fpu-sparc.inlines.hh"
-#elif defined(HAVE_FENV_H)
+#elif defined(PPL_HAVE_FENV_H)
 #include "fpu-c99.inlines.hh"
 #else
 #include "fpu-none.inlines.hh"

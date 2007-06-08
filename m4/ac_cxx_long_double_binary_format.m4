@@ -263,7 +263,7 @@ else
   ac_supported_long_double=1
 fi
 AM_CONDITIONAL(SUPPORTED_LONG_DOUBLE, test $ac_supported_long_double = 1)
-AC_DEFINE_UNQUOTED(PPL_SUPPORTED_LONG_DOUBLE, $ac_supported_long_double,
+AC_DEFINE_UNQUOTED(SUPPORTED_LONG_DOUBLE, $ac_supported_long_double,
   [Not zero if long doubles are supported.])
 
 AC_LANG_POP(C++)

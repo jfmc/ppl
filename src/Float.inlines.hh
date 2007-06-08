@@ -24,10 +24,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Float_inlines_hh 1
 
 #include <climits>
-#ifdef HAVE_STDINT_H
+#ifdef PPL_HAVE_STDINT_H
 #include <stdint.h>
 #endif
-#ifdef HAVE_INTTYPES_H
+#ifdef PPL_HAVE_INTTYPES_H
 #include <inttypes.h>
 #endif
 
@@ -334,7 +334,7 @@ float_ieee754_quad::build(bool negative, mpz_t mantissa, int exponent) {
     << (MANTISSA_BITS - 64);
 }
 
-#ifdef CXX_FLOAT_BINARY_FORMAT
+#ifdef PPL_CXX_FLOAT_BINARY_FORMAT
 inline
 Float<float>::Float() {
 }
@@ -350,7 +350,7 @@ Float<float>::value() {
 }
 #endif
 
-#ifdef CXX_DOUBLE_BINARY_FORMAT
+#ifdef PPL_CXX_DOUBLE_BINARY_FORMAT
 inline
 Float<double>::Float() {
 }
@@ -366,7 +366,7 @@ Float<double>::value() {
 }
 #endif
 
-#ifdef CXX_LONG_DOUBLE_BINARY_FORMAT
+#ifdef PPL_CXX_LONG_DOUBLE_BINARY_FORMAT
 inline
 Float<long double>::Float() {
 }

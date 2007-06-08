@@ -135,7 +135,7 @@ catch (const std::exception& e) {					\
     if (!overflow || has_exact_coefficient_type(shape(0, EMPTY)))	\
       failed_tests.push_back(#test);
 
-#if COEFFICIENT_BITS == 0
+#if PPL_COEFFICIENT_BITS == 0
 
 #define DO_TEST_F64(test) DO_TEST(test)
 #define DO_TEST_F64A(test) DO_TEST(test)
@@ -146,7 +146,7 @@ catch (const std::exception& e) {					\
 #define DO_TEST_F8(test) DO_TEST(test)
 #define DO_TEST_F8A(test) DO_TEST(test)
 
-#elif COEFFICIENT_BITS == 64
+#elif PPL_COEFFICIENT_BITS == 64
 
 #ifdef NDEBUG
 
@@ -172,7 +172,7 @@ catch (const std::exception& e) {					\
 
 #endif // !defined(NDEBUG)
 
-#elif COEFFICIENT_BITS == 32
+#elif PPL_COEFFICIENT_BITS == 32
 
 #ifdef NDEBUG
 
@@ -198,7 +198,7 @@ catch (const std::exception& e) {					\
 
 #endif // !defined(NDEBUG)
 
-#elif COEFFICIENT_BITS == 16
+#elif PPL_COEFFICIENT_BITS == 16
 
 #ifdef NDEBUG
 
@@ -224,7 +224,7 @@ catch (const std::exception& e) {					\
 
 #endif // !defined(NDEBUG)
 
-#elif COEFFICIENT_BITS == 8
+#elif PPL_COEFFICIENT_BITS == 8
 
 #ifdef NDEBUG
 
@@ -250,7 +250,7 @@ catch (const std::exception& e) {					\
 
 #endif // !defined(NDEBUG)
 
-#endif // COEFFICIENT_BITS == 8
+#endif // PPL_COEFFICIENT_BITS == 8
 
 
 // Turn s into a string: PPL_TEST_STR(x + y) => "x + y".

@@ -82,7 +82,7 @@ else
   ac_supported_float=1
 fi
 AM_CONDITIONAL(SUPPORTED_FLOAT, test $ac_supported_float = 1)
-AC_DEFINE_UNQUOTED(PPL_SUPPORTED_FLOAT, $ac_supported_float,
+AC_DEFINE_UNQUOTED(SUPPORTED_FLOAT, $ac_supported_float,
   [Not zero if floats are supported.])
 
 AC_LANG_POP(C++)

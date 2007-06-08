@@ -28,19 +28,19 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <cstdlib>
 #include <climits>
 #include <string>
-#ifdef HAVE_STDINT_H
+#ifdef PPL_HAVE_STDINT_H
 #include <stdint.h>
 #endif
-#ifdef HAVE_INTTYPES_H
+#ifdef PPL_HAVE_INTTYPES_H
 #include <inttypes.h>
 #endif
 
-#if !HAVE_DECL_STRTOLL
+#if !PPL_HAVE_DECL_STRTOLL
 signed long long
 strtoll(const char* nptr, char** endptr, int base);
 #endif
 
-#if !HAVE_DECL_STRTOULL
+#if !PPL_HAVE_DECL_STRTOULL
 unsigned long long
 strtoull(const char* nptr, char** endptr, int base);
 #endif
@@ -60,27 +60,27 @@ template <> struct Is_Native<unsigned long long> : public True { };
 
 namespace Checked {
 
-#ifndef HAVE_INT_FAST16_T
+#ifndef PPL_HAVE_INT_FAST16_T
 typedef int16_t int_fast16_t;
 #endif
 
-#ifndef HAVE_INT_FAST32_T
+#ifndef PPL_HAVE_INT_FAST32_T
 typedef int32_t int_fast32_t;
 #endif
 
-#ifndef HAVE_INT_FAST64_T
+#ifndef PPL_HAVE_INT_FAST64_T
 typedef int64_t int_fast64_t;
 #endif
 
-#ifndef HAVE_UINT_FAST16_T
+#ifndef PPL_HAVE_UINT_FAST16_T
 typedef uint16_t uint_fast16_t;
 #endif
 
-#ifndef HAVE_UINT_FAST32_T
+#ifndef PPL_HAVE_UINT_FAST32_T
 typedef uint32_t uint_fast32_t;
 #endif
 
-#ifndef HAVE_UINT_FAST64_T
+#ifndef PPL_HAVE_UINT_FAST64_T
 typedef uint64_t uint_fast64_t;
 #endif
 

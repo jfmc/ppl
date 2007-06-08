@@ -431,7 +431,7 @@ public:
 
   //! The vector of coefficients.
   T vec_[
-#if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
+#if !PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
 	       1
 #endif
   ];

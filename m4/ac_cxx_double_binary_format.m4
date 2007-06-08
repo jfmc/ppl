@@ -91,7 +91,7 @@ else
   ac_supported_double=1
 fi
 AM_CONDITIONAL(SUPPORTED_DOUBLE, test $ac_supported_double = 1)
-AC_DEFINE_UNQUOTED(PPL_SUPPORTED_DOUBLE, $ac_supported_double,
+AC_DEFINE_UNQUOTED(SUPPORTED_DOUBLE, $ac_supported_double,
   [Not zero if doubles are supported.])
 
 AC_LANG_POP(C++)

@@ -64,9 +64,9 @@ AC_SUBST(PPL_VERSION_MINOR)
 AC_SUBST(PPL_VERSION_REVISION)
 AC_SUBST(PPL_VERSION_BETA)
 
-AC_DEFINE_UNQUOTED(PPL_CONFIGURE_OPTIONS, "$ac_configure_args", [This contains the options with which `configure' was invoked.])
+AC_DEFINE_UNQUOTED(CONFIGURE_OPTIONS, "$ac_configure_args", [This contains the options with which `configure' was invoked.])
 PPL_CONFIGURE_OPTIONS="\"$ac_configure_args\""
-AC_SUBST(PPL_CONFIGURE_OPTIONS)
+AC_SUBST(CONFIGURE_OPTIONS)
 
 # Installation directories.
 AC_SUBST([docdir], ['${datadir}/doc/ppl'])
@@ -74,13 +74,11 @@ AC_SUBST([docdir], ['${datadir}/doc/ppl'])
 # Generate a configuration header file.
 AC_CONFIG_HEADER(config.h)
 
+# Generate prefixed defines.
+AX_PREFIX_CONFIG_H
+
 ISODATE=`date +%Y-%m-%d`
 AC_SUBST(ISODATE)
-
-AH_TOP([
-#ifndef PPL_ppl_config_h
-#define PPL_ppl_config_h 1
-])
 
 AH_BOTTOM([
 /*
@@ -88,15 +86,18 @@ AH_BOTTOM([
   we must make sure <stdint.h> is included before <sys/types.hh> is
   (even indirectly) included.
 */
-#ifdef HAVE_STDINT_H
+#ifdef PPL_HAVE_STDINT_H
 #include <stdint.h>
 #endif
-#ifdef HAVE_INTTYPES_H
+#ifdef PPL_HAVE_INTTYPES_H
 #include <inttypes.h>
 #endif
 
-#endif /* !defined(PPL_ppl_config_h) */
+#ifdef PPL_NDEBUG
+# define NDEBUG PPL_NDEBUG
+#endif
 ])
+
 
 # C compiler
 
@@ -144,7 +145,7 @@ case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
   OPT_FLAGS="-g"
-  COMP_FLAGS="$COMP_FLAGS -pg -DPROFILING=1"
+  COMP_FLAGS="$COMP_FLAGS -pg -DPPL_PROFILING=1"
   ;;
 no)
   AC_MSG_RESULT(no)
@@ -212,7 +213,7 @@ enable_more_assertions=${enableval}
 if test x"$enable_more_assertions" = xyes
 then
   enable_assertions=yes
-  AC_DEFINE(PPL_ABI_BREAKING_EXTRA_DEBUG, 1, [ABI-breaking extra assertions are enabled when this is defined.])
+  AC_DEFINE(ABI_BREAKING_EXTRA_DEBUG, 1, [ABI-breaking extra assertions are enabled when this is defined.])
 fi
 
 if test x"$enable_assertions" = xno
@@ -343,12 +344,12 @@ esac
 
 if test x"$fpmath_may_use_387" = xyes
 then
-  AC_DEFINE(PPL_FPMATH_MAY_USE_387, 1, [Defined if floating point arithmetics may use the 387 unit.])
+  AC_DEFINE(FPMATH_MAY_USE_387, 1, [Defined if floating point arithmetics may use the 387 unit.])
 fi
 
 if test x"$fpmath_may_use_sse" = xyes
 then
-  AC_DEFINE(PPL_FPMATH_MAY_USE_SSE, 1, [Defined if floating point arithmetics may use the SSE instruction set.])
+  AC_DEFINE(FPMATH_MAY_USE_SSE, 1, [Defined if floating point arithmetics may use the SSE instruction set.])
 fi
 
 enableval=no

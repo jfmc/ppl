@@ -37,11 +37,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <cassert>
 #include <climits>
 
-#ifdef HAVE_STDINT_H
+#ifdef PPL_HAVE_STDINT_H
 #include <stdint.h>
 #endif
 
-#ifdef HAVE_INTTYPES_H
+#ifdef PPL_HAVE_INTTYPES_H
 #include <inttypes.h>
 #endif
 

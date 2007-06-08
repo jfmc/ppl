@@ -14,7 +14,7 @@ PURPOSE. */
 
 #include "Checked_Number.defs.hh"
 
-#if defined(CHECKED_INTEGERS) || defined(NATIVE_INTEGERS)
+#if defined(PPL_CHECKED_INTEGERS) || defined(PPL_NATIVE_INTEGERS)
 
 namespace Parma_Polyhedra_Library {
 
@@ -60,9 +60,9 @@ struct Coefficient_traits_template<Checked_Number<int64_t, Policy> > {
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // defined(CHECKED_INTEGERS) || defined(NATIVE_INTEGERS)
+#endif // defined(PPL_CHECKED_INTEGERS) || defined(PPL_NATIVE_INTEGERS)
 
-#ifdef GMP_INTEGERS
+#ifdef PPL_GMP_INTEGERS
 #include "GMP_Integer.types.hh"
 #endif
 
@@ -86,7 +86,7 @@ namespace Parma_Polyhedra_Library {
       for native integral types with no overflow detection
       (available template instances are as above).
 */
-typedef COEFFICIENT_TYPE Coefficient;
+typedef PPL_COEFFICIENT_TYPE Coefficient;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! An alias for easily naming the coefficient traits.

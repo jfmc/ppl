@@ -21,7 +21,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include "config.h"
+#include <ppl-config.h>
 #include "ppl_c.h"
 #include <gmp.h>
 #include <glpk.h>
@@ -34,25 +34,25 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <string.h>
 #include <math.h>
 
-#ifdef HAVE_GETOPT_H
+#ifdef PPL_HAVE_GETOPT_H
 # include <getopt.h>
 #endif
 
-#ifdef HAVE_UNISTD_H
+#ifdef PPL_HAVE_UNISTD_H
 /* Include this for `getopt()': especially important if we do not have
    <getopt.h>. */
 # include <unistd.h>
 #endif
 
-#ifdef HAVE_SIGNAL_H
+#ifdef PPL_HAVE_SIGNAL_H
 # include <signal.h>
 #endif
 
-#ifdef HAVE_SYS_TIME_H
+#ifdef PPL_HAVE_SYS_TIME_H
 # include <sys/time.h>
 #endif
 
-#ifdef HAVE_SYS_RESOURCE_H
+#ifdef PPL_HAVE_SYS_RESOURCE_H
 /* This should be included after <time.h> and <sys/time.h> so as to make
    sure we have the definitions for, e.g., `ru_utime'. */
 # include <sys/resource.h>
@@ -70,7 +70,7 @@ static const char* ppl_source_version = PPL_VERSION;
 # define ATTRIBUTE_UNUSED
 #endif
 
-#ifdef HAVE_GETOPT_H
+#ifdef PPL_HAVE_GETOPT_H
 static struct option long_options[] = {
   {"check",           optional_argument, 0, 'c'},
   {"help",            no_argument,       0, 'h'},
@@ -109,7 +109,7 @@ static const char* usage_string
 "  -t, --timings           prints timings to stderr\n"
 "  -v, --verbose           produces lots of output\n"
 "  -V, --version           prints version information to stdout\n"
-#ifndef HAVE_GETOPT_H
+#ifndef PPL_HAVE_GETOPT_H
 "\n"
 "NOTE: this version does not support long options.\n"
 #endif
@@ -194,7 +194,7 @@ get_ppl_banner() {
 
 static void
 process_options(int argc, char* argv[]) {
-#ifdef HAVE_GETOPT_H
+#ifdef PPL_HAVE_GETOPT_H
   int option_index;
 #endif
   int enumerate_required = 0;
@@ -208,7 +208,7 @@ process_options(int argc, char* argv[]) {
   double d;
 
   while (1) {
-#ifdef HAVE_GETOPT_H
+#ifdef PPL_HAVE_GETOPT_H
     option_index = 0;
     c = getopt_long(argc, argv, OPTION_LETTERS, long_options, &option_index);
 #else
@@ -417,7 +417,7 @@ set_alarm_on_cpu_time(unsigned seconds, void (*handler)(int)) {
   }
 }
 
-#if HAVE_DECL_RLIMIT_AS
+#if PPL_HAVE_DECL_RLIMIT_AS
 void
 limit_virtual_memory(unsigned bytes) {
   struct rlimit t;
@@ -435,7 +435,7 @@ limit_virtual_memory(unsigned bytes) {
 void
 limit_virtual_memory(unsigned bytes ATTRIBUTE_UNUSED) {
 }
-#endif /* !HAVE_DECL_RLIMIT_AS */
+#endif /* !PPL_HAVE_DECL_RLIMIT_AS */
 
 static void
 my_timeout(int dummy ATTRIBUTE_UNUSED) {
@@ -1087,7 +1087,7 @@ error_handler(enum ppl_enum_error_code code,
   fatal("PPL error code %d: %s", code, description);
 }
 
-#if !CXX_SUPPORTS_ATTRIBUTE_WEAK
+#if !PPL_CXX_SUPPORTS_ATTRIBUTE_WEAK
 void
 set_GMP_memory_allocation_functions(void) {
 }

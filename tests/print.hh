@@ -38,7 +38,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 static bool
 check_noisy(const char* environment_variable) {
-#if HAVE_DECL_GETENV
+#if PPL_HAVE_DECL_GETENV
   return getenv(environment_variable) != 0;
 #else
 #if NOISY

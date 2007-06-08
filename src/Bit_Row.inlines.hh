@@ -88,7 +88,7 @@ Bit_Row::clear() {
 
 inline memory_size_type
 Bit_Row::external_memory_in_bytes() const {
-  return vec[0]._mp_alloc * SIZEOF_MP_LIMB_T;
+  return vec[0]._mp_alloc * PPL_SIZEOF_MP_LIMB_T;
 }
 
 inline memory_size_type
@@ -96,7 +96,7 @@ Bit_Row::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
 }
 
-#if HAVE_DECL_FFS && SIZEOF_MP_LIMB_T == SIZEOF_INT
+#if PPL_HAVE_DECL_FFS && PPL_SIZEOF_MP_LIMB_T == PPL_SIZEOF_INT
 
 inline unsigned int
 Bit_Row::first_one(mp_limb_t w) {

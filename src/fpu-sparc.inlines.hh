@@ -20,7 +20,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifdef HAVE_IEEEFP_H
+#ifdef PPL_HAVE_IEEEFP_H
 #include <ieeefp.h>
 
 #define FPU_TONEAREST ((int) FP_RN)
@@ -64,4 +64,4 @@ fpu_check_inexact() {
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(HAVE_IEEEFP_H)
+#endif // !defined(PPL_HAVE_IEEEFP_H)

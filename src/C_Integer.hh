@@ -33,7 +33,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef LLONG_MIN
 #if defined(LONG_LONG_MIN)
 #define LLONG_MIN LONG_LONG_MIN
-#elif SIZEOF_LONG_LONG == 8
+#elif PPL_SIZEOF_LONG_LONG == 8
 #define LLONG_MIN 0x8000000000000000LL
 #endif
 #endif
@@ -41,7 +41,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef LLONG_MAX
 #if defined(LONG_LONG_MAX)
 #define LLONG_MAX LONG_LONG_MAX
-#elif SIZEOF_LONG_LONG == 8
+#elif PPL_SIZEOF_LONG_LONG == 8
 #define LLONG_MAX 0x7fffffffffffffffLL
 #endif
 #endif
@@ -49,7 +49,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef ULLONG_MAX
 #if defined(ULONG_LONG_MAX)
 #define ULLONG_MAX ULONG_LONG_MAX
-#elif SIZEOF_LONG_LONG == 8
+#elif PPL_SIZEOF_LONG_LONG == 8
 #define ULLONG_MAX 0xffffffffffffffffULL
 #endif
 #endif

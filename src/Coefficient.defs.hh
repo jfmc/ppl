@@ -26,12 +26,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Coefficient.types.hh"
 #include <iosfwd>
 
-#if defined(CHECKED_INTEGERS) || defined(NATIVE_INTEGERS)
+#if defined(PPL_CHECKED_INTEGERS) || defined(PPL_NATIVE_INTEGERS)
 #include "Checked_Number.defs.hh"
 #include "checked_int.inlines.hh"
 #endif
 
-#ifdef GMP_INTEGERS
+#ifdef PPL_GMP_INTEGERS
 #include "GMP_Integer.defs.hh"
 #endif
 

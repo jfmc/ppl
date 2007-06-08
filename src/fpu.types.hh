@@ -12,7 +12,7 @@ PURPOSE. */
 #ifndef PPL_fpu_types_hh
 #define PPL_fpu_types_hh 1
 
-#ifdef HAVE_IEEEFP_H
+#ifdef PPL_HAVE_IEEEFP_H
 #include <ieeefp.h>
 #endif
 
