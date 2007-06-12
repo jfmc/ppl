@@ -1,6 +1,6 @@
 Name:		ppl
 Version:	@VERSION@
-Release:	7%{?dist}
+Release:	8%{?dist}
 
 Summary:	The Parma Polyhedra Library: a library of numerical abstractions
 Group:		Development/Libraries
@@ -150,6 +150,8 @@ This package contains the static archive for the Parma Watchdog Library.
 
 %build
 %configure --enable-shared --disable-rpath CPPFLAGS="-I%{_includedir}/glpk -I%{_libdir}/gprolog-`gprolog --version 2>&1 | head -1 | sed -e "s/.* \([^ ]*\)$/\1/g"`/include -I%{_includedir}/Yap"
+sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
+sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 make %{?_smp_mflags}
 
 %install
@@ -259,6 +261,10 @@ rm -f %{buildroot}%{_libdir}/*.la %{buildroot}%{_libdir}/%{name}/*.la
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Tue Jun 12 2007 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-8
+- Patch the `libtool' script after `%%configure' so as to fix
+  the rpath issue.
+
 * Thu Jun 07 2007 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-7
 - `%%install' commands revised.
 
