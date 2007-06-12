@@ -159,9 +159,6 @@ rm -rf $RPM_BUILD_ROOT
 make DESTDIR=$RPM_BUILD_ROOT INSTALL="%{__install} -p" install
 rm -f %{buildroot}%{_libdir}/*.la %{buildroot}%{_libdir}/%{name}/*.la
 
-%check
-make check
-
 %files
 %defattr(-,root,root,-)
 %doc %{_datadir}/doc/%{name}/BUGS
@@ -268,7 +265,6 @@ rm -rf $RPM_BUILD_ROOT
 * Tue Jun 12 2007 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-8
 - Patch the `libtool' script after `%%configure' so as to fix
   the rpath issue.
-- `%%check' added.
 - Revised the description of the `devel' package.
 - Include also the `TODO' file in the documentation of the main package.
 
