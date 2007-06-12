@@ -103,3 +103,24 @@
 + Seriously, for this release of the Parma Watchdog Library,
 + documentation is only available in the sources, in Doxygen format.
 + Proper manuals will be included in future releases.
+diff -ur ppl-0.9/doc/Makefile.in ppl-0.9-patched/doc/Makefile.in
+--- ppl-0.9/doc/Makefile.in	2006-03-12 09:11:41.000000000 +0100
++++ ppl-0.9-patched/doc/Makefile.in	2007-06-12 20:41:45.000000000 +0200
+@@ -710,7 +710,7 @@
+ 	for file in $(srcdir)/*.txt $(srcdir)/README.doc; do \
+ 	  $(INSTALL_DATA) $$file $(DESTDIR)$(txtdir)/`basename $$file`; \
+ 	done
+-	for file in BUGS COPYING CREDITS ChangeLog NEWS README README.configure ; do \
++	for file in BUGS COPYING CREDITS ChangeLog NEWS README README.configure TODO ; do \
+ 	  $(INSTALL_DATA) $(srcdir)/../$$file $(DESTDIR)$(txtdir)/$$file; \
+ 	done
+ 
+@@ -719,7 +719,7 @@
+ 
+ uninstall-txt:
+ 	rm -f $(DESTDIR)$(txtdir)/*.txt $(DESTDIR)$(txtdir)/README.doc
+-	for file in BUGS COPYING CREDITS ChangeLog NEWS README README.configure ; do \
++	for file in BUGS COPYING CREDITS ChangeLog NEWS README README.configure TODO ; do \
+ 	  rm -f $(DESTDIR)$(txtdir)/$$file; \
+ 	done
+ 
