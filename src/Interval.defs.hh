@@ -164,11 +164,6 @@ public:
   }
 
   template <typename T>
-  explicit Interval(const T& x, typename Enable_If<Is_Singleton_Or_Interval<T>::value, bool>::type = false) {
-    assign(*this, x);
-  }
-
-  template <typename T>
   typename Enable_If<Is_Singleton_Or_Interval<T>::value, Interval&>::type
   operator=(const T& x) {
     assign(*this, x);
@@ -657,12 +652,12 @@ public:
   }
 
   template <typename T>
-  explicit Interval(const T& x)
+  explicit Interval(const T& x, typename Enable_If<Is_Singleton_Or_Interval<T>::value, bool>::type = false)
 #ifdef PPL_ABI_BREAKING_EXTRA_DEBUG
     : lower_loaded(0), upper_loaded(0), completed(0)
 #endif
   {
-    assign(x);
+    assign(*this, x);
   }
 
 private:
