@@ -1883,13 +1883,11 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
   else {
     x.assign(UNIVERSE);
     if (!lower_unbounded)
-      refine_existential(x,
-			 (lower_open ? GREATER_THAN : GREATER_OR_EQUAL),
-			 lower_bound);
+      x.refine_existential((lower_open ? GREATER_THAN : GREATER_OR_EQUAL),
+			   lower_bound);
     if (!upper_unbounded)
-      refine_existential(x,
-			 (upper_open ? LESS_THAN : LESS_OR_EQUAL),
-			 upper_bound);
+      x.refine_existential((upper_open ? LESS_THAN : LESS_OR_EQUAL),
+			   upper_bound);
   }
   return is;
 }
