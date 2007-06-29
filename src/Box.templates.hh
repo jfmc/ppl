@@ -82,7 +82,7 @@ Box<Interval>::Box(const Box<Other_Interval>& y)
     empty_up_to_date(y.empty_up_to_date) {
   if (!y.marked_empty())
     for (dimension_type k = y.space_dimension(); k-- > 0; )
-      assign(seq[k], y.seq[k]);
+      seq[k].assign(y.seq[k]);
   assert(OK());
 }
 
@@ -119,7 +119,7 @@ Box<Interval>::Box(const Generator_System& gs)
 	  assign_r(q.get_num(), g.coefficient(Variable(i)), ROUND_NOT_NEEDED);
 	  assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
 	  q.canonicalize();
-	  join_assign(seq[i], q);
+	  seq[i].join_assign(q);
 	}
       }
       else {
@@ -129,7 +129,7 @@ Box<Interval>::Box(const Generator_System& gs)
 	  assign_r(q.get_num(), g.coefficient(Variable(i)), ROUND_NOT_NEEDED);
 	  assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
 	  q.canonicalize();
-	  assign(seq[i], q);
+	  seq[i].assign(q);
 	}
       }
     }
@@ -467,7 +467,7 @@ Box<Interval>::Box(const Grid& gr, Complexity_Class)
       assign_r(bound.get_num(), point[i+1], ROUND_NOT_NEEDED);
       assign_r(bound.get_den(), divisor, ROUND_NOT_NEEDED);
       bound.canonicalize();
-      assign(seq_i, bound);
+      seq_i.assign(bound);
     }
     else
       seq_i.assign(UNIVERSE);
@@ -523,7 +523,7 @@ Box<Interval>::add_space_dimensions_and_project(const dimension_type m) {
   // A add `m' new zero elements to the sequence.
   seq.insert(seq.end(), m, Interval());
   for (dimension_type sz = seq.size(), i = sz - m; i < sz; ++i)
-    assign(seq[i], 0);
+    seq[i].assign(0);
 
   assert(OK());
 }
@@ -1000,7 +1000,7 @@ Box<Interval>::max_min(const Linear_Expression& expr,
       // If 0 belongs to the interval, choose it
       // (and directly proceed to the next iteration).
       // FIXME: name qualification issue.
-      if (Parma_Polyhedra_Library::contains(seq_i, 0))
+      if (seq_i.contains(0))
 	continue;
       if (!seq_i.lower_is_unbounded())
 	if (seq_i.lower_is_open())
@@ -1070,7 +1070,7 @@ Box<Interval>::contains(const Box<Interval>& y) const {
 
   for (dimension_type k = x.seq.size(); k-- > 0; )
     // FIXME: fix this name qualification issue.
-    if (!Parma_Polyhedra_Library::contains(x.seq[k], y.seq[k]))
+    if (!x.seq[k].contains(y.seq[k]))
       return false;
   return true;
 }
@@ -1090,7 +1090,7 @@ Box<Interval>::is_disjoint_from(const Box<Interval>& y) const {
 
   for (dimension_type k = x.seq.size(); k-- > 0; )
     // FIXME: fix this name qualification issue.
-    if (Parma_Polyhedra_Library::is_disjoint_from(x.seq[k], y.seq[k]))
+    if (x.seq[k].is_disjoint_from(y.seq[k]))
       return true;
   return false;
 }
@@ -1236,7 +1236,7 @@ Box<Interval>::intersection_assign(const Box& y) {
   empty_up_to_date = false;
 
   for (dimension_type k = space_dim; k-- > 0; )
-    intersect_assign(x.seq[k], y.seq[k]);
+    x.seq[k].intersect_assign(y.seq[k]);
 
   assert(x.OK());
 }
@@ -1259,7 +1259,7 @@ Box<Interval>::box_hull_assign(const Box& y) {
   }
 
   for (dimension_type k = x.seq.size(); k-- > 0; )
-    join_assign(x.seq[k], y.seq[k]);
+    x.seq[k].join_assign(y.seq[k]);
 
   assert(x.OK());
 }
@@ -1318,7 +1318,7 @@ Box<Interval>::box_difference_assign(const Box& y) {
   dimension_type index_non_contained = space_dim;
   dimension_type number_non_contained = 0;
   for (dimension_type i = space_dim; i-- > 0; )
-    if (!Parma_Polyhedra_Library::contains(y.seq[i], x.seq[i]))
+    if (!y.seq[i].contains(x.seq[i]))
       if (++number_non_contained == 1)
 	index_non_contained = i;
       else
@@ -1516,7 +1516,7 @@ Box<Interval>::fold_space_dimensions(const Variables_Set& to_be_folded,
     Interval& seq_v = seq[var.id()];
     for (Variables_Set::const_iterator i = to_be_folded.begin(),
 	   tbf_end = to_be_folded.end(); i != tbf_end; ++i)
-      join_assign(seq_v, seq[*i]);
+      seq_v.join_assign(seq[*i]);
   }
   remove_space_dimensions(to_be_folded);
 }
@@ -1559,15 +1559,15 @@ Box<Interval>::add_constraint_no_check(const Constraint& c) {
   const Constraint::Type c_type = c.type();
   switch (c_type) {
   case Constraint::EQUALITY:
-    refine_existential(seq_c, EQUAL, q);
+    seq_c.refine_existential(EQUAL, q);
     break;
   case Constraint::NONSTRICT_INEQUALITY:
-    refine_existential(seq_c, (d > 0) ? GREATER_OR_EQUAL : LESS_OR_EQUAL, q);
+    seq_c.refine_existential((d > 0) ? GREATER_OR_EQUAL : LESS_OR_EQUAL, q);
     // FIXME: this assertion fails due to a bug in refine.
     assert(seq_c.OK());
     break;
   case Constraint::STRICT_INEQUALITY:
-    refine_existential(seq_c, (d > 0) ? GREATER_THAN : LESS_THAN, q);
+    seq_c.refine_existential((d > 0) ? GREATER_THAN : LESS_THAN, q);
     break;
   }
   // FIXME: do check the value returned by `refine' and
@@ -1914,7 +1914,7 @@ Box<Interval>::refine_no_check(const Constraint& c) {
     k[i] = c.coefficient(Variable(i));
     Interval& p_i = p[i];
     p_i = seq[i];
-    mul_assign(p_i, p_i, k[i]);
+    p_i.mul_assign(p_i, k[i]);
   }
   const Coefficient& inhomogeneous_term = c.inhomogeneous_term();
   for (dimension_type i = c_space_dim; i-- > 0; ) {
@@ -1925,10 +1925,10 @@ Box<Interval>::refine_no_check(const Constraint& c) {
     for (dimension_type j = c_space_dim; j-- > 0; ) {
       if (i == j)
 	continue;
-      add_assign(q, q, p[j]);
+      q.add_assign(q, p[j]);
     }
-    div_assign(q, q, k[i]);
-    neg_assign(q, q);
+    q.div_assign(q, k[i]);
+    q.neg_assign(q);
     Relation_Symbol rel;
     switch (c.type()) {
     case Constraint::EQUALITY:
@@ -1941,7 +1941,7 @@ Box<Interval>::refine_no_check(const Constraint& c) {
       rel = (sgn_coefficient_i > 0) ? GREATER_THAN : LESS_THAN;
       break;
     }
-    refine_existential(seq[i], rel, q);
+    seq[i].refine_existential(rel, q);
     // FIXME: could/should we exploit the return value of refine_existential,
     //        in case it is available?
     // FIMXE: should we instead be lazy and do not even bother about
@@ -2002,21 +2002,21 @@ Box<Interval>::affine_image(const Variable var,
     return;
 
   Tmp_Interval_Type expr_value, temp0, temp1;
-  assign(expr_value, expr.inhomogeneous_term());
+  expr_value.assign(expr.inhomogeneous_term());
   for (dimension_type i = expr_space_dim; i-- > 0; ) {
     const Coefficient& coeff = expr.coefficient(Variable(i));
     if (coeff != 0) {
-      assign(temp0, coeff);
-      assign(temp1, seq[i]);
-      mul_assign(temp0, temp0, temp1);
-      add_assign(expr_value, expr_value, temp0);
+      temp0.assign(coeff);
+      temp1.assign(seq[i]);
+      temp0.mul_assign(temp0, temp1);
+      expr_value.add_assign(expr_value, temp0);
     }
   }
   if (denominator != 1) {
-    assign(temp0, denominator);
-    div_assign(expr_value, expr_value, temp0);
+    temp0.assign(denominator);
+    expr_value.div_assign(expr_value, temp0);
   }
-  assign(seq[var.id()], expr_value);
+  seq[var.id()].assign(expr_value);
 
   assert(OK());
 }
@@ -2048,22 +2048,22 @@ Box<Interval>::affine_preimage(const Variable var,
   const bool invertible = (expr_v != 0);
   if (!invertible) {
     Tmp_Interval_Type expr_value, temp0, temp1;
-    assign(expr_value, expr.inhomogeneous_term());
+    expr_value.assign(expr.inhomogeneous_term());
     for (dimension_type i = expr_space_dim; i-- > 0; ) {
       const Coefficient& coeff = expr.coefficient(Variable(i));
       if (coeff != 0) {
-	assign(temp0, coeff);
-	assign(temp1, seq[i]);
-	mul_assign(temp0, temp0, temp1);
-	add_assign(expr_value, expr_value, temp0);
+	temp0.assign(coeff);
+	temp1.assign(seq[i]);
+	temp0.mul_assign(temp0, temp1);
+	expr_value.add_assign(expr_value, temp0);
       }
     }
     if (denominator != 1) {
-      assign(temp0, denominator);
-      div_assign(expr_value, expr_value, temp0);
+      temp0.assign(denominator);
+      expr_value.div_assign(expr_value, temp0);
     }
     Interval& x_seq_v = seq[var.id()];
-    intersect_assign(expr_value, x_seq_v);
+    expr_value.intersect_assign(x_seq_v);
     if (expr_value.is_empty())
       set_empty();
     else
