@@ -2,25 +2,6 @@
 Enhancements for PPL 0.10
 =========================
 
-- Improve the Java interface so as to provide the services
-  required by collection classes.  In particular:
-
-  + For each semantic domain D, provide a method
-
-      public boolean equals(Object other)
-
-    that returns false if other is not an instance of D, and returns
-    the result of the equality comparison over D otherwise.
-
-  + For each semantic domain D, provide a method
-
-      public int hashCode()
-
-    The correctness requirement is that p1.equals(p2) implies
-    p1.hashCode() == p2.hashCode().  Of course, computing p1.hashCode()
-    and p2.hashCode() should be significantly more efficient than
-    computing p1.equals(p2).
-
 - Suppose we want to sum three numbers, and suppose we do it by
 
     add(T& to, const T& x, const T& y, const T& z) {
