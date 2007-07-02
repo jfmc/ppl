@@ -2317,7 +2317,7 @@ R.&nbsp;Bagnara, P.&nbsp;M. Hill, E.&nbsp;Ricci, and E.&nbsp;Zaffanella.
 \anchor BHRZ03b
 R.&nbsp;Bagnara, P.&nbsp;M. Hill, E.&nbsp;Ricci, and E.&nbsp;Zaffanella.
   Precise widening operators for convex polyhedra.
-  Quaderno 312, Dipartimento di Matematica, Universit‡ di Parma,
+  Quaderno 312, Dipartimento di Matematica, Universit√† di Parma,
   Italy, 2003.
   Available at <A HREF="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</A>.
 
@@ -2330,7 +2330,7 @@ R.&nbsp;Bagnara, P.&nbsp;M. Hill, E.&nbsp;Ricci, and E.&nbsp;Zaffanella.
 R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
   A new encoding and implementation of not necessarily closed convex
   polyhedra.
-  Quaderno 305, Dipartimento di Matematica, Universit‡ di Parma,
+  Quaderno 305, Dipartimento di Matematica, Universit√† di Parma,
   Italy, 2002.
   Available at <A HREF="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</A>.
 
@@ -2346,8 +2346,8 @@ R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
   the 1st CoLogNet Workshop on Component-based Software Development and
   Implementation Technology for Computational Logic Systems</i>, pages 147-153,
   Madrid, Spain, 2002.
-  Published as TR Number CLIP4/02.0, Universidad PolitÈcnica de
-  Madrid, Facultad de Inform·tica.
+  Published as TR Number CLIP4/02.0, Universidad Polit√©cnica de
+  Madrid, Facultad de Inform√°tica.
 
 </DD>
 
@@ -2384,7 +2384,7 @@ R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
 \anchor BHZ04
 R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
   Widening operators for powerset domains.
-  Quaderno 349, Dipartimento di Matematica, Universit‡ di Parma,
+  Quaderno 349, Dipartimento di Matematica, Universit√† di Parma,
   Italy, 2004.
   Available at <A HREF="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</A>.
 
@@ -2396,7 +2396,7 @@ R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
 \anchor BJT99
 F.&nbsp;Besson, T.&nbsp;P. Jensen, and J.-P. Talpin.
   Polyhedral analysis for synchronous languages.
-  In A.&nbsp;Cortesi and G.&nbsp;FilÈ, editors, <i>Static Analysis:
+  In A.&nbsp;Cortesi and G.&nbsp;Fil√©, editors, <i>Static Analysis:
   Proceedings of the 6th International Symposium</i>, volume 1694 of <i>Lecture
   Notes in Computer Science</i>, pages 51-68, Venice, Italy, 1999.
   Springer-Verlag, Berlin.
@@ -2424,7 +2424,7 @@ R.&nbsp;Bagnara, E.&nbsp;Ricci, E.&nbsp;Zaffanella, and P.&nbsp;M. Hill.
 R.&nbsp;Bagnara, E.&nbsp;Ricci, E.&nbsp;Zaffanella, and P.&nbsp;M. Hill.
   Possibly not closed convex polyhedra and the Parma Polyhedra
   Library.
-  Quaderno 286, Dipartimento di Matematica, Universit‡ di Parma,
+  Quaderno 286, Dipartimento di Matematica, Universit√† di Parma,
   Italy, 2002.
   See also \ref BRZH02c "[BRZH02c]". Available at
   <A HREF="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</A>.
@@ -2572,7 +2572,7 @@ D.&nbsp;Gopan, F.&nbsp;DiMaio, N.&nbsp;Dor, T.&nbsp;Reps, and M.&nbsp;Sagiv.
 E.&nbsp;Gawrilow and M.&nbsp;Joswig.
   <tt>polymake</tt>: a framework for analyzing convex polytopes.
   In G.&nbsp;Kalai and G.&nbsp;M. Ziegler, editors, <i>Polytopes -
-  Combinatorics and Computation</i>, pages 43-74. Birkh‰user, 2000.
+  Combinatorics and Computation</i>, pages 43-74. Birkh√§user, 2000.
 
 </DD>
 
@@ -2593,10 +2593,10 @@ E.&nbsp;Gawrilow and M.&nbsp;Joswig.
 <DD>
 \anchor Hal79
 N.&nbsp;Halbwachs.
-  <i>DÈtermination Automatique de Relations LinÈaires
-  VÈrifiÈes par les Variables d'un Programme</i>.
-  ThËse de 3Ëme cycle d'informatique,
-  UniversitÈ scientifique et mÈdicale de Grenoble, Grenoble, France, March
+  <i>D√©termination Automatique de Relations Lin√©aires
+  V√©rifi√©es par les Variables d'un Programme</i>.
+  Th√®se de 3√®me cycle d'informatique,
+  Universit√© scientifique et m√©dicale de Grenoble, Grenoble, France, March
   1979.
 
 </DD>
@@ -2756,7 +2756,7 @@ F.&nbsp;Masdupuy.
 F.&nbsp;Masdupuy.
   <i>Array Indices Relational Semantic Analysis Using Rational Cosets
   and Trapezoids</i>.
-  ThËse d'informatique, …cole Polytechnique, Palaiseau, France,
+  Th√®se d'informatique, √âcole Polytechnique, Palaiseau, France,
   December 1993.
 
 </DD>
