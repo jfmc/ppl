@@ -25,17 +25,24 @@ abs_srcdir = @abs_srcdir@
 if BUILD_OCAML_INTERFACE
 
 interface_generator_files = \
+ppl_interface_generator_ocaml_cc.m4 \
+ppl_interface_generator_ocaml_cc_code.m4 \
 ppl_interface_generator_ocaml_dat.m4 \
 ppl_interface_generator_ocaml_ml.m4 \
 ppl_interface_generator_ocaml_ml_code.m4 \
-ppl_interface_generator_ocaml_cc.m4 \
-ppl_interface_generator_ocaml_cc_code.m4
-
-EXTRA_DIST = $(interface_generator_files)
+ppl_interface_generator_ocaml_mli.m4 \
+ppl_interface_generator_ocaml_mli_code.m4
 
 original_mls = \
 ppl_ocaml_globals.ml \
-ppl_ocaml_types.ml
+ppl_ocaml_types.ml \
+test1.ml
+
+EXTRA_DIST = \
+$(interface_generator_files) \
+$(original_mls) \
+ppl_ocaml_globals.cc
+
 
 BUILT_SOURCES = \
 ppl_ocaml.cc \
@@ -102,7 +109,7 @@ OCAMLC_ROOT = @ocamlc_root@
 
 noinst_LIBRARIES = libppl_ocaml.a
 
-libppl_ocaml_a_SOURCES = \
+nodist_libppl_ocaml_a_SOURCES = \
 ppl_ocaml.cc
 
 AM_CPPFLAGS = -I$(OCAMLC_ROOT) -I$(top_srcdir)/src -I$(top_builddir)/src @extra_includes@

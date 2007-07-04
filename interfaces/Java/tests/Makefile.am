@@ -46,9 +46,14 @@ C_Polyhedron_test1.java
 BUILT_SOURCES =  \
 ppl_java_generated_tests.java
 
+# Even if the Java sources are not really needed, they are built by m4,
+# we need to include them to invoke the Automake Java build system.
 EXTRA_DIST = \
 Test_Partial_Function.java \
-C_Polyhedron_test1.java
+C_Polyhedron_test1.java \
+ppl_interface_generator_java_test_java_code.m4 \
+ppl_interface_generator_java_test_java.m4 \
+ppl_java_tests_common
 
 CLASSPATH = ../ppl_java.jar:.
 JAVACFLAGS = -classpath $(CLASSPATH)
