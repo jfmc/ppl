@@ -906,7 +906,6 @@ build_java_congruence(JNIEnv* env, const Congruence& cg) {
 jobject
 build_java_generator(JNIEnv* env, const Generator& g) {
   jclass j_generator_class = env->FindClass("ppl_java/Generator");
-  jclass j_gen_type_class = env->FindClass("ppl_java/Generator_Type");
   jmethodID line_ctr_id =
     env->GetStaticMethodID(j_generator_class,
 			   "line",
@@ -929,23 +928,6 @@ build_java_generator(JNIEnv* env, const Generator& g) {
 			   "(Lppl_java/Linear_Expression;"
 			   "Lppl_java/Coefficient;)"
 			   "Lppl_java/Generator;");
-
-  jfieldID gen_type_line_get_id
-    = env->GetStaticFieldID(j_gen_type_class,
-			    "LINE",
-			    "Lppl_java/Generator_Type;");
-  jfieldID gen_type_ray_get_id
-    = env->GetStaticFieldID(j_gen_type_class,
-			    "RAY",
-			    "Lppl_java/Generator_Type;");
-  jfieldID gen_type_point_get_id
-    = env->GetStaticFieldID(j_gen_type_class,
-			    "POINT",
-			    "Lppl_java/Generator_Type;");
-  jfieldID gen_type_closure_point_get_id
-    = env->GetStaticFieldID(j_gen_type_class,
-			    "CLOSURE_POINT",
-			    "Lppl_java/Generator_Type;");
   jobject j_g_le = get_linear_expression(env, g);
   jobject jcoeff = build_java_coeff(env, Coefficient(1));
   switch (g.type()) {
@@ -979,7 +961,6 @@ build_java_generator(JNIEnv* env, const Generator& g) {
 jobject
 build_java_grid_generator(JNIEnv* env, const Grid_Generator& g) {
   jclass j_grid_generator_class = env->FindClass("ppl_java/Grid_Generator");
-  jclass j_gen_type_class = env->FindClass("ppl_java/Grid_Generator_Type");
   jmethodID line_ctr_id =
     env->GetStaticMethodID(j_grid_generator_class,
 			   "grid_line",
@@ -997,19 +978,6 @@ build_java_grid_generator(JNIEnv* env, const Grid_Generator& g) {
 			   "(Lppl_java/Linear_Expression;"
 			   "Lppl_java/Coefficient;)"
 			   "Lppl_java/Grid_Generator;");
-
-  jfieldID gen_type_line_get_id
-    = env->GetStaticFieldID(j_gen_type_class,
-			    "LINE",
-			    "Lppl_java/Grid_Generator_Type;");
-  jfieldID gen_type_parameter_get_id
-    = env->GetStaticFieldID(j_gen_type_class,
- 			    "PARAMETER",
- 			    "Lppl_java/Grid_Generator_Type;");
-  jfieldID gen_type_point_get_id
-    = env->GetStaticFieldID(j_gen_type_class,
- 			    "POINT",
- 			    "Lppl_java/Grid_Generator_Type;");
   jobject j_g_le = get_linear_expression(env, g);
   jobject jcoeff = build_java_coeff(env, Coefficient(1));
   switch (g.type()) {
