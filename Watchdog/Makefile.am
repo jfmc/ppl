@@ -23,7 +23,7 @@
 # Tell aclocal where to find `.m4' files.
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = utils src doc
+SUBDIRS = m4 utils src doc
 
 dist_noinst_SCRIPTS = \
 configure
