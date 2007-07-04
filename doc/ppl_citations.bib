@@ -670,9 +670,10 @@
   Editor = "K. Yi",
   Publisher = "Springer-Verlag, Berlin",
   Series = "Lecture Notes in Computer Science",
-  Volume = 4136,
+  Volume = 4134,
   Pages = "144--160",
   Year = 2006,
+  ISBN = "3-540-37756-5",
   Abstract = "Linear Relation Analysis [CH78,Hal79] is one of the
               first, but still one of the most powerful, abstract
               interpretations working in an infinite lattice. As such,
@@ -1218,6 +1219,46 @@
               successors. Using our prototype implementation TimePass,
               we demonstrate the performance of our technique on
               benchmark examples."
+}
+
+@InProceedings{SankaranarayananISG06,
+  Author = "S. Sankaranarayanan and F. Ivan\v{c}i\'{c}
+            and I. Shlyakhter and A. Gupta",
+  Title = "Static Analysis in Disjunctive Numerical Domains",
+  Booktitle = "Static Analysis:
+               Proceedings of the 13th International Symposium",
+  Address = "Seoul, Korea",
+  Editor = "K. Yi",
+  Publisher = "Springer-Verlag, Berlin",
+  Series = "Lecture Notes in Computer Science",
+  Volume = 4134,
+  Pages = "3--17",
+  Year = 2006,
+  ISBN = "3-540-37756-5",
+  Abstract = "The convexity of numerical domains such as polyhedra,
+              octagons, intervals and linear equalities enables
+              tractable analysis of software for buffer overflows,
+              null pointer dereferences and floating point
+              errors. However, convexity also causes the analysis to
+              fail in many common cases. Powerset extensions can
+              remedy this shortcoming by considering disjunctions of
+              predicates. Unfortunately, analysis using powerset
+              domains can be exponentially more expensive as compared
+              to analysis on the base domain. In this paper, we prove
+              structural properties of fixed points computed in
+              commonly used powerset extensions. We show that a fixed
+              point computed on a powerset extension is also a fixed
+              point in the base domain computed on an ``elaboration''
+              of the program's CFG structure. Using this insight, we
+              build analysis algorithms that approach path sensitive
+              static analysis algorithms by performing the fixed point
+              computation on the base domain while discovering an
+              ``elaboration'' on the fly. Using restrictions on the
+              nature of the elaborations, we design algorithms that
+              scale polynomially in terms of the number of
+              disjuncts. We have implemented a light-weight static
+              analyzer for C programs with encouraging initial
+              results."
 }
 
 @Techreport{SlaninaSSM07TR,
