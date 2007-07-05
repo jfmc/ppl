@@ -2412,8 +2412,13 @@ large_integers_prolog_cpp([], _).
 large_integers_prolog_cpp([Exp|Exps], Adds) :-
   pl_check_prolog_flag(bounded, F),
   (F == true ->
-     pl_check_prolog_flag(max_integer, Max_int),
-    (Max_int >> 1 =< 1 << Exp + 3 ->
+    pl_check_prolog_flag(max_integer, Max_int),
+    /* If the test value is too large, it may be wrap.
+       So we compare it with a much smaller number
+       as well as checking it against the maximum value. */
+    Test_value is 1 << Exp + 3,
+    Half_test_value is 1 << (Exp//2) + 3,
+    ((Test_value < Half_test_value; Max_int >> 1 =< Test_value) ->
        true
     ;
        large_integers_prolog_cpp1(Adds, Exp),
