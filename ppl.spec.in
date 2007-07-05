@@ -1,6 +1,6 @@
 Name:		ppl
 Version:	@VERSION@
-Release:	11%{?dist}
+Release:	12%{?dist}
 
 Summary:	The Parma Polyhedra Library: a library of numerical abstractions
 Group:		Development/Libraries
@@ -80,7 +80,7 @@ of the Parma Polyhedra Library.
 %package swiprolog
 Summary:	The SWI-Prolog interface of the Parma Polyhedra Library
 Group:		Development/Libraries
-BuildRequires:	pl >= 5.6.0, readline-devel
+BuildRequires:	pl >= 5.6.0
 Requires:	ppl = %{version}-%{release}, ppl-pwl = %{version}-%{release}, pl >= 5.6.0, readline-devel
 %description swiprolog
 This package adds SWI-Prolog support to the Parma Polyhedra Library.
@@ -95,7 +95,9 @@ Requires:	ppl-swiprolog = %{version}-%{release}
 This package contains the static archive for the SWI-Prolog interface
 of the Parma Polyhedra Library.
 
+%if 0
 %package yap
+# Disable YAP support until bug 246815 is fixed.
 Summary:	The YAP Prolog interface of the Parma Polyhedra Library
 Group:		Development/Libraries
 BuildRequires:	yap-devel >= 5.1.1
@@ -103,7 +105,9 @@ Requires:	ppl = %{version}-%{release}, ppl-pwl = %{version}-%{release}, yap >= 5
 %description yap
 This package adds YAP Prolog support to the Parma Polyhedra Library (PPL).
 Install this package if you want to use the library in YAP Prolog programs.
+%endif
 
+%if 0
 %package yap-static
 Summary:	The static archive for the YAP Prolog interface of the Parma Polyhedra Library
 Group:		Development/Libraries
@@ -112,6 +116,7 @@ Requires:	ppl-yap = %{version}-%{release}
 %description yap-static
 This package contains the static archive for the YAP Prolog interface
 of the Parma Polyhedra Library.
+%endif
 
 %package docs
 Summary:	Documentation for the Parma Polyhedra Library
@@ -159,7 +164,9 @@ CPPFLAGS="-I%{_includedir}/glpk"
 %ifnarch ppc64
 CPPFLAGS="$CPPFLAGS -I%{_libdir}/gprolog-`gprolog --version 2>&1 | head -1 | sed -e "s/.* \([^ ]*\)$/\1/g"`/include"
 %endif
+%if 0
 CPPFLAGS="$CPPFLAGS -I%{_includedir}/Yap"
+%endif
 %configure --enable-shared --disable-rpath CPPFLAGS="$CPPFLAGS"
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
@@ -235,15 +242,19 @@ rm -f %{buildroot}%{_libdir}/*.la %{buildroot}%{_libdir}/%{name}/*.la
 %defattr(-,root,root,-)
 %{_libdir}/%{name}/libppl_swiprolog.a
 
+%if 0
 %files yap
 %defattr(-,root,root,-)
 %doc interfaces/Prolog/YAP/README.yap
 %{_libdir}/%{name}/ppl_yap.pl
 %{_libdir}/%{name}/ppl_yap.so
+%endif
 
+%if 0
 %files yap-static
 %defattr(-,root,root,-)
 %{_libdir}/%{name}/ppl_yap.a
+%endif
 
 %files docs
 %defattr(-,root,root,-)
@@ -277,6 +288,11 @@ rm -f %{buildroot}%{_libdir}/*.la %{buildroot}%{_libdir}/%{name}/*.la
 rm -rf %{buildroot}
 
 %changelog
+* Thu Jul 05 2007 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-12
+- Disable YAP support until bug 246815 is fixed.
+- Bug 243084 has been fixed: `ppl-swiprolog' dependency on `readline-devel'
+  removed.
+
 * Thu Jul 05 2007 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-11
 - The `gprolog' package is not available on the ppc64 architecture:
   so do `ppl-gprolog' and `ppl-gprolog-static'.
