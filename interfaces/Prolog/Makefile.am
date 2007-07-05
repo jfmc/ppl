@@ -29,7 +29,9 @@ ppl_interface_generator_prolog_systems.m4 \
 ppl_interface_generator_prolog_icc_code.m4
 
 
-EXTRA_DIST = $(interface_generator_files)
+EXTRA_DIST = \
+$(interface_generator_files) \
+ppl_prolog_common.icc
 
 noinst_HEADERS = \
 exceptions.hh \
