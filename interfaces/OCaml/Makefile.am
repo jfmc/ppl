@@ -65,7 +65,7 @@ copied_mls.stamp:
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	for mlfile in $(original_mls); \
 	 do \
-	cp $(srcdir)/$$mlfile . ; \
+	cp -f $(srcdir)/$$mlfile . ; \
 	done \
 	fi
 	echo timestamp > copied_mls.stamp
@@ -85,7 +85,7 @@ delete_mls.stamp: ppl_ocaml_types.cmo ppl_ocaml_globals.cmo
 	for mlfile in $(original_mls); \
 	 do \
 	if [ -a $(top_builddir)/interfaces/OCaml/$$mlfile ]; then \
-	  rm $(top_builddir)/interfaces/OCaml/$$mlfile  ; \
+	  rm -f $(top_builddir)/interfaces/OCaml/$$mlfile  ; \
 	fi \
 	done \
 	fi
@@ -126,12 +126,12 @@ all:  libppl_ocaml.a ppl_ocaml.cma delete_mls.stamp
 
 test1$(EXEEXT):  all
 	if [ $(abs_srcdir) != `pwd` ]; then \
-	cp $(srcdir)/test1.ml . ; \
+	cp -f $(srcdir)/test1.ml . ; \
 	fi
 	ocamlc -g -c  $(OCAMLC_FLAGS) test1.ml
 	ocamlc -o $@ -cc g++ -g -custom $(OCAMLC_FLAGS)  ppl_ocaml.cma gmp.cma -ccopt -g test1.cmo
 	if [ $(abs_srcdir) != `pwd` ]; then \
-	rm test1.ml ; \
+	rm -f test1.ml ; \
 	fi
 
 ocamldir = $(ocamlc_root)/ppl
