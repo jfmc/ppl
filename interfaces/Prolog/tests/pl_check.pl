@@ -2399,35 +2399,33 @@ large_integers :-
   large_integers_exponents(Exps),
   large_integers_additions(Adds),
   out(large_int, init),
-  large_integers_prolog_cpp(Exps, Adds),
   pl_check_prolog_flag(bounded, Y),
   (Y == true ->
-    (out(sys_large_int, init),
-     large_integers_sys_prolog_cpp(Adds))
+     pl_check_prolog_flag(max_integer, Max_int),
+     large_integers_prolog_cpp_bounded(Exps, Adds, Max_int, 0),
+     out(sys_large_int, init),
+     large_integers_sys_prolog_cpp(Adds)
    ;
-     true
+     large_integers_prolog_cpp_unbounded(Exps, Adds)
   ).
 
-large_integers_prolog_cpp([], _).
-large_integers_prolog_cpp([Exp|Exps], Adds) :-
-  pl_check_prolog_flag(bounded, F),
-  (F == true ->
-    pl_check_prolog_flag(max_integer, Max_int),
-    /* If the test value is too large, it may be wrap.
-       So we compare it with a much smaller number
-       as well as checking it against the maximum value. */
-    Test_value is 1 << Exp + 3,
-    Half_test_value is 1 << (Exp//2) + 3,
-    ((Test_value < Half_test_value; Max_int >> 1 =< Test_value) ->
-       true
-    ;
-       large_integers_prolog_cpp1(Adds, Exp),
-       large_integers_prolog_cpp(Exps, Adds)
-    )
-  ;
+large_integers_prolog_cpp_bounded([], _, _, _).
+large_integers_prolog_cpp_bounded([Exp|Exps], Adds, Max_int, Prev_value) :-
+  /* If the test value is too large, it may be wrap.
+     So we compare it with the previous value that was ok
+     as well as checking it against the maximum value. */
+  Test_value is 1 << Exp + 3,
+  ((Test_value =< Prev_value; Max_int >> 1 =< Test_value) ->
+     true
+   ;
      large_integers_prolog_cpp1(Adds, Exp),
-     large_integers_prolog_cpp(Exps, Adds)
+     large_integers_prolog_cpp_bounded(Exps, Adds, Max_int, Test_value)
   ).
+
+large_integers_prolog_cpp_unbounded([], _).
+large_integers_prolog_cpp_unbounded([Exp|Exps], Adds) :-
+   large_integers_prolog_cpp1(Adds, Exp),
+   large_integers_prolog_cpp_unbounded(Exps, Adds).
 
 large_integers_prolog_cpp1([], _).
 large_integers_prolog_cpp1([Add|Adds], Exp) :-
