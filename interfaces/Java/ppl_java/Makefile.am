@@ -42,8 +42,7 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../../ppl_interface_generator_common_dat.m4 \
 ../../ppl_interface_generator_copyright \
 ../ppl_interface_generator_java_dat.m4 \
-ppl_interface_generator_java_classes_java.m4 \
-ppl_interface_generator_java_classes_java_code.m4
+$(interface_generator_files)
 
 fixed_java_cxx_headers = \
 ppl_java.Congruence \
@@ -106,7 +105,6 @@ Parma_Polyhedra_Library.java \
 Partial_Function.java \
 Poly_Con_Relation.java \
 Poly_Gen_Relation.java \
-Polyhedron.java \
 Relation_Symbol.java \
 Variable.java \
 Variables_Set.java
