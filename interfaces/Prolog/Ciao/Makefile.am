@@ -41,7 +41,7 @@ AM_CPPFLAGS = \
 @extra_includes@
 
 interface_generator_dependencies = \
-../../ppl_interface_instantiations.m4 \
+$(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../../ppl_interface_generator_common.m4 \
 ../../ppl_interface_generator_common_dat.m4 \
 ../../ppl_interface_generator_copyright \

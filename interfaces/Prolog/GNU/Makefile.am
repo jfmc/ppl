@@ -49,7 +49,7 @@ $(top_builddir)/Watchdog/src/libpwl.la \
 libppl_gprolog_la_LDFLAGS = -module -avoid-version
 
 interface_generator_dependencies = \
-../../ppl_interface_instantiations.m4 \
+$(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../../ppl_interface_generator_common.m4 \
 ../../ppl_interface_generator_common_dat.m4 \
 ../../ppl_interface_generator_copyright \
