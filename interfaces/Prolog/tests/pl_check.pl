@@ -33,7 +33,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 :- dynamic(noisy/1).
 
-% check_all
+% check_all/0
 % This executes all the test predicates which, together, check all
 % the ppl interface predicates.
 
@@ -43,17 +43,19 @@ check_all :-
    catch(run_all(Groups), Exception,
        (print_exception_term(Exception), fail)).
 
-% check_quiet
-% This alo executes all the test predicates with no output.
+% check_quiet/0
+% This also executes all the test predicates with no output.
 
 check_quiet :-
    make_quiet,
    check_all.
 
-% check_noisy
-% This alo executes all the test predicates but also prints some messages
-% including the banner, version numbers and expected output from
-% the exception tests.
+% check_noisy/0
+% check_extra_noisy/0
+%
+% These also execute all the test predicates but also outputs
+% information including the banner, version numbers and expected
+% output from the exception tests.
 
 check_noisy :-
    make_noisy,
@@ -62,6 +64,10 @@ check_noisy :-
 check_extra_noisy :-
    make_extra_noisy,
    check_all.
+
+% run_all/1
+% This executes all the given list of tests, catching any exceptions.
+% If any test fails then an error message is output and then it fails.
 
 run_all([Group|Groups]):-
    ppl_initialize,
@@ -79,13 +85,23 @@ run_all([_|_]) :-
    ppl_finalize,
    fail.
 
+% run_fail/1
+% This is used when a test in run_all/1 fails.
+% A message is output saying which group of tests has failed
+% and then fails.
+
 run_fail(Group) :-
    group_predicates(Group, Predicates),
    error_message(['Error occurred while performing test', Group,
-              'which checks predicates:', nl, Predicates]),
+              'which checks predicates:', also, Predicates]),
    !,
    ppl_finalize,
    fail.
+
+% run_exception/2
+% This is used when a test in run_all/1 causes an exception to be thrown.
+% A message is output saying which group of tests was being run when
+% the exception was thrown and then it fails.
 
 run_exception(Group, ppl_overflow_error(Cause)) :-
    !,
@@ -102,6 +118,9 @@ run_exception(Group, Exception) :-
               'which checks predicates ', nl, Predicates]),
    print_exception_term(Exception),
    fail.
+
+% run_one/1
+% Runs the named group of tests.
 
 % Tests predicates that return PPL version information and the PPL banner.
 % If noisy(0) holds, there is no output but if not,
@@ -127,7 +146,7 @@ run_one(all_versions_and_banner) :-
   ).
 
 % Tests predicates that return the maximum allowed dimension and coefficients.
-% If noisy(0) holds, there is no output but if not, the maximums/miniumums
+% If noisy(0) holds, there is no output but if not, the maximums/minimums
 % are printed.
 run_one(numeric_bounds) :-
   max_dimension,
@@ -239,6 +258,7 @@ run_one(catch_time) :-
 run_one(mip_problem) :-
    mip_problem.
 
+% Checks how the PPL Prolog system performs with large integers
 % XSB has problems with large numbers - hence tests for XSB disallowed.
 % We catch the exception if it is caused by integer overflow in C++
 % and suppress output as this is expected when C++ uses checked_integers.
@@ -251,6 +271,7 @@ run_one(large_integers) :-
      true
    ).
 
+% Checks the handling of exceptions.
 run_one(handle_exceptions) :-
    exceptions.
 
@@ -267,7 +288,7 @@ max_dimension :-
 % ppl_Coefficient_max/1, ppl_Coefficient_min/1.
 % But it has to catch the case when the numeric bounds in the
 % prolog system are smaller than any finite bounds in C++
-% As the test does not know the configuartion, all that can be tested
+% As the test does not know the configuration, all that can be tested
 % here is that the results are consistent and the bounds are
 % in a list of possible bounds.
 
@@ -2401,25 +2422,27 @@ large_integers :-
   out(large_int, init),
   pl_check_prolog_flag(bounded, Y),
   (Y == true ->
-     pl_check_prolog_flag(max_integer, Max_int),
-     large_integers_prolog_cpp_bounded(Exps, Adds, Max_int, 0),
+     large_integers_prolog_cpp_bounded(Exps, Adds, 0),
      out(sys_large_int, init),
      large_integers_sys_prolog_cpp(Adds)
    ;
      large_integers_prolog_cpp_unbounded(Exps, Adds)
   ).
 
-large_integers_prolog_cpp_bounded([], _, _, _).
-large_integers_prolog_cpp_bounded([Exp|Exps], Adds, Max_int, Prev_value) :-
+large_integers_prolog_cpp_bounded([], _, _).
+large_integers_prolog_cpp_bounded([Exp|Exps], Adds, Prev_value) :-
   /* If the test value is too large, it may be wrap.
      So we compare it with the previous value that was ok
      as well as checking it against the maximum value. */
   Test_value is 1 << Exp + 3,
-  ((Test_value =< Prev_value; Max_int >> 1 =< Test_value) ->
+  ( ( Test_value =< Prev_value ;
+      (pl_check_prolog_flag(max_integer, Max_int),
+         Max_int >> 1 =< Test_value)
+    ) ->
      true
    ;
      large_integers_prolog_cpp1(Adds, Exp),
-     large_integers_prolog_cpp_bounded(Exps, Adds, Max_int, Test_value)
+     large_integers_prolog_cpp_bounded(Exps, Adds, Test_value)
   ).
 
 large_integers_prolog_cpp_unbounded([], _).
@@ -3171,10 +3194,10 @@ group_predicates(new_polyhedron_from_dimension,
   ]).
 
 group_predicates(new_polyhedron_from_polyhedron,
-  [ppl_new_C_Polyhedron_from_C_Polyhedrom/3,
-   ppl_new_C_Polyhedron_from_NNC_Polyhedrom/3,
-   ppl_new_NNC_Polyhedron_from_C_Polyhedrom/3,
-   ppl_new_NNC_Polyhedron_from_NNC_Polyhedrom/3,
+  [ppl_new_C_Polyhedron_from_C_Polyhedron/3,
+   ppl_new_C_Polyhedron_from_NNC_Polyhedron/3,
+   ppl_new_NNC_Polyhedron_from_C_Polyhedron/3,
+   ppl_new_NNC_Polyhedron_from_NNC_Polyhedron/3,
    ppl_new_C_Polyhedron_from_constraints/2,
    ppl_new_NNC_Polyhedron_from_constraints/2,
    ppl_Polyhedron_equals_Polyhedron/2
