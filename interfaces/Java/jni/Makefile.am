@@ -34,8 +34,7 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../../ppl_interface_generator_common_dat.m4 \
 ../../ppl_interface_generator_copyright \
 ../ppl_interface_generator_java_dat.m4 \
-ppl_interface_generator_java_ppl_java_classes_cc.m4 \
-ppl_interface_generator_java_ppl_java_classes_cc_code.m4
+$(interface_generator_files)
 
 AM_CPPFLAGS = -I$(top_builddir)/src -I../ppl_java -I$(top_srcdir)/src @extra_includes@ @JNIFLAGS@
 
@@ -44,12 +43,14 @@ lib_LTLIBRARIES = libppl_java.la
 if HOST_OS_DARWIN
 libppl_java_la_LDFLAGS=-shrext .jnilib
 endif HOST_OS_DARWIN
- 
+
 libppl_java_la_SOURCES = \
 ppl_java_common.hh \
 ppl_java_common.cc \
-ppl_java_classes.cc \
 ppl_java_globals.cc
+
+nodist_libppl_java_la_SOURCES = \
+ppl_java_classes.cc
 
 BUILT_SOURCES = \
 ppl_java_classes.cc
