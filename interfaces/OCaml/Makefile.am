@@ -77,8 +77,9 @@ copied_mls.stamp:
 .ml.cmo:
 	ocamlc -g -c  $(OCAMLC_FLAGS) `basename  $<`
 
-
-ppl_ocaml.cmo: copied_mls.stamp ppl_ocaml_types.cmo ppl_ocaml_globals.cmo ppl_ocaml.cmi
+ppl_ocaml_types.cmo: copied_mls.stamp
+ppl_ocaml_globals.cmo: ppl_ocaml_types.cmo
+ppl_ocaml.cmo: ppl_ocaml_globals.cmo ppl_ocaml.cmi
 
 delete_mls.stamp: ppl_ocaml_types.cmo ppl_ocaml_globals.cmo
 	if [ $(abs_srcdir) != `pwd` ]; then \
