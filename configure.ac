@@ -926,6 +926,7 @@ fi
 cygwin=no
 darwin=no
 solaris=no
+x86_64=no
 no_undefined=no
 
 case "${host_cpu}" in
@@ -938,6 +939,9 @@ alpha*)
     CFLAGS="$CFLAGS -fprm d -ieee -underflow_to_zero"
     CXXFLAGS="$CXXFLAGS -fprm d -ieee -underflow_to_zero"
   fi
+  ;;
+x86_64*)
+  x86_64=yes
   ;;
 *)
   ;;
@@ -966,6 +970,9 @@ esac
 AM_CONDITIONAL(HOST_OS_CYGWIN, test x$cygwin = xyes)
 AM_CONDITIONAL(HOST_OS_DARWIN, test x$darwin = xyes)
 AM_CONDITIONAL(HOST_OS_SOLARIS, test x$solaris = xyes)
+
+AM_CONDITIONAL(HOST_CPU_X86_64, test x$x86_64 = xyes)
+
 AM_CONDITIONAL(NO_UNDEFINED, test x$no_undefined = xyes)
 
 AC_SUBST(extra_includes)
