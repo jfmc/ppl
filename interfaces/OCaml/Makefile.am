@@ -121,10 +121,6 @@ ppl_ocaml.cma: ppl_ocaml.cmo
 	 ocamlc -a -custom ppl_ocaml.cmo -I . $(OCAMLC_FLAGS) -cclib -lppl_ocaml   -cclib -lppl -o ppl_ocaml.cma
 
 
-# Force to create the interface when a `make' is given.
-# FIXME: this is a temporary patch.
-all:  libppl_ocaml.a ppl_ocaml.cma delete_mls.stamp
-
 test1$(EXEEXT):  all
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	cp -f $(srcdir)/test1.ml . ; \
@@ -135,7 +131,7 @@ test1$(EXEEXT):  all
 	rm -f test1.ml ; \
 	fi
 
-ocamldir = $(ocamlc_root)/ppl
+ocamldir = $(pkglibdir)
 
 ocaml_DATA = \
 libppl_ocaml.a \
