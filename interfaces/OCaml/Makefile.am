@@ -120,6 +120,9 @@ noinst_PROGRAM = test1
 ppl_ocaml.cma: ppl_ocaml.cmo
 	 ocamlc -a -custom ppl_ocaml.cmo -I . $(OCAMLC_FLAGS) -cclib -lppl_ocaml   -cclib -lppl -o ppl_ocaml.cma
 
+# Force to create the interface when a `make' is given.
+# FIXME: this is a temporary patch.
+all:  libppl_ocaml.a ppl_ocaml.cma delete_mls.stamp
 
 test1$(EXEEXT):  all
 	if [ $(abs_srcdir) != `pwd` ]; then \
