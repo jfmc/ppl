@@ -273,3 +273,6 @@ EXTRA_DIST = $(refine2_SRCS)
 
 MOSTLYCLEANFILES = \
 ascii_dump_load1.dat
+
+DISTCLEANFILES = \
+run_tests.stamp
