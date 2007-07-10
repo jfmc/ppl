@@ -300,7 +300,7 @@ public:
 
     \param cs
     A system of constraints: constraints that are not
-    \ref Boxes "interval constraints"
+    \ref bounding_boxes "interval constraints"
     are ignored (even though they may have contributed
     to the space dimension).
   */
@@ -312,7 +312,7 @@ public:
 
     \param cs
     A system of constraints: constraints that are not
-    \ref Boxes "interval constraints"
+    \ref bounding_boxes "interval constraints"
     are ignored (even though they may have contributed
     to the space dimension).
 
@@ -336,6 +336,9 @@ public:
   /*!
     Builds the smallest box containing the polyhedron defined by \p gs.
     The box inherits the space dimension of \p gs.
+
+    \param gs
+    The generator system describing the polyhedron to be approximated.
 
     \param dummy
     A dummy tag to syntactically differentiate this one
@@ -1673,7 +1676,7 @@ namespace Parma_Polyhedra_Library {
 /*! \relates Box
   \return
   <CODE>true</CODE> if the constraint \p c is an
-  \ref Boxes "interval constraint";
+  \ref bounding_boxes "interval constraint";
   <CODE>false</CODE> otherwise.
 
   \param c
