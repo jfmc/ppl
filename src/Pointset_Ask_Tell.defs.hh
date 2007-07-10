@@ -40,7 +40,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <list>
 #include <map>
 
-//! The powerset construction instantiated on PPL polyhedra.
+//! The ask-and-tell construction instantiated on PPL polyhedra.
 /*! \ingroup PPL_CXX_interface */
 template <typename PS>
 class Parma_Polyhedra_Library::Pointset_Ask_Tell
