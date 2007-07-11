@@ -58,17 +58,13 @@ combine(Result l, Result u) {
 using namespace Boundary_NS;
 using namespace Interval_NS;
 
-struct Interval_Base {
-};
+struct Interval_Base {};
 
 template <typename T, typename Enable = void>
-struct Is_Singleton_Or_Interval : public False {};
+struct Is_Singleton : public Is_Native_Or_Checked<T> {};
 
 template <typename T>
-struct Is_Singleton_Or_Interval<T, typename Enable_If<Is_Same_Or_Derived<Interval_Base, T>::value>::type> : public True {};
-
-template <typename T>
-struct Is_Singleton_Or_Interval<T, typename Enable_If<Is_Native_Or_Checked<T>::value>::type> : public True {};
+struct Is_Interval : public Is_Same_Or_Derived<Interval_Base, T> {};
 
 //! A generic, not necessarily closed, possibly restricted interval.
 /*! \ingroup PPL_CXX_interface
@@ -164,32 +160,32 @@ public:
   }
 
   template <typename T>
-  typename Enable_If<Is_Singleton_Or_Interval<T>::value, Interval&>::type
+  typename Enable_If<Is_Singleton<T>::value || Is_Interval<T>::value, Interval&>::type
   operator=(const T& x) {
     assign(x);
     return *this;
   }
 
   template <typename T>
-  typename Enable_If<Is_Singleton_Or_Interval<T>::value, Interval&>::type
+  typename Enable_If<Is_Singleton<T>::value || Is_Interval<T>::value, Interval&>::type
   operator+=(const T& x) {
     add_assign(*this, x);
     return *this;
   }
   template <typename T>
-  typename Enable_If<Is_Singleton_Or_Interval<T>::value, Interval&>::type
+  typename Enable_If<Is_Singleton<T>::value || Is_Interval<T>::value, Interval&>::type
   operator-=(const T& x) {
     sub_assign(*this, x);
     return *this;
   }
   template <typename T>
-  typename Enable_If<Is_Singleton_Or_Interval<T>::value, Interval&>::type
+  typename Enable_If<Is_Singleton<T>::value || Is_Interval<T>::value, Interval&>::type
   operator*=(const T& x) {
     mul_assign(*this, x);
     return *this;
   }
   template <typename T>
-  typename Enable_If<Is_Singleton_Or_Interval<T>::value, Interval&>::type
+  typename Enable_If<Is_Singleton<T>::value || Is_Interval<T>::value, Interval&>::type
   operator/=(const T& x) {
     div_assign(*this, x);
     return *this;
@@ -661,72 +657,72 @@ public:
   }
 
   template <typename T>
-  typename Enable_If<Is_Singleton_Or_Interval<T>::value, bool>::type
+  typename Enable_If<Is_Singleton<T>::value || Is_Interval<T>::value, bool>::type
   contains(const T& y) const;
 
   template <typename T>
-  typename Enable_If<Is_Singleton_Or_Interval<T>::value, bool>::type
+  typename Enable_If<Is_Singleton<T>::value || Is_Interval<T>::value, bool>::type
   strictly_contains(const T& y) const;
 
   template <typename T>
-  typename Enable_If<Is_Singleton_Or_Interval<T>::value, bool>::type
+  typename Enable_If<Is_Singleton<T>::value || Is_Interval<T>::value, bool>::type
   is_disjoint_from(const T& y) const;
 
   template <typename From1, typename From2>
   I_Result assign(const From1& l, const From2& u);
 
   template <typename From>
-  typename Enable_If<Is_Singleton_Or_Interval<From>::value, I_Result>::type
+  typename Enable_If<Is_Singleton<From>::value || Is_Interval<From>::value, I_Result>::type
   assign(const From& x);
 
   template <typename From>
-  typename Enable_If<Is_Singleton_Or_Interval<From>::value, I_Result>::type
+  typename Enable_If<Is_Singleton<From>::value || Is_Interval<From>::value, I_Result>::type
   join_assign(const From& x);
 
   template <typename From1, typename From2>
-  typename Enable_If<(Is_Singleton_Or_Interval<From1>::value
-		      || Is_Singleton_Or_Interval<From2>::value), I_Result>::type
+  typename Enable_If<((Is_Singleton<From1>::value || Is_Interval<From1>::value)
+		      && (Is_Singleton<From2>::value || Is_Interval<From2>::value)), I_Result>::type
   join_assign(const From1& x, const From2& y);
 
   template <typename From>
-  typename Enable_If<Is_Singleton_Or_Interval<From>::value, I_Result>::type
+  typename Enable_If<Is_Singleton<From>::value || Is_Interval<From>::value, I_Result>::type
   intersect_assign(const From& x);
 
   template <typename From1, typename From2>
-  typename Enable_If<(Is_Singleton_Or_Interval<From1>::value
-		      || Is_Singleton_Or_Interval<From2>::value), I_Result>::type
+  typename Enable_If<((Is_Singleton<From1>::value || Is_Interval<From1>::value)
+		      && (Is_Singleton<From2>::value || Is_Interval<From2>::value)), I_Result>::type
   intersect_assign(const From1& x, const From2& y);
 
   template <typename From>
-  typename Enable_If<Is_Singleton_Or_Interval<From>::value, I_Result>::type
+  typename Enable_If<Is_Singleton<From>::value || Is_Interval<From>::value, I_Result>::type
   refine_existential(Relation_Symbol rel, const From& x);
 
   template <typename From>
-  typename Enable_If<Is_Singleton_Or_Interval<From>::value, I_Result>::type
+  typename Enable_If<Is_Singleton<From>::value || Is_Interval<From>::value, I_Result>::type
   refine_universal(Relation_Symbol rel, const From& x);
 
   template <typename From>
-  typename Enable_If<Is_Singleton_Or_Interval<From>::value, I_Result>::type
+  typename Enable_If<Is_Singleton<From>::value || Is_Interval<From>::value, I_Result>::type
   neg_assign(const From& x);
 
   template <typename From1, typename From2>
-  typename Enable_If<(Is_Singleton_Or_Interval<From1>::value
-		      && Is_Singleton_Or_Interval<From2>::value), I_Result>::type
+  typename Enable_If<((Is_Singleton<From1>::value || Is_Interval<From1>::value)
+		      && (Is_Singleton<From2>::value || Is_Interval<From2>::value)), I_Result>::type
   add_assign(const From1& x, const From2& y);
 
   template <typename From1, typename From2>
-  typename Enable_If<(Is_Singleton_Or_Interval<From1>::value
-		      && Is_Singleton_Or_Interval<From2>::value), I_Result>::type
+  typename Enable_If<((Is_Singleton<From1>::value || Is_Interval<From1>::value)
+		      && (Is_Singleton<From2>::value || Is_Interval<From2>::value)), I_Result>::type
   sub_assign(const From1& x, const From2& y);
 
   template <typename From1, typename From2>
-  typename Enable_If<(Is_Singleton_Or_Interval<From1>::value
-		      && Is_Singleton_Or_Interval<From2>::value), I_Result>::type
+  typename Enable_If<((Is_Singleton<From1>::value || Is_Interval<From1>::value)
+		      && (Is_Singleton<From2>::value || Is_Interval<From2>::value)), I_Result>::type
   mul_assign(const From1& x, const From2& y);
 
   template <typename From1, typename From2>
-  typename Enable_If<(Is_Singleton_Or_Interval<From1>::value
-		      && Is_Singleton_Or_Interval<From2>::value), I_Result>::type
+  typename Enable_If<((Is_Singleton<From1>::value || Is_Interval<From1>::value)
+		      && (Is_Singleton<From2>::value || Is_Interval<From2>::value)), I_Result>::type
   div_assign(const From1& x, const From2& y);
 
 private:
@@ -788,40 +784,40 @@ const Scalar_As_Interval_Info SCALAR_INFO;
 typedef Interval_Restriction_None<Interval_Info_Null_Open<Scalar_As_Interval_Policy> > Scalar_As_Interval_Info_Open;
 
 template <typename T>
-inline typename Enable_If<Is_Native_Or_Checked<T>::value, const T&>::type
+inline typename Enable_If<Is_Singleton<T>::value, const T&>::type
 f_lower(const T& x) {
   return x;
 }
 template <typename T>
-inline typename Enable_If<Is_Native_Or_Checked<T>::value, const T&>::type
+inline typename Enable_If<Is_Singleton<T>::value, const T&>::type
 f_upper(const T& x) {
   return x;
 }
 template <typename T>
-inline typename Enable_If<Is_Native_Or_Checked<T>::value, const Scalar_As_Interval_Info&>::type
+inline typename Enable_If<Is_Singleton<T>::value, const Scalar_As_Interval_Info&>::type
 f_info(const T&) {
   return SCALAR_INFO;
 }
 template <typename T>
-inline typename Enable_If<Is_Native_Or_Checked<T>::value, Scalar_As_Interval_Info_Open>::type
+inline typename Enable_If<Is_Singleton<T>::value, Scalar_As_Interval_Info_Open>::type
 f_info(const T&, bool open) {
   return Scalar_As_Interval_Info_Open(open);
 }
 
 template <typename T>
-inline typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type
+inline typename Enable_If<Is_Singleton<T>::value, bool>::type
 f_is_empty(const T& x) {
   return is_not_a_number(x);
 }
 
 template <typename T>
-inline typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type
+inline typename Enable_If<Is_Singleton<T>::value, bool>::type
 f_is_singleton(const T& x) {
   return !f_is_empty(x);
 }
 
 template <typename T>
-inline typename Enable_If<Is_Singleton_Or_Interval<T>::value, Ternary>::type
+inline typename Enable_If<Is_Singleton<T>::value || Is_Interval<T>::value, Ternary>::type
 f_is_empty_lazy(const T& x) {
   if (f_info(x).get_interval_property(CARDINALITY_0))
     return f_info(x).get_interval_property(CARDINALITY_IS) ? T_YES : T_NO;
@@ -844,7 +840,7 @@ is_not_a_number(const char*) {
 }
 
 template <typename T>
-inline typename Enable_If<Is_Singleton_Or_Interval<T>::value, bool>::type
+inline typename Enable_If<Is_Singleton<T>::value || Is_Interval<T>::value, bool>::type
 is_singleton_integer(const T& x) {
   return is_singleton(x) && is_integer(f_lower(x));
 }
@@ -862,7 +858,7 @@ same_object(const T& x, const T& y) {
 }
 
 template <typename T>
-inline typename Enable_If<Is_Singleton_Or_Interval<T>::value, bool>::type
+inline typename Enable_If<Is_Singleton<T>::value || Is_Interval<T>::value, bool>::type
 check_empty_arg(const T& x) {
   if (f_info(x).may_be_empty)
     return f_is_empty(x);
@@ -882,10 +878,9 @@ check_empty_result(const Interval<Boundary, Info>& x, I_Result r) {
 }
 
 template <typename T1, typename T2>
-inline typename Enable_If<((Is_Singleton_Or_Interval<T1>::value
-			    || Is_Singleton_Or_Interval<T2>::value)
-			   && (Is_Same_Or_Derived<Interval_Base, T1>::value
-			       || Is_Same_Or_Derived<Interval_Base, T2>::value)),
+inline typename Enable_If<((Is_Singleton<T1>::value || Is_Interval<T1>::value)
+			   && (Is_Singleton<T2>::value || Is_Interval<T2>::value)
+			   && (Is_Interval<T1>::value || Is_Interval<T2>::value)),
 			  bool>::type
 operator==(const T1& x, const T2& y) {
   assert(f_OK(x));
@@ -900,10 +895,9 @@ operator==(const T1& x, const T2& y) {
 }
 
 template <typename T1, typename T2>
-inline typename Enable_If<((Is_Singleton_Or_Interval<T1>::value
-			    || Is_Singleton_Or_Interval<T2>::value)
-			   && (Is_Same_Or_Derived<Interval_Base, T1>::value
-			       || Is_Same_Or_Derived<Interval_Base, T2>::value)),
+inline typename Enable_If<((Is_Singleton<T1>::value || Is_Interval<T1>::value)
+			   && (Is_Singleton<T2>::value || Is_Interval<T2>::value)
+			   && (Is_Interval<T1>::value || Is_Interval<T2>::value)),
 			  bool>::type
 operator!=(const T1& x, const T2& y) {
   return !(x == y);
@@ -911,7 +905,7 @@ operator!=(const T1& x, const T2& y) {
 
 template <typename Boundary, typename Info>
 template <typename T>
-inline typename Enable_If<Is_Singleton_Or_Interval<T>::value, bool>::type
+inline typename Enable_If<Is_Singleton<T>::value || Is_Interval<T>::value, bool>::type
 Interval<Boundary, Info>::contains(const T& y) const {
   assert(OK());
   assert(f_OK(y));
@@ -927,7 +921,7 @@ Interval<Boundary, Info>::contains(const T& y) const {
 
 template <typename Boundary, typename Info>
 template <typename T>
-inline typename Enable_If<Is_Singleton_Or_Interval<T>::value, bool>::type
+inline typename Enable_If<Is_Singleton<T>::value || Is_Interval<T>::value, bool>::type
 Interval<Boundary, Info>::strictly_contains(const T& y) const {
   assert(OK());
   assert(f_OK(y));
@@ -948,7 +942,7 @@ Interval<Boundary, Info>::strictly_contains(const T& y) const {
 
 template <typename Boundary, typename Info>
 template <typename T>
-inline typename Enable_If<Is_Singleton_Or_Interval<T>::value, bool>::type
+inline typename Enable_If<Is_Singleton<T>::value || Is_Interval<T>::value, bool>::type
 Interval<Boundary, Info>::is_disjoint_from(const T& y) const {
   assert(OK());
   assert(f_OK(y));
@@ -975,7 +969,7 @@ Interval<To_Boundary, To_Info>::assign(const From1& l, const From2& u) {
 
 template <typename To_Boundary, typename To_Info>
 template <typename From>
-inline typename Enable_If<Is_Singleton_Or_Interval<From>::value, I_Result>::type
+inline typename Enable_If<Is_Singleton<From>::value || Is_Interval<From>::value, I_Result>::type
 Interval<To_Boundary, To_Info>::assign(const From& x) {
   assert(f_OK(x));
   if (check_empty_arg(x))
@@ -996,7 +990,7 @@ Interval<To_Boundary, To_Info>::assign(const From& x) {
 
 template <typename To_Boundary, typename To_Info>
 template <typename From>
-inline typename Enable_If<Is_Singleton_Or_Interval<From>::value, I_Result>::type
+inline typename Enable_If<Is_Singleton<From>::value || Is_Interval<From>::value, I_Result>::type
 Interval<To_Boundary, To_Info>::join_assign(const From& x) {
   assert(f_OK(x));
   if (check_empty_arg(*this))
@@ -1017,8 +1011,8 @@ Interval<To_Boundary, To_Info>::join_assign(const From& x) {
 
 template <typename To_Boundary, typename To_Info>
 template <typename From1, typename From2>
-inline typename Enable_If<(Is_Singleton_Or_Interval<From1>::value
-			   || Is_Singleton_Or_Interval<From2>::value), I_Result>::type
+inline typename Enable_If<((Is_Singleton<From1>::value || Is_Interval<From1>::value)
+			   && (Is_Singleton<From2>::value || Is_Interval<From2>::value)), I_Result>::type
 Interval<To_Boundary, To_Info>::join_assign(const From1& x, const From2& y) {
   assert(f_OK(x));
   assert(f_OK(y));
@@ -1046,7 +1040,7 @@ Interval<To_Boundary, To_Info>::join_assign(const From1& x, const From2& y) {
 
 template <typename To_Boundary, typename To_Info>
 template <typename From>
-inline typename Enable_If<Is_Singleton_Or_Interval<From>::value, I_Result>::type
+inline typename Enable_If<Is_Singleton<From>::value || Is_Interval<From>::value, I_Result>::type
 Interval<To_Boundary, To_Info>::intersect_assign(const From& x) {
   assert(f_OK(x));
   if (!intersect_restriction(info(), *this, x))
@@ -1062,8 +1056,8 @@ Interval<To_Boundary, To_Info>::intersect_assign(const From& x) {
 
 template <typename To_Boundary, typename To_Info>
 template <typename From1, typename From2>
-inline typename Enable_If<(Is_Singleton_Or_Interval<From1>::value
-			   || Is_Singleton_Or_Interval<From2>::value), I_Result>::type
+inline typename Enable_If<((Is_Singleton<From1>::value || Is_Interval<From1>::value)
+			   && (Is_Singleton<From2>::value || Is_Interval<From2>::value)), I_Result>::type
 Interval<To_Boundary, To_Info>::intersect_assign(const From1& x, const From2& y) {
   assert(f_OK(x));
   assert(f_OK(y));
@@ -1102,7 +1096,7 @@ Interval<To_Boundary, To_Info>::intersect_assign(const From1& x, const From2& y)
 */
 template <typename To_Boundary, typename To_Info>
 template <typename From>
-inline typename Enable_If<Is_Singleton_Or_Interval<From>::value, I_Result>::type
+inline typename Enable_If<Is_Singleton<From>::value || Is_Interval<From>::value, I_Result>::type
 Interval<To_Boundary, To_Info>::refine_existential(Relation_Symbol rel, const From& x) {
   assert(OK());
   assert(f_OK(x));
@@ -1193,7 +1187,7 @@ Interval<To_Boundary, To_Info>::refine_existential(Relation_Symbol rel, const Fr
 */
 template <typename To_Boundary, typename To_Info>
 template <typename From>
-inline typename Enable_If<Is_Singleton_Or_Interval<From>::value, I_Result>::type
+inline typename Enable_If<Is_Singleton<From>::value || Is_Interval<From>::value, I_Result>::type
 Interval<To_Boundary, To_Info>::refine_universal(Relation_Symbol rel, const From& x) {
   assert(OK());
   assert(f_OK(x));
@@ -1268,7 +1262,7 @@ Interval<To_Boundary, To_Info>::refine_universal(Relation_Symbol rel, const From
 
 template <typename To_Boundary, typename To_Info>
 template <typename From>
-inline typename Enable_If<Is_Singleton_Or_Interval<From>::value, I_Result>::type
+inline typename Enable_If<Is_Singleton<From>::value || Is_Interval<From>::value, I_Result>::type
 Interval<To_Boundary, To_Info>::neg_assign(const From& x) {
   assert(f_OK(x));
   if (check_empty_arg(x))
@@ -1290,8 +1284,8 @@ Interval<To_Boundary, To_Info>::neg_assign(const From& x) {
 
 template <typename To_Boundary, typename To_Info>
 template <typename From1, typename From2>
-inline typename Enable_If<(Is_Singleton_Or_Interval<From1>::value
-			   && Is_Singleton_Or_Interval<From2>::value), I_Result>::type
+inline typename Enable_If<((Is_Singleton<From1>::value || Is_Interval<From1>::value)
+			   && (Is_Singleton<From2>::value || Is_Interval<From2>::value)), I_Result>::type
 Interval<To_Boundary, To_Info>::add_assign(const From1& x, const From2& y) {
   assert(f_OK(x));
   assert(f_OK(y));
@@ -1326,8 +1320,8 @@ Interval<To_Boundary, To_Info>::add_assign(const From1& x, const From2& y) {
 
 template <typename To_Boundary, typename To_Info>
 template <typename From1, typename From2>
-inline typename Enable_If<(Is_Singleton_Or_Interval<From1>::value
-			   && Is_Singleton_Or_Interval<From2>::value), I_Result>::type
+inline typename Enable_If<((Is_Singleton<From1>::value || Is_Interval<From1>::value)
+			   && (Is_Singleton<From2>::value || Is_Interval<From2>::value)), I_Result>::type
 Interval<To_Boundary, To_Info>::sub_assign(const From1& x, const From2& y) {
   assert(f_OK(x));
   assert(f_OK(y));
@@ -1378,8 +1372,8 @@ Interval<To_Boundary, To_Info>::sub_assign(const From1& x, const From2& y) {
 **/
 template <typename To_Boundary, typename To_Info>
 template <typename From1, typename From2>
-inline typename Enable_If<(Is_Singleton_Or_Interval<From1>::value
-			   && Is_Singleton_Or_Interval<From2>::value), I_Result>::type
+inline typename Enable_If<((Is_Singleton<From1>::value || Is_Interval<From1>::value)
+			   && (Is_Singleton<From2>::value || Is_Interval<From2>::value)), I_Result>::type
 Interval<To_Boundary, To_Info>::mul_assign(const From1& x, const From2& y) {
   assert(f_OK(x));
   assert(f_OK(y));
@@ -1546,8 +1540,8 @@ Interval<To_Boundary, To_Info>::mul_assign(const From1& x, const From2& y) {
 **/
 template <typename To_Boundary, typename To_Info>
 template <typename From1, typename From2>
-inline typename Enable_If<(Is_Singleton_Or_Interval<From1>::value
-			   && Is_Singleton_Or_Interval<From2>::value), I_Result>::type
+inline typename Enable_If<((Is_Singleton<From1>::value || Is_Interval<From1>::value)
+			   && (Is_Singleton<From2>::value || Is_Interval<From2>::value)), I_Result>::type
 Interval<To_Boundary, To_Info>::div_assign(const From1& x, const From2& y) {
   assert(f_OK(x));
   assert(f_OK(y));
@@ -1643,7 +1637,7 @@ Interval<To_Boundary, To_Info>::div_assign(const From1& x, const From2& y) {
 }
 
 template <typename B, typename Info, typename T>
-inline typename Enable_If<Is_Native_Or_Checked<T>::value, Interval<B, Info> >::type
+inline typename Enable_If<Is_Singleton<T>::value, Interval<B, Info> >::type
 operator+(const Interval<B, Info>& x, const T& y) {
   Interval<B, Info> z;
   z.add_assign(x, y);
@@ -1651,7 +1645,7 @@ operator+(const Interval<B, Info>& x, const T& y) {
 }
 
 template <typename B, typename Info, typename T>
-inline typename Enable_If<Is_Native_Or_Checked<T>::value, Interval<B, Info> >::type
+inline typename Enable_If<Is_Singleton<T>::value, Interval<B, Info> >::type
 operator+(const T& x, const Interval<B, Info>& y) {
   Interval<B, Info> z;
   z.add_assign(x, y);
@@ -1667,7 +1661,7 @@ operator+(const Interval<B, Info>& x, const Interval<B, Info>& y) {
 }
 
 template <typename B, typename Info, typename T>
-inline typename Enable_If<Is_Native_Or_Checked<T>::value, Interval<B, Info> >::type
+inline typename Enable_If<Is_Singleton<T>::value, Interval<B, Info> >::type
 operator-(const Interval<B, Info>& x, const T& y) {
   Interval<B, Info> z;
   z.sub_assign(x, y);
@@ -1675,7 +1669,7 @@ operator-(const Interval<B, Info>& x, const T& y) {
 }
 
 template <typename B, typename Info, typename T>
-inline typename Enable_If<Is_Native_Or_Checked<T>::value, Interval<B, Info> >::type
+inline typename Enable_If<Is_Singleton<T>::value, Interval<B, Info> >::type
 operator-(const T& x, const Interval<B, Info>& y) {
   Interval<B, Info> z;
   z.sub_assign(x, y);
@@ -1691,7 +1685,7 @@ operator-(const Interval<B, Info>& x, const Interval<B, Info>& y) {
 }
 
 template <typename B, typename Info, typename T>
-inline typename Enable_If<Is_Native_Or_Checked<T>::value, Interval<B, Info> >::type
+inline typename Enable_If<Is_Singleton<T>::value, Interval<B, Info> >::type
 operator*(const Interval<B, Info>& x, const T& y) {
   Interval<B, Info> z;
   z.mul_assign(x, y);
@@ -1699,7 +1693,7 @@ operator*(const Interval<B, Info>& x, const T& y) {
 }
 
 template <typename B, typename Info, typename T>
-inline typename Enable_If<Is_Native_Or_Checked<T>::value, Interval<B, Info> >::type
+inline typename Enable_If<Is_Singleton<T>::value, Interval<B, Info> >::type
 operator*(const T& x, const Interval<B, Info>& y) {
   Interval<B, Info> z;
   z.mul_assign(x, y);
@@ -1715,7 +1709,7 @@ operator*(const Interval<B, Info>& x, const Interval<B, Info>& y) {
 }
 
 template <typename B, typename Info, typename T>
-inline typename Enable_If<Is_Native_Or_Checked<T>::value, Interval<B, Info> >::type
+inline typename Enable_If<Is_Singleton<T>::value, Interval<B, Info> >::type
 operator/(const Interval<B, Info>& x, const T& y) {
   Interval<B, Info> z;
   z.div_assign(x, y);
@@ -1723,7 +1717,7 @@ operator/(const Interval<B, Info>& x, const T& y) {
 }
 
 template <typename B, typename Info, typename T>
-inline typename Enable_If<Is_Native_Or_Checked<T>::value, Interval<B, Info> >::type
+inline typename Enable_If<Is_Singleton<T>::value, Interval<B, Info> >::type
 operator/(const T& x, const Interval<B, Info>& y) {
   Interval<B, Info> z;
   z.div_assign(x, y);
