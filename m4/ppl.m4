@@ -7,7 +7,7 @@ dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
 dnl The PPL is free software; you can redistribute it and/or modify it
 dnl under the terms of the GNU General Public License as published by the
-dnl Free Software Foundation; either version 2 of the License, or (at your
+dnl Free Software Foundation; either version 3 of the License, or (at your
 dnl option) any later version.
 dnl
 dnl The PPL is distributed in the hope that it will be useful, but WITHOUT
