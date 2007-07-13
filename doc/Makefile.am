@@ -391,13 +391,15 @@ ppl-devref-c-interface-@VERSION@.pdf: devref-c-interface.latex-dir
 	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
 
 ppl-user-c-interface-@VERSION@-html: \
-user-c-interface.doxyconf-html $(USER_C_INTERFACE_STUFF)
+user-c-interface.doxyconf-html \
+$(USER_C_INTERFACE_STUFF) $(USER_HTML_DIR)
 	rm -rf $@
 	$(TEX_ENV) $(DOXYGEN) $<
 	(cd $@; $(INSTALLDOX) -l $(USER_HTML_DIR).tag@../$(USER_HTML_DIR))
 
 ppl-devref-c-interface-@VERSION@-html: \
-devref-c-interface.doxyconf-html $(DEVREF_C_INTERFACE_STUFF)
+devref-c-interface.doxyconf-html \
+$(DEVREF_C_INTERFACE_STUFF) $(DEVREF_HTML_DIR)
 	rm -rf $@
 	$(TEX_ENV) $(DOXYGEN) $<
 	(cd $@; $(INSTALLDOX) -l $(DEVREF_HTML_DIR).tag@../$(DEVREF_HTML_DIR))
@@ -424,13 +426,15 @@ ppl-devref-prolog-interface-@VERSION@.pdf: devref-prolog-interface.latex-dir
 	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
 
 ppl-user-prolog-interface-@VERSION@-html: \
-user-prolog-interface.doxyconf-html $(USER_PROLOG_INTERFACE_STUFF)
+user-prolog-interface.doxyconf-html \
+$(USER_PROLOG_INTERFACE_STUFF) $(USER_HTML_DIR)
 	rm -rf $@
 	$(TEX_ENV) $(DOXYGEN) $<
 	(cd $@; $(INSTALLDOX) -l $(USER_HTML_DIR).tag@../$(USER_HTML_DIR))
 
 ppl-devref-prolog-interface-@VERSION@-html: \
-devref-prolog-interface.doxyconf-html $(DEVREF_PROLOG_INTERFACE_STUFF)
+devref-prolog-interface.doxyconf-html \
+$(DEVREF_PROLOG_INTERFACE_STUFF) $(DEVREF_HTML_DIR)
 	rm -rf $@
 	$(TEX_ENV) $(DOXYGEN) $<
 	(cd $@; $(INSTALLDOX) -l $(DEVREF_HTML_DIR).tag@../$(DEVREF_HTML_DIR))
