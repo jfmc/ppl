@@ -2,6 +2,13 @@
 Enhancements for PPL 0.10
 =========================
 
+- Have a look at
+
+    http://www.inf.ethz.ch/personal/gonnet/FPAccuracy/Analysis.html
+
+  especially at the "Surprises" section, where it talks about
+  rounding problems for division and multiplication on Pentium/AMD.
+
 - Provide PPL-specific documentation on the use of `make check'
   and `make uninstall'.
 
