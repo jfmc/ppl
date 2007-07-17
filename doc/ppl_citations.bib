@@ -743,6 +743,45 @@
               reasonable costs.",
 }
 
+@Inproceedings{GopanR07b,
+  Author = "D. Gopan and T. W. Reps",
+  Title = "Guided Static Analysis",
+  Booktitle = "Static Analysis:
+               Proceedings of the 14th International Symposium",
+  Address = "Kongens Lyngby, Denmark",
+  Editor = "G. Fil\'e and H. R. Nielson",
+  Publisher = "Springer-Verlag, Berlin",
+  Series = "Lecture Notes in Computer Science",
+  Note = "To appear",
+  Year = 2007,
+  Abstract = "In static analysis, the semantics of the program is
+              expressed as a set of equations. The equations are
+              solved iteratively over some abstract domain. If the
+              abstract domain is distributive and satisfies the
+              ascending-chain condition, an iterative technique yields
+              the most precise solution for the equations. However, if
+              the above properties are not satisfied, the solution
+              obtained is typically imprecise. Moreover, due to
+              the properties of widening operators, the precision loss
+              is sensitive to the order in which the state-space is
+              explored.
+
+              In this paper, we introduce \emph{guided static analysis},
+              a framework for controlling the exploration of the
+              state-space of a program. The framework guides the
+              state-space exploration by applying standard
+              static-analysis techniques to a sequence of modified
+              versions of the analyzed program. As such, the framework
+              does not require any modifications to existing analysis
+              techniques, and thus can be easily integrated into
+              existing static-analysis tools.
+
+              We present two instantiations of the framework, which
+              improve the precision of widening in (i) loops with
+              multiple phases and (ii) loops in which the transformation
+              performed on each iteration is chosen non-deterministically.",
+}
+
 @Inproceedings{GopanRS05,
   Author = "D. Gopan and T. W. Reps and M. Sagiv",
   Title = "A Framework for Numeric Analysis of Array Operations",
