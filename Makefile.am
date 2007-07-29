@@ -40,3 +40,7 @@ BUGS CREDITS README.configure STANDARDS
 @SET_MAKE@
 
 SUBDIRS = utils src Watchdog tests interfaces demos doc m4 debian
+
+DISTCLEANFILES = \
+@PACKAGE@-config.h \
+_configs.sed

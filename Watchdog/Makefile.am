@@ -31,3 +31,7 @@ configure
 EXTRA_DIST = \
 BUGS \
 CREDITS
+
+DISTCLEANFILES = \
+@PACKAGE@-config.h \
+_configs.sed
