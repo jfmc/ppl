@@ -173,9 +173,10 @@ approximate_partition_aux(const PPL::Congruence& c,
 
 } // namespace
 
+/*! \relates Parma_Polyhedra_Library::Pointset_Powerset */
 std::pair<PPL::Grid, PPL::Pointset_Powerset<PPL::Grid> >
 PPL::approximate_partition(const Grid& p, const Grid& q,
-                                  bool& finite_partition) {
+			   bool& finite_partition) {
   using namespace PPL;
   finite_partition = true;
   Pointset_Powerset<Grid> r(p.space_dimension(), EMPTY);
@@ -191,6 +192,7 @@ PPL::approximate_partition(const Grid& p, const Grid& q,
   return std::make_pair(qq, r);
 }
 
+/*! \relates Parma_Polyhedra_Library::Pointset_Powerset */
 bool
 PPL::check_containment(const Grid& ph,
 		       const Pointset_Powerset<Grid>& ps) {
