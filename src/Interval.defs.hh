@@ -693,10 +693,40 @@ public:
 		      && (Is_Singleton<From2>::value || Is_Interval<From2>::value)), I_Result>::type
   intersect_assign(const From1& x, const From2& y);
 
+  /*! \brief
+    Refines \p to according to the existential relation \p rel with \p x.
+
+    The \p to interval is restricted to become, upon successful exit,
+    the smallest interval of its type that contains the set
+    \f[
+      \{\,
+        a \in \mathtt{to}
+      \mid
+        \exists b \in \mathtt{x} \st a \mathrel{\mathtt{rel}} b
+      \,\}.
+    \f]
+    \return
+    ???
+  */
   template <typename From>
   typename Enable_If<Is_Singleton<From>::value || Is_Interval<From>::value, I_Result>::type
   refine_existential(Relation_Symbol rel, const From& x);
 
+  /*! \brief
+    Refines \p to so that it satisfies the universal relation \p rel with \p x.
+
+    The \p to interval is restricted to become, upon successful exit,
+    the smallest interval of its type that contains the set
+    \f[
+      \{\,
+        a \in \mathtt{to}
+      \mid
+        \forall b \in \mathtt{x} \itc a \mathrel{\mathtt{rel}} b
+      \,\}.
+    \f]
+    \return
+    ???
+  */
   template <typename From>
   typename Enable_If<Is_Singleton<From>::value || Is_Interval<From>::value, I_Result>::type
   refine_universal(Relation_Symbol rel, const From& x);
@@ -1078,22 +1108,6 @@ Interval<To_Boundary, To_Info>::intersect_assign(const From1& x, const From2& y)
   return check_empty_result(*this, combine(rl, ru));
 }
 
-/*! \brief
-  Refines \p to according to the existential relation \p rel with \p x.
-
-  \relates Interval
-  The \p to interval is restricted to become, upon successful exit,
-  the smallest interval of its type that contains the set
-  \f[
-    \{\,
-      a \in \mathtt{to}
-    \mid
-      \exists b \in \mathtt{x} \st a \mathrel{\mathtt{rel}} b
-    \,\}.
-  \f]
-  \return
-  ???
-*/
 template <typename To_Boundary, typename To_Info>
 template <typename From>
 inline typename Enable_If<Is_Singleton<From>::value || Is_Interval<From>::value, I_Result>::type
@@ -1169,22 +1183,6 @@ Interval<To_Boundary, To_Info>::refine_existential(Relation_Symbol rel, const Fr
   }
 }
 
-/*! \brief
-  Refines \p to so that it satisfies the universal relation \p rel with \p x.
-
-  \relates Interval
-  The \p to interval is restricted to become, upon successful exit,
-  the smallest interval of its type that contains the set
-  \f[
-    \{\,
-      a \in \mathtt{to}
-    \mid
-      \forall b \in \mathtt{x} \itc a \mathrel{\mathtt{rel}} b
-    \,\}.
-  \f]
-  \return
-  ???
-*/
 template <typename To_Boundary, typename To_Info>
 template <typename From>
 inline typename Enable_If<Is_Singleton<From>::value || Is_Interval<From>::value, I_Result>::type
