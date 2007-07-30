@@ -181,7 +181,7 @@ Box<Interval>::minimize(const Linear_Expression& expr,
 
 template <typename Interval>
 bool
-Box<Interval>::strictly_contains(const Box<Interval>& y) const {
+Box<Interval>::strictly_contains(const Box& y) const {
   const Box& x = *this;
   return x.contains(y) && !y.contains(x);
 }
