@@ -1054,7 +1054,7 @@ Box<Interval>::max_min(const Linear_Expression& expr,
 
 template <typename Interval>
 bool
-Box<Interval>::contains(const Box<Interval>& y) const {
+Box<Interval>::contains(const Box& y) const {
   const Box& x = *this;
   // Dimension-compatibility check.
   if (x.space_dimension() != y.space_dimension())
@@ -1077,7 +1077,7 @@ Box<Interval>::contains(const Box<Interval>& y) const {
 
 template <typename Interval>
 bool
-Box<Interval>::is_disjoint_from(const Box<Interval>& y) const {
+Box<Interval>::is_disjoint_from(const Box& y) const {
   const Box& x = *this;
   // Dimension-compatibility check.
   if (x.space_dimension() != y.space_dimension())
