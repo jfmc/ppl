@@ -40,7 +40,9 @@ Interval_Info_Bitset<T, Policy>::swap(Interval_Info_Bitset<T, Policy>& y) {
 
 namespace std {
 
-/*! \relates Parma_Polyhedra_Library::Interval_Info */
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \relates Parma_Polyhedra_Library::Interval_Info_Null */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Policy>
 inline void
 swap(Parma_Polyhedra_Library::Interval_Info_Null<Policy>& x,
@@ -48,7 +50,9 @@ swap(Parma_Polyhedra_Library::Interval_Info_Null<Policy>& x,
   x.swap(y);
 }
 
-/*! \relates Parma_Polyhedra_Library::Interval_Info */
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \relates Parma_Polyhedra_Library::Interval_Info_Bitset */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T, typename Policy>
 inline void
 swap(Parma_Polyhedra_Library::Interval_Info_Bitset<T, Policy>& x,
