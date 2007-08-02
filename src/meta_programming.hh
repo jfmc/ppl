@@ -219,7 +219,10 @@ struct Is_Same<T, T> : public True {
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Base, typename Derived>
 struct Is_Same_Or_Derived {
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! A class that is constructible from just anything.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   struct Any {
     //! The universal constructor.
     template <typename T>
