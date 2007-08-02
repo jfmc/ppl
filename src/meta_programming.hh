@@ -30,6 +30,7 @@ namespace Parma_Polyhedra_Library {
   Declares a per-class constant of type <CODE>bool</CODE>, called \p name
   and with value \p value.
 
+  \ingroup PPL_CXX_interface
   Differently from static constants, \p name needs not (and cannot) be
   defined (for static constants, the need for a further definition is
   mandated by Section 9.4.2/4 of the C++ standard).
@@ -43,6 +44,7 @@ namespace Parma_Polyhedra_Library {
   Declares a per-class constant of type <CODE>int</CODE>, called \p name
   and with value \p value.
 
+  \ingroup PPL_CXX_interface
   Differently from static constants, \p name needs not (and cannot) be
   defined (for static constants, the need for a further definition is
   mandated by Section 9.4.2/4 of the C++ standard).
@@ -57,6 +59,7 @@ namespace Parma_Polyhedra_Library {
   and with value \p value.  The value of the constant is accessible
   by means of the syntax <CODE>name()</CODE>.
 
+  \ingroup PPL_CXX_interface
   Differently from static constants, \p name needs not (and cannot) be
   defined (for static constants, the need for a further definition is
   mandated by Section 9.4.2/4 of the C++ standard).
@@ -73,6 +76,7 @@ namespace Parma_Polyhedra_Library {
   and with value \p value.  A constant reference to the constant
   is accessible by means of the syntax <CODE>name()</CODE>.
 
+  \ingroup PPL_CXX_interface
   Differently from static constants, \p name needs not (and cannot) be
   defined (for static constants, the need for a further definition is
   mandated by Section 9.4.2/4 of the C++ standard).
@@ -88,6 +92,7 @@ namespace Parma_Polyhedra_Library {
 /*! \brief
   A class that is only defined if \p b evaluates to <CODE>true</CODE>.
 
+  \ingroup PPL_CXX_interface
   This is the non-specialized case, so the class is declared but not defined.
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
@@ -98,6 +103,7 @@ struct Compile_Time_Check;
 /*! \brief
   A class that is only defined if \p b evaluates to <CODE>true</CODE>.
 
+  \ingroup PPL_CXX_interface
   This is the specialized case with \p b equal to <CODE>true</CODE>,
   so the class is declared and (trivially) defined.
 */
@@ -119,6 +125,7 @@ struct Compile_Time_Check<true> {
 /*! \brief
   Produces a compilation error if the compile-time constant \p e does
   not evaluate to <CODE>true</CODE>
+  \ingroup PPL_CXX_interface
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 #define COMPILE_TIME_CHECK(e, msg) COMPILE_TIME_CHECK_AUX(e, __LINE__)
@@ -127,6 +134,7 @@ struct Compile_Time_Check<true> {
 /*! \brief
   A class holding a constant called <CODE>value</CODE> that evaluates
   to \p b.
+  \ingroup PPL_CXX_interface
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <bool b>
@@ -140,6 +148,7 @@ struct Bool {
 /*! \brief
   A class holding a constant called <CODE>value</CODE> that evaluates
   to <CODE>true</CODE>.
+  \ingroup PPL_CXX_interface
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 struct True : public Bool<true> {
@@ -149,6 +158,7 @@ struct True : public Bool<true> {
 /*! \brief
   A class holding a constant called <CODE>value</CODE> that evaluates
   to <CODE>false</CODE>.
+  \ingroup PPL_CXX_interface
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 struct False : public Bool<false> {
@@ -159,6 +169,7 @@ struct False : public Bool<false> {
   A class holding a constant called <CODE>value</CODE> that evaluates
   to <CODE>true</CODE> if and only if \p T1 is the same type as \p T2.
 
+  \ingroup PPL_CXX_interface
   This is the non-specialized case, in which \p T1 and \p T2 can be different.
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
@@ -171,6 +182,7 @@ struct Is_Same : public False {
   A class holding a constant called <CODE>value</CODE> that evaluates
   to <CODE>true</CODE> if and only if \p T1 is the same type as \p T2.
 
+  \ingroup PPL_CXX_interface
   This is the specialization in which \p T1 and \p T2 are equal.
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
@@ -184,6 +196,7 @@ struct Is_Same<T, T> : public True {
   to <CODE>true</CODE> if and only if \p Base is the same type as \p Derived
   or \p Derived is a class derived from \p Base.
 
+  \ingroup PPL_CXX_interface
   \note
   Care must be taken to use this predicate with template classes.
   Suppose we have
@@ -241,6 +254,7 @@ struct Is_Same_Or_Derived {
   A class that provides a type member called <CODE>type</CODE> equivalent
   to \p T if and only if \p b is <CODE>true</CODE>.
 
+  \ingroup PPL_CXX_interface
   This is the non-specialized case, in which the <CODE>type</CODE> member
   is not present.
 */
@@ -259,6 +273,7 @@ struct Enable_If_Is {
   A class that provides a type member called <CODE>type</CODE> equivalent
   to \p T if and only if \p b is <CODE>true</CODE>.
 
+  \ingroup PPL_CXX_interface
   This is the specialization in which the <CODE>type</CODE> member
   is present.
 
