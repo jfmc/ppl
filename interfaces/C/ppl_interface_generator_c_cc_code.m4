@@ -89,7 +89,8 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@
     *pph = to_nonconst(new @TOPOLOGY@@CPP_CLASS@(space_dim, EMPTY));
   else {
     *pph = to_nonconst(new @TOPOLOGY@@CPP_CLASS@(space_dim, UNIVERSE));
-    bool closed;
+    // Initialization is just to avoid compilation warnings.
+    bool closed = false;
     TEMP_INTEGER(n);
     TEMP_INTEGER(d);
     for (dimension_type k = space_dim; k-- > 0; ) {
