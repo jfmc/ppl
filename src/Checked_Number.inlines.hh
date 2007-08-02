@@ -310,7 +310,9 @@ assign_r(To& to, const char* x, Rounding_Dir dir) {
 
 #define FUNC1(name, func) \
 template <typename To, typename From>					\
-inline typename Enable_If<Is_Native_Or_Checked<To>::value && Is_Native_Or_Checked<From>::value, Result>::type \
+inline typename Enable_If<Is_Native_Or_Checked<To>::value               \
+                          && Is_Native_Or_Checked<From>::value,         \
+                          Result>::type                                 \
 name(To& to, const From& x, Rounding_Dir dir) {				\
   return								\
     check_result(Checked::func<typename Native_Checked_To_Wrapper<To>	\
@@ -334,7 +336,9 @@ FUNC1(sqrt_assign_r, sqrt_ext)
 
 #define FUNC1(name, func) \
 template <typename To, typename From>					\
-inline typename Enable_If<Is_Native_Or_Checked<To>::value && Is_Native_Or_Checked<From>::value, Result>::type \
+inline typename Enable_If<Is_Native_Or_Checked<To>::value		\
+                          && Is_Native_Or_Checked<From>::value,         \
+                          Result>::type					\
 name(To& to, const From& x, int exp, Rounding_Dir dir) {		\
   return								\
     check_result(Checked::func<typename Native_Checked_To_Wrapper<To>	\
@@ -354,7 +358,10 @@ FUNC1(div2exp_assign_r, div2exp_ext)
 
 #define FUNC2(name, func) \
 template <typename To, typename From1, typename From2>			\
-inline typename Enable_If<Is_Native_Or_Checked<To>::value && Is_Native_Or_Checked<From1>::value && Is_Native_Or_Checked<From2>::value, Result>::type \
+inline typename Enable_If<Is_Native_Or_Checked<To>::value		\
+                          && Is_Native_Or_Checked<From1>::value         \
+                          && Is_Native_Or_Checked<From2>::value,        \
+                          Result>::type					\
 name(To& to, const From1& x, const From2& y, Rounding_Dir dir) {	\
   return								\
     check_result(Checked::func<typename Native_Checked_To_Wrapper<To>	\
@@ -388,7 +395,12 @@ template <typename To1,							\
           typename From2,						\
           typename To2,							\
 	  typename To3>							\
-inline typename Enable_If<Is_Native_Or_Checked<To1>::value && Is_Native_Or_Checked<From1>::value && Is_Native_Or_Checked<From2>::value && Is_Native_Or_Checked<To2>::value && Is_Native_Or_Checked<To3>::value, Result>::type \
+inline typename Enable_If<Is_Native_Or_Checked<To1>::value		\
+                          && Is_Native_Or_Checked<From1>::value         \
+                          && Is_Native_Or_Checked<From2>::value         \
+                          && Is_Native_Or_Checked<To2>::value           \
+                          && Is_Native_Or_Checked<To3>::value,          \
+                          Result>::type					\
 name(To1& to, const From1& x, const From2& y, To2& s, To3& t,		\
      Rounding_Dir dir) {						\
   return								\
@@ -473,7 +485,8 @@ Checked_Number<T, Policy>::f(const T& y) { \
 } \
 template <typename T, typename Policy> \
 template <typename From> \
-inline typename Enable_If<Is_Native_Or_Checked<From>::value, Checked_Number<T, Policy>& >::type \
+inline typename Enable_If<Is_Native_Or_Checked<From>::value, \
+                          Checked_Number<T, Policy>& >::type \
 Checked_Number<T, Policy>::f(const From& y) { \
   Checked_Number<T, Policy> cy(y); \
   Policy::handle_result(fun(*this, *this, cy, \
@@ -498,14 +511,16 @@ f(const Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y) { \
   return r; \
 } \
 template <typename Type, typename T, typename Policy>	\
-inline typename Enable_If<Is_Native<Type>::value, Checked_Number<T, Policy> >::type \
+inline \
+typename Enable_If<Is_Native<Type>::value, Checked_Number<T, Policy> >::type \
 f(const Type& x, const Checked_Number<T, Policy>& y) { \
   Checked_Number<T, Policy> r(x); \
   Policy::handle_result(fun(r, r, y, Policy::ROUND_DEFAULT_OPERATOR)); \
   return r; \
 } \
 template <typename T, typename Policy, typename Type>	\
-inline typename Enable_If<Is_Native<Type>::value, Checked_Number<T, Policy> >::type \
+inline \
+typename Enable_If<Is_Native<Type>::value, Checked_Number<T, Policy> >::type \
 f(const Checked_Number<T, Policy>& x, const Type& y) { \
   Checked_Number<T, Policy> r(y); \
   Policy::handle_result(fun(r, x, r, Policy::ROUND_DEFAULT_OPERATOR)); \
@@ -522,11 +537,11 @@ DEF_BINARY_OP(operator %, rem_assign_r)
 
 #define DEF_COMPARE(f, fun)						\
 template <typename T1, typename T2>					\
-inline typename Enable_If<((Is_Checked<T1>::value			\
-			    && Is_Native_Or_Checked<T2>::value)		\
-			   || (Is_Checked<T2>::value			\
-			       && Is_Native_Or_Checked<T1>::value)),	\
-                          bool>::type					\
+inline									\
+typename Enable_If<Is_Native_Or_Checked<T1>::value                      \
+                   && Is_Native_Or_Checked<T2>::value                   \
+                   && (Is_Checked<T1>::value || Is_Checked<T2>::value),	\
+		   bool>::type						\
 f(const T1& x, const T2& y) {						\
   return Checked::fun<typename Native_Checked_From_Wrapper<T1>::Policy,	\
     		      typename Native_Checked_From_Wrapper<T2>::Policy>	\
@@ -545,8 +560,8 @@ DEF_COMPARE(operator <, lt_ext)
 
 #define DEF_COMPARE(f, fun)						\
 template <typename T1, typename T2>					\
-inline typename Enable_If<(Is_Native_Or_Checked<T1>::value		\
-			   && Is_Native_Or_Checked<T2>::value),		\
+inline typename Enable_If<Is_Native_Or_Checked<T1>::value		\
+			  && Is_Native_Or_Checked<T2>::value,		\
                           bool>::type					\
 f(const T1& x, const T2& y) {						\
   return Checked::fun<typename Native_Checked_From_Wrapper<T1>::Policy,	\
@@ -672,9 +687,15 @@ sgn(const From& x) {
 
 /*! \relates Checked_Number */
 template <typename From1, typename From2>
-inline typename Enable_If<Is_Native_Or_Checked<From1>::value && Is_Native_Or_Checked<From2>::value, int>::type
+inline typename Enable_If<Is_Native_Or_Checked<From1>::value
+                          && Is_Native_Or_Checked<From2>::value,
+                          int>::type
 cmp(const From1& x, const From2& y) {
-  Result r = Checked::cmp_ext<typename Native_Checked_From_Wrapper<From1>::Policy, typename Native_Checked_From_Wrapper<From2>::Policy>(Native_Checked_From_Wrapper<From1>::raw_value(x), Native_Checked_From_Wrapper<From2>::raw_value(y));
+  Result r
+    = Checked::cmp_ext<typename Native_Checked_From_Wrapper<From1>::Policy,
+                       typename Native_Checked_From_Wrapper<From2>::Policy>
+                 (Native_Checked_From_Wrapper<From1>::raw_value(x),
+		  Native_Checked_From_Wrapper<From2>::raw_value(y));
   switch (r) {
   case V_LT:
     return -1;

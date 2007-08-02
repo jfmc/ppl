@@ -137,9 +137,15 @@ struct Check_Overflow_Policy {
   const_bool_nodef(check_nan_result, true);
 };
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \ingroup PPL_CXX_interface */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T, typename Enable = void>
 struct Native_Checked_From_Wrapper;
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \ingroup PPL_CXX_interface */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 struct Native_Checked_From_Wrapper<T, typename Enable_If<Is_Native<T>::value>::type> {
   typedef Checked_Number_Transparent_Policy<T> Policy;
@@ -148,6 +154,9 @@ struct Native_Checked_From_Wrapper<T, typename Enable_If<Is_Native<T>::value>::t
   }
 };
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \ingroup PPL_CXX_interface */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T, typename P>
 struct Native_Checked_From_Wrapper<Checked_Number<T, P> > {
   typedef P Policy;
@@ -156,9 +165,15 @@ struct Native_Checked_From_Wrapper<Checked_Number<T, P> > {
   }
 };
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \ingroup PPL_CXX_interface */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T, typename Enable = void>
 struct Native_Checked_To_Wrapper;
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \ingroup PPL_CXX_interface */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 struct Native_Checked_To_Wrapper<T, typename Enable_If<Is_Native<T>::value>::type> {
   typedef Check_Overflow_Policy<T> Policy;
@@ -167,6 +182,9 @@ struct Native_Checked_To_Wrapper<T, typename Enable_If<Is_Native<T>::value>::typ
   }
 };
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \ingroup PPL_CXX_interface */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T, typename P>
 struct Native_Checked_To_Wrapper<Checked_Number<T, P> > {
   typedef P Policy;
@@ -175,15 +193,18 @@ struct Native_Checked_To_Wrapper<Checked_Number<T, P> > {
   }
 };
 
+/*! \ingroup PPL_CXX_interface */
 template <typename T>
 struct Is_Checked : public False { };
 
+/*! \ingroup PPL_CXX_interface */
 template <typename T, typename P>
 struct Is_Checked<Checked_Number<T, P> > : public True { };
 
+/*! \ingroup PPL_CXX_interface */
 template <typename T>
-struct Is_Native_Or_Checked : public Bool<(Is_Native<T>::value
-					   || Is_Checked<T>::value)> { };
+struct Is_Native_Or_Checked
+  : public Bool<Is_Native<T>::value || Is_Checked<T>::value> { };
 
 //! A wrapper for numeric types implementing a given policy.
 /*! \ingroup PPL_CXX_interface
@@ -451,28 +472,53 @@ private:
   T v;
 };
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \ingroup PPL_CXX_interface */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T, typename P>
 struct Slow_Copy<Checked_Number<T, P> > : public Bool<Slow_Copy<T>::value> {};
 
+/*! \relates Checked_Number */
 template <typename T>
-typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type is_not_a_number(const T& x);
-template <typename T>
-typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type is_minus_infinity(const T& x);
-template <typename T>
-typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type is_plus_infinity(const T& x);
-template <typename T>
-typename Enable_If<Is_Native_Or_Checked<T>::value, int>::type is_infinity(const T& x);
-template <typename T>
-typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type is_integer(const T& x);
+typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type
+is_not_a_number(const T& x);
 
+/*! \relates Checked_Number */
+template <typename T>
+typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type
+is_minus_infinity(const T& x);
+
+/*! \relates Checked_Number */
+template <typename T>
+typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type
+is_plus_infinity(const T& x);
+
+/*! \relates Checked_Number */
+template <typename T>
+typename Enable_If<Is_Native_Or_Checked<T>::value, int>::type
+is_infinity(const T& x);
+
+/*! \relates Checked_Number */
+template <typename T>
+typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type
+is_integer(const T& x);
+
+/*! \relates Checked_Number */
 template <typename To>
-typename Enable_If<Is_Native_Or_Checked<To>::value, Result>::type assign_r(To& to, const char* x, Rounding_Dir dir);
+typename Enable_If<Is_Native_Or_Checked<To>::value, Result>::type
+assign_r(To& to, const char* x, Rounding_Dir dir);
+
+/*! \relates Checked_Number */
 template <typename To, typename To_Policy>
-typename Enable_If<Is_Native_Or_Checked<To>::value, Result>::type assign_r(To& to, char* x, Rounding_Dir dir);
+typename Enable_If<Is_Native_Or_Checked<To>::value, Result>::type
+assign_r(To& to, char* x, Rounding_Dir dir);
 
 #define FUNC1(name) \
 template <typename To, typename From> \
-typename Enable_If<Is_Native_Or_Checked<To>::value && Is_Native_Or_Checked<From>::value, Result>::type name(To& to, const From& x, Rounding_Dir dir);
+typename Enable_If<Is_Native_Or_Checked<To>::value \
+                   && Is_Native_Or_Checked<From>::value, \
+                   Result>::type \
+name(To& to, const From& x, Rounding_Dir dir);
 
 FUNC1(assign_r)
 FUNC1(floor_assign_r)
@@ -486,7 +532,10 @@ FUNC1(sqrt_assign_r)
 
 #define FUNC1(name) \
 template <typename To, typename From> \
-typename Enable_If<Is_Native_Or_Checked<To>::value && Is_Native_Or_Checked<From>::value, Result>::type name(To& to, const From& x, int exp, Rounding_Dir dir);
+typename Enable_If<Is_Native_Or_Checked<To>::value \
+                   && Is_Native_Or_Checked<From>::value, \
+                   Result>::type \
+name(To& to, const From& x, int exp, Rounding_Dir dir);
 
 FUNC1(mul2exp_assign_r)
 FUNC1(div2exp_assign_r)
@@ -495,7 +544,11 @@ FUNC1(div2exp_assign_r)
 
 #define FUNC2(name) \
 template <typename To, typename From1, typename From2> \
-typename Enable_If<Is_Native_Or_Checked<To>::value && Is_Native_Or_Checked<From1>::value && Is_Native_Or_Checked<From2>::value, Result>::type name(To& to, const From1& x, const From2& y, Rounding_Dir dir);
+typename Enable_If<Is_Native_Or_Checked<To>::value \
+                   && Is_Native_Or_Checked<From1>::value \
+                   && Is_Native_Or_Checked<From2>::value, \
+                   Result>::type \
+name(To& to, const From1& x, const From2& y, Rounding_Dir dir);
 
 FUNC2(add_assign_r)
 FUNC2(sub_assign_r)
@@ -511,10 +564,16 @@ FUNC2(sub_mul_assign_r)
 #undef FUNC2
 
 #define FUNC4(name) \
-template <typename To1, typename From1, typename From2,		\
-	  typename To2, typename To3>				\
-typename Enable_If<Is_Native_Or_Checked<To1>::value && Is_Native_Or_Checked<From1>::value && Is_Native_Or_Checked<From2>::value && Is_Native_Or_Checked<To2>::value && Is_Native_Or_Checked<To3>::value, Result>::type name(To1& to, const From1& x, const From2& y,		\
-	    To2& s, To3& t, Rounding_Dir dir);
+template <typename To1, typename From1, typename From2,	\
+	  typename To2, typename To3> \
+typename Enable_If<Is_Native_Or_Checked<To1>::value \
+                   && Is_Native_Or_Checked<From1>::value \
+                   && Is_Native_Or_Checked<From2>::value \
+                   && Is_Native_Or_Checked<To2>::value \
+                   && Is_Native_Or_Checked<To3>::value, \
+                   Result>::type \
+name(To1& to, const From1& x, const From2& y, \
+     To2& s, To3& t, Rounding_Dir dir);
 
 FUNC4(gcdext_assign_r)
 
@@ -690,91 +749,97 @@ void sqrt_assign(Checked_Number<T, Policy>& x,
 //! Equality operator.
 /*! \relates Checked_Number */
 template <typename T1, typename T2>
-inline typename Enable_If<((Is_Checked<T1>::value
-			    && Is_Native_Or_Checked<T2>::value)
-			   || (Is_Checked<T2>::value
-			       && Is_Native_Or_Checked<T1>::value)),
-                          bool>::type
+inline
+typename Enable_If<Is_Native_Or_Checked<T1>::value
+                   && Is_Native_Or_Checked<T2>::value
+                   && (Is_Checked<T1>::value || Is_Checked<T2>::value),
+		   bool>::type
 operator==(const T1& x, const T2& y);
 
 template <typename T1, typename T2>
-inline typename Enable_If<(Is_Native_Or_Checked<T1>::value
-			   && Is_Native_Or_Checked<T2>::value), bool>::type
+inline typename Enable_If<Is_Native_Or_Checked<T1>::value
+			  && Is_Native_Or_Checked<T2>::value,
+			  bool>::type
 equal(const T1& x, const T2& y);
 
 //! Disequality operator.
 /*! \relates Checked_Number */
 template <typename T1, typename T2>
-inline typename Enable_If<((Is_Checked<T1>::value
-			    && Is_Native_Or_Checked<T2>::value)
-			   || (Is_Checked<T2>::value
-			       && Is_Native_Or_Checked<T1>::value)),
-                          bool>::type
+inline
+typename Enable_If<Is_Native_Or_Checked<T1>::value
+                   && Is_Native_Or_Checked<T2>::value
+                   && (Is_Checked<T1>::value || Is_Checked<T2>::value),
+		   bool>::type
 operator!=(const T1& x, const T2& y);
 
 template <typename T1, typename T2>
-inline typename Enable_If<(Is_Native_Or_Checked<T1>::value
-			   && Is_Native_Or_Checked<T2>::value), bool>::type
+inline typename Enable_If<Is_Native_Or_Checked<T1>::value
+			  && Is_Native_Or_Checked<T2>::value,
+			  bool>::type
 not_equal(const T1& x, const T2& y);
 
 //! Greater than or equal to operator.
 /*! \relates Checked_Number */
 template <typename T1, typename T2>
-inline typename Enable_If<((Is_Checked<T1>::value
-			    && Is_Native_Or_Checked<T2>::value)
-			   || (Is_Checked<T2>::value
-			       && Is_Native_Or_Checked<T1>::value)),
-                          bool>::type
+inline
+typename Enable_If<Is_Native_Or_Checked<T1>::value
+                   && Is_Native_Or_Checked<T2>::value
+                   && (Is_Checked<T1>::value || Is_Checked<T2>::value),
+		   bool>::type
 operator>=(const T1& x, const T2& y);
 
 template <typename T1, typename T2>
-inline typename Enable_If<(Is_Native_Or_Checked<T1>::value
-			   && Is_Native_Or_Checked<T2>::value), bool>::type
+inline typename Enable_If<Is_Native_Or_Checked<T1>::value
+			  && Is_Native_Or_Checked<T2>::value,
+			  bool>::type
 greater_or_equal(const T1& x, const T2& y);
 
 //! Greater than operator.
 /*! \relates Checked_Number */
 template <typename T1, typename T2>
-inline typename Enable_If<((Is_Checked<T1>::value
-			    && Is_Native_Or_Checked<T2>::value)
-			   || (Is_Checked<T2>::value
-			       && Is_Native_Or_Checked<T1>::value)),
-                          bool>::type
+inline
+typename Enable_If<Is_Native_Or_Checked<T1>::value
+                   && Is_Native_Or_Checked<T2>::value
+                   && (Is_Checked<T1>::value || Is_Checked<T2>::value),
+		   bool>::type
 operator>(const T1& x, const T2& y);
 
 template <typename T1, typename T2>
-inline typename Enable_If<(Is_Native_Or_Checked<T1>::value
-			   && Is_Native_Or_Checked<T2>::value), bool>::type
+inline typename Enable_If<Is_Native_Or_Checked<T1>::value
+			  && Is_Native_Or_Checked<T2>::value,
+			  bool>::type
 greater_than(const T1& x, const T2& y);
 
 //! Less than or equal to operator.
 /*! \relates Checked_Number */
 template <typename T1, typename T2>
-inline typename Enable_If<((Is_Checked<T1>::value
-			    && Is_Native_Or_Checked<T2>::value)
-			   || (Is_Checked<T2>::value
-			       && Is_Native_Or_Checked<T1>::value)),
-                          bool>::type
+inline
+typename Enable_If<Is_Native_Or_Checked<T1>::value
+                   && Is_Native_Or_Checked<T2>::value
+                   && (Is_Checked<T1>::value || Is_Checked<T2>::value),
+		   bool>::type
 operator<=(const T1& x, const T2& y);
 
 template <typename T1, typename T2>
-inline typename Enable_If<(Is_Native_Or_Checked<T1>::value
-			   && Is_Native_Or_Checked<T2>::value), bool>::type
+inline typename Enable_If<Is_Native_Or_Checked<T1>::value
+			  && Is_Native_Or_Checked<T2>::value,
+			  bool>::type
 less_or_equal(const T1& x, const T2& y);
 
 //! Less than operator.
 /*! \relates Checked_Number */
 template <typename T1, typename T2>
-inline typename Enable_If<((Is_Checked<T1>::value
-			    && Is_Native_Or_Checked<T2>::value)
-			   || (Is_Checked<T2>::value
-			       && Is_Native_Or_Checked<T1>::value)),
-                          bool>::type
+inline
+typename Enable_If<Is_Native_Or_Checked<T1>::value
+                   && Is_Native_Or_Checked<T2>::value
+                   && (Is_Checked<T1>::value || Is_Checked<T2>::value),
+		   bool>::type
 operator<(const T1& x, const T2& y);
 
 template <typename T1, typename T2>
-inline typename Enable_If<(Is_Native_Or_Checked<T1>::value
-			   && Is_Native_Or_Checked<T2>::value), bool>::type
+inline typename Enable_If<Is_Native_Or_Checked<T1>::value
+			  && Is_Native_Or_Checked<T2>::value,
+			  bool>::type
 less_than(const T1& x, const T2& y);
 
 /*! \brief
@@ -794,7 +859,9 @@ sgn(const From& x);
   \relates Checked_Number
 */
 template <typename From1, typename From2>
-inline typename Enable_If<Is_Native_Or_Checked<From1>::value && Is_Native_Or_Checked<From2>::value, int>::type
+inline typename Enable_If<Is_Native_Or_Checked<From1>::value
+                          && Is_Native_Or_Checked<From2>::value,
+                          int>::type
 cmp(const From1& x, const From2& y);
 
 //@} // Relational Operators and Comparison Functions
