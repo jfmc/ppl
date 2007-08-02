@@ -1,4 +1,4 @@
-# Doxyfile 1.5.2
+# Doxyfile 1.5.3
 
 #---------------------------------------------------------------------------
 # Project related configuration options
@@ -19,6 +19,7 @@ STRIP_FROM_PATH        =
 STRIP_FROM_INC_PATH    = 
 SHORT_NAMES            = NO
 JAVADOC_AUTOBRIEF      = NO
+QT_AUTOBRIEF           = NO
 MULTILINE_CPP_IS_BRIEF = NO
 DETAILS_AT_TOP         = NO
 INHERIT_DOCS           = NO
@@ -39,6 +40,7 @@ EXTRACT_PRIVATE        = NO
 EXTRACT_STATIC         = NO
 EXTRACT_LOCAL_CLASSES  = YES
 EXTRACT_LOCAL_METHODS  = NO
+EXTRACT_ANON_NSPACES   = NO
 HIDE_UNDOC_MEMBERS     = YES
 HIDE_UNDOC_CLASSES     = YES
 HIDE_FRIEND_COMPOUNDS  = YES
@@ -68,7 +70,7 @@ WARNINGS               = YES
 WARN_IF_UNDOCUMENTED   = NO
 WARN_IF_DOC_ERROR      = YES
 WARN_NO_PARAMDOC       = NO
-WARN_FORMAT            = "$file:$line: $text"
+WARN_FORMAT            = "$file:$line: $text "
 WARN_LOGFILE           = 
 #---------------------------------------------------------------------------
 # configuration options related to the input files
@@ -119,6 +121,7 @@ HTML_FOOTER            =
 HTML_STYLESHEET        = 
 HTML_ALIGN_MEMBERS     = YES
 GENERATE_HTMLHELP      = NO
+HTML_DYNAMIC_SECTIONS  = NO
 CHM_FILE               = 
 HHC_LOCATION           = 
 GENERATE_CHI           = NO
@@ -220,6 +223,7 @@ DOT_IMAGE_FORMAT       = png
 DOT_PATH               = 
 DOTFILE_DIRS           = 
 DOT_GRAPH_MAX_NODES    = 50
+MAX_DOT_GRAPH_DEPTH    = 0
 DOT_TRANSPARENT        = NO
 DOT_MULTI_TARGETS      = NO
 GENERATE_LEGEND        = YES
