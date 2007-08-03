@@ -3062,7 +3062,7 @@ only in that, for a vertex,
 the (\f$n+1\f$)'st term is different from zero and,
 for a ray, it is zero.
 
-\subsection Double_Description Double Description
+\subsection Devref_Double_Description Double Description
 
 Let \f$\cP \in \Rset^n \f$ be a polyhedron and  \f$C \in \Rset^{n+1} \f$
 the corresponding polyhedral cone.
