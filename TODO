@@ -112,6 +112,13 @@ Enhancements for PPL 0.10 or later versions
   See http://www.cs.unipr.it/ppl/Documentation/bibliography#NemhauserW88
   Check the work by Kent Andersen and Gérard Cornuéjols on
   reduce-and-split cuts.
+- Add an implementation of Minkowski addition.  Check the algorithm
+  described in
+
+    K. Fukuda.
+    From the zonotope construction to the Minkowski addition
+    of convex polytopes.
+    J. Symbolic Comput., 38(4):1261-1272, 2004.
 
 
 Efficiency Issues
