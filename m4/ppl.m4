@@ -131,7 +131,7 @@ main() {
       if (min_ppl_beta == 0)
         min_ppl_version_ok = false;
       else
-        min_ppl_revision = 0; 
+        min_ppl_revision = 0;
     }
     else if (n == 2) {
       n = sscanf("$min_ppl_version",
@@ -140,7 +140,7 @@ main() {
       if (n != 2)
         min_ppl_version_ok = false;
       else {
-        min_ppl_revision = 0; 
+        min_ppl_revision = 0;
         min_ppl_beta = 0;
       }
     }
@@ -221,7 +221,7 @@ fi
 if test "x$no_ppl" = x
 then
   AC_MSG_RESULT(yes)
-  ifelse([$2], , :, [$2])     
+  ifelse([$2], , :, [$2])
 else
   AC_MSG_RESULT(no)
   if test x"$PPL_CONFIG" = xno
