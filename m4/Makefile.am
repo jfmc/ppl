@@ -22,7 +22,7 @@
 
 # M4 macro files to be used by the client applications with Autoconf.
 m4datadir = $(datadir)/aclocal
-m4data_DATA = ppl.m4
+m4data_DATA = ppl.m4 ppl_c.m4
 
 # M4 macro files for internal use.
 m4macros = \
