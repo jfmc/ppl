@@ -27,7 +27,8 @@ ppl_interface_generator_gprolog_pl.m4 \
 $(GPROLOG_CFLI_FILES) \
 ppl_gprolog_sd.cc \
 gp_clpq.pl \
-gnu_pl_check.pl
+gnu_pl_check.pl \
+README.gprolog
 
 if BUILD_GNU_PROLOG_INTERFACE
 
