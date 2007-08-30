@@ -28,7 +28,8 @@ $(YAP_CFLI_FILES) \
 ppl_yap.pl \
 yap_clpq.pl \
 yap_clpq2.pl \
-yap_pl_check.pl
+yap_pl_check.pl \
+README.yap
 
 if BUILD_YAP_PROLOG_INTERFACE
 
