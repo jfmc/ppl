@@ -987,10 +987,11 @@ AC_SUBST(required_instantiations_java_cxx_headers_sources)
 AC_SUBST(ocamlc_root)
 
 AC_CONFIG_FILES(Makefile
-                ppl.lsm ppl.spec
+                ppl.lsm
                 debian/Makefile
                 debian/libppl.copyright
                 debian/libppl-pwl.copyright
+		fedora/Makefile
                 src/Makefile
                 src/version.hh
                 src/ppl-config.cc
