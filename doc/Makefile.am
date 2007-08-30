@@ -126,6 +126,7 @@ ppl-user-c-interface-@VERSION@.ps.gz
 USER_C_INTERFACE_STUFF = \
 user.tex \
 ppl.sty \
+../interfaces/C/C_interface.dox \
 $(top_builddir)/interfaces/C/ppl_c.h
 
 DEVREF_C_INTERFACE_STUFF = \
