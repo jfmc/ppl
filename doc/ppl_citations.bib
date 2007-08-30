@@ -1381,6 +1381,57 @@
               and demonstrate our approach on examples."
 }
 
+@Inproceedings{Starynkevitch07,
+  Author = "B. Starynkevitch",
+  Title = "Multi-Stage Construction of a Global Static Analyzer",
+  Booktitle = "Proceedings of the 2007 GCC Developers' Summit",
+  Address = "Ottawa, Canada",
+  Year = 2007,
+  Abstract = "We describe ongoing work about global static analysis
+              for GCC4 within the GlobalGCC European project,
+              funded thru the ITEA Programme.  The aim of this
+              work is to provide global (whole program) static
+              analysis, notably based upon abstract interpretation
+              and knowledge based techniques, within the GCC
+              compiler, targeted for analysis of medium sized C,
+              Fortran or C++ programs. This will facilitate the
+              adoption of GCC in the area of safetycritical
+              software development, by providing features found in
+              a few expensive commercial tools (PolySpace, AbsInt)
+              or research prototypes (Astree). In this
+              perspective, the emphasis is on the quality of
+              analysis, at the expense of much bigger compilation
+              times, without sacrificing scalability. Such
+              analysis can be used for several purposes:
+              statically compute some interesting properties of
+              the program at most control points (possibly
+              reporting them the user); provide clever,
+              contextual, warnings about possible hazards in the
+              user program (null pointer dereferences, zero
+              divide, conversion loss, out of bound array access,
+              \dots) while avoiding too much false alarms; enable
+              additional optimisations, like conditional
+              contextual constant folding, C++ method call
+              devirtualization, an other contextual optimizations.
+              The compiler’s rich program manipulation
+              infrastructure facilitates the development of these
+              advanced analysis capabilities.  To facilitate the
+              development high-level semantical analyses, a domain
+              specific language has been developped, and is
+              translated (thru C) into dynamically loaded code. It
+              uses the Parma Polyhedra Library (also used in the
+              GRAPHITE project) for relational analysis on scalars
+              and gives more expressivity to develop analaysis
+              algorithms. It permits multi-staged generation of
+              the specific analysis tailored to the analyzed
+              source code. Presenting this work at the 2007 GCC
+              summit will allow us to stress the importance of all
+              outputs of the compiler, not only object-code, and
+              to expose the complementary contribution of static
+              analyses and dynamic/instrumentation approaches like
+              mudflap."
+}
+
 @Inproceedings{SongCR06,
   Author = "H. Song and K. J. Compton and W. C. Rounds",
   Title = "{SPHIN:} A Model Checker for Reconfigurable Hybrid Systems
