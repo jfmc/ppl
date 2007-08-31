@@ -24,12 +24,12 @@ Enhancements for PPL 0.10
 
 - Suppose we want to sum three numbers, and suppose we do it by
 
-  Â  add(T& to, const T& x, const T& y, const T& z) {
-Â      add(to, x, y);
-Â      add(to, to, z);
-Â    }
+    add(T& to, const T& x, const T& y, const T& z) {
+      add(to, x, y);
+      add(to, to, z);
+    }
 
-Â  Now suppose that &to == &z, so that we compute the wrong result.
+  Now suppose that &to == &z, so that we compute the wrong result.
   Perform a code audit to ensure that the above situation never happens.
   In order to ensure that, ensure that the following rule (to be added
   to STANDARDS) is always obeyed:
