@@ -213,7 +213,7 @@ $(DIST_CORE_PDF_DOCS)
 
 DIST_PS_DOCS = \
 $(PS_LICENSES) \
-$(DIST_CORE_PS_DOCS) \
+$(DIST_CORE_PS_DOCS)
 # FIXME: should we distribute manuals for the "foreign" interfaces?
 #$(DIST_C_INTERFACE_PS_DOCS) \
 #$(DIST_PROLOG_INTERFACE_PS_DOCS)
