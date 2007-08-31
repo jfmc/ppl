@@ -20,7 +20,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-/*! \defgroup PrologInterface Prolog Language Interface
+/*! \mainpage Prolog Language Interface
 
 The Parma Polyhedra Library comes equipped with a Prolog interface.
 Despite the lack of standardization of Prolog's foreign language interfaces,
@@ -45,11 +45,16 @@ or <CODE>/usr/local</CODE>).
 \anchor PI_SI_Features
 <H1>System-Independent Features</H1>
 
-The Prolog interface provides access to the PPL polyhedra.
-A general introduction to convex polyhedra, their representation in the PPL
-and the operations provided by the PPL is given in Sections
-\ref preamble, \ref convex_polys, \ref representation
-and \ref Operations_on_Convex_Polyhedra of this manual.
+The Prolog interface provides access to the numerical abstractions
+(convex polyhedra, BD shapes, octagonal shapes, etc.) implemented
+by the PPL library.
+A general introduction to the numerical abstractions,
+their representation in the PPL and the operations provided
+by the PPL is given in Sections
+\extref{preamble, The Main Features}, \extref{convex_polys, Convex Polyhedra},
+\extref{representation, Representations of Convex Polyhedra}
+and \extref{Operations_on_Convex_Polyhedra, Operations on Convex Polyhedra}
+in the main PPL user manual.
 Here we just describe those aspects that are specific to the Prolog interface.
 
 <H2>Overview</H2>
@@ -131,12 +136,15 @@ on the use of the interface.
   a PPL polyhedron,
   the polyhedra referenced and any constraints or generators in the call
   should follow all the (space) dimension-compatibility rules stated in
-  Section \ref representation.
+  Section \extref{representation, Representations of Convex Polyhedra}
+  of the main PPL user manual.
 
 - As explained above, a polyhedron has a fixed topology C or NNC,
   that is determined at the time of its initialization.
   All subsequent operations on the polyhedron must respect all the
-  topological compatibility rules stated in Section \ref representation.
+  topological compatibility rules stated in Section
+  \extref{representation, Representations of Convex Polyhedra}
+  of the main PPL user manual.
 
 - Any application using the PPL should make sure that only the
   intended version(s) of the library are ever used.
@@ -805,8 +813,11 @@ The specification uses the following grammar rules:
 \anchor predicates
 Below is a short description of each of the interface predicates.
 For full definitions of terminology used here, see Sections
-\ref preamble, \ref convex_polys, \ref representation
-and \ref Operations_on_Convex_Polyhedra of this manual.
+\extref{preamble, The Main Features},
+\extref{convex_polys, Convex Polyhedra},
+\extref{representation, Representations of Convex Polyhedra} and
+\extref{Operations_on_Convex_Polyhedra, Operations on Convex Polyhedra}
+in the main PPL user manual.
 
 
 <H2><CODE> ppl_version_major(?C_int) </CODE></H2>
@@ -1086,7 +1097,8 @@ Unifies <CODE>Poly_Relation_List</CODE> with the list of relations the
 polyhedron referenced by <CODE>Handle</CODE> has with
 <CODE>Constraint</CODE>.  The possible relations are listed in the
 grammar rules above; their meaning is given in Section
-\ref relation_with "specifying the relation_with operations".
+\extref{relation_with, Relation-With Operators}
+of the main PPL user manual.
 
 <H2><CODE> ppl_Polyhedron_relation_with_generator(+Handle, +Generator,
                ?Poly_Relation_List) </CODE></H2>
@@ -1095,7 +1107,8 @@ Unifies <CODE>Poly_Relation_List</CODE> with the list of relations the
 polyhedron referenced by <CODE>Handle</CODE> has with
 <CODE>Generator</CODE>.  The possible relations are listed in the
 grammar rules above; their meaning is given in
-Section \ref relation_with "specifying the relation_with operations".
+Section \extref{relation_with, Relation-With Operators}
+of the main PPL user manual.
 
 <H2><CODE> ppl_Polyhedron_get_bounding_box(+Handle,
                                           +Complexity,
@@ -1356,7 +1369,8 @@ and a query will succeed even when
 
    If the system of generators representing a polyhedron
    is non-empty, then it must include a point
-   (see Section \ref Generators_Representation).
+   (see Section \extref{Generators_Representation, Generators Representation}
+    of the main PPL user manual).
    Thus care must be taken to ensure that, before calling this
    predicate, either the polyhedron referenced by <CODE>Handle</CODE>
    is non-empty or that whenever <CODE>Generator_System</CODE> is
@@ -1809,8 +1823,10 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    <CODE>List_of_PPL_Vars</CODE> are folded into the dimension referenced
    by <CODE>PPL_Var</CODE> and removed.
    The result is undefined if <CODE>List_of_PPL_Vars</CODE>
-   does not have the properties described in
-   Section \ref fold_space_dimensions.
+   does not have the properties described in Section
+   \extref{fold_space_dimensions,
+   Folding Multiple Dimensions of the Vector Space into One Dimension}
+   of the main PPL user manual.
 
 <H2><CODE> ppl_Polyhedron_map_space_dimensions(+Handle, +P_Func)) </CODE></H2>
 
@@ -1819,8 +1835,9 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    using the partial function defined by <CODE>P_Func</CODE>.
    The result is undefined if \p P_Func does not encode a partial
    function with the properties described in
-   Section \ref Mapping_the_Dimensions_of_the_Vector_Space
-   "specifying the map_space_dimensions operator".
+   Section \extref{Mapping_the_Dimensions_of_the_Vector_Space,
+   Mapping the Dimensions of the Vector Space}
+   of the main PPL user manual.
 
 <H2><CODE>
   ppl_new_MIP_Problem_from_space_dimension(+Dimension_Type, -Handle)
@@ -2219,4 +2236,4 @@ when the PPL library is no longer needed.
 Notice that, for dynamic linking to work, you should have configured
 the library with the <CODE>--enable-shared</CODE> option.
 
-*/ /* \defgroup PrologInterface */
+*/ /* \mainpage */
