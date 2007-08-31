@@ -903,6 +903,14 @@ then
                 AC_DEFINE(GLPK_HAS__GLP_LIB_PRINT_HOOK,
                           1,
                           [Defined if GLPK provides _glp_lib_print_hook().]))
+  AC_CHECK_FUNC(glp_term_out,
+                AC_DEFINE(GLPK_HAS_GLP_TERM_OUT,
+                          1,
+                          [Defined if GLPK provides glp_term_out().]))
+  AC_CHECK_FUNC(glp_term_hook,
+                AC_DEFINE(GLPK_HAS_GLP_TERM_HOOK,
+                          1,
+                          [Defined if GLPK provides glp_term_hook().]))
 fi
 AC_LANG_POP(C)
 

@@ -461,6 +461,7 @@ static ppl_dimension_type* integer_variables;
 
 static void
 maybe_check_results(const int ppl_status, const double ppl_optimum_value) {
+  const char* ppl_status_string;
   const char* glpk_status_string;
   int glpk_status;
   int treat_as_lp = 0;
@@ -487,17 +488,27 @@ maybe_check_results(const int ppl_status, const double ppl_optimum_value) {
     lpx_intopt(glpk_lp);
     glpk_status = lpx_mip_status(glpk_lp);
   }
-  /* If no_optimization is enabled, the second case is not possibile */
+  /* If no_optimization is enabled, the second case is not possibile. */
   if (!((ppl_status == PPL_MIP_PROBLEM_STATUS_UNFEASIBLE
 	 && (glpk_status == LPX_NOFEAS || glpk_status == LPX_I_NOFEAS))
 	|| (ppl_status == PPL_MIP_PROBLEM_STATUS_UNBOUNDED
 	    && (glpk_status == LPX_UNBND || glpk_status == LPX_I_UNDEF))
 	|| (ppl_status == PPL_MIP_PROBLEM_STATUS_OPTIMIZED
 	    && ((glpk_status == LPX_OPT || glpk_status == LPX_I_OPT)
-		/*If no_optimization is enabled, check if the problem is
-		  unbounded for GLPK */
+		/* If no_optimization is enabled, check if the problem is
+		   unbounded for GLPK.  */
 		|| (no_optimization && (glpk_status == LPX_UNBND
 					|| glpk_status == LPX_I_UNDEF))))))  {
+
+    if (ppl_status == PPL_MIP_PROBLEM_STATUS_UNFEASIBLE)
+      ppl_status_string = "unfeasible";
+    else if (ppl_status == PPL_MIP_PROBLEM_STATUS_UNBOUNDED)
+      ppl_status_string = "unbounded";
+    else if (ppl_status == PPL_MIP_PROBLEM_STATUS_OPTIMIZED)
+      ppl_status_string = "optimizable";
+    else
+      ppl_status_string = "<?>";
+
     switch (glpk_status) {
     case LPX_NOFEAS:
       glpk_status_string = "unfeasible";
@@ -521,16 +532,21 @@ maybe_check_results(const int ppl_status, const double ppl_optimum_value) {
       glpk_status_string = "<?>";
       break;
     }
-    error("check failed: for GLPK the problem is %s", glpk_status_string);
+
+    error("check failed: for GLPK the problem is %s, not %s",
+	  glpk_status_string, ppl_status_string);
+
     check_results_failed = 1;
   }
   else if (!no_optimization
 	   && ppl_status == PPL_MIP_PROBLEM_STATUS_OPTIMIZED) {
+
     double glpk_optimum_value = treat_as_lp ? lpx_get_obj_val(glpk_lp)
       : lpx_mip_obj_val(glpk_lp);
+
     if (fabs(ppl_optimum_value - glpk_optimum_value) > check_threshold) {
-      error("check failed: for GLPK the problem's optimum is %.10g",
-	    glpk_optimum_value);
+      error("check failed: for GLPK the problem's optimum is %.10g,"
+	    " not %.10g", glpk_optimum_value, ppl_optimum_value);
       check_results_failed = 1;
     }
   }
@@ -1098,7 +1114,7 @@ set_GMP_memory_allocation_functions(void) {
 }
 #endif
 
-#ifdef NDEBUG
+#if defined(NDEBUG) && !defined(PPL_GLPK_HAS_GLP_TERM_OUT)
 static int
 glpk_message_interceptor(void* info, char* msg) {
   (void) info;
@@ -1124,10 +1140,14 @@ main(int argc, char* argv[]) {
     fatal("cannot install the custom variable output function");
 
 #ifdef NDEBUG
-#if defined(PPL_GLPK_HAS__GLP_LIB_PRINT_HOOK)
+#if defined(PPL_GLPK_HAS_GLP_TERM_OUT)
+  glp_term_out(GLP_OFF);
+#elif defined(PPL_GLPK_HAS_GLP_TERM_HOOK)
+  glp_term_hook(glpk_message_interceptor, 0);
+#elif defined(PPL_GLPK_HAS__GLP_LIB_PRINT_HOOK)
   extern void _glp_lib_print_hook(int (*func)(void *info, char *buf),
 				  void *info);
-  _glp_lib_print_hook(0, glpk_message_interceptor);
+  _glp_lib_print_hook(glpk_message_interceptor, 0);
 #elif defined(PPL_GLPK_HAS_LIB_SET_PRINT_HOOK)
   lib_set_print_hook(0, glpk_message_interceptor);
 #endif
