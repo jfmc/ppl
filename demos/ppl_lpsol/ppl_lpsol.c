@@ -24,7 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <ppl-config.h>
 #include "ppl_c.h"
 #include <gmp.h>
-#include <glpk.h>
 #include <stdio.h>
 #include <assert.h>
 #include <time.h>
@@ -33,6 +32,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <errno.h>
 #include <string.h>
 #include <math.h>
+
+#if defined(PPL_HAVE_GLPK_GLPK_H)
+#include <glpk/glpk.h>
+#elif defined(PPL_HAVE_GLPK_H)
+#include <glpk.h>
+#endif
 
 #ifdef PPL_HAVE_GETOPT_H
 # include <getopt.h>
@@ -1119,7 +1124,13 @@ main(int argc, char* argv[]) {
     fatal("cannot install the custom variable output function");
 
 #ifdef NDEBUG
+#if defined(PPL_GLPK_HAS__GLP_LIB_PRINT_HOOK)
+  extern void _glp_lib_print_hook(int (*func)(void *info, char *buf),
+				  void *info);
+  _glp_lib_print_hook(0, glpk_message_interceptor);
+#elif defined(PPL_GLPK_HAS_LIB_SET_PRINT_HOOK)
   lib_set_print_hook(0, glpk_message_interceptor);
+#endif
 #endif
 
   /* Process command line options. */

@@ -889,8 +889,21 @@ fi
 
 # Check for the GLPK library.
 AC_LANG_PUSH(C)
-AC_CHECK_HEADER(glpk.h, HAVE_GLPK_H=yes)
-AM_CONDITIONAL(HAVE_GLPK, test x$HAVE_GLPK_H = xyes)
+AC_CHECK_HEADERS([glpk.h glpk/glpk.h], have_glpk=yes)
+AM_CONDITIONAL(HAVE_GLPK, test x$have_glpk = xyes)
+if test x$have_glpk = xyes
+then
+  ac_save_LIBS="$LIBS"
+  LIBS="$LIBS -lglpk"
+  AC_CHECK_FUNC(lib_set_print_hook,
+                AC_DEFINE(GLPK_HAS_LIB_SET_PRINT_HOOK,
+                          1,
+                          [Defined if GLPK provides lib_set_print_hook().]))
+  AC_CHECK_FUNC(_glp_lib_print_hook,
+                AC_DEFINE(GLPK_HAS__GLP_LIB_PRINT_HOOK,
+                          1,
+                          [Defined if GLPK provides _glp_lib_print_hook().]))
+fi
 AC_LANG_POP(C)
 
 # Checks for header files.
