@@ -176,7 +176,7 @@ public:
     Flags for the newly added rows.
 
     Turns the \f$r \times c\f$ matrix \f$M\f$ into
-    the \f$(r+n) \times c\f$ matrix \f$M \choose 0\f$.
+    the \f$(r+n) \times c\f$ matrix \f$\genfrac{(}{)}{0pt}{}{M}{0}\f$.
     The matrix is expanded avoiding reallocation whenever possible.
   */
   void add_zero_rows(dimension_type n, Row::Flags row_flags);
@@ -205,7 +205,7 @@ public:
 
     Turns the \f$r \times c\f$ matrix \f$M\f$ into
     the \f$(r+n) \times (c+m)\f$ matrix
-    \f$\bigl({M \atop 0}{0 \atop 0}\bigr)\f$.
+    \f$\bigl(\genfrac{}{}{0pt}{}{M}{0} \genfrac{}{}{0pt}{}{0}{0}\bigr)\f$.
     The matrix is expanded avoiding reallocation whenever possible.
   */
   void add_zero_rows_and_columns(dimension_type n, dimension_type m,
@@ -219,7 +219,7 @@ public:
 
     Turns the \f$r \times c\f$ matrix \f$M\f$ into
     the \f$(r+1) \times c\f$ matrix
-    \f$\bigl({M \atop 0}\bigr)\f$.
+    \f$\genfrac{(}{)}{0pt}{}{M}{0}\f$.
     The matrix is expanded avoiding reallocation whenever possible.
   */
   void add_row(const Row& y);
@@ -232,7 +232,7 @@ public:
 
     Turns the \f$r \times c\f$ matrix \f$M\f$ into
     the \f$(r+1) \times c\f$ matrix
-    \f$\bigl({M \atop 0}\bigr)\f$.
+    \f$\genfrac{(}{)}{0pt}{}{M}{0}\f$.
     The matrix is expanded avoiding reallocation whenever possible.
   */
   void add_recycled_row(Row& y);

@@ -349,10 +349,11 @@ public:
     positive.
 
     Turns the \f$r \times c\f$ matrix \f$A\f$ into the \f$(r+dims) \times
-    (c+dims)\f$ matrix \f$\bigl({0 \atop A}{B \atop A}\bigr)\f$ where
-    \f$B\f$ is the \f$dims \times dims\f$ unit matrix of the form
-    \f$\bigl({0 \atop 1}{1 \atop 0}\bigr)\f$.  The matrix is expanded
-    avoiding reallocation whenever possible.
+    (c+dims)\f$ matrix
+    \f$\bigl(\genfrac{}{}{0pt}{}{0}{A} \genfrac{}{}{0pt}{}{B}{A}\bigr)\f$
+    where \f$B\f$ is the \f$dims \times dims\f$ unit matrix of the form
+    \f$\bigl(\genfrac{}{}{0pt}{}{0}{1} \genfrac{}{}{0pt}{}{1}{0}\bigr)\f$.
+    The matrix is expanded avoiding reallocation whenever possible.
   */
   void add_unit_rows_and_columns(dimension_type dims);
 
