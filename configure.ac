@@ -709,15 +709,20 @@ then
   JAVAPREFIX="${JAVA_HOME}/bin"
 fi
 
-# Check for Java programs. Order here is important: check first
-# for the compiler.
-AC_PROG_JAVAC
-AC_PROG_JAVA
-AC_PROG_JAR
-AC_PROG_JAVAH
+# Java
+if test x${java_interface_enabled} = xyes
+then
+  # Check for Java programs. Order here is important: check first
+  # for the compiler.
+  AC_PROG_JAVAC
+  AC_PROG_JAVA
+  AC_PROG_JAR
+  AC_PROG_JAVAH
+fi
 
-# All the Java programs are required to build the Java interface.
-AM_CONDITIONAL(BUILD_JAVA_INTERFACE, test ! "x$JAVA" = "xno" &&  test ! "x$ac_cv_javac_supports_enums" = "xno" && test ! "x$JAR" = "xno" && test ! "x$JAVAH" = "xno")
+# All the Java programs are required to build the Java interface and if
+# the Java interface is enabled.
+AM_CONDITIONAL(BUILD_JAVA_INTERFACE, test ! "x$JAVA" = "xno" &&  test ! "x$ac_cv_javac_supports_enums" = "xno" && test ! "x$JAR" = "xno" && test ! "x$JAVAH" = "xno" && test x${java_interface_enabled} = xyes)
 
 # OCaml
 if test x${ocaml_interface_enabled} = xyes
