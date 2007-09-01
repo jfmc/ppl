@@ -101,7 +101,8 @@ ppl_pl$(EXEEXT): ppl_swiprolog.lo ppl_pl.o
 pl_clpq$(EXEEXT): ppl_swiprolog.lo pl_clpq.o pl_clpq.pl ../tests/clpq.pl
 	plld -cc $(CC) -c++ $(CXX) -ld $(CXX) \
 		-ld-options`echo '' $(AM_CXXFLAGS) $(CXXFLAGS) | tr " " "/"` \
-		-o $@ ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../tests/clpq.pl \
+		-o $@ ppl_swiprolog.o pl_clpq.o \
+                $(srcdir)/pl_clpq.pl $(srcdir)/../tests/clpq.pl \
 		-L$(top_builddir)/src/.libs -lppl \
 		-L$(top_builddir)/Watchdog/src/.libs -lpwl \
 		@extra_libraries@
@@ -109,7 +110,8 @@ pl_clpq$(EXEEXT): ppl_swiprolog.lo pl_clpq.o pl_clpq.pl ../tests/clpq.pl
 pl_clpq2$(EXEEXT): ppl_swiprolog.lo pl_clpq.o pl_clpq.pl ../tests/clpq2.pl
 	plld -cc $(CC) -c++ $(CXX) -ld $(CXX) \
 		-ld-options`echo '' $(AM_CXXFLAGS) $(CXXFLAGS) | tr " " "/"` \
-		-o $@ ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../tests/clpq2.pl \
+		-o $@ ppl_swiprolog.o pl_clpq.o \
+                $(srcdir)/pl_clpq.pl $(srcdir)/../tests/clpq2.pl \
 		-L$(top_builddir)/src/.libs -lppl \
 		-L$(top_builddir)/Watchdog/src/.libs -lpwl \
 		@extra_libraries@
