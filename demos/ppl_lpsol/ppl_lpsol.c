@@ -149,11 +149,11 @@ my_exit(int status) {
 static void
 fatal(const char* format, ...) {
   va_list ap;
-  va_start(ap, format);
   fprintf(stderr, "%s: ", program_name);
+  va_start(ap, format);
   vfprintf(stderr, format, ap);
-  fprintf(stderr, "\n");
   va_end(ap);
+  fprintf(stderr, "\n");
   my_exit(1);
 }
 
@@ -172,15 +172,17 @@ warning(const char* format, ...) {
 static void
 error(const char* format, ...) {
   va_list ap;
-  va_start(ap, format);
   fprintf(stderr, "%s: ", program_name);
+  va_start(ap, format);
   vfprintf(stderr, format, ap);
+  va_end(ap);
   fprintf(stderr, "\n");
   if (output_argument) {
+    va_start(ap, format);
     vfprintf(output_file, format, ap);
+    va_end(ap);
     fprintf(output_file, "\n");
   }
-  va_end(ap);
 }
 
 static const char*
