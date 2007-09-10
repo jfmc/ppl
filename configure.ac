@@ -113,6 +113,16 @@ AC_ARG_WITH(cxx,
     [use XXX as the C++ compiler]),
   CXX=$with_cxx)
 
+# Checks for programs.
+# Note that AC_PROG_CC must precede the first use of $GCC abd AC_PROG_CXX
+# must precede the first use of $GXX.
+AC_PROG_EGREP
+AC_PROG_CC
+AC_PROG_CXX
+AC_PROG_CXXCPP
+AC_PROG_MAKE_SET
+AC_PROG_INSTALL
+
 # Compilation flags
 
 COMP_FLAGS=""
@@ -352,6 +362,13 @@ then
   AC_DEFINE(FPMATH_MAY_USE_SSE, 1, [Defined if floating point arithmetics may use the SSE instruction set.])
 fi
 
+# With GCC, disable transformations and optimizations that assume default
+# floating point rounding behavior.
+if test x"$GCC" = xyes
+then
+  OPT_FLAGS="$OPT_FLAGS -frounding-math"
+fi
+
 enableval=no
 AC_MSG_CHECKING([whether to use precompiled headers])
 AC_ARG_ENABLE(pch,
@@ -478,14 +495,6 @@ AC_ARG_WITH(cxxflags,
   AC_HELP_STRING([--with-cxxflags=XXX],
     [add XXX to the options for the C++ compiler]),
   CXXFLAGS="$CXXFLAGS $with_cxxflags")
-
-# Checks for programs.
-AC_PROG_EGREP
-AC_PROG_CC
-AC_PROG_CXX
-AC_PROG_CXXCPP
-AC_PROG_MAKE_SET
-AC_PROG_INSTALL
 
 # Check for Perl.
 AC_PATH_PROG([PERL], perl, no)
