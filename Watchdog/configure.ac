@@ -271,6 +271,8 @@ then
 fi
 
 # Checks for programs.
+# Note that AC_PROG_CC must precede the first use of $GCC abd AC_PROG_CXX
+# must precede the first use of $GXX.
 AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_CXXCPP
