@@ -722,7 +722,7 @@ fi
 
 # All the Java programs are required to build the Java interface and if
 # the Java interface is enabled.
-AM_CONDITIONAL(BUILD_JAVA_INTERFACE, test ! "x$JAVA" = "xno" &&  test ! "x$ac_cv_javac_supports_enums" = "xno" && test ! "x$JAR" = "xno" && test ! "x$JAVAH" = "xno" && test x${java_interface_enabled} = xyes)
+AM_CONDITIONAL(BUILD_JAVA_INTERFACE, test ! "x$JAVA" = xno &&  test ! "x$ac_cv_javac_supports_enums" = xno && test ! "x$JAR" = xno && test ! "x$JAVAH" = xno && test x${java_interface_enabled} = xyes)
 
 # OCaml
 if test x${ocaml_interface_enabled} = xyes
