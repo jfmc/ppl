@@ -36,7 +36,7 @@ AC_CONFIG_SRCDIR(src/Watchdog.cc)
 AC_CANONICAL_HOST
 
 # Use Automake.
-AM_INIT_AUTOMAKE([foreign dist-bzip2 dist-zip 1.7.3])
+AM_INIT_AUTOMAKE([foreign no-define dist-bzip2 dist-zip 1.7.3])
 AC_SUBST(VERSION)
 
 # Generate a configuration header file.
