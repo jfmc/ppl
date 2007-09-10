@@ -31,6 +31,10 @@ AC_PREREQ(2.59)
 # Make sure the sources are there.
 AC_CONFIG_SRCDIR(src/Watchdog.cc)
 
+# Determine the system type and set output variables to the names of
+# the canonical system types.
+AC_CANONICAL_HOST
+
 # Use Automake.
 AM_INIT_AUTOMAKE([foreign dist-bzip2 dist-zip 1.7.3])
 AC_SUBST(VERSION)
@@ -68,13 +72,6 @@ AC_ARG_WITH(cxx,
 CXX=$with_cxx)
 
 AC_LANG(C++)
-
-# Checks for programs.
-AC_PROG_CC
-AC_PROG_CXX
-AC_PROG_CXXCPP
-AC_PROG_MAKE_SET
-AC_PROG_INSTALL
 
 # Check for Perl.
 AC_PATH_PROG([PERL], perl, no)
@@ -224,8 +221,8 @@ no)
   ;;
 esac
 
-CFLAGS="$COMP_FLAGS $OPT_FLAGS $CFLAGS"
-CXXFLAGS="$COMP_FLAGS $OPT_FLAGS $CXXFLAGS"
+CFLAGS="$CFLAGS $COMP_FLAGS $OPT_FLAGS"
+CXXFLAGS="$CXXFLAGS $COMP_FLAGS $OPT_FLAGS"
 
 # Allow additions to C and C++ compilation flags
 
@@ -272,6 +269,13 @@ then
 *** THE SYSTEM DOES NOT PROVIDE THE SETITIMER FUNCTION.]))
   AC_LANG_POP(C)
 fi
+
+# Checks for programs.
+AC_PROG_CC
+AC_PROG_CXX
+AC_PROG_CXXCPP
+AC_PROG_MAKE_SET
+AC_PROG_INSTALL
 
 # Libtool.
 # Turn off shared libraries during beta-testing, since they

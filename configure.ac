@@ -371,8 +371,8 @@ no)
 esac
 AM_CONDITIONAL(USE_PRECOMPILED_HEADERS, test x"$enableval" = xyes)
 
-CFLAGS="$COMP_FLAGS $OPT_FLAGS $CFLAGS"
-CXXFLAGS="$COMP_FLAGS $OPT_FLAGS $CXXFLAGS"
+CFLAGS="$CFLAGS $COMP_FLAGS $OPT_FLAGS"
+CXXFLAGS="$CXXFLAGS $COMP_FLAGS $OPT_FLAGS"
 
 enableval=mpz
 AC_MSG_CHECKING([the type of integral values to use as coefficients])
@@ -941,11 +941,11 @@ AC_CHECK_DECLS([RLIMIT_DATA, RLIMIT_RSS, RLIMIT_VMEM, RLIMIT_AS],
 # If we are using GCC we want to compile with warnings enabled.
 if test x"$GCC" = xyes
 then
-  CFLAGS="-W -Wall $CFLAGS"
+  CFLAGS="$CFLAGS -W -Wall"
 fi
 if test x"$GXX" = xyes
 then
-  CXXFLAGS="-W -Wall $CXXFLAGS"
+  CXXFLAGS="$CXXFLAGS -W -Wall"
 fi
 
 # System-dependent adjustments.
