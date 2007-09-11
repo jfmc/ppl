@@ -28,7 +28,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <> struct Is_Native<mpz_class> : public True { };
-template <> struct Slow_Copy<mpz_class> : public True {};
 
 namespace Checked {
 
