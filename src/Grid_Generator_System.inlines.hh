@@ -66,7 +66,7 @@ Grid_Generator_System
 }
 
 inline bool
-Grid_Generator_System::is_equal_to(const Grid_Generator_System y) const {
+Grid_Generator_System::is_equal_to(const Grid_Generator_System& y) const {
   return operator==(static_cast<const Generator_System&>(*this),
 		    static_cast<const Generator_System&>(y));
 }

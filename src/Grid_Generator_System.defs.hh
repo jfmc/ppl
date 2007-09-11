@@ -336,7 +336,7 @@ public:
   bool has_points() const;
 
   //! Returns <CODE>true</CODE> if \p *this is identical to \p y.
-  bool is_equal_to(const Grid_Generator_System y) const;
+  bool is_equal_to(const Grid_Generator_System& y) const;
 
   //! Checks if all the invariants are satisfied.
   /*!
