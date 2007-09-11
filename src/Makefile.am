@@ -103,9 +103,14 @@ INCLUDE_FILES = \
 namespaces.hh \
 compiler.hh \
 meta_programming.hh \
+Slow_Copy.hh \
+Has_Assign_Or_Swap.hh \
+assign_or_swap.hh \
 mp_std_bits.defs.hh \
 mp_std_bits.inlines.hh \
 Temp.defs.hh \
+Temp.inlines.hh \
+Temp.templates.hh \
 Coefficient_traits_template.hh \
 Checked_Number.types.hh \
 $(COEFFICIENT_TYPES_INCLUDE_FILES) \
