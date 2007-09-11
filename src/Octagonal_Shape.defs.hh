@@ -97,7 +97,7 @@ template <typename To, typename T>
 bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 				 const Octagonal_Shape<T>& x,
 				 const Octagonal_Shape<T>& y,
-				 const Rounding_Dir dir);
+				 Rounding_Dir dir);
 
 //! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
 /*! \relates Octagonal_Shape
@@ -114,7 +114,7 @@ template <typename Temp, typename To, typename T>
 bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 				 const Octagonal_Shape<T>& x,
 				 const Octagonal_Shape<T>& y,
-				 const Rounding_Dir dir);
+				 Rounding_Dir dir);
 
 //! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
 /*! \relates Octagonal_Shape
@@ -131,7 +131,7 @@ template <typename Temp, typename To, typename T>
 bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 				 const Octagonal_Shape<T>& x,
 				 const Octagonal_Shape<T>& y,
-				 const Rounding_Dir dir,
+				 Rounding_Dir dir,
 				 Temp& tmp0,
 				 Temp& tmp1,
 				 Temp& tmp2);
@@ -151,7 +151,7 @@ template <typename To, typename T>
 bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			       const Octagonal_Shape<T>& x,
 			       const Octagonal_Shape<T>& y,
-			       const Rounding_Dir dir);
+			       Rounding_Dir dir);
 
 //! Computes the euclidean distance between \p x and \p y.
 /*! \relates Octagonal_Shape
@@ -168,7 +168,7 @@ template <typename Temp, typename To, typename T>
 bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			       const Octagonal_Shape<T>& x,
 			       const Octagonal_Shape<T>& y,
-			       const Rounding_Dir dir);
+			       Rounding_Dir dir);
 
 //! Computes the euclidean distance between \p x and \p y.
 /*! \relates Octagonal_Shape
@@ -185,7 +185,7 @@ template <typename Temp, typename To, typename T>
 bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			       const Octagonal_Shape<T>& x,
 			       const Octagonal_Shape<T>& y,
-			       const Rounding_Dir dir,
+			       Rounding_Dir dir,
 			       Temp& tmp0,
 			       Temp& tmp1,
 			       Temp& tmp2);
@@ -205,7 +205,7 @@ template <typename To, typename T>
 bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 				const Octagonal_Shape<T>& x,
 				const Octagonal_Shape<T>& y,
-				const Rounding_Dir dir);
+				Rounding_Dir dir);
 
 //! Computes the \f$L_\infty\f$ distance between \p x and \p y.
 /*! \relates Octagonal_Shape
@@ -222,7 +222,7 @@ template <typename Temp, typename To, typename T>
 bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 				const Octagonal_Shape<T>& x,
 				const Octagonal_Shape<T>& y,
-				const Rounding_Dir dir);
+				Rounding_Dir dir);
 
 //! Computes the \f$L_\infty\f$ distance between \p x and \p y.
 /*! \relates Octagonal_Shape
@@ -239,7 +239,7 @@ template <typename Temp, typename To, typename T>
 bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 				const Octagonal_Shape<T>& x,
 				const Octagonal_Shape<T>& y,
-				const Rounding_Dir dir,
+				Rounding_Dir dir,
 				Temp& tmp0,
 				Temp& tmp1,
 				Temp& tmp2);
@@ -285,7 +285,7 @@ bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool extract_octagonal_difference(const Constraint& c,
-				  const dimension_type c_space_dim,
+				  dimension_type c_space_dim,
 				  dimension_type& c_num_vars,
 				  dimension_type& c_first_var,
 				  dimension_type& c_second_var,
@@ -1044,7 +1044,7 @@ public:
     or if \p relsym is a strict relation symbol.
   */
   void generalized_affine_preimage(const Linear_Expression& lhs,
-				   const Relation_Symbol relsym,
+				   Relation_Symbol relsym,
 				   const Linear_Expression& rhs);
 
   /*!
@@ -1473,13 +1473,13 @@ private:
   const N& matrix_at(dimension_type i, dimension_type j) const;
 
   //! Adds the constraint <CODE>matrix[i][j] <= k</CODE>.
-  void add_octagonal_constraint(const dimension_type i,
-				const dimension_type j,
+  void add_octagonal_constraint(dimension_type i,
+				dimension_type j,
 				const N& k);
 
   //! Adds the constraint <CODE>matrix[i][j] <= num/den</CODE>.
-  void add_octagonal_constraint(const dimension_type i,
-				const dimension_type j,
+  void add_octagonal_constraint(dimension_type i,
+				dimension_type j,
 				Coefficient_traits::const_reference num,
 				Coefficient_traits::const_reference den);
 
@@ -1489,7 +1489,8 @@ private:
 
     Note that the coefficient of \p var in \p expr is null.
   */
-  void refine(const Variable var, const Relation_Symbol relsym,
+  void refine(Variable var,
+	      Relation_Symbol relsym,
 	      const Linear_Expression& expr,
 	      Coefficient_traits::const_reference denominator
 	      = Coefficient_one());
@@ -1680,7 +1681,7 @@ private:
     \p included are left untouched.
   */
   bool max_min(const Linear_Expression& expr,
-	       const bool maximize,
+	       bool maximize,
 	       Coefficient& ext_n, Coefficient& ext_d, bool& included) const;
 
   //! Maximizes or minimizes \p expr subject to \p *this.
@@ -1715,7 +1716,7 @@ private:
     \p included and \p g are left untouched.
   */
   bool max_min(const Linear_Expression& expr,
-	       const bool maximize,
+	       bool maximize,
 	       Coefficient& ext_n, Coefficient& ext_d, bool& included,
 	       Generator& g) const;
 

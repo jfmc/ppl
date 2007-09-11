@@ -274,7 +274,7 @@ template <typename Temp, typename To, typename T>
 bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 				 const DB_Matrix<T>& x,
 				 const DB_Matrix<T>& y,
-				 const Rounding_Dir dir,
+				 Rounding_Dir dir,
 				 Temp& tmp0,
 				 Temp& tmp1,
 				 Temp& tmp2);
@@ -296,7 +296,7 @@ template <typename Temp, typename To, typename T>
 bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			       const DB_Matrix<T>& x,
 			       const DB_Matrix<T>& y,
-			       const Rounding_Dir dir,
+			       Rounding_Dir dir,
 			       Temp& tmp0,
 			       Temp& tmp1,
 			       Temp& tmp2);
@@ -318,7 +318,7 @@ template <typename Temp, typename To, typename T>
 bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 				 const DB_Matrix<T>& x,
 				 const DB_Matrix<T>& y,
-				 const Rounding_Dir dir,
+				 Rounding_Dir dir,
 				 Temp& tmp0,
 				 Temp& tmp1,
 				 Temp& tmp2);

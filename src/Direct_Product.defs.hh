@@ -105,7 +105,7 @@ public:
     dimension.
   */
   explicit Direct_Product(dimension_type num_dimensions = 0,
-			  const Degenerate_Element kind = UNIVERSE);
+			  Degenerate_Element kind = UNIVERSE);
 
   //! Builds a pair, copying a system of congruences.
   /*!
@@ -1009,7 +1009,7 @@ public:
     relation symbol.
   */
   void generalized_affine_image(Variable var,
-				const Relation_Symbol relsym,
+				Relation_Symbol relsym,
 				const Linear_Expression& expr,
 				Coefficient_traits::const_reference denominator
 				  = Coefficient_one());
@@ -1075,7 +1075,7 @@ public:
   */
   void
   generalized_affine_preimage(Variable var,
-			      const Relation_Symbol relsym,
+			      Relation_Symbol relsym,
 			      const Linear_Expression& expr,
 			      Coefficient_traits::const_reference denominator
 			      = Coefficient_one());
@@ -1134,7 +1134,7 @@ public:
     relation symbol.
   */
   void generalized_affine_image(const Linear_Expression& lhs,
-				const Relation_Symbol relsym,
+				Relation_Symbol relsym,
 				const Linear_Expression& rhs);
 
   /*! \brief
@@ -1183,7 +1183,7 @@ public:
     relation symbol.
   */
   void generalized_affine_preimage(const Linear_Expression& lhs,
-				   const Relation_Symbol relsym,
+				   Relation_Symbol relsym,
 				   const Linear_Expression& rhs);
 
   /*! \brief
@@ -1505,7 +1505,7 @@ public:
     dimension.
   */
   explicit Open_Product(dimension_type num_dimensions = 0,
-			const Degenerate_Element kind = UNIVERSE);
+			Degenerate_Element kind = UNIVERSE);
 
   //! Builds a pair, copying a system of congruences.
   /*!

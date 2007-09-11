@@ -87,7 +87,7 @@ bool
 rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			    const Box<Interval>& x,
 			    const Box<Interval>& y,
-			    const Rounding_Dir dir);
+			    Rounding_Dir dir);
 
 //! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
 /*! \relates Box
@@ -105,7 +105,7 @@ bool
 rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			    const Box<Interval>& x,
 			    const Box<Interval>& y,
-			    const Rounding_Dir dir);
+			    Rounding_Dir dir);
 
 //! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
 /*! \relates Box
@@ -123,7 +123,7 @@ bool
 rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			    const Box<Interval>& x,
 			    const Box<Interval>& y,
-			    const Rounding_Dir dir,
+			    Rounding_Dir dir,
 			    Temp& tmp0,
 			    Temp& tmp1,
 			    Temp& tmp2);
@@ -144,7 +144,7 @@ bool
 euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			  const Box<Interval>& x,
 			  const Box<Interval>& y,
-			  const Rounding_Dir dir);
+			  Rounding_Dir dir);
 
 //! Computes the euclidean distance between \p x and \p y.
 /*! \relates Box
@@ -162,7 +162,7 @@ bool
 euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			  const Box<Interval>& x,
 			  const Box<Interval>& y,
-			  const Rounding_Dir dir);
+			  Rounding_Dir dir);
 
 //! Computes the euclidean distance between \p x and \p y.
 /*! \relates Box
@@ -180,7 +180,7 @@ bool
 euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			  const Box<Interval>& x,
 			  const Box<Interval>& y,
-			  const Rounding_Dir dir,
+			  Rounding_Dir dir,
 			  Temp& tmp0,
 			  Temp& tmp1,
 			  Temp& tmp2);
@@ -201,7 +201,7 @@ bool
 l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			   const Box<Interval>& x,
 			   const Box<Interval>& y,
-			   const Rounding_Dir dir);
+			   Rounding_Dir dir);
 
 //! Computes the \f$L_\infty\f$ distance between \p x and \p y.
 /*! \relates Box
@@ -219,7 +219,7 @@ bool
 l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			   const Box<Interval>& x,
 			   const Box<Interval>& y,
-			   const Rounding_Dir dir);
+			   Rounding_Dir dir);
 
 //! Computes the \f$L_\infty\f$ distance between \p x and \p y.
 /*! \relates Box
@@ -237,7 +237,7 @@ bool
 l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			   const Box<Interval>& x,
 			   const Box<Interval>& y,
-			   const Rounding_Dir dir,
+			   Rounding_Dir dir,
 			   Temp& tmp0,
 			   Temp& tmp1,
 			   Temp& tmp2);
@@ -252,7 +252,7 @@ template <typename Specialization,
 bool
 l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 		    const Box<Interval>& x, const Box<Interval>& y,
-		    const Rounding_Dir dir,
+		    Rounding_Dir dir,
 		    Temp& tmp0, Temp& tmp1, Temp& tmp2);
 
 } // namespace Parma_Polyhedra_Library
@@ -798,7 +798,7 @@ public:
     dimension-incompatible or if \p var is not a space dimension of \p *this.
   */
   void generalized_affine_image(Variable var,
-				const Relation_Symbol relsym,
+				Relation_Symbol relsym,
 				const Linear_Expression& expr,
 				Coefficient_traits::const_reference denominator
 				  = Coefficient_one());
@@ -829,7 +829,7 @@ public:
   */
   void
   generalized_affine_preimage(Variable var,
-			      const Relation_Symbol relsym,
+			      Relation_Symbol relsym,
 			      const Linear_Expression& expr,
 			      Coefficient_traits::const_reference denominator
 			      = Coefficient_one());
@@ -853,7 +853,7 @@ public:
     Thrown if \p *this is dimension-incompatible with \p lhs or \p rhs.
   */
   void generalized_affine_image(const Linear_Expression& lhs,
-				const Relation_Symbol relsym,
+				Relation_Symbol relsym,
 				const Linear_Expression& rhs);
 
   /*! \brief
@@ -875,7 +875,7 @@ public:
     Thrown if \p *this is dimension-incompatible with \p lhs or \p rhs.
   */
   void generalized_affine_preimage(const Linear_Expression& lhs,
-				   const Relation_Symbol relsym,
+				   Relation_Symbol relsym,
 				   const Linear_Expression& rhs);
 
   /*! \brief
@@ -1603,7 +1603,7 @@ private:
     \p included and \p g are left untouched.
   */
   bool max_min(const Linear_Expression& expr,
-	       const bool maximize,
+	       bool maximize,
 	       Coefficient& ext_n, Coefficient& ext_d, bool& included,
 	       Generator& g) const;
 
@@ -1633,7 +1633,7 @@ private:
     \p included and \p point are left untouched.
   */
   bool max_min(const Linear_Expression& expr,
-	       const bool maximize,
+	       bool maximize,
 	       Coefficient& ext_n, Coefficient& ext_d, bool& included) const;
 
   //! \name Exception Throwers
@@ -1698,7 +1698,7 @@ namespace Parma_Polyhedra_Library {
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool extract_interval_constraint(const Constraint& c,
-				 const dimension_type c_space_dim,
+				 dimension_type c_space_dim,
 				 dimension_type& c_num_vars,
 				 dimension_type& c_only_var);
 

@@ -1293,7 +1293,7 @@ public:
     relation symbol.
   */
   void generalized_affine_image(Variable var,
-				const Relation_Symbol relsym,
+				Relation_Symbol relsym,
 				const Linear_Expression& expr,
 				Coefficient_traits::const_reference denominator
 				  = Coefficient_one());
@@ -1326,7 +1326,7 @@ public:
   */
   void
   generalized_affine_preimage(Variable var,
-			      const Relation_Symbol relsym,
+			      Relation_Symbol relsym,
 			      const Linear_Expression& expr,
 			      Coefficient_traits::const_reference denominator
 			      = Coefficient_one());
@@ -1352,7 +1352,7 @@ public:
     relation symbol.
   */
   void generalized_affine_image(const Linear_Expression& lhs,
-				const Relation_Symbol relsym,
+				Relation_Symbol relsym,
 				const Linear_Expression& rhs);
 
   /*! \brief
@@ -1376,7 +1376,7 @@ public:
     relation symbol.
   */
   void generalized_affine_preimage(const Linear_Expression& lhs,
-				   const Relation_Symbol relsym,
+				   Relation_Symbol relsym,
 				   const Linear_Expression& rhs);
 
   /*!
@@ -2258,7 +2258,7 @@ private:
     \p included and \p g are left untouched.
   */
   bool max_min(const Linear_Expression& expr,
-	       const bool maximize,
+	       bool maximize,
 	       Coefficient& ext_n, Coefficient& ext_d, bool& included,
 	       Generator& g) const;
 
@@ -2434,7 +2434,7 @@ protected:
 				    const Congruence_System& cgs) const;
   void throw_dimension_incompatible(const char* method,
 				    const char* var_name,
-				    const Variable var) const;
+				    Variable var) const;
   void throw_dimension_incompatible(const char* method,
 				    dimension_type required_space_dim) const;
 

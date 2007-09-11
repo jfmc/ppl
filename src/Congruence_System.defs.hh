@@ -365,7 +365,7 @@ protected:
 private:
 
   //! Builds an empty (i.e. zero rows) system of dimension \p d.
-  explicit Congruence_System(const dimension_type d);
+  explicit Congruence_System(dimension_type d);
 
   /*! \brief
     Concatenates copies of the congruences from \p cgs onto \p *this.
@@ -389,7 +389,7 @@ private:
     \p new_space_dim must at least equal to the current space
     dimension.
   */
-  bool increase_space_dimension(const dimension_type new_space_dim);
+  bool increase_space_dimension(dimension_type new_space_dim);
 
   /*! \brief
     Inserts in \p *this an exact copy of the congruence \p cg,
@@ -477,7 +477,7 @@ private:
     The value of \p new_dimension must be at most the space dimension
     of \p *this.
   */
-  void remove_higher_space_dimensions(const dimension_type new_dimension);
+  void remove_higher_space_dimensions(dimension_type new_dimension);
 
   //! Resizes the system without worrying about the old contents.
   /*!

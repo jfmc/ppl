@@ -599,8 +599,8 @@ private:
     \param exiting_base_index
     The index of the row exiting the base.
   */
-  void pivot(const dimension_type entering_var_index,
-	     const dimension_type exiting_base_index);
+  void pivot(dimension_type entering_var_index,
+	     dimension_type exiting_base_index);
 
   /*! \brief
     Checks for optimality and, if it does not hold, computes the column
@@ -639,10 +639,10 @@ private:
     Drop unnecessary artificial variables from the tableau and get ready
     for the second phase of the simplex algorithm.
   */
-  void erase_artificials(const dimension_type begin_artificials,
-			 const dimension_type end_artificials);
+  void erase_artificials(dimension_type begin_artificials,
+			 dimension_type end_artificials);
 
-  bool is_in_base(const dimension_type var_index,
+  bool is_in_base(dimension_type var_index,
 		  dimension_type& row_index) const;
 
   /*! \brief

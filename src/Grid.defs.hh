@@ -370,7 +370,7 @@ public:
     dimension.
   */
   explicit Grid(dimension_type num_dimensions = 0,
-		const Degenerate_Element kind = UNIVERSE);
+		Degenerate_Element kind = UNIVERSE);
 
   //! Builds a grid, copying a system of congruences.
   /*!
@@ -1513,7 +1513,7 @@ public:
   */
   void
   generalized_affine_image(Variable var,
-			   const Relation_Symbol relsym,
+			   Relation_Symbol relsym,
 			   const Linear_Expression& expr,
 			   Coefficient_traits::const_reference denominator
 			   = Coefficient_one(),
@@ -1552,7 +1552,7 @@ public:
   */
   void
   generalized_affine_preimage(Variable var,
-			      const Relation_Symbol relsym,
+			      Relation_Symbol relsym,
 			      const Linear_Expression& expr,
 			      Coefficient_traits::const_reference denominator
 			      = Coefficient_one(),
@@ -1585,7 +1585,7 @@ public:
   */
   void
   generalized_affine_image(const Linear_Expression& lhs,
-			   const Relation_Symbol relsym,
+			   Relation_Symbol relsym,
 			   const Linear_Expression& rhs,
 			   Coefficient_traits::const_reference modulus
 			   = Coefficient_zero());
@@ -1616,7 +1616,7 @@ public:
   */
   void
   generalized_affine_preimage(const Linear_Expression& lhs,
-			      const Relation_Symbol relsym,
+			      Relation_Symbol relsym,
 			      const Linear_Expression& rhs,
 			      Coefficient_traits::const_reference modulus
 			      = Coefficient_zero());
@@ -1912,7 +1912,7 @@ public:
     Thrown if \p new_dimensions is greater than the space dimension of
     \p *this.
   */
-  void remove_higher_space_dimensions(const dimension_type new_dimension);
+  void remove_higher_space_dimensions(dimension_type new_dimension);
 
   /*! \brief
     Remaps the dimensions of the vector space according to
@@ -2106,8 +2106,7 @@ private:
     \param kind
     specifies whether the universe or the empty grid has to be built.
   */
-  void construct(dimension_type num_dimensions,
-		 const Degenerate_Element kind);
+  void construct(dimension_type num_dimensions, Degenerate_Element kind);
 
   //! Builds a grid from a system of congruences.
   /*!
@@ -2605,7 +2604,7 @@ protected:
 				    const Grid_Generator_System& gs) const;
   void throw_dimension_incompatible(const char* method,
 				    const char* var_name,
-				    const Variable var) const;
+				    Variable var) const;
   void throw_dimension_incompatible(const char* method,
 				    dimension_type required_space_dim) const;
 

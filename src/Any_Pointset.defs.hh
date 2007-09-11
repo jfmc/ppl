@@ -654,7 +654,7 @@ public:
   */
   virtual
   void generalized_affine_image(Variable var,
-				const Relation_Symbol relsym,
+				Relation_Symbol relsym,
 				const Linear_Expression& expr,
 				Coefficient_traits::const_reference denominator
 				= Coefficient_one()) = 0;
@@ -687,7 +687,7 @@ public:
   */
   virtual void
   generalized_affine_preimage(Variable var,
-			      const Relation_Symbol relsym,
+			      Relation_Symbol relsym,
 			      const Linear_Expression& expr,
 			      Coefficient_traits::const_reference denominator
 			      = Coefficient_one()) = 0;
@@ -713,7 +713,7 @@ public:
     relation symbol.
   */
   virtual void generalized_affine_image(const Linear_Expression& lhs,
-					const Relation_Symbol relsym,
+					Relation_Symbol relsym,
 					const Linear_Expression& rhs) = 0;
 
   /*! \brief
@@ -737,7 +737,7 @@ public:
     relation symbol.
   */
   virtual void generalized_affine_preimage(const Linear_Expression& lhs,
-					   const Relation_Symbol relsym,
+					   Relation_Symbol relsym,
 					   const Linear_Expression& rhs) = 0;
 
   /*!
@@ -1235,7 +1235,7 @@ class WRAPPER_NAME : public Any_Pointset {				\
     x.affine_image(var, expr, denominator);				\
   }									\
   void generalized_affine_image(Variable var,				\
-				const Relation_Symbol relsym,		\
+				Relation_Symbol relsym,			\
 				const Linear_Expression& expr,		\
 				Coefficient_traits::const_reference	\
 				denominator = Coefficient_one()) {	\
@@ -1243,19 +1243,19 @@ class WRAPPER_NAME : public Any_Pointset {				\
   }									\
   void									\
   generalized_affine_preimage(Variable var,				\
-			      const Relation_Symbol relsym,		\
+			      Relation_Symbol relsym,			\
 			      const Linear_Expression& expr,		\
 			      Coefficient_traits::const_reference denominator \
 			      = Coefficient_one()) {			\
     x.generalized_affine_preimage(var, relsym, expr, denominator);	\
   }									\
   virtual void generalized_affine_image(const Linear_Expression& lhs,	\
-					const Relation_Symbol relsym,	\
+					Relation_Symbol relsym,		\
 					const Linear_Expression& rhs) { \
     x.generalized_affine_image(lhs, relsym, rhs);			\
   }									\
   void generalized_affine_preimage(const Linear_Expression& lhs,	\
-				   const Relation_Symbol relsym,	\
+				   Relation_Symbol relsym,		\
 				   const Linear_Expression& rhs) {	\
     x.generalized_affine_preimage(lhs, relsym, rhs);			\
   }									\

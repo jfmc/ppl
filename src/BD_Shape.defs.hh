@@ -94,7 +94,7 @@ template <typename To, typename T>
 bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 				 const BD_Shape<T>& x,
 				 const BD_Shape<T>& y,
-				 const Rounding_Dir dir);
+				 Rounding_Dir dir);
 
 //! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
 /*! \relates BD_Shape
@@ -111,7 +111,7 @@ template <typename Temp, typename To, typename T>
 bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 				 const BD_Shape<T>& x,
 				 const BD_Shape<T>& y,
-				 const Rounding_Dir dir);
+				 Rounding_Dir dir);
 
 //! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
 /*! \relates BD_Shape
@@ -128,7 +128,7 @@ template <typename Temp, typename To, typename T>
 bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 				 const BD_Shape<T>& x,
 				 const BD_Shape<T>& y,
-				 const Rounding_Dir dir,
+				 Rounding_Dir dir,
 				 Temp& tmp0,
 				 Temp& tmp1,
 				 Temp& tmp2);
@@ -148,7 +148,7 @@ template <typename To, typename T>
 bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			       const BD_Shape<T>& x,
 			       const BD_Shape<T>& y,
-			       const Rounding_Dir dir);
+			       Rounding_Dir dir);
 
 //! Computes the euclidean distance between \p x and \p y.
 /*! \relates BD_Shape
@@ -165,7 +165,7 @@ template <typename Temp, typename To, typename T>
 bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			       const BD_Shape<T>& x,
 			       const BD_Shape<T>& y,
-			       const Rounding_Dir dir);
+			       Rounding_Dir dir);
 
 //! Computes the euclidean distance between \p x and \p y.
 /*! \relates BD_Shape
@@ -182,7 +182,7 @@ template <typename Temp, typename To, typename T>
 bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			       const BD_Shape<T>& x,
 			       const BD_Shape<T>& y,
-			       const Rounding_Dir dir,
+			       Rounding_Dir dir,
 			       Temp& tmp0,
 			       Temp& tmp1,
 			       Temp& tmp2);
@@ -202,7 +202,7 @@ template <typename To, typename T>
 bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 				const BD_Shape<T>& x,
 				const BD_Shape<T>& y,
-				const Rounding_Dir dir);
+				Rounding_Dir dir);
 
 //! Computes the \f$L_\infty\f$ distance between \p x and \p y.
 /*! \relates BD_Shape
@@ -219,7 +219,7 @@ template <typename Temp, typename To, typename T>
 bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 				const BD_Shape<T>& x,
 				const BD_Shape<T>& y,
-				const Rounding_Dir dir);
+				Rounding_Dir dir);
 
 //! Computes the \f$L_\infty\f$ distance between \p x and \p y.
 /*! \relates BD_Shape
@@ -236,7 +236,7 @@ template <typename Temp, typename To, typename T>
 bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 				const BD_Shape<T>& x,
 				const BD_Shape<T>& y,
-				const Rounding_Dir dir,
+				Rounding_Dir dir,
 				Temp& tmp0,
 				Temp& tmp1,
 				Temp& tmp2);
@@ -278,7 +278,7 @@ bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool extract_bounded_difference(const Constraint& c,
-				const dimension_type c_space_dim,
+				dimension_type c_space_dim,
 				dimension_type& c_num_vars,
 				dimension_type& c_first_var,
 				dimension_type& c_second_var,
@@ -1611,7 +1611,7 @@ private:
     \p included and \p g are left untouched.
   */
   bool max_min(const Linear_Expression& expr,
-	       const bool maximize,
+	       bool maximize,
 	       Coefficient& ext_n, Coefficient& ext_d, bool& included,
 	       Generator& g) const;
 
@@ -1642,7 +1642,7 @@ private:
     \p included and \p point are left untouched.
   */
   bool max_min(const Linear_Expression& expr,
-	       const bool maximize,
+	       bool maximize,
 	       Coefficient& ext_n, Coefficient& ext_d, bool& included) const;
 
   //! Adds the constraint <CODE>dbm[i][j] \<= k</CODE>.
@@ -1659,7 +1659,7 @@ private:
 
     Note that the coefficient of \p var in \p expr is null.
   */
-  void refine(const Variable var, const Relation_Symbol relsym,
+  void refine(Variable var, Relation_Symbol relsym,
 	      const Linear_Expression& expr,
 	      Coefficient_traits::const_reference denominator
 	      = Coefficient_one());
