@@ -1108,7 +1108,8 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
   // with the respectively constraints in `*this'
   // `-y <= v - u <= x'.
   // Let be `d == c_term/coeff' and `d1 == -c_term/coeff'.
-  Coefficient numer, denom;
+  TEMP_INTEGER(numer);
+  TEMP_INTEGER(denom);
   // The following variables of mpq_class type are used to be precise
   // when the bds is defined by integer constraints.
   DIRTY_TEMP0(mpq_class, q_x);
@@ -1234,7 +1235,8 @@ BD_Shape<T>::relation_with(const Generator& g) const {
 	TEMP_INTEGER(den);
 	TEMP_INTEGER(num);
 	numer_denom(dbm_ij, num, den);
-	Coefficient product = 0;
+	TEMP_INTEGER(product);
+	product = 0;
 	add_mul_assign(product, den, g_coeff_y);
 	add_mul_assign(product, -den, g_coeff_x);
 	if (!is_line_or_ray)
@@ -1250,7 +1252,8 @@ BD_Shape<T>::relation_with(const Generator& g) const {
 	  TEMP_INTEGER(den);
 	  TEMP_INTEGER(num);
 	  numer_denom(dbm_ij, num, den);
-	  Coefficient product = 0;
+	  TEMP_INTEGER(product);
+	  product = 0;
 	  add_mul_assign(product, den, g_coeff_y);
 	  add_mul_assign(product, -den, g_coeff_x);
 	  if (!is_line_or_ray)
@@ -1272,7 +1275,8 @@ BD_Shape<T>::relation_with(const Generator& g) const {
 	  TEMP_INTEGER(den);
 	  TEMP_INTEGER(num);
 	  numer_denom(dbm_ji, num, den);
-	  Coefficient product = 0;
+	  TEMP_INTEGER(product);
+	  product = 0;
 	  add_mul_assign(product, den, g_coeff_x);
 	  add_mul_assign(product, -den, g_coeff_y);
 	  if (!is_line_or_ray)

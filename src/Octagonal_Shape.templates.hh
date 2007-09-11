@@ -389,8 +389,10 @@ Octagonal_Shape<T>::add_constraint(const Constraint& c) {
   dimension_type num_vars = 0;
   dimension_type i = 0;
   dimension_type j = 0;
-  Coefficient coeff;
-  Coefficient term = c.inhomogeneous_term();
+  TEMP_INTEGER(coeff);
+  // FIXME: what is this for?  Why is term only used once?
+  TEMP_INTEGER(term);
+  term = c.inhomogeneous_term();
   // Constraints that are not octagonal differences are ignored.
   if (!extract_octagonal_difference(c, c_space_dim, num_vars,
 				    i, j, coeff, term))
@@ -826,14 +828,16 @@ Octagonal_Shape<T>::bounds(const Linear_Expression& expr,
   dimension_type num_vars = 0;
   dimension_type i = 0;
   dimension_type j = 0;
-  Coefficient coeff;
-  Coefficient term = c.inhomogeneous_term();
+  TEMP_INTEGER(coeff);
+  // FIXME: what is this for?  Why is term only used once?
+  TEMP_INTEGER(term);
+  term = c.inhomogeneous_term();
   // We use MIP_Problems to handle constraints that are not
   // octagonal difference.
   if (!extract_octagonal_difference(c, c.space_dimension(), num_vars,
 				    i, j, coeff, term)) {
     Optimization_Mode mode_bounds =
-      (from_above) ? MAXIMIZATION : MINIMIZATION;
+      from_above ? MAXIMIZATION : MINIMIZATION;
     MIP_Problem mip(space_dim, constraints(), expr, mode_bounds);
     if (mip.solve() == OPTIMIZED_MIP_PROBLEM)
       return true;
@@ -891,8 +895,10 @@ Octagonal_Shape<T>::max_min(const Linear_Expression& expr,
   dimension_type num_vars = 0;
   dimension_type i = 0;
   dimension_type j = 0;
-  Coefficient coeff;
-  Coefficient term = c.inhomogeneous_term();
+  TEMP_INTEGER(coeff);
+  // FIXME: what is this for?  Why is term only used once?
+  TEMP_INTEGER(term);
+  term = c.inhomogeneous_term();
   // We use MIP_Problems to handle constraints that are not
   // octagonal difference.
   if (!extract_octagonal_difference(c, c.space_dimension(), num_vars,
@@ -1046,8 +1052,8 @@ Octagonal_Shape<T>::relation_with(const Constraint& c) const {
   dimension_type num_vars = 0;
   dimension_type i = 0;
   dimension_type j = 0;
-  Coefficient coeff;
-  Coefficient c_term;
+  TEMP_INTEGER(coeff);
+  TEMP_INTEGER(c_term);
   // Constraints that are not octagonal differences are ignored.
   if (!extract_octagonal_difference(c, c_space_dim, num_vars,
 				    i, j, coeff, c_term))
@@ -1089,8 +1095,10 @@ Octagonal_Shape<T>::relation_with(const Constraint& c) const {
     --i_iter;
   typename OR_Matrix<N>::const_row_reference_type m_ci = *i_iter;
   const N& m_ci_cj = m_ci[coherent_index(j)];
-  Coefficient numer, denom;
-  Coefficient minus_c_term = -c_term;
+  TEMP_INTEGER(numer);
+  TEMP_INTEGER(denom);
+  TEMP_INTEGER(minus_c_term);
+  minus_c_term = -c_term;
   // The following variables of mpq_class type are used to be precise
   // when the octagon is defined by integer constraints.
   DIRTY_TEMP0(mpq_class, q_x);
@@ -1248,7 +1256,8 @@ Octagonal_Shape<T>::relation_with(const Generator& g) const {
       TEMP_INTEGER(num);
       TEMP_INTEGER(den);
       numer_denom(m_ii_i, num, den);
-      Coefficient product = 0;
+      TEMP_INTEGER(product);
+      product = 0;
       den *= 2;
       add_mul_assign(product, den, g_coeff_x);
       // Note that if the generator `g' is a line or a ray,
@@ -1267,7 +1276,8 @@ Octagonal_Shape<T>::relation_with(const Generator& g) const {
 	TEMP_INTEGER(den);
 	TEMP_INTEGER(num);
 	numer_denom(m_i_ii, num, den);
-	Coefficient product = 0;
+	TEMP_INTEGER(product);
+	product = 0;
 	den *= 2;
 	add_mul_assign(product, -den, g_coeff_x);
 	// Note that if the generator `g' is a line or a ray,
@@ -1289,7 +1299,8 @@ Octagonal_Shape<T>::relation_with(const Generator& g) const {
 	TEMP_INTEGER(den);
 	TEMP_INTEGER(num);
 	numer_denom(m_ii_i, num, den);
-	Coefficient product = 0;
+	TEMP_INTEGER(product);
+	product = 0;
 	den *= 2;
 	add_mul_assign(product, den, g_coeff_x);
  	// Note that if the generator `g' is a line or a ray,
@@ -1332,7 +1343,8 @@ Octagonal_Shape<T>::relation_with(const Generator& g) const {
       if (is_binary_equality) {
 	TEMP_INTEGER(den);
 	TEMP_INTEGER(num);
-	Coefficient product = 0;
+	TEMP_INTEGER(product);
+	product = 0;
 	// The constraint has form ax - ay = b.
 	// The scalar product has the form
 	// 'den * coeff_x - den * coeff_y - num * g.divisor()'.
@@ -1352,7 +1364,8 @@ Octagonal_Shape<T>::relation_with(const Generator& g) const {
 	if (!is_plus_infinity(m_i_j)) {
 	  TEMP_INTEGER(den);
 	  TEMP_INTEGER(num);
-	  Coefficient product = 0;
+	  TEMP_INTEGER(product);
+	  product = 0;
 	  // The constraint has form ax - ay <= b.
 	  // The scalar product has the form
 	  // 'den * coeff_x - den * coeff_y - num * g.divisor()'.
@@ -1373,7 +1386,8 @@ Octagonal_Shape<T>::relation_with(const Generator& g) const {
 	if (!is_plus_infinity(m_ii_jj)) {
 	  TEMP_INTEGER(den);
 	  TEMP_INTEGER(num);
-	  Coefficient product = 0;
+	  TEMP_INTEGER(product);
+	  product = 0;
 	  // The constraint has form -ax + ay <= b.
 	  // The scalar product has the form
 	  // '-den * coeff_x + den * coeff_y - num * g.divisor()'.
@@ -1396,7 +1410,8 @@ Octagonal_Shape<T>::relation_with(const Generator& g) const {
       if (is_a_binary_equality) {
 	TEMP_INTEGER(den);
 	TEMP_INTEGER(num);
-	Coefficient product = 0;
+	TEMP_INTEGER(product);
+	product = 0;
 	// The constraint has form ax + ay = b.
 	// The scalar product has the form
 	// 'den * coeff_x + den * coeff_y - num * g.divisor()'.
@@ -1416,7 +1431,8 @@ Octagonal_Shape<T>::relation_with(const Generator& g) const {
 	if (!is_plus_infinity(m_i_jj)) {
 	  TEMP_INTEGER(den);
 	  TEMP_INTEGER(num);
-	  Coefficient product = 0;
+	  TEMP_INTEGER(product);
+	  product = 0;
 	  // The constraint has form -ax - ay <= b.
 	  // The scalar product has the form
 	  // '-den * coeff_x - den * coeff_y - num * g.divisor()'.
@@ -1437,7 +1453,8 @@ Octagonal_Shape<T>::relation_with(const Generator& g) const {
 	if (!is_plus_infinity(m_ii_j)) {
 	  TEMP_INTEGER(den);
 	  TEMP_INTEGER(num);
-	  Coefficient product = 0;
+	  TEMP_INTEGER(product);
+	  product = 0;
 	  // The constraint has form ax + ay <= b.
 	  // The scalar product has the form
 	  // 'den * coeff_x + den * coeff_y - num * g.divisor()'.
@@ -2480,8 +2497,10 @@ Octagonal_Shape<T>
     dimension_type num_vars = 0;
     dimension_type i = 0;
     dimension_type j = 0;
-    Coefficient coeff;
-    Coefficient term = c.inhomogeneous_term();
+    TEMP_INTEGER(coeff);
+    // FIXME: what is this for?  Why is term only used once?
+    TEMP_INTEGER(term);
+    term = c.inhomogeneous_term();
 
     // Constraints that are not octagonal differences are ignored.
     if (extract_octagonal_difference(c, cs_space_dim, num_vars, i, j,

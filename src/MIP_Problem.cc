@@ -1565,8 +1565,8 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
       incumbent_solution_point = p;
       have_incumbent_solution = true;
 #if PPL_NOISY_SIMPLEX
-      Coefficient num;
-      Coefficient den;
+      TEMP_INTEGER(num);
+      TEMP_INTEGER(den);
       lp.evaluate_objective_function(p, num, den);
       std::cerr << "new value found: " << num << "/" << den << std::endl;
 #endif
