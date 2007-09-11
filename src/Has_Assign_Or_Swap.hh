@@ -24,36 +24,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Has_Assign_Or_Swap_hh 1
 
 #include "meta_programming.hh"
-#include <gmpxx.h>
 
 namespace Parma_Polyhedra_Library {
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-/*! \ingroup PPL_CXX_interface
-  Copies are not slow by default.
-*/
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-template <typename T>
-struct Has_Assign_Or_Swap : public False {
-};
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-/*! \ingroup PPL_CXX_interface
-  Copies are slow for mpz_class objects.
-*/
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-template <>
-struct Has_Assign_Or_Swap<mpz_class> : public True {
-};
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-/*! \ingroup PPL_CXX_interface
-  Copies are slow for mpq_class objects.
-*/
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-template <>
-struct Has_Assign_Or_Swap<mpq_class> : public True {
-};
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \ingroup PPL_CXX_interface
@@ -61,7 +33,8 @@ struct Has_Assign_Or_Swap<mpq_class> : public True {
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T, typename Enable = void>
-struct Has_Assign_Or_Swap : public False { };
+struct Has_Assign_Or_Swap : public False {
+};
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \ingroup PPL_CXX_interface
