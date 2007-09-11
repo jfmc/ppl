@@ -38,13 +38,18 @@ namespace Parma_Polyhedra_Library {
 dimension_type
 not_a_dimension();
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \brief
+  Make sure swap() is specialized when needed.
+
+  This will cause a compile-time error whenever a specialization for \p T
+  is beneficial but missing.
+*/
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 inline typename Enable_If<Slow_Copy<T>::value, void>::type
 swap(T&, T&) {
   COMPILE_TIME_CHECK(!Slow_Copy<T>::value, "missing swap specialization");
-  // This is intentionally written to generate ambiguous overloading
-  // or compile time check error.
-  // A swap specialization for this type is missing and needed.
 }
 
 // FIXME: write a comment for this.
