@@ -20,8 +20,8 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_Slow_Copy_defs_hh
-#define PPL_Slow_Copy_defs_hh 1
+#ifndef PPL_Slow_Copy_hh
+#define PPL_Slow_Copy_hh 1
 
 #include "meta_programming.hh"
 #include <gmpxx.h>
@@ -57,4 +57,4 @@ struct Slow_Copy<mpq_class> : public True {
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(PPL_Slow_Copy_defs_hh)
+#endif // !defined(PPL_Slow_Copy_hh)
