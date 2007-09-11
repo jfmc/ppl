@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Checked_Number.types.hh"
 #include "checked.defs.hh"
 #include "meta_programming.hh"
+#include "Slow_Copy.hh"
 
 namespace Parma_Polyhedra_Library {
 
