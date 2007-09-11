@@ -1,4 +1,4 @@
-/* *Temp* class declarations.
+/* Temp_* class declarations.
    Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -24,148 +24,111 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Temp_defs_hh 1
 
 #include "meta_programming.hh"
+#include "Slow_Copy.hh"
 
 namespace Parma_Polyhedra_Library {
 
-template <typename T> struct Slow_Copy : public False { };
-
-template <typename T>
-inline typename Enable_If<Slow_Copy<T>::value, void>::type
-swap(T&, T&) {
-  COMPILE_TIME_CHECK(!Slow_Copy<T>::value, "missing swap specialization");
-  // This is intentionally written to generate ambiguous overloading
-  // or compile time check error.
-  // A swap specialization for this type is missing and needed.
-}
-
-template <typename T, typename Enable = void>
-struct Has_Assign_Or_Swap : public False { };
-
-template <typename T>
-struct Has_Assign_Or_Swap<T,
-			  typename Enable_If_Is<void (T::*)(T& x),
-						&T::assign_or_swap>::type>
-  : public True {
-};
-
-
-template <typename T>
-inline typename Enable_If<Has_Assign_Or_Swap<T>::value, void>::type
-assign_or_swap(T& to, T& from) {
-  to.assign_or_swap(from);
-}
-
-template <typename T>
-inline typename Enable_If<!Has_Assign_Or_Swap<T>::value
-                          && !Slow_Copy<T>::value, void>::type
-assign_or_swap(T& to, T& from) {
-  to = from;
-}
-
-template <typename T>
-inline typename Enable_If<!Has_Assign_Or_Swap<T>::value
-                          && Slow_Copy<T>::value, void>::type
-assign_or_swap(T& to, T& from) {
-  using std::swap;
-  swap(to, from);
-}
-
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! A pool of temporary items of type \p T.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 class Temp_Item {
+public:
+  //! Obtain a refeence to a temporary item.
+  static Temp_Item& obtain();
+
+  //! Release the temporary item \p p.
+  static void release(Temp_Item& p);
+
+  //! Get a reference to the encapsulated item.
+  T& item();
+
 private:
+  //! The encapsulated item.
   T item_;
+
+  //! Pointer to the next item in the free list.
   Temp_Item* next;
-  static Temp_Item* list;
+
+  //! Head of the free list.
+  static Temp_Item* free_list_head;
+
+  //! Default constructor.
+  Temp_Item();
+
+  //! Copy constructor: private and intentionally not implemented.
   Temp_Item(const Temp_Item&);
+
+  //! Assignment operator: private and intentionally not implemented.
   Temp_Item& operator=(const Temp_Item&);
-
-public:
-  Temp_Item()
-    : item_() {
-  }
-  T& item() {
-    return item_;
-  }
-  static Temp_Item& get() {
-    if (list) {
-      Temp_Item* p = list;
-      list = list->next;
-      return *p;
-    }
-    else
-      return *new Temp_Item();
-  }
-  static void release(Temp_Item& p) {
-    p.next = list;
-    list = &p;
-  }
 };
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! A pool of temporary items of type \p T.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
-Temp_Item<T>* Temp_Item<T>::list = 0;
+class Temp_Real_Holder {
+public:
+  //! FIXME!
+  Temp_Real_Holder(Temp_Item<T>& obj);
 
+  //! FIXME!
+  ~Temp_Real_Holder();
 
-template <typename T>
-class Temp_Holder {
+  //! FIXME!
+  T& item();
+
 private:
+  //! FIXME!
   Temp_Item<T>& hold;
-public:
-  Temp_Holder(Temp_Item<T>& obj)
-    : hold(obj) {
-  }
-  ~Temp_Holder() {
-    Temp_Item<T>::release(hold);
-  }
-  T& item() {
-    return hold.item();
-  }
 };
 
 template <typename T>
-struct Null_Holder {
+class Temp_Null_Holder {
+public:
+  //! FIXME!
+  Temp_Null_Holder();
+
+  //! FIXME!
+  T item();
+
 private:
+  //! FIXME!
   T item_;
+};
+
+template <typename T>
+class Temp_List {
 public:
-  Null_Holder() {
-  }
-  T item() {
-    return item_;
-  }
-};
-
-template <typename T>
-struct Temp_List {
   typedef T& type;
-  typedef Temp_Holder<T> holder_type;
-  static holder_type get_holder() {
-    return Temp_Holder<T>(Temp_Item<T>::get());
-  }
+  typedef Temp_Real_Holder<T> holder_type;
+  static holder_type obtain_holder();
 };
 
 template <typename T>
-struct Temp_Local {
+class Temp_Local {
+public:
   typedef T type;
-  typedef Null_Holder<T> holder_type;
-  static holder_type get_holder() {
-    return Null_Holder<T>();
-  }
+  typedef Temp_Null_Holder<T> holder_type;
+  static holder_type obtain_holder();
 };
 
 template <typename T, typename Enable = void>
-struct Dirty_Temp;
+class Dirty_Temp;
 
 template <typename T>
-struct Dirty_Temp<T, typename Enable_If<Slow_Copy<T>::value>::type> : public Temp_List<T> { };
+class Dirty_Temp<T, typename Enable_If<Slow_Copy<T>::value>::type>
+  : public Temp_List<T> {
+};
+
 template <typename T>
-struct Dirty_Temp<T, typename Enable_If<!Slow_Copy<T>::value>::type> : public Temp_Local<T> { };
+class Dirty_Temp<T, typename Enable_If<!Slow_Copy<T>::value>::type>
+  : public Temp_Local<T> {
+};
 
+} // namespace Parma_Polyhedra_Library
 
-#define DIRTY_TEMP(T, id)						\
-  typename Dirty_Temp<T>::holder_type holder ## id =			\
-    Dirty_Temp<T>::get_holder();					\
-  typename Dirty_Temp<T>::type id = holder ## id.item()
-
-}
-
+#include "Temp.inlines.hh"
+#include "Temp.templates.hh"
 
 #endif // !defined(PPL_Temp_defs_hh)
