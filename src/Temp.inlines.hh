@@ -1,4 +1,4 @@
-/* Temp_* class implementation: inline functions.
+/* Temp_* classes implementation: inline functions.
    Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -58,41 +58,41 @@ Temp_Item<T>::release(Temp_Item& p) {
 }
 
 template <typename T>
-Temp_Real_Holder<T>::Temp_Real_Holder(Temp_Item<T>& obj)
-  : hold(obj) {
+Temp_Reference_Holder<T>::Temp_Reference_Holder(Temp_Item<T>& p)
+  : held(p) {
 }
 
 template <typename T>
-Temp_Real_Holder<T>::~Temp_Real_Holder() {
-  Temp_Item<T>::release(hold);
+Temp_Reference_Holder<T>::~Temp_Reference_Holder() {
+  Temp_Item<T>::release(held);
 }
 
 template <typename T>
 T&
-Temp_Real_Holder<T>::item() {
-  return hold.item();
+Temp_Reference_Holder<T>::item() {
+  return held.item();
 }
 
 template <typename T>
-Temp_Null_Holder<T>::Temp_Null_Holder() {
+Temp_Value_Holder<T>::Temp_Value_Holder() {
 }
 
 template <typename T>
 T
-Temp_Null_Holder<T>::item() {
+Temp_Value_Holder<T>::item() {
   return item_;
 }
 
 template <typename T>
-typename Temp_List<T>::holder_type
-Temp_List<T>::obtain_holder() {
-  return Temp_Real_Holder<T>(Temp_Item<T>::obtain());
+typename Temp_From_Free_List<T>::holder_type
+Temp_From_Free_List<T>::obtain_holder() {
+  return Temp_Reference_Holder<T>(Temp_Item<T>::obtain());
 }
 
 template <typename T>
-typename Temp_Local<T>::holder_type
-Temp_Local<T>::obtain_holder() {
-  return Temp_Null_Holder<T>();
+typename Temp_From_Local_Variable<T>::holder_type
+Temp_From_Local_Variable<T>::obtain_holder() {
+  return Temp_Value_Holder<T>();
 }
 
 } // namespace Parma_Polyhedra_Library

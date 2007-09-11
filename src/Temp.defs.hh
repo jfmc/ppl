@@ -1,4 +1,4 @@
-/* Temp_* class declarations.
+/* Temp_* classes declarations.
    Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -34,13 +34,13 @@ namespace Parma_Polyhedra_Library {
 template <typename T>
 class Temp_Item {
 public:
-  //! Obtain a refeence to a temporary item.
+  //! Obtains a refeence to a temporary item.
   static Temp_Item& obtain();
 
-  //! Release the temporary item \p p.
+  //! Releases the temporary item \p p.
   static void release(Temp_Item& p);
 
-  //! Get a reference to the encapsulated item.
+  //! Returns a reference to the encapsulated item.
   T& item();
 
 private:
@@ -64,66 +64,92 @@ private:
 };
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! A pool of temporary items of type \p T.
+//! An holder for a reference to a temporary object.
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
-class Temp_Real_Holder {
+class Temp_Reference_Holder {
 public:
-  //! FIXME!
-  Temp_Real_Holder(Temp_Item<T>& obj);
+  //! Constructs an holder holding \p p.
+  Temp_Reference_Holder(Temp_Item<T>& p);
 
-  //! FIXME!
-  ~Temp_Real_Holder();
+  //! Destructor.
+  ~Temp_Reference_Holder();
 
-  //! FIXME!
+  //! Returns a reference to the held item.
   T& item();
 
 private:
-  //! FIXME!
-  Temp_Item<T>& hold;
+  //! The held item, encapsulated.
+  Temp_Item<T>& held;
 };
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! An (fake) holder for the value of a temporary object.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
-class Temp_Null_Holder {
+class Temp_Value_Holder {
 public:
-  //! FIXME!
-  Temp_Null_Holder();
+  //! Constructs a fake holder.
+  Temp_Value_Holder();
 
-  //! FIXME!
+  //! Returns the value of the held item.
   T item();
 
 private:
-  //! FIXME!
+  //! The held item.
   T item_;
 };
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! A structure for handling temporaries with a global free list.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
-class Temp_List {
-public:
+struct Temp_From_Free_List {
+  //! The type of the temporaries.
   typedef T& type;
-  typedef Temp_Real_Holder<T> holder_type;
+
+  //! The type of the holder.
+  typedef Temp_Reference_Holder<T> holder_type;
+
+  //! Obtain the holder for a new temporary.
   static holder_type obtain_holder();
 };
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! A structure for handling temporaries with local variables.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
-class Temp_Local {
-public:
+struct Temp_From_Local_Variable {
+  //! The type of the temporaries.
   typedef T type;
-  typedef Temp_Null_Holder<T> holder_type;
+
+  //! The type of the holder.
+  typedef Temp_Value_Holder<T> holder_type;
+
+  //! Obtain the holder for a new temporary.
   static holder_type obtain_holder();
 };
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! A structure for the efficient handling of temporaries.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T, typename Enable = void>
 class Dirty_Temp;
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Specialization for the handling of temporaries with a free list.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 class Dirty_Temp<T, typename Enable_If<Slow_Copy<T>::value>::type>
-  : public Temp_List<T> {
+  : public Temp_From_Free_List<T> {
 };
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Specialization for the handling of temporaries with local variables.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 class Dirty_Temp<T, typename Enable_If<!Slow_Copy<T>::value>::type>
-  : public Temp_Local<T> {
+  : public Temp_From_Local_Variable<T> {
 };
 
 } // namespace Parma_Polyhedra_Library

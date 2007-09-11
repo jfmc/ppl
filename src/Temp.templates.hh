@@ -1,4 +1,4 @@
-/* Temp_* class implementation: non-inline template members.
+/* Temp_* classes implementation: non-inline template members.
    Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
