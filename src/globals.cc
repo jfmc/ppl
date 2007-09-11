@@ -28,8 +28,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-PPL::Coefficient_free_list_element* PPL::Coefficient_free_list_first = 0;
-
 const PPL::Throwable* volatile PPL::abandon_expensive_computations = 0;
 
 bool

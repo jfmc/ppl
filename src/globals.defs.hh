@@ -27,6 +27,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Coefficient.defs.hh"
 #include "C_Integer.hh"
 #include "meta_programming.hh"
+#include "Slow_Copy.hh"
+#include "Temp.defs.hh"
 #include <exception>
 #include <gmpxx.h>
 
@@ -36,72 +38,17 @@ namespace Parma_Polyhedra_Library {
 dimension_type
 not_a_dimension();
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! A node of the list of available coefficients.
-/*! \ingroup PPL_CXX_interface */
-// FIXME: rewrite the comment.
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-class Coefficient_free_list_element {
-private:
-  Coefficient i;
-  Coefficient_free_list_element* p;
-
-public:
-  Coefficient_free_list_element()
-    : i() {
-  }
-
-  Coefficient& integer() {
-    return i;
-  }
-
-  Coefficient_free_list_element*& next() {
-    return p;
-  }
-};
-
-extern Coefficient_free_list_element* Coefficient_free_list_first;
-
-inline Coefficient&
-get_tmp_Coefficient() {
-  Coefficient* p;
-  if (Coefficient_free_list_first != 0) {
-    p = &Coefficient_free_list_first->integer();
-    Coefficient_free_list_first = Coefficient_free_list_first->next();
-  }
-  else
-    p = reinterpret_cast<Coefficient*>(new Coefficient_free_list_element());
-  return *p;
+template <typename T>
+inline typename Enable_If<Slow_Copy<T>::value, void>::type
+swap(T&, T&) {
+  COMPILE_TIME_CHECK(!Slow_Copy<T>::value, "missing swap specialization");
+  // This is intentionally written to generate ambiguous overloading
+  // or compile time check error.
+  // A swap specialization for this type is missing and needed.
 }
 
-inline void
-release_tmp_Coefficient(Coefficient& i) {
-  Coefficient_free_list_element& e
-    = reinterpret_cast<Coefficient_free_list_element&>(i);
-  e.next() = Coefficient_free_list_first;
-  Coefficient_free_list_first = &e;
-}
-
-class Temp_Coefficient_Holder {
-private:
-  Coefficient& hold;
-
-public:
-  Temp_Coefficient_Holder(Coefficient& i)
-    : hold(i) {
-  }
-  ~Temp_Coefficient_Holder() {
-    release_tmp_Coefficient(hold);
-  }
-};
-
-#if 1
-#define TEMP_INTEGER(id) \
-Coefficient& id = get_tmp_Coefficient(); \
-Temp_Coefficient_Holder temp_Coefficient_holder_ ## id = (id)
-#else
-#define TEMP_INTEGER(id) static Coefficient id
-#endif
+// FIXME: write a comment for this.
+#define TEMP_INTEGER(id) DIRTY_TEMP0(Coefficient, id)
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Speculative allocation function.
