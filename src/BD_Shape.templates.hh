@@ -4588,7 +4588,7 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
 	      if (i == 0) {
 		// We have got a constraint with an only Variable.
 		s << Variable(j - 1);
-		N v;
+		DIRTY_TEMP(N, v);
 		neg_assign_r(v, c_j_i, ROUND_DOWN);
 		s << " >= " << v;
 	      }
