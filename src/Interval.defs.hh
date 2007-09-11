@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "globals.defs.hh"
 #include "meta_programming.hh"
+#include "assign_or_swap.hh"
 #include "Interval.types.hh"
 #include "Interval_Info.defs.hh"
 #include <iosfwd>

@@ -24,6 +24,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Interval_Restriction_defs_hh 1
 
 #include "meta_programming.hh"
+#include "Slow_Copy.hh"
+#include "assign_or_swap.hh"
 
 namespace Parma_Polyhedra_Library {
 
