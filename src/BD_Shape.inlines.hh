@@ -492,7 +492,7 @@ template <typename T>
 inline void
 BD_Shape<T>::add_dbm_constraint(const dimension_type i,
 				const dimension_type j,
-				N k) {
+				const N& k) {
   // Private method: the caller has to ensure the following.
   assert(i <= space_dimension() && j <= space_dimension() && i != j);
   N& dbm_ij = dbm[i][j];

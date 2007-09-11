@@ -1646,7 +1646,8 @@ private:
 	       Coefficient& ext_n, Coefficient& ext_d, bool& included) const;
 
   //! Adds the constraint <CODE>dbm[i][j] \<= k</CODE>.
-  void add_dbm_constraint(dimension_type i, dimension_type j, N k);
+  void add_dbm_constraint(dimension_type i, dimension_type j, const N& k);
+
   //! Adds the constraint <CODE>dbm[i][j] \<= num/den</CODE>.
   void add_dbm_constraint(dimension_type i, dimension_type j,
 			  Coefficient_traits::const_reference num,
