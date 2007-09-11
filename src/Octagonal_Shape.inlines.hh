@@ -279,10 +279,9 @@ Octagonal_Shape<T>::minimized_constraints() const {
 
 template <typename T>
 inline void
-Octagonal_Shape<T>
-::add_octagonal_constraint(const dimension_type i,
-			   const dimension_type j,
-			   N k) {
+Octagonal_Shape<T>::add_octagonal_constraint(const dimension_type i,
+					     const dimension_type j,
+					     const N& k) {
   // Private method: the caller has to ensure the following.
 #ifndef NDEBUG
   assert(i < 2*space_dim && j < 2*space_dim && i != j);

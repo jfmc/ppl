@@ -1475,7 +1475,7 @@ private:
   //! Adds the constraint <CODE>matrix[i][j] <= k</CODE>.
   void add_octagonal_constraint(const dimension_type i,
 				const dimension_type j,
-				N k);
+				const N& k);
 
   //! Adds the constraint <CODE>matrix[i][j] <= num/den</CODE>.
   void add_octagonal_constraint(const dimension_type i,
