@@ -28,6 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "C_Polyhedron.defs.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
+#include "Temp.defs.hh"
 #include <cassert>
 #include <vector>
 #include <iostream>
@@ -511,7 +512,7 @@ BD_Shape<T>::add_dbm_constraint(const dimension_type i,
   // Private method: the caller has to ensure the following.
   assert(i <= space_dimension() && j <= space_dimension() && i != j);
   assert(den != 0);
-  N k;
+  DIRTY_TEMP(N, k);
   div_round_up(k, num, den);
   add_dbm_constraint(i, j, k);
 }

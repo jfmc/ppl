@@ -32,6 +32,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "MIP_Problem.defs.hh"
 #include "Variables_Set.defs.hh"
 #include "Bit_Row.defs.hh"
+#include "Temp.defs.hh"
 #include <cassert>
 #include <vector>
 #include <deque>
@@ -65,7 +66,7 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
 
   const dimension_type space_dim = space_dimension();
   DB_Row<N>& dbm_0 = dbm[0];
-  N tmp;
+  DIRTY_TEMP(N, tmp);
 
   bool dbm_initialized = false;
   bool point_seen = false;
@@ -354,7 +355,7 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
 
   bool changed = false;
   // Compute the bound for `x', rounding towards plus infinity.
-  N d;
+  DIRTY_TEMP(N, d);
   div_round_up(d, c.inhomogeneous_term(), coeff);
   if (x > d) {
     x = d;
@@ -509,7 +510,7 @@ BD_Shape<T>::is_disjoint_from(const BD_Shape& y) const {
   // `*this' and `y' are disjoint if
   // 1.) a_i_j < -b_j_i or
   // 2.) b_i_j < -a_j_i.
-  N tmp;
+  DIRTY_TEMP(N, tmp);
   for (dimension_type i = space_dim+1; i-- > 0; ) {
     const DB_Row<N>& x_i = dbm[i];
     for (dimension_type j = space_dim+1; j-- > 0; ) {
@@ -588,7 +589,7 @@ BD_Shape<T>::contains_integer_point() const {
   BD_Shape<mpz_class> bds_z(space_dim);
   typedef BD_Shape<mpz_class>::N Z;
   bds_z.status.reset_shortest_path_closed();
-  N tmp;
+  DIRTY_TEMP(N, tmp);
   bool all_integers = true;
   for (dimension_type i = space_dim + 1; i-- > 0; ) {
     DB_Row<Z>& z_i = bds_z.dbm[i];
@@ -711,7 +712,7 @@ BD_Shape<T>::is_shortest_path_reduced() const {
   // A constraint `c' is redundant, when there are two constraints such that
   // their sum is the same constraint with the inhomogeneous term
   // less than or equal to the `c' one.
-  N c;
+  DIRTY_TEMP(N, c);
   for (dimension_type k = 0; k <= space_dim; ++k)
     if (leader[k] == k) {
       const DB_Row<N>& x_k = x_copy.dbm[k];
@@ -951,7 +952,7 @@ BD_Shape<T>::max_min(const Linear_Expression& expr,
     const N& x = (coeff < 0) ? dbm[i][j] : dbm[j][i];
     if (!is_plus_infinity(x)) {
       // Compute the maximize/minimize of `expr'.
-      N d;
+      DIRTY_TEMP(N, d);
       const Coefficient& b = expr.inhomogeneous_term();
       TEMP_INTEGER(minus_b);
       neg_assign(minus_b, b);
@@ -959,7 +960,7 @@ BD_Shape<T>::max_min(const Linear_Expression& expr,
       assign_r(d, sc_b, ROUND_UP);
       // Set `coeff_expr' to the absolute value of coefficient of
       // a variable in `expr'.
-      N coeff_expr;
+      DIRTY_TEMP(N, coeff_expr);
       const Coefficient& coeff_i = expr.coefficient(Variable(i-1));
       const int sign_i = sgn(coeff_i);
       if (sign_i > 0)
@@ -1310,7 +1311,7 @@ BD_Shape<T>::shortest_path_closure_assign() const {
     assign_r(x.dbm[h][h], 0, ROUND_NOT_NEEDED);
   }
 
-  N sum;
+  DIRTY_TEMP(N, sum);
   for (dimension_type k = num_dimensions + 1; k-- > 0; ) {
     const DB_Row<N>& x_dbm_k = x.dbm[k];
     for (dimension_type i = num_dimensions + 1; i-- > 0; ) {
@@ -1387,7 +1388,7 @@ BD_Shape<T>::shortest_path_reduction_assign() const {
 
   // Step 2: flag non-redundant constraints in the (zero-cycle-free)
   // subsystem of bounded differences having only leaders as variables.
-  N c;
+  DIRTY_TEMP(N, c);
   for (dimension_type l_i = 0; l_i < num_leaders; ++l_i) {
     const dimension_type i = leaders[l_i];
     const DB_Row<N>& dbm_i = dbm[i];
@@ -1934,7 +1935,7 @@ BD_Shape<T>::get_limiting_shape(const Constraint_System& cs,
       if (coeff < 0)
 	coeff = -coeff;
       // Compute the bound for `x', rounding towards plus infinity.
-      N d;
+      DIRTY_TEMP(N, d);
       div_round_up(d, c.inhomogeneous_term(), coeff);
       if (x <= d)
 	if (c.is_inequality())
@@ -2234,7 +2235,7 @@ BD_Shape<T>
 	    add_assign_r(ub_u, ub_u, minus_lb_u, ROUND_NOT_NEEDED);
 	    // Compute `(-lb_u) - q * (ub_u - lb_u)'.
 	    sub_mul_assign_r(minus_lb_u, q, ub_u, ROUND_NOT_NEEDED);
-	    N up_approx;
+	    DIRTY_TEMP(N, up_approx);
 	    assign_r(up_approx, minus_lb_u, ROUND_UP);
 	    // Deducing `v - u <= ub_v - (q * ub_u + (1-q) * lb_u)'.
 	    add_assign_r(dbm_u[v], ub_v, up_approx, ROUND_UP);
@@ -2294,7 +2295,7 @@ BD_Shape<T>
 	    add_assign_r(minus_lb_u, minus_lb_u, ub_u, ROUND_NOT_NEEDED);
 	    // Compute `ub_u - q * (ub_u - lb_u)'.
 	    sub_mul_assign_r(ub_u, q, minus_lb_u, ROUND_NOT_NEEDED);
-	    N up_approx;
+	    DIRTY_TEMP(N, up_approx);
 	    assign_r(up_approx, ub_u, ROUND_UP);
 	    // Deducing `u - v <= (q*lb_u + (1-q)*ub_u) - lb_v'.
 	    add_assign_r(dbm_v[u], up_approx, minus_lb_v, ROUND_UP);
@@ -2397,7 +2398,7 @@ BD_Shape<T>::refine(const Variable var,
   if (t == 1) {
     // Case 2: expr == a*w + b, w != v, a == denominator.
     assert(expr.coefficient(Variable(w-1)) == denominator);
-    N d;
+    DIRTY_TEMP(N, d);
     switch (relsym) {
     case EQUAL:
       // Add the new constraint `v - w <= b/denominator'.
@@ -2445,7 +2446,7 @@ BD_Shape<T>::refine(const Variable var,
     minus_expr = -expr;
   const Linear_Expression& sc_expr = is_sc ? expr : minus_expr;
 
-  N sum;
+  DIRTY_TEMP(N, sum);
   // Indices of the variables that are unbounded in `this->dbm'.
   // (The initializations are just to quiet a compiler warning.)
   dimension_type pinf_index = 0;
@@ -2455,7 +2456,7 @@ BD_Shape<T>::refine(const Variable var,
   switch (relsym) {
   case EQUAL:
     {
-      N neg_sum;
+      DIRTY_TEMP(N, neg_sum);
       // Indices of the variables that are unbounded in `this->dbm'.
       // (The initializations are just to quiet a compiler warning.)
       dimension_type neg_pinf_index = 0;
@@ -2478,7 +2479,7 @@ BD_Shape<T>::refine(const Variable var,
 	if (sign_i == 0)
 	  continue;
 	if (sign_i > 0) {
-	  N coeff_i;
+	  DIRTY_TEMP(N, coeff_i);
 	  assign_r(coeff_i, sc_i, ROUND_UP);
 	  // Approximating `sc_expr'.
 	  if (pinf_count <= 1) {
@@ -2504,7 +2505,7 @@ BD_Shape<T>::refine(const Variable var,
 	else if (sign_i < 0) {
 	  TEMP_INTEGER(minus_sc_i);
 	  neg_assign(minus_sc_i, sc_i);
-	  N minus_coeff_i;
+	  DIRTY_TEMP(N, minus_coeff_i);
 	  assign_r(minus_coeff_i, minus_sc_i, ROUND_UP);
 	  // Approximating `sc_expr'.
 	  if (pinf_count <= 1) {
@@ -2542,7 +2543,7 @@ BD_Shape<T>::refine(const Variable var,
       // towards zero. Since `sc_den' is known to be positive, this amounts to
       // rounding downwards, which is achieved as usual by rounding upwards
       // `minus_sc_den' and negating again the result.
-      N down_sc_den;
+      DIRTY_TEMP(N, down_sc_den);
       assign_r(down_sc_den, minus_sc_den, ROUND_UP);
       neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
 
@@ -2613,7 +2614,7 @@ BD_Shape<T>::refine(const Variable var,
 	pinf_index = i;
 	continue;
       }
-      N coeff_i;
+      DIRTY_TEMP(N, coeff_i);
       if (sign_i > 0)
 	assign_r(coeff_i, sc_i, ROUND_UP);
       else {
@@ -2630,7 +2631,7 @@ BD_Shape<T>::refine(const Variable var,
       // approximated towards zero. Since `sc_den' is known to be
       // positive, this amounts to rounding downwards, which is achieved
       // by rounding upwards `minus_sc-den' and negating again the result.
-      N down_sc_den;
+      DIRTY_TEMP(N, down_sc_den);
       assign_r(down_sc_den, minus_sc_den, ROUND_UP);
       neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
       div_assign_r(sum, sum, down_sc_den, ROUND_UP);
@@ -2670,7 +2671,7 @@ BD_Shape<T>::refine(const Variable var,
 	pinf_index = i;
 	continue;
       }
-      N coeff_i;
+      DIRTY_TEMP(N, coeff_i);
       if (sign_i > 0)
 	assign_r(coeff_i, sc_i, ROUND_UP);
       else {
@@ -2687,7 +2688,7 @@ BD_Shape<T>::refine(const Variable var,
       // approximated towards zero. Since `sc_den' is known to be positive,
       // this amounts to rounding downwards, which is achieved by rounding
       // upwards `minus_sc_den' and negating again the result.
-      N down_sc_den;
+      DIRTY_TEMP(N, down_sc_den);
       assign_r(down_sc_den, minus_sc_den, ROUND_UP);
       neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
       div_assign_r(sum, sum, down_sc_den, ROUND_UP);
@@ -2795,9 +2796,9 @@ BD_Shape<T>::affine_image(const Variable var,
 	  else {
 	    // Translate all the constraints on `var',
 	    // adding or subtracting the value `b/denominator'.
-	    N d;
+	    DIRTY_TEMP(N, d);
 	    div_round_up(d, b, denominator);
-	    N c;
+	    DIRTY_TEMP(N, c);
 	    div_round_up(c, b, minus_den);
 	    DB_Row<N>& dbm_v = dbm[v];
 	    for (dimension_type i = space_dim + 1; i-- > 0; ) {
@@ -2820,11 +2821,11 @@ BD_Shape<T>::affine_image(const Variable var,
 	  if (b != 0) {
 	    // Translate the unary constraints on `var',
 	    // adding or subtracting the value `b/denominator'.
-	    N c;
+	    DIRTY_TEMP(N, c);
 	    div_round_up(c, b, minus_den);
 	    N& dbm_v0 = dbm[v][0];
 	    add_assign_r(dbm_v0, dbm_v0, c, ROUND_UP);
-	    N d;
+	    DIRTY_TEMP(N, d);
 	    div_round_up(d, b, denominator);
 	    N& dbm_0v = dbm[0][v];
 	    add_assign_r(dbm_0v, dbm_0v, d, ROUND_UP);
@@ -2851,7 +2852,7 @@ BD_Shape<T>::affine_image(const Variable var,
 	  const N& dbm_w0 = dbm[w][0];
 	  if (!is_plus_infinity(dbm_w0)) {
 	    // Add the constraint `v <= b/denominator - lower_w'.
-	    N d;
+	    DIRTY_TEMP(N, d);
 	    div_round_up(d, b, denominator);
 	    add_assign_r(dbm[0][v], d, dbm_w0, ROUND_UP);
 	    status.reset_shortest_path_closed();
@@ -2859,7 +2860,7 @@ BD_Shape<T>::affine_image(const Variable var,
 	  const N& dbm_0w = dbm[0][w];
 	  if (!is_plus_infinity(dbm_0w)) {
 	    // Add the constraint `v >= b/denominator - upper_w'.
-	    N c;
+	    DIRTY_TEMP(N, c);
 	    div_round_up(c, b, minus_den);
 	    add_assign_r(dbm[v][0], dbm_0w, c, ROUND_UP);
 	    status.reset_shortest_path_closed();
@@ -2898,8 +2899,8 @@ BD_Shape<T>::affine_image(const Variable var,
     minus_expr = -expr;
   const Linear_Expression& sc_expr = is_sc ? expr : minus_expr;
 
-  N pos_sum;
-  N neg_sum;
+  DIRTY_TEMP(N, pos_sum);
+  DIRTY_TEMP(N, neg_sum);
   // Indices of the variables that are unbounded in `this->dbm'.
   // (The initializations are just to quiet a compiler warning.)
   dimension_type pos_pinf_index = 0;
@@ -2920,7 +2921,7 @@ BD_Shape<T>::affine_image(const Variable var,
     const Coefficient& sc_i = sc_expr.coefficient(Variable(i-1));
     const int sign_i = sgn(sc_i);
     if (sign_i > 0) {
-      N coeff_i;
+      DIRTY_TEMP(N, coeff_i);
       assign_r(coeff_i, sc_i, ROUND_UP);
       // Approximating `sc_expr'.
       if (pos_pinf_count <= 1) {
@@ -2946,7 +2947,7 @@ BD_Shape<T>::affine_image(const Variable var,
     else if (sign_i < 0) {
       TEMP_INTEGER(minus_sc_i);
       neg_assign(minus_sc_i, sc_i);
-      N minus_coeff_i;
+      DIRTY_TEMP(N, minus_coeff_i);
       assign_r(minus_coeff_i, minus_sc_i, ROUND_UP);
       // Approximating `sc_expr'.
       if (pos_pinf_count <= 1) {
@@ -2994,7 +2995,7 @@ BD_Shape<T>::affine_image(const Variable var,
       // towards zero. Since `sc_den' is known to be positive, this amounts to
       // rounding downwards, which is achieved as usual by rounding upwards
       // `minus_sc_den' and negating again the result.
-      N down_sc_den;
+      DIRTY_TEMP(N, down_sc_den);
       assign_r(down_sc_den, minus_sc_den, ROUND_UP);
       neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
       div_assign_r(pos_sum, pos_sum, down_sc_den, ROUND_UP);
@@ -3022,7 +3023,7 @@ BD_Shape<T>::affine_image(const Variable var,
       // towards zero. Since `sc_den' is known to be positive, this amounts to
       // rounding downwards, which is achieved as usual by rounding upwards
       // `minus_sc_den' and negating again the result.
-      N down_sc_den;
+      DIRTY_TEMP(N, down_sc_den);
       assign_r(down_sc_den, minus_sc_den, ROUND_UP);
       neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
       div_assign_r(neg_sum, neg_sum, down_sc_den, ROUND_UP);
@@ -3263,7 +3264,7 @@ BD_Shape<T>
 	  const N& dbm_w0 = dbm[w][0];
 	  if (!is_plus_infinity(dbm_w0)) {
 	    // Add the constraint `v <= b/denominator - lower_w'.
-	    N d;
+	    DIRTY_TEMP(N, d);
 	    div_round_up(d, b, denominator);
 	    add_assign_r(dbm[0][v], d, dbm_w0, ROUND_UP);
 	    status.reset_shortest_path_closed();
@@ -3298,7 +3299,7 @@ BD_Shape<T>
     minus_expr = -ub_expr;
   const Linear_Expression& sc_expr = is_sc ? ub_expr : minus_expr;
 
-  N pos_sum;
+  DIRTY_TEMP(N, pos_sum);
   // Index of the variable that are unbounded in `this->dbm'.
   // (The initializations are just to quiet a compiler warning.)
   dimension_type pos_pinf_index = 0;
@@ -3316,7 +3317,7 @@ BD_Shape<T>
     const Coefficient& sc_i = sc_expr.coefficient(Variable(i-1));
     const int sign_i = sgn(sc_i);
     if (sign_i > 0) {
-      N coeff_i;
+      DIRTY_TEMP(N, coeff_i);
       assign_r(coeff_i, sc_i, ROUND_UP);
       // Approximating `sc_expr'.
       if (pos_pinf_count <= 1) {
@@ -3332,7 +3333,7 @@ BD_Shape<T>
     else if (sign_i < 0) {
       TEMP_INTEGER(minus_sc_i);
       neg_assign(minus_sc_i, sc_i);
-      N minus_coeff_i;
+      DIRTY_TEMP(N, minus_coeff_i);
       assign_r(minus_coeff_i, minus_sc_i, ROUND_UP);
       // Approximating `sc_expr'.
       if (pos_pinf_count <= 1) {
@@ -3368,7 +3369,7 @@ BD_Shape<T>
       // towards zero. Since `sc_den' is known to be positive, this amounts to
       // rounding downwards, which is achieved as usual by rounding upwards
       // `minus_sc_den' and negating again the result.
-      N down_sc_den;
+      DIRTY_TEMP(N, down_sc_den);
       assign_r(down_sc_den, minus_sc_den, ROUND_UP);
       neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
       div_assign_r(pos_sum, pos_sum, down_sc_den, ROUND_UP);
@@ -3565,7 +3566,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
     const Coefficient& a = expr.coefficient(Variable(w-1));
     if (a == denominator || a == minus_den) {
       // Case 2: expr == a*w + b, with a == +/- denominator.
-      N d;
+      DIRTY_TEMP(N, d);
       switch (relsym) {
       case LESS_OR_EQUAL:
 	div_round_up(d, b, denominator);
@@ -3707,7 +3708,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
     minus_expr = -expr;
   const Linear_Expression& sc_expr = is_sc ? expr : minus_expr;
 
-  N sum;
+  DIRTY_TEMP(N, sum);
   // Index of variable that is unbounded in `this->dbm'.
   // (The initialization is just to quiet a compiler warning.)
   dimension_type pinf_index = 0;
@@ -3736,7 +3737,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	pinf_index = i;
 	continue;
       }
-      N coeff_i;
+      DIRTY_TEMP(N, coeff_i);
       if (sign_i > 0)
 	assign_r(coeff_i, sc_i, ROUND_UP);
       else {
@@ -3764,7 +3765,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
       // towards zero. Since `sc_den' is known to be positive, this amounts to
       // rounding downwards, which is achieved as usual by rounding upwards
       // `minus_sc_den' and negating again the result.
-      N down_sc_den;
+      DIRTY_TEMP(N, down_sc_den);
       assign_r(down_sc_den, minus_sc_den, ROUND_UP);
       neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
       div_assign_r(sum, sum, down_sc_den, ROUND_UP);
@@ -3804,7 +3805,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	pinf_index = i;
 	continue;
       }
-      N coeff_i;
+      DIRTY_TEMP(N, coeff_i);
       if (sign_i > 0)
 	assign_r(coeff_i, sc_i, ROUND_UP);
       else {
@@ -3832,7 +3833,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
       // towards zero. Since `sc_den' is known to be positive, this amounts to
       // rounding downwards, which is achieved as usual by rounding upwards
       // `minus_sc_den' and negating again the result.
-      N down_sc_den;
+      DIRTY_TEMP(N, down_sc_den);
       assign_r(down_sc_den, minus_sc_den, ROUND_UP);
       neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
       div_assign_r(sum, sum, down_sc_den, ROUND_UP);
@@ -4450,8 +4451,7 @@ BD_Shape<T>::expand_space_dimension(Variable var, dimension_type m) {
   dimension_type old_dim = space_dimension();
   // `var' should be one of the dimensions of the vector space.
   if (var.space_dimension() > old_dim)
-    throw_dimension_incompatible("expand_space_dimension(v, m)", "v",
-var);
+    throw_dimension_incompatible("expand_space_dimension(v, m)", "v", var);
 
   // The space dimension of the resulting BDS should not
   // overflow the maximum allowed space dimension.
@@ -4604,7 +4604,7 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
 		  s << Variable(j - 1);
 		  s << " - ";
 		  s << Variable(i - 1);
-		  N v;
+		  DIRTY_TEMP(N, v);
 		  neg_assign_r(v, c_j_i, ROUND_DOWN);
 		  s << " >= " << v;
 		}
@@ -4632,7 +4632,7 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
 		  s << Variable(i - 1);
 		  s << " - ";
 		  s << Variable(j - 1);
-		  N v;
+		  DIRTY_TEMP(N, v);
 		  neg_assign_r(v, c_i_j, ROUND_DOWN);
 		  s << " >= " << v;
 		}
