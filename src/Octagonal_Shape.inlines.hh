@@ -310,7 +310,7 @@ Octagonal_Shape<T>
   assert(j < m_i.row_size());
   assert(den != 0);
 #endif
-  N k;
+  DIRTY_TEMP(N, k);
   div_round_up(k, num, den);
   add_octagonal_constraint(i, j, k);
 }
