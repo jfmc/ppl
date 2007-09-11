@@ -34,7 +34,7 @@ bool
 PPL::is_canonical(const mpq_class& x) {
   if (x.get_den() <= 0)
     return false;
-  mpq_class temp = x;
+  DIRTY_TEMP0(mpq_class, temp = x);
   temp.canonicalize();
   return temp.get_num() == x.get_num();
 }

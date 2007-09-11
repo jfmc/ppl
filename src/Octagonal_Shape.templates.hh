@@ -1091,9 +1091,14 @@ Octagonal_Shape<T>::relation_with(const Constraint& c) const {
   const N& m_ci_cj = m_ci[coherent_index(j)];
   Coefficient numer, denom;
   Coefficient minus_c_term = -c_term;
-  // The variables mpq_class are used to be precise when
-  // the octagon is defined by integer constraints.
-  mpq_class q_x, q_y, d, d1, c_den, q_den;
+  // The following variables of mpq_class type are used to be precise
+  // when the octagon is defined by integer constraints.
+  DIRTY_TEMP0(mpq_class, q_x);
+  DIRTY_TEMP0(mpq_class, q_y);
+  DIRTY_TEMP0(mpq_class, d);
+  DIRTY_TEMP0(mpq_class, d1);
+  DIRTY_TEMP0(mpq_class, c_den);
+  DIRTY_TEMP0(mpq_class, q_den);
   assign_r(c_den, coeff, ROUND_NOT_NEEDED);
   assign_r(d, c_term, ROUND_NOT_NEEDED);
   div_assign_r(d, d, c_den, ROUND_NOT_NEEDED);
@@ -2757,7 +2762,7 @@ Octagonal_Shape<T>
   assert(sc_den > 0);
   assert(!is_plus_infinity(ub_v));
 
-  mpq_class mpq_sc_den;
+  DIRTY_TEMP0(mpq_class, mpq_sc_den);
   assign_r(mpq_sc_den, sc_den, ROUND_NOT_NEEDED);
 
   // No need to consider indices greater than `last_id'.
@@ -2794,13 +2799,13 @@ Octagonal_Shape<T>
 	  // for `u', respectively. The upper bound for `v - u' is
 	  // computed as `ub_v - (q * ub_u + (1-q) * lb_u)',
           // i.e., `ub_v + (-lb_u) - q * (ub_u + (-lb_u))'.
-	  mpq_class minus_lb_u;
+	  DIRTY_TEMP0(mpq_class, minus_lb_u);
 	  assign_r(minus_lb_u, m_u_cu, ROUND_NOT_NEEDED);
 	  div2exp_assign_r(minus_lb_u, minus_lb_u, 1, ROUND_NOT_NEEDED);
-	  mpq_class q;
+	  DIRTY_TEMP0(mpq_class, q);
 	  assign_r(q, expr_u, ROUND_NOT_NEEDED);
 	  div_assign_r(q, q, mpq_sc_den, ROUND_NOT_NEEDED);
-	  mpq_class ub_u;
+	  DIRTY_TEMP0(mpq_class, ub_u);
 	  assign_r(ub_u, matrix[n_u+1][n_u], ROUND_NOT_NEEDED);
 	  div2exp_assign_r(ub_u, ub_u, 1, ROUND_NOT_NEEDED);
 	  // Compute `ub_u - lb_u'.
@@ -2838,13 +2843,13 @@ Octagonal_Shape<T>
 	  // for `u', respectively. The upper bound for `v + u' is
 	  // computed as `ub_v + ((-q) * lb_u + (1+q) * ub_u)',
 	  // i.e., `ub_v + ub_u + (-q) * (lb_u - ub_u)'.
-	  mpq_class ub_u;
+	  DIRTY_TEMP0(mpq_class, ub_u);
 	  assign_r(ub_u, m_cu[n_u], ROUND_NOT_NEEDED);
 	  div2exp_assign_r(ub_u, ub_u, 1, ROUND_NOT_NEEDED);
-	  mpq_class minus_q;
+	  DIRTY_TEMP0(mpq_class, minus_q);
 	  assign_r(minus_q, minus_expr_u, ROUND_NOT_NEEDED);
 	  div_assign_r(minus_q, minus_q, mpq_sc_den, ROUND_NOT_NEEDED);
-	  mpq_class lb_u;
+	  DIRTY_TEMP0(mpq_class, lb_u);
 	  assign_r(lb_u, matrix[n_u][n_u+1], ROUND_NOT_NEEDED);
 	  div2exp_assign_r(lb_u, lb_u, 1, ROUND_NOT_NEEDED);
 	  neg_assign_r(lb_u, lb_u, ROUND_NOT_NEEDED);
@@ -2875,7 +2880,7 @@ Octagonal_Shape<T>
   assert(sc_den > 0);
   assert(!is_plus_infinity(minus_lb_v));
 
-  mpq_class mpq_sc_den;
+  DIRTY_TEMP0(mpq_class, mpq_sc_den);
   assign_r(mpq_sc_den, sc_den, ROUND_NOT_NEEDED);
 
   // No need to consider indices greater than `last_id'.
@@ -2913,13 +2918,13 @@ Octagonal_Shape<T>
 	  // for `u', respectively. The upper bound for `u - v' is
 	  // computed as `(q * lb_u + (1-q) * ub_u) - lb_v',
 	  // i.e., `ub_u - q * (ub_u + (-lb_u)) + minus_lb_v'.
-	  mpq_class ub_u;
+	  DIRTY_TEMP0(mpq_class, ub_u);
 	  assign_r(ub_u, m_cu[n_u], ROUND_NOT_NEEDED);
 	  div2exp_assign_r(ub_u, ub_u, 1, ROUND_NOT_NEEDED);
-	  mpq_class q;
+	  DIRTY_TEMP0(mpq_class, q);
 	  assign_r(q, expr_u, ROUND_NOT_NEEDED);
 	  div_assign_r(q, q, mpq_sc_den, ROUND_NOT_NEEDED);
-	  mpq_class minus_lb_u;
+	  DIRTY_TEMP0(mpq_class, minus_lb_u);
 	  assign_r(minus_lb_u, matrix[n_u][n_u+1], ROUND_NOT_NEEDED);
 	  div2exp_assign_r(minus_lb_u, minus_lb_u, 1, ROUND_NOT_NEEDED);
 	  // Compute `ub_u - lb_u'.
@@ -2957,13 +2962,13 @@ Octagonal_Shape<T>
 	  // for `u', respectively. The upper bound for `-v - u' is
 	  // computed as `-lb_v - ((-q)*ub_u + (1+q)*lb_u)',
 	  // i.e., `minus_lb_v - lb_u + q*(ub_u - lb_u)'.
-	  mpq_class ub_u;
+	  DIRTY_TEMP0(mpq_class, ub_u);
 	  assign_r(ub_u, matrix[n_u+1][n_u], ROUND_NOT_NEEDED);
 	  div2exp_assign_r(ub_u, ub_u, 1, ROUND_NOT_NEEDED);
-	  mpq_class q;
+	  DIRTY_TEMP0(mpq_class, q);
 	  assign_r(q, expr_u, ROUND_NOT_NEEDED);
 	  div_assign_r(q, q, mpq_sc_den, ROUND_NOT_NEEDED);
-	  mpq_class minus_lb_u;
+	  DIRTY_TEMP0(mpq_class, minus_lb_u);
 	  assign_r(minus_lb_u, m_u[n_u+1], ROUND_NOT_NEEDED);
 	  div2exp_assign_r(minus_lb_u, minus_lb_u, 1, ROUND_NOT_NEEDED);
 	  // Compute `ub_u - lb_u'.

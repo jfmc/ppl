@@ -475,7 +475,7 @@ PPL::Polyhedron::contains_integer_point() const {
 						    Variable(space_dim-1)));
   TEMP_INTEGER(homogeneous_gcd);
   TEMP_INTEGER(gcd);
-  mpq_class rational_inhomogeneous;
+  DIRTY_TEMP0(mpq_class, rational_inhomogeneous);
   TEMP_INTEGER(tightened_inhomogeneous);
   for (Constraint_System::const_iterator cs_i = cs.begin(),
 	 cs_end = cs.end(); cs_i != cs_end; ++cs_i) {

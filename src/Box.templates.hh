@@ -105,7 +105,7 @@ Box<Interval>::Box(const Generator_System& gs)
   }
 
   const dimension_type space_dim = space_dimension();
-  DIRTY_TEMP(mpq_class, q);
+  DIRTY_TEMP0(mpq_class, q);
   bool point_seen = false;
   // Going through all the points.
   for (Generator_System::const_iterator
@@ -259,7 +259,7 @@ Box<Interval>::Box(const Octagonal_Shape<T>& oct, Complexity_Class)
   if (space_dim == 0)
     return;
 
-  DIRTY_TEMP(mpq_class, bound);
+  DIRTY_TEMP0(mpq_class, bound);
   for (dimension_type i = space_dim; i-- > 0; ) {
     Interval& seq_i = seq[i];
     const dimension_type ii = 2*i;
@@ -350,7 +350,7 @@ Box<Interval>::Box(const Polyhedron& ph, Complexity_Class complexity)
     }
     // Get all the bounds for the space dimensions.
     Generator g(point());
-    DIRTY_TEMP(mpq_class, bound);
+    DIRTY_TEMP0(mpq_class, bound);
     DIRTY_TEMP(Coefficient, bound_num);
     DIRTY_TEMP(Coefficient, bound_den);
     for (dimension_type i = space_dim; i-- > 0; ) {
@@ -459,7 +459,7 @@ Box<Interval>::Box(const Grid& gr, Complexity_Class)
   // generator point.
   assert(first_point != 0);
   const Grid_Generator& point = *first_point;
-  DIRTY_TEMP(mpq_class, bound);
+  DIRTY_TEMP0(mpq_class, bound);
   const Coefficient& divisor = point.divisor();
   for (dimension_type i = space_dim; i-- > 0; ) {
     Interval& seq_i = seq[i];
@@ -644,7 +644,7 @@ Box<Interval>::relation_with(const Constraint& c) const {
   if (seq_var.is_universe())
     return Poly_Con_Relation::strictly_intersects();
 
-  DIRTY_TEMP(mpq_class, c_bound);
+  DIRTY_TEMP0(mpq_class, c_bound);
   assign_r(c_bound.get_num(), c.inhomogeneous_term(), ROUND_NOT_NEEDED);
   const Coefficient& d = c.coefficient(Variable(c_only_var));
   assign_r(c_bound.get_den(), d, ROUND_NOT_NEEDED);
@@ -652,7 +652,7 @@ Box<Interval>::relation_with(const Constraint& c) const {
   neg_assign_r(c_bound, c_bound, ROUND_NOT_NEEDED);
   const bool c_is_lower_bound = (d > 0);
 
-  DIRTY_TEMP(mpq_class, bound_diff);
+  DIRTY_TEMP0(mpq_class, bound_diff);
   if (c.is_equality()) {
     if (seq_var.lower_is_unbounded()) {
       assert(!seq_var.upper_is_unbounded());
@@ -865,8 +865,8 @@ Box<Interval>::relation_with(const Generator& g) const {
 
   // Here `g' is a point or closure point.
   const Coefficient& g_divisor = g.divisor();
-  DIRTY_TEMP(mpq_class, g_coord);
-  DIRTY_TEMP(mpq_class, bound);
+  DIRTY_TEMP0(mpq_class, g_coord);
+  DIRTY_TEMP0(mpq_class, bound);
   for (dimension_type i = g_space_dim; i-- > 0; ) {
     const Interval& seq_i = seq[i];
     if (seq_i.is_universe())
@@ -931,12 +931,12 @@ Box<Interval>::max_min(const Linear_Expression& expr,
   if (is_empty())
     return false;
 
-  DIRTY_TEMP(mpq_class, result);
+  DIRTY_TEMP0(mpq_class, result);
   assign_r(result, expr.inhomogeneous_term(), ROUND_NOT_NEEDED);
   bool is_included = true;
   const int maximize_sign = maximize ? 1 : -1;
-  DIRTY_TEMP(mpq_class, bound_i);
-  DIRTY_TEMP(mpq_class, expr_i);
+  DIRTY_TEMP0(mpq_class, bound_i);
+  DIRTY_TEMP0(mpq_class, expr_i);
   for (dimension_type i = expr_space_dim; i-- > 0; ) {
     const Interval& seq_i = seq[i];
     assign_r(expr_i, expr.coefficient(Variable(i)), ROUND_NOT_NEEDED);
@@ -985,7 +985,7 @@ Box<Interval>::max_min(const Linear_Expression& expr,
   DIRTY_TEMP(Coefficient, g_divisor);
   g_divisor = 1;
   const int maximize_sign = maximize ? 1 : -1;
-  DIRTY_TEMP(mpq_class, g_coord);
+  DIRTY_TEMP0(mpq_class, g_coord);
   DIRTY_TEMP(Coefficient, num);
   DIRTY_TEMP(Coefficient, den);
   DIRTY_TEMP(Coefficient, lcm);
@@ -1008,7 +1008,7 @@ Box<Interval>::max_min(const Linear_Expression& expr,
 	    if (seq_i.upper_is_open()) {
 	      // Bounded and open interval: compute middle point.
 	      assign_r(g_coord, seq_i.lower(), ROUND_NOT_NEEDED);
-	      DIRTY_TEMP(mpq_class, q_seq_i_upper);
+	      DIRTY_TEMP0(mpq_class, q_seq_i_upper);
 	      assign_r(q_seq_i_upper, seq_i.upper(), ROUND_NOT_NEEDED);
 	      g_coord += q_seq_i_upper;
 	      g_coord /= 2;
@@ -1548,7 +1548,7 @@ Box<Interval>::add_constraint_no_check(const Constraint& c) {
   // `rel' is either the relation `==', `>=', or `>'.
   // For the purpose of refining intervals, this is
   // (morally) turned into `Variable(c_only_var-1) rel -n/d'.
-  DIRTY_TEMP(mpq_class, q);
+  DIRTY_TEMP0(mpq_class, q);
   assign_r(q.get_num(), n, ROUND_NOT_NEEDED);
   assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
   q.canonicalize();

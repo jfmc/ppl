@@ -762,8 +762,8 @@ inline void
 mulmod(T& to, const T& x, const T& y, const T& to_m) {
   Result r;
   if (std::numeric_limits<T>::is_bounded) {
-    DIRTY_TEMP(mpz_class, a);
-    DIRTY_TEMP(mpz_class, b);
+    DIRTY_TEMP0(mpz_class, a);
+    DIRTY_TEMP0(mpz_class, b);
     r = assign_r(a, x, ROUND_NOT_NEEDED);
     assert(r == V_EQ);
     r = assign_r(b, y, ROUND_NOT_NEEDED);

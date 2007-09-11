@@ -247,7 +247,7 @@ Box<Interval>::get_lower_bound(const dimension_type k, bool& closed,
 
   closed = !seq_k.lower_is_open();
 
-  mpq_class lr;
+  DIRTY_TEMP0(mpq_class, lr);
   assign_r(lr, seq_k.lower(), ROUND_NOT_NEEDED);
   n = lr.get_num();
   d = lr.get_den();
@@ -267,7 +267,7 @@ Box<Interval>::get_upper_bound(const dimension_type k, bool& closed,
 
   closed = !seq_k.upper_is_open();
 
-  mpq_class ur;
+  DIRTY_TEMP0(mpq_class, ur);
   assign_r(ur, seq_k.upper(), ROUND_NOT_NEEDED);
   n = ur.get_num();
   d = ur.get_den();

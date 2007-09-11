@@ -572,7 +572,7 @@ cmp_generic(const Type1& x, const Type2& y) {
 template <typename Policy, typename Type>
 inline Result
 input_generic(Type& to, std::istream& is, Rounding_Dir dir) {
-  mpq_class q;
+  DIRTY_TEMP0(mpq_class, q);
   Result r = input_mpq(q, is);
   if (r == VC_MINUS_INFINITY)
     return assign<Policy, Special_Float_Policy>(to, MINUS_INFINITY, dir);

@@ -91,7 +91,7 @@ numer_denom(const Checked_Number<T, Policy>& from,
   assert(!is_not_a_number(from)
 	 && !is_minus_infinity(from)
 	 && !is_plus_infinity(from));
-  mpq_class q;
+  DIRTY_TEMP0(mpq_class, q);
   assign_r(q, from, ROUND_NOT_NEEDED);
   num = q.get_num();
   den = q.get_den();
@@ -102,8 +102,8 @@ inline void
 div_round_up(Checked_Number<T, Policy>& to,
 	     Coefficient_traits::const_reference x,
 	     Coefficient_traits::const_reference y) {
-  mpq_class qx;
-  mpq_class qy;
+  DIRTY_TEMP0(mpq_class, qx);
+  DIRTY_TEMP0(mpq_class, qy);
   // Note: this code assumes that a Coefficient is always convertible
   // to an mpq_class without loss of precision.
   assign_r(qx, x, ROUND_NOT_NEEDED);

@@ -1109,9 +1109,14 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
   // `-y <= v - u <= x'.
   // Let be `d == c_term/coeff' and `d1 == -c_term/coeff'.
   Coefficient numer, denom;
-  // The variables mpq_class are used to be precise when
-  // the bds is defined by integer constraints.
-  mpq_class q_x, q_y, d, d1, c_den, q_den;
+  // The following variables of mpq_class type are used to be precise
+  // when the bds is defined by integer constraints.
+  DIRTY_TEMP0(mpq_class, q_x);
+  DIRTY_TEMP0(mpq_class, q_y);
+  DIRTY_TEMP0(mpq_class, d);
+  DIRTY_TEMP0(mpq_class, d1);
+  DIRTY_TEMP0(mpq_class, c_den);
+  DIRTY_TEMP0(mpq_class, q_den);
   assign_r(c_den, coeff, ROUND_NOT_NEEDED);
   assign_r(d, c_term, ROUND_NOT_NEEDED);
   div_assign_r(d, d, c_den, ROUND_NOT_NEEDED);
@@ -2203,7 +2208,7 @@ BD_Shape<T>
   // greater than zero. In particular:
   // if `q >= 1',    then `v - u <= ub_v - ub_u';
   // if `0 < q < 1', then `v - u <= ub_v - (q*ub_u + (1-q)*lb_u)'.
-  mpq_class mpq_sc_den;
+  DIRTY_TEMP0(mpq_class, mpq_sc_den);
   assign_r(mpq_sc_den, sc_den, ROUND_NOT_NEEDED);
   const DB_Row<N>& dbm_0 = dbm[0];
   // No need to consider indices greater than `last_v'.
@@ -2224,12 +2229,12 @@ BD_Shape<T>
 	    // the upper bound for `v - u' is computed as
 	    // `ub_v - (q * ub_u + (1-q) * lb_u)', i.e.,
 	    // `ub_v + (-lb_u) - q * (ub_u + (-lb_u))'.
-	    mpq_class minus_lb_u;
+	    DIRTY_TEMP0(mpq_class, minus_lb_u);
 	    assign_r(minus_lb_u, dbm_u0, ROUND_NOT_NEEDED);
-	    mpq_class q;
+	    DIRTY_TEMP0(mpq_class, q);
 	    assign_r(q, expr_u, ROUND_NOT_NEEDED);
 	    div_assign_r(q, q, mpq_sc_den, ROUND_NOT_NEEDED);
-	    mpq_class ub_u;
+	    DIRTY_TEMP0(mpq_class, ub_u);
 	    assign_r(ub_u, dbm_0[u], ROUND_NOT_NEEDED);
 	    // Compute `ub_u - lb_u'.
 	    add_assign_r(ub_u, ub_u, minus_lb_u, ROUND_NOT_NEEDED);
@@ -2262,7 +2267,7 @@ BD_Shape<T>
   // greater than zero. In particular:
   // if `q >= 1',    then `u - v <= lb_u - lb_v';
   // if `0 < q < 1', then `u - v <= (q*lb_u + (1-q)*ub_u) - lb_v'.
-  mpq_class mpq_sc_den;
+  DIRTY_TEMP0(mpq_class, mpq_sc_den);
   assign_r(mpq_sc_den, sc_den, ROUND_NOT_NEEDED);
   DB_Row<N>& dbm_0 = dbm[0];
   DB_Row<N>& dbm_v = dbm[v];
@@ -2284,12 +2289,12 @@ BD_Shape<T>
 	    // the upper bound for `u - v' is computed as
 	    // `(q * lb_u + (1-q) * ub_u) - lb_v', i.e.,
 	    // `ub_u - q * (ub_u + (-lb_u)) + minus_lb_v'.
-	    mpq_class ub_u;
+	    DIRTY_TEMP0(mpq_class, ub_u);
 	    assign_r(ub_u, dbm_0u, ROUND_NOT_NEEDED);
-	    mpq_class q;
+	    DIRTY_TEMP0(mpq_class, q);
 	    assign_r(q, expr_u, ROUND_NOT_NEEDED);
 	    div_assign_r(q, q, mpq_sc_den, ROUND_NOT_NEEDED);
-	    mpq_class minus_lb_u;
+	    DIRTY_TEMP0(mpq_class, minus_lb_u);
 	    assign_r(minus_lb_u, dbm[u][0], ROUND_NOT_NEEDED);
 	    // Compute `ub_u - lb_u'.
 	    add_assign_r(minus_lb_u, minus_lb_u, ub_u, ROUND_NOT_NEEDED);
