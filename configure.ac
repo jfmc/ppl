@@ -115,10 +115,15 @@ AC_ARG_WITH(cxx,
 
 # Checks for programs.
 # Note that AC_PROG_CC must precede the first use of $GCC abd AC_PROG_CXX
-# must precede the first use of $GXX.
-AC_PROG_EGREP
+# must precede the first use of $GXX.  Note also that we do not allow
+# AC_PROG_CC and AC_PROG_CXX to affect CFLAGS and CXXFLAGS.
+save_CFLAGS="$CFLAGS"
 AC_PROG_CC
+CFLAGS="$save_CFLAGS"
+save_CXXFLAGS="$CXXFLAGS"
 AC_PROG_CXX
+CXXFLAGS="$save_CXXFLAGS"
+AC_PROG_EGREP
 AC_PROG_CXXCPP
 AC_PROG_MAKE_SET
 AC_PROG_INSTALL
@@ -388,8 +393,8 @@ no)
 esac
 AM_CONDITIONAL(USE_PRECOMPILED_HEADERS, test x"$enableval" = xyes)
 
-CFLAGS="$CFLAGS $COMP_FLAGS $OPT_FLAGS"
-CXXFLAGS="$CXXFLAGS $COMP_FLAGS $OPT_FLAGS"
+CFLAGS="$COMP_FLAGS $OPT_FLAGS $CFLAGS"
+CXXFLAGS="$COMP_FLAGS $OPT_FLAGS $CXXFLAGS"
 
 enableval=mpz
 AC_MSG_CHECKING([the type of integral values to use as coefficients])
