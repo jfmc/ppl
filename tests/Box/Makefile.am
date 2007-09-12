@@ -267,9 +267,10 @@ DERIVED_CXXFLAGS = -DDERIVED_TEST $(AM_CXXFLAGS)
 nnc_frompolyhedron1_SOURCES = frompolyhedron1.cc
 nnc_frompolyhedron1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
-BUGS = bug1
+BUGS = bug1 bug2
 
 bug1_SOURCES = bug1.cc
+bug2_SOURCES = bug2.cc
 
 check_PROGRAMS = $(ALL_TESTS) $(BUGS)
 
