@@ -113,7 +113,7 @@ run_tests.stamp: run_tests
 	echo "true" >run_tests.stamp
 	chmod +x run_tests.stamp
 
-XFAIL_TESTS = $(BUGS)
+XFAIL_TESTS =
 
 if SUPPORTED_FLOAT
 FLOAT_INSTANCES=fl_r_oc
@@ -272,7 +272,7 @@ BUGS = bug1 bug2
 bug1_SOURCES = bug1.cc
 bug2_SOURCES = bug2.cc
 
-check_PROGRAMS = $(ALL_TESTS) $(BUGS)
+check_PROGRAMS = $(ALL_TESTS)
 
 
 EXTRA_DIST = $(refine2_SRCS)
