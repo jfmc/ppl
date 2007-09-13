@@ -1,4 +1,4 @@
-/* MIP_Problem class implementation: non-inline functions.
+* MIP_Problem class implementation: non-inline functions.
    Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -880,9 +880,8 @@ PPL::MIP_Problem::steepest_edge_entering_index() const {
 	  assign_r(real_coeff.get_num(), tableau_ij, ROUND_NOT_NEEDED);
 	  assign_r(real_coeff.get_den(), tableau_i[base[i]], ROUND_NOT_NEEDED);
 	  real_coeff.canonicalize();
-	  // FIXME: we may have undefined behavior in the following line!
-	  // See the GMP documentation.
-	  double float_tableau_value = real_coeff.get_d();
+	  double float_tableau_value;
+	  assign_r(float_tableau_value, real_coeff, ROUND_IGNORE);
 	  challenger_den += float_tableau_value * float_tableau_value;
 	}
       }
