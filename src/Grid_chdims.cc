@@ -27,8 +27,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Variables_Set.defs.hh"
 #include <cassert>
 
-#define BE_LAZY 1
-
 namespace PPL = Parma_Polyhedra_Library;
 
 // Used for add_space_dimensions_and_embed.
