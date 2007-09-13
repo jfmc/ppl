@@ -71,7 +71,6 @@ Enhancements for PPL 0.10
 - `make check' in ppl_lpsol must run also the incremental version
   of the simplex solver.
 - MIP_Problem: ensure ascii_load() and operator<< are correct.
-- Develop a C and Prolog interfaces for all the supported domains.
 - Incorporate the domain of intervals.
 - Reduce the number of FIXMEs to no more than 20.
 - Complete the manual pages for ppl-config, ppl_lpsol and ppl_lcdd.
@@ -81,7 +80,6 @@ Enhancements for PPL 0.10
 - Clearly explain, in the documentation, how (not) to use
   set_GMP_memory_allocation_functions().  More generally, explain how
   to have memory-guarded computations.
-- Reconsider the handling of temporary coefficients.
 - Provide a generic implementation for the `widening with tokens'.
 - Direct_Product: Check that all comments and code are consistent with
   intended semantics.
