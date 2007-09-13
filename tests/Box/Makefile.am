@@ -90,7 +90,7 @@ maxspacedim1 \
 minconstraints1 \
 pointsetpowerset1 \
 relations1 relations2 \
-refine1 refine3 \
+refine3 \
 removespacedims1 \
 timeelapse1 \
 universe1 \
@@ -113,7 +113,7 @@ run_tests.stamp: run_tests
 	echo "true" >run_tests.stamp
 	chmod +x run_tests.stamp
 
-XFAIL_TESTS =
+XFAIL_TESTS = $(BUGS)
 
 if SUPPORTED_FLOAT
 FLOAT_INSTANCES=fl_r_oc
@@ -233,7 +233,7 @@ pointsetpowerset1_SOURCES = pointsetpowerset1.cc
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
 
-refine1_SOURCES = refine1.cc
+#refine1_SOURCES = refine1.cc
 refine3_SOURCES = refine3.cc
 
 removespacedims1_SOURCES = removespacedims1.cc
