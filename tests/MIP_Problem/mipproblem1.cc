@@ -1670,7 +1670,8 @@ test10() {
   MIP_Problem mip(cs.space_dimension(), cs.begin(), cs.end(), ivs, cost,
 		  MINIMIZATION);
 
-  mip.solve();
+  if (mip.solve() != OPTIMIZED_MIP_PROBLEM)
+    return false;
 
   Generator pg = mip.optimizing_point();
   nout << "Optimizing point = ";
@@ -1700,7 +1701,8 @@ test11() {
 
   MIP_Problem mip(cs.space_dimension(), cs.begin(), cs.end(), ivs, cost,
 		  MAXIMIZATION);
-  mip.solve();
+  if (mip.solve() != OPTIMIZED_MIP_PROBLEM)
+    return false;
 
   Generator pg = mip.optimizing_point();
   nout << "Optimizing point = ";
@@ -1708,7 +1710,9 @@ test11() {
   nout << pg << endl;
 
   mip.set_optimization_mode(MINIMIZATION);
-  mip.solve();
+
+  if (mip.solve() != OPTIMIZED_MIP_PROBLEM)
+    return false;
 
   pg = mip.optimizing_point();
   nout << "Optimizing point = ";
@@ -1761,7 +1765,10 @@ test12() {
 bool
 test13() {
   MIP_Problem mip = MIP_Problem();
-  mip.solve();
+
+  if (mip.solve() != OPTIMIZED_MIP_PROBLEM)
+    return false;
+
   Generator pg = mip.optimizing_point();
   nout << "Optimizing point = ";
   print_generator(pg);
@@ -1775,7 +1782,10 @@ bool
 test14() {
   MIP_Problem mip = MIP_Problem();
   mip.add_constraint(Linear_Expression::zero() <= 1);
-  mip.solve();
+
+  if (mip.solve() != OPTIMIZED_MIP_PROBLEM)
+    return false;
+
   Generator pg = mip.optimizing_point();
   Generator pg_kr = point();
   if (pg != pg_kr)
@@ -1806,7 +1816,8 @@ test15() {
   MIP_Problem mip(cs.space_dimension(), cs.begin(), cs.end(), ivs, cost,
 		  MAXIMIZATION);
 
-  mip.solve();
+  if (mip.solve() != OPTIMIZED_MIP_PROBLEM)
+    return false;
 
   Generator pg = mip.optimizing_point();
   nout << "Optimizing point = ";
@@ -1835,7 +1846,8 @@ test16() {
   MIP_Problem mip(cs.space_dimension(), cs.begin(), cs.end(), /*ivs,*/ cost,
 		  MAXIMIZATION);
 
-  mip.solve();
+  if (mip.solve() != OPTIMIZED_MIP_PROBLEM)
+    return false;
 
   Generator pg = mip.optimizing_point();
   nout << "Optimizing point = ";
@@ -1845,7 +1857,45 @@ test16() {
   return pg == point(-2*A + 10*B, 7);
 }
 
+bool
+test17() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+
+  // Feasible region.
+  Constraint_System cs;
+  cs.insert(A + B >= 0);
+  cs.insert(B >= 0);
+  cs.insert(B == 3);
+  cs.insert(2*C + 2*D == 9);
+
+  // Cost function.
+  Linear_Expression cost(10*A + 6*B);
+
+  MIP_Problem mip(cs.space_dimension(), cs.begin(), cs.end(), cost,
+		  MINIMIZATION);
+
+  if (mip.solve() != OPTIMIZED_MIP_PROBLEM)
+    return false;
+
+  Generator pg = mip.optimizing_point();
+  nout << "Optimizing point = ";
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+  nout << pg << endl;
+
+  Coefficient num;
+  Coefficient den;
+  mip.optimal_value(num, den);
+  nout << "Optimum value = " << num << "/" << den << endl;
+  Coefficient num_kr = -12;
+  Coefficient den_kr = 1;
+  return num == num_kr && den == den_kr;
 }
+
+}
+
 // namespace
 
 BEGIN_MAIN
@@ -1865,4 +1915,5 @@ BEGIN_MAIN
   DO_TEST(test14);
   DO_TEST(test15);
   DO_TEST(test16);
+  DO_TEST(test17);
 END_MAIN
