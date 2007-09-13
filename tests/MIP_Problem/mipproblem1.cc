@@ -1337,7 +1337,8 @@ test05() {
   return true;
 }
 
-bool test06() {
+bool
+test06() {
   Variable A(0);
   Variable B(1);
   Linear_Expression cost(A + B);
@@ -1395,7 +1396,8 @@ bool test06() {
   return true;
 }
 
-bool test07() {
+bool
+test07() {
   Variable A(0);
   Variable B(1);
   Linear_Expression cost(A + B);
@@ -1457,7 +1459,8 @@ bool test07() {
   return true;
 }
 
-bool test08() {
+bool
+test08() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -1572,7 +1575,8 @@ bool test08() {
   return true;
 }
 
-bool test09() {
+bool
+test09() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -1766,8 +1770,8 @@ test13() {
     return false;
   return true;
 }
-bool
 
+bool
 test14() {
   MIP_Problem mip = MIP_Problem();
   mip.add_constraint(Linear_Expression::zero() <= 1);
@@ -1777,7 +1781,68 @@ test14() {
   if (pg != pg_kr)
     return false;
   mip.add_constraint(Linear_Expression::zero() >= 1);
-  return (!mip.is_satisfiable());
+  return !mip.is_satisfiable();
+}
+
+bool
+test15() {
+  Variable A(0);
+  Variable B(1);
+
+  // Feasible region.
+  Constraint_System cs;
+  cs.insert(A >= 0);
+  cs.insert(B >= 0);
+  cs.insert(-A - B >= -8);
+  cs.insert(-A - 3*B >= -18);
+  cs.insert(-A + B >= -4);
+
+  // All integer variables.
+  Variables_Set ivs(A, B);
+
+  // Cost function.
+  Linear_Expression cost(A + B);
+
+  MIP_Problem mip(cs.space_dimension(), cs.begin(), cs.end(), ivs, cost,
+		  MAXIMIZATION);
+
+  mip.solve();
+
+  Generator pg = mip.optimizing_point();
+  nout << "Optimizing point = ";
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+  nout << pg << endl;
+
+  return pg == point(6*A + 2*B);
+}
+
+bool
+test16() {
+  Variable A(0);
+  Variable B(1);
+
+  // Feasible region.
+  Constraint_System cs;
+  cs.insert(-A - 3*B >= -4);
+  cs.insert(-5*A - B >= -5);
+  cs.insert(-3*A - 2*B >= -2);
+  cs.insert(A + 3*B >= -1);
+  cs.insert(2*A - B >= -2);
+
+  // Cost function.
+  Linear_Expression cost(A + B);
+
+  MIP_Problem mip(cs.space_dimension(), cs.begin(), cs.end(), /*ivs,*/ cost,
+		  MAXIMIZATION);
+
+  mip.solve();
+
+  Generator pg = mip.optimizing_point();
+  nout << "Optimizing point = ";
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+  nout << pg << endl;
+
+  return pg == point(-2*A + 10*B, 7);
 }
 
 }
@@ -1798,4 +1863,6 @@ BEGIN_MAIN
   DO_TEST_F64(test12);
   DO_TEST(test13);
   DO_TEST(test14);
+  DO_TEST(test15);
+  DO_TEST(test16);
 END_MAIN
