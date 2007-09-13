@@ -10,6 +10,9 @@ NEWS for version 0.10  (release date to be decided)
 New and Changed Features
 ========================
 
+o  The Parma Polyhedra Library is now released under the terms of the
+   version 3 (or later) of the GNU General Public License.
+
 o  The new class Octagonal_Shape provides an implementation of the domain
    of octagonal shapes (including a provably correct widening) as proposed
    by Roberto Bagnara, Patricia Hill, Elena Mazzi and Enea Zaffanella in
