@@ -2305,7 +2305,7 @@ private:
     \p included and \p point are left untouched.
   */
   bool max_min(const Linear_Expression& expr,
-	       char* method_call,
+	       const char* method_call,
 	       Coefficient& ext_n, Coefficient& ext_d, bool& included,
 	       Grid_Generator* point = NULL) const;
 

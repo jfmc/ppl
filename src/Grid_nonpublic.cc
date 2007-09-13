@@ -297,7 +297,7 @@ PPL::Grid::bounds(const Linear_Expression& expr,
 
 bool
 PPL::Grid::max_min(const Linear_Expression& expr,
-		   char* method_call,
+		   const char* method_call,
 		   Coefficient& ext_n, Coefficient& ext_d, bool& included,
 		   Grid_Generator* point) const {
   if (bounds(expr, method_call)) {
