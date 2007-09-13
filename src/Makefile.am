@@ -195,6 +195,7 @@ Interval_Info.inlines.hh \
 Interval_Restriction.defs.hh \
 Interval.defs.hh \
 Interval.inlines.hh \
+Interval.templates.hh \
 Box.defs.hh \
 Box.inlines.hh \
 Box.templates.hh \
