@@ -32,7 +32,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 // Used for add_space_dimensions_and_embed.
-inline void
+void
 PPL::Grid::add_space_dimensions(Congruence_System& cgs,
 				Grid_Generator_System& gs,
 				const dimension_type dims) {
@@ -51,7 +51,7 @@ PPL::Grid::add_space_dimensions(Congruence_System& cgs,
 }
 
 // Used for add_space_dimensions_and_project.
-inline void
+void
 PPL::Grid::add_space_dimensions(Grid_Generator_System& gs,
 				Congruence_System& cgs,
 				const dimension_type dims) {

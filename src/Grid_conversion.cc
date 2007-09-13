@@ -100,7 +100,7 @@ Grid::upper_triangular(const Grid_Generator_System& sys,
   return num_columns == row;
 }
 
-inline void
+void
 Grid::multiply_grid(const Coefficient& multiplier, Grid_Generator& gen,
 		    Grid_Generator_System& dest, const dimension_type num_rows,
 		    const dimension_type num_dims) {
@@ -123,7 +123,7 @@ Grid::multiply_grid(const Coefficient& multiplier, Grid_Generator& gen,
   }
 }
 
-inline void
+void
 Grid::multiply_grid(const Coefficient& multiplier, Congruence& cg,
 		    Congruence_System& dest, const dimension_type num_rows,
 		    const dimension_type num_dims) {

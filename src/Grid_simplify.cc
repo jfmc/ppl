@@ -104,7 +104,7 @@ Grid::reduce_reduced(M& sys,
 }
 #endif // STRONG_REDUCTION
 
-inline void
+void
 Grid::reduce_line_with_line(Grid_Generator& row, Grid_Generator& pivot,
 			    dimension_type column) {
   const Coefficient& pivot_column = pivot[column];
@@ -130,7 +130,7 @@ Grid::reduce_line_with_line(Grid_Generator& row, Grid_Generator& pivot,
   }
 }
 
-inline void
+void
 Grid::reduce_equality_with_equality(Congruence& row,
 				    const Congruence& pivot,
 				    const dimension_type column) {
