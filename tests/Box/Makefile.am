@@ -99,7 +99,8 @@ writebox1
 DERIVED_TESTS = \
 nnc_frompolyhedron1
 
-ALL_TESTS = $(ORIGINAL_TESTS) $(DERIVED_TESTS) $(WATCHDOG_TESTS)
+ALL_TESTS = $(ORIGINAL_TESTS) $(DERIVED_TESTS)
+# $(WATCHDOG_TESTS)
 
 # This will be overridden by the `run_tests' script.
 TEST_CPPFLAGS=-DBOX_INSTANCE=rt_r_oc
