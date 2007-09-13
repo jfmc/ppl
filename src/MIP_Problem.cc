@@ -859,7 +859,6 @@ PPL::MIP_Problem::steepest_edge_entering_index() const {
   assert(tableau_num_rows == base.size());
   double challenger_num = 0.0;
   double challenger_den = 0.0;
-  double challenger_value = 0.0;
   double current_value = 0.0;
   dimension_type entering_index = 0;
   const int cost_sign = sgn(working_cost[working_cost.size() - 1]);
@@ -887,16 +886,11 @@ PPL::MIP_Problem::steepest_edge_entering_index() const {
 	  challenger_den += float_tableau_value * float_tableau_value;
 	}
       }
-      // Initialization during the first loop.
-      if (entering_index == 0) {
-	current_value = challenger_num / sqrt(challenger_den);
-	entering_index = j;
- 	continue;
-      }
-      challenger_value = challenger_num / sqrt(challenger_den);
-      // Update the values, if the challenger wins.
-      if (challenger_value > current_value) {
-	std::swap(challenger_value, current_value);
+      double challenger_value = challenger_num / sqrt(challenger_den);
+      // Initialize `current_value' during the first iteration.
+      // Otherwise update if the challenger wins.
+      if (entering_index == 0 || challenger_value > current_value) {
+	current_value = challenger_value;
 	entering_index = j;
       }
     }
