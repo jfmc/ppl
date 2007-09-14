@@ -170,7 +170,7 @@ nnc_onepoint \
 nnc_permute \
 nnc_polydifference1 \
 nnc_polyhull1 \
-nnc_randphull1 nnc_randphull2 \
+nnc_randphull1 \
 nnc_relations1 nnc_relations2 \
 nnc_removespacedims1 \
 nnc_smm1 \
@@ -337,8 +337,7 @@ pointsetpowerset1_SOURCES = pointsetpowerset1.cc
 powerset1_SOURCES = powerset1.cc
 
 randphull1_SOURCES = randphull1.cc
-randphull2_SOURCES = randphull2.cc
-randphull2_LDADD = $(LDADD) -lm
+randphull1_LDADD = $(LDADD) -lm
 
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
@@ -541,9 +540,7 @@ nnc_polyhull1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_randphull1_SOURCES = randphull1.cc
 nnc_randphull1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_randphull2_SOURCES = randphull2.cc
-nnc_randphull2_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_randphull2_LDADD = $(LDADD) -lm
+nnc_randphull1_LDADD = $(LDADD) -lm
 
 nnc_relations1_SOURCES = relations1.cc
 nnc_relations1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -581,66 +578,7 @@ endif BUILD_WATCHDOG_LIBRARY
 
 TESTS = $(ORIGINAL_TESTS) $(DERIVED_TESTS) $(WATCHDOG_TESTS)
 
-XFAIL_ALWAYS =
-
-XFAIL_WITH_INT64 = \
-$(XFAIL_ALWAYS) \
-randphull2 \
-nnc_randphull2
-
-XFAIL_WITH_INT32 = \
-$(XFAIL_WITH_INT64)
-
-XFAIL_WITH_INT16 = \
-$(XFAIL_WITH_INT32)
-
-XFAIL_WITH_INT8 = \
-$(XFAIL_WITH_INT16) \
-randphull1 \
-smm1 \
-nnc_randphull1 \
-nnc_smm1
-
-XFAIL_WITH_INT8_A = \
-$(XFAIL_WITH_INT8)
-
-if USE_INT64
-
-XFAIL_SET = $(XFAIL_WITH_INT64)
-
-else !USE_INT64
-if USE_INT32
-
-XFAIL_SET = $(XFAIL_WITH_INT32)
-
-else !USE_INT32
-if USE_INT16
-
-XFAIL_SET = $(XFAIL_WITH_INT16)
-
-else !USE_INT16
-if USE_INT8
-
-if ASSERTIONS_ENABLED
-
-XFAIL_SET = $(XFAIL_WITH_INT8_A)
-
-else !ASSERTIONS_ENABLED
-
-XFAIL_SET = $(XFAIL_WITH_INT8)
-
-endif !ASSERTIONS_ENABLED
-
-else !USE_INT8
-
-XFAIL_SET = $(XFAIL_ALWAYS)
-
-endif !USE_INT8
-endif !USE_INT16
-endif !USE_INT32
-endif !USE_INT64
-
-XFAIL_TESTS = $(XFAIL_SET)
+XFAIL_TESTS =
 
 check_PROGRAMS = $(TESTS) $(BUGS)
 

@@ -22,8 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
-
 namespace Parma_Polyhedra_Library {
   // Import all the output operators into the main PPL namespace.
   using IO_Operators::operator<<;
@@ -37,6 +35,8 @@ namespace Parma_Polyhedra_Library {
 //    M O N E Y
 
 namespace {
+
+namespace test01_namespace {
 
 void
 less_than(C_Polyhedron& ph, Variable X, Variable Y) {
@@ -90,12 +90,12 @@ constraints(C_Polyhedron& ph,
   less_than(ph, R, S);
 }
 
+} // namespace test01_namespace
+
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
+bool
+test01() {
   Variable S(0);
   Variable E(1);
   Variable N(2);
@@ -112,38 +112,41 @@ main() TRY {
       for (int C3 = 0; C3 <= 1; ++C3)
 	for (int C4 = 0; C4 <= 1; ++C4) {
 	  C_Polyhedron ph(8);
-	  constraints(ph,
-		      S, E, N, D, M, O, R, Y,
-		      C1, C2, C3, C4);
-	  if (!ph.is_empty()) {
-	    nout << "Solution constraints" << endl;
-	    const Constraint_System& cs = ph.constraints();
-	    std::copy(cs.begin(), cs.end(),
-		      std::ostream_iterator<Constraint>(nout, "\n"));
-	    nout << "Solution generators" << endl;
-	    const Generator_System& gs = ph.generators();
-	    std::copy(gs.begin(), gs.end(),
-		      std::ostream_iterator<Generator>(nout, "\n"));
+	  test01_namespace::constraints(ph,
+					S, E, N, D, M, O, R, Y,
+					C1, C2, C3, C4);
+	  if (ph.is_empty())
+	    continue;
 
-	    if (solution_found)
-	      return 1;
+	  using namespace Parma_Polyhedra_Library::IO_Operators;
+	  nout << "Solution constraints" << endl;
+	  const Constraint_System& cs = ph.constraints();
+	  std::copy(cs.begin(), cs.end(),
+		    std::ostream_iterator<Constraint>(nout, "\n"));
+	  nout << "Solution generators" << endl;
+	  const Generator_System& gs = ph.generators();
+	  std::copy(gs.begin(), gs.end(),
+		    std::ostream_iterator<Generator>(nout, "\n"));
+	  if (solution_found)
+	    return true;
+	  solution_found = true;
 
-	    solution_found = true;
+	  C_Polyhedron expected(8);
+	  expected.add_constraint(S == 9);
+	  expected.add_constraint(E == 5);
+	  expected.add_constraint(N == 6);
+	  expected.add_constraint(D == 7);
+	  expected.add_constraint(M == 1);
+	  expected.add_constraint(O == 0);
+	  expected.add_constraint(R == 8);
+	  expected.add_constraint(Y == 2);
 
-	    C_Polyhedron expected(8);
-	    expected.add_constraint(S == 9);
-	    expected.add_constraint(E == 5);
-	    expected.add_constraint(N == 6);
-	    expected.add_constraint(D == 7);
-	    expected.add_constraint(M == 1);
-	    expected.add_constraint(O == 0);
-	    expected.add_constraint(R == 8);
-	    expected.add_constraint(Y == 2);
-
-	    if (ph != expected)
-	      return 1;
-	  }
+	  if (ph != expected)
+	    return false;
 	}
-  return 0;
+  return true;
 }
-CATCH
+
+BEGIN_MAIN
+  DO_TEST_F8(test01);
+END_MAIN
