@@ -22,11 +22,11 @@
 
 JAVAROOT = .
 
-if BUILD_JAVA_INTERFACE
-
 interface_generator_files = \
 ppl_interface_generator_java_test_java.m4 \
 ppl_interface_generator_java_test_java_code.m4
+
+if BUILD_JAVA_INTERFACE
 
 interface_generator_dependencies = \
 $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
@@ -72,7 +72,7 @@ check-local:
              -dlopen ../../../src/libppl.la \
 	$(JAVA) -classpath .:../ppl_java.jar -Djava.library.path=../jni/.libs C_Polyhedron_test1
 
-CLEANFILES = \
-$(BUILT_SOURCES)
-
 endif BUILD_JAVA_INTERFACE
+
+CLEANFILES = \
+ppl_java_generated_tests.java

@@ -20,19 +20,19 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-if BUILD_JAVA_INTERFACE
-
 SUBDIRS = ppl_java jni . tests
 
 EXTRA_DIST = \
 ppl_interface_generator_java_dat.m4
 
+if BUILD_JAVA_INTERFACE
+
 jardir = $(pkglibdir)
 jar_DATA = ppl_java.jar
-
-CLEANFILES = ppl_java.jar
 
 ppl_java.jar: ppl_java/java_classes.stamp
 	$(JAR) cf ppl_java.jar ppl_java/*.class
 
 endif BUILD_JAVA_INTERFACE
+
+CLEANFILES = ppl_java.jar

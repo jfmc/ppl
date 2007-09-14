@@ -28,21 +28,9 @@ required_instantiations_java_sources = \
 required_instantiations_java_cxx_headers = \
 @required_instantiations_java_cxx_headers@
 
-if BUILD_JAVA_INTERFACE
-
-all:	java_classes.stamp java_cxx_headers.stamp
-
 interface_generator_files = \
 ppl_interface_generator_java_classes_java.m4 \
 ppl_interface_generator_java_classes_java_code.m4
-
-interface_generator_dependencies = \
-$(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
-../../ppl_interface_generator_common.m4 \
-../../ppl_interface_generator_common_dat.m4 \
-../../ppl_interface_generator_copyright \
-../ppl_interface_generator_java_dat.m4 \
-$(interface_generator_files)
 
 fixed_java_cxx_headers = \
 ppl_java.Congruence \
@@ -113,6 +101,27 @@ all_java_sources = \
 $(fixed_java_sources) \
 $(required_instantiations_java_sources)
 
+EXTRA_DIST = \
+$(interface_generator_files) \
+$(fixed_java_sources)
+
+# This is to force Automake to generate the required Java infrastructure
+# and all the class files.
+noinst_JAVA = Variable.java
+
+
+if BUILD_JAVA_INTERFACE
+
+all:	java_classes.stamp java_cxx_headers.stamp
+
+interface_generator_dependencies = \
+$(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
+../../ppl_interface_generator_common.m4 \
+../../ppl_interface_generator_common_dat.m4 \
+../../ppl_interface_generator_copyright \
+../ppl_interface_generator_java_dat.m4 \
+$(interface_generator_files)
+
 java_classes.stamp: $(all_java_sources)
 	@if test -n "$?"; then \
 		echo '$(CLASSPATH_ENV) $(JAVAC) -d $(JAVAROOT) $(AM_JAVACFLAGS) $(JAVACFLAGS) $?' ; \
@@ -145,13 +154,7 @@ source_generation.stamp: $(interface_generator_dependencies) Makefile
 
 $(required_instantiations_java_sources): source_generation.stamp
 
-EXTRA_DIST = \
-$(interface_generator_files) \
-$(fixed_java_sources)
-
-# This is to force Automake to generate the required Java infrastructure
-# and all the class files.
-noinst_JAVA = Variable.java
+endif BUILD_JAVA_INTERFACE
 
 CLEANFILES = \
 $(required_instantiations_java_sources) \
@@ -160,4 +163,3 @@ $(fixed_java_cxx_headers_sources) \
 java_classes.stamp \
 java_cxx_headers.stamp \
 source_generation.stamp
-endif BUILD_JAVA_INTERFACE

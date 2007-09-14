@@ -22,8 +22,6 @@
 
 abs_srcdir = @abs_srcdir@
 
-if BUILD_OCAML_INTERFACE
-
 interface_generator_files = \
 ppl_interface_generator_ocaml_cc.m4 \
 ppl_interface_generator_ocaml_cc_code.m4 \
@@ -43,6 +41,8 @@ $(interface_generator_files) \
 $(original_mls) \
 ppl_ocaml_globals.cc
 
+
+if BUILD_OCAML_INTERFACE
 
 BUILT_SOURCES = \
 ppl_ocaml.cc \
@@ -147,6 +147,8 @@ ppl_ocaml_globals.cmo \
 ppl_ocaml_types.cmi \
 ppl_ocaml_types.cmo
 
+endif BUILD_OCAML_INTERFACE
+
 CLEANFILES = \
 delete_mls.stamp \
 copied_mls.stamp \
@@ -162,10 +164,3 @@ ppl_ocaml_types.cmi \
 ppl_ocaml_types.cmo \
 test1.cmi \
 test1.cmo
-
-
-else # !HAVE_OCAML_COMPILER
-
-EXTRA_DIST =
-
-endif
