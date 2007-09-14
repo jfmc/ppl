@@ -1310,8 +1310,8 @@ PPL
     // The grid contains at least one point.
     normalize_divisors(gs, gen_sys);
 
-    // FIXME: compute gs_num_rows() only once.
-    for (dimension_type row = 0; row < gs.num_rows(); ++row)
+    for (dimension_type row = 0,
+	   gs_num_rows = gs.num_rows(); row < gs_num_rows; ++row)
       gen_sys.recycling_insert(gs[row]);
   }
   else {
