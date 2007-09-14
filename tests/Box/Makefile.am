@@ -99,8 +99,7 @@ writebox1
 DERIVED_TESTS = \
 nnc_frompolyhedron1
 
-ALL_TESTS = $(ORIGINAL_TESTS) $(DERIVED_TESTS)
-# $(WATCHDOG_TESTS)
+ALL_TESTS = $(ORIGINAL_TESTS) $(DERIVED_TESTS) $(WATCHDOG_TESTS)
 
 # This will be overridden by the `run_tests' script.
 TEST_CPPFLAGS=-DBOX_INSTANCE=rt_r_oc
@@ -234,7 +233,7 @@ pointsetpowerset1_SOURCES = pointsetpowerset1.cc
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
 
-#refine1_SOURCES = refine1.cc
+refine1_SOURCES = refine1.cc
 refine3_SOURCES = refine3.cc
 
 removespacedims1_SOURCES = removespacedims1.cc
