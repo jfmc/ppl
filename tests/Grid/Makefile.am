@@ -103,6 +103,8 @@ topclosure1 \
 widening1 widening2  widening3\
 writecongruencesystem
 
+XFAIL_TESTS =
+
 #
 # Sources for the tests
 #
@@ -250,50 +252,6 @@ widening2_SOURCES = widening2.cc
 widening3_SOURCES = widening3.cc
 
 writecongruencesystem_SOURCES = writecongruencesystem.cc
-
-XFAIL_ALWAYS =
-
-XFAIL_WITH_INT64 = \
-$(XFAIL_ALWAYS)
-
-XFAIL_WITH_INT32 = \
-$(XFAIL_WITH_INT64)
-
-XFAIL_WITH_INT16 = \
-$(XFAIL_WITH_INT32)
-
-XFAIL_WITH_INT8 = \
-$(XFAIL_WITH_INT16)
-
-if USE_INT64
-
-XFAIL_SET = $(XFAIL_WITH_INT64)
-
-else !USE_INT64
-if USE_INT32
-
-XFAIL_SET = $(XFAIL_WITH_INT32)
-
-else !USE_INT32
-if USE_INT16
-
-XFAIL_SET = $(XFAIL_WITH_INT16)
-
-else !USE_INT16
-if USE_INT8
-
-XFAIL_SET = $(XFAIL_WITH_INT8)
-
-else !USE_INT8
-
-XFAIL_SET = $(XFAIL_ALWAYS)
-
-endif !USE_INT8
-endif !USE_INT16
-endif !USE_INT32
-endif !USE_INT64
-
-XFAIL_TESTS = $(XFAIL_SET)
 
 check_PROGRAMS = $(TESTS)
 
