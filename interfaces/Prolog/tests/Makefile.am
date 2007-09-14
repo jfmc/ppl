@@ -54,6 +54,9 @@ ppl_predicate_check_common.pl \
 ppl_interface_generator_predicate_check_pl.m4 \
 ppl_interface_generator_predicate_check_code.m4
 
+
+if BUILD_SOME_PROLOG_INTERFACES
+
 BUILT_SOURCES = \
 ppl_predicate_check.pl
 
@@ -71,6 +74,8 @@ ppl_predicate_check.pl: $(interface_generator_dependencies) Makefile
 	m4 --prefix-builtin -I../.. -I$(srcdir) -I$(srcdir)/.. \
 	   -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_predicate_check_pl.m4 > $@
+
+endif BUILD_SOME_PROLOG_INTERFACES
 
 DISTCLEANFILES = \
 ppl_predicate_check.pl
