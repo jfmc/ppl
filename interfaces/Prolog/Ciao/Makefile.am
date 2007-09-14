@@ -171,6 +171,9 @@ clpq2_test: ciao_clpq2$(EXEEXT) .libs/libppl_ciao.so ../tests/script_clpq2 $(EXP
 			<$(srcdir)/../tests/script_clpq2 >obtained_clpq2
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
 
+endif ENABLE_SHARED
+endif BUILD_CIAO_PROLOG_INTERFACE
+
 DISTCLEANFILES = \
 ppl_ciao.pl
 
@@ -179,6 +182,3 @@ MOSTLYCLEANFILES = \
 ciao_clpq ciao_clpq2 ciao_pl_check \
 obtained_clpq obtained_clpq2 obtained_pchk \
 $(CLPQ_TESTS)
-
-endif ENABLE_SHARED
-endif BUILD_CIAO_PROLOG_INTERFACE

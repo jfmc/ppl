@@ -144,6 +144,9 @@ clpq2_test: yap_clpq2.pl ppl_yap.pl ../tests/clpq2.pl ../tests/script_clpq2 $(EX
 			<script_clpq2 >obtained_clpq2
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
 
+endif ENABLE_SHARED
+endif BUILD_YAP_PROLOG_INTERFACE
+
 DISTCLEANFILES = \
 ppl_yap.cc
 
@@ -151,6 +154,3 @@ MOSTLYCLEANFILES = \
 script_clpq script_clpq2 script_pchk \
 obtained_clpq obtained_clpq2 obtained_pchk \
 $(CLPQ_TESTS)
-
-endif ENABLE_SHARED
-endif BUILD_YAP_PROLOG_INTERFACE

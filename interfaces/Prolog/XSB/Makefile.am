@@ -183,6 +183,8 @@ pl_check_test: ppl_xsb.la ppl_xsb.xwam xsb_pl_check.P ../tests/pl_check.pl
 	fi
 	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
 
+endif BUILD_XSB_PROLOG_INTERFACE
+
 DISTCLEANFILES = \
 ppl_xsb.H \
 ppl_xsb.cc
@@ -191,5 +193,3 @@ MOSTLYCLEANFILES = \
 ppl_xsb.xwam ppl_xsb.so \
 xsb_clpq.xwam xsb_clpq2.xwam xsb_pl_check.xwam \
 $(CLPQ_TESTS) obtained_clpq obtained_clpq2 obtained_pchk
-
-endif BUILD_XSB_PROLOG_INTERFACE

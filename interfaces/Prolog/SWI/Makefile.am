@@ -166,6 +166,8 @@ clpq2_test: pl_clpq2 ../tests/script_clpq2 $(EXPECTED_CLPQ2)
 		./pl_clpq2 <$(srcdir)/../tests/script_clpq2 >obtained_clpq2
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
 
+endif BUILD_SWI_PROLOG_INTERFACE
+
 DISTCLEANFILES = \
 ppl_swiprolog.cc
 
@@ -174,5 +176,3 @@ pl_clpq pl_clpq2 \
 obtained_clpq obtained_clpq2 obtained_pchk \
 $(CLPQ_TESTS) \
 script_pchk
-
-endif BUILD_SWI_PROLOG_INTERFACE

@@ -171,6 +171,8 @@ clpq2_test: ppl_sicstus ppl_sicstus.pl sp_clpq.pl ../tests/clpq2.pl ../tests/scr
 	      <$(srcdir)/../tests/script_clpq2 >obtained_clpq2
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
 
+endif BUILD_SICSTUS_PROLOG_INTERFACE
+
 DISTCLEANFILES = \
 ppl_sicstus_sd.cc
 
@@ -178,5 +180,3 @@ MOSTLYCLEANFILES = \
 ppl_sicstus.s.o ppl_sicstus.so \
 $(CLPQ_TESTS) \
 obtained_clpq obtained_clpq2 obtained_pchk
-
-endif BUILD_SICSTUS_PROLOG_INTERFACE
