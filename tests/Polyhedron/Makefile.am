@@ -103,7 +103,7 @@ polydifference1 polydifference2 \
 polyhull1 polyhull2 \
 pointsetpowerset1 \
 powerset1 \
-randphull1 randphull2 \
+randphull1 \
 relations1 relations2 relations3 \
 removespacedims1 removespacedims2 \
 smm1 \
