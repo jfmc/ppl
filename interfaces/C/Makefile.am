@@ -99,8 +99,8 @@ libppl_c_la_LDFLAGS = \
 
 nodist_include_HEADERS = ppl_c.h ppl_c_version.h
 
+endif BUILD_C_INTERFACE
+
 DISTCLEANFILES = \
 ppl_c.h \
 ppl_c.cc
-
-endif BUILD_C_INTERFACE
