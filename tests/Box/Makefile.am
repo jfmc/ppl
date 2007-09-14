@@ -90,7 +90,7 @@ maxspacedim1 \
 minconstraints1 \
 pointsetpowerset1 \
 relations1 relations2 \
-refine3 \
+refine1 refine3 \
 removespacedims1 \
 timeelapse1 \
 universe1 \
@@ -267,13 +267,9 @@ DERIVED_CXXFLAGS = -DDERIVED_TEST $(AM_CXXFLAGS)
 nnc_frompolyhedron1_SOURCES = frompolyhedron1.cc
 nnc_frompolyhedron1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
-BUGS = bug1 bug2
+BUGS =
 
-bug1_SOURCES = bug1.cc
-bug2_SOURCES = bug2.cc
-
-check_PROGRAMS = $(ALL_TESTS)
-
+check_PROGRAMS = $(ALL_TESTS) $(BUGS)
 
 EXTRA_DIST = $(refine2_SRCS)
 
