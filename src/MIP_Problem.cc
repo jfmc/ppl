@@ -1101,6 +1101,8 @@ PPL::MIP_Problem::compute_simplex() {
   TEMP_INTEGER(cost_sgn_coeff);
   TEMP_INTEGER(current_num);
   TEMP_INTEGER(current_den);
+  TEMP_INTEGER(challenger);
+  TEMP_INTEGER(current);
   cost_sgn_coeff = working_cost[working_cost.size()-1];
   current_num = working_cost[0];
   if (cost_sgn_coeff < 0)
@@ -1138,8 +1140,6 @@ PPL::MIP_Problem::compute_simplex() {
     // the `textbook' and the float `steepest-edge' technique.
     cost_sgn_coeff = working_cost[working_cost.size()-1];
 
-    TEMP_INTEGER(challenger);
-    TEMP_INTEGER(current);
     challenger = working_cost[0];
     if (cost_sgn_coeff < 0)
       neg_assign(challenger);
@@ -1283,6 +1283,11 @@ PPL::MIP_Problem::compute_generator() const {
   std::vector<Coefficient> den(external_space_dim);
   dimension_type row = 0;
 
+  TEMP_INTEGER(lcm);
+  // Speculatively allocate temporaries out of loop.
+  TEMP_INTEGER(split_num);
+  TEMP_INTEGER(split_den);
+
   // We start to compute num[] and den[].
   for (dimension_type i = external_space_dim; i-- > 0; ) {
     Coefficient& num_i = num[i];
@@ -1313,8 +1318,6 @@ PPL::MIP_Problem::compute_generator() const {
       // Like before, we he have to check if the variable is in base.
       if (is_in_base(split_var, row)) {
 	const Row& t_row = tableau[row];
-	TEMP_INTEGER(split_num);
-	TEMP_INTEGER(split_den);
 	if (t_row[split_var] > 0) {
 	  split_num = -t_row[0];
 	  split_den = t_row[split_var];
@@ -1325,7 +1328,6 @@ PPL::MIP_Problem::compute_generator() const {
 	}
 	// We compute the lcm to compute subsequently the difference
 	// between the 2 variables.
-	TEMP_INTEGER(lcm);
 	lcm_assign(lcm, den_i, split_den);
 	exact_div_assign(den_i, lcm, den_i);
 	exact_div_assign(split_den, lcm, split_den);
@@ -1342,7 +1344,6 @@ PPL::MIP_Problem::compute_generator() const {
   }
 
   // Compute the lcm of all denominators.
-  TEMP_INTEGER(lcm);
   lcm = den[0];
   for (dimension_type i = 1; i < external_space_dim; ++i)
     lcm_assign(lcm, lcm, den[i]);
@@ -1661,8 +1662,8 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp, Generator& p,
   const Coefficient& p_divisor = p.divisor();
 
 #if PPL_SIMPLEX_USE_MIP_HEURISTIC
-  found_satisfiable_generator = choose_branching_variable(lp, i_vars,
-							  nonint_dim);
+  found_satisfiable_generator
+    = choose_branching_variable(lp, i_vars, nonint_dim);
 #else
   TEMP_INTEGER(gcd);
   for (Variables_Set::const_iterator v_begin = i_vars.begin(),
@@ -1711,41 +1712,35 @@ PPL::MIP_Problem::OK() const {
     if (!input_cs[i].OK())
       return false;
 
-   if (!tableau.OK())
-     return false;
+  if (!tableau.OK() || !input_obj_function.OK() || !last_generator.OK())
+    return false;
 
-   if (!input_obj_function.OK())
-     return false;
-
-   if (!last_generator.OK())
-     return false;
-
-   // Constraint system should contain no strict inequalities.
-   for (dimension_type i = input_cs_num_rows; i-- > 0; )
-     if (input_cs[i].is_strict_inequality()) {
+  // Constraint system should contain no strict inequalities.
+  for (dimension_type i = input_cs_num_rows; i-- > 0; )
+    if (input_cs[i].is_strict_inequality()) {
 #ifndef NDEBUG
-    cerr << "The feasible region of the MIP_Problem is defined by "
-	 << "a constraint system containing strict inequalities."
+      cerr << "The feasible region of the MIP_Problem is defined by "
+	   << "a constraint system containing strict inequalities."
+	   << endl;
+      ascii_dump(cerr);
+#endif
+      return false;
+    }
+
+  // Constraint system and objective function should be dimension compatible.
+  if (external_space_dim < input_obj_function.space_dimension()) {
+#ifndef NDEBUG
+    cerr << "The MIP_Problem and the objective function have "
+	 << "incompatible space dimensions ("
+	 << external_space_dim << " < "
+	 << input_obj_function.space_dimension() << ")."
 	 << endl;
     ascii_dump(cerr);
 #endif
     return false;
   }
 
-   // Constraint system and objective function should be dimension compatible.
-   if (external_space_dim < input_obj_function.space_dimension()) {
-#ifndef NDEBUG
-     cerr << "The MIP_Problem and the objective function have "
-	  << "incompatible space dimensions ("
-	  << external_space_dim << " < "
-	  << input_obj_function.space_dimension() << ")."
-	  << endl;
-     ascii_dump(cerr);
-#endif
-     return false;
-   }
-
-   if (status != UNSATISFIABLE && initialized) {
+  if (status != UNSATISFIABLE && initialized) {
     // Here `last_generator' has to be meaningful.
     // Check for dimension compatibility and actual feasibility.
     if (external_space_dim != last_generator.space_dimension()) {
