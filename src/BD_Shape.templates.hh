@@ -4546,6 +4546,7 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
     if (c.marked_empty())
       s << "false";
     else {
+      DIRTY_TEMP(N, v);
       bool first = true;
       for (dimension_type i = 0; i <= n; ++i)
 	for (dimension_type j = i + 1; j <= n; ++j) {
@@ -4588,7 +4589,6 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
 	      if (i == 0) {
 		// We have got a constraint with an only Variable.
 		s << Variable(j - 1);
-		DIRTY_TEMP(N, v);
 		neg_assign_r(v, c_j_i, ROUND_DOWN);
 		s << " >= " << v;
 	      }
@@ -4604,7 +4604,6 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
 		  s << Variable(j - 1);
 		  s << " - ";
 		  s << Variable(i - 1);
-		  DIRTY_TEMP(N, v);
 		  neg_assign_r(v, c_j_i, ROUND_DOWN);
 		  s << " >= " << v;
 		}
@@ -4632,7 +4631,6 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
 		  s << Variable(i - 1);
 		  s << " - ";
 		  s << Variable(j - 1);
-		  DIRTY_TEMP(N, v);
 		  neg_assign_r(v, c_i_j, ROUND_DOWN);
 		  s << " >= " << v;
 		}
