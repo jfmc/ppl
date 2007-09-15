@@ -56,19 +56,19 @@ Polyhedron::Polyhedron(Topology topol, const Box& box)
   // this constraint will be removed at the end.
   con_sys.insert(Variable(space_dim - 1) >= 0);
 
+  TEMP_INTEGER(l_n);
+  TEMP_INTEGER(l_d);
+  TEMP_INTEGER(u_n);
+  TEMP_INTEGER(u_d);
   for (dimension_type k = space_dim; k-- > 0; ) {
     // See if we have a valid lower bound.
     bool l_closed = false;
-    TEMP_INTEGER(l_n);
-    TEMP_INTEGER(l_d);
     bool l_bounded = box.get_lower_bound(k, l_closed, l_n, l_d);
     if (l_bounded && topol == NECESSARILY_CLOSED && !l_closed)
       throw_invalid_argument("C_Polyhedron(const Box& box):",
 			     " box has an open lower bound");
     // See if we have a valid upper bound.
     bool u_closed = false;
-    TEMP_INTEGER(u_n);
-    TEMP_INTEGER(u_d);
     bool u_bounded = box.get_upper_bound(k, u_closed, u_n, u_d);
     if (u_bounded && topol == NECESSARILY_CLOSED && !u_closed)
       throw_invalid_argument("C_Polyhedron(const Box& box):",
