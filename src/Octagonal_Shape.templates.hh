@@ -5856,10 +5856,10 @@ Octagonal_Shape<T>::ascii_load(std::istream& s) {
   if (!(s >> space_dim))
     return false;
 
-  if(!status.ascii_load(s))
+  if (!status.ascii_load(s))
     return false;
 
-  if(!matrix.ascii_load(s))
+  if (!matrix.ascii_load(s))
     return false;
 
   assert(OK());

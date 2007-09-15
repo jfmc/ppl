@@ -68,7 +68,7 @@ Ask_Tell_Pair<D>::definitely_entails(const Ask_Tell_Pair& y) const {
   const D& x_tell = x.tell();
   const D& y_ask = y.ask();
   const D& y_tell = y.tell();
-   if(!y_ask.definitely_entails(x_ask))
+  if (!y_ask.definitely_entails(x_ask))
     return false;
   else if (x_tell.definitely_entails(y_tell))
     return true;
