@@ -348,10 +348,11 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
 
   // Select the cell to be modified for the "<=" part of the constraint,
   // and set `coeff' to the absolute value of itself.
-  N& x = (coeff < 0) ? dbm[i][j] : dbm[j][i];
-  N& y = (coeff < 0) ? dbm[j][i] : dbm[i][j];
-  if (coeff < 0)
-    coeff = -coeff;
+  const bool negative = (coeff < 0);
+  N& x = negative ? dbm[i][j] : dbm[j][i];
+  N& y = negative ? dbm[j][i] : dbm[i][j];
+  if (negative)
+    neg_assign(coeff, coeff);
 
   bool changed = false;
   // Compute the bound for `x', rounding towards plus infinity.
@@ -364,7 +365,9 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
 
   if (c.is_equality()) {
     // Also compute the bound for `y', rounding towards plus infinity.
-    div_round_up(d, -c.inhomogeneous_term(), coeff);
+    TEMP_INTEGER(minus_c_term);
+    neg_assign(minus_c_term, c.inhomogeneous_term());
+    div_round_up(d, minus_c_term, coeff);
     if (y > d) {
       y = d;
       changed = true;
@@ -860,29 +863,22 @@ BD_Shape<T>::bounds(const Linear_Expression& expr,
   dimension_type i = 0;
   dimension_type j = 0;
   TEMP_INTEGER(coeff);
-  // Checks if `expr' is a difference bounded.
-  if (!extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff)) {
-    Optimization_Mode mode_bounds
-      = from_above ? MAXIMIZATION : MINIMIZATION;
-    MIP_Problem mip(space_dim, constraints(), expr, mode_bounds);
-    if (mip.solve() == OPTIMIZED_MIP_PROBLEM)
-      return true;
-
-    // Here`expr' is unbounded in `*this'.
-    return false;
-  }
-  else {
-    // Here the constraint is a bounded difference.
+  // Check if `c' is a BD constraint.
+  if (extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff)) {
     if (num_vars == 0)
       // Dealing with a trivial constraint.
       return true;
-
     // Select the cell to be checked.
     const N& x = (coeff < 0) ? dbm[i][j] : dbm[j][i];
-    if (!is_plus_infinity(x))
-      return true;
-    else
-      return false;
+    return !is_plus_infinity(x);
+  }
+  else {
+    // Not a DB constraint: use the MIP solver.
+    Optimization_Mode mode_bounds
+      = from_above ? MAXIMIZATION : MINIMIZATION;
+    MIP_Problem mip(space_dim, constraints(), expr, mode_bounds);
+    // Problem is known to be feasible.
+    return (mip.solve() == OPTIMIZED_MIP_PROBLEM);
   }
 }
 
@@ -924,22 +920,22 @@ BD_Shape<T>::max_min(const Linear_Expression& expr,
   dimension_type i = 0;
   dimension_type j = 0;
   TEMP_INTEGER(coeff);
-  // Checks if `expr' is a difference bounded.
+  // Check if `c' is a BD constraint.
   if (!extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff)) {
     Optimization_Mode mode_max_min = maximize ? MAXIMIZATION
       : MINIMIZATION;
     MIP_Problem mip(space_dim, constraints(), expr, mode_max_min);
-    if(mip.solve() == OPTIMIZED_MIP_PROBLEM) {
+    if (mip.solve() == OPTIMIZED_MIP_PROBLEM) {
       mip.optimal_value(ext_n, ext_d);
       included = true;
       return true;
     }
-
-    // Here`expr' is unbounded in `*this'.
-    return false;
+    else
+      // Here`expr' is unbounded in `*this'.
+      return false;
   }
   else {
-    // Here the `expr' is a bounded difference.
+    // Here `expr' is a bounded difference.
     if (num_vars == 0) {
       // Dealing with a trivial expression.
       ext_n = expr.inhomogeneous_term();
@@ -965,7 +961,7 @@ BD_Shape<T>::max_min(const Linear_Expression& expr,
       const int sign_i = sgn(coeff_i);
       if (sign_i > 0)
 	assign_r(coeff_expr, coeff_i, ROUND_UP);
-      else{
+      else {
 	TEMP_INTEGER(minus_coeff_i);
 	neg_assign(minus_coeff_i, coeff_i);
 	assign_r(coeff_expr, minus_coeff_i, ROUND_UP);
@@ -974,12 +970,12 @@ BD_Shape<T>::max_min(const Linear_Expression& expr,
       add_mul_assign_r(d, coeff_expr, x, ROUND_UP);
       numer_denom(d, ext_n, ext_d);
       if (!maximize)
-        ext_n = -ext_n;
+        neg_assign(ext_n, ext_n);
       included = true;
       return true;
     }
 
-    // The `expr' is unbounded.
+    // `expr' is unbounded.
     return false;
   }
 }
@@ -1019,13 +1015,13 @@ BD_Shape<T>::max_min(const Linear_Expression& expr,
   Optimization_Mode mode_max_min
     = maximize ? MAXIMIZATION : MINIMIZATION;
   MIP_Problem mip(space_dim, constraints(), expr, mode_max_min);
-  if(mip.solve() == OPTIMIZED_MIP_PROBLEM) {
+  if (mip.solve() == OPTIMIZED_MIP_PROBLEM) {
     g = mip.optimizing_point();
     mip.evaluate_objective_function(g, ext_n, ext_d);
     included = true;
     return true;
   }
-  // Here`expr' is unbounded in `*this'.
+  // Here `expr' is unbounded in `*this'.
   return false;
 }
 
@@ -1095,21 +1091,17 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
 
   // Select the cell to be checked for the "<=" part of the constraint,
   // and set `coeff' to the absolute value of itself.
-  const N& x = (coeff < 0) ? dbm[i][j] : dbm[j][i];
-  const N& y = (coeff < 0) ? dbm[j][i] : dbm[i][j];
-  if (coeff < 0)
-    coeff = -coeff;
-  TEMP_INTEGER(c_term);
-  c_term = c.inhomogeneous_term();
-  TEMP_INTEGER(minus_c_term);
-  minus_c_term = -c.inhomogeneous_term();
+  const bool negative = (coeff < 0);
+  const N& x = negative ? dbm[i][j] : dbm[j][i];
+  const N& y = negative ? dbm[j][i] : dbm[i][j];
+  if (negative)
+    neg_assign(coeff, coeff);
   // Deduce the relation/s of the constraint `c' of the form
-  // `coeff*v - coeff*u </<=/== c_term'
+  // `coeff*v - coeff*u </<=/== c.inhomogeneous_term()'
   // with the respectively constraints in `*this'
   // `-y <= v - u <= x'.
-  // Let be `d == c_term/coeff' and `d1 == -c_term/coeff'.
-  TEMP_INTEGER(numer);
-  TEMP_INTEGER(denom);
+  // Let `d == c.inhomogeneous_term()/coeff'
+  // and `d1 == -c.inhomogeneous_term()/coeff'.
   // The following variables of mpq_class type are used to be precise
   // when the bds is defined by integer constraints.
   DIRTY_TEMP0(mpq_class, q_x);
@@ -1119,9 +1111,9 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
   DIRTY_TEMP0(mpq_class, c_den);
   DIRTY_TEMP0(mpq_class, q_den);
   assign_r(c_den, coeff, ROUND_NOT_NEEDED);
-  assign_r(d, c_term, ROUND_NOT_NEEDED);
+  assign_r(d, c.inhomogeneous_term(), ROUND_NOT_NEEDED);
+  neg_assign_r(d1, d, ROUND_NOT_NEEDED);
   div_assign_r(d, d, c_den, ROUND_NOT_NEEDED);
-  assign_r(d1, minus_c_term, ROUND_NOT_NEEDED);
   div_assign_r(d1, d1, c_den, ROUND_NOT_NEEDED);
 
   if (is_plus_infinity(x)) {
@@ -1131,6 +1123,8 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
       // In this case `*this' is disjoint from `c' if
       // `-y > d' (`-y >= d' if c is a strict equality), i.e. if
       // `y < d1' (`y <= d1' if c is a strict equality).
+      TEMP_INTEGER(numer);
+      TEMP_INTEGER(denom);
       numer_denom(y, numer, denom);
       assign_r(q_den, denom, ROUND_NOT_NEEDED);
       assign_r(q_y, numer, ROUND_NOT_NEEDED);
@@ -1146,6 +1140,8 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
   }
 
   // Here `x' is not plus-infinity.
+  TEMP_INTEGER(numer);
+  TEMP_INTEGER(denom);
   numer_denom(x, numer, denom);
   assign_r(q_den, denom, ROUND_NOT_NEEDED);
   assign_r(q_x, numer, ROUND_NOT_NEEDED);
@@ -1219,6 +1215,10 @@ BD_Shape<T>::relation_with(const Generator& g) const {
   // studying the sign of the scalar product between the generator and
   // all the constraints in the BDS.
 
+  // Allocation of temporaries done once and for all.
+  TEMP_INTEGER(num);
+  TEMP_INTEGER(den);
+  TEMP_INTEGER(product);
   // We find in `*this' all the constraints.
   for (dimension_type i = 0; i <= space_dim; ++i) {
     const Coefficient& g_coeff_y = (i > g_space_dim || i == 0)
@@ -1232,10 +1232,7 @@ BD_Shape<T>::relation_with(const Generator& g) const {
       if (is_additive_inverse(dbm_ji, dbm_ij)) {
 	// We have one equality constraint: den*x - den*y = num.
 	// Compute the scalar product.
-	TEMP_INTEGER(den);
-	TEMP_INTEGER(num);
 	numer_denom(dbm_ij, num, den);
-	TEMP_INTEGER(product);
 	product = 0;
 	add_mul_assign(product, den, g_coeff_y);
 	add_mul_assign(product, -den, g_coeff_x);
@@ -1249,10 +1246,7 @@ BD_Shape<T>::relation_with(const Generator& g) const {
 	if (!is_plus_infinity(dbm_ij)) {
 	  // We have the binary inequality constraint: den*x - den*y <= num.
 	  // Compute the scalar product.
-	  TEMP_INTEGER(den);
-	  TEMP_INTEGER(num);
 	  numer_denom(dbm_ij, num, den);
-	  TEMP_INTEGER(product);
 	  product = 0;
 	  add_mul_assign(product, den, g_coeff_y);
 	  add_mul_assign(product, -den, g_coeff_x);
@@ -1272,10 +1266,7 @@ BD_Shape<T>::relation_with(const Generator& g) const {
 	if (!is_plus_infinity(dbm_ji)) {
 	  // We have the binary inequality constraint: den*y - den*x <= b.
 	  // Compute the scalar product.
-	  TEMP_INTEGER(den);
-	  TEMP_INTEGER(num);
 	  numer_denom(dbm_ji, num, den);
-	  TEMP_INTEGER(product);
 	  product = 0;
 	  add_mul_assign(product, den, g_coeff_x);
 	  add_mul_assign(product, -den, g_coeff_y);
@@ -1925,26 +1916,28 @@ BD_Shape<T>::get_limiting_shape(const Constraint_System& cs,
 
   shortest_path_closure_assign();
   bool changed = false;
+  TEMP_INTEGER(coeff);
+  TEMP_INTEGER(minus_c_term);
+  DIRTY_TEMP(N, d);
   for (Constraint_System::const_iterator cs_i = cs.begin(),
 	 cs_end = cs.end(); cs_i != cs_end; ++cs_i) {
     const Constraint& c = *cs_i;
     dimension_type num_vars = 0;
     dimension_type i = 0;
     dimension_type j = 0;
-    TEMP_INTEGER(coeff);
     // Constraints that are not bounded differences are ignored.
     if (extract_bounded_difference(c, cs_space_dim, num_vars, i, j, coeff)) {
       // Select the cell to be modified for the "<=" part of the constraint,
       // and set `coeff' to the absolute value of itself.
-      const N& x = (coeff < 0) ? dbm[i][j] : dbm[j][i];
-      const N& y = (coeff < 0) ? dbm[j][i] : dbm[i][j];
+      const bool negative = (coeff < 0);
+      const N& x = negative ? dbm[i][j] : dbm[j][i];
+      const N& y = negative ? dbm[j][i] : dbm[i][j];
       DB_Matrix<N>& ls_dbm = limiting_shape.dbm;
-      N& ls_x = (coeff < 0) ? ls_dbm[i][j] : ls_dbm[j][i];
-      N& ls_y = (coeff < 0) ? ls_dbm[j][i] : ls_dbm[i][j];
-      if (coeff < 0)
-	coeff = -coeff;
+      N& ls_x = negative ? ls_dbm[i][j] : ls_dbm[j][i];
+      N& ls_y = negative ? ls_dbm[j][i] : ls_dbm[i][j];
+      if (negative)
+	neg_assign(coeff, coeff);
       // Compute the bound for `x', rounding towards plus infinity.
-      DIRTY_TEMP(N, d);
       div_round_up(d, c.inhomogeneous_term(), coeff);
       if (x <= d)
 	if (c.is_inequality())
@@ -1954,7 +1947,8 @@ BD_Shape<T>::get_limiting_shape(const Constraint_System& cs,
 	  }
 	else {
 	  // Compute the bound for `y', rounding towards plus infinity.
-	  div_round_up(d, -c.inhomogeneous_term(), coeff);
+	  neg_assign(minus_c_term, c.inhomogeneous_term());
+	  div_round_up(d, minus_c_term, coeff);
 	  if (y <= d)
 	    if (ls_y > d) {
 	      ls_y = d;
@@ -2215,6 +2209,11 @@ BD_Shape<T>
   DIRTY_TEMP0(mpq_class, mpq_sc_den);
   assign_r(mpq_sc_den, sc_den, ROUND_NOT_NEEDED);
   const DB_Row<N>& dbm_0 = dbm[0];
+  // Speculative allocation of temporaries to be used in the following loop.
+  DIRTY_TEMP0(mpq_class, minus_lb_u);
+  DIRTY_TEMP0(mpq_class, q);
+  DIRTY_TEMP0(mpq_class, ub_u);
+  DIRTY_TEMP(N, up_approx);
   // No need to consider indices greater than `last_v'.
   for (dimension_type u = last_v; u > 0; --u)
     if (u != v) {
@@ -2233,18 +2232,14 @@ BD_Shape<T>
 	    // the upper bound for `v - u' is computed as
 	    // `ub_v - (q * ub_u + (1-q) * lb_u)', i.e.,
 	    // `ub_v + (-lb_u) - q * (ub_u + (-lb_u))'.
-	    DIRTY_TEMP0(mpq_class, minus_lb_u);
 	    assign_r(minus_lb_u, dbm_u0, ROUND_NOT_NEEDED);
-	    DIRTY_TEMP0(mpq_class, q);
 	    assign_r(q, expr_u, ROUND_NOT_NEEDED);
 	    div_assign_r(q, q, mpq_sc_den, ROUND_NOT_NEEDED);
-	    DIRTY_TEMP0(mpq_class, ub_u);
 	    assign_r(ub_u, dbm_0[u], ROUND_NOT_NEEDED);
 	    // Compute `ub_u - lb_u'.
 	    add_assign_r(ub_u, ub_u, minus_lb_u, ROUND_NOT_NEEDED);
 	    // Compute `(-lb_u) - q * (ub_u - lb_u)'.
 	    sub_mul_assign_r(minus_lb_u, q, ub_u, ROUND_NOT_NEEDED);
-	    DIRTY_TEMP(N, up_approx);
 	    assign_r(up_approx, minus_lb_u, ROUND_UP);
 	    // Deducing `v - u <= ub_v - (q * ub_u + (1-q) * lb_u)'.
 	    add_assign_r(dbm_u[v], ub_v, up_approx, ROUND_UP);
@@ -2275,6 +2270,11 @@ BD_Shape<T>
   assign_r(mpq_sc_den, sc_den, ROUND_NOT_NEEDED);
   DB_Row<N>& dbm_0 = dbm[0];
   DB_Row<N>& dbm_v = dbm[v];
+  // Speculative allocation of temporaries to be used in the following loop.
+  DIRTY_TEMP0(mpq_class, ub_u);
+  DIRTY_TEMP0(mpq_class, q);
+  DIRTY_TEMP0(mpq_class, minus_lb_u);
+  DIRTY_TEMP(N, up_approx);
   // No need to consider indices greater than `last_v'.
   for (dimension_type u = last_v; u > 0; --u)
     if (u != v) {
@@ -2293,18 +2293,14 @@ BD_Shape<T>
 	    // the upper bound for `u - v' is computed as
 	    // `(q * lb_u + (1-q) * ub_u) - lb_v', i.e.,
 	    // `ub_u - q * (ub_u + (-lb_u)) + minus_lb_v'.
-	    DIRTY_TEMP0(mpq_class, ub_u);
 	    assign_r(ub_u, dbm_0u, ROUND_NOT_NEEDED);
-	    DIRTY_TEMP0(mpq_class, q);
 	    assign_r(q, expr_u, ROUND_NOT_NEEDED);
 	    div_assign_r(q, q, mpq_sc_den, ROUND_NOT_NEEDED);
-	    DIRTY_TEMP0(mpq_class, minus_lb_u);
 	    assign_r(minus_lb_u, dbm[u][0], ROUND_NOT_NEEDED);
 	    // Compute `ub_u - lb_u'.
 	    add_assign_r(minus_lb_u, minus_lb_u, ub_u, ROUND_NOT_NEEDED);
 	    // Compute `ub_u - q * (ub_u - lb_u)'.
 	    sub_mul_assign_r(ub_u, q, minus_lb_u, ROUND_NOT_NEEDED);
-	    DIRTY_TEMP(N, up_approx);
 	    assign_r(up_approx, ub_u, ROUND_UP);
 	    // Deducing `u - v <= (q*lb_u + (1-q)*ub_u) - lb_v'.
 	    add_assign_r(dbm_v[u], up_approx, minus_lb_v, ROUND_UP);
@@ -2415,7 +2411,7 @@ BD_Shape<T>::refine(const Variable var,
       add_dbm_constraint(w, v, d);
       // Add the new constraint `v - w >= b/denominator',
       // i.e., `w - v <= -b/denominator'.
-      div_round_up(d, -b, denominator);
+      div_round_up(d, b, minus_den);
       add_dbm_constraint(v, w, d);
       break;
     case LESS_OR_EQUAL:
@@ -2426,7 +2422,7 @@ BD_Shape<T>::refine(const Variable var,
     case GREATER_OR_EQUAL:
       // Add the new constraint `v - w >= b/denominator',
       // i.e., `w - v <= -b/denominator'.
-      div_round_up(d, -b, denominator);
+      div_round_up(d, b, minus_den);
       add_dbm_constraint(v, w, d);
       break;
     default:
@@ -2462,6 +2458,11 @@ BD_Shape<T>::refine(const Variable var,
   // Number of unbounded variables found.
   dimension_type pinf_count = 0;
 
+  // Speculative allocation of temporaries that are used in most
+  // of the computational traces starting from this point (also loops).
+  TEMP_INTEGER(minus_sc_i);
+  DIRTY_TEMP(N, coeff_i);
+
   switch (relsym) {
   case EQUAL:
     {
@@ -2488,7 +2489,6 @@ BD_Shape<T>::refine(const Variable var,
 	if (sign_i == 0)
 	  continue;
 	if (sign_i > 0) {
-	  DIRTY_TEMP(N, coeff_i);
 	  assign_r(coeff_i, sc_i, ROUND_UP);
 	  // Approximating `sc_expr'.
 	  if (pinf_count <= 1) {
@@ -2512,16 +2512,13 @@ BD_Shape<T>::refine(const Variable var,
 	  }
 	}
 	else if (sign_i < 0) {
-	  TEMP_INTEGER(minus_sc_i);
 	  neg_assign(minus_sc_i, sc_i);
-	  DIRTY_TEMP(N, minus_coeff_i);
-	  assign_r(minus_coeff_i, minus_sc_i, ROUND_UP);
+	  assign_r(coeff_i, minus_sc_i, ROUND_UP);
 	  // Approximating `sc_expr'.
 	  if (pinf_count <= 1) {
 	    const N& approx_minus_i = dbm[i][0];
 	    if (!is_plus_infinity(approx_minus_i))
-	      add_mul_assign_r(sum,
-			       minus_coeff_i, approx_minus_i, ROUND_UP);
+	      add_mul_assign_r(sum, coeff_i, approx_minus_i, ROUND_UP);
 	    else {
 	      ++pinf_count;
 	      pinf_index = i;
@@ -2531,7 +2528,7 @@ BD_Shape<T>::refine(const Variable var,
 	  if (neg_pinf_count <= 1) {
 	    const N& approx_i = dbm_0[i];
 	    if (!is_plus_infinity(approx_i))
-	      add_mul_assign_r(neg_sum, minus_coeff_i, approx_i, ROUND_UP);
+	      add_mul_assign_r(neg_sum, coeff_i, approx_i, ROUND_UP);
 	    else {
 	      ++neg_pinf_count;
 	      neg_pinf_index = i;
@@ -2623,11 +2620,9 @@ BD_Shape<T>::refine(const Variable var,
 	pinf_index = i;
 	continue;
       }
-      DIRTY_TEMP(N, coeff_i);
       if (sign_i > 0)
 	assign_r(coeff_i, sc_i, ROUND_UP);
       else {
-	TEMP_INTEGER(minus_sc_i);
 	neg_assign(minus_sc_i, sc_i);
 	assign_r(coeff_i, minus_sc_i, ROUND_UP);
       }
@@ -2680,11 +2675,9 @@ BD_Shape<T>::refine(const Variable var,
 	pinf_index = i;
 	continue;
       }
-      DIRTY_TEMP(N, coeff_i);
       if (sign_i > 0)
 	assign_r(coeff_i, sc_i, ROUND_UP);
       else {
-	TEMP_INTEGER(minus_sc_i);
 	neg_assign(minus_sc_i, sc_i);
 	assign_r(coeff_i, minus_sc_i, ROUND_UP);
       }
@@ -2923,14 +2916,16 @@ BD_Shape<T>::affine_image(const Variable var,
   assign_r(neg_sum, minus_sc_b, ROUND_UP);
 
   // Approximate the homogeneous part of `sc_expr'.
+  const DB_Row<N>& dbm_0 = dbm[0];
+  // Speculative allocation of temporaries to be used in the following loop.
+  DIRTY_TEMP(N, coeff_i);
+  TEMP_INTEGER(minus_sc_i);
   // Note: indices above `w' can be disregarded, as they all have
   // a zero coefficient in `sc_expr'.
-  const DB_Row<N>& dbm_0 = dbm[0];
   for (dimension_type i = w; i > 0; --i) {
     const Coefficient& sc_i = sc_expr.coefficient(Variable(i-1));
     const int sign_i = sgn(sc_i);
     if (sign_i > 0) {
-      DIRTY_TEMP(N, coeff_i);
       assign_r(coeff_i, sc_i, ROUND_UP);
       // Approximating `sc_expr'.
       if (pos_pinf_count <= 1) {
@@ -2954,16 +2949,13 @@ BD_Shape<T>::affine_image(const Variable var,
       }
     }
     else if (sign_i < 0) {
-      TEMP_INTEGER(minus_sc_i);
       neg_assign(minus_sc_i, sc_i);
-      DIRTY_TEMP(N, minus_coeff_i);
-      assign_r(minus_coeff_i, minus_sc_i, ROUND_UP);
+      assign_r(coeff_i, minus_sc_i, ROUND_UP);
       // Approximating `sc_expr'.
       if (pos_pinf_count <= 1) {
 	const N& up_approx_minus_i = dbm[i][0];
 	if (!is_plus_infinity(up_approx_minus_i))
-	  add_mul_assign_r(pos_sum,
-			   minus_coeff_i, up_approx_minus_i, ROUND_UP);
+	  add_mul_assign_r(pos_sum, coeff_i, up_approx_minus_i, ROUND_UP);
 	else {
 	  ++pos_pinf_count;
 	  pos_pinf_index = i;
@@ -2973,7 +2965,7 @@ BD_Shape<T>::affine_image(const Variable var,
       if (neg_pinf_count <= 1) {
 	const N& up_approx_i = dbm_0[i];
 	if (!is_plus_infinity(up_approx_i))
-	  add_mul_assign_r(neg_sum, minus_coeff_i, up_approx_i, ROUND_UP);
+	  add_mul_assign_r(neg_sum, coeff_i, up_approx_i, ROUND_UP);
 	else {
 	  ++neg_pinf_count;
 	  neg_pinf_index = i;
@@ -3319,14 +3311,16 @@ BD_Shape<T>
   assign_r(pos_sum, sc_b, ROUND_UP);
 
   // Approximate the homogeneous part of `sc_expr'.
+  const DB_Row<N>& dbm_0 = dbm[0];
+  // Speculative allocation of temporaries to be used in the following loop.
+  DIRTY_TEMP(N, coeff_i);
+  TEMP_INTEGER(minus_sc_i);
   // Note: indices above `w' can be disregarded, as they all have
   // a zero coefficient in `sc_expr'.
-  const DB_Row<N>& dbm_0 = dbm[0];
   for (dimension_type i = w; i > 0; --i) {
     const Coefficient& sc_i = sc_expr.coefficient(Variable(i-1));
     const int sign_i = sgn(sc_i);
     if (sign_i > 0) {
-      DIRTY_TEMP(N, coeff_i);
       assign_r(coeff_i, sc_i, ROUND_UP);
       // Approximating `sc_expr'.
       if (pos_pinf_count <= 1) {
@@ -3340,16 +3334,13 @@ BD_Shape<T>
       }
     }
     else if (sign_i < 0) {
-      TEMP_INTEGER(minus_sc_i);
       neg_assign(minus_sc_i, sc_i);
-      DIRTY_TEMP(N, minus_coeff_i);
-      assign_r(minus_coeff_i, minus_sc_i, ROUND_UP);
+      assign_r(coeff_i, minus_sc_i, ROUND_UP);
       // Approximating `sc_expr'.
       if (pos_pinf_count <= 1) {
 	const N& up_approx_minus_i = dbm[i][0];
 	if (!is_plus_infinity(up_approx_minus_i))
-	  add_mul_assign_r(pos_sum,
-			   minus_coeff_i, up_approx_minus_i, ROUND_UP);
+	  add_mul_assign_r(pos_sum, coeff_i, up_approx_minus_i, ROUND_UP);
 	else {
 	  ++pos_pinf_count;
 	  pos_pinf_index = i;
@@ -3724,6 +3715,10 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
   // Number of unbounded variables found.
   dimension_type pinf_count = 0;
 
+  // Speculative allocation of temporaries to be used in the following loops.
+  DIRTY_TEMP(N, coeff_i);
+  TEMP_INTEGER(minus_sc_i);
+
   switch (relsym) {
   case LESS_OR_EQUAL:
     // Compute an upper approximation for `sc_expr' into `sum'.
@@ -3746,11 +3741,9 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	pinf_index = i;
 	continue;
       }
-      DIRTY_TEMP(N, coeff_i);
       if (sign_i > 0)
 	assign_r(coeff_i, sc_i, ROUND_UP);
       else {
-	TEMP_INTEGER(minus_sc_i);
 	neg_assign(minus_sc_i, sc_i);
 	assign_r(coeff_i, minus_sc_i, ROUND_UP);
       }
@@ -3814,11 +3807,9 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	pinf_index = i;
 	continue;
       }
-      DIRTY_TEMP(N, coeff_i);
       if (sign_i > 0)
 	assign_r(coeff_i, sc_i, ROUND_UP);
       else {
-	TEMP_INTEGER(minus_sc_i);
 	neg_assign(minus_sc_i, sc_i);
 	assign_r(coeff_i, minus_sc_i, ROUND_UP);
       }
