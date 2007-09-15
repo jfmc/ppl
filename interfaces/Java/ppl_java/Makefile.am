@@ -105,12 +105,11 @@ EXTRA_DIST = \
 $(interface_generator_files) \
 $(fixed_java_sources)
 
+if BUILD_JAVA_INTERFACE
+
 # This is to force Automake to generate the required Java infrastructure
 # and all the class files.
 noinst_JAVA = Variable.java
-
-
-if BUILD_JAVA_INTERFACE
 
 all:	java_classes.stamp java_cxx_headers.stamp
 
