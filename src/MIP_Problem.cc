@@ -315,8 +315,8 @@ PPL::MIP_Problem::solve() const{
 	break;
       case UNBOUNDED_MIP_PROBLEM:
 	x.status = UNBOUNDED;
-	// FIXME: How to handle this case? We can have an UNBOUNDED problem
-	//        without feasible points.
+	// A feasible point has been set in `solve_mip()', so that
+	// a call to `feasible_point' will be successful.
 	x.last_generator = g;
 	break;
       case OPTIMIZED_MIP_PROBLEM:
@@ -1547,6 +1547,8 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
     // All the coordinates of `point' are satisfiable.
     if (lp_status == UNBOUNDED_MIP_PROBLEM) {
       // This is a point that belongs to the MIP_Problem.
+      // In this way we are sure that we will return every time
+      // a feasible point if requested by the user.
       incumbent_solution_point = p;
       return lp_status;
     }
