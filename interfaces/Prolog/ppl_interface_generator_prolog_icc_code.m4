@@ -159,8 +159,8 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(Prolog_term_ref t_bb,
 
       bool finite;
       bool closed;
-      Coefficient n;
-      Coefficient d;
+      TEMP_INTEGER(n);
+      TEMP_INTEGER(d);
       Prolog_term_ref t_bound = Prolog_new_term_ref();
 
       // Get and raise the lower bound.
@@ -768,8 +768,8 @@ ppl_@CLASS@_@MAXMIN@(Prolog_term_ref t_ph, Prolog_term_ref t_le_expr,
     const @CPP_CLASS@* ph = term_to_handle<@CPP_CLASS@ >(t_ph, where);
     PPL_CHECK(ph);
     const Linear_Expression le = build_linear_expression(t_le_expr, where);
-    Coefficient n;
-    Coefficient d;
+    TEMP_INTEGER(n);
+    TEMP_INTEGER(d);
     bool maxmin;
     if (ph->@MAXMIN@(le, n, d, maxmin)) {
       Prolog_term_ref t = Prolog_new_term_ref();
@@ -797,8 +797,8 @@ ppl_@CLASS@_@MAXMIN@_with_point(Prolog_term_ref t_ph,
     const @CPP_CLASS@* ph = term_to_handle<@CPP_CLASS@ >(t_ph, where);
     PPL_CHECK(ph);
     const Linear_Expression le = build_linear_expression(t_le_expr, where);
-    Coefficient n;
-    Coefficient d;
+    TEMP_INTEGER(n);
+    TEMP_INTEGER(d);
     bool maxmin;
     @UGENERATOR@ g(@POINT@());
     if (ph->@MAXMIN@(le, n, d, maxmin, g)) {

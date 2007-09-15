@@ -129,7 +129,8 @@ build_ppl_congruence(JNIEnv* env, const jobject& j_congruence) {
 					      "modulus",
 					      "Lppl_java/Coefficient;");
   jobject j_modulus = env->GetObjectField(j_congruence, modulus_field_id);
-  Coefficient ppl_modulus = build_ppl_coeff(env, j_modulus);
+  TEMP_INTEGER(ppl_modulus);
+  ppl_modulus = build_ppl_coeff(env, j_modulus);
   jfieldID lhs_field_id
       = env->GetFieldID(congruence_class,
  			"lhs",
@@ -394,7 +395,8 @@ build_ppl_coeff(JNIEnv* env, const jobject& j_coeff) {
 					    "()Ljava/lang/String;");
   jstring bi_string = (jstring) env->CallObjectMethod(bi, bi_to_string);
   const char *nativeString = env->GetStringUTFChars(bi_string, 0);
-  Coefficient ppl_coeff = Coefficient(nativeString);
+  TEMP_INTEGER(ppl_coeff);
+  ppl_coeff = Coefficient(nativeString);
   env->ReleaseStringUTFChars(bi_string, nativeString);
   return ppl_coeff;
 }

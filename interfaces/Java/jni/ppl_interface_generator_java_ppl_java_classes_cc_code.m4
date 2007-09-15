@@ -340,8 +340,10 @@ JNIEXPORT jboolean JNICALL Java_ppl_1java_@1CLASS@_@1MAXMIN@__Lppl_1java_Linear_
   try {
   jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
   @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
-  Coefficient coeff_num = build_ppl_coeff(env, j_coeff_num);
-  Coefficient coeff_den = build_ppl_coeff(env, j_coeff_den);
+  TEMP_INTEGER(coeff_num);
+  TEMP_INTEGER(coeff_den);
+  coeff_num = build_ppl_coeff(env, j_coeff_num);
+  coeff_den = build_ppl_coeff(env, j_coeff_den);
   Linear_Expression le = build_linear_expression(env, j_le);
   bool b_value;
   if(this_@LCLASS@->@MAXMIN@(le, coeff_num, coeff_den, b_value)) {
@@ -370,8 +372,10 @@ JNIEXPORT jboolean JNICALL Java_ppl_1java_@1CLASS@_@1MAXMIN@__Lppl_1java_Linear_
   try {
  jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
   @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
-  Coefficient coeff_num = build_ppl_coeff(env, j_coeff_num);
-  Coefficient coeff_den = build_ppl_coeff(env, j_coeff_den);
+  TEMP_INTEGER(coeff_num);
+  TEMP_INTEGER(coeff_den);
+  coeff_num = build_ppl_coeff(env, j_coeff_num);
+  coeff_den = build_ppl_coeff(env, j_coeff_den);
   Linear_Expression le = build_linear_expression(env, j_le);
   bool b_value;
   @UGENERATOR@ g = @POINT@();
@@ -564,7 +568,8 @@ JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_@1AFFIMAGE@
   @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
   Variable v = build_ppl_variable(env, j_var);
   Linear_Expression le = build_linear_expression(env, j_le);
-  Coefficient c = build_ppl_coeff(env, j_coeff);
+  TEMP_INTEGER(c);
+  c = build_ppl_coeff(env, j_coeff);
   this_@LCLASS@->@AFFIMAGE@(v, le, c);
   }
   CATCH_ALL;
@@ -601,7 +606,8 @@ JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_generalized_1@1AFFIMAGE@__Lppl_1j
  Variable v = build_ppl_variable(env, j_variable);
  Relation_Symbol relsym = build_ppl_relsym(env, j_relsym);
  Linear_Expression le = build_linear_expression(env, j_le);
- Coefficient c = build_ppl_coeff(env, j_coeff);
+ TEMP_INTEGER(c);
+ c = build_ppl_coeff(env, j_coeff);
  this_@LCLASS@->generalized_@AFFIMAGE@(v, relsym, le, c);
   }
   CATCH_ALL;
@@ -620,7 +626,8 @@ JNIEXPORT void JNICALL Java_ppl_1java_1Grid_generalized_1@1AFFIMAGE@__Lppl_1java
  Linear_Expression lhs = build_linear_expression(env, j_le_lhs);
  Linear_Expression rhs = build_linear_expression(env, j_le_rhs);
  Relation_Symbol relsym = build_ppl_relsym(env, j_relsym);
- Coefficient modulus = build_ppl_coeff(env, j_modulus);
+ TEMP_INTEGER(modulus);
+ modulus = build_ppl_coeff(env, j_modulus);
  this_@LCLASS@->generalized_@AFFIMAGE@(lhs, relsym, rhs, modulus);
   }
   CATCH_ALL;
@@ -639,8 +646,10 @@ JNIEXPORT void JNICALL Java_ppl_1java_Grid_generalized_1@1AFFIMAGE@__Lppl_1java_
  Variable v = build_ppl_variable(env, j_variable);
  Relation_Symbol relsym = build_ppl_relsym(env, j_relsym);
  Linear_Expression le = build_linear_expression(env, j_le);
- Coefficient c = build_ppl_coeff(env, j_coeff);
- Coefficient modulus = build_ppl_coeff(env, j_modulus);
+ TEMP_INTEGER(c);
+ TEMP_INTEGER(modulus);
+ c = build_ppl_coeff(env, j_coeff);
+ modulus = build_ppl_coeff(env, j_modulus);
  this_@LCLASS@->generalized_@AFFIMAGE@(v, relsym, le, c, modulus);
   }
   CATCH_ALL;
@@ -658,7 +667,8 @@ JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_bounded_1@1AFFIMAGE@
   Variable v = build_ppl_variable(env, j_variable);
   Linear_Expression lhs = build_linear_expression(env, j_le_lhs);
   Linear_Expression rhs = build_linear_expression(env, j_le_rhs);
-  Coefficient c = build_ppl_coeff(env, j_coeff);
+  TEMP_INTEGER(c);
+  c = build_ppl_coeff(env, j_coeff);
   this_@LCLASS@->bounded_@AFFIMAGE@(v, lhs, rhs, c);
   }
   CATCH_ALL;

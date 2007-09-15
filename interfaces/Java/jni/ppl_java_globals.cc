@@ -116,8 +116,8 @@ JNIEXPORT jobject JNICALL Java_ppl_1java_MIP_1Problem_objective_1function
 			 "(Lppl_java/Coefficient;)V");
     jlong ptr = get_ptr(env, j_this_mip_problem);
     MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(ptr);
-    Coefficient inhomogeneous_term
-      = mip->objective_function().inhomogeneous_term();
+    TEMP_INTEGER(inhomogeneous_term);
+    inhomogeneous_term = mip->objective_function().inhomogeneous_term();
     jobject j_coeff_inhomogeneous_term
       = build_java_coeff(env, inhomogeneous_term);
     jobject j_le_coeff = env->NewObject(j_le_coeff_class, j_le_coeff_ctr_id,
@@ -273,8 +273,10 @@ JNIEXPORT void JNICALL Java_ppl_1java_MIP_1Problem_evaluate_1objective_1function
     jlong ptr = get_ptr(env, j_this_mip_problem);
     MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(ptr);
     Generator g = build_ppl_generator(env, j_gen);
-    Coefficient num = build_ppl_coeff(env, j_coeff_num);
-    Coefficient den = build_ppl_coeff(env, j_coeff_den);
+    TEMP_INTEGER(num);
+    TEMP_INTEGER(den);
+    num = build_ppl_coeff(env, j_coeff_num);
+    den = build_ppl_coeff(env, j_coeff_den);
     mip->evaluate_objective_function(g, num, den);
     set_coefficient(env, j_coeff_num, build_java_coeff(env, num));
     set_coefficient(env, j_coeff_den, build_java_coeff(env, den));
@@ -312,8 +314,10 @@ JNIEXPORT void JNICALL Java_ppl_1java_MIP_1Problem_optimal_1value
 (JNIEnv* env, jobject j_this_mip_problem, jobject j_coeff_num,
  jobject j_coeff_den) {
   try {
-    Coefficient coeff_num = build_ppl_coeff(env, j_coeff_num);
-    Coefficient coeff_den = build_ppl_coeff(env, j_coeff_den);
+    TEMP_INTEGER(coeff_num);
+    TEMP_INTEGER(coeff_den);
+    coeff_num = build_ppl_coeff(env, j_coeff_num);
+    coeff_den = build_ppl_coeff(env, j_coeff_den);
     jlong ptr = get_ptr(env, j_this_mip_problem);
     MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(ptr);
     mip->optimal_value(coeff_num, coeff_den);

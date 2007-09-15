@@ -552,7 +552,8 @@ extern "C"
 CAMLprim value
 ppl_@TOPOLOGY@@CLASS@_@MAXMIN@(value ph, value caml_le) try {
   CAMLparam2(ph, caml_le);
-  Coefficient num@COMMA@ den = 0;
+  TEMP_INTEGER(num);
+  TEMP_INTEGER(den);
   bool is_supremum = false;
   @UGENERATOR@ g = @POINT@();
   @CPP_CLASS@& pph = *p_@TOPOLOGY@@CLASS@_val(ph);

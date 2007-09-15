@@ -298,7 +298,7 @@ get_linear_expression(JNIEnv* env, const R& r) {
     = env->FindClass("ppl_java/Linear_Expression_Variable");
   jclass j_variable_class
     = env->FindClass("ppl_java/Variable");
-  Coefficient coefficient;
+  TEMP_INTEGER(coefficient);
   dimension_type varid = 0;
   dimension_type space_dimension = r.space_dimension();
   jobject j_le_term;
