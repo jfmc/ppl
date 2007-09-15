@@ -140,6 +140,6 @@ $(nodist_noinst_HEADERS)
 dist-hook:
 	mv -f $(distdir)/pwl.hh $(distdir)/pwl.hh.dist
 
-MOSTLYCLEANFILES = $(BUILT_SOURCES)
-
 endif BUILD_WATCHDOG_LIBRARY
+
+MOSTLYCLEANFILES = $(BUILT_SOURCES)
