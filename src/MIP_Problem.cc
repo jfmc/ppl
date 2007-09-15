@@ -1952,7 +1952,7 @@ if (!(s >> internal_space_dim))
 
   Constraint c(Constraint::zero_dim_positivity());
   for (dimension_type i = 0; i < input_cs_size; ++i) {
-    if(!c.ascii_load(s))
+    if (!c.ascii_load(s))
       return false;
     input_cs.push_back(c);
   }
