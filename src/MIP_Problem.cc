@@ -300,7 +300,7 @@ PPL::MIP_Problem::solve() const{
       bool have_incumbent_solution = false;
 
       MIP_Problem mip_copy(*this);
-      // Treat this MIP_Problem as an LP one: we ha have to deal with
+      // Treat this MIP_Problem as an LP one: we have to deal with
       // the relaxation in solve_mip().
       mip_copy.i_variables.clear();
       MIP_Problem_Status mip_status = solve_mip(have_incumbent_solution,
