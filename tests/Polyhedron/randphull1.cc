@@ -45,8 +45,6 @@ count_points(const C_Polyhedron& ph) {
 
 } // namespace test01_namespace
 
-} // namespace
-
 bool
 test01() {
   // Set up a random numbers' generator.
@@ -70,8 +68,6 @@ test01() {
   return true;
 }
 
-
-namespace {
 
 namespace test02_namespace {
 
@@ -140,8 +136,6 @@ random_polytope(C_Polyhedron& ph,
 
 } // namespace test02_namespace
 
-} // namespace
-
 bool
 test02() {
   for (unsigned dimension = 2; dimension <= 6; ++dimension) {
@@ -171,6 +165,8 @@ test02() {
   }
   return true;
 }
+
+} // namespace
 
 BEGIN_MAIN
   DO_TEST_F64(test01);

@@ -27,16 +27,16 @@ namespace Parma_Polyhedra_Library {
   using IO_Operators::operator<<;
 }
 
+namespace {
+
+namespace test01_namespace {
+
 // The classic cryptarithmetic puzzle:
 //
 //      S E N D
 //    + M O R E
 //    ---------
 //    M O N E Y
-
-namespace {
-
-namespace test01_namespace {
 
 void
 less_than(C_Polyhedron& ph, Variable X, Variable Y) {
@@ -92,8 +92,6 @@ constraints(C_Polyhedron& ph,
 
 } // namespace test01_namespace
 
-} // namespace
-
 bool
 test01() {
   Variable S(0);
@@ -118,7 +116,6 @@ test01() {
 	  if (ph.is_empty())
 	    continue;
 
-	  using namespace Parma_Polyhedra_Library::IO_Operators;
 	  nout << "Solution constraints" << endl;
 	  const Constraint_System& cs = ph.constraints();
 	  std::copy(cs.begin(), cs.end(),
@@ -146,6 +143,8 @@ test01() {
 	}
   return true;
 }
+
+} // namespace
 
 BEGIN_MAIN
   DO_TEST_F8(test01);
