@@ -352,7 +352,7 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
   N& x = negative ? dbm[i][j] : dbm[j][i];
   N& y = negative ? dbm[j][i] : dbm[i][j];
   if (negative)
-    neg_assign(coeff, coeff);
+    neg_assign(coeff);
 
   bool changed = false;
   // Compute the bound for `x', rounding towards plus infinity.
@@ -970,7 +970,7 @@ BD_Shape<T>::max_min(const Linear_Expression& expr,
       add_mul_assign_r(d, coeff_expr, x, ROUND_UP);
       numer_denom(d, ext_n, ext_d);
       if (!maximize)
-        neg_assign(ext_n, ext_n);
+        neg_assign(ext_n);
       included = true;
       return true;
     }
@@ -1095,7 +1095,7 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
   const N& x = negative ? dbm[i][j] : dbm[j][i];
   const N& y = negative ? dbm[j][i] : dbm[i][j];
   if (negative)
-    neg_assign(coeff, coeff);
+    neg_assign(coeff);
   // Deduce the relation/s of the constraint `c' of the form
   // `coeff*v - coeff*u </<=/== c.inhomogeneous_term()'
   // with the respectively constraints in `*this'
@@ -1936,7 +1936,7 @@ BD_Shape<T>::get_limiting_shape(const Constraint_System& cs,
       N& ls_x = negative ? ls_dbm[i][j] : ls_dbm[j][i];
       N& ls_y = negative ? ls_dbm[j][i] : ls_dbm[i][j];
       if (negative)
-	neg_assign(coeff, coeff);
+	neg_assign(coeff);
       // Compute the bound for `x', rounding towards plus infinity.
       div_round_up(d, c.inhomogeneous_term(), coeff);
       if (x <= d)
