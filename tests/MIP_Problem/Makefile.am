@@ -62,8 +62,8 @@ mipproblem1_SOURCES = mipproblem1.cc
 
 mipproblem2_SRCS = mipproblem2.cc
 
-bug1_SRCS = bug1.cc
-bug2_SRCS = bug2.cc
+bug1_SOURCES = bug1.cc
+bug2_SOURCES = bug2.cc
 
 if BUILD_WATCHDOG_LIBRARY
 WATCHDOG_TESTS = mipproblem2
