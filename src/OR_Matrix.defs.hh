@@ -334,7 +334,7 @@ private:
 
   //! Contains the rows of the matrix.
   /*!
-    Creates a DB_Row which contains the rows of the OR_Matrix
+    A DB_Row which contains the rows of the OR_Matrix
     inserting each successive row to the end of the vec.
     To contain all the elements of OR_Matrix the size of the DB_Row
     is 2*n*(n+1), where the n is the characteristic parameter of
@@ -394,15 +394,12 @@ public:
     \param new_dim
     The new dimension of the resized matrix.
 
-    If the new dimension is greater than the old one, it
-    adds new rows of right dimension to the end if
-    there is enough capacity; otherwise, it creates a new matrix,
-    with the specified dimension, copying the old elements
-    in the upper part of the new matrix, which is
-    then assigned to \p *this. In this case each element is
-    initialized to plus infinity.
-    If the new dimension is less than the old one, it erase
-    from matrix to the end the rows with index greater than 2*new_dim-1
+    If the new dimension is greater than the old one, it adds new rows
+    of right dimension to the end if there is enough capacity; otherwise,
+    it creates a new matrix, with the specified dimension, which is
+    then assigned to \p *this.
+    If the new dimension is less than the old one, it erase from the matrix
+    the rows having index greater than 2*new_dim-1
   */
   void resize_no_copy(dimension_type new_dim);
 
