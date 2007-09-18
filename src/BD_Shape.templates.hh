@@ -1694,7 +1694,7 @@ BD_Shape<T>::remove_space_dimensions(const Variables_Set& to_be_removed) {
       std::swap(dbm[dst], dbm[src]);
       for (dimension_type i = old_space_dim + 1; i-- > 0; ) {
 	DB_Row<N>& dbm_i = dbm[i];
-	dbm_i[dst] = dbm_i[src];
+	assign_or_swap(dbm_i[dst], dbm_i[src]);
       }
       ++dst;
       ++src;
@@ -1707,7 +1707,7 @@ BD_Shape<T>::remove_space_dimensions(const Variables_Set& to_be_removed) {
     std::swap(dbm[dst], dbm[src]);
     for (dimension_type i = old_space_dim + 1; i-- > 0; ) {
       DB_Row<N>& dbm_i = dbm[i];
-      dbm_i[dst] = dbm_i[src];
+      assign_or_swap(dbm_i[dst], dbm_i[src]);
     }
     ++src;
     ++dst;
@@ -1756,28 +1756,28 @@ BD_Shape<T>::map_space_dimensions(const Partial_Function& pfunc) {
   // First of all we must map the unary constraints, because
   // there is the fictitious variable `zero', that can't be mapped
   // at all.
-  const DB_Row<N>& dbm_0 = dbm[0];
+  DB_Row<N>& dbm_0 = dbm[0];
   DB_Row<N>& x_0 = x[0];
   for (dimension_type j = 1; j <= space_dim; ++j) {
     dimension_type new_j;
     if (pfunc.maps(j - 1, new_j)) {
-      x_0[new_j + 1] = dbm_0[j];
-      x[new_j + 1][0] = dbm[j][0];
+      assign_or_swap(x_0[new_j + 1], dbm_0[j]);
+      assign_or_swap(x[new_j + 1][0], dbm[j][0]);
     }
   }
   // Now we map the binary constraints, exchanging the indexes.
   for (dimension_type i = 1; i <= space_dim; ++i) {
     dimension_type new_i;
     if (pfunc.maps(i - 1, new_i)) {
-      const DB_Row<N>& dbm_i = dbm[i];
+      DB_Row<N>& dbm_i = dbm[i];
       ++new_i;
       DB_Row<N>& x_new_i = x[new_i];
       for (dimension_type j = i+1; j <= space_dim; ++j) {
 	dimension_type new_j;
 	if (pfunc.maps(j - 1, new_j)) {
 	  ++new_j;
-	  x_new_i[new_j] = dbm_i[j];
-	  x[new_j][new_i] = dbm[j][i];
+	  assign_or_swap(x_new_i[new_j], dbm_i[j]);
+	  assign_or_swap(x[new_j][new_i], dbm[j][i]);
 	}
       }
     }

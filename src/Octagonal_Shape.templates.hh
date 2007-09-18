@@ -1899,7 +1899,7 @@ Octagonal_Shape<T>::strong_reduction_assign() const {
   const dimension_type num_no_sing_leaders = no_sing_leaders.size();
 
   Octagonal_Shape aux(space_dim);
-  // Step 2: add to auxiliary octagon only no-redundant
+  // Step 2: add to auxiliary octagon only non-redundant
   // constraints and construct a 0-cycle using only
   // the leaders of the non-singular classes.
   for (dimension_type li = 0; li < num_no_sing_leaders; ++li) {
@@ -2218,11 +2218,11 @@ Octagonal_Shape<T>
     if (to_be_removed.count(i) != 0)
       ++i;
     else {
-      typename OR_Matrix<N>::const_row_iterator
+      typename OR_Matrix<N>::row_iterator
 	row_iter = matrix.row_begin()+2*i;
-      typename OR_Matrix<N>::const_row_reference_type
+      typename OR_Matrix<N>::row_reference_type
 	row_ref = *row_iter;
-      typename OR_Matrix<N>::const_row_reference_type
+      typename OR_Matrix<N>::row_reference_type
 	row_ref1 = *(++row_iter);
       // If variable(j) is to remove, we pass another variable,
       // else we shift its cells to up right.
@@ -2232,13 +2232,13 @@ Octagonal_Shape<T>
       // in the `matrix' by two rows and two rows.
       for (dimension_type j = 0; j <= i; ++j)
 	if (to_be_removed.count(j) == 0) {
-	  *(iter++) = row_ref[2*j];
-	  *(iter++) = row_ref[2*j+1];
+	  assign_or_swap(*(iter++), row_ref[2*j]);
+	  assign_or_swap(*(iter++), row_ref[2*j+1]);
 	}
       for (dimension_type j = 0; j <= i; ++j)
 	if (to_be_removed.count(j) == 0) {
-	  *(iter++) = row_ref1[2*j];
-	  *(iter++) = row_ref1[2*j+1];
+	  assign_or_swap(*(iter++), row_ref1[2*j]);
+	  assign_or_swap(*(iter++), row_ref1[2*j+1]);
 	}
       ++i;
     }
@@ -2265,7 +2265,7 @@ Octagonal_Shape<T>::map_space_dimensions(const Partial_Function& pfunc) {
   const dimension_type new_space_dim = pfunc.max_in_codomain() + 1;
   // If we are going to actually reduce the space dimension,
   // then shortest-path closure is required to keep precision.
-    if (new_space_dim < space_dim)
+  if (new_space_dim < space_dim)
     strong_closure_assign();
 
   // If the octagon is empty, then it is sufficient to adjust
@@ -2298,7 +2298,7 @@ Octagonal_Shape<T>::map_space_dimensions(const Partial_Function& pfunc) {
       Row_Iterator x_iter = m_begin + double_new_i;
       Row_Reference x_i = *x_iter;
       Row_Reference x_ii = *(x_iter + 1);
-      for(dimension_type j = 0; j <= i; ++j) {
+      for (dimension_type j = 0; j <= i; ++j) {
 	dimension_type new_j;
 	// If also the second variable is mapped, we work.
 	if (pfunc.maps(j, new_j)) {
@@ -2309,19 +2309,19 @@ Octagonal_Shape<T>::map_space_dimensions(const Partial_Function& pfunc) {
 	  // If new_j > new_i, we must consider, as rows, the rows of
 	  // the variable new_j, and not of new_i ones.
 	  if (new_i >= new_j) {
-	    x_i[double_new_j] = r_i[dj];
-	    x_ii[double_new_j] = r_ii[dj];
-	    x_ii[double_new_j+1] = r_ii[dj + 1];
-	    x_i[double_new_j+1] = r_i[dj + 1];
+	    assign_or_swap(x_i[double_new_j], r_i[dj]);
+	    assign_or_swap(x_ii[double_new_j], r_ii[dj]);
+	    assign_or_swap(x_ii[double_new_j+1], r_ii[dj + 1]);
+	    assign_or_swap(x_i[double_new_j+1], r_i[dj + 1]);
 	  }
 	  else {
 	    Row_Iterator xj_iter = m_begin + double_new_j;
 	    Row_Reference x_j = *xj_iter;
 	    Row_Reference x_jj = *(xj_iter + 1);
-	    x_jj[double_new_i+1] = r_i[dj];
-	    x_jj[double_new_i] = r_ii[dj];
-	    x_j[double_new_i+1] = r_i[dj+1];
-	    x_j[double_new_i] = r_ii[dj+1];
+	    assign_or_swap(x_jj[double_new_i+1], r_i[dj]);
+	    assign_or_swap(x_jj[double_new_i], r_ii[dj]);
+	    assign_or_swap(x_j[double_new_i+1], r_i[dj+1]);
+	    assign_or_swap(x_j[double_new_i], r_ii[dj+1]);
 	  }
 
 	}
