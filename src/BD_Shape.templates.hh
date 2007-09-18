@@ -1949,12 +1949,10 @@ BD_Shape<T>::get_limiting_shape(const Constraint_System& cs,
 	  // Compute the bound for `y', rounding towards plus infinity.
 	  neg_assign(minus_c_term, c.inhomogeneous_term());
 	  div_round_up(d, minus_c_term, coeff);
-	  if (y <= d)
-	    if (ls_y > d) {
-	      ls_y = d;
-	      changed = true;
-	    }
-
+	  if (y <= d && ls_y > d) {
+	    ls_y = d;
+	    changed = true;
+	  }
 	}
     }
   }
@@ -2513,6 +2511,7 @@ BD_Shape<T>::refine(const Variable var,
 	}
 	else if (sign_i < 0) {
 	  neg_assign(minus_sc_i, sc_i);
+	  // Note: using temporary named `coeff_i' to store -coeff_i.
 	  assign_r(coeff_i, minus_sc_i, ROUND_UP);
 	  // Approximating `sc_expr'.
 	  if (pinf_count <= 1) {
@@ -2950,6 +2949,7 @@ BD_Shape<T>::affine_image(const Variable var,
     }
     else if (sign_i < 0) {
       neg_assign(minus_sc_i, sc_i);
+      // Note: using temporary named `coeff_i' to store -coeff_i.
       assign_r(coeff_i, minus_sc_i, ROUND_UP);
       // Approximating `sc_expr'.
       if (pos_pinf_count <= 1) {
@@ -3335,6 +3335,7 @@ BD_Shape<T>
     }
     else if (sign_i < 0) {
       neg_assign(minus_sc_i, sc_i);
+      // Note: using temporary named `coeff_i' to store -coeff_i.
       assign_r(coeff_i, minus_sc_i, ROUND_UP);
       // Approximating `sc_expr'.
       if (pos_pinf_count <= 1) {
