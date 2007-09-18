@@ -545,17 +545,13 @@ OR_Matrix<T>::grow(const dimension_type new_dim) {
       space_dim = new_dim;
     }
     else {
-      // We cannot even recycle the old vec.
+      // We cannot recycle the old vec.
       OR_Matrix<T> new_matrix(new_dim);
       element_iterator j = new_matrix.element_begin();
       for (element_iterator i = element_begin(),
 	     mend = element_end(); i != mend; ++i, ++j)
-	// FIXME: this assignment is costly when using mpz_class or
-	// mpq_class. Provide a "copy_or_swap()" method that swaps
-	// the implementation of coefficients when appropriate.
-      	*j = *i;
+	assign_or_swap(*j, *i);
       swap(new_matrix);
-      return;
     }
   }
 }
@@ -572,9 +568,19 @@ OR_Matrix<T>::shrink(const dimension_type new_dim) {
 template <typename T>
 inline void
 OR_Matrix<T>::resize_no_copy(const dimension_type new_dim) {
-  if (new_dim > space_dim)
-    // FIXME: here we might unnecessarily copy!
-    grow(new_dim);
+  if (new_dim > space_dim) {
+    const dimension_type new_size = 2*new_dim*(new_dim + 1);
+    if (new_size <= vec_capacity) {
+      // We can recycle the old vec.
+      vec.expand_within_capacity(new_size);
+      space_dim = new_dim;
+    }
+    else {
+      // We cannot recycle the old vec.
+      OR_Matrix<T> new_matrix(new_dim);
+      swap(new_matrix);
+    }
+  }
   else if (new_dim < space_dim)
     shrink(new_dim);
 }
