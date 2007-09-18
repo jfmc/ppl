@@ -96,6 +96,7 @@ DB_Matrix<T>::grow(const dimension_type new_n_rows) {
       // Copy the old rows.
       ++i;
       while (i-- > 0) {
+	// FIXME: copying may be unnecessarily costly.
 	DB_Row<T> new_row(rows[i],
 			  new_matrix.row_size,
 			  new_matrix.row_capacity);
@@ -119,6 +120,7 @@ DB_Matrix<T>::grow(const dimension_type new_n_rows) {
       const dimension_type new_row_capacity
 	= compute_capacity(new_n_rows, max_num_columns());
       for (dimension_type i = old_n_rows; i-- > 0; ) {
+	// FIXME: copying may be unnecessarily costly.
 	DB_Row<T> new_row(rows[i], new_n_rows, new_row_capacity);
 	std::swap(rows[i], new_row);
       }
