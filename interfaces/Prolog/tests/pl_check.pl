@@ -1964,7 +1964,7 @@ get_bounding_box(T, CS, Box) :-
   clean_ppl_new_Polyhedron_from_bounding_box(T, Box, P1),
   clean_ppl_new_Polyhedron_from_bounding_box(T, Box1, P2),
   clean_ppl_new_Polyhedron_from_bounding_box(T, Box2, P3),
-  (Box \= [empty]
+  (Box \== [empty]
   ->
     ppl_Polyhedron_contains_Polyhedron(P1, P),
     ppl_Polyhedron_contains_Polyhedron(P2, P1),
@@ -2534,12 +2534,14 @@ large_integers_affine_transform_loop(Exp, P, A) :-
 % has a wrong exception message, then exceptions/0 will fail.
 
 exceptions :-
-   current_prolog_flag(bounded, Y),
+   pl_check_prolog_flag(bounded, Y),
    make_vars(3, V),
    exception_prolog(V),
-   (Y == true -> exception_sys_prolog(V) ; true),
+   ((Y == true,\+prolog_system('XSB'))  -> exception_sys_prolog(V) ; true),
    exception_cplusplus(V),
    !.
+exceptions :-
+   prolog_system('XSB').
 
 %% TEST: Prolog_unsigned_out_of_range
 exception_yap :-
@@ -3344,11 +3346,7 @@ group_predicates(handle_exceptions,
 % Note that 268435456 is 2^28.
 
 pl_check_prolog_flag(bounded, TF) :-
-  \+ prolog_system('XSB'),
   current_prolog_flag(bounded, TF).
-
-pl_check_prolog_flag(bounded, true) :-
-  prolog_system('XSB').
 
 pl_check_prolog_flag(max_integer, Max_Int) :-
   \+ prolog_system('XSB'),
