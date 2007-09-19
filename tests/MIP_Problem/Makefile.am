@@ -44,7 +44,8 @@ TESTS = \
 ascii_dump_load1 \
 exceptions1 \
 mipproblem1 \
-mipproblem2
+mipproblem2 \
+mipproblem3
 
 XFAIL_TESTS =
 
@@ -61,6 +62,8 @@ exceptions1_SOURCES = exceptions1.cc
 mipproblem1_SOURCES = mipproblem1.cc
 
 mipproblem2_SRCS = mipproblem2.cc
+
+mipproblem3_SOURCES = mipproblem3.cc
 
 bug1_SOURCES = bug1.cc
 bug2_SOURCES = bug2.cc

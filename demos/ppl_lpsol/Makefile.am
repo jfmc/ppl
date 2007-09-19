@@ -113,7 +113,6 @@ $(TOUGH_EXAMPLES_FOR_SIMPLEX_IF_ASSERTIONS_ENABLED)
 TOUGH_EXAMPLES_FOR_BB_SATISFIABILITY = \
 $(TOUGH_EXAMPLES_FOR_BB_SATISFIABILTY_IF_ASSERTIONS_ENABLED)
 
-#FIXME: ex11.mps must be removed from this list.
 TOUGH_EXAMPLES_FOR_BB_OPTIMALITY = \
 egout.mps \
 lseu.mps \
@@ -142,7 +141,6 @@ sc50b.mps \
 ship08l.mps
 
 DO_NOT_CHECK_PROBLEMS = \
-ex11.mps \
 ex12.mps \
 mas74.mps \
 mas76.mps \
