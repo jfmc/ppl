@@ -28,7 +28,6 @@ blend.mps \
 boeing1.mps \
 boeing2.mps \
 egout.mps \
-ex11.mps \
 ex12.mps \
 ex1.mps \
 kb2.mps \
