@@ -117,15 +117,15 @@ COEFFICIENT_MNEMONIC = @coefficient_mnemonic@
 
 if ASSERTIONS_ENABLED
 
-EXPECTED_CLPQ = $(srcdir)/expected_clpq_$(COEFFICIENT_MNEMONIC)_a
-EXPECTED_CLPQ2 = $(srcdir)/expected_clpq2_$(COEFFICIENT_MNEMONIC)_a
-EXPECTED_PCHK = $(srcdir)/expected_pchk_$(COEFFICIENT_MNEMONIC)_a
+EXPECTED_CLPQ = $(srcdir)/../tests/expected_clpq_$(COEFFICIENT_MNEMONIC)_a
+EXPECTED_CLPQ2 = $(srcdir)/../tests/expected_clpq2_$(COEFFICIENT_MNEMONIC)_a
+EXPECTED_PCHK = $(srcdir)/../tests/expected_pchk_$(COEFFICIENT_MNEMONIC)_a
 
 else !ASSERTIONS_ENABLED
 
-EXPECTED_CLPQ = $(srcdir)/expected_clpq_$(COEFFICIENT_MNEMONIC)
-EXPECTED_CLPQ2 = $(srcdir)/expected_clpq2_$(COEFFICIENT_MNEMONIC)
-EXPECTED_PCHK = $(srcdir)/expected_pchk_$(COEFFICIENT_MNEMONIC)
+EXPECTED_CLPQ = $(srcdir)/../tests/expected_clpq_$(COEFFICIENT_MNEMONIC)
+EXPECTED_CLPQ2 = $(srcdir)/../tests/expected_clpq2_$(COEFFICIENT_MNEMONIC)
+EXPECTED_PCHK = $(srcdir)/../tests/expected_pchk_$(COEFFICIENT_MNEMONIC)
 
 endif !ASSERTIONS_ENABLED
 
