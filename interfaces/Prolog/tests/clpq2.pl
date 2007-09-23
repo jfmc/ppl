@@ -592,7 +592,9 @@ write_termexpr('$VAR'(N), Var_List) :-
 write_termexpr(Term, _Var_List) :-
   int_expr(Term),
   !,
-  N is Term,
+  % FIXME: restore the original `N is Term' as soon as XSB is fixed.
+  % See http://www.cs.unipr.it/pipermail/ppl-devel/2007-September/011126.html
+  call(N is Term),
   write(N).
 write_termexpr(Term, Var_List) :-
   Term = [_|_],
