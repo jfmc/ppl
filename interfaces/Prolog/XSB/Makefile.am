@@ -30,17 +30,7 @@ ppl_interface_generator_xsb_H.m4 \
 $(XSB_CFLI_FILES) \
 xsb_clpq.P \
 xsb_clpq2.P \
-xsb_pl_check.P \
-expected_clpq_mpz expected_clpq2_mpz expected_pchk_mpz \
-expected_clpq_int8 expected_clpq2_int8 expected_pchk_int8 \
-expected_clpq_int16 expected_clpq2_int16 expected_pchk_int16 \
-expected_clpq_int32 expected_clpq2_int32 expected_pchk_int32 \
-expected_clpq_int64 expected_clpq2_int64 expected_pchk_int64 \
-expected_clpq_mpz_a expected_clpq2_mpz_a expected_pchk_mpz_a \
-expected_clpq_int8_a expected_clpq2_int8_a expected_pchk_int8_a \
-expected_clpq_int16_a expected_clpq2_int16_a expected_pchk_int16_a \
-expected_clpq_int32_a expected_clpq2_int32_a expected_pchk_int32_a \
-expected_clpq_int64_a expected_clpq2_int64_a expected_pchk_int64_a
+xsb_pl_check.P
 
 if BUILD_XSB_PROLOG_INTERFACE
 
@@ -107,11 +97,6 @@ CLPQ_TESTS_STRICT = \
 schedule.clpq
 
 CLPQ_TESTS = $(CLPQ_TESTS_NONSTRICT) $(CLPQ_TESTS_STRICT)
-
-# FIXME: we are checking against special versions of `expected_clpq'
-#        and `expected_clpq2'.  This is due to the fact that XSB 2.6
-#        and previous versions do not support control escape
-#        sequences.
 
 COEFFICIENT_MNEMONIC = @coefficient_mnemonic@
 
