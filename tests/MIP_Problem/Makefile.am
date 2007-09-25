@@ -49,7 +49,7 @@ mipproblem3
 
 XFAIL_TESTS =
 
-BUGS = bug1 bug2
+BUGS =
 
 #
 # Sources for the tests
@@ -64,9 +64,6 @@ mipproblem1_SOURCES = mipproblem1.cc
 mipproblem2_SRCS = mipproblem2.cc
 
 mipproblem3_SOURCES = mipproblem3.cc
-
-bug1_SOURCES = bug1.cc
-bug2_SOURCES = bug2.cc
 
 if BUILD_WATCHDOG_LIBRARY
 WATCHDOG_TESTS = mipproblem2
