@@ -253,6 +253,9 @@ check-local: ppl_lpsol
 	-./ppl_lpsol -n -s $(CHECK_OPTION) $(srcdir)/examples/modglob.mps -oobtained >/dev/null
 	$(DIFF_COMMAND)
 
+endif HAVE_GLPK
+endif BUILD_C_INTERFACE
+
 MOSTLYCLEANFILES = \
 do_not_check_problems \
 tough_examples \
@@ -260,6 +263,3 @@ obtained \
 expected_optima \
 obtained_optima \
 lp_problems
-
-endif HAVE_GLPK
-endif BUILD_C_INTERFACE
