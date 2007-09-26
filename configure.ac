@@ -946,8 +946,20 @@ AC_CHECK_DECLS([RLIMIT_DATA, RLIMIT_RSS, RLIMIT_VMEM, RLIMIT_AS],
 #endif
 ])
 
+AC_CHECK_DECLS([getrusage],
+               ,
+               ,
+               [
+#ifdef HAVE_SYS_TIME_H
+# include <sys/time.h>
+#endif
+#ifdef HAVE_SYS_RESOURCE_H
+# include <sys/resource.h>
+#endif
+])
+
 # Checks for typedefs, structures, and compiler characteristics.
-# Nothing for the time being.
+AC_CHECK_TYPES([timeval])
 
 # Checks for library functions.
 # Nothing for the time being.
