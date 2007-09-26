@@ -1088,7 +1088,7 @@ solve(char* file_name) {
     ppl_Coefficient_to_mpz_t(optimum_d, tmp_z);
     mpz_mul(tmp_z, tmp_z, den_lcm);
     mpq_set_den(optimum, tmp_z);
-    if (verbosity >= 1)
+    if (verbosity == 1)
       fprintf(output_file, "Optimized problem.\n");
     if (verbosity >= 2)
       fprintf(output_file, "Optimum value: %.10g\n", mpq_get_d(optimum));
