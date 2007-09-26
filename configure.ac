@@ -619,6 +619,10 @@ no)
 esac
 build_watchdog_library=$enableval
 AM_CONDITIONAL(BUILD_WATCHDOG_LIBRARY, test x"$build_watchdog_library" = xyes)
+if test x"$build_watchdog_library" = xyes
+then
+  AC_DEFINE(WATCHDOG_LIBRARY_ENABLED, 1, [Defined if the Parma Watchdog Library is enabled.])
+fi
 
 # Enabled or not, the Watchdog subdirectory must be configured.
 AC_CONFIG_SUBDIRS(Watchdog)
