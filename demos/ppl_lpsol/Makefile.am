@@ -140,6 +140,12 @@ sc50a.mps \
 sc50b.mps \
 ship08l.mps
 
+DO_NOT_OUTPUT_OPTIMUM_LOCATION_PROBLEMS = \
+adlittle.mps \
+boeing1.mps \
+boeing2.mps \
+rout.mps
+
 DO_NOT_CHECK_PROBLEMS = \
 ex12.mps \
 mas74.mps \
@@ -198,13 +204,12 @@ check-local: ppl_lpsol
 	  echo "*** ppl_lpsol -s -n $$m -oobtained $$file" >>obtained; \
 	  ./ppl_lpsol -s -n $(CHECK_OPTION) -oobtained $$path >/dev/null; \
 	done
-	echo $(LP_PROBLEMS) >lp_problems
 	echo $(TOUGH_EXAMPLES_FOR_BB_OPTIMALITY) >tough_examples
 	-for path in $(srcdir)/examples/*.mps; \
 	do \
 	  file=`basename $$path`; \
-	  grep $$file do_not_check_problems >/dev/null 2>&1 && continue; \
 	  grep $$file lp_problems >/dev/null 2>&1 && continue; \
+	  grep $$file do_not_check_problems >/dev/null 2>&1 && continue; \
 	  grep $$file tough_examples >/dev/null 2>&1 && continue; \
 	  for m in -m -M; \
 	  do \
@@ -213,15 +218,18 @@ check-local: ppl_lpsol
 	  done \
 	done
 	echo $(TOUGH_EXAMPLES_FOR_SIMPLEX) >tough_examples
+	echo $(DO_NOT_OUTPUT_OPTIMUM_LOCATION_PROBLEMS) >do_not_output_location
 	-for path in $(srcdir)/examples/*.mps; \
 	do \
-	  file=`basename $$path`; \
+	 file=`basename $$path`; \
 	 grep $$file do_not_check_problems >/dev/null 2>&1 && continue; \
 	 grep $$file tough_examples >/dev/null 2>&1 && continue; \
+	 verbosity='';\
+	 grep $$file do_not_output_location >/dev/null 2>&1 && verbosity='-v 2'; \
 	 for m in -m -M; \
 	 do \
 	    echo "*** ppl_lpsol -r -s $$m -oobtained $$file" >>obtained; \
-	    ./ppl_lpsol -r -s $(CHECK_OPTION) $$m -oobtained $$path >/dev/null; \
+	    ./ppl_lpsol -r -s $(CHECK_OPTION) $$verbosity $$m -oobtained $$path >/dev/null; \
 	  done \
 	done
 	echo $(TOUGH_EXAMPLES_FOR_ENUM) >tough_examples
