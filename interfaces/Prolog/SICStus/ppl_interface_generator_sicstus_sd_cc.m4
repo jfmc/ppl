@@ -26,7 +26,6 @@ m4_include(`ppl_interface_generator_copyright')`'dnl
 */
 
 #include "ppl.hh"
-#include "pwl.hh"
 #include "sicstus_cfli.h"
 #include "../exceptions.hh"
 #include <cassert>
