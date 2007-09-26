@@ -31,10 +31,17 @@ sp_pl_check.pl
 
 if BUILD_SICSTUS_PROLOG_INTERFACE
 
+if BUILD_WATCHDOG_LIBRARY
+
+WATCHDOG_LIBRARY = $(top_builddir)/Watchdog/src/libpwl.la
+WATCHDOG_INCLUDES = -I$(top_builddir)/Watchdog/src
+
+endif BUILD_WATCHDOG_LIBRARY
+
 AM_CPPFLAGS = \
 -I$(top_srcdir)/interfaces/Prolog \
 -I$(top_builddir)/src \
--I$(top_builddir)/Watchdog/src \
+$(WATCHDOG_INCLUDES) \
 $(SICSTUS_PROLOG_INCLUDE_OPTIONS) \
 @extra_includes@
 
@@ -57,15 +64,16 @@ ppl_sicstus_sd.cc: $(interface_generator_dependencies) Makefile
 bin_PROGRAMS = ppl_sicstus
 ppl_sicstus_SOURCES =
 
+
 if ENABLE_SHARED
 
 pkglib_DATA = ppl_sicstus.pl ppl_sicstus.s.o
 
-ppl_sicstus.so: ppl_sicstus.pl $(top_builddir)/src/libppl.la $(top_builddir)/Watchdog/src/libpwl.la .libs/ppl_sicstus_sd.o
+ppl_sicstus.so: ppl_sicstus.pl $(top_builddir)/src/libppl.la $(WATCHDOG_LIBRARY) .libs/ppl_sicstus_sd.o
 	$(LIBTOOL) --mode=link --tag=CXX \
 	splfr $(srcdir)/ppl_sicstus.pl .libs/ppl_sicstus_sd.o -o $@ \
 		$(top_builddir)/src/libppl.la \
-		$(top_builddir)/Watchdog/src/libpwl.la \
+		$(WATCHDOG_LIBRARY) \
 		@extra_libraries@
 
 install-data-local: ppl_sicstus.so
@@ -82,13 +90,13 @@ noinst_LTLIBRARIES = ppl_sicstus_sd.la
 nodist_ppl_sicstus_sd_la_SOURCES = ppl_sicstus_sd.cc
 ppl_sicstus_sd_la_LDFLAGS = -module -avoid-version
 
-ppl_sicstus$(EXEEXT): ppl_sicstus.s.o $(top_builddir)/src/libppl.la $(top_builddir)/Watchdog/src/libpwl.la
+ppl_sicstus$(EXEEXT): ppl_sicstus.s.o $(top_builddir)/src/libppl.la $(WATCHDOG_LIBRARY)
 	$(LIBTOOL) --mode=link --tag=CXX \
 	spld --main=prolog \
 		--cflag=`echo '$(AM_CXXFLAGS) $(CXXFLAGS)' | tr " " ","` \
 		--resources=ppl_sicstus.s.o -o $@ \
 		$(top_builddir)/src/libppl.la \
-		$(top_builddir)/Watchdog/src/libpwl.la \
+		$(WATCHDOG_LIBRARY) \
 		@extra_libraries@
 
 if ENABLE_STATIC
