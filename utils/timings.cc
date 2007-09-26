@@ -42,11 +42,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace std;
 
+#ifdef PPL_HAVE_TIMEVAL
 // To save the time when start_clock is called.
 static struct timeval saved_ru_utime;
+#endif
 
 void
 start_clock() {
+#if defined(PPL_HAVE_DECL_GETRUSAGE) && defined(PPL_HAVE_TIMEVAL)
   struct rusage rsg;
   if (getrusage(RUSAGE_SELF, &rsg) != 0) {
     cerr << "getrusage failed: " << strerror(errno) << endl;
@@ -54,10 +57,12 @@ start_clock() {
   }
   else
     saved_ru_utime = rsg.ru_utime;
+#endif
 }
 
 void
 print_clock(ostream& s) {
+#if defined(PPL_HAVE_DECL_GETRUSAGE) && defined(PPL_HAVE_TIMEVAL)
   struct rusage rsg;
   if (getrusage(RUSAGE_SELF, &rsg) != 0) {
     cerr << "getrusage failed: " << strerror(errno) << endl;
@@ -90,4 +95,7 @@ print_clock(ostream& s) {
     s << secs << "." << setfill('0') << setw(2) << hsecs;
     s.fill(fill_char);
   }
+#else
+  s << "(no clock available)";
+#endif
 }
