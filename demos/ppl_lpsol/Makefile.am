@@ -266,6 +266,7 @@ endif BUILD_C_INTERFACE
 
 MOSTLYCLEANFILES = \
 do_not_check_problems \
+do_not_output_location \
 tough_examples \
 obtained \
 expected_optima \
