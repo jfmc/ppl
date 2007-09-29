@@ -2,11 +2,11 @@
 
 Name:		ppl
 Version:	0.10pre8
-Release:	1%{?dist}
+Release:	2%{?dist}
 
 Summary:	The Parma Polyhedra Library: a library of numerical abstractions
 Group:		Development/Libraries
-License:	GPL
+License:	GPLv3+
 URL:		http://www.cs.unipr.it/ppl/
 Source:		ftp://ftp.cs.unipr.it/pub/ppl/releases/%{version}/%{name}-%{version}.tar.gz
 #Patch0:		ppl-0.10-docfiles.patch
@@ -83,7 +83,7 @@ of the Parma Polyhedra Library.
 Summary:	The SWI-Prolog interface of the Parma Polyhedra Library
 Group:		Development/Libraries
 BuildRequires:	pl >= 5.6.0
-Requires:	%{name} = %{version}-%{release}, %{name}-pwl = %{version}-%{release}, pl >= 5.6.0, readline-devel
+Requires:	%{name} = %{version}-%{release}, %{name}-pwl = %{version}-%{release}, pl >= 5.6.0
 %description swiprolog
 This package adds SWI-Prolog support to the Parma Polyhedra Library.
 Install this package if you want to use the library in SWI Prolog programs.
@@ -310,6 +310,10 @@ rm -f %{buildroot}%{_libdir}/*.la %{buildroot}%{_libdir}/%{name}/*.la
 rm -rf %{buildroot}
 
 %changelog
+* Sat Sep 29 2007 Roberto Bagnara <bagnara@cs.unipr.it> 0.10-2
+- The value of the `License' tag is now `GPLv3+'.
+- `ppl-swiprolog' dependency on `readline-devel' removed (again).
+
 * Thu Aug 30 2007 Roberto Bagnara <bagnara@cs.unipr.it> 0.10-1
 - Started working on the PPL 0.10 spec file.
 - New packages `ppl-ocaml' and `ppl-ocaml-devel' contain the OCaml interface.
