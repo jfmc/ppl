@@ -81,7 +81,9 @@ o  All identifiers containing the strings `less_than_or_equal' or
 Bugfixes
 ========
 
-o  ...
+o  Fixed bugs that prevented building the library on systems not supported
+   by the Parma Watchdog Library or when the `--disable-watchdog' configure
+   was used.
 
 
 --------------------------------------------------------------------------

@@ -27,7 +27,6 @@ m4_include(`ppl_interface_generator_copyright')`'dnl
 
 #define __STDC_LIMIT_MACROS
 #include "ppl.hh"
-#include "pwl.hh"
 #include "swi_cfli.hh"
 #include "../exceptions.hh"
 #include <cassert>

@@ -27,7 +27,6 @@ m4_include(`ppl_interface_generator_copyright')
 */
 
 #include "ppl.hh"
-#include "pwl.hh"
 #include "xsb_cfli.hh"
 #include "../exceptions.hh"
 

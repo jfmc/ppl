@@ -34,14 +34,16 @@ if BUILD_SICSTUS_PROLOG_INTERFACE
 if BUILD_WATCHDOG_LIBRARY
 
 WATCHDOG_LIBRARY = $(top_builddir)/Watchdog/src/libpwl.la
-WATCHDOG_INCLUDES = -I$(top_builddir)/Watchdog/src
+WATCHDOG_INCLUDE_OPTIONS = -I$(top_builddir)/Watchdog/src
+WATCHDOG_DLOPEN = -dlopen $(WATCHDOG_LIBRARY)
+WATCHDOG_LINK_OPTIONS = -L$(top_builddir)/Watchdog/src/.libs -lpwl
 
 endif BUILD_WATCHDOG_LIBRARY
 
 AM_CPPFLAGS = \
 -I$(top_srcdir)/interfaces/Prolog \
 -I$(top_builddir)/src \
-$(WATCHDOG_INCLUDES) \
+$(WATCHDOG_INCLUDE_OPTIONS) \
 $(SICSTUS_PROLOG_INCLUDE_OPTIONS) \
 @extra_includes@
 
@@ -149,7 +151,8 @@ pl_check_test: ppl_sicstus ppl_sicstus.pl sp_pl_check.pl ../tests/pl_check.pl $(
 	fi
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		 ./ppl_sicstus -l $(srcdir)/sp_pl_check.pl \
+		$(WATCHDOG_DLOPEN) \
+		./ppl_sicstus -l $(srcdir)/sp_pl_check.pl \
         --goal "main."  \
 			>obtained_pchk
 	if [ $(srcdir) != `pwd` ]; then \
@@ -162,7 +165,9 @@ pl_check_test: ppl_sicstus ppl_sicstus.pl sp_pl_check.pl ../tests/pl_check.pl $(
 clpq_test: ppl_sicstus ppl_sicstus.pl sp_clpq.pl ../tests/clpq.pl ../tests/script_clpq $(EXPECTED_CLPQ) | pl_check_test
 	LANG=C; \
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
-	$(LIBTOOL) --mode=execute -dlopen ../../../src/libppl.la \
+	$(LIBTOOL) --mode=execute \
+	  -dlopen ../../../src/libppl.la \
+	  $(WATCHDOG_DLOPEN) \
 	  ./ppl_sicstus -l $(srcdir)/sp_clpq.pl \
 	    --goal "main('$(top_srcdir)/interfaces/Prolog/tests/clpq')." \
 	      <$(srcdir)/../tests/script_clpq >obtained_clpq
@@ -173,7 +178,9 @@ clpq_test: ppl_sicstus ppl_sicstus.pl sp_clpq.pl ../tests/clpq.pl ../tests/scrip
 clpq2_test: ppl_sicstus ppl_sicstus.pl sp_clpq.pl ../tests/clpq2.pl ../tests/script_clpq2 $(EXPECTED_CLPQ2) | clpq_test
 	LANG=C; \
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
-	$(LIBTOOL) --mode=execute -dlopen ../../../src/libppl.la \
+	$(LIBTOOL) --mode=execute \
+          -dlopen ../../../src/libppl.la \
+	  $(WATCHDOG_DLOPEN) \
 	  ./ppl_sicstus -l $(srcdir)/sp_clpq.pl \
 	    --goal "main('$(top_srcdir)/interfaces/Prolog/tests/clpq2')." \
 	      <$(srcdir)/../tests/script_clpq2 >obtained_clpq2

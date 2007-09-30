@@ -21,7 +21,6 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl.hh"
-#include "pwl.hh"
 #include <ciao_prolog.h>
 #include <cassert>
 #include <sstream>

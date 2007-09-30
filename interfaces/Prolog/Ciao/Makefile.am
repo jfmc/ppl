@@ -32,12 +32,22 @@ ciao_clpq2.pl \
 ciao_pl_check.pl
 
 if BUILD_CIAO_PROLOG_INTERFACE
+
+if BUILD_WATCHDOG_LIBRARY
+
+WATCHDOG_LIBRARY = $(top_builddir)/Watchdog/src/libpwl.la
+WATCHDOG_INCLUDE_OPTIONS = -I$(top_builddir)/Watchdog/src
+WATCHDOG_DLOPEN = -dlopen $(WATCHDOG_LIBRARY)
+WATCHDOG_LINK_OPTIONS = -L$(top_builddir)/Watchdog/src/.libs -lpwl
+
+endif BUILD_WATCHDOG_LIBRARY
+
 if ENABLE_SHARED
 
 AM_CPPFLAGS = \
 -I$(top_srcdir)/interfaces/Prolog \
 -I$(top_builddir)/src \
--I$(top_builddir)/Watchdog/src \
+$(WATCHDOG_INCLUDE_OPTIONS) \
 @extra_includes@
 
 interface_generator_dependencies = \
@@ -53,7 +63,7 @@ pkglib_LTLIBRARIES = libppl_ciao.la
 libppl_ciao_la_SOURCES = ppl_ciao.cc
 libppl_ciao_la_LIBADD = \
 $(top_builddir)/src/libppl.la \
-$(top_builddir)/Watchdog/src/libpwl.la \
+$(WATCHDOG_LIBRARY) \
 @extra_libraries@
 libppl_ciao_la_LDFLAGS = -module -avoid-version
 
@@ -141,7 +151,7 @@ check-local: pl_check_test clpq_test clpq2_test
 pl_check_test: ciao_pl_check$(EXEEXT) .libs/libppl_ciao.so $(EXPECTED_PCHK)
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		-dlopen ../../../Watchdog/src/libpwl.la \
+		$(WATCHDOG_DLOPEN) \
 		-dlopen libppl_ciao.la \
 		./ciao_pl_check \
 			 >obtained_pchk
@@ -153,7 +163,7 @@ clpq_test: ciao_clpq$(EXEEXT) .libs/libppl_ciao.so ../tests/script_clpq $(EXPECT
 	GLOBALSTKSIZE=1000000 \
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		-dlopen ../../../Watchdog/src/libpwl.la \
+		$(WATCHDOG_DLOPEN) \
 		-dlopen libppl_ciao.la \
 		./ciao_clpq \
 			<$(srcdir)/../tests/script_clpq >obtained_clpq
@@ -165,7 +175,7 @@ clpq2_test: ciao_clpq2$(EXEEXT) .libs/libppl_ciao.so ../tests/script_clpq2 $(EXP
 	GLOBALSTKSIZE=100000 \
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		-dlopen ../../../Watchdog/src/libpwl.la \
+		$(WATCHDOG_DLOPEN) \
 		-dlopen libppl_ciao.la \
 		./ciao_clpq2 \
 			<$(srcdir)/../tests/script_clpq2 >obtained_clpq2

@@ -34,6 +34,15 @@ xsb_pl_check.P
 
 if BUILD_XSB_PROLOG_INTERFACE
 
+if BUILD_WATCHDOG_LIBRARY
+
+WATCHDOG_LIBRARY = $(top_builddir)/Watchdog/src/libpwl.la
+WATCHDOG_INCLUDE_OPTIONS = -I$(top_builddir)/Watchdog/src
+WATCHDOG_DLOPEN = -dlopen $(WATCHDOG_LIBRARY)
+WATCHDOG_LINK_OPTIONS = -L$(top_builddir)/Watchdog/src/.libs -lpwl
+
+endif BUILD_WATCHDOG_LIBRARY
+
 BUILT_SOURCES = \
 ppl_xsb.H \
 ppl_xsb.cc
@@ -58,7 +67,7 @@ AM_CPPFLAGS = \
 -I$(top_srcdir)/interfaces/Prolog \
 -I$(top_buildir)/interfaces/Prolog \
 -I$(top_builddir)/src \
--I$(top_builddir)/Watchdog/src \
+$(WATCHDOG_INCLUDE_OPTIONS) \
 $(XSB_PROLOG_INCLUDE_OPTIONS) \
 @extra_includes@
 
@@ -66,7 +75,7 @@ pkglib_LTLIBRARIES = ppl_xsb.la
 nodist_ppl_xsb_la_SOURCES = ppl_xsb.cc
 ppl_xsb_la_LIBADD = \
 $(top_builddir)/src/libppl.la \
-$(top_builddir)/Watchdog/src/libpwl.la \
+$(WATCHDOG_LIBRARY) \
 @extra_libraries@
 ppl_xsb_la_LDFLAGS = -module -avoid-version
 
@@ -80,7 +89,7 @@ ppl_xsb.xwam: ppl_xsb.H ppl_xsb.cc ppl_xsb.la Makefile
 	    "-L../../../src/.libs -L../../../Watchdog/src/.libs')])." \
 		| $(LIBTOOL) --mode=execute \
 			-dlopen ../../../src/libppl.la \
-			-dlopen ../../../Watchdog/src/libpwl.la \
+			$(WATCHDOG_DLOPEN) \
 			xsb
 	rm -f ppl_xsb.c
 
@@ -124,7 +133,7 @@ check-local: ppl_xsb.la xsb_clpq.P ../tests/clpq.pl ../tests/script_clpq xsb_clp
 	rm -f xsb_clpq.xwam
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		-dlopen ../../../Watchdog/src/libpwl.la \
+		$(WATCHDOG_DLOPEN) \
 		-dlopen ppl_xsb.la \
 		xsb xsb_clpq \
 			<$(srcdir)/../tests/script_clpq >obtained_clpq
@@ -140,7 +149,7 @@ check-local: ppl_xsb.la xsb_clpq.P ../tests/clpq.pl ../tests/script_clpq xsb_clp
 	rm -f xsb_clpq2.xwam
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		-dlopen ../../../Watchdog/src/libpwl.la \
+		$(WATCHDOG_DLOPEN) \
 		-dlopen ppl_xsb.la \
 		xsb xsb_clpq2 \
 			<$(srcdir)/../tests/script_clpq2 >obtained_clpq2
@@ -158,7 +167,7 @@ pl_check_test: ppl_xsb.la ppl_xsb.xwam xsb_pl_check.P ../tests/pl_check.pl
 	rm -f xsb_pl_check.xwam
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		-dlopen ../../../Watchdog/src/libpwl.la \
+		$(WATCHDOG_DLOPEN) \
 		-dlopen ppl_xsb.la \
 		xsb xsb_pl_check \
 			>obtained_pchk
