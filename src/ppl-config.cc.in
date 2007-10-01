@@ -76,7 +76,7 @@ Format required_format = NO_FORMAT;
 
 Interface required_interface = NO_INTERFACE;
 
-#define PPL_LICENSE "GNU GENERAL PUBLIC LICENSE, Version 2"
+#define PPL_LICENSE "GNU GENERAL PUBLIC LICENSE, Version 3"
 
 std::string prefix;
 std::string exec_prefix;
