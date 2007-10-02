@@ -122,9 +122,9 @@ bool test01() {
   mip.add_to_integer_space_dimensions(Variables_Set(D));
 
   try {
-    // Set a 1 second timeout.
+    // Set a 2 seconds timeout.
     Parma_Watchdog_Library::Watchdog
-      w(100, abandon_expensive_computations, t);
+      w(200, abandon_expensive_computations, t);
 
     pg = mip.optimizing_point();
 
