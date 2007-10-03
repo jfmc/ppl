@@ -196,4 +196,10 @@ System.out.println(@LTOPOLOGY@@LCLASS@1.toString());
 
 ');
 
+m4_define(`ppl_@CLASS@_total_memory_in_bytes_code', `
+System.out.print("Total memory in bytes of @LTOPOLOGY@@LCLASS@1: ");
+System.out.println(@LTOPOLOGY@@LCLASS@1.total_memory_in_bytes());
+
+');
+
 m4_divert`'dnl

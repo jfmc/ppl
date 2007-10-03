@@ -244,6 +244,12 @@ public class MIP_Problem extends PPL_Object {
     */
     public native void optimal_value(Coefficient num, Coefficient den);
 
+   /*! \brief
+     Returns the total size in bytes of the memory occupied by the
+     underlined C++ object.
+   */
+    public native long total_memory_in_bytes();
+
     //! Returns a string representation of \p this.
     public native String toString();
 

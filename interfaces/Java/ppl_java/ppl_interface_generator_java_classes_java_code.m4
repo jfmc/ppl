@@ -433,3 +433,10 @@ m4_define(`ppl_@CLASS@_size_code',
   public native long size();
 
 ')
+
+m4_define(`ppl_@CLASS@_total_memory_in_bytes_code',
+`dnl
+%<--%<--%<-- @CLASS@.java
+  public native long total_memory_in_bytes();
+
+')

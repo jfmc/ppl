@@ -856,3 +856,13 @@ JNIEXPORT jstring JNICALL Java_ppl_1java_@1CLASS@_toString
   return 0;
 }
 ')
+
+m4_define(`ppl_@CLASS@_total_memory_in_bytes_code',
+`JNIEXPORT jlong JNICALL Java_ppl_1java_@1CLASS@_total_1memory_1in_1bytes
+(JNIEnv* env, jobject j_pps) {
+  jlong this_ptr = get_ptr(env, j_pps);
+  @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
+  return this_@LCLASS@->total_memory_in_bytes();
+}
+
+')

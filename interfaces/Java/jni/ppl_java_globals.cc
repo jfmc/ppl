@@ -459,3 +459,13 @@ JNIEXPORT jstring JNICALL Java_ppl_1java_Congruence_1System_toString
   return env->NewStringUTF(s.str().c_str());
 }
 
+JNIEXPORT jlong JNICALL Java_ppl_1java_MIP_1Problem_total_1memory_1in_1bytes
+(JNIEnv* env , jobject j_this_mip_problem) {
+  try {
+    jlong ptr = get_ptr(env, j_this_mip_problem);
+    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(ptr);
+    return mip->total_memory_in_bytes();
+  }
+  CATCH_ALL;
+  return 0;
+}
