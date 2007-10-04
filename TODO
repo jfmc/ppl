@@ -4,13 +4,6 @@ Enhancements for PPL 0.10
 
 - Write interfaces/OCaml/README.ocaml.
 
-- Have a look at
-
-    http://www.inf.ethz.ch/personal/gonnet/FPAccuracy/Analysis.html
-
-  especially at the "Surprises" section, where it talks about
-  rounding problems for division and multiplication on Pentium/AMD.
-
 - Provide PPL-specific documentation on the use of `make check'
   and `make uninstall'.
 
@@ -52,16 +45,10 @@ Enhancements for PPL 0.10
   but all the others should follow.
 - Update the examples in README.configure.
 - Fix the dependency problems in interfaces/OCaml/Makefile.am.
-- Using meta_programming.hh it is possible to define all the swap functions
-  "automatically".  Consider whether it is worth doing it.
 - In the SWI-Prolog documentation, the command to dynamically
   load the library has to be modified so as to specify the `.so'
   extension: this is required under Mac OS X and seems not to
   do any harm under GNU/Linux.
-- Add a "quick assign" function to checked numbers that allows
-  to efficiently assign small integer constants (like those in
-  the range [-2, 2]) that are guaranteed not to cause any
-  rounding or overflow problems.
 - Check all the Makefile.am's to make sure CLEANFILES, MOSTLYCLEANFILES
   and DISTCLEANFILES are used in a sensible way.
 - Revise the documentation for all the congruences() and
@@ -75,36 +62,53 @@ Enhancements for PPL 0.10
 - Reduce the number of FIXMEs to no more than 20.
 - Complete the manual pages for ppl-config, ppl_lpsol and ppl_lcdd.
 - Write a manual page for ppl (3).
-- Provide a single, generic implementation to replace all our status
-  classes.
 - Clearly explain, in the documentation, how (not) to use
   set_GMP_memory_allocation_functions().  More generally, explain how
   to have memory-guarded computations.
-- Provide a generic implementation for the `widening with tokens'.
 - Direct_Product: Check that all comments and code are consistent with
   intended semantics.
 
 Enhancements for PPL 0.10 or later versions
-==========================================
+===========================================
 
+- Add a "quick assign" function to checked numbers that allows
+  to efficiently assign small integer constants (like those in
+  the range [-2, 2]) that are guaranteed not to cause any
+  rounding or overflow problems.
 - Consider whether or not our interface for method time_elapse_assign()
   is the one needed by users: in particular, see if it should take as
   an argument a generator system, instead of an abstract element.
+- Experiment with different compilation flags, such as GCC's
+  `-fno-threadsafe-statics'.
+- Have a look at
+
+    http://www.inf.ethz.ch/personal/gonnet/FPAccuracy/Analysis.html
+
+  especially at the "Surprises" section, where it talks about
+  rounding problems for division and multiplication on Pentium/AMD.
+
+
+Enhancements for PPL 0.11 or later versions
+===========================================
+
+- Provide a generic implementation for the `widening with tokens'.
 - In the OK() methods, instead of having all those #ifndef NDEBUG,
   it is probably worthwhile to use a suitable defined `barf' stream
   that does the right thing.
-- Provide support for strict inequalities in MIP problems.
-- Implement void Polyhedron::envelope_assign(const Polyhedron& y).
+- Using meta_programming.hh it is possible to define all the swap functions
+  "automatically".  Consider whether it is worth doing it.
+- Provide a single, generic implementation to replace all our status
+  classes.
 - Implement the extrapolation operators defined in HenzingerH95
   and HenzingerPW01.
+- Implement void Polyhedron::envelope_assign(const Polyhedron& y).
+- Provide support for strict inequalities in MIP problems.
 - See whether, using the techniques described in
   ftp://ftp.ifor.math.ethz.ch/pub/fukuda/reports/polyunion001120.ps.gz
   we can implement bool poly_hull_assign_if_exact(PH& p, const PH& q),
   temporarily in algorithms.hh, more efficiently.
 - Provide optimized implementations of Polyhedron::expand_dimension()
   Polyhedron::fold_dimensions().
-- Experiment with different compilation flags, such as GCC's
-  `-fno-threadsafe-statics'.
 - Suppose we are only interested in integral solutions (as is the
   case, e.g., in most termination analyses).  Then cutting-plane methods
   (Gomory, Chvátal, ...) allow to shrink polyhedra still not losing any
@@ -126,8 +130,7 @@ Efficiency Issues
 
 - There must be a more efficient way to implement
   bool Polyhedron::is_disjoint_from(const Polyhedron&).
-- There must be a more efficient way to compute convex
-  differences.
+- There must be a more efficient way to compute convex differences.
 - We are being rather careless about the creation of temporaries
   as far as the classes Linear_Expression, Constraint and Generator
   are concerned.
