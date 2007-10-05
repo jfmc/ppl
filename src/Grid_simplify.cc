@@ -169,7 +169,7 @@ Grid::reduce_pc_with_pc(R& row, R& pivot,
   TEMP_INTEGER(t);
   TEMP_INTEGER(reduced_row_col);
   // Use reduced_row_col temporarily to hold the gcd.
-  gcdext_assign(reduced_row_col, pivot_column, row_column, s, t);
+  gcdext_assign(reduced_row_col, s, t, pivot_column, row_column);
   // Now pivot[column] * s + row[column] * t == gcd.
 
   // Store the reduced ratio between pivot[column] and row[column].
