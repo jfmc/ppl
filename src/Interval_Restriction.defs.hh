@@ -258,7 +258,7 @@ intersect_restriction(Interval_Restriction_Integer<Base>& to, const From1& x, co
 template <typename Base, typename From1, typename From2>
 inline bool
 diff_restriction(Interval_Restriction_Integer<Base>& to,
-		 const From1& x, const From2& y) {
+		 const From1& x, const From2&) {
   to.set_integer(Restriction_Integer<From1, Base>::get(x).get_integer());
   return true;
 }
