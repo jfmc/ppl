@@ -1304,7 +1304,13 @@ private:
   Parma_Polyhedra_Library::operator==<Interval>(const Box<Interval>& x,
 						const Box<Interval>& y);
 
-#if !defined(__GNUC__) || __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ > 3)
+#ifdef __ICC
+  // Work around bug of the Intel compiler: use `interval_type'
+  // instead of `Interval'.
+  friend std::ostream&
+  Parma_Polyhedra_Library
+  ::IO_Operators::operator<<<>(std::ostream& s, const Box<interval_type>& box);
+#elif !defined(__GNUC__) || __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ > 3)
   friend std::ostream&
   Parma_Polyhedra_Library
   ::IO_Operators::operator<<<>(std::ostream& s, const Box<Interval>& box);
