@@ -313,7 +313,7 @@ struct FUNCTION_CLASS(name) <Policy1, Policy2, Policy3, type1, type2, type3> { \
   SPECIALIZE_FUN3_0_1(gcd, func, Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
 #define SPECIALIZE_GCDEXT(func, To1, From1, From2, To2, To3)		\
   SPECIALIZE_FUN5_0_1(gcdext, func, Result, nonconst, To1,		\
-		      const, From1, const, From2, nonconst, To2, nonconst, To3, Rounding_Dir)
+		      nonconst, To2, nonconst, To3, const, From1, const, From2, Rounding_Dir)
 #define SPECIALIZE_LCM(func, To, From1, From2) \
   SPECIALIZE_FUN3_0_1(lcm, func, Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
 #define SPECIALIZE_INPUT(func, Type) \
@@ -350,8 +350,7 @@ DECLARE_FUN2_0_2(div2exp,     Result, nonconst, To, const, From, int, Rounding_D
 DECLARE_FUN3_0_1(add_mul,     Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
 DECLARE_FUN3_0_1(sub_mul,     Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
 DECLARE_FUN3_0_1(gcd,         Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
-DECLARE_FUN5_0_1(gcdext,      Result, nonconst, To1, const, From1, const, From2,
-		                      nonconst, To2, nonconst, To3, Rounding_Dir)
+DECLARE_FUN5_0_1(gcdext,      Result, nonconst, To1, nonconst, To2, nonconst, To3, const, From1, const, From2, Rounding_Dir)
 DECLARE_FUN3_0_1(lcm,         Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
 DECLARE_FUN1_0_2(input,       Result, nonconst, Type, std::istream&, Rounding_Dir)
 DECLARE_FUN1_1_2(output,      Result, std::ostream&, const, Type, const Numeric_Format&, Rounding_Dir)

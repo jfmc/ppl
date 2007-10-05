@@ -681,12 +681,13 @@ gcd_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
     return gcd<To_Policy, From1_Policy, From2_Policy>(to, x, y, dir);
 }
 
-template <typename To1_Policy, typename From1_Policy, typename From2_Policy,
-	  typename To2_Policy, typename To3_Policy,
-	  typename To1, typename From1, typename From2, typename To2, typename To3>
+template <typename To1_Policy, typename To2_Policy, typename To3_Policy,
+	  typename From1_Policy, typename From2_Policy,
+	  typename To1, typename To2, typename To3,
+	  typename From1, typename From2>
 inline Result
-gcdext_ext(To1& to, const From1& x, const From2& y,
-	   To2& s, To3& t, Rounding_Dir dir) {
+gcdext_ext(To1& to, To2& s, To3& t, const From1& x, const From2& y,
+	   Rounding_Dir dir) {
   if (is_nan<From1_Policy>(x) || is_nan<From2_Policy>(y))
     return set_special<To1_Policy>(to, VC_NAN);
   else if (is_minf<From1_Policy>(x) || is_pinf<From1_Policy>(x)) {
@@ -700,7 +701,7 @@ gcdext_ext(To1& to, const From1& x, const From2& y,
     return abs_ext<To1_Policy, From1_Policy>(to, x, dir);
   }
   else
-    return gcdext<To1_Policy, From1_Policy, From2_Policy, To2_Policy, To3_Policy>(to, x, y, s, t, dir);
+    return gcdext<To1_Policy, To2_Policy, To3_Policy, From1_Policy, From2_Policy>(to, s, t, x, y, dir);
 }
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,

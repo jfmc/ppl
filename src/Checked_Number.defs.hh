@@ -565,16 +565,17 @@ FUNC2(sub_mul_assign_r)
 #undef FUNC2
 
 #define FUNC4(name) \
-template <typename To1, typename From1, typename From2,	\
-	  typename To2, typename To3> \
+template <typename To1, typename To2, typename To3, \
+	  typename From1, typename From2> \
 typename Enable_If<Is_Native_Or_Checked<To1>::value \
-                   && Is_Native_Or_Checked<From1>::value \
-                   && Is_Native_Or_Checked<From2>::value \
                    && Is_Native_Or_Checked<To2>::value \
-                   && Is_Native_Or_Checked<To3>::value, \
+                   && Is_Native_Or_Checked<To3>::value \
+                   && Is_Native_Or_Checked<From1>::value \
+		   && Is_Native_Or_Checked<From2>::value, \
                    Result>::type \
-name(To1& to, const From1& x, const From2& y, \
-     To2& s, To3& t, Rounding_Dir dir);
+name(To1& to, To2& s, To3& t, \
+     const From1& x, const From2& y, \
+     Rounding_Dir dir);
 
 FUNC4(gcdext_assign_r)
 
@@ -709,10 +710,10 @@ gcd_assign(Checked_Number<T, Policy>& x,
 template <typename T, typename Policy>
 void
 gcdext_assign(Checked_Number<T, Policy>& x,
-	      const Checked_Number<T, Policy>& y,
-	      const Checked_Number<T, Policy>& z,
 	      Checked_Number<T, Policy>& s,
-	      Checked_Number<T, Policy>& t);
+	      Checked_Number<T, Policy>& t,
+	      const Checked_Number<T, Policy>& y,
+	      const Checked_Number<T, Policy>& z);
 
 //! Assigns to \p x the least common multiple of \p y and \p z.
 /*! \relates Checked_Number */

@@ -494,10 +494,11 @@ SPECIALIZE_GCD(gcd_mpz, mpz_class, mpz_class, mpz_class)
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy>
 inline Result
-gcdext_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y,
-	   mpz_class& s, mpz_class& t, Rounding_Dir) {
-  mpz_gcdext(to.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t(),
-	     s.get_mpz_t(), t.get_mpz_t());
+gcdext_mpz(mpz_class& to, mpz_class& s, mpz_class& t,
+	   const mpz_class& x, const mpz_class& y,
+	   Rounding_Dir) {
+  mpz_gcdext(to.get_mpz_t(), s.get_mpz_t(), t.get_mpz_t(),
+	     x.get_mpz_t(), y.get_mpz_t());
   return V_EQ;
 }
 

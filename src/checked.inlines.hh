@@ -284,12 +284,12 @@ gcd_exact(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   return abs<To_Policy, To_Policy>(to, to, dir);
 }
 
-template <typename To1_Policy, typename From1_Policy, typename From2_Policy,
-	  typename To2_Policy, typename To3_Policy,
-	  typename To1, typename From1, typename From2,
-	  typename To2, typename To3>
+template <typename To1_Policy, typename To2_Policy, typename To3_Policy,
+	  typename From1_Policy, typename From2_Policy,
+	  typename To1, typename To2, typename To3,
+	  typename From1, typename From2>
 inline Result
-gcdext_exact(To1& to, const From1& x, const From2& y, To2& s, To3& t,
+gcdext_exact(To1& to, To2& s, To3& t, const From1& x, const From2& y,
 	     Rounding_Dir dir) {
   if (y == 0) {
     if (x == 0) {
