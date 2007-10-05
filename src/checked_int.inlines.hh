@@ -1066,7 +1066,7 @@ idiv_signed_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename Type>
 inline Result
-idiv_unsigned_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
+idiv_unsigned_int(Type& to, const Type x, const Type y, Rounding_Dir) {
   if (CHECK_P(To_Policy::check_div_zero, y == 0))
     return set_special<To_Policy>(to, V_DIV_ZERO);
   to = x / y;

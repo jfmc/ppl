@@ -187,7 +187,7 @@ SPECIALIZE_CONSTRUCT(construct_mpz_base, mpz_class, unsigned long)
 
 template <typename To_Policy, typename From_Policy, typename From>
 inline Result
-construct_mpz_float(mpz_class& to, const From& from, Rounding_Dir dir) {
+construct_mpz_float(mpz_class& to, const From& from, Rounding_Dir) {
   if (is_nan<From_Policy>(from)) {
     if (To_Policy::has_nan) {
       new (&to) mpz_class();

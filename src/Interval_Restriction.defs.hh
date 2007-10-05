@@ -257,7 +257,8 @@ intersect_restriction(Interval_Restriction_Integer<Base>& to, const From1& x, co
 
 template <typename Base, typename From1, typename From2>
 inline bool
-diff_restriction(Interval_Restriction_Integer<Base>& to, const From1& x, const From2& y) {
+diff_restriction(Interval_Restriction_Integer<Base>& to,
+		 const From1& x, const From2& y) {
   to.set_integer(Restriction_Integer<From1, Base>::get(x).get_integer());
   return true;
 }
@@ -608,7 +609,8 @@ intersect_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to, const Fr
 
 template <typename T, typename Base, typename From1, typename From2>
 inline bool
-diff_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to, const From1& x, const From2& y) {
+diff_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to,
+		 const From1& x, const From2& y) {
   // FIXME: to be written
   return true;
 }
