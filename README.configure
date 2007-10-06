@@ -6,11 +6,11 @@ Configuration of the Parma Polyhedra Library
 ============================================
 
 In an ideal situation (i.e., on a more or less standard Un*x
-environment, with the right compilers, the GMP library installed in
-a standard place and provided the user is satisfied with all the
-options we chose as defaults), a source distribution of the Parma
-Polyhedra Library (PPL) can be unpacked, configured, built and
-installed with the following, well-known procedure:
+environment, with the right compilers, the GMP library installed in a
+standard place and provided the user is satisfied with all the options
+we chose as defaults), a source distribution of the Parma Polyhedra
+Library (PPL) can be unpacked, configured, built and installed with
+the following, well-known procedure:
 
   $ tar jxf ppl-x.y.tar.bz2
   $ ./configure
@@ -19,8 +19,8 @@ installed with the following, well-known procedure:
   Password: <root password>
   $ make install
 
-After successful completion of these steps the PPL is completely installed
-on the system and can be used as expected.
+After successful completion of these steps the PPL is completely
+installed on the system and can be used as expected.
 
 On the other hand, the PPL `configure' shell script provides many
 options to adjust the build and installation process for customizing
@@ -115,16 +115,16 @@ was segfaulting).  Even more important, GCC versions 3.4.x are known
 to have miscompiled at least one of such development snapshots.
 
 Here is an example of configuration that uses the Intel C/C++ compiler
-version 8.1.  Assuming you have configured GMP with a command like
+version 10.0.  Assuming you have configured GMP with a command like
 
-  CC=icc CXX=icpc /path/to/gmp-4.1.4/configure --enable-cxx \
-    --prefix=/opt/intel_cc_80
+  CC=icc CXX=icpc /path/to/gmp-4.2.2/configure --enable-cxx \
+    --prefix=/opt/intel/cce/10.0.026
 
 you can configure the PPL with a command like
 
   /path/to/ppl-x.y/configure --with-cxx=icpc --with-cc=icc \
-    --with-cxxflags="-w2 -wd161,177,193,279,383,444,981,1188,1418" \
-    --with-libgmpxx-prefix=/opt/intel_cc_80
+    --with-cxxflags="-strict-ansi -w2 -wd161,177,193,279,383,444,981,1098,1188,1418" \
+    --with-libgmpxx-prefix=/opt/intel/cce/10.0.026
 
 Notice that the `--with-cxxflags' option is absolutely non-essential
 here and is only included to show how extra compiler options can be
