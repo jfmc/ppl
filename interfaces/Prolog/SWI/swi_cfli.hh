@@ -197,8 +197,7 @@ Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
 }
 
 /*!
-  Assign to \p c a Prolog cons (list constructor)whose head is \p h
-  and tail is \p t.
+  Assign to \p c a Prolog list whose head is \p h and tail is \p t.
 */
 inline int
 Prolog_construct_cons(Prolog_term_ref c,
