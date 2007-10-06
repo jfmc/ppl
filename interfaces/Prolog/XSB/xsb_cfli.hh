@@ -254,7 +254,7 @@ Prolog_is_compound(Prolog_term_ref t) {
 }
 
 /*!
-  Return true if \p t is a Prolog list, false otherwise.
+  Return true if \p t is a Prolog cons (list constructor), false otherwise.
 */
 inline int
 Prolog_is_cons(Prolog_term_ref t) {
