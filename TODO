@@ -78,8 +78,6 @@ Enhancements for PPL 0.10 or later versions
 - Consider whether or not our interface for method time_elapse_assign()
   is the one needed by users: in particular, see if it should take as
   an argument a generator system, instead of an abstract element.
-- Experiment with different compilation flags, such as GCC's
-  `-fno-threadsafe-statics'.
 - Have a look at
 
     http://www.inf.ethz.ch/personal/gonnet/FPAccuracy/Analysis.html
