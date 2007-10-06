@@ -281,7 +281,7 @@ public:
   */
   Constraint_System minimized_constraints() const;
 
-  //! Returns a system of constraints which approximates \p *this.
+  //! Returns a system of congruences which approximates \p *this.
   Congruence_System congruences() const;
 
   /*! \brief
@@ -1655,16 +1655,22 @@ public:
   */
   Open_Product& operator=(const Open_Product& y);
 
-  //! Returns the system of constraints.
+  //! Returns a system of constraints that \p *this satisfies.
   Constraint_System constraints() const;
 
-  //! Returns the system of constraints in reduced form.
+  /*! \brief
+    Returns a system of constraints in reduced form that \p *this
+    satisfies.
+  */
   Constraint_System minimized_constraints() const;
 
-  //! Returns the system of congruences.
+  //! Returns a system of congruences that \p *this satisfies.
   Congruence_System congruences() const;
 
-  //! Returns the system of congruences in reduced form.
+  /*! \brief
+    Returns a system of congruences in reduced form that \p *this
+    satisfies.
+  */
   Congruence_System minimized_congruences() const;
 
   //! Returns the system of generators.

@@ -545,12 +545,12 @@ public:
   //! Returns the system of generators, with no redundant generator.
   const Generator_System& minimized_generators() const;
 
-  //! Returns a system of congruences created from the constraints.
+  //! Returns a system of congruences that \p *this satisfies.
   Congruence_System congruences() const;
 
   /*! \brief
-    Returns a system of congruences created from the minimized
-    constraints.
+    Returns a system of congruences in reduced form that \p *this
+    satisfies.
   */
   Congruence_System minimized_congruences() const;
 

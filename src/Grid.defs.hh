@@ -95,7 +95,7 @@ bool operator!=(const Grid& x, const Grid& y);
   sect_rational_grids) and it is always possible to obtain either
   representation.
   That is, if we know the system of congruences, we can obtain
-  from this the system of generators that define the same grid
+  from this a system of generators that define the same grid
   and vice versa.
   These systems can contain redundant members, or they can be in the
   minimal form.
@@ -105,7 +105,7 @@ bool operator!=(const Grid& x, const Grid& y);
   and returns the Boolean value <CODE>false</CODE> whenever
   the resulting grid turns out to be empty.
 
-  A key attributes of any grid is its space dimension (the dimension
+  A key attribute of any grid is its space dimension (the dimension
   \f$n \in \Nset\f$ of the enclosing vector space):
 
   - all grids, the empty ones included, are endowed with a space
@@ -613,12 +613,12 @@ public:
   */
   dimension_type affine_dimension() const;
 
-  //! Returns a system of constraints constructed from the grid equalities.
+  //! Returns a system of constraints  that are satisfied by \p *this.
   Constraint_System constraints() const;
 
   /*! \brief
-    Returns a system of constraints constructed from the equalities
-    in the minimal congruence system.
+    Returns a system of constraints in reduced form that are satisfied
+    by \p *this.
   */
   Constraint_System minimized_constraints() const;
 
