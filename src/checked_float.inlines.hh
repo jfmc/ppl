@@ -130,13 +130,15 @@ fpu_inverse_rounding(Rounding_Dir dir) {
 
 inline float
 limit_precision(float v) {
-  volatile float x = v;
+  float x = v;
+  avoid_cse(x);
   return x;
 }
 
 inline double
 limit_precision(double v) {
-  volatile double x = v;
+  double x = v;
+  avoid_cse(x);
   return x;
 }
 
@@ -150,7 +152,8 @@ limit_precision(long double v) {
   // that causes excessive optimization compiling -(-a * b).
   // See http://gcc.gnu.org/bugzilla/show_bug.cgi?id=21032
   // and http://gcc.gnu.org/bugzilla/show_bug.cgi?id=21067.
-  volatile long double x = v;
+  long double x = v;
+  avoid_cse(x);
   return x;
 #endif
 }
