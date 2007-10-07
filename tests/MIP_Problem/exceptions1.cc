@@ -119,7 +119,7 @@ test05() {
   Coefficient den;
 
   try {
-    // This tries to evaluate the objective function on a space dimension
+    // This tries to evaluate the objective function on a space-dimension
     // incompatible generator.
     mip.evaluate_objective_function(p, num, den);
   }
