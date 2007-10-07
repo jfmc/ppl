@@ -76,12 +76,6 @@ Enhancements for PPL 0.10 or later versions
 - Consider whether or not our interface for method time_elapse_assign()
   is the one needed by users: in particular, see if it should take as
   an argument a generator system, instead of an abstract element.
-- Have a look at
-
-    http://www.inf.ethz.ch/personal/gonnet/FPAccuracy/Analysis.html
-
-  especially at the "Surprises" section, where it talks about
-  rounding problems for division and multiplication on Pentium/AMD.
 
 
 Enhancements for PPL 0.11 or later versions
