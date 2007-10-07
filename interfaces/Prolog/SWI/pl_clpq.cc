@@ -27,6 +27,11 @@ extern "C" install_t uninstall();
 
 int
 main(int, char** argv) {
+#if PLVERSION > 50643
+  // Tell SWI-Prolog not to fiddle with GMP allocation functions.
+  PL_action(PL_GMP_SET_ALLOC_FUNCTIONS, FALSE);
+#endif
+
   char* pl_args[2];
   pl_args[0] = argv[0];
   pl_args[1] = 0;
