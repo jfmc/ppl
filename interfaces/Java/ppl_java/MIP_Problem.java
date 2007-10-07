@@ -246,7 +246,7 @@ public class MIP_Problem extends PPL_Object {
 
    /*! \brief
      Returns the total size in bytes of the memory occupied by the
-     underlined C++ object.
+     underlying C++ object.
    */
     public native long total_memory_in_bytes();
 
@@ -256,10 +256,10 @@ public class MIP_Problem extends PPL_Object {
     //! Checks if all the invariants are satisfied.
     public native boolean OK();
 
-    //! Builds the underlined C++ object.
+    //! Builds the underlying C++ object.
     private native void build_cpp_object(long dim);
 
-    //! Builds the underlined C++ object.
+    //! Builds the underlying C++ object.
     private native void build_cpp_object(long dim,
 					 Constraint_System cs,
 					 Linear_Expression obj,

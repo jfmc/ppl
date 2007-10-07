@@ -208,11 +208,11 @@ build_ppl_grid_generator(JNIEnv* env, const jobject& j_g);
 jobject
 build_java_grid_generator(JNIEnv* env, const Grid_Generator& grid_g);
 
-// Get a pointer to the underlined C++ object from a Java object.
+// Get a pointer to the underlying C++ object from a Java object.
 jlong
 get_ptr(JNIEnv* env, const jobject& ppl_object);
 
-// Get a pointer to the underlined C++ object from a Java object.
+// Get a pointer to the underlying C++ object from a Java object.
 void
 set_ptr(JNIEnv* env, const jobject& ppl_object, const long long address);
 
