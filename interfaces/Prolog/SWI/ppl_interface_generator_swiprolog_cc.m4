@@ -57,7 +57,7 @@ long Prolog_max_integer;
 /*!
   Temporary used to communicate big integers between C++ and Prolog.
 */
-mpz_class tmp_mpz_class;
+mpz_class* tmp_mpz_class_p = 0;
 
 /*!
   Performs system-dependent initialization.
@@ -67,6 +67,7 @@ ppl_Prolog_sysdep_init() {
   Prolog_has_unbounded_integers = true;
   Prolog_min_integer = 0;
   Prolog_max_integer = 0;
+  tmp_mpz_class_p = new mpz_class();
 }
 
 /*!
@@ -74,20 +75,25 @@ ppl_Prolog_sysdep_init() {
 */
 void
 ppl_Prolog_sysdep_deinit() {
+  assert(tmp_mpz_class_p != 0);
+  delete tmp_mpz_class_p;
+  tmp_mpz_class_p = 0;
 }
 
 int
 Prolog_get_Coefficient(Prolog_term_ref t, PPL::Coefficient& n) {
   assert(Prolog_is_integer(t));
-  PL_get_mpz(t, tmp_mpz_class.get_mpz_t());
-  n = tmp_mpz_class;
+  assert(tmp_mpz_class_p != 0);
+  PL_get_mpz(t, tmp_mpz_class_p->get_mpz_t());
+  n = *tmp_mpz_class_p;
   return 1;
 }
 
 int
 Prolog_unify_Coefficient(Prolog_term_ref t, const PPL::Coefficient& n) {
-  PPL::assign_r(tmp_mpz_class, n, PPL::ROUND_NOT_NEEDED);
-  return PL_unify_mpz(t, tmp_mpz_class.get_mpz_t());
+  assert(tmp_mpz_class_p != 0);
+  PPL::assign_r(*tmp_mpz_class_p, n, PPL::ROUND_NOT_NEEDED);
+  return PL_unify_mpz(t, tmp_mpz_class_p->get_mpz_t());
 }
 
 int
