@@ -168,9 +168,14 @@ public:
   */
   void insert(const Constraint& c);
 
+  //! Initializes the class.
+  static void initialize();
+
+  //! Finalizes the class.
+  static void finalize();
+
   /*! \brief
-    Returns the singleton system containing only
-    Constraint::zero_dim_false().
+    Returns the singleton system containing only Constraint::zero_dim_false().
   */
   static const Constraint_System& zero_dim_empty();
 
@@ -292,6 +297,12 @@ public:
   void swap(Constraint_System& y);
 
 private:
+  /*! \brief
+    Holds (between class initialization and finalization) a pointer to
+    the singleton system containing only Constraint::zero_dim_false().
+  */
+  static const Constraint_System* zero_dim_empty_p;
+
   friend class const_iterator;
   friend class Parma_Polyhedra_Library::Polyhedron;
 

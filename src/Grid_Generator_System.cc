@@ -238,6 +238,23 @@ PPL::Grid_Generator_System::ascii_load(std::istream& s) {
   return true;
 }
 
+const PPL::Grid_Generator_System*
+PPL::Grid_Generator_System::zero_dim_univ_p = 0;
+
+void
+PPL::Grid_Generator_System::initialize() {
+  assert(zero_dim_univ_p == 0);
+  zero_dim_univ_p
+    = new Grid_Generator_System(Grid_Generator::zero_dim_point());
+}
+
+void
+PPL::Grid_Generator_System::finalize() {
+  assert(zero_dim_univ_p != 0);
+  delete zero_dim_univ_p;
+  zero_dim_univ_p = 0;
+}
+
 bool
 PPL::Grid_Generator_System::OK() const {
   if (topology() == NOT_NECESSARILY_CLOSED) {

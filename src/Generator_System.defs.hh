@@ -215,9 +215,14 @@ public:
   */
   void insert(const Generator& g);
 
+  //! Initializes the class.
+  static void initialize();
+
+  //! Finalizes the class.
+  static void finalize();
+
   /*! \brief
-    Returns the singleton system containing only
-    Generator::zero_dim_point().
+    Returns the singleton system containing only Generator::zero_dim_point().
   */
   static const Generator_System& zero_dim_univ();
 
@@ -350,6 +355,12 @@ public:
   void swap(Generator_System& y);
 
 private:
+  /*! \brief
+    Holds (between class initialization and finalization) a pointer to
+    the singleton system containing only Generator::zero_dim_point().
+  */
+  static const Generator_System* zero_dim_univ_p;
+
   friend class const_iterator;
   friend class Parma_Polyhedra_Library::Polyhedron;
   friend class Parma_Polyhedra_Library::Grid_Generator_System;

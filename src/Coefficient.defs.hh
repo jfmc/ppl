@@ -37,7 +37,20 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Initializes the Coefficient constants.
+#endif
+void Coefficient_constants_initialize();
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Finalizes the Coefficient constants.
+#endif
+void Coefficient_constants_finalize();
+
+//! Returns a const reference to a Coefficient with value 0.
 Coefficient_traits::const_reference Coefficient_zero();
+
+//! Returns a const reference to a Coefficient with value 1.
 Coefficient_traits::const_reference Coefficient_one();
 
 } // namespace Parma_Polyhedra_Library

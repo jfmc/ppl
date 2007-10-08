@@ -96,15 +96,12 @@ operator/(const Congruence& cg, Coefficient_traits::const_reference k) {
 
 inline const Congruence&
 Congruence::zero_dim_integrality() {
-  static const Congruence zdi(Linear_Expression::zero() %= Coefficient(-1));
-  return zdi;
+  return *zero_dim_integrality_p;
 }
 
 inline const Congruence&
 Congruence::zero_dim_false() {
-  static const Congruence
-    zdf((Linear_Expression::zero() %= Coefficient(-1)) / 0);
-  return zdf;
+  return *zero_dim_false_p;
 }
 
 inline Congruence&

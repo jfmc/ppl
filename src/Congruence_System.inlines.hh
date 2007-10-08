@@ -105,8 +105,8 @@ Congruence_System::resize_no_copy(const dimension_type new_num_rows,
 
 inline const Congruence_System&
 Congruence_System::zero_dim_empty() {
-  static const Congruence_System zdf(Congruence::zero_dim_false());
-  return zdf;
+  assert(zero_dim_empty_p != 0);
+  return *zero_dim_empty_p;
 }
 
 inline

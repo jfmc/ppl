@@ -26,6 +26,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Variable.defs.hh"
 #include "fpu.defs.hh"
 #include "checked.defs.hh"
+#include "Coefficient.defs.hh"
+#include "Linear_Expression.defs.hh"
+#include "Constraint.defs.hh"
+#include "Generator.defs.hh"
+#include "Congruence.defs.hh"
+#include "Grid_Generator.defs.hh"
+#include "Constraint_System.defs.hh"
+#include "Generator_System.defs.hh"
+#include "Congruence_System.defs.hh"
+#include "Grid_Generator_System.defs.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
 
@@ -50,9 +60,25 @@ PPL::Init::Init() {
   if (count++ == 0) {
     // ... the GMP memory allocation functions are set, ...
     set_GMP_memory_allocation_functions();
-    // ... and the default output function for Variable objects is set.
+    // ... the default output function for Variable objects is set, ...
     Variable::set_output_function(Variable::default_output_function);
+    // ... the Coefficient constants are initialized, ...
+    Coefficient_constants_initialize();
+    // ... the Linear_Expression class is initialized, ...
+    Linear_Expression::initialize();
+    // ... the Constraint, Generator, Congruence, Grid_Generator,
+    // Constraint_System, Generator_System, Congruence_System, and
+    // Grid_Generator_System classes are initialized, ...
+    Constraint::initialize();
+    Generator::initialize();
+    Congruence::initialize();
+    Grid_Generator::initialize();
+    Constraint_System::initialize();
+    Generator_System::initialize();
+    Congruence_System::initialize();
+    Grid_Generator_System::initialize();
 #if PPL_CAN_CONTROL_FPU
+    // ... and the FPU rounding direction is set.
     old_rounding_direction = fpu_get_rounding_direction();
     fpu_set_rounding_direction(round_fpu_dir(ROUND_DIRECT));
 #endif
@@ -65,7 +91,24 @@ PPL::Init::~Init() {
   // Only when the last Init object is destroyed...
   if (--count == 0) {
 #if PPL_CAN_CONTROL_FPU
+    // ... the FPU rounding direction is restored, ...
     fpu_set_rounding_direction(old_rounding_direction);
 #endif
+    // ... the Grid_Generator_System, Congruence_System,
+    // Generator_System, Constraint_System, Grid_Generator,
+    // Congruence, Generator and Constraint classes are finalized
+    // IN THAT ORDER, ...
+    Grid_Generator_System::finalize();
+    Congruence_System::finalize();
+    Generator_System::finalize();
+    Constraint_System::finalize();
+    Grid_Generator::finalize();
+    Congruence::finalize();
+    Generator::finalize();
+    Constraint::finalize();
+    // ... the Linear_Expression class is finalized, ...
+    Linear_Expression::finalize();
+    // ... and the Coefficient constants are finalized.
+    Coefficient_constants_finalize();
   }
 }

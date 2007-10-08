@@ -423,6 +423,22 @@ PPL::Congruence_System::ascii_load(std::istream& s) {
   return true;
 }
 
+const PPL::Congruence_System* PPL::Congruence_System::zero_dim_empty_p = 0;
+
+void
+PPL::Congruence_System::initialize() {
+  assert(zero_dim_empty_p == 0);
+  zero_dim_empty_p
+    = new Congruence_System(Congruence::zero_dim_false());
+}
+
+void
+PPL::Congruence_System::finalize() {
+  assert(zero_dim_empty_p != 0);
+  delete zero_dim_empty_p;
+  zero_dim_empty_p = 0;
+}
+
 bool
 PPL::Congruence_System::OK() const {
   // A Congruence_System must be a valid Matrix.

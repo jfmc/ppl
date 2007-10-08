@@ -997,6 +997,22 @@ PPL::Generator_System::remove_invalid_lines_and_rays() {
   gs.erase_to_end(n_rows);
 }
 
+const PPL::Generator_System* PPL::Generator_System::zero_dim_univ_p = 0;
+
+void
+PPL::Generator_System::initialize() {
+  assert(zero_dim_univ_p == 0);
+  zero_dim_univ_p
+    = new Generator_System(Generator::zero_dim_point());
+}
+
+void
+PPL::Generator_System::finalize() {
+  assert(zero_dim_univ_p != 0);
+  delete zero_dim_univ_p;
+  zero_dim_univ_p = 0;
+}
+
 bool
 PPL::Generator_System::OK() const {
   // A Generator_System must be a valid Linear_System; do not check for

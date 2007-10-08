@@ -216,6 +216,49 @@ PPL::Constraint::is_equivalent_to(const Constraint& y) const {
   return true;
 }
 
+const PPL::Constraint* PPL::Constraint::zero_dim_false_p = 0;
+const PPL::Constraint* PPL::Constraint::zero_dim_positivity_p = 0;
+const PPL::Constraint* PPL::Constraint::epsilon_geq_zero_p = 0;
+const PPL::Constraint* PPL::Constraint::epsilon_leq_one_p = 0;
+
+void
+PPL::Constraint::initialize() {
+  assert(zero_dim_false_p == 0);
+  zero_dim_false_p
+    = new Constraint(Linear_Expression::zero() == Coefficient_one());
+
+  assert(zero_dim_positivity_p == 0);
+  zero_dim_positivity_p
+    = new Constraint(Linear_Expression::zero() <= Coefficient_one());
+
+  assert(epsilon_geq_zero_p == 0);
+  epsilon_geq_zero_p
+    = new Constraint(construct_epsilon_geq_zero());
+
+  assert(epsilon_leq_one_p == 0);
+  epsilon_leq_one_p
+    = new Constraint(Linear_Expression::zero() < Coefficient_one());
+}
+
+void
+PPL::Constraint::finalize() {
+  assert(zero_dim_false_p != 0);
+  delete zero_dim_false_p;
+  zero_dim_false_p = 0;
+
+  assert(zero_dim_positivity_p != 0);
+  delete zero_dim_positivity_p;
+  zero_dim_positivity_p = 0;
+
+  assert(epsilon_geq_zero_p != 0);
+  delete epsilon_geq_zero_p;
+  epsilon_geq_zero_p = 0;
+
+  assert(epsilon_leq_one_p != 0);
+  delete epsilon_leq_one_p;
+  epsilon_leq_one_p = 0;
+}
+
 /*! \relates Parma_Polyhedra_Library::Constraint */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Constraint& c) {

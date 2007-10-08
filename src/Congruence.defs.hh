@@ -295,6 +295,12 @@ public:
   bool is_equal_at_dimension(dimension_type dim,
 			     const Congruence& cg) const;
 
+  //! Initializes the class.
+  static void initialize();
+
+  //! Finalizes the class.
+  static void finalize();
+
   /*! \brief
     Returns a reference to the true (zero-dimension space) congruence
     \f$0 = 1 \pmod{1}\f$, also known as the <EM>integrality
@@ -367,6 +373,18 @@ protected:
   void strong_normalize();
 
 private:
+  /*! \brief
+    Holds (between class initialization and finalization) a pointer to
+    the false (zero-dimension space) congruence \f$0 = 1 \pmod{0}\f$.
+  */
+  static const Congruence* zero_dim_false_p;
+
+  /*! \brief
+    Holds (between class initialization and finalization) a pointer to
+    the true (zero-dimension space) congruence \f$0 = 1 \pmod{1}\f$,
+    also known as the <EM>integrality congruence</EM>.
+  */
+  static const Congruence* zero_dim_integrality_p;
 
   //! Marks this congruence as a linear equality.
   void set_is_equality();

@@ -343,6 +343,12 @@ public:
   */
   Coefficient_traits::const_reference divisor() const;
 
+  //! Initializes the class.
+  static void initialize();
+
+  //! Finalizes the class.
+  static void finalize();
+
   //! Returns the origin of the zero-dimensional space \f$\Rset^0\f$.
   static const Generator& zero_dim_point();
 
@@ -387,6 +393,18 @@ public:
   void swap(Generator& y);
 
 private:
+  /*! \brief
+    Holds (between class initialization and finalization) a pointer to
+    the origin of the zero-dimensional space \f$\Rset^0\f$.
+  */
+  static const Generator* zero_dim_point_p;
+
+  /*! \brief
+    Holds (between class initialization and finalization) a pointer to
+    the origin of the zero-dimensional space \f$\Rset^0\f$, as a closure point.
+  */
+  static const Generator* zero_dim_closure_point_p;
+
   /*! \brief
     Builds a generator of type \p type and topology \p topology,
     stealing the coefficients from \p e.

@@ -328,27 +328,26 @@ operator<(const Linear_Expression& e, Coefficient_traits::const_reference n) {
 
 inline const Constraint&
 Constraint::zero_dim_false() {
-  static const Constraint zdf(Linear_Expression::zero() == Coefficient_one());
-  return zdf;
+  assert(zero_dim_false_p != 0);
+  return *zero_dim_false_p;
 }
 
 inline const Constraint&
 Constraint::zero_dim_positivity() {
-  static const Constraint zdp(Linear_Expression::zero() <= Coefficient_one());
-  return zdp;
+  assert(zero_dim_positivity_p != 0);
+  return *zero_dim_positivity_p;
 }
 
 inline const Constraint&
 Constraint::epsilon_geq_zero() {
-  static const Constraint eps_geq_zero = construct_epsilon_geq_zero();
-  return eps_geq_zero;
+  assert(epsilon_geq_zero_p != 0);
+  return *epsilon_geq_zero_p;
 }
 
 inline const Constraint&
 Constraint::epsilon_leq_one() {
-  static const Constraint
-    eps_leq_one(Linear_Expression::zero() < Coefficient_one());
-  return eps_leq_one;
+  assert(epsilon_leq_one_p != 0);
+  return *epsilon_leq_one_p;
 }
 
 inline void

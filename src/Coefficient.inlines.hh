@@ -25,17 +25,32 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+#if defined(PPL_CHECKED_INTEGERS) || defined(PPL_NATIVE_INTEGERS)
 inline Coefficient_traits::const_reference
 Coefficient_zero() {
-  static Coefficient z(0);
-  return z;
+  return Coefficient(0);
 }
 
 inline Coefficient_traits::const_reference
 Coefficient_one() {
-  static Coefficient o(1);
-  return o;
+  return Coefficient(1);
 }
+#endif
+
+#ifdef PPL_GMP_INTEGERS
+inline Coefficient_traits::const_reference
+Coefficient_zero() {
+  extern const Coefficient* Coefficient_zero_p;
+  return *Coefficient_zero_p;
+}
+
+inline Coefficient_traits::const_reference
+Coefficient_one() {
+  extern const Coefficient* Coefficient_one_p;
+  assert(*Coefficient_one_p != 0);
+  return *Coefficient_one_p;
+}
+#endif
 
 } // namespace Parma_Polyhedra_Library
 

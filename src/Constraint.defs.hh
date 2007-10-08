@@ -328,6 +328,12 @@ public:
   //! Returns the inhomogeneous term of \p *this.
   Coefficient_traits::const_reference inhomogeneous_term() const;
 
+  //! Initializes the class.
+  static void initialize();
+
+  //! Finalizes the class.
+  static void finalize();
+
   //! The unsatisfiable (zero-dimension space) constraint \f$0 = 1\f$.
   static const Constraint& zero_dim_false();
 
@@ -401,6 +407,32 @@ public:
   void swap(Constraint& y);
 
 private:
+  /*! \brief
+    Holds (between class initialization and finalization) a pointer to
+    the unsatisfiable (zero-dimension space) constraint \f$0 = 1\f$.
+  */
+  static const Constraint* zero_dim_false_p;
+
+  /*! \brief
+    Holds (between class initialization and finalization) a pointer to
+    the true (zero-dimension space) constraint \f$0 \leq 1\f$, also
+    known as <EM>positivity constraint</EM>.
+  */
+  static const Constraint* zero_dim_positivity_p;
+
+  /*! \brief
+    Holds (between class initialization and finalization) a pointer to
+    the zero-dimension space constraint \f$\epsilon \geq 0\f$.
+  */
+  static const Constraint* epsilon_geq_zero_p;
+
+  /*! \brief
+    Holds (between class initialization and finalization) a pointer to
+    the zero-dimension space constraint \f$\epsilon \leq 1\f$
+    (used to implement NNC polyhedra).
+  */
+  static const Constraint* epsilon_leq_one_p;
+
   friend class Parma_Polyhedra_Library::Congruence;
   friend class Parma_Polyhedra_Library::Scalar_Products;
   friend class Parma_Polyhedra_Library::Topology_Adjusted_Scalar_Product_Sign;

@@ -157,6 +157,31 @@ PPL::Generator::is_equivalent_to(const Generator& y) const {
   return true;
 }
 
+const PPL::Generator* PPL::Generator::zero_dim_point_p = 0;
+const PPL::Generator* PPL::Generator::zero_dim_closure_point_p = 0;
+
+void
+PPL::Generator::initialize() {
+  assert(zero_dim_point_p == 0);
+  zero_dim_point_p
+    = new Generator(point());
+
+  assert(zero_dim_closure_point_p == 0);
+  zero_dim_closure_point_p
+    = new Generator(closure_point());
+}
+
+void
+PPL::Generator::finalize() {
+  assert(zero_dim_point_p != 0);
+  delete zero_dim_point_p;
+  zero_dim_point_p = 0;
+
+  assert(zero_dim_closure_point_p != 0);
+  delete zero_dim_closure_point_p;
+  zero_dim_closure_point_p = 0;
+}
+
 /*! \relates Parma_Polyhedra_Library::Generator */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Generator& g) {

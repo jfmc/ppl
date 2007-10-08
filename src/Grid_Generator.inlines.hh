@@ -178,8 +178,8 @@ Grid_Generator::external_memory_in_bytes() const {
 
 inline const Grid_Generator&
 Grid_Generator::zero_dim_point() {
-  static const Grid_Generator zdp = grid_point();
-  return zdp;
+  assert(zero_dim_point_p != 0);
+  return *zero_dim_point_p;
 }
 
 inline void

@@ -121,8 +121,8 @@ Grid_Generator_System::space_dimension() const {
 
 inline const Grid_Generator_System&
 Grid_Generator_System::zero_dim_univ() {
-  static const Grid_Generator_System zdu(Grid_Generator::zero_dim_point());
-  return zdu;
+  assert(zero_dim_univ_p != 0);
+  return *zero_dim_univ_p;
 }
 
 inline void

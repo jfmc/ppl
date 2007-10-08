@@ -97,8 +97,8 @@ Linear_Expression::inhomogeneous_term() const {
 
 inline const Linear_Expression&
 Linear_Expression::zero() {
-  static Linear_Expression z = Linear_Expression(Coefficient_zero());
-  return z;
+  assert(zero_p != 0);
+  return *zero_p;
 }
 
 inline memory_size_type

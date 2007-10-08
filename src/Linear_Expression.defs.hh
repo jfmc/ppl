@@ -316,6 +316,12 @@ public:
   //! Returns the inhomogeneous term of \p *this.
   Coefficient_traits::const_reference inhomogeneous_term() const;
 
+  //! Initializes the class.
+  static void initialize();
+
+  //! Finalizes the class.
+  static void finalize();
+
   //! Returns the (zero-dimension space) constant 0.
   static const Linear_Expression& zero();
 
@@ -346,6 +352,12 @@ public:
   void swap(Linear_Expression& y);
 
 private:
+  /*! \brief
+    Holds (between class initialization and finalization) a pointer to
+    the (zero-dimension space) constant 0.
+  */
+  static const Linear_Expression* zero_p;
+
   friend class Parma_Polyhedra_Library::Scalar_Products;
   friend class Parma_Polyhedra_Library::Constraint;
   friend class Parma_Polyhedra_Library::Generator;

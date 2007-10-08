@@ -55,13 +55,27 @@ PPL::Linear_Expression::Linear_Expression(const Grid_Generator& g)
     e[i] = g[i];
 }
 
+const PPL::Linear_Expression* PPL::Linear_Expression::zero_p = 0;
+
+void
+PPL::Linear_Expression::initialize() {
+  assert(zero_p == 0);
+  zero_p = new Linear_Expression(Coefficient_zero());
+}
+
+void
+PPL::Linear_Expression::finalize() {
+  assert(zero_p != 0);
+  delete zero_p;
+  zero_p = 0;
+}
+
 PPL::Linear_Expression::Linear_Expression(const Congruence& cg)
   : Linear_Row(cg.space_dimension() + 1, Linear_Row::Flags()) {
   Linear_Expression& e = *this;
   for (dimension_type i = size(); i-- > 0; )
     e[i] = cg[i];
 }
-
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression

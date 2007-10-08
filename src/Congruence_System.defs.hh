@@ -213,6 +213,12 @@ public:
   */
   void recycling_insert(Congruence_System& cgs);
 
+  //! Initializes the class.
+  static void initialize();
+
+  //! Finalizes the class.
+  static void finalize();
+
   //! Returns the system containing only Congruence::zero_dim_false().
   static const Congruence_System& zero_dim_empty();
 
@@ -363,6 +369,11 @@ protected:
   bool satisfies_all_congruences(const Grid_Generator& g) const;
 
 private:
+  /*! \brief
+    Holds (between class initialization and finalization) a pointer to
+    the singleton system containing only Congruence::zero_dim_false().
+  */
+  static const Congruence_System* zero_dim_empty_p;
 
   //! Builds an empty (i.e. zero rows) system of dimension \p d.
   explicit Congruence_System(dimension_type d);

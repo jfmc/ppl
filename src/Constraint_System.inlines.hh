@@ -92,8 +92,8 @@ Constraint_System::clear() {
 
 inline const Constraint_System&
 Constraint_System::zero_dim_empty() {
-  static const Constraint_System zdf(Constraint::zero_dim_false());
-  return zdf;
+  assert(zero_dim_empty_p != 0);
+  return *zero_dim_empty_p;
 }
 
 inline

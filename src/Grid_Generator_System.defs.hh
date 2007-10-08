@@ -229,6 +229,12 @@ public:
   */
   void recycling_insert(Grid_Generator_System& gs);
 
+  //! Initializes the class.
+  static void initialize();
+
+  //! Finalizes the class.
+  static void finalize();
+
   /*! \brief
     Returns the singleton system containing only
     Grid_Generator::zero_dim_point().
@@ -370,6 +376,12 @@ public:
   void swap(Grid_Generator_System& y);
 
 private:
+  /*! \brief
+    Holds (between class initialization and finalization) a pointer to
+    the singleton system containing only Grid_Generator::zero_dim_point().
+  */
+  static const Grid_Generator_System* zero_dim_univ_p;
+
   friend class Grid;
 
   friend bool

@@ -330,6 +330,12 @@ public:
   */
   Coefficient_traits::const_reference divisor() const;
 
+  //! Initializes the class.
+  static void initialize();
+
+  //! Finalizes the class.
+  static void finalize();
+
   //! Returns the origin of the zero-dimensional space \f$\Rset^0\f$.
   static const Grid_Generator& zero_dim_point();
 
@@ -394,6 +400,12 @@ public:
   void coefficient_swap(Grid_Generator& y);
 
 private:
+  /*! \brief
+    Holds (between class initialization and finalization) a pointer to
+    the origin of the zero-dimensional space \f$\Rset^0\f$.
+  */
+  static const Grid_Generator* zero_dim_point_p;
+
   /*! \brief
     Scales \p *this to be represented with a divisor of \p d (if
     \*this is a parameter or point).

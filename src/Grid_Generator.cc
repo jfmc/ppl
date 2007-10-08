@@ -262,6 +262,22 @@ PPL::Grid_Generator::scale_to_divisor(Coefficient_traits::const_reference d) {
   }
 }
 
+const PPL::Grid_Generator* PPL::Grid_Generator::zero_dim_point_p = 0;
+
+void
+PPL::Grid_Generator::initialize() {
+  assert(zero_dim_point_p == 0);
+  zero_dim_point_p
+    = new Grid_Generator(grid_point());
+}
+
+void
+PPL::Grid_Generator::finalize() {
+  assert(zero_dim_point_p != 0);
+  delete zero_dim_point_p;
+  zero_dim_point_p = 0;
+}
+
 /*! \relates Parma_Polyhedra_Library::Grid_Generator */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Grid_Generator& g) {

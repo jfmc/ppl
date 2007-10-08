@@ -175,8 +175,8 @@ Generator_System::end() const {
 
 inline const Generator_System&
 Generator_System::zero_dim_univ() {
-  static const Generator_System zdu(Generator::zero_dim_point());
-  return zdu;
+  assert(zero_dim_univ_p != 0);
+  return *zero_dim_univ_p;
 }
 
 inline void

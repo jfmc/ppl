@@ -147,14 +147,14 @@ Generator::total_memory_in_bytes() const {
 
 inline const Generator&
 Generator::zero_dim_point() {
-  static const Generator zdp = point();
-  return zdp;
+  assert(zero_dim_point_p != 0);
+  return *zero_dim_point_p;
 }
 
 inline const Generator&
 Generator::zero_dim_closure_point() {
-  static const Generator zdcp = closure_point();
-  return zdcp;
+  assert(zero_dim_closure_point_p != 0);
+  return *zero_dim_closure_point_p;
 }
 
 /*! \relates Generator */

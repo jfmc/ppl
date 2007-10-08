@@ -265,3 +265,28 @@ PPL::Congruence::OK() const {
   // All tests passed.
   return true;
 }
+
+const PPL::Congruence* PPL::Congruence::zero_dim_false_p = 0;
+const PPL::Congruence* PPL::Congruence::zero_dim_integrality_p = 0;
+
+void
+PPL::Congruence::initialize() {
+  assert(zero_dim_false_p == 0);
+  zero_dim_false_p
+    = new Congruence((Linear_Expression::zero() %= Coefficient(-1)) / 0);
+
+  assert(zero_dim_integrality_p == 0);
+  zero_dim_integrality_p
+    = new Congruence(Linear_Expression::zero() %= Coefficient(-1));
+}
+
+void
+PPL::Congruence::finalize() {
+  assert(zero_dim_false_p != 0);
+  delete zero_dim_false_p;
+  zero_dim_false_p = 0;
+
+  assert(zero_dim_integrality_p != 0);
+  delete zero_dim_integrality_p;
+  zero_dim_integrality_p = 0;
+}
