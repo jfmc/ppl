@@ -38,10 +38,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 % the ppl interface predicates.
 
 check_all :-
-   (noisy(_) -> true; make_quiet),
+   (noisy(_) -> true ; make_quiet),
    list_groups(Groups),
    catch(run_all(Groups), Exception,
-       (print_exception_term(Exception), fail)).
+         (print_exception_term(Exception), fail)).
 
 % check_quiet/0
 % This also executes all the test predicates with no output.
@@ -71,30 +71,24 @@ check_extra_noisy :-
 
 run_all([Group|Groups]):-
    ppl_initialize,
-   (catch(run_one(Group), Exception,
-         run_exception(Group, Exception)) -> true ; run_fail(Group)),
-   !,
-   ppl_finalize,
-   run_all(Groups).
-
+   (catch(run_one(Group), Exception, run_exception(Group, Exception)) ->
+       ppl_finalize,
+       run_all(Groups)
+   ;
+       run_fail(Group)
+   ).
 run_all([]).
-
-run_all([_|_]) :-
-   error_message(['Prolog interface checks failed.']),
-   !,
-   ppl_finalize,
-   fail.
 
 % run_fail/1
 % This is used when a test in run_all/1 fails.
-% A message is output saying which group of tests has failed
-% and then fails.
+% A message is output saying which group of tests has failed;
+% then it finalizes the ppl and fails.
 
 run_fail(Group) :-
    group_predicates(Group, Predicates),
    error_message(['Error occurred while performing test', Group,
-              'which checks predicates:', also, Predicates]),
-   !,
+                  'which checks predicates:', also, Predicates]),
+   error_message(['Prolog interface checks failed.']),
    ppl_finalize,
    fail.
 
@@ -103,21 +97,18 @@ run_fail(Group) :-
 % A message is output saying which group of tests was being run when
 % the exception was thrown and then it fails.
 
-run_exception(Group, ppl_overflow_error(Cause)) :-
-   !,
-   group_predicates(Group, Predicates),
-   display_message(
-            ['Overflow exception occurred while performing test ', Group,
-              'which checks predicates ', nl, Predicates]),
-   print_exception_term(ppl_overflow_error(Cause)).
-
 run_exception(Group, Exception) :-
-   group_predicates(Group, Predicates),
-   display_message(
-            ['Exception occurred while performing test ', Group,
-              'which checks predicates ', nl, Predicates]),
-   print_exception_term(Exception),
-   fail.
+	group_predicates(Group, Predicates),
+	(Exception = ppl_overflow_error(_) ->
+	    Kind = 'Overflow exception'
+	;
+	    Kind = 'Exception'
+	),
+ 	display_message([Kind, 'occurred while performing test ', Group,
+			 'which checks predicates ', nl, Predicates]),
+	print_exception_term(Exception),
+	% Do fail for all but overflow exceptions.
+	Exception = ppl_overflow_error(_).
 
 % run_one/1
 % Runs the named group of tests.
@@ -3115,8 +3106,7 @@ format_exception_message(Error) :-
 %%%%%%%%%%%% predicates for output messages %%%%%%%%%%%%%%%%%%
 
 error_message(Message):-
-   write_all(Message),
-   fail.
+   write_all(Message).
 
 display_message(Message):-
     noisy(_),
@@ -3129,8 +3119,8 @@ write_all([Phrase|Phrases]):-
    (Phrase == nl ->
       nl
    ;
-      (write(Phrase),
-      write(' '))
+      write(Phrase),
+      write(' ')
    ),
    write_all(Phrases).
 
