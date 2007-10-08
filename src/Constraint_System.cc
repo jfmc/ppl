@@ -37,19 +37,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::Constraint_System::Constraint_System(const Congruence_System& cgs)
-  : Linear_System(NOT_NECESSARILY_CLOSED) {
-  if (cgs.space_dimension() == 0)
-    cgs.empty() ? Constraint_System()
-      : zero_dim_empty();
-  else {
-    insert(Constraint::zero_dim_positivity());
-    for (Congruence_System::const_iterator i = cgs.begin(),
-	   cgs_end = cgs.end(); i != cgs_end; ++i)
-      if (i->is_equality())
-        // TODO: Consider adding a recycling_insert to save the extra
-        //       copy here.
-        insert(Constraint(*i));
-  }
+  : Linear_System(NECESSARILY_CLOSED, 0, cgs.space_dimension() + 1) {
+  for (Congruence_System::const_iterator i = cgs.begin(),
+	 cgs_end = cgs.end(); i != cgs_end; ++i)
+    if (i->is_equality())
+      // TODO: Consider adding a recycling_insert to save the extra copy here.
+      insert(Constraint(*i));
 }
 
 bool
