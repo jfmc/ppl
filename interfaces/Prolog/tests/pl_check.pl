@@ -2143,8 +2143,7 @@ time_out(T) :-
   ppl_set_timeout_exception_atom(time_out),
   !,
   ppl_delete_Polyhedron(P1),
-  ppl_delete_Polyhedron(Q1),
-  ppl_finalize.
+  ppl_delete_Polyhedron(Q1).
 
 % time_watch(+Topology, +Goal, +No_Time_Out, +Time_Out)
 % time_watch/4 makes a copy of Goal with a copy of the polyhedron
