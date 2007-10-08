@@ -60,38 +60,37 @@ PPL::Constraint::construct_epsilon_geq_zero() {
 
 PPL::Constraint::Constraint(const Congruence& cg)
   : Linear_Row(cg.is_equality()
-	       // Extra columns for inhomogeneous term and epsilon
-	       // coefficient.
-	       ? cg.space_dimension() + 2
+	       // Size includes extra column for the inhomogeneous term.
+	       ? cg.space_dimension() + 1
 	       : (throw_invalid_argument("Constraint(cg)",
 					 "congruence cg must be an equality."),
 		  0),
+	       // Capacity also includes a column for the epsilon coefficient.
 	       compute_capacity(cg.space_dimension() + 2, Row::max_size()),
-	       Flags(NOT_NECESSARILY_CLOSED, LINE_OR_EQUALITY)) {
-  // Copy coefficients.
-  assert(cg.space_dimension() > 0);
-  dimension_type i = cg.space_dimension();
-  operator[](i) = cg[i];
-  while (i-- > 0)
-    operator[](i) = cg[i];
+	       Flags(NECESSARILY_CLOSED, LINE_OR_EQUALITY)) {
+  Constraint& c = *this;
+  // Copy coefficients and inhomogeneous term.
+  for (dimension_type i = cg.space_dimension() + 1; i-- > 0; )
+    c[i] = cg[i];
   // Enforce normalization.
   strong_normalize();
 }
 
 PPL::Constraint::Constraint(const Congruence& cg,
-		       dimension_type sz,
-		       dimension_type capacity)
+			    dimension_type sz,
+			    dimension_type capacity)
   : Linear_Row(cg.is_equality()
 	       ? sz
 	       : (throw_invalid_argument("Constraint(cg, sz, c)",
 					 "congruence cg must be an equality."),
 		  0),
 	       capacity,
-	       Flags(NOT_NECESSARILY_CLOSED, LINE_OR_EQUALITY)) {
+	       Flags(NECESSARILY_CLOSED, LINE_OR_EQUALITY)) {
+  Constraint& c = *this;
   // Copy coefficients.
   assert(sz > 0);
   while (sz-- > 0)
-    operator[](sz) = cg[sz];
+    c[sz] = cg[sz];
 }
 
 bool
