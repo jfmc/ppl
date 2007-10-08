@@ -181,19 +181,11 @@ Grid::hash_code() const {
 
 inline Constraint_System
 Grid::constraints() const {
-  if (space_dimension() == 0)
-    return is_universe() ? Constraint_System()
-      : Constraint_System::zero_dim_empty();
-  else
     return Constraint_System(congruences());;
 }
 
 inline Constraint_System
 Grid::minimized_constraints() const {
-  if (space_dimension() == 0)
-    return is_universe() ? Constraint_System()
-      : Constraint_System::zero_dim_empty();
-  else
     return Constraint_System(minimized_congruences());;
 }
 
