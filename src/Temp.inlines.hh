@@ -98,13 +98,14 @@ Temp_From_Local_Variable<T>::obtain_holder() {
 } // namespace Parma_Polyhedra_Library
 
 #define DIRTY_TEMP(T, id)						\
-  typename Dirty_Temp<T>::holder_type holder ## id =			\
-    Dirty_Temp<T>::obtain_holder();					\
-  typename Dirty_Temp<T>::type id = holder ## id.item()
+  typename Parma_Polyhedra_Library::Dirty_Temp<T>::holder_type holder ## id = \
+    Parma_Polyhedra_Library::Dirty_Temp<T>::obtain_holder();		\
+  typename Parma_Polyhedra_Library::Dirty_Temp<T>::type id =		\
+    holder ## id.item()
 
 #define DIRTY_TEMP0(T, id)						\
-  Dirty_Temp<T>::holder_type holder ## id =				\
-    Dirty_Temp<T>::obtain_holder();					\
-  Dirty_Temp<T>::type id = holder ## id.item()
+  Parma_Polyhedra_Library::Dirty_Temp<T>::holder_type holder ## id =	\
+    Parma_Polyhedra_Library::Dirty_Temp<T>::obtain_holder();		\
+  Parma_Polyhedra_Library::Dirty_Temp<T>::type id = holder ## id.item()
 
 #endif // !defined(PPL_Temp_inlines_hh)
