@@ -171,7 +171,7 @@ Congruence::inhomogeneous_term() const {
 
 inline Coefficient_traits::const_reference
 Congruence::modulus() const {
-  assert(size() > 0);
+  assert(size() > 1);
   return (*this)[size()-1];
 }
 

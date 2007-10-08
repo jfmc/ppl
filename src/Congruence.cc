@@ -41,7 +41,6 @@ PPL::Congruence::Congruence(const Constraint& c)
 	   c),
 	c.space_dimension() + 2,
 	compute_capacity(c.space_dimension() + 2, Row::max_size())) {
-
   (*this)[size()-1] = 0;
 }
 
@@ -54,7 +53,7 @@ PPL::Congruence::Congruence(const Constraint& c,
 	   c),
 	sz,
 	capacity) {
-
+  assert(sz > 1);
   (*this)[sz-1] = 0;
 }
 
