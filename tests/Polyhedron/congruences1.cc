@@ -24,7 +24,265 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-bool test01() {
+// Empty polyhedron.
+bool
+test01() {
+  C_Polyhedron ph1(7, EMPTY);
+
+  C_Polyhedron known_ph = ph1;
+
+  Congruence_System cgs = ph1.congruences();
+
+  C_Polyhedron ph2(cgs);
+
+  bool ok = (ph2 == known_ph);
+
+  print_congruences(cgs, "*** cgs ***");
+  print_constraints(ph2, "*** ph2(cgs) ***");
+
+  return ok;
+}
+
+// Universe polyhedron.
+bool
+test02() {
+  C_Polyhedron ph1(7);
+
+  C_Polyhedron known_ph = ph1;
+
+  Congruence_System cgs = ph1.congruences();
+
+  C_Polyhedron ph2(7);
+  ph2.add_congruences(cgs);
+
+  bool ok = (ph2 == known_ph);
+
+  print_congruences(cgs, "*** cgs ***");
+  print_constraints(ph2, "*** ph2(cgs) ***");
+
+  return ok;
+}
+
+// Zero dimension empty polyhedron.
+bool
+test03() {
+  C_Polyhedron ph1(0, EMPTY);
+
+  Congruence_System cgs = ph1.congruences();
+
+  C_Polyhedron known_ph(Congruence_System::zero_dim_empty());
+
+  bool ok = (ph1 == known_ph);
+
+  print_constraints(ph1, "*** ph1 ***");
+
+  return ok;
+}
+
+// Zero dimension universe polyhedron.
+bool
+test04() {
+  C_Polyhedron ph1(0);
+
+  C_Polyhedron known_ph = ph1;
+
+  Congruence_System cgs = ph1.congruences();
+
+  C_Polyhedron ph2(0);
+  ph2.add_congruences(cgs);
+
+  bool ok = (ph2 == known_ph);
+
+  print_congruences(cgs, "*** cgs ***");
+  print_constraints(ph2, "*** ph2(cgs) ***");
+
+  return ok;
+}
+
+// Polyhedron in 3D.
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph1(3);
+  ph1.add_constraint(A + B >= 3);
+  ph1.add_constraint(A == 0);
+
+  C_Polyhedron known_ph = ph1;
+
+  Congruence_System cgs = ph1.congruences();
+
+  C_Polyhedron ph2(3);
+  ph2.add_congruences(cgs);
+  ph2.add_constraint(A + B >= 3);
+
+  bool ok = (ph2 == known_ph);
+
+  print_congruences(cgs, "*** cgs ***");
+  print_constraints(ph2, "*** ph2(cgs) ***");
+
+  return ok;
+}
+
+// Polyhedron in 3D with implied equality.
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph1(3);
+  ph1.add_constraint(A + B >= 3);
+  ph1.add_constraint(A + B <= 3);
+  ph1.add_constraint(A == 0);
+
+  C_Polyhedron known_ph = ph1;
+
+  Congruence_System cgs = ph1.congruences();
+
+  C_Polyhedron ph2(3);
+  ph2.add_congruences(cgs);
+
+  bool ok = (ph2 != known_ph);
+
+  ph2.add_constraint(A + B == 3);
+
+  ok &= (ph2 == known_ph);
+
+  print_congruences(cgs, "*** cgs ***");
+  print_constraints(ph2, "*** ph2(cgs) ***");
+
+  return ok;
+}
+
+// Empty polyhedron.
+bool
+test07() {
+  C_Polyhedron ph1(7, EMPTY);
+
+  C_Polyhedron known_ph = ph1;
+
+  Congruence_System cgs = ph1.minimized_congruences();
+
+  C_Polyhedron ph2(cgs);
+
+  bool ok = (ph2 == known_ph);
+
+  print_congruences(cgs, "*** cgs ***");
+  print_constraints(ph2, "*** ph2(cgs) ***");
+
+  return ok;
+}
+
+// Universe polyhedron.
+bool
+test08() {
+  C_Polyhedron ph1(7);
+
+  C_Polyhedron known_ph = ph1;
+
+  Congruence_System cgs = ph1.minimized_congruences();
+
+  C_Polyhedron ph2(7);
+  ph2.add_congruences(cgs);
+
+  bool ok = (ph2 == known_ph);
+
+  print_congruences(cgs, "*** cgs ***");
+  print_constraints(ph2, "*** ph2(cgs) ***");
+
+  return ok;
+}
+
+// Zero dimension empty polyhedron.
+bool
+test09() {
+  C_Polyhedron ph1(0, EMPTY);
+
+  Congruence_System cgs = ph1.minimized_congruences();
+
+  C_Polyhedron known_ph(Congruence_System::zero_dim_empty());
+
+  bool ok = (ph1 == known_ph);
+
+  print_constraints(ph1, "*** ph1 ***");
+
+  return ok;
+}
+
+// Zero dimension universe polyhedron.
+bool
+test10() {
+  C_Polyhedron ph1(0);
+
+  C_Polyhedron known_ph = ph1;
+
+  Congruence_System cgs = ph1.minimized_congruences();
+
+  C_Polyhedron ph2(0);
+  ph2.add_congruences(cgs);
+
+  bool ok = (ph2 == known_ph);
+
+  print_congruences(cgs, "*** cgs ***");
+  print_constraints(ph2, "*** ph2(cgs) ***");
+
+  return ok;
+}
+
+// Polyhedron in 3D.
+bool
+test11() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph1(3);
+  ph1.add_constraint(A + B >= 3);
+  ph1.add_constraint(A == 0);
+
+  C_Polyhedron known_ph = ph1;
+
+  Congruence_System cgs = ph1.minimized_congruences();
+
+  C_Polyhedron ph2(3);
+  ph2.add_congruences(cgs);
+  ph2.add_constraint(A + B >= 3);
+
+  bool ok = (ph2 == known_ph);
+
+  print_congruences(cgs, "*** cgs ***");
+  print_constraints(ph2, "*** ph2(cgs) ***");
+
+  return ok;
+}
+
+// Polyhedron in 3D with implied equality.
+bool
+test12() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph1(3);
+  ph1.add_constraint(A + B >= 3);
+  ph1.add_constraint(A + B <= 3);
+  ph1.add_constraint(A == 0);
+
+  C_Polyhedron known_ph = ph1;
+
+  Congruence_System cgs = ph1.minimized_congruences();
+
+  C_Polyhedron ph2(3);
+  ph2.add_congruences(cgs);
+
+  bool ok = (ph2 == known_ph);
+
+  print_congruences(cgs, "*** cgs ***");
+  print_constraints(ph2, "*** ph2(cgs) ***");
+
+  return ok;
+}
+
+bool test13() {
   Variable x(0);
   Variable y(1);
 
@@ -50,4 +308,16 @@ bool test01() {
 
 BEGIN_MAIN
 DO_TEST(test01);
+DO_TEST(test02);
+DO_TEST(test03);
+DO_TEST(test04);
+DO_TEST(test05);
+DO_TEST(test06);
+DO_TEST(test07);
+DO_TEST(test08);
+DO_TEST(test09);
+DO_TEST(test10);
+DO_TEST(test11);
+DO_TEST(test12);
+DO_TEST(test13);
 END_MAIN
