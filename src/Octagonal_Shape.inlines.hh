@@ -479,9 +479,10 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			    const Octagonal_Shape<T>& x,
 			    const Octagonal_Shape<T>& y,
 			    const Rounding_Dir dir) {
-  static Checked_Number<Temp, Extended_Number_Policy> tmp0;
-  static Checked_Number<Temp, Extended_Number_Policy> tmp1;
-  static Checked_Number<Temp, Extended_Number_Policy> tmp2;
+  typedef Checked_Number<Temp, Extended_Number_Policy> Checked_Temp;
+  DIRTY_TEMP(Checked_Temp, tmp0);
+  DIRTY_TEMP(Checked_Temp, tmp1);
+  DIRTY_TEMP(Checked_Temp, tmp2);
   return rectilinear_distance_assign(r, x, y, dir, tmp0, tmp1, tmp2);
 }
 
@@ -543,9 +544,10 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			  const Octagonal_Shape<T>& x,
 			  const Octagonal_Shape<T>& y,
 			  const Rounding_Dir dir) {
-  static Checked_Number<Temp, Extended_Number_Policy> tmp0;
-  static Checked_Number<Temp, Extended_Number_Policy> tmp1;
-  static Checked_Number<Temp, Extended_Number_Policy> tmp2;
+  typedef Checked_Number<Temp, Extended_Number_Policy> Checked_Temp;
+  DIRTY_TEMP(Checked_Temp, tmp0);
+  DIRTY_TEMP(Checked_Temp, tmp1);
+  DIRTY_TEMP(Checked_Temp, tmp2);
   return euclidean_distance_assign(r, x, y, dir, tmp0, tmp1, tmp2);
 }
 
@@ -607,9 +609,10 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			   const Octagonal_Shape<T>& x,
 			   const Octagonal_Shape<T>& y,
 			   const Rounding_Dir dir) {
-  static Checked_Number<Temp, Extended_Number_Policy> tmp0;
-  static Checked_Number<Temp, Extended_Number_Policy> tmp1;
-  static Checked_Number<Temp, Extended_Number_Policy> tmp2;
+  typedef Checked_Number<Temp, Extended_Number_Policy> Checked_Temp;
+  DIRTY_TEMP(Checked_Temp, tmp0);
+  DIRTY_TEMP(Checked_Temp, tmp1);
+  DIRTY_TEMP(Checked_Temp, tmp2);
   return l_infinity_distance_assign(r, x, y, dir, tmp0, tmp1, tmp2);
 }
 
