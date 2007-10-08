@@ -63,6 +63,7 @@ concatenate1 \
 congruence1 \
 congruences1 \
 congruences2 \
+constraints1 \
 contains1 \
 containsintegerpoint1 \
 copyconstruct1 \
@@ -159,6 +160,8 @@ congruence1_SOURCES = congruence1.cc
 
 congruences1_SOURCES = congruences1.cc
 congruences2_SOURCES = congruences2.cc
+
+constraints1_SOURCES = constraints1.cc
 
 contains1_SOURCES = contains1.cc
 
