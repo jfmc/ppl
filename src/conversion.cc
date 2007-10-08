@@ -28,6 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Bit_Matrix.defs.hh"
 #include "Polyhedron.defs.hh"
 #include "Scalar_Products.defs.hh"
+#include "Temp.defs.hh"
 #include <cstddef>
 
 namespace PPL = Parma_Polyhedra_Library;
@@ -398,7 +399,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
     // constraint `source_k' and the generator `dest[i]'.  This
     // product is 0 if and only if the generator saturates the
     // constraint.
-    static std::vector<Coefficient> scalar_prod;
+    DIRTY_TEMP0(std::vector<Coefficient>, scalar_prod);
     const int needed_space = dest_num_rows - scalar_prod.size();
     if (needed_space > 0)
       scalar_prod.insert(scalar_prod.end(), needed_space, Coefficient_zero());
