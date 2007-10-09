@@ -120,9 +120,49 @@ AC_ARG_WITH(cxx,
 save_CFLAGS="$CFLAGS"
 AC_PROG_CC
 CFLAGS="$save_CFLAGS"
+
+# The Intel C compiler masquerades as gcc, but we want to know.
+if test x"$GCC" = xyes
+then
+  AC_MSG_CHECKING([whether we are actually using the Intel C compiler])
+  AC_LANG_PUSH(C)
+  AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+#ifndef __INTEL_COMPILER
+choke me
+#endif
+]])],
+  AC_MSG_RESULT(yes)
+  ICC=yes,
+  AC_MSG_RESULT(no)
+  ICC=no,
+  AC_MSG_RESULT(no)
+  ICC=no)
+  AC_LANG_POP(C)
+fi
+
 save_CXXFLAGS="$CXXFLAGS"
 AC_PROG_CXX
 CXXFLAGS="$save_CXXFLAGS"
+
+# The Intel C++ compiler masquerades as g++, but we want to know.
+if test x"$GXX" = xyes
+then
+  AC_MSG_CHECKING([whether we are actually using the Intel C++ compiler])
+  AC_LANG_PUSH(C++)
+  AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+#ifndef __INTEL_COMPILER
+choke me
+#endif
+]])],
+  AC_MSG_RESULT(yes)
+  ICPC=yes,
+  AC_MSG_RESULT(no)
+  ICPC=no,
+  AC_MSG_RESULT(no)
+  ICPC=no)
+  AC_LANG_POP(C++)
+fi
+
 AC_PROG_EGREP
 AC_PROG_CXXCPP
 AC_PROG_MAKE_SET
