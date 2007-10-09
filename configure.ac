@@ -1013,14 +1013,25 @@ AC_CHECK_TYPES([timeval])
 # Checks for library functions.
 # Nothing for the time being.
 
-# If we are using GCC we want to compile with warnings enabled.
+# If we are using GCC or the Intel C/C++ compiler we want to compile
+# with lots of warnings enabled.
 if test x"$GCC" = xyes
 then
-  CFLAGS="$CFLAGS -W -Wall"
+  if test x"$ICC" = xyes
+  then
+    CFLAGS="$CFLAGS -w2 -wd161,177,193,279,383,444,981,1098,1188,1418"
+  else
+    CFLAGS="$CFLAGS -W -Wall"
+  fi
 fi
 if test x"$GXX" = xyes
 then
-  CXXFLAGS="$CXXFLAGS -W -Wall"
+  if test x"$ICPC" = xyes
+  then
+    CXXFLAGS="$CXXFLAGS -w2 -wd161,177,193,279,383,444,981,1098,1188,1418"
+  else
+    CXXFLAGS="$CXXFLAGS -W -Wall"
+  fi
 fi
 
 # System-dependent adjustments.
