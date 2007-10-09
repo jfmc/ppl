@@ -1367,6 +1367,8 @@ ppl_initialize() {
   try {
     if (Prolog_interface_initialized)
       return PROLOG_SUCCESS;
+    // Initialize the core library.
+    initialize();
     for (size_t i
 	   = sizeof(prolog_interface_atoms)/sizeof(prolog_interface_atoms[0]);
 	 i-- > 0; ) {
@@ -1389,6 +1391,8 @@ ppl_finalize() {
       return PROLOG_SUCCESS;
 
     Prolog_interface_initialized = false;
+    // Finalize the core library.
+    finalize();
 #ifdef PPL_WATCHDOG_LIBRARY_ENABLED
     // Release the pending timeout object, if any.
     reset_timeout();
