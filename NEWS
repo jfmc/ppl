@@ -27,6 +27,21 @@ o  The class LP_Problem has been renamed MIP_Problem and now supports
    work done before these changes. See the documentation of class
    MIP_Problem for a detailed description of the public interface.
 
+o  Users of the C++ interface of the library can now decide to disable
+   the automatic initialization mechanism of the PPL.  To do so, the
+   preprocessor symbol PPL_NO_AUTOMATIC_INITIALIZATION should be defined
+   before including the `ppl.hh' header file.  When automatic initialization
+   is disabled it is imperative to explicitly call the new function
+
+     void Parma_Polyhedra_Library::initialize()
+
+   before using the library.  The new function
+
+     void Parma_Polyhedra_Library::finalize() and
+
+   should also be called (to release a small amount of memory) when
+   done with the library.
+
 o  contains_integer_point() ...
 
 o  All PPL semantic objects now provide the method

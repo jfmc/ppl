@@ -25,10 +25,41 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Init.defs.hh"
 
+#ifndef PPL_NO_AUTOMATIC_INITIALIZATION
 namespace {
 
 Parma_Polyhedra_Library::Init Parma_Polyhedra_Library_initializer;
 
 } // namespace
+#else
+namespace {
+
+Parma_Polyhedra_Library::Init* Parma_Polyhedra_Library_initializer_p;
+
+} // namespace
+#endif
+
+namespace Parma_Polyhedra_Library {
+
+//! Initializes the library.
+inline void
+initialize() {
+#ifdef PPL_NO_AUTOMATIC_INITIALIZATION
+  if (Parma_Polyhedra_Library_initializer_p == 0)
+    Parma_Polyhedra_Library_initializer_p = new Init();
+#endif
+}
+
+//! Finalizes the library.
+inline void
+finalize() {
+#ifdef PPL_NO_AUTOMATIC_INITIALIZATION
+  assert(Parma_Polyhedra_Library_initializer_p != 0);
+  delete Parma_Polyhedra_Library_initializer_p;
+  Parma_Polyhedra_Library_initializer_p = 0;
+#endif
+}
+
+} //namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_initializer_hh)
