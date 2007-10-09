@@ -300,10 +300,6 @@ ppl_not_a_dimension PPL_PROTO((ppl_dimension_type* m));
 /*! \brief
   Initializes the Parma Polyhedra Library.
   This function must be called before any other function.
-
-  \return
-  <CODE>PPL_ERROR_INVALID_ARGUMENT</CODE> if the library
-  was already initialized.
 */
 int
 ppl_initialize PPL_PROTO((void));
@@ -311,10 +307,6 @@ ppl_initialize PPL_PROTO((void));
 /*! \brief
   Finalizes the Parma Polyhedra Library.
   This function must be called after any other function.
-
-  \return
-  <CODE>PPL_ERROR_INVALID_ARGUMENT</CODE> if the library
-  was already finalized.
 */
 int
 ppl_finalize PPL_PROTO((void));
