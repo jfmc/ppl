@@ -126,7 +126,7 @@ version 10.0.  Assuming you have configured GMP with a command like
 you can configure the PPL with a command like
 
   /path/to/ppl-x.y/configure --with-cxx=icpc --with-cc=icc \
-    --with-cxxflags="-strict-ansi -w2 -wd161,177,193,279,383,444,981,1098,1188,1418" \
+    --with-cxxflags="-strict-ansi" \
     --with-libgmpxx-prefix=/opt/intel/cce/10.0.026
 
 Notice that the `--with-cxxflags' option is absolutely non-essential
