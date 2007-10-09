@@ -4,8 +4,7 @@ Enhancements for PPL 0.10
 
 - Write interfaces/OCaml/README.ocaml.
 
-- Provide PPL-specific documentation on the use of `make check'
-  and `make uninstall'.
+- Provide PPL-specific documentation on the use of `make check'.
 
 - Add a short section to the user documentation explaining how to
   compile and link (at least under Un*x) an application using the PPL
