@@ -407,11 +407,16 @@ then
   AC_DEFINE(FPMATH_MAY_USE_SSE, 1, [Defined if floating point arithmetics may use the SSE instruction set.])
 fi
 
-# With GCC, disable transformations and optimizations that assume default
+# Disable all transformations and optimizations that assume default
 # floating point rounding behavior.
-if test x"$GCC" = xyes
+if test x"$GXX" = xyes
 then
-  OPT_FLAGS="$OPT_FLAGS -frounding-math"
+  if test x"$ICPC" = xyes
+  then
+    OPT_FLAGS="$OPT_FLAGS -fp-model strict -fp-speculation off"
+  else
+    OPT_FLAGS="$OPT_FLAGS -frounding-math"
+  fi
 fi
 
 enableval=no
