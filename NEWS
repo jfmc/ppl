@@ -104,6 +104,10 @@ o  Fixed bugs that prevented building the library on systems not supported
    by the Parma Watchdog Library or when the `--disable-watchdog' configure
    was used.
 
+o  Fixed a bug in Grid::constraints() and Grid::minimized_constraints()
+   that caused an internal assertion to fail when the grid had 0 space
+   dimensions.
+
 
 --------------------------------------------------------------------------
 NEWS for version 0.9  (released on March 12, 2006)
