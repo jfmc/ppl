@@ -613,12 +613,15 @@ public:
   */
   dimension_type affine_dimension() const;
 
-  //! Returns a system of constraints  that are satisfied by \p *this.
+  /*! \brief
+      Returns a system of equality constraints satisfied by \p *this
+      with the same affine dimension as \p *this.
+  */
   Constraint_System constraints() const;
 
   /*! \brief
-    Returns a system of constraints in reduced form that are satisfied
-    by \p *this.
+      Returns a system of equality constraints in reduced form
+      satisfied by \p *this with the same affine dimension as \p *this.
   */
   Constraint_System minimized_constraints() const;
 

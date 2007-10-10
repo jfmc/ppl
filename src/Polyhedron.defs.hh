@@ -545,12 +545,12 @@ public:
   //! Returns the system of generators, with no redundant generator.
   const Generator_System& minimized_generators() const;
 
-  //! Returns a system of congruences that \p *this satisfies.
+  //! Returns a system of (equality) congruences satisfied by \p *this.
   Congruence_System congruences() const;
 
   /*! \brief
-    Returns a system of congruences in reduced form that \p *this
-    satisfies.
+      Returns a system of (equality) congruences in reduced form
+      satsified by \p *this with the same affine dimension as \p *this.
   */
   Congruence_System minimized_congruences() const;
 
