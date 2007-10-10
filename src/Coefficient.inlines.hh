@@ -28,12 +28,16 @@ namespace Parma_Polyhedra_Library {
 #if defined(PPL_CHECKED_INTEGERS) || defined(PPL_NATIVE_INTEGERS)
 inline Coefficient_traits::const_reference
 Coefficient_zero() {
-  return Coefficient(0);
+  // FIXME: is there a way to avoid this static variable?
+  static Coefficient zero(0);
+  return zero;
 }
 
 inline Coefficient_traits::const_reference
 Coefficient_one() {
-  return Coefficient(1);
+  // FIXME: is there a way to avoid this static variable?
+  static Coefficient one(1);
+  return one;
 }
 #endif
 
