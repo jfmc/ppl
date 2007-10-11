@@ -34,7 +34,7 @@ namespace Parma_Polyhedra_Library {
 template <typename Interval>
 Grid::Grid(const Box<Interval>& box)
   : con_sys(),
-    gen_sys(NECESSARILY_CLOSED) {
+    gen_sys() {
   if (box.space_dimension() > max_space_dimension())
     throw_space_dimension_overflow("Grid(box, from_bounding_box)",
 				   "the space dimension of box "
@@ -104,10 +104,9 @@ Grid::Grid(const Box<Interval>& box)
 }
 
 template <typename Box>
-Grid::Grid(const Box& box, From_Covering_Box dummy)
+Grid::Grid(const Box& box, From_Covering_Box)
   : con_sys(),
-    gen_sys(NECESSARILY_CLOSED) {
-  used(dummy);
+    gen_sys() {
 
   if (box.space_dimension() > max_space_dimension())
     throw_space_dimension_overflow("Grid(box, from_covering_box)",
