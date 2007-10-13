@@ -27,7 +27,7 @@ namespace Parma_Polyhedra_Library {
 
 template <typename Policy>
 inline void
-Interval_Info_Null<Policy>::swap(Interval_Info_Null<Policy>& y) {
+Interval_Info_Null<Policy>::swap(Interval_Info_Null<Policy>&) {
 }
 
 template <typename T, typename Policy>
