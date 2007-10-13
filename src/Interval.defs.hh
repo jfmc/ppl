@@ -995,7 +995,9 @@ Interval<To_Boundary, To_Info>::assign(const From1& l, const From2& u) {
   Result ru = Boundary_NS::assign(UPPER, upper(), info(), UPPER, u, f_info(u));
   complete_init_internal();
   assert(OK());
-  return check_empty_result(*this, combine(rl, ru));
+  // The following Parma_Polyhedra_Library:: qualification is to work
+  // around a bug in version 10.0 of the Intel C/C++ compiler.
+  return Parma_Polyhedra_Library::check_empty_result(*this, combine(rl, ru));
 }
 
 template <typename To_Boundary, typename To_Info>
@@ -1082,7 +1084,9 @@ Interval<To_Boundary, To_Info>::intersect_assign(const From& x) {
   rl = max_assign(LOWER, lower(), info(), LOWER, f_lower(x), f_info(x));
   ru = min_assign(UPPER, upper(), info(), UPPER, f_upper(x), f_info(x));
   assert(OK());
-  return check_empty_result(*this, combine(rl, ru));
+  // The following Parma_Polyhedra_Library:: qualification is to work
+  // around a bug in version 10.0 of the Intel C/C++ compiler.
+  return Parma_Polyhedra_Library::check_empty_result(*this, combine(rl, ru));
 }
 
 template <typename To_Boundary, typename To_Info>
@@ -1106,7 +1110,9 @@ Interval<To_Boundary, To_Info>::intersect_assign(const From1& x, const From2& y)
   assign_or_swap(info(), to_info);
   complete_init_internal();
   assert(OK());
-  return check_empty_result(*this, combine(rl, ru));
+  // The following Parma_Polyhedra_Library:: qualification is to work
+  // around a bug in version 10.0 of the Intel C/C++ compiler.
+  return Parma_Polyhedra_Library::check_empty_result(*this, combine(rl, ru));
 }
 
 template <typename To_Boundary, typename To_Info>
@@ -1127,7 +1133,10 @@ Interval<To_Boundary, To_Info>::refine_existential(Relation_Symbol rel, const Fr
 				      UPPER, f_upper(x), f_info(x), true);
       invalidate_cardinality_cache();
       normalize();
-      return check_empty_result(*this, combine(V_EQ, ru));
+      // The following Parma_Polyhedra_Library:: qualification is to work
+      // around a bug in version 10.0 of the Intel C/C++ compiler.
+      return Parma_Polyhedra_Library::check_empty_result(*this,
+							 combine(V_EQ, ru));
     }
   case LESS_OR_EQUAL:
     {
@@ -1138,7 +1147,10 @@ Interval<To_Boundary, To_Info>::refine_existential(Relation_Symbol rel, const Fr
 				      UPPER, f_upper(x), f_info(x));
       invalidate_cardinality_cache();
       normalize();
-      return check_empty_result(*this, combine(V_EQ, ru));
+      // The following Parma_Polyhedra_Library:: qualification is to work
+      // around a bug in version 10.0 of the Intel C/C++ compiler.
+      return Parma_Polyhedra_Library::check_empty_result(*this,
+							 combine(V_EQ, ru));
     }
   case GREATER_THAN:
     {
@@ -1149,7 +1161,10 @@ Interval<To_Boundary, To_Info>::refine_existential(Relation_Symbol rel, const Fr
 				      LOWER, f_lower(x), f_info(x), true);
       invalidate_cardinality_cache();
       normalize();
-      return check_empty_result(*this, combine(rl, V_EQ));
+      // The following Parma_Polyhedra_Library:: qualification is to work
+      // around a bug in version 10.0 of the Intel C/C++ compiler.
+      return Parma_Polyhedra_Library::check_empty_result(*this,
+							 combine(rl, V_EQ));
     }
   case GREATER_OR_EQUAL:
     {
@@ -1160,7 +1175,10 @@ Interval<To_Boundary, To_Info>::refine_existential(Relation_Symbol rel, const Fr
 				      LOWER, f_lower(x), f_info(x));
       invalidate_cardinality_cache();
       normalize();
-      return check_empty_result(*this, combine(rl, V_EQ));
+      // The following Parma_Polyhedra_Library:: qualification is to work
+      // around a bug in version 10.0 of the Intel C/C++ compiler.
+      return Parma_Polyhedra_Library::check_empty_result(*this,
+							 combine(rl, V_EQ));
     }
   case EQUAL:
     return intersect_assign(x);
@@ -1176,7 +1194,10 @@ Interval<To_Boundary, To_Info>::refine_existential(Relation_Symbol rel, const Fr
 	upper_shrink();
       invalidate_cardinality_cache();
       normalize();
-      return check_empty_result(*this, combine(V_EQ, V_EQ));
+      // The following Parma_Polyhedra_Library:: qualification is to work
+      // around a bug in version 10.0 of the Intel C/C++ compiler.
+      return Parma_Polyhedra_Library::check_empty_result(*this,
+							 combine(V_EQ, V_EQ));
     }
   default:
     assert(false);
@@ -1202,7 +1223,10 @@ Interval<To_Boundary, To_Info>::refine_universal(Relation_Symbol rel, const From
 				      LOWER, f_lower(x), f_info(x), true);
       invalidate_cardinality_cache();
       normalize();
-      return check_empty_result(*this, combine(V_EQ, ru));
+      // The following Parma_Polyhedra_Library:: qualification is to work
+      // around a bug in version 10.0 of the Intel C/C++ compiler.
+      return Parma_Polyhedra_Library::check_empty_result(*this,
+							 combine(V_EQ, ru));
     }
   case LESS_OR_EQUAL:
     {
@@ -1213,7 +1237,10 @@ Interval<To_Boundary, To_Info>::refine_universal(Relation_Symbol rel, const From
 				      LOWER, f_lower(x), f_info(x));
       invalidate_cardinality_cache();
       normalize();
-      return check_empty_result(*this, combine(V_EQ, ru));
+      // The following Parma_Polyhedra_Library:: qualification is to work
+      // around a bug in version 10.0 of the Intel C/C++ compiler.
+      return Parma_Polyhedra_Library::check_empty_result(*this,
+							 combine(V_EQ, ru));
     }
   case GREATER_THAN:
     {
@@ -1224,7 +1251,10 @@ Interval<To_Boundary, To_Info>::refine_universal(Relation_Symbol rel, const From
 				      UPPER, f_upper(x), f_info(x), true);
       invalidate_cardinality_cache();
       normalize();
-      return check_empty_result(*this, combine(rl, V_EQ));
+      // The following Parma_Polyhedra_Library:: qualification is to work
+      // around a bug in version 10.0 of the Intel C/C++ compiler.
+      return Parma_Polyhedra_Library::check_empty_result(*this,
+							 combine(rl, V_EQ));
     }
   case GREATER_OR_EQUAL:
     {
@@ -1235,7 +1265,10 @@ Interval<To_Boundary, To_Info>::refine_universal(Relation_Symbol rel, const From
 				      UPPER, f_upper(x), f_info(x));
       invalidate_cardinality_cache();
       normalize();
-      return check_empty_result(*this, combine(rl, V_EQ));
+      // The following Parma_Polyhedra_Library:: qualification is to work
+      // around a bug in version 10.0 of the Intel C/C++ compiler.
+      return Parma_Polyhedra_Library::check_empty_result(*this,
+							 combine(rl, V_EQ));
     }
   case EQUAL:
     if (!f_is_singleton(x))
@@ -1251,7 +1284,10 @@ Interval<To_Boundary, To_Info>::refine_universal(Relation_Symbol rel, const From
 	upper_shrink();
       invalidate_cardinality_cache();
       normalize();
-      return check_empty_result(*this, combine(V_EQ, V_EQ));
+      // The following Parma_Polyhedra_Library:: qualification is to work
+      // around a bug in version 10.0 of the Intel C/C++ compiler.
+      return Parma_Polyhedra_Library::check_empty_result(*this,
+							 combine(V_EQ, V_EQ));
     }
   default:
     assert(false);
