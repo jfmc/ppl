@@ -419,8 +419,7 @@ private:
 			Parma_Polyhedra_Library::Congruence_System& y);
 
   friend bool
-  Parma_Polyhedra_Library::operator==(const Congruence_System& x,
-				      const Congruence_System& y);
+  operator==(const Congruence_System& x, const Congruence_System& y);
 
   //! Returns the \p k- th congruence of the system.
   Congruence& operator[](dimension_type k);

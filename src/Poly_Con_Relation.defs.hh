@@ -100,20 +100,15 @@ private:
   Poly_Con_Relation(flags_t mask);
 
   friend bool
-  Parma_Polyhedra_Library::operator==(const Poly_Con_Relation& x,
-				      const Poly_Con_Relation& y);
-
+  operator==(const Poly_Con_Relation& x, const Poly_Con_Relation& y);
   friend bool
-  Parma_Polyhedra_Library::operator!=(const Poly_Con_Relation& x,
-				      const Poly_Con_Relation& y);
+  operator!=(const Poly_Con_Relation& x, const Poly_Con_Relation& y);
 
   friend Poly_Con_Relation
-  Parma_Polyhedra_Library::operator&&(const Poly_Con_Relation& x,
-				      const Poly_Con_Relation& y);
+  operator&&(const Poly_Con_Relation& x, const Poly_Con_Relation& y);
 
   friend Poly_Con_Relation
-  Parma_Polyhedra_Library::operator-(const Poly_Con_Relation& x,
-				     const Poly_Con_Relation& y);
+  operator-(const Poly_Con_Relation& x, const Poly_Con_Relation& y);
 
   friend std::ostream&
   Parma_Polyhedra_Library::

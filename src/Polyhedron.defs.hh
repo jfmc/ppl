@@ -1782,8 +1782,7 @@ public:
 
   //@} // Member Functions that May Modify the Dimension of the Vector Space
 
-  friend bool Parma_Polyhedra_Library::operator==(const Polyhedron& x,
-						  const Polyhedron& y);
+  friend bool operator==(const Polyhedron& x, const Polyhedron& y);
 
   //! \name Miscellaneous Member Functions
   //@{

@@ -395,58 +395,43 @@ private:
   Linear_Expression(dimension_type sz, bool);
 
   friend Linear_Expression
-  Parma_Polyhedra_Library::operator+(const Linear_Expression& e1,
-				     const Linear_Expression& e2);
+  operator+(const Linear_Expression& e1, const Linear_Expression& e2);
   friend Linear_Expression
-  Parma_Polyhedra_Library::operator+(Coefficient_traits::const_reference n,
-				     const Linear_Expression& e);
+  operator+(Coefficient_traits::const_reference n, const Linear_Expression& e);
   friend Linear_Expression
-  Parma_Polyhedra_Library::operator+(const Linear_Expression& e,
-				     Coefficient_traits::const_reference n);
+  operator+(const Linear_Expression& e, Coefficient_traits::const_reference n);
 
   friend Linear_Expression
-  Parma_Polyhedra_Library::operator-(const Linear_Expression& e);
+  operator-(const Linear_Expression& e);
 
   friend Linear_Expression
-  Parma_Polyhedra_Library::operator-(const Linear_Expression& e1,
-				     const Linear_Expression& e2);
+  operator-(const Linear_Expression& e1, const Linear_Expression& e2);
   friend Linear_Expression
-  Parma_Polyhedra_Library::operator-(Coefficient_traits::const_reference n,
-				     const Linear_Expression& e);
+  operator-(Coefficient_traits::const_reference n, const Linear_Expression& e);
   friend Linear_Expression
-  Parma_Polyhedra_Library::operator-(const Linear_Expression& e,
-				     Coefficient_traits::const_reference n);
+  operator-(const Linear_Expression& e, Coefficient_traits::const_reference n);
 
   friend Linear_Expression
-  Parma_Polyhedra_Library::operator*(Coefficient_traits::const_reference n,
-				     const Linear_Expression& e);
+  operator*(Coefficient_traits::const_reference n, const Linear_Expression& e);
   friend Linear_Expression
-  Parma_Polyhedra_Library::operator*(const Linear_Expression& e,
-				     Coefficient_traits::const_reference n);
+  operator*(const Linear_Expression& e, Coefficient_traits::const_reference n);
 
   friend Linear_Expression&
-  Parma_Polyhedra_Library::operator+=(Linear_Expression& e1,
-				      const Linear_Expression& e2);
+  operator+=(Linear_Expression& e1, const Linear_Expression& e2);
   friend Linear_Expression&
-  Parma_Polyhedra_Library::operator+=(Linear_Expression& e,
-				      Variable v);
+  operator+=(Linear_Expression& e, Variable v);
   friend Linear_Expression&
-  Parma_Polyhedra_Library::operator+=(Linear_Expression& e,
-				      Coefficient_traits::const_reference n);
+  operator+=(Linear_Expression& e, Coefficient_traits::const_reference n);
 
   friend Linear_Expression&
-  Parma_Polyhedra_Library::operator-=(Linear_Expression& e1,
-				      const Linear_Expression& e2);
+  operator-=(Linear_Expression& e1, const Linear_Expression& e2);
   friend Linear_Expression&
-  Parma_Polyhedra_Library::operator-=(Linear_Expression& e,
-				      Variable v);
+  operator-=(Linear_Expression& e, Variable v);
   friend Linear_Expression&
-  Parma_Polyhedra_Library::operator-=(Linear_Expression& e,
-				      Coefficient_traits::const_reference n);
+  operator-=(Linear_Expression& e, Coefficient_traits::const_reference n);
 
   friend Linear_Expression&
-  Parma_Polyhedra_Library::operator*=(Linear_Expression& e,
-				      Coefficient_traits::const_reference n);
+  operator*=(Linear_Expression& e, Coefficient_traits::const_reference n);
 
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators

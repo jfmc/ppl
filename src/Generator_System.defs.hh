@@ -365,9 +365,7 @@ private:
   friend class Parma_Polyhedra_Library::Polyhedron;
   friend class Parma_Polyhedra_Library::Grid_Generator_System;
 
-  friend bool
-  Parma_Polyhedra_Library::operator==(const Polyhedron& x,
-				      const Polyhedron& y);
+  friend bool operator==(const Polyhedron& x, const Polyhedron& y);
 
   //! Builds an empty system of generators having the specified topology.
   explicit Generator_System(Topology topol);

@@ -94,20 +94,15 @@ private:
   Poly_Gen_Relation(flags_t mask);
 
   friend bool
-  Parma_Polyhedra_Library::operator==(const Poly_Gen_Relation& x,
-				      const Poly_Gen_Relation& y);
-
+  operator==(const Poly_Gen_Relation& x, const Poly_Gen_Relation& y);
   friend bool
-  Parma_Polyhedra_Library::operator!=(const Poly_Gen_Relation& x,
-				      const Poly_Gen_Relation& y);
+  operator!=(const Poly_Gen_Relation& x, const Poly_Gen_Relation& y);
 
   friend Poly_Gen_Relation
-  Parma_Polyhedra_Library::operator&&(const Poly_Gen_Relation& x,
-				      const Poly_Gen_Relation& y);
+  operator&&(const Poly_Gen_Relation& x, const Poly_Gen_Relation& y);
 
   friend Poly_Gen_Relation
-  Parma_Polyhedra_Library::operator-(const Poly_Gen_Relation& x,
-				     const Poly_Gen_Relation& y);
+  operator-(const Poly_Gen_Relation& x, const Poly_Gen_Relation& y);
 
   friend std::ostream&
   Parma_Polyhedra_Library::

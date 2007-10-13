@@ -447,20 +447,15 @@ private:
 			       Variable v) const;
 
   friend Congruence
-  Parma_Polyhedra_Library::operator/(const Congruence& cg,
-		 Coefficient_traits::const_reference k);
-
+  operator/(const Congruence& cg, Coefficient_traits::const_reference k);
   friend Congruence
-  Parma_Polyhedra_Library::operator/(const Constraint& c,
-		 Coefficient_traits::const_reference m);
+  operator/(const Constraint& c, Coefficient_traits::const_reference m);
 
   friend bool
-  Parma_Polyhedra_Library::operator==(const Congruence& x,
-				      const Congruence& y);
+  operator==(const Congruence& x, const Congruence& y);
 
   friend bool
-  Parma_Polyhedra_Library::operator!=(const Congruence& x,
-				      const Congruence& y);
+  operator!=(const Congruence& x, const Congruence& y);
 
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators

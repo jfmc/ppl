@@ -1301,8 +1301,7 @@ private:
   friend class Parma_Polyhedra_Library::Box;
 
   friend bool
-  Parma_Polyhedra_Library::operator==<Interval>(const Box<Interval>& x,
-						const Box<Interval>& y);
+  operator==<Interval>(const Box<Interval>& x, const Box<Interval>& y);
 
 #ifdef __ICC
   // Work around bug of the Intel compiler: use `interval_type'

@@ -2018,8 +2018,7 @@ public:
 
   //@} // Member Functions that May Modify the Dimension of the Vector Space
 
-  friend bool Parma_Polyhedra_Library::operator==(const Grid& x,
-						  const Grid& y);
+  friend bool operator==(const Grid& x, const Grid& y);
 
   friend class Parma_Polyhedra_Library::Grid_Certificate;
 

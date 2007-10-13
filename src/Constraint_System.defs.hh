@@ -306,9 +306,7 @@ private:
   friend class const_iterator;
   friend class Parma_Polyhedra_Library::Polyhedron;
 
-  friend bool
-  Parma_Polyhedra_Library::operator==(const Polyhedron& x,
-				      const Polyhedron& y);
+  friend bool operator==(const Polyhedron& x, const Polyhedron& y);
 
   //! Builds an empty system of constraints having the specified topology.
   explicit Constraint_System(Topology topol);

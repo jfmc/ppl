@@ -477,8 +477,7 @@ public:
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
 
-  friend bool Parma_Polyhedra_Library::operator==<T>(const OR_Matrix<T>& x,
-						     const OR_Matrix<T>& y);
+  friend bool operator==<T>(const OR_Matrix<T>& x, const OR_Matrix<T>& y);
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;

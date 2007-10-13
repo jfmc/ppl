@@ -474,54 +474,39 @@ private:
 			       Variable v) const;
 
   friend Constraint
-  Parma_Polyhedra_Library::operator==(const Linear_Expression& e1,
-				      const Linear_Expression& e2);
+  operator==(const Linear_Expression& e1, const Linear_Expression& e2);
   friend Constraint
-  Parma_Polyhedra_Library::operator==(const Linear_Expression& e,
-				      Coefficient_traits::const_reference n);
+  operator==(const Linear_Expression& e, Coefficient_traits::const_reference n);
   friend Constraint
-  Parma_Polyhedra_Library::operator==(Coefficient_traits::const_reference n,
-				      const Linear_Expression& e);
+  operator==(Coefficient_traits::const_reference n, const Linear_Expression& e);
 
   friend Constraint
-  Parma_Polyhedra_Library::operator>=(const Linear_Expression& e1,
-				      const Linear_Expression& e2);
+  operator>=(const Linear_Expression& e1, const Linear_Expression& e2);
   friend Constraint
-  Parma_Polyhedra_Library::operator>=(const Linear_Expression& e,
-				      Coefficient_traits::const_reference n);
+  operator>=(const Linear_Expression& e, Coefficient_traits::const_reference n);
   friend Constraint
-  Parma_Polyhedra_Library::operator>=(Coefficient_traits::const_reference n,
-				      const Linear_Expression& e);
+  operator>=(Coefficient_traits::const_reference n, const Linear_Expression& e);
 
   friend Constraint
-  Parma_Polyhedra_Library::operator<=(const Linear_Expression& e1,
-				      const Linear_Expression& e2);
+  operator<=(const Linear_Expression& e1, const Linear_Expression& e2);
   friend Constraint
-  Parma_Polyhedra_Library::operator<=(const Linear_Expression& e,
-				      Coefficient_traits::const_reference n);
+  operator<=(const Linear_Expression& e, Coefficient_traits::const_reference n);
   friend Constraint
-  Parma_Polyhedra_Library::operator<=(Coefficient_traits::const_reference n,
-				      const Linear_Expression& e);
+  operator<=(Coefficient_traits::const_reference n, const Linear_Expression& e);
 
   friend Constraint
-  Parma_Polyhedra_Library::operator>(const Linear_Expression& e1,
-				     const Linear_Expression& e2);
+  operator>(const Linear_Expression& e1, const Linear_Expression& e2);
   friend Constraint
-  Parma_Polyhedra_Library::operator>(const Linear_Expression& e,
-				     Coefficient_traits::const_reference n);
+  operator>(const Linear_Expression& e, Coefficient_traits::const_reference n);
   friend Constraint
-  Parma_Polyhedra_Library::operator>(Coefficient_traits::const_reference n,
-				     const Linear_Expression& e);
+  operator>(Coefficient_traits::const_reference n, const Linear_Expression& e);
 
   friend Constraint
-  Parma_Polyhedra_Library::operator<(const Linear_Expression& e1,
-				     const Linear_Expression& e2);
+  operator<(const Linear_Expression& e1, const Linear_Expression& e2);
   friend Constraint
-  Parma_Polyhedra_Library::operator<(const Linear_Expression& e,
-				     Coefficient_traits::const_reference n);
+  operator<(const Linear_Expression& e, Coefficient_traits::const_reference n);
   friend Constraint
-  Parma_Polyhedra_Library::operator<(Coefficient_traits::const_reference n,
-				     const Linear_Expression& e);
+  operator<(Coefficient_traits::const_reference n, const Linear_Expression& e);
 
   //! Copy-constructor with given size.
   Constraint(const Constraint& c, dimension_type sz);

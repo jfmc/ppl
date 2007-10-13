@@ -1405,8 +1405,7 @@ public:
   int32_t hash_code() const;
 
   friend bool
-  Parma_Polyhedra_Library::operator==<T>(const Octagonal_Shape<T>& x,
-					 const Octagonal_Shape<T>& y);
+  operator==<T>(const Octagonal_Shape<T>& x, const Octagonal_Shape<T>& y);
 
   template <typename Temp, typename To, typename U>
   friend bool Parma_Polyhedra_Library::rectilinear_distance_assign
