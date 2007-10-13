@@ -35,7 +35,9 @@ PPL::Pointset_Ask_Tell<PPL::NNC_Polyhedron>
 	 y_end = y.end(); i != y_end; ++i) {
     Determinate<NNC_Polyhedron> nnc_ask(NNC_Polyhedron(i->ask().element()));
     Determinate<NNC_Polyhedron> nnc_tell(NNC_Polyhedron(i->tell().element()));
-    x.sequence.push_back(Pair(nnc_ask, nnc_tell));
+    // FIXME: why the following does not work?
+    //x.sequence.push_back(Pair(nnc_ask, nnc_tell));
+    x.sequence.push_back(Ask_Tell_Pair<CS>(nnc_ask, nnc_tell));
   }
   x.normalized = y.normalized;
   assert(x.OK());
@@ -51,7 +53,9 @@ PPL::Pointset_Ask_Tell<PPL::C_Polyhedron>
 	 y_end = y.end(); i != y_end; ++i) {
     Determinate<C_Polyhedron> c_ask(C_Polyhedron(i->ask().element()));
     Determinate<C_Polyhedron> c_tell(C_Polyhedron(i->tell().element()));
-    x.sequence.push_back(Pair(c_ask, c_tell));
+    // FIXME: why the following does not work?
+    //x.sequence.push_back(Pair(c_ask, c_tell));
+    x.sequence.push_back(Ask_Tell_Pair<CS>(c_ask, c_tell));
   }
 
   // Note: this might be non-normalized even when `y' is known to be

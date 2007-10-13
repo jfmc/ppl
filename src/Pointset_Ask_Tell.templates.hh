@@ -66,7 +66,9 @@ Pointset_Ask_Tell<NNC_Polyhedron>
       nnc_ask(NNC_Polyhedron(i->ask().element().constraints()));
     Determinate<NNC_Polyhedron>
       nnc_tell(NNC_Polyhedron(i->tell().element().constraints()));
-    x.sequence.push_back(Pair(nnc_ask, nnc_tell));
+    // FIXME: why the following does not work?
+    //x.sequence.push_back(Pair(nnc_ask, nnc_tell));
+    x.sequence.push_back(Ask_Tell_Pair<CS>(nnc_ask, nnc_tell));
   }
   // FIXME: the following is a bug!
   x.normalized = y.normalized;
@@ -85,7 +87,9 @@ Pointset_Ask_Tell<C_Polyhedron>
       c_ask(C_Polyhedron(i->ask().element().constraints()));
     Determinate<C_Polyhedron>
       c_tell(C_Polyhedron(i->tell().element().constraints()));
-    x.sequence.push_back(Pair(c_ask, c_tell));
+    // FIXME: why the following does not work?
+    //x.sequence.push_back(Pair(c_ask, c_tell));
+    x.sequence.push_back(Ask_Tell_Pair<CS>(c_ask, c_tell));
   }
 
   // FIXME: the following comment should be rephrased!
