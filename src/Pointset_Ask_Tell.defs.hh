@@ -52,6 +52,7 @@ public:
 private:
   typedef Determinate<PS> CS;
   typedef Ask_Tell<CS> Base;
+  typedef typename Base::Pair Pair;
 
 public:
   //! Returns the maximum space dimension a Pointset_Ask_Tell<PS> can handle.
@@ -70,7 +71,7 @@ public:
   */
   explicit
   Pointset_Ask_Tell(dimension_type num_dimensions = 0,
-		     Degenerate_Element kind = UNIVERSE);
+		    Degenerate_Element kind = UNIVERSE);
 
   //! Ordinary copy-constructor.
   Pointset_Ask_Tell(const Pointset_Ask_Tell& y);
@@ -94,8 +95,10 @@ public:
   */
   explicit Pointset_Ask_Tell(const Constraint_System& cs);
 
-  //! Creates a Pointset_Ask_Tell with a single polyhedron
-  //! with the same information contents as \p cgs.
+  /*! \brief
+    Creates a Pointset_Ask_Tell with a single polyhedron
+    with the same information contents as \p cgs.
+  */
   explicit Pointset_Ask_Tell(const Congruence_System& cgs);
 
   //@} // Constructors and Destructor
