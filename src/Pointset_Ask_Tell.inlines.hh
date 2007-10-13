@@ -71,52 +71,6 @@ Pointset_Ask_Tell<PS>::Pointset_Ask_Tell(const PS& ph)
   : Base(ph), space_dim(ph.space_dimension()) {
 }
 
-// FIXME: This full specialization is declared inline and placed here
-// just as a workaround to a bug in GCC 3.3.3. In principle, it should
-// not be declared inline and moved in Pointset_Ask_Tell.cc.
-// See http://gcc.gnu.org/bugzilla/show_bug.cgi?id=13635.
-template <>
-template <>
-inline
-Pointset_Ask_Tell<NNC_Polyhedron>
-::Pointset_Ask_Tell(const Pointset_Ask_Tell<C_Polyhedron>& y)
-  : Base(), space_dim(y.space_dimension()) {
-  Pointset_Ask_Tell& x = *this;
-  for (Pointset_Ask_Tell<C_Polyhedron>::const_iterator i = y.begin(),
-	 y_end = y.end(); i != y_end; ++i) {
-    Determinate<NNC_Polyhedron> nnc_ask(NNC_Polyhedron(i->ask().element()));
-    Determinate<NNC_Polyhedron> nnc_tell(NNC_Polyhedron(i->tell().element()));
-    x.sequence.push_back(Pair(nnc_ask, nnc_tell));
-  }
-  x.normalized = y.normalized;
-  assert(x.OK());
-}
-
-// FIXME: This full specialization is declared inline and placed here
-// just as a workaround to a bug in GCC 3.3.3. In principle, it should
-// not be declared inline and moved in Pointset_Ask_Tell.cc.
-// See http://gcc.gnu.org/bugzilla/show_bug.cgi?id=13635.
-template <>
-template <>
-inline
-Pointset_Ask_Tell<C_Polyhedron>
-::Pointset_Ask_Tell(const Pointset_Ask_Tell<NNC_Polyhedron>& y)
-  : Base(), space_dim(y.space_dimension()) {
-  Pointset_Ask_Tell& x = *this;
-  for (Pointset_Ask_Tell<NNC_Polyhedron>::const_iterator i = y.begin(),
-	 y_end = y.end(); i != y_end; ++i) {
-    Determinate<C_Polyhedron> c_ask(C_Polyhedron(i->ask().element()));
-    Determinate<C_Polyhedron> c_tell(C_Polyhedron(i->tell().element()));
-    x.sequence.push_back(Pair(c_ask, c_tell));
-  }
-
-  // Note: this might be non-normalized even when `y' is known to be
-  // normalized, because the constructor of C_Polyhedron, by enforcing
-  // topological closure, may have made different elements comparable.
-  x.normalized = false;
-  assert(x.OK());
-}
-
 template <typename PS>
 inline
 Pointset_Ask_Tell<PS>::Pointset_Ask_Tell(const Constraint_System& cs)

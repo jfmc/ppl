@@ -71,49 +71,6 @@ Pointset_Powerset<PS>::Pointset_Powerset(const PS& ph)
   : Base(ph), space_dim(ph.space_dimension()) {
 }
 
-// FIXME: This full specialization is declared inline and placed here
-// just as a workaround to a bug in GCC 3.3.3. In principle, it should
-// not be declared inline and moved in Pointset_Powerset.cc.
-// See http://gcc.gnu.org/bugzilla/show_bug.cgi?id=13635.
-template <>
-template <>
-inline
-Pointset_Powerset<NNC_Polyhedron>
-::Pointset_Powerset(const Pointset_Powerset<C_Polyhedron>& y)
-  : Base(), space_dim(y.space_dimension()) {
-  Pointset_Powerset& x = *this;
-  for (Pointset_Powerset<C_Polyhedron>::const_iterator i = y.begin(),
-	 y_end = y.end(); i != y_end; ++i)
-    x.sequence.push_back(Determinate<NNC_Polyhedron>
-			 (NNC_Polyhedron(i->element())));
-  x.reduced = y.reduced;
-  assert(x.OK());
-}
-
-// FIXME: This full specialization is declared inline and placed here
-// just as a workaround to a bug in GCC 3.3.3. In principle, it should
-// not be declared inline and moved in Pointset_Powerset.cc.
-// See http://gcc.gnu.org/bugzilla/show_bug.cgi?id=13635.
-template <>
-template <>
-inline
-Pointset_Powerset<C_Polyhedron>
-::Pointset_Powerset(const Pointset_Powerset<NNC_Polyhedron>& y)
-  : Base(), space_dim(y.space_dimension()) {
-  Pointset_Powerset& x = *this;
-  for (Pointset_Powerset<NNC_Polyhedron>::const_iterator i = y.begin(),
-	 y_end = y.end(); i != y_end; ++i)
-    x.sequence.push_back(Determinate<C_Polyhedron>
-			 (C_Polyhedron(i->element())));
-
-  // Note: this might be non-reduced even when `y' is known to be
-  // omega-reduced, because the constructor of C_Polyhedron, by
-  // enforcing topological closure, may have made different elements
-  // comparable.
-  x.reduced = false;
-  assert(x.OK());
-}
-
 template <typename PS>
 inline
 Pointset_Powerset<PS>::Pointset_Powerset(const Constraint_System& cs)

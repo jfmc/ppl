@@ -39,15 +39,8 @@ test01() {
   if (ps2 != ps1 || !(ps2 == ps1))
     return false;
 
-#if 0
-  // GCC 3.3.3 does not accept this.
   using IO_Operators::operator<<;
   nout << "ps1:" << endl << ps1 << endl;
-#else
-  nout << "ps1:" << endl;
-  Parma_Polyhedra_Library::IO_Operators::operator<<(nout, ps1);
-  nout << endl;
-#endif
 
   FCAIBVP d(A);
   PS ps3(d);

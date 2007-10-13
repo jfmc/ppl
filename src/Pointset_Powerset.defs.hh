@@ -471,14 +471,10 @@ private:
 				    y_cert_ms) const;
 
   // FIXME: here it should be enough to befriend the template constructor
-  //   template <typename QH>
-  //   Pointset_Powerset(const Pointset_Powerset<QH>&)
+  // template <typename QH>
+  // Pointset_Powerset(const Pointset_Powerset<QH>&),
   // but, apparently, this cannot be done.
-  // As a workaround, we could use
-  //   friend class Pointset_Powerset<NNC_Polyhedron>
-  // but GCC 3.3.3 has a bug that causes its rejection.
-  // So, temporarily, we make all Pointset_Powerset's friends of each other.
-  template <typename QH> friend class Pointset_Powerset;
+  friend class Pointset_Powerset<NNC_Polyhedron>;
 };
 
 

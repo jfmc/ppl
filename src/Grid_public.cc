@@ -690,9 +690,6 @@ PPL::Grid::OK(bool check_not_empty) const {
   }
 
   {
-    // This block is to limit the scope of num_columns, at least for
-    // GCC < 3.4.
-
     // The expected number of columns in the congruence and generator
     // systems, if they are not empty.
     const dimension_type num_columns = space_dim + 1;
@@ -808,7 +805,7 @@ PPL::Grid::OK(bool check_not_empty) const {
       }
 
     } // if (congruences_are_up_to_date())
-  } // scope block
+  }
 
   if (congruences_are_up_to_date()) {
     // Check if the system of congruences is well-formed.

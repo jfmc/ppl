@@ -25,4 +25,38 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-// Empty, for the time being.
+template <>
+template <>
+PPL::Pointset_Ask_Tell<PPL::NNC_Polyhedron>
+::Pointset_Ask_Tell(const Pointset_Ask_Tell<C_Polyhedron>& y)
+  : Base(), space_dim(y.space_dimension()) {
+  Pointset_Ask_Tell& x = *this;
+  for (Pointset_Ask_Tell<C_Polyhedron>::const_iterator i = y.begin(),
+	 y_end = y.end(); i != y_end; ++i) {
+    Determinate<NNC_Polyhedron> nnc_ask(NNC_Polyhedron(i->ask().element()));
+    Determinate<NNC_Polyhedron> nnc_tell(NNC_Polyhedron(i->tell().element()));
+    x.sequence.push_back(Pair(nnc_ask, nnc_tell));
+  }
+  x.normalized = y.normalized;
+  assert(x.OK());
+}
+
+template <>
+template <>
+PPL::Pointset_Ask_Tell<PPL::C_Polyhedron>
+::Pointset_Ask_Tell(const Pointset_Ask_Tell<NNC_Polyhedron>& y)
+  : Base(), space_dim(y.space_dimension()) {
+  Pointset_Ask_Tell& x = *this;
+  for (Pointset_Ask_Tell<NNC_Polyhedron>::const_iterator i = y.begin(),
+	 y_end = y.end(); i != y_end; ++i) {
+    Determinate<C_Polyhedron> c_ask(C_Polyhedron(i->ask().element()));
+    Determinate<C_Polyhedron> c_tell(C_Polyhedron(i->tell().element()));
+    x.sequence.push_back(Pair(c_ask, c_tell));
+  }
+
+  // Note: this might be non-normalized even when `y' is known to be
+  // normalized, because the constructor of C_Polyhedron, by enforcing
+  // topological closure, may have made different elements comparable.
+  x.normalized = false;
+  assert(x.OK());
+}

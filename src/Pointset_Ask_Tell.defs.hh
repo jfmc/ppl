@@ -441,14 +441,10 @@ private:
 				    y_cert_ms) const;
 
   // FIXME: here it should be enough to befriend the template constructor
-  //   template <typename QH>
-  //   Pointset_Ask_Tell(const Pointset_Ask_Tell<QH>&)
+  // template <typename QH>
+  // Pointset_Ask_Tell(const Pointset_Ask_Tell<QH>&),
   // but, apparently, this cannot be done.
-  // As a workaround, we could use
-  //   friend class Pointset_Ask_Tell<NNC_Polyhedron>
-  // but GCC 3.3.3 has a bug that causes its rejection.
-  // So, temporarily, we make all Pointset_Ask_Tell's friends of each other.
-  template <typename QH> friend class Pointset_Ask_Tell;
+  friend class Pointset_Ask_Tell<NNC_Polyhedron>;
 };
 
 

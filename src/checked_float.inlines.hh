@@ -144,18 +144,7 @@ limit_precision(double v) {
 
 inline long double
 limit_precision(long double v) {
-#if __GNUC__ >= 4
   return v;
-#else
-  // Not really needed for floating point operations done with the
-  // maximum available precision, but this avoids a bug in GCC 3.4.3
-  // that causes excessive optimization compiling -(-a * b).
-  // See http://gcc.gnu.org/bugzilla/show_bug.cgi?id=21032
-  // and http://gcc.gnu.org/bugzilla/show_bug.cgi?id=21067.
-  long double x = v;
-  avoid_cse(x);
-  return x;
-#endif
 }
 
 template <typename Policy, typename T>

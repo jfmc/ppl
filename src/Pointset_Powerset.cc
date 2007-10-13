@@ -283,3 +283,36 @@ PPL::Pointset_Powerset<PPL::Grid>
       return false;
   return true;
 }
+
+template <>
+template <>
+PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
+::Pointset_Powerset(const Pointset_Powerset<C_Polyhedron>& y)
+  : Base(), space_dim(y.space_dimension()) {
+  Pointset_Powerset& x = *this;
+  for (Pointset_Powerset<C_Polyhedron>::const_iterator i = y.begin(),
+	 y_end = y.end(); i != y_end; ++i)
+    x.sequence.push_back(Determinate<NNC_Polyhedron>
+			 (NNC_Polyhedron(i->element())));
+  x.reduced = y.reduced;
+  assert(x.OK());
+}
+
+template <>
+template <>
+PPL::Pointset_Powerset<PPL::C_Polyhedron>
+::Pointset_Powerset(const Pointset_Powerset<NNC_Polyhedron>& y)
+  : Base(), space_dim(y.space_dimension()) {
+  Pointset_Powerset& x = *this;
+  for (Pointset_Powerset<NNC_Polyhedron>::const_iterator i = y.begin(),
+	 y_end = y.end(); i != y_end; ++i)
+    x.sequence.push_back(Determinate<C_Polyhedron>
+			 (C_Polyhedron(i->element())));
+
+  // Note: this might be non-reduced even when `y' is known to be
+  // omega-reduced, because the constructor of C_Polyhedron, by
+  // enforcing topological closure, may have made different elements
+  // comparable.
+  x.reduced = false;
+  assert(x.OK());
+}
