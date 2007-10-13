@@ -1416,9 +1416,8 @@ public:
 
   //@} // Member Functions that May Modify the Dimension of the Vector Space
 
-  friend bool
-  Parma_Polyhedra_Library::operator==<>(const Direct_Product<D1, D2>& x,
-					const Direct_Product<D1, D2>& y);
+  friend bool operator==<>(const Direct_Product<D1, D2>& x,
+			   const Direct_Product<D1, D2>& y);
 
 #if 0
   friend std::ostream&
