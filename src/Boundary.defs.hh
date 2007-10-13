@@ -245,7 +245,7 @@ inline bool
 normal_is_reverse_infinity(Boundary_Type type, const T& x, const Info&) {
   if (!Info::may_contain_infinity)
     return false;
-  if (type == LOWER)
+  else if (type == LOWER)
     return Parma_Polyhedra_Library::is_plus_infinity(x);
   else
     return Parma_Polyhedra_Library::is_minus_infinity(x);
