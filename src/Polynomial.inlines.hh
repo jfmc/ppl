@@ -207,6 +207,11 @@ Polynomial::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
 }
 
+inline bool
+Polynomial::is_equal_to(const Polynomial& y) const {
+  return map == y.map;
+}
+
 inline void
 Polynomial::primitive_form_assign() {
   normalize();
@@ -221,15 +226,15 @@ Polynomial::check_primitive_form() const {
 }
 
 inline void
-Polynomial::linear_combine(const Polynomial& y, const Term& t) {
-  linear_combine(y, t, y.coefficient(t));
-}
-
-inline void
 Polynomial::linear_combine(const Polynomial& y,
 			   const Term& t,
 			   Coefficient_traits::const_reference y_t) {
   linear_combine(y, t, coefficient(t), y_t);
+}
+
+inline void
+Polynomial::linear_combine(const Polynomial& y, const Term& t) {
+  linear_combine(y, t, y.coefficient(t));
 }
 
 /*! \relates Polynomial */
@@ -337,11 +342,6 @@ pow(const Polynomial& p, const dimension_type n) {
 inline void
 Polynomial::swap(Polynomial& y) {
   std::swap(map, y.map);
-}
-
-inline bool
-Polynomial::is_equal_to(const Polynomial& y) const {
-  return map == y.map;
 }
 
 inline bool

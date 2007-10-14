@@ -268,7 +268,7 @@ public:
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
 
-  PPL_OUTPUT_DECLARATIONS;
+  PPL_OUTPUT_DECLARATIONS
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
@@ -298,35 +298,19 @@ private:
   //! Returns a reference to the coefficient component.
   Coefficient& coefficient_ref();
 
-  friend Monomial&
-  Parma_Polyhedra_Library::operator*=(Monomial& m,
-				      Coefficient_traits::const_reference n);
+  friend Monomial& operator*=(Monomial& m,
+			      Coefficient_traits::const_reference n);
+  friend Monomial& operator*=(Monomial& m, Variable v);
+  friend Monomial& operator*=(Monomial& m, const Term& t);
+  friend Monomial& operator*=(Monomial& m1, const Monomial& m2);
 
-  friend Monomial&
-  Parma_Polyhedra_Library::operator*=(Monomial& m, Variable v);
+  friend void pow_assign(Monomial& m, dimension_type n);
 
-  friend Monomial&
-  Parma_Polyhedra_Library::operator*=(Monomial& m, const Term& t);
-
-  friend Monomial&
-  Parma_Polyhedra_Library::operator*=(Monomial& m1, const Monomial& m2);
-
-  friend void
-  Parma_Polyhedra_Library::pow_assign(Monomial& m, dimension_type n);
-
-  friend Monomial&
-  Parma_Polyhedra_Library
-  ::exact_div_assign(Monomial& m,
-		     Coefficient_traits::const_reference n);
-  friend Monomial&
-  Parma_Polyhedra_Library::exact_div_assign(Monomial& m,
-					    Variable v);
-  friend Monomial&
-  Parma_Polyhedra_Library::exact_div_assign(Monomial& m,
-					    const Term& t);
-  friend Monomial&
-  Parma_Polyhedra_Library::exact_div_assign(Monomial& m1,
-					    const Monomial& m2);
+  friend Monomial& exact_div_assign(Monomial& m,
+				    Coefficient_traits::const_reference n);
+  friend Monomial& exact_div_assign(Monomial& m, Variable v);
+  friend Monomial& exact_div_assign(Monomial& m, const Term& t);
+  friend Monomial& exact_div_assign(Monomial& m1, const Monomial& m2);
 
   friend class Parma_Polyhedra_Library::Polynomial;
   friend class Parma_Polyhedra_Library::Polynomial::const_iterator;

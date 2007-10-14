@@ -47,7 +47,7 @@ PPL::Monomial::ascii_dump(std::ostream& s) const {
   s << " )";
 }
 
-PPL_OUTPUT_DEFINITIONS(Monomial);
+PPL_OUTPUT_DEFINITIONS(Monomial)
 
 bool
 PPL::Monomial::ascii_load(std::istream& s) {

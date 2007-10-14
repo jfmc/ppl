@@ -442,7 +442,7 @@ PPL::Term::ascii_dump(std::ostream& s) const {
   s << " )";
 }
 
-PPL_OUTPUT_DEFINITIONS(Term);
+PPL_OUTPUT_DEFINITIONS(Term)
 
 bool
 PPL::Term::ascii_load(std::istream& s) {

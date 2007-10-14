@@ -693,8 +693,8 @@ public:
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool ascii_load(std::istream& s);
 
-  friend bool Parma_Polyhedra_Library::operator==<PH, db>(const Polynomial_Cone<PH, db>& x,
-						     const Polynomial_Cone<PH, db>& y);
+  friend bool operator==<PH, db>(const Polynomial_Cone<PH, db>& x,
+				 const Polynomial_Cone<PH, db>& y);
 
 private:
   template <typename Other_PH, unsigned other_db>

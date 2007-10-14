@@ -226,11 +226,11 @@ void
 Polynomial_Space<db>::join_assign_karr(const Polynomial_Space& yy) {
   Polynomial_Space& x = *this;
   const dimension_type x_space_dim = x.space_dimension();
-  
+
   // Dimension-compatibility check.
   if (x_space_dim != yy.space_dimension())
     throw_dimension_incompatible("join_assign(yy)", yy);
-  
+
   // Based on the algorithm for computing the hull of affine spaces by
   // M. Karr: "Affine Relationships Among Variables of a Program".
 
@@ -423,11 +423,11 @@ template <degree_type db>
 void
 Polynomial_Space<db>::join_assign_canonical_not_required(const Polynomial_Space& y) {
   Polynomial_Space& x = *this;
-  
+
   // Dimension-compatibility check.
   if (x.space_dimension() != y.space_dimension())
     throw_dimension_incompatible("join_assign(yy)", y);
-  
+
   // Computing intersection of vector spaces by multiplying
   // polynomials by a new fresh variable `t' and then existentially
   // eliminating it.
@@ -439,7 +439,7 @@ Polynomial_Space<db>::join_assign_canonical_not_required(const Polynomial_Space&
   // Since multiplying by * `t' is cheaper than multiplying by
   // (1-`t'), we do the first with the largest sequence of
   // polynomials.
- 
+
   if (x.polynomials.size() > y.polynomials.size()) {
 
     // Multiplying by `t'.
@@ -1121,7 +1121,7 @@ Polynomial_Space<db>::OK() const {
  bomb:
 #ifndef NDEBUG
     cerr << "Here is the guilty Polynomial_Space:" << endl;
-    
+
     using namespace IO_Operators;
     //cerr << *this << endl;
     ascii_dump(cerr);

@@ -144,6 +144,12 @@ Monomial::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
 }
 
+inline void
+Monomial::swap(Monomial& y) {
+  std::swap(term_ref(), y.term_ref());
+  std::swap(coefficient_ref(), y.coefficient_ref());
+}
+
 /*! \relates Monomial */
 inline Monomial
 operator*(const Monomial& m, const Term& t) {
@@ -292,12 +298,6 @@ operator==(const Monomial& x, const Monomial& y) {
 inline bool
 operator!=(const Monomial& x, const Monomial& y) {
   return !(x == y);
-}
-
-inline void
-Monomial::swap(Monomial& y) {
-  std::swap(term_ref(), y.term_ref());
-  std::swap(coefficient_ref(), y.coefficient_ref());
 }
 
 } // namespace Parma_Polyhedra_Library

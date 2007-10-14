@@ -141,6 +141,12 @@ Term::total_memory_in_bytes() const {
 
 /*! \relates Term */
 inline Term
+operator*(const Term& t, const Variable v) {
+  return mul_pow(t, v, 1);
+}
+
+/*! \relates Term */
+inline Term
 operator*(Variable v, const Term& t) {
   return t * v;
 }
@@ -149,12 +155,6 @@ operator*(Variable v, const Term& t) {
 inline Term&
 operator*=(Term& t, const Variable v) {
   return mul_pow_assign(t, v, 1);
-}
-
-/*! \relates Term */
-inline Term
-operator*(const Term& t, const Variable v) {
-  return mul_pow(t, v, 1);
 }
 
 /*! \relates Term */

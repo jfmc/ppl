@@ -767,7 +767,7 @@ PPL::Polynomial::ascii_dump(std::ostream& s) const {
   }
 }
 
-PPL_OUTPUT_DEFINITIONS(Polynomial);
+PPL_OUTPUT_DEFINITIONS(Polynomial)
 
 bool
 PPL::Polynomial::ascii_load(std::istream& s) {

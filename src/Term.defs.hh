@@ -307,7 +307,7 @@ public:
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
 
-  PPL_OUTPUT_DECLARATIONS;
+  PPL_OUTPUT_DECLARATIONS
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
@@ -402,60 +402,31 @@ private:
 
   friend class Parma_Polyhedra_Library::Polynomial;
 
-  friend Term
-  Parma_Polyhedra_Library::operator*(const Term& t1, const Term& t2);
+  friend Term operator*(const Term& t1, const Term& t2);
+  friend Term operator*(Variable v, const Term& t);
+  friend Term operator*(Variable v, Variable w);
 
-  friend Term
-  Parma_Polyhedra_Library::operator*(Variable v, const Term& t);
+  friend Term& operator*=(Term& t1, const Term& t2);
 
-  friend Term
-  Parma_Polyhedra_Library::mul_pow(const Term& t, Variable v, exponent_type n);
+  friend Term mul_pow(const Term& t, Variable v, exponent_type n);
+  friend Term& mul_pow_assign(Term& t, const Variable v, exponent_type n);
 
-  friend Term
-  Parma_Polyhedra_Library::operator*(Variable v, Variable w);
+  friend Term& pow_assign(Term& t, exponent_type n);
 
-  friend Term&
-  Parma_Polyhedra_Library::operator*=(Term& t1, const Term& t2);
+  friend Term operator/(const Term& t1, const Term& t2);
 
-  friend Term&
-  Parma_Polyhedra_Library::mul_pow_assign(Term& t,
-					  const Variable v,
-					  exponent_type n);
+  friend Term& operator/=(Term& t1, const Term& t2);
 
-  friend Term
-  Parma_Polyhedra_Library::operator/(const Term& t1, const Term& t2);
+  friend Term div_pow(const Term& t, const Variable v, exponent_type n);
+  friend Term& div_pow_assign(Term& t, const Variable v, exponent_type n);
 
-  friend Term&
-  Parma_Polyhedra_Library::operator/=(Term& t1, const Term& t2);
+  friend Term& exact_div_assign(Term& t, Variable v);
+  friend Term& exact_div_assign(Term& t1, const Term& t2);
 
-  friend Term
-  Parma_Polyhedra_Library::div_pow(const Term& t,
-				   const Variable v,
-				   exponent_type n);
+  friend bool operator==(const Term& x, const Term& y);
 
-  friend Term&
-  Parma_Polyhedra_Library::div_pow_assign(Term& t,
-					  const Variable v,
-					  exponent_type n);
-
-  friend Term&
-  Parma_Polyhedra_Library::pow_assign(Term& t, exponent_type n);
-
-  friend Term&
-  Parma_Polyhedra_Library::exact_div_assign(Term& t, Variable v);
-
-  friend Term&
-  Parma_Polyhedra_Library::exact_div_assign(Term& t1, const Term& t2);
-
-  friend bool
-  Parma_Polyhedra_Library::operator==(const Term& x, const Term& y);
-
-  friend bool
-  Parma_Polyhedra_Library::lexicographic_less(const Term& x, const Term& y);
-
-  friend bool
-  Parma_Polyhedra_Library::graded_lexicographic_less(const Term& x,
-						     const Term& y);
+  friend bool lexicographic_less(const Term& x, const Term& y);
+  friend bool graded_lexicographic_less(const Term& x, const Term& y);
 
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators::operator<<(std::ostream& s,

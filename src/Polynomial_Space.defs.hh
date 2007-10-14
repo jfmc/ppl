@@ -653,7 +653,7 @@ public:
 
   //@} // Member Functions that May Modify the Dimension of the Vector Space
 
-  PPL_OUTPUT_DECLARATIONS;
+  PPL_OUTPUT_DECLARATIONS
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
@@ -665,8 +665,7 @@ public:
   bool ascii_load(std::istream& s);
 
   friend bool
-  Parma_Polyhedra_Library::operator==<db>(const Polynomial_Space<db>& x,
-					  const Polynomial_Space<db>& y);
+  operator==<db>(const Polynomial_Space<db>& x, const Polynomial_Space<db>& y);
 
 private:
 

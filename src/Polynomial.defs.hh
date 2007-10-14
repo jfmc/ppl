@@ -442,7 +442,7 @@ public:
 		      Coefficient_traits::const_reference x_t,
 		      Coefficient_traits::const_reference y_t);
 
-  PPL_OUTPUT_DECLARATIONS;
+  PPL_OUTPUT_DECLARATIONS
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
@@ -600,94 +600,52 @@ private:
   template <Parma_Polyhedra_Library::degree_type>
   friend class Parma_Polyhedra_Library::Polynomial_Space;
 
-  friend Polynomial
-  Parma_Polyhedra_Library::operator+(const Polynomial& p1,
-				     const Polynomial& p2);
-  friend Polynomial
-  Parma_Polyhedra_Library::operator+(Coefficient_traits::const_reference n,
-				     const Polynomial& p);
-  friend Polynomial
-  Parma_Polyhedra_Library::operator+(const Polynomial& p,
-				     Coefficient_traits::const_reference n);
+  friend Polynomial operator+(const Polynomial& p1, const Polynomial& p2);
+  friend Polynomial operator+(Coefficient_traits::const_reference n,
+			      const Polynomial& p);
+  friend Polynomial operator+(const Polynomial& p,
+			      Coefficient_traits::const_reference n);
 
-  friend Polynomial
-  Parma_Polyhedra_Library::operator-(const Polynomial& p);
+  friend Polynomial& operator+=(Polynomial& p1, const Polynomial& p2);
+  friend Polynomial& operator+=(Polynomial& p, Variable v);
+  friend Polynomial& operator+=(Polynomial& p,
+				Coefficient_traits::const_reference n);
 
-  friend Polynomial
-  Parma_Polyhedra_Library::operator-(const Polynomial& p1,
-				     const Polynomial& p2);
-  friend Polynomial
-  Parma_Polyhedra_Library::operator-(Coefficient_traits::const_reference n,
-				     const Polynomial& p);
-  friend Polynomial
-  Parma_Polyhedra_Library::operator-(const Polynomial& p,
-				     Coefficient_traits::const_reference n);
+  friend Polynomial operator-(const Polynomial& p);
 
-  friend Polynomial
-  Parma_Polyhedra_Library::operator*(const Polynomial& p1,
-				     const Polynomial& p2);
+  friend Polynomial operator-(const Polynomial& p1, const Polynomial& p2);
+  friend Polynomial operator-(Coefficient_traits::const_reference n,
+			      const Polynomial& p);
+  friend Polynomial operator-(const Polynomial& p,
+			      Coefficient_traits::const_reference n);
 
-  friend Polynomial
-  Parma_Polyhedra_Library::operator*(Coefficient_traits::const_reference n,
-				     const Polynomial& p);
-  friend Polynomial
-  Parma_Polyhedra_Library::operator*(const Polynomial& p,
-				     Coefficient_traits::const_reference n);
+  friend Polynomial& operator-=(Polynomial& p1, const Polynomial& p2);
+  friend Polynomial& operator-=(Polynomial& p, Variable v);
+  friend Polynomial& operator-=(Polynomial& p,
+				Coefficient_traits::const_reference n);
 
-  friend Polynomial&
-  Parma_Polyhedra_Library::operator+=(Polynomial& p1,
-				      const Polynomial& p2);
-  friend Polynomial&
-  Parma_Polyhedra_Library::operator+=(Polynomial& p,
-				      Variable v);
-  friend Polynomial&
-  Parma_Polyhedra_Library::operator+=(Polynomial& p,
+  friend Polynomial operator*(const Polynomial& p1, const Polynomial& p2);
+
+  friend Polynomial operator*(Coefficient_traits::const_reference n,
+			      const Polynomial& p);
+  friend Polynomial operator*(const Polynomial& p,
+			      Coefficient_traits::const_reference n);
+
+  friend Polynomial& operator*=(Polynomial& p1, const Polynomial& p2);
+  friend Polynomial& operator*=(Polynomial& p, const Monomial& m);
+  friend Polynomial& operator*=(Polynomial& p, const Term& t);
+  friend Polynomial& operator*=(Polynomial& p, Variable v);
+  friend Polynomial& operator*=(Polynomial& p,
+				Coefficient_traits::const_reference n);
+
+  friend void pow_assign(Polynomial& p, dimension_type n);
+
+  friend Polynomial& exact_div_assign(Polynomial& p,
 				      Coefficient_traits::const_reference n);
-
-  friend Polynomial&
-  Parma_Polyhedra_Library::operator-=(Polynomial& p1,
-				      const Polynomial& p2);
-  friend Polynomial&
-  Parma_Polyhedra_Library::operator-=(Polynomial& p,
-				      Variable v);
-  friend Polynomial&
-  Parma_Polyhedra_Library::operator-=(Polynomial& p,
-				      Coefficient_traits::const_reference n);
-
-  friend Polynomial&
-  Parma_Polyhedra_Library::operator*=(Polynomial& p1,
-				      const Polynomial& p2);
-  friend Polynomial&
-  Parma_Polyhedra_Library::operator*=(Polynomial& p,
-				      const Monomial& m);
-  friend Polynomial&
-  Parma_Polyhedra_Library::operator*=(Polynomial& p,
-				      const Term& t);
-  friend Polynomial&
-  Parma_Polyhedra_Library::operator*=(Polynomial& p,
-				      Variable v);
-  friend Polynomial&
-  Parma_Polyhedra_Library::operator*=(Polynomial& p,
-				      Coefficient_traits::const_reference n);
-  friend void
-  Parma_Polyhedra_Library::pow_assign(Polynomial& p, dimension_type n);
-
-  friend Polynomial&
-  Parma_Polyhedra_Library
-  ::exact_div_assign(Polynomial& p,
-		     Coefficient_traits::const_reference n);
-  friend Polynomial&
-  Parma_Polyhedra_Library::exact_div_assign(Polynomial& p,
-					    Variable v);
-  friend Polynomial&
-  Parma_Polyhedra_Library::exact_div_assign(Polynomial& p,
-					    const Term& t);
-  friend Polynomial&
-  Parma_Polyhedra_Library::exact_div_assign(Polynomial& p,
-					    const Monomial& m);
-  friend Polynomial&
-  Parma_Polyhedra_Library::exact_div_assign(Polynomial& p1,
-					    const Polynomial& p2);
+  friend Polynomial& exact_div_assign(Polynomial& p, Variable v);
+  friend Polynomial& exact_div_assign(Polynomial& p, const Term& t);
+  friend Polynomial& exact_div_assign(Polynomial& p, const Monomial& m);
+  friend Polynomial& exact_div_assign(Polynomial& p1, const Polynomial& p2);
 
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators::operator<<(std::ostream& s,

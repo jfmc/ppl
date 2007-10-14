@@ -407,58 +407,42 @@ private:
 			       const Term& t) const;
 
   friend Polynomial_Constraint
-  Parma_Polyhedra_Library::operator==(const Polynomial& p1,
-				      const Polynomial& p2);
+  operator==(const Polynomial& p1, const Polynomial& p2);
   friend Polynomial_Constraint
-  Parma_Polyhedra_Library::operator==(const Polynomial& p,
-				      Coefficient_traits::const_reference n);
+  operator==(const Polynomial& p, Coefficient_traits::const_reference n);
   friend Polynomial_Constraint
-  Parma_Polyhedra_Library::operator==(Coefficient_traits::const_reference n,
-				      const Polynomial& p);
+  operator==(Coefficient_traits::const_reference n, const Polynomial& p);
 
   friend Polynomial_Constraint
-  Parma_Polyhedra_Library::operator>=(const Polynomial& p1,
-				      const Polynomial& p2);
+  operator>=(const Polynomial& p1, const Polynomial& p2);
   friend Polynomial_Constraint
-  Parma_Polyhedra_Library::operator>=(const Polynomial& p,
-				      Coefficient_traits::const_reference n);
+  operator>=(const Polynomial& p, Coefficient_traits::const_reference n);
   friend Polynomial_Constraint
-  Parma_Polyhedra_Library::operator>=(Coefficient_traits::const_reference n,
-				      const Polynomial& p);
+  operator>=(Coefficient_traits::const_reference n, const Polynomial& p);
 
   friend Polynomial_Constraint
-  Parma_Polyhedra_Library::operator<=(const Polynomial& p1,
-				      const Polynomial& p2);
+  operator<=(const Polynomial& p1, const Polynomial& p2);
   friend Polynomial_Constraint
-  Parma_Polyhedra_Library::operator<=(const Polynomial& p,
-				      Coefficient_traits::const_reference n);
+  operator<=(const Polynomial& p, Coefficient_traits::const_reference n);
   friend Polynomial_Constraint
-  Parma_Polyhedra_Library::operator<=(Coefficient_traits::const_reference n,
-				      const Polynomial& p);
+  operator<=(Coefficient_traits::const_reference n, const Polynomial& p);
 
   friend Polynomial_Constraint
-  Parma_Polyhedra_Library::operator>(const Polynomial& p1,
-				     const Polynomial& p2);
+  operator>(const Polynomial& p1, const Polynomial& p2);
   friend Polynomial_Constraint
-  Parma_Polyhedra_Library::operator>(const Polynomial& p,
-				     Coefficient_traits::const_reference n);
+  operator>(const Polynomial& p, Coefficient_traits::const_reference n);
   friend Polynomial_Constraint
-  Parma_Polyhedra_Library::operator>(Coefficient_traits::const_reference n,
-				     const Polynomial& p);
+  operator>(Coefficient_traits::const_reference n, const Polynomial& p);
 
   friend Polynomial_Constraint
-  Parma_Polyhedra_Library::operator<(const Polynomial& p1,
-				     const Polynomial& p2);
+  operator<(const Polynomial& p1, const Polynomial& p2);
   friend Polynomial_Constraint
-  Parma_Polyhedra_Library::operator<(const Polynomial& p,
-				     Coefficient_traits::const_reference n);
+  operator<(const Polynomial& p, Coefficient_traits::const_reference n);
   friend Polynomial_Constraint
-  Parma_Polyhedra_Library::operator<(Coefficient_traits::const_reference n,
-				     const Polynomial& p);
+  operator<(Coefficient_traits::const_reference n, const Polynomial& p);
 
   friend bool
-  Parma_Polyhedra_Library::operator==(const Polynomial_Constraint& x,
-				      const Polynomial_Constraint& y);
+  operator==(const Polynomial_Constraint& x, const Polynomial_Constraint& y);
 
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators

@@ -61,11 +61,11 @@ PPL::move_to_higher_space_dimensions(const Polynomial& p,
     const Term& t = m.term();
     Term new_t;
     // Moving each of the monomials 'offset' dimensions.
-    for (dimension_type i = t.space_dimension(); i-- > 0; ) {
-      exponent_type exp = t.exponent(Variable(i));
+    for (dimension_type j = t.space_dimension(); j-- > 0; ) {
+      exponent_type exp = t.exponent(Variable(j));
       // TO DO: could this be made more efficient with a
       // 'move_to_higher_space_dimensions' for Terms?
-      new_t *= pow(Variable(i + offset), exp);
+      new_t *= pow(Variable(j + offset), exp);
     }
     result += m.coefficient() * new_t;
   }
@@ -90,10 +90,10 @@ PPL::substitute(const Polynomial& p, Variable x, const Polynomial& q) {
       // Substituting `x' by `q' in the monomial `m' and adding the
       // obtained monomial to `result'.
       Term new_t;
-      for (dimension_type i = t.space_dimension(); i-- > 0; ) {
-	exponent_type exp = t.exponent(Variable(i));
-	if (x != Variable(i) && exp > 0)
-	  new_t *= pow(Variable(i), exp);
+      for (dimension_type j = t.space_dimension(); j-- > 0; ) {
+	exponent_type exp = t.exponent(Variable(j));
+	if (x != Variable(j) && exp > 0)
+	  new_t *= pow(Variable(j), exp);
       }
       Polynomial new_q = pow(q, x_exp);
       result += m.coefficient() * new_t * new_q;
