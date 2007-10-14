@@ -109,7 +109,7 @@ private:
   // Whether we are changing data that is also changed by the signal handler.
   static volatile bool in_critical_section;
 
-  friend void Parma_Watchdog_Library::PWL_handle_timeout(int signum);
+  friend void PWL_handle_timeout(int signum);
 };
 
 class Init {
