@@ -1115,6 +1115,7 @@ AC_CONFIG_FILES(Makefile
                 tests/MIP_Problem/Makefile
                 tests/Octagonal_Shape/Makefile
                 tests/Polyhedron/Makefile
+                tests/Polynomial_Space/Makefile
                 utils/Makefile
                 m4/Makefile
                 demos/Makefile

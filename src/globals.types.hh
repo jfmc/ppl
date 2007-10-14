@@ -20,6 +20,16 @@ namespace Parma_Polyhedra_Library {
 /*! \ingroup PPL_CXX_interface */
 typedef size_t dimension_type;
 
+//! An unsigned integral type for representing exponents of variables in terms.
+/*! \ingroup PPL_CXX_interface */
+typedef unsigned char exponent_type;
+
+/*! brief
+  An unsigned integral type for representing the degree of terms,
+  monomials and polynomials.
+ \ingroup PPL_CXX_interface */
+typedef unsigned long degree_type;
+
 //! An unsigned integral type for representing memory size in bytes.
 /*! \ingroup PPL_CXX_interface */
 typedef size_t memory_size_type;
