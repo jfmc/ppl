@@ -72,6 +72,7 @@ bool operator!=(const Any_Pointset& x, const Any_Pointset& y);
 
 
 //! Any PPL pointset.
+/*! \ingroup PPL_CXX_interface */
 class Parma_Polyhedra_Library::Any_Pointset {
 public:
 #if 0
@@ -1061,8 +1062,11 @@ public:
   */
   void fold_space_dimensions(const Variables_Set& to_be_folded, Variable var);
 
+#endif
+
   //@} // Member Functions that May Modify the Dimension of the Vector Space
 
+#if 0
   friend bool Parma_Polyhedra_Library::operator==(const Any_Pointset& x,
 						  const Any_Pointset& y);
 #endif
