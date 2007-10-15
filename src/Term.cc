@@ -402,23 +402,24 @@ PPL::Term::OK() const {
 
 void
 PPL::Term::shift_space_dimensions(const Variables_Set& unused) {
-  const dimension_type vec_size = vec.size();
-  for (Variables_Set::const_iterator ui = unused.begin(),
-	 unused_end = unused.end(); ui != unused_end; ++ui) {
-    const dimension_type i = *ui;
-    if (i >= vec_size)
-      break;
-    else {
-      assert(vec[i] == 0);
-      vec[i] = NOT_A_NUMBER;
-    }
-  }
+  // CHECKME: should we replace this by an assertion?
+  if (unused.size() == 0)
+    return;
+
+  Variables_Set::const_iterator unused_i = unused.begin();
+  Variables_Set::const_iterator unused_end = unused.end();
+  assert(unused_i != unused_end);
+  dimension_type unused_var_index = *unused_i;
   dimension_type displacement = 0;
-  for (dimension_type i = 0; i < vec_size; ++i)
-    if (is_not_a_number(vec[i]))
+  for (dimension_type i = 0, i_end = vec.size(); i < i_end; ++i)
+    if (i == unused_var_index) {
       ++displacement;
+      ++unused_i;
+      unused_var_index = (unused_i != unused_end) ? *unused_i : i_end;
+    }
     else
       vec[i - displacement] = vec[i];
+
   Vector::iterator vec_end = vec.end();
   vec.erase(vec_end - displacement, vec_end);
   assert(OK());
