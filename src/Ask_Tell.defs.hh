@@ -55,6 +55,7 @@ operator<<(std::ostream&, const Ask_Tell<D>&);
 } // namespace Parma_Polyhedra_Library
 
 //! A pair of <EM>ask</EM> and <EM>tell</EM> descriptions.
+/*! \ingroup PPL_CXX_interface */
 template <typename D>
 class Parma_Polyhedra_Library::Ask_Tell_Pair {
 public:
