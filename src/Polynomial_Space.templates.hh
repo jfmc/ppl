@@ -651,15 +651,15 @@ remove_space_dimensions(const Variables_Set& to_be_removed) {
   // Otherwise, we do b) (assuming db > 1; if db == 1, we do a)).
 
   if ((db - 1) * sz < dim + db)
-    for (Variables_Set::iterator i = to_be_removed.begin(),
+    for (Variables_Set::const_iterator i = to_be_removed.begin(),
 	   i_end = to_be_removed.end(); i != i_end; ++i)
       existentially_quantify_all(Variable(*i));
   else
     for (Term iter, iter_end = end_graded_lex_term(db);
 	 iter != iter_end; next_graded_lex_term(dim, iter)) {
-      Variables_Set::iterator i     = to_be_removed.begin();
-      Variables_Set::iterator i_end = to_be_removed.end();
-      for (; i != i_end && iter.exponent(Variable(*i)) == 0; ++i)
+      Variables_Set::const_iterator i     = to_be_removed.begin();
+      Variables_Set::const_iterator i_end = to_be_removed.end();
+      for ( ; i != i_end && iter.exponent(Variable(*i)) == 0; ++i)
 	;
       if (i != i_end)
 	existentially_quantify(iter);
@@ -673,7 +673,6 @@ remove_space_dimensions(const Variables_Set& to_be_removed) {
   dim -= sz;
 
   assert(OK());
-
 }
 
 template <degree_type db>
@@ -706,14 +705,15 @@ Polynomial_Space<db>::map_space_dimensions(const PartialFunction& pfunc) {
     if (pfunc.maps(i, pfunc_i))
       aux_func[j++] = pfunc_i;
     else
-      unmapped_variables.insert(Variable(i));
+      unmapped_variables.insert(i);
   }
 
   // Remove the unmapped variables.
   remove_space_dimensions(unmapped_variables);
 
   // Permute remaining variables according to `aux_func'.
-  for (Iterator i = polynomials.begin(), i_end = polynomials.end(); i != i_end; ++i) {
+  for (Iterator i = polynomials.begin(),
+	 i_end = polynomials.end(); i != i_end; ++i) {
     Polynomial& p = *i;
     p.permute_space_dimensions(aux_func);
     // NOTE: the polynomial is still normalized.
