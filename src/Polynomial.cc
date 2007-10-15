@@ -736,7 +736,7 @@ PPL::Polynomial::linear_combine(const Polynomial& y,
 
 void
 PPL::Polynomial::shift_space_dimensions(const Variables_Set& unused) {
-  // Note: here we exploiting the stability of the term ordering
+  // Note: here we exploit the stability of the term ordering
   // under the shifting of space dimensions.
   for (Map::iterator i = map.begin(), i_end = map.end(); i != i_end; ++i) {
     Term& t = const_cast<Term&>(i->first);
