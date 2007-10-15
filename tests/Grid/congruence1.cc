@@ -407,6 +407,34 @@ test16() {
   return false;
 }
 
+// Check if the congruences are equivalent.
+static bool
+test17() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Test_Congruence a((A + 2*B + 3*C %= 5) / 7);
+
+  Test_Congruence b((A + 2*B + 3*C %= 12) / 7);
+
+  Test_Congruence c((2*A + 4*B + 6*C %= 10) / 14);
+
+  bool ok = (a == b);
+  ok &= (a == c);
+
+  Test_Congruence d((2*A + 4*B + 6*C %= 10) / 7);
+
+  ok &= (a != d);
+
+  print_congruence(a, "*** a ***");
+  print_congruence(b, "*** b ***");
+  print_congruence(c, "*** c ***");
+  print_congruence(d, "*** d ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -426,4 +454,5 @@ BEGIN_MAIN
   DO_TEST(test14);
   DO_TEST(test15);
   DO_TEST(test16);
+  DO_TEST(test17);
 END_MAIN
