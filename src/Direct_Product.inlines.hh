@@ -347,6 +347,14 @@ Direct_Product<D1, D2>::add_recycled_constraints(Constraint_System& cs) {
 template <typename D1, typename D2>
 inline bool
 Direct_Product<D1, D2>
+::add_constraints_and_minimize(const Constraint_System& cs) {
+  bool empty = d1.add_constraints_and_minimize(cs);
+  return d2.add_constraints_and_minimize(cs) || empty;
+}
+
+template <typename D1, typename D2>
+inline bool
+Direct_Product<D1, D2>
 ::add_recycled_constraints_and_minimize(Constraint_System& cs) {
   bool empty = d1.add_recycled_constraints_and_minimize(cs);
   return d2.add_recycled_constraints_and_minimize(cs) || empty;
@@ -393,31 +401,50 @@ Direct_Product<D1, D2>::domain2() const {
   return d2;
 }
 
-// TODO: Consider adding a check on which component best approximates
-//       the product, and returning the system from that component.
-
 template <typename D1, typename D2>
 inline Constraint_System
 Direct_Product<D1, D2>::constraints() const {
-  return d1.constraints();
+  Constraint_System cs1 = d1.constraints();
+  Constraint_System cs2 = d2.constraints();
+  for (Constraint_System::const_iterator i = cs1.begin(),
+	 cs_end = cs1.end(); i != cs_end; ++i)
+    cs2.insert(*i);
+  return cs2;
 }
 
 template <typename D1, typename D2>
 inline Constraint_System
 Direct_Product<D1, D2>::minimized_constraints() const {
-  return d1.minimized_constraints();
+  Constraint_System cs1 = d1.constraints();
+  Constraint_System cs2 = d2.constraints();
+  for (Constraint_System::const_iterator i = cs1.begin(),
+	 cs_end = cs1.end(); i != cs_end; ++i)
+    cs2.insert(*i);
+  Polyhedron ph(cs2);
+  return ph.minimized_constraints();
 }
 
 template <typename D1, typename D2>
 inline Congruence_System
 Direct_Product<D1, D2>::congruences() const {
-  return d1.congruences();
+  Congruence_System cgs1 = d1.congruences();
+  Congruence_System cgs2 = d2.congruences();
+  for (Congruence_System::const_iterator i = cgs1.begin(),
+	 cgs_end = cgs1.end(); i != cgs_end; ++i)
+    cgs2.insert(*i);
+  return cgs2;
 }
 
 template <typename D1, typename D2>
 inline Congruence_System
 Direct_Product<D1, D2>::minimized_congruences() const {
-  return d1.minimized_congruences();
+  Congruence_System cgs1 = d1.congruences();
+  Congruence_System cgs2 = d2.congruences();
+  for (Congruence_System::const_iterator i = cgs1.begin(),
+	 cgs_end = cgs1.end(); i != cgs_end; ++i)
+    cgs2.insert(*i);
+  Grid gr(cgs2);
+  return gr.minimized_congruences();
 }
 
 template <typename D1, typename D2>

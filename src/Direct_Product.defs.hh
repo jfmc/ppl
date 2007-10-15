@@ -83,7 +83,90 @@ bool operator!=(const Direct_Product<D1, D2>& x,
 /*! \ingroup PPL_CXX_interface
   An object of the class Direct_Product represents a direct product.
 
-  FIXME: Continue here.
+Suppose \f$D_1, D_2\f$ are two abstract domains
+with concretization functions:
+\f\[
+  \fund{\gamma_1}{D_1}{\Rset^n}, \fund{\gamma_2}{D_2}{\Rset^n}.
+\f\]
+
+As defined in \ref CousotC79 "[CousotC79]", a direct product
+\f$D = (D_1 \times D_2)\f$ has a
+concretization
+\f\(
+  \fund{\gamma}{D}{\Rset^n}
+\f\)
+where, if \f$d \in D, d_1 \in D_1, d_2 \in D_2\f$
+\f\[
+  \gamma(d) = \gamma_1(d_1) \inters \gamma_2(d_2).
+\f\]
+
+The operations are defined to be the result of applying the corresponding
+operations on each of the components.
+For example, the test for emptiness will just test if either component
+is empty; thus, if
+\f$d = (G, P) \in (\Gset \times \Pset)\f$
+is a direct product in one dimension, and \f$G\f$ denotes the set of numbers
+that are integral multiples of 3 while \f$P\$ denotes the set of numbers
+between 1 and 2, then an operation that tests for emptiness should return
+false.
+
+  \par
+  In all the examples it is assumed that variables
+  <CODE>x</CODE> and <CODE>y</CODE> are defined (where they are
+  used) as follows:
+  \code
+  Variable x(0);
+  Variable y(1);
+  \endcode
+
+  \par Example 1
+  The following code builds a direct product of a Grid and NNC_Polyhedron,
+  corresponding to the positive even integer
+  pairs in \f$\Rset^2\f$, given as a system of congruences:
+  \code
+  Congruence_System cgs;
+  cgs.insert((x %= 0) / 2);
+  cgs.insert((y %= 0) / 2);
+  Direct_Product<Grid, NNC_Polyhedron> dp(cgs);
+  dp.add_constraint(x >= 0);
+  dp.add_constraint(y >= 0);
+  \endcode
+
+  \par Example 2
+  The following code builds the same direct product
+  in \f$\Rset^2\f$:
+  \code
+  Direct_Product<Grid, NNC_Polyhedron> dp(2);
+  dp.add_constraint(x >= 0);
+  dp.add_constraint(y >= 0);
+  dp.add_congruence((x %= 0) / 2);
+  dp.add_congruence((y %= 0) / 2);
+  \endcode
+
+  \par Example 3
+  The following code will write "dp is empty":
+  \code
+  Direct_Product<Grid, NNC_Polyhedron> dp(1);
+  dp.add_congruence((x %= 0) / 2);
+  dp.add_congruence((x %= 1) / 2);
+  if (dp.is_empty())
+    cout << "dp is empty." << endl;
+  else
+    cout << "dp is not empty." << endl;
+  \endcode
+
+  \par Example 4
+  The following code will write "dp is not empty":
+  \code
+  Direct_Product<Grid, NNC_Polyhedron> dp(1);
+  dp.add_congruence((x %= 0) / 2);
+  dp.add_constraint(x >= 1);
+  dp.add_constraint(x <= 1);
+  if (dp.is_empty())
+    cout << "dp is empty." << endl;
+  else
+    cout << "dp is not empty." << endl;
+  \endcode
 */
 
 template <typename D1, typename D2>
