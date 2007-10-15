@@ -26,9 +26,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Any_Pointset.types.hh"
 #include "C_Polyhedron.defs.hh"
 #include "NNC_Polyhedron.defs.hh"
+#include "Grid.defs.hh"
+#include "Box.defs.hh"
 #include "BD_Shape.defs.hh"
 #include "Octagonal_Shape.defs.hh"
-#include "Grid.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -1013,6 +1014,7 @@ public:
   */
   template <typename Partial_Function>
   void map_space_dimensions(const Partial_Function& pfunc);
+#endif
 
   //! Creates \p m copies of the space dimension corresponding to \p var.
   /*!
@@ -1061,8 +1063,6 @@ public:
     into the \f$k\f$-th space dimension.
   */
   void fold_space_dimensions(const Variables_Set& to_be_folded, Variable var);
-
-#endif
 
   //@} // Member Functions that May Modify the Dimension of the Vector Space
 
@@ -1134,6 +1134,18 @@ class WRAPPER_NAME : public Any_Pointset {				\
     : x(y) {								\
   }									\
   explicit WRAPPER_NAME(const NNC_Polyhedron& y)			\
+    : x(y) {								\
+  }									\
+  template <typename U>							\
+  explicit WRAPPER_NAME(const Box<U>& y)				\
+    : x(y) {								\
+  }									\
+  template <typename U>							\
+  explicit WRAPPER_NAME(const BD_Shape<U>& y)				\
+    : x(y) {								\
+  }									\
+  template <typename U>					                \
+  explicit WRAPPER_NAME(const Octagonal_Shape<U>& y)			\
     : x(y) {								\
   }									\
 									\
@@ -1328,6 +1340,7 @@ PPL_ANY_POINTSET_WRAPPER_CLASS(, C_Polyhedron_Pointset, C_Polyhedron)
 PPL_ANY_POINTSET_WRAPPER_CLASS(, NNC_Polyhedron_Pointset, NNC_Polyhedron)
 //PPL_ANY_POINTSET_WRAPPER_CLASS(, Grid_Pointset, Grid)
 
+PPL_ANY_POINTSET_WRAPPER_CLASS(template <typename T>, Box_Pointset, Box<T>)
 PPL_ANY_POINTSET_WRAPPER_CLASS(template <typename T>, BD_Shape_Pointset, BD_Shape<T>)
 PPL_ANY_POINTSET_WRAPPER_CLASS(template <typename T>, Octagonal_Shape_Pointset, Octagonal_Shape<T>)
 
