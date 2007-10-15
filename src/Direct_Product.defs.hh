@@ -79,36 +79,34 @@ bool operator!=(const Direct_Product<D1, D2>& x,
 } // namespace Parma_Polyhedra_Library
 
 
-//! A Direct Product.
+//! The direct product of two abstractions.
 /*! \ingroup PPL_CXX_interface
-  An object of the class Direct_Product represents a direct product.
+  An object of the class Direct_Product represents the direct product
+  of two abstract domains.
 
-Suppose \f$D_1, D_2\f$ are two abstract domains
-with concretization functions:
-\f\[
-  \fund{\gamma_1}{D_1}{\Rset^n}, \fund{\gamma_2}{D_2}{\Rset^n}.
-\f\]
+  Suppose \f$D_1\f$ and \f$D_2\f$ are two abstract domains
+  with concretization functions:
+  \f$\fund{\gamma_1}{D_1}{\Rset^n}\f$ and
+  \f$\fund{\gamma_2}{D_2}{\Rset^n}\f$, respectively.
 
-As defined in \ref CousotC79 "[CousotC79]", a direct product
-\f$D = (D_1 \times D_2)\f$ has a
-concretization
-\f\(
-  \fund{\gamma}{D}{\Rset^n}
-\f\)
-where, if \f$d \in D, d_1 \in D_1, d_2 \in D_2\f$
-\f\[
-  \gamma(d) = \gamma_1(d_1) \inters \gamma_2(d_2).
-\f\]
+  As defined in \ref CousotC79 "[CousotC79]",
+  the direct product \f$D = D_1 \times D_2\f$
+  has a concretization
+  \f$\fund{\gamma}{D}{\Rset^n}\f$
+  where, if \f$d = (d_1, d_2) \in D\f$
+  \f[
+    \gamma(d) = \gamma_1(d_1) \inters \gamma_2(d_2).
+  \f]
 
-The operations are defined to be the result of applying the corresponding
-operations on each of the components.
-For example, the test for emptiness will just test if either component
-is empty; thus, if
-\f$d = (G, P) \in (\Gset \times \Pset)\f$
-is a direct product in one dimension, and \f$G\f$ denotes the set of numbers
-that are integral multiples of 3 while \f$P\$ denotes the set of numbers
-between 1 and 2, then an operation that tests for emptiness should return
-false.
+  The operations are defined to be the result of applying the corresponding
+  operations on each of the components.
+  For example, the test for emptiness will just test if either component
+  is empty; thus, if
+  \f$d = (G, P) \in (\Gset \times \Pset)\f$
+  is a direct product in one dimension, and \f$G\f$ denotes the set of
+  numbers that are integral multiples of 3 while \f$P\$ denotes the
+  set of numbers between 1 and 2, then an operation that tests for
+  emptiness should return false.
 
   \par
   In all the examples it is assumed that variables
