@@ -423,8 +423,8 @@ public:
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
 
-  // FIXME: the following was "private:", not "public:".
-public:
+private:
+  friend class DB_Row<T>;
 
   //! The number of coefficients in the row.
   dimension_type size_;
