@@ -160,7 +160,6 @@ Direct_Product<D1, D2>::upper_bound_assign_if_exact(const Direct_Product& y) {
     || d2.upper_bound_assign_if_exact(y.d2);
 }
 
-#if 0
 template <typename D1, typename D2>
 inline void
 Direct_Product<D1, D2>
@@ -195,34 +194,12 @@ Direct_Product<D1, D2>
 template <typename D1, typename D2>
 inline void
 Direct_Product<D1, D2>
-::generalized_affine_image(Variable var,
-			   const Linear_Expression& expr,
-			   Coefficient_traits::const_reference denominator,
-			   Coefficient_traits::const_reference modulus) {
-  d1.generalized_affine_image(var, expr, denominator, modulus);
-  d2.generalized_affine_image(var, expr, denominator, modulus);
-}
-
-template <typename D1, typename D2>
-inline void
-Direct_Product<D1, D2>
 ::generalized_affine_preimage(Variable var,
 			      const Relation_Symbol relsym,
 			      const Linear_Expression& expr,
 			      Coefficient_traits::const_reference denominator) {
   d1.generalized_affine_preimage(var, relsym, expr, denominator);
   d2.generalized_affine_preimage(var, relsym, expr, denominator);
-}
-
-template <typename D1, typename D2>
-inline void
-Direct_Product<D1, D2>
-::generalized_affine_preimage(Variable var,
-			      const Linear_Expression& expr,
-			      Coefficient_traits::const_reference denominator,
-			      Coefficient_traits::const_reference modulus) {
-  d1.generalized_affine_preimage(var, expr, denominator, modulus);
-  d2.generalized_affine_preimage(var, expr, denominator, modulus);
 }
 
 template <typename D1, typename D2>
@@ -238,16 +215,6 @@ Direct_Product<D1, D2>
 template <typename D1, typename D2>
 inline void
 Direct_Product<D1, D2>
-::generalized_affine_image(const Linear_Expression& lhs,
-			   const Linear_Expression& rhs,
-			   Coefficient_traits::const_reference modulus) {
-  d1.generalized_affine_image(lhs, rhs, modulus);
-  d2.generalized_affine_image(lhs, rhs, modulus);
-}
-
-template <typename D1, typename D2>
-inline void
-Direct_Product<D1, D2>
 ::generalized_affine_preimage(const Linear_Expression& lhs,
 			      const Relation_Symbol relsym,
 			      const Linear_Expression& rhs) {
@@ -255,16 +222,6 @@ Direct_Product<D1, D2>
   d2.generalized_affine_preimage(lhs, relsym, rhs);
 }
 
-template <typename D1, typename D2>
-inline void
-Direct_Product<D1, D2>
-::generalized_affine_preimage(const Linear_Expression& lhs,
-			      const Linear_Expression& rhs,
-			      Coefficient_traits::const_reference modulus) {
-  d1.generalized_affine_preimage(lhs, rhs, modulus);
-  d2.generalized_affine_preimage(lhs, rhs, modulus);
-}
-#endif
 
 template <typename D1, typename D2>
 inline void

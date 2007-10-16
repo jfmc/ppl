@@ -135,8 +135,6 @@ test03() {
   return ok;
 }
 
-// FIXME: Wait for implementation.
-#if 0
 // affine_image()
 bool
 test04() {
@@ -181,7 +179,7 @@ test05() {
   return ok;
 }
 
-// generalized_affine_image(v, e, relsym, d)
+// generalized_affine_image(v, relsym, e, d)
 bool
 test06() {
   Variable A(0);
@@ -206,6 +204,8 @@ test06() {
   return ok;
 }
 
+// FIXME: Wait for implementation.
+#if 0
 // generalized_affine_image(v, e, d, modulus)
 bool
 test07() {
@@ -228,8 +228,9 @@ test07() {
 
   return ok;
 }
+#endif
 
-// generalized_affine_preimage(v, e, relsym, d)
+// generalized_affine_preimage(v, relsym, e, d)
 bool
 test08() {
   Variable A(0);
@@ -247,13 +248,21 @@ test08() {
   Product known_dp(3);
   known_dp.add_constraint(0 <= A);
   known_dp.add_constraint(A <= 3);
-  known_dp.add_congruence(A %= B);
 
   bool ok = (dp == known_dp);
+
+#ifdef GRID_IS_D1
+  print_congruences(dp.domain1(), "*** dp.domain1() ***");
+  print_constraints(dp.domain2(), "*** dp.domain2() ***");
+#else
+  print_constraints(dp.domain1(), "*** dp.domain1() ***");
+  print_congruences(dp.domain2(), "*** dp.domain2() ***");
+#endif
 
   return ok;
 }
 
+#if 0
 // generalized_affine_preimage(v, e, d, modulus), add_generator(),
 // add_generators(), add_grid_generators()
 bool
@@ -288,6 +297,7 @@ test09() {
 
   return ok;
 }
+#endif
 
 // generalized_affine_image(lhs, relsym, rhs)
 bool
@@ -313,6 +323,7 @@ test10() {
   return ok;
 }
 
+#if 0
 // generalized_affine_image(lhs, rhs, modulus), add_congruences(cgs)
 bool
 test11() {
@@ -341,6 +352,7 @@ test11() {
 
   return ok;
 }
+#endif
 
 // generalized_affine_preimage(lhs, relsym, rhs), add_constraints(cs)
 bool
@@ -363,13 +375,21 @@ test12() {
   Product known_dp(3);
   known_dp.add_constraint(0 <= A);
   known_dp.add_constraint(A <= 3);
-  known_dp.add_congruence(A %= B);
 
   bool ok = (dp == known_dp);
+
+#ifdef GRID_IS_D1
+  print_congruences(dp.domain1(), "*** dp.domain1() ***");
+  print_constraints(dp.domain2(), "*** dp.domain2() ***");
+#else
+  print_constraints(dp.domain1(), "*** dp.domain1() ***");
+  print_congruences(dp.domain2(), "*** dp.domain2() ***");
+#endif
 
   return ok;
 }
 
+#if 0
 // generalized_affine_preimage(lhs, rhs, modulus)
 bool
 test13() {
@@ -507,18 +527,16 @@ BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
   DO_TEST(test03);
-#if 0
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
-  DO_TEST(test07);
+//  DO_TEST(test07);
   DO_TEST(test08);
-  DO_TEST(test09);
+//  DO_TEST(test09);
   DO_TEST(test10);
-  DO_TEST(test11);
+//  DO_TEST(test11);
   DO_TEST(test12);
-  DO_TEST(test13);
-#endif
+//  DO_TEST(test13);
   DO_TEST_F8(test14);
   DO_TEST_NNC(test15);
   DO_TEST(test16);

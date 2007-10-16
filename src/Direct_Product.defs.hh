@@ -1008,9 +1008,6 @@ public:
   */
   void difference_assign(const Direct_Product& y);
 
-  // FIXME: Finish these when their interface is cleaned up, taking
-  //        into account the extra Grid versions.
-#if 0
   /*! \brief
     Assigns to \p *this the \ref Single_Update_Affine_Functions
     "affine image" of \p
@@ -1096,39 +1093,6 @@ public:
 				  = Coefficient_one());
 
   /*! \brief
-    Assigns to \p *this the image of \p *this with respect to
-    the \ref Grid_Generalized_Image "generalized affine relation"
-    \f$\mathrm{var}' = \frac{\mathrm{expr}}{\mathrm{denominator}}
-    \pmod{\mathrm{modulus}}\f$.
-
-    \param var
-    The left hand side variable of the generalized affine relation;
-
-    \param expr
-    The numerator of the right hand side affine expression;
-
-    \param denominator
-    The denominator of the right hand side affine expression.
-    Optional argument with an automatic value of one;
-
-    \param modulus
-    The modulus of the congruence lhs %= rhs.  A modulus of zero
-    indicates lhs == rhs.  Optional argument with an automatic value
-    of one.
-
-    \exception std::invalid_argument
-    Thrown if \p denominator is zero or if \p expr and \p *this are
-    dimension-incompatible or if \p var is not a space dimension of \p
-    *this.
-  */
-  void generalized_affine_image(Variable var,
-				const Linear_Expression& expr,
-				Coefficient_traits::const_reference denominator
-				= Coefficient_one(),
-				Coefficient_traits::const_reference modulus
-				= Coefficient_one());
-
-  /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
     \ref Generalized_Affine_Relations "generalized affine relation"
     \f$\mathrm{var}' \relsym \frac{\mathrm{expr}}{\mathrm{denominator}}\f$,
@@ -1162,39 +1126,6 @@ public:
 			      = Coefficient_one());
 
   /*! \brief
-    Assigns to \p *this the preimage of \p *this with respect to the
-    \ref Grid_Generalized_Image "generalized affine relation"
-    \f$\mathrm{var}' = \frac{\mathrm{expr}}{\mathrm{denominator}}
-    \pmod{\mathrm{modulus}}\f$.
-
-    \param var
-    The left hand side variable of the generalized affine relation;
-
-    \param expr
-    The numerator of the right hand side affine expression;
-
-    \param denominator
-    The denominator of the right hand side affine expression.
-    Optional argument with an automatic value of one;
-
-    \param modulus
-    The modulus of the congruence lhs %= rhs.  A modulus of zero
-    indicates lhs == rhs.  Optional argument with an automatic value
-    of one.
-
-    \exception std::invalid_argument
-    Thrown if \p denominator is zero or if \p expr and \p *this are
-    dimension-incompatible or if \p var is not a space dimension of \p
-    *this.
-  */
-  void generalized_affine_preimage(Variable var,
-				   const Linear_Expression& expr,
-				   Coefficient_traits::const_reference denominator
-				   = Coefficient_one(),
-				   Coefficient_traits::const_reference modulus
-				   = Coefficient_one());
-
-  /*! \brief
     Assigns to \p *this the image of \p *this with respect to the
     \ref Generalized_Affine_Relations "generalized affine relation"
     \f$\mathrm{lhs}' \relsym \mathrm{rhs}\f$, where
@@ -1219,31 +1150,6 @@ public:
 				const Linear_Expression& rhs);
 
   /*! \brief
-    Assigns to \p *this the image of \p *this with respect to
-    the \ref Generalized_Image "generalized affine relation"
-    \f$\mathrm{lhs}' = \mathrm{rhs} \pmod{\mathrm{modulus}}\f$.
-
-    \param lhs
-    The left hand side affine expression.
-
-    \param rhs
-    The right hand side affine expression.
-
-    \param modulus
-    The modulus of the congruence lhs %= rhs.  A modulus of zero
-    indicates lhs == rhs.  Optional argument with an automatic value
-    of one.
-
-    \exception std::invalid_argument
-    Thrown if \p *this is dimension-incompatible with \p lhs or \p
-    rhs.
-  */
-  void generalized_affine_image(const Linear_Expression& lhs,
-				const Linear_Expression& rhs,
-				Coefficient_traits::const_reference modulus
-				= Coefficient_one());
-
-  /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
     \ref Generalized_Affine_Relations "generalized affine relation"
     \f$\mathrm{lhs}' \relsym \mathrm{rhs}\f$, where
@@ -1266,32 +1172,6 @@ public:
   void generalized_affine_preimage(const Linear_Expression& lhs,
 				   Relation_Symbol relsym,
 				   const Linear_Expression& rhs);
-
-  /*! \brief
-    Assigns to \p *this the preimage of \p *this with respect to the
-    \ref Generalized_Image "generalized affine relation"
-    \f$\mathrm{lhs}' = \mathrm{rhs} \pmod{\mathrm{modulus}}\f$.
-
-    \param lhs
-    The left hand side affine expression;
-
-    \param rhs
-    The right hand side affine expression;
-
-    \param modulus
-    The modulus of the congruence lhs %= rhs.  A modulus of zero
-    indicates lhs == rhs.  Optional argument with an automatic value
-    of one.
-
-    \exception std::invalid_argument
-    Thrown if \p *this is dimension-incompatible with \p lhs or \p
-    rhs.
-  */
-  void generalized_affine_preimage(const Linear_Expression& lhs,
-				   const Linear_Expression& rhs,
-				   Coefficient_traits::const_reference modulus
-				   = Coefficient_one());
-#endif
 
   /*! \brief
     Assigns to \p *this the result of computing the \ref Time_Elapse_Operator
