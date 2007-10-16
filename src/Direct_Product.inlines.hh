@@ -362,7 +362,7 @@ template <typename D1, typename D2>
 inline Constraint_System
 Direct_Product<D1, D2>::constraints() const {
   Constraint_System cs = d2.constraints();
-  const Constraint_System cs1 = d1.constraints();
+  const Constraint_System& cs1 = d1.constraints();
   for (Constraint_System::const_iterator i = cs1.begin(),
 	 cs_end = cs1.end(); i != cs_end; ++i)
     cs.insert(*i);
@@ -373,7 +373,7 @@ template <typename D1, typename D2>
 inline Constraint_System
 Direct_Product<D1, D2>::minimized_constraints() const {
   Constraint_System cs = d2.constraints();
-  const Constraint_System cs1 = d1.constraints();
+  const Constraint_System& cs1 = d1.constraints();
   for (Constraint_System::const_iterator i = cs1.begin(),
 	 cs_end = cs1.end(); i != cs_end; ++i)
     cs.insert(*i);
@@ -391,7 +391,7 @@ template <typename D1, typename D2>
 inline Congruence_System
 Direct_Product<D1, D2>::congruences() const {
   Congruence_System cgs = d2.congruences();
-  const Constraint_System cgs1 = d1.congruences();
+  const Constraint_System& cgs1 = d1.congruences();
   for (Congruence_System::const_iterator i = cgs1.begin(),
 	 cgs_end = cgs1.end(); i != cgs_end; ++i)
     cgs.insert(*i);
@@ -402,7 +402,7 @@ template <typename D1, typename D2>
 inline Congruence_System
 Direct_Product<D1, D2>::minimized_congruences() const {
   Congruence_System cgs = d2.congruences();
-  const Constraint_System cgs1 = d1.congruences();
+  const Constraint_System& cgs1 = d1.congruences();
   for (Congruence_System::const_iterator i = cgs1.begin(),
 	 cgs_end = cgs1.end(); i != cgs_end; ++i)
     cgs.insert(*i);
