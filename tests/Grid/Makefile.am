@@ -69,7 +69,7 @@ containsintegerpoint1 \
 copyconstruct1 \
 coveringbox1 coveringbox2 \
 directproduct1 directproduct2 directproduct3 \
-directproduct4 directproduct5 directproduct6 \
+directproduct4 directproduct5 directproduct6 directproduct7 \
 discrete1 \
 disjoint1 \
 equals1 \
@@ -176,6 +176,7 @@ directproduct3_SOURCES = directproduct3.cc
 directproduct4_SOURCES = directproduct4.cc
 directproduct5_SOURCES = directproduct5.cc
 directproduct6_SOURCES = directproduct6.cc
+directproduct7_SOURCES = directproduct7.cc
 
 discrete1_SOURCES = discrete1.cc
 

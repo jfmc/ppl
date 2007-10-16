@@ -418,45 +418,45 @@ public:
 #endif
 
   /*! \brief
-    Returns <CODE>true</CODE> if and only if \p *this is an empty
-    product.
+    Returns <CODE>true</CODE> if and only if either of the components
+    of \p *this are empty.
   */
   bool is_empty() const;
 
   /*! \brief
-    Returns <CODE>true</CODE> if and only if \p *this is a universe
+    Returns <CODE>true</CODE> if and only if both of the components
+    of \p *this are the universe.
     product.
   */
   bool is_universe() const;
 
   /*! \brief
-    Returns <CODE>true</CODE> if and only if \p *this is a
-    topologically closed subset of the vector space.
+    Returns <CODE>true</CODE> if and only if both of the components
+    of \p *this are topologically closed subsets of the vector space.
   */
   bool is_topologically_closed() const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this and \p y are
-    disjoint.
+    componentwise disjoint.
 
     \exception std::invalid_argument
     Thrown if \p x and \p y are dimension-incompatible.
   */
   bool is_disjoint_from(const Direct_Product& y) const;
 
-  //! Returns <CODE>true</CODE> if and only if \p *this is discrete.
-  /*!
-    A grid is discrete if it can be defined by a generator system which
-    contains only points and parameters.  This includes the empty grid
-    and any grid in dimension zero.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if a component of \p *this
+    is discrete.
   */
   bool is_discrete() const;
 
-  //! Returns <CODE>true</CODE> if and only if \p *this is bounded.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if a component of \p *this
+    is bounded.
+  */
   bool is_bounded() const;
 
-  // FIXME: Implement these.
-#if 0
   //! Returns <CODE>true</CODE> if and only if \p expr is bounded in \p *this.
   /*!
     This method is the same as bounds_from_below.
@@ -491,9 +491,6 @@ public:
 
     \param maximum
     <CODE>true</CODE> if the supremum value can be reached in \p this.
-    Always <CODE>true</CODE> when \p this bounds \p expr.  Present for
-    interface compatibility with class Polyhedron, where closure
-    points can result in a value of false.
 
     \exception std::invalid_argument
     Thrown if \p expr and \p *this are dimension-incompatible.
@@ -505,6 +502,8 @@ public:
   bool maximize(const Linear_Expression& expr,
 		Coefficient& sup_n, Coefficient& sup_d, bool& maximum) const;
 
+  // FIXME: Implement this?.
+#if 0
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty and
     \p expr is bounded from above in \p *this, in which case the
@@ -539,6 +538,7 @@ public:
   bool maximize(const Linear_Expression& expr,
 		Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
 		Grid_Generator& point) const;
+#endif
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty and
@@ -570,6 +570,8 @@ public:
   bool minimize(const Linear_Expression& expr,
 		Coefficient& inf_n, Coefficient& inf_d, bool& minimum) const;
 
+  // FIXME: Implement this?
+#if 0
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty and
     \p expr is bounded from below in \p *this, in which case the
@@ -606,16 +608,18 @@ public:
 		Grid_Generator& point) const;
 #endif
 
-  //! Returns <CODE>true</CODE> if and only if \p *this contains \p y.
-  /*!
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if each component of \p *this
+    contains the corresponding component of \p y.
+
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
   bool contains(const Direct_Product& y) const;
 
   /*! \brief
-    Returns <CODE>true</CODE> if and only if \p *this strictly
-    contains \p y.
+    Returns <CODE>true</CODE> if and only if each component of \p *this
+    strictly contains the corresponding component of \p y.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
@@ -717,11 +721,10 @@ public:
   */
   bool add_grid_generator_and_minimize(const Grid_Generator& g);
 
-  //! Adds a copy of each congruence in \p cgs to \p *this.
+  //! Adds a copy of the congruences in \p cgs to \p *this.
   /*!
     \param cgs
-    Contains the congruences that will be added to the system of
-    congruences of \p *this.
+    The congruence system to be added.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cgs are dimension-incompatible.
@@ -731,8 +734,7 @@ public:
   //! Adds the congruences in \p cgs to *this.
   /*!
     \param cgs
-    The congruence system that may be recycled, adding its
-    congruences to the system of congruences of \p *this.
+    The congruence system to be added that may be recycled.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible.
@@ -744,15 +746,13 @@ public:
   void add_recycled_congruences(Congruence_System& cgs);
 
   /*! \brief
-    Adds a copy of the congruences in \p cgs to the system of
-    congruences of \p *this, reducing the result.
+    Adds a copy of the congruences in \p cgs to \p *this, reducing the result.
 
     \return
     <CODE>false</CODE> if and only if the result is empty.
 
     \param cgs
-    Contains the congruences that will be added to the system of
-    congruences of \p *this.
+    The congruence system to be be added.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cgs are dimension-incompatible.
@@ -760,15 +760,13 @@ public:
   bool add_congruences_and_minimize(const Congruence_System& cgs);
 
   /*! \brief
-    Adds the congruences in \p cgs to the system of congruences of \p
-    *this, reducing the result.
+    Adds the congruences in \p cgs to \p *this, reducing the result.
 
     \return
     <CODE>false</CODE> if and only if the result is empty.
 
     \param cgs
-    The congruence system that may be recycled, adding its
-    congruences to the system of congruences of \p *this.
+    The congruence system to be added that may be recycled.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cgs are dimension-incompatible.
@@ -779,27 +777,36 @@ public:
   */
   bool add_recycled_congruences_and_minimize(Congruence_System& cgs);
 
-  //! Adds copies of the equality constraints in \p cs to \p *this.
+  //! Adds a copy of the constraint system in \p cs to \p *this.
   /*!
+    \param cs
+    The constraint system to be added.
+
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible.
   */
   void add_constraints(const Constraint_System& cs);
 
   /*! \brief
-    Adds copies of the equality constraints in \p cs to \p *this,
+    Adds  a copy of the constraint system in \p cs to \p *this,
     reducing the result.
 
     \return
     <CODE>false</CODE> if and only if the result is empty.
+
+    \param cs
+    The constraint system to be added.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible.
   */
   bool add_constraints_and_minimize(const Constraint_System& cs);
 
-  //! Adds the equality constraints in \p cs to \p *this.
+  //! Adds the constraint system in \p cs to \p *this.
   /*!
+    \param cs
+    The constraint system to be added that may be recycled.
+
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible.
 
@@ -810,7 +817,10 @@ public:
   void add_recycled_constraints(Constraint_System& cs);
 
   /*! \brief
-    Adds the constraints in \p cs to \p *this, reducing the result.
+    Adds the constraint system in \p cs to \p *this, reducing the result.
+
+    \param cs
+    The constraint system to be added that may be recycled.
 
     \return
     <CODE>false</CODE> if and only if the result is empty.
