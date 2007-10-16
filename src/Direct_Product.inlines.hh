@@ -225,6 +225,28 @@ Direct_Product<D1, D2>
 
 template <typename D1, typename D2>
 inline void
+Direct_Product<D1, D2>
+::bounded_affine_image(Variable var,
+			       const Linear_Expression& lb_expr,
+			       const Linear_Expression& ub_expr,
+			       Coefficient_traits::const_reference denominator) {
+  d1.bounded_affine_image(var, lb_expr, ub_expr, denominator);
+  d2.bounded_affine_image(var, lb_expr, ub_expr, denominator);
+}
+
+template <typename D1, typename D2>
+inline void
+Direct_Product<D1, D2>
+::bounded_affine_preimage(Variable var,
+			       const Linear_Expression& lb_expr,
+			       const Linear_Expression& ub_expr,
+			       Coefficient_traits::const_reference denominator) {
+  d1.bounded_affine_preimage(var, lb_expr, ub_expr, denominator);
+  d2.bounded_affine_preimage(var, lb_expr, ub_expr, denominator);
+}
+
+template <typename D1, typename D2>
+inline void
 Direct_Product<D1, D2>::time_elapse_assign(const Direct_Product& y) {
   d1.time_elapse_assign(y.d1);
   d2.time_elapse_assign(y.d2);

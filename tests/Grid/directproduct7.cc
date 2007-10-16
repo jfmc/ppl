@@ -430,6 +430,198 @@ test13() {
   return ok;
 }
 
+// Non-empty product. bounded_affine_image/3
+bool
+test14() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Product dp(3);
+  dp.add_congruence((A ==  0) / 0);
+  dp.add_congruence((B ==  0) / 0);
+  dp.add_congruence((C == -2) / 0);
+
+#ifdef GRID_IS_D1
+  print_congruences(dp.domain1(),
+    "*** dp.domain1() ***");
+  print_constraints(dp.domain2(),
+     "*** dp.domain2() ***");
+#else
+  print_constraints(dp.domain1(),
+     "*** dp.domain1() ***");
+  print_congruences(dp.domain2(),
+     "*** dp.domain2() ***");
+#endif
+
+  dp.bounded_affine_image(A, 7-B, B+3);
+
+  Product known_dp(3);
+  known_dp.add_constraint(C == -2);
+  known_dp.add_constraint(B == 0);
+  known_dp.add_constraint(A <= 3);
+  known_dp.add_constraint(A + B >= 7);
+
+  bool ok = (dp == known_dp);
+
+
+#ifdef GRID_IS_D1
+  print_congruences(dp.domain1(),
+    "*** dp.domain1() ***");
+  print_constraints(dp.domain2(),
+     "*** dp.domain2() ***");
+#else
+  print_constraints(dp.domain1(),
+     "*** dp.domain1() ***");
+  print_congruences(dp.domain2(),
+     "*** dp.domain2() ***");
+#endif
+
+  return ok;
+}
+
+// Empty grid. bounded_affine_image/3
+bool
+test15() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Product dp(3);
+  dp.add_constraint(A ==  0);
+  dp.add_constraint(A ==  1);
+  dp.add_constraint(C == -2);
+
+#ifdef GRID_IS_D1
+  print_congruences(dp.domain1(),
+    "*** dp.domain1() ***");
+  print_constraints(dp.domain2(),
+     "*** dp.domain2() ***");
+#else
+  print_constraints(dp.domain1(),
+     "*** dp.domain1() ***");
+  print_congruences(dp.domain2(),
+     "*** dp.domain2() ***");
+#endif
+
+  dp.bounded_affine_image(A, 7-B, B+3);
+
+  Product known_dp(3, EMPTY);
+
+  bool ok = (dp == known_dp);
+
+#ifdef GRID_IS_D1
+  print_congruences(dp.domain1(),
+    "*** dp.domain1() ***");
+  print_constraints(dp.domain2(),
+     "*** dp.domain2() ***");
+#else
+  print_constraints(dp.domain1(),
+     "*** dp.domain1() ***");
+  print_congruences(dp.domain2(),
+     "*** dp.domain2() ***");
+#endif
+
+  return ok;
+}
+
+// Non-empty product. bounded_affine_preimage/3
+bool
+test16() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Product dp(3);
+  dp.add_congruence((A ==  0) / 0);
+  dp.add_congruence((B ==  0) / 0);
+  dp.add_congruence((C == -2) / 0);
+
+#ifdef GRID_IS_D1
+  print_congruences(dp.domain1(),
+    "*** dp.domain1() ***");
+  print_constraints(dp.domain2(),
+     "*** dp.domain2() ***");
+#else
+  print_constraints(dp.domain1(),
+     "*** dp.domain1() ***");
+  print_congruences(dp.domain2(),
+     "*** dp.domain2() ***");
+#endif
+
+  dp.bounded_affine_preimage(A, 7-B, B+3);
+
+  Constraint_System cs;
+  cs.insert(C == -2);
+  cs.insert(B == 0);
+  cs.insert(C >= 3);
+
+  Product known_dp(3);
+  known_dp.add_constraints(cs);
+
+  bool ok = (dp == known_dp);
+
+
+#ifdef GRID_IS_D1
+  print_congruences(dp.domain1(),
+    "*** dp.domain1() ***");
+  print_constraints(dp.domain2(),
+     "*** dp.domain2() ***");
+#else
+  print_constraints(dp.domain1(),
+     "*** dp.domain1() ***");
+  print_congruences(dp.domain2(),
+     "*** dp.domain2() ***");
+#endif
+
+  return ok;
+}
+
+// Empty grid. bounded_affine_preimage/3
+bool
+test17() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Product dp(3);
+  dp.add_constraint(A ==  0);
+  dp.add_constraint(A ==  1);
+  dp.add_constraint(C == -2);
+
+#ifdef GRID_IS_D1
+  print_congruences(dp.domain1(),
+    "*** dp.domain1() ***");
+  print_constraints(dp.domain2(),
+     "*** dp.domain2() ***");
+#else
+  print_constraints(dp.domain1(),
+     "*** dp.domain1() ***");
+  print_congruences(dp.domain2(),
+     "*** dp.domain2() ***");
+#endif
+
+  dp.bounded_affine_preimage(A, 7-B, B+3);
+
+  Product known_dp(3, EMPTY);
+
+  bool ok = (dp == known_dp);
+
+#ifdef GRID_IS_D1
+  print_congruences(dp.domain1(),
+    "*** dp.domain1() ***");
+  print_constraints(dp.domain2(),
+     "*** dp.domain2() ***");
+#else
+  print_constraints(dp.domain1(),
+     "*** dp.domain1() ***");
+  print_congruences(dp.domain2(),
+     "*** dp.domain2() ***");
+#endif
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -446,4 +638,8 @@ BEGIN_MAIN
   DO_TEST(test11);
   DO_TEST(test12);
   DO_TEST(test13);
+  DO_TEST(test14);
+  DO_TEST(test15);
+  DO_TEST(test16);
+  DO_TEST(test17);
 END_MAIN
