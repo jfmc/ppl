@@ -14,10 +14,10 @@ PURPOSE. */
 
 namespace Parma_Polyhedra_Library {
 
-template <typename BT>
+template <typename T>
 class DB_Row_Impl_Handler;
 
-template <typename BT>
+template <typename T>
 class DB_Row;
 
 } // namespace Parma_Polyhedra_Library
