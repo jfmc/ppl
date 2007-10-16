@@ -109,9 +109,65 @@ test02() {
   return ok;
 }
 
-// add_constraints
+// A point in both domains.
 bool
 test03() {
+  Variable A(0);
+
+  Product dp(1);
+
+  dp.add_constraint(A == 7);
+
+  Constraint_System cs = dp.minimized_constraints();
+
+  Product dp1(cs);
+
+  bool ok = (dp1 == dp);
+
+#ifdef GRID_IS_D1
+  print_congruences(dp.domain1(), "*** dp.domain1() ***");
+  print_constraints(dp.domain2(), "*** dp.domain2() ***");
+#else
+  print_constraints(dp.domain1(), "*** dp.domain1() ***");
+  print_congruences(dp.domain2(), "*** dp.domain2() ***");
+#endif
+
+  return ok;
+}
+
+// A point specified by inequalities.
+bool
+test04() {
+  Variable A(0);
+
+  Product dp(1);
+  dp.add_constraint(A >= 7);
+  dp.add_constraint(A <= 7);
+
+  Constraint_System cs = dp.minimized_constraints();
+
+  Product dp1(cs);
+
+  bool ok = (dp1 == dp);
+
+#ifdef GRID_IS_D1
+  print_congruences(dp.domain1(), "*** dp.domain1() ***");
+  print_constraints(dp.domain2(), "*** dp.domain2() ***");
+  print_congruences(dp1.domain1(), "*** dp1.domain1() ***");
+  print_constraints(dp1.domain2(), "*** dp1.domain2() ***");
+#else
+  print_constraints(dp.domain1(), "*** dp.domain1() ***");
+  print_congruences(dp.domain2(), "*** dp.domain2() ***");
+  print_constraints(dp1.domain1(), "*** dp1.domain1() ***");
+  print_congruences(dp1.domain2(), "*** dp1.domain2() ***");
+#endif
+
+  return ok;
+}
+
+// add_constraints
+bool
+test05() {
 
   Variable A(0);
   Variable B(1);
@@ -152,7 +208,7 @@ test03() {
 
 // add_recycled_constraints
 bool
-test04() {
+test06() {
   Variable A(0);
   Variable B(1);
 
@@ -193,7 +249,7 @@ test04() {
 
 // add_constraints_and_minimize
 bool
-test05() {
+test07() {
   Variable A(0);
   Variable B(1);
 
@@ -236,7 +292,7 @@ test05() {
 
 // add_recycled_constraints_and_minimize
 bool
-test06() {
+test08() {
   Variable A(0);
   Variable B(1);
 
@@ -282,7 +338,7 @@ test06() {
 }
 // add_congruences
 bool
-test07() {
+test09() {
 
   Variable A(0);
   Variable B(1);
@@ -324,7 +380,7 @@ test07() {
 #if (0)
 // add_recycled_congruences
 bool
-test08() {
+test10() {
   Variable A(0);
   Variable B(1);
 
@@ -365,7 +421,7 @@ test08() {
 
 // add_congruences_and_minimize
 bool
-test09() {
+test11() {
   Variable A(0);
   Variable B(1);
 
@@ -408,7 +464,7 @@ test09() {
 
 // add_recycled_congruences_and_minimize
 bool
-test10() {
+test12() {
   Variable A(0);
   Variable B(1);
 
@@ -465,4 +521,11 @@ BEGIN_MAIN
   DO_TEST(test05);
   DO_TEST(test06);
   DO_TEST(test07);
+  DO_TEST(test08);
+  DO_TEST(test09);
+#if 0
+  DO_TEST(test10);
+  DO_TEST(test11);
+  DO_TEST(test12);
+#endif
 END_MAIN

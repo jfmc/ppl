@@ -404,46 +404,48 @@ Direct_Product<D1, D2>::domain2() const {
 template <typename D1, typename D2>
 inline Constraint_System
 Direct_Product<D1, D2>::constraints() const {
-  Constraint_System cs1 = d1.constraints();
-  Constraint_System cs2 = d2.constraints();
-  for (Constraint_System::const_iterator i = cs1.begin(),
-	 cs_end = cs1.end(); i != cs_end; ++i)
-    cs2.insert(*i);
-  return cs2;
+  Constraint_System cs = d2.constraints();
+  for (Constraint_System::const_iterator i = d1.constraints().begin(),
+	 cs_end = d1.constraints().end(); i != cs_end; ++i)
+    cs.insert(*i);
+  return cs;
 }
 
 template <typename D1, typename D2>
 inline Constraint_System
 Direct_Product<D1, D2>::minimized_constraints() const {
-  Constraint_System cs1 = d1.constraints();
-  Constraint_System cs2 = d2.constraints();
-  for (Constraint_System::const_iterator i = cs1.begin(),
-	 cs_end = cs1.end(); i != cs_end; ++i)
-    cs2.insert(*i);
-  Polyhedron ph(cs2);
-  return ph.minimized_constraints();
+  Constraint_System cs = d2.constraints();
+  for (Constraint_System::const_iterator i = d1.constraints().begin(),
+	 cs_end = d1.constraints().end(); i != cs_end; ++i)
+    cs.insert(*i);
+  if (is_topologically_closed()) {
+    C_Polyhedron ph(cs);
+    return ph.minimized_constraints();
+  }
+  else {
+    NNC_Polyhedron ph(cs);
+    return ph.minimized_constraints();
+  }
 }
 
 template <typename D1, typename D2>
 inline Congruence_System
 Direct_Product<D1, D2>::congruences() const {
-  Congruence_System cgs1 = d1.congruences();
-  Congruence_System cgs2 = d2.congruences();
-  for (Congruence_System::const_iterator i = cgs1.begin(),
-	 cgs_end = cgs1.end(); i != cgs_end; ++i)
-    cgs2.insert(*i);
-  return cgs2;
+  Congruence_System cgs = d2.congruences();
+  for (Congruence_System::const_iterator i = d1.congruences().begin(),
+	 cgs_end = d1.congruences().end(); i != cgs_end; ++i)
+    cgs.insert(*i);
+  return cgs;
 }
 
 template <typename D1, typename D2>
 inline Congruence_System
 Direct_Product<D1, D2>::minimized_congruences() const {
-  Congruence_System cgs1 = d1.congruences();
-  Congruence_System cgs2 = d2.congruences();
-  for (Congruence_System::const_iterator i = cgs1.begin(),
-	 cgs_end = cgs1.end(); i != cgs_end; ++i)
-    cgs2.insert(*i);
-  Grid gr(cgs2);
+  Congruence_System cgs = d2.congruences();
+  for (Congruence_System::const_iterator i = d1.congruences().begin(),
+	 cgs_end = d1.congruences().end(); i != cgs_end; ++i)
+    cgs.insert(*i);
+  Grid gr(cgs);
   return gr.minimized_congruences();
 }
 
