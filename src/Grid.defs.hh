@@ -42,6 +42,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Poly_Gen_Relation.defs.hh"
 #include "Grid_Certificate.types.hh"
 #include "Box.types.hh"
+#include "Polyhedron.defs.hh"
+#include "Polyhedron.types.hh"
+#include "Polyhedron.inlines.hh"
 #include <vector>
 #include <iosfwd>
 
@@ -591,6 +594,19 @@ public:
   */
   template <typename Box>
   Grid(const Box& box, From_Covering_Box dummy);
+
+  //! Builds a grid, copying a polyhedron.
+  /*!
+    The grid inherits the space dimension of polyhedron.
+
+    \param ph
+    The polyhedron.
+
+    \exception std::length_error
+    Thrown if \p num_dimensions exceeds the maximum allowed space
+    dimension.
+  */
+  explicit Grid(const Polyhedron& ph);
 
   //! Ordinary copy-constructor.
   Grid(const Grid& y);
