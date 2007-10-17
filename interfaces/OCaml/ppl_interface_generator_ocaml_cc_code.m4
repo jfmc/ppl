@@ -555,7 +555,7 @@ ppl_@TOPOLOGY@@CLASS@_@MAXMIN@(value ph, value caml_le) try {
   TEMP_INTEGER(num);
   TEMP_INTEGER(den);
   bool is_supremum = false;
-  @UGENERATOR@ g = @POINT@();
+  Generator g = point();
   @CPP_CLASS@& pph = *p_@TOPOLOGY@@CLASS@_val(ph);
   bool ppl_return_value = pph.@MAXMIN@(build_ppl_Linear_Expression(caml_le),
 				      num, den, is_supremum, g);
