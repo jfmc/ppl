@@ -299,7 +299,7 @@ bool
 PPL::Grid::max_min(const Linear_Expression& expr,
 		   const char* method_call,
 		   Coefficient& ext_n, Coefficient& ext_d, bool& included,
-		   Grid_Generator* point) const {
+		   Generator* point) const {
   if (bounds(expr, method_call)) {
     if (marked_empty())
       return false;
@@ -308,7 +308,7 @@ PPL::Grid::max_min(const Linear_Expression& expr,
       ext_d = 1;
       included = true;
       if (point)
-	*point = grid_point();
+	*point = Generator::point();
       return true;
     }
     // Grid::bounds above ensures the generators are up to date.
@@ -331,8 +331,10 @@ PPL::Grid::max_min(const Linear_Expression& expr,
 
     included = true;
     if (point) {
-      *point = gen;
-      point->strong_normalize();
+      Linear_Expression e;
+      for (dimension_type i = space_dim; i-- > 0; )
+	e += gen.coefficient(Variable(i)) * Variable(i);
+      *point = Generator::point(e, gen.divisor());
     }
     return true;
   }

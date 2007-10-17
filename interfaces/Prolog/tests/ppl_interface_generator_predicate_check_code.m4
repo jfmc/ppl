@@ -832,26 +832,26 @@ ppl_@CLASS@_@MAXMIN@_with_point_6_test :-
      ->
        (ppl_@CLASS@_@MAXMIN@_with_point(PS, LE, N, D, B, G),
         B == Bexptd, N == Nexptd, D == Dexptd,
-        (predicate_exists(ppl_@CLASS@_add_@GENERATOR@)
+        (predicate_exists(ppl_Polyhedron_add_generator)
         ->
-          clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim,
+          clean_ppl_new_C_Polyhedron_from_space_dimension(Space_Dim,
                                                              empty, PSG),
-          clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim,
+          clean_ppl_new_C_Polyhedron_from_space_dimension(Space_Dim,
                                                              empty, PSGexptd),
           (G =.. [closure_point|CP]
           ->
             Gexptd =.. [closure_point|CPexptd],
             G_Point =.. [point|CP],
             Gexptd_Point =.. [point|CPexptd],
-            ppl_@CLASS@_add_@GENERATOR@(PSG, G_Point),
-            ppl_@CLASS@_add_@GENERATOR@(PSGexptd, Gexptd_Point)
+            ppl_Polyhedron_add_generator(PSG, G_Point),
+            ppl_Polyhedron_add_generator(PSGexptd, Gexptd_Point)
           ;
-            (ppl_@CLASS@_add_@GENERATOR@(PSG, G),
-             ppl_@CLASS@_add_@GENERATOR@(PSGexptd, Gexptd))
+            (ppl_Polyhedron_add_generator(PSG, G),
+             ppl_Polyhedron_add_generator(PSGexptd, Gexptd))
           ),
-          ppl_@CLASS@_equals_@CLASS@(PSG, PSGexptd),
-          ppl_delete_@CLASS@(PSG),
-          ppl_delete_@CLASS@(PSGexptd)
+          ppl_C_Polyhedron_equals_C_Polyhedron(PSG, PSGexptd),
+          ppl_delete_Polyhedron(PSG),
+          ppl_delete_Polyhedron(PSGexptd)
         ;
           true
         ))

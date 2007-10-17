@@ -159,7 +159,7 @@ m4_define(`ppl_@CLASS@_@MAXMIN@_with_point_code',
     public native boolean @MAXMIN@(Linear_Expression expr,
 				   Coefficient sup_n, Coefficient sup_d,
 				   By_Reference<Boolean> maximum,
-				   @UGENERATOR@ point);
+				   Generator point);
 
 ')
 

@@ -365,10 +365,10 @@ JNIEXPORT jboolean JNICALL Java_ppl_1java_@1CLASS@_@1MAXMIN@__Lppl_1java_Linear_
 
 m4_define(`ppl_@CLASS@_@MAXMIN@_with_point_code',
 `dnl
-JNIEXPORT jboolean JNICALL Java_ppl_1java_@1CLASS@_@1MAXMIN@__Lppl_1java_Linear_1Expression_2Lppl_1java_Coefficient_2Lppl_1java_Coefficient_2Lppl_1java_By_1Reference_2Lppl_1java_@1UGENERATOR@_2
+JNIEXPORT jboolean JNICALL Java_ppl_1java_@1CLASS@_@1MAXMIN@__Lppl_1java_Linear_1Expression_2Lppl_1java_Coefficient_2Lppl_1java_Coefficient_2Lppl_1java_By_1Reference_2Lppl_1java_Generator_2
 (JNIEnv* env, jobject j_this_@LCLASS@ , jobject j_le,
  jobject j_coeff_num, jobject j_coeff_den, jobject j_ref_boolean,
- jobject j_@GENERATOR@) {
+ jobject j_generator) {
   try {
  jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
   @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
@@ -378,16 +378,16 @@ JNIEXPORT jboolean JNICALL Java_ppl_1java_@1CLASS@_@1MAXMIN@__Lppl_1java_Linear_
   coeff_den = build_ppl_coeff(env, j_coeff_den);
   Linear_Expression le = build_linear_expression(env, j_le);
   bool b_value;
-  @UGENERATOR@ g = @POINT@();
+  Generator g = point();
   if(this_@LCLASS@->@MAXMIN@(le, coeff_num, coeff_den, b_value, g)) {
     jobject j_coeff_num_result = build_java_coeff(env, coeff_num);
     jobject j_coeff_den_result = build_java_coeff(env, coeff_den);
-    jobject j_@GENERATOR@_result = build_java_@GENERATOR@(env, g);
+    jobject j_generator_result = build_java_generator(env, g);
     set_coefficient(env, j_coeff_num, j_coeff_num_result);
     set_coefficient(env, j_coeff_den, j_coeff_den_result);
     jobject j_boolean = bool_to_j_boolean(env, b_value);
     set_by_reference(env, j_ref_boolean, j_boolean);
-    set_@GENERATOR@(env, j_@GENERATOR@, j_@GENERATOR@_result);
+    set_generator(env, j_generator, j_generator_result);
       return true;
     }
     return false;

@@ -821,7 +821,7 @@ public:
   */
   bool maximize(const Linear_Expression& expr,
 		Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
-		Grid_Generator& point) const;
+		Generator& point) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty and
@@ -886,7 +886,7 @@ public:
   */
   bool minimize(const Linear_Expression& expr,
 		Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
-		Grid_Generator& point) const;
+		Generator& point) const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this contains \p y.
   /*!
@@ -2325,7 +2325,7 @@ private:
   bool max_min(const Linear_Expression& expr,
 	       const char* method_call,
 	       Coefficient& ext_n, Coefficient& ext_d, bool& included,
-	       Grid_Generator* point = NULL) const;
+	       Generator* point = NULL) const;
 
   //! \name Widening- and Extrapolation-Related Functions
   //@{

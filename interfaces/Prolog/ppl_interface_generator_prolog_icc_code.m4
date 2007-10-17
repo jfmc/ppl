@@ -800,7 +800,7 @@ ppl_@CLASS@_@MAXMIN@_with_point(Prolog_term_ref t_ph,
     TEMP_INTEGER(n);
     TEMP_INTEGER(d);
     bool maxmin;
-    @UGENERATOR@ g(@POINT@());
+    Generator g(point());
     if (ph->@MAXMIN@(le, n, d, maxmin, g)) {
       Prolog_term_ref t = Prolog_new_term_ref();
       Prolog_atom a = (maxmin ? a_true : a_false);
@@ -808,7 +808,7 @@ ppl_@CLASS@_@MAXMIN@_with_point(Prolog_term_ref t_ph,
       if (Prolog_unify_Coefficient(t_n, n)
           && Prolog_unify_Coefficient(t_d, d)
           && Prolog_unify(t_maxmin, t)
-          && Prolog_unify(t_g, @GENERATOR@_term(g)))
+          && Prolog_unify(t_g, generator_term(g)))
         return PROLOG_SUCCESS;
     }
  }

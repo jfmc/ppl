@@ -187,7 +187,7 @@ boolean @LTOPOLOGY@@LCLASS@1_@MAXMIN@
 
 m4_define(`ppl_@CLASS@_@MAXMIN@_with_point_code', `
 boolean @LTOPOLOGY@@LCLASS@1_@MAXMIN@_with_point
-  = @LTOPOLOGY@@LCLASS@1.@MAXMIN@(le, coeff0, coeff1, bool_by_ref1, @GENERATOR@1);
+  = @LTOPOLOGY@@LCLASS@1.@MAXMIN@(le, coeff0, coeff1, bool_by_ref1, generator1);
 
 ');
 

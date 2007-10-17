@@ -319,7 +319,7 @@ Grid::maximize(const Linear_Expression& expr,
 inline bool
 Grid::maximize(const Linear_Expression& expr,
 	       Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
-	       Grid_Generator& point) const {
+	       Generator& point) const {
   return max_min(expr, "maximize(e, ...)", sup_n, sup_d, maximum, &point);
 }
 
@@ -332,7 +332,7 @@ Grid::minimize(const Linear_Expression& expr,
 inline bool
 Grid::minimize(const Linear_Expression& expr,
 	       Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
-	       Grid_Generator& point) const {
+	       Generator& point) const {
   return max_min(expr, "minimize(e, ...)", inf_n, inf_d, minimum, &point);
 }
 

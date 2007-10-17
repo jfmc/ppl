@@ -224,12 +224,12 @@ ppl_@CLASS@_@MAXMIN@
  ppl_Coefficient_t sup_n,
  ppl_Coefficient_t sup_d,
  int* poptimum,
- ppl_@UGENERATOR@_t point) try {
+ ppl_Generator_t point) try {
   const @CPP_CLASS@& pph = *to_const(ph);
   const Linear_Expression& lle = *to_const(le);
   Coefficient& ssup_n = *to_nonconst(sup_n);
   Coefficient& ssup_d = *to_nonconst(sup_d);
-  @UGENERATOR@& ppoint = *to_nonconst(point);
+  Generator& ppoint = *to_nonconst(point);
   bool optimum;
   bool ok = pph.@MAXMIN@(lle, ssup_n, ssup_d, optimum, ppoint);
   if (ok)
