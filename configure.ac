@@ -883,7 +883,7 @@ AM_CONDITIONAL(BUILD_SOME_PROLOG_INTERFACES, test x$SOME_PROLOG = xyes)
 
 # This is the list of interfaces that are enabled by default.
 # Different instantiations are separated by a '@' character.
-default_instantiations="Polyhedron @ Grid @ BD_Shape<int8_t>"
+default_instantiations="Polyhedron @ Grid @ Octagonal_Shape<double>"
 
 enableval=not_specified
 AC_MSG_CHECKING([which instantiations are enabled])
