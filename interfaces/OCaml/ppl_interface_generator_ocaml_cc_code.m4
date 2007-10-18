@@ -564,7 +564,7 @@ ppl_@TOPOLOGY@@CLASS@_@MAXMIN@(value ph, value caml_le) try {
   Field(caml_return_value, 1) = build_caml_coefficient(num);
   Field(caml_return_value, 2) = build_caml_coefficient(den);
   Field(caml_return_value, 3) = Val_bool(is_supremum);
-  Field(caml_return_value, 4) = build_caml_@GENERATOR@(g);
+  Field(caml_return_value, 4) = build_caml_generator(g);
   CAMLreturn(caml_return_value);
 }
 CATCH_ALL
