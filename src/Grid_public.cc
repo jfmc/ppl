@@ -178,6 +178,7 @@ PPL::Grid::Grid(const Polyhedron& ph)
       // If the polyhedron's generator is a (closure) point, the grid line must
       // have the direction given by a line that joins the grid point already
       // inserted and the new point.
+      TEMP_INTEGER(coeff);
       for (Generator_System::const_iterator g = gs.begin(),
 	     gs_end = gs.end(); g != gs_end; ++g) {
 	Linear_Expression e;
@@ -185,7 +186,6 @@ PPL::Grid::Grid(const Polyhedron& ph)
           Coefficient g_divisor = g->divisor();
 	  for (dimension_type i = space_dim; i-- > 0; ) {
             const Variable v(i);
-            TEMP_INTEGER(coeff);
             coeff = point_expr.coefficient(v) * g_divisor;
             coeff -= g->coefficient(v) * point_divisor;
 	    e += coeff * v;
