@@ -160,14 +160,16 @@ PPL::Grid::Grid(const Polyhedron& ph)
       const Generator_System& gs = ph.generators();
       Grid_Generator_System ggs(space_dim);
       Linear_Expression point_expr;
+      Coefficient point_divisor;
       for (Generator_System::const_iterator g = gs.begin(),
 	     gs_end = gs.end(); g != gs_end; ++g) {
         if (g->is_point() || g->is_closure_point()) {
 	  for (dimension_type i = space_dim; i-- > 0; ) {
             const Variable v(i);
 	    point_expr += g->coefficient(v) * v;
+            point_divisor = g->divisor();
 	  }
-	  ggs.insert(grid_point(point_expr, g->divisor()));
+	  ggs.insert(grid_point(point_expr, point_divisor));
           break;
 	}
       }
@@ -180,9 +182,13 @@ PPL::Grid::Grid(const Polyhedron& ph)
 	     gs_end = gs.end(); g != gs_end; ++g) {
 	Linear_Expression e;
         if (g->is_point() || g->is_closure_point()) {
+          Coefficient g_divisor = g->divisor();
 	  for (dimension_type i = space_dim; i-- > 0; ) {
             const Variable v(i);
-	    e += g->coefficient(v) * v - point_expr.coefficient(v) * v;
+            TEMP_INTEGER(coeff);
+            coeff = point_expr.coefficient(v) * g_divisor;
+            coeff -= g->coefficient(v) * point_divisor;
+	    e += coeff * v;
 	  }
           if (e.all_homogeneous_terms_are_zero())
             continue;

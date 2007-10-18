@@ -445,6 +445,39 @@ test20() {
   return ok;
 }
 
+/* Grid(ph) - non-empty and non-universe grid built from
+   C_polyhedron constructed from generators */
+bool
+test21() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Generator_System cs;
+  cs.insert(point(A + B));
+  cs.insert(line(A - C));
+  cs.insert(point(3 * C));
+
+  C_Polyhedron ph(cs);
+
+  Grid gr(ph);
+
+  print_constraints(ph, "*** ph ***");
+
+  Grid known_gr(3);
+  known_gr.add_congruence(A + 2*B + C == 3);
+
+  bool ok = (gr == known_gr);
+
+  print_congruences(gr, "*** gr(ph) ***");
+  print_generators(gr, "*** gr(ph) ***");
+
+  print_congruences(known_gr, "*** known_gr(ph) ***");
+  print_generators(known_gr, "*** known_gr(ph) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -465,7 +498,8 @@ BEGIN_MAIN
   DO_TEST(test15);
   DO_TEST(test16);
   DO_TEST(test17);
-  DO_TEST_F(test18);
+  DO_TEST(test18);
   DO_TEST(test19);
   DO_TEST(test20);
+  DO_TEST(test21);
 END_MAIN
