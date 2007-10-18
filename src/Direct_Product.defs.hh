@@ -502,8 +502,6 @@ public:
   bool maximize(const Linear_Expression& expr,
 		Coefficient& sup_n, Coefficient& sup_d, bool& maximum) const;
 
-  // FIXME: Implement this?.
-#if 0
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty and
     \p expr is bounded from above in \p *this, in which case the
@@ -520,13 +518,10 @@ public:
 
     \param maximum
     <CODE>true</CODE> if the supremum value can be reached in \p this.
-    Always <CODE>true</CODE> when \p this bounds \p expr.  Present for
-    interface compatibility with class Polyhedron, where closure
-    points can result in a value of false;
 
     \param point
-    When maximization succeeds, will be assigned a point where \p expr
-    reaches its supremum value.
+    When maximization succeeds, will be assigned a generator point
+    where \p expr reaches its supremum value.
 
     \exception std::invalid_argument
     Thrown if \p expr and \p *this are dimension-incompatible.
@@ -537,8 +532,7 @@ public:
   */
   bool maximize(const Linear_Expression& expr,
 		Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
-		Grid_Generator& point) const;
-#endif
+		Generator& point) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty and
@@ -555,10 +549,7 @@ public:
     The denominator of the infimum value;
 
     \param minimum
-    <CODE>true</CODE> if the is the infimum value can be reached in \p
-    this.  Always <CODE>true</CODE> when \p this bounds \p expr.
-    Present for interface compatibility with class Polyhedron, where
-    closure points can result in a value of false.
+    <CODE>true</CODE> if the infimum value can be reached in \p this.
 
     \exception std::invalid_argument
     Thrown if \p expr and \p *this are dimension-incompatible.
@@ -570,8 +561,6 @@ public:
   bool minimize(const Linear_Expression& expr,
 		Coefficient& inf_n, Coefficient& inf_d, bool& minimum) const;
 
-  // FIXME: Implement this?
-#if 0
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty and
     \p expr is bounded from below in \p *this, in which case the
@@ -587,14 +576,11 @@ public:
     The denominator of the infimum value;
 
     \param minimum
-    <CODE>true</CODE> if the is the infimum value can be reached in \p
-    this.  Always <CODE>true</CODE> when \p this bounds \p expr.
-    Present for interface compatibility with class Polyhedron, where
-    closure points can result in a value of false;
+    <CODE>true</CODE> if the infimum value can be reached in \p this.
 
     \param point
-    When minimization succeeds, will be assigned a point where \p expr
-    reaches its infimum value.
+    When minimization succeeds, will be assigned a generator point
+    where \p expr reaches its infimum value.
 
     \exception std::invalid_argument
     Thrown if \p expr and \p *this are dimension-incompatible.
@@ -605,8 +591,7 @@ public:
   */
   bool minimize(const Linear_Expression& expr,
 		Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
-		Grid_Generator& point) const;
-#endif
+		Generator& point) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if each component of \p *this

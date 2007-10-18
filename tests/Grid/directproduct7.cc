@@ -218,7 +218,8 @@ bool
 test07() {
   Product dp(7, EMPTY);
 
-  Coefficient extr_n, extr_d;
+  Coefficient extr_n;
+  Coefficient extr_d;
   bool dummy;
 
   bool ok = (!dp.maximize(Linear_Expression(0), extr_n, extr_d, dummy));
@@ -243,10 +244,13 @@ bool
 test08() {
   Product dp(0, EMPTY);
 
-  Coefficient extr_n, extr_d;
+  Coefficient extr_n;
+  Coefficient extr_d;
   bool dummy;
+  Generator pnt(point());
 
-  bool ok = (!dp.maximize(Linear_Expression(0), extr_n, extr_d, dummy));
+  bool ok = !dp.maximize(Linear_Expression(0), extr_n, extr_d, dummy)
+    && !dp.maximize(Linear_Expression(0), extr_n, extr_d, dummy, pnt);
 
 #ifdef GRID_IS_D1
   print_congruences(dp.domain1(),
@@ -270,8 +274,10 @@ test09() {
 
   Coefficient extr_n, extr_d;
   bool dummy;
+  Generator pnt(point());
 
-  bool ok = dp.maximize(Linear_Expression(0), extr_n, extr_d, dummy);
+  bool ok = dp.maximize(Linear_Expression(0), extr_n, extr_d, dummy)
+    && dp.maximize(Linear_Expression(0), extr_n, extr_d, dummy, pnt);
 
 #ifdef GRID_IS_D1
   print_congruences(dp.domain1(),
@@ -300,14 +306,27 @@ test10() {
 
   Linear_Expression le = A + B;
 
-  Coefficient max_n, max_d, min_n, min_d;
-
-  bool max, min;
+  Coefficient max_n;
+  Coefficient max_d;
+  Coefficient min_n;
+  Coefficient min_d;
+  Generator pnt_max(point());
+  Generator pnt_min(point());
+  Generator known_pnt(point(3*A + 2*B, 3));
+  bool max;
+  bool min;
 
   bool ok = dp.maximize(le, max_n, max_d, max)
-    && dp.minimize(le, min_n, min_d, min);
+    && dp.minimize(le, min_n, min_d, min)
+    && dp.maximize(le, max_n, max_d, max, pnt_max)
+    && dp.minimize(le, min_n, min_d, min, pnt_min);
 
-  ok &= max && min && max_n == 5 && max_d == 3 && min_n == 5 && min_d == 3;
+  ok = ok
+    && max && min && max_n == 5 && max_d == 3 && min_n == 5 && min_d == 3
+    && pnt_max == known_pnt && pnt_min == known_pnt;
+
+  print_generator(pnt_max, "*** max point ***");
+  print_generator(pnt_min, "*** min point ***");
 
 #ifdef GRID_IS_D1
   print_congruences(dp.domain1(),
@@ -337,14 +356,25 @@ test11() {
 ;
   Linear_Expression le = A + B;
 
-  Coefficient max_n, max_d, min_n, min_d;
-
-  bool max, min;
+  Coefficient max_n;
+  Coefficient max_d;
+  Coefficient min_n;
+  Coefficient min_d;
+  Generator pnt_max(point());
+  Generator pnt_min(point());
+  bool max;
+  bool min;
 
   bool ok = dp.maximize(le, max_n, max_d, max)
-    && dp.minimize(le, min_n, min_d, min);
+    && dp.minimize(le, min_n, min_d, min)
+    && dp.maximize(le, max_n, max_d, max, pnt_max)
+    && dp.minimize(le, min_n, min_d, min, pnt_min);
 
-  ok &= max && min && max_n == 1 && max_d == 1 && min_n == 1 && min_d == 1;
+  ok = ok
+    && max && min && max_n == 1 && max_d == 1 && min_n == 1 && min_d == 1
+    && pnt_max == pnt_min;
+
+  print_generator(pnt_max, "*** maximum point ***");
 
 #ifdef GRID_IS_D1
   print_congruences(dp.domain1(),
@@ -372,11 +402,19 @@ test12() {
 
   Linear_Expression le = 2*A - B;
 
-  Coefficient extr_n, extr_d;
-  bool max, min;
+  Coefficient max_n;
+  Coefficient max_d;
+  Coefficient min_n;
+  Coefficient min_d;
+  Generator pnt_max(point());
+  Generator pnt_min(point());
+  bool max;
+  bool min;
 
-  bool ok = !dp.maximize(le, extr_n, extr_d, max)
-    && !dp.minimize(le, extr_n, extr_d, min);
+  bool ok = !dp.maximize(le, max_n, max_d, max)
+    && !dp.minimize(le, min_n, min_d, min)
+    && !dp.maximize(le, max_n, max_d, max, pnt_max)
+    && !dp.minimize(le, min_n, min_d, min, pnt_min);
 
 #ifdef GRID_IS_D1
   print_congruences(dp.domain1(),
@@ -403,17 +441,27 @@ test13() {
   dp.add_constraint(A + B > 0);
   dp.add_constraint(A + B < 1);
   dp.add_congruence(3*B %= 2);
-;
+
   Linear_Expression le = A + B;
 
-  Coefficient max_n, max_d, min_n, min_d;
+  Coefficient max_n;
+  Coefficient max_d;
+  Coefficient min_n;
+  Coefficient min_d;
+  Generator pnt_max(point());
+  Generator pnt_min(point());
 
   bool max, min;
 
   bool ok = dp.maximize(le, max_n, max_d, max)
-    && dp.minimize(le, min_n, min_d, min);
+    && dp.minimize(le, min_n, min_d, min)
+    && dp.maximize(le, max_n, max_d, max, pnt_max)
+    && dp.minimize(le, min_n, min_d, min, pnt_min);
 
-  ok &= !max && !min && max_n == 1 && max_d == 1 && min_n == 0 && min_d == 1;
+  ok = ok
+    && !max && !min && max_n == 1 && max_d == 1 && min_n == 0 && min_d == 1;
+
+  print_generator(pnt_max, "*** maximum point ***");
 
 #ifdef GRID_IS_D1
   print_congruences(dp.domain1(),
