@@ -386,12 +386,15 @@ test18() {
   print_constraints(ph, "*** ph ***");
 
   Grid known_gr(3);
-  known_gr.add_congruence(4*A - B + C == 1);
+  known_gr.add_congruence(2*A + 7*B + 2*C == 3);
 
   bool ok = (gr == known_gr);
 
   print_congruences(gr, "*** gr(ph) ***");
   print_generators(gr, "*** gr(ph) ***");
+
+  print_congruences(known_gr, "*** known_gr(ph) ***");
+  print_generators(known_gr, "*** known_gr(ph) ***");
 
   return ok;
 }
@@ -462,7 +465,7 @@ BEGIN_MAIN
   DO_TEST(test15);
   DO_TEST(test16);
   DO_TEST(test17);
-  DO_TEST(test18);
+  DO_TEST_F(test18);
   DO_TEST(test19);
   DO_TEST(test20);
 END_MAIN
