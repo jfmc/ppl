@@ -149,11 +149,12 @@ PPL::Grid::Grid(const Polyhedron& ph)
     construct(space_dim, UNIVERSE);
   else {
 
+    gen_sys = Grid_Generator_System(space_dim);
     if (!ph.constraints_are_up_to_date()) {
       // If the polyhedron's constraints are not up-to-date,
       // use the generators instead to build the grid.
 
-      assert(generators_are_up_to_date());
+      assert(ph.generators_are_up_to_date());
 
       // First find a point or closure point and convert it to a
       // grid point and add to the (initially empty) set of grid generators.
