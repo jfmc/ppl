@@ -1,4 +1,4 @@
-/* Lenght_Error_Exception Java class declaration and implementation.
+/* Length_Error_Exception Java class declaration and implementation.
    Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -22,9 +22,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 package ppl_java;
 
-public class Lenght_Error_Exception extends RuntimeException {
+public class Length_Error_Exception extends RuntimeException {
 
-    public Lenght_Error_Exception(String s) {
+    public Length_Error_Exception(String s) {
         super(s);
     }
 }

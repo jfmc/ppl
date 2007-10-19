@@ -75,7 +75,7 @@ Grid_Generator.java \
 Grid_Generator_System.java \
 Grid_Generator_Type.java \
 Invalid_Argument_Exception.java \
-Lenght_Error_Exception.java \
+Length_Error_Exception.java \
 Linear_Expression.java \
 Linear_Expression_Coefficient.java \
 Linear_Expression_Difference.java \

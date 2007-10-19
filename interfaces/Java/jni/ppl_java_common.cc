@@ -42,7 +42,7 @@ handle_exception(JNIEnv* env, const std::logic_error& e) {
 
 void
 handle_exception(JNIEnv* env, const std::length_error& e) {
-  jclass newExcCls = env->FindClass("ppl_java/Lenght_Error_Exception");
+  jclass newExcCls = env->FindClass("ppl_java/Length_Error_Exception");
   env->ThrowNew(newExcCls, e.what());
 }
 
