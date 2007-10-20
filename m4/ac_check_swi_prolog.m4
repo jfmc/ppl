@@ -67,6 +67,8 @@ main() {
                   swi_prolog="")
   AC_LANG_POP(C++)
   CPPFLAGS="$ac_save_CPPFLAGS"
+  SWI_PROLOG="$swi_prolog"
+  AC_SUBST(SWI_PROLOG)
   AC_SUBST(SWI_PROLOG_INCLUDE_OPTIONS)
 fi
 
