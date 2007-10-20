@@ -81,7 +81,8 @@ test03() {
   print_generators(gr, "*** gr ***");
 
   bool ok = (gr.relation_with(B == 1)
-	     == Poly_Con_Relation::is_included());
+	     == (Poly_Con_Relation::is_included()
+		 && Poly_Con_Relation::saturates()));
 
   return ok;
 }
@@ -97,10 +98,12 @@ test04() {
 
   bool ok = (gr.relation_with(B == 0)
 	     == (Poly_Con_Relation::is_included()
-		 && Poly_Con_Relation::is_disjoint())
+		 && Poly_Con_Relation::is_disjoint()
+	         && Poly_Con_Relation::saturates())
 	     && gr.relation_with(B > 0)
 	     == (Poly_Con_Relation::is_included()
-		 && Poly_Con_Relation::is_disjoint()));
+		 && Poly_Con_Relation::is_disjoint()
+	         && Poly_Con_Relation::saturates()));
 
   return ok;
 }
@@ -114,9 +117,16 @@ test05() {
   bool ok = (// False.
 	     gr.relation_with(Linear_Expression(1) == 0)
 	     == Poly_Con_Relation::is_disjoint()
+	     && gr.relation_with(Linear_Expression(0) > 0)
+	     == (Poly_Con_Relation::saturates()
+		 && Poly_Con_Relation::is_disjoint())
 	     // True.
 	     && gr.relation_with(Linear_Expression(1) == 1)
-	     == Poly_Con_Relation::is_included()
+	     == (Poly_Con_Relation::saturates()
+		 && Poly_Con_Relation::is_included())
+	     && gr.relation_with(Linear_Expression(0) >= 0)
+	     == (Poly_Con_Relation::saturates()
+		 && Poly_Con_Relation::is_included())
 	     // False.
 	     && gr.relation_with(Linear_Expression(1) < 0)
 	     == Poly_Con_Relation::is_disjoint()
@@ -160,11 +170,13 @@ test07() {
   bool ok = (gr.relation_with(A == 3)
 	     == Poly_Con_Relation::is_disjoint()
 	     && gr.relation_with(2*A == 1)
-	     == Poly_Con_Relation::is_included()
+	     == (Poly_Con_Relation::is_included()
+		 && Poly_Con_Relation::saturates())
 	     && gr.relation_with(2*A < 1)
 	     == Poly_Con_Relation::is_disjoint()
 	     && gr.relation_with(2*A >= 1)
-	     == Poly_Con_Relation::is_included());
+	     == (Poly_Con_Relation::is_included()
+		 && Poly_Con_Relation::saturates()));
 
   return ok;
 }
@@ -198,9 +210,11 @@ test09() {
   print_generators(gr, "*** gr ***");
 
   bool ok = (gr.relation_with(Linear_Expression(10) == 10)
-	     == Poly_Con_Relation::is_included()
+	     == (Poly_Con_Relation::is_included()
+		 && Poly_Con_Relation::saturates())
 	     && gr.relation_with(Linear_Expression(10) >= 10)
-	     == Poly_Con_Relation::is_included());
+	     == (Poly_Con_Relation::is_included()
+		 && Poly_Con_Relation::saturates()));
 
   return ok;
 }
@@ -258,10 +272,12 @@ test12() {
 
   bool ok = (gr.relation_with(B == 0)
 	     == (Poly_Con_Relation::is_included()
-		 && Poly_Con_Relation::is_disjoint())
+		 && Poly_Con_Relation::is_disjoint()
+	         && Poly_Con_Relation::saturates())
 	     && gr.relation_with(B >= 0)
 	     == (Poly_Con_Relation::is_included()
-		 && Poly_Con_Relation::is_disjoint()));
+		 && Poly_Con_Relation::is_disjoint()
+	         && Poly_Con_Relation::saturates()));
 
   return ok;
 }
@@ -331,10 +347,12 @@ test16() {
 
   bool ok = (gr.relation_with(A + B == 8)
 	     == (Poly_Con_Relation::is_included()
-		 && Poly_Con_Relation::is_disjoint())
+		 && Poly_Con_Relation::is_disjoint()
+	         && Poly_Con_Relation::saturates())
 	     && gr.relation_with(A + B > 8)
 	     == (Poly_Con_Relation::is_included()
-		 && Poly_Con_Relation::is_disjoint()));
+		 && Poly_Con_Relation::is_disjoint()
+	         && Poly_Con_Relation::saturates()));
 
   return ok;
 }
@@ -383,7 +401,8 @@ test18() {
 	     && gr.relation_with(A == 0)
 	     == Poly_Con_Relation::strictly_intersects()
 	     && gr.relation_with(Linear_Expression(0) == 0)
-	     == Poly_Con_Relation::is_included());
+	     == (Poly_Con_Relation::is_included()
+		 && Poly_Con_Relation::saturates()));
 
   return ok;
 }
@@ -397,19 +416,23 @@ test19() {
   bool ok = (// False.
 	     gr.relation_with(Linear_Expression(1) == 0)
 	     == (Poly_Con_Relation::is_disjoint()
-		 && Poly_Con_Relation::is_included())
+		 && Poly_Con_Relation::is_included()
+	         && Poly_Con_Relation::saturates())
 	     // True.
 	     && gr.relation_with(Linear_Expression(1) == 1)
 	     == (Poly_Con_Relation::is_disjoint()
-		 && Poly_Con_Relation::is_included())
+		 && Poly_Con_Relation::is_included()
+	         && Poly_Con_Relation::saturates())
 	     // False.
 	     && gr.relation_with(Linear_Expression(1) < 0)
 	     == (Poly_Con_Relation::is_disjoint()
-		 && Poly_Con_Relation::is_included())
+		 && Poly_Con_Relation::is_included()
+	         && Poly_Con_Relation::saturates())
 	     // True.
 	     && gr.relation_with(Linear_Expression(1) >= 0)
 	     == (Poly_Con_Relation::is_disjoint()
-		 && Poly_Con_Relation::is_included()));
+		 && Poly_Con_Relation::is_included()
+	         && Poly_Con_Relation::saturates()));
 
   return ok;
 }

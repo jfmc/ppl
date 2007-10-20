@@ -613,6 +613,13 @@ PPL::Grid::throw_dimension_incompatible(const char* method,
 
 void
 PPL::Grid::throw_dimension_incompatible(const char* method,
+					const char* g_name,
+					const Generator& g) const {
+  throw_dimension_incompatible(method, g_name, g.space_dimension());
+}
+
+void
+PPL::Grid::throw_dimension_incompatible(const char* method,
 					const char* cgs_name,
 					const Congruence_System& cgs) const {
   throw_dimension_incompatible(method, cgs_name, cgs.space_dimension());

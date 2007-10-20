@@ -358,23 +358,24 @@ PPL::Grid::relation_with(const Congruence& cg) const {
     throw_dimension_incompatible("relation_with(cg)", "cg", cg);
 
   if (marked_empty())
-    return Poly_Con_Relation::is_included()
+    return Poly_Con_Relation::saturates()
+      && Poly_Con_Relation::is_included()
       && Poly_Con_Relation::is_disjoint();
 
   if (space_dim == 0)
-    if (cg.inhomogeneous_term() == 0)
-      return Poly_Con_Relation::is_included();
+    if (cg.is_trivial_false())
+      return Poly_Con_Relation::is_disjoint();
     else if (cg.is_equality())
-      return Poly_Con_Relation::is_disjoint();
+      return Poly_Con_Relation::saturates()
+	&& Poly_Con_Relation::is_included();
     else if (cg.inhomogeneous_term() % cg.modulus() == 0)
-      return Poly_Con_Relation::is_included();
-    else
-      // cg is false.
-      return Poly_Con_Relation::is_disjoint();
+      return Poly_Con_Relation::saturates()
+	&& Poly_Con_Relation::is_included();
 
   if (!generators_are_up_to_date() && !update_generators())
     // Updating found the grid empty.
-    return Poly_Con_Relation::is_included()
+    return Poly_Con_Relation::saturates()
+      && Poly_Con_Relation::is_included()
       && Poly_Con_Relation::is_disjoint();
 
   // Return one of the relations
@@ -489,8 +490,13 @@ PPL::Grid::relation_with(const Congruence& cg) const {
   }
 
   if (point_sp == 0)
-    // Every generator satisfied the cg.
-    return Poly_Con_Relation::is_included();
+    if (cg.is_equality())
+      // Every generator satisfied the cg.
+      return Poly_Con_Relation::is_included()
+        && Poly_Con_Relation::saturates();
+    else
+      // Every generator satisfied the cg.
+      return Poly_Con_Relation::is_included();
 
   assert(!known_to_intersect);
   return Poly_Con_Relation::is_disjoint();
@@ -519,6 +525,45 @@ PPL::Grid::relation_with(const Grid_Generator& g) const {
     : Poly_Gen_Relation::nothing();
 }
 
+PPL::Poly_Gen_Relation
+PPL::Grid::relation_with(const Generator& g) const {
+  dimension_type g_space_dim = g.space_dimension();
+
+  // Dimension-compatibility check.
+  if (space_dim < g_space_dim)
+    throw_dimension_incompatible("relation_with(g)", "g", g);
+
+  // The empty grid cannot subsume a generator.
+  if (marked_empty())
+    return Poly_Gen_Relation::nothing();
+
+  // A universe grid in a zero-dimensional space subsumes all the
+  // generators of a zero-dimensional space.
+  if (space_dim == 0)
+    return Poly_Gen_Relation::subsumes();
+
+  congruences_are_up_to_date() || update_congruences();
+
+  Linear_Expression expr;
+  for (dimension_type i = g_space_dim; i-- > 0; ) {
+    const Variable v(i);
+    expr += g.coefficient(v) * v;
+  }
+  Grid_Generator gg(grid_point());
+  if (g.is_point() || g.is_closure_point())
+    // Points and closure points are converted to grid points.
+    gg = grid_point(expr, g.divisor());
+  else
+    // The generator is a ray or line.
+    // In both cases, we convert it to a grid line
+    gg = grid_line(expr);
+
+  return
+    con_sys.satisfies_all_congruences(gg)
+    ? Poly_Gen_Relation::subsumes()
+    : Poly_Gen_Relation::nothing();
+}
+
 PPL::Poly_Con_Relation
 PPL::Grid::relation_with(const Constraint& c) const {
   // Dimension-compatibility check.
@@ -531,18 +576,32 @@ PPL::Grid::relation_with(const Constraint& c) const {
   }
 
   if (marked_empty())
-    return Poly_Con_Relation::is_included()
+    return Poly_Con_Relation::saturates()
+      &&  Poly_Con_Relation::is_included()
       && Poly_Con_Relation::is_disjoint();
 
   if (space_dim == 0)
     if (c.is_inconsistent())
-      return Poly_Con_Relation::is_disjoint();
+      if (c.is_strict_inequality() && c.inhomogeneous_term() == 0)
+	// The constraint 0 > 0 implicitly defines the hyperplane 0 = 0;
+	// thus, the zero-dimensional point also saturates it.
+	return Poly_Con_Relation::saturates()
+	  && Poly_Con_Relation::is_disjoint();
+      else
+	return Poly_Con_Relation::is_disjoint();
+    else if (c.inhomogeneous_term() == 0)
+      return Poly_Con_Relation::saturates()
+	&& Poly_Con_Relation::is_included();
     else
+      // The zero-dimensional point saturates
+      // neither the positivity constraint 1 >= 0,
+      // nor the strict positivity constraint 1 > 0.
       return Poly_Con_Relation::is_included();
 
   if (!generators_are_up_to_date() && !update_generators())
     // Updating found the grid empty.
-    return Poly_Con_Relation::is_included()
+    return Poly_Con_Relation::saturates()
+      && Poly_Con_Relation::is_included()
       && Poly_Con_Relation::is_disjoint();
 
   // Return one of the relations
@@ -553,6 +612,7 @@ PPL::Grid::relation_with(const Constraint& c) const {
   // There is always a point.
 
   bool point_is_included = false;
+  bool point_saturates = false;
   const Grid_Generator* first_point = NULL;
 
   for (Grid_Generator_System::const_iterator g = gen_sys.begin(),
@@ -566,8 +626,10 @@ PPL::Grid::relation_with(const Constraint& c) const {
 	  first_point = &gen;
 	  const int sign = Scalar_Products::sign(c, gen);
 	  Constraint::Type type = c.type();
-	  if ((type == Constraint::NONSTRICT_INEQUALITY && sign >= 0)
-	      || (type == Constraint::STRICT_INEQUALITY && sign > 0))
+	  if ((type == Constraint::NONSTRICT_INEQUALITY && sign == 0)) {
+	    point_saturates = true;
+	  }
+	  else if (sign > 0)
 	    point_is_included = true;
 	  break;
 	}
@@ -591,8 +653,12 @@ PPL::Grid::relation_with(const Constraint& c) const {
       break;
     }
 
+  if (point_saturates)
+    // Any parameters and lines are also included.
+    return Poly_Con_Relation::saturates()
+      && Poly_Con_Relation::is_included();
   if (point_is_included)
-    // Any parameters and lines are also include.
+    // Any parameters and lines are also included.
     return Poly_Con_Relation::is_included();
   return Poly_Con_Relation::is_disjoint();
 }

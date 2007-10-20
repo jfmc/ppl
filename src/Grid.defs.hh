@@ -684,6 +684,15 @@ public:
   Poly_Gen_Relation
   relation_with(const Grid_Generator& g) const;
 
+  //! Returns the relations holding between \p *this and \p g.
+  /*
+    \exception std::invalid_argument
+    Thrown if \p *this and generator \p g are dimension-incompatible.
+  */
+  // FIXME: see the comment for Poly_Con_Relation above.
+  Poly_Gen_Relation
+  relation_with(const Generator& g) const;
+
   //! Returns the relations holding between \p *this and \p c.
   /*
     \exception std::invalid_argument
@@ -2611,6 +2620,9 @@ protected:
   void throw_dimension_incompatible(const char* method,
 				    const char* g_name,
 				    const Grid_Generator& g) const;
+  void throw_dimension_incompatible(const char* method,
+				    const char* g_name,
+				    const Generator& g) const;
   void throw_dimension_incompatible(const char* method,
 				    const char* cgs_name,
 				    const Congruence_System& cgs) const;
