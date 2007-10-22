@@ -406,7 +406,7 @@ public:
     \p r implies <CODE>is_disjoint()</CODE>
     if and only if one or both of \p r1 and \p r2 imply
     <CODE>is_disjoint()</CODE>;
-    and \p r implies <CODE>strictly_intersects()</CODE>
+    and \p r implies <CODE>nothing()</CODE>
     if and only if both \p r1 and \p r2 imply
     <CODE>strictly_intersects()</CODE>.
   */

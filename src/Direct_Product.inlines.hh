@@ -84,7 +84,8 @@ Direct_Product<D1, D2>::Direct_Product(const Generator_System& gs)
 
 template <typename D1, typename D2>
 inline
-Direct_Product<D1, D2>::Direct_Product(Generator_System& gs) {
+Direct_Product<D1, D2>::Direct_Product(Generator_System& gs)
+  : d1(gs), d2(gs) {
 }
 
 template <typename D1, typename D2>
