@@ -89,7 +89,7 @@ bool operator!=(const Direct_Product<D1, D2>& x,
   \f$\fund{\gamma_1}{D_1}{\Rset^n}\f$ and
   \f$\fund{\gamma_2}{D_2}{\Rset^n}\f$, respectively.
 
-  As defined in \ref CousotC79 "[CousotC79]",
+  As defined in \ref CC79 "[CC79]",
   the direct product \f$D = D_1 \times D_2\f$
   has a concretization
   \f$\fund{\gamma}{D}{\Rset^n}\f$

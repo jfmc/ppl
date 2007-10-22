@@ -548,7 +548,7 @@ test14() {
 
   Product dp(2);
 
-  bool ok = Poly_Con_Relation::strictly_intersects() == dp.relation_with(c);
+  bool ok = Poly_Con_Relation::nothing() == dp.relation_with(c);
 
 #ifdef GRID_IS_D1
   print_congruences(dp.domain1(),
@@ -622,11 +622,11 @@ test16() {
 
   bool ok = (okdp1 && okdp2
              && dp.relation_with(A + B + C == 0)
-	     == Poly_Con_Relation::strictly_intersects()
+	     == Poly_Con_Relation::nothing()
 	     && dp.relation_with(A + B == 0)
-	     == Poly_Con_Relation::strictly_intersects()
+	     == Poly_Con_Relation::nothing()
 	     && dp.relation_with(A == 0)
-	     == Poly_Con_Relation::strictly_intersects()
+	     == Poly_Con_Relation::nothing()
 	     && dp.relation_with(Linear_Expression(0) == 0)
 	     == (Poly_Con_Relation::is_included()
 		 && Poly_Con_Relation::saturates())

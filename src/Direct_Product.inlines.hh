@@ -473,9 +473,9 @@ Direct_Product<D1, D2>::relation_with(const Constraint& c) const {
   Poly_Con_Relation relation1 = d1.relation_with(c);
   Poly_Con_Relation relation2 = d2.relation_with(c);
 
-  // If d1 and d2 have the same relation, then return it.
-  if (relation1 == relation2)
-    return relation1;
+  if (relation1 == Poly_Con_Relation::strictly_intersects()
+      && relation2 == Poly_Con_Relation::strictly_intersects())
+    return Poly_Con_Relation::nothing();
 
   // If exactly one of d1 and d2 strictly intersect c, then return
   // the relation for the other.
