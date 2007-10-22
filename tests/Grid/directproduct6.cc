@@ -26,7 +26,7 @@ namespace {
 
 
 // FIXME: Test both Direct_Product and Open_Product.
-#define OPEN_PRODUCT
+// #define OPEN_PRODUCT
 // FIXME: Also test the other combination (Product<Ph, Grid>).
 #define GRID_IS_D1
 // FIXME: Also test with C_Polyhedron.
@@ -144,7 +144,11 @@ test04() {
   dp.add_constraint(A >= 7);
   dp.add_constraint(A <= 7);
 
+#ifdef OPEN_PRODUCT
   Constraint_System cs = dp.minimized_constraints();
+#else
+  Constraint_System cs = dp.constraints();
+#endif
 
   Product dp1(cs);
 

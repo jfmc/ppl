@@ -29,7 +29,7 @@ namespace {
 
 
 // FIXME: Test both Direct_Product and Open_Product.
-#define OPEN_PRODUCT
+// #define OPEN_PRODUCT
 // FIXME: Also test the other combination (Product<Ph, Grid>).
 #define GRID_IS_D1
 // FIXME: Also test with C_Polyhedron.

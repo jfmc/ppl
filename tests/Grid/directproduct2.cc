@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
 // FIXME: Test both Direct_Product and Open_Product.
-#define OPEN_PRODUCT
+// #define OPEN_PRODUCT
 // FIXME: Also test the other combination (Product<Ph, Grid>).
 #define GRID_IS_D1
 // FIXME: Also test with C_Polyhedron.
@@ -371,7 +371,11 @@ test20() {
   dp.add_generator(point());
   dp.add_generator(line(A));
 
+#ifndef OPEN_PRODUCT
+  bool ok = !dp.is_bounded();
+#else
   bool ok = dp.is_bounded();
+#endif
 
   return ok;
 }

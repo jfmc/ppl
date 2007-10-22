@@ -414,7 +414,7 @@ template <typename D1, typename D2>
 inline Congruence_System
 Direct_Product<D1, D2>::congruences() const {
   Congruence_System cgs = d2.congruences();
-  const Constraint_System& cgs1 = d1.congruences();
+  const Congruence_System& cgs1 = d1.congruences();
   for (Congruence_System::const_iterator i = cgs1.begin(),
 	 cgs_end = cgs1.end(); i != cgs_end; ++i)
     cgs.insert(*i);
@@ -425,7 +425,7 @@ template <typename D1, typename D2>
 inline Congruence_System
 Direct_Product<D1, D2>::minimized_congruences() const {
   Congruence_System cgs = d2.congruences();
-  const Constraint_System& cgs1 = d1.congruences();
+  const Congruence_System& cgs1 = d1.congruences();
   for (Congruence_System::const_iterator i = cgs1.begin(),
 	 cgs_end = cgs1.end(); i != cgs_end; ++i)
     cgs.insert(*i);

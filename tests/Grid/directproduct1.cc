@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
 // FIXME: Test both Direct_Product and Open_Product.
-#define OPEN_PRODUCT
+// #define OPEN_PRODUCT
 // FIXME: Also test the other combination (Product<Ph, Grid>).
 #define GRID_IS_D1
 // FIXME: Also test with C_Polyhedron.
@@ -75,6 +75,30 @@ test02() {
 
   bool ok = (dp1 != dp2);
 
+#ifdef GRID_IS_D1
+  print_congruences(dp1.domain1(),
+    "*** dp1.domain1() ***");
+  print_constraints(dp1.domain2(),
+     "*** dp1.domain2() ***");
+#else
+  print_constraints(dp1.domain1(),
+     "*** dp1.domain1() ***");
+  print_congruences(dp1.domain2(),
+     "*** dp1.domain2() ***");
+#endif
+
+#ifdef GRID_IS_D1
+  print_congruences(dp2.domain1(),
+    "*** dp2.domain1() ***");
+  print_constraints(dp2.domain2(),
+     "*** dp2.domain2() ***");
+#else
+  print_constraints(dp2.domain1(),
+     "*** dp2.domain1() ***");
+  print_congruences(dp2.domain2(),
+     "*** dp2.domain2() ***");
+#endif
+
   return ok;
 }
 
@@ -91,6 +115,30 @@ test03() {
   dp2.add_congruence((A %= 0) / 4);
 
   bool ok = (dp1 == dp2);
+
+#ifdef GRID_IS_D1
+  print_congruences(dp1.domain1(),
+    "*** dp1.domain1() ***");
+  print_constraints(dp1.domain2(),
+     "*** dp1.domain2() ***");
+#else
+  print_constraints(dp1.domain1(),
+     "*** dp1.domain1() ***");
+  print_congruences(dp1.domain2(),
+     "*** dp1.domain2() ***");
+#endif
+
+#ifdef GRID_IS_D1
+  print_congruences(dp2.domain1(),
+    "*** dp2.domain1() ***");
+  print_constraints(dp2.domain2(),
+     "*** dp2.domain2() ***");
+#else
+  print_constraints(dp2.domain1(),
+     "*** dp2.domain1() ***");
+  print_congruences(dp2.domain2(),
+     "*** dp2.domain2() ***");
+#endif
 
   return ok;
 }
@@ -117,6 +165,18 @@ test04() {
 	     && dp.domain2() == known_gr);
 #endif
 
+#ifdef GRID_IS_D1
+  print_congruences(dp.domain1(),
+    "*** dp.domain1() ***");
+  print_constraints(dp.domain2(),
+     "*** dp.domain2() ***");
+#else
+  print_constraints(dp.domain1(),
+     "*** dp.domain1() ***");
+  print_congruences(dp.domain2(),
+     "*** dp.domain2() ***");
+#endif
+
   return ok;
 }
 
@@ -133,6 +193,30 @@ test05() {
   dp2.add_constraint(static_cast<const Constraint>(A >= 0));
 
   bool ok = (dp1 == dp2);
+
+#ifdef GRID_IS_D1
+  print_congruences(dp1.domain1(),
+    "*** dp1.domain1() ***");
+  print_constraints(dp1.domain2(),
+     "*** dp1.domain2() ***");
+#else
+  print_constraints(dp1.domain1(),
+     "*** dp1.domain1() ***");
+  print_congruences(dp1.domain2(),
+     "*** dp1.domain2() ***");
+#endif
+
+#ifdef GRID_IS_D1
+  print_congruences(dp2.domain1(),
+    "*** dp2.domain1() ***");
+  print_constraints(dp2.domain2(),
+     "*** dp2.domain2() ***");
+#else
+  print_constraints(dp2.domain1(),
+     "*** dp2.domain1() ***");
+  print_congruences(dp2.domain2(),
+     "*** dp2.domain2() ***");
+#endif
 
   return ok;
 }
@@ -158,6 +242,30 @@ test06() {
   bool ok = (dp1 == dp2 && dp1.domain2() == known_gr);
 #endif
 
+#ifdef GRID_IS_D1
+  print_congruences(dp1.domain1(),
+    "*** dp1.domain1() ***");
+  print_constraints(dp1.domain2(),
+     "*** dp1.domain2() ***");
+#else
+  print_constraints(dp1.domain1(),
+     "*** dp1.domain1() ***");
+  print_congruences(dp1.domain2(),
+     "*** dp1.domain2() ***");
+#endif
+
+#ifdef GRID_IS_D1
+  print_congruences(dp2.domain1(),
+    "*** dp2.domain1() ***");
+  print_constraints(dp2.domain2(),
+     "*** dp2.domain2() ***");
+#else
+  print_constraints(dp2.domain1(),
+     "*** dp2.domain1() ***");
+  print_congruences(dp2.domain2(),
+     "*** dp2.domain2() ***");
+#endif
+
   return ok;
 }
 
@@ -180,6 +288,18 @@ test07() {
   bool ok = (dp.domain2() == known_gr);
 #endif
 
+#ifdef GRID_IS_D1
+  print_congruences(dp.domain1(),
+    "*** dp.domain1() ***");
+  print_constraints(dp.domain2(),
+     "*** dp.domain2() ***");
+#else
+  print_constraints(dp.domain1(),
+     "*** dp.domain1() ***");
+  print_congruences(dp.domain2(),
+     "*** dp.domain2() ***");
+#endif
+
   return ok;
 }
 
@@ -200,6 +320,18 @@ test08() {
   bool ok = (dp.domain1() == known_gr);
 #else
   bool ok = (dp.domain2() == known_gr);
+#endif
+
+#ifdef GRID_IS_D1
+  print_congruences(dp.domain1(),
+    "*** dp.domain1() ***");
+  print_constraints(dp.domain2(),
+     "*** dp.domain2() ***");
+#else
+  print_constraints(dp.domain1(),
+     "*** dp.domain1() ***");
+  print_congruences(dp.domain2(),
+     "*** dp.domain2() ***");
 #endif
 
   return ok;
@@ -225,6 +357,18 @@ test09() {
   bool ok = (dp.domain1() == known_gr && dp.domain2() == known_ph);
 #else
   bool ok = (dp.domain1() == known_ph && dp.domain2() == known_gr);
+#endif
+
+#ifdef GRID_IS_D1
+  print_congruences(dp.domain1(),
+    "*** dp.domain1() ***");
+  print_constraints(dp.domain2(),
+     "*** dp.domain2() ***");
+#else
+  print_constraints(dp.domain1(),
+     "*** dp.domain1() ***");
+  print_congruences(dp.domain2(),
+     "*** dp.domain2() ***");
 #endif
 
   return ok;
@@ -256,6 +400,18 @@ test10() {
   bool ok = (dp.domain1() == known_ph && dp.domain2() == known_gr);
 #endif
 
+#ifdef GRID_IS_D1
+  print_congruences(dp.domain1(),
+    "*** dp.domain1() ***");
+  print_constraints(dp.domain2(),
+     "*** dp.domain2() ***");
+#else
+  print_constraints(dp.domain1(),
+     "*** dp.domain1() ***");
+  print_congruences(dp.domain2(),
+     "*** dp.domain2() ***");
+#endif
+
   return ok;
 }
 #endif
@@ -275,6 +431,30 @@ test11() {
 
   bool ok = (dp1 == dp2);
 
+#ifdef GRID_IS_D1
+  print_congruences(dp1.domain1(),
+    "*** dp1.domain1() ***");
+  print_constraints(dp1.domain2(),
+     "*** dp1.domain2() ***");
+#else
+  print_constraints(dp1.domain1(),
+     "*** dp1.domain1() ***");
+  print_congruences(dp1.domain2(),
+     "*** dp1.domain2() ***");
+#endif
+
+#ifdef GRID_IS_D1
+  print_congruences(dp2.domain1(),
+    "*** dp2.domain1() ***");
+  print_constraints(dp2.domain2(),
+     "*** dp2.domain2() ***");
+#else
+  print_constraints(dp2.domain1(),
+     "*** dp2.domain1() ***");
+  print_congruences(dp2.domain2(),
+     "*** dp2.domain2() ***");
+#endif
+
   return ok;
 }
 
@@ -289,6 +469,18 @@ test12() {
   Product dp(cs);
 
   bool ok = (dp.space_dimension() == 5);
+
+#ifdef GRID_IS_D1
+  print_congruences(dp.domain1(),
+    "*** dp.domain1() ***");
+  print_constraints(dp.domain2(),
+     "*** dp.domain2() ***");
+#else
+  print_constraints(dp.domain1(),
+     "*** dp.domain1() ***");
+  print_congruences(dp.domain2(),
+     "*** dp.domain2() ***");
+#endif
 
   return ok;
 }
@@ -306,6 +498,30 @@ test13() {
   Product dp2(dp1);
 
   bool ok = (dp1 == dp2);
+
+#ifdef GRID_IS_D1
+  print_congruences(dp1.domain1(),
+    "*** dp1.domain1() ***");
+  print_constraints(dp1.domain2(),
+     "*** dp1.domain2() ***");
+#else
+  print_constraints(dp1.domain1(),
+     "*** dp1.domain1() ***");
+  print_congruences(dp1.domain2(),
+     "*** dp1.domain2() ***");
+#endif
+
+#ifdef GRID_IS_D1
+  print_congruences(dp2.domain1(),
+    "*** dp2.domain1() ***");
+  print_constraints(dp2.domain2(),
+     "*** dp2.domain2() ***");
+#else
+  print_constraints(dp2.domain1(),
+     "*** dp2.domain1() ***");
+  print_congruences(dp2.domain2(),
+     "*** dp2.domain2() ***");
+#endif
 
   return ok;
 }
@@ -348,6 +564,18 @@ test14() {
 	   );
   }
 
+#ifdef GRID_IS_D1
+  print_congruences(dp.domain1(),
+    "*** dp.domain1() ***");
+  print_constraints(dp.domain2(),
+     "*** dp.domain2() ***");
+#else
+  print_constraints(dp.domain1(),
+     "*** dp.domain1() ***");
+  print_congruences(dp.domain2(),
+     "*** dp.domain2() ***");
+#endif
+
   return ok;
 }
 
@@ -376,6 +604,18 @@ test15() {
 
   bool ok = gr == known_gr;
 
+#ifdef GRID_IS_D1
+  print_congruences(dp.domain1(),
+    "*** dp.domain1() ***");
+  print_constraints(dp.domain2(),
+     "*** dp.domain2() ***");
+#else
+  print_constraints(dp.domain1(),
+     "*** dp.domain1() ***");
+  print_congruences(dp.domain2(),
+     "*** dp.domain2() ***");
+#endif
+
   return ok;
 }
 
@@ -403,6 +643,18 @@ test16() {
 
   bool ok = gr == known_gr;
 
+#ifdef GRID_IS_D1
+  print_congruences(dp.domain1(),
+    "*** dp.domain1() ***");
+  print_constraints(dp.domain2(),
+     "*** dp.domain2() ***");
+#else
+  print_constraints(dp.domain1(),
+     "*** dp.domain1() ***");
+  print_congruences(dp.domain2(),
+     "*** dp.domain2() ***");
+#endif
+
   return ok;
 }
 
@@ -423,12 +675,24 @@ test17() {
 
   NNC_Polyhedron known_ph(dp.space_dimension());
   known_ph.add_constraint(B + C == 3);
-#ifndef GRID_IS_D1
   known_ph.add_constraint(A <= 11);
   known_ph.add_constraint(A > 9);
-#endif
 
   bool ok = (ph == known_ph);
+
+  print_constraints(ph, "*** ph ***");
+
+#ifdef GRID_IS_D1
+  print_congruences(dp.domain1(),
+    "*** dp.domain1() ***");
+  print_constraints(dp.domain2(),
+     "*** dp.domain2() ***");
+#else
+  print_constraints(dp.domain1(),
+     "*** dp.domain1() ***");
+  print_congruences(dp.domain2(),
+     "*** dp.domain2() ***");
+#endif
 
   return ok;
 }
@@ -450,12 +714,22 @@ test18() {
 
   NNC_Polyhedron known_ph(dp.space_dimension());
   known_ph.add_constraint(B + C == 3);
-#ifndef GRID_IS_D1
   known_ph.add_constraint(A > 9);
   known_ph.add_constraint(A <= 11);
-#endif
 
   bool ok = (ph == known_ph);
+
+#ifdef GRID_IS_D1
+  print_congruences(dp.domain1(),
+    "*** dp.domain1() ***");
+  print_constraints(dp.domain2(),
+     "*** dp.domain2() ***");
+#else
+  print_constraints(dp.domain1(),
+     "*** dp.domain1() ***");
+  print_congruences(dp.domain2(),
+     "*** dp.domain2() ***");
+#endif
 
   return ok;
 }
@@ -481,6 +755,18 @@ test19() {
   known_ph.add_generator(line(B + C));
 
   bool ok = (ph == known_ph);
+
+#ifdef GRID_IS_D1
+  print_congruences(dp.domain1(),
+    "*** dp.domain1() ***");
+  print_constraints(dp.domain2(),
+     "*** dp.domain2() ***");
+#else
+  print_constraints(dp.domain1(),
+     "*** dp.domain1() ***");
+  print_congruences(dp.domain2(),
+     "*** dp.domain2() ***");
+#endif
 
   return ok;
 }
@@ -509,6 +795,18 @@ test20() {
   // Maybe this should check that the generators are minimized.
 
   bool ok = (ph == known_ph);
+
+#ifdef GRID_IS_D1
+  print_congruences(dp.domain1(),
+    "*** dp.domain1() ***");
+  print_constraints(dp.domain2(),
+     "*** dp.domain2() ***");
+#else
+  print_constraints(dp.domain1(),
+     "*** dp.domain1() ***");
+  print_congruences(dp.domain2(),
+     "*** dp.domain2() ***");
+#endif
 
   return ok;
 }
