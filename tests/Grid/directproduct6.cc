@@ -655,6 +655,45 @@ test16() {
   return ok;
 }
 
+// A product where the components strictly intersect the constraint.
+bool
+test17() {
+  Variable A(0);
+  Variable B(1);
+
+  Product dp(3, EMPTY);
+  dp.add_grid_generator(grid_point(A + B));
+  dp.add_grid_generator(grid_line(A - 2*B));
+  dp.add_grid_generator(parameter(A - B, 3));
+  dp.add_generator(point(A + B));
+  dp.add_generator(line(A - 2*B));
+  dp.add_generator(line(A));
+
+  bool okdp1 = (dp.domain1().relation_with(2*A + B >= 3)
+		== Poly_Con_Relation::strictly_intersects());
+
+  bool okdp2 = (dp.domain2().relation_with(2*A + B >= 3)
+	       == Poly_Con_Relation::strictly_intersects());
+
+  bool ok = (okdp1 && okdp2
+	     && dp.relation_with(2*A + B >= 3)
+	     == Poly_Con_Relation::nothing());
+
+#ifdef GRID_IS_D1
+  print_congruences(dp.domain1(),
+    "*** dp.domain1() ***");
+  print_constraints(dp.domain2(),
+     "*** dp.domain2() ***");
+#else
+  print_constraints(dp.domain1(),
+     "*** dp.domain1() ***");
+  print_congruences(dp.domain2(),
+     "*** dp.domain2() ***");
+#endif
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -676,4 +715,5 @@ BEGIN_MAIN
   DO_TEST(test14);
   DO_TEST(test15);
   DO_TEST(test16);
+  DO_TEST(test17);
 END_MAIN
