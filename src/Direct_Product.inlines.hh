@@ -457,6 +457,54 @@ Direct_Product<D1, D2>::minimized_grid_generators() const {
 }
 
 template <typename D1, typename D2>
+inline Poly_Gen_Relation
+Direct_Product<D1, D2>::relation_with(const Generator& g) const {
+  if (Poly_Gen_Relation::nothing() == d1.relation_with(g)
+      || Poly_Gen_Relation::nothing() == d2.relation_with(g))
+    return Poly_Gen_Relation::nothing();
+  else
+    return Poly_Gen_Relation::subsumes();
+}
+
+template <typename D1, typename D2>
+inline Poly_Con_Relation
+Direct_Product<D1, D2>::relation_with(const Constraint& c) const {
+
+  Poly_Con_Relation relation1 = d1.relation_with(c);
+  Poly_Con_Relation relation2 = d2.relation_with(c);
+
+  // If d1 and d2 have the same relation, then return it.
+  if (relation1 == relation2)
+    return relation1;
+
+  // If exactly one of d1 and d2 strictly intersect c, then return
+  // the relation for the other.
+  if (relation1.implies(Poly_Con_Relation::strictly_intersects()))
+  return relation2;
+  if (relation2.implies(Poly_Con_Relation::strictly_intersects()))
+  return relation1;
+
+  // Neither d1 nor d2 strictly intersect c.
+  // If d1 is not included in c, then d1 must be disjoint.
+  Poly_Con_Relation result =
+    (relation1.implies(Poly_Con_Relation::is_included()))
+      ? Poly_Con_Relation::is_included()
+      : Poly_Con_Relation::is_disjoint();
+
+  if (relation2.implies(Poly_Con_Relation::is_included()))
+    result = result && Poly_Con_Relation::is_included();
+  if (relation1.implies(Poly_Con_Relation::saturates()))
+    result = result && Poly_Con_Relation::saturates();
+  else if (relation2.implies(Poly_Con_Relation::saturates()))
+    result = result && Poly_Con_Relation::saturates();
+  if (relation1.implies(Poly_Con_Relation::is_disjoint()))
+    result = result && Poly_Con_Relation::is_disjoint();
+  else if (relation2.implies(Poly_Con_Relation::is_disjoint()))
+    result = result && Poly_Con_Relation::is_disjoint();
+  return result;
+}
+
+template <typename D1, typename D2>
 inline bool
 Direct_Product<D1, D2>::is_empty() const {
   return d1.is_empty() || d2.is_empty();

@@ -511,6 +511,146 @@ test12() {
 
 #endif
 
+// relation_with a generator
+bool
+test13() {
+  Variable A(0);
+  Variable B(1);
+
+  Generator pnt(point(A + B));
+
+  Product dp(2);
+
+  bool ok = Poly_Gen_Relation::subsumes() == dp.relation_with(pnt);
+
+#ifdef GRID_IS_D1
+  print_congruences(dp.domain1(),
+    "*** dp.domain1() ***");
+  print_constraints(dp.domain2(),
+     "*** dp.domain2() ***");
+#else
+  print_constraints(dp.domain1(),
+     "*** dp.domain1() ***");
+  print_congruences(dp.domain2(),
+     "*** dp.domain2() ***");
+#endif
+
+  return ok;
+}
+
+// relation_with a constraint
+bool
+test14() {
+  Variable A(0);
+  Variable B(1);
+
+  Constraint c(A == 2);
+
+  Product dp(2);
+
+  bool ok = Poly_Con_Relation::strictly_intersects() == dp.relation_with(c);
+
+#ifdef GRID_IS_D1
+  print_congruences(dp.domain1(),
+    "*** dp.domain1() ***");
+  print_constraints(dp.domain2(),
+     "*** dp.domain2() ***");
+#else
+  print_constraints(dp.domain1(),
+     "*** dp.domain1() ***");
+  print_congruences(dp.domain2(),
+     "*** dp.domain2() ***");
+#endif
+
+  return ok;
+}
+
+// Empty product; relation_with a constraint.
+bool
+test15() {
+  Variable A(0);
+  Variable B(1);
+
+  Product dp(2);
+  dp.add_constraint(A == 1);
+  dp.add_congruence((A %= 2) / 0);
+
+  bool ok = (dp.relation_with(B == 0)
+	     == (Poly_Con_Relation::is_included()
+		 && Poly_Con_Relation::is_disjoint()
+	         && Poly_Con_Relation::saturates())
+	     && dp.relation_with(B >= 0)
+	     == (Poly_Con_Relation::is_included()
+		 && Poly_Con_Relation::is_disjoint()
+	         && Poly_Con_Relation::saturates()));
+
+#ifdef GRID_IS_D1
+  print_congruences(dp.domain1(),
+    "*** dp.domain1() ***");
+  print_constraints(dp.domain2(),
+     "*** dp.domain2() ***");
+#else
+  print_constraints(dp.domain1(),
+     "*** dp.domain1() ***");
+  print_congruences(dp.domain2(),
+     "*** dp.domain2() ***");
+#endif
+
+  return ok;
+}
+
+// A product in 3D; relation_with a constraint.
+bool
+test16() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Product dp(3, EMPTY);
+  dp.add_grid_generator(grid_point(A + B + C));
+  dp.add_grid_generator(grid_line(A - 2*B + 3*C));
+  dp.add_grid_generator(parameter(A - B, 3));
+  dp.add_generator(point(A + B + C));
+  dp.add_generator(line(A - 2*B + 3*C));
+  dp.add_generator(ray(A - B));
+
+  bool okdp1 = (dp.domain1().relation_with(2*A + B >= 3)
+	     == Poly_Con_Relation::strictly_intersects());
+
+  bool okdp2 = (dp.domain2().relation_with(2*A + B >= 3)
+	       == Poly_Con_Relation::is_included());
+
+  bool ok = (okdp1 && okdp2
+             && dp.relation_with(A + B + C == 0)
+	     == Poly_Con_Relation::strictly_intersects()
+	     && dp.relation_with(A + B == 0)
+	     == Poly_Con_Relation::strictly_intersects()
+	     && dp.relation_with(A == 0)
+	     == Poly_Con_Relation::strictly_intersects()
+	     && dp.relation_with(Linear_Expression(0) == 0)
+	     == (Poly_Con_Relation::is_included()
+		 && Poly_Con_Relation::saturates())
+	     && dp.relation_with(2*A + B >= 3)
+	     == Poly_Con_Relation::is_included()
+	     && dp.relation_with(3*A + 3*B + C >= 7)
+	     == (Poly_Con_Relation::is_included()
+		 && Poly_Con_Relation::saturates()));
+
+#ifdef GRID_IS_D1
+  print_congruences(dp.domain1(),
+    "*** dp.domain1() ***");
+  print_constraints(dp.domain2(),
+     "*** dp.domain2() ***");
+#else
+  print_constraints(dp.domain1(),
+     "*** dp.domain1() ***");
+  print_congruences(dp.domain2(),
+     "*** dp.domain2() ***");
+#endif
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -528,4 +668,8 @@ BEGIN_MAIN
   DO_TEST(test11);
   DO_TEST(test12);
 #endif
+  DO_TEST(test13);
+  DO_TEST(test14);
+  DO_TEST(test15);
+  DO_TEST(test16);
 END_MAIN

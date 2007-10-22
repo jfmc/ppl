@@ -100,6 +100,8 @@ bool operator!=(const Direct_Product<D1, D2>& x,
 
   The operations are defined to be the result of applying the corresponding
   operations on each of the components.
+  How the results on the components are interpreted and
+  combined depend on the specific test.
   For example, the test for emptiness will just test if either component
   is empty; thus, if
   \f$d = (G, P) \in (\Gset \times \Pset)\f$
@@ -107,6 +109,8 @@ bool operator!=(const Direct_Product<D1, D2>& x,
   numbers that are integral multiples of 3 while \f$P\$ denotes the
   set of numbers between 1 and 2, then an operation that tests for
   emptiness should return false.
+  However, the test for the universe returns true if and only if the
+  test is_universe() on both components returns true.
 
   \par
   In all the examples it is assumed that variables
@@ -386,29 +390,58 @@ public:
   */
   Grid_Generator_System minimized_grid_generators() const;
 
-  // FIXME: Implement relation_with(*).
-#if 0
   //! Returns the relations holding between \p *this and \p c.
   /*
     \exception std::invalid_argument
     Thrown if \p *this and congruence \p cg are dimension-incompatible.
+
+    Returns the Poly_Con_Relation \p r for \p *this:
+    suppose the first component returns \p r1 and the second \p r2,
+    then \p r implies <CODE>is_included()</CODE>
+    if and only if one or both of \p r1 and \p r2 imply
+    <CODE>is_included()</CODE>;
+    \p r implies <CODE>saturates()</CODE>
+    if and only if one or both of \p r1 and \p r2 imply
+    <CODE>saturates()</CODE>;
+    \p r implies <CODE>is_disjoint()</CODE>
+    if and only if one or both of \p r1 and \p r2 imply
+    <CODE>is_disjoint()</CODE>;
+    and \p r implies <CODE>strictly_intersects()</CODE>
+    if and only if both \p r1 and \p r2 imply
+    <CODE>strictly_intersects()</CODE>.
   */
   Poly_Con_Relation relation_with(const Constraint& c) const;
 
+  /* FIXME: Implement relation_with(Congruence) when/if it is implemented
+            for the Polyhedron classes.
+  */
+#if 0
   //! Returns the relations holding between \p *this and \p cg.
   /*
     \exception std::invalid_argument
     Thrown if \p *this and congruence \p cg are dimension-incompatible.
   */
   Poly_Con_Relation relation_with(const Congruence& cg) const;
+#endif
 
   //! Returns the relations holding between \p *this and \p g.
   /*
     \exception std::invalid_argument
     Thrown if \p *this and generator \p g are dimension-incompatible.
+
+    Returns the Poly_Gen_Relation \p r for \p *this:
+    suppose the first component returns \p r1 and the second \p r2,
+    then \p r = <CODE>subsumes()</CODE>
+    if and only if \p r1 = \p r2 = <CODE>subsumes()</CODE>;
+    and \p r = <CODE>nothing()</CODE>
+    if and only if one or both of \p r1 and \p r2 = <CODE>nothing()</CODE>;
   */
   Poly_Gen_Relation relation_with(const Generator& g) const;
 
+  /* FIXME: Implement relation_with(Grid_Generator) when/if it is implemented
+            for the Polyhedron classes.
+  */
+#if 0
   //! Returns the relations holding between \p *this and \p g.
   /*
     \exception std::invalid_argument
