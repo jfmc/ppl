@@ -279,23 +279,137 @@ Pointset_Powerset<PS>::map_space_dimensions(const Partial_Function& pfunc) {
   assert(x.OK());
 }
 
-template <typename PS>
-void
-Pointset_Powerset<PS>::affine_image(Variable var,
-				    const Linear_Expression& expr,
-				    Coefficient_traits::const_reference
-				    denominator) {
-  Pointset_Powerset& x = *this;
-  for (Sequence_iterator si = x.sequence.begin(),
-	 s_end = x.sequence.end(); si != s_end; ++si) {
-    si->element().affine_image(var, expr, denominator);
-    // Note that the underlying domain can apply conservative approximation:
-    // that is why it would not be correct to make the loss of reduction
-    // conditional on `var' and `expr'.
-    x.reduced = false;
+  template <typename PS>
+  void
+  Pointset_Powerset<PS>::affine_image(Variable var,
+				      const Linear_Expression& expr,
+				      Coefficient_traits::const_reference
+				      denominator) {
+    Pointset_Powerset& x = *this;
+    for (Sequence_iterator si = x.sequence.begin(),
+	   s_end = x.sequence.end(); si != s_end; ++si) {
+      si->element().affine_image(var, expr, denominator);
+      // Note that the underlying domain can apply conservative approximation:
+      // that is why it would not be correct to make the loss of reduction
+      // conditional on `var' and `expr'.
+      x.reduced = false;
+    }
+    assert(x.OK());
   }
-  assert(x.OK());
-}
+
+  template <typename PS>
+  void
+  Pointset_Powerset<PS>::affine_preimage(Variable var,
+					 const Linear_Expression& expr,
+					 Coefficient_traits::const_reference
+					 denominator) {
+    Pointset_Powerset& x = *this;
+    for (Sequence_iterator si = x.sequence.begin(),
+	   s_end = x.sequence.end(); si != s_end; ++si) {
+      si->element().affine_preimage(var, expr, denominator);
+      // Note that the underlying domain can apply conservative approximation:
+      // that is why it would not be correct to make the loss of reduction
+      // conditional on `var' and `expr'.
+      x.reduced = false;
+    }
+    assert(x.OK());
+  }
+
+
+  template <typename PS>
+  void
+  Pointset_Powerset<PS>
+  ::generalized_affine_image(const Linear_Expression& lhs,
+			     const Relation_Symbol relsym,
+			     const Linear_Expression& rhs) {
+    Pointset_Powerset& x = *this;
+    for (Sequence_iterator si = x.sequence.begin(),
+	   s_end = x.sequence.end(); si != s_end; ++si) {
+      si->element().generalized_affine_image(lhs, relsym, rhs);
+      x.reduced = false;
+    }
+    assert(x.OK());
+  }
+
+  template <typename PS>
+  void
+  Pointset_Powerset<PS>
+  ::generalized_affine_preimage(const Linear_Expression& lhs,
+				const Relation_Symbol relsym,
+				const Linear_Expression& rhs) {
+    Pointset_Powerset& x = *this;
+    for (Sequence_iterator si = x.sequence.begin(),
+	   s_end = x.sequence.end(); si != s_end; ++si) {
+      si->element().generalized_affine_preimage(lhs, relsym, rhs);
+      x.reduced = false;
+    }
+    assert(x.OK());
+  }
+
+  template <typename PS>
+  void
+  Pointset_Powerset<PS>
+  ::generalized_affine_image(Variable var,
+			     const Relation_Symbol relsym,
+			     const Linear_Expression& expr,
+			     Coefficient_traits::const_reference denominator) {
+    Pointset_Powerset& x = *this;
+    for (Sequence_iterator si = x.sequence.begin(),
+	   s_end = x.sequence.end(); si != s_end; ++si) {
+      si->element().generalized_affine_image(var, relsym, expr, denominator);
+      x.reduced = false;
+    }
+    assert(x.OK());
+  }
+
+  template <typename PS>
+  void
+  Pointset_Powerset<PS>
+  ::generalized_affine_preimage(Variable var,
+				const Relation_Symbol relsym,
+				const Linear_Expression& expr,
+				Coefficient_traits::const_reference denominator) {  Pointset_Powerset& x = *this;
+    for (Sequence_iterator si = x.sequence.begin(),
+	   s_end = x.sequence.end(); si != s_end; ++si) {
+      si->element().generalized_affine_preimage(var, relsym, expr, denominator);
+      x.reduced = false;
+    }
+    assert(x.OK());
+  }
+
+
+  template <typename PS>
+  void
+  Pointset_Powerset<PS>
+  ::bounded_affine_image(Variable var,
+			 const Linear_Expression& lb_expr,
+			 const Linear_Expression& ub_expr,
+			 Coefficient_traits::const_reference denominator) {
+    Pointset_Powerset& x = *this;
+    for (Sequence_iterator si = x.sequence.begin(),
+	   s_end = x.sequence.end(); si != s_end; ++si) {
+      si->element().bounded_affine_image(var, lb_expr, ub_expr, denominator);
+      x.reduced = false;
+    }
+    assert(x.OK());
+  }
+
+  template <typename PS>
+  void
+  Pointset_Powerset<PS>
+  ::bounded_affine_preimage(Variable var,
+			    const Linear_Expression& lb_expr,
+			    const Linear_Expression& ub_expr,
+			    Coefficient_traits::const_reference denominator) {
+    Pointset_Powerset& x = *this;
+    for (Sequence_iterator si = x.sequence.begin(),
+	   s_end = x.sequence.end(); si != s_end; ++si) {
+      si->element().bounded_affine_preimage(var, lb_expr, ub_expr,
+                                            denominator);
+      x.reduced = false;
+    }
+    assert(x.OK());
+  }
 
 template <typename PS>
 bool
