@@ -108,6 +108,9 @@ public:
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
+  //! Returns the dimension of the vector space enclosing \p *this.
+  dimension_type affine_dimension() const;
+
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this geometrically
     covers \p y, i.e., if any point (in some element) of \p y is also

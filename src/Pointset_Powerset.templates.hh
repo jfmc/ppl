@@ -411,16 +411,41 @@ Pointset_Powerset<PS>::map_space_dimensions(const Partial_Function& pfunc) {
     assert(x.OK());
   }
 
-template <typename PS>
-bool
-Pointset_Powerset<PS>::contains_integer_point() const {
-  const Pointset_Powerset& x = *this;
-  for (Sequence_const_iterator si = x.sequence.begin(),
-	 s_end = x.sequence.end(); si != s_end; ++si)
-    if (si->element().contains_integer_point())
-      return true;
-  return false;
-}
+  template <typename PS>
+  dimension_type
+  Pointset_Powerset<PS>::affine_dimension() const {
+    // The affine dimension of the powerset is the affine dimension of
+    // the smallest vector space in which it can be embedded.
+    const Pointset_Powerset& x = *this;
+    C_Polyhedron x_ph(space_dim, EMPTY);
+
+    for (Sequence_const_iterator si = x.sequence.begin(),
+	   s_end = x.sequence.end(); si != s_end; ++si) {
+      C_Polyhedron phi(space_dim);
+      PS pi(si->element());
+      const Constraint_System& cs = pi.minimized_constraints();
+      for (Constraint_System::const_iterator i = cs.begin(),
+	     cs_end = cs.end(); i != cs_end; ++i) {
+        const Constraint& c = *i;
+        if (c.is_equality())
+          phi.add_constraint(c);
+      }
+      x_ph.poly_hull_assign(phi);
+    }
+
+    return x_ph.affine_dimension();
+  }
+
+  template <typename PS>
+  bool
+  Pointset_Powerset<PS>::contains_integer_point() const {
+    const Pointset_Powerset& x = *this;
+    for (Sequence_const_iterator si = x.sequence.begin(),
+	   s_end = x.sequence.end(); si != s_end; ++si)
+      if (si->element().contains_integer_point())
+	return true;
+    return false;
+  }
 
 template <typename PS>
 void

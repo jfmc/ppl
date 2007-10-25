@@ -368,6 +368,114 @@ test08() {
   return ok && ok1;
 }
 
+// affine_dimension for powersets of C polyhedra
+bool
+test09() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(1);
+  Pointset_Powerset<C_Polyhedron> c_ps(3, EMPTY);
+  Constraint_System cs;
+  cs.insert(x >= 0);
+  cs.insert(x <= 2);
+  cs.insert(z <= 2);
+  cs.insert(z >= 2);
+  C_Polyhedron ph(3);
+  ph.add_constraints(cs);
+  c_ps.add_disjunct(ph);
+
+  Constraint_System cs1;
+  cs1.insert(y >= 3);
+  cs1.insert(y <= 5);
+  cs1.insert(x == 6);
+  C_Polyhedron ph1(3);
+  ph1.add_constraints(cs1);
+  c_ps.add_disjunct(ph1);
+
+  dimension_type d = c_ps.affine_dimension();
+
+
+  bool ok = (d == 3);
+
+  Pointset_Powerset<C_Polyhedron>::const_iterator i = c_ps.begin();
+  C_Polyhedron phi = i -> element();
+  i++;
+  C_Polyhedron phi1 = i -> element();
+
+  print_constraints(phi, "*** phi ***");
+  print_constraints(phi1, "*** phi1 ***");
+
+  c_ps.add_constraint(z == 2);
+
+  dimension_type d1 = c_ps.affine_dimension();
+
+  bool ok1 = (d1 == 2);
+
+  Pointset_Powerset<C_Polyhedron>::const_iterator j = c_ps.begin();
+  C_Polyhedron phj = j -> element();
+  j++;
+  C_Polyhedron phj1 = j -> element();
+
+  print_constraints(phj, "*** phj ***");
+  print_constraints(phj1, "*** phj1 ***");
+
+  return ok && ok1;
+}
+
+// affine_dimension for powersets of NNC polyhedrs
+bool
+test10() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(1);
+  Pointset_Powerset<NNC_Polyhedron> c_ps(3, EMPTY);
+  Constraint_System cs;
+  cs.insert(x > 0);
+  cs.insert(x <= 2);
+  cs.insert(z <= 2);
+  cs.insert(z >= 2);
+  NNC_Polyhedron ph(3);
+  ph.add_constraints(cs);
+  c_ps.add_disjunct(ph);
+
+  Constraint_System cs1;
+  cs1.insert(y >= 3);
+  cs1.insert(y <= 5);
+  cs1.insert(x == 6);
+  NNC_Polyhedron ph1(3);
+  ph1.add_constraints(cs1);
+  c_ps.add_disjunct(ph1);
+
+  dimension_type d = c_ps.affine_dimension();
+
+
+  bool ok = (d == 3);
+
+  Pointset_Powerset<NNC_Polyhedron>::const_iterator i = c_ps.begin();
+  NNC_Polyhedron phi = i -> element();
+  i++;
+  NNC_Polyhedron phi1 = i -> element();
+
+  print_constraints(phi, "*** phi ***");
+  print_constraints(phi1, "*** phi1 ***");
+
+  c_ps.add_constraint(z == 2);
+
+  dimension_type d1 = c_ps.affine_dimension();
+
+  bool ok1 = (d1 == 2);
+
+  Pointset_Powerset<NNC_Polyhedron>::const_iterator j = c_ps.begin();
+  NNC_Polyhedron phj = j -> element();
+  j++;
+  NNC_Polyhedron phj1 = j -> element();
+
+  print_constraints(phj, "*** phj ***");
+  print_constraints(phj1, "*** phj1 ***");
+
+  return ok && ok1;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -379,9 +487,9 @@ BEGIN_MAIN
   DO_TEST(test06);
   DO_TEST(test07);
   DO_TEST(test08);
-#if 0
   DO_TEST(test09);
   DO_TEST(test10);
+#if 0
   DO_TEST(test11);
   DO_TEST(test12);
   DO_TEST(test13);
