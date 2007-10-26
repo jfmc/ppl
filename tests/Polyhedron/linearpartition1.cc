@@ -265,11 +265,29 @@ test04() {
   p.add_generator(point(-y));
 
   using namespace IO_Operators;
+
   nout << "p = " << p << endl;
 
   Pointset_Powerset<NNC_Polyhedron> p_c = aux_test04(p);
 
   nout << "complement(p) = " << p_c << endl;
+
+  Pointset_Powerset<NNC_Polyhedron> p_p(p.space_dimension(), EMPTY);
+  p_p.add_disjunct(NNC_Polyhedron(p));
+  p_p.intersection_assign(p_c);
+
+  nout << "p intersected with complement(p) = " << p_p << endl;
+
+  if (!p_p.empty())
+    return false;
+
+  p_c.add_disjunct(NNC_Polyhedron(p));
+  p_c.pairwise_reduce();
+
+  nout << "p added to complement(p), pairwise reduced = " << p_c << endl;
+
+  if (!p_c.is_top())
+    return false;
 
   C_Polyhedron q(2);
   q.add_constraint(x >= -1);
@@ -283,7 +301,22 @@ test04() {
 
   nout << "complement(q) = " << q_c << endl;
 
-  // FIXME
+  Pointset_Powerset<NNC_Polyhedron> q_p(q.space_dimension(), EMPTY);
+  q_p.add_disjunct(NNC_Polyhedron(q));
+  q_p.intersection_assign(q_c);
+
+  nout << "q intersected with complement(q) = " << q_p << endl;
+
+  if (!q_p.empty())
+    return false;
+
+  q_c.add_disjunct(NNC_Polyhedron(q));
+  q_c.pairwise_reduce();
+
+  nout << "q added to complement(q), pairwise reduced = " << q_c << endl;
+
+  if (!q_c.is_top())
+    return false;
 
   return true;
 }
