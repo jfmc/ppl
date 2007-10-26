@@ -107,7 +107,7 @@ NNC_dual_hypercube(const dimension_type dims,
 
 void
 build_polyhedra(const dimension_type dims,
-		const int perc,
+		const int percentage,
 		std::vector<NNC_Polyhedron>& ph) {
 
   Linear_Expression weight_center;
@@ -116,13 +116,13 @@ build_polyhedra(const dimension_type dims,
   weight_center = Linear_Expression(0);
   for (dimension_type axis = dims; axis-- > 0; )
     weight_center += Variable(axis);
-  ph.push_back(NNC_dual_hypercube(dims, weight_center, 5, perc));
+  ph.push_back(NNC_dual_hypercube(dims, weight_center, 5, percentage));
 
   // 2nd-polyhedron.
   weight_center = Linear_Expression(0);
   for (dimension_type axis = dims; axis-- > 0; )
     weight_center += 2*Variable(axis);
-  ph.push_back(NNC_dual_hypercube(dims, weight_center, 4, perc));
+  ph.push_back(NNC_dual_hypercube(dims, weight_center, 4, percentage));
 
   // 3rd-polyhedron.
   weight_center = Linear_Expression(0);
@@ -131,7 +131,7 @@ build_polyhedra(const dimension_type dims,
       weight_center += 10*Variable(axis);
     else
       weight_center += 2*Variable(axis);
-  ph.push_back(NNC_dual_hypercube(dims, weight_center, 5, perc));
+  ph.push_back(NNC_dual_hypercube(dims, weight_center, 5, percentage));
 
   // 4th-polyhedron.
   weight_center = Linear_Expression(0);
@@ -140,7 +140,7 @@ build_polyhedra(const dimension_type dims,
       weight_center += 10*Variable(axis);
     else
       weight_center += Variable(axis);
-  ph.push_back(NNC_dual_hypercube(dims, weight_center, 4, perc));
+  ph.push_back(NNC_dual_hypercube(dims, weight_center, 4, percentage));
 }
 
 void
@@ -261,22 +261,22 @@ test01() {
 #endif
 
   for (dimension_type dims = first_dim; dims <= last_dim; dims++)
-    for (int perc = 25; perc <= 50; perc += 25) {
+    for (int percentage = 25; percentage <= 50; percentage += 25) {
 
       nout << endl
-	   << "++++++++ DIM = " << dims << "  ++++++++"
+	   << "++++++++ DIMENSIONS = " << dims << "  ++++++++"
 	   << endl
-	   << "++++++++ PERC = " << perc << " ++++++++"
+	   << "++++++++ PERCENTAGE = " << percentage << " ++++++++"
 	   << endl;
 
       // Standard evaluation strategy.
       ph.clear();
-      build_polyhedra(dims, perc, ph);
+      build_polyhedra(dims, percentage, ph);
       computation(ph, false);
 
       // Enhanced evaluation strategy.
       ph.clear();
-      build_polyhedra(dims, perc, ph);
+      build_polyhedra(dims, percentage, ph);
       computation(ph, true);
     }
   // FIXME: check the cardinalities of the results obtained.
