@@ -22,9 +22,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-#define test01_DO_CLASS(T)			\
-  nout << #T "::max_space_dimension() = "	\
-	  << T::max_space_dimension() << endl
+#define test01_DO_CLASS(T)				\
+  nout << #T "::max_space_dimension() = "		\
+    << T::max_space_dimension() << endl;		\
+  if (T::max_space_dimension() < max_space_dimension())	\
+    return false
 
 #define test01_DO_WRD(WRD)			\
   test01_DO_CLASS(WRD<int8_t>);			\
@@ -39,7 +41,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #define test01_DO_CONSTR_CLASS(CONSTR, T)				\
   nout << #CONSTR "<" #T ">::max_space_dimension() = "			\
-	  << CONSTR<T>::max_space_dimension() << endl
+       << CONSTR<T>::max_space_dimension() << endl;			\
+  if (CONSTR<T>::max_space_dimension() < max_space_dimension())		\
+    return false
 
 #define test01_DO_CONSTR_WRD(CONSTR, WRD)			\
   test01_DO_CONSTR_CLASS(CONSTR, WRD<int8_t>);			\
@@ -54,6 +58,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 bool
 test01() {
+  nout << "Parma_Polyhedra_Library::max_space_dimension() = "
+       << max_space_dimension() << endl;
+  if (max_space_dimension() < 32767)
+    return false;
+
   test01_DO_CLASS(Variable);
   test01_DO_CLASS(Variables_Set);
   test01_DO_CLASS(Linear_Expression);
@@ -68,6 +77,8 @@ test01() {
   test01_DO_CLASS(C_Polyhedron);
   test01_DO_CLASS(NNC_Polyhedron);
   test01_DO_CLASS(Grid);
+  // FIXME: what about all other boxes?
+  test01_DO_CLASS(Rational_Box);
   test01_DO_WRD(BD_Shape);
   test01_DO_WRD(Octagonal_Shape);
   test01_DO_CONSTR_CLASS(Pointset_Powerset, C_Polyhedron);
@@ -81,10 +92,6 @@ test01() {
   test01_DO_CONSTR_WRD(Pointset_Ask_Tell, BD_Shape);
   test01_DO_CONSTR_WRD(Pointset_Ask_Tell, Octagonal_Shape);
 
-  nout << "Parma_Polyhedra_Library::max_space_dimension() = "
-       << max_space_dimension() << endl;
-
-  // FIXME: we are not testing very much.
   return true;
 }
 
