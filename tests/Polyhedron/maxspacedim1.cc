@@ -58,11 +58,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 bool
 test01() {
-  nout << "Parma_Polyhedra_Library::max_space_dimension() = "
-       << max_space_dimension() << endl;
-  if (max_space_dimension() < 32767)
-    return false;
-
   test01_DO_CLASS(Variable);
   test01_DO_CLASS(Variables_Set);
   test01_DO_CLASS(Linear_Expression);
@@ -92,7 +87,12 @@ test01() {
   test01_DO_CONSTR_WRD(Pointset_Ask_Tell, BD_Shape);
   test01_DO_CONSTR_WRD(Pointset_Ask_Tell, Octagonal_Shape);
 
-  return true;
+  nout << "Parma_Polyhedra_Library::max_space_dimension() = "
+       << max_space_dimension() << endl;
+
+  // 9458 is the value of max_space_dimension()
+  // computed on a 32bit architecture.
+  return (max_space_dimension() >= 9458);
 }
 
 BEGIN_MAIN
