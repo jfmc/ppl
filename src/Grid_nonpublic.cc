@@ -244,12 +244,14 @@ PPL::Grid::is_included_in(const Grid& y) const {
   if (!x.generators_are_up_to_date() && !x.update_generators())
     // Updating found `x' empty.
     return true;
-  y.congruences_are_up_to_date() || y.update_congruences();
+  if (!y.congruences_are_up_to_date())
+    y.update_congruences();
 #else
   if (!x.generators_are_minimized() && !x.minimize())
     // Minimizing found `x' empty.
     return true;
-  y.congruences_are_minimized() || y.minimize();
+  if (!y.congruences_are_minimized())
+    y.minimize();
 #endif
 
   assert(x.OK());
