@@ -80,30 +80,103 @@ bool operator!=(const Partially_Reduced_Product<D1, D2, R>& x,
 } // namespace Parma_Polyhedra_Library
 
 
-// FIXME: add documentation.
+/*! \brief
+  This class provides the reduction method for the Smash_Product
+  domain.
+
+  \ingroup PPL_CXX_interface
+  The reduction classes are used to instantiate the Partially_Reduced_Product
+  domain. This class propagates emptiness between its components.
+*/
 template <typename D1, typename D2>
 class Parma_Polyhedra_Library::Smash_Reduction {
 public:
+  //! Default constructor.
   Smash_Reduction();
+
+  /*! brief
+    The smash reduction operator for propagating emptiness between the
+    domain elements \p d1 and \p d2.
+
+    If either of the the domain elements \p d1 or \p d2 is empty
+    then the other is also set empty.
+
+    \param d1
+    A pointset domain element;
+
+    \param d2
+    A pointset domain element;
+  */
   void product_reduce(D1& d1, D2& d2);
+
+  //! Destructor.
   ~Smash_Reduction();
 };
 
-// FIXME: add documentation.
+/*! \brief
+  This class provides the reduction method for the Constraints_Product
+  domain.
+
+  \ingroup PPL_CXX_interface
+  The reduction classes are used to instantiate the Partially_Reduced_Product
+  domain. This class adds the constraints defining each of the component
+  domains to the other component.
+*/
 template <typename D1, typename D2>
 class Parma_Polyhedra_Library::Constraints_Reduction {
 public:
+  //! Default constructor.
   Constraints_Reduction();
+
+  /*! brief
+    The constraints reduction operator for sharing constraints between the
+    domains.
+
+    The minimized constraint system defining the domain element \p d1
+    is added to \p d2 and the minimized constraint system  defining \p d2
+    is added to \p d1.
+    In each case, the donor domain must provide a constraint system
+    in minimal form; this must define a polyhedron in which the
+    donor element is contained.
+    The recipient domain selects a subset of these constraints
+    that it can add to the recipient element.
+    For example: if the domain \p D1 is the Grid domain and \p D2
+    the NNC Polyhedron domain, then only the equality constraints are copied
+    from \p d1 to \p d2 and from \p d2 to \p d1.
+
+    \param d1
+    A pointset domain element;
+
+    \param d2
+    A pointset domain element;
+  */
   void product_reduce(D1& d1, D2& d2);
+
+  //! Destructor.
   ~Constraints_Reduction();
 };
 
-// FIXME: add documentation.
+/*! brief
+  This class provides the reduction method for the Direct_Product domain.
+
+  \ingroup PPL_CXX_interface
+  The reduction classes are used to instantiate the Partially_Reduced_Product
+  domain template parameter \p R. This class does no reduction at all.
+*/
 template <typename D1, typename D2>
 class Parma_Polyhedra_Library::No_Reduction {
 public:
+  //! Default constructor.
   No_Reduction();
+
+  /*! \brief
+    The null reduction operator.
+
+    The parameters \p d1 and \p d2 are ignored.
+  */
   void product_reduce(D1& d1, D2& d2);
+
+  //! Destructor.
   ~No_Reduction();
 };
 
@@ -1587,7 +1660,7 @@ namespace Parma_Polyhedra_Library {
   be supported in C++.
 
   When template typedefs will be supported in C++, what now is verbosely
-  denoted by Domain_Product::Direct_Product<Domain1, Domain2> will simply
+  denoted by Domain_Product<Domain1, Domain2>::Direct_Product will simply
   be denoted by Direct_Product<Domain1, Domain2>.
 */
 template <typename D1, typename D2>
