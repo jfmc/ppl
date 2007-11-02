@@ -126,15 +126,13 @@ private:
     //! Subscript operator.
     U& operator[](dimension_type k) const;
 
-    // FIXME!!!
-    //private:
-  public:
-    //! Holds a reference to the beginning of this row.
-    U* first;
-
     //! Default constructor: creates a past-the-end object.
     Pseudo_Row();
 
+    //! Assignment operator.
+    Pseudo_Row& operator=(const Pseudo_Row& y);
+
+  private:
 #if PPL_OR_MATRIX_EXTRA_DEBUG
 
     //! Private constructor for a Pseudo_Row with size \p s beginning at \p y.
@@ -147,8 +145,8 @@ private:
 
 #endif // !PPL_OR_MATRIX_EXTRA_DEBUG
 
-    //! Assignment operator.
-    Pseudo_Row& operator=(const Pseudo_Row& y);
+    //! Holds a reference to the beginning of this row.
+    U* first;
 
 #if PPL_OR_MATRIX_EXTRA_DEBUG
 
