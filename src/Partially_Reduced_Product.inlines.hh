@@ -695,8 +695,7 @@ No_Reduction<D1, D2>::No_Reduction() {
 }
 
 template <typename D1, typename D2>
-void No_Reduction<D1, D2>::product_reduce(D1& d1, D2& d2) {
-  return;
+void No_Reduction<D1, D2>::product_reduce(D1&, D2&) {
 }
 
 template <typename D1, typename D2>
