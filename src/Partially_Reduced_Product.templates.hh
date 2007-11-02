@@ -355,18 +355,15 @@ Smash_Reduction<D1, D2>::Smash_Reduction() {
 template <typename D1, typename D2>
 void Smash_Reduction<D1, D2>::product_reduce(D1& d1, D2& d2) {
   if (d2.is_empty()) {
-    if (d1.is_empty())
-      return;
-    D1 new_d1(d1.space_dimension(), EMPTY);
-    std::swap(d1, new_d1);
-    return;
+    if (!d1.is_empty()) {
+      D1 new_d1(d1.space_dimension(), EMPTY);
+      std::swap(d1, new_d1);
+    }
   }
-  if (d1.is_empty()) {
+  else if (d1.is_empty()) {
     D2 new_d2(d2.space_dimension(), EMPTY);
     std::swap(d2, new_d2);
-    return;
   }
-  return;
 }
 
 template <typename D1, typename D2>
