@@ -142,24 +142,24 @@ bool
   bool maximum2;
   bool r1 = d1.maximize(expr, sup1_n, sup1_d, maximum1);
   bool r2 = d2.maximize(expr, sup2_n, sup2_d, maximum2);
-  /* if neither is bounded from above, return false */
+  // If neither is bounded from above, return false.
   if (!r1 && !r2)
     return false;
-  /* if only d2 is bounded from above, then use the values for d2 */
+  // If only d2 is bounded from above, then use the values for d2.
   if (!r1) {
     sup_n = sup2_n;
     sup_d = sup2_d;
     maximum = maximum2;
     return true;
   }
-  /* if only d1 is bounded from above, then use the values for d1 */
+  // If only d1 is bounded from above, then use the values for d1.
   if (!r2) {
     sup_n = sup1_n;
     sup_d = sup1_d;
     maximum = maximum1;
     return true;
   }
-  /* if both d1 and d2 are bounded from above, then use the minimum values */
+  // If both d1 and d2 are bounded from above, then use the minimum values.
   if (sup2_d * sup1_n >= sup1_d * sup2_n) {
     sup_n = sup1_n;
     sup_d = sup1_d;
@@ -190,24 +190,24 @@ bool
   bool minimum2;
   bool r1 = d1.minimize(expr, inf1_n, inf1_d, minimum1);
   bool r2 = d2.minimize(expr, inf2_n, inf2_d, minimum2);
-  /* if neither is bounded from below, return false */
+  // If neither is bounded from below, return false.
   if (!r1 && !r2)
     return false;
-  /* if only d2 is bounded from below, then use the values for d2 */
+  // If only d2 is bounded from below, then use the values for d2.
   if (!r1) {
     inf_n = inf2_n;
     inf_d = inf2_d;
     minimum = minimum2;
     return true;
   }
-  /* if only d1 is bounded from below, then use the values for d1 */
+  // If only d1 is bounded from below, then use the values for d1.
   if (!r2) {
     inf_n = inf1_n;
     inf_d = inf1_d;
     minimum = minimum1;
     return true;
   }
-  /* if both d1 and d2 are bounded from below, then use the minimum values */
+  // If both d1 and d2 are bounded from below, then use the minimum values.
   if (inf2_d * inf1_n <= inf1_d * inf2_n) {
     inf_n = inf1_n;
     inf_d = inf1_d;
@@ -241,10 +241,10 @@ bool
   Generator pnt2(point());
   bool r1 = d1.maximize(expr, sup1_n, sup1_d, maximum1, pnt1);
   bool r2 = d2.maximize(expr, sup2_n, sup2_d, maximum2, pnt2);
-  /* if neither is bounded from above, return false */
+  // If neither is bounded from above, return false.
   if (!r1 && !r2)
     return false;
-  /* if only d2 is bounded from above, then use the values for d2 */
+  // If only d2 is bounded from above, then use the values for d2.
   if (!r1) {
     sup_n = sup2_n;
     sup_d = sup2_d;
@@ -252,7 +252,7 @@ bool
     pnt = pnt2;
     return true;
   }
-  /* if only d1 is bounded from above, then use the values for d1 */
+  // If only d1 is bounded from above, then use the values for d1.
   if (!r2) {
     sup_n = sup1_n;
     sup_d = sup1_d;
@@ -260,7 +260,7 @@ bool
     pnt = pnt1;
     return true;
   }
-  /* if both d1 and d2 are bounded from above, then use the minimum values */
+  // If both d1 and d2 are bounded from above, then use the minimum values.
   if (sup2_d * sup1_n >= sup1_d * sup2_n) {
     sup_n = sup1_n;
     sup_d = sup1_d;
@@ -296,10 +296,10 @@ bool
   Generator pnt2(point());
   bool r1 = d1.minimize(expr, inf1_n, inf1_d, minimum1, pnt1);
   bool r2 = d2.minimize(expr, inf2_n, inf2_d, minimum2, pnt2);
-  /* if neither is bounded from below, return false */
+  // If neither is bounded from below, return false.
   if (!r1 && !r2)
     return false;
-  /* if only d2 is bounded from below, then use the values for d2 */
+  // If only d2 is bounded from below, then use the values for d2.
   if (!r1) {
     inf_n = inf2_n;
     inf_d = inf2_d;
@@ -307,7 +307,7 @@ bool
     pnt = pnt2;
     return true;
   }
-  /* if only d1 is bounded from below, then use the values for d1 */
+  // If only d1 is bounded from below, then use the values for d1.
   if (!r2) {
     inf_n = inf1_n;
     inf_d = inf1_d;
@@ -315,7 +315,7 @@ bool
     pnt = pnt1;
     return true;
   }
-  /* if both d1 and d2 are bounded from below, then use the minimum values */
+  // If both d1 and d2 are bounded from below, then use the minimum values.
   if (inf2_d * inf1_n <= inf1_d * inf2_n) {
     inf_n = inf1_n;
     inf_d = inf1_d;
