@@ -309,6 +309,10 @@ Direct_Product.types.hh \
 Direct_Product.defs.hh \
 Direct_Product.inlines.hh \
 Direct_Product.templates.hh \
+Partially_Reduced_Product.types.hh \
+Partially_Reduced_Product.defs.hh \
+Partially_Reduced_Product.inlines.hh \
+Partially_Reduced_Product.templates.hh \
 Any_Pointset.types.hh \
 Any_Pointset.defs.hh \
 Any_Pointset.inlines.hh \
