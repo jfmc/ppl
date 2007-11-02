@@ -1603,26 +1603,6 @@ public:
   Constraints_Product;
 };
 
-
-// FIXME: the following typedefs do not belong here.
-typedef Domain_Product<Grid, NNC_Polyhedron>::Direct_Product
-Grid_NNC_Polyhedron_Direct_Product;
-
-typedef Domain_Product<Grid, C_Polyhedron>::Direct_Product
-Grid_C_Polyhedron_Direct_Product;
-
-typedef Domain_Product<Grid, NNC_Polyhedron>::Smash_Product
-Grid_NNC_Polyhedron_Smash_Product;
-
-typedef Domain_Product<Grid, C_Polyhedron>::Smash_Product
-Grid_C_Polyhedron_Smash_Product;
-
-typedef Domain_Product<Grid, NNC_Polyhedron>::Constraints_Product
-Grid_NNC_Polyhedron_Constraints_Product;
-
-typedef Domain_Product<Grid, C_Polyhedron>::Constraints_Product
-Grid_C_Polyhedron_Constraints_Product;
-
 }; // namespace Parma_Polyhedra_Library
 
 namespace std {

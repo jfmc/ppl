@@ -28,14 +28,20 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 
 #ifdef PH_IS_NNC
 // FIXME when Box.defs.hh no longer includes the old Direct_Product.
-typedef Grid_NNC_Polyhedron_Direct_Product No_Reduction_Product;
-typedef Grid_NNC_Polyhedron_Smash_Product Smash_Product;
-typedef Grid_NNC_Polyhedron_Constraints_Product Constraints_Product;
+typedef Domain_Product<Grid, NNC_Polyhedron>::Direct_Product
+No_Reduction_Product;
+typedef Domain_Product<Grid, NNC_Polyhedron>::Smash_Product
+Smash_Product;
+typedef Domain_Product<Grid, NNC_Polyhedron>::Constraints_Product
+Constraints_Product;
 #else
 // FIXME when Box.defs.hh no longer includes the old Direct_Product.
-typedef Grid_C_Polyhedron_Direct_Product No_Reduction_Product;
-typedef Grid_C_Polyhedron_Smash_Product Smash_Product;
-typedef Grid_C_Polyhedron_Constraints_Product Constraints_Product;
+typedef Domain_Product<Grid, C_Polyhedron>::Direct_Product
+No_Reduction_Product;
+typedef Domain_Product<Grid, C_Polyhedron>::Smash_Product
+Smash_Product;
+typedef Domain_Product<Grid, C_Polyhedron>::Constraints_Product
+Constraints_Product;
 #endif
 
 namespace {
