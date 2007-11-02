@@ -182,21 +182,18 @@ public:
 
 //! The partially reduced product of two abstractions.
 /*! \ingroup PPL_CXX_interface
-  An object of the class Partially_Reduced_Product<D1, D2, R> represents the
-  partially reduced product of two abstract domains D1 and D2
-  where the form of any reduction is defined by the class R.
-
-  FIXME: The following description of the Partially_Reduced_Product<D1, D2, R>
-         class needs updating.
+  An object of the class <CODE>Partially_Reduced_Product<D1, D2, R></CODE>
+  represents the (partially reduced) product of two pointset domains \p D1
+  and \p D2 where the form of any reduction is defined by the
+  reduction class \p R.
 
   Suppose \f$D_1\f$ and \f$D_2\f$ are two abstract domains
   with concretization functions:
   \f$\fund{\gamma_1}{D_1}{\Rset^n}\f$ and
   \f$\fund{\gamma_2}{D_2}{\Rset^n}\f$, respectively.
 
-  As defined in \ref CC79 "[CC79]",
-  the direct product \f$D = D_1 \times D_2\f$
-  has a concretization
+  The partially reduced product \f$D = D_1 \times D_2\f$,
+  for any reduction class \p R, has a concretization
   \f$\fund{\gamma}{D}{\Rset^n}\f$
   where, if \f$d = (d_1, d_2) \in D\f$
   \f[
@@ -204,21 +201,29 @@ public:
   \f]
 
   The operations are defined to be the result of applying the corresponding
-  operations on each of the components.
+  operations on each of the components provided the product is already reduced
+  by the reduction method defined by \p R.
+  In particular, if \p R is the <CODE>No_Reduction<D1, D2></CODE> class,
+  then the class <CODE>Partially_Reduced_Product<D1, D2, R></CODE> domain
+  is the direct product as defined in \ref CC79 "[CC79]".
+
   How the results on the components are interpreted and
   combined depend on the specific test.
-  For example, the test for emptiness will just test if either component
-  is empty; thus, if
+  For example, the test for emptiness will first make sure
+  the product is reduced (using the reduction method provided by \p R
+  if it is not already known to be reduced) and then test if either component
+  is empty; thus, if \p R defines no reduction between its components and
   \f$d = (G, P) \in (\Gset \times \Pset)\f$
-  is a direct product in one dimension, and \f$G\f$ denotes the set of
+  is a direct product in one dimension where \f$G\f$ denotes the set of
   numbers that are integral multiples of 3 while \f$P\$ denotes the
   set of numbers between 1 and 2, then an operation that tests for
   emptiness should return false.
   However, the test for the universe returns true if and only if the
-  test is_universe() on both components returns true.
+  test <CODE>is_universe()</CODE> on both components returns true.
 
   \par
-  In all the examples it is assumed that variables
+  In all the examples it is assumed that the template <CODE>R</CODE>
+  is the <CODE>No_Reduction<D1, D2></CODE> class and that variables
   <CODE>x</CODE> and <CODE>y</CODE> are defined (where they are
   used) as follows:
   \code
@@ -227,14 +232,15 @@ public:
   \endcode
 
   \par Example 1
-  The following code builds a product of a Grid and NNC_Polyhedron,
+  The following code builds a direct product of a Grid and NNC Polyhedron,
   corresponding to the positive even integer
   pairs in \f$\Rset^2\f$, given as a system of congruences:
   \code
   Congruence_System cgs;
   cgs.insert((x %= 0) / 2);
   cgs.insert((y %= 0) / 2);
-  Partially_Reduced_Product<Grid, NNC_Polyhedron> dp(cgs);
+  Partially_Reduced_Product<Grid, NNC_Polyhedron, No_Reduction<D1, D2> >
+    dp(cgs);
   dp.add_constraint(x >= 0);
   dp.add_constraint(y >= 0);
   \endcode
@@ -243,7 +249,7 @@ public:
   The following code builds the same product
   in \f$\Rset^2\f$:
   \code
-  Partially_Reduced_Product<Grid, NNC_Polyhedron> dp(2);
+  Partially_Reduced_Product<Grid, NNC_Polyhedron, No_Reduction<D1, D2> > dp(2);
   dp.add_constraint(x >= 0);
   dp.add_constraint(y >= 0);
   dp.add_congruence((x %= 0) / 2);
@@ -253,7 +259,7 @@ public:
   \par Example 3
   The following code will write "dp is empty":
   \code
-  Partially_Reduced_Product<Grid, NNC_Polyhedron> dp(1);
+  Partially_Reduced_Product<Grid, NNC_Polyhedron, No_Reduction<D1, D2> > dp(1);
   dp.add_congruence((x %= 0) / 2);
   dp.add_congruence((x %= 1) / 2);
   if (dp.is_empty())
@@ -265,7 +271,7 @@ public:
   \par Example 4
   The following code will write "dp is not empty":
   \code
-  Partially_Reduced_Product<Grid, NNC_Polyhedron> dp(1);
+  Partially_Reduced_Product<Grid, NNC_Polyhedron, No_Reduction<D1, D2> > dp(1);
   dp.add_congruence((x %= 0) / 2);
   dp.add_constraint(x >= 1);
   dp.add_constraint(x <= 1);
@@ -279,7 +285,10 @@ public:
 template <typename D1, typename D2, typename R>
 class Parma_Polyhedra_Library::Partially_Reduced_Product {
 public:
-  //! Returns the maximum space dimension this Partially_Reduced_Product can handle.
+  /*! brief
+    Returns the maximum space dimension this product
+    can handle.
+  */
   static dimension_type max_space_dimension();
 
   //! Builds an object having the specified properties.
@@ -1487,7 +1496,7 @@ public:
     The partial function specifying the destiny of each space
     dimension.
 
-    The template class Partial_Function must provide the following
+    The template class <CODE>Partial_Function</CODE> must provide the following
     methods.
     \code
       bool has_empty_codomain() const
@@ -1591,7 +1600,7 @@ public:
   ~Partially_Reduced_Product();
 
   /*! \brief
-    Swaps \p *this with Partially_Reduced_Product \p y.  (\p *this and \p y can be
+    Swaps \p *this with product \p y.  (\p *this and \p y can be
     dimension-incompatible.)
   */
   void swap(Partially_Reduced_Product& y);

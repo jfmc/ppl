@@ -712,7 +712,6 @@ template <typename D1, typename D2>
 void Constraints_Reduction<D1, D2>::product_reduce(D1& d1, D2& d2) {
   d1.add_constraints(d2.minimized_constraints());
   d2.add_constraints(d1.minimized_constraints());
-  return;
 }
 
 template <typename D1, typename D2>
