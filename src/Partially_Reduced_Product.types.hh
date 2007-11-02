@@ -14,7 +14,16 @@ PURPOSE. */
 
 namespace Parma_Polyhedra_Library {
 
-  template <typename D1, typename D2, typename R>
+template <typename D1, typename D2>
+class Smash_Reduction;
+
+template <typename D1, typename D2>
+class Constraints_Reduction;
+
+template <typename D1, typename D2>
+class No_Reduction;
+
+template <typename D1, typename D2, typename R>
 class Partially_Reduced_Product;
 
 } // namespace Parma_Polyhedra_Library

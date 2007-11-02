@@ -80,6 +80,33 @@ bool operator!=(const Partially_Reduced_Product<D1, D2, R>& x,
 } // namespace Parma_Polyhedra_Library
 
 
+// FIXME: add documentation.
+template <typename D1, typename D2>
+class Parma_Polyhedra_Library::Smash_Reduction {
+public:
+  Smash_Reduction();
+  void product_reduce(D1& d1, D2& d2);
+  ~Smash_Reduction();
+};
+
+// FIXME: add documentation.
+template <typename D1, typename D2>
+class Parma_Polyhedra_Library::Constraints_Reduction {
+public:
+  Constraints_Reduction();
+  void product_reduce(D1& d1, D2& d2);
+  ~Constraints_Reduction();
+};
+
+// FIXME: add documentation.
+template <typename D1, typename D2>
+class Parma_Polyhedra_Library::No_Reduction {
+public:
+  No_Reduction();
+  void product_reduce(D1& d1, D2& d2);
+  ~No_Reduction();
+};
+
 //! The partially reduced product of two abstractions.
 /*! \ingroup PPL_CXX_interface
   An object of the class Partially_Reduced_Product<D1, D2, R> represents the
@@ -1553,56 +1580,48 @@ protected:
   bool reduced;
 };
 
-
 namespace Parma_Polyhedra_Library {
 
+/*! \brief
+  This class is temporary and will be removed when template typedefs will
+  be supported in C++.
+
+  When template typedefs will be supported in C++, what now is verbosely
+  denoted by Domain_Product::Direct_Product<Domain1, Domain2> will simply
+  be denoted by Direct_Product<Domain1, Domain2>.
+*/
 template <typename D1, typename D2>
-class Smash_Reduction {
+class Domain_Product {
 public:
-  Smash_Reduction();
-  void product_reduce(D1& d1, D2& d2);
-  ~Smash_Reduction();
+  typedef Partially_Reduced_Product<D1, D2, No_Reduction<D1, D2> >
+  Direct_Product;
+
+  typedef Partially_Reduced_Product<D1, D2, Smash_Reduction<D1, D2> >
+  Smash_Product;
+
+  typedef Partially_Reduced_Product<D1, D2, Constraints_Reduction<D1, D2> >
+  Constraints_Product;
 };
 
-template <typename D1, typename D2>
-class Constraints_Reduction {
-public:
-  Constraints_Reduction();
-  void product_reduce(D1& d1, D2& d2);
-  ~Constraints_Reduction();
-};
 
-template <typename D1, typename D2>
-class No_Reduction {
-public:
-  No_Reduction();
-  void product_reduce(D1& d1, D2& d2);
-  ~No_Reduction();
-};
+// FIXME: the following typedefs do not belong here.
+typedef Domain_Product<Grid, NNC_Polyhedron>::Direct_Product
+Grid_NNC_Polyhedron_Direct_Product;
 
-  typedef Partially_Reduced_Product<
-    Grid, NNC_Polyhedron, No_Reduction< Grid, NNC_Polyhedron > >
-  Grid_NNC_Polyhedron_Direct_Product;
+typedef Domain_Product<Grid, C_Polyhedron>::Direct_Product
+Grid_C_Polyhedron_Direct_Product;
 
-  typedef Partially_Reduced_Product<
-    Grid, C_Polyhedron, No_Reduction<Grid, C_Polyhedron> >
-  Grid_C_Polyhedron_Direct_Product;
+typedef Domain_Product<Grid, NNC_Polyhedron>::Smash_Product
+Grid_NNC_Polyhedron_Smash_Product;
 
-  typedef Partially_Reduced_Product<
-    Grid, NNC_Polyhedron, Smash_Reduction<Grid, NNC_Polyhedron> >
-  Grid_NNC_Polyhedron_Smash_Product;
+typedef Domain_Product<Grid, C_Polyhedron>::Smash_Product
+Grid_C_Polyhedron_Smash_Product;
 
-  typedef Partially_Reduced_Product<
-    Grid, C_Polyhedron, Smash_Reduction<Grid, C_Polyhedron> >
-  Grid_C_Polyhedron_Smash_Product;
+typedef Domain_Product<Grid, NNC_Polyhedron>::Constraints_Product
+Grid_NNC_Polyhedron_Constraints_Product;
 
-  typedef Partially_Reduced_Product<
-    Grid, NNC_Polyhedron, Constraints_Reduction<Grid, NNC_Polyhedron> >
-  Grid_NNC_Polyhedron_Constraints_Product;
-
-  typedef Partially_Reduced_Product<
-    Grid, C_Polyhedron, Constraints_Reduction<Grid, C_Polyhedron> >
-  Grid_C_Polyhedron_Constraints_Product;
+typedef Domain_Product<Grid, C_Polyhedron>::Constraints_Product
+Grid_C_Polyhedron_Constraints_Product;
 
 }; // namespace Parma_Polyhedra_Library
 
