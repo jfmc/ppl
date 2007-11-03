@@ -73,15 +73,11 @@ test02() {
 
   bool ok = (dp1 != dp2 && dp3 != dp4 && dp5 != dp6);
 
-  print_congruences(dp1.domain1(),
-    "*** dp1.domain1() ***");
-  print_constraints(dp1.domain2(),
-     "*** dp1.domain2() ***");
+  print_congruences(dp1.domain1(), "*** dp1.domain1() ***");
+  print_constraints(dp1.domain2(), "*** dp1.domain2() ***");
 
-  print_congruences(dp2.domain1(),
-    "*** dp2.domain1() ***");
-  print_constraints(dp2.domain2(),
-     "*** dp2.domain2() ***");
+  print_congruences(dp2.domain1(), "*** dp2.domain1() ***");
+  print_constraints(dp2.domain2(), "*** dp2.domain2() ***");
 
   return ok;
 }
@@ -105,15 +101,11 @@ test03() {
 
   bool ok =  (dp1 == dp2 && dp3 == dp4 && dp5 == dp6);
 
-  print_congruences(dp1.domain1(),
-    "*** dp1.domain1() ***");
-  print_constraints(dp1.domain2(),
-     "*** dp1.domain2() ***");
+  print_congruences(dp1.domain1(), "*** dp1.domain1() ***");
+  print_constraints(dp1.domain2(), "*** dp1.domain2() ***");
 
-  print_congruences(dp2.domain1(),
-    "*** dp2.domain1() ***");
-  print_constraints(dp2.domain2(),
-     "*** dp2.domain2() ***");
+  print_congruences(dp2.domain1(), "*** dp2.domain1() ***");
+  print_constraints(dp2.domain2(), "*** dp2.domain2() ***");
 
   return ok;
 }
@@ -137,15 +129,11 @@ test04() {
 
   bool ok =  (dp1 == dp2 && dp3 == dp4 && dp5 == dp6);
 
-  print_congruences(dp1.domain1(),
-    "*** dp1.domain1() ***");
-  print_constraints(dp1.domain2(),
-     "*** dp1.domain2() ***");
+  print_congruences(dp1.domain1(), "*** dp1.domain1() ***");
+  print_constraints(dp1.domain2(), "*** dp1.domain2() ***");
 
-  print_congruences(dp2.domain1(),
-    "*** dp2.domain1() ***");
-  print_constraints(dp2.domain2(),
-     "*** dp2.domain2() ***");
+  print_congruences(dp2.domain1(), "*** dp2.domain1() ***");
+  print_constraints(dp2.domain2(), "*** dp2.domain2() ***");
 
   return ok;
 }
@@ -169,15 +157,11 @@ test05() {
 
   bool ok =  (dp1 == dp2 && dp3 == dp4 && dp5 == dp6);
 
-  print_congruences(dp1.domain1(),
-    "*** dp1.domain1() ***");
-  print_constraints(dp1.domain2(),
-     "*** dp1.domain2() ***");
+  print_congruences(dp1.domain1(), "*** dp1.domain1() ***");
+  print_constraints(dp1.domain2(), "*** dp1.domain2() ***");
 
-  print_congruences(dp2.domain1(),
-    "*** dp2.domain1() ***");
-  print_constraints(dp2.domain2(),
-     "*** dp2.domain2() ***");
+  print_congruences(dp2.domain1(), "*** dp2.domain1() ***");
+  print_constraints(dp2.domain2(), "*** dp2.domain2() ***");
 
   return ok;
 }
@@ -206,15 +190,11 @@ test06() {
                && (dp3 == dp4 && dp3.domain1() == known_gr)
                && (dp5 == dp6 && dp5.domain1() == known_gr);
 
-  print_congruences(dp1.domain1(),
-    "*** dp1.domain1() ***");
-  print_constraints(dp1.domain2(),
-     "*** dp1.domain2() ***");
+  print_congruences(dp1.domain1(), "*** dp1.domain1() ***");
+  print_constraints(dp1.domain2(), "*** dp1.domain2() ***");
 
-  print_congruences(dp2.domain1(),
-    "*** dp2.domain1() ***");
-  print_constraints(dp2.domain2(),
-     "*** dp2.domain2() ***");
+  print_congruences(dp2.domain1(), "*** dp2.domain1() ***");
+  print_constraints(dp2.domain2(), "*** dp2.domain2() ***");
 
   return ok;
 }
@@ -234,10 +214,8 @@ test07() {
 
   bool ok = (dp.domain1() == known_gr);
 
-  print_congruences(dp.domain1(),
-    "*** dp.domain1() ***");
-  print_constraints(dp.domain2(),
-     "*** dp.domain2() ***");
+  print_congruences(dp.domain1(), "*** dp.domain1() ***");
+  print_constraints(dp.domain2(), "*** dp.domain2() ***");
 
   return ok;
 }
@@ -257,10 +235,8 @@ test08() {
 
   bool ok = (dp.domain1() == known_gr);
 
-  print_congruences(dp.domain1(),
-    "*** dp.domain1() ***");
-  print_constraints(dp.domain2(),
-     "*** dp.domain2() ***");
+  print_congruences(dp.domain1(), "*** dp.domain1() ***");
+  print_constraints(dp.domain2(), "*** dp.domain2() ***");
 
   return ok;
 }
@@ -287,10 +263,8 @@ test09() {
 
   bool ok = (dp.domain1() == known_gr && dp.domain2() == known_ph);
 
-  print_congruences(dp.domain1(),
-    "*** dp.domain1() ***");
-  print_constraints(dp.domain2(),
-     "*** dp.domain2() ***");
+  print_congruences(dp.domain1(), "*** dp.domain1() ***");
+  print_constraints(dp.domain2(), "*** dp.domain2() ***");
 
   return ok;
 }
@@ -321,10 +295,8 @@ test10() {
 
   bool ok = (dp.domain1() == known_gr && dp.domain2() == known_ph);
 
-  print_congruences(dp.domain1(),
-    "*** dp.domain1() ***");
-  print_constraints(dp.domain2(),
-     "*** dp.domain2() ***");
+  print_congruences(dp.domain1(), "*** dp.domain1() ***");
+  print_constraints(dp.domain2(), "*** dp.domain2() ***");
 
   return ok;
 }
@@ -351,15 +323,11 @@ test11() {
   bool ok =  (dp1 == dp2 && dp3 == dp4 && dp5 == dp6);
 
 
-  print_congruences(dp1.domain1(),
-    "*** dp1.domain1() ***");
-  print_constraints(dp1.domain2(),
-     "*** dp1.domain2() ***");
+  print_congruences(dp1.domain1(), "*** dp1.domain1() ***");
+  print_constraints(dp1.domain2(), "*** dp1.domain2() ***");
 
-  print_congruences(dp2.domain1(),
-    "*** dp2.domain1() ***");
-  print_constraints(dp2.domain2(),
-     "*** dp2.domain2() ***");
+  print_congruences(dp2.domain1(), "*** dp2.domain1() ***");
+  print_constraints(dp2.domain2(), "*** dp2.domain2() ***");
 
   return ok;
 }

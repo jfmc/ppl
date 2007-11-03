@@ -248,6 +248,28 @@ T low_bits_mask(unsigned n);
     std::cerr << *this;							\
   }
 
+// FIXME: Copy and edit of PPL_OUTPUT_2_PARAM_TEMPLATE_DEFINITIONS
+#define PPL_OUTPUT_3_PARAM_TEMPLATE_DEFINITIONS(type_symbol1,		\
+						type_symbol2,		\
+						type_symbol3,		\
+						class_prefix)		\
+  template <typename type_symbol1, typename type_symbol2,		\
+            typename type_symbol3>					\
+  void									\
+  class_prefix<type_symbol1, type_symbol2, type_symbol3>::ascii_dump()	\
+    const {								\
+    ascii_dump(std::cerr);						\
+  }									\
+                                                                     	\
+    template <typename type_symbol1, typename type_symbol2,		\
+              typename type_symbol3>					\
+    void								\
+    class_prefix<type_symbol1, type_symbol2, type_symbol3>::print()	\
+      const {								\
+      using namespace IO_Operators;					\
+      std::cerr << *this;						\
+    }
+
 #define PPL_OUTPUT_TEMPLATE_DEFINITIONS_ASCII_ONLY(type_symbol, class_prefix) \
   template <typename type_symbol>					\
   void									\
