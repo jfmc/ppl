@@ -606,7 +606,8 @@ inline bool
 Partially_Reduced_Product<D1, D2, R>::strictly_contains(const Partially_Reduced_Product& y) const {
   reduce();
   y.reduce();
-  return d1.strictly_contains(y.d1) && d2.strictly_contains(y.d2);
+  return (d1.contains(y.d1) && d2.strictly_contains(y.d2))
+    || (d2.contains(y.d2) && d1.strictly_contains(y.d1));
 }
 
 template <typename D1, typename D2, typename R>

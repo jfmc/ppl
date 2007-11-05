@@ -24,37 +24,24 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
-// FIXME: Test both Direct_Product and Open_Product.
-// #define OPEN_PRODUCT
-// FIXME: Also test the other combination (Product<Ph, Grid>).
-#define GRID_IS_D1
-// FIXME: Also test with C_Polyhedron.
 #define PH_IS_NNC
+// #define PH_IS_FIRST
 
 #ifdef PH_IS_NNC
-#define DO_TEST_NNC(test) DO_TEST(test)
+typedef NNC_Polyhedron Poly;
 #else
-#define NNC_Polyhedron C_Polyhedron
-#define DO_TEST_NNC(test)
+typedef C_Polyhedron Poly;
 #endif
 
-#ifdef OPEN_PRODUCT
-#ifdef GRID_IS_D1
-typedef Open_Product<Grid, NNC_Polyhedron> Product;
+#ifdef PH_IS_FIRST
+typedef Domain_Product<Poly, Grid>::Direct_Product Product;
 #else
-typedef Open_Product<NNC_Polyhedron, Grid> Product;
-#endif
-#else
-#ifdef GRID_IS_D1
-typedef Direct_Product<Grid, NNC_Polyhedron> Product;
-#else
-typedef Direct_Product<NNC_Polyhedron, Grid> Product;
-#endif
+typedef Domain_Product<Grid, Poly>::Direct_Product Product;
 #endif
 
 namespace {
 
-// Product()
+// Universe product in 0 dimensions
 bool
 test01() {
   Product dp1;
@@ -63,10 +50,15 @@ test01() {
 
   bool ok = (dp1 == dp2);
 
+  print_congruences(dp1, "*** dp1 congruences ***");
+  print_constraints(dp1, "*** dp1 constraints ***");
+  print_congruences(dp2, "*** dp2 congruences ***");
+  print_constraints(dp2, "*** dp2 constraints ***");
+
   return ok;
 }
 
-// Product(dims, type)
+// Empty product(dims, type)
 bool
 test02() {
   Product dp1(3);
@@ -75,34 +67,15 @@ test02() {
 
   bool ok = (dp1 != dp2);
 
-#ifdef GRID_IS_D1
-  print_congruences(dp1.domain1(),
-    "*** dp1.domain1() ***");
-  print_constraints(dp1.domain2(),
-     "*** dp1.domain2() ***");
-#else
-  print_constraints(dp1.domain1(),
-     "*** dp1.domain1() ***");
-  print_congruences(dp1.domain2(),
-     "*** dp1.domain2() ***");
-#endif
-
-#ifdef GRID_IS_D1
-  print_congruences(dp2.domain1(),
-    "*** dp2.domain1() ***");
-  print_constraints(dp2.domain2(),
-     "*** dp2.domain2() ***");
-#else
-  print_constraints(dp2.domain1(),
-     "*** dp2.domain1() ***");
-  print_congruences(dp2.domain2(),
-     "*** dp2.domain2() ***");
-#endif
+  print_congruences(dp1, "*** dp1 congruences ***");
+  print_constraints(dp1, "*** dp1 constraints ***");
+  print_congruences(dp2, "*** dp2 congruences ***");
+  print_constraints(dp2, "*** dp2 constraints ***");
 
   return ok;
 }
 
-// Product(ccgs), add_congruence(cg)
+// Product(cgs), add_congruence(cg)
 bool
 test03() {
   Variable A(0);
@@ -116,29 +89,10 @@ test03() {
 
   bool ok = (dp1 == dp2);
 
-#ifdef GRID_IS_D1
-  print_congruences(dp1.domain1(),
-    "*** dp1.domain1() ***");
-  print_constraints(dp1.domain2(),
-     "*** dp1.domain2() ***");
-#else
-  print_constraints(dp1.domain1(),
-     "*** dp1.domain1() ***");
-  print_congruences(dp1.domain2(),
-     "*** dp1.domain2() ***");
-#endif
-
-#ifdef GRID_IS_D1
-  print_congruences(dp2.domain1(),
-    "*** dp2.domain1() ***");
-  print_constraints(dp2.domain2(),
-     "*** dp2.domain2() ***");
-#else
-  print_constraints(dp2.domain1(),
-     "*** dp2.domain1() ***");
-  print_congruences(dp2.domain2(),
-     "*** dp2.domain2() ***");
-#endif
+  print_congruences(dp1, "*** dp1 congruences ***");
+  print_constraints(dp1, "*** dp1 constraints ***");
+  print_congruences(dp2, "*** dp2 congruences ***");
+  print_constraints(dp2, "*** dp2 constraints ***");
 
   return ok;
 }
@@ -152,35 +106,26 @@ test04() {
 
   Product dp(cgs);
 
-  NNC_Polyhedron known_ph(1);
+  Poly known_ph(1);
 
   Grid known_gr(1);
   known_gr.add_congruence((A %= 0) / 4);
 
-#ifdef GRID_IS_D1
+#ifdef PH_IS_FIRST
+  bool ok = (dp.domain2() == known_gr
+	     && dp.domain1() == known_ph);
+#else
   bool ok = (dp.domain1() == known_gr
 	     && dp.domain2() == known_ph);
-#else
-  bool ok = (dp.domain1() == known_ph
-	     && dp.domain2() == known_gr);
 #endif
 
-#ifdef GRID_IS_D1
-  print_congruences(dp.domain1(),
-    "*** dp.domain1() ***");
-  print_constraints(dp.domain2(),
-     "*** dp.domain2() ***");
-#else
-  print_constraints(dp.domain1(),
-     "*** dp.domain1() ***");
-  print_congruences(dp.domain2(),
-     "*** dp.domain2() ***");
-#endif
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
 
   return ok;
 }
 
-// Product(ccs), add_constraint(cc)
+// Product(cs), add_constraint(c)
 bool
 test05() {
   Variable A(0);
@@ -194,34 +139,15 @@ test05() {
 
   bool ok = (dp1 == dp2);
 
-#ifdef GRID_IS_D1
-  print_congruences(dp1.domain1(),
-    "*** dp1.domain1() ***");
-  print_constraints(dp1.domain2(),
-     "*** dp1.domain2() ***");
-#else
-  print_constraints(dp1.domain1(),
-     "*** dp1.domain1() ***");
-  print_congruences(dp1.domain2(),
-     "*** dp1.domain2() ***");
-#endif
-
-#ifdef GRID_IS_D1
-  print_congruences(dp2.domain1(),
-    "*** dp2.domain1() ***");
-  print_constraints(dp2.domain2(),
-     "*** dp2.domain2() ***");
-#else
-  print_constraints(dp2.domain1(),
-     "*** dp2.domain1() ***");
-  print_congruences(dp2.domain2(),
-     "*** dp2.domain2() ***");
-#endif
+  print_congruences(dp1, "*** dp1 congruences ***");
+  print_constraints(dp1, "*** dp1 constraints ***");
+  print_congruences(dp2, "*** dp2 congruences ***");
+  print_constraints(dp2, "*** dp2 constraints ***");
 
   return ok;
 }
 
-// Product(cs)
+// Product(cs), add_congruence(c)
 bool
 test06() {
   Variable A(0);
@@ -236,40 +162,23 @@ test06() {
   Grid known_gr(1);
   known_gr.add_congruence(A == 9);
 
-#ifdef GRID_IS_D1
-  bool ok = (dp1 == dp2 && dp1.domain1() == known_gr);
-#else
+#ifdef PH_IS_FIRST
   bool ok = (dp1 == dp2 && dp1.domain2() == known_gr);
+#else
+  bool ok = (dp1 == dp2 && dp1.domain1() == known_gr);
 #endif
 
-#ifdef GRID_IS_D1
-  print_congruences(dp1.domain1(),
-    "*** dp1.domain1() ***");
-  print_constraints(dp1.domain2(),
-     "*** dp1.domain2() ***");
-#else
-  print_constraints(dp1.domain1(),
-     "*** dp1.domain1() ***");
-  print_congruences(dp1.domain2(),
-     "*** dp1.domain2() ***");
-#endif
-
-#ifdef GRID_IS_D1
-  print_congruences(dp2.domain1(),
-    "*** dp2.domain1() ***");
-  print_constraints(dp2.domain2(),
-     "*** dp2.domain2() ***");
-#else
-  print_constraints(dp2.domain1(),
-     "*** dp2.domain1() ***");
-  print_congruences(dp2.domain2(),
-     "*** dp2.domain2() ***");
-#endif
+  print_congruences(dp1, "*** dp1 congruences ***");
+  print_constraints(dp1, "*** dp1 constraints ***");
+  print_congruences(dp2, "*** dp2 congruences ***");
+  print_constraints(dp2, "*** dp2 constraints ***");
 
   return ok;
 }
 
-// Product(cggs), add_grid_generator(g)
+// Product(ggs), add_grid_generator(g)
+// FIXME: The constructor for a grid_generator and add_grid_generator
+//        behave differently - hence the need for adding universe generators.
 bool
 test07() {
   Variable A(0);
@@ -279,60 +188,48 @@ test07() {
 
   Product dp(gs);
 
-  Grid known_gr(2, EMPTY);
-  known_gr.add_grid_generator(grid_point(A + B));
+  Product known_dp(2, EMPTY);
+  known_dp.add_grid_generator(grid_point(A + B));
+  known_dp.add_generator(point());
+  known_dp.add_generator(line(A));
+  known_dp.add_generator(line(B));
 
-#ifdef GRID_IS_D1
-  bool ok = (dp.domain1() == known_gr);
-#else
-  bool ok = (dp.domain2() == known_gr);
-#endif
+  bool ok = (dp == known_dp);
 
-#ifdef GRID_IS_D1
-  print_congruences(dp.domain1(),
-    "*** dp.domain1() ***");
-  print_constraints(dp.domain2(),
-     "*** dp.domain2() ***");
-#else
-  print_constraints(dp.domain1(),
-     "*** dp.domain1() ***");
-  print_congruences(dp.domain2(),
-     "*** dp.domain2() ***");
-#endif
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
 
   return ok;
 }
 
-// Product(ggs)
+// Product(ggs), add_generator(g)
+// FIXME: The constructor for a grid_generator and add_grid_generator
+//        behave differently - hence the need for adding universe grid
+//        generators.
 bool
 test08() {
   Variable A(0);
+  Variable B(1);
   Variable C(2);
 
-  Grid_Generator_System gs(grid_point(A + 7*C));
+  Generator_System gs(point(A + 7*C));
 
   Product dp(gs);
 
-  Grid known_gr(3, EMPTY);
-  known_gr.add_grid_generator(grid_point(A + 7*C));
+  Product known_dp(3, EMPTY);
+  known_dp.add_generator(point(A + 7*C));
+  known_dp.add_grid_generator(grid_point());
+  known_dp.add_grid_generator(grid_line(A));
+  known_dp.add_grid_generator(grid_line(B));
+  known_dp.add_grid_generator(grid_line(C));
 
-#ifdef GRID_IS_D1
-  bool ok = (dp.domain1() == known_gr);
-#else
-  bool ok = (dp.domain2() == known_gr);
-#endif
+  bool ok = (dp == known_dp);
 
-#ifdef GRID_IS_D1
-  print_congruences(dp.domain1(),
-    "*** dp.domain1() ***");
-  print_constraints(dp.domain2(),
-     "*** dp.domain2() ***");
-#else
-  print_constraints(dp.domain1(),
-     "*** dp.domain1() ***");
-  print_congruences(dp.domain2(),
-     "*** dp.domain2() ***");
-#endif
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
+
+  print_congruences(known_dp, "*** known_dp congruences ***");
+  print_constraints(known_dp, "*** known_dp constraints ***");
 
   return ok;
 }
@@ -347,29 +244,13 @@ test09() {
 
   Product dp(box);
 
-  Grid known_gr(2);
-  known_gr.add_congruence(3*B == 2);
+  Product known_dp(2);
+  known_dp.add_constraint(3*B == 2);
 
-  NNC_Polyhedron known_ph(2);
-  known_ph.add_constraint(3*B == 2);
+  bool ok = (dp == known_dp);
 
-#ifdef GRID_IS_D1
-  bool ok = (dp.domain1() == known_gr && dp.domain2() == known_ph);
-#else
-  bool ok = (dp.domain1() == known_ph && dp.domain2() == known_gr);
-#endif
-
-#ifdef GRID_IS_D1
-  print_congruences(dp.domain1(),
-    "*** dp.domain1() ***");
-  print_constraints(dp.domain2(),
-     "*** dp.domain2() ***");
-#else
-  print_constraints(dp.domain1(),
-     "*** dp.domain1() ***");
-  print_congruences(dp.domain2(),
-     "*** dp.domain2() ***");
-#endif
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
 
   return ok;
 }
@@ -389,28 +270,13 @@ test10() {
 
   Product dp(box, From_Covering_Box());
 
-  Grid known_gr(2);
-  known_gr.add_congruence(3*B %= 0);
+  Product known_dp(2);
+  known_dp.add_congruence(3*B %= 0);
 
-  NNC_Polyhedron known_ph(2);
+  bool ok = (dp == known_dp);
 
-#ifdef GRID_IS_D1
-  bool ok = (dp.domain1() == known_gr && dp.domain2() == known_ph);
-#else
-  bool ok = (dp.domain1() == known_ph && dp.domain2() == known_gr);
-#endif
-
-#ifdef GRID_IS_D1
-  print_congruences(dp.domain1(),
-    "*** dp.domain1() ***");
-  print_constraints(dp.domain2(),
-     "*** dp.domain2() ***");
-#else
-  print_constraints(dp.domain1(),
-     "*** dp.domain1() ***");
-  print_congruences(dp.domain2(),
-     "*** dp.domain2() ***");
-#endif
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
 
   return ok;
 }
@@ -431,63 +297,17 @@ test11() {
 
   bool ok = (dp1 == dp2);
 
-#ifdef GRID_IS_D1
-  print_congruences(dp1.domain1(),
-    "*** dp1.domain1() ***");
-  print_constraints(dp1.domain2(),
-     "*** dp1.domain2() ***");
-#else
-  print_constraints(dp1.domain1(),
-     "*** dp1.domain1() ***");
-  print_congruences(dp1.domain2(),
-     "*** dp1.domain2() ***");
-#endif
-
-#ifdef GRID_IS_D1
-  print_congruences(dp2.domain1(),
-    "*** dp2.domain1() ***");
-  print_constraints(dp2.domain2(),
-     "*** dp2.domain2() ***");
-#else
-  print_constraints(dp2.domain1(),
-     "*** dp2.domain1() ***");
-  print_congruences(dp2.domain2(),
-     "*** dp2.domain2() ***");
-#endif
-
-  return ok;
-}
-
-// space_dimension()
-bool
-test12() {
-  Variable A(0);
-  Variable E(4);
-
-  Constraint_System cs(A + E < 9);
-
-  Product dp(cs);
-
-  bool ok = (dp.space_dimension() == 5);
-
-#ifdef GRID_IS_D1
-  print_congruences(dp.domain1(),
-    "*** dp.domain1() ***");
-  print_constraints(dp.domain2(),
-     "*** dp.domain2() ***");
-#else
-  print_constraints(dp.domain1(),
-     "*** dp.domain1() ***");
-  print_congruences(dp.domain2(),
-     "*** dp.domain2() ***");
-#endif
+  print_congruences(dp1, "*** dp1 congruences ***");
+  print_constraints(dp1, "*** dp1 constraints ***");
+  print_congruences(dp2, "*** dp2 congruences ***");
+  print_constraints(dp2, "*** dp2 constraints ***");
 
   return ok;
 }
 
 // Copy constructor.
 bool
-test13() {
+test12() {
   Variable A(0);
   Variable B(2);
 
@@ -499,89 +319,17 @@ test13() {
 
   bool ok = (dp1 == dp2);
 
-#ifdef GRID_IS_D1
-  print_congruences(dp1.domain1(),
-    "*** dp1.domain1() ***");
-  print_constraints(dp1.domain2(),
-     "*** dp1.domain2() ***");
-#else
-  print_constraints(dp1.domain1(),
-     "*** dp1.domain1() ***");
-  print_congruences(dp1.domain2(),
-     "*** dp1.domain2() ***");
-#endif
-
-#ifdef GRID_IS_D1
-  print_congruences(dp2.domain1(),
-    "*** dp2.domain1() ***");
-  print_constraints(dp2.domain2(),
-     "*** dp2.domain2() ***");
-#else
-  print_constraints(dp2.domain1(),
-     "*** dp2.domain1() ***");
-  print_congruences(dp2.domain2(),
-     "*** dp2.domain2() ***");
-#endif
-
-  return ok;
-}
-
-
-// affine_dimension()
-bool
-test14() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
-  Product dp(3);
-  dp.add_constraint(A - C <= 9);
-  dp.add_constraint(A - C >= 9);
-  dp.add_constraint(B == 2);
-
-  bool ok = (dp.affine_dimension() == 1
-#ifdef GRID_IS_D1
-	     && dp.domain1().affine_dimension() == 2
-	     && dp.domain2().affine_dimension() == 1
-#else
-	     && dp.domain1().affine_dimension() == 1
-	     && dp.domain2().affine_dimension() == 2
-#endif
-	     );
-
-  if (ok) {
-    dp.add_constraint(C == 4);
-    dp.add_generator(ray(B));
-    dp.add_generator(point(A + C));
-    ok &= (dp.affine_dimension() == 1
-#ifdef GRID_IS_D1
-	   && dp.domain1().affine_dimension() == 1
-	   && dp.domain2().affine_dimension() == 2
-#else
-	   && dp.domain1().affine_dimension() == 2
-	   && dp.domain2().affine_dimension() == 1
-#endif
-	   );
-  }
-
-#ifdef GRID_IS_D1
-  print_congruences(dp.domain1(),
-    "*** dp.domain1() ***");
-  print_constraints(dp.domain2(),
-     "*** dp.domain2() ***");
-#else
-  print_constraints(dp.domain1(),
-     "*** dp.domain1() ***");
-  print_congruences(dp.domain2(),
-     "*** dp.domain2() ***");
-#endif
+  print_congruences(dp1, "*** dp1 congruences ***");
+  print_constraints(dp1, "*** dp1 constraints ***");
+  print_congruences(dp2, "*** dp2 congruences ***");
+  print_constraints(dp2, "*** dp2 constraints ***");
 
   return ok;
 }
 
 // congruences()
 bool
-test15() {
+test13() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -590,38 +338,25 @@ test15() {
   dp.add_congruence(A %= 9);
   dp.add_congruence(B + C %= 3);
 
-#ifdef GRID_IS_D1
   Congruence_System cgs;
   cgs.insert(B + C %= 0);
   cgs.insert(A %= 0);
 
   Grid known_gr(cgs);
-#else
-  Grid known_gr(3);
-#endif
 
   Grid gr(dp.congruences());
 
   bool ok = gr == known_gr;
 
-#ifdef GRID_IS_D1
-  print_congruences(dp.domain1(),
-    "*** dp.domain1() ***");
-  print_constraints(dp.domain2(),
-     "*** dp.domain2() ***");
-#else
-  print_constraints(dp.domain1(),
-     "*** dp.domain1() ***");
-  print_congruences(dp.domain2(),
-     "*** dp.domain2() ***");
-#endif
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
 
   return ok;
 }
 
 // minimized_congruences()
 bool
-test16() {
+test14() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -632,10 +367,7 @@ test16() {
   dp.add_constraint(A <= 9);
 
   Congruence_System cgs;
-#ifdef GRID_IS_D1
   cgs.insert(B + C %= 3);
-#endif
-  cgs.insert((A + 0*C %= 9) / 0);
 
   Grid known_gr(cgs);
 
@@ -643,22 +375,87 @@ test16() {
 
   bool ok = gr == known_gr;
 
-#ifdef GRID_IS_D1
-  print_congruences(dp.domain1(),
-    "*** dp.domain1() ***");
-  print_constraints(dp.domain2(),
-     "*** dp.domain2() ***");
-#else
-  print_constraints(dp.domain1(),
-     "*** dp.domain1() ***");
-  print_congruences(dp.domain2(),
-     "*** dp.domain2() ***");
-#endif
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
 
   return ok;
 }
 
 // constraints()
+bool
+test15() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Product dp(3);
+  dp.add_congruence((B + C %= 3) / 0);
+#ifdef PH_IS_NNC
+  dp.add_constraint(A > 9);
+#else
+  dp.add_constraint(A >= 9);
+#endif
+  dp.add_constraint(A <= 11);
+
+  Poly ph(dp.space_dimension());
+  ph.add_constraints(dp.constraints());
+
+  Poly known_ph(dp.space_dimension());
+  known_ph.add_constraint(B + C == 3);
+  known_ph.add_constraint(A <= 11);
+#ifdef PH_IS_NNC
+  known_ph.add_constraint(A > 9);
+#else
+  known_ph.add_constraint(A >= 9);
+#endif
+
+  bool ok = (ph == known_ph);
+
+  print_constraints(ph, "*** ph ***");
+
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
+
+  return ok;
+}
+
+// minimized_constraints()
+bool
+test16() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Product dp(3);
+  dp.add_congruence((B + C %= 3) / 0);
+#ifdef PH_IS_NNC
+  dp.add_constraint(A > 9);
+#else
+  dp.add_constraint(A >= 9);
+#endif
+  dp.add_constraint(A <= 11);
+
+  Poly ph(dp.space_dimension());
+  ph.add_constraints(dp.constraints());
+
+  Poly known_ph(dp.space_dimension());
+  known_ph.add_constraint(B + C == 3);
+#ifdef PH_IS_NNC
+  known_ph.add_constraint(A > 9);
+#else
+  known_ph.add_constraint(A >= 9);
+#endif
+  known_ph.add_constraint(A <= 11);
+
+  bool ok = (ph == known_ph);
+
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
+
+  return ok;
+}
+
+// generators()
 bool
 test17() {
   Variable A(0);
@@ -667,37 +464,27 @@ test17() {
 
   Product dp(3);
   dp.add_congruence((B + C %= 3) / 0);
+#ifdef PH_IS_NNC
   dp.add_constraint(A > 9);
+#else
+  dp.add_constraint(A >= 9);
+#endif
   dp.add_constraint(A <= 11);
 
-  NNC_Polyhedron ph(dp.space_dimension());
-  ph.add_constraints(dp.constraints());
+  Poly ph(dp.space_dimension());
+  ph.add_generators(dp.generators());
 
-  NNC_Polyhedron known_ph(dp.space_dimension());
-  known_ph.add_constraint(B + C == 3);
-  known_ph.add_constraint(A <= 11);
-  known_ph.add_constraint(A > 9);
+  Poly known_ph(dp.space_dimension());
 
   bool ok = (ph == known_ph);
 
-  print_constraints(ph, "*** ph ***");
-
-#ifdef GRID_IS_D1
-  print_congruences(dp.domain1(),
-    "*** dp.domain1() ***");
-  print_constraints(dp.domain2(),
-     "*** dp.domain2() ***");
-#else
-  print_constraints(dp.domain1(),
-     "*** dp.domain1() ***");
-  print_congruences(dp.domain2(),
-     "*** dp.domain2() ***");
-#endif
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
 
   return ok;
 }
 
-// minimized_constraints()
+// minimized_generators()
 bool
 test18() {
   Variable A(0);
@@ -706,35 +493,27 @@ test18() {
 
   Product dp(3);
   dp.add_congruence((B + C %= 3) / 0);
+#ifdef PH_IS_NNC
   dp.add_constraint(A > 9);
+#else
+  dp.add_constraint(A >= 9);
+#endif
   dp.add_constraint(A <= 11);
 
-  NNC_Polyhedron ph(dp.space_dimension());
-  ph.add_constraints(dp.constraints());
+  Poly ph(dp.space_dimension());
+  ph.add_generators(dp.generators());
 
-  NNC_Polyhedron known_ph(dp.space_dimension());
-  known_ph.add_constraint(B + C == 3);
-  known_ph.add_constraint(A > 9);
-  known_ph.add_constraint(A <= 11);
+  Poly known_ph(dp.space_dimension());
 
   bool ok = (ph == known_ph);
 
-#ifdef GRID_IS_D1
-  print_congruences(dp.domain1(),
-    "*** dp.domain1() ***");
-  print_constraints(dp.domain2(),
-     "*** dp.domain2() ***");
-#else
-  print_constraints(dp.domain1(),
-     "*** dp.domain1() ***");
-  print_congruences(dp.domain2(),
-     "*** dp.domain2() ***");
-#endif
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
 
   return ok;
 }
 
-// generators()
+// grid_generators()
 bool
 test19() {
   Variable A(0);
@@ -743,35 +522,28 @@ test19() {
 
   Product dp(3);
   dp.add_congruence((B + C %= 3) / 0);
+#ifdef PH_IS_NNC
   dp.add_constraint(A > 9);
+#else
+  dp.add_constraint(A >= 9);
+#endif
   dp.add_constraint(A <= 11);
 
-  NNC_Polyhedron ph(dp.space_dimension());
-  ph.add_generators(dp.generators());
+  dimension_type d = dp.space_dimension();
 
-  NNC_Polyhedron known_ph(dp.space_dimension());
-  known_ph.add_generator(closure_point(9*A + 3*B));
-  known_ph.add_generator(point(11*A + 3*B));
-  known_ph.add_generator(line(B + C));
+  Grid gr(d);
 
-  bool ok = (ph == known_ph);
+  Grid known_gr(dp.space_dimension());
 
-#ifdef GRID_IS_D1
-  print_congruences(dp.domain1(),
-    "*** dp.domain1() ***");
-  print_constraints(dp.domain2(),
-     "*** dp.domain2() ***");
-#else
-  print_constraints(dp.domain1(),
-     "*** dp.domain1() ***");
-  print_congruences(dp.domain2(),
-     "*** dp.domain2() ***");
-#endif
+  bool ok = (gr == known_gr);
+
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
 
   return ok;
 }
 
-// minimized_generators()
+// minimized_grid_generators()
 bool
 test20() {
   Variable A(0);
@@ -780,33 +552,23 @@ test20() {
 
   Product dp(3);
   dp.add_congruence((B + C %= 3) / 0);
+#ifdef PH_IS_NNC
   dp.add_constraint(A > 9);
+#else
+  dp.add_constraint(A >= 9);
+#endif
   dp.add_constraint(A <= 11);
 
-  NNC_Polyhedron ph(dp.space_dimension());
-  ph.add_generators(dp.generators());
+  dimension_type d = dp.space_dimension();
 
-  NNC_Polyhedron known_ph(dp.space_dimension());
-  known_ph.add_generator(line(B - C));
-  known_ph.add_generator(closure_point(9*A + 3*B));
-  known_ph.add_generator(point(10*A + 3*B));
-  known_ph.add_generator(point(11*A + 3*B));
+  Grid gr(d);
 
-  // Maybe this should check that the generators are minimized.
+  Grid known_gr(dp.space_dimension());
 
-  bool ok = (ph == known_ph);
+  bool ok = (gr == known_gr);
 
-#ifdef GRID_IS_D1
-  print_congruences(dp.domain1(),
-    "*** dp.domain1() ***");
-  print_constraints(dp.domain2(),
-     "*** dp.domain2() ***");
-#else
-  print_constraints(dp.domain1(),
-     "*** dp.domain1() ***");
-  print_congruences(dp.domain2(),
-     "*** dp.domain2() ***");
-#endif
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
 
   return ok;
 }
@@ -825,15 +587,13 @@ BEGIN_MAIN
   DO_TEST(test09);
   //DO_TEST(test10);
   DO_TEST(test11);
-  DO_TEST_NNC(test12);
+  DO_TEST(test12);
   DO_TEST(test13);
   DO_TEST(test14);
   DO_TEST(test15);
-#ifdef OPEN_PRODUCT
   DO_TEST(test16);
-#endif
-  DO_TEST_NNC(test17);
-  DO_TEST_NNC(test18);
-  DO_TEST_NNC(test19);
-  DO_TEST_NNC(test20);
+  DO_TEST(test17);
+  DO_TEST(test18);
+  DO_TEST(test19);
+  DO_TEST(test20);
 END_MAIN

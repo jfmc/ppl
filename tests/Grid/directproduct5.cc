@@ -1,4 +1,4 @@
-/* Test Direct_Product<NNC_Polyhedron, Grid> reduction.
+/* Test Grid::congruences().
    Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -22,153 +22,393 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-// FIXME: rename once Reduced_Product name decided
+// #define PH_IS_NNC
+// #define PH_IS_FIRST
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
+#ifdef PH_IS_NNC
+typedef NNC_Polyhedron Poly;
+#else
+typedef C_Polyhedron Poly;
+#endif
+
+#ifdef PH_IS_FIRST
+typedef Domain_Product<Poly, Grid>::Direct_Product Product;
+#else
+typedef Domain_Product<Grid, Poly>::Direct_Product Product;
+#endif
 
 namespace {
 
-typedef Open_Product<NNC_Polyhedron, Grid> Product;
-
-// reduce()
+// add_constraints
 bool
 test01() {
+
   Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
-  Product dp(1);
-  dp.add_constraint(A > 7);
-  dp.add_constraint(A < 7);
+  Constraint_System cs;
+  cs.insert(A >= 0);
+  cs.insert(B == 0);
 
-  bool ok = dp.domain2().is_universe();
+  Product dp(2);
 
-  dp.reduce();
+  print_constraints(dp, "*** dp constraints ***");
+  print_congruences(dp, "*** dp congruences ***");
 
-  ok &= dp.domain2().is_empty();
+  dp.add_constraints(cs);
 
-  print_constraints(dp.domain1(), "*** dp.domain1() ***");
-  print_congruences(dp.domain2(), "*** dp.domain2() ***");
+  Product known_dp(2);
+  known_dp.add_constraint(A >= 0);
+  known_dp.add_constraint(B == 0);
+
+  bool ok = (dp == known_dp);
+
+  print_constraints(dp, "*** dp constraints ***");
+  print_congruences(dp, "*** dp congruences ***");
 
   return ok;
 }
 
-#if 0
-// reduce()
-bool
-testr0() {
-  Variable A(0);
-
-  Product dp(1);
-
-  dp.add_congruence((A %= 0) / 2);
-  dp.add_constraint(A >= 7);
-
-  bool ok = dp.reduce();
-
-  Product known_dp(1);
-  known_dp.add_congruence((A %= 0) / 2);
-  known_dp.add_constraint(A >= 8);
-
-  ok &= (dp == known_dp);
-
-  return ok;
-}
-
-// reduce() where there is a ph divisor > 1
-bool
-testr2() {
-  Variable A(0);
-
-  Product dp(1);
-
-  dp.add_congruence((A %= 0) / 3);
-  dp.add_constraint(3*A >= 2);
-
-  Product original_dp = dp;
-
-  bool ok = dp.reduce();
-
-  if (dp.domain1().strictly_contains(original_dp.domain1())) {
-    ok = false;
-    nout << "Polyhedron was reduced." << endl;
-  }
-  else
-    nout << "Polyhedron stayed the same." << endl;
-
-  if (dp.domain2().strictly_contains(original_dp.domain2())) {
-    ok = false;
-    nout << "Grid was reduced." << endl;
-  }
-  else
-    nout << "Grid stayed the same." << endl;
-
-  return ok;
-}
-
-// reduce() where there is a ph divisor > 1
-bool
-testr1() {
-  Variable A(0);
-
-  Product dp(1);
-
-  dp.add_congruence((A %= 0) / 2);
-  dp.add_constraint(3*A >= 2);
-
-  bool ok = dp.reduce();
-
-  Product known_dp(1);
-  known_dp.add_congruence((A %= 0) / 2);
-  known_dp.add_constraint(A >= 2);
-
-  ok &= (dp == known_dp);
-
-  return ok;
-}
-#endif
-
-// FIX tests that are specific to Open_Product
-
-// is_bounded(), due to intersection.
+// add_recycled_constraints
 bool
 test02() {
   Variable A(0);
   Variable B(1);
 
-  Product dp(2, EMPTY);
-  dp.add_grid_generator(grid_point());
-  dp.add_grid_generator(grid_line(A + B));
-  dp.add_generator(point());
-  dp.add_generator(line(A));
+  Constraint_System cs;
+  cs.insert(A + B <= 0);
 
-  bool ok = dp.is_bounded();
+  Product dp(2);
 
-  print_constraints(dp.domain1(), "*** dp.domain1() ***");
-  print_congruences(dp.domain2(), "*** dp.domain2() ***");
+  print_constraints(dp, "*** dp constraints ***");
+  print_congruences(dp, "*** dp congruences ***");
+
+  dp.add_recycled_constraints(cs);
+
+  Product known_dp(2);
+  known_dp.add_constraint(A + B <= 0);
+
+  bool ok = (dp == known_dp);
+
+  print_constraints(dp, "*** dp constraints ***");
+  print_congruences(dp, "*** dp congruences ***");
 
   return ok;
 }
 
-// reduce() when the added equality is implied.
+// add_constraints_and_minimize
 bool
 test03() {
   Variable A(0);
+  Variable B(1);
 
-  Product dp(1);
-  dp.add_constraint(A >= 7);
-  dp.add_constraint(A <= 7);
+  Constraint_System cs;
+  cs.insert(A >= 0);
+  cs.insert(A + B == 0);
 
-  bool ok = dp.domain2().is_universe();
+  Product dp(2);
 
-  dp.reduce();
+  print_constraints(dp, "*** dp constraints ***");
+  print_congruences(dp, "*** dp congruences ***");
 
-  Product dp1(1);
-  dp1.add_congruence((A %= 7) / 0);
+  dp.add_constraints_and_minimize(cs);
 
-  ok &= !dp.domain2().is_universe();
-  ok &= (dp == dp1);
+  Product known_dp(2);
+  known_dp.add_constraint(A >= 0);
+  known_dp.add_constraint(A + B == 0);
 
-  print_constraints(dp.domain1(), "*** dp.domain1() ***");
-  print_congruences(dp.domain2(), "*** dp.domain2() ***");
+  bool ok = (dp == known_dp);
+
+  return ok;
+}
+
+// add_recycled_constraints_and_minimize
+bool
+test04() {
+  Variable A(0);
+  Variable B(1);
+
+  Constraint_System cs;
+  cs.insert(B >= 0);
+  cs.insert(A - B == 0);
+
+  Product dp(2);
+
+  print_constraints(dp, "*** dp constraints ***");
+  print_congruences(dp, "*** dp congruences ***");
+
+  dp.add_recycled_constraints_and_minimize(cs);
+
+  Product known_dp(2);
+  known_dp.add_constraint(B >= 0);
+  known_dp.add_constraint(A - B == 0);
+
+  bool ok = (dp == known_dp);
+
+  print_constraints(dp, "*** dp constraints ***");
+  print_congruences(dp, "*** dp congruences ***");
+
+  return ok;
+}
+
+// add_congruences
+bool
+test05() {
+
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Congruence_System cgs;
+  cgs.insert((A %= 0) / 2);
+  cgs.insert((B == 0) / 2);
+
+  Product dp(2);
+
+  print_constraints(dp, "*** dp constraints ***");
+  print_congruences(dp, "*** dp congruences ***");
+
+  dp.add_congruences(cgs);
+
+  Product known_dp(2);
+  known_dp.add_congruence((A %= 0) / 2);
+  known_dp.add_congruence((B == 0) / 2);
+
+  bool ok = (dp == known_dp);
+
+  print_constraints(dp, "*** dp constraints ***");
+  print_congruences(dp, "*** dp congruences ***");
+
+  return ok;
+}
+
+#if (0)
+// add_recycled_congruences
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+
+  Congruence_System cgs;
+  cgs.insert((A + B %= 0) / 2);
+
+  Product dp(2);
+
+  print_constraints(dp, "*** dp constraints ***");
+  print_congruences(dp, "*** dp congruences ***");
+
+  dp.add_recycled_congruences(cgs);
+
+  Product known_dp(2);
+  known_dp.add_congruence((A + B %= 0) / 2);
+
+  bool ok = (dp == known_dp);
+
+  print_constraints(dp, "*** dp constraints ***");
+  print_congruences(dp, "*** dp congruences ***");
+
+  return ok;
+}
+
+// add_congruences_and_minimize
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
+
+  Congruence_System cgs;
+  cgs.insert((A %= 0) / 2);
+  cgs.insert(A + B == 0);
+
+  Product dp(2);
+
+  print_constraints(dp, "*** dp constraints ***");
+  print_congruences(dp, "*** dp congruences ***");
+
+  dp.add_congruences_and_minimize(cgs);
+
+  Product known_dp(2);
+  known_dp.add_congruence((A %= 0) / 2);
+  known_dp.add_congruence(A + B == 0);
+
+  bool ok = (dp == known_dp);
+
+  print_constraints(dp, "*** dp constraints ***");
+  print_congruences(dp, "*** dp congruences ***");
+
+  return ok;
+}
+
+// add_recycled_congruences_and_minimize
+bool
+test08() {
+  Variable A(0);
+  Variable B(1);
+
+  Congruence_System cgs;
+  cgs.insert((B %= 0) / 2);
+  cgs.insert(A - B == 0);
+
+  Product dp(2);
+
+  print_constraints(dp, "*** dp constraints ***");
+  print_congruences(dp, "*** dp congruences ***");
+
+  dp.add_recycled_congruences_and_minimize(cgs);
+
+  Product known_dp(2);
+  known_dp.add_congruence((B %= 0) / 2);
+  known_dp.add_congruence(A - B == 0);
+
+  bool ok = (dp == known_dp);
+
+  print_constraints(dp, "*** dp constraints ***");
+  print_congruences(dp, "*** dp congruences ***");
+
+  return ok;
+}
+
+#endif
+
+// relation_with a generator
+bool
+test09() {
+  Variable A(0);
+  Variable B(1);
+
+  Generator pnt(point(A + B));
+
+  Product dp(2);
+
+  bool ok = Poly_Gen_Relation::subsumes() == dp.relation_with(pnt);
+
+  print_constraints(dp, "*** dp constraints ***");
+  print_congruences(dp, "*** dp congruences ***");
+
+  return ok;
+}
+
+// relation_with a constraint
+bool
+test10() {
+  Variable A(0);
+  Variable B(1);
+
+  Constraint c(A == 2);
+
+  Product dp(2);
+
+  bool ok = Poly_Con_Relation::nothing() == dp.relation_with(c);
+
+  print_constraints(dp, "*** dp constraints ***");
+  print_congruences(dp, "*** dp congruences ***");
+
+  return ok;
+}
+
+// Empty product; relation_with a constraint.
+bool
+test11() {
+  Variable A(0);
+  Variable B(1);
+
+  Product dp(2);
+  dp.add_constraint(A == 1);
+  dp.add_congruence((A %= 2) / 0);
+
+  bool ok = (dp.relation_with(B == 0)
+	     == (Poly_Con_Relation::is_included()
+		 && Poly_Con_Relation::is_disjoint()
+	         && Poly_Con_Relation::saturates())
+	     && dp.relation_with(B >= 0)
+	     == (Poly_Con_Relation::is_included()
+		 && Poly_Con_Relation::is_disjoint()
+	         && Poly_Con_Relation::saturates()));
+
+  print_constraints(dp, "*** dp constraints ***");
+  print_congruences(dp, "*** dp congruences ***");
+
+  return ok;
+}
+
+// A product in 3D; relation_with a constraint.
+bool
+test12() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Product dp(3, EMPTY);
+  dp.add_grid_generator(grid_point(A + B + C));
+  dp.add_grid_generator(grid_line(A - 2*B + 3*C));
+  dp.add_grid_generator(parameter(A - B, 3));
+  dp.add_generator(point(A + B + C));
+  dp.add_generator(line(A - 2*B + 3*C));
+  dp.add_generator(ray(A - B));
+
+#ifdef PH_IS_FIRST
+  bool okdp1 = (dp.domain2().relation_with(2*A + B >= 3)
+	     == Poly_Con_Relation::strictly_intersects());
+
+  bool okdp2 = (dp.domain1().relation_with(2*A + B >= 3)
+	       == Poly_Con_Relation::is_included());
+#else
+  bool okdp1 = (dp.domain1().relation_with(2*A + B >= 3)
+	     == Poly_Con_Relation::strictly_intersects());
+
+  bool okdp2 = (dp.domain2().relation_with(2*A + B >= 3)
+	       == Poly_Con_Relation::is_included());
+#endif
+
+  bool ok = (okdp1 && okdp2
+             && dp.relation_with(A + B + C == 0)
+	     == Poly_Con_Relation::nothing()
+	     && dp.relation_with(A + B == 0)
+	     == Poly_Con_Relation::nothing()
+	     && dp.relation_with(A == 0)
+	     == Poly_Con_Relation::nothing()
+	     && dp.relation_with(Linear_Expression(0) == 0)
+	     == (Poly_Con_Relation::is_included()
+		 && Poly_Con_Relation::saturates())
+	     && dp.relation_with(2*A + B >= 3)
+	     == Poly_Con_Relation::is_included()
+	     && dp.relation_with(3*A + 3*B + C >= 7)
+	     == (Poly_Con_Relation::is_included()
+		 && Poly_Con_Relation::saturates()));
+
+  print_constraints(dp, "*** dp constraints ***");
+  print_congruences(dp, "*** dp congruences ***");
+
+  return ok;
+}
+
+// A product where the components strictly intersect the constraint.
+bool
+test13() {
+  Variable A(0);
+  Variable B(1);
+
+  Product dp(3, EMPTY);
+  dp.add_grid_generator(grid_point(A + B));
+  dp.add_grid_generator(grid_line(A - 2*B));
+  dp.add_grid_generator(parameter(A - B, 3));
+  dp.add_generator(point(A + B));
+  dp.add_generator(line(A - 2*B));
+  dp.add_generator(line(A));
+
+  bool okdp1 = (dp.domain1().relation_with(2*A + B >= 3)
+		== Poly_Con_Relation::strictly_intersects());
+
+  bool okdp2 = (dp.domain2().relation_with(2*A + B >= 3)
+	       == Poly_Con_Relation::strictly_intersects());
+
+  bool ok = (okdp1 && okdp2
+	     && dp.relation_with(2*A + B >= 3)
+	     == Poly_Con_Relation::nothing());
+
+  print_constraints(dp, "*** dp constraints ***");
+  print_congruences(dp, "*** dp congruences ***");
 
   return ok;
 }
@@ -179,4 +419,16 @@ BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
   DO_TEST(test03);
+  DO_TEST(test04);
+  DO_TEST(test05);
+#if 0
+  DO_TEST(test06);
+  DO_TEST(test07);
+  DO_TEST(test08);
+#endif
+  DO_TEST(test09);
+  DO_TEST(test10);
+  DO_TEST(test11);
+  DO_TEST(test12);
+  DO_TEST(test13);
 END_MAIN

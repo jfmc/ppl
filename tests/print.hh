@@ -204,6 +204,22 @@ print_generators(const Parma_Polyhedra_Library::Grid& gr,
 		 const std::string& intro = "",
 		 std::ostream& s = nout);
 
+template <typename D1, typename D2, typename R>
+void
+print_constraints(const Parma_Polyhedra_Library::Partially_Reduced_Product<D1, D2, R>& pd,
+		  const std::string& intro = "",
+		  std::ostream& s = nout) {
+  print_constraints(pd.constraints(), intro, s);
+}
+
+template <typename D1, typename D2, typename R>
+void
+print_congruences(const Parma_Polyhedra_Library::Partially_Reduced_Product<D1, D2, R>& pd,
+		  const std::string& intro = "",
+		  std::ostream& s = nout) {
+  print_congruences(pd.congruences(), intro, s);
+}
+
 void
 print_function(const Parma_Polyhedra_Library::Partial_Function& function,
 	       const std::string& intro = "",

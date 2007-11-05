@@ -24,32 +24,19 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
-// FIXME: Test both Direct_Product and Open_Product.
-// #define OPEN_PRODUCT
-// FIXME: Also test the other combination (Product<Ph, Grid>).
-#define GRID_IS_D1
-// FIXME: Also test with C_Polyhedron.
 #define PH_IS_NNC
+#define PH_IS_FIRST
 
 #ifdef PH_IS_NNC
-#define DO_TEST_NNC(test) DO_TEST(test)
+typedef NNC_Polyhedron Poly;
 #else
-#define NNC_Polyhedron C_Polyhedron
-#define DO_TEST_NNC(test)
+typedef C_Polyhedron Poly;
 #endif
 
-#ifdef OPEN_PRODUCT
-#ifdef GRID_IS_D1
-typedef Open_Product<Grid, NNC_Polyhedron> Product;
+#ifdef PH_IS_FIRST
+typedef Domain_Product<Poly, Grid>::Direct_Product Product;
 #else
-typedef Open_Product<NNC_Polyhedron, Grid> Product;
-#endif
-#else
-#ifdef GRID_IS_D1
-typedef Direct_Product<Grid, NNC_Polyhedron> Product;
-#else
-typedef Direct_Product<NNC_Polyhedron, Grid> Product;
-#endif
+typedef Domain_Product<Grid, Poly>::Direct_Product Product;
 #endif
 
 namespace {
@@ -67,6 +54,9 @@ test01() {
 
   bool ok = !dp.is_empty();
 
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
+
   return ok;
 }
 
@@ -76,10 +66,14 @@ test02() {
   Variable A(0);
 
   Product dp(3);
+
   dp.add_congruence((A %= 0) / 2);
   dp.add_congruence((A %= 1) / 2);
 
   bool ok = dp.is_empty();
+
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
 
   return ok;
 }
@@ -95,6 +89,9 @@ test03() {
 
   bool ok = dp.is_empty();
 
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
+
   return ok;
 }
 
@@ -104,6 +101,9 @@ test04() {
   Product dp(3, EMPTY);
 
   bool ok = !dp.is_universe();
+
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
 
   return ok;
 }
@@ -119,6 +119,9 @@ test05() {
 
   bool ok = !dp.is_universe();
 
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
+
   return ok;
 }
 
@@ -129,20 +132,34 @@ test06() {
 
   bool ok = dp.is_universe();
 
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
+
   return ok;
 }
 
-// is_topologically_closed() where the Polyhedron is topologically
+// is_topologically_closed() where the NNC Polyhedron is topologically
 // open.
 bool
 test07() {
   Variable A(0);
 
   Product dp(3);
+#ifdef PH_IS_NNC
   dp.add_constraint(A < 3);
+#else
+  dp.add_constraint(A <= 3);
+#endif
   dp.add_congruence((A %= 0) / 3);
 
+#ifdef PH_IS_NNC
   bool ok = !dp.is_topologically_closed();
+#else
+  bool ok = dp.is_topologically_closed();
+#endif
+
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
 
   return ok;
 }
@@ -159,6 +176,9 @@ test08() {
 
   bool ok = dp.is_topologically_closed();
 
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
+
   return ok;
 }
 
@@ -169,10 +189,19 @@ test09() {
   Variable A(0);
 
   Product dp(3);
-  dp.add_constraint(A < 3);
   dp.add_congruence((A %= 0) / 4);
+#ifdef PH_IS_NNC
+  dp.add_constraint(A < 3);
 
-  bool ok = !/* FIX */ dp.is_topologically_closed();
+  bool ok = !dp.is_topologically_closed();
+#else
+  dp.add_constraint(A <= 3);
+
+  bool ok = dp.is_topologically_closed();
+#endif
+
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
 
   return ok;
 }
@@ -183,12 +212,21 @@ test10() {
   Variable B(1);
 
   Product dp1(12);
-  dp1.add_constraint(B < 3);
-
   Product dp2(12);
+#ifdef PH_IS_NNC
+  dp1.add_constraint(B < 3);
   dp2.add_constraint(B > 3);
-
   bool ok = dp1.is_disjoint_from(dp2);
+#else
+  dp1.add_constraint(B <= 3);
+  dp2.add_constraint(B >= 4);
+  bool ok = dp1.is_disjoint_from(dp2);
+#endif
+
+  print_congruences(dp1, "*** dp1 congruences ***");
+  print_constraints(dp1, "*** dp1 constraints ***");
+  print_congruences(dp2, "*** dp2 congruences ***");
+  print_constraints(dp2, "*** dp2 constraints ***");
 
   return ok;
 }
@@ -206,6 +244,11 @@ test11() {
 
   bool ok = dp1.is_disjoint_from(dp2);
 
+  print_congruences(dp1, "*** dp1 congruences ***");
+  print_constraints(dp1, "*** dp1 constraints ***");
+  print_congruences(dp2, "*** dp2 congruences ***");
+  print_constraints(dp2, "*** dp2 constraints ***");
+
   return ok;
 }
 
@@ -215,14 +258,25 @@ test12() {
   Variable A(0);
 
   Product dp1(3);
-  dp1.add_constraint(A < 3);
   dp1.add_congruence((A %= 0) / 7);
-
   Product dp2(3);
-  dp2.add_constraint(A > 3);
   dp2.add_congruence((A %= 1) / 7);
+#ifdef PH_IS_NNC
+  dp1.add_constraint(A < 3);
+  dp2.add_constraint(A > 3);
 
   bool ok = dp1.is_disjoint_from(dp2);
+#else
+  dp1.add_constraint(A <= 2);
+  dp2.add_constraint(A >= 4);
+
+  bool ok = dp1.is_disjoint_from(dp2);
+#endif
+
+  print_congruences(dp1, "*** dp1 congruences ***");
+  print_constraints(dp1, "*** dp1 constraints ***");
+  print_congruences(dp2, "*** dp2 congruences ***");
+  print_constraints(dp2, "*** dp2 constraints ***");
 
   return ok;
 }
@@ -233,14 +287,25 @@ test13() {
   Variable A(0);
 
   Product dp1(3);
-  dp1.add_constraint(A < 6);
   dp1.add_congruence((A %= 1) / 7);
-
   Product dp2(3);
-  dp2.add_constraint(A > 3);
   dp2.add_congruence((A %= 1) / 14);
+#ifdef PH_IS_NNC
+  dp1.add_constraint(A < 6);
+  dp2.add_constraint(A > 3);
 
-  bool ok = !/* FIX */ dp1.is_disjoint_from(dp2);
+  bool ok = !dp1.is_disjoint_from(dp2);
+#else
+  dp1.add_constraint(A <= 6);
+  dp2.add_constraint(A >= 3);
+
+  bool ok = !dp1.is_disjoint_from(dp2);
+#endif
+
+  print_congruences(dp1, "*** dp1 congruences ***");
+  print_constraints(dp1, "*** dp1 constraints ***");
+  print_congruences(dp2, "*** dp2 congruences ***");
+  print_constraints(dp2, "*** dp2 constraints ***");
 
   return ok;
 }
@@ -272,6 +337,11 @@ test14() {
 
   bool ok = dp1.is_disjoint_from(dp2);
 
+  print_congruences(dp1, "*** dp1 congruences ***");
+  print_constraints(dp1, "*** dp1 constraints ***");
+  print_congruences(dp2, "*** dp2 congruences ***");
+  print_constraints(dp2, "*** dp2 constraints ***");
+
   return ok;
 }
 
@@ -290,6 +360,9 @@ test15() {
 
   bool ok = dp.is_discrete();
 
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
+
   return ok;
 }
 
@@ -306,10 +379,14 @@ test16() {
 
   bool ok = dp.is_discrete();
 
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
+
   return ok;
 }
 
-// is_discrete(), due to intersection.
+// is_discrete() is false, as the components are not discrete
+// although the intersection is discrete..
 bool
 test17() {
   Variable A(0);
@@ -321,7 +398,10 @@ test17() {
   dp.add_generator(point());
   dp.add_generator(line(A));
 
-  bool ok = dp.is_discrete();
+  bool ok = !dp.is_discrete();
+
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
 
   return ok;
 }
@@ -333,13 +413,23 @@ test18() {
   Variable B(1);
 
   Product dp(2);
+  dp.add_congruence((A %= 1) / 3);
+#ifdef PH_IS_NNC
   dp.add_constraint(A > 1);
   dp.add_constraint(A < 4);
   dp.add_constraint(B > 1);
   dp.add_constraint(B < 4);
-  dp.add_congruence((A %= 1) / 3);
+#else
+  dp.add_constraint(A >= 1);
+  dp.add_constraint(A <= 4);
+  dp.add_constraint(B >= 1);
+  dp.add_constraint(B <= 4);
+#endif
 
   bool ok = dp.is_bounded();
+
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
 
   return ok;
 }
@@ -356,6 +446,9 @@ test19() {
 
   bool ok = dp.is_bounded();
 
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
+
   return ok;
 }
 
@@ -371,11 +464,10 @@ test20() {
   dp.add_generator(point());
   dp.add_generator(line(A));
 
-#ifndef OPEN_PRODUCT
   bool ok = !dp.is_bounded();
-#else
-  bool ok = dp.is_bounded();
-#endif
+
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
 
   return ok;
 }
@@ -389,20 +481,18 @@ BEGIN_MAIN
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
-  DO_TEST_NNC(test07);
+  DO_TEST(test07);
   DO_TEST(test08);
-  DO_TEST_NNC(test09);
-  DO_TEST_NNC(test10);
+  DO_TEST(test09);
+  DO_TEST(test10);
   DO_TEST(test11);
-  DO_TEST_NNC(test12);
-  DO_TEST_NNC(test13);
+  DO_TEST(test12);
+  DO_TEST(test13);
   DO_TEST(test14);
   DO_TEST(test15);
   DO_TEST(test16);
-#ifdef OPEN_PRODUCT
   DO_TEST(test17);
-#endif
-  DO_TEST_NNC(test18);
+  DO_TEST(test18);
   DO_TEST(test19);
   DO_TEST(test20);
 END_MAIN
