@@ -143,11 +143,7 @@ test06() {
   C_Polyhedron ph2(3);
   ph2.add_congruences(cgs);
 
-  bool ok = (ph2 != known_ph);
-
-  ph2.add_constraint(A + B == 3);
-
-  ok &= (ph2 == known_ph);
+  bool ok = (ph2 == known_ph);
 
   print_congruences(cgs, "*** cgs ***");
   print_constraints(ph2, "*** ph2(cgs) ***");

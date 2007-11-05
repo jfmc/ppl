@@ -354,7 +354,7 @@ Polyhedron::simplified_constraints() const {
 
 inline Congruence_System
 Polyhedron::congruences() const {
-  return Congruence_System(constraints());
+  return Congruence_System(minimized_constraints());
 }
 
 inline Congruence_System
