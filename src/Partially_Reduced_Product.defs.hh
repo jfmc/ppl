@@ -1201,9 +1201,7 @@ public:
 				Relation_Symbol relsym,
 				const Linear_Expression& expr,
 				Coefficient_traits::const_reference denominator
-				= Coefficient_one(),
-				Coefficient_traits::const_reference modulus
-				= Coefficient_zero());
+				= Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
@@ -1236,9 +1234,7 @@ public:
 			      Relation_Symbol relsym,
 			      const Linear_Expression& expr,
 			      Coefficient_traits::const_reference denominator
-			      = Coefficient_one(),
-			      Coefficient_traits::const_reference modulus
-			      = Coefficient_zero());
+			      = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the image of \p *this with respect to the
@@ -1262,9 +1258,7 @@ public:
   */
   void generalized_affine_image(const Linear_Expression& lhs,
 				Relation_Symbol relsym,
-				const Linear_Expression& rhs,
-				Coefficient_traits::const_reference modulus
-				= Coefficient_zero());
+				const Linear_Expression& rhs);
 
   /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
@@ -1288,9 +1282,7 @@ public:
   */
   void generalized_affine_preimage(const Linear_Expression& lhs,
 				   Relation_Symbol relsym,
-				   const Linear_Expression& rhs,
-				   Coefficient_traits::const_reference modulus
-				   = Coefficient_zero());
+				   const Linear_Expression& rhs);
 
   /*!
     \brief
