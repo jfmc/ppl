@@ -457,6 +457,7 @@ test16() {
   return ok;
 }
 
+#if 0
 // generators()
 bool
 test17() {
@@ -574,6 +575,7 @@ test20() {
 
   return ok;
 }
+#endif
 
 } // namespace
 
@@ -594,8 +596,8 @@ BEGIN_MAIN
   DO_TEST(test14);
   DO_TEST(test15);
   DO_TEST(test16);
-  DO_TEST(test17);
-  DO_TEST(test18);
-  DO_TEST(test19);
-  DO_TEST(test20);
+//  DO_TEST(test17);
+//  DO_TEST(test18);
+//  DO_TEST(test19);
+//  DO_TEST(test20);
 END_MAIN

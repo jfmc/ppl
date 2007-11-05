@@ -174,8 +174,7 @@ test05() {
   return ok;
 }
 
-// generalized_affine_preimage(v, EQUAL, e, d, denom),
-// add_generator(),
+// generalized_affine_preimage(v, EQUAL, e, d),
 bool
 test06() {
   Variable A(0);
@@ -188,15 +187,9 @@ test06() {
 
   dp.generalized_affine_preimage(B, EQUAL, A + B, 1);
 
-  Product known_dp(3, EMPTY);
-  known_dp.add_grid_generator(grid_point());
-  known_dp.add_grid_generator(parameter(2*B));
-  known_dp.add_grid_generator(parameter(A + B));
-  known_dp.add_grid_generator(grid_line(C));
-  known_dp.add_generator(point());
-  known_dp.add_generator(line(A));
-  known_dp.add_generator(line(B));
-  known_dp.add_generator(line(C));
+  Product known_dp(3);
+  known_dp.add_congruence((A + B %= 0) / 2);
+  known_dp.add_congruence(A %= 0);
 
   bool ok = (dp == known_dp);
 

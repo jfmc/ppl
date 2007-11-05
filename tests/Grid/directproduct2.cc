@@ -392,11 +392,14 @@ test17() {
   Variable A(0);
   Variable B(1);
 
-  Product dp(3, EMPTY);
-  dp.add_grid_generator(grid_point());
-  dp.add_grid_generator(grid_line(A + B));
-  dp.add_generator(point());
-  dp.add_generator(line(A));
+  Product dp(3);
+  dp.add_congruence((A - B %= 0) / 0);
+  dp.add_constraint(B >= 0);
+  dp.add_constraint(B <= 0);
+/*   dp.add_grid_generator(grid_point()); */
+/*   dp.add_grid_generator(grid_line(A + B)); */
+/*   dp.add_generator(point()); */
+/*   dp.add_generator(line(A)); */
 
   bool ok = !dp.is_discrete();
 
@@ -438,33 +441,14 @@ test18() {
 bool
 test19() {
   Variable A(0);
-
-  Product dp(2, EMPTY);
-  dp.add_generator(point());
-  dp.add_generator(ray(-A));
-  dp.add_grid_generator(grid_point());
-
-  bool ok = dp.is_bounded();
-
-  print_congruences(dp, "*** dp congruences ***");
-  print_constraints(dp, "*** dp constraints ***");
-
-  return ok;
-}
-
-// is_bounded(), due to intersection.
-bool
-test20() {
-  Variable A(0);
   Variable B(1);
 
-  Product dp(2, EMPTY);
-  dp.add_grid_generator(grid_point());
-  dp.add_grid_generator(grid_line(A + B));
-  dp.add_generator(point());
-  dp.add_generator(line(A));
+  Product dp(2);
+  dp.add_congruence((A %= 0) / 0);
+  dp.add_congruence((B %= 0) / 0);
+  dp.add_constraint(B <= 0);
 
-  bool ok = !dp.is_bounded();
+  bool ok = dp.is_bounded();
 
   print_congruences(dp, "*** dp congruences ***");
   print_constraints(dp, "*** dp constraints ***");
@@ -494,5 +478,4 @@ BEGIN_MAIN
   DO_TEST(test17);
   DO_TEST(test18);
   DO_TEST(test19);
-  DO_TEST(test20);
 END_MAIN

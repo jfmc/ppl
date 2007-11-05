@@ -22,7 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-// #define PH_IS_NNC
+#define PH_IS_NNC
 // #define PH_IS_FIRST
 
 #ifdef PH_IS_NNC
@@ -72,39 +72,38 @@ test02() {
   Product dp(3);
   dp.add_constraint(A - C <= 9);
   dp.add_constraint(A - C >= 9);
-  dp.add_constraint(B == 2);
+  dp.add_constraint(B >= 2);
 
 #ifdef PH_IS_FIRST
-  bool ok1 = (dp.domain2().affine_dimension() == 2
-	      && dp.domain1().affine_dimension() == 1);
-  bool ok2 = (dp.domain2().affine_dimension() == 1
+  bool ok1 = (dp.domain2().affine_dimension() == 3
 	      && dp.domain1().affine_dimension() == 2);
+  bool ok2 = (dp.domain2().affine_dimension() == 2
+	      && dp.domain1().affine_dimension() == 3);
 #else
   bool ok1 = (dp.domain1().affine_dimension() == 2
-	      && dp.domain2().affine_dimension() == 1);
-  bool ok2 = (dp.domain1().affine_dimension() == 1
+	      && dp.domain2().affine_dimension() == 3);
+  bool ok2 = (dp.domain1().affine_dimension() == 3
 	      && dp.domain2().affine_dimension() == 2);
 #endif
-  bool ok = (dp.affine_dimension() == 1 && (ok1 || ok2) );
+  bool ok = (dp.affine_dimension() == 2 && (ok1 || ok2) );
 
   if (ok) {
     dp.add_constraint(C == 4);
-    dp.add_generator(ray(B));
-    dp.add_generator(point(A + C));
+    dp.add_constraint(B == 2);
 
 #ifdef PH_IS_FIRST
-  bool ok3 = !ok1 && (dp.domain2().affine_dimension() == 2
+  bool ok3 = !ok1 && (dp.domain2().affine_dimension() == 1
+	      && dp.domain1().affine_dimension() == 0);
+  bool ok4 = ! ok2 && (dp.domain2().affine_dimension() == 0
 	      && dp.domain1().affine_dimension() == 1);
-  bool ok4 = ! ok2 && (dp.domain2().affine_dimension() == 1
-	      && dp.domain1().affine_dimension() == 2);
 #else
-  bool ok3 = !ok1 && (dp.domain1().affine_dimension() == 2
+  bool ok3 = !ok1 && (dp.domain1().affine_dimension() == 1
+	      && dp.domain2().affine_dimension() == 0);
+  bool ok4 = ! ok2 && (dp.domain1().affine_dimension() == 0
 	      && dp.domain2().affine_dimension() == 1);
-  bool ok4 = ! ok2 && (dp.domain1().affine_dimension() == 1
-	      && dp.domain2().affine_dimension() == 2);
 #endif
 
-    ok &= (dp.affine_dimension() == 1 && (ok1 && ok4) || (ok2 && ok3) );
+    ok &= (dp.affine_dimension() == 0 && (ok1 && ok4) || (ok2 && ok3) );
   }
 
   print_congruences(dp, "*** dp congruences ***");
@@ -593,38 +592,35 @@ test18() {
   Variable B(1);
   Variable C(2);
 
-  Product dp1(3, EMPTY);
-  dp1.add_grid_generator(grid_point());
-  dp1.add_grid_generator(grid_point(A + 2*B - 3*C, 3));
-  dp1.add_generator(point(3*A));
-  dp1.add_generator(ray(A));
-  dp1.add_generator(point(3*B));
-  dp1.add_generator(ray(B));
-  dp1.add_generator(line(C));
+  Product dp1(3);
+  dp1.add_constraint(A >= 0);
+  dp1.add_constraint(B >= 0);
+  dp1.add_constraint(A + B >= 3);
+  dp1.add_constraint(2*A - B == 0);
+  dp1.add_constraint(3*A + C == 0);
+  dp1.add_congruence(3*A %= 0);
 
-  Product dp2(3, EMPTY);
-  dp2.add_grid_generator(grid_point(3*A - B + 4*C, 7));
-  dp2.add_generator(point(A + B));
+  Product dp2(3);
+  dp2.add_constraint(7*C == 4);
+  dp2.add_constraint(7*B == -1);
+  dp2.add_constraint(7*A == 3);
 
   dp1.time_elapse_assign(dp2);
 
-  Product known_dp(3, EMPTY);
-  known_dp.add_grid_generator(grid_point());
-  known_dp.add_grid_generator(grid_point(A + 2*B - 3*C, 3));
-  known_dp.add_grid_generator(grid_point(3*A - B + 4*C, 7));
-  // Same Generators as dp1.
-  known_dp.add_generator(point(3*A));
-  known_dp.add_generator(ray(A));
-  known_dp.add_generator(point(3*B));
-  known_dp.add_generator(ray(B));
-  known_dp.add_generator(line(C));
+  Product known_dp(3);
+  known_dp.add_constraint(5*A - 13*B - 7*C == 0);
+  known_dp.add_constraint(3*A + C >= 0);
+  known_dp.add_constraint(A + B >= 3);
+  known_dp.add_constraint(4*A - 3*C >= 13);
+  known_dp.add_congruence((65*A - B %= 0) / 7);
+  known_dp.add_congruence(21*A %= 0);
 
   bool ok = (dp1 == known_dp);
 
-  print_congruences(dp1, "*** dp1 congruences ***");
-  print_constraints(dp1, "*** dp1 constraints ***");
-  print_congruences(dp2, "*** dp2 congruences ***");
-  print_constraints(dp2, "*** dp2 constraints ***");
+  print_congruences(dp1, "*** dp1.time_elapse_assign(dp2) congruences ***");
+  print_constraints(dp1, "*** dp1.time_elapse_assign(dp2) constraints ***");
+  print_congruences(dp2, "*** dp2.time_elapse_assign(dp2) congruences ***");
+  print_constraints(dp2, "*** dp2.time_elapse_assign(dp2) constraints ***");
 
   return ok;
 }
@@ -636,27 +632,30 @@ test19() {
   Variable B(1);
   Variable C(2);
 
-  Product dp(3, EMPTY);
-  dp.add_grid_generator(grid_point());
-  dp.add_grid_generator(grid_point(A + 2*B - 3*C, 3));
-  dp.add_generator(point(A));
+  Product dp(3);
+  dp.add_constraint(C == 0);
+  dp.add_constraint(B >= 0);
+  dp.add_constraint(3*A + C == 0);
+  dp.add_constraint(2*A - B == 0);
+  dp.add_congruence(3*A %= 0);
 #ifdef PH_IS_NNC
-  dp.add_generator(closure_point());
+  dp.add_constraint(A > 0);
 #else
-  dp.add_generator(point());
+  dp.add_constraint(A >= 0);
 #endif
-  dp.add_generator(ray(A));
-  dp.add_generator(ray(B));
+
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
 
   dp.topological_closure_assign();
 
-  Product known_dp(3, EMPTY);
-  known_dp.add_generator(point());
-  known_dp.add_generator(ray(A));
-  known_dp.add_generator(ray(B));
-  // Add Grid_Generators as to dp.
-  known_dp.add_grid_generator(grid_point());
-  known_dp.add_grid_generator(grid_point(A + 2*B - 3*C, 3));
+  Product known_dp(3);
+  known_dp.add_constraint(C == 0);
+  known_dp.add_constraint(B >= 0);
+  known_dp.add_constraint(3*A + C == 0);
+  known_dp.add_constraint(2*A - B == 0);
+  known_dp.add_congruence(3*A %= 0);
+  known_dp.add_constraint(A >= 0);
 
   bool ok = (dp == known_dp);
 
@@ -673,33 +672,43 @@ test20() {
   Variable B(1);
   Variable C(2);
 
-  Product dp_prev(3, EMPTY);
-  dp_prev.add_grid_generator(grid_point());
-  dp_prev.add_grid_generator(grid_point(A, 3));
-  dp_prev.add_grid_generator(grid_point(2*B));
-  dp_prev.add_generator(point(A));
-  dp_prev.add_generator(point(2*A));
-  dp_prev.add_generator(point(2*A + B));
+  Product dp_prev(3);
+  dp_prev.add_constraint(C == 0);
+  dp_prev.add_constraint(A - B >= 1);
+  dp_prev.add_constraint(A <= 2);
+  dp_prev.add_constraint(B >= 0);
+  dp_prev.add_congruence((B %= 0) / 2);
+  dp_prev.add_congruence(3*A %= 0);
 
-  Product dp(dp_prev);
-  dp.add_grid_generator(parameter(A, 6));
-  dp.add_generator(point(2*A + 2*B));
+  print_congruences(dp_prev, "*** dp_prev congruences ***");
+  print_constraints(dp_prev, "*** dp_prev constraints ***");
+
+  Product dp(3);
+  dp.add_constraint(C == 0);
+  dp.add_constraint(A <= 2);
+  dp.add_constraint(B >= 0);
+  dp.add_constraint(2*A - B >= 2);
+  dp.add_constraint(B >= 0);
+  dp.add_congruence(6*A %= 0);
+  dp.add_congruence((B %= 0) / 2);
+
   dp.upper_bound_assign(dp_prev);
-
-  dp.widening_assign(dp_prev);
-
-  Product known_dp(3, EMPTY);
-  known_dp.add_grid_generator(grid_point());
-  known_dp.add_grid_generator(grid_point(2*B));
-  known_dp.add_grid_generator(grid_line(A));
-  known_dp.add_generator(point(2*A));
-  known_dp.add_generator(ray(-A));
-  known_dp.add_generator(ray(B));
-
-  bool ok = (dp == known_dp);
 
   print_congruences(dp, "*** dp congruences ***");
   print_constraints(dp, "*** dp constraints ***");
+
+  dp.widening_assign(dp_prev);
+
+  Product known_dp(3);
+  known_dp.add_constraint(C == 0);
+  known_dp.add_constraint(A <= 2);
+  known_dp.add_constraint(B >= 0);
+  known_dp.add_congruence((B %= 0) / 2);
+
+  bool ok = (dp == known_dp);
+
+  print_congruences(dp, "*** dp.widening_assign(dp_prev) congruences ***");
+  print_constraints(dp, "*** dp.widening_assign(dp_prev) constraints ***");
 
   return ok;
 }

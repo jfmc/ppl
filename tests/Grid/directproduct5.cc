@@ -339,13 +339,10 @@ test12() {
   Variable B(1);
   Variable C(2);
 
-  Product dp(3, EMPTY);
-  dp.add_grid_generator(grid_point(A + B + C));
-  dp.add_grid_generator(grid_line(A - 2*B + 3*C));
-  dp.add_grid_generator(parameter(A - B, 3));
-  dp.add_generator(point(A + B + C));
-  dp.add_generator(line(A - 2*B + 3*C));
-  dp.add_generator(ray(A - B));
+  Product dp(3);
+  dp.add_constraint(3*A + 3*B + C == 7);
+  dp.add_constraint(3*A - C >= 2);
+  dp.add_congruence(6*A + 3*B %= 0);
 
 #ifdef PH_IS_FIRST
   bool okdp1 = (dp.domain2().relation_with(2*A + B >= 3)
@@ -388,14 +385,11 @@ bool
 test13() {
   Variable A(0);
   Variable B(1);
+  Variable C(2);
 
-  Product dp(3, EMPTY);
-  dp.add_grid_generator(grid_point(A + B));
-  dp.add_grid_generator(grid_line(A - 2*B));
-  dp.add_grid_generator(parameter(A - B, 3));
-  dp.add_generator(point(A + B));
-  dp.add_generator(line(A - 2*B));
-  dp.add_generator(line(A));
+  Product dp(3);
+  dp.add_constraint(C == 0);
+  dp.add_congruence(6*A + 3*B %= 0);
 
   bool okdp1 = (dp.domain1().relation_with(2*A + B >= 3)
 		== Poly_Con_Relation::strictly_intersects());
