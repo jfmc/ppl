@@ -117,9 +117,7 @@ test03() {
   return ok;
 }
 
-#if 0
-// Waiting for implementation
-// generalized_affine_image(v, e, d, modulus)
+// generalized_affine_image(v, EQUAL, e, d, denom, modulus)
 bool
 test04() {
   Variable A(0);
@@ -130,10 +128,12 @@ test04() {
   dp.add_congruence((A + B %= 0) / 2);
   dp.add_constraint(A >= 3);
 
-  dp.generalized_affine_image(B, A + 1, 2);
+  dp.generalized_affine_image(B, EQUAL, A + 1, 2, 1);
 
   Product known_dp(3);
-  known_dp.add_congruence((A - 2*B %= -1) / 2);
+  known_dp.add_congruence((A + 2*B %= -1) / 2);
+  known_dp.add_constraint(A - 2*B >= -1);
+  known_dp.add_constraint(A - 2*B <= -1);
   known_dp.add_congruence(A %= 0);
   known_dp.add_constraint(A >= 3);
 
@@ -144,7 +144,6 @@ test04() {
 
   return ok;
 }
-#endif
 
 // generalized_affine_preimage(v, relsym, e, d)
 bool
@@ -173,9 +172,8 @@ test05() {
   return ok;
 }
 
-#if 0
-// generalized_affine_preimage(v, e, d, modulus), add_generator(),
-// add_generators(), add_grid_generators()
+// generalized_affine_preimage(v, EQUAL, e, d, denom, modulus),
+// add_generator(),
 bool
 test06() {
   Variable A(0);
@@ -186,23 +184,17 @@ test06() {
   dp.add_congruence(A %= 0);
   dp.add_congruence((B %= 0) / 2);
 
-  dp.generalized_affine_preimage(B, A + B, 1, 0);
-
-  Grid_Generator_System ggs;
-  ggs.insert(grid_point());
-  ggs.insert(parameter(2*B));
-  ggs.insert(parameter(A + B));
-  ggs.insert(grid_line(C));
-
-  Generator_System gs;
-  gs.insert(point());
-  gs.insert(line(A));
-  gs.insert(line(B));
-  gs.insert(line(C));
+  dp.generalized_affine_preimage(B, EQUAL, A + B, 1, 0);
 
   Product known_dp(3, EMPTY);
-  known_dp.add_grid_generators(ggs);
-  known_dp.add_generators(gs);
+  known_dp.add_grid_generator(grid_point());
+  known_dp.add_grid_generator(parameter(2*B));
+  known_dp.add_grid_generator(parameter(A + B));
+  known_dp.add_grid_generator(grid_line(C));
+  known_dp.add_generator(point());
+  known_dp.add_generator(line(A));
+  known_dp.add_generator(line(B));
+  known_dp.add_generator(line(C));
 
   bool ok = (dp == known_dp);
 
@@ -211,7 +203,6 @@ test06() {
 
   return ok;
 }
-#endif
 
 // generalized_affine_image(lhs, relsym, rhs)
 bool
@@ -240,8 +231,8 @@ test07() {
   return ok;
 }
 
-#if 0
-// generalized_affine_image(lhs, EQUAL, rhs, modulus), add_congruences(cgs)
+// generalized_affine_image(lhs, EQUAL, rhs, modulus),
+// add_congruences(cgs)
 bool
 test08() {
   Variable A(0);
@@ -257,13 +248,8 @@ test08() {
 
   dp.generalized_affine_image(A + 2*B, EQUAL, A - B, 3);
 
-  Product known_dp(2, EMPTY);
-  known_dp.add_grid_generator(grid_point());
-  known_dp.add_grid_generator(grid_point(B, 2));
-  known_dp.add_grid_generator(grid_line(2*A - B));
-  known_dp.add_generator(point(3*A));
-  known_dp.add_generator(ray(-A));
-  known_dp.add_generator(line(B));
+  Product known_dp(2);
+  known_dp.add_congruence((A + 2*B %= 0) / 1);
 
   bool ok = (dp == known_dp);
 
@@ -272,7 +258,6 @@ test08() {
 
   return ok;
 }
-#endif
 
 // generalized_affine_preimage(lhs, relsym, rhs), add_constraints(cs)
 bool
@@ -304,7 +289,6 @@ test09() {
   return ok;
 }
 
-#if 0
 // generalized_affine_preimage(lhs, EQUAL, rhs, modulus)
 bool
 test10() {
@@ -329,7 +313,6 @@ test10() {
 
   return ok;
 }
-#endif
 
 // add_constraints
 bool
@@ -567,13 +550,13 @@ BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
   DO_TEST(test03);
-//  DO_TEST(test04);
+  DO_TEST(test04);
   DO_TEST(test05);
-//  DO_TEST(test06);
+  DO_TEST(test06);
   DO_TEST(test07);
-//  DO_TEST(test08);
+  DO_TEST(test08);
   DO_TEST(test09);
-//  DO_TEST(test10);
+  DO_TEST(test10);
   DO_TEST(test11);
   DO_TEST(test12);
   DO_TEST(test13);

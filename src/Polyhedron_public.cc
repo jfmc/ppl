@@ -2306,7 +2306,8 @@ PPL::Polyhedron::
 generalized_affine_image(const Variable var,
 			 const Relation_Symbol relsym,
 			 const Linear_Expression& expr,
-			 Coefficient_traits::const_reference denominator) {
+			 Coefficient_traits::const_reference denominator,
+			 Coefficient_traits::const_reference) {
   // The denominator cannot be zero.
   if (denominator == 0)
     throw_invalid_argument("generalized_affine_image(v, r, e, d)", "d == 0");
@@ -2398,7 +2399,8 @@ PPL::Polyhedron::
 generalized_affine_preimage(const Variable var,
 			    const Relation_Symbol relsym,
 			    const Linear_Expression& expr,
-			    Coefficient_traits::const_reference denominator) {
+			    Coefficient_traits::const_reference denominator,
+			    Coefficient_traits::const_reference) {
   // The denominator cannot be zero.
   if (denominator == 0)
     throw_invalid_argument("generalized_affine_preimage(v, r, e, d)",
@@ -2504,7 +2506,8 @@ generalized_affine_preimage(const Variable var,
 void
 PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
 					  const Relation_Symbol relsym,
-					  const Linear_Expression& rhs) {
+					  const Linear_Expression& rhs,
+			                  Coefficient_traits::const_reference) {
   // Dimension-compatibility checks.
   // The dimension of `lhs' should not be greater than the dimension
   // of `*this'.
@@ -2662,7 +2665,8 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
 void
 PPL::Polyhedron::generalized_affine_preimage(const Linear_Expression& lhs,
 					     const Relation_Symbol relsym,
-					     const Linear_Expression& rhs) {
+					     const Linear_Expression& rhs,
+			                     Coefficient_traits::const_reference) {
   // Dimension-compatibility checks.
   // The dimension of `lhs' should not be greater than the dimension
   // of `*this'.

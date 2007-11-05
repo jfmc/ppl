@@ -192,9 +192,10 @@ Partially_Reduced_Product<D1, D2, R>
 ::generalized_affine_image(Variable var,
 			   const Relation_Symbol relsym,
 			   const Linear_Expression& expr,
-			   Coefficient_traits::const_reference denominator) {
-  d1.generalized_affine_image(var, relsym, expr, denominator);
-  d2.generalized_affine_image(var, relsym, expr, denominator);
+			   Coefficient_traits::const_reference denominator,
+			   Coefficient_traits::const_reference modulus) {
+  d1.generalized_affine_image(var, relsym, expr, denominator, modulus);
+  d2.generalized_affine_image(var, relsym, expr, denominator, modulus);
 }
 
 template <typename D1, typename D2, typename R>
@@ -203,9 +204,10 @@ Partially_Reduced_Product<D1, D2, R>
 ::generalized_affine_preimage(Variable var,
 			      const Relation_Symbol relsym,
 			      const Linear_Expression& expr,
-			      Coefficient_traits::const_reference denominator) {
-  d1.generalized_affine_preimage(var, relsym, expr, denominator);
-  d2.generalized_affine_preimage(var, relsym, expr, denominator);
+			      Coefficient_traits::const_reference denominator,
+			      Coefficient_traits::const_reference modulus) {
+  d1.generalized_affine_preimage(var, relsym, expr, denominator, modulus);
+  d2.generalized_affine_preimage(var, relsym, expr, denominator, modulus);
 }
 
 template <typename D1, typename D2, typename R>
@@ -213,9 +215,10 @@ inline void
 Partially_Reduced_Product<D1, D2, R>
 ::generalized_affine_image(const Linear_Expression& lhs,
 			   const Relation_Symbol relsym,
-			   const Linear_Expression& rhs) {
-  d1.generalized_affine_image(lhs, relsym, rhs);
-  d2.generalized_affine_image(lhs, relsym, rhs);
+			   const Linear_Expression& rhs,
+			   Coefficient_traits::const_reference modulus) {
+  d1.generalized_affine_image(lhs, relsym, rhs, modulus);
+  d2.generalized_affine_image(lhs, relsym, rhs, modulus);
 }
 
 template <typename D1, typename D2, typename R>
@@ -223,9 +226,10 @@ inline void
 Partially_Reduced_Product<D1, D2, R>
 ::generalized_affine_preimage(const Linear_Expression& lhs,
 			      const Relation_Symbol relsym,
-			      const Linear_Expression& rhs) {
-  d1.generalized_affine_preimage(lhs, relsym, rhs);
-  d2.generalized_affine_preimage(lhs, relsym, rhs);
+			      const Linear_Expression& rhs,
+			      Coefficient_traits::const_reference modulus) {
+  d1.generalized_affine_preimage(lhs, relsym, rhs, modulus);
+  d2.generalized_affine_preimage(lhs, relsym, rhs, modulus);
 }
 
 
