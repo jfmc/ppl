@@ -93,7 +93,7 @@ membytes1 \
 mingenerators1 \
 mincongruences1 \
 outputoperator1 outputoperator2 outputoperator3 \
-partiallyreducedproduct1 \
+partiallyreducedproduct1 partiallyreducedproduct2 \
 partition1 \
 powersetdifference1 \
 powersetgeometricallycovers1 \
@@ -238,6 +238,7 @@ outputoperator2_SOURCES = outputoperator2.cc
 outputoperator3_SOURCES = outputoperator3.cc
 
 partiallyreducedproduct1_SOURCES = partiallyreducedproduct1.cc
+partiallyreducedproduct2_SOURCES = partiallyreducedproduct2.cc
 
 partition1_SOURCES = partition1.cc
 
