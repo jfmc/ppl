@@ -359,38 +359,6 @@ public:
   */
   explicit Partially_Reduced_Product(Constraint_System& cs);
 
-  //! Builds a pair, copying a system of grid generators.
-  /*!
-    The pair inherits the space dimension of the grid generator system.
-
-    \param const_gs
-    The system of grid generators to be approximated by the pair.
-
-    \exception std::invalid_argument
-    Thrown if the system of grid generators is not empty but has no points.
-
-    \exception std::length_error
-    Thrown if \p num_dimensions exceeds the maximum allowed space
-    dimension.
-  */
-  explicit Partially_Reduced_Product(const Grid_Generator_System& const_gs);
-
-  //! Builds a pair, recycling a system of grid generators.
-  /*!
-    The pair inherits the space dimension of the grid generator system.
-
-    \param gs
-    The system of grid generators to be approximated by the pair.
-    Its data-structures may be recycled to build the pair.
-
-    \exception std::invalid_argument
-    Thrown if the system of grid generators is not empty but has no points.
-
-    \exception std::length_error
-    Thrown if \p num_dimensions exceeds the maximum allowed space dimension.
-  */
-  explicit Partially_Reduced_Product(Grid_Generator_System& gs);
-
   //! Builds a pair, copying a system of generators.
   /*!
     The pair inherits the space dimension of the generator system.

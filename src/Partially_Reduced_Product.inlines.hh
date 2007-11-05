@@ -71,20 +71,6 @@ Partially_Reduced_Product<D1, D2, R>::Partially_Reduced_Product(Constraint_Syste
 
 template <typename D1, typename D2, typename R>
 inline
-Partially_Reduced_Product<D1, D2, R>::Partially_Reduced_Product(const Grid_Generator_System& gs)
-  : d1(gs), d2(gs) {
-  clear_reduced_flag();
-}
-
-template <typename D1, typename D2, typename R>
-inline
-Partially_Reduced_Product<D1, D2, R>::Partially_Reduced_Product(Grid_Generator_System& gs)
-  : d1(gs), d2(gs) {
-  clear_reduced_flag();
-}
-
-template <typename D1, typename D2, typename R>
-inline
 Partially_Reduced_Product<D1, D2, R>::Partially_Reduced_Product(const Generator_System& gs)
   : d1(gs), d2(gs) {
   clear_reduced_flag();

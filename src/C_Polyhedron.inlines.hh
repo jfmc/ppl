@@ -92,34 +92,6 @@ C_Polyhedron::C_Polyhedron(Generator_System& gs, Recycle_Input)
 	       Recycle_Input()) {
 }
 
-inline
-C_Polyhedron::C_Polyhedron(const Grid_Generator_System& ggs)
-  : Polyhedron(NECESSARILY_CLOSED,
-	       ggs.space_dimension() <= max_space_dimension()
-	       ? ggs.space_dimension()
-	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
-						 "C_Polyhedron(ggs)",
-						 "the space dimension of ggs "
-						 "exceeds the maximum allowed "
-						 "space dimension"), 0),
-	       UNIVERSE) {
-  // FIXME: is this implementation complete?
-}
-
-inline
-C_Polyhedron::C_Polyhedron(Grid_Generator_System& ggs, Recycle_Input)
-  : Polyhedron(NECESSARILY_CLOSED,
-	       ggs.space_dimension() <= max_space_dimension()
-	       ? ggs.space_dimension()
-	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
-						 "C_Polyhedron(ggs, recycle)",
-						 "the space dimension of ggs "
-						 "exceeds the maximum allowed "
-						 "space dimension"), 0),
-	       UNIVERSE) {
-  // FIXME: is this implementation complete?
-}
-
 template <typename Interval>
 inline
 C_Polyhedron::C_Polyhedron(const Box<Interval>& box)

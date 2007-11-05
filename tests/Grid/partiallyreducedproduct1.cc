@@ -199,6 +199,7 @@ test06() {
   return ok;
 }
 
+#if 0
 // Product(cggs), add_grid_generator(g)
 bool
 test07() {
@@ -240,6 +241,7 @@ test08() {
 
   return ok;
 }
+#endif
 
 // Product(bounding_box)
 bool
@@ -753,8 +755,8 @@ BEGIN_MAIN
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
-  DO_TEST(test07);
-  DO_TEST(test08);
+  //DO_TEST(test07);
+  //DO_TEST(test08);
   DO_TEST(test09);
   //DO_TEST(test10);
   DO_TEST(test11);
