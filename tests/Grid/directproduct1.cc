@@ -176,6 +176,7 @@ test06() {
   return ok;
 }
 
+#if 0
 // Product(ggs), add_grid_generator(g)
 // FIXME: The constructor for a grid_generator and add_grid_generator
 //        behave differently - hence the need for adding universe generators.
@@ -233,6 +234,7 @@ test08() {
 
   return ok;
 }
+#endif
 
 // Product(bounding_box)
 bool
@@ -582,8 +584,8 @@ BEGIN_MAIN
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
-  DO_TEST(test07);
-  DO_TEST(test08);
+//  DO_TEST(test07);
+//  DO_TEST(test08);
   DO_TEST(test09);
   //DO_TEST(test10);
   DO_TEST(test11);
