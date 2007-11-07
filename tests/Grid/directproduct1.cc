@@ -370,6 +370,7 @@ test14() {
 
   Congruence_System cgs;
   cgs.insert(B + C %= 3);
+  cgs.insert(A == 9);
 
   Grid known_gr(cgs);
 
@@ -593,7 +594,7 @@ BEGIN_MAIN
   DO_TEST(test11);
   DO_TEST(test12);
   DO_TEST(test13);
-//   DO_TEST(test14);
+  DO_TEST(test14);
   DO_TEST(test15);
   DO_TEST(test16);
 //  DO_TEST(test17);

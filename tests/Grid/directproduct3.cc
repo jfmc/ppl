@@ -633,7 +633,6 @@ test19() {
   Variable C(2);
 
   Product dp(3);
-  dp.add_constraint(C == 0);
   dp.add_constraint(B >= 0);
   dp.add_constraint(3*A + C == 0);
   dp.add_constraint(2*A - B == 0);
@@ -650,7 +649,6 @@ test19() {
   dp.topological_closure_assign();
 
   Product known_dp(3);
-  known_dp.add_constraint(C == 0);
   known_dp.add_constraint(B >= 0);
   known_dp.add_constraint(3*A + C == 0);
   known_dp.add_constraint(2*A - B == 0);
@@ -736,6 +734,6 @@ BEGIN_MAIN
   DO_TEST(test16);
   DO_TEST(test17);
   DO_TEST(test18);
-//   DO_TEST(test19);
+  DO_TEST(test19);
   DO_TEST(test20);
 END_MAIN
