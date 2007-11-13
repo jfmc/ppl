@@ -34,336 +34,112 @@ typedef C_Polyhedron Poly;
 #endif
 
 #ifdef PH_IS_FIRST
+typedef Domain_Product<Poly, Grid>::Direct_Product DProduct;
 typedef Domain_Product<Poly, Grid>::Smash_Product SProduct;
 typedef Domain_Product<Poly, Grid>::Constraints_Product CProduct;
 #else
+typedef Domain_Product<Grid, Poly>::Direct_Product DProduct;
 typedef Domain_Product<Grid, Poly>::Smash_Product SProduct;
 typedef Domain_Product<Grid, Poly>::Constraints_Product CProduct;
 #endif
 
 namespace {
 
-// Product()
+// Product(dims, type); == and !=
 bool
 test01() {
-  CProduct pd1;
-  CProduct pd2(0, UNIVERSE);
-  SProduct pd3;
-  SProduct pd4(0, UNIVERSE);
-
-  bool ok = (pd1 == pd2 && pd3 == pd4);
-
-  print_congruences(pd1, "*** pd1 congruences ***");
-  print_constraints(pd1, "*** pd1 constraints ***");
-  print_congruences(pd3, "*** pd3 congruences ***");
-  print_constraints(pd3, "*** pd3 constraints ***");
-
-  return ok;
-}
-
-// Product(dims, type)
-bool
-test02() {
-  CProduct pd1(3);
-  CProduct pd2(3, EMPTY);
-  SProduct pd3(3);
-  SProduct pd4(3, EMPTY);
-
-  bool ok = (pd1 != pd2 && pd3 != pd4);
-
-  print_congruences(pd1, "*** pd1 congruences ***");
-  print_constraints(pd1, "*** pd1 constraints ***");
-  print_congruences(pd2, "*** pd2 congruences ***");
-  print_constraints(pd2, "*** pd2 constraints ***");
-
-  return ok;
-}
-
-// Product(ccgs), add_congruence(cg)
-bool
-test03() {
   Variable A(0);
 
-  const Congruence_System cgs((A %= 0) / 4);
+  SProduct sp1(3);
+  SProduct sp2(3, EMPTY);
+  CProduct cp1(3);
+  CProduct cp2(3);
+  cp2.add_constraint(A == 0);
 
-  CProduct pd1(cgs);
-  CProduct pd2(1);
-  pd2.add_congruence((A %= 0) / 4);
-  SProduct pd3(cgs);
-  SProduct pd4(1);
-  pd4.add_congruence((A %= 0) / 4);
+  bool ok = (sp1 != sp2 && cp1 != cp2);
 
-  bool ok =  (pd1 == pd2 && pd3 == pd4);
+  if (!ok)
+    return false;
 
-  print_congruences(pd1, "*** pd1 congruences ***");
-  print_constraints(pd1, "*** pd1 constraints ***");
-  print_congruences(pd2, "*** pd2 congruences ***");
-  print_constraints(pd2, "*** pd2 constraints ***");
+  sp1.add_congruence((A %= 0) / 4);
+  sp1.add_congruence((A %= 1) / 4);
 
-  return ok;
-}
+  cp1.add_constraint(A >= 0);
+  cp1.add_constraint(A <= 0);
 
-// Product(cgs), domain1(), domain2()
-bool
-test04() {
-  Variable A(0);
+  ok = (sp1 == sp2 && cp1 == cp2);
 
-  const Congruence_System cgs((A %= 0) / 4);
+  ok = ok && sp1.OK() && sp2.OK() && cp1.OK() && cp2.OK();
 
-  CProduct pd1(cgs);
-  CProduct pd2(1);
-  pd2.add_congruence((A %= 0) / 4);
-  SProduct pd3(cgs);
-  SProduct pd4(1);
-  pd4.add_congruence((A %= 0) / 4);
-
-  bool ok =  (pd1 == pd2 && pd3 == pd4);
-
-  print_congruences(pd1, "*** pd1 congruences ***");
-  print_constraints(pd1, "*** pd1 constraints ***");
-  print_congruences(pd2, "*** pd2 congruences ***");
-  print_constraints(pd2, "*** pd2 constraints ***");
+  print_congruences(sp1, "*** sp1 congruences ***");
+  print_constraints(sp1, "*** sp1 constraints ***");
+  print_congruences(cp1, "*** cp1 congruences ***");
+  print_constraints(cp1, "*** cp1 constraints ***");
 
   return ok;
 }
-
-// Product(ccs), add_constraint(cc)
-bool
-test05() {
-  Variable A(0);
-
-  const Constraint_System cs(A >= 0);
-
-  CProduct pd1(cs);
-  CProduct pd2(1);
-  pd2.add_constraint(static_cast<const Constraint>(A >= 0));
-  SProduct pd3(cs);
-  SProduct pd4(1);
-  pd4.add_constraint(static_cast<const Constraint>(A >= 0));
-
-  bool ok =  (pd1 == pd2 && pd3 == pd4);
-
-  print_congruences(pd1, "*** pd1 congruences ***");
-  print_constraints(pd1, "*** pd1 constraints ***");
-  print_congruences(pd2, "*** pd2 congruences ***");
-  print_constraints(pd2, "*** pd2 constraints ***");
-
-  return ok;
-}
-
-// Product(cs)
-bool
-test06() {
-  Variable A(0);
-
-  Constraint_System cs(A == 9);
-
-  CProduct pd1(cs);
-  CProduct pd2(1);
-  pd2.add_constraint(A == 9);
-  SProduct pd3(cs);
-  SProduct pd4(1);
-  pd4.add_constraint(A == 9);
-
-  Grid known_gr(1);
-  known_gr.add_congruence(A == 9);
-
-  bool ok =  (pd1 == pd2 && pd1.domain1() == known_gr
-               && pd3 == pd4 && pd3.domain1() == known_gr);
-
-  print_congruences(pd1, "*** pd1 congruences ***");
-  print_constraints(pd1, "*** pd1 constraints ***");
-  print_congruences(pd3, "*** pd3 congruences ***");
-  print_constraints(pd3, "*** pd3 constraints ***");
-
-  return ok;
-}
-
-#if 0
-// Product(cggs), add_grid_generator(g)
-bool
-test07() {
-  Variable A(0);
-  Variable B(1);
-
-  const Grid_Generator_System gs(grid_point(A + B));
-
-  CProduct pd(gs);
-
-  Grid known_gr(2, EMPTY);
-  known_gr.add_grid_generator(grid_point(A + B));
-
-  bool ok = (pd.domain1() == known_gr);
-
-  print_congruences(pd.domain1(), "*** pd.domain1() ***");
-  print_constraints(pd.domain2(), "*** pd.domain2() ***");
-
-  return ok;
-}
-#endif
-
-#if 0
-// Product(ggs)
-bool
-test08() {
-  Variable A(0);
-  Variable C(2);
-
-  Grid_Generator_System gs(grid_point(A + 7*C));
-
-  SProduct pd(gs);
-
-  Grid known_gr(3, EMPTY);
-  known_gr.add_grid_generator(grid_point(A + 7*C));
-
-  bool ok = (pd.domain1() == known_gr);
-
-  print_congruences(pd, "*** pd congruences ***");
-  print_constraints(pd, "*** pd constraints ***");
-
-  return ok;
-}
-#endif
-
-// Product(bounding_box)
-bool
-test09() {
-  Variable B(1);
-
-  Rational_Box box(2);
-  box.add_constraint(3*B == 2);
-
-  CProduct pd(box);
-
-  Grid known_gr(2);
-  known_gr.add_congruence(3*B == 2);
-
-#ifdef PH_IS_NNC
-  NNC_Polyhedron known_ph(2);
-#else
-  C_Polyhedron known_ph(2);
-#endif
-  known_ph.add_constraint(3*B == 2);
-
-  bool ok = (pd.domain1() == known_gr && pd.domain2() == known_ph);
-
-  print_congruences(pd, "*** pd congruences ***");
-  print_constraints(pd, "*** pd constraints ***");
-
-  return ok;
-}
-
-// FIXME: Waiting for covering box methods, details in
-//        Partially_Reduced_Product.defs.hh.
-#if 0
-// Product(covering_box)
-bool
-test10() {
-  Variable B(1);
-
-  Rational_Box box(2);
-  box.add_constraint(A == 0);
-  box.add_constraint(3*B >= 2);
-  box.add_constraint(3*B <= 3);
-
-  CProduct pd(box, From_Covering_Box());
-
-  Grid known_gr(2);
-  known_gr.add_congruence(3*B %= 0);
-
-#ifdef PH_IS_NNC
-  NNC_Polyhedron known_ph(2);
-#else
-  C_Polyhedron known_ph(2);
-#endif
-
-  bool ok = (pd.domain1() == known_gr && pd.domain2() == known_ph);
-
-  print_congruences(pd, "*** pd congruences ***");
-  print_constraints(pd, "*** pd constraints ***");
-
-  return ok;
-}
-#endif
 
 // operator=
 bool
-test11() {
+test02() {
   Variable A(0);
   Variable B(1);
 
   Constraint_System cs(A + B <= 9);
 
-  CProduct pd1(cs);
-  pd1.add_congruence((A %= 9) / 19);
-  CProduct pd2 = pd1;
-  SProduct pd3(cs);
-  pd3.add_congruence((A %= 9) / 19);
-  SProduct pd4 = pd3;
+  SProduct sp1(cs);
+  sp1.add_congruence((A %= 9) / 19);
+  sp1.add_congruence((A %= 8) / 19);
+  SProduct sp2 = sp1;
+  CProduct cp1(cs);
+  cp1.add_constraint(A >= 9);
+  cp1.add_constraint(A <= 9);
+  CProduct cp2 = cp1;
 
-  bool ok =  (pd1 == pd2 && pd3 == pd4);
+  bool ok =  (sp1 == sp2 && cp1 == cp2);
 
-  print_congruences(pd1, "*** pd1 congruences ***");
-  print_constraints(pd1, "*** pd1 constraints ***");
-  print_congruences(pd3, "*** pd3 congruences ***");
-  print_constraints(pd3, "*** pd3 constraints ***");
+  ok = ok && sp1.OK() && sp2.OK() && cp1.OK() && cp2.OK();
 
-  return ok;
-}
-
-// space_dimension()
-bool
-test12() {
-  Variable A(0);
-  Variable E(4);
-
-#ifdef PH_IS_NNC
-  Constraint_System cs(A + E < 9);
-#else
-  Constraint_System cs(A + E <= 9);
-#endif
-
-  CProduct pd1(cs);
-  SProduct pd2(cs);
-
-  bool ok = (pd1.space_dimension() == 5
-             && pd2.space_dimension() == 5);
-
-
-  print_congruences(pd1, "*** pd1 congruences ***");
-  print_constraints(pd1, "*** pd1 constraints ***");
-  print_congruences(pd2, "*** pd2 congruences ***");
-  print_constraints(pd2, "*** pd2 constraints ***");
+  print_congruences(sp1, "*** sp1 congruences ***");
+  print_constraints(sp1, "*** sp1 constraints ***");
+  print_congruences(cp1, "*** cp1 congruences ***");
+  print_constraints(cp1, "*** cp1 constraints ***");
 
   return ok;
 }
 
 // Copy constructor.
 bool
-test13() {
+test03() {
   Variable A(0);
   Variable B(2);
 
   Constraint_System cs(A - B == 0);
 
-  CProduct pd1(cs);
-  CProduct pd2(pd1);
-  SProduct pd3(cs);
-  SProduct pd4(pd3);
+  SProduct sp1(cs);
+  sp1.add_congruence((A %= 9) / 19);
+  sp1.add_congruence((A %= 8) / 19);
+  SProduct sp2(sp1);
+  CProduct cp1(cs);
+  cp1.add_constraint(A >= 9);
+  cp1.add_constraint(A <= 9);
+  CProduct cp2(cp1);
 
-  bool ok =  (pd1 == pd2 && pd3 == pd4);
+  bool ok =  (sp1 == sp2 && cp1 == cp2);
 
-  print_congruences(pd1, "*** pd1 congruences ***");
-  print_constraints(pd1, "*** pd1 constraints ***");
-  print_congruences(pd3, "*** pd3 congruences ***");
-  print_constraints(pd3, "*** pd3 constraints ***");
+  ok = ok && sp1.OK() && sp2.OK() && cp1.OK() && cp2.OK();
+
+  print_congruences(sp1, "*** sp1 congruences ***");
+  print_constraints(sp1, "*** sp1 constraints ***");
+  print_congruences(cp1, "*** cp1 congruences ***");
+  print_constraints(cp1, "*** cp1 constraints ***");
 
   return ok;
 }
 
 // affine_dimension()
 bool
-test14() {
+test04() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -373,97 +149,103 @@ test14() {
   cs.insert(A - C >= 9);
   cs.insert(B == 2);
 
-  CProduct pd1(3);
-  pd1.add_constraints(cs);
-  SProduct pd2(3);
-  pd2.add_constraints(cs);
+  SProduct sp(3);
+  sp.add_constraints(cs);
+  CProduct cp(3);
+  cp.add_constraints(cs);
 
-  bool ok = (pd1.affine_dimension() == 1
-             && pd2.affine_dimension() == 1
-	     && pd1.domain1().affine_dimension() == 1
-	     && pd1.domain2().affine_dimension() == 1
-	     && pd2.domain1().affine_dimension() == 2
-	     && pd2.domain2().affine_dimension() == 1);
+  bool ok = (sp.affine_dimension() == 1
+             && cp.affine_dimension() == 1
+	     && sp.domain1().affine_dimension() == 2
+	     && sp.domain2().affine_dimension() == 1
+	     && cp.domain1().affine_dimension() == 1
+	     && cp.domain2().affine_dimension() == 1);
 
-  print_congruences(pd1, "*** pd1 congruences ***");
-  print_constraints(pd1, "*** pd1 constraints ***");
-  print_congruences(pd2, "*** pd2 congruences ***");
-  print_constraints(pd2, "*** pd2 constraints ***");
+  ok = ok && sp.OK() && cp.OK();
+
+  print_congruences(sp, "*** sp congruences ***");
+  print_constraints(sp, "*** sp constraints ***");
+  print_congruences(cp, "*** cp congruences ***");
+  print_constraints(cp, "*** cp constraints ***");
 
   return ok;
 }
 
 // congruences()
 bool
-test15() {
+test05() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
 
-  CProduct pd1(3);
-  pd1.add_congruence(A %= 9);
-  pd1.add_congruence(B + C %= 3);
-  SProduct pd2(3);
-  pd2.add_congruence(A %= 9);
-  pd2.add_congruence(B + C %= 3);
+  Constraint_System cs1;
+  cs1.insert(A - C <= 8);
+  cs1.insert(A - C >= 9);
+  Constraint_System cs2;
+  cs2.insert(A - C <= 9);
+  cs2.insert(A - C >= 9);
 
-  Congruence_System cgs;
-  cgs.insert(A %= 9);
-  cgs.insert(B + C %= 3);
+  SProduct sp(cs1);
+  CProduct cp(cs2);
 
-  Grid known_gr(cgs);
+  DProduct known_dp1(3, EMPTY);
+  DProduct known_dp2(3);
+  known_dp2.add_constraint(A - C == 9);
 
-  Grid gr1(pd1.congruences());
-  Grid gr2(pd2.congruences());
+  DProduct dp1(sp.minimized_congruences());
+  DProduct dp2(cp.minimized_congruences());
 
-  bool ok = (gr1 == known_gr && gr2 == known_gr);
+  bool ok = (dp1 == known_dp1 && dp2 == known_dp2);
 
-  print_congruences(pd1, "*** pd1 congruences ***");
-  print_constraints(pd1, "*** pd1 constraints ***");
-  print_congruences(pd2, "*** pd2 congruences ***");
-  print_constraints(pd2, "*** pd2 constraints ***");
+  ok = ok && sp.OK() && cp.OK();
+
+  print_congruences(sp, "*** sp congruences ***");
+  print_constraints(sp, "*** sp constraints ***");
+  print_congruences(cp, "*** cp congruences ***");
+  print_constraints(cp, "*** cp constraints ***");
 
   return ok;
 }
 
 // minimized_congruences()
 bool
-test16() {
+test06() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
 
-  CProduct pd1(3);
-  pd1.add_congruence(B + C %= 3);
-  pd1.add_constraint(A >= 9);
-  pd1.add_constraint(A <= 9);
-  SProduct pd2(3);
-  pd2.add_congruence(B + C %= 3);
-  pd2.add_constraint(A >= 9);
-  pd2.add_constraint(A <= 9);
+  Constraint_System cs1;
+  cs1.insert(A - C <= 8);
+  cs1.insert(A - C >= 9);
+  Constraint_System cs2;
+  cs2.insert(A - C <= 9);
+  cs2.insert(A - C >= 9);
 
-  Congruence_System cgs;
-  cgs.insert(B + C %= 3);
-  cgs.insert(A == 9);
+  SProduct sp(cs1);
+  CProduct cp(cs2);
 
-  Grid known_gr(cgs);
+  DProduct known_dp1(3, EMPTY);
+  DProduct known_dp2(3);
+  known_dp2.add_constraint(A - C == 9);
 
-  Grid gr1(pd1.minimized_congruences());
-  Grid gr2(pd2.minimized_congruences());
+  DProduct dp1(sp.minimized_congruences());
+  DProduct dp2(cp.minimized_congruences());
 
-  bool ok = (gr1 == known_gr && gr2 == known_gr);
+  bool ok = (dp1 == known_dp1 && dp2 == known_dp2);
 
-  print_congruences(pd1, "*** pd1 congruences ***");
-  print_constraints(pd1, "*** pd1 constraints ***");
-  print_congruences(pd2, "*** pd2 congruences ***");
-  print_constraints(pd2, "*** pd2 constraints ***");
+  ok = ok && sp.OK() && cp.OK();
+
+  print_congruences(sp, "*** sp congruences ***");
+  print_constraints(sp, "*** sp constraints ***");
+  print_congruences(cp, "*** cp congruences ***");
+  print_constraints(cp, "*** cp constraints ***");
 
   return ok;
 }
 
 // constraints()
 bool
-test17() {
+test07() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -474,52 +256,46 @@ test17() {
   Constraint c(A >= 9);
 #endif
 
-  CProduct pd1(3);
-  pd1.add_congruence((B + C %= 3) / 0);
-  pd1.add_constraint(c);
-  pd1.add_constraint(A <= 11);
-  SProduct pd2(3);
-  pd2.add_congruence((B + C %= 3) / 0);
-  pd2.add_constraint(c);
-  pd2.add_constraint(A <= 11);
+  SProduct sp(3);
+  sp.add_congruence((B + C %= 3) / 0);
+  sp.add_constraint(c);
+  sp.add_constraint(A <= 8);
+  CProduct cp(3);
+  cp.add_congruence((B + C %= 3) / 0);
+  cp.add_constraint(c);
+  cp.add_constraint(B <= 11);
+  cp.add_constraint(B >= 11);
 
-#ifdef PH_IS_NNC
-  NNC_Polyhedron ph1(pd1.space_dimension());
-  NNC_Polyhedron ph2(pd2.space_dimension());
-#else
-  C_Polyhedron ph1(pd1.space_dimension());
-  C_Polyhedron ph2(pd2.space_dimension());
-#endif
+  DProduct dp1(sp.space_dimension());
+  DProduct dp2(cp.space_dimension());
 
-  ph1.add_constraints(pd1.constraints());
-  ph2.add_constraints(pd2.constraints());
+  dp1.add_constraints(sp.constraints());
+  dp2.add_constraints(cp.constraints());
 
-#ifdef PH_IS_NNC
-  NNC_Polyhedron known_ph(pd1.space_dimension());
-#else
-  C_Polyhedron known_ph(pd1.space_dimension());
-#endif
-  known_ph.add_constraint(B + C == 3);
-  known_ph.add_constraint(A <= 11);
-  known_ph.add_constraint(c);
+  DProduct known_dp1(sp.space_dimension(), EMPTY);
+  DProduct known_dp2(sp.space_dimension());
+  known_dp2.add_constraint(C == -8);
+  known_dp2.add_constraint(c);
+  known_dp2.add_constraint(B == 11);
 
-  bool ok = (ph1 == known_ph && ph2 == known_ph);
+  bool ok = (dp1 == known_dp1 && dp2 == known_dp2);
 
-  print_congruences(pd1, "*** pd1 congruences ***");
-  print_constraints(pd1, "*** pd1 constraints ***");
-  print_congruences(pd2, "*** pd2 congruences ***");
-  print_constraints(pd2, "*** pd2 constraints ***");
+  ok = ok && sp.OK() && cp.OK();
+
+  print_congruences(sp, "*** sp congruences ***");
+  print_constraints(sp, "*** sp constraints ***");
+  print_congruences(cp, "*** cp congruences ***");
+  print_constraints(cp, "*** cp constraints ***");
 
   return ok;
 }
 
 // minimized_constraints()
 bool
-test18() {
+test08() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
-
 
 #ifdef PH_IS_NNC
   Constraint c(A > 9);
@@ -527,151 +303,355 @@ test18() {
   Constraint c(A >= 9);
 #endif
 
-  CProduct pd1(3);
-  pd1.add_congruence((B + C %= 3) / 0);
-  pd1.add_constraint(c);
-  pd1.add_constraint(A <= 11);
-  SProduct pd2(3);
-  pd2.add_congruence((B + C %= 3) / 0);
-  pd2.add_constraint(c);
-  pd2.add_constraint(A <= 11);
+  SProduct sp(3);
+  sp.add_congruence((B + C %= 3) / 0);
+  sp.add_constraint(c);
+  sp.add_constraint(A <= 8);
+  CProduct cp(3);
+  cp.add_congruence((B + C %= 3) / 0);
+  cp.add_constraint(c);
+  cp.add_constraint(B <= 11);
+  cp.add_constraint(B >= 11);
 
-#ifdef PH_IS_NNC
-  NNC_Polyhedron ph1(pd1.space_dimension());
-  NNC_Polyhedron ph2(pd2.space_dimension());
-#else
-  C_Polyhedron ph1(pd1.space_dimension());
-  C_Polyhedron ph2(pd2.space_dimension());
-#endif
+  DProduct dp1(sp.space_dimension());
+  DProduct dp2(cp.space_dimension());
 
-  ph1.add_constraints(pd1.constraints());
-  ph2.add_constraints(pd2.constraints());
+  dp1.add_constraints(sp.minimized_constraints());
+  dp2.add_constraints(cp.minimized_constraints());
 
-#ifdef PH_IS_NNC
-  NNC_Polyhedron known_ph(pd1.space_dimension());
-#else
-  C_Polyhedron known_ph(pd1.space_dimension());
-#endif
-  known_ph.add_constraint(B + C == 3);
-  known_ph.add_constraint(A <= 11);
-  known_ph.add_constraint(c);
+  DProduct known_dp1(sp.space_dimension(), EMPTY);
+  DProduct known_dp2(sp.space_dimension());
+  known_dp2.add_constraint(C == -8);
+  known_dp2.add_constraint(c);
+  known_dp2.add_constraint(B == 11);
 
-  bool ok = (ph1 == known_ph && ph2 == known_ph);
+  bool ok = (dp1 == known_dp1 && dp2 == known_dp2);
 
-  print_congruences(pd1, "*** pd1 congruences ***");
-  print_constraints(pd1, "*** pd1 constraints ***");
-  print_congruences(pd2, "*** pd2 congruences ***");
-  print_constraints(pd2, "*** pd2 constraints ***");
+  ok = ok && sp.OK() && cp.OK();
+
+  print_congruences(sp, "*** sp congruences ***");
+  print_constraints(sp, "*** sp constraints ***");
+  print_congruences(cp, "*** cp congruences ***");
+  print_constraints(cp, "*** cp constraints ***");
 
   return ok;
 }
 
-#if 0
-// generators()
+// is_empty() where both domain objects have points.
 bool
-test19() {
+test09() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
 
-  SProduct pd(3);
-  pd.add_congruence((B + C %= 3) / 0);
+  SProduct sp(3);
+  sp.add_congruence(A %= 9);
+  sp.add_congruence(B + C %= 3);
+
+  bool smash_ok = !sp.is_empty();
+
+  smash_ok = smash_ok && sp.OK();
+
+  CProduct cp(3);
+  cp.add_congruence(A %= 9);
+  cp.add_congruence(B + C %= 3);
+
+  bool cons_ok = !cp.is_empty();
+
+  cons_ok = cons_ok && cp.OK();
+
+  print_congruences(sp, "*** sp congruences ***");
+  print_constraints(sp, "*** sp constraints ***");
+  print_congruences(cp, "*** cp congruences ***");
+  print_constraints(cp, "*** cp constraints ***");
+
+  return smash_ok && cons_ok;
+}
+
+// is_empty().
+bool
+test10() {
+  Variable A(0);
+
+  SProduct sp(3);
+  sp.add_constraint(A <= 1);
+  sp.add_constraint(A >= 3);
+
+  bool smash_ok = sp.is_empty();
+  smash_ok = smash_ok && sp.OK();
+
+  CProduct cp(3);
+  cp.add_constraint(A >= 1);
+  cp.add_constraint(A <= 1);
+  cp.add_congruence((A %= 3) / 0);
+
+  bool cons_ok = cp.is_empty();
+  cons_ok = cons_ok && cp.OK();
+
+  print_congruences(sp, "*** sp congruences ***");
+  print_constraints(sp, "*** sp constraints ***");
+  print_congruences(cp, "*** cp congruences ***");
+  print_constraints(cp, "*** cp constraints ***");
+
+  return smash_ok && cons_ok;
+}
+
+// is_topologically_closed().
+bool
+test11() {
+  Variable A(0);
+
+  SProduct sp(3);
+  bool smash_ok;
+  CProduct cp(3);
+  bool cons_ok;
 #ifdef PH_IS_NNC
-  pd.add_constraint(A > 9);
-#else
-  pd.add_constraint(A >= 9);
-#endif
-  pd.add_constraint(A <= 11);
+  sp.add_constraint(A < 3);
+  cp.add_constraint(A < 3);
 
+  smash_ok = !sp.is_topologically_closed();
+  cons_ok = !cp.is_topologically_closed();
+#else
+  sp.add_constraint(A <= 3);
+  cp.add_constraint(A <= 3);
+
+  smash_ok = sp.is_topologically_closed();
+  cons_ok = cp.is_topologically_closed();
+#endif
+  smash_ok = smash_ok && sp.OK();
+  cons_ok = cons_ok && cp.OK();
+
+  if (!smash_ok || !cons_ok) {
+    print_congruences(sp, "*** sp congruences non-empty ***");
+    print_constraints(sp, "*** sp constraints non-empty ***");
+    print_congruences(cp, "*** cp congruences non-empty ***");
+    print_constraints(cp, "*** cp constraints non-empty ***");
+    return false;
+  }
+
+  sp.add_congruence((A %= 0) / 2);
+  sp.add_congruence((A %= 1) / 2);
 #ifdef PH_IS_NNC
-  NNC_Polyhedron ph(pd.space_dimension(), EMPTY);
+  cp.add_congruence((A %= 2) / 0);
 #else
-  C_Polyhedron ph(pd.space_dimension(), EMPTY);
-#endif
-  ph.add_generators(pd.generators());
-
-#ifdef PH_IS_NNC
-  NNC_Polyhedron known_ph(pd.space_dimension());
-#else
-  C_Polyhedron known_ph(pd.space_dimension());
+  cp.add_congruence((A %= 2) / 0);
 #endif
 
-  bool ok = (ph == known_ph);
+  smash_ok = sp.is_topologically_closed();
+  cons_ok = cp.is_topologically_closed();
+  smash_ok = smash_ok && sp.OK();
+  cons_ok = cons_ok && cp.OK();
 
-  print_congruences(pd, "*** pd congruences ***");
-  print_constraints(pd, "*** pd constraints ***");
+  print_congruences(sp, "*** sp congruences ***");
+  print_constraints(sp, "*** sp constraints ***");
+  print_congruences(cp, "*** cp congruences ***");
+  print_constraints(cp, "*** cp constraints ***");
+
+  return smash_ok && cons_ok;
+}
+
+// is_disjoint_from().
+bool
+test12() {
+  Variable B(1);
+
+  SProduct sp1(4);
+  sp1.add_constraint(B <= 3);
+  sp1.add_constraint(B >= 3);
+
+  SProduct sp2(4);
+  sp2.add_congruence((B %= 1) / 3);
+
+  bool ok = !sp1.is_disjoint_from(sp2);
+  ok = ok && sp1.OK() && sp2.OK();
+
+  print_congruences(sp1, "*** sp1 congruences ***");
+  print_constraints(sp1, "*** sp1 constraints ***");
+  print_congruences(sp2, "*** sp2 congruences ***");
+  print_constraints(sp2, "*** sp2 constraints ***");
+
+  if (!ok)
+    return false;
+
+  CProduct cp1(4);
+  cp1.add_constraint(B <= 3);
+  cp1.add_constraint(B >= 3);
+
+  CProduct cp2(4);
+  cp2.add_congruence((B %= 1) / 3);
+
+  ok = cp1.is_disjoint_from(cp2);
+  ok = ok && cp1.OK() && cp2.OK();
+
+  print_congruences(cp1, "*** cp1 congruences ***");
+  print_constraints(cp1, "*** cp1 constraints ***");
+  print_congruences(cp2, "*** cp2 congruences ***");
+  print_constraints(cp2, "*** cp2 constraints ***");
 
   return ok;
 }
 
-// minimized_generators()
+// is_bounded().
 bool
-test20() {
+test13() {
   Variable A(0);
   Variable B(1);
-  Variable C(2);
 
-  CProduct pd(3);
-  pd.add_congruence((B + C %= 3) / 0);
-#ifdef PH_IS_NNC
-  pd.add_constraint(A > 9);
-#else
-  pd.add_constraint(A >= 9);
-#endif
-  pd.add_constraint(A <= 11);
+  bool ok;
 
-#ifdef PH_IS_NNC
-  NNC_Polyhedron ph(pd.space_dimension(), EMPTY);
-#else
-  C_Polyhedron ph(pd.space_dimension(), EMPTY);
-#endif
-  ph.add_generators(pd.minimized_generators());
+  SProduct sp(2);
+  sp.add_constraint(A >= 1);
+  sp.add_constraint(A <= 0);
+  sp.add_congruence((A %= 1) / 3);
 
-#ifdef PH_IS_NNC
-  NNC_Polyhedron known_ph(pd.space_dimension());
-#else
-  C_Polyhedron known_ph(pd.space_dimension());
-#endif
+  ok = sp.is_bounded();
+  ok = ok && sp.OK();
 
-  bool ok = (ph == known_ph);
+  print_congruences(sp, "*** sp congruences ***");
+  print_constraints(sp, "*** sp constraints ***");
 
-  print_congruences(pd, "*** pd congruences ***");
-  print_constraints(pd, "*** pd constraints ***");
+  if (!ok)
+    return false;
+
+  CProduct cp(2);
+  cp.add_constraint(A >= 1);
+  cp.add_constraint(A <= 1);
+  cp.add_congruence((A %= 1) / 3);
+  cp.add_congruence((B %= 1) / 0);
+
+  ok = cp.is_bounded();
+  ok = ok && cp.OK();
+
+  print_congruences(cp, "*** cp congruences ***");
+  print_constraints(cp, "*** cp constraints ***");
 
   return ok;
 }
-#endif
 
-// inconsistent constraints()
+// ok(), not reduced.
 bool
-test21() {
+test14() {
   Variable A(0);
   Variable B(1);
-  Variable C(2);
 
-  CProduct pd1(3);
-  pd1.add_congruence((B + C %= 3) / 0);
-  SProduct pd2(3);
-  pd2.add_congruence((B + C %= 3) / 0);
-#ifdef PH_IS_NNC
-  pd1.add_constraint(A > 11);
-  pd2.add_constraint(A > 11);
+  bool ok;
+
+  SProduct sp(2);
+  sp.add_constraint(A >= 1);
+  sp.add_constraint(A <= 0);
+  sp.add_congruence((A %= 1) / 3);
+
+  ok = sp.OK();
+
+#if PH_IS_FIRST
+  print_constraints(sp.domain1().constraints(),
+		    "*** sp,domain1() constraints ***");
+  print_congruences(sp.domain2().congruences(),
+		    "*** sp,domain2() congruences ***");
 #else
-  pd1.add_constraint(A >= 12);
-  pd2.add_constraint(A >= 12);
+  print_congruences(sp.domain1().congruences(),
+		    "*** sp,domain1() congruences ***");
+  print_constraints(sp.domain2().constraints(),
+		    "*** sp,domain2() constraints ***");
 #endif
-  pd1.add_constraint(A <= 11);
-  pd2.add_constraint(A <= 11);
 
-  CProduct known_pd1(pd1.space_dimension(), EMPTY);
-  SProduct known_pd2(pd2.space_dimension(), EMPTY);
+  if (!ok)
+    return false;
 
-  bool ok = (pd1 == known_pd1 && pd2 == known_pd2);
+  CProduct cp(2);
+  cp.add_constraint(A >= 1);
+  cp.add_constraint(A <= 1);
+  cp.add_congruence((A %= 1) / 3);
+  cp.add_congruence((B %= 1) / 0);
 
-  print_congruences(pd1, "*** pd1 congruences ***");
-  print_constraints(pd1, "*** pd1 constraints ***");
-  print_congruences(pd2, "*** pd2 congruences ***");
-  print_constraints(pd2, "*** pd2 constraints ***");
+  ok = cp.OK();
+
+#if PH_IS_FIRST
+  print_constraints(cp.domain1().constraints(),
+		    "*** cp,domain1() constraints ***");
+  print_congruences(cp.domain2().congruences(),
+		    "*** cp,domain2() congruences ***");
+#else
+  print_congruences(cp.domain1().congruences(),
+		    "*** cp,domain1() congruences ***");
+  print_constraints(cp.domain2().constraints(),
+		    "*** cp,domain2() constraints ***");
+#endif
+
+  return ok;
+}
+
+// ok(), is reduced.
+bool
+test15() {
+  Variable A(0);
+  Variable B(1);
+
+  bool ok;
+
+  SProduct sp(2);
+  sp.add_constraint(A >= 1);
+  sp.add_constraint(A <= 0);
+  sp.add_congruence((A %= 1) / 3);
+
+  // reduce the product
+  Constraint_System sp_cs = sp.constraints();
+
+  ok = sp.OK();
+
+  if (!ok) {
+    print_constraints(sp_cs, "*** sp.constraints(); ***");
+    return false;
+  }
+
+  Grid sp_gr(sp_cs);
+  ok = sp_gr.is_empty();
+
+#if PH_IS_FIRST
+  print_constraints(sp.domain1().constraints(),
+		    "*** sp.domain1() constraints ***");
+  print_congruences(sp.domain2().congruences(),
+		    "*** sp.domain2() congruences ***");
+#else
+  print_congruences(sp.domain1().congruences(),
+		    "*** sp.domain1() congruences ***");
+  print_constraints(sp.domain2().constraints(),
+		    "*** sp.domain2() constraints ***");
+#endif
+
+  if (!ok)
+    return false;
+
+  CProduct cp(2);
+  cp.add_constraint(A >= 1);
+  cp.add_constraint(A <= 1);
+  cp.add_congruence((A %= 1) / 3);
+  cp.add_congruence((B %= 1) / 0);
+
+  // reduce the product
+  Constraint_System cp_cs = sp.constraints();
+
+  ok = cp.OK();
+
+  if (!ok) {
+    print_constraints(cp_cs, "*** cp.constraints(); ***");
+    return false;
+  }
+
+  Grid cp_gr(cp_cs);
+  ok = (cp_gr.affine_dimension() == 0);
+
+#if PH_IS_FIRST
+  print_constraints(cp.domain1().constraints(),
+		    "*** cp.domain1() constraints ***");
+  print_congruences(cp.domain2().congruences(),
+		    "*** cp.domain2() congruences ***");
+#else
+  print_congruences(cp.domain1().congruences(),
+		    "*** cp.domain1() congruences ***");
+  print_constraints(cp.domain2().constraints(),
+		    "*** cp.domain2() constraints ***");
+#endif
 
   return ok;
 }
@@ -685,19 +665,13 @@ BEGIN_MAIN
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
-  //DO_TEST(test07);
-  //DO_TEST(test08);
+  DO_TEST(test07);
+  DO_TEST(test08);
   DO_TEST(test09);
-  //DO_TEST(test10);
+  DO_TEST(test10);
   DO_TEST(test11);
   DO_TEST(test12);
   DO_TEST(test13);
   DO_TEST(test14);
   DO_TEST(test15);
-  DO_TEST(test16);
-  DO_TEST(test17);
-  DO_TEST(test18);
-//  DO_TEST(test19);
-//  DO_TEST(test20);
-  DO_TEST(test21);
 END_MAIN

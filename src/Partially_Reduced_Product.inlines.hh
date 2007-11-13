@@ -95,7 +95,7 @@ template <typename D1, typename D2, typename R>
 inline
 Partially_Reduced_Product<D1, D2, R>::Partially_Reduced_Product(const Partially_Reduced_Product& y)
   : d1(y.d1), d2(y.d2) {
-  clear_reduced_flag();
+  reduced = y.reduced;
 }
 
 template <typename D1, typename D2, typename R>
@@ -142,6 +142,8 @@ Partially_Reduced_Product<D1, D2, R>::intersection_assign(const Partially_Reduce
 template <typename D1, typename D2, typename R>
 inline void
 Partially_Reduced_Product<D1, D2, R>::difference_assign(const Partially_Reduced_Product& y) {
+  reduce();
+  y.reduce();
   d1.difference_assign(y.d1);
   d2.difference_assign(y.d2);
   // FIXME: check this.
@@ -151,6 +153,8 @@ Partially_Reduced_Product<D1, D2, R>::difference_assign(const Partially_Reduced_
 template <typename D1, typename D2, typename R>
 inline void
 Partially_Reduced_Product<D1, D2, R>::upper_bound_assign(const Partially_Reduced_Product& y) {
+  reduce();
+  y.reduce();
   d1.upper_bound_assign(y.d1);
   d2.upper_bound_assign(y.d2);
   // FIXME: can we do better than this?
@@ -159,11 +163,19 @@ Partially_Reduced_Product<D1, D2, R>::upper_bound_assign(const Partially_Reduced
 
 template <typename D1, typename D2, typename R>
 inline bool
-Partially_Reduced_Product<D1, D2, R>::upper_bound_assign_if_exact(const Partially_Reduced_Product& y) {
-  return d1.upper_bound_assign_if_exact(y.d1)
-    || d2.upper_bound_assign_if_exact(y.d2);
-  // FIXME: can we do better than this?
-  clear_reduced_flag();
+Partially_Reduced_Product<D1, D2, R>
+::upper_bound_assign_if_exact(const Partially_Reduced_Product& y) {
+  reduce();
+  y.reduce();
+  D1 d1_copy = d1;
+  bool ub_exact = d1_copy.upper_bound_assign_if_exact(y.d1);
+  if (!ub_exact)
+    return false;
+  ub_exact = d2.upper_bound_assign_if_exact(y.d2);
+  if (!ub_exact)
+    return false;
+  std::swap(d1,d1_copy);
+  return true;
 }
 
 template <typename D1, typename D2, typename R>
@@ -218,51 +230,53 @@ Partially_Reduced_Product<D1, D2, R>
   d2.generalized_affine_image(lhs, relsym, rhs);
 }
 
-template <typename D1, typename D2, typename R>
-inline void
-Partially_Reduced_Product<D1, D2, R>
-::generalized_affine_preimage(const Linear_Expression& lhs,
-			      const Relation_Symbol relsym,
-			      const Linear_Expression& rhs) {
-  d1.generalized_affine_preimage(lhs, relsym, rhs);
-  d2.generalized_affine_preimage(lhs, relsym, rhs);
-}
+  template <typename D1, typename D2, typename R>
+  inline void
+  Partially_Reduced_Product<D1, D2, R>
+  ::generalized_affine_preimage(const Linear_Expression& lhs,
+				const Relation_Symbol relsym,
+				const Linear_Expression& rhs) {
+    d1.generalized_affine_preimage(lhs, relsym, rhs);
+    d2.generalized_affine_preimage(lhs, relsym, rhs);
+  }
 
 
-template <typename D1, typename D2, typename R>
-inline void
-Partially_Reduced_Product<D1, D2, R>
-::bounded_affine_image(Variable var,
-			       const Linear_Expression& lb_expr,
-			       const Linear_Expression& ub_expr,
-			       Coefficient_traits::const_reference denominator) {
-  d1.bounded_affine_image(var, lb_expr, ub_expr, denominator);
-  d2.bounded_affine_image(var, lb_expr, ub_expr, denominator);
-  // FIXME: check this.
-  clear_reduced_flag();
-}
+  template <typename D1, typename D2, typename R>
+  inline void
+  Partially_Reduced_Product<D1, D2, R>
+  ::bounded_affine_image(Variable var,
+			 const Linear_Expression& lb_expr,
+			 const Linear_Expression& ub_expr,
+			 Coefficient_traits::const_reference denominator) {
+    d1.bounded_affine_image(var, lb_expr, ub_expr, denominator);
+    d2.bounded_affine_image(var, lb_expr, ub_expr, denominator);
+    // FIXME: check this.
+    clear_reduced_flag();
+  }
 
-template <typename D1, typename D2, typename R>
-inline void
-Partially_Reduced_Product<D1, D2, R>
-::bounded_affine_preimage(Variable var,
-			       const Linear_Expression& lb_expr,
-			       const Linear_Expression& ub_expr,
-			       Coefficient_traits::const_reference denominator) {
-  d1.bounded_affine_preimage(var, lb_expr, ub_expr, denominator);
-  d2.bounded_affine_preimage(var, lb_expr, ub_expr, denominator);
-  // FIXME: check this.
-  clear_reduced_flag();
-}
+  template <typename D1, typename D2, typename R>
+  inline void
+  Partially_Reduced_Product<D1, D2, R>
+  ::bounded_affine_preimage(Variable var,
+			    const Linear_Expression& lb_expr,
+			    const Linear_Expression& ub_expr,
+			    Coefficient_traits::const_reference denominator) {
+    d1.bounded_affine_preimage(var, lb_expr, ub_expr, denominator);
+    d2.bounded_affine_preimage(var, lb_expr, ub_expr, denominator);
+    // FIXME: check this.
+    clear_reduced_flag();
+  }
 
-template <typename D1, typename D2, typename R>
-inline void
-Partially_Reduced_Product<D1, D2, R>::time_elapse_assign(const Partially_Reduced_Product& y) {
-  d1.time_elapse_assign(y.d1);
-  d2.time_elapse_assign(y.d2);
-  // FIXME: check this.
-  clear_reduced_flag();
-}
+  template <typename D1, typename D2, typename R>
+  inline void
+  Partially_Reduced_Product<D1, D2, R>
+  ::time_elapse_assign(const Partially_Reduced_Product& y) {
+    reduce();
+    d1.time_elapse_assign(y.d1);
+    d2.time_elapse_assign(y.d2);
+    // FIXME: check this.
+    clear_reduced_flag();
+  }
 
 template <typename D1, typename D2, typename R>
 inline void
@@ -305,15 +319,17 @@ Partially_Reduced_Product<D1, D2, R>::add_generator(const Generator& g) {
 
 template <typename D1, typename D2, typename R>
 inline bool
-Partially_Reduced_Product<D1, D2, R>::add_generator_and_minimize(const Generator& g) {
+Partially_Reduced_Product<D1, D2, R>
+::add_generator_and_minimize(const Generator& g) {
   bool empty = d1.add_generator_and_minimize(g);
-  return d2.add_generator_and_minimize(g) || empty;
+  return (d2.add_generator_and_minimize(g) && empty);
   clear_reduced_flag();
 }
 
 template <typename D1, typename D2, typename R>
 inline void
-Partially_Reduced_Product<D1, D2, R>::add_grid_generator(const Grid_Generator& g) {
+Partially_Reduced_Product<D1, D2, R>
+::add_grid_generator(const Grid_Generator& g) {
   d1.add_grid_generator(g);
   d2.add_grid_generator(g);
   clear_reduced_flag();
@@ -324,13 +340,14 @@ inline bool
 Partially_Reduced_Product<D1, D2, R>
 ::add_grid_generator_and_minimize(const Grid_Generator& g) {
   bool empty = d1.add_grid_generator_and_minimize(g);
-  return d2.add_grid_generator_and_minimize(g) || empty;
+  return (d2.add_grid_generator_and_minimize(g) && empty);
   clear_reduced_flag();
 }
 
 template <typename D1, typename D2, typename R>
 inline void
-Partially_Reduced_Product<D1, D2, R>::add_constraints(const Constraint_System& cs) {
+Partially_Reduced_Product<D1, D2, R>
+::add_constraints(const Constraint_System& cs) {
   d1.add_constraints(cs);
   d2.add_constraints(cs);
   clear_reduced_flag();
@@ -338,7 +355,8 @@ Partially_Reduced_Product<D1, D2, R>::add_constraints(const Constraint_System& c
 
 template <typename D1, typename D2, typename R>
 inline void
-Partially_Reduced_Product<D1, D2, R>::add_recycled_constraints(Constraint_System& cs) {
+Partially_Reduced_Product<D1, D2, R>
+::add_recycled_constraints(Constraint_System& cs) {
   d1.add_recycled_constraints(cs);
   d2.add_recycled_constraints(cs);
   clear_reduced_flag();
@@ -349,7 +367,7 @@ inline bool
 Partially_Reduced_Product<D1, D2, R>
 ::add_constraints_and_minimize(const Constraint_System& cs) {
   bool empty = d1.add_constraints_and_minimize(cs);
-  return d2.add_constraints_and_minimize(cs) || empty;
+  return (d2.add_constraints_and_minimize(cs) && empty);
   clear_reduced_flag();
 }
 
@@ -358,13 +376,14 @@ inline bool
 Partially_Reduced_Product<D1, D2, R>
 ::add_recycled_constraints_and_minimize(Constraint_System& cs) {
   bool empty = d1.add_recycled_constraints_and_minimize(cs);
-  return d2.add_recycled_constraints_and_minimize(cs) || empty;
+  return (d2.add_recycled_constraints_and_minimize(cs) && empty);
   clear_reduced_flag();
 }
 
 template <typename D1, typename D2, typename R>
 inline void
-Partially_Reduced_Product<D1, D2, R>::add_congruences(const Congruence_System& cgs) {
+Partially_Reduced_Product<D1, D2, R>
+::add_congruences(const Congruence_System& cgs) {
   d1.add_congruences(cgs);
   d2.add_congruences(cgs);
   clear_reduced_flag();
@@ -372,7 +391,8 @@ Partially_Reduced_Product<D1, D2, R>::add_congruences(const Congruence_System& c
 
 template <typename D1, typename D2, typename R>
 inline void
-Partially_Reduced_Product<D1, D2, R>::add_generators(const Generator_System& gs) {
+Partially_Reduced_Product<D1, D2, R>
+::add_generators(const Generator_System& gs) {
   d1.add_generators(gs);
   d2.add_generators(gs);
   clear_reduced_flag();
@@ -380,7 +400,8 @@ Partially_Reduced_Product<D1, D2, R>::add_generators(const Generator_System& gs)
 
 template <typename D1, typename D2, typename R>
 inline void
-Partially_Reduced_Product<D1, D2, R>::add_grid_generators(const Grid_Generator_System& gs) {
+Partially_Reduced_Product<D1, D2, R>
+::add_grid_generators(const Grid_Generator_System& gs) {
   d1.add_grid_generators(gs);
   d2.add_grid_generators(gs);
   clear_reduced_flag();
@@ -388,7 +409,8 @@ Partially_Reduced_Product<D1, D2, R>::add_grid_generators(const Grid_Generator_S
 
 template <typename D1, typename D2, typename R>
 inline Partially_Reduced_Product<D1, D2, R>&
-Partially_Reduced_Product<D1, D2, R>::operator=(const Partially_Reduced_Product& y) {
+Partially_Reduced_Product<D1, D2, R>
+::operator=(const Partially_Reduced_Product& y) {
   d1 = y.d1;
   d2 = y.d2;
   reduced = y.reduced;
@@ -398,8 +420,8 @@ Partially_Reduced_Product<D1, D2, R>::operator=(const Partially_Reduced_Product&
 template <typename D1, typename D2, typename R>
 inline const D1&
 Partially_Reduced_Product<D1, D2, R>::domain1() const {
-  Partially_Reduced_Product& dp = const_cast<Partially_Reduced_Product&>(*this);  dp.reduce();
-  return dp.d1;
+  reduce();
+  return d1;
 }
 
 template <typename D1, typename D2, typename R>
@@ -462,6 +484,7 @@ Partially_Reduced_Product<D1, D2, R>::minimized_grid_generators() const {
 template <typename D1, typename D2, typename R>
 inline bool
 Partially_Reduced_Product<D1, D2, R>::is_empty() const {
+  reduce();
   return d1.is_empty() || d2.is_empty();
 }
 
@@ -474,24 +497,30 @@ Partially_Reduced_Product<D1, D2, R>::is_universe() const {
 template <typename D1, typename D2, typename R>
 inline bool
 Partially_Reduced_Product<D1, D2, R>::is_topologically_closed() const {
+  reduce();
   return d1.is_topologically_closed() && d2.is_topologically_closed();
 }
 
 template <typename D1, typename D2, typename R>
 inline bool
-Partially_Reduced_Product<D1, D2, R>::is_disjoint_from(const Partially_Reduced_Product& y) const {
+Partially_Reduced_Product<D1, D2, R>
+::is_disjoint_from(const Partially_Reduced_Product& y) const {
+  reduce();
+  y.reduce();
   return d1.is_disjoint_from(y.d1) || d2.is_disjoint_from(y.d2);
 }
 
 template <typename D1, typename D2, typename R>
 inline bool
 Partially_Reduced_Product<D1, D2, R>::is_discrete() const {
+  reduce();
   return d1.is_discrete() || d2.is_discrete();
 }
 
 template <typename D1, typename D2, typename R>
 inline bool
 Partially_Reduced_Product<D1, D2, R>::is_bounded() const {
+  reduce();
   return d1.is_bounded() || d2.is_bounded();
  }
 
@@ -499,6 +528,7 @@ template <typename D1, typename D2, typename R>
 inline bool
   Partially_Reduced_Product<D1, D2, R>::bounds_from_above(
                                         const Linear_Expression& expr) const {
+  reduce();
   return d1.bounds_from_above(expr) || d2.bounds_from_above(expr);
  }
 
@@ -506,20 +536,30 @@ template <typename D1, typename D2, typename R>
 inline bool
   Partially_Reduced_Product<D1, D2, R>::bounds_from_below(
                                         const Linear_Expression& expr) const {
+  reduce();
   return d1.bounds_from_below(expr) || d2.bounds_from_below(expr);
  }
 
 template <typename D1, typename D2, typename R>
 inline void
-Partially_Reduced_Product<D1, D2, R>::widening_assign(const Partially_Reduced_Product& y,
+Partially_Reduced_Product<D1, D2, R>
+::widening_assign(const Partially_Reduced_Product& y,
 					unsigned* tp) {
+  // FIXME: In general this is _NOT_ a widening since the reduction
+  //        may mean that the sequence does not satisfy the ascending
+  //        chain condition.
+  //        However, for the direct, smash and constraints product
+  //        it may be ok - but this still needs checking.
+  reduce();
+  y.reduce();
   d1.widening_assign(y.d1, tp);
   d2.widening_assign(y.d2, tp);
 }
 
 template <typename D1, typename D2, typename R>
 inline void
-Partially_Reduced_Product<D1, D2, R>::add_space_dimensions_and_embed(dimension_type m) {
+Partially_Reduced_Product<D1, D2, R>
+::add_space_dimensions_and_embed(dimension_type m) {
   d1.add_space_dimensions_and_embed(m);
   d2.add_space_dimensions_and_embed(m);
 }
@@ -641,6 +681,12 @@ Partially_Reduced_Product<D1, D2, R>::ascii_dump(std::ostream& s) const {
 template <typename D1, typename D2, typename R>
 inline bool
 Partially_Reduced_Product<D1, D2, R>::OK() const {
+  if (reduced) {
+    Partially_Reduced_Product<D1, D2, R> pd = *this;
+    pd.reduce();
+    if (pd != *this)
+      return false;
+  }
   return d1.OK() && d2.OK();
 }
 
