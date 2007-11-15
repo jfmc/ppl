@@ -35,50 +35,57 @@ Partially_Reduced_Product<D1, D2, R>::max_space_dimension() {
 
 template <typename D1, typename D2, typename R>
 inline
-Partially_Reduced_Product<D1, D2, R>::Partially_Reduced_Product(dimension_type num_dimensions,
-				       const Degenerate_Element kind)
+Partially_Reduced_Product<D1, D2, R>
+::Partially_Reduced_Product(dimension_type num_dimensions,
+			    const Degenerate_Element kind)
   : d1(num_dimensions, kind), d2(num_dimensions, kind) {
   set_reduced_flag();
 }
 
 template <typename D1, typename D2, typename R>
 inline
-Partially_Reduced_Product<D1, D2, R>::Partially_Reduced_Product(const Congruence_System& ccgs)
+Partially_Reduced_Product<D1, D2, R>
+::Partially_Reduced_Product(const Congruence_System& ccgs)
   : d1(ccgs), d2(ccgs) {
-  set_reduced_flag();
+  clear_reduced_flag();
 }
 
 template <typename D1, typename D2, typename R>
 inline
-Partially_Reduced_Product<D1, D2, R>::Partially_Reduced_Product(Congruence_System& cgs)
+Partially_Reduced_Product<D1, D2, R>
+::Partially_Reduced_Product(Congruence_System& cgs)
   : d1(const_cast<const Congruence_System&>(cgs)), d2(cgs) {
-  set_reduced_flag();
+  clear_reduced_flag();
 }
 
 template <typename D1, typename D2, typename R>
 inline
-Partially_Reduced_Product<D1, D2, R>::Partially_Reduced_Product(const Constraint_System& ccs)
+Partially_Reduced_Product<D1, D2, R>
+::Partially_Reduced_Product(const Constraint_System& ccs)
   : d1(ccs), d2(ccs) {
-  set_reduced_flag();
+  clear_reduced_flag();
 }
 
 template <typename D1, typename D2, typename R>
 inline
-Partially_Reduced_Product<D1, D2, R>::Partially_Reduced_Product(Constraint_System& cs)
+Partially_Reduced_Product<D1, D2, R>
+::Partially_Reduced_Product(Constraint_System& cs)
   : d1(const_cast<const Constraint_System&>(cs)), d2(cs) {
-  set_reduced_flag();
+  clear_reduced_flag();
 }
 
 template <typename D1, typename D2, typename R>
 inline
-Partially_Reduced_Product<D1, D2, R>::Partially_Reduced_Product(const Generator_System& gs)
+Partially_Reduced_Product<D1, D2, R>
+::Partially_Reduced_Product(const Generator_System& gs)
   : d1(gs), d2(gs) {
   clear_reduced_flag();
 }
 
 template <typename D1, typename D2, typename R>
 inline
-Partially_Reduced_Product<D1, D2, R>::Partially_Reduced_Product(Generator_System& gs)
+Partially_Reduced_Product<D1, D2, R>
+::Partially_Reduced_Product(Generator_System& gs)
   : d1(gs), d2(gs) {
   clear_reduced_flag();
 }
@@ -86,14 +93,16 @@ Partially_Reduced_Product<D1, D2, R>::Partially_Reduced_Product(Generator_System
 template <typename D1, typename D2, typename R>
 template <typename Interval>
 inline
-Partially_Reduced_Product<D1, D2, R>::Partially_Reduced_Product(const Box<Interval>& box)
+Partially_Reduced_Product<D1, D2, R>
+::Partially_Reduced_Product(const Box<Interval>& box)
   : d1(box), d2(box) {
   clear_reduced_flag();
 }
 
 template <typename D1, typename D2, typename R>
 inline
-Partially_Reduced_Product<D1, D2, R>::Partially_Reduced_Product(const Partially_Reduced_Product& y)
+Partially_Reduced_Product<D1, D2, R>
+::Partially_Reduced_Product(const Partially_Reduced_Product& y)
   : d1(y.d1), d2(y.d2) {
   reduced = y.reduced;
 }
@@ -133,7 +142,8 @@ Partially_Reduced_Product<D1, D2, R>::affine_dimension() const {
 
 template <typename D1, typename D2, typename R>
 inline void
-Partially_Reduced_Product<D1, D2, R>::intersection_assign(const Partially_Reduced_Product& y) {
+Partially_Reduced_Product<D1, D2, R>
+::intersection_assign(const Partially_Reduced_Product& y) {
   d1.intersection_assign(y.d1);
   d2.intersection_assign(y.d2);
   clear_reduced_flag();
@@ -141,7 +151,8 @@ Partially_Reduced_Product<D1, D2, R>::intersection_assign(const Partially_Reduce
 
 template <typename D1, typename D2, typename R>
 inline void
-Partially_Reduced_Product<D1, D2, R>::difference_assign(const Partially_Reduced_Product& y) {
+Partially_Reduced_Product<D1, D2, R>
+::difference_assign(const Partially_Reduced_Product& y) {
   reduce();
   y.reduce();
   d1.difference_assign(y.d1);
@@ -152,7 +163,8 @@ Partially_Reduced_Product<D1, D2, R>::difference_assign(const Partially_Reduced_
 
 template <typename D1, typename D2, typename R>
 inline void
-Partially_Reduced_Product<D1, D2, R>::upper_bound_assign(const Partially_Reduced_Product& y) {
+Partially_Reduced_Product<D1, D2, R>
+::upper_bound_assign(const Partially_Reduced_Product& y) {
   reduce();
   y.reduce();
   d1.upper_bound_assign(y.d1);
@@ -526,16 +538,16 @@ Partially_Reduced_Product<D1, D2, R>::is_bounded() const {
 
 template <typename D1, typename D2, typename R>
 inline bool
-  Partially_Reduced_Product<D1, D2, R>::bounds_from_above(
-                                        const Linear_Expression& expr) const {
+  Partially_Reduced_Product<D1, D2, R>
+::bounds_from_above(const Linear_Expression& expr) const {
   reduce();
   return d1.bounds_from_above(expr) || d2.bounds_from_above(expr);
  }
 
 template <typename D1, typename D2, typename R>
 inline bool
-  Partially_Reduced_Product<D1, D2, R>::bounds_from_below(
-                                        const Linear_Expression& expr) const {
+  Partially_Reduced_Product<D1, D2, R>
+::bounds_from_below(const Linear_Expression& expr) const {
   reduce();
   return d1.bounds_from_below(expr) || d2.bounds_from_below(expr);
  }
@@ -566,14 +578,16 @@ Partially_Reduced_Product<D1, D2, R>
 
 template <typename D1, typename D2, typename R>
 inline void
-Partially_Reduced_Product<D1, D2, R>::add_space_dimensions_and_project(dimension_type m) {
+Partially_Reduced_Product<D1, D2, R>
+::add_space_dimensions_and_project(dimension_type m) {
   d1.add_space_dimensions_and_project(m);
   d2.add_space_dimensions_and_project(m);
 }
 
 template <typename D1, typename D2, typename R>
 inline void
-Partially_Reduced_Product<D1, D2, R>::concatenate_assign(const Partially_Reduced_Product& y) {
+Partially_Reduced_Product<D1, D2, R>
+::concatenate_assign(const Partially_Reduced_Product& y) {
   d1.concatenate_assign(y.d1);
   d2.concatenate_assign(y.d2);
 }
@@ -597,7 +611,8 @@ Partially_Reduced_Product<D1, D2, R>
 template <typename D1, typename D2, typename R>
 template <typename Partial_Function>
 inline void
-Partially_Reduced_Product<D1, D2, R>::map_space_dimensions(const Partial_Function& pfunc) {
+Partially_Reduced_Product<D1, D2, R>
+::map_space_dimensions(const Partial_Function& pfunc) {
   d1.map_space_dimensions(pfunc);
   d2.map_space_dimensions(pfunc);
 }
@@ -621,7 +636,8 @@ Partially_Reduced_Product<D1, D2, R>
 
 template <typename D1, typename D2, typename R>
 inline bool
-Partially_Reduced_Product<D1, D2, R>::contains(const Partially_Reduced_Product& y) const {
+Partially_Reduced_Product<D1, D2, R>
+::contains(const Partially_Reduced_Product& y) const {
   reduce();
   y.reduce();
   return d1.contains(y.d1) && d2.contains(y.d2);
@@ -629,7 +645,8 @@ Partially_Reduced_Product<D1, D2, R>::contains(const Partially_Reduced_Product& 
 
 template <typename D1, typename D2, typename R>
 inline bool
-Partially_Reduced_Product<D1, D2, R>::strictly_contains(const Partially_Reduced_Product& y) const {
+Partially_Reduced_Product<D1, D2, R>
+::strictly_contains(const Partially_Reduced_Product& y) const {
   reduce();
   y.reduce();
   return (d1.contains(y.d1) && d2.strictly_contains(y.d2))
@@ -639,7 +656,8 @@ Partially_Reduced_Product<D1, D2, R>::strictly_contains(const Partially_Reduced_
 template <typename D1, typename D2, typename R>
 inline bool
 Partially_Reduced_Product<D1, D2, R>::reduce() const {
-  Partially_Reduced_Product& dp = const_cast<Partially_Reduced_Product&>(*this);
+  Partially_Reduced_Product& dp
+    = const_cast<Partially_Reduced_Product&>(*this);
   if (dp.is_reduced())
     return false;
   R r;
@@ -676,18 +694,6 @@ Partially_Reduced_Product<D1, D2, R>::ascii_dump(std::ostream& s) const {
   d1.ascii_dump(s);
   s << "Domain 2:\n";
   d2.ascii_dump(s);
-}
-
-template <typename D1, typename D2, typename R>
-inline bool
-Partially_Reduced_Product<D1, D2, R>::OK() const {
-  if (reduced) {
-    Partially_Reduced_Product<D1, D2, R> pd = *this;
-    pd.reduce();
-    if (pd != *this)
-      return false;
-  }
-  return d1.OK() && d2.OK();
 }
 
 /*! \relates Parma_Polyhedra_Library::Partially_Reduced_Product */

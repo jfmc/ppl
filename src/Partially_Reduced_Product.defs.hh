@@ -1625,7 +1625,7 @@ protected:
 
   /*! \brief
     Flag to record whether the components are reduced with respect
-    to each other.
+    to each other and the reduction class.
   */
   bool reduced;
 };

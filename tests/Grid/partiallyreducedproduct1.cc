@@ -192,8 +192,8 @@ test05() {
   DProduct known_dp2(3);
   known_dp2.add_constraint(A - C == 9);
 
-  DProduct dp1(sp.minimized_congruences());
-  DProduct dp2(cp.minimized_congruences());
+  DProduct dp1(sp.congruences());
+  DProduct dp2(cp.congruences());
 
   bool ok = (dp1 == known_dp1 && dp2 == known_dp2);
 
@@ -656,6 +656,62 @@ test15() {
   return ok;
 }
 
+// Building from constraints()
+bool
+test16() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Constraint_System cs1;
+  cs1.insert(A - C <= 8);
+  cs1.insert(A - C >= 9);
+  Constraint_System cs2;
+  cs2.insert(A - C <= 9);
+  cs2.insert(A - C >= 9);
+
+  SProduct sp(cs1);
+  CProduct cp(cs2);
+
+
+  bool ok = sp.OK() && cp.OK();
+
+  print_congruences(sp, "*** sp congruences ***");
+  print_constraints(sp, "*** sp constraints ***");
+  print_congruences(cp, "*** cp congruences ***");
+  print_constraints(cp, "*** cp constraints ***");
+
+  return ok;
+}
+
+// Building from congruences()
+bool
+test17() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Congruence_System cgs1;
+  cgs1.insert((A - C %= 8) / 10);
+  cgs1.insert((A - C %= 9) / 10);
+  Congruence_System cgs2;
+  cgs2.insert(A - C %= 9);
+  cgs2.insert((B %= 21) / 0);
+
+  SProduct sp(cgs1);
+  CProduct cp(cgs2);
+
+
+  bool ok = sp.OK() && cp.OK();
+
+  print_congruences(sp, "*** sp congruences ***");
+  print_constraints(sp, "*** sp constraints ***");
+  print_congruences(cp, "*** cp congruences ***");
+  print_constraints(cp, "*** cp constraints ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -674,4 +730,6 @@ BEGIN_MAIN
   DO_TEST(test13);
   DO_TEST(test14);
   DO_TEST(test15);
+  DO_TEST(test16);
+  DO_TEST(test17);
 END_MAIN
