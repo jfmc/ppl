@@ -32,7 +32,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-  template <typename D1, typename D2, typename R>
+template <typename D1, typename D2, typename R>
 Constraint_System
 Partially_Reduced_Product<D1, D2, R>::constraints() const {
   reduce();
@@ -90,7 +90,8 @@ Partially_Reduced_Product<D1, D2, R>::minimized_congruences() const {
 
 template <typename D1, typename D2, typename R>
 Poly_Gen_Relation
-Partially_Reduced_Product<D1, D2, R>::relation_with(const Generator& g) const {
+Partially_Reduced_Product<D1, D2, R>
+::relation_with(const Generator& g) const {
   reduce();
   if (Poly_Gen_Relation::nothing() == d1.relation_with(g)
       || Poly_Gen_Relation::nothing() == d2.relation_with(g))
@@ -101,8 +102,8 @@ Partially_Reduced_Product<D1, D2, R>::relation_with(const Generator& g) const {
 
 template <typename D1, typename D2, typename R>
 Poly_Con_Relation
-Partially_Reduced_Product<D1, D2, R>::relation_with(const Constraint& c) const {
-
+Partially_Reduced_Product<D1, D2, R>
+::relation_with(const Constraint& c) const {
   reduce();
   Poly_Con_Relation relation1 = d1.relation_with(c);
   Poly_Con_Relation relation2 = d2.relation_with(c);
@@ -127,10 +128,11 @@ Partially_Reduced_Product<D1, D2, R>::relation_with(const Constraint& c) const {
 
 template <typename D1, typename D2, typename R>
 bool
-  Partially_Reduced_Product<D1, D2, R>::maximize(const Linear_Expression& expr,
-				   Coefficient& sup_n,
-                                   Coefficient& sup_d,
-                                   bool& maximum) const {
+Partially_Reduced_Product<D1, D2, R>
+::maximize(const Linear_Expression& expr,
+	   Coefficient& sup_n,
+	   Coefficient& sup_d,
+	   bool& maximum) const {
   reduce();
   if (is_empty())
     return false;
@@ -175,10 +177,11 @@ bool
 
 template <typename D1, typename D2, typename R>
 bool
-  Partially_Reduced_Product<D1, D2, R>::minimize(const Linear_Expression& expr,
-				   Coefficient& inf_n,
-                                   Coefficient& inf_d,
-                                   bool& minimum) const {
+Partially_Reduced_Product<D1, D2, R>
+::minimize(const Linear_Expression& expr,
+	   Coefficient& inf_n,
+	   Coefficient& inf_d,
+	   bool& minimum) const {
   reduce();
   if (is_empty())
     return false;
@@ -223,11 +226,12 @@ bool
 
 template <typename D1, typename D2, typename R>
 bool
-  Partially_Reduced_Product<D1, D2, R>::maximize(const Linear_Expression& expr,
-				   Coefficient& sup_n,
-                                   Coefficient& sup_d,
-                                   bool& maximum,
-                                   Generator& pnt) const {
+Partially_Reduced_Product<D1, D2, R>
+::maximize(const Linear_Expression& expr,
+	   Coefficient& sup_n,
+	   Coefficient& sup_d,
+	   bool& maximum,
+	   Generator& pnt) const {
   reduce();
   if (is_empty())
     return false;
@@ -278,11 +282,12 @@ bool
 
 template <typename D1, typename D2, typename R>
 bool
-  Partially_Reduced_Product<D1, D2, R>::minimize(const Linear_Expression& expr,
-				   Coefficient& inf_n,
-                                   Coefficient& inf_d,
-                                   bool& minimum,
-                                   Generator& pnt) const {
+Partially_Reduced_Product<D1, D2, R>
+::minimize(const Linear_Expression& expr,
+	   Coefficient& inf_n,
+	   Coefficient& inf_d,
+	   bool& minimum,
+	   Generator& pnt) const {
   reduce();
   if (is_empty())
     return false;
