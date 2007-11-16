@@ -473,42 +473,6 @@ public:
   */
   Grid(Grid_Generator_System& gs, Recycle_Input dummy);
 
-  //! Builds a grid, copying a system of generators.
-  /*!
-    The grid inherits the space dimension of the generator system.
-
-    \param const_gs
-    The system of generators defining the grid.
-
-    \exception std::invalid_argument
-    Thrown if the system of generators is not empty but has no points.
-
-    \exception std::length_error
-    Thrown if \p num_dimensions exceeds the maximum allowed space
-    dimension.
-  */
-  explicit Grid(const Generator_System& const_gs);
-
-  //! Builds a grid, recycling a system of generators.
-  /*!
-    The grid inherits the space dimension of the generator system.
-
-    \param gs
-    The system of generators defining the grid.  Its data-structures
-    may be recycled to build the grid.
-
-    \param dummy
-    A dummy tag to syntactically differentiate this one
-    from the other constructors.
-
-    \exception std::invalid_argument
-    Thrown if the system of generators is not empty but has no points.
-
-    \exception std::length_error
-    Thrown if \p num_dimensions exceeds the maximum allowed space dimension.
-  */
-  Grid(Generator_System& gs, Recycle_Input dummy);
-
   //! Builds a grid out of a box.
   /*!
     The grid inherits the space dimension of the generator system.
@@ -646,18 +610,6 @@ public:
 
   //! Returns the system of congruences in reduced form.
   const Congruence_System& minimized_congruences() const;
-
-  /*! \brief
-    Returns a universe system of generators of the same number of
-    dimensions as the Grid.
-  */
-  Generator_System generators() const;
-
-  /*! \brief
-    Returns a universe system of generators of the same number of
-    dimensions as the Grid.
-  */
-  Generator_System minimized_generators() const;
 
   //! Returns the system of generators.
   const Grid_Generator_System& grid_generators() const;
@@ -1030,12 +982,6 @@ public:
     or if \p *this is an empty grid and \p g is not a point.
   */
   bool add_grid_generator_and_minimize(const Grid_Generator& g);
-
-  //! Domain compatibility method.
-  void add_generator(const Generator& g) const;
-
-  //! Returns <CODE>true</CODE> if \p *this is empty else <CODE>false</CODE>.
-  bool add_generator_and_minimize(const Generator& g) const;
 
   //! Adds a copy of each congruence in \p cgs to \p *this.
   /*!

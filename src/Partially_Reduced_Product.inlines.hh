@@ -323,41 +323,6 @@ Partially_Reduced_Product<D1, D2, R>::add_congruence(const Congruence& cg) {
 
 template <typename D1, typename D2, typename R>
 inline void
-Partially_Reduced_Product<D1, D2, R>::add_generator(const Generator& g) {
-  d1.add_generator(g);
-  d2.add_generator(g);
-  clear_reduced_flag();
-}
-
-template <typename D1, typename D2, typename R>
-inline bool
-Partially_Reduced_Product<D1, D2, R>
-::add_generator_and_minimize(const Generator& g) {
-  bool empty = d1.add_generator_and_minimize(g);
-  return (d2.add_generator_and_minimize(g) && empty);
-  clear_reduced_flag();
-}
-
-template <typename D1, typename D2, typename R>
-inline void
-Partially_Reduced_Product<D1, D2, R>
-::add_grid_generator(const Grid_Generator& g) {
-  d1.add_grid_generator(g);
-  d2.add_grid_generator(g);
-  clear_reduced_flag();
-}
-
-template <typename D1, typename D2, typename R>
-inline bool
-Partially_Reduced_Product<D1, D2, R>
-::add_grid_generator_and_minimize(const Grid_Generator& g) {
-  bool empty = d1.add_grid_generator_and_minimize(g);
-  return (d2.add_grid_generator_and_minimize(g) && empty);
-  clear_reduced_flag();
-}
-
-template <typename D1, typename D2, typename R>
-inline void
 Partially_Reduced_Product<D1, D2, R>
 ::add_constraints(const Constraint_System& cs) {
   d1.add_constraints(cs);
@@ -402,24 +367,6 @@ Partially_Reduced_Product<D1, D2, R>
 }
 
 template <typename D1, typename D2, typename R>
-inline void
-Partially_Reduced_Product<D1, D2, R>
-::add_generators(const Generator_System& gs) {
-  d1.add_generators(gs);
-  d2.add_generators(gs);
-  clear_reduced_flag();
-}
-
-template <typename D1, typename D2, typename R>
-inline void
-Partially_Reduced_Product<D1, D2, R>
-::add_grid_generators(const Grid_Generator_System& gs) {
-  d1.add_grid_generators(gs);
-  d2.add_grid_generators(gs);
-  clear_reduced_flag();
-}
-
-template <typename D1, typename D2, typename R>
 inline Partially_Reduced_Product<D1, D2, R>&
 Partially_Reduced_Product<D1, D2, R>
 ::operator=(const Partially_Reduced_Product& y) {
@@ -441,56 +388,6 @@ inline const D2&
 Partially_Reduced_Product<D1, D2, R>::domain2() const {
   reduce();
   return d2;
-}
-
-template <typename D1, typename D2, typename R>
-inline Generator_System
-Partially_Reduced_Product<D1, D2, R>::generators() const {
-  reduce();
-  Generator_System gs = d2.generators();
-  const Generator_System& gs1 = d1.generators();
-  for (Generator_System::const_iterator i = gs1.begin(),
-	 gs_end = gs1.end(); i != gs_end; ++i)
-    gs.insert(*i);
-  return gs;
-}
-
-template <typename D1, typename D2, typename R>
-inline Generator_System
-Partially_Reduced_Product<D1, D2, R>::minimized_generators() const {
-  reduce();
-  Generator_System gs = d2.generators();
-  const Generator_System& gs1 = d1.generators();
-  for (Generator_System::const_iterator i = gs1.begin(),
-	 gs_end = gs1.end(); i != gs_end; ++i)
-    gs.insert(*i);
-  NNC_Polyhedron ph(gs);
-  return ph.minimized_generators();
-}
-
-template <typename D1, typename D2, typename R>
-inline Grid_Generator_System
-Partially_Reduced_Product<D1, D2, R>::grid_generators() const {
-  reduce();
-  Grid_Generator_System gs = d2.grid_generators();
-  const Grid_Generator_System& gs1 = d1.grid_generators();
-  for (Grid_Generator_System::const_iterator i = gs1.begin(),
-	 gs_end = gs1.end(); i != gs_end; ++i)
-    gs.insert(*i);
-  return gs;
-}
-
-template <typename D1, typename D2, typename R>
-inline Grid_Generator_System
-Partially_Reduced_Product<D1, D2, R>::minimized_grid_generators() const {
-  reduce();
-  Grid_Generator_System gs = d2.grid_generators();
-  const Grid_Generator_System& gs1 = d1.grid_generators();
-  for (Grid_Generator_System::const_iterator i = gs1.begin(),
-	 gs_end = gs1.end(); i != gs_end; ++i)
-    gs.insert(*i);
-  Grid gr(gs);
-  return gr.minimized_grid_generators();
 }
 
 template <typename D1, typename D2, typename R>

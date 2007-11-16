@@ -176,69 +176,9 @@ test06() {
   return ok;
 }
 
-#if 0
-// Product(ggs), add_grid_generator(g)
-// FIXME: The constructor for a grid_generator and add_grid_generator
-//        behave differently - hence the need for adding universe generators.
-bool
-test07() {
-  Variable A(0);
-  Variable B(1);
-
-  const Grid_Generator_System gs(grid_point(A + B));
-
-  Product dp(gs);
-
-  Product known_dp(2, EMPTY);
-  known_dp.add_grid_generator(grid_point(A + B));
-  known_dp.add_generator(point());
-  known_dp.add_generator(line(A));
-  known_dp.add_generator(line(B));
-
-  bool ok = (dp == known_dp);
-
-  print_congruences(dp, "*** dp congruences ***");
-  print_constraints(dp, "*** dp constraints ***");
-
-  return ok;
-}
-
-// Product(ggs), add_generator(g)
-// FIXME: The constructor for a grid_generator and add_grid_generator
-//        behave differently - hence the need for adding universe grid
-//        generators.
-bool
-test08() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
-  Generator_System gs(point(A + 7*C));
-
-  Product dp(gs);
-
-  Product known_dp(3, EMPTY);
-  known_dp.add_generator(point(A + 7*C));
-  known_dp.add_grid_generator(grid_point());
-  known_dp.add_grid_generator(grid_line(A));
-  known_dp.add_grid_generator(grid_line(B));
-  known_dp.add_grid_generator(grid_line(C));
-
-  bool ok = (dp == known_dp);
-
-  print_congruences(dp, "*** dp congruences ***");
-  print_constraints(dp, "*** dp constraints ***");
-
-  print_congruences(known_dp, "*** known_dp congruences ***");
-  print_constraints(known_dp, "*** known_dp constraints ***");
-
-  return ok;
-}
-#endif
-
 // Product(bounding_box)
 bool
-test09() {
+test07() {
   Variable B(1);
 
   Rational_Box box(2);
@@ -262,7 +202,7 @@ test09() {
 #if 0
 // Product(covering_box)
 bool
-test10() {
+test08() {
   Variable B(1);
 
   Rational_Box box(2);
@@ -286,7 +226,7 @@ test10() {
 
 // operator=
 bool
-test11() {
+test09() {
   Variable A(0);
   Variable B(1);
 
@@ -309,7 +249,7 @@ test11() {
 
 // Copy constructor.
 bool
-test12() {
+test10() {
   Variable A(0);
   Variable B(2);
 
@@ -331,7 +271,7 @@ test12() {
 
 // congruences()
 bool
-test13() {
+test11() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -358,7 +298,7 @@ test13() {
 
 // minimized_congruences()
 bool
-test14() {
+test12() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -386,7 +326,7 @@ test14() {
 
 // constraints()
 bool
-test15() {
+test13() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -424,7 +364,7 @@ test15() {
 
 // minimized_constraints()
 bool
-test16() {
+test14() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -458,126 +398,6 @@ test16() {
   return ok;
 }
 
-#if 0
-// generators()
-bool
-test17() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
-  Product dp(3);
-  dp.add_congruence((B + C %= 3) / 0);
-#ifdef PH_IS_NNC
-  dp.add_constraint(A > 9);
-#else
-  dp.add_constraint(A >= 9);
-#endif
-  dp.add_constraint(A <= 11);
-
-  Poly ph(dp.space_dimension());
-  ph.add_generators(dp.generators());
-
-  Poly known_ph(dp.space_dimension());
-
-  bool ok = (ph == known_ph);
-
-  print_congruences(dp, "*** dp congruences ***");
-  print_constraints(dp, "*** dp constraints ***");
-
-  return ok;
-}
-
-// minimized_generators()
-bool
-test18() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
-  Product dp(3);
-  dp.add_congruence((B + C %= 3) / 0);
-#ifdef PH_IS_NNC
-  dp.add_constraint(A > 9);
-#else
-  dp.add_constraint(A >= 9);
-#endif
-  dp.add_constraint(A <= 11);
-
-  Poly ph(dp.space_dimension());
-  ph.add_generators(dp.generators());
-
-  Poly known_ph(dp.space_dimension());
-
-  bool ok = (ph == known_ph);
-
-  print_congruences(dp, "*** dp congruences ***");
-  print_constraints(dp, "*** dp constraints ***");
-
-  return ok;
-}
-
-// grid_generators()
-bool
-test19() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
-  Product dp(3);
-  dp.add_congruence((B + C %= 3) / 0);
-#ifdef PH_IS_NNC
-  dp.add_constraint(A > 9);
-#else
-  dp.add_constraint(A >= 9);
-#endif
-  dp.add_constraint(A <= 11);
-
-  dimension_type d = dp.space_dimension();
-
-  Grid gr(d);
-
-  Grid known_gr(dp.space_dimension());
-
-  bool ok = (gr == known_gr);
-
-  print_congruences(dp, "*** dp congruences ***");
-  print_constraints(dp, "*** dp constraints ***");
-
-  return ok;
-}
-
-// minimized_grid_generators()
-bool
-test20() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
-  Product dp(3);
-  dp.add_congruence((B + C %= 3) / 0);
-#ifdef PH_IS_NNC
-  dp.add_constraint(A > 9);
-#else
-  dp.add_constraint(A >= 9);
-#endif
-  dp.add_constraint(A <= 11);
-
-  dimension_type d = dp.space_dimension();
-
-  Grid gr(d);
-
-  Grid known_gr(dp.space_dimension());
-
-  bool ok = (gr == known_gr);
-
-  print_congruences(dp, "*** dp congruences ***");
-  print_constraints(dp, "*** dp constraints ***");
-
-  return ok;
-}
-#endif
-
 } // namespace
 
 BEGIN_MAIN
@@ -587,18 +407,12 @@ BEGIN_MAIN
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
-//  DO_TEST(test07);
+  DO_TEST(test07);
 //  DO_TEST(test08);
   DO_TEST(test09);
-  //DO_TEST(test10);
+  DO_TEST(test10);
   DO_TEST(test11);
   DO_TEST(test12);
   DO_TEST(test13);
   DO_TEST(test14);
-  DO_TEST(test15);
-  DO_TEST(test16);
-//  DO_TEST(test17);
-//  DO_TEST(test18);
-//  DO_TEST(test19);
-//  DO_TEST(test20);
 END_MAIN

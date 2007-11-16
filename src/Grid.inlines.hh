@@ -111,62 +111,12 @@ Grid::Grid(Grid_Generator_System& ggs, Recycle_Input)
 }
 
 inline
-Grid::Grid(const Generator_System& gs)
-  : con_sys(),
-    gen_sys(gs.space_dimension() > max_space_dimension()
-	    ? throw_space_dimension_overflow("Grid(gs)",
-					     "n exceeds the maximum "
-					     "allowed space dimension"), 0
-	    : gs.space_dimension()) {
-  construct(gs.space_dimension(), UNIVERSE);
-}
-
-inline
-Grid::Grid(Generator_System& gs, Recycle_Input)
-  : con_sys(),
-    gen_sys(gs.space_dimension() > max_space_dimension()
-	    ? throw_space_dimension_overflow("Grid(gs, recycle)",
-					     "n exceeds the maximum "
-					     "allowed space dimension"), 0
-	    : gs.space_dimension()) {
-  construct(gs.space_dimension(), UNIVERSE);
-}
-
-inline
 Grid::~Grid() {
 }
 
 inline dimension_type
 Grid::space_dimension() const {
   return space_dim;
-}
-
-inline Generator_System
-Grid::generators() const {
-  Generator_System gs;
-  // Trivially true point.
-  gs.insert(point());
-  // A line for each dimension.
-  dimension_type dim = space_dimension();
-  while (dim--)
-    gs.insert(line(Variable(dim)));
-  return gs;
-}
-
-inline Generator_System
-Grid::minimized_generators() const {
-  return generators();
-}
-
-inline void
-Grid::add_generator(const Generator& g) const {
-  used(g);
-}
-
-inline bool
-Grid::add_generator_and_minimize(const Generator& g) const {
-  used(g);
-  return !is_empty();
 }
 
 inline memory_size_type

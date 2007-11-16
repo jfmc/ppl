@@ -396,10 +396,6 @@ test17() {
   dp.add_congruence((A - B %= 0) / 0);
   dp.add_constraint(B >= 0);
   dp.add_constraint(B <= 0);
-/*   dp.add_grid_generator(grid_point()); */
-/*   dp.add_grid_generator(grid_line(A + B)); */
-/*   dp.add_generator(point()); */
-/*   dp.add_generator(line(A)); */
 
   bool ok = !dp.is_discrete();
 

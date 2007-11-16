@@ -457,6 +457,7 @@ public:
   */
   Congruence_System minimized_congruences() const;
 
+#if 0
   //! Returns a system of generators which approximates \p *this.
   Generator_System generators() const;
 
@@ -471,6 +472,7 @@ public:
     in reduced form.
   */
   Grid_Generator_System minimized_grid_generators() const;
+#endif
 
   //! Returns the relations holding between \p *this and \p c.
   /*
@@ -775,52 +777,6 @@ public:
   */
   bool add_congruence_and_minimize(const Congruence& c);
 
-  /*! \brief
-    Adds a copy of generator \p g to the system of generators of \p
-    *this.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and generator \p g are dimension-incompatible,
-    or if \p *this is empty and \p g is not a point.
-  */
-  void add_generator(const Generator& g);
-
-  /*! \brief
-    Adds a copy of generator \p g to the system of generators of \p
-    *this, reducing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and generator \p g are dimension-incompatible,
-    or if \p *this is empty and \p g is not a point.
-  */
-  bool add_generator_and_minimize(const Generator& g);
-
-  /*! \brief
-    Adds a copy of grid generator \p g to the system of grid generators of \p
-    *this.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and grid generator \p g are dimension-incompatible,
-    or if \p *this is empty and \p g is not a grid point.
-  */
-  void add_grid_generator(const Grid_Generator& g);
-
-  /*! \brief
-    Adds a copy of grid generator \p g to the system of grid generators of \p
-    *this, reducing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and grid generator \p g are dimension-incompatible,
-    or if \p *this is empty and \p g is not a point.
-  */
-  bool add_grid_generator_and_minimize(const Grid_Generator& g);
-
   //! Adds a copy of the congruences in \p cgs to \p *this.
   /*!
     \param cgs
@@ -933,154 +889,6 @@ public:
     or exceptional return is that it can be safely destroyed.
   */
   bool add_recycled_constraints_and_minimize(Constraint_System& cs);
-
-  /*! \brief
-    Adds a copy of the grid generators in \p gs to the system of
-    grid generators of \p *this.
-
-    \param gs
-    Contains the generators that will be added to the system of
-    grid generators of \p *this.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p gs are dimension-incompatible, or if
-    \p *this is empty and the system of grid generators \p gs is not empty,
-    but has no grid points.
-  */
-  void add_grid_generators(const Grid_Generator_System& gs);
-
-  /*! \brief
-    Adds the grid generators in \p gs to the system of grid generators of \p
-    *this.
-
-    \param gs
-    The grid generator system that may be recycled, adding its grid generators
-    to the system of grid generators of \p *this.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p gs are dimension-incompatible, or if
-    \p *this is empty and the system of grid generators \p gs is not empty,
-    but has no grid points.
-
-    \warning
-    The only assumption that can be made about \p gs upon successful
-    or exceptional return is that it can be safely destroyed.
-  */
-  void add_recycled_grid_generators(Grid_Generator_System& gs);
-
-  /*! \brief
-    Adds a copy of the grid generators in \p gs to the system of
-    grid generators of \p *this, reducing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param gs
-    Contains the grid generators that will be added to the system of
-    grid generators of \p *this.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p gs are dimension-incompatible, or if \p
-    *this is empty and the system of grid generators \p gs is not empty,
-    but has no  grid points.
-  */
-  bool add_grid_generators_and_minimize(const Grid_Generator_System& gs);
-
-  /*! \brief
-    Adds the generators in \p gs to the system of generators of \p
-    *this, reducing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param gs
-    The generator system that may be recycled, adding its generators
-    to the system of generators of \p *this.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p gs are dimension-incompatible, or if \p
-    *this is empty and the system of grid generators \p gs is not empty,
-    but has no grid points.
-
-    \warning
-    The only assumption that can be made about \p gs upon successful
-    or exceptional return is that it can be safely destroyed.
-  */
-  bool add_recycled_grid_generators_and_minimize(Grid_Generator_System& gs);
-
-  /*! \brief
-    Adds a copy of the generators in \p gs to the system of generators
-    of \p *this.
-
-    \param gs
-    Contains the generators that will be added to the system of
-    generators of \p *this.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p gs are dimension-incompatible, or if
-    \p *this is empty and the system of generators \p gs is not empty,
-    but has no points.
-  */
-  void add_generators(const Generator_System& gs);
-
-  /*! \brief
-    Adds the generators in \p gs to the system of generators of \p
-    *this.
-
-    \param gs
-    The generator system that may be recycled, adding its generators
-    to the system of generators of \p *this.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p gs are dimension-incompatible, or if
-    \p *this is empty and the system of generators \p gs is not empty,
-    but has no points.
-
-    \warning
-    The only assumption that can be made about \p gs upon successful
-    or exceptional return is that it can be safely destroyed.
-  */
-  void add_recycled_generators(Generator_System& gs);
-
-  /*! \brief
-    Adds a copy of the generators in \p gs to the system of generators
-    of \p *this, reducing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param gs
-    Contains the generators that will be added to the system of
-    generators of \p *this.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p gs are dimension-incompatible, or if \p
-    *this is empty and the system of generators \p gs is not empty,
-    but has no points.
-  */
-  bool add_generators_and_minimize(const Generator_System& gs);
-
-  /*! \brief
-    Adds the generators in \p gs to the system of generators of \p
-    *this, reducing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param gs
-    The generator system that may be recycled, adding its generators
-    to the system of generators of \p *this.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p gs are dimension-incompatible, or if \p
-    *this is empty and the system of generators \p gs is not empty,
-    but has no points.
-
-    \warning
-    The only assumption that can be made about \p gs upon successful
-    or exceptional return is that it can be safely destroyed.
-  */
-  bool add_recycled_generators_and_minimize(Generator_System& gs);
 
   /*! \brief
     Assigns to \p *this the componentwise intersection of \p *this and \p y.
