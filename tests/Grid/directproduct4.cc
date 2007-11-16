@@ -446,37 +446,9 @@ test15() {
   return ok;
 }
 
-#if (0)
-// add_recycled_congruences
-bool
-test16() {
-  Variable A(0);
-  Variable B(1);
-
-  Congruence_System cgs;
-  cgs.insert((A + B %= 0) / 2);
-
-  Product dp(2);
-
-  print_constraints(dp, "*** dp constraints ***");
-  print_congruences(dp, "*** dp congruences ***");
-
-  dp.add_recycled_congruences(cgs);
-
-  Product known_dp(2);
-  known_dp.add_congruence((A + B %= 0) / 2);
-
-  bool ok = (dp == known_dp);
-
-  print_constraints(dp, "*** dp constraints ***");
-  print_congruences(dp, "*** dp congruences ***");
-
-  return ok;
-}
-
 // add_congruences_and_minimize
 bool
-test17() {
+test16() {
   Variable A(0);
   Variable B(1);
 
@@ -493,7 +465,35 @@ test17() {
 
   Product known_dp(2);
   known_dp.add_congruence((A %= 0) / 2);
-  known_dp.add_congruence(A + B == 0);
+  known_dp.add_congruence((A + B %= 0) / 0);
+
+  bool ok = (dp == known_dp);
+
+  print_constraints(dp, "*** dp constraints ***");
+  print_congruences(dp, "*** dp congruences ***");
+
+  return ok;
+}
+
+#if (0)
+// add_recycled_congruences
+bool
+test17() {
+  Variable A(0);
+  Variable B(1);
+
+  Congruence_System cgs;
+  cgs.insert((A + B %= 0) / 2);
+
+  Product dp(2);
+
+  print_constraints(dp, "*** dp constraints ***");
+  print_congruences(dp, "*** dp congruences ***");
+
+  dp.add_recycled_congruences(cgs);
+
+  Product known_dp(2);
+  known_dp.add_congruence((A + B %= 0) / 2);
 
   bool ok = (dp == known_dp);
 
@@ -551,7 +551,7 @@ BEGIN_MAIN
   DO_TEST(test13);
   DO_TEST(test14);
   DO_TEST(test15);
-//  DO_TEST(test16);
+  DO_TEST(test16);
 //  DO_TEST(test17);
 //  DO_TEST(test18);
 END_MAIN

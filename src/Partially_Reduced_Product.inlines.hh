@@ -367,6 +367,21 @@ Partially_Reduced_Product<D1, D2, R>
 }
 
 template <typename D1, typename D2, typename R>
+inline bool
+Partially_Reduced_Product<D1, D2, R>
+::add_congruences_and_minimize(const Congruence_System& cgs) {
+  // FIXME: When the corresponding methods are in the non-grid classes
+  //        we can use these methods directly.
+  d1.add_congruences(cgs);
+  d2.add_congruences(cgs);
+  (void) minimized_congruences();
+  clear_reduced_flag();
+  if (is_empty())
+    return false;
+  return true;
+}
+
+template <typename D1, typename D2, typename R>
 inline Partially_Reduced_Product<D1, D2, R>&
 Partially_Reduced_Product<D1, D2, R>
 ::operator=(const Partially_Reduced_Product& y) {
