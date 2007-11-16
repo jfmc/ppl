@@ -304,7 +304,7 @@ public:
     dimension.
   */
   explicit Partially_Reduced_Product(dimension_type num_dimensions = 0,
-			  Degenerate_Element kind = UNIVERSE);
+				     Degenerate_Element kind = UNIVERSE);
 
   //! Builds a pair, copying a system of congruences.
   /*!
@@ -361,19 +361,14 @@ public:
 
   //! Builds a pair out of a box.
   /*!
+    The product inherits the space dimension of the box.
+
     \param box
-    The bounding box representing the pair to be built.  The box can
-    contain only point and universe intervals;
+    The bounding box representing the pair to be built.
 
     \exception std::length_error
     Thrown if the space dimension of \p box exceeds the maximum
     allowed space dimension.
-
-    \exception std::invalid_argument
-    FIXME: what???
-    Thrown if \p box contains at least one interval with: a
-    topologically open bound, a single bound, or two bounds which have
-    space between them.
   */
   template <typename Interval>
   Partially_Reduced_Product(const Box<Interval>& box);
@@ -425,23 +420,6 @@ public:
   */
   Congruence_System minimized_congruences() const;
 
-#if 0
-  //! Returns a system of generators which approximates \p *this.
-  Generator_System generators() const;
-
-  //! Returns the minimized system of generators.
-  Generator_System minimized_generators() const;
-
-  //! Returns a system of grid generators which approximates \p *this.
-  Grid_Generator_System grid_generators() const;
-
-  /*! \brief
-    Returns a system of grid generators which approximates \p *this,
-    in reduced form.
-  */
-  Grid_Generator_System minimized_grid_generators() const;
-#endif
-
   //! Returns the relations holding between \p *this and \p c.
   /*
     \exception std::invalid_argument
@@ -489,18 +467,6 @@ public:
     if and only if one or both of \p r1 and \p r2 = <CODE>nothing()</CODE>;
   */
   Poly_Gen_Relation relation_with(const Generator& g) const;
-
-  /* FIXME: Implement relation_with(Grid_Generator) when/if it is implemented
-            for the Polyhedron classes.
-  */
-#if 0
-  //! Returns the relations holding between \p *this and \p g.
-  /*
-    \exception std::invalid_argument
-    Thrown if \p *this and generator \p g are dimension-incompatible.
-  */
-  Poly_Gen_Relation relation_with(const Grid_Generator& g) const;
-#endif
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if either of the components
@@ -706,8 +672,6 @@ public:
 
   //! Adds constraint \p c to \p *this.
   /*!
-    The addition can only affect \p *this if \p c is an equality.
-
     \exception std::invalid_argument
     Thrown if \p *this and \p c are dimension-incompatible.
   */
@@ -715,8 +679,6 @@ public:
 
   //! Adds constraint \p c to \p *this, reducing the result.
   /*!
-    The addition can only affect \p *this if \p c is an equality.
-
     \return
     <CODE>false</CODE> if and only if the result is empty.
 
@@ -755,6 +717,7 @@ public:
   */
   void add_congruences(const Congruence_System& cgs);
 
+#if 0
   //! Adds the congruences in \p cgs to *this.
   /*!
     \param cgs
@@ -768,6 +731,7 @@ public:
     or exceptional return is that it can be safely destroyed.
   */
   void add_recycled_congruences(Congruence_System& cgs);
+#endif
 
   /*! \brief
     Adds a copy of the congruences in \p cgs to \p *this, reducing the result.
@@ -783,6 +747,7 @@ public:
   */
   bool add_congruences_and_minimize(const Congruence_System& cgs);
 
+#if 0
   /*! \brief
     Adds the congruences in \p cgs to \p *this, reducing the result.
 
@@ -800,6 +765,7 @@ public:
     or exceptional return is that it can be safely destroyed.
   */
   bool add_recycled_congruences_and_minimize(Congruence_System& cgs);
+#endif
 
   //! Adds a copy of the constraint system in \p cs to \p *this.
   /*!
@@ -952,7 +918,8 @@ public:
     \ref Generalized_Affine_Relations "generalized affine relation"
     \f$\mathrm{var}' \relsym \frac{\mathrm{expr}}{\mathrm{denominator}}\f$,
     where \f$\mathord{\relsym}\f$ is the relation symbol encoded
-    by \p relsym.
+    by \p relsym
+    (see also \ref Grid_Generalized_Image "generalized affine relation".)
 
     \param var
     The left hand side variable of the generalized affine relation;
@@ -985,6 +952,7 @@ public:
     \f$\mathrm{var}' \relsym \frac{\mathrm{expr}}{\mathrm{denominator}}\f$,
     where \f$\mathord{\relsym}\f$ is the relation symbol encoded
     by \p relsym.
+   (see also \ref Grid_Generalized_Image "generalized affine relation".)
 
     \param var
     The left hand side variable of the generalized affine relation;
@@ -1017,6 +985,7 @@ public:
     \ref Generalized_Affine_Relations "generalized affine relation"
     \f$\mathrm{lhs}' \relsym \mathrm{rhs}\f$, where
     \f$\mathord{\relsym}\f$ is the relation symbol encoded by \p relsym.
+   (see also \ref Grid_Generalized_Image "generalized affine relation".)
 
     \param lhs
     The left hand side affine expression;
@@ -1041,6 +1010,7 @@ public:
     \ref Generalized_Affine_Relations "generalized affine relation"
     \f$\mathrm{lhs}' \relsym \mathrm{rhs}\f$, where
     \f$\mathord{\relsym}\f$ is the relation symbol encoded by \p relsym.
+   (see also \ref Grid_Generalized_Image "generalized affine relation".)
 
     \param lhs
     The left hand side affine expression;
@@ -1127,6 +1097,7 @@ public:
   /*! \brief
     Assigns to \p *this the result of computing the \ref Time_Elapse_Operator
     "time-elapse" between \p *this and \p y.
+    (See also \ref Grid_Time_Elapse "time-elapse".)
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
@@ -1138,6 +1109,9 @@ public:
 
   // TODO: Add a way to call other widenings.
 
+  // CHECKME: This may not be a real widening; it depends on the reduction
+  //          class R and the widening used.
+
   /*! \brief
     Assigns to \p *this the result of computing the
     "widening" between \p *this and \p y.
@@ -1147,7 +1121,7 @@ public:
     are up to date and minimized.
 
     \param y
-    A direct product that <EM>must</EM> be contained in \p *this;
+    A product that <EM>must</EM> be contained in \p *this;
 
     \param tp
     An optional pointer to an unsigned variable storing the number of

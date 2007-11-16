@@ -75,28 +75,12 @@ Partially_Reduced_Product<D1, D2, R>
 }
 
 template <typename D1, typename D2, typename R>
-inline
-Partially_Reduced_Product<D1, D2, R>
-::Partially_Reduced_Product(const Generator_System& gs)
-  : d1(gs), d2(gs) {
-  clear_reduced_flag();
-}
-
-template <typename D1, typename D2, typename R>
-inline
-Partially_Reduced_Product<D1, D2, R>
-::Partially_Reduced_Product(Generator_System& gs)
-  : d1(gs), d2(gs) {
-  clear_reduced_flag();
-}
-
-template <typename D1, typename D2, typename R>
 template <typename Interval>
 inline
 Partially_Reduced_Product<D1, D2, R>
 ::Partially_Reduced_Product(const Box<Interval>& box)
   : d1(box), d2(box) {
-  clear_reduced_flag();
+  set_reduced_flag();
 }
 
 template <typename D1, typename D2, typename R>
@@ -169,8 +153,8 @@ Partially_Reduced_Product<D1, D2, R>
   y.reduce();
   d1.upper_bound_assign(y.d1);
   d2.upper_bound_assign(y.d2);
-  // FIXME: can we do better than this?
-  clear_reduced_flag();
+  // CHECKME: if upper_bound_assign is not a least_upper_bound.
+  // clear_reduced_flag();
 }
 
 template <typename D1, typename D2, typename R>
@@ -502,6 +486,8 @@ Partially_Reduced_Product<D1, D2, R>
 ::concatenate_assign(const Partially_Reduced_Product& y) {
   d1.concatenate_assign(y.d1);
   d2.concatenate_assign(y.d2);
+  if (!is_reduced() || !y.is_reduced())
+    clear_reduced_flag();
 }
 
 template <typename D1, typename D2, typename R>

@@ -55,7 +55,7 @@ test01() {
   print_congruences(dp2, "*** dp2 congruences ***");
   print_constraints(dp2, "*** dp2 constraints ***");
 
-  return ok;
+  return ok && dp1.OK() && dp2.OK();
 }
 
 // Empty product(dims, type)
@@ -72,7 +72,7 @@ test02() {
   print_congruences(dp2, "*** dp2 congruences ***");
   print_constraints(dp2, "*** dp2 constraints ***");
 
-  return ok;
+  return ok && dp1.OK() && dp2.OK();
 }
 
 // Product(cgs), add_congruence(cg)
@@ -94,7 +94,7 @@ test03() {
   print_congruences(dp2, "*** dp2 congruences ***");
   print_constraints(dp2, "*** dp2 constraints ***");
 
-  return ok;
+  return ok && dp1.OK() && dp2.OK();
 }
 
 // Product(cgs), domain1(), domain2()
@@ -122,7 +122,7 @@ test04() {
   print_congruences(dp, "*** dp congruences ***");
   print_constraints(dp, "*** dp constraints ***");
 
-  return ok;
+  return ok && dp.OK();
 }
 
 // Product(cs), add_constraint(c)
@@ -144,7 +144,7 @@ test05() {
   print_congruences(dp2, "*** dp2 congruences ***");
   print_constraints(dp2, "*** dp2 constraints ***");
 
-  return ok;
+  return ok && dp1.OK() && dp2.OK();
 }
 
 // Product(cs), add_congruence(c)
@@ -173,28 +173,32 @@ test06() {
   print_congruences(dp2, "*** dp2 congruences ***");
   print_constraints(dp2, "*** dp2 constraints ***");
 
-  return ok;
+  return ok && dp1.OK() && dp2.OK();
 }
 
 // Product(bounding_box)
 bool
 test07() {
+  Variable A(0);
   Variable B(1);
 
   Rational_Box box(2);
-  box.add_constraint(3*B == 2);
+  box.add_constraint(3*B >= 2);
+  box.add_constraint(A >= 2);
+  box.add_constraint(A <= 2);
 
   Product dp(box);
 
   Product known_dp(2);
-  known_dp.add_constraint(3*B == 2);
+  known_dp.add_constraint(3*B >= 2);
+  known_dp.add_constraint(A == 2);
 
-  bool ok = (dp == known_dp);
+  bool ok = (dp == known_dp) && dp.OK();
 
   print_congruences(dp, "*** dp congruences ***");
   print_constraints(dp, "*** dp constraints ***");
 
-  return ok;
+  return ok && dp.OK();
 }
 
 // FIXME: Waiting for covering box methods, details in
@@ -220,7 +224,7 @@ test08() {
   print_congruences(dp, "*** dp congruences ***");
   print_constraints(dp, "*** dp constraints ***");
 
-  return ok;
+  return ok && dp.OK();
 }
 #endif
 
@@ -244,7 +248,7 @@ test09() {
   print_congruences(dp2, "*** dp2 congruences ***");
   print_constraints(dp2, "*** dp2 constraints ***");
 
-  return ok;
+  return ok && dp1.OK() && dp2.OK();
 }
 
 // Copy constructor.
@@ -266,7 +270,7 @@ test10() {
   print_congruences(dp2, "*** dp2 congruences ***");
   print_constraints(dp2, "*** dp2 constraints ***");
 
-  return ok;
+  return ok && dp1.OK() && dp2.OK();
 }
 
 // congruences()
@@ -293,7 +297,7 @@ test11() {
   print_congruences(dp, "*** dp congruences ***");
   print_constraints(dp, "*** dp constraints ***");
 
-  return ok;
+  return ok && dp.OK();
 }
 
 // minimized_congruences()
@@ -321,7 +325,7 @@ test12() {
   print_congruences(dp, "*** dp congruences ***");
   print_constraints(dp, "*** dp constraints ***");
 
-  return ok;
+  return ok && dp.OK();
 }
 
 // constraints()
@@ -359,7 +363,7 @@ test13() {
   print_congruences(dp, "*** dp congruences ***");
   print_constraints(dp, "*** dp constraints ***");
 
-  return ok;
+  return ok && dp.OK();
 }
 
 // minimized_constraints()
@@ -395,7 +399,7 @@ test14() {
   print_congruences(dp, "*** dp congruences ***");
   print_constraints(dp, "*** dp constraints ***");
 
-  return ok;
+  return ok && dp.OK();
 }
 
 } // namespace

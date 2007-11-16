@@ -643,9 +643,6 @@ test19() {
   dp.add_constraint(A >= 0);
 #endif
 
-  print_congruences(dp, "*** dp congruences ***");
-  print_constraints(dp, "*** dp constraints ***");
-
   dp.topological_closure_assign();
 
   Product known_dp(3);
@@ -655,7 +652,7 @@ test19() {
   known_dp.add_congruence(3*A %= 0);
   known_dp.add_constraint(A >= 0);
 
-  bool ok = (dp == known_dp);
+  bool ok = (dp.is_topologically_closed() && dp == known_dp);
 
   print_congruences(dp, "*** dp congruences ***");
   print_constraints(dp, "*** dp constraints ***");

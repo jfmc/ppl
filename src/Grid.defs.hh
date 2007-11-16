@@ -475,7 +475,7 @@ public:
 
   //! Builds a grid out of a box.
   /*!
-    The grid inherits the space dimension of the generator system.
+    The grid inherits the space dimension of the box.
     The built grid is the most precise grid that includes the box.
 
     \param box
