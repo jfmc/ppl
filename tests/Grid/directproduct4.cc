@@ -89,7 +89,7 @@ test02() {
   return ok;
 }
 
-// generalized_affine_image(v, relsym, e, d)
+// generalized_affine_image(v, EQUAL, e)
 bool
 test03() {
   Variable A(0);
@@ -117,8 +117,7 @@ test03() {
   return ok;
 }
 
-#if 0
-// generalized_affine_image(v, EQUAL, e, d, denom, modulus)
+// generalized_affine_image(v, EQUAL, e, d)
 bool
 test04() {
   Variable A(0);
@@ -129,12 +128,10 @@ test04() {
   dp.add_congruence((A + B %= 0) / 2);
   dp.add_constraint(A >= 3);
 
-  dp.generalized_affine_image(B, EQUAL, A + 1, 2, 1);
+  dp.generalized_affine_image(B, EQUAL, A + 1, 2);
 
   Product known_dp(3);
-  known_dp.add_congruence((A + 2*B %= -1) / 2);
-  known_dp.add_constraint(A - 2*B >= -1);
-  known_dp.add_constraint(A - 2*B <= -1);
+  known_dp.add_constraint(A - 2*B == -1);
   known_dp.add_congruence(A %= 0);
   known_dp.add_constraint(A >= 3);
 
@@ -145,9 +142,8 @@ test04() {
 
   return ok;
 }
-#endif
 
-// generalized_affine_preimage(v, relsym, e, d)
+// generalized_affine_preimage(v, GREATER_OR_EQUAL, e)
 bool
 test05() {
   Variable A(0);
@@ -226,8 +222,7 @@ test07() {
   return ok;
 }
 
-#if 0
-// generalized_affine_image(lhs, EQUAL, rhs, modulus),
+// generalized_affine_image(lhs, EQUAL, rhs),
 // add_congruences(cgs)
 bool
 test08() {
@@ -242,7 +237,7 @@ test08() {
   dp.add_congruences(cs);
   dp.add_constraint(A <= 3);
 
-  dp.generalized_affine_image(A + 2*B, EQUAL, A - B, 3);
+  dp.generalized_affine_image(A + 2*B, EQUAL, A - B);
 
   Product known_dp(2);
   known_dp.add_congruence((A + 2*B %= 0) / 1);
@@ -254,7 +249,6 @@ test08() {
 
   return ok;
 }
-#endif
 
 // generalized_affine_preimage(lhs, relsym, rhs), add_constraints(cs)
 bool
@@ -286,8 +280,7 @@ test09() {
   return ok;
 }
 
-#if 0
-// generalized_affine_preimage(lhs, EQUAL, rhs, modulus)
+// generalized_affine_preimage(lhs, EQUAL, rhs)
 bool
 test10() {
   Variable A(0);
@@ -295,14 +288,12 @@ test10() {
   Variable C(2);
 
   Product dp(3);
-  dp.add_constraint(A - B == 0);
+  dp.add_constraint(A - B == 1);
 
-  dp.generalized_affine_preimage(A - B, EQUAL, 2*A - 2*B, 5);
+  dp.generalized_affine_preimage(A - B, EQUAL, 2*A - 2*B);
 
   Product known_dp(3);
-  known_dp.add_congruence((2*A - 2*B %= 0) / 5);
-  known_dp.add_constraint(A - B >= 0);
-  known_dp.add_constraint(A - B <= 0);
+  known_dp.add_congruence((2*A - 2*B %= 1) / 0);
 
   bool ok = (dp == known_dp);
 
@@ -311,7 +302,6 @@ test10() {
 
   return ok;
 }
-#endif
 
 // add_constraints
 bool
@@ -549,13 +539,13 @@ BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
   DO_TEST(test03);
-//  DO_TEST(test04);
+  DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
   DO_TEST(test07);
-//  DO_TEST(test08);
+  DO_TEST(test08);
   DO_TEST(test09);
-//  DO_TEST(test10);
+  DO_TEST(test10);
   DO_TEST(test11);
   DO_TEST(test12);
   DO_TEST(test13);
