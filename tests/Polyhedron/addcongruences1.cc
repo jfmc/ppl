@@ -154,6 +154,87 @@ bool test05() {
   return ok;
 }
 
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph1(2);
+
+  Congruence_System cgs;
+  cgs.insert(A - B %= 0);
+  cgs.insert(B == 7);
+
+  print_constraints(ph1, "*** ph1 ***");
+  print_congruences(cgs, "*** cgs ***");
+
+  ph1.add_congruences_and_minimize(cgs);
+
+  C_Polyhedron known_result(cgs);
+
+  bool ok = (ph1 == known_result);
+
+  print_constraints(ph1, "*** after ph1.add_congruences(cgs) ***");
+
+  return ok;
+}
+
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph1(2);
+
+  Congruence_System cgs;
+  cgs.insert(A - B %= 0);
+  cgs.insert(B == 7);
+
+  Congruence_System cgs_copy = cgs;
+
+  print_constraints(ph1, "*** ph1 ***");
+  print_congruences(cgs, "*** cgs ***");
+
+  ph1.add_recycled_congruences(cgs);
+
+  C_Polyhedron known_result(cgs_copy);
+
+  bool ok = (ph1 == known_result);
+
+  print_constraints(ph1, "*** after ph1.add_congruences(cgs) ***");
+
+  return ok;
+}
+
+bool
+test08() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph1(2);
+
+  Congruence_System cgs;
+  cgs.insert(A - B %= 0);
+  cgs.insert(A == 0);
+  cgs.insert(A + B == 7);
+  cgs.insert(B == 7);
+
+  Congruence_System cgs_copy = cgs;
+
+  print_constraints(ph1, "*** ph1 ***");
+  print_congruences(cgs, "*** cgs ***");
+
+  ph1.add_recycled_congruences_and_minimize(cgs);
+
+  C_Polyhedron known_result(cgs_copy);
+
+  bool ok = (ph1 == known_result);
+
+  print_constraints(ph1, "*** after ph1.add_congruences(cgs) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -162,5 +243,8 @@ BEGIN_MAIN
   DO_TEST(test03);
   DO_TEST(test04);
   DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
+  DO_TEST(test08);
 END_MAIN
 

@@ -712,6 +712,103 @@ test17() {
   return ok;
 }
 
+// add_congruences_and_minimize
+bool
+test18() {
+  Variable A(0);
+  Variable B(1);
+
+  Congruence_System cgs;
+  cgs.insert((A %= 0) / 2);
+  cgs.insert((A + B %= 0) / 2);
+  cgs.insert((B %= 0) / 2);
+  cgs.insert(A + B == 0);
+
+  SProduct sp(2);
+  CProduct cp(2);
+
+  sp.add_congruences_and_minimize(cgs);
+  cp.add_congruences_and_minimize(cgs);
+
+  SProduct known_sp(cgs);
+  CProduct known_cp(cgs);
+
+  bool ok = (sp == known_sp && cp == known_cp);
+
+  print_constraints(sp, "*** sp constraints ***");
+  print_congruences(sp, "*** sp congruences ***");
+  print_constraints(cp, "*** cp constraints ***");
+  print_congruences(cp, "*** cp congruences ***");
+
+  return ok;
+}
+
+// add_recycled_congruences
+bool
+test19() {
+  Variable A(0);
+  Variable B(1);
+
+  Congruence_System cgs;
+  cgs.insert((A + B %= 0) / 2);
+  cgs.insert((A %= 0) / 0);
+
+  SProduct sp(2);
+  CProduct cp(2);
+
+  Congruence_System cgs_copy = cgs;
+  Congruence_System cgs_copy2 = cgs;
+
+  sp.add_recycled_congruences(cgs);
+  cp.add_recycled_congruences(cgs_copy);
+
+  SProduct known_sp(cgs_copy2);
+  CProduct known_cp(cgs_copy2);
+
+  bool ok = (sp == known_sp && cp == known_cp);
+
+  print_constraints(sp, "*** sp constraints ***");
+  print_congruences(sp, "*** sp congruences ***");
+  print_constraints(cp, "*** cp constraints ***");
+  print_congruences(cp, "*** cp congruences ***");
+
+  return ok;
+}
+
+// add_recycled_congruences_and_minimize
+bool
+test20() {
+  Variable A(0);
+  Variable B(1);
+
+  Congruence_System cgs;
+  cgs.insert((B %= 0) / 2);
+  cgs.insert((A %= 0) / 2);
+  cgs.insert((A %= 0) / 1);
+  cgs.insert(A - B == 0);
+
+  SProduct sp(2);
+  CProduct cp(2);
+
+  Congruence_System cgs_copy = cgs;
+  Congruence_System cgs_copy2 = cgs;
+
+  sp.add_recycled_congruences_and_minimize(cgs);
+  cp.add_recycled_congruences_and_minimize(cgs_copy);
+
+  SProduct known_sp(cgs_copy2);
+  CProduct known_cp(cgs_copy2);
+
+  bool ok = (sp == known_sp && cp == known_cp);
+
+  print_constraints(sp, "*** sp constraints ***");
+  print_congruences(sp, "*** sp congruences ***");
+  print_constraints(cp, "*** cp constraints ***");
+  print_congruences(cp, "*** cp congruences ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -732,4 +829,7 @@ BEGIN_MAIN
   DO_TEST(test15);
   DO_TEST(test16);
   DO_TEST(test17);
+  DO_TEST(test18);
+  DO_TEST(test19);
+  DO_TEST(test20);
 END_MAIN

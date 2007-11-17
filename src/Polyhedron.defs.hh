@@ -1027,6 +1027,75 @@ public:
   void add_congruences(const Congruence_System& cgs);
 
   /*! \brief
+    Adds a copy of the congruences in \p cs to the system
+    of congruences of \p *this, minimizing the result.
+
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \param cs
+    Contains the congruences that will be added to the system of
+    congruences of \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are topology-incompatible or
+    dimension-incompatible.
+  */
+  bool add_congruences_and_minimize(const Congruence_System& cs);
+
+  // FIXME
+  /*! \brief
+    Adds the congruences in \p cs to the system of congruences
+    of \p *this (without minimizing the result).
+
+    \param cgs
+    The congruence system to be added to \p *this.  The congruences in
+    \p cgs may be recycled.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are topology-incompatible or
+    dimension-incompatible.
+
+    \warning
+    The only assumption that can be made on \p cs upon successful or
+    exceptional return is that it can be safely destroyed.
+  */
+  void add_recycled_congruences(Congruence_System& cgs);
+
+  // FIXME
+  /*! \brief
+    Adds the congruences in \p cs to the system of congruences
+    of \p *this, minimizing the result.
+
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \param cgs
+    The congruence system to be added to \p *this.  The congruences in
+    \p cgs may be recycled.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are topology-incompatible or
+    dimension-incompatible.
+
+    \warning
+    The only assumption that can be made on \p cs upon successful or
+    exceptional return is that it can be safely destroyed.
+  */
+  bool add_recycled_congruences_and_minimize(Congruence_System& cgs);
+
+  /*! \brief
+    Returns true indicating that this domain has methods that
+    can recycle constraints
+  */
+  static bool can_recycle_constraint_systems();
+
+  /*! \brief
+    Returns false indicating that this domain cannot recycle congruences
+  */
+  static bool can_recycle_congruence_systems();
+
+  /*! \brief
     Assigns to \p *this the intersection of \p *this and \p y.
     The result is not guaranteed to be minimized.
 

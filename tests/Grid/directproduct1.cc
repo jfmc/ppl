@@ -27,6 +27,8 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 #define PH_IS_NNC
 // #define PH_IS_FIRST
 
+typedef Domain_Product<BD_Shape<mpq_class>, Grid>::Direct_Product BDDProduct;
+
 #ifdef PH_IS_NNC
 typedef NNC_Polyhedron Poly;
 #else
@@ -402,6 +404,64 @@ test14() {
   return ok && dp.OK();
 }
 
+#if 0
+// Universe product in 0 dimensions
+bool
+test15() {
+  BDDProduct dp1;
+
+  BDDProduct dp2(0, UNIVERSE);
+
+  bool ok = (dp1 == dp2);
+
+  print_congruences(dp1, "*** dp1 congruences ***");
+  print_constraints(dp1, "*** dp1 constraints ***");
+  print_congruences(dp2, "*** dp2 congruences ***");
+  print_constraints(dp2, "*** dp2 constraints ***");
+
+  return ok && dp1.OK() && dp2.OK();
+}
+
+// Empty product(dims, type)
+bool
+test16() {
+  BDDProduct dp1(3);
+
+  BDDProduct dp2(3, EMPTY);
+
+  bool ok = (dp1 != dp2);
+
+  print_congruences(dp1, "*** dp1 congruences ***");
+  print_constraints(dp1, "*** dp1 constraints ***");
+  print_congruences(dp2, "*** dp2 congruences ***");
+  print_constraints(dp2, "*** dp2 constraints ***");
+
+  return ok && dp1.OK() && dp2.OK();
+}
+
+// BDDProduct(cgs), add_congruence(cg)
+bool
+test17() {
+  Variable A(0);
+
+  const Congruence_System cgs((A %= 0) / 4);
+
+  BDDProduct dp1(cgs);
+
+  BDDProduct dp2(1);
+  dp2.add_congruence((A %= 0) / 4);
+
+  bool ok = (dp1 == dp2);
+
+  print_congruences(dp1, "*** dp1 congruences ***");
+  print_constraints(dp1, "*** dp1 constraints ***");
+  print_congruences(dp2, "*** dp2 congruences ***");
+  print_constraints(dp2, "*** dp2 constraints ***");
+
+  return ok && dp1.OK() && dp2.OK();
+}
+#endif
+
 } // namespace
 
 BEGIN_MAIN
@@ -419,4 +479,7 @@ BEGIN_MAIN
   DO_TEST(test12);
   DO_TEST(test13);
   DO_TEST(test14);
+/*   DO_TEST(test15); */
+/*   DO_TEST(test16); */
+/*   DO_TEST(test17); */
 END_MAIN

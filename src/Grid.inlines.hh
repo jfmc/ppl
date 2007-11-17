@@ -168,6 +168,17 @@ Grid::swap(Grid& y) {
   std::swap(dim_kinds, y.dim_kinds);
 }
 
+inline bool
+Grid::can_recycle_constraint_systems() {
+  return true;
+}
+
+
+inline bool
+Grid::can_recycle_congruence_systems() {
+  return true;
+}
+
 } // namespace Parma_Polyhedra_Library
 
 /*! \relates Parma_Polyhedra_Library::Grid */

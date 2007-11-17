@@ -23,7 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ppl_test.hh"
 
 // #define PH_IS_NNC
-// #define PH_IS_FIRST
+#define PH_IS_FIRST
 
 #ifdef PH_IS_NNC
 typedef NNC_Polyhedron Poly;
@@ -183,37 +183,9 @@ test05() {
   return ok;
 }
 
-#if (0)
-// add_recycled_congruences
-bool
-test06() {
-  Variable A(0);
-  Variable B(1);
-
-  Congruence_System cgs;
-  cgs.insert((A + B %= 0) / 2);
-
-  Product dp(2);
-
-  print_constraints(dp, "*** dp constraints ***");
-  print_congruences(dp, "*** dp congruences ***");
-
-  dp.add_recycled_congruences(cgs);
-
-  Product known_dp(2);
-  known_dp.add_congruence((A + B %= 0) / 2);
-
-  bool ok = (dp == known_dp);
-
-  print_constraints(dp, "*** dp constraints ***");
-  print_congruences(dp, "*** dp congruences ***");
-
-  return ok;
-}
-
 // add_congruences_and_minimize
 bool
-test07() {
+test06() {
   Variable A(0);
   Variable B(1);
 
@@ -230,7 +202,34 @@ test07() {
 
   Product known_dp(2);
   known_dp.add_congruence((A %= 0) / 2);
-  known_dp.add_congruence(A + B == 0);
+  known_dp.add_constraint(A + B == 0);
+
+  bool ok = (dp == known_dp);
+
+  print_constraints(dp, "*** dp constraints ***");
+  print_congruences(dp, "*** dp congruences ***");
+
+  return ok;
+}
+
+// add_recycled_congruences
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
+
+  Congruence_System cgs;
+  cgs.insert((A + B %= 0) / 2);
+
+  Product dp(2);
+
+  print_constraints(dp, "*** dp constraints ***");
+  print_congruences(dp, "*** dp congruences ***");
+
+  dp.add_recycled_congruences(cgs);
+
+  Product known_dp(2);
+  known_dp.add_congruence((A + B %= 0) / 2);
 
   bool ok = (dp == known_dp);
 
@@ -259,7 +258,7 @@ test08() {
 
   Product known_dp(2);
   known_dp.add_congruence((B %= 0) / 2);
-  known_dp.add_congruence(A - B == 0);
+  known_dp.add_constraint(A - B == 0);
 
   bool ok = (dp == known_dp);
 
@@ -268,8 +267,6 @@ test08() {
 
   return ok;
 }
-
-#endif
 
 // relation_with a generator
 bool
@@ -415,11 +412,9 @@ BEGIN_MAIN
   DO_TEST(test03);
   DO_TEST(test04);
   DO_TEST(test05);
-#if 0
   DO_TEST(test06);
   DO_TEST(test07);
   DO_TEST(test08);
-#endif
   DO_TEST(test09);
   DO_TEST(test10);
   DO_TEST(test11);

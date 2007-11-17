@@ -315,29 +315,11 @@ Partially_Reduced_Product<D1, D2, R>
 }
 
 template <typename D1, typename D2, typename R>
-inline void
-Partially_Reduced_Product<D1, D2, R>
-::add_recycled_constraints(Constraint_System& cs) {
-  d1.add_recycled_constraints(cs);
-  d2.add_recycled_constraints(cs);
-  clear_reduced_flag();
-}
-
-template <typename D1, typename D2, typename R>
 inline bool
 Partially_Reduced_Product<D1, D2, R>
 ::add_constraints_and_minimize(const Constraint_System& cs) {
   bool empty = d1.add_constraints_and_minimize(cs);
   return (d2.add_constraints_and_minimize(cs) && empty);
-  clear_reduced_flag();
-}
-
-template <typename D1, typename D2, typename R>
-inline bool
-Partially_Reduced_Product<D1, D2, R>
-::add_recycled_constraints_and_minimize(Constraint_System& cs) {
-  bool empty = d1.add_recycled_constraints_and_minimize(cs);
-  return (d2.add_recycled_constraints_and_minimize(cs) && empty);
   clear_reduced_flag();
 }
 

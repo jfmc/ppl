@@ -1181,6 +1181,18 @@ public:
   bool add_recycled_constraints_and_minimize(Constraint_System& cs);
 
   /*! \brief
+    Returns true indicating that this domain has methods that
+    can recycle congruences
+  */
+  static bool can_recycle_congruence_systems();
+
+  /*! \brief
+    Returns true indicating that this domain has methods that
+    can recycle constraints
+  */
+  static bool can_recycle_constraint_systems();
+
+  /*! \brief
     Adds a copy of the generators in \p gs to the system of generators
     of \p *this.
 

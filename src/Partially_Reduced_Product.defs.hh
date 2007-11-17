@@ -717,10 +717,6 @@ public:
   */
   void add_congruences(const Congruence_System& cgs);
 
-  /* FIXME: Implement add_recycled_congruences(Congruence_System)
-            when/if it is implemented for the Polyhedron classes.
-  */
-#if 0
   //! Adds the congruences in \p cgs to *this.
   /*!
     \param cgs
@@ -734,7 +730,6 @@ public:
     or exceptional return is that it can be safely destroyed.
   */
   void add_recycled_congruences(Congruence_System& cgs);
-#endif
 
   /*! \brief
     Adds a copy of the congruences in \p cgs to \p *this, reducing the result.
@@ -750,10 +745,6 @@ public:
   */
   bool add_congruences_and_minimize(const Congruence_System& cgs);
 
-  /* FIXME: Implement add_recycled_congruences_and_minimize(Congruence_System)
-     when/if it is implemented for the Polyhedron classes.
-  */
-#if 0
   /*! \brief
     Adds the congruences in \p cgs to \p *this, reducing the result.
 
@@ -771,7 +762,6 @@ public:
     or exceptional return is that it can be safely destroyed.
   */
   bool add_recycled_congruences_and_minimize(Congruence_System& cgs);
-#endif
 
   //! Adds a copy of the constraint system in \p cs to \p *this.
   /*!

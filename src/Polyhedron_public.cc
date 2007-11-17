@@ -1524,6 +1524,22 @@ PPL::Polyhedron::add_constraints_and_minimize(const Constraint_System& cs) {
   return add_recycled_constraints_and_minimize(cs_copy);
 }
 
+bool
+PPL::Polyhedron::add_congruences_and_minimize(const Congruence_System& cgs) {
+  add_congruences(cgs);
+  return minimize();
+}
+
+void
+PPL::Polyhedron::add_recycled_congruences(Congruence_System& cgs) {
+  add_congruences(cgs);
+}
+
+bool
+PPL::Polyhedron::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
+  return add_congruences_and_minimize(cgs);
+}
+
 void
 PPL::Polyhedron::add_recycled_generators(Generator_System& gs) {
   // Topology compatibility check.

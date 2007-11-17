@@ -46,6 +46,13 @@ o  In the C interface it is no longer an error to call ppl_initialize()
    or ppl_finalize() multiple times (this matches the behavior of the
    other interfaces).
 
+o  add_congruences_and_minimize(Congruence_System cgs)
+   add_recycled_congruences(Congruence_System cgs)
+   add_recycled_congruences_and_minimize(Congruence_System& cgs) ...
+
+o  can_recycle_constraint_systems()
+   can_recycle_congruence_systems() ...
+
 o  constrains(Variable var) ...
 
 o  contains_integer_point() ...

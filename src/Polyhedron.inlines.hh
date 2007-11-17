@@ -107,6 +107,17 @@ Polyhedron::swap(Polyhedron& y) {
   std::swap(space_dim, y.space_dim);
 }
 
+inline bool
+Polyhedron::can_recycle_constraint_systems() {
+  return true;
+}
+
+
+inline bool
+Polyhedron::can_recycle_congruence_systems() {
+  return false;
+}
+
 } // namespace Parma_Polyhedra_Library
 
 /*! \relates Parma_Polyhedra_Library::Polyhedron */

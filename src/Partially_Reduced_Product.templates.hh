@@ -89,6 +89,92 @@ Partially_Reduced_Product<D1, D2, R>::minimized_congruences() const {
 }
 
 template <typename D1, typename D2, typename R>
+void
+Partially_Reduced_Product<D1, D2, R>
+::add_recycled_constraints(Constraint_System& cs) {
+  if (d1.can_recycle_constraint_systems()) {
+    d2.add_constraints(cs);
+    d1.add_recycled_constraints(cs);
+  }
+  else
+    if (d2.can_recycle_constraint_systems()) {
+      d1.add_constraints(cs);
+      d2.add_recycled_constraints(cs);
+    }
+    else {
+      d1.add_constraints(cs);
+      d2.add_constraints(cs);
+    }
+  clear_reduced_flag();
+}
+
+template <typename D1, typename D2, typename R>
+bool
+Partially_Reduced_Product<D1, D2, R>
+::add_recycled_constraints_and_minimize(Constraint_System& cs) {
+  bool empty1;
+  bool empty2;
+  if (d1.can_recycle_constraint_systems()) {
+    empty2 = d2.add_constraints_and_minimize(cs);
+    empty1 = d1.add_recycled_constraints_and_minimize(cs);
+  }
+  else
+    if (d2.can_recycle_constraint_systems()) {
+      empty1 = d1.add_constraints_and_minimize(cs);
+      empty2 = d2.add_recycled_constraints_and_minimize(cs);
+    }
+    else {
+      empty1 = d1.add_constraints_and_minimize(cs);
+      empty2 = d2.add_constraints_and_minimize(cs);
+    }
+  clear_reduced_flag();
+  return empty1 && empty2;
+}
+
+template <typename D1, typename D2, typename R>
+void
+Partially_Reduced_Product<D1, D2, R>
+::add_recycled_congruences(Congruence_System& cgs) {
+  if (d1.can_recycle_congruence_systems()) {
+    d2.add_congruences(cgs);
+    d1.add_recycled_congruences(cgs);
+  }
+  else
+    if (d2.can_recycle_congruence_systems()) {
+      d1.add_congruences(cgs);
+      d2.add_recycled_congruences(cgs);
+    }
+    else {
+      d1.add_congruences(cgs);
+      d2.add_congruences(cgs);
+    }
+  clear_reduced_flag();
+}
+
+template <typename D1, typename D2, typename R>
+bool
+Partially_Reduced_Product<D1, D2, R>
+::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
+  bool empty1;
+  bool empty2;
+  if (d1.can_recycle_congruence_systems()) {
+    empty2 = d2.add_congruences_and_minimize(cgs);
+    empty1 = d1.add_recycled_congruences_and_minimize(cgs);
+  }
+  else
+    if (d2.can_recycle_congruence_systems()) {
+      empty1 = d1.add_congruences_and_minimize(cgs);
+      empty2 = d2.add_recycled_congruences_and_minimize(cgs);
+    }
+    else {
+      empty1 = d1.add_congruences_and_minimize(cgs);
+      empty2 = d2.add_congruences_and_minimize(cgs);
+    }
+  clear_reduced_flag();
+  return empty1 && empty2;
+}
+
+template <typename D1, typename D2, typename R>
 Poly_Gen_Relation
 Partially_Reduced_Product<D1, D2, R>
 ::relation_with(const Generator& g) const {
