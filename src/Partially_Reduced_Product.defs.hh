@@ -47,7 +47,7 @@ namespace IO_Operators {
   \relates Parma_Polyhedra_Library::Partially_Reduced_Product
   Writes a textual representation of \p dp on \p s.
 */
-  template <typename D1, typename D2, typename R>
+template <typename D1, typename D2, typename R>
 std::ostream&
 operator<<(std::ostream& s, const Partially_Reduced_Product<D1, D2, R>& dp);
 
@@ -1311,11 +1311,9 @@ public:
   friend bool operator==<>(const Partially_Reduced_Product<D1, D2, R>& x,
 			   const Partially_Reduced_Product<D1, D2, R>& y);
 
-#if 0
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators::
-  operator<<(std::ostream& s, const Partially_Reduced_Product<D1, D2, R>& dp);
-#endif
+  operator<<<>(std::ostream& s, const Partially_Reduced_Product<D1, D2, R>& dp);
 
   //! \name Miscellaneous Member Functions
   //@{
