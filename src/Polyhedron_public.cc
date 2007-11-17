@@ -556,6 +556,99 @@ PPL::Polyhedron::contains_integer_point() const {
 }
 
 bool
+PPL::Polyhedron::constrains(const Variable var) const {
+  // `var' should be one of the dimensions of the polyhedron.
+  const dimension_type var_space_dim = var.space_dimension();
+  if (space_dim < var_space_dim)
+    throw_dimension_incompatible("constrains(v)", "v", var);
+
+  // An empty polyhedron constrains all variables.
+  if (marked_empty())
+    return true;
+
+  if (generators_are_up_to_date() && !has_pending_constraints()) {
+    // Since generators are up-to-date and there are no pending
+    // constraints, the generator system (since it is well formed)
+    // contains a point.  Hence the polyhedron is not empty.
+    if (constraints_are_up_to_date() && !has_pending_generators())
+      // Here a variable is constrained if and only if it is
+      // syntactically constrained.
+      goto syntactic_check;
+
+    // Count non-pending lines.
+    dimension_type num_lines = 0;
+    const dimension_type first_pending = gen_sys.first_pending_row();
+    for (dimension_type i = first_pending; i-- > 0; )
+      switch (gen_sys[i].type()) {
+      case Generator::LINE:
+	++num_lines;
+	break;
+      default:
+	break;
+      }
+
+    if (num_lines == space_dim
+	&& (has_pending_generators() || generators_are_minimized()))
+      // A universe polyhedron constrains no variable.
+      return false;
+
+    // Scan generators: perhaps we will find a generator equivalent to
+    // line(var) or a pair of generators equivalent to ray(-var) and
+    // ray(var).
+    bool have_positive_ray = false;
+    bool have_negative_ray = false;
+    const dimension_type var_id = var.id();
+    for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
+      const Generator& gen_sys_i = gen_sys[i];
+      const Generator::Type gen_sys_i_type = gen_sys_i.type();
+      if (gen_sys_i_type == Generator::LINE
+	  || gen_sys_i_type == Generator::RAY) {
+	const Linear_Row& row = gen_sys_i;
+	const int sign = sgn(row.coefficient(var_id));
+	if (sign != 0) {
+	  for (dimension_type j = space_dim+1; --j > 0; )
+	    if (j != var_id && row[j] != 0)
+	      goto next;
+	  if (gen_sys_i_type == Generator::LINE)
+	    return true;
+	  if (sign > 0)
+	    if (have_negative_ray)
+	      return true;
+	    else
+	      have_positive_ray = true;
+	  else if (have_positive_ray)
+	  return true;
+	  else
+	    have_negative_ray = true;
+	}
+      }
+    next:
+      ;
+    }
+
+    // We are still here: at least we know that, since generators are
+    // up-to-date and there are no pending constraints, then the
+    // generator system (since it is well formed) contains a point.
+    // Hence the polyhedron is not empty.
+    if (has_pending_generators())
+      process_pending_generators();
+    else if (!constraints_are_up_to_date())
+      update_constraints();
+    goto syntactic_check;
+  }
+
+  // We must minimize to detect emptiness and obtain constraints.
+  if (!minimize())
+    return true;
+
+ syntactic_check:
+  for (dimension_type i = con_sys.num_rows(); i-- > 0; )
+    if (con_sys[i].coefficient(var) != 0)
+      return true;
+  return false;
+}
+
+bool
 PPL::Polyhedron::OK(bool check_not_empty) const {
 #ifndef NDEBUG
   using std::endl;

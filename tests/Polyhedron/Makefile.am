@@ -64,6 +64,7 @@ bounds1 \
 cnncconversion1 \
 concatenate1 \
 congruences1 \
+constrains1 \
 constraints1 \
 contains1 contains2 \
 containsintegerpoint1 \
@@ -141,6 +142,7 @@ nnc_boundedh79extrapolation1 \
 nnc_bounds1 \
 nnc_concatenate1 \
 nnc_congruences1 \
+nnc_constrains1 \
 nnc_constraints1 \
 nnc_contains1 \
 nnc_containsintegerpoint1 \
@@ -241,6 +243,8 @@ cnncconversion1_SOURCES = cnncconversion1.cc
 concatenate1_SOURCES = concatenate1.cc
 
 congruences1_SOURCES = congruences1.cc
+
+constrains1_SOURCES = constrains1.cc
 
 constraints1_SOURCES = constraints1.cc
 
@@ -449,6 +453,9 @@ nnc_concatenate1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_congruences1_SOURCES = congruences1.cc
 nnc_congruences1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_constrains1_SOURCES = constrains1.cc
+nnc_constrains1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_constraints1_SOURCES = constraints1.cc
 nnc_constraints1_CXXFLAGS = $(DERIVED_CXXFLAGS)

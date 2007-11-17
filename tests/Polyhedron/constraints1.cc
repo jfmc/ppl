@@ -31,7 +31,7 @@ test01() {
   C_Polyhedron ph1(2);
   ph1.add_constraint(0*A == 1);
 
-  print_constraints(ph1, "*** ph constraints ***");
+  print_constraints(ph1, "*** ph1 constraints ***");
 
   C_Polyhedron known_result = ph1;
 

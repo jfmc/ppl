@@ -46,6 +46,8 @@ o  In the C interface it is no longer an error to call ppl_initialize()
    or ppl_finalize() multiple times (this matches the behavior of the
    other interfaces).
 
+o  constrains(Variable var) ...
+
 o  contains_integer_point() ...
 
 o  All PPL semantic objects now provide the method
