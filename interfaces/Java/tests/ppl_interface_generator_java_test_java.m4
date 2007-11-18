@@ -101,7 +101,7 @@ m4_replace_all_patterns_in_string($1,
 m4_pushdef(`m4_post_extra_class_code', `dnl
 }
 catch (ppl_java.Overflow_Error_Exception e) {
-System.out.println("*Overflow detected*::exception catched");
+System.out.println("*Overflow detected*::exception caught");
 }
 return true;
 

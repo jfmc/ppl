@@ -866,3 +866,20 @@ m4_define(`ppl_@CLASS@_total_memory_in_bytes_code',
 }
 
 ')
+
+m4_define(`ppl_@CLASS@_constrains_code',
+`dnl
+JNIEXPORT jboolean JNICALL Java_ppl_1java_@1CLASS@_constrains
+(JNIEnv* env, jobject j_this_@LCLASS@, jobject j_var) {
+  try {
+    jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
+    @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
+    Variable v = build_ppl_variable(env, j_var);
+    return this_@LCLASS@->constrains(v);
+  }
+  CATCH_ALL;
+  return false;
+}
+
+')
+

@@ -96,7 +96,8 @@ ppl_@CLASS@_increment_iterator/1 +pointset_powerset,
 ppl_@CLASS@_decrement_iterator/1 +pointset_powerset,
 ppl_@CLASS@_size/1 +pointset_powerset,
 ppl_@CLASS@_drop_disjunct/2 +pointset_powerset,
-ppl_@CLASS@_total_memory_in_bytes/1 +simple_pps
+ppl_@CLASS@_total_memory_in_bytes/1 +simple_pps,
+ppl_@CLASS@_constrains/1 +polyhedron
 
 ')`'dnl
 dnl

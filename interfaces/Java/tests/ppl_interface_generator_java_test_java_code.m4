@@ -179,6 +179,12 @@ m4_define(`ppl_@CLASS@_@SIMPLIFY@_code',`
 ')
 
 
+m4_define(`ppl_@CLASS@_constrains_code', `
+boolean @LTOPOLOGY@@LCLASS@1_constrains
+  = @LTOPOLOGY@@LCLASS@1.constrains(var);
+
+')
+
 m4_define(`ppl_@CLASS@_@MAXMIN@_code', `
 boolean @LTOPOLOGY@@LCLASS@1_@MAXMIN@
   = @LTOPOLOGY@@LCLASS@1.@MAXMIN@(le, coeff0, coeff1, bool_by_ref1);

@@ -440,3 +440,10 @@ m4_define(`ppl_@CLASS@_total_memory_in_bytes_code',
   public native long total_memory_in_bytes();
 
 ')
+
+m4_define(`ppl_@CLASS@_constrains_code',
+`dnl
+%<--%<--%<-- @CLASS@.java
+  public native boolean constrains(Variable var);
+
+')
