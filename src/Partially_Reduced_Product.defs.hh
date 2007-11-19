@@ -442,17 +442,12 @@ public:
   */
   Poly_Con_Relation relation_with(const Constraint& c) const;
 
-  /* FIXME: Implement relation_with(Congruence) when/if it is implemented
-            for the Polyhedron classes.
-  */
-#if 0
   //! Returns the relations holding between \p *this and \p cg.
   /*
     \exception std::invalid_argument
     Thrown if \p *this and congruence \p cg are dimension-incompatible.
   */
   Poly_Con_Relation relation_with(const Congruence& cg) const;
-#endif
 
   //! Returns the relations holding between \p *this and \p g.
   /*

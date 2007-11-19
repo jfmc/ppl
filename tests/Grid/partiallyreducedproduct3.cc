@@ -212,9 +212,94 @@ test05() {
   return ok;
 }
 
-// Smash product; bounds_from_above() and bounds_from_below() when bounded.
+// Non-empty smash product; relation_with a congruence.
 bool
 test06() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  SProduct sp(3);
+  sp.add_constraint(3*A + 3*B + C == 7);
+  sp.add_constraint(3*A - C >= 2);
+  sp.add_congruence(6*A + 3*B %= 0);
+
+  Poly_Con_Relation rel1 = sp.relation_with(A + B + C %= 0);
+  Poly_Con_Relation rel2 = sp.relation_with(A + B %= 0);
+  Poly_Con_Relation rel3 = sp.relation_with(A %= 0);
+  Poly_Con_Relation rel4 = sp.relation_with(Linear_Expression(0) %= 0);
+  Poly_Con_Relation rel5 = sp.relation_with(2*A + B %= 3);
+  Poly_Con_Relation rel6 = sp.relation_with(3*A + 3*B + C %= 7);
+  Poly_Con_Relation rel7 = sp.relation_with(3*A - C %= 3);
+  bool ok = (rel1 == Poly_Con_Relation::nothing()
+	     && rel2 == Poly_Con_Relation::nothing()
+	     && rel3 == Poly_Con_Relation::nothing()
+	     && rel4 == (Poly_Con_Relation::is_included()
+			 && Poly_Con_Relation::saturates())
+	     && rel5 == Poly_Con_Relation::nothing()
+	     && rel6 == (Poly_Con_Relation::is_included()
+			 && Poly_Con_Relation::saturates())
+	     && rel7 == (Poly_Con_Relation::is_included()));
+
+  nout << "sp.relation_with(A + B + C %= 0) == " << rel1 << endl;
+  nout << "sp.relation_with(A + B %= 0) == " << rel2 << endl;
+  nout << "sp.relation_with(A %= 0) == " << rel3 << endl;
+  nout << "sp.relation_with(Linear_Expression(0) %= 0) == " << rel4 << endl;
+  nout << "sp.relation_with(2*A + B %= 3) == " << rel5 << endl;
+  nout << "sp.relation_with(3*A + 3*B + C %= 7) == " << rel6 << endl;
+  nout << "sp.relation_with(3*A - C %= 3) == " << rel7 << endl;
+  print_constraints(sp, "*** sp constraints ***");
+  print_congruences(sp, "*** sp congruences ***");
+
+  return ok;
+}
+
+// A non-empty constraints product; relation_with a congruence.
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  CProduct cp(3);
+  cp.add_constraint(3*A + 3*B + C >= 7);
+  cp.add_constraint(3*A + 3*B + C <= 7);
+  cp.add_constraint(3*A - C >= 2);
+  cp.add_congruence(6*A + 3*B %= 0);
+
+  Poly_Con_Relation rel1 = cp.relation_with(A + B + C %= 0);
+  Poly_Con_Relation rel2 = cp.relation_with(A + B %= 0);
+  Poly_Con_Relation rel3 = cp.relation_with(A %= 0);
+  Poly_Con_Relation rel4 = cp.relation_with(Linear_Expression(0) %= 0);
+  Poly_Con_Relation rel5 = cp.relation_with(2*A + B %= 3);
+  Poly_Con_Relation rel6 = cp.relation_with(3*A + 3*B + C %= 7);
+  Poly_Con_Relation rel7 = cp.relation_with(3*A - C %= 3);
+  bool ok = (rel1 == Poly_Con_Relation::nothing()
+	     && rel2 == Poly_Con_Relation::nothing()
+	     && rel3 == Poly_Con_Relation::nothing()
+	     && rel4 == (Poly_Con_Relation::is_included()
+			 && Poly_Con_Relation::saturates())
+	     && rel5 == Poly_Con_Relation::nothing()
+	     && rel6 == (Poly_Con_Relation::is_included()
+			 && Poly_Con_Relation::saturates())
+	     && rel7 == (Poly_Con_Relation::is_included()));
+
+  nout << "cp.relation_with(A + B + C %= 0) == " << rel1 << endl;
+  nout << "cp.relation_with(A + B %= 0) == " << rel2 << endl;
+  nout << "cp.relation_with(A %= 0) == " << rel3 << endl;
+  nout << "cp.relation_with(Linear_Expression(0) %= 0) == " << rel4 << endl;
+  nout << "cp.relation_with(2*A + B %= 3) == " << rel5 << endl;
+  nout << "cp.relation_with(3*A + 3*B + C %= 7) == " << rel6 << endl;
+  nout << "cp.relation_with(3*A - C %= 3) == " << rel7 << endl;
+  print_constraints(cp, "*** cp constraints ***");
+  print_congruences(cp, "*** cp congruences ***");
+
+  return ok;
+}
+
+// Smash product; bounds_from_above() and bounds_from_below() when bounded.
+bool
+test08() {
   Variable A(0);
   Variable B(1);
 
@@ -236,7 +321,7 @@ test06() {
 // Constraints product; bounds_from_above() and bounds_from_below()
 // when bounded.
 bool
-  test07() {
+  test09() {
   Variable A(0);
   Variable B(1);
 
@@ -258,7 +343,7 @@ bool
 // Smash product; bounds_from_above() and bounds_from_below()
 // when not bounded.
 bool
-test08() {
+test10() {
   Variable A(0);
   Variable B(1);
 
@@ -281,7 +366,7 @@ test08() {
 // Constraints product; bounds_from_above() and bounds_from_below()
 // when it is not bounded.
 bool
-test09() {
+test11() {
   Variable A(0);
   Variable B(1);
 
@@ -303,7 +388,7 @@ test09() {
 
 // Smash product; maximize() and minimize() when bounded.
 bool
-test10() {
+test12() {
   Variable A(0);
   Variable B(1);
 
@@ -343,7 +428,7 @@ test10() {
 
 // Constraints product; maximize() and minimize() when bounded.
 bool
-test11() {
+test13() {
   Variable A(0);
   Variable B(1);
 
@@ -396,7 +481,7 @@ test11() {
 // Smash and constraints product; maximize() and minimize()
 // when not bounded.
 bool
-test12() {
+test14() {
   Variable A(0);
   Variable B(1);
 
@@ -441,7 +526,7 @@ test12() {
 
 // Smash product; bounded_affine_image/3
 bool
-test13() {
+test15() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -472,7 +557,7 @@ test13() {
 
 // Constraints product; bounded_affine_image/3.
 bool
-test14() {
+test16() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -505,7 +590,7 @@ test14() {
 
 // Smash product; bounded_affine_preimage/3.
 bool
-test15() {
+test17() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -538,7 +623,7 @@ test15() {
 
 // Constraints product; bounded_affine_preimage/3.
 bool
-test16() {
+test18() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -573,7 +658,7 @@ test16() {
 
 // concatenate_assign()
 bool
-test17() {
+test19() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -607,7 +692,7 @@ test17() {
 }
 
 bool
-test18() {
+test20() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -665,4 +750,6 @@ BEGIN_MAIN
   DO_TEST(test16);
   DO_TEST(test17);
   DO_TEST(test18);
+  DO_TEST(test19);
+  DO_TEST(test20);
 END_MAIN

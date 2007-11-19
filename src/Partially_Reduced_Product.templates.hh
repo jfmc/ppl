@@ -213,6 +213,32 @@ Partially_Reduced_Product<D1, D2, R>
 }
 
 template <typename D1, typename D2, typename R>
+Poly_Con_Relation
+Partially_Reduced_Product<D1, D2, R>
+::relation_with(const Congruence& cg) const {
+  reduce();
+  Poly_Con_Relation relation1 = d1.relation_with(cg);
+  Poly_Con_Relation relation2 = d2.relation_with(cg);
+
+  Poly_Con_Relation result = Poly_Con_Relation::nothing();
+
+  if (relation1.implies(Poly_Con_Relation::is_included()))
+    result = result && Poly_Con_Relation::is_included();
+  else if (relation2.implies(Poly_Con_Relation::is_included()))
+    result = result && Poly_Con_Relation::is_included();
+  if (relation1.implies(Poly_Con_Relation::saturates()))
+    result = result && Poly_Con_Relation::saturates();
+  else if (relation2.implies(Poly_Con_Relation::saturates()))
+    result = result && Poly_Con_Relation::saturates();
+  if (relation1.implies(Poly_Con_Relation::is_disjoint()))
+    result = result && Poly_Con_Relation::is_disjoint();
+  else if (relation2.implies(Poly_Con_Relation::is_disjoint()))
+    result = result && Poly_Con_Relation::is_disjoint();
+
+  return result;
+}
+
+template <typename D1, typename D2, typename R>
 bool
 Partially_Reduced_Product<D1, D2, R>
 ::maximize(const Linear_Expression& expr,
