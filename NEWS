@@ -64,7 +64,10 @@ o  All PPL semantic objects now provide the method
    returning a 32-bit hash code for *this.  If x and y are such that
    x == y evaluates to true, so does x.hash_code() == y.hash_code().
 
-o  Direct_Product ...
+o  The method relations_with(Congruence) has been added to the Polyhedron
+   class for compatibility with the Grid class methods.
+
+o  Partially_Reduced_Product ...
 
 o  Ask_Tell ...
 
