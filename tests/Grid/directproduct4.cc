@@ -22,12 +22,22 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-#define PH_IS_NNC
+// ONE AND ONLY ONE OF THESE MUST BE UNCOMMENTED
+#define NNC_Poly_Class
+// #define C_Poly_Class
+// #define BD_Shape_Class
+
 #define PH_IS_FIRST
 
-#ifdef PH_IS_NNC
+#ifdef BD_Shape_Class
+typedef BD_Shape<mpq_class> Poly;
+#endif
+
+#ifdef NNC_Poly_Class
 typedef NNC_Polyhedron Poly;
-#else
+#endif
+
+#ifdef C_Poly_Class
 typedef C_Polyhedron Poly;
 #endif
 
@@ -56,6 +66,7 @@ test01() {
   Product known_dp(3);
   known_dp.add_congruence((B %= 2) / 14);
   known_dp.add_constraint(A - B - C == 0);
+  known_dp.add_constraint(A - C <= 10);
   known_dp.add_constraint(B <= 10);
 
   bool ok = (dp == known_dp);
@@ -134,6 +145,7 @@ test04() {
   known_dp.add_constraint(A - 2*B == -1);
   known_dp.add_congruence(A %= 0);
   known_dp.add_constraint(A >= 3);
+  known_dp.add_constraint(B >= 2);
 
   bool ok = (dp == known_dp);
 
@@ -295,7 +307,18 @@ test10() {
   Product known_dp(3);
   known_dp.add_congruence((2*A - 2*B %= 1) / 0);
 
+#ifdef BD_Shape_Class
+  #ifdef PH_IS_FIRST
+    bool ok = (dp.domain2() == known_dp.domain2()
+	       && dp.domain1().is_universe());
+  #else
+    bool ok = (dp.domain1() == known_dp.domain1()
+	       && dp.domain2().is_universe());
+  #endif
+#else
   bool ok = (dp == known_dp);
+#endif
+
 
   print_constraints(dp, "*** dp constraints ***");
   print_congruences(dp, "*** dp congruences ***");

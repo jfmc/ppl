@@ -25,12 +25,22 @@ for the product domains */
 
 #include "ppl_test.hh"
 
-// #define PH_IS_NNC
+// ONE AND ONLY ONE OF THESE MUST BE UNCOMMENTED
+ #define NNC_Poly_Class
+// #define C_Poly_Class
+// #define BD_Shape_Class
+
 #define PH_IS_FIRST
 
-#ifdef PH_IS_NNC
+#ifdef BD_Shape_Class
+typedef BD_Shape<mpq_class> Poly;
+#endif
+
+#ifdef NNC_Poly_Class
 typedef NNC_Polyhedron Poly;
-#else
+#endif
+
+#ifdef C_Poly_Class
 typedef C_Polyhedron Poly;
 #endif
 
@@ -111,11 +121,11 @@ test05() {
   Variable B(1);
 
   Product dp(2);
-  dp.add_constraint(A + B >= 1);
-  dp.add_constraint(A + B <= 1);
+  dp.add_constraint(A - B >= 1);
+  dp.add_constraint(A - B <= 1);
   dp.add_congruence(3*B %= 2);
 
-  Linear_Expression le = A + B;
+  Linear_Expression le = A - B;
   bool ok = dp.bounds_from_above(le)
     && dp.bounds_from_below(le);
 
@@ -246,11 +256,11 @@ test11() {
   Variable B(1);
 
   Product dp(2);
-  dp.add_constraint(A + B >= 1);
-  dp.add_constraint(A + B <= 1);
+  dp.add_constraint(A - B >= 1);
+  dp.add_constraint(A - B <= 1);
   dp.add_congruence(3*B %= 2);
 ;
-  Linear_Expression le = A + B;
+  Linear_Expression le = A - B;
 
   Coefficient max_n;
   Coefficient max_d;
@@ -316,16 +326,16 @@ test13() {
   Variable B(1);
 
   Product dp(2);
-#ifdef PH_IS_NNC
-  dp.add_constraint(A + B > 0);
-  dp.add_constraint(A + B < 1);
+#ifdef NNC_Poly_Class
+  dp.add_constraint(A - B > 0);
+  dp.add_constraint(A - B < 1);
 #else
-  dp.add_constraint(A + B >= 0);
-  dp.add_constraint(A + B <= 1);
+  dp.add_constraint(A - B >= 0);
+  dp.add_constraint(A - B <= 1);
 #endif
   dp.add_congruence(3*B %= 2);
 
-  Linear_Expression le = A + B;
+  Linear_Expression le = A - B;
 
   Coefficient max_n;
   Coefficient max_d;
@@ -342,7 +352,7 @@ test13() {
     && dp.maximize(le, max_n, max_d, max, pnt_max)
     && dp.minimize(le, min_n, min_d, min, pnt_min);
 
-#ifdef PH_IS_NNC
+#ifdef NNC_Poly_Class
   ok = ok && !max && !min;
 #else
   ok = ok && max && min;
@@ -379,17 +389,19 @@ test14() {
   known_dp.add_constraint(C == -2);
   known_dp.add_constraint(B == 0);
   known_dp.add_constraint(A <= 3);
-  known_dp.add_constraint(A + B >= 7);
+  known_dp.add_constraint(A - B >= 7);
 
   bool ok = (dp == known_dp);
 
-  print_congruences(dp, "*** dp congruences ***");
-  print_constraints(dp, "*** dp constraints ***");
+  print_congruences(dp,
+     "*** dp.bounded_affine_image(A, 7-B, B+3) congruences ***");
+  print_constraints(dp,
+     "*** dp.bounded_affine_image(A, 7-B, B+3) constraints ***");
 
   return ok;
 }
 
-// Empty grid. bounded_affine_image/3
+// Empty product component. bounded_affine_image/3
 bool
 test15() {
   Variable A(0);
@@ -449,7 +461,7 @@ test16() {
   return ok;
 }
 
-// Empty grid. bounded_affine_preimage/3
+// Empty product. bounded_affine_preimage/3
 bool
 test17() {
   Variable A(0);

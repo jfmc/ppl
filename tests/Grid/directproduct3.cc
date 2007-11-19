@@ -22,12 +22,22 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-#define PH_IS_NNC
-// #define PH_IS_FIRST
+// ONE AND ONLY ONE OF THESE MUST BE UNCOMMENTED
+#define NNC_Poly_Class
+// #define C_Poly_Class
+// #define BD_Shape_Class
 
-#ifdef PH_IS_NNC
+#define PH_IS_FIRST
+
+#ifdef BD_Shape_Class
+typedef BD_Shape<mpq_class> Poly;
+#endif
+
+#ifdef NNC_Poly_Class
 typedef NNC_Polyhedron Poly;
-#else
+#endif
+
+#ifdef C_Poly_Class
 typedef C_Polyhedron Poly;
 #endif
 
@@ -45,7 +55,7 @@ test01() {
   Variable A(0);
   Variable E(4);
 
-#ifdef PH_IS_NNC
+#ifdef NNC_Poly_Class
   Constraint_System cs(A + E < 9);
 #else
   Constraint_System cs(A + E <= 9);
@@ -74,37 +84,32 @@ test02() {
   dp.add_constraint(A - C >= 9);
   dp.add_constraint(B >= 2);
 
-#ifdef PH_IS_FIRST
-  bool ok1 = (dp.domain2().affine_dimension() == 3
-	      && dp.domain1().affine_dimension() == 2);
-  bool ok2 = (dp.domain2().affine_dimension() == 2
-	      && dp.domain1().affine_dimension() == 3);
-#else
-  bool ok1 = (dp.domain1().affine_dimension() == 2
-	      && dp.domain2().affine_dimension() == 3);
-  bool ok2 = (dp.domain1().affine_dimension() == 3
-	      && dp.domain2().affine_dimension() == 2);
-#endif
-  bool ok = (dp.affine_dimension() == 2 && (ok1 || ok2) );
-
-  if (ok) {
-    dp.add_constraint(C == 4);
-    dp.add_constraint(B == 2);
+  bool ok;
 
 #ifdef PH_IS_FIRST
-  bool ok3 = !ok1 && (dp.domain2().affine_dimension() == 1
-	      && dp.domain1().affine_dimension() == 0);
-  bool ok4 = ! ok2 && (dp.domain2().affine_dimension() == 0
-	      && dp.domain1().affine_dimension() == 1);
+  ok = (dp.domain2().affine_dimension() == 3
+	&& dp.domain1().affine_dimension() == 2);
 #else
-  bool ok3 = !ok1 && (dp.domain1().affine_dimension() == 1
-	      && dp.domain2().affine_dimension() == 0);
-  bool ok4 = ! ok2 && (dp.domain1().affine_dimension() == 0
-	      && dp.domain2().affine_dimension() == 1);
+  ok = (dp.domain1().affine_dimension() == 2
+	&& dp.domain2().affine_dimension() == 3);
+#endif
+  ok = (ok && dp.affine_dimension() == 2);
+
+  if (!ok)
+    return false;
+
+  dp.add_constraint(C == 4);
+  dp.add_constraint(B == 2);
+
+#ifdef PH_IS_FIRST
+  ok = (dp.domain2().affine_dimension() == 1
+	&& dp.domain1().affine_dimension() == 0);
+#else
+  ok = (dp.domain1().affine_dimension() == 1
+	&& dp.domain2().affine_dimension() == 0);
 #endif
 
-    ok &= (dp.affine_dimension() == 0 && (ok1 && ok4) || (ok2 && ok3) );
-  }
+  ok &= (ok && dp.affine_dimension() == 0);
 
   print_congruences(dp, "*** dp congruences ***");
   print_constraints(dp, "*** dp constraints ***");
@@ -338,7 +343,7 @@ test09() {
 
   Product known_dp(3);
   known_dp.add_constraint(A >= 0);
-#ifdef PH_IS_NNC
+#ifdef NNC_Poly_Class
   known_dp.add_constraint(A < 3);
 #else
   known_dp.add_constraint(A <= 3);
@@ -614,11 +619,12 @@ test18() {
   known_dp.add_constraint(4*A - 3*C >= 13);
   known_dp.add_congruence((65*A - B %= 0) / 7);
   known_dp.add_congruence(21*A %= 0);
+  known_dp.add_constraint(A >= 0);
 
   bool ok = (dp1 == known_dp);
 
-  print_congruences(dp1, "*** dp1.time_elapse_assign(dp2) congruences ***");
-  print_constraints(dp1, "*** dp1.time_elapse_assign(dp2) constraints ***");
+  print_congruences(dp1, "*** dp1.time_elapse_assign(dp1) congruences ***");
+  print_constraints(dp1, "*** dp1.time_elapse_assign(dp1) constraints ***");
   print_congruences(dp2, "*** dp2.time_elapse_assign(dp2) congruences ***");
   print_constraints(dp2, "*** dp2.time_elapse_assign(dp2) constraints ***");
 
@@ -637,7 +643,7 @@ test19() {
   dp.add_constraint(3*A + C == 0);
   dp.add_constraint(2*A - B == 0);
   dp.add_congruence(3*A %= 0);
-#ifdef PH_IS_NNC
+#ifdef NNC_Poly_Class
   dp.add_constraint(A > 0);
 #else
   dp.add_constraint(A >= 0);
@@ -660,6 +666,7 @@ test19() {
   return ok;
 }
 
+#ifndef BD_Shape_Class
 // widening_assign
 bool
 test20() {
@@ -707,6 +714,7 @@ test20() {
 
   return ok;
 }
+#endif
 
 } // namespace
 
@@ -732,5 +740,7 @@ BEGIN_MAIN
   DO_TEST(test17);
   DO_TEST_F8(test18);
   DO_TEST(test19);
+#ifndef BD_Shape_Class
   DO_TEST(test20);
+#endif
 END_MAIN

@@ -24,14 +24,24 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
-#define PH_IS_NNC
+// ONE AND ONLY ONE OF THESE MUST BE UNCOMMENTED
+#define NNC_Poly_Class
+// #define C_Poly_Class
+// #define BD_Shape_Class
+
 // #define PH_IS_FIRST
 
 typedef Domain_Product<BD_Shape<mpq_class>, Grid>::Direct_Product BDDProduct;
 
-#ifdef PH_IS_NNC
+#ifdef BD_Shape_Class
+typedef BD_Shape<mpq_class> Poly;
+#endif
+
+#ifdef NNC_Poly_Class
 typedef NNC_Polyhedron Poly;
-#else
+#endif
+
+#ifdef C_Poly_Class
 typedef C_Polyhedron Poly;
 #endif
 
@@ -178,6 +188,7 @@ test06() {
   return ok && dp1.OK() && dp2.OK();
 }
 
+#ifndef BD_Shape_Class
 // Product(bounding_box)
 bool
 test07() {
@@ -202,6 +213,7 @@ test07() {
 
   return ok && dp.OK();
 }
+#endif
 
 // FIXME: Waiting for covering box methods, details in
 //        Direct_Product.defs.hh.
@@ -339,7 +351,7 @@ test13() {
 
   Product dp(3);
   dp.add_congruence((B + C %= 3) / 0);
-#ifdef PH_IS_NNC
+#ifdef NNC_Poly_Class
   dp.add_constraint(A > 9);
 #else
   dp.add_constraint(A >= 9);
@@ -352,7 +364,7 @@ test13() {
   Poly known_ph(dp.space_dimension());
   known_ph.add_constraint(B + C == 3);
   known_ph.add_constraint(A <= 11);
-#ifdef PH_IS_NNC
+#ifdef NNC_Poly_Class
   known_ph.add_constraint(A > 9);
 #else
   known_ph.add_constraint(A >= 9);
@@ -377,7 +389,7 @@ test14() {
 
   Product dp(3);
   dp.add_congruence((B + C %= 3) / 0);
-#ifdef PH_IS_NNC
+#ifdef NNC_Poly_Class
   dp.add_constraint(A > 9);
 #else
   dp.add_constraint(A >= 9);
@@ -389,7 +401,7 @@ test14() {
 
   Poly known_ph(dp.space_dimension());
   known_ph.add_constraint(B + C == 3);
-#ifdef PH_IS_NNC
+#ifdef NNC_Poly_Class
   known_ph.add_constraint(A > 9);
 #else
   known_ph.add_constraint(A >= 9);
@@ -496,7 +508,9 @@ BEGIN_MAIN
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
+#ifndef BD_Shape_Class
   DO_TEST(test07);
+#endif
 //  DO_TEST(test08);
   DO_TEST(test09);
   DO_TEST(test10);

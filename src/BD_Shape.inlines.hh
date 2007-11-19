@@ -171,7 +171,7 @@ template <typename T>
 inline bool
 BD_Shape<T>::add_congruences_and_minimize(const Congruence_System& cgs) {
   add_congruences(cgs);
-  return minimize();
+  return !is_empty();
 }
 
 template <typename T>
