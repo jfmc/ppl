@@ -113,6 +113,18 @@ BD_Shape<T>::BD_Shape(const BD_Shape<U>& y)
 }
 
 template <typename T>
+inline Congruence_System
+BD_Shape<T>::congruences() const {
+  return Congruence_System(minimized_constraints());
+}
+
+template <typename T>
+inline Congruence_System
+BD_Shape<T>::minimized_congruences() const {
+  return Congruence_System(minimized_constraints());
+}
+
+template <typename T>
 inline bool
 BD_Shape<T>::add_constraint_and_minimize(const Constraint& c) {
   add_constraint(c);
@@ -126,7 +138,6 @@ BD_Shape<T>::add_constraints(const Constraint_System& cs) {
   for (Constraint_System::const_iterator i = cs.begin(),
 	 cs_end = cs.end(); i != cs_end; ++i)
     add_constraint(*i);
-  assert(OK());
 }
 
 template <typename T>
@@ -147,6 +158,45 @@ template <typename T>
 inline bool
 BD_Shape<T>::add_recycled_constraints_and_minimize(Constraint_System& cs) {
   return add_constraints_and_minimize(cs);
+}
+
+template <typename T>
+void
+BD_Shape<T>::add_congruences(const Congruence_System& cgs) {
+  Constraint_System cs(cgs);
+  add_constraints(cs);
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::add_congruences_and_minimize(const Congruence_System& cgs) {
+  add_congruences(cgs);
+  return minimize();
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::add_recycled_congruences(Congruence_System& cgs) {
+  add_congruences(cgs);
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
+  return add_congruences_and_minimize(cgs);
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::can_recycle_constraint_systems() {
+  return false;
+}
+
+
+template <typename T>
+inline bool
+BD_Shape<T>::can_recycle_congruence_systems() {
+  return false;
 }
 
 template <typename T>

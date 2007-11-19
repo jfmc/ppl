@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "globals.defs.hh"
 #include "Constraint.types.hh"
 #include "Generator.types.hh"
+#include "Congruence.types.hh"
 #include "Linear_Expression.types.hh"
 #include "Constraint_System.types.hh"
 #include "Generator_System.types.hh"
@@ -508,6 +509,15 @@ public:
   //! Returns a minimized system of constraints defining \p *this.
   Constraint_System minimized_constraints() const;
 
+  //! Returns a system of (equality) congruences satisfied by \p *this.
+  Congruence_System congruences() const;
+
+  /*! \brief
+      Returns a system of (equality) congruences in reduced form
+      satsified by \p *this with the same affine dimension as \p *this.
+  */
+  Congruence_System minimized_congruences() const;
+
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p expr is
     bounded from above in \p *this.
@@ -749,6 +759,15 @@ public:
   bool add_constraint_and_minimize(const Constraint& c);
 
   /*! \brief
+    Adds a copy of congruence \p cg to the system of congruences of \p
+    *this (without minimizing the result).
+
+    \exception std::invalid_argument
+    Thrown if \p *this and congruence \p cg are dimension-incompatible.
+  */
+  void add_congruence(const Congruence& cg);
+
+  /*! \brief
     Adds the constraints in \p cs to the system of bounded differences
     defining \p *this.
 
@@ -817,6 +836,85 @@ public:
     exceptional return is that it can be safely destroyed.
   */
   bool add_recycled_constraints_and_minimize(Constraint_System& cs);
+
+  /*! \brief
+    Adds to \p *this constraints equivalent to the congruences in \p
+    cgs (without minimizing the result).
+
+    \param cgs
+    Contains the congruences that will be added to the system of
+    constraints of \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cgs are topology-incompatible or
+    dimension-incompatible.
+  */
+void add_congruences(const Congruence_System& cgs);
+
+  /*! \brief
+    Adds a copy of the congruences in \p cs to the system
+    of congruences of \p *this, minimizing the result.
+
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \param cs
+    Contains the congruences that will be added to the system of
+    congruences of \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are dimension-incompatible.
+  */
+  bool add_congruences_and_minimize(const Congruence_System& cs);
+
+  // FIXME
+  /*! \brief
+    Adds the congruences in \p cs to the system of congruences
+    of \p *this (without minimizing the result).
+
+    \param cgs
+    The congruence system to be added to \p *this.  The congruences in
+    \p cgs may be recycled.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are dimension-incompatible.
+
+    \warning
+    The only assumption that can be made on \p cs upon successful or
+    exceptional return is that it can be safely destroyed.
+  */
+  void add_recycled_congruences(Congruence_System& cgs);
+
+  // FIXME
+  /*! \brief
+    Adds the congruences in \p cs to the system of congruences
+    of \p *this, minimizing the result.
+
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \param cgs
+    The congruence system to be added to \p *this.  The congruences in
+    \p cgs may be recycled.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are dimension-incompatible.
+
+    \warning
+    The only assumption that can be made on \p cs upon successful or
+    exceptional return is that it can be safely destroyed.
+  */
+  bool add_recycled_congruences_and_minimize(Congruence_System& cgs);
+
+  /*! \brief
+    Returns false indicating that this domain cannot recycle constraints
+  */
+  static bool can_recycle_constraint_systems();
+
+  /*! \brief
+    Returns false indicating that this domain cannot recycle congruences
+  */
+  static bool can_recycle_congruence_systems();
 
   //! Assigns to \p *this the intersection of \p *this and \p y.
   /*!

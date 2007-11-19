@@ -25,8 +25,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Generator_System.defs.hh"
 #include "Generator_System.inlines.hh"
-#include "Congruence_System.defs.hh"
 #include "Congruence_System.inlines.hh"
+#include "Congruence_System.defs.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
 #include "MIP_Problem.defs.hh"
@@ -48,8 +48,7 @@ BD_Shape<T>::BD_Shape(const Congruence_System& cgs)
   : dbm(cgs.space_dimension() + 1),
     status(),
     redundancy_dbm() {
-  // TODO: handle those congruences that happen to be equalities
-  // and can be encoded as bounded differences.
+  add_congruences(cgs);
   return;
 }
 
@@ -378,6 +377,22 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
   // closure or reduction of the bounded difference shape.
   if (changed && marked_shortest_path_closed())
     status.reset_shortest_path_closed();
+  assert(OK());
+}
+
+template <typename T>
+void
+BD_Shape<T>::add_congruence(const Congruence& cg) {
+  dimension_type cg_space_dim = cg.space_dimension();
+  if (cg.is_equality()) {
+    Linear_Expression expr;
+    for (dimension_type i = cg_space_dim; i-- > 0; ) {
+      const Variable v(i);
+      expr += cg.coefficient(v) * v;
+    }
+    expr += cg.inhomogeneous_term();
+    add_constraint(expr == 0);
+  }
   assert(OK());
 }
 

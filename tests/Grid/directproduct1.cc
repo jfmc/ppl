@@ -404,7 +404,6 @@ test14() {
   return ok && dp.OK();
 }
 
-#if 0
 // Universe product in 0 dimensions
 bool
 test15() {
@@ -460,7 +459,33 @@ test17() {
 
   return ok && dp1.OK() && dp2.OK();
 }
-#endif
+
+// congruences()
+bool
+test18() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  BDDProduct dp(3);
+  dp.add_congruence(A %= 9);
+  dp.add_congruence(B + C %= 3);
+
+  Congruence_System cgs;
+  cgs.insert(B + C %= 0);
+  cgs.insert(A %= 0);
+
+  Grid known_gr(cgs);
+
+  Grid gr(dp.congruences());
+
+  bool ok = gr == known_gr;
+
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
+
+  return ok && dp.OK();
+}
 
 } // namespace
 
@@ -479,7 +504,8 @@ BEGIN_MAIN
   DO_TEST(test12);
   DO_TEST(test13);
   DO_TEST(test14);
-/*   DO_TEST(test15); */
-/*   DO_TEST(test16); */
-/*   DO_TEST(test17); */
+  DO_TEST(test15);
+  DO_TEST(test16);
+  DO_TEST(test17);
+  DO_TEST(test18);
 END_MAIN
