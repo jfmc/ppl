@@ -248,6 +248,103 @@ PPL::Polyhedron::relation_with(const Generator& g) const {
     : Poly_Gen_Relation::nothing();
 }
 
+PPL::Poly_Con_Relation
+PPL::Polyhedron::relation_with(const Congruence& cg) const {
+  dimension_type cg_space_dim = cg.space_dimension();
+  // Dimension-compatibility check.
+  if (space_dim < cg_space_dim)
+    throw_dimension_incompatible("relation_with(cg)", "cg", cg);
+
+  if (cg.is_equality()) {
+    const Constraint c(cg);
+    return relation_with(c);
+  }
+
+  if (marked_empty())
+    return Poly_Con_Relation::saturates()
+      && Poly_Con_Relation::is_included()
+      && Poly_Con_Relation::is_disjoint();
+
+  if (space_dim == 0)
+    if (cg.is_trivial_false())
+      return Poly_Con_Relation::is_disjoint();
+    else if (cg.inhomogeneous_term() % cg.modulus() == 0)
+      return Poly_Con_Relation::saturates()
+	&& Poly_Con_Relation::is_included();
+
+  if ((has_pending_constraints() && !process_pending_constraints())
+      || (!generators_are_up_to_date() && !update_generators()))
+    // The polyhedron is empty.
+    return Poly_Con_Relation::saturates()
+      && Poly_Con_Relation::is_included()
+      && Poly_Con_Relation::is_disjoint();
+
+  // Find the equality corresponding to the congruence (ignoring the modulus).
+  Linear_Expression expr;
+  for (dimension_type i = cg_space_dim; i-- > 0; ) {
+    const Variable v(i);
+    expr += cg.coefficient(v) * v;
+  }
+  expr += cg.inhomogeneous_term();
+  Constraint c(expr == 0);
+
+  // The polyhedron is non-empty so that there exists a point.
+  // For an arbitrary generator point find the scalar product with
+  // the equality.
+  TEMP_INTEGER(point_val);
+
+  for (Generator_System::const_iterator g = gen_sys.begin(),
+         gen_sys_end = gen_sys.end(); g != gen_sys_end; ++g) {
+    if (g->is_point()) {
+      Scalar_Products::assign(point_val, c, *g);
+      break;
+    }
+  }
+
+  // Find the 2 hyperplanes that satisfies the congruence and are
+  // nearest to the point such that the point lies on or between these
+  // hyperplanes.
+  // Then use the relations between the polyhedron and the corresponding
+  // half-spaces to determine its relation with the congruence.
+  const Coefficient& modulus = cg.modulus();
+
+  TEMP_INTEGER(div);
+  div = modulus;
+
+  TEMP_INTEGER(nearest);
+  nearest = (point_val / div) * div;
+
+  point_val -= nearest;
+  expr -= nearest;
+  if (point_val == 0)
+     return relation_with(expr == 0);
+
+  Linear_Expression next_expr;
+  if (point_val > 0) {
+     next_expr = expr - modulus;
+  }
+  else {
+    expr = - (expr);
+    next_expr = expr - modulus;
+  }
+
+  Poly_Con_Relation relations = relation_with(expr >= 0);
+  assert(!relations.implies(Poly_Con_Relation::saturates())
+	 && !relations.implies(Poly_Con_Relation::is_disjoint()));
+  if (relations.implies(Poly_Con_Relation::strictly_intersects()))
+    return Poly_Con_Relation::strictly_intersects();
+
+  assert(relations == Poly_Con_Relation::is_included());
+  Poly_Con_Relation next_relations = relation_with(next_expr <= 0);
+  assert(!next_relations.implies(Poly_Con_Relation::saturates())
+	 && !next_relations.implies(Poly_Con_Relation::is_disjoint()));
+  if (next_relations.implies(Poly_Con_Relation::strictly_intersects()))
+    return Poly_Con_Relation::strictly_intersects();
+
+  assert(next_relations == Poly_Con_Relation::is_included());
+  return Poly_Con_Relation::is_disjoint();
+}
+
 bool
 PPL::Polyhedron::is_universe() const {
   if (marked_empty())

@@ -579,6 +579,15 @@ public:
   Poly_Gen_Relation relation_with(const Generator& g) const;
 
   /*! \brief
+    Returns the relations holding between the polyhedron \p *this
+    and the congruence \p c.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and congruence \p c are dimension-incompatible.
+  */
+  Poly_Con_Relation relation_with(const Congruence& cg) const;
+
+  /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is
     an empty polyhedron.
   */
