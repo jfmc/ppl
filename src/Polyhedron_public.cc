@@ -575,22 +575,20 @@ PPL::Polyhedron::constrains(const Variable var) const {
       // syntactically constrained.
       goto syntactic_check;
 
-    // Count non-pending lines.
-    dimension_type num_lines = 0;
-    const dimension_type first_pending = gen_sys.first_pending_row();
-    for (dimension_type i = first_pending; i-- > 0; )
-      switch (gen_sys[i].type()) {
-      case Generator::LINE:
-	++num_lines;
-	break;
-      default:
-	break;
-      }
+    if (generators_are_minimized()) {
+      // Try a quick, incomplete check for the universe polyhedron:
+      // a universe polyhedron constrains no variable.
+      // Count the number of non-pending
+      // (hence, linearly independent) lines.
+      dimension_type num_lines = 0;
+      const dimension_type first_pending = gen_sys.first_pending_row();
+      for (dimension_type i = first_pending; i-- > 0; )
+	if (gen_sys[i].is_line())
+	  ++num_lines;
 
-    if (num_lines == space_dim
-	&& (has_pending_generators() || generators_are_minimized()))
-      // A universe polyhedron constrains no variable.
-      return false;
+      if (num_lines == space_dim)
+	return false;
+    }
 
     // Scan generators: perhaps we will find a generator equivalent to
     // line(var) or a pair of generators equivalent to ray(-var) and
@@ -600,16 +598,14 @@ PPL::Polyhedron::constrains(const Variable var) const {
     const dimension_type var_id = var.id();
     for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
       const Generator& gen_sys_i = gen_sys[i];
-      const Generator::Type gen_sys_i_type = gen_sys_i.type();
-      if (gen_sys_i_type == Generator::LINE
-	  || gen_sys_i_type == Generator::RAY) {
+      if (gen_sys_i.is_line_or_ray()) {
 	const Linear_Row& row = gen_sys_i;
 	const int sign = sgn(row.coefficient(var_id));
 	if (sign != 0) {
 	  for (dimension_type j = space_dim+1; --j > 0; )
 	    if (j != var_id && row[j] != 0)
 	      goto next;
-	  if (gen_sys_i_type == Generator::LINE)
+	  if (gen_sys_i.is_line())
 	    return true;
 	  if (sign > 0)
 	    if (have_negative_ray)
@@ -617,7 +613,7 @@ PPL::Polyhedron::constrains(const Variable var) const {
 	    else
 	      have_positive_ray = true;
 	  else if (have_positive_ray)
-	  return true;
+	    return true;
 	  else
 	    have_negative_ray = true;
 	}
