@@ -55,6 +55,7 @@ bhz03widening1 \
 bounded1 \
 bounds1 \
 boundedaffineimage1 \
+boundingbox1 \
 boundedaffinepreimage1 \
 cc76narrowing1 \
 cc76extrapolation1 \
@@ -168,6 +169,8 @@ bounds1_SOURCES = bounds1.cc
 boundedaffineimage1_SOURCES = boundedaffineimage1.cc
 
 boundedaffinepreimage1_SOURCES = boundedaffinepreimage1.cc
+
+boundingbox1_SOURCES = boundingbox1.cc
 
 cc76narrowing1_SOURCES = cc76narrowing1.cc
 

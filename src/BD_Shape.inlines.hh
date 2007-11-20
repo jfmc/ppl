@@ -210,6 +210,18 @@ BD_Shape<T>::BD_Shape(const Constraint_System& cs)
 }
 
 template <typename T>
+template <typename Interval>
+inline
+BD_Shape<T>::BD_Shape(const Box<Interval>& box)
+  : dbm(box.space_dimension() + 1), status(), redundancy_dbm() {
+  if (box.space_dimension() > 0)
+    // A (non zero-dim) universe BDS is shortest-path closed.
+    status.set_shortest_path_closed();
+  add_constraints(box.constraints());
+  return;
+}
+
+template <typename T>
 inline BD_Shape<T>&
 BD_Shape<T>::operator=(const BD_Shape& y) {
   dbm = y.dbm;

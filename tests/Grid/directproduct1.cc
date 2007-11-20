@@ -25,8 +25,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
 // ONE AND ONLY ONE OF THESE MUST BE UNCOMMENTED
-#define NNC_Poly_Class
-// #define C_Poly_Class
+// #define NNC_Poly_Class
+#define C_Poly_Class
 // #define BD_Shape_Class
 
 // #define PH_IS_FIRST
@@ -188,7 +188,6 @@ test06() {
   return ok && dp1.OK() && dp2.OK();
 }
 
-#ifndef BD_Shape_Class
 // Product(bounding_box)
 bool
 test07() {
@@ -213,7 +212,6 @@ test07() {
 
   return ok && dp.OK();
 }
-#endif
 
 // FIXME: Waiting for covering box methods, details in
 //        Direct_Product.defs.hh.
@@ -508,9 +506,7 @@ BEGIN_MAIN
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
-#ifndef BD_Shape_Class
   DO_TEST(test07);
-#endif
 //  DO_TEST(test08);
   DO_TEST(test09);
   DO_TEST(test10);
