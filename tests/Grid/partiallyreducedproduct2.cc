@@ -877,7 +877,7 @@ BEGIN_MAIN
   DO_TEST(test05);
   DO_TEST(test06);
   DO_TEST(test07);
-  DO_TEST(test08);
+  DO_TEST_F8(test08);
   DO_TEST(test09);
   DO_TEST(test10);
   DO_TEST(test11);
@@ -887,7 +887,7 @@ BEGIN_MAIN
   DO_TEST(test15);
   DO_TEST(test16);
   DO_TEST(test17);
-  DO_TEST(test18);
+  DO_TEST_F8(test18);
   DO_TEST(test19);
   DO_TEST(test20);
 END_MAIN
