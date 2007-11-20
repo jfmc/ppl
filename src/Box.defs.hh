@@ -40,7 +40,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Poly_Gen_Relation.types.hh"
 #include "Polyhedron.types.hh"
 #include "Grid.types.hh"
-#include "Direct_Product.types.hh"
+#include "Partially_Reduced_Product.types.hh"
 #include <vector>
 #include <iosfwd>
 
@@ -385,13 +385,13 @@ public:
   explicit Box(const Grid& ph,
 	       Complexity_Class complexity = POLYNOMIAL_COMPLEXITY);
 
-  //! Builds a box containing the direct product \p dp.
+  //! Builds a box containing the partially reduced product \p dp.
   /*!
     Builds a box containing \p ph using algorithms whose complexity
     does not exceed the one specified by \p complexity.
   */
-  template <typename D1, typename D2>
-  explicit Box(const Direct_Product<D1, D2>& dp,
+  template <typename D1, typename D2, typename R>
+  explicit Box(const Partially_Reduced_Product<D1, D2, R>& dp,
 	       Complexity_Class complexity = ANY_COMPLEXITY);
 
   /*! \brief

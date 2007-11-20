@@ -475,8 +475,8 @@ Box<Interval>::Box(const Grid& gr, Complexity_Class)
 }
 
 template <typename Interval>
-template <typename D1, typename D2>
-Box<Interval>::Box(const Direct_Product<D1, D2>& dp,
+template <typename D1, typename D2, typename R>
+Box<Interval>::Box(const Partially_Reduced_Product<D1, D2, R>& dp,
 		   Complexity_Class complexity)
   : seq(dp.space_dimension() <= max_space_dimension()
 	? dp.space_dimension()

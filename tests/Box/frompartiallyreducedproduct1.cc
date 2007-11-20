@@ -24,17 +24,21 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
+typedef Domain_Product<C_Polyhedron, Grid>::Direct_Product DProduct;
+typedef Domain_Product<C_Polyhedron, Grid>::Smash_Product SProduct;
+typedef Domain_Product<C_Polyhedron, Grid>::Constraints_Product CProduct;
+
 bool
 test01() {
   Variable A(0);
 
-  Direct_Product<Grid, C_Polyhedron> dp(1);
+  DProduct dp(1);
   dp.add_constraint(A <= 4);
   dp.add_constraint(A >= 2);
   dp.add_congruence((A %= 1) / 5);
 
-  print_congruences(dp.domain1(), "*** dp.domain1() ***");
-  print_constraints(dp.domain2(), "*** dp.domain2() ***");
+  print_congruences(dp, "*** dp.congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
 
   Rational_Box box(dp);
 
@@ -54,21 +58,19 @@ bool
 test02() {
   Variable A(0);
 
-  Direct_Product<Grid, C_Polyhedron> dp(1);
+  DProduct dp(1);
   dp.add_constraint(A <= 4);
   dp.add_constraint(A >= 2);
   dp.add_congruence((A %= 0) / 3);
-
-  print_congruences(dp.domain1(), "*** dp.domain1() ***");
-  print_constraints(dp.domain2(), "*** dp.domain2() ***");
 
   Rational_Box box(dp);
   box.add_constraint(3*A >= 2);
   box.add_constraint(A <= 6);
 
+  print_congruences(dp, "*** dp.congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
+
   Rational_Box known_box(1);
-  // FIXME: how can this expected from the direct product?
-  // known_box.add_constraint(A == 3);
   known_box.add_constraint(A >= 2);
   known_box.add_constraint(A <= 4);
 
@@ -80,9 +82,55 @@ test02() {
   return ok;
 }
 
+bool
+test03() {
+  Variable A(0);
+
+  SProduct sp(1);
+  sp.add_constraint(A >= 4);
+  sp.add_constraint(A <= 2);
+  sp.add_congruence((A %= 0) / 3);
+
+  Rational_Box box(sp);
+
+  print_congruences(sp, "*** sp.congruences ***");
+  print_constraints(sp, "*** sp constraints ***");
+
+  bool ok = box.is_empty();
+
+  print_constraints(box, "*** box ***");
+
+  return ok;
+}
+
+bool
+test04() {
+  Variable A(0);
+
+  CProduct cp(1);
+  cp.add_constraint(A <= 4);
+  cp.add_constraint(A >= 4);
+  cp.add_congruence((A %= 0) / 3);
+
+  Rational_Box box(cp);
+
+  print_congruences(cp, "*** cp.congruences ***");
+  print_constraints(cp, "*** cp constraints ***");
+
+  Rational_Box known_box(1, EMPTY);
+
+  bool ok = box.is_empty();
+
+  print_constraints(box, "*** box ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
 END_MAIN

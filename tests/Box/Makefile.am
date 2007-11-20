@@ -76,9 +76,9 @@ expandspacedim1 \
 foldspacedims1 \
 frombdshape1 \
 frombox1 \
-fromdirectproduct1 \
 fromgensys1 \
 fromgrid1 \
+frompartiallyreducedproduct1 \
 frompolyhedron1 \
 frompolyhedron2 \
 fromspacedim1 \
@@ -196,14 +196,14 @@ frombdshape1_SOURCES = frombdshape1.cc
 
 frombox1_SOURCES = frombox1.cc
 
-fromdirectproduct1_SOURCES = fromdirectproduct1.cc
-
 fromgensys1_SOURCES = fromgensys1.cc
 
 fromgrid1_SOURCES = fromgrid1.cc
 
 frompolyhedron1_SOURCES = frompolyhedron1.cc
 frompolyhedron2_SOURCES = frompolyhedron2.cc
+
+frompartiallyreducedproduct1_SOURCES = frompartiallyreducedproduct1.cc
 
 fromspacedim1_SOURCES = fromspacedim1.cc
 
