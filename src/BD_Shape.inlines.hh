@@ -698,6 +698,12 @@ BD_Shape<T>::H79_widening_assign(const BD_Shape& y, unsigned* tp) {
 
 template <typename T>
 inline void
+BD_Shape<T>::widening_assign(const BD_Shape& y, unsigned* tp) {
+  H79_widening_assign(y, tp);
+}
+
+template <typename T>
+inline void
 BD_Shape<T>::limited_H79_extrapolation_assign(const BD_Shape& y,
 					      const Constraint_System& cs,
 					      unsigned* tp) {

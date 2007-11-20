@@ -23,8 +23,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ppl_test.hh"
 
 // ONE AND ONLY ONE OF THESE MUST BE UNCOMMENTED
-#define NNC_Poly_Class
-// #define C_Poly_Class
+// #define NNC_Poly_Class
+#define C_Poly_Class
 // #define BD_Shape_Class
 
 #define PH_IS_FIRST
@@ -666,7 +666,6 @@ test19() {
   return ok;
 }
 
-#ifndef BD_Shape_Class
 // widening_assign
 bool
 test20() {
@@ -714,7 +713,6 @@ test20() {
 
   return ok;
 }
-#endif
 
 } // namespace
 
@@ -740,7 +738,5 @@ BEGIN_MAIN
   DO_TEST(test17);
   DO_TEST_F8(test18);
   DO_TEST(test19);
-#ifndef BD_Shape_Class
   DO_TEST(test20);
-#endif
 END_MAIN
