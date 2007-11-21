@@ -22,22 +22,27 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-// ONE AND ONLY ONE OF THESE MUST BE UNCOMMENTED
-#define NNC_Poly_Class
-// #define C_Poly_Class
-// #define BD_Shape_Class
-
 #define PH_IS_FIRST
 
-#ifdef BD_Shape_Class
+// ONE AND ONLY ONE OF THESE MUST BE 1
+#define NNC_Poly_Class 1
+#define C_Poly_Class 0
+#define BD_Shape_Class 0
+#define Octagonal_Shape_Class 0
+
+#if Octagonal_Shape_Class
+typedef TOctagonal_Shape Poly;
+#endif
+
+#if BD_Shape_Class
 typedef BD_Shape<mpq_class> Poly;
 #endif
 
-#ifdef NNC_Poly_Class
+#if NNC_Poly_Class
 typedef NNC_Polyhedron Poly;
 #endif
 
-#ifdef C_Poly_Class
+#if C_Poly_Class
 typedef C_Polyhedron Poly;
 #endif
 
@@ -307,7 +312,7 @@ test10() {
   Product known_dp(3);
   known_dp.add_congruence((2*A - 2*B %= 1) / 0);
 
-#ifdef BD_Shape_Class
+#if BD_Shape_Class || Octagonal_Shape_Class
   #ifdef PH_IS_FIRST
     bool ok = (dp.domain2() == known_dp.domain2()
 	       && dp.domain1().is_universe());

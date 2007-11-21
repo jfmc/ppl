@@ -117,6 +117,28 @@ Octagonal_Shape<T>::Octagonal_Shape(const Constraint_System& cs)
 }
 
 template <typename T>
+inline
+Octagonal_Shape<T>::Octagonal_Shape(const Congruence_System& cgs)
+  : matrix(cgs.space_dimension()),
+    space_dim(cgs.space_dimension()),
+    status() {
+  add_congruences(cgs);
+  return;
+}
+
+template <typename T>
+inline Congruence_System
+Octagonal_Shape<T>::congruences() const {
+  return Congruence_System(minimized_constraints());
+}
+
+template <typename T>
+inline Congruence_System
+Octagonal_Shape<T>::minimized_congruences() const {
+  return Congruence_System(minimized_constraints());
+}
+
+template <typename T>
 inline Octagonal_Shape<T>&
 Octagonal_Shape<T>::operator=(const Octagonal_Shape& y) {
   matrix = y.matrix;
@@ -316,11 +338,65 @@ Octagonal_Shape<T>
 }
 
 template <typename T>
+inline void
+Octagonal_Shape<T>::add_recycled_constraints(Constraint_System& cs) {
+  add_constraints(cs);
+}
+
+template <typename T>
+inline bool
+Octagonal_Shape<T>
+::add_recycled_constraints_and_minimize(Constraint_System& cs) {
+  return add_constraints_and_minimize(cs);
+}
+
+template <typename T>
 inline bool
 Octagonal_Shape<T>::add_constraints_and_minimize(const Constraint_System& cs) {
   add_constraints(cs);
   strong_closure_assign();
   return !marked_empty();
+}
+
+template <typename T>
+inline void
+Octagonal_Shape<T>::add_congruences(const Congruence_System& cgs) {
+  Constraint_System cs(cgs);
+  add_constraints(cs);
+}
+
+template <typename T>
+inline bool
+Octagonal_Shape<T>
+::add_congruences_and_minimize(const Congruence_System& cgs) {
+  add_congruences(cgs);
+  return !is_empty();
+}
+
+template <typename T>
+inline void
+Octagonal_Shape<T>::add_recycled_congruences(Congruence_System& cgs) {
+  add_congruences(cgs);
+}
+
+template <typename T>
+inline bool
+Octagonal_Shape<T>
+::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
+  return add_congruences_and_minimize(cgs);
+}
+
+template <typename T>
+inline bool
+Octagonal_Shape<T>::can_recycle_constraint_systems() {
+  return false;
+}
+
+
+template <typename T>
+inline bool
+Octagonal_Shape<T>::can_recycle_congruence_systems() {
+  return false;
 }
 
 template <typename T>
@@ -356,6 +432,12 @@ Octagonal_Shape<T>
   intersection_assign(y);
   strong_closure_assign();
   return !(marked_empty());
+}
+
+template <typename T>
+inline void
+Octagonal_Shape<T>::widening_assign(const Octagonal_Shape& y, unsigned* tp) {
+  BHMZ05_widening_assign(y, tp);
 }
 
 template <typename T>

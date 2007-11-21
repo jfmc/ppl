@@ -24,22 +24,25 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace IO_Operators;
 
-// ONE AND ONLY ONE OF THESE MUST BE UNCOMMENTED
- #define NNC_Poly_Class
-// #define C_Poly_Class
-// #define BD_Shape_Class
+// ONE AND ONLY ONE OF THESE MUST BE 1
+#define NNC_Poly_Class 1
+#define C_Poly_Class 0
+#define BD_Shape_Class 0
+#define Octagonal_Shape_Class 0
 
-#define PH_IS_FIRST
+#if Octagonal_Shape_Class
+typedef TOctagonal_Shape Poly;
+#endif
 
-#ifdef BD_Shape_Class
+#if BD_Shape_Class
 typedef BD_Shape<mpq_class> Poly;
 #endif
 
-#ifdef NNC_Poly_Class
+#if NNC_Poly_Class
 typedef NNC_Polyhedron Poly;
 #endif
 
-#ifdef C_Poly_Class
+#if C_Poly_Class
 typedef C_Polyhedron Poly;
 #endif
 
@@ -341,7 +344,7 @@ test11() {
   return ok;
 }
 
-#ifndef BD_Shape_Class
+#if !BD_Shape_Class
 // A product in 3D; relation_with a constraint.
 bool
 test12() {
@@ -432,6 +435,7 @@ test13() {
   return ok;
 }
 
+#if !Octagonal_Shape_Class
 // relation_with a congruence
 bool
 test14() {
@@ -559,6 +563,7 @@ test17() {
   return ok;
 }
 #endif
+#endif
 
 } // namespace
 
@@ -574,7 +579,7 @@ BEGIN_MAIN
   DO_TEST(test09);
   DO_TEST(test10);
   DO_TEST(test11);
-#ifndef BD_Shape_Class
+#if !BD_Shape_Class && !Octagonal_Shape_Class
   DO_TEST(test12);
   DO_TEST(test13);
   DO_TEST(test14);

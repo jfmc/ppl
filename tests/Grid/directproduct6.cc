@@ -25,22 +25,27 @@ for the product domains */
 
 #include "ppl_test.hh"
 
-// ONE AND ONLY ONE OF THESE MUST BE UNCOMMENTED
- #define NNC_Poly_Class
-// #define C_Poly_Class
-// #define BD_Shape_Class
-
 #define PH_IS_FIRST
 
-#ifdef BD_Shape_Class
+// ONE AND ONLY ONE OF THESE MUST BE 1
+#define NNC_Poly_Class 0
+#define C_Poly_Class 1
+#define BD_Shape_Class 0
+#define Octagonal_Shape_Class 0
+
+#if Octagonal_Shape_Class
+typedef TOctagonal_Shape Poly;
+#endif
+
+#if BD_Shape_Class
 typedef BD_Shape<mpq_class> Poly;
 #endif
 
-#ifdef NNC_Poly_Class
+#if NNC_Poly_Class
 typedef NNC_Polyhedron Poly;
 #endif
 
-#ifdef C_Poly_Class
+#if C_Poly_Class
 typedef C_Polyhedron Poly;
 #endif
 
@@ -326,7 +331,7 @@ test13() {
   Variable B(1);
 
   Product dp(2);
-#ifdef NNC_Poly_Class
+#if NNC_Poly_Class
   dp.add_constraint(A - B > 0);
   dp.add_constraint(A - B < 1);
 #else
@@ -352,7 +357,7 @@ test13() {
     && dp.maximize(le, max_n, max_d, max, pnt_max)
     && dp.minimize(le, min_n, min_d, min, pnt_min);
 
-#ifdef NNC_Poly_Class
+#if NNC_Poly_Class
   ok = ok && !max && !min;
 #else
   ok = ok && max && min;

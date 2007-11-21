@@ -191,16 +191,6 @@ Octagonal_Shape<T>::Octagonal_Shape(const Polyhedron& ph,
 }
 
 template <typename T>
-Octagonal_Shape<T>::Octagonal_Shape(const Congruence_System& cgs)
-  : matrix(cgs.space_dimension()),
-    space_dim(cgs.space_dimension()),
-    status() {
-  // TODO: handle those congruences that happen to be equalities
-  // and can be encoded as octagonal constraints.
-  return;
-}
-
-template <typename T>
 Octagonal_Shape<T>::Octagonal_Shape(const Generator_System& gs)
   : matrix(gs.space_dimension()),
     space_dim(gs.space_dimension()),
@@ -473,6 +463,22 @@ Octagonal_Shape<T>::add_constraint_and_minimize(const Constraint& c) {
   else
     strong_closure_assign();
   return !(marked_empty());
+}
+
+template <typename T>
+void
+Octagonal_Shape<T>::add_congruence(const Congruence& cg) {
+  dimension_type cg_space_dim = cg.space_dimension();
+  if (cg.is_equality()) {
+    Linear_Expression expr;
+    for (dimension_type i = cg_space_dim; i-- > 0; ) {
+      const Variable v(i);
+      expr += cg.coefficient(v) * v;
+    }
+    expr += cg.inhomogeneous_term();
+    add_constraint(expr == 0);
+  }
+  assert(OK());
 }
 
 template <typename T>

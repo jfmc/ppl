@@ -22,22 +22,27 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-// ONE AND ONLY ONE OF THESE MUST BE UNCOMMENTED
-// #define NNC_Poly_Class
-#define C_Poly_Class
-// #define BD_Shape_Class
-
 #define PH_IS_FIRST
 
-#ifdef BD_Shape_Class
+// ONE AND ONLY ONE OF THESE MUST BE 1
+#define NNC_Poly_Class 0
+#define C_Poly_Class 1
+#define BD_Shape_Class 0
+#define Octagonal_Shape_Class 0
+
+#if Octagonal_Shape_Class
+typedef TOctagonal_Shape Poly;
+#endif
+
+#if BD_Shape_Class
 typedef BD_Shape<mpq_class> Poly;
 #endif
 
-#ifdef NNC_Poly_Class
+#if NNC_Poly_Class
 typedef NNC_Polyhedron Poly;
 #endif
 
-#ifdef C_Poly_Class
+#if C_Poly_Class
 typedef C_Polyhedron Poly;
 #endif
 
@@ -55,7 +60,7 @@ test01() {
   Variable A(0);
   Variable E(4);
 
-#ifdef NNC_Poly_Class
+#if NNC_Poly_Class
   Constraint_System cs(A + E < 9);
 #else
   Constraint_System cs(A + E <= 9);
@@ -343,7 +348,7 @@ test09() {
 
   Product known_dp(3);
   known_dp.add_constraint(A >= 0);
-#ifdef NNC_Poly_Class
+#if NNC_Poly_Class
   known_dp.add_constraint(A < 3);
 #else
   known_dp.add_constraint(A <= 3);
@@ -643,7 +648,7 @@ test19() {
   dp.add_constraint(3*A + C == 0);
   dp.add_constraint(2*A - B == 0);
   dp.add_congruence(3*A %= 0);
-#ifdef NNC_Poly_Class
+#if NNC_Poly_Class
   dp.add_constraint(A > 0);
 #else
   dp.add_constraint(A >= 0);

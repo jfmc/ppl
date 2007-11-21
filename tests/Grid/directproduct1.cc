@@ -24,24 +24,27 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
-// ONE AND ONLY ONE OF THESE MUST BE UNCOMMENTED
-// #define NNC_Poly_Class
-#define C_Poly_Class
-// #define BD_Shape_Class
-
 // #define PH_IS_FIRST
 
-typedef Domain_Product<BD_Shape<mpq_class>, Grid>::Direct_Product BDDProduct;
+// ONE AND ONLY ONE OF THESE MUST BE 1
+#define NNC_Poly_Class 1
+#define C_Poly_Class 0
+#define BD_Shape_Class 0
+#define Octagonal_Shape_Class 0
 
-#ifdef BD_Shape_Class
+#if Octagonal_Shape_Class
+typedef TOctagonal_Shape Poly;
+#endif
+
+#if BD_Shape_Class
 typedef BD_Shape<mpq_class> Poly;
 #endif
 
-#ifdef NNC_Poly_Class
+#if NNC_Poly_Class
 typedef NNC_Polyhedron Poly;
 #endif
 
-#ifdef C_Poly_Class
+#if C_Poly_Class
 typedef C_Polyhedron Poly;
 #endif
 
@@ -103,6 +106,7 @@ test03() {
 
   print_congruences(dp1, "*** dp1 congruences ***");
   print_constraints(dp1, "*** dp1 constraints ***");
+  print_constraints(dp1.minimized_constraints(), "*** dp1 minimized_constraints ***");
   print_congruences(dp2, "*** dp2 congruences ***");
   print_constraints(dp2, "*** dp2 constraints ***");
 
@@ -188,6 +192,7 @@ test06() {
   return ok && dp1.OK() && dp2.OK();
 }
 
+#if !Octagonal_Shape_Class
 // Product(bounding_box)
 bool
 test07() {
@@ -212,6 +217,7 @@ test07() {
 
   return ok && dp.OK();
 }
+#endif
 
 // FIXME: Waiting for covering box methods, details in
 //        Direct_Product.defs.hh.
@@ -395,7 +401,7 @@ test14() {
   dp.add_constraint(A <= 11);
 
   Poly ph(dp.space_dimension());
-  ph.add_constraints(dp.constraints());
+  ph.add_constraints(dp.minimized_constraints());
 
   Poly known_ph(dp.space_dimension());
   known_ph.add_constraint(B + C == 3);
@@ -414,89 +420,6 @@ test14() {
   return ok && dp.OK();
 }
 
-// Universe product in 0 dimensions
-bool
-test15() {
-  BDDProduct dp1;
-
-  BDDProduct dp2(0, UNIVERSE);
-
-  bool ok = (dp1 == dp2);
-
-  print_congruences(dp1, "*** dp1 congruences ***");
-  print_constraints(dp1, "*** dp1 constraints ***");
-  print_congruences(dp2, "*** dp2 congruences ***");
-  print_constraints(dp2, "*** dp2 constraints ***");
-
-  return ok && dp1.OK() && dp2.OK();
-}
-
-// Empty product(dims, type)
-bool
-test16() {
-  BDDProduct dp1(3);
-
-  BDDProduct dp2(3, EMPTY);
-
-  bool ok = (dp1 != dp2);
-
-  print_congruences(dp1, "*** dp1 congruences ***");
-  print_constraints(dp1, "*** dp1 constraints ***");
-  print_congruences(dp2, "*** dp2 congruences ***");
-  print_constraints(dp2, "*** dp2 constraints ***");
-
-  return ok && dp1.OK() && dp2.OK();
-}
-
-// BDDProduct(cgs), add_congruence(cg)
-bool
-test17() {
-  Variable A(0);
-
-  const Congruence_System cgs((A %= 0) / 4);
-
-  BDDProduct dp1(cgs);
-
-  BDDProduct dp2(1);
-  dp2.add_congruence((A %= 0) / 4);
-
-  bool ok = (dp1 == dp2);
-
-  print_congruences(dp1, "*** dp1 congruences ***");
-  print_constraints(dp1, "*** dp1 constraints ***");
-  print_congruences(dp2, "*** dp2 congruences ***");
-  print_constraints(dp2, "*** dp2 constraints ***");
-
-  return ok && dp1.OK() && dp2.OK();
-}
-
-// congruences()
-bool
-test18() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
-  BDDProduct dp(3);
-  dp.add_congruence(A %= 9);
-  dp.add_congruence(B + C %= 3);
-
-  Congruence_System cgs;
-  cgs.insert(B + C %= 0);
-  cgs.insert(A %= 0);
-
-  Grid known_gr(cgs);
-
-  Grid gr(dp.congruences());
-
-  bool ok = gr == known_gr;
-
-  print_congruences(dp, "*** dp congruences ***");
-  print_constraints(dp, "*** dp constraints ***");
-
-  return ok && dp.OK();
-}
-
 } // namespace
 
 BEGIN_MAIN
@@ -506,16 +429,14 @@ BEGIN_MAIN
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
+#if !Octagonal_Shape_Class
   DO_TEST(test07);
+#endif
 //  DO_TEST(test08);
   DO_TEST(test09);
   DO_TEST(test10);
   DO_TEST(test11);
-  DO_TEST(test12);
+//  DO_TEST(test12);
   DO_TEST(test13);
-  DO_TEST(test14);
-  DO_TEST(test15);
-  DO_TEST(test16);
-  DO_TEST(test17);
-  DO_TEST(test18);
+//  DO_TEST(test14);
 END_MAIN

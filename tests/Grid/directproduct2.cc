@@ -24,22 +24,27 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
-// ONE AND ONLY ONE OF THESE MUST BE UNCOMMENTED
-#define NNC_Poly_Class
-// #define C_Poly_Class
-// #define BD_Shape_Class
-
 #define PH_IS_FIRST
 
-#ifdef BD_Shape_Class
+// ONE AND ONLY ONE OF THESE MUST BE 1
+#define NNC_Poly_Class 0
+#define C_Poly_Class 1
+#define BD_Shape_Class 0
+#define Octagonal_Shape_Class 0
+
+#if Octagonal_Shape_Class
+typedef TOctagonal_Shape Poly;
+#endif
+
+#if BD_Shape_Class
 typedef BD_Shape<mpq_class> Poly;
 #endif
 
-#ifdef NNC_Poly_Class
+#if NNC_Poly_Class
 typedef NNC_Polyhedron Poly;
 #endif
 
-#ifdef C_Poly_Class
+#if C_Poly_Class
 typedef C_Polyhedron Poly;
 #endif
 
@@ -155,14 +160,14 @@ test07() {
   Variable A(0);
 
   Product dp(3);
-#ifdef NNC_Poly_Class
+#if NNC_Poly_Class
   dp.add_constraint(A < 3);
 #else
   dp.add_constraint(A <= 3);
 #endif
   dp.add_congruence((A %= 0) / 3);
 
-#ifdef NNC_Poly_Class
+#if NNC_Poly_Class
   bool ok = !dp.is_topologically_closed();
 #else
   bool ok = dp.is_topologically_closed();
@@ -200,7 +205,7 @@ test09() {
 
   Product dp(3);
   dp.add_congruence((A %= 0) / 4);
-#ifdef NNC_Poly_Class
+#if NNC_Poly_Class
   dp.add_constraint(A < 3);
 
   bool ok = !dp.is_topologically_closed();
@@ -223,7 +228,7 @@ test10() {
 
   Product dp1(12);
   Product dp2(12);
-#ifdef NNC_Poly_Class
+#if NNC_Poly_Class
   dp1.add_constraint(B < 3);
   dp2.add_constraint(B > 3);
   bool ok = dp1.is_disjoint_from(dp2);
@@ -271,7 +276,7 @@ test12() {
   dp1.add_congruence((A %= 0) / 7);
   Product dp2(3);
   dp2.add_congruence((A %= 1) / 7);
-#ifdef NNC_Poly_Class
+#if NNC_Poly_Class
   dp1.add_constraint(A < 3);
   dp2.add_constraint(A > 3);
 
@@ -300,7 +305,7 @@ test13() {
   dp1.add_congruence((A %= 1) / 7);
   Product dp2(3);
   dp2.add_congruence((A %= 1) / 14);
-#ifdef NNC_Poly_Class
+#if NNC_Poly_Class
   dp1.add_constraint(A < 6);
   dp2.add_constraint(A > 3);
 
@@ -423,7 +428,7 @@ test18() {
 
   Product dp(2);
   dp.add_congruence((A %= 1) / 3);
-#ifdef NNC_Poly_Class
+#if NNC_Poly_Class
   dp.add_constraint(A > 1);
   dp.add_constraint(A < 4);
   dp.add_constraint(B > 1);
