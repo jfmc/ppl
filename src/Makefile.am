@@ -305,10 +305,6 @@ Pointset_Ask_Tell.types.hh \
 Pointset_Ask_Tell.defs.hh \
 Pointset_Ask_Tell.inlines.hh \
 Pointset_Ask_Tell.templates.hh \
-Direct_Product.types.hh \
-Direct_Product.defs.hh \
-Direct_Product.inlines.hh \
-Direct_Product.templates.hh \
 Partially_Reduced_Product.types.hh \
 Partially_Reduced_Product.defs.hh \
 Partially_Reduced_Product.inlines.hh \
