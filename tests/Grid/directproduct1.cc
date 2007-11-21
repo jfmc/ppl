@@ -27,10 +27,10 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 // #define PH_IS_FIRST
 
 // ONE AND ONLY ONE OF THESE MUST BE 1
-#define NNC_Poly_Class 0
+#define NNC_Poly_Class 1
 #define C_Poly_Class 0
 #define BD_Shape_Class 0
-#define Octagonal_Shape_Class 1
+#define Octagonal_Shape_Class 0
 
 #if Octagonal_Shape_Class
 typedef TOctagonal_Shape Poly;
