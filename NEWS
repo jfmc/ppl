@@ -54,7 +54,8 @@ o  In the Octagonal_Shape and BD_Shape domains:
 
 o  In the Octagonal_Shape domain:
    add_recycled_constraints(Congruence_System cgs)
-   add_recycled_constraints_and_minimize(Congruence_System& cgs) ...
+   add_recycled_constraints_and_minimize(Congruence_System& cgs)
+   constructor from Box ...
 
 o  can_recycle_constraint_systems()
    can_recycle_congruence_systems() ...

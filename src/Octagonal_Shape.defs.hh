@@ -489,6 +489,21 @@ public:
   explicit Octagonal_Shape(const Polyhedron& ph,
 			   Complexity_Class complexity = ANY_COMPLEXITY);
 
+  //! Builds an OS out of a box.
+  /*!
+    The OS inherits the space dimension of the box.
+    The built OS is the most precise OS that includes the box.
+
+    \param box
+    The bounding box representing the BDS to be built.
+
+    \exception std::length_error
+    Thrown if the space dimension of \p box exceeds the maximum
+    allowed space dimension.
+  */
+  template <typename Interval>
+  explicit Octagonal_Shape(const Box<Interval>& box);
+
   /*! \brief
     The assignment operator.
     (\p *this and \p y can be dimension-incompatible.)

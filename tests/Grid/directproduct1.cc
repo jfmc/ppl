@@ -27,10 +27,10 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 // #define PH_IS_FIRST
 
 // ONE AND ONLY ONE OF THESE MUST BE 1
-#define NNC_Poly_Class 1
+#define NNC_Poly_Class 0
 #define C_Poly_Class 0
 #define BD_Shape_Class 0
-#define Octagonal_Shape_Class 0
+#define Octagonal_Shape_Class 1
 
 #if Octagonal_Shape_Class
 typedef TOctagonal_Shape Poly;
@@ -192,7 +192,6 @@ test06() {
   return ok && dp1.OK() && dp2.OK();
 }
 
-#if !Octagonal_Shape_Class
 // Product(bounding_box)
 bool
 test07() {
@@ -217,7 +216,6 @@ test07() {
 
   return ok && dp.OK();
 }
-#endif
 
 // FIXME: Waiting for covering box methods, details in
 //        Direct_Product.defs.hh.
@@ -355,7 +353,7 @@ test13() {
 
   Product dp(3);
   dp.add_congruence((B + C %= 3) / 0);
-#ifdef NNC_Poly_Class
+#if NNC_Poly_Class
   dp.add_constraint(A > 9);
 #else
   dp.add_constraint(A >= 9);
@@ -368,7 +366,7 @@ test13() {
   Poly known_ph(dp.space_dimension());
   known_ph.add_constraint(B + C == 3);
   known_ph.add_constraint(A <= 11);
-#ifdef NNC_Poly_Class
+#if NNC_Poly_Class
   known_ph.add_constraint(A > 9);
 #else
   known_ph.add_constraint(A >= 9);
@@ -393,7 +391,7 @@ test14() {
 
   Product dp(3);
   dp.add_congruence((B + C %= 3) / 0);
-#ifdef NNC_Poly_Class
+#if NNC_Poly_Class
   dp.add_constraint(A > 9);
 #else
   dp.add_constraint(A >= 9);
@@ -405,7 +403,7 @@ test14() {
 
   Poly known_ph(dp.space_dimension());
   known_ph.add_constraint(B + C == 3);
-#ifdef NNC_Poly_Class
+#if NNC_Poly_Class
   known_ph.add_constraint(A > 9);
 #else
   known_ph.add_constraint(A >= 9);
@@ -429,14 +427,12 @@ BEGIN_MAIN
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
-#if !Octagonal_Shape_Class
   DO_TEST(test07);
-#endif
 //  DO_TEST(test08);
   DO_TEST(test09);
   DO_TEST(test10);
   DO_TEST(test11);
-//  DO_TEST(test12);
+  DO_TEST(test12);
   DO_TEST(test13);
-//  DO_TEST(test14);
+  DO_TEST(test14);
 END_MAIN

@@ -127,6 +127,20 @@ Octagonal_Shape<T>::Octagonal_Shape(const Congruence_System& cgs)
 }
 
 template <typename T>
+template <typename Interval>
+inline
+Octagonal_Shape<T>::Octagonal_Shape(const Box<Interval>& box)
+  : matrix(box.space_dimension()),
+    space_dim(box.space_dimension()),
+    status() {
+  if (box.space_dimension() > 0)
+    // A (non zero-dim) universe OS is strongly closed.
+    status.set_strongly_closed();
+  add_constraints(box.constraints());
+  return;
+}
+
+template <typename T>
 inline Congruence_System
 Octagonal_Shape<T>::congruences() const {
   return Congruence_System(minimized_constraints());
