@@ -731,7 +731,7 @@ BEGIN_MAIN
 #endif
   DO_TEST(test06);
 #if C_Poly_Class
-  DO_TEST_F8(test07);
+  DO_TEST_F8A(test07);
 #else
   DO_TEST(test07);
 #endif
