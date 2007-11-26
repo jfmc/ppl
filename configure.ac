@@ -828,9 +828,10 @@ then
   AC_CHECK_PROG(GNU_PROLOG, gprolog, gprolog)
   if test x"$GNU_PROLOG" = xgprolog
   then
-    AC_CHECK_HEADER(gprolog.h,
-                    [],
-                    GNU_PROLOG="")
+    # On Ubuntu 7.10 `gprolog.h' is under `/usr/lib/gprolog-iso/include/'.
+    AC_CHECK_HEADERS([gprolog.h /usr/lib/gprolog-iso/include/gprolog.h]
+                     [],
+                     GNU_PROLOG="")
   fi
 fi
 AM_CONDITIONAL(BUILD_GNU_PROLOG_INTERFACE, test x$GNU_PROLOG = xgprolog)
