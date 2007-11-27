@@ -1528,8 +1528,6 @@ Box<Interval>::add_constraint_no_check(const Constraint& c) {
   assert(c_space_dim <= space_dimension());
 
   // If the box is already empty, do nothing.
-  if (marked_empty())
-      return;
 
   dimension_type c_num_vars = 0;
   dimension_type c_only_var = 0;
