@@ -1527,6 +1527,10 @@ Box<Interval>::add_constraint_no_check(const Constraint& c) {
   const dimension_type c_space_dim = c.space_dimension();
   assert(c_space_dim <= space_dimension());
 
+  // If the box is already empty, do nothing.
+  if (marked_empty())
+      return;
+
   dimension_type c_num_vars = 0;
   dimension_type c_only_var = 0;
   // Constraints that are not interval constraints are ignored.
@@ -1582,11 +1586,8 @@ void
 Box<Interval>::add_constraints_no_check(const Constraint_System& cs) {
   assert(cs.space_dimension() <= space_dimension());
   for (Constraint_System::const_iterator i = cs.begin(),
-	 cs_end = cs.end(); i != cs_end; ++i) {
+	 cs_end = cs.end(); i != cs_end; ++i)
     add_constraint_no_check(*i);
-    if (is_empty())
-      return;
-  }
   assert(OK());
 }
 
