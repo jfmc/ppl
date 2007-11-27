@@ -383,7 +383,7 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
 template <typename T>
 void
 BD_Shape<T>::add_congruence(const Congruence& cg) {
-  dimension_type cg_space_dim = cg.space_dimension();
+  const dimension_type cg_space_dim = cg.space_dimension();
   if (cg.is_equality()) {
     Linear_Expression expr;
     for (dimension_type i = cg_space_dim; i-- > 0; ) {
