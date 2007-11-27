@@ -1535,6 +1535,8 @@ Box<Interval>::add_constraint_no_check(const Constraint& c) {
 
   if (c_num_vars == 0) {
     // Dealing with a trivial constraint.
+    if (c.is_equality() && c.inhomogeneous_term() != 0)
+      set_empty();
     if (c.inhomogeneous_term() < 0)
       set_empty();
     return;
@@ -1581,8 +1583,11 @@ void
 Box<Interval>::add_constraints_no_check(const Constraint_System& cs) {
   assert(cs.space_dimension() <= space_dimension());
   for (Constraint_System::const_iterator i = cs.begin(),
-	 cs_end = cs.end(); i != cs_end; ++i)
+	 cs_end = cs.end(); i != cs_end; ++i) {
     add_constraint_no_check(*i);
+    if (is_empty())
+      return;
+  }
   assert(OK());
 }
 
