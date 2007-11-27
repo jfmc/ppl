@@ -1344,7 +1344,7 @@ private:
     The return value <CODE>false</CODE> does not necessarily
     implies that \p *this is non-empty.
   */
-  bool marked_empty()const;
+  bool marked_empty() const;
 
   /*! \brief
     A Boolean flag indicating emptiness of the box.

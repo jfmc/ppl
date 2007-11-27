@@ -1524,6 +1524,8 @@ Box<Interval>::fold_space_dimensions(const Variables_Set& to_be_folded,
 template <typename Interval>
 void
 Box<Interval>::add_constraint_no_check(const Constraint& c) {
+  assert(!marked_empty());
+
   const dimension_type c_space_dim = c.space_dimension();
   assert(c_space_dim <= space_dimension());
 
@@ -1582,7 +1584,7 @@ void
 Box<Interval>::add_constraints_no_check(const Constraint_System& cs) {
   assert(cs.space_dimension() <= space_dimension());
   for (Constraint_System::const_iterator i = cs.begin(),
-	 cs_end = cs.end(); i != cs_end; ++i)
+	 cs_end = cs.end(); !marked_empty() && i != cs_end; ++i)
     add_constraint_no_check(*i);
   assert(OK());
 }
