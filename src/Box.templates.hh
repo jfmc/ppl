@@ -1535,9 +1535,8 @@ Box<Interval>::add_constraint_no_check(const Constraint& c) {
 
   if (c_num_vars == 0) {
     // Dealing with a trivial constraint.
-    if (c.is_equality() && c.inhomogeneous_term() != 0)
-      set_empty();
-    if (c.inhomogeneous_term() < 0)
+    if ((c.is_equality() && c.inhomogeneous_term() != 0)
+	|| c.inhomogeneous_term() < 0)
       set_empty();
     return;
   }
