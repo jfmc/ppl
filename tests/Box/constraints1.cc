@@ -114,6 +114,45 @@ test04() {
   return ok;
 }
 
+bool
+test05() {
+  Variable A(0);
+
+  Constraint_System cs(Linear_Expression(0) == -1);
+
+  print_constraints(cs, "*** cs ***");
+
+  TBox box(cs);
+
+  Rational_Box known_result(0, EMPTY);
+
+  bool ok = (Rational_Box(box) == known_result);
+
+  print_constraints(box, "*** box ***");
+
+  return ok;
+}
+
+bool
+test06() {
+  Variable A(0);
+
+  Constraint_System cs(Linear_Expression(0) == -1);
+  cs.insert(A >= 0);
+
+  print_constraints(cs, "*** cs ***");
+
+  TBox box(cs);
+
+  Rational_Box known_result(1, EMPTY);
+
+  bool ok = (Rational_Box(box) == known_result);
+
+  print_constraints(box, "*** box ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -121,4 +160,6 @@ BEGIN_MAIN
   DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
+  DO_TEST_F(test05);
+  DO_TEST_F(test06);
 END_MAIN
