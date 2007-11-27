@@ -1527,8 +1527,6 @@ Box<Interval>::add_constraint_no_check(const Constraint& c) {
   const dimension_type c_space_dim = c.space_dimension();
   assert(c_space_dim <= space_dimension());
 
-  // If the box is already empty, do nothing.
-
   dimension_type c_num_vars = 0;
   dimension_type c_only_var = 0;
   // Constraints that are not interval constraints are ignored.
