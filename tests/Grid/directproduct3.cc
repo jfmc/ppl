@@ -25,10 +25,15 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PH_IS_FIRST
 
 // ONE AND ONLY ONE OF THESE MUST BE 1
-#define NNC_Poly_Class 0
-#define C_Poly_Class 1
+#define NNC_Poly_Class 1
+#define C_Poly_Class 0
 #define BD_Shape_Class 0
 #define Octagonal_Shape_Class 0
+#define Box_Class 0
+
+#if Box_Class
+typedef TBox Poly;
+#endif
 
 #if Octagonal_Shape_Class
 typedef TOctagonal_Shape Poly;
@@ -85,8 +90,13 @@ test02() {
   Variable C(2);
 
   Product dp(3);
-  dp.add_constraint(A - C <= 9);
+#if Box_Class
+  dp.add_constraint(A <= 9);
+  dp.add_constraint(A >= 9);
+#else
   dp.add_constraint(A - C >= 9);
+  dp.add_constraint(A - C <= 9);
+#endif
   dp.add_constraint(B >= 2);
 
   bool ok;
@@ -351,7 +361,10 @@ test09() {
 #if NNC_Poly_Class
   known_dp.add_constraint(A < 3);
 #else
+#if !Box_Class
+// FIXME Box class returns the box unchanged.
   known_dp.add_constraint(A <= 3);
+#endif
 #endif
   known_dp.add_congruence((A - B %= 2) / 4);
 
@@ -636,6 +649,7 @@ test18() {
   return ok;
 }
 
+#if !Box_Class
 // topological_closure_assign
 bool
 test19() {
@@ -670,6 +684,7 @@ test19() {
 
   return ok;
 }
+#endif
 
 // widening_assign
 bool
@@ -746,6 +761,8 @@ BEGIN_MAIN
   DO_TEST(test16);
   DO_TEST(test17);
   DO_TEST_F8(test18);
+#if !Box_Class
   DO_TEST(test19);
+#endif
   DO_TEST(test20);
 END_MAIN

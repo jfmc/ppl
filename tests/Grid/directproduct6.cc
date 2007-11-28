@@ -28,10 +28,15 @@ for the product domains */
 #define PH_IS_FIRST
 
 // ONE AND ONLY ONE OF THESE MUST BE 1
-#define NNC_Poly_Class 0
-#define C_Poly_Class 1
+#define NNC_Poly_Class 1
+#define C_Poly_Class 0
 #define BD_Shape_Class 0
 #define Octagonal_Shape_Class 0
+#define Box_Class 0
+
+#if Box_Class
+typedef TBox Poly;
+#endif
 
 #if Octagonal_Shape_Class
 typedef TOctagonal_Shape Poly;
@@ -126,8 +131,15 @@ test05() {
   Variable B(1);
 
   Product dp(2);
+#if Box_Class
+  dp.add_constraint(A >= 1);
+  dp.add_constraint(A <= 1);
+  dp.add_constraint(B >= 1);
+  dp.add_constraint(B <= 0);
+#else
   dp.add_constraint(A - B >= 1);
   dp.add_constraint(A - B <= 1);
+#endif
   dp.add_congruence(3*B %= 2);
 
   Linear_Expression le = A - B;
@@ -261,8 +273,15 @@ test11() {
   Variable B(1);
 
   Product dp(2);
+#if Box_Class
+  dp.add_constraint(A >= 2);
+  dp.add_constraint(A <= 2);
+  dp.add_constraint(B >= 1);
+  dp.add_constraint(B <= 1);
+#else
   dp.add_constraint(A - B >= 1);
   dp.add_constraint(A - B <= 1);
+#endif
   dp.add_congruence(3*B %= 2);
 ;
   Linear_Expression le = A - B;
@@ -331,12 +350,20 @@ test13() {
   Variable B(1);
 
   Product dp(2);
+
 #if NNC_Poly_Class
   dp.add_constraint(A - B > 0);
   dp.add_constraint(A - B < 1);
 #else
+#if !Box_Class
   dp.add_constraint(A - B >= 0);
   dp.add_constraint(A - B <= 1);
+#else
+  dp.add_constraint(A >= 2);
+  dp.add_constraint(A <= 2);
+  dp.add_constraint(B <= 2);
+  dp.add_constraint(B >= 1);
+#endif
 #endif
   dp.add_congruence(3*B %= 2);
 
@@ -373,6 +400,7 @@ test13() {
   return ok;
 }
 
+#if !Box_Class
 // Non-empty product. bounded_affine_image/3
 bool
 test14() {
@@ -492,6 +520,7 @@ test17() {
 
   return ok;
 }
+#endif
 
 } // namespace
 
@@ -509,8 +538,10 @@ BEGIN_MAIN
   DO_TEST(test11);
   DO_TEST(test12);
   DO_TEST(test13);
+#if !Box_Class
   DO_TEST(test14);
   DO_TEST(test15);
   DO_TEST(test16);
   DO_TEST(test17);
+#endif
 END_MAIN

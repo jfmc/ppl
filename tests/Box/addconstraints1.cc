@@ -146,6 +146,128 @@ test05() {
   return false;
 }
 
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+
+  Constraint_System cs;
+  cs.insert(A >= 0);
+  cs.insert(B >= 5);
+  cs.insert(B <= 5);
+
+  TBox box1(2);
+  bool ok = box1.add_constraints_and_minimize(cs);
+
+  Rational_Box known_result(2);
+  known_result.add_constraint(A >= 0);
+  known_result.add_constraint(B == 5);
+
+  ok = ok && (Rational_Box(box1) == known_result);
+
+  print_constraints(box1, "*** box1.add_constraints(cs) ***");
+  print_constraints(known_result, "*** known_result ***");
+
+  return ok;
+}
+
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
+
+  Constraint_System cs;
+  cs.insert(A >= 0);
+  cs.insert(B >= 5);
+  cs.insert(B <= 5);
+
+  TBox box1(2);
+  box1.add_recycled_constraints(cs);
+
+  Rational_Box known_result(2);
+  known_result.add_constraint(A >= 0);
+  known_result.add_constraint(B == 5);
+
+  bool ok = (Rational_Box(box1) == known_result);
+
+  print_constraints(box1, "*** box1.add_constraints(cs) ***");
+  print_constraints(known_result, "*** known_result ***");
+
+  return ok;
+}
+
+bool
+test08() {
+  Variable A(0);
+  Variable B(1);
+
+  Constraint_System cs;
+  cs.insert(A >= 0);
+  cs.insert(B >= 5);
+  cs.insert(B <= 5);
+
+  TBox box1(2);
+  bool ok = box1.add_recycled_constraints_and_minimize(cs);
+
+  Rational_Box known_result(2);
+  known_result.add_constraint(A >= 0);
+  known_result.add_constraint(B == 5);
+
+  ok = ok && (Rational_Box(box1) == known_result);
+
+  print_constraints(box1, "*** box1.add_constraints(cs) ***");
+  print_constraints(known_result, "*** known_result ***");
+
+  return ok;
+}
+
+bool
+test09() {
+  Variable A(0);
+  Variable B(1);
+
+  Constraint_System cs;
+  cs.insert(A >= 0);
+  cs.insert(B >= 5);
+  cs.insert(B <= 4);
+
+  TBox box1(2);
+  bool ok = !box1.add_constraints_and_minimize(cs);
+
+  Rational_Box known_result(2, EMPTY);
+
+  ok = ok && (Rational_Box(box1) == known_result);
+
+  print_constraints(box1, "*** box1.add_constraints(cs) ***");
+  print_constraints(known_result, "*** known_result ***");
+
+  return ok;
+}
+
+bool
+test10() {
+  Variable A(0);
+  Variable B(1);
+
+  Constraint_System cs;
+  cs.insert(A >= 0);
+  cs.insert(B >= 5);
+  cs.insert(B <= 5);
+  cs.insert(A + 3 <= 2);
+
+  TBox box1(2);
+  bool ok = !box1.add_recycled_constraints_and_minimize(cs);
+
+  Rational_Box known_result(2, EMPTY);
+
+  ok = ok && (Rational_Box(box1) == known_result);
+
+  print_constraints(box1, "*** box1.add_constraints(cs) ***");
+  print_constraints(known_result, "*** known_result ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -154,4 +276,9 @@ BEGIN_MAIN
   DO_TEST(test03);
   DO_TEST(test04);
   DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
+  DO_TEST(test08);
+  DO_TEST(test09);
+  DO_TEST(test10);
 END_MAIN

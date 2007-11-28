@@ -46,7 +46,7 @@ o  In the C interface it is no longer an error to call ppl_initialize()
    or ppl_finalize() multiple times (this matches the behavior of the
    other interfaces).
 
-o  In the Octagonal_Shape and BD_Shape domains:
+o  In the Octagonal_Shape, BD_Shape and Box domains:
    add_congruences_and_minimize(Congruence_System cgs)
    add_recycled_congruences(Congruence_System cgs)
    add_recycled_congruences_and_minimize(Congruence_System& cgs)
@@ -56,6 +56,15 @@ o  In the Octagonal_Shape domain:
    add_recycled_constraints(Congruence_System cgs)
    add_recycled_constraints_and_minimize(Congruence_System& cgs)
    constructor from Box ...
+
+o  In the Box domain:
+   Box(Congruence_System cgs)
+   add_constraint_and_minimize(Constraint c)
+   add_constraints_and_minimize(Constraint_System cs)
+   add_recycled_constraints(Constraint_System cs)
+   add_recycled_constraints_and_minimize(Constraint_System& cs)
+   congruences()
+   minimized_congruences()
 
 o  can_recycle_constraint_systems()
    can_recycle_congruence_systems() ...

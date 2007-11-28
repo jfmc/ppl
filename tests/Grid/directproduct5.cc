@@ -29,6 +29,11 @@ using namespace IO_Operators;
 #define C_Poly_Class 0
 #define BD_Shape_Class 0
 #define Octagonal_Shape_Class 0
+#define Box_Class 0
+
+#if Box_Class
+typedef TBox Poly;
+#endif
 
 #if Octagonal_Shape_Class
 typedef TOctagonal_Shape Poly;
@@ -127,13 +132,13 @@ test03() {
   print_constraints(dp, "*** dp constraints ***");
   print_congruences(dp, "*** dp congruences ***");
 
-  dp.add_constraints_and_minimize(cs);
+  bool ok = dp.add_constraints_and_minimize(cs);
 
   Product known_dp(2);
   known_dp.add_constraint(A >= 0);
   known_dp.add_constraint(A + B == 0);
 
-  bool ok = (dp == known_dp);
+  ok = ok && (dp == known_dp);
 
   return ok;
 }
@@ -153,13 +158,13 @@ test04() {
   print_constraints(dp, "*** dp constraints ***");
   print_congruences(dp, "*** dp congruences ***");
 
-  dp.add_recycled_constraints_and_minimize(cs);
+  bool ok = dp.add_recycled_constraints_and_minimize(cs);
 
   Product known_dp(2);
   known_dp.add_constraint(B >= 0);
   known_dp.add_constraint(A - B == 0);
 
-  bool ok = (dp == known_dp);
+  ok = ok && (dp == known_dp);
 
   print_constraints(dp, "*** dp constraints ***");
   print_congruences(dp, "*** dp congruences ***");
@@ -213,13 +218,13 @@ test06() {
   print_constraints(dp, "*** dp constraints ***");
   print_congruences(dp, "*** dp congruences ***");
 
-  dp.add_congruences_and_minimize(cgs);
+  bool ok = dp.add_congruences_and_minimize(cgs);
 
   Product known_dp(2);
   known_dp.add_congruence((A %= 0) / 2);
   known_dp.add_constraint(A + B == 0);
 
-  bool ok = (dp == known_dp);
+  ok = ok && (dp == known_dp);
 
   print_constraints(dp, "*** dp constraints ***");
   print_congruences(dp, "*** dp congruences ***");
@@ -269,13 +274,13 @@ test08() {
   print_constraints(dp, "*** dp constraints ***");
   print_congruences(dp, "*** dp congruences ***");
 
-  dp.add_recycled_congruences_and_minimize(cgs);
+  bool ok = dp.add_recycled_congruences_and_minimize(cgs);
 
   Product known_dp(2);
   known_dp.add_congruence((B %= 0) / 2);
   known_dp.add_constraint(A - B == 0);
 
-  bool ok = (dp == known_dp);
+  ok = ok &&(dp == known_dp);
 
   print_constraints(dp, "*** dp constraints ***");
   print_congruences(dp, "*** dp congruences ***");
@@ -283,6 +288,7 @@ test08() {
   return ok;
 }
 
+#if !Box_Class
 // relation_with a generator
 bool
 test09() {
@@ -343,8 +349,9 @@ test11() {
 
   return ok;
 }
+#endif
 
-#if !BD_Shape_Class
+#if !Octagonal_Shape_Class && !BD_Shape_Class && !Box_Class
 // A product in 3D; relation_with a constraint.
 bool
 test12() {
@@ -435,7 +442,6 @@ test13() {
   return ok;
 }
 
-#if !Octagonal_Shape_Class
 // relation_with a congruence
 bool
 test14() {
@@ -563,7 +569,6 @@ test17() {
   return ok;
 }
 #endif
-#endif
 
 } // namespace
 
@@ -576,10 +581,12 @@ BEGIN_MAIN
   DO_TEST(test06);
   DO_TEST(test07);
   DO_TEST(test08);
+#if !Box_Class
   DO_TEST(test09);
   DO_TEST(test10);
   DO_TEST(test11);
-#if !BD_Shape_Class && !Octagonal_Shape_Class
+#endif
+#if !BD_Shape_Class && !Octagonal_Shape_Class && !Box_Class
   DO_TEST(test12);
   DO_TEST(test13);
   DO_TEST(test14);

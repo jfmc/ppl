@@ -31,13 +31,18 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 #define C_Poly_Class 0
 #define BD_Shape_Class 0
 #define Octagonal_Shape_Class 0
+#define Box_Class 0
+
+#if Box_Class
+typedef TBox Poly;
+#endif
 
 #if Octagonal_Shape_Class
 typedef TOctagonal_Shape Poly;
 #endif
 
 #if BD_Shape_Class
-typedef BD_Shape<mpq_class> Poly;
+typedef TBD_Shape Poly;
 #endif
 
 #if NNC_Poly_Class

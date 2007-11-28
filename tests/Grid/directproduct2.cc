@@ -27,10 +27,15 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 #define PH_IS_FIRST
 
 // ONE AND ONLY ONE OF THESE MUST BE 1
-#define NNC_Poly_Class 0
-#define C_Poly_Class 1
+#define NNC_Poly_Class 1
+#define C_Poly_Class 0
 #define BD_Shape_Class 0
 #define Octagonal_Shape_Class 0
+#define Box_Class 0
+
+#if Box_Class
+typedef TBox Poly;
+#endif
 
 #if Octagonal_Shape_Class
 typedef TOctagonal_Shape Poly;
@@ -153,6 +158,7 @@ test06() {
   return ok;
 }
 
+#if !Box_Class
 // is_topologically_closed() where the NNC Polyhedron is topologically
 // open.
 bool
@@ -220,6 +226,7 @@ test09() {
 
   return ok;
 }
+#endif
 
 // is_disjoint_from(dp), due to the Polyhedra.
 bool
@@ -350,7 +357,11 @@ test14() {
   dp2.add_congruence((A %= 0) / 2);
   dp2.add_congruence((A %= 0) / 4);
 
+#if Box_Class
+  bool ok = !dp1.is_disjoint_from(dp2);
+#else
   bool ok = dp1.is_disjoint_from(dp2);
+#endif
 
   print_congruences(dp1, "*** dp1 congruences ***");
   print_constraints(dp1, "*** dp1 constraints ***");
@@ -476,9 +487,11 @@ BEGIN_MAIN
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
+#if !Box_Class
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
+#endif
   DO_TEST(test10);
   DO_TEST(test11);
   DO_TEST(test12);

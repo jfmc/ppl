@@ -65,6 +65,7 @@ boxhull1 \
 cc76narrowing1 \
 cc76widening \
 concatenate1 \
+congruences1 \
 constraints1 \
 contains1 \
 containsintegerpoint1 \
@@ -173,6 +174,8 @@ cc76widening_SOURCES = cc76widening.cc
 #closure1_SOURCES = closure1.cc
 
 concatenate1_SOURCES = concatenate1.cc
+
+congruences1_SOURCES = congruences1.cc
 
 constraints1_SOURCES = constraints1.cc
 

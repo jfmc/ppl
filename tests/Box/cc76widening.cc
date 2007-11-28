@@ -51,8 +51,36 @@ test01() {
   return ok;
 }
 
+bool
+test02() {
+  Variable x(0);
+  Variable y(1);
+
+  TBox box1(2);
+  box1.add_constraint(x <= 1);
+
+  TBox box2(2);
+  box2.add_constraint(-x <= 3);
+  box2.add_constraint(x <= 0);
+
+  print_constraints(box1, "*** box1 ***");
+  print_constraints(box2, "*** box2 ***");
+
+  box1.widening_assign(box2);
+
+  Rational_Box known_result(2);
+  known_result.add_constraint(x <= 1);
+
+  bool ok = (Rational_Box(box1) == known_result);
+
+  print_constraints(box1, "*** box1.CC76_widening_assign(box2) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
   DO_TEST(test01);
+  DO_TEST(test02);
 END_MAIN

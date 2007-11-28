@@ -29,6 +29,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define C_Poly_Class 0
 #define BD_Shape_Class 0
 #define Octagonal_Shape_Class 0
+#define Box_Class 0
+
+#if Box_Class
+typedef TBox Poly;
+#endif
 
 #if Octagonal_Shape_Class
 typedef TOctagonal_Shape Poly;
@@ -105,6 +110,7 @@ test02() {
   return ok;
 }
 
+#if !Box_Class
 // generalized_affine_image(v, EQUAL, e)
 bool
 test03() {
@@ -117,7 +123,9 @@ test03() {
   dp.add_constraint(B >= 0);
   dp.add_constraint(A - B >= 0);
 
-  dp.generalized_affine_image(A, EQUAL, A + 2);
+  Linear_Expression le(A+2);
+
+  dp.generalized_affine_image(A, EQUAL, le);
 
   Product known_dp(3);
   known_dp.add_congruence(A %= 0);
@@ -330,12 +338,14 @@ test10() {
 
   return ok;
 }
+#endif
 
 } // namespace
 
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
+#if !Box_Class
   DO_TEST(test03);
   DO_TEST(test04);
   DO_TEST(test05);
@@ -344,4 +354,5 @@ BEGIN_MAIN
   DO_TEST(test08);
   DO_TEST(test09);
   DO_TEST(test10);
+#endif
 END_MAIN
