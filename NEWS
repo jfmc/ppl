@@ -57,14 +57,7 @@ o  In the Octagonal_Shape domain:
    add_recycled_constraints_and_minimize(Congruence_System& cgs)
    constructor from Box ...
 
-o  In the Box domain:
-   Box(Congruence_System cgs)
-   add_constraint_and_minimize(Constraint c)
-   add_constraints_and_minimize(Constraint_System cs)
-   add_recycled_constraints(Constraint_System cs)
-   add_recycled_constraints_and_minimize(Constraint_System& cs)
-   congruences()
-   minimized_congruences()
+o  A new abstraction called Box has been added that ...
 
 o  can_recycle_constraint_systems()
    can_recycle_congruence_systems() ...
