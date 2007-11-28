@@ -34,6 +34,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint_System.types.hh"
 #include "Generator.types.hh"
 #include "Generator_System.types.hh"
+#include "Congruence.types.hh"
+#include "Congruence_System.types.hh"
 #include "BD_Shape.types.hh"
 #include "Octagonal_Shape.types.hh"
 #include "Poly_Con_Relation.types.hh"
@@ -349,6 +351,34 @@ public:
   */
   Box(const Generator_System& gs, Recycle_Input dummy);
 
+  /*!
+    Builds the smallest box containing the grid defined by a
+    system of congruences \p cgs.
+    The box inherits the space dimension of \p cgs.
+
+    \param cgs
+    A system of congruences: congruences that are not
+    non-relational equality constraints are ignored
+    (though they may have contributed to the space dimension).
+  */
+  explicit Box(const Congruence_System& cgs);
+
+  /*!
+    Builds the smallest box containing the grid defined by a
+    system of congruences \p cgs, recycling \p cgs.
+    The box inherits the space dimension of \p cgs.
+
+    \param cgs
+    A system of congruences: congruences that are not
+    non-relational equality constraints are ignored
+    (though they will contribute to the space dimension).
+
+    \param dummy
+    A dummy tag to syntactically differentiate this one
+    from the other constructors.
+  */
+  Box(const Congruence_System& cgs, Recycle_Input dummy);
+
   //! Builds a box containing the BDS \p bds.
   /*!
     Builds the smallest box containing \p bds using a polynomial algorithm.
@@ -645,6 +675,21 @@ public:
   void add_constraint(const Constraint& c);
 
   /*! \brief
+    Use the constraint \p c to refine \p *this.
+
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \param c
+    The constraint to be added. If it is not an interval constraint, it
+    will be simply ignored.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p c are dimension-incompatible.
+  */
+  bool add_constraint_and_minimize(const Constraint& c);
+
+  /*! \brief
      Use the constraints in \p cs to refine \p *this.
      FIXME: this is not true.
 
@@ -656,6 +701,168 @@ public:
      Thrown if \p *this and \p cs are dimension-incompatible.
   */
   void add_constraints(const Constraint_System& cs);
+
+  /*! \brief
+    Use the constraints in \p cs to refine \p *this.
+    FIXME: this is not true.
+
+    \param  cs
+    The constraints to be added. Constraints that are not interval
+    constraints will be simply ignored.  The constraints in
+    \p cs may be recycled.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are dimension-incompatible.
+
+    \warning
+    The only assumption that can be made on \p cs upon successful or
+    exceptional return is that it can be safely destroyed.
+  */
+  void add_recycled_constraints(Constraint_System& cs);
+
+  /*! \brief
+    Use the constraints in \p cs to refine \p *this.
+    FIXME: this is not true.
+
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \param  cs
+    The constraints to be added. Constraints that are not interval
+    constraints will be simply ignored.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are dimension-incompatible,
+    or if \p cs contains a strict inequality.
+  */
+  bool add_constraints_and_minimize(const Constraint_System& cs);
+
+  /*! \brief
+    Use the constraints in \p cs to refine \p *this.
+    FIXME: this is not true.
+
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \param cs
+    The constraint system to be added to \p *this. Constraints that are
+    not interval constraints will be simply ignored. The constraints in
+    \p cs may be recycled.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are topology-incompatible or
+    dimension-incompatible.
+
+    \warning
+    The only assumption that can be made on \p cs upon successful or
+    exceptional return is that it can be safely destroyed.
+  */
+  bool add_recycled_constraints_and_minimize(Constraint_System& cs);
+
+  /*! \brief
+    Use the congruence \p cg to refine \p *this.
+
+    \param cg
+    The congruence to be used. If it is not a non-relational
+    equality, the box is not changed.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cg are dimension-incompatible.
+  */
+  void add_congruence(const Congruence& cg);
+
+  /*! \brief
+    Use the congruence \p cg to refine \p *this.
+
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \param cg
+    The congruence to be used. If it is not a non-relational
+    equality, the box is not changed.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cg are dimension-incompatible.
+  */
+  bool add_congruence_and_minimize(const Congruence& cg);
+
+  /*! \brief
+    Use the congruences in \p cgs to refine \p *this.
+
+    \param  cgs
+    The congruences to be used. Congruences that are
+    not non-relational equalities are not added although their
+    space dimension is checked for compatibility.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cgs are dimension-incompatible.
+  */
+  void add_congruences(const Congruence_System& cgs);
+
+  /*! \brief
+    Use the congruences in \p cgs to refine \p *this.
+
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \param cgs
+    The congruences to be used. Congruences that are
+    not non-relational equalities are not added although their
+    space dimension is checked for compatibility.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cgs are dimension-incompatible.
+  */
+  bool add_congruences_and_minimize(const Congruence_System& cgs);
+
+  /*! \brief
+    Use the congruences in \p cgs to refine \p *this.
+
+    \param cgs
+    The congruences to be used. Congruences that are
+    not non-relational equalities are not added although their
+    space dimension is checked for compatibility. The congruences in
+    \p cgs may be recycled.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cgs are dimension-incompatible.
+
+    \warning
+    The only assumption that can be made on \p cgs upon successful or
+    exceptional return is that it can be safely destroyed.
+  */
+  void add_recycled_congruences(Congruence_System& cgs);
+
+  /*! \brief
+    Use the congruences in \p cgs to refine \p *this.
+
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \param cgs
+    The congruences to be used. Congruences that are
+    not non-relational equalities are not added although their
+    space dimension is checked for compatibility. The congruences in
+    \p cgs may be recycled.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cgs are dimension-incompatible.
+
+    \warning
+    The only assumption that can be made on \p cs upon successful or
+    exceptional return is that it can be safely destroyed.
+  */
+  bool add_recycled_congruences_and_minimize(Congruence_System& cgs);
+
+  /*! \brief
+    Returns false indicating that this domain does not recycle constraints
+  */
+  static bool can_recycle_constraint_systems();
+
+  /*! \brief
+    Returns false indicating that this domain does not recycle congruences
+  */
+  static bool can_recycle_congruence_systems();
 
   /*! \brief
     Use the constraint \p c to refine \p *this.
@@ -986,6 +1193,9 @@ public:
   void CC76_widening_assign(const Box& y,
 			    Iterator first, Iterator last);
 
+  //! Same as CC76_widening_assign(y, tp).
+  void widening_assign(const Box& y, unsigned* tp = 0);
+
   /*! \brief
     Improves the result of the \ref CC76_extrapolation "CC76-extrapolation"
     computation by also enforcing those constraints in \p cs that are
@@ -1285,6 +1495,12 @@ public:
   //! Returns a minimized system of constraints defining \p *this.
   Constraint_System minimized_constraints() const;
 
+  //! Returns a system of congruences approximating \p *this.
+  Congruence_System congruences() const;
+
+  //! Returns a minimized system of congruences approximating \p *this.
+  Congruence_System minimized_congruences() const;
+
   PPL_OUTPUT_DECLARATIONS
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -1388,6 +1604,28 @@ private:
     dimension-incompatible with \p *this, the behavior is undefined.
   */
   void add_constraints_no_check(const Constraint_System& cs);
+
+  /*! \brief
+    Use the congruence \p c to refine \p *this.
+    FIXME: this is not true.
+
+    \param c
+    The congruence to be added. If it is not a non-relational equality
+    congruence, it will be ignored.  If it is dimension-incompatible
+    with \p *this, the behavior is undefined.
+  */
+  void add_congruence_no_check(const Congruence& cg);
+
+  /*! \brief
+    Use the congruences in \p cgs to refine \p *this.
+    FIXME: this is not true.
+
+    \param c
+    The congruences to be added. Congruences that are not non-relational
+    equality congruences will be ignored.  If it is
+    dimension-incompatible with \p *this, the behavior is undefined.
+  */
+  void add_congruences_no_check(const Congruence_System& cgs);
 
   /*! \brief
     Use the constraint \p c to refine \p *this.
@@ -1653,7 +1891,13 @@ private:
 				    const Constraint& c) const;
 
   void throw_dimension_incompatible(const char* method,
+				    const Congruence& cg) const;
+
+  void throw_dimension_incompatible(const char* method,
 				    const Constraint_System& cs) const;
+
+  void throw_dimension_incompatible(const char* method,
+				    const Congruence_System& cgs) const;
 
   void throw_dimension_incompatible(const char* method,
 				    const Generator& g) const;
@@ -1706,6 +1950,11 @@ bool extract_interval_constraint(const Constraint& c,
 				 dimension_type c_space_dim,
 				 dimension_type& c_num_vars,
 				 dimension_type& c_only_var);
+
+bool extract_interval_congruence(const Congruence& cg,
+				 dimension_type cg_space_dim,
+				 dimension_type& cg_num_vars,
+				 dimension_type& cg_only_var);
 
 } // namespace Parma_Polyhedra_Library
 

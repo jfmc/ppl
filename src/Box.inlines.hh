@@ -26,6 +26,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Boundary.defs.hh"
 #include "Constraint_System.defs.hh"
 #include "Constraint_System.inlines.hh"
+#include "Congruence_System.defs.hh"
+#include "Congruence_System.inlines.hh"
 #include "distances.defs.hh"
 
 namespace Parma_Polyhedra_Library {
@@ -67,6 +69,14 @@ inline
 Box<Interval>::Box(const Generator_System& gs, Recycle_Input) {
   // Recycling is useless: just delegate.
   Box<Interval> tmp(gs);
+  this->swap(tmp);
+}
+
+template <typename Interval>
+inline
+Box<Interval>::Box(const Congruence_System& cgs, Recycle_Input) {
+  // Recycling is useless: just delegate.
+  Box<Interval> tmp(cgs);
   this->swap(tmp);
 }
 
@@ -303,6 +313,13 @@ Box<Interval>::add_constraint(const Constraint& c) {
   add_constraint_no_check(c);
 }
 
+template <typename T>
+inline bool
+Box<T>::add_constraint_and_minimize(const Constraint& c) {
+  add_constraint(c);
+  return !is_empty();
+}
+
 template <typename Interval>
 inline void
 Box<Interval>::add_constraints(const Constraint_System& cs) {
@@ -311,6 +328,101 @@ Box<Interval>::add_constraints(const Constraint_System& cs) {
     throw_dimension_incompatible("add_constraints(cs)", cs);
 
   add_constraints_no_check(cs);
+}
+
+template <typename T>
+inline bool
+Box<T>::add_constraints_and_minimize(const Constraint_System& cs) {
+  add_constraints(cs);
+  return !is_empty();
+}
+
+template <typename T>
+inline void
+Box<T>::add_recycled_constraints(Constraint_System& cs) {
+  add_constraints(cs);
+}
+
+template <typename T>
+inline bool
+Box<T>::add_recycled_constraints_and_minimize(Constraint_System& cs) {
+  add_constraints(cs);
+  return !is_empty();
+}
+
+template <typename Interval>
+inline void
+Box<Interval>::add_congruence(const Congruence& cg) {
+  const dimension_type cg_space_dim = cg.space_dimension();
+  // Dimension-compatibility check.
+  if (cg_space_dim > space_dimension())
+    throw_dimension_incompatible("add_congruence(cg)", cg);
+
+  // If the box is already empty, there is nothing left to do.
+  if (marked_empty())
+    return;
+
+  add_congruence_no_check(cg);
+}
+
+template <typename T>
+inline bool
+Box<T>::add_congruence_and_minimize(const Congruence& cg) {
+  add_congruence(cg);
+  return !is_empty();
+}
+
+template <typename Interval>
+inline void
+Box<Interval>::add_congruences(const Congruence_System& cgs) {
+  if (cgs.space_dimension() > space_dimension())
+    throw_dimension_incompatible("add_congruences(cgs)", cgs);
+  add_congruences_no_check(cgs);
+}
+
+template <typename T>
+inline bool
+Box<T>::add_congruences_and_minimize(const Congruence_System& cgs) {
+  add_congruences(cgs);
+  return !is_empty();
+}
+
+template <typename T>
+inline void
+Box<T>::add_recycled_congruences(Congruence_System& cgs) {
+  add_congruences(cgs);
+}
+
+template <typename T>
+inline bool
+Box<T>::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
+  add_congruences(cgs);
+  return !is_empty();
+}
+
+template <typename T>
+inline bool
+Box<T>::can_recycle_constraint_systems() {
+  return false;
+}
+
+template <typename T>
+inline bool
+Box<T>::can_recycle_congruence_systems() {
+  return false;
+}
+
+template <typename T>
+inline void
+Box<T>::widening_assign(const Box& y, unsigned* tp) {
+  CC76_widening_assign(y, tp);
+}
+
+template <typename Interval>
+inline Congruence_System
+Box<Interval>::minimized_congruences() const {
+  // Only equalities can be congruences and these are already minimized.
+  return congruences();
 }
 
 template <typename Interval>

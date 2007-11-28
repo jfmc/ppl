@@ -48,3 +48,27 @@ PPL::extract_interval_constraint(const Constraint& c,
 	return false;
   return true;
 }
+
+bool
+PPL::extract_interval_congruence(const Congruence& cg,
+			 	 const dimension_type cg_space_dim,
+				 dimension_type& cg_num_vars,
+				 dimension_type& cg_only_var) {
+  // Check for preconditions.
+  assert(cg.space_dimension() == cg_space_dim);
+  assert(cg_num_vars == 0 && cg_only_var == 0);
+  // Only equality congruences can be intervals.
+  assert(cg.is_equality());
+
+  // Collect the non-zero components of `cg'.
+  for (dimension_type i = cg_space_dim; i-- > 0; )
+    if (cg.coefficient(Variable(i)) != 0)
+      if (cg_num_vars == 0) {
+	cg_only_var = i;
+	++cg_num_vars;
+      }
+      else
+	// Congruence `cg' is not an interval congruence.
+	return false;
+  return true;
+}

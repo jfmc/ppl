@@ -74,6 +74,22 @@ Box<Interval>::Box(const Constraint_System& cs)
 }
 
 template <typename Interval>
+inline
+Box<Interval>::Box(const Congruence_System& cgs)
+  : seq(cgs.space_dimension() <= max_space_dimension()
+	? cgs.space_dimension()
+	: (throw_space_dimension_overflow("Box(cgs)",
+					  "cgs exceeds the maximum "
+					  "allowed space dimension"),
+	   cgs.space_dimension())),
+    empty_up_to_date(false) {
+  // FIXME: check whether we can avoid the double initialization.
+  for (dimension_type i = cgs.space_dimension(); i-- > 0; )
+    seq[i].assign(UNIVERSE);
+  add_congruences_no_check(cgs);
+}
+
+template <typename Interval>
 template <typename Other_Interval>
 inline
 Box<Interval>::Box(const Box<Other_Interval>& y)
@@ -1589,6 +1605,64 @@ Box<Interval>::add_constraints_no_check(const Constraint_System& cs) {
   assert(OK());
 }
 
+template <typename Interval>
+void
+Box<Interval>::add_congruence_no_check(const Congruence& cg) {
+  assert(!marked_empty());
+
+  const dimension_type cg_space_dim = cg.space_dimension();
+  assert(cg_space_dim <= space_dimension());
+
+  // Only equality congruences can be intervals.
+  if (!cg.is_equality())
+    return;
+
+  dimension_type cg_num_vars = 0;
+  dimension_type cg_only_var = 0;
+  // Congruences that are not interval congruences are ignored.
+  if (!extract_interval_congruence(cg, cg_space_dim, cg_num_vars, cg_only_var))
+    return;
+
+  if (cg_num_vars == 0) {
+    // Dealing with a trivial congruence.
+    if (cg.inhomogeneous_term() != 0)
+      set_empty();
+    return;
+  }
+
+  assert(cg_num_vars == 1);
+  const Coefficient& d = cg.coefficient(Variable(cg_only_var));
+  const Coefficient& n = cg.inhomogeneous_term();
+  // The congruence `cg' is of the form
+  // `Variable(cg_only_var-1) + n / d rel 0', where
+  // `rel' is either the relation `==', `>=', or `>'.
+  // For the purpose of refining intervals, this is
+  // (morally) turned into `Variable(cg_only_var-1) rel -n/d'.
+  DIRTY_TEMP0(mpq_class, q);
+  assign_r(q.get_num(), n, ROUND_NOT_NEEDED);
+  assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
+  q.canonicalize();
+  // Turn `n/d' into `-n/d'.
+  q = -q;
+
+  Interval& seq_c = seq[cg_only_var];
+    seq_c.refine_existential(EQUAL, q);
+  // FIXME: do check the value returned by `refine' and
+  // set `empty' and `empty_up_to_date' as appropriate.
+  empty_up_to_date = false;
+  assert(OK());
+}
+
+template <typename Interval>
+void
+Box<Interval>::add_congruences_no_check(const Congruence_System& cgs) {
+  assert(cgs.space_dimension() <= space_dimension());
+  for (Congruence_System::const_iterator i = cgs.begin(),
+	 cgs_end = cgs.end(); !marked_empty() && i != cgs_end; ++i)
+    add_congruence_no_check(*i);
+  assert(OK());
+}
+
 #if 1
 namespace {
 
@@ -2301,6 +2375,36 @@ Box<Interval>::minimized_constraints() const {
   return cs;
 }
 
+template <typename Interval>
+Congruence_System
+Box<Interval>::congruences() const {
+  Congruence_System cgs;
+  const dimension_type space_dim = space_dimension();
+  if (space_dim == 0) {
+    if (marked_empty())
+      cgs = Congruence_System::zero_dim_empty();
+  }
+  // Make sure emptyness is detected.
+  else if (is_empty())
+    cgs.insert((0*Variable(space_dim-1) %= -1) / 0);
+  else {
+    // KLUDGE: in the future `cgs' will be constructed of the right dimension.
+    // For the time being, we force the dimension with the following line.
+    cgs.insert(0*Variable(space_dim-1) %= 0);
+
+    for (dimension_type k = 0; k < space_dim; ++k) {
+      bool closed = false;
+      DIRTY_TEMP(Coefficient, n);
+      DIRTY_TEMP(Coefficient, d);
+      if (get_lower_bound(k, closed, n, d) && closed)
+	  // Make sure equality congruences are detected.
+	  if (seq[k].is_singleton())
+	    cgs.insert((d*Variable(k) %= n) / 0);
+    }
+  }
+  return cgs;
+}
+
 /*! \relates Parma_Polyhedra_Library::Box */
 template <typename Interval>
 std::ostream&
@@ -2412,6 +2516,17 @@ Box<Interval>::throw_dimension_incompatible(const char* method,
 
 template <typename Interval>
 void
+Box<Interval>::throw_dimension_incompatible(const char* method,
+					    const Congruence& cg) const {
+  std::ostringstream s;
+  s << "PPL::Box::" << method << ":" << std::endl
+    << "this->space_dimension() == " << space_dimension()
+    << ", cg->space_dimension == " << cg.space_dimension() << ".";
+  throw std::invalid_argument(s.str());
+}
+
+template <typename Interval>
+void
 Box<Interval>
 ::throw_dimension_incompatible(const char* method,
 			       const Constraint_System& cs) const {
@@ -2419,6 +2534,18 @@ Box<Interval>
   s << "PPL::Box::" << method << ":" << std::endl
     << "this->space_dimension() == " << space_dimension()
     << ", cs->space_dimension == " << cs.space_dimension() << ".";
+  throw std::invalid_argument(s.str());
+}
+
+template <typename Interval>
+void
+Box<Interval>
+::throw_dimension_incompatible(const char* method,
+			       const Congruence_System& cgs) const {
+  std::ostringstream s;
+  s << "PPL::Box::" << method << ":" << std::endl
+    << "this->space_dimension() == " << space_dimension()
+    << ", cgs->space_dimension == " << cgs.space_dimension() << ".";
   throw std::invalid_argument(s.str());
 }
 
