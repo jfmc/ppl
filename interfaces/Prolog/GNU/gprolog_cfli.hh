@@ -23,10 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PCFLI_gprolog_cfli_hh
 #define PCFLI_gprolog_cfli_hh 1
 
-#if defined(PPL_HAVE_GPROLOG_H)
 #include <gprolog.h>
-#endif
-
 #include <cassert>
 
 typedef PlTerm Prolog_term_ref;
