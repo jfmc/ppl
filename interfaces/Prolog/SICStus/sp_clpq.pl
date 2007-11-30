@@ -20,10 +20,14 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-:- set_prolog_flag(language, iso).
+%% FIXME: The "language" is not a valid flag for version 4...
+%% :- set_prolog_flag(language, iso).
 
 :- ensure_loaded('ppl_sicstus.pl').
-:- use_module(library(lists), [append/3, member/2]).
+
+%% FIXME: append/3 and member/2 are built-in predicates for version 4...
+%% :- use_module(library(lists), [append/3, member/2]).
+:- use_module(library(lists)).
 
 eat_eol :-
 	get_code(user_input, _EOL).
