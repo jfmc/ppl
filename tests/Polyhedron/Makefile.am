@@ -76,6 +76,7 @@ exceptions1 exceptions2  exceptions3 \
 expandspacedim1 expandspacedim2 \
 foldspacedims1 foldspacedims2 \
 frombox1 frombox2 \
+fromgrid1 \
 generalizedaffineimage1 generalizedaffineimage2 \
 generalizedaffinepreimage1 generalizedaffinepreimage2 \
 generators1 \
@@ -153,6 +154,7 @@ nnc_exceptions1 nnc_exceptions3 \
 nnc_expandspacedim1 \
 nnc_foldspacedims1 \
 nnc_frombox1 \
+nnc_fromgrid1 \
 nnc_generalizedaffineimage1 \
 nnc_generalizedaffinepreimage1 \
 nnc_generators1 \
@@ -274,6 +276,8 @@ foldspacedims2_SOURCES = foldspacedims2.cc
 
 frombox1_SOURCES = frombox1.cc
 frombox2_SOURCES = frombox2.cc
+
+fromgrid1_SOURCES = fromgrid1.cc
 
 generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
 generalizedaffineimage2_SOURCES = generalizedaffineimage2.cc
@@ -488,6 +492,9 @@ nnc_foldspacedims1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_frombox1_SOURCES = frombox1.cc
 nnc_frombox1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_fromgrid1_SOURCES = fromgrid1.cc
+nnc_fromgrid1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
 nnc_generalizedaffineimage1_CXXFLAGS = $(DERIVED_CXXFLAGS)

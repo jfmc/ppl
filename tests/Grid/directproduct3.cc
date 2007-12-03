@@ -649,7 +649,6 @@ test18() {
   return ok;
 }
 
-#if !Box_Class
 // topological_closure_assign
 bool
 test19() {
@@ -668,7 +667,9 @@ test19() {
   dp.add_constraint(A >= 0);
 #endif
 
+#if !Box_Class
   dp.topological_closure_assign();
+#endif
 
   Product known_dp(3);
   known_dp.add_constraint(B >= 0);
@@ -684,7 +685,6 @@ test19() {
 
   return ok;
 }
-#endif
 
 // widening_assign
 bool
@@ -761,8 +761,6 @@ BEGIN_MAIN
   DO_TEST(test16);
   DO_TEST(test17);
   DO_TEST_F8(test18);
-#if !Box_Class
-  DO_TEST(test19);
-#endif
+//  DO_TEST(test19);
   DO_TEST(test20);
 END_MAIN

@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "C_Polyhedron.defs.hh"
 #include "NNC_Polyhedron.defs.hh"
+#include "Grid.defs.hh"
 #include "algorithms.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
@@ -64,6 +65,19 @@ PPL::C_Polyhedron::C_Polyhedron(Congruence_System& cgs, Recycle_Input)
 						 "space dimension"), 0),
 	       UNIVERSE) {
   add_congruences(cgs);
+}
+
+PPL::C_Polyhedron::C_Polyhedron(const Grid& grid)
+  : Polyhedron(NECESSARILY_CLOSED,
+	       grid.space_dimension() <= max_space_dimension()
+	       ? grid.space_dimension()
+	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
+						 "C_Polyhedron(grid)",
+						 "the space dimension of grid "
+						 "exceeds the maximum allowed "
+						 "space dimension"), 0),
+	       UNIVERSE) {
+  add_constraints(grid.constraints());
 }
 
 bool

@@ -3188,6 +3188,7 @@ PPL::operator==(const Polyhedron& x, const Polyhedron& y) {
     return false;
 
   default:
+    assert(x.OK());
     if (x.is_included_in(y))
       if (x.marked_empty())
 	return y.is_empty();

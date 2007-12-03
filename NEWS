@@ -117,6 +117,9 @@ o  All identifiers containing the strings `less_than_or_equal' or
    `greater_than_or_equal', any case, have been renamed so as to contain
    `less_or_equal' or `greater_or_equal', respectively.
 
+o  Added methods to C_Polyhedron and NNC_Polyhedron that construct a
+   polyhedron from a grid.
+
 
 Bugfixes
 ========

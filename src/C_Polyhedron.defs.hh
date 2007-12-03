@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "C_Polyhedron.types.hh"
 #include "NNC_Polyhedron.types.hh"
 #include "Polyhedron.defs.hh"
+#include "Grid.types.hh"
 
 //! A closed convex polyhedron.
 /*! \ingroup PPL_CXX_interface
@@ -144,7 +145,7 @@ public:
   */
   explicit C_Polyhedron(const Congruence_System& cgs);
 
-  //! Builds an C polyhedron recycling a system of congruences.
+  //! Builds a C polyhedron recycling a system of congruences.
   /*!
     The polyhedron inherits the space dimension of the congruence
     system.
@@ -183,6 +184,16 @@ public:
   */
   template <typename Interval>
   explicit C_Polyhedron(const Box<Interval>& box);
+
+  //! Builds a C polyhedron that approximates a grid.
+  /*!
+    The polyhedron inherits the space dimension of the grid.
+    The built polyhedron is the most precise that includes the grid.
+
+    \param grid
+    The grid used to build the polyhedron.
+  */
+  explicit C_Polyhedron(const Grid& grid);
 
   //! Ordinary copy-constructor.
   C_Polyhedron(const C_Polyhedron& y);

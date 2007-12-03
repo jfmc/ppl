@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "C_Polyhedron.types.hh"
 #include "NNC_Polyhedron.types.hh"
 #include "Polyhedron.defs.hh"
+#include "Grid.types.hh"
 
 //! A not necessarily closed convex polyhedron.
 /*! \ingroup PPL_CXX_interface
@@ -155,6 +156,16 @@ public:
   */
   template <typename Interval>
   explicit NNC_Polyhedron(const Box<Interval>& box);
+
+  //! Builds an NNC polyhedron that approximates a grid.
+  /*!
+    The polyhedron inherits the space dimension of the grid.
+    The built polyhedron is the most precise that includes the grid.
+
+    \param grid
+    The grid used to build the polyhedron.
+  */
+  explicit NNC_Polyhedron(const Grid& grid);
 
   //! Ordinary copy-constructor.
   NNC_Polyhedron(const NNC_Polyhedron& y);
