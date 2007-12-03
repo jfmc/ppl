@@ -200,16 +200,14 @@ PPL::Linear_System::insert(const Linear_Row& r) {
       swap_columns(old_num_columns - 1, r_size - 1);
     add_row(r);
   }
-  else if (r_size < old_num_columns)
-    if (is_necessarily_closed() || old_num_rows == 0)
-      add_row(Linear_Row(r, old_num_columns, row_capacity));
-    else {
-      // Create a resized copy of the row (and move the epsilon
-      // coefficient to its last position).
-      Linear_Row tmp_row(r, old_num_columns, row_capacity);
+  else if (r_size < old_num_columns) {
+    // Create a resized copy of the row.
+    Linear_Row tmp_row(r, old_num_columns, row_capacity);
+    // If needed, move the epsilon coefficient to the last position.
+    if (!is_necessarily_closed())
       std::swap(tmp_row[r_size - 1], tmp_row[old_num_columns - 1]);
-      add_row(tmp_row);
-    }
+    add_row(tmp_row);
+  }
   else
     // Here r_size == old_num_columns.
     add_row(r);
