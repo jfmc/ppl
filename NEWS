@@ -129,6 +129,10 @@ o  Fixed a bug in Grid::constraints() and Grid::minimized_constraints()
    that caused an internal assertion to fail when the grid had 0 space
    dimensions.
 
+o  Fixed a bug in Linear_System::insert(const Linear_Row&) whereby a
+   wrong result could have been obtained when inserting a not necessarily
+   closed constraint/generator in an empty system having a higher space
+   dimension.
 
 --------------------------------------------------------------------------
 NEWS for version 0.9  (released on March 12, 2006)
