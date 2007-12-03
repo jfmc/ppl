@@ -423,6 +423,102 @@ test14() {
   return ok && dp.OK();
 }
 
+// Product(c_polyhedron).
+bool
+test15() {
+  Variable A(0);
+
+  const Constraint_System cs(A == 0);
+
+  C_Polyhedron ph(cs);
+
+  Product dp1(ph);
+
+  Product dp2(1);
+  dp2.add_congruence((A %= 0) / 0);
+
+  bool ok = (dp1 == dp2);
+
+  print_congruences(dp1, "*** dp1 congruences ***");
+  print_constraints(dp1, "*** dp1 constraints ***");
+  print_congruences(dp2, "*** dp2 congruences ***");
+  print_constraints(dp2, "*** dp2 constraints ***");
+
+  return ok && dp1.OK() && dp2.OK();
+}
+
+// Product(nnc_polyhedron).
+bool
+test16() {
+  Variable A(0);
+
+  const Constraint_System cs(A > 0);
+
+  NNC_Polyhedron ph(cs);
+
+  Product dp1(ph);
+
+  Product dp2(1);
+  dp2.add_constraint(A > 0);
+
+  bool ok = (dp1 == dp2);
+
+  print_congruences(dp1, "*** dp1 congruences ***");
+  print_constraints(dp1, "*** dp1 constraints ***");
+  print_congruences(dp2, "*** dp2 congruences ***");
+  print_constraints(dp2, "*** dp2 constraints ***");
+
+  return ok && dp1.OK() && dp2.OK();
+}
+
+// Product(grid).
+bool
+test17() {
+  Variable A(0);
+
+  const Congruence_System cgs(A %= 0);
+
+  Grid gr(cgs);
+
+  Product dp1(gr);
+
+  Product dp2(1);
+  dp2.add_congruence((A %= 0) / 1);
+
+  bool ok = (dp1 == dp2);
+
+  print_congruences(dp1, "*** dp1 congruences ***");
+  print_constraints(dp1, "*** dp1 constraints ***");
+  print_congruences(dp2, "*** dp2 congruences ***");
+  print_constraints(dp2, "*** dp2 constraints ***");
+
+  return ok && dp1.OK() && dp2.OK();
+}
+
+// Product(box).
+bool
+test18() {
+  Variable A(0);
+
+  const Constraint_System cs(A > 0);
+
+  TBox box(cs);
+
+  Product dp1(box);
+
+  Product dp2(1);
+  dp2.add_constraint(A > 0);
+
+  bool ok = (dp1 == dp2);
+
+  print_congruences(dp1, "*** dp1 congruences ***");
+  print_constraints(dp1, "*** dp1 constraints ***");
+  print_congruences(dp2, "*** dp2 congruences ***");
+  print_constraints(dp2, "*** dp2 constraints ***");
+
+  return ok && dp1.OK() && dp2.OK();
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -440,4 +536,8 @@ BEGIN_MAIN
   DO_TEST(test12);
   DO_TEST(test13);
   DO_TEST(test14);
+  DO_TEST(test15);
+  DO_TEST(test16);
+  DO_TEST(test17);
+  DO_TEST(test18);
 END_MAIN

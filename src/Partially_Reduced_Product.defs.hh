@@ -359,6 +359,45 @@ public:
   */
   explicit Partially_Reduced_Product(Constraint_System& cs);
 
+  //! Builds a pair, from a C polyhedron.
+  /*!
+    The pair inherits the space dimension of the polyhedron.
+
+    \param cs
+    The polyhedron to be approximated by the pair.
+
+    \exception std::length_error
+    Thrown if \p num_dimensions exceeds the maximum allowed space
+    dimension.
+  */
+  explicit Partially_Reduced_Product(const C_Polyhedron& ph);
+
+  //! Builds a pair, from an NNC polyhedron.
+  /*!
+    The pair inherits the space dimension of the polyhedron.
+
+    \param cs
+    The polyhedron to be approximated by the pair.
+
+    \exception std::length_error
+    Thrown if \p num_dimensions exceeds the maximum allowed space
+    dimension.
+  */
+  explicit Partially_Reduced_Product(const NNC_Polyhedron& ph);
+
+  //! Builds a pair, from a grid.
+  /*!
+    The pair inherits the space dimension of the grid.
+
+    \param cs
+    The grid to be approximated by the pair.
+
+    \exception std::length_error
+    Thrown if \p num_dimensions exceeds the maximum allowed space
+    dimension.
+  */
+  explicit Partially_Reduced_Product(const Grid& gr);
+
   //! Builds a pair out of a box.
   /*!
     The product inherits the space dimension of the box.
