@@ -300,6 +300,51 @@ bool test13() {
   return ok;
 }
 
+// FIXME: This shows a bug when a congruence system with no (non-trivial)
+//        equalities is used to construct a constraint system.
+bool test14() {
+  Variable x(0);
+  Variable y(1);
+
+  Congruence_System cgs;
+  cgs.insert((2*y %= 2) / 3);
+
+  Constraint_System cs(cgs);
+  print_constraints(cs, "*** cs ***");
+
+  cs.insert(0*x > -1);
+  print_constraints(cs, "*** cs.insert(0*x > -1) ***");
+
+  C_Polyhedron ph(cs);
+
+  bool ok = ph.is_universe();
+
+  print_constraints(ph, "*** ph(cs) ***");
+
+  return ok;
+}
+
+// A similar test to the previous test but with 0 dimensions.
+bool test15() {
+  Variable x(0);
+
+  Congruence_System cgs;
+
+  Constraint_System cs(cgs);
+  print_constraints(cs, "*** cs ***");
+
+  cs.insert(0*x > -1);
+  print_constraints(cs, "*** cs.insert(0*x > -1) ***");
+
+  C_Polyhedron ph(cs);
+
+  bool ok = ph.is_universe();
+
+  print_constraints(ph, "*** ph(cs) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -316,4 +361,6 @@ DO_TEST(test10);
 DO_TEST(test11);
 DO_TEST(test12);
 DO_TEST(test13);
+DO_TEST_F(test14);
+DO_TEST(test15);
 END_MAIN
