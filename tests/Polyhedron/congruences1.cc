@@ -300,8 +300,6 @@ bool test13() {
   return ok;
 }
 
-// FIXME: This shows a bug when a congruence system with no (non-trivial)
-//        equalities is used to construct a constraint system.
 bool test14() {
   Variable x(0);
   Variable y(1);
@@ -348,19 +346,19 @@ bool test15() {
 } // namespace
 
 BEGIN_MAIN
-DO_TEST(test01);
-DO_TEST(test02);
-DO_TEST(test03);
-DO_TEST(test04);
-DO_TEST(test05);
-DO_TEST(test06);
-DO_TEST(test07);
-DO_TEST(test08);
-DO_TEST(test09);
-DO_TEST(test10);
-DO_TEST(test11);
-DO_TEST(test12);
-DO_TEST(test13);
-DO_TEST_F(test14);
-DO_TEST(test15);
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
+  DO_TEST(test08);
+  DO_TEST(test09);
+  DO_TEST(test10);
+  DO_TEST(test11);
+  DO_TEST(test12);
+  DO_TEST(test13);
+  DO_TEST(test14);
+  DO_TEST(test15);
 END_MAIN
