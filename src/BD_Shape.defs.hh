@@ -36,6 +36,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Poly_Gen_Relation.types.hh"
 #include "Polyhedron.types.hh"
 #include "Box.types.hh"
+#include "Grid.types.hh"
 #include "Variable.defs.hh"
 #include "Variables_Set.types.hh"
 #include "DB_Matrix.defs.hh"
@@ -473,7 +474,7 @@ public:
   explicit BD_Shape(const Polyhedron& ph,
 		    Complexity_Class complexity = ANY_COMPLEXITY);
 
-  //! Builds a BDS out of a box.
+  //! Builds a BDS that approximates a box.
   /*!
     The BDS inherits the space dimension of the box.
     The built BDS is the most precise BDS that includes the box.
@@ -487,6 +488,20 @@ public:
   */
   template <typename Interval>
   explicit BD_Shape(const Box<Interval>& box);
+
+  //! Builds a BDS out of a grid.
+  /*!
+    The BDS inherits the space dimension of the grid.
+    The built BDS is the most precise BDS that includes the grid.
+
+    \param grid
+    The grid used to build the BDS.
+
+    \exception std::length_error
+    Thrown if the space dimension of \p grid exceeds the maximum
+    allowed space dimension.
+  */
+  explicit BD_Shape(const Grid& grid);
 
   /*! \brief
     The assignment operator

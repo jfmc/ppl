@@ -37,6 +37,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Poly_Gen_Relation.defs.hh"
 #include "Polyhedron.types.hh"
 #include "Box.types.hh"
+#include "Grid.types.hh"
 #include "Variable.defs.hh"
 #include "Variables_Set.types.hh"
 #include "Checked_Number.defs.hh"
@@ -503,6 +504,20 @@ public:
   */
   template <typename Interval>
   explicit Octagonal_Shape(const Box<Interval>& box);
+
+  //! Builds an OS that approximates a grid.
+  /*!
+    The OS inherits the space dimension of the grid.
+    The built OS is the most precise OS that includes the grid.
+
+    \param grid
+    The grid used to build the OS.
+
+    \exception std::length_error
+    Thrown if the space dimension of \p grid exceeds the maximum
+    allowed space dimension.
+  */
+  explicit Octagonal_Shape(const Grid& grid);
 
   /*! \brief
     The assignment operator.

@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint_System.defs.hh"
 #include "Constraint_System.inlines.hh"
 #include "C_Polyhedron.defs.hh"
+#include "Grid.defs.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
 #include <cassert>
@@ -137,6 +138,19 @@ Octagonal_Shape<T>::Octagonal_Shape(const Box<Interval>& box)
     // A (non zero-dim) universe OS is strongly closed.
     status.set_strongly_closed();
   add_constraints(box.constraints());
+  return;
+}
+
+template <typename T>
+inline
+Octagonal_Shape<T>::Octagonal_Shape(const Grid& grid)
+  : matrix(grid.space_dimension()),
+    space_dim(grid.space_dimension()),
+    status() {
+  if (grid.space_dimension() > 0)
+    // A (non zero-dim) universe OS is strongly closed.
+    status.set_strongly_closed();
+  add_congruences(grid.congruences());
   return;
 }
 

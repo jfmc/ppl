@@ -120,6 +120,9 @@ o  All identifiers containing the strings `less_than_or_equal' or
 o  Added methods to C_Polyhedron and NNC_Polyhedron that construct a
    polyhedron from a grid.
 
+o  Added methods to BD_Shape and Octagonal_Shape that construct a
+   BD_Shape or Octagonal_Shape, respectively, from a grid.
+
 
 Bugfixes
 ========

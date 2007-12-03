@@ -67,6 +67,7 @@ empty1 \
 expandspacedim1 \
 foldspacedims1 \
 fromgensys1 \
+fromgrid1 \
 frompolyhedron1 \
 fromspacedim1 \
 generalizedaffineimage1 \
@@ -193,6 +194,8 @@ expandspacedim1_SOURCES = expandspacedim1.cc
 foldspacedims1_SOURCES = foldspacedims1.cc
 
 fromgensys1_SOURCES = fromgensys1.cc
+
+fromgrid1_SOURCES = fromgrid1.cc
 
 frompolyhedron1_SOURCES = frompolyhedron1.cc
 
