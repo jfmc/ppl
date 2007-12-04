@@ -27,15 +27,18 @@ m4_define(`m4_run_class_code',
 m4_define(`m4_run_class_test_code',
 `
     public boolean run_@CLASS@_test() {
-try {
+  try {
 ')
 
 m4_define(`m4_new_class_element_code',
 `
- @TOPOLOGY@@CLASS@ @LTOPOLOGY@@LCLASS@1 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
-@TOPOLOGY@@CLASS@ @LTOPOLOGY@@LCLASS@2 = new @TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@1);
-@TOPOLOGY@@CLASS@ @LTOPOLOGY@@LCLASS@3 = new @TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@1);
-@LTOPOLOGY@@LCLASS@3.free();
+    @TOPOLOGY@@CLASS@ @LTOPOLOGY@@LCLASS@1 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
+    @TOPOLOGY@@CLASS@ @LTOPOLOGY@@LCLASS@2 = new @TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@1);
+    @TOPOLOGY@@CLASS@ @LTOPOLOGY@@LCLASS@3 = new @TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@1);
+    @LTOPOLOGY@@LCLASS@3.free();
+    @TOPOLOGY@@CLASS@ @LTOPOLOGY@@LCLASS@4 = new @TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@1);
+    @LTOPOLOGY@@LCLASS@4 = null;
+    System.gc();
 ')
 
 m4_define(`ppl_@CLASS@_bounds_from_@ABOVEBELOW@_code',`
