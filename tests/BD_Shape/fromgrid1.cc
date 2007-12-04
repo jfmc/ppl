@@ -45,7 +45,7 @@ test01() {
   known_bd.add_constraint(x - y == 0);
   known_bd.add_constraint(y - z == 0);
 
-  bool ok = (bd == known_bd);
+  bool ok = (check_result(bd, known_bd));
 
   print_constraints(bd, "*** bd ***");
   print_constraints(known_bd, "*** known_bd ***");
@@ -62,7 +62,7 @@ test02() {
 
   BD_Shape<mpq_class> known_bd(gr.space_dimension());
 
-  bool ok = (bd == known_bd);
+  bool ok = (check_result(bd, known_bd));
 
   print_constraints(bd, "*** bd ***");
   print_constraints(known_bd, "*** known_bd ***");
@@ -85,7 +85,7 @@ test03() {
 
   BD_Shape<mpq_class> known_bd(gr.space_dimension());
 
-  bool ok = (bd == known_bd);
+  bool ok = (check_result(bd, known_bd));
 
   print_constraints(bd, "*** bd ***");
   print_constraints(known_bd, "*** known_bd ***");
@@ -102,7 +102,7 @@ test04() {
 
   BD_Shape<mpq_class> known_bd;
 
-  bool ok = (bd == known_bd);
+  bool ok = (check_result(bd, known_bd));
 
   print_constraints(bd, "*** bd ***");
   print_constraints(known_bd, "*** known_bd ***");
@@ -119,7 +119,7 @@ test05() {
 
   BD_Shape<mpq_class> known_bd(2, EMPTY);
 
-  bool ok = (bd == known_bd);
+  bool ok = (check_result(bd, known_bd));
 
   print_constraints(bd, "*** bd ***");
   print_constraints(known_bd, "*** known_bd ***");
@@ -144,7 +144,7 @@ test06() {
   known_bd.add_constraint(x == 1);
   known_bd.add_constraint(y == 0);
 
-  bool ok = (bd == known_bd);
+  bool ok = (check_result(bd, known_bd));
 
   print_constraints(bd, "*** bd ***");
   print_constraints(known_bd, "*** known_bd ***");
@@ -161,7 +161,7 @@ test07() {
 
   BD_Shape<mpq_class> known_bd(0, EMPTY);
 
-  bool ok = (bd == known_bd);
+  bool ok = (check_result(bd, known_bd));
 
   print_constraints(bd, "*** bd ***");
   print_constraints(known_bd, "*** known_bd ***");
@@ -179,7 +179,7 @@ test08() {
 
   BD_Shape<mpq_class> known_bd(gr.space_dimension());
 
-  bool ok = (bd == known_bd);
+  bool ok = (check_result(bd, known_bd));
 
   print_constraints(bd, "*** bd ***");
   print_constraints(known_bd, "*** known_bd ***");

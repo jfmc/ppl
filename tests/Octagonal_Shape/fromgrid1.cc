@@ -45,7 +45,7 @@ test01() {
   known_oct.add_constraint(x + y == 0);
   known_oct.add_constraint(y - z == 0);
 
-  bool ok = (oct == known_oct);
+  bool ok = (check_result(oct, known_oct));
 
   print_constraints(oct, "*** oct ***");
   print_constraints(known_oct, "*** known_oct ***");
@@ -62,7 +62,7 @@ test02() {
 
   Octagonal_Shape<mpq_class> known_oct(gr.space_dimension());
 
-  bool ok = (oct == known_oct);
+  bool ok = (check_result(oct, known_oct));
 
   print_constraints(oct, "*** oct ***");
   print_constraints(known_oct, "*** known_oct ***");
@@ -85,7 +85,7 @@ test03() {
 
   Octagonal_Shape<mpq_class> known_oct(gr.space_dimension());
 
-  bool ok = (oct == known_oct);
+  bool ok = (check_result(oct, known_oct));
 
   print_constraints(oct, "*** oct ***");
   print_constraints(known_oct, "*** known_oct ***");
@@ -102,7 +102,7 @@ test04() {
 
   Octagonal_Shape<mpq_class> known_oct;
 
-  bool ok = (oct == known_oct);
+  bool ok = (check_result(oct, known_oct));
 
   print_constraints(oct, "*** oct ***");
   print_constraints(known_oct, "*** known_oct ***");
@@ -119,7 +119,7 @@ test05() {
 
   Octagonal_Shape<mpq_class> known_oct(2, EMPTY);
 
-  bool ok = (oct == known_oct);
+  bool ok = (check_result(oct, known_oct));
 
   print_constraints(oct, "*** oct ***");
   print_constraints(known_oct, "*** known_oct ***");
@@ -144,7 +144,7 @@ test06() {
   known_oct.add_constraint(x == 1);
   known_oct.add_constraint(y == 0);
 
-  bool ok = (oct == known_oct);
+  bool ok = (check_result(oct, known_oct));
 
   print_constraints(oct, "*** oct ***");
   print_constraints(known_oct, "*** known_oct ***");
@@ -161,7 +161,7 @@ test07() {
 
   Octagonal_Shape<mpq_class> known_oct(0, EMPTY);
 
-  bool ok = (oct == known_oct);
+  bool ok = (check_result(oct, known_oct));
 
   print_constraints(oct, "*** oct ***");
   print_constraints(known_oct, "*** known_oct ***");
@@ -179,7 +179,7 @@ test08() {
 
   Octagonal_Shape<mpq_class> known_oct(gr.space_dimension());
 
-  bool ok = (oct == known_oct);
+  bool ok = (check_result(oct, known_oct));
 
   print_constraints(oct, "*** oct ***");
   print_constraints(known_oct, "*** known_oct ***");
