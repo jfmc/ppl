@@ -77,7 +77,7 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_code',
 m4_define(`ppl_delete_@CLASS@_code',
 `dnl
 %<--%<--%<-- @TOPOLOGY@@CLASS@.java
-    public native void finalize();
+    protected native void finalize();
 
 ')
 
