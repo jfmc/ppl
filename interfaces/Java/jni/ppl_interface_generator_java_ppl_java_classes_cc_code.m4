@@ -210,10 +210,12 @@ m4_define(`ppl_free_@CLASS@_code',
 JNIEXPORT void JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_free
 (JNIEnv* env, jobject j_@LTOPOLOGY@@LCLASS@) {
   jlong this_ptr = get_ptr(env, j_@LTOPOLOGY@@LCLASS@);
-  @TOPOLOGY@@CPP_CLASS@* str  = reinterpret_cast<@TOPOLOGY@@CPP_CLASS@*>(this_ptr);
- if (!is_a_reference(env, j_@LTOPOLOGY@@LCLASS@))
-  delete str;
-  str = 0;
+  @TOPOLOGY@@CPP_CLASS@* str  =
+       reinterpret_cast<@TOPOLOGY@@CPP_CLASS@*>(this_ptr);
+    if (!is_a_reference(env, j_@LTOPOLOGY@@LCLASS@)) {
+  	delete str;
+  	set_ptr(env, j_@LTOPOLOGY@@LCLASS@, 0);
+   }
 }
 
 ')
