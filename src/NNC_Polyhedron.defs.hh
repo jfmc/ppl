@@ -167,6 +167,28 @@ public:
   */
   explicit NNC_Polyhedron(const Grid& grid);
 
+  //! Builds a NNC polyhedron out of a bd shape.
+  /*!
+    The polyhedron inherits the space dimension of the bd shape.
+    The built polyhedron is the most precise that includes the bd shape.
+
+    \param bd
+    The bd shape used to build the polyhedron.
+  */
+  template <typename U>
+  explicit NNC_Polyhedron(const BD_Shape<U>& bd);
+
+  //! Builds a NNC polyhedron out of an octagonal shape.
+  /*!
+    The polyhedron inherits the space dimension of the octagonal shape.
+    The built polyhedron is the most precise that includes the octagonal shape.
+
+    \param os
+    The octagonal shape used to build the polyhedron.
+  */
+  template <typename U>
+  explicit NNC_Polyhedron(const Octagonal_Shape<U>& os);
+
   //! Ordinary copy-constructor.
   NNC_Polyhedron(const NNC_Polyhedron& y);
 

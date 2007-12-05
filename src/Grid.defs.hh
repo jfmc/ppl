@@ -45,6 +45,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Polyhedron.defs.hh"
 #include "Polyhedron.types.hh"
 #include "Polyhedron.inlines.hh"
+#include "BD_Shape.types.hh"
+#include "Octagonal_Shape.types.hh"
 #include <vector>
 #include <iosfwd>
 
@@ -479,7 +481,7 @@ public:
     The built grid is the most precise grid that includes the box.
 
     \param box
-    The bounding box representing the grid to be built.
+    The box representing the grid to be built.
 
     \exception std::length_error
     Thrown if the space dimension of \p box exceeds the maximum
@@ -487,6 +489,36 @@ public:
   */
   template <typename Interval>
   explicit Grid(const Box<Interval>& box);
+
+  //! Builds a grid out of a bd shape.
+  /*!
+    The grid inherits the space dimension of the bd shape.
+    The built grid is the most precise grid that includes the bd shape.
+
+    \param bd
+    The bd shape representing the grid to be built.
+
+    \exception std::length_error
+    Thrown if the space dimension of \p bd exceeds the maximum
+    allowed space dimension.
+  */
+  template <typename U>
+  explicit Grid(const BD_Shape<U>& bd);
+
+  //! Builds a grid out of a OS.
+  /*!
+    The grid inherits the space dimension of the octagonal shape.
+    The built grid is the most precise grid that includes the octagonal shape.
+
+    \param os
+    The octagonal shape representing the grid to be built.
+
+    \exception std::length_error
+    Thrown if the space dimension of \p os exceeds the maximum
+    allowed space dimension.
+  */
+  template <typename U>
+  explicit Grid(const Octagonal_Shape<U>& os);
 
   //! Builds a grid out of a generic, interval-based covering box.
   /*!

@@ -28,6 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint_System.inlines.hh"
 #include "C_Polyhedron.defs.hh"
 #include "Grid.defs.hh"
+#include "BD_Shape.defs.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
 #include <cassert>
@@ -151,6 +152,20 @@ Octagonal_Shape<T>::Octagonal_Shape(const Grid& grid)
     // A (non zero-dim) universe OS is strongly closed.
     status.set_strongly_closed();
   add_congruences(grid.congruences());
+  return;
+}
+
+template <typename T>
+template <typename U>
+inline
+Octagonal_Shape<T>::Octagonal_Shape(const BD_Shape<U>& bd)
+  : matrix(bd.space_dimension()),
+    space_dim(bd.space_dimension()),
+    status() {
+  if (bd.space_dimension() > 0)
+    // A (non zero-dim) universe BDS is shortest-path closed.
+    status.set_strongly_closed();
+  add_constraints(bd.constraints());
   return;
 }
 

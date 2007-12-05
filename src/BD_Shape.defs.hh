@@ -37,6 +37,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Polyhedron.types.hh"
 #include "Box.types.hh"
 #include "Grid.types.hh"
+#include "Octagonal_Shape.types.hh"
 #include "Variable.defs.hh"
 #include "Variables_Set.types.hh"
 #include "DB_Matrix.defs.hh"
@@ -502,6 +503,21 @@ public:
     allowed space dimension.
   */
   explicit BD_Shape(const Grid& grid);
+
+  //! Builds a BDS from an octagonal shape.
+  /*!
+    The BDS inherits the space dimension of the octagonal shape.
+    The built BDS is the most precise BDS that includes the octagonal shape.
+
+    \param os
+    The octagonal shape used to build the BDS.
+
+    \exception std::length_error
+    Thrown if the space dimension of \p os exceeds the maximum
+    allowed space dimension.
+  */
+  template <typename U>
+  explicit BD_Shape(const Octagonal_Shape<U>& os);
 
   /*! \brief
     The assignment operator

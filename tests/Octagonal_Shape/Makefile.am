@@ -66,6 +66,7 @@ disjoint1 \
 empty1 \
 expandspacedim1 \
 foldspacedims1 \
+frombdshape1 \
 fromgensys1 \
 fromgrid1 \
 frompolyhedron1 \
@@ -192,6 +193,8 @@ empty1_SOURCES = empty1.cc
 expandspacedim1_SOURCES = expandspacedim1.cc
 
 foldspacedims1_SOURCES = foldspacedims1.cc
+
+frombdshape1_SOURCES = frombdshape1.cc
 
 fromgensys1_SOURCES = fromgensys1.cc
 

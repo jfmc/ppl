@@ -27,6 +27,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "NNC_Polyhedron.types.hh"
 #include "Polyhedron.defs.hh"
 #include "Grid.types.hh"
+#include "BD_Shape.types.hh"
+#include "Octagonal_Shape.types.hh"
 
 //! A closed convex polyhedron.
 /*! \ingroup PPL_CXX_interface
@@ -184,6 +186,28 @@ public:
   */
   template <typename Interval>
   explicit C_Polyhedron(const Box<Interval>& box);
+
+  //! Builds a C polyhedron out of a bd shape.
+  /*!
+    The polyhedron inherits the space dimension of the bd shape.
+    The built polyhedron is the most precise that includes the bd shape.
+
+    \param bd
+    The bd shape used to build the polyhedron.
+  */
+  template <typename U>
+  explicit C_Polyhedron(const BD_Shape<U>& bd);
+
+  //! Builds a C polyhedron out of an octagonal shape.
+  /*!
+    The polyhedron inherits the space dimension of the octagonal shape.
+    The built polyhedron is the most precise that includes the octagonal shape.
+
+    \param os
+    The octagonal shape used to build the polyhedron.
+  */
+  template <typename U>
+  explicit C_Polyhedron(const Octagonal_Shape<U>& os);
 
   //! Builds a C polyhedron that approximates a grid.
   /*!

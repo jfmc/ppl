@@ -452,14 +452,22 @@ bool
 test16() {
   Variable A(0);
 
+#if NNC_Poly_Class
   const Constraint_System cs(A > 0);
+#else
+  const Constraint_System cs(A >= 0);
+#endif
 
   NNC_Polyhedron ph(cs);
 
   Product dp1(ph);
 
   Product dp2(1);
+#if NNC_Poly_Class
   dp2.add_constraint(A > 0);
+#else
+  dp2.add_constraint(A >= 0);
+#endif
 
   bool ok = (dp1 == dp2);
 
@@ -519,6 +527,60 @@ test18() {
   return ok && dp1.OK() && dp2.OK();
 }
 
+// Product(bds).
+bool
+test19() {
+  Variable A(0);
+  Variable B(1);
+
+  Constraint_System cs(A >= 0);
+  cs.insert(2*A - 2*B >= 5);
+
+  TBD_Shape bd(cs);
+
+  Product dp1(bd);
+
+  Product dp2(2);
+  dp2.add_constraint(A >= 0);
+  dp2.add_constraint(2*A - 2*B >= 5);
+
+  bool ok = (dp1 == dp2);
+
+  print_congruences(dp1, "*** dp1 congruences ***");
+  print_constraints(dp1, "*** dp1 constraints ***");
+  print_congruences(dp2, "*** dp2 congruences ***");
+  print_constraints(dp2, "*** dp2 constraints ***");
+
+  return ok && dp1.OK() && dp2.OK();
+}
+
+// Product(os).
+bool
+test20() {
+  Variable A(0);
+  Variable B(1);
+
+  Constraint_System cs(A >= 0);
+  cs.insert(2*A + 2*B >= 5);
+
+  TOctagonal_Shape os(cs);
+
+  Product dp1(os);
+
+  Product dp2(2);
+  dp2.add_constraint(A >= 0);
+  dp2.add_constraint(2*A + 2*B >= 5);
+
+  bool ok = (dp1 == dp2);
+
+  print_congruences(dp1, "*** dp1 congruences ***");
+  print_constraints(dp1, "*** dp1 constraints ***");
+  print_congruences(dp2, "*** dp2 congruences ***");
+  print_constraints(dp2, "*** dp2 constraints ***");
+
+  return ok && dp1.OK() && dp2.OK();
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -539,5 +601,6 @@ BEGIN_MAIN
   DO_TEST(test15);
   DO_TEST(test16);
   DO_TEST(test17);
-  DO_TEST(test18);
+  DO_TEST(test19);
+  DO_TEST(test20);
 END_MAIN

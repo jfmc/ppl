@@ -123,6 +123,9 @@ o  Added methods to C_Polyhedron and NNC_Polyhedron that construct a
 o  Added methods to BD_Shape and Octagonal_Shape that construct a
    BD_Shape or Octagonal_Shape, respectively, from a grid.
 
+o  Added methods to the Polyhedra classes, and the Grid, BD_Shape,
+   Octagonal_Shape classes that construct an element from a BD_Shape
+   and from an Octagonal_Shape.
 
 Bugfixes
 ========

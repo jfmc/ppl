@@ -105,6 +105,36 @@ C_Polyhedron::C_Polyhedron(const Box<Interval>& box)
 						 "space dimension"), box)) {
 }
 
+template <typename U>
+inline
+C_Polyhedron::C_Polyhedron(const BD_Shape<U>& bd)
+  : Polyhedron(NECESSARILY_CLOSED,
+	       bd.space_dimension() <= max_space_dimension()
+	       ? bd.space_dimension()
+	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
+						 "C_Polyhedron(bd): ",
+						 "the space dimension of bd "
+						 "exceeds the maximum allowed "
+						 "space dimension"), 0),
+               UNIVERSE) {
+  add_constraints(bd.constraints());
+}
+
+template <typename U>
+inline
+C_Polyhedron::C_Polyhedron(const Octagonal_Shape<U>& os)
+  : Polyhedron(NECESSARILY_CLOSED,
+	       os.space_dimension() <= max_space_dimension()
+	       ? os.space_dimension()
+	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
+						 "C_Polyhedron(os): ",
+						 "the space dimension of os "
+						 "exceeds the maximum allowed "
+						 "space dimension"), 0),
+               UNIVERSE) {
+  add_constraints(os.constraints());
+}
+
 inline
 C_Polyhedron::C_Polyhedron(const C_Polyhedron& y)
   : Polyhedron(y) {

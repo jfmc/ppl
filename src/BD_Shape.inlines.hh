@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint_System.inlines.hh"
 #include "C_Polyhedron.defs.hh"
 #include "Grid.defs.hh"
+#include "Octagonal_Shape.defs.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
 #include "Temp.defs.hh"
@@ -230,6 +231,18 @@ BD_Shape<T>::BD_Shape(const Grid& grid)
     // A (non zero-dim) universe BDS is shortest-path closed.
     status.set_shortest_path_closed();
   add_congruences(grid.congruences());
+  return;
+}
+
+template <typename T>
+template <typename U>
+inline
+BD_Shape<T>::BD_Shape(const Octagonal_Shape<U>& os)
+  : dbm(os.space_dimension() + 1), status(), redundancy_dbm() {
+  if (os.space_dimension() > 0)
+    // A (non zero-dim) universe BDS is shortest-path closed.
+    status.set_shortest_path_closed();
+  add_constraints(os.constraints());
   return;
 }
 

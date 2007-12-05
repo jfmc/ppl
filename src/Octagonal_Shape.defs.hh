@@ -38,6 +38,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Polyhedron.types.hh"
 #include "Box.types.hh"
 #include "Grid.types.hh"
+#include "BD_Shape.types.hh"
 #include "Variable.defs.hh"
 #include "Variables_Set.types.hh"
 #include "Checked_Number.defs.hh"
@@ -518,6 +519,21 @@ public:
     allowed space dimension.
   */
   explicit Octagonal_Shape(const Grid& grid);
+
+  //! Builds an OS from a bd shape.
+  /*!
+    The OS inherits the space dimension of the bd shape.
+    The built OS is the most precise OS that includes the bd shape.
+
+    \param bd
+    The bd shape used to build the OS.
+
+    \exception std::length_error
+    Thrown if the space dimension of \p bd exceeds the maximum
+    allowed space dimension.
+  */
+  template <typename U>
+  explicit Octagonal_Shape(const BD_Shape<U>& bd);
 
   /*! \brief
     The assignment operator.

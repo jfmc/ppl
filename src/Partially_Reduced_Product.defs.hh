@@ -403,7 +403,7 @@ public:
     The product inherits the space dimension of the box.
 
     \param box
-    The bounding box representing the pair to be built.
+    The box representing the pair to be built.
 
     \exception std::length_error
     Thrown if the space dimension of \p box exceeds the maximum
@@ -411,6 +411,34 @@ public:
   */
   template <typename Interval>
   Partially_Reduced_Product(const Box<Interval>& box);
+
+  //! Builds a pair out of a bd shape.
+  /*!
+    The product inherits the space dimension of the bd shape.
+
+    \param box
+    The bd shape representing the pair to be built.
+
+    \exception std::length_error
+    Thrown if the space dimension of \p bd exceeds the maximum
+    allowed space dimension.
+  */
+  template <typename U>
+  Partially_Reduced_Product(const BD_Shape<U>& bd);
+
+  //! Builds a pair out of an octagonal shape.
+  /*!
+    The product inherits the space dimension of the octagonal shape.
+
+    \param os
+    The octagonal shape representing the pair to be built.
+
+    \exception std::length_error
+    Thrown if the space dimension of \p os exceeds the maximum
+    allowed space dimension.
+  */
+  template <typename U>
+  Partially_Reduced_Product(const Octagonal_Shape<U>& os);
 
   //! Ordinary copy-constructor.
   Partially_Reduced_Product(const Partially_Reduced_Product& y);
