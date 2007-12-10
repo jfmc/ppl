@@ -187,13 +187,13 @@ public:
   template <typename Interval>
   explicit C_Polyhedron(const Box<Interval>& box);
 
-  //! Builds a C polyhedron out of a bd shape.
+  //! Builds a C polyhedron out of a bounded-difference shape.
   /*!
-    The polyhedron inherits the space dimension of the bd shape.
-    The built polyhedron is the most precise that includes the bd shape.
+    The polyhedron inherits the space dimension of the BDS.
+    The built polyhedron is the most precise that includes the BDS.
 
     \param bd
-    The bd shape used to build the polyhedron.
+    The BDS used to build the polyhedron.
   */
   template <typename U>
   explicit C_Polyhedron(const BD_Shape<U>& bd);

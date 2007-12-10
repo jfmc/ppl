@@ -490,13 +490,13 @@ public:
   template <typename Interval>
   explicit Grid(const Box<Interval>& box);
 
-  //! Builds a grid out of a bd shape.
+  //! Builds a grid out of a bounded-difference shape.
   /*!
-    The grid inherits the space dimension of the bd shape.
-    The built grid is the most precise grid that includes the bd shape.
+    The grid inherits the space dimension of the BDS.
+    The built grid is the most precise grid that includes the BDS.
 
     \param bd
-    The bd shape representing the grid to be built.
+    The BDS representing the grid to be built.
 
     \exception std::length_error
     Thrown if the space dimension of \p bd exceeds the maximum
@@ -505,7 +505,7 @@ public:
   template <typename U>
   explicit Grid(const BD_Shape<U>& bd);
 
-  //! Builds a grid out of a OS.
+  //! Builds a grid out of an octagonal shape.
   /*!
     The grid inherits the space dimension of the octagonal shape.
     The built grid is the most precise grid that includes the octagonal shape.
