@@ -22,6 +22,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 #include <csignal>
+#include <iostream>
+#include <exception>
 #ifdef PPL_HAVE_FENV_H
 #include <fenv.h>
 #endif
