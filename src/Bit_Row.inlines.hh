@@ -111,6 +111,12 @@ set_union(const Bit_Row& x, const Bit_Row& y, Bit_Row& z) {
   mpz_ior(z.vec, x.vec, y.vec);
 }
 
+/*! \relates Bit_Row */
+inline void
+set_intersection(const Bit_Row& x, const Bit_Row& y, Bit_Row& z) {
+  mpz_and(z.vec, x.vec, y.vec);
+}
+
 } // namespace Parma_Polyhedra_Library
 
 
