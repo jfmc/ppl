@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Partial_Function.types.hh"
 #include <string>
 #include <iostream>
+#include <cstdlib>
 
 #ifndef NOISY
 #define NOISY 0
