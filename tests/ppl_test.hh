@@ -85,7 +85,7 @@ catch (const std::exception& e) {					\
 }
 
 #define ANNOUNCE_TEST(test)		 \
-  nout << "\n=== " #test " ===" << endl
+  nout << "\n=== " #test " ===" << std::endl
 
 #define RUN_TEST(test)							\
   try {									\
