@@ -23,6 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "files.hh"
 #include <fstream>
 #include <iostream>
+#include <cstdlib>
 
 using namespace std;
 
@@ -35,7 +36,7 @@ open(fstream& s, const char* path, ios_base::openmode mode) {
       cerr << " for reading";
     else if (mode == ios_base::out)
       cerr << " for writing";
-    else if (mode == ios_base::in | ios_base::out)
+    else if (mode == (ios_base::in | ios_base::out))
       cerr << " for reading/writing";
     cerr << endl;
     exit(1);
