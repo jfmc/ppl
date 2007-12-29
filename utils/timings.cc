@@ -29,6 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <iomanip>
 #include <cstring>
 #include <cerrno>
+#include <cstdlib>
 
 #ifdef PPL_HAVE_SYS_TIME_H
 # include <sys/time.h>
