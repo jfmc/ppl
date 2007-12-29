@@ -167,7 +167,7 @@ PPL::Linear_Row::Flags::ascii_load(std::istream& s) {
     if (!(s >> str))
       return false;
     if (str[0] == '+')
-      set_bits(1 << Row::Flags::first_free_bit + bit);
+      set_bits(1 << (Row::Flags::first_free_bit + bit));
     else if (str[0] != '-')
       return false;
     if (str.compare(1, strlen(bit_names[bit]), bit_names[bit]) != 0)
