@@ -87,11 +87,12 @@ PPL::Grid_Certificate::Grid_Certificate(const Grid& cgr)
 int
 PPL::Grid_Certificate::compare(const Grid_Certificate& y) const {
   assert(OK() && y.OK());
-  if (num_equalities == y.num_equalities)
+  if (num_equalities == y.num_equalities) {
     if (num_proper_congruences == y.num_proper_congruences)
       return 0;
     else
       return num_proper_congruences > y.num_proper_congruences ? 1 : -1;
+  }
   return num_equalities > y.num_equalities ? 1 : -1;
 }
 

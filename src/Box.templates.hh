@@ -933,7 +933,7 @@ Box<Interval>::max_min(const Linear_Expression& expr,
 				  ? "maximize(e, ...)"
 				  : "minimize(e, ...)"), "e", expr);
   // Deal with zero-dim Box first.
-  if (space_dim == 0)
+  if (space_dim == 0) {
     if (marked_empty())
       return false;
     else {
@@ -942,6 +942,7 @@ Box<Interval>::max_min(const Linear_Expression& expr,
       included = true;
       return true;
     }
+  }
 
   // For an empty Box we simply return false.
   if (is_empty())
@@ -1334,11 +1335,12 @@ Box<Interval>::box_difference_assign(const Box& y) {
   dimension_type index_non_contained = space_dim;
   dimension_type number_non_contained = 0;
   for (dimension_type i = space_dim; i-- > 0; )
-    if (!y.seq[i].contains(x.seq[i]))
+    if (!y.seq[i].contains(x.seq[i])) {
       if (++number_non_contained == 1)
 	index_non_contained = i;
       else
 	break;
+    }
 
   switch (number_non_contained) {
   case 0:
@@ -2604,13 +2606,14 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   (void) y.is_empty();
   // If one of two boxes is empty, then they are equal if and only if
   // the other box is empty too.
-  if (x.marked_empty() || y.marked_empty())
+  if (x.marked_empty() || y.marked_empty()) {
     if (x.marked_empty() == y.marked_empty()) {
       assign_r(r, 0, ROUND_NOT_NEEDED);
       return true;
     }
     else
       goto pinf;
+  }
 
   assign_r(tmp0, 0, ROUND_NOT_NEEDED);
   for (dimension_type i = x_space_dim; i-- > 0; ) {

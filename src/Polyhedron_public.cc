@@ -194,7 +194,7 @@ PPL::Polyhedron::relation_with(const Constraint& c) const {
       && Poly_Con_Relation::is_included()
       && Poly_Con_Relation::is_disjoint();
 
-  if (space_dim == 0)
+  if (space_dim == 0) {
     if (c.is_inconsistent())
       if (c.is_strict_inequality() && c.inhomogeneous_term() == 0)
 	// The constraint 0 > 0 implicitly defines the hyperplane 0 = 0;
@@ -211,6 +211,7 @@ PPL::Polyhedron::relation_with(const Constraint& c) const {
       // neither the positivity constraint 1 >= 0,
       // nor the strict positivity constraint 1 > 0.
       return Poly_Con_Relation::is_included();
+  }
 
   if ((has_pending_constraints() && !process_pending_constraints())
       || (!generators_are_up_to_date() && !update_generators()))
@@ -265,12 +266,13 @@ PPL::Polyhedron::relation_with(const Congruence& cg) const {
       && Poly_Con_Relation::is_included()
       && Poly_Con_Relation::is_disjoint();
 
-  if (space_dim == 0)
+  if (space_dim == 0) {
     if (cg.is_trivial_false())
       return Poly_Con_Relation::is_disjoint();
     else if (cg.inhomogeneous_term() % cg.modulus() == 0)
       return Poly_Con_Relation::saturates()
 	&& Poly_Con_Relation::is_included();
+  }
 
   if ((has_pending_constraints() && !process_pending_constraints())
       || (!generators_are_up_to_date() && !update_generators()))
@@ -1332,11 +1334,12 @@ PPL::Polyhedron::add_generator(const Generator& g) {
     // It is not possible to create 0-dim rays or lines.
     assert(g.is_point() || g.is_closure_point());
     // Closure points can only be inserted in non-empty polyhedra.
-    if (marked_empty())
+    if (marked_empty()) {
       if (g.type() != Generator::POINT)
 	throw_invalid_generator("add_generator(g)", "g");
       else
 	status.set_zero_dim_univ();
+    }
     assert(OK());
     return;
   }

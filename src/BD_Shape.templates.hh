@@ -912,7 +912,7 @@ BD_Shape<T>::max_min(const Linear_Expression& expr,
 				  ? "maximize(e, ...)"
 				  : "minimize(e, ...)"), "e", expr);
   // Deal with zero-dim BDS first.
-  if (space_dim == 0)
+  if (space_dim == 0) {
     if (marked_empty())
       return false;
     else {
@@ -921,6 +921,7 @@ BD_Shape<T>::max_min(const Linear_Expression& expr,
       included = true;
       return true;
     }
+  }
 
   shortest_path_closure_assign();
   // For an empty BDS we simply return false.
@@ -1011,7 +1012,7 @@ BD_Shape<T>::max_min(const Linear_Expression& expr,
 				  ? "maximize(e, ...)"
 				  : "minimize(e, ...)"), "e", expr);
   // Deal with zero-dim BDS first.
-  if (space_dim == 0)
+  if (space_dim == 0) {
     if (marked_empty())
       return false;
     else {
@@ -1021,6 +1022,7 @@ BD_Shape<T>::max_min(const Linear_Expression& expr,
       g = point();
       return true;
     }
+  }
 
   shortest_path_closure_assign();
   // For an empty BDS we simply return false.
@@ -2231,7 +2233,7 @@ BD_Shape<T>
   for (dimension_type u = last_v; u > 0; --u)
     if (u != v) {
       const Coefficient& expr_u = sc_expr.coefficient(Variable(u-1));
-      if (expr_u > 0)
+      if (expr_u > 0) {
 	if (expr_u >= sc_den)
 	  // Deducing `v - u <= ub_v - ub_u'.
 	  sub_assign_r(dbm[u][v], ub_v, dbm_0[u], ROUND_UP);
@@ -2258,6 +2260,7 @@ BD_Shape<T>
 	    add_assign_r(dbm_u[v], ub_v, up_approx, ROUND_UP);
 	  }
 	}
+      }
     }
 }
 
@@ -2292,7 +2295,7 @@ BD_Shape<T>
   for (dimension_type u = last_v; u > 0; --u)
     if (u != v) {
       const Coefficient& expr_u = sc_expr.coefficient(Variable(u-1));
-      if (expr_u > 0)
+      if (expr_u > 0) {
 	if (expr_u >= sc_den)
 	  // Deducing `u - v <= lb_u - lb_v',
 	  // i.e., `u - v <= (-lb_v) - (-lb_u)'.
@@ -2319,6 +2322,7 @@ BD_Shape<T>
 	    add_assign_r(dbm_v[u], up_approx, minus_lb_v, ROUND_UP);
 	  }
 	}
+      }
     }
 }
 
@@ -2366,11 +2370,12 @@ BD_Shape<T>::refine(const Variable var,
   dimension_type w = 0;
   // Get information about the number of non-zero coefficients in `expr'.
   for (dimension_type i = expr_space_dim; i-- > 0; )
-    if (expr.coefficient(Variable(i)) != 0)
+    if (expr.coefficient(Variable(i)) != 0) {
       if (t++ == 1)
 	break;
       else
 	w = i+1;
+    }
 
   // Since we are only able to record bounded differences, we can
   // precisely deal with the case of a single variable only if its
@@ -2768,11 +2773,12 @@ BD_Shape<T>::affine_image(const Variable var,
   dimension_type w = 0;
   // Get information about the number of non-zero coefficients in `expr'.
   for (dimension_type i = expr_space_dim; i-- > 0; )
-    if (expr.coefficient(Variable(i)) != 0)
+    if (expr.coefficient(Variable(i)) != 0) {
       if (t++ == 1)
 	break;
       else
 	w = i+1;
+    }
 
   // Now we know the form of `expr':
   // - If t == 0, then expr == b, with `b' a constant;
@@ -3100,11 +3106,12 @@ BD_Shape<T>::affine_preimage(const Variable var,
   dimension_type j = 0;
   // Get information about the number of non-zero coefficients in `expr'.
   for (dimension_type i = expr_space_dim; i-- > 0; )
-    if (expr.coefficient(Variable(i)) != 0)
+    if (expr.coefficient(Variable(i)) != 0) {
       if (t++ == 1)
 	break;
       else
         j = i;
+    }
 
   // Now we know the form of `expr':
   // - If t == 0, then expr = b, with `b' a constant;
@@ -3207,11 +3214,12 @@ BD_Shape<T>
   dimension_type w = 0;
   // Get information about the number of non-zero coefficients in `expr'.
   for (dimension_type i = ub_space_dim; i-- > 0; )
-    if (ub_expr.coefficient(Variable(i)) != 0)
+    if (ub_expr.coefficient(Variable(i)) != 0) {
       if (t++ == 1)
 	break;
       else
 	w = i+1;
+    }
 
   // Now we know the form of `ub_expr':
   // - If t == 0, then ub_expr == b, with `b' a constant;
@@ -3534,11 +3542,12 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
   dimension_type w = 0;
   // Get information about the number of non-zero coefficients in `expr'.
   for (dimension_type i = expr_space_dim; i-- > 0; )
-    if (expr.coefficient(Variable(i)) != 0)
+    if (expr.coefficient(Variable(i)) != 0) {
       if (t++ == 1)
 	break;
       else
 	w = i+1;
+    }
 
   // Now we know the form of `expr':
   // - If t == 0, then expr == b, with `b' a constant;
@@ -3921,11 +3930,12 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
   dimension_type j_lhs = 0;
   // Compute the number of the non-zero components of `lhs'.
   for (dimension_type i = lhs_space_dim; i-- > 0; )
-    if (lhs.coefficient(Variable(i)) != 0)
+    if (lhs.coefficient(Variable(i)) != 0) {
       if (t_lhs++ == 1)
 	break;
       else
 	j_lhs = i;
+    }
 
   const Coefficient& b_lhs = lhs.inhomogeneous_term();
 
@@ -3961,11 +3971,12 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
     // Compute a sign-corrected relation symbol.
     const Coefficient& den = lhs.coefficient(v);
     Relation_Symbol new_relsym = relsym;
-    if (den < 0)
+    if (den < 0) {
       if (relsym == LESS_OR_EQUAL)
 	new_relsym = GREATER_OR_EQUAL;
       else if (relsym == GREATER_OR_EQUAL)
 	new_relsym = LESS_OR_EQUAL;
+    }
     Linear_Expression expr = rhs - b_lhs;
     generalized_affine_image(v, new_relsym, expr, den);
   }
@@ -4185,11 +4196,12 @@ BD_Shape<T>::generalized_affine_preimage(const Linear_Expression& lhs,
   dimension_type j_lhs = 0;
   // Compute the number of the non-zero components of `lhs'.
   for (dimension_type i = lhs_space_dim; i-- > 0; )
-    if (lhs.coefficient(Variable(i)) != 0)
+    if (lhs.coefficient(Variable(i)) != 0) {
       if (t_lhs++ == 1)
 	break;
       else
 	j_lhs = i;
+    }
 
   const Coefficient& b_lhs = lhs.inhomogeneous_term();
 
@@ -4207,11 +4219,12 @@ BD_Shape<T>::generalized_affine_preimage(const Linear_Expression& lhs,
     // Compute a sign-corrected relation symbol.
     const Coefficient& den = lhs.coefficient(v);
     Relation_Symbol new_relsym = relsym;
-    if (den < 0)
+    if (den < 0) {
       if (relsym == LESS_OR_EQUAL)
 	new_relsym = GREATER_OR_EQUAL;
       else if (relsym == GREATER_OR_EQUAL)
 	new_relsym = LESS_OR_EQUAL;
+    }
     Linear_Expression expr = rhs - b_lhs;
     generalized_affine_preimage(v, new_relsym, expr, den);
   }
@@ -4410,7 +4423,7 @@ BD_Shape<T>::minimized_constraints() const {
     const DB_Row<N>& dbm_0 = dbm[0];
     for (dimension_type i = 1; i <= space_dim; ++i) {
       const dimension_type leader = leaders[i];
-      if (i != leader)
+      if (i != leader) {
 	// Generate the constraint relating `i' and its leader.
 	if (leader == 0) {
 	  // A unary equality has to be generated.
@@ -4424,6 +4437,7 @@ BD_Shape<T>::minimized_constraints() const {
 	  numer_denom(dbm[i][leader], num, den);
 	  cs.insert(den*Variable(leader-1) - den*Variable(i-1) == num);
 	}
+      }
     }
 
     // Go through the leaders to generate inequality constraints.

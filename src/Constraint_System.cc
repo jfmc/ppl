@@ -183,7 +183,7 @@ adjust_topology_and_space_dimension(const Topology new_topology,
     }
   else
     // Here `cols_to_be_added == 0'.
-    if (old_topology != new_topology)
+    if (old_topology != new_topology) {
       if (new_topology == NECESSARILY_CLOSED) {
 	// A NOT_NECESSARILY_CLOSED constraint system
 	// can be converted to a NECESSARILY_CLOSED one
@@ -199,6 +199,7 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 	add_zero_columns(1);
 	set_not_necessarily_closed();
       }
+    }
   // We successfully adjusted space dimensions and topology.
   assert(OK());
   return true;

@@ -161,7 +161,7 @@ BD_Shape<T>::Status::OK() const {
   }
 
   // Shortest-path reduction implies shortest-path closure.
-  if (test_shortest_path_reduced())
+  if (test_shortest_path_reduced()) {
     if (test_shortest_path_closed())
       return true;
     else {
@@ -172,6 +172,7 @@ BD_Shape<T>::Status::OK() const {
 #endif
       return false;
     }
+  }
 
   // Any other case is OK.
   return true;

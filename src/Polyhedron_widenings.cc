@@ -459,11 +459,12 @@ PPL::Polyhedron
 	    e += Linear_Expression(combining_cs[h]);
 	  }
 
-	  if (!e.all_homogeneous_terms_are_zero())
+	  if (!e.all_homogeneous_terms_are_zero()) {
 	    if (strict_inequality)
 	      new_cs.insert(e > 0);
 	    else
 	      new_cs.insert(e >= 0);
+	  }
 	}
       }
     }

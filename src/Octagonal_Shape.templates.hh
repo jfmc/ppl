@@ -568,11 +568,12 @@ Octagonal_Shape<T>::contains(const Octagonal_Shape& y) const {
   // dimension-compatible octagon.
   // The zero-dimensional empty octagon only contains another
   // zero-dimensional empty octagon.
-  if (space_dim == 0)
+  if (space_dim == 0) {
     if (!marked_empty())
       return true;
     else
       return y.marked_empty();
+  }
 
   // `y' needs to be transitively closed.
   y.strong_closure_assign();
@@ -866,7 +867,7 @@ Octagonal_Shape<T>::max_min(const Linear_Expression& expr,
 				  ? "maximize(e, ...)"
 				  : "minimize(e, ...)"), "e", expr);
   // Deal with zero-dim octagons first.
-  if (space_dim == 0)
+  if (space_dim == 0) {
     if (marked_empty())
       return false;
     else {
@@ -875,6 +876,7 @@ Octagonal_Shape<T>::max_min(const Linear_Expression& expr,
       included = true;
       return true;
     }
+  }
 
   strong_closure_assign();
   // For an empty OS we simply return false.
@@ -968,7 +970,7 @@ Octagonal_Shape<T>::max_min(const Linear_Expression& expr,
 				  ? "maximize(e, ...)"
 				  : "minimize(e, ...)"), "e", expr);
   // Deal with zero-dim octagons first.
-  if (space_dim == 0)
+  if (space_dim == 0) {
     if (marked_empty())
       return false;
     else {
@@ -978,6 +980,7 @@ Octagonal_Shape<T>::max_min(const Linear_Expression& expr,
       g = point();
       return true;
     }
+  }
 
   strong_closure_assign();
   // For an empty OS we simply return false.
@@ -2501,7 +2504,7 @@ Octagonal_Shape<T>
     // Compute the bound for `m_i_j', rounding towards plus infinity.
     div_round_up(d, term, coeff);
     if (m_i[j] <= d)
-      if (c.is_inequality())
+      if (c.is_inequality()) {
 	if (lo_m_i_j > d) {
 	  lo_m_i_j = d;
 	  is_oct_changed = true;
@@ -2528,6 +2531,7 @@ Octagonal_Shape<T>
 	    is_oct_changed = true;
 	  }
 	}
+      }
   }
   // In general, adding a constraint does not preserve the strongly
   // closure of the octagon.
@@ -3050,11 +3054,12 @@ Octagonal_Shape<T>::refine(const Variable var,
 
   // Get information about the number of non-zero coefficients in `expr'.
   for (dimension_type i = expr_space_dim; i-- > 0; )
-    if (expr.coefficient(Variable(i)) != 0)
+    if (expr.coefficient(Variable(i)) != 0) {
       if (t++ == 1)
 	break;
       else
 	w_id = i;
+    }
 
   // Now we know the form of `expr':
   // - If t == 0, then expr == b, with `b' a constant;
@@ -3345,12 +3350,13 @@ Octagonal_Shape<T>::refine(const Variable var,
 		else
 		  matrix[n_var+1][2*pinf_index+1] = sum;
 	      else
-		if (ppi == minus_sc_den)
+		if (ppi == minus_sc_den) {
 		  // Add the constraint `v + pinf_index <= sum'.
 		  if (var_id < pinf_index)
 		    matrix[2*pinf_index+1][n_var] = sum;
 		  else
 		    matrix[n_var+1][2*pinf_index] = sum;
+		}
 	    }
 	}
 
@@ -3390,13 +3396,14 @@ Octagonal_Shape<T>::refine(const Variable var,
 		else
 		  matrix[2*neg_pinf_index+1][n_var+1] = neg_sum;
 	      else
-		if (npi == minus_sc_den)
+		if (npi == minus_sc_den) {
 		  // Add the constraint `v + neg_pinf_index >= -neg_sum',
 		  // i.e., `-neg_pinf_index - v <= neg_sum'.
 		  if (neg_pinf_index < var_id)
 		    matrix[n_var][2*neg_pinf_index+1] = neg_sum;
 		  else
 		    matrix[2*neg_pinf_index][n_var+1] = neg_sum;
+		}
 	    }
 	}
 	break;
@@ -3618,11 +3625,12 @@ Octagonal_Shape<T>::affine_image(const Variable var,
   // Get information about the number of non-zero coefficients in `expr'.
   // The `expr' must not be in two or plus variables.
   for (dimension_type i = expr_space_dim; i-- > 0; )
-    if (expr.coefficient(Variable(i)) != 0)
+    if (expr.coefficient(Variable(i)) != 0) {
       if (t++ == 1)
 	break;
       else
         w_id = i;
+    }
 
   typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
   typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
@@ -3931,12 +3939,13 @@ Octagonal_Shape<T>::affine_image(const Variable var,
 	  else
 	    matrix[n_var+1][2*pos_pinf_index+1] = pos_sum;
 	else
-	  if (ppi == minus_sc_den)
+	  if (ppi == minus_sc_den) {
 	    // Add the constraint `v + pos_pinf_index <= pos_sum'.
 	    if (var_id < pos_pinf_index)
 	      matrix[2*pos_pinf_index+1][n_var] = pos_sum;
 	    else
 	      matrix[n_var+1][2*pos_pinf_index] = pos_sum;
+	  }
       }
   }
 
@@ -3974,13 +3983,14 @@ Octagonal_Shape<T>::affine_image(const Variable var,
 	  else
 	    matrix[2*neg_pinf_index+1][n_var+1] = neg_sum;
 	else
-	  if (npi == minus_sc_den)
+	  if (npi == minus_sc_den) {
 	    // Add the constraint `v + neg_pinf_index >= -neg_sum',
 	    // i.e., `-neg_pinf_index - v <= neg_sum'.
 	    if (neg_pinf_index < var_id)
 	      matrix[n_var][2*neg_pinf_index+1] = neg_sum;
 	    else
 	      matrix[2*neg_pinf_index][n_var+1] = neg_sum;
+	  }
       }
   }
 
@@ -4027,11 +4037,12 @@ Octagonal_Shape<T>::affine_preimage(const Variable var,
 
   // Get information about the number of the non-zero coefficients of `expr'.
   for (dimension_type i = expr_space_dim; i-- > 0; )
-    if (expr.coefficient(Variable(i)) != 0)
+    if (expr.coefficient(Variable(i)) != 0) {
       if (t++ == 1)
 	break;
       else
         w_id = i;
+    }
 
   // `w' is the variable with index `w_id'.
   // Now we know the form of `expr':
@@ -4147,11 +4158,12 @@ Octagonal_Shape<T>
   // Get information about the number of non-zero coefficients in `expr'.
   // The `expr' must not be in two or plus variables.
   for (dimension_type i = expr_space_dim; i-- > 0; )
-    if (expr.coefficient(Variable(i)) != 0)
+    if (expr.coefficient(Variable(i)) != 0) {
       if (t++ == 1)
 	break;
       else
         w_id = i;
+    }
 
   typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
   typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
@@ -4670,11 +4682,12 @@ Octagonal_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
     // Compute a sign-corrected relation symbol.
     const Coefficient& den = lhs.coefficient(v);
     Relation_Symbol new_relsym = relsym;
-    if (den < 0)
+    if (den < 0) {
       if (relsym == LESS_OR_EQUAL)
 	new_relsym = GREATER_OR_EQUAL;
       else if (relsym == GREATER_OR_EQUAL)
 	new_relsym = LESS_OR_EQUAL;
+    }
     Linear_Expression expr = rhs - b_lhs;
     generalized_affine_image(v, new_relsym, expr, den);
   }
@@ -4820,11 +4833,12 @@ Octagonal_Shape<T>::bounded_affine_image(const Variable var,
   // Get information about the number of non-zero coefficients in `lb_expr'.
   // The `expr' must not be in two or plus variables.
   for (dimension_type i = lb_space_dim; i-- > 0; )
-    if (lb_expr.coefficient(Variable(i)) != 0)
+    if (lb_expr.coefficient(Variable(i)) != 0) {
       if (t++ == 1)
 	break;
       else
 	w_id = i;
+    }
 
   typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
   typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
@@ -5053,13 +5067,14 @@ Octagonal_Shape<T>::bounded_affine_image(const Variable var,
 	  else
 	    matrix[2*neg_pinf_index+1][n_var+1] = neg_sum;
 	else
-	  if (npi == minus_sc_den)
+	  if (npi == minus_sc_den) {
 	    // Add the constraint `v + neg_pinf_index >= -neg_sum',
 	    // i.e., `-neg_pinf_index - v <= neg_sum'.
 	    if (neg_pinf_index < var_id)
 	      matrix[n_var][2*neg_pinf_index+1] = neg_sum;
 	    else
 	      matrix[2*neg_pinf_index][n_var+1] = neg_sum;
+	  }
       }
   }
 
@@ -5206,11 +5221,12 @@ Octagonal_Shape<T>
     // Compute a sign-corrected relation symbol.
     const Coefficient& den = lhs.coefficient(v);
     Relation_Symbol new_relsym = relsym;
-    if (den < 0)
+    if (den < 0) {
       if (relsym == LESS_OR_EQUAL)
 	new_relsym = GREATER_OR_EQUAL;
       else if (relsym == GREATER_OR_EQUAL)
 	new_relsym = LESS_OR_EQUAL;
+    }
     Linear_Expression expr = rhs - b_lhs;
     generalized_affine_preimage(v, new_relsym, expr, den);
   }

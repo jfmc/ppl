@@ -362,7 +362,7 @@ PPL::Grid::relation_with(const Congruence& cg) const {
       && Poly_Con_Relation::is_included()
       && Poly_Con_Relation::is_disjoint();
 
-  if (space_dim == 0)
+  if (space_dim == 0) {
     if (cg.is_trivial_false())
       return Poly_Con_Relation::is_disjoint();
     else if (cg.is_equality())
@@ -371,6 +371,7 @@ PPL::Grid::relation_with(const Congruence& cg) const {
     else if (cg.inhomogeneous_term() % cg.modulus() == 0)
       return Poly_Con_Relation::saturates()
 	&& Poly_Con_Relation::is_included();
+  }
 
   if (!generators_are_up_to_date() && !update_generators())
     // Updating found the grid empty.
@@ -489,7 +490,7 @@ PPL::Grid::relation_with(const Congruence& cg) const {
     }
   }
 
-  if (point_sp == 0)
+  if (point_sp == 0) {
     if (cg.is_equality())
       // Every generator satisfied the cg.
       return Poly_Con_Relation::is_included()
@@ -497,6 +498,7 @@ PPL::Grid::relation_with(const Congruence& cg) const {
     else
       // Every generator satisfied the cg.
       return Poly_Con_Relation::is_included();
+  }
 
   assert(!known_to_intersect);
   return Poly_Con_Relation::is_disjoint();
@@ -580,7 +582,7 @@ PPL::Grid::relation_with(const Constraint& c) const {
       &&  Poly_Con_Relation::is_included()
       && Poly_Con_Relation::is_disjoint();
 
-  if (space_dim == 0)
+  if (space_dim == 0) {
     if (c.is_inconsistent())
       if (c.is_strict_inequality() && c.inhomogeneous_term() == 0)
 	// The constraint 0 > 0 implicitly defines the hyperplane 0 = 0;
@@ -597,6 +599,7 @@ PPL::Grid::relation_with(const Constraint& c) const {
       // neither the positivity constraint 1 >= 0,
       // nor the strict positivity constraint 1 > 0.
       return Poly_Con_Relation::is_included();
+  }
 
   if (!generators_are_up_to_date() && !update_generators())
     // Updating found the grid empty.

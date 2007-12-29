@@ -52,7 +52,7 @@ increase_space_dimension(const dimension_type new_space_dim) {
 
   const dimension_type cols_to_add = new_space_dim - space_dimension();
 
-  if (cols_to_add)
+  if (cols_to_add) {
     if (num_rows()) {
       const dimension_type old_num_columns = num_columns();
       add_zero_columns(cols_to_add);
@@ -62,6 +62,7 @@ increase_space_dimension(const dimension_type new_space_dim) {
     else
       // Empty system.
       add_zero_columns(cols_to_add);
+  }
 
   assert(OK());
   return true;

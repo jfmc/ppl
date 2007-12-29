@@ -223,11 +223,12 @@ PPL::Grid::quick_equivalence_test(const Grid& y) const {
   // TODO: Consider minimizing the systems and re-performing these
   //       checks.
 
-  if (css_normalized)
+  if (css_normalized) {
     if (x.con_sys == y.con_sys)
       return Grid::TVB_TRUE;
     else
       return Grid::TVB_FALSE;
+  }
 
   return Grid::TVB_DONT_KNOW;
 }

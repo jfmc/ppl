@@ -566,7 +566,7 @@ PPL::Polyhedron::max_min(const Linear_Expression& expr,
 				  : "minimize(e, ...)"), "e", expr);
 
   // Deal with zero-dim polyhedra first.
-  if (space_dim == 0)
+  if (space_dim == 0) {
     if (marked_empty())
       return false;
     else {
@@ -576,6 +576,7 @@ PPL::Polyhedron::max_min(const Linear_Expression& expr,
       g = point();
       return true;
     }
+  }
 
   // For an empty polyhedron we simply return false.
   if (marked_empty()
@@ -908,7 +909,7 @@ PPL::Polyhedron::obtain_sorted_constraints() const {
   assert(constraints_are_up_to_date());
   // `con_sys' will be sorted up to `index_first_pending'.
   Polyhedron& x = const_cast<Polyhedron&>(*this);
-  if (!x.con_sys.is_sorted())
+  if (!x.con_sys.is_sorted()) {
     if (x.sat_g_is_up_to_date()) {
       // Sorting constraints keeping `sat_g' consistent.
       x.con_sys.sort_and_remove_with_sat(x.sat_g);
@@ -926,6 +927,7 @@ PPL::Polyhedron::obtain_sorted_constraints() const {
       // If neither `sat_g' nor `sat_c' are up-to-date,
       // we just sort the constraints.
       x.con_sys.sort_rows();
+  }
 
   assert(con_sys.check_sorted());
 }
@@ -935,7 +937,7 @@ PPL::Polyhedron::obtain_sorted_generators() const {
   assert(generators_are_up_to_date());
   // `gen_sys' will be sorted up to `index_first_pending'.
   Polyhedron& x = const_cast<Polyhedron&>(*this);
-  if (!x.gen_sys.is_sorted())
+  if (!x.gen_sys.is_sorted()) {
     if (x.sat_c_is_up_to_date()) {
       // Sorting generators keeping 'sat_c' consistent.
       x.gen_sys.sort_and_remove_with_sat(x.sat_c);
@@ -953,6 +955,7 @@ PPL::Polyhedron::obtain_sorted_generators() const {
       // If neither `sat_g' nor `sat_c' are up-to-date, we just sort
       // the generators.
       x.gen_sys.sort_rows();
+  }
 
   assert(gen_sys.check_sorted());
 }

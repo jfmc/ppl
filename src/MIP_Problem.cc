@@ -500,7 +500,7 @@ PPL::MIP_Problem::parse_constraints(dimension_type& tableau_num_rows,
     bool found_many_nonzero_coeffs = false;
     dimension_type nonzero_coeff_column_index = 0;
     for (dimension_type sd = cs_i.space_dimension(); sd-- > 0; ) {
-      if (cs_i.coefficient(Variable(sd)) != 0)
+      if (cs_i.coefficient(Variable(sd)) != 0) {
 	if (found_a_nonzero_coeff) {
 	  found_many_nonzero_coeffs = true;
 	  if (cs_i.is_inequality())
@@ -511,6 +511,7 @@ PPL::MIP_Problem::parse_constraints(dimension_type& tableau_num_rows,
 	  nonzero_coeff_column_index = sd + 1;
 	  found_a_nonzero_coeff = true;
 	}
+      }
     }
     // If more than one coefficient is nonzero,
     // continue with next constraint.

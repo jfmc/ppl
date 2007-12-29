@@ -355,11 +355,12 @@ operator==(const BD_Shape<T>& x, const BD_Shape<T>& y) {
     return false;
 
   // Zero-dim BDSs are equal if and only if they are both empty or universe.
-  if (x_space_dim == 0)
+  if (x_space_dim == 0) {
     if (x.marked_empty())
       return y.marked_empty();
     else
       return !y.marked_empty();
+  }
 
   // The exact equivalence test requires shortest-path closure.
   x.shortest_path_closure_assign();

@@ -150,7 +150,7 @@ adjust_topology_and_space_dimension(const Topology new_topology,
     }
   else
     // Here `cols_to_be_added == 0'.
-    if (old_topology != new_topology)
+    if (old_topology != new_topology) {
       if (new_topology == NECESSARILY_CLOSED) {
 	// A NOT_NECESSARILY_CLOSED generator system
 	// can be converted in to a NECESSARILY_CLOSED one
@@ -172,6 +172,7 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 	  gs[i][eps_index] = gs[i][0];
 	set_not_necessarily_closed();
       }
+    }
   // We successfully adjusted dimensions and topology.
   assert(OK());
   return true;
@@ -447,7 +448,7 @@ PPL::Generator_System::relation_with(const Constraint& c) const {
 	// If that is the case, then we have to do something only if
 	// the generator is a point.
 	if (sp_sign == 0) {
-	  if (g.is_point())
+	  if (g.is_point()) {
 	    if (first_point_or_nonsaturating_ray_sign == 2)
 	      // It is the first time that we find a point and
 	      // we have not found a non-saturating ray yet.
@@ -456,6 +457,7 @@ PPL::Generator_System::relation_with(const Constraint& c) const {
 	      // We already found a point or a non-saturating ray.
 	      if (first_point_or_nonsaturating_ray_sign != 0)
 		return Poly_Con_Relation::strictly_intersects();
+	  }
 	}
 	else
 	  // Here we know that sp_sign != 0.
@@ -517,7 +519,7 @@ PPL::Generator_System::relation_with(const Constraint& c) const {
 	// inequality. If that is the case, then we have to do something
 	// only if the generator is a point.
 	if (sp_sign == 0) {
-	  if (g.is_point())
+	  if (g.is_point()) {
 	    if (first_point_or_nonsaturating_ray)
 	      // It is the first time that we have a point and
 	      // we have not found a non-saturating ray yet.
@@ -528,6 +530,7 @@ PPL::Generator_System::relation_with(const Constraint& c) const {
 		// Since g saturates c, we have a strict intersection if
 		// none of the generators seen so far are included in `c'.
 		return Poly_Con_Relation::strictly_intersects();
+	  }
 	}
 	else
 	  // Here we know that sp_sign != 0.
@@ -629,7 +632,7 @@ PPL::Generator_System::relation_with(const Constraint& c) const {
 	// If that is the case, then we have to do something
 	// only if the generator is a point.
 	if (sp_sign == 0) {
-	  if (g.is_point())
+	  if (g.is_point()) {
 	    if (first_point_or_nonsaturating_ray)
 	      // It is the first time that we have a point and
 	      // we have not found a non-saturating ray yet.
@@ -638,6 +641,7 @@ PPL::Generator_System::relation_with(const Constraint& c) const {
 	      // We already found a point or a non-saturating ray before.
 	      if (result == Poly_Con_Relation::is_included())
 		return Poly_Con_Relation::strictly_intersects();
+	  }
 	}
 	else
 	  // Here we know that sp_sign != 0.

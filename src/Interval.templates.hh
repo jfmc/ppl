@@ -61,11 +61,12 @@ Interval<Boundary, Info>::CC76_widening_assign(const From& y,
     if (y_lb > x_lb) {
       Iterator k = std::lower_bound(first, last, x_lb);
       if (k != last) {
-	if (x_lb < *k)
+	if (x_lb < *k) { 
 	  if (k != first)
 	    x_lb = *--k;
 	  else
 	    x.lower_set(UNBOUNDED);
+	}
       }
       else
 	x_lb = *--k;

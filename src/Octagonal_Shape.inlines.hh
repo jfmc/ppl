@@ -290,11 +290,12 @@ operator==(const Octagonal_Shape<T>& x, const Octagonal_Shape<T>& y) {
     return false;
 
   // Zero-dim OSs are equal if and only if they are both empty or universe.
-  if (x.space_dim == 0)
+  if (x.space_dim == 0) {
     if (x.marked_empty())
       return y.marked_empty();
     else
       return !y.marked_empty();
+  }
 
   x.strong_closure_assign();
   y.strong_closure_assign();

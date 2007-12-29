@@ -291,7 +291,7 @@ PPL::Linear_System::add_rows(const Linear_System& y) {
     return;
 
   // Check if sortedness is preserved.
-  if (is_sorted())
+  if (is_sorted()) {
     if (!y.is_sorted() || y.num_pending_rows() > 0)
       set_sorted(false);
     else {
@@ -300,6 +300,7 @@ PPL::Linear_System::add_rows(const Linear_System& y) {
       if (n_rows > 0)
 	set_sorted(compare((*this)[n_rows-1], y[0]) <= 0);
     }
+  }
 
   // Add the rows of `y' as if they were pending.
   add_pending_rows(y);
@@ -842,7 +843,7 @@ PPL::Linear_System::OK(const bool check_strong_normalized) const {
 
   // An empty system is OK,
   // unless it is an NNC system with exactly one column.
-  if (empty())
+  if (empty()) {
     if (is_necessarily_closed() || num_columns() != 1)
       return true;
     else {
@@ -851,6 +852,7 @@ PPL::Linear_System::OK(const bool check_strong_normalized) const {
 #endif
       return false;
     }
+  }
 
   // A non-empty system will contain constraints or generators; in
   // both cases it must have at least one column for the inhomogeneous
