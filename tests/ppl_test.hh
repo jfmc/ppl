@@ -34,6 +34,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <iterator>
 #include <string>
 #include <algorithm>
+#include <typeinfo>
 
 void
 set_handlers();
