@@ -23,7 +23,55 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Interval_templates_hh
 #define PPL_Interval_templates_hh 1
 
+#include <algorithm>
+
 namespace Parma_Polyhedra_Library {
+
+template <typename Boundary, typename Info>
+template <typename From, typename Iterator>
+typename Enable_If<Is_Interval<From>::value, void>::type
+Interval<Boundary, Info>::CC76_widening_assign(const From& y,
+					       Iterator first,
+					       Iterator last) {
+  // We assume that `y' is contained in or equal to `*this'.
+  assert(contains(y));
+  Interval<Boundary, Info>& x = *this;
+
+  // Upper bound.
+  if (!x.upper_is_unbounded()) {
+    Boundary& x_ub = x.upper();
+    const Boundary& y_ub = y.upper();
+    assert(!y.upper_is_unbounded() && y_ub <= x_ub);
+    if (y_ub < x_ub) {
+      Iterator k = std::lower_bound(first, last, x_ub);
+      if (k != last) {
+	if (x_ub < *k)
+	  x_ub = *k;
+      }
+      else
+	x.upper_set(UNBOUNDED);
+    }
+  }
+
+  // Lower bound.
+  if (!x.lower_is_unbounded()) {
+    Boundary& x_lb = x.lower();
+    const Boundary& y_lb = y.lower();
+    assert(!y.lower_is_unbounded() && y_lb >= x_lb);
+    if (y_lb > x_lb) {
+      Iterator k = std::lower_bound(first, last, x_lb);
+      if (k != last) {
+	if (x_lb < *k)
+	  if (k != first)
+	    x_lb = *--k;
+	  else
+	    x.lower_set(UNBOUNDED);
+      }
+      else
+	x_lb = *--k;
+    }
+  }
+}
 
 template <typename Boundary, typename Info>
 inline std::istream&
