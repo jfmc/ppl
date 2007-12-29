@@ -2167,47 +2167,10 @@ Box<Interval>::CC76_widening_assign(const Box& y,
   if (y.is_empty())
     return;
 
-  Box& x = *this;
-  for (dimension_type i = x.seq.size(); i-- > 0; ) {
-    Interval& x_seq_i = x.seq[i];
-    const Interval& y_seq_i = y.seq[i];
+  for (dimension_type i = seq.size(); i-- > 0; )
+    seq[i].CC76_widening_assign(y.seq[i], first, last);
 
-    // Upper bound.
-    if (!x_seq_i.upper_is_unbounded()) {
-      typename Interval::boundary_type& x_ub = x_seq_i.upper();
-      const typename Interval::boundary_type& y_ub = y_seq_i.upper();
-      assert(!y_seq_i.upper_is_unbounded() && y_ub <= x_ub);
-      if (y_ub < x_ub) {
-	Iterator k = std::lower_bound(first, last, x_ub);
-	if (k != last) {
-	  if (x_ub < *k)
-	    x_ub = *k;
-	}
-	else
-	  x_seq_i.upper_set(UNBOUNDED);
-      }
-    }
-
-    // Lower bound.
-    if (!x_seq_i.lower_is_unbounded()) {
-      typename Interval::boundary_type& x_lb = x_seq_i.lower();
-      const typename Interval::boundary_type& y_lb = y_seq_i.lower();
-      assert(!y_seq_i.lower_is_unbounded() && y_lb >= x_lb);
-      if (y_lb > x_lb) {
-	Iterator k = std::lower_bound(first, last, x_lb);
-	if (k != last) {
-	  if (x_lb < *k)
-	    if (k != first)
-	      x_lb = *--k;
-	    else
-	      x_seq_i.lower_set(UNBOUNDED);
-	}
-	else
-	  x_lb = *--k;
-      }
-    }
-  }
-  assert(x.OK());
+  assert(OK());
 }
 
 template <typename Interval>
