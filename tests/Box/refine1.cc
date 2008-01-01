@@ -1,6 +1,6 @@
 /* Test Box::refine(const Constraint&)
    and Box::refine(const Constraint_System&).
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
