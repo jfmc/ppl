@@ -1707,6 +1707,10 @@ grid_exceptions :-
    current_prolog_flag(bounded, Y),
    make_vars(3, V),
    grid_exception_prolog(V),
+    /* XSB does not throw catchable exceptions for integers out of range;
+	so call to exception_sys_prolog is not made when testing XSB.
+        The same exclusion for XSB and exception_sys_prolog/1 test is also
+        made in pl_check.pl (See log message 2007-09-19 10:29:08) */
    ((Y == true,\+prolog_system('XSB'))  -> grid_exception_sys_prolog(V) ; true),
    grid_exception_cplusplus(V),
    !.
