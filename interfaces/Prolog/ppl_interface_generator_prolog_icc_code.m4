@@ -179,7 +179,7 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(Prolog_term_ref t_bb,
     }
 
     @TOPOLOGY@@CPP_CLASS@* ph;
-    ph = new @TOPOLOGY@@CPP_CLASS@(box);
+    ph = new @TOPOLOGY@@CLASS@(box new_@BOX@_code`' );
     Prolog_term_ref tmp = Prolog_new_term_ref();
     Prolog_put_address(tmp, ph);
     if (Prolog_unify(t_ph, tmp)) {
@@ -191,6 +191,12 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(Prolog_term_ref t_bb,
   }
   CATCH_ALL;
 }
+
+')
+
+m4_define(`new_bounding_box_code', `')
+
+m4_define(`new_covering_box_code', `, From_Covering_Box()');
 
 ')
 
@@ -613,6 +619,14 @@ m4_define(`relation_with_congruence_code', `
         Prolog_construct_cons(tail, t_inc, tail);
         r = r - Poly_Con_Relation::is_included();
       }
+      else if (r.implies(Poly_Con_Relation::saturates())) {
+        Prolog_term_ref t_sat = Prolog_new_term_ref();
+        Prolog_put_atom(t_sat, a_saturates);
+        Prolog_construct_cons(tail, t_sat, tail);
+        r = r - Poly_Con_Relation::saturates();
+      }
+     else
+       break;
     }
 ')
 
