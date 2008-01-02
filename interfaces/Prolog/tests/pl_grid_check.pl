@@ -1707,9 +1707,10 @@ grid_exceptions :-
    current_prolog_flag(bounded, Y),
    make_vars(3, V),
    grid_exception_prolog(V),
-   (Y == true -> grid_exception_sys_prolog(V) ; true),
+   ((Y == true,\+prolog_system('XSB'))  -> grid_exception_sys_prolog(V) ; true),
    grid_exception_cplusplus(V),
    !.
+
 
 %% TEST: Prolog_unsigned_out_of_range
 grid_exception_yap :-
@@ -1996,6 +1997,7 @@ grid_exception_cplusplus(10, [A, B, C]) :-
   must_catch(ppl_Grid_affine_preimage(P, B, A + C, 1)),
   !,
   ppl_delete_Grid(P).
+
 
 % must_catch(+Call) calls Call using catch and checks exception.
 % If exception it succeeds and fails if there is no exception caught.
