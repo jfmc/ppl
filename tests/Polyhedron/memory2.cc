@@ -1,11 +1,11 @@
 /* Test the allocation error recovery facility of the library.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <limits>
 
 // If GMP does not support exceptions the test is pointless.
-#if !GMP_SUPPORTS_EXCEPTIONS
+#if !PPL_GMP_SUPPORTS_EXCEPTIONS
 
 int
 main() TRY {
@@ -33,7 +33,7 @@ main() TRY {
 }
 CATCH
 
-#else // GMP_SUPPORTS_EXCEPTIONS
+#else // PPL_GMP_SUPPORTS_EXCEPTIONS
 
 namespace {
 
@@ -196,12 +196,12 @@ test3() {
 
 } // namespace
 
-#define IGNORE_OVERFLOWS(fun) \
-try { \
-  fun; \
-} \
-catch (const std::overflow_error&) { \
-}
+#define IGNORE_OVERFLOWS(fun)			\
+  try {						\
+    fun;					\
+  }						\
+  catch (const std::overflow_error&) {		\
+  }
 
 int
 main() TRY {
@@ -219,4 +219,4 @@ main() TRY {
 }
 CATCH
 
-#endif // GMP_SUPPORTS_EXCEPTIONS
+#endif // PPL_GMP_SUPPORTS_EXCEPTIONS

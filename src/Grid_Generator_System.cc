@@ -1,11 +1,11 @@
 /* Grid_Generator_System class implementation (non-inline functions).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -20,12 +20,11 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
-
+#include <ppl-config.h>
 #include "Grid_Generator_System.defs.hh"
 #include "Grid_Generator_System.inlines.hh"
 #include "Scalar_Products.defs.hh"
-
+#include "Variables_Set.defs.hh"
 #include <cassert>
 #include <iostream>
 
@@ -233,10 +232,27 @@ PPL::Grid_Generator_System::ascii_load(std::istream& s) {
     if (!x[i].ascii_load(s))
       return false;
 
-  // Checking for well-formedness.
+  // Check invariants.
   assert(OK());
 
   return true;
+}
+
+const PPL::Grid_Generator_System*
+PPL::Grid_Generator_System::zero_dim_univ_p = 0;
+
+void
+PPL::Grid_Generator_System::initialize() {
+  assert(zero_dim_univ_p == 0);
+  zero_dim_univ_p
+    = new Grid_Generator_System(Grid_Generator::zero_dim_point());
+}
+
+void
+PPL::Grid_Generator_System::finalize() {
+  assert(zero_dim_univ_p != 0);
+  delete zero_dim_univ_p;
+  zero_dim_univ_p = 0;
 }
 
 bool
@@ -309,9 +325,8 @@ PPL::Grid_Generator_System
 void
 PPL::Grid_Generator_System
 ::remove_space_dimensions(const Variables_Set& to_be_removed) {
-  // Dimension-compatibility assertion: the variable having maximum
-  // space dimension is the one occurring last in the set.
-  assert(space_dimension() >= to_be_removed.rbegin()->space_dimension());
+  // Dimension-compatibility assertion.
+  assert(space_dimension() >= to_be_removed.space_dimension());
 
   // The removal of no dimensions from any system is a no-op.  This
   // case also captures the only legal removal of dimensions from a
@@ -323,10 +338,10 @@ PPL::Grid_Generator_System
   // by shifting left the columns to the right that will be kept.
   Variables_Set::const_iterator tbr = to_be_removed.begin();
   Variables_Set::const_iterator tbr_end = to_be_removed.end();
-  dimension_type dst_col = tbr->space_dimension();
+  dimension_type dst_col = *tbr+1;
   dimension_type src_col = dst_col + 1;
   for (++tbr; tbr != tbr_end; ++tbr) {
-    dimension_type tbr_col = tbr->space_dimension();
+    const dimension_type tbr_col = *tbr+1;
     // Move all columns in between to the left.
     while (src_col < tbr_col)
       Matrix::swap_columns(dst_col++, src_col++);

@@ -1,11 +1,11 @@
 /* Linear_System class implementation (non-inline functions).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -20,12 +20,12 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
+#include <ppl-config.h>
 
 #include "Linear_System.defs.hh"
 #include "Coefficient.defs.hh"
 #include "Row.defs.hh"
-#include "Saturation_Matrix.defs.hh"
+#include "Bit_Matrix.defs.hh"
 #include "Scalar_Products.defs.hh"
 #include <algorithm>
 #include <iostream>
@@ -173,7 +173,7 @@ PPL::Linear_System::ascii_load(std::istream& s) {
     if (!x[row].ascii_load(s))
       return false;
 
-  // Check for well-formedness.
+  // Check invariants.
   assert(OK(true));
   return true;
 }
@@ -200,16 +200,14 @@ PPL::Linear_System::insert(const Linear_Row& r) {
       swap_columns(old_num_columns - 1, r_size - 1);
     add_row(r);
   }
-  else if (r_size < old_num_columns)
-    if (is_necessarily_closed() || old_num_rows == 0)
-      add_row(Linear_Row(r, old_num_columns, row_capacity));
-    else {
-      // Create a resized copy of the row (and move the epsilon
-      // coefficient to its last position).
-      Linear_Row tmp_row(r, old_num_columns, row_capacity);
+  else if (r_size < old_num_columns) {
+    // Create a resized copy of the row.
+    Linear_Row tmp_row(r, old_num_columns, row_capacity);
+    // If needed, move the epsilon coefficient to the last position.
+    if (!is_necessarily_closed())
       std::swap(tmp_row[r_size - 1], tmp_row[old_num_columns - 1]);
-      add_row(tmp_row);
-    }
+    add_row(tmp_row);
+  }
   else
     // Here r_size == old_num_columns.
     add_row(r);
@@ -289,11 +287,11 @@ PPL::Linear_System::add_rows(const Linear_System& y) {
   assert(num_pending_rows() == 0);
 
   // Adding no rows is a no-op.
-  if (y.num_rows() == 0)
+  if (y.empty())
     return;
 
   // Check if sortedness is preserved.
-  if (is_sorted())
+  if (is_sorted()) {
     if (!y.is_sorted() || y.num_pending_rows() > 0)
       set_sorted(false);
     else {
@@ -302,6 +300,7 @@ PPL::Linear_System::add_rows(const Linear_System& y) {
       if (n_rows > 0)
 	set_sorted(compare((*this)[n_rows-1], y[0]) <= 0);
     }
+  }
 
   // Add the rows of `y' as if they were pending.
   add_pending_rows(y);
@@ -340,7 +339,7 @@ PPL::Linear_System::sort_rows(const dimension_type first_row,
   std::vector<Row>::iterator new_last = swapping_unique(first, last);
   // Finally, remove duplicates.
   rows.erase(new_last, last);
-  // NOTE: we cannot check for well-formedness of the system here,
+  // NOTE: we cannot check all invariants of the system here,
   // because the caller still has to update `index_first_pending'.
 }
 
@@ -498,7 +497,7 @@ PPL::operator==(const Linear_System& x, const Linear_System& y) {
 }
 
 void
-PPL::Linear_System::sort_and_remove_with_sat(Saturation_Matrix& sat) {
+PPL::Linear_System::sort_and_remove_with_sat(Bit_Matrix& sat) {
   Linear_System& sys = *this;
   // We can only sort the non-pending part of the system.
   assert(sys.first_pending_row() == sat.num_rows());
@@ -508,11 +507,11 @@ PPL::Linear_System::sort_and_remove_with_sat(Saturation_Matrix& sat) {
   }
 
   // First, sort `sys' (keeping `sat' consistent) without removing duplicates.
-  With_Saturation_Matrix_iterator first(sys.rows.begin(), sat.rows.begin());
-  With_Saturation_Matrix_iterator last = first + sat.num_rows();
+  With_Bit_Matrix_iterator first(sys.rows.begin(), sat.rows.begin());
+  With_Bit_Matrix_iterator last = first + sat.num_rows();
   swapping_sort(first, last, Row_Less_Than());
   // Second, move duplicates in `sys' to the end (keeping `sat' consistent).
-  With_Saturation_Matrix_iterator new_last = swapping_unique(first, last);
+  With_Bit_Matrix_iterator new_last = swapping_unique(first, last);
 
   const dimension_type num_duplicates = last - new_last;
   const dimension_type new_first_pending_row
@@ -605,7 +604,7 @@ PPL::Linear_System
   const dimension_type ncols = x.num_columns();
   // Trying to keep sortedness.
   bool still_sorted = x.is_sorted();
-  // This deque of booleans will be used to flag those rows that,
+  // This deque of Booleans will be used to flag those rows that,
   // before exiting, need to be re-checked for sortedness.
   std::deque<bool> check_for_sortedness;
   if (still_sorted)
@@ -703,7 +702,7 @@ PPL::Linear_System::simplify() {
       }
       ++n_lines_or_equalities;
     }
-  // Apply Gaussian's elimination to the subsystem of lines/equalities.
+  // Apply Gaussian elimination to the subsystem of lines/equalities.
   const dimension_type rank = x.gauss(n_lines_or_equalities);
   // Eliminate any redundant line/equality that has been detected.
   if (rank < n_lines_or_equalities) {
@@ -844,7 +843,7 @@ PPL::Linear_System::OK(const bool check_strong_normalized) const {
 
   // An empty system is OK,
   // unless it is an NNC system with exactly one column.
-  if (num_rows() == 0)
+  if (empty()) {
     if (is_necessarily_closed() || num_columns() != 1)
       return true;
     else {
@@ -853,6 +852,7 @@ PPL::Linear_System::OK(const bool check_strong_normalized) const {
 #endif
       return false;
     }
+  }
 
   // A non-empty system will contain constraints or generators; in
   // both cases it must have at least one column for the inhomogeneous

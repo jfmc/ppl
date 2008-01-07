@@ -1,11 +1,11 @@
 /* Test Direct_Product<nnc_ph, gr> ascii_dump() and ascii_load().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -30,6 +30,9 @@ using std::string;
 using std::fstream;
 using std::ios_base;
 
+typedef Domain_Product<Grid, NNC_Polyhedron>::Direct_Product
+No_Reduction_Product;
+
 namespace {
 
 // Universe.
@@ -37,7 +40,7 @@ bool
 test01() {
   const char* my_file = "ascii_dump_load7.dat";
 
-  Direct_Product<NNC_Polyhedron, Grid> dp1(3);
+  No_Reduction_Product dp1(3);
 
   fstream f;
   open(f, my_file, ios_base::out);
@@ -45,7 +48,7 @@ test01() {
   close(f);
 
   open(f, my_file, ios_base::in);
-  Direct_Product<NNC_Polyhedron, Grid> dp2(3);
+  No_Reduction_Product dp2(3);
   dp2.ascii_load(f);
   close(f);
 
@@ -60,7 +63,7 @@ test02() {
   const char* my_file = "ascii_dump_load7.dat";
   Variable A(0);
 
-  Direct_Product<NNC_Polyhedron, Grid> dp1(3);
+  No_Reduction_Product dp1(3);
   dp1.add_congruence((2*A %= 3) / 3);
 
   fstream f;
@@ -69,7 +72,7 @@ test02() {
   close(f);
 
   open(f, my_file, ios_base::in);
-  Direct_Product<NNC_Polyhedron, Grid> dp2(3);
+  No_Reduction_Product dp2(3);
   dp2.ascii_load(f);
   close(f);
 
@@ -84,7 +87,7 @@ test03() {
   const char* my_file = "ascii_dump_load7.dat";
   Variable A(0);
 
-  Direct_Product<NNC_Polyhedron, Grid> dp1(3);
+  No_Reduction_Product dp1(3);
   dp1.add_constraint(3*A > 2);
 
   fstream f;
@@ -93,7 +96,7 @@ test03() {
   close(f);
 
   open(f, my_file, ios_base::in);
-  Direct_Product<NNC_Polyhedron, Grid> dp2(3);
+  No_Reduction_Product dp2(3);
   dp2.ascii_load(f);
   close(f);
 
@@ -109,7 +112,7 @@ test04() {
   Variable A(0);
   Variable B(1);
 
-  Direct_Product<NNC_Polyhedron, Grid> dp1(3);
+  No_Reduction_Product dp1(3);
   dp1.add_constraint(3*B > 2);
   dp1.add_congruence((A %= 0) / 2);
 
@@ -119,7 +122,7 @@ test04() {
   close(f);
 
   open(f, my_file, ios_base::in);
-  Direct_Product<NNC_Polyhedron, Grid> dp2(3);
+  No_Reduction_Product dp2(3);
   dp2.ascii_load(f);
   close(f);
 
@@ -137,7 +140,7 @@ test05() {
   Variable C(2);
   Variable D(3);
 
-  Direct_Product<NNC_Polyhedron, Grid> dp1(4);
+  No_Reduction_Product dp1(4);
   dp1.add_constraint(3*A + D > 2);
   dp1.add_congruence((A - 3*C %= 0) / 2);
 
@@ -147,7 +150,7 @@ test05() {
   close(f);
 
   open(f, my_file, ios_base::in);
-  Direct_Product<NNC_Polyhedron, Grid> dp2(4);
+  No_Reduction_Product dp2(4);
   dp2.ascii_load(f);
   close(f);
 
@@ -161,7 +164,7 @@ bool
 test06() {
   const char* my_file = "ascii_dump_load7.dat";
 
-  Direct_Product<NNC_Polyhedron, Grid> dp1(7, EMPTY);
+  No_Reduction_Product dp1(7, EMPTY);
 
   fstream f;
   open(f, my_file, ios_base::out);
@@ -169,7 +172,7 @@ test06() {
   close(f);
 
   open(f, my_file, ios_base::in);
-  Direct_Product<NNC_Polyhedron, Grid> dp2(3);
+  No_Reduction_Product dp2(3);
   dp2.ascii_load(f);
   close(f);
 
@@ -183,7 +186,7 @@ bool
 test07() {
   const char* my_file = "ascii_dump_load7.dat";
 
-  Direct_Product<NNC_Polyhedron, Grid> dp1(0, EMPTY);
+  No_Reduction_Product dp1(0, EMPTY);
 
   fstream f;
   open(f, my_file, ios_base::out);
@@ -191,7 +194,7 @@ test07() {
   close(f);
 
   open(f, my_file, ios_base::in);
-  Direct_Product<NNC_Polyhedron, Grid> dp2(3);
+  No_Reduction_Product dp2(3);
   dp2.ascii_load(f);
   close(f);
 
@@ -205,7 +208,7 @@ bool
 test08() {
   const char* my_file = "ascii_dump_load7.dat";
 
-  Direct_Product<NNC_Polyhedron, Grid> dp1(0);
+  No_Reduction_Product dp1(0);
 
   fstream f;
   open(f, my_file, ios_base::out);
@@ -213,7 +216,7 @@ test08() {
   close(f);
 
   open(f, my_file, ios_base::in);
-  Direct_Product<NNC_Polyhedron, Grid> dp2(3);
+  No_Reduction_Product dp2(3);
   dp2.ascii_load(f);
   close(f);
 

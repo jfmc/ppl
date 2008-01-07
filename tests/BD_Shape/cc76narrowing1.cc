@@ -1,11 +1,11 @@
 /* Test BD_Shape::CC76_narrowing_assign().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -53,7 +53,7 @@ test01() {
   known_result.add_constraint(-y <= 8);
   known_result.add_constraint(y <= 8);
 
-  bool ok = (BD_Shape<mpq_class>(bd2) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd2) == known_result);
 
   print_constraints(bd2, "*** bd2.CC76_narrowing_assign(bd1) ***");
 
@@ -92,7 +92,7 @@ test02() {
   known_result.add_constraint(z - y <= 3);
   known_result.add_constraint(z - x <= 2);
 
-  bool ok = (BD_Shape<mpq_class>(bd2) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd2) == known_result);
 
   print_constraints(bd2, "*** bd2.CC76_narrowing_assign(bd1) ***");
 
@@ -122,7 +122,7 @@ test03() {
 
   bd2.CC76_narrowing_assign(bd1);
 
-  bool ok = (BD_Shape<mpq_class>(bd2) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd2) == known_result);
 
   print_constraints(bd2, "*** bd2.CC76_narrowing_assign(bd1) ***");
 
@@ -153,7 +153,7 @@ test04() {
 
   BD_Shape<mpq_class> known_result(3, EMPTY);
 
-  bool ok = (BD_Shape<mpq_class>(bd2) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd2) == known_result);
 
   print_constraints(bd2, "*** bd2.CC76_narrowing_assign(bd1) ***");
 
@@ -171,7 +171,7 @@ test05() {
 
   bd2.CC76_narrowing_assign(bd1);
 
-  bool ok = (BD_Shape<mpq_class>(bd2) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd2) == known_result);
 
   print_constraints(bd2, "*** bd2.CC76_narrowing_assign(bd1) ***");
 
@@ -189,9 +189,9 @@ test06() {
   cs.insert(y >= 6);
 
   try {
-    // This is an invalid use of the function
+    // This is an invalid use of the method
     // BD_Shape::CC76_narrowing_assign(bd2, cs): it is
-    // illegal to apply this function to two polyhedra that are not
+    // illegal to apply this method to two polyhedra that are not
     // dimension-compatible.
     bd2.CC76_narrowing_assign(bd1);
   }

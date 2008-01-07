@@ -1,11 +1,11 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
 # The PPL is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2 of the License, or (at your
+# Free Software Foundation; either version 3 of the License, or (at your
 # option) any later version.
 #
 # The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -22,30 +22,58 @@
 
 abs_srcdir = @abs_srcdir@
 
-EXTRA_DIST = ppl_ciao.pl ciao_clpq.pl ciao_clpq2.pl ciao_pl_check.pl
+CIAO_CFLI_FILES = ciao_cfli.hh
+
+EXTRA_DIST = \
+ppl_interface_generator_ciao_pl.m4 \
+$(CIAO_CFLI_FILES) \
+ciao_clpq.pl \
+ciao_clpq2.pl \
+ciao_pl_check.pl
 
 if BUILD_CIAO_PROLOG_INTERFACE
+
+if BUILD_WATCHDOG_LIBRARY
+
+WATCHDOG_LIBRARY = $(top_builddir)/Watchdog/src/libpwl.la
+WATCHDOG_INCLUDE_OPTIONS = -I$(top_builddir)/Watchdog/src
+WATCHDOG_DLOPEN = -dlopen $(WATCHDOG_LIBRARY)
+WATCHDOG_LINK_OPTIONS = -L$(top_builddir)/Watchdog/src/.libs -lpwl
+
+endif BUILD_WATCHDOG_LIBRARY
+
 if ENABLE_SHARED
 
 AM_CPPFLAGS = \
+-I$(top_srcdir)/interfaces/Prolog \
 -I$(top_builddir)/src \
--I$(top_builddir)/Watchdog/src \
+$(WATCHDOG_INCLUDE_OPTIONS) \
 @extra_includes@
+
+interface_generator_dependencies = \
+$(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
+../../ppl_interface_generator_common.m4 \
+../../ppl_interface_generator_common_dat.m4 \
+../../ppl_interface_generator_copyright \
+../ppl_interface_generator_prolog_dat.m4 \
+../ppl_interface_generator_prolog_systems.m4 \
+ppl_interface_generator_ciao_pl.m4
 
 pkglib_LTLIBRARIES = libppl_ciao.la
 libppl_ciao_la_SOURCES = ppl_ciao.cc
 libppl_ciao_la_LIBADD = \
 $(top_builddir)/src/libppl.la \
-$(top_builddir)/Watchdog/src/libpwl.la \
+$(WATCHDOG_LIBRARY) \
 @extra_libraries@
 libppl_ciao_la_LDFLAGS = -module -avoid-version
 
 pkglib_DATA = ppl_ciao.po
 
+ppl_ciao.pl: $(interface_generator_dependencies) Makefile
+	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
+           $(srcdir)/ppl_interface_generator_ciao_pl.m4 > $@
+
 ppl_ciao.po: ppl_ciao.pl
-	if [ $(abs_srcdir) != `pwd` ]; then \
-	  cp -f $(srcdir)/ppl_ciao.pl .; \
-	fi
 	ciaoc -c ppl_ciao.pl
 
 # All the invocations of `ciaoc' to build `ciao_pl_check', `ciao_clpq'
@@ -123,19 +151,19 @@ check-local: pl_check_test clpq_test clpq2_test
 pl_check_test: ciao_pl_check$(EXEEXT) .libs/libppl_ciao.so $(EXPECTED_PCHK)
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		-dlopen ../../../Watchdog/src/libpwl.la \
+		$(WATCHDOG_DLOPEN) \
 		-dlopen libppl_ciao.la \
 		./ciao_pl_check \
 			 >obtained_pchk
 	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
 
-clpq_test: ciao_clpq$(EXEEXT) .libs/libppl_ciao.so ../tests/script_clpq $(EXPECTED_CLPQ) 
+clpq_test: ciao_clpq$(EXEEXT) .libs/libppl_ciao.so ../tests/script_clpq $(EXPECTED_CLPQ)
 	LANG=C; \
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
 	GLOBALSTKSIZE=1000000 \
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		-dlopen ../../../Watchdog/src/libpwl.la \
+		$(WATCHDOG_DLOPEN) \
 		-dlopen libppl_ciao.la \
 		./ciao_clpq \
 			<$(srcdir)/../tests/script_clpq >obtained_clpq
@@ -147,22 +175,20 @@ clpq2_test: ciao_clpq2$(EXEEXT) .libs/libppl_ciao.so ../tests/script_clpq2 $(EXP
 	GLOBALSTKSIZE=100000 \
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		-dlopen ../../../Watchdog/src/libpwl.la \
+		$(WATCHDOG_DLOPEN) \
 		-dlopen libppl_ciao.la \
 		./ciao_clpq2 \
 			<$(srcdir)/../tests/script_clpq2 >obtained_clpq2
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
+
+endif ENABLE_SHARED
+endif BUILD_CIAO_PROLOG_INTERFACE
+
+DISTCLEANFILES = \
+ppl_ciao.pl
 
 MOSTLYCLEANFILES = \
 *.itf *.po *.c *.so \
 ciao_clpq ciao_clpq2 ciao_pl_check \
 obtained_clpq obtained_clpq2 obtained_pchk \
 $(CLPQ_TESTS)
-
-mostlyclean-local:
-	if [ $(abs_srcdir) != `pwd` ]; then \
-	  rm -f ppl_ciao.pl; \
-	fi
-
-endif ENABLE_SHARED
-endif BUILD_CIAO_PROLOG_INTERFACE

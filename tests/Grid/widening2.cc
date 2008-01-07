@@ -1,11 +1,11 @@
 /* Test Grid::generator_widening_assign().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -45,8 +45,7 @@ test01() {
 
   bool ok = (gr2 == known_gr);
 
-  print_generators(gr2,
-		   "*** gr2.generator_widening_assign(gr1) ***");
+  print_generators(gr2, "*** gr2.generator_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -72,8 +71,7 @@ test02() {
 
   bool ok = (gr2 == known_gr);
 
-  print_generators(gr2,
-		   "*** gr2.generator_widening_assign(gr1) ***");
+  print_generators(gr2, "*** gr2.generator_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -97,8 +95,7 @@ test03() {
 
   bool ok = (gr2 == known_gr);
 
-  print_generators(gr2,
-		   "*** gr2.generator_widening_assign(gr1) ***");
+  print_generators(gr2, "*** gr2.generator_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -128,8 +125,7 @@ test04() {
 
   bool ok = (gr2 == known_gr);
 
-  print_generators(gr2,
-		   "*** gr2.generator_widening_assign(gr1) ***");
+  print_generators(gr2, "*** gr2.generator_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -162,8 +158,7 @@ test05() {
 
   bool ok = (gr2 == known_gr);
 
-  print_generators(gr2,
-		   "*** gr2.generator_widening_assign(gr1) ***");
+  print_generators(gr2, "*** gr2.generator_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -197,13 +192,14 @@ test06() {
 
   bool ok = (gr2 == known_gr);
 
-  print_generators(gr2,
-		   "*** gr2.generator_widening_assign(gr1) ***");
+  print_generators(gr2, "*** gr2.generator_widening_assign(gr1) ***");
 
   return ok;
 }
 
-// Widening example in fm06.
+// The next two tests are based on an example in [BagnaraDHMZ06a].
+// Widening should only be applied where the grid to be widened is in
+// strong minimal form.
 bool
 test07() {
   Variable A(0);
@@ -228,13 +224,13 @@ test07() {
 
   bool ok = (gr2 == known_gr);
 
-  print_congruences(gr2,
-		    "*** gr2.generator_widening_assign(gr1) ***");
+  print_congruences(gr2, "*** gr2.generator_widening_assign(gr1) ***");
 
   return ok;
 }
 
-// Check for strong minimal form
+// This uses the same grids as before but with the given representation
+// not in strong minimal form.
 bool
 test08() {
   Variable A(0);
@@ -259,8 +255,7 @@ test08() {
 
   bool ok = (gr2 == known_gr);
 
-  print_congruences(gr2,
-		    "*** gr2.widening_assign(gr1) ***");
+  print_congruences(gr2, "*** gr2.widening_assign(gr1) ***");
 
   return ok;
 }
@@ -292,8 +287,7 @@ test09() {
 
   nout << "*** `tokens' (which should be 3), are = *** " << tokens << endl;
 
-  print_congruences(gr2,
-		    "*** gr2.widening_assign(gr1, &tokens) ***");
+  print_congruences(gr2, "*** gr2.widening_assign(gr1, &tokens) ***");
 
   return ok;
 }
@@ -328,8 +322,7 @@ test10() {
 
   nout << "*** `tokens' (which should be 4), are = *** " << tokens << endl;
 
-  print_congruences(gr2,
-		    "*** gr2.widening_assign(gr1, &tokens) ***");
+  print_congruences(gr2, "*** gr2.widening_assign(gr1, &tokens) ***");
 
   return ok;
 }
@@ -351,8 +344,7 @@ test11() {
 
   bool ok = (gr2 == known_gr);
 
-  print_congruences(gr2,
-		    "*** gr2.widening_assign(gr1) ***");
+  print_congruences(gr2, "*** gr2.widening_assign(gr1) ***");
 
   return ok;
 }
@@ -367,13 +359,13 @@ test12() {
   gr1.add_congruence(5*A + B %= 0);
   gr1.add_congruence(22*A %= 0);
 
-  print_congruences(gr1, "gr1: ");
+  print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(2);
   gr2.add_congruence(5*A + B %= 0);
   gr2.add_congruence(44*A %= 0);
 
-  print_congruences(gr2, "gr2: ");
+  print_congruences(gr2, "*** gr2 ***");
 
   gr2.generator_widening_assign(gr1);
 
@@ -382,8 +374,7 @@ test12() {
 
   bool ok = (gr2 == known_gr);
 
-  print_congruences(gr2,
-		    "*** gr2.widening_assign(gr1) ***");
+  print_congruences(gr2, "*** gr2.widening_assign(gr1) ***");
 
   return ok;
 }
@@ -398,13 +389,13 @@ test13() {
   gr1.add_congruence(9*A + B %= 0);
   gr1.add_congruence(22*A %= 0);
 
-  print_congruences(gr1, "gr1: ");
+  print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(2);
   gr2.add_congruence(9*A + B %= 0);
   gr2.add_congruence(44*A %= 0);
 
-  print_congruences(gr2, "gr2: ");
+  print_congruences(gr2, "*** gr2 ***");
 
   gr2.generator_widening_assign(gr1);
 
@@ -413,8 +404,7 @@ test13() {
 
   bool ok = (gr2 == known_gr);
 
-  print_congruences(gr2,
-		    "*** gr2.widening_assign(gr1) ***");
+  print_congruences(gr2, "*** gr2.widening_assign(gr1) ***");
 
   return ok;
 }
@@ -450,6 +440,30 @@ test14() {
   return false;
 }
 
+bool
+test15() {
+  Variable A(0);
+  Grid gr1(1);
+  gr1.add_congruence((A %= 1) / 2);
+  gr1.add_congruence((A %= 0) / 2);
+
+  print_congruences(gr1, "*** gr1 ***");
+
+  Grid gr2(1);
+  gr2.add_congruence((A %= 1) / 2);
+  gr2.add_congruence((A %= 0) / 2);
+
+  print_congruences(gr2, "*** gr2 ***");
+
+  gr2.generator_widening_assign(gr1);
+  bool ok = (gr1 == gr2);
+
+  print_congruences(gr1, "*** gr1 ***");
+  print_congruences(gr2, "*** gr2.generator_widening_assign ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -467,4 +481,5 @@ BEGIN_MAIN
   DO_TEST_F8(test12);
   DO_TEST_F8(test13);
   DO_TEST(test14);
+  DO_TEST(test15);
 END_MAIN

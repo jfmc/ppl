@@ -1,11 +1,11 @@
 /* Test Grid::intersection_assign().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -478,6 +478,25 @@ test16() {
   return ok;
 }
 
+// Both empty and both not in minimal form.
+bool
+test17() {
+  Variable A(0);
+  Grid gr1(1);
+  gr1.add_congruence((A %= 1) / 2);
+  gr1.add_congruence((A %= 0) / 2);
+
+  Grid gr2(1);
+  gr2.add_congruence((A %= 1) / 2);
+  gr2.add_congruence((A %= 0) / 2);
+
+  bool ok = (!gr1.intersection_assign_and_minimize(gr2));
+  print_congruences(gr1, "*** gr1 ***");
+  print_congruences(gr2, "*** gr2 ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -497,4 +516,5 @@ BEGIN_MAIN
   DO_TEST(test14);
   DO_TEST(test15);
   DO_TEST(test16);
+  DO_TEST(test17);
 END_MAIN

@@ -1,11 +1,11 @@
 /* Declaration of simple print functions used in test programs.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Partial_Function.types.hh"
 #include <string>
 #include <iostream>
+#include <cstdlib>
 
 #ifndef NOISY
 #define NOISY 0
@@ -38,7 +39,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 static bool
 check_noisy(const char* environment_variable) {
-#if HAVE_DECL_GETENV
+#if PPL_HAVE_DECL_GETENV
   return getenv(environment_variable) != 0;
 #else
 #if NOISY
@@ -93,6 +94,17 @@ print_constraints(const Parma_Polyhedra_Library::Polyhedron& ph,
 		  const std::string& intro = "",
 		  std::ostream& s = nout);
 
+template <typename Interval>
+void
+print_constraints(const Parma_Polyhedra_Library::Box<Interval>& box,
+		  const std::string& intro = "",
+		  std::ostream& s = nout) {
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+  if (!intro.empty())
+    s << intro << std::endl;
+  s << box << std::endl;
+}
+
 template <typename T>
 void
 print_constraints(const Parma_Polyhedra_Library::BD_Shape<T>& bd,
@@ -104,9 +116,20 @@ print_constraints(const Parma_Polyhedra_Library::BD_Shape<T>& bd,
   s << bd << std::endl;
 }
 
+template <typename T>
+void
+print_constraints(const Parma_Polyhedra_Library::Octagonal_Shape<T>& oc,
+		  const std::string& intro = "",
+		  std::ostream& s = nout) {
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+  if (!intro.empty())
+    s << intro << std::endl;
+  s << oc << std::endl;
+}
+
 template <typename PH>
 void
-print_constraints(const Parma_Polyhedra_Library::Polyhedra_Powerset<PH>& pps,
+print_constraints(const Parma_Polyhedra_Library::Pointset_Powerset<PH>& pps,
 		  const std::string& intro = "",
 		  std::ostream& s = nout) {
   using namespace Parma_Polyhedra_Library::IO_Operators;
@@ -117,13 +140,24 @@ print_constraints(const Parma_Polyhedra_Library::Polyhedra_Powerset<PH>& pps,
 
 template <typename PH>
 void
-print_congruences(const Parma_Polyhedra_Library::Polyhedra_Powerset<PH>& pps,
+print_congruences(const Parma_Polyhedra_Library::Pointset_Powerset<PH>& pps,
 		  const std::string& intro = "",
 		  std::ostream& s = nout) {
   using namespace Parma_Polyhedra_Library::IO_Operators;
   if (!intro.empty())
     s << intro << std::endl;
   s << pps << std::endl;
+}
+
+template <typename PH>
+void
+print_constraints(const Parma_Polyhedra_Library::Pointset_Ask_Tell<PH>& pat,
+		  const std::string& intro = "",
+		  std::ostream& s = nout) {
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+  if (!intro.empty())
+    s << intro << std::endl;
+  s << pat << std::endl;
 }
 
 void
@@ -170,6 +204,22 @@ void
 print_generators(const Parma_Polyhedra_Library::Grid& gr,
 		 const std::string& intro = "",
 		 std::ostream& s = nout);
+
+template <typename D1, typename D2, typename R>
+void
+print_constraints(const Parma_Polyhedra_Library::Partially_Reduced_Product<D1, D2, R>& pd,
+		  const std::string& intro = "",
+		  std::ostream& s = nout) {
+  print_constraints(pd.constraints(), intro, s);
+}
+
+template <typename D1, typename D2, typename R>
+void
+print_congruences(const Parma_Polyhedra_Library::Partially_Reduced_Product<D1, D2, R>& pd,
+		  const std::string& intro = "",
+		  std::ostream& s = nout) {
+  print_congruences(pd.congruences(), intro, s);
+}
 
 void
 print_function(const Parma_Polyhedra_Library::Partial_Function& function,

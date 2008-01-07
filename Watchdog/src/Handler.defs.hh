@@ -1,11 +1,11 @@
 /* Handler and derived classes' declaration.
-   Copyright (C) 2002-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Watchdog Library (PWL).
 
 The PWL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PWL is distributed in the hope that it will be useful, but WITHOUT
@@ -37,7 +37,7 @@ public:
 
 //! A kind of Handler that installs a flag onto a flag-holder.
 /*!
-  The templatic class Handler_Flag<Flag_Base, Flag> is an handler whose
+  The template class Handler_Flag<Flag_Base, Flag> is an handler whose
   job is to install a flag onto an <EM>holder</EM> for the flag.
   The flag is of type \p Flag and the holder is a (volatile) pointer
   to \p Flag_Base.  Installing the flag onto the holder means making

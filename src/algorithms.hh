@@ -1,11 +1,11 @@
 /* A collection of useful convex polyhedra algorithms: inline functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_algorithms_hh 1
 
 #include "NNC_Polyhedron.defs.hh"
-#include "Polyhedra_Powerset.defs.hh"
+#include "Pointset_Powerset.defs.hh"
 #include <utility>
 #include <cassert>
 
@@ -38,24 +38,24 @@ namespace Parma_Polyhedra_Library {
 
   \relates Polyhedron
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename PH>
 bool
 poly_hull_assign_if_exact(PH& p, const PH& q);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates Polyhedron */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename PH>
 bool
 poly_hull_assign_if_exact(PH& p, const PH& q) {
   PH phull = p;
   NNC_Polyhedron nnc_p(p);
   phull.poly_hull_assign(q);
-  std::pair<PH, Polyhedra_Powerset<NNC_Polyhedron> >
+  std::pair<PH, Pointset_Powerset<NNC_Polyhedron> >
     partition = linear_partition(q, phull);
-  const Polyhedra_Powerset<NNC_Polyhedron>& s = partition.second;
-  typedef Polyhedra_Powerset<NNC_Polyhedron>::const_iterator iter;
+  const Pointset_Powerset<NNC_Polyhedron>& s = partition.second;
+  typedef Pointset_Powerset<NNC_Polyhedron>::const_iterator iter;
   for (iter i = s.begin(), s_end = s.end(); i != s_end; ++i)
     // The polyhedral hull is exact if and only if all the elements
     // of the partition of the polyhedral hull of `p' and `q' with

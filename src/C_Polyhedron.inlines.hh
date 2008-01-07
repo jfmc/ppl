@@ -1,11 +1,11 @@
 /* C_Polyhedron class implementation: inline functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -55,15 +55,16 @@ C_Polyhedron::C_Polyhedron(const Constraint_System& cs)
 }
 
 inline
-C_Polyhedron::C_Polyhedron(Constraint_System& cs)
+C_Polyhedron::C_Polyhedron(Constraint_System& cs, Recycle_Input)
   : Polyhedron(NECESSARILY_CLOSED,
 	       cs.space_dimension() <= max_space_dimension()
 	       ? cs
 	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
-						 "C_Polyhedron(cs)",
+						 "C_Polyhedron(cs, recycle)",
 						 "the space dimension of cs "
 						 "exceeds the maximum allowed "
-						 "space dimension"), cs)) {
+						 "space dimension"), cs),
+	       Recycle_Input()) {
 }
 
 inline
@@ -79,46 +80,21 @@ C_Polyhedron::C_Polyhedron(const Generator_System& gs)
 }
 
 inline
-C_Polyhedron::C_Polyhedron(Generator_System& gs)
+C_Polyhedron::C_Polyhedron(Generator_System& gs, Recycle_Input)
   : Polyhedron(NECESSARILY_CLOSED,
 	       gs.space_dimension() <= max_space_dimension()
 	       ? gs
 	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
-						 "C_Polyhedron(gs)",
+						 "C_Polyhedron(gs, recycle)",
 						 "the space dimension of gs "
 						 "exceeds the maximum allowed "
-						 "space dimension"), gs)) {
+						 "space dimension"), gs),
+	       Recycle_Input()) {
 }
 
+template <typename Interval>
 inline
-C_Polyhedron::C_Polyhedron(const Grid_Generator_System& gs)
-  : Polyhedron(NECESSARILY_CLOSED,
-	       gs.space_dimension() <= max_space_dimension()
-	       ? gs.space_dimension()
-	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
-						 "C_Polyhedron(ggs)",
-						 "the space dimension of ggs "
-						 "exceeds the maximum allowed "
-						 "space dimension"), 0),
-	       UNIVERSE) {
-}
-
-inline
-C_Polyhedron::C_Polyhedron(Grid_Generator_System& gs)
-  : Polyhedron(NECESSARILY_CLOSED,
-	       gs.space_dimension() <= max_space_dimension()
-	       ? gs.space_dimension()
-	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
-						 "C_Polyhedron(ggs)",
-						 "the space dimension of ggs "
-						 "exceeds the maximum allowed "
-						 "space dimension"), 0),
-	       UNIVERSE) {
-}
-
-template <typename Box>
-inline
-C_Polyhedron::C_Polyhedron(const Box& box, From_Bounding_Box)
+C_Polyhedron::C_Polyhedron(const Box<Interval>& box)
   : Polyhedron(NECESSARILY_CLOSED,
 	       box.space_dimension() <= max_space_dimension()
 	       ? box
@@ -127,6 +103,36 @@ C_Polyhedron::C_Polyhedron(const Box& box, From_Bounding_Box)
 						 "the space dimension of box "
 						 "exceeds the maximum allowed "
 						 "space dimension"), box)) {
+}
+
+template <typename U>
+inline
+C_Polyhedron::C_Polyhedron(const BD_Shape<U>& bd)
+  : Polyhedron(NECESSARILY_CLOSED,
+	       bd.space_dimension() <= max_space_dimension()
+	       ? bd.space_dimension()
+	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
+						 "C_Polyhedron(bd): ",
+						 "the space dimension of bd "
+						 "exceeds the maximum allowed "
+						 "space dimension"), 0),
+               UNIVERSE) {
+  add_constraints(bd.constraints());
+}
+
+template <typename U>
+inline
+C_Polyhedron::C_Polyhedron(const Octagonal_Shape<U>& os)
+  : Polyhedron(NECESSARILY_CLOSED,
+	       os.space_dimension() <= max_space_dimension()
+	       ? os.space_dimension()
+	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
+						 "C_Polyhedron(os): ",
+						 "the space dimension of os "
+						 "exceeds the maximum allowed "
+						 "space dimension"), 0),
+               UNIVERSE) {
+  add_constraints(os.constraints());
 }
 
 inline

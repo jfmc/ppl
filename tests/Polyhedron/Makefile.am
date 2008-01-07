@@ -1,11 +1,11 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
 # The PPL is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2 of the License, or (at your
+# Free Software Foundation; either version 3 of the License, or (at your
 # option) any later version.
 #
 # The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -27,8 +27,6 @@ TESTS_ENVIRONMENT = $(CHECKER)
 
 AM_CPPFLAGS = \
 -I$(top_builddir)/src \
--I$(top_builddir)/Watchdog \
--I$(top_builddir)/Watchdog/src \
 -I$(top_srcdir)/utils \
 -I$(top_srcdir)/tests \
 @extra_includes@ \
@@ -41,6 +39,7 @@ $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
 ORIGINAL_TESTS = \
+hybrid \
 addcongruence1 \
 addcongruences1 \
 addconstraint1 \
@@ -61,13 +60,14 @@ boundedaffineimage1 \
 boundedaffinepreimage1 \
 boundedbhrz03extrapolation1 \
 boundedh79extrapolation1 \
-boundingbox1 boundingbox2 boundingbox3 \
 bounds1 \
 cnncconversion1 \
 concatenate1 \
 congruences1 \
+constrains1 \
 constraints1 \
 contains1 contains2 \
+containsintegerpoint1 \
 disjoint1 disjoint2 \
 dualhypercubes \
 empty1 \
@@ -75,6 +75,10 @@ equals1 \
 exceptions1 exceptions2  exceptions3 \
 expandspacedim1 expandspacedim2 \
 foldspacedims1 foldspacedims2 \
+frombdshape1 \
+frombox1 frombox2 \
+fromgrid1 \
+fromoctagonalshape1 \
 generalizedaffineimage1 generalizedaffineimage2 \
 generalizedaffinepreimage1 generalizedaffinepreimage2 \
 generators1 \
@@ -86,13 +90,12 @@ limitedh79extrapolation1 \
 linearpartition1 \
 linexpression1 \
 linearsystem1 \
-lpproblem1 lpproblem2 lpproblem3 \
 mapspacedims1 \
 matrix1 \
 max_min1 \
 maxspacedim1 \
 mc91 \
-membytes1 membytes2 \
+membytes1 \
 memory1 memory2 \
 minconstraints1 minconstraints2 \
 mingenerators1 mingenerators2 \
@@ -102,9 +105,9 @@ onepoint \
 permute \
 polydifference1 polydifference2 \
 polyhull1 polyhull2 \
-polypowerset1 \
+pointsetpowerset1 pointsetpowerset2 \
 powerset1 \
-randphull1 randphull2 \
+randphull1 \
 relations1 relations2 relations3 \
 removespacedims1 removespacedims2 \
 smm1 \
@@ -112,6 +115,7 @@ timeelapse1 timeelapse2 \
 topclosed1 \
 topclosure1 \
 universe1 universe2 \
+variablesset1 \
 writeconsys1 \
 writegensys1 \
 writepolyhedron1 writepolyhedron2 \
@@ -138,18 +142,23 @@ nnc_boundedaffineimage1 \
 nnc_boundedaffinepreimage1 \
 nnc_boundedbhrz03extrapolation1 \
 nnc_boundedh79extrapolation1 \
-nnc_boundingbox1 nnc_boundingbox2 \
 nnc_bounds1 \
 nnc_concatenate1 \
 nnc_congruences1 \
+nnc_constrains1 \
 nnc_constraints1 \
 nnc_contains1 \
+nnc_containsintegerpoint1 \
 nnc_disjoint1 \
 nnc_empty1 \
 nnc_equals1 \
 nnc_exceptions1 nnc_exceptions3 \
 nnc_expandspacedim1 \
 nnc_foldspacedims1 \
+nnc_frombdshape1 \
+nnc_frombox1 \
+nnc_fromgrid1 \
+nnc_fromoctagonalshape1 \
 nnc_generalizedaffineimage1 \
 nnc_generalizedaffinepreimage1 \
 nnc_generators1 \
@@ -162,14 +171,14 @@ nnc_linearpartition1 \
 nnc_mapspacedims1 \
 nnc_max_min1 \
 nnc_mc91 \
-nnc_membytes1 nnc_membytes2 \
+nnc_membytes1 \
 nnc_minconstraints1 \
 nnc_mingenerators1 \
 nnc_onepoint \
 nnc_permute \
 nnc_polydifference1 \
 nnc_polyhull1 \
-nnc_randphull1 nnc_randphull2 \
+nnc_randphull1 \
 nnc_relations1 nnc_relations2 \
 nnc_removespacedims1 \
 nnc_smm1 \
@@ -180,6 +189,8 @@ nnc_writepolyhedron1
 #
 # Sources for the tests
 #
+
+hybrid_SOURCES = hybrid.cc
 
 addcongruence1_SOURCES = addcongruence1.cc
 
@@ -231,10 +242,6 @@ boundedbhrz03extrapolation1_SOURCES = boundedbhrz03extrapolation1.cc
 
 boundedh79extrapolation1_SOURCES = boundedh79extrapolation1.cc
 
-boundingbox1_SOURCES = boundingbox1.cc
-boundingbox2_SOURCES = boundingbox2.cc
-boundingbox3_SOURCES = boundingbox3.cc
-
 bounds1_SOURCES = bounds1.cc
 
 cnncconversion1_SOURCES = cnncconversion1.cc
@@ -243,10 +250,14 @@ concatenate1_SOURCES = concatenate1.cc
 
 congruences1_SOURCES = congruences1.cc
 
+constrains1_SOURCES = constrains1.cc
+
 constraints1_SOURCES = constraints1.cc
 
 contains1_SOURCES = contains1.cc
 contains2_SOURCES = contains2.cc
+
+containsintegerpoint1_SOURCES = containsintegerpoint1.cc
 
 disjoint1_SOURCES = disjoint1.cc
 disjoint2_SOURCES = disjoint2.cc
@@ -266,6 +277,15 @@ expandspacedim2_SOURCES = expandspacedim2.cc
 
 foldspacedims1_SOURCES = foldspacedims1.cc
 foldspacedims2_SOURCES = foldspacedims2.cc
+
+frombdshape1_SOURCES = frombdshape1.cc
+
+frombox1_SOURCES = frombox1.cc
+frombox2_SOURCES = frombox2.cc
+
+fromgrid1_SOURCES = fromgrid1.cc
+
+fromoctagonalshape1_SOURCES = fromoctagonalshape1.cc
 
 generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
 generalizedaffineimage2_SOURCES = generalizedaffineimage2.cc
@@ -292,10 +312,6 @@ linexpression1_SOURCES = linexpression1.cc
 
 linearsystem1_SOURCES = linearsystem1.cc
 
-lpproblem1_SOURCES = lpproblem1.cc
-lpproblem2_SOURCES = lpproblem2.cc
-lpproblem3_SOURCES = lpproblem3.cc
-
 mapspacedims1_SOURCES = mapspacedims1.cc
 
 matrix1_SOURCES = matrix1.cc
@@ -307,7 +323,6 @@ maxspacedim1_SOURCES = maxspacedim1.cc
 mc91_SOURCES = mc91.cc
 
 membytes1_SOURCES = membytes1.cc
-membytes2_SOURCES = membytes2.cc
 
 memory1_SOURCES = memory1.cc
 memory2_SOURCES = memory2.cc
@@ -333,13 +348,13 @@ polydifference2_SOURCES = polydifference2.cc
 polyhull1_SOURCES = polyhull1.cc
 polyhull2_SOURCES = polyhull2.cc
 
-polypowerset1_SOURCES = polypowerset1.cc
+pointsetpowerset1_SOURCES = pointsetpowerset1.cc
+pointsetpowerset2_SOURCES = pointsetpowerset2.cc
 
 powerset1_SOURCES = powerset1.cc
 
 randphull1_SOURCES = randphull1.cc
-randphull2_SOURCES = randphull2.cc
-randphull2_LDADD = $(LDADD) -lm
+randphull1_LDADD = $(LDADD) -lm
 
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
@@ -359,6 +374,8 @@ topclosure1_SOURCES = topclosure1.cc
 
 universe1_SOURCES = universe1.cc
 universe2_SOURCES = universe2.cc
+
+variablesset1_SOURCES = variablesset1.cc
 
 writeconsys1_SOURCES = writeconsys1.cc
 
@@ -440,11 +457,6 @@ nnc_boundedvhrz03extrapolation1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_boundedh79extrapolation1_SOURCES = boundedh79extrapolation1.cc
 nnc_boundedh79extrapolation1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
-nnc_boundingbox1_SOURCES = boundingbox1.cc
-nnc_boundingbox1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_boundingbox2_SOURCES = boundingbox2.cc
-nnc_boundingbox2_CXXFLAGS = $(DERIVED_CXXFLAGS)
-
 nnc_bounds1_SOURCES = bounds1.cc
 nnc_bounds1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
@@ -454,11 +466,17 @@ nnc_concatenate1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_congruences1_SOURCES = congruences1.cc
 nnc_congruences1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
+nnc_constrains1_SOURCES = constrains1.cc
+nnc_constrains1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
 nnc_constraints1_SOURCES = constraints1.cc
 nnc_constraints1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_contains1_SOURCES = contains1.cc
 nnc_contains1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_containsintegerpoint1_SOURCES = containsintegerpoint1.cc
+nnc_containsintegerpoint1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_disjoint1_SOURCES = disjoint1.cc
 nnc_disjoint1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -479,6 +497,18 @@ nnc_expandspacedim1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_foldspacedims1_SOURCES = foldspacedims1.cc
 nnc_foldspacedims1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_frombdshape1_SOURCES = frombdshape1.cc
+nnc_frombdshape1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_frombox1_SOURCES = frombox1.cc
+nnc_frombox1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_fromgrid1_SOURCES = fromgrid1.cc
+nnc_fromgrid1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_fromoctagonalshape1_SOURCES = fromoctagonalshape1.cc
+nnc_fromoctagonalshape1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
 nnc_generalizedaffineimage1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -518,8 +548,6 @@ nnc_mc91_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_membytes1_SOURCES = membytes1.cc
 nnc_membytes1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_membytes2_SOURCES = membytes2.cc
-nnc_membytes2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_minconstraints1_SOURCES = minconstraints1.cc
 nnc_minconstraints1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -541,9 +569,7 @@ nnc_polyhull1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_randphull1_SOURCES = randphull1.cc
 nnc_randphull1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_randphull2_SOURCES = randphull2.cc
-nnc_randphull2_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_randphull2_LDADD = $(LDADD) -lm
+nnc_randphull1_LDADD = $(LDADD) -lm
 
 nnc_relations1_SOURCES = relations1.cc
 nnc_relations1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -571,76 +597,17 @@ if BUILD_WATCHDOG_LIBRARY
 WATCHDOG_TESTS = watchdog1
 
 watchdog1_SOURCES = $(watchdog1_SRCS)
+watchdog1_CPPFLAGS = \
+$(AM_CPPFLAGS) \
+-I$(top_builddir)/Watchdog \
+-I$(top_builddir)/Watchdog/src
 watchdog1_LDADD = $(LDADD) $(top_builddir)/Watchdog/src/libpwl.la
 
 endif BUILD_WATCHDOG_LIBRARY
 
 TESTS = $(ORIGINAL_TESTS) $(DERIVED_TESTS) $(WATCHDOG_TESTS)
 
-XFAIL_ALWAYS =
-
-XFAIL_WITH_INT64 = \
-$(XFAIL_ALWAYS) \
-randphull2 \
-nnc_randphull2
-
-XFAIL_WITH_INT32 = \
-$(XFAIL_WITH_INT64)
-
-XFAIL_WITH_INT16 = \
-$(XFAIL_WITH_INT32)
-
-XFAIL_WITH_INT8 = \
-$(XFAIL_WITH_INT16) \
-membytes1 \
-randphull1 \
-smm1 \
-nnc_membytes1 \
-nnc_randphull1 \
-nnc_smm1
-
-XFAIL_WITH_INT8_A = \
-$(XFAIL_WITH_INT8) \
-membytes2 \
-nnc_membytes2
-
-if USE_INT64
-
-XFAIL_SET = $(XFAIL_WITH_INT64)
-
-else !USE_INT64
-if USE_INT32
-
-XFAIL_SET = $(XFAIL_WITH_INT32)
-
-else !USE_INT32
-if USE_INT16
-
-XFAIL_SET = $(XFAIL_WITH_INT16)
-
-else !USE_INT16
-if USE_INT8
-
-if ASSERTIONS_ENABLED
-
-XFAIL_SET = $(XFAIL_WITH_INT8_A)
-
-else !ASSERTIONS_ENABLED
-
-XFAIL_SET = $(XFAIL_WITH_INT8)
-
-endif !ASSERTIONS_ENABLED
-
-else !USE_INT8
-
-XFAIL_SET = $(XFAIL_ALWAYS)
-
-endif !USE_INT8
-endif !USE_INT16
-endif !USE_INT32
-endif !USE_INT64
-
-XFAIL_TESTS = $(XFAIL_SET)
+XFAIL_TESTS =
 
 check_PROGRAMS = $(TESTS) $(BUGS)
 
@@ -654,9 +621,7 @@ ascii_dump_load2.dat \
 ascii_dump_load3.dat \
 matrix1.dat \
 linearsystem1.dat \
-writeconsys1.dat \
 writegensys1.dat \
 writepolyhedron1.dat \
 writepolyhedron2.dat \
-writerelation1.dat \
 writevariable1.dat

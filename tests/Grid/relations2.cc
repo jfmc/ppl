@@ -1,11 +1,11 @@
 /* Test Grid::relation_with(cg).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -68,7 +68,8 @@ test03() {
   print_generators(gr, "*** gr ***");
 
   bool ok
-    =  (gr.relation_with((A + C %= 0) / 3) == Poly_Con_Relation::strictly_intersects());
+    =  (gr.relation_with((A + C %= 0) / 3)
+        == Poly_Con_Relation::strictly_intersects());
 
   return ok;
 }
@@ -85,8 +86,10 @@ test04() {
   print_generators(gr, "*** gr ***");
 
   bool ok
-    = (gr.relation_with((A + 0*B %= 0) / 0) == Poly_Con_Relation::strictly_intersects()
-       && gr.relation_with((B + 0*B %= -2) / 0) == Poly_Con_Relation::is_disjoint());
+    = (gr.relation_with((A + 0*B %= 0) / 0)
+         == Poly_Con_Relation::strictly_intersects()
+       && gr.relation_with((B + 0*B %= -2) / 0)
+         == Poly_Con_Relation::is_disjoint());
 
   return ok;
 }
@@ -118,7 +121,8 @@ test06() {
 
   bool ok = (gr.relation_with((B %= 0) / 2)
 	     == (Poly_Con_Relation::is_included()
-		 && Poly_Con_Relation::is_disjoint()));
+		 && Poly_Con_Relation::is_disjoint()
+		 && Poly_Con_Relation::saturates()));
 
   return ok;
 }
@@ -141,16 +145,20 @@ test07() {
        == Poly_Con_Relation::is_disjoint()
        // Proper congruence.
        && gr.relation_with(Linear_Expression(1) %= 1)
-       == Poly_Con_Relation::is_included()
+       == (Poly_Con_Relation::is_included()
+	   && Poly_Con_Relation::saturates())
        // Proper congruence.
        && gr.relation_with((Linear_Expression(5) %= 1) / 4)
-       == Poly_Con_Relation::is_included()
+       == (Poly_Con_Relation::is_included()
+	   && Poly_Con_Relation::saturates())
        // Equality.
        && gr.relation_with(Linear_Expression(1) %= 1)
-       == Poly_Con_Relation::is_included()
+       == (Poly_Con_Relation::is_included()
+	   && Poly_Con_Relation::saturates())
        // Integrality congruence.
        && gr.relation_with(Congruence::zero_dim_integrality())
-       == Poly_Con_Relation::is_included());
+       == (Poly_Con_Relation::is_included()
+	   && Poly_Con_Relation::saturates()));
 
   return ok;
 }
@@ -202,14 +210,15 @@ test10() {
     = (gr.relation_with((A %= 3) / 0)
        == Poly_Con_Relation::is_disjoint()
        && gr.relation_with((2*A %= 1) / 0)
-       == Poly_Con_Relation::is_included()
+       == (Poly_Con_Relation::is_included()
+	   && Poly_Con_Relation::saturates())
        && gr.relation_with(2*A %= 1)
        == Poly_Con_Relation::is_included());
 
   return ok;
 }
 
-// Grid with a divisor that is greater than zero: seperate spaces.
+// Grid with a divisor that is greater than zero: separate spaces.
 bool
 test11() {
   Variable A(0);
@@ -294,7 +303,8 @@ test15() {
   bool ok
     = (gr.relation_with((B %= 0) / 2)
        == (Poly_Con_Relation::is_included()
-	   && Poly_Con_Relation::is_disjoint()));
+	   && Poly_Con_Relation::is_disjoint()
+	   && Poly_Con_Relation::saturates()));
 
   return ok;
 }
@@ -365,7 +375,24 @@ test19() {
   bool ok
     = (gr.relation_with((A %= 0) / 8)
        == (Poly_Con_Relation::is_included()
-	   && Poly_Con_Relation::is_disjoint()));
+	   && Poly_Con_Relation::is_disjoint()
+	   && Poly_Con_Relation::saturates()));
+
+  return ok;
+}
+
+// Grid strictly intersects where the inhomogeneous term is non-zero.
+bool
+test20() {
+  Variable A(0);
+
+  Grid gr(1);
+  gr.add_congruence((A %= 0) / 1);
+  print_congruences(gr, "*** gr ***");
+
+  bool ok
+    = (gr.relation_with((2*A %= 1) / 3)
+       == (Poly_Con_Relation::strictly_intersects()));
 
   return ok;
 }
@@ -392,4 +419,5 @@ BEGIN_MAIN
   DO_TEST(test17);
   DO_TEST(test18);
   DO_TEST(test19);
+  DO_TEST(test20);
 END_MAIN

@@ -1,11 +1,11 @@
 /* Declarations of global objects.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -25,7 +25,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "globals.types.hh"
 #include "Coefficient.defs.hh"
+#include "C_Integer.hh"
+#include "meta_programming.hh"
+#include "Slow_Copy.hh"
+#include "Temp.defs.hh"
 #include <exception>
+#include <gmpxx.h>
 
 namespace Parma_Polyhedra_Library {
 
@@ -34,71 +39,21 @@ dimension_type
 not_a_dimension();
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! A node of the list of available coefficients.
-/*! \ingroup PPL_CXX_interface */
-// FIXME: rewrite the comment.
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-class Coefficient_free_list_element {
-private:
-  Coefficient i;
-  Coefficient_free_list_element* p;
+/*! \brief
+  Make sure swap() is specialized when needed.
 
-public:
-  Coefficient_free_list_element()
-    : i() {
-  }
-
-  Coefficient& integer() {
-    return i;
-  }
-
-  Coefficient_free_list_element*& next() {
-    return p;
-  }
-};
-
-extern Coefficient_free_list_element* Coefficient_free_list_first;
-
-inline Coefficient&
-get_tmp_Coefficient() {
-  Coefficient* p;
-  if (Coefficient_free_list_first != 0) {
-    p = &Coefficient_free_list_first->integer();
-    Coefficient_free_list_first = Coefficient_free_list_first->next();
-  }
-  else
-    p = reinterpret_cast<Coefficient*>(new Coefficient_free_list_element());
-  return *p;
+  This will cause a compile-time error whenever a specialization for \p T
+  is beneficial but missing.
+*/
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+template <typename T>
+inline typename Enable_If<Slow_Copy<T>::value, void>::type
+swap(T&, T&) {
+  COMPILE_TIME_CHECK(!Slow_Copy<T>::value, "missing swap specialization");
 }
 
-inline void
-release_tmp_Coefficient(Coefficient& i) {
-  Coefficient_free_list_element& e
-    = reinterpret_cast<Coefficient_free_list_element&>(i);
-  e.next() = Coefficient_free_list_first;
-  Coefficient_free_list_first = &e;
-}
-
-class Temp_Coefficient_Holder {
-private:
-  Coefficient& hold;
-
-public:
-  Temp_Coefficient_Holder(Coefficient& i)
-    : hold(i) {
-  }
-  ~Temp_Coefficient_Holder() {
-    release_tmp_Coefficient(hold);
-  }
-};
-
-#if 1
-#define TEMP_INTEGER(id) \
-Coefficient& id = get_tmp_Coefficient(); \
-Temp_Coefficient_Holder temp_Coefficient_holder_ ## id = (id)
-#else
-#define TEMP_INTEGER(id) static Coefficient id
-#endif
+// FIXME: write a comment for this.
+#define TEMP_INTEGER(id) DIRTY_TEMP0(Coefficient, id)
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Speculative allocation function.
@@ -119,10 +74,14 @@ Temp_Coefficient_Holder temp_Coefficient_holder_ ## id = (id)
   for our vector-like data structures. In all cases, the speculative
   allocation will not exceed \p maximum_size.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 dimension_type
 compute_capacity(dimension_type requested_size,
 		 dimension_type maximum_size);
+
+// FIXME!!!
+dimension_type
+compute_capacity(dimension_type requested_size);
 
 //! User objects the PPL can throw.
 /*! \ingroup PPL_CXX_interface
@@ -177,17 +136,17 @@ maybe_abandon();
 
 //! A tag class.
 /*! \ingroup PPL_CXX_interface
-  Tag class to differentiate the C_Polyhedron and NNC_Polyhedron
-  constructors that build a polyhedron out of a bounding box.
+  Tag class to make the Grid covering box constructor unique.
 */
-struct From_Bounding_Box {
+struct From_Covering_Box {
 };
 
 //! A tag class.
 /*! \ingroup PPL_CXX_interface
-  Tag class to make the Grid covering box constructor unique.
+  Tag class to distinguish those constructors that recycle the data
+  structures of their arguments, instead of taking a copy.
 */
-struct From_Covering_Box {
+struct Recycle_Input {
 };
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -229,7 +188,7 @@ T low_bits_mask(unsigned n);
   void ascii_dump() const;					\
   void ascii_dump(std::ostream& s) const;			\
   void print() const;
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
 #define PPL_OUTPUT_DEFINITIONS(class_name)			\
   void								\
@@ -289,6 +248,28 @@ T low_bits_mask(unsigned n);
     std::cerr << *this;							\
   }
 
+// FIXME: Copy and edit of PPL_OUTPUT_2_PARAM_TEMPLATE_DEFINITIONS
+#define PPL_OUTPUT_3_PARAM_TEMPLATE_DEFINITIONS(type_symbol1,		\
+						type_symbol2,		\
+						type_symbol3,		\
+						class_prefix)		\
+  template <typename type_symbol1, typename type_symbol2,		\
+            typename type_symbol3>					\
+  void									\
+  class_prefix<type_symbol1, type_symbol2, type_symbol3>::ascii_dump()	\
+    const {								\
+    ascii_dump(std::cerr);						\
+  }									\
+                                                                     	\
+    template <typename type_symbol1, typename type_symbol2,		\
+              typename type_symbol3>					\
+    void								\
+    class_prefix<type_symbol1, type_symbol2, type_symbol3>::print()	\
+      const {								\
+      using namespace IO_Operators;					\
+      std::cerr << *this;						\
+    }
+
 #define PPL_OUTPUT_TEMPLATE_DEFINITIONS_ASCII_ONLY(type_symbol, class_prefix) \
   template <typename type_symbol>					\
   void									\
@@ -302,6 +283,138 @@ T low_bits_mask(unsigned n);
     std::cerr << "No user level output operator defined "		\
 	      << "for " PPL_XSTR(class_prefix) << "." << std::endl;	\
   }
+
+template <typename T, long long v, typename Enable = void>
+struct Fit : public False {
+};
+
+template <typename T, long long v>
+struct Fit<T, v, typename Enable_If<C_Integer<T>::value>::type>  {
+  enum {
+    value = (v >= static_cast<long long>(C_Integer<T>::min)
+             && v <= static_cast<long long>(C_Integer<T>::max))
+  };
+};
+
+template <typename T, long long v>
+struct TConstant {
+  static const T value = v;
+};
+
+
+template <typename T, long long v>
+const T TConstant<T, v>::value;
+
+template <typename T, long long v, bool prefer_signed = true,
+	  typename Enable = void>
+struct Constant_ : public TConstant<T, v> {
+};
+
+template <typename T, long long v, bool prefer_signed>
+struct Constant_<T, v, prefer_signed,
+		 typename Enable_If<(Fit<typename C_Integer<T>::smaller_signed_type, v>::value
+				     && (prefer_signed ||
+					 !Fit<typename C_Integer<T>::smaller_unsigned_type, v>::value))>::type>
+  : public Constant_<typename C_Integer<T>::smaller_signed_type, v, prefer_signed> {
+};
+
+template <typename T, long long v, bool prefer_signed>
+struct Constant_<T, v, prefer_signed,
+		 typename Enable_If<(Fit<typename C_Integer<T>::smaller_unsigned_type, v>::value
+				     && (!prefer_signed ||
+					 !Fit<typename C_Integer<T>::smaller_signed_type, v>::value))>::type>
+  : public Constant_<typename C_Integer<T>::smaller_unsigned_type, v, prefer_signed> {
+};
+
+template <long long v, bool prefer_signed = true>
+struct Constant : public Constant_<long long, v, prefer_signed> {
+};
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Extract the numerator and denominator components of \p from.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+template <typename T, typename Policy>
+void
+numer_denom(const Checked_Number<T, Policy>& from,
+	    Coefficient& num, Coefficient& den);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Divides \p x by \p y into \p to, rounding the result towards plus infinity.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+template <typename T, typename Policy>
+void
+div_round_up(Checked_Number<T, Policy>& to,
+	     Coefficient_traits::const_reference x,
+	     Coefficient_traits::const_reference y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Assigns to \p x the minimum between \p x and \p y.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+template <typename N>
+void
+min_assign(N& x, const N& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Assigns to \p x the maximum between \p x and \p y.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+template <typename N>
+void
+max_assign(N& x, const N& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Returns <CODE>true</CODE> if and only if \p x is an even number.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+template <typename T, typename Policy>
+bool
+is_even(const Checked_Number<T, Policy>& x);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Returns <CODE>true</CODE> if and only if \f$x = -y\f$.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+template <typename T, typename Policy>
+bool
+is_additive_inverse(const Checked_Number<T, Policy>& x,
+		    const Checked_Number<T, Policy>& y);
+
+
+template <typename T, typename Enable = void>
+struct Has_OK : public False { };
+
+template <typename T>
+struct Has_OK<T, typename Enable_If_Is<bool (T::*)() const, &T::OK>::type>
+  : public True {
+};
+
+template <typename T>
+inline typename Enable_If<Has_OK<T>::value, bool>::type
+f_OK(const T& to) {
+  return to.OK();
+}
+
+#define FOK(T) inline bool f_OK(const T&) { return true; }
+
+FOK(char)
+FOK(signed char)
+FOK(unsigned char)
+FOK(signed short)
+FOK(unsigned short)
+FOK(signed int)
+FOK(unsigned int)
+FOK(signed long)
+FOK(unsigned long)
+FOK(signed long long)
+FOK(unsigned long long)
+FOK(float)
+FOK(double)
+FOK(long double)
+FOK(mpz_class)
+FOK(mpq_class)
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Returns <CODE>true</CODE> if and only if \p x is in canonical form.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+bool
+is_canonical(const mpq_class& x);
 
 } // namespace Parma_Polyhedra_Library
 

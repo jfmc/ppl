@@ -1,11 +1,11 @@
 /* C_Polyhedron class implementation (non-inline functions).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -20,10 +20,11 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
+#include <ppl-config.h>
 
 #include "C_Polyhedron.defs.hh"
 #include "NNC_Polyhedron.defs.hh"
+#include "Grid.defs.hh"
 #include "algorithms.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
@@ -52,17 +53,31 @@ PPL::C_Polyhedron::C_Polyhedron(const Congruence_System& cgs)
   add_congruences(cgs);
 }
 
-PPL::C_Polyhedron::C_Polyhedron(Congruence_System& cgs)
+PPL::C_Polyhedron::C_Polyhedron(Congruence_System& cgs, Recycle_Input)
   : Polyhedron(NECESSARILY_CLOSED,
 	       cgs.space_dimension() <= max_space_dimension()
 	       ? cgs.space_dimension()
 	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
-						 "NNC_Polyhedron(cgs)",
+						 "NNC_Polyhedron"
+						 "(cgs, recycle)",
 						 "the space dimension of cgs "
 						 "exceeds the maximum allowed "
 						 "space dimension"), 0),
 	       UNIVERSE) {
   add_congruences(cgs);
+}
+
+PPL::C_Polyhedron::C_Polyhedron(const Grid& grid)
+  : Polyhedron(NECESSARILY_CLOSED,
+	       grid.space_dimension() <= max_space_dimension()
+	       ? grid.space_dimension()
+	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
+						 "C_Polyhedron(grid)",
+						 "the space dimension of grid "
+						 "exceeds the maximum allowed "
+						 "space dimension"), 0),
+	       UNIVERSE) {
+  add_constraints(grid.constraints());
 }
 
 bool

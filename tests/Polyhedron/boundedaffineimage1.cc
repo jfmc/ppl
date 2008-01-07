@@ -1,11 +1,11 @@
 /* Test Polyhedron::bounded_affine_image().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -37,21 +37,21 @@ test01() {
   ph.add_constraint(A - B <= 2);
   ph.add_constraint(A - B >= -2);
 
-  print_constraints(ph, "--- ph ---");
+  print_constraints(ph, "*** ph ***");
 
   C_Polyhedron kr1 = ph;
   C_Polyhedron kr2 = ph;
 
   ph.bounded_affine_image(A, 7-B, B+3);
 
-  kr1.generalized_affine_image(A, GREATER_THAN_OR_EQUAL, 7-B);
-  kr2.generalized_affine_image(A, LESS_THAN_OR_EQUAL, B+3);
+  kr1.generalized_affine_image(A, GREATER_OR_EQUAL, 7-B);
+  kr2.generalized_affine_image(A, LESS_OR_EQUAL, B+3);
   kr1.intersection_assign(kr2);
 
   bool ok = (ph == kr1);
 
   print_generators(ph,
-		   "--- ph.bounded_affine_image(A, 7-B, B+3) ---");
+		   "*** ph.bounded_affine_image(A, 7-B, B+3) ***");
 
   return ok;
 }
@@ -69,21 +69,21 @@ test02() {
   ph.add_constraint(A - B <= 2);
   ph.add_constraint(A - B >= -2);
 
-  print_constraints(ph, "--- ph ---");
+  print_constraints(ph, "*** ph ***");
 
   C_Polyhedron kr1 = ph;
   C_Polyhedron kr2 = ph;
 
   ph.bounded_affine_image(A, 7-3*A+2*B, B+5*A-3);
 
-  kr1.generalized_affine_image(A, GREATER_THAN_OR_EQUAL, 7-3*A+2*B);
-  kr2.generalized_affine_image(A, LESS_THAN_OR_EQUAL, B+5*A-3);
+  kr1.generalized_affine_image(A, GREATER_OR_EQUAL, 7-3*A+2*B);
+  kr2.generalized_affine_image(A, LESS_OR_EQUAL, B+5*A-3);
   kr1.intersection_assign(kr2);
 
   bool ok = (ph == kr1);
 
   print_generators(ph,
-		   "--- ph.bounded_affine_image(A, 7-3*A+2*B, B+5*A-3) ---");
+		   "*** ph.bounded_affine_image(A, 7-3*A+2*B, B+5*A-3) ***");
 
   return ok;
 }
@@ -98,7 +98,7 @@ test03() {
   ph.add_constraint(A <= 4);
   ph.add_constraint(A == B);
 
-  print_constraints(ph, "--- ph ---");
+  print_constraints(ph, "*** ph ***");
 
   ph.bounded_affine_image(A, A+5, B);
 
@@ -106,7 +106,7 @@ test03() {
 
   bool ok = (ph == kr1);
 
-  print_generators(ph, "--- ph.bounded_affine_image(A, A+5, B) ---");
+  print_generators(ph, "*** ph.bounded_affine_image(A, A+5, B) ***");
 
   return ok;
 }

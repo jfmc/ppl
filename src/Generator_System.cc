@@ -1,11 +1,11 @@
 /* Generator_System class implementation (non-inline functions).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -20,7 +20,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
+#include <ppl-config.h>
 
 #include "Generator_System.defs.hh"
 #include "Generator_System.inlines.hh"
@@ -45,7 +45,7 @@ adjust_topology_and_space_dimension(const Topology new_topology,
   dimension_type cols_to_be_added = new_space_dim - old_space_dim;
 
   // Dealing with empty constraint systems first.
-  if (num_rows() == 0) {
+  if (empty()) {
     if (num_columns() == 0)
       if (new_topology == NECESSARILY_CLOSED) {
 	add_zero_columns(cols_to_be_added + 1);
@@ -85,7 +85,7 @@ adjust_topology_and_space_dimension(const Topology new_topology,
     return true;
   }
 
-  // Here `num_rows() > 0'.
+  // Here the generator systen is not empty.
   if (cols_to_be_added > 0)
     if (old_topology != new_topology)
       if (new_topology == NECESSARILY_CLOSED) {
@@ -150,7 +150,7 @@ adjust_topology_and_space_dimension(const Topology new_topology,
     }
   else
     // Here `cols_to_be_added == 0'.
-    if (old_topology != new_topology)
+    if (old_topology != new_topology) {
       if (new_topology == NECESSARILY_CLOSED) {
 	// A NOT_NECESSARILY_CLOSED generator system
 	// can be converted in to a NECESSARILY_CLOSED one
@@ -172,6 +172,7 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 	  gs[i][eps_index] = gs[i][0];
 	set_not_necessarily_closed();
       }
+    }
   // We successfully adjusted dimensions and topology.
   assert(OK());
   return true;
@@ -235,7 +236,7 @@ PPL::Generator_System::has_closure_points() const {
     return false;
   // Adopt the point of view of the user.
   for (Generator_System::const_iterator i = begin(),
-	 iend = end(); i != iend; ++i)
+	 this_end = end(); i != this_end; ++i)
     if (i->is_closure_point())
       return true;
   return false;
@@ -447,7 +448,7 @@ PPL::Generator_System::relation_with(const Constraint& c) const {
 	// If that is the case, then we have to do something only if
 	// the generator is a point.
 	if (sp_sign == 0) {
-	  if (g.is_point())
+	  if (g.is_point()) {
 	    if (first_point_or_nonsaturating_ray_sign == 2)
 	      // It is the first time that we find a point and
 	      // we have not found a non-saturating ray yet.
@@ -456,6 +457,7 @@ PPL::Generator_System::relation_with(const Constraint& c) const {
 	      // We already found a point or a non-saturating ray.
 	      if (first_point_or_nonsaturating_ray_sign != 0)
 		return Poly_Con_Relation::strictly_intersects();
+	  }
 	}
 	else
 	  // Here we know that sp_sign != 0.
@@ -505,7 +507,7 @@ PPL::Generator_System::relation_with(const Constraint& c) const {
       // The hyperplane implicitly defined by the non-strict inequality `c'
       // is included in the set of points satisfying `c'.
       result = result && Poly_Con_Relation::is_included();
-      // The following boolean variable will be set to `false'
+      // The following Boolean variable will be set to `false'
       // as soon as either we find (any) point or we find a
       // non-saturating ray.
       bool first_point_or_nonsaturating_ray = true;
@@ -517,7 +519,7 @@ PPL::Generator_System::relation_with(const Constraint& c) const {
 	// inequality. If that is the case, then we have to do something
 	// only if the generator is a point.
 	if (sp_sign == 0) {
-	  if (g.is_point())
+	  if (g.is_point()) {
 	    if (first_point_or_nonsaturating_ray)
 	      // It is the first time that we have a point and
 	      // we have not found a non-saturating ray yet.
@@ -528,6 +530,7 @@ PPL::Generator_System::relation_with(const Constraint& c) const {
 		// Since g saturates c, we have a strict intersection if
 		// none of the generators seen so far are included in `c'.
 		return Poly_Con_Relation::strictly_intersects();
+	  }
 	}
 	else
 	  // Here we know that sp_sign != 0.
@@ -616,7 +619,7 @@ PPL::Generator_System::relation_with(const Constraint& c) const {
       // The hyperplane implicitly defined by the strict inequality `c'
       // is disjoint from the set of points satisfying `c'.
       result = result && Poly_Con_Relation::is_disjoint();
-      // The following boolean variable will be set to `false'
+      // The following Boolean variable will be set to `false'
       // as soon as either we find (any) point or we find a
       // non-saturating ray.
       bool first_point_or_nonsaturating_ray = true;
@@ -629,7 +632,7 @@ PPL::Generator_System::relation_with(const Constraint& c) const {
 	// If that is the case, then we have to do something
 	// only if the generator is a point.
 	if (sp_sign == 0) {
-	  if (g.is_point())
+	  if (g.is_point()) {
 	    if (first_point_or_nonsaturating_ray)
 	      // It is the first time that we have a point and
 	      // we have not found a non-saturating ray yet.
@@ -638,6 +641,7 @@ PPL::Generator_System::relation_with(const Constraint& c) const {
 	      // We already found a point or a non-saturating ray before.
 	      if (result == Poly_Con_Relation::is_included())
 		return Poly_Con_Relation::strictly_intersects();
+	  }
 	}
 	else
 	  // Here we know that sp_sign != 0.
@@ -934,8 +938,7 @@ PPL::Generator_System::ascii_load(std::istream& s) {
     return false;
   }
 
-  // Checking for well-formedness.
-
+  // Check invariants.
   assert(OK());
   return true;
 }
@@ -996,6 +999,22 @@ PPL::Generator_System::remove_invalid_lines_and_rays() {
     }
   }
   gs.erase_to_end(n_rows);
+}
+
+const PPL::Generator_System* PPL::Generator_System::zero_dim_univ_p = 0;
+
+void
+PPL::Generator_System::initialize() {
+  assert(zero_dim_univ_p == 0);
+  zero_dim_univ_p
+    = new Generator_System(Generator::zero_dim_point());
+}
+
+void
+PPL::Generator_System::finalize() {
+  assert(zero_dim_univ_p != 0);
+  delete zero_dim_univ_p;
+  zero_dim_univ_p = 0;
 }
 
 bool

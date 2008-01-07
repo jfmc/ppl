@@ -1,11 +1,11 @@
 /* Polyhedron class implementation: conversion().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -20,14 +20,15 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
+#include <ppl-config.h>
 
 #include "Linear_Row.defs.hh"
 #include "Linear_System.defs.hh"
-#include "Saturation_Row.defs.hh"
-#include "Saturation_Matrix.defs.hh"
+#include "Bit_Row.defs.hh"
+#include "Bit_Matrix.defs.hh"
 #include "Polyhedron.defs.hh"
 #include "Scalar_Products.defs.hh"
+#include "Temp.defs.hh"
 #include <cstddef>
 
 namespace PPL = Parma_Polyhedra_Library;
@@ -129,9 +130,9 @@ namespace PPL = Parma_Polyhedra_Library;
     -# given \f$C\f$ find \f$G\f$ such that \f$(C, G)\f$ is a DD pair;
     -# given \f$G\f$ find \f$C\f$ such that \f$(C, G)\f$ is a DD pair.
 
-  Using Farkas' lemma we can prove that these two problems are
+  Using Farkas' Lemma we can prove that these two problems are
   computationally equivalent (i.e., linear-time reducible to each other).
-  Farkas' lemma establishes a fundamental property of vectors in
+  Farkas' Lemma establishes a fundamental property of vectors in
   \f$\Rset^n\f$ that, in a sense, captures the essence of duality.
   Consider a matrix \f$A \in \Rset^{m \times n}\f$ and let
   \f$\{ \vect{a}_1, \ldots, \vect{a}_m \}\f$ be its set of row vectors.
@@ -177,7 +178,7 @@ namespace PPL = Parma_Polyhedra_Library;
     \exists \vect{\lambda} \geq \vect{0}
       \mathrel{.} \vect{x}^\mathrm{T} = \vect{\lambda}^\mathrm{T}G^\mathrm{T}
   \f$,
-  which, by Farkas' lemma is equivalent to
+  which, by Farkas' Lemma is equivalent to
   \f$
     \forall \vect{y} \mathrel{:} (G^\mathrm{T}\vect{y} \geq \vect{0} \implies
                                  \langle \vect{y}, \vect{x} \rangle \geq 0)
@@ -191,7 +192,7 @@ namespace PPL = Parma_Polyhedra_Library;
     \forall \vect{x} \mathrel{:} (C\vect{x} \geq \vect{0} \implies
     \langle \vect{x}, \vect{z} \rangle \geq 0)
   \f$.
-  By Farkas' lemma, this is equivalent to
+  By Farkas' Lemma, this is equivalent to
   \f$\exists \vect{\mu} \geq \vect{0} \mathrel{.}
   \vect{z}^\mathrm{T} = \vect{\mu}^\mathrm{T} C\f$,
   which is equivalent to what we wanted to prove, that is,
@@ -216,7 +217,7 @@ namespace PPL = Parma_Polyhedra_Library;
   \f$\exists \vect{\mu} \geq \vect{0} \mathrel{.}
   \vect{z} = C^\mathrm{T}\vect{\mu}\f$
   and we will prove that \f$G^\mathrm{T}\vect{z} \geq \vect{0}\f$.
-  By Farkas' lemma, the assumption
+  By Farkas' Lemma, the assumption
   \f$\exists \vect{\mu} \geq \vect{0} \mathrel{.}
   \vect{z}^\mathrm{T} = \vect{\mu}^\mathrm{T}C\f$,
   is equivalent to
@@ -350,7 +351,7 @@ PPL::dimension_type
 PPL::Polyhedron::conversion(Linear_System& source,
 			    const dimension_type start,
 			    Linear_System& dest,
-			    Saturation_Matrix& sat,
+			    Bit_Matrix& sat,
 			    dimension_type num_lines_or_equalities) {
   dimension_type source_num_rows = source.num_rows();
   dimension_type dest_num_rows = dest.num_rows();
@@ -394,10 +395,11 @@ PPL::Polyhedron::conversion(Linear_System& source,
     // otherwise the scalar product below will bomb.
     assert(source_num_columns == dest_num_columns);
 
-    // `scalar_prod[i]' will contain the scalar product
-    // of the constraint `source_k' and the generator `dest[i]'.
-    // This product is 0 iff the generator saturates the constraint.
-    static std::vector<Coefficient> scalar_prod;
+    // `scalar_prod[i]' will contain the scalar product of the
+    // constraint `source_k' and the generator `dest[i]'.  This
+    // product is 0 if and only if the generator saturates the
+    // constraint.
+    DIRTY_TEMP0(std::vector<Coefficient>, scalar_prod);
     const int needed_space = dest_num_rows - scalar_prod.size();
     if (needed_space > 0)
       scalar_prod.insert(scalar_prod.end(), needed_space, Coefficient_zero());
@@ -412,7 +414,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
 	// The generator does not saturate the constraint.
 	break;
 #if REACTIVE_ABANDONING
-      // Check if the client has requested abandoning all exponential
+      // Check if the client has requested abandoning all expensive
       // computations.  If so, the exception specified by the client
       // is thrown now.
       maybe_abandon();
@@ -548,7 +550,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
       // does not saturate the constraint `source_k'.  Therefore, if
       // the constraint is an inequality, we set to 1 the
       // corresponding element of `sat' ...
-      Saturation_Row& sat_nle = sat[num_lines_or_equalities];
+      Bit_Row& sat_nle = sat[num_lines_or_equalities];
       if (source_k.is_ray_or_point_or_inequality())
 	sat_nle.set(k);
       // ... otherwise, the constraint is an equality which is
@@ -667,7 +669,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
 	      // If there exist another generator that saturates
 	      // all the constraints saturated by both `dest[i]' and
 	      // `dest[j]', then they are NOT adjacent.
-	      Saturation_Row new_satrow;
+	      Bit_Row new_satrow;
 	      assert(sat[i].last() == ULONG_MAX || sat[i].last() < k);
 	      assert(sat[j].last() == ULONG_MAX || sat[j].last() < k);
 	      // Being the union of `sat[i]' and `sat[j]',
@@ -805,7 +807,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
       }
     }
 #if !REACTIVE_ABANDONING
-    // Check if the client has requested abandoning all exponential
+    // Check if the client has requested abandoning all expensive
     // computations.  If so, the exception specified by the client
     // is thrown now.
     maybe_abandon();

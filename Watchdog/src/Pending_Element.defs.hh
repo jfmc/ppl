@@ -1,11 +1,11 @@
 /* Pending_Element class declaration.
-   Copyright (C) 2002-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Watchdog Library (PWL).
 
 The PWL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PWL is distributed in the hope that it will be useful, but WITHOUT
@@ -32,7 +32,7 @@ http://www.cs.unipr.it/Software/ . */
 /*!
   Each pending watchdog event is characterized by a deadline (a positive
   time interval), an associated handler that will be invoked upon event
-  expiration, and a boolean flag that indicates whether the event has already
+  expiration, and a Boolean flag that indicates whether the event has already
   expired or not.
 */
 class Parma_Watchdog_Library::Pending_Element : public Doubly_Linked_Object {

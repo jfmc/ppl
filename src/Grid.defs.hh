@@ -1,11 +1,11 @@
 /* Grid class declaration.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -28,6 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Grid.types.hh"
 #include "globals.defs.hh"
 #include "Variable.defs.hh"
+#include "Variables_Set.types.hh"
 #include "Linear_Expression.defs.hh"
 #include "Constraint.defs.hh"
 #include "Constraint_System.defs.hh"
@@ -40,20 +41,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
 #include "Grid_Certificate.types.hh"
+#include "Box.types.hh"
+#include "Polyhedron.defs.hh"
+#include "Polyhedron.types.hh"
+#include "Polyhedron.inlines.hh"
+#include "BD_Shape.types.hh"
+#include "Octagonal_Shape.types.hh"
 #include <vector>
 #include <iosfwd>
-
-// Dimension kind vector tracing
-#define print_dim_kinds(msg, dim_kinds)					\
-  std::cout << msg << "dim_kinds:";					\
-  for (Dimension_Kinds::iterator i = dim_kinds.begin(); i != dim_kinds.end(); ++i) \
-    std::cout << " " << *i;						\
-  std::cout << std::endl;
-#if 0
-#define trace_dim_kinds(msg, dim_kinds) print_dim_kinds(msg, dim_kinds)
-#else
-#define trace_dim_kinds(msg, dim_kinds)
-#endif
 
 namespace Parma_Polyhedra_Library {
 
@@ -105,17 +100,17 @@ bool operator!=(const Grid& x, const Grid& y);
   sect_rational_grids) and it is always possible to obtain either
   representation.
   That is, if we know the system of congruences, we can obtain
-  from this the system of generators that define the same grid
+  from this a system of generators that define the same grid
   and vice versa.
   These systems can contain redundant members, or they can be in the
   minimal form.
   Most operators on grids are provided with two implementations:
   one of these, denoted <CODE>\<operator-name\>_and_minimize</CODE>,
   also enforces the minimization of the representations,
-  and returns the boolean value <CODE>false</CODE> whenever
+  and returns the Boolean value <CODE>false</CODE> whenever
   the resulting grid turns out to be empty.
 
-  A key attributes of any grid is its space dimension (the dimension
+  A key attribute of any grid is its space dimension (the dimension
   \f$n \in \Nset\f$ of the enclosing vector space):
 
   - all grids, the empty ones included, are endowed with a space
@@ -361,6 +356,9 @@ bool operator!=(const Grid& x, const Grid& y);
 
 class Parma_Polyhedra_Library::Grid {
 public:
+  //! The numeric type of coefficients.
+  typedef Coefficient coefficient_type;
+
   //! Returns the maximum space dimension all kinds of Grid can handle.
   static dimension_type max_space_dimension();
 
@@ -377,7 +375,7 @@ public:
     dimension.
   */
   explicit Grid(dimension_type num_dimensions = 0,
-		const Degenerate_Element kind = UNIVERSE);
+		Degenerate_Element kind = UNIVERSE);
 
   //! Builds a grid, copying a system of congruences.
   /*!
@@ -400,11 +398,15 @@ public:
     The system of congruences defining the grid.  Its data-structures
     may be recycled to build the grid.
 
+    \param dummy
+    A dummy tag to syntactically differentiate this one
+    from the other constructors.
+
     \exception std::length_error
     Thrown if \p num_dimensions exceeds the maximum allowed space
     dimension.
   */
-  explicit Grid(Congruence_System& cgs);
+  Grid(Congruence_System& cgs, Recycle_Input dummy);
 
   //! Builds a grid, copying a system of constraints.
   /*!
@@ -427,11 +429,15 @@ public:
     The system of constraints defining the grid.  Its data-structures
     may be recycled to build the grid.
 
+    \param dummy
+    A dummy tag to syntactically differentiate this one
+    from the other constructors.
+
     \exception std::length_error
     Thrown if \p num_dimensions exceeds the maximum allowed space
     dimension.
   */
-  explicit Grid(Constraint_System& cs);
+  Grid(Constraint_System& cs, Recycle_Input dummy);
 
   //! Builds a grid, copying a system of grid generators.
   /*!
@@ -457,107 +463,62 @@ public:
     The system of generators defining the grid.  Its data-structures
     may be recycled to build the grid.
 
-    \exception std::invalid_argument
-    Thrown if the system of generators is not empty but has no points.
-
-    \exception std::length_error
-    Thrown if \p num_dimensions exceeds the maximum allowed space dimension.
-  */
-  explicit Grid(Grid_Generator_System& gs);
-
-  //! Builds a grid, copying a system of generators.
-  /*!
-    The grid inherits the space dimension of the generator system.
-
-    \param const_gs
-    The system of generators defining the grid.
-
-    \exception std::invalid_argument
-    Thrown if the system of generators is not empty but has no points.
-
-    \exception std::length_error
-    Thrown if \p num_dimensions exceeds the maximum allowed space
-    dimension.
-  */
-  explicit Grid(const Generator_System& const_gs);
-
-  //! Builds a grid, recycling a system of generators.
-  /*!
-    The grid inherits the space dimension of the generator system.
-
-    \param gs
-    The system of generators defining the grid.  Its data-structures
-    may be recycled to build the grid.
-
-    \exception std::invalid_argument
-    Thrown if the system of generators is not empty but has no points.
-
-    \exception std::length_error
-    Thrown if \p num_dimensions exceeds the maximum allowed space dimension.
-  */
-  explicit Grid(Generator_System& gs);
-
-  //! Builds a grid out of a generic, interval-based bounding box.
-  /*!
-    \param box
-    The bounding box representing the grid to be built.  The box can
-    contain only point and universe intervals;
-
     \param dummy
-    A dummy tag to make this constructor syntactically unique.
+    A dummy tag to syntactically differentiate this one
+    from the other constructors.
+
+    \exception std::invalid_argument
+    Thrown if the system of generators is not empty but has no points.
+
+    \exception std::length_error
+    Thrown if \p num_dimensions exceeds the maximum allowed space dimension.
+  */
+  Grid(Grid_Generator_System& gs, Recycle_Input dummy);
+
+  //! Builds a grid out of a box.
+  /*!
+    The grid inherits the space dimension of the box.
+    The built grid is the most precise grid that includes the box.
+
+    \param box
+    The box representing the grid to be built.
 
     \exception std::length_error
     Thrown if the space dimension of \p box exceeds the maximum
     allowed space dimension.
-
-    \exception std::invalid_argument
-    Thrown if \p box contains at least one interval with: a
-    topologically open bound, a single bound, or two bounds which have
-    space between them.
-
-    The template class Box must provide the following methods.
-    \code
-      dimension_type space_dimension() const
-    \endcode
-    returns the dimension of the vector space enclosing the grid
-    represented by the bounding box.
-    \code
-      bool is_empty() const
-    \endcode
-    returns <CODE>true</CODE> if and only if the bounding box
-    describes the empty set.
-    \code
-      bool get_lower_bound(dimension_type k, bool& closed,
-                           Coefficient& n, Coefficient& d) const
-    \endcode
-    Let \f$I\f$ be the interval corresponding to the <CODE>k</CODE>-th
-    space dimension.  If \f$I\f$ is not bounded from below, simply return
-    <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
-    <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
-    is set to <CODE>true</CODE> if the lower boundary of \f$I\f$
-    is closed and is set to <CODE>false</CODE> otherwise;
-    <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
-    \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
-    corresponds to the greatest lower bound of \f$I\f$.  The fraction
-    \f$n/d\f$ is in canonical form if and only if \f$n\f$ and \f$d\f$
-    have no common factors and \f$d\f$ is positive, \f$0/1\f$ being
-    the unique representation for zero.
-    \code
-      bool get_upper_bound(dimension_type k, bool& closed,
-                           Coefficient& n, Coefficient& d) const
-    \endcode
-    Let \f$I\f$ be the interval corresponding to the <CODE>k</CODE>-th
-    space dimension.  If \f$I\f$ is not bounded from above, simply return
-    <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
-    <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
-    is set to <CODE>true</CODE> if the upper boundary of \f$I\f$
-    is closed and is set to <CODE>false</CODE> otherwise;
-    <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
-    \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
-    corresponds to the least upper bound of \f$I\f$.
   */
-  template <typename Box>
-  Grid(const Box& box, From_Bounding_Box dummy);
+  template <typename Interval>
+  explicit Grid(const Box<Interval>& box);
+
+  //! Builds a grid out of a bounded-difference shape.
+  /*!
+    The grid inherits the space dimension of the BDS.
+    The built grid is the most precise grid that includes the BDS.
+
+    \param bd
+    The BDS representing the grid to be built.
+
+    \exception std::length_error
+    Thrown if the space dimension of \p bd exceeds the maximum
+    allowed space dimension.
+  */
+  template <typename U>
+  explicit Grid(const BD_Shape<U>& bd);
+
+  //! Builds a grid out of an octagonal shape.
+  /*!
+    The grid inherits the space dimension of the octagonal shape.
+    The built grid is the most precise grid that includes the octagonal shape.
+
+    \param os
+    The octagonal shape representing the grid to be built.
+
+    \exception std::length_error
+    Thrown if the space dimension of \p os exceeds the maximum
+    allowed space dimension.
+  */
+  template <typename U>
+  explicit Grid(const Octagonal_Shape<U>& os);
 
   //! Builds a grid out of a generic, interval-based covering box.
   /*!
@@ -630,6 +591,19 @@ public:
   template <typename Box>
   Grid(const Box& box, From_Covering_Box dummy);
 
+  //! Builds a grid, copying a polyhedron.
+  /*!
+    The grid inherits the space dimension of polyhedron.
+
+    \param ph
+    The polyhedron.
+
+    \exception std::length_error
+    Thrown if \p num_dimensions exceeds the maximum allowed space
+    dimension.
+  */
+  explicit Grid(const Polyhedron& ph);
+
   //! Ordinary copy-constructor.
   Grid(const Grid& y);
 
@@ -651,12 +625,15 @@ public:
   */
   dimension_type affine_dimension() const;
 
-  //! Returns a system of constraints constructed from the grid equalities.
+  /*! \brief
+      Returns a system of equality constraints satisfied by \p *this
+      with the same affine dimension as \p *this.
+  */
   Constraint_System constraints() const;
 
   /*! \brief
-    Returns a system of constraints constructed from the equalities
-    in the minimal congruence system.
+      Returns a system of equality constraints in reduced form
+      satisfied by \p *this with the same affine dimension as \p *this.
   */
   Constraint_System minimized_constraints() const;
 
@@ -665,18 +642,6 @@ public:
 
   //! Returns the system of congruences in reduced form.
   const Congruence_System& minimized_congruences() const;
-
-  /*! \brief
-    Returns a universe system of generators of the same number of
-    dimensions as the Grid.
-  */
-  Generator_System generators() const;
-
-  /*! \brief
-    Returns a universe system of generators of the same number of
-    dimensions as the Grid.
-  */
-  Generator_System minimized_generators() const;
 
   //! Returns the system of generators.
   const Grid_Generator_System& grid_generators() const;
@@ -702,6 +667,15 @@ public:
   // FIXME: see the comment for Poly_Con_Relation above.
   Poly_Gen_Relation
   relation_with(const Grid_Generator& g) const;
+
+  //! Returns the relations holding between \p *this and \p g.
+  /*
+    \exception std::invalid_argument
+    Thrown if \p *this and generator \p g are dimension-incompatible.
+  */
+  // FIXME: see the comment for Poly_Con_Relation above.
+  Poly_Gen_Relation
+  relation_with(const Generator& g) const;
 
   //! Returns the relations holding between \p *this and \p c.
   /*
@@ -752,6 +726,12 @@ public:
 
   //! Returns <CODE>true</CODE> if and only if \p *this is bounded.
   bool is_bounded() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this
+    contains at least one integer point.
+  */
+  bool contains_integer_point() const;
 
   //! Returns <CODE>true</CODE> if and only if \p expr is bounded in \p *this.
   /*!
@@ -834,7 +814,7 @@ public:
   */
   bool maximize(const Linear_Expression& expr,
 		Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
-		Grid_Generator& point) const;
+		Generator& point) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty and
@@ -899,7 +879,7 @@ public:
   */
   bool minimize(const Linear_Expression& expr,
 		Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
-		Grid_Generator& point) const;
+		Generator& point) const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this contains \p y.
   /*!
@@ -916,82 +896,6 @@ public:
     Thrown if \p *this and \p y are dimension-incompatible.
   */
   bool strictly_contains(const Grid& y) const;
-
-  //! Uses \p *this to shrink a generic, interval-based bounding box.
-  /*!
-    \param box
-    The bounding box to be shrunk.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p box are dimension-incompatible, or if \p
-    box contains any topologically open bounds.
-
-    The template class Box must provide the following methods
-    \code
-      dimension_type space_dimension() const
-    \endcode
-    returns the dimension of the vector space enclosing the grid
-    represented by the bounding box.
-    \code
-      bool get_lower_bound(dimension_type k, bool& closed,
-                           Coefficient& n, Coefficient& d) const
-    \endcode
-    Let \f$I\f$ be the interval corresponding to the <CODE>k</CODE>-th
-    space dimension.  If \f$I\f$ is not bounded from below, simply return
-    <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
-    <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
-    is set to <CODE>true</CODE> if the lower boundary of \f$I\f$
-    is closed and is set to <CODE>false</CODE> otherwise;
-    <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
-    \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
-    corresponds to the greatest lower bound of \f$I\f$.  The fraction
-    \f$n/d\f$ is in canonical form if and only if \f$n\f$ and \f$d\f$
-    have no common factors and \f$d\f$ is positive, \f$0/1\f$ being
-    the unique representation for zero.
-    \code
-      bool get_upper_bound(dimension_type k, bool& closed,
-                           Coefficient& n, Coefficient& d) const
-    \endcode
-    Let \f$I\f$ be the interval corresponding to the <CODE>k</CODE>-th
-    space dimension.  If \f$I\f$ is not bounded from above, simply return
-    <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
-    <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
-    is set to <CODE>true</CODE> if the upper boundary of \f$I\f$
-    is closed and is set to <CODE>false</CODE> otherwise;
-    <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
-    \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
-    corresponds to the least upper bound of \f$I\f$.
-    \code
-      set_empty()
-    \endcode
-    Causes the box to become empty, i.e., to represent the empty set.
-    \code
-      raise_lower_bound(dimension_type k, bool closed,
-                        Coefficient_traits::const_reference n,
-                        Coefficient_traits::const_reference d)
-    \endcode
-    intersects the interval corresponding to the <CODE>k</CODE>-th
-    space dimension with \f$[n/d, +\infty)\f$.  <CODE>closed</CODE> is
-    always passed as <CODE>true</CODE>.
-    \code
-      lower_upper_bound(dimension_type k, bool closed,
-                        Coefficient_traits::const_reference n,
-                        Coefficient_traits::const_reference d)
-    \endcode
-    intersects the interval corresponding to the <CODE>k</CODE>-th
-    space dimension with \f$(-\infty, n/d]\f$.  <CODE>closed</CODE> is
-    always passed as <CODE>true</CODE>.
-
-    The function <CODE>raise_lower_bound(k, closed, n, d)</CODE>
-    will be called at most once for each possible value for <CODE>k</CODE>
-    and for all such calls the fraction \f$n/d\f$ will be in canonical form,
-    that is, \f$n\f$ and \f$d\f$ have no common factors and \f$d\f$
-    is positive, \f$0/1\f$ being the unique representation for zero.
-    The same guarantee is offered for the function
-    <CODE>lower_upper_bound(k, closed, n, d)</CODE>.
-  */
-  template <typename Box>
-  void shrink_bounding_box(Box& box) const;
 
   //! Writes the covering box for \p *this into \p box.
   /*!
@@ -1019,48 +923,9 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this and \p box are dimension-incompatible.
-
-    The template class Box must provide the following methods
-    \code
-      Box(dimension_type space_dimension)
-    \endcode
-    Creates a universe box of space_dimension dimensions.
-    \code
-      dimension_type space_dimension() const
-    \endcode
-    returns the dimension of the vector space enclosing the grid
-    represented by the covering box.
-    \code
-      set_empty()
-    \endcode
-    Causes the box to become empty, i.e., to represent the empty set.
-    \code
-      raise_lower_bound(dimension_type k, bool closed,
-                        Coefficient_traits::const_reference n,
-                        Coefficient_traits::const_reference d)
-    \endcode
-    intersects the interval corresponding to the <CODE>k</CODE>-th
-    space dimension with \f$[n/d, +\infty)\f$.  <CODE>closed</CODE> is
-    always passed as <CODE>true</CODE>.
-    \code
-      lower_upper_bound(dimension_type k, bool closed,
-                        Coefficient_traits::const_reference n,
-                        Coefficient_traits::const_reference d)
-    \endcode
-    intersects the interval corresponding to the <CODE>k</CODE>-th
-    space dimension with \f$(-\infty, n/d]\f$.  <CODE>closed</CODE> is
-    always passed as <CODE>true</CODE>.
-
-    The function <CODE>raise_lower_bound(k, closed, n, d)</CODE>
-    will be called at most once for each possible value for <CODE>k</CODE>
-    and for all such calls the fraction \f$n/d\f$ will be in canonical form,
-    that is, \f$n\f$ and \f$d\f$ have no common factors and \f$d\f$
-    is positive, \f$0/1\f$ being the unique representation for zero.
-    The same guarantee is offered for the function
-    <CODE>lower_upper_bound(k, closed, n, d)</CODE>.
   */
-  template <typename Box>
-  void get_covering_box(Box& box) const;
+  template <typename Interval>
+  void get_covering_box(Box<Interval>& box) const;
 
   //! Checks if all the invariants are satisfied.
   /*!
@@ -1149,12 +1014,6 @@ public:
     or if \p *this is an empty grid and \p g is not a point.
   */
   bool add_grid_generator_and_minimize(const Grid_Generator& g);
-
-  //! Domain compatibility method.
-  void add_generator(const Generator& g) const;
-
-  //! Returns <CODE>true</CODE> if \p *this is empty else <CODE>false</CODE>.
-  bool add_generator_and_minimize(const Generator& g) const;
 
   //! Adds a copy of each congruence in \p cgs to \p *this.
   /*!
@@ -1352,6 +1211,18 @@ public:
     or exceptional return is that it can be safely destroyed.
   */
   bool add_recycled_constraints_and_minimize(Constraint_System& cs);
+
+  /*! \brief
+    Returns true indicating that this domain has methods that
+    can recycle congruences
+  */
+  static bool can_recycle_congruence_systems();
+
+  /*! \brief
+    Returns true indicating that this domain has methods that
+    can recycle constraints
+  */
+  static bool can_recycle_constraint_systems();
 
   /*! \brief
     Adds a copy of the generators in \p gs to the system of generators
@@ -1637,6 +1508,10 @@ public:
     \param var
     The left hand side variable of the generalized affine relation;
 
+    \param relsym
+    The relation symbol where EQUAL is the symbol for a congruence
+    relation;
+
     \param expr
     The numerator of the right hand side affine expression;
 
@@ -1647,19 +1522,21 @@ public:
     \param modulus
     The modulus of the congruence lhs %= rhs.  A modulus of zero
     indicates lhs == rhs.  Optional argument with an automatic value
-    of one.
+    of zero.
 
     \exception std::invalid_argument
     Thrown if \p denominator is zero or if \p expr and \p *this are
     dimension-incompatible or if \p var is not a space dimension of \p
     *this.
   */
-  void generalized_affine_image(Variable var,
-				const Linear_Expression& expr,
-				Coefficient_traits::const_reference denominator
-				= Coefficient_one(),
-				Coefficient_traits::const_reference modulus
-				= Coefficient_one());
+  void
+  generalized_affine_image(Variable var,
+			   Relation_Symbol relsym,
+			   const Linear_Expression& expr,
+			   Coefficient_traits::const_reference denominator
+			   = Coefficient_one(),
+			   Coefficient_traits::const_reference modulus
+			   = Coefficient_zero());
 
   /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
@@ -1670,6 +1547,10 @@ public:
     \param var
     The left hand side variable of the generalized affine relation;
 
+    \param relsym
+    The relation symbol where EQUAL is the symbol for a congruence
+    relation;
+
     \param expr
     The numerator of the right hand side affine expression;
 
@@ -1680,19 +1561,21 @@ public:
     \param modulus
     The modulus of the congruence lhs %= rhs.  A modulus of zero
     indicates lhs == rhs.  Optional argument with an automatic value
-    of one.
+    of zero.
 
     \exception std::invalid_argument
     Thrown if \p denominator is zero or if \p expr and \p *this are
     dimension-incompatible or if \p var is not a space dimension of \p
     *this.
   */
-  void generalized_affine_preimage(Variable var,
-				   const Linear_Expression& expr,
-				   Coefficient_traits::const_reference denominator
-				   = Coefficient_one(),
-				   Coefficient_traits::const_reference modulus
-				   = Coefficient_one());
+  void
+  generalized_affine_preimage(Variable var,
+			      Relation_Symbol relsym,
+			      const Linear_Expression& expr,
+			      Coefficient_traits::const_reference denominator
+			      = Coefficient_one(),
+			      Coefficient_traits::const_reference modulus
+			      = Coefficient_zero());
 
   /*! \brief
     Assigns to \p *this the image of \p *this with respect to
@@ -1702,22 +1585,28 @@ public:
     \param lhs
     The left hand side affine expression.
 
+    \param relsym
+    The relation symbol where EQUAL is the symbol for a congruence
+    relation;
+
     \param rhs
     The right hand side affine expression.
 
     \param modulus
     The modulus of the congruence lhs %= rhs.  A modulus of zero
     indicates lhs == rhs.  Optional argument with an automatic value
-    of one.
+    of zero.
 
     \exception std::invalid_argument
     Thrown if \p *this is dimension-incompatible with \p lhs or \p
     rhs.
   */
-  void generalized_affine_image(const Linear_Expression& lhs,
-				const Linear_Expression& rhs,
-				Coefficient_traits::const_reference modulus
-				= Coefficient_one());
+  void
+  generalized_affine_image(const Linear_Expression& lhs,
+			   Relation_Symbol relsym,
+			   const Linear_Expression& rhs,
+			   Coefficient_traits::const_reference modulus
+			   = Coefficient_zero());
 
   /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
@@ -1727,22 +1616,92 @@ public:
     \param lhs
     The left hand side affine expression;
 
+    \param relsym
+    The relation symbol where EQUAL is the symbol for a congruence
+    relation;
+
     \param rhs
     The right hand side affine expression;
 
     \param modulus
     The modulus of the congruence lhs %= rhs.  A modulus of zero
     indicates lhs == rhs.  Optional argument with an automatic value
-    of one.
+    of zero.
 
     \exception std::invalid_argument
     Thrown if \p *this is dimension-incompatible with \p lhs or \p
     rhs.
   */
-  void generalized_affine_preimage(const Linear_Expression& lhs,
-				   const Linear_Expression& rhs,
-				   Coefficient_traits::const_reference modulus
-				   = Coefficient_one());
+  void
+  generalized_affine_preimage(const Linear_Expression& lhs,
+			      Relation_Symbol relsym,
+			      const Linear_Expression& rhs,
+			      Coefficient_traits::const_reference modulus
+			      = Coefficient_zero());
+
+  /*!
+    \brief
+    Assigns to \p *this the image of \p *this with respect to the
+    \ref Single_Update_Bounded_Affine_Relations "bounded affine relation"
+    \f$\frac{\mathrm{lb\_expr}}{\mathrm{denominator}}
+         \leq \mathrm{var}'
+           \leq \frac{\mathrm{ub\_expr}}{\mathrm{denominator}}\f$.
+
+    \param var
+    The variable updated by the affine relation;
+
+    \param lb_expr
+    The numerator of the lower bounding affine expression;
+
+    \param ub_expr
+    The numerator of the upper bounding affine expression;
+
+    \param denominator
+    The (common) denominator for the lower and upper bounding
+    affine expressions (optional argument with default value 1).
+
+    \exception std::invalid_argument
+    Thrown if \p denominator is zero or if \p lb_expr (resp., \p ub_expr)
+    and \p *this are dimension-incompatible or if \p var is not a space
+    dimension of \p *this.
+  */
+  void bounded_affine_image(Variable var,
+			    const Linear_Expression& lb_expr,
+			    const Linear_Expression& ub_expr,
+			    Coefficient_traits::const_reference denominator
+			    = Coefficient_one());
+
+  /*!
+    \brief
+    Assigns to \p *this the preimage of \p *this with respect to the
+    \ref Single_Update_Bounded_Affine_Relations "bounded affine relation"
+    \f$\frac{\mathrm{lb\_expr}}{\mathrm{denominator}}
+         \leq \mathrm{var}'
+           \leq \frac{\mathrm{ub\_expr}}{\mathrm{denominator}}\f$.
+
+    \param var
+    The variable updated by the affine relation;
+
+    \param lb_expr
+    The numerator of the lower bounding affine expression;
+
+    \param ub_expr
+    The numerator of the upper bounding affine expression;
+
+    \param denominator
+    The (common) denominator for the lower and upper bounding
+    affine expressions (optional argument with default value 1).
+
+    \exception std::invalid_argument
+    Thrown if \p denominator is zero or if \p lb_expr (resp., \p ub_expr)
+    and \p *this are dimension-incompatible or if \p var is not a space
+    dimension of \p *this.
+  */
+  void bounded_affine_preimage(Variable var,
+			       const Linear_Expression& lb_expr,
+			       const Linear_Expression& ub_expr,
+			       Coefficient_traits::const_reference denominator
+			       = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the result of computing the \ref Grid_Time_Elapse
@@ -1971,7 +1930,7 @@ public:
     Thrown if \p new_dimensions is greater than the space dimension of
     \p *this.
   */
-  void remove_higher_space_dimensions(const dimension_type new_dimension);
+  void remove_higher_space_dimensions(dimension_type new_dimension);
 
   /*! \brief
     Remaps the dimensions of the vector space according to
@@ -2074,10 +2033,11 @@ public:
 
   //@} // Member Functions that May Modify the Dimension of the Vector Space
 
-  friend bool Parma_Polyhedra_Library::operator==(const Grid& x,
-						  const Grid& y);
+  friend bool operator==(const Grid& x, const Grid& y);
 
   friend class Parma_Polyhedra_Library::Grid_Certificate;
+
+  template <typename Interval> friend class Parma_Polyhedra_Library::Box;
 
   //! \name Miscellaneous Member Functions
   //@{
@@ -2096,12 +2056,10 @@ public:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
-    \ref ascii_dump) and sets \p *this accordingly.
-
-     \return
-     <CODE>true</CODE> if successful, else <CODE>false</CODE>.
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   bool ascii_load(std::istream& s);
 
   //! Returns the total size in bytes of the memory occupied by \p *this.
@@ -2109,6 +2067,14 @@ public:
 
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
+
+  /*! \brief
+    Returns a 32-bit hash code for \p *this.
+
+    If \p x and \p y are such that <CODE>x == y</CODE>,
+    then <CODE>x.hash_code() == y.hash_code()</CODE>.
+  */
+  int32_t hash_code() const;
 
   //@} // Miscellaneous Member Functions
 
@@ -2157,35 +2123,27 @@ private:
     \param kind
     specifies whether the universe or the empty grid has to be built.
   */
-  void construct(dimension_type num_dimensions,
-		 const Degenerate_Element kind);
+  void construct(dimension_type num_dimensions, Degenerate_Element kind);
 
   //! Builds a grid from a system of congruences.
   /*!
     The grid inherits the space dimension of the congruence system.
 
     \param cgs
-    The system of congruences defining the grid.
+    The system of congruences defining the grid. Its data-structures
+    may be recycled to build the grid.
   */
-  void construct(const Congruence_System& cgs);
+  void construct(Congruence_System& cgs);
 
   //! Builds a grid from a system of grid generators.
   /*!
     The grid inherits the space dimension of the generator system.
 
-    \param gs
-    The system of grid generators defining the grid;
+    \param ggs
+    The system of grid generators defining the grid.  Its data-structures
+    may be recycled to build the grid.
   */
-  void construct(const Grid_Generator_System& gs);
-
-  //! Builds a grid from a system of generators.
-  /*!
-    The grid inherits the space dimension of the generator system.
-
-    \param gs
-    The system of generators defining the grid;
-  */
-  void construct(const Generator_System& gs);
+  void construct(Grid_Generator_System& ggs);
 
   //! \name Private Verifiers: Verify if Individual Flags are Set
   //@{
@@ -2364,9 +2322,9 @@ private:
     \p included and \p point are left untouched.
   */
   bool max_min(const Linear_Expression& expr,
-	       char* method_call,
+	       const char* method_call,
 	       Coefficient& ext_n, Coefficient& ext_d, bool& included,
-	       Grid_Generator* point = NULL) const;
+	       Generator* point = NULL) const;
 
   //! \name Widening- and Extrapolation-Related Functions
   //@{
@@ -2441,7 +2399,7 @@ private:
   static void
   normalize_divisors(Grid_Generator_System& sys,
 		     Coefficient& divisor,
-		     Grid_Generator* first_point = NULL);
+		     const Grid_Generator* first_point = NULL);
 
   //! Normalizes the divisors in \p sys.
   /*!
@@ -2653,6 +2611,9 @@ protected:
 				    const char* g_name,
 				    const Grid_Generator& g) const;
   void throw_dimension_incompatible(const char* method,
+				    const char* g_name,
+				    const Generator& g) const;
+  void throw_dimension_incompatible(const char* method,
 				    const char* cgs_name,
 				    const Congruence_System& cgs) const;
   void throw_dimension_incompatible(const char* method,
@@ -2663,7 +2624,7 @@ protected:
 				    const Grid_Generator_System& gs) const;
   void throw_dimension_incompatible(const char* method,
 				    const char* var_name,
-				    const Variable var) const;
+				    Variable var) const;
   void throw_dimension_incompatible(const char* method,
 				    dimension_type required_space_dim) const;
 

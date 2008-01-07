@@ -1,11 +1,11 @@
 /* Constraint class implementation: inline functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -24,47 +24,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Constraint_inlines_hh 1
 
 #include "Linear_Expression.defs.hh"
-#include "Congruence.defs.hh"
 
 namespace Parma_Polyhedra_Library {
-
-inline
-Constraint::Constraint(const Congruence& cg)
-  : Linear_Row(cg.is_equality()
-	       // Extra columns for inhomogeneous term and epsilon
-	       // coefficient.
-	       ? cg.space_dimension() + 2
-	       : (throw_invalid_argument("Constraint(cg)",
-					 "congruence cg must be an equality."),
-		  0),
-	       compute_capacity(cg.space_dimension() + 2, Row::max_size()),
-	       Flags(NOT_NECESSARILY_CLOSED, LINE_OR_EQUALITY)) {
-  // Copy coefficients.
-  assert(cg.space_dimension() > 0);
-  dimension_type i = cg.space_dimension();
-  operator[](i) = cg[i];
-  while (i-- > 0)
-    operator[](i) = cg[i];
-  // Enforce normalization.
-  strong_normalize();
-}
-
-inline
-Constraint::Constraint(const Congruence& cg,
-		       dimension_type sz,
-		       dimension_type capacity)
-  : Linear_Row(cg.is_equality()
-	       ? sz
-	       : (throw_invalid_argument("Constraint(cg, sz, c)",
-					 "congruence cg must be an equality."),
-		  0),
-	       capacity,
-	       Flags(NOT_NECESSARILY_CLOSED, LINE_OR_EQUALITY)) {
-  // Copy coefficients.
-  assert(sz > 0);
-  while (sz-- > 0)
-    operator[](sz) = cg[sz];
-}
 
 inline
 Constraint::Constraint(Linear_Expression& e, Type type, Topology topology) {
@@ -367,27 +328,26 @@ operator<(const Linear_Expression& e, Coefficient_traits::const_reference n) {
 
 inline const Constraint&
 Constraint::zero_dim_false() {
-  static const Constraint zdf(Linear_Expression::zero() == Coefficient_one());
-  return zdf;
+  assert(zero_dim_false_p != 0);
+  return *zero_dim_false_p;
 }
 
 inline const Constraint&
 Constraint::zero_dim_positivity() {
-  static const Constraint zdp(Linear_Expression::zero() <= Coefficient_one());
-  return zdp;
+  assert(zero_dim_positivity_p != 0);
+  return *zero_dim_positivity_p;
 }
 
 inline const Constraint&
 Constraint::epsilon_geq_zero() {
-  static const Constraint eps_geq_zero = construct_epsilon_geq_zero();
-  return eps_geq_zero;
+  assert(epsilon_geq_zero_p != 0);
+  return *epsilon_geq_zero_p;
 }
 
 inline const Constraint&
 Constraint::epsilon_leq_one() {
-  static const Constraint
-    eps_leq_one(Linear_Expression::zero() < Coefficient_one());
-  return eps_leq_one;
+  assert(epsilon_leq_one_p != 0);
+  return *epsilon_leq_one_p;
 }
 
 inline void

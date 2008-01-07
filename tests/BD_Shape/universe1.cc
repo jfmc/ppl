@@ -1,11 +1,11 @@
 /* Test BD_Shape::is_universe().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -28,30 +28,62 @@ bool
 test01() {
   Variable x(0);
   Variable y(1);
-  // Variable z(2);
 
-  TBD_Shape bd1(4);
-  TBD_Shape bd2(4);
+  TBD_Shape bd(4);
 
-  bd1.add_constraint(-x <= 4);
-  bd1.add_constraint(y - x <= 0);
-  bd1.add_constraint(x - y <= -5);
+  bd.add_constraint(-x <= 4);
+  bd.add_constraint(y - x <= 0);
+  bd.add_constraint(x - y <= -5);
 
-  bool universe1 = bd1.is_universe();
+  bool universe = bd.is_universe();
 
-  nout << "*** bd1.is_universe() ***" << endl;
-  nout << (universe1 ? "true" : "false") << endl;
+  nout << "*** bd.is_universe() ***" << endl;
+  nout << (universe ? "true" : "false") << endl;
 
-  bool universe2 = bd2.is_universe();
+  return !universe;
+}
 
-  nout << "*** bd2.is_universe() ***" << endl;
-  nout << (universe2 ? "true" : "false") << endl;
+bool
+test02() {
+  TBD_Shape bd(4);
 
-  return universe1 != universe2;
+  bool universe = bd.is_universe();
+
+  nout << "*** bd.is_universe() ***" << endl;
+  nout << (universe ? "true" : "false") << endl;
+
+  return universe;
+}
+
+bool
+test03() {
+  TBD_Shape bd(0);
+
+  bool universe = bd.is_universe();
+
+  nout << "*** bd.is_universe() ***" << endl;
+  nout << (universe ? "true" : "false") << endl;
+
+  return universe;
+}
+
+bool
+test04() {
+  TBD_Shape bd(20, EMPTY);
+
+  bool universe = bd.is_universe();
+
+  nout << "*** bd.is_universe() ***" << endl;
+  nout << (universe ? "true" : "false") << endl;
+
+  return !universe;
 }
 
 } // namespace
 
 BEGIN_MAIN
   DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
 END_MAIN

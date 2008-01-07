@@ -1,11 +1,11 @@
 /* Widening_Function class implementation: inline functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -53,14 +53,14 @@ operator()(PH& x, const PH& y, unsigned* tp) const {
   (x.*lw_method)(y, limiting_cs, tp);
 }
 
-/*! \relates Polyhedra_Powerset */
+/*! \relates Pointset_Powerset */
 template <typename PH>
 inline Widening_Function<PH>
 widen_fun_ref(void (PH::* wm)(const PH&, unsigned*)) {
   return Widening_Function<PH>(wm);
 }
 
-/*! \relates Polyhedra_Powerset */
+/*! \relates Pointset_Powerset */
 template <typename PH, typename CS>
 inline Limited_Widening_Function<PH, CS>
 widen_fun_ref(void (PH::* lwm)(const PH&, const CS&, unsigned*),

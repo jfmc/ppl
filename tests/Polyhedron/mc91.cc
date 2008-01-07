@@ -1,11 +1,11 @@
-/* Test the Polyhedra_Powerset construction with McCarthy's 91 function.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Test the Pointset_Powerset construction with McCarthy's 91 function.
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -26,7 +26,7 @@ namespace {
 
 bool
 test01() {
-  typedef Polyhedra_Powerset<C_Polyhedron> PCS;
+  typedef Pointset_Powerset<C_Polyhedron> PCS;
 
   Variable A(0);
   Variable B(1);
@@ -67,11 +67,11 @@ test01() {
   do {
     previous = current;
     current = inductive;
-    Polyhedra_Powerset<C_Polyhedron> b1(2);
+    Pointset_Powerset<C_Polyhedron> b1(2);
     b1.concatenate_assign(previous);
     b1.add_space_dimensions_and_embed(2);
     current.intersection_assign(b1);
-    Polyhedra_Powerset<C_Polyhedron> b2(4);
+    Pointset_Powerset<C_Polyhedron> b2(4);
     b2.concatenate_assign(previous);
     current.intersection_assign(b2);
 
@@ -99,7 +99,7 @@ test01() {
   C_Polyhedron expected_ph(2);
   expected_ph.add_constraint(A - B <= 10);
   expected_ph.add_constraint(B >= 91);
-  Polyhedra_Powerset<C_Polyhedron> expected(2, EMPTY);
+  Pointset_Powerset<C_Polyhedron> expected(2, EMPTY);
   expected.add_disjunct(expected_ph);
 
   bool ok = (expected == current);

@@ -1,11 +1,11 @@
 /* Test Grid::widening_assign().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -44,8 +44,7 @@ test01() {
 
   bool ok = (gr2 == known_gr);
 
-  print_congruences(gr2,
-        "*** gr2.widening_assign(gr1) ***");
+  print_congruences(gr2, "*** gr2.widening_assign(gr1) ***");
 
   return ok;
 }
@@ -71,8 +70,7 @@ test02() {
 
   bool ok = (gr2 == known_gr);
 
-  print_congruences(gr2,
-        "*** gr2.widening_assign(gr1) ***");
+  print_congruences(gr2, "*** gr2.widening_assign(gr1) ***");
 
   return ok;
 }
@@ -94,8 +92,7 @@ test03() {
 
   bool ok = (gr2 == known_gr);
 
-  print_congruences(gr2,
-        "*** gr2.widening_assign(gr1) ***");
+  print_congruences(gr2, "*** gr2.widening_assign(gr1) ***");
 
   return ok;
 }
@@ -129,8 +126,7 @@ test04() {
 
   bool ok = (gr2 == known_gr);
 
-  print_congruences(gr2,
-        "*** gr2.widening_assign(gr1) ***");
+  print_congruences(gr2, "*** gr2.widening_assign(gr1) ***");
 
   return ok;
 }
@@ -165,8 +161,7 @@ test05() {
 
   bool ok = (gr2 == known_gr);
 
-  print_congruences(gr2,
-        "*** gr2.widening_assign(gr1) ***");
+  print_congruences(gr2, "*** gr2.widening_assign(gr1) ***");
 
   return ok;
 }
@@ -201,8 +196,7 @@ test06() {
 
   bool ok = (gr2 == known_gr);
 
-  print_congruences(gr2,
-        "*** gr2.widening_assign(gr1) ***");
+  print_congruences(gr2, "*** gr2.widening_assign(gr1) ***");
 
   return ok;
 }
@@ -235,8 +229,7 @@ test07() {
 
   bool ok = (gr2 == known_gr);
 
-  print_congruences(gr2,
-        "*** gr2.widening_assign(gr1) ***");
+  print_congruences(gr2, "*** gr2.widening_assign(gr1) ***");
 
   return ok;
 }
@@ -269,8 +262,7 @@ test08() {
   nout << "*** `tokens' which should be should be 3 are *** "
        << tokens << endl;
 
-  print_congruences(gr2,
-        "*** gr2.widening_assign(gr1, &tokens) ***");
+  print_congruences(gr2, "*** gr2.widening_assign(gr1, &tokens) ***");
 
   return ok;
 }

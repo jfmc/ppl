@@ -1,11 +1,11 @@
 /* Polyhedron class declaration.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -26,7 +26,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Polyhedron.types.hh"
 #include "globals.types.hh"
 #include "Variable.defs.hh"
-#include "Linear_Expression.defs.hh"
+#include "Variables_Set.types.hh"
+#include "Linear_Expression.types.hh"
 #include "Constraint_System.defs.hh"
 #include "Constraint_System.inlines.hh"
 #include "Generator_System.defs.hh"
@@ -35,14 +36,17 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Congruence_System.inlines.hh"
 #include "Grid_Generator_System.defs.hh"
 #include "Grid_Generator_System.inlines.hh"
-#include "Saturation_Matrix.defs.hh"
+#include "Bit_Matrix.defs.hh"
+#include "Constraint.types.hh"
 #include "Generator.types.hh"
-#include "Congruence.defs.hh"
+#include "Congruence.types.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
 #include "BHRZ03_Certificate.types.hh"
 #include "H79_Certificate.types.hh"
+#include "Box.types.hh"
 #include "BD_Shape.types.hh"
+#include "Octagonal_Shape.types.hh"
 #include <vector>
 #include <iosfwd>
 
@@ -352,6 +356,9 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
 
 class Parma_Polyhedra_Library::Polyhedron {
 public:
+  //! The numeric type of coefficients.
+  typedef Coefficient coefficient_type;
+
   //! Returns the maximum space dimension all kinds of Polyhedron can handle.
   static dimension_type max_space_dimension();
 
@@ -401,10 +408,14 @@ protected:
     declared <CODE>const</CODE> because its data-structures may be
     recycled to build the polyhedron.
 
+    \param dummy
+    A dummy tag to syntactically differentiate this one
+    from the other constructors.
+
     \exception std::invalid_argument
     Thrown if the topology of \p cs is incompatible with \p topol.
   */
-  Polyhedron(Topology topol, Constraint_System& cs);
+  Polyhedron(Topology topol, Constraint_System& cs, Recycle_Input dummy);
 
   //! Builds a polyhedron from a system of generators.
   /*!
@@ -434,11 +445,15 @@ protected:
     declared <CODE>const</CODE> because its data-structures may be
     recycled to build the polyhedron.
 
+    \param dummy
+    A dummy tag to syntactically differentiate this one
+    from the other constructors.
+
     \exception std::invalid_argument
     Thrown if the topology of \p gs is incompatible with \p topol,
     or if the system of generators is not empty but has no points.
   */
-  Polyhedron(Topology topol, Generator_System& gs);
+  Polyhedron(Topology topol, Generator_System& gs, Recycle_Input dummy);
 
   //! Builds a polyhedron out of a generic, interval-based bounding box.
   /*!
@@ -530,12 +545,12 @@ public:
   //! Returns the system of generators, with no redundant generator.
   const Generator_System& minimized_generators() const;
 
-  //! Returns a system of congruences created from the constraints.
+  //! Returns a system of (equality) congruences satisfied by \p *this.
   Congruence_System congruences() const;
 
   /*! \brief
-    Returns a system of congruences created from the minimized
-    constraints.
+      Returns a system of (equality) congruences in reduced form
+      satsified by \p *this with the same affine dimension as \p *this.
   */
   Congruence_System minimized_congruences() const;
 
@@ -562,6 +577,15 @@ public:
     Thrown if \p *this and generator \p g are dimension-incompatible.
   */
   Poly_Gen_Relation relation_with(const Generator& g) const;
+
+  /*! \brief
+    Returns the relations holding between the polyhedron \p *this
+    and the congruence \p c.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and congruence \p c are dimension-incompatible.
+  */
+  Poly_Con_Relation relation_with(const Congruence& cg) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is
@@ -597,6 +621,21 @@ public:
     is a bounded polyhedron.
   */
   bool is_bounded() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this
+    contains at least one integer point.
+  */
+  bool contains_integer_point() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p var is constrained in
+    \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p var is not a space dimension of \p *this.
+  */
+  bool constrains(Variable var) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p expr is
@@ -660,7 +699,7 @@ public:
     \param maximum
     <CODE>true</CODE> if and only if the supremum is also the maximum value;
 
-    \param point
+    \param g
     When maximization succeeds, will be assigned the point or
     closure point where \p expr reaches its supremum value.
 
@@ -669,11 +708,11 @@ public:
 
     If \p *this is empty or \p expr is not bounded from above,
     <CODE>false</CODE> is returned and \p sup_n, \p sup_d, \p maximum
-    and \p point are left untouched.
+    and \p g are left untouched.
   */
   bool maximize(const Linear_Expression& expr,
 		Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
-		Generator& point) const;
+		Generator& g) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty
@@ -719,7 +758,7 @@ public:
     \param minimum
     <CODE>true</CODE> if and only if the infimum is also the minimum value;
 
-    \param point
+    \param g
     When minimization succeeds, will be assigned a point or
     closure point where \p expr reaches its infimum value.
 
@@ -728,11 +767,11 @@ public:
 
     If \p *this is empty or \p expr is not bounded from below,
     <CODE>false</CODE> is returned and \p inf_n, \p inf_d, \p minimum
-    and \p point are left untouched.
+    and \p g are left untouched.
   */
   bool minimize(const Linear_Expression& expr,
 		Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
-		Generator& point) const;
+		Generator& g) const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this contains \p y.
   /*!
@@ -749,75 +788,6 @@ public:
     dimension-incompatible.
   */
   bool strictly_contains(const Polyhedron& y) const;
-
-  /*! \brief
-    Uses \p *this to shrink a generic, interval-based bounding box.
-    Assigns to \p box the intersection of \p box with the smallest
-    bounding box containing \p *this.
-
-    \param box
-    The bounding box to be shrunk;
-
-    \param complexity
-    The complexity class of the algorithm to be used.
-
-    If the polyhedron \p *this or \p box is empty, then the empty box
-    is returned.
-
-    If \p *this and \p box are non-empty, then, for
-    each space dimension \f$k\f$ with variable \f$\mathrm{var}\f$, let
-    \f$u\f$ be the upper and \f$l\f$ the lower bound of the smallest
-    interval containing \p *this.
-
-    If \f$l\f$ is infinite, then \p box is unaltered; if \f$l\f$ is
-    finite, then the \p box interval for space dimension \f$k\f$ is
-    (destructively) intersected with \f$[l, +\mathrm{infty})\f$ if a
-    point of \p *this satisfies \f$\mathrm{var} == l\f$ and with
-    \f$(l, +\mathrm{infty})\f$ otherwise.
-
-    Similarly, if \f$u\f$ is infinite, then \p box is unaltered; if
-    \f$u\f$ is finite, then the \p box interval for space dimension
-    \f$k\f$ is (destructively) intersected with \f$(-\mathrm{infty},
-    u]\f$ if a point of \p *this satisfies \f$\mathrm{var} == u\f$ and
-    with \f$(-\mathrm{infty}, u)\f$ otherwise.
-
-    The template class Box must provide the following methods, whose
-    return values, if any, are simply ignored.
-    \code
-      set_empty()
-    \endcode
-    causes the box to become empty, i.e., to represent the empty set.
-    \code
-      raise_lower_bound(dimension_type k, bool closed,
-                        Coefficient_traits::const_reference n,
-                        Coefficient_traits::const_reference d)
-    \endcode
-    intersects the interval corresponding to the <CODE>k</CODE>-th
-    space dimension
-    with \f$[n/d, +\infty)\f$ if <CODE>closed</CODE> is <CODE>true</CODE>,
-    with \f$(n/d, +\infty)\f$ if <CODE>closed</CODE> is <CODE>false</CODE>.
-    \code
-      lower_upper_bound(dimension_type k, bool closed,
-                        Coefficient_traits::const_reference n,
-                        Coefficient_traits::const_reference d)
-    \endcode
-    intersects the interval corresponding to the <CODE>k</CODE>-th
-    space dimension
-    with \f$(-\infty, n/d]\f$ if <CODE>closed</CODE> is <CODE>true</CODE>,
-    with \f$(-\infty, n/d)\f$ if <CODE>closed</CODE>
-    is <CODE>false</CODE>.
-
-    The function <CODE>raise_lower_bound(k, closed, n, d)</CODE>
-    will be called at most once for each possible value for <CODE>k</CODE>
-    and for all such calls the fraction \f$n/d\f$ will be in canonical form,
-    that is, \f$n\f$ and \f$d\f$ have no common factors and \f$d\f$
-    is positive, \f$0/1\f$ being the unique representation for zero.
-    The same guarantee is offered for the function
-    <CODE>lower_upper_bound(k, closed, n, d)</CODE>.
-  */
-  template <typename Box>
-  void shrink_bounding_box(Box& box,
-			   Complexity_Class complexity = ANY_COMPLEXITY) const;
 
   //! Checks if all the invariants are satisfied.
   /*!
@@ -1064,6 +1034,75 @@ public:
     dimension-incompatible.
   */
   void add_congruences(const Congruence_System& cgs);
+
+  /*! \brief
+    Adds a copy of the congruences in \p cs to the system
+    of congruences of \p *this, minimizing the result.
+
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \param cs
+    Contains the congruences that will be added to the system of
+    congruences of \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are topology-incompatible or
+    dimension-incompatible.
+  */
+  bool add_congruences_and_minimize(const Congruence_System& cs);
+
+  // FIXME
+  /*! \brief
+    Adds the congruences in \p cs to the system of congruences
+    of \p *this (without minimizing the result).
+
+    \param cgs
+    The congruence system to be added to \p *this.  The congruences in
+    \p cgs may be recycled.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are topology-incompatible or
+    dimension-incompatible.
+
+    \warning
+    The only assumption that can be made on \p cs upon successful or
+    exceptional return is that it can be safely destroyed.
+  */
+  void add_recycled_congruences(Congruence_System& cgs);
+
+  // FIXME
+  /*! \brief
+    Adds the congruences in \p cs to the system of congruences
+    of \p *this, minimizing the result.
+
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \param cgs
+    The congruence system to be added to \p *this.  The congruences in
+    \p cgs may be recycled.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are topology-incompatible or
+    dimension-incompatible.
+
+    \warning
+    The only assumption that can be made on \p cs upon successful or
+    exceptional return is that it can be safely destroyed.
+  */
+  bool add_recycled_congruences_and_minimize(Congruence_System& cgs);
+
+  /*! \brief
+    Returns true indicating that this domain has methods that
+    can recycle constraints
+  */
+  static bool can_recycle_constraint_systems();
+
+  /*! \brief
+    Returns false indicating that this domain cannot recycle congruences
+  */
+  static bool can_recycle_congruence_systems();
 
   /*! \brief
     Assigns to \p *this the intersection of \p *this and \p y.
@@ -1341,10 +1380,10 @@ public:
     relation symbol.
   */
   void generalized_affine_image(Variable var,
-				const Relation_Symbol relsym,
+				Relation_Symbol relsym,
 				const Linear_Expression& expr,
 				Coefficient_traits::const_reference denominator
-				  = Coefficient_one());
+				= Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
@@ -1374,7 +1413,7 @@ public:
   */
   void
   generalized_affine_preimage(Variable var,
-			      const Relation_Symbol relsym,
+			      Relation_Symbol relsym,
 			      const Linear_Expression& expr,
 			      Coefficient_traits::const_reference denominator
 			      = Coefficient_one());
@@ -1400,7 +1439,7 @@ public:
     relation symbol.
   */
   void generalized_affine_image(const Linear_Expression& lhs,
-				const Relation_Symbol relsym,
+				Relation_Symbol relsym,
 				const Linear_Expression& rhs);
 
   /*! \brief
@@ -1424,7 +1463,7 @@ public:
     relation symbol.
   */
   void generalized_affine_preimage(const Linear_Expression& lhs,
-				   const Relation_Symbol relsym,
+				   Relation_Symbol relsym,
 				   const Linear_Expression& rhs);
 
   /*!
@@ -1830,8 +1869,7 @@ public:
 
   //@} // Member Functions that May Modify the Dimension of the Vector Space
 
-  friend bool Parma_Polyhedra_Library::operator==(const Polyhedron& x,
-						  const Polyhedron& y);
+  friend bool operator==(const Polyhedron& x, const Polyhedron& y);
 
   //! \name Miscellaneous Member Functions
   //@{
@@ -1853,10 +1891,10 @@ public:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
-    \ref ascii_dump) and sets \p *this accordingly.
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   bool ascii_load(std::istream& s);
 
   //! Returns the total size in bytes of the memory occupied by \p *this.
@@ -1864,6 +1902,14 @@ public:
 
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
+
+  /*! \brief
+    Returns a 32-bit hash code for \p *this.
+
+    If \p x and \p y are such that <CODE>x == y</CODE>,
+    then <CODE>x.hash_code() == y.hash_code()</CODE>.
+  */
+  int32_t hash_code() const;
 
   //@} // Miscellaneous Member Functions
 
@@ -1875,10 +1921,10 @@ private:
   Generator_System gen_sys;
 
   //! The saturation matrix having constraints on its columns.
-  Saturation_Matrix sat_c;
+  Bit_Matrix sat_c;
 
   //! The saturation matrix having generators on its columns.
-  Saturation_Matrix sat_g;
+  Bit_Matrix sat_g;
 
 #define PPL_IN_Polyhedron_CLASS
 #include "Ph_Status.idefs.hh"
@@ -2230,6 +2276,9 @@ private:
   */
   bool strongly_minimize_generators() const;
 
+  //! If constraints are up-to-date, obtain a simplified copy of them.
+  Constraint_System simplified_constraints() const;
+
   //@} // Weak and Strong Minimization of Descriptions
 
   enum Three_Valued_Boolean {
@@ -2282,7 +2331,7 @@ private:
     <CODE>true</CODE> if and only if the extremum of \p expr can
     actually be reached in \p * this;
 
-    \param point
+    \param g
     When maximization or minimization succeeds, will be assigned
     a point or closure point where \p expr reaches the
     corresponding extremum value.
@@ -2292,12 +2341,12 @@ private:
 
     If \p *this is empty or \p expr is not bounded in the appropriate
     direction, <CODE>false</CODE> is returned and \p ext_n, \p ext_d,
-    \p included and \p point are left untouched.
+    \p included and \p g are left untouched.
   */
   bool max_min(const Linear_Expression& expr,
-	       const bool maximize,
+	       bool maximize,
 	       Coefficient& ext_n, Coefficient& ext_d, bool& included,
-	       Generator& point) const;
+	       Generator& g) const;
 
   //! \name Widening- and Extrapolation-Related Functions
   //@{
@@ -2361,8 +2410,8 @@ private:
   */
   static void add_space_dimensions(Linear_System& mat1,
 				   Linear_System& mat2,
-				   Saturation_Matrix& sat1,
-				   Saturation_Matrix& sat2,
+				   Bit_Matrix& sat1,
+				   Bit_Matrix& sat2,
 				   dimension_type add_dim);
 
   //! \name Minimization-Related Static Member Functions
@@ -2373,7 +2422,7 @@ private:
   static bool minimize(bool con_to_gen,
 		       Linear_System& source,
 		       Linear_System& dest,
-		       Saturation_Matrix& sat);
+		       Bit_Matrix& sat);
 
   /*! \brief
     Adds given constraints and builds minimized corresponding generators
@@ -2383,7 +2432,7 @@ private:
   static bool add_and_minimize(bool con_to_gen,
 			       Linear_System& source1,
 			       Linear_System& dest,
-			       Saturation_Matrix& sat,
+			       Bit_Matrix& sat,
 			       const Linear_System& source2);
 
   /*! \brief
@@ -2394,14 +2443,14 @@ private:
   static bool add_and_minimize(bool con_to_gen,
 			       Linear_System& source,
 			       Linear_System& dest,
-			       Saturation_Matrix& sat);
+			       Bit_Matrix& sat);
 
   //! Performs the conversion from constraints to generators and vice versa.
   // Detailed Doxygen comment to be found in file conversion.cc.
   static dimension_type conversion(Linear_System& source,
 				   dimension_type start,
 				   Linear_System& dest,
-				   Saturation_Matrix& sat,
+				   Bit_Matrix& sat,
 				   dimension_type num_lines_or_equalities);
 
   /*! \brief
@@ -2409,11 +2458,14 @@ private:
     <CODE>conversion()</CODE>.
   */
   // Detailed Doxygen comment to be found in file simplify.cc.
-  static int simplify(Linear_System& mat, Saturation_Matrix& sat);
+  static int simplify(Linear_System& mat, Bit_Matrix& sat);
 
   //@} // Minimization-Related Static Member Functions
 
+  template <typename Interval> friend class Parma_Polyhedra_Library::Box;
   template <typename T> friend class Parma_Polyhedra_Library::BD_Shape;
+  template <typename T> friend class Parma_Polyhedra_Library::Octagonal_Shape;
+  friend class Parma_Polyhedra_Library::Grid;
   friend class Parma_Polyhedra_Library::BHRZ03_Certificate;
   friend class Parma_Polyhedra_Library::H79_Certificate;
 
@@ -2469,7 +2521,7 @@ protected:
 				    const Congruence_System& cgs) const;
   void throw_dimension_incompatible(const char* method,
 				    const char* var_name,
-				    const Variable var) const;
+				    Variable var) const;
   void throw_dimension_incompatible(const char* method,
 				    dimension_type required_space_dim) const;
 

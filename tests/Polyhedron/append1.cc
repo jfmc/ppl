@@ -1,11 +1,11 @@
 /* An example of iteration to a post-fixpoint.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -35,10 +35,8 @@ shift_rename_add(const C_Polyhedron& p,
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
+bool
+test01() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -92,7 +90,7 @@ main() TRY {
 
     current.poly_hull_assign_and_minimize(previous);
 
-    print_constraints(current, "*** after poly_hull_assign_and_minimize***");
+    print_constraints(current, "*** after poly_hull_assign_and_minimize ***");
 
   } while (current != previous);
 
@@ -103,6 +101,11 @@ main() TRY {
 
   print_constraints(expected, "*** expected ***");
 
-  return current == expected ? 0 : 1;
+  return current == expected ? true : false;
 }
-CATCH
+
+BEGIN_MAIN
+  DO_TEST(test01);
+END_MAIN
+
+

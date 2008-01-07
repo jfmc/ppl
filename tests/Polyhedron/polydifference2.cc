@@ -1,11 +1,11 @@
 /* Test Polyhedron::poly_difference_assign().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -60,7 +60,7 @@ test01() {
 
   bool ok = (computed_result == known_result);
 
-  print_generators(computed_result, "*** After poly_difference_assign ***");
+  print_generators(computed_result, "*** after poly_difference_assign ***");
   print_generators(known_result, "*** known_result ***");
 
   return ok;
@@ -91,7 +91,7 @@ test02() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After ph1.poly_difference_assign(ph2) ***");
+  print_constraints(ph1, "*** after ph1.poly_difference_assign(ph2) ***");
 
   return ok;
 }
@@ -135,8 +135,32 @@ test03() {
 
   bool ok = (computed_result == known_result);
 
-  print_constraints(computed_result, "*** After poly_difference_assign ***");
+  print_constraints(computed_result, "*** after poly_difference_assign ***");
   print_constraints(known_result, "*** known_result ***");
+
+  return ok;
+}
+
+bool
+test04() {
+  Variable A(0);
+
+  C_Polyhedron ph1(1);
+
+  C_Polyhedron ph2(1);
+  ph2.add_constraint(A >= 1);
+  ph2.add_constraint(A <= 0);
+
+  print_constraints(ph1, "*** ph1 ***");
+  print_constraints(ph2, "*** ph2 ***");
+
+  ph1.poly_difference_assign(ph2);
+
+  C_Polyhedron known_result(1);
+
+  bool ok = (ph1 == known_result);
+
+  print_constraints(ph1, "*** after ph1.poly_difference_assign(ph2) ***");
 
   return ok;
 }
@@ -147,4 +171,5 @@ BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
   DO_TEST(test03);
+  DO_TEST(test04);
 END_MAIN

@@ -1,11 +1,11 @@
 /* Test Grid::add_grid_generator*().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -40,8 +40,7 @@ test01() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-		    "*** gr.add_grid_generator(grid_point(-A)) ***");
+  print_congruences(gr, "*** gr.add_grid_generator(grid_point(-A)) ***");
 
   return ok;
 }
@@ -63,8 +62,7 @@ test02() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-		    "*** gr.add_grid_generator(grid_point(A + B)) ***");
+  print_congruences(gr, "*** gr.add_grid_generator(grid_point(A + B)) ***");
 
   return ok;
 }
@@ -91,8 +89,7 @@ test03() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-		    "*** gr.add_grid_generator(...) ***");
+  print_congruences(gr, "*** gr.add_grid_generator(...) ***");
 
   return ok;
 }
@@ -120,8 +117,7 @@ test04() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-		    "*** gr.add_grid_generator(*i) ***");
+  print_congruences(gr, "*** gr.add_grid_generator(*i) ***");
 
   return ok;
 }
@@ -138,8 +134,7 @@ test05() {
   print_congruences(gr, "*** gr ***");
 
   gr.add_grid_generator(grid_point(7*A, 3));
-  print_congruences(gr,
-		    "*** gr.add_grid_generator(grid_point(7*A, 3)) ***");
+  print_congruences(gr, "*** gr.add_grid_generator(grid_point(7*A, 3)) ***");
   gr.add_grid_generator(grid_line(A - B));
 
   Grid known_gr(4);
@@ -150,8 +145,7 @@ test05() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-		    "*** gr.add_grid_generator(grid_line(A - B)) ***");
+  print_congruences(gr, "*** gr.add_grid_generator(grid_line(A - B)) ***");
 
   return ok;
 }
@@ -270,8 +264,7 @@ test10() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-		    "*** gr.add_grid_generator(grid_point()) ***");
+  print_congruences(gr, "*** gr.add_grid_generator(grid_point()) ***");
 
   return ok;
 }
@@ -289,8 +282,7 @@ test11() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-		    "*** gr.add_grid_generator(grid_point()) ***");
+  print_congruences(gr, "*** gr.add_grid_generator(grid_point()) ***");
 
   return ok;
 }

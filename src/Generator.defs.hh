@@ -1,11 +1,11 @@
 /* Generator class declaration.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -319,7 +319,7 @@ public:
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! Returns <CODE>true</CODE> if and only if \p *this is a line or a ray.
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   bool is_line_or_ray() const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this is a point.
@@ -342,6 +342,12 @@ public:
     Thrown if \p *this is neither a point nor a closure point.
   */
   Coefficient_traits::const_reference divisor() const;
+
+  //! Initializes the class.
+  static void initialize();
+
+  //! Finalizes the class.
+  static void finalize();
 
   //! Returns the origin of the zero-dimensional space \f$\Rset^0\f$.
   static const Generator& zero_dim_point();
@@ -374,7 +380,7 @@ public:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
-    \ref ascii_dump) and sets \p *this accordingly.
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
 #endif
@@ -387,6 +393,18 @@ public:
   void swap(Generator& y);
 
 private:
+  /*! \brief
+    Holds (between class initialization and finalization) a pointer to
+    the origin of the zero-dimensional space \f$\Rset^0\f$.
+  */
+  static const Generator* zero_dim_point_p;
+
+  /*! \brief
+    Holds (between class initialization and finalization) a pointer to
+    the origin of the zero-dimensional space \f$\Rset^0\f$, as a closure point.
+  */
+  static const Generator* zero_dim_closure_point_p;
+
   /*! \brief
     Builds a generator of type \p type and topology \p topology,
     stealing the coefficients from \p e.

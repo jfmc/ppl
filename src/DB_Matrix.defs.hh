@@ -1,11 +1,11 @@
 /* DB_Matrix class declaration.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -39,7 +39,7 @@ namespace IO_Operators {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Output operator.
 /*! \relates Parma_Polyhedra_Library::DB_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 std::ostream&
 operator<<(std::ostream& s, const DB_Matrix<T>& c);
@@ -52,11 +52,11 @@ operator<<(std::ostream& s, const DB_Matrix<T>& c);
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The base class for the square matrices.
 /*! \ingroup PPL_CXX_interface
-  The templatic class DB_Matrix<T> allows for the representation of
+  The template class DB_Matrix<T> allows for the representation of
   a square matrix of T objects.
   Each DB_Matrix<T> object can be viewed as a multiset of DB_Row<T>.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 class Parma_Polyhedra_Library::DB_Matrix {
 public:
@@ -91,7 +91,7 @@ public:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! A read-only iterator over the rows of the matrix.
   /*! \ingroup PPL_CXX_interface */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   class const_iterator {
   private:
     typedef typename std::vector<DB_Row<T> >::const_iterator Iter;
@@ -212,11 +212,17 @@ public:
   PPL_OUTPUT_DECLARATIONS
 
   /*! \brief
-    Loads from \p s an ASCII representation (as produced by \ref ascii_dump)
-    and sets \p *this accordingly.  Returns <CODE>true</CODE>
-    if successful, <CODE>false</CODE> otherwise.
+    Loads from \p s an ASCII representation (as produced by
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
   bool ascii_load(std::istream& s);
+
+  //! Returns the total size in bytes of the memory occupied by \p *this.
+  memory_size_type total_memory_in_bytes() const;
+
+  //! Returns the size in bytes of the memory managed by \p *this.
+  memory_size_type external_memory_in_bytes() const;
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
@@ -227,7 +233,7 @@ namespace std {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Specializes <CODE>std::swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::DB_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 void swap(Parma_Polyhedra_Library::DB_Matrix<T>& x,
 	  Parma_Polyhedra_Library::DB_Matrix<T>& y);
@@ -240,14 +246,14 @@ namespace Parma_Polyhedra_Library {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are identical.
 /*! \relates DB_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 bool operator==(const DB_Matrix<T>& x, const DB_Matrix<T>& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are different.
 /*! \relates DB_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 bool operator!=(const DB_Matrix<T>& x, const DB_Matrix<T>& y);
 
@@ -263,12 +269,12 @@ bool operator!=(const DB_Matrix<T>& x, const DB_Matrix<T>& y);
   All computations are performed using the temporary variables
   \p tmp0, \p tmp1 and \p tmp2.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Temp, typename To, typename T>
 bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 				 const DB_Matrix<T>& x,
 				 const DB_Matrix<T>& y,
-				 const Rounding_Dir dir,
+				 Rounding_Dir dir,
 				 Temp& tmp0,
 				 Temp& tmp1,
 				 Temp& tmp2);
@@ -285,12 +291,12 @@ bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   All computations are performed using the temporary variables
   \p tmp0, \p tmp1 and \p tmp2.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Temp, typename To, typename T>
 bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			       const DB_Matrix<T>& x,
 			       const DB_Matrix<T>& y,
-			       const Rounding_Dir dir,
+			       Rounding_Dir dir,
 			       Temp& tmp0,
 			       Temp& tmp1,
 			       Temp& tmp2);
@@ -307,12 +313,12 @@ bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   All computations are performed using the temporary variables
   \p tmp0, \p tmp1 and \p tmp2.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Temp, typename To, typename T>
 bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 				 const DB_Matrix<T>& x,
 				 const DB_Matrix<T>& y,
-				 const Rounding_Dir dir,
+				 Rounding_Dir dir,
 				 Temp& tmp0,
 				 Temp& tmp1,
 				 Temp& tmp2);

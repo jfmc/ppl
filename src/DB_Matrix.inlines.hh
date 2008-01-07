@@ -1,11 +1,11 @@
 /* DB_Matrix class implementation: inline functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "globals.defs.hh"
 #include "Checked_Number.defs.hh"
+#include "distances.defs.hh"
 #include <cassert>
 #include <iostream>
 
@@ -48,6 +49,12 @@ template <typename T>
 inline dimension_type
 DB_Matrix<T>::max_num_columns() {
   return DB_Row<T>::max_size();
+}
+
+template <typename T>
+inline memory_size_type
+DB_Matrix<T>::total_memory_in_bytes() const {
+  return sizeof(*this) + external_memory_in_bytes();
 }
 
 template <typename T>
@@ -159,7 +166,7 @@ DB_Matrix<T>::num_rows() const {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates DB_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 inline bool
 operator!=(const DB_Matrix<T>& x, const DB_Matrix<T>& y) {
@@ -192,44 +199,9 @@ DB_Matrix<T>::operator=(const DB_Matrix& y) {
   return *this;
 }
 
-template <typename To, typename From>
-struct maybe_assign_struct {
-  static inline Result
-  function(const To*& top, To& tmp, const From& from, Rounding_Dir dir) {
-    // When `To' and `From' are different types, we make the conversion
-    // and use `tmp'.
-    top = &tmp;
-    return assign_r(tmp, from, dir);
-  }
-};
-
-template <typename Type>
-struct maybe_assign_struct<Type, Type> {
-  static inline Result
-  function(const Type*& top, Type&, const Type& from, Rounding_Dir) {
-    // When the types are the same, conversion is unnecessary.
-    top = &from;
-    return V_EQ;
-  }
-};
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-/*! \brief
-  Assigns to \p top a pointer to a location that holds the
-  conversion, according to \p dir, of \p from to type \p To.  When
-  necessary, and only when necessary, the variable \p tmp is used to
-  hold the result of conversion.
-*/
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-template <typename To, typename From>
-inline Result
-maybe_assign(const To*& top, To& tmp, const From& from, Rounding_Dir dir) {
-  return maybe_assign_struct<To, From>::function(top, tmp, from, dir);
-}
-
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates DB_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Specialization, typename Temp, typename To, typename T>
 inline bool
 l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -254,7 +226,7 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 	  continue;
 	else {
 	pinf:
-	  r = PLUS_INFINITY;
+	  assign_r(r, PLUS_INFINITY, ROUND_NOT_NEEDED);
 	  return true;
 	}
       }
@@ -272,7 +244,7 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 	maybe_assign(tmp2p, tmp2, x_i_j, inverse(dir));
       }
       sub_assign_r(tmp1, *tmp1p, *tmp2p, dir);
-      assert(tmp1 >= 0);
+      assert(sgn(tmp1) >= 0);
       Specialization::combine(tmp0, tmp1, dir);
     }
   }
@@ -281,21 +253,9 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   return true;
 }
 
-template <typename Temp>
-struct Rectilinear_Distance_Specialization {
-  static inline void
-  combine(Temp& running, const Temp& current, Rounding_Dir dir) {
-    add_assign_r(running, running, current, dir);
-  }
-
-  static inline void
-  finalize(Temp&, Rounding_Dir) {
-  }
-};
-
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates DB_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Temp, typename To, typename T>
 inline bool
 rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -314,23 +274,9 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 }
 
 
-template <typename Temp>
-struct Euclidean_Distance_Specialization {
-  static inline void
-  combine(Temp& running, Temp& current, Rounding_Dir dir) {
-    mul_assign_r(current, current, current, dir);
-    add_assign_r(running, running, current, dir);
-  }
-
-  static inline void
-  finalize(Temp& running, Rounding_Dir dir) {
-    sqrt_assign_r(running, running, dir);
-  }
-};
-
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates DB_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Temp, typename To, typename T>
 inline bool
 euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -348,23 +294,9 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 								  tmp2);
 }
 
-
-template <typename Temp>
-struct L_Infinity_Distance_Specialization {
-  static inline void
-  combine(Temp& running, const Temp& current, Rounding_Dir) {
-    if (current > running)
-      running = current;
-  }
-
-  static inline void
-  finalize(Temp&, Rounding_Dir) {
-  }
-};
-
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates DB_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Temp, typename To, typename T>
 inline bool
 l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -388,7 +320,7 @@ namespace std {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates Parma_Polyhedra_Library::DB_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 inline void
 swap(Parma_Polyhedra_Library::DB_Matrix<T>& x,

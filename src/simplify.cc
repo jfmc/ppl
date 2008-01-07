@@ -1,11 +1,11 @@
 /* Polyhedron class implementation: simplify().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -20,12 +20,11 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
+#include <ppl-config.h>
 
 #include "Linear_Row.defs.hh"
 #include "Linear_System.defs.hh"
-#include "Saturation_Row.defs.hh"
-#include "Saturation_Matrix.defs.hh"
+#include "Bit_Matrix.defs.hh"
 #include "Polyhedron.defs.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
@@ -79,7 +78,7 @@ namespace PPL = Parma_Polyhedra_Library;
   where \f$\lambda_1, \lambda_2\f$ can be any real number.
 */
 int
-PPL::Polyhedron::simplify(Linear_System& sys, Saturation_Matrix& sat) {
+PPL::Polyhedron::simplify(Linear_System& sys, Bit_Matrix& sat) {
   // This method is only applied to a well-formed system `sys'.
   assert(sys.OK(true));
 

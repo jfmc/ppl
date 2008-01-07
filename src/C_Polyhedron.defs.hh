@@ -1,11 +1,11 @@
 /* C_Polyhedron class declaration.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -26,6 +26,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "C_Polyhedron.types.hh"
 #include "NNC_Polyhedron.types.hh"
 #include "Polyhedron.defs.hh"
+#include "Grid.types.hh"
+#include "BD_Shape.types.hh"
+#include "Octagonal_Shape.types.hh"
 
 //! A closed convex polyhedron.
 /*! \ingroup PPL_CXX_interface
@@ -92,10 +95,14 @@ public:
     declared <CODE>const</CODE> because its data-structures may be
     recycled to build the polyhedron.
 
+    \param dummy
+    A dummy tag to syntactically differentiate this one
+    from the other constructors.
+
     \exception std::invalid_argument
     Thrown if the system of constraints contains strict inequalities.
   */
-  explicit C_Polyhedron(Constraint_System& cs);
+  C_Polyhedron(Constraint_System& cs, Recycle_Input dummy);
 
   //! Builds a C polyhedron from a system of generators.
   /*!
@@ -119,11 +126,15 @@ public:
     declared <CODE>const</CODE> because its data-structures may be
     recycled to build the polyhedron.
 
+    \param dummy
+    A dummy tag to syntactically differentiate this one
+    from the other constructors.
+
     \exception std::invalid_argument
     Thrown if the system of generators is not empty but has no points,
     or if it contains closure points.
   */
-  explicit C_Polyhedron(Generator_System& gs);
+  C_Polyhedron(Generator_System& gs, Recycle_Input dummy);
 
   //! Builds a C polyhedron from a system of congruences.
   /*!
@@ -136,7 +147,7 @@ public:
   */
   explicit C_Polyhedron(const Congruence_System& cgs);
 
-  //! Builds an C polyhedron recycling a system of congruences.
+  //! Builds a C polyhedron recycling a system of congruences.
   /*!
     The polyhedron inherits the space dimension of the congruence
     system.
@@ -145,36 +156,12 @@ public:
     The system of congruences defining the polyhedron.  It is not
     declared <CODE>const</CODE> because its data-structures may be
     recycled to build the polyhedron.
+
+    \param dummy
+    A dummy tag to syntactically differentiate this one
+    from the other constructors.
   */
-  explicit C_Polyhedron(Congruence_System& cgs);
-
-  //! Builds a C polyhedron from a system of grid generators.
-  /*!
-    The polyhedron inherits the space dimension of the generator system.
-
-    \param gs
-    The system of generators defining the polyhedron.
-
-    \exception std::invalid_argument
-    Thrown if the system of generators is not empty but has no points,
-    or if it contains closure points.
-  */
-  explicit C_Polyhedron(const Grid_Generator_System& ggs);
-
-  //! Builds a C polyhedron recycling a system of grid generators.
-  /*!
-    The polyhedron inherits the space dimension of the generator system.
-
-    \param gs
-    The system of generators defining the polyhedron.  It is not
-    declared <CODE>const</CODE> because its data-structures may be
-    recycled to build the polyhedron.
-
-    \exception std::invalid_argument
-    Thrown if the system of generators is not empty but has no points,
-    or if it contains closure points.
-  */
-  explicit C_Polyhedron(Grid_Generator_System& ggs);
+  C_Polyhedron(Congruence_System& cgs, Recycle_Input dummy);
 
   /*! \brief
     Builds a C polyhedron representing the topological closure
@@ -182,19 +169,12 @@ public:
   */
   explicit C_Polyhedron(const NNC_Polyhedron& y);
 
-  //! Builds a C polyhedron out of a generic, interval-based bounding box.
+  //! Builds a C polyhedron out of a box.
   /*!
-    For a description of the methods that should be provided by
-    the template class Box, see the documentation of the protected method:
-      template \<typename Box\>
-      Polyhedron::Polyhedron(Topology topol, const Box& box);
+    FIXME: we should build a sound approximation, not throw invalid argument.
 
     \param box
-    The bounding box representing the polyhedron to be built;
-
-    \param dummy
-    A dummy tag to syntactically differentiate this one from the other
-    constructors.
+    The bounding box representing the polyhedron to be approximated;
 
     \exception std::length_error
     Thrown if the space dimension of \p box exceeds the maximum allowed
@@ -204,8 +184,40 @@ public:
     Thrown if \p box has intervals that are not topologically closed
     (i.e., having some finite but open bounds).
   */
-  template <typename Box>
-  C_Polyhedron(const Box& box, From_Bounding_Box dummy);
+  template <typename Interval>
+  explicit C_Polyhedron(const Box<Interval>& box);
+
+  //! Builds a C polyhedron out of a bounded-difference shape.
+  /*!
+    The polyhedron inherits the space dimension of the BDS.
+    The built polyhedron is the most precise that includes the BDS.
+
+    \param bd
+    The BDS used to build the polyhedron.
+  */
+  template <typename U>
+  explicit C_Polyhedron(const BD_Shape<U>& bd);
+
+  //! Builds a C polyhedron out of an octagonal shape.
+  /*!
+    The polyhedron inherits the space dimension of the octagonal shape.
+    The built polyhedron is the most precise that includes the octagonal shape.
+
+    \param os
+    The octagonal shape used to build the polyhedron.
+  */
+  template <typename U>
+  explicit C_Polyhedron(const Octagonal_Shape<U>& os);
+
+  //! Builds a C polyhedron that approximates a grid.
+  /*!
+    The polyhedron inherits the space dimension of the grid.
+    The built polyhedron is the most precise that includes the grid.
+
+    \param grid
+    The grid used to build the polyhedron.
+  */
+  explicit C_Polyhedron(const Grid& grid);
 
   //! Ordinary copy-constructor.
   C_Polyhedron(const C_Polyhedron& y);

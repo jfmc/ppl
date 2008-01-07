@@ -1,11 +1,11 @@
 /* Matrix class declaration.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -40,7 +40,7 @@ site: http://www.cs.unipr.it/ppl/ . */
   to the number of columns of the matrix), are also bound to have the
   same capacity.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
 class Parma_Polyhedra_Library::Matrix {
 public:
@@ -86,7 +86,7 @@ public:
     A const_iterator is used to provide read-only access
     to each row contained in a Matrix object.
   */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   class const_iterator {
   private:
     typedef std::vector<Row>::const_iterator Iter;
@@ -140,6 +140,9 @@ public:
     bool operator!=(const const_iterator& y) const;
   };
 
+  //! Returns <CODE>true</CODE> if and only if \p *this has no rows.
+  bool empty() const;
+
   /*! \brief
     Returns the const_iterator pointing to the first row, if \p *this is
     not empty; otherwise, returns the past-the-end const_iterator.
@@ -173,7 +176,7 @@ public:
     Flags for the newly added rows.
 
     Turns the \f$r \times c\f$ matrix \f$M\f$ into
-    the \f$(r+n) \times c\f$ matrix \f$M \choose 0\f$.
+    the \f$(r+n) \times c\f$ matrix \f$\genfrac{(}{)}{0pt}{}{M}{0}\f$.
     The matrix is expanded avoiding reallocation whenever possible.
   */
   void add_zero_rows(dimension_type n, Row::Flags row_flags);
@@ -202,7 +205,7 @@ public:
 
     Turns the \f$r \times c\f$ matrix \f$M\f$ into
     the \f$(r+n) \times (c+m)\f$ matrix
-    \f$\bigl({M \atop 0}{0 \atop 0}\bigr)\f$.
+    \f$\bigl(\genfrac{}{}{0pt}{}{M}{0} \genfrac{}{}{0pt}{}{0}{0}\bigr)\f$.
     The matrix is expanded avoiding reallocation whenever possible.
   */
   void add_zero_rows_and_columns(dimension_type n, dimension_type m,
@@ -216,7 +219,7 @@ public:
 
     Turns the \f$r \times c\f$ matrix \f$M\f$ into
     the \f$(r+1) \times c\f$ matrix
-    \f$\bigl({M \atop 0}\bigr)\f$.
+    \f$\genfrac{(}{)}{0pt}{}{M}{0}\f$.
     The matrix is expanded avoiding reallocation whenever possible.
   */
   void add_row(const Row& y);
@@ -229,7 +232,7 @@ public:
 
     Turns the \f$r \times c\f$ matrix \f$M\f$ into
     the \f$(r+1) \times c\f$ matrix
-    \f$\bigl({M \atop 0}\bigr)\f$.
+    \f$\genfrac{(}{)}{0pt}{}{M}{0}\f$.
     The matrix is expanded avoiding reallocation whenever possible.
   */
   void add_recycled_row(Row& y);
@@ -301,9 +304,9 @@ public:
   PPL_OUTPUT_DECLARATIONS
 
   /*! \brief
-    Loads from \p s an ASCII representation (as produced by \ref ascii_dump)
-    and sets \p *this accordingly.  Returns <CODE>true</CODE> if successful,
-    <CODE>false</CODE> otherwise.
+    Loads from \p s an ASCII representation (as produced by
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
   bool ascii_load(std::istream& s);
 
@@ -328,7 +331,7 @@ namespace std {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! Specializes <CODE>std::swap</CODE>.
   /*! \relates Parma_Polyhedra_Library::Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 void swap(Parma_Polyhedra_Library::Matrix& x,
 	  Parma_Polyhedra_Library::Matrix& y);
 
@@ -340,13 +343,13 @@ namespace Parma_Polyhedra_Library {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are identical.
 /*! \relates Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool operator==(const Matrix& x, const Matrix& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are different.
 /*! \relates Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool operator!=(const Matrix& x, const Matrix& y);
 
 } // namespace Parma_Polyhedra_Library

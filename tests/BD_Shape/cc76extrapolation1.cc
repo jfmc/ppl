@@ -1,11 +1,11 @@
 /* Test BD_Shape::CC76_extrapolation_assign().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -49,7 +49,7 @@ test01() {
   known_result.add_constraint(x <= 1);
   known_result.add_constraint(x - y <= 2);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.CC76_extrapolation_assign(bd2) ***");
 
@@ -123,7 +123,7 @@ test02() {
   known_result.add_constraint(B - D <= 2);
   known_result.add_constraint(C - D <= 4);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1,
 		    "bd1.limited_CC76_extrapolation_assign(bd2, cs) ***");
@@ -201,7 +201,7 @@ test03() {
   // Force the closure of `bd1'.
   bd1 == bd2;
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_widening) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_widening);
 
   print_constraints(bd1, "*** bd1.closure_assign() ***");
 
@@ -232,7 +232,7 @@ test04() {
 
   bd1.CC76_extrapolation_assign(bd2);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.CC76_extrapolation_assign(bd2) ***");
 
@@ -281,7 +281,7 @@ test05() {
 	 << m_i << endl;
 
     m_i_next = aux_test05(++i, a, b, c);
-    TBD_Shape::base_type* no_stop_points = 0;
+    TBD_Shape::coefficient_type_base* no_stop_points = 0;
     m_i_next.CC76_extrapolation_assign(m_i, no_stop_points, no_stop_points);
     m_i_next.bds_hull_assign(m_i);
     // Force closure.
@@ -434,9 +434,9 @@ test11() {
   TBD_Shape bd2(2);
 
   try {
-    // This is an invalid use of the function
+    // This is an invalid use of the method
     // BD_Shape::CC76_extrapolation_assign(bd): it is
-    // illegal to apply this function to two polyhedra that are not
+    // illegal to apply this method to two polyhedra that are not
     // dimension-compatible.
     bd2.CC76_extrapolation_assign(bd1);
   }
@@ -455,9 +455,9 @@ test12() {
   TBD_Shape bd2(10);
 
   try {
-    // This is an invalid use of the function
+    // This is an invalid use of the method
     // BD_Shape::CC76_widening_assign(bd2): it is illegal to apply
-    // this function to two polyhedra that are not dimensional
+    // this method to two polyhedra that are not dimensional
     // compatible.
     bd2.CC76_extrapolation_assign(bd1);
   }

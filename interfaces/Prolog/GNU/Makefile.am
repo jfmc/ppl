@@ -1,11 +1,11 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
 # The PPL is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2 of the License, or (at your
+# Free Software Foundation; either version 3 of the License, or (at your
 # option) any later version.
 #
 # The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -20,25 +20,56 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-EXTRA_DIST = ppl_gprolog_sd.cc ppl_gprolog.pl gp_clpq.pl gnu_pl_check.pl
+GPROLOG_CFLI_FILES = gprolog_cfli.hh
+
+EXTRA_DIST = \
+ppl_interface_generator_gprolog_pl.m4 \
+$(GPROLOG_CFLI_FILES) \
+ppl_gprolog_sd.cc \
+gp_clpq.pl \
+gnu_pl_check.pl \
+README.gprolog
 
 if BUILD_GNU_PROLOG_INTERFACE
 
+if BUILD_WATCHDOG_LIBRARY
+
+WATCHDOG_LIBRARY = $(top_builddir)/Watchdog/src/libpwl.la
+WATCHDOG_INCLUDE_OPTIONS = -I$(top_builddir)/Watchdog/src
+WATCHDOG_DLOPEN = -dlopen $(WATCHDOG_LIBRARY)
+WATCHDOG_LINK_OPTIONS = -L$(top_builddir)/Watchdog/src/.libs -lpwl
+
+endif BUILD_WATCHDOG_LIBRARY
+
 AM_CPPFLAGS = \
+-I$(top_srcdir)/interfaces/Prolog \
 -I$(top_builddir)/src \
--I$(top_builddir)/Watchdog/src \
+$(WATCHDOG_INCLUDE_OPTIONS) \
 @extra_includes@
 
 bin_PROGRAMS = ppl_gprolog
 ppl_gprolog_SOURCES =
 
 pkglib_LTLIBRARIES = libppl_gprolog.la
-libppl_gprolog_la_SOURCES = ppl_gprolog_sd.cc
+nodist_libppl_gprolog_la_SOURCES = ppl_gprolog_sd.cc
 libppl_gprolog_la_LIBADD = \
 $(top_builddir)/src/libppl.la \
-$(top_builddir)/Watchdog/src/libpwl.la \
+$(WATCHDOG_LIBRARY) \
 @extra_libraries@
 libppl_gprolog_la_LDFLAGS = -module -avoid-version
+
+interface_generator_dependencies = \
+$(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
+../../ppl_interface_generator_common.m4 \
+../../ppl_interface_generator_common_dat.m4 \
+../../ppl_interface_generator_copyright \
+../ppl_interface_generator_prolog_dat.m4 \
+../ppl_interface_generator_prolog_systems.m4 \
+ppl_interface_generator_gprolog_pl.m4
+
+ppl_gprolog.pl: $(interface_generator_dependencies) Makefile
+	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
+           $(srcdir)/ppl_interface_generator_gprolog_pl.m4 > $@
 
 pkglib_DATA = ppl_gprolog.pl
 
@@ -54,20 +85,20 @@ endif !ENABLE_SHARED
 
 ppl_gprolog$(EXEEXT): libppl_gprolog.la ppl_gprolog.pl
 	gplc --c-compiler $(CXX) -o $@ \
-		$(srcdir)/ppl_gprolog.pl $(LIBPPL_GPROLOG) \
-		-L '$(AM_CXXFLAGS) $(CXXFLAGS) -L$(top_builddir)/src/.libs -lppl -L$(top_builddir)/Watchdog/src/.libs -lpwl -lgmpxx -lgmp'
+		ppl_gprolog.pl $(LIBPPL_GPROLOG) \
+		-L '$(AM_CXXFLAGS) $(CXXFLAGS) -L$(top_builddir)/src/.libs -lppl $(WATCHDOG_LINK_OPTIONS) -lgmpxx -lgmp'
 
 gp_clpq: libppl_gprolog.la ppl_gprolog.pl gp_clpq.pl ../tests/clpq.pl
 	gplc --c-compiler $(CXX) -o $@ \
-		$(srcdir)/ppl_gprolog.pl $(srcdir)/gp_clpq.pl \
+		ppl_gprolog.pl $(srcdir)/gp_clpq.pl \
 		$(srcdir)/../tests/clpq.pl $(LIBPPL_GPROLOG) \
-		-L '$(AM_CXXFLAGS) $(CXXFLAGS) -L$(top_builddir)/src/.libs -lppl -L$(top_builddir)/Watchdog/src/.libs -lpwl -lgmpxx -lgmp'
+		-L '$(AM_CXXFLAGS) $(CXXFLAGS) -L$(top_builddir)/src/.libs -lppl $(WATCHDOG_LINK_OPTIONS) -lgmpxx -lgmp'
 
 gp_clpq2: libppl_gprolog.la ppl_gprolog.pl gp_clpq.pl ../tests/clpq2.pl
 	gplc --c-compiler $(CXX) -o $@ \
-		$(srcdir)/ppl_gprolog.pl $(srcdir)/gp_clpq.pl \
+		ppl_gprolog.pl $(srcdir)/gp_clpq.pl \
 		$(srcdir)/../tests/clpq2.pl $(LIBPPL_GPROLOG) \
-		-L '$(AM_CXXFLAGS) $(CXXFLAGS) -L$(top_builddir)/src/.libs -lppl -L$(top_builddir)/Watchdog/src/.libs -lpwl -lgmpxx -lgmp'
+		-L '$(AM_CXXFLAGS) $(CXXFLAGS) -L$(top_builddir)/src/.libs -lppl $(WATCHDOG_LINK_OPTIONS) -lgmpxx -lgmp'
 
 CLPQ_TESTS_NONSTRICT = \
 ack.clpq \
@@ -119,7 +150,7 @@ pl_check_test: gnu_pl_check.pl ../tests/pl_check.pl $(EXPECTED_PCHK)
 	echo "main." >>script_pchk
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		-dlopen ../../../Watchdog/src/libpwl.la \
+		$(WATCHDOG_DLOPEN) \
 		-dlopen libppl_gprolog.la \
 		./ppl_gprolog <script_pchk
 	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
@@ -129,7 +160,7 @@ clpq_test: gp_clpq ../tests/script_clpq $(EXPECTED_CLPQ)
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		-dlopen ../../../Watchdog/src/libpwl.la \
+		$(WATCHDOG_DLOPEN) \
 		-dlopen libppl_gprolog.la \
 		./gp_clpq <$(SCRIPT_CLPQ) >obtained_clpq
 	diff -u --ignore-all-space $(EXPECTED_CLPQ) obtained_clpq
@@ -139,15 +170,18 @@ clpq2_test: gp_clpq2 ../tests/script_clpq2 $(EXPECTED_CLPQ2)
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		-dlopen ../../../Watchdog/src/libpwl.la \
+		$(WATCHDOG_DLOPEN) \
 		-dlopen libppl_gprolog.la \
 		./gp_clpq2 <$(SCRIPT_CLPQ2) >obtained_clpq2
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
+
+endif BUILD_GNU_PROLOG_INTERFACE
+
+DISTCLEANFILES = \
+ppl_gprolog.pl
 
 MOSTLYCLEANFILES = \
 gp_clpq gp_clpq2 \
 obtained_clpq obtained_clpq2 obtained_pchk \
 $(CLPQ_TESTS) \
 script_pchk
-
-endif BUILD_GNU_PROLOG_INTERFACE

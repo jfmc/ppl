@@ -1,11 +1,11 @@
 /* Test Grid::is_pointed().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -317,7 +317,7 @@ test11() {
   gr.add_congruence(A == 1);
   gr.add_congruence(A == 2);
 
-  bool ok (gr.is_discrete());
+  bool ok = (gr.is_discrete());
 
   print_congruences(gr, "*** gr ***");
 

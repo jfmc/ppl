@@ -1,11 +1,11 @@
 /* Congruence class implementation (non-inline functions).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -20,7 +20,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
+#include <ppl-config.h>
 
 #include "Congruence.defs.hh"
 
@@ -41,7 +41,6 @@ PPL::Congruence::Congruence(const Constraint& c)
 	   c),
 	c.space_dimension() + 2,
 	compute_capacity(c.space_dimension() + 2, Row::max_size())) {
-
   (*this)[size()-1] = 0;
 }
 
@@ -54,7 +53,7 @@ PPL::Congruence::Congruence(const Constraint& c,
 	   c),
 	sz,
 	capacity) {
-
+  assert(sz > 1);
   (*this)[sz-1] = 0;
 }
 
@@ -88,7 +87,7 @@ PPL::Congruence::normalize() {
   if (sz == 0)
     return;
 
-  Coefficient_traits::const_reference mod = modulus();
+  const Coefficient& mod = modulus();
   if (mod == 0)
     return;
 
@@ -108,7 +107,8 @@ PPL::Congruence::strong_normalize() {
 }
 
 PPL::Congruence
-PPL::Congruence::create(const Linear_Expression& e1, const Linear_Expression& e2) {
+PPL::Congruence::create(const Linear_Expression& e1,
+			const Linear_Expression& e2) {
   // Ensure that diff is created with capacity for the modulus.
   dimension_type dim, e1_dim, e2_dim;
   e1_dim = e1.space_dimension();
@@ -147,9 +147,10 @@ PPL::Congruence::throw_dimension_incompatible(const char* method,
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Congruence& c) {
   const dimension_type num_variables = c.space_dimension();
+  TEMP_INTEGER(cv);
   bool first = true;
   for (dimension_type v = 0; v < num_variables; ++v) {
-    Coefficient cv = c.coefficient(Variable(v));
+    cv = c.coefficient(Variable(v));
     if (cv != 0) {
       if (!first) {
 	if (cv > 0)
@@ -204,11 +205,13 @@ PPL::Congruence::is_trivial_false() const {
 void
 PPL::Congruence::ascii_dump(std::ostream& s) const {
   const Row& x = *this;
-  dimension_type x_size = x.size();
-  for (dimension_type i = 0; i < x_size - 1; ++i)
-    s << x[i] << ' ';
-  if (x_size)
+  const dimension_type x_size = x.size();
+  s << "size " << x_size << " ";
+  if (x_size > 0) {
+    for (dimension_type i = 0; i < x_size - 1; ++i)
+      s << x[i] << ' ';
     s << "m " << x[x_size - 1];
+  }
   s << std::endl;
 }
 
@@ -217,25 +220,39 @@ PPL_OUTPUT_DEFINITIONS(Congruence)
 bool
 PPL::Congruence::ascii_load(std::istream& s) {
   std::string str;
-  Congruence& x = *this;
-  dimension_type col = 0;
-  while (col < x.size() - 1)
-    if (!(s >> x[col]))
+  if (!(s >> str) || str != "size")
+    return false;
+  dimension_type new_size;
+  if (!(s >> new_size))
+    return false;
+
+  Row& x = *this;
+  const dimension_type old_size = x.size();
+  if (new_size < old_size)
+    x.shrink(new_size);
+  else if (new_size > old_size) {
+    Row y(new_size, Row::Flags());
+    x.swap(y);
+  }
+
+  if (new_size > 0) {
+    for (dimension_type col = 0; col < new_size - 1; ++col)
+      if (!(s >> x[col]))
+	return false;
+    if (!(s >> str) || (str.compare("m") != 0))
       return false;
-    else
-      ++col;
-
-  if (!(s >> str) || str.compare("m"))
-    return false;
-
-  if (!(s >> x[col]))
-    return false;
-
+    if (!(s >> x[new_size-1]))
+      return false;
+  }
   return true;
 }
 
 bool
 PPL::Congruence::OK() const {
+  // A Congruence must be a valid Row.
+  if (!Row::OK())
+    return false;
+
   // Modulus check.
   if (modulus() < 0) {
 #ifndef NDEBUG
@@ -247,4 +264,29 @@ PPL::Congruence::OK() const {
 
   // All tests passed.
   return true;
+}
+
+const PPL::Congruence* PPL::Congruence::zero_dim_false_p = 0;
+const PPL::Congruence* PPL::Congruence::zero_dim_integrality_p = 0;
+
+void
+PPL::Congruence::initialize() {
+  assert(zero_dim_false_p == 0);
+  zero_dim_false_p
+    = new Congruence((Linear_Expression::zero() %= Coefficient(-1)) / 0);
+
+  assert(zero_dim_integrality_p == 0);
+  zero_dim_integrality_p
+    = new Congruence(Linear_Expression::zero() %= Coefficient(-1));
+}
+
+void
+PPL::Congruence::finalize() {
+  assert(zero_dim_false_p != 0);
+  delete zero_dim_false_p;
+  zero_dim_false_p = 0;
+
+  assert(zero_dim_integrality_p != 0);
+  delete zero_dim_integrality_p;
+  zero_dim_integrality_p = 0;
 }

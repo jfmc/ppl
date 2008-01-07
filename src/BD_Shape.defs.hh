@@ -1,11 +1,11 @@
 /* BD_Shape class declaration.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -27,21 +27,26 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "globals.defs.hh"
 #include "Constraint.types.hh"
 #include "Generator.types.hh"
+#include "Congruence.types.hh"
 #include "Linear_Expression.types.hh"
 #include "Constraint_System.types.hh"
 #include "Generator_System.types.hh"
+#include "Congruence_System.types.hh"
 #include "Poly_Con_Relation.types.hh"
 #include "Poly_Gen_Relation.types.hh"
 #include "Polyhedron.types.hh"
+#include "Box.types.hh"
+#include "Grid.types.hh"
+#include "Octagonal_Shape.types.hh"
 #include "Variable.defs.hh"
+#include "Variables_Set.types.hh"
 #include "DB_Matrix.defs.hh"
 #include "DB_Row.defs.hh"
 #include "Checked_Number.defs.hh"
+#include "Bit_Matrix.defs.hh"
 #include <cstddef>
 #include <iosfwd>
 #include <vector>
-#include <deque>
-
 
 namespace Parma_Polyhedra_Library {
 
@@ -92,7 +97,7 @@ template <typename To, typename T>
 bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 				 const BD_Shape<T>& x,
 				 const BD_Shape<T>& y,
-				 const Rounding_Dir dir);
+				 Rounding_Dir dir);
 
 //! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
 /*! \relates BD_Shape
@@ -109,7 +114,7 @@ template <typename Temp, typename To, typename T>
 bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 				 const BD_Shape<T>& x,
 				 const BD_Shape<T>& y,
-				 const Rounding_Dir dir);
+				 Rounding_Dir dir);
 
 //! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
 /*! \relates BD_Shape
@@ -126,7 +131,7 @@ template <typename Temp, typename To, typename T>
 bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 				 const BD_Shape<T>& x,
 				 const BD_Shape<T>& y,
-				 const Rounding_Dir dir,
+				 Rounding_Dir dir,
 				 Temp& tmp0,
 				 Temp& tmp1,
 				 Temp& tmp2);
@@ -146,7 +151,7 @@ template <typename To, typename T>
 bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			       const BD_Shape<T>& x,
 			       const BD_Shape<T>& y,
-			       const Rounding_Dir dir);
+			       Rounding_Dir dir);
 
 //! Computes the euclidean distance between \p x and \p y.
 /*! \relates BD_Shape
@@ -163,7 +168,7 @@ template <typename Temp, typename To, typename T>
 bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			       const BD_Shape<T>& x,
 			       const BD_Shape<T>& y,
-			       const Rounding_Dir dir);
+			       Rounding_Dir dir);
 
 //! Computes the euclidean distance between \p x and \p y.
 /*! \relates BD_Shape
@@ -180,7 +185,7 @@ template <typename Temp, typename To, typename T>
 bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			       const BD_Shape<T>& x,
 			       const BD_Shape<T>& y,
-			       const Rounding_Dir dir,
+			       Rounding_Dir dir,
 			       Temp& tmp0,
 			       Temp& tmp1,
 			       Temp& tmp2);
@@ -200,7 +205,7 @@ template <typename To, typename T>
 bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 				const BD_Shape<T>& x,
 				const BD_Shape<T>& y,
-				const Rounding_Dir dir);
+				Rounding_Dir dir);
 
 //! Computes the \f$L_\infty\f$ distance between \p x and \p y.
 /*! \relates BD_Shape
@@ -217,7 +222,7 @@ template <typename Temp, typename To, typename T>
 bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 				const BD_Shape<T>& x,
 				const BD_Shape<T>& y,
-				const Rounding_Dir dir);
+				Rounding_Dir dir);
 
 //! Computes the \f$L_\infty\f$ distance between \p x and \p y.
 /*! \relates BD_Shape
@@ -234,7 +239,7 @@ template <typename Temp, typename To, typename T>
 bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 				const BD_Shape<T>& x,
 				const BD_Shape<T>& y,
-				const Rounding_Dir dir,
+				Rounding_Dir dir,
 				Temp& tmp0,
 				Temp& tmp1,
 				Temp& tmp2);
@@ -274,9 +279,9 @@ bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   then it will be set to the value of the first non-zero coefficient
   in \p c.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool extract_bounded_difference(const Constraint& c,
-				const dimension_type c_space_dim,
+				dimension_type c_space_dim,
 				dimension_type& c_num_vars,
 				dimension_type& c_first_var,
 				dimension_type& c_second_var,
@@ -285,7 +290,7 @@ bool extract_bounded_difference(const Constraint& c,
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Extracts leader indices from the predecessor relation.
 /*! \relates BD_Shape */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 void compute_leader_indices(const std::vector<dimension_type>& predecessor,
 			    std::vector<dimension_type>& indices);
 
@@ -394,7 +399,7 @@ private:
 
 public:
   //! The numeric base type upon which bounded differences are built.
-  typedef T base_type;
+  typedef T coefficient_type_base;
 
   /*! \brief
     The (extended) numeric type of the inhomogeneous term of the
@@ -439,7 +444,16 @@ public:
     \exception std::invalid_argument
     Thrown if the system of constraints \p cs contains strict inequalities.
   */
-  BD_Shape(const Constraint_System& cs);
+  explicit BD_Shape(const Constraint_System& cs);
+
+  //! Builds a BDS from a system of congruences.
+  /*!
+    The BDS inherits the space dimension of \p cgs
+
+    \param cgs
+    A system of congruences: some elements may be safely ignored.
+  */
+  explicit BD_Shape(const Congruence_System& cgs);
 
   //! Builds a BDS from the system of generators \p gs.
   /*!
@@ -449,7 +463,7 @@ public:
     \exception std::invalid_argument
     Thrown if the system of generators is not empty but has no points.
   */
-  BD_Shape(const Generator_System& gs);
+  explicit BD_Shape(const Generator_System& gs);
 
   //! Builds a BDS from the polyhedron \p ph.
   /*!
@@ -458,7 +472,52 @@ public:
     \p complexity is \p ANY_COMPLEXITY, then the BDS built is the
     smallest one containing \p ph.
   */
-  BD_Shape(const Polyhedron& ph, Complexity_Class complexity = ANY_COMPLEXITY);
+  explicit BD_Shape(const Polyhedron& ph,
+		    Complexity_Class complexity = ANY_COMPLEXITY);
+
+  //! Builds a BDS that approximates a box.
+  /*!
+    The BDS inherits the space dimension of the box.
+    The built BDS is the most precise BDS that includes the box.
+
+    \param box
+    The bounding box representing the BDS to be built.
+
+    \exception std::length_error
+    Thrown if the space dimension of \p box exceeds the maximum
+    allowed space dimension.
+  */
+  template <typename Interval>
+  explicit BD_Shape(const Box<Interval>& box);
+
+  //! Builds a BDS out of a grid.
+  /*!
+    The BDS inherits the space dimension of the grid.
+    The built BDS is the most precise BDS that includes the grid.
+
+    \param grid
+    The grid used to build the BDS.
+
+    \exception std::length_error
+    Thrown if the space dimension of \p grid exceeds the maximum
+    allowed space dimension.
+  */
+  explicit BD_Shape(const Grid& grid);
+
+  //! Builds a BDS from an octagonal shape.
+  /*!
+    The BDS inherits the space dimension of the octagonal shape.
+    The built BDS is the most precise BDS that includes the octagonal shape.
+
+    \param os
+    The octagonal shape used to build the BDS.
+
+    \exception std::length_error
+    Thrown if the space dimension of \p os exceeds the maximum
+    allowed space dimension.
+  */
+  template <typename U>
+  explicit BD_Shape(const Octagonal_Shape<U>& os);
 
   /*! \brief
     The assignment operator
@@ -496,6 +555,151 @@ public:
   //! Returns a minimized system of constraints defining \p *this.
   Constraint_System minimized_constraints() const;
 
+  //! Returns a system of (equality) congruences satisfied by \p *this.
+  Congruence_System congruences() const;
+
+  /*! \brief
+      Returns a system of (equality) congruences in reduced form
+      satsified by \p *this with the same affine dimension as \p *this.
+  */
+  Congruence_System minimized_congruences() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p expr is
+    bounded from above in \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+  */
+  bool bounds_from_above(const Linear_Expression& expr) const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p expr is
+    bounded from below in \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+  */
+  bool bounds_from_below(const Linear_Expression& expr) const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is not empty
+    and \p expr is bounded from above in \p *this, in which case
+    the supremum value is computed.
+
+    \param expr
+    The linear expression to be maximized subject to \p *this;
+
+    \param sup_n
+    The numerator of the supremum value;
+
+    \param sup_d
+    The denominator of the supremum value;
+
+    \param maximum
+    <CODE>true</CODE> if and only if the supremum is also the maximum value.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+
+    If \p *this is empty or \p expr is not bounded from above,
+    <CODE>false</CODE> is returned and \p sup_n, \p sup_d
+    and \p maximum are left untouched.
+  */
+  bool maximize(const Linear_Expression& expr,
+		Coefficient& sup_n, Coefficient& sup_d, bool& maximum) const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is not empty
+    and \p expr is bounded from above in \p *this, in which case
+    the supremum value and a point where \p expr reaches it are computed.
+
+    \param expr
+    The linear expression to be maximized subject to \p *this;
+
+    \param sup_n
+    The numerator of the supremum value;
+
+    \param sup_d
+    The denominator of the supremum value;
+
+    \param maximum
+    <CODE>true</CODE> if and only if the supremum is also the maximum value;
+
+    \param g
+    When maximization succeeds, will be assigned the point or
+    closure point where \p expr reaches its supremum value.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+
+    If \p *this is empty or \p expr is not bounded from above,
+    <CODE>false</CODE> is returned and \p sup_n, \p sup_d, \p maximum
+    and \p g are left untouched.
+  */
+  bool maximize(const Linear_Expression& expr,
+		Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
+		Generator& g) const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is not empty
+    and \p expr is bounded from below in \p *this, in which case
+    the infimum value is computed.
+
+    \param expr
+    The linear expression to be minimized subject to \p *this;
+
+    \param inf_n
+    The numerator of the infimum value;
+
+    \param inf_d
+    The denominator of the infimum value;
+
+    \param minimum
+    <CODE>true</CODE> if and only if the infimum is also the minimum value.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+
+    If \p *this is empty or \p expr is not bounded from below,
+    <CODE>false</CODE> is returned and \p inf_n, \p inf_d
+    and \p minimum are left untouched.
+  */
+  bool minimize(const Linear_Expression& expr,
+		Coefficient& inf_n, Coefficient& inf_d, bool& minimum) const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is not empty
+    and \p expr is bounded from below in \p *this, in which case
+    the infimum value and a point where \p expr reaches it are computed.
+
+    \param expr
+    The linear expression to be minimized subject to \p *this;
+
+    \param inf_n
+    The numerator of the infimum value;
+
+    \param inf_d
+    The denominator of the infimum value;
+
+    \param minimum
+    <CODE>true</CODE> if and only if the infimum is also the minimum value;
+
+    \param g
+    When minimization succeeds, will be assigned a point or
+    closure point where \p expr reaches its infimum value.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+
+    If \p *this is empty or \p expr is not bounded from below,
+    <CODE>false</CODE> is returned and \p inf_n, \p inf_d, \p minimum
+    and \p g are left untouched.
+  */
+  bool minimize(const Linear_Expression& expr,
+		Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
+		Generator& g) const;
+
   //! Returns <CODE>true</CODE> if and only if \p *this contains \p y.
   /*!
     \exception std::invalid_argument
@@ -509,6 +713,14 @@ public:
     Thrown if \p *this and \p y are dimension-incompatible.
   */
   bool strictly_contains(const BD_Shape& y) const;
+
+  //! Returns <CODE>true</CODE> if and only if \p *this and \p y are disjoint.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p x and \p y are topology-incompatible or
+    dimension-incompatible.
+  */
+  bool is_disjoint_from(const BD_Shape& y) const;
 
   //! Returns the relations holding between \p *this and the constraint \p c.
   /*!
@@ -532,11 +744,23 @@ public:
   //! Returns <CODE>true</CODE> if and only if \p *this is a universe BDS.
   bool is_universe() const;
 
+  //! Returns <CODE>true</CODE> if and only if \p *this is discrete.
+  bool is_discrete() const;
+
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this
-    is a bounded BDS.
+    is a topologically closed subset of the vector space.
   */
+  bool is_topologically_closed() const;
+
+  //! Returns <CODE>true</CODE> if and only if \p *this is a bounded BDS.
   bool is_bounded() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this
+    contains at least one integer point.
+  */
+  bool contains_integer_point() const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this satisfies
@@ -581,6 +805,15 @@ public:
   bool add_constraint_and_minimize(const Constraint& c);
 
   /*! \brief
+    Adds a copy of congruence \p cg to the system of congruences of \p
+    *this (without minimizing the result).
+
+    \exception std::invalid_argument
+    Thrown if \p *this and congruence \p cg are dimension-incompatible.
+  */
+  void add_congruence(const Congruence& cg);
+
+  /*! \brief
     Adds the constraints in \p cs to the system of bounded differences
     defining \p *this.
 
@@ -593,6 +826,24 @@ public:
     or if \p cs contains a strict inequality.
   */
   void add_constraints(const Constraint_System& cs);
+
+  /*! \brief
+    Adds the constraints in \p cs to the system of constraints
+    of \p *this (without minimizing the result).
+
+    \param cs
+    The constraint system to be added to \p *this.  The constraints in
+    \p cs may be recycled.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are topology-incompatible or
+    dimension-incompatible.
+
+    \warning
+    The only assumption that can be made on \p cs upon successful or
+    exceptional return is that it can be safely destroyed.
+  */
+  void add_recycled_constraints(Constraint_System& cs);
 
   /*! \brief
     Adds the constraints in \p cs to the system of bounded differences
@@ -610,6 +861,106 @@ public:
     or if \p cs contains a strict inequality.
   */
   bool add_constraints_and_minimize(const Constraint_System& cs);
+
+  /*! \brief
+    Adds the constraints in \p cs to the system of constraints
+    of \p *this, minimizing the result.
+
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \param cs
+    The constraint system to be added to \p *this.  The constraints in
+    \p cs may be recycled.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are topology-incompatible or
+    dimension-incompatible.
+
+    \warning
+    The only assumption that can be made on \p cs upon successful or
+    exceptional return is that it can be safely destroyed.
+  */
+  bool add_recycled_constraints_and_minimize(Constraint_System& cs);
+
+  /*! \brief
+    Adds to \p *this constraints equivalent to the congruences in \p
+    cgs (without minimizing the result).
+
+    \param cgs
+    Contains the congruences that will be added to the system of
+    constraints of \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cgs are topology-incompatible or
+    dimension-incompatible.
+  */
+void add_congruences(const Congruence_System& cgs);
+
+  /*! \brief
+    Adds a copy of the congruences in \p cs to the system
+    of congruences of \p *this, minimizing the result.
+
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \param cs
+    Contains the congruences that will be added to the system of
+    congruences of \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are dimension-incompatible.
+  */
+  bool add_congruences_and_minimize(const Congruence_System& cs);
+
+  // FIXME
+  /*! \brief
+    Adds the congruences in \p cs to the system of congruences
+    of \p *this (without minimizing the result).
+
+    \param cgs
+    The congruence system to be added to \p *this.  The congruences in
+    \p cgs may be recycled.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are dimension-incompatible.
+
+    \warning
+    The only assumption that can be made on \p cs upon successful or
+    exceptional return is that it can be safely destroyed.
+  */
+  void add_recycled_congruences(Congruence_System& cgs);
+
+  // FIXME
+  /*! \brief
+    Adds the congruences in \p cs to the system of congruences
+    of \p *this, minimizing the result.
+
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \param cgs
+    The congruence system to be added to \p *this.  The congruences in
+    \p cgs may be recycled.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are dimension-incompatible.
+
+    \warning
+    The only assumption that can be made on \p cs upon successful or
+    exceptional return is that it can be safely destroyed.
+  */
+  bool add_recycled_congruences_and_minimize(Congruence_System& cgs);
+
+  /*! \brief
+    Returns false indicating that this domain cannot recycle constraints
+  */
+  static bool can_recycle_constraint_systems();
+
+  /*! \brief
+    Returns false indicating that this domain cannot recycle congruences
+  */
+  static bool can_recycle_congruence_systems();
 
   //! Assigns to \p *this the intersection of \p *this and \p y.
   /*!
@@ -831,6 +1182,70 @@ public:
   void generalized_affine_preimage(const Linear_Expression& lhs,
 				   Relation_Symbol relsym,
 				   const Linear_Expression& rhs);
+
+  /*!
+    \brief
+    Assigns to \p *this the image of \p *this with respect to the
+    \ref Single_Update_Bounded_Affine_Relations "bounded affine relation"
+    \f$\frac{\mathrm{lb\_expr}}{\mathrm{denominator}}
+         \leq \mathrm{var}'
+           \leq \frac{\mathrm{ub\_expr}}{\mathrm{denominator}}\f$.
+
+    \param var
+    The variable updated by the affine relation;
+
+    \param lb_expr
+    The numerator of the lower bounding affine expression;
+
+    \param ub_expr
+    The numerator of the upper bounding affine expression;
+
+    \param denominator
+    The (common) denominator for the lower and upper bounding
+    affine expressions (optional argument with default value 1).
+
+    \exception std::invalid_argument
+    Thrown if \p denominator is zero or if \p lb_expr (resp., \p ub_expr)
+    and \p *this are dimension-incompatible or if \p var is not a space
+    dimension of \p *this.
+  */
+  void bounded_affine_image(Variable var,
+			    const Linear_Expression& lb_expr,
+			    const Linear_Expression& ub_expr,
+			    Coefficient_traits::const_reference denominator
+			    = Coefficient_one());
+
+  /*!
+    \brief
+    Assigns to \p *this the preimage of \p *this with respect to the
+    \ref Single_Update_Bounded_Affine_Relations "bounded affine relation"
+    \f$\frac{\mathrm{lb\_expr}}{\mathrm{denominator}}
+         \leq \mathrm{var}'
+           \leq \frac{\mathrm{ub\_expr}}{\mathrm{denominator}}\f$.
+
+    \param var
+    The variable updated by the affine relation;
+
+    \param lb_expr
+    The numerator of the lower bounding affine expression;
+
+    \param ub_expr
+    The numerator of the upper bounding affine expression;
+
+    \param denominator
+    The (common) denominator for the lower and upper bounding
+    affine expressions (optional argument with default value 1).
+
+    \exception std::invalid_argument
+    Thrown if \p denominator is zero or if \p lb_expr (resp., \p ub_expr)
+    and \p *this are dimension-incompatible or if \p var is not a space
+    dimension of \p *this.
+  */
+  void bounded_affine_preimage(Variable var,
+			       const Linear_Expression& lb_expr,
+			       const Linear_Expression& ub_expr,
+			       Coefficient_traits::const_reference denominator
+			       = Coefficient_one());
   /*! \brief
     Assigns to \p *this the result of computing the
     \ref Time_Elapse_Operator "time-elapse" between \p *this and \p y.
@@ -839,6 +1254,9 @@ public:
     Thrown if \p *this and \p y are dimension-incompatible.
   */
   void time_elapse_assign(const BD_Shape& y);
+
+  //! Assigns to \p *this its topological closure.
+  void topological_closure_assign();
 
   /*! \brief
     Assigns to \p *this the result of computing the
@@ -939,7 +1357,7 @@ public:
     As was the case for widening operators, the argument \p y is meant to
     denote the value computed in the previous iteration step, whereas
     \p *this denotes the value computed in the current iteration step
-    (in the <EM>descreasing</EM> iteration sequence). Hence, the call
+    (in the <EM>decreasing</EM> iteration sequence). Hence, the call
     <CODE>x.CC76_narrowing_assign(y)</CODE> will assign to \p x
     the result of the computation \f$\mathtt{y} \Delta \mathtt{x}\f$.
   */
@@ -985,6 +1403,9 @@ public:
     Thrown if \p *this and \p y are dimension-incompatible.
   */
   void H79_widening_assign(const BD_Shape& y, unsigned* tp = 0);
+
+  //! Same as H79_widening_assign(y, tp).
+  void widening_assign(const BD_Shape& y, unsigned* tp = 0);
 
   /*! \brief
     Improves the result of the \ref H79_widening "H79-widening"
@@ -1058,27 +1479,12 @@ public:
   void add_space_dimensions_and_project(dimension_type m);
 
   /*! \brief
-    Seeing a BDS as a set of tuples (its points),
-    assigns to \p *this all the tuples that can be obtained by concatenating,
-    in the order given, a tuple of \p *this with a tuple of \p y.
+    Assigns to \p *this the \ref Concatenating_Polyhedra "concatenation"
+    of \p *this and \p y, taken in this order.
 
-    Let \f$B \sseq \Rset^n\f$ and \f$D \sseq \Rset^m\f$ be the BDSs
-    corresponding, on entry, to \p *this and \p y, respectively.
-    Upon successful completion, \p *this will represent the BDS
-    \f$R \sseq \Rset^{n+m}\f$ such that
-    \f[
-      R \defeq
-          \Bigl\{\,
-            (x_1, \ldots, x_n, y_1, \ldots, y_m)^\transpose
-          \Bigm|
-            (x_1, \ldots, x_n)^\transpose \in B,
-            (y_1, \ldots, y_m)^\transpose \in D
-          \,\Bigl\}.
-    \f]
-    Another way of seeing it is as follows: first increases the space
-    dimension of \p *this by adding \p y.space_dimension() new
-    dimensions; then adds to the system of constraints of \p *this a
-    renamed-apart version of the constraints of \p y.
+    \exception std::length_error
+    Thrown if the concatenation would cause the vector space
+    to exceed dimension <CODE>max_space_dimension()</CODE>.
   */
   void concatenate_assign(const BD_Shape& y);
 
@@ -1110,7 +1516,7 @@ public:
     \param pfunc
     The partial function specifying the destiny of each dimension.
 
-    The template class PartialFunction must provide the following
+    The template class Partial_Function must provide the following
     methods.
     \code
       bool has_empty_codomain() const
@@ -1140,8 +1546,56 @@ public:
     \ref Mapping_the_Dimensions_of_the_Vector_Space
     "specification of the mapping operator".
   */
-  template <typename PartialFunction>
-  void map_space_dimensions(const PartialFunction& pfunc);
+  template <typename Partial_Function>
+  void map_space_dimensions(const Partial_Function& pfunc);
+
+  //! Creates \p m copies of the space dimension corresponding to \p var.
+  /*!
+    \param var
+    The variable corresponding to the space dimension to be replicated;
+
+    \param m
+    The number of replicas to be created.
+
+    \exception std::invalid_argument
+    Thrown if \p var does not correspond to a dimension of the vector space.
+
+    \exception std::length_error
+    Thrown if adding \p m new space dimensions would cause the
+    vector space to exceed dimension <CODE>max_space_dimension()</CODE>.
+
+    If \p *this has space dimension \f$n\f$, with \f$n > 0\f$,
+    and <CODE>var</CODE> has space dimension \f$k \leq n\f$,
+    then the \f$k\f$-th space dimension is
+    \ref expand_space_dimension "expanded" to \p m new space dimensions
+    \f$n\f$, \f$n+1\f$, \f$\dots\f$, \f$n+m-1\f$.
+  */
+  void expand_space_dimension(Variable var, dimension_type m);
+
+  //! Folds the space dimensions in \p to_be_folded into \p var.
+  /*!
+    \param to_be_folded
+    The set of Variable objects corresponding to the space dimensions
+    to be folded;
+
+    \param var
+    The variable corresponding to the space dimension that is the
+    destination of the folding operation.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with \p var or with
+    one of the Variable objects contained in \p to_be_folded.
+    Also thrown if \p var is contained in \p to_be_folded.
+
+    If \p *this has space dimension \f$n\f$, with \f$n > 0\f$,
+    <CODE>var</CODE> has space dimension \f$k \leq n\f$,
+    \p to_be_folded is a set of variables whose maximum space dimension
+    is also less than or equal to \f$n\f$, and \p var is not a member
+    of \p to_be_folded, then the space dimensions corresponding to
+    variables in \p to_be_folded are \ref fold_space_dimensions "folded"
+    into the \f$k\f$-th space dimension.
+  */
+  void fold_space_dimensions(const Variables_Set& to_be_folded, Variable var);
 
   //@} // Member Functions that May Modify the Dimension of the Vector Space
 
@@ -1149,15 +1603,29 @@ public:
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
-    Loads from \p s an ASCII representation (as produced by \ref ascii_dump)
-    and sets \p *this accordingly.  Returns <CODE>true</CODE> if successful,
-    <CODE>false</CODE> otherwise.
+    Loads from \p s an ASCII representation (as produced by
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   bool ascii_load(std::istream& s);
 
-  friend bool Parma_Polyhedra_Library::operator==<T>(const BD_Shape<T>& x,
-						     const BD_Shape<T>& y);
+  //! Returns the total size in bytes of the memory occupied by \p *this.
+  memory_size_type total_memory_in_bytes() const;
+
+  //! Returns the size in bytes of the memory managed by \p *this.
+  memory_size_type external_memory_in_bytes() const;
+
+  /*! \brief
+    Returns a 32-bit hash code for \p *this.
+
+    If \p x and \p y are such that <CODE>x == y</CODE>,
+    then <CODE>x.hash_code() == y.hash_code()</CODE>.
+  */
+  int32_t hash_code() const;
+
+  friend bool operator==<T>(const BD_Shape<T>& x, const BD_Shape<T>& y);
+
   template <typename Temp, typename To, typename U>
   friend bool Parma_Polyhedra_Library::rectilinear_distance_assign
   (Checked_Number<To, Extended_Number_Policy>& r,
@@ -1176,6 +1644,7 @@ public:
 
 private:
   template <typename U> friend class Parma_Polyhedra_Library::BD_Shape;
+  template <typename Interval> friend class Parma_Polyhedra_Library::Box;
 
   //! The matrix representing the system of bounded differences.
   DB_Matrix<N> dbm;
@@ -1187,15 +1656,15 @@ private:
   //! The status flags to keep track of the internal state.
   Status status;
 
-  //! A matrix of Booleans indicating which constraints are redundant.
-  std::vector<std::deque<bool> > redundancy_dbm;
+  //! A matrix indicating which constraints are redundant.
+  Bit_Matrix redundancy_dbm;
 
   //! Returns <CODE>true</CODE> if the BDS is known to be empty.
   /*!
     The return value <CODE>false</CODE> does not necessarily
     implies that \p *this is non-empty.
   */
-  bool marked_empty()const;
+  bool marked_empty() const;
 
   /*! \brief
     Returns <CODE>true</CODE> if the system of bounded differences
@@ -1204,7 +1673,7 @@ private:
     The return value <CODE>false</CODE> does not necessarily
     implies that <CODE>this->dbm</CODE> is not shortest-path closed.
   */
-  bool marked_shortest_path_closed()const;
+  bool marked_shortest_path_closed() const;
 
   /*! \brief
     Returns <CODE>true</CODE> if the system of bounded differences
@@ -1213,7 +1682,7 @@ private:
     The return value <CODE>false</CODE> does not necessarily
     implies that <CODE>this->dbm</CODE> is not shortest-path reduced.
   */
-  bool marked_shortest_path_reduced()const;
+  bool marked_shortest_path_reduced() const;
 
   //! Turns \p *this into an empty BDS.
   void set_empty();
@@ -1238,12 +1707,109 @@ private:
   */
   bool is_shortest_path_reduced() const;
 
+  //! Checks if and how \p expr is bounded in \p *this.
+  /*!
+    Returns <CODE>true</CODE> if and only if \p from_above is
+    <CODE>true</CODE> and \p expr is bounded from above in \p *this,
+    or \p from_above is <CODE>false</CODE> and \p expr is bounded
+    from below in \p *this.
+
+    \param expr
+    The linear expression to test;
+
+    \param from_above
+    <CODE>true</CODE> if and only if the boundedness of interest is
+    "from above".
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+  */
+  bool bounds(const Linear_Expression& expr, bool from_above) const;
+
+  //! Maximizes or minimizes \p expr subject to \p *this.
+  /*!
+    \param expr
+    The linear expression to be maximized or minimized subject to \p
+    *this;
+
+    \param maximize
+    <CODE>true</CODE> if maximization is what is wanted;
+
+    \param ext_n
+    The numerator of the extremum value;
+
+    \param ext_d
+    The denominator of the extremum value;
+
+    \param included
+    <CODE>true</CODE> if and only if the extremum of \p expr can
+    actually be reached in \p * this;
+
+    \param g
+    When maximization or minimization succeeds, will be assigned
+    a point or closure point where \p expr reaches the
+    corresponding extremum value.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+
+    If \p *this is empty or \p expr is not bounded in the appropriate
+    direction, <CODE>false</CODE> is returned and \p ext_n, \p ext_d,
+    \p included and \p g are left untouched.
+  */
+  bool max_min(const Linear_Expression& expr,
+	       bool maximize,
+	       Coefficient& ext_n, Coefficient& ext_d, bool& included,
+	       Generator& g) const;
+
+  //! Maximizes or minimizes \p expr subject to \p *this.
+  /*!
+    \param expr
+    The linear expression to be maximized or minimized subject to \p
+    *this;
+
+    \param maximize
+    <CODE>true</CODE> if maximization is what is wanted;
+
+    \param ext_n
+    The numerator of the extremum value;
+
+    \param ext_d
+    The denominator of the extremum value;
+
+    \param included
+    <CODE>true</CODE> if and only if the extremum of \p expr can
+    actually be reached in \p * this;
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+
+    If \p *this is empty or \p expr is not bounded in the appropriate
+    direction, <CODE>false</CODE> is returned and \p ext_n, \p ext_d,
+    \p included and \p point are left untouched.
+  */
+  bool max_min(const Linear_Expression& expr,
+	       bool maximize,
+	       Coefficient& ext_n, Coefficient& ext_d, bool& included) const;
+
   //! Adds the constraint <CODE>dbm[i][j] \<= k</CODE>.
-  void add_dbm_constraint(dimension_type i, dimension_type j, N k);
+  void add_dbm_constraint(dimension_type i, dimension_type j, const N& k);
+
   //! Adds the constraint <CODE>dbm[i][j] \<= num/den</CODE>.
   void add_dbm_constraint(dimension_type i, dimension_type j,
 			  Coefficient_traits::const_reference num,
 			  Coefficient_traits::const_reference den);
+
+  /*! \brief
+    Adds to the BDS the constraint
+    \f$\mathrm{var} \relsym \frac{\mathrm{expr}}{\mathrm{denominator}}\f$.
+
+    Note that the coefficient of \p var in \p expr is null.
+  */
+  void refine(Variable var, Relation_Symbol relsym,
+	      const Linear_Expression& expr,
+	      Coefficient_traits::const_reference denominator
+	      = Coefficient_one());
 
   //! Removes all the constraints on row/column \p v.
   void forget_all_dbm_constraints(dimension_type v);

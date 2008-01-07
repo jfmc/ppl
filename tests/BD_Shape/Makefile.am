@@ -1,11 +1,11 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
 # The PPL is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2 of the License, or (at your
+# Free Software Foundation; either version 3 of the License, or (at your
 # option) any later version.
 #
 # The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -20,10 +20,10 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-#CHECKER =
-CHECKER = valgrind --tool=memcheck -q --trace-children=yes --leak-check=yes --num-callers=100 --leak-resolution=high --suppressions=$(top_srcdir)/tests/valgrind_suppressions
+CHECKER =
+#CHECKER = valgrind --tool=memcheck -q --trace-children=yes --leak-check=yes --num-callers=100 --leak-resolution=high --suppressions=$(top_srcdir)/tests/valgrind_suppressions
 
-TESTS_ENVIRONMENT = CHEKER="$(CHECKER)"
+TESTS_ENVIRONMENT = CHECKER="$(CHECKER)"
 
 AM_CPPFLAGS = \
 $(TEST_CPPFLAGS) \
@@ -45,7 +45,7 @@ addconstraints1 \
 addspacedims1 \
 affinedimension1 \
 affineimage1 affineimage2 \
-affinepreimage1 affinepreimage2 \
+affinepreimage1 \
 ascii_dump_load1 \
 bdsdifference1 \
 bdshull1 \
@@ -53,16 +53,28 @@ bgp99extrapolation1 \
 bhmz05widening1 \
 bhz03widening1 \
 bounded1 \
+bounds1 \
+boundedaffineimage1 \
+boundingbox1 \
+boundedaffinepreimage1 \
 cc76narrowing1 \
 cc76extrapolation1 \
 closure1 \
 concatenate1 \
 constraints1 \
 contains1 \
+containsintegerpoint1 \
+discrete1 \
+disjoint1 \
 empty1 \
 equality1 \
+expandspacedim1 \
+foldspacedims1 \
 fromgensys1 \
+fromgrid1 \
+fromoctagonalshape1 \
 frompolyhedron1 \
+fromspacedim1 \
 generalizedaffineimage1 generalizedaffineimage2 \
 generalizedaffinepreimage1 generalizedaffinepreimage2 \
 generalizedaffinepreimage3 \
@@ -73,7 +85,9 @@ limitedbhmz05extrapolation1 \
 limitedcc76extrapolation1 \
 limitedh79extrapolation1 \
 mapspacedims1 \
-maxspacedim \
+max_min1 max_min2 \
+maxspacedim1 \
+membytes1 \
 minconstraints1 \
 relations1 relations2 relations3 \
 removespacedims1 \
@@ -81,12 +95,17 @@ timeelapse1 \
 universe1 \
 writebdshape1
 
-# This will be overriden by the `run_tests' script.
+# This will be overridden by the `run_tests' script.
 TEST_CPPFLAGS=-DBD_SHAPE_INSTANCE=mpq_class
 
 dist_check_SCRIPTS = run_tests
 
-TESTS = $(dist_check_SCRIPTS)
+TESTS = run_tests.stamp
+
+run_tests.stamp: run_tests
+	+$(srcdir)/run_tests
+	echo "true" >run_tests.stamp
+	chmod +x run_tests.stamp
 
 XFAIL_TESTS =
 
@@ -132,7 +151,6 @@ affineimage1_SOURCES = affineimage1.cc
 affineimage2_SOURCES = affineimage2.cc
 
 affinepreimage1_SOURCES = affinepreimage1.cc
-affinepreimage2_SOURCES = affinepreimage2.cc
 
 ascii_dump_load1_SOURCES = ascii_dump_load1.cc
 
@@ -148,6 +166,14 @@ bhz03widening1_SOURCES = bhz03widening1.cc
 
 bounded1_SOURCES = bounded1.cc
 
+bounds1_SOURCES = bounds1.cc
+
+boundedaffineimage1_SOURCES = boundedaffineimage1.cc
+
+boundedaffinepreimage1_SOURCES = boundedaffinepreimage1.cc
+
+boundingbox1_SOURCES = boundingbox1.cc
+
 cc76narrowing1_SOURCES = cc76narrowing1.cc
 
 cc76extrapolation1_SOURCES = cc76extrapolation1.cc
@@ -160,13 +186,29 @@ constraints1_SOURCES = constraints1.cc
 
 contains1_SOURCES = contains1.cc
 
+containsintegerpoint1_SOURCES = containsintegerpoint1.cc
+
+discrete1_SOURCES = discrete1.cc
+
+disjoint1_SOURCES = disjoint1.cc
+
 empty1_SOURCES = empty1.cc
 
 equality1_SOURCES = equality1.cc
 
+expandspacedim1_SOURCES = expandspacedim1.cc
+
+foldspacedims1_SOURCES = foldspacedims1.cc
+
 fromgensys1_SOURCES = fromgensys1.cc
 
+fromgrid1_SOURCES = fromgrid1.cc
+
+fromoctagonalshape1_SOURCES = fromoctagonalshape1.cc
+
 frompolyhedron1_SOURCES = frompolyhedron1.cc
+
+fromspacedim1_SOURCES = fromspacedim1.cc
 
 generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
 generalizedaffineimage2_SOURCES = generalizedaffineimage2.cc
@@ -189,7 +231,12 @@ limitedh79extrapolation1_SOURCES = limitedh79extrapolation1.cc
 
 mapspacedims1_SOURCES = mapspacedims1.cc
 
-maxspacedim_SOURCES = maxspacedim.cc
+max_min1_SOURCES = max_min1.cc
+max_min2_SOURCES = max_min2.cc
+
+maxspacedim1_SOURCES = maxspacedim1.cc
+
+membytes1_SOURCES = membytes1.cc
 
 minconstraints1_SOURCES = minconstraints1.cc
 
@@ -208,3 +255,6 @@ writebdshape1_SOURCES = writebdshape1.cc
 
 MOSTLYCLEANFILES = \
 ascii_dump_load1.dat
+
+DISTCLEANFILES = \
+run_tests.stamp

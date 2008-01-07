@@ -1,11 +1,11 @@
 /* Test Polyhedron::add_constrains().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -102,7 +102,7 @@ test03() {
 
   bool ok = (ph == known_result);
 
-  print_constraints(ph, "*** After ph.add_constraints(cs2) ***");
+  print_constraints(ph, "*** after ph.add_constraints(cs2) ***");
 
   return ok;
 }
@@ -125,7 +125,7 @@ test04() {
   bool ok = (computed_result == ph);
 
   print_constraints(computed_result,
-		    "*** After add_constraints_and_minimize ***");
+		    "*** after add_constraints_and_minimize ***");
 
   return ok;
 }
@@ -148,7 +148,7 @@ test05() {
 
   bool ok = (ph == computed_result);
 
-  print_constraints(ph, "*** After add_constraints_and_minimize(cs) ***");
+  print_constraints(ph, "*** after add_constraints_and_minimize(cs) ***");
 
   return ok;
 }
@@ -175,7 +175,7 @@ test06() {
 
   bool ok = (ph == known_result);
 
-  print_constraints(ph, "*** After add_constraints_and_minimize(cs) ***");
+  print_constraints(ph, "*** after add_constraints_and_minimize(cs) ***");
 
   return ok;
 }
@@ -201,7 +201,7 @@ test07() {
 
   bool ok = (ph == known_result);
 
-  print_constraints(ph, "*** After add_constraints_and_minimize(cs) ***");
+  print_constraints(ph, "*** after add_constraints_and_minimize(cs) ***");
 
   return ok;
 }
@@ -223,7 +223,7 @@ test08() {
 
   bool ok = (known_result == ph);
 
-  print_constraints(ph, "*** After add_constraints ***");
+  print_constraints(ph, "*** after add_constraints ***");
 
   return ok;
 }
@@ -255,7 +255,7 @@ test09() {
 
   bool ok = (known_result == ph);
 
-  print_constraints(ph, "*** After add_constraints ***");
+  print_constraints(ph, "*** after add_constraints ***");
 
   return ok;
 }
@@ -279,7 +279,7 @@ test10() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After ph1.add_constraints(cs) ***");
+  print_constraints(ph1, "*** after ph1.add_constraints(cs) ***");
 
   return ok;
 }
@@ -304,9 +304,9 @@ test11() {
 
   bool ok = (ph == copy_ph);
 
-  print_constraints(ph, "*** After ph.add_constraints(cs1) ***");
+  print_constraints(ph, "*** after ph.add_constraints(cs1) ***");
   print_constraints(ph,
-		    "*** After copy_ph.add_constraints_and_minimize(cs2) ***");
+		    "*** after copy_ph.add_constraints_and_minimize(cs2) ***");
   return ok;
 }
 
@@ -338,9 +338,9 @@ test12() {
 
   bool ok = (ph1 == copy_ph1);
 
-  print_constraints(ph1, "*** After add_constraints_assign ***");
+  print_constraints(ph1, "*** after add_constraints_assign ***");
   print_constraints(copy_ph1,
-		    "*** After add_constraints_and_minimize ***");
+		    "*** after add_constraints_and_minimize ***");
 
   return ok;
 }

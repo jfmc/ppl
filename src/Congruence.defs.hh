@@ -1,11 +1,11 @@
 /* Congruence class declaration.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -75,11 +75,6 @@ operator%=(const Linear_Expression& e1, const Linear_Expression& e2);
 /*! \relates Congruence */
 Congruence
 operator%=(const Linear_Expression& e, Coefficient_traits::const_reference n);
-
-//! Returns the congruence \f$n = e \pmod{1}\f$.
-/*! \relates Congruence */
-Congruence
-operator%=(Coefficient_traits::const_reference n, const Linear_Expression& e);
 
 //! Returns a copy of \p cg, multiplying \p k into the copy's modulus.
 /*!
@@ -191,7 +186,7 @@ swap(Parma_Polyhedra_Library::Congruence& x,
   \code
   Congruence cg1((x - 5*y + 3*z %= 4) / 5);
   cout << "Congruence cg1: " << cg1 << endl;
-  Coefficient m = cg1.modulus();
+  const Coefficient& m = cg1.modulus();
   if (m == 0)
     cout << "Congruence cg1 is an equality." << endl;
   else {
@@ -300,6 +295,12 @@ public:
   bool is_equal_at_dimension(dimension_type dim,
 			     const Congruence& cg) const;
 
+  //! Initializes the class.
+  static void initialize();
+
+  //! Finalizes the class.
+  static void finalize();
+
   /*! \brief
     Returns a reference to the true (zero-dimension space) congruence
     \f$0 = 1 \pmod{1}\f$, also known as the <EM>integrality
@@ -341,7 +342,7 @@ public:
     Loads from \p s an ASCII representation of the internal
     representation of \p *this.
   */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   bool ascii_load(std::istream& s);
 
   //! Checks if all the invariants are satisfied.
@@ -372,6 +373,18 @@ protected:
   void strong_normalize();
 
 private:
+  /*! \brief
+    Holds (between class initialization and finalization) a pointer to
+    the false (zero-dimension space) congruence \f$0 = 1 \pmod{0}\f$.
+  */
+  static const Congruence* zero_dim_false_p;
+
+  /*! \brief
+    Holds (between class initialization and finalization) a pointer to
+    the true (zero-dimension space) congruence \f$0 = 1 \pmod{1}\f$,
+    also known as the <EM>integrality congruence</EM>.
+  */
+  static const Congruence* zero_dim_integrality_p;
 
   //! Marks this congruence as a linear equality.
   void set_is_equality();
@@ -434,20 +447,15 @@ private:
 			       Variable v) const;
 
   friend Congruence
-  Parma_Polyhedra_Library::operator/(const Congruence& cg,
-		 Coefficient_traits::const_reference k);
-
+  operator/(const Congruence& cg, Coefficient_traits::const_reference k);
   friend Congruence
-  Parma_Polyhedra_Library::operator/(const Constraint& c,
-		 Coefficient_traits::const_reference m);
+  operator/(const Constraint& c, Coefficient_traits::const_reference m);
 
   friend bool
-  Parma_Polyhedra_Library::operator==(const Congruence& x,
-				      const Congruence& y);
+  operator==(const Congruence& x, const Congruence& y);
 
   friend bool
-  Parma_Polyhedra_Library::operator!=(const Congruence& x,
-				      const Congruence& y);
+  operator!=(const Congruence& x, const Congruence& y);
 
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators
@@ -469,6 +477,5 @@ private:
 };
 
 #include "Congruence.inlines.hh"
-#include "Congruence_System.inlines.hh"
 
 #endif // !defined(PPL_Congruence_defs_hh)

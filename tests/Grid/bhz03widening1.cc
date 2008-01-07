@@ -1,11 +1,11 @@
-/* Test Polyhedra_Powerset<Grid>::BHZ03_widening_assign().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Test Pointset_Powerset<Grid>::BHZ03_widening_assign().
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -24,11 +24,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
-typedef Polyhedra_Powerset<Grid> GSet;
+typedef Pointset_Powerset<Grid> GSet;
 
 namespace {
 
-// Joins of grids in powersets shows that series is stabilising.
+// Joins of grids in powersets shows that series is stabilizing.
 bool
 test01() {
   Variable A(0);

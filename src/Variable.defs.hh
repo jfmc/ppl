@@ -1,11 +1,11 @@
 /* Variable class declaration.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -83,7 +83,7 @@ public:
   //! Builds the variable corresponding to the Cartesian axis of index \p i.
   /*!
     \exception std::length_error
-    Thrown if the <CODE>i+1</CODE> exceeds
+    Thrown if <CODE>i+1</CODE> exceeds
     <CODE>Variable::max_space_dimension()</CODE>.
   */
   explicit Variable(dimension_type i);
@@ -144,13 +144,5 @@ private:
 };
 
 #include "Variable.inlines.hh"
-
-namespace Parma_Polyhedra_Library {
-
-//! An std::set containing variables in increasing order of dimension index.
-/*! \ingroup PPL_CXX_interface */
-typedef std::set<Variable, Variable::Compare> Variables_Set;
-
-} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Variable_defs_hh)

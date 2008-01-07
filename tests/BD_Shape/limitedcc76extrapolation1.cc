@@ -1,11 +1,11 @@
 /* Test BD_Shape::limited_CC76_extrapolation_assign().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -344,7 +344,7 @@ test10() {
 
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
-  print_constraints(cs, "*** cs ****");
+  print_constraints(cs, "*** cs ***");
 
   bd1.limited_CC76_extrapolation_assign(bd2, cs);
 
@@ -353,7 +353,7 @@ test10() {
   known_result.add_constraint(y >= 3);
   known_result.add_constraint(y - x >= 2);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1,
 		    "*** bd1.limited_CC76_extrapolation_assign(bd2) ***");
@@ -433,9 +433,9 @@ test13() {
   cs.insert(y <= 9);
 
   try {
-    // This is an invalid use of the function
+    // This is an invalid use of the method
     // BD_Shape::limited_CC76_extrapolation_assign(bd2, cs): it is
-    // illegal to apply this function to two polyhedra that are not
+    // illegal to apply the method to two polyhedra that are not
     // dimension-compatible.
     bd2.limited_CC76_extrapolation_assign(bd1, cs);
   }
@@ -468,9 +468,9 @@ test14() {
   cs.insert(z <= 5);
 
   try {
-    // This is an invalid use of the function
+    // This is an invalid use of the method
     // BD_Shape::limited_CC76_extrapolation_assign(bd, cs): it is
-    // illegal to apply this function to a system of constraints that
+    // illegal to apply the method to a system of constraints that
     // is not dimension-compatible with the two polyhedra.
     bd2.limited_CC76_extrapolation_assign(bd1, cs);
   }
@@ -502,9 +502,9 @@ test15() {
   cs.insert(x < 5);
 
   try {
-    // This is an invalid use of the function
+    // This is an invalid use of the method
     // BD_Shape::limited_CC76_extrapolation_assign(bd, cs): it is
-    // illegal to apply this function to a system of constraints that
+    // illegal to apply the method to a system of constraints that
     // in which there is a strict inequality.
     bd2.limited_CC76_extrapolation_assign(bd1, cs);
   }

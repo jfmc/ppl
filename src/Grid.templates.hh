@@ -1,11 +1,11 @@
 /* Grid class implementation: inline functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -23,7 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Grid_templates_hh
 #define PPL_Grid_templates_hh 1
 
-#include "Interval.defs.hh"
 #include "Grid_Generator.defs.hh"
 #include "Grid_Generator_System.defs.hh"
 #include "Grid_Generator_System.inlines.hh"
@@ -32,12 +31,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-template <typename Box>
-Grid::Grid(const Box& box, From_Bounding_Box dummy)
+template <typename Interval>
+Grid::Grid(const Box<Interval>& box)
   : con_sys(),
-    gen_sys(NECESSARILY_CLOSED) {
-  used(dummy);
-
+    gen_sys() {
   if (box.space_dimension() > max_space_dimension())
     throw_space_dimension_overflow("Grid(box, from_bounding_box)",
 				   "the space dimension of box "
@@ -45,20 +42,6 @@ Grid::Grid(const Box& box, From_Bounding_Box dummy)
 				   "space dimension");
 
   space_dim = box.space_dimension();
-
-  TEMP_INTEGER(l_n);
-  TEMP_INTEGER(l_d);
-
-  // Check that all bounds are closed.  This check must be done before
-  // the empty test below, as an open bound might mean an empty box.
-  for (dimension_type k = space_dim; k-- > 0; ) {
-    bool closed = false;
-    // FIXME: Perhaps introduce box::is_bounded_and_closed.
-    if (box.get_lower_bound(k, closed, l_n, l_d) && !closed)
-      throw_invalid_argument("Grid(box, from_bounding_box)", "box");
-    if (box.get_upper_bound(k, closed, l_n, l_d) && !closed)
-      throw_invalid_argument("Grid(box, from_bounding_box)", "box");
-  }
 
   if (box.is_empty()) {
     // Empty grid.
@@ -73,6 +56,8 @@ Grid::Grid(const Box& box, From_Bounding_Box dummy)
     // Initialize the space dimension as indicated by the box.
     con_sys.increase_space_dimension(space_dim);
     // Add congruences and generators according to `box'.
+    TEMP_INTEGER(l_n);
+    TEMP_INTEGER(l_d);
     TEMP_INTEGER(u_n);
     TEMP_INTEGER(u_d);
     gen_sys.insert(grid_point(0*Variable(space_dim-1)));
@@ -89,7 +74,7 @@ Grid::Grid(const Box& box, From_Bounding_Box dummy)
 
 	    // Scale the point to use as divisor the lcm of the
 	    // divisors of the existing point and the lower bound.
-	    Coefficient_traits::const_reference point_divisor = point.divisor();
+	    const Coefficient& point_divisor = point.divisor();
 	    gcd_assign(u_n, l_d, point_divisor);
 	    // `u_n' now holds the gcd.
 	    exact_div_assign(u_n, point_divisor, u_n);
@@ -105,13 +90,7 @@ Grid::Grid(const Box& box, From_Bounding_Box dummy)
 
 	    continue;
 	  }
-	// The only valid bounded interval is a point interval.
-	throw_invalid_argument("Grid(box, from_bounding_box)", "box");
       }
-      else if (box.get_upper_bound(k, closed, u_n, u_d))
-	// An interval can only be a point or the universe.
-	throw_invalid_argument("Grid(box, from_bounding_box)",
-			       "box");
       // A universe interval allows any value in dimension k.
       gen_sys.insert(grid_line(Variable(k)));
     }
@@ -125,10 +104,9 @@ Grid::Grid(const Box& box, From_Bounding_Box dummy)
 }
 
 template <typename Box>
-Grid::Grid(const Box& box, From_Covering_Box dummy)
+Grid::Grid(const Box& box, From_Covering_Box)
   : con_sys(),
-    gen_sys(NECESSARILY_CLOSED) {
-  used(dummy);
+    gen_sys() {
 
   if (box.space_dimension() > max_space_dimension())
     throw_space_dimension_overflow("Grid(box, from_covering_box)",
@@ -175,7 +153,7 @@ Grid::Grid(const Box& box, From_Covering_Box dummy)
       // TODO: Consider producing the system(s) in minimized form.
       if (box.get_lower_bound(k, closed, l_n, l_d)) {
 
-	Coefficient_traits::const_reference point_divisor = point.divisor();
+	const Coefficient& point_divisor = point.divisor();
 	assert(l_d > 0);
 	assert(point_divisor > 0);
 	// Use `d' to hold the gcd.
@@ -220,7 +198,7 @@ Grid::Grid(const Box& box, From_Covering_Box dummy)
       }
       else
 	if (box.get_upper_bound(k, closed, u_n, u_d)) {
-	  Coefficient_traits::const_reference point_divisor = point.divisor();
+	  const Coefficient& point_divisor = point.divisor();
 	  assert(u_d > 0);
 	  assert(point_divisor > 0);
 	  // Use `d' to hold the gcd.
@@ -254,96 +232,15 @@ Grid::Grid(const Box& box, From_Covering_Box dummy)
   assert(OK());
 }
 
-template <typename Box>
+template <typename Interval>
 void
-Grid::shrink_bounding_box(Box& box) const {
-  // Dimension-compatibility check.
-  if (space_dim > box.space_dimension())
-    throw_dimension_incompatible("shrink_bounding_box(box)", "box",
-				 box.space_dimension());
-
-  TEMP_INTEGER(temp);
-
-  // Check that all bounds are closed.  This check must be done before
-  // the empty test below, as an open bound might mean an empty box.
-  for (dimension_type k = space_dim; k-- > 0; ) {
-    bool closed = false;
-    // FIXME: Perhaps introduce box::is_bounded_and_closed.
-    if (box.get_lower_bound(k, closed, temp, temp) && !closed)
-      throw_invalid_argument("shrink_bounding_box(box)", "box");
-    if (box.get_upper_bound(k, closed, temp, temp) && !closed)
-      throw_invalid_argument("shrink_bounding_box(box)", "box");
-  }
-
-  if (marked_empty()) {
-    box.set_empty();
-    return;
-  }
-  if (space_dim == 0)
-    return;
-  if (!generators_are_up_to_date() && !update_generators()) {
-    // Updating found the grid empty.
-    box.set_empty();
-    return;
-  }
-
-  assert(gen_sys.num_generators() > 0);
-
-  dimension_type num_dims = gen_sys.num_columns() - 2 /* parameter divisor */;
-  dimension_type num_rows = gen_sys.num_generators();
-
-  // Create a vector to record which dimensions are bounded.
-  std::vector<bool> bounded_interval(num_dims, true);
-
-  const Grid_Generator *first_point = NULL;
-  // Clear the bound flag in `bounded_interval' for all dimensions in
-  // which a line or sequence of points extends away from a single
-  // value in the dimension.
-  for (dimension_type row = 0; row < num_rows; ++row) {
-    Grid_Generator& gen = const_cast<Grid_Generator&>(gen_sys[row]);
-    if (gen.is_point()) {
-      if (first_point == NULL) {
-	first_point = &gen_sys[row];
-	continue;
-      }
-      const Grid_Generator& point = *first_point;
-      // Convert the point `gen' to a parameter.
-      for (dimension_type dim = num_dims; dim-- > 0; )
-	gen[dim] -= point[dim];
-      gen.set_divisor(point.divisor());
-    }
-    for (dimension_type col = num_dims; col > 0; )
-      if (gen[col--] != 0)
-	bounded_interval[col] = false;
-  }
-
-  // Attempt to set both bounds of each boundable interval to the
-  // value of the associated coefficient in the point.
-  const Grid_Generator& point = *first_point;
-  TEMP_INTEGER(bound);
-  Coefficient_traits::const_reference divisor = point.divisor();
-  for (dimension_type dim = num_dims; dim-- > 0; )
-    if (bounded_interval[dim]) {
-      // Reduce the bound fraction first.
-      gcd_assign(temp, point[dim+1], divisor);
-      // `temp' is the GCD.
-      exact_div_assign(bound, point[dim+1], temp);
-      exact_div_assign(temp, divisor, temp);
-      // `temp' is now the reduced divisor.
-      box.raise_lower_bound(dim, true, bound, temp);
-      box.lower_upper_bound(dim, true, bound, temp);
-    }
-}
-
-template <typename Box>
-void
-Grid::get_covering_box(Box& box) const {
+Grid::get_covering_box(Box<Interval>& box) const {
   // Dimension-compatibility check.
   if (space_dim > box.space_dimension())
     throw_dimension_incompatible("get_covering_box(box)", "box",
 				 box.space_dimension());
 
-  Box new_box(box.space_dimension());
+  Box<Interval> new_box(box.space_dimension());
 
   if (marked_empty()) {
     box = new_box;
@@ -360,10 +257,10 @@ Grid::get_covering_box(Box& box) const {
     return;
   }
 
-  assert(gen_sys.num_generators() > 0);
+  assert(!gen_sys.empty());
 
   dimension_type num_dims = gen_sys.num_columns() - 2 /* parameter divisor */;
-  dimension_type num_rows = gen_sys.num_generators();
+  dimension_type num_rows = gen_sys.num_rows();
 
   TEMP_INTEGER(gcd);
   TEMP_INTEGER(bound);
@@ -386,8 +283,7 @@ Grid::get_covering_box(Box& box) const {
 	  if (!interval_emptiness[dim] && gen[dim+1] != 0) {
 	    // Empty interval, set both bounds for associated
       	    // dimension to zero.
-	    new_box.lower_upper_bound(dim, true, 0, 1);
-	    new_box.raise_lower_bound(dim, true, 0, 1);
+            new_box.add_constraint(Variable(dim) == 0);
 	    interval_emptiness[dim] = true;
 	  }
 	continue;
@@ -416,7 +312,7 @@ Grid::get_covering_box(Box& box) const {
     // addition of the lower bound and the shortest distance in the
     // given dimension between any two grid points.
     const Grid_Generator& point = *first_point;
-    Coefficient_traits::const_reference divisor = point.divisor();
+    const Coefficient& divisor = point.divisor();
     TEMP_INTEGER(lower_bound);
     for (dimension_type dim = num_dims; dim-- > 0; ) {
       if (interval_emptiness[dim])
@@ -431,7 +327,7 @@ Grid::get_covering_box(Box& box) const {
 	// leaving the sign the same.
 	lower_bound %= interval_sizes[dim];
 	// Check if the lowest value the other side of the origin is
-	// closer to the origin, prefering the lowest positive if they
+	// closer to the origin, preferring the lowest positive if they
 	// are equal.
 	if (lower_bound > 0) {
 	  if (interval_sizes[dim] - lower_bound < lower_bound)
@@ -447,7 +343,7 @@ Grid::get_covering_box(Box& box) const {
 	exact_div_assign(bound, bound, gcd);
 	exact_div_assign(gcd, divisor, gcd);
 	// `gcd' now holds the reduced divisor.
-	new_box.lower_upper_bound(dim, true, bound, gcd);
+        new_box.add_constraint(gcd*Variable(dim) <= bound);
       }
 
       // Reduce the bound fraction first.
@@ -455,12 +351,12 @@ Grid::get_covering_box(Box& box) const {
       exact_div_assign(lower_bound, lower_bound, gcd);
       exact_div_assign(gcd, divisor, gcd);
       // `gcd' now holds the reduced divisor.
-      new_box.raise_lower_bound(dim, true, lower_bound, gcd);
+      new_box.add_constraint(gcd*Variable(dim) >= lower_bound);
     }
   }
   else {
     const Grid_Generator& point = gen_sys[0];
-    Coefficient_traits::const_reference divisor = point.divisor();
+    const Coefficient& divisor = point.divisor();
     // The covering box of a single point has only lower bounds.
     for (dimension_type dim = num_dims; dim-- > 0; ) {
       // Reduce the bound fraction first.
@@ -468,11 +364,11 @@ Grid::get_covering_box(Box& box) const {
       exact_div_assign(bound, point[dim+1], gcd);
       exact_div_assign(gcd, divisor, gcd);
       // `gcd' now holds the reduced divisor.
-      new_box.raise_lower_bound(dim, true, bound, gcd);
+      new_box.add_constraint(gcd*Variable(dim) >= bound);
     }
   }
 
-  box = new_box;
+  box.swap(new_box);
 }
 
 template <typename Partial_Function>
@@ -526,7 +422,8 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
 	dimension_type j = i;
 	do {
 	  visited[j] = true;
-	  dimension_type k;
+	  // The following initialization is only to make the compiler happy.
+	  dimension_type k = 0;
 	  if (!pfunc.maps(j, k))
 	    throw_invalid_argument("map_space_dimensions(pfunc)",
 				   " pfunc is inconsistent");
@@ -569,7 +466,7 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
 
   const Grid_Generator_System& old_gensys = grid_generators();
 
-  if (old_gensys.num_generators() == 0) {
+  if (old_gensys.empty()) {
     // The grid is empty.
     Grid new_grid(new_space_dimension, EMPTY);
     std::swap(*this, new_grid);
@@ -595,10 +492,8 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
     if (i->is_point())
       break;
   assert(i != old_gensys_end);
-  Coefficient_traits::const_reference system_divisor = i->divisor();
-  for (Grid_Generator_System::const_iterator i = old_gensys.begin();
-       i != old_gensys_end;
-       ++i) {
+  const Coefficient& system_divisor = i->divisor();
+  for (i = old_gensys.begin(); i != old_gensys_end; ++i) {
     const Grid_Generator& old_g = *i;
     Linear_Expression e(0 * Variable(new_space_dimension-1));
     bool all_zeroes = true;

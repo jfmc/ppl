@@ -1,11 +1,11 @@
 /* Test BD_Shape::BHMZ05_widening_assign().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -48,7 +48,7 @@ test01() {
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(x - y <= 2);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.BHMZ05_widening_assign(bd2) ***");
 
@@ -67,9 +67,9 @@ test02() {
 
   BD_Shape<mpq_class> known_result;
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
-  print_constraints(bd1, "*** After bd1.BHMZ05_widening_assign(bd2) ***");
+  print_constraints(bd1, "*** after bd1.BHMZ05_widening_assign(bd2) ***");
 
   return ok;
 }
@@ -114,7 +114,7 @@ test03() {
   known_result.add_constraint(D >= 0);
   known_result.add_constraint(E - D == 0);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.BHMZ05_widening_assign(bd2) ***");
 
@@ -142,7 +142,7 @@ test04() {
 
   BD_Shape<mpq_class> known_result(3);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.BHMZ05_widening_assign(bd2) ***");
 
@@ -172,7 +172,7 @@ test05() {
 
   BD_Shape<mpq_class> known_result(3, EMPTY);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.BHMZ05_widening_assign(bd2) ***");
 
@@ -230,7 +230,7 @@ test06() {
       known_result.add_constraint(-1 <= b-c);
       known_result.add_constraint(      b-c <= 1);
 
-      bool ok = (BD_Shape<mpq_class>(m_i) == known_result) ;
+      bool ok = (BD_Shape<mpq_class>(m_i) == known_result);
 
       nout << "*** m_" << i << " (fixpoint) ***" << endl
 	   << m_i << endl;
@@ -266,7 +266,7 @@ test07() {
 
   bd1.BHMZ05_widening_assign(bd2);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.BHMZ05_widening_assign(bd2) ***");
 
@@ -292,14 +292,14 @@ test08() {
 
   TBD_Shape bd2(cs2);
 
-  print_constraints(bd1, "*** bd1 ****");
-  print_constraints(bd2, "*** bd2 ****");
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
 
   BD_Shape<mpq_class> known_result(bd2);
 
   bd2.BHMZ05_widening_assign(bd1);
 
-  bool ok = (BD_Shape<mpq_class>(bd2) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd2) == known_result);
 
   print_constraints(bd2,
 		    "*** bd2.BHMZ05_widening_assign(bd1) ***");
@@ -313,9 +313,9 @@ test09() {
   TBD_Shape bd2(10);
 
   try {
-    // This is an invalid use of the function
+    // This is an invalid use of the method
     // BD_Shape::BHMZ05_widening_assign(bd1): it is illegal to apply
-    // this function to two polyhedra that are not dimensional
+    // the method to two polyhedra that are not dimensional
     // compatible.
     bd2.BHMZ05_widening_assign(bd1);
   }

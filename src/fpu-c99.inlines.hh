@@ -1,11 +1,11 @@
 /* C99 Floating point unit related functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -20,7 +20,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifdef HAVE_FENV_H
+#ifdef PPL_HAVE_FENV_H
 #include <fenv.h>
 
 #ifdef FE_TONEAREST
@@ -40,7 +40,7 @@ namespace Parma_Polyhedra_Library {
 
 inline fpu_rounding_direction_type
 fpu_get_rounding_direction() {
-  return fegetround();
+  return static_cast<fpu_rounding_direction_type>(fegetround());
 }
 
 inline void
@@ -50,7 +50,8 @@ fpu_set_rounding_direction(fpu_rounding_direction_type dir) {
 
 inline fpu_rounding_control_word_type
 fpu_save_rounding_direction(fpu_rounding_direction_type dir) {
-  fpu_rounding_direction_type old = fegetround();
+  fpu_rounding_control_word_type old
+    = static_cast<fpu_rounding_control_word_type>(fegetround());
   fesetround(dir);
   return old;
 }
@@ -58,12 +59,6 @@ fpu_save_rounding_direction(fpu_rounding_direction_type dir) {
 inline void
 fpu_reset_inexact() {
   feclearexcept(FE_INEXACT);
-}
-
-inline fpu_rounding_control_word_type
-fpu_save_rounding_direction_reset_inexact(fpu_rounding_direction_type dir) {
-  fpu_reset_inexact();
-  return fpu_save_rounding_direction(dir);
 }
 
 inline void
@@ -78,4 +73,4 @@ fpu_check_inexact() {
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(HAVE_FENV_H)
+#endif // !defined(PPL_HAVE_FENV_H)

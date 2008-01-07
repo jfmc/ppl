@@ -1,11 +1,11 @@
 /* Test methods which can add multiple generators to a grid.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -88,8 +88,7 @@ test03() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-		    "*** gr.add_recycled_grid_generators(gs) ***");
+  print_congruences(gr, "*** gr.add_recycled_grid_generators(gs) ***");
 
   return ok;
 }
@@ -110,8 +109,7 @@ test04() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-		    "*** gr.add_recycled_grid_generators(gs) ***");
+  print_congruences(gr, "*** gr.add_recycled_grid_generators(gs) ***");
 
   return ok;
 }
@@ -290,7 +288,7 @@ test11() {
 
 // add_grid_generators -- add to a grid where the generator system of the
 // grid starts with a parameter (test point finding loop in
-// Grid::normalize_divisors(gs,gs)).
+// Grid::normalize_divisors(gs, gs)).
 bool
 test12() {
   Variable A(0);
@@ -315,8 +313,7 @@ test12() {
 
   bool ok = (gr == known_gr);
 
-  print_generators(gr,
-		   "*** gr.add_grid_generators(gs) ***");
+  print_generators(gr, "*** gr.add_grid_generators(gs) ***");
 
   return ok;
 }
@@ -337,8 +334,7 @@ test13() {
 
   bool ok = (gr == known_gr);
 
-  print_generators(gr,
-		   "*** gr.add_grid_generators(gs) ***");
+  print_generators(gr, "*** gr.add_grid_generators(gs) ***");
 
   return ok;
 }

@@ -1,11 +1,11 @@
-/* Test Direct_Product<NNC_Polyhedron, Grid> reduction.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Test Direct_Product<NNC_Polyhedron, Grid>.
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -22,122 +22,458 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-// FIXME: rename once Reduced_Product name decided
-
 using namespace Parma_Polyhedra_Library::IO_Operators;
+
+#define PH_IS_FIRST
+
+// ONE AND ONLY ONE OF THESE MUST BE 1
+#define NNC_Poly_Class 1
+#define C_Poly_Class 0
+#define BD_Shape_Class 0
+#define Octagonal_Shape_Class 0
+#define Box_Class 0
+
+#if Box_Class
+typedef TBox Poly;
+#endif
+
+#if Octagonal_Shape_Class
+typedef TOctagonal_Shape Poly;
+#endif
+
+#if BD_Shape_Class
+typedef BD_Shape<mpq_class> Poly;
+#endif
+
+#if NNC_Poly_Class
+typedef NNC_Polyhedron Poly;
+#endif
+
+#if C_Poly_Class
+typedef C_Polyhedron Poly;
+#endif
+
+#ifdef PH_IS_FIRST
+typedef Domain_Product<Poly, Grid>::Direct_Product Product;
+#else
+typedef Domain_Product<Grid, Poly>::Direct_Product Product;
+#endif
 
 namespace {
 
-typedef Open_Product<NNC_Polyhedron, Grid> Product;
-
-// reduce()
+// is_empty() where both domain objects have points.
 bool
 test01() {
   Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
-  Product dp(1);
-  dp.add_constraint(A > 7);
-  dp.add_constraint(A < 7);
+  Product dp(3);
+  dp.add_congruence(A %= 9);
+  dp.add_congruence(B + C %= 3);
 
-  bool ok = dp.domain2().is_universe();
+  bool ok = !dp.is_empty();
 
-  dp.reduce();
-
-  ok &= dp.domain2().is_empty();
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
 
   return ok;
 }
 
-#if 0
-// reduce()
+// is_empty() where one domain object is empty.
 bool
-testr0() {
+test02() {
   Variable A(0);
 
-  Product dp(1);
+  Product dp(3);
 
   dp.add_congruence((A %= 0) / 2);
-  dp.add_constraint(A >= 7);
+  dp.add_congruence((A %= 1) / 2);
 
-  bool ok = dp.reduce();
+  bool ok = dp.is_empty();
 
-  Product known_dp(1);
-  known_dp.add_congruence((A %= 0) / 2);
-  known_dp.add_constraint(A >= 8);
-
-  ok &= (dp == known_dp);
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
 
   return ok;
 }
 
-// reduce() where there is a ph divisor > 1
+// is_empty() where both domain objects are empty.
 bool
-testr2() {
+test03() {
   Variable A(0);
 
-  Product dp(1);
+  Product dp(3);
+  dp.add_constraint(A == 1);
+  dp.add_constraint(A == 3);
 
+  bool ok = dp.is_empty();
+
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
+
+  return ok;
+}
+
+// is_universe() where both domain objects are empty.
+bool
+test04() {
+  Product dp(3, EMPTY);
+
+  bool ok = !dp.is_universe();
+
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
+
+  return ok;
+}
+
+// is_universe() where one domain object is universe.
+bool
+test05() {
+  Variable A(0);
+
+  Product dp(3);
+  dp.add_congruence((A %= 0) / 2);
+  dp.add_congruence((A %= 1) / 2);
+
+  bool ok = !dp.is_universe();
+
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
+
+  return ok;
+}
+
+// is_universe() where both domain objects are universe.
+bool
+test06() {
+  Product dp(3);
+
+  bool ok = dp.is_universe();
+
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
+
+  return ok;
+}
+
+#if !Box_Class
+// is_topologically_closed() where the NNC Polyhedron is topologically
+// open.
+bool
+test07() {
+  Variable A(0);
+
+  Product dp(3);
+#if NNC_Poly_Class
+  dp.add_constraint(A < 3);
+#else
+  dp.add_constraint(A <= 3);
+#endif
   dp.add_congruence((A %= 0) / 3);
-  dp.add_constraint(3*A >= 2);
 
-  Product original_dp = dp;
+#if NNC_Poly_Class
+  bool ok = !dp.is_topologically_closed();
+#else
+  bool ok = dp.is_topologically_closed();
+#endif
 
-  bool ok = dp.reduce();
-
-  if (dp.domain1().strictly_contains(original_dp.domain1())) {
-    ok = false;
-    nout << "Polyhedron was reduced." << endl;
-  }
-  else
-    nout << "Polyhedron stayed the same." << endl;
-
-  if (dp.domain2().strictly_contains(original_dp.domain2())) {
-    ok = false;
-    nout << "Grid was reduced." << endl;
-  }
-  else
-    nout << "Grid stayed the same." << endl;
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
 
   return ok;
 }
 
-// reduce() where there is a ph divisor > 1
+// is_topologically_closed() where the Polyhedron is topologically
+// closed.
 bool
-testr1() {
+test08() {
   Variable A(0);
 
-  Product dp(1);
+  Product dp(3);
+  dp.add_constraint(A <= 3);
+  dp.add_congruence((A %= 0) / 3);
 
-  dp.add_congruence((A %= 0) / 2);
-  dp.add_constraint(3*A >= 2);
+  bool ok = dp.is_topologically_closed();
 
-  bool ok = dp.reduce();
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
 
-  Product known_dp(1);
-  known_dp.add_congruence((A %= 0) / 2);
-  known_dp.add_constraint(A >= 2);
+  return ok;
+}
 
-  ok &= (dp == known_dp);
+// is_topologically_closed() where the Polyhedron is topologically
+// open and the intersection is closed.
+bool
+test09() {
+  Variable A(0);
+
+  Product dp(3);
+  dp.add_congruence((A %= 0) / 4);
+#if NNC_Poly_Class
+  dp.add_constraint(A < 3);
+
+  bool ok = !dp.is_topologically_closed();
+#else
+  dp.add_constraint(A <= 3);
+
+  bool ok = dp.is_topologically_closed();
+#endif
+
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
 
   return ok;
 }
 #endif
 
-// FIX tests that are specific to Open_Product
-
-// is_bounded(), due to intersection.
+// is_disjoint_from(dp), due to the Polyhedra.
 bool
-test02() {
+test10() {
+  Variable B(1);
+
+  Product dp1(12);
+  Product dp2(12);
+#if NNC_Poly_Class
+  dp1.add_constraint(B < 3);
+  dp2.add_constraint(B > 3);
+  bool ok = dp1.is_disjoint_from(dp2);
+#else
+  dp1.add_constraint(B <= 3);
+  dp2.add_constraint(B >= 4);
+  bool ok = dp1.is_disjoint_from(dp2);
+#endif
+
+  print_congruences(dp1, "*** dp1 congruences ***");
+  print_constraints(dp1, "*** dp1 constraints ***");
+  print_congruences(dp2, "*** dp2 congruences ***");
+  print_constraints(dp2, "*** dp2 constraints ***");
+
+  return ok;
+}
+
+// is_disjoint_from(dp), due to the Grids.
+bool
+test11() {
+  Variable A(0);
+
+  Product dp1(3);
+  dp1.add_congruence((A %= 0) / 7);
+
+  Product dp2(3);
+  dp2.add_congruence((A %= 1) / 7);
+
+  bool ok = dp1.is_disjoint_from(dp2);
+
+  print_congruences(dp1, "*** dp1 congruences ***");
+  print_constraints(dp1, "*** dp1 constraints ***");
+  print_congruences(dp2, "*** dp2 congruences ***");
+  print_constraints(dp2, "*** dp2 constraints ***");
+
+  return ok;
+}
+
+// is_disjoint_from(dp), due to either.
+bool
+test12() {
+  Variable A(0);
+
+  Product dp1(3);
+  dp1.add_congruence((A %= 0) / 7);
+  Product dp2(3);
+  dp2.add_congruence((A %= 1) / 7);
+#if NNC_Poly_Class
+  dp1.add_constraint(A < 3);
+  dp2.add_constraint(A > 3);
+
+  bool ok = dp1.is_disjoint_from(dp2);
+#else
+  dp1.add_constraint(A <= 2);
+  dp2.add_constraint(A >= 4);
+
+  bool ok = dp1.is_disjoint_from(dp2);
+#endif
+
+  print_congruences(dp1, "*** dp1 congruences ***");
+  print_constraints(dp1, "*** dp1 constraints ***");
+  print_congruences(dp2, "*** dp2 congruences ***");
+  print_constraints(dp2, "*** dp2 constraints ***");
+
+  return ok;
+}
+
+// is_disjoint_from(dp), due to both.
+bool
+test13() {
+  Variable A(0);
+
+  Product dp1(3);
+  dp1.add_congruence((A %= 1) / 7);
+  Product dp2(3);
+  dp2.add_congruence((A %= 1) / 14);
+#if NNC_Poly_Class
+  dp1.add_constraint(A < 6);
+  dp2.add_constraint(A > 3);
+
+  bool ok = !dp1.is_disjoint_from(dp2);
+#else
+  dp1.add_constraint(A <= 6);
+  dp2.add_constraint(A >= 3);
+
+  bool ok = !dp1.is_disjoint_from(dp2);
+#endif
+
+  print_congruences(dp1, "*** dp1 congruences ***");
+  print_constraints(dp1, "*** dp1 constraints ***");
+  print_congruences(dp2, "*** dp2 congruences ***");
+  print_constraints(dp2, "*** dp2 constraints ***");
+
+  return ok;
+}
+
+// is_disjoint_from(dp), due to the intersection of the entire direct
+// products (i.e. the dp1 and dp2 polyhedron components intersect, as
+// do the grid components).
+bool
+test14() {
   Variable A(0);
   Variable B(1);
 
-  Product dp(2, EMPTY);
-  dp.add_grid_generator(grid_point());
-  dp.add_grid_generator(grid_line(A + B));
-  dp.add_generator(point());
-  dp.add_generator(line(A));
+  Product dp1(2);
+  dp1.add_constraint(A <= 4);
+  dp1.add_constraint(A >= 0);
+  dp1.add_constraint(A - B <= 0);
+  dp1.add_constraint(A - B >= 2);
+  dp1.add_congruence((A %= 0) / 2);
+  dp1.add_congruence((A %= 0) / 4);
+
+  Product dp2(2);
+  dp2.add_constraint(A <= 4);
+  dp2.add_constraint(A <= 0);
+  dp2.add_constraint(A + B >= 4);
+  dp2.add_constraint(A + B <= 6);
+  // Same grid as dp1.
+  dp2.add_congruence((A %= 0) / 2);
+  dp2.add_congruence((A %= 0) / 4);
+
+#if Box_Class
+  bool ok = !dp1.is_disjoint_from(dp2);
+#else
+  bool ok = dp1.is_disjoint_from(dp2);
+#endif
+
+  print_congruences(dp1, "*** dp1 congruences ***");
+  print_constraints(dp1, "*** dp1 constraints ***");
+  print_congruences(dp2, "*** dp2 congruences ***");
+  print_constraints(dp2, "*** dp2 constraints ***");
+
+  return ok;
+}
+
+// is_discrete(), due to grid.
+bool
+test15() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Product dp(3);
+  dp.add_constraint(A == 1);
+  dp.add_constraint(B == 2);
+  dp.add_constraint(C <= 3);
+  dp.add_congruence((C %= 0) / 3);
+
+  bool ok = dp.is_discrete();
+
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
+
+  return ok;
+}
+
+// is_discrete(), due to polyhedron.
+bool
+test16() {
+  Variable A(0);
+  Variable B(1);
+
+  Product dp(2);
+  dp.add_constraint(A <= 3);
+  dp.add_constraint(A >= 3);
+  dp.add_constraint(B == 0);
+
+  bool ok = dp.is_discrete();
+
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
+
+  return ok;
+}
+
+// is_discrete() is false, as the components are not discrete
+// although the intersection is discrete..
+bool
+test17() {
+  Variable A(0);
+  Variable B(1);
+
+  Product dp(3);
+  dp.add_congruence((A - B %= 0) / 0);
+  dp.add_constraint(B >= 0);
+  dp.add_constraint(B <= 0);
+
+  bool ok = !dp.is_discrete();
+
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
+
+  return ok;
+}
+
+// is_bounded(), due to polyhedron.
+bool
+test18() {
+  Variable A(0);
+  Variable B(1);
+
+  Product dp(2);
+  dp.add_congruence((A %= 1) / 3);
+#if NNC_Poly_Class
+  dp.add_constraint(A > 1);
+  dp.add_constraint(A < 4);
+  dp.add_constraint(B > 1);
+  dp.add_constraint(B < 4);
+#else
+  dp.add_constraint(A >= 1);
+  dp.add_constraint(A <= 4);
+  dp.add_constraint(B >= 1);
+  dp.add_constraint(B <= 4);
+#endif
 
   bool ok = dp.is_bounded();
+
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
+
+  return ok;
+}
+
+// is_bounded(), due to grid.
+bool
+test19() {
+  Variable A(0);
+  Variable B(1);
+
+  Product dp(2);
+  dp.add_congruence((A %= 0) / 0);
+  dp.add_congruence((B %= 0) / 0);
+  dp.add_constraint(B <= 0);
+
+  bool ok = dp.is_bounded();
+
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
 
   return ok;
 }
@@ -147,4 +483,23 @@ test02() {
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
+#if !Box_Class
+  DO_TEST(test07);
+  DO_TEST(test08);
+  DO_TEST(test09);
+#endif
+  DO_TEST(test10);
+  DO_TEST(test11);
+  DO_TEST(test12);
+  DO_TEST(test13);
+  DO_TEST(test14);
+  DO_TEST(test15);
+  DO_TEST(test16);
+  DO_TEST(test17);
+  DO_TEST(test18);
+  DO_TEST(test19);
 END_MAIN

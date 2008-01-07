@@ -1,11 +1,11 @@
 /* Init class implementation (non-inline functions and static variables).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -20,12 +20,22 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
+#include <ppl-config.h>
 
 #include "Init.defs.hh"
 #include "Variable.defs.hh"
 #include "fpu.defs.hh"
 #include "checked.defs.hh"
+#include "Coefficient.defs.hh"
+#include "Linear_Expression.defs.hh"
+#include "Constraint.defs.hh"
+#include "Generator.defs.hh"
+#include "Congruence.defs.hh"
+#include "Grid_Generator.defs.hh"
+#include "Constraint_System.defs.hh"
+#include "Generator_System.defs.hh"
+#include "Congruence_System.defs.hh"
+#include "Grid_Generator_System.defs.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
 
@@ -35,7 +45,7 @@ PPL::fpu_rounding_direction_type PPL::Init::old_rounding_direction;
 
 extern "C" void
 set_GMP_memory_allocation_functions(void)
-#if CXX_SUPPORTS_ATTRIBUTE_WEAK
+#if PPL_CXX_SUPPORTS_ATTRIBUTE_WEAK
   __attribute__((weak));
 
 void
@@ -50,11 +60,27 @@ PPL::Init::Init() {
   if (count++ == 0) {
     // ... the GMP memory allocation functions are set, ...
     set_GMP_memory_allocation_functions();
-    // ... and the default output function for Variable objects is set.
+    // ... the default output function for Variable objects is set, ...
     Variable::set_output_function(Variable::default_output_function);
+    // ... the Coefficient constants are initialized, ...
+    Coefficient_constants_initialize();
+    // ... the Linear_Expression class is initialized, ...
+    Linear_Expression::initialize();
+    // ... the Constraint, Generator, Congruence, Grid_Generator,
+    // Constraint_System, Generator_System, Congruence_System, and
+    // Grid_Generator_System classes are initialized, ...
+    Constraint::initialize();
+    Generator::initialize();
+    Congruence::initialize();
+    Grid_Generator::initialize();
+    Constraint_System::initialize();
+    Generator_System::initialize();
+    Congruence_System::initialize();
+    Grid_Generator_System::initialize();
 #if PPL_CAN_CONTROL_FPU
+    // ... and the FPU rounding direction is set.
     old_rounding_direction = fpu_get_rounding_direction();
-    fpu_set_rounding_direction(ROUND_DIRECT);
+    fpu_set_rounding_direction(round_fpu_dir(ROUND_DIRECT));
 #endif
     // FIXME: is 3200 a magic number?
     set_rational_sqrt_precision_parameter(3200);
@@ -65,7 +91,24 @@ PPL::Init::~Init() {
   // Only when the last Init object is destroyed...
   if (--count == 0) {
 #if PPL_CAN_CONTROL_FPU
+    // ... the FPU rounding direction is restored, ...
     fpu_set_rounding_direction(old_rounding_direction);
 #endif
+    // ... the Grid_Generator_System, Congruence_System,
+    // Generator_System, Constraint_System, Grid_Generator,
+    // Congruence, Generator and Constraint classes are finalized
+    // IN THAT ORDER, ...
+    Grid_Generator_System::finalize();
+    Congruence_System::finalize();
+    Generator_System::finalize();
+    Constraint_System::finalize();
+    Grid_Generator::finalize();
+    Congruence::finalize();
+    Generator::finalize();
+    Constraint::finalize();
+    // ... the Linear_Expression class is finalized, ...
+    Linear_Expression::finalize();
+    // ... and the Coefficient constants are finalized.
+    Coefficient_constants_finalize();
   }
 }

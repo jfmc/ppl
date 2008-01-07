@@ -1,11 +1,11 @@
 /* Generator_System class declaration.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -215,9 +215,14 @@ public:
   */
   void insert(const Generator& g);
 
+  //! Initializes the class.
+  static void initialize();
+
+  //! Finalizes the class.
+  static void finalize();
+
   /*! \brief
-    Returns the singleton system containing only
-    Generator::zero_dim_point().
+    Returns the singleton system containing only Generator::zero_dim_point().
   */
   static const Generator_System& zero_dim_univ();
 
@@ -305,6 +310,9 @@ public:
     void skip_forward();
   };
 
+  //! Returns <CODE>true</CODE> if and only if \p *this has no generators.
+  bool empty() const;
+
   /*! \brief
     Returns the const_iterator pointing to the first generator,
     if \p *this is not empty;
@@ -327,14 +335,14 @@ public:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
-    \ref ascii_dump) and sets \p *this accordingly.
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
 
     Resizes the matrix of generators using the numbers of rows and columns
     read from \p s, then initializes the coordinates of each generator
     and its type reading the contents from \p s.
   */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   bool ascii_load(std::istream& s);
 
   //! Returns the total size in bytes of the memory occupied by \p *this.
@@ -347,13 +355,17 @@ public:
   void swap(Generator_System& y);
 
 private:
+  /*! \brief
+    Holds (between class initialization and finalization) a pointer to
+    the singleton system containing only Generator::zero_dim_point().
+  */
+  static const Generator_System* zero_dim_univ_p;
+
   friend class const_iterator;
   friend class Parma_Polyhedra_Library::Polyhedron;
   friend class Parma_Polyhedra_Library::Grid_Generator_System;
 
-  friend bool
-  Parma_Polyhedra_Library::operator==(const Polyhedron& x,
-				      const Polyhedron& y);
+  friend bool operator==(const Polyhedron& x, const Polyhedron& y);
 
   //! Builds an empty system of generators having the specified topology.
   explicit Generator_System(Topology topol);
@@ -486,7 +498,7 @@ private:
   void remove_invalid_lines_and_rays();
 
   /*! \brief
-    Applies Gaussian's elimination and back-substitution so as
+    Applies Gaussian elimination and back-substitution so as
     to provide a partial simplification of the system of generators.
 
     It is assumed that the system has no pending generators.

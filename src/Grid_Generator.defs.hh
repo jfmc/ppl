@@ -1,11 +1,11 @@
 /* Grid_Generator class declaration.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -28,6 +28,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Grid_Generator_System.defs.hh"
 #include "Generator.defs.hh"
 #include "Grid.types.hh"
+// FIXME: this inclusion must be removed along with the friend declaration
+//        befriending class Box.
+#include "Box.types.hh"
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
@@ -327,6 +330,12 @@ public:
   */
   Coefficient_traits::const_reference divisor() const;
 
+  //! Initializes the class.
+  static void initialize();
+
+  //! Finalizes the class.
+  static void finalize();
+
   //! Returns the origin of the zero-dimensional space \f$\Rset^0\f$.
   static const Grid_Generator& zero_dim_point();
 
@@ -368,10 +377,10 @@ public:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
-    \ref ascii_dump) and sets \p *this accordingly.
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   bool ascii_load(std::istream& s);
 
   //! Checks if all the invariants are satisfied.
@@ -391,6 +400,12 @@ public:
   void coefficient_swap(Grid_Generator& y);
 
 private:
+  /*! \brief
+    Holds (between class initialization and finalization) a pointer to
+    the origin of the zero-dimensional space \f$\Rset^0\f$.
+  */
+  static const Grid_Generator* zero_dim_point_p;
+
   /*! \brief
     Scales \p *this to be represented with a divisor of \p d (if
     \*this is a parameter or point).
@@ -464,6 +479,13 @@ private:
   //        Grid::relation_with(c) and Grid::Grid(box, *).
   friend class Grid;
 
+
+  // FIXME: The following friend declaration is for the use of operator[]
+  //        in Box<Interval>::Box(const Grid&, Complexity_Class),
+  //        and should be removed as soon as the computation there is moved
+  //        to the Grid class.
+  template <typename Interval> friend class Parma_Polyhedra_Library::Box;
+
   friend class Grid_Generator_System;
   friend class Grid_Generator_System::const_iterator;
   friend class Congruence_System;
@@ -522,6 +544,5 @@ std::ostream& operator<<(std::ostream& s, const Grid_Generator::Type& t);
 } // namespace Parma_Polyhedra_Library
 
 #include "Grid_Generator.inlines.hh"
-#include "Grid_Generator_System.inlines.hh"
 
 #endif // !defined(PPL_Grid_Generator_defs_hh)

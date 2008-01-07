@@ -1,11 +1,11 @@
 /* Testing Polyhedron::intersection_assign().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -80,6 +80,7 @@ test01() {
   print_constraints(icosahedron, "*** icosahedron ***");
   print_constraints(column, "*** column ***");
   print_constraints(computed_result, "*** computed_result ***");
+  print_constraints(known_result, "*** known_result ***");
 
   return ok;
 }
@@ -201,7 +202,7 @@ test03() {
 
   bool ok = (computed_result == known_result);
 
-  print_constraints(computed_result, "*** After intersection_assign ***");
+  print_constraints(computed_result, "*** after intersection_assign ***");
 
   return ok;
 }
@@ -233,8 +234,8 @@ test04() {
 	     && computed_result2 == known_result);
 
   print_constraints(computed_result1,
-		    "*** After intersection_assign_and_minimize ***");
-  print_constraints(computed_result2, "*** After intersection_assign ***");
+		    "*** after intersection_assign_and_minimize ***");
+  print_constraints(computed_result2, "*** after intersection_assign ***");
 
   return ok;
 }
@@ -263,7 +264,7 @@ test05() {
 
   bool ok = (known_result == ph1);
 
-  print_constraints(ph1, "*** After intersection_assign_and_minimize ***");
+  print_constraints(ph1, "*** after intersection_assign_and_minimize ***");
 
   return ok;
 }
@@ -300,7 +301,7 @@ test06() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After intersection_assign ***");
+  print_constraints(ph1, "*** after intersection_assign ***");
 
   return ok;
 }
@@ -316,7 +317,7 @@ aux_test07(C_Polyhedron& ph1,
 
   ph1.intersection_assign_and_minimize(ph2);
 
-  print_generators(ph1, "*** After intersection_assign ***");
+  print_generators(ph1, "*** after intersection_assign ***");
 
   return ph1 == known_result;
 }
@@ -365,7 +366,7 @@ test08() {
   bool ok = (ph1 == known_result);
 
   print_constraints(ph1,
-		    "*** After ph1.intersection_assign_and_minimize(ph2) ***");
+		    "*** after ph1.intersection_assign_and_minimize(ph2) ***");
 
   return ok;
 }
@@ -386,7 +387,7 @@ test09() {
   bool ok = (ph1 == known_result);
 
   print_constraints(ph1,
-		    "*** After ph1.intersection_assign_and_minimize(ph2) ***");
+		    "*** after ph1.intersection_assign_and_minimize(ph2) ***");
 
   return ok;
 }
@@ -409,7 +410,7 @@ test10() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After ph1.intersection_assign(ph2) ***");
+  print_constraints(ph1, "*** after ph1.intersection_assign(ph2) ***");
 
   return ok;
 }
@@ -428,7 +429,7 @@ test11() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After ph1.intersection_assign(ph2) ***");
+  print_constraints(ph1, "*** after ph1.intersection_assign(ph2) ***");
 
   return ok;
 }
@@ -456,9 +457,9 @@ test12() {
 
   bool ok = (ph1 == copy_ph1);
 
-  print_constraints(ph1, "*** After intersection_assign ***");
+  print_constraints(ph1, "*** after intersection_assign ***");
   print_constraints(copy_ph1,
-		    "*** After intersection_assign_and_minimize ***");
+		    "*** after intersection_assign_and_minimize ***");
 
   return ok;
 }
@@ -490,9 +491,9 @@ test13() {
 
   bool ok = (ph1 == copy_ph1);
 
-  print_constraints(ph1, "*** After intersection_assign ***");
+  print_constraints(ph1, "*** after intersection_assign ***");
   print_constraints(copy_ph1,
-		    "*** After intersection_assign_and_minimize ***");
+		    "*** after intersection_assign_and_minimize ***");
 
   return ok;
 }
@@ -500,7 +501,7 @@ test13() {
 } // namespace
 
 BEGIN_MAIN
-  DO_TEST_F8A(test01);
+  DO_TEST(test01);
   DO_TEST_F8A(test02);
   DO_TEST(test03);
   DO_TEST(test04);

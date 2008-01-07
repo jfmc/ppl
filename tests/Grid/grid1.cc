@@ -1,11 +1,11 @@
 /* Test reduction and conversion of grids created from generators.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -45,7 +45,7 @@ test01() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-     "*** gr.add_grid_generator_and_minimize(grid_point(2*A)) ***");
+		    "*** gr.add_grid_generator_and_minimize(grid_point(2*A)) ***");
 
   return ok;
 }
@@ -74,8 +74,7 @@ test02() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-     "*** gr.add_grid_generator_and_minimize(g) ***");
+  print_congruences(gr, "*** gr.add_grid_generator_and_minimize(g) ***");
 
   return ok;
 }
@@ -105,13 +104,11 @@ test03() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-     "*** gr.add_grid_generators_and_minimize(gs) ***");
+  print_congruences(gr, "*** gr.add_grid_generators_and_minimize(gs) ***");
 
   return ok;
 }
 
-// test from Chiara conversion_test.cc
 bool
 test04() {
   Variable A(0);
@@ -138,13 +135,11 @@ test04() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-     "*** gr.add_grid_generators_and_minimize(gs) ***");
+  print_congruences(gr, "*** gr.add_grid_generators_and_minimize(gs) ***");
 
   return ok;
 }
 
-// test1 from Chiara conversion_test.cc.
 bool
 test05() {
   Variable A(0);
@@ -169,13 +164,11 @@ test05() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-     "*** gr.add_grid_generators_and_minimize(gs) ***");
+  print_congruences(gr, "*** gr.add_grid_generators_and_minimize(gs) ***");
 
   return ok;
 }
 
-// test2 from Chiara conversion_test.cc.
 bool
 test06() {
   Variable A(0);
@@ -202,13 +195,11 @@ test06() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-     "*** gr.add_grid_generators_and_minimize(gs) ***");
+  print_congruences(gr, "*** gr.add_grid_generators_and_minimize(gs) ***");
 
   return ok;
 }
 
-// test3 from Chiara conversion_test.cc.
 bool
 test07() {
   Variable A(0);
@@ -239,7 +230,6 @@ test07() {
   return ok;
 }
 
-// param_test1 from Chiara Convert_Test.cc.
 bool
 test08() {
   Variable A(0);
@@ -271,7 +261,6 @@ test08() {
   return ok;
 }
 
-// param_test2 from Chiara Convert_Test.cc.
 bool
 test09() {
   Variable A(0);
@@ -301,7 +290,6 @@ test09() {
   return ok;
 }
 
-// param_test3 from Chiara Convert_Test.cc.
 bool
 test10() {
   Variable A(0);
@@ -332,7 +320,6 @@ test10() {
   return ok;
 }
 
-// param_test5 from Chiara Convert_Test.cc.
 bool
 test11() {
   Variable A(0);
@@ -362,7 +349,6 @@ test11() {
   return ok;
 }
 
-// param_test6 from Chiara Convert_Test.cc.
 bool
 test12() {
   Variable A(0);
@@ -419,9 +405,6 @@ test14() {
   return ok;
 }
 
-// Bigger values (param_test7a from Chiara Convert_Test.cc) -- in
-// grid1_64.cc.
-// Test reduce_line_with_line (param_test9 from Chiara Convert_Test.cc).
 bool
 test15() {
   Variable A(0);
@@ -451,8 +434,6 @@ test15() {
   return ok;
 }
 
-// Grids from a water monitor example (from param_test10 from Chiara
-// Convert_test.cc).
 bool
 test16() {
   Variable A(0);
@@ -487,7 +468,6 @@ test16() {
   return ok;
 }
 
-// param_test11 from Chiara Convert_Test.cc.
 bool
 test17() {
   Variable A(0);
@@ -560,7 +540,7 @@ test20() {
   return ok;
 }
 
-// Even bigger values (param_test8 from Chiara Convert_Test.cc).
+// Using large values for the coordinates
 bool
 test21() {
   Variable A(0);
@@ -615,7 +595,7 @@ test21() {
   return ok;
 }
 
-// Bigger values (param_test7a from Chiara Convert_Test.cc).
+// Using large values for the coefficients.
 bool
 test22() {
   Variable A(0);
@@ -646,7 +626,6 @@ test22() {
   return ok;
 }
 
-// test4 from Chiara conversion_test.cc.
 bool
 test23() {
   Variable A(0);
@@ -680,7 +659,6 @@ test23() {
   return ok;
 }
 
-// param_test4 from Chiara Convert_Test.cc.
 bool
 test24() {
   Variable A(0);

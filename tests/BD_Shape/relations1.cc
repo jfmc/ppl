@@ -1,11 +1,11 @@
 /* Test BD_Shape::relation_with().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -32,7 +32,7 @@ test01() {
 
   Poly_Con_Relation rel = bd.relation_with(A >= 0);
 
-  print_constraints(bd, "--- bd ---");
+  print_constraints(bd, "*** bd ***");
   using namespace IO_Operators;
   nout << "bd.relation_with(A >= 0) == " << rel << endl;
 
@@ -54,8 +54,8 @@ test02() {
   Constraint c(y >= 0);
   Poly_Con_Relation rel = bd.relation_with(c);
 
-  print_constraints(bd, "--- bd ---");
-  print_constraint(c, "--- c ---");
+  print_constraints(bd, "*** bd ***");
+  print_constraint(c, "*** c ***");
   using namespace IO_Operators;
   nout << "bd.relation_with(c) == " << rel << endl;
 
@@ -76,8 +76,8 @@ test03() {
   Constraint c(y >= 0);
   Poly_Con_Relation rel = bd.relation_with(c);
 
-  print_constraints(bd, "--- bd ---");
-  print_constraint(c, "--- c ---");
+  print_constraints(bd, "*** bd ***");
+  print_constraint(c, "*** c ***");
   using namespace IO_Operators;
   nout << "bd.relation_with(c) == " << rel << endl;
 
@@ -98,8 +98,8 @@ test04() {
   Constraint c(z >= 0);
   Poly_Con_Relation rel = bd.relation_with(c);
 
-  print_constraints(bd, "--- bd ---");
-  print_constraint(c, "--- c ---");
+  print_constraints(bd, "*** bd ***");
+  print_constraint(c, "*** c ***");
   using namespace IO_Operators;
   nout << "bd.relation_with(c) == " << rel << endl;
 
@@ -119,8 +119,8 @@ test05() {
   Constraint c(x >= 1);
   Poly_Con_Relation rel = bd.relation_with(c);
 
-  print_constraints(bd, "--- bd ---");
-  print_constraint(c, "--- c ---");
+  print_constraints(bd, "*** bd ***");
+  print_constraint(c, "*** c ***");
   using namespace IO_Operators;
   nout << "bd.relation_with(c) == " << rel << endl;
 
@@ -144,8 +144,8 @@ test06() {
   Constraint c(x == 1);
   Poly_Con_Relation rel = bd.relation_with(c);
 
-  print_constraints(bd, "--- bd ---");
-  print_constraint(c, "--- c ---");
+  print_constraints(bd, "*** bd ***");
+  print_constraint(c, "*** c ***");
   using namespace IO_Operators;
   nout << "bd.relation_with(c) == " << rel << endl;
 
@@ -169,8 +169,8 @@ test07() {
   Constraint c(x == 2);
   Poly_Con_Relation rel = bd.relation_with(c);
 
-  print_constraints(bd, "--- bd ---");
-  print_constraint(c, "--- c ---");
+  print_constraints(bd, "*** bd ***");
+  print_constraint(c, "*** c ***");
   using namespace IO_Operators;
   nout << "bd.relation_with(c) == " << rel << endl;
 
@@ -193,8 +193,8 @@ test08() {
   Constraint c(x == 2);
   Poly_Con_Relation rel = bd.relation_with(c);
 
-  print_constraints(bd, "--- bd ---");
-  print_constraint(c, "--- c ---");
+  print_constraints(bd, "*** bd ***");
+  print_constraint(c, "*** c ***");
   using namespace IO_Operators;
   nout << "bd.relation_with(c) == " << rel << endl;
 
@@ -217,8 +217,8 @@ test09() {
   Constraint c(-x >= 2);
   Poly_Con_Relation rel = bd.relation_with(c);
 
-  print_constraints(bd, "--- bd ---");
-  print_constraint(c, "--- c ---");
+  print_constraints(bd, "*** bd ***");
+  print_constraint(c, "*** c ***");
   using namespace IO_Operators;
   nout << "bd.relation_with(c) == " << rel << endl;
 
@@ -233,7 +233,7 @@ test10() {
   TBD_Shape bd(0);
   Poly_Con_Relation rel = bd.relation_with(Linear_Expression(0) >= 0);
 
-  print_constraints(bd, "--- bd ---");
+  print_constraints(bd, "*** bd ***");
   using namespace IO_Operators;
   nout << "bd.relation_with(0 >= 0) == " << rel << endl;
 
@@ -249,7 +249,7 @@ test11() {
   TBD_Shape bd(0);
   Poly_Con_Relation rel = bd.relation_with(Linear_Expression(0) >= 1);
 
-  print_constraints(bd, "--- bd ---");
+  print_constraints(bd, "*** bd ***");
   using namespace IO_Operators;
   nout << "bd.relation_with(0 >= 1) == " << rel << endl;
 
@@ -264,7 +264,7 @@ test12() {
   TBD_Shape bd;
   Poly_Con_Relation rel = bd.relation_with(Linear_Expression(1) >= 0);
 
-  print_constraints(bd, "--- bd ---");
+  print_constraints(bd, "*** bd ***");
   using namespace IO_Operators;
   nout << "bd.relation_with(1 >= 0) == " << rel << endl;
 
@@ -284,8 +284,8 @@ test13() {
   Constraint c(x > 1);
   Poly_Con_Relation rel = bd.relation_with(c);
 
-  print_constraints(bd, "--- bd ---");
-  print_constraint(c, "--- c ---");
+  print_constraints(bd, "*** bd ***");
+  print_constraint(c, "*** c ***");
   using namespace IO_Operators;
   nout << "bd.relation_with(c) == " << rel << endl;
 
@@ -309,8 +309,8 @@ test14() {
   Constraint c(x > 1);
   Poly_Con_Relation rel = bd.relation_with(c);
 
-  print_constraints(bd, "--- bd ---");
-  print_constraint(c, "--- c ---");
+  print_constraints(bd, "*** bd ***");
+  print_constraint(c, "*** c ***");
   using namespace IO_Operators;
   nout << "bd.relation_with(c) == " << rel << endl;
 
@@ -331,7 +331,7 @@ test15() {
 
   Poly_Con_Relation rel = bd.relation_with(-y >= -1);
 
-  print_constraints(bd, "--- bd ---");
+  print_constraints(bd, "*** bd ***");
   using namespace IO_Operators;
   nout << "bd.relation_with(-y >= -1) == " << rel << endl;
 
@@ -354,7 +354,7 @@ test16() {
 
   Poly_Con_Relation rel = bd.relation_with(y > 3);
 
-  print_constraints(bd, "--- bd ---");
+  print_constraints(bd, "*** bd ***");
   using namespace IO_Operators;
   nout << "bd.relation_with(y > 3) == " << rel << endl;
 
@@ -377,7 +377,7 @@ test17() {
 
   Poly_Con_Relation rel = bd.relation_with(-y >= -4);
 
-  print_constraints(bd, "--- bd ---");
+  print_constraints(bd, "*** bd ***");
   using namespace IO_Operators;
   nout << "bd.relation_with(1 >= 0) == " << rel << endl;
 
@@ -396,7 +396,7 @@ test18() {
 
   Poly_Con_Relation rel = bd.relation_with(Linear_Expression(0) >= -1);
 
-  print_constraints(bd, "--- bd ---");
+  print_constraints(bd, "*** bd ***");
   using namespace IO_Operators;
   nout << "bd.relation_with(0 >= -1) == " << rel << endl;
 
@@ -415,8 +415,8 @@ test19() {
   Generator g = point(x);
   Poly_Gen_Relation rel = bd.relation_with(g);
 
-  print_constraints(bd, "--- bd ---");
-  print_generator(g, "--- g ---");
+  print_constraints(bd, "*** bd ***");
+  print_generator(g, "*** g ***");
   using namespace IO_Operators;
   nout << "bd.relation_with(v(A)) == " << rel << endl;
 
@@ -434,8 +434,8 @@ test20() {
   Generator g = point();
   Poly_Gen_Relation rel = bd.relation_with(g);
 
-  print_constraints(bd, "--- bd ---");
-  print_generator(g, "--- g ---");
+  print_constraints(bd, "*** bd ***");
+  print_generator(g, "*** g ***");
   using namespace IO_Operators;
   nout << "bd.relation_with(v()) == " << rel << endl;
 

@@ -1,11 +1,11 @@
 /* Linear_System class declaration.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -25,8 +25,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Linear_System.types.hh"
 #include "Row.types.hh"
-#include "Saturation_Row.types.hh"
-#include "Saturation_Matrix.types.hh"
+#include "Bit_Row.types.hh"
+#include "Bit_Matrix.types.hh"
 #include "Matrix.defs.hh"
 #include "Topology.hh"
 #include "Linear_Row.defs.hh"
@@ -49,7 +49,7 @@ site: http://www.cs.unipr.it/ppl/ . */
    - a Boolean flag that, when <CODE>true</CODE>, ensures that the
      non-pending prefix of the sequence of rows is sorted.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
 class Parma_Polyhedra_Library::Linear_System : public Matrix {
 public:
@@ -84,7 +84,7 @@ public:
     copies pending rows as pending from the one that transforms
     pending rows into non-pending ones.
   */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   struct With_Pending {
   };
 
@@ -290,16 +290,16 @@ public:
   */
   void sort_pending_and_remove_duplicates();
 
-  class With_Saturation_Matrix_iterator;
+  class With_Bit_Matrix_iterator;
 
   /*! \brief
     Sorts the system, removing duplicates, keeping the saturation
     matrix consistent.
 
     \param sat
-    Saturation matrix with rows corresponding to the rows of \p *this.
+    Bit matrix with rows corresponding to the rows of \p *this.
   */
-  void sort_and_remove_with_sat(Saturation_Matrix& sat);
+  void sort_and_remove_with_sat(Bit_Matrix& sat);
 
   //! Minimizes the subsystem of equations contained in \p *this.
   /*!
@@ -328,7 +328,7 @@ public:
   void back_substitute(dimension_type n_lines_or_equalities);
 
   /*! \brief
-    Applies Gaussian's elimination and back-substitution so as to
+    Applies Gaussian elimination and back-substitution so as to
     simplify the linear system.
   */
   void simplify();
@@ -345,12 +345,12 @@ public:
   PPL_OUTPUT_DECLARATIONS
 
   /*! \brief
-    Loads from \p s an ASCII representation (as produced by \ref
-    ascii_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
-    if successful, <CODE>false</CODE> otherwise.
+    Loads from \p s an ASCII representation (as produced by
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
 
     Reads into a Linear_System object the information produced by the
-    output of <CODE>ascii_dump()</CODE>.  The specialized methods
+    output of ascii_dump(std::ostream&) const.  The specialized methods
     provided by Constraint_System and Generator_System take care of
     properly reading the contents of the system.
   */
@@ -400,7 +400,7 @@ namespace std {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Specializes <CODE>std::swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::Linear_System */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 void swap(Parma_Polyhedra_Library::Linear_System& x,
 	  Parma_Polyhedra_Library::Linear_System& y);
 
@@ -411,31 +411,30 @@ namespace Parma_Polyhedra_Library {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are identical.
 /*! \relates Linear_System */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool operator==(const Linear_System& x, const Linear_System& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are different.
 /*! \relates Linear_System */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool operator!=(const Linear_System& x, const Linear_System& y);
 
 } // namespace Parma_Polyhedra_Library
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! An iterator keeping a Linear_System consistent with a Saturation_Matrix.
+//! An iterator keeping a Linear_System consistent with a Bit_Matrix.
 /*! \ingroup PPL_CXX_interface
   An iterator on the vector of Row objects encoded in a Linear_System
   extended to maintain a corresponding iterator on a vector of
-  Saturation_Row objects.  Access to values is always done on the Row
-  objects, but iterator
-  movements and swaps are done on both components.
+  Bit_Row objects.  Access to values is always done on the Row
+  objects, but iterator movements and swaps are done on both components.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-class Parma_Polyhedra_Library::Linear_System::With_Saturation_Matrix_iterator {
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+class Parma_Polyhedra_Library::Linear_System::With_Bit_Matrix_iterator {
 public:
   typedef std::vector<Row>::iterator Iter1;
-  typedef std::vector<Saturation_Row>::iterator Iter2;
+  typedef std::vector<Bit_Row>::iterator Iter2;
 
 private:
   Iter1 i1;
@@ -450,51 +449,51 @@ public:
   typedef std::iterator_traits<Iter1>::reference reference;
 
   //! Constructor.
-  With_Saturation_Matrix_iterator(Iter1 iter1, Iter2 iter2);
+  With_Bit_Matrix_iterator(Iter1 iter1, Iter2 iter2);
 
   //! Copy-constructor.
-  With_Saturation_Matrix_iterator(const With_Saturation_Matrix_iterator& y);
+  With_Bit_Matrix_iterator(const With_Bit_Matrix_iterator& y);
 
   //! Destructor.
-  ~With_Saturation_Matrix_iterator();
+  ~With_Bit_Matrix_iterator();
 
   //! Assignment operator.
-  With_Saturation_Matrix_iterator&
-  operator=(const With_Saturation_Matrix_iterator& y);
+  With_Bit_Matrix_iterator&
+  operator=(const With_Bit_Matrix_iterator& y);
 
   //! \name Operators Implementing Iterator Movement
   //@{
-  With_Saturation_Matrix_iterator& operator++();
-  With_Saturation_Matrix_iterator operator++(int);
+  With_Bit_Matrix_iterator& operator++();
+  With_Bit_Matrix_iterator operator++(int);
 
-  With_Saturation_Matrix_iterator& operator--();
-  With_Saturation_Matrix_iterator operator--(int);
+  With_Bit_Matrix_iterator& operator--();
+  With_Bit_Matrix_iterator operator--(int);
 
-  With_Saturation_Matrix_iterator& operator+=(difference_type d);
-  With_Saturation_Matrix_iterator operator+(difference_type d) const;
+  With_Bit_Matrix_iterator& operator+=(difference_type d);
+  With_Bit_Matrix_iterator operator+(difference_type d) const;
 
-  With_Saturation_Matrix_iterator& operator-=(difference_type d);
-  With_Saturation_Matrix_iterator operator-(difference_type d) const;
+  With_Bit_Matrix_iterator& operator-=(difference_type d);
+  With_Bit_Matrix_iterator operator-(difference_type d) const;
   //@}
 
   //! Distance operator.
-  difference_type operator-(const With_Saturation_Matrix_iterator& y) const;
+  difference_type operator-(const With_Bit_Matrix_iterator& y) const;
 
   //! \name Comparisons between Iterators
   //@{
-  bool operator==(const With_Saturation_Matrix_iterator& y) const;
-  bool operator!=(const With_Saturation_Matrix_iterator& y) const;
-  bool operator<(const With_Saturation_Matrix_iterator& y) const;
+  bool operator==(const With_Bit_Matrix_iterator& y) const;
+  bool operator!=(const With_Bit_Matrix_iterator& y) const;
+  bool operator<(const With_Bit_Matrix_iterator& y) const;
   //@}
 
-  //! Dereferencing operator.
+  //! Dereference operator.
   reference operator*() const;
 
   //! Access-through operator.
   pointer operator->() const;
 
-  //! Swaps the pointed Row objects while keeping Saturation_Matrix consistent.
-  void iter_swap(const With_Saturation_Matrix_iterator& y) const;
+  //! Swaps the pointed Row objects while keeping Bit_Matrix consistent.
+  void iter_swap(const With_Bit_Matrix_iterator& y) const;
 
 };
 
@@ -502,13 +501,13 @@ namespace std {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Specializes <CODE>std::iter_swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Linear_System::With_Saturation_Matrix_iterator */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \relates Parma_Polyhedra_Library::Linear_System::With_Bit_Matrix_iterator */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 void
 iter_swap(Parma_Polyhedra_Library
-	  ::Linear_System::With_Saturation_Matrix_iterator x,
+	  ::Linear_System::With_Bit_Matrix_iterator x,
 	  Parma_Polyhedra_Library
-	  ::Linear_System::With_Saturation_Matrix_iterator y);
+	  ::Linear_System::With_Bit_Matrix_iterator y);
 
 } // namespace std
 

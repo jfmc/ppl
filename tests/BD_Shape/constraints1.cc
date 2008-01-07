@@ -1,11 +1,11 @@
 /* Test BD_Shape::constraints().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -109,7 +109,25 @@ test04() {
 
   BD_Shape<mpq_class> known_result(bd1);
 
-  bool ok = (BD_Shape<mpq_class>(bd2) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd2) == known_result);
+
+  return ok;
+}
+
+bool
+test05() {
+
+  TBD_Shape bd1(0);
+  bd1.add_constraint(Linear_Expression(1) == 0);
+
+  TBD_Shape bd2(0, EMPTY);
+
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
+
+  BD_Shape<mpq_class> known_result(bd2);
+
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   return ok;
 }
@@ -121,4 +139,5 @@ BEGIN_MAIN
   DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
+  DO_TEST(test05);
 END_MAIN

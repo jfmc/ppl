@@ -1,11 +1,11 @@
 /* Generator class implementation: inline functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -147,14 +147,14 @@ Generator::total_memory_in_bytes() const {
 
 inline const Generator&
 Generator::zero_dim_point() {
-  static const Generator zdp = point();
-  return zdp;
+  assert(zero_dim_point_p != 0);
+  return *zero_dim_point_p;
 }
 
 inline const Generator&
 Generator::zero_dim_closure_point() {
-  static const Generator zdcp = closure_point();
-  return zdcp;
+  assert(zero_dim_closure_point_p != 0);
+  return *zero_dim_closure_point_p;
 }
 
 /*! \relates Generator */

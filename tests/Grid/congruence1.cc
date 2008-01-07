@@ -1,11 +1,11 @@
 /* Test class Congruence.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -45,7 +45,7 @@ test01() {
   Test_Congruence b((A %= 5 - 3*C - 2*B) / 7);
   b.strong_normalize();
 
-  bool ok (a == b);
+  bool ok = (a == b);
 
   print_congruence(a, "*** a ***");
   print_congruence(b, "*** b ***");
@@ -66,7 +66,7 @@ test02() {
   Test_Congruence b((A %= -5 - 3*C - 2*B) / 7);
   b.strong_normalize();
 
-  bool ok (a == b);
+  bool ok = (a == b);
 
   print_congruence(a, "*** a ***");
   print_congruence(b, "*** b ***");
@@ -87,7 +87,7 @@ test03() {
   Test_Congruence b((16*A + 2*B %= - 64 - 8*C) / 4);
   b.strong_normalize();
 
-  bool ok (a == b);
+  bool ok = (a == b);
 
   print_congruence(a, "*** a ***");
   print_congruence(b, "*** b ***");
@@ -108,7 +108,7 @@ test04() {
   Test_Congruence b((- A %= - 2*B + 5 - 3*C) / 7);
   b.strong_normalize();
 
-  bool ok (a == b);
+  bool ok = (a == b);
 
   print_congruence(a, "*** a ***");
   print_congruence(b, "*** b ***");
@@ -132,7 +132,7 @@ test05() {
   Test_Congruence b(A + 4*B %= 5 - 3*C);
   b.strong_normalize();
 
-  bool ok (a == b);
+  bool ok = (a == b);
 
   print_congruence(a, "*** a ***");
   print_congruence(b, "*** b ***");
@@ -153,7 +153,7 @@ test06() {
   Test_Congruence b((3*A + 24*B %= -19 - 3*C) / 0);
   b.strong_normalize();
 
-  bool ok (a == b);
+  bool ok = (a == b);
 
   print_congruence(a, "*** a ***");
   print_congruence(b, "*** b ***");
@@ -174,7 +174,7 @@ test07() {
   Test_Congruence b((A + 4*B == 17 - 3*C) / 3);
   b.strong_normalize();
 
-  bool ok (a == b);
+  bool ok = (a == b);
 
   print_congruence(a, "*** a ***");
   print_congruence(b, "*** b ***");
@@ -195,7 +195,7 @@ test08() {
   Test_Congruence b(A + 4*B == 17 - 3*C);
   b.strong_normalize();
 
-  bool ok (a == b);
+  bool ok = (a == b);
 
   print_congruence(a, "*** a ***");
   print_congruence(b, "*** b ***");
@@ -218,7 +218,7 @@ test09() {
   b /= 3;
   b.strong_normalize();
 
-  bool ok (a == b);
+  bool ok = (a == b);
 
   print_congruence(a, "*** a ***");
   print_congruence(b, "*** b ***");
@@ -298,7 +298,7 @@ test11() {
   Test_Congruence b((A + 4*B %= -1 - 3*C) / -3);
   b.strong_normalize();
 
-  bool ok (a == b);
+  bool ok = (a == b);
 
   print_congruence(a, "*** a ***");
   print_congruence(b, "*** b ***");
@@ -321,7 +321,7 @@ test12() {
   Test_Congruence b((-A + 4*B %= - 3*C - 17*D - 2*E - 4) / -3);
   b.strong_normalize();
 
-  bool ok (a == b);
+  bool ok = (a == b);
 
   print_congruence(a, "*** a ***");
   print_congruence(b, "*** b ***");
@@ -339,7 +339,7 @@ test13() {
   Test_Congruence b(le %= 0);
   b.strong_normalize();
 
-  bool ok (a == b);
+  bool ok = (a == b);
 
   print_congruence(a, "*** a ***");
   print_congruence(b, "*** b ***");
@@ -347,20 +347,20 @@ test13() {
   return ok;
 }
 
-// Only an inhomogeneous term on left hand side.
+// Linear expressions on both sides.
 static bool
 test14() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
 
-  Test_Congruence a((-5 %= A + 2*B + 3*C) / 7);
+  Test_Congruence a((A - 5 %= 2*B + 3*C) / 7);
   a.strong_normalize();
 
-  Test_Congruence b((A %= -5 - 3*C - 2*B) / 7);
+  Test_Congruence b((-A %= -5 - 3*C - 2*B) / 7);
   b.strong_normalize();
 
-  bool ok (a == b);
+  bool ok = (a == b);
 
   print_congruence(a, "*** a ***");
   print_congruence(b, "*** b ***");
@@ -407,6 +407,34 @@ test16() {
   return false;
 }
 
+// Check if the congruences are equivalent.
+static bool
+test17() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Test_Congruence a((A + 2*B + 3*C %= 5) / 7);
+
+  Test_Congruence b((A + 2*B + 3*C %= 12) / 7);
+
+  Test_Congruence c((2*A + 4*B + 6*C %= 10) / 14);
+
+  bool ok = (a == b);
+  ok &= (a == c);
+
+  Test_Congruence d((2*A + 4*B + 6*C %= 10) / 7);
+
+  ok &= (a != d);
+
+  print_congruence(a, "*** a ***");
+  print_congruence(b, "*** b ***");
+  print_congruence(c, "*** c ***");
+  print_congruence(d, "*** d ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -426,4 +454,5 @@ BEGIN_MAIN
   DO_TEST(test14);
   DO_TEST(test15);
   DO_TEST(test16);
+  DO_TEST(test17);
 END_MAIN

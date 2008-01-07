@@ -1,11 +1,11 @@
 /* A sort of clone of the cddlib test program `lcdd'.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -44,7 +44,7 @@ namespace PPL = Parma_Polyhedra_Library;
 
 typedef PPL::C_Polyhedron POLYHEDRON_TYPE;
 
-#if !CXX_SUPPORTS_ATTRIBUTE_WEAK
+#if !PPL_CXX_SUPPORTS_ATTRIBUTE_WEAK
 extern "C" void
 set_GMP_memory_allocation_functions(void) {
 }
@@ -52,7 +52,7 @@ set_GMP_memory_allocation_functions(void) {
 
 #elif defined(USE_POLKA)
 
-#include <config.h>
+#include <ppl-config.h>
 #include <gmp.h>
 
 extern "C" {
@@ -73,7 +73,7 @@ typedef poly_t* POLYHEDRON_TYPE;
 
 #elif defined(USE_POLYLIB)
 
-#include <config.h>
+#include <ppl-config.h>
 #include <gmp.h>
 
 extern "C" {
@@ -102,21 +102,21 @@ typedef Polyhedron* POLYHEDRON_TYPE;
 #include <sstream>
 #include <stdexcept>
 
-#ifdef HAVE_GETOPT_H
+#ifdef PPL_HAVE_GETOPT_H
 #include <getopt.h>
 #endif
 
-#ifdef HAVE_UNISTD_H
+#ifdef PPL_HAVE_UNISTD_H
 // Include this for `getopt()': especially important if we do not have
 // <getopt.h>.
 # include <unistd.h>
 #endif
 
-#ifdef HAVE_SYS_TIME_H
+#ifdef PPL_HAVE_SYS_TIME_H
 # include <sys/time.h>
 #endif
 
-#ifdef HAVE_SYS_RESOURCE_H
+#ifdef PPL_HAVE_SYS_RESOURCE_H
 // This should be included after <time.h> and <sys/time.h> so as to make
 // sure we have the definitions for, e.g., `ru_utime'.
 # include <sys/resource.h>
@@ -124,7 +124,7 @@ typedef Polyhedron* POLYHEDRON_TYPE;
 
 namespace {
 
-#ifdef HAVE_GETOPT_H
+#ifdef PPL_HAVE_GETOPT_H
 struct option long_options[] = {
   {"max-cpu",        required_argument, 0, 'C'},
   {"max-memory",     required_argument, 0, 'R'},
@@ -152,7 +152,7 @@ static const char* usage_string
 "  -V, --version           prints version information to stdout\n"
 "  -cPATH, --check=PATH    checks if the result is equal to what is in PATH\n"
 #endif
-#ifndef HAVE_GETOPT_H
+#ifndef PPL_HAVE_GETOPT_H
 "\n"
 "NOTE: this version does not support long options.\n"
 #endif
@@ -295,7 +295,7 @@ set_alarm_on_cpu_time(const unsigned seconds, sig_handler_type handler) {
   }
 }
 
-#if HAVE_DECL_RLIMIT_AS
+#if PPL_HAVE_DECL_RLIMIT_AS
 void
 limit_virtual_memory(const unsigned bytes) {
   struct rlimit t;
@@ -313,7 +313,7 @@ limit_virtual_memory(const unsigned bytes) {
 void
 limit_virtual_memory(unsigned) {
 }
-#endif // !HAVE_DECL_RLIMIT_AS
+#endif // !PPL_HAVE_DECL_RLIMIT_AS
 
 extern "C" void
 timeout(int) {
@@ -338,7 +338,7 @@ timeout(int) {
 void
 process_options(int argc, char* argv[]) {
   while (true) {
-#ifdef HAVE_GETOPT_H
+#ifdef PPL_HAVE_GETOPT_H
     int option_index = 0;
     int c = getopt_long(argc, argv, OPTION_LETTERS, long_options,
 			&option_index);
@@ -865,7 +865,7 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
 
   if (rep == H) {
 #if defined(USE_PPL)
-    ph = PPL::C_Polyhedron(cs);
+    ph = PPL::C_Polyhedron(cs, PPL::Recycle_Input());
 #elif defined(USE_POLKA)
     ph = poly_universe(space_dim);
     ph = poly_add_constraints_lazy(ph, mat);
@@ -881,7 +881,7 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
   }
   else {
 #if defined(USE_PPL)
-    ph = PPL::C_Polyhedron(gs);
+    ph = PPL::C_Polyhedron(gs, PPL::Recycle_Input());
 #elif defined(USE_POLKA)
     ph = poly_of_frames(mat);
 #elif defined(USE_POLYLIB)

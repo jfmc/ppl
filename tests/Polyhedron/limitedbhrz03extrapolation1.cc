@@ -1,11 +1,11 @@
 /* Test Polyhedron::limited_BHRZ03_extrapolation_assign().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -22,10 +22,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
-  set_handlers();
-
+bool
+test01() {
   Variable A(0);
   Variable B(1);
 
@@ -57,10 +55,13 @@ main() TRY {
   known_result.add_constraint(B <= 4);
   known_result.add_constraint(A <= 5);
 
-  int retval = (ph2 == known_result) ? 0 : 1;
+  bool ok = (ph2 == known_result) ? true : false;
 
-  print_constraints(ph2, "*** After ph2.limited_BHRZ03_widening(ph1, cs)***");
+  print_constraints(ph2, "*** after ph2.limited_BHRZ03_widening(ph1, cs) ***");
 
-  return retval;
+  return ok;
 }
-CATCH
+
+BEGIN_MAIN
+  DO_TEST(test01);
+END_MAIN

@@ -1,11 +1,11 @@
 /* DB_Row class implementation: inline functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -34,7 +34,7 @@ template <typename T>
 inline void*
 DB_Row_Impl_Handler<T>::Impl::operator new(const size_t fixed_size,
 					   const dimension_type capacity) {
-#if CXX_SUPPORTS_FLEXIBLE_ARRAYS
+#if PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
   return ::operator new(fixed_size + capacity*sizeof(T));
 #else
   assert(capacity >= 1);
@@ -52,6 +52,27 @@ template <typename T>
 inline void
 DB_Row_Impl_Handler<T>::Impl::operator delete(void* p, dimension_type) {
   ::operator delete(p);
+}
+
+template <typename T>
+inline memory_size_type
+DB_Row_Impl_Handler<T>::Impl
+::total_memory_in_bytes(dimension_type capacity) const {
+  return
+    sizeof(*this)
+    + capacity*sizeof(T)
+#if !PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
+    - 1*sizeof(T)
+#endif
+    + external_memory_in_bytes();
+}
+
+template <typename T>
+inline memory_size_type
+DB_Row_Impl_Handler<T>::Impl::total_memory_in_bytes() const {
+  // In general, this is a lower bound, as the capacity of *this
+  // may be strictly greater than `size_'
+  return total_memory_in_bytes(size_);
 }
 
 template <typename T>
@@ -94,7 +115,7 @@ template <typename T>
 inline
 DB_Row_Impl_Handler<T>::DB_Row_Impl_Handler()
   : impl(0) {
-#if EXTRA_ROW_DEBUG
+#if PPL_DB_ROW_EXTRA_DEBUG
   capacity_ = 0;
 #endif
 }
@@ -131,13 +152,13 @@ DB_Row<T>::size() const {
   return this->impl->size();
 }
 
-#if EXTRA_ROW_DEBUG
+#if PPL_DB_ROW_EXTRA_DEBUG
 template <typename T>
 inline dimension_type
 DB_Row<T>::capacity() const {
   return this->capacity_;
 }
-#endif // EXTRA_ROW_DEBUG
+#endif // PPL_DB_ROW_EXTRA_DEBUG
 
 template <typename T>
 inline
@@ -148,19 +169,19 @@ DB_Row<T>::DB_Row()
 template <typename T>
 inline void
 DB_Row<T>::allocate(
-#if CXX_SUPPORTS_FLEXIBLE_ARRAYS
+#if PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
 	       const
 #endif
 	       dimension_type capacity) {
   DB_Row<T>& x = *this;
   assert(capacity <= max_size());
-#if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
+#if !PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
   if (capacity == 0)
     ++capacity;
 #endif
   assert(x.impl == 0);
   x.impl = new (capacity) typename DB_Row_Impl_Handler<T>::Impl();
-#if EXTRA_ROW_DEBUG
+#if PPL_DB_ROW_EXTRA_DEBUG
   assert(x.capacity_ == 0);
   x.capacity_ = capacity;
 #endif
@@ -171,7 +192,7 @@ inline void
 DB_Row<T>::expand_within_capacity(const dimension_type new_size) {
   DB_Row<T>& x = *this;
   assert(x.impl);
-#if EXTRA_ROW_DEBUG
+#if PPL_DB_ROW_EXTRA_DEBUG
   assert(new_size <= x.capacity_);
 #endif
   x.impl->expand_within_capacity(new_size);
@@ -182,7 +203,7 @@ inline void
 DB_Row<T>::copy_construct_coefficients(const DB_Row& y) {
   DB_Row<T>& x = *this;
   assert(x.impl && y.impl);
-#if EXTRA_ROW_DEBUG
+#if PPL_DB_ROW_EXTRA_DEBUG
   assert(y.size() <= x.capacity_);
 #endif
   x.impl->copy_construct_coefficients(*(y.impl));
@@ -281,7 +302,7 @@ inline void
 DB_Row<T>::swap(DB_Row& y) {
   DB_Row<T>& x = *this;
   std::swap(x.impl, y.impl);
-#if EXTRA_ROW_DEBUG
+#if PPL_DB_ROW_EXTRA_DEBUG
   std::swap(x.capacity_, y.capacity_);
 #endif
 }
@@ -291,7 +312,7 @@ inline void
 DB_Row<T>::assign(DB_Row& y) {
   DB_Row<T>& x = *this;
   x.impl = y.impl;
-#if EXTRA_ROW_DEBUG
+#if PPL_DB_ROW_EXTRA_DEBUG
   x.capacity_ = y.capacity_;
 #endif
 }
@@ -347,6 +368,36 @@ inline typename DB_Row<T>::const_iterator
 DB_Row<T>::end() const {
   const DB_Row<T>& x = *this;
   return const_iterator(x.impl->vec_ + x.impl->size_);
+}
+
+template <typename T>
+inline memory_size_type
+DB_Row<T>::external_memory_in_bytes(dimension_type capacity) const {
+  const DB_Row<T>& x = *this;
+  return x.impl->total_memory_in_bytes(capacity);
+}
+
+template <typename T>
+inline memory_size_type
+DB_Row<T>::total_memory_in_bytes(dimension_type capacity) const {
+  return sizeof(*this) + external_memory_in_bytes(capacity);
+}
+
+template <typename T>
+inline memory_size_type
+DB_Row<T>::external_memory_in_bytes() const {
+  const DB_Row<T>& x = *this;
+#if PPL_DB_ROW_EXTRA_DEBUG
+  return x.impl->total_memory_in_bytes(x.capacity_);
+#else
+  return x.impl->total_memory_in_bytes();
+#endif
+}
+
+template <typename T>
+inline memory_size_type
+DB_Row<T>::total_memory_in_bytes() const {
+  return sizeof(*this) + external_memory_in_bytes();
 }
 
 /*! \relates DB_Row */

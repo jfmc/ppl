@@ -1,13 +1,12 @@
 /* Solve linear programming problems by either vertex/point enumeration
-   or the primal simplex algorithm. Just a toy to test the C interface
-   of the library.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   or the primal simplex algorithm.
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -22,10 +21,9 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include "config.h"
+#include <ppl-config.h>
 #include "ppl_c.h"
 #include <gmp.h>
-#include <glpk.h>
 #include <stdio.h>
 #include <assert.h>
 #include <time.h>
@@ -33,33 +31,40 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
+#include <math.h>
 
-#ifdef HAVE_GETOPT_H
+#if defined(PPL_HAVE_GLPK_GLPK_H)
+#include <glpk/glpk.h>
+#elif defined(PPL_HAVE_GLPK_H)
+#include <glpk.h>
+#endif
+
+#ifdef PPL_HAVE_GETOPT_H
 # include <getopt.h>
 #endif
 
-#ifdef HAVE_UNISTD_H
+#ifdef PPL_HAVE_UNISTD_H
 /* Include this for `getopt()': especially important if we do not have
-   <getopt.h>.  */
+   <getopt.h>. */
 # include <unistd.h>
 #endif
 
-#ifdef HAVE_SIGNAL_H
+#ifdef PPL_HAVE_SIGNAL_H
 # include <signal.h>
 #endif
 
-#ifdef HAVE_SYS_TIME_H
+#ifdef PPL_HAVE_SYS_TIME_H
 # include <sys/time.h>
 #endif
 
-#ifdef HAVE_SYS_RESOURCE_H
+#ifdef PPL_HAVE_SYS_RESOURCE_H
 /* This should be included after <time.h> and <sys/time.h> so as to make
-   sure we have the definitions for, e.g., `ru_utime'.  */
+   sure we have the definitions for, e.g., `ru_utime'. */
 # include <sys/resource.h>
 #endif
 
-#if PPL_VERSION_MAJOR == 0 && PPL_VERSION_MINOR < 8
-# error "PPL version 0.8 or following is required"
+#if PPL_VERSION_MAJOR == 0 && PPL_VERSION_MINOR < 10
+# error "PPL version 0.10 or following is required"
 #endif
 
 static const char* ppl_source_version = PPL_VERSION;
@@ -70,48 +75,58 @@ static const char* ppl_source_version = PPL_VERSION;
 # define ATTRIBUTE_UNUSED
 #endif
 
-#ifdef HAVE_GETOPT_H
+#ifdef PPL_HAVE_GETOPT_H
 static struct option long_options[] = {
-  {"check",           no_argument,       0, 'c'},
+  {"check",           optional_argument, 0, 'c'},
   {"help",            no_argument,       0, 'h'},
   {"incremental",     no_argument,       0, 'i'},
   {"min",             no_argument,       0, 'm'},
   {"max",             no_argument,       0, 'M'},
+  {"no-optimization", no_argument,       0, 'n'},
+  {"no-mip",          no_argument,       0, 'r'},
   {"max-cpu",         required_argument, 0, 'C'},
-  {"max-memory",      required_argument, 0, 'V'},
+  {"max-memory",      required_argument, 0, 'R'},
   {"output",          required_argument, 0, 'o'},
   {"enumerate",       no_argument,       0, 'e'},
-  {"no-optimization", no_argument,       0, 'n'},
   {"simplex",         no_argument,       0, 's'},
   {"timings",         no_argument,       0, 't'},
-  {"verbose",         no_argument,       0, 'v'},
+  {"verbosity",       required_argument, 0, 'v'},
+  {"version",         no_argument,       0, 'V'},
   {0, 0, 0, 0}
 };
 #endif
 
 static const char* usage_string
 = "Usage: %s [OPTION]... [FILE]...\n\n"
-"  -c, --check             checks plausibility of the optimum value found\n"
+"  -c, --check[=THRESHOLD] checks the obtained results;  optima are checked\n"
+"                          with a tolerance of THRESHOLD (default %.10g)\n"
 "  -i, --incremental       solves the problem incrementally\n"
 "  -m, --min               minimizes the objective function\n"
-"  -n, --no-optimization   checks for satisfiability\n"
 "  -M, --max               maximizes the objective function (default)\n"
+"  -n, --no-optimization   checks for satisfiability only\n"
+"  -r, --no-mip            consider integer variables as real variables\n"
 "  -CSECS, --max-cpu=SECS  limits CPU usage to SECS seconds\n"
-"  -VMB, --max-memory=MB   limits memory usage to MB megabytes\n"
-"  -h, --help              prints this help text to stderr\n"
+"  -RMB, --max-memory=MB   limits memory usage to MB megabytes\n"
+"  -h, --help              prints this help text to stdout\n"
 "  -oPATH, --output=PATH   appends output to PATH\n"
 "  -e, --enumerate         use the (expensive!) enumeration method\n"
 "  -s, --simplex           use the simplex method\n"
 "  -t, --timings           prints timings to stderr\n"
-"  -v, --verbose           outputs also the constraints "
-"and objective function\n"
-#ifndef HAVE_GETOPT_H
+"  -v, --verbosity=LEVEL   sets verbosity level (from 0 to 4, default 3):\n"
+"                          0 --> quiet: no output except for errors and\n"
+"                                explicitly required notifications\n"
+"                          1 --> solver state only\n"
+"                          2 --> state + optimal value\n"
+"                          3 --> state + optimal value + optimum location\n"
+"                          4 --> lots of output\n"
+"  -V, --version           prints version information to stdout\n"
+#ifndef PPL_HAVE_GETOPT_H
 "\n"
 "NOTE: this version does not support long options.\n"
 #endif
 ;
 
-#define OPTION_LETTERS "bceimnMC:V:ho:stv"
+#define OPTION_LETTERS "bc::eimnMC:R:ho:rstVv:"
 
 static const char* program_name = 0;
 
@@ -122,10 +137,14 @@ FILE* output_file = NULL;
 static int check_results = 0;
 static int use_simplex = 0;
 static int print_timings = 0;
-static int verbose = 0;
+static int verbosity = 3;
 static int maximize = 1;
 static int incremental = 0;
 static int no_optimization = 0;
+static int no_mip = 0;
+static int check_results_failed = 0;
+static double check_threshold = 0.0;
+static const double default_check_threshold = 0.000000001;
 
 static void
 my_exit(int status) {
@@ -136,12 +155,40 @@ my_exit(int status) {
 static void
 fatal(const char* format, ...) {
   va_list ap;
-  va_start(ap, format);
   fprintf(stderr, "%s: ", program_name);
+  va_start(ap, format);
+  vfprintf(stderr, format, ap);
+  va_end(ap);
+  fprintf(stderr, "\n");
+  my_exit(1);
+}
+
+#if 0
+static void
+warning(const char* format, ...) {
+  va_list ap;
+  va_start(ap, format);
+  fprintf(stderr, "%s: warning: ", program_name);
   vfprintf(stderr, format, ap);
   fprintf(stderr, "\n");
   va_end(ap);
-  my_exit(1);
+}
+#endif
+
+static void
+error(const char* format, ...) {
+  va_list ap;
+  fprintf(stderr, "%s: ", program_name);
+  va_start(ap, format);
+  vfprintf(stderr, format, ap);
+  va_end(ap);
+  fprintf(stderr, "\n");
+  if (output_argument) {
+    va_start(ap, format);
+    vfprintf(output_file, format, ap);
+    va_end(ap);
+    fprintf(output_file, "\n");
+  }
 }
 
 static const char*
@@ -160,19 +207,21 @@ get_ppl_banner() {
 
 static void
 process_options(int argc, char* argv[]) {
-#ifdef HAVE_GETOPT_H
+#ifdef PPL_HAVE_GETOPT_H
   int option_index;
 #endif
   int enumerate_required = 0;
   int simplex_required = 0;
   int incremental_required = 0;
   int no_optimization_required = 0;
+  int no_mip_required = 0;
   int c;
   char* endptr;
   long l;
+  double d;
 
   while (1) {
-#ifdef HAVE_GETOPT_H
+#ifdef PPL_HAVE_GETOPT_H
     option_index = 0;
     c = getopt_long(argc, argv, OPTION_LETTERS, long_options, &option_index);
 #else
@@ -187,6 +236,15 @@ process_options(int argc, char* argv[]) {
 
     case 'c':
       check_results = 1;
+      if (optarg) {
+	d = strtod(optarg, &endptr);
+	if (*endptr || errno == ERANGE || d < 0.0)
+	  fatal("only a non-negative floating point number can `-c'");
+	else
+	  check_threshold = d;
+      }
+      else
+	check_threshold = default_check_threshold;
       break;
 
     case 'm':
@@ -199,22 +257,22 @@ process_options(int argc, char* argv[]) {
 
     case '?':
     case 'h':
-      fprintf(stderr, usage_string, argv[0]);
+      fprintf(stdout, usage_string, argv[0], default_check_threshold);
       my_exit(0);
       break;
 
     case 'C':
       l = strtol(optarg, &endptr, 10);
       if (*endptr || l < 0)
-	fatal("a non-negative integer must follow `-c'");
+	fatal("a non-negative integer must follow `-C'");
       else
 	max_seconds_of_cpu_time = l;
       break;
 
-    case 'V':
+    case 'R':
       l = strtol(optarg, &endptr, 10);
       if (*endptr || l < 0)
-	fatal("a non-negative integer must follow `-m'");
+	fatal("a non-negative integer must follow `-R'");
       else
 	max_bytes_of_virtual_memory = l*1024*1024;
       break;
@@ -236,7 +294,16 @@ process_options(int argc, char* argv[]) {
       break;
 
     case 'v':
-      verbose = 1;
+      l = strtol(optarg, &endptr, 10);
+      if (*endptr || l < 0 || l > 4)
+	fatal("verbosity must be an integer between 0 and 4");
+      else
+	verbosity = l;
+      break;
+
+    case 'V':
+      fprintf(stdout, "%s\n", PPL_VERSION);
+      my_exit(0);
       break;
 
     case 'i':
@@ -247,14 +314,19 @@ process_options(int argc, char* argv[]) {
       no_optimization_required = 1;
       break;
 
+    case 'r':
+      no_mip_required = 1;
+      break;
+
     default:
       abort();
     }
   }
 
-  if (enumerate_required && (simplex_required || incremental_required ||
-			     no_optimization_required))
-      fatal("Some incompatible options were given to ppl_lpsol");
+  if (enumerate_required
+      && (simplex_required
+	  || incremental_required))
+      fatal("-e option is incompatible with -i and -s");
 
   if (enumerate_required)
     use_simplex = 0;
@@ -267,8 +339,11 @@ process_options(int argc, char* argv[]) {
   if (no_optimization_required)
     no_optimization = 1;
 
+  if (no_mip_required)
+    no_mip = 1;
+
   if (optind >= argc) {
-    if (verbose)
+    if (verbosity >= 4)
       fprintf(stderr,
 	      "Parma Polyhedra Library version:\n%s\n\n"
 	      "Parma Polyhedra Library banner:\n%s",
@@ -359,7 +434,7 @@ set_alarm_on_cpu_time(unsigned seconds, void (*handler)(int)) {
   }
 }
 
-#if HAVE_DECL_RLIMIT_AS
+#if PPL_HAVE_DECL_RLIMIT_AS
 void
 limit_virtual_memory(unsigned bytes) {
   struct rlimit t;
@@ -377,7 +452,7 @@ limit_virtual_memory(unsigned bytes) {
 void
 limit_virtual_memory(unsigned bytes ATTRIBUTE_UNUSED) {
 }
-#endif /* !HAVE_DECL_RLIMIT_AS */
+#endif /* !PPL_HAVE_DECL_RLIMIT_AS */
 
 static void
 my_timeout(int dummy ATTRIBUTE_UNUSED) {
@@ -391,11 +466,109 @@ static mpz_t tmp_z;
 static mpq_t tmp1_q;
 static mpq_t tmp2_q;
 static ppl_Coefficient_t ppl_coeff;
-static LPX* lp;
+static LPX* glpk_lp;
+static int glpk_lp_problem_kind;
+static int glpk_lp_num_int;
+static ppl_dimension_type* integer_variables;
+
+static void
+maybe_check_results(const int ppl_status, const double ppl_optimum_value) {
+  const char* ppl_status_string;
+  const char* glpk_status_string;
+  int glpk_status;
+  int treat_as_lp = 0;
+  if (!check_results)
+    return;
+
+  /* Disable GLPK output. */
+  lpx_set_int_parm(glpk_lp, LPX_K_MSGLEV, 0);
+
+  if (no_mip || glpk_lp_problem_kind == LPX_LP)
+    treat_as_lp = 1;
+
+  lpx_set_obj_dir(glpk_lp, (maximize ? LPX_MAX : LPX_MIN));
+
+  if (treat_as_lp) {
+    /* Set the problem class to LP: MIP problems are thus treated as
+       LP ones. */
+    lpx_set_class(glpk_lp, LPX_LP);
+    lpx_simplex(glpk_lp);
+    glpk_status = lpx_get_status(glpk_lp);
+  }
+  else {
+    /* MIP case. */
+    lpx_intopt(glpk_lp);
+    glpk_status = lpx_mip_status(glpk_lp);
+  }
+  /* If no_optimization is enabled, the second case is not possibile. */
+  if (!((ppl_status == PPL_MIP_PROBLEM_STATUS_UNFEASIBLE
+	 && (glpk_status == LPX_NOFEAS || glpk_status == LPX_I_NOFEAS))
+	|| (ppl_status == PPL_MIP_PROBLEM_STATUS_UNBOUNDED
+	    && (glpk_status == LPX_UNBND || glpk_status == LPX_I_UNDEF))
+	|| (ppl_status == PPL_MIP_PROBLEM_STATUS_OPTIMIZED
+	    && ((glpk_status == LPX_OPT || glpk_status == LPX_I_OPT)
+		/* If no_optimization is enabled, check if the problem is
+		   unbounded for GLPK.  */
+		|| (no_optimization && (glpk_status == LPX_UNBND
+					|| glpk_status == LPX_I_UNDEF))))))  {
+
+    if (ppl_status == PPL_MIP_PROBLEM_STATUS_UNFEASIBLE)
+      ppl_status_string = "unfeasible";
+    else if (ppl_status == PPL_MIP_PROBLEM_STATUS_UNBOUNDED)
+      ppl_status_string = "unbounded";
+    else if (ppl_status == PPL_MIP_PROBLEM_STATUS_OPTIMIZED)
+      ppl_status_string = "optimizable";
+    else
+      ppl_status_string = "<?>";
+
+    switch (glpk_status) {
+    case LPX_NOFEAS:
+      glpk_status_string = "unfeasible";
+      break;
+    case LPX_UNBND:
+      glpk_status_string = "unbounded";
+      break;
+    case LPX_OPT:
+      glpk_status_string = "optimizable";
+      break;
+    case LPX_I_NOFEAS:
+      glpk_status_string = "unfeasible";
+      break;
+    case LPX_I_OPT:
+      glpk_status_string = "optimizable";
+      break;
+    case LPX_I_UNDEF:
+      glpk_status_string = "undefined";
+      break;
+    default:
+      glpk_status_string = "<?>";
+      break;
+    }
+
+    error("check failed: for GLPK the problem is %s, not %s",
+	  glpk_status_string, ppl_status_string);
+
+    check_results_failed = 1;
+  }
+  else if (!no_optimization
+	   && ppl_status == PPL_MIP_PROBLEM_STATUS_OPTIMIZED) {
+
+    double glpk_optimum_value = treat_as_lp ? lpx_get_obj_val(glpk_lp)
+      : lpx_mip_obj_val(glpk_lp);
+
+    if (fabs(ppl_optimum_value - glpk_optimum_value) > check_threshold) {
+      error("check failed: for GLPK the problem's optimum is %.10g,"
+	    " not %.10g", glpk_optimum_value, ppl_optimum_value);
+      check_results_failed = 1;
+    }
+  }
+  return;
+}
+
 
 static const char*
 variable_output_function(ppl_dimension_type var) {
-  const char* name = lpx_get_col_name(lp, var+1);
+  const char* name = lpx_get_col_name(glpk_lp, var+1);
   if (name != NULL)
     return name;
   else
@@ -418,9 +591,8 @@ add_constraints(ppl_Linear_Expression_t ppl_le,
     mpz_neg(tmp_z, tmp_z);
     ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
     ppl_Linear_Expression_add_to_inhomogeneous(ppl_le, ppl_coeff);
-    ppl_new_Constraint(&ppl_c, ppl_le,
-		       PPL_CONSTRAINT_TYPE_GREATER_THAN_OR_EQUAL);
-    if (verbose) {
+    ppl_new_Constraint(&ppl_c, ppl_le, PPL_CONSTRAINT_TYPE_GREATER_OR_EQUAL);
+    if (verbosity >= 4) {
       ppl_io_fprint_Constraint(output_file, ppl_c);
       fprintf(output_file, "\n");
     }
@@ -435,8 +607,8 @@ add_constraints(ppl_Linear_Expression_t ppl_le,
     ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
     ppl_Linear_Expression_add_to_inhomogeneous(ppl_le, ppl_coeff);
     ppl_new_Constraint(&ppl_c, ppl_le,
-		       PPL_CONSTRAINT_TYPE_LESS_THAN_OR_EQUAL);
-    if (verbose) {
+		       PPL_CONSTRAINT_TYPE_LESS_OR_EQUAL);
+    if (verbosity >= 4) {
       ppl_io_fprint_Constraint(output_file, ppl_c);
       fprintf(output_file, "\n");
     }
@@ -452,9 +624,8 @@ add_constraints(ppl_Linear_Expression_t ppl_le,
     mpz_neg(tmp_z, tmp_z);
     ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
     ppl_Linear_Expression_add_to_inhomogeneous(ppl_le, ppl_coeff);
-    ppl_new_Constraint(&ppl_c, ppl_le,
-		       PPL_CONSTRAINT_TYPE_GREATER_THAN_OR_EQUAL);
-    if (verbose) {
+    ppl_new_Constraint(&ppl_c, ppl_le, PPL_CONSTRAINT_TYPE_GREATER_OR_EQUAL);
+    if (verbosity >= 4) {
       ppl_io_fprint_Constraint(output_file, ppl_c);
       fprintf(output_file, "\n");
     }
@@ -466,10 +637,9 @@ add_constraints(ppl_Linear_Expression_t ppl_le,
     mpz_neg(tmp_z, tmp_z);
     ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
     ppl_Linear_Expression_add_to_inhomogeneous(ppl_le2, ppl_coeff);
-    ppl_new_Constraint(&ppl_c, ppl_le2,
-		       PPL_CONSTRAINT_TYPE_LESS_THAN_OR_EQUAL);
+    ppl_new_Constraint(&ppl_c, ppl_le2, PPL_CONSTRAINT_TYPE_LESS_OR_EQUAL);
     ppl_delete_Linear_Expression(ppl_le2);
-    if (verbose) {
+    if (verbosity >= 4) {
       ppl_io_fprint_Constraint(output_file, ppl_c);
       fprintf(output_file, "\n");
     }
@@ -485,7 +655,7 @@ add_constraints(ppl_Linear_Expression_t ppl_le,
     ppl_Linear_Expression_add_to_inhomogeneous(ppl_le, ppl_coeff);
     ppl_new_Constraint(&ppl_c, ppl_le,
 		       PPL_CONSTRAINT_TYPE_EQUAL);
-    if (verbose) {
+    if (verbosity >= 4) {
       ppl_io_fprint_Constraint(output_file, ppl_c);
       fprintf(output_file, "\n");
     }
@@ -500,7 +670,7 @@ add_constraints(ppl_Linear_Expression_t ppl_le,
 }
 
 static int
-solve_with_generators(ppl_const_Constraint_System_t ppl_cs,
+solve_with_generators(ppl_Constraint_System_t ppl_cs,
 		      ppl_const_Linear_Expression_t ppl_objective_le,
 		      ppl_Coefficient_t optimum_n,
 		      ppl_Coefficient_t optimum_d,
@@ -511,8 +681,8 @@ solve_with_generators(ppl_const_Constraint_System_t ppl_cs,
   int included;
   int ok;
 
-  /* Create the polyhedron. */
-  ppl_new_C_Polyhedron_from_Constraint_System(&ppl_ph, ppl_cs);
+  /* Create the polyhedron (recycling the data structures of ppl_cs). */
+  ppl_new_C_Polyhedron_recycle_Constraint_System(&ppl_ph, ppl_cs);
 
   if (print_timings) {
     fprintf(stderr, "Time to create a PPL polyhedron: ");
@@ -531,9 +701,18 @@ solve_with_generators(ppl_const_Constraint_System_t ppl_cs,
   }
 
   if (empty) {
-    fprintf(output_file, "Unfeasible problem.\n");
-    /* TODO: if the `--check' option has been given, use GLPK to check
-       that the problem is indeed unfeasible.  */
+    if (verbosity >= 1)
+      fprintf(output_file, "Unfeasible problem.\n");
+    maybe_check_results(PPL_MIP_PROBLEM_STATUS_UNFEASIBLE, 0.0);
+    return 0;
+  }
+
+  if (!empty && no_optimization) {
+    if (verbosity >= 1)
+      fprintf(output_file, "Feasible problem.\n");
+    /* Kludge: let's pass PPL_MIP_PROBLEM_STATUS_OPTIMIZED,
+       to let work `maybe_check_results'. */
+    maybe_check_results(PPL_MIP_PROBLEM_STATUS_OPTIMIZED, 0.0);
     return 0;
   }
 
@@ -550,9 +729,9 @@ solve_with_generators(ppl_const_Constraint_System_t ppl_cs,
   }
 
   if (unbounded) {
-    fprintf(output_file, "Unbounded problem.\n");
-    /* TODO: if the `--check' option has been given, use GLPK to check
-       that the problem is indeed unbounded.  */
+    if (verbosity >= 1)
+      fprintf(output_file, "Unbounded problem.\n");
+    maybe_check_results(PPL_MIP_PROBLEM_STATUS_UNBOUNDED, 0.0);
     return 0;
   }
 
@@ -588,52 +767,48 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
 		   ppl_Coefficient_t optimum_n,
 		   ppl_Coefficient_t optimum_d,
 		   ppl_Generator_t point) {
-  int status;
-
-  ppl_LP_Problem_t lp;
+  ppl_MIP_Problem_t ppl_mip;
+  int status = 0;
+  int satisfiable = 0;
+  ppl_dimension_type space_dim;
+  ppl_const_Constraint_t c;
+  ppl_const_Generator_t g;
+  ppl_Constraint_System_const_iterator_t i;
+  ppl_Constraint_System_const_iterator_t iend;
+  int counter;
   int mode = maximize
-    ? PPL_LP_PROBLEM_MAXIMIZATION : PPL_LP_PROBLEM_MINIMIZATION;
+    ? PPL_OPTIMIZATION_MODE_MAXIMIZATION
+    : PPL_OPTIMIZATION_MODE_MINIMIZATION;
 
-  if(incremental) {
-    ppl_new_LP_Problem_trivial(&lp);
-    // Add a dummy contraint to have a correct space dimension.
-    ppl_dimension_type space_dim;
-    ppl_Linear_Expression_t dummy_le;
-    ppl_Constraint_t dummy_c;
-    ppl_Constraint_System_space_dimension(cs, &space_dim);
-    /*  fprintf(stderr, "\nSpace dimension: %d\n", space_dim); */
-    ppl_new_Linear_Expression_with_dimension(&dummy_le, space_dim);
-    ppl_new_Constraint(&dummy_c, dummy_le, PPL_CONSTRAINT_TYPE_EQUAL);
-    ppl_LP_Problem_add_constraint(lp, dummy_c);
-    ppl_delete_Linear_Expression(dummy_le);
-    ppl_delete_Constraint(dummy_c);
-    ppl_LP_Problem_set_objective_function(lp, objective);
-    ppl_LP_Problem_set_optimization_mode(lp, mode);
-
-    // Add the constraints in `cs' one at a time.
-    ppl_Constraint_System_const_iterator_t i;
-    ppl_Constraint_System_const_iterator_t iend;
+  ppl_Constraint_System_space_dimension(cs, &space_dim);
+  ppl_new_MIP_Problem_from_space_dimension(&ppl_mip, space_dim);
+  ppl_MIP_Problem_set_objective_function(ppl_mip, objective);
+  ppl_MIP_Problem_set_optimization_mode(ppl_mip, mode);
+  if (!no_mip)
+    ppl_MIP_Problem_add_to_integer_space_dimensions(ppl_mip, integer_variables,
+						    glpk_lp_num_int);
+  if (incremental) {
+    /* Add the constraints of `cs' one at a time. */
     ppl_new_Constraint_System_const_iterator(&i);
     ppl_new_Constraint_System_const_iterator(&iend);
     ppl_Constraint_System_begin(cs, i);
     ppl_Constraint_System_end(cs, iend);
-    int counter;
+
     counter = 0;
     while (!ppl_Constraint_System_const_iterator_equal_test(i, iend)) {
       ++counter;
-      if (verbose)
-	fprintf(stdout, "\nSolving constraint %d\n", counter);
-      ppl_const_Constraint_t c;
+      if (verbosity >= 4)
+	fprintf(output_file, "\nSolving constraint %d\n", counter);
       ppl_Constraint_System_const_iterator_dereference(i, &c);
-      ppl_LP_Problem_add_constraint(lp, c);
+      ppl_MIP_Problem_add_constraint(ppl_mip, c);
 
-      if(no_optimization) {
-	status = ppl_LP_Problem_is_satisfiable(lp);
-	if (status == PPL_LP_PROBLEM_STATUS_UNFEASIBLE)
+      if (no_optimization) {
+	satisfiable = ppl_MIP_Problem_is_satisfiable(ppl_mip);
+	if (!satisfiable)
 	  break;
       }
       else
-	status = ppl_LP_Problem_solve(lp);
+	status = ppl_MIP_Problem_solve(ppl_mip);
       ppl_Constraint_System_const_iterator_increment(i);
     }
     ppl_delete_Constraint_System_const_iterator(i);
@@ -641,67 +816,63 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
   }
 
   else {
-    ppl_new_LP_Problem(&lp, cs, objective, mode);
-    status = no_optimization ? ppl_LP_Problem_is_satisfiable(lp) :
-                               ppl_LP_Problem_solve(lp);
- }
+    ppl_MIP_Problem_add_constraints(ppl_mip, cs);
+    if (no_optimization)
+      satisfiable = ppl_MIP_Problem_is_satisfiable(ppl_mip);
+    else
+      status = ppl_MIP_Problem_solve(ppl_mip);
+  }
 
   if (print_timings) {
-    fprintf(stderr, "Time to solve the LP problem: ");
+    fprintf(stderr, "Time to solve the problem: ");
     print_clock(stderr);
     fprintf(stderr, " s\n");
     start_clock();
   }
 
-  if (status == PPL_LP_PROBLEM_STATUS_UNFEASIBLE) {
-    fprintf(output_file, "Unfeasible problem.\n");
-    /* TODO: if the `--check' option has been given, use GLPK to check
-       that the problem is indeed unfeasible.  */
+  if ((no_optimization && !satisfiable)
+      || (!no_optimization && status == PPL_MIP_PROBLEM_STATUS_UNFEASIBLE)) {
+    if (verbosity >= 1)
+      fprintf(output_file, "Unfeasible problem.\n");
+    maybe_check_results(status, 0.0);
     return 0;
   }
-
-  else if (status != PPL_LP_PROBLEM_STATUS_UNFEASIBLE && no_optimization) {
-    fprintf(output_file, "Feasible problem.\n");
-    /* TODO: if the `--check' option has been given, use GLPK to check
-       that the problem is indeed feasible.  */
+  else if (no_optimization && satisfiable) {
+    if (verbosity >= 1)
+      fprintf(output_file, "Feasible problem.\n");
+    /* Kludge: let's pass PPL_MIP_PROBLEM_STATUS_OPTIMIZED,
+       to let work `maybe_check_results'. */
+    maybe_check_results(PPL_MIP_PROBLEM_STATUS_OPTIMIZED, 0.0);
     return 0;
   }
-
-  else if (status == PPL_LP_PROBLEM_STATUS_UNBOUNDED) {
-    fprintf(output_file, "Unbounded problem.\n");
-    /* TODO: if the `--check' option has been given, use GLPK to check
-       that the problem is indeed unbounded.  */
+  else if (status == PPL_MIP_PROBLEM_STATUS_UNBOUNDED) {
+    if (verbosity >= 1)
+      fprintf(output_file, "Unbounded problem.\n");
+    maybe_check_results(status, 0.0);
     return 0;
   }
-  else if (status == PPL_LP_PROBLEM_STATUS_OPTIMIZED) {
-    ppl_LP_Problem_optimal_value(lp, optimum_n, optimum_d);
-    ppl_const_Generator_t g;
-    ppl_LP_Problem_optimizing_point(lp, &g);
+  else if (status == PPL_MIP_PROBLEM_STATUS_OPTIMIZED) {
+    ppl_MIP_Problem_optimal_value(ppl_mip, optimum_n, optimum_d);
+    ppl_MIP_Problem_optimizing_point(ppl_mip, &g);
     ppl_assign_Generator_from_Generator(point, g);
     return 1;
   }
   else
     fatal("internal error");
-}
 
-static void
-check_feasibility(ppl_const_Constraint_System_t cs,
-		  ppl_const_Generator_t g) {
-  ppl_Polyhedron_t ph;
-  unsigned int relation;
-  ppl_new_C_Polyhedron_from_Constraint_System(&ph, cs);
-  relation = ppl_Polyhedron_relation_with_Generator(ph, g);
-  ppl_delete_Polyhedron(ph);
-  if (relation != PPL_POLY_GEN_RELATION_SUBSUMES)
-    fprintf(stderr, "The computed optimum is NOT a feasible point!\n");
+  /* This is just to avoid a compiler warning. */
+  return 0;
 }
 
 static void
 solve(char* file_name) {
   ppl_Constraint_System_t ppl_cs;
-  ppl_Generator_t optimum_value;
+#ifndef NDEBUG
+  ppl_Constraint_System_t ppl_cs_copy;
+#endif
+  ppl_Generator_t optimum_location;
   ppl_Linear_Expression_t ppl_le;
-  int dimension, row, num_rows, column, nz, i, type;
+  int dimension, row, num_rows, column, nz, i, j, type;
   int* coefficient_index;
   double lb, ub;
   double* coefficient_value;
@@ -718,8 +889,13 @@ solve(char* file_name) {
   if (print_timings)
     start_clock();
 
-  lp = lpx_read_mps(file_name);
-  if (lp == NULL)
+  if (verbosity == 0) {
+    // FIXME: find a way to suppress output from lpx_read_mps.
+  }
+
+  glpk_lp = lpx_read_mps(file_name);
+
+  if (glpk_lp == NULL)
     fatal("cannot read MPS file `%s'", file_name);
 
   if (print_timings) {
@@ -729,8 +905,29 @@ solve(char* file_name) {
     start_clock();
   }
 
-  dimension = lpx_get_num_cols(lp);
+  glpk_lp_problem_kind = lpx_get_class(glpk_lp);
+  if (glpk_lp_problem_kind == LPX_MIP && !no_mip && !use_simplex)
+     fatal("the enumeration solving method can not handle MIP problems");
 
+  dimension = lpx_get_num_cols(glpk_lp);
+
+  /* Read variables constrained to be integer. */
+    if (glpk_lp_problem_kind == LPX_MIP && !no_mip && use_simplex) {
+      if (verbosity >= 4)
+	fprintf(output_file, "Integer variables:\n");
+      glpk_lp_num_int = lpx_get_num_int(glpk_lp);
+      integer_variables = (ppl_dimension_type*)
+	malloc((glpk_lp_num_int + 1)*sizeof(ppl_dimension_type));
+      for (i = 0, j = 0; i < dimension; ++i)
+	if (lpx_get_col_kind(glpk_lp, i+1) == LPX_IV) {
+	  integer_variables[j] = i;
+	  if (verbosity >= 4) {
+	    ppl_io_fprint_variable(output_file, i);
+	    fprintf(output_file, " ");
+	  }
+	  ++j;
+	}
+    }
   coefficient_index = (int*) malloc((dimension+1)*sizeof(int));
   coefficient_value = (double*) malloc((dimension+1)*sizeof(double));
   rational_coefficient = (mpq_t*) malloc((dimension+1)*sizeof(mpq_t));
@@ -745,22 +942,22 @@ solve(char* file_name) {
 
   mpz_init(den_lcm);
 
-  if (verbose)
-    fprintf(output_file, "Constraints:\n");
+  if (verbosity >= 4)
+    fprintf(output_file, "\nConstraints:\n");
 
   /* Set up the row (ordinary) constraints. */
-  num_rows = lpx_get_num_rows(lp);
+  num_rows = lpx_get_num_rows(glpk_lp);
   for (row = 1; row <= num_rows; ++row) {
     /* Initialize the least common multiple computation. */
     mpz_set_si(den_lcm, 1);
     /* Set `nz' to the number of non-zero coefficients. */
-    nz = lpx_get_mat_row(lp, row, coefficient_index, coefficient_value);
+    nz = lpx_get_mat_row(glpk_lp, row, coefficient_index, coefficient_value);
     for (i = 1; i <= nz; ++i) {
       mpq_set_d(rational_coefficient[i], coefficient_value[i]);
       /* Update den_lcm. */
       mpz_lcm(den_lcm, den_lcm, mpq_denref(rational_coefficient[i]));
     }
-    lpx_get_row_bnds(lp, row, &type, &lb, &ub);
+    lpx_get_row_bnds(glpk_lp, row, &type, &lb, &ub);
     mpq_set_d(rational_lb, lb);
     mpz_lcm(den_lcm, den_lcm, mpq_denref(rational_lb));
     mpq_set_d(rational_ub, ub);
@@ -787,6 +984,10 @@ solve(char* file_name) {
   free(rational_coefficient);
   free(coefficient_index);
 
+#ifndef NDEBUG
+  ppl_new_Constraint_System_from_Constraint_System(&ppl_cs_copy, ppl_cs);
+#endif
+
   /*
     FIXME: here we could build the polyhedron and minimize it before
     adding the variable bounds.
@@ -794,8 +995,7 @@ solve(char* file_name) {
 
   /* Set up the columns constraints, i.e., variable bounds. */
   for (column = 1; column <= dimension; ++column) {
-
-    lpx_get_col_bnds(lp, column, &type, &lb, &ub);
+    lpx_get_col_bnds(glpk_lp, column, &type, &lb, &ub);
 
     mpq_set_d(rational_lb, lb);
     mpq_set_d(rational_ub, ub);
@@ -824,10 +1024,10 @@ solve(char* file_name) {
   mpz_set_si(den_lcm, 1);
 
   mpq_init(objective[0]);
-  mpq_set_d(objective[0], lpx_get_obj_coef(lp, 0));
+  mpq_set_d(objective[0], lpx_get_obj_coef(glpk_lp, 0));
   for (i = 1; i <= dimension; ++i) {
     mpq_init(objective[i]);
-    mpq_set_d(objective[i], lpx_get_obj_coef(lp, i));
+    mpq_set_d(objective[i], lpx_get_obj_coef(glpk_lp, i));
     /* Update den_lcm. */
     mpz_lcm(den_lcm, den_lcm, mpq_denref(objective[i]));
   }
@@ -842,7 +1042,7 @@ solve(char* file_name) {
     ppl_Linear_Expression_add_to_coefficient(ppl_objective_le, i-1, ppl_coeff);
   }
 
-  if (verbose) {
+  if (verbosity >= 4) {
     fprintf(output_file, "Objective function:\n");
     ppl_io_fprint_Linear_Expression(output_file, ppl_objective_le);
   }
@@ -851,7 +1051,7 @@ solve(char* file_name) {
     mpq_clear(objective[i]);
   free(objective);
 
-  if (verbose) {
+  if (verbosity >= 4) {
     if (mpz_cmp_si(den_lcm, 1) != 0) {
       fprintf(output_file, ")/");
       mpz_out_str(output_file, 10, den_lcm);
@@ -862,21 +1062,24 @@ solve(char* file_name) {
 
   ppl_new_Coefficient(&optimum_n);
   ppl_new_Coefficient(&optimum_d);
-  ppl_new_Generator_zero_dim_point(&optimum_value);
+  ppl_new_Generator_zero_dim_point(&optimum_location);
 
   optimum_found = use_simplex
     ? solve_with_simplex(ppl_cs,
 			 ppl_objective_le,
 			 optimum_n,
 			 optimum_d,
-			 optimum_value)
+			 optimum_location)
     : solve_with_generators(ppl_cs,
 			    ppl_objective_le,
 			    optimum_n,
 			    optimum_d,
-			    optimum_value);
+			    optimum_location);
 
   ppl_delete_Linear_Expression(ppl_objective_le);
+
+  if (glpk_lp_problem_kind == LPX_MIP)
+      free(integer_variables);
 
   if (optimum_found) {
     mpq_init(optimum);
@@ -885,43 +1088,66 @@ solve(char* file_name) {
     ppl_Coefficient_to_mpz_t(optimum_d, tmp_z);
     mpz_mul(tmp_z, tmp_z, den_lcm);
     mpq_set_den(optimum, tmp_z);
-    fprintf(output_file, "Optimum value: %.10g\n", mpq_get_d(optimum));
+    if (verbosity == 1)
+      fprintf(output_file, "Optimized problem.\n");
+    if (verbosity >= 2)
+      fprintf(output_file, "Optimum value: %.10g\n", mpq_get_d(optimum));
+    if (verbosity >= 3) {
+      fprintf(output_file, "Optimum location:\n");
+      ppl_Generator_divisor(optimum_location, ppl_coeff);
+      ppl_Coefficient_to_mpz_t(ppl_coeff, tmp_z);
+      for (i = 0; i < dimension; ++i) {
+	mpz_set(mpq_denref(tmp1_q), tmp_z);
+	ppl_Generator_coefficient(optimum_location, i, ppl_coeff);
+	ppl_Coefficient_to_mpz_t(ppl_coeff, mpq_numref(tmp1_q));
+	ppl_io_fprint_variable(output_file, i);
+	fprintf(output_file, " = %.10g\n", mpq_get_d(tmp1_q));
+      }
+    }
+#ifndef NDEBUG
+    {
+      ppl_Polyhedron_t ph;
+      unsigned int relation;
+      ppl_new_C_Polyhedron_recycle_Constraint_System(&ph, ppl_cs_copy);
+      ppl_delete_Constraint_System(ppl_cs_copy);
+      relation = ppl_Polyhedron_relation_with_Generator(ph, optimum_location);
+      ppl_delete_Polyhedron(ph);
+      assert(relation == PPL_POLY_GEN_RELATION_SUBSUMES);
+    }
+#endif
+    maybe_check_results(PPL_MIP_PROBLEM_STATUS_OPTIMIZED,
+			mpq_get_d(optimum));
     mpq_clear(optimum);
-    fprintf(output_file, "Optimum location:\n");
-    ppl_Generator_divisor(optimum_value, ppl_coeff);
-    ppl_Coefficient_to_mpz_t(ppl_coeff, tmp_z);
-    for (i = 0; i < dimension; ++i) {
-      mpz_set(mpq_denref(tmp1_q), tmp_z);
-      ppl_Generator_coefficient(optimum_value, i, ppl_coeff);
-      ppl_Coefficient_to_mpz_t(ppl_coeff, mpq_numref(tmp1_q));
-      ppl_io_fprint_variable(output_file, i);
-      fprintf(output_file, " = %.10g\n", mpq_get_d(tmp1_q));
-    }
-    if (check_results) {
-      // TODO: currently checking only feasibility.
-      // Find a way to also check for optimality: probably the best
-      // thing to do is to use GLPK for that purpose.
-      check_feasibility(ppl_cs, optimum_value);
-    }
   }
 
   ppl_delete_Constraint_System(ppl_cs);
   ppl_delete_Coefficient(optimum_d);
   ppl_delete_Coefficient(optimum_n);
-  ppl_delete_Generator(optimum_value);
+  ppl_delete_Generator(optimum_location);
 
-  lpx_delete_prob(lp);
+  lpx_delete_prob(glpk_lp);
 }
 
 static void
 error_handler(enum ppl_enum_error_code code,
 	      const char* description) {
-  fatal("PPL error code %d\n%s", code, description);
+  if (output_argument)
+    fprintf(output_file, "PPL error code %d: %s\n", code, description);
+  fatal("PPL error code %d: %s", code, description);
 }
 
-#if !CXX_SUPPORTS_ATTRIBUTE_WEAK
+#if !PPL_CXX_SUPPORTS_ATTRIBUTE_WEAK
 void
 set_GMP_memory_allocation_functions(void) {
+}
+#endif
+
+#if defined(NDEBUG) && !defined(PPL_GLPK_HAS_GLP_TERM_OUT)
+static int
+glpk_message_interceptor(void* info, char* msg) {
+  (void) info;
+  (void) msg;
+  return 1;
 }
 #endif
 
@@ -941,6 +1167,20 @@ main(int argc, char* argv[]) {
   if (ppl_io_set_variable_output_function(variable_output_function) < 0)
     fatal("cannot install the custom variable output function");
 
+#ifdef NDEBUG
+#if defined(PPL_GLPK_HAS_GLP_TERM_OUT)
+  glp_term_out(GLP_OFF);
+#elif defined(PPL_GLPK_HAS_GLP_TERM_HOOK)
+  glp_term_hook(glpk_message_interceptor, 0);
+#elif defined(PPL_GLPK_HAS__GLP_LIB_PRINT_HOOK)
+  extern void _glp_lib_print_hook(int (*func)(void *info, char *buf),
+				  void *info);
+  _glp_lib_print_hook(glpk_message_interceptor, 0);
+#elif defined(PPL_GLPK_HAS_LIB_SET_PRINT_HOOK)
+  lib_set_print_hook(0, glpk_message_interceptor);
+#endif
+#endif
+
   /* Process command line options. */
   process_options(argc, argv);
 
@@ -956,8 +1196,15 @@ main(int argc, char* argv[]) {
   if (max_bytes_of_virtual_memory > 0)
     limit_virtual_memory(max_bytes_of_virtual_memory);
 
-  while (optind < argc)
+  while (optind < argc) {
+    if (check_results)
+      check_results_failed = 0;
+
     solve(argv[optind++]);
+
+    if (check_results && check_results_failed)
+      break;
+  }
 
   /* Finalize globals. */
   ppl_delete_Coefficient(ppl_coeff);
@@ -969,7 +1216,8 @@ main(int argc, char* argv[]) {
   if (output_argument)
     fclose(output_file);
 
-  my_exit(0);
+  my_exit((check_results && check_results_failed) ? 1 : 0);
 
+  /* This is just to avoid a compiler warning. */
   return 0;
 }

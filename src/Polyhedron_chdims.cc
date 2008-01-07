@@ -1,12 +1,12 @@
 /* Polyhedron class implementation
    (non-inline operators that may change the dimension of the vector space).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -21,9 +21,10 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
+#include <ppl-config.h>
 
 #include "Polyhedron.defs.hh"
+#include "Variables_Set.defs.hh"
 #include <cassert>
 
 #define BE_LAZY 1
@@ -33,8 +34,8 @@ namespace PPL = Parma_Polyhedra_Library;
 void
 PPL::Polyhedron::add_space_dimensions(Linear_System& sys1,
 				      Linear_System& sys2,
-				      Saturation_Matrix& sat1,
-				      Saturation_Matrix& sat2,
+				      Bit_Matrix& sat1,
+				      Bit_Matrix& sat2,
 				      dimension_type add_dim) {
   assert(sys1.topology() == sys2.topology());
   assert(sys1.num_columns() == sys2.num_columns());
@@ -205,7 +206,7 @@ PPL::Polyhedron::add_space_dimensions_and_project(dimension_type m) {
   }
 
   if (space_dim == 0) {
-    assert(status.test_zero_dim_univ() && gen_sys.num_rows() == 0);
+    assert(status.test_zero_dim_univ() && gen_sys.empty());
     // The system of generators for this polyhedron has only
     // the origin as a point.
     // In an NNC polyhedron, all points have to be accompanied
@@ -423,10 +424,8 @@ PPL::Polyhedron::remove_space_dimensions(const Variables_Set& to_be_removed) {
     return;
   }
 
-  // Dimension-compatibility check: the variable having
-  // maximum space dimension is the one occurring last in the set.
-  const dimension_type
-    min_space_dim = to_be_removed.rbegin()->space_dimension();
+  // Dimension-compatibility check.
+  const dimension_type min_space_dim = to_be_removed.space_dimension();
   if (space_dim < min_space_dim)
     throw_dimension_incompatible("remove_space_dimensions(vs)", min_space_dim);
 
@@ -458,10 +457,10 @@ PPL::Polyhedron::remove_space_dimensions(const Variables_Set& to_be_removed) {
   // by shifting left those columns that will not be removed.
   Variables_Set::const_iterator tbr = to_be_removed.begin();
   Variables_Set::const_iterator tbr_end = to_be_removed.end();
-  dimension_type dst_col = tbr->space_dimension();
+  dimension_type dst_col = *tbr + 1;
   dimension_type src_col = dst_col + 1;
   for (++tbr; tbr != tbr_end; ++tbr) {
-    dimension_type tbr_col = tbr->space_dimension();
+    const dimension_type tbr_col = *tbr + 1;
     // All columns in between are moved to the left.
     while (src_col < tbr_col)
       gen_sys.Matrix::swap_columns(dst_col++, src_col++);
@@ -616,20 +615,20 @@ PPL::Polyhedron::fold_space_dimensions(const Variables_Set& to_be_folded,
     return;
 
   // All variables in `to_be_folded' should be dimensions of the polyhedron.
-  if (to_be_folded.rbegin()->space_dimension() > space_dim)
+  if (to_be_folded.space_dimension() > space_dim)
     throw_dimension_incompatible("fold_space_dimensions(tbf, v)",
-				 "*tbf.rbegin()",
-				 *to_be_folded.rbegin());
+				 "tbf.space_dimension()",
+				 to_be_folded.space_dimension());
 
-  // Moreover, `var' should not occur in `to_be_folded'.
-  if (to_be_folded.find(var) != to_be_folded.end())
+  // Moreover, `var.id()' should not occur in `to_be_folded'.
+  if (to_be_folded.find(var.id()) != to_be_folded.end())
     throw_invalid_argument("fold_space_dimensions(tbf, v)",
 			   "v should not occur in tbf");
 
   for (Variables_Set::const_iterator i = to_be_folded.begin(),
 	 tbf_end = to_be_folded.end(); i != tbf_end; ++i) {
     Polyhedron copy = *this;
-    copy.affine_image(var, Linear_Expression(*i));
+    copy.affine_image(var, Linear_Expression(Variable(*i)));
     poly_hull_assign(copy);
   }
   remove_space_dimensions(to_be_folded);

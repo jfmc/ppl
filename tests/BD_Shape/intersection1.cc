@@ -1,11 +1,11 @@
 /* Test BD_Shape::intersection_assign().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -47,7 +47,7 @@ test01() {
   known_result.add_constraint(-y <= -2);
   known_result.add_constraint(x - y <= 4);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.intersection_assign(bd2) ***");
 
@@ -82,7 +82,7 @@ test02() {
   known_result.add_constraint(z - x <= 0);
   known_result.add_constraint(y - z <= -1);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.intersection_assign(bd2) ***");
 
@@ -120,7 +120,7 @@ test03() {
   known_result.add_constraint(y - x <= -1);
   known_result.add_constraint(x - y <= 1);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.intersection_assign(bd2) ***");
 
@@ -152,7 +152,7 @@ test04() {
 
   BD_Shape<mpq_class> known_result(3, EMPTY);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.intersection_assign(bd2) ***");
 
@@ -184,7 +184,7 @@ test05() {
 
   BD_Shape<mpq_class> known_result(3, EMPTY);
 
-  bool ok = (BD_Shape<mpq_class>(bd2) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd2) == known_result);
 
   print_constraints(bd2, "*** bd2.intersection_assign(bd1) ***");
 
@@ -203,7 +203,7 @@ test06() {
 
   BD_Shape<mpq_class> known_result;
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.intersection_assign(bd2) ***");
 
@@ -230,7 +230,7 @@ test07() {
 
   bd1.intersection_assign(bd2);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.intersection_assign(bd2) ***");
 
@@ -256,7 +256,7 @@ test08() {
 
   bd1.intersection_assign_and_minimize(bd2);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.intersection_assign(bd2) ***");
 
@@ -274,9 +274,9 @@ test09() {
   TBD_Shape bd2(3);
 
   try {
-    // This is an invalid use of function
+    // This is an invalid use of method
     // BD_Shape::intersection_assign_and_minimize(bd2): it is illegal
-    // to apply this function to two polyhedra of different dimensions.
+    // to apply this method to two polyhedra of different dimensions.
     bd1.intersection_assign_and_minimize(bd2);
   }
   catch (std::invalid_argument& e) {
@@ -294,9 +294,9 @@ test10() {
   TBD_Shape bd2(15);
 
   try {
-    // This is an invalid use of function
+    // This is an invalid use of method
     // BD_Shape::intersection_assign(bd2): it is illegal
-    // to apply this function to two polyhedra of different dimensions.
+    // to apply this method to two polyhedra of different dimensions.
     bd1.intersection_assign(bd2);
   }
   catch (std::invalid_argument& e) {
@@ -306,6 +306,44 @@ test10() {
   catch (...) {
   }
   return false;
+}
+
+bool
+test11() {
+  TBD_Shape bd1(3, EMPTY);
+  TBD_Shape bd2(3);
+
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
+
+  bd1.intersection_assign(bd2);
+
+  BD_Shape<mpq_class> known_result(3, EMPTY);
+
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+
+  print_constraints(bd1, "*** bd1.intersection_assign(bd2) ***");
+
+  return ok;
+}
+
+bool
+test12() {
+  TBD_Shape bd1(3);
+  TBD_Shape bd2(3, EMPTY);
+
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
+
+  bd1.intersection_assign(bd2);
+
+  BD_Shape<mpq_class> known_result(3, EMPTY);
+
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+
+  print_constraints(bd1, "*** bd1.intersection_assign(bd2) ***");
+
+  return ok;
 }
 
 } // namespace
@@ -321,4 +359,6 @@ BEGIN_MAIN
   DO_TEST(test08);
   DO_TEST(test09);
   DO_TEST(test10);
+  DO_TEST(test11);
+  DO_TEST(test12);
 END_MAIN

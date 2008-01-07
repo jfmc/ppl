@@ -1,11 +1,11 @@
 /* Linear_Expression class implementation (non-inline functions).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -21,7 +21,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 
-#include <config.h>
+#include <ppl-config.h>
 
 #include "Linear_Expression.defs.hh"
 #include "Constraint.defs.hh"
@@ -55,13 +55,27 @@ PPL::Linear_Expression::Linear_Expression(const Grid_Generator& g)
     e[i] = g[i];
 }
 
+const PPL::Linear_Expression* PPL::Linear_Expression::zero_p = 0;
+
+void
+PPL::Linear_Expression::initialize() {
+  assert(zero_p == 0);
+  zero_p = new Linear_Expression(Coefficient_zero());
+}
+
+void
+PPL::Linear_Expression::finalize() {
+  assert(zero_p != 0);
+  delete zero_p;
+  zero_p = 0;
+}
+
 PPL::Linear_Expression::Linear_Expression(const Congruence& cg)
   : Linear_Row(cg.space_dimension() + 1, Linear_Row::Flags()) {
   Linear_Expression& e = *this;
   for (dimension_type i = size(); i-- > 0; )
     e[i] = cg[i];
 }
-
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression
@@ -246,17 +260,17 @@ PPL::operator*=(Linear_Expression& e, Coefficient_traits::const_reference n) {
 
 bool
 PPL::Linear_Expression::OK() const {
-  dimension_type sz = size();
-  return Linear_Row::OK(sz, sz);
+  return Linear_Row::OK();
 }
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Linear_Expression& e) {
   const dimension_type num_variables = e.space_dimension();
+  TEMP_INTEGER(ev);
   bool first = true;
   for (dimension_type v = 0; v < num_variables; ++v) {
-    Coefficient ev = e[v+1];
+    ev = e[v+1];
     if (ev != 0) {
       if (!first) {
 	if (ev > 0)
@@ -276,7 +290,8 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Linear_Expression& e) {
     }
   }
   // Inhomogeneous term.
-  Coefficient it = e[0];
+  TEMP_INTEGER(it);
+  it = e[0];
   if (it != 0) {
     if (!first) {
       if (it > 0)

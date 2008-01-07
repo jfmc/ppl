@@ -1,11 +1,11 @@
-/* Test Polyhedra_Powerset<PH>::geometrically_covers().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Test Pointset_Powerset<PH>::geometrically_covers().
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -37,11 +37,11 @@ test01() {
   cs3.insert(x <= 5);
   C_Polyhedron ph1(cs1), ph2(cs2), ph3(cs3);
 
-  Polyhedra_Powerset<C_Polyhedron> ps12(1, EMPTY);
+  Pointset_Powerset<C_Polyhedron> ps12(1, EMPTY);
   ps12.add_disjunct(ph1);
   ps12.add_disjunct(ph2);
 
-  Polyhedra_Powerset<C_Polyhedron> ps3(1, EMPTY);
+  Pointset_Powerset<C_Polyhedron> ps3(1, EMPTY);
   ps3.add_disjunct(ph3);
 
   bool ok = ps12.geometrically_covers(ps3);

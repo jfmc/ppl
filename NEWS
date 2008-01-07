@@ -4,20 +4,139 @@ Parma Polyhedra Library NEWS -- history of user-visible changes
 
 
 --------------------------------------------------------------------------
-NEWS for version 0.10  (released date to be decided)
+NEWS for version 0.10  (release date to be decided)
 --------------------------------------------------------------------------
 
 New and Changed Features
 ========================
 
-o  ...
+o  The Parma Polyhedra Library is now released under the terms of the
+   version 3 (or later) of the GNU General Public License.
+
+o  The new class Octagonal_Shape provides an implementation of the domain
+   of octagonal shapes (including a provably correct widening) as proposed
+   by Roberto Bagnara, Patricia Hill, Elena Mazzi and Enea Zaffanella in
+   their SAS 2005 paper.
+
+o  The class LP_Problem has been renamed MIP_Problem and now supports
+   the solution of Mixed Integer (Linear) Programming problems. Also
+   added support for the incremental solution of MIP problems: it is now
+   possible to add new space dimensions or new constraints to the
+   feasible region, as well as change the objective function and the
+   optimization mode, while still exploiting some of the computational
+   work done before these changes. See the documentation of class
+   MIP_Problem for a detailed description of the public interface.
+
+o  Users of the C++ interface of the library can now decide to disable
+   the automatic initialization mechanism of the PPL.  To do so, the
+   preprocessor symbol PPL_NO_AUTOMATIC_INITIALIZATION should be defined
+   before including the `ppl.hh' header file.  When automatic initialization
+   is disabled it is imperative to explicitly call the new function
+
+     void Parma_Polyhedra_Library::initialize()
+
+   before using the library.  The new function
+
+     void Parma_Polyhedra_Library::finalize() and
+
+   should also be called (to release a small amount of memory) when
+   done with the library.
+
+o  In the C interface it is no longer an error to call ppl_initialize()
+   or ppl_finalize() multiple times (this matches the behavior of the
+   other interfaces).
+
+o  In the Octagonal_Shape, BD_Shape and Box domains:
+   add_congruences_and_minimize(Congruence_System cgs)
+   add_recycled_congruences(Congruence_System cgs)
+   add_recycled_congruences_and_minimize(Congruence_System& cgs)
+   widening_assign ...
+
+o  In the Octagonal_Shape domain:
+   add_recycled_constraints(Congruence_System cgs)
+   add_recycled_constraints_and_minimize(Congruence_System& cgs)
+   constructor from Box ...
+
+o  A new abstraction called Box has been added that ...
+
+o  can_recycle_constraint_systems()
+   can_recycle_congruence_systems() ...
+
+o  constrains(Variable var) ...
+
+o  contains_integer_point() ...
+
+o  All PPL semantic objects now provide the method
+
+     int32_t hash_code() const
+
+   returning a 32-bit hash code for *this.  If x and y are such that
+   x == y evaluates to true, so does x.hash_code() == y.hash_code().
+
+o  The method relations_with(Congruence) has been added to the Polyhedron
+   class for compatibility with the Grid class methods.
+
+o  Partially_Reduced_Product ...
+
+o  Ask_Tell ...
+
+o  Pointset_Ask_Tell ...
+
+o  Box ...
+
+o  shrink_bounding_box has gone ...
+
+o  As all PPL semantic objects can now be constructed from boxes,
+   the constructors
+
+     template <typename Box> C_Polyhedron(const Box&, From_Bounding_Box),
+     template <typename Box> NNC_Polyhedron(const Box&, From_Bounding_Box),
+     template <typename Box> Grid(const Box&, From_Bounding_Box)
+
+   have been removed.
+
+o  The class Polyhedra_Powerset has been renamed Pointset_Powerset,
+   since it can be applied to non-polyhedral abstractions, such as
+   the one offered by the Grid class.
+
+o  The new methods
+
+     bool Constraint_System::empty() const
+     bool Generator_System::empty() const
+     bool Congruence_System::empty() const
+     bool Grid_Generator_System::empty() const
+
+  return true if and only if the system in question is empty (i.e.,
+  it has no constraints, generators, congruences or grid-generators,
+  respectively).
+
+o  The `ppl.hh' header file no longer defines macros not prefixed
+   by "PPL_".
+
+o  All identifiers containing the strings `less_than_or_equal' or
+   `greater_than_or_equal', any case, have been renamed so as to contain
+   `less_or_equal' or `greater_or_equal', respectively.
+
+o  Added constructors so that objects of classes C_Polyhedron,
+   NNC_Polyhedron, Grid, Box, BD_Shape and Octagonal_Shape are always
+   constructible from one another.
 
 
 Bugfixes
 ========
 
-o  ...
+o  Fixed bugs that prevented building the library on systems not supported
+   by the Parma Watchdog Library or when the `--disable-watchdog' configure
+   was used.
 
+o  Fixed a bug in Grid::constraints() and Grid::minimized_constraints()
+   that caused an internal assertion to fail when the grid had 0 space
+   dimensions.
+
+o  Fixed a bug in Linear_System::insert(const Linear_Row&) whereby a
+   wrong result could have been obtained when inserting a not necessarily
+   closed constraint/generator in an empty system having a higher space
+   dimension.
 
 --------------------------------------------------------------------------
 NEWS for version 0.9  (released on March 12, 2006)
@@ -164,7 +283,7 @@ o  Added Polyhedron methods difference_assign() and join_assign(),
 
 o  The helper function widen_fun_ref() building a limited widening
    function is now templatic even on the second argument (i.e., the
-   limiting constraint system). The templatic widening method
+   limiting constraint system). The template widening method
 
      Polyhedra_Powerset<PH>::BHZ03_widening_assign()
 
@@ -291,7 +410,7 @@ o  New functions added to the C interface:
    allow C applications to obtain information about the Coefficient
    integer numerical type.
 
-   The new Prolog interface predicates ppl_Coeffient_is_bounded/0,
+   The new Prolog interface predicates ppl_Coefficient_is_bounded/0,
    ppl_Coefficient_max/1 and ppl_Coefficient_min/1 provide the same
    functionality.
 
@@ -592,7 +711,7 @@ NEWS for version 0.6  (released on August 18, 2004)
 New and Changed Features
 ========================
 
-o  New templatic classes Determinate, PowerSet, and Polyhedra_PowerSet.
+o  New template classes Determinate, PowerSet, and Polyhedra_PowerSet.
    The first two classes realize, in a completely generic way, the
    determinate and powerset constructions described by Roberto Bagnara
    in his 1998, Science of Computer Programming paper.  The third class
@@ -807,7 +926,7 @@ o  Timeout computation facilities have been added to the Prolog interfaces:
    ppl_timeout_exception_atom/1, ppl_set_timeout/1, ppl_reset_timeout/0.
 
 o  Many efficiency improvements have been achieved.  Part of these have
-   been obtained by increasing the degree of "lazyness" of the library.
+   been obtained by increasing the degree of "laziness" of the library.
 
 o  Many portability and standard-conformance improvements: the library
    can now be compiled with GNU g++, Intel C++ Compiler 7.0 for Linux,
@@ -995,7 +1114,7 @@ o  Added support for timeout-guarded operations.  It is now possible
 o  The methods named convex_hull_* and convex_difference_*
    have been renamed poly_hull_* and poly_difference_*.
 
-o  All methods named *_and_minimize() now return a boolean
+o  All methods named *_and_minimize() now return a Boolean
    flag that is false if the result is empty.
 
 o  All method and variable names containing the word "vertex"
@@ -1022,10 +1141,10 @@ o  The methods Polyhedron::widening_assign() and
    of the widenings introduced in
 
      N. Halbwachs.
-     Détermination Automatique de Relations Linéaires
-     Vérifiées par les Variables d'un Programme.
-     Thèse de 3ème cicle d'informatique,
-     Université scientifique et médicale de Grenoble,
+     DÃ©termination Automatique de Relations LinÃ©aires
+     VÃ©rifiÃ©es par les Variables d'un Programme.
+     ThÃ¨se de 3Ã¨me cicle d'informatique,
+     UniversitÃ© scientifique et mÃ©dicale de Grenoble,
      Grenoble, France, March 1979.
 
    and described in
@@ -1058,7 +1177,7 @@ NEWS for version 0.3 (released on February 26, 2002)
 New Features
 ============
 
-o  The library has been ported under libtool: it is now possible
+o  The library has been ported under Libtool: it is now possible
    to build dynamic libraries as well.
 
 o  We now use the integer C++ class of GMP to represent the
@@ -1091,7 +1210,7 @@ o  Fixed Polyhedron::satisfies(const Constraint&) and
    Polyhedron::affine_image().
 
 o  Polyhedron::limited_widening_assign(const Polyhedron&, ConSys&)
-   was erroneously returning a (random) boolean: it is now a void
+   was erroneously returning a (random) Boolean: it is now a void
    method.
 
 

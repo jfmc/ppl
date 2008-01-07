@@ -1,11 +1,11 @@
 /* Grid class implementation: simplify().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -20,18 +20,12 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
+#include <ppl-config.h>
 #include <cassert>
 
 #include "Grid.defs.hh"
 
 namespace Parma_Polyhedra_Library {
-
-#define TRACE(x)
-//#define TRACE(x) x
-
-TRACE(using std::endl;)
-TRACE(using std::cerr;)
 
 #ifdef STRONG_REDUCTION
 template <typename M, typename R>
@@ -45,7 +39,7 @@ Grid::reduce_reduced(M& sys,
 		     const bool generators) {
   R& pivot = sys[pivot_index];
 
-  Coefficient_traits::const_reference pivot_dim = pivot[dim];
+  const Coefficient& pivot_dim = pivot[dim];
 
   if (pivot_dim == 0)
     return;
@@ -59,7 +53,8 @@ Grid::reduce_reduced(M& sys,
     line_or_equality = LINE;
     virtual_kind = GEN_VIRTUAL;
     jump = -1;
-  } else {
+  }
+  else {
     line_or_equality = EQUALITY;
     virtual_kind = CON_VIRTUAL;
     jump = 1;
@@ -80,7 +75,7 @@ Grid::reduce_reduced(M& sys,
 	    && dim_kinds[kinds_index] == PARAMETER)) {
       R& row = sys[row_index];
 
-      Coefficient_traits::const_reference row_dim = row[dim];
+      const Coefficient& row_dim = row[dim];
       // num_rows_to_subtract may be positive or negative.
       num_rows_to_subtract = row_dim / pivot_dim;
 
@@ -109,12 +104,10 @@ Grid::reduce_reduced(M& sys,
 }
 #endif // STRONG_REDUCTION
 
-inline void
+void
 Grid::reduce_line_with_line(Grid_Generator& row, Grid_Generator& pivot,
 			    dimension_type column) {
-  TRACE(cerr << "reduce_line_with_line" << endl);
-
-  Coefficient_traits::const_reference pivot_column = pivot[column];
+  const Coefficient& pivot_column = pivot[column];
   Coefficient& row_column = row[column];
   TEMP_INTEGER(reduced_row_col);
   // Use reduced_row_col temporarily to hold the gcd.
@@ -137,15 +130,14 @@ Grid::reduce_line_with_line(Grid_Generator& row, Grid_Generator& pivot,
   }
 }
 
-inline void
+void
 Grid::reduce_equality_with_equality(Congruence& row,
 				    const Congruence& pivot,
 				    const dimension_type column) {
-  TRACE(cerr << "reduce_equality_with_equality" << endl);
   // Assume two equalities.
   assert(row.modulus() == 0 && pivot.modulus() == 0);
 
-  Coefficient_traits::const_reference pivot_column = pivot[column];
+  const Coefficient& pivot_column = pivot[column];
   Coefficient& row_column = row[column];
   TEMP_INTEGER(reduced_row_col);
   // Use reduced_row_col temporarily to hold the gcd.
@@ -177,21 +169,17 @@ Grid::reduce_pc_with_pc(R& row, R& pivot,
   TEMP_INTEGER(t);
   TEMP_INTEGER(reduced_row_col);
   // Use reduced_row_col temporarily to hold the gcd.
-  gcdext_assign(reduced_row_col, pivot_column, row_column, s, t);
+  gcdext_assign(reduced_row_col, s, t, pivot_column, row_column);
   // Now pivot[column] * s + row[column] * t == gcd.
-  TRACE(cerr << "  gcd " << reduced_row_col
-	     << ", s " << s << ", t " << t << endl);
 
   // Store the reduced ratio between pivot[column] and row[column].
   TEMP_INTEGER(reduced_pivot_col);
   exact_div_assign(reduced_pivot_col, pivot_column, reduced_row_col);
   pivot_column = reduced_row_col /* gcd */;
   exact_div_assign(reduced_row_col, row_column, reduced_row_col);
-  TRACE(cerr << "  reduced_pivot_col " << reduced_pivot_col
-	     << ", reduced_row_col " << reduced_row_col << endl);
 
   // Multiply row, then subtract from it a multiple of pivot such that
-  // the result in row[column] is zero.  Afterwards, multiply pivot,
+  // the result in row[column] is zero.  Afterward, multiply pivot,
   // then add to it a (possibly negative) multiple of row such that
   // the result in pivot[column] is the smallest possible positive
   // integer.
@@ -217,9 +205,8 @@ Grid::reduce_parameter_with_line(Grid_Generator& row,
 				 Grid_Generator_System& sys) {
   // Very similar to reduce_congruence_with_equality below.  Any
   // change here may be needed there too.
-  TRACE(cerr << "reduce_parameter_with_line" << endl);
 
-  Coefficient_traits::const_reference pivot_column = pivot[column];
+  const Coefficient& pivot_column = pivot[column];
   Coefficient& row_column = row[column];
 
   // Subtract one to allow for the parameter divisor column
@@ -253,7 +240,7 @@ Grid::reduce_parameter_with_line(Grid_Generator& row,
     neg_assign(reduced_row_col);
   }
 #endif
-  for (dimension_type index = sys.num_generators(); index-- > 0; ) {
+  for (dimension_type index = sys.num_rows(); index-- > 0; ) {
     Grid_Generator& gen = sys[index];
     if (gen.is_parameter_or_point())
       for (dimension_type col = num_columns; col-- > 0; )
@@ -273,10 +260,9 @@ Grid::reduce_congruence_with_equality(Congruence& row,
 				      Congruence_System& sys) {
   // Very similar to reduce_parameter_with_line above.  Any change
   // here may be needed there too.
-  TRACE(cerr << "reduce_congruence_with_equality" << endl);
   assert(row.modulus() > 0 && pivot.modulus() == 0);
 
-  Coefficient_traits::const_reference pivot_column = pivot[column];
+  const Coefficient& pivot_column = pivot[column];
   Coefficient& row_column = row[column];
 
   dimension_type num_columns = sys.num_columns();
@@ -338,10 +324,7 @@ Grid::rows_are_zero(M& system, dimension_type first,
 
 void
 Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
-  TRACE(cerr << "==== simplify (reduce) gs:" << endl);
-  TRACE(cerr << "sys:" << endl);
-  TRACE(sys.ascii_dump(cerr));
-  assert(sys.num_generators() > 0);
+  assert(!sys.empty());
   // For reduce_pc_with_pc.
   assert(sys.num_columns() > 0);
 
@@ -354,8 +337,7 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
   if (dim_kinds.size() != num_columns)
     dim_kinds.resize(num_columns);
 
-  const dimension_type num_rows = sys.num_generators();
-  TRACE(cerr << "  num_rows " << num_rows << endl);
+  const dimension_type num_rows = sys.num_rows();
 
   // For each dimension `dim' move or construct a row into position
   // `pivot_index' such that the row has zero in all elements
@@ -363,25 +345,16 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
   // `dim'.
   dimension_type pivot_index = 0;
   for (dimension_type dim = 0; dim < num_columns; ++dim) {
-    TRACE(cerr << "dim " << dim << endl);
-    trace_dim_kinds("  ", dim_kinds);
-
     // Consider the pivot and following rows.
     dimension_type row_index = pivot_index;
-    TRACE(cerr << "  row_index " << row_index << endl);
 
     // Move down over rows which have zero in column `dim'.
-    while (row_index < num_rows && sys[row_index][dim] == 0) {
-      TRACE(cerr << "  .");
+    while (row_index < num_rows && sys[row_index][dim] == 0)
       ++row_index;
-    }
-    TRACE(cerr << endl);
 
-    if (row_index == num_rows) {
+    if (row_index == num_rows)
       // Element in column `dim' is zero in all rows from the pivot.
-      TRACE(cerr << "  Marking virtual row" << endl);
       dim_kinds[dim] = GEN_VIRTUAL;
-    }
     else {
       if (row_index != pivot_index)
 	std::swap(sys[row_index], sys[pivot_index]);
@@ -390,10 +363,8 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
 
       // Change the matrix so that the value at `dim' in every row
       // following `pivot_index' is 0, leaving an equivalent grid.
-      TRACE(cerr << "  Reducing all following rows" << endl);
       while (row_index < num_rows - 1) {
 	++row_index;
-	TRACE(cerr << "    row_index " << row_index << endl);
 
 	Grid_Generator& row = sys[row_index];
 
@@ -431,8 +402,7 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
       // Ensure a positive follows the leading zeros.
       if (pivot[dim] < 0)
 	pivot.negate(dim, num_columns - 1);
-      TRACE(cerr << "  rr pivot_index " << pivot_index << endl);
-      TRACE(sys.ascii_dump(cerr));
+
       // Factor this row out of the preceding rows.
       reduce_reduced<Grid_Generator_System, Grid_Generator>
 	(sys, dim, pivot_index, dim, num_columns - 1, dim_kinds);
@@ -440,20 +410,17 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
 
       ++pivot_index;
     }
-    TRACE(sys.ascii_dump(cerr));
   }
-  trace_dim_kinds("gs simpl end ", dim_kinds);
 
   // Clip any zero rows from the end of the matrix.
   if (num_rows > pivot_index) {
-    TRACE(cerr << "clipping trailing" << endl);
 #ifndef NDEBUG
-    const bool ret = rows_are_zero<Grid_Generator_System,Grid_Generator>
+    const bool ret = rows_are_zero<Grid_Generator_System, Grid_Generator>
       (sys,
        // index of first
        pivot_index,
        // index of last
-       sys.num_generators() - 1,
+       sys.num_rows() - 1,
        // row size
        sys.num_columns() - 1);
     assert(ret == true);
@@ -465,9 +432,8 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
 
   // Ensure that the parameter divisors are the same as the system
   // divisor.
-  TRACE(cerr << "updating param divisors" << endl);
-  Coefficient_traits::const_reference system_divisor = sys[0][0];
-  for (dimension_type row = sys.num_generators() - 1,
+  const Coefficient& system_divisor = sys[0][0];
+  for (dimension_type row = sys.num_rows() - 1,
 	 dim = sys.num_columns() - 2;
        dim > 0; --dim)
     switch (dim_kinds[dim]) {
@@ -480,15 +446,10 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
     }
 
   assert(sys.OK());
-
-  TRACE(cerr << "---- simplify (reduce) gs done." << endl);
 }
 
 bool
 Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
-  TRACE(cerr << "======== simplify (reduce) cgs:" << endl);
-  TRACE(cerr << "sys:" << endl);
-  TRACE(sys.ascii_dump(cerr));
   assert(sys.num_columns() > 2);
 
   // Changes here may also be required in the generator version above.
@@ -503,7 +464,6 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
     dim_kinds.resize(num_columns);
 
   const dimension_type num_rows = sys.num_rows();
-  TRACE(cerr << "  num_rows " << num_rows << endl);
 
   // For each dimension `dim' move or construct a row into position
   // `pivot_index' such that the row has a value of zero in all
@@ -511,26 +471,17 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
   // `dim'.
   dimension_type pivot_index = 0;
   for (dimension_type dim = num_columns; dim-- > 0; ) {
-    TRACE(cerr << "dim " << dim << endl);
-    trace_dim_kinds("  ", dim_kinds);
-
     // Consider the pivot and following rows.
     dimension_type row_index = pivot_index;
-    TRACE(cerr << "  row_index " << row_index << endl);
 
     // Move down over rows which have zero in column `dim'.
-    while (row_index < num_rows && sys[row_index][dim] == 0) {
-      TRACE(cerr << "  .");
+    while (row_index < num_rows && sys[row_index][dim] == 0)
       ++row_index;
-    }
-    TRACE(cerr << endl);
 
-    if (row_index == num_rows) {
+    if (row_index == num_rows)
       // Element in column `dim' is zero in all rows from the pivot,
       // or `sys' is empty of rows.
-      TRACE(cerr << "  Marking virtual row" << endl);
       dim_kinds[dim] = CON_VIRTUAL;
-    }
     else {
       // row_index != num_rows
       if (row_index != pivot_index)
@@ -540,10 +491,8 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
 
       // Change the matrix so that the value at `dim' in every row
       // following `pivot_index' is 0, leaving an equivalent grid.
-      TRACE(cerr << "  Reducing all following rows" << endl);
       while (row_index < num_rows - 1) {
 	++row_index;
-	TRACE(cerr << "    row_index " << row_index << endl);
 
 	Congruence& row = sys[row_index];
 
@@ -587,7 +536,6 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
 #endif
       ++pivot_index;
     }
-    TRACE(sys.ascii_dump(cerr));
   } // end for (dimension_type dim = num_columns; dim-- > 0; )
 
   // For clearer naming.
@@ -615,9 +563,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
       std::swap(sys.rows[0], sys.rows.back());
       sys.erase_to_end(1);
 
-      trace_dim_kinds("cgs simpl end ", dim_kinds);
       assert(sys.OK());
-      TRACE(cerr << "---- simplify (reduce) cgs done (empty)." << endl);
       return true;
     }
   }
@@ -635,9 +581,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
       cg[num_columns] = 1;
       cg[0] = 1;
 
-      trace_dim_kinds("cgs simpl end ", dim_kinds);
       assert(sys.OK());
-      TRACE(cerr << "---- simplify (reduce) cgs done (universe)." << endl);
       return false;
     }
     sys[0][num_columns] = 1;
@@ -648,9 +592,8 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
 
   // Clip any zero rows from the end of the matrix.
   if (num_rows > 1 && num_rows > reduced_num_rows) {
-    TRACE(cerr << "clipping trailing" << endl);
 #ifndef NDEBUG
-    const bool ret = rows_are_zero<Congruence_System,Congruence>
+    const bool ret = rows_are_zero<Congruence_System, Congruence>
       (sys,
        // index of first
        reduced_num_rows,
@@ -700,12 +643,8 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
     (sys, 0, reduced_num_rows - 1, 0, 0, dim_kinds, false);
 #endif
 
-  trace_dim_kinds("cgs simpl end ", dim_kinds);
   assert(sys.OK());
-  TRACE(cerr << "---- simplify (reduce) cgs done." << endl);
   return false;
 }
-
-#undef TRACE
 
 } // namespace Parma_Polyhedra_Library

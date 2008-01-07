@@ -1,11 +1,11 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
 # The PPL is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2 of the License, or (at your
+# Free Software Foundation; either version 3 of the License, or (at your
 # option) any later version.
 #
 # The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -22,23 +22,30 @@
 
 # M4 macro files to be used by the client applications with Autoconf.
 m4datadir = $(datadir)/aclocal
-m4data_DATA = ppl.m4
+m4data_DATA = ppl.m4 ppl_c.m4
 
 # M4 macro files for internal use.
 m4macros = \
+ac_check_classpath.m4 \
 ac_check_fpu_control.m4 \
 ac_check_gmp.m4 \
 ac_check_sicstus_prolog.m4 \
 ac_check_swi_prolog.m4 \
 ac_check_xsb_prolog.m4 \
 ac_cxx_attribute_weak.m4 \
+ac_cxx_proper_long_double.m4 \
 ac_cxx_double_binary_format.m4 \
 ac_cxx_flexible_arrays.m4 \
 ac_cxx_float_binary_format.m4 \
 ac_cxx_long_double_binary_format.m4 \
+ac_cxx_remainder_bug.m4 \
+ac_prog_jar.m4 \
+ac_prog_java.m4 \
+ac_prog_javac.m4 \
+ac_prog_javah.m4 \
+ax_prefix_config_h.m4 \
 lib-ld.m4 \
 lib-link.m4 \
 lib-prefix.m4
 
 EXTRA_DIST = $(m4macros) $(m4data_DATA)
-

@@ -1,0 +1,36 @@
+The GNU Prolog interface to the PPL is available both as a ``PPL
+enhanced'' GNU Prolog interpreter and as a library that can be linked
+to GNU Prolog programs.  Only GNU Prolog version 1.2.19 and later
+versions are supported.
+
+So that it can be used with the GNU Prolog PPL interface (and, for
+that matter, with any foreign code), the GNU Prolog installation must
+be configured with the `--disable-regs' option.
+
+
+The `ppl_gprolog' Executable
+----------------------------
+
+The `ppl_gprolog' executable is simply the GNU Prolog interpreter with
+the Parma Polyhedra Library linked in.  The only thing you should do
+to use the library is to call `ppl_initialize/0' before any other PPL
+predicate and to call `ppl_finalize/0' when you are done with the
+library.
+
+
+Linking the Library To GNU Prolog Programs
+------------------------------------------
+
+In order to allow linking GNU Prolog programs to the PPL, the
+following files are installed in the directory `<prefix>/lib/ppl',
+where <prefix> is the root of your installation (`/usr' or
+`/usr/local' in most cases): `ppl_gprolog.pl' contains the required
+foreign declarations; `libppl_gprolog.*' contain the executable code
+for the GNU Prolog interface in various formats (static library,
+shared library, libtool library).  If your GNU Prolog program is
+constituted by, say, `source1.pl' and `source2.pl' and you want to
+create the executable `myprog', your compilation command may look like
+
+    gplc -o myprog <prefix>/lib/ppl/ppl_gprolog.pl source1.pl source2.pl \
+      -L '-L<prefix>/lib/ppl -lppl_gprolog -L<prefix>/lib \
+      -lppl -lgmpxx -lgmp -lstdc++'

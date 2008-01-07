@@ -1,11 +1,11 @@
 /* IEC 559 floating point format related functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -24,10 +24,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Float_inlines_hh 1
 
 #include <climits>
-#ifdef HAVE_STDINT_H
+#ifdef PPL_HAVE_STDINT_H
 #include <stdint.h>
 #endif
-#ifdef HAVE_INTTYPES_H
+#ifdef PPL_HAVE_INTTYPES_H
 #include <inttypes.h>
 #endif
 
@@ -334,7 +334,7 @@ float_ieee754_quad::build(bool negative, mpz_t mantissa, int exponent) {
     << (MANTISSA_BITS - 64);
 }
 
-#ifdef CXX_FLOAT_BINARY_FORMAT
+#ifdef PPL_CXX_FLOAT_BINARY_FORMAT
 inline
 Float<float>::Float() {
 }
@@ -350,7 +350,7 @@ Float<float>::value() {
 }
 #endif
 
-#ifdef CXX_DOUBLE_BINARY_FORMAT
+#ifdef PPL_CXX_DOUBLE_BINARY_FORMAT
 inline
 Float<double>::Float() {
 }
@@ -366,7 +366,7 @@ Float<double>::value() {
 }
 #endif
 
-#ifdef CXX_LONG_DOUBLE_BINARY_FORMAT
+#ifdef PPL_CXX_LONG_DOUBLE_BINARY_FORMAT
 inline
 Float<long double>::Float() {
 }

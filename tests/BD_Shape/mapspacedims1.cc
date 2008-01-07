@@ -1,11 +1,11 @@
 /* Test BD_Shape::map_space_dimensions().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -105,6 +105,7 @@ test04() {
   print_function(function, "*** function ***");
   print_constraints(bd1, "*** bd1 ***");
 
+  cs = bd1.minimized_constraints();
   bd1.map_space_dimensions(function);
 
   BD_Shape<mpq_class> known_result(2);
@@ -209,7 +210,7 @@ test07() {
   known_result.add_constraint(y <= 1);
   known_result.add_constraint(x - y <= 3);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd, "*** bd.map_space_dimension(function) ***");
 
@@ -269,7 +270,7 @@ test09() {
 
   BD_Shape<mpq_class> known_result(0);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd, "*** bd.map_space_dimension(function) ***");
 

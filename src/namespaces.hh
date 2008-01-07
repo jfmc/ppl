@@ -1,11 +1,11 @@
 /* Documentation for used namespaces.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -31,7 +31,7 @@ namespace Parma_Polyhedra_Library {
 /*! \ingroup PPL_CXX_interface
   This is done so that the library's input/output operators
   do not interfere with those the user might want to define.
-  In fact, it is highly unlikely that any pre-defined I/O
+  In fact, it is highly unlikely that any predefined I/O
   operator will suit the needs of a client application.
   On the other hand, those applications for which the PPL
   I/O operator are enough can easily obtain access to them.
@@ -61,14 +61,14 @@ namespace IO_Operators {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Types and functions implementing checked numbers.
 /*! \ingroup PPL_CXX_interface */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 namespace Checked {
 } // namespace Checked
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! %Implementation related data and functions.
 /*! \ingroup PPL_CXX_interface */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 namespace Implementation {
 } // namespace Implementation
 

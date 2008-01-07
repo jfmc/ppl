@@ -1,11 +1,11 @@
 /* Sorting objects for which copies cost more than swaps.  -*- C++ -*-
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -34,10 +34,10 @@ namespace {
 
   Moreover, the algorithm always uses std:iter_swap() instead of
   std::swap() so as to behave as expected when instantiated on
-  Linear_System::With_Saturation_Matrix_iterator. Namely, using a sorting
+  Linear_System::With_Bit_Matrix_iterator. Namely, using a sorting
   routine that either copies objects or directly swaps them
   (i.e., without calling std::iter_swap) would not be correct
-  when using Linear_System::With_Saturation_Matrix_iterator.
+  when using Linear_System::With_Bit_Matrix_iterator.
 */
 
 template <typename Value_Type, typename Compare>

@@ -1,11 +1,11 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
 # The PPL is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2 of the License, or (at your
+# Free Software Foundation; either version 3 of the License, or (at your
 # option) any later version.
 #
 # The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -54,24 +54,32 @@ asciidumpload1 asciidumpload2 asciidumpload3 asciidumpload4 asciidumpload5 \
 asciidumpload6 asciidumpload7 \
 bhz03widening1 \
 bounded1 \
-boundingbox1 boundingbox2 \
+boundingbox1 \
 bounds1 \
+boundedaffineimage1 \
+boundedaffinepreimage1 \
 certificate1 \
 concatenate1 \
 congruence1 \
 congruences1 \
 congruences2 \
+constraints1 \
 contains1 \
+containsintegerpoint1 \
 copyconstruct1 \
 coveringbox1 coveringbox2 \
-directproduct1 directproduct2 \
+directproduct1 directproduct2 directproduct3 directproduct4 \
+directproduct5 directproduct6 \
 discrete1 \
 disjoint1 \
 equals1 \
 expandspacedim1 \
 foldspacedims1 \
-generalizedaffineimage1 generalizedaffineimage2 \
+frombdshape1 \
+fromoctagonalshape1 \
+generalizedaffineimage1 generalizedaffineimage2 generalizedaffineimage3 \
 generalizedaffinepreimage1 generalizedaffinepreimage2 \
+generalizedaffinepreimage3 \
 generator1 \
 generators1 generators2 \
 grid1 grid2 grid3 \
@@ -87,6 +95,11 @@ membytes1 \
 mingenerators1 \
 mincongruences1 \
 outputoperator1 outputoperator2 outputoperator3 \
+partiallyreducedproduct1 partiallyreducedproduct2 partiallyreducedproduct3 \
+partition1 \
+powersetdifference1 \
+powersetgeometricallycovers1 \
+powersetgeometricallyequals1 \
 relations1 relations2 relations3 \
 removespacedims1 removespacedims2 \
 timeelapse1 \
@@ -94,6 +107,8 @@ topclosed1 \
 topclosure1 \
 widening1 widening2  widening3\
 writecongruencesystem
+
+XFAIL_TESTS =
 
 #
 # Sources for the tests
@@ -134,9 +149,12 @@ bhz03widening1_SOURCES = bhz03widening1.cc
 bounded1_SOURCES = bounded1.cc
 
 boundingbox1_SOURCES = boundingbox1.cc
-boundingbox2_SOURCES = boundingbox2.cc
 
 bounds1_SOURCES = bounds1.cc
+
+boundedaffineimage1_SOURCES = boundedaffineimage1.cc
+
+boundedaffinepreimage1_SOURCES = boundedaffinepreimage1.cc
 
 certificate1_SOURCES = certificate1.cc
 
@@ -147,12 +165,20 @@ congruence1_SOURCES = congruence1.cc
 congruences1_SOURCES = congruences1.cc
 congruences2_SOURCES = congruences2.cc
 
+constraints1_SOURCES = constraints1.cc
+
 contains1_SOURCES = contains1.cc
+
+containsintegerpoint1_SOURCES = containsintegerpoint1.cc
 
 copyconstruct1_SOURCES = copyconstruct1.cc
 
 directproduct1_SOURCES = directproduct1.cc
 directproduct2_SOURCES = directproduct2.cc
+directproduct3_SOURCES = directproduct3.cc
+directproduct4_SOURCES = directproduct4.cc
+directproduct5_SOURCES = directproduct5.cc
+directproduct6_SOURCES = directproduct6.cc
 
 discrete1_SOURCES = discrete1.cc
 
@@ -162,13 +188,19 @@ equals1_SOURCES = equals1.cc
 
 expandspacedim1_SOURCES = expandspacedim1.cc
 
+frombdshape1_SOURCES = frombdshape1.cc
+
+fromoctagonalshape1_SOURCES = fromoctagonalshape1.cc
+
 foldspacedims1_SOURCES = foldspacedims1.cc
 
 generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
 generalizedaffineimage2_SOURCES = generalizedaffineimage2.cc
+generalizedaffineimage3_SOURCES = generalizedaffineimage3.cc
 
 generalizedaffinepreimage1_SOURCES = generalizedaffinepreimage1.cc
 generalizedaffinepreimage2_SOURCES = generalizedaffinepreimage2.cc
+generalizedaffinepreimage3_SOURCES = generalizedaffinepreimage3.cc
 
 generator1_SOURCES = generator1.cc
 
@@ -211,6 +243,16 @@ outputoperator1_SOURCES = outputoperator1.cc
 outputoperator2_SOURCES = outputoperator2.cc
 outputoperator3_SOURCES = outputoperator3.cc
 
+partiallyreducedproduct1_SOURCES = partiallyreducedproduct1.cc
+partiallyreducedproduct2_SOURCES = partiallyreducedproduct2.cc
+partiallyreducedproduct3_SOURCES = partiallyreducedproduct3.cc
+
+partition1_SOURCES = partition1.cc
+
+powersetdifference1_SOURCES = powersetdifference1.cc
+powersetgeometricallycovers1_SOURCES = powersetgeometricallycovers1.cc
+powersetgeometricallyequals1_SOURCES = powersetgeometricallyequals1.cc
+
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
 relations3_SOURCES = relations3.cc
@@ -229,50 +271,6 @@ widening2_SOURCES = widening2.cc
 widening3_SOURCES = widening3.cc
 
 writecongruencesystem_SOURCES = writecongruencesystem.cc
-
-XFAIL_ALWAYS =
-
-XFAIL_WITH_INT64 = \
-$(XFAIL_ALWAYS)
-
-XFAIL_WITH_INT32 = \
-$(XFAIL_WITH_INT64)
-
-XFAIL_WITH_INT16 = \
-$(XFAIL_WITH_INT32)
-
-XFAIL_WITH_INT8 = \
-$(XFAIL_WITH_INT16)
-
-if USE_INT64
-
-XFAIL_SET = $(XFAIL_WITH_INT64)
-
-else !USE_INT64
-if USE_INT32
-
-XFAIL_SET = $(XFAIL_WITH_INT32)
-
-else !USE_INT32
-if USE_INT16
-
-XFAIL_SET = $(XFAIL_WITH_INT16)
-
-else !USE_INT16
-if USE_INT8
-
-XFAIL_SET = $(XFAIL_WITH_INT8)
-
-else !USE_INT8
-
-XFAIL_SET = $(XFAIL_ALWAYS)
-
-endif !USE_INT8
-endif !USE_INT16
-endif !USE_INT32
-endif !USE_INT64
-
-XFAIL_TESTS = $(XFAIL_SET)
 
 check_PROGRAMS = $(TESTS)
 

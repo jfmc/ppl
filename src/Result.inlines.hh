@@ -1,11 +1,11 @@
 /* Result supporting functions implementation: inline functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -23,36 +23,18 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Result_inlines_hh
 #define PPL_Result_inlines_hh 1
 
-#include <cassert>
-
 namespace Parma_Polyhedra_Library {
 
+/*! \relates Parma_Polyhedra_Library::Result */
 inline Result
 classify(Result r) {
   return static_cast<Result>(r & VC_MASK);
 }
 
+/*! \relates Parma_Polyhedra_Library::Result */
 inline bool
 is_special(Result r) {
   return classify(r) != VC_NORMAL;
-}
-
-inline Result
-sign(Result r) {
-  switch (r) {
-  case V_LT:
-  case V_EQ:
-  case V_GT:
-  case VC_NAN:
-    return r;
-  case VC_MINUS_INFINITY:
-    return V_LT;
-  case VC_PLUS_INFINITY:
-    return V_GT;
-  default:
-    assert(false);
-    return VC_NAN;
-  }
 }
 
 } // namespace Parma_Polyhedra_Library

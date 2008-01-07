@@ -1,11 +1,11 @@
 /* Test linear_partition().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -28,17 +28,17 @@ bool
 aux_test01(const C_Polyhedron& p,
 	   const C_Polyhedron& q,
 	   const std::pair<C_Polyhedron,
-	   Powerset<Determinate<NNC_Polyhedron> > >& partition) {
+	   Pointset_Powerset<NNC_Polyhedron> >& partition) {
   const C_Polyhedron& r = partition.first;
   // `r' must be a subset of or equal to `q'.
   if (!q.contains(r))
     return false;
-  const Powerset<Determinate<NNC_Polyhedron> >& s = partition.second;
+  const Pointset_Powerset<NNC_Polyhedron>& s = partition.second;
   NNC_Polyhedron the_union(r);
   // These are the NNC versions of `p' and `q'.
   NNC_Polyhedron nnc_p(p);
   NNC_Polyhedron nnc_q(q);
-  typedef Powerset<Determinate<NNC_Polyhedron> >::const_iterator iter;
+  typedef Pointset_Powerset<NNC_Polyhedron>::const_iterator iter;
   for (iter i = s.begin(), s_end = s.end(); i != s_end; ++i) {
     const NNC_Polyhedron& a = i->element();
     // All elements of `s' must be disjoint from `p'.
@@ -78,12 +78,12 @@ test01() {
 
   nout << "q = " << q << endl;
 
-  std::pair<C_Polyhedron, Powerset<Determinate<NNC_Polyhedron> > >
+  std::pair<C_Polyhedron, Pointset_Powerset<NNC_Polyhedron> >
     result = linear_partition(p, q);
 
   nout << "*** q partition ***" << endl;
-  nout << "  === p inters q === " << endl << "  " << result.first << endl;
-  nout << "  ===    rest    === " << endl << "  " << result.second << endl;
+  nout << "  +++ p inters q +++" << endl << "  " << result.first << endl;
+  nout << "  +++    rest    +++" << endl << "  " << result.second << endl;
 
   if (!aux_test01(p, q, result))
     return false;
@@ -91,8 +91,8 @@ test01() {
   result = linear_partition(q, p);
 
   nout << "*** p partition ***" << endl;
-  nout << "  === q inters p === " << endl << "  " << result.first << endl;
-  nout << "  ===    rest    === " << endl << "  " << result.second << endl;
+  nout << "  +++ q inters p +++" << endl << "  " << result.first << endl;
+  nout << "  +++    rest    +++" << endl << "  " << result.second << endl;
 
   return aux_test01(q, p, result);
 }
@@ -101,17 +101,17 @@ bool
 aux_test02(const C_Polyhedron& p,
 	   const C_Polyhedron& q,
 	   const std::pair<C_Polyhedron,
-	   Powerset<Determinate<NNC_Polyhedron> > >& partition) {
+	   Pointset_Powerset<NNC_Polyhedron> >& partition) {
   const C_Polyhedron& r = partition.first;
   // `r' must be a subset of or equal to `q'.
   if (!q.contains(r))
     return false;
-  const Powerset<Determinate<NNC_Polyhedron> >& s = partition.second;
+  const Pointset_Powerset<NNC_Polyhedron>& s = partition.second;
   NNC_Polyhedron the_union(r);
   // These are the NNC versions of `p' and `q'.
   NNC_Polyhedron nnc_p(p);
   NNC_Polyhedron nnc_q(q);
-  typedef Powerset<Determinate<NNC_Polyhedron> >::const_iterator iter;
+  typedef Pointset_Powerset<NNC_Polyhedron>::const_iterator iter;
   for (iter i = s.begin(), s_end = s.end(); i != s_end; ++i) {
     const NNC_Polyhedron& a = i->element();
     // All elements of `s' must be disjoint from `p'.
@@ -151,12 +151,12 @@ test02() {
 
   nout << "q = " << q << endl;
 
-  std::pair<C_Polyhedron, Powerset<Determinate<NNC_Polyhedron> > >
+  std::pair<C_Polyhedron, Pointset_Powerset<NNC_Polyhedron> >
     result = linear_partition(p, q);
 
   nout << "*** q partition ***" << endl;
-  nout << "  === p inters q === " << endl << "  " << result.first << endl;
-  nout << "  ===    rest    === " << endl << "  " << result.second << endl;
+  nout << "  +++ p inters q +++" << endl << "  " << result.first << endl;
+  nout << "  +++    rest    +++" << endl << "  " << result.second << endl;
 
   if (!aux_test01(p, q, result))
     return false;
@@ -164,8 +164,8 @@ test02() {
   result = linear_partition(q, p);
 
   nout << "*** p partition ***" << endl;
-  nout << "  === q inters p === " << endl << "  " << result.first << endl;
-  nout << "  ===    rest    === " << endl << "  " << result.second << endl;
+  nout << "  +++ q inters p +++" << endl << "  " << result.first << endl;
+  nout << "  +++    rest    +++" << endl << "  " << result.second << endl;
 
   return aux_test02(q, p, result);
 }
@@ -174,17 +174,17 @@ bool
 aux_test03(const C_Polyhedron& p,
 	   const C_Polyhedron& q,
 	   const std::pair<C_Polyhedron,
-	   Powerset<Determinate<NNC_Polyhedron> > >& partition) {
+	   Pointset_Powerset<NNC_Polyhedron> >& partition) {
   const C_Polyhedron& r = partition.first;
   // `r' must be a subset of or equal to `q'.
   if (!q.contains(r))
     return false;
-  const Powerset<Determinate<NNC_Polyhedron> >& s = partition.second;
+  const Pointset_Powerset<NNC_Polyhedron>& s = partition.second;
   NNC_Polyhedron the_union(r);
   // These are the NNC versions of `p' and `q'.
   NNC_Polyhedron nnc_p(p);
   NNC_Polyhedron nnc_q(q);
-  typedef Powerset<Determinate<NNC_Polyhedron> >::const_iterator iter;
+  typedef Pointset_Powerset<NNC_Polyhedron>::const_iterator iter;
   for (iter i = s.begin(), s_end = s.end(); i != s_end; ++i) {
     const NNC_Polyhedron& a = i->element();
     // All elements of `s' must be disjoint from `p'.
@@ -225,12 +225,12 @@ test03() {
 
   nout << "q = " << q << endl;
 
-  std::pair<C_Polyhedron, Powerset<Determinate<NNC_Polyhedron> > >
+  std::pair<C_Polyhedron, Pointset_Powerset<NNC_Polyhedron> >
     result = linear_partition(p, q);
 
   nout << "*** q partition ***" << endl;
-  nout << "  === p inters q === " << endl << "  " << result.first << endl;
-  nout << "  ===    rest    === " << endl << "  " << result.second << endl;
+  nout << "  +++ p inters q +++" << endl << "  " << result.first << endl;
+  nout << "  +++    rest    +++" << endl << "  " << result.second << endl;
 
   if (!aux_test03(p, q, result))
     return false;
@@ -238,17 +238,17 @@ test03() {
   result = linear_partition(q, p);
 
   nout << "*** p partition ***" << endl;
-  nout << "  === q inters p === " << endl << "  " << result.first << endl;
-  nout << "  ===    rest    === " << endl << "  " << result.second << endl;
+  nout << "  +++ q inters p +++" << endl << "  " << result.first << endl;
+  nout << "  +++    rest    +++" << endl << "  " << result.second << endl;
 
   return aux_test03(q, p, result);
 }
 
 // Compute the complement.
 template <typename PH>
-Polyhedra_Powerset<NNC_Polyhedron>
+Pointset_Powerset<NNC_Polyhedron>
 aux_test04(const PH& ph) {
-  std::pair<PH, Polyhedra_Powerset<NNC_Polyhedron> > partition
+  std::pair<PH, Pointset_Powerset<NNC_Polyhedron> > partition
     = linear_partition(ph, PH(ph.space_dimension(), UNIVERSE));
   return partition.second;
 }
@@ -265,11 +265,29 @@ test04() {
   p.add_generator(point(-y));
 
   using namespace IO_Operators;
+
   nout << "p = " << p << endl;
 
-  Polyhedra_Powerset<NNC_Polyhedron> p_c = aux_test04(p);
+  Pointset_Powerset<NNC_Polyhedron> p_c = aux_test04(p);
 
   nout << "complement(p) = " << p_c << endl;
+
+  Pointset_Powerset<NNC_Polyhedron> p_p(p.space_dimension(), EMPTY);
+  p_p.add_disjunct(NNC_Polyhedron(p));
+  p_p.intersection_assign(p_c);
+
+  nout << "p intersected with complement(p) = " << p_p << endl;
+
+  if (!p_p.empty())
+    return false;
+
+  p_c.add_disjunct(NNC_Polyhedron(p));
+  p_c.pairwise_reduce();
+
+  nout << "p added to complement(p), pairwise reduced = " << p_c << endl;
+
+  if (!p_c.is_top())
+    return false;
 
   C_Polyhedron q(2);
   q.add_constraint(x >= -1);
@@ -279,11 +297,26 @@ test04() {
 
   nout << "q = " << q << endl;
 
-  Polyhedra_Powerset<NNC_Polyhedron> q_c = aux_test04(q);
+  Pointset_Powerset<NNC_Polyhedron> q_c = aux_test04(q);
 
   nout << "complement(q) = " << q_c << endl;
 
-  // FIXME
+  Pointset_Powerset<NNC_Polyhedron> q_p(q.space_dimension(), EMPTY);
+  q_p.add_disjunct(NNC_Polyhedron(q));
+  q_p.intersection_assign(q_c);
+
+  nout << "q intersected with complement(q) = " << q_p << endl;
+
+  if (!q_p.empty())
+    return false;
+
+  q_c.add_disjunct(NNC_Polyhedron(q));
+  q_c.pairwise_reduce();
+
+  nout << "q added to complement(q), pairwise reduced = " << q_c << endl;
+
+  if (!q_c.is_top())
+    return false;
 
   return true;
 }

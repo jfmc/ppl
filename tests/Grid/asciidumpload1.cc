@@ -1,11 +1,11 @@
 /* Test Grid::ascii_dump() and Grid::ascii_load().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -339,8 +339,8 @@ test14() {
     << "-ZE -EM  +CM +GM  +CS +GS  -CP -GP  -SC -SG\n"
     << "con_sys (up-to-date)\n"
     << "2 x 3\n"
-    << "0 1 m 1\n"
-    << "1 0 m 1\n"
+    << "size 3 0 1 m 1\n"
+    << "size 3 1 0 m 1\n"
     << "gen_sys (up-to-err)\n";
   close(f);
 
@@ -362,8 +362,8 @@ test15() {
     << "-ZE -EM  +CM +GM  +CS +GS  -CP -GP  -SC -SG\n"
     << "con_sys (up-to-date)\n"
     << "2 x 3\n"
-    << "0 1 m 1\n"
-    << "1 0 m 1\n"
+    << "size 3 0 1 m 1\n"
+    << "size 3 1 0 m 1\n"
     << "gen_sys\n";
   close(f);
 
@@ -385,8 +385,8 @@ test16() {
     << "-ZE -EM  +CM +GM  +CS +GS  -CP -GP  -SC -SG\n"
     << "con_sys (up-to-date)\n"
     << "2 x 3\n"
-    << "0 1 m 1\n"
-    << "1 0 m 1\n"
+    << "size 3 0 1 m 1\n"
+    << "size 3 1 0 m 1\n"
     << "gen_sys (up-to-date)\n"
     << "err\n";
   close(f);
@@ -409,12 +409,12 @@ test17() {
     << "-ZE -EM  +CM +GM  +CS +GS  -CP -GP  -SC -SG\n"
     << "con_sys (up-to-date)\n"
     << "2 x 3\n"
-    << "0 1 m 1\n"
-    << "1 0 m 1\n"
+    << "size 3 0 1 m 1\n"
+    << "size 3 1 0 m 1\n"
     << "gen_sys (up-to-date)\n"
     << "2 x err\n"
-    << "1 0 0 P\n"
-    << "0 1 1 Q\n";
+    << "size 3 1 0 0 P\n"
+    << "size 3 0 1 1 Q\n";
   close(f);
 
   open(f, my_file, ios_base::in);
@@ -435,12 +435,12 @@ test18() {
     << "-ZE -EM  +CM +GM  +CS +GS  -CP -GP  -SC -SG\n"
     << "con_sys (up-to-date)\n"
     << "2 x 3\n"
-    << "0 1 m 1\n"
-    << "1 0 m 1\n"
+    << "size 3 0 1 m 1\n"
+    << "size 3 1 0 m 1\n"
     << "gen_sys (up-to-date)\n"
     << "2 x 3\n"
-    << "1 0 0 P\n"
-    << "0 1 1 Q\n"
+    << "size 3 1 0 0 P\n"
+    << "size 3 0 1 1 Q\n"
     << "dimerrnsion_kinds 0 0\n";
   close(f);
 
@@ -462,12 +462,12 @@ test19() {
     << "-ZE -EM  +CM +GM  +CS +GS  -CP -GP  -SC -SG\n"
     << "con_sys (up-to-date)\n"
     << "2 x 3\n"
-    << "0 1 m 1\n"
-    << "1 0 m 1\n"
+    << "size 3 0 1 m 1\n"
+    << "size 3 1 0 m 1\n"
     << "gen_sys (up-to-date)\n"
     << "2 x 3\n"
-    << "1 0 0 P\n"
-    << "0 1 1 Q\n"
+    << "size 3 1 0 0 P\n"
+    << "size 3 0 1 1 Q\n"
     << "dimension_kinds 0\n";
   close(f);
 
@@ -489,12 +489,12 @@ test20() {
     << "-ZE -EM  +CM +GM  +CS +GS  -CP -GP  -SC -SG\n"
     << "con_sys (up-to-date)\n"
     << "2 x 3\n"
-    << "0 1 m 1\n"
-    << "1 0 m 1\n"
+    << "size 3 0 1 m 1\n"
+    << "size 3 1 0 m 1\n"
     << "gen_sys (up-to-date)\n"
     << "2 x 3\n"
-    << "1 0 0 P\n"
-    << "0 1 1 Q\n"
+    << "size 3 1 0 0 P\n"
+    << "size 3 0 1 1 Q\n"
     << "dimension_kinds 0 700\n";
   close(f);
 

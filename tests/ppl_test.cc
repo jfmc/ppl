@@ -1,11 +1,11 @@
 /* Implementation of utility functions used in test programs.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -22,7 +22,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 #include <csignal>
-#ifdef HAVE_FENV_H
+#include <iostream>
+#include <exception>
+#ifdef PPL_HAVE_FENV_H
 #include <fenv.h>
 #endif
 
@@ -87,7 +89,7 @@ fpe_handler(int sig, siginfo_t* sip, void*) {
   else {
     std::cerr << "SIGFPE caught (unknown si_code " << sip->si_code << ")"
 	      << std::endl;
-#ifdef HAVE_FENV_H
+#ifdef PPL_HAVE_FENV_H
     std::cerr << "Inquire with fetestexcept(): ";
     if (fetestexcept(FE_INEXACT))
       std::cerr << "FE_INEXACT ";
@@ -138,44 +140,4 @@ PPL::check_distance(const Checked_Number<mpq_class, Extended_Number_Policy>& d,
   }
   else
     return true;
-}
-
-bool
-PPL::operator==(const Bounding_Box& x, const Bounding_Box& y) {
-  dimension_type dimension = x.space_dimension();
-  if (dimension != y.space_dimension())
-    return false;
-
-  if (x.is_empty() && y.is_empty())
-    return true;
-
-  if (x.is_empty() || y.is_empty())
-    return false;
-
-  TEMP_INTEGER(n_x);
-  TEMP_INTEGER(n_y);
-  TEMP_INTEGER(d_x);
-  TEMP_INTEGER(d_y);
-
-  for (dimension_type i = dimension; i-- > 0; ) {
-    bool tem;
-    bool x_closed = x.get_lower_bound(i, tem, n_x, d_x);
-    bool y_closed = y.get_lower_bound(i, tem, n_y, d_y);
-    if (x_closed == y_closed) {
-      if (x_closed && (n_x != n_y || d_x != d_y))
-	return false;
-    }
-    else
-      return false;
-    x_closed = x.get_upper_bound(i, tem, n_x, d_x);
-    y_closed = y.get_upper_bound(i, tem, n_y, d_y);
-    if (x_closed == y_closed) {
-      if (x_closed && (n_x != n_y || d_x != d_y))
-	return false;
-    }
-    else
-      return false;
-  }
-
-  return true;
 }

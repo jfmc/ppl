@@ -1,11 +1,11 @@
 /* Test BD_Shape::contains().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -114,6 +114,63 @@ test04() {
   return false;
 }
 
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+
+  Constraint_System cs;
+  cs.insert(D >= 0);
+  cs.insert(C >= 0);
+  cs.insert(B <= 0);
+  cs.insert(A >= 0);
+
+  TBD_Shape bd1(cs);
+
+  print_constraints(bd1, "*** bd1 ***");
+
+  TBD_Shape bd2(cs);
+  bd2.add_constraint(A - B >= 0);
+
+  print_constraints(bd2, "*** bd2 ***");
+
+  bool contained = bd1.contains(bd2);
+
+  nout << "*** bd1.contains(bd2) ***" << endl;
+  nout << (contained ? "true" : "false") << endl;
+
+  return contained;
+}
+
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  TBD_Shape bd1(3);
+  bd1.add_constraint(C <= 0);
+  bd1.add_constraint(B - C <= 1);
+
+  print_constraints(bd1, "*** bd1 ***");
+
+  TBD_Shape bd2(3);
+  bd2.add_constraint(A == 0);
+  bd2.add_constraint(C <= 0);
+  bd2.add_constraint(B - C <= 2);
+
+  print_constraints(bd2, "*** bd2 ***");
+
+  bool contained = bd1.contains(bd2);
+
+  nout << "*** bd1.contains(bd2) ***" << endl;
+  nout << (!contained ? "true" : "false") << endl;
+
+  return !contained;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -121,4 +178,6 @@ BEGIN_MAIN
   DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
 END_MAIN

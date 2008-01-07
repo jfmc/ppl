@@ -1,11 +1,11 @@
 /* Powerset class implementation: non-inline template functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -146,9 +146,10 @@ Powerset<D>::is_omega_reduced() const {
 
 template <typename D>
 typename Powerset<D>::iterator
-Powerset<D>::add_non_bottom_disjunct(const D& d,
-				      iterator first,
-				      iterator last) {
+Powerset<D>::add_non_bottom_disjunct_preserve_reduction(const D& d,
+							iterator first,
+							iterator last) {
+  assert(!d.is_bottom());
   for (iterator xi = first; xi != last; ) {
     const D& xv = *xi;
     if (d.definitely_entails(xv))
@@ -162,6 +163,7 @@ Powerset<D>::add_non_bottom_disjunct(const D& d,
       ++xi;
   }
   sequence.push_back(d);
+  assert(OK());
   return first;
 }
 
@@ -207,7 +209,7 @@ template <typename D>
 template <typename Binary_Operator_Assign>
 void
 Powerset<D>::pairwise_apply_assign(const Powerset& y,
-				    Binary_Operator_Assign op_assign) {
+				   Binary_Operator_Assign op_assign) {
   // Ensure omega-reduction here, since what follows has quadratic complexity.
   omega_reduce();
   y.omega_reduce();
@@ -223,6 +225,7 @@ Powerset<D>::pairwise_apply_assign(const Powerset& y,
   // Put the new sequence in place.
   std::swap(sequence, new_sequence);
   reduced = false;
+  assert(OK());
 }
 
 template <typename D>
@@ -234,7 +237,10 @@ Powerset<D>::least_upper_bound_assign(const Powerset& y) {
   iterator old_begin = begin();
   iterator old_end = end();
   for (const_iterator i = y.begin(), y_end = y.end(); i != y_end; ++i)
-    old_begin = add_non_bottom_disjunct(*i, old_begin, old_end);
+    old_begin = add_non_bottom_disjunct_preserve_reduction(*i,
+							   old_begin,
+							   old_end);
+  assert(OK());
 }
 
 namespace IO_Operators {

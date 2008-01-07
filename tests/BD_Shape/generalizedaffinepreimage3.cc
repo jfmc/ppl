@@ -1,11 +1,11 @@
 /* Test BD_Shape::generalized_affine_preimage().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -72,12 +72,12 @@ test02() {
   bd.add_constraint(A >= 0);
 
   try {
-    // This is an incorrect use of the function
+    // This is an incorrect use of the method
     // BD_Shape::generalized_affine_preimage(lhs, r, rhs):
     // it is illegal to use a variable in the `rhs' expression that
     // does not appear in the BDS.
 
-    bd.generalized_affine_preimage(A + B, GREATER_THAN_OR_EQUAL, B + C);
+    bd.generalized_affine_preimage(A + B, GREATER_OR_EQUAL, B + C);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -98,11 +98,11 @@ test03() {
   bd.add_constraint(A >= 1);
 
   try {
-    // This is an incorrect use of function
+    // This is an incorrect use of method
     // BD_Shape::generalized_affine_preimage(lhs, r, rhs):
     // it is illegal to use a variable in the `lhs' expression that
     // does not appear in the BDS.
-    bd.generalized_affine_preimage(B + C, LESS_THAN_OR_EQUAL, A + 1);
+    bd.generalized_affine_preimage(B + C, LESS_OR_EQUAL, A + 1);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -123,10 +123,9 @@ test04() {
   bd.add_constraint(A >= 0);
 
   try {
-    // This is an incorrect use of the function
+    // This is an incorrect use of the method
     // BD_Shape::generalized_affine_preimage(lhs, r, rhs):
     // it is illegal to use a strict relation symbol.
-
     bd.generalized_affine_preimage(A + B, GREATER_THAN, B + C);
   }
   catch (std::invalid_argument& e) {
@@ -148,7 +147,7 @@ test05() {
   bd.add_constraint(A >= 1);
 
   try {
-    // This is an incorrect use of function
+    // This is an incorrect use of method
     // BD_Shape::generalized_affine_preimage(lhs, r, rhs):
     // it is illegal to use a strict relation symbol.
     bd.generalized_affine_preimage(B + C, LESS_THAN, A + 1);

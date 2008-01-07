@@ -1,11 +1,11 @@
 /* Test Polyhedron::poly_difference_assign().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -66,7 +66,7 @@ test01() {
 
   bool ok = (computed_result == known_result);
 
-  print_generators(computed_result, "*** After poly_difference_assign ***");
+  print_generators(computed_result, "*** after poly_difference_assign ***");
   print_generators(known_result, "*** known_result ***");
 
   return ok;
@@ -88,7 +88,7 @@ test02() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After ph1.poly_difference_assign(ph2) ***");
+  print_constraints(ph1, "*** after ph1.poly_difference_assign(ph2) ***");
 
   return ok;
 }
@@ -118,7 +118,7 @@ test03() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After ph1.poly_difference_assign(ph2) ***");
+  print_constraints(ph1, "*** after ph1.poly_difference_assign(ph2) ***");
 
   return ok;
 }
@@ -142,8 +142,7 @@ test04() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1,
-		    "**After ph1.poly_difference_assign(ph2)**");
+  print_constraints(ph1, "*** after ph1.poly_difference_assign(ph2) ***");
 
   return ok;
 }
@@ -166,7 +165,7 @@ test05() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After ph1.poly_difference_assign(ph2) ***");
+  print_constraints(ph1, "*** after ph1.poly_difference_assign(ph2) ***");
 
   return ok;
 }
@@ -189,7 +188,7 @@ test06() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After ph1.poly_difference_assign(ph2) ***");
+  print_constraints(ph1, "*** after ph1.poly_difference_assign(ph2) ***");
 
   return ok;
 }
@@ -209,14 +208,14 @@ aux_test07(int lx, int ly, int dx, int dy) {
 
 bool
 test07() {
-  Polyhedra_Powerset<C_Polyhedron> cross(2, EMPTY);
+  Pointset_Powerset<C_Polyhedron> cross(2, EMPTY);
   cross.add_disjunct(aux_test07(0, 3, 9, 3));
   cross.add_disjunct(aux_test07(3, 0, 3, 9));
 
   using namespace IO_Operators;
   nout << "cross = " << cross << endl;
 
-  Polyhedra_Powerset<C_Polyhedron> squares(2, EMPTY);
+  Pointset_Powerset<C_Polyhedron> squares(2, EMPTY);
   squares.add_disjunct(aux_test07(1, 4, 1, 1));
   squares.add_disjunct(aux_test07(4, 4, 1, 1));
   squares.add_disjunct(aux_test07(7, 4, 1, 1));
@@ -225,21 +224,21 @@ test07() {
 
   nout << "squares = " << squares << endl;
 
-  Polyhedra_Powerset<C_Polyhedron> difference = cross;
+  Pointset_Powerset<C_Polyhedron> difference = cross;
   difference.poly_difference_assign(squares);
 
   nout << "cross - squares = " << difference << endl;
 
-  Polyhedra_Powerset<C_Polyhedron> intersection = difference;
+  Pointset_Powerset<C_Polyhedron> intersection = difference;
   intersection.meet_assign(squares);
 
   nout << "(cross - squares) inters squares = " << intersection << endl;
 
-  // When using Polyhedra_Powerset<NNC_Polyhedron>, intersection will be
-  // empty.  When using Polyhedra_Powerset<C_Polyhedron>,
+  // When using Pointset_Powerset<NNC_Polyhedron>, intersection will be
+  // empty.  When using Pointset_Powerset<C_Polyhedron>,
   // intersection will consist of objects of affine dimension at most 1.
   bool ok1 = true;
-  for (Polyhedra_Powerset<C_Polyhedron>::const_iterator
+  for (Pointset_Powerset<C_Polyhedron>::const_iterator
 	 i = intersection.begin(), in_end = intersection.end();
        i != in_end; ++i)
     if (i->element().affine_dimension() > 1) {
@@ -248,7 +247,7 @@ test07() {
       ok1 = false;
     }
 
-  Polyhedra_Powerset<C_Polyhedron> re_union = difference;
+  Pointset_Powerset<C_Polyhedron> re_union = difference;
   re_union.upper_bound_assign(squares);
 
   nout << "(cross - squares) union squares = " << re_union << endl;

@@ -1,11 +1,11 @@
 /* Generator class implementation (non-inline functions).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -20,7 +20,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
+#include <ppl-config.h>
 
 #include "Generator.defs.hh"
 
@@ -157,6 +157,31 @@ PPL::Generator::is_equivalent_to(const Generator& y) const {
   return true;
 }
 
+const PPL::Generator* PPL::Generator::zero_dim_point_p = 0;
+const PPL::Generator* PPL::Generator::zero_dim_closure_point_p = 0;
+
+void
+PPL::Generator::initialize() {
+  assert(zero_dim_point_p == 0);
+  zero_dim_point_p
+    = new Generator(point());
+
+  assert(zero_dim_closure_point_p == 0);
+  zero_dim_closure_point_p
+    = new Generator(closure_point());
+}
+
+void
+PPL::Generator::finalize() {
+  assert(zero_dim_point_p != 0);
+  delete zero_dim_point_p;
+  zero_dim_point_p = 0;
+
+  assert(zero_dim_closure_point_p != 0);
+  delete zero_dim_closure_point_p;
+  zero_dim_closure_point_p = 0;
+}
+
 /*! \relates Parma_Polyhedra_Library::Generator */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Generator& g) {
@@ -191,9 +216,10 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Generator& g) {
     break;
   }
 
+  TEMP_INTEGER(gv);
   bool first = true;
   for (dimension_type v = 0; v < num_variables; ++v) {
-    Coefficient gv = g[v+1];
+    gv = g[v+1];
     if (gv != 0) {
       if (!first) {
 	if (gv > 0)
@@ -290,7 +316,9 @@ PPL_OUTPUT_DEFINITIONS(Generator)
 
 bool
 PPL::Generator::OK() const {
-  const Generator& g = *this;
+  // Check the underlying Linear_Row object.
+  if (!Linear_Row::OK())
+    return false;
 
   // Topology consistency check.
   const dimension_type min_size = is_necessarily_closed() ? 1 : 2;
@@ -307,6 +335,7 @@ PPL::Generator::OK() const {
   }
 
   // Normalization check.
+  const Generator& g = *this;
   Generator tmp = g;
   tmp.strong_normalize();
   if (tmp != g) {

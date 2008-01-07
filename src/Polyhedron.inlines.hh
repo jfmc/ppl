@@ -1,11 +1,11 @@
 /* Polyhedron class implementation: inline functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -23,9 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Polyhedron_inlines_hh
 #define PPL_Polyhedron_inlines_hh 1
 
-#include "Interval.defs.hh"
 #include "Generator.defs.hh"
-#include "LP_Problem.defs.hh"
 #include "compiler.hh"
 #include <algorithm>
 #include <deque>
@@ -35,6 +33,16 @@ namespace Parma_Polyhedra_Library {
 inline memory_size_type
 Polyhedron::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
+}
+
+inline dimension_type
+Polyhedron::space_dimension() const {
+  return space_dim;
+}
+
+inline int32_t
+Polyhedron::hash_code() const {
+  return space_dimension() & 0x7fffffff;
 }
 
 inline dimension_type
@@ -68,37 +76,6 @@ Polyhedron::is_necessarily_closed() const {
   return con_sys.is_necessarily_closed();
 }
 
-inline dimension_type
-Polyhedron::space_dimension() const {
-  return space_dim;
-}
-
-inline Congruence_System
-Polyhedron::congruences() const {
-  return Congruence_System(constraints());
-}
-
-inline Congruence_System
-Polyhedron::minimized_congruences() const {
-  return Congruence_System(minimized_constraints());
-}
-
-inline Grid_Generator_System
-Polyhedron::minimized_grid_generators() const {
-  return grid_generators();
-}
-
-inline void
-Polyhedron::add_grid_generator(const Grid_Generator& g) const {
-  used(g);
-}
-
-inline bool
-Polyhedron::add_grid_generator_and_minimize(const Grid_Generator& g) const {
-  used(g);
-  return !is_empty();
-}
-
 inline void
 Polyhedron::upper_bound_assign(const Polyhedron& y) {
   poly_hull_assign(y);
@@ -128,6 +105,17 @@ Polyhedron::swap(Polyhedron& y) {
   std::swap(sat_g, y.sat_g);
   std::swap(status, y.status);
   std::swap(space_dim, y.space_dim);
+}
+
+inline bool
+Polyhedron::can_recycle_constraint_systems() {
+  return true;
+}
+
+
+inline bool
+Polyhedron::can_recycle_congruence_systems() {
+  return false;
 }
 
 } // namespace Parma_Polyhedra_Library
@@ -196,6 +184,18 @@ Polyhedron::can_have_something_pending() const {
   return constraints_are_minimized()
     && generators_are_minimized()
     && (sat_c_is_up_to_date() || sat_g_is_up_to_date());
+}
+
+inline bool
+Polyhedron::is_empty() const {
+  if (marked_empty())
+    return true;
+  // Try a fast-fail test: if generators are up-to-date and
+  // there are no pending constraints, then the generator system
+  // (since it is well formed) contains a point.
+  if (generators_are_up_to_date() && !has_pending_constraints())
+    return false;
+  return !minimize();
 }
 
 inline void
@@ -313,18 +313,6 @@ Polyhedron::process_pending() const {
 }
 
 inline bool
-Polyhedron::is_empty() const {
-  if (marked_empty())
-    return true;
-  // Try a fast-fail test: if generators are up-to-date and
-  // there are no pending constraints, then the generator system
-  // (since it is well formed) contains a point.
-  if (generators_are_up_to_date() && !has_pending_constraints())
-    return false;
-  return !minimize();
-}
-
-inline bool
 Polyhedron::bounds_from_above(const Linear_Expression& expr) const {
   return bounds(expr, true);
 }
@@ -362,6 +350,59 @@ Polyhedron::minimize(const Linear_Expression& expr,
 		     Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
 		     Generator& g) const {
   return max_min(expr, false, inf_n, inf_d, minimum, g);
+}
+
+inline Constraint_System
+Polyhedron::simplified_constraints() const {
+  assert(constraints_are_up_to_date());
+  Constraint_System cs(con_sys);
+  if (cs.num_pending_rows() > 0)
+    cs.unset_pending_rows();
+  if (has_pending_constraints() || !constraints_are_minimized())
+    cs.simplify();
+  return cs;
+}
+
+inline Congruence_System
+Polyhedron::congruences() const {
+  return Congruence_System(minimized_constraints());
+}
+
+inline Congruence_System
+Polyhedron::minimized_congruences() const {
+  return Congruence_System(minimized_constraints());
+}
+
+inline Grid_Generator_System
+Polyhedron::minimized_grid_generators() const {
+  return grid_generators();
+}
+
+inline bool
+Polyhedron::add_congruences_and_minimize(const Congruence_System& cgs) {
+  add_congruences(cgs);
+  return minimize();
+}
+
+inline void
+Polyhedron::add_recycled_congruences(Congruence_System& cgs) {
+  add_congruences(cgs);
+}
+
+inline bool
+Polyhedron::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
+  return add_congruences_and_minimize(cgs);
+}
+
+inline void
+Polyhedron::add_grid_generator(const Grid_Generator& g) const {
+  used(g);
+}
+
+inline bool
+Polyhedron::add_grid_generator_and_minimize(const Grid_Generator& g) const {
+  used(g);
+  return !is_empty();
 }
 
 /*! \relates Polyhedron */

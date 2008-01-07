@@ -1,4 +1,4 @@
-Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 See below for the copying conditions.
 
 
@@ -6,11 +6,11 @@ Configuration of the Parma Polyhedra Library
 ============================================
 
 In an ideal situation (i.e., on a more or less standard Un*x
-environment, with the right compilers, the GMP library installed in
-a standard place and provided the user is satisfied with all the
-options we chose as defaults), a source distribution of the Parma
-Polyhedra Library (PPL) can be unpacked, configured, built and
-installed with the following, well-known procedure:
+environment, with the right compilers, the GMP library installed in a
+standard place and provided the user is satisfied with all the options
+we chose as defaults), a source distribution of the Parma Polyhedra
+Library (PPL) can be unpacked, configured, built and installed with
+the following, well-known procedure:
 
   $ tar jxf ppl-x.y.tar.bz2
   $ ./configure
@@ -19,8 +19,8 @@ installed with the following, well-known procedure:
   Password: <root password>
   $ make install
 
-After successful completion of these steps the PPL is completely installed
-on the system and can be used as expected.
+After successful completion of these steps the PPL is completely
+installed on the system and can be used as expected.
 
 On the other hand, the PPL `configure' shell script provides many
 options to adjust the build and installation process for customizing
@@ -106,21 +106,28 @@ library.  These switches are
   --with-cflags=XXX       add XXX to the options for the C compiler
   --with-cxxflags=XXX     add XXX to the options for the C++ compiler
 
+Among other things, the ability to specify the C and C++ compilation
+flags allows you to use special compilation options ---such as
+`-fno-threadsafe-statics'--- that, while not safe for general use,
+may be adequate for your particular application.
+
 Let us take the occasion to stress, once again, the fact that you
 _must_ use the same C++ compiler to compile the C++ interface of GMP,
 the PPL and your application, if you use the C++ interface of the PPL.
+It should be noted that no version of GCC prior to 4.0.3 is known to
+reliably compile PPL 0.10.
 
-Here is an example with the Intel C/C++ compiler version 8.1.  Assuming
-you have configured GMP with a command like
+Here is an example of configuration that uses the Intel C/C++ compiler
+version 10.0.  Assuming you have configured GMP with a command like
 
-  CC=icc CXX=icpc /path/to/gmp-4.1.4/configure --enable-cxx \
-    --prefix=/opt/intel_cc_80
+  CC=icc CXX=icpc /path/to/gmp-4.2.2/configure --enable-cxx \
+    --prefix=/opt/intel/cce/10.0.026
 
 you can configure the PPL with a command like
 
   /path/to/ppl-x.y/configure --with-cxx=icpc --with-cc=icc \
-    --with-cxxflags="-w2 -wd161,177,193,279,383,444,981,1188,1418" \
-    --with-libgmpxx-prefix=/opt/intel_cc_80
+    --with-cxxflags="-strict-ansi" \
+    --with-libgmpxx-prefix=/opt/intel/cce/10.0.026
 
 Notice that the `--with-cxxflags' option is absolutely non-essential
 here and is only included to show how extra compiler options can be
@@ -186,7 +193,7 @@ choices for TYPE are available:
 
 --------
 
-Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -199,7 +206,7 @@ of each distribution of the PPL in files called `fdl.*'.
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.  The license is included, in various
 formats, in the `doc' subdirectory of each distribution of the PPL in
 files are called `gpl.*'.

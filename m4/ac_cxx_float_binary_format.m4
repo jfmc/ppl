@@ -1,11 +1,11 @@
 dnl A function to detect the binary format used by C++ floats.
-dnl Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
 dnl The PPL is free software; you can redistribute it and/or modify it
 dnl under the terms of the GNU General Public License as published by the
-dnl Free Software Foundation; either version 2 of the License, or (at your
+dnl Free Software Foundation; either version 3 of the License, or (at your
 dnl option) any later version.
 dnl
 dnl The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -19,7 +19,7 @@ dnl Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
-dnl
+
 AC_DEFUN([AC_CXX_FLOAT_BINARY_FORMAT],
 [
 ac_save_CPPFLAGS="$CPPFLAGS"
@@ -82,7 +82,7 @@ else
   ac_supported_float=1
 fi
 AM_CONDITIONAL(SUPPORTED_FLOAT, test $ac_supported_float = 1)
-AC_DEFINE_UNQUOTED(PPL_SUPPORTED_FLOAT, $ac_supported_float,
+AC_DEFINE_UNQUOTED(SUPPORTED_FLOAT, $ac_supported_float,
   [Not zero if floats are supported.])
 
 AC_LANG_POP(C++)

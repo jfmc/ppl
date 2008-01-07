@@ -1,11 +1,11 @@
 /* Powerset class implementation: inline functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -27,176 +27,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <cassert>
 
 namespace Parma_Polyhedra_Library {
-
-template <typename D>
-inline
-Powerset<D>::omega_iterator::omega_iterator()
-  : base() {
-}
-
-template <typename D>
-inline
-Powerset<D>::omega_iterator::omega_iterator(const omega_iterator& y)
-  : base(y.base) {
-}
-
-template <typename D>
-inline
-Powerset<D>::omega_iterator::omega_iterator(const Base& b)
-  : base(b) {
-}
-
-template <typename D>
-inline typename Powerset<D>::omega_iterator::reference
-Powerset<D>::omega_iterator::operator*() const {
-  return *base;
-}
-
-template <typename D>
-inline typename Powerset<D>::omega_iterator::pointer
-Powerset<D>::omega_iterator::operator->() const {
-  return &*base;
-}
-
-template <typename D>
-inline typename Powerset<D>::omega_iterator&
-Powerset<D>::omega_iterator::operator++() {
-  ++base;
-  return *this;
-}
-
-template <typename D>
-inline typename Powerset<D>::omega_iterator
-Powerset<D>::omega_iterator::operator++(int) {
-  omega_iterator tmp = *this;
-  operator++();
-  return tmp;
-}
-
-template <typename D>
-inline typename Powerset<D>::omega_iterator&
-Powerset<D>::omega_iterator::operator--() {
-  --base;
-  return *this;
-}
-
-template <typename D>
-inline typename Powerset<D>::omega_iterator
-Powerset<D>::omega_iterator::operator--(int) {
-  omega_iterator tmp = *this;
-  operator--();
-  return tmp;
-}
-
-template <typename D>
-inline bool
-Powerset<D>::omega_iterator::operator==(const omega_iterator& y) const {
-  return base == y.base;
-}
-
-template <typename D>
-inline bool
-Powerset<D>::omega_iterator::operator!=(const omega_iterator& y) const {
-  return !operator==(y);
-}
-
-template <typename D>
-inline
-Powerset<D>::omega_const_iterator::omega_const_iterator()
-  : base() {
-}
-
-template <typename D>
-inline
-Powerset<D>
-::omega_const_iterator::omega_const_iterator(const omega_const_iterator& y)
-  : base(y.base) {
-}
-
-template <typename D>
-inline
-Powerset<D>::omega_const_iterator::omega_const_iterator(const Base& b)
-  : base(b) {
-}
-
-template <typename D>
-inline typename Powerset<D>::omega_const_iterator::reference
-Powerset<D>::omega_const_iterator::operator*() const {
-  return *base;
-}
-
-template <typename D>
-inline typename Powerset<D>::omega_const_iterator::pointer
-Powerset<D>::omega_const_iterator::operator->() const {
-  return &*base;
-}
-
-template <typename D>
-inline typename Powerset<D>::omega_const_iterator&
-Powerset<D>::omega_const_iterator::operator++() {
-  ++base;
-  return *this;
-}
-
-template <typename D>
-inline typename Powerset<D>::omega_const_iterator
-Powerset<D>::omega_const_iterator::operator++(int) {
-  omega_const_iterator tmp = *this;
-  operator++();
-  return tmp;
-}
-
-template <typename D>
-inline typename Powerset<D>::omega_const_iterator&
-Powerset<D>::omega_const_iterator::operator--() {
-  --base;
-  return *this;
-}
-
-template <typename D>
-inline typename Powerset<D>::omega_const_iterator
-Powerset<D>::omega_const_iterator::operator--(int) {
-  omega_const_iterator tmp = *this;
-  operator--();
-  return tmp;
-}
-
-template <typename D>
-inline bool
-Powerset<D>
-::omega_const_iterator::operator==(const omega_const_iterator& y) const {
-  return base == y.base;
-}
-
-template <typename D>
-inline bool
-Powerset<D>
-::omega_const_iterator::operator!=(const omega_const_iterator& y) const {
-  return !operator==(y);
-}
-
-template <typename D>
-inline
-Powerset<D>
-::omega_const_iterator::omega_const_iterator(const omega_iterator& y)
-  : base(y.base) {
-}
-
-/*! \relates Powerset::omega_const_iterator */
-template <typename D>
-inline bool
-operator==(const typename Powerset<D>::omega_iterator& x,
-	   const typename Powerset<D>::omega_const_iterator& y) {
-  return Powerset<D>::omega_const_iterator(x).operator==(y);
-}
-
-/*! \relates Powerset::omega_const_iterator */
-template <typename D>
-inline bool
-operator!=(const typename Powerset<D>::omega_iterator& x,
-	   const typename Powerset<D>::omega_const_iterator& y) {
-  return !(x == y);
-}
 
 template <typename D>
 inline typename Powerset<D>::iterator
@@ -306,9 +136,8 @@ Powerset<D>::Powerset()
 template <typename D>
 inline
 Powerset<D>::Powerset(const D& d)
-  : sequence(), reduced(true) {
-  if (!d.is_bottom())
-    sequence.push_back(d);
+  : sequence(), reduced(false) {
+  sequence.push_back(d);
   assert(OK());
 }
 
@@ -319,16 +148,16 @@ Powerset<D>::~Powerset() {
 
 template <typename D>
 inline void
-Powerset<D>::add_non_bottom_disjunct(const D& d) {
-  assert(!d.is_bottom());
-  add_non_bottom_disjunct(d, begin(), end());
+Powerset<D>::add_non_bottom_disjunct_preserve_reduction(const D& d) {
+  // !d.is_bottom() is asserted by the callee.
+  add_non_bottom_disjunct_preserve_reduction(d, begin(), end());
 }
 
 template <typename D>
 inline void
 Powerset<D>::add_disjunct(const D& d) {
-  if (!d.is_bottom())
-    add_non_bottom_disjunct(d);
+  sequence.push_back(d);
+  reduced = false;
 }
 
 /*! \relates Powerset */

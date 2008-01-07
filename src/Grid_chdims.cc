@@ -1,12 +1,12 @@
 /* Grid class implementation
    (non-inline operators that may change the dimension of the vector space).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -21,17 +21,16 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
+#include <ppl-config.h>
 
 #include "Grid.defs.hh"
+#include "Variables_Set.defs.hh"
 #include <cassert>
-
-#define BE_LAZY 1
 
 namespace PPL = Parma_Polyhedra_Library;
 
 // Used for add_space_dimensions_and_embed.
-inline void
+void
 PPL::Grid::add_space_dimensions(Congruence_System& cgs,
 				Grid_Generator_System& gs,
 				const dimension_type dims) {
@@ -50,7 +49,7 @@ PPL::Grid::add_space_dimensions(Congruence_System& cgs,
 }
 
 // Used for add_space_dimensions_and_project.
-inline void
+void
 PPL::Grid::add_space_dimensions(Grid_Generator_System& gs,
 				Congruence_System& cgs,
 				const dimension_type dims) {
@@ -267,10 +266,8 @@ PPL::Grid::remove_space_dimensions(const Variables_Set& to_be_removed) {
     return;
   }
 
-  // Dimension-compatibility check: the variable having maximum space
-  // dimension is the one occurring last in the set.
-  const dimension_type
-    min_space_dim = to_be_removed.rbegin()->space_dimension();
+  // Dimension-compatibility check.
+  const dimension_type min_space_dim = to_be_removed.space_dimension();
   if (space_dim < min_space_dim)
     throw_dimension_incompatible("remove_space_dimensions(vs)", min_space_dim);
 
@@ -334,7 +331,7 @@ PPL::Grid::remove_higher_space_dimensions(const dimension_type new_dimension) {
     return;
   }
 
-  // Favour the generators, as is done by is_empty().
+  // Favor the generators, as is done by is_empty().
   if (generators_are_up_to_date()) {
     gen_sys.remove_higher_space_dimensions(new_dimension);
     if (generators_are_minimized()) {
@@ -345,7 +342,7 @@ PPL::Grid::remove_higher_space_dimensions(const dimension_type new_dimension) {
 	dim_kinds[row] == GEN_VIRTUAL || ++num_redundant;
       if (num_redundant > 0) {
 	// Chop zero rows from end of system, to keep minimal form.
-	gen_sys.erase_to_end(gen_sys.num_generators() - num_redundant);
+	gen_sys.erase_to_end(gen_sys.num_rows() - num_redundant);
 	gen_sys.unset_pending_rows();
       }
       dim_kinds.erase(dim_kinds.begin() + new_dimension + 1, dim_kinds.end());
@@ -359,7 +356,8 @@ PPL::Grid::remove_higher_space_dimensions(const dimension_type new_dimension) {
     // Extra 2 columns for inhomogeneous term and modulus.
     cgs.increase_space_dimension(new_dimension + 2);
     con_sys.swap(cgs);
-  } else {
+  }
+  else {
     assert(congruences_are_minimized());
     con_sys.remove_higher_space_dimensions(new_dimension);
     // Count the actual number of rows that are now redundant.
@@ -455,20 +453,20 @@ PPL::Grid::fold_space_dimensions(const Variables_Set& to_be_folded,
     return;
 
   // All variables in `to_be_folded' must be dimensions of the grid.
-  if (to_be_folded.rbegin()->space_dimension() > space_dim)
+  if (to_be_folded.space_dimension() > space_dim)
     throw_dimension_incompatible("fold_space_dimensions(tbf, v)",
-				 "*tbf.rbegin()",
-				 *to_be_folded.rbegin());
+				 "tbf.space_dimension()",
+				 to_be_folded.space_dimension());
 
-  // Moreover, `var' must not occur in `to_be_folded'.
-  if (to_be_folded.find(var) != to_be_folded.end())
+  // Moreover, `var.id()' must not occur in `to_be_folded'.
+  if (to_be_folded.find(var.id()) != to_be_folded.end())
     throw_invalid_argument("fold_space_dimensions(tbf, v)",
 			   "v should not occur in tbf");
 
   for (Variables_Set::const_iterator i = to_be_folded.begin(),
 	 tbf_end = to_be_folded.end(); i != tbf_end; ++i) {
     Grid copy = *this;
-    copy.affine_image(var, Linear_Expression(*i));
+    copy.affine_image(var, Linear_Expression(Variable(*i)));
     join_assign(copy);
   }
   remove_space_dimensions(to_be_folded);

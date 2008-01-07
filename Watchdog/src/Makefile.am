@@ -1,11 +1,11 @@
 # Automake source file for the Parma Watchdog Library.
-# Copyright (C) 2002-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Watchdog Library (PWL).
 #
 # The PWL is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2 of the License, or (at your
+# Free Software Foundation; either version 3 of the License, or (at your
 # option) any later version.
 #
 # The PWL is distributed in the hope that it will be useful, but WITHOUT
@@ -62,7 +62,7 @@ if BUILD_WATCHDOG_LIBRARY
 
 # Libtool -version-info for libpwl.la.
 #
-#  1. Start with version information of `0:0:0' for each libtool library.
+#  1. Start with version information of `0:0:0' for each Libtool library.
 #
 #  2. Update the version information only immediately before a public
 #     release of your software.  More frequent updates are unnecessary,
@@ -86,8 +86,10 @@ if BUILD_WATCHDOG_LIBRARY
 #	    0.2			0.5		    1:0:0
 #	    0.3			0.6		    2:0:0
 #	    0.4			0.7		    3:0:0
+#	    0.5			0.8		    3:0:0
+#	    0.6			0.10		    4:0:0
 
-LIBPWL_LT_CURRENT =  3
+LIBPWL_LT_CURRENT =  4
 LIBPWL_LT_REVISION = 0
 LIBPWL_LT_AGE =      0
 
@@ -138,6 +140,6 @@ $(nodist_noinst_HEADERS)
 dist-hook:
 	mv -f $(distdir)/pwl.hh $(distdir)/pwl.hh.dist
 
-MOSTLYCLEANFILES = $(BUILT_SOURCES)
-
 endif BUILD_WATCHDOG_LIBRARY
+
+MOSTLYCLEANFILES = $(BUILT_SOURCES)

@@ -1,11 +1,11 @@
 /* Test BD_Shape::affine_image().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -42,7 +42,7 @@ test01() {
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(x - y == 0);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.affine_image(x, y) ***");
 
@@ -68,7 +68,7 @@ test02() {
   known_result.add_constraint(x - y <= 7);
   known_result.add_constraint(x <= 6);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.affine_image(x, x + 4) ***");
 
@@ -93,7 +93,7 @@ test03() {
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(x == 4);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.affine_image(x, 4) ***");
 
@@ -116,7 +116,7 @@ test04() {
 
   bd1.affine_image(x, x);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.affine_image(x, x) ***");
 
@@ -142,7 +142,7 @@ test05() {
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(x - y <= 2);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.affine_image(x, 2*x - 2, 2) ***");
 
@@ -167,7 +167,7 @@ test06() {
   known_result.add_constraint(x <= 2);
   known_result.add_constraint(y - x == 0);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.affine_image(y, 2*x, 2) ***");
 
@@ -192,7 +192,7 @@ test07() {
   known_result.add_constraint(x <= 2);
   known_result.add_constraint(y - x == 1);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.affine_image(y, 3*x + 3, 3) ***");
 
@@ -326,9 +326,9 @@ test12() {
   Linear_Expression coeff1 = x + 1;
 
   try {
-    // This is an incorrect use of function
-    // BD_Shape::affine_image(v, expr,d): it is illegal applying
-    // the function with a linear expression with the denominator equal to
+    // This is an incorrect use of method
+    // BD_Shape::affine_image(v, expr, d): it is illegal to apply
+    // the method to a linear expression with the denominator equal to
     // zero.
     Coefficient d = 0;
     bd.affine_image(x, coeff1, d);
@@ -351,9 +351,9 @@ test13() {
   bd.add_constraint(x >= 1);
 
   try {
-    // This is an invalid used of the function
+    // This is an invalid used of the method
     // BD_Shape::affine_image(v, expr, d): it is illegal to
-    // apply this function to a variable that is not in the space of
+    // apply this method to a variable that is not in the space of
     // the polyhedron.
     bd.affine_image(y, x + 1);
   }
@@ -377,7 +377,7 @@ test14() {
   bd.add_constraint(y >= 1);
 
   try {
-    // This is an invalid used of the function
+    // This is an invalid used of the method
     // BD_Shape::affine_image(v, expr, d): it is illegal to
     // use a variable in the expression that does not appear in the
     // space of the polyhedron.
@@ -405,9 +405,9 @@ test15() {
   Linear_Expression coeff1 = 2*x + 1;
 
   try {
-    // This is an incorrect use of function
-    // BD_Shape::affine_image(v, expr,d): it is illegal applying
-    // the function with a linear expression with the denominator equal to
+    // This is an incorrect use of method
+    // BD_Shape::affine_image(v, expr, d): it is illegal to apply
+    // the method to a linear expression with the denominator equal to
     // zero.
     Coefficient d = 0;
     bd.affine_image(x, coeff1, d);

@@ -1,11 +1,11 @@
 /* Test BD_Shape::add_constraints_and_minimize().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -43,7 +43,7 @@ test01() {
   known_result.add_constraint(B == 5);
   known_result.add_constraint(B - A <= 5);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(known_result, "*** known_result ***");
 
@@ -58,7 +58,7 @@ test02() {
   TBD_Shape bd1(2);
 
   try {
-    // This is an invalid use of function
+    // This is an invalid use of method
     // BD_Shape::add_constraint: it is illegal
     // to add a strict inequality.
     bd1.add_constraint(x <= 0);
@@ -82,7 +82,7 @@ test03() {
   TBD_Shape bd1(2);
 
   try {
-    // This is an invalid use of function
+    // This is an invalid use of method
     // BD_Shape::add_constraint: it is illegal
     // to add a constraint with bigger dimension.
     bd1.add_constraint(x <= 0);
@@ -105,7 +105,7 @@ test04() {
   TBD_Shape bd(1);
 
   try {
-    // This is an invalid use of the function
+    // This is an invalid use of the method
     // BD_Shape::add_constraints_and_minimize(cs): it is illegal to
     // add a system of constraints that is not dimensional incompatible
     // with the polyhedron.
@@ -129,8 +129,8 @@ test05() {
   TBD_Shape bd(1);
 
   try {
-    // This is an invalid use of the function
-    // RBD_Shape::add_constraint(c): it is illegal to insert a
+    // This is an invalid use of the method
+    // BD_Shape::add_constraint(c): it is illegal to insert a
     // constraints that contains a variable that is not in the space
     // of the polyhedron.
     bd.add_constraint(y >= 0);
@@ -152,7 +152,7 @@ test06() {
   TBD_Shape bd(1);
 
   try {
-    // This is an invalid use of the function
+    // This is an invalid use of the method
     // BD_Shape::add_constraints(cs): it is illegal to add a system
     // of constraints that is dimensional incompatible with the
     // polyhedron.

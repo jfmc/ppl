@@ -1,11 +1,11 @@
 /* Header file for test programs.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl.hh"
 #include "print.hh"
+#include "FCAIBVP.defs.hh"
 #include "Partial_Function.defs.hh"
 #include "Random_Number_Generator.defs.hh"
 #include <stdexcept>
@@ -33,6 +34,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <iterator>
 #include <string>
 #include <algorithm>
+#include <typeinfo>
 
 void
 set_handlers();
@@ -57,6 +59,7 @@ int						\
 main() try {					\
   set_handlers();				\
   bool succeeded = false;			\
+  bool overflow = false;			\
   std::list<std::string> failed_tests;
 
 #define END_MAIN							\
@@ -83,15 +86,17 @@ catch (const std::exception& e) {					\
 }
 
 #define ANNOUNCE_TEST(test)		 \
-  nout << "\n=== " #test " ===" << endl
+  nout << "\n=== " #test " ===" << std::endl
 
 #define RUN_TEST(test)							\
   try {									\
+    overflow = false;							\
     succeeded = test();							\
   }									\
   catch (const std::overflow_error& e) {				\
     nout << "arithmetic overflow (" << e.what() << ")"			\
 	 << std::endl;							\
+    overflow = true;							\
     succeeded = false;							\
   }									\
   catch (const std::exception& e) {					\
@@ -118,78 +123,135 @@ catch (const std::exception& e) {					\
   if (succeeded)			 \
     failed_tests.push_back(#test);
 
-#if COEFFICIENT_BITS == 0
+#define DO_TEST_OVERFLOW(test)		 \
+  ANNOUNCE_TEST(test);			 \
+  RUN_TEST(test);			 \
+  if (succeeded || !overflow)		 \
+    failed_tests.push_back(#test);
+
+#define DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)			\
+  ANNOUNCE_TEST(test);							\
+  RUN_TEST(test);							\
+  if (!succeeded)							\
+    if (!overflow || has_exact_coefficient_type(shape(0, EMPTY)))	\
+      failed_tests.push_back(#test);
+
+#if PPL_COEFFICIENT_BITS == 0
 
 #define DO_TEST_F64(test) DO_TEST(test)
+#define DO_TEST_F64A(test) DO_TEST(test)
 #define DO_TEST_F32(test) DO_TEST(test)
+#define DO_TEST_F32A(test) DO_TEST(test)
 #define DO_TEST_F16(test) DO_TEST(test)
 #define DO_TEST_F16A(test) DO_TEST(test)
 #define DO_TEST_F8(test) DO_TEST(test)
 #define DO_TEST_F8A(test) DO_TEST(test)
 
-#elif COEFFICIENT_BITS == 64
-
-#define DO_TEST_F64(test) DO_TEST_F(test)
-#define DO_TEST_F32(test) DO_TEST(test)
-#define DO_TEST_F16(test) DO_TEST(test)
-#define DO_TEST_F16A(test) DO_TEST(test)
-#define DO_TEST_F8(test) DO_TEST(test)
-#define DO_TEST_F8A(test) DO_TEST(test)
-
-#elif COEFFICIENT_BITS == 32
-
-#define DO_TEST_F64(test) DO_TEST_F(test)
-#define DO_TEST_F32(test) DO_TEST_F(test)
-#define DO_TEST_F16(test) DO_TEST(test)
-#define DO_TEST_F16A(test) DO_TEST(test)
-#define DO_TEST_F8(test) DO_TEST(test)
-#define DO_TEST_F8A(test) DO_TEST(test)
-
-#elif COEFFICIENT_BITS == 16
+#elif PPL_COEFFICIENT_BITS == 64
 
 #ifdef NDEBUG
 
-#define DO_TEST_F64(test) DO_TEST_F(test)
-#define DO_TEST_F32(test) DO_TEST_F(test)
-#define DO_TEST_F16(test) DO_TEST_F(test)
+#define DO_TEST_F64(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F64A(test) DO_TEST(test)
+#define DO_TEST_F32(test) DO_TEST(test)
+#define DO_TEST_F32A(test) DO_TEST(test)
+#define DO_TEST_F16(test) DO_TEST(test)
 #define DO_TEST_F16A(test) DO_TEST(test)
 #define DO_TEST_F8(test) DO_TEST(test)
 #define DO_TEST_F8A(test) DO_TEST(test)
 
 #else
 
-#define DO_TEST_F64(test) DO_TEST_F(test)
-#define DO_TEST_F32(test) DO_TEST_F(test)
-#define DO_TEST_F16(test) DO_TEST_F(test)
-#define DO_TEST_F16A(test) DO_TEST_F(test)
+#define DO_TEST_F64(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F64A(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32(test) DO_TEST(test)
+#define DO_TEST_F32A(test) DO_TEST(test)
+#define DO_TEST_F16(test) DO_TEST(test)
+#define DO_TEST_F16A(test) DO_TEST(test)
 #define DO_TEST_F8(test) DO_TEST(test)
 #define DO_TEST_F8A(test) DO_TEST(test)
 
 #endif // !defined(NDEBUG)
 
-#elif COEFFICIENT_BITS == 8
+#elif PPL_COEFFICIENT_BITS == 32
 
 #ifdef NDEBUG
 
-#define DO_TEST_F64(test) DO_TEST_F(test)
-#define DO_TEST_F32(test) DO_TEST_F(test)
-#define DO_TEST_F16(test) DO_TEST_F(test)
-#define DO_TEST_F16A(test) DO_TEST_F(test)
-#define DO_TEST_F8(test) DO_TEST_F(test)
+#define DO_TEST_F64(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F64A(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32A(test) DO_TEST(test)
+#define DO_TEST_F16(test) DO_TEST(test)
+#define DO_TEST_F16A(test) DO_TEST(test)
+#define DO_TEST_F8(test) DO_TEST(test)
 #define DO_TEST_F8A(test) DO_TEST(test)
 
 #else
 
-#define DO_TEST_F64(test) DO_TEST_F(test)
-#define DO_TEST_F32(test) DO_TEST_F(test)
-#define DO_TEST_F16(test) DO_TEST_F(test)
-#define DO_TEST_F16A(test) DO_TEST_F(test)
-#define DO_TEST_F8(test) DO_TEST_F(test)
-#define DO_TEST_F8A(test) DO_TEST_F(test)
+#define DO_TEST_F64(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F64A(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32A(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F16(test) DO_TEST(test)
+#define DO_TEST_F16A(test) DO_TEST(test)
+#define DO_TEST_F8(test) DO_TEST(test)
+#define DO_TEST_F8A(test) DO_TEST(test)
 
 #endif // !defined(NDEBUG)
 
-#endif // COEFFICIENT_BITS == 8
+#elif PPL_COEFFICIENT_BITS == 16
+
+#ifdef NDEBUG
+
+#define DO_TEST_F64(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F64A(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32A(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F16(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F16A(test) DO_TEST(test)
+#define DO_TEST_F8(test) DO_TEST(test)
+#define DO_TEST_F8A(test) DO_TEST(test)
+
+#else
+
+#define DO_TEST_F64(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F64A(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32A(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F16(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F16A(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F8(test) DO_TEST(test)
+#define DO_TEST_F8A(test) DO_TEST(test)
+
+#endif // !defined(NDEBUG)
+
+#elif PPL_COEFFICIENT_BITS == 8
+
+#ifdef NDEBUG
+
+#define DO_TEST_F64(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F64A(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32A(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F16(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F16A(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F8(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F8A(test) DO_TEST(test)
+
+#else
+
+#define DO_TEST_F64(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F64A(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32A(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F16(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F16A(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F8(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F8A(test) DO_TEST_OVERFLOW(test)
+
+#endif // !defined(NDEBUG)
+
+#endif // PPL_COEFFICIENT_BITS == 8
 
 
 // Turn s into a string: PPL_TEST_STR(x + y) => "x + y".
@@ -208,8 +270,16 @@ using std::endl;
 #define C_Polyhedron NNC_Polyhedron
 #endif
 
+#ifndef BOX_INSTANCE
+#define BOX_INSTANCE rt_r_oc
+#endif
+
 #ifndef BD_SHAPE_INSTANCE
 #define BD_SHAPE_INSTANCE mpq_class
+#endif
+
+#ifndef OCTAGONAL_SHAPE_INSTANCE
+#define OCTAGONAL_SHAPE_INSTANCE mpq_class
 #endif
 
 namespace Parma_Polyhedra_Library {
@@ -217,8 +287,66 @@ namespace Parma_Polyhedra_Library {
 //! Utility typedef to allow a macro argument to denote the long double type.
 typedef long double long_double;
 
+struct Floating_Real_Open_Interval_Info_Policy {
+  const_bool_nodef(store_special, false);
+  const_bool_nodef(store_open, true);
+  const_bool_nodef(cache_empty, true);
+  const_bool_nodef(cache_singleton, true);
+  const_bool_nodef(cache_normalized, false);
+  const_int_nodef(next_bit, 0);
+  const_bool_nodef(may_be_empty, true);
+  const_bool_nodef(may_contain_infinity, false);
+  const_bool_nodef(check_empty_result, false);
+  const_bool_nodef(check_inexact, false);
+};
+
+typedef Interval_Restriction_None
+<Interval_Info_Bitset<unsigned int, Floating_Real_Open_Interval_Info_Policy> >
+Floating_Real_Open_Interval_Info;
+
+typedef Interval<float, Floating_Real_Open_Interval_Info> fl_r_oc;
+typedef Interval<double, Floating_Real_Open_Interval_Info> db_r_oc;
+typedef Interval<long double, Floating_Real_Open_Interval_Info> ld_r_oc;
+
+struct Rational_Real_Open_Interval_Info_Policy {
+  const_bool_nodef(store_special, true);
+  const_bool_nodef(store_open, true);
+  const_bool_nodef(cache_empty, true);
+  const_bool_nodef(cache_singleton, true);
+  const_bool_nodef(cache_normalized, false);
+  const_int_nodef(next_bit, 0);
+  const_bool_nodef(may_be_empty, true);
+  const_bool_nodef(may_contain_infinity, false);
+  const_bool_nodef(check_empty_result, false);
+  const_bool_nodef(check_inexact, false);
+};
+
+typedef Interval_Restriction_None
+<Interval_Info_Bitset<unsigned int, Rational_Real_Open_Interval_Info_Policy> >
+Rational_Real_Open_Interval_Info;
+
+typedef Interval<mpq_class, Rational_Real_Open_Interval_Info> rt_r_oc;
+
+//! The incarnation of Box under test.
+typedef Box<BOX_INSTANCE> TBox;
+
 //! The incarnation of BD_Shape under test.
 typedef BD_Shape<BD_SHAPE_INSTANCE> TBD_Shape;
+
+//! The incarnation of Octagonal_Shape under test.
+typedef Octagonal_Shape<OCTAGONAL_SHAPE_INSTANCE> TOctagonal_Shape;
+
+template <typename Shape>
+inline bool
+has_exact_coefficient_type(const Shape&) {
+  return std::numeric_limits<typename Shape::coefficient_type>::is_exact;
+}
+
+template <typename Interval>
+inline bool
+has_exact_coefficient_type(const Box<Interval>&) {
+  return std::numeric_limits<typename Interval::boundary_type>::is_exact;
+}
 
 bool
 check_distance(const Checked_Number<mpq_class, Extended_Number_Policy>& d,
@@ -312,21 +440,192 @@ check_result(const BD_Shape<T>& computed_result,
     : check_result_i(computed_result, known_result, 0, 0, 0);
 }
 
-//! Compare copies of \p a and \p b.
-/*!
-  Comparing temporary copies ensures that the underlying
-  representation of \p a and \p b stays the same.
-*/
 template <typename T>
-inline bool
-copy_compare(const T& a, const T& b) {
-  const T tem_a = a;
-  const T tem_b = b;
-  return tem_a == tem_b;
+bool
+check_result_i(const Octagonal_Shape<T>& computed_result,
+	       const Octagonal_Shape<mpq_class>& known_result,
+	       const char* max_r_d_s,
+	       const char* max_e_d_s,
+	       const char* max_l_d_s) {
+  using namespace IO_Operators;
+  Octagonal_Shape<mpq_class> q_computed_result(computed_result);
+  // Handle in a more efficient way the case where equality is expected.
+  if (max_r_d_s == 0 && max_e_d_s == 0 && max_l_d_s == 0) {
+    if (q_computed_result != known_result) {
+      nout << "Equality does not hold:"
+	   << "\ncomputed result is\n"
+	   << q_computed_result
+	   << "\nknown result is\n"
+	   << known_result
+	   << endl;
+      return false;
+    }
+    else
+      return true;
+  }
+
+  if (!q_computed_result.contains(known_result)) {
+    nout << "Containment does not hold:"
+	 << "\ncomputed result is\n"
+	 << q_computed_result
+	 << "\nknown result is\n"
+	 << known_result
+	 << endl;
+    return false;
+  }
+
+  Checked_Number<mpq_class, Extended_Number_Policy> r_d;
+  rectilinear_distance_assign(r_d, known_result, q_computed_result, ROUND_UP);
+  Checked_Number<mpq_class, Extended_Number_Policy> e_d;
+  euclidean_distance_assign(e_d, known_result, q_computed_result, ROUND_UP);
+  Checked_Number<mpq_class, Extended_Number_Policy> l_d;
+  l_infinity_distance_assign(l_d, known_result, q_computed_result, ROUND_UP);
+  bool ok_r = check_distance(r_d, max_r_d_s, "rectilinear");
+  bool ok_e = check_distance(e_d, max_e_d_s, "euclidean");
+  bool ok_l = check_distance(l_d, max_l_d_s, "l_infinity");
+  bool ok = ok_r && ok_e && ok_l;
+  if (!ok) {
+    nout << "Computed result is\n"
+	 << q_computed_result
+	 << "\nknown result is\n"
+	 << known_result
+	 << endl;
+  }
+  return ok;
 }
 
-//! Return true if and only if x equals y.
-bool operator==(const Bounding_Box& x, const Bounding_Box& y);
+template <typename T>
+bool
+check_result(const Octagonal_Shape<T>& computed_result,
+	     const Octagonal_Shape<mpq_class>& known_result,
+	     const char* max_r_d_s,
+	     const char* max_e_d_s,
+	     const char* max_l_d_s) {
+  return std::numeric_limits<T>::is_integer
+    ? check_result_i(computed_result, known_result,
+		     "+inf", "+inf", "+inf")
+    : check_result_i(computed_result, known_result,
+		     max_r_d_s, max_e_d_s, max_l_d_s);
+}
+
+template <>
+inline bool
+check_result(const Octagonal_Shape<mpq_class>& computed_result,
+	     const Octagonal_Shape<mpq_class>& known_result,
+	     const char*,
+	     const char*,
+	     const char*) {
+  return check_result_i(computed_result, known_result,
+			0, 0, 0);
+}
+
+template <typename T>
+bool
+check_result(const Octagonal_Shape<T>& computed_result,
+	     const Octagonal_Shape<mpq_class>& known_result) {
+  return std::numeric_limits<T>::is_integer
+    ? check_result_i(computed_result, known_result, "+inf", "+inf", "+inf")
+    : check_result_i(computed_result, known_result, 0, 0, 0);
+}
+
+
+template <typename Interval>
+bool
+check_result_i(const Box<Interval>& computed_result,
+	       const Rational_Box& known_result,
+	       const char* max_r_d_s,
+	       const char* max_e_d_s,
+	       const char* max_l_d_s) {
+  using namespace IO_Operators;
+  Rational_Box q_computed_result(computed_result);
+  // Handle in a more efficient way the case where equality is expected.
+  if (max_r_d_s == 0 && max_e_d_s == 0 && max_l_d_s == 0) {
+    if (q_computed_result != known_result) {
+      nout << "Equality does not hold:"
+	   << "\ncomputed result is\n"
+	   << q_computed_result
+	   << "\nknown result is\n"
+	   << known_result
+	   << endl;
+      return false;
+    }
+    else
+      return true;
+  }
+
+  if (!q_computed_result.contains(known_result)) {
+    nout << "Containment does not hold:"
+	 << "\ncomputed result is\n"
+	 << q_computed_result
+	 << "\nknown result is\n"
+	 << known_result
+	 << endl;
+    nout << "Individual dimensions where containment does not hold"
+	 << "\n(Variable: computed-result known-result):\n";
+    for (dimension_type i = 0; i < computed_result.space_dimension(); ++i) {
+      if (!q_computed_result.get_interval(Variable(i)).contains(known_result.get_interval(Variable(i))))
+	nout << Variable(i) << ": "
+	     << q_computed_result.get_interval(Variable(i))
+	     << ' '
+	     << known_result.get_interval(Variable(i))
+	     << endl;
+    }
+    return false;
+  }
+
+  Checked_Number<mpq_class, Extended_Number_Policy> r_d;
+  rectilinear_distance_assign(r_d, known_result, q_computed_result, ROUND_UP);
+  Checked_Number<mpq_class, Extended_Number_Policy> e_d;
+  euclidean_distance_assign(e_d, known_result, q_computed_result, ROUND_UP);
+  Checked_Number<mpq_class, Extended_Number_Policy> l_d;
+  l_infinity_distance_assign(l_d, known_result, q_computed_result, ROUND_UP);
+  bool ok_r = check_distance(r_d, max_r_d_s, "rectilinear");
+  bool ok_e = check_distance(e_d, max_e_d_s, "euclidean");
+  bool ok_l = check_distance(l_d, max_l_d_s, "l_infinity");
+  bool ok = ok_r && ok_e && ok_l;
+  if (!ok) {
+    nout << "Computed result is\n"
+	 << q_computed_result
+	 << "\nknown result is\n"
+	 << known_result
+	 << endl;
+  }
+  return ok;
+}
+
+template <typename Interval>
+bool
+check_result(const Box<Interval>& computed_result,
+	     const Rational_Box& known_result,
+	     const char* max_r_d_s,
+	     const char* max_e_d_s,
+	     const char* max_l_d_s) {
+  return std::numeric_limits<typename Interval::boundary_type>::is_integer
+    ? check_result_i(computed_result, known_result,
+		     "+inf", "+inf", "+inf")
+    : check_result_i(computed_result, known_result,
+		     max_r_d_s, max_e_d_s, max_l_d_s);
+}
+
+template <>
+inline bool
+check_result(const Rational_Box& computed_result,
+	     const Rational_Box& known_result,
+	     const char*,
+	     const char*,
+	     const char*) {
+  return check_result_i(computed_result, known_result,
+			0, 0, 0);
+}
+
+template <typename Interval>
+bool
+check_result(const Box<Interval>& computed_result,
+	     const Rational_Box& known_result) {
+  return std::numeric_limits<typename Interval::boundary_type>::is_integer
+    ? check_result_i(computed_result, known_result, "+inf", "+inf", "+inf")
+    : check_result_i(computed_result, known_result, 0, 0, 0);
+}
 
 } // namespace Parma_Polyhedra_Library
 

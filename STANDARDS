@@ -18,6 +18,11 @@ compound name.  By all means, avoid baStudlyCaps: write
 available_widening_tokens (if it is a variable) or
 Available_Widening_Tokens (if it is a class or enum); never write
 availableWideningTokens or AvailableWideningTokens.
+In general, we use:
+
+  lower_case for variables, methods, functions, typedefs;
+  UPPER_CASE for macros and enum values;
+  Mixed_Case for class names and template parameter names.
 
 
 Pre and post increment and decrement operators
@@ -38,9 +43,9 @@ algorithm should be specialized to use the swap method.
 Limiting the visibility of variables, functions, macros and so forth
 --------------------------------------------------------------------
 
-Avoid using the keyword "static" to specify that global variables or
+Avoid using the keyword `static' to specify that global variables or
 functions should be visible only inside the current translation unit;
-use the anonymous namespace, instead. The keyword "static" should
+use the anonymous namespace, instead. The keyword `static' should
 only appear inside class definitions or function bodies. As an example,
 
 static const char* s = "Not accessible by other translation units";
@@ -74,13 +79,13 @@ its impact as much as possible by naming objects in a conspicuous way
 and by limiting as much as possible the scope of declarations.
 This means
 
-- all C and C++ macros should have names prefixed by "PPL_";
+- all C and C++ macros should have names prefixed by `PPL_';
   those that are not meant to be directly accessible by the user should
   be #undef'ed as soon as possible in the source file they are defined in;
 - all functions and types declared by the C interface should have
-  names prefixed by "ppl_";
+  names prefixed by `ppl_';
 - all Prolog predicates declared by the Prolog interfaces should have
-  names prefixed by "ppl_".
+  names prefixed by `ppl_'.
 
 
 Macros
@@ -100,7 +105,7 @@ Trailing whitespace
 -------------------
 
 Always avoid trailing whitespace.
-If you use emacs, then all the trailing whitespace in the current
+If you use Emacs, then all the trailing whitespace in the current
 buffer can be removed by using the command
 
   M-x delete-trailing-whitespace
@@ -157,7 +162,7 @@ non-empty lines here start at column 0;
 
 } // namespace Parma_Polyhedra_Library
 
-If you use emacs, you may want to put the following two lines in your
+If you use Emacs, you may want to put the following two lines in your
 .emacs:
 
 ;; Disable indentation when in namespace blocks.
@@ -202,14 +207,14 @@ Source code should be organized so as to ensure that:
   - each file is of manageable size.
 
 As a rule of thumb, each type (class, struct, class template, etc.)
-named "Xtype" that is relevant on its own for the user or the
+named `Xtype' that is relevant on its own for the user or the
 developer of the library should be provided with a set of source files
-whose filenames start with "Xtype". The source files for such a type
+whose filenames start with `Xtype'. The source files for such a type
 should be named and populated as follows:
 
 a) Xtype.types.hh
 Contains the forward declarations of type names (in particular, the
-one for "Xtype") and other useful typedef's.
+one for `Xtype') and other useful typedef's.
 
 b) Xtype.defs.hh
 Contains the definition of the type, together with the declaration of
@@ -321,7 +326,7 @@ Standards for Documenting the Project with Doxygen
    (but that are useful for the developers) should be surrounded by
 
      #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-	//! ... doxygen comments ...
+	//! ... Doxygen comments ...
      #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 
    so that they will only appear in the developer's reference.
@@ -360,7 +365,7 @@ Standards for Documenting the Project with Doxygen
    Typically, this will be the only kind of Doxygen command
    occurring in *.inlines.hh and *.cc source files.
 
-   If Classname is a templatic class, the arguments of the template
+   If Classname is a template class, the arguments of the template
    (as well as the angle brackets) should be omitted.
    The namespace qualification of the class can be omitted, provided
    the comment block is included in the namespace scope.
@@ -421,15 +426,19 @@ o  The test functions should be written
 
         // Comment describing the test...
         bool
-          test10() {
+        test10() {
             // ... test code ...
         }
 
-   where the 10 in "test10" indicates that it is the 10th test function
+   where the 10 in `test10' indicates that it is the 10th test function
    in the program.
 
 o  The test functions should return true if the test succeeds and false
    if it fails.
+
+o  If a test requires auxiliary functions and/or classes, put them
+   in a namespace named, e.g., `test10_namespace', which in turn is
+   within the anonymous namespace.
 
 o  Following all the test functions, include:
 
@@ -440,6 +449,26 @@ o  Following all the test functions, include:
         END_MAIN
 
    where every test function in the program is included in the list.
+
+o  If any of the tests is known to fail due to an overflow when the
+   library is configured to use some of the bounded-precision checked
+   integers, then the corresponding test function should be called,
+   e.g., as follows
+
+          DO_TEST_F32(test07);
+
+   where the subscript "_F32" means that the overflow is expected for
+   all checked integers having 32 bits at most (i.e., 64 bits checked
+   integers are not expected to overflow). As an alternative,
+
+          DO_TEST_F32A(test07);
+
+   means that the overflow is expected, as before, for all checked
+   integers having less than 32 bits but in the case of 32 bits checked
+   integers the overflow occurs only if assertions are enabled.
+   Hence, the possible subscripts for DO_TEST are:
+
+          _F8A, _F8, _F16A, _F16, _F32A, _F32, _F64A, _F64.
 
 o  Normally, test code should produce no output at all (independently from
    whether the test succeeded or failed). Output is only meant to help
@@ -487,3 +516,61 @@ o  Refer to the existing tests for examples. Many tests are written along
      b) create a second object in a different (maybe simpler) way, having
         as value the expected result of the computations done in point a);
      c) check for equivalence of the two objects.
+
+o  Ideally the tests should exercise every line of code in the library.
+   To help ensure that, the test-coverage facilities provided by GCC
+   are very useful.  They are described in Chapter 9 of the GCC manual
+   ("`gcov'---a Test Coverage Program").  For a shorter introduction,
+   the build tree under test must be configured with the
+   `--enable-coverage' and `--disable-optimization options' (and possibly
+   also with --enable-profiling).  For example:
+
+     $ configure --enable-coverage --disable-optimization \
+                 --enable-profiling \
+                 --enable-assertions --enable-more-assertions
+
+   Running the tests (with `make check') produces many .gcno and .gcda
+   files in src/.libs and in the test directories.  These are data
+   files for the `gcov' program.  The `gcov' program produces coverage
+   information.  For example:
+
+     $ cd src
+     $ gcov -o .libs Grid_public.cc
+
+   will produce a file called Grid_public.cc.gcov containing the
+   coverage information for Grid_public.cc.  In a similar way
+
+     $ cd tests/Grid
+     $ gcov *.cc
+
+   will produce a file call tests/Grid/ppl.hh.gcov containing coverage
+   information for the header files.
+
+   Below is a section from a .gcov file.  The first column is the
+   number of times the line was run, the second is the line number of the
+   line in the source file.  Line 1006 has been run 48245 times.  Lines
+   1007, 1002 and 1013 have yet to be run.  It would be very difficult
+   to run line 1007, since this requires a Linear_System that does not
+   satisfy the invariants for its class and the PPL does everything it
+   can to make that impossible without fiddling with memory using raw
+   memory pointers.  Similarly for line 1013.  However, the fact that
+   line 1012 has never been run is suspicious and may indicate an area
+   that needs testing.
+
+        -: 1001:bool
+    48245: 1002:PPL::Generator_System::OK() const {
+        -: 1003:  // A Generator_System must be a valid Linear_System; do not check for
+        -: 1004:  // strong normalization, since this will be done when
+        -: 1005:  // checking each individual generator.
+    48245: 1006:  if (!Linear_System::OK(false))
+    #####: 1007:    return false;
+        -: 1008:
+        -: 1009:  // Checking each generator in the system.
+    48245: 1010:  const Generator_System& x = *this;
+    96490: 1011:  for (dimension_type i = num_rows(); i-- > 0; )
+    #####: 1012:    if (!x[i].OK())
+    #####: 1013:      return false;
+        -: 1014:
+        -: 1015:  // All checks passed.
+    48245: 1016:  return true;
+        -: 1017:}

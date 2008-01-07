@@ -1,11 +1,11 @@
 /* Documentation for the Prolog interfaces.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -20,7 +20,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-/*! \defgroup PrologInterface Prolog Language Interface
+/*! \mainpage Prolog Language Interface
 
 The Parma Polyhedra Library comes equipped with a Prolog interface.
 Despite the lack of standardization of Prolog's foreign language interfaces,
@@ -45,11 +45,16 @@ or <CODE>/usr/local</CODE>).
 \anchor PI_SI_Features
 <H1>System-Independent Features</H1>
 
-The Prolog interface provides access to the PPL polyhedra.
-A general introduction to convex polyhedra, their representation in the PPL
-and the operations provided by the PPL is given in Sections
-\ref preamble, \ref convex_polys, \ref representation
-and \ref Operations_on_Convex_Polyhedra of this manual.
+The Prolog interface provides access to the numerical abstractions
+(convex polyhedra, BD shapes, octagonal shapes, etc.) implemented
+by the PPL library.
+A general introduction to the numerical abstractions,
+their representation in the PPL and the operations provided
+by the PPL is given in Sections
+\extref{preamble, The Main Features}, \extref{convex_polys, Convex Polyhedra},
+\extref{representation, Representations of Convex Polyhedra}
+and \extref{Operations_on_Convex_Polyhedra, Operations on Convex Polyhedra}
+in the main PPL user manual.
 Here we just describe those aspects that are specific to the Prolog interface.
 
 <H2>Overview</H2>
@@ -131,12 +136,15 @@ on the use of the interface.
   a PPL polyhedron,
   the polyhedra referenced and any constraints or generators in the call
   should follow all the (space) dimension-compatibility rules stated in
-  Section \ref representation.
+  Section \extref{representation, Representations of Convex Polyhedra}
+  of the main PPL user manual.
 
 - As explained above, a polyhedron has a fixed topology C or NNC,
   that is determined at the time of its initialization.
   All subsequent operations on the polyhedron must respect all the
-  topological compatibility rules stated in Section \ref representation.
+  topological compatibility rules stated in Section
+  \extref{representation, Representations of Convex Polyhedra}
+  of the main PPL user manual.
 
 - Any application using the PPL should make sure that only the
   intended version(s) of the library are ever used.
@@ -319,6 +327,10 @@ Here is a list of all the PPL predicates provided by the Prolog interface.
 
 <CODE>
   ppl_Polyhedron_is_bounded(+Handle)
+</CODE>
+
+<CODE>
+  ppl_Polyhedron_contains_integer_point(+Handle)
 </CODE>
 
 <CODE>
@@ -570,89 +582,101 @@ Here is a list of all the PPL predicates provided by the Prolog interface.
 </CODE>
 
 <CODE>
-  ppl_new_LP_Problem_trivial(-Handle)
+  ppl_new_MIP_Problem_from_space_dimension(+Dimension_Type, -Handle)
 </CODE>
 
 <CODE>
-  ppl_new_LP_Problem(+Constraint_System, +Lin_Expr, +Optimization_Mode,
-                     -Handle)
+  ppl_new_MIP_Problem(+Constraint_System, +Lin_Expr, +Optimization_Mode,
+                      -Handle)
 </CODE>
 
 <CODE>
-  ppl_new_LP_Problem_from_LP_Problem(+Handle_1, -Handle_2)
+  ppl_new_MIP_Problem_from_MIP_Problem(+Handle_1, -Handle_2)
 </CODE>
 
 <CODE>
-  ppl_LP_Problem_swap(+Handle_1, +Handle_2)
+  ppl_MIP_Problem_swap(+Handle_1, +Handle_2)
 </CODE>
 
 <CODE>
-  ppl_delete_LP_Problem(+Handle)
+  ppl_delete_MIP_Problem(+Handle)
 </CODE>
 
 <CODE>
-  ppl_LP_Problem_space_dimension(+Handle, ?Dimension_Type)
+  ppl_MIP_Problem_space_dimension(+Handle, ?Dimension_Type)
 </CODE>
 
 <CODE>
-  ppl_LP_Problem_constraints(+Handle, -Constraint_System)
+  ppl_MIP_Problem_integer_space_dimensions(+Handle, -Vars_List)
 </CODE>
 
 <CODE>
-  ppl_LP_Problem_objective_function(+Handle, -Lin_Expr)
+  ppl_MIP_Problem_constraints(+Handle, -Constraint_System)
 </CODE>
 
 <CODE>
-  ppl_LP_Problem_optimization_mode(+Handle, ?Optimization_Mode)
+  ppl_MIP_Problem_objective_function(+Handle, -Lin_Expr)
 </CODE>
 
 <CODE>
-  ppl_LP_Problem_clear(+Handle)
+  ppl_MIP_Problem_optimization_mode(+Handle, ?Optimization_Mode)
 </CODE>
 
 <CODE>
-  ppl_LP_Problem_add_constraint(+Handle, +Constraint)
+  ppl_MIP_Problem_clear(+Handle)
 </CODE>
 
 <CODE>
-  ppl_LP_Problem_add_constraints(+Handle, +Constraint_System)
+  ppl_MIP_Problem_add_space_dimensions_and_embed(+Handle, +Dimension_Type)
 </CODE>
 
 <CODE>
-  ppl_LP_Problem_set_objective_function(+Handle, +Lin_Expr)
+  ppl_MIP_Problem_add_to_integer_space_dimensions(+Handle, +Vars_List)
 </CODE>
 
 <CODE>
-  ppl_LP_Problem_set_optimization_mode(+Handle, +Optimization_Mode)
+  ppl_MIP_Problem_add_constraint(+Handle, +Constraint)
 </CODE>
 
 <CODE>
-  ppl_LP_Problem_is_satisfiable(+Handle)
+  ppl_MIP_Problem_add_constraints(+Handle, +Constraint_System)
 </CODE>
 
 <CODE>
-  ppl_LP_Problem_solve(+Handle, ?LP_Problem_Status)
+  ppl_MIP_Problem_set_objective_function(+Handle, +Lin_Expr)
 </CODE>
 
 <CODE>
-  ppl_LP_Problem_feasible_point(+Handle, -Generator)
+  ppl_MIP_Problem_set_optimization_mode(+Handle, +Optimization_Mode)
 </CODE>
 
 <CODE>
-  ppl_LP_Problem_optimizing_point(+Handle, -Generator)
+  ppl_MIP_Problem_is_satisfiable(+Handle)
 </CODE>
 
 <CODE>
-  ppl_LP_Problem_optimal_value(+Handle, ?Coefficient_1, ?Coefficient_2)
+  ppl_MIP_Problem_solve(+Handle, ?MIP_Problem_Status)
 </CODE>
 
 <CODE>
-  ppl_LP_Problem_evaluate_objective_function(+Handle, +Generator,
-                                             ?Coefficient_1, ?Coefficient_2)
+  ppl_MIP_Problem_feasible_point(+Handle, -Generator)
 </CODE>
 
 <CODE>
-  ppl_LP_Problem_OK(+Handle)
+  ppl_MIP_Problem_optimizing_point(+Handle, -Generator)
+</CODE>
+
+<CODE>
+  ppl_MIP_Problem_optimal_value(+Handle, ?Coefficient_1, ?Coefficient_2)
+</CODE>
+
+<CODE>
+  ppl_MIP_Problem_evaluate_objective_function(+Handle, +Generator,
+                                              ?Coefficient_1, ?Coefficient_2)
+</CODE>
+
+<CODE>
+  ppl_MIP_Problem_OK(+Handle)
 </CODE>
 
 
@@ -779,15 +803,21 @@ The specification uses the following grammar rules:
  Optimization_Mode
              --> max | min
 
- LP_Problem_Status
+ MIP_Problem_Status
              --> unfeasible | unbounded | optimized
+
+ Vars_List   --> []    			list of PPL variables
+            | [PPL_Var | Vars_List].
 \endcode
 
 \anchor predicates
 Below is a short description of each of the interface predicates.
 For full definitions of terminology used here, see Sections
-\ref preamble, \ref convex_polys, \ref representation
-and \ref Operations_on_Convex_Polyhedra of this manual.
+\extref{preamble, The Main Features},
+\extref{convex_polys, Convex Polyhedra},
+\extref{representation, Representations of Convex Polyhedra} and
+\extref{Operations_on_Convex_Polyhedra, Operations on Convex Polyhedra}
+in the main PPL user manual.
 
 
 <H2><CODE> ppl_version_major(?C_int) </CODE></H2>
@@ -1067,7 +1097,8 @@ Unifies <CODE>Poly_Relation_List</CODE> with the list of relations the
 polyhedron referenced by <CODE>Handle</CODE> has with
 <CODE>Constraint</CODE>.  The possible relations are listed in the
 grammar rules above; their meaning is given in Section
-\ref relation_with "specifying the relation_with operations".
+\extref{relation_with, Relation-With Operators}
+of the main PPL user manual.
 
 <H2><CODE> ppl_Polyhedron_relation_with_generator(+Handle, +Generator,
                ?Poly_Relation_List) </CODE></H2>
@@ -1076,7 +1107,8 @@ Unifies <CODE>Poly_Relation_List</CODE> with the list of relations the
 polyhedron referenced by <CODE>Handle</CODE> has with
 <CODE>Generator</CODE>.  The possible relations are listed in the
 grammar rules above; their meaning is given in
-Section \ref relation_with "specifying the relation_with operations".
+Section \extref{relation_with, Relation-With Operators}
+of the main PPL user manual.
 
 <H2><CODE> ppl_Polyhedron_get_bounding_box(+Handle,
                                           +Complexity,
@@ -1127,6 +1159,11 @@ to be used has the following meaning:
 
    Succeeds if and only if the polyhedron referenced by
    <CODE>Handle</CODE> is bounded.
+
+<H2><CODE> ppl_Polyhedron_contains_integer_point(+Handle) </CODE></H2>
+
+   Succeeds if and only if the polyhedron referenced by
+   <CODE>Handle</CODE> contains at least one integer point.
 
 <H2><CODE> ppl_Polyhedron_bounds_from_above(+Handle,
                                    +Lin_Expr) </CODE></H2>
@@ -1332,7 +1369,8 @@ and a query will succeed even when
 
    If the system of generators representing a polyhedron
    is non-empty, then it must include a point
-   (see Section \ref Generators_Representation).
+   (see Section \extref{Generators_Representation, Generators Representation}
+    of the main PPL user manual).
    Thus care must be taken to ensure that, before calling this
    predicate, either the polyhedron referenced by <CODE>Handle</CODE>
    is non-empty or that whenever <CODE>Generator_System</CODE> is
@@ -1785,8 +1823,10 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    <CODE>List_of_PPL_Vars</CODE> are folded into the dimension referenced
    by <CODE>PPL_Var</CODE> and removed.
    The result is undefined if <CODE>List_of_PPL_Vars</CODE>
-   does not have the properties described in
-   Section \ref fold_space_dimensions.
+   does not have the properties described in Section
+   \extref{fold_space_dimensions,
+   Folding Multiple Dimensions of the Vector Space into One Dimension}
+   of the main PPL user manual.
 
 <H2><CODE> ppl_Polyhedron_map_space_dimensions(+Handle, +P_Func)) </CODE></H2>
 
@@ -1795,170 +1835,194 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    using the partial function defined by <CODE>P_Func</CODE>.
    The result is undefined if \p P_Func does not encode a partial
    function with the properties described in
-   Section \ref Mapping_the_Dimensions_of_the_Vector_Space
-   "specifying the map_space_dimensions operator".
+   Section \extref{Mapping_the_Dimensions_of_the_Vector_Space,
+   Mapping the Dimensions of the Vector Space}
+   of the main PPL user manual.
 
 <H2><CODE>
-  ppl_new_LP_Problem_trivial(-Handle)
+  ppl_new_MIP_Problem_from_space_dimension(+Dimension_Type, -Handle)
 </CODE></H2>
 
-   Creates an LP Problem \f$\mathrm{LP}\f$ with
-   the feasible region the \f$0\f$-dimensional universe,
+   Creates an MIP Problem \f$\mathrm{MIP}\f$ with the feasible region
+   the vector space of dimension <CODE>Dimension_Type</CODE>,
    objective function \f$0\f$ and optimization mode <CODE>max</CODE>.
-   <CODE>Handle</CODE> is unified with the handle for \f$\mathrm{LP}\f$.
+   <CODE>Handle</CODE> is unified with the handle for \f$\mathrm{MIP}\f$.
 
 <H2><CODE>
-  ppl_new_LP_Problem(+Constraint_System, +Lin_Expr, +Optimization_Mode,
-                     -Handle)
+  ppl_new_MIP_Problem(+Constraint_System, +Lin_Expr, +Optimization_Mode,
+                      -Handle)
 </CODE></H2>
 
-   Creates an LP Problem \f$\mathrm{LP}\f$ with
+   Creates an MIP Problem \f$\mathrm{MIP}\f$ with
    the feasible region represented by <CODE>Constraint_System</CODE>,
    objective function <CODE>Lin_Expr</CODE> and optimization mode
    <CODE>Optimization_Mode</CODE>.
-   <CODE>Handle</CODE> is unified with the handle for \f$\mathrm{LP}\f$.
+   <CODE>Handle</CODE> is unified with the handle for \f$\mathrm{MIP}\f$.
 
 <H2><CODE>
-  ppl_LP_Problem_swap(+Handle_1, +Handle_2)
+  ppl_MIP_Problem_swap(+Handle_1, +Handle_2)
 </CODE></H2>
 
-   Swaps the LP Problem referenced by <CODE>Handle_1</CODE>
+   Swaps the MIP Problem referenced by <CODE>Handle_1</CODE>
    with the one referenced by <CODE>Handle_2</CODE>.
 
 <H2><CODE>
-  ppl_delete_LP_Problem(+Handle)
+  ppl_delete_MIP_Problem(+Handle)
 </CODE></H2>
 
-   Deletes the LP Problem referenced by <CODE>Handle</CODE>.
+   Deletes the MIP Problem referenced by <CODE>Handle</CODE>.
    After execution,
-   <CODE>Handle</CODE> is no longer a valid handle for a PPL LP Problem.
+   <CODE>Handle</CODE> is no longer a valid handle for a PPL MIP Problem.
 
 <H2><CODE>
-  ppl_LP_Problem_space_dimension(+Handle, ?Dimension_Type)
+  ppl_MIP_Problem_space_dimension(+Handle, ?Dimension_Type)
 </CODE></H2>
 
    Unifies the dimension of the vector space in which the
-   LP Problem referenced by <CODE>Handle</CODE> is embedded
+   MIP Problem referenced by <CODE>Handle</CODE> is embedded
    with <CODE>Dimension_Type</CODE>.
 
 <H2><CODE>
-  ppl_LP_Problem_constraints(+Handle, -Constraint_System)
+  ppl_MIP_Problem_integer_space_dimensions(+Handle, -Vars_List)
+</CODE></H2>
+
+   Unifies <CODE>Vars_List</CODE> with a list of variables representing
+   representing the integer space dimensions of the MIP Problem
+   referenced by <CODE>Handle</CODE>.
+
+<H2><CODE>
+  ppl_MIP_Problem_constraints(+Handle, -Constraint_System)
 </CODE></H2>
 
    Unifies <CODE>Constraint_System</CODE> with a list of
    the constraints in the constraints system
-   representing the feasible region for the LP Problem
+   representing the feasible region for the MIP Problem
    referenced by <CODE>Handle</CODE>.
 
 <H2><CODE>
-  ppl_LP_Problem_objective_function(+Handle, -Lin_Expr)
+  ppl_MIP_Problem_objective_function(+Handle, -Lin_Expr)
 </CODE></H2>
 
    Unifies <CODE>Lin_Expr</CODE> with the objective function
-   for the LP Problem referenced by <CODE>Handle</CODE>.
+   for the MIP Problem referenced by <CODE>Handle</CODE>.
 
 <H2><CODE>
-  ppl_LP_Problem_optimization_mode(+Handle, ?Optimization_Mode)
+  ppl_MIP_Problem_optimization_mode(+Handle, ?Optimization_Mode)
 </CODE></H2>
 
    Unifies <CODE>Optimization_Mode</CODE> with the optimization mode
-   for the LP Problem referenced by <CODE>Handle</CODE>.
+   for the MIP Problem referenced by <CODE>Handle</CODE>.
 
 <H2><CODE>
-  ppl_LP_Problem_clear(+Handle)
+  ppl_MIP_Problem_clear(+Handle)
 </CODE></H2>
 
-  Resets the LP problem referenced by <CODE>Handle</CODE>
+  Resets the MIP problem referenced by <CODE>Handle</CODE>
   to be the trivial problem with
   the feasible region the \f$0\f$-dimensional universe,
   objective function \f$0\f$ and optimization mode <CODE>max</CODE>.
 
+<H2><CODE> ppl_MIP_Problem_add_space_dimensions_and_embed(
+             +Handle, +Dimension_Type)
+ </CODE></H2>
+
+   Embeds the MIP problem referenced by <CODE>Handle</CODE>
+   in a space that is enlarged by <CODE>Dimension_Type</CODE> dimensions,
+
 <H2><CODE>
-  ppl_LP_Problem_add_constraint(+Handle, +Constraint)
+  ppl_MIP_Problem_add_to_integer_space_dimensions(+Handle, +Vars_List)
 </CODE></H2>
 
-   Updates the LP Problem referenced by <CODE>Handle</CODE>
+   Updates the MIP Problem referenced by <CODE>Handle</CODE>
+   so that the variables in <CODE>Vars_List</CODE> are added to
+   the set of integer space dimensions.
+
+<H2><CODE>
+  ppl_MIP_Problem_add_constraint(+Handle, +Constraint)
+</CODE></H2>
+
+   Updates the MIP Problem referenced by <CODE>Handle</CODE>
    so that the feasible region is represented by the original constraint
    system together with the constraint <CODE>Constraint</CODE>.
 
 <H2><CODE>
-  ppl_LP_Problem_add_constraints(+Handle, +Constraint_System)
+  ppl_MIP_Problem_add_constraints(+Handle, +Constraint_System)
 </CODE></H2>
 
-   Updates the LP Problem referenced by <CODE>Handle</CODE>
+   Updates the MIP Problem referenced by <CODE>Handle</CODE>
    so that the feasible region is represented by the original constraint
    system together with all the constraints in <CODE>Constraint_System</CODE>.
 
 <H2><CODE>
-  ppl_LP_Problem_set_objective_function(+Handle, +Lin_Expr)
+  ppl_MIP_Problem_set_objective_function(+Handle, +Lin_Expr)
 </CODE></H2>
 
-   Updates the LP Problem referenced by <CODE>Handle</CODE>
+   Updates the MIP Problem referenced by <CODE>Handle</CODE>
    so that the objective function is changed to <CODE>Lin_Expr</CODE>.
 
 <H2><CODE>
-  ppl_LP_Problem_set_optimization_mode(+Handle, +Optimization_Mode)
+  ppl_MIP_Problem_set_optimization_mode(+Handle, +Optimization_Mode)
 </CODE></H2>
 
-   Updates the LP Problem referenced by <CODE>Handle</CODE>
+   Updates the MIP Problem referenced by <CODE>Handle</CODE>
    so that the optimization mode is changed to <CODE>Optimization_Mode</CODE>.
 
 <H2><CODE>
-  ppl_LP_Problem_is_satisfiable(+Handle)
+  ppl_MIP_Problem_is_satisfiable(+Handle)
 </CODE></H2>
 
-  Succeeds if and only if the LP Problem referenced by
+  Succeeds if and only if the MIP Problem referenced by
   <CODE>Handle</CODE> is satisfiable.
 
 <H2><CODE>
-  ppl_LP_Problem_solve(+Handle, ?LP_Problem_Status)
+  ppl_MIP_Problem_solve(+Handle, ?MIP_Problem_Status)
 </CODE></H2>
 
-  Solves the LP problem  referenced by
-  <CODE>Handle</CODE> and unifies <CODE>LP_Problem_Status</CODE>
+  Solves the MIP problem  referenced by
+  <CODE>Handle</CODE> and unifies <CODE>MIP_Problem_Status</CODE>
   with:
-  <CODE>unfeasible</CODE>, if the LP problem is not satisfiable;
-  <CODE>unbounded</CODE>, if the LP problem is satisfiable but
+  <CODE>unfeasible</CODE>, if the MIP problem is not satisfiable;
+  <CODE>unbounded</CODE>, if the MIP problem is satisfiable but
   there is no finite bound to the value of the objective function;
-  <CODE>optimized</CODE>, if the LP problem admits an optimal solution.
+  <CODE>optimized</CODE>, if the MIP problem admits an optimal solution.
 
 <H2><CODE>
-  ppl_LP_Problem_feasible_point(+Handle, ?Generator)
+  ppl_MIP_Problem_feasible_point(+Handle, ?Generator)
 </CODE></H2>
 
-  Unifies  <CODE>Generator</CODE> with a feasible point for the LP problem
+  Unifies  <CODE>Generator</CODE> with a feasible point for the MIP problem
   referenced by <CODE>Handle</CODE>.
 
 <H2><CODE>
-  ppl_LP_Problem_optimizing_point(+Handle, ?Generator)
+  ppl_MIP_Problem_optimizing_point(+Handle, ?Generator)
 </CODE></H2>
 
-  Unifies  <CODE>Generator</CODE> with an optimizing point for the LP problem
+  Unifies  <CODE>Generator</CODE> with an optimizing point for the MIP problem
   referenced by <CODE>Handle</CODE>.
 
 <H2><CODE>
-  ppl_LP_Problem_optimal_value(+Handle, ?Coefficient_1, ?Coefficient_2)
+  ppl_MIP_Problem_optimal_value(+Handle, ?Coefficient_1, ?Coefficient_2)
 </CODE></H2>
 
   Unifies <CODE>Coefficient_1</CODE> and <CODE>Coefficient_2</CODE>
   with the numerator and denominator, respectively, for the optimal value
-  for the LP problem  referenced by <CODE>Handle</CODE>.
+  for the MIP problem  referenced by <CODE>Handle</CODE>.
 
 <H2><CODE>
-  ppl_LP_Problem_evaluate_objective_function(+Handle, +Generator,
+  ppl_MIP_Problem_evaluate_objective_function(+Handle, +Generator,
                                              ?Coefficient_1, ?Coefficient_2)
 </CODE></H2>
-  Evaluates the objective function of the LP problem  referenced by
+  Evaluates the objective function of the MIP problem  referenced by
   <CODE>Handle</CODE> at point <CODE>Generator</CODE>.
   <CODE>Coefficient_1</CODE> is unified with the numerator and
   <CODE>Coefficient_2</CODE> is unified with the denominator of the
   objective function value at <CODE>Generator</CODE>.
 
 <H2><CODE>
-  ppl_LP_Problem_OK(+Handle)
+  ppl_MIP_Problem_OK(+Handle)
 </CODE></H2>
 
-   Succeeds only if the LP Problem referenced by
+   Succeeds only if the MIP Problem referenced by
    <CODE>Handle</CODE> is well formed, i.e., if it
    satisfies all its implementation invariants.  Useful for debugging purposes.
 
@@ -2172,4 +2236,4 @@ when the PPL library is no longer needed.
 Notice that, for dynamic linking to work, you should have configured
 the library with the <CODE>--enable-shared</CODE> option.
 
-*/ /* \defgroup PrologInterface */
+*/ /* \mainpage */

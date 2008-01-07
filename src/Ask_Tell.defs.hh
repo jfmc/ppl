@@ -1,11 +1,11 @@
 /* Ask_Tell class declaration.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -24,55 +24,55 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Ask_Tell_defs_hh
 
 #include "Ask_Tell.types.hh"
-#include "Constraint_System.types.hh"
-#include "Constraint.types.hh"
-#include "Variable.defs.hh"
-//#include "globals.defs.hh"
+#include "iterator_to_const.defs.hh"
 #include <iosfwd>
 #include <list>
 
 namespace Parma_Polyhedra_Library {
 
-template <typename CS>
-Ask_Tell<CS>
-operator+(const Ask_Tell<CS>&, const Ask_Tell<CS>&);
+//! Returns <CODE>true</CODE> if and only if \p x and \p y are equivalent.
+/*! \relates Ask_Tell */
+template <typename D>
+bool
+operator==(const Ask_Tell<D>& x, const Ask_Tell<D>& y);
 
-template <typename CS>
-Ask_Tell<CS>
-operator*(const Ask_Tell<CS>&, const Ask_Tell<CS>&);
-
-template <typename CS>
-CS
-project(const Ask_Tell<CS>&);
+//! Returns <CODE>true</CODE> if and only if \p x and \p y are not equivalent.
+/*! \relates Ask_Tell */
+template <typename D>
+bool
+operator!=(const Ask_Tell<D>& x, const Ask_Tell<D>& y);
 
 namespace IO_Operators {
 
-template <typename CS>
+//! Output operator.
+/*! \relates Parma_Polyhedra_Library::Ask_Tell */
+template <typename D>
 std::ostream&
-operator<<(std::ostream&, const Ask_Tell<CS>&);
+operator<<(std::ostream&, const Ask_Tell<D>&);
 
 } // namespace IO_Operators
 
 } // namespace Parma_Polyhedra_Library
 
-//! A pair of (ask and tell) constraints.
-template <typename CS>
+//! A pair of <EM>ask</EM> and <EM>tell</EM> descriptions.
+/*! \ingroup PPL_CXX_interface */
+template <typename D>
 class Parma_Polyhedra_Library::Ask_Tell_Pair {
 public:
   //! Pair constructor.
-  Ask_Tell_Pair(const CS& ask, const CS& tell);
+  Ask_Tell_Pair(const D& ask, const D& tell);
 
   //! Const accessor to the <EM>ask</EM> component.
-  const CS& ask() const;
+  const D& ask() const;
 
   //! Non-const accessor to the <EM>ask</EM> component.
-  CS& ask();
+  D& ask();
 
   //! Const accessor to the <EM>ask</EM> component.
-  const CS& tell() const;
+  const D& tell() const;
 
   //! Non-const accessor to the <EM>tell</EM> component.
-  CS& tell();
+  D& tell();
 
   /*! \brief
     Returns <CODE>true</CODE> if \p *this definitely entails \p y.
@@ -84,81 +84,52 @@ public:
 
 private:
   //! The <EM>ask</EM> component.
-  CS a;
+  D a;
 
   //! The <EM>tell</EM> component.
-  CS t;
+  D t;
 };
 
-//! The ask and tell construction on constraint systems.
+//! The ask and tell construction on a base-level domain.
 /*!
   This class offers a generic implementation of <EM>ask-and-tell
   constraint systems</EM> as defined in \ref Bag98 "[Bag98]".
 */
-template <typename CS>
+template <typename D>
 class Parma_Polyhedra_Library::Ask_Tell {
-protected:
-  void pair_insert(const CS& a, const CS& t);
-  void pair_insert_good(const CS& a, const CS& t);
-
-  bool reduce();
-  bool deduce();
-  bool absorb();
-  void engine();
-
-  bool probe(const CS& tellv, const CS& askv) const;
-
 public:
-  //! Builds a universe (top) or empty (bottom) ask-and-tell agent.
-  /*!
-    \param num_dimensions
-    The number of dimensions of the vector space enclosing the
-    ask-and-tell agent;
+  //! \name Constructors and Destructor
+  //@{
 
-    \param universe
-    If <CODE>true</CODE>, a universe ask-and-tell agent is built; an
-    empty agent is built otherwise.
+  /*! \brief
+    Default constructor: builds the top of the ask-and-tell constraint
+    system (i.e., the empty system).
   */
-  explicit Ask_Tell(dimension_type num_dimensions = 0,
-		   bool universe = true);
+  Ask_Tell();
 
-  //! Ordinary copy-constructor.
+  //! Copy constructor.
   Ask_Tell(const Ask_Tell& y);
 
   /*! \brief
-    The assignment operator.
-    (\p *this and \p y can be dimension-incompatible.)
+    If \p p is not top, builds an ask-and-tell system containing only \p p.
+    Builds the empty system otherwise.
   */
-  Ask_Tell& operator=(const Ask_Tell& y);
-
-  //! Swaps \p *this with \p y.
-  void swap(Ask_Tell& y);
+  explicit Ask_Tell(const Ask_Tell_Pair<D>& p);
 
   /*! \brief
-    Creates an ask-and-tell constraint system with the same
-    information contents as \p cs.
+    If \p ask and \p tell do not constitute a top pair, builds an
+    ask-and-tell system containing only that pair.
+    Builds the empty system otherwise.
   */
-  Ask_Tell(const Constraint_System& cs);
+  Ask_Tell(const D& ask, const D& tell);
 
-  //! Adds to \p *this the pair constituted by \p ask and \p tell.
-  Ask_Tell& add_pair(const CS& ask, const CS& tell);
+  //! Destructor.
+  ~Ask_Tell();
 
-  Ask_Tell& bottom();
+  //@} // Constructors and Destructor
 
-  //! Assigns to \p *this an upper bound of \p *this and \p y.
-  void upper_bound_assign(const Ask_Tell& y);
-
-  //! Assigns to \p *this the meet of \p *this and \p y.
-  void meet_assign(const Ask_Tell& y);
-
-  //! Assigns to \p *this the concatenation of \p *this and \p y.
-  /*!
-    Seeing an ask-and-tell agent as a set of tuples, this method
-    assigns to \p *this all the tuples that can be obtained by
-    concatenating, in the order given, a tuple of \p *this with
-    a tuple of \p y.
-  */
-  void concatenate_assign(const Ask_Tell& y);
+  //! \name Member Functions that Do Not Modify the Ask_Tell Object
+  //@{
 
   /*! \brief
     Returns <CODE>true</CODE> if \p *this definitely entails \p y.
@@ -182,120 +153,212 @@ public:
   */
   bool is_bottom() const;
 
-  //! Returns the dimension of the vector space enclosing \p *this.
-  dimension_type space_dimension() const;
-
-  //! Intersects \p *this with (a copy of) constraint \p c.
-  /*!
-    \exception std::invalid_argument
-    Thrown if \p *this and constraint \p c are topology-incompatible
-    or dimension-incompatible.
+  /*! \brief
+    Returns a lower bound to the total size in bytes of the memory
+    occupied by \p *this.
   */
-  void add_constraint(const Constraint& c);
-
-  //! Intersects \p *this with (a copy of) the constraints in \p cs.
-  /*!
-    \param cs
-    Contains the constraints to intersect with.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cs are topology-incompatible or
-    dimension-incompatible.
-  */
-  void add_constraints(const Constraint_System& cs);
+  memory_size_type total_memory_in_bytes() const;
 
   /*! \brief
-    Adds \p m new dimensions to the vector space, embedding
-    the old polyhedron in the new space.
+    Returns a lower bound to the size in bytes of the memory
+    managed by \p *this.
   */
-  void add_space_dimensions_and_embed(dimension_type m);
+  memory_size_type external_memory_in_bytes() const;
 
   /*! \brief
-    Adds \p m new dimensions to the vector space
-    and does not embed it in the new space.
+    Returns a 32-bit hash code for \p *this.
+
+    If \p x and \p y are such that <CODE>x == y</CODE>,
+    then <CODE>x.hash_code() == y.hash_code()</CODE>.
   */
-  void add_space_dimensions_and_project(dimension_type m);
-
-  //! Removes all the specified dimensions from the vector space.
-  /*!
-    \param to_be_removed
-    The set of Variable objects corresponding to the space dimensions
-    to be removed.
-
-    \exception std::invalid_argument
-    Thrown if \p *this is dimension-incompatible with one of the
-    Variable objects contained in \p to_be_removed.
-  */
-  void remove_space_dimensions(const Variables_Set& to_be_removed);
-
-  /*! \brief
-    Removes the higher dimensions of the vector space so that
-    the resulting space will have dimension \p new_dimension.
-
-    \exception std::invalid_argument
-    Thrown if \p new_dimensions is greater than the space dimension of
-    \p *this.
-  */
-  void remove_higher_space_dimensions(dimension_type new_dimension);
-
-  template <typename Partial_Function>
-  void map_space_dimensions(const Partial_Function& pfunc);
-
-  void H79_extrapolation_assign(const Ask_Tell& y);
-
-  friend Ask_Tell operator +<>(const Ask_Tell<CS>& x,
-			      const Ask_Tell<CS>& y);
-  friend Ask_Tell operator *<>(const Ask_Tell& x, const Ask_Tell& y);
+  int32_t hash_code() const;
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
-  friend CS project<>(const Ask_Tell& x);
+  //@} // Member Functions that Do Not Modify the Ask_Tell Object
 
-private:
-  //! An ask-tell agent is implemented as a sequence of ask-tell pairs
+protected:
+  //! An ask-tell agent is composed of pairs.
+  typedef Ask_Tell_Pair<D> Pair;
+
+  //! An ask-tell agent is implemented as a sequence of ask-tell pairs.
   /*!
     The particular sequence employed must support efficient deletion
     in any position and efficient back insertion.
   */
-  typedef std::list<Ask_Tell_Pair<CS> > Sequence;
+  typedef std::list<Ask_Tell_Pair<D> > Sequence;
 
-  //! The sequence container holding powerset's elements.
+  //! Alias for the low-level iterator on the pairs.
+  typedef typename Sequence::iterator Sequence_iterator;
+
+  //! Alias for the low-level %const_iterator on the pairs.
+  typedef typename Sequence::const_iterator Sequence_const_iterator;
+
+  //! The sequence container holding the pairs/
   Sequence sequence;
 
-  //! The number of dimensions of the enclosing vector space.
-  dimension_type space_dim;
+  //! If <CODE>true</CODE>, \p *this is normalized.
+  mutable bool normalized;
 
 public:
+  // Sequence manipulation types, accessors and modifiers
   typedef typename Sequence::size_type size_type;
-
-  size_type size() const;
-
-  typedef typename Sequence::iterator iterator;
-  typedef typename Sequence::const_iterator const_iterator;
-  typedef typename Sequence::reverse_iterator reverse_iterator;
-  typedef typename Sequence::const_reverse_iterator const_reverse_iterator;
   typedef typename Sequence::value_type value_type;
 
+  /*! \brief
+    Alias for a <EM>read-only</EM> bidirectional %iterator on the
+    pairs an Ask_Tell object.
+
+    By using this iterator type, the pairs cannot be overwritten,
+    but they can be removed using methods
+    <CODE>drop_pair(iterator position)</CODE> and
+    <CODE>drop_pairs(iterator first, iterator last)</CODE>,
+    while still ensuring a correct handling of normalization.
+  */
+  typedef iterator_to_const<Sequence> iterator;
+
+  //! A bidirectional %const_iterator on the disjuncts of a Powerset element.
+  typedef const_iterator_to_const<Sequence> const_iterator;
+
+  //! The reverse iterator type built from Powerset::iterator.
+  typedef std::reverse_iterator<iterator> reverse_iterator;
+
+  //! The reverse iterator type built from Powerset::const_iterator.
+  typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
+
+  //! \name Member Functions for the Direct Manipulation of Pairs
+  //@{
+
+  /*! \brief
+    Normalizes the pairs in \p *this.
+
+    This method is declared <CODE>const</CODE> because, even though
+    normalization may change the syntactic representation of \p *this,
+    its semantics will be unchanged.
+  */
+  void normalize() const;
+
+  //! Returns the number of pairs.
+  size_type size() const;
+
+  //! Returns <CODE>true</CODE> if and only if there are no pairs in \p *this.
+  bool empty() const;
+
+  /*! \brief
+    Returns an iterator pointing to the first pair, if \p *this
+    is not empty; otherwise, returns the past-the-end iterator.
+  */
   iterator begin();
+
+  //! Returns the past-the-end iterator.
+  iterator end();
+
+  /*! \brief
+    Returns a const_iterator pointing to the first pair, if \p *this
+    is not empty; otherwise, returns the past-the-end const_iterator.
+  */
   const_iterator begin() const;
 
-  iterator end();
+  //! Returns the past-the-end const_iterator.
   const_iterator end() const;
 
+  /*! \brief
+    Returns a reverse_iterator pointing to the last pair, if \p *this
+    is not empty; otherwise, returns the before-the-start reverse_iterator.
+  */
   reverse_iterator rbegin();
+
+  //! Returns the before-the-start reverse_iterator.
+  reverse_iterator rend();
+
+  /*! \brief
+    Returns a const_reverse_iterator pointing to the last pair,
+    if \p *this is not empty; otherwise, returns the before-the-start
+    const_reverse_iterator.
+  */
   const_reverse_iterator rbegin() const;
 
-  reverse_iterator rend();
+  //! Returns the before-the-start const_reverse_iterator.
   const_reverse_iterator rend() const;
 
-//protected:
-  iterator erase(iterator first, iterator last) {
-    return sequence.erase(first, last);
-  }
-  iterator erase(iterator position) {
-    return sequence.erase(position);
-  }
+  //! Adds to \p *this the pair \p p.
+  Ask_Tell& add_pair(const Ask_Tell_Pair<D>& p);
+
+  //! Adds to \p *this the pair constituted by \p ask and \p tell.
+  Ask_Tell& add_pair(const D& ask, const D& tell);
+
+  /*! \brief
+    Drops the pair in \p *this pointed to by \p position, returning
+    an iterator to the pair following \p position.
+  */
+  iterator drop_pair(iterator position);
+
+  //! Drops all the pairs from \p first to \p last (excluded).
+  void drop_pairs(iterator first, iterator last);
+
+  //! Drops all the pairs, making \p *this an empty powerset.
+  void clear();
+
+  //@} // Member Functions for the Direct Manipulation of Pairs
+
+  //! \name Member Functions that May Modify the Ask_Tell Object
+  //@{
+
+  /*! \brief
+    The assignment operator.
+    (\p *this and \p y can be dimension-incompatible.)
+  */
+  Ask_Tell& operator=(const Ask_Tell& y);
+
+  //! Swaps \p *this with \p y.
+  void swap(Ask_Tell& y);
+
+  //! Assigns to \p *this an upper bound of \p *this and \p y.
+  void upper_bound_assign(const Ask_Tell& y);
+
+  //! Assigns to \p *this the meet of \p *this and \p y.
+  void meet_assign(const Ask_Tell& y);
+
+  //@} // Member Functions that May Modify the Ask_Tell element
+
+protected:
+  //! Returns <CODE>true</CODE> if and only if \p *this is normalized.
+  bool is_normalized() const;
+
+  void pair_insert(const D& a, const D& t);
+  void pair_insert_good(const D& a, const D& t);
+
+  /*
+    Postcondition:
+    the map is well formed and there are no two pairs x and y such that
+    x.ASK.definitely_entails(y.ASK) && y.TELL.definitely_entails(x.TELL).
+  */
+  bool reduce();
+
+  // Preconditions:
+  //
+  //     the map is well formed and the postcondition of reduce() is satisfied.
+  //
+  // Postconditions:
+  //
+  //     the map is well formed, the postcondition of reduce() is satisfied,
+  //     and...
+  //
+  bool deduce();
+
+  bool absorb();
+
+  void deabsorb() const;
+
+  /*! \brief
+    Does the hard work of checking whether \p *this is normalized
+    and returns <CODE>true</CODE> if and only if it is.
+  */
+  bool check_normalized() const;
+
+protected:
+  bool probe(const D& tellv, const D& askv) const;
 };
 
 
@@ -303,12 +366,13 @@ namespace std {
 
 //! Specializes <CODE>std::swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::Ask_Tell */
-template <typename CS>
-void swap(Parma_Polyhedra_Library::Ask_Tell<CS>& x,
-	  Parma_Polyhedra_Library::Ask_Tell<CS>& y);
+template <typename D>
+void swap(Parma_Polyhedra_Library::Ask_Tell<D>& x,
+	  Parma_Polyhedra_Library::Ask_Tell<D>& y);
 
 } // namespace std
 
 #include "Ask_Tell.inlines.hh"
+#include "Ask_Tell.templates.hh"
 
 #endif // !defined(PPL_Ask_Tell_defs_hh)

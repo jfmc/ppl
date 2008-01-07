@@ -1,11 +1,11 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
 # The PPL is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2 of the License, or (at your
+# Free Software Foundation; either version 3 of the License, or (at your
 # option) any later version.
 #
 # The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -20,7 +20,7 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-SUBDIRS = . BD_Shape Polyhedron Grid
+SUBDIRS = . Box Ask_Tell MIP_Problem Octagonal_Shape BD_Shape Polyhedron Grid
 
 AM_CPPFLAGS = -I$(top_builddir)/src -I$(top_srcdir)/src @extra_includes@
 
@@ -32,14 +32,16 @@ files.cc \
 print.hh \
 print.cc \
 ppl_test.cc \
-BBox.cc \
+FCAIBVP.cc \
 Partial_Function.cc
 
 LDADD = $(top_builddir)/src/libppl.la libppl_tests.a -lppl @extra_libraries@
 
 noinst_HEADERS = \
 ppl_test.hh \
-BBox.hh \
+FCAIBVP.defs.hh \
+FCAIBVP.inlines.hh \
+FCAIBVP.types.hh \
 Partial_Function.defs.hh \
 Partial_Function.inlines.hh \
 Partial_Function.types.hh \

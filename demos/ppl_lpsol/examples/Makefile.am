@@ -1,11 +1,11 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
 # The PPL is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2 of the License, or (at your
+# Free Software Foundation; either version 3 of the License, or (at your
 # option) any later version.
 #
 # The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -27,9 +27,22 @@ bgprtr.mps \
 blend.mps \
 boeing1.mps \
 boeing2.mps \
+egout.mps \
+ex12.mps \
 ex1.mps \
 kb2.mps \
+lseu.mps \
+markshare1.mps \
+markshare2.mps \
+mas74.mps \
+mas76.mps \
 mip.mps \
+modglob.mps \
+noswot.mps \
+opt1217.mps \
+p0033.mps \
+pk1.mps \
+rout.mps \
 sample.mps \
 sc105.mps \
 sc50a.mps \

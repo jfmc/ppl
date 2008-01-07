@@ -1,11 +1,11 @@
 # Autoconf source file for the Parma Watchdog Library.
-# Copyright (C) 2002-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Watchdog Library (PWL).
 #
 # The PWL is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2 of the License, or (at your
+# Free Software Foundation; either version 3 of the License, or (at your
 # option) any later version.
 #
 # The PWL is distributed in the hope that it will be useful, but WITHOUT
@@ -23,7 +23,7 @@
 # Process this file with autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Watchdog Library],[0.4],[bagnara@cs.unipr.it],[watchdog])
+AC_INIT([the Parma Watchdog Library],[0.6],[bagnara@cs.unipr.it],[pwl])
 
 # Minimum autoconf version required.
 AC_PREREQ(2.59)
@@ -31,12 +31,28 @@ AC_PREREQ(2.59)
 # Make sure the sources are there.
 AC_CONFIG_SRCDIR(src/Watchdog.cc)
 
+# Determine the system type and set output variables to the names of
+# the canonical system types.
+AC_CANONICAL_HOST
+
 # Use Automake.
-AM_INIT_AUTOMAKE([foreign dist-bzip2 dist-zip 1.7.3])
+AM_INIT_AUTOMAKE([foreign no-define dist-bzip2 dist-zip 1.7.3])
 AC_SUBST(VERSION)
 
 # Generate a configuration header file.
 AC_CONFIG_HEADER([config.h])
+
+# Generate prefixed defines.
+AX_PREFIX_CONFIG_H
+
+ISODATE=`date +%Y-%m-%d`
+AC_SUBST(ISODATE)
+
+AH_BOTTOM([
+#ifdef PWL_NDEBUG
+# define NDEBUG PWL_NDEBUG
+#endif
+])
 
 # C compiler
 
@@ -56,13 +72,6 @@ AC_ARG_WITH(cxx,
 CXX=$with_cxx)
 
 AC_LANG(C++)
-
-# Checks for programs.
-AC_PROG_CC
-AC_PROG_CXX
-AC_PROG_CXXCPP
-AC_PROG_MAKE_SET
-AC_PROG_INSTALL
 
 # Check for Perl.
 AC_PATH_PROG([PERL], perl, no)
@@ -99,7 +108,7 @@ case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
   OPT_FLAGS="-g"
-  COMP_FLAGS="$COMP_FLAGS -pg -DPROFILING=1"
+  COMP_FLAGS="$COMP_FLAGS -pg -DPWL_PROFILING=1"
   ;;
 no)
   AC_MSG_RESULT(no)
@@ -212,8 +221,8 @@ no)
   ;;
 esac
 
-CFLAGS="$COMP_FLAGS $OPT_FLAGS"
-CXXFLAGS="$COMP_FLAGS $OPT_FLAGS"
+CFLAGS="$COMP_FLAGS $OPT_FLAGS $CFLAGS"
+CXXFLAGS="$COMP_FLAGS $OPT_FLAGS $CXXFLAGS"
 
 # Allow additions to C and C++ compilation flags
 
@@ -261,6 +270,20 @@ then
   AC_LANG_POP(C)
 fi
 
+# Checks for programs.
+# Note that AC_PROG_CC must precede the first use of $GCC abd AC_PROG_CXX
+# must precede the first use of $GXX.  Note also that we do not allow
+# AC_PROG_CC and AC_PROG_CXX to affect CFLAGS and CXXFLAGS.
+save_CFLAGS="$CFLAGS"
+AC_PROG_CC
+CFLAGS="$save_CFLAGS"
+save_CXXFLAGS="$CXXFLAGS"
+AC_PROG_CXX
+CXXFLAGS="$save_CXXFLAGS"
+AC_PROG_CXXCPP
+AC_PROG_MAKE_SET
+AC_PROG_INSTALL
+
 # Libtool.
 # Turn off shared libraries during beta-testing, since they
 # make debugging harder and the build process takes too long.
@@ -295,5 +318,11 @@ AC_SUBST(debug_flag)
 
 AC_CONFIG_FILES(Makefile
                 src/Makefile
+                m4/Makefile
+                doc/Makefile
+                doc/user.doxyconf-latex
+                doc/devref.doxyconf-latex
+                doc/user.doxyconf-html
+                doc/devref.doxyconf-html
                 utils/Makefile)
 AC_OUTPUT

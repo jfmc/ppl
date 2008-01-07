@@ -1,11 +1,11 @@
-/* Test Polyhedra_Powerset<PH>::BHZ03_widening_assign().
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Test Pointset_Powerset<PH>::BHZ03_widening_assign().
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -29,7 +29,7 @@ test01() {
   Variable A(0);
   Variable B(1);
 
-  typedef Polyhedra_Powerset<TBD_Shape> PSet;
+  typedef Pointset_Powerset<TBD_Shape> PSet;
 
   TBD_Shape p(2);
   TBD_Shape q(2);

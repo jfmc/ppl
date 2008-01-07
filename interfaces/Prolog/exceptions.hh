@@ -1,11 +1,11 @@
 /* Exceptions used internally by the Prolog interfaces.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2 of the License, or (at your
+Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
 The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -22,18 +22,24 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 class internal_exception {
 private:
-  Prolog_term_ref tr;
+  Prolog_term_ref t;
+  const char* w;
 
 public:
-  explicit internal_exception(Prolog_term_ref t)
-    : tr(t) {
+  internal_exception(Prolog_term_ref term, const char* where)
+    : t(term),
+      w(where) {
   }
 
   virtual ~internal_exception() {
   }
 
   virtual Prolog_term_ref term() const {
-    return tr;
+    return t;
+  }
+
+  virtual const char* where() const {
+    return w;
   }
 };
 
@@ -42,105 +48,78 @@ private:
   unsigned long m;
 
 public:
-  explicit Prolog_unsigned_out_of_range(Prolog_term_ref t, unsigned long max)
-    : internal_exception(t),
+  Prolog_unsigned_out_of_range(Prolog_term_ref term,
+			       const char* where,
+			       unsigned long max)
+    : internal_exception(term, where),
       m(max) {
   }
 
   unsigned long max() const {
     return m;
   }
-
 };
 
 class non_linear : public internal_exception {
-private:
-  const char* w;
-
 public:
-  explicit non_linear(const char* s, Prolog_term_ref t)
-    : internal_exception(t), w(s) {
-  }
-
-  const char* where() const {
-    return w;
+  non_linear(Prolog_term_ref term, const char* where)
+    : internal_exception(term, where) {
   }
 };
 
 class not_an_integer : public internal_exception {
 public:
-  explicit not_an_integer(Prolog_term_ref t)
-    : internal_exception(t) {
+  not_an_integer(Prolog_term_ref term, const char* where)
+    : internal_exception(term, where) {
   }
 };
 
 class not_unsigned_integer : public internal_exception {
 public:
-  explicit not_unsigned_integer(Prolog_term_ref t)
-    : internal_exception(t) {
+  not_unsigned_integer(Prolog_term_ref term, const char* where)
+    : internal_exception(term, where) {
   }
 };
 
 class not_a_variable : public internal_exception {
 public:
-  explicit not_a_variable(Prolog_term_ref t)
-    : internal_exception(t) {
-  }
-};
-
-class not_a_polyhedron_kind : public internal_exception {
-public:
-  explicit not_a_polyhedron_kind(Prolog_term_ref t)
-    : internal_exception(t) {
-  }
-};
-
-class not_a_polyhedron_handle : public internal_exception {
-public:
-  explicit not_a_polyhedron_handle(Prolog_term_ref t)
-    : internal_exception(t) {
+  not_a_variable(Prolog_term_ref term, const char* where)
+    : internal_exception(term, where) {
   }
 };
 
 class not_an_optimization_mode : public internal_exception {
 public:
-  explicit not_an_optimization_mode(Prolog_term_ref t)
-    : internal_exception(t) {
-  }
-};
-
-class not_an_lp_problem_handle : public internal_exception {
-public:
-  explicit not_an_lp_problem_handle(Prolog_term_ref t)
-    : internal_exception(t) {
+  not_an_optimization_mode(Prolog_term_ref term, const char* where)
+    : internal_exception(term, where) {
   }
 };
 
 class not_a_complexity_class : public internal_exception {
 public:
-  explicit not_a_complexity_class(Prolog_term_ref t)
-    : internal_exception(t) {
+  not_a_complexity_class(Prolog_term_ref term, const char* where)
+    : internal_exception(term, where) {
   }
 };
 
 class not_universe_or_empty : public internal_exception {
 public:
-  explicit not_universe_or_empty(Prolog_term_ref t)
-    : internal_exception(t) {
+  not_universe_or_empty(Prolog_term_ref term, const char* where)
+    : internal_exception(term, where) {
   }
 };
 
 class not_a_relation : public internal_exception {
 public:
-  explicit not_a_relation(Prolog_term_ref t)
-    : internal_exception(t) {
+  not_a_relation(Prolog_term_ref term, const char* where)
+    : internal_exception(term, where) {
   }
 };
 
 class not_a_nil_terminated_list : public internal_exception {
 public:
-  explicit not_a_nil_terminated_list(Prolog_term_ref t)
-    : internal_exception(t) {
+  not_a_nil_terminated_list(Prolog_term_ref term, const char* where)
+    : internal_exception(term, where) {
   }
 };
 
@@ -149,13 +128,19 @@ private:
   Parma_Polyhedra_Library::Coefficient n;
 
 public:
-  explicit
-  PPL_integer_out_of_range(const Parma_Polyhedra_Library::Coefficient& i)
-    : n(i) {
+  PPL_integer_out_of_range(const Parma_Polyhedra_Library::Coefficient& value)
+    : n(value) {
   }
 
-  const Parma_Polyhedra_Library::Coefficient i() const {
+  const Parma_Polyhedra_Library::Coefficient value() const {
     return n;
+  }
+};
+
+class ppl_handle_mismatch : public internal_exception {
+public:
+  ppl_handle_mismatch(Prolog_term_ref term, const char* where)
+    : internal_exception(term, where) {
   }
 };
 

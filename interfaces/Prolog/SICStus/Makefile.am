@@ -1,11 +1,11 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
 # The PPL is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2 of the License, or (at your
+# Free Software Foundation; either version 3 of the License, or (at your
 # option) any later version.
 #
 # The PPL is distributed in the hope that it will be useful, but WITHOUT
@@ -23,32 +23,59 @@
 SICSTUS_CFLI_FILES = sicstus_cfli.h sicstus_cfli.ic sicstus_cfli.cc
 
 EXTRA_DIST = \
+ppl_interface_generator_sicstus_sd_cc.m4 \
 $(SICSTUS_CFLI_FILES) \
-ppl_sicstus_sd.cc \
 ppl_sicstus.pl \
 sp_clpq.pl \
 sp_pl_check.pl
 
 if BUILD_SICSTUS_PROLOG_INTERFACE
 
+if BUILD_WATCHDOG_LIBRARY
+
+WATCHDOG_LIBRARY = $(top_builddir)/Watchdog/src/libpwl.la
+WATCHDOG_INCLUDE_OPTIONS = -I$(top_builddir)/Watchdog/src
+WATCHDOG_DLOPEN = -dlopen $(WATCHDOG_LIBRARY)
+WATCHDOG_LINK_OPTIONS = -L$(top_builddir)/Watchdog/src/.libs -lpwl
+
+endif BUILD_WATCHDOG_LIBRARY
+
 AM_CPPFLAGS = \
+-I$(top_srcdir)/interfaces/Prolog \
 -I$(top_builddir)/src \
--I$(top_builddir)/Watchdog/src \
+$(WATCHDOG_INCLUDE_OPTIONS) \
 $(SICSTUS_PROLOG_INCLUDE_OPTIONS) \
 @extra_includes@
 
+BUILT_SOURCES = \
+ppl_sicstus_sd.cc
+
+interface_generator_dependencies = \
+$(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
+../../ppl_interface_generator_common.m4 \
+../../ppl_interface_generator_common_dat.m4 \
+../../ppl_interface_generator_copyright \
+../ppl_interface_generator_prolog_dat.m4 \
+../ppl_interface_generator_prolog_systems.m4 \
+ppl_interface_generator_sicstus_sd_cc.m4
+
+ppl_sicstus_sd.cc: $(interface_generator_dependencies) Makefile
+	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
+           $(srcdir)/ppl_interface_generator_sicstus_sd_cc.m4 > $@
+
 bin_PROGRAMS = ppl_sicstus
 ppl_sicstus_SOURCES =
+
 
 if ENABLE_SHARED
 
 pkglib_DATA = ppl_sicstus.pl ppl_sicstus.s.o
 
-ppl_sicstus.so: ppl_sicstus.pl $(top_builddir)/src/libppl.la $(top_builddir)/Watchdog/src/libpwl.la .libs/ppl_sicstus_sd.o
+ppl_sicstus.so: ppl_sicstus.pl $(top_builddir)/src/libppl.la $(WATCHDOG_LIBRARY) .libs/ppl_sicstus_sd.o
 	$(LIBTOOL) --mode=link --tag=CXX \
 	splfr $(srcdir)/ppl_sicstus.pl .libs/ppl_sicstus_sd.o -o $@ \
 		$(top_builddir)/src/libppl.la \
-		$(top_builddir)/Watchdog/src/libpwl.la \
+		$(WATCHDOG_LIBRARY) \
 		@extra_libraries@
 
 install-data-local: ppl_sicstus.so
@@ -62,16 +89,16 @@ pkglib_DATA = ppl_sicstus.pl
 endif !ENABLE_SHARED
 
 noinst_LTLIBRARIES = ppl_sicstus_sd.la
-ppl_sicstus_sd_la_SOURCES = ppl_sicstus_sd.cc
+nodist_ppl_sicstus_sd_la_SOURCES = ppl_sicstus_sd.cc
 ppl_sicstus_sd_la_LDFLAGS = -module -avoid-version
 
-ppl_sicstus$(EXEEXT): ppl_sicstus.s.o $(top_builddir)/src/libppl.la $(top_builddir)/Watchdog/src/libpwl.la
+ppl_sicstus$(EXEEXT): ppl_sicstus.s.o $(top_builddir)/src/libppl.la $(WATCHDOG_LIBRARY)
 	$(LIBTOOL) --mode=link --tag=CXX \
 	spld --main=prolog \
 		--cflag=`echo '$(AM_CXXFLAGS) $(CXXFLAGS)' | tr " " ","` \
 		--resources=ppl_sicstus.s.o -o $@ \
 		$(top_builddir)/src/libppl.la \
-		$(top_builddir)/Watchdog/src/libpwl.la \
+		$(WATCHDOG_LIBRARY) \
 		@extra_libraries@
 
 if ENABLE_STATIC
@@ -124,7 +151,8 @@ pl_check_test: ppl_sicstus ppl_sicstus.pl sp_pl_check.pl ../tests/pl_check.pl $(
 	fi
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		 ./ppl_sicstus -l $(srcdir)/sp_pl_check.pl \
+		$(WATCHDOG_DLOPEN) \
+		./ppl_sicstus -l $(srcdir)/sp_pl_check.pl \
         --goal "main."  \
 			>obtained_pchk
 	if [ $(srcdir) != `pwd` ]; then \
@@ -137,7 +165,9 @@ pl_check_test: ppl_sicstus ppl_sicstus.pl sp_pl_check.pl ../tests/pl_check.pl $(
 clpq_test: ppl_sicstus ppl_sicstus.pl sp_clpq.pl ../tests/clpq.pl ../tests/script_clpq $(EXPECTED_CLPQ) | pl_check_test
 	LANG=C; \
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
-	$(LIBTOOL) --mode=execute -dlopen ../../../src/libppl.la \
+	$(LIBTOOL) --mode=execute \
+	  -dlopen ../../../src/libppl.la \
+	  $(WATCHDOG_DLOPEN) \
 	  ./ppl_sicstus -l $(srcdir)/sp_clpq.pl \
 	    --goal "main('$(top_srcdir)/interfaces/Prolog/tests/clpq')." \
 	      <$(srcdir)/../tests/script_clpq >obtained_clpq
@@ -148,15 +178,20 @@ clpq_test: ppl_sicstus ppl_sicstus.pl sp_clpq.pl ../tests/clpq.pl ../tests/scrip
 clpq2_test: ppl_sicstus ppl_sicstus.pl sp_clpq.pl ../tests/clpq2.pl ../tests/script_clpq2 $(EXPECTED_CLPQ2) | clpq_test
 	LANG=C; \
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
-	$(LIBTOOL) --mode=execute -dlopen ../../../src/libppl.la \
+	$(LIBTOOL) --mode=execute \
+          -dlopen ../../../src/libppl.la \
+	  $(WATCHDOG_DLOPEN) \
 	  ./ppl_sicstus -l $(srcdir)/sp_clpq.pl \
 	    --goal "main('$(top_srcdir)/interfaces/Prolog/tests/clpq2')." \
 	      <$(srcdir)/../tests/script_clpq2 >obtained_clpq2
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
 
+endif BUILD_SICSTUS_PROLOG_INTERFACE
+
+DISTCLEANFILES = \
+ppl_sicstus_sd.cc
+
 MOSTLYCLEANFILES = \
 ppl_sicstus.s.o ppl_sicstus.so \
 $(CLPQ_TESTS) \
 obtained_clpq obtained_clpq2 obtained_pchk
-
-endif BUILD_SICSTUS_PROLOG_INTERFACE

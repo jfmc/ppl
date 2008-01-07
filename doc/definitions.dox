@@ -1,4 +1,4 @@
-//  Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+//  Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 //
 //  This document describes the Parma Polyhedra Library (PPL).
 //
@@ -9,9 +9,9 @@
 //  Texts.
 //
 //  The PPL is free software; you can redistribute it and/or modify it
-//  under the terms of the GNU General Public License as published by the
-//  Free Software Foundation; either version 2
-//  of the License, or (at your option) any later version.
+//  under the terms of the GNU General Public License as published by
+//  the Free Software Foundation; either version 3 of the License, or
+//  (at your option) any later version.
 //
 //  The PPL is distributed in the hope that it will be useful, but WITHOUT
 //  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
@@ -851,7 +851,7 @@ the affine relation defined by
     \itc
       (\vect{v}, \vect{w}) \in \phi
         \iff
-          (w_0 + w_2 \geq 2 v_0 - v_1) \land (w_1 = v_1).
+          (w_0 - w_2 \geq 2 v_0 - v_1) \land (w_1 = v_1).
 \f]
 The same relation is specified by
 \f$x'_0 + 0 \cdot x'_1 - x'_2 \geq 2 x_0 - x_1\f$,
@@ -1188,7 +1188,7 @@ a parameter \f$k\f$ and only apply widenings starting from the
 
 The library also supports an improved widening delay strategy,
 that we call <EM>widening with tokens</EM> \ref BHRZ03a "[BHRZ03a]".
-A token is a sort of wildcard allowing for the replacement of the widening
+A token is a sort of wild card allowing for the replacement of the widening
 application by the exact upper bound computation: the token is used
 (and thus consumed) only when the widening would have resulted in an
 actual precision loss (as opposed to the <EM>potential</EM> precision loss
@@ -1224,7 +1224,16 @@ that their results cannot be worse than the smallest
 \ref bounding_boxes "bounding box" enclosing the two argument polyhedra.
 
 
-\section Bounded_Difference_Shapes Bounded Difference Shapes
+\section Weakly_Relational_Shapes Weakly-Relational Shapes
+
+The PPL provides support for computations on numerical domains that,
+in selected contexts, can achieve a better precision/efficiency ratio
+with respect to the corresponding computations on a ``fully
+relational'' domain of convex polyhedra.  This is achieved by
+restricting the syntactic form of the constraints that can be used to
+describe the domain elements.
+
+\subsection Bounded_Difference_Shapes Bounded Difference Shapes
 
 For each vector \f$\vect{a} \in \Rset^n\f$ and scalar \f$b \in \Rset\f$,
 and for each relation symbol \f$\mathord{\relsym} \in \{ =, \geq\}\f$,
@@ -1239,47 +1248,72 @@ A convex polyhedron \f$\cP \in \CPset_n\f$ is said to be a
 either \f$\cP\f$ can be expressed as the intersection of a finite number
 of bounded difference constraints or \f$n = 0\f$ and \f$\cP = \emptyset\f$.
 
-By construction, a BDS is always topologically closed.
-Under the usual set inclusion ordering, the set of all BDSs on the vector
-space \f$\Rset^n\f$ is a lattice having the empty set \f$\emptyset\f$
-and the universe \f$\Rset^n\f$ as the smallest and the biggest elements,
-respectively.
-In theoretical terms, it is a meet sub-lattice of \f$\CPset_n\f$, meaning
-that the intersection of a finite set of BDSs is still a BDS; on the other
-hand, in general the poly-hull of two BDSs is not a BDS. The smallest BDS
-containing a finite set of BDSs is said to be their <EM>bds-hull</EM>.
+\subsection Octagonal_Shapes Octagonal Shapes
 
-The PPL provides support for computations on the domain of rational
-bounded difference shapes that, in selected contexts, can achieve a
-better precision/efficiency ratio with respect to the corresponding
-computations on a domain of convex polyhedra.
+For each vector \f$\vect{a} \in \Rset^n\f$ and scalar \f$b \in \Rset\f$,
+and for each relation symbol \f$\mathord{\relsym} \in \{ =, \geq\}\f$,
+the linear constraint \f$\langle \vect{a}, \vect{x} \rangle \relsym b\f$
+is said to be an <EM>octagonal</EM> if there exist two indices
+\f$i, j \in \{ 0, \ldots, n-1 \}\f$ such that:
+  - \f$a_i, a_j \in \{ -1, 0, 1 \}\f$;
+  - \f$a_k = 0\f$, for all \f$k \notin \{ i, j \}\f$.
+
+A convex polyhedron \f$\cP \in \CPset_n\f$ is said to be an
+<EM>octagonal shape</EM> (OS, for short) if and only if
+either \f$\cP\f$ can be expressed as the intersection of a finite number
+of octagonal constraints or \f$n = 0\f$ and \f$\cP = \emptyset\f$.
+
+Note that, since any bounded difference is also an octagonal constraint,
+any BDS is also an OS. The name ``octagonal'' comes from the fact that,
+in a vector space of dimension 2, a bounded OS can have eight sides
+at most.
+
+\subsection Weakly_Relational_Shape_Interface Weakly-Relational Shapes Interface
+By construction, any BDS or OS is always topologically closed.
+Under the usual set inclusion ordering, the set of all BDSs (resp., OSs)
+on the vector space \f$\Rset^n\f$ is a lattice having the empty set
+\f$\emptyset\f$ and the universe \f$\Rset^n\f$ as the smallest and
+the biggest elements, respectively.
+In theoretical terms, it is a meet sub-lattice of \f$\CPset_n\f$;
+moreover, the lattice of BDSs is a meet sublattice of the lattice of OSs.
+The least upper bound of a finite set of BDSs (resp., OSs) is said to be
+their <EM>bds-hull</EM> (resp., <EM>oct-hull</EM>).
+
 As far as the representation of the rational inhomogeneous term of
-each bounded difference is concerned, several <EM>rounding-aware</EM>
-implementation choices are available, including:
+each bounded difference or octagonal constraint is concerned, several
+<EM>rounding-aware</EM> implementation choices are available, including:
   - bounded precision integer types;
   - bounded precision floating point types;
   - unbounded precision integer and rational types, as provided by GMP.
 
-The user interface for BDSs is meant to be as similar as possible to
-the one developed for the domain of closed polyhedra: in particular,
-all operators on polyhedra are also available for the domain of BDSs,
-even though they are typically characterized by a lower degree of precision.
+The user interface for BDSs and OSs is meant to be as similar as
+possible to the one developed for the domain of closed polyhedra: in
+particular, all operators on polyhedra are also available for the
+domains of BDSs and OSs, even though they are typically characterized
+by a lower degree of precision.
+For instance, the <EM>bds-difference</EM> and <EM>oct-difference</EM>
+operators return (the smallest) over-approximations of the set-theoretical
+difference operator on the corresponding domains.
+In the case of (generalized) images and preimages of affine relations,
+suitable (possibly not-optimal) over-approximations are computed when
+the considered relations cannot be precisely modeled by only using
+bounded differences or octagonal constraints.
 
-\subsection Widening_and_Extrapolation_Operators_on_BD_Shapes Widening and Extrapolation Operators on BD Shapes
+\subsection Widening_and_Extrapolation_Operators_on_WR_Shapes Widening and Extrapolation Operators on Weakly-Relational Shapes
 
 \anchor BHMZ05_widening
-For the domain of BDSs, the library provides a variant of the widening
-operator for convex polyhedra defined in \ref CH78 "[CH78]".
+For the domains of BDSs and OSs, the library provides a variant of
+the widening operator for convex polyhedra defined in \ref CH78 "[CH78]".
 The implementation follows the specification in \ref BHMZ05 "[BHMZ05]",
-resulting in an operator which is well-defined on the domain of BDSs
-(i.e., it does not depend on the internal representation of BDSs),
+resulting in an operator which is well-defined on the corresponding domain
+(i.e., it does not depend on the internal representation of BDSs or OSs),
 while still ensuring convergence in a finite number of steps.
 
 \anchor CC76_extrapolation
 The library also implements an extension of the widening operator for
 intervals as defined in \ref CC76 "[CC76]". The reader is warned that
-such an extension, even though being well-defined on the domain of BDSs,
-is not provided with a convergence guarantee and is therefore an
+such an extension, even though being well-defined on the domain of BDSs
+and OSs, is not provided with a convergence guarantee and is therefore an
 extrapolation operator.
 
 
@@ -1499,7 +1533,7 @@ In this section we introduce rational grids
 as provided by the library.
 See also \ref BDHMZ05 "[BDHMZ05]" for a detailed description of this domain.
 
-The libary supports two representations for the grids domain;
+The library supports two representations for the grids domain;
 <EM>congruence systems</EM> and <EM>grid generator systems</EM>.
 We first describe <EM>linear congruence relations</EM> which form the elements
 of a congruence system.
@@ -1597,13 +1631,14 @@ combinations of the vectors in \f$S\f$.
 
 Let \f$\cL\f$ be a grid.
 Then
-- a vector \f$\vect{p} \in \cL\f$ is called a <EM>point</EM> of \f$\cL\f$;
+- a vector \f$\vect{p} \in \cL\f$ is called a <EM>grid point</EM> of \f$\cL\f$;
 - a vector \f$\vect{q} \in \Rset^n\f$, where \f$\vect{q} \neq \vect{0}\f$,
   is called a <EM>parameter</EM> of \f$\cL\f$
   if \f$\cL \neq \emptyset\f$ and \f$\vect{p} + \mu \vect{q} \in \cL\f$,
   for all points \f$\vect{p} \in \cL\f$ and all \f$\mu \in \Zset\f$;
-- a vector \f$\vect{l} \in \Rset^n\f$ is called a <EM>line</EM> of \f$\cL\f$
-  if \f$\cL \neq \emptyset\f$ and \f$\vect{p} + \lambda \vect{l} \in \cL\f$,
+- a vector \f$\vect{l} \in \Rset^n\f$ is called a <EM>grid line</EM> of
+  \f$\cL\f$ if \f$\cL \neq \emptyset\f$ and
+  \f$\vect{p} + \lambda \vect{l} \in \cL\f$,
   for all points \f$\vect{p} \in \cL\f$ and all \f$\lambda \in \Rset\f$.
 
 
@@ -1624,11 +1659,11 @@ then \f$\cL \in \Gset_n\f$ is a rational grid
 (see Section 4.4 in \ref Sch99 "[Sch99]" and
 also Proposition 8 in \ref BDHMZ05 "[BDHMZ05]").
 The 3-tuple \f$(L, Q, P)\f$
-is said to be a <EM>generator system</EM> for \f$\cL\f$
+is said to be a <EM>grid generator system</EM> for \f$\cL\f$
 and we write \f$\cL = \ggen(L, Q, P)\f$.
 
 Note that the grid \f$\cL = \ggen(L, Q, P) = \emptyset\f$
-if and only if the set of points \f$P = \emptyset\f$.
+if and only if the set of grid points \f$P = \emptyset\f$.
 If \f$P \neq \emptyset\f$, then
 \f$\cL = \ggen(L, \emptyset, Q_{\vect{p}} \union P)\f$
 where, for some \f$\vect{p} \in P\f$,
@@ -1642,20 +1677,20 @@ then \f$\card \cC \leq \card \cC'\f$.
 Note that a minimized congruence system for a non-empty grid
 has at most \f$n\f$ congruence relations.
 
-Similarly, a <EM>minimized</EM> generator system
+Similarly, a <EM>minimized</EM> grid generator system
 \f$\cG = (L, Q, P)\f$ for \f$\cL\f$
 is such that, if \f$\cG' = (L', Q', P')\f$ is
-another generator system for \f$\cL\f$,
+another grid generator system for \f$\cL\f$,
 then \f$\card L \leq \card L'\f$ and
 \f$\card Q + \card P \leq \card Q' + \card P'\f$.
-Note that a minimized generator system for a grid
-has no more than a total of \f$n+1\f$ lines, parameters and points.
+Note that a minimized grid generator system for a grid
+has no more than a total of \f$n+1\f$ grid lines, parameters and points.
 
 \subsection Grids_Double_Description_Grids Double Description for Grids
 
 As for convex polyhedra, any grid \f$\cL\f$ can be described by using
 a congruence system \f$\cC\f$ for \f$\cL\f$,
-a generator system \f$\cG\f$ for \f$\cL\f$, or
+a grid generator system \f$\cG\f$ for \f$\cL\f$, or
 both by means of the <EM>double description pair (DD pair)</EM>
 \f$(\cC, \cG)\f$.
 The <EM>double description method</EM> for grids is a collection of
@@ -1673,7 +1708,7 @@ intersection and grid join.
 The <EM>space dimension</EM> of a grid \f$\cL \in \Gset_n\f$
 is the dimension
 \f$n \in \Nset\f$ of the corresponding vector space \f$\Rset^n\f$.
-The space dimension of congruence relations, generators and other objects
+The space dimension of congruence relations, grid generators and other objects
 of the library is defined similarly.
 
 \subsection Grid_Affine_Dimension Affine Independence and Affine Dimension for Grids
@@ -1903,7 +1938,7 @@ of a grid \f$\cL\f$ under
 For instance,
 suppose the grid \f$\cL\f$
 to be transformed is the non-relational grid in \f$\Rset^2\f$
-generated by the set of points
+generated by the set of grid points
 \f$\bigl\{
      (0, 0)^\transpose,
      (0, 3)^\transpose,
@@ -1913,13 +1948,13 @@ Then, if the considered variable is \f$x_0\f$ and
 the linear expression is \f$3x_0 + 2 x_1 + 1\f$
 (so that \f$k = 0\f$, \f$a_0 = 3, a_1 = 2, b = 1\f$),
 the affine image operator will translate \f$\cL\f$
-to the grid \f$\cL_1\f$ generated by the set of points
+to the grid \f$\cL_1\f$ generated by the set of grid points
 \f$\bigl\{
      (1, 0)^\transpose,
      (7, 3)^\transpose,
      (10, 0)^\transpose
    \bigr\}\f$
-which is the grid generated by the point \f$(1, 0)\f$
+which is the grid generated by the grid point \f$(1, 0)\f$
 and parameters \f$(3, -3), (0, 9)\f$; or, alternatively defined by the
 congruence system \f$\{x \equiv_3 1, x + y \equiv_9 1\}\f$.
 If the considered variable is as before (i.e., \f$k = 0\f$)
@@ -2000,7 +2035,7 @@ is the grid
 
 The library provides operators for checking the relation holding
 between a grid  and
-either a congruence or a generator.
+a congruence, a grid generator, constraint or a (polyhedron) generator.
 
 Suppose \f$\cL\f$ is a grid
 and \f$\cC\f$ an arbitrary congruence system representing \f$\cL\f$.
@@ -2023,10 +2058,38 @@ The possible relations between \f$\cL\f$ and \f$\cg\f$ are as follows.
   gives us a non-empty grid strictly smaller than \f$\cL\f$.
 - \f$\cL\f$ <EM>is included</EM> in \f$\cg\f$ if \f$\cL \sseq \cL_{\cg}\f$;
   that is, adding \f$\cg\f$ to \f$\cC\f$ leaves \f$\cL\f$ unchanged.
+- \f$\cL\f$ <EM>saturates</EM> \f$\cg\f$ if \f$\cL\f$ <EM>is included</EM>
+  in \f$\cg\f$ and \f$f = 0\f$, i.e., \f$\cg\f$ is an equality congruence.
 
-A grid \f$\cL\f$ <EM>subsumes</EM> a generator \f$g\f$ if
-adding \f$g\f$ to any generator system representing \f$\cL\f$
+For the relation between \f$\cL\f$ and a constraint, suppose that
+\f$
+  c = \bigl(
+        \langle \vect{a}, \vect{x} \rangle \relsym b
+      \bigr)
+\f$
+is a constraint
+with \f$\mathord{\relsym} \in \{ =, \geq, > \}\f$
+and \f$\cQ\f$ the set of points that satisfy \f$c\f$.
+The possible relations between \f$\cL\f$ and \f$c\f$ are as follows.
+- \f$\cL\f$ <EM>is disjoint</EM> from \f$c\f$ if
+  \f$\cL \inters \cQ = \emptyset\f$.
+- \f$\cL\f$ <EM>strictly intersects</EM> \f$c\f$ if
+  \f$\cL \inters \cQ \neq \emptyset\f$ and \f$\cL \inters \cQ \subset \cL\f$.
+- \f$\cL\f$ <EM>is included</EM> in \f$c\f$ if \f$\cL \sseq \cQ\f$.
+- \f$\cL\f$ <EM>saturates</EM> \f$c\f$ if \f$\cL\f$ <EM>is included</EM>
+  in \f$c\f$ and \f$\mathord{\relsym}\f$ is \f$=\f$.
+
+A grid \f$\cL\f$ <EM>subsumes</EM> a grid generator \f$g\f$
+if adding \f$g\f$ to any grid generator system representing \f$\cL\f$
 does not change \f$\cL\f$.
+
+A grid \f$\cL\f$ <EM>subsumes</EM> a (polyhedron) point or closure point
+\f$g\f$ if adding the corresponding grid point to any grid generator system
+representing \f$\cL\f$ does not change \f$\cL\f$.
+A grid \f$\cL\f$ <EM>subsumes</EM> a (polyhedron) ray or line
+\f$g\f$ if adding the corresponding grid line to any grid generator system
+representing \f$\cL\f$ does not change \f$\cL\f$.
+
 
 \subsection Rectilinear_Grids Rectilinear Grids and Covering Boxes
 
@@ -2257,7 +2320,7 @@ R.&nbsp;Bagnara, K.&nbsp;Dobson, P.&nbsp;M. Hill, M.&nbsp;Mundell, and E.&nbsp;Z
 \anchor BHMZ05
 R.&nbsp;Bagnara, P.&nbsp;M. Hill, E.&nbsp;Mazzi, and E.&nbsp;Zaffanella.
   Widening Operators for Weakly-Relational Numeric Abstractions.
-  In C.&nbsp;Hankin and I.&nbsp;Silveroni, editors, <i>Static Analysis:
+  In C.&nbsp;Hankin and I.&nbsp;Siveroni, editors, <i>Static Analysis:
   Proceedings of the 12th International Symposium</i>, volume 3672 of
   <i>Lecture Notes in Computer Science</i>, pages 3-18, London, UK, 2005.
   Springer-Verlag, Berlin.
@@ -2283,7 +2346,7 @@ R.&nbsp;Bagnara, P.&nbsp;M. Hill, E.&nbsp;Ricci, and E.&nbsp;Zaffanella.
 \anchor BHRZ03b
 R.&nbsp;Bagnara, P.&nbsp;M. Hill, E.&nbsp;Ricci, and E.&nbsp;Zaffanella.
   Precise widening operators for convex polyhedra.
-  Quaderno 312, Dipartimento di Matematica, Universit‡ di Parma,
+  Quaderno 312, Dipartimento di Matematica, Universit√† di Parma,
   Italy, 2003.
   Available at <A HREF="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</A>.
 
@@ -2296,7 +2359,7 @@ R.&nbsp;Bagnara, P.&nbsp;M. Hill, E.&nbsp;Ricci, and E.&nbsp;Zaffanella.
 R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
   A new encoding and implementation of not necessarily closed convex
   polyhedra.
-  Quaderno 305, Dipartimento di Matematica, Universit‡ di Parma,
+  Quaderno 305, Dipartimento di Matematica, Universit√† di Parma,
   Italy, 2002.
   Available at <A HREF="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</A>.
 
@@ -2312,8 +2375,8 @@ R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
   the 1st CoLogNet Workshop on Component-based Software Development and
   Implementation Technology for Computational Logic Systems</i>, pages 147-153,
   Madrid, Spain, 2002.
-  Published as TR Number CLIP4/02.0, Universidad PolitÈcnica de
-  Madrid, Facultad de Inform·tica.
+  Published as TR Number CLIP4/02.0, Universidad Polit√©cnica de
+  Madrid, Facultad de Inform√°tica.
 
 </DD>
 
@@ -2350,7 +2413,7 @@ R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
 \anchor BHZ04
 R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
   Widening operators for powerset domains.
-  Quaderno 349, Dipartimento di Matematica, Universit‡ di Parma,
+  Quaderno 349, Dipartimento di Matematica, Universit√† di Parma,
   Italy, 2004.
   Available at <A HREF="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</A>.
 
@@ -2362,7 +2425,7 @@ R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
 \anchor BJT99
 F.&nbsp;Besson, T.&nbsp;P. Jensen, and J.-P. Talpin.
   Polyhedral analysis for synchronous languages.
-  In A.&nbsp;Cortesi and G.&nbsp;FilÈ, editors, <i>Static Analysis:
+  In A.&nbsp;Cortesi and G.&nbsp;Fil√©, editors, <i>Static Analysis:
   Proceedings of the 6th International Symposium</i>, volume 1694 of <i>Lecture
   Notes in Computer Science</i>, pages 51-68, Venice, Italy, 1999.
   Springer-Verlag, Berlin.
@@ -2390,7 +2453,7 @@ R.&nbsp;Bagnara, E.&nbsp;Ricci, E.&nbsp;Zaffanella, and P.&nbsp;M. Hill.
 R.&nbsp;Bagnara, E.&nbsp;Ricci, E.&nbsp;Zaffanella, and P.&nbsp;M. Hill.
   Possibly not closed convex polyhedra and the Parma Polyhedra
   Library.
-  Quaderno 286, Dipartimento di Matematica, Universit‡ di Parma,
+  Quaderno 286, Dipartimento di Matematica, Universit√† di Parma,
   Italy, 2002.
   See also \ref BRZH02c "[BRZH02c]". Available at
   <A HREF="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</A>.
@@ -2538,7 +2601,7 @@ D.&nbsp;Gopan, F.&nbsp;DiMaio, N.&nbsp;Dor, T.&nbsp;Reps, and M.&nbsp;Sagiv.
 E.&nbsp;Gawrilow and M.&nbsp;Joswig.
   <tt>polymake</tt>: a framework for analyzing convex polytopes.
   In G.&nbsp;Kalai and G.&nbsp;M. Ziegler, editors, <i>Polytopes -
-  Combinatorics and Computation</i>, pages 43-74. Birkh‰user, 2000.
+  Combinatorics and Computation</i>, pages 43-74. Birkh√§user, 2000.
 
 </DD>
 
@@ -2559,10 +2622,10 @@ E.&nbsp;Gawrilow and M.&nbsp;Joswig.
 <DD>
 \anchor Hal79
 N.&nbsp;Halbwachs.
-  <i>DÈtermination Automatique de Relations LinÈaires
-  VÈrifiÈes par les Variables d'un Programme</i>.
-  ThËse de 3Ëme cycle d'informatique,
-  UniversitÈ scientifique et mÈdicale de Grenoble, Grenoble, France, March
+  <i>D√©termination Automatique de Relations Lin√©aires
+  V√©rifi√©es par les Variables d'un Programme</i>.
+  Th√®se de 3√®me cycle d'informatique,
+  Universit√© scientifique et m√©dicale de Grenoble, Grenoble, France, March
   1979.
 
 </DD>
@@ -2722,7 +2785,7 @@ F.&nbsp;Masdupuy.
 F.&nbsp;Masdupuy.
   <i>Array Indices Relational Semantic Analysis Using Rational Cosets
   and Trapezoids</i>.
-  ThËse d'informatique, …cole Polytechnique, Palaiseau, France,
+  Th√®se d'informatique, √âcole Polytechnique, Palaiseau, France,
   December 1993.
 
 </DD>
@@ -3028,7 +3091,7 @@ only in that, for a vertex,
 the (\f$n+1\f$)'st term is different from zero and,
 for a ray, it is zero.
 
-\subsection Double_Description Double Description
+\subsection Devref_Double_Description Double Description
 
 Let \f$\cP \in \Rset^n \f$ be a polyhedron and  \f$C \in \Rset^{n+1} \f$
 the corresponding polyhedral cone.
@@ -3203,10 +3266,9 @@ is equal to the set of constraints that are saturated by \f$\vect{y}_2\f$.
 
 \subsection Saturation_Matrix Saturation Matrix
 
-A <EM>saturation matrix</EM> is a
-Boolean matrix that represent the connection between constraints and
-generators of a polyhedron.
-There are two kinds of saturation matrix one having rows indexed
+A <EM>saturation matrix</EM> is a bit matrix that represents
+the connection between constraints and generators of a polyhedron.
+There are two kinds of saturation matrices, one having rows indexed
 by constraints and columns indexed by generators (<EM>sat_g</EM>),
 and one (that is the transposed version of the previous one) having
 rows indexed by generators and columns indexed by constraints (<EM>sat_c</EM>).
