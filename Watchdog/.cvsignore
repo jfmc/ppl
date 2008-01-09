@@ -4,6 +4,7 @@
 .libs
 Makefile
 Makefile.in
+_configs.sed
 aclocal.m4
 autom4te.cache
 config.cache
@@ -13,6 +14,7 @@ config.log
 config.status
 configure
 libtool
+pwl-config.h
 stamp-h
 stamp-h.in
 stamp-h1
