@@ -1,3 +1,7 @@
+*.lo
+*.loT
 .deps
+.libs
 Makefile
 Makefile.in
+ppl_java_classes.cc

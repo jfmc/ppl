@@ -1,3 +1,5 @@
 *.class
+*.stamp
 Makefile
 Makefile.in
+ppl_java_*.h
