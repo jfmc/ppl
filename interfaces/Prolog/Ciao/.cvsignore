@@ -2,6 +2,7 @@
 *.itf
 *.la
 *.lo
+*.loT
 *.po
 *_glue.c
 .deps

@@ -2,6 +2,7 @@
 *.clpq
 *.la
 *.lo
+*.loT
 .deps
 .libs
 Makefile
