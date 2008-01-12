@@ -172,8 +172,15 @@ ppl_relation_test_data(test00, constraint, 0 = 1, Rel) :-
   ; Rel = [is_disjoint, is_included]
   ; Rel = [is_included, is_disjoint].
 ppl_relation_test_data(test00, generator, point(0), []).
-ppl_relation_test_data(test00, congruence, 0 = 1, Rel) :-
-  Rel = [is_included, is_disjoint] ; Rel = [is_disjoint, is_included].
+ppl_relation_test_data(test00, congruence, (0 =:= 1) / 0, Rel) :-
+  Rel = [saturates, is_included, is_disjoint]
+  ; Rel = [saturates, is_disjoint, is_included]
+  ; Rel = [is_included, is_disjoint, saturates]
+  ; Rel = [is_included, saturates, is_disjoint]
+  ; Rel = [is_disjoint, is_included, saturates]
+  ; Rel = [is_disjoint, saturates, is_included]
+  ; Rel = [is_disjoint, is_included]
+  ; Rel = [is_included, is_disjoint].
 ppl_relation_test_data(test00, grid_generator, grid_point(0), []).
 
 ppl_property_test_data(test00, _, _, is_empty).
@@ -210,7 +217,14 @@ ppl_relation_test_data(test01, constraint, 0 = 1, Rel) :-
   ; Rel = [is_included, is_disjoint].
 ppl_relation_test_data(test01, generator, point(0), []).
 ppl_relation_test_data(test01, congruence, 0 = 1, Rel) :-
-  Rel = [is_included, is_disjoint] ; Rel = [is_disjoint, is_included].
+  Rel = [saturates, is_included, is_disjoint]
+  ; Rel = [saturates, is_disjoint, is_included]
+  ; Rel = [is_included, is_disjoint, saturates]
+  ; Rel = [is_included, saturates, is_disjoint]
+  ; Rel = [is_disjoint, is_included, saturates]
+  ; Rel = [is_disjoint, saturates, is_included]
+  ; Rel = [is_disjoint, is_included]
+  ; Rel = [is_included, is_disjoint].
 ppl_relation_test_data(test01, grid_generator, grid_point(0), []).
 
 ppl_property_test_data(test01, _, _, is_empty).
@@ -236,7 +250,9 @@ ppl_relation_test_data(test02, constraint, 0 = 0, Rel) :-
   Rel = [saturates, is_included] ; Rel = [is_included, saturates]
   ; Rel = [is_included].
 ppl_relation_test_data(test02, generator, point(0), [subsumes]).
-ppl_relation_test_data(test02, congruence, 0 = 0, [is_included]).
+ppl_relation_test_data(test02, congruence, 0 = 0, Rel) :-
+  Rel = [saturates, is_included] ; Rel = [is_included, saturates]
+  ; Rel = [is_included].
 ppl_relation_test_data(test02, grid_generator, grid_point(0), [subsumes]).
 
 ppl_property_test_data(test02, _, _, is_bounded).

@@ -178,15 +178,21 @@ ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_3_test :-
 
 ')
 
-m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@_code',
+m4_define(`ppl_C_Polyhedron_OK', ppl_Polyhedron_OK`'$1)
+m4_define(`ppl_NNC_Polyhedron_OK', ppl_Polyhedron_OK`'$1)
+
+m4_define(`ppl_delete_C_Polyhedron', ppl_delete_Polyhedron`'$1)
+m4_define(`ppl_delete_NNC_Polyhedron', ppl_delete_Polyhedron`'$1)
+
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_code',
 `
-ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@_2_test :-
+ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_2_test :-
   (
-   clean_ppl_new_@INTOPOLOGY@@FRIEND@_from_space_dimension(0, universe, PS),
-   clean_ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@(PS, PS1),
-   ppl_@FRIEND@_OK(PS),
+   clean_ppl_new_@FRIEND@_from_space_dimension(0, universe, PS),
+   clean_ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@(PS, PS1),
+   ppl_@FRIEND@_OK(`(PS)'),
    ppl_@CLASS@_OK(PS1),
-   ppl_delete_@FRIEND@(PS),
+   ppl_delete_@FRIEND@(`(PS)'),
    ppl_delete_@CLASS@(PS1)
   ->
    fail ; true).
@@ -225,12 +231,11 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@_2_test :-
     clean_ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(Box, PS),
     (@BOX@ == bounding_box
     ->
-      ppl_@CLASS@_get_@BOX@(PS, any, Box1)
+      ppl_@CLASS@_get_bounding_box(PS, any, Box1)
     ;
       ppl_@CLASS@_get_@BOX@(PS, Box1)
     ),
     clean_ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(Box1, PS1),
-    ppl_@CLASS@_equals_@CLASS@(PS, PS1),
     \+ clean_ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(Box, 0),
     \+ clean_ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(
              [i(x, c(1/2)), i(c(0), o(pinf))], _),
@@ -621,6 +626,7 @@ ppl_@CLASS@_@PARTITION@_4_test :-
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2, Space_Dim),
      ppl_@CLASS@_@PARTITION@(PS1, PS2, PS3, PPS),
      (predicate_exists(ppl_@CLASS@_contains_@CLASS@)
+     ->
        ppl_@DISJUNCT@_contains_@DISJUNCT@(PS1, PS3),
        ppl_@DISJUNCT@_contains_@DISJUNCT@(PS2, PS3)
      ;
@@ -662,16 +668,21 @@ ppl_@CLASS@_get_bounding_box_3_test :-
      ppl_@CLASS@_get_bounding_box(PS, CC, Box),
      (predicate_exists(ppl_new_@TOPOLOGY@@CLASS@_from_bounding_box)
      ->
-       clean_ppl_new_@TOPOLOGY@@CLASS@_from_bounding_box(Box, PS1),
-       ppl_@CLASS@_get_bounding_box(PS1, CC, Box1),
-       clean_ppl_new_@TOPOLOGY@@CLASS@_from_bounding_box(Box1, PS2),
-       ppl_@CLASS@_equals_@CLASS@(PS1, PS2),
-       ppl_@CLASS@_contains_@CLASS@(PS2, PS),
-       ppl_delete_@CLASS@(PS1),
-       ppl_delete_@CLASS@(PS2)
-     ;
-       true
-     ),
+      (Box \== [empty]
+      ->
+        clean_ppl_new_@TOPOLOGY@@CLASS@_from_bounding_box(Box, PS1),
+        ppl_@CLASS@_get_bounding_box(PS1, CC, Box1),
+        clean_ppl_new_@TOPOLOGY@@CLASS@_from_bounding_box(Box1, PS2),
+        ppl_@CLASS@_equals_@CLASS@(PS1, PS2),
+        ppl_@CLASS@_contains_@CLASS@(PS2, PS),
+        ppl_delete_@CLASS@(PS1),
+        ppl_delete_@CLASS@(PS2)
+      ;
+        true
+      )
+    ;
+      true
+    ),
      ppl_delete_@CLASS@(PS)
    ->
      fail ; true)
@@ -689,17 +700,22 @@ ppl_@CLASS@_get_covering_box_2_test :-
      ppl_@CLASS@_get_covering_box(PS, Box),
      (predicate_exists(ppl_new_@TOPOLOGY@@CLASS@_from_covering_box)
      ->
-       clean_ppl_new_@TOPOLOGY@@CLASS@_from_covering_box(Box, PS1),
+      clean_ppl_new_@TOPOLOGY@@CLASS@_from_covering_box(Box, PS1),
+      (Box \== [empty]
+      ->
        ppl_@CLASS@_get_covering_box(PS1, Box1),
        clean_ppl_new_@CLASS@_from_covering_box(Box1, PS2),
        ppl_@CLASS@_space_dimension(PS2, Space_Dim),
-       ppl_@CLASS@_equals_@CLASS@(PS1, PS2),
-       ppl_@CLASS@_contains_@CLASS@(PS2, PS),
+       %% ppl_@CLASS@_equals_@CLASS@(PS1, PS2),
+       %% ppl_@CLASS@_contains_@CLASS@(PS2, PS),
        ppl_delete_@CLASS@(PS1),
        ppl_delete_@CLASS@(PS2)
-     ;
+      ;
        true
-     ),
+      )
+    ;
+      true
+    ),
      ppl_delete_@CLASS@(PS)
    ->
      fail ; true)
