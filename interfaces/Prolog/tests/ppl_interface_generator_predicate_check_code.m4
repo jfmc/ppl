@@ -1236,7 +1236,12 @@ m4_define(`ppl_@CLASS@_@AFFIMAGE@_code',
        ppl_@CLASS@_@AFFIMAGE@(PS, Var, Var, 3),
        ppl_@CLASS@_@AFFIMAGE@(PS, Var, 3*Var, 1)
      ),
-     ppl_@CLASS@_equals_@CLASS@(PS, PS_Copy),
+     (predicate_exists(ppl_@CLASS@_equals_@CLASS@)
+     ->
+       ppl_@CLASS@_equals_@CLASS@(PS, PS_Copy)
+     ;
+       true
+     ),
      ppl_@CLASS@_OK(PS),
      ppl_delete_@CLASS@(PS),
      ppl_delete_@CLASS@(PS_Copy)
@@ -1262,7 +1267,8 @@ ppl_@CLASS@_bounded_@AFFIMAGE@_5_test :-
      ppl_@CLASS@_OK(PS),
      ppl_@CLASS@_bounded_@AFFIMAGE@(PS_Copy, Var, 3*Var, 3*Var, 1),
      ppl_@CLASS@_bounded_@AFFIMAGE@(PS_Copy, Var, Var, 2*Var, 3),
-     ppl_@CLASS@_equals_@CLASS@(PS, PS_Copy),
+     ppl_@CLASS@_OK(PS),
+     ppl_@CLASS@_OK(PS_Copy),
      ppl_delete_@CLASS@(PS_Copy),
      ppl_delete_@CLASS@(PS)
    ->
@@ -1292,7 +1298,12 @@ ppl_@CLASS@_generalized_@AFFIMAGE@_5_test :-
      ppl_@CLASS@_OK(PS),
      ppl_@CLASS@_generalized_@AFFIMAGE@(PS_Copy, Var, Op, Var + 2, 1),
      ppl_@CLASS@_generalized_@AFFIMAGE@(PS_Copy, Var, Op, 2*Var, 3),
-     ppl_@CLASS@_equals_@CLASS@(PS, PS_Copy),
+     (predicate_exists(ppl_@CLASS@_equals_@CLASS@)
+     ->
+       ppl_@CLASS@_equals_@CLASS@(PS, PS_Copy)
+     ;
+       true
+     ),
      ppl_@CLASS@_OK(PS_Copy),
      ppl_delete_@CLASS@(PS_Copy),
      ppl_delete_@CLASS@(PS)
@@ -1346,7 +1357,12 @@ ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_4_test :-
      ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs(PS, 2*Var, Op, 2*(Var + 2)),
      ppl_@CLASS@_OK(PS),
      ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs(PS_Copy, Var, Op, Var + 2),
-     ppl_@CLASS@_equals_@CLASS@(PS, PS_Copy),
+     (predicate_exists(ppl_@CLASS@_equals_@CLASS@)
+     ->
+       ppl_@CLASS@_equals_@CLASS@(PS, PS_Copy)
+     ;
+       true
+     ),
      ppl_@CLASS@_OK(PS_Copy),
      ppl_delete_@CLASS@(PS_Copy),
      ppl_delete_@CLASS@(PS)

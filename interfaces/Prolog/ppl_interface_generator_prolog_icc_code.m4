@@ -179,7 +179,7 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(Prolog_term_ref t_bb,
     }
 
     @TOPOLOGY@@CPP_CLASS@* ph;
-    ph = new @TOPOLOGY@@CLASS@(box new_@BOX@_code`' );
+    ph = new @TOPOLOGY@@CPP_CLASS@(box new_@BOX@_code`' );
     Prolog_term_ref tmp = Prolog_new_term_ref();
     Prolog_put_address(tmp, ph);
     if (Prolog_unify(t_ph, tmp)) {
