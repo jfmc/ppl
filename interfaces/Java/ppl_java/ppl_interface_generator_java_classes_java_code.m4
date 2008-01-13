@@ -56,7 +56,7 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 
 ')
 
-m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@_code',
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@_code',
 `dnl
 %<--%<--%<-- @TOPOLOGY@@CLASS@.java
     public @TOPOLOGY@@CLASS@(@TOPOLOGY@@CLASS@ y) {
