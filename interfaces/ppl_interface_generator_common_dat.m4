@@ -409,15 +409,40 @@ m4_define(`m4_cpp_class_replacement', m4_cplusplus_class`'$1)
 
 dnl The friend class name.
 dnl First the default - every class is a friend of itself.
-m4_define(`m4_friend_replacement', m4_interface_class`'$1)
-m4_define(`m4_friend_alt_replacement', m4_cplusplus_class`'$1)
+dnl m4_define(`m4_friend_replacement', `C_Polyhedron, NNC_Polyhedron, Grid')
+m4_define(`m4_friend_replacement', `m4_all_friends(interface)')
 
+m4_define(`m4_friend_alt_replacement',`m4_all_friends(cplusplus)')
 dnl To allow for other classes to be friends,
 dnl we cannot just take a predefined list of friends as some
 dnl may not be instantiated and available.
 dnl
 dnl Several classes for friend replacement use the next two macros:
 dnl m4_same_class_string/4 and m4_same_class_string_aux/4
+
+
+m4_define(`m4_all_friends', `dnl
+m4_patsubst(m4_all_friends_aux($1), `@COMMA@', `, ')`'dnl
+')
+
+m4_define(`m4_all_friends_aux', `dnl
+m4_define(`m4_replace_list_start', 0)`'dnl
+m4_forloop(m4_ind, 1, m4_num_classes, `dnl
+m4_ifelse(m4_echo_unquoted(m4_class_kind`'m4_ind), Pointset_Powerset, ,
+m4_echo_unquoted(m4_class_kind`'m4_ind), Domain_Product, , `dnl
+m4_define(`m4_friend_class', m4_`'$1`'_class`'m4_ind)`'dnl
+m4_ifelse(m4_friend_class, Polyhedron,
+          m4_one_friend(C_`'m4_friend_class)`'dnl
+m4_one_friend(NNC_`'m4_friend_class),
+          m4_one_friend(m4_friend_class))`'dnl
+')')`'dnl
+')
+
+m4_define(`m4_one_friend', `dnl
+m4_ifelse(m4_replace_list_start, 0,
+    `m4_undefine(`m4_replace_list_start')$1',
+      @COMMA@`'$1)`'dnl
+')
 
 dnl m4_same_class_string(String, Name_Type, Class_Name_Type, Topology)
 dnl
