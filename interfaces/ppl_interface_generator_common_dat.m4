@@ -708,9 +708,9 @@ m4_define(`m4_Grid_relation_represent_alt_replacement',
 dnl  The different kinds of objects that can be added to a class.
 m4_define(`m4_add_represent_replacement', `constraint')
 m4_define(`m4_Polyhedron_add_represent_replacement',
-         `constraint, generator')
+         `m4_add_represent_replacement, generator')
 m4_define(`m4_Grid_add_represent_replacement',
-         `constraint, grid_generator, congruence')
+         `m4_add_represent_replacement, congruence, grid_generator')
 m4_define(`m4_Pointset_Powerset_add_represent_replacement',
          `constraint')
 
@@ -755,7 +755,8 @@ m4_define(`m4_Polyhedron_has_property_replacement',
         `m4_has_property_replacement, is_discrete')
 m4_define(`m4_Grid_has_property_replacement',
         `m4_has_property_replacement, is_discrete')
-m4_define(`m4_Pointset_Powerset_has_property_replacement',`contains_integer_point')
+m4_define(`m4_Pointset_Powerset_has_property_replacement',
+        `contains_integer_point')
 
 dnl  The "simplify" predicates
 m4_define(`m4_simplify_replacement', `topological_closure_assign')
