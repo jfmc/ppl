@@ -61,6 +61,7 @@ cc76narrowing1 \
 cc76extrapolation1 \
 closure1 \
 concatenate1 \
+congruences1 \
 constraints1 \
 contains1 \
 containsintegerpoint1 \
@@ -181,6 +182,8 @@ cc76extrapolation1_SOURCES = cc76extrapolation1.cc
 closure1_SOURCES = closure1.cc
 
 concatenate1_SOURCES = concatenate1.cc
+
+congruences1_SOURCES = constraints1.cc
 
 constraints1_SOURCES = constraints1.cc
 

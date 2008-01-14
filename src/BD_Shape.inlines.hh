@@ -117,12 +117,36 @@ BD_Shape<T>::BD_Shape(const BD_Shape<U>& y)
 template <typename T>
 inline Congruence_System
 BD_Shape<T>::congruences() const {
+  dimension_type space_dim = space_dimension();
+  Congruence_System cgs;
+  shortest_path_closure_assign();
+  if (space_dim == 0) {
+    if (marked_empty())
+      cgs = Congruence_System::zero_dim_empty();
+      return cgs;
+  }
+  if (marked_empty()) {
+    cgs.insert((0*Variable(space_dim-1) %= 1) / 0);
+    return cgs;
+  }
   return Congruence_System(minimized_constraints());
 }
 
 template <typename T>
 inline Congruence_System
 BD_Shape<T>::minimized_congruences() const {
+  dimension_type space_dim = space_dimension();
+  Congruence_System cgs;
+  shortest_path_closure_assign();
+  if (space_dim == 0) {
+    if (marked_empty())
+      cgs = Congruence_System::zero_dim_empty();
+      return cgs;
+  }
+  if (marked_empty()) {
+    cgs.insert((0*Variable(space_dim-1) %= 1) / 0);
+    return cgs;
+  }
   return Congruence_System(minimized_constraints());
 }
 
@@ -130,6 +154,14 @@ template <typename T>
 inline bool
 BD_Shape<T>::add_constraint_and_minimize(const Constraint& c) {
   add_constraint(c);
+  shortest_path_closure_assign();
+  return !marked_empty();
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::add_congruence_and_minimize(const Congruence& cg) {
+  add_congruence(cg);
   shortest_path_closure_assign();
   return !marked_empty();
 }

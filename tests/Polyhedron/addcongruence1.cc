@@ -118,6 +118,102 @@ test05() {
   return ok;
 }
 
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+  ph.add_congruence(A %= 0);
+  bool b = ph.add_congruence_and_minimize((B == 5) / 0);
+
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(B == 5);
+
+  bool ok = b && (ph == known_result);
+
+  print_constraints(ph, "*** ph ***");
+
+  return ok;
+}
+
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+
+  ph.add_congruence((A + B %= 3) / 4);
+  bool b = ph.add_congruence_and_minimize((A == -1) / 0);
+
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(A == -1);
+
+  bool ok = b && (ph == known_result);
+
+  print_constraints(ph, "*** ph ***");
+
+  return ok;
+}
+
+bool
+test08() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2, EMPTY);
+
+  print_constraints(ph, "*** ph ***");
+
+  C_Polyhedron known_result(ph);
+
+  ph.add_congruence((A - B == 0) / 0);
+  bool b = ph.add_congruence_and_minimize((A + B %= 1) / 2);
+
+  bool ok = !b && (ph == known_result);
+
+  print_constraints(ph, "*** ph after adding congruences ***");
+
+  return ok;
+}
+
+bool
+test09() {
+  C_Polyhedron ph(0);
+
+  print_constraints(ph, "*** ph ***");
+
+  C_Polyhedron known_result(0);
+
+  bool b =
+    ph.add_congruence_and_minimize((Linear_Expression::zero() %= 0) / 2);
+
+  bool ok = b && (ph == known_result);
+
+  print_constraints(ph, "*** ph after adding congruence ***");
+
+  return ok;
+}
+
+bool
+test10() {
+  C_Polyhedron ph(0);
+
+  print_constraints(ph, "*** ph ***");
+
+  bool b =
+    ph.add_congruence_and_minimize((Linear_Expression::zero() %= 1) / 0);
+
+  C_Polyhedron known_result(0, EMPTY);
+
+  bool ok = !b && (ph == known_result);
+
+  print_constraints(ph, "*** ph after adding congruence ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -126,4 +222,9 @@ BEGIN_MAIN
   DO_TEST(test03);
   DO_TEST(test04);
   DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
+  DO_TEST(test08);
+  DO_TEST(test09);
+  DO_TEST(test10);
 END_MAIN

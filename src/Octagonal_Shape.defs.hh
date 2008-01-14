@@ -902,6 +902,19 @@ public:
   void add_congruence(const Congruence& cg);
 
   /*! \brief
+    Adds a copy of congruence \p cg to the system of congruences
+    of \p *this, minimizing the result
+
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and congruence \p c are topology-incompatible
+    or dimension-incompatible.
+  */
+  bool add_congruence_and_minimize(const Congruence& cg);
+
+  /*! \brief
     Adds to \p *this constraints equivalent to the congruences in \p
     cgs (without minimizing the result).
 
