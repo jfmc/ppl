@@ -674,23 +674,22 @@ m4_define(`m4_disjunct_extrapolation_alt_replacement',
   `m4_echo_unquoted(m4_`'m4_remove_topology(m4_disjunct_kind($1))`'_extrapolation_alt_replacement)')
 
 dnl  The different kinds of objects that can build a class.
-m4_define(`m4_build_represent_replacement', `constraint, generator')
-m4_define(`m4_Polyhedron_build_represent_replacement',
-         `constraint, generator')
+m4_define(`m4_build_represent_replacement',
+         `constraint, congruence, generator')
 m4_define(`m4_Grid_build_represent_replacement',
          `constraint, grid_generator, congruence')
-m4_define(`m4_Pointset_Powerset_build_represent_replacement', `constraint')
+m4_define(`m4_Pointset_Powerset_build_represent_replacement',
+         `constraint, congruence')
 
 dnl  The different kinds of alternative objects that can build
 dnl  the same class.
 dnl  At the moment, this is just used for the test data generator.
-m4_define(`m4_build_represent_alt_replacement', `generator, constraint')
-m4_define(`m4_Polyhedron_build_represent_alt_replacement',
-         `generator, constraint')
+m4_define(`m4_build_represent_alt_replacement',
+          `generator, congruence, constraint')
 m4_define(`m4_Grid_build_represent_alt_replacement',
          `constraint, congruence, grid_generator')
 m4_define(`m4_Pointset_Powerset_build_represent_alt_replacement',
-         `constraint')
+         `constraint, congruence')
 
 dnl  The different kinds of objects that can have a relation with a class.
 m4_define(`m4_relation_represent_replacement', `constraint, generator')
@@ -756,7 +755,7 @@ m4_define(`m4_Polyhedron_has_property_replacement',
         `m4_has_property_replacement, is_discrete')
 m4_define(`m4_Grid_has_property_replacement',
         `m4_has_property_replacement, is_discrete')
-m4_define(`m4_Pointset_Powerset_has_property_replacement',`')
+m4_define(`m4_Pointset_Powerset_has_property_replacement',`contains_integer_point')
 
 dnl  The "simplify" predicates
 m4_define(`m4_simplify_replacement', `topological_closure_assign')
