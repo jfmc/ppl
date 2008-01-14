@@ -592,5 +592,5 @@ ppl_build_test_data(test10, _Topology, box,
                                [i(c(1/2), o(pinf)), i(o(minf), c(-1/2))]).
 ppl_build_test_data(test11, _Topology, box, [i(c(-4), c(1)), i(c(-1), c(1))]).
 ppl_build_test_data(test12, T, box, [i(c(0/2), o(pinf)), i(o(minf), c(1))]) :-
-  T \= t_NNC_.
+  \+ T == t_NNC_.
 ppl_build_test_data(test12, t_NNC_, box, [i(o(0/2), o(pinf)), i(o(minf), o(1))]).

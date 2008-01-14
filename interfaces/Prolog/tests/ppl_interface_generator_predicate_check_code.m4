@@ -639,7 +639,7 @@ ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_3_test :-
   (
    choose_test(TEST_DATA, Space_Dim),
    (
-     class_@CLASS@ \= class_BD_Shape_int8_t,
+     class_@CLASS@ \== class_BD_Shape_int8_t,
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
      ppl_relation_test_data(TEST_DATA, @RELATION_REPRESENT@, R, Rel_Expected),
      ppl_@CLASS@_relation_with_@RELATION_REPRESENT@(PS, R, Rel),

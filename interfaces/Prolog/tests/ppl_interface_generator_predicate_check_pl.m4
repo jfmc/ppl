@@ -151,6 +151,7 @@ dnl -----------------------------------------------------------------
 m4_pushdef(`m4_extension', `dnl
 m4_ifdef(`$1_code',
          `m4_ifelse(m4_check_test_usability($1, $5), keep,
+:- dynamic($1_$2_test/0).
 :- discontiguous($1_$2_test/0).)')
 ')`'dnl
 dnl -----------------------------------------------------------------
