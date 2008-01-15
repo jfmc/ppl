@@ -365,19 +365,18 @@ ppl_@CLASS@_get_@GET_REPRESENT@s_2_test :-
    choose_test(TEST_DATA, Space_Dim),
    (
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
-     ppl_@CLASS@_get_@GET_REPRESENT@s(PS, RS1),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS1, Space_Dim),
+     ppl_@CLASS@_get_@GET_REPRESENT@s(PS, RS),
      (predicate_exists(ppl_@CLASS@_add_@GET_REPRESENT@s)
      ->
-       (ppl_initial_test_system(@GET_REPRESENT@, U_or_E),
-        clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim,
-                                                             U_or_E, PS1),
-        ppl_@CLASS@_add_@GET_REPRESENT@s(PS1, RS1),
-        ppl_@CLASS@_equals_@CLASS@(PS, PS1),
-        ppl_delete_@CLASS@(PS1))
+         ppl_@CLASS@_add_@GET_REPRESENT@s(PS1, RS)
      ;
-       true
+         true
      ),
-     ppl_delete_@CLASS@(PS)
+     ppl_@CLASS@_OK(PS),
+     ppl_@CLASS@_OK(PS1),
+     ppl_delete_@CLASS@(PS),
+     ppl_delete_@CLASS@(PS1)
    ->
      fail ; true)
   ).
@@ -390,20 +389,19 @@ ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_2_test :-
   (
    choose_test(TEST_DATA, Space_Dim),
    (
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
-     ppl_@CLASS@_get_minimized_@GET_REPRESENT@s(PS, RS1),
-     (predicate_exists(ppl_@CLASS@_add_@GET_REPRESENT@s)
-    ->
-       (ppl_initial_test_system(@GET_REPRESENT@, U_or_E),
-        clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim,
-                                                           U_or_E, PS1),
-        ppl_@CLASS@_add_@GET_REPRESENT@s(PS1, RS1),
-        ppl_@CLASS@_equals_@CLASS@(PS, PS1),
-        ppl_delete_@CLASS@(PS1))
-     ;
+      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
+      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS1, Space_Dim),
+      ppl_@CLASS@_get_minimized_@GET_REPRESENT@s(PS, RS),
+      ( predicate_exists(ppl_@CLASS@_add_@GET_REPRESENT@s)
+      ->
+        ppl_@CLASS@_add_@GET_REPRESENT@s(PS1, RS)
+      ;
         true
-     ),
-     ppl_delete_@CLASS@(PS)
+      ),
+      ppl_@CLASS@_OK(PS),
+      ppl_@CLASS@_OK(PS1),
+      ppl_delete_@CLASS@(PS),
+      ppl_delete_@CLASS@(PS1)
    ->
      fail ; true)
   ).

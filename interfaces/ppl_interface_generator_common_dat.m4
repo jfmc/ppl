@@ -706,11 +706,11 @@ m4_define(`m4_Grid_relation_represent_alt_replacement',
          `con, gen, con')
 
 dnl  The different kinds of objects that can be added to a class.
-m4_define(`m4_add_represent_replacement', `constraint')
+m4_define(`m4_add_represent_replacement', `constraint, congruence')
 m4_define(`m4_Polyhedron_add_represent_replacement',
          `m4_add_represent_replacement, generator')
 m4_define(`m4_Grid_add_represent_replacement',
-         `m4_add_represent_replacement, congruence, grid_generator')
+         `m4_add_represent_replacement, grid_generator')
 m4_define(`m4_Pointset_Powerset_add_represent_replacement',
          `constraint')
 
