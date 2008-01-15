@@ -438,6 +438,52 @@ Pointset_Powerset<PS>::map_space_dimensions(const Partial_Function& pfunc) {
 
   template <typename PS>
   bool
+  Pointset_Powerset<PS>::is_universe() const {
+    // FIXME: this is not the most efficient implementation.
+    // FIXME: this is buggy when PS is not an abstraction of NNC_Polyhedron.
+    const NNC_Polyhedron ph = NNC_Polyhedron(space_dim);
+    const Pointset_Powerset<NNC_Polyhedron> pps(*this);
+    return check_containment(ph, pps);
+  }
+
+  template <typename PS>
+  bool
+  Pointset_Powerset<PS>::is_empty() const {
+    const Pointset_Powerset& x = *this;
+    for (Sequence_const_iterator si = x.sequence.begin(),
+	   s_end = x.sequence.end(); si != s_end; ++si)
+      if (!si->element().is_empty())
+	return false;
+    return true;
+  }
+
+  template <typename PS>
+  bool
+  Pointset_Powerset<PS>::is_topologically_closed() const {
+    const Pointset_Powerset& x = *this;
+    // The powerset must be omega-reduced before checking
+    // topological closure.
+    x.omega_reduce();
+    for (Sequence_const_iterator si = x.sequence.begin(),
+	   s_end = x.sequence.end(); si != s_end; ++si)
+      if (!si->element().is_topologically_closed())
+	return false;
+    return true;
+  }
+
+  template <typename PS>
+  bool
+  Pointset_Powerset<PS>::is_bounded() const {
+    const Pointset_Powerset& x = *this;
+    for (Sequence_const_iterator si = x.sequence.begin(),
+	   s_end = x.sequence.end(); si != s_end; ++si)
+      if (!si->element().is_bounded())
+	return false;
+    return true;
+  }
+
+  template <typename PS>
+  bool
   Pointset_Powerset<PS>::contains_integer_point() const {
     const Pointset_Powerset& x = *this;
     for (Sequence_const_iterator si = x.sequence.begin(),

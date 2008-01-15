@@ -112,6 +112,30 @@ public:
   dimension_type affine_dimension() const;
 
   /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is
+    an empty powerset.
+  */
+  bool is_empty() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this
+    is a universe powerset.
+  */
+  bool is_universe() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this
+    is a topologically closed subset of the vector space.
+  */
+  bool is_topologically_closed() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if all elements in \p *this
+    are bounded.
+  */
+  bool is_bounded() const;
+
+  /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this geometrically
     covers \p y, i.e., if any point (in some element) of \p y is also
     a point (of some element) of \p *this.
