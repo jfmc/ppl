@@ -755,8 +755,6 @@ m4_define(`m4_Polyhedron_has_property_replacement',
         `m4_has_property_replacement, is_discrete')
 m4_define(`m4_Grid_has_property_replacement',
         `m4_has_property_replacement, is_discrete')
-m4_define(`m4_Pointset_Powerset_has_property_replacement',
-        `contains_integer_point')
 
 dnl  The "simplify" predicates
 m4_define(`m4_simplify_replacement', `topological_closure_assign')
