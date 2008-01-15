@@ -73,6 +73,10 @@ test03() {
 
   Congruence_System cgs = gr1.minimized_congruences();
 
+  gr1.OK();
+
+  print_congruences(gr1, "*** gr1(cgs) ***");
+
   Grid gr2(cgs);
 
   bool ok = (gr2 == known_gr);
@@ -91,6 +95,10 @@ test04() {
   Grid known_gr = gr1;
 
   Congruence_System cgs = gr1.minimized_congruences();
+
+  gr1.OK();
+
+  print_congruences(gr1, "*** gr1(cgs) ***");
 
   Grid gr2(cgs);
 
