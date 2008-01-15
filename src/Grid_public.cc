@@ -276,18 +276,6 @@ PPL::Grid::congruences() const {
 
 const PPL::Congruence_System&
 PPL::Grid::minimized_congruences() const {
-  if (space_dim == 0) {
-    if (!marked_empty()) {
-      // Ensure the congruences are minimal by extending a zero dim
-      // universe congruence system to the appropriate dimension and
-      // then storing it in `con_sys'.
-      Congruence_System cgs(Congruence::zero_dim_integrality());
-      cgs.increase_space_dimension(space_dim);
-      cgs[0][0] = 1; // Recover minimal form after cgs(zdi) normalization.
-      const_cast<Congruence_System&>(con_sys).swap(cgs);
-    }
-    return con_sys;
-  }
   if (congruences_are_up_to_date() && !congruences_are_minimized()) {
     // Minimize the congruences.
     Grid& gr = const_cast<Grid&>(*this);
