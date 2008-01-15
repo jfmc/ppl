@@ -242,7 +242,8 @@ PPL::Grid::concatenate_assign(const Grid& y) {
     return;
   }
 
-  congruences_are_up_to_date() || update_congruences();
+  if (!congruences_are_up_to_date())
+    update_congruences();
 
   con_sys.concatenate(y.congruences());
 

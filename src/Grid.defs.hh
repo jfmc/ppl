@@ -2222,11 +2222,7 @@ private:
   //@{
 
   //! Updates and minimizes the congruences from the generators.
-  /*!
-    \return
-    Always <CODE>true</CODE>.
-  */
-  bool update_congruences() const;
+  void update_congruences() const;
 
   //! Updates and minimizes the generators from the congruences.
   /*!

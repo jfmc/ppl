@@ -368,7 +368,7 @@ PPL::Grid::set_empty() {
   const_cast<Congruence_System&>(con_sys).swap(cgs);
 }
 
-bool
+void
 PPL::Grid::update_congruences() const {
   // The caller must ensure that the generators are up to date.
   assert(space_dim > 0);
@@ -392,7 +392,6 @@ PPL::Grid::update_congruences() const {
   // Both systems are minimized.
   gr.set_congruences_minimized();
   gr.set_generators_minimized();
-  return true;
 }
 
 bool

@@ -269,7 +269,8 @@ PPL::Grid::congruences() const {
     return con_sys;
   }
 
-  congruences_are_up_to_date() || update_congruences();
+  if (!congruences_are_up_to_date())
+    update_congruences();
 
   return con_sys;
 }
@@ -507,7 +508,8 @@ PPL::Grid::relation_with(const Grid_Generator& g) const {
   if (space_dim == 0)
     return Poly_Gen_Relation::subsumes();
 
-  congruences_are_up_to_date() || update_congruences();
+  if (!congruences_are_up_to_date())
+    update_congruences();
 
   return
     con_sys.satisfies_all_congruences(g)
@@ -532,7 +534,8 @@ PPL::Grid::relation_with(const Generator& g) const {
   if (space_dim == 0)
     return Poly_Gen_Relation::subsumes();
 
-  congruences_are_up_to_date() || update_congruences();
+  if (!congruences_are_up_to_date())
+    update_congruences();
 
   Linear_Expression expr;
   for (dimension_type i = g_space_dim; i-- > 0; ) {
@@ -1056,7 +1059,8 @@ PPL::Grid::add_congruence(const Congruence& cg) {
     return;
   }
 
-  congruences_are_up_to_date() || update_congruences();
+  if (!congruences_are_up_to_date())
+    update_congruences();
 
   con_sys.insert(cg);
 
@@ -1175,7 +1179,8 @@ PPL::Grid::add_recycled_congruences(Congruence_System& cgs) {
   }
 
   // The congruences are required.
-  congruences_are_up_to_date() || update_congruences();
+  if (!congruences_are_up_to_date())
+    update_congruences();
 
   // Swap (instead of copying) the coefficients of `cgs' (which is
   // writable).
@@ -1249,7 +1254,8 @@ PPL::Grid::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
   if (marked_empty())
     return false;
 
-  congruences_are_up_to_date() || update_congruences();
+  if (!congruences_are_up_to_date())
+    update_congruences();
 
   con_sys.recycling_insert(cgs);
 
@@ -1377,10 +1383,11 @@ PPL::Grid::add_recycled_grid_generators(Grid_Generator_System& gs) {
     return;
   }
 
-  if (!marked_empty()
-      && (generators_are_up_to_date() || update_generators())) {
+  if (!marked_empty()) {
     // The grid contains at least one point.
 
+    if (!generators_are_up_to_date())
+      update_generators();
     normalize_divisors(gs, gen_sys);
 
     gen_sys.recycling_insert(gs);
@@ -1448,9 +1455,11 @@ PPL
   // Adjust `gs' to the right dimension.
   gs.insert(parameter(0*Variable(space_dim-1)));
 
-  if (!marked_empty()
-      && (generators_are_up_to_date() || update_generators())) {
+  if (!marked_empty()) {
     // The grid contains at least one point.
+
+    if (!generators_are_up_to_date())
+      update_generators();
     normalize_divisors(gs, gen_sys);
 
     for (dimension_type row = 0,
@@ -1501,8 +1510,10 @@ PPL::Grid::intersection_assign(const Grid& y) {
     return;
 
   // The congruences must be up-to-date.
-  x.congruences_are_up_to_date() || x.update_congruences();
-  y.congruences_are_up_to_date() || y.update_congruences();
+  if (!x.congruences_are_up_to_date())
+    x.update_congruences();
+  if (!y.congruences_are_up_to_date())
+    y.update_congruences();
 
   if (!y.con_sys.empty()) {
     x.con_sys.insert(y.con_sys);
@@ -1858,7 +1869,8 @@ generalized_affine_image(const Variable var,
       throw_invalid_argument("generalized_affine_image(v, r, e, d, m)",
                              "r != EQUAL && m != 0");
 
-    generators_are_up_to_date() || minimize();
+    if (!generators_are_up_to_date())
+      minimize();
 
     // Any image of an empty grid is empty.
     if (marked_empty())
@@ -1879,7 +1891,8 @@ generalized_affine_image(const Variable var,
 
   // Modulate dimension `var' according to `modulus'.
 
-  generators_are_up_to_date() || minimize();
+  if (!generators_are_up_to_date())
+    minimize();
 
   // Test if minimization, possibly in affine_image, found an empty
   // grid.
@@ -1932,7 +1945,8 @@ generalized_affine_preimage(const Variable var,
       throw_invalid_argument("generalized_affine_preimage(v, r, e, d, m)",
                              "r != EQUAL && m != 0");
 
-    generators_are_up_to_date() || minimize();
+    if (!generators_are_up_to_date())
+      minimize();
 
     // Any image of an empty grid is empty.
     if (marked_empty())
@@ -2018,7 +2032,8 @@ generalized_affine_image(const Linear_Expression& lhs,
       throw_invalid_argument("generalized_affine_image(e1, r, e2, m)",
                              "r != EQUAL && m != 0");
 
-    generators_are_up_to_date() || minimize();
+    if (!generators_are_up_to_date())
+      minimize();
 
     // Any image of an empty grid is empty.
     if (marked_empty())
@@ -2146,7 +2161,8 @@ generalized_affine_preimage(const Linear_Expression& lhs,
       throw_invalid_argument("generalized_affine_preimage(e1, r, e2, m)",
                              "r != EQUAL && m != 0");
 
-    generators_are_up_to_date() || minimize();
+    if (!generators_are_up_to_date())
+      minimize();
 
     // Any image of an empty grid is empty.
     if (marked_empty())
