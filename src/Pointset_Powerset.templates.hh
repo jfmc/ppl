@@ -459,6 +459,17 @@ Pointset_Powerset<PS>::map_space_dimensions(const Partial_Function& pfunc) {
 
   template <typename PS>
   bool
+  Pointset_Powerset<PS>::is_discrete() const {
+    const Pointset_Powerset& x = *this;
+    for (Sequence_const_iterator si = x.sequence.begin(),
+	   s_end = x.sequence.end(); si != s_end; ++si)
+      if (!si->element().is_discrete())
+	return false;
+    return true;
+  }
+
+  template <typename PS>
+  bool
   Pointset_Powerset<PS>::is_topologically_closed() const {
     const Pointset_Powerset& x = *this;
     // The powerset must be omega-reduced before checking
@@ -479,6 +490,23 @@ Pointset_Powerset<PS>::map_space_dimensions(const Partial_Function& pfunc) {
 	   s_end = x.sequence.end(); si != s_end; ++si)
       if (!si->element().is_bounded())
 	return false;
+    return true;
+  }
+
+  template <typename PS>
+  bool
+  Pointset_Powerset<PS>::is_disjoint_from(const Pointset_Powerset& y) const {
+    const Pointset_Powerset& x = *this;
+    for (Sequence_const_iterator si = x.sequence.begin(),
+	   s_end = x.sequence.end(); si != s_end; ++si) {
+      const PS& pi = si->element();
+      for (Sequence_const_iterator sj = y.sequence.begin(),
+	     s_end = y.sequence.end(); sj != s_end; ++sj) {
+        const PS& pj = sj->element();
+        if (!pi.is_disjoint_from(pj))
+	  return false;
+      }
+    }
     return true;
   }
 

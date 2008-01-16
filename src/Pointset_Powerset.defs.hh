@@ -135,6 +135,17 @@ public:
   */
   bool is_bounded() const;
 
+  //! Returns <CODE>true</CODE> if and only if \p *this and \p y are disjoint.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p x and \p y are topology-incompatible or
+    dimension-incompatible.
+  */
+  bool is_disjoint_from(const Pointset_Powerset& y) const;
+
+  //! Returns <CODE>true</CODE> if and only if \p *this is discrete.
+  bool is_discrete() const;
+
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this geometrically
     covers \p y, i.e., if any point (in some element) of \p y is also

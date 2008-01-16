@@ -208,6 +208,129 @@ test13() {
   return b && b1;
 }
 
+bool
+test14() {
+  Pointset_Powerset<C_Polyhedron> ps1(0, EMPTY);
+
+  Pointset_Powerset<C_Polyhedron> ps2(0, EMPTY);
+  bool b = ps1.is_disjoint_from(ps2);
+  bool c = ps2.is_disjoint_from(ps1);
+
+  ps1.add_disjunct(C_Polyhedron(0));
+  bool b1 = ps1.is_disjoint_from(ps2);
+  bool c1 = ps2.is_disjoint_from(ps1);
+
+  ps2.add_disjunct(C_Polyhedron(0));
+  bool b2 = !ps1.is_disjoint_from(ps2);
+  bool c2 = !ps2.is_disjoint_from(ps1);
+
+  return b && c && b1 && c1 && b2 && c2;
+}
+
+bool
+test15() {
+  Variable x(0);
+  Constraint_System cs;
+  Pointset_Powerset<NNC_Polyhedron> ps1(1, EMPTY);
+
+  cs.clear();
+  cs.insert(x > 0);
+  cs.insert(x <= 1);
+  ps1.add_disjunct(NNC_Polyhedron(cs));
+
+  cs.clear();
+  cs.insert(x == 2);
+  ps1.add_disjunct(NNC_Polyhedron(cs));
+
+  Pointset_Powerset<NNC_Polyhedron> ps2(1, EMPTY);
+
+  cs.clear();
+  cs.insert(x > 2);
+  cs.insert(x <= 6);
+  ps2.add_disjunct(NNC_Polyhedron(cs));
+
+  bool b = ps1.is_disjoint_from(ps2);
+  bool c = ps2.is_disjoint_from(ps1);
+
+  cs.clear();
+  cs.insert(x >= 2);
+  ps2.add_disjunct(NNC_Polyhedron(cs));
+
+  bool b1 = !ps1.is_disjoint_from(ps2);
+  bool c1 = !ps2.is_disjoint_from(ps1);
+
+  return b && c && b1 && c1;
+}
+
+bool
+test16() {
+  Variable x(0);
+  Constraint_System cs;
+  Pointset_Powerset<C_Polyhedron> ps1(1, EMPTY);
+
+  Pointset_Powerset<C_Polyhedron> ps2(1, EMPTY);
+  bool b = ps1.is_disjoint_from(ps2);
+  bool c = ps2.is_disjoint_from(ps1);
+
+  ps1.add_disjunct(C_Polyhedron(1));
+
+  bool b1 = ps1.is_disjoint_from(ps2);
+  bool c1 = ps2.is_disjoint_from(ps1);
+
+  cs.clear();
+  cs.insert(x >= 0);
+  cs.insert(x <= 1);
+  ps2.add_disjunct(C_Polyhedron(cs));
+
+  bool b2 = !ps1.is_disjoint_from(ps2);
+  bool c2 = !ps2.is_disjoint_from(ps1);
+
+  return b && c && b1 && c1 && b2 && c2;
+}
+
+bool
+test17() {
+  Pointset_Powerset<C_Polyhedron> ps(0, EMPTY);
+  bool b = ps.is_discrete();
+
+  ps.add_disjunct(C_Polyhedron(0));
+  // A zero-dimension universe is discrete.
+  bool b1 = ps.is_discrete();
+  return b && b1;
+}
+
+bool
+test18() {
+  Variable x(0);
+  Constraint_System cs;
+  Pointset_Powerset<NNC_Polyhedron> ps(1, EMPTY);
+
+  cs.clear();
+  cs.insert(x == 2);
+  ps.add_disjunct(NNC_Polyhedron(cs));
+
+  bool b = ps.is_discrete();
+
+  cs.clear();
+  cs.insert(x > 0);
+  cs.insert(x <= 1);
+  ps.add_disjunct(NNC_Polyhedron(cs));
+
+  bool b1 = !ps.is_discrete();
+  return b && b1;
+}
+
+bool
+test19() {
+  Pointset_Powerset<C_Polyhedron> ps(1, EMPTY);
+  bool b = ps.is_discrete();
+
+  ps.add_disjunct(C_Polyhedron(1));
+
+  bool b1 = !ps.is_discrete();
+  return b && b1;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -224,4 +347,10 @@ BEGIN_MAIN
   DO_TEST(test11);
   DO_TEST(test12);
   DO_TEST(test13);
+  DO_TEST(test14);
+  DO_TEST(test15);
+  DO_TEST(test16);
+  DO_TEST(test17);
+  DO_TEST(test18);
+  DO_TEST(test19);
 END_MAIN
