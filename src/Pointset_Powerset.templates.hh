@@ -512,6 +512,212 @@ Pointset_Powerset<PS>::map_space_dimensions(const Partial_Function& pfunc) {
 
   template <typename PS>
   bool
+  Pointset_Powerset<PS>
+  ::bounds_from_above(const Linear_Expression& expr) const {
+    const Pointset_Powerset& x = *this;
+    x.omega_reduce();
+    for (Sequence_const_iterator si = x.sequence.begin(),
+	   s_end = x.sequence.end(); si != s_end; ++si)
+      if (!si->element().bounds_from_above(expr))
+	return false;
+    return true;
+  }
+
+  template <typename PS>
+  bool
+  Pointset_Powerset<PS>
+  ::bounds_from_below(const Linear_Expression& expr) const {
+    const Pointset_Powerset& x = *this;
+    x.omega_reduce();
+    for (Sequence_const_iterator si = x.sequence.begin(),
+	   s_end = x.sequence.end(); si != s_end; ++si)
+      if (!si->element().bounds_from_below(expr))
+	return false;
+    return true;
+  }
+
+  template <typename PS>
+  bool
+  Pointset_Powerset<PS>::maximize(const Linear_Expression& expr,
+		                  Coefficient& sup_n,
+                                  Coefficient& sup_d,
+                                  bool& maximum) const {
+    const Pointset_Powerset& x = *this;
+    x.omega_reduce();
+    bool first = true;
+
+    Coefficient supt_n = 0;
+    Coefficient supt_d = 1;
+    bool maxt = 0;
+
+    Coefficient supi_n = 0;
+    Coefficient supi_d = 1;
+    bool maxi = 0;
+
+    for (Sequence_const_iterator si = x.sequence.begin(),
+	   s_end = x.sequence.end(); si != s_end; ++si) {
+      if (!si->element().maximize(expr, supi_n, supi_d, maxi))
+	return false;
+      else
+	if (first) {
+	  first = false;
+	  supt_n = supi_n;
+	  supt_d = supi_d;
+	  maxt = maxi;
+	}
+	else
+	  if (supt_n * supi_d < supi_n * supt_d) {
+	    supt_n = supi_n;
+	    supt_d = supi_d;
+  	    maxt = maxi;
+	  }
+    }
+    sup_n = supt_n;
+    sup_d = supt_d;
+    maximum = maxt;
+    return true;
+  }
+
+  template <typename PS>
+  bool
+  Pointset_Powerset<PS>::maximize(const Linear_Expression& expr,
+		                  Coefficient& sup_n,
+                                  Coefficient& sup_d,
+                                  bool& maximum,
+		                  Generator& g) const {
+    const Pointset_Powerset& x = *this;
+    x.omega_reduce();
+    bool first = true;
+
+    Coefficient supt_n = 0;
+    Coefficient supt_d = 1;
+    bool maxt = 0;
+    Generator gt = point();
+
+    Coefficient supi_n = 0;
+    Coefficient supi_d = 1;
+    bool maxi = 0;
+    Generator gi = point();
+
+    for (Sequence_const_iterator si = x.sequence.begin(),
+	   s_end = x.sequence.end(); si != s_end; ++si) {
+      if (!si->element().maximize(expr, supi_n, supi_d, maxi, gi))
+	return false;
+      else
+	if (first) {
+	  first = false;
+	  supt_n = supi_n;
+	  supt_d = supi_d;
+	  maxt = maxi;
+	  gt = gi;
+	}
+	else
+	  if (supt_n * supi_d < supi_n * supt_d) {
+	    supt_n = supi_n;
+	    supt_d = supi_d;
+  	    maxt = maxi;
+	    gt = gi;
+	  }
+    }
+    sup_n = supt_n;
+    sup_d = supt_d;
+    maximum = maxt;
+    g = gt;
+    return true;
+  }
+
+  template <typename PS>
+  bool
+  Pointset_Powerset<PS>::minimize(const Linear_Expression& expr,
+		                  Coefficient& inf_n,
+                                  Coefficient& inf_d,
+                                  bool& minimum) const {
+    const Pointset_Powerset& x = *this;
+    x.omega_reduce();
+    bool first = true;
+
+    Coefficient inft_n = 0;
+    Coefficient inft_d = 1;
+    bool mint = 0;
+
+    Coefficient infi_n = 0;
+    Coefficient infi_d = 1;
+    bool mini = 0;
+
+    for (Sequence_const_iterator si = x.sequence.begin(),
+	   s_end = x.sequence.end(); si != s_end; ++si) {
+      if (!si->element().minimize(expr, infi_n, infi_d, mini))
+	return false;
+      else
+	if (first) {
+	  first = false;
+	  inft_n = infi_n;
+	  inft_d = infi_d;
+	  mint = mini;
+	}
+	else
+	  if (inft_n * infi_d < infi_n * inft_d) {
+	    inft_n = infi_n;
+	    inft_d = infi_d;
+  	    mint = mini;
+	  }
+    }
+    inf_n = inft_n;
+    inf_d = inft_d;
+    minimum = mint;
+    return true;
+  }
+
+  template <typename PS>
+  bool
+  Pointset_Powerset<PS>::minimize(const Linear_Expression& expr,
+		                  Coefficient& inf_n,
+                                  Coefficient& inf_d,
+                                  bool& minimum,
+		                  Generator& g) const {
+    const Pointset_Powerset& x = *this;
+    x.omega_reduce();
+    bool first = true;
+
+    Coefficient inft_n = 0;
+    Coefficient inft_d = 1;
+    bool mint = 0;
+    Generator gt = point();
+
+    Coefficient infi_n = 0;
+    Coefficient infi_d = 1;
+    bool mini = 0;
+    Generator gi = point();
+
+    for (Sequence_const_iterator si = x.sequence.begin(),
+	   s_end = x.sequence.end(); si != s_end; ++si) {
+      if (!si->element().minimize(expr, infi_n, infi_d, mini, gi))
+	return false;
+      else
+	if (first) {
+	  first = false;
+	  inft_n = infi_n;
+	  inft_d = infi_d;
+	  mint = mini;
+	  gt = gi;
+	}
+	else
+	  if (inft_n * infi_d < infi_n * inft_d) {
+	    inft_n = infi_n;
+	    inft_d = infi_d;
+  	    mint = mini;
+	    gt = gi;
+	  }
+    }
+    inf_n = inft_n;
+    inf_d = inft_d;
+    minimum = mint;
+    g = gt;
+    return true;
+  }
+
+  template <typename PS>
+  bool
   Pointset_Powerset<PS>::contains_integer_point() const {
     const Pointset_Powerset& x = *this;
     for (Sequence_const_iterator si = x.sequence.begin(),
