@@ -280,7 +280,7 @@ ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@_2_test :-
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2a, Space_Dim),
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1_Copy),
      (ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@(PS1_Copy, PS2) ->
-       (predicate_exists(ppl_@CLASS@_equals_@CLASS@)
+       (predicate_exists(ppl_@CLASS@_contains_@CLASS@)
        ->
          ppl_@CLASS@_equals_@CLASS@(PS2, PS2a),
          ppl_@CLASS@_contains_@CLASS@(PS1_Copy, PS1),
@@ -1103,7 +1103,7 @@ ppl_@CLASS@_@BINOP@_2_test :-
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2a, Space_Dim),
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1_Copy),
      ppl_@CLASS@_@BINOP@(PS1_Copy, PS2),
-     (predicate_exists(ppl_@CLASS@_equals_@CLASS@)
+     (predicate_exists(ppl_@CLASS@_contains_@CLASS@)
      ->
        ppl_@CLASS@_equals_@CLASS@(PS2, PS2a),
        (@BINOP@ == intersection_assign
