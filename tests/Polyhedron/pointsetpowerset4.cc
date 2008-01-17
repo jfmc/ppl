@@ -633,6 +633,31 @@ test19() {
   return ok && ok1;
 }
 
+bool
+test20() {
+  Variable x(0);
+  Pointset_Powerset<NNC_Polyhedron> ps(1);
+  Constraint_System cs;
+  cs.clear();
+  cs.insert(x > 5);
+  cs.insert(x > 8);
+  ps.add_constraints(cs);
+
+  ps.topological_closure_assign();
+
+  bool ok = ps.OK();
+
+  Pointset_Powerset<NNC_Polyhedron> known_ps(1);
+  cs.clear();
+  cs.insert(x >= 5);
+  cs.insert(x >= 8);
+  known_ps.add_constraints(cs);
+
+  ok = ok && ps.contains(known_ps);
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -655,4 +680,5 @@ BEGIN_MAIN
   DO_TEST(test17);
   DO_TEST(test18);
   DO_TEST(test19);
+  DO_TEST(test20);
 END_MAIN

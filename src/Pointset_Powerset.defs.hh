@@ -468,6 +468,9 @@ public:
   */
   bool add_congruences_and_minimize(const Congruence_System& cs);
 
+  //! Assigns to \p *this its topological closure.
+  void topological_closure_assign();
+
   /*! \brief
     Assign to \p *this the result of (recursively) merging together
     the pairs of disjuncts whose upper-bound is the same as their

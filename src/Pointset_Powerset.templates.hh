@@ -566,6 +566,16 @@ Pointset_Powerset<PS>::map_space_dimensions(const Partial_Function& pfunc) {
   }
 
   template <typename PS>
+  void
+  Pointset_Powerset<PS>::topological_closure_assign() {
+    Pointset_Powerset& x = *this;
+    for (Sequence_iterator si = x.sequence.begin(),
+	   s_end = x.sequence.end(); si != s_end; ++si)
+      si->element().topological_closure_assign();
+  assert(x.OK());
+  }
+
+  template <typename PS>
   bool
   Pointset_Powerset<PS>::contains(const Pointset_Powerset& y) const {
     const Pointset_Powerset& x = *this;

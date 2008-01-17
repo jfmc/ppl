@@ -469,65 +469,6 @@ m4_ifelse($1, $2,
     `, '$4`'$3)')`'dnl
 ')
 
-dnl This is commented for now as this is not in the C++ interface.
-dnl
-dnl For BD_Shape class kind, any generated class with kind BD_Shape
-dnl is a friend.
-dnl Also if C_Polyhedron is a generated class it is a friend
-dnl
-dnl m4_define(`m4_BD_Shape_friend_replacement', `dnl
-dnl
-dnl Initialise a flag to ensure the comma in the list is a separator only.
-dnl m4_define(`m4_replace_list_start', 0)`'dnl
-dnl m4_same_class_string(
-dnl   BD_Shape, interface,,
-dnl   class_kind)`'dnl
-dnl m4_same_class_string(
-dnl   Polyhedron, interface,,
-dnl   class_kind)`'dnl
-dnl ')
-
-dnl This is commented for now as this is not in the C++ interface.
-dnl
-dnl Defines the alternative friend name for cplusplus code.
-dnl m4_define(`m4_BD_Shape_friend_alt_replacement', `dnl
-dnl m4_define(`m4_replace_list_start', 0)`'dnl
-dnl m4_same_class_string(
-dnl   BD_Shape, cplusplus,
-dnl   class_kind)`'dnl
-dnl m4_same_class_string(
-dnl   Polyhedron, cplusplus,,
-dnl   class_kind)
-dnl ')
-
-dnl This is commented for now as this is not in the C++ interface.
-dnl
-dnl For Octagon class kind, any generated class with kind Octagon
-dnl is a friend.
-dnl Also if Polyhedron is a generated class it is a friend
-dnl
-dnl m4_define(`m4_Octagonal_Shape_friend_replacement', `dnl
-dnl m4_define(`m4_replace_list_start', 0)`'dnl
-dnl m4_same_class_string(
-dnl   Octagonal_Shape, interface,,
-dnl   class_kind)`'dnl
-dnl m4_same_class_string(
-dnl   Polyhedron, interface,,
-dnl   class_kind)`'dnl
-dnl ')
-
-dnl This is commented for now as this is not in the C++ interface.
-dnl
-dnl m4_define(`m4_Octagonal_Shape_friend_alt_replacement', `dnl
-dnl m4_define(`m4_replace_list_start', 0)`'dnl
-dnl m4_same_class_string(
-dnl   Octagonal_Shape, cplusplus,,
-dnl   class_kind)`'dnl
-dnl m4_same_class_string(
-dnl   Polyhedron, cplusplus, C_,
-dnl   class_kind)`'dnl
-dnl ')
-
 dnl For Pointset_Powerset class kind, if the body is C_Polyhedron
 dnl or NNC_Polyhedron,
 dnl and Polyhedron is generated, then C_Polyhedron
@@ -750,13 +691,14 @@ m4_define(`m4_Pointset_Powerset_partition_replacement',
 dnl  The unary "has_property" predicates
 m4_define(`m4_has_property_replacement', `is_empty, is_universe, is_bounded, contains_integer_point, is_topologically_closed')
 m4_define(`m4_Polyhedron_has_property_replacement',
-        `m4_has_property_replacement, is_discrete')
+          `m4_has_property_replacement, is_discrete')
 m4_define(`m4_Grid_has_property_replacement',
-        `m4_has_property_replacement, is_discrete')
+          `m4_has_property_replacement, is_discrete')
 
 dnl  The "simplify" predicates
 m4_define(`m4_simplify_replacement', `topological_closure_assign')
-m4_define(`m4_Pointset_Powerset_simplify_replacement', `pairwise_reduce')
+m4_define(`m4_Pointset_Powerset_simplify_replacement',
+          `m4_simplify_replacement, pairwise_reduce')
 
 dnl  Above or below
 m4_define(`m4_abovebelow_replacement', `above, below')
