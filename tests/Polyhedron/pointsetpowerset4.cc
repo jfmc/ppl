@@ -122,8 +122,66 @@ test04() {
 bool
 test05() {
   Variable x(0);
+  Constraint_System cs;
+  Linear_Expression LE = x;
+
+  Coefficient max_n;
+  Coefficient max_d;
+  bool max_included;
+  Generator max_g(point());
+  Pointset_Powerset<NNC_Polyhedron> ps(1, EMPTY);
+
+  cs.clear();
+  cs.insert(x >= 3);
+  cs.insert(x < 14);
+  ps.add_disjunct(NNC_Polyhedron(cs));
+
+  bool ok = ps.maximize(LE, max_n, max_d, max_included)
+    && max_n == 14 && max_d == 1 && !max_included;
+  ok = ok && ps.maximize(LE, max_n, max_d, max_included, max_g)
+    && max_n == 14 && max_d == 1 && !max_included
+    && max_g.is_closure_point()
+    && max_g.divisor() == 1;
+
+  nout << max_n << "/" << max_d;
+  nout << " @ ";
+  print_generator(max_g);
+  nout << endl;
+
+  if (!ok)
+    return false;
+
+  cs.clear();
+  cs.insert(x >= 3);
+  cs.insert(x <= 14);
+  ps.add_disjunct(NNC_Polyhedron(cs));
+
+  ok = ps.maximize(LE, max_n, max_d, max_included)
+    && max_n == 14 && max_d == 1 && max_included;
+  ok = ok && ps.maximize(LE, max_n, max_d, max_included, max_g)
+    && max_n == 14 && max_d == 1 && max_included
+    && max_g.is_point()
+    && max_g.divisor() == 1;
+
+  nout << max_n << "/" << max_d;
+  nout << " @ ";
+  print_generator(max_g);
+  nout << endl;
+
+  return ok;
+}
+
+bool
+test06() {
+  Variable x(0);
   Variable y(1);
   Constraint_System cs;
+  Linear_Expression LE = 9*x + y;
+
+  Coefficient num;
+  Coefficient den;
+  bool included;
+  Generator g(point());
   Pointset_Powerset<C_Polyhedron> ps(2, EMPTY);
 
   cs.clear();
@@ -132,12 +190,6 @@ test05() {
   cs.insert(y >= 5);
   cs.insert(11*y <= 87);
   ps.add_disjunct(C_Polyhedron(cs));
-
-  Coefficient num;
-  Coefficient den;
-  bool included;
-  Generator g(point());
-  Linear_Expression LE = 9*x + y;
 
   bool ok = ps.maximize(LE, num, den, included)
     && num == 549 && den == 11 && included;
@@ -162,9 +214,9 @@ test05() {
   cs.insert(4*y <= 85);
   ps.add_disjunct(C_Polyhedron(cs));
 
-  bool ok1 = ps.maximize(LE, num, den, included)
+  ok = ps.maximize(LE, num, den, included)
     && num == 779 && den == 3 && included;
-  ok1 = ok1 && ps.maximize(LE, num, den, included, g)
+  ok = ok && ps.maximize(LE, num, den, included, g)
     && num == 779 && den == 3 && included
     && g.is_point()
     && g.divisor() == 3;
@@ -174,19 +226,20 @@ test05() {
   print_generator(g);
   nout << endl;
 
-  return ok1;
+  return ok;
 }
 
 bool
-test06() {
+test07() {
   Variable x(0);
-  Pointset_Powerset<C_Polyhedron> ps(1, EMPTY);
+  Linear_Expression LE = x;
 
   Coefficient num;
   Coefficient den;
   bool included;
   Generator g(point());
-  Linear_Expression LE = x;
+  Pointset_Powerset<C_Polyhedron> ps(1, EMPTY);
+
   bool ok = ps.maximize(LE, num, den, included)
     && num == 0 && den == 1 && !included;
   ok = ok && ps.maximize(LE, num, den, included, g)
@@ -198,19 +251,20 @@ test06() {
     return false;
 
   ps.add_disjunct(C_Polyhedron(1));
-  bool ok1 = !ps.maximize(LE, num, den, included, g);
+  ok = !ps.maximize(LE, num, den, included, g);
 
-  return ok1;
+  return ok;
 }
 
 bool
-test07() {
-  Pointset_Powerset<C_Polyhedron> ps(0, EMPTY);
+test08() {
+  Linear_Expression LE;
   Coefficient num;
   Coefficient den;
   bool included;
   Generator g(point());
-  Linear_Expression LE;
+  Pointset_Powerset<C_Polyhedron> ps(0, EMPTY);
+
   bool ok = ps.minimize(LE, num, den, included)
     && num == 0 && den == 1 && !included;
   ok = ok && ps.minimize(LE, num, den, included, g)
@@ -222,9 +276,9 @@ test07() {
     return false;
 
   ps.add_disjunct(C_Polyhedron(0));
-  bool ok1 = ps.minimize(LE, num, den, included)
+  ok = ps.minimize(LE, num, den, included)
     && num == 0 && den == 1 && included;
-  ok1 = ok1 && ps.minimize(LE, num, den, included, g)
+  ok = ok && ps.minimize(LE, num, den, included, g)
     && num == 0 && den == 1 && included
     && g.is_point()
     && g.divisor() == 1;
@@ -236,33 +290,86 @@ test07() {
   print_generator(g);
   nout << endl;
 
-  return ok1;
+  return ok;
 }
 
 bool
-test08() {
+test09() {
+  Variable x(0);
+  Constraint_System cs;
+  Linear_Expression LE = x;
+
+  Coefficient min_n;
+  Coefficient min_d;
+  bool min_included;
+  Generator min_g(point());
+
+  Pointset_Powerset<NNC_Polyhedron> ps(1, EMPTY);
+
+  cs.clear();
+  cs.insert(2*x > 3);
+  cs.insert(x < 14);
+  ps.add_disjunct(NNC_Polyhedron(cs));
+
+  bool ok = ps.minimize(LE, min_n, min_d, min_included)
+    && min_n == 3 && min_d == 2 && !min_included;
+  ok = ok && ps.minimize(LE, min_n, min_d, min_included, min_g)
+    && min_n == 3 && min_d == 2 && !min_included
+    && min_g.is_closure_point()
+    && min_g.divisor() == 2;
+
+  nout << min_n << "/" << min_d;
+  nout << " @ ";
+  print_generator(min_g);
+  nout << endl;
+
+  if (!ok)
+    return false;
+
+  cs.clear();
+  cs.insert(2*x >= 3);
+  cs.insert(x < 14);
+  ps.add_disjunct(NNC_Polyhedron(cs));
+
+  ok = ps.minimize(LE, min_n, min_d, min_included)
+    && min_n == 3 && min_d == 2 && min_included;
+  ok = ok && ps.minimize(LE, min_n, min_d, min_included, min_g)
+    && min_n == 3 && min_d == 2 && min_included
+    && min_g.is_point()
+    && min_g.divisor() == 2;
+
+  nout << min_n << "/" << min_d;
+  nout << " @ ";
+  print_generator(min_g);
+  nout << endl;
+
+  return ok;
+}
+
+bool
+test10() {
   Variable x(0);
   Variable y(1);
   Constraint_System cs;
-  Pointset_Powerset<C_Polyhedron> ps(2, EMPTY);
-
-  cs.clear();
-  cs.insert(x >= 3);
-  cs.insert(3*x <= 14);
-  cs.insert(y >= 5);
-  cs.insert(11*y <= 87);
-  ps.add_disjunct(C_Polyhedron(cs));
+  Linear_Expression LE = x + y;
 
   Coefficient num;
   Coefficient den;
   bool included;
   Generator g(point());
-  Linear_Expression LE = 9*x + y;
+  Pointset_Powerset<C_Polyhedron> ps(2, EMPTY);
+
+  cs.clear();
+  cs.insert(x >= 3);
+  cs.insert(x <= 4);
+  cs.insert(y >= 5);
+  cs.insert(y <= 8);
+  ps.add_disjunct(C_Polyhedron(cs));
 
   bool ok = ps.minimize(LE, num, den, included)
-    && num == 32 && den == 1 && included;
+    && num == 8 && den == 1 && included;
   ok = ok && ps.minimize(LE, num, den, included, g)
-    && num == 32 && den == 1 && included
+    && num == 8 && den == 1 && included
     && g.is_point()
     && g.divisor() == 1;
 
@@ -276,37 +383,38 @@ test08() {
     return false;
 
   cs.clear();
-  cs.insert(2*x - 3*y >= 5);
-  cs.insert(x <= 28);
-  cs.insert(7*y >= 36);
-  cs.insert(y <= 8);
+  cs.insert(x - y >= 1);
+  cs.insert(x <= 8);
+  cs.insert(y >= 2);
+  cs.insert(y <= 10);
   ps.add_disjunct(C_Polyhedron(cs));
 
-  bool ok1 = ps.minimize(LE, num, den, included)
-    && num == 1359 && den == 14 && included;
-  ok1 = ok1 && ps.minimize(LE, num, den, included, g)
-    && num == 1359 && den == 14 && included
+  ok = ps.minimize(LE, num, den, included)
+    && num == 5 && den == 1 && included;
+  ok = ok && ps.minimize(LE, num, den, included, g)
+    && num == 5 && den == 1 && included
     && g.is_point()
-    && g.divisor() == 14;
+    && g.divisor() == 1;
 
   nout << num << "/" << den;
   nout << " @ ";
   print_generator(g);
   nout << endl;
 
-  return ok1;
+  return ok;
 }
 
 bool
-test09() {
+test11() {
   Variable x(0);
-  Pointset_Powerset<C_Polyhedron> ps(1, EMPTY);
+  Linear_Expression LE = x;
 
   Coefficient num;
   Coefficient den;
   bool included;
   Generator g(point());
-  Linear_Expression LE = x;
+  Pointset_Powerset<C_Polyhedron> ps(1, EMPTY);
+
   bool ok = ps.minimize(LE, num, den, included)
     && num == 0 && den == 1 && !included;
   ok = ok && ps.minimize(LE, num, den, included, g)
@@ -318,9 +426,9 @@ test09() {
     return false;
 
   ps.add_disjunct(C_Polyhedron(1));
-  bool ok1 = !ps.minimize(LE, num, den, included, g);
+  ok = !ps.minimize(LE, num, den, included, g);
 
-  return ok1;
+  return ok;
 }
 
 } // namespace
@@ -335,8 +443,8 @@ BEGIN_MAIN
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
-/*   DO_TEST(test10); */
-/*   DO_TEST(test11); */
+  DO_TEST(test10);
+  DO_TEST(test11);
 /*   DO_TEST(test12); */
 /*   DO_TEST(test13); */
 /*   DO_TEST(test14); */

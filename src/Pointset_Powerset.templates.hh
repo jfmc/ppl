@@ -553,6 +553,7 @@ Pointset_Powerset<PS>::map_space_dimensions(const Partial_Function& pfunc) {
     Coefficient supi_n = 0;
     Coefficient supi_d = 1;
     bool maxi = 0;
+    TEMP_INTEGER(tmp);
 
     for (Sequence_const_iterator si = x.sequence.begin(),
 	   s_end = x.sequence.end(); si != s_end; ++si) {
@@ -565,12 +566,16 @@ Pointset_Powerset<PS>::map_space_dimensions(const Partial_Function& pfunc) {
 	  supt_d = supi_d;
 	  maxt = maxi;
 	}
-	else
-	  if (supt_n * supi_d < supi_n * supt_d) {
+	else {
+          tmp = (supt_n * supi_d) - (supi_n * supt_d);
+	  if (tmp < 0) {
 	    supt_n = supi_n;
 	    supt_d = supi_d;
   	    maxt = maxi;
 	  }
+	  else if (tmp == 0)
+            maxt = maxt || maxi;
+	}
     }
     sup_n = supt_n;
     sup_d = supt_d;
@@ -598,6 +603,7 @@ Pointset_Powerset<PS>::map_space_dimensions(const Partial_Function& pfunc) {
     Coefficient supi_d = 1;
     bool maxi = 0;
     Generator gi = point();
+    TEMP_INTEGER(tmp);
 
     for (Sequence_const_iterator si = x.sequence.begin(),
 	   s_end = x.sequence.end(); si != s_end; ++si) {
@@ -611,13 +617,19 @@ Pointset_Powerset<PS>::map_space_dimensions(const Partial_Function& pfunc) {
 	  maxt = maxi;
 	  gt = gi;
 	}
-	else
-	  if (supt_n * supi_d < supi_n * supt_d) {
+	else {
+          tmp = (supt_n * supi_d) - (supi_n * supt_d);
+	  if (tmp < 0) {
 	    supt_n = supi_n;
 	    supt_d = supi_d;
   	    maxt = maxi;
+  	    gt = gi;
+	  }
+	  else if (tmp == 0) {
+            maxt = maxt || maxi;
 	    gt = gi;
 	  }
+	}
     }
     sup_n = supt_n;
     sup_d = supt_d;
@@ -643,6 +655,7 @@ Pointset_Powerset<PS>::map_space_dimensions(const Partial_Function& pfunc) {
     Coefficient infi_n = 0;
     Coefficient infi_d = 1;
     bool mini = 0;
+    TEMP_INTEGER(tmp);
 
     for (Sequence_const_iterator si = x.sequence.begin(),
 	   s_end = x.sequence.end(); si != s_end; ++si) {
@@ -655,12 +668,16 @@ Pointset_Powerset<PS>::map_space_dimensions(const Partial_Function& pfunc) {
 	  inft_d = infi_d;
 	  mint = mini;
 	}
-	else
-	  if (inft_n * infi_d < infi_n * inft_d) {
+	else {
+          tmp = (inft_n * infi_d) - (infi_n * inft_d);
+	  if (tmp > 0) {
 	    inft_n = infi_n;
 	    inft_d = infi_d;
   	    mint = mini;
 	  }
+	  else if (tmp == 0)
+            mint = mint || mini;
+	}
     }
     inf_n = inft_n;
     inf_d = inft_d;
@@ -688,6 +705,7 @@ Pointset_Powerset<PS>::map_space_dimensions(const Partial_Function& pfunc) {
     Coefficient infi_d = 1;
     bool mini = 0;
     Generator gi = point();
+    TEMP_INTEGER(tmp);
 
     for (Sequence_const_iterator si = x.sequence.begin(),
 	   s_end = x.sequence.end(); si != s_end; ++si) {
@@ -701,13 +719,19 @@ Pointset_Powerset<PS>::map_space_dimensions(const Partial_Function& pfunc) {
 	  mint = mini;
 	  gt = gi;
 	}
-	else
-	  if (inft_n * infi_d < infi_n * inft_d) {
+	else {
+          tmp = (inft_n * infi_d) - (infi_n * inft_d);
+	  if (tmp > 0) {
 	    inft_n = infi_n;
 	    inft_d = infi_d;
   	    mint = mini;
+  	    gt = gi;
+	  }
+	  else if (tmp == 0) {
+            mint = mint || mini;
 	    gt = gi;
 	  }
+	}
     }
     inf_n = inft_n;
     inf_d = inft_d;
