@@ -431,6 +431,66 @@ test11() {
   return ok;
 }
 
+bool
+test12() {
+  Variable x(0);
+  Constraint c = (x >= 0);
+  Pointset_Powerset<C_Polyhedron> ps(1, EMPTY);
+  ps.add_disjunct(C_Polyhedron(1));
+  ps.add_constraint(c);
+  Constraint c1 = (x >= 1);
+  bool ok = ps.add_constraint_and_minimize(c1);
+
+  return ok && ps.OK();
+}
+
+bool
+test13() {
+  Variable x(0);
+  Congruence cg = (x %= 0);
+  Pointset_Powerset<C_Polyhedron> ps(1, EMPTY);
+  ps.add_disjunct(C_Polyhedron(1));
+  ps.add_congruence(cg);
+  Congruence cg1 = ((x %= 0) / 2);
+  bool ok = ps.add_congruence_and_minimize(cg1);
+
+  return ok && ps.OK();
+}
+
+bool
+test14() {
+  Variable x(0);
+  Constraint_System cs;
+  cs.insert(x >= 3);
+  cs.insert(x <= 4);
+  Pointset_Powerset<C_Polyhedron> ps(1, EMPTY);
+  ps.add_disjunct(C_Polyhedron(1));
+  ps.add_constraints(cs);
+  cs.insert(x <= 3);
+  bool ok = ps.add_constraints_and_minimize(cs);
+  cs.insert(x <= 2);
+  ok = ok && !ps.add_constraints_and_minimize(cs);
+
+  return ok && ps.OK();
+}
+
+bool
+test15() {
+  Variable x(0);
+  Congruence_System cgs;
+  cgs.insert(x %= 0);
+  Pointset_Powerset<C_Polyhedron> ps(1, EMPTY);
+  ps.add_disjunct(C_Polyhedron(1));
+  ps.add_congruences(cgs);
+  cgs.insert((x %= 0) / 2);
+  bool ok = ps.add_congruences_and_minimize(cgs);
+  cgs.insert((x %= 0) / 0);
+  cgs.insert((x %= 1) / 0);
+  ok = ok && !ps.add_congruences_and_minimize(cgs);
+
+  return ok && ps.OK();
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -445,10 +505,10 @@ BEGIN_MAIN
   DO_TEST(test09);
   DO_TEST(test10);
   DO_TEST(test11);
-/*   DO_TEST(test12); */
-/*   DO_TEST(test13); */
-/*   DO_TEST(test14); */
-/*   DO_TEST(test15); */
+  DO_TEST(test12);
+  DO_TEST(test13);
+  DO_TEST(test14);
+  DO_TEST(test15);
 /*   DO_TEST(test16); */
 /*   DO_TEST(test17); */
 /*   DO_TEST(test18); */

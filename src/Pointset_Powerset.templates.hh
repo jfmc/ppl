@@ -201,6 +201,61 @@ Pointset_Powerset<PS>::refine(const Constraint_System& cs) {
 
 template <typename PS>
 void
+Pointset_Powerset<PS>::add_congruence(const Congruence& c) {
+  Pointset_Powerset& x = *this;
+  for (Sequence_iterator si = x.sequence.begin(),
+	 s_end = x.sequence.end(); si != s_end; ++si)
+    si->element().add_congruence(c);
+  x.reduced = false;
+  assert(x.OK());
+}
+
+template <typename PS>
+bool
+Pointset_Powerset<PS>::add_congruence_and_minimize(const Congruence& c) {
+  Pointset_Powerset& x = *this;
+  for (Sequence_iterator si = x.sequence.begin(),
+	 s_end = x.sequence.end(); si != s_end; )
+    if (!si->element().add_congruence_and_minimize(c))
+      si = x.sequence.erase(si);
+    else {
+      x.reduced = false;
+      ++si;
+    }
+  assert(x.OK());
+  return !x.empty();
+}
+
+template <typename PS>
+void
+Pointset_Powerset<PS>::add_congruences(const Congruence_System& cs) {
+  Pointset_Powerset& x = *this;
+  for (Sequence_iterator si = x.sequence.begin(),
+	 s_end = x.sequence.end(); si != s_end; ++si)
+    si->element().add_congruences(cs);
+  x.reduced = false;
+  assert(x.OK());
+}
+
+template <typename PS>
+bool
+Pointset_Powerset<PS>::
+add_congruences_and_minimize(const Congruence_System& cs) {
+  Pointset_Powerset& x = *this;
+  for (Sequence_iterator si = x.sequence.begin(),
+	 s_end = x.sequence.end(); si != s_end; )
+    if (!si->element().add_congruences_and_minimize(cs))
+      si = x.sequence.erase(si);
+    else {
+      x.reduced = false;
+      ++si;
+    }
+  assert(x.OK());
+  return !x.empty();
+}
+
+template <typename PS>
+void
 Pointset_Powerset<PS>::add_space_dimensions_and_embed(dimension_type m) {
   Pointset_Powerset& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),

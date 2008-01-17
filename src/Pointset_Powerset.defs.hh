@@ -402,6 +402,52 @@ public:
   */
   bool add_constraints_and_minimize(const Constraint_System& cs);
 
+  //! Intersects \p *this with congruence \p c.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p *this and congruence \p c are topology-incompatible
+    or dimension-incompatible.
+  */
+  void add_congruence(const Congruence& c);
+
+  //! Intersects \p *this with the congruence \p c, minimizing the result.
+  /*!
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p c are topology-incompatible or
+    dimension-incompatible.
+  */
+  bool add_congruence_and_minimize(const Congruence& c);
+
+  //! Intersects \p *this with the congruences in \p cs.
+  /*!
+    \param cs
+    The congruences to intersect with.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are topology-incompatible or
+    dimension-incompatible.
+  */
+  void add_congruences(const Congruence_System& cs);
+
+  /*! \brief
+    Intersects \p *this with the congruences in \p cs,
+    minimizing the result.
+
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \param cs
+    The congruences to intersect with.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are topology-incompatible or
+    dimension-incompatible.
+  */
+  bool add_congruences_and_minimize(const Congruence_System& cs);
+
   /*! \brief
     Assign to \p *this the result of (recursively) merging together
     the pairs of disjuncts whose upper-bound is the same as their
