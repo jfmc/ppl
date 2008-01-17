@@ -1105,7 +1105,6 @@ ppl_@CLASS@_@BINOP@_2_test :-
      ppl_@CLASS@_@BINOP@(PS1_Copy, PS2),
      (predicate_exists(ppl_@CLASS@_contains_@CLASS@)
      ->
-       ppl_@CLASS@_equals_@CLASS@(PS2, PS2a),
        (@BINOP@ == intersection_assign
        ->
          ppl_@CLASS@_contains_@CLASS@(PS1, PS1_Copy),
@@ -1115,30 +1114,24 @@ ppl_@CLASS@_@BINOP@_2_test :-
          ->
            ppl_@CLASS@_contains_@CLASS@(PS1, PS1_Copy)
          ;
-          (@BINOP@ == time_elapse_assign
-           ->
-             (\+ ppl_@CLASS@_is_empty(PS2)
-             ->
-               ppl_@CLASS@_contains_@CLASS@(PS1_Copy, PS1)
-             ;
-               ppl_@CLASS@_is_empty(PS1_Copy)
-             )
+           (@BINOP@ == concatenate_assign
+            ->
+             ppl_@CLASS@_space_dimension(PS1, Dim1),
+             ppl_@CLASS@_space_dimension(PS2, Dim2),
+             Dim_Conc is Dim1 + Dim2,
+             ppl_@CLASS@_space_dimension(PS1_Copy, Dim_Conc)
            ;
-             (@BINOP@ == concatenate_assign
-              ->
-               ppl_@CLASS@_space_dimension(PS1, Dim1),
-               ppl_@CLASS@_space_dimension(PS2, Dim2),
-               Dim_Conc is Dim1 + Dim2,
-               ppl_@CLASS@_space_dimension(PS1_Copy, Dim_Conc)
-             ;
-               member(@BINOP@,
-                           [upper_bound_assign,
-                            poly_hull_assign,
-                            join_assign,
-                            bds_hull_assign,
-                            oct_hull_assign]),
+             (member(@BINOP@,
+                         [upper_bound_assign,
+                          poly_hull_assign,
+                          join_assign,
+                          bds_hull_assign,
+                          oct_hull_assign])
+             ->
                ppl_@CLASS@_contains_@CLASS@(PS1_Copy, PS1),
                ppl_@CLASS@_contains_@CLASS@(PS1_Copy, PS2)
+             ;
+               true
              )
            )
          )

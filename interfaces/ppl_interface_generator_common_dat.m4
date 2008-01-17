@@ -711,8 +711,6 @@ m4_define(`m4_Polyhedron_add_represent_replacement',
          `m4_add_represent_replacement, generator')
 m4_define(`m4_Grid_add_represent_replacement',
          `m4_add_represent_replacement, grid_generator')
-m4_define(`m4_Pointset_Powerset_add_represent_replacement',
-         `constraint')
 
 dnl  The different kinds of objects that can be obtained from a
 dnl  class description.
@@ -776,7 +774,8 @@ dnl  One object can be contained, strictly contained or disjoint in the other.
 m4_define(`m4_comparison_replacement',
          `contains, strictly_contains, is_disjoint_from')
 m4_define(`m4_Pointset_Powerset_comparison_replacement',
-         `geometrically_covers, geometrically_equals')
+         `m4_comparison_replacement,
+          geometrically_covers, geometrically_equals')
 
 dnl  The different kinds of binary operators.
 m4_define(`m4_binop_replacement',
