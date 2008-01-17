@@ -567,6 +567,52 @@ Pointset_Powerset<PS>::map_space_dimensions(const Partial_Function& pfunc) {
 
   template <typename PS>
   bool
+  Pointset_Powerset<PS>::contains(const Pointset_Powerset& y) const {
+    const Pointset_Powerset& x = *this;
+    for (Sequence_const_iterator si = y.sequence.begin(),
+	   s_end = y.sequence.end(); si != s_end; ++si) {
+      const PS& pi = si->element();
+      bool pi_is_contained = false;
+      for (Sequence_const_iterator sj = x.sequence.begin(),
+	     s_end = x.sequence.end();
+             (sj != s_end && !pi_is_contained); ++sj) {
+        const PS& pj = sj->element();
+        if (pj.contains(pi))
+	  pi_is_contained = true;
+      }
+      if (!pi_is_contained)
+        return false;
+    }
+    return true;
+  }
+
+  template <typename PS>
+  bool
+  Pointset_Powerset<PS>::strictly_contains(const Pointset_Powerset& y) const {
+    /* omega reduction ensures that a disjunct of y cannot be strictly
+       contained in one disjunct and also contained but not strictly
+       contained in another disjunct of *this */
+    const Pointset_Powerset& x = *this;
+    x.omega_reduce();
+    for (Sequence_const_iterator si = y.sequence.begin(),
+	   s_end = y.sequence.end(); si != s_end; ++si) {
+      const PS& pi = si->element();
+      bool pi_is_strictly_contained = false;
+      for (Sequence_const_iterator sj = x.sequence.begin(),
+	     s_end = x.sequence.end();
+             (sj != s_end && !pi_is_strictly_contained); ++sj) {
+        const PS& pj = sj->element();
+        if (pj.strictly_contains(pi))
+	  pi_is_strictly_contained = true;
+      }
+      if (!pi_is_strictly_contained)
+        return false;
+    }
+    return true;
+  }
+
+  template <typename PS>
+  bool
   Pointset_Powerset<PS>
   ::bounds_from_above(const Linear_Expression& expr) const {
     const Pointset_Powerset& x = *this;

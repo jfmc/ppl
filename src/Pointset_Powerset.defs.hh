@@ -309,6 +309,26 @@ public:
   */
   bool geometrically_equals(const Pointset_Powerset& y) const;
 
+  /*! brief
+    Returns <CODE>true</CODE> if and only if each disjunct
+      of \p y is contained in a disjunct of \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are topology-incompatible or
+    dimension-incompatible.
+  */
+  bool contains(const Pointset_Powerset& y) const;
+
+  /*! brief
+    Returns <CODE>true</CODE> if and only if each disjunct
+      of \p y is strictly contained in a disjunct of \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are topology-incompatible or
+    dimension-incompatible.
+  */
+  bool strictly_contains(const Pointset_Powerset& y) const;
+
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this
     contains at least one integer point.
@@ -561,6 +581,17 @@ public:
     with each disjunct in \p y and collecting all these intersections.
   */
   void intersection_assign(const Pointset_Powerset& y);
+
+  //! Assigns to \p *this the intersection of \p *this and \p y.
+  /*!
+    The result is obtained by intersecting each disjunct in \p *this
+    with each disjunct in \p y, minimizing the result
+    and collecting all these intersections.
+
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+  */
+  bool intersection_assign_and_minimize(const Pointset_Powerset& y);
 
   //! Assigns to \p *this the difference of \p *this and \p y.
   // FIXME: document the intended semantics.

@@ -491,6 +491,148 @@ test15() {
   return ok && ps.OK();
 }
 
+bool
+test16() {
+  Variable x(0);
+  Pointset_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+  Constraint_System cs;
+
+  cs.insert(x >= 0);
+  cs.insert(x <= 2);
+  c_ps.add_disjunct(C_Polyhedron(cs));
+
+  Pointset_Powerset<C_Polyhedron> c_ps1(1, EMPTY);
+
+  cs.clear();
+  cs.insert(x >= 1);
+  cs.insert(x <= 3);
+  c_ps1.add_disjunct(C_Polyhedron(cs));
+
+  c_ps.intersection_assign(c_ps1);
+
+  cs.clear();
+  cs.insert(x >= 1);
+  cs.insert(x <= 2);
+  Pointset_Powerset<C_Polyhedron> c_ps_expected(1, EMPTY);
+  c_ps_expected.add_disjunct(C_Polyhedron(cs));
+
+  bool ok = c_ps.definitely_entails(c_ps_expected);
+  bool ok1 = c_ps_expected.definitely_entails(c_ps);
+
+  return ok && ok1 && c_ps.OK() && c_ps1.OK();
+}
+
+bool
+test17() {
+  Variable x(0);
+  Pointset_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+  Constraint_System cs;
+
+  cs.insert(x >= 0);
+  cs.insert(x <= 2);
+  c_ps.add_disjunct(C_Polyhedron(cs));
+
+  Pointset_Powerset<C_Polyhedron> c_ps1(1, EMPTY);
+
+  cs.clear();
+  cs.insert(x >= 1);
+  cs.insert(x <= 3);
+  c_ps1.add_disjunct(C_Polyhedron(cs));
+
+  bool ok = c_ps.intersection_assign_and_minimize(c_ps1);
+
+  cs.clear();
+  cs.insert(x >= 1);
+  cs.insert(x <= 2);
+  Pointset_Powerset<C_Polyhedron> c_ps_expected(1, EMPTY);
+  c_ps_expected.add_disjunct(C_Polyhedron(cs));
+
+  bool ok1 = c_ps.definitely_entails(c_ps_expected);
+  bool ok2 = c_ps_expected.definitely_entails(c_ps);
+
+  Pointset_Powerset<C_Polyhedron> c_ps2(1, EMPTY);
+  cs.clear();
+  cs.insert(x == 4);
+  c_ps2.add_disjunct(C_Polyhedron(cs));
+
+  bool ok3 = !c_ps2.intersection_assign_and_minimize(c_ps1);
+
+  return ok && ok1 && ok2 && ok3 && c_ps.OK() && c_ps1.OK() && c_ps2.OK();
+}
+
+bool
+test18() {
+  Pointset_Powerset<C_Polyhedron> ps1(1, EMPTY);
+
+  Pointset_Powerset<C_Polyhedron> ps2(1, EMPTY);
+  bool b = ps1.contains(ps2);
+  bool c = ps2.contains(ps1);
+  bool bs = ps1.strictly_contains(ps2);
+  bool cs = ps2.strictly_contains(ps1);
+
+  ps1.add_disjunct(C_Polyhedron(1));
+  bool b1 = ps1.contains(ps2);
+  bool c1 = !ps2.contains(ps1);
+  bool bs1 = ps1.strictly_contains(ps2);
+  bool cs1 = !ps2.strictly_contains(ps1);
+
+  ps2.add_disjunct(C_Polyhedron(1));
+  bool b2 = ps1.contains(ps2);
+  bool c2 = ps2.contains(ps1);
+  bool bs2 = !ps1.strictly_contains(ps2);
+  bool cs2 = !ps2.strictly_contains(ps1);
+
+  bool ok = b && c && b1 && c1 && b2 && c2;
+  bool oks = bs && cs && bs1 && cs1 && bs2 && cs2;
+
+  return ok && oks;
+}
+
+bool
+test19() {
+  Variable x(0);
+  Pointset_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+  Constraint_System cs;
+
+  cs.insert(x >= 0);
+  cs.insert(x <= 2);
+  c_ps.add_disjunct(C_Polyhedron(cs));
+
+  cs.clear();
+  cs.insert(x >= 1);
+  cs.insert(x <= 4);
+  c_ps.add_disjunct(C_Polyhedron(cs));
+
+  cs.clear();
+  cs.insert(x >= 1);
+  cs.insert(x <= 3);
+  c_ps.add_disjunct(C_Polyhedron(cs));
+
+  Pointset_Powerset<C_Polyhedron> c_ps1(1, EMPTY);
+
+  cs.clear();
+  cs.insert(x >= 1);
+  cs.insert(x <= 3);
+  c_ps1.add_disjunct(C_Polyhedron(cs));
+
+  bool ok = c_ps.contains(c_ps1)
+    && !c_ps1.contains(c_ps)
+    && c_ps.strictly_contains(c_ps1)
+    && !c_ps1.strictly_contains(c_ps);
+
+  cs.clear();
+  cs.insert(x >= 1);
+  cs.insert(x <= 4);
+  c_ps1.add_disjunct(C_Polyhedron(cs));
+
+  bool ok1 = c_ps.contains(c_ps1)
+    && !c_ps1.contains(c_ps)
+    && !c_ps.strictly_contains(c_ps1)
+    && !c_ps1.strictly_contains(c_ps);
+
+  return ok && ok1;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -509,8 +651,8 @@ BEGIN_MAIN
   DO_TEST(test13);
   DO_TEST(test14);
   DO_TEST(test15);
-/*   DO_TEST(test16); */
-/*   DO_TEST(test17); */
-/*   DO_TEST(test18); */
-/*   DO_TEST(test19); */
+  DO_TEST(test16);
+  DO_TEST(test17);
+  DO_TEST(test18);
+  DO_TEST(test19);
 END_MAIN
