@@ -622,6 +622,109 @@ Pointset_Powerset<PS>::map_space_dimensions(const Partial_Function& pfunc) {
   }
 
   template <typename PS>
+  Poly_Con_Relation
+  Pointset_Powerset<PS>::relation_with(const Congruence& cg) const {
+    const Pointset_Powerset& x = *this;
+
+    /* *this is included in cg if every disjunct is included in cg */
+    bool is_included = true;
+    /* *this is disjoint with cg if every disjunct is disjoint with cg */
+    bool is_disjoint = true;
+    /* *this strictly_intersects with cg if some disjunct strictly
+       intersects with cg */
+    bool is_strictly_intersecting = false;
+    /* *this saturates cg if some disjunct saturates cg and
+       every disjunct is either disjoint from cg or saturates cg */
+    bool saturates_once = false;
+    bool may_saturate = true;
+    for (Sequence_const_iterator si = x.sequence.begin(),
+	   s_end = x.sequence.end(); si != s_end; ++si) {
+      Poly_Con_Relation relation_i = si->element().relation_with(cg);
+       if (!relation_i.implies(Poly_Con_Relation::is_included()))
+         is_included = false;
+       if (!relation_i.implies(Poly_Con_Relation::is_disjoint()))
+         is_disjoint = false;
+       if (relation_i.implies(Poly_Con_Relation::strictly_intersects()))
+         is_strictly_intersecting = true;
+       if (relation_i.implies(Poly_Con_Relation::saturates()))
+         saturates_once = true;
+       else if (!relation_i.implies(Poly_Con_Relation::is_disjoint()))
+         may_saturate = false;
+    }
+
+    Poly_Con_Relation result = Poly_Con_Relation::nothing();
+    if (is_included)
+      result = result && Poly_Con_Relation::is_included();
+    if (is_disjoint)
+      result = result && Poly_Con_Relation::is_disjoint();
+    if (is_strictly_intersecting)
+      result = result && Poly_Con_Relation::strictly_intersects();
+    if (saturates_once && may_saturate)
+      result = result && Poly_Con_Relation::saturates();
+
+    return result;
+}
+
+  template <typename PS>
+  Poly_Con_Relation
+  Pointset_Powerset<PS>::relation_with(const Constraint& c) const {
+    const Pointset_Powerset& x = *this;
+
+    /* *this is included in c if every disjunct is included in c */
+    bool is_included = true;
+    /* *this is disjoint with c if every disjunct is disjoint with c */
+    bool is_disjoint = true;
+    /* *this strictly_intersects with c if some disjunct strictly
+       intersects with c */
+    bool is_strictly_intersecting = false;
+    /* *this saturates c if some disjunct saturates c and
+       every disjunct is either disjoint from c or saturates c */
+    bool saturates_once = false;
+    bool may_saturate = true;
+    for (Sequence_const_iterator si = x.sequence.begin(),
+	   s_end = x.sequence.end(); si != s_end; ++si) {
+      Poly_Con_Relation relation_i = si->element().relation_with(c);
+       if (!relation_i.implies(Poly_Con_Relation::is_included()))
+         is_included = false;
+       if (!relation_i.implies(Poly_Con_Relation::is_disjoint()))
+         is_disjoint = false;
+       if (relation_i.implies(Poly_Con_Relation::strictly_intersects()))
+         is_strictly_intersecting = true;
+       if (relation_i.implies(Poly_Con_Relation::saturates()))
+         saturates_once = true;
+       else if (!relation_i.implies(Poly_Con_Relation::is_disjoint()))
+         may_saturate = false;
+    }
+
+    Poly_Con_Relation result = Poly_Con_Relation::nothing();
+    if (is_included)
+      result = result && Poly_Con_Relation::is_included();
+    if (is_disjoint)
+      result = result && Poly_Con_Relation::is_disjoint();
+    if (is_strictly_intersecting)
+      result = result && Poly_Con_Relation::strictly_intersects();
+    if (saturates_once && may_saturate)
+      result = result && Poly_Con_Relation::saturates();
+
+    return result;
+}
+
+  template <typename PS>
+  Poly_Gen_Relation
+  Pointset_Powerset<PS>::relation_with(const Generator& g) const {
+    const Pointset_Powerset& x = *this;
+
+    for (Sequence_const_iterator si = x.sequence.begin(),
+	   s_end = x.sequence.end(); si != s_end; ++si) {
+      Poly_Gen_Relation relation_i = si->element().relation_with(g);
+       if (relation_i.implies(Poly_Gen_Relation::subsumes()))
+         return Poly_Gen_Relation::subsumes();
+    }
+
+    return Poly_Gen_Relation::nothing();
+}
+
+  template <typename PS>
   bool
   Pointset_Powerset<PS>
   ::bounds_from_above(const Linear_Expression& expr) const {

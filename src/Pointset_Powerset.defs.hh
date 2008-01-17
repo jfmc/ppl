@@ -36,6 +36,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Variables_Set.types.hh"
 #include "Determinate.defs.hh"
 #include "Powerset.defs.hh"
+#include "Poly_Con_Relation.defs.hh"
+#include "Poly_Gen_Relation.defs.hh"
 #include <iosfwd>
 #include <list>
 #include <map>
@@ -480,6 +482,33 @@ public:
     in \p *this, we have \f$\cP \uplus \cQ \neq \cP \union \cQ\f$.
   */
   void pairwise_reduce();
+
+  /*! \brief
+    Returns the relations holding between the powerset \p *this
+    and the constraint \p c.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and constraint \p c are dimension-incompatible.
+  */
+  Poly_Con_Relation relation_with(const Constraint& c) const;
+
+  /*! \brief
+    Returns the relations holding between the powerset \p *this
+    and the generator \p g.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and generator \p g are dimension-incompatible.
+  */
+  Poly_Gen_Relation relation_with(const Generator& g) const;
+
+  /*! \brief
+    Returns the relations holding between the powerset \p *this
+    and the congruence \p c.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and congruence \p c are dimension-incompatible.
+  */
+  Poly_Con_Relation relation_with(const Congruence& cg) const;
 
   /*! \brief
     Assigns to \p *this the result of applying the

@@ -635,9 +635,11 @@ m4_define(`m4_Pointset_Powerset_build_represent_alt_replacement',
 dnl  The different kinds of objects that can have a relation with a class.
 m4_define(`m4_relation_represent_replacement', `constraint, generator')
 m4_define(`m4_Polyhedron_relation_represent_replacement',
-         `constraint, generator')
+         `m4_relation_represent_replacement, congruence')
 m4_define(`m4_Grid_relation_represent_replacement',
-         `constraint, grid_generator, congruence')
+         `m4_relation_represent_replacement, congruence, grid_generator')
+m4_define(`m4_Pointset_Powerset_relation_represent_replacement',
+         `m4_relation_represent_replacement, congruence')
 
 dnl  The type of these relations with a class.
 m4_define(`m4_relation_represent_alt_replacement', `con, gen')

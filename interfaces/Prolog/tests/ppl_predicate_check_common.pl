@@ -409,7 +409,7 @@ ppl_dimension_test_data(test06, _, 1).
 
 ppl_relation_test_data(test06, constraint, A =< 3, [strictly_intersects]) :-
   make_vars(1, [A]).
-ppl_relation_test_data(test06, generator, point(3*A, 2), [subsumes]) :-
+ppl_relation_test_data(test06, generator, point(3*A), [subsumes]) :-
   make_vars(1, [A]).
 ppl_relation_test_data(test06, congruence, (2*A =:= 1) / 3,
                                               [strictly_intersects]) :-
@@ -472,7 +472,7 @@ ppl_dimension_test_data(test07, _, 1).
 
 ppl_relation_test_data(test07, constraint, A >= -3, [strictly_intersects]) :-
   make_vars(1, [A]).
-ppl_relation_test_data(test07, generator, point(-3*A, 2), [subsumes]) :-
+ppl_relation_test_data(test07, generator, point(-4*A), [subsumes]) :-
   make_vars(1, [A]).
 ppl_relation_test_data(test07, congruence, (2*A =:= 1) / 3,
                                               [strictly_intersects]) :-

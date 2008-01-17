@@ -105,7 +105,8 @@ onepoint \
 permute \
 polydifference1 polydifference2 \
 polyhull1 polyhull2 \
-pointsetpowerset1 pointsetpowerset2 pointsetpowerset3 pointsetpowerset4 \
+pointsetpowerset1 pointsetpowerset2 pointsetpowerset3 \
+pointsetpowerset4 pointsetpowerset5 \
 powerset1 \
 randphull1 \
 relations1 relations2 relations3 \
@@ -352,6 +353,7 @@ pointsetpowerset1_SOURCES = pointsetpowerset1.cc
 pointsetpowerset2_SOURCES = pointsetpowerset2.cc
 pointsetpowerset3_SOURCES = pointsetpowerset3.cc
 pointsetpowerset4_SOURCES = pointsetpowerset4.cc
+pointsetpowerset5_SOURCES = pointsetpowerset5.cc
 
 powerset1_SOURCES = powerset1.cc
 
