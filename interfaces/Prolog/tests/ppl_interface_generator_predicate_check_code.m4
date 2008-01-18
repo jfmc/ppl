@@ -133,7 +133,7 @@ ppl_cleanup_@CLASS@(P) :-
 ppl_cleanup_all_@CLASS@([]).
 ppl_cleanup_all_@CLASS@([_|_]).
 ppl_cleanup_all_@CLASS@([P|Ps]) :-
-  delete_all_ppl_all_@CLASS@([P|Ps]).
+  ppl_delete_all_@CLASS@([P|Ps]).
 
 ppl_delete_all_@CLASS@([]).
 ppl_delete_all_@CLASS@([P|Ps]) :-
