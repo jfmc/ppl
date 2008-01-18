@@ -42,6 +42,7 @@ m4_divert(1)
 prolog_system('XSB').
 
 discontiguous(_).
+include(_).
 
 main :-
     (check_all ->

@@ -38,7 +38,6 @@ version_dependent_declarations :-
 main :-
 	version_dependent_declarations,
         ensure_loaded('ppl_predicate_check.pl'),
-        ensure_loaded('ppl_predicate_check_common.pl'),
 	set_prolog_flag(fileerrors, off),
 	(check_all ->
 	    write('OK')

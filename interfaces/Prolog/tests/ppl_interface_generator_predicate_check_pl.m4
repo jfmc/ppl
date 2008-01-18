@@ -66,6 +66,8 @@ dnl
 %                                                                   %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+:- include('ppl_predicate_check_common.pl').
+
 check_all :-
   (noisy(_) -> true; make_quiet),
   ppl_initialize,
