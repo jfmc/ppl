@@ -145,8 +145,13 @@ ppl_delete_all_@CLASS@([P|Ps]) :-
 m4_define(`m4_add_out_class_code', `dnl
 out_@CLASS@(P):-
   ((noisy(N), N < 2) -> true ;
-    ppl_@CLASS@_get_@GET_REPRESENT@s(P, RS),
-    display_message([nl, @GET_REPRESENT@s, are, nl, RS, nl]),
+    (predicate_exists(ppl_@CLASS@_get_@GET_REPRESENT@s)
+    ->
+      ppl_@CLASS@_get_@GET_REPRESENT@s(P, RS),
+      display_message([nl, @GET_REPRESENT@s, are, nl, RS, nl])
+    ;
+      display_message([nl, @LCLASS@, representation, cannot ,be, displayed, nl])
+    ),
     fail
   ).
 
@@ -324,12 +329,7 @@ ppl_@CLASS@_swap_2_test :-
       ppl_@CLASS@_is_empty(PS),
       ppl_@CLASS@_is_universe(PS1)
     ;
-      (predicate_exists(ppl_@CLASS@_geometrically_covers_@CLASS@)
-      ->
-        ppl_@CLASS@_geometrically_covers_@CLASS@(PS1, PS)
-      ;
-        true
-      )
+      true
     ),
     ppl_@CLASS@_OK(PS),
     ppl_@CLASS@_OK(PS1),
@@ -751,16 +751,6 @@ ppl_@CLASS@_@SIMPLIFY@_1_test :-
      (predicate_exists(ppl_@CLASS@_contains_@CLASS@)
      ->
        ppl_@CLASS@_contains_@CLASS@(PS, PS1)
-     ;
-       true
-     ),
-     (predicate_exists(ppl_@CLASS@_geometrically_equals_@CLASS@)
-     ->
-      %%% FIXME: There is a bug in the C++ system here.
-      %% nl, ppl_@CLASS@_ascii_dump(PS),
-      %% nl, ppl_@CLASS@_ascii_dump(PS1),
-      %% ppl_@CLASS@_geometrically_equals_@CLASS@(PS, PS1),
-      true
      ;
        true
      ),
@@ -1463,7 +1453,7 @@ ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign_test :-
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1_Copy),
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS2, PS2_Copy),
      ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign(
-                                                           PS1, PS2),
+                                                           PS1, PS2, 3),
      ppl_@CLASS@_wdn_exn_check_code(PS1, PS1_Copy, PS2, PS2_Copy)
    ->
      fail ; true)
@@ -1483,7 +1473,7 @@ ppl_@CLASS@_BGP99_@DISJUNCT_EXTRAPOLATION@_extrapolation_assign_test :-
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1_Copy),
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS2, PS2_Copy),
      ppl_@CLASS@_BGP99_@DISJUNCT_EXTRAPOLATION@_extrapolation_assign(
-                                                           PS1, PS2),
+                                                           PS1, PS2, 3),
      ppl_@CLASS@_wdn_exn_check_code(PS1, PS1_Copy, PS2, PS2_Copy)
    ->
      fail ; true)
