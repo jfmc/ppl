@@ -191,6 +191,44 @@ choices for TYPE are available:
   native-int32     use 32-bit *unchecked* integers
   native-int64     use 64-bit *unchecked* integers
 
+Configuring for the interfaces
+------------------------------
+
+The instantiations for the domains for interfaces other than the main
+C++ interface can be customized via the `instantiations' option for
+the PPL `configure' shell script.
+
+To enable the use of various kinds of instantiations, you can use
+the configure option
+
+--instantiations=DOMAINS
+
+where DOMAINS is an "@" separated list;
+the following options are currently supported:
+
+Polyhedron
+Grid
+BD_Shape<I>
+Octagonal_Shape<I>
+Pointset_Powerset<C_Polyhedron>
+Pointset_Powerset<NNC_Polyhedron>
+Pointset_Powerset<Grid>
+Pointset_Powerset<BD_Shape<I> >
+Pointset_Powerset<Octagonal_Shape<I> >
+
+where "I" can be
+	signed char
+	long
+	long long
+	int
+	short
+	mpz_class
+	mpq_class"
+
+Note that the domain "Polyhedron" must be specified
+without any topology "C_" and "NNC_" as they are added automatically
+and both the domains "C_Polyhedron" and "NNC_Polyhedron" will be generated.
+
 --------
 
 Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
