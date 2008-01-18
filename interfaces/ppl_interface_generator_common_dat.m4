@@ -77,6 +77,14 @@ dnl Class_Counter - is the index to the first class in Class_List;
 dnl Class         - is the interface class name, as input;
 dnl Class_List    - is a tail part of the input list of interface
 dnl                 class names.
+m4_define(`m4_init_interface_names', `dnl
+    m4_define(m4_interface_class`'$1, $2)`'dnl
+m4_init_interface_classes_aux(m4_incr($1), $3)`'dnl
+')
+
+dnl FIXME: Old code for allowing for having Pointset_Powerset_Polyhedron
+dnl        classes. Now we require the topology C or NNC to be given
+dnl        in the C++ name in the configuration.
 dnl The macro has three cases.
 dnl If the class name does not contain "Polyhedron",
 dnl then m4_interface_class`'Class_Counter => Class;
@@ -87,18 +95,18 @@ dnl m4_interface_class`'Class_Counter => C_Class and
 dnl m4_interface_class`'Class_Counter+1 => NNC_Class.
 dnl In all cases, the m4_init_interface_classes_aux is called again
 dnl to process the rest of the list with a new value for the class counter.
-m4_define(`m4_init_interface_names', `dnl
-m4_ifelse(
-  m4_index($2, Polyhedron), -1,
-    `m4_define(m4_interface_class`'$1, $2)`'dnl
-m4_init_interface_classes_aux(m4_incr($1), $3)',
-  `$2', `Polyhedron',
-    `m4_define(m4_interface_class`'$1, $2)`'dnl
-m4_init_interface_classes_aux(m4_incr($1), $3)',
-    `m4_define(m4_interface_class`'$1, m4_prefix_polyhedron($2, C))`'dnl
-m4_define(m4_interface_class`'m4_incr($1), m4_prefix_polyhedron($2, NNC))`'dnl
-m4_init_interface_classes_aux(m4_incr(m4_incr($1)), $3)')`'dnl
-')
+dnl m4_define(`m4_init_interface_names', `dnl
+dnl m4_ifelse(
+dnl   m4_index($2, Polyhedron), -1,
+dnl     `m4_define(m4_interface_class`'$1, $2)`'dnl
+dnl m4_init_interface_classes_aux(m4_incr($1), $3)',
+dnl   `$2', `Polyhedron',
+dnl     `m4_define(m4_interface_class`'$1, $2)`'dnl
+dnl m4_init_interface_classes_aux(m4_incr($1), $3)',
+dnl     `m4_define(m4_interface_class`'$1, m4_prefix_polyhedron($2, C))`'dnl
+dnl m4_define(m4_interface_class`'m4_incr($1), m4_prefix_polyhedron($2, NNC))`'dnl
+dnl m4_init_interface_classes_aux(m4_incr(m4_incr($1)), $3)')`'dnl
+dnl ')
 
 dnl ---------------------------------------------------------------------
 dnl =====  m4_init_cplusplus_names is defined.                      =====
@@ -147,6 +155,14 @@ dnl Class_Counter - is the index to the next class in Class_List;
 dnl Class         - is the cplusplus class name, as input;
 dnl Class_List    - is a tail part of the input list of cplusplus
 dnl                 class names.
+m4_define(`m4_init_cplusplus_names', `dnl
+m4_init_cplusplus_names_aux($1, $2)`'dnl
+m4_init_cplusplus_classes_aux(m4_incr($1), $3)`'dnl
+')
+
+dnl FIXME: Old code for allowing for having Pointset_Powerset<Polyhedron>
+dnl        classes. Now we require the topology C or NNC to be given
+dnl        as in Pointset_Powerset<C_Polyhedron>.
 dnl The macro has three cases.
 dnl If the class name does not contain "Polyhedron",
 dnl then m4_init_cplusplus_names_aux(Class_Counter, Class) is called;
@@ -159,16 +175,18 @@ dnl where ClassC and ClassNNC are defined by m4_prefix_polyhedron(Class, C)
 dnl and m4_prefix_polyhedron(Class, NNC), respectively;
 dnl In all cases, the m4_init_cplusplus_classes_aux is called again
 dnl to process the rest of the list with a new value for the class counter.
-m4_define(`m4_init_cplusplus_names', `dnl
-m4_ifelse(
-  m4_index($2, Polyhedron), -1, `m4_init_cplusplus_names_aux($1, $2)`'dnl
-m4_init_cplusplus_classes_aux(m4_incr($1), $3)',
-  $2, `Polyhedron', `m4_init_cplusplus_names_aux($1, $2)`'dnl
-m4_init_cplusplus_classes_aux(m4_incr($1), $3)',
-  `m4_init_cplusplus_names_aux($1, m4_prefix_polyhedron($2, C))`'dnl
-m4_init_cplusplus_names_aux(m4_incr($1), m4_prefix_polyhedron($2, NNC))`'dnl
-m4_init_cplusplus_classes_aux(m4_incr(m4_incr($1)), $3)')`'dnl
-')
+dnl m4_define(`m4_init_cplusplus_names', `dnl
+dnl m4_ifelse(
+dnl   m4_index($2, Polyhedron), -1, `m4_init_cplusplus_names_aux($1, $2)`'dnl
+dnl m4_init_cplusplus_classes_aux(m4_incr($1), $3)',
+dnl   m4_eval(m4_index(`$2', `C_Polyhedron') >= 0), `m4_init_cplusplus_names_aux($1, $2)`'dnl
+dnl m4_init_cplusplus_classes_aux(m4_incr($1), $3)',
+dnl   $2, `Polyhedron', `m4_init_cplusplus_names_aux($1, $2)`'dnl
+dnl m4_init_cplusplus_classes_aux(m4_incr($1), $3)',
+dnl   `m4_init_cplusplus_names_aux($1, m4_prefix_polyhedron($2, C))`'dnl
+dnl m4_init_cplusplus_names_aux(m4_incr($1), m4_prefix_polyhedron($2, NNC))`'dnl
+dnl m4_init_cplusplus_classes_aux(m4_incr(m4_incr($1)), $3)')`'dnl
+dnl ')
 
 dnl m4_init_cplusplus_names_aux(Class_Counter, Class)
 dnl

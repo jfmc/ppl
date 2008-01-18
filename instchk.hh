@@ -37,6 +37,23 @@ public:
   static bool valid_instantiation() {
     return true;
   }
+};
+
+class C_Polyhedron {
+public:
+  static bool valid_instantiation() {
+    return true;
+  }
+  static bool valid_Pointset_Powerset_argument() {
+    return true;
+  }
+};
+
+class NNC_Polyhedron {
+public:
+  static bool valid_instantiation() {
+    return true;
+  }
   static bool valid_Pointset_Powerset_argument() {
     return true;
   }
