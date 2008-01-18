@@ -29,6 +29,7 @@ ppl_swiprolog.pl \
 pl_clpq.cc \
 pl_clpq.pl \
 swi_pl_check.pl \
+swi_predicate_check.pl \
 README.swiprolog
 
 if BUILD_SWI_PROLOG_INTERFACE
@@ -174,6 +175,18 @@ clpq2_test: pl_clpq2 ../tests/script_clpq2 $(EXPECTED_CLPQ2)
 		$(WATCHDOG_DLOPEN) \
 		./pl_clpq2 <$(srcdir)/../tests/script_clpq2 >obtained_clpq2
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
+
+predicate_check_test: swi_predicate_check.pl ../tests/ppl_predicate_check.pl $(EXPECTED_PCHK)
+	cp -f $(srcdir)/../tests/ppl_predicate_check_common.pl . ; \
+	cp -f ../tests/ppl_predicate_check.pl . ; \
+        echo "ensure_loaded('$(srcdir)/swi_predicate_check'). main." > script_pchk
+	$(LIBTOOL) --mode=execute \
+		-dlopen ../../../src/libppl.la \
+		$(WATCHDOG_DLOPEN) \
+                ./ppl_pl < script_pchk
+	rm -f ppl_predicate_check.pl; \
+	rm -f ppl_predicate_check_common.pl; \
+	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
 
 endif BUILD_SWI_PROLOG_INTERFACE
 

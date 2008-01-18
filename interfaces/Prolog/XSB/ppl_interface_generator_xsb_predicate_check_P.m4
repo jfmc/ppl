@@ -36,9 +36,12 @@ m4_divert(1)
 
 :- [ppl_xsb].
 
-#include "pl_check.pl"
+#include "ppl_predicate_check.pl"
+#include "ppl_predicate_check_common.pl"
 
 prolog_system('XSB').
+
+discontiguous(_).
 
 main :-
     (check_all ->
