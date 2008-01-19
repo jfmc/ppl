@@ -44,4 +44,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #endif
 #include <cassert>
 
+#ifdef PPL_NO_AUTOMATIC_INITIALIZATION
+ #undef PPL_NO_AUTOMATIC_INITIALIZATION
+#endif
+
 #endif
