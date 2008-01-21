@@ -35,6 +35,7 @@ dnl Prefix extra code for each class.
 m4_define(`m4_pre_extra_class_code', `dnl
 m4_define(`m4_this_class', `m4_interface_class$1')`'dnl
 m4_define(`m4_this_class_kind', `m4_class_kind$1')`'dnl
+m4_divert
 %<--%<--%<-- m4_this_class`'.java
 package ppl_java;
 
@@ -69,6 +70,7 @@ m4_undefine(`m4_this_class_kind')
 %<--%<--%<-- m4_interface_class$1`'.java
 public class m4_cplusplus_class$1 extends PPL_Object {
 
+m4_divert(-1)dnl
 dnl m4_post_extra_class_code(Class, CPP_Class, Class_Kind)
 dnl Postfix extra code for each class.
 m4_define(`m4_post_extra_class_code', `dnl
@@ -102,10 +104,7 @@ m4_this_class_kind, Pointset_Powerset,
 m4_undefine(`m4_this_class')`'dnl
 m4_undefine(`m4_this_class_kind')
 ')
-
 m4_divert`'dnl
-dnl
-dnl Generate the non-fixed part of the file.
 m4_all_code`'dnl
 dnl
 dnl End of file generation.
