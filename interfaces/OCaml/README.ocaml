@@ -1,1 +1,6 @@
-To be written.
+
+The Objective Caml interface of the Parma Polyhedra Library requires
+OCaml version 3.09 or higher and the MLGMP wrapper to the GMP library
+(http://caml.inria.fr/cgi-bin/hump.en.cgi?contrib=278).
+
+To be continued.
