@@ -252,10 +252,10 @@ val ppl_@TOPOLOGY@@CLASS@_swap:
 
 ')
 
-m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@_code',
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_code',
 `dnl
-val ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@:
-@LINTOPOLOGY@@LFRIEND@ -> @LTOPOLOGY@@LCLASS@
+val ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@:
+@LFRIEND@ -> @LTOPOLOGY@@LCLASS@
 
 ')
 

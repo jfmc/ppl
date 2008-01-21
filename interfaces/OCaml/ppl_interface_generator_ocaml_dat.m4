@@ -40,7 +40,7 @@ dnl
 m4_define(`m4_procedure_list', `dnl
 ppl_delete_@CLASS@/1 +simple_pps,
 ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension/3 +simple_pps,
-ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@/2 +simple_pps,
+ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@/2 +simple_pps,
 ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s/2 +simple_pps,
 ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@/2 +simple -wr_shape,
 ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@/2 +polyhedron,

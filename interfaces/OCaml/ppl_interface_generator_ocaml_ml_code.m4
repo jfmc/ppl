@@ -284,11 +284,11 @@ external ppl_@TOPOLOGY@@CLASS@_swap:
 
 ')
 
-m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@_code',
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_code',
 `dnl
-external ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@:
-@LINTOPOLOGY@@LFRIEND@ -> @LTOPOLOGY@@LCLASS@ =
-"ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@"
+external ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@:
+@LFRIEND@ -> @LTOPOLOGY@@LCLASS@ =
+"ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@"
 
 ')
 
@@ -413,8 +413,8 @@ external ppl_@CLASS@_iterator_equals_iterator:
 # m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@_code',
 # `dnl
 # external ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@:
-# @LINTOPOLOGY@@LFRIEND@ -> @LTOPOLOGY@@LCLASS@ =
-# "ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@"
+# @LFRIEND@ -> @LTOPOLOGY@@LCLASS@ =
+# "ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@"
 
 # ')
 

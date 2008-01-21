@@ -599,13 +599,13 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@_code',
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_code',
 `dnl
 extern "C"
 CAMLprim value
-ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@(value ph) try {
+ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@(value ph) try {
   CAMLparam1(ph);
-  @INTOPOLOGY@@ALT_FRIEND@& pph = *p_@INTOPOLOGY@@FRIEND@_val(ph);
+  @ALT_FRIEND@& pph = *p_@FRIEND@_val(ph);
   CAMLreturn(val_p_@TOPOLOGY@@CLASS@(*new @TOPOLOGY@@CPP_CLASS@(pph)));
 }
 CATCH_ALL
