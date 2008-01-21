@@ -1,4 +1,5 @@
-m4_define(`dnl', `m4_dnl')
+m4_define(`dnl', `m4_dnl')`'dnl
+m4_divert(-1)
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
@@ -19,8 +20,6 @@ dnl Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
-
-m4_divert(-1)
 
 dnl Classes to be implemented and C++ versions of these classes.
 m4_include(ppl_interface_instantiations.m4)
@@ -78,7 +77,7 @@ dnl Class         - is the interface class name, as input;
 dnl Class_List    - is a tail part of the input list of interface
 dnl                 class names.
 m4_define(`m4_init_interface_names', `dnl
-    m4_define(m4_interface_class`'$1, $2)`'dnl
+m4_define(m4_interface_class`'$1, $2)`'dnl
 m4_init_interface_classes_aux(m4_incr($1), $3)`'dnl
 ')
 
@@ -229,7 +228,7 @@ dnl m4_cplusplus_class`'Class_Counter_1 and
 dnl m4_cplusplus_class`'Class_Counter_2
 m4_define(`m4_parse_body_class', `dnl
 m4_define(m4_cplusplus_class`'$1`'_1,
-    `m4_regexp(m4_class_body$1, `\([^@]*\).*', `\1')')`'dnl
+`m4_regexp(m4_class_body$1, `\([^@]*\).*', `\1')')`'dnl
 m4_define(m4_cplusplus_class`'$1`'_2,
     `m4_regexp(m4_class_body$1, `\([^@]*\)@COMMA@\(.*\)', `\2')')`'dnl
 ')
@@ -775,5 +774,3 @@ m4_define(`m4_Polyhedron_ub_exact_replacement',
          `m4_ub_exact_replacement, poly_hull_assign_if_exact')
 m4_define(`m4_Grid_ub_exact_replacement',
          `m4_ub_exact_replacement, join_assign_if_exact')
-
-m4_divert`'

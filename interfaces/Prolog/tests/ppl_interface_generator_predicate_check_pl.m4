@@ -1,4 +1,5 @@
 m4_define(`dnl', `m4_dnl')`'dnl
+m4_divert(-1)
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
@@ -19,26 +20,28 @@ dnl Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
-
+dnl
 dnl This file generates ppl_predicate_check.pl.
+m4_divert`'dnl
 %<--%<--%<-- ppl_predicate_check_main.pl
 /* Prolog code for checking all predicates.  -*- C++ -*-
-m4_include(`ppl_interface_generator_copyright')dnl
-*/`'dnl
+m4_include(`ppl_interface_generator_copyright')`'dnl
+*/
+m4_divert(-1)
 dnl
 dnl ==================================================================
 dnl Common files are included here
 dnl ==================================================================
 dnl
-m4_include(`ppl_interface_generator_common.m4')`'dnl
-m4_include(`ppl_interface_generator_common_dat.m4')`'dnl
-m4_include(`ppl_interface_generator_prolog_dat.m4')dnl
-m4_include(`ppl_interface_generator_predicate_check_code.m4')`'dnl
-dnl
+m4_include(`ppl_interface_generator_common.m4')
+m4_include(`ppl_interface_generator_common_dat.m4')
+m4_include(`ppl_interface_generator_prolog_dat.m4')
+m4_include(`ppl_interface_generator_predicate_check_code.m4')
+
 dnl ==================================================================
 dnl Useful macros needed to generate the test code.
 dnl ==================================================================
-dnl
+
 dnl m4_filter_code(Schema_Code, Procedure_Spec1, Procedure_Spec1...)
 dnl
 m4_define(`m4_filter_code', `dnl
@@ -48,14 +51,14 @@ m4_ifelse($#, 0, , $#, 1, , $#, 2,
       keep, throw)')',
   `m4_ifelse(m4_index($1, m4_regexp($2, `ppl_[^ /]+', `\&')), -1,
     `m4_filter_code($1, m4_shift(m4_shift($@)))', throw)')')`'dnl
-dnl
+
 dnl m4_check_test_usability(Procedure_name,
 dnl                         Procedure_Spec1, Procedure_Spec1...)
 dnl
 m4_define(`m4_check_test_usability', `dnl
 m4_filter_code(m4_indir($1_code),
   m4_filter_all_procedures($2, 0, m4_procedure_list))`'dnl
-')`'dnl
+')
 dnl
 dnl
 dnl ==================================================================
@@ -71,10 +74,9 @@ dnl -----------------------------------------------------------------
 dnl Extra files and definitions needed
 dnl -----------------------------------------------------------------
 dnl
-m4_divert(-1)`'dnl
-m4_pushdef(`m4_one_class_code', `
-m4_define(`m4_current_interface', m4_interface_class`'$1)`'dnl
-:- include(QUOTE../tests/ppl_predicate_check_`'m4_current_interface`'.plQUOTE).`'dnl
+m4_pushdef(`m4_one_class_code',
+`m4_define(`m4_current_interface', m4_interface_class`'$1)`'dnl
+:- include(QUOTE../tests/ppl_predicate_check_`'m4_current_interface`'.plQUOTE).
 m4_undefine(`m4_current_interface')`'dnl
 ')
 dnl
@@ -82,7 +84,7 @@ dnl -----------------------------------------------------------------
 dnl Main call to generate code for the include statements.
 dnl -----------------------------------------------------------------
 dnl
-m4_divert
+m4_divert`'dnl
 %<--%<--%<-- ppl_predicate_check_main.pl
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -94,7 +96,8 @@ m4_divert
 :- include('ppl_predicate_check_common.pl').
 :- dynamic(all_class_dependent_predicates/1).
 :- discontiguous(all_class_dependent_predicates/1).
-m4_patsubst(m4_all_code`'m4_changequote(`[*[', `]*]')[*[]*], QUOTE, [*[']*])[*[]*]dnl
+m4_patsubst(m4_all_code`'m4_changequote(`[*[', `]*]')[*[]*],
+                                        QUOTE, [*[']*])[*[]*]dnl
 m4_changequote`'dnl
 m4_popdef(`m4_one_class_code')`'dnl
 dnl
@@ -115,18 +118,20 @@ dnl
 dnl -----------------------------------------------------------------
 dnl Main call to generate code
 dnl -----------------------------------------------------------------
-m4_divert
+m4_define(`m4_gen_code', m4_all_code)
+m4_divert`'dnl
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                   %
 %                       Main call for tests                         %
 %                                                                   %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 check_all :-
   (noisy(_) -> true; make_quiet),
-  ppl_initialize,`'dnl
-m4_patsubst(m4_patsubst(m4_all_code, `  ', `'), COMMA, `,')
+  ppl_initialize, `'dnl
+m4_patsubst(m4_gen_code, COMMA, `,')
   ppl_finalize.
-m4_popdef(`m4_one_class_code')
+m4_popdef(`m4_one_class_code')`'dnl
 dnl ==================================================================
 dnl Generate code for defining test_<class_name>.
 dnl ==================================================================
@@ -137,7 +142,7 @@ dnl -----------------------------------------------------------------
 m4_divert(-1)`'dnl
 m4_include(`ppl_interface_generator_prolog_systems.m4')dnl
 m4_define(`m4_start1', 0)`'dnl
-m4_pushdef(`m4_check_test_usability', keep)dnl
+m4_pushdef(`m4_check_test_usability', keep)`'dnl
 m4_pushdef(`m4_extension', `dnl
 m4_ifdef(`$1_code',
          `m4_ifelse(m4_check_test_usability($1, $5), keep,
