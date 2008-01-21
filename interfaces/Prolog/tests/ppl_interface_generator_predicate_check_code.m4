@@ -22,15 +22,6 @@ dnl site: http://www.cs.unipr.it/ppl/ .
 
 m4_divert(-1)
 dnl This file contains the schematic tests for the Prolog interface predicates.
-dnl
-m4_define(`m4_add_topology_class_code', `dnl
-m4_ifelse(m4_cplusplus_class$1, Polyhedron,
-  `
-clean_ppl_new_Polyhedron_from_space_dimension(Dim, UorE, PS) :-
-    clean_ppl_new_C_Polyhedron_from_space_dimension(Dim, UorE, PS).
-')
-
-')
 
 m4_define(`m4_add_build_class_code', `dnl
 ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Dim) :-

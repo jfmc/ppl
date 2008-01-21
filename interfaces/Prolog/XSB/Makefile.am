@@ -183,9 +183,9 @@ pl_check_test: ppl_xsb.la ppl_xsb.xwam xsb_pl_check.P ../tests/pl_check.pl
 	fi
 	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
 
-predicate_check_test: ppl_xsb.la ppl_xsb.xwam xsb_predicate_check.P ../tests/pl_check.pl
+predicate_check_test: ppl_xsb.la ppl_xsb.xwam xsb_predicate_check.P ../tests/ppl_predicate_check_main.pl
 	cp -f $(srcdir)/../tests/ppl_predicate_check_common.pl . ; \
-	cp -f ../tests/ppl_predicate_check.pl .
+	cp -f ../tests/ppl_predicate_check_main.pl .
 	rm -f xsb_predicate_check.xwam
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
@@ -193,8 +193,8 @@ predicate_check_test: ppl_xsb.la ppl_xsb.xwam xsb_predicate_check.P ../tests/pl_
 		-dlopen ppl_xsb.la \
 		xsb xsb_predicate_check \
 			>obtained_pchk
-	rm -f ppl_predicate_check.pl
-	rm -f xsb_predicate_check.P; \
+	rm -f ppl_predicate_check_main.pl
+#	rm -f xsb_predicate_check.P; \
 	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
 
 endif BUILD_XSB_PROLOG_INTERFACE

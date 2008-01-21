@@ -55,10 +55,14 @@ ppl_interface_generator_predicate_check_pl.m4 \
 ppl_interface_generator_predicate_check_code.m4
 
 
+all_predicate_check_sources = \
+$(fixed_predicate_check_sources) \
+$(required_instantiations_predicate_check_sources)
+
 if BUILD_SOME_PROLOG_INTERFACES
 
 BUILT_SOURCES = \
-ppl_predicate_check.pl
+ppl_predicate_check_main.pl
 
 interface_generator_dependencies = \
 $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
@@ -70,12 +74,19 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ppl_interface_generator_predicate_check_pl.m4 \
 ppl_interface_generator_predicate_check_code.m4
 
-ppl_predicate_check.pl: $(interface_generator_dependencies) Makefile
-	m4 --prefix-builtin -I../.. -I$(srcdir) -I$(srcdir)/.. \
-	   -I$(srcdir)/../.. \
-           $(srcdir)/ppl_interface_generator_predicate_check_pl.m4 > $@
+ppl_predicate_check_main.pl: $(interface_generator_dependencies) Makefile
+	m4 --prefix-builtin -I../.. \
+		-I$(srcdir) -I$(srcdir)/.. -I$(srcdir)/../.. \
+		$(srcdir)/ppl_interface_generator_predicate_check_pl.m4 \
+			> predicate_check_all
+	$(top_srcdir)/utils/cm_cleaner.sh < predicate_check_all
+	$(top_srcdir)/utils/cm_splitter.sh < predicate_check_all
+	rm -f predicate_check_all
 
 endif BUILD_SOME_PROLOG_INTERFACES
 
+CLEANFILES = \
+ppl_predicate_check_*.pl
+
 DISTCLEANFILES = \
-ppl_predicate_check.pl
+ppl_predicate_check_*.pl

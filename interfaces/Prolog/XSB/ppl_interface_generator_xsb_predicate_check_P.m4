@@ -29,15 +29,32 @@ m4_include(`ppl_interface_generator_copyright')
 :- import xpp_include_dir/1 from parse.
 :- assert(xpp_include_dir('.')).
 
+#include "ppl_predicate_check_main.pl"
+#include "ppl_predicate_check_common.pl"
+m4_divert(-1)
+m4_include(`ppl_interface_generator_common.m4')dnl
+m4_include(`ppl_interface_generator_common_dat.m4')dnl
+m4_pushdef(`m4_one_class_code', `dnl
+m4_replace_all_patterns_in_string($1,
+                                  `#includeSPACE"../tests/ppl_predicate_check_@CLASS@.pl"
+',
+                                  m4_pattern_list)`'dnl
+')`'dnl
+dnl
+dnl -----------------------------------------------------------------
+dnl Generate #include declarations for all the classes.
+dnl -----------------------------------------------------------------
+dnl
+m4_divert
+m4_patsubst(m4_patsubst(m4_all_code, ` ', `'), SPACE, ` ')`'dnl
+m4_popdef(`m4_one_class_code')`'dnl
+
 :- import append/3, length/2, member/2 from basics.
 :- import
 m4_divert(1)
    from ppl_xsb.
 
 :- [ppl_xsb].
-
-#include "ppl_predicate_check.pl"
-#include "ppl_predicate_check_common.pl"
 
 prolog_system('XSB').
 

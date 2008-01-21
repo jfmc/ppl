@@ -187,18 +187,18 @@ clpq2_test: ppl_sicstus ppl_sicstus.pl sp_clpq.pl ../tests/clpq2.pl ../tests/scr
 	      <$(srcdir)/../tests/script_clpq2 >obtained_clpq2
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
 
-predicate_check_test: ppl_sicstus ppl_sicstus.pl sp_predicate_check.pl ../tests/ppl_predicate_check.pl $(EXPECTED_PCHK)
+predicate_check_test: ppl_sicstus ppl_sicstus.pl sp_predicate_check.pl ../tests/ppl_predicate_check_main.pl $(EXPECTED_PCHK)
 	if [ $(srcdir) != `pwd` ]; then \
 	  cp -f $(srcdir)/../tests/ppl_predicate_check_common.pl . ; \
 	fi
-	cp -f ../tests/ppl_predicate_check.pl . ; \
+	cp -f ../tests/ppl_predicate_check_main.pl . ; \
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		$(WATCHDOG_DLOPEN) \
 		./ppl_sicstus -l $(srcdir)/sp_predicate_check.pl \
         --goal "main."  \
 			>obtained_pchk
-	rm -f ppl_predicate_check.pl; \
+	rm -f ppl_predicate_check_main.pl; \
 	rm -f ppl_predicate_check_common.pl; \
 	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
 

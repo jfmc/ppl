@@ -122,11 +122,11 @@ ciao_clpq2: .libs/libppl_ciao.so ppl_ciao.po ciao_clpq.pl ../tests/clpq2.pl | ci
 	rm -f clpq2.pl
 
 
-ciao_predicate_check: .libs/libppl_ciao.so ppl_ciao.po ciao_predicate_check.pl ../tests/ppl_predicate_check.pl | ciao_pl_check
+ciao_predicate_check: .libs/libppl_ciao.so ppl_ciao.po ciao_predicate_check.pl ../tests/ppl_predicate_check_main.pl | ciao_pl_check
 	cp -f $(srcdir)/../tests/ppl_predicate_check_common.pl .; \
-	cp -f ../tests/ppl_predicate_check.pl .
+	cp -f ../tests/ppl_predicate_check_main.pl .
 	ciaoc -o $@ ciao_predicate_check.pl
-	rm -f ppl_predicate_check.pl
+	rm -f ppl_predicate_check_main.pl
 
 CLPQ_TESTS_NONSTRICT = \
 ack.clpq \

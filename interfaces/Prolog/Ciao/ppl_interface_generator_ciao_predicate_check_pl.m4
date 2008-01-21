@@ -39,7 +39,7 @@ m4_divert(1)
 
 :- set_prolog_flag(multi_arity_warnings, off).
 
-:-  `include'('ppl_predicate_check.pl').
+:-  `include'('ppl_predicate_check_main.pl').
 
 prolog_system('Ciao').
 

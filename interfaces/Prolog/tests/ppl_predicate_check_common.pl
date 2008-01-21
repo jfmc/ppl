@@ -140,6 +140,8 @@ choose_2_tests(TEST_DATA1, TEST_DATA2, Dim) :-
 :- discontiguous(ppl_property_test_data/4).
 :- discontiguous(ppl_bounds_test_data/5).
 :- discontiguous(ppl_maxmin_test_data/10).
+:- dynamic(all_class_dependent_predicates/1).
+:- discontiguous(all_class_dependent_predicates/1).
 
 ppl_initial_test_system(constraint, universe).
 ppl_initial_test_system(congruence, universe).
