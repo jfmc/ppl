@@ -35,23 +35,27 @@ dnl
 dnl Definition for converting a term to a class handle code for all
 dnl classes must be placed before all the generated code so that one class
 dnl can be copied from another.
-m4_define(`m4_pre_all_classes_code', `')
+m4_define(`m4_pre_all_classes_code', `')`'dnl
 
-
-dnl m4_pre_extra_class_code(Class_Counter)
-dnl Prefix extra code for each class.
-m4_define(`m4_pre_extra_class_code', `dnl
+m4_pushdef(`m4_one_class_code', `dnl
 m4_replace_all_patterns_in_string($1,
-  m4_access_class_code,
-  m4_pattern_list)`'dnl
-
+                                  m4_access_class_code,
+                                  m4_pattern_list)`'dnl
 ')
+dnl
+dnl -----------------------------------------------------------------
+dnl Generate type declarations for all the classes.
+dnl -----------------------------------------------------------------
+dnl
+m4_divert`'dnl
+`#'include "ppl_ocaml_globals.cc"
+m4_all_code
+m4_popdef(`m4_one_class_code')`'dnl
 
 m4_divert`'dnl
 dnl
-
-`#'include "ppl_ocaml_globals.cc"
-dnl
-dnl Generate the non-fixed part of the file.
+dnl -----------------------------------------------------------------
+dnl Generate the main class-dependent code.
+dnl -----------------------------------------------------------------
 m4_all_code
 dnl
