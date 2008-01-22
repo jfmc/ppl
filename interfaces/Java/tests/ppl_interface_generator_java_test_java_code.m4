@@ -41,6 +41,20 @@ m4_define(`m4_new_class_element_code',
     System.gc();
 ')
 
+m4_define(`m4_more_new_class_element_code',
+`
+    if (("@FRIEND@" != "@TOPOLOGY@@CLASS@")) {
+       @FRIEND@ @LFRIEND@_@FRIEND@1 = new @FRIEND@(@CONSTRAINER@s1);
+       @TOPOLOGY@@CLASS@ @LTOPOLOGY@@LCLASS@_@FRIEND@2
+         = new @TOPOLOGY@@CLASS@(@LFRIEND@_@FRIEND@1);
+    System.gc();
+    System.out.println(
+      "@TOPOLOGY@@CLASS@ @LTOPOLOGY@@LCLASS@_@FRIEND@");
+    System.out.println(
+      "   = new @TOPOLOGY@@CLASS@(@LFRIEND@_@FRIEND@1) ok.");
+}
+')
+
 m4_define(`ppl_@CLASS@_bounds_from_@ABOVEBELOW@_code',`
 boolean @LTOPOLOGY@@CLASS@1_bounds_from_@ABOVEBELOW@ = @LTOPOLOGY@@LCLASS@1.bounds_from_@ABOVEBELOW@(le);
 ')

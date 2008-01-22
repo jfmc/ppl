@@ -39,7 +39,7 @@ m4_define(`m4_class_build_cpp_object2_code',
 m4_define(`m4_class_build_cpp_object3_code',
 `dnl
 %<--%<--%<-- @TOPOLOGY@@CLASS@.java
-    private native void build_cpp_object(@TOPOLOGY@@CLASS@ y);
+    private native void build_cpp_object(@FRIEND@ y);
 
 ')
 
@@ -56,10 +56,10 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 
 ')
 
-m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@_code',
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_code',
 `dnl
 %<--%<--%<-- @TOPOLOGY@@CLASS@.java
-    public @TOPOLOGY@@CLASS@(@TOPOLOGY@@CLASS@ y) {
+    public @TOPOLOGY@@CLASS@(@FRIEND@ y) {
         build_cpp_object(y);
     }
 

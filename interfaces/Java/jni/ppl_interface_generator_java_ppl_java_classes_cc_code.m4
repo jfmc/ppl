@@ -149,15 +149,15 @@ JNIEXPORT void JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_build_1cpp_1object__JL
 
 ')
 
-m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@_code',
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_code',
 `dnl
-JNIEXPORT void JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_build_1cpp_1object__Lppl_1java_@1TOPOLOGY@@1CLASS@_2
-(JNIEnv* env, jobject  j_this_@LTOPOLOGY@@LCLASS@, jobject j_@LTOPOLOGY@@LCLASS@)
+JNIEXPORT void JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_build_1cpp_1object__Lppl_1java_@1FRIEND@_2
+(JNIEnv* env, jobject  j_this_@LTOPOLOGY@@LCLASS@, jobject j_@LFRIEND@)
 {
- jclass j_@LTOPOLOGY@@LCLASS@_class = env->GetObjectClass(j_@LTOPOLOGY@@LCLASS@);
- jlong ptr = get_ptr(env, j_@LTOPOLOGY@@LCLASS@);
- @TOPOLOGY@@CPP_CLASS@* @LTOPOLOGY@@LCLASS@_ptr = reinterpret_cast<@TOPOLOGY@@CPP_CLASS@*>(ptr);
- @TOPOLOGY@@CPP_CLASS@* @LTOPOLOGY@_this_@LCLASS@_ptr = new @TOPOLOGY@@CPP_CLASS@(*@LTOPOLOGY@@LCLASS@_ptr);
+ jclass j_@LTOPOLOGY@@LCLASS@_class = env->GetObjectClass(j_this_@LTOPOLOGY@@LCLASS@);
+ jlong ptr = get_ptr(env, j_@LFRIEND@);
+ @ALT_FRIEND@* @LFRIEND@_ptr = reinterpret_cast<@ALT_FRIEND@*>(ptr);
+ @TOPOLOGY@@CPP_CLASS@* @LTOPOLOGY@_this_@LCLASS@_ptr = new @TOPOLOGY@@CPP_CLASS@(*@LFRIEND@_ptr);
 jfieldID pointer_field = env->GetFieldID(j_@LTOPOLOGY@@LCLASS@_class, "ptr", "J");
 env->SetLongField(j_this_@LTOPOLOGY@@LCLASS@, pointer_field,
 		   (long long) @LTOPOLOGY@_this_@LCLASS@_ptr);

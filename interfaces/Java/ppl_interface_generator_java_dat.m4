@@ -1,4 +1,5 @@
-m4_define(`dnl', `m4_dnl')
+m4_define(`dnl', `m4_dnl')`'dnl
+m4_divert(-1)
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
@@ -20,7 +21,6 @@ dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
-m4_divert(-1)
 dnl
 dnl m4_procedure_list
 dnl This class using patterns wherever possible.
@@ -41,7 +41,7 @@ m4_define(`m4_procedure_list', `dnl
 ppl_delete_@CLASS@/1 +simple_pps,
 ppl_free_@CLASS@/1 +simple_pps,
 ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension/3 +simple_pps,
-ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@/2 +simple_pps,
+ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@/2 +simple_pps,
 ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s/2 +simple_pps,
 ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@/2 +simple -wr_shape,
 ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@/2 +polyhedron,
