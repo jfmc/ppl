@@ -31,7 +31,7 @@ $(XSB_CFLI_FILES) \
 xsb_clpq.P \
 xsb_clpq2.P \
 xsb_pl_check.P \
-ppl_interface_generator_xsb_predicate_check.pl.m4
+ppl_interface_generator_xsb_predicate_check_P.m4
 
 if BUILD_XSB_PROLOG_INTERFACE
 
@@ -194,7 +194,7 @@ predicate_check_test: ppl_xsb.la ppl_xsb.xwam xsb_predicate_check.P ../tests/ppl
 		xsb xsb_predicate_check \
 			>obtained_pchk
 	rm -f ppl_predicate_check_main.pl
-#	rm -f xsb_predicate_check.P; \
+	rm -f xsb_predicate_check.P; \
 	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
 
 endif BUILD_XSB_PROLOG_INTERFACE
