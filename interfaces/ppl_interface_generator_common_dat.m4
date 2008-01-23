@@ -438,7 +438,7 @@ dnl The friend class name.
 dnl A class can be built from its "friend"'s
 dnl There is the interface name as default friend,
 dnl the interface name but where "Polyhedron" does not include
-dnl the topology (alt_friend), and the C++ name (cpp_friend).
+dnl the topology (alt_friend), and the C++ name (cppx_friend).
 dnl
 dnl To allow for other classes to be friends,
 dnl we cannot just take a predefined list of friends as some
@@ -449,7 +449,7 @@ m4_define(`m4_friend_alt_replacement', `dnl
 m4_all_friends(interface, no_topology)`'dnl
 ')
 
-m4_define(`m4_friend_cpp_replacement',`m4_all_friends(cplusplus)')
+m4_define(`m4_friend_cppx_replacement',`m4_all_friends(cplusplus)')
 
 m4_define(`m4_all_friends', `dnl
 m4_patsubst(m4_all_friends_aux($1, $2), `@COMMA@', `, ')`'dnl

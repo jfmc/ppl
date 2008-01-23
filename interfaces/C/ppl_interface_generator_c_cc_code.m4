@@ -39,8 +39,8 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_code',
 ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@
 (ppl_@CLASS@_t* pph,
  ppl_const_@ALT_FRIEND@_t ph) try {
-  const @CPP_FRIEND@& phh
-    = *static_cast<const @CPP_FRIEND@*>(to_const(ph));
+  const @CPPX_FRIEND@& phh
+    = *static_cast<const @CPPX_FRIEND@*>(to_const(ph));
   *pph = to_nonconst(new @TOPOLOGY@@CPP_CLASS@(phh));
   return 0;
 }

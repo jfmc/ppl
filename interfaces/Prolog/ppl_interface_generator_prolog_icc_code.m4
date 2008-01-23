@@ -62,9 +62,9 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@(
                    "ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@/2";
   try {
     @TOPOLOGY@@CPP_CLASS@* ph;
-    const @CPP_FRIEND@* ph_source
-        = static_cast<const @CPP_FRIEND@*>
-        (term_to_handle<@CPP_FRIEND@ >(t_ph_source, where));
+    const @CPPX_FRIEND@* ph_source
+        = static_cast<const @CPPX_FRIEND@*>
+        (term_to_handle<@CPPX_FRIEND@ >(t_ph_source, where));
     PPL_CHECK(ph_source);
         ph = new @TOPOLOGY@@CPP_CLASS@(*ph_source);
     Prolog_term_ref tmp = Prolog_new_term_ref();

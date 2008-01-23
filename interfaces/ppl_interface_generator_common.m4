@@ -144,7 +144,7 @@ dnl
 dnl m4_alt_replace is the replacement for alt_pattern
 m4_define(`m4_alt_replace', `m4_arg($2, m4_alt_replacements)')`'dnl
 dnl m4_alt_replace is the replacement for alt_pattern
-m4_define(`m4_cpp_replace', `m4_arg($2, m4_cpp_replacements)')`'dnl
+m4_define(`m4_cppx_replace', `m4_arg($2, m4_cppx_replacements)')`'dnl
 dnl
 m4_ifelse(m4_replace, NONE, `',
           m4_alt_replace, NONE, `',
@@ -175,18 +175,18 @@ m4_patsubst(m4_patsubst(m4_patsubst(m4_patsubst(
     m4_add_one_after_underscore(m4_alt_replace)),
   m4_pattern_delimiter`'ALT_`'PATTERN`'m4_pattern_delimiter,
     m4_alt_replace),
-  m4_pattern_delimiter`'1UCPP_`'PATTERN`'m4_pattern_delimiter,
+  m4_pattern_delimiter`'1UCPPX_`'PATTERN`'m4_pattern_delimiter,
     m4_add_one_after_underscore(m4_capfirstletters(m4_alt_replace))),
-  m4_pattern_delimiter`'UCPP_`'PATTERN`'m4_pattern_delimiter,
+  m4_pattern_delimiter`'UCPPX_`'PATTERN`'m4_pattern_delimiter,
     m4_capfirstletters(m4_alt_replace)),
-  m4_pattern_delimiter`'1LCPP_`'PATTERN`'m4_pattern_delimiter,
+  m4_pattern_delimiter`'1LCPPX_`'PATTERN`'m4_pattern_delimiter,
     m4_add_one_after_underscore(m4_downcase(m4_alt_replace))),
-  m4_pattern_delimiter`'LCPP_`'PATTERN`'m4_pattern_delimiter,
+  m4_pattern_delimiter`'LCPPX_`'PATTERN`'m4_pattern_delimiter,
     m4_downcase(m4_alt_replace)),
-  m4_pattern_delimiter`'1CPP_`'PATTERN`'m4_pattern_delimiter,
+  m4_pattern_delimiter`'1CPPX_`'PATTERN`'m4_pattern_delimiter,
     m4_add_one_after_underscore(m4_alt_replace)),
-  m4_pattern_delimiter`'CPP_`'PATTERN`'m4_pattern_delimiter,
-    m4_cpp_replace),
+  m4_pattern_delimiter`'CPPX_`'PATTERN`'m4_pattern_delimiter,
+    m4_cppx_replace),
   m4_pattern_delimiter`'PATTERN`'m4_pattern_delimiter,
     m4_replace)`'dnl
 )`'dnl
@@ -237,12 +237,12 @@ m4_define(`m4_alt_replacements', `dnl
       `m4_$3_alt_replacement($1)',
       `m4_replacements')')')`'dnl
 dnl
-dnl m4_alt_replacements is the alternative replacement list for pattern.
-m4_define(`m4_cpp_replacements', `dnl
-  m4_ifdef(m4_`'m4_class_kind$1`'_$3_cpp_replacement,
-    m4_`'m4_class_kind$1`'_$3_cpp_replacement($1),
-    `m4_ifdef(`m4_$3_cpp_replacement',
-      `m4_$3_cpp_replacement($1)',
+dnl m4_cppx_replacements is the cplusplus replacement list for pattern.
+m4_define(`m4_cppx_replacements', `dnl
+  m4_ifdef(m4_`'m4_class_kind$1`'_$3_cppx_replacement,
+    m4_`'m4_class_kind$1`'_$3_cppx_replacement($1),
+    `m4_ifdef(`m4_$3_cppx_replacement',
+      `m4_$3_cppx_replacement($1)',
       `m4_replacements')')')`'dnl
 dnl
 m4_ifelse(m4_index(`$2', PATTERN), `-1', $2, `dnl
@@ -251,6 +251,7 @@ dnl
 m4_undefine(`PATTERN')`'dnl
 m4_undefine(`m4_replacements')`'dnl
 m4_undefine(`m4_alt_replacements')`'dnl
+m4_undefine(`m4_cppx_replacements')`'dnl
 ')
 
 dnl m4_replace_all_patterns_in_string(
