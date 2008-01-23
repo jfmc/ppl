@@ -432,7 +432,9 @@ dnl The interface class name.
 m4_define(`m4_class_replacement', m4_interface_class`'$1)
 
 dnl The cplusplus class name.
+dnl FIXME: Two definitions are temporary while we get files in sync.
 m4_define(`m4_cpp_class_replacement', m4_cplusplus_class`'$1)
+m4_define(`m4_class_cppx_replacement', m4_cplusplus_class`'$1)
 
 dnl The friend class name.
 dnl A class can be built from its "friend"'s
@@ -514,7 +516,7 @@ m4_same_class_string(
   m4_class_body$1, interface, m4_get_class_topology($1), cplusplus_class)`'dnl
 ')
 dnl
-m4_define(`m4_Pointset_Powerset_friend_alt_replacement', `dnl
+m4_define(`m4_Pointset_Powerset_friend_cppx_replacement', `dnl
 m4_cplusplus_class$1`'dnl
 m4_same_class_string(
   m4_class_body$1, cplusplus, m4_get_class_topology($1), cplusplus_class)`'dnl
@@ -611,12 +613,19 @@ m4_ifelse($1,
 ')`'dnl
 ')
 
+dnl FIXME: Two definitions are temporary while we get files in sync.
 m4_define(`m4_cpp_disjunct_replacement', `dnl
 m4_remove_topology(m4_class_body`'$1)`'dnl
 ')
+m4_define(`m4_disjunct_alt_replacement', `dnl
+m4_remove_topology(m4_class_body`'$1)`'dnl
+')
 
+dnl FIXME: Two definitions are temporary while we get files in sync.
 m4_define(`m4_cpp_disjunct_alt_replacement', m4_class_body`'$1)
+m4_define(`m4_disjunct_cppx_replacement', m4_class_body`'$1)
 
+dnl CHECKME: Probably untested for weakly relational disjuncts - looks iffy!.
 m4_define(`m4_disjunct_replacement', `dnl
 m4_remove_topology(m4_get_interface_class_name(m4_class_body`'$1))`'dnl
 ')
