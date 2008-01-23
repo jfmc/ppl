@@ -34,13 +34,13 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@CLASS@_code',
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_code',
 `int
-ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@CLASS@
+ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@
 (ppl_@CLASS@_t* pph,
- ppl_const_@CLASS@_t ph) try {
-  const @INTOPOLOGY@@CPP_CLASS@& phh
-    = *static_cast<const @INTOPOLOGY@@CPP_CLASS@*>(to_const(ph));
+ ppl_const_@ALT_FRIEND@_t ph) try {
+  const @CPP_FRIEND@& phh
+    = *static_cast<const @CPP_FRIEND@*>(to_const(ph));
   *pph = to_nonconst(new @TOPOLOGY@@CPP_CLASS@(phh));
   return 0;
 }

@@ -605,7 +605,7 @@ extern "C"
 CAMLprim value
 ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@(value ph) try {
   CAMLparam1(ph);
-  @ALT_FRIEND@& pph = *p_@FRIEND@_val(ph);
+  @CPP_FRIEND@& pph = *p_@FRIEND@_val(ph);
   CAMLreturn(val_p_@TOPOLOGY@@CLASS@(*new @TOPOLOGY@@CPP_CLASS@(pph)));
 }
 CATCH_ALL

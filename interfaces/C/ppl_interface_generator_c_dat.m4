@@ -41,7 +41,7 @@ dnl The <name> must be exactly as written here.
 dnl
 m4_define(`m4_procedure_list', `dnl
 ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension +simple,
-ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@CLASS@ +simple,
+ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@ +simple,
 ppl_new_@TOPOLOGY@@CLASS@_from_@UBUILD_REPRESENT@_System +simple,
 ppl_new_@TOPOLOGY@@CLASS@_recycle_@UBUILD_REPRESENT@_System +simple,
 ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@ +simple -wr_shape,
