@@ -132,6 +132,8 @@ dnl m4_replacements.
 dnl Additional codes help provide the right form of the replacmement:
 dnl - alt_ means that the alternative replacement in m4_alt_replacements
 dnl must be used if one exists.
+dnl - cppx_ means that the alternative replacement in m4_cppx_replacements
+dnl must be used if one exists.
 dnl - when the alt_replace is NONE, then the code is replaced by the
 dnl   the empty string.
 dnl - U means that the alt_actual string must be capitalised at start
