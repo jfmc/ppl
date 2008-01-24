@@ -26,10 +26,11 @@ dnl ==================================================================
 dnl Common files are included here
 dnl ==================================================================
 dnl
-m4_include(`ppl_interface_generator_common.m4')`'dnl
-m4_include(`ppl_interface_generator_common_dat.m4')`'dnl
-m4_include(`ppl_interface_generator_common_procedure_list.m4')`'dnl
-m4_include(`ppl_interface_generator_java_all_dat.m4')dnl
+m4_include(`ppl_interface_generator_common.m4')
+m4_include(`ppl_interface_generator_common_dat.m4')
+m4_include(`ppl_interface_generator_common_procedure_list.m4')
+m4_include(`ppl_interface_generator_java_all_dat.m4')
+m4_include(`ppl_interface_generator_java_test_java_code.m4')
 dnl
 dnl This file generates ppl_java_classes_test.java.
 m4_divert`'
@@ -66,33 +67,34 @@ m4_divert(1)`'dnl
     // Here generated stuff.
 m4_divert(2)`'dnl
 }
-dnl
+m4_divert(-1)
+
 dnl ==================================================================
 dnl Declare test for each domain
 dnl ==================================================================
-dnl
-m4_include(`ppl_interface_generator_java_test_java_code.m4')`'dnl
+
 m4_pushdef(`m4_pre_extra_class_code', `dnl
 m4_replace_all_patterns_in_string($1,
   m4_run_class_code,
   m4_pattern_list)`'dnl
-')`'dnl
-dnl
+')
+
 m4_pushdef(`m4_post_extra_class_code', `dnl
 ')
-dnl
-m4_pushdef(`m4_extension', `')`'dnl
-dnl
+
+m4_pushdef(`m4_extension', `')
+m4_divert`'dnl
 m4_all_code`'dnl
 m4_undivert(1)`'dnl
-dnl
+m4_divert(-1)
+
 dnl ==================================================================
 dnl Test all methods
 dnl ==================================================================
-dnl
-m4_popdef(`m4_pre_extra_class_code')`'dnl
-m4_popdef(`m4_post_extra_class_code')`'dnl
-m4_popdef(`m4_extension')`'dnl
+
+m4_popdef(`m4_pre_extra_class_code')
+m4_popdef(`m4_post_extra_class_code')
+m4_popdef(`m4_extension')
 m4_pushdef(`m4_pre_extra_class_code', `dnl
 m4_replace_all_patterns_in_string($1,
   m4_run_class_test_code,
@@ -103,7 +105,7 @@ m4_replace_all_patterns_in_string($1,
 m4_replace_all_patterns_in_string($1,
   m4_more_new_class_element_code,
   m4_pattern_list)`'dnl
-')`'dnl
+')
 m4_pushdef(`m4_post_extra_class_code', `dnl
 }
 catch (ppl_java.Overflow_Error_Exception e) {
@@ -113,7 +115,8 @@ return true;
 
     }
 
-')`'dnl
-dnl
+')
+
+m4_divert`'dnl
 m4_all_code`'dnl
 m4_undivert(2)`'dnl
