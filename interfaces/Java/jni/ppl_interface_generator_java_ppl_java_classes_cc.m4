@@ -27,7 +27,8 @@ m4_divert(-1)dnl
 m4_include(`ppl_interface_generator_java_ppl_java_classes_cc_code.m4')dnl
 m4_include(`ppl_interface_generator_common.m4')dnl
 m4_include(`ppl_interface_generator_common_dat.m4')dnl
-m4_include(`ppl_interface_generator_java_dat.m4')dnl
+m4_include(`ppl_interface_generator_common_procedure_list.m4')dnl
+m4_include(`ppl_interface_generator_java_all_dat.m4')dnl
 dnl
 
 dnl m4_pre_extra_class_code(Class, CPP_Class, Class_Kind)

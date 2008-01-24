@@ -118,7 +118,8 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../../ppl_interface_generator_common.m4 \
 ../../ppl_interface_generator_common_dat.m4 \
 ../../ppl_interface_generator_copyright \
-../ppl_interface_generator_java_dat.m4 \
+../../ppl_interface_generator_common_procedure_list.m4 \
+../ppl_interface_generator_java_all_dat.m4 \
 $(interface_generator_files)
 
 java_classes.stamp: $(all_java_sources)

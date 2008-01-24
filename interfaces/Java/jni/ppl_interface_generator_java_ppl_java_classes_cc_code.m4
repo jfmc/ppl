@@ -50,6 +50,17 @@ return j_it;
 }
 ')
 
+m4_define(`ppl_@CLASS@_delete_iterator_code',
+`dnl
+JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_delete_1iterator
+(JNIEnv* env) {
+jclass j_it_class = env->FindClass("ppl_java/@CLASS@_Iterator");
+ if (!is_a_reference(env, j_it_class))
+  delete j_it_class;
+}
+
+')
+
 m4_define(`ppl_@CLASS@_increment_iterator_code',
 `dnl
 JNIEXPORT void JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_1Iterator_next

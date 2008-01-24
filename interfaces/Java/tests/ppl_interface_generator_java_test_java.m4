@@ -1,4 +1,5 @@
 m4_define(`dnl', `m4_dnl')`'dnl
+m4_divert(-1)
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
@@ -27,9 +28,11 @@ dnl ==================================================================
 dnl
 m4_include(`ppl_interface_generator_common.m4')`'dnl
 m4_include(`ppl_interface_generator_common_dat.m4')`'dnl
-m4_include(`ppl_interface_generator_java_dat.m4')dnl
+m4_include(`ppl_interface_generator_common_procedure_list.m4')`'dnl
+m4_include(`ppl_interface_generator_java_all_dat.m4')dnl
 dnl
 dnl This file generates ppl_java_classes_test.java.
+m4_divert`'
 /* Java code for checking all classes.  -*- C++ -*-
 m4_include(`ppl_interface_generator_copyright')dnl
 */

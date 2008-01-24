@@ -399,6 +399,13 @@ m4_define(`ppl_@CLASS@_end_iterator_code',
 
 ')
 
+m4_define(`ppl_@CLASS@_delete_iterator_code',
+`dnl
+%<--%<--%<-- @CLASS@.java
+    public native void delete_iterator();
+
+')
+
 m4_define(`ppl_@CLASS@_get_disjunct_code',
 `dnl
 %<--%<--%<-- @CLASS@_Iterator.java
