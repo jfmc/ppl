@@ -23,7 +23,7 @@
 SUBDIRS = . tests Ciao GNU SICStus SWI XSB YAP
 
 interface_generator_files = \
-ppl_interface_generator_prolog_dat.m4 \
+ppl_interface_generator_prolog_all_dat.m4 \
 ppl_interface_generator_prolog_icc.m4 \
 ppl_interface_generator_prolog_systems.m4 \
 ppl_interface_generator_prolog_icc_code.m4
@@ -48,7 +48,6 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../ppl_interface_generator_copyright \
 ../ppl_interface_generator_common_procedure_list.m4 \
 ppl_interface_generator_prolog_all_dat.m4 \
-ppl_interface_generator_prolog_dat.m4 \
 ppl_interface_generator_prolog_icc.m4 \
 ppl_interface_generator_prolog_icc_code.m4
 

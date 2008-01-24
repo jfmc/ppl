@@ -298,14 +298,14 @@ val ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@:
 m4_define(`ppl_@CLASS@_get_disjunct_code',
  `
  val ppl_@CLASS@_iterator_get_disjunct:
- @LTOPOLOGY@@LCLASS@_iterator  ->  @LALT_CPP_DISJUNCT@
+ @LTOPOLOGY@@LCLASS@_iterator  ->  @LCLASSTOPOLOGY@@LCPP_DISJUNCT@
 
 ')
 
 m4_define(`ppl_@CLASS@_add_disjunct_code',
  `
  val ppl_@CLASS@_add_disjunct:
- @LTOPOLOGY@@LCLASS@  ->  @LALT_CPP_DISJUNCT@ -> unit
+ @LTOPOLOGY@@LCLASS@  ->  @LCLASSTOPOLOGY@@LCPP_DISJUNCT@ -> unit
 
 ')
 

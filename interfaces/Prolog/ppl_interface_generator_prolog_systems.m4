@@ -21,7 +21,7 @@ dnl site: http://www.cs.unipr.it/ppl/ .
 
 m4_divert(-1)
 m4_include(`ppl_interface_generator_common.m4')dnl
-m4_include(`ppl_interface_generator_prolog_dat.m4')dnl
+m4_include(`ppl_interface_generator_prolog_all_dat.m4')dnl
 dnl
 dnl m4_separator(String)
 dnl

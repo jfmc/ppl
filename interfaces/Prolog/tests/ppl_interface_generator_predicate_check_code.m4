@@ -534,7 +534,7 @@ ppl_@CLASS@_drop_disjunct_2_test :-
    ppl_build_test_data(TEST_DATA1, t_@TOPOLOGY@, @CONSTRAINER@s, RS1),
    (
      clean_ppl_new_@TOPOLOGY@@CLASS@_from_@CONSTRAINER@s(RS, PPS),
-     clean_ppl_new_@ALT_DISJUNCT@_from_@CONSTRAINER@s(RS1, PS),
+     clean_ppl_new_@CLASSTOPOLOGY@@DISJUNCT@_from_@CONSTRAINER@s(RS1, PS),
      ppl_@CLASS@_add_disjunct(PPS, PS),
      ppl_@CLASS@_size(PPS, S),
      S > 1,
@@ -580,7 +580,7 @@ ppl_@CLASS@_get_disjunct_2_test1(_, []).
 ppl_@CLASS@_get_disjunct_2_test1(PPS, [Test|Tests]) :-
   (
    ppl_build_test_data(Test, t_@TOPOLOGY@, @CONSTRAINER@s, RS),
-   clean_ppl_new_@ALT_DISJUNCT@_from_@CONSTRAINER@s(RS, PS),
+   clean_ppl_new_@CLASSTOPOLOGY@@DISJUNCT@_from_@CONSTRAINER@s(RS, PS),
    ppl_@CLASS@_add_disjunct(PPS, PS),
    ppl_delete_@DISJUNCT@(PS),
    ppl_@CLASS@_get_disjunct_2_test1(PPS, Tests),
@@ -610,8 +610,8 @@ ppl_@CLASS@_@PARTITION@_4_test :-
   (
    choose_2_tests(TEST_DATA1, TEST_DATA2, Space_Dim),
    (
-     ppl_@ALT_CPP_DISJUNCT@_build_test_object(TEST_DATA1, PS1, Space_Dim),
-     ppl_@ALT_CPP_DISJUNCT@_build_test_object(TEST_DATA2, PS2, Space_Dim),
+     ppl_@CLASSTOPOLOGY@@CPP_DISJUNCT@_build_test_object(TEST_DATA1, PS1, Space_Dim),
+     ppl_@CLASSTOPOLOGY@@CPP_DISJUNCT@_build_test_object(TEST_DATA2, PS2, Space_Dim),
      ppl_@CLASS@_@PARTITION@(PS1, PS2, PS3, PPS),
      ppl_@DISJUNCT@_OK(PS3),
      ppl_@CLASS@_OK(PPS)
@@ -1060,7 +1060,7 @@ ppl_@CLASS@_add_disjunct_2_test :-
    choose_2_tests(TEST_DATA1, TEST_DATA2, Space_Dim),
    (
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PPS1, Space_Dim),
-     ppl_@ALT_DISJUNCT@_build_test_object(TEST_DATA2, PS2, Space_Dim),
+     ppl_@CLASSTOPOLOGY@@DISJUNCT@_build_test_object(TEST_DATA2, PS2, Space_Dim),
      ppl_@CLASS@_add_disjunct(PPS1, PS2),
      ppl_@CLASS@_OK(PPS1),
      ppl_@DISJUNCT@_OK(PS2),
@@ -1411,9 +1411,9 @@ ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_4_test :-
 
 ')
 
-m4_define(`ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code',
+m4_define(`ppl_@CLASS@_BHZ03_@CLASSTOPOLOGY@@DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code',
 `
-ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_test :-
+ppl_@CLASS@_BHZ03_@CLASSTOPOLOGY@@DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_test :-
   (
    choose_2_tests(TEST_DATA1, TEST_DATA2, Space_Dim),
    (

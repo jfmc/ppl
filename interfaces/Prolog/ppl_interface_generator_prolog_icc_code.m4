@@ -425,8 +425,8 @@ ppl_@CLASS@_get_disjunct(Prolog_term_ref t_it,
          = term_to_handle<@CPP_CLASS@::iterator >(t_it, where);
     PPL_CHECK(it);
 
-    @ALT_CPP_DISJUNCT@* disj
-	= const_cast<@ALT_CPP_DISJUNCT@*>(&((*it)->element()));
+    @CLASSTOPOLOGY@@CPP_DISJUNCT@* disj
+	= const_cast<@CLASSTOPOLOGY@@CPP_DISJUNCT@*>(&((*it)->element()));
     Prolog_term_ref t_d = Prolog_new_term_ref();
     Prolog_put_address(t_d, disj);
 
@@ -488,19 +488,19 @@ ppl_@CLASS@_@PARTITION@(Prolog_term_ref t_ph,
 			 Prolog_term_ref t_pset) {
   static const char* where = "ppl_@CLASS@_@PARTITION@/4";
   try {
-    const @ALT_CPP_DISJUNCT@* ph =
-        term_to_handle<@ALT_CPP_DISJUNCT@>(t_ph, where);
+    const @CLASSTOPOLOGY@@CPP_DISJUNCT@* ph =
+        term_to_handle<@CLASSTOPOLOGY@@CPP_DISJUNCT@>(t_ph, where);
     PPL_CHECK(ph);
-    const @ALT_CPP_DISJUNCT@* qh =
-        term_to_handle<@ALT_CPP_DISJUNCT@>(t_qh, where);
+    const @CLASSTOPOLOGY@@CPP_DISJUNCT@* qh =
+        term_to_handle<@CLASSTOPOLOGY@@CPP_DISJUNCT@>(t_qh, where);
     PPL_CHECK(qh);
 
     Prolog_term_ref t_r_first = Prolog_new_term_ref();
     Prolog_term_ref t_r_second = Prolog_new_term_ref();
-    std::pair<@ALT_CPP_DISJUNCT@@COMMA@ Pointset_Powerset<@SUPERCLASS@> > r =
+    std::pair<@CLASSTOPOLOGY@@CPP_DISJUNCT@@COMMA@ Pointset_Powerset<@SUPERCLASS@> > r =
       @PARTITION@(*ph, *qh);
 
-    @ALT_CPP_DISJUNCT@* rfh = new @ALT_CPP_DISJUNCT@(EMPTY);
+    @CLASSTOPOLOGY@@CPP_DISJUNCT@* rfh = new @CLASSTOPOLOGY@@CPP_DISJUNCT@(EMPTY);
     rfh->swap(r.first);
 
     Pointset_Powerset<@SUPERCLASS@>* rsh =
@@ -880,8 +880,9 @@ ppl_@CLASS@_add_disjunct(Prolog_term_ref t_ph, Prolog_term_ref t_d) {
   try {
     @CPP_CLASS@* ph = term_to_handle<@CPP_CLASS@ >(t_ph, where);
     PPL_CHECK(ph);
-    @ALT_CPP_DISJUNCT@* d =
-      static_cast<@ALT_CPP_DISJUNCT@*>(term_to_handle<@ALT_CPP_DISJUNCT@ >(t_d, where));
+    @CLASSTOPOLOGY@@CPP_DISJUNCT@* d =
+      static_cast<@CLASSTOPOLOGY@@CPP_DISJUNCT@*>
+        (term_to_handle<@CLASSTOPOLOGY@@CPP_DISJUNCT@ >(t_d, where));
     PPL_CHECK(d);
     ph->add_disjunct(*d);
     return PROLOG_SUCCESS;
@@ -1318,7 +1319,7 @@ ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_with_tok
     unsigned t = term_to_unsigned<unsigned>(t_ti, where);
     lhs->BHZ03_widening_assign<@ALT_DISJUNCT_WIDEN@_Certificate>
       (*rhs,
-       widen_fun_ref(&@ALT_CPP_DISJUNCT@::@DISJUNCT_WIDEN@_widening_assign),
+       widen_fun_ref(&@CLASSTOPOLOGY@@CPP_DISJUNCT@::@DISJUNCT_WIDEN@_widening_assign),
        &t);
     if (unify_long(t_to, t))
       return PROLOG_SUCCESS;
@@ -1342,7 +1343,7 @@ ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign(
 
     lhs->BHZ03_widening_assign<@ALT_DISJUNCT_WIDEN@_Certificate>
       (*rhs,
-       widen_fun_ref(&@ALT_CPP_DISJUNCT@::@DISJUNCT_WIDEN@_widening_assign));
+       widen_fun_ref(&@CLASSTOPOLOGY@@CPP_DISJUNCT@::@DISJUNCT_WIDEN@_widening_assign));
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -1365,7 +1366,7 @@ ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign(
 
     lhs->BGP99_extrapolation_assign
       (*rhs,
-       widen_fun_ref(&@ALT_CPP_DISJUNCT@::@DISJUNCT_WIDEN@_widening_assign),
+       widen_fun_ref(&@CLASSTOPOLOGY@@CPP_DISJUNCT@::@DISJUNCT_WIDEN@_widening_assign),
        term_to_unsigned<unsigned>(t_d, where));
     return PROLOG_SUCCESS;
   }
@@ -1389,7 +1390,7 @@ ppl_@CLASS@_BGP99_@DISJUNCT_EXTRAPOLATION@_extrapolation_assign(
 
     lhs->BGP99_extrapolation_assign
       (*rhs,
-       widen_fun_ref(&@ALT_CPP_DISJUNCT@::@DISJUNCT_EXTRAPOLATION@_extrapolation_assign),
+       widen_fun_ref(&@CLASSTOPOLOGY@@CPP_DISJUNCT@::@DISJUNCT_EXTRAPOLATION@_extrapolation_assign),
        term_to_unsigned<unsigned>(t_d, where));
     return PROLOG_SUCCESS;
   }

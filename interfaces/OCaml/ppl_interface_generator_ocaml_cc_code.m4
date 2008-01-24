@@ -712,8 +712,8 @@ m4_define(`ppl_@CLASS@_get_disjunct_code',
 ppl_@CLASS@_iterator_get_disjunct(value caml_it) {
    CAMLparam1(caml_it);
    @CPP_CLASS@::iterator& cpp_it  = *p_@TOPOLOGY@@CLASS@_iterator_val(caml_it);
-   @ALT_CPP_DISJUNCT@ disjunct = cpp_it->element();
-  CAMLreturn(val_p_@ALT_CPP_DISJUNCT@(disjunct));
+   @CLASSTOPOLOGY@@CPP_DISJUNCT@ disjunct = cpp_it->element();
+  CAMLreturn(val_p_@CLASSTOPOLOGY@@CPP_DISJUNCT@(disjunct));
 
 }
 
@@ -726,7 +726,7 @@ void
  ppl_@CLASS@_add_disjunct(value t_pps, value caml_item_to_add) try {
    CAMLparam2(t_pps, caml_item_to_add);
    @CPP_CLASS@& pps = *p_@TOPOLOGY@@CLASS@_val(t_pps);
-   @ALT_CPP_DISJUNCT@& item = *p_@ALT_CPP_DISJUNCT@_val(caml_item_to_add);
+   @CLASSTOPOLOGY@@CPP_DISJUNCT@& item = *p_@CLASSTOPOLOGY@@CPP_DISJUNCT@_val(caml_item_to_add);
    pps.add_disjunct(item);
 CAMLreturn0;
  }

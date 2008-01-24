@@ -76,7 +76,7 @@ JNIEXPORT jobject JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_1Iterator_get_1disj
 (JNIEnv* env, jobject j_it) {
  jlong ptr = get_ptr(env, j_it);
  @TOPOLOGY@@CPP_CLASS@::iterator* @LTOPOLOGY@@LCLASS@_itr_ptr = reinterpret_cast<@TOPOLOGY@@CPP_CLASS@::iterator*>(ptr);
-jclass j_class = env->FindClass("ppl_java/@ALT_CPP_DISJUNCT@");
+jclass j_class = env->FindClass("ppl_java/@CLASSTOPOLOGY@@CPP_DISJUNCT@");
 jmethodID j_ctr_id = env->GetMethodID(j_class, "<init>", "()V");
 jobject j_obj = env->NewObject(j_class, j_ctr_id);
   set_ptr(env, j_obj, (long long) &((*@LTOPOLOGY@@LCLASS@_itr_ptr)->element()));set_is_a_reference(env, j_obj, true);
