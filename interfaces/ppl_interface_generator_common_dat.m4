@@ -501,6 +501,13 @@ m4_interface_class$1`'dnl
 m4_same_class_string(
   m4_class_body$1, interface, m4_get_class_topology($1), cplusplus_class)`'dnl
 ')
+
+m4_define(`m4_Pointset_Powerset_friend_alt_replacement', `dnl
+dnl
+m4_interface_class$1`'dnl
+m4_same_class_string(
+  m4_class_body$1, interface, m4_get_class_topology($1), cplusplus_class)`'dnl
+')
 dnl
 m4_define(`m4_Pointset_Powerset_friend_cppx_replacement', `dnl
 m4_cplusplus_class$1`'dnl

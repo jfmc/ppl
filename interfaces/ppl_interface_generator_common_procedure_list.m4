@@ -1,4 +1,5 @@
 m4_define(`dnl', `m4_dnl')`'dnl
+m4_divert(-1)
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
@@ -20,7 +21,7 @@ dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
-m4_divert(-1)
+m4_include(`ppl_interface_generator_common_dat.m4')
 
 dnl m4_procedure_list
 dnl This class using patterns wherever possible.
@@ -102,4 +103,4 @@ ppl_@CLASS@_@PARTITION@/4 -simple +pointset_powerset,
 ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign/2 +pointset_powerset,
 ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign/3 +pointset_powerset,
 ppl_@CLASS@_BGP99_@DISJUNCT_EXTRAPOLATION@_extrapolation_assign/3 -pointset_powerset
-')`'dnl
+')

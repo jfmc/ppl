@@ -40,7 +40,7 @@ dnl Include files defining macros that generate the non-fixed part.
 dnl -----------------------------------------------------------------
 m4_include(`ppl_interface_generator_c_cc_code.m4')`'dnl
 m4_include(`ppl_interface_generator_common.m4')`'dnl
-m4_include(`ppl_interface_generator_c_dat.m4')`'dnl
+m4_include(`ppl_interface_generator_c_all_dat.m4')`'dnl
 m4_divert(-1)
 
 dnl -----------------------------------------------------------------

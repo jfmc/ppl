@@ -35,14 +35,14 @@ PPL_PROTO((ppl_@CLASS@_t* pph, ppl_const_@CLASS@_t ph));
 
 ')
 
-m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@UBUILD_REPRESENT@_System_code',
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_code',
 `int
 ppl_new_@TOPOLOGY@@CLASS@_from_@UBUILD_REPRESENT@_System
 PPL_PROTO((ppl_@CLASS@_t* pph, ppl_const_@UBUILD_REPRESENT@_System_t cs));
 
 ')
 
-m4_define(`ppl_new_@TOPOLOGY@@CLASS@_recycle_@UBUILD_REPRESENT@_System_code',
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_recycle_@BUILD_REPRESENT@s_code',
 `int
 ppl_new_@TOPOLOGY@@CLASS@_recycle_@UBUILD_REPRESENT@_System
 PPL_PROTO((ppl_@CLASS@_t* pph, ppl_@UBUILD_REPRESENT@_System_t cs));
@@ -100,7 +100,7 @@ PPL_PROTO((ppl_const_@CLASS@_t ph,
 
 ')
 
-m4_define(`ppl_@CLASS@_relation_with_@URELATION_REPRESENT@_code',
+m4_define(`ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_code',
 `int
 ppl_@CLASS@_relation_with_@URELATION_REPRESENT@
 PPL_PROTO((ppl_const_@CLASS@_t ph,
@@ -156,9 +156,9 @@ ppl_@CLASS@_OK PPL_PROTO((ppl_const_@CLASS@_t ph));
 
 ')
 
-m4_define(`ppl_@CLASS@_topological_closure_assign_code',
+m4_define(`ppl_@CLASS@_@SIMPLIFY@_code',
 `int
-ppl_@CLASS@_topological_closure_assign PPL_PROTO((ppl_@CLASS@_t ph));
+ppl_@CLASS@_@SIMPLIFY@ PPL_PROTO((ppl_@CLASS@_t ph));
 
 ')
 
@@ -268,6 +268,29 @@ PPL_PROTO((ppl_@CLASS@_t ph,
 
 ')
 
+m4_define(`ppl_Grid_generalized_@AFFIMAGE@_code',
+`int
+ppl_Grid_generalized_@AFFIMAGE@
+PPL_PROTO((ppl_Grid_t ph,
+           ppl_dimension_type var,
+           enum ppl_enum_Constraint_Type relsym,
+           ppl_const_Linear_Expression_t le,
+           ppl_const_Coefficient_t d,
+           ppl_const_Coefficient_t m));
+
+')
+
+m4_define(`ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs_code',
+`int
+ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs
+PPL_PROTO((ppl_Grid_t ph,
+           ppl_const_Linear_Expression_t lhs,
+           enum ppl_enum_Constraint_Type relsym,
+           ppl_const_Linear_Expression_t rhs,
+           ppl_const_Coefficient_t m));
+
+')
+
 m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_code',
 `int
 ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens
@@ -285,9 +308,9 @@ PPL_PROTO((ppl_@CLASS@_t x,
 
 ')
 
-m4_define(`ppl_@CLASS@_limited_@WIDENEXPN@_extrapolation_assign_with_tokens_code',
+m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens_code',
 `int
-ppl_@CLASS@_limited_@WIDENEXPN@_extrapolation_assign_with_tokens
+ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens
 PPL_PROTO((ppl_@CLASS@_t x,
            ppl_const_@CLASS@_t y,
            ppl_const_Constraint_System_t cs,
@@ -295,9 +318,9 @@ PPL_PROTO((ppl_@CLASS@_t x,
 
 ')
 
-m4_define(`ppl_@CLASS@_limited_@WIDENEXPN@_extrapolation_assign_code',
+m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_code',
 `int
-ppl_@CLASS@_limited_@WIDENEXPN@_extrapolation_assign
+ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign
 PPL_PROTO((ppl_@CLASS@_t x,
            ppl_const_@CLASS@_t y,
            ppl_const_Constraint_System_t cs));

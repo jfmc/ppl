@@ -48,7 +48,7 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@UBUILD_REPRESENT@_System_code',
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_code',
 `int
 ppl_new_@TOPOLOGY@@CLASS@_from_@UBUILD_REPRESENT@_System
 (ppl_@CLASS@_t* pph, ppl_const_@UBUILD_REPRESENT@_System_t cs) try {
@@ -60,7 +60,7 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_new_@TOPOLOGY@@CLASS@_recycle_@UBUILD_REPRESENT@_System_code',
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_recycle_@BUILD_REPRESENT@s_code',
 `int
 ppl_new_@TOPOLOGY@@CLASS@_recycle_@UBUILD_REPRESENT@_System
 (ppl_@CLASS@_t* pph, ppl_@UBUILD_REPRESENT@_System_t cs) try {
@@ -180,7 +180,7 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_relation_with_@URELATION_REPRESENT@_code',
+m4_define(`ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_code',
 `int
 ppl_@CLASS@_relation_with_@URELATION_REPRESENT@
 (ppl_const_@CLASS@_t ph,
@@ -275,11 +275,11 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_topological_closure_assign_code',
+m4_define(`ppl_@CLASS@_@SIMPLIFY@_code',
 `int
-ppl_@CLASS@_topological_closure_assign(ppl_@CLASS@_t ph) try {
+ppl_@CLASS@_@SIMPLIFY@(ppl_@CLASS@_t ph) try {
   @CPP_CLASS@& pph = *to_nonconst(ph);
-  pph.topological_closure_assign();
+  pph.@SIMPLIFY@();
   return 0;
 }
 CATCH_ALL
@@ -466,6 +466,46 @@ CATCH_ALL
 
 ')
 
+m4_define(`ppl_Grid_generalized_@AFFIMAGE@_code',
+`int
+ppl_Grid_generalized_@AFFIMAGE@
+(ppl_Grid_t ph,
+ ppl_dimension_type var,
+ enum ppl_enum_Constraint_Type relsym,
+ ppl_const_Linear_Expression_t le,
+ ppl_const_Coefficient_t d,
+ ppl_const_Coefficient_t m) try {
+  Grid& pph = *to_nonconst(ph);
+  const Linear_Expression& lle = *to_const(le);
+  const Coefficient& dd = *to_const(d);
+  const Coefficient& mm = *to_const(m);
+  pph.generalized_@AFFIMAGE@
+    (Variable(var), relation_symbol(relsym), lle, dd, mm);
+  return 0;
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs_code',
+`int
+ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs
+(ppl_Grid_t ph,
+ ppl_const_Linear_Expression_t lhs,
+ enum ppl_enum_Constraint_Type relsym,
+ ppl_const_Linear_Expression_t rhs,
+ ppl_const_Coefficient_t m) try {
+  Grid& pph = *to_nonconst(ph);
+  const Linear_Expression& llhs = *to_const(lhs);
+  const Linear_Expression& rrhs = *to_const(rhs);
+  const Coefficient& mm = *to_const(m);
+  pph.generalized_@AFFIMAGE@(llhs, relation_symbol(relsym), rrhs, mm);
+  return 0;
+}
+CATCH_ALL
+
+')
+
 m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_code',
 `int
 ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens
@@ -492,9 +532,9 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_limited_@WIDENEXPN@_extrapolation_assign_with_tokens_code',
+m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens_code',
 `int
-ppl_@CLASS@_limited_@WIDENEXPN@_extrapolation_assign_with_tokens
+ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens
 (ppl_@CLASS@_t x,
  ppl_const_@CLASS@_t y,
  ppl_const_@UCONSTRAINER@_System_t cs,
@@ -502,21 +542,21 @@ ppl_@CLASS@_limited_@WIDENEXPN@_extrapolation_assign_with_tokens
   @CPP_CLASS@& xx = *to_nonconst(x);
   const @CPP_CLASS@& yy = *to_const(y);
   const @UCONSTRAINER@_System& ccs = *to_const(cs);
-  xx.limited_@WIDENEXPN@_extrapolation_assign(yy, ccs, tp);
+  xx.@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(yy, ccs, tp);
   return 0;
 }
 CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_limited_@WIDENEXPN@_extrapolation_assign_code',
+m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_code',
 `int
-ppl_@CLASS@_limited_@WIDENEXPN@_extrapolation_assign
+ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign
 (ppl_@CLASS@_t x,
  ppl_const_@CLASS@_t y,
  ppl_const_@UCONSTRAINER@_System_t cs) try {
   return
-    ppl_@CLASS@_limited_@WIDENEXPN@_extrapolation_assign_with_tokens
+    ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens
       (x, y, cs, 0);
 }
 CATCH_ALL
