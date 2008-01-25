@@ -25,7 +25,6 @@ abs_srcdir = @abs_srcdir@
 interface_generator_files = \
 ppl_interface_generator_ocaml_cc.m4 \
 ppl_interface_generator_ocaml_cc_code.m4 \
-ppl_interface_generator_ocaml_dat.m4 \
 ppl_interface_generator_ocaml_all_dat.m4 \
 ppl_interface_generator_ocaml_ml.m4 \
 ppl_interface_generator_ocaml_ml_code.m4 \
