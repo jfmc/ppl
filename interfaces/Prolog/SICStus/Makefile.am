@@ -75,7 +75,8 @@ pkglib_DATA = ppl_sicstus.pl ppl_sicstus.s.o
 
 ppl_sicstus.so: ppl_sicstus.pl $(top_builddir)/src/libppl.la $(WATCHDOG_LIBRARY) .libs/ppl_sicstus_sd.o
 	$(LIBTOOL) --mode=link --tag=CXX \
-	splfr $(srcdir)/ppl_sicstus.pl .libs/ppl_sicstus_sd.o -o $@ \
+	splfr --cflag="$(CPPFLAGS)" \
+		$(srcdir)/ppl_sicstus.pl .libs/ppl_sicstus_sd.o -o $@ \
 		$(top_builddir)/src/libppl.la \
 		$(WATCHDOG_LIBRARY) \
 		@extra_libraries@
@@ -97,7 +98,7 @@ ppl_sicstus_sd_la_LDFLAGS = -module -avoid-version
 ppl_sicstus$(EXEEXT): ppl_sicstus.s.o $(top_builddir)/src/libppl.la $(WATCHDOG_LIBRARY)
 	$(LIBTOOL) --mode=link --tag=CXX \
 	spld --main=prolog \
-		--cflag=`echo '$(AM_CXXFLAGS) $(CXXFLAGS)' | tr " " ","` \
+		--cflag=`echo '$(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)' | tr " " ","` \
 		--resources=ppl_sicstus.s.o -o $@ \
 		$(top_builddir)/src/libppl.la \
 		$(WATCHDOG_LIBRARY) \
@@ -106,12 +107,14 @@ ppl_sicstus$(EXEEXT): ppl_sicstus.s.o $(top_builddir)/src/libppl.la $(WATCHDOG_L
 if ENABLE_STATIC
 
 ppl_sicstus.s.o: ppl_sicstus.pl ppl_sicstus_sd.o
-	splfr --static $(srcdir)/ppl_sicstus.pl ppl_sicstus_sd.o
+	splfr --cflag="$(CPPFLAGS)" \
+		--static $(srcdir)/ppl_sicstus.pl ppl_sicstus_sd.o
 
 else !ENABLE_STATIC
 
 ppl_sicstus.s.o: ppl_sicstus.pl .libs/ppl_sicstus_sd.o
-	splfr --static $(srcdir)/ppl_sicstus.pl .libs/ppl_sicstus_sd.o
+	splfr --cflag="$(CPPFLAGS)" \
+		--static $(srcdir)/ppl_sicstus.pl .libs/ppl_sicstus_sd.o
 
 endif !ENABLE_STATIC
 
