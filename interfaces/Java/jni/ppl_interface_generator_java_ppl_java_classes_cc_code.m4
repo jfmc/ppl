@@ -19,32 +19,17 @@ dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
-m4_define(`ppl_@CLASS@_begin_iterator_code',
+m4_define(`ppl_@CLASS@_@BEGINEND@_iterator_code',
 `dnl
 `#'include "ppl_java_@CLASS@_Iterator.h"
-JNIEXPORT jobject JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_begin_1iterator
+JNIEXPORT jobject JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_@BEGINEND@_1iterator
   (JNIEnv* env, jobject j_this_powerset) {
  jlong powerset_ptr = get_ptr(env, j_this_powerset);
  @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(powerset_ptr);
 jclass j_it_class = env->FindClass("ppl_java/@TOPOLOGY@@CLASS@_Iterator");
 jmethodID j_it_ctr_id = env->GetMethodID(j_it_class, "<init>", "()V");
 jobject j_it = env->NewObject(j_it_class, j_it_ctr_id);
-@TOPOLOGY@@CPP_CLASS@::iterator* ppl_it = new @TOPOLOGY@@CPP_CLASS@::iterator(this_@LCLASS@->begin());
-set_ptr(env, j_it, (long long) ppl_it);
-return j_it;
-}
-')
-
-m4_define(`ppl_@CLASS@_end_iterator_code',
-`dnl
-JNIEXPORT jobject JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_end_1iterator
-  (JNIEnv* env, jobject j_this_powerset) {
- jlong powerset_ptr = get_ptr(env, j_this_powerset);
- @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(powerset_ptr);
-jclass j_it_class = env->FindClass("ppl_java/@TOPOLOGY@@CLASS@_Iterator");
-jmethodID j_it_ctr_id = env->GetMethodID(j_it_class, "<init>", "()V");
-jobject j_it = env->NewObject(j_it_class, j_it_ctr_id);
-@TOPOLOGY@@CPP_CLASS@::iterator* ppl_it = new @TOPOLOGY@@CPP_CLASS@::iterator(this_@LCLASS@->end());
+@TOPOLOGY@@CPP_CLASS@::iterator* ppl_it = new @TOPOLOGY@@CPP_CLASS@::iterator(this_@LCLASS@->@BEGINEND@());
 set_ptr(env, j_it, (long long) ppl_it);
 return j_it;
 }
@@ -61,25 +46,19 @@ jclass j_it_class = env->FindClass("ppl_java/@CLASS@_Iterator");
 
 ')
 
-m4_define(`ppl_@CLASS@_increment_iterator_code',
+m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
 `dnl
-JNIEXPORT void JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_1Iterator_next
+JNIEXPORT void JNICALL
+   Java_ppl_1java_@1TOPOLOGY@@1CLASS@_1Iterator_@ALT_INCDEC@
 (JNIEnv* env, jobject j_it) {
  jlong ptr = get_ptr(env, j_it);
  @TOPOLOGY@@CPP_CLASS@::iterator* @LTOPOLOGY@@LCLASS@_itr_ptr = reinterpret_cast<@TOPOLOGY@@CPP_CLASS@::iterator*>(ptr);
-++(*@LTOPOLOGY@@LCLASS@_itr_ptr);
+@CPPX_INCDEC@(*@LTOPOLOGY@@LCLASS@_itr_ptr);
 }
 ')
 
-m4_define(`ppl_@CLASS@_decrement_iterator_code',
-`dnl
-JNIEXPORT void JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_1Iterator_prev
-(JNIEnv* env, jobject j_it) {
- jlong ptr = get_ptr(env, j_it);
- @TOPOLOGY@@CPP_CLASS@::iterator* @LTOPOLOGY@@LCLASS@_itr_ptr = reinterpret_cast<@TOPOLOGY@@CPP_CLASS@::iterator*>(ptr);
---(*@LTOPOLOGY@@LCLASS@_itr_ptr);
-}
-')
+m4_define(`m4_increment_extra_op_name', `next')
+m4_define(`m4_decrement_extra_op_name', `prev')
 
 m4_define(`ppl_@CLASS@_get_disjunct_code',
 `dnl

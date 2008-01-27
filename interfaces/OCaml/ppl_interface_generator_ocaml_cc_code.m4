@@ -746,29 +746,15 @@ CAMLreturn0;
 
  ')
 
-m4_define(`ppl_@CLASS@_decrement_iterator_code',
+m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
 `
  extern "C"
 void
- ppl_@CLASS@_iterator_decrement(value caml_itr) try {
+ ppl_@CLASS@_iterator_@INCDEC@(value caml_itr) try {
    CAMLparam1(caml_itr);
    @CPP_CLASS@::iterator& itr = *p_@CLASS@_iterator_val(caml_itr);
-    --itr;
+    @CPPX_INCDEC@itr;
    CAMLreturn0;
- }
- CATCH_ALL
-
- ')
-
-m4_define(`ppl_@CLASS@_increment_iterator_code',
-`
- extern "C"
-void
- ppl_@CLASS@_iterator_increment(value caml_itr) try {
-   CAMLparam1(caml_itr);
-   @CPP_CLASS@::iterator& itr = *p_@CLASS@_iterator_val(caml_itr);
-  ++itr;
-CAMLreturn0;
  }
  CATCH_ALL
 

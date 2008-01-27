@@ -403,7 +403,9 @@ widen,
 extrapolation,
 narrow,
 limitedbounded,
-box')
+box,
+incdec,
+beginend')
 
 dnl ---------------------------------------------------------------------
 dnl Define the replacements for these patterns
@@ -828,3 +830,15 @@ m4_define(`m4_Polyhedron_ub_exact_replacement',
          `m4_ub_exact_replacement, poly_hull_assign_if_exact')
 m4_define(`m4_Grid_ub_exact_replacement',
          `m4_ub_exact_replacement, join_assign_if_exact')
+
+dnl  The iterators for the Powerset domains can increment or decrement
+m4_define(`m4_incdec_replacement', `increment, decrement')
+
+dnl  The C++ replacements for the increment/decrement operators.
+m4_define(`m4_incdec_cppx_replacement', `++, --')
+
+dnl  The Java replacements for the increment/decrement operators.
+m4_define(`m4_incdec_alt_replacement', `next, prev')
+
+dnl  The iterators for the Powerset domains have a begin and end iterator
+m4_define(`m4_beginend_replacement', `begin, end')

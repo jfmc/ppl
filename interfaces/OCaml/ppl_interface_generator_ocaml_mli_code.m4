@@ -319,16 +319,9 @@ m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_decrement_iterator_code',
+m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
  `
- val ppl_@CLASS@_iterator_decrement:
-  @LCLASS@_iterator -> unit
-
-')
-
-m4_define(`ppl_@CLASS@_increment_iterator_code',
- `
- val ppl_@CLASS@_iterator_increment:
+ val ppl_@CLASS@_iterator_@INCDEC@:
   @LCLASS@_iterator -> unit
 
 ')

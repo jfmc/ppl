@@ -381,24 +381,15 @@ m4_define(`ppl_@CLASS@_size_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_decrement_iterator_code',
+m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
  `
- external ppl_@CLASS@_iterator_decrement:
+ external ppl_@CLASS@_iterator_@INCDEC@:
  @LCLASS@_iterator -> unit =
- "ppl_@CLASS@_iterator_decrement"
+ "ppl_@CLASS@_iterator_@INCDEC@"
 
 
 ')
 
-
-m4_define(`ppl_@CLASS@_increment_iterator_code',
- `
- external ppl_@CLASS@_iterator_increment:
- @LCLASS@_iterator -> unit =
- "ppl_@CLASS@_iterator_increment"
-
-
-')
 m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
  `
 external ppl_@CLASS@_iterator_equals_iterator:

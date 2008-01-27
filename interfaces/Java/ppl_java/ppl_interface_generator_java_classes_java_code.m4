@@ -385,17 +385,10 @@ m4_define(`ppl_@CLASS@_string_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_begin_iterator_code',
+m4_define(`ppl_@CLASS@_@BEGINEND@_iterator_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
-    public native @CLASS@_Iterator begin_iterator();
-
-')
-
-m4_define(`ppl_@CLASS@_end_iterator_code',
-`dnl
-%<--%<--%<-- @CLASS@.java
-    public native @CLASS@_Iterator end_iterator();
+    public native @CLASS@_Iterator @BEGINEND@_iterator();
 
 ')
 
@@ -427,17 +420,10 @@ m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_increment_iterator_code',
+m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
 `dnl
 %<--%<--%<-- @CLASS@_Iterator.java
-  public native void next();
-
-')
-
-m4_define(`ppl_@CLASS@_decrement_iterator_code',
-`dnl
-%<--%<--%<-- @CLASS@_Iterator.java
-  public native void prev();
+  public native void @ALT_INCDEC@();
 
 ')
 

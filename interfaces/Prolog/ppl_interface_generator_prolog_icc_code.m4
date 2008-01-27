@@ -295,41 +295,16 @@ ppl_@CLASS@_get_minimized_@GET_REPRESENT@s(Prolog_term_ref t_ph,
 
 ')
 
-m4_define(`ppl_@CLASS@_begin_iterator_code',
+m4_define(`ppl_@CLASS@_@BEGINEND@_iterator_code',
 `extern "C" Prolog_foreign_return_type
-ppl_@CLASS@_begin_iterator(Prolog_term_ref t_pps,
+ppl_@CLASS@_@BEGINEND@_iterator(Prolog_term_ref t_pps,
 			  Prolog_term_ref t_it) {
-  static const char* where = "ppl_@CLASS@_begin_iterator/2";
+  static const char* where = "ppl_@CLASS@_@BEGINEND@_iterator/2";
   try {
     @CPP_CLASS@* pps = term_to_handle<@CPP_CLASS@ >(t_pps, where);
     PPL_CHECK(pps);
 
-    @CPP_CLASS@::iterator* i = new @CPP_CLASS@::iterator(pps->begin());
-    Prolog_term_ref t_i = Prolog_new_term_ref();
-    Prolog_put_address(t_i, i);
-
-    if (Prolog_unify(t_it, t_i)) {
-      PPL_REGISTER(i);
-      return PROLOG_SUCCESS;
-    }
-    else
-      delete i;
-  }
-  CATCH_ALL;
-}
-
-')
-
-m4_define(`ppl_@CLASS@_end_iterator_code',
-`extern "C" Prolog_foreign_return_type
-ppl_@CLASS@_end_iterator(Prolog_term_ref t_pps,
-			  Prolog_term_ref t_it) {
-  static const char* where = "ppl_@CLASS@_end_iterator/2";
-  try {
-    @CPP_CLASS@* pps = term_to_handle<@CPP_CLASS@ >(t_pps, where);
-    PPL_CHECK(pps);
-
-    @CPP_CLASS@::iterator* i = new @CPP_CLASS@::iterator(pps->end());
+    @CPP_CLASS@::iterator* i = new @CPP_CLASS@::iterator(pps->@BEGINEND@());
     Prolog_term_ref t_i = Prolog_new_term_ref();
     Prolog_put_address(t_i, i);
 
@@ -361,15 +336,15 @@ ppl_@CLASS@_delete_iterator(Prolog_term_ref t_it) {
 
 ')
 
-m4_define(`ppl_@CLASS@_increment_iterator_code',
+m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
 `extern "C" Prolog_foreign_return_type
-ppl_@CLASS@_increment_iterator(Prolog_term_ref t_it) {
-  static const char* where = "ppl_@CLASS@_increment_iterator/2";
+ppl_@CLASS@_@INCDEC@_iterator(Prolog_term_ref t_it) {
+  static const char* where = "ppl_@CLASS@_@INCDEC@_iterator/2";
   try {
     @CPP_CLASS@::iterator* it
          = term_to_handle<@CPP_CLASS@::iterator >(t_it, where);
     PPL_CHECK(it);
-    ++(*it);
+    @CPPX_INCDEC@(*it);
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -393,22 +368,6 @@ ppl_@CLASS@_iterator_equals_iterator(Prolog_term_ref t_it1,
       return PROLOG_SUCCESS;
     else
       return PROLOG_FAILURE;
-  }
-  CATCH_ALL;
-}
-
-')
-
-m4_define(`ppl_@CLASS@_decrement_iterator_code',
-`extern "C" Prolog_foreign_return_type
-ppl_@CLASS@_decrement_iterator(Prolog_term_ref t_it) {
-  static const char* where = "ppl_@CLASS@_increment_iterator/2";
-  try {
-    @CPP_CLASS@::iterator* it
-         = term_to_handle<@CPP_CLASS@::iterator >(t_it, where);
-    PPL_CHECK(it);
-    --(*it);
-    return PROLOG_SUCCESS;
   }
   CATCH_ALL;
 }
@@ -456,6 +415,25 @@ ppl_@CLASS@_drop_disjunct(Prolog_term_ref t_pps,
     @CPP_CLASS@::iterator& i = *it;
     pps->drop_disjunct(i);
 
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+')
+
+m4_define(`ppl_@CLASS@_add_disjunct_code',
+`extern "C" Prolog_foreign_return_type
+ppl_@CLASS@_add_disjunct(Prolog_term_ref t_ph, Prolog_term_ref t_d) {
+  static const char* where = "ppl_@CLASS@_add_disjunct/2";
+  try {
+    @CPP_CLASS@* ph = term_to_handle<@CPP_CLASS@ >(t_ph, where);
+    PPL_CHECK(ph);
+    @CLASSTOPOLOGY@@CPP_DISJUNCT@* d =
+      static_cast<@CLASSTOPOLOGY@@CPP_DISJUNCT@*>
+        (term_to_handle<@CLASSTOPOLOGY@@CPP_DISJUNCT@ >(t_d, where));
+    PPL_CHECK(d);
+    ph->add_disjunct(*d);
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -870,52 +848,6 @@ ppl_@CLASS@_add_@ADD_REPRESENT@(Prolog_term_ref t_ph, Prolog_term_ref t_c) {
   }
   CATCH_ALL;
 }
-
-')
-
-m4_define(`ppl_@CLASS@_add_disjunct_code',
-`extern "C" Prolog_foreign_return_type
-ppl_@CLASS@_add_disjunct(Prolog_term_ref t_ph, Prolog_term_ref t_d) {
-  static const char* where = "ppl_@CLASS@_add_disjunct/2";
-  try {
-    @CPP_CLASS@* ph = term_to_handle<@CPP_CLASS@ >(t_ph, where);
-    PPL_CHECK(ph);
-    @CLASSTOPOLOGY@@CPP_DISJUNCT@* d =
-      static_cast<@CLASSTOPOLOGY@@CPP_DISJUNCT@*>
-        (term_to_handle<@CLASSTOPOLOGY@@CPP_DISJUNCT@ >(t_d, where));
-    PPL_CHECK(d);
-    ph->add_disjunct(*d);
-    return PROLOG_SUCCESS;
-  }
-  CATCH_ALL;
-}
-
-')
-
-
-m4_define(`add_assign_code',
-`namespace {
-
-Prolog_foreign_return_type
-add_assign(Prolog_term_ref t_ph,
-           Prolog_term_ref t_c,
-           void (@CPP_CLASS@::* add_assign)(const @CPP_CLASS@&),
-           const char* where) {
-  try {
-    @CPP_CLASS@* lhs = term_to_handle<@CPP_CLASS@ >(t_ph, where);
-    const @CPP_CLASS@* rhs = term_to_handle<@CPP_CLASS@ >(t_rhs, where);
-    PPL_CHECK(ph);
-    if (ph->add_assign(build_@ADD_REPRESENT@(t_c, where)))
-      return PROLOG_SUCCESS;
-
-    PPL_CHECK(lhs);
-    PPL_CHECK(rhs);
-    (lhs->*bop_assign)(*rhs);
-    return PROLOG_SUCCESS;
-  }
-  CATCH_ALL;
-}
-
 
 ')
 
