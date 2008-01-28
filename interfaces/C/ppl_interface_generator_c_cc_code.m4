@@ -684,4 +684,17 @@ CATCH_ALL
 
 ')
 
+
+m4_define(`ppl_@CLASS@_size_code',
+`int
+ppl_@CLASS@_size
+(ppl_const_@CLASS@_t ps,
+ size_t* sz) try {
+  *sz = to_const(ps)->size();
+  return 0;
+}
+CATCH_ALL
+
+')
+
 m4_divert`'dnl
