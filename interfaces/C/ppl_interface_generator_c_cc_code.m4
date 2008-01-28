@@ -829,4 +829,20 @@ CATCH_ALL
 
 ')
 
+m4_define(`ppl_@CLASS@_add_disjunct_code',
+`dnl
+int
+ppl_@CLASS@_add_disjunct
+(ppl_@CLASS@_t ps,
+ ppl_const_@DISJUNCT@_t d) try {
+  @CPP_CLASS@& pps = *to_nonconst(ps);
+  const @CLASSTOPOLOGY@@CPP_DISJUNCT@& dd
+     = *static_cast<const @CLASSTOPOLOGY@@CPP_DISJUNCT@*>(to_const(d));
+  pps.add_disjunct(dd);
+  return 0;
+}
+CATCH_ALL
+
+')
+
 m4_divert`'dnl

@@ -480,6 +480,13 @@ PPL_PROTO((ppl_@CLASS@_t ps,
 
 ')
 
+m4_define(`ppl_@CLASS@_add_disjunct_code',
+`dnl
+int
+ppl_@CLASS@_add_disjunct
+PPL_PROTO((ppl_@CLASS@_t ps,
+           ppl_const_@DISJUNCT@_t d));
+
+')
 
 m4_divert`'dnl
-
