@@ -19,9 +19,21 @@ dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
-m4_define(`ppl_@CLASS@_@BEGINEND@_iterator_code',
+m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
 `dnl
 `#'include "ppl_java_@CLASS@_Iterator.h"
+JNIEXPORT jboolean JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_1Iterator_equals
+(JNIEnv* env, jobject j_this_it, jobject j_it) {
+jlong ptr = get_ptr(env, j_this_it);
+ @TOPOLOGY@@CPP_CLASS@::iterator* @LTOPOLOGY@@LCLASS@_this_itr_ptr = reinterpret_cast<@TOPOLOGY@@CPP_CLASS@::iterator*>(ptr);
+ptr = get_ptr(env, j_it);
+ @TOPOLOGY@@CPP_CLASS@::iterator* @LTOPOLOGY@@LCLASS@_itr_ptr = reinterpret_cast<@TOPOLOGY@@CPP_CLASS@::iterator*>(ptr);
+return *@LTOPOLOGY@@LCLASS@_itr_ptr == *@LTOPOLOGY@@LCLASS@_this_itr_ptr;
+}
+')
+
+m4_define(`ppl_@CLASS@_@BEGINEND@_iterator_code',
+`dnl
 JNIEXPORT jobject JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_@BEGINEND@_1iterator
   (JNIEnv* env, jobject j_this_powerset) {
  jlong powerset_ptr = get_ptr(env, j_this_powerset);
@@ -71,17 +83,6 @@ jmethodID j_ctr_id = env->GetMethodID(j_class, "<init>", "()V");
 jobject j_obj = env->NewObject(j_class, j_ctr_id);
   set_ptr(env, j_obj, (long long) &((*@LTOPOLOGY@@LCLASS@_itr_ptr)->element()));set_is_a_reference(env, j_obj, true);
 return j_obj;
-}
-')
-m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',`
-dnl
-JNIEXPORT jboolean JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_1Iterator_equals
-(JNIEnv* env, jobject j_this_it, jobject j_it) {
-jlong ptr = get_ptr(env, j_this_it);
- @TOPOLOGY@@CPP_CLASS@::iterator* @LTOPOLOGY@@LCLASS@_this_itr_ptr = reinterpret_cast<@TOPOLOGY@@CPP_CLASS@::iterator*>(ptr);
-ptr = get_ptr(env, j_it);
- @TOPOLOGY@@CPP_CLASS@::iterator* @LTOPOLOGY@@LCLASS@_itr_ptr = reinterpret_cast<@TOPOLOGY@@CPP_CLASS@::iterator*>(ptr);
-return *@LTOPOLOGY@@LCLASS@_itr_ptr == *@LTOPOLOGY@@LCLASS@_this_itr_ptr;
 }
 ')
 

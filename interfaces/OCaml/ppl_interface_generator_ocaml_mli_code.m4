@@ -274,22 +274,12 @@ val ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@:
 
  ')
 
- m4_define(`ppl_@CLASS@_begin_iterator_code',
+ m4_define(`ppl_@CLASS@_@BEGINEND@_iterator_code',
  `
- type @LCLASS@_iterator
-
- val ppl_@CLASS@_begin_iterator:
+ val ppl_@CLASS@_@BEGINEND@_iterator:
  @LCLASS@  -> @LCLASS@_iterator
 
 ')
-
- m4_define(`ppl_@CLASS@_end_iterator_code',
- `
- val ppl_@CLASS@_end_iterator:
- @LCLASS@  -> @LCLASS@_iterator
-
-')
-
 
 m4_define(`ppl_@CLASS@_get_disjunct_code',
  `
@@ -314,6 +304,8 @@ m4_define(`ppl_@CLASS@_drop_disjunct_code',
 
 m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
  `
+ type @LCLASS@_iterator
+
  val ppl_@CLASS@_iterator_equals_iterator:
  @LCLASS@_iterator ->  @LCLASS@_iterator -> bool
 

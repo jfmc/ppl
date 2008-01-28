@@ -328,21 +328,11 @@ external ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@:
 
  ')
 
- m4_define(`ppl_@CLASS@_begin_iterator_code',
+ m4_define(`ppl_@CLASS@_@BEGINEND@_iterator_code',
  `
-type @LCLASS@_iterator
-
-external ppl_@CLASS@_begin_iterator:
+external ppl_@CLASS@_@BEGINEND@_iterator:
 @LCLASS@  -> @LCLASS@_iterator =
-"ppl_@CLASS@_begin_iterator"
-
-')
-
-m4_define(`ppl_@CLASS@_end_iterator_code',
- `
- external ppl_@CLASS@_end_iterator:
- @LCLASS@  -> @LCLASS@_iterator =
-"ppl_@CLASS@_end_iterator"
+"ppl_@CLASS@_@BEGINEND@_iterator"
 
 ')
 
@@ -392,6 +382,8 @@ m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
 
 m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
  `
+type @LCLASS@_iterator
+
 external ppl_@CLASS@_iterator_equals_iterator:
  @LCLASS@_iterator ->  @LCLASS@_iterator -> bool =
 "ppl_@CLASS@_iterator_equals_iterator"

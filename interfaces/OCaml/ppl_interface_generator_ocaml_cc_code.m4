@@ -643,58 +643,14 @@ CATCH_ALL
 
  ')
 
-m4_define(`ppl_@CLASS@_begin_iterator_code',
- `
-//! Give access to the embedded @CLASS@* in \p v.
-inline @CPP_CLASS@::iterator*&
-p_@CLASS@_iterator_val(value v) {
-  return *reinterpret_cast<@CPP_CLASS@::iterator**>(Data_custom_val(v));
-}
-
-void
-custom_@CLASS@_iterator_finalize(value v) {
-  std::cerr << "About to delete a polyhedron " << *p_@CLASS@_val(v)
-	    << std::endl;
-  delete p_@CLASS@_iterator_val(v);
-}
-
-static struct custom_operations @CLASS@_iterator_custom_operations = {
-  "it.unipr.cs.ppl" "." PPL_VERSION "." "@CLASS@_iterator"@COMMA@
-  custom_@CLASS@_iterator_finalize@COMMA@
-  custom_compare_default@COMMA@
-  custom_hash_default@COMMA@
-  custom_serialize_default@COMMA@
-  custom_deserialize_default
-};
-
-inline value
-val_p_@CLASS@_iterator(const @CPP_CLASS@::iterator& ph) {
-  value v = caml_alloc_custom(&@CLASS@_iterator_custom_operations,
-			      sizeof(@CPP_CLASS@::iterator*), 0, 1);
-  p_@CLASS@_iterator_val(v) = const_cast<@CPP_CLASS@::iterator*>(&ph);
-  return(v);
-}
-
- extern "C"
- CAMLprim value
- ppl_@CLASS@_begin_iterator(value t_pps) try {
-   CAMLparam1(t_pps);
-   @CPP_CLASS@& pps = *p_@CLASS@_val(t_pps);
-  CAMLreturn(val_p_@CLASS@_iterator(*new @CPP_CLASS@::iterator(pps.begin())));
-
- }
- CATCH_ALL
-
- ')
-
-m4_define(`ppl_@CLASS@_end_iterator_code',
+m4_define(`ppl_@CLASS@_@BEGINEND@_iterator_code',
  `
  extern "C"
  CAMLprim value
- ppl_@CLASS@_end_iterator(value t_pps) try {
+ ppl_@CLASS@_@BEGINEND@_iterator(value t_pps) try {
    CAMLparam1(t_pps);
    @CPP_CLASS@& pps = *p_@CLASS@_val(t_pps);
-  CAMLreturn(val_p_@CLASS@_iterator(*new @CPP_CLASS@::iterator(pps.end())));
+  CAMLreturn(val_p_@CLASS@_iterator(*new @CPP_CLASS@::iterator(pps.@BEGINEND@())));
 
  }
  CATCH_ALL
@@ -762,6 +718,36 @@ void
 
 m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
 `
+//! Give access to the embedded @CLASS@* in \p v.
+inline @CPP_CLASS@::iterator*&
+p_@CLASS@_iterator_val(value v) {
+  return *reinterpret_cast<@CPP_CLASS@::iterator**>(Data_custom_val(v));
+}
+
+void
+custom_@CLASS@_iterator_finalize(value v) {
+  std::cerr << "About to delete a polyhedron " << *p_@CLASS@_val(v)
+	    << std::endl;
+  delete p_@CLASS@_iterator_val(v);
+}
+
+static struct custom_operations @CLASS@_iterator_custom_operations = {
+  "it.unipr.cs.ppl" "." PPL_VERSION "." "@CLASS@_iterator"@COMMA@
+  custom_@CLASS@_iterator_finalize@COMMA@
+  custom_compare_default@COMMA@
+  custom_hash_default@COMMA@
+  custom_serialize_default@COMMA@
+  custom_deserialize_default
+};
+
+inline value
+val_p_@CLASS@_iterator(const @CPP_CLASS@::iterator& ph) {
+  value v = caml_alloc_custom(&@CLASS@_iterator_custom_operations,
+			      sizeof(@CPP_CLASS@::iterator*), 0, 1);
+  p_@CLASS@_iterator_val(v) = const_cast<@CPP_CLASS@::iterator*>(&ph);
+  return(v);
+}
+
  extern "C"
 CAMLprim value
  ppl_@CLASS@_iterator_equals_iterator(value caml_itr1, value caml_itr2) try {
