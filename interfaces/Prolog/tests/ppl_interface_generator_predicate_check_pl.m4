@@ -35,7 +35,7 @@ dnl ==================================================================
 dnl
 m4_include(`ppl_interface_generator_common.m4')
 m4_include(`ppl_interface_generator_common_dat.m4')
-m4_include(`ppl_interface_generator_prolog_all_dat.m4')
+m4_include(`ppl_interface_generator_prolog_procedure_generators.m4')
 m4_include(`ppl_interface_generator_predicate_check_code.m4')
 
 dnl ==================================================================

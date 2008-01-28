@@ -25,7 +25,7 @@ abs_srcdir = @abs_srcdir@
 interface_generator_files = \
 ppl_interface_generator_ocaml_cc.m4 \
 ppl_interface_generator_ocaml_cc_code.m4 \
-ppl_interface_generator_ocaml_all_dat.m4 \
+ppl_interface_generator_ocaml_procedure_generators.m4 \
 ppl_interface_generator_ocaml_ml.m4 \
 ppl_interface_generator_ocaml_ml_code.m4 \
 ppl_interface_generator_ocaml_mli.m4 \
@@ -55,8 +55,7 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../ppl_interface_generator_common.m4 \
 ../ppl_interface_generator_common_dat.m4 \
 ../ppl_interface_generator_copyright \
-../ppl_interface_generator_common_procedure_list.m4 \
-ppl_interface_generator_ocaml_all_dat.m4 \
+ppl_interface_generator_ocaml_procedure_generators.m4 \
 ppl_interface_generator_ocaml_ml.m4 \
 ppl_interface_generator_ocaml_ml_code.m4 \
 ppl_interface_generator_ocaml_mli.m4 \

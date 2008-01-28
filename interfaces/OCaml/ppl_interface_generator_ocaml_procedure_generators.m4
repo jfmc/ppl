@@ -22,7 +22,7 @@ dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
 dnl Include the common list.
-m4_include(`ppl_interface_generator_common_procedure_list.m4')
+m4_include(`ppl_interface_generator_common_procedure_generators.m4')
 
 dnl
 dnl m4_procedure_list
@@ -33,6 +33,7 @@ dnl Note that the code for the schema "<name>_code" must be defined
 dnl in the ppl_interface_generator_*_code.m4 file.
 dnl The <name> must be exactly as written here.
 dnl
+
 m4_define(`m4_procedure_list', `m4_common_procedure_list')
 
 dnl TODO

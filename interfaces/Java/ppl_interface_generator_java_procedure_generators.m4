@@ -22,7 +22,7 @@ dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
 dnl Include the common list.
-m4_include(`ppl_interface_generator_common_procedure_list.m4')
+m4_include(`ppl_interface_generator_common_procedure_generators.m4')
 
 dnl
 dnl m4_procedure_list

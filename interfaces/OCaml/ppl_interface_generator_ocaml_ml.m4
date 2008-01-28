@@ -27,7 +27,7 @@ dnl Include files defining macros that generate the non-fixed part.
 m4_include(`ppl_interface_generator_ocaml_ml_code.m4')
 m4_include(`ppl_interface_generator_common.m4')
 m4_include(`ppl_interface_generator_common_dat.m4')
-m4_include(`ppl_interface_generator_ocaml_all_dat.m4')
+m4_include(`ppl_interface_generator_ocaml_procedure_generators.m4')
 
 dnl m4_pre_all_classes_code
 dnl

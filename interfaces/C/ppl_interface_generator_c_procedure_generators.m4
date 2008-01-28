@@ -22,7 +22,7 @@ dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
 dnl Include the language independent `dat' information.
-m4_include(`ppl_interface_generator_common_procedure_list.m4')
+m4_include(`ppl_interface_generator_common_procedure_generators.m4')
 
 dnl m4_procedure_list
 dnl This is the main procedure for generating the C code.
@@ -37,7 +37,7 @@ ppl_assign_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@ +simple,
 ppl_@CLASS@_add_recycled_@ADD_REPRESENT@ +simple,
 ppl_@CLASS@_add_recycled_@ADD_REPRESENT@_and_minimize +simple,
 ppl_@CLASS@_add_recycled_@ADD_REPRESENT@s +simple,
-ppl_@CLASS@_add_recycled_@ADD_REPRESENT@s_and_minimize +simple,
+ppl_@CLASS@_add_recycled_@ADD_REPRESENT@s_and_minimize +simple
 )
 ')
 

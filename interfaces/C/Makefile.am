@@ -21,7 +21,7 @@
 # site: http://www.cs.unipr.it/ppl/ .
 
 interface_generator_files = \
-ppl_interface_generator_c_all_dat.m4 \
+ppl_interface_generator_c_procedure_generators.m4 \
 ppl_interface_generator_c_h.m4 \
 ppl_interface_generator_c_h_code.m4 \
 ppl_interface_generator_c_h_preamble \
@@ -74,7 +74,7 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../ppl_interface_generator_common.m4 \
 ../ppl_interface_generator_common_dat.m4 \
 ../ppl_interface_generator_copyright \
-../ppl_interface_generator_common_procedure_list.m4 \
+../ppl_interface_generator_common_procedure_generators.m4 \
 $(interface_generator_files)
 
 ppl_c.h: $(interface_generator_dependencies) Makefile

@@ -28,8 +28,7 @@ dnl ==================================================================
 dnl
 m4_include(`ppl_interface_generator_common.m4')
 m4_include(`ppl_interface_generator_common_dat.m4')
-m4_include(`ppl_interface_generator_common_procedure_list.m4')
-m4_include(`ppl_interface_generator_java_all_dat.m4')
+m4_include(`ppl_interface_generator_java_procedure_generators.m4')
 m4_include(`ppl_interface_generator_java_test_java_code.m4')
 dnl
 dnl This file generates ppl_java_classes_test.java.

@@ -23,7 +23,7 @@
 SUBDIRS = ppl_java jni . tests
 
 EXTRA_DIST = \
-ppl_interface_generator_java_all_dat.m4
+ppl_interface_generator_java_procedure_generators.m4
 
 if BUILD_JAVA_INTERFACE
 

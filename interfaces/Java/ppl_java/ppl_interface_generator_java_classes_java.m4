@@ -26,8 +26,7 @@ dnl Include files defining macros that generate the non-fixed part.
 m4_include(`ppl_interface_generator_java_classes_java_code.m4')dnl
 m4_include(`ppl_interface_generator_common.m4')dnl
 m4_include(`ppl_interface_generator_common_dat.m4')dnl
-m4_include(`ppl_interface_generator_common_procedure_list.m4')dnl
-m4_include(`ppl_interface_generator_java_all_dat.m4')dnl
+m4_include(`ppl_interface_generator_java_procedure_generators.m4')dnl
 dnl
 m4_divert(-1)dnl
 

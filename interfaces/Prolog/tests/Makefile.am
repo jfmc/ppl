@@ -69,9 +69,9 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../../ppl_interface_generator_common.m4 \
 ../../ppl_interface_generator_common_dat.m4 \
 ../../ppl_interface_generator_copyright \
-../../ppl_interface_generator_common_procedure_list.m4 \
+../../ppl_interface_generator_common_procedure_generators.m4 \
 ../ppl_interface_generator_prolog_systems.m4 \
-../ppl_interface_generator_prolog_all_dat.m4 \
+../ppl_interface_generator_prolog_procedure_generators.m4 \
 ppl_interface_generator_predicate_check_pl.m4 \
 ppl_interface_generator_predicate_check_code.m4
 

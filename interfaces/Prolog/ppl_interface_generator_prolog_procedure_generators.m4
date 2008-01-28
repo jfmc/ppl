@@ -23,7 +23,7 @@ dnl site: http://www.cs.unipr.it/ppl/ .
 
 dnl Include the language independent `dat' information.
 m4_include(`ppl_interface_generator_common_dat.m4')
-m4_include(`ppl_interface_generator_common_procedure_list.m4')
+m4_include(`ppl_interface_generator_common_procedure_generators.m4')
 
 dnl Library predicate list.
 m4_define(`m4_library_predicate_list', `dnl
