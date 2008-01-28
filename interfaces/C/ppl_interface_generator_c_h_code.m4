@@ -464,5 +464,22 @@ PPL_PROTO((ppl_const_@CLASS@_t ps,
 
 ')
 
+m4_define(`ppl_@CLASS@_drop_disjunct_code',
+`dnl
+int
+ppl_@CLASS@_drop_disjunct
+PPL_PROTO((ppl_@CLASS@_t ps,
+ ppl_const_@CLASS@_iterator_t cit,
+ ppl_@CLASS@_iterator_t it));
+
+int
+ppl_@CLASS@_drop_disjuncts
+PPL_PROTO((ppl_@CLASS@_t ps,
+ ppl_const_@CLASS@_iterator_t first,
+ ppl_const_@CLASS@_iterator_t last));
+
+')
+
+
 m4_divert`'dnl
 

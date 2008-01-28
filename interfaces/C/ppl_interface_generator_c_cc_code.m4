@@ -799,4 +799,34 @@ CATCH_ALL
 
 ')
 
+m4_define(`ppl_@CLASS@_drop_disjunct_code',
+`dnl
+int
+ppl_@CLASS@_drop_disjunct
+(ppl_@CLASS@_t ps,
+ ppl_const_@CLASS@_iterator_t cit,
+ ppl_@CLASS@_iterator_t it) try {
+  @CPP_CLASS@& pps = *to_nonconst(ps);
+  const @CPP_CLASS@::iterator& ccit = *to_const(cit);
+  @CPP_CLASS@::iterator& iit = *to_nonconst(it);
+  iit = pps.drop_disjunct(ccit);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_@CLASS@_drop_disjuncts
+(ppl_@CLASS@_t ps,
+ ppl_const_@CLASS@_iterator_t first,
+ ppl_const_@CLASS@_iterator_t last) try {
+  @CPP_CLASS@& pps = *to_nonconst(ps);
+  const @CPP_CLASS@::iterator& ffirst = *to_const(first);
+  const @CPP_CLASS@::iterator& llast = *to_const(last);
+  pps.drop_disjuncts(ffirst, llast);
+  return 0;
+}
+CATCH_ALL
+
+')
+
 m4_divert`'dnl
