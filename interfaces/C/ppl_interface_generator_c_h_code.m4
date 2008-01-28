@@ -407,4 +407,62 @@ PPL_PROTO((ppl_const_@CLASS@_t ps,
 
 ')
 
+m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
+`dnl
+PPL_TYPE_DECLARATION(@CLASS@_iterator);
+PPL_TYPE_DECLARATION(@CLASS@_const_iterator);
+
+int
+ppl_@CLASS@_iterator_equal_test
+PPL_PROTO((ppl_const_@CLASS@_iterator_t x,
+           ppl_const_@CLASS@_iterator_t y));
+
+int
+ppl_@CLASS@_const_iterator_equal_test
+PPL_PROTO((ppl_const_@CLASS@_const_iterator_t x,
+           ppl_const_@CLASS@_const_iterator_t y));
+
+')
+
+m4_define(`ppl_@CLASS@_@BEGINEND@_iterator_code',
+`dnl
+int
+ppl_@CLASS@_iterator_@BEGINEND@
+PPL_PROTO((ppl_const_@CLASS@_t ps,
+           ppl_const_@CLASS@_iterator_t psit));
+
+int
+ppl_@CLASS@_const_iterator_@BEGINEND@
+PPL_PROTO((ppl_const_@CLASS@_t ps,
+           ppl_const_@CLASS@_const_iterator_t psit));
+
+')
+
+m4_define(`ppl_@CLASS@_delete_iterator_code',
+`dnl
+int
+ppl_delete_@CLASS@_iterator
+PPL_PROTO((ppl_const_@CLASS@_iterator_t psit));
+
+int
+ppl_delete_@CLASS@_const_iterator
+PPL_PROTO((ppl_const_@CLASS@_const_iterator_t psit));
+
+')
+
+m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
+`dnl
+int
+ppl_@CLASS@_iterator_@INCDEC@
+PPL_PROTO((ppl_const_@CLASS@_t ps,
+           ppl_const_@CLASS@_iterator_t psit));
+
+int
+ppl_@CLASS@_const_iterator_@INCDEC@
+PPL_PROTO((ppl_const_@CLASS@_t ps,
+           ppl_const_@CLASS@_const_iterator_t psit));
+
+')
+
 m4_divert`'dnl
+

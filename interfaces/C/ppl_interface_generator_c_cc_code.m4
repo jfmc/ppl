@@ -697,4 +697,106 @@ CATCH_ALL
 
 ')
 
+m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
+`dnl
+
+typedef @CPP_CLASS@::iterator
+        @CLASS@_iterator;
+typedef @CPP_CLASS@::const_iterator
+        @CLASS@_const_iterator;
+
+DECLARE_CONVERSIONS(@CLASS@_iterator,
+                    @CLASS@_iterator)
+DECLARE_CONVERSIONS(@CLASS@_const_iterator,
+                    @CLASS@_const_iterator)
+
+
+int
+ppl_@CLASS@_iterator_equal_test
+(ppl_const_@CLASS@_iterator_t x,
+ ppl_const_@CLASS@_iterator_t y) try {
+  return (*to_const(x) == *to_const(y)) ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_@CLASS@_const_iterator_equal_test
+(ppl_const_@CLASS@_const_iterator_t x,
+ ppl_const_@CLASS@_const_iterator_t y) try {
+  return (*to_const(x) == *to_const(y)) ? 1 : 0;
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_@CLASS@_@BEGINEND@_iterator_code',
+`dnl
+int
+ppl_@CLASS@_@BEGINEND@
+(ppl_@CLASS@_t ps,
+ ppl_@CLASS@_iterator_t psit) try {
+  @CPP_CLASS@::iterator& ppsit = *to_nonconst(psit);
+  ppsit = to_nonconst(ps)->@BEGINEND@();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_@CLASS@_const_@BEGINEND@
+(ppl_const_@CLASS@_t ps,
+ ppl_@CLASS@_const_iterator_t psit) try {
+  @CPP_CLASS@::const_iterator& ppsit = *to_nonconst(psit);
+  ppsit = to_const(ps)->@BEGINEND@();
+  return 0;
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_@CLASS@_delete_iterator_code',
+`dnl
+int
+ppl_delete_@CLASS@_iterator
+(ppl_const_@CLASS@_iterator_t it)
+  try {
+  delete to_const(it);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_delete_@CLASS@_const_iterator
+(ppl_const_@CLASS@_const_iterator_t it)
+  try {
+  delete to_const(it);
+  return 0;
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
+`dnl
+int
+ppl_@CLASS@_iterator_@INCDEC@
+(ppl_@CLASS@_iterator_t it)
+  try {
+    @CPP_CLASS@::iterator& iit = *to_nonconst(it);
+    @CPPX_INCDEC@iit;
+    return 0;
+}
+CATCH_ALL
+
+int
+ppl_@CLASS@_const_iterator_@INCDEC@
+(ppl_@CLASS@_const_iterator_t it)
+  try {
+    @CPP_CLASS@::const_iterator& iit = *to_nonconst(it);
+    @CPPX_INCDEC@iit;
+    return 0;
+}
+CATCH_ALL
+
+')
+
 m4_divert`'dnl
