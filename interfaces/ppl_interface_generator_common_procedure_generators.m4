@@ -39,10 +39,10 @@ dnl in the ppl_interface_generator_*_code.m4 file.
 dnl The <name> must be exactly as written here.
 
 m4_define(`m4_common_procedure_list', `dnl
-ppl_delete_@CLASS@/1 *nofail +simple_pps,
-ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension/3 +simple_pps,
-ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@/2 +simple_pps,
-ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s/2 +simple_pps,
+ppl_delete_@CLASS@/1 *nofail +simple_pps +product,
+ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension/3 +simple_pps +product,
+ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@/2 +simple_pps +product,
+ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s/2 +simple_pps +product,
 ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@/2 +simple,
 ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@/2 +polyhedron,
 ppl_@CLASS@_swap/2 *nofail +simple_pps,
@@ -59,7 +59,7 @@ ppl_@CLASS@_@MAXMIN@/5 +simple_pps,
 ppl_@CLASS@_@MAXMIN@_with_point/6 +simple_pps,
 ppl_@CLASS@_@COMPARISON@_@CLASS@/2 +simple_pps,
 ppl_@CLASS@_equals_@CLASS@/2 +simple_pps,
-ppl_@CLASS@_OK/1 +simple_pps,
+ppl_@CLASS@_OK/1 +simple_pps +product,
 ppl_@CLASS@_add_@ADD_REPRESENT@/2 *nofail +simple_pps,
 ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize/2 +simple_pps,
 ppl_@CLASS@_add_@ADD_REPRESENT@s/2 *nofail +simple_pps,

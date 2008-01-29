@@ -46,8 +46,15 @@ m4_divert(-1)
 dnl -----------------------------------------------------------------
 dnl Macros needed for the class conversion declarations.
 dnl -----------------------------------------------------------------
-m4_define(`m4_declaration_code', `
-DECLARE_CONVERSIONS(m4_interface_class`'$1, m4_cplusplus_class`'$1)
+m4_define(`m4_declaration_code', `dnl
+m4_ifelse(m4_class_kind$1, Direct_Product,
+            `typedef @CPP_CLASS@ @CPPDEF_CLASS@;',
+          m4_class_kind$1, Smash_Product,
+            `typedef @CPP_CLASS@ @CPPDEF_CLASS@;',
+          m4_class_kind$1, Constraints_Product,
+            `typedef @CPP_CLASS@ @CPPDEF_CLASS@;')
+
+DECLARE_CONVERSIONS(m4_interface_class`'$1, @CPPDEF_CLASS@)
 ')
 m4_pushdef(`m4_one_class_code', `dnl
 m4_replace_all_patterns_in_string($1,

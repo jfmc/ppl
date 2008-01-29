@@ -44,11 +44,17 @@ public:
   static bool valid_Pointset_Powerset_argument() {
     return true;
   }
+  static bool valid_Product_argument() {
+    return true;
+  }
 };
 
 class NNC_Polyhedron {
 public:
   static bool valid_Pointset_Powerset_argument() {
+    return true;
+  }
+  static bool valid_Product_argument() {
     return true;
   }
 };
@@ -59,6 +65,9 @@ public:
     return true;
   }
   static bool valid_Pointset_Powerset_argument() {
+    return true;
+  }
+  static bool valid_Product_argument() {
     return true;
   }
 };
@@ -136,6 +145,33 @@ class Pointset_Powerset {
 public:
   static bool valid_instantiation() {
     return PH::valid_Pointset_Powerset_argument();
+  }
+};
+
+  template <typename PH1, typename PH2>
+class Direct_Product {
+public:
+  static bool valid_instantiation() {
+    return PH1::valid_Product_argument()
+             && PH2::valid_Product_argument();
+  }
+};
+
+  template <typename PH1, typename PH2>
+class Smash_Product {
+public:
+  static bool valid_instantiation() {
+    return PH1::valid_Product_argument()
+             && PH2::valid_Product_argument();
+  }
+};
+
+  template <typename PH1, typename PH2>
+class Constraints_Product {
+public:
+  static bool valid_instantiation() {
+    return PH1::valid_Product_argument()
+             && PH2::valid_Product_argument();
   }
 };
 

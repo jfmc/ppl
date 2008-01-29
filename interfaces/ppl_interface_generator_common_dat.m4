@@ -81,32 +81,6 @@ m4_define(m4_interface_class`'$1, $2)`'dnl
 m4_init_interface_classes_aux(m4_incr($1), $3)`'dnl
 ')
 
-dnl FIXME: Old code for allowing for having Pointset_Powerset_Polyhedron
-dnl        classes. Now we require the topology C or NNC to be given
-dnl        in the C++ name in the configuration.
-dnl The macro has three cases.
-dnl If the class name does not contain "Polyhedron",
-dnl then m4_interface_class`'Class_Counter => Class;
-dnl If the class name is simply "Polyhedron",
-dnl then m4_interface_class`'Class_Counter => Class;
-dnl Otherwise
-dnl m4_interface_class`'Class_Counter => C_Class and
-dnl m4_interface_class`'Class_Counter+1 => NNC_Class.
-dnl In all cases, the m4_init_interface_classes_aux is called again
-dnl to process the rest of the list with a new value for the class counter.
-dnl m4_define(`m4_init_interface_names', `dnl
-dnl m4_ifelse(
-dnl   m4_index($2, Polyhedron), -1,
-dnl     `m4_define(m4_interface_class`'$1, $2)`'dnl
-dnl m4_init_interface_classes_aux(m4_incr($1), $3)',
-dnl   `$2', `Polyhedron',
-dnl     `m4_define(m4_interface_class`'$1, $2)`'dnl
-dnl m4_init_interface_classes_aux(m4_incr($1), $3)',
-dnl     `m4_define(m4_interface_class`'$1, m4_prefix_polyhedron($2, C))`'dnl
-dnl m4_define(m4_interface_class`'m4_incr($1), m4_prefix_polyhedron($2, NNC))`'dnl
-dnl m4_init_interface_classes_aux(m4_incr(m4_incr($1)), $3)')`'dnl
-dnl ')
-
 dnl ---------------------------------------------------------------------
 dnl =====  m4_init_cplusplus_names is defined.                      =====
 dnl ---------------------------------------------------------------------
@@ -170,9 +144,7 @@ dnl - m4_class_body`'Class_Counter,
 dnl where the kind is the part preceding the first "<"
 dnl and the body is the rest of the full cplusplus name.
 dnl
-dnl FIXME: This is out-of-date and only worked for product classes
-dnl        whose components were _not_ themselves products.
-dnl If the class kind is a Direct_Product or Open_Product,
+dnl If the class kind is a Direct_Product or Constraints_Product,
 dnl it also calls the macro m4_parse_body_class(`$1')
 dnl to define subclasses
 dnl m4_cplusplus_class`'Class_Counter_1 and
@@ -187,7 +159,9 @@ dnl
 dnl FIXME: This code is untested.
 m4_ifelse(m4_class_kind`'$1, Direct_Product,
               m4_parse_body_class(`$1'),
-          m4_class_kind`'$1, Open_Product,
+          m4_class_kind`'$1, Smash_Product,
+              m4_parse_body_class(`$1'),
+          m4_class_kind`'$1, Constraints_Product,
               m4_parse_body_class(`$1'))`'dnl
 dnl
 ')
@@ -196,12 +170,12 @@ dnl m4_parse_body_class(Class_Counter)
 dnl This only should be called when the class kind is a product
 dnl and the components are separated by "@COMMA@".
 dnl The components are defined as:
-dnl m4_cplusplus_class`'Class_Counter_1 and
-dnl m4_cplusplus_class`'Class_Counter_2
+dnl m4_interface_class`'Class_Counter_1 and
+dnl m4_interface_class`'Class_Counter_2
 m4_define(`m4_parse_body_class', `dnl
-m4_define(m4_cplusplus_class`'$1`'_1,
+m4_define(m4_body$1`'_1,
 `m4_regexp(m4_class_body$1, `\([^@]*\).*', `\1')')`'dnl
-m4_define(m4_cplusplus_class`'$1`'_2,
+m4_define(m4_body$1`'_2,
     `m4_regexp(m4_class_body$1, `\([^@]*\)@COMMA@\(.*\)', `\2')')`'dnl
 ')
 
@@ -225,15 +199,17 @@ dnl m4_class_kind2 => `Pointset_Powerset'
 dnl m4_class_body2 => `BD_Shape<signed char>'
 m4_define(`m4_get_class_kind',
   `m4_define(m4_class_kind`'$1,
-    `m4_ifelse(`$2', `', ,
-      `m4_ifelse(m4_index(`$2', <), -1, `$2',
-        `m4_regexp(`$2', `\([^ <]+\)[.]*', `\1')')')')')
+    `m4_ifelse($2, `', ,
+               m4_index($2, <), -1, $2,
+                 m4_regexp($2, `\([^ <]+\)[.]*', `\1'))')`'dnl
+')
 
 m4_define(`m4_get_class_body',
   `m4_define(m4_class_body`'$1,
-    `m4_ifelse(`$2', `', ,
-      `m4_ifelse(m4_index(`$2', <), -1, `',
-        `m4_regexp(`$2', `[^ <]+[<]\(.*\w>?\)[ ]*[>]', `\1')')')')')
+    `m4_ifelse($2, `', ,
+               m4_index(`$2', <), -1, `',
+                 m4_regexp(`$2', `[^ <]+[<]\(.*\w>?\)[ ]*[>]', `\1'))')`'dnl
+')
 
 dnl m4_get_class_topology(Class)
 dnl
@@ -338,10 +314,11 @@ polyhedron,
 grid,
 bd_shape,
 octagonal_shape,
-pointset_powerset')
+pointset_powerset,
+product')
 
 m4_define(`m4_all_group',
-  `Polyhedron, Grid, BD_Shape, Octagonal_Shape, Pointset_Powerset')
+  `Polyhedron, Grid, BD_Shape, Octagonal_Shape, Pointset_Powerset, Direct_Product, Smash_Product, Constraints_Product')
 m4_define(`m4_simple_pps_group',
   `Polyhedron, Grid, BD_Shape, Octagonal_Shape, Pointset_Powerset')
 m4_define(`m4_simple_group', `Polyhedron, Grid, BD_Shape, Octagonal_Shape')
@@ -352,6 +329,7 @@ m4_define(`m4_grid_group', Grid)
 m4_define(`m4_bd_shape_group', BD_Shape)
 m4_define(`m4_octagonal_shape_group', Octagonal_Shape)
 m4_define(`m4_pointset_powerset_group', Pointset_Powerset)
+m4_define(`m4_product_group', `Direct_Product, Smash_Product, Constraints_Product')
 
 dnl =====================================================================
 dnl ===== The next set of macros define the replacements            =====
@@ -369,6 +347,7 @@ dnl of procedure names and code schemas.
 m4_define(`m4_pattern_list', `dnl
 class,
 cpp_class,
+cppdef_class,
 friend,
 intopology,
 topology,
@@ -419,8 +398,35 @@ dnl ---------------------------------------------------------------------
 dnl The interface class name.
 m4_define(`m4_class_replacement', m4_interface_class`'$1)
 
-dnl The cplusplus class name.
+dnl The cplusplus name.
 m4_define(`m4_cpp_class_replacement', m4_cplusplus_class`'$1)
+
+dnl The direct product full cplusplus name.
+m4_define(`m4_Direct_Product_cpp_class_replacement',
+Domain_Product<`'m4_body$1`'_1@COMMA@`'m4_body$1`'_2>::Direct_Product)
+
+dnl The direct product full cplusplus name.
+m4_define(`m4_Smash_Product_cpp_class_replacement',
+Domain_Product<`'m4_body$1`'_1@COMMA@`'m4_body$1`'_2>::Smash_Product)
+
+dnl The direct product full cplusplus name.
+m4_define(`m4_Constraints_Product_cpp_class_replacement',
+Domain_Product<`'m4_body1`'_1@COMMA@`'m4_body$1`'_2>::Constraints_Product)
+
+dnl The defined cplusplus name (the default is as before).
+m4_define(`m4_cppdef_class_replacement', m4_cplusplus_class`'$1)
+
+dnl The defined direct product cplusplus name.
+m4_define(`m4_Direct_Product_cppdef_class_replacement',
+m4_interface_class`'$1)
+
+dnl The defined smash product cplusplus name.
+m4_define(`m4_Smash_Product_cppdef_class_replacement',
+m4_interface_class`'$1)
+
+dnl The defined constraints product cplusplus name.
+m4_define(`m4_Constraints_Product_cppdef_class_replacement',
+m4_interface_class`'$1)
 
 dnl ---------------------------------------------------------------------
 dnl pattern == friend
@@ -478,7 +484,7 @@ m4_patsubst(m4_all_friends_aux($1, $2), `@COMMA@', `, ')`'dnl
 m4_define(`m4_all_friends_aux', `dnl
 m4_forloop(m4_ind, 1, m4_num_classes, `dnl
 m4_ifelse(m4_echo_unquoted(m4_class_kind`'m4_ind), Pointset_Powerset, ,
-m4_echo_unquoted(m4_class_kind`'m4_ind), Domain_Product, , `dnl
+m4_echo_unquoted(m4_class_kind`'m4_ind), Direct_Product, , `dnl
 m4_define(`m4_friend_class', m4_`'$1`'_class`'m4_ind)`'dnl
 m4_ifelse(m4_friend_class, Polyhedron,
           m4_ifelse($2, `',
@@ -516,6 +522,22 @@ m4_cplusplus_class$1`'dnl
 m4_same_class_string(
   m4_class_body$1, cplusplus, m4_get_class_topology($1), cplusplus_class)`'dnl
 ')
+
+dnl For product class kinds, C_Polyhedron, NNC_Polyhedron, BD_Shape,
+dnl Octagonal_Shape and other products are all friends.
+dnl FIXME: This only allows for the direct product domain.
+dnl
+m4_define(`m4_Direct_Product_friend_replacement',
+  `m4_all_friends(interface), m4_interface_class$1`'dnl
+')
+
+m4_define(`m4_Direct_Product_friend_alt_replacement',
+  `m4_all_friends(interface, no_topology), m4_interface_class$1`'dnl
+')
+
+m4_define(`m4_Direct_Product_friend_cppx_replacement',
+  `m4_all_friends(cplusplus),
+     Domain_Product<`'m4_body$1`'_1@COMMA@`'m4_body$1`'_2>::Direct_Product')
 
 dnl ---------------------------------------------------------------------
 dnl pattern == topology or intopology
@@ -688,6 +710,8 @@ m4_define(`m4_Grid_build_represent_replacement',
          `constraint, grid_generator, congruence')
 m4_define(`m4_Pointset_Powerset_build_represent_replacement',
          `constraint, congruence')
+m4_define(`m4_Direct_Product_build_represent_replacement',
+         `constraint, congruence')
 
 dnl  The different kinds of alternative objects that can build
 dnl  the same class.
@@ -697,6 +721,8 @@ m4_define(`m4_build_represent_alt_replacement',
 m4_define(`m4_Grid_build_represent_alt_replacement',
          `constraint, congruence, grid_generator')
 m4_define(`m4_Pointset_Powerset_build_represent_alt_replacement',
+         `constraint, congruence')
+m4_define(`m4_Direct_Product_build_represent_alt_replacement',
          `constraint, congruence')
 
 dnl ---------------------------------------------------------------------
