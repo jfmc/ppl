@@ -47,11 +47,7 @@ dnl -----------------------------------------------------------------
 dnl Macros needed for the class conversion declarations.
 dnl -----------------------------------------------------------------
 m4_define(`m4_declaration_code', `dnl
-m4_ifelse(m4_class_kind$1, Direct_Product,
-            `typedef @CPP_CLASS@ @CPPDEF_CLASS@;',
-          m4_class_kind$1, Smash_Product,
-            `typedef @CPP_CLASS@ @CPPDEF_CLASS@;',
-          m4_class_kind$1, Constraints_Product,
+m4_ifelse(m4_class_group$1, product,
             `typedef @CPP_CLASS@ @CPPDEF_CLASS@;')
 
 DECLARE_CONVERSIONS(m4_interface_class`'$1, @CPPDEF_CLASS@)

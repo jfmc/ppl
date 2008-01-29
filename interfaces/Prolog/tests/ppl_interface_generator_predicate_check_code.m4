@@ -224,11 +224,16 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@_2_test :-
    (
     ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@, box, Box),
     clean_ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(Box, PS),
-    (@BOX@ == bounding_box
+    (predicate_exists(ppl_@CLASS@_get_@BOX@)
     ->
-      ppl_@CLASS@_get_bounding_box(PS, any, Box1)
+     (@BOX@ == bounding_box
+      ->
+        ppl_@CLASS@_get_bounding_box(PS, any, Box1)
+      ;
+        ppl_@CLASS@_get_@BOX@(PS, Box1)
+      )
     ;
-      ppl_@CLASS@_get_@BOX@(PS, Box1)
+      ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@, box, Box1)
     ),
     clean_ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(Box1, PS1),
     \+ clean_ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(Box, 0),

@@ -154,14 +154,10 @@ dnl
 m4_define(`m4_init_cplusplus_names_aux', `dnl
 m4_define(m4_cplusplus_class`'$1, `$2')`'dnl
 m4_get_class_kind(`$1', `$2')`'dnl
+m4_get_class_group(`$1')`'dnl
 m4_get_class_body(`$1', `$2')`'dnl
 dnl
-dnl FIXME: This code is untested.
-m4_ifelse(m4_class_kind`'$1, Direct_Product,
-              m4_parse_body_class(`$1'),
-          m4_class_kind`'$1, Smash_Product,
-              m4_parse_body_class(`$1'),
-          m4_class_kind`'$1, Constraints_Product,
+m4_ifelse(m4_class_group`'$1, Product,
               m4_parse_body_class(`$1'))`'dnl
 dnl
 ')
@@ -317,19 +313,49 @@ octagonal_shape,
 pointset_powerset,
 product')
 
+dnl A sublist of the same groups whose elements are disjoint.
+dnl These are used to define the m4_class_group`'class_index
+dnl which is used for the "pattern" replacements (see below).
+m4_define(`m4_class_groups', `dnl
+polyhedron,
+grid,
+wr_shape,
+pointset_powerset,
+product')
+
 m4_define(`m4_all_group',
-  `Polyhedron, Grid, BD_Shape, Octagonal_Shape, Pointset_Powerset, Direct_Product, Smash_Product, Constraints_Product')
-m4_define(`m4_simple_pps_group',
-  `Polyhedron, Grid, BD_Shape, Octagonal_Shape, Pointset_Powerset')
-m4_define(`m4_simple_group', `Polyhedron, Grid, BD_Shape, Octagonal_Shape')
-m4_define(`m4_shape_group', `Polyhedron, BD_Shape, Octagonal_Shape')
+  `Polyhedron, Grid, BD_Shape, Octagonal_Shape,
+   Pointset_Powerset, m4_product_group')
+m4_define(`m4_simple_pps_group', `m4_simple_group, Pointset_Powerset')
+m4_define(`m4_simple_group', `Grid, m4_shape_group')
+m4_define(`m4_shape_group', `Polyhedron, m4_wr_shape_group')
 m4_define(`m4_wr_shape_group', `BD_Shape, Octagonal_Shape')
 m4_define(`m4_polyhedron_group', Polyhedron)
 m4_define(`m4_grid_group', Grid)
 m4_define(`m4_bd_shape_group', BD_Shape)
 m4_define(`m4_octagonal_shape_group', Octagonal_Shape)
 m4_define(`m4_pointset_powerset_group', Pointset_Powerset)
-m4_define(`m4_product_group', `Direct_Product, Smash_Product, Constraints_Product')
+m4_define(`m4_product_group',
+  `Direct_Product, Smash_Product, Constraints_Product')
+
+m4_define(`m4_get_class_group',
+  `m4_define(m4_class_group`'$1, `')`'dnl
+m4_get_class_group_aux(`$1', m4_class_groups)')
+
+m4_define(`m4_get_class_group_aux', `dnl
+m4_ifelse($#, 0, , $#, 1, , $#, 2,
+    m4_get_class_group_aux2($1, $2, m4_$2_group),
+    `m4_ifelse(m4_get_class_group_aux2($1, $2, m4_$2_group), 0,
+      `m4_get_class_group_aux($1, m4_shift(m4_shift($@)))')')')
+
+m4_define(`m4_get_class_group_aux2', `dnl
+m4_ifelse($#, 0, , $#, 1, , $#, 2, 0, $#, 3,
+  m4_ifelse(`$3', m4_class_kind$1,
+    m4_define(m4_class_group`'$1, $2), 0),
+  `m4_ifelse(`$3', m4_class_kind$1,
+    `m4_define(m4_class_group`'$1, $2)',
+    m4_get_class_group_aux2($1, $2, m4_shift(m4_shift(m4_shift($@))))`'dnl
+)')')
 
 dnl =====================================================================
 dnl ===== The next set of macros define the replacements            =====
@@ -402,30 +428,14 @@ dnl The cplusplus name.
 m4_define(`m4_cpp_class_replacement', m4_cplusplus_class`'$1)
 
 dnl The direct product full cplusplus name.
-m4_define(`m4_Direct_Product_cpp_class_replacement',
-Domain_Product<`'m4_body$1`'_1@COMMA@`'m4_body$1`'_2>::Direct_Product)
-
-dnl The direct product full cplusplus name.
-m4_define(`m4_Smash_Product_cpp_class_replacement',
-Domain_Product<`'m4_body$1`'_1@COMMA@`'m4_body$1`'_2>::Smash_Product)
-
-dnl The direct product full cplusplus name.
-m4_define(`m4_Constraints_Product_cpp_class_replacement',
-Domain_Product<`'m4_body1`'_1@COMMA@`'m4_body$1`'_2>::Constraints_Product)
+m4_define(`m4_product_cpp_class_replacement',
+     Domain_Product<`'m4_body$1`'_1@COMMA@`'m4_body$1`'_2>::`'m4_class_kind$1)
 
 dnl The defined cplusplus name (the default is as before).
 m4_define(`m4_cppdef_class_replacement', m4_cplusplus_class`'$1)
 
 dnl The defined direct product cplusplus name.
-m4_define(`m4_Direct_Product_cppdef_class_replacement',
-m4_interface_class`'$1)
-
-dnl The defined smash product cplusplus name.
-m4_define(`m4_Smash_Product_cppdef_class_replacement',
-m4_interface_class`'$1)
-
-dnl The defined constraints product cplusplus name.
-m4_define(`m4_Constraints_Product_cppdef_class_replacement',
+m4_define(`m4_product_cppdef_class_replacement',
 m4_interface_class`'$1)
 
 dnl ---------------------------------------------------------------------
@@ -525,19 +535,19 @@ m4_same_class_string(
 
 dnl For product class kinds, C_Polyhedron, NNC_Polyhedron, BD_Shape,
 dnl Octagonal_Shape and other products are all friends.
-dnl FIXME: This only allows for the direct product domain.
 dnl
-m4_define(`m4_Direct_Product_friend_replacement',
+m4_define(`m4_product_friend_replacement',
   `m4_all_friends(interface), m4_interface_class$1`'dnl
 ')
 
-m4_define(`m4_Direct_Product_friend_alt_replacement',
+m4_define(`m4_product_friend_alt_replacement',
   `m4_all_friends(interface, no_topology), m4_interface_class$1`'dnl
 ')
 
-m4_define(`m4_Direct_Product_friend_cppx_replacement',
+m4_define(`m4_product_friend_cppx_replacement',
   `m4_all_friends(cplusplus),
-     Domain_Product<`'m4_body$1`'_1@COMMA@`'m4_body$1`'_2>::Direct_Product')
+     Domain_Product<`'m4_body$1`'_1@COMMA@`'m4_body$1`'_2>::`'m4_class_kind$1')
+)
 
 dnl ---------------------------------------------------------------------
 dnl pattern == topology or intopology
@@ -710,7 +720,7 @@ m4_define(`m4_Grid_build_represent_replacement',
          `constraint, grid_generator, congruence')
 m4_define(`m4_Pointset_Powerset_build_represent_replacement',
          `constraint, congruence')
-m4_define(`m4_Direct_Product_build_represent_replacement',
+m4_define(`m4_product_build_represent_replacement',
          `constraint, congruence')
 
 dnl  The different kinds of alternative objects that can build
@@ -722,7 +732,7 @@ m4_define(`m4_Grid_build_represent_alt_replacement',
          `constraint, congruence, grid_generator')
 m4_define(`m4_Pointset_Powerset_build_represent_alt_replacement',
          `constraint, congruence')
-m4_define(`m4_Direct_Product_build_represent_alt_replacement',
+m4_define(`m4_product_build_represent_alt_replacement',
          `constraint, congruence')
 
 dnl ---------------------------------------------------------------------
@@ -737,6 +747,8 @@ m4_define(`m4_Grid_relation_represent_replacement',
          `m4_relation_represent_replacement, congruence, grid_generator')
 m4_define(`m4_Pointset_Powerset_relation_represent_replacement',
          `m4_relation_represent_replacement, congruence')
+m4_define(`m4_Product_relation_represent_replacement',
+         `m4_relation_represent_replacement, congruence')
 
 dnl  The type of these relations with a class.
 m4_define(`m4_relation_represent_alt_replacement', `con, gen')
@@ -745,6 +757,8 @@ m4_define(`m4_Polyhedron_relation_represent_alt_replacement',
 m4_define(`m4_Grid_relation_represent_alt_replacement',
          `con, gen, con, gen')
 m4_define(`m4_Pointset_Powerset_relation_represent_alt_replacement',
+         `con, gen, con')
+m4_define(`m4_product_relation_represent_alt_replacement',
          `con, gen, con')
 
 dnl  The different kinds of objects that can be added to a class.
@@ -795,6 +809,8 @@ m4_define(`m4_Polyhedron_has_property_replacement',
           `m4_has_property_replacement, is_discrete')
 m4_define(`m4_Grid_has_property_replacement',
           `m4_has_property_replacement, is_discrete')
+m4_define(`m4_product_has_property_replacement',
+          `is_empty, is_universe, is_bounded, is_topologically_closed, is_discrete')
 
 dnl  The "simplify" predicates
 m4_define(`m4_simplify_replacement', `topological_closure_assign')

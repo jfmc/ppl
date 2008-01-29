@@ -229,23 +229,29 @@ dnl m4_replacements is the replacement list for the pattern.
 m4_define(`m4_replacements', `dnl
   m4_ifdef(m4_`'m4_class_kind$1`'_$3_replacement,
     m4_`'m4_class_kind$1`'_$3_replacement($1),
-    `m4_$3_replacement($1)')')`'dnl
+    `m4_ifdef(m4_`'m4_class_group$1`'_$3_replacement,
+       m4_`'m4_class_group$1`'_$3_replacement($1),
+       `m4_$3_replacement($1)')')')`'dnl
 dnl
 dnl m4_alt_replacements is the alternative replacement list for pattern.
 m4_define(`m4_alt_replacements', `dnl
   m4_ifdef(m4_`'m4_class_kind$1`'_$3_alt_replacement,
     m4_`'m4_class_kind$1`'_$3_alt_replacement($1),
-    `m4_ifdef(`m4_$3_alt_replacement',
-      `m4_$3_alt_replacement($1)',
-      `m4_replacements')')')`'dnl
+    `m4_ifdef(m4_`'m4_class_group$1`'_$3_alt_replacement,
+      m4_`'m4_class_group$1`'_$3_alt_replacement($1),
+      `m4_ifdef(`m4_$3_alt_replacement',
+        `m4_$3_alt_replacement($1)',
+        `m4_replacements')')')')`'dnl
 dnl
 dnl m4_cppx_replacements is the cplusplus replacement list for pattern.
 m4_define(`m4_cppx_replacements', `dnl
   m4_ifdef(m4_`'m4_class_kind$1`'_$3_cppx_replacement,
-    m4_`'m4_class_kind$1`'_$3_cppx_replacement($1),
-    `m4_ifdef(`m4_$3_cppx_replacement',
-      `m4_$3_cppx_replacement($1)',
-      `m4_replacements')')')`'dnl
+   m4_`'m4_class_kind$1`'_$3_cppx_replacement($1),
+    `m4_ifdef(m4_`'m4_class_group$1`'_$3_cppx_replacement,
+      m4_`'m4_class_group$1`'_$3_cppx_replacement($1),
+      `m4_ifdef(`m4_$3_cppx_replacement',
+        `m4_$3_cppx_replacement($1)',
+        `m4_replacements')')')')`'dnl
 dnl
 m4_ifelse(m4_index(`$2', PATTERN), `-1', $2, `dnl
 m4_expand_pattern_by_replacements($2, 1)')`'dnl
