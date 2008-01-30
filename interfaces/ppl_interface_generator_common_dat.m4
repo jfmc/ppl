@@ -494,7 +494,7 @@ m4_patsubst(m4_all_friends_aux($1, $2), `@COMMA@', `, ')`'dnl
 m4_define(`m4_all_friends_aux', `dnl
 m4_forloop(m4_ind, 1, m4_num_classes, `dnl
 m4_ifelse(m4_echo_unquoted(m4_class_kind`'m4_ind), Pointset_Powerset, ,
-m4_echo_unquoted(m4_class_kind`'m4_ind), Direct_Product, , `dnl
+m4_echo_unquoted(m4_class_group`'m4_ind), product, , `dnl
 m4_define(`m4_friend_class', m4_`'$1`'_class`'m4_ind)`'dnl
 m4_ifelse(m4_friend_class, Polyhedron,
           m4_ifelse($2, `',

@@ -891,6 +891,18 @@ public:
   void intersection_assign(const Partially_Reduced_Product& y);
 
   /*! \brief
+    Assigns to \p *this the componentwise intersection of \p *this and \p y,
+    minimizing the components and reducing the result.
+
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
+  */
+  bool intersection_assign_and_minimize(const Partially_Reduced_Product& y);
+
+  /*! \brief
     Assigns to \p *this an upper bound of \p *this and \p y
     computed on the corresponding components.
 

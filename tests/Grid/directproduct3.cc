@@ -273,10 +273,35 @@ test06() {
 
   bool ok = (dp1 == known_dp);
 
-  print_congruences(dp1, "*** dp1 congruences ***");
-  print_constraints(dp1, "*** dp1 constraints ***");
-  print_congruences(dp2, "*** dp2 congruences ***");
-  print_constraints(dp2, "*** dp2 constraints ***");
+  if (!ok) {
+    print_congruences(dp1, "*** dp1 congruences ***");
+    print_constraints(dp1, "*** dp1 constraints ***");
+    print_congruences(dp2, "*** dp2 congruences ***");
+    print_constraints(dp2, "*** dp2 constraints ***");
+    return ok;
+  }
+
+  dp1.add_constraint(B <= 1);
+  dp2.add_constraint(B >= 1);
+  ok = dp1.intersection_assign_and_minimize(dp2);
+
+  if (!ok) {
+    print_congruences(dp1, "*** dp1 congruences ***");
+    print_constraints(dp1, "*** dp1 constraints ***");
+    print_congruences(dp2, "*** dp2 congruences ***");
+    print_constraints(dp2, "*** dp2 constraints ***");
+    return ok;
+  }
+
+  dp2.add_constraint(B >= 2);
+  ok = !dp1.intersection_assign_and_minimize(dp2);
+
+  if (!ok) {
+    print_congruences(dp1, "*** dp1 congruences ***");
+    print_constraints(dp1, "*** dp1 constraints ***");
+    print_congruences(dp2, "*** dp2 congruences ***");
+    print_constraints(dp2, "*** dp2 constraints ***");
+  }
 
   return ok;
 }

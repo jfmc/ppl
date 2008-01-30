@@ -176,6 +176,20 @@ Partially_Reduced_Product<D1, D2, R>
 }
 
 template <typename D1, typename D2, typename R>
+inline bool
+Partially_Reduced_Product<D1, D2, R>
+::intersection_assign_and_minimize(const Partially_Reduced_Product& y) {
+  if (!d1.intersection_assign_and_minimize(y.d1))
+    return false;
+  if (!d2.intersection_assign_and_minimize(y.d2))
+    return false;
+  reduce();
+  if (is_empty())
+    return false;
+  return true;
+}
+
+template <typename D1, typename D2, typename R>
 inline void
 Partially_Reduced_Product<D1, D2, R>
 ::difference_assign(const Partially_Reduced_Product& y) {
