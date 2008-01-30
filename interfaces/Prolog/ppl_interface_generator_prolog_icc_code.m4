@@ -1030,15 +1030,15 @@ ppl_@CLASS@_@AFFIMAGE@
 
 ')
 
-m4_define(`ppl_Grid_generalized_@AFFIMAGE@_code',
+m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruence_code',
 `extern "C" Prolog_foreign_return_type
-ppl_Grid_generalized_@AFFIMAGE@
+ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruence
 (Prolog_term_ref t_ph,
  Prolog_term_ref t_v, Prolog_term_ref t_r, Prolog_term_ref t_le,
  Prolog_term_ref t_d, Prolog_term_ref t_m) {
-  static const char* where = "ppl_Grid_generalized_@AFFIMAGE@/6";
+  static const char* where = "ppl_@CLASS@_generalized_@AFFIMAGE@/6";
   try {
-    Grid* ph = term_to_handle<Grid>(t_ph, where);
+    @CLASS@* ph = term_to_handle<@CLASS@>(t_ph, where);
     PPL_CHECK(ph);
     ph->generalized_@AFFIMAGE@(term_to_Variable(t_v, where),
                                term_to_relation_symbol(t_r, where),
@@ -1073,15 +1073,15 @@ ppl_@CLASS@_generalized_@AFFIMAGE@
 
 ')
 
-m4_define(`ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs_code',
+m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence_code',
 `extern "C" Prolog_foreign_return_type
-ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs
+ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence
 (Prolog_term_ref t_ph,
  Prolog_term_ref t_lhs, Prolog_term_ref t_r, Prolog_term_ref t_rhs,
  Prolog_term_ref t_m) {
- static const char* where = "ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs/5";
+ static const char* where = "ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs/5";
   try {
-    Grid* ph = term_to_handle<Grid>(t_ph, where);
+    @CLASS@* ph = term_to_handle<@CLASS@>(t_ph, where);
     PPL_CHECK(ph);
     ph->generalized_@AFFIMAGE@(build_linear_expression(t_lhs, where),
                                term_to_relation_symbol(t_r, where),
@@ -1167,6 +1167,45 @@ ppl_@CLASS@_@WIDEN@_widening_assign
     PPL_CHECK(lhs);
     PPL_CHECK(rhs);
     lhs->@WIDEN@_widening_assign(*rhs, 0);
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+')
+
+m4_define(`ppl_@CLASS@_widening_assign_with_tokens_code',
+`extern "C" Prolog_foreign_return_type
+ppl_@CLASS@_widening_assign_with_tokens
+(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs,
+ Prolog_term_ref t_ti, Prolog_term_ref t_to) {
+  static const char* where = "ppl_@CLASS@_widening_assign_with_tokens/4";
+  try {
+    @CPP_CLASS@* lhs = term_to_handle<@CPP_CLASS@ >(t_lhs, where);
+    const @CPP_CLASS@* rhs = term_to_handle<@CPP_CLASS@ >(t_rhs, where);
+    PPL_CHECK(lhs);
+    PPL_CHECK(rhs);
+    unsigned t = term_to_unsigned<unsigned>(t_ti, where);
+    lhs->widening_assign(*rhs, &t);
+      if (unify_long(t_to, t))
+      return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+')
+
+m4_define(`ppl_@CLASS@_widening_assign_code',
+`extern "C" Prolog_foreign_return_type
+ppl_@CLASS@_widening_assign
+(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
+  static const char* where = "ppl_@CLASS@_widening_assign/2";
+  try {
+    @CPP_CLASS@* lhs = term_to_handle<@CPP_CLASS@ >(t_lhs, where);
+    const @CPP_CLASS@* rhs = term_to_handle<@CPP_CLASS@ >(t_rhs, where);
+    PPL_CHECK(lhs);
+    PPL_CHECK(rhs);
+    lhs->widening_assign(*rhs, 0);
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;

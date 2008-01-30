@@ -48,12 +48,21 @@ ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@/2 +polyhedron,
 ppl_@CLASS@_swap/2 *nofail +all,
 ppl_@CLASS@_@DIMENSION@/2 +all,
 ppl_@CLASS@_relation_with_@RELATION_REPRESENT@/3 +all,
-dnl NOTE: We can only "get" a meaningful system (such as a set of
-dnl constraints) that represents a domain from a simple domain.
+dnl
+dnl NOTE: The next two schemas are only for simple domains since
+dnl       we can only "get" a meaningful system (such as a set of
+dnl       constraints) that represents a domain from a simple domain.
+dnl
 ppl_@CLASS@_get_@GET_REPRESENT@s/2 +simple,
 ppl_@CLASS@_get_minimized_@GET_REPRESENT@s/2 +simple,
+dnl
+dnl FIXME: There is no get_bounding_box() method
+dnl        from the pointset_powerset or product domains.
+dnl        Only the Grid domain has a get_covering_box() method.
+dnl
 ppl_@CLASS@_get_bounding_box/3 +simple,
 ppl_@CLASS@_get_covering_box/2 +grid,
+dnl
 ppl_@CLASS@_@HAS_PROPERTY@/1 +all,
 ppl_@CLASS@_@SIMPLIFY@/1 *nofail +all,
 ppl_@CLASS@_bounds_from_@ABOVEBELOW@/2 +all,
@@ -63,27 +72,17 @@ ppl_@CLASS@_@COMPARISON@_@CLASS@/2 +all,
 ppl_@CLASS@_equals_@CLASS@/2 +all,
 ppl_@CLASS@_OK/1 +simple_pps +product,
 ppl_@CLASS@_add_@ADD_REPRESENT@/2 *nofail +all,
-ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize/2 all,
+ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize/2 +all,
 ppl_@CLASS@_add_@ADD_REPRESENT@s/2 *nofail +all,
 ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize/2 +all,
 ppl_@CLASS@_@BINOP@/2 *nofail +all,
 ppl_@CLASS@_@BINMINOP@/2 +all,
 ppl_@CLASS@_@AFFIMAGE@/4 *nofail +all,
 ppl_@CLASS@_bounded_@AFFIMAGE@/5 *nofail +all,
-dnl FIXME: for some Prolog systems (eg SICStus and Ciao),
-dnl        the grid class has to be specified separately
-dnl        and with "grid" instead of "@CLASS@" to avoid wrong generation.
-ppl_@CLASS@_generalized_@AFFIMAGE@/5 +all -grid,
-ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs/4 +all -grid,
-ppl_Grid_generalized_@AFFIMAGE@/6 +grid,
-ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs/5 +grid,
-ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens/4 +simple,
-ppl_@CLASS@_@WIDEN@_widening_assign/2 *nofail +simple,
-ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens/5 +simple,
-ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign/3 *nofail +simple,
-ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens/4 +wr_shape,
-ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign/2 *nofail +wr_shape,
-ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign/2 +wr_shape,
+ppl_@CLASS@_generalized_@AFFIMAGE@/5 +all,
+ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs/4 +all,
+ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruence/6 +grid,
+ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence/5 +grid,
 ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@/2 *nofail +all,
 ppl_@CLASS@_remove_space_dimensions/2 +all,
 ppl_@CLASS@_remove_higher_space_dimensions/2 *nofail +all,
@@ -91,6 +90,27 @@ ppl_@CLASS@_expand_space_dimension/3 *nofail +all,
 ppl_@CLASS@_fold_space_dimensions/3  +all,
 ppl_@CLASS@_map_space_dimensions/2 +all,
 ppl_@CLASS@_ascii_dump/1 +all,
+dnl
+dnl FIXME: We do not have a default widening for the
+dnl        pointset_powerset domain.
+dnl
+ppl_@CLASS@_widening_assign_with_tokens/4 +simple +product,
+ppl_@CLASS@_widening_assign/2 *nofail +simple +product,
+dnl
+dnl NOTE: The next few schemas provide special widenings and
+dnl       extrapolations that depend on the domains.
+dnl
+ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens/4 +simple,
+ppl_@CLASS@_@WIDEN@_widening_assign/2 *nofail +simple,
+ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens/5 +simple,
+ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign/3 *nofail +simple,
+ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens/4 +wr_shape,
+ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign/2 *nofail +wr_shape,
+ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign/2 +wr_shape,
+dnl
+dnl NOTE: The next few schemas provide procedures specifically for
+dnl       the pointset_powerset domains.
+dnl
 ppl_@CLASS@_size/2 +pointset_powerset,
 ppl_@CLASS@_iterator_equals_iterator/2 +pointset_powerset,
 ppl_@CLASS@_@BEGINEND@_iterator/2 +pointset_powerset,
@@ -99,8 +119,11 @@ ppl_@CLASS@_@INCDEC@_iterator/1 +pointset_powerset,
 ppl_@CLASS@_get_disjunct/2 +pointset_powerset,
 ppl_@CLASS@_drop_disjunct/2 +pointset_powerset,
 ppl_@CLASS@_add_disjunct/2 *nofail +pointset_powerset,
-ppl_@CLASS@_@PARTITION@/4 -simple +pointset_powerset,
+ppl_@CLASS@_@PARTITION@/4 +pointset_powerset,
 ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign/2 +pointset_powerset,
 ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign/3 +pointset_powerset,
+dnl
+dnl CHECKME: This is not implemented.
+dnl
 ppl_@CLASS@_BGP99_@DISJUNCT_EXTRAPOLATION@_extrapolation_assign/3 -pointset_powerset
 ')

@@ -472,6 +472,28 @@ CATCH_ALL
 
 ')
 
+m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence_code',
+`dnl
+extern "C"
+void
+ppl_@TOPOLOGY@@CLASS@_generalized_@AFFIMAGE@1_with_congruence(value ph,
+                                         value le1,
+                                         value rel_sym,
+					 value le2,
+                                         value caml_modulus) try {
+  CAMLparam5(ph, le1, rel_sym, le2, caml_modulus);
+  build_ppl_relsym(rel_sym);
+  @CPP_CLASS@& pph = *p_@TOPOLOGY@@CLASS@_val(ph);
+  pph.generalized_@AFFIMAGE@(build_ppl_Linear_Expression(le1),
+			     build_ppl_relsym(rel_sym),
+			     build_ppl_Linear_Expression(le2),
+			     build_ppl_Coefficient(caml_modulus));
+  CAMLreturn0;
+ }
+CATCH_ALL
+
+')
+
 m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_code',
 `dnl
 extern "C"

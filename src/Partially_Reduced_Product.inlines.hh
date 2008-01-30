@@ -354,11 +354,32 @@ Partially_Reduced_Product<D1, D2, R>::add_constraint(const Constraint& c) {
 }
 
 template <typename D1, typename D2, typename R>
+inline bool
+Partially_Reduced_Product<D1, D2, R>::add_constraint_and_minimize(const Constraint& c) {
+  bool empty = d1.add_constraint_and_minimize(c);
+  empty = empty && d2.add_constraint_and_minimize(c);
+  clear_reduced_flag();
+  return empty;
+}
+
+template <typename D1, typename D2, typename R>
 inline void
 Partially_Reduced_Product<D1, D2, R>::add_congruence(const Congruence& cg) {
   d1.add_congruence(cg);
   d2.add_congruence(cg);
   clear_reduced_flag();
+}
+
+template <typename D1, typename D2, typename R>
+inline bool
+Partially_Reduced_Product<D1, D2, R>::add_congruence_and_minimize(const Congruence& cg) {
+  d1.add_congruence(cg);
+  d2.add_congruence(cg);
+  (void) minimized_congruences();
+  clear_reduced_flag();
+  if (is_empty())
+    return false;
+  return true;
 }
 
 template <typename D1, typename D2, typename R>
@@ -375,8 +396,9 @@ inline bool
 Partially_Reduced_Product<D1, D2, R>
 ::add_constraints_and_minimize(const Constraint_System& cs) {
   bool empty = d1.add_constraints_and_minimize(cs);
-  return (d2.add_constraints_and_minimize(cs) && empty);
+  empty = empty && d2.add_constraints_and_minimize(cs);
   clear_reduced_flag();
+  return empty;
 }
 
 template <typename D1, typename D2, typename R>

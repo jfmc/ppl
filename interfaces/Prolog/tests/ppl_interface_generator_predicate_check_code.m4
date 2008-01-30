@@ -1264,34 +1264,34 @@ ppl_@CLASS@_generalized_@AFFIMAGE@_5_test :-
 
 ')
 
-m4_define(`ppl_Grid_generalized_@AFFIMAGE@_code',
+m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_code',
 `
-ppl_Grid_generalized_@AFFIMAGE@_6_test :-
+ppl_@CLASS@_generalized_@AFFIMAGE@_6_test :-
   (
    choose_test(TEST_DATA, Space_Dim),
    Space_Dim > 0,
    (
-     ppl_Grid_build_test_object(TEST_DATA, PS, Space_Dim),
-     ppl_Grid_build_test_object(TEST_DATA, PS_Copy, Space_Dim),
+     ppl_@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
+     ppl_@CLASS@_build_test_object(TEST_DATA, PS_Copy, Space_Dim),
      make_vars(Space_Dim, [Var| _Var_List]),
-     ppl_Grid_generalized_@AFFIMAGE@(PS, Var, =, 2*Var, 3, 5),
-     ppl_Grid_generalized_@AFFIMAGE@(PS, Var, =, Var + 2, 1, 0),
-     ppl_Grid_OK(PS),
-     ppl_Grid_generalized_@AFFIMAGE@(PS_Copy, Var, =, Var + 2, 1, 0),
-     ppl_Grid_generalized_@AFFIMAGE@(PS_Copy, Var, =, 2*Var, 3, 5),
-%%     ppl_Grid_equals_Grid(PS, PS_Copy),
+     ppl_@CLASS@_generalized_@AFFIMAGE@(PS, Var, =, 2*Var, 3, 5),
+     ppl_@CLASS@_generalized_@AFFIMAGE@(PS, Var, =, Var + 2, 1, 0),
+     ppl_@CLASS@_OK(PS),
+     ppl_@CLASS@_generalized_@AFFIMAGE@(PS_Copy, Var, =, Var + 2, 1, 0),
+     ppl_@CLASS@_generalized_@AFFIMAGE@(PS_Copy, Var, =, 2*Var, 3, 5),
+%%     ppl_@CLASS@_equals_@CLASS@(PS, PS_Copy),
      ppl_@CLASS@_OK(PS_Copy),
-     ppl_delete_Grid(PS_Copy),
-     ppl_delete_Grid(PS)
+     ppl_delete_@CLASS@(PS_Copy),
+     ppl_delete_@CLASS@(PS)
    ->
      fail ; true)
  ).
 
 ')
 
-m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_code',
+m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence_code',
 `
-ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_4_test :-
+ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence_4_test :-
   (
    choose_test(TEST_DATA, Space_Dim),
    Space_Dim > 0,
@@ -1305,9 +1305,9 @@ ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_4_test :-
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS_Copy, Space_Dim),
      make_vars(Space_Dim, [Var| _Var_List]),
-     ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs(PS, 2*Var, Op, 2*(Var + 2)),
+     ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence(PS, 2*Var, Op, 2*(Var + 2)),
      ppl_@CLASS@_OK(PS),
-     ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs(PS_Copy, Var, Op, Var + 2),
+     ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence(PS_Copy, Var, Op, Var + 2),
      (predicate_exists(ppl_@CLASS@_equals_@CLASS@)
      ->
        ppl_@CLASS@_equals_@CLASS@(PS, PS_Copy)
@@ -1323,27 +1323,27 @@ ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_4_test :-
 
 ')
 
-m4_define(`ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs_code',
+m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence_code',
 `
-ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs_5_test :-
+ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence_5_test :-
   (
    choose_test(TEST_DATA, Space_Dim),
    Space_Dim > 0,
    (
-     ppl_Grid_build_test_object(TEST_DATA, PS, Space_Dim),
-     ppl_Grid_build_test_object(TEST_DATA, PS_Copy, Space_Dim),
+     ppl_@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
+     ppl_@CLASS@_build_test_object(TEST_DATA, PS_Copy, Space_Dim),
      make_vars(Space_Dim, [Var| _Var_List]),
-     ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs(PS, Var + 2, =, 2*Var, 5),
-     ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs(PS, 1 - Var, =, Var + 2, 0),
-     ppl_Grid_OK(PS),
-     ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs(PS_Copy,
+     ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence(PS, Var + 2, =, 2*Var, 5),
+     ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence(PS, 1 - Var, =, Var + 2, 0),
+     ppl_@CLASS@_OK(PS),
+     ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence(PS_Copy,
                                                 1 - Var, =, Var + 2, 0),
-     ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs(PS_Copy,
+     ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence(PS_Copy,
                                                 Var + 2, =, 2*Var, 5),
-%%     ppl_Grid_equals_Grid(PS, PS_Copy),
-     ppl_Grid_OK(PS_Copy),
-     ppl_delete_Grid(PS_Copy),
-     ppl_delete_Grid(PS)
+%%     ppl_@CLASS@_equals_@CLASS@(PS, PS_Copy),
+     ppl_@CLASS@_OK(PS_Copy),
+     ppl_delete_@CLASS@(PS_Copy),
+     ppl_delete_@CLASS@(PS)
    ->
      fail ; true)
  ).

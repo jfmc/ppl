@@ -202,6 +202,13 @@ val ppl_@TOPOLOGY@@CLASS@_generalized_@AFFIMAGE@:
 
 ')
 
+m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence_code',
+`dnl
+val ppl_@TOPOLOGY@@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence:
+  @LTOPOLOGY@@LCLASS@ -> linear_expression -> relation_symbol -> linear_expression -> Z.t
+    -> unit
+
+')
 
 m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_code',
 `dnl

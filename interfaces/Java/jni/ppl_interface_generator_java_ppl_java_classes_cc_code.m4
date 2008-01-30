@@ -621,9 +621,9 @@ JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_generalized_1@1AFFIMAGE@__Lppl_1j
 
 ')
 
-m4_define(`ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs_code',
+m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence_code',
 `dnl
-JNIEXPORT void JNICALL Java_ppl_1java_1Grid_generalized_1@1AFFIMAGE@__Lppl_1java_Linear_1Expression_2Lppl_1java_Relation_1Symbol_2Lppl_1java_Linear_1Expression_2
+JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_generalized_1@1AFFIMAGE@_1lhs_1rhs_1with_1congruence
 (JNIEnv* env, jobject j_this_@LCLASS@, jobject j_le_lhs, jobject j_relsym,
  jobject j_le_rhs, jobject j_modulus) {
   try {
@@ -641,9 +641,9 @@ JNIEXPORT void JNICALL Java_ppl_1java_1Grid_generalized_1@1AFFIMAGE@__Lppl_1java
 
 ')
 
-m4_define(`ppl_Grid_generalized_@AFFIMAGE@_code',
+m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruence_code',
 `dnl
-JNIEXPORT void JNICALL Java_ppl_1java_Grid_generalized_1@1AFFIMAGE@__Lppl_1java_Variable_2Lppl_1java_Relation_1Symbol_2Lppl_1java_Linear_1Expression_2Lppl_1java_Coefficient_2Lppl_1java_Coefficient_2
+JNIEXPORT void JNICALL Java_ppl_1java_@CLASS@_generalized_1@1AFFIMAGE@_1with_1congruence
 (JNIEnv* env, jobject j_this_@LCLASS@, jobject j_variable, jobject j_relsym,
  jobject j_le , jobject j_coeff, jobject j_modulus) {
   try {

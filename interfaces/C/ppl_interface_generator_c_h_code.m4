@@ -268,10 +268,10 @@ PPL_PROTO((ppl_@CLASS@_t ph,
 
 ')
 
-m4_define(`ppl_Grid_generalized_@AFFIMAGE@_code',
+m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruence_code',
 `int
-ppl_Grid_generalized_@AFFIMAGE@
-PPL_PROTO((ppl_Grid_t ph,
+ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruence
+PPL_PROTO((ppl_@CLASS@_t ph,
            ppl_dimension_type var,
            enum ppl_enum_Constraint_Type relsym,
            ppl_const_Linear_Expression_t le,
@@ -280,10 +280,10 @@ PPL_PROTO((ppl_Grid_t ph,
 
 ')
 
-m4_define(`ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs_code',
+m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence_code',
 `int
-ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs
-PPL_PROTO((ppl_Grid_t ph,
+ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence
+PPL_PROTO((ppl_@CLASS@_t ph,
            ppl_const_Linear_Expression_t lhs,
            enum ppl_enum_Constraint_Type relsym,
            ppl_const_Linear_Expression_t rhs,

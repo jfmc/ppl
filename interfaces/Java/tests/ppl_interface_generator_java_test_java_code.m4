@@ -164,10 +164,16 @@ boolean @LTOPOLOGY@@LCLASS@1_@UB_EXACT@
 
 ')
 
-m4_define(`ppl_Grid_generalized_@AFFIMAGE@_code', `
-@LTOPOLOGY@@LCLASS@1.generalized_@AFFIMAGE@(var, Relation_Symbol.EQUAL,
+m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruence_code', `
+@LTOPOLOGY@@LCLASS@1.generalized_@AFFIMAGE@_with_congruence(var,
+                                                    Relation_Symbol.EQUAL,
 						    le, coeff1, coeff1);
+')
 
+m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence_code', `
+@LTOPOLOGY@@LCLASS@1.generalized_@AFFIMAGE@_lhs_rhs_with_congruence(le,
+                                                    Relation_Symbol.EQUAL,
+						    le, coeff1);
 ')
 
 m4_define(`ppl_@CLASS@_equals_@CLASS@_code', `

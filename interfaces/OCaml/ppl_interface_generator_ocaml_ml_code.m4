@@ -220,6 +220,14 @@ external ppl_@TOPOLOGY@@CLASS@_generalized_@AFFIMAGE@:
 
 ')
 
+m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence_code',
+`dnl
+external ppl_@TOPOLOGY@@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence:
+  @LTOPOLOGY@@LCLASS@ -> linear_expression -> relation_symbol -> linear_expression -> Z.t
+    -> unit
+      = "ppl_@TOPOLOGY@@CLASS@_generalized_@AFFIMAGE@1_with_congruence"
+
+')
 
 m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_code',
 `dnl

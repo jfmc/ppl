@@ -466,16 +466,16 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_Grid_generalized_@AFFIMAGE@_code',
+m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruence_code',
 `int
-ppl_Grid_generalized_@AFFIMAGE@
-(ppl_Grid_t ph,
+ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruence
+(ppl_@CLASS@_t ph,
  ppl_dimension_type var,
  enum ppl_enum_Constraint_Type relsym,
  ppl_const_Linear_Expression_t le,
  ppl_const_Coefficient_t d,
  ppl_const_Coefficient_t m) try {
-  Grid& pph = *to_nonconst(ph);
+  @CPP_CLASS@& pph = *to_nonconst(ph);
   const Linear_Expression& lle = *to_const(le);
   const Coefficient& dd = *to_const(d);
   const Coefficient& mm = *to_const(m);
@@ -487,15 +487,15 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs_code',
+m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence_code',
 `int
-ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs
-(ppl_Grid_t ph,
+ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence
+(ppl_@CLASS@_t ph,
  ppl_const_Linear_Expression_t lhs,
  enum ppl_enum_Constraint_Type relsym,
  ppl_const_Linear_Expression_t rhs,
  ppl_const_Coefficient_t m) try {
-  Grid& pph = *to_nonconst(ph);
+  @CPP_CLASS@& pph = *to_nonconst(ph);
   const Linear_Expression& llhs = *to_const(lhs);
   const Linear_Expression& rrhs = *to_const(rhs);
   const Coefficient& mm = *to_const(m);

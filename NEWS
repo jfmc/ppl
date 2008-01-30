@@ -121,6 +121,18 @@ o  Added constructors so that objects of classes C_Polyhedron,
    NNC_Polyhedron, Grid, Box, BD_Shape and Octagonal_Shape are always
    constructible from one another.
 
+o  In the interfaces, the interface procedures for
+   ppl_Grid_generalized_image_lhs_rhs/5 and
+   ppl_Grid_generalized_preimage_lhs_rhs/5
+   ppl_Grid_generalized_image/6 and
+   ppl_Grid_generalized_preimage/6
+   have been renamed as
+   ppl_Grid_generalized_image_lhs_rhs_with_congruence/5
+   ppl_Grid_generalized_preimage_lhs_rhs_with_congruence/5
+   ppl_Grid_generalized_image_with_congruence/6
+   ppl_Grid_generalized_preimage_with_congruence/6
+   so as to allow for /4 and /5, resp., versions
+
 
 Bugfixes
 ========

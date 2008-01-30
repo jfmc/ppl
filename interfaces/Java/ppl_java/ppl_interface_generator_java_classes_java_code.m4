@@ -294,10 +294,10 @@ m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign_code',
 
 ')
 
-m4_define(`ppl_Grid_generalized_@AFFIMAGE@_code',
+m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruence_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
-    public native void generalized_@AFFIMAGE@(Variable var,
+    public native void generalized_@AFFIMAGE@_with_congruence(Variable var,
 				Relation_Symbol relsym,
 				Linear_Expression expr,
 				Coefficient denominator,
@@ -306,10 +306,10 @@ m4_define(`ppl_Grid_generalized_@AFFIMAGE@_code',
 ')
 
 
-m4_define(`ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs_code',
+m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
-    public native void generalized_@AFFIMAGE@(Linear_Expression lhs,
+    public native void generalized_@AFFIMAGE@_lhs_rhs_with_congruence(Linear_Expression lhs,
 				Relation_Symbol relsym,
 				Linear_Expression rhs,
 				Coefficient modulus);
