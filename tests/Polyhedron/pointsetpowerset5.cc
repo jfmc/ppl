@@ -251,6 +251,159 @@ test10() {
   return ok && ps.OK();
 }
 
+bool
+test11() {
+  Variable x(0);
+
+  C_Polyhedron ph1(1);
+  ph1.add_constraint(x == 1);
+
+  C_Polyhedron ph2(1);
+  ph2.add_constraint(x <= 2);
+  Pointset_Powerset<C_Polyhedron> ps(1, EMPTY);
+
+  ps.add_disjunct(ph1);
+  ps.add_disjunct(ph2);
+
+  dimension_type m = 2;
+
+  ps.add_space_dimensions_and_embed(m);
+  bool ok = (ps.space_dimension() == 3 && ps.affine_dimension() == 3);
+
+  ps.add_space_dimensions_and_project(m);
+  bool ok1 = (ps.space_dimension() == 5 && ps.affine_dimension() == 3);
+
+  ps.remove_higher_space_dimensions(4);
+  bool ok2 = (ps.space_dimension() == 4 && ps.affine_dimension() == 3);
+
+  return ok && ok1 && ok2 && ps.OK();
+}
+
+bool
+test12() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+  Variable w(3);
+
+  C_Polyhedron ph1(4);
+  ph1.add_constraint(x == 1);
+  ph1.add_constraint(z == 1);
+
+  C_Polyhedron ph2(4);
+  ph2.add_constraint(x <= 2);
+  ph2.add_constraint(z == 1);
+  Pointset_Powerset<C_Polyhedron> ps(4, EMPTY);
+
+  ps.add_disjunct(ph1);
+  ps.add_disjunct(ph2);
+
+  Variables_Set to_be_removed;
+  to_be_removed.insert(y);
+  to_be_removed.insert(w);
+
+  ps.remove_space_dimensions(to_be_removed);
+  bool ok = (ps.space_dimension() == 2 && ps.affine_dimension() == 1);
+
+  return ok && ps.OK();
+}
+
+bool
+test13() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+  Variable w(3);
+
+  C_Polyhedron ph1(4);
+  ph1.add_constraint(x == 1);
+  ph1.add_constraint(z == 1);
+
+  C_Polyhedron ph2(4);
+  ph2.add_constraint(x <= 2);
+  ph2.add_constraint(z == 1);
+  Pointset_Powerset<C_Polyhedron> ps(4, EMPTY);
+
+  ps.add_disjunct(ph1);
+  ps.add_disjunct(ph2);
+
+  ps.expand_space_dimension(y, 2);
+  bool ok = (ps.space_dimension() == 6 && ps.affine_dimension() == 5);
+
+  return ok && ps.OK();
+}
+
+bool
+test14() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+  Variable w(3);
+
+  C_Polyhedron ph1(4);
+  ph1.add_constraint(x == 1);
+  ph1.add_constraint(z == 1);
+
+  C_Polyhedron ph2(4);
+  ph2.add_constraint(x <= 2);
+  ph2.add_constraint(z == 1);
+  Pointset_Powerset<C_Polyhedron> ps(4, EMPTY);
+
+  ps.add_disjunct(ph1);
+  ps.add_disjunct(ph2);
+
+  Variables_Set to_be_folded;
+  to_be_folded.insert(y);
+  to_be_folded.insert(w);
+
+  ps.fold_space_dimensions(to_be_folded, z);
+  bool ok = (ps.space_dimension() == 2 && ps.affine_dimension() == 2);
+
+  return ok && ps.OK();
+}
+
+// Constructs the powerset of one polyhedron { x >= 0, x <= 1/2, y >= 0 }
+// from the corresponding box.
+bool
+test15() {
+  Variable x(0);
+  Variable y(1);
+
+  Rational_Box box(2);
+  box.add_constraint(x >= 0);
+  box.add_constraint(2*x <= 1);
+  box.add_constraint(y >= 0);
+
+  Pointset_Powerset<C_Polyhedron> pps(box);
+
+  Pointset_Powerset<C_Polyhedron> known_pps(2);
+  known_pps.add_constraint(x >= 0);
+  known_pps.add_constraint(2*x <= 1);
+  known_pps.add_constraint(y >= 0);
+
+  bool ok = (pps == known_pps);
+
+  return ok;
+}
+
+// Constructs the powerset of one polyhedron
+// from the empty box.
+bool
+test16() {
+  Variable x(0);
+  Variable y(1);
+
+  Rational_Box box(2, EMPTY);
+
+  Pointset_Powerset<C_Polyhedron> pps(box);
+
+  Pointset_Powerset<C_Polyhedron> known_pps(2, EMPTY);
+
+  bool ok = (pps == known_pps);
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -264,4 +417,10 @@ BEGIN_MAIN
   DO_TEST(test08);
   DO_TEST(test09);
   DO_TEST(test10);
+  DO_TEST(test11);
+  DO_TEST(test12);
+  DO_TEST(test13);
+  DO_TEST(test14);
+  DO_TEST(test15);
+  DO_TEST(test16);
 END_MAIN

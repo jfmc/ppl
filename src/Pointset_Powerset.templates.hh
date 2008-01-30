@@ -336,6 +336,33 @@ Pointset_Powerset<PS>::map_space_dimensions(const Partial_Function& pfunc) {
 
   template <typename PS>
   void
+  Pointset_Powerset<PS>::expand_space_dimension(Variable var,
+						 dimension_type m) {
+    Pointset_Powerset& x = *this;
+    for (Sequence_iterator si = x.sequence.begin(),
+	   s_end = x.sequence.end(); si != s_end; ++si)
+      si->element().expand_space_dimension(var, m);
+    x.space_dim += m;
+    assert(x.OK());
+  }
+
+  template <typename PS>
+  void
+  Pointset_Powerset<PS>::fold_space_dimensions(const Variables_Set& to_be_folded,
+					       Variable var) {
+    Pointset_Powerset& x = *this;
+    Variables_Set::size_type num_folded = to_be_folded.size();
+    if (num_folded > 0) {
+      for (Sequence_iterator si = x.sequence.begin(),
+	     s_end = x.sequence.end(); si != s_end; ++si)
+	si->element().fold_space_dimensions(to_be_folded, var);
+    }
+    x.space_dim -= num_folded;
+    assert(x.OK());
+  }
+
+  template <typename PS>
+  void
   Pointset_Powerset<PS>::affine_image(Variable var,
 				      const Linear_Expression& expr,
 				      Coefficient_traits::const_reference

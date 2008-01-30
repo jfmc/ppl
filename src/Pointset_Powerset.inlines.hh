@@ -86,6 +86,16 @@ Pointset_Powerset<PS>::Pointset_Powerset(const Congruence_System& cgs)
 }
 
 template <typename PS>
+template <typename Interval>
+Pointset_Powerset<PS>::Pointset_Powerset(const Box<Interval>& box)
+  : Base(), space_dim(box.space_dimension()) {
+  Pointset_Powerset& x = *this;
+  if (!box.is_empty())
+    x.sequence.push_back(Determinate<PS>(PS(box)));
+  assert(OK());
+}
+
+template <typename PS>
 inline Pointset_Powerset<PS>&
 Pointset_Powerset<PS>::operator=(const Pointset_Powerset& y) {
   Pointset_Powerset& x = *this;
