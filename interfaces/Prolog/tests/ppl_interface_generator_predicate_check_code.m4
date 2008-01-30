@@ -606,7 +606,12 @@ ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_3_test :-
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
      ppl_relation_test_data(TEST_DATA, @RELATION_REPRESENT@, R, Rel_Expected),
      ppl_@CLASS@_relation_with_@RELATION_REPRESENT@(PS, R, Rel),
-     Rel = Rel_Expected,
+     (class_@CLASS@ == class_Polyhedron ; class_@CLASS@ == class_Grid
+     ->
+       Rel = Rel_Expected
+     ;
+       true
+     ),
      ppl_delete_@CLASS@(PS)
    ->
      fail ; (class_@CLASS@ == class_BD_Shape_int8_t -> fail ; true))
