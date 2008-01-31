@@ -388,7 +388,7 @@ dnl if it is, it checks if +Group or -Group
 dnl (depending if +_or_- is + or -) is included in the Procedure_Spec;
 dnl if it is, then it expands to 1, otherwise, expands to 0.
 m4_define(`m4_keep_or_throw_for_one_group', `dnl
-m4_ifelse(m4_arg_counter(m4_class_kind$1, m4_$4_group), `', 0,
+m4_ifelse(m4_arg_counter($1, m4_$4_group), `', 0,
   `m4_ifelse(m4_index($2, $3$4), -1, 0, 1)')`'dnl
 ')
 
@@ -423,8 +423,15 @@ dnl if so, it expands to Procedure_Spec.
 m4_define(`m4_filter_one_procedure', `dnl
 m4_define(`m4_proc_info_string',
        `m4_patsubst(`$2', `[ ]*ppl_[^ ]+ \(.*\)', \1)')`'dnl
-m4_ifelse(m4_keep_or_throw($1, m4_proc_info_string, -, m4_group_names), 1, 0,
-  m4_keep_or_throw($1, m4_proc_info_string, +, m4_group_names))`'dnl
+m4_ifelse(m4_keep_or_throw(m4_class_kind$1, m4_proc_info_string, -,
+                           m4_group_names),
+  1, 0,
+    m4_ifelse(m4_keep_or_throw(m4_remove_topology(m4_class_body$1),
+                               m4_proc_info_string, \,
+                               m4_group_names),
+      1, 0,
+        m4_keep_or_throw(m4_class_kind$1, m4_proc_info_string, +,
+                         m4_group_names)))`'dnl
 m4_undefine(m4_proc_info_string)`'dnl
 ')
 

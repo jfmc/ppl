@@ -158,7 +158,7 @@ m4_get_class_group(`$1')`'dnl
 m4_get_class_body(`$1', `$2')`'dnl
 dnl
 m4_ifelse(m4_class_group`'$1, Product,
-              m4_parse_body_class(`$1'))`'dnl
+  m4_parse_body_class(`$1'))`'dnl
 dnl
 ')
 
@@ -814,15 +814,16 @@ dnl ---------------------------------------------------------------------
 dnl pattern == partition
 dnl The "partition" which is currently only available for the Polyhedron
 dnl and Grid Pointset_Powerset classes.
+dnl FIXME: However because of differences between the
+dnl linear and approximate partitions, we have to have these
+dnl separate. Thus approximate_partition for Grids
+dnl is defined without any pattern.
 dnl ---------------------------------------------------------------------
 
 m4_define(`m4_partition_replacement', `NONE')
 m4_define(`m4_Pointset_Powerset_partition_replacement',
-          `m4_ifelse(
-          m4_echo_unquoted(m4_remove_topology(m4_disjunct_kind($1))),
-          `Polyhedron', `linear_partition',
-          m4_echo_unquoted(m4_remove_topology(m4_disjunct_kind($1))),
-          `Grid', `approximate_partition')')
+  `m4_ifelse(m4_echo_unquoted(m4_remove_topology(m4_disjunct_kind($1))),
+      `Polyhedron', `linear_partition')')
 
 dnl ---------------------------------------------------------------------
 dnl pattern == has_prperty
@@ -841,15 +842,27 @@ m4_define(`m4_product_has_property_replacement',
           `is_empty, is_universe, is_bounded, is_topologically_closed,
             is_discrete')
 
-dnl  The "simplify" predicates
+dnl ---------------------------------------------------------------------
+dnl pattern == simplify
+dnl This just groups two methods that modify a domain element.
+dnl ---------------------------------------------------------------------
+
 m4_define(`m4_simplify_replacement', `topological_closure_assign')
 m4_define(`m4_Pointset_Powerset_simplify_replacement',
           `m4_simplify_replacement, pairwise_reduce')
 
-dnl  Above or below
+dnl ---------------------------------------------------------------------
+dnl pattern -- above/below
+dnl Used for the bounds_from_above and bounds_from_below methods.
+dnl ---------------------------------------------------------------------
+
 m4_define(`m4_abovebelow_replacement', `above, below')
 
-dnl  Maximize or Minimize
+dnl ---------------------------------------------------------------------
+dnl pattern == maxmin
+dnl Maximize or Minimize
+dnl ---------------------------------------------------------------------
+
 m4_define(`m4_maxmin_replacement', `maximize, minimize')
 
 dnl  Embed or project

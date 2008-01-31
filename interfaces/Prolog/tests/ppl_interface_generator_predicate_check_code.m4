@@ -737,15 +737,19 @@ ppl_@CLASS@_bounds_from_@ABOVEBELOW@_2_test :-
    choose_test(TEST_DATA, Space_Dim),
    (
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
-     (ppl_bounds_test_data(TEST_DATA, @CONSTRAINER@s, LE,
-                           @ABOVEBELOW@, true)
+     ((
+       class_@DISJUNCT@ \= class_Grid,
+       ppl_bounds_test_data(TEST_DATA, @CONSTRAINER@s, LE,
+                           @ABOVEBELOW@, true))
      ->
        ppl_@CLASS@_bounds_from_@ABOVEBELOW@(PS, LE)
      ;
        true
      ),
-     (ppl_bounds_test_data(TEST_DATA, @CONSTRAINER@s, LE1,
-                           @ABOVEBELOW@, false)
+     ((
+       class_@DISJUNCT@ \= class_Grid,
+       ppl_bounds_test_data(TEST_DATA, @CONSTRAINER@s, LE1,
+                           @ABOVEBELOW@, false))
      ->
        \+ ppl_@CLASS@_bounds_from_@ABOVEBELOW@(PS, LE1)
      ;
