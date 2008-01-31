@@ -654,6 +654,12 @@ Partially_Reduced_Product<D1, D2, R>::ascii_dump(std::ostream& s) const {
   d2.ascii_dump(s);
 }
 
+template <typename D1, typename D2, typename R>
+inline int32_t
+Partially_Reduced_Product<D1, D2, R>::hash_code() const {
+  return space_dimension() & 0x7fffffff;
+}
+
 /*! \relates Parma_Polyhedra_Library::Partially_Reduced_Product */
 template <typename D1, typename D2, typename R>
 inline bool

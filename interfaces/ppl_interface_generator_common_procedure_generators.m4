@@ -90,6 +90,7 @@ ppl_@CLASS@_expand_space_dimension/3 *nofail +all,
 ppl_@CLASS@_fold_space_dimensions/3  +all,
 ppl_@CLASS@_map_space_dimensions/2 +all,
 ppl_@CLASS@_ascii_dump/1 +all,
+ppl_@CLASS@_@MEMBYTES@/2 +all,
 dnl
 dnl FIXME: We do not have a default widening for the
 dnl        pointset_powerset domain.
@@ -111,7 +112,6 @@ dnl
 dnl NOTE: The next few schemas provide procedures specifically for
 dnl       the pointset_powerset domains.
 dnl
-ppl_@CLASS@_size/2 +pointset_powerset,
 ppl_@CLASS@_iterator_equals_iterator/2 +pointset_powerset,
 ppl_@CLASS@_@BEGINEND@_iterator/2 +pointset_powerset,
 ppl_@CLASS@_delete_iterator/1 +pointset_powerset,

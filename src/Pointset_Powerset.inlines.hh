@@ -195,6 +195,12 @@ Pointset_Powerset<PS>::total_memory_in_bytes() const {
 }
 
 template <typename PS>
+inline int32_t
+Pointset_Powerset<PS>::hash_code() const {
+  return space_dimension() & 0x7fffffff;
+}
+
+template <typename PS>
 inline void
 Pointset_Powerset<PS>
 ::poly_difference_assign(const Pointset_Powerset& y) {

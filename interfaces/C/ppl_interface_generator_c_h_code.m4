@@ -399,9 +399,9 @@ PPL_PROTO((ppl_@CLASS@_t ph,
 
 ')
 
-m4_define(`ppl_@CLASS@_size_code',
+m4_define(`ppl_@CLASS@_@MEMBYTES@_code',
 `int
-ppl_@CLASS@_size
+ppl_@CLASS@_@MEMBYTES@
 PPL_PROTO((ppl_const_@CLASS@_t ps,
            size_t* sz));
 

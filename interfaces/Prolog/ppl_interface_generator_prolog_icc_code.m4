@@ -441,23 +441,6 @@ ppl_@CLASS@_add_disjunct(Prolog_term_ref t_ph, Prolog_term_ref t_d) {
 
 ')
 
-m4_define(`ppl_@CLASS@_size_code',
-`extern "C" Prolog_foreign_return_type
-ppl_@CLASS@_size(Prolog_term_ref t_pps,
-		 Prolog_term_ref t_s) {
-  static const char* where = "ppl_@CLASS@_size/2";
-  try {
-    @CPP_CLASS@* pps = term_to_handle<@CPP_CLASS@ >(t_pps, where);
-    PPL_CHECK(pps);
-
-    if (unify_ulong(t_s, pps->size()))
-      return PROLOG_SUCCESS;
-  }
-  CATCH_ALL;
-}
-
-')
-
 m4_define(`ppl_@CLASS@_@PARTITION@_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_@PARTITION@(Prolog_term_ref t_ph,
@@ -1586,6 +1569,23 @@ ppl_@CLASS@_ascii_dump
   }
   CATCH_ALL;
 }
+
+m4_define(`ppl_@CLASS@_@MEMBYTES@_code',
+`extern "C" Prolog_foreign_return_type
+ppl_@CLASS@_@MEMBYTES@(Prolog_term_ref t_pps,
+		 Prolog_term_ref t_m) {
+  static const char* where = "ppl_@CLASS@_@MEMBYTES@/2";
+  try {
+    @CPP_CLASS@* pps = term_to_handle<@CPP_CLASS@ >(t_pps, where);
+    PPL_CHECK(pps);
+
+    if (unify_ulong(t_m, pps->@MEMBYTES@()))
+      return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+')
 
 ')
 

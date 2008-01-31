@@ -34,9 +34,9 @@ dnl in the ppl_interface_generator_*_code.m4 file.
 dnl The <name> must be exactly as written here.
 dnl
 m4_define(`m4_procedure_list', `m4_echo_unquoted(`m4_common_procedure_list',
-ppl_free_@CLASS@/1 +simple_pps +product,
-ppl_@CLASS@_hashcode/2 +simple,
-ppl_@CLASS@_string/1 +simple_pps)dnl
+ppl_free_@CLASS@/1 +all,
+ppl_@CLASS@_hashcode/2 +all,
+ppl_@CLASS@_string/1 +all)dnl
 ')
 
 dnl TODO

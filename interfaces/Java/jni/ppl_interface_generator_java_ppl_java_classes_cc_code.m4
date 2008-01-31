@@ -86,16 +86,6 @@ return j_obj;
 }
 ')
 
-m4_define(`ppl_@CLASS@_size_code',
-`JNIEXPORT jlong JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_size
-(JNIEnv* env, jobject j_pps) {
-  jlong this_ptr = get_ptr(env, j_pps);
-  @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
-  return this_@LCLASS@->size();
-}
-
-')
-
 m4_define(`ppl_@CLASS@_drop_disjunct_code',
 `dnl
 JNIEXPORT void JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_drop_1disjunct
@@ -863,12 +853,12 @@ JNIEXPORT jstring JNICALL Java_ppl_1java_@1CLASS@_toString
 }
 ')
 
-m4_define(`ppl_@CLASS@_total_memory_in_bytes_code',
-`JNIEXPORT jlong JNICALL Java_ppl_1java_@1CLASS@_total_1memory_1in_1bytes
+m4_define(`ppl_@CLASS@_@MEMBYTES@_code',
+`JNIEXPORT jlong JNICALL Java_ppl_1java_@1CLASS@_@1MEMBYTES@
 (JNIEnv* env, jobject j_pps) {
   jlong this_ptr = get_ptr(env, j_pps);
   @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
-  return this_@LCLASS@->total_memory_in_bytes();
+  return this_@LCLASS@->@MEMBYTES@();
 }
 
 ')

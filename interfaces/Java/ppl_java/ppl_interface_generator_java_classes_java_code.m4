@@ -427,17 +427,10 @@ m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_size_code',
+m4_define(`ppl_@CLASS@_@MEMBYTES@_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
-  public native long size();
-
-')
-
-m4_define(`ppl_@CLASS@_total_memory_in_bytes_code',
-`dnl
-%<--%<--%<-- @CLASS@.java
-  public native long total_memory_in_bytes();
+  public native long @MEMBYTES@();
 
 ')
 

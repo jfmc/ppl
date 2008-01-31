@@ -286,6 +286,13 @@ external ppl_@TOPOLOGY@@CLASS@_OK:
 ')
 
 
+m4_define(`ppl_@CLASS@_@MEMBYTES@_code',
+ `
+ external ppl_@TOPOLOGY@@CLASS@_@MEMBYTES@:
+ @LTOPOLOGY@@LCLASS@  -> int = "ppl_@TOPOLOGY@@CLASS@__@MEMBYTES@"
+
+')
+
 m4_define(`ppl_@CLASS@_swap_code',
 `dnl
 external ppl_@TOPOLOGY@@CLASS@_swap:
@@ -368,14 +375,6 @@ m4_define(`ppl_@CLASS@_drop_disjunct_code',
  @LCLASS@  ->  @LCLASS@_iterator -> unit =
  "ppl_@CLASS@_drop_disjunct"
 
-
-')
-
-m4_define(`ppl_@CLASS@_size_code',
- `
- external ppl_@CLASS@_size:
- @LCLASS@  -> int =
- "ppl_@CLASS@_size"
 
 ')
 

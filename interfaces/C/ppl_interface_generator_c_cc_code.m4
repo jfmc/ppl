@@ -684,13 +684,12 @@ CATCH_ALL
 
 ')
 
-
-m4_define(`ppl_@CLASS@_size_code',
+m4_define(`ppl_@CLASS@_@MEMBYTES@_code',
 `int
-ppl_@CLASS@_size
+ppl_@CLASS@_@MEMBYTES@
 (ppl_const_@CLASS@_t ps,
  size_t* sz) try {
-  *sz = to_const(ps)->size();
+  *sz = to_const(ps)->@MEMBYTES@();
   return 0;
 }
 CATCH_ALL

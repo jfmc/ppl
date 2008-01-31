@@ -410,7 +410,8 @@ narrow,
 limitedbounded,
 box,
 incdec,
-beginend')
+beginend,
+membytes')
 
 dnl ---------------------------------------------------------------------
 dnl Define the replacements for these patterns
@@ -750,7 +751,7 @@ m4_define(`m4_Pointset_Powerset_relation_represent_replacement',
 m4_define(`m4_Product_relation_represent_replacement',
          `m4_relation_represent_replacement, congruence')
 
-dnl  The type of these relations with a class.
+dnl The type of these relations with a class.
 m4_define(`m4_relation_represent_alt_replacement', `con, gen')
 m4_define(`m4_Polyhedron_relation_represent_alt_replacement',
          `con, gen, con')
@@ -761,40 +762,60 @@ m4_define(`m4_Pointset_Powerset_relation_represent_alt_replacement',
 m4_define(`m4_product_relation_represent_alt_replacement',
          `con, gen, con')
 
-dnl  The different kinds of objects that can be added to a class.
+dnl ---------------------------------------------------------------------
+dnl pattern == add_represent
+dnl The different kinds of objects that can be added to a class.
+dnl ---------------------------------------------------------------------
+
 m4_define(`m4_add_represent_replacement', `constraint, congruence')
 m4_define(`m4_Polyhedron_add_represent_replacement',
          `m4_add_represent_replacement, generator')
 m4_define(`m4_Grid_add_represent_replacement',
          `m4_add_represent_replacement, grid_generator')
 
-dnl  The different kinds of objects that can be obtained from a
-dnl  class description.
+dnl ---------------------------------------------------------------------
+dnl pattern == get_represent
+dnl The different kinds of objects that can be obtained from a
+dnl class description.
+dnl ---------------------------------------------------------------------
+
 m4_define(`m4_get_represent_replacement', `constraint')
 m4_define(`m4_Polyhedron_get_represent_replacement',
          `constraint, generator, congruence')
 m4_define(`m4_Grid_get_represent_replacement',
          `congruence, grid_generator')
 
-dnl  The recycling argument which is only needed for the Polyhedron
-dnl  or Grid class.
+dnl ---------------------------------------------------------------------
+dnl pattern == recycle_represent
+dnl The recycling argument which is only needed for the Polyhedron
+dnl or Grid class.
+dnl ---------------------------------------------------------------------
+
 m4_define(`m4_recycle_replacement', `')
 m4_define(`m4_Polyhedron_recycle_replacement',
          `@COMMA@ Recycle_Input()')
 m4_define(`m4_Grid_recycle_replacement',
          `@COMMA@ Recycle_Input()')
 
-dnl  The "superclass" is the most general class for the disjunct kind.
-dnl  For grids it is Grid and for all the other
-dnl  simple classes, it is NNC_Polyhedron.
+dnl ---------------------------------------------------------------------
+dnl pattern == superclass
+dnl The "superclass" is the most general class for the disjunct kind.
+dnl For grids it is Grid and for all the other simple classes,
+dnl it is NNC_Polyhedron. The default is NONE.
+dnl ---------------------------------------------------------------------
+
 m4_define(`m4_superclass_replacement', `NONE')
 m4_define(`m4_Pointset_Powerset_superclass_replacement',
           `m4_ifelse(
           m4_echo_unquoted(m4_disjunct_kind($1)),
           `Grid', `Grid', `NNC_Polyhedron')')
 
-dnl  The "partition" which is currently only available for the Polyhedron
-dnl  and Grid Pointset_Powerset classes.
+dnl ---------------------------------------------------------------------
+dnl pattern == partition
+dnl The "partition" which is currently only available for the Polyhedron
+dnl and Grid Pointset_Powerset classes.
+dnl ---------------------------------------------------------------------
+
 m4_define(`m4_partition_replacement', `NONE')
 m4_define(`m4_Pointset_Powerset_partition_replacement',
           `m4_ifelse(
@@ -803,14 +824,22 @@ m4_define(`m4_Pointset_Powerset_partition_replacement',
           m4_echo_unquoted(m4_remove_topology(m4_disjunct_kind($1))),
           `Grid', `approximate_partition')')
 
-dnl  The unary "has_property" predicates
-m4_define(`m4_has_property_replacement', `is_empty, is_universe, is_bounded, contains_integer_point, is_topologically_closed')
+dnl ---------------------------------------------------------------------
+dnl pattern == has_prperty
+dnl The unary "has_property" predicates check properties of the domains
+dnl The check "contains_integer_point" is not available for the
+dnl product domains.
+dnl ---------------------------------------------------------------------
+
+m4_define(`m4_has_property_replacement', `is_empty, is_universe,
+            is_bounded, contains_integer_point, is_topologically_closed')
 m4_define(`m4_Polyhedron_has_property_replacement',
           `m4_has_property_replacement, is_discrete')
 m4_define(`m4_Grid_has_property_replacement',
           `m4_has_property_replacement, is_discrete')
 m4_define(`m4_product_has_property_replacement',
-          `is_empty, is_universe, is_bounded, is_topologically_closed, is_discrete')
+          `is_empty, is_universe, is_bounded, is_topologically_closed,
+            is_discrete')
 
 dnl  The "simplify" predicates
 m4_define(`m4_simplify_replacement', `topological_closure_assign')
@@ -884,3 +913,10 @@ m4_define(`m4_incdec_alt_replacement', `next, prev')
 
 dnl  The iterators for the Powerset domains have a begin and end iterator
 m4_define(`m4_beginend_replacement', `begin, end')
+
+dnl  The total and external memory query methods for all the domains
+dnl  and the size query to the pointset powerset domain.
+m4_define(`m4_membytes_replacement',
+  `external_memory_in_bytes, total_memory_in_bytes')
+m4_define(`m4_Pointset_Powerset_membytes_replacement',
+  `m4_membytes_replacement, size')

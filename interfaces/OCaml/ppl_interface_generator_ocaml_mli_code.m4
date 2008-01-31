@@ -251,6 +251,12 @@ val ppl_@TOPOLOGY@@CLASS@_OK:
  @LTOPOLOGY@@LCLASS@ -> bool
 ')
 
+m4_define(`ppl_@CLASS@_@MEMBYTES@_code',
+ `
+ val ppl_@TOPOLOGY@@CLASS@_@MEMBYTES@:
+ @LTOPOLOGY@@LCLASS@  -> int
+')
+
 
 m4_define(`ppl_@CLASS@_swap_code',
 `dnl
@@ -323,10 +329,4 @@ m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
  val ppl_@CLASS@_iterator_@INCDEC@:
   @LCLASS@_iterator -> unit
 
-')
-
-m4_define(`ppl_@CLASS@_size_code',
- `
- val ppl_@CLASS@_size:
- @LCLASS@  -> int
 ')

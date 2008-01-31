@@ -607,6 +607,19 @@ CATCH_ALL
 
 ')
 
+m4_define(`ppl_@CLASS@_@MEMBYTES@_code',
+`
+ extern "C"
+CAMLprim value
+ ppl_@TOPOLOGY@@CLASS@_@MEMBYTES@(value ph) try {
+CAMLparam1(ph);
+@CPP_CLASS@& pph = *p_@TOPOLOGY@@CLASS@_val(ph);
+ CAMLreturn(Val_int(pph.@MEMBYTES@()));
+ }
+ CATCH_ALL
+
+ ')
+
 m4_define(`ppl_@CLASS@_swap_code',
 `dnl
 extern "C"
@@ -780,19 +793,6 @@ CAMLprim value
    CAMLreturn(Val_bool(true));
  else
    CAMLreturn(Val_bool(false));
- }
- CATCH_ALL
-
- ')
-
-m4_define(`ppl_@CLASS@_size_code',
-`
- extern "C"
-CAMLprim value
- ppl_@CLASS@_size(value caml_pps) try {
-CAMLparam1(caml_pps);
-@CPP_CLASS@& pps = *p_@CLASS@_val(caml_pps);
- CAMLreturn(Val_int(pps.size()));
  }
  CATCH_ALL
 

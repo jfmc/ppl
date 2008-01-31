@@ -403,21 +403,19 @@ ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_2_test :-
 
 ')
 
-m4_define(`ppl_@CLASS@_size_code',
+m4_define(`ppl_@CLASS@_@MEMBYTES@_code',
 `
-ppl_@CLASS@_size_2_test :-
+ppl_@CLASS@_@MEMBYTES@_2_test :-
   (
    choose_test(TEST_DATA, _Space_Dim),
    ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@, @CONSTRAINER@s, RS),
    (
-     clean_ppl_new_@TOPOLOGY@@CLASS@_from_@CONSTRAINER@s(RS, PPS),
-     ppl_@CLASS@_size(PPS, S),
-     S == 1,
-     ppl_@CLASS@_begin_iterator(PPS, It),
-     ppl_@CLASS@_drop_disjunct(PPS, It),
-     ppl_@CLASS@_size(PPS, 0),
-     ppl_@CLASS@_delete_iterator(It),
-     ppl_delete_@CLASS@(PPS)
+     clean_ppl_new_@TOPOLOGY@@CLASS@_from_@CONSTRAINER@s(RS, PH),
+     ppl_@CLASS@_@MEMBYTES@(PH, S),
+     ((noisy(N), N < 2) -> true ;
+       display_message([nl, for, TEST_DATA, the, @MEMBYTES@, is, S, nl])
+     ),
+     ppl_delete_@CLASS@(PH)
    ->
      fail ; true)
   ).
