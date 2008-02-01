@@ -402,7 +402,7 @@ m4_define(`ppl_@CLASS@_delete_iterator_code',
 m4_define(`ppl_@CLASS@_get_disjunct_code',
 `dnl
 %<--%<--%<-- @CLASS@_Iterator.java
-  public native @CLASSTOPOLOGY@@CPP_DISJUNCT@ get_disjunct();
+  public native @CLASSTOPOLOGY@@DISJUNCT@ get_disjunct();
 
 ')
 

@@ -451,10 +451,10 @@ ppl_@CLASS@_@PARTITION@(Prolog_term_ref t_ph,
   static const char* where = "ppl_@CLASS@_@PARTITION@/4";
   try {
     const @CLASSTOPOLOGY@@CPP_DISJUNCT@* ph =
-        term_to_handle<@CLASSTOPOLOGY@@CPP_DISJUNCT@>(t_ph, where);
+        term_to_handle<@CLASSTOPOLOGY@@CPP_DISJUNCT@ >(t_ph, where);
     PPL_CHECK(ph);
     const @CLASSTOPOLOGY@@CPP_DISJUNCT@* qh =
-        term_to_handle<@CLASSTOPOLOGY@@CPP_DISJUNCT@>(t_qh, where);
+        term_to_handle<@CLASSTOPOLOGY@@CPP_DISJUNCT@ >(t_qh, where);
     PPL_CHECK(qh);
 
     Prolog_term_ref t_r_first = Prolog_new_term_ref();
@@ -493,10 +493,10 @@ ppl_@CLASS@_approximate_partition(Prolog_term_ref t_ph,
   static const char* where = "ppl_@CLASS@_approximate_partition/5";
   try {
     const @CLASSTOPOLOGY@@CPP_DISJUNCT@* ph =
-        term_to_handle<@CLASSTOPOLOGY@@CPP_DISJUNCT@>(t_ph, where);
+        term_to_handle<@CLASSTOPOLOGY@@CPP_DISJUNCT@ >(t_ph, where);
     PPL_CHECK(ph);
     const @CLASSTOPOLOGY@@CPP_DISJUNCT@* qh =
-        term_to_handle<@CLASSTOPOLOGY@@CPP_DISJUNCT@>(t_qh, where);
+        term_to_handle<@CLASSTOPOLOGY@@CPP_DISJUNCT@ >(t_qh, where);
     PPL_CHECK(qh);
     bool finite;
 

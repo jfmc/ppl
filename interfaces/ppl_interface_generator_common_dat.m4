@@ -102,8 +102,12 @@ dnl
 dnl Parses the "@"-separated list of class names Class_List
 dnl to be used in the C++ code implementing the interface procedures.
 dnl Note that first the "," is replaced using the macro m4_subst_comma.
+
+dnl NEW
 m4_define(`m4_init_cplusplus_classes',
-  `m4_init_cplusplus_classes_aux(1, m4_subst_comma($@))')
+  `m4_init_cplusplus_classes_aux(1, m4_subst_comma($@))`'dnl
+   m4_init_all_class_definitions(1)`'dnl
+')
 
 dnl m4_init_cplusplus_classes_aux(Class_Counter, Class_List)
 dnl
@@ -115,6 +119,7 @@ dnl cplusplus names and then calls itself to recursively
 dnl process the rest of the list.
 dnl The COMMA pattern is revised to @COMMA@ as soon as a class name
 dnl has been separated from the @-separated list of classes.
+dnl NEW
 m4_define(`m4_init_cplusplus_classes_aux', `dnl
 m4_ifelse($2, `',  `',
   m4_regexp(`$2', `\([^@]+\)@?\(.*\)',
@@ -128,6 +133,7 @@ dnl Class_Counter - is the index to the next class in Class_List;
 dnl Class         - is the cplusplus class name, as input;
 dnl Class_List    - is a tail part of the input list of cplusplus
 dnl                 class names.
+dnl NEW
 m4_define(`m4_init_cplusplus_names', `dnl
 m4_init_cplusplus_names_aux($1, $2)`'dnl
 m4_init_cplusplus_classes_aux(m4_incr($1), $3)`'dnl
@@ -151,32 +157,35 @@ dnl m4_cplusplus_class`'Class_Counter_1 and
 dnl m4_cplusplus_class`'Class_Counter_2
 dnl for the two components.
 dnl
+')
+dnl NEW
 m4_define(`m4_init_cplusplus_names_aux', `dnl
 m4_define(m4_cplusplus_class`'$1, `$2')`'dnl
-m4_get_class_kind(`$1', `$2')`'dnl
-m4_get_class_group(`$1')`'dnl
-m4_get_class_body(`$1', `$2')`'dnl
+')
+
+dnl NEW
+m4_define(`m4_init_all_class_definitions', `dnl
+m4_init_class_definitions($1, m4_cplusplus_class`'$1, class)`'dnl
+m4_ifelse($1, m4_num_classes, ,
+    `m4_init_all_class_definitions(m4_incr($1))')
+')
+
+dnl NEW
+m4_define(`m4_init_class_definitions', `dnl
+m4_get_kind($1, $2, $3)`'dnl
+m4_get_group($1, $3)`'dnl
+m4_get_body($1, $2, $3)`'dnl
 dnl
-m4_ifelse(m4_class_group`'$1, Product,
-  m4_parse_body_class(`$1'))`'dnl
+m4_ifelse(m4_$3_group$1, pointset_powerset,
+  `m4_parse_body_for_powerset($1, $2, $3)')`'dnl
+dnl
+m4_ifelse(m4_$3_group$1, product,
+  `m4_parse_body_for_product($1, $2, $3)')`'dnl
 dnl
 ')
 
-dnl m4_parse_body_class(Class_Counter)
-dnl This only should be called when the class kind is a product
-dnl and the components are separated by "@COMMA@".
-dnl The components are defined as:
-dnl m4_interface_class`'Class_Counter_1 and
-dnl m4_interface_class`'Class_Counter_2
-m4_define(`m4_parse_body_class', `dnl
-m4_define(m4_body$1`'_1,
-`m4_regexp(m4_class_body$1, `\([^@]*\).*', `\1')')`'dnl
-m4_define(m4_body$1`'_2,
-    `m4_regexp(m4_class_body$1, `\([^@]*\)@COMMA@\(.*\)', `\2')')`'dnl
-')
-
-dnl m4_get_class_kind(Class_Counter, String)
-dnl m4_get_class_body(Class_Counter, String)
+dnl m4_get_kind(Class_Counter, String)
+dnl m4_get_body(Class_Counter, String)
 dnl
 dnl String = a cplusplus class name.
 dnl
@@ -193,18 +202,75 @@ dnl If String = Pointset_Powerset<BD_Shape<signed char> >
 dnl               and Class_Counter = 2
 dnl m4_class_kind2 => `Pointset_Powerset'
 dnl m4_class_body2 => `BD_Shape<signed char>'
-m4_define(`m4_get_class_kind',
-  `m4_define(m4_class_kind`'$1,
-    `m4_ifelse($2, `', ,
-               m4_index($2, <), -1, $2,
-                 m4_regexp($2, `\([^ <]+\)[.]*', `\1'))')`'dnl
-')
-
-m4_define(`m4_get_class_body',
-  `m4_define(m4_class_body`'$1,
+dnl NEW
+m4_define(`m4_get_body',
+  `m4_define(m4_$3_body`'$1,
     `m4_ifelse($2, `', ,
                m4_index(`$2', <), -1, `',
                  m4_regexp(`$2', `[^ <]+[<]\(.*\w>?\)[ ]*[>]', `\1'))')`'dnl
+')
+
+m4_define(`m4_get_kind',
+  `m4_define(m4_$3_kind`'$1,
+    `m4_ifelse($2, `', ,
+               m4_index($2, <), -1, m4_remove_topology($2),
+                 m4_regexp($2, `\([^ <]+\)[.]*', `\1'))')`'dnl
+')
+
+dnl NEW
+m4_define(`m4_get_group',
+  `m4_define(m4_$2_group`'$1, `')`'dnl
+m4_get_group_aux($1, $2, m4_class_groups)')
+
+dnl NEW
+m4_define(`m4_get_group_aux', `dnl
+m4_ifelse($#, 0, , $#, 1, , $#, 2, , $#, 3,
+    m4_get_group_aux2($1, $2, $3, m4_$3_group),
+    `m4_ifelse(m4_get_group_aux2($1, $2, $3, m4_$3_group), 0,
+      `m4_get_group_aux($1, $2, m4_shift(m4_shift(m4_shift($@))))')')')
+
+dnl NEW
+m4_define(`m4_get_group_aux2', `dnl
+m4_ifelse($#, 0, , $#, 1, , $#, 2, 0, $#, 3, 0, $#, 4,
+  m4_ifelse(`$4', m4_$2_kind$1,
+    `m4_define(m4_$2_group`'$1, `$3')', 0),
+  `m4_ifelse(`$4', m4_$2_kind$1,
+    `m4_define(m4_$2_group`'$1, `$3')',
+    m4_get_group_aux2($1, $2, $3, m4_shift(m4_shift(m4_shift(m4_shift($@)))))`'dnl
+)')')
+
+dnl NEW
+dnl We need to get the class index from the cpp name.
+m4_define(`m4_get_class_index', `dnl
+m4_forloop(m4_ind, 1, m4_num_classes, `dnl
+m4_ifelse(m4_remove_topology($1),
+  m4_echo_unquoted(m4_cplusplus_class`'m4_ind),
+  m4_ind)`'dnl
+')`'dnl
+')
+
+dnl NEW
+m4_define(`m4_parse_body_for_powerset', `dnl
+m4_define(`m4_interface_$3_body$1',
+  m4_interface_class`'m4_get_class_index(m4_$3_body$1))`'dnl
+m4_define(`m4_cplusplus_$3_body$1', m4_$3_body$1)`'dnl
+m4_init_class_definitions($1, m4_$3_body$1, $3_body)`'dnl
+')
+
+dnl NEW
+m4_define(`m4_parse_body_for_product', `dnl
+m4_define(m4_$3_body_1st$1,
+  `m4_regexp(m4_$3_body$1, `\([^@]*\).*', `\1')')`'dnl
+m4_define(m4_$3_body_2nd$1,
+  `m4_regexp(m4_$3_body$1, `\([^@]*\)@COMMA@\(.*\)', `\2')')`'dnl
+m4_define(`m4_interface_$3_body_1st$1',
+  m4_interface_class`'m4_get_class_index(m4_$3_body_1st$1))`'dnl
+m4_define(`m4_cplusplus_$3_body_1st$1', m4_$3_body_1st$1)`'dnl
+m4_define(`m4_interface_$3_body_2nd$1',
+  m4_interface_class`'m4_get_class_index(m4_$3_body_2nd$1))`'dnl
+m4_define(`m4_cplusplus_$3_body_2nd$1', m4_$3_body_2nd$1)`'dnl
+m4_init_class_definitions($1, m4_$3_body_1st$1, $3_body_1st)`'dnl
+m4_init_class_definitions($1, m4_$3_body_2nd$1, $3_body_2nd)`'dnl
 ')
 
 dnl m4_get_class_topology(Class)
@@ -236,31 +302,6 @@ dnl "Polyhedron".
 m4_define(`m4_remove_topology', `dnl
 m4_ifelse(m4_index($1, C_), 0, Polyhedron,
             m4_index($1, NNC_), 0, Polyhedron, $1)`'dnl
-')
-
-dnl m4_remove_topology(Class_Name)
-dnl
-dnl expands to the class name unless it is
-dnl C_Polyhedron or NNC_Polyhedron, in which case it expands to
-dnl "Polyhedron".
-m4_define(`m4_remove_topologies', `dnl
-m4_ifelse($1, 0, ,
-            $1, `m4_remove_topologies(m4_remove_topology($1), m4_shift($@))')
-')
-
-dnl m4_get_class_counter(Cpp_Class_Name, Topology)
-dnl
-dnl expands to the class counter for the cplusplus class.
-dnl If the class is C_Polyhderon or NNC_Polyhedron
-dnl then the topology may have to be added to the configuration name.
-m4_define(`m4_get_class_counter', `dnl
-m4_forloop(m4_ind, 1, m4_num_classes, `dnl
-m4_ifelse(
-  $1, m4_get_class_topology($1)`'m4_echo_unquoted(m4_cplusplus_class`'m4_ind),
-    m4_ind,
-  $1, m4_echo_unquoted(m4_cplusplus_class`'m4_ind),
-    m4_ind)`'dnl
-')`'dnl
 ')
 
 dnl =====================================================================
@@ -338,25 +379,6 @@ m4_define(`m4_pointset_powerset_group', Pointset_Powerset)
 m4_define(`m4_product_group',
   `Direct_Product, Smash_Product, Constraints_Product')
 
-m4_define(`m4_get_class_group',
-  `m4_define(m4_class_group`'$1, `')`'dnl
-m4_get_class_group_aux(`$1', m4_class_groups)')
-
-m4_define(`m4_get_class_group_aux', `dnl
-m4_ifelse($#, 0, , $#, 1, , $#, 2,
-    m4_get_class_group_aux2($1, $2, m4_$2_group),
-    `m4_ifelse(m4_get_class_group_aux2($1, $2, m4_$2_group), 0,
-      `m4_get_class_group_aux($1, m4_shift(m4_shift($@)))')')')
-
-m4_define(`m4_get_class_group_aux2', `dnl
-m4_ifelse($#, 0, , $#, 1, , $#, 2, 0, $#, 3,
-  m4_ifelse(`$3', m4_class_kind$1,
-    m4_define(m4_class_group`'$1, $2), 0),
-  `m4_ifelse(`$3', m4_class_kind$1,
-    `m4_define(m4_class_group`'$1, $2)',
-    m4_get_class_group_aux2($1, $2, m4_shift(m4_shift(m4_shift($@))))`'dnl
-)')')
-
 dnl =====================================================================
 dnl ===== The next set of macros define the replacements            =====
 dnl ===== for the patterns used                                     =====
@@ -430,7 +452,7 @@ m4_define(`m4_cpp_class_replacement', m4_cplusplus_class`'$1)
 
 dnl The direct product full cplusplus name.
 m4_define(`m4_product_cpp_class_replacement',
-     Domain_Product<`'m4_body$1`'_1@COMMA@`'m4_body$1`'_2>::`'m4_class_kind$1)
+     Domain_Product<`'m4_cplusplus_class_body_1st$1@COMMA@`'m4_cplusplus_class_body_2nd$1 >::`'m4_class_kind$1)
 
 dnl The defined cplusplus name (the default is as before).
 m4_define(`m4_cppdef_class_replacement', m4_cplusplus_class`'$1)
@@ -518,20 +540,20 @@ m4_define(`m4_Pointset_Powerset_friend_replacement', `dnl
 dnl
 m4_interface_class$1`'dnl
 m4_same_class_string(
-  m4_class_body$1, interface, m4_get_class_topology($1), cplusplus_class)`'dnl
+  m4_interface_class_body$1, interface, `', cplusplus_class)`'dnl
 ')
 
 m4_define(`m4_Pointset_Powerset_friend_alt_replacement', `dnl
 dnl
 m4_interface_class$1`'dnl
 m4_same_class_string(
-  m4_class_body$1, interface, m4_get_class_topology($1), cplusplus_class)`'dnl
+  m4_interface_class_body$1, interface, `', cplusplus_class)`'dnl
 ')
 dnl
 m4_define(`m4_Pointset_Powerset_friend_cppx_replacement', `dnl
 m4_cplusplus_class$1`'dnl
 m4_same_class_string(
-  m4_class_body$1, cplusplus, m4_get_class_topology($1), cplusplus_class)`'dnl
+  m4_cplusplus_class_body$1, cplusplus, `', cplusplus_class)`'dnl
 ')
 
 dnl For product class kinds, C_Polyhedron, NNC_Polyhedron, BD_Shape,
@@ -547,7 +569,7 @@ m4_define(`m4_product_friend_alt_replacement',
 
 m4_define(`m4_product_friend_cppx_replacement',
   `m4_all_friends(cplusplus),
-     Domain_Product<`'m4_body$1`'_1@COMMA@`'m4_body$1`'_2>::`'m4_class_kind$1')
+     Domain_Product<`'m4_cplusplus_class_body_1st$1`'@COMMA@`'m4_cplusplus_class_body_2nd$1`' >::`'m4_class_kind$1')
 )
 
 dnl ---------------------------------------------------------------------
@@ -656,27 +678,15 @@ dnl ---------------------------------------------------------------------
 dnl If the class is C_Polyhderon or NNC_Polyhedron the topology is removed
 dnl but the class topology replacement is then also defined.
 m4_define(`m4_cpp_disjunct_replacement', `dnl
-m4_remove_topology(m4_class_body`'$1)`'dnl
+m4_remove_topology(m4_cplusplus_class_body`'$1)`'dnl
 m4_define(`m4_classtopology_replacement',
-  `m4_get_class_topology(m4_class_body`'$1)')`'dnl
-')
-
-dnl We need to get the interface name from the cpp name.
-dnl The interface name is found using auxilliary macro:
-dnl m4_get_interface_class_name(Cpp_Class_Name, Topology)
-dnl which expands to the interface name for the cplusplus class.
-m4_define(`m4_get_interface_class_name', `dnl
-m4_forloop(m4_ind, 1, m4_num_classes, `dnl
-m4_ifelse($1,
-  m4_get_class_topology($1)`'m4_echo_unquoted(m4_cplusplus_class`'m4_ind),
-  m4_get_class_topology($1)`'m4_echo_unquoted(m4_interface_class`'m4_ind))`'dnl
-')`'dnl
+  `m4_get_class_topology(m4_cplusplus_class_body`'$1)')`'dnl
 ')
 
 dnl If the class is C_Polyhderon or NNC_Polyhedron the topology is removed
 dnl but the class topology replacement is then also defined.
 m4_define(`m4_disjunct_replacement', `dnl
-m4_remove_topology(m4_get_interface_class_name(m4_class_body`'$1))`'dnl
+m4_remove_topology(m4_interface_class_body`'$1)`'dnl
 m4_define(`m4_classtopology_replacement',
   `m4_get_class_topology(m4_class_body`'$1)')`'dnl
 ')
@@ -685,12 +695,8 @@ dnl ---------------------------------------------------------------------
 dnl pattern == disjunct_widen
 dnl ---------------------------------------------------------------------
 
-m4_define(`m4_disjunct_kind',
-  `m4_define(`m4_disj', m4_class_body`'$1)`'dnl
-    m4_ifelse(m4_disj, `', ,
-      `m4_ifelse(m4_index(m4_disj, <), -1, m4_disj,
-        `m4_regexp(m4_disj, `\([^ <]+\)[.]*', `\1')')')`'dnl
-m4_undefine(`m4_disj')`'dnl
+dnl FIXME: To be eliminated soon.
+m4_define(`m4_disjunct_kind', m4_class_body_kind$1)`'dnl
 ')
 
 m4_define(`m4_disjunct_widen_replacement',
@@ -892,10 +898,10 @@ m4_define(`m4_Octagonal_Shape_binop_replacement',
          `m4_binop_replacement, oct_hull_assign')
 m4_define(`m4_Pointset_Powerset_binop_replacement',
           `m4_ifelse(
-          m4_echo_unquoted(m4_remove_topology(m4_disjunct_kind($1))), Polyhedron,
+          m4_echo_unquoted(m4_remove_topology(m4_class_body_kind$1)), Polyhedron,
           `intersection_assign, poly_difference_assign, concatenate_assign,
            time_elapse_assign',
-          `m4_body_class_kind($1)', Grid,
+          `m4_class_body_kind$1', Grid,
           `intersection_assign, poly_difference_assign, concatenate_assign,
            time_elapse_assign',
           `intersection_assign, concatenate_assign,
