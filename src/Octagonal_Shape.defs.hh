@@ -613,6 +613,14 @@ public:
   Poly_Con_Relation relation_with(const Constraint& c) const;
 
   /*! \brief
+    Returns the relations holding between \p *this and the congruence \p cg.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cg are dimension-incompatible.
+  */
+  Poly_Con_Relation relation_with(const Congruence& cg) const;
+
+  /*! \brief
     Returns the relations holding between \p *this and the generator \p g.
 
     \exception std::invalid_argument
@@ -1940,6 +1948,9 @@ private:
 
   void throw_dimension_incompatible(const char* method,
 				    const Constraint& c) const;
+
+  void throw_dimension_incompatible(const char* method,
+				    const Congruence& cg) const;
 
   void throw_dimension_incompatible(const char* method,
 				    const Generator& g) const;

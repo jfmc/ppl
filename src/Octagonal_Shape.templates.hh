@@ -1004,6 +1004,53 @@ Octagonal_Shape<T>::max_min(const Linear_Expression& expr,
 
 template <typename T>
 Poly_Con_Relation
+Octagonal_Shape<T>::relation_with(const Congruence& cg) const {
+  dimension_type cg_space_dim = cg.space_dimension();
+
+  // Dimension-compatibility check.
+  if (cg_space_dim > space_dim) {
+    throw_dimension_incompatible("relation_with(cg)", cg);
+  }
+
+  // If the congruence is an octagonal equality,
+  // find the relation with the equivalent equality constraint.
+  if (cg.is_equality()) {
+    Constraint c(cg);
+    dimension_type num_vars = 0;
+    dimension_type i = 0;
+    dimension_type j = 0;
+    TEMP_INTEGER(coeff);
+    TEMP_INTEGER(c_term);
+    if (extract_octagonal_difference(c, cg_space_dim, num_vars,
+				    i, j, coeff, c_term))
+      return relation_with(c);
+  }
+
+  strong_closure_assign();
+
+  if (marked_empty())
+    return Poly_Con_Relation::saturates()
+      && Poly_Con_Relation::is_included()
+      && Poly_Con_Relation::is_disjoint();
+
+  if (space_dim == 0) {
+    if (cg.is_trivial_false())
+      return Poly_Con_Relation::is_disjoint();
+    else if (cg.inhomogeneous_term() % cg.modulus() == 0)
+      return Poly_Con_Relation::saturates()
+	&& Poly_Con_Relation::is_included();
+  }
+
+  // FIXME: If there is no obvious quick method, find the relation of the
+  //        equivalent polyhedron with the congruence.
+  const Octagonal_Shape<T>& x = *this;
+  const C_Polyhedron ph(x);
+  return ph.relation_with(cg);
+}
+
+
+template <typename T>
+Poly_Con_Relation
 Octagonal_Shape<T>::relation_with(const Constraint& c) const {
   dimension_type c_space_dim = c.space_dimension();
 
@@ -5980,6 +6027,17 @@ Octagonal_Shape<T>::throw_dimension_incompatible(const char* method,
   s << "PPL::Octagonal_Shape::" << method << ":\n"
     << "this->space_dimension() == " << space_dimension()
     << ", c->space_dimension == " << c.space_dimension() << ".";
+  throw std::invalid_argument(s.str());
+}
+
+template <typename T>
+void
+Octagonal_Shape<T>::throw_dimension_incompatible(const char* method,
+						 const Congruence& cg) const {
+  std::ostringstream s;
+  s << "PPL::Octagonal_Shape::" << method << ":\n"
+    << "this->space_dimension() == " << space_dimension()
+    << ", cg->space_dimension == " << cg.space_dimension() << ".";
   throw std::invalid_argument(s.str());
 }
 

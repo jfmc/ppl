@@ -375,6 +375,49 @@ test17() {
   return rel == known_result;
 }
 
+bool
+test18() {
+  Variable A(0);
+
+  TBD_Shape bd(1);
+  bd.add_constraint(A >= 0);
+  bd.add_constraint(A <= 1);
+
+  Congruence cg((A %= 0) / 0);
+  Poly_Con_Relation rel = bd.relation_with(cg);
+
+  print_constraints(bd, "--- bd ---");
+  print_congruence(cg, "--- cg ---");
+  using namespace IO_Operators;
+  nout << "bd.relation_with(A == 0) == " << rel << endl;
+
+  Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
+
+  return rel == known_result;
+}
+
+bool
+test19() {
+  Variable A(0);
+  Variable B(1);
+
+  TBD_Shape bd(2);
+  bd.add_constraint(A >= 0);
+  bd.add_constraint(A - B <= 1);
+
+  Congruence cg((A + 3*B %= 0) / 1);
+  Poly_Con_Relation rel = bd.relation_with(cg);
+
+  print_constraints(bd, "--- bd ---");
+  print_congruence(cg, "--- cg ---");
+  using namespace IO_Operators;
+  nout << "bd.relation_with((A %= 0)/1) == " << rel << endl;
+
+  Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
+
+  return rel == known_result;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -395,4 +438,6 @@ BEGIN_MAIN
   DO_TEST(test15);
   DO_TEST(test16);
   DO_TEST(test17);
+  DO_TEST(test18);
+  DO_TEST(test19);
 END_MAIN
