@@ -30,9 +30,28 @@ dnl ===== using "@" separated lists and defined                     =====
 dnl ===== by macros in ppl_interface_instantiations.m4.             =====
 dnl =====================================================================
 
+
+dnl m4_init_class_definitions
+dnl
+dnl Macro called by m4_all_code in m4_interface_generators_common.m4
+dnl
+dnl For all the classes required by the configuration and specified
+dnl by m4_interface_classes_names and m4_cplusplus_classes_names
+dnl in <build_dir>/interfaces/m4_interface_instantiations.m4
+dnl this defines macros for their interface and cplusplus names,
+dnl their components and 'entities' related to these components.
+dnl
+dnl The Boolean flag m4_class_definitions_initialized is set to true
+dnl to avoid repeated generation when more than one set of code is
+dnl generated for any one file.
+m4_define(`m4_init_class_definitions', `dnl
+m4_init_interface_classes(m4_interface_classes_names)`'dnl
+m4_init_cplusplus_classes(m4_cplusplus_classes_names)`'dnl
+m4_define(`m4_class_definitions_initialized', `true')`'dnl
+')
 dnl ---------------------------------------------------------------------
-dnl =====  any macros needed for both interfaces and cplusplus      =====
-dnl =====  names go here                           .                =====
+dnl =====  any extra macros needed for both interfaces and          =====
+dnl =====  cplusplus names go here                           .      =====
 dnl ---------------------------------------------------------------------
 
 dnl m4_prefix_polyhedron(Class, String)
@@ -44,7 +63,8 @@ m4_patsubst($1, Polyhedron, $2_Polyhedron)`'dnl
 ')
 
 dnl ---------------------------------------------------------------------
-dnl =====  m4_init_interface_names is defined.                      =====
+dnl =====  Macros for m4_interface_class<class_num> are defined     =====
+dnl =====  here.                                                    =====
 dnl ---------------------------------------------------------------------
 
 dnl m4_init_interface_classes(Class_List)
@@ -52,7 +72,8 @@ dnl
 dnl Parses the @-separated list of class names Class_List
 dnl for the names of the classes used to form the names of procedures
 dnl in the user interface.
-m4_define(`m4_init_interface_classes', `m4_init_interface_classes_aux(1, $1)')
+m4_define(`m4_init_interface_classes', `dnl
+m4_init_interface_classes_aux(1, $1)')
 
 dnl m4_init_interface_classes_aux(Class_Counter, Class_List)
 dnl
@@ -82,8 +103,28 @@ m4_init_interface_classes_aux(m4_incr($1), $3)`'dnl
 ')
 
 dnl ---------------------------------------------------------------------
-dnl =====  m4_init_cplusplus_names is defined.                      =====
+dnl =====  Macros for m4_cplusplus_class<class_num> and             =====
+dnl =====  its components are defined here.                         =====
 dnl ---------------------------------------------------------------------
+
+dnl m4_init_cplusplus_classes(Class_List)
+dnl
+dnl Parses the "@"-separated list of class names Class_List
+dnl to be used in the C++ code implementing the interface procedures.
+dnl Note that first the "," is replaced by "COMMA" using the macro
+dnl m4_subst_comma because the ',' in the product class is wrongly
+dnl parsed by m4.
+dnl First all the macros m4_cplusplus_class`'Class_Counter
+dnl are defined and then the components are parsed and their entities
+dnl defined by additional macros.
+m4_define(`m4_init_cplusplus_classes',   `dnl
+dnl First all the macros m4_cplusplus_class`'Class_Counter
+dnl are defined.
+m4_init_cplusplus_classes_aux(1, m4_subst_comma($@))`'dnl
+dnl Then the components are parsed and their entities are
+dnl defined by additional macros.
+m4_init_all_cplusplus_class_components(1)`'dnl
+')
 
 dnl m4_subst_comma(String1, String2,...)
 dnl
@@ -97,29 +138,15 @@ m4_define(`m4_subst_comma',
 `m4_ifelse($#, 0, , $#, 1, $1,
   `$1`'COMMA`'m4_subst_comma(m4_shift($@))')')
 
-dnl m4_init_cplusplus_classes(Class_List)
-dnl
-dnl Parses the "@"-separated list of class names Class_List
-dnl to be used in the C++ code implementing the interface procedures.
-dnl Note that first the "," is replaced using the macro m4_subst_comma.
-
-dnl NEW
-m4_define(`m4_init_cplusplus_classes',
-  `m4_init_cplusplus_classes_aux(1, m4_subst_comma($@))`'dnl
-   m4_init_all_class_definitions(1)`'dnl
-')
-
 dnl m4_init_cplusplus_classes_aux(Class_Counter, Class_List)
 dnl
 dnl Class_Counter - is the index to the next class in Class_List;
 dnl Class_List    - is a tail part of the input list of cplusplus
 dnl                 class names.
-dnl The macro calls m4_init_cplusplus_names to define the next
-dnl cplusplus names and then calls itself to recursively
-dnl process the rest of the list.
+dnl The macro calls m4_init_cplusplus_names to define the
+dnl cplusplus names (which calls this macro recursively).
 dnl The COMMA pattern is revised to @COMMA@ as soon as a class name
 dnl has been separated from the @-separated list of classes.
-dnl NEW
 m4_define(`m4_init_cplusplus_classes_aux', `dnl
 m4_ifelse($2, `',  `',
   m4_regexp(`$2', `\([^@]+\)@?\(.*\)',
@@ -133,81 +160,120 @@ dnl Class_Counter - is the index to the next class in Class_List;
 dnl Class         - is the cplusplus class name, as input;
 dnl Class_List    - is a tail part of the input list of cplusplus
 dnl                 class names.
-dnl NEW
+dnl This defines m4_cplusplus_class`'Class_Counter
+dnl and then calls m4_init_cplusplus_classes_aux to process the rest
+dnl of the list of classes.
 m4_define(`m4_init_cplusplus_names', `dnl
-m4_init_cplusplus_names_aux($1, $2)`'dnl
+m4_define(m4_cplusplus_class`'$1, `$2')`'dnl
 m4_init_cplusplus_classes_aux(m4_incr($1), $3)`'dnl
 ')
 
-dnl m4_init_cplusplus_names_aux(Class_Counter, Class)
+dnl m4_init_all_cplusplus_class_components(Class_Counter)
+dnl
+dnl Class_Counter - is the index to the next class in Class_List;
+dnl
+dnl For each class, this parses the name, finding and defining
+dnl schemas for its class kind and group.
+dnl For classes that have a sub-component "<...>" part
+dnl this also parses and defines macros for these components.
+m4_define(`m4_init_all_cplusplus_class_components', `dnl
+m4_init_cplusplus_class_components($1, m4_cplusplus_class`'$1, class)`'dnl
+m4_ifelse($1, m4_num_classes, ,
+    `m4_init_all_cplusplus_class_components(m4_incr($1))')
+')
+
+dnl m4_init_cplusplus_class_components(Class_Counter,
+dnl                                    String, Macro_Specifier)
 dnl
 dnl Class_Counter - is the index to Class;
 dnl Class         - is the cplusplus class name, as input;
-dnl This macro defines three class dependent macros:
-dnl - m4_cplusplus_class`'Class_Counter,
-dnl - m4_class_kind`'Class_Counter and
-dnl - m4_class_body`'Class_Counter,
-dnl where the kind is the part preceding the first "<"
-dnl and the body is the rest of the full cplusplus name.
+dnl Macro_Specifier
+dnl               - is the component of the macro name that
+dnl                 determines the precise component it refers to.
 dnl
-dnl If the class kind is a Direct_Product or Constraints_Product,
-dnl it also calls the macro m4_parse_body_class(`$1')
-dnl to define subclasses
-dnl m4_cplusplus_class`'Class_Counter_1 and
-dnl m4_cplusplus_class`'Class_Counter_2
-dnl for the two components.
+dnl Initially (at the top level), the Macro_Specifier is just "class".
+dnl For each component in the name the string "_body" is added.
+dnl Thus for Pointset_Powerset<BD_Shape<long> > with Class_Counter = 4
+dnl and interface names Pointset_Powerset_BD_Shape_long
+dnl with BD_Shape_long defined for the component:
 dnl
-')
-dnl NEW
-m4_define(`m4_init_cplusplus_names_aux', `dnl
-m4_define(m4_cplusplus_class`'$1, `$2')`'dnl
-')
-
-dnl NEW
-m4_define(`m4_init_all_class_definitions', `dnl
-m4_init_class_definitions($1, m4_cplusplus_class`'$1, class)`'dnl
-m4_ifelse($1, m4_num_classes, ,
-    `m4_init_all_class_definitions(m4_incr($1))')
-')
-
-dnl NEW
-m4_define(`m4_init_class_definitions', `dnl
+dnl m4_cplusplus_class4 = Pointset_Powerset<BD_Shape<long> >
+dnl m4_interface_class4 = Pointset_Powerset_BD_Shape_long
+dnl m4_class_kind4 = Pointset_Powerset
+dnl m4_class_group4 = pointset_powerset
+dnl m4_class_body_body4 = BD_Shape<long>
+dnl m4_cplusplus_class_body4 = BD_Shape<long>
+dnl m4_interface_class_body4 = BD_Shape_long
+dnl m4_class_body_kind4 = BD_Shape
+dnl m4_class_body_group4 = bd_shape
+dnl m4_class_body_body4 = long
+dnl
+dnl For the Product classes, the body is parsed into a "1st"
+dnl and "2nd" component:
+dnl Thus for Direct_Product<Grid,BD_Shape<long> > with Class_Counter = 5
+dnl and interface names Product_BD_Shape_long
+dnl with Grid and BD_Shape_long for the components:
+dnl m4_cplusplus_class5 = Direct_Product<Grid@COMMA@BD_Shape<long> >
+dnl m4_interface_class5 = Direct_Product_Grid_BD_Shape_long
+dnl m4_class_kind5 = Direct_Product
+dnl m4_class_group5 = product
+dnl m4_class_body5 = Grid@COMMA@BD_Shape<long>
+dnl m4_class_body_1st5 = Grid
+dnl m4_cplusplus_class_body_1st5 = Grid
+dnl m4_interface_class_body_1st5 = Grid
+dnl m4_class_body_1st_kind5 = Grid
+dnl m4_class_body_1st_group5 = grid
+dnl m4_class_body_2nd5 = BD_Shape<long>
+dnl m4_cplusplus_class_body_2nd5 = BD_Shape<long>
+dnl m4_interface_class_body_2nd5 = BD_Shape<long>
+dnl m4_class_body_2nd_kind5 = BD_Shape
+dnl m4_class_body_2nd_group5 = bd_shape
+dnl m4_class_body_2nd_body5 = long
+dnl
+m4_define(`m4_init_cplusplus_class_components', `dnl
 m4_get_kind($1, $2, $3)`'dnl
 m4_get_group($1, $3)`'dnl
 m4_get_body($1, $2, $3)`'dnl
 dnl
 m4_ifelse(m4_$3_group$1, pointset_powerset,
-  `m4_parse_body_for_powerset($1, $2, $3)')`'dnl
+  `m4_parse_body_for_powerset($1, $3)')`'dnl
 dnl
 m4_ifelse(m4_$3_group$1, product,
-  `m4_parse_body_for_product($1, $2, $3)')`'dnl
+  `m4_parse_body_for_product($1, $3)')`'dnl
 dnl
 ')
 
-dnl m4_get_kind(Class_Counter, String)
-dnl m4_get_body(Class_Counter, String)
+dnl m4_get_kind(Class_Counter, String, Macro_Specifier)
+dnl m4_get_body(Class_Counter, String, Macro_Specifier)
+dnl m4_get_group(Class_Counter, Macro_Specifier)
 dnl
-dnl String = a cplusplus class name.
+dnl Class_Counter - is the index to Class;
+dnl String        - a cplusplus class name.
+dnl Macro_Specifier
+dnl               - is the component of the macro name that
+dnl                 determines the precise component it refers to.
 dnl
-dnl The head (class_kind) and the body of
+dnl The head (Macro_Specifier_kind) and the body of
 dnl the C++ class name in String are separated out.
-dnl m4_class_kind`'Class_Counter = the first part before the "<"
-dnl m4_class_body`'Class_Counter = the rest
+dnl m4_Macro_Specifier_kind`'Class_Counter = the first part before the "<"
+dnl m4_Macro_Specifier_body`'Class_Counter = the rest
+dnl and m4_Macro_Specifier_body`'Class_Counter defines the group to which this
+dnl class belongs.
 dnl
 dnl For example:
-dnl If String = Polyhedron and Class_Counter = 1
+dnl If Macro_Specifier = class, String = Polyhedron and Class_Counter = 1
 dnl m4_class_kind1 => `Polyhedron'
 dnl m4_class_body1 => `'
 dnl If String = Pointset_Powerset<BD_Shape<signed char> >
 dnl               and Class_Counter = 2
 dnl m4_class_kind2 => `Pointset_Powerset'
 dnl m4_class_body2 => `BD_Shape<signed char>'
-dnl NEW
+dnl m4_class_group2 => `pointset_powerset'
 m4_define(`m4_get_body',
   `m4_define(m4_$3_body`'$1,
-    `m4_ifelse($2, `', ,
+    m4_ifelse($2, `', ,
                m4_index(`$2', <), -1, `',
-                 m4_regexp(`$2', `[^ <]+[<]\(.*\w>?\)[ ]*[>]', `\1'))')`'dnl
+                 m4_regexp(`$2', `[^ <]+[<]\(.*\w>?\)[ ]*[>]', `\1')))`'dnl
 ')
 
 m4_define(`m4_get_kind',
@@ -217,30 +283,31 @@ m4_define(`m4_get_kind',
                  m4_regexp($2, `\([^ <]+\)[.]*', `\1'))')`'dnl
 ')
 
-dnl NEW
 m4_define(`m4_get_group',
   `m4_define(m4_$2_group`'$1, `')`'dnl
 m4_get_group_aux($1, $2, m4_class_groups)')
 
-dnl NEW
 m4_define(`m4_get_group_aux', `dnl
 m4_ifelse($#, 0, , $#, 1, , $#, 2, , $#, 3,
     m4_get_group_aux2($1, $2, $3, m4_$3_group),
     `m4_ifelse(m4_get_group_aux2($1, $2, $3, m4_$3_group), 0,
       `m4_get_group_aux($1, $2, m4_shift(m4_shift(m4_shift($@))))')')')
 
-dnl NEW
 m4_define(`m4_get_group_aux2', `dnl
 m4_ifelse($#, 0, , $#, 1, , $#, 2, 0, $#, 3, 0, $#, 4,
-  m4_ifelse(`$4', m4_$2_kind$1,
-    `m4_define(m4_$2_group`'$1, `$3')', 0),
+  `m4_ifelse(`$4', m4_$2_kind$1,
+    `m4_define(m4_$2_group`'$1, `$3')', 0)',
   `m4_ifelse(`$4', m4_$2_kind$1,
     `m4_define(m4_$2_group`'$1, `$3')',
     m4_get_group_aux2($1, $2, $3, m4_shift(m4_shift(m4_shift(m4_shift($@)))))`'dnl
 )')')
 
-dnl NEW
-dnl We need to get the class index from the cpp name.
+
+dnl m4_get_class_index(String)
+dnl
+dnl String        - a cplusplus class name.
+dnl
+dnl This finds the class counter from the cpp name.
 m4_define(`m4_get_class_index', `dnl
 m4_forloop(m4_ind, 1, m4_num_classes, `dnl
 m4_ifelse(m4_remove_topology($1),
@@ -249,28 +316,40 @@ m4_ifelse(m4_remove_topology($1),
 ')`'dnl
 ')
 
-dnl NEW
+dnl m4_parse_body_for_powerset(Class_Counter, Macro_Specifier)
+dnl
+dnl Class_Counter - is the index to Class;
+dnl Macro_Specifier
+dnl               - is the component of the macro name that
+dnl                 determines the precise component it refers to.
+dnl
 m4_define(`m4_parse_body_for_powerset', `dnl
-m4_define(`m4_interface_$3_body$1',
-  m4_interface_class`'m4_get_class_index(m4_$3_body$1))`'dnl
-m4_define(`m4_cplusplus_$3_body$1', m4_$3_body$1)`'dnl
-m4_init_class_definitions($1, m4_$3_body$1, $3_body)`'dnl
+m4_define(`m4_interface_$2_body$1',
+  m4_interface_class`'m4_get_class_index(m4_$2_body$1))`'dnl
+m4_define(`m4_cplusplus_$2_body$1', m4_$2_body$1)`'dnl
+m4_init_cplusplus_class_components($1, m4_$2_body$1, $2_body)`'dnl
 ')
 
-dnl NEW
+dnl m4_parse_body_for_product(Class_Counter, Macro_Specifier)
+dnl
+dnl Class_Counter - is the index to Class;
+dnl Macro_Specifier
+dnl               - is the component of the macro name that
+dnl                 determines the precise component it refers to.
+dnl
 m4_define(`m4_parse_body_for_product', `dnl
-m4_define(m4_$3_body_1st$1,
-  `m4_regexp(m4_$3_body$1, `\([^@]*\).*', `\1')')`'dnl
-m4_define(m4_$3_body_2nd$1,
-  `m4_regexp(m4_$3_body$1, `\([^@]*\)@COMMA@\(.*\)', `\2')')`'dnl
-m4_define(`m4_interface_$3_body_1st$1',
-  m4_interface_class`'m4_get_class_index(m4_$3_body_1st$1))`'dnl
-m4_define(`m4_cplusplus_$3_body_1st$1', m4_$3_body_1st$1)`'dnl
-m4_define(`m4_interface_$3_body_2nd$1',
-  m4_interface_class`'m4_get_class_index(m4_$3_body_2nd$1))`'dnl
-m4_define(`m4_cplusplus_$3_body_2nd$1', m4_$3_body_2nd$1)`'dnl
-m4_init_class_definitions($1, m4_$3_body_1st$1, $3_body_1st)`'dnl
-m4_init_class_definitions($1, m4_$3_body_2nd$1, $3_body_2nd)`'dnl
+m4_define(`m4_$2_body_1st$1',
+  `m4_regexp(m4_$2_body$1, `\([^@]*\).*', `\1')')`'dnl
+m4_define(`m4_$2_body_2nd$1',
+  `m4_regexp(m4_$2_body$1, `\([^@]*\)@COMMA@\(.*\)', `\2')')`'dnl
+m4_define(`m4_interface_$2_body_1st$1',
+  m4_interface_class`'m4_get_class_index(m4_$2_body_1st$1))`'dnl
+m4_define(`m4_cplusplus_$2_body_1st$1', m4_$2_body_1st$1)`'dnl
+m4_define(`m4_interface_$2_body_2nd$1',
+  m4_interface_class`'m4_get_class_index(m4_$2_body_2nd$1))`'dnl
+m4_define(`m4_cplusplus_$2_body_2nd$1', m4_$2_body_2nd$1)`'dnl
+m4_init_cplusplus_class_components($1, m4_$2_body_1st$1, $2_body_1st)`'dnl
+m4_init_cplusplus_class_components($1, m4_$2_body_2nd$1, $2_body_2nd)`'dnl
 ')
 
 dnl m4_get_class_topology(Class)
@@ -538,22 +617,19 @@ dnl (if the body is NNC_Polyhedron) is a friend.
 dnl
 m4_define(`m4_Pointset_Powerset_friend_replacement', `dnl
 dnl
-m4_interface_class$1`'dnl
-m4_same_class_string(
-  m4_interface_class_body$1, interface, `', cplusplus_class)`'dnl
+m4_interface_class$1,
+m4_get_class_topology(m4_cplusplus_class_body$1)`'dnl
+m4_interface_class_body$1`'dnl
 ')
 
 m4_define(`m4_Pointset_Powerset_friend_alt_replacement', `dnl
 dnl
-m4_interface_class$1`'dnl
-m4_same_class_string(
-  m4_interface_class_body$1, interface, `', cplusplus_class)`'dnl
+m4_interface_class$1, m4_interface_class_body$1`'dnl
 ')
-dnl
+
 m4_define(`m4_Pointset_Powerset_friend_cppx_replacement', `dnl
-m4_cplusplus_class$1`'dnl
-m4_same_class_string(
-  m4_cplusplus_class_body$1, cplusplus, `', cplusplus_class)`'dnl
+dnl
+m4_cplusplus_class$1, m4_cplusplus_class_body$1`'dnl
 ')
 
 dnl For product class kinds, C_Polyhedron, NNC_Polyhedron, BD_Shape,

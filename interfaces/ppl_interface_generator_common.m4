@@ -522,6 +522,13 @@ dnl (so must be generated from a schema) but has to be included before
 dnl all classes (as in ppl_prolog_icc.m4).
 m4_define(`m4_pre_all_classes_code', `')
 
+dnl m4_class_definitions_initialized/0
+dnl
+dnl Avoids initializing the class macro definitions more than once
+dnl when the main macro m4_all_code/0 is called more than once in a
+dnl file generation.
+m4_define(`m4_class_definitions_initialized', `false')
+
 dnl m4_all_code
 dnl
 dnl This initializes the macros for the classes requested by the user
@@ -535,9 +542,12 @@ dnl
 dnl The main loop macro m4_all_classes_loop is called to generate
 dnl code for all the required classes.
 m4_define(`m4_all_code', `dnl
-dnl Provides the class name macro definitions by calling
-m4_init_interface_classes(m4_interface_classes_names)`'dnl
-m4_init_cplusplus_classes(m4_cplusplus_classes_names)`'dnl
+dnl
+dnl Provides the class name macro definitions if not
+dnl already initialized
+m4_ifelse(m4_class_definitions_initialized, `false',
+  `m4_init_class_definitions', `')`'dnl
+dnl
 dnl then adds the extra code for all classes
 m4_pre_all_classes_code`'dnl
 dnl and then generates code for each class.
