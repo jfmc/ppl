@@ -1288,26 +1288,31 @@ Box<Interval>::concatenate_assign(const Box& y) {
   const dimension_type x_space_dim = x.space_dimension();
   const dimension_type y_space_dim = y.space_dimension();
 
-  // If `y' is an empty 0-dim space box let `*this' become empty.
-  if (y_space_dim == 0 && y.marked_empty()) {
+  // If `y' is marked empty, the result will be empty too.
+  if (y.marked_empty())
     x.set_empty();
-    return;
-  }
 
-  // If `x' is an empty 0-dim space box, then it is sufficient to adjust
+  // If `y' is a 0-dim space box, there is nothing left to do.
+  if (y_space_dim == 0)
+    return;
+
+  // Here `y_space_dim > 0', so that a non-trivial concatenation wil occur:
+  // make sure that reallocation will occur once at most.
+  x.seq.reserve(x_space_dim + y_space_dim);
+
+  // If `x' is marked empty, then it is sufficient to adjust
   // the dimension of the vector space.
-  if (x_space_dim == 0 && x.marked_empty()) {
+  if (x.marked_empty()) {
     x.seq.insert(x.seq.end(), y_space_dim, Interval());
     assert(x.OK());
     return;
   }
 
-  x.seq.reserve(x_space_dim + y_space_dim);
+  // Here neither `x' nor `y' are marked empty: concatenate them.
   std::copy(y.seq.begin(), y.seq.end(),
 	    std::back_insert_iterator<Sequence>(x.seq));
-
-  if (x.marked_empty() && !y.marked_empty())
-    x.empty_up_to_date = false;
+  // Update the `empty_up_to_date' flag.
+  x.empty_up_to_date = x.empty_up_to_date && y.empty_up_to_date;
 
   assert(x.OK());
 }
