@@ -430,6 +430,7 @@ polyhedron,
 grid,
 bd_shape,
 octagonal_shape,
+box,
 pointset_powerset,
 product')
 
@@ -440,11 +441,12 @@ m4_define(`m4_class_groups', `dnl
 polyhedron,
 grid,
 wr_shape,
+box,
 pointset_powerset,
 product')
 
 m4_define(`m4_all_group',
-  `Polyhedron, Grid, BD_Shape, Octagonal_Shape,
+  `Polyhedron, Grid, BD_Shape, Octagonal_Shape, Rational_Box,
    Pointset_Powerset, m4_product_group')
 m4_define(`m4_simple_pps_group', `m4_simple_group, Pointset_Powerset')
 m4_define(`m4_simple_group', `Grid, m4_shape_group')
@@ -454,6 +456,7 @@ m4_define(`m4_polyhedron_group', Polyhedron)
 m4_define(`m4_grid_group', Grid)
 m4_define(`m4_bd_shape_group', BD_Shape)
 m4_define(`m4_octagonal_shape_group', Octagonal_Shape)
+m4_define(`m4_box_group', Rational_Box)
 m4_define(`m4_pointset_powerset_group', Pointset_Powerset)
 m4_define(`m4_product_group',
   `Direct_Product, Smash_Product, Constraints_Product')
@@ -540,39 +543,15 @@ dnl The defined direct product cplusplus name.
 m4_define(`m4_product_cppdef_class_replacement',
 m4_interface_class`'$1)
 
+dnl The defined rational box cplusplus name.
+m4_define(`m4_box_cppdef_class_replacement',
+m4_interface_class`'$1)
+
 dnl ---------------------------------------------------------------------
 dnl pattern == friend
 dnl A class can be built from any other class named as a "friend".
 dnl A friend must be one of the classes named in the instantiations
 dnl ---------------------------------------------------------------------
-
-dnl Some of the class specific friend replacements use the next two macros:
-dnl m4_same_class_string/4 and m4_same_class_string_aux/4
-
-dnl m4_same_class_string(String, Name_Type, Class_Name_Type, Topology)
-dnl
-dnl String = class kind or cplusplus_class name (= the class body)
-dnl depending on Class_Name_Type.
-dnl Name_Type  = "interface" or "cplusplus".
-dnl Class_Name_Type = "class_kind" or "cplusplus_class".
-dnl This and the "_aux"  macros are needed to define the friend replacements.
-dnl The macro expands to a list of either the full interface name or cplusplus
-dnl name, depending on whether $2 = "interface" or "cplusplus"
-m4_define(`m4_same_class_string', `dnl
-dnl Find all interface class names for $1 in the class list.
-m4_forloop(m4_ind, 1, m4_num_classes, `dnl
-m4_same_class_string_aux(
-  $1, m4_$4`'m4_ind, m4_$2_class`'m4_ind, $3)`'dnl
-')`'dnl
-')
-
-m4_define(`m4_same_class_string_aux', `dnl
-dnl comma is a separator so the first element has no comma.
-m4_ifelse($1, $2,
-  `m4_ifelse(m4_replace_list_start, 0,
-     `m4_undefine(`m4_replace_list_start')$4`'$3',
-    `, '$4`'$3)')`'dnl
-')
 
 dnl The friend class name.
 dnl There is the interface name as default friend,
@@ -923,6 +902,8 @@ m4_define(`m4_Grid_has_property_replacement',
 m4_define(`m4_product_has_property_replacement',
           `is_empty, is_universe, is_bounded, is_topologically_closed,
             is_discrete')
+m4_define(`m4_Rational_Box_has_property_replacement', `is_empty, is_universe,
+            is_bounded, contains_integer_point')
 
 dnl ---------------------------------------------------------------------
 dnl pattern == simplify
