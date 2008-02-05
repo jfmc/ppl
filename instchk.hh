@@ -72,6 +72,27 @@ public:
   }
 };
 
+class Rational_Box {
+public:
+  static bool valid_instantiation() {
+    return true;
+  }
+  static bool valid_Pointset_Powerset_argument() {
+    return true;
+  }
+  static bool valid_Product_argument() {
+    return true;
+  }
+};
+
+template <typename PH>
+class Pointset_Powerset {
+public:
+  static bool valid_instantiation() {
+    return PH::valid_Pointset_Powerset_argument();
+  }
+};
+
 template <typename T>
 bool
 valid_BD_Shape_argument(void);
@@ -127,6 +148,9 @@ public:
   static bool valid_Pointset_Powerset_argument() {
     return true;
   }
+  static bool valid_Product_argument() {
+    return true;
+  }
 };
 
 template <typename T>
@@ -138,13 +162,8 @@ public:
   static bool valid_Pointset_Powerset_argument() {
     return true;
   }
-};
-
-template <typename PH>
-class Pointset_Powerset {
-public:
-  static bool valid_instantiation() {
-    return PH::valid_Pointset_Powerset_argument();
+  static bool valid_Product_argument() {
+    return true;
   }
 };
 
