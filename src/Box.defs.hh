@@ -1434,7 +1434,7 @@ public:
   const Interval& get_interval(Variable var) const;
 
   /*! \brief
-    Returns a reference the interval that bounds \p var.
+    Sets to \p i the interval that bounds \p var.
 
     \exception std::invalid_argument
     Thrown if \p var is not a space dimension of \p *this.
