@@ -23,6 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Bit_Row_inlines_hh
 #define PPL_Bit_Row_inlines_hh 1
 
+#include "globals.defs.hh"
 #include <cassert>
 // For the declaration of ffs(3).
 #include <cstring>
@@ -115,6 +116,14 @@ set_union(const Bit_Row& x, const Bit_Row& y, Bit_Row& z) {
 inline void
 set_intersection(const Bit_Row& x, const Bit_Row& y, Bit_Row& z) {
   mpz_and(z.vec, x.vec, y.vec);
+}
+
+/*! \relates Bit_Row */
+inline void
+set_difference(const Bit_Row& x, const Bit_Row& y, Bit_Row& z) {
+  DIRTY_TEMP0(mpz_class, complement_y);
+  mpz_com(complement_y.get_mpz_t(), y.vec);
+  mpz_and(z.vec, x.vec, complement_y.get_mpz_t());
 }
 
 } // namespace Parma_Polyhedra_Library
