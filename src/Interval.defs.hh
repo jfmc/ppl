@@ -705,11 +705,19 @@ public:
                           || Is_Interval<From2>::value)), I_Result>::type
   intersect_assign(const From1& x, const From2& y);
 
+  /*! \brief
+    Assigns to \p *this the smallest interval containing the set-theoretic
+    difference of \p *this and \p x.
+  */
   template <typename From>
   typename Enable_If<Is_Singleton<From>::value
                      || Is_Interval<From>::value, I_Result>::type
   difference_assign(const From& x);
 
+  /*! \brief
+    Assigns to \p *this the smallest interval containing the set-theoretic
+    difference of \p x and \p y.
+  */
   template <typename From1, typename From2>
   typename Enable_If<((Is_Singleton<From1>::value
                        || Is_Interval<From1>::value)
