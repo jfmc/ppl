@@ -1353,8 +1353,7 @@ Box<Interval>::box_difference_assign(const Box& y) {
     x.set_empty();
     break;
   case 1:
-//     Parma_Polyhedra_Library::difference_assign(x.seq[index_non_contained],
-// 					       y.seq[index_non_contained]);
+    x.seq[index_non_contained].difference_assign(y.seq[index_non_contained]);
     break;
   default:
     // Nothing to do: the difference is `x'.
