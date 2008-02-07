@@ -899,11 +899,25 @@ m4_define(`m4_Polyhedron_has_property_replacement',
           `m4_has_property_replacement, is_discrete')
 m4_define(`m4_Grid_has_property_replacement',
           `m4_has_property_replacement, is_discrete')
-m4_define(`m4_product_has_property_replacement',
-          `is_empty, is_universe, is_bounded, is_topologically_closed,
-            is_discrete')
 m4_define(`m4_Rational_Box_has_property_replacement', `is_empty, is_universe,
             is_bounded, contains_integer_point')
+m4_define(`m4_Pointset_Powerset_has_property_replacement',
+  `m4_echo_unquoted(m4_`'m4_class_body_kind$1`'_has_property_replacement)')
+
+dnl For products, we take the intersection of the properties of
+dnl each of the component domains.
+m4_define(`m4_product_has_property_replacement', `dnl
+m4_define(`m4_1st_sequence',
+  m4_`'m4_class_body_1st_kind$1`'_has_property_replacement)`'dnl
+m4_define(`m4_2nd_sequence',
+  m4_`'m4_class_body_2nd_kind$1`'_has_property_replacement)`'dnl
+m4_define(`m4_3rd_sequence',
+  `is_empty, is_universe, is_bounded, is_topologically_closed')`'dnl
+m4_three_seq_intersection`'dnl
+m4_undefine(`m4_1st_sequence')`'dnl
+m4_undefine(`m4_2nd_sequence')`'dnl
+m4_undefine(`m4_3rd_sequence')`'dnl
+')
 
 dnl ---------------------------------------------------------------------
 dnl pattern == simplify
@@ -994,5 +1008,10 @@ dnl  The total and external memory query methods for all the domains
 dnl  and the size query to the pointset powerset domain.
 m4_define(`m4_membytes_replacement',
   `external_memory_in_bytes, total_memory_in_bytes')
-m4_define(`m4_Pointset_Powerset_membytes_replacement',
-  `m4_membytes_replacement, size')
+m4_define(`m4_box_membytes_replacement', `')
+m4_define(`m4_Pointset_Powerset_membytes_replacement', `dnl
+m4_define(`m4_TMP_MACRO',
+  m4_`'m4_class_body_group$1`'_membytes_replacement)`'dnl
+m4_ifelse(m4_TMP_MACRO, `', size, `m4_tmp, size')`'dnl
+m4_undefine(`m4_TMP_MACRO')`'dnl
+')

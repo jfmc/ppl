@@ -108,6 +108,110 @@ dnl
 dnl Code copied from m4 documentation where it is called echo2.
 m4_define(`m4_echo_quoted', `$@')
 
+dnl ----------------------------------------------------------------------
+dnl m4_two_seq_intersection,
+dnl m4_three_seq_intersection and helper macros
+dnl
+dnl These find the intersection of two and three sequences, respectively.
+dnl ----------------------------------------------------------------------
+dnl
+dnl m4_two_seq_intersection
+dnl
+dnl This macro with its helper macros below,
+dnl intersects two sequences that must be previously defined
+dnl as m4_1st_sequence and m4_2nd_sequence. The order of the
+dnl intersected sequence is that of m4_1st_sequence.
+dnl
+dnl For example, if m4_1st_sequence is defined to be `a, b, c, d' and
+dnl m4_2nd_sequence is defined to be `b, d, e, a, f',
+dnl this macro is defined to be `a, b, d'.
+m4_define(`m4_two_seq_intersection', `dnl
+m4_define(`m4_add_one_first', 1)`'dnl
+m4_patsubst(m4_two_seq_intersection_aux(m4_1st_sequence),
+            @COMMA@, `, ')`'dnl
+')
+
+dnl m4_two_seq_intersection_aux(...)
+dnl
+dnl The arguments are the first sequence to be intersected
+dnl and it calls itself recursively with the tail of the sequence.
+m4_define(`m4_two_seq_intersection_aux', `dnl
+m4_ifelse($#, 0, , $#, 1,
+  `m4_two_seq_intersection_aux2($1, m4_2nd_sequence)',
+  `m4_two_seq_intersection_aux2($1, m4_2nd_sequence)`'dnl
+m4_two_seq_intersection_aux(m4_shift($@))')`'dnl
+')
+
+dnl m4_two_seq_intersection_aux2(String, ...)
+dnl
+dnl This is defined to be `String' if `String' also occurs
+dnl in the 2nd or in a later argument position.
+dnl It calls itself recursively with the tail of the sequence.
+m4_define(`m4_two_seq_intersection_aux2', `dnl
+m4_ifelse($#, 0, , $#, 1, , $#, 2,
+  `m4_ifelse($1, $2, `m4_add_one($1)')',
+  `m4_ifelse($1, $2, `m4_add_one($1)',
+m4_two_seq_intersection_aux2($1, m4_shift(m4_shift($@))))')`'dnl
+')
+
+dnl m4_three_seq_intersection
+dnl
+dnl This macro with its helper macros below,
+dnl intersects three sequences that must be previously defined
+dnl as m4_1st_sequence, m4_2nd_sequence and m4_3rd_sequence.
+dnl The order of the intersected sequence is that of m4_1st_sequence.
+dnl
+m4_define(`m4_three_seq_intersection', `dnl
+m4_define(`m4_add_one_first', 1)`'dnl
+m4_patsubst(m4_three_seq_intersection_aux(m4_1st_sequence),
+            @COMMA@, `, ')`'dnl
+')
+
+dnl m4_three_seq_intersection_aux(...)
+dnl
+dnl The arguments are the first sequence to be intersected
+dnl and it calls itself recursively with the tail of the sequence.
+m4_define(`m4_three_seq_intersection_aux', `dnl
+m4_ifelse($#, 0, , $#, 1,
+  `m4_three_seq_intersection_aux2($1, m4_2nd_sequence)',
+  `m4_three_seq_intersection_aux2($1, m4_2nd_sequence)`'dnl
+m4_three_seq_intersection_aux(m4_shift($@))')`'dnl
+')
+
+dnl m4_three_seq_intersection_aux2(String, ...)
+dnl
+dnl This is defined to be `String' if `String' also occurs
+dnl in the 2nd or in a later argument position
+dnl as well as in m4_3rd_sequence.
+dnl It calls itself recursively with the tail of the sequence.
+m4_define(`m4_three_seq_intersection_aux2', `dnl
+m4_ifelse($#, 0, , $#, 1, , $#, 2,
+  `m4_ifelse($1, $2, `m4_three_seq_intersection_aux3($1, m4_3rd_sequence)')',
+  `m4_ifelse($1, $2, `m4_three_seq_intersection_aux3($1, m4_3rd_sequence)',
+m4_three_seq_intersection_aux2($1, m4_shift(m4_shift($@))))')`'dnl
+')
+
+dnl m4_three_seq_intersection_aux3(String, ...)
+dnl
+dnl This is defined to be `String' if `String' also occurs
+dnl in the 2nd or in a later argument position.
+dnl It calls itself recursively with the tail of the sequence.
+m4_define(`m4_three_seq_intersection_aux3', `dnl
+m4_ifelse($#, 0, , $#, 1, , $#, 2,
+  `m4_ifelse($1, $2, `m4_add_one($1)')',
+  `m4_ifelse($1, $2, `m4_add_one($1)',
+m4_three_seq_intersection_aux3($1, m4_shift(m4_shift($@))))')`'dnl
+')
+
+dnl m4_add_one(String)
+dnl
+dnl This separates the new sequence temporarily with @COMMA@ to avoid
+dnl the `,' being mis-interpreted by m4.
+m4_define(`m4_add_one', `dnl
+m4_ifelse(m4_add_one_first, 1,
+  $1`'m4_undefine(`m4_add_one_first'), @COMMA@$1)`'dnl
+')
+
 dnl =====================================================================
 dnl ====== The following are application dependent macros: their meaning
 dnl ====== is influenced by the overall interface generator architecture.
@@ -423,15 +527,21 @@ dnl if so, it expands to Procedure_Spec.
 m4_define(`m4_filter_one_procedure', `dnl
 m4_define(`m4_proc_info_string',
        `m4_patsubst(`$2', `[ ]*ppl_[^ ]+ \(.*\)', \1)')`'dnl
-m4_ifelse(m4_keep_or_throw(m4_class_kind$1, m4_proc_info_string, -,
+m4_ifelse(m4_keep_or_throw(m4_class_kind$1,
+                           m4_proc_info_string, -,
                            m4_group_names),
   1, 0,
-    m4_ifelse(m4_keep_or_throw(m4_remove_topology(m4_class_body_kind$1),
-                               m4_proc_info_string, \,
-                               m4_group_names),
-      1, 0,
-        m4_keep_or_throw(m4_class_kind$1, m4_proc_info_string, +,
-                         m4_group_names)))`'dnl
+  m4_keep_or_throw(m4_class_body_kind$1,
+                             m4_proc_info_string, \,
+                             m4_group_names),
+  1, 0,
+  m4_keep_or_throw(m4_class_body_2nd_kind$1,
+                             m4_proc_info_string, ?,
+                             m4_group_names),
+  1, 0,
+  m4_keep_or_throw(m4_class_kind$1,
+                   m4_proc_info_string, +,
+                   m4_group_names))`'dnl
 m4_undefine(m4_proc_info_string)`'dnl
 ')
 
@@ -553,5 +663,3 @@ m4_pre_all_classes_code`'dnl
 dnl and then generates code for each class.
 m4_all_classes_code(1)`'dnl
 ')
-
-m4_divert`'dnl
