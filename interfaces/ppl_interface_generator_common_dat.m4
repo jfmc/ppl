@@ -234,6 +234,7 @@ m4_define(`m4_init_cplusplus_class_components', `dnl
 m4_get_kind($1, $2, $3)`'dnl
 m4_get_group($1, $3)`'dnl
 m4_get_body($1, $2, $3)`'dnl
+m4_get_counter($1, $2, $3)`'dnl
 dnl
 m4_ifelse(m4_$3_group$1, pointset_powerset,
   `m4_parse_body_for_powerset($1, $3)')`'dnl
@@ -283,15 +284,23 @@ m4_define(`m4_get_kind',
                  m4_regexp($2, `\([^ <]+\)[.]*', `\1'))')`'dnl
 ')
 
+m4_define(`m4_get_counter',
+  `m4_define(m4_$3_counter`'$1,
+    m4_ifelse($2, `', ,
+               m4_get_class_index($2)))`'dnl
+')
+
 m4_define(`m4_get_group',
   `m4_define(m4_$2_group`'$1, `')`'dnl
-m4_get_group_aux($1, $2, m4_class_groups)')
+m4_get_group_aux($1, $2, m4_class_groups)`'dnl
+')
 
 m4_define(`m4_get_group_aux', `dnl
 m4_ifelse($#, 0, , $#, 1, , $#, 2, , $#, 3,
     m4_get_group_aux2($1, $2, $3, m4_$3_group),
     `m4_ifelse(m4_get_group_aux2($1, $2, $3, m4_$3_group), 0,
-      `m4_get_group_aux($1, $2, m4_shift(m4_shift(m4_shift($@))))')')')
+      `m4_get_group_aux($1, $2, m4_shift(m4_shift(m4_shift($@))))')')`'dnl
+')
 
 m4_define(`m4_get_group_aux2', `dnl
 m4_ifelse($#, 0, , $#, 1, , $#, 2, 0, $#, 3, 0, $#, 4,
@@ -299,8 +308,9 @@ m4_ifelse($#, 0, , $#, 1, , $#, 2, 0, $#, 3, 0, $#, 4,
     `m4_define(m4_$2_group`'$1, `$3')', 0)',
   `m4_ifelse(`$4', m4_$2_kind$1,
     `m4_define(m4_$2_group`'$1, `$3')',
-    m4_get_group_aux2($1, $2, $3, m4_shift(m4_shift(m4_shift(m4_shift($@)))))`'dnl
-)')')
+    m4_get_group_aux2($1, $2, $3,
+      m4_shift(m4_shift(m4_shift(m4_shift($@))))))')`'dnl
+')
 
 
 dnl m4_get_class_index(String)
@@ -532,14 +542,14 @@ m4_define(`m4_class_replacement', m4_interface_class`'$1)
 dnl The cplusplus name.
 m4_define(`m4_cpp_class_replacement', m4_cplusplus_class`'$1)
 
-dnl The direct product full cplusplus name.
+dnl The product full cplusplus name.
 m4_define(`m4_product_cpp_class_replacement',
      Domain_Product<`'m4_cplusplus_class_body_1st$1@COMMA@`'m4_cplusplus_class_body_2nd$1 >::`'m4_class_kind$1)
 
 dnl The defined cplusplus name (the default is as before).
 m4_define(`m4_cppdef_class_replacement', m4_cplusplus_class`'$1)
 
-dnl The defined direct product cplusplus name.
+dnl The defined product cplusplus name.
 m4_define(`m4_product_cppdef_class_replacement',
 m4_interface_class`'$1)
 
@@ -802,6 +812,27 @@ dnl pattern == relation_represent
 dnl  The different kinds of objects that can have a relation with a class.
 dnl ---------------------------------------------------------------------
 
+dnl FIXME: **************************************************************
+dnl       This code is here temporarily while we improve the way the
+dnl       m4 works for the replacements.
+dnl       To find any sequence of replacements the m4 should call
+dnl       this macro - but at the moment it is only used locally - here
+dnl       and for the replacement for the `has_property' pattern.
+dnl FIXME: **************************************************************
+dnl m4_class_pattern_replacement(Class_Counter, Pattern, Replacement_Id)
+dnl
+dnl Class_Counter:  counter of class for which we want the replacements.
+dnl Pattern:        pattern to be replaced (lower-case);
+dnl Replacement_Id: Can be the empty string, `_alt' or `_cppx'
+dnl                 depending on the required group of replacements.
+m4_define(`m4_class_pattern_replacement', `dnl
+  m4_ifdef(m4_`'m4_class_kind$1`'_$2$3_replacement,
+    m4_`'m4_class_kind$1`'_$2$3_replacement($1),
+    `m4_ifdef(m4_`'m4_class_group$1`'_$2$3_replacement,
+       m4_`'m4_class_group$1`'_$2$3_replacement($1),
+       `m4_$2$3_replacement($1)')')`'dnl
+')
+
 m4_define(`m4_relation_represent_replacement', `constraint, generator')
 m4_define(`m4_Polyhedron_relation_represent_replacement',
          `m4_relation_represent_replacement, congruence')
@@ -809,8 +840,23 @@ m4_define(`m4_Grid_relation_represent_replacement',
          `m4_relation_represent_replacement, congruence, grid_generator')
 m4_define(`m4_Pointset_Powerset_relation_represent_replacement',
          `m4_relation_represent_replacement, congruence')
-m4_define(`m4_Product_relation_represent_replacement',
-         `m4_relation_represent_replacement, congruence')
+
+m4_define(`m4_product_relation_represent_replacement', `dnl
+m4_define(`m4_1st_sequence',
+  `constraint, generator, congruence')`'dnl
+m4_define(`m4_2nd_sequence',
+  `m4_class_pattern_replacement(m4_class_body_1st_counter$1,
+    relation_represent, `')')`'dnl
+m4_define(`m4_3rd_sequence',
+  `m4_class_pattern_replacement(m4_class_body_2nd_counter$1,
+    relation_represent, `')')`'dnl
+m4_define(`m4_num_of_sequences', 3)`'dnl
+m4_seq_intersection`'dnl
+m4_undefine(`m4_1st_sequence')`'dnl
+m4_undefine(`m4_2nd_sequence')`'dnl
+m4_undefine(`m4_3rd_sequence')`'dnl
+m4_undefine(`m4_num_of_sequences')`'dnl
+')
 
 dnl The type of these relations with a class.
 m4_define(`m4_relation_represent_alt_replacement', `con, gen')
@@ -820,8 +866,23 @@ m4_define(`m4_Grid_relation_represent_alt_replacement',
          `con, gen, con, gen')
 m4_define(`m4_Pointset_Powerset_relation_represent_alt_replacement',
          `con, gen, con')
-m4_define(`m4_product_relation_represent_alt_replacement',
-         `con, gen, con')
+
+m4_define(`m4_product_relation_represent_alt_replacement', `dnl
+m4_define(`m4_1st_sequence',
+  `con, gen, con')`'dnl
+m4_define(`m4_2nd_sequence',
+  `m4_class_pattern_replacement(m4_class_body_1st_counter$1,
+    relation_represent, `_alt')')`'dnl
+m4_define(`m4_3rd_sequence',
+  `m4_class_pattern_replacement(m4_class_body_2nd_counter$1,
+    relation_represent, `_alt')')`'dnl
+m4_define(`m4_num_of_sequences', 3)`'dnl
+m4_seq_intersection`'dnl
+m4_undefine(`m4_1st_sequence')`'dnl
+m4_undefine(`m4_2nd_sequence')`'dnl
+m4_undefine(`m4_3rd_sequence')`'dnl
+m4_undefine(`m4_num_of_sequences')`'dnl
+')
 
 dnl ---------------------------------------------------------------------
 dnl pattern == add_represent
@@ -908,15 +969,19 @@ dnl For products, we take the intersection of the properties of
 dnl each of the component domains.
 m4_define(`m4_product_has_property_replacement', `dnl
 m4_define(`m4_1st_sequence',
-  m4_`'m4_class_body_1st_kind$1`'_has_property_replacement)`'dnl
-m4_define(`m4_2nd_sequence',
-  m4_`'m4_class_body_2nd_kind$1`'_has_property_replacement)`'dnl
-m4_define(`m4_3rd_sequence',
   `is_empty, is_universe, is_bounded, is_topologically_closed')`'dnl
-m4_three_seq_intersection`'dnl
+m4_define(`m4_2nd_sequence',
+  `m4_class_pattern_replacement(m4_class_body_1st_counter$1,
+    has_property, `')')`'dnl
+m4_define(`m4_3rd_sequence',
+  `m4_class_pattern_replacement(m4_class_body_2nd_counter$1,
+    has_property, `')')`'dnl
+m4_define(`m4_num_of_sequences', 3)`'dnl
+m4_seq_intersection`'dnl
 m4_undefine(`m4_1st_sequence')`'dnl
 m4_undefine(`m4_2nd_sequence')`'dnl
 m4_undefine(`m4_3rd_sequence')`'dnl
+m4_undefine(`m4_num_of_sequences')`'dnl
 ')
 
 dnl ---------------------------------------------------------------------

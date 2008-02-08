@@ -115,92 +115,60 @@ dnl
 dnl These find the intersection of two and three sequences, respectively.
 dnl ----------------------------------------------------------------------
 dnl
-dnl m4_two_seq_intersection
+dnl m4_seq_intersection
 dnl
 dnl This macro with its helper macros below,
-dnl intersects two sequences that must be previously defined
-dnl as m4_1st_sequence and m4_2nd_sequence. The order of the
+dnl intersects two or three sequences that must be previously defined
+dnl as `m4_1st_sequence', `m4_2nd_sequence' and, if there is a third,
+dnl `m4_3rd_sequence'. The number of sequences (2 or 3) must also be defined
+dnl by the macro `m4_number_of_sequences'. The order of the
 dnl intersected sequence is that of m4_1st_sequence.
 dnl
 dnl For example, if m4_1st_sequence is defined to be `a, b, c, d' and
 dnl m4_2nd_sequence is defined to be `b, d, e, a, f',
 dnl this macro is defined to be `a, b, d'.
-m4_define(`m4_two_seq_intersection', `dnl
+m4_define(`m4_seq_intersection', `dnl
 m4_define(`m4_add_one_first', 1)`'dnl
-m4_patsubst(m4_two_seq_intersection_aux(m4_1st_sequence),
+m4_patsubst(m4_seq_intersection_aux(m4_1st_sequence),
             @COMMA@, `, ')`'dnl
 ')
 
-dnl m4_two_seq_intersection_aux(...)
+dnl m4_seq_intersection_aux(...)
 dnl
-dnl The arguments are the first sequence to be intersected
-dnl and it calls itself recursively with the tail of the sequence.
-m4_define(`m4_two_seq_intersection_aux', `dnl
-m4_ifelse($#, 0, , $#, 1,
-  `m4_two_seq_intersection_aux2($1, m4_2nd_sequence)',
-  `m4_two_seq_intersection_aux2($1, m4_2nd_sequence)`'dnl
-m4_two_seq_intersection_aux(m4_shift($@))')`'dnl
-')
-
-dnl m4_two_seq_intersection_aux2(String, ...)
-dnl
-dnl This is defined to be `String' if `String' also occurs
-dnl in the 2nd or in a later argument position.
+dnl The arguments are the first sequence to be intersected.
+dnl It calls either the helper macro for 3 sequences or the helper
+dnl macro for 2 sequences (depending on the number of sequences).
 dnl It calls itself recursively with the tail of the sequence.
-m4_define(`m4_two_seq_intersection_aux2', `dnl
-m4_ifelse($#, 0, , $#, 1, , $#, 2,
-  `m4_ifelse($1, $2, `m4_add_one($1)')',
-  `m4_ifelse($1, $2, `m4_add_one($1)',
-m4_two_seq_intersection_aux2($1, m4_shift(m4_shift($@))))')`'dnl
-')
-
-dnl m4_three_seq_intersection
-dnl
-dnl This macro with its helper macros below,
-dnl intersects three sequences that must be previously defined
-dnl as m4_1st_sequence, m4_2nd_sequence and m4_3rd_sequence.
-dnl The order of the intersected sequence is that of m4_1st_sequence.
-dnl
-m4_define(`m4_three_seq_intersection', `dnl
-m4_define(`m4_add_one_first', 1)`'dnl
-m4_patsubst(m4_three_seq_intersection_aux(m4_1st_sequence),
-            @COMMA@, `, ')`'dnl
-')
-
-dnl m4_three_seq_intersection_aux(...)
-dnl
-dnl The arguments are the first sequence to be intersected
-dnl and it calls itself recursively with the tail of the sequence.
-m4_define(`m4_three_seq_intersection_aux', `dnl
+m4_define(`m4_seq_intersection_aux', `dnl
 m4_ifelse($#, 0, , $#, 1,
-  `m4_three_seq_intersection_aux2($1, m4_2nd_sequence)',
-  `m4_three_seq_intersection_aux2($1, m4_2nd_sequence)`'dnl
-m4_three_seq_intersection_aux(m4_shift($@))')`'dnl
+  m4_`'m4_num_of_sequences`'_seq_intersection_aux($1, m4_2nd_sequence),
+  m4_`'m4_num_of_sequences`'_seq_intersection_aux($1, m4_2nd_sequence)`'dnl
+`m4_seq_intersection_aux(m4_shift($@))')`'dnl
 ')
 
-dnl m4_three_seq_intersection_aux2(String, ...)
+dnl m4_3_seq_intersection_aux(String, ...)
 dnl
 dnl This is defined to be `String' if `String' also occurs
 dnl in the 2nd or in a later argument position
 dnl as well as in m4_3rd_sequence.
 dnl It calls itself recursively with the tail of the sequence.
-m4_define(`m4_three_seq_intersection_aux2', `dnl
+m4_define(`m4_3_seq_intersection_aux', `dnl
 m4_ifelse($#, 0, , $#, 1, , $#, 2,
-  `m4_ifelse($1, $2, `m4_three_seq_intersection_aux3($1, m4_3rd_sequence)')',
-  `m4_ifelse($1, $2, `m4_three_seq_intersection_aux3($1, m4_3rd_sequence)',
-m4_three_seq_intersection_aux2($1, m4_shift(m4_shift($@))))')`'dnl
+  `m4_ifelse($1, $2, `m4_2_seq_intersection_aux($1, m4_3rd_sequence)')',
+  `m4_ifelse($1, $2, `m4_2_seq_intersection_aux($1, m4_3rd_sequence)',
+`m4_3_seq_intersection_aux($1, m4_shift(m4_shift($@)))')')`'dnl
 ')
 
-dnl m4_three_seq_intersection_aux3(String, ...)
+dnl m4_2_seq_intersection_aux(String, ...)
 dnl
 dnl This is defined to be `String' if `String' also occurs
 dnl in the 2nd or in a later argument position.
 dnl It calls itself recursively with the tail of the sequence.
-m4_define(`m4_three_seq_intersection_aux3', `dnl
+m4_define(`m4_2_seq_intersection_aux', `dnl
 m4_ifelse($#, 0, , $#, 1, , $#, 2,
   `m4_ifelse($1, $2, `m4_add_one($1)')',
   `m4_ifelse($1, $2, `m4_add_one($1)',
-m4_three_seq_intersection_aux3($1, m4_shift(m4_shift($@))))')`'dnl
+`m4_2_seq_intersection_aux($1, m4_shift(m4_shift($@)))')')`'dnl
 ')
 
 dnl m4_add_one(String)
