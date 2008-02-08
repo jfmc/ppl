@@ -27,7 +27,7 @@ namespace Parma_Polyhedra_Library {
 
 struct Z_Box_Interval_Info_Policy {
   const_bool_nodef(store_special, true);
-  const_bool_nodef(store_open, true);
+  const_bool_nodef(store_open, false);
   const_bool_nodef(cache_empty, true);
   const_bool_nodef(cache_singleton, true);
   const_bool_nodef(cache_normalized, false);
@@ -75,16 +75,40 @@ Double_Box;
 typedef Box<Interval<long double, Floating_Point_Box_Interval_Info> >
 Long_Double_Box;
 
-/*
-int8_t      Int8_Box
-int16_t     etc
-int32_t
-int64_t
-uint8_t     UInt8_Box or Uint8_Box
-uint16_t    etc
-uint32_t
-uint64_t
-*/
+struct Native_Integer_Box_Interval_Info_Policy {
+  const_bool_nodef(store_special, true);
+  const_bool_nodef(store_open, false);
+  const_bool_nodef(cache_empty, true);
+  const_bool_nodef(cache_singleton, true);
+  const_bool_nodef(cache_normalized, false);
+  const_int_nodef(next_bit, 0);
+  const_bool_nodef(may_be_empty, true);
+  const_bool_nodef(may_contain_infinity, false);
+  const_bool_nodef(check_empty_result, false);
+  const_bool_nodef(check_inexact, false);
+};
+
+typedef
+Interval_Restriction_None<Interval_Info_Bitset
+                          <unsigned int,
+                           Native_Integer_Box_Interval_Info_Policy> >
+Native_Integer_Box_Interval_Info;
+
+typedef Box<Interval<int8_t, Native_Integer_Box_Interval_Info> > Int8_Box;
+
+typedef Box<Interval<int16_t, Native_Integer_Box_Interval_Info> > Int16_Box;
+
+typedef Box<Interval<int32_t, Native_Integer_Box_Interval_Info> > Int32_Box;
+
+typedef Box<Interval<int64_t, Native_Integer_Box_Interval_Info> > Int64_Box;
+
+typedef Box<Interval<uint8_t, Native_Integer_Box_Interval_Info> > Uint8_Box;
+
+typedef Box<Interval<uint16_t, Native_Integer_Box_Interval_Info> > Uint16_Box;
+
+typedef Box<Interval<uint32_t, Native_Integer_Box_Interval_Info> > Uint32_Box;
+
+typedef Box<Interval<uint64_t, Native_Integer_Box_Interval_Info> > Uint64_Box;
 
 } // namespace Parma_Polyhedra_Library
 
