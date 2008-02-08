@@ -612,10 +612,10 @@ m4_ifelse(m4_echo_unquoted(m4_class_kind`'m4_ind), Pointset_Powerset, ,
 m4_echo_unquoted(m4_class_group`'m4_ind), product, , `dnl
 m4_define(`m4_friend_class', m4_`'$1`'_class`'m4_ind)`'dnl
 m4_ifelse(m4_friend_class, Polyhedron,
-          m4_ifelse($2, `',
-          m4_one_friend(C_`'m4_friend_class@COMMA@NNC_`'m4_friend_class),
-          m4_one_friend(m4_friend_class@COMMA@m4_friend_class)),
-          m4_one_friend(m4_friend_class))`'dnl
+          `m4_ifelse($2, `',
+          `m4_one_friend(C_`'m4_friend_class@COMMA@NNC_`'m4_friend_class)',
+          `m4_one_friend(m4_friend_class@COMMA@m4_friend_class)')',
+          `m4_one_friend(m4_friend_class)')`'dnl
 m4_undefine(`m4_friend_class')')')`'dnl
 ')
 
@@ -931,8 +931,7 @@ dnl ---------------------------------------------------------------------
 
 m4_define(`m4_superclass_replacement', `NONE')
 m4_define(`m4_Pointset_Powerset_superclass_replacement',
-          `m4_ifelse(
-          m4_echo_unquoted(m4_disjunct_kind($1)),
+          `m4_ifelse(m4_echo_unquoted(m4_disjunct_kind($1)),
           `Grid', `Grid', `NNC_Polyhedron')')
 
 dnl ---------------------------------------------------------------------
