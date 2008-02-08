@@ -74,7 +74,7 @@ Float_Box;
 typedef Box<Interval<double, Floating_Point_Box_Interval_Info> >
 Double_Box;
 
-typedef Box<Interval<long double, Floating_Point_Box_Interval_Info>
+typedef Box<Interval<long double, Floating_Point_Box_Interval_Info> >
 Long_Double_Box;
 
 /*
