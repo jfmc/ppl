@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifdef PPL_WATCHDOG_LIBRARY_ENABLED
 #include "pwl.hh"
 #endif
+#include "interfaced_boxes.hh"
 #include "track_allocation.hh"
 #include <set>
 #include <vector>

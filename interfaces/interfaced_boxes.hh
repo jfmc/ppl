@@ -23,8 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_interfaced_boxes_hh
 #define PPL_interfaced_boxes_hh 1
 
-#include "Interval.defs.hh"
-
 namespace Parma_Polyhedra_Library {
 
 struct Z_Box_Interval_Info_Policy {

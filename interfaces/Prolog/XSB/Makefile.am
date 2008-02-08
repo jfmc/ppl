@@ -71,6 +71,7 @@ xsb_predicate_check.P: $(interface_generator_dependencies) ppl_interface_generat
            $(srcdir)/ppl_interface_generator_xsb_predicate_check_P.m4 > $@
 
 AM_CPPFLAGS = \
+-I$(top_srcdir)/interfaces \
 -I$(top_srcdir)/interfaces/Prolog \
 -I$(top_buildir)/interfaces/Prolog \
 -I$(top_builddir)/src \
