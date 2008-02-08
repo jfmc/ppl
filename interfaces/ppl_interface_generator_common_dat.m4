@@ -528,8 +528,32 @@ beginend,
 membytes')
 
 dnl ---------------------------------------------------------------------
-dnl Define the replacements for these patterns
+dnl Define the replacement macros for all patterns
 dnl ---------------------------------------------------------------------
+
+dnl m4_class_pattern_replacement(Class_Counter, Pattern, Replacement_Id)
+dnl
+dnl Class_Counter:  counter of class for which we want the replacements.
+dnl Pattern:        pattern to be replaced (lower-case);
+dnl Replacement_Id: Can be the empty string, `_alt' or `_cppx'
+dnl                 depending on the required group of replacements.
+dnl
+dnl To find any sequence of replacements the macro
+dnl "m4_replace_one_pattern_in_string"
+dnl defined in "m4_interface_generators_common.m4"
+dnl calls this macro.
+dnl
+m4_define(`m4_class_pattern_replacement', `dnl
+  m4_ifdef(m4_`'m4_class_kind$1`'_$2$3_replacement,
+    m4_`'m4_class_kind$1`'_$2$3_replacement($1),
+    `m4_ifdef(m4_`'m4_class_group$1`'_$2$3_replacement,
+       m4_`'m4_class_group$1`'_$2$3_replacement($1),
+       `m4_$2$3_replacement($1)')')`'dnl
+')
+
+dnl =====================================================================
+dnl ===== Define the individual replacements for each pattern       =====
+dnl =====================================================================
 
 dnl ---------------------------------------------------------------------
 dnl pattern == class
@@ -812,27 +836,6 @@ dnl pattern == relation_represent
 dnl  The different kinds of objects that can have a relation with a class.
 dnl ---------------------------------------------------------------------
 
-dnl FIXME: **************************************************************
-dnl       This code is here temporarily while we improve the way the
-dnl       m4 works for the replacements.
-dnl       To find any sequence of replacements the m4 should call
-dnl       this macro - but at the moment it is only used locally - here
-dnl       and for the replacement for the `has_property' pattern.
-dnl FIXME: **************************************************************
-dnl m4_class_pattern_replacement(Class_Counter, Pattern, Replacement_Id)
-dnl
-dnl Class_Counter:  counter of class for which we want the replacements.
-dnl Pattern:        pattern to be replaced (lower-case);
-dnl Replacement_Id: Can be the empty string, `_alt' or `_cppx'
-dnl                 depending on the required group of replacements.
-m4_define(`m4_class_pattern_replacement', `dnl
-  m4_ifdef(m4_`'m4_class_kind$1`'_$2$3_replacement,
-    m4_`'m4_class_kind$1`'_$2$3_replacement($1),
-    `m4_ifdef(m4_`'m4_class_group$1`'_$2$3_replacement,
-       m4_`'m4_class_group$1`'_$2$3_replacement($1),
-       `m4_$2$3_replacement($1)')')`'dnl
-')
-
 m4_define(`m4_relation_represent_replacement', `constraint, generator')
 m4_define(`m4_Polyhedron_relation_represent_replacement',
          `m4_relation_represent_replacement, congruence')
@@ -964,9 +967,8 @@ m4_define(`m4_Rational_Box_has_property_replacement', `is_empty, is_universe,
             is_bounded, contains_integer_point')
 m4_define(`m4_Pointset_Powerset_has_property_replacement',
   `m4_echo_unquoted(m4_`'m4_class_body_kind$1`'_has_property_replacement)')
-
 dnl For products, we take the intersection of the properties of
-dnl each of the component domains.
+dnl each of the component domains with the possible properties for products.
 m4_define(`m4_product_has_property_replacement', `dnl
 m4_define(`m4_1st_sequence',
   `is_empty, is_universe, is_bounded, is_topologically_closed')`'dnl
@@ -1032,16 +1034,22 @@ m4_define(`m4_BD_Shape_binop_replacement',
          `m4_binop_replacement, bds_hull_assign')
 m4_define(`m4_Octagonal_Shape_binop_replacement',
          `m4_binop_replacement, oct_hull_assign')
-m4_define(`m4_Pointset_Powerset_binop_replacement',
-          `m4_ifelse(
-          m4_echo_unquoted(m4_remove_topology(m4_class_body_kind$1)), Polyhedron,
-          `intersection_assign, poly_difference_assign, concatenate_assign,
-           time_elapse_assign',
-          `m4_class_body_kind$1', Grid,
-          `intersection_assign, poly_difference_assign, concatenate_assign,
-           time_elapse_assign',
-          `intersection_assign, concatenate_assign,
-           time_elapse_assign')')
+dnl For the powerset domains, we intersect the replacements for the
+dnl disjuncts with the replacements for the disjunct.
+dnl We also add the poly_difference_assign as this has been defined for
+dnl powersets for any disjunct.
+m4_define(`m4_Pointset_Powerset_binop_replacement', `dnl
+poly_difference_assign, m4_define(`m4_1st_sequence',
+  `intersection_assign, concatenate_assign, time_elapse_assign')`'dnl
+m4_define(`m4_2nd_sequence',
+  `m4_class_pattern_replacement(m4_class_body_counter$1,
+    binop, `')')`'dnl
+m4_define(`m4_num_of_sequences', 2)`'dnl
+m4_seq_intersection`'dnl
+m4_undefine(`m4_1st_sequence')`'dnl
+m4_undefine(`m4_2nd_sequence')`'dnl
+m4_undefine(`m4_num_of_sequences')`'dnl
+')
 
 dnl  The different kinds of "and_minimize" binary operators.
 m4_define(`m4_binminop_replacement', `intersection_assign_and_minimize')

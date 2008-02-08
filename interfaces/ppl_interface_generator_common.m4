@@ -299,31 +299,15 @@ m4_define(`PATTERN', m4_upcase($3))`'dnl
 dnl
 dnl m4_replacements is the replacement list for the pattern.
 m4_define(`m4_replacements', `dnl
-  m4_ifdef(m4_`'m4_class_kind$1`'_$3_replacement,
-    m4_`'m4_class_kind$1`'_$3_replacement($1),
-    `m4_ifdef(m4_`'m4_class_group$1`'_$3_replacement,
-       m4_`'m4_class_group$1`'_$3_replacement($1),
-       `m4_$3_replacement($1)')')')`'dnl
+m4_class_pattern_replacement($1, $3, `')')`'dnl
 dnl
 dnl m4_alt_replacements is the alternative replacement list for pattern.
 m4_define(`m4_alt_replacements', `dnl
-  m4_ifdef(m4_`'m4_class_kind$1`'_$3_alt_replacement,
-    m4_`'m4_class_kind$1`'_$3_alt_replacement($1),
-    `m4_ifdef(m4_`'m4_class_group$1`'_$3_alt_replacement,
-      m4_`'m4_class_group$1`'_$3_alt_replacement($1),
-      `m4_ifdef(`m4_$3_alt_replacement',
-        `m4_$3_alt_replacement($1)',
-        `m4_replacements')')')')`'dnl
+m4_class_pattern_replacement($1, $3, `_alt')')`'dnl
 dnl
 dnl m4_cppx_replacements is the cplusplus replacement list for pattern.
 m4_define(`m4_cppx_replacements', `dnl
-  m4_ifdef(m4_`'m4_class_kind$1`'_$3_cppx_replacement,
-   m4_`'m4_class_kind$1`'_$3_cppx_replacement($1),
-    `m4_ifdef(m4_`'m4_class_group$1`'_$3_cppx_replacement,
-      m4_`'m4_class_group$1`'_$3_cppx_replacement($1),
-      `m4_ifdef(`m4_$3_cppx_replacement',
-        `m4_$3_cppx_replacement($1)',
-        `m4_replacements')')')')`'dnl
+m4_class_pattern_replacement($1, $3, `_cppx')')`'dnl
 dnl
 m4_ifelse(m4_index(`$2', PATTERN), `-1', $2, `dnl
 m4_expand_pattern_by_replacements($2, 1)')`'dnl
@@ -477,8 +461,8 @@ m4_define(`m4_keep_or_throw', `dnl
 m4_ifelse($#, 0, 0, $#, 1, 0, $#, 2, 0, $#, 3, 0,
   $#, 4, `m4_keep_or_throw_for_one_group($1, $2, $3, $4)',
     `m4_ifelse(m4_keep_or_throw_for_one_group($1, $2, $3, $4), 1, 1,
-      m4_keep_or_throw($1, $2, $3,
-                       m4_shift(m4_shift(m4_shift(m4_shift($@))))))')`'dnl
+      `m4_keep_or_throw($1, $2, $3,
+                       m4_shift(m4_shift(m4_shift(m4_shift($@)))))')')`'dnl
 ')
 
 dnl m4_filter_one_procedure(Class_Counter, Procedure_Spec)
@@ -507,9 +491,9 @@ m4_ifelse(m4_keep_or_throw(m4_class_kind$1,
                              m4_proc_info_string, ?,
                              m4_group_names),
   1, 0,
-  m4_keep_or_throw(m4_class_kind$1,
+  `m4_keep_or_throw(m4_class_kind$1,
                    m4_proc_info_string, +,
-                   m4_group_names))`'dnl
+                   m4_group_names)')`'dnl
 m4_undefine(m4_proc_info_string)`'dnl
 ')
 
