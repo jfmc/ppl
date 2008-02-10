@@ -115,7 +115,12 @@ noinst_LIBRARIES = libppl_ocaml.a
 nodist_libppl_ocaml_a_SOURCES = \
 ppl_ocaml.cc
 
-AM_CPPFLAGS = -I$(OCAMLC_ROOT) -I$(top_srcdir)/src -I$(top_builddir)/src @extra_includes@
+AM_CPPFLAGS = \
+-I$(OCAMLC_ROOT) \
+-I$(top_srcdir)/interfaces \
+-I$(top_srcdir)/src \
+-I$(top_builddir)/src \
+@extra_includes@
 
 noinst_PROGRAM = test1
 

@@ -86,6 +86,7 @@ ppl_c.cc: $(interface_generator_dependencies) Makefile
            $(srcdir)/ppl_interface_generator_c_cc.m4 > $@
 
 AM_CPPFLAGS = \
+-I$(top_srcdir)/interfaces \
 -I$(top_builddir)/interfaces/C \
 -I$(top_builddir)/src \
 @extra_includes@

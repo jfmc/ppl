@@ -85,6 +85,162 @@ public:
   }
 };
 
+class Z_Box {
+public:
+  static bool valid_instantiation() {
+    return true;
+  }
+  static bool valid_Pointset_Powerset_argument() {
+    return true;
+  }
+  static bool valid_Product_argument() {
+    return true;
+  }
+};
+
+class Float_Box {
+public:
+  static bool valid_instantiation() {
+    return true;
+  }
+  static bool valid_Pointset_Powerset_argument() {
+    return true;
+  }
+  static bool valid_Product_argument() {
+    return true;
+  }
+};
+
+class Double_Box {
+public:
+  static bool valid_instantiation() {
+    return true;
+  }
+  static bool valid_Pointset_Powerset_argument() {
+    return true;
+  }
+  static bool valid_Product_argument() {
+    return true;
+  }
+};
+
+class Long_Double_Box {
+public:
+  static bool valid_instantiation() {
+    return true;
+  }
+  static bool valid_Pointset_Powerset_argument() {
+    return true;
+  }
+  static bool valid_Product_argument() {
+    return true;
+  }
+};
+
+class Int8_Box {
+public:
+  static bool valid_instantiation() {
+    return true;
+  }
+  static bool valid_Pointset_Powerset_argument() {
+    return true;
+  }
+  static bool valid_Product_argument() {
+    return true;
+  }
+};
+
+class Int16_Box {
+public:
+  static bool valid_instantiation() {
+    return true;
+  }
+  static bool valid_Pointset_Powerset_argument() {
+    return true;
+  }
+  static bool valid_Product_argument() {
+    return true;
+  }
+};
+
+class Int32_Box {
+public:
+  static bool valid_instantiation() {
+    return true;
+  }
+  static bool valid_Pointset_Powerset_argument() {
+    return true;
+  }
+  static bool valid_Product_argument() {
+    return true;
+  }
+};
+
+class Int64_Box {
+public:
+  static bool valid_instantiation() {
+    return true;
+  }
+  static bool valid_Pointset_Powerset_argument() {
+    return true;
+  }
+  static bool valid_Product_argument() {
+    return true;
+  }
+};
+
+class Uint8_Box {
+public:
+  static bool valid_instantiation() {
+    return true;
+  }
+  static bool valid_Pointset_Powerset_argument() {
+    return true;
+  }
+  static bool valid_Product_argument() {
+    return true;
+  }
+};
+
+class Uint16_Box {
+public:
+  static bool valid_instantiation() {
+    return true;
+  }
+  static bool valid_Pointset_Powerset_argument() {
+    return true;
+  }
+  static bool valid_Product_argument() {
+    return true;
+  }
+};
+
+class Uint32_Box {
+public:
+  static bool valid_instantiation() {
+    return true;
+  }
+  static bool valid_Pointset_Powerset_argument() {
+    return true;
+  }
+  static bool valid_Product_argument() {
+    return true;
+  }
+};
+
+class Uint64_Box {
+public:
+  static bool valid_instantiation() {
+    return true;
+  }
+  static bool valid_Pointset_Powerset_argument() {
+    return true;
+  }
+  static bool valid_Product_argument() {
+    return true;
+  }
+};
+
 template <typename PH>
 class Pointset_Powerset {
 public:

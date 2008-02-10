@@ -37,7 +37,12 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../ppl_interface_generator_java_procedure_generators.m4 \
 $(interface_generator_files)
 
-AM_CPPFLAGS = -I$(top_builddir)/src -I../ppl_java -I$(top_srcdir)/src @extra_includes@ @JNIFLAGS@
+AM_CPPFLAGS = \
+-I$(top_srcdir)/interfaces \
+-I$(top_builddir)/src \
+-I../ppl_java \
+-I$(top_srcdir)/src \
+@extra_includes@ @JNIFLAGS@
 
 lib_LTLIBRARIES = libppl_java.la
 

@@ -62,6 +62,7 @@ dnl -----------------------------------------------------------------
 dnl Output conversion declarations for all the classes.
 dnl -----------------------------------------------------------------
 m4_divert`'dnl
+`#include "interfaced_boxes.hh"'
 m4_all_code`'dnl
 m4_divert(-1)
 m4_popdef(`m4_one_class_code')

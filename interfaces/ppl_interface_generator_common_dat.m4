@@ -287,7 +287,7 @@ m4_define(`m4_get_kind',
 m4_define(`m4_get_counter',
   `m4_define(m4_$3_counter`'$1,
     m4_ifelse($2, `', ,
-               m4_get_class_index($2)))`'dnl
+               m4_get_class_counter($2)))`'dnl
 ')
 
 m4_define(`m4_get_group',
@@ -313,12 +313,12 @@ m4_ifelse($#, 0, , $#, 1, , $#, 2, 0, $#, 3, 0, $#, 4,
 ')
 
 
-dnl m4_get_class_index(String)
+dnl m4_get_class_counter(String)
 dnl
 dnl String        - a cplusplus class name.
 dnl
 dnl This finds the class counter from the cpp name.
-m4_define(`m4_get_class_index', `dnl
+m4_define(`m4_get_class_counter', `dnl
 m4_forloop(m4_ind, 1, m4_num_classes, `dnl
 m4_ifelse(m4_remove_topology($1),
   m4_echo_unquoted(m4_cplusplus_class`'m4_ind),
@@ -335,7 +335,7 @@ dnl                 determines the precise component it refers to.
 dnl
 m4_define(`m4_parse_body_for_powerset', `dnl
 m4_define(`m4_interface_$2_body$1',
-  m4_interface_class`'m4_get_class_index(m4_$2_body$1))`'dnl
+  m4_interface_class`'m4_get_class_counter(m4_$2_body$1))`'dnl
 m4_define(`m4_cplusplus_$2_body$1', m4_$2_body$1)`'dnl
 m4_init_cplusplus_class_components($1, m4_$2_body$1, $2_body)`'dnl
 ')
@@ -353,10 +353,10 @@ m4_define(`m4_$2_body_1st$1',
 m4_define(`m4_$2_body_2nd$1',
   `m4_regexp(m4_$2_body$1, `\([^@]*\)@COMMA@\(.*\)', `\2')')`'dnl
 m4_define(`m4_interface_$2_body_1st$1',
-  m4_interface_class`'m4_get_class_index(m4_$2_body_1st$1))`'dnl
+  m4_interface_class`'m4_get_class_counter(m4_$2_body_1st$1))`'dnl
 m4_define(`m4_cplusplus_$2_body_1st$1', m4_$2_body_1st$1)`'dnl
 m4_define(`m4_interface_$2_body_2nd$1',
-  m4_interface_class`'m4_get_class_index(m4_$2_body_2nd$1))`'dnl
+  m4_interface_class`'m4_get_class_counter(m4_$2_body_2nd$1))`'dnl
 m4_define(`m4_cplusplus_$2_body_2nd$1', m4_$2_body_2nd$1)`'dnl
 m4_init_cplusplus_class_components($1, m4_$2_body_1st$1, $2_body_1st)`'dnl
 m4_init_cplusplus_class_components($1, m4_$2_body_2nd$1, $2_body_2nd)`'dnl
@@ -456,7 +456,7 @@ pointset_powerset,
 product')
 
 m4_define(`m4_all_group',
-  `Polyhedron, Grid, BD_Shape, Octagonal_Shape, Rational_Box,
+  `Polyhedron, Grid, BD_Shape, Octagonal_Shape, m4_box_group,
    Pointset_Powerset, m4_product_group')
 m4_define(`m4_simple_pps_group', `m4_simple_group, Pointset_Powerset')
 m4_define(`m4_simple_group', `Grid, m4_shape_group')
@@ -466,7 +466,10 @@ m4_define(`m4_polyhedron_group', Polyhedron)
 m4_define(`m4_grid_group', Grid)
 m4_define(`m4_bd_shape_group', BD_Shape)
 m4_define(`m4_octagonal_shape_group', Octagonal_Shape)
-m4_define(`m4_box_group', Rational_Box)
+m4_define(`m4_box_group',
+  `Rational_Box, Z_Box, Float_Box, Double_Box, Long_Double_Box,
+   Int8_Box, Int16_Box, Int32_Box, Int64_Box,
+   Uint8_Box, Uint16_Box, Uint32_Box, Uint64_Box')
 m4_define(`m4_pointset_powerset_group', Pointset_Powerset)
 m4_define(`m4_product_group',
   `Direct_Product, Smash_Product, Constraints_Product')
@@ -577,7 +580,7 @@ dnl The defined product cplusplus name.
 m4_define(`m4_product_cppdef_class_replacement',
 m4_interface_class`'$1)
 
-dnl The defined rational box cplusplus name.
+dnl The defined box cplusplus name.
 m4_define(`m4_box_cppdef_class_replacement',
 m4_interface_class`'$1)
 
@@ -962,10 +965,22 @@ m4_define(`m4_Polyhedron_has_property_replacement',
           `m4_has_property_replacement, is_discrete')
 m4_define(`m4_Grid_has_property_replacement',
           `m4_has_property_replacement, is_discrete')
-m4_define(`m4_Rational_Box_has_property_replacement', `is_empty, is_universe,
+m4_define(`m4_box_has_property_replacement', `is_empty, is_universe,
             is_bounded, contains_integer_point')
-m4_define(`m4_Pointset_Powerset_has_property_replacement',
-  `m4_echo_unquoted(m4_`'m4_class_body_kind$1`'_has_property_replacement)')
+dnl For pointset_powersets, we take the intersection of the properties of
+dnl the disjunct domain with all the properties.
+m4_define(`m4_Pointset_Powerset_has_property_replacement', `dnl
+m4_define(`m4_1st_sequence',
+  `m4_has_property_replacement, is_discrete')`'dnl
+m4_define(`m4_2nd_sequence',
+  `m4_class_pattern_replacement(m4_class_body_counter$1,
+                                has_property, `')')`'dnl
+m4_define(`m4_num_of_sequences', 2)`'dnl
+m4_seq_intersection`'dnl
+m4_undefine(`m4_1st_sequence')`'dnl
+m4_undefine(`m4_2nd_sequence')`'dnl
+m4_undefine(`m4_num_of_sequences')`'dnl
+')
 dnl For products, we take the intersection of the properties of
 dnl each of the component domains with the possible properties for products.
 m4_define(`m4_product_has_property_replacement', `dnl

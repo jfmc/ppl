@@ -22,6 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <jni.h>
 #include <ppl.hh>
+#include "interfaced_boxes.hh"
 
 
 using namespace Parma_Polyhedra_Library;
