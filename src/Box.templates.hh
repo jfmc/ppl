@@ -1184,6 +1184,8 @@ Box<Interval>::is_universe() const {
 template <typename Interval>
 bool
 Box<Interval>::is_topologically_closed() const {
+  if (!Interval::info_type::store_open)
+    return true;
   if (is_empty())
     return true;
   for (dimension_type k = seq.size(); k-- > 0; )
