@@ -874,6 +874,57 @@
               instance overflows, branch conditions and so on."
 }
 
+@PhdThesis{Henriksen07th,
+  Author = "K. S. Henriksen",
+  Title = "A Logic Programming Based Approach to Applying
+           Abstract Interpretation to Embedded Software",
+  School = "Computer Science, Roskilde University",
+  Month = oct,
+  Address = "Roskilde, Denmark",
+  Year = 2007,
+  Note = "Published as Computer Science Research Report \#117",
+  Abstract = "Abstract interpretation is a general framework for
+              static program analysis. In recent years this framework
+              has been used outside academia for verification of
+              embedded and real-time systems. Airbus and the European
+              Space Agency are examples of organisations that have
+              successfully adapted this analysis framework
+              for verification of critical components.
+              Logic programming is a programming paradigm with a sound
+              mathematical foundation. One of its characteristics is
+              the separation of logic (the meaning of a program) and
+              control (how it is executed); hence logic programming,
+              and in particular its extension with constraints, is a
+              language comparatively well suited for program analysis.
+              In this thesis logic programming is used to analyse
+              software developed for embedded systems. The particular
+              embedded system is modeled as an emulator written as a
+              constraint logic program. The emulator is specialised
+              with respect to some object program in order to obtain
+              a constraint logic program isomorphic to this object
+              program. Applying abstract interpretation based
+              analysers to the specialised emulator will provide
+              analysis results that can directly be related back
+              to the object program due to the isomorphism maintained
+              between the object program and the specialised emulator.
+              Two abstract interpretation based analysers for logic
+              programs have been developed.  The first is a convex
+              polyhedron analyser for constraint logic programs
+              implementing a set of widening techniques for improved
+              precision of the analysis.  The second analyser is a type
+              analysis tool for logic programs that automatically
+              derives a pre-interpretation from a regular type definition.
+              Additionallly, a framework for using a restricted form of
+              logic programming, namely Datalog, to express and check
+              program properties is described.  At the end of the thesis
+              it is shown how instrumenting the semantics of the emulator
+              can be used to obtain, for instance, a fully automatic
+              Worst Case Execution Time analysis by applying the convex
+              polyhedron analyser to the instrumented and specialised
+              emulator.  The tools developed in this thesis have all
+              been made available online for demonstration."
+}
+
 @Inproceedings{HymansU04,
   Author = "C. Hymans and E. Upton",
   Title = "Static Analysis of Gated Data Dependence Graphs",
