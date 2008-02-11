@@ -201,21 +201,27 @@ public:
   Info& info() {
     return *this;
   }
+
   const Info& info() const {
     return *this;
   }
+
   Boundary& lower() {
     return lower_;
   }
+
   const Boundary& lower() const {
     return lower_;
   }
+
   Boundary& upper() {
     return upper_;
   }
+
   const Boundary& upper() const {
     return upper_;
   }
+
   Ternary is_empty_cached() const {
     if (info().get_interval_property(CARDINALITY_0))
       return info().get_interval_property(CARDINALITY_IS) ? T_YES : T_NO;
@@ -224,6 +230,7 @@ public:
     else
       return T_MAYBE;
   }
+
   Ternary is_singleton_cached() const {
     if (info().get_interval_property(CARDINALITY_1))
       return info().get_interval_property(CARDINALITY_IS) ? T_YES : T_NO;
@@ -232,6 +239,7 @@ public:
     else
       return T_MAYBE;
   }
+
   bool is_empty() const {
     switch (is_empty_cached()) {
     case T_NO:
@@ -250,6 +258,7 @@ public:
     assert(false);
     return false;
   }
+
   bool is_singleton() const {
     switch (is_singleton_cached()) {
     case T_NO:
@@ -268,9 +277,11 @@ public:
     assert(false);
     return false;
   }
+
   bool has_restriction() const {
     return info().has_restriction();
   }
+
   I_Result normalize() const {
     assert(OK());
     if (has_restriction()) {
@@ -285,44 +296,54 @@ public:
     else
       return combine(V_EQ, V_EQ);
   }
+
   bool lower_is_open() const {
     assert(OK());
     return is_open(LOWER, lower(), info());
   }
+
   bool upper_is_open() const {
     assert(OK());
     return is_open(UPPER, upper(), info());
   }
+
   Result lower_shrink() {
     assert(OK());
     return shrink(LOWER, lower(), info());
   }
+
   Result upper_shrink() {
     assert(OK());
     return shrink(UPPER, upper(), info());
   }
+
   bool lower_is_unbounded() const {
     assert(OK());
     return Boundary_NS::is_unbounded(LOWER, lower(), info());
   }
+
   bool upper_is_unbounded() const {
     assert(OK());
     return Boundary_NS::is_unbounded(UPPER, upper(), info());
   }
+
   bool is_unbounded() const {
     assert(OK());
     return lower_is_unbounded() || upper_is_unbounded();
   }
+
   bool is_universe() const {
     assert(OK());
     return lower_is_unbounded() && upper_is_unbounded()
       && !has_restriction();
   }
+
   void invalidate_cardinality_cache() const {
     w_info().set_interval_property(CARDINALITY_IS, false);
     w_info().set_interval_property(CARDINALITY_0, false);
     w_info().set_interval_property(CARDINALITY_1, false);
   }
+
   template <typename T>
   I_Result lower_set_uninit(const T& x, bool open = false) {
     info().clear_boundary_properties(LOWER);
@@ -330,12 +351,14 @@ public:
     lower_load();
     return combine(rl, V_EQ);
   }
+
   I_Result lower_set_uninit(const Unbounded&) {
     info().clear_boundary_properties(LOWER);
     Result rl = set_unbounded(LOWER, lower(), info());
     lower_load();
     return combine(rl, V_EQ);
   }
+
   template <typename T>
   I_Result lower_set(const T& x, bool open = false) {
     assert(OK());
@@ -345,6 +368,7 @@ public:
     assert(OK());
     return combine(rl, V_EQ);
   }
+
   I_Result lower_set(const Unbounded&) {
     assert(OK());
     info().clear_boundary_properties(LOWER);
@@ -353,6 +377,7 @@ public:
     assert(OK());
     return combine(rl, V_EQ);
   }
+
   template <typename T>
   I_Result lower_narrow(const T& x, bool open = false) {
     assert(OK());
@@ -360,6 +385,7 @@ public:
       return combine(V_EQ, V_EQ);
     return lower_set(x, open);
   }
+
   template <typename T>
   I_Result lower_widen(const T& x, bool open = false) {
     assert(OK());
@@ -367,6 +393,7 @@ public:
       return combine(V_EQ, V_EQ);
     return lower_set(x, open);
   }
+
   I_Result lower_widen(const Unbounded&) {
     assert(OK());
     if (lower_is_unbounded())
@@ -377,6 +404,7 @@ public:
     assert(OK());
     return combine(rl, V_EQ);
   }
+
   template <typename T>
   I_Result upper_set_uninit(const T& x, bool open = false) {
     info().clear_boundary_properties(UPPER);
@@ -390,6 +418,7 @@ public:
     upper_load();
     return combine(rl, V_EQ);
   }
+
   template <typename T>
   I_Result upper_set(const T& x, bool open = false) {
     assert(OK());
@@ -399,6 +428,7 @@ public:
     assert(OK());
     return combine(rl, V_EQ);
   }
+
   I_Result upper_set(const Unbounded&) {
     assert(OK());
     info().clear_boundary_properties(UPPER);
@@ -407,6 +437,7 @@ public:
     assert(OK());
     return combine(rl, V_EQ);
   }
+
   template <typename T>
   I_Result upper_narrow(const T& x, bool open = false) {
     assert(OK());
@@ -414,6 +445,7 @@ public:
       return combine(V_EQ, V_EQ);
     return upper_set(x, open);
   }
+
   template <typename T>
   I_Result upper_widen(const T& x, bool open = false) {
     assert(OK());
@@ -421,6 +453,7 @@ public:
       return combine(V_EQ, V_EQ);
     return upper_set(x, open);
   }
+
   I_Result upper_widen(const Unbounded&) {
     assert(OK());
     if (upper_is_unbounded())
@@ -431,6 +464,7 @@ public:
     assert(OK());
     return combine(rl, V_EQ);
   }
+
   I_Result assign(Degenerate_Element e) {
     info().clear();
     switch (e) {
@@ -454,6 +488,7 @@ public:
     assert(OK());
     return I_EMPTY;
   }
+
   I_Result set_infinities() {
     info().clear();
     info().set_interval_property(CARDINALITY_0, true);
@@ -465,13 +500,27 @@ public:
     assert(OK());
     return combine(rl, ru);
   }
+
   bool is_topologically_closed() const {
     assert(OK());
-    // FIXME: review
-    return is_empty() ||
-      ((lower_is_unbounded() || !lower_is_open())
-       && (upper_is_unbounded() || !upper_is_open()));
+    return !Info::store_open
+      || is_empty()
+      || ((lower_is_unbounded() || !lower_is_open())
+          && (upper_is_unbounded() || !upper_is_open()));
   }
+
+  //! Assigns to \p *this its topological closure.
+  void topological_closure_assign() {
+    if (!Info::store_open || is_empty())
+      return;
+
+    if (!lower_is_unbounded())
+      info().set_boundary_property(LOWER, OPEN, false);
+
+    if (!upper_is_unbounded())
+      info().set_boundary_property(UPPER, OPEN, false);
+  }
+
   bool is_infinity() const {
     assert(OK());
     if (is_reverse_infinity(LOWER, lower(), info()))
@@ -481,6 +530,7 @@ public:
     else
       return 0;
   }
+
   bool contains_integer_point() const {
     assert(OK());
     if (is_empty())
@@ -507,6 +557,7 @@ public:
   void ascii_dump(std::ostream& s) const {
     s << *this << std::endl;
   }
+
   bool ascii_load(std::istream& s) {
     s >> *this;
     return s;
@@ -554,7 +605,7 @@ public:
       if (info().get_boundary_property(LOWER, NORMALIZED)
 	  && !info().is_restricted(lower())) {
 #ifndef NDEBUG
-	std::cerr << "The lower boundary is marked to be normalized, but actually it's not." << std::endl;
+	std::cerr << "The lower boundary is marked to be normalized, but it is not." << std::endl;
 #endif
 	return false;
       }
@@ -587,7 +638,7 @@ public:
       if (info().get_boundary_property(UPPER, NORMALIZED)
 	  && !info().is_restricted(upper())) {
 #ifndef NDEBUG
-	std::cerr << "The upper boundary is marked to be normalized, but actually it's not." << std::endl;
+	std::cerr << "The upper boundary is marked to be normalized, but it is not." << std::endl;
 #endif
 	return false;
       }
