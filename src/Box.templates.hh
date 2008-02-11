@@ -2385,6 +2385,15 @@ Box<Interval>::congruences() const {
   return cgs;
 }
 
+template <typename Interval>
+memory_size_type
+Box<Interval>::external_memory_in_bytes() const {
+  memory_size_type n = seq.capacity() * sizeof(Interval);
+  for (dimension_type k = seq.size(); k-- > 0; )
+    n += seq[k].external_memory_in_bytes();
+  return n;
+}
+
 /*! \relates Parma_Polyhedra_Library::Box */
 template <typename Interval>
 std::ostream&

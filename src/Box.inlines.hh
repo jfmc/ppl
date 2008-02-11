@@ -81,6 +81,12 @@ Box<Interval>::Box(const Congruence_System& cgs, Recycle_Input) {
 }
 
 template <typename Interval>
+inline memory_size_type
+Box<Interval>::total_memory_in_bytes() const {
+  return sizeof(*this) + external_memory_in_bytes();
+}
+
+template <typename Interval>
 inline dimension_type
 Box<Interval>::space_dimension() const {
   return seq.size();

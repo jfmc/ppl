@@ -1504,6 +1504,12 @@ public:
   //! Returns a minimized system of congruences approximating \p *this.
   Congruence_System minimized_congruences() const;
 
+  //! Returns the total size in bytes of the memory occupied by \p *this.
+  memory_size_type total_memory_in_bytes() const;
+
+  //! Returns the size in bytes of the memory managed by \p *this.
+  memory_size_type external_memory_in_bytes() const;
+
   PPL_OUTPUT_DECLARATIONS
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
