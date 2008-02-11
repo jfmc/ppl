@@ -26,6 +26,18 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <typename Boundary, typename Info>
+inline memory_size_type
+Interval<Boundary, Info>::external_memory_in_bytes() const {
+  return external_memory_in_bytes(lower()) + external_memory_in_bytes(upper());
+}
+
+template <typename Boundary, typename Info>
+inline memory_size_type
+Interval<Boundary, Info>::total_memory_in_bytes() const {
+  return sizeof(*this) + external_memory_in_bytes();
+}
+
+template <typename Boundary, typename Info>
 inline void
 Interval<Boundary, Info>::swap(Interval<Boundary, Info>& y) {
   std::swap(lower(), y.lower());
