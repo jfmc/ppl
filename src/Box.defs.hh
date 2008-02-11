@@ -1156,6 +1156,9 @@ public:
   */
   void time_elapse_assign(const Box& y);
 
+  //! Assigns to \p *this its topological closure.
+  void topological_closure_assign();
+
   /*! \brief
     Assigns to \p *this the result of computing the
     \ref CC76_extrapolation "CC76-widening" between \p *this and \p y.

@@ -1184,10 +1184,9 @@ Box<Interval>::is_universe() const {
 template <typename Interval>
 bool
 Box<Interval>::is_topologically_closed() const {
-  if (!Interval::info_type::store_open)
+  if (!Interval::info_type::store_open || is_empty())
     return true;
-  if (is_empty())
-    return true;
+
   for (dimension_type k = seq.size(); k-- > 0; )
     if (!seq[k].topologically_closed())
       return false;
@@ -1225,6 +1224,16 @@ Box<Interval>::contains_integer_point() const {
     if (!seq[k].contains_integer_point())
       return false;
   return true;
+}
+
+template <typename Interval>
+void
+Box<Interval>::topological_closure_assign() {
+  if (!Interval::info_type::store_open || is_empty())
+    return;
+
+  for (dimension_type k = seq.size(); k-- > 0; )
+    seq[k].topological_closure_assign();
 }
 
 template <typename Interval>
