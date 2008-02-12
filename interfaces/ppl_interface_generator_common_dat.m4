@@ -771,7 +771,7 @@ dnl pattern == cpp_disjunct or disjunct
 dnl The different kinds of objects that are elements of a Pointset_Powerset.
 dnl ---------------------------------------------------------------------
 
-dnl If the class is C_Polyhderon or NNC_Polyhedron the topology is removed
+dnl If the class is C_Polyhedron or NNC_Polyhedron the topology is removed
 dnl but the class topology replacement is then also defined.
 m4_define(`m4_cpp_disjunct_replacement', `dnl
 m4_remove_topology(m4_cplusplus_class_body`'$1)`'dnl
@@ -779,12 +779,13 @@ m4_define(`m4_classtopology_replacement',
   `m4_get_class_topology(m4_cplusplus_class_body`'$1)')`'dnl
 ')
 
-dnl If the class is C_Polyhderon or NNC_Polyhedron the topology is removed
+dnl If the class is C_Polyhedron or NNC_Polyhedron the topology is removed
 dnl but the class topology replacement is then also defined.
-m4_define(`m4_disjunct_replacement', `dnl
-m4_remove_topology(m4_interface_class_body`'$1)`'dnl
+m4_define(`m4_disjunct_replacement', `')
+m4_define(`m4_Pointset_Powerset_disjunct_replacement', `dnl
+m4_remove_topology(m4_interface_class_body$1)`'dnl
 m4_define(`m4_classtopology_replacement',
-  `m4_get_class_topology(m4_class_body`'$1)')`'dnl
+  `m4_get_class_topology(m4_class_body$1)')`'dnl
 ')
 
 dnl ---------------------------------------------------------------------
@@ -1150,7 +1151,5 @@ dnl  The total and external memory query methods for all the domains
 dnl  and the size query to the pointset powerset domain.
 m4_define(`m4_membytes_replacement',
    `external_memory_in_bytes, total_memory_in_bytes')
-m4_define(`m4_Pointset_Powerset_membytes_replacement', `dnl
-  m4_ifelse(m4_class_body_group$1, box, `size',
-     `m4_membytes_replacement, size')`'dnl
-')
+m4_define(`m4_Pointset_Powerset_membytes_replacement',
+   `m4_membytes_replacement, size')
