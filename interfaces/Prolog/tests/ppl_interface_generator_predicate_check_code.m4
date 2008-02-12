@@ -583,11 +583,10 @@ ppl_@CLASS@_@PARTITION@_4_test :-
   (
    choose_2_tests(TEST_DATA1, TEST_DATA2, Space_Dim),
    (
-     ppl_@CLASSTOPOLOGY@@CPP_DISJUNCT@_build_test_object(TEST_DATA1, PS1, Space_Dim),
-     ppl_@CLASSTOPOLOGY@@CPP_DISJUNCT@_build_test_object(TEST_DATA2, PS2, Space_Dim),
+     ppl_@CLASSTOPOLOGY@@DISJUNCT@_build_test_object(TEST_DATA1, PS1, Space_Dim),
+     ppl_@CLASSTOPOLOGY@@DISJUNCT@_build_test_object(TEST_DATA2, PS2, Space_Dim),
      ppl_@CLASS@_@PARTITION@(PS1, PS2, PS3, PPS),
-     ppl_@DISJUNCT@_OK(PS3),
-     ppl_@CLASS@_OK(PPS)
+     ppl_@DISJUNCT@_OK(PS3)
    ->
      fail ; (class_@CLASS@ == class_BD_Shape_int8_t -> fail ; true))
   ).

@@ -460,7 +460,7 @@ m4_define(`m4_all_group',
    Pointset_Powerset, m4_product_group')
 m4_define(`m4_simple_pps_group', `m4_simple_group, Pointset_Powerset')
 m4_define(`m4_simple_group', `Grid, m4_shape_group')
-m4_define(`m4_shape_group', `Polyhedron, m4_wr_shape_group')
+m4_define(`m4_shape_group', `Polyhedron, m4_wr_shape_group, m4_box_group')
 m4_define(`m4_wr_shape_group', `BD_Shape, Octagonal_Shape')
 m4_define(`m4_polyhedron_group', Polyhedron)
 m4_define(`m4_grid_group', Grid)
@@ -686,12 +686,15 @@ m4_define(`m4_Polyhedron_widen_replacement', `BHRZ03, H79')
 m4_define(`m4_Grid_widen_replacement', `congruence, generator')
 m4_define(`m4_BD_Shape_widen_replacement', `BHMZ05, H79')
 m4_define(`m4_Octagonal_Shape_widen_replacement', `BHMZ05')
+m4_define(`m4_box_widen_replacement', `CC76')
 m4_define(`m4_Pointset_Powerset_widen_replacement', `BHZ03')
 dnl The alt_replacement defines the certificates for the widenings
 m4_define(`m4_Polyhedron_widen_alt_replacement', `BHRZ03, H79')
 m4_define(`m4_BD_Shape_widen_alt_replacement', `H79, H79')
 m4_define(`m4_Octagonal_Shape_widen_alt_replacement', `H79')
 m4_define(`m4_Grid_widen_alt_replacement', `Grid, Grid')
+dnl FIXME: This is not in the C++ box domain and will fail if used.
+m4_define(`m4_box_widen_alt_replacement', `CC76')
 
 dnl ---------------------------------------------------------------------
 dnl pattern == extrapolation
@@ -716,6 +719,7 @@ m4_define(`m4_BD_Shape_widenexpn_replacement',
 m4_define(`m4_Octagonal_Shape_widenexpn_replacement',
    `m4_Octagonal_Shape_widen_replacement,
     m4_Octagonal_Shape_extrapolation_replacement')
+m4_define(`m4_box_widenexpn_replacement', `m4_box_widen_replacement')
 m4_define(`m4_Pointset_Powerset_widenexpn_replacement',
   `m4_Pointset_Powerset_widen_replacement')
 
@@ -844,8 +848,19 @@ m4_define(`m4_Polyhedron_relation_represent_replacement',
          `m4_relation_represent_replacement, congruence')
 m4_define(`m4_Grid_relation_represent_replacement',
          `m4_relation_represent_replacement, congruence, grid_generator')
-m4_define(`m4_Pointset_Powerset_relation_represent_replacement',
-         `m4_relation_represent_replacement, congruence')
+
+m4_define(`m4_Pointset_Powerset_relation_represent_replacement', `dnl
+m4_define(`m4_1st_sequence',
+  `m4_relation_represent_replacement, congruence')`'dnl
+m4_define(`m4_2nd_sequence',
+  `m4_class_pattern_replacement(m4_class_body_counter$1,
+                                relation_represent, `')')`'dnl
+m4_define(`m4_num_of_sequences', 2)`'dnl
+m4_seq_intersection`'dnl
+m4_undefine(`m4_1st_sequence')`'dnl
+m4_undefine(`m4_2nd_sequence')`'dnl
+m4_undefine(`m4_num_of_sequences')`'dnl
+')
 
 m4_define(`m4_product_relation_represent_replacement', `dnl
 m4_define(`m4_1st_sequence',
@@ -870,8 +885,19 @@ m4_define(`m4_Polyhedron_relation_represent_alt_replacement',
          `con, gen, con')
 m4_define(`m4_Grid_relation_represent_alt_replacement',
          `con, gen, con, gen')
-m4_define(`m4_Pointset_Powerset_relation_represent_alt_replacement',
-         `con, gen, con')
+
+m4_define(`m4_Pointset_Powerset_relation_represent_alt_replacement', `dnl
+m4_define(`m4_1st_sequence',
+  `m4_relation_represent_alt_replacement, con')`'dnl
+m4_define(`m4_2nd_sequence',
+  `m4_class_pattern_replacement(m4_class_body_counter$1,
+                                relation_represent, `_alt')')`'dnl
+m4_define(`m4_num_of_sequences', 2)`'dnl
+m4_seq_intersection`'dnl
+m4_undefine(`m4_1st_sequence')`'dnl
+m4_undefine(`m4_2nd_sequence')`'dnl
+m4_undefine(`m4_num_of_sequences')`'dnl
+')
 
 m4_define(`m4_product_relation_represent_alt_replacement', `dnl
 m4_define(`m4_1st_sequence',
@@ -948,9 +974,10 @@ dnl is defined without any pattern.
 dnl ---------------------------------------------------------------------
 
 m4_define(`m4_partition_replacement', `NONE')
-m4_define(`m4_Pointset_Powerset_partition_replacement',
-  `m4_ifelse(m4_echo_unquoted(m4_remove_topology(m4_disjunct_kind($1))),
-      `Polyhedron', `linear_partition')')
+m4_define(`m4_Pointset_Powerset_partition_replacement',`linear_partition')
+dnl m4_define(`m4_Pointset_Powerset_partition_replacement',
+dnl   `m4_ifelse(m4_echo_unquoted(m4_remove_topology(m4_disjunct_kind($1))),
+dnl       `Polyhedron', `linear_partition')')
 
 dnl ---------------------------------------------------------------------
 dnl pattern == has_prperty
@@ -1006,8 +1033,35 @@ dnl This just groups two methods that modify a domain element.
 dnl ---------------------------------------------------------------------
 
 m4_define(`m4_simplify_replacement', `topological_closure_assign')
-m4_define(`m4_Pointset_Powerset_simplify_replacement',
-          `m4_simplify_replacement, pairwise_reduce')
+m4_define(`m4_Pointset_Powerset_simplify_replacement', `dnl
+pairwise_reduce,
+m4_define(`m4_1st_sequence',
+  `m4_simplify_replacement')`'dnl
+m4_define(`m4_2nd_sequence',
+  `m4_class_pattern_replacement(m4_class_body_counter$1,
+                                simplify, `')')`'dnl
+m4_define(`m4_num_of_sequences', 2)`'dnl
+m4_seq_intersection`'dnl
+m4_undefine(`m4_1st_sequence')`'dnl
+m4_undefine(`m4_2nd_sequence')`'dnl
+m4_undefine(`m4_num_of_sequences')`'dnl
+')
+m4_define(`m4_product_simplify_replacement', `dnl
+m4_define(`m4_1st_sequence',
+  `m4_simplify_replacement')`'dnl
+m4_define(`m4_2nd_sequence',
+  `m4_class_pattern_replacement(m4_class_body_1st_counter$1,
+    simplify, `')')`'dnl
+m4_define(`m4_3rd_sequence',
+  `m4_class_pattern_replacement(m4_class_body_2nd_counter$1,
+    simplify, `')')`'dnl
+m4_define(`m4_num_of_sequences', 3)`'dnl
+m4_seq_intersection`'dnl
+m4_undefine(`m4_1st_sequence')`'dnl
+m4_undefine(`m4_2nd_sequence')`'dnl
+m4_undefine(`m4_3rd_sequence')`'dnl
+m4_undefine(`m4_num_of_sequences')`'dnl
+')
 
 dnl ---------------------------------------------------------------------
 dnl pattern -- above/below
@@ -1049,12 +1103,13 @@ m4_define(`m4_BD_Shape_binop_replacement',
 m4_define(`m4_Octagonal_Shape_binop_replacement',
          `m4_binop_replacement, oct_hull_assign')
 dnl For the powerset domains, we intersect the replacements for the
-dnl disjuncts with the replacements for the disjunct.
-dnl We also add the poly_difference_assign as this has been defined for
-dnl powersets for any disjunct.
+dnl disjuncts with the replacements for a powerset.
+dnl The poly_difference_assign has been defined for powersets of polyhedra.
+dnl FIXME: poly_difference_assign
+dnl does not appear to work for disjuncts that are not polyhedra or grids.
 m4_define(`m4_Pointset_Powerset_binop_replacement', `dnl
-poly_difference_assign, m4_define(`m4_1st_sequence',
-  `intersection_assign, concatenate_assign, time_elapse_assign')`'dnl
+m4_define(`m4_1st_sequence',
+  `poly_difference_assign, intersection_assign, concatenate_assign, time_elapse_assign')`'dnl
 m4_define(`m4_2nd_sequence',
   `m4_class_pattern_replacement(m4_class_body_counter$1,
     binop, `')')`'dnl
@@ -1094,11 +1149,8 @@ m4_define(`m4_beginend_replacement', `begin, end')
 dnl  The total and external memory query methods for all the domains
 dnl  and the size query to the pointset powerset domain.
 m4_define(`m4_membytes_replacement',
-  `external_memory_in_bytes, total_memory_in_bytes')
-m4_define(`m4_box_membytes_replacement', `')
+   `external_memory_in_bytes, total_memory_in_bytes')
 m4_define(`m4_Pointset_Powerset_membytes_replacement', `dnl
-m4_define(`m4_TMP_MACRO',
-  m4_`'m4_class_body_group$1`'_membytes_replacement)`'dnl
-m4_ifelse(m4_TMP_MACRO, `', size, `m4_tmp, size')`'dnl
-m4_undefine(`m4_TMP_MACRO')`'dnl
+  m4_ifelse(m4_class_body_group$1, box, `size',
+     `m4_membytes_replacement, size')`'dnl
 ')

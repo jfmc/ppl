@@ -47,7 +47,7 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@/2 +all,
 ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@/2 +polyhedron,
 ppl_@CLASS@_swap/2 *nofail +all,
 ppl_@CLASS@_@DIMENSION@/2 +all,
-ppl_@CLASS@_relation_with_@RELATION_REPRESENT@/3 +all \box,
+ppl_@CLASS@_relation_with_@RELATION_REPRESENT@/3 +all,
 dnl
 dnl NOTE: The next two schemas are only for simple domains since
 dnl       we can only "get" a meaningful system (such as a set of
@@ -60,11 +60,11 @@ dnl FIXME: There is no get_bounding_box() method
 dnl        from the pointset_powerset or product domains.
 dnl        Only the Grid domain has a get_covering_box() method.
 dnl
-ppl_@CLASS@_get_bounding_box/3 +simple,
+ppl_@CLASS@_get_bounding_box/3 +simple -box,
 ppl_@CLASS@_get_covering_box/2 +grid,
 dnl
 ppl_@CLASS@_@HAS_PROPERTY@/1 +all,
-ppl_@CLASS@_@SIMPLIFY@/1 *nofail +all -box \box ?box,
+ppl_@CLASS@_@SIMPLIFY@/1 *nofail +all,
 ppl_@CLASS@_bounds_from_@ABOVEBELOW@/2 +all,
 ppl_@CLASS@_@MAXMIN@/5 +all,
 ppl_@CLASS@_@MAXMIN@_with_point/6 +all,
@@ -76,7 +76,7 @@ ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize/2 +all,
 ppl_@CLASS@_add_@ADD_REPRESENT@s/2 *nofail +all,
 ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize/2 +all,
 ppl_@CLASS@_@BINOP@/2 *nofail +all,
-ppl_@CLASS@_@BINMINOP@/2 +all -box ?box,
+ppl_@CLASS@_@BINMINOP@/2 +all -box \box ?box,
 ppl_@CLASS@_@AFFIMAGE@/4 *nofail +all,
 ppl_@CLASS@_bounded_@AFFIMAGE@/5 *nofail +all -box \box ?box,
 ppl_@CLASS@_generalized_@AFFIMAGE@/5 +all -box \box ?box,
@@ -90,7 +90,7 @@ ppl_@CLASS@_expand_space_dimension/3 *nofail +all,
 ppl_@CLASS@_fold_space_dimensions/3  +all,
 ppl_@CLASS@_map_space_dimensions/2 +all,
 ppl_@CLASS@_ascii_dump/1 +all,
-ppl_@CLASS@_@MEMBYTES@/2 +all -box ?box,
+ppl_@CLASS@_@MEMBYTES@/2 +all \box ?box,
 dnl
 dnl FIXME: We do not have a default widening for the
 dnl        pointset_powerset domain.
@@ -119,8 +119,8 @@ ppl_@CLASS@_@INCDEC@_iterator/1 +pointset_powerset,
 ppl_@CLASS@_get_disjunct/2 +pointset_powerset,
 ppl_@CLASS@_drop_disjunct/2 +pointset_powerset,
 ppl_@CLASS@_add_disjunct/2 *nofail +pointset_powerset,
-ppl_@CLASS@_@PARTITION@/4 +pointset_powerset \grid \wr_shape \box,
-ppl_@CLASS@_approximate_partition/5  +pointset_powerset \shape \box,
+ppl_@CLASS@_@PARTITION@/4 +pointset_powerset \grid,
+ppl_@CLASS@_approximate_partition/5  +pointset_powerset \shape,
 ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign/2 +pointset_powerset \box,
 ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign/3 +pointset_powerset \box,
 dnl

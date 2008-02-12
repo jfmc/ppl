@@ -384,7 +384,7 @@ ppl_maxmin_test_data(test05, _Topology, congruence, _, A, -1, 1, true,
    make_vars(1, [A]).
 
 /* Test data for test test06,
-            a non-universe object in 1 dimensionwith no upper bound */
+            a non-universe object in 1 dimension with no upper bound */
 
 ppl_build_test_data(test06, T, constraints, CS) :-
   (\+ T == t_NNC_,
