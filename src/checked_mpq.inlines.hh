@@ -29,8 +29,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-template <> struct Is_Native<mpq_class> : public True { };
-
 namespace Checked {
 
 template <typename Policy>

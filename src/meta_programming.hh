@@ -23,6 +23,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_meta_programming_hh
 #define PPL_meta_programming_hh 1
 
+#include <gmpxx.h>
+
 namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -326,6 +328,10 @@ template <> struct Is_Native<double> : public True { };
 #if PPL_SUPPORTED_LONG_DOUBLE
 template <> struct Is_Native<long double> : public True { };
 #endif
+
+template <> struct Is_Native<mpz_class> : public True { };
+
+template <> struct Is_Native<mpq_class> : public True { };
 
 } // namespace Parma_Polyhedra_Library
 
