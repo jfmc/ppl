@@ -562,11 +562,6 @@ output_mpz(std::ostream& os, const mpz_class& from, const Numeric_Format&,
 SPECIALIZE_INPUT(input_generic, mpz_class)
 SPECIALIZE_OUTPUT(output_mpz, mpz_class)
 
-inline memory_size_type
-external_memory_in_bytes(const mpz_class& x) {
-  return x.get_mpz_t()[0]._mp_alloc * PPL_SIZEOF_MP_LIMB_T;
-}
-
 } // namespace Checked
 
 } // namespace Parma_Polyhedra_Library

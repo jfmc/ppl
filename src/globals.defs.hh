@@ -376,15 +376,55 @@ bool
 is_additive_inverse(const Checked_Number<T, Policy>& x,
 		    const Checked_Number<T, Policy>& y);
 
+//! \name Memory Size Inspection Functions
+//@{
+
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief
-  For native types, returns the amount of memory controlled by the
-  type of the (unused) parameter, i.e., 0.
+  For native types, returns the total size in bytes of the memory
+  occupied by the type of the (unused) parameter, i.e., 0.
+*/
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+template <typename T>
+typename Enable_If<Is_Native<T>::value, memory_size_type>::type
+total_memory_in_bytes(const T&);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \brief
+  For native types, returns the size in bytes of the memory managed
+  by the type of the (unused) parameter, i.e., 0.
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 typename Enable_If<Is_Native<T>::value, memory_size_type>::type
 external_memory_in_bytes(const T&);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Returns the total size in bytes of the memory occupied by \p x.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+memory_size_type
+total_memory_in_bytes(const mpz_class& x);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Returns the size in bytes of the memory managed by \p x.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+memory_size_type
+external_memory_in_bytes(const mpz_class& x);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Returns the total size in bytes of the memory occupied by \p x.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+memory_size_type
+total_memory_in_bytes(const mpq_class& x);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Returns the size in bytes of the memory managed by \p x.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+memory_size_type
+external_memory_in_bytes(const mpq_class& x);
+
+//@} // Memory Size Inspection Functions
+
 
 template <typename T, typename Enable = void>
 struct Has_OK : public False { };

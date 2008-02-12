@@ -150,6 +150,34 @@ external_memory_in_bytes(const T&) {
   return 0;
 }
 
+template <typename T>
+inline typename
+Enable_If<Is_Native<T>::value, memory_size_type>::type
+total_memory_in_bytes(const T&) {
+  return sizeof(T);
+}
+
+inline memory_size_type
+external_memory_in_bytes(const mpz_class& x) {
+  return x.get_mpz_t()[0]._mp_alloc * PPL_SIZEOF_MP_LIMB_T;
+}
+
+inline memory_size_type
+total_memory_in_bytes(const mpz_class& x) {
+  return sizeof(x) + external_memory_in_bytes(x);
+}
+
+inline memory_size_type
+external_memory_in_bytes(const mpq_class& x) {
+  return external_memory_in_bytes(x.get_num())
+    + external_memory_in_bytes(x.get_den());
+}
+
+inline memory_size_type
+total_memory_in_bytes(const mpq_class& x) {
+  return sizeof(x) + external_memory_in_bytes(x);
+}
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_globals_inlines_hh)

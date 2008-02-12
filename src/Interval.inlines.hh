@@ -28,7 +28,8 @@ namespace Parma_Polyhedra_Library {
 template <typename Boundary, typename Info>
 inline memory_size_type
 Interval<Boundary, Info>::external_memory_in_bytes() const {
-  return external_memory_in_bytes(lower()) + external_memory_in_bytes(upper());
+  return Parma_Polyhedra_Library::external_memory_in_bytes(lower())
+    + Parma_Polyhedra_Library::external_memory_in_bytes(upper());
 }
 
 template <typename Boundary, typename Info>
