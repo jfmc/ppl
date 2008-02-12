@@ -833,23 +833,23 @@ Box<Interval>::relation_with(const Constraint& c) const {
   }
   else {
     // `c' is not an interval constraint.
-    Rational_Interval r(0);
-    Rational_Interval t;
+    DIRTY_TEMP0(Rational_Interval, r);
+    DIRTY_TEMP0(Rational_Interval, t);
+    DIRTY_TEMP0(mpq_class, m);
+    r = 0;
     for (dimension_type i = c.space_dimension(); i-- > 0; ) {
-      const Coefficient& m = c.coefficient(Variable(i));
-      if (sgn(m) != 0) {
+      const Coefficient& c_i = c.coefficient(Variable(i));
+      if (sgn(c_i) != 0) {
+        m = c_i;
         // FIXME: an add_mul_assign() method would come handy here.
         t = seq[i];
-#if 1
-        Rational_Interval im(c.coefficient(Variable(i)));
-        t *= im;
-#else
         t *= m;
-#endif
         r += t;
       }
     }
-    // FIXME: do a simple case analysis and return the correct result.
+    m = c.inhomogeneous_term();
+    // FIXME: do a simple case analysis on r and m and return the
+    // correct result.
     throw_constraint_incompatible("relation_with(c)");
   }
 
