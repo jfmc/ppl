@@ -199,6 +199,7 @@ Interval.templates.hh \
 Box.defs.hh \
 Box.inlines.hh \
 Box.templates.hh \
+Rational_Interval.hh \
 Rational_Box.hh \
 Variable.defs.hh \
 Variable.inlines.hh \
