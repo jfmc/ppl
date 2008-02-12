@@ -302,6 +302,31 @@ struct Enable_If<true, T> {
   typedef T type;
 };
 
+template <typename T>
+struct Is_Native : public False {
+};
+
+template <> struct Is_Native<signed char> : public True { };
+template <> struct Is_Native<signed short> : public True { };
+template <> struct Is_Native<signed int> : public True { };
+template <> struct Is_Native<signed long> : public True { };
+template <> struct Is_Native<signed long long> : public True { };
+template <> struct Is_Native<unsigned char> : public True { };
+template <> struct Is_Native<unsigned short> : public True { };
+template <> struct Is_Native<unsigned int> : public True { };
+template <> struct Is_Native<unsigned long> : public True { };
+template <> struct Is_Native<unsigned long long> : public True { };
+
+#if PPL_SUPPORTED_FLOAT
+template <> struct Is_Native<float> : public True { };
+#endif
+#if PPL_SUPPORTED_DOUBLE
+template <> struct Is_Native<double> : public True { };
+#endif
+#if PPL_SUPPORTED_LONG_DOUBLE
+template <> struct Is_Native<long double> : public True { };
+#endif
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_meta_programming_hh)

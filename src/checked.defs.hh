@@ -366,10 +366,6 @@ Result input_mpq(mpq_class& to, std::istream& is);
 #define PLUS_INFINITY float(HUGE_VAL)
 #define NOT_A_NUMBER float(NAN)
 
-template <typename T>
-struct Is_Native : public False {
-};
-
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \ingroup PPL_CXX_interface */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
