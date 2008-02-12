@@ -143,6 +143,13 @@ is_additive_inverse(const Checked_Number<T, Policy>& x,
     && negated_x == y;
 }
 
+template <typename T>
+inline typename
+Enable_If<Is_Native<T>::value, memory_size_type>::type
+external_memory_in_bytes(const T&) {
+  return 0;
+}
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_globals_inlines_hh)
