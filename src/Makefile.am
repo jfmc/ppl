@@ -185,6 +185,8 @@ Coefficient.defs.hh \
 Coefficient.inlines.hh \
 globals.defs.hh \
 globals.inlines.hh \
+math_utilities.defs.hh \
+math_utilities.inlines.hh \
 iterator_to_const.defs.hh \
 iterator_to_const.inlines.hh \
 distances.defs.hh \

@@ -24,7 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_globals_defs_hh 1
 
 #include "globals.types.hh"
-#include "Coefficient.defs.hh"
 #include "C_Integer.hh"
 #include "meta_programming.hh"
 #include "Slow_Copy.hh"
@@ -148,27 +147,6 @@ struct From_Covering_Box {
 */
 struct Recycle_Input {
 };
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-/*! \brief
-  If \f$g\f$ is the GCD of \p x and \p y, the values of \p x and \p y
-  divided by \f$g\f$ are assigned to \p nx and \p ny, respectively.
-
-  \note
-  \p x and \p nx may be the same object and likewise for
-  \p y and \p ny.  Any other aliasing results in undefined behavior.
-*/
-#endif
-void
-normalize2(Coefficient_traits::const_reference x,
-	   Coefficient_traits::const_reference y,
-	   Coefficient& nx, Coefficient& ny);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Returns a mask for the lowest \p n bits,
-#endif
-template <typename T>
-T low_bits_mask(unsigned n);
 
 // Turn s into a string: PPL_STR(x + y) => "x + y".
 #define PPL_STR(s) #s
@@ -330,52 +308,6 @@ template <long long v, bool prefer_signed = true>
 struct Constant : public Constant_<long long, v, prefer_signed> {
 };
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Extract the numerator and denominator components of \p from.
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-template <typename T, typename Policy>
-void
-numer_denom(const Checked_Number<T, Policy>& from,
-	    Coefficient& num, Coefficient& den);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Divides \p x by \p y into \p to, rounding the result towards plus infinity.
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-template <typename T, typename Policy>
-void
-div_round_up(Checked_Number<T, Policy>& to,
-	     Coefficient_traits::const_reference x,
-	     Coefficient_traits::const_reference y);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Assigns to \p x the minimum between \p x and \p y.
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-template <typename N>
-void
-min_assign(N& x, const N& y);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Assigns to \p x the maximum between \p x and \p y.
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-template <typename N>
-void
-max_assign(N& x, const N& y);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Returns <CODE>true</CODE> if and only if \p x is an even number.
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-template <typename T, typename Policy>
-bool
-is_even(const Checked_Number<T, Policy>& x);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Returns <CODE>true</CODE> if and only if \f$x = -y\f$.
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-template <typename T, typename Policy>
-bool
-is_additive_inverse(const Checked_Number<T, Policy>& x,
-		    const Checked_Number<T, Policy>& y);
-
 //! \name Memory Size Inspection Functions
 //@{
 
@@ -458,12 +390,6 @@ FOK(double)
 FOK(long double)
 FOK(mpz_class)
 FOK(mpq_class)
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Returns <CODE>true</CODE> if and only if \p x is in canonical form.
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-bool
-is_canonical(const mpq_class& x);
 
 } // namespace Parma_Polyhedra_Library
 
