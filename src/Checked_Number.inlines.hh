@@ -23,6 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Checked_Number_inlines_hh
 #define PPL_Checked_Number_inlines_hh 1
 
+#include "globals.defs.hh"
 #include <stdexcept>
 #include <sstream>
 
@@ -285,14 +286,14 @@ is_plus_infinity(const Checked_Number<T, Policy>& x) {
 template <typename T, typename Policy>
 inline memory_size_type
 total_memory_in_bytes(const Checked_Number<T, Policy>& x) {
-  return Checked::total_memory_in_bytes(x.raw_value());
+  return total_memory_in_bytes(x.raw_value());
 }
 
 /*! \relates Checked_Number */
 template <typename T, typename Policy>
 inline memory_size_type
 external_memory_in_bytes(const Checked_Number<T, Policy>& x) {
-  return Checked::external_memory_in_bytes(x.raw_value());
+  return external_memory_in_bytes(x.raw_value());
 }
 
 
@@ -794,8 +795,6 @@ maybe_check_fpu_inexact() {
   else
     return 0;
 }
-
-
 
 } // namespace Parma_Polyhedra_Library
 

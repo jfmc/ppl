@@ -583,18 +583,6 @@ input_generic(Type& to, std::istream& is, Rounding_Dir dir) {
   return set_special<Policy>(to, r);
 }
 
-template <typename T>
-inline memory_size_type
-external_memory_in_bytes(T) {
-  return 0;
-}
-
-template <typename T>
-inline memory_size_type
-total_memory_in_bytes(T& x) {
-  return sizeof(x) + external_memory_in_bytes(x);
-}
-
 } // namespace Checked
 
 } // namespace Parma_Polyhedra_Library
