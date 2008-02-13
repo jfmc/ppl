@@ -962,7 +962,7 @@ m4_define(`m4_partition_replacement', `NONE')
 m4_define(`m4_Pointset_Powerset_partition_replacement',`linear_partition')
 
 dnl ---------------------------------------------------------------------
-dnl pattern == has_prperty
+dnl pattern == has_property
 dnl The unary "has_property" predicates check properties of the domains
 dnl The check "contains_integer_point" is not available for the
 dnl product domains.
