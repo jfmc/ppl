@@ -372,17 +372,6 @@ m4_ifelse(m4_index($1, C_), 0, C_,
 m4_index($1, NNC_), 0, NNC_)`'dnl
 ')
 
-
-dnl m4_get_disjunct_topology(Class_Counter)
-dnl
-dnl expands to the empty string unless the disjunct is
-dnl C_Polyhedron or NNC_Polyhedron, in which case it expands to
-dnl "C_" or "NNC_" respectively.
-m4_define(`m4_get_disjunct_topology', `dnl
-m4_ifelse(m4_index(m4_class_body`'$1, C_), 0, C_,
-m4_index(m4_class_body`'$1, NNC_), 0, NNC_)`'dnl
-')
-
 dnl m4_remove_topology(Class_Name)
 dnl
 dnl expands to the class name unless it is
@@ -771,46 +760,41 @@ dnl pattern == cpp_disjunct or disjunct
 dnl The different kinds of objects that are elements of a Pointset_Powerset.
 dnl ---------------------------------------------------------------------
 
-dnl If the class is C_Polyhedron or NNC_Polyhedron the topology is removed
-dnl but the class topology replacement is then also defined.
-m4_define(`m4_cpp_disjunct_replacement', `dnl
-m4_remove_topology(m4_cplusplus_class_body`'$1)`'dnl
-m4_define(`m4_classtopology_replacement',
-  `m4_get_class_topology(m4_cplusplus_class_body`'$1)')`'dnl
-')
+dnl If the interface disjunct name is C_Polyhedron or NNC_Polyhedron
+dnl the topology is removed.
+m4_define(`m4_cpp_disjunct_replacement', `')
+m4_define(`m4_cpp_disjunct_replacement',
+  `m4_remove_topology(m4_cplusplus_class_body$1)')
 
-dnl If the class is C_Polyhedron or NNC_Polyhedron the topology is removed
-dnl but the class topology replacement is then also defined.
+dnl If the cpp disjunct name is C_Polyhedron or NNC_Polyhedron
+dnl the topology is removed.
 m4_define(`m4_disjunct_replacement', `')
-m4_define(`m4_Pointset_Powerset_disjunct_replacement', `dnl
-m4_remove_topology(m4_interface_class_body$1)`'dnl
+m4_define(`m4_Pointset_Powerset_disjunct_replacement',
+  `m4_remove_topology(m4_interface_class_body$1)')
+
+dnl The disjunct topology replacement.
 m4_define(`m4_classtopology_replacement',
-  `m4_get_class_topology(m4_class_body$1)')`'dnl
-')
+  `m4_get_class_topology(m4_cplusplus_class_body$1)')
 
 dnl ---------------------------------------------------------------------
 dnl pattern == disjunct_widen
 dnl ---------------------------------------------------------------------
 
-dnl FIXME: To be eliminated soon.
-m4_define(`m4_disjunct_kind', m4_class_body_kind$1)`'dnl
-')
-
 m4_define(`m4_disjunct_widen_replacement',
-  `m4_echo_unquoted(m4_`'m4_remove_topology(m4_disjunct_kind($1))`'_widen_replacement)')
+  `m4_echo_unquoted(m4_`'m4_remove_topology(m4_class_body_kind$1)`'_widen_replacement)')
 
 m4_define(`m4_disjunct_widen_alt_replacement',
-  `m4_echo_unquoted(m4_`'m4_remove_topology(m4_disjunct_kind($1))`'_widen_alt_replacement)')
+  `m4_echo_unquoted(m4_`'m4_remove_topology(m4_class_body_kind$1)`'_widen_alt_replacement)')
 
 dnl ---------------------------------------------------------------------
 dnl pattern == disjunct_extrapolation
 dnl ---------------------------------------------------------------------
 
 m4_define(`m4_disjunct_extrapolation_replacement',
-  `m4_echo_unquoted(m4_`'m4_remove_topology(m4_disjunct_kind($1))`'_extrapolation_replacement)')
+  `m4_echo_unquoted(m4_`'m4_remove_topology(m4_class_body_kind$1)`'_extrapolation_replacement)')
 
 m4_define(`m4_disjunct_extrapolation_alt_replacement',
-  `m4_echo_unquoted(m4_`'m4_remove_topology(m4_disjunct_kind($1))`'_extrapolation_alt_replacement)')
+  `m4_echo_unquoted(m4_`'m4_remove_topology(m4_class_body_kind$1)`'_extrapolation_alt_replacement)')
 
 
 dnl ---------------------------------------------------------------------
@@ -961,7 +945,7 @@ dnl ---------------------------------------------------------------------
 
 m4_define(`m4_superclass_replacement', `NONE')
 m4_define(`m4_Pointset_Powerset_superclass_replacement',
-          `m4_ifelse(m4_echo_unquoted(m4_disjunct_kind($1)),
+          `m4_ifelse(m4_echo_unquoted(m4_class_body_kind$1),
           `Grid', `Grid', `NNC_Polyhedron')')
 
 dnl ---------------------------------------------------------------------
@@ -976,9 +960,6 @@ dnl ---------------------------------------------------------------------
 
 m4_define(`m4_partition_replacement', `NONE')
 m4_define(`m4_Pointset_Powerset_partition_replacement',`linear_partition')
-dnl m4_define(`m4_Pointset_Powerset_partition_replacement',
-dnl   `m4_ifelse(m4_echo_unquoted(m4_remove_topology(m4_disjunct_kind($1))),
-dnl       `Polyhedron', `linear_partition')')
 
 dnl ---------------------------------------------------------------------
 dnl pattern == has_prperty

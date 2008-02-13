@@ -51,13 +51,8 @@ typedef Domain_Product<Grid, Poly>::Constraints_Product CProduct;
 namespace {
 
 // remove_higher_dimensions()
-// This test shows a bug when we have a Constraints_Product of a Grid and
-// a Box but not for a Smash_Product.
 // The initial product is empty with 1 space dimension
 // and this dimension is removed.
-// The test succeeds for a  Constraints_Product of a Grid and
-// a polyhedron (comment the above declaration "#define PH_IS_BOX").
-
 bool
 test01() {
   Variable A(0);
@@ -79,7 +74,6 @@ test01() {
     return false;
   }
 
-  // FIXME: This == test is needed to make the cp1.OK() check below to fail.
   bool ok1 = (cp1 == cp2 && cp2.is_empty());
   if (!ok1 || !cp1.OK()) {
     print_congruences(cp1, "*** after == check: cp1 congruences ***");
@@ -107,11 +101,6 @@ test01() {
 
 // upper_bound_assign(cp2)
 // The first product is empty and the second a single point in 1D
-// This test shows a bug when we have a Constraints_Product of a Grid and
-// a Box but not for a Smash_Product.
-// The test succeeds for a  Constraints_Product of a Grid and
-// a polyhedron (comment the above declaration "#define PH_IS_BOX").
-
 bool
 test02() {
   Variable A(0);
@@ -154,6 +143,6 @@ test02() {
 } // namespace
 
 BEGIN_MAIN
-  DO_TEST_F(test01);
-  DO_TEST_F(test02);
+  DO_TEST(test01);
+  DO_TEST(test02);
 END_MAIN

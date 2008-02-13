@@ -209,7 +209,8 @@ Partially_Reduced_Product<D1, D2, R>
   y.reduce();
   d1.upper_bound_assign(y.d1);
   d2.upper_bound_assign(y.d2);
-  // CHECKME: if upper_bound_assign is not a least_upper_bound.
+  // CHECKME: if upper_bound_assign is not a least_upper_bound
+  //          it may not be reduced.
   // clear_reduced_flag();
 }
 
@@ -713,8 +714,20 @@ Constraints_Reduction<D1, D2>::Constraints_Reduction() {
 
 template <typename D1, typename D2>
 void Constraints_Reduction<D1, D2>::product_reduce(D1& d1, D2& d2) {
+  if (d2.is_empty()) {
+    if (!d1.is_empty()) {
+      D1 new_d1(d1.space_dimension(), EMPTY);
+      std::swap(d1, new_d1);
+    }
+  }
+  else if (d1.is_empty()) {
+    D2 new_d2(d2.space_dimension(), EMPTY);
+    std::swap(d2, new_d2);
+  }
+  else {
   d1.add_constraints(d2.minimized_constraints());
   d2.add_constraints(d1.minimized_constraints());
+  }
 }
 
 template <typename D1, typename D2>
