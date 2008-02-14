@@ -600,37 +600,31 @@ Box<Interval>::bounds(const Linear_Expression& expr,
 template <typename Interval>
 Poly_Con_Relation
 interval_relation_no_check(const Interval& i,
-			   const Constraint& c) {
+			   const Relation_Symbol relsym,
+			   const Coefficient_traits::const_reference num,
+			   const Coefficient_traits::const_reference den)
+{
 
-  const dimension_type c_space_dim = c.space_dimension();
-  assert(c_space_dim == 1);
-
-#ifndef NDEBUG
-  dimension_type c_num_vars = 0;
-  dimension_type c_only_var = 0;
-
-  // `c' must be an interval constraint.
-  assert(extract_interval_constraint(c, c_space_dim, c_num_vars, c_only_var)
-    && c_num_vars == 1 && c_only_var == 0);
-#endif
+  assert(relsym == EQUAL
+	 || relsym == GREATER_THAN
+	 || relsym == GREATER_OR_EQUAL);
 
   if (i.is_universe())
     return Poly_Con_Relation::strictly_intersects();
 
-  DIRTY_TEMP0(mpq_class, c_bound);
-  assign_r(c_bound.get_num(), c.inhomogeneous_term(), ROUND_NOT_NEEDED);
-  const Coefficient& d = c.coefficient(Variable(0));
-  assign_r(c_bound.get_den(), d, ROUND_NOT_NEEDED);
-  c_bound.canonicalize();
-  neg_assign_r(c_bound, c_bound, ROUND_NOT_NEEDED);
-  const bool c_is_lower_bound = (d > 0);
+  DIRTY_TEMP0(mpq_class, bound);
+  assign_r(bound.get_num(), num, ROUND_NOT_NEEDED);
+  assign_r(bound.get_den(), den, ROUND_NOT_NEEDED);
+  bound.canonicalize();
+  neg_assign_r(bound, bound, ROUND_NOT_NEEDED);
+  const bool is_lower_bound = (den > 0);
 
   DIRTY_TEMP0(mpq_class, bound_diff);
-  if (c.is_equality()) {
+  if (relsym == EQUAL) {
     if (i.lower_is_unbounded()) {
       assert(!i.upper_is_unbounded());
       assign_r(bound_diff, i.upper(), ROUND_NOT_NEEDED);
-      sub_assign_r(bound_diff, bound_diff, c_bound, ROUND_NOT_NEEDED);
+      sub_assign_r(bound_diff, bound_diff, bound, ROUND_NOT_NEEDED);
       switch (sgn(bound_diff)) {
       case 1:
 	return Poly_Con_Relation::strictly_intersects();
@@ -644,7 +638,7 @@ interval_relation_no_check(const Interval& i,
     }
     else {
       assign_r(bound_diff, i.lower(), ROUND_NOT_NEEDED);
-      sub_assign_r(bound_diff, bound_diff, c_bound, ROUND_NOT_NEEDED);
+      sub_assign_r(bound_diff, bound_diff, bound, ROUND_NOT_NEEDED);
       switch (sgn(bound_diff)) {
       case 1:
 	return Poly_Con_Relation::is_disjoint();
@@ -662,7 +656,7 @@ interval_relation_no_check(const Interval& i,
 	  return Poly_Con_Relation::is_included();
 	else {
 	  assign_r(bound_diff, i.upper(), ROUND_NOT_NEEDED);
-	  sub_assign_r(bound_diff, bound_diff, c_bound, ROUND_NOT_NEEDED);
+	  sub_assign_r(bound_diff, bound_diff, bound, ROUND_NOT_NEEDED);
 	  switch (sgn(bound_diff)) {
 	  case 1:
 	    return Poly_Con_Relation::strictly_intersects();
@@ -679,17 +673,17 @@ interval_relation_no_check(const Interval& i,
     }
   }
 
-  assert(!c.is_equality());
-  if (c_is_lower_bound) {
+  assert(relsym != EQUAL);
+  if (is_lower_bound) {
     if (i.lower_is_unbounded()) {
       assert(!i.upper_is_unbounded());
       assign_r(bound_diff, i.upper(), ROUND_NOT_NEEDED);
-      sub_assign_r(bound_diff, bound_diff, c_bound, ROUND_NOT_NEEDED);
+      sub_assign_r(bound_diff, bound_diff, bound, ROUND_NOT_NEEDED);
       switch (sgn(bound_diff)) {
       case 1:
 	return Poly_Con_Relation::strictly_intersects();
       case 0:
-	if (c.is_strict_inequality() || i.upper_is_open())
+	if (relsym == GREATER_THAN || i.upper_is_open())
 	  return Poly_Con_Relation::is_disjoint();
 	else
 	  return Poly_Con_Relation::strictly_intersects();
@@ -699,19 +693,19 @@ interval_relation_no_check(const Interval& i,
     }
     else {
       assign_r(bound_diff, i.lower(), ROUND_NOT_NEEDED);
-      sub_assign_r(bound_diff, bound_diff, c_bound, ROUND_NOT_NEEDED);
+      sub_assign_r(bound_diff, bound_diff, bound, ROUND_NOT_NEEDED);
       switch (sgn(bound_diff)) {
       case 1:
 	return Poly_Con_Relation::is_included();
       case 0:
-	if (c.is_nonstrict_inequality() || i.lower_is_open()) {
+	if (relsym == GREATER_OR_EQUAL || i.lower_is_open()) {
 	  Poly_Con_Relation result = Poly_Con_Relation::is_included();
 	  if (i.is_singleton())
 	    result = result && Poly_Con_Relation::saturates();
 	  return result;
 	}
 	else {
-	  assert(c.is_strict_inequality() && !i.lower_is_open());
+	  assert(relsym == GREATER_THAN && !i.lower_is_open());
 	  if (i.is_singleton())
 	    return Poly_Con_Relation::is_disjoint()
 	      && Poly_Con_Relation::saturates();
@@ -724,12 +718,12 @@ interval_relation_no_check(const Interval& i,
 	  return Poly_Con_Relation::strictly_intersects();
 	else {
 	  assign_r(bound_diff, i.upper(), ROUND_NOT_NEEDED);
-	  sub_assign_r(bound_diff, bound_diff, c_bound, ROUND_NOT_NEEDED);
+	  sub_assign_r(bound_diff, bound_diff, bound, ROUND_NOT_NEEDED);
 	  switch (sgn(bound_diff)) {
 	  case 1:
 	    return Poly_Con_Relation::strictly_intersects();
 	  case 0:
-	    if (c.is_strict_inequality() || i.upper_is_open())
+	    if (relsym == GREATER_THAN || i.upper_is_open())
 	      return Poly_Con_Relation::is_disjoint();
 	    else
 	      return Poly_Con_Relation::strictly_intersects();
@@ -746,19 +740,19 @@ interval_relation_no_check(const Interval& i,
       return Poly_Con_Relation::strictly_intersects();
     else {
       assign_r(bound_diff, i.upper(), ROUND_NOT_NEEDED);
-      sub_assign_r(bound_diff, bound_diff, c_bound, ROUND_NOT_NEEDED);
+      sub_assign_r(bound_diff, bound_diff, bound, ROUND_NOT_NEEDED);
       switch (sgn(bound_diff)) {
       case -1:
 	return Poly_Con_Relation::is_included();
       case 0:
-	if (c.is_nonstrict_inequality() || i.upper_is_open()) {
+	if (relsym == GREATER_OR_EQUAL || i.upper_is_open()) {
 	  Poly_Con_Relation result = Poly_Con_Relation::is_included();
 	  if (i.is_singleton())
 	    result = result && Poly_Con_Relation::saturates();
 	  return result;
 	}
 	else {
-	  assert(c.is_strict_inequality() && !i.upper_is_open());
+	  assert(relsym == GREATER_THAN && !i.upper_is_open());
 	  if (i.is_singleton())
 	    return Poly_Con_Relation::is_disjoint()
 	      && Poly_Con_Relation::saturates();
@@ -771,12 +765,12 @@ interval_relation_no_check(const Interval& i,
 	  return Poly_Con_Relation::strictly_intersects();
 	else {
 	  assign_r(bound_diff, i.lower(), ROUND_NOT_NEEDED);
-	  sub_assign_r(bound_diff, bound_diff, c_bound, ROUND_NOT_NEEDED);
+	  sub_assign_r(bound_diff, bound_diff, bound, ROUND_NOT_NEEDED);
 	  switch (sgn(bound_diff)) {
 	  case -1:
 	    return Poly_Con_Relation::strictly_intersects();
 	  case 0:
-	    if (c.is_strict_inequality() || i.lower_is_open())
+	    if (relsym == GREATER_THAN || i.lower_is_open())
 	      return Poly_Con_Relation::is_disjoint();
 	    else
 	      return Poly_Con_Relation::strictly_intersects();
@@ -847,14 +841,17 @@ Box<Interval>::relation_with(const Constraint& c) const {
       }
     else {
       // c is an interval constraint.
-      const Linear_Expression e
-	= (c.coefficient(Variable(c_only_var)) * Variable(0)
-          + c.inhomogeneous_term());
+      Relation_Symbol relsym;
       if (c.is_equality())
-	return interval_relation_no_check(seq[c_only_var], e == 0);
-      return (c.is_strict_inequality())
-	? interval_relation_no_check(seq[c_only_var], e > 0)
-	: interval_relation_no_check(seq[c_only_var], e >= 0);
+	relsym = EQUAL;
+      else if (c.is_strict_inequality())
+	relsym = GREATER_THAN;
+      else
+	relsym = GREATER_OR_EQUAL;
+      return interval_relation_no_check(seq[c_only_var],
+					relsym,
+					c.inhomogeneous_term(),
+					c.coefficient(Variable(c_only_var)));
     }
   else {
     // Deal with a non-trivial and non-interval constraint.
@@ -872,14 +869,16 @@ Box<Interval>::relation_with(const Constraint& c) const {
 	r += t;
       }
     }
-    m = c.inhomogeneous_term();
-
-    const Linear_Expression e = (Variable(0) + m);
+    Relation_Symbol relsym;
     if (c.is_equality())
-      return interval_relation_no_check(r, e == 0);
-    return (c.is_strict_inequality())
-      ? interval_relation_no_check(r, e > 0)
-      : interval_relation_no_check(r, e >= 0);
+      relsym = EQUAL;
+    else if (c.is_strict_inequality())
+      relsym = GREATER_THAN;
+    else
+      relsym = GREATER_OR_EQUAL;
+    return interval_relation_no_check(r,
+				      relsym,
+                                      c.inhomogeneous_term());
   }
 
   // Quiet a compiler warning: this program point is unreachable.

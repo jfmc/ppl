@@ -1840,7 +1840,7 @@ private:
 
     \param included
     <CODE>true</CODE> if and only if the extremum of \p expr can
-    actually be reached in \p * this;
+    actually be reached in \p *this;
 
     \param g
     When maximization or minimization succeeds, will be assigned
@@ -1931,18 +1931,35 @@ namespace Parma_Polyhedra_Library {
 
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! Returns the relations holding between \p *this and the constraint \p c.
-  /*!
-    \param c
-    The constraint for the relation.
-    If \p c is dimension-incompatible with \p *this,
-    or \p c is not an interval constraint, the behavior is undefined.
+  /*! \brief
+    Returns the relations holding between an interval and
+    an interval constraint.
+
+    \param i
+    The interval;
+
+    \param relsym
+    The relation symbol;
+
+    \param num
+    The numerator of the constraint bound;
+
+    \param num
+    The denominator of the constraint bound
+
+    The interval constraint is
+    <CODE>den * Variable(0) relsym num</CODE>.
+    If \p relsym is not \p EQUAL, \p GREATER_THAN or \p GREATER_OR_EQUAL
+    the behavior is undefined.
   */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   template <typename Interval>
   Poly_Con_Relation
   interval_relation_no_check(const Interval& i,
-			     const Constraint& c);
+			     const Relation_Symbol relsym,
+			     const Coefficient_traits::const_reference num,
+			     const Coefficient_traits::const_reference den
+			     = 1);
 };
 
 namespace Parma_Polyhedra_Library {
