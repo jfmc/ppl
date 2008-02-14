@@ -90,10 +90,15 @@ handle_exception(JNIEnv* env);
 template <typename U, typename V>
 U
 jtype_to_unsigned(const V& value) {
-  COMPILE_TIME_CHECK(sizeof(U) >= sizeof(V),
-		     "illegal use of jtype_to_unsigned()");
   if (value < 0)
     throw std::invalid_argument("not an unsigned integer.");
+
+  if (sizeof(U) < sizeof(V)) {
+    if (value
+        > static_cast<V>(std::numeric_limits<U>::max()))
+      throw std::invalid_argument("unsigned integer out of range.");
+  }
+
   return value;
 }
 
