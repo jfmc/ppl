@@ -1929,6 +1929,25 @@ private:
 
 namespace Parma_Polyhedra_Library {
 
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! Returns the relations holding between \p *this and the constraint \p c.
+  /*!
+    \param c
+    The constraint for the relation.
+    If \p c is dimension-incompatible with \p *this,
+    or \p c is not an interval constraint, the behavior is undefined.
+  */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+  template <typename Interval>
+  Poly_Con_Relation
+  interval_relation_no_check(const Interval& i,
+			     const Constraint& c);
+};
+
+namespace Parma_Polyhedra_Library {
+
+
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Decodes the constraint \p c as an interval constraint.
 /*! \relates Box
