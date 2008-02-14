@@ -678,21 +678,20 @@ JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_@1WIDEN@_1widening_1assign
 (JNIEnv* env , jobject j_this_@LCLASS@ , jobject j_@LCLASS@,
  jobject j_by_ref_int) {
   try {
-  jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
-  @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
-  this_ptr = get_ptr(env, j_@LCLASS@);
-  @CPP_CLASS@* @LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
-  if (is_null(env, j_by_ref_int))
-    this_@LCLASS@->@WIDEN@_widening_assign(*@LCLASS@);
-  else {
-    jobject j_integer = get_by_reference(env, j_by_ref_int);
-    unsigned int tokens =
-	 jtype_to_unsigned<unsigned int> (j_integer_to_j_int(env,
-					   j_integer));
-    this_@LCLASS@->@WIDEN@_widening_assign(*@LCLASS@, &tokens);
-    j_integer = j_int_to_j_integer(env, tokens);
-    set_by_reference(env, j_by_ref_int, j_integer);
-   }
+    jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
+    @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
+    this_ptr = get_ptr(env, j_@LCLASS@);
+    @CPP_CLASS@* @LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
+    if (is_null(env, j_by_ref_int))
+      this_@LCLASS@->@WIDEN@_widening_assign(*@LCLASS@);
+    else {
+      jobject j_integer = get_by_reference(env, j_by_ref_int);
+      unsigned int tokens =
+        jtype_to_unsigned<unsigned int>(j_integer_to_j_int(env, j_integer));
+      this_@LCLASS@->@WIDEN@_widening_assign(*@LCLASS@, &tokens);
+      j_integer = j_int_to_j_integer(env, tokens);
+      set_by_reference(env, j_by_ref_int, j_integer);
+    }
   }
   CATCH_ALL;
 }
@@ -704,10 +703,10 @@ m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign_code',
 JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_@1EXTRAPOLATION@_1narrowing_1assign
 (JNIEnv* env , jobject j_this_@LCLASS@ , jobject j_@LCLASS@) {
   try {
-  jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
-  @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
-  this_ptr = get_ptr(env, j_@LCLASS@);
-  @CPP_CLASS@* @LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
+    jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
+    @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
+    this_ptr = get_ptr(env, j_@LCLASS@);
+    @CPP_CLASS@* @LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
     this_@LCLASS@->@EXTRAPOLATION@_narrowing_assign(*@LCLASS@);
   }
   CATCH_ALL;
@@ -721,23 +720,22 @@ JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_@1LIMITEDBOUNDED@_1@1WIDENEXPN@_1
 (JNIEnv* env , jobject j_this_@LCLASS@, jobject j_cs, jobject j_@LCLASS@,
  jobject j_by_ref_int) {
   try {
-  jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
-  @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
-  this_ptr = get_ptr(env, j_@LCLASS@);
-  @CPP_CLASS@* @LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
-  @UCONSTRAINER@_System cs = build_ppl_@CONSTRAINER@_system(env, j_cs);
-  if (is_null(env, j_by_ref_int))
-    this_@LCLASS@->@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(*@LCLASS@, cs);
-  else {
-    jobject j_integer = get_by_reference(env, j_by_ref_int);
-    unsigned int tokens =
-	 jtype_to_unsigned<unsigned int> (j_integer_to_j_int(env,
-					   j_integer));
-    this_@LCLASS@->@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(*@LCLASS@, cs,
-							 &tokens);
-    j_integer = j_int_to_j_integer(env, tokens);
-    set_by_reference(env, j_by_ref_int, j_integer);
-   }
+    jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
+    @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
+    this_ptr = get_ptr(env, j_@LCLASS@);
+    @CPP_CLASS@* @LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
+    @UCONSTRAINER@_System cs = build_ppl_@CONSTRAINER@_system(env, j_cs);
+    if (is_null(env, j_by_ref_int))
+      this_@LCLASS@->@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(*@LCLASS@, cs);
+    else {
+      jobject j_integer = get_by_reference(env, j_by_ref_int);
+      unsigned int tokens =
+        jtype_to_unsigned<unsigned int>(j_integer_to_j_int(env, j_integer));
+      this_@LCLASS@->@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(*@LCLASS@, cs,
+                                                                       &tokens);
+      j_integer = j_int_to_j_integer(env, tokens);
+      set_by_reference(env, j_by_ref_int, j_integer);
+    }
   }
   CATCH_ALL;
 }
@@ -779,10 +777,10 @@ m4_define(`ppl_@CLASS@_remove_higher_space_dimensions_code',
 JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_remove_1higher_1space_1dimensions
 (JNIEnv* env, jobject j_this_@LCLASS@, jlong dim) {
   try {
-  dimension_type ppl_dim = jtype_to_unsigned<dimension_type>(dim);
-  jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
-  @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
-  this_@LCLASS@->remove_higher_space_dimensions(ppl_dim);
+    dimension_type ppl_dim = jtype_to_unsigned<dimension_type>(dim);
+    jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
+    @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
+    this_@LCLASS@->remove_higher_space_dimensions(ppl_dim);
   }
   CATCH_ALL;
 }
@@ -794,11 +792,11 @@ m4_define(`ppl_@CLASS@_expand_space_dimension_code',
 JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_expand_1space_1dimension
 (JNIEnv* env, jobject j_this_@LCLASS@, jobject j_variable, jlong dim) {
   try {
-  dimension_type ppl_dim = jtype_to_unsigned<dimension_type>(dim);
-  jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
-  @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
-  Variable v = build_ppl_variable(env, j_variable);
-  this_@LCLASS@->expand_space_dimension(v, ppl_dim);
+    dimension_type ppl_dim = jtype_to_unsigned<dimension_type>(dim);
+    jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
+    @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
+    Variable v = build_ppl_variable(env, j_variable);
+    this_@LCLASS@->expand_space_dimension(v, ppl_dim);
   }
   CATCH_ALL;
 }
