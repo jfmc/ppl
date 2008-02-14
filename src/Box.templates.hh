@@ -599,20 +599,22 @@ Box<Interval>::bounds(const Linear_Expression& expr,
 
 template <typename Interval>
 Poly_Con_Relation
-interval_relation_no_check(const Interval& itvl,
+interval_relation_no_check(const Interval& i,
 			   const Constraint& c) {
 
   const dimension_type c_space_dim = c.space_dimension();
   assert(c_space_dim == 1);
 
+#ifndef NDEBUG
   dimension_type c_num_vars = 0;
   dimension_type c_only_var = 0;
 
   // `c' must be an interval constraint.
   assert(extract_interval_constraint(c, c_space_dim, c_num_vars, c_only_var)
     && c_num_vars == 1 && c_only_var == 0);
+#endif
 
-  if (itvl.is_universe())
+  if (i.is_universe())
     return Poly_Con_Relation::strictly_intersects();
 
   DIRTY_TEMP0(mpq_class, c_bound);
@@ -625,15 +627,15 @@ interval_relation_no_check(const Interval& itvl,
 
   DIRTY_TEMP0(mpq_class, bound_diff);
   if (c.is_equality()) {
-    if (itvl.lower_is_unbounded()) {
-      assert(!itvl.upper_is_unbounded());
-      assign_r(bound_diff, itvl.upper(), ROUND_NOT_NEEDED);
+    if (i.lower_is_unbounded()) {
+      assert(!i.upper_is_unbounded());
+      assign_r(bound_diff, i.upper(), ROUND_NOT_NEEDED);
       sub_assign_r(bound_diff, bound_diff, c_bound, ROUND_NOT_NEEDED);
       switch (sgn(bound_diff)) {
       case 1:
 	return Poly_Con_Relation::strictly_intersects();
       case 0:
-	return itvl.upper_is_open()
+	return i.upper_is_open()
 	  ? Poly_Con_Relation::is_disjoint()
 	  : Poly_Con_Relation::strictly_intersects();
       case -1:
@@ -641,31 +643,31 @@ interval_relation_no_check(const Interval& itvl,
       }
     }
     else {
-      assign_r(bound_diff, itvl.lower(), ROUND_NOT_NEEDED);
+      assign_r(bound_diff, i.lower(), ROUND_NOT_NEEDED);
       sub_assign_r(bound_diff, bound_diff, c_bound, ROUND_NOT_NEEDED);
       switch (sgn(bound_diff)) {
       case 1:
 	return Poly_Con_Relation::is_disjoint();
       case 0:
-	if (itvl.lower_is_open())
+	if (i.lower_is_open())
 	  return Poly_Con_Relation::is_disjoint();
 	else {
 	  Poly_Con_Relation result = Poly_Con_Relation::is_included();
-	  if (itvl.is_singleton())
+	  if (i.is_singleton())
 	    result = result && Poly_Con_Relation::saturates();
 	  return result;
 	}
       case -1:
-	if (itvl.upper_is_unbounded())
+	if (i.upper_is_unbounded())
 	  return Poly_Con_Relation::is_included();
 	else {
-	  assign_r(bound_diff, itvl.upper(), ROUND_NOT_NEEDED);
+	  assign_r(bound_diff, i.upper(), ROUND_NOT_NEEDED);
 	  sub_assign_r(bound_diff, bound_diff, c_bound, ROUND_NOT_NEEDED);
 	  switch (sgn(bound_diff)) {
 	  case 1:
 	    return Poly_Con_Relation::strictly_intersects();
 	  case 0:
-	    if (itvl.upper_is_open())
+	    if (i.upper_is_open())
 	      return Poly_Con_Relation::is_disjoint();
 	    else
 	      return Poly_Con_Relation::strictly_intersects();
@@ -679,15 +681,15 @@ interval_relation_no_check(const Interval& itvl,
 
   assert(!c.is_equality());
   if (c_is_lower_bound) {
-    if (itvl.lower_is_unbounded()) {
-      assert(!itvl.upper_is_unbounded());
-      assign_r(bound_diff, itvl.upper(), ROUND_NOT_NEEDED);
+    if (i.lower_is_unbounded()) {
+      assert(!i.upper_is_unbounded());
+      assign_r(bound_diff, i.upper(), ROUND_NOT_NEEDED);
       sub_assign_r(bound_diff, bound_diff, c_bound, ROUND_NOT_NEEDED);
       switch (sgn(bound_diff)) {
       case 1:
 	return Poly_Con_Relation::strictly_intersects();
       case 0:
-	if (c.is_strict_inequality() || itvl.upper_is_open())
+	if (c.is_strict_inequality() || i.upper_is_open())
 	  return Poly_Con_Relation::is_disjoint();
 	else
 	  return Poly_Con_Relation::strictly_intersects();
@@ -696,21 +698,21 @@ interval_relation_no_check(const Interval& itvl,
       }
     }
     else {
-      assign_r(bound_diff, itvl.lower(), ROUND_NOT_NEEDED);
+      assign_r(bound_diff, i.lower(), ROUND_NOT_NEEDED);
       sub_assign_r(bound_diff, bound_diff, c_bound, ROUND_NOT_NEEDED);
       switch (sgn(bound_diff)) {
       case 1:
 	return Poly_Con_Relation::is_included();
       case 0:
-	if (c.is_nonstrict_inequality() || itvl.lower_is_open()) {
+	if (c.is_nonstrict_inequality() || i.lower_is_open()) {
 	  Poly_Con_Relation result = Poly_Con_Relation::is_included();
-	  if (itvl.is_singleton())
+	  if (i.is_singleton())
 	    result = result && Poly_Con_Relation::saturates();
 	  return result;
 	}
 	else {
-	  assert(c.is_strict_inequality() && !itvl.lower_is_open());
-	  if (itvl.is_singleton())
+	  assert(c.is_strict_inequality() && !i.lower_is_open());
+	  if (i.is_singleton())
 	    return Poly_Con_Relation::is_disjoint()
 	      && Poly_Con_Relation::saturates();
 	  else
@@ -718,16 +720,16 @@ interval_relation_no_check(const Interval& itvl,
 	}
 	break;
       case -1:
-	if (itvl.upper_is_unbounded())
+	if (i.upper_is_unbounded())
 	  return Poly_Con_Relation::strictly_intersects();
 	else {
-	  assign_r(bound_diff, itvl.upper(), ROUND_NOT_NEEDED);
+	  assign_r(bound_diff, i.upper(), ROUND_NOT_NEEDED);
 	  sub_assign_r(bound_diff, bound_diff, c_bound, ROUND_NOT_NEEDED);
 	  switch (sgn(bound_diff)) {
 	  case 1:
 	    return Poly_Con_Relation::strictly_intersects();
 	  case 0:
-	    if (c.is_strict_inequality() || itvl.upper_is_open())
+	    if (c.is_strict_inequality() || i.upper_is_open())
 	      return Poly_Con_Relation::is_disjoint();
 	    else
 	      return Poly_Con_Relation::strictly_intersects();
@@ -740,24 +742,24 @@ interval_relation_no_check(const Interval& itvl,
   }
   else {
     // `c' is an upper bound.
-    if (itvl.upper_is_unbounded())
+    if (i.upper_is_unbounded())
       return Poly_Con_Relation::strictly_intersects();
     else {
-      assign_r(bound_diff, itvl.upper(), ROUND_NOT_NEEDED);
+      assign_r(bound_diff, i.upper(), ROUND_NOT_NEEDED);
       sub_assign_r(bound_diff, bound_diff, c_bound, ROUND_NOT_NEEDED);
       switch (sgn(bound_diff)) {
       case -1:
 	return Poly_Con_Relation::is_included();
       case 0:
-	if (c.is_nonstrict_inequality() || itvl.upper_is_open()) {
+	if (c.is_nonstrict_inequality() || i.upper_is_open()) {
 	  Poly_Con_Relation result = Poly_Con_Relation::is_included();
-	  if (itvl.is_singleton())
+	  if (i.is_singleton())
 	    result = result && Poly_Con_Relation::saturates();
 	  return result;
 	}
 	else {
-	  assert(c.is_strict_inequality() && !itvl.upper_is_open());
-	  if (itvl.is_singleton())
+	  assert(c.is_strict_inequality() && !i.upper_is_open());
+	  if (i.is_singleton())
 	    return Poly_Con_Relation::is_disjoint()
 	      && Poly_Con_Relation::saturates();
 	  else
@@ -765,16 +767,16 @@ interval_relation_no_check(const Interval& itvl,
 	}
 	break;
       case 1:
-	if (itvl.lower_is_unbounded())
+	if (i.lower_is_unbounded())
 	  return Poly_Con_Relation::strictly_intersects();
 	else {
-	  assign_r(bound_diff, itvl.lower(), ROUND_NOT_NEEDED);
+	  assign_r(bound_diff, i.lower(), ROUND_NOT_NEEDED);
 	  sub_assign_r(bound_diff, bound_diff, c_bound, ROUND_NOT_NEEDED);
 	  switch (sgn(bound_diff)) {
 	  case -1:
 	    return Poly_Con_Relation::strictly_intersects();
 	  case 0:
-	    if (c.is_strict_inequality() || itvl.lower_is_open())
+	    if (c.is_strict_inequality() || i.lower_is_open())
 	      return Poly_Con_Relation::is_disjoint();
 	    else
 	      return Poly_Con_Relation::strictly_intersects();
