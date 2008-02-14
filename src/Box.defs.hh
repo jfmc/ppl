@@ -31,6 +31,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Variables_Set.types.hh"
 #include "Linear_Expression.types.hh"
 #include "Constraint.types.hh"
+#include "Constraint.defs.hh"
 #include "Constraint_System.types.hh"
 #include "Generator.types.hh"
 #include "Generator_System.types.hh"
@@ -1938,8 +1939,8 @@ namespace Parma_Polyhedra_Library {
     \param i
     The interval;
 
-    \param relsym
-    The relation symbol;
+    \param constraint_type
+    The constraint type;
 
     \param num
     The numerator of the constraint bound;
@@ -1947,16 +1948,16 @@ namespace Parma_Polyhedra_Library {
     \param num
     The denominator of the constraint bound
 
-    The interval constraint is
-    <CODE>den * Variable(0) relsym num</CODE>.
-    If \p relsym is not \p EQUAL, \p GREATER_THAN or \p GREATER_OR_EQUAL
-    the behavior is undefined.
+    The interval constraint has the form
+    <CODE>den * Variable(0) relsym num</CODE>
+    where relsym is  <CODE>==</CODE>,  <CODE>></CODE> or  <CODE>>=</CODE>
+    depending on the <CODE>constraint_type</CODE>.
   */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   template <typename Interval>
   Poly_Con_Relation
   interval_relation_no_check(const Interval& i,
-			     const Relation_Symbol relsym,
+			     const Constraint::Type constraint_type,
 			     const Coefficient_traits::const_reference num,
 			     const Coefficient_traits::const_reference den
 			     = 1);

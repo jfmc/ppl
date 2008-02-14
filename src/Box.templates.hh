@@ -600,14 +600,10 @@ Box<Interval>::bounds(const Linear_Expression& expr,
 template <typename Interval>
 Poly_Con_Relation
 interval_relation_no_check(const Interval& i,
-			   const Relation_Symbol relsym,
+			   const Constraint::Type constraint_type,
 			   const Coefficient_traits::const_reference num,
 			   const Coefficient_traits::const_reference den)
 {
-
-  assert(relsym == EQUAL
-	 || relsym == GREATER_THAN
-	 || relsym == GREATER_OR_EQUAL);
 
   if (i.is_universe())
     return Poly_Con_Relation::strictly_intersects();
@@ -620,7 +616,7 @@ interval_relation_no_check(const Interval& i,
   const bool is_lower_bound = (den > 0);
 
   DIRTY_TEMP0(mpq_class, bound_diff);
-  if (relsym == EQUAL) {
+  if (constraint_type == Constraint::EQUALITY) {
     if (i.lower_is_unbounded()) {
       assert(!i.upper_is_unbounded());
       assign_r(bound_diff, i.upper(), ROUND_NOT_NEEDED);
@@ -673,7 +669,7 @@ interval_relation_no_check(const Interval& i,
     }
   }
 
-  assert(relsym != EQUAL);
+  assert(constraint_type != Constraint::EQUALITY);
   if (is_lower_bound) {
     if (i.lower_is_unbounded()) {
       assert(!i.upper_is_unbounded());
@@ -683,7 +679,8 @@ interval_relation_no_check(const Interval& i,
       case 1:
 	return Poly_Con_Relation::strictly_intersects();
       case 0:
-	if (relsym == GREATER_THAN || i.upper_is_open())
+	if (constraint_type == Constraint::STRICT_INEQUALITY
+	    || i.upper_is_open())
 	  return Poly_Con_Relation::is_disjoint();
 	else
 	  return Poly_Con_Relation::strictly_intersects();
@@ -698,14 +695,16 @@ interval_relation_no_check(const Interval& i,
       case 1:
 	return Poly_Con_Relation::is_included();
       case 0:
-	if (relsym == GREATER_OR_EQUAL || i.lower_is_open()) {
+	if (constraint_type == Constraint::NONSTRICT_INEQUALITY
+	    || i.lower_is_open()) {
 	  Poly_Con_Relation result = Poly_Con_Relation::is_included();
 	  if (i.is_singleton())
 	    result = result && Poly_Con_Relation::saturates();
 	  return result;
 	}
 	else {
-	  assert(relsym == GREATER_THAN && !i.lower_is_open());
+	  assert(constraint_type == Constraint::STRICT_INEQUALITY
+		 && !i.lower_is_open());
 	  if (i.is_singleton())
 	    return Poly_Con_Relation::is_disjoint()
 	      && Poly_Con_Relation::saturates();
@@ -723,7 +722,8 @@ interval_relation_no_check(const Interval& i,
 	  case 1:
 	    return Poly_Con_Relation::strictly_intersects();
 	  case 0:
-	    if (relsym == GREATER_THAN || i.upper_is_open())
+	    if (constraint_type == Constraint::STRICT_INEQUALITY
+		|| i.upper_is_open())
 	      return Poly_Con_Relation::is_disjoint();
 	    else
 	      return Poly_Con_Relation::strictly_intersects();
@@ -745,14 +745,16 @@ interval_relation_no_check(const Interval& i,
       case -1:
 	return Poly_Con_Relation::is_included();
       case 0:
-	if (relsym == GREATER_OR_EQUAL || i.upper_is_open()) {
+	if (constraint_type == Constraint::NONSTRICT_INEQUALITY
+	    || i.upper_is_open()) {
 	  Poly_Con_Relation result = Poly_Con_Relation::is_included();
 	  if (i.is_singleton())
 	    result = result && Poly_Con_Relation::saturates();
 	  return result;
 	}
 	else {
-	  assert(relsym == GREATER_THAN && !i.upper_is_open());
+	  assert(constraint_type == Constraint::STRICT_INEQUALITY
+		 && !i.upper_is_open());
 	  if (i.is_singleton())
 	    return Poly_Con_Relation::is_disjoint()
 	      && Poly_Con_Relation::saturates();
@@ -770,7 +772,8 @@ interval_relation_no_check(const Interval& i,
 	  case -1:
 	    return Poly_Con_Relation::strictly_intersects();
 	  case 0:
-	    if (relsym == GREATER_THAN || i.lower_is_open())
+	    if (constraint_type == Constraint::STRICT_INEQUALITY
+		|| i.lower_is_open())
 	      return Poly_Con_Relation::is_disjoint();
 	    else
 	      return Poly_Con_Relation::strictly_intersects();
@@ -841,15 +844,8 @@ Box<Interval>::relation_with(const Constraint& c) const {
       }
     else {
       // c is an interval constraint.
-      Relation_Symbol relsym;
-      if (c.is_equality())
-	relsym = EQUAL;
-      else if (c.is_strict_inequality())
-	relsym = GREATER_THAN;
-      else
-	relsym = GREATER_OR_EQUAL;
       return interval_relation_no_check(seq[c_only_var],
-					relsym,
+					c.type(),
 					c.inhomogeneous_term(),
 					c.coefficient(Variable(c_only_var)));
     }
@@ -869,15 +865,8 @@ Box<Interval>::relation_with(const Constraint& c) const {
 	r += t;
       }
     }
-    Relation_Symbol relsym;
-    if (c.is_equality())
-      relsym = EQUAL;
-    else if (c.is_strict_inequality())
-      relsym = GREATER_THAN;
-    else
-      relsym = GREATER_OR_EQUAL;
     return interval_relation_no_check(r,
-				      relsym,
+				      c.type(),
                                       c.inhomogeneous_term());
   }
 
