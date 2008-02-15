@@ -1,7 +1,7 @@
 m4_define(`dnl', `m4_dnl')`'dnl
 m4_divert(-1)
 
-dnl This m4 file generates the test file ppl_predicate_check_<CLASS_NAME>.pl
+dnl This m4 file generates the test files ppl_predicate_check_<CLASS_NAME>.pl
 dnl using the code in ppl_interface_generator_predicate_check_code.m4.
 
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
@@ -31,13 +31,11 @@ m4_divert`'dnl
 m4_include(`ppl_interface_generator_copyright')`'dnl
 */
 m4_divert(-1)
-dnl
+
 dnl ==================================================================
 dnl Common files are included here
 dnl ==================================================================
-dnl
-m4_include(`ppl_interface_generator_common.m4')
-m4_include(`ppl_interface_generator_common_dat.m4')
+
 m4_include(`ppl_interface_generator_prolog_procedure_generators.m4')
 m4_include(`ppl_interface_generator_predicate_check_code.m4')
 
