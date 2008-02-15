@@ -649,7 +649,7 @@ interval_relation_no_check(const Interval& i,
 	}
       case -1:
 	if (i.upper_is_unbounded())
-	  return Poly_Con_Relation::is_included();
+	  return Poly_Con_Relation::strictly_intersects();
 	else {
 	  assign_r(bound_diff, i.upper(), ROUND_NOT_NEEDED);
 	  sub_assign_r(bound_diff, bound_diff, bound, ROUND_NOT_NEEDED);
