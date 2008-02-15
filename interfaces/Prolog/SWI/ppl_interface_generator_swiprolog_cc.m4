@@ -1,4 +1,8 @@
-m4_define(`dnl', `m4_dnl')
+m4_define(`dnl', `m4_dnl')`'dnl
+m4_divert(-1)
+
+dnl This m4 file generates the file ppl_swiprolog.pl.
+
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
@@ -20,7 +24,9 @@ dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
-dnl This file generates ppl_swiprolog.cc.
+m4_include(`ppl_interface_generator_prolog_systems.m4')
+
+m4_divert`'dnl
 /* SWI Prolog interface.
 m4_include(`ppl_interface_generator_copyright')`'dnl
 */
@@ -119,11 +125,9 @@ extern "C" install_t
 uninstall() {
   ppl_finalize();
 }
-dnl
-m4_divert`'dnl
-dnl
+
+m4_divert(-1)
 dnl Include common macros for generating system dependent code.
-m4_include(`ppl_interface_generator_prolog_systems.m4')dnl
 dnl
 dnl Redefine m4_extension as useful for SWI Prolog.
 dnl m4_extension(Predicate_Name, Arity)
@@ -131,8 +135,10 @@ dnl Note: SPACES is just a marker to generated the two spaces of
 dnl indentation following it.
 m4_define(`m4_extension', `dnl
 SPACES  PL_EXTENSION_ENTRY($1, $2)
-')dnl
+')
+
 dnl Now remove the marker SPACES.
+m4_divert`'dnl
 m4_patsubst(ppl_prolog_sys_code, SPACES, `')dnl
 dnl
 dnl End of file generation.

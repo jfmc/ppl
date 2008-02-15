@@ -1,4 +1,9 @@
 m4_define(`dnl', `m4_dnl')`'dnl
+m4_divert(-1)
+
+dnl This m4 file generates the file ppl_java_classes.cc
+dnl using the code in ppl_interface_generator_java_classes_cc_code.m4.
+
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
@@ -20,15 +25,15 @@ dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
-dnl This file is to generate CLASS.java.
-dnl
 dnl Include files defining macros that generate the non-fixed part.
-m4_divert(-1)dnl
-m4_include(`ppl_interface_generator_java_ppl_java_classes_cc_code.m4')dnl
-m4_include(`ppl_interface_generator_common.m4')dnl
-m4_include(`ppl_interface_generator_common_dat.m4')dnl
-m4_include(`ppl_interface_generator_java_procedure_generators.m4')dnl
-dnl
+m4_include(`ppl_interface_generator_java_ppl_java_classes_cc_code.m4')
+m4_include(`ppl_interface_generator_java_procedure_generators.m4')
+
+m4_divert`'dnl
+/* Java classes implementation.
+m4_include(`ppl_interface_generator_copyright')
+*/
+m4_divert(-1)
 
 dnl m4_pre_extra_class_code(Class, CPP_Class, Class_Kind)
 dnl Prefix extra code for each class.
@@ -43,10 +48,9 @@ m4_undefine(`m4_this_class')
 using namespace Parma_Polyhedra_Library;
 ')
 
-dnl m4_post_extra_class_code(Class, CPP_Class, Class_Kind)
-dnl Postfix extra code for each class.
-m4_define(`m4_post_extra_class_code', `')
-
+dnl -----------------------------------------------------------------
+dnl Main call to macro m4_all_code to generate code
+dnl -----------------------------------------------------------------
 m4_divert`'dnl
 `#'include "ppl_java_common.hh"
 dnl Generate the non-fixed part of the file.

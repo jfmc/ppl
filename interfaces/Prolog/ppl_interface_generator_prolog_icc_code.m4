@@ -1,3 +1,7 @@
+m4_divert(-1)
+
+dnl This m4 file contains the program code for generating ppl_prolog.icc
+
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
@@ -18,8 +22,6 @@ dnl Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
-
-m4_divert(-1)dnl
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 `extern "C" Prolog_foreign_return_type
@@ -1636,5 +1638,3 @@ ppl_@CLASS@_@MEMBYTES@(Prolog_term_ref t_pps,
 ')
 
 ')
-
-divert`'dnl

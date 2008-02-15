@@ -1,5 +1,9 @@
-m4_define(`dnl', `m4_dnl')`'dnl
 m4_divert(-1)
+
+dnl This m4 file defines the list of procedures
+dnl for the OCaml interface; this includes:
+dnl - the list in the imported file and any OCaml specific procedures.
+
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
@@ -21,8 +25,10 @@ dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
-dnl Include the common list.
+dnl Include the language independent macros.
 m4_include(`ppl_interface_generator_common_procedure_generators.m4')
+m4_include(`ppl_interface_generator_common.m4')
+m4_include(`ppl_interface_generator_common_dat.m4')
 
 dnl
 dnl m4_procedure_list

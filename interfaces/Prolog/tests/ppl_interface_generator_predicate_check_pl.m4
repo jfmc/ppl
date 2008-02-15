@@ -1,5 +1,9 @@
 m4_define(`dnl', `m4_dnl')`'dnl
 m4_divert(-1)
+
+dnl This m4 file generates the test file ppl_predicate_check_<CLASS_NAME>.pl
+dnl using the code in ppl_interface_generator_predicate_check_code.m4.
+
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
@@ -20,8 +24,7 @@ dnl Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
-dnl
-dnl This file generates ppl_predicate_check.pl.
+
 m4_divert`'dnl
 %<--%<--%<-- ppl_predicate_check_main.pl
 /* Prolog code for checking all predicates.  -*- C++ -*-
@@ -168,34 +171,34 @@ m4_undefine(`m4_current_interface')`'dnl
 ')
 m4_pushdef(`m4_post_extra_class_code', `
   true.
-')`'dnl
-dnl
+')
+
 dnl -----------------------------------------------------------------
-dnl Main calls to macros to generate code
+dnl Call to macro m4_all_code to generate code
 dnl -----------------------------------------------------------------
 m4_divert`'dnl
 m4_patsubst(m4_all_code, COMMA, `,')`'dnl
 m4_popdef(`m4_extension')`'dnl
 m4_popdef(`m4_pre_extra_class_code')`'dnl
 m4_popdef(`m4_post_extra_class_code')`'dnl
-dnl  m4_popdef(`m4_check_test_usability')dnl
-dnl
+m4_divert(-1)
+
 dnl ==================================================================
 dnl Generate code for the declarations
 dnl ==================================================================
-dnl
+
 dnl -----------------------------------------------------------------
 dnl Extra definitions
 dnl -----------------------------------------------------------------
-m4_divert(-1)`'dnl
+
 m4_pushdef(`m4_extension', `dnl
 m4_ifdef(`$1_code',
          `m4_ifelse(m4_check_test_usability($1, $5), keep,
 :- dynamic($1_$2_test/0).
 :- discontiguous($1_$2_test/0).)')
 ')`'dnl
-m4_pushdef(`m4_pre_extra_class_code', `
-m4_define(`m4_current_interface', m4_interface_class`'$1)`'dnl
+m4_pushdef(`m4_pre_extra_class_code', `dnl
+m4_define(`m4_current_interface', m4_interface_class`'$1)
 %<--%<--%<-- ppl_predicate_check_`'m4_current_interface.pl
 m4_undefine(`m4_current_interface')`'dnl
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -204,50 +207,51 @@ m4_undefine(`m4_current_interface')`'dnl
 %                                                                   %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ')
+
 dnl -----------------------------------------------------------------
-dnl Main call to macros to generate code
+dnl Main call to macro m4_all_code to generate code
 dnl -----------------------------------------------------------------
 m4_divert`'dnl
 m4_all_code`'dnl
-m4_popdef(`m4_extension')`'dnl
-m4_popdef(`m4_pre_extra_class_code')`'dnl
-dnl
+m4_divert(-1)
+m4_popdef(`m4_extension')
+m4_popdef(`m4_pre_extra_class_code')
+
 dnl ==================================================================
 dnl Generate code for the class dependent predicate tests
 dnl ==================================================================
-dnl
+
 dnl -----------------------------------------------------------------
 dnl Extra definitions
 dnl -----------------------------------------------------------------
-m4_divert(-1)`'dnl
-m4_include(`ppl_interface_generator_predicate_check_code.m4')`'dnl
-dnl
+m4_include(`ppl_interface_generator_predicate_check_code.m4')
+
 m4_define(`m4_arg_sequence',
   `m4_ifelse(`$1', 0, ,
      `Arg1`'m4_ifelse(`$1', 1, ,
-       `m4_forloop(`i', 2, `$1', `m4_separator Arg`'i')')')')`'dnl
-dnl
+       `m4_forloop(`i', 2, `$1', `m4_separator Arg`'i')')')')
+
 m4_define(`m4_find_name',
   `m4_regexp($1, `\(ppl_[^ /]+\)', `\1')`'dnl
-')`'dnl
-dnl
+')
+
 m4_define(`m4_find_arity',
   `m4_regexp($1, `ppl_[^ /]+\(.*\)', `m4_get_arity(\1)')`'dnl
-')`'dnl
-dnl
+')
+
 m4_define(`m4_make_clean_defs', `dnl
 clean_$1`'m4_ifelse(`$2', 0, , `(`'m4_arg_sequence($2))') :-
   ($1`'m4_ifelse(`$2', 0, , `(`'m4_arg_sequence($2))'),
   ppl_cleanup_@CLASS@(Arg`'$2)).
-')`'dnl
-dnl
+')
+
 m4_define(`m4_replace_patterns_in_clean_defs', `dnl
 m4_replace_all_patterns_in_string($1,
                                   m4_make_clean_defs(m4_find_name($2),
                                                      m4_find_arity($2)),
                                   m4_pattern_list)
-')`'dnl
-dnl
+')
+
 m4_define(`m4_extras', `dnl
 m4_ifelse($#, 0, ,
           $#, 1, ,
@@ -257,8 +261,8 @@ m4_ifelse($#, 0, ,
           `m4_ifelse(m4_index($2, new), -1, ,
                      m4_replace_patterns_in_clean_defs($1, $2))'dnl
 `m4_extras($1, m4_shift(m4_shift($@)))')`'dnl
-')`'dnl
-dnl
+')
+
 m4_define(`m4_pre_extra_class_code', `dnl
 m4_define(`m4_current_interface', m4_interface_class`'$1)`'dnl
 
@@ -288,37 +292,38 @@ m4_replace_all_patterns_in_string($1,
   m4_add_out_extra_class_code($1),
   m4_pattern_list)`'dnl
 m4_extras($1, m4_procedure_list)
-')`'dnl
-dnl
-m4_pushdef(`m4_default_code', `')`'dnl
-dnl
+')
+
+m4_pushdef(`m4_default_code', `')
+
 m4_pushdef(`m4_extension', `dnl
 m4_ifdef(`$1_code',
 `m4_ifelse(m4_check_test_usability($1, $5), keep, `
 m4_indir(`$1_code')`'dnl
 ')', `')
-')`'dnl
-dnl
+')
+
 dnl -----------------------------------------------------------------
-dnl Main call to macros to generate code
+dnl Call to macro m4_all_code to generate code
 dnl -----------------------------------------------------------------
 m4_divert`'dnl
 m4_all_code`'dnl
-m4_popdef(`m4_extension')`'dnl
-m4_popdef(`m4_pre_extra_class_code')`'dnl
-dnl
+m4_divert(-1)
+m4_popdef(`m4_extension')
+m4_popdef(`m4_pre_extra_class_code')
+
 dnl ==================================================================
 dnl Generate code,
 dnl defining the argument of "all_class_dependent_predicates/1",
 dnl a list of all the class dependent predicates that are implemented.
 dnl ==================================================================
-dnl
+
 dnl -----------------------------------------------------------------
 dnl Extra files and definitions
 dnl -----------------------------------------------------------------
-m4_divert(-1)`'dnl
-m4_pushdef(`m4_pre_extra_class_code', `
-m4_define(`m4_current_interface', m4_interface_class`'$1)`'dnl
+
+m4_pushdef(`m4_pre_extra_class_code', `dnl
+m4_define(`m4_current_interface', m4_interface_class`'$1)
 %<--%<--%<-- ppl_predicate_check_`'m4_current_interface.pl
 m4_undefine(`m4_current_interface')`'dnl
 m4_define(`m4_start1', 0)`'dnl
@@ -330,22 +335,27 @@ m4_define(`m4_start1', 0)`'dnl
 
 all_class_dependent_predicates(
   [
-  ')`'dnl
+  ')
+
 m4_define(`m4_post_extra_class_code', `
   ]
 ).
-')`'dnl
-m4_define(`m4_start1', 0)`'dnl
+')
+m4_define(`m4_start1', 0)
+
 m4_pushdef(`m4_extension', `dnl
 m4_ifelse(m4_start1, 0,
   `m4_undefine(`m4_start1')', `COMMA
 ')  `$1'dnl
-')`'dnl
-dnl
+')
+
 dnl -----------------------------------------------------------------
-dnl Main calls to macros to generate code
+dnl Main calls to macro m4_all_code to generate code
 dnl -----------------------------------------------------------------
 m4_divert`'dnl
 m4_patsubst(m4_all_code, COMMA, `,')`'dnl
-m4_popdef(`m4_extension')`'dnl
-m4_popdef(`m4_pre_extra_class_code')`'dnl
+m4_divert(-1)
+m4_popdef(`m4_extension')
+m4_popdef(`m4_pre_extra_class_code')
+
+dnl End of file generation.

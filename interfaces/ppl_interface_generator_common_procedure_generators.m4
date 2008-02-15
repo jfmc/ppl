@@ -1,5 +1,8 @@
-m4_define(`dnl', `m4_dnl')`'dnl
 m4_divert(-1)
+
+dnl This m4 file defines the list of the procedures generated
+dnl that are independent of the inetrface being generated.
+
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
@@ -20,8 +23,6 @@ dnl Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
-
-m4_include(`ppl_interface_generator_common_dat.m4')
 
 dnl m4_procedure_list
 dnl This class using patterns wherever possible.

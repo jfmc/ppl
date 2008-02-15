@@ -1,4 +1,9 @@
-m4_define(`dnl', `m4_dnl')
+m4_define(`dnl', `m4_dnl')`'dnl
+m4_divert(-1)
+
+dnl This m4 file defines macros needed for generating
+dnl the Ciao dependent code for xsb_predicate_check.pl.
+
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
@@ -20,7 +25,10 @@ dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
-dnl This file generates ppl_ciao_predicate_check.pl
+m4_include(`ppl_interface_generator_common_dat.m4')
+m4_include(`ppl_interface_generator_prolog_systems.m4')
+
+m4_divert`'dnl
 /* XSB Prolog interface: XSB Prolog part for checking all predicates.
 m4_include(`ppl_interface_generator_copyright')
 */
@@ -32,8 +40,7 @@ m4_include(`ppl_interface_generator_copyright')
 #include "ppl_predicate_check_main.pl"
 #include "ppl_predicate_check_common.pl"
 m4_divert(-1)
-m4_include(`ppl_interface_generator_common.m4')dnl
-m4_include(`ppl_interface_generator_common_dat.m4')dnl
+
 m4_pushdef(`m4_one_class_code', `dnl
 m4_replace_all_patterns_in_string($1,
                                   `#includeSPACE"../tests/ppl_predicate_check_@CLASS@.pl"
@@ -71,8 +78,9 @@ main :-
 
 :- main.
 m4_divert`'dnl
-m4_include(`ppl_interface_generator_prolog_systems.m4')dnl
 m4_define(`m4_extension', `m4_ifelse($4, 0, , `COMMA
 ')	  $1/$2')dnl
 m4_patsubst(ppl_prolog_sys_code, COMMA, `,')`'dnl
-m4_undivert(1)`'dnl
+m4_undivert(1)
+dnl
+dnl End of file generation.

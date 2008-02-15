@@ -1,4 +1,9 @@
 m4_divert(-1)
+
+dnl This m4 file includes macro definitions for:
+dnl - application independent helper macros used here and by other m4 files.
+dnl - defining the main code generation macro m4_all_code.
+
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
@@ -65,8 +70,7 @@ dnl m4_add_one_after_underscore(String)
 dnl
 dnl Adds a 1 after any underscore (needed for Java interface code)..
 dnl Example: m4_capfirstletter(`xyz_abc') ==> xyz_1abc
-m4_define(`m4_add_one_after_underscore', `m4_patsubst(`$1', `_', `_1')`'dnl
-')
+m4_define(`m4_add_one_after_underscore', `m4_patsubst(`$1', `_', `_1')')
 
 dnl m4_ifndef(Macro, Default Definition)
 dnl

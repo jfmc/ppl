@@ -1,5 +1,7 @@
-m4_define(`dnl', `m4_dnl')`'dnl
-m4_divert(-1)`'dnl
+m4_divert(-1)
+
+dnl This m4 file contains the program code for generating ppl_ocaml.ml
+
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).

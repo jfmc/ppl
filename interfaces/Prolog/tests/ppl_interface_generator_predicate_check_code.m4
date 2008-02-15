@@ -1,4 +1,9 @@
-m4_define(`dnl', `m4_dnl')`'dnl
+m4_divert(-1)
+
+dnl This m4 file contains the code for generating the test files
+dnl ppl_predicate_check_<CLASS_NAME>.pl, which test
+dnl the generated Prolog interface predicates.
+
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
@@ -19,8 +24,6 @@ dnl Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
-m4_divert(-1)
-dnl This file contains the schematic tests for the Prolog interface predicates.
 
 m4_define(`m4_add_build_class_code', `dnl
 ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Dim) :-

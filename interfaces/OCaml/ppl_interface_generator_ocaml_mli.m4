@@ -1,5 +1,9 @@
 m4_define(`dnl', `m4_dnl')`'dnl
 m4_divert(-1)
+
+dnl This m4 file generates the file ppl_ocaml.mli
+dnl using the code in ppl_interface_generator_ocaml_mli_code.m4.
+
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
@@ -21,13 +25,15 @@ dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
-dnl This file generates ppl_prolog.icc.
-dnl
 dnl Include files defining macros that generate the non-fixed part.
 m4_include(`ppl_interface_generator_ocaml_mli_code.m4')
-m4_include(`ppl_interface_generator_common.m4')
-m4_include(`ppl_interface_generator_common_dat.m4')
 m4_include(`ppl_interface_generator_ocaml_procedure_generators.m4')
+
+m4_divert`'dnl
+(** OCaml interface code.
+m4_include(`ppl_interface_generator_copyright')
+*)
+m4_divert(-1)
 
 dnl m4_pre_all_classes_code
 dnl
@@ -37,7 +43,7 @@ dnl can be copied from another.
 
 m4_divert`'dnl
 dnl
-(**Interfaces file to define new excpeptions, new types and interfaces function to PPL*)
+(**Interfaces file to define new exceptions, new types and interfaces function to PPL*)
 
 open Gmp
 
@@ -219,4 +225,5 @@ dnl -----------------------------------------------------------------
 dnl Generate the main class-dependent code.
 dnl -----------------------------------------------------------------
 m4_all_code`'dnl
-
+dnl
+dnl End of file generation.

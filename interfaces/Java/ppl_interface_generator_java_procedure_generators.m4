@@ -1,5 +1,9 @@
-m4_define(`dnl', `m4_dnl')`'dnl
 m4_divert(-1)
+
+dnl This m4 file defines the list of methods
+dnl for the Java interface; this includes:
+dnl - the list in the imported file and any Java specific methods.
+
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
@@ -21,10 +25,11 @@ dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
-dnl Include the common list.
+dnl Include the language independent macros.
 m4_include(`ppl_interface_generator_common_procedure_generators.m4')
+m4_include(`ppl_interface_generator_common.m4')
+m4_include(`ppl_interface_generator_common_dat.m4')
 
-dnl
 dnl m4_procedure_list
 dnl This class extends the m4_common_procedure_list
 dnl and all procedures common to the all the interfaces should go there.
@@ -32,7 +37,7 @@ dnl
 dnl Note that the code for the schema "<name>_code" must be defined
 dnl in the ppl_interface_generator_*_code.m4 file.
 dnl The <name> must be exactly as written here.
-dnl
+
 m4_define(`m4_procedure_list', `m4_echo_unquoted(`m4_common_procedure_list',
 ppl_free_@CLASS@/1 +all,
 ppl_@CLASS@_hashcode/2 +all -box,

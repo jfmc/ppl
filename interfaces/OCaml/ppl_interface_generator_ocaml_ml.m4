@@ -1,5 +1,9 @@
-m4_define(`dnl', `m4_dnl')
-m4_divert(-1)dnl
+m4_define(`dnl', `m4_dnl')`'dnl
+m4_divert(-1)
+
+dnl This m4 file generates the file ppl_ocaml.ml
+dnl using the code in ppl_interface_generator_ocaml_ml_code.m4.
+
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
@@ -21,22 +25,15 @@ dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
-dnl This file generates ppl_prolog.icc.
-dnl
 dnl Include files defining macros that generate the non-fixed part.
 m4_include(`ppl_interface_generator_ocaml_ml_code.m4')
-m4_include(`ppl_interface_generator_common.m4')
-m4_include(`ppl_interface_generator_common_dat.m4')
 m4_include(`ppl_interface_generator_ocaml_procedure_generators.m4')
 
-dnl m4_pre_all_classes_code
-dnl
-dnl Definition for converting a term to a class handle code for all
-dnl classes must be placed before all the generated code so that one class
-dnl can be copied from another.
-m4_define(`m4_pre_all_classes_code', `')`'dnl
 m4_divert`'dnl
-dnl
+(** OCaml interface code.
+m4_include(`ppl_interface_generator_copyright')
+*)
+
 include Ppl_ocaml_globals
 include Ppl_ocaml_types
 open Gmp
@@ -50,7 +47,6 @@ let _ = Callback.register_exception "PPL_not_an_unsigned_exception" (Error "any 
 let _ = Callback.register_exception "PPL_unexpected_error" (Error "any string")
 
 m4_divert(-1)
-m4_define(`m4_pre_all_classes_code', `')`'dnl
 m4_pushdef(`m4_one_class_code', `dnl
 m4_replace_all_patterns_in_string($1,
                                   `type @LTOPOLOGY@@LCLASS@
@@ -71,4 +67,5 @@ dnl Generate the main class-dependent code.
 dnl -----------------------------------------------------------------
 m4_divert`'dnl
 m4_all_code
-
+dnl
+dnl End of file generation.

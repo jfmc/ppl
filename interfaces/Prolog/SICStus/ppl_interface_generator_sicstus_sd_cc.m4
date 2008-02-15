@@ -1,4 +1,8 @@
-m4_define(`dnl', `m4_dnl')
+m4_define(`dnl', `m4_dnl')`'dnl
+m4_divert(-1)
+
+dnl This m4 file generates the file ppl_sicstus_sd.cc.
+
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
@@ -20,7 +24,10 @@ dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
-dnl This file generates ppl_sicstus_sd.cc.
+dnl Include common macros for generating system dependent code.
+m4_include(`ppl_interface_generator_prolog_systems.m4')dnl
+
+m4_divert`'dnl
 /* SICStus Prolog interface: system-dependent part.
 m4_include(`ppl_interface_generator_copyright')`'dnl
 */
@@ -262,9 +269,6 @@ ppl_sicstus_deinit(int /* when */) {
 dnl
 m4_divert`'dnl
 dnl
-dnl Include common macros for generating system dependent code.
-m4_include(`ppl_interface_generator_prolog_systems.m4')dnl
-dnl
 dnl Redefine m4_extension to generate SICStus stubs.
 dnl m4_extension(Predicate_Name, Arity)
 m4_define(`m4_extension', `dnl
@@ -273,15 +277,16 @@ SP_STUB_$2($1)
 dnl Generate stubs.
 ppl_prolog_sys_code`'dnl
 m4_undivert(1)`'dnl
-dnl
-m4_divert`'dnl
-dnl
+m4_divert(-1)
+
 dnl Redefine m4_extension to generate SICStus user predicates.
 dnl m4_extension(Predicate_Name, Arity)
 m4_define(`m4_extension', `dnl
   SP_DEFINE_C_PREDICATE($1, $2);
-')dnl
+')
+
 dnl Generate user predicates.
+m4_divert`'dnl
 ppl_prolog_sys_code`'dnl
 dnl
 dnl End of file generation.
