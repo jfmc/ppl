@@ -1,3 +1,4 @@
+dnl  -*- C++ -*-
 m4_divert(-1)
 
 dnl This m4 file contains the code for generating ppl_java_classes.cc
@@ -25,7 +26,7 @@ dnl site: http://www.cs.unipr.it/ppl/ .
 
 m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
 `dnl
-`#'include "ppl_java_@CLASS@_Iterator.h"
+#include "ppl_java_@CLASS@_Iterator.h"
 JNIEXPORT jboolean JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_1Iterator_equals
 (JNIEnv* env, jobject j_this_it, jobject j_it) {
 jlong ptr = get_ptr(env, j_this_it);

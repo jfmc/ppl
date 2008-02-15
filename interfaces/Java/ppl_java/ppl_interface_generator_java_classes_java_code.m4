@@ -1,3 +1,4 @@
+dnl  -*- java -*-
 m4_divert(-1)
 
 dnl This m4 file contains the code for generating files <CLASS_NAME>.java
