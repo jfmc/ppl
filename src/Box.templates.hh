@@ -858,7 +858,7 @@ Box<Interval>::relation_with(const Constraint& c) const {
     for (dimension_type i = c.space_dimension(); i-- > 0; ) {
       const Coefficient& c_i = c.coefficient(Variable(i));
       if (sgn(c_i) != 0) {
-	m = c_i;
+        assign_r(m, c_i, ROUND_NOT_NEEDED);
 	// FIXME: an add_mul_assign() method would come handy here.
 	t = seq[i];
 	t *= m;
