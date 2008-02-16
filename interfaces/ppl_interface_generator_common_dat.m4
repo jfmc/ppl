@@ -833,17 +833,14 @@ dnl pattern == relation_represent
 dnl  The different kinds of objects that can have a relation with a class.
 dnl ---------------------------------------------------------------------
 
-m4_define(`m4_relation_represent_replacement', `constraint, generator')
-m4_define(`m4_Polyhedron_relation_represent_replacement',
-         `m4_relation_represent_replacement, congruence')
+m4_define(`m4_relation_represent_replacement',
+	`constraint, generator, congruence')
 m4_define(`m4_Grid_relation_represent_replacement',
-         `m4_relation_represent_replacement, congruence, grid_generator')
-m4_define(`m4_box_relation_represent_replacement',
-         `m4_relation_represent_replacement, congruence')
+         `m4_relation_represent_replacement, grid_generator')
 
 m4_define(`m4_Pointset_Powerset_relation_represent_replacement', `dnl
 m4_define(`m4_1st_sequence',
-  `m4_relation_represent_replacement, congruence')`'dnl
+  `m4_relation_represent_replacement')`'dnl
 m4_define(`m4_2nd_sequence',
   `m4_class_pattern_replacement(m4_class_body_counter$1,
                                 relation_represent, `')')`'dnl
@@ -872,17 +869,13 @@ m4_undefine(`m4_num_of_sequences')`'dnl
 ')
 
 dnl The type of these relations with a class.
-m4_define(`m4_relation_represent_alt_replacement', `con, gen')
-m4_define(`m4_Polyhedron_relation_represent_alt_replacement',
-         `con, gen, con')
+m4_define(`m4_relation_represent_alt_replacement', `con, gen, con')
 m4_define(`m4_Grid_relation_represent_alt_replacement',
          `con, gen, con, gen')
-m4_define(`m4_box_relation_represent_alt_replacement',
-         `con, gen, con')
 
 m4_define(`m4_Pointset_Powerset_relation_represent_alt_replacement', `dnl
 m4_define(`m4_1st_sequence',
-  `m4_relation_represent_alt_replacement, con')`'dnl
+  `m4_relation_represent_alt_replacement')`'dnl
 m4_define(`m4_2nd_sequence',
   `m4_class_pattern_replacement(m4_class_body_counter$1,
                                 relation_represent, `_alt')')`'dnl
