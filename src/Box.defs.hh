@@ -479,10 +479,16 @@ public:
   //! Returns the relations holding between \p *this and the constraint \p c.
   /*!
     \exception std::invalid_argument
-    Thrown if \p *this and constraint \p c are dimension-incompatible
-    or if \p c is not a box constraint.
+    Thrown if \p *this and constraint \p c are dimension-incompatible.
   */
   Poly_Con_Relation relation_with(const Constraint& c) const;
+
+  //! Returns the relations holding between \p *this and the congruence \p cg.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p *this and constraint \p cg are dimension-incompatible.
+  */
+  Poly_Con_Relation relation_with(const Congruence& cg) const;
 
   //! Returns the relations holding between \p *this and the generator \p g.
   /*!
@@ -1956,11 +1962,10 @@ namespace Parma_Polyhedra_Library {
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   template <typename Interval>
   Poly_Con_Relation
-  interval_relation_no_check(const Interval& i,
-			     const Constraint::Type constraint_type,
-			     const Coefficient_traits::const_reference num,
-			     const Coefficient_traits::const_reference den
-			     = 1);
+  interval_relation(const Interval& i,
+		    const Constraint::Type constraint_type,
+		    const Coefficient_traits::const_reference num,
+		    const Coefficient_traits::const_reference den = 1);
 };
 
 namespace Parma_Polyhedra_Library {

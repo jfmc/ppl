@@ -599,10 +599,10 @@ Box<Interval>::bounds(const Linear_Expression& expr,
 
 template <typename Interval>
 Poly_Con_Relation
-interval_relation_no_check(const Interval& i,
-			   const Constraint::Type constraint_type,
-			   const Coefficient_traits::const_reference num,
-			   const Coefficient_traits::const_reference den)
+interval_relation(const Interval& i,
+		  const Constraint::Type constraint_type,
+		  const Coefficient_traits::const_reference num,
+		  const Coefficient_traits::const_reference den)
 {
 
   if (i.is_universe())
@@ -791,6 +791,73 @@ interval_relation_no_check(const Interval& i,
 
 template <typename Interval>
 Poly_Con_Relation
+Box<Interval>::relation_with(const Congruence& cg) const {
+  const dimension_type cg_space_dim = cg.space_dimension();
+  const dimension_type space_dim = space_dimension();
+
+  // Dimension-compatibility check.
+  if (cg_space_dim > space_dim)
+    throw_dimension_incompatible("relation_with(cg)", cg);
+
+  if (is_empty())
+    return Poly_Con_Relation::saturates()
+      && Poly_Con_Relation::is_included()
+      && Poly_Con_Relation::is_disjoint();
+
+  if (space_dim == 0) {
+    if (cg.is_trivial_false())
+      return Poly_Con_Relation::is_disjoint();
+    else if (cg.inhomogeneous_term() % cg.modulus() == 0)
+      return Poly_Con_Relation::saturates()
+	&& Poly_Con_Relation::is_included();
+  }
+
+  if (cg.is_equality()) {
+    const Constraint c(cg);
+    return relation_with(c);
+  }
+
+  DIRTY_TEMP0(Rational_Interval, r);
+  DIRTY_TEMP0(Rational_Interval, t);
+  DIRTY_TEMP0(mpq_class, m);
+  r = 0;
+  for (dimension_type i = cg.space_dimension(); i-- > 0; ) {
+    const Coefficient& cg_i = cg.coefficient(Variable(i));
+    if (sgn(cg_i) != 0) {
+      assign_r(m, cg_i, ROUND_NOT_NEEDED);
+      // FIXME: an add_mul_assign() method would come handy here.
+      t = seq[i];
+      t *= m;
+      r += t;
+    }
+  }
+
+  if (r.lower_is_unbounded() || r.upper_is_unbounded())
+    return Poly_Con_Relation::strictly_intersects();
+
+
+  // Find the value that satisfies the congruence and is
+  // nearest to the lower bound such that the point lies on or above it.
+
+  TEMP_INTEGER(lower);
+  TEMP_INTEGER(mod);
+  TEMP_INTEGER(v);
+  mod = cg.modulus();
+  v = cg.inhomogeneous_term() % mod;
+  assign_r(lower, r.lower(), ROUND_DOWN);
+  v -= ((lower / mod) * mod);
+  if (v + lower > 0)
+    v -= mod;
+  return interval_relation(r,
+			   Constraint::EQUALITY,
+			   v);
+
+  // Quiet a compiler warning: this program point is unreachable.
+  throw std::runtime_error("PPL internal error");
+}
+
+template <typename Interval>
+Poly_Con_Relation
 Box<Interval>::relation_with(const Constraint& c) const {
   const dimension_type c_space_dim = c.space_dimension();
   const dimension_type space_dim = space_dimension();
@@ -844,10 +911,10 @@ Box<Interval>::relation_with(const Constraint& c) const {
       }
     else {
       // c is an interval constraint.
-      return interval_relation_no_check(seq[c_only_var],
-					c.type(),
-					c.inhomogeneous_term(),
-					c.coefficient(Variable(c_only_var)));
+      return interval_relation(seq[c_only_var],
+			       c.type(),
+			       c.inhomogeneous_term(),
+			       c.coefficient(Variable(c_only_var)));
     }
   else {
     // Deal with a non-trivial and non-interval constraint.
@@ -865,9 +932,9 @@ Box<Interval>::relation_with(const Constraint& c) const {
 	r += t;
       }
     }
-    return interval_relation_no_check(r,
-				      c.type(),
-                                      c.inhomogeneous_term());
+    return interval_relation(r,
+			     c.type(),
+			     c.inhomogeneous_term());
   }
 
   // Quiet a compiler warning: this program point is unreachable.

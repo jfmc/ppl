@@ -90,7 +90,7 @@ maxspacedim1 \
 membytes1 \
 minconstraints1 \
 pointsetpowerset1 \
-relations1 relations2 relations3 \
+relations1 relations2 relations3 relations4 \
 refine1 refine3 \
 removespacedims1 \
 timeelapse1 \
@@ -236,6 +236,7 @@ pointsetpowerset1_SOURCES = pointsetpowerset1.cc
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
 relations3_SOURCES = relations3.cc
+relations4_SOURCES = relations4.cc
 
 refine1_SOURCES = refine1.cc
 refine3_SOURCES = refine3.cc
