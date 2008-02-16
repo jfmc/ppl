@@ -56,6 +56,23 @@ combine(Result l, Result u) {
   return static_cast<I_Result>(l | (u << 6));
 }
 
+inline Result
+lower(I_Result r) {
+  return static_cast<Result>(r & 63);
+}
+
+inline Result
+upper(I_Result r) {
+  return static_cast<Result>((r >> 6) & 63);
+}
+
+template <typename Info>
+inline bool
+unrepresentability_error(I_Result r, const Info&) {
+  return !Info::store_special
+    && (is_special(lower(r)) || is_special(upper(r)));
+}
+
 using namespace Boundary_NS;
 using namespace Interval_NS;
 
