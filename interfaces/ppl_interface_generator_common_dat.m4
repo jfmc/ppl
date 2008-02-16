@@ -838,6 +838,8 @@ m4_define(`m4_Polyhedron_relation_represent_replacement',
          `m4_relation_represent_replacement, congruence')
 m4_define(`m4_Grid_relation_represent_replacement',
          `m4_relation_represent_replacement, congruence, grid_generator')
+m4_define(`m4_box_relation_represent_replacement',
+         `m4_relation_represent_replacement, congruence')
 
 m4_define(`m4_Pointset_Powerset_relation_represent_replacement', `dnl
 m4_define(`m4_1st_sequence',
@@ -875,6 +877,8 @@ m4_define(`m4_Polyhedron_relation_represent_alt_replacement',
          `con, gen, con')
 m4_define(`m4_Grid_relation_represent_alt_replacement',
          `con, gen, con, gen')
+m4_define(`m4_box_relation_represent_alt_replacement',
+         `con, gen, con')
 
 m4_define(`m4_Pointset_Powerset_relation_represent_alt_replacement', `dnl
 m4_define(`m4_1st_sequence',

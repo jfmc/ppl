@@ -122,30 +122,6 @@ test05() {
 
   Constraint_System cs;
   cs.insert(A <= 3);
-  cs.insert(A >= 0);
-  cs.insert(B <= 3);
-  cs.insert(B >= 0);
-
-  TBox box(cs);
-
-  Poly_Con_Relation rel = box.relation_with((A + B %= 4) / 6);
-
-  print_constraints(box, "*** box ***");
-  using namespace IO_Operators;
-  nout << "box.relation_with((A + B %= 4) / 6) == " << rel << endl;
-
-  Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
-
-  return rel == known_result;
-}
-
-bool
-test06() {
-  Variable A(0);
-  Variable B(1);
-
-  Constraint_System cs;
-  cs.insert(A <= 3);
   cs.insert(A >= 3);
   cs.insert(B <= 3);
   cs.insert(B >= 3);
@@ -165,7 +141,7 @@ test06() {
 }
 
 bool
-test07() {
+test06() {
   Variable A(0);
   Variable B(1);
 
@@ -187,7 +163,7 @@ test07() {
 }
 
 bool
-test08() {
+test07() {
   Variable A(0);
   Variable B(1);
 
@@ -207,7 +183,7 @@ test08() {
 }
 
 bool
-test09() {
+test08() {
   Variable A(0);
   Variable B(1);
 
@@ -231,27 +207,25 @@ test09() {
 }
 
 bool
-test10() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
+test09() {
+  // The zero-dim universe box.
+  TBox box(0);
 
-  TBox box(3);
-  box.add_constraint(A >= 1);
-
-  Poly_Con_Relation rel = box.relation_with((A %= 2) / 0);
+  Congruence c(Linear_Expression(0) == 0);
+  Poly_Con_Relation rel = box.relation_with(c);
 
   print_constraints(box, "*** box ***");
   using namespace IO_Operators;
-  nout << "box.relation_with((A %= 2) / 0) == " << rel << endl;
+  nout << "box.relation_with(0 %= 0) == " << rel << endl;
 
-  Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
+  Poly_Con_Relation known_result
+    = Poly_Con_Relation::is_included() && Poly_Con_Relation::saturates();
 
   return rel == known_result;
 }
 
 bool
-test11() {
+test10() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -272,7 +246,7 @@ test11() {
 }
 
 bool
-test12() {
+test11() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -295,7 +269,7 @@ test12() {
 }
 
 bool
-test13() {
+test12() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -317,7 +291,7 @@ test13() {
 }
 
 bool
-test14() {
+test13() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -332,14 +306,14 @@ test14() {
   using namespace IO_Operators;
   nout << "box.relation_with((A + B %= 1) / 5) == " << rel << endl;
 
-  Poly_Con_Relation known_result = Poly_Con_Relation::is_included()
-    && Poly_Con_Relation::saturates();
+  Poly_Con_Relation known_result
+    = Poly_Con_Relation::is_included() && Poly_Con_Relation::saturates();
 
   return rel == known_result;
 }
 
 bool
-test15() {
+test14() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -361,7 +335,7 @@ test15() {
 }
 
 bool
-test16() {
+test15() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -383,7 +357,7 @@ test16() {
 }
 
 bool
-test17() {
+test16() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -400,6 +374,92 @@ test17() {
   nout << "box.relation_with((A + B %= 1) / 5) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
+
+  return rel == known_result;
+}
+
+bool
+test17() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  TBox box(3);
+  box.add_constraint(3*A >= 1);
+  box.add_constraint(7*A <= 20);
+  box.add_constraint(11*B >= 5);
+  box.add_constraint(B <= 3);
+
+  Poly_Con_Relation rel = box.relation_with((A + B %= 1) / 9);
+
+  print_constraints(box, "*** box ***");
+  using namespace IO_Operators;
+  nout << "box.relation_with((A + B %= 1) / 9) == " << rel << endl;
+
+  Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
+
+  return rel == known_result;
+}
+
+
+bool
+test18() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  TBox box(3);
+  box.add_constraint(3*A >= 1);
+  box.add_constraint(7*A <= 20);
+  box.add_constraint(11*B >= 5);
+  box.add_constraint(B <= 3);
+
+  Poly_Con_Relation rel = box.relation_with((A + B %= 0) / 10);
+
+  print_constraints(box, "*** box ***");
+  using namespace IO_Operators;
+  nout << "box.relation_with((A + B %= 1) / 5) == " << rel << endl;
+
+  Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
+
+  return rel == known_result;
+}
+
+bool
+test19() {
+  Variable A(0);
+  Variable B(1);
+
+  TBox box(1);
+  box.add_constraint(A >= 1);
+
+  try {
+    // This tests the space dimension exception..
+   Poly_Con_Relation rel = box.relation_with((A + B %= 1) / 9);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
+bool
+test20() {
+  // The zero-dim empty box.
+  TBox box(0, EMPTY);
+  Poly_Con_Relation rel = box.relation_with((Linear_Expression(0) %= 1) / 0);
+
+  print_constraints(box, "*** box ***");
+  using namespace IO_Operators;
+  nout << "box.relation_with(0 %= 1) == " << rel << endl;
+
+  Poly_Con_Relation known_result
+    =  Poly_Con_Relation::saturates()
+      && Poly_Con_Relation::is_included()
+      && Poly_Con_Relation::is_disjoint();
 
   return rel == known_result;
 }
@@ -424,4 +484,7 @@ BEGIN_MAIN
   DO_TEST(test15);
   DO_TEST(test16);
   DO_TEST(test17);
+  DO_TEST(test18);
+  DO_TEST(test19);
+  DO_TEST(test20);
 END_MAIN
