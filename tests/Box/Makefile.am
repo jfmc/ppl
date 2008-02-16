@@ -45,7 +45,6 @@ $(top_builddir)/src/libppl.la \
 #closure1
 #generalizedaffineimage1
 #generalizedaffinepreimage1
-#membytes1
 
 # Tests that do not succeed yet (maybe even known result is wrong).
 #ascii_dump_load1
@@ -88,6 +87,7 @@ intersection1 \
 mapspacedims1 \
 max_min1 \
 maxspacedim1 \
+membytes1 \
 minconstraints1 \
 pointsetpowerset1 \
 relations1 relations2 relations3 \
@@ -227,7 +227,7 @@ max_min1_SOURCES = max_min1.cc
 
 maxspacedim1_SOURCES = maxspacedim1.cc
 
-#membytes1_SOURCES = membytes1.cc
+membytes1_SOURCES = membytes1.cc
 
 minconstraints1_SOURCES = minconstraints1.cc
 
