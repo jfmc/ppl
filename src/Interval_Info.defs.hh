@@ -90,7 +90,7 @@ get_bits(T& bits, unsigned int start, unsigned int len) {
   return (bits >> start) & ((static_cast<T>(1) << len) - 1);
 }
 
-}
+} // namespace Interval_NS
 
 using namespace Interval_NS;
 using namespace Boundary_NS;

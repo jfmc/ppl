@@ -135,7 +135,7 @@ f_is_empty_lazy(const T& x) {
     return T_MAYBE;
 }
 
-} // Interval_NS
+} // namespace Interval_NS
 
 inline bool
 is_integer(const char*) {
@@ -409,7 +409,7 @@ inline typename Enable_If<Is_Singleton<From>::value
                           || Is_Interval<From>::value, I_Result>::type
 Interval<To_Boundary, To_Info>::difference_assign(const From& x) {
   assert(f_OK(x));
-  used(x);
+  Parma_Polyhedra_Library::used(x);
   return combine(V_LE, V_GE);
 }
 
