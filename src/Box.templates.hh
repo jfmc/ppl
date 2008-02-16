@@ -804,13 +804,10 @@ Box<Interval>::relation_with(const Congruence& cg) const {
       && Poly_Con_Relation::is_included()
       && Poly_Con_Relation::is_disjoint();
 
-  if (space_dim == 0) {
+   if (space_dim == 0) {
     if (cg.is_trivial_false())
       return Poly_Con_Relation::is_disjoint();
-    else if (cg.is_equality() || cg.inhomogeneous_term() == 0)
-      return Poly_Con_Relation::saturates()
-	&& Poly_Con_Relation::is_included();
-    else if (cg.inhomogeneous_term() % cg.modulus() == 0)
+    else
       return Poly_Con_Relation::saturates()
 	&& Poly_Con_Relation::is_included();
   }

@@ -142,22 +142,17 @@ test05() {
 
 bool
 test06() {
-  Variable A(0);
-  Variable B(1);
 
-  Constraint_System cs;
-  cs.insert(A >= 1);
-  cs.insert(B >= 0);
+  TBox box(0);
 
-  TBox box(cs);
-
-  Poly_Con_Relation rel = box.relation_with(A + 2*B %= 1);
+  Poly_Con_Relation rel = box.relation_with((Linear_Expression(1) %= 0) / 2);
 
   print_constraints(box, "*** box ***");
   using namespace IO_Operators;
-  nout << "box.relation_with(A + 2*B %= 1" << rel << endl;
+  nout << "box.relation_with((Linear_Expression(1) %= 0) / 2) == "
+       << rel << endl;
 
-  Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
+  Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
 
   return rel == known_result;
 }
