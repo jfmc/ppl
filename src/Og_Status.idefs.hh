@@ -31,7 +31,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 //! A conjunctive assertion about a Octagonal_Shape<T> object.
 /*!
   The assertions supported are:
-  - <EM>zero-dim universe</EM>: the polyhedron is the zero-dimension
+  - <EM>zero-dim universe</EM>: the polyhedron is the zero-dimensional
     vector space \f$\Rset^0 = \{\cdot\}\f$;
   - <EM>empty</EM>: the polyhedron is the empty set;
   - <EM>strongly closed</EM>: the Octagonal_Shape object is strongly

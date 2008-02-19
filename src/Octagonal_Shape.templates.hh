@@ -181,7 +181,7 @@ Octagonal_Shape<T>::Octagonal_Shape(const Polyhedron& ph,
 	div_round_up(matrix[2*i][2*i+1], num, den);
       }
     }
-    status.set_strongly_closed();
+    set_strongly_closed();
     assert(OK());
     return;
   }
@@ -361,7 +361,7 @@ Octagonal_Shape<T>::Octagonal_Shape(const Generator_System& gs)
       break;
     }
   }
-  status.set_strongly_closed();
+  set_strongly_closed();
   assert(OK());
 }
 
@@ -388,10 +388,9 @@ Octagonal_Shape<T>::add_constraint(const Constraint& c) {
 
   if (num_vars == 0) {
     // Dealing with a trivial constraint.
-    if (c.is_equality() && c.inhomogeneous_term() != 0)
+    if ((c.is_equality() && c.inhomogeneous_term() != 0)
+        || c.inhomogeneous_term() < 0)
       set_empty();
-    if (c.inhomogeneous_term() < 0)
-      status.set_empty();
     return;
   }
 
@@ -433,7 +432,7 @@ Octagonal_Shape<T>::add_constraint(const Constraint& c) {
 
   // This method does not preserve closure.
   if (is_oct_changed && marked_strongly_closed())
-    status.reset_strongly_closed();
+    reset_strongly_closed();
   assert(OK());
 }
 
@@ -553,7 +552,7 @@ Octagonal_Shape<T>::concatenate_assign(const Octagonal_Shape& y) {
 
   // The concatenation doesn't preserve the closure.
   if (marked_strongly_closed())
-    status.reset_strongly_closed();
+    reset_strongly_closed();
   assert(OK());
 }
 
@@ -709,7 +708,7 @@ Octagonal_Shape<T>::contains_integer_point() const {
   // tight as those in *this and then recheck for emptyness, also
   // exploiting tight-coherence.
   Octagonal_Shape<mpz_class> oct_z(space_dim);
-  oct_z.status.reset_strongly_closed();
+  oct_z.reset_strongly_closed();
 
   typedef Octagonal_Shape<mpz_class>::N Z;
   DIRTY_TEMP(N, tmp);
@@ -735,7 +734,7 @@ Octagonal_Shape<T>::contains_integer_point() const {
   // Restore strong closure.
   if (all_integers)
     // oct_z unchanged, so it is still strongly closed.
-    oct_z.status.set_strongly_closed();
+    oct_z.set_strongly_closed();
   else {
     // oct_z changed: recompute strong closure.
     oct_z.strong_closure_assign();
@@ -1631,7 +1630,7 @@ Octagonal_Shape<T>::strong_closure_assign() const {
   for (Row_Iterator i = m_begin; i != m_end; ++i) {
     N& x_i_i = (*i)[i.index()];
     if (sgn(x_i_i) < 0) {
-      x.status.set_empty();
+      x.set_empty();
       return;
     }
     else {
@@ -1644,7 +1643,7 @@ Octagonal_Shape<T>::strong_closure_assign() const {
   // Step 2: we enforce the strong coherence.
   x.strong_coherence_assign();
   // The octagon is not empty and it is now strongly closed.
-  x.status.set_strongly_closed();
+  x.set_strongly_closed();
 }
 
 template <typename T>
@@ -1823,7 +1822,7 @@ Octagonal_Shape<T>
   for (Row_Iterator i = m_begin; i != m_end; ++i) {
     N& x_i_i = (*i)[i.index()];
     if (sgn(x_i_i) < 0) {
-      x.status.set_empty();
+      x.set_empty();
       return;
     }
     else {
@@ -1836,7 +1835,7 @@ Octagonal_Shape<T>
   // Step 3: we enforce the strong coherence.
   x.strong_coherence_assign();
   // The octagon is not empty and it is now strongly closed.
-  x.status.set_strongly_closed();
+  x.set_strongly_closed();
 }
 
 template <typename T>
@@ -2065,7 +2064,7 @@ Octagonal_Shape<T>::strong_reduction_assign() const {
   }
 
   Octagonal_Shape<T>& x = const_cast<Octagonal_Shape<T>&>(*this);
-  aux.status.reset_strongly_closed();
+  aux.reset_strongly_closed();
 
 #ifndef NDEBUG
   {
@@ -2195,7 +2194,7 @@ Octagonal_Shape<T>::add_space_dimensions_and_embed(dimension_type m) {
   // If `*this' was the zero-dim space universe octagon,
   // then we can set the strongly closure flag.
   if (was_zero_dim_univ)
-    status.set_strongly_closed();
+    set_strongly_closed();
 
   assert(OK());
 }
@@ -2224,7 +2223,7 @@ Octagonal_Shape<T>::add_space_dimensions_and_project(dimension_type m) {
   }
 
   if (marked_strongly_closed())
-    status.reset_strongly_closed();
+    reset_strongly_closed();
   assert(OK());
 }
 
@@ -2429,7 +2428,7 @@ Octagonal_Shape<T>::intersection_assign(const Octagonal_Shape& y) {
 
   // This method not preserve the closure.
   if (changed && marked_strongly_closed())
-    status.reset_strongly_closed();
+    reset_strongly_closed();
   assert(OK());
 }
 
@@ -2502,7 +2501,7 @@ assign_r(	elem, PLUS_INFINITY, ROUND_NOT_NEEDED);
     }
   }
 
-  status.reset_strongly_closed();
+  reset_strongly_closed();
   assert(OK());
 }
 
@@ -2583,7 +2582,7 @@ Octagonal_Shape<T>
   // In general, adding a constraint does not preserve the strongly
   // closure of the octagon.
   if (is_oct_changed && limiting_octagon.marked_strongly_closed())
-    limiting_octagon.status.reset_strongly_closed();
+    limiting_octagon.reset_strongly_closed();
 }
 
 template <typename T>
@@ -2694,7 +2693,7 @@ Octagonal_Shape<T>::BHMZ05_widening_assign(const Octagonal_Shape& y,
     if (*j != elem)
       assign_r(elem, PLUS_INFINITY, ROUND_NOT_NEEDED);
   }
-  status.reset_strongly_closed();
+  reset_strongly_closed();
   assert(OK());
 }
 
@@ -2793,7 +2792,7 @@ Octagonal_Shape<T>::CC76_narrowing_assign(const Octagonal_Shape& y) {
   }
 
   if (is_oct_changed && marked_strongly_closed())
-    status.reset_strongly_closed();
+    reset_strongly_closed();
   assert(OK());
 }
 
@@ -3360,7 +3359,7 @@ Octagonal_Shape<T>::refine(const Variable var,
 	}
 
 	// In the following, strong closure will be definitely lost.
-	status.reset_strongly_closed();
+	reset_strongly_closed();
 
 	// Exploit the upper approximation, if possible.
 	if (pinf_count <= 1) {
@@ -3750,7 +3749,7 @@ Octagonal_Shape<T>::affine_image(const Variable var,
 	    mul2exp_assign_r(minus_d, minus_d, 1, ROUND_IGNORE);
 	    add_assign_r(m_v_cv, m_v_cv, minus_d, ROUND_UP);
  	  }
-	  status.reset_strongly_closed();
+	  reset_strongly_closed();
 	}
 
 	else {
@@ -3764,7 +3763,7 @@ Octagonal_Shape<T>::affine_image(const Variable var,
 	  // Swap the unary constraints on `var'.
 	  std::swap(m_v_cv, m_cv_v);
 	  // Strong closure is not preserved.
-	  status.reset_strongly_closed();
+	  reset_strongly_closed();
 	  if (b != 0) {
 	    // Translate all the constraints on `var' adding or
 	    // subtracting the value `b/denominator'.
@@ -3951,7 +3950,7 @@ Octagonal_Shape<T>::affine_image(const Variable var,
   }
 
   // In the following, strong closure will be definitely lost.
-  status.reset_strongly_closed();
+  reset_strongly_closed();
 
   // Exploit the upper approximation, if possible.
   if (pos_pinf_count <= 1) {
@@ -4240,7 +4239,7 @@ Octagonal_Shape<T>
     // Remove all constraints on `var'.
     forget_all_octagonal_constraints(var_id);
     // Strong closure is lost.
-    status.reset_strongly_closed();
+    reset_strongly_closed();
     switch (relsym) {
     case LESS_OR_EQUAL:
       // Add the constraint `var <= b/denominator'.
@@ -4273,7 +4272,7 @@ Octagonal_Shape<T>
 	  if (w_id == var_id) {
 	    // Here `expr' is of the form: +/- denominator * v + b.
 	    // Strong closure is not preserved.
-	    status.reset_strongly_closed();
+	    reset_strongly_closed();
 	    if (w_coeff == denominator) {
 	      // Translate all the constraints of the form `v - w <= cost'
 	      // into the constraint `v - w <= cost + b/denominator';
@@ -4341,7 +4340,7 @@ Octagonal_Shape<T>
 	  if (w_id == var_id) {
 	    // Here `expr' is of the form: +/- denominator * v + b.
 	    // Strong closure is not preserved.
-	    status.reset_strongly_closed();
+	    reset_strongly_closed();
 	    if (w_coeff == denominator) {
 	      // Translate each constraint `w - v <= cost'
 	      // into the constraint `w - v <= cost - b/denominator';
@@ -4490,7 +4489,7 @@ Octagonal_Shape<T>
       }
       // Remove all constraints on `v'.
       forget_all_octagonal_constraints(var_id);
-      status.reset_strongly_closed();
+      reset_strongly_closed();
       // Return immediately if no approximation could be computed.
       if (pinf_count > 1) {
 	assert(OK());
@@ -4585,7 +4584,7 @@ Octagonal_Shape<T>
 
       // Remove all constraints on `var'.
       forget_all_octagonal_constraints(var_id);
-      status.reset_strongly_closed();
+      reset_strongly_closed();
       // Return immediately if no approximation could be computed.
       if (pinf_count > 1) {
 	assert(OK());
@@ -5078,7 +5077,7 @@ Octagonal_Shape<T>::bounded_affine_image(const Variable var,
   }
 
   // In the following, strong closure will be definitely lost.
-  status.reset_strongly_closed();
+  reset_strongly_closed();
 
   // Exploit the lower approximation, if possible.
   if (neg_pinf_count <= 1) {
@@ -5610,7 +5609,7 @@ Octagonal_Shape<T>::expand_space_dimension(Variable var, dimension_type m) {
   // In general, adding a constraint does not preserve the strong closure
   // of the octagon.
   if (marked_strongly_closed())
-    status.reset_strongly_closed();
+    reset_strongly_closed();
   assert(OK());
 }
 
@@ -5970,7 +5969,7 @@ Octagonal_Shape<T>::OK() const {
   // Check whether the closure information is legal.
   if (marked_strongly_closed()) {
     Octagonal_Shape x = *this;
-    x.status.reset_strongly_closed();
+    x.reset_strongly_closed();
     x.strong_closure_assign();
     if (x.matrix != matrix) {
 #ifndef NDEBUG

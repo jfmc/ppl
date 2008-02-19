@@ -1653,6 +1653,9 @@ private:
   //! The status flags to keep track of the internal state.
   Status status;
 
+  //! Returns <CODE>true</CODE> if the OS is the zero-dimensional universe.
+  bool marked_zero_dim_univ() const;
+
   //! Returns <CODE>true</CODE> if the OS is known to be empty.
   /*!
     The return value <CODE>false</CODE> does not necessarily
@@ -1674,6 +1677,12 @@ private:
 
   //! Turns \p *this into an empty OS.
   void set_empty();
+
+  //! Marks \p *this as strongly closed.
+  void set_strongly_closed();
+
+  //! Marks \p *this as possibly not strongly closed.
+  void reset_strongly_closed();
 
   N& matrix_at(dimension_type i, dimension_type j);
   const N& matrix_at(dimension_type i, dimension_type j) const;
