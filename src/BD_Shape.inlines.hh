@@ -49,22 +49,14 @@ BD_Shape<T>::max_space_dimension() {
 
 template <typename T>
 inline bool
+BD_Shape<T>::marked_zero_dim_univ() const {
+  return status.test_zero_dim_univ();
+}
+
+template <typename T>
+inline bool
 BD_Shape<T>::marked_empty() const {
   return status.test_empty();
-}
-
-template <typename T>
-inline void
-BD_Shape<T>::set_empty() {
-  status.set_empty();
-  assert(OK());
-  assert(marked_empty());
-}
-
-template <typename T>
-inline void
-BD_Shape<T>::set_zero_dim_univ() {
-  status.set_zero_dim_univ();
 }
 
 template <typename T>
@@ -80,6 +72,42 @@ BD_Shape<T>::marked_shortest_path_reduced() const {
 }
 
 template <typename T>
+inline void
+BD_Shape<T>::set_zero_dim_univ() {
+  status.set_zero_dim_univ();
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::set_empty() {
+  status.set_empty();
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::set_shortest_path_closed() {
+  status.set_shortest_path_closed();
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::set_shortest_path_reduced() {
+  status.set_shortest_path_reduced();
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::reset_shortest_path_closed() {
+  status.reset_shortest_path_closed();
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::reset_shortest_path_reduced() {
+  status.reset_shortest_path_reduced();
+}
+
+template <typename T>
 inline
 BD_Shape<T>::BD_Shape(const dimension_type num_dimensions,
 		      const Degenerate_Element kind)
@@ -89,9 +117,9 @@ BD_Shape<T>::BD_Shape(const dimension_type num_dimensions,
   else {
     if (num_dimensions > 0)
       // A (non zero-dim) universe BDS is closed.
-      status.set_shortest_path_closed();
-    assert(OK());
+      set_shortest_path_closed();
   }
+  assert(OK());
 }
 
 template <typename T>
@@ -110,7 +138,7 @@ BD_Shape<T>::BD_Shape(const BD_Shape<U>& y)
   // TODO: handle flags properly, possibly taking special cases into account.
   if (y.marked_empty())
     set_empty();
-  else if (y.status.test_zero_dim_univ())
+  else if (y.marked_zero_dim_univ())
     set_zero_dim_univ();
 }
 
@@ -239,7 +267,7 @@ BD_Shape<T>::BD_Shape(const Constraint_System& cs)
   : dbm(cs.space_dimension() + 1), status(), redundancy_dbm() {
   if (cs.space_dimension() > 0)
     // A (non zero-dim) universe BDS is shortest-path closed.
-    status.set_shortest_path_closed();
+    set_shortest_path_closed();
   add_constraints(cs);
 }
 
@@ -250,7 +278,7 @@ BD_Shape<T>::BD_Shape(const Box<Interval>& box)
   : dbm(box.space_dimension() + 1), status(), redundancy_dbm() {
   if (box.space_dimension() > 0)
     // A (non zero-dim) universe BDS is shortest-path closed.
-    status.set_shortest_path_closed();
+    set_shortest_path_closed();
   add_constraints(box.constraints());
   return;
 }
@@ -261,7 +289,7 @@ BD_Shape<T>::BD_Shape(const Grid& grid)
   : dbm(grid.space_dimension() + 1), status(), redundancy_dbm() {
   if (grid.space_dimension() > 0)
     // A (non zero-dim) universe BDS is shortest-path closed.
-    status.set_shortest_path_closed();
+    set_shortest_path_closed();
   add_congruences(grid.congruences());
   return;
 }
@@ -273,7 +301,7 @@ BD_Shape<T>::BD_Shape(const Octagonal_Shape<U>& os)
   : dbm(os.space_dimension() + 1), status(), redundancy_dbm() {
   if (os.space_dimension() > 0)
     // A (non zero-dim) universe BDS is shortest-path closed.
-    status.set_shortest_path_closed();
+    set_shortest_path_closed();
   add_constraints(os.constraints());
   return;
 }
@@ -622,7 +650,7 @@ BD_Shape<T>::add_dbm_constraint(const dimension_type i,
   if (dbm_ij > k) {
     dbm_ij = k;
     if (marked_shortest_path_closed())
-      status.reset_shortest_path_closed();
+      reset_shortest_path_closed();
   }
 }
 
@@ -720,7 +748,7 @@ BD_Shape<T>::remove_higher_space_dimensions(const dimension_type new_dim) {
   // Shortest-path closure is maintained.
   // TODO: see whether or not reduction can be (efficiently!) maintained too.
   if (marked_shortest_path_reduced())
-    status.reset_shortest_path_reduced();
+    reset_shortest_path_reduced();
 
   // If we removed _all_ dimensions from a non-empty BDS,
   // the zero-dim universe BDS has been obtained.

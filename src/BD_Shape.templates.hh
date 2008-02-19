@@ -167,7 +167,7 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
       break;
     }
   }
-  status.set_shortest_path_closed();
+  set_shortest_path_closed();
   assert(OK());
 }
 
@@ -277,7 +277,7 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
 	div_round_up(dbm[i][0], num, den);
       }
     }
-    status.set_shortest_path_closed();
+    set_shortest_path_closed();
     assert(OK());
     return;
   }
@@ -376,7 +376,7 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
   // In general, adding a constraint does not preserve the shortest-path
   // closure or reduction of the bounded difference shape.
   if (changed && marked_shortest_path_closed())
-    status.reset_shortest_path_closed();
+    reset_shortest_path_closed();
   assert(OK());
 }
 
@@ -436,7 +436,7 @@ BD_Shape<T>::concatenate_assign(const BD_Shape& y) {
   }
 
   if (marked_shortest_path_closed())
-    status.reset_shortest_path_closed();
+    reset_shortest_path_closed();
   assert(OK());
 }
 
@@ -606,7 +606,7 @@ BD_Shape<T>::contains_integer_point() const {
   // those in *this and then recheck for emptyness.
   BD_Shape<mpz_class> bds_z(space_dim);
   typedef BD_Shape<mpz_class>::N Z;
-  bds_z.status.reset_shortest_path_closed();
+  bds_z.reset_shortest_path_closed();
   DIRTY_TEMP(N, tmp);
   bool all_integers = true;
   for (dimension_type i = space_dim + 1; i-- > 0; ) {
@@ -1397,7 +1397,7 @@ BD_Shape<T>::shortest_path_closure_assign() const {
   for (dimension_type h = num_dimensions + 1; h-- > 0; ) {
     N& x_dbm_hh = x.dbm[h][h];
     if (sgn(x_dbm_hh) < 0) {
-      x.status.set_empty();
+      x.set_empty();
       return;
     }
     else {
@@ -1408,7 +1408,7 @@ BD_Shape<T>::shortest_path_closure_assign() const {
   }
 
   // The BDS is not empty and it is now shortest-path closed.
-  x.status.set_shortest_path_closed();
+  x.set_shortest_path_closed();
 }
 
 template <typename T>
@@ -1504,7 +1504,7 @@ BD_Shape<T>::shortest_path_reduction_assign() const {
   // it might change its internal representation.
   BD_Shape<T>& x = const_cast<BD_Shape<T>&>(*this);
   std::swap(x.redundancy_dbm, redundancy);
-  x.status.set_shortest_path_reduced();
+  x.set_shortest_path_reduced();
 
   assert(is_shortest_path_reduced());
 }
@@ -1544,7 +1544,7 @@ BD_Shape<T>::bds_hull_assign(const BD_Shape& y) {
   // Shortest-path closure is maintained (if it was holding).
   // TODO: see whether reduction can be (efficiently!) maintained too.
   if (marked_shortest_path_reduced())
-    status.reset_shortest_path_reduced();
+    reset_shortest_path_reduced();
   assert(OK());
 }
 
@@ -1641,12 +1641,12 @@ BD_Shape<T>::add_space_dimensions_and_embed(const dimension_type m) {
   // Shortest-path closure is maintained (if it was holding).
   // TODO: see whether reduction can be (efficiently!) maintained too.
   if (marked_shortest_path_reduced())
-    status.reset_shortest_path_reduced();
+    reset_shortest_path_reduced();
 
   // If `*this' was the zero-dim space universe BDS,
   // the we can set the shortest-path closure flag.
   if (was_zero_dim_univ)
-    status.set_shortest_path_closed();
+    set_shortest_path_closed();
 
   assert(OK());
 }
@@ -1672,7 +1672,7 @@ BD_Shape<T>::add_space_dimensions_and_project(const dimension_type m) {
 	  if (i != j)
 	    assign_r(dbm_i[j], 0, ROUND_NOT_NEEDED);
       }
-      status.set_shortest_path_closed();
+      set_shortest_path_closed();
     }
     assert(OK());
     return;
@@ -1693,7 +1693,7 @@ BD_Shape<T>::add_space_dimensions_and_project(const dimension_type m) {
   }
 
   if (marked_shortest_path_closed())
-    status.reset_shortest_path_closed();
+    reset_shortest_path_closed();
   assert(OK());
 }
 
@@ -1740,7 +1740,7 @@ BD_Shape<T>::remove_space_dimensions(const Variables_Set& to_be_removed) {
   // Shortest-path closure is maintained.
   // TODO: see whether reduction can be (efficiently!) maintained too.
   if (marked_shortest_path_reduced())
-    status.reset_shortest_path_reduced();
+    reset_shortest_path_reduced();
 
   // For each variable to remove, we fill the corresponding column and
   // row by shifting respectively left and above those
@@ -1812,7 +1812,7 @@ BD_Shape<T>::map_space_dimensions(const Partial_Function& pfunc) {
   // Shortest-path closure is maintained (if it was holding).
   // TODO: see whether reduction can be (efficiently!) maintained too.
   if (marked_shortest_path_reduced())
-    status.reset_shortest_path_reduced();
+    reset_shortest_path_reduced();
 
   // We create a new matrix with the new space dimension.
   DB_Matrix<N> x(new_space_dim+1);
@@ -1891,7 +1891,7 @@ BD_Shape<T>::intersection_assign(const BD_Shape& y) {
   }
 
   if (changed && marked_shortest_path_closed())
-    status.reset_shortest_path_closed();
+    reset_shortest_path_closed();
   assert(OK());
 }
 
@@ -1965,7 +1965,7 @@ BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y,
       }
     }
   }
-  status.reset_shortest_path_closed();
+  reset_shortest_path_closed();
   assert(OK());
 }
 
@@ -2023,7 +2023,7 @@ BD_Shape<T>::get_limiting_shape(const Constraint_System& cs,
   // In general, adding a constraint does not preserve the shortest-path
   // closure of the bounded difference shape.
   if (changed && limiting_shape.marked_shortest_path_closed())
-    limiting_shape.status.reset_shortest_path_closed();
+    limiting_shape.reset_shortest_path_closed();
 }
 
 template <typename T>
@@ -2141,7 +2141,7 @@ BD_Shape<T>::BHMZ05_widening_assign(const BD_Shape& y, unsigned* tp) {
   // even though the dbm is still in reduced form. However, the
   // current implementation invariant requires that any reduced dbm
   // is closed too.
-  status.reset_shortest_path_closed();
+  reset_shortest_path_closed();
   assert(OK());
 }
 
@@ -2245,7 +2245,7 @@ BD_Shape<T>::CC76_narrowing_assign(const BD_Shape& y) {
     }
   }
   if (changed && marked_shortest_path_closed())
-    status.reset_shortest_path_closed();
+    reset_shortest_path_closed();
   assert(OK());
 }
 
@@ -2608,7 +2608,7 @@ BD_Shape<T>::refine(const Variable var,
       }
 
       // In the following, shortest-path closure will be definitely lost.
-      status.reset_shortest_path_closed();
+      reset_shortest_path_closed();
 
       // Before computing quotients, the denominator should be approximated
       // towards zero. Since `sc_den' is known to be positive, this amounts to
@@ -2842,7 +2842,7 @@ BD_Shape<T>::affine_image(const Variable var,
     forget_all_dbm_constraints(v);
     // Shortest-path closure is preserved, but not reduction.
     if (marked_shortest_path_reduced())
-      status.reset_shortest_path_reduced();
+      reset_shortest_path_reduced();
     // Add the constraint `var == b/denominator'.
     add_dbm_constraint(0, v, b, denominator);
     add_dbm_constraint(v, 0, b, minus_den);
@@ -2885,7 +2885,7 @@ BD_Shape<T>::affine_image(const Variable var,
 	  // Swap the unary constraints on `var'.
 	  std::swap(dbm[v][0], dbm[0][v]);
 	  // Shortest-path closure is not preserved.
-	  status.reset_shortest_path_closed();
+	  reset_shortest_path_closed();
 	  if (b != 0) {
 	    // Translate the unary constraints on `var',
 	    // adding or subtracting the value `b/denominator'.
@@ -2907,7 +2907,7 @@ BD_Shape<T>::affine_image(const Variable var,
 	forget_all_dbm_constraints(v);
 	// Shortest-path closure is preserved, but not reduction.
 	if (marked_shortest_path_reduced())
-	  status.reset_shortest_path_reduced();
+	  reset_shortest_path_reduced();
 	if (a == denominator) {
 	  // Add the new constraint `v - w == b/denominator'.
 	  add_dbm_constraint(w, v, b, denominator);
@@ -2923,7 +2923,7 @@ BD_Shape<T>::affine_image(const Variable var,
 	    DIRTY_TEMP(N, d);
 	    div_round_up(d, b, denominator);
 	    add_assign_r(dbm[0][v], d, dbm_w0, ROUND_UP);
-	    status.reset_shortest_path_closed();
+	    reset_shortest_path_closed();
 	  }
 	  const N& dbm_0w = dbm[0][w];
 	  if (!is_plus_infinity(dbm_0w)) {
@@ -2931,7 +2931,7 @@ BD_Shape<T>::affine_image(const Variable var,
 	    DIRTY_TEMP(N, c);
 	    div_round_up(c, b, minus_den);
 	    add_assign_r(dbm[v][0], dbm_0w, c, ROUND_UP);
-	    status.reset_shortest_path_closed();
+	    reset_shortest_path_closed();
 	  }
 	}
       }
@@ -3045,7 +3045,7 @@ BD_Shape<T>::affine_image(const Variable var,
   forget_all_dbm_constraints(v);
   // Shortest-path closure is maintained, but not reduction.
   if (marked_shortest_path_reduced())
-    status.reset_shortest_path_reduced();
+    reset_shortest_path_reduced();
   // Return immediately if no approximation could be computed.
   if (pos_pinf_count > 1 && neg_pinf_count > 1) {
     assert(OK());
@@ -3053,7 +3053,7 @@ BD_Shape<T>::affine_image(const Variable var,
   }
 
   // In the following, shortest-path closure will be definitely lost.
-  status.reset_shortest_path_closed();
+  reset_shortest_path_closed();
 
   // Exploit the upper approximation, if possible.
   if (pos_pinf_count <= 1) {
@@ -3171,7 +3171,7 @@ BD_Shape<T>::affine_preimage(const Variable var,
     forget_all_dbm_constraints(v);
     // Shortest-path closure is preserved, but not reduction.
     if (marked_shortest_path_reduced())
-      status.reset_shortest_path_reduced();
+      reset_shortest_path_reduced();
     assert(OK());
     return;
   }
@@ -3190,7 +3190,7 @@ BD_Shape<T>::affine_preimage(const Variable var,
 	forget_all_dbm_constraints(v);
 	// Shortest-path closure is preserved, but not reduction.
 	if (marked_shortest_path_reduced())
-	  status.reset_shortest_path_reduced();
+	  reset_shortest_path_reduced();
 	assert(OK());
       }
       return;
@@ -3213,7 +3213,7 @@ BD_Shape<T>::affine_preimage(const Variable var,
     forget_all_dbm_constraints(v);
     // Shortest-path closure is preserved, but not reduction.
     if (marked_shortest_path_reduced())
-      status.reset_shortest_path_reduced();
+      reset_shortest_path_reduced();
   }
   assert(OK());
 }
@@ -3337,7 +3337,7 @@ BD_Shape<T>
 	    DIRTY_TEMP(N, d);
 	    div_round_up(d, b, denominator);
 	    add_assign_r(dbm[0][v], d, dbm_w0, ROUND_UP);
-	    status.reset_shortest_path_closed();
+	    reset_shortest_path_closed();
 	  }
 	}
 	assert(OK());
@@ -3429,7 +3429,7 @@ BD_Shape<T>
   }
 
   // In the following, shortest-path closure will be definitely lost.
-  status.reset_shortest_path_closed();
+  reset_shortest_path_closed();
 
   // Exploit the upper approximation, if possible.
   if (pos_pinf_count <= 1) {
@@ -3612,7 +3612,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
     // Remove all constraints on `var'.
     forget_all_dbm_constraints(v);
     // Both shortest-path closure and reduction are lost.
-    status.reset_shortest_path_closed();
+    reset_shortest_path_closed();
     switch (relsym) {
     case LESS_OR_EQUAL:
       // Add the constraint `var <= b/denominator'.
@@ -3644,7 +3644,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	if (w == v) {
 	  // `expr' is of the form: a*v + b.
 	  // Shortest-path closure and reduction are not preserved.
-	  status.reset_shortest_path_closed();
+	  reset_shortest_path_closed();
 	  if (a == denominator) {
 	    // Translate each constraint `v - w <= dbm_wv'
 	    // into the constraint `v - w <= dbm_wv + b/denominator';
@@ -3673,7 +3673,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	  forget_all_dbm_constraints(v);
 	  // Shortest-path closure is preserved, but not reduction.
 	  if (marked_shortest_path_reduced())
-	    status.reset_shortest_path_reduced();
+	    reset_shortest_path_reduced();
 	  if (a == denominator)
 	    // Add the new constraint `v - w <= b/denominator'.
 	    add_dbm_constraint(w, v, d);
@@ -3686,7 +3686,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	      // Add the constraint `v <= b/denominator - lb_w'.
 	      add_assign_r(dbm_0[v], d, dbm_w0, ROUND_UP);
 	      // Shortest-path closure is not preserved.
-	      status.reset_shortest_path_closed();
+	      reset_shortest_path_closed();
 	    }
 	  }
 	}
@@ -3697,7 +3697,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	if (w == v) {
 	  // `expr' is of the form: a*w + b.
 	  // Shortest-path closure and reduction are not preserved.
-	  status.reset_shortest_path_closed();
+	  reset_shortest_path_closed();
 	  if (a == denominator) {
 	    // Translate each constraint `w - v <= dbm_vw'
 	    // into the constraint `w - v <= dbm_vw - b/denominator';
@@ -3726,7 +3726,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	  forget_all_dbm_constraints(v);
 	  // Shortest-path closure is preserved, but not reduction.
 	  if (marked_shortest_path_reduced())
-	    status.reset_shortest_path_reduced();
+	    reset_shortest_path_reduced();
 	  if (a == denominator)
 	    // Add the new constraint `v - w >= b/denominator',
 	    // i.e., `w - v <= -b/denominator'.
@@ -3741,7 +3741,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	      // Add the constraint `-v <= ub_w - b/denominator'.
 	      add_assign_r(dbm_v[0], dbm_0w, d, ROUND_UP);
 	      // Shortest-path closure is not preserved.
-	      status.reset_shortest_path_closed();
+	      reset_shortest_path_closed();
 	    }
 	  }
 	}
@@ -3825,7 +3825,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
     forget_all_dbm_constraints(v);
     // Shortest-path closure is preserved, but not reduction.
     if (marked_shortest_path_reduced())
-      status.reset_shortest_path_reduced();
+      reset_shortest_path_reduced();
     // Return immediately if no approximation could be computed.
     if (pinf_count > 1) {
       assert(OK());
@@ -3891,7 +3891,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
     forget_all_dbm_constraints(v);
     // Shortest-path closure is preserved, but not reduction.
     if (marked_shortest_path_reduced())
-      status.reset_shortest_path_reduced();
+      reset_shortest_path_reduced();
     // Return immediately if no approximation could be computed.
     if (pinf_count > 1) {
       assert(OK());
@@ -4194,7 +4194,7 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
   forget_all_dbm_constraints(v);
   // Shortest-path closure is preserved, but not reduction.
   if (marked_shortest_path_reduced())
-    status.reset_shortest_path_reduced();
+    reset_shortest_path_reduced();
   assert(OK());
 }
 
@@ -4560,7 +4560,7 @@ BD_Shape<T>::expand_space_dimension(Variable var, dimension_type m) {
   // In general, adding a constraint does not preserve the shortest-path
   // closure or reduction of the bounded difference shape.
   if (marked_shortest_path_closed())
-    status.reset_shortest_path_closed();
+    reset_shortest_path_closed();
   assert(OK());
 }
 
@@ -4793,7 +4793,7 @@ BD_Shape<T>::OK() const {
   // Check whether the shortest-path closure information is legal.
   if (marked_shortest_path_closed()) {
     BD_Shape x = *this;
-    x.status.reset_shortest_path_closed();
+    x.reset_shortest_path_closed();
     x.shortest_path_closure_assign();
     if (x.dbm != dbm) {
 #ifndef NDEBUG
@@ -4820,7 +4820,7 @@ BD_Shape<T>::OK() const {
 	}
 
     BD_Shape x = *this;
-    x.status.reset_shortest_path_reduced();
+    x.reset_shortest_path_reduced();
     x.shortest_path_reduction_assign();
     if (x.redundancy_dbm != redundancy_dbm) {
 #ifndef NDEBUG

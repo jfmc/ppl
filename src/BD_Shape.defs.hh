@@ -1679,8 +1679,15 @@ private:
   //! A matrix indicating which constraints are redundant.
   Bit_Matrix redundancy_dbm;
 
-  //! Returns <CODE>true</CODE> if the BDS is known to be empty.
-  /*!
+  /*! \brief
+    Returns <CODE>true</CODE> if the BDS is the zero-dimensional
+    universe box.
+  */
+  bool marked_zero_dim_univ() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if the BDS is known to be empty.
+
     The return value <CODE>false</CODE> does not necessarily
     implies that \p *this is non-empty.
   */
@@ -1709,6 +1716,18 @@ private:
 
   //! Turns \p *this into an zero-dimensional universe BDS.
   void set_zero_dim_univ();
+
+  //! Marks \p *this as shortest-path closed.
+  void set_shortest_path_closed();
+
+  //! Marks \p *this as shortest-path closed.
+  void set_shortest_path_reduced();
+
+  //! Marks \p *this as possibly not shortest-path closed.
+  void reset_shortest_path_closed();
+
+  //! Marks \p *this as possibly not shortest-path reduced.
+  void reset_shortest_path_reduced();
 
   //! Assigns to <CODE>this->dbm</CODE> its shortest-path closure.
   void shortest_path_closure_assign() const;
