@@ -1679,10 +1679,7 @@ private:
   //! A matrix indicating which constraints are redundant.
   Bit_Matrix redundancy_dbm;
 
-  /*! \brief
-    Returns <CODE>true</CODE> if the BDS is the zero-dimensional
-    universe box.
-  */
+  //! Returns <CODE>true</CODE> if the BDS is the zero-dimensional universe.
   bool marked_zero_dim_univ() const;
 
   /*! \brief
