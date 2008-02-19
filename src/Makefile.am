@@ -199,6 +199,7 @@ Interval.defs.hh \
 Interval.inlines.hh \
 Interval.templates.hh \
 Box.defs.hh \
+Box_Status.inlines.hh \
 Box.inlines.hh \
 Box.templates.hh \
 Rational_Interval.hh \
@@ -321,6 +322,7 @@ algorithms.hh
 NESTED_INCLUDE_FILES = \
 Ph_Status.idefs.hh \
 Grid_Status.idefs.hh \
+Box_Status.idefs.hh \
 BDS_Status.idefs.hh \
 Og_Status.idefs.hh
 
