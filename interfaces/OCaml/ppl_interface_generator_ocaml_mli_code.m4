@@ -1,3 +1,4 @@
+dnl  -*- Tuareg -*-
 m4_divert(-1)
 
 dnl This m4 file contains the program code for generating ppl_ocaml.mli
@@ -40,7 +41,8 @@ val ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s:
 m4_define(`ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_code',
 `dnl
 val ppl_@TOPOLOGY@@CLASS@_relation_with_@RELATION_REPRESENT@:
-      @LTOPOLOGY@@LCLASS@ -> linear_@RELATION_REPRESENT@ -> poly_@ALT_RELATION_REPRESENT@_relation list
+  @LTOPOLOGY@@LCLASS@ -> linear_@RELATION_REPRESENT@
+  -> poly_@ALT_RELATION_REPRESENT@_relation list
 
 ')
 
@@ -116,7 +118,7 @@ val ppl_@TOPOLOGY@@CLASS@_@BINOP@:
 m4_define(`ppl_@CLASS@_@BINMINOP@_code',
 `dnl
 val ppl_@TOPOLOGY@@CLASS@_@BINMINOP@:
-   @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> bool
+  @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> bool
 
 ')
 
@@ -130,7 +132,7 @@ val ppl_@TOPOLOGY@@CLASS@_add_space_dimensions_@EMBEDPROJECT@:
 m4_define(`ppl_@CLASS@_remove_space_dimensions_code',
 `dnl
 val ppl_@TOPOLOGY@@CLASS@_remove_space_dimensions:
-     @LTOPOLOGY@@LCLASS@ -> int list -> unit
+  @LTOPOLOGY@@LCLASS@ -> int list -> unit
 
 ')
 
@@ -144,41 +146,42 @@ val ppl_@TOPOLOGY@@CLASS@_remove_higher_space_dimensions:
 m4_define(`ppl_@CLASS@_fold_space_dimensions_code',
 `dnl
 val ppl_@TOPOLOGY@@CLASS@_fold_space_dimensions:
-     @LTOPOLOGY@@LCLASS@ -> int list -> int -> unit
+  @LTOPOLOGY@@LCLASS@ -> int list -> int -> unit
 
 ')
 
 m4_define(`ppl_@CLASS@_map_space_dimensions_code',
 `dnl
 val ppl_@TOPOLOGY@@CLASS@_map_space_dimensions:
- @LTOPOLOGY@@LCLASS@ -> (int*int) list -> unit
+  @LTOPOLOGY@@LCLASS@ -> (int*int) list -> unit
 ')
 
 m4_define(`ppl_@CLASS@_expand_space_dimension_code',
 `dnl
 val ppl_@TOPOLOGY@@CLASS@_expand_space_dimension:
- @LTOPOLOGY@@LCLASS@ -> int -> int -> unit
+  @LTOPOLOGY@@LCLASS@ -> int -> int -> unit
 ')
 
 m4_define(`ppl_@CLASS@_get_@GET_REPRESENT@s_code',
 `dnl
 val ppl_@TOPOLOGY@@CLASS@_get_@GET_REPRESENT@s:
-@LTOPOLOGY@@LCLASS@ -> @GET_REPRESENT@_system
+  @LTOPOLOGY@@LCLASS@ -> @GET_REPRESENT@_system
 
 ')
 
 m4_define(`ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_code',
 `dnl
 val ppl_@TOPOLOGY@@CLASS@_get_minimized_@GET_REPRESENT@s:
-   @LTOPOLOGY@@LCLASS@ -> @GET_REPRESENT@_system
+  @LTOPOLOGY@@LCLASS@ -> @GET_REPRESENT@_system
 
 ')
 
 m4_define(`ppl_@CLASS@_bounded_@AFFIMAGE@_code',
 `dnl
 val ppl_@TOPOLOGY@@CLASS@_bounded_@AFFIMAGE@:
-  @LTOPOLOGY@@LCLASS@ -> int -> linear_expression -> linear_expression
-      -> Z.t -> unit
+  @LTOPOLOGY@@LCLASS@ -> int
+  -> linear_expression -> linear_expression
+  -> Z.t -> unit
 ')
 
 m4_define(`ppl_@CLASS@_@AFFIMAGE@_code',
@@ -191,8 +194,9 @@ val ppl_@TOPOLOGY@@CLASS@_@AFFIMAGE@:
 m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_code',
 `dnl
 val ppl_@TOPOLOGY@@CLASS@_generalized_@AFFIMAGE@_lhs_rhs:
-  @LTOPOLOGY@@LCLASS@ -> linear_expression -> relation_symbol -> linear_expression
-    -> unit
+  @LTOPOLOGY@@LCLASS@ -> linear_expression
+  -> relation_symbol -> linear_expression
+  -> unit
 
 ')
 
@@ -200,77 +204,81 @@ m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_code',
 `dnl
 val ppl_@TOPOLOGY@@CLASS@_generalized_@AFFIMAGE@:
   @LTOPOLOGY@@LCLASS@ -> int -> relation_symbol -> linear_expression
-      -> Z.t -> unit
+  -> Z.t -> unit
 
 ')
 
 m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence_code',
 `dnl
 val ppl_@TOPOLOGY@@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence:
-  @LTOPOLOGY@@LCLASS@ -> linear_expression -> relation_symbol -> linear_expression -> Z.t
-    -> unit
+  @LTOPOLOGY@@LCLASS@ -> linear_expression
+  -> relation_symbol -> linear_expression -> Z.t
+  -> unit
 
 ')
 
 m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_code',
 `dnl
 val ppl_@TOPOLOGY@@CLASS@_@WIDEN@_widening_assign:
- @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> unit
+  @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> unit
 
 ')
 
 m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_code',
 `dnl
 val ppl_@TOPOLOGY@@CLASS@_@WIDEN@_widening_assign_with_tokens:
- @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> int -> int
+  @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> int -> int
 
 ')
 
 m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens_code',
 `dnl
 val ppl_@TOPOLOGY@@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens:
- @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> constraint_system -> int -> int
+  @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@
+  -> constraint_system -> int -> int
 
 ')
 
 m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_code',
 `dnl
 val ppl_@TOPOLOGY@@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign:
- @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> constraint_system -> unit
+  @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@
+  -> constraint_system -> unit
 
 ')
 
 m4_define(`ppl_@CLASS@_@MAXMIN@_code',
 `dnl
 val ppl_@TOPOLOGY@@CLASS@_@MAXMIN@:
- @LTOPOLOGY@@LCLASS@ -> linear_expression -> bool * Z.t * Z.t * bool * linear_generator
+  @LTOPOLOGY@@LCLASS@ -> linear_expression
+  -> bool * Z.t * Z.t * bool * linear_generator
 
 ')
 
 m4_define(`ppl_@CLASS@_OK_code',
 `dnl
 val ppl_@TOPOLOGY@@CLASS@_OK:
- @LTOPOLOGY@@LCLASS@ -> bool
+  @LTOPOLOGY@@LCLASS@ -> bool
 ')
 
 m4_define(`ppl_@CLASS@_@MEMBYTES@_code',
  `
- val ppl_@TOPOLOGY@@CLASS@_@MEMBYTES@:
- @LTOPOLOGY@@LCLASS@  -> int
+val ppl_@TOPOLOGY@@CLASS@_@MEMBYTES@:
+  @LTOPOLOGY@@LCLASS@  -> int
 ')
 
 
 m4_define(`ppl_@CLASS@_swap_code',
 `dnl
 val ppl_@TOPOLOGY@@CLASS@_swap:
-@LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> unit
+  @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> unit
 
 ')
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_code',
 `dnl
 val ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@:
-@LFRIEND@ -> @LTOPOLOGY@@LCLASS@
+  @LFRIEND@ -> @LTOPOLOGY@@LCLASS@
 
 ')
 
@@ -278,57 +286,57 @@ val ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@:
 m4_define(`ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@_code',
 `dnl
 val ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@:
-@LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> bool
+  @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> bool
 
 ')
 
  m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign_code',
  `dnl
- val ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign:
- @LTOPOLOGY@@LCLASS@  -> @LTOPOLOGY@@LCLASS@ -> unit
+val ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign:
+  @LTOPOLOGY@@LCLASS@  -> @LTOPOLOGY@@LCLASS@ -> unit
 
  ')
 
  m4_define(`ppl_@CLASS@_@BEGINEND@_iterator_code',
- `
- val ppl_@CLASS@_@BEGINEND@_iterator:
- @LCLASS@  -> @LCLASS@_iterator
+ `dnl
+val ppl_@CLASS@_@BEGINEND@_iterator:
+  @LCLASS@  -> @LCLASS@_iterator
 
 ')
 
 m4_define(`ppl_@CLASS@_get_disjunct_code',
- `
- val ppl_@CLASS@_iterator_get_disjunct:
- @LCLASS@_iterator  ->  @LCLASSTOPOLOGY@@LDISJUNCT@
+ `dnl
+val ppl_@CLASS@_iterator_get_disjunct:
+  @LCLASS@_iterator  ->  @LCLASSTOPOLOGY@@LDISJUNCT@
 
 ')
 
 m4_define(`ppl_@CLASS@_add_disjunct_code',
  `
- val ppl_@CLASS@_add_disjunct:
- @LCLASS@  ->  @LCLASSTOPOLOGY@@LDISJUNCT@ -> unit
+val ppl_@CLASS@_add_disjunct:
+  @LCLASS@  ->  @LCLASSTOPOLOGY@@LDISJUNCT@ -> unit
 
 ')
 
 m4_define(`ppl_@CLASS@_drop_disjunct_code',
- `
- val ppl_@CLASS@_drop_disjunct:
- @LCLASS@  ->  @LCLASS@_iterator -> unit
+ `dnl
+val ppl_@CLASS@_drop_disjunct:
+  @LCLASS@  ->  @LCLASS@_iterator -> unit
 
 ')
 
 m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
- `
- type @LCLASS@_iterator
+ `dnl
+type @LCLASS@_iterator
 
- val ppl_@CLASS@_iterator_equals_iterator:
- @LCLASS@_iterator ->  @LCLASS@_iterator -> bool
+val ppl_@CLASS@_iterator_equals_iterator:
+  @LCLASS@_iterator ->  @LCLASS@_iterator -> bool
 
 ')
 
 m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
- `
- val ppl_@CLASS@_iterator_@INCDEC@:
+ `dnl
+val ppl_@CLASS@_iterator_@INCDEC@:
   @LCLASS@_iterator -> unit
 
 ')
