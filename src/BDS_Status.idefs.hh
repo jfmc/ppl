@@ -30,7 +30,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 //! A conjunctive assertion about a BD_Shape<T> object.
 /*! \ingroup PPL_CXX_interface
   The assertions supported are:
-  - <EM>zero-dim universe</EM>: the BDS is the zero-dimension
+  - <EM>zero-dim universe</EM>: the BDS is the zero-dimensional
     vector space \f$\Rset^0 = \{\cdot\}\f$;
   - <EM>empty</EM>: the BDS is the empty set;
   - <EM>shortest-path closed</EM>: the BDS is represented by a shortest-path
