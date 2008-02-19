@@ -215,17 +215,16 @@ public:
   is empty; thus, if \p R defines no reduction between its components and
   \f$d = (G, P) \in (\Gset \times \Pset)\f$
   is a direct product in one dimension where \f$G\f$ denotes the set of
-  numbers that are integral multiples of 3 while \f$P\$ denotes the
+  numbers that are integral multiples of 3 while \f$P\f$ denotes the
   set of numbers between 1 and 2, then an operation that tests for
   emptiness should return false.
   However, the test for the universe returns true if and only if the
   test <CODE>is_universe()</CODE> on both components returns true.
 
   \par
-  In all the examples it is assumed that the template <CODE>R</CODE>
-  is the <CODE>No_Reduction<D1, D2></CODE> class and that variables
-  <CODE>x</CODE> and <CODE>y</CODE> are defined (where they are
-  used) as follows:
+  In all the examples it is assumed that the template \c R is the
+  <CODE>No_Reduction<D1, D2></CODE> class and that variables
+  \c x and \c y are defined (where they are used) as follows:
   \code
   Variable x(0);
   Variable y(1);
@@ -354,8 +353,8 @@ public:
     The system of constraints to be approximated by the pair.
 
     \exception std::length_error
-    Thrown if \p num_dimensions exceeds the maximum allowed space
-    dimension.
+    Thrown if the space dimension of \p cs exceeds the maximum allowed
+    space dimension.
   */
   explicit Partially_Reduced_Product(Constraint_System& cs);
 
@@ -363,12 +362,12 @@ public:
   /*!
     The pair inherits the space dimension of the polyhedron.
 
-    \param cs
+    \param ph
     The polyhedron to be approximated by the pair.
 
     \exception std::length_error
-    Thrown if \p num_dimensions exceeds the maximum allowed space
-    dimension.
+    Thrown if the space dimension of \p ph exceeds the maximum allowed
+    space dimension.
   */
   explicit Partially_Reduced_Product(const C_Polyhedron& ph);
 
@@ -376,12 +375,12 @@ public:
   /*!
     The pair inherits the space dimension of the polyhedron.
 
-    \param cs
+    \param ph
     The polyhedron to be approximated by the pair.
 
     \exception std::length_error
-    Thrown if \p num_dimensions exceeds the maximum allowed space
-    dimension.
+    Thrown if the space dimension of \p ph exceeds the maximum allowed
+    space dimension.
   */
   explicit Partially_Reduced_Product(const NNC_Polyhedron& ph);
 
@@ -389,12 +388,12 @@ public:
   /*!
     The pair inherits the space dimension of the grid.
 
-    \param cs
+    \param gr
     The grid to be approximated by the pair.
 
     \exception std::length_error
-    Thrown if \p num_dimensions exceeds the maximum allowed space
-    dimension.
+    Thrown if the space dimension of \p gr exceeds the maximum allowed
+    space dimension.
   */
   explicit Partially_Reduced_Product(const Grid& gr);
 
@@ -412,12 +411,12 @@ public:
   template <typename Interval>
   Partially_Reduced_Product(const Box<Interval>& box);
 
-  //! Builds a pair out of a bd shape.
+  //! Builds a pair out of a BD shape.
   /*!
-    The product inherits the space dimension of the bd shape.
+    The product inherits the space dimension of the BD shape.
 
-    \param box
-    The bd shape representing the pair to be built.
+    \param bd
+    The BD shape representing the pair to be built.
 
     \exception std::length_error
     Thrown if the space dimension of \p bd exceeds the maximum

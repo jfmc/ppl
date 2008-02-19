@@ -1622,10 +1622,10 @@ private:
   void add_constraints_no_check(const Constraint_System& cs);
 
   /*! \brief
-    Use the congruence \p c to refine \p *this.
+    Use the congruence \p cg to refine \p *this.
     FIXME: this is not true.
 
-    \param c
+    \param cg
     The congruence to be added. If it is not a non-relational equality
     congruence, it will be ignored.  If it is dimension-incompatible
     with \p *this, the behavior is undefined.
@@ -1636,7 +1636,7 @@ private:
     Use the congruences in \p cgs to refine \p *this.
     FIXME: this is not true.
 
-    \param c
+    \param cgs
     The congruences to be added. Congruences that are not non-relational
     equality congruences will be ignored.  If it is
     dimension-incompatible with \p *this, the behavior is undefined.
@@ -1951,7 +1951,7 @@ namespace Parma_Polyhedra_Library {
     \param num
     The numerator of the constraint bound;
 
-    \param num
+    \param den
     The denominator of the constraint bound
 
     The interval constraint has the form
