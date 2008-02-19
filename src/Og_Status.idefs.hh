@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_Og_Status_defs_hh
-#define PPL_Og_Status_defs_hh 1
+#ifndef PPL_Og_Status_idefs_hh
+#define PPL_Og_Status_idefs_hh 1
 
 #ifndef PPL_IN_Octagonal_Shape_CLASS
 #error "Do not include Og_Status.idefs.hh directly; use Octagonal_Shape.defs.hh instead."
@@ -107,4 +107,4 @@ private:
 
 };
 
-#endif // !defined(PPL_Og_Status_defs_hh)
+#endif // !defined(PPL_Og_Status_idefs_hh)

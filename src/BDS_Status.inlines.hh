@@ -20,8 +20,8 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_BD_Status_inlines_hh
-#define PPL_BD_Status_inlines_hh 1
+#ifndef PPL_BDS_Status_inlines_hh
+#define PPL_BDS_Status_inlines_hh 1
 
 namespace Parma_Polyhedra_Library {
 
@@ -264,4 +264,4 @@ BD_Shape<T>::Status::ascii_load(std::istream& s) {
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(PPL_BD_Status_inlines_hh)
+#endif // !defined(PPL_BDS_Status_inlines_hh)
