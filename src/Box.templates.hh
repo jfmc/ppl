@@ -51,7 +51,7 @@ Box<Interval>::Box(dimension_type num_dimensions, Degenerate_Element kind)
 	   num_dimensions)),
 	empty(kind == EMPTY), empty_up_to_date(true) {
   // In a box that is marked empty the intervals are completely
-  // meaningless: we exploit this by avoiding their initializion.
+  // meaningless: we exploit this by avoiding their initialization.
   if (kind == UNIVERSE)
     for (dimension_type i = num_dimensions; i-- > 0; )
       seq[i].assign(UNIVERSE);

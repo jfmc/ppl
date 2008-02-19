@@ -1571,6 +1571,13 @@ private:
   //! A sequence of intervals, one for each dimension of the vector space.
   Sequence seq;
 
+#define PPL_IN_Box_CLASS
+#include "Box_Status.idefs.hh"
+#undef PPL_IN_Box_CLASS
+
+  //! The status flags to keep track of the internal state.
+  Status status;
+
   //! Returns <CODE>true</CODE> if and only if the box is known to be empty.
   /*!
     The return value <CODE>false</CODE> does not necessarily
@@ -2009,6 +2016,7 @@ bool extract_interval_congruence(const Congruence& cg,
 
 } // namespace Parma_Polyhedra_Library
 
+#include "Box_Status.inlines.hh"
 #include "Box.inlines.hh"
 #include "Box.templates.hh"
 
