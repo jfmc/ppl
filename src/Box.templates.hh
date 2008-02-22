@@ -2284,6 +2284,206 @@ Box<Interval>::affine_preimage(const Variable var,
 }
 
 template <typename Interval>
+void
+Box<Interval>::
+bounded_affine_image(const Variable var,
+		     const Linear_Expression& lb_expr,
+		     const Linear_Expression& ub_expr,
+		     Coefficient_traits::const_reference denominator) {
+  // The denominator cannot be zero.
+  if (denominator == 0)
+    throw_generic("bounded_affine_image(v, lb, ub, d)", "d == 0");
+
+  // Dimension-compatibility checks.
+  const dimension_type space_dim = space_dimension();
+  // The dimension of `lb_expr' and `ub_expr' should not be
+  // greater than the dimension of `*this'.
+  const dimension_type lb_space_dim = lb_expr.space_dimension();
+  if (space_dim < lb_space_dim)
+    throw_dimension_incompatible("bounded_affine_image(v, lb, ub, d)",
+				 "lb", lb_expr);
+  const dimension_type ub_space_dim = ub_expr.space_dimension();
+  if (space_dim < ub_space_dim)
+    throw_dimension_incompatible("bounded_affine_image(v, lb, ub, d)",
+				 "ub", ub_expr);
+    // `var' should be one of the dimensions of the box.
+  const dimension_type var_space_dim = var.space_dimension();
+  if (space_dim < var_space_dim)
+    throw_dimension_incompatible("affine_image(v, e, d)", "v", var);
+
+  // Any image of an empty box is empty.
+  if (is_empty())
+    return;
+
+  // Check whether `var' occurs in `lb_expr' and/or `ub_expr'.
+  if (lb_expr.coefficient(var) == 0) {
+    // Here `var' can only occur in `ub_expr'.
+    generalized_affine_image(var,
+			     LESS_OR_EQUAL,
+			     ub_expr,
+			     denominator);
+    if (denominator > 0)
+      add_constraint(lb_expr <= denominator*var);
+    else
+      add_constraint(denominator*var <= lb_expr);
+  }
+  else if (ub_expr.coefficient(var) == 0) {
+    // Here `var' can only occur in `lb_expr'.
+    generalized_affine_image(var,
+			     GREATER_OR_EQUAL,
+			     lb_expr,
+			     denominator);
+    if (denominator > 0)
+      add_constraint(denominator*var <= ub_expr);
+    else
+      add_constraint(ub_expr <= denominator*var);
+  }
+  else {
+    // Here `var' occurs in both `lb_expr' and `ub_expr'.  As boxes
+    // can only use the non-relational constraints, we find the
+    // maximum/minimum values `ub_expr' and `lb_expr' obtain with the
+    // box and use these instead of the `ub-expr' and `lb-expr'.
+    Coefficient max_num;
+    Coefficient max_den;
+    bool max_included;
+    Coefficient min_num;
+    Coefficient min_den;
+    bool min_included;
+    Interval& seq_v = seq[var.id()];
+    if (maximize(ub_expr, max_num, max_den, max_included)) {
+      if (minimize(lb_expr, min_num, min_den, min_included)) {
+	// The `ub_expr' has a maximum value and the `lb_expr'
+	// has a minimum value for the box.
+	// Set the bounds for `var' using the minimum for `lb_expr'.
+	min_den *= denominator;
+	DIRTY_TEMP0(mpq_class, q);
+	assign_r(q.get_num(), min_num, ROUND_NOT_NEEDED);
+	assign_r(q.get_den(), min_den, ROUND_NOT_NEEDED);
+	q.canonicalize();
+	(denominator > 0)
+	  ? seq_v.lower_set(q, !min_included)
+	  : seq_v.upper_set(q, !min_included);
+	// Now make the maximum of lb_expr the upper bound.  If the
+	// maximum is not at a box point, then inequality is strict.
+	max_den *= denominator;
+	assign_r(q.get_num(), max_num, ROUND_NOT_NEEDED);
+	assign_r(q.get_den(), max_den, ROUND_NOT_NEEDED);
+	q.canonicalize();
+	(denominator > 0)
+	  ? seq_v.upper_set(q, !max_included)
+	  : seq_v.lower_set(q, !max_included);
+      }
+      else {
+	// The `ub_expr' has a maximum value but the `lb_expr'
+	// has no minimum value for the box.
+	// Set the bounds for `var' using the maximum for `lb_expr'.
+	DIRTY_TEMP0(mpq_class, q);
+	max_den *= denominator;
+	assign_r(q.get_num(), max_num, ROUND_NOT_NEEDED);
+	assign_r(q.get_den(), max_den, ROUND_NOT_NEEDED);
+	q.canonicalize();
+	if (denominator > 0) {
+	  seq_v.lower_set(UNBOUNDED);
+	  seq_v.upper_set(q, !max_included);
+	}
+	else {
+	  seq_v.upper_set(UNBOUNDED);
+	  seq_v.lower_set(q, !max_included);
+	}
+      }
+    }
+    else if (minimize(lb_expr, min_num, min_den, min_included)) {
+	// The `ub_expr' has no maximum value but the `lb_expr'
+	// has a minimum value for the box.
+	// Set the bounds for `var' using the minimum for `lb_expr'.
+	min_den *= denominator;
+	DIRTY_TEMP0(mpq_class, q);
+	assign_r(q.get_num(), min_num, ROUND_NOT_NEEDED);
+	assign_r(q.get_den(), min_den, ROUND_NOT_NEEDED);
+	q.canonicalize();
+	if (denominator > 0) {
+	  seq_v.upper_set(UNBOUNDED);
+	  seq_v.lower_set(q, !min_included);
+	}
+	else {
+	  seq_v.lower_set(UNBOUNDED);
+	  seq_v.upper_set(q, !min_included);
+	}
+    }
+    else {
+      // The `ub_expr' has no maximum value and the `lb_expr'
+      // has no minimum value for the box.
+      // So we set the bounds to be unbounded.
+      seq[var.id()].set_infinities();
+    }
+  }
+  assert(OK());
+}
+
+template <typename Interval>
+void
+Box<Interval>::
+generalized_affine_image(const Variable var,
+			 const Relation_Symbol relsym,
+			 const Linear_Expression& expr,
+			 Coefficient_traits::const_reference denominator) {
+  // The denominator cannot be zero.
+  if (denominator == 0)
+    throw_generic("generalized_affine_image(v, r, e, d)", "d == 0");
+
+  // Dimension-compatibility checks.
+  const dimension_type space_dim = space_dimension();
+  // The dimension of `expr' should not be greater than the dimension
+  // of `*this'.
+  if (space_dim < expr.space_dimension())
+    throw_dimension_incompatible("generalized_affine_image(v, r, e, d)",
+				 "e", expr);
+  // `var' should be one of the dimensions of the box.
+  const dimension_type var_space_dim = var.space_dimension();
+  if (space_dim < var_space_dim)
+    throw_dimension_incompatible("generalized_affine_image(v, r, e, d)",
+				 "v", var);
+
+  // The relation symbol cannot be a disequality.
+  if (relsym == NOT_EQUAL)
+    throw_generic("generalized_affine_image(v, r, e, d)",
+		  "r is the disequality relation symbol");
+
+  // First compute the affine image.
+  affine_image(var, expr, denominator);
+
+  if (relsym == EQUAL)
+    // The affine relation is indeed an affine function.
+    return;
+
+  // Any image of an empty box is empty.
+  if (is_empty())
+    return;
+
+  Interval& seq_var = seq[var.id()];
+  switch (relsym) {
+  case LESS_OR_EQUAL:
+    seq_var.lower_set_uninit(UNBOUNDED);
+    break;
+  case LESS_THAN:
+      seq_var.lower_set_uninit(UNBOUNDED);
+      seq_var.refine_existential(LESS_THAN, seq_var.upper());
+    break;
+  case GREATER_OR_EQUAL:
+      seq_var.upper_set_uninit(UNBOUNDED);
+    break;
+  case GREATER_THAN:
+      seq_var.upper_set_uninit(UNBOUNDED);
+      seq_var.refine_existential(GREATER_THAN, seq_var.lower());
+    break;
+  default:
+    // The EQUAL and NOT_EQUAL cases have been already dealt with.
+    throw std::runtime_error("PPL internal error");
+  }
+  assert(OK());
+}
+
+template <typename Interval>
 template <typename Iterator>
 void
 Box<Interval>::CC76_widening_assign(const Box& y,

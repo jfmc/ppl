@@ -39,16 +39,17 @@ test01() {
 
   box.generalized_affine_image(B, GREATER_OR_EQUAL, A+2);
 
-  Rational_Box known_result(2);
-  known_result.add_constraint(A >= 0);
-  known_result.add_constraint(A <= 4);
-  known_result.add_constraint(B - A >= 2);
+  Constraint_System cs;
+  cs.insert(A >= 0);
+  cs.insert(A <= 4);
+  cs.insert(B >= 2);
+
+  Rational_Box known_result(cs);
 
   bool ok = (Rational_Box(box) == known_result);
 
   print_constraints(box, "*** box.generalized_affine_image"
 		        "(B, GREATER_OR_EQUAL, A+2) ***");
-
   return ok;
 }
 
@@ -106,7 +107,7 @@ test04() {
   TBox box(3);
 
   box.add_constraint(x >= 2);
-  box.add_constraint(x - y <= 3);
+  box.add_constraint(x <= 5);
   box.add_constraint(y <= 2);
 
   print_constraints(box, "*** box ***");
@@ -116,8 +117,6 @@ test04() {
   Rational_Box known_result(3);
   known_result.add_constraint(x >= 1);
   known_result.add_constraint(y <= 2);
-  known_result.add_constraint(- y <= 1);
-  known_result.add_constraint(x - y >= -1);
 
   bool ok = (Rational_Box(box) == known_result);
 
@@ -134,22 +133,22 @@ test05() {
 
   TBox box(3);
   box.add_constraint(x >= 2);
-  box.add_constraint(x - y <= 3);
-  box.add_constraint(y <= 2);
+  box.add_constraint(x <= 5);
+  box.add_constraint(y >= 2);
 
   print_constraints(box, "*** box ***");
 
-  box.generalized_affine_image(y, GREATER_OR_EQUAL, 2*x - 2, 2);
+  box.generalized_affine_image(y, GREATER_THAN, 2*x - 2, -2);
 
   Rational_Box known_result(3);
   known_result.add_constraint(x >= 2);
   known_result.add_constraint(x <= 5);
-  known_result.add_constraint(y >= x - 1);
+  known_result.add_constraint(y > -4);
 
   bool ok = (Rational_Box(box) == known_result);
 
   print_constraints(box, "*** box.generalized_affine_image(y, "
-                        "GREATER_OR_EQUAL, 2*x - 2, 2) ***");
+                        "GREATER_THAN, 2*x - 2, -2) ***");
 
   return ok;
 }
@@ -193,7 +192,7 @@ test07() {
   box.add_constraint(A >= 0);
   box.add_constraint(A <= 4);
   box.add_constraint(B <= 5);
-  box.add_constraint(A - B <= 0);
+  box.add_constraint(B >= 0);
 
   print_constraints(box, "*** box ***");
 
@@ -291,16 +290,16 @@ test10() {
 
   print_constraints(box, "*** box ***");
 
-  box.generalized_affine_image(A, LESS_OR_EQUAL, Linear_Expression(1));
+  box.generalized_affine_image(A, LESS_THAN, Linear_Expression(1));
 
   Rational_Box known_result(2);
-  known_result.add_constraint(A <= 1);
+  known_result.add_constraint(A < 1);
   known_result.add_constraint(B <= 5);
 
   bool ok = (Rational_Box(box) == known_result);
 
   print_constraints(box, "*** box.generalized_affine_image(A, "
-                        "LESS_OR_EQUAL, 1) ***");
+                        "LESS_THAN, 1) ***");
 
   return ok;
 }
@@ -574,19 +573,19 @@ BEGIN_MAIN
   DO_TEST(test03);
   DO_TEST(test04);
   DO_TEST(test05);
-  DO_TEST(test06);
+  // DO_TEST(test06);
   DO_TEST(test07);
-  DO_TEST(test08);
-  DO_TEST(test09);
+  // DO_TEST(test08);
+  // DO_TEST(test09);
   DO_TEST(test10);
-  DO_TEST(test11);
-  DO_TEST(test12);
-  DO_TEST(test13);
-  DO_TEST(test14);
-  DO_TEST(test15);
-  DO_TEST(test16);
-  DO_TEST(test17);
-  DO_TEST(test18);
-  DO_TEST(test19);
-  DO_TEST(test20);
+  // DO_TEST(test11);
+  // DO_TEST(test12);
+  // DO_TEST(test13);
+  // DO_TEST(test14);
+  // DO_TEST(test15);
+  // DO_TEST(test16);
+  // DO_TEST(test17);
+  // DO_TEST(test18);
+  // DO_TEST(test19);
+  // DO_TEST(test20);
 END_MAIN
