@@ -2343,11 +2343,11 @@ bounded_affine_image(const Variable var,
     // can only use the non-relational constraints, we find the
     // maximum/minimum values `ub_expr' and `lb_expr' obtain with the
     // box and use these instead of the `ub-expr' and `lb-expr'.
-    Coefficient max_num;
-    Coefficient max_den;
+    DIRTY_TEMP(Coefficient, max_num);
+    DIRTY_TEMP(Coefficient, max_den);
     bool max_included;
-    Coefficient min_num;
-    Coefficient min_den;
+    DIRTY_TEMP(Coefficient, min_num);
+    DIRTY_TEMP(Coefficient, min_den);
     bool min_included;
     Interval& seq_v = seq[var.id()];
     if (maximize(ub_expr, max_num, max_den, max_included)) {
