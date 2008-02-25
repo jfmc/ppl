@@ -2484,6 +2484,215 @@ generalized_affine_image(const Variable var,
 }
 
 template <typename Interval>
+void
+Box<Interval>::
+generalized_affine_image(const Linear_Expression& lhs,
+                         const Relation_Symbol relsym,
+                         const Linear_Expression& rhs) {
+  // Dimension-compatibility checks.
+  // The dimension of `lhs' should not be greater than the dimension
+  // of `*this'.
+  dimension_type lhs_space_dim = lhs.space_dimension();
+  const dimension_type space_dim = space_dimension();
+  if (space_dim < lhs_space_dim)
+    throw_dimension_incompatible("generalized_affine_image(e1, r, e2)",
+				 "e1", lhs);
+  // The dimension of `rhs' should not be greater than the dimension
+  // of `*this'.
+  const dimension_type rhs_space_dim = rhs.space_dimension();
+  if (space_dim < rhs_space_dim)
+    throw_dimension_incompatible("generalized_affine_image(e1, r, e2)",
+				 "e2", rhs);
+
+  // The relation symbol cannot be a disequality.
+  if (relsym == NOT_EQUAL)
+    throw_generic("generalized_affine_image(e1, r, e2)",
+                  "r is the disequality relation symbol");
+
+  // Any image of an empty box is empty.
+  if (marked_empty())
+    return;
+
+  // Compute the maximum and minimum value reached by the rhs on the box.
+  DIRTY_TEMP(Coefficient, max_num);
+  DIRTY_TEMP(Coefficient, max_den);
+  bool max_included;
+  bool max_rhs = maximize(rhs, max_num, max_den, max_included);
+  DIRTY_TEMP(Coefficient, min_num);
+  DIRTY_TEMP(Coefficient, min_den);
+  bool min_included;
+  bool min_rhs = minimize(rhs, min_num, min_den, min_included);
+
+  // Check whether there is 0, 1 or more thna one variable in the lhs
+  // and record the variable with the highest dimension; set the box
+  // intervals to be unbounded for all other dimensions with non-zero
+  // coefficients in the lhs.
+  bool has_var = false;
+  bool has_more_than_one_var = false;
+  dimension_type has_var_id;
+  for ( ; lhs_space_dim > 0; lhs_space_dim--)
+    if (lhs.coefficient(Variable(lhs_space_dim - 1)) != 0) {
+      if (has_var) {
+        Interval& seq_i = seq[lhs_space_dim - 1];
+        seq_i.lower_set(UNBOUNDED);
+        seq_i.upper_set(UNBOUNDED);
+        has_more_than_one_var = true;
+      }
+      else {
+        has_var = true;
+        has_var_id = lhs_space_dim - 1;
+      }
+    }
+
+  if (has_more_than_one_var) {
+    // There is more than one dimension with non-zero coefficient, so
+    // we cannot have any information about the dimensions in the lhs.
+    // Since all but the highest dimension with non-zero coefficient
+    // in the lhs have been set unbounded, it remains to set the
+    // highest dimension in the lhs unbounded.
+    Interval& seq_var = seq[has_var_id];
+    seq_var.lower_set(UNBOUNDED);
+    seq_var.upper_set(UNBOUNDED);
+    assert(OK());
+    return;
+  }
+
+  if (has_var) {
+    // There is exactly one dimension with non-zero coefficient.
+    Interval& seq_var = seq[has_var_id];
+
+    // Compute the new bounds for this dimension defined by the rhs
+    // expression.
+    const Coefficient& inhomo = lhs.inhomogeneous_term();
+    const Coefficient& coeff = lhs.coefficient(Variable(has_var_id));
+    DIRTY_TEMP0(mpq_class, q_max);
+    DIRTY_TEMP0(mpq_class, q_min);
+    if (max_rhs) {
+      max_num -= inhomo * max_den;
+      max_den *= coeff;
+      assign_r(q_max.get_num(), max_num, ROUND_NOT_NEEDED);
+      assign_r(q_max.get_den(), max_den, ROUND_NOT_NEEDED);
+      q_max.canonicalize();
+    }
+    if (min_rhs) {
+      min_num -= inhomo * min_den;
+      min_den *= coeff;
+      assign_r(q_min.get_num(), min_num, ROUND_NOT_NEEDED);
+      assign_r(q_min.get_den(), min_den, ROUND_NOT_NEEDED);
+      q_min.canonicalize();
+    }
+
+    // The choice as to which bounds should be set depends on the sign
+    // of the coefficient of the dimension `has_var_id' in the lhs.
+    if (coeff > 0)
+      // The coefficient of the dimension in the lhs is +ve.
+      switch (relsym) {
+      case LESS_OR_EQUAL:
+        seq_var.lower_set(UNBOUNDED);
+        max_rhs
+          ? seq_var.upper_set(q_max, !max_included)
+          : seq_var.upper_set(UNBOUNDED);
+        break;
+      case LESS_THAN:
+        seq_var.lower_set(UNBOUNDED);
+        max_rhs
+          ? seq_var.upper_set(q_max, true)
+          : seq_var.upper_set(UNBOUNDED);
+        break;
+      case EQUAL:
+        max_rhs
+          ? seq_var.upper_set(q_max, !max_included)
+          : seq_var.upper_set(UNBOUNDED);
+          min_rhs
+            ? seq_var.lower_set(q_min, !min_included)
+            : seq_var.lower_set(UNBOUNDED);
+          break;
+      case GREATER_OR_EQUAL:
+        seq_var.upper_set(UNBOUNDED);
+        min_rhs
+          ? seq_var.lower_set(q_min, !min_included)
+          : seq_var.lower_set(UNBOUNDED);
+        break;
+      case GREATER_THAN:
+        seq_var.upper_set(UNBOUNDED);
+        min_rhs
+          ? seq_var.lower_set(q_min, true)
+          : seq_var.lower_set(UNBOUNDED);
+        break;
+      default:
+        // The NOT_EQUAL case has been already dealt with.
+        throw std::runtime_error("PPL internal error");
+      }
+    else
+      // The coefficient of the dimension in the lhs is -ve.
+      switch (relsym) {
+      case GREATER_OR_EQUAL:
+        seq_var.lower_set(UNBOUNDED);
+        min_rhs
+          ? seq_var.upper_set(q_min, !min_included)
+          : seq_var.upper_set(UNBOUNDED);
+        break;
+      case GREATER_THAN:
+        seq_var.lower_set(UNBOUNDED);
+        min_rhs
+          ? seq_var.upper_set(q_min, true)
+          : seq_var.upper_set(UNBOUNDED);
+        break;
+      case EQUAL:
+        max_rhs
+          ? seq_var.lower_set(q_max, !max_included)
+          : seq_var.lower_set(UNBOUNDED);
+          min_rhs
+            ? seq_var.upper_set(q_min, !min_included)
+            : seq_var.upper_set(UNBOUNDED);
+          break;
+      case LESS_OR_EQUAL:
+        seq_var.upper_set(UNBOUNDED);
+        max_rhs
+          ? seq_var.lower_set(q_max, !max_included)
+          : seq_var.lower_set(UNBOUNDED);
+        break;
+      case LESS_THAN:
+        seq_var.upper_set(UNBOUNDED);
+        max_rhs
+          ? seq_var.lower_set(q_max, true)
+          : seq_var.lower_set(UNBOUNDED);
+        break;
+      default:
+        // The NOT_EQUAL case has been already dealt with.
+        throw std::runtime_error("PPL internal error");
+      }
+  }
+
+  else {
+    // The lhs is a constant value, so we just need to add the
+    // appropriate constraint.
+    const Coefficient& inhomo = lhs.inhomogeneous_term();
+    switch (relsym) {
+    case LESS_THAN:
+      add_constraint(inhomo < rhs);
+      break;
+    case LESS_OR_EQUAL:
+      add_constraint(inhomo <= rhs);
+      break;
+    case EQUAL:
+      add_constraint(inhomo == rhs);
+      break;
+    case GREATER_OR_EQUAL:
+      add_constraint(inhomo >= rhs);
+      break;
+    case GREATER_THAN:
+      add_constraint(inhomo > rhs);
+      break;
+    default:
+      // The NOT_EQUAL case has been already dealt with.
+      throw std::runtime_error("PPL internal error");
+    }
+  }
+  assert(OK());
+}
+
+template <typename Interval>
 template <typename Iterator>
 void
 Box<Interval>::CC76_widening_assign(const Box& y,

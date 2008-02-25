@@ -2403,7 +2403,7 @@ bounded_affine_image(const Variable var,
 			     denominator);
     // Now apply the affine upper bound, as recorded in `new_var'
     // (we force minimization because we will need the generators).
-      add_constraint_and_minimize(new_var >= var);
+    add_constraint_and_minimize(new_var >= var);
     // Remove the temporarily added dimension.
     remove_higher_space_dimensions(space_dim-1);
   }

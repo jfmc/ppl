@@ -81,7 +81,7 @@ frompartiallyreducedproduct1 \
 frompolyhedron1 \
 frompolyhedron2 \
 fromspacedim1 \
-generalizedaffineimage1 \
+generalizedaffineimage1 generalizedaffineimage2 \
 geomcovers1 \
 intersection1 \
 mapspacedims1 \
@@ -211,6 +211,7 @@ frompartiallyreducedproduct1_SOURCES = frompartiallyreducedproduct1.cc
 fromspacedim1_SOURCES = fromspacedim1.cc
 
 generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
+generalizedaffineimage2_SOURCES = generalizedaffineimage2.cc
 
 #generalizedaffinepreimage1_SOURCES = generalizedaffinepreimage1.cc
 
