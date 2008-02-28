@@ -282,7 +282,8 @@ test09() {
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(3*x >= -14);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  //  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result, "3.2e-7", "3.2e-7", "3.2e-7");
 
   print_constraints(box1,
 		    "*** box1.bounded_affine_image("
@@ -309,7 +310,8 @@ test10() {
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(3*x < 14);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  //  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result, "3.2e-8", "3.2e-8", "3.2e-8");
 
   print_constraints(box1,
 		    "*** box1.bounded_affine_image(x, x + 4, x + 4) ***");

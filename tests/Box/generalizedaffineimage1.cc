@@ -348,7 +348,7 @@ test12() {
   box.generalized_affine_image(Linear_Expression(6), EQUAL, 3*x - 4);
   ph.generalized_affine_image(Linear_Expression(6), EQUAL, 3*x - 4);
 
-  bool ok = (Rational_Box(box) == Rational_Box(ph));
+  bool ok = check_result(box, Rational_Box(ph), "2.39e-7", "2.39e-7", "2.39e-7");
 
   print_constraints(box,
 		    "*** box.generalized_affine_image(6, EQUAL, 3*x - 4) ***");
