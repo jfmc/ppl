@@ -651,7 +651,7 @@ public:
     \exception std::invalid_argument
     Thrown if \p denominator is zero or if \p expr and \p *this are
     dimension-incompatible or if \p var is not a space dimension of \p *this
-    or if \p *this is a C_Any_Pointset and \p relsym is a strict
+    or if \p *this is a Any_Pointset and \p relsym is a strict
     relation symbol.
   */
   virtual
