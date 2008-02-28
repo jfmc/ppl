@@ -29,21 +29,21 @@ test01() {
   Variable x(0);
   Variable y(1);
 
-  TBox box1(3);
-  box1.add_constraint(x <= 2);
-  box1.add_constraint(x - y <= 3);
-  box1.add_constraint(y <= 2);
+  TBox box(3);
+  box.add_constraint(x <= 2);
+  box.add_constraint(x - y <= 3);
+  box.add_constraint(y <= 2);
 
-  print_constraints(box1, "*** box1 ***");
+  print_constraints(box, "*** box ***");
 
-  box1.affine_preimage(x, y);
+  box.affine_preimage(x, y);
 
   Rational_Box known_result(3);
   known_result.add_constraint(y <= 2);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
-  print_constraints(box1, "*** box1.affine_preimage(x, y) ***");
+  print_constraints(box, "*** box.affine_preimage(x, y) ***");
 
   return ok;
 }

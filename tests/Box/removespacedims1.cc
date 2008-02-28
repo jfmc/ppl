@@ -33,24 +33,24 @@ test01() {
   Variable x5(4);
   Variable x6(5);
 
-  TBox box1(6);
-  box1.add_constraint(x3 <= 2);
-  box1.add_constraint(x5 <= 3);
+  TBox box(6);
+  box.add_constraint(x3 <= 2);
+  box.add_constraint(x5 <= 3);
 
-  print_constraints(box1, "*** box1 ***");
+  print_constraints(box, "*** box ***");
 
   // This is the set of the variables that we want to remove.
   Variables_Set to_be_removed;
   to_be_removed.insert(x3);
   to_be_removed.insert(x5);
 
-  box1.remove_space_dimensions(to_be_removed);
+  box.remove_space_dimensions(to_be_removed);
 
   Rational_Box known_result(4);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
-  print_constraints(box1, "*** box1.remove_space_dimensions({x3, x5}) ***");
+  print_constraints(box, "*** box.remove_space_dimensions({x3, x5}) ***");
 
   return ok;
 }
@@ -66,12 +66,12 @@ test02() {
   Variable x7(6);
   Variable x8(7);
 
-  TBox box1(8);
-  box1.add_constraint(x1 <= 2);
-  box1.add_constraint(x5 <= 7);
-  box1.add_constraint(x2 <= 10);
+  TBox box(8);
+  box.add_constraint(x1 <= 2);
+  box.add_constraint(x5 <= 7);
+  box.add_constraint(x2 <= 10);
 
-  print_constraints(box1, "*** box1 ***");
+  print_constraints(box, "*** box ***");
 
   // This is the set of the variables that we want to remove.
   Variables_Set to_be_removed;
@@ -84,14 +84,14 @@ test02() {
   to_be_removed.insert(x7);
   to_be_removed.insert(x8);
 
-  box1.remove_space_dimensions(to_be_removed);
+  box.remove_space_dimensions(to_be_removed);
 
   Rational_Box known_result(0);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
-  print_constraints(box1,
-		    "*** box1.remove_space_dimensions"
+  print_constraints(box,
+		    "*** box.remove_space_dimensions"
 		    "({x1, x2, x3, x4, x5, x6, x7, x8}) ***");
 
   return ok;
@@ -104,26 +104,26 @@ test03() {
   Variable x3(2);
   Variable x4(3);
 
-  TBox box1(4);
-  box1.add_constraint(x2 >= 5);
-  box1.add_constraint(x4 >= 3);
-  box1.add_constraint(x4 <= 0);
+  TBox box(4);
+  box.add_constraint(x2 >= 5);
+  box.add_constraint(x4 >= 3);
+  box.add_constraint(x4 <= 0);
 
-  print_constraints(box1, "*** box1 ***");
+  print_constraints(box, "*** box ***");
 
   Variables_Set to_be_removed;
   to_be_removed.insert(x1);
   to_be_removed.insert(x3);
   to_be_removed.insert(x4);
 
-  box1.remove_space_dimensions(to_be_removed);
+  box.remove_space_dimensions(to_be_removed);
 
   Rational_Box known_result(1, EMPTY);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
-  print_constraints(box1,
-		    "*** box1.remove_space_dimensions({x1, x3, x4}) ***");
+  print_constraints(box,
+		    "*** box.remove_space_dimensions({x1, x3, x4}) ***");
 
   return ok;
 }

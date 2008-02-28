@@ -28,18 +28,18 @@ bool
 test01() {
   Partial_Function function;
 
-  TBox box1(3);
+  TBox box(3);
 
   print_function(function, "*** function ***");
-  print_constraints(box1, "*** box1 ***");
+  print_constraints(box, "*** box ***");
 
-  box1.map_space_dimensions(function);
+  box.map_space_dimensions(function);
 
   Rational_Box known_result;
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
-  print_constraints(box1, "*** box1.map_space_dimensions(function) ***");
+  print_constraints(box, "*** box.map_space_dimensions(function) ***");
 
   return ok;
 }
@@ -48,18 +48,18 @@ bool
 test02() {
   Partial_Function function;
 
-  TBox box1(3, EMPTY);
+  TBox box(3, EMPTY);
 
   print_function(function, "*** function ***");
-  print_constraints(box1, "*** box1 ***");
+  print_constraints(box, "*** box ***");
 
-  box1.map_space_dimensions(function);
+  box.map_space_dimensions(function);
 
   Rational_Box known_result(0, EMPTY);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
-  print_constraints(box1, "*** box1.map_space_dimensions(function) ***");
+  print_constraints(box, "*** box.map_space_dimensions(function) ***");
 
   return ok;
 }
@@ -70,18 +70,18 @@ test03() {
   function.insert(0, 1);
   function.insert(1, 0);
 
-  TBox box1(3, EMPTY);
+  TBox box(3, EMPTY);
 
   print_function(function, "*** function ***");
-  print_constraints(box1, "*** box1 ***");
+  print_constraints(box, "*** box ***");
 
-  box1.map_space_dimensions(function);
+  box.map_space_dimensions(function);
 
   Rational_Box known_result(2, EMPTY);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
-  print_constraints(box1, "*** box1.map_space_dimensions(function) ***");
+  print_constraints(box, "*** box.map_space_dimensions(function) ***");
 
   return ok;
 }
@@ -100,21 +100,21 @@ test04() {
   cs.insert(x == 1);
   cs.insert(z - x <= 3);
 
-  TBox box1(cs);
+  TBox box(cs);
 
   print_function(function, "*** function ***");
-  print_constraints(box1, "*** box1 ***");
+  print_constraints(box, "*** box ***");
 
-  cs = box1.minimized_constraints();
-  box1.map_space_dimensions(function);
+  cs = box.minimized_constraints();
+  box.map_space_dimensions(function);
 
   Rational_Box known_result(2);
   known_result.add_constraint(x == 1);
   known_result.add_constraint(y - x <= 3);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
-  print_constraints(box1, "*** box1.map_space_dimensions(function) ***");
+  print_constraints(box, "*** box.map_space_dimensions(function) ***");
 
   return ok;
 }
@@ -134,18 +134,18 @@ test05() {
   cs.insert(z - y <= 7);
   cs.insert(y - x <= 2);
 
-  TBox box1(cs);
+  TBox box(cs);
 
   print_function(function, "*** function ***");
-  print_constraints(box1, "*** box1 ***");
+  print_constraints(box, "*** box ***");
 
-  box1.map_space_dimensions(function);
+  box.map_space_dimensions(function);
 
   Rational_Box known_result(1);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
-  print_constraints(box1, "*** box1.map_space_dimensions(function) ***");
+  print_constraints(box, "*** box.map_space_dimensions(function) ***");
 
   return ok;
 }
@@ -166,18 +166,18 @@ test06() {
   cs.insert(z - y <= 7);
   cs.insert(y - x <= 1);
 
-  TBox box1(cs);
+  TBox box(cs);
 
   print_function(function, "*** function ***");
-  print_constraints(box1, "*** box1 ***");
+  print_constraints(box, "*** box ***");
 
-  box1.map_space_dimensions(function);
+  box.map_space_dimensions(function);
 
   Rational_Box known_result(2);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
-  print_constraints(box1, "*** box1.map_space_dimensions(function) ***");
+  print_constraints(box, "*** box.map_space_dimensions(function) ***");
 
   return ok;
 }
