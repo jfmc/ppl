@@ -105,6 +105,16 @@ is_additive_inverse(const Checked_Number<T, Policy>& x,
     && negated_x == y;
 }
 
+inline bool
+is_canonical(const mpq_class& x) {
+  if (x.get_den() <= 0)
+    return false;
+  DIRTY_TEMP0(mpq_class, temp);
+  temp = x;
+  temp.canonicalize();
+  return temp.get_num() == x.get_num();
+}
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_math_utilities_inlines_hh)
