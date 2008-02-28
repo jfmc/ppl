@@ -43,7 +43,7 @@ test01() {
   known_result.add_constraint(B == 5);
   known_result.add_constraint(B - A <= 5);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(known_result, "*** known_result ***");
 
@@ -163,7 +163,7 @@ test06() {
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(B == 5);
 
-  ok = ok && (Rational_Box(box) == known_result);
+  ok = ok && check_result(box, known_result);
 
   print_constraints(box, "*** box.add_constraints(cs) ***");
   print_constraints(known_result, "*** known_result ***");
@@ -188,7 +188,7 @@ test07() {
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(B == 5);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.add_constraints(cs) ***");
   print_constraints(known_result, "*** known_result ***");
@@ -213,7 +213,7 @@ test08() {
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(B == 5);
 
-  ok = ok && (Rational_Box(box) == known_result);
+  ok = ok && check_result(box, known_result);
 
   print_constraints(box, "*** box.add_constraints(cs) ***");
   print_constraints(known_result, "*** known_result ***");
@@ -236,7 +236,7 @@ test09() {
 
   Rational_Box known_result(2, EMPTY);
 
-  ok = ok && (Rational_Box(box) == known_result);
+  ok = ok && check_result(box, known_result);
 
   print_constraints(box, "*** box.add_constraints(cs) ***");
   print_constraints(known_result, "*** known_result ***");
@@ -260,7 +260,7 @@ test10() {
 
   Rational_Box known_result(2, EMPTY);
 
-  ok = ok && (Rational_Box(box) == known_result);
+  ok = ok && check_result(box, known_result);
 
   print_constraints(box, "*** box.add_constraints(cs) ***");
   print_constraints(known_result, "*** known_result ***");

@@ -46,7 +46,7 @@ test01() {
 
   Rational_Box known_result(cs);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.generalized_affine_image"
                     "(B, GREATER_OR_EQUAL, A+2) ***");
@@ -70,7 +70,7 @@ test02() {
 
   known_result.affine_image(A, A + 2);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.generalized_affine_image"
 		    "(A, EQUAL, A + 2) ***");
@@ -91,7 +91,7 @@ test03() {
 
   Rational_Box known_result(2, EMPTY);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.generalized_affine_image"
 		    "(A, LESS_OR_EQUAL, B + 1) ***");
@@ -118,7 +118,7 @@ test04() {
   known_result.add_constraint(x >= 1);
   known_result.add_constraint(y <= 2);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.generalized_affine_image(x, "
                     "GREATER_OR_EQUAL, 2*x - 2, 2) ***");
@@ -145,7 +145,7 @@ test05() {
   known_result.add_constraint(x <= 5);
   known_result.add_constraint(y > -4);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.generalized_affine_image(y, "
                     "GREATER_THAN, 2*x - 2, -2) ***");
@@ -171,7 +171,7 @@ test06() {
   known_result.add_constraint(A < 1);
   known_result.add_constraint(B <= 5);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.generalized_affine_image(A, "
                     "LESS_THAN, 1) ***");
@@ -199,7 +199,7 @@ test07() {
   known_result.add_constraint(B >= 0);
   known_result.add_constraint(B <= 5);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.generalized_affine_image(A, "
                         "GREATER_OR_EQUAL, 1) ***");
@@ -585,7 +585,7 @@ test20() {
 
   Rational_Box known_result(3, EMPTY);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box,
 		    "*** box.generalized_affine_image(3, "

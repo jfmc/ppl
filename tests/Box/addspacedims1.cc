@@ -43,7 +43,7 @@ test01() {
   known_result.add_constraint(x <= 2);
   known_result.add_constraint(z <= 2);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box,
 		    "*** box.add_space_dimensions_and_embed(2) "
@@ -81,7 +81,7 @@ test03() {
 
   Rational_Box known_result(3, UNIVERSE);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.add_space_dimension_and_embed(3) ***");
 
@@ -107,7 +107,7 @@ test04() {
   known_result.add_constraint(C == 0);
   known_result.add_constraint(D == 0);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.add_space_dimensions_and_project(4) ***");
 
@@ -132,7 +132,7 @@ test05() {
 
   print_constraints(box, "*** box.add_space_dimensions_and_project(0) ***");
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   return ok;
 }
@@ -155,7 +155,7 @@ test06() {
   known_result.add_constraint(C == 0);
   known_result.add_constraint(D == 0);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.add_space_dimensions_and_project(3) ***");
 
@@ -191,7 +191,7 @@ test08() {
   known_result.add_constraint(w == 0);
   known_result.add_constraint(z == 0);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.add_space_dimensions_and_project(2) ***");
 
@@ -227,7 +227,7 @@ test10() {
 
   Rational_Box known_result(3, EMPTY);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.add_space_dimension_and_project(3) ***");
 
@@ -253,7 +253,7 @@ test11() {
   known_result.add_constraint(C == 0);
   known_result.add_constraint(D == 0);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.add_space_dimensions_and_project(4) ***");
 
@@ -305,7 +305,7 @@ test13() {
   known_result.add_constraint(x <= 2);
   known_result.add_constraint(z <= 2);
 
-  bool ok = (Rational_Box(box) == known_result) ;
+  bool ok = check_result(box, known_result) ;
 
   print_constraints(box,
 		    "*** box.add_space_dimensions_and_embed(2) "

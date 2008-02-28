@@ -40,7 +40,7 @@ test01() {
 
   Rational_Box known_result(0);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box ***");
 
@@ -64,7 +64,7 @@ test02() {
   Rational_Box known_result(4);
   known_result.add_congruences(cgs);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box ***");
 
@@ -89,7 +89,7 @@ test03() {
   Rational_Box known_result(3);
   known_result.add_constraint(A == 7);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box ***");
 
@@ -115,7 +115,7 @@ test04() {
   Rational_Box known_result(3);
   known_result.add_constraint(A == 7);
 
-  ok = ok && (Rational_Box(box) == known_result);
+  ok = ok && check_result(box, known_result);
 
   print_constraints(box, "*** box ***");
 
@@ -141,7 +141,7 @@ test05() {
   known_result.add_constraint(1*A + 2*B + 3*C + 4*D == 0);
   known_result.add_constraint(2*A + 3*B + 4*C + 5*D == 1);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box ***");
 
@@ -167,7 +167,7 @@ test06() {
   Rational_Box known_result(3);
   known_result.add_constraint(A == 7);
 
-  ok = ok && (Rational_Box(box) == known_result);
+  ok = ok && check_result(box, known_result);
 
   print_constraints(box, "*** box ***");
 
@@ -194,7 +194,7 @@ test07() {
   Rational_Box known_result(3);
   known_result.add_constraint(A == 7);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box, "*** box ***");
   print_constraints(box1, "*** box1(box.congruences()) ***");
@@ -223,7 +223,7 @@ test08() {
   known_result.add_constraint(A == 7);
   known_result.add_constraint(B == 3);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box ***");
 
@@ -248,7 +248,7 @@ test09() {
 
   Rational_Box known_result(3, EMPTY);
 
-  ok = ok && (Rational_Box(box) == known_result);
+  ok = ok && check_result(box, known_result);
 
   print_constraints(box, "*** box ***");
 
@@ -269,7 +269,7 @@ test10() {
 
   Rational_Box known_result(4);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box ***");
 
@@ -294,7 +294,7 @@ test11() {
   Rational_Box known_result(3);
   known_result.add_constraint(A == 7);
 
-  ok = ok && (Rational_Box(box) == known_result);
+  ok = ok && check_result(box, known_result);
 
   print_constraints(box, "*** box ***");
 
@@ -312,7 +312,7 @@ test12() {
 
   Rational_Box known_result(1, EMPTY);
 
-  ok = ok && (Rational_Box(box) == known_result);
+  ok = ok && check_result(box, known_result);
 
   print_constraints(box, "*** box ***");
   print_constraints(known_result, "*** known_result ***");
@@ -341,7 +341,7 @@ test13() {
   Rational_Box known_result(3);
   known_result.add_constraint(A == 7);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** box1(box.congruences()) ***");
 
@@ -367,7 +367,7 @@ test14() {
   known_result.add_constraint(A == 7);
   known_result.add_constraint(B == 3);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** box1(box.congruences()) ***");
 
@@ -394,7 +394,7 @@ test15() {
 
   Rational_Box known_result(3, EMPTY);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** box1(box.congruences()) ***");
 
@@ -409,7 +409,7 @@ test16() {
 
   Rational_Box known_result(0);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** box1(box.congruences()) ***");
 
@@ -424,7 +424,7 @@ test17() {
 
   Rational_Box known_result(0, EMPTY);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** box1(box.congruences()) ***");
 

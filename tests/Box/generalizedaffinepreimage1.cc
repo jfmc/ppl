@@ -66,7 +66,7 @@ test02() {
 
   Rational_Box known_result(2, EMPTY);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box,
 		    "*** box.generalized_affine_preimage(B, "

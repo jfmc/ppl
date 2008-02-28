@@ -47,7 +47,7 @@ test01() {
   known_result.add_constraint(-y <= -2);
   known_result.add_constraint(x - y <= 4);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** box1.intersection_assign(box2) ***");
 
@@ -82,7 +82,7 @@ test02() {
   known_result.add_constraint(z - x <= 0);
   known_result.add_constraint(y - z <= -1);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** box1.intersection_assign(box2) ***");
 
@@ -120,7 +120,7 @@ test03() {
   known_result.add_constraint(y - x <= -1);
   known_result.add_constraint(x - y <= 1);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** box1.intersection_assign(box2) ***");
 
@@ -152,7 +152,7 @@ test04() {
 
   Rational_Box known_result(3, EMPTY);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** box1.intersection_assign(box2) ***");
 
@@ -184,7 +184,7 @@ test05() {
 
   Rational_Box known_result(3, EMPTY);
 
-  bool ok = (Rational_Box(box2) == known_result);
+  bool ok = check_result(box2, known_result);
 
   print_constraints(box2, "*** box2.intersection_assign(box1) ***");
 
@@ -203,7 +203,7 @@ test06() {
 
   Rational_Box known_result;
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** box1.intersection_assign(box2) ***");
 
@@ -230,7 +230,7 @@ test07() {
 
   box1.intersection_assign(box2);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** box1.intersection_assign(box2) ***");
 
@@ -256,7 +256,7 @@ test08() {
 
   box1.intersection_assign(box2);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** box1.intersection_assign(box2) ***");
 
@@ -320,7 +320,7 @@ test11() {
 
   Rational_Box known_result(3, EMPTY);
 
-  bool ok = (Rational_Box(box1) == known_result) ;
+  bool ok = check_result(box1, known_result) ;
 
   print_constraints(box1, "*** box1.intersection_assign(box2) ***");
 
@@ -339,7 +339,7 @@ test12() {
 
   Rational_Box known_result(3, EMPTY);
 
-  bool ok = (Rational_Box(box1) == known_result) ;
+  bool ok = check_result(box1, known_result) ;
 
   print_constraints(box1, "*** box1.intersection_assign(box2) ***");
 

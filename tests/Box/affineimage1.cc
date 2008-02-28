@@ -41,7 +41,7 @@ test01() {
   known_result.add_constraint(A <= 4);
   known_result.add_constraint(B <= 4);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.affine_image(A, B) ***");
 
@@ -67,7 +67,7 @@ test02() {
   known_result.add_constraint(A - B <= 7);
   known_result.add_constraint(A <= 6);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.affine_image(A, A + 4) ***");
 
@@ -92,7 +92,7 @@ test03() {
   known_result.add_constraint(B <= 2);
   known_result.add_constraint(A == 4);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.affine_image(A, 4) ***");
 
@@ -115,7 +115,7 @@ test04() {
 
   box.affine_image(A, A);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.affine_image(A, A) ***");
 
@@ -141,7 +141,7 @@ test05() {
   known_result.add_constraint(B <= 2);
   known_result.add_constraint(A - B <= 2);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.affine_image(A, 2*A - 2, 2) ***");
 
@@ -165,7 +165,7 @@ test06() {
   known_result.add_constraint(A <= 2);
   known_result.add_constraint(B <= 2);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.affine_image(B, 2*A, 2) ***");
 
@@ -189,7 +189,7 @@ test07() {
   known_result.add_constraint(A <= 2);
   known_result.add_constraint(B <= 3);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.affine_image(B, 3*A + 3, 3) ***");
 
@@ -301,7 +301,7 @@ test11() {
   Rational_Box known_result(3);
   known_result.add_constraint(B <= 2);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.affine_image(A, 2*B + C + 2, 4) ***");
 

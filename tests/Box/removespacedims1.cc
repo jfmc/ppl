@@ -48,7 +48,7 @@ test01() {
 
   Rational_Box known_result(4);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.remove_space_dimensions({x3, x5}) ***");
 
@@ -88,7 +88,7 @@ test02() {
 
   Rational_Box known_result(0);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box,
 		    "*** box.remove_space_dimensions"
@@ -120,7 +120,7 @@ test03() {
 
   Rational_Box known_result(1, EMPTY);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box,
 		    "*** box.remove_space_dimensions({x1, x3, x4}) ***");
@@ -143,7 +143,7 @@ test04() {
 
   Rational_Box known_result(0, UNIVERSE);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.remove_higher_space_dimensions(0) ***");
 
@@ -168,7 +168,7 @@ test05() {
 
   Rational_Box known_result(1, EMPTY);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.remove_higher_space_dimensions(1) ***");
 
@@ -194,7 +194,7 @@ test06() {
   Rational_Box known_result(3);
   known_result.add_constraint(x2 >= 5);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.remove_higher_space_dimensions(3) ***");
 
@@ -216,7 +216,7 @@ test07() {
 
   box.remove_higher_space_dimensions(3);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.remove_higher_space_dimensions(3) ***");
 
@@ -304,7 +304,7 @@ test10() {
   known_result.add_constraint(x3 - x1 <= 0);
   known_result.add_constraint(x2 >= 6);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.remove_higher_space_dimensions(3) ***");
 
@@ -343,7 +343,7 @@ test11() {
   known_result.add_constraint(x3 - x1 <= 0);
   known_result.add_constraint(x2 >= 6);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.remove_space_dimensions({x4, x5}) ***");
 

@@ -67,7 +67,7 @@ test01() {
   known_result.add_constraint(A >= 1);
   known_result.add_constraint(B >= 1);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(known_result, "*** known_result ***");
 

@@ -506,7 +506,7 @@ test06() {
   known_result.add_constraint(B >= -2);
   known_result.add_constraint(B <= 4);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.refine(A - 2*B >= 0) ***");
   print_constraints(known_result, "*** known_result ***");
@@ -531,7 +531,7 @@ test07() {
   Rational_Box known_result(1);
   known_result.add_constraint(A == 1);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.refine(c) ***");
   print_constraints(known_result, "*** known_result ***");

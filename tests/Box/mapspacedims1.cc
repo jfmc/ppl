@@ -37,7 +37,7 @@ test01() {
 
   Rational_Box known_result;
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.map_space_dimensions(function) ***");
 
@@ -57,7 +57,7 @@ test02() {
 
   Rational_Box known_result(0, EMPTY);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.map_space_dimensions(function) ***");
 
@@ -79,7 +79,7 @@ test03() {
 
   Rational_Box known_result(2, EMPTY);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.map_space_dimensions(function) ***");
 
@@ -112,7 +112,7 @@ test04() {
   known_result.add_constraint(x == 1);
   known_result.add_constraint(y - x <= 3);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.map_space_dimensions(function) ***");
 
@@ -143,7 +143,7 @@ test05() {
 
   Rational_Box known_result(1);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.map_space_dimensions(function) ***");
 
@@ -175,7 +175,7 @@ test06() {
 
   Rational_Box known_result(2);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.map_space_dimensions(function) ***");
 
@@ -206,7 +206,7 @@ test07() {
   known_result.add_constraint(y <= 1);
   known_result.add_constraint(x - y <= 3);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.map_space_dimension(function) ***");
 
@@ -244,7 +244,7 @@ test08() {
   known_result.add_constraint(C >= 0);
   known_result.add_constraint(B - C == 0);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.map_space_dimensions(function) ***");
 
@@ -266,7 +266,7 @@ test09() {
 
   Rational_Box known_result(0);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.map_space_dimension(function) ***");
 

@@ -51,7 +51,7 @@ test01() {
   known_result.add_constraint(x1 <= 5);
   known_result.add_constraint(x1 - x2 <= 20);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** box1.box_hull_assign(box2) ***");
 
@@ -88,7 +88,7 @@ test02() {
   known_result.add_constraint(x - y <= 8);
   known_result.add_constraint(y - x <= 2);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** box1.box_hull_assign(box2) ***");
 
@@ -119,7 +119,7 @@ test03() {
 
   box1.box_hull_assign(box2);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** box1.box_hull_assign(box2) ***");
 
@@ -156,7 +156,7 @@ test04() {
   known_result.add_constraint(A - B <= 8);
   known_result.add_constraint(B - A <= 2);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** box1.box_hull_assign(box2) ***");
 
@@ -227,7 +227,7 @@ test07() {
   Rational_Box known_result(1);
   known_result.add_constraint(A <= 3);
 
-  bool ok = (Rational_Box(box1) == known_result) ;
+  bool ok = check_result(box1, known_result) ;
 
   print_constraints(box1, "*** box1.box_hull_assign(box2) ***");
 

@@ -51,7 +51,7 @@ test01() {
   known_result.add_constraint(-y <= 6);
   known_result.add_constraint(y <= 7);
 
-  bool ok = (Rational_Box(box2) == known_result);
+  bool ok = check_result(box2, known_result);
 
   print_constraints(box2, "*** box2.CC76_narrowing_assign(box1) ***");
 
@@ -84,7 +84,7 @@ test02() {
   known_result.add_constraint(-x <= 2);
   known_result.add_constraint(x <= 3);
 
-  bool ok = (Rational_Box(box2) == known_result);
+  bool ok = check_result(box2, known_result);
 
   print_constraints(box2, "*** box2.CC76_narrowing_assign(box1) ***");
 
@@ -114,7 +114,7 @@ test03() {
 
   box2.CC76_narrowing_assign(box1);
 
-  bool ok = (Rational_Box(box2) == known_result);
+  bool ok = check_result(box2, known_result);
 
   print_constraints(box2, "*** box2.CC76_narrowing_assign(box1) ***");
 
@@ -145,7 +145,7 @@ test04() {
 
   Rational_Box known_result(3, EMPTY);
 
-  bool ok = (Rational_Box(box2) == known_result);
+  bool ok = check_result(box2, known_result);
 
   print_constraints(box2, "*** box2.CC76_narrowing_assign(box1) ***");
 
@@ -163,7 +163,7 @@ test05() {
 
   box2.CC76_narrowing_assign(box1);
 
-  bool ok = (Rational_Box(box2) == known_result);
+  bool ok = check_result(box2, known_result);
 
   print_constraints(box2, "*** box2.CC76_narrowing_assign(box1) ***");
 

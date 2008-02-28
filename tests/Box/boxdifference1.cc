@@ -48,7 +48,7 @@ test01() {
 
   Rational_Box known_result(2, EMPTY);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** after box1.box_difference_assign(ph2) ***");
 
@@ -69,7 +69,7 @@ test02() {
   cs.insert(Linear_Expression(-4) >= 0);
   Rational_Box known_result(cs);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** after box1.box_difference_assign(box2) ***");
 
@@ -105,7 +105,7 @@ test03() {
   known_result.add_constraint(y >= 2);
   known_result.add_constraint(y - x >= 1);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** after box1.box_difference_assign(box2) ***");
 
@@ -136,7 +136,7 @@ test04() {
 
   box1.box_difference_assign(box2);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** after box1.box_difference_assign(box2) ***");
 
@@ -167,7 +167,7 @@ test05() {
 
   Rational_Box known_result(2, EMPTY);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** after box1.box_difference_assign(box2) ***");
 
@@ -202,7 +202,7 @@ test06() {
   known_result.add_constraint(y >= 1);
   known_result.add_constraint(z <= 2);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** after box1.box_difference_assign(box2) ***");
 
@@ -237,7 +237,7 @@ test07() {
 
   box1.box_difference_assign(box2);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** after box1.box_difference_assign(box2) ***");
   print_constraints(known_result, "*** known_result ***");

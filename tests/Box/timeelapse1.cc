@@ -75,7 +75,7 @@ test02() {
   known_result.add_constraint(x >= 0);
   known_result.add_constraint(y >= 0);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** box1_time_elapse_assign(box2) ***");
 
@@ -104,7 +104,7 @@ test03() {
   Rational_Box known_result(2);
   known_result.add_constraint(y >= 1);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** box1_time_elapse_assign(box2) ***");
 
@@ -131,7 +131,7 @@ test04() {
 
   Rational_Box known_result(3);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** box1_time_elapse_assign(box2) ***");
 
@@ -165,7 +165,7 @@ test05() {
 
   Rational_Box known_result(3, EMPTY);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** box1.time_elapse_assign(box2) ***");
 

@@ -41,7 +41,7 @@ test01() {
   Rational_Box known_result(3);
   known_result.add_constraint(y <= 2);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.affine_preimage(x, y) ***");
 
@@ -65,7 +65,7 @@ test02() {
   Rational_Box known_result(2);
   known_result.add_constraint(B >= 0);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.affine_preimage(A, B-1) ***");
 
@@ -89,7 +89,7 @@ test03() {
   known_result.add_constraint(A >= 1);
   known_result.add_constraint(B >= 0);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.affine_preimage(A, 2*A + 2, 2) ***");
 
@@ -112,7 +112,7 @@ test04() {
   Rational_Box known_result(2);
   known_result.add_constraint(A >= 2);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.affine_preimage(B, 3) ***");
 

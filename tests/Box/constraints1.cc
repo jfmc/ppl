@@ -33,7 +33,7 @@ test01() {
   Constraint_System cs = box1.constraints();
   TBox box2(cs);
 
-  bool ok = (Rational_Box(box2) == known_result);
+  bool ok = check_result(box2, known_result);
 
   print_constraints(box1, "*** box1 ***");
   print_constraints(box2, "*** box2 ***");
@@ -51,7 +51,7 @@ test02() {
   Constraint_System cs = box1.constraints();
   TBox box2(cs);
 
-  bool ok = (Rational_Box(box2) == known_result);
+  bool ok = check_result(box2, known_result);
 
   print_constraints(box1, "*** box1 ***");
   print_constraints(box2, "*** box2 ***");
@@ -79,7 +79,7 @@ test03() {
   Constraint_System cs = box1.constraints();
   TBox box2(cs);
 
-  bool ok = (Rational_Box(box2) == known_result);
+  bool ok = check_result(box2, known_result);
 
   print_constraints(box1, "*** box1 ***");
   print_constraints(box2, "*** box2 ***");
@@ -109,7 +109,7 @@ test04() {
 
   Rational_Box known_result(box1);
 
-  bool ok = (Rational_Box(box2) == known_result);
+  bool ok = check_result(box2, known_result);
 
   return ok;
 }
@@ -126,7 +126,7 @@ test05() {
 
   Rational_Box known_result(0, EMPTY);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box ***");
 
@@ -146,7 +146,7 @@ test06() {
 
   Rational_Box known_result(1, EMPTY);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box ***");
 
