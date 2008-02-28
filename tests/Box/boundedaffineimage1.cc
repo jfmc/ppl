@@ -30,21 +30,21 @@ test01() {
   Variable x(0);
   Variable y(1);
 
-  TBox box1(3);
-  box1.add_constraint(x <= 2);
-  box1.add_constraint(y <= 2);
+  TBox box(3);
+  box.add_constraint(x <= 2);
+  box.add_constraint(y <= 2);
 
-  print_constraints(box1, "*** box1 ***");
+  print_constraints(box, "*** box ***");
 
-  box1.bounded_affine_image(x, y, y);
+  box.bounded_affine_image(x, y, y);
 
   Rational_Box known_result(3);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(x <= 2);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
-  print_constraints(box1, "*** box1.bounded_affine_image(x, y, y) ***");
+  print_constraints(box, "*** box.bounded_affine_image(x, y, y) ***");
 
   return ok;
 }
@@ -271,22 +271,21 @@ test09() {
   Variable x(0);
   Variable y(1);
 
-  TBox box1(3);
-  box1.add_constraint(3*x <= 2);
-  box1.add_constraint(y <= 2);
+  TBox box(3);
+  box.add_constraint(3*x <= 2);
+  box.add_constraint(y <= 2);
 
-  print_constraints(box1, "*** box1 ***");
-  box1.bounded_affine_image(x, x + 4, x + 4, -1);
+  print_constraints(box, "*** box ***");
+  box.bounded_affine_image(x, x + 4, x + 4, -1);
 
   Rational_Box known_result(3);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(3*x >= -14);
 
-  //  bool ok = (Rational_Box(box1) == known_result);
-  bool ok = check_result(box1, known_result, "3.2e-7", "3.2e-7", "3.2e-7");
+  bool ok = check_result(box, known_result, "3.18e-7", "3.18e-7", "3.18e-7");
 
-  print_constraints(box1,
-		    "*** box1.bounded_affine_image("
+  print_constraints(box,
+		    "*** box.bounded_affine_image("
 		    "x, x + 4, x + 4, -1) ***");
 
   return ok;
@@ -299,22 +298,31 @@ test10() {
   Variable x(0);
   Variable y(1);
 
-  TBox box1(3);
-  box1.add_constraint(3*x < 2);
-  box1.add_constraint(y <= 2);
+  TBox box(3);
+  box.add_constraint(3*x < 2);
+  box.add_constraint(y <= 2);
 
-  print_constraints(box1, "*** box1 ***");
-  box1.bounded_affine_image(x, x + 4, x + 4);
+  print_constraints(box, "*** box ***");
+  box.bounded_affine_image(x, x + 4, x + 4);
 
   Rational_Box known_result(3);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(3*x < 14);
 
-  //  bool ok = (Rational_Box(box1) == known_result);
-  bool ok = check_result(box1, known_result, "3.2e-8", "3.2e-8", "3.2e-8");
+  // FIXME: the commented check_result() fails, while the following one
+  // succeeds.  This indicates the presence of a bug.
+  //bool ok = check_result(box, known_result);
+  bool ok = check_result(box, known_result, "0.0", "0.0", "0.0");
 
-  print_constraints(box1,
-		    "*** box1.bounded_affine_image(x, x + 4, x + 4) ***");
+  print_constraints(box,
+		    "*** box.bounded_affine_image(x, x + 4, x + 4) ***");
+
+  print_constraints(known_result,
+		    "*** known_result ***");
+
+  print_constraints(Rational_Box(box),
+		    "*** Rational_Box(box) ***");
+
   return ok;
 }
 
@@ -326,21 +334,21 @@ test11() {
   Variable x(0);
   Variable y(1);
 
-  TBox box1(3);
-  box1.add_constraint(x <= 2);
-  box1.add_constraint(y <= 2);
+  TBox box(3);
+  box.add_constraint(x <= 2);
+  box.add_constraint(y <= 2);
 
-  print_constraints(box1, "*** box1 ***");
+  print_constraints(box, "*** box ***");
 
-  box1.bounded_affine_image(y, 2*x, 2*x, 2);
+  box.bounded_affine_image(y, 2*x, 2*x, 2);
 
   Rational_Box known_result(3);
   known_result.add_constraint(x <= 2);
   known_result.add_constraint(y <= 2);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
-  print_constraints(box1, "*** box1.bounded_affine_image(y, 2*x, 2*x, 2) ***");
+  print_constraints(box, "*** box.bounded_affine_image(y, 2*x, 2*x, 2) ***");
 
   return ok;
 }
@@ -353,22 +361,22 @@ test12() {
   Variable x(0);
   Variable y(1);
 
-  TBox box1(3);
-  box1.add_constraint(x < 2);
-  box1.add_constraint(y <= 2);
+  TBox box(3);
+  box.add_constraint(x < 2);
+  box.add_constraint(y <= 2);
 
-  print_constraints(box1, "*** box1 ***");
+  print_constraints(box, "*** box ***");
 
-  box1.bounded_affine_image(x, 2*x - 2, 2*x - 2, 2);
+  box.bounded_affine_image(x, 2*x - 2, 2*x - 2, 2);
 
   Rational_Box known_result(3);
   known_result.add_constraint(x < 1);
   known_result.add_constraint(y <= 2);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
-  print_constraints(box1,
-		    "*** box1.bounded_affine_image(x, 2*x-2, 2*x-2, 2) ***");
+  print_constraints(box,
+		    "*** box.bounded_affine_image(x, 2*x-2, 2*x-2, 2) ***");
 
   return ok;
 }
