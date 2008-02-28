@@ -2554,7 +2554,7 @@ generalized_affine_image(const Linear_Expression& lhs,
   bool has_more_than_one_var = false;
   // Initialization is just to avoid an annoying warning.
   dimension_type has_var_id = 0;
-  for ( ; lhs_space_dim > 0; lhs_space_dim--)
+  for ( ; lhs_space_dim > 0; --lhs_space_dim)
     if (lhs.coefficient(Variable(lhs_space_dim - 1)) != 0) {
       if (has_var) {
         Interval& seq_i = seq[lhs_space_dim - 1];
