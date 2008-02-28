@@ -624,9 +624,8 @@ template <typename Interval>
 Poly_Con_Relation
 interval_relation(const Interval& i,
 		  const Constraint::Type constraint_type,
-		  const Coefficient_traits::const_reference num,
-		  const Coefficient_traits::const_reference den)
-{
+		  Coefficient_traits::const_reference num,
+		  Coefficient_traits::const_reference den) {
 
   if (i.is_universe())
     return Poly_Con_Relation::strictly_intersects();

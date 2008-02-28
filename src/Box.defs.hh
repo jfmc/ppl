@@ -1973,8 +1973,8 @@ template <typename Interval>
 Poly_Con_Relation
 interval_relation(const Interval& i,
                   const Constraint::Type constraint_type,
-                  const Coefficient_traits::const_reference num,
-                  const Coefficient_traits::const_reference den = 1);
+                  Coefficient_traits::const_reference num,
+                  Coefficient_traits::const_reference den = 1);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Decodes the constraint \p c as an interval constraint.
