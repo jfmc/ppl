@@ -3079,9 +3079,9 @@ Octagonal_Shape<T>
 template <typename T>
 void
 Octagonal_Shape<T>::refine(const Variable var,
-		    const Relation_Symbol relsym,
-		    const Linear_Expression& expr,
-		    Coefficient_traits::const_reference denominator) {
+			   const Relation_Symbol relsym,
+			   const Linear_Expression& expr,
+			   Coefficient_traits::const_reference denominator) {
   assert(denominator != 0);
   const dimension_type expr_space_dim = expr.space_dimension();
   assert(space_dim >= expr_space_dim);
