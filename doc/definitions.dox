@@ -2483,6 +2483,16 @@ P.&nbsp;Cousot and R.&nbsp;Cousot.
 
 </DD>
 
+<DT> [CC79] </DT>
+<DD>
+\anchor CC79
+P.&nbsp;Cousot and R.&nbsp;Cousot.
+ Systematic design of program analysis frameworks.
+ In <em>Proceedings of the Sixth Annual ACM Symposium on Principles
+  of Programming Languages</em>, pages 269-282, New York, 1979. ACM Press.
+
+</DD>
+
 
 <DT> [CC92] </DT>
 <DD>
