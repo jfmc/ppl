@@ -33,17 +33,48 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <typename Interval>
+inline bool
+Box<Interval>::marked_empty() const {
+  return status.test_empty_up_to_date() && status.test_empty();
+}
+
+template <typename Interval>
+inline void
+Box<Interval>::set_empty() {
+  status.set_empty();
+  status.set_empty_up_to_date();
+}
+
+template <typename Interval>
+inline void
+Box<Interval>::set_nonempty() {
+  status.reset_empty();
+  status.set_empty_up_to_date();
+}
+
+template <typename Interval>
+inline void
+Box<Interval>::set_empty_up_to_date() {
+  status.set_empty_up_to_date();
+}
+
+template <typename Interval>
+inline void
+Box<Interval>::reset_empty_up_to_date() {
+  return status.reset_empty_up_to_date();
+}
+
+template <typename Interval>
 inline
 Box<Interval>::Box(const Box& y)
-  : seq(y.seq), empty(y.empty), empty_up_to_date(y.empty_up_to_date) {
+  : seq(y.seq), status(y.status) {
 }
 
 template <typename Interval>
 inline Box<Interval>&
 Box<Interval>::operator=(const Box& y) {
   seq = y.seq;
-  empty = y.empty;
-  empty_up_to_date = y.empty_up_to_date;
+  status = y.status;
   return *this;
 }
 
@@ -52,8 +83,7 @@ inline void
 Box<Interval>::swap(Box& y) {
   Box& x = *this;
   std::swap(x.seq, y.seq);
-  std::swap(x.empty, y.empty);
-  std::swap(x.empty_up_to_date, y.empty_up_to_date);
+  std::swap(x.status, y.status);
 }
 
 template <typename Interval>
@@ -134,21 +164,15 @@ Box<Interval>::set_interval(const Variable var, const Interval& i) {
     return;
 
   seq[var.id()] = i;
-  empty_up_to_date = false;
+  reset_empty_up_to_date();
 
   assert(OK());
 }
 
 template <typename Interval>
 inline bool
-Box<Interval>::marked_empty() const {
-  return empty_up_to_date && empty;
-}
-
-template <typename Interval>
-inline bool
 Box<Interval>::is_empty() const {
-  return empty_up_to_date ? empty : check_empty();
+  return marked_empty() || check_empty();
 }
 
 template <typename Interval>
@@ -289,12 +313,6 @@ Box<Interval>::get_upper_bound(const dimension_type k, bool& closed,
   d = ur.get_den();
 
   return true;
-}
-
-template <typename Interval>
-inline void
-Box<Interval>::set_empty() {
-  empty = empty_up_to_date = true;
 }
 
 template <typename Interval>

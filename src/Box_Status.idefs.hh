@@ -39,10 +39,19 @@ site: http://www.cs.unipr.it/ppl/ . */
   a legal Status.  In fact:
   - <EM>empty up-to-date</EM> and <EM>empty</EM> excludes <EM>universe</EM>.
 */
+class Status;
+
 class Status {
 public:
-  //! By default Status is the <EM>zero-dim universe</EM> assertion.
+  //! By default Status is the empty set of assertion.
   Status();
+
+  //! Ordinary copy-constructor.
+  Status(const Status& y);
+
+  //! Copy-constructor from a box of different type.
+  template <typename Other_Interval>
+  Status(const typename Box<Other_Interval>::Status& y);
 
   //! \name Test, remove or add an individual assertion from the conjunction.
   //@{
@@ -77,6 +86,7 @@ private:
 
   //! \name Bit-masks for the individual assertions.
   //@{
+  static const flags_t NONE             = 0U;
   static const flags_t EMPTY_UP_TO_DATE = 1U << 0;
   static const flags_t EMPTY            = 1U << 1;
   static const flags_t UNIVERSE         = 1U << 2;

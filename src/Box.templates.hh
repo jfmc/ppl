@@ -49,12 +49,16 @@ Box<Interval>::Box(dimension_type num_dimensions, Degenerate_Element kind)
 					  "n exceeds the maximum "
 					  "allowed space dimension"),
 	   num_dimensions)),
-	empty(kind == EMPTY), empty_up_to_date(true) {
+    status() {
   // In a box that is marked empty the intervals are completely
   // meaningless: we exploit this by avoiding their initialization.
-  if (kind == UNIVERSE)
+  if (kind == UNIVERSE) {
     for (dimension_type i = num_dimensions; i-- > 0; )
       seq[i].assign(UNIVERSE);
+    set_empty_up_to_date();
+  }
+  else
+    set_empty();
   assert(OK());
 }
 
@@ -67,7 +71,7 @@ Box<Interval>::Box(const Constraint_System& cs)
 					  "cs exceeds the maximum "
 					  "allowed space dimension"),
 	   cs.space_dimension())),
-    empty_up_to_date(false) {
+    status() {
   // FIXME: check whether we can avoid the double initialization.
   for (dimension_type i = cs.space_dimension(); i-- > 0; )
     seq[i].assign(UNIVERSE);
@@ -83,7 +87,7 @@ Box<Interval>::Box(const Congruence_System& cgs)
 					  "cgs exceeds the maximum "
 					  "allowed space dimension"),
 	   cgs.space_dimension())),
-    empty_up_to_date(false) {
+    status() {
   // FIXME: check whether we can avoid the double initialization.
   for (dimension_type i = cgs.space_dimension(); i-- > 0; )
     seq[i].assign(UNIVERSE);
@@ -95,8 +99,13 @@ template <typename Other_Interval>
 inline
 Box<Interval>::Box(const Box<Other_Interval>& y)
   : seq(y.space_dimension()),
-    empty(y.empty),
-    empty_up_to_date(y.empty_up_to_date) {
+    // FIXME: why the following does not work?
+    // status(y.status) {
+    status() {
+  // FIXME: remove when the above is fixed.
+  if (y.marked_empty())
+    set_empty();
+
   if (!y.marked_empty())
     for (dimension_type k = y.space_dimension(); k-- > 0; )
       seq[k].assign(y.seq[k]);
@@ -111,8 +120,7 @@ Box<Interval>::Box(const Generator_System& gs)
 					  "gs exceeds the maximum "
 					  "allowed space dimension"),
 	   gs.space_dimension())),
-    empty(false),
-    empty_up_to_date(true) {
+    status() {
   const Generator_System::const_iterator gs_begin = gs.begin();
   const Generator_System::const_iterator gs_end = gs.end();
   if (gs_begin == gs_end) {
@@ -120,6 +128,9 @@ Box<Interval>::Box(const Generator_System& gs)
     set_empty();
     return;
   }
+
+  // The empty flag will be meaningful, whatever happens from now on.
+  set_empty_up_to_date();
 
   const dimension_type space_dim = space_dimension();
   DIRTY_TEMP0(mpq_class, q);
@@ -212,8 +223,7 @@ Box<Interval>::Box(const BD_Shape<T>& bds, Complexity_Class)
 					  "bds exceeds the maximum "
 					  "allowed space dimension"),
 	   bds.space_dimension())),
-    empty(false),
-    empty_up_to_date(true) {
+    status() {
   // Expose all the interval constraints.
   bds.shortest_path_closure_assign();
   if (bds.marked_empty()) {
@@ -221,6 +231,9 @@ Box<Interval>::Box(const BD_Shape<T>& bds, Complexity_Class)
     assert(OK());
     return;
   }
+
+  // The empty flag will be meaningful, whatever happens from now on.
+  set_empty_up_to_date();
 
   const dimension_type space_dim = space_dimension();
   if (space_dim == 0) {
@@ -263,14 +276,16 @@ Box<Interval>::Box(const Octagonal_Shape<T>& oct, Complexity_Class)
 					  "oct exceeds the maximum "
 					  "allowed space dimension"),
 	   oct.space_dimension())),
-    empty(false),
-    empty_up_to_date(true) {
+    status() {
   // Expose all the interval constraints.
   oct.strong_closure_assign();
   if (oct.marked_empty()) {
     set_empty();
     return;
   }
+
+  // The empty flag will be meaningful, whatever happens from now on.
+  set_empty_up_to_date();
 
   const dimension_type space_dim = space_dimension();
   if (space_dim == 0)
@@ -316,8 +331,10 @@ Box<Interval>::Box(const Polyhedron& ph, Complexity_Class complexity)
 					  "ph exceeds the maximum "
 					  "allowed space dimension"),
 	   ph.space_dimension())),
-    empty(false),
-    empty_up_to_date(true) {
+    status() {
+  // The empty flag will be meaningful, whatever happens from now on.
+  set_empty_up_to_date();
+
   // We do not need to bother about `complexity' if:
   // a) the polyhedron is already marked empty; or ...
   if (ph.marked_empty()) {
@@ -419,8 +436,7 @@ Box<Interval>::Box(const Grid& gr, Complexity_Class)
 					  "gr exceeds the maximum "
 					  "allowed space dimension"),
 	   gr.space_dimension())),
-    empty(false),
-    empty_up_to_date(true) {
+    status() {
 
   // FIXME: here we are not taking advantage of intervals with restrictions!
 
@@ -428,6 +444,9 @@ Box<Interval>::Box(const Grid& gr, Complexity_Class)
     set_empty();
     return;
   }
+
+  // The empty flag will be meaningful, whatever happens from now on.
+  set_empty_up_to_date();
 
   dimension_type space_dim = gr.space_dimension();
 
@@ -501,14 +520,18 @@ Box<Interval>::Box(const Partially_Reduced_Product<D1, D2, R>& dp,
 					  "dp exceeds the maximum "
 					  "allowed space dimension"),
 	   dp.space_dimension())),
-    empty(false),
-    empty_up_to_date(true) {
+    status() {
+  // The empty flag will be meaningful, whatever happens from now on.
+  set_empty_up_to_date();
+
   for (dimension_type i = dp.space_dimension(); i-- > 0; )
     seq[i].assign(UNIVERSE);
+
   {
     Box tmp(dp.domain1(), complexity);
     intersection_assign(tmp);
   }
+
   {
     Box tmp(dp.domain2(), complexity);
     intersection_assign(tmp);
@@ -1222,9 +1245,9 @@ Box<Interval>::is_disjoint_from(const Box& y) const {
 template <typename Interval>
 bool
 Box<Interval>::OK() const {
-  if (empty_up_to_date && !empty) {
+  if (status.test_empty_up_to_date() && !status.test_empty()) {
     Box tmp = *this;
-    tmp.empty_up_to_date = false;
+    tmp.reset_empty_up_to_date();
     if (tmp.check_empty()) {
 #ifndef NDEBUG
       std::cerr << "The box is empty, but it is marked as non-empty."
@@ -1235,7 +1258,7 @@ Box<Interval>::OK() const {
   }
 
   // A box that is not marked empty must have meaningful intervals.
-  if (!empty_up_to_date || !empty) {
+  if (!marked_empty()) {
     for (dimension_type k = seq.size(); k-- > 0; )
       if (!seq[k].OK())
 	return false;
@@ -1266,14 +1289,14 @@ Box<Interval>::affine_dimension() const {
 template <typename Interval>
 bool
 Box<Interval>::check_empty() const {
-  assert(!empty_up_to_date);
-  empty_up_to_date = true;
+  assert(!marked_empty());
+  Box<Interval>& x = const_cast<Box<Interval>&>(*this);
   for (dimension_type k = seq.size(); k-- > 0; )
     if (seq[k].is_empty()) {
-      empty = true;
+      x.set_empty();
       return true;
     }
-  empty = false;
+  x.set_nonempty();;
   return false;
 }
 
@@ -1368,7 +1391,7 @@ Box<Interval>::intersection_assign(const Box& y) {
 
   // FIXME: here we may conditionally exploit a capability of the
   // underlying Interval to eagerly detect empty results.
-  empty_up_to_date = false;
+  reset_empty_up_to_date();
 
   for (dimension_type k = space_dim; k-- > 0; )
     x.seq[k].intersect_assign(y.seq[k]);
@@ -1430,7 +1453,8 @@ Box<Interval>::concatenate_assign(const Box& y) {
   std::copy(y.seq.begin(), y.seq.end(),
 	    std::back_insert_iterator<Sequence>(x.seq));
   // Update the `empty_up_to_date' flag.
-  x.empty_up_to_date = x.empty_up_to_date && y.empty_up_to_date;
+  if (!y.status.test_empty_up_to_date())
+    reset_empty_up_to_date();
 
   assert(x.OK());
 }
@@ -1715,7 +1739,7 @@ Box<Interval>::add_constraint_no_check(const Constraint& c) {
   }
   // FIXME: do check the value returned by `refine' and
   // set `empty' and `empty_up_to_date' as appropriate.
-  empty_up_to_date = false;
+  reset_empty_up_to_date();
   assert(OK());
 }
 
@@ -1770,10 +1794,10 @@ Box<Interval>::add_congruence_no_check(const Congruence& cg) {
   q = -q;
 
   Interval& seq_c = seq[cg_only_var];
-    seq_c.refine_existential(EQUAL, q);
+  seq_c.refine_existential(EQUAL, q);
   // FIXME: do check the value returned by `refine' and
   // set `empty' and `empty_up_to_date' as appropriate.
-  empty_up_to_date = false;
+  reset_empty_up_to_date();
   assert(OK());
 }
 
@@ -1901,7 +1925,7 @@ Box<Interval>::refine_no_check(const Constraint& c) {
 	  && maybe_check_fpu_inexact<Temp_Boundary_Type>() == 1)
 	open = T_YES;
       seq[k].lower_narrow(t_bound, open == T_YES);
-      empty_up_to_date = false;
+      reset_empty_up_to_date();
     maybe_refine_upper_1:
       if (c_type != Constraint::EQUALITY)
 	continue;
@@ -1965,7 +1989,7 @@ Box<Interval>::refine_no_check(const Constraint& c) {
 	  && maybe_check_fpu_inexact<Temp_Boundary_Type>() == 1)
 	open = T_YES;
       seq[k].upper_narrow(t_bound, open == T_YES);
-      empty_up_to_date = false;
+      reset_empty_up_to_date();
     }
     else {
       assert(sgn_a_k < 0);
@@ -2030,7 +2054,7 @@ Box<Interval>::refine_no_check(const Constraint& c) {
 	  && maybe_check_fpu_inexact<Temp_Boundary_Type>() == 1)
 	open = T_YES;
       seq[k].upper_narrow(t_bound, open == T_YES);
-      empty_up_to_date = false;
+      reset_empty_up_to_date();
     maybe_refine_upper_2:
       if (c_type != Constraint::EQUALITY)
 	continue;
@@ -2094,7 +2118,7 @@ Box<Interval>::refine_no_check(const Constraint& c) {
 	  && maybe_check_fpu_inexact<Temp_Boundary_Type>() == 1)
 	open = T_YES;
       seq[k].lower_narrow(t_bound, open == T_YES);
-      empty_up_to_date = false;
+      reset_empty_up_to_date();
     }
   next_k:
     ;
@@ -2937,9 +2961,7 @@ template <typename Interval>
 void
 Box<Interval>::ascii_dump(std::ostream& s) const {
   const char separator = ' ';
-  s << "empty" << separator << (empty ? '1' : '0');
-  s << separator;
-  s << "empty_up_to_date" << separator << (empty_up_to_date ? '1' : '0');
+  status.ascii_dump(s);
   s << separator;
   const dimension_type space_dim = space_dimension();
   s << "space_dim" << separator << space_dim;
@@ -2953,20 +2975,10 @@ PPL_OUTPUT_TEMPLATE_DEFINITIONS(Interval, Box<Interval>)
 template <typename Interval>
 bool
 Box<Interval>::ascii_load(std::istream& s) {
+  if (!status.ascii_load(s))
+    return false;
+
   std::string str;
-
-  bool flag;
-  if (!(s >> str) || str != "empty")
-    return false;
-  if (!(s >> flag))
-    return false;
-  empty = flag;
-  if (!(s >> str) || str != "empty_up_to_date")
-    return false;
-  if (!(s >> flag))
-    return false;
-  empty_up_to_date = flag;
-
   dimension_type space_dim;
   if (!(s >> str) || str != "space_dim")
     return false;

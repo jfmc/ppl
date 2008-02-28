@@ -35,8 +35,21 @@ Box<Interval>::Status::Status(flags_t mask)
 
 template <typename Interval>
 inline
+Box<Interval>::Status::Status(const Status& y)
+  : flags(y.flags) {
+}
+
+template <typename Interval>
+template <typename Other_Interval>
+inline
+Box<Interval>::Status::Status(const typename Box<Other_Interval>::Status& y)
+  : flags(y.flags) {
+}
+
+template <typename Interval>
+inline
 Box<Interval>::Status::Status()
-  : flags(EMPTY_UP_TO_DATE) {
+  : flags(NONE) {
 }
 
 template <typename Interval>
@@ -66,23 +79,19 @@ Box<Interval>::Status::reset(flags_t mask) {
 template <typename Interval>
 inline bool
 Box<Interval>::Status::test_empty_up_to_date() const {
-  return flags == EMPTY_UP_TO_DATE;
+  return test_any(EMPTY_UP_TO_DATE);
 }
 
 template <typename Interval>
 inline void
 Box<Interval>::Status::reset_empty_up_to_date() {
-  // This is a no-op if the current status is not zero-dim.
-  if (flags == EMPTY_UP_TO_DATE)
-    // In the zero-dim space, if it is not the universe it is empty.
-    flags = EMPTY;
+  reset(EMPTY_UP_TO_DATE);
 }
 
 template <typename Interval>
 inline void
 Box<Interval>::Status::set_empty_up_to_date() {
-  // Zero-dim universe is incompatible with anything else.
-  flags = EMPTY_UP_TO_DATE;
+  set(EMPTY_UP_TO_DATE);
 }
 
 template <typename Interval>
@@ -100,7 +109,7 @@ Box<Interval>::Status::reset_empty() {
 template <typename Interval>
 inline void
 Box<Interval>::Status::set_empty() {
-  flags = EMPTY;
+  set(EMPTY);
 }
 
 template <typename Interval>
@@ -124,22 +133,15 @@ Box<Interval>::Status::set_universe() {
 template <typename Interval>
 bool
 Box<Interval>::Status::OK() const {
-  if (test_empty_up_to_date())
-    // Zero-dim universe is OK.
-    return true;
-
-  if (test_empty()) {
-    Status copy = *this;
-    copy.reset_empty();
-    if (copy.test_empty_up_to_date())
-      return true;
-    else {
+  if (test_empty_up_to_date()
+      && test_empty()
+      && test_universe()) {
 #ifndef NDEBUG
-      std::cerr << "The empty flag is incompatible with any other one."
-		<< std::endl;
+    std::cerr
+      << "The status asserts emptiness and universality at the same time."
+      << std::endl;
 #endif
-      return false;
-    }
+    return false;
   }
 
   // Any other case is OK.

@@ -1496,9 +1496,6 @@ public:
   bool get_upper_bound(dimension_type k, bool& closed,
 		       Coefficient& n, Coefficient& d) const;
 
-  //! Causes the box to become empty, i.e., to represent the empty set.
-  void set_empty();
-
   //! Returns a system of constraints defining \p *this.
   Constraint_System constraints() const;
 
@@ -1578,21 +1575,27 @@ private:
   //! The status flags to keep track of the internal state.
   Status status;
 
-  //! Returns <CODE>true</CODE> if and only if the box is known to be empty.
-  /*!
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if the box is known to be empty.
+
     The return value <CODE>false</CODE> does not necessarily
     implies that \p *this is non-empty.
   */
   bool marked_empty() const;
 
-  /*! \brief
-    A Boolean flag indicating emptiness of the box.
-    Only meaningful when \p empty_up_to_date is <CODE>true</CODE>.
-  */
-  mutable bool empty;
+public:
+  //! Causes the box to become empty, i.e., to represent the empty set.
+  void set_empty();
 
-  //! Tells whether or not the flag \p empty is meaningful.
-  mutable bool empty_up_to_date;
+private:
+  //! Marks \p *this as definitely not empty.
+  void set_nonempty();
+
+  //! Asserts the validity of the empty flag of \p *this.
+  void set_empty_up_to_date();
+
+  //! Invalidates empty flag of \p *this.
+  void reset_empty_up_to_date();
 
   /*! \brief
     Checks the hard way whether \p *this is an empty box:
