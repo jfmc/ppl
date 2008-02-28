@@ -1,4 +1,4 @@
-/* Test time_elapse_assign() for particular polyhedra.
+/* Test Box<Interval>::time_elapse_assign().
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -182,9 +182,8 @@ test06() {
   TBox box2(2);
 
   try {
-    // This is an invalid use of the method
-    // Box::time_elapse_assign(box2): it is
-    // illegal to apply the method to two polyhedra that are not
+    // This is an invalid use of the method Box::time_elapse_assign(box2):
+    // it is illegal to apply the method to two boxes that are not
     // dimension-compatible.
     box1.time_elapse_assign(box2);
   }
