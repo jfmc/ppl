@@ -1478,7 +1478,7 @@ public:
   Constraints_Product;
 };
 
-}; // namespace Parma_Polyhedra_Library
+} // namespace Parma_Polyhedra_Library
 
 namespace std {
 
