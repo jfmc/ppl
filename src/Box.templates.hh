@@ -3161,11 +3161,10 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
     const Interval& x_i = x.seq[i];
     const Interval& y_i = y.seq[i];
     // Dealing with the lower bounds.
-    if (x_i.lower_is_unbounded())
-      if (y_i.lower_is_unbounded())
-	continue;
-      else
+    if (x_i.lower_is_unbounded()) {
+      if (!y_i.lower_is_unbounded())
 	goto pinf;
+    }
     else if (y_i.lower_is_unbounded())
       goto pinf;
     else {
