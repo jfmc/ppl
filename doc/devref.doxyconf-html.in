@@ -115,6 +115,8 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/globals.defs.hh \
                          @srcdir@/../src/globals.inlines.hh \
                          @srcdir@/../src/globals.cc \
+                         @srcdir@/../src/math_utilities.defs.hh \
+                         @srcdir@/../src/math_utilities.inlines.hh \
                          @srcdir@/../src/distances.types.hh \
                          @srcdir@/../src/distances.defs.hh \
                          @srcdir@/../src/distances.inlines.hh \
