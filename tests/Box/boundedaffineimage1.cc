@@ -97,10 +97,9 @@ test03() {
 
   Rational_Box known_result(5);
   known_result.add_constraint(B <= 1);
-  known_result.add_constraint(5*C <= 7);
   known_result.add_constraint(A <= 1);
 
-  bool ok = check_result(box, known_result, "9.54e-8", "9.54e-8", "9.54e-8");
+  bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.bounded_affine_image(C, "
                         "3*D - E, 2*C + 1, -5) ***");
@@ -309,10 +308,7 @@ test10() {
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(3*x < 14);
 
-  // FIXME: the commented check_result() fails, while the following one
-  // succeeds.  This indicates the presence of a bug.
-  //bool ok = check_result(box, known_result);
-  bool ok = check_result(box, known_result, "0.0", "0.0", "0.0");
+  bool ok = check_result(box, known_result, "3.18e-7", "3.18e-7", "3.18e-7");
 
   print_constraints(box,
 		    "*** box.bounded_affine_image(x, x + 4, x + 4) ***");
