@@ -2529,7 +2529,8 @@ generalized_affine_image(const Linear_Expression& lhs,
   // coefficients in the lhs.
   bool has_var = false;
   bool has_more_than_one_var = false;
-  dimension_type has_var_id;
+  // Initialization is just to avoid an annoying warning.
+  dimension_type has_var_id = 0;
   for ( ; lhs_space_dim > 0; lhs_space_dim--)
     if (lhs.coefficient(Variable(lhs_space_dim - 1)) != 0) {
       if (has_var) {
