@@ -1946,40 +1946,35 @@ private:
 
 namespace Parma_Polyhedra_Library {
 
-
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  /*! \brief
-    Returns the relations holding between an interval and
-    an interval constraint.
+/*! \brief
+  Returns the relations holding between an interval and
+  an interval constraint.
 
-    \param i
-    The interval;
+  \param i
+  The interval;
 
-    \param constraint_type
-    The constraint type;
+  \param constraint_type
+  The constraint type;
 
-    \param num
-    The numerator of the constraint bound;
+  \param num
+  The numerator of the constraint bound;
 
-    \param den
-    The denominator of the constraint bound
+  \param den
+  The denominator of the constraint bound
 
-    The interval constraint has the form
-    <CODE>den * Variable(0) relsym num</CODE>
-    where relsym is  <CODE>==</CODE>,  <CODE>></CODE> or  <CODE>>=</CODE>
-    depending on the <CODE>constraint_type</CODE>.
-  */
+  The interval constraint has the form
+  <CODE>den * Variable(0) relsym num</CODE>
+  where relsym is  <CODE>==</CODE>,  <CODE>></CODE> or  <CODE>>=</CODE>
+  depending on the <CODE>constraint_type</CODE>.
+*/
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-  template <typename Interval>
-  Poly_Con_Relation
-  interval_relation(const Interval& i,
-		    const Constraint::Type constraint_type,
-		    const Coefficient_traits::const_reference num,
-		    const Coefficient_traits::const_reference den = 1);
-};
-
-namespace Parma_Polyhedra_Library {
-
+template <typename Interval>
+Poly_Con_Relation
+interval_relation(const Interval& i,
+                  const Constraint::Type constraint_type,
+                  const Coefficient_traits::const_reference num,
+                  const Coefficient_traits::const_reference den = 1);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Decodes the constraint \p c as an interval constraint.
