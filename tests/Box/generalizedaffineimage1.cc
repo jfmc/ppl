@@ -48,7 +48,8 @@ test01() {
 
   bool ok = check_result(box, known_result);
 
-  print_constraints(box, "*** box.generalized_affine_image"
+  print_constraints(box,
+                    "*** box.generalized_affine_image"
                     "(B, GREATER_OR_EQUAL, A+2) ***");
   return ok;
 }
@@ -72,7 +73,8 @@ test02() {
 
   bool ok = check_result(box, known_result);
 
-  print_constraints(box, "*** box.generalized_affine_image"
+  print_constraints(box,
+                    "*** box.generalized_affine_image"
 		    "(A, EQUAL, A + 2) ***");
 
   return ok;
@@ -93,7 +95,8 @@ test03() {
 
   bool ok = check_result(box, known_result);
 
-  print_constraints(box, "*** box.generalized_affine_image"
+  print_constraints(box,
+                    "*** box.generalized_affine_image"
 		    "(A, LESS_OR_EQUAL, B + 1) ***");
 
   return ok;
@@ -120,7 +123,8 @@ test04() {
 
   bool ok = check_result(box, known_result);
 
-  print_constraints(box, "*** box.generalized_affine_image(x, "
+  print_constraints(box,
+                    "*** box.generalized_affine_image(x, "
                     "GREATER_OR_EQUAL, 2*x - 2, 2) ***");
 
   return ok;
@@ -147,7 +151,8 @@ test05() {
 
   bool ok = check_result(box, known_result);
 
-  print_constraints(box, "*** box.generalized_affine_image(y, "
+  print_constraints(box,
+                    "*** box.generalized_affine_image(y, "
                     "GREATER_THAN, 2*x - 2, -2) ***");
 
   return ok;
@@ -173,7 +178,8 @@ test06() {
 
   bool ok = check_result(box, known_result);
 
-  print_constraints(box, "*** box.generalized_affine_image(A, "
+  print_constraints(box,
+                    "*** box.generalized_affine_image(A, "
                     "LESS_THAN, 1) ***");
 
   return ok;
@@ -201,8 +207,9 @@ test07() {
 
   bool ok = check_result(box, known_result);
 
-  print_constraints(box, "*** box.generalized_affine_image(A, "
-                        "GREATER_OR_EQUAL, 1) ***");
+  print_constraints(box,
+                    "*** box.generalized_affine_image(A, "
+                    "GREATER_OR_EQUAL, 1) ***");
 
   return ok;
 }
@@ -227,9 +234,10 @@ test08() {
   box.generalized_affine_image(e1, GREATER_OR_EQUAL, e2);
   ph.generalized_affine_image(e1, GREATER_OR_EQUAL, e2);
 
-  bool ok = (Rational_Box(box) == Rational_Box(ph));
+  bool ok = check_result(box, Rational_Box(ph));
 
-  print_constraints(box, "*** box.generalized_affine_image(A, "
+  print_constraints(box,
+                    "*** box.generalized_affine_image(A, "
                     "GREATER_OR_EQUAL, A) ***");
   print_constraints(Rational_Box(ph),
                     "*** Rational_Box(ph).generalized_affine_image(A, "
@@ -259,7 +267,7 @@ test09() {
   box.generalized_affine_image(-B, LESS_OR_EQUAL, Linear_Expression(1));
   ph.generalized_affine_image(-B, LESS_OR_EQUAL, Linear_Expression(1));
 
-  bool ok = (Rational_Box(box) == Rational_Box(ph));
+  bool ok = check_result(box, Rational_Box(ph));
 
   print_constraints(box,
                     "*** box.generalized_affine_image(-B, "
@@ -292,7 +300,7 @@ test10() {
   box.generalized_affine_image(e1, LESS_OR_EQUAL, e2);
   ph.generalized_affine_image(e1, LESS_OR_EQUAL, e2);
 
-  bool ok = (Rational_Box(box) == Rational_Box(ph));
+  bool ok = check_result(box, Rational_Box(ph));
 
   print_constraints(box, "*** box.generalized_affine_image(C, "
                     "LESS_OR_EQUAL, A + 1) ***");
@@ -319,7 +327,7 @@ test11() {
   box.generalized_affine_image(3*x + 2, GREATER_OR_EQUAL, 2*x - 3);
   ph.generalized_affine_image(3*x + 2, GREATER_OR_EQUAL, 2*x - 3);
 
-  bool ok = (Rational_Box(box) == Rational_Box(ph));
+  bool ok = check_result(box, Rational_Box(ph));
 
   print_constraints(box,
 		    "*** box.generalized_affine_image(3*x + 2, "
@@ -378,9 +386,10 @@ test13() {
   ph.generalized_affine_image(2*B + 3*A,
 			      LESS_OR_EQUAL, Linear_Expression(1));
 
-  bool ok = (Rational_Box(box) == Rational_Box(ph));
+  bool ok = check_result(box, Rational_Box(ph));
 
-  print_constraints(box, "*** box.generalized_affine_image(3*A + 2*B, "
+  print_constraints(box,
+                    "*** box.generalized_affine_image(3*A + 2*B, "
                     "LESS_OR_EQUAL, 1) ***");
   print_constraints(Rational_Box(ph),
                     "*** Rational_Box(ph).generalized_affine_image(3*A + 2*B, "
@@ -405,7 +414,7 @@ test14() {
   box.generalized_affine_image(-2*A + 5, EQUAL, -4*B);
   ph.generalized_affine_image(-2*A + 5, EQUAL, -4*B);
 
-  bool ok = (Rational_Box(box) == Rational_Box(ph));
+  bool ok = check_result(box, Rational_Box(ph));
 
   print_constraints(box,
 		    "*** box.generalized_affine_image(-2*A + 5, "
@@ -433,9 +442,10 @@ test15() {
   box.generalized_affine_image(2*B - 5, EQUAL, 3*B);
   ph.generalized_affine_image(2*B - 5, EQUAL, 3*B);
 
-  bool ok = (Rational_Box(box) == Rational_Box(ph));
+  bool ok = check_result(box, Rational_Box(ph));
 
-  print_constraints(box, "*** box.generalized_affine_image(2*B - 5, "
+  print_constraints(box,
+                    "*** box.generalized_affine_image(2*B - 5, "
                     "EQUAL, 3*B) ***");
   print_constraints(Rational_Box(ph),
                     "*** Rational_Box(ph).generalized_affine_image("
@@ -463,7 +473,7 @@ test16() {
   ph.generalized_affine_image(Linear_Expression(-4),
                                LESS_OR_EQUAL, A - 3*B + 2*C);
 
-  bool ok = (Rational_Box(box) == Rational_Box(ph));
+  bool ok = check_result(box, Rational_Box(ph));
 
   print_constraints(box,
 		    "*** box.generalized_affine_image(-4, "
@@ -495,9 +505,10 @@ test17() {
   ph.generalized_affine_image(Linear_Expression(2),
 			      GREATER_OR_EQUAL, A - 3*B + 2*C);
 
-  bool ok = (Rational_Box(box) == Rational_Box(ph));
+  bool ok = check_result(box, Rational_Box(ph));
 
-  print_constraints(box, "*** box.generalized_affine_image(2, "
+  print_constraints(box,
+                    "*** box.generalized_affine_image(2, "
                     "GREATER_OR_EQUAL, A - 3*B + 2*C) ***");
   print_constraints(Rational_Box(ph),
                     "*** Rational_Box(ph).generalized_affine_image("
@@ -527,10 +538,11 @@ test18() {
   ph.generalized_affine_image(-2*A - B - 1,
 			      GREATER_OR_EQUAL, 3*A + B + 4*C - 2);
 
-  bool ok = (Rational_Box(box) == Rational_Box(ph));
+  bool ok = check_result(box, Rational_Box(ph));
 
-  print_constraints(box, "*** box.generalized_affine_image(-2*A - B - 1, "
-                        "GREATER_OR_EQUAL, 3*A + B + 4*C - 2) ***");
+  print_constraints(box,
+                    "*** box.generalized_affine_image(-2*A - B - 1, "
+                    "GREATER_OR_EQUAL, 3*A + B + 4*C - 2) ***");
   print_constraints(Rational_Box(ph),
                     "*** Rational_Box(ph).generalized_affine_image("
                     "-2*A - B - 1, GREATER_OR_EQUAL, 3*A + B + 4*C - 2) ***");
@@ -556,13 +568,14 @@ test19() {
   box.generalized_affine_image(-2*C + 3, GREATER_OR_EQUAL, -3*B + 4);
   ph.generalized_affine_image(-2*C + 3, GREATER_OR_EQUAL, -3*B + 4);
 
-  bool ok = (Rational_Box(box) == Rational_Box(ph));
+  bool ok = check_result(box, Rational_Box(ph));
 
-  print_constraints(box, "*** box.generalized_affine_image(-2*C + 3, "
-                        "GREATER_OR_EQUAL, -3*B + 4) ***");
+  print_constraints(box,
+                    "*** box.generalized_affine_image(-2*C + 3, "
+                    "GREATER_OR_EQUAL, -3*B + 4) ***");
   print_constraints(Rational_Box(ph),
                     "*** Rational_Box(ph).generalized_affine_image(-2*C + 3, "
-                        "GREATER_OR_EQUAL, -3*B + 4) ***");
+                    "GREATER_OR_EQUAL, -3*B + 4) ***");
 
   return ok;
 }

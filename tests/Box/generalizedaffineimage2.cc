@@ -226,7 +226,7 @@ test08() {
   box.generalized_affine_image(e1, GREATER_THAN, e2);
   ph.generalized_affine_image(e1, GREATER_THAN, e2);
 
-  bool ok = (Rational_Box(box) == Rational_Box(ph));
+  bool ok = check_result(box, Rational_Box(ph));
 
   print_constraints(box, "*** box.generalized_affine_image(A, "
                     "GREATER_THAN, A) ***");
@@ -258,7 +258,7 @@ test09() {
   box.generalized_affine_image(-B, LESS_THAN, Linear_Expression(1));
   ph.generalized_affine_image(-B, LESS_THAN, Linear_Expression(1));
 
-  bool ok = (Rational_Box(box) == Rational_Box(ph));
+  bool ok = check_result(box, Rational_Box(ph));
 
   print_constraints(box,
                     "*** box.generalized_affine_image(-B, "
@@ -291,7 +291,7 @@ test10() {
   box.generalized_affine_image(e1, LESS_THAN, e2);
   ph.generalized_affine_image(e1, LESS_THAN, e2);
 
-  bool ok = (Rational_Box(box) == Rational_Box(ph));
+  bool ok = check_result(box, Rational_Box(ph));
 
   print_constraints(box, "*** box.generalized_affine_image(C, "
                     "LESS_THAN, A + 1) ***");
@@ -318,7 +318,7 @@ test11() {
   box.generalized_affine_image(3*A + 2, GREATER_THAN, 2*A - 3);
   ph.generalized_affine_image(3*A + 2, GREATER_THAN, 2*A - 3);
 
-  bool ok = (Rational_Box(box) == Rational_Box(ph));
+  bool ok = check_result(box, Rational_Box(ph));
 
   print_constraints(box,
 		    "*** box.generalized_affine_image(3*A + 2, "
@@ -348,7 +348,7 @@ test12() {
   ph.generalized_affine_image(2*B + 3*A,
 			      LESS_THAN, Linear_Expression(1));
 
-  bool ok = (Rational_Box(box) == Rational_Box(ph));
+  bool ok = check_result(box, Rational_Box(ph));
 
   print_constraints(box, "*** box.generalized_affine_image(3*A + 2*B, "
                     "LESS_THAN, 1) ***");
@@ -378,7 +378,7 @@ test13() {
   ph.generalized_affine_image(Linear_Expression(-4),
                                LESS_THAN, A - 3*B + 2*C);
 
-  bool ok = (Rational_Box(box) == Rational_Box(ph));
+  bool ok = check_result(box, Rational_Box(ph));
 
   print_constraints(box,
 		    "*** box.generalized_affine_image(-4, "
@@ -410,7 +410,7 @@ test14() {
   ph.generalized_affine_image(Linear_Expression(2),
 			      GREATER_THAN, A - 3*B + 2*C);
 
-  bool ok = (Rational_Box(box) == Rational_Box(ph));
+  bool ok = check_result(box, Rational_Box(ph));
 
   print_constraints(box, "*** box.generalized_affine_image(2, "
                     "GREATER_THAN, A - 3*B + 2*C) ***");
@@ -442,7 +442,7 @@ test15() {
   ph.generalized_affine_image(-2*A - B - 1,
 			      GREATER_THAN, 3*A + B + 4*C - 2);
 
-  bool ok = (Rational_Box(box) == Rational_Box(ph));
+  bool ok = check_result(box, Rational_Box(ph));
 
   print_constraints(box, "*** box.generalized_affine_image(-2*A - B - 1, "
                         "GREATER_THAN, 3*A + B + 4*C - 2) ***");
@@ -471,7 +471,7 @@ bool
   box.generalized_affine_image(-2*C + 3, GREATER_THAN, -3*B + 4);
   ph.generalized_affine_image(-2*C + 3, GREATER_THAN, -3*B + 4);
 
-  bool ok = (Rational_Box(box) == Rational_Box(ph));
+  bool ok = check_result(box, Rational_Box(ph));
 
   print_constraints(box, "*** box.generalized_affine_image(-2*C + 3, "
                         "GREATER_THAN, -3*B + 4) ***");
