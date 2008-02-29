@@ -1,4 +1,4 @@
-/* Test Box::bounded_affine_image().
+/* Test Box::bounded_affine_preimage().
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
