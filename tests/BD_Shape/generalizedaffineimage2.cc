@@ -72,7 +72,7 @@ test02() {
   bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd, "*** bd.generalized_affine_image(x, "
-		        "GREATER_OR_EQUAL, -x - 3) ***");
+                        "GREATER_OR_EQUAL, -x - 3) ***");
 
   return ok;
 }
@@ -97,7 +97,7 @@ test03() {
   bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd, "*** bd.generalized_affine_image(B, "
-		        "LESS_OR_EQUAL, 3*B + 1, 2) ***");
+                        "LESS_OR_EQUAL, 3*B + 1, 2) ***");
 
   return ok;
 }
@@ -122,7 +122,7 @@ test04() {
   bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd, "*** bd.generalized_affine_image(B, "
-		        "GREATER_OR_EQUAL, B - 2) ***");
+                        "GREATER_OR_EQUAL, B - 2) ***");
 
   return ok;
 }
@@ -147,7 +147,7 @@ test05() {
   bool ok = check_result(bd, known_result, "7.63e-17", "3.82e-17", "1.91e-17");
 
   print_constraints(bd, "*** bd.generalized_affine_image(A, "
-		        "GREATER_OR_EQUAL, 2*A + 3, 2) ***");
+                        "GREATER_OR_EQUAL, 2*A + 3, 2) ***");
 
   return ok;
 }
@@ -203,7 +203,7 @@ test07() {
   bool ok = check_result(bd, known_result);
 
   print_constraints(bd, "*** bd.generalized_affine_image(C, "
-		        "EQUAL, 5*C - 3, 4) ***");
+                        "EQUAL, 5*C - 3, 4) ***");
 
   return ok;
 }
@@ -285,7 +285,7 @@ test10() {
   bool ok = check_result(bd, known_result);
 
   print_constraints(bd, "*** bd.generalized_affine_image(B, "
-		        "EQUAL, 2*A - 4*B + C + 3, 3) ***");
+                        "EQUAL, 2*A - 4*B + C + 3, 3) ***");
 
   return ok;
 }
@@ -341,7 +341,7 @@ test12() {
   bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd,
-		    "*** bd.generalized_affine_image(B-3, EQUAL, B+1) ***");
+                    "*** bd.generalized_affine_image(B-3, EQUAL, B+1) ***");
 
   return ok;
 }

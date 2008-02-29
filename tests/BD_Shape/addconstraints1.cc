@@ -33,17 +33,17 @@ test01() {
   cs.insert(A >= 0);
   cs.insert(B == 5);
 
-  TBD_Shape bd1(2);
-  bd1.add_constraints_and_minimize(cs);
+  TBD_Shape bds(2);
+  bds.add_constraints_and_minimize(cs);
 
-  print_constraints(bd1, "*** bd1.add_constraints_and_minimize(cs) ***");
+  print_constraints(bds, "*** bds.add_constraints_and_minimize(cs) ***");
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(B == 5);
   known_result.add_constraint(B - A <= 5);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
 
   print_constraints(known_result, "*** known_result ***");
 
@@ -55,14 +55,14 @@ test02() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape bd1(2);
+  TBD_Shape bds(2);
 
   try {
     // This is an invalid use of method
     // BD_Shape::add_constraint: it is illegal
     // to add a strict inequality.
-    bd1.add_constraint(x <= 0);
-    bd1.add_constraint(y < 0);
+    bds.add_constraint(x <= 0);
+    bds.add_constraint(y < 0);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -79,14 +79,14 @@ test03() {
   Variable y(1);
   Variable z(2);
 
-  TBD_Shape bd1(2);
+  TBD_Shape bds(2);
 
   try {
     // This is an invalid use of method
     // BD_Shape::add_constraint: it is illegal
     // to add a constraint with bigger dimension.
-    bd1.add_constraint(x <= 0);
-    bd1.add_constraint(y - x + z >= 0);
+    bds.add_constraint(x <= 0);
+    bds.add_constraint(y - x + z >= 0);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;

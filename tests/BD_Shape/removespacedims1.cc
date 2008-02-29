@@ -33,28 +33,28 @@ test01() {
   Variable x5(4);
   Variable x6(5);
 
-  TBD_Shape bd1(6);
-  bd1.add_constraint(x2 - x3 <= 0);
-  bd1.add_constraint(x3 <= 2);
-  bd1.add_constraint(x6 - x5 <= 2);
-  bd1.add_constraint(x5 <= 3);
+  TBD_Shape bds(6);
+  bds.add_constraint(x2 - x3 <= 0);
+  bds.add_constraint(x3 <= 2);
+  bds.add_constraint(x6 - x5 <= 2);
+  bds.add_constraint(x5 <= 3);
 
-  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bds, "*** bds ***");
 
   // This is the set of the variables that we want to remove.
   Variables_Set to_be_removed;
   to_be_removed.insert(x3);
   to_be_removed.insert(x5);
 
-  bd1.remove_space_dimensions(to_be_removed);
+  bds.remove_space_dimensions(to_be_removed);
 
   BD_Shape<mpq_class> known_result(4);
   known_result.add_constraint(x2 <= 2);
   known_result.add_constraint(x4 <= 5);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
 
-  print_constraints(bd1, "*** bd1.remove_space_dimensions({x3, x5}) ***");
+  print_constraints(bds, "*** bds.remove_space_dimensions({x3, x5}) ***");
 
   return ok;
 }
@@ -70,15 +70,15 @@ test02() {
   Variable x7(6);
   Variable x8(7);
 
-  TBD_Shape bd1(8);
-  bd1.add_constraint(x7 - x3 <= 0);
-  bd1.add_constraint(x1 <= 2);
-  bd1.add_constraint(x4 - x8 <= 2);
-  bd1.add_constraint(x5 <= 7);
-  bd1.add_constraint(x2 <= 10);
-  bd1.add_constraint(x6 - x8 <= 4);
+  TBD_Shape bds(8);
+  bds.add_constraint(x7 - x3 <= 0);
+  bds.add_constraint(x1 <= 2);
+  bds.add_constraint(x4 - x8 <= 2);
+  bds.add_constraint(x5 <= 7);
+  bds.add_constraint(x2 <= 10);
+  bds.add_constraint(x6 - x8 <= 4);
 
-  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bds, "*** bds ***");
 
   // This is the set of the variables that we want to remove.
   Variables_Set to_be_removed;
@@ -91,15 +91,15 @@ test02() {
   to_be_removed.insert(x7);
   to_be_removed.insert(x8);
 
-  bd1.remove_space_dimensions(to_be_removed);
+  bds.remove_space_dimensions(to_be_removed);
 
   BD_Shape<mpq_class> known_result(0);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
 
-  print_constraints(bd1,
-		    "*** bd1.remove_space_dimensions"
-		    "({x1, x2, x3, x4, x5, x6, x7, x8}) ***");
+  print_constraints(bds,
+                    "*** bds.remove_space_dimensions"
+                    "({x1, x2, x3, x4, x5, x6, x7, x8}) ***");
 
   return ok;
 }
@@ -111,27 +111,27 @@ test03() {
   Variable x3(2);
   Variable x4(3);
 
-  TBD_Shape bd1(4);
-  bd1.add_constraint(x1 - x2 <=1);
-  bd1.add_constraint(x2 - x3 <= -2);
-  bd1.add_constraint(x3 - x1 <= 0);
-  bd1.add_constraint(x2 >= 5);
-  bd1.add_constraint(x4 >= 3);
+  TBD_Shape bds(4);
+  bds.add_constraint(x1 - x2 <=1);
+  bds.add_constraint(x2 - x3 <= -2);
+  bds.add_constraint(x3 - x1 <= 0);
+  bds.add_constraint(x2 >= 5);
+  bds.add_constraint(x4 >= 3);
 
-  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bds, "*** bds ***");
 
   Variables_Set to_be_removed;
   to_be_removed.insert(x1);
   to_be_removed.insert(x3);
   to_be_removed.insert(x4);
 
-  bd1.remove_space_dimensions(to_be_removed);
+  bds.remove_space_dimensions(to_be_removed);
 
   BD_Shape<mpq_class> known_result(1, EMPTY);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
 
-  print_constraints(bd1, "*** bd1.remove_space_dimensions({x1, x3, x4}) ***");
+  print_constraints(bds, "*** bds.remove_space_dimensions({x1, x3, x4}) ***");
 
   return ok;
 }

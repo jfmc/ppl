@@ -42,13 +42,13 @@ test01() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(A >= 0);
-  bd.add_constraint(B >= 0);
+  TBD_Shape bds(2);
+  bds.add_constraint(A >= 0);
+  bds.add_constraint(B >= 0);
 
   fstream f;
   open(f, my_file, ios_base::out);
-  bd.ascii_dump(f);
+  bds.ascii_dump(f);
   close(f);
 
   open(f, my_file, ios_base::in | ios_base::out);
@@ -76,13 +76,13 @@ test02() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(A >= 0);
-  bd.add_constraint(B >= 1);
+  TBD_Shape bds(2);
+  bds.add_constraint(A >= 0);
+  bds.add_constraint(B >= 1);
 
   fstream f;
   open(f, my_file, ios_base::out);
-  bd.ascii_dump(f);
+  bds.ascii_dump(f);
   close(f);
 
   open(f, my_file, ios_base::in | ios_base::out);
@@ -110,13 +110,13 @@ test03() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(A >= 0);
-  bd.add_constraint(B >= 2);
+  TBD_Shape bds(2);
+  bds.add_constraint(A >= 0);
+  bds.add_constraint(B >= 2);
 
   fstream f;
   open(f, my_file, ios_base::out);
-  bd.ascii_dump(f);
+  bds.ascii_dump(f);
   close(f);
 
   open(f, my_file, ios_base::in | ios_base::out);
@@ -144,13 +144,13 @@ test04() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(A >= 0);
-  bd.add_constraint(B >= 3);
+  TBD_Shape bds(2);
+  bds.add_constraint(A >= 0);
+  bds.add_constraint(B >= 3);
 
   fstream f;
   open(f, my_file, ios_base::out);
-  bd.ascii_dump(f);
+  bds.ascii_dump(f);
   close(f);
 
   open(f, my_file, ios_base::in | ios_base::out);
@@ -178,13 +178,13 @@ test05() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(A >= 0);
-  bd.add_constraint(B >= 3);
+  TBD_Shape bds(2);
+  bds.add_constraint(A >= 0);
+  bds.add_constraint(B >= 3);
 
   fstream f;
   open(f, my_file, ios_base::out);
-  bd.ascii_dump(f);
+  bds.ascii_dump(f);
   close(f);
 
   open(f, my_file, ios_base::in | ios_base::out);
@@ -212,24 +212,24 @@ test06() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd1(3);
-  bd1.add_constraint(A - B >= 2);
-  bd1.add_constraint(B >= 0);
+  TBD_Shape bds1(3);
+  bds1.add_constraint(A - B >= 2);
+  bds1.add_constraint(B >= 0);
 
   fstream f;
   open(f, my_file, ios_base::out);
-  bd1.ascii_dump(f);
+  bds1.ascii_dump(f);
   close(f);
 
   open(f, my_file, ios_base::in);
-  TBD_Shape bd2;
-  bd2.ascii_load(f);
+  TBD_Shape bds2;
+  bds2.ascii_load(f);
   close(f);
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
 
-  bool ok = (bd1 == bd2);
+  bool ok = (bds1 == bds2);
 
   return ok;
 }

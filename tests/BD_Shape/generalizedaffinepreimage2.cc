@@ -48,8 +48,8 @@ test01() {
   bool ok = check_result(bd, known_result, "3.66e-7", "2.28e-7", "1.59e-7");
 
   print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(B, "
-		    "EQUAL, -1) ***");
+                    "*** bd.generalized_affine_preimage(B, "
+                    "EQUAL, -1) ***");
 
   return ok;
 }
@@ -73,8 +73,8 @@ test02() {
   bool ok = check_result(bd, known_result);
 
   print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(B, "
-		    "GREATER_OR_EQUAL, -1) ***");
+                    "*** bd.generalized_affine_preimage(B, "
+                    "GREATER_OR_EQUAL, -1) ***");
 
   return ok;
 }
@@ -100,8 +100,8 @@ test03() {
   bool ok = check_result(bd,  known_result);
 
   print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(B, "
-		    "EQUAL, 3*A+2) ***");
+                    "*** bd.generalized_affine_preimage(B, "
+                    "EQUAL, 3*A+2) ***");
 
   return ok;
 }
@@ -125,8 +125,8 @@ test04() {
   bool ok = (bd == known_result);
 
   print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(A, "
-		    "LESS_OR_EQUAL, B, 5) ***");
+                    "*** bd.generalized_affine_preimage(A, "
+                    "LESS_OR_EQUAL, B, 5) ***");
 
   return ok;
 }
@@ -150,8 +150,8 @@ test05() {
   bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(A, "
-		    "GREATER_OR_EQUAL, B + 3) ***");
+                    "*** bd.generalized_affine_preimage(A, "
+                    "GREATER_OR_EQUAL, B + 3) ***");
 
   return ok;
 }
@@ -177,8 +177,8 @@ test06() {
   bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(A, "
-		    "GREATER_OR_EQUAL, B + 3) ***");
+                    "*** bd.generalized_affine_preimage(A, "
+                    "GREATER_OR_EQUAL, B + 3) ***");
 
   return ok;
 }
@@ -205,8 +205,8 @@ test07() {
   bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(A - B, "
-		    "GREATER_OR_EQUAL, B + C + 2) ***");
+                    "*** bd.generalized_affine_preimage(A - B, "
+                    "GREATER_OR_EQUAL, B + C + 2) ***");
 
   return ok;
 }
@@ -233,8 +233,8 @@ test08() {
   bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(A - B, "
-		    "GREATER_OR_EQUAL, 2) ***");
+                    "*** bd.generalized_affine_preimage(A - B, "
+                    "GREATER_OR_EQUAL, 2) ***");
 
   return ok;
 }
@@ -261,8 +261,8 @@ test09() {
   bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(A - B, "
-		    "GREATER_OR_EQUAL, C + 2) ***");
+                    "*** bd.generalized_affine_preimage(A - B, "
+                    "GREATER_OR_EQUAL, C + 2) ***");
 
   return ok;
 }
@@ -289,8 +289,8 @@ test10() {
   bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(0, "
-		    "GREATER_OR_EQUAL, 1) ***");
+                    "*** bd.generalized_affine_preimage(0, "
+                    "GREATER_OR_EQUAL, 1) ***");
 
   return ok;
 }
@@ -318,8 +318,8 @@ test11() {
   bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(B + C, "
-		    "GREATER_OR_EQUAL, 3) ***");
+                    "*** bd.generalized_affine_preimage(B + C, "
+                    "GREATER_OR_EQUAL, 3) ***");
 
   return ok;
 }
@@ -348,8 +348,8 @@ test12() {
   bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(B + C, "
-		    "GREATER_OR_EQUAL, B + C) ***");
+                    "*** bd.generalized_affine_preimage(B + C, "
+                    "GREATER_OR_EQUAL, B + C) ***");
 
   return ok;
 }
@@ -375,8 +375,8 @@ test13() {
   bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(B - A, "
-		    "GREATER_OR_EQUAL, A) ***");
+                    "*** bd.generalized_affine_preimage(B - A, "
+                    "GREATER_OR_EQUAL, A) ***");
 
   return ok;
 }
@@ -401,8 +401,8 @@ test14() {
   bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(B - A, "
-		    "EQUAL, 2*A) ***");
+                    "*** bd.generalized_affine_preimage(B - A, "
+                    "EQUAL, 2*A) ***");
 
   return ok;
 }
@@ -430,8 +430,8 @@ test15() {
   bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(A - B, "
-		    "LESS_OR_EQUAL, B - C) ***");
+                    "*** bd.generalized_affine_preimage(A - B, "
+                    "LESS_OR_EQUAL, B - C) ***");
 
   return ok;
 }
@@ -459,8 +459,8 @@ test16() {
   bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(C, "
-		    "LESS_OR_EQUAL, A + B) ***");
+                    "*** bd.generalized_affine_preimage(C, "
+                    "LESS_OR_EQUAL, A + B) ***");
 
   return ok;
 }
@@ -491,8 +491,8 @@ test17() {
   bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(C, "
-		    "EQUAL, A + 2*B + C) ***");
+                    "*** bd.generalized_affine_preimage(C, "
+                    "EQUAL, A + 2*B + C) ***");
 
   return ok;
 }
@@ -518,8 +518,8 @@ test18() {
   bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(A - B, "
-		    "LESS_OR_EQUAL, 10) ***");
+                    "*** bd.generalized_affine_preimage(A - B, "
+                    "LESS_OR_EQUAL, 10) ***");
 
   return ok;
 }
@@ -547,8 +547,8 @@ test19() {
   bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(2*A - 2*C, "
-		    "LESS_OR_EQUAL, 6) ***");
+                    "*** bd.generalized_affine_preimage(2*A - 2*C, "
+                    "LESS_OR_EQUAL, 6) ***");
 
   return ok;
 }
@@ -575,8 +575,8 @@ test20() {
   bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(4*A - 2*B + 3*C, "
-		    "EQUAL, 1 + C) ***");
+                    "*** bd.generalized_affine_preimage(4*A - 2*B + 3*C, "
+                    "EQUAL, 1 + C) ***");
 
   return ok;
 }

@@ -56,8 +56,8 @@ test01() {
   bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(3*B + C, "
-		    "EQUAL, 2*A) ***");
+                    "*** bd.generalized_affine_preimage(3*B + C, "
+                    "EQUAL, 2*A) ***");
 
   return ok;
 }

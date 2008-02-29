@@ -46,7 +46,7 @@ test01() {
   bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd,
-		    "*** bd.bounded_affine_preimage(A, 7, 3) ***");
+                    "*** bd.bounded_affine_preimage(A, 7, 3) ***");
 
   return ok;
 }
@@ -75,7 +75,7 @@ test02() {
   bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd,
-		    "*** bd.bounded_affine_preimage(A, 3, 7) ***");
+                    "*** bd.bounded_affine_preimage(A, 3, 7) ***");
 
   return ok;
 }
@@ -98,12 +98,12 @@ test03() {
   BD_Shape<mpq_class> known_result(2, EMPTY);
 
   bd.bounded_affine_preimage(A, Linear_Expression(3), Linear_Expression(7),
-			      -1);
+                              -1);
 
   bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd,
-		    "*** bd.bounded_affine_preimage(A, 3, 7, -1) ***");
+                    "*** bd.bounded_affine_preimage(A, 3, 7, -1) ***");
 
   return ok;
 }
@@ -126,12 +126,12 @@ test04() {
   BD_Shape<mpq_class> known_result(2, EMPTY);
 
   bd.bounded_affine_preimage(A, Linear_Expression(7),
-			      Linear_Expression(3), -1);
+                              Linear_Expression(3), -1);
 
   bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd,
-		    "*** bd.bounded_affine_preimage(A, 7, 3, -1) ***");
+                    "*** bd.bounded_affine_preimage(A, 7, 3, -1) ***");
 
   return ok;
 }
@@ -163,7 +163,7 @@ test05() {
   bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd,
-		    "*** bd.bounded_affine_preimage(A, 3, A+2) ***");
+                    "*** bd.bounded_affine_preimage(A, 3, A+2) ***");
 
   return ok;
 }
@@ -193,7 +193,7 @@ test06() {
   bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd,
-		    "*** bd.bounded_affine_preimage(A, 3, -A+2) ***");
+                    "*** bd.bounded_affine_preimage(A, 3, -A+2) ***");
 
   return ok;
 }
@@ -222,7 +222,7 @@ test07() {
   bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd,
-		    "*** bd.bounded_affine_preimage(A, 3, B+5) ***");
+                    "*** bd.bounded_affine_preimage(A, 3, B+5) ***");
 
   return ok;
 }
@@ -251,7 +251,7 @@ test08() {
   bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd,
-		    "*** bd.bounded_affine_preimage(A, 3, B-5, -1) ***");
+                    "*** bd.bounded_affine_preimage(A, 3, B-5, -1) ***");
 
   return ok;
 }
@@ -282,7 +282,7 @@ test09() {
   bool ok = check_result(bd, known_result);
 
   print_constraints(bd,
-		    "*** bd.bounded_affine_preimage(A, 2, 4*A + 3*B - 5) ***");
+                    "*** bd.bounded_affine_preimage(A, 2, 4*A + 3*B - 5) ***");
 
   return ok;
 }
@@ -312,8 +312,8 @@ test10() {
   bool ok = check_result(bd, known_result);
 
   print_constraints(bd,
-		    "*** bd.bounded_affine_preimage(A, 2, "
-		    "4*A + 3*B - 5, -2) ***");
+                    "*** bd.bounded_affine_preimage(A, 2, "
+                    "4*A + 3*B - 5, -2) ***");
 
   return ok;
 }
@@ -337,7 +337,7 @@ test11() {
   bool ok = check_result(bd, known_result);
 
   print_constraints(bd,
-		    "*** bd.bounded_affine_preimage(A, A, A) ***");
+                    "*** bd.bounded_affine_preimage(A, A, A) ***");
 
   return ok;
 }

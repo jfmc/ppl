@@ -44,8 +44,8 @@ test01() {
   bool ok = check_result(bd, known_result);
 
   print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(B, "
-		    "GREATER_OR_EQUAL, -1) ***");
+                    "*** bd.generalized_affine_preimage(B, "
+                    "GREATER_OR_EQUAL, -1) ***");
 
   return ok;
 }
@@ -68,8 +68,8 @@ test02() {
   bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(B, "
-		    "LESS_OR_EQUAL, -1) ***");
+                    "*** bd.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, -1) ***");
 
   return ok;
 }
@@ -94,8 +94,8 @@ test03() {
   bool ok = check_result(bd, known_result);
 
   print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(B, "
-		    "LESS_OR_EQUAL, -B+1) ***");
+                    "*** bd.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, -B+1) ***");
 
   return ok;
 }
@@ -120,8 +120,8 @@ test04() {
   bool ok = check_result(bd, known_result);
 
   print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(B, "
-		    "LESS_OR_EQUAL, B+1) ***");
+                    "*** bd.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, B+1) ***");
 
   return ok;
 }
@@ -146,8 +146,8 @@ test05() {
   bool ok = check_result(bd, known_result, "2.13e-8", "1.25e-8", "8.52e-9");
 
   print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(B, "
-		    "LESS_OR_EQUAL, 2*B+1) ***");
+                    "*** bd.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, 2*B+1) ***");
 
   return ok;
 }
@@ -172,8 +172,8 @@ test06() {
   bool ok = check_result(bd, known_result, "2.69e-8", "1.72e-8", "1.20e-8");
 
   print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(B, "
-		    "LESS_OR_EQUAL, -2*B+1) ***");
+                    "*** bd.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, -2*B+1) ***");
 
   return ok;
 }
@@ -198,8 +198,8 @@ test07() {
   bool ok = check_result(bd, known_result, "2.89e-7", "1.85e-7", "1.40e-7");
 
   print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(B, "
-		    "LESS_OR_EQUAL, 3*A-2*B+1) ***");
+                    "*** bd.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, 3*A-2*B+1) ***");
 
   return ok;
 }
@@ -224,8 +224,8 @@ test08() {
   bool ok = check_result(bd, known_result, "5.27e-7", "3.53e-7", "2.59e-7");
 
   print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(B, "
-		    "LESS_OR_EQUAL, -3*A-2*B+1) ***");
+                    "*** bd.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, -3*A-2*B+1) ***");
 
   return ok;
 }
@@ -255,8 +255,8 @@ test09() {
   bool ok = check_result(bd, known_result, "5.48e-6", "2.97e-6", "1.77e-6");
 
   print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(B, "
-		    "LESS_OR_EQUAL, -3*A-2*B+7*C+1, 2) ***");
+                    "*** bd.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, -3*A-2*B+7*C+1, 2) ***");
 
   return ok;
 }
@@ -266,7 +266,7 @@ test10() {
   // If the Coefficient type is not wide enough, do nothing.
   if (std::numeric_limits<Coefficient>::is_bounded
       && (std::numeric_limits<Coefficient>::min() > -203
-	  || std::numeric_limits<Coefficient>::max() < 629))
+          || std::numeric_limits<Coefficient>::max() < 629))
     return true;
 
   Variable A(0);
@@ -294,8 +294,8 @@ test10() {
   bool ok = check_result(bd, known_result, "4.48e-6", "2.36e-6", "1.36e-6");
 
   print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(B, "
-		    "LESS_OR_EQUAL, -3*A-2*B-7*C+1, 3) ***");
+                    "*** bd.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, -3*A-2*B-7*C+1, 3) ***");
 
   return ok;
 }
@@ -322,8 +322,8 @@ test11() {
   bool ok = check_result(bd, known_result, "3.68e-7", "2.41e-7", "1.79e-7");
 
   print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(B, "
-		    "LESS_OR_EQUAL, -3*A-2*B+7*C+1, -2) ***");
+                    "*** bd.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, -3*A-2*B+7*C+1, -2) ***");
 
   return ok;
 }
@@ -355,8 +355,8 @@ test12() {
   bool ok = check_result(bd, known_result, "5.13e-6", "2.73e-6", "1.67e-6");
 
   print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(B, "
-		    "LESS_OR_EQUAL, -3*A-2*B-7*C+1, -3) ***");
+                    "*** bd.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, -3*A-2*B-7*C+1, -3) ***");
 
   return ok;
 }
@@ -386,8 +386,8 @@ test13() {
   bool ok = check_result(bd, known_result, "7.39e-6", "4.07e-6", "2.55e-6");
 
   print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(B, "
-		    "GREATER_OR_EQUAL, -3*A-2*B+7*C+1, -2) ***");
+                    "*** bd.generalized_affine_preimage(B, "
+                    "GREATER_OR_EQUAL, -3*A-2*B+7*C+1, -2) ***");
 
   return ok;
 }
@@ -419,8 +419,8 @@ test14() {
   bool ok = check_result(bd, known_result, "1.98e-6", "9.26e-7", "5.25e-7");
 
   print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(B, "
-		    "GREATER_OR_EQUAL, 3*A-2*B-7*C+1, -3) ***");
+                    "*** bd.generalized_affine_preimage(B, "
+                    "GREATER_OR_EQUAL, 3*A-2*B-7*C+1, -3) ***");
 
   return ok;
 }
@@ -449,8 +449,8 @@ test15() {
   bool ok = check_result(bd, known_result, "4.26e-7", "2.44e-7", "1.79e-7");
 
   print_constraints(bd,
-		    "*** bd.generalized_affine_preimage(B, "
-		    "GREATER_OR_EQUAL, 3*A-2*B-7*C+1, -3) ***");
+                    "*** bd.generalized_affine_preimage(B, "
+                    "GREATER_OR_EQUAL, 3*A-2*B-7*C+1, -3) ***");
 
   return ok;
 }

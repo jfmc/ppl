@@ -40,7 +40,7 @@ test01() {
   bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1,
-		    "*** bd1.limited_CC76_extrapolation_assign(bd2) ***");
+                    "*** bd1.limited_CC76_extrapolation_assign(bd2) ***");
 
   return ok;
 }
@@ -72,7 +72,7 @@ test02() {
   bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1,
-		    "*** bd1.limited_CC76_extrapolation_assign(bd2, cs) ***");
+                    "*** bd1.limited_CC76_extrapolation_assign(bd2, cs) ***");
 
   return ok;
 }
@@ -103,7 +103,7 @@ test03() {
   bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1,
-		    "*** bd1.limited_CC76_extrapolation_assign(bd2, cs) ***");
+                    "*** bd1.limited_CC76_extrapolation_assign(bd2, cs) ***");
 
   return ok;
 }
@@ -139,7 +139,7 @@ test04() {
   bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1,
-		    "*** bd1.limited_CC76_extrapolation_assign(bd2, cs) ***");
+                    "*** bd1.limited_CC76_extrapolation_assign(bd2, cs) ***");
 
   return ok;
 }
@@ -173,7 +173,7 @@ test05() {
   bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1,
-		    "*** bd1.limited_CC76_extrapolation_assign(bd2, cs) ***");
+                    "*** bd1.limited_CC76_extrapolation_assign(bd2, cs) ***");
 
   return ok;
 }
@@ -208,7 +208,7 @@ test06() {
   bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1,
-		    "*** bd1.limited_CC76_extrapolation_assign(bd2, cs) ***");
+                    "*** bd1.limited_CC76_extrapolation_assign(bd2, cs) ***");
 
   return ok;
 }
@@ -243,7 +243,7 @@ test07() {
   bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1,
-		    "*** bd1.limited_CC76_extrapolation_assign(bd2, cs) ***");
+                    "*** bd1.limited_CC76_extrapolation_assign(bd2, cs) ***");
 
   return ok;
 }
@@ -277,7 +277,7 @@ test08() {
   bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1,
-		    "*** bd1.limited_CC76_extrapolation_assign(bd2, cs) ***");
+                    "*** bd1.limited_CC76_extrapolation_assign(bd2, cs) ***");
 
   return ok;
 }
@@ -317,7 +317,7 @@ test09() {
   bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1,
-		    "*** bd1.limited_CC76_extrapolation_assign(bd2, cs) ***");
+                    "*** bd1.limited_CC76_extrapolation_assign(bd2, cs) ***");
 
   return ok;
 }
@@ -356,7 +356,7 @@ test10() {
   bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1,
-		    "*** bd1.limited_CC76_extrapolation_assign(bd2) ***");
+                    "*** bd1.limited_CC76_extrapolation_assign(bd2) ***");
 
   return ok;
 }
@@ -384,7 +384,7 @@ test11() {
   bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1,
-		    "*** bd1.limited_CC76_extrapolation_assign(bd2) ***");
+                    "*** bd1.limited_CC76_extrapolation_assign(bd2) ***");
 
   return ok;
 }
@@ -417,7 +417,7 @@ test12() {
   bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1,
-		    "*** bd1.limited_CC76_extrapolation_assign(bd2, cs2) ***");
+                    "*** bd1.limited_CC76_extrapolation_assign(bd2, cs2) ***");
 
   return ok;
 }

@@ -334,34 +334,34 @@ add_edges(BD_Shape<T>& bd, const Edge* edges, unsigned n) {
     nout << "a = " << a << "; b = " << b << endl;
 
     bd.add_constraint(a*Variable(edges[i].from) - a*Variable(edges[i].to)
-		      <= b);
+                      <= b);
   }
 }
 
-#define DISTANCE(To, Temp)			       \
+#define DISTANCE(To, Temp)                             \
   do { \
     Checked_Number<To, Extended_Number_Policy> distance; \
-    rectilinear_distance_assign<Temp>(distance, qbd1, qbd2, ROUND_UP); \
+    rectilinear_distance_assign<Temp>(distance, qbds1, qbds2, ROUND_UP); \
     nout << "Rectilinear distance<" #To ", " #Temp "> = " << distance \
          << endl; \
-    euclidean_distance_assign<Temp>(distance, qbd1, qbd2, ROUND_UP); \
+    euclidean_distance_assign<Temp>(distance, qbds1, qbds2, ROUND_UP); \
     nout << "Euclidean distance<" #To ", " #Temp "> = " << distance \
          << endl; \
-    l_infinity_distance_assign<Temp>(distance, qbd1, qbd2, ROUND_UP); \
+    l_infinity_distance_assign<Temp>(distance, qbds1, qbds2, ROUND_UP); \
     nout << "L-infinity distance<" #To ", " #Temp "> = " << distance \
          << endl; \
   } while (0)
 
 bool
 test01() {
-  BD_Shape<mpq_class> qbd1(126);
-  add_edges(qbd1, hawaii, sizeof(hawaii)/sizeof(Edge));
+  BD_Shape<mpq_class> qbds1(126);
+  add_edges(qbds1, hawaii, sizeof(hawaii)/sizeof(Edge));
 
   TBD_Shape tbd(126);
   add_edges(tbd, hawaii, sizeof(hawaii)/sizeof(Edge));
 
-  BD_Shape<mpq_class> qbd2(tbd);
-  if (!qbd2.contains(qbd1))
+  BD_Shape<mpq_class> qbds2(tbd);
+  if (!qbds2.contains(qbds1))
     return false;
 
   // FIXME!!!
@@ -405,7 +405,7 @@ test02() {
   Variable C(2);
   Variable D(3);
 
-  BDS bd1(4);
+  BDS bds1(4);
   Constraint_System cs;
   Coefficient numer, denom;
 
@@ -418,25 +418,25 @@ test02() {
   denom = q_1_2.get_den();
   cs.insert(denom*C - denom*D >= -numer);
 
-  bd1.add_constraints(cs);
+  bds1.add_constraints(cs);
 
-  print_constraints(bd1.constraints(), "*** BEFORE FIRST Floyd-Warshall ***");
+  print_constraints(bds1.constraints(), "*** BEFORE FIRST Floyd-Warshall ***");
   nout << "\n";
 
   // Force application of Floyd-Warshall.
-  bd1.is_empty();
+  bds1.is_empty();
 
-  print_constraints(bd1.constraints(), "*** AFTER FIRST Floyd-Warshall ***");
+  print_constraints(bds1.constraints(), "*** AFTER FIRST Floyd-Warshall ***");
   nout << "\n";
 
   // Copy constraints (so that the BDS is marked as not closed)
   // and then force again application of Floyd-Warshall.
-  BDS bd2(bd1.constraints());
-  bd2.is_empty();
+  BDS bds2(bds1.constraints());
+  bds2.is_empty();
 
-  print_constraints(bd2.constraints(), "*** AFTER SECOND Floyd-Warshall ***");
+  print_constraints(bds2.constraints(), "*** AFTER SECOND Floyd-Warshall ***");
 
-  bool ok = bd1.contains(bd2) && !bd2.contains(bd1);
+  bool ok = bds1.contains(bds2) && !bds2.contains(bds1);
 
   return ok;
 }
@@ -515,35 +515,35 @@ test03() {
   denom = q_1_7.get_den();
   cs.insert(denom*F - denom*E <= -numer);
 
-  BDS bd1(10);
-  bd1.add_constraints(cs);
-  print_constraints(bd1.constraints(), "*** BEFORE FIRST Floyd-Warshall ***");
+  BDS bds1(10);
+  bds1.add_constraints(cs);
+  print_constraints(bds1.constraints(), "*** BEFORE FIRST Floyd-Warshall ***");
   nout << "\n";
 
   // Force application of Floyd-Warshall.
-  bd1.is_empty();
+  bds1.is_empty();
 
-  print_constraints(bd1.constraints(), "*** AFTER FIRST Floyd-Warshall ***");
+  print_constraints(bds1.constraints(), "*** AFTER FIRST Floyd-Warshall ***");
   nout << "\n";
 
   // Copy constraints (so that the BDS is marked as not closed)
   // and then force again application of Floyd-Warshall.
-  BDS bd2(bd1.constraints());
-  bd2.is_empty();
+  BDS bds2(bds1.constraints());
+  bds2.is_empty();
 
-  print_constraints(bd2.constraints(), "*** AFTER SECOND Floyd-Warshall ***");
+  print_constraints(bds2.constraints(), "*** AFTER SECOND Floyd-Warshall ***");
   nout << "\n";
 
   // Copy constraints (so that the BDS is marked as not closed)
   // and then force once again application of Floyd-Warshall.
-  BDS bd3(bd2.constraints());
+  BDS bd3(bds2.constraints());
   bd3.is_empty();
 
-  print_constraints(bd2.constraints(), "*** AFTER THIRD Floyd-Warshall ***");
+  print_constraints(bds2.constraints(), "*** AFTER THIRD Floyd-Warshall ***");
   nout << "\n";
 
-  bool ok = bd1.contains(bd2) && bd2.contains(bd3)
-    && !bd2.contains(bd1) && !bd3.contains(bd2);
+  bool ok = bds1.contains(bds2) && bds2.contains(bd3)
+    && !bds2.contains(bds1) && !bd3.contains(bds2);
 
   return ok;
 }

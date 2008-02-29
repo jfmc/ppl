@@ -42,8 +42,7 @@ test01() {
 
   bd3.time_elapse_assign(bd4);
 
-  bool ok = (bd1.is_empty()
-		&& bd3.is_empty());
+  bool ok = (bd1.is_empty() && bd3.is_empty());
 
   print_constraints(bd1, "*** bd1_time_elapse_assign(bd2) ***");
   print_constraints(bd3, "*** bd3_time_elapse_assign(bd4) ***");
@@ -183,9 +182,8 @@ test06() {
 
   try {
     // This is an invalid use of the method
-    // BD_Shape::time_elapse_assign(bd2): it is
-    // illegal to apply the method to two polyhedra that are not
-    // dimension-compatible.
+    // BD_Shape::time_elapse_assign(bd2): it is illegal to apply the
+    // method to two polyhedra that are not dimension-compatible.
     bd1.time_elapse_assign(bd2);
   }
   catch (std::invalid_argument& e) {

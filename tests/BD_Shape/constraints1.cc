@@ -26,17 +26,17 @@ namespace {
 
 bool
 test01() {
-  TBD_Shape bd1(0, EMPTY);
+  TBD_Shape bds1(0, EMPTY);
 
-  BD_Shape<mpq_class> known_result(bd1);
+  BD_Shape<mpq_class> known_result(bds1);
 
-  Constraint_System cs = bd1.constraints();
-  TBD_Shape bd2(cs);
+  Constraint_System cs = bds1.constraints();
+  TBD_Shape bds2(cs);
 
-  bool ok = (BD_Shape<mpq_class>(bd2) == known_result);
+  bool ok = (BD_Shape<mpq_class>(bds2) == known_result);
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
   print_constraints(cs, "*** cs ***");
 
   return ok;
@@ -44,17 +44,17 @@ test01() {
 
 bool
 test02() {
-  TBD_Shape bd1(0, UNIVERSE);
+  TBD_Shape bds1(0, UNIVERSE);
 
-  BD_Shape<mpq_class> known_result(bd1);
+  BD_Shape<mpq_class> known_result(bds1);
 
-  Constraint_System cs = bd1.constraints();
-  TBD_Shape bd2(cs);
+  Constraint_System cs = bds1.constraints();
+  TBD_Shape bds2(cs);
 
-  bool ok = (BD_Shape<mpq_class>(bd2) == known_result);
+  bool ok = (BD_Shape<mpq_class>(bds2) == known_result);
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
   print_constraints(cs, "*** cs ***");
 
   return ok;
@@ -66,23 +66,23 @@ test03() {
   Variable B(1);
   Variable C(2);
 
-  TBD_Shape bd1(3);
-  bd1.add_constraint(A >= 0);
-  bd1.add_constraint(B >= 0);
-  bd1.add_constraint(B - C >= 1);
-  bd1.add_constraint(C - A <= 9);
+  TBD_Shape bds1(3);
+  bds1.add_constraint(A >= 0);
+  bds1.add_constraint(B >= 0);
+  bds1.add_constraint(B - C >= 1);
+  bds1.add_constraint(C - A <= 9);
 
-  BD_Shape<mpq_class> known_result(bd1);
+  BD_Shape<mpq_class> known_result(bds1);
 
-  bd1.contains(bd1);
+  bds1.contains(bds1);
 
-  Constraint_System cs = bd1.constraints();
-  TBD_Shape bd2(cs);
+  Constraint_System cs = bds1.constraints();
+  TBD_Shape bds2(cs);
 
-  bool ok = (BD_Shape<mpq_class>(bd2) == known_result);
+  bool ok = (BD_Shape<mpq_class>(bds2) == known_result);
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
   print_constraints(cs, "*** cs ***");
 
   return ok;
@@ -94,22 +94,22 @@ test04() {
   Variable B(1);
   Variable C(2);
 
-  TBD_Shape bd1(3);
-  bd1.add_constraint(A >= 0);
-  bd1.add_constraint(B >= 0);
-  bd1.add_constraint(B - C == 1);
-  bd1.add_constraint(C - A <= 9);
+  TBD_Shape bds1(3);
+  bds1.add_constraint(A >= 0);
+  bds1.add_constraint(B >= 0);
+  bds1.add_constraint(B - C == 1);
+  bds1.add_constraint(C - A <= 9);
 
-  Constraint_System cs = bd1.constraints();
-  TBD_Shape bd2(cs);
+  Constraint_System cs = bds1.constraints();
+  TBD_Shape bds2(cs);
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
   print_constraints(cs, "*** cs ***");
 
-  BD_Shape<mpq_class> known_result(bd1);
+  BD_Shape<mpq_class> known_result(bds1);
 
-  bool ok = (BD_Shape<mpq_class>(bd2) == known_result);
+  bool ok = (BD_Shape<mpq_class>(bds2) == known_result);
 
   return ok;
 }
@@ -117,17 +117,17 @@ test04() {
 bool
 test05() {
 
-  TBD_Shape bd1(0);
-  bd1.add_constraint(Linear_Expression(1) == 0);
+  TBD_Shape bds1(0);
+  bds1.add_constraint(Linear_Expression(1) == 0);
 
-  TBD_Shape bd2(0, EMPTY);
+  TBD_Shape bds2(0, EMPTY);
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
 
-  BD_Shape<mpq_class> known_result(bd2);
+  BD_Shape<mpq_class> known_result(bds2);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
 
   return ok;
 }
