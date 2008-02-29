@@ -2338,6 +2338,12 @@ bounded_affine_image(const Variable var,
   if (is_empty())
     return;
 
+  // Add the constraint implied by the `lb_expr' and `ub_expr'.
+  if (denominator > 0)
+    add_constraint(lb_expr <= ub_expr);
+  else
+    add_constraint(lb_expr >= ub_expr);
+
   // Check whether `var' occurs in `lb_expr' and/or `ub_expr'.
   if (lb_expr.coefficient(var) == 0) {
     // Here `var' can only occur in `ub_expr'.
@@ -2446,6 +2452,177 @@ bounded_affine_image(const Variable var,
 template <typename Interval>
 void
 Box<Interval>::
+bounded_affine_preimage(const Variable var,
+			const Linear_Expression& lb_expr,
+			const Linear_Expression& ub_expr,
+			Coefficient_traits::const_reference denominator) {
+  // The denominator cannot be zero.
+  const dimension_type space_dim = space_dimension();
+  if (denominator == 0)
+    throw_generic("bounded_affine_preimage(v, lb, ub, d)", "d == 0");
+
+  // Dimension-compatibility checks.
+  // `var' should be one of the dimensions of the polyhedron.
+  const dimension_type var_space_dim = var.space_dimension();
+  if (space_dim < var_space_dim)
+    throw_dimension_incompatible("bounded_affine_preimage(v, lb, ub, d)",
+				 "v", var);
+  // The dimension of `lb_expr' and `ub_expr' should not be
+  // greater than the dimension of `*this'.
+  const dimension_type lb_space_dim = lb_expr.space_dimension();
+  if (space_dim < lb_space_dim)
+    throw_dimension_incompatible("bounded_affine_preimage(v, lb, ub)",
+				 "lb", lb_expr);
+  const dimension_type ub_space_dim = ub_expr.space_dimension();
+  if (space_dim < ub_space_dim)
+    throw_dimension_incompatible("bounded_affine_preimage(v, lb, ub)",
+				 "ub", ub_expr);
+
+  // Any preimage of an empty polyhedron is empty.
+  if (marked_empty())
+    return;
+
+  // If the implied constraint between `ub_expr and `lb_expr' is
+  // independent of `var', then impose it now.
+  if (ub_expr.coefficient(var) == lb_expr.coefficient(var))
+    if (denominator > 0)
+      add_constraint(lb_expr <= ub_expr);
+    else
+      add_constraint(lb_expr >= ub_expr);
+
+  Interval& seq_var = seq[var.id()];
+  if (!seq_var.is_universe()) {
+
+    // We want to work with a positive denominator,
+    // so the sign and its (unsigned) value are separated.
+    bool denom_sgn = (denominator > 0) ? true : false;
+    TEMP_INTEGER(pos_denominator);
+    pos_denominator = sgn(denominator) * denominator;
+    // Store all the information about the upper and lower bounds
+    // for `var' before making this interval unbounded.
+    bool open_lower = seq_var.lower_is_open();
+    bool unbounded_lower = seq_var.lower_is_unbounded();
+    DIRTY_TEMP0(mpq_class, q_seq_var_lower);
+    DIRTY_TEMP(Coefficient, num_lower);
+    DIRTY_TEMP(Coefficient, den_lower);
+    if (!unbounded_lower) {
+      assign_r(q_seq_var_lower, seq_var.lower(), ROUND_NOT_NEEDED);
+      assign_r(num_lower, q_seq_var_lower.get_num(), ROUND_NOT_NEEDED);
+      if (denom_sgn)
+        assign_r(den_lower, q_seq_var_lower.get_den(), ROUND_NOT_NEEDED);
+      else
+        neg_assign_r(den_lower, q_seq_var_lower.get_den(), ROUND_NOT_NEEDED);
+      num_lower *= pos_denominator;
+      seq_var.lower_set(UNBOUNDED);
+    }
+    bool open_upper = seq_var.upper_is_open();
+    bool unbounded_upper = seq_var.upper_is_unbounded();
+    DIRTY_TEMP0(mpq_class, q_seq_var_upper);
+    DIRTY_TEMP(Coefficient, num_upper);
+    DIRTY_TEMP(Coefficient, den_upper);
+    if (!unbounded_upper) {
+      assign_r(q_seq_var_upper, seq_var.upper(), ROUND_NOT_NEEDED);
+      assign_r(num_upper, q_seq_var_upper.get_num(), ROUND_NOT_NEEDED);
+      if (denom_sgn)
+        assign_r(den_upper, q_seq_var_upper.get_den(), ROUND_NOT_NEEDED);
+      else
+        neg_assign_r(den_upper, q_seq_var_upper.get_den(), ROUND_NOT_NEEDED);
+      num_upper *= pos_denominator;
+      seq_var.upper_set(UNBOUNDED);
+    }
+
+    if (!unbounded_lower) {
+      // The `lb_expr' is revised by removing the `var' component,
+      // multiplying by `-' denominator of the lower bound for `var',
+      // and adding the lower bound for `var' to the inhomogeneous
+      // term.
+      DIRTY_TEMP(Linear_Expression, revised_lb_expr);
+      TEMP_INTEGER(d);
+      d = - (den_lower * ub_expr.inhomogeneous_term()) + num_lower;
+      revised_lb_expr = Linear_Expression(d);
+      for (dimension_type dim = space_dim; dim > 0; dim--)
+        if (var.id() != dim - 1) {
+          d = - den_lower * ub_expr.coefficient(Variable(dim - 1));
+          revised_lb_expr += d * Variable(dim - 1);
+        }
+
+      // Find the minimum value for the revised lower bound expression
+      // and use this to refine the appropriate bound.
+      bool included;
+      DIRTY_TEMP(Coefficient, den);
+      if (minimize(revised_lb_expr, num_lower, den, included)) {
+        DIRTY_TEMP(Coefficient, ub_var_coeff);
+        assign_r(ub_var_coeff, ub_expr.coefficient(var), ROUND_NOT_NEEDED);
+        den_lower *= (den * ub_var_coeff);
+        DIRTY_TEMP0(mpq_class, q);
+        assign_r(q.get_num(), num_lower, ROUND_NOT_NEEDED);
+        assign_r(q.get_den(), den_lower, ROUND_NOT_NEEDED);
+        q.canonicalize();
+        open_lower |= !included;
+        if ((ub_var_coeff >= 0) ? denom_sgn : !denom_sgn)
+          seq_var.lower_narrow(q, open_lower);
+        else
+          seq_var.upper_narrow(q, open_lower);
+        if (seq_var.is_empty()) {
+          set_empty();
+          return;
+        }
+      }
+    }
+
+    if (!unbounded_upper) {
+      // The `ub_expr' is revised by removing the `var' component,
+      // multiplying by `-' denominator of the upper bound for `var',
+      // and adding the upper bound for `var' to the inhomogeneous
+      // term.
+      DIRTY_TEMP(Linear_Expression, revised_ub_expr);
+      TEMP_INTEGER(d);
+      d = - (den_upper * lb_expr.inhomogeneous_term()) + num_upper;
+      revised_ub_expr =  Linear_Expression(d);
+      for (dimension_type dim = space_dim; dim > 0; dim--)
+        if (var.id() != dim - 1) {
+          d = - den_upper * lb_expr.coefficient(Variable(dim - 1));
+          revised_ub_expr += d * Variable(dim - 1);
+        }
+      // Find the maximum value for the revised upper bound expression
+      // and use this to refine the appropriate bound.
+      bool included;
+      DIRTY_TEMP(Coefficient, den);
+      if (maximize(revised_ub_expr, num_upper, den, included)) {
+        DIRTY_TEMP(Coefficient, lb_var_coeff);
+        assign_r(lb_var_coeff, lb_expr.coefficient(var), ROUND_NOT_NEEDED);
+        den_upper *= (den * lb_var_coeff);
+        DIRTY_TEMP0(mpq_class, q);
+        assign_r(q.get_num(), num_upper, ROUND_NOT_NEEDED);
+        assign_r(q.get_den(), den_upper, ROUND_NOT_NEEDED);
+        q.canonicalize();
+        open_upper |= !included;
+        if ((lb_var_coeff >= 0) ? denom_sgn : !denom_sgn)
+          seq_var.upper_narrow(q, open_upper);
+        else
+          seq_var.lower_narrow(q, open_upper);
+        if (seq_var.is_empty()) {
+          set_empty();
+          return;
+        }
+      }
+    }
+  }
+
+  // If the implied constraint between `ub_expr and `lb_expr' is
+  // dependent on `var', then impose on the new box.
+  if (ub_expr.coefficient(var) != lb_expr.coefficient(var))
+    if (denominator > 0)
+      add_constraint(lb_expr <= ub_expr);
+    else
+      add_constraint(lb_expr >= ub_expr);
+
+  assert(OK());
+}
+
+template <typename Interval>
+void
+Box<Interval>::
 generalized_affine_image(const Variable var,
 			 const Relation_Symbol relsym,
 			 const Linear_Expression& expr,
@@ -2503,6 +2680,155 @@ generalized_affine_image(const Variable var,
     // The EQUAL and NOT_EQUAL cases have been already dealt with.
     throw std::runtime_error("PPL internal error");
   }
+  assert(OK());
+}
+
+template <typename Interval>
+void
+Box<Interval>::
+generalized_affine_preimage(const Variable var,
+			    const Relation_Symbol relsym,
+			    const Linear_Expression& expr,
+			    Coefficient_traits::const_reference denominator) {
+  // The denominator cannot be zero.
+  if (denominator == 0)
+    throw_generic("generalized_affine_preimage(v, r, e, d)",
+			   "d == 0");
+
+  // Dimension-compatibility checks.
+  const dimension_type space_dim = space_dimension();
+  // The dimension of `expr' should not be greater than the dimension
+  // of `*this'.
+  if (space_dim < expr.space_dimension())
+    throw_dimension_incompatible("generalized_affine_preimage(v, r, e, d)",
+				 "e", expr);
+  // `var' should be one of the dimensions of the box.
+  const dimension_type var_space_dim = var.space_dimension();
+  if (space_dim < var_space_dim)
+    throw_dimension_incompatible("generalized_affine_preimage(v, r, e, d)",
+				 "v", var);
+  // The relation symbol cannot be a disequality.
+  if (relsym == NOT_EQUAL)
+    throw_generic("generalized_affine_preimage(v, r, e, d)",
+                  "r is the disequality relation symbol");
+
+  // Check whether the affine relation is indeed an affine function.
+  if (relsym == EQUAL) {
+    affine_preimage(var, expr, denominator);
+    return;
+  }
+
+  // Compute the reversed relation symbol to simplify later coding.
+  Relation_Symbol reversed_relsym;
+  switch (relsym) {
+  case LESS_THAN:
+    reversed_relsym = GREATER_THAN;
+    break;
+  case LESS_OR_EQUAL:
+    reversed_relsym = GREATER_OR_EQUAL;
+    break;
+  case GREATER_OR_EQUAL:
+    reversed_relsym = LESS_OR_EQUAL;
+    break;
+  case GREATER_THAN:
+    reversed_relsym = LESS_THAN;
+    break;
+  default:
+    // The EQUAL and NOT_EQUAL cases have been already dealt with.
+    throw std::runtime_error("PPL internal error");
+    break;
+  }
+
+  // Check whether the preimage of this affine relation can be easily
+  // computed as the image of its inverse relation.
+  const Coefficient& var_coefficient = expr.coefficient(var);
+  if (var_coefficient != 0) {
+    Linear_Expression inverse_expr
+      = expr - (denominator + var_coefficient) * var;
+    TEMP_INTEGER(inverse_denominator);
+    neg_assign(inverse_denominator, var_coefficient);
+    Relation_Symbol inverse_relsym
+      = (sgn(denominator) == sgn(inverse_denominator))
+      ? relsym : reversed_relsym;
+    generalized_affine_image(var, inverse_relsym, inverse_expr,
+			     inverse_denominator);
+    return;
+  }
+
+  // Here `var_coefficient == 0', so that the preimage cannot
+  // be easily computed by inverting the affine relation.
+  // Shrink the box by adding the constraint induced
+  // by the affine relation.
+  // First, compute the maximum and minimum value reached by
+  // `denominator*var' on the box as we need to use non-relational
+  // expressions.
+  DIRTY_TEMP(Coefficient, max_num);
+  DIRTY_TEMP(Coefficient, max_den);
+  bool max_included;
+  bool bound_above = maximize(denominator*var, max_num, max_den, max_included);
+  DIRTY_TEMP(Coefficient, min_num);
+  DIRTY_TEMP(Coefficient, min_den);
+  bool min_included;
+  bool bound_below = minimize(denominator*var, min_num, min_den, min_included);
+  // Use the correct relation symbol
+  const Relation_Symbol corrected_relsym
+    = (denominator > 0) ? relsym : reversed_relsym;
+  // Revise the expression to take into account the denominator of the
+  // maximum/minimim value for `var'.
+  DIRTY_TEMP(Linear_Expression, revised_expr);
+  dimension_type dim = space_dim;
+  TEMP_INTEGER(d);
+  if (corrected_relsym == LESS_THAN || corrected_relsym == LESS_OR_EQUAL) {
+    if (bound_below) {
+      for ( ; dim > 0; dim--) {
+        d = min_den * expr.coefficient(Variable(dim - 1));
+        revised_expr
+          += d * Variable(dim - 1);
+      }
+    }
+  }
+  else {
+    if (bound_above) {
+      for ( ; dim > 0; dim--) {
+        d = max_den * expr.coefficient(Variable(dim - 1));
+        revised_expr
+          += d * Variable(dim - 1);
+      }
+    }
+  }
+
+  switch (corrected_relsym) {
+  case LESS_THAN:
+    if (bound_below)
+      add_constraint(min_num < revised_expr);
+    break;
+  case LESS_OR_EQUAL:
+    if (bound_below)
+      (min_included)
+        ? add_constraint(min_num <= revised_expr)
+        : add_constraint(min_num < revised_expr);
+    break;
+  case GREATER_OR_EQUAL:
+    if (bound_above)
+      (max_included)
+        ? add_constraint(max_num >= revised_expr)
+        : add_constraint(max_num > revised_expr);
+    break;
+  case GREATER_THAN:
+    if (bound_above)
+      add_constraint(max_num > revised_expr);
+    break;
+  default:
+    // The EQUAL and NOT_EQUAL cases have been already dealt with.
+    throw std::runtime_error("PPL internal error");
+    break;
+  }
+  // If the shrunk box is empty, its preimage is empty too.
+  if (is_empty())
+    return;
+  Interval& seq_v = seq[var.id()];
+  seq_v.lower_set(UNBOUNDED);
+  seq_v.upper_set(UNBOUNDED);
   assert(OK());
 }
 
@@ -2713,6 +3039,54 @@ generalized_affine_image(const Linear_Expression& lhs,
       throw std::runtime_error("PPL internal error");
     }
   }
+  assert(OK());
+}
+
+template <typename Interval>
+void
+Box<Interval>::
+generalized_affine_preimage(const Linear_Expression& lhs,
+                            const Relation_Symbol relsym,
+                            const Linear_Expression& rhs) {
+  // Dimension-compatibility checks.
+  // The dimension of `lhs' should not be greater than the dimension
+  // of `*this'.
+  dimension_type lhs_space_dim = lhs.space_dimension();
+  const dimension_type space_dim = space_dimension();
+  if (space_dim < lhs_space_dim)
+    throw_dimension_incompatible("generalized_affine_image(e1, r, e2)",
+				 "e1", lhs);
+  // The dimension of `rhs' should not be greater than the dimension
+  // of `*this'.
+  const dimension_type rhs_space_dim = rhs.space_dimension();
+  if (space_dim < rhs_space_dim)
+    throw_dimension_incompatible("generalized_affine_image(e1, r, e2)",
+				 "e2", rhs);
+
+  // The relation symbol cannot be a disequality.
+  if (relsym == NOT_EQUAL)
+    throw_generic("generalized_affine_image(e1, r, e2)",
+                  "r is the disequality relation symbol");
+
+  // Any image of an empty box is empty.
+  if (marked_empty())
+    return;
+
+  // For any dimension occurring in the lhs, swap and change the sign
+  // of this component for the rhs and lhs.  Then use these in a call
+  // to generalized_affine_image/3.
+  Linear_Expression revised_lhs = lhs;
+  Linear_Expression revised_rhs = rhs;
+  for (dimension_type d = lhs_space_dim; d-- > 0; ) {
+    const Variable& var = Variable(d);
+    if (lhs.coefficient(var) != 0) {
+      DIRTY_TEMP(Coefficient, temp);
+      temp = rhs.coefficient(var) + lhs.coefficient(var);
+      revised_rhs -= temp * var;
+      revised_lhs -= temp * var;
+    }
+  }
+  generalized_affine_image(revised_lhs, relsym, revised_rhs);
   assert(OK());
 }
 

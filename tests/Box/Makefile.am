@@ -42,7 +42,6 @@ $(top_builddir)/src/libppl.la \
 
 # Tests that do not compile yet.
 #closure1
-#generalizedaffinepreimage1
 
 # Tests that do not succeed yet (maybe even known result is wrong).
 #ascii_dump_load1
@@ -58,6 +57,7 @@ bgp99extrapolation1 \
 bhz03widening1 \
 bounded1 \
 boundedaffineimage1 \
+boundedaffinepreimage1 \
 boxdifference1 \
 boxhull1 \
 cc76narrowing1 \
@@ -82,6 +82,7 @@ frompolyhedron1 \
 frompolyhedron2 \
 fromspacedim1 \
 generalizedaffineimage1 generalizedaffineimage2 \
+generalizedaffinepreimage1 \
 geomcovers1 \
 intersection1 \
 mapspacedims1 \
@@ -162,6 +163,7 @@ bhz03widening1_SOURCES = bhz03widening1.cc
 bounded1_SOURCES = bounded1.cc
 
 boundedaffineimage1_SOURCES = boundedaffineimage1.cc
+boundedaffinepreimage1_SOURCES = boundedaffinepreimage1.cc
 
 boxdifference1_SOURCES = boxdifference1.cc
 
@@ -213,7 +215,7 @@ fromspacedim1_SOURCES = fromspacedim1.cc
 generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
 generalizedaffineimage2_SOURCES = generalizedaffineimage2.cc
 
-#generalizedaffinepreimage1_SOURCES = generalizedaffinepreimage1.cc
+generalizedaffinepreimage1_SOURCES = generalizedaffinepreimage1.cc
 
 geomcovers1_SOURCES = geomcovers1.cc
 
