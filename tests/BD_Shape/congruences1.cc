@@ -1,6 +1,4 @@
-/* Test Octagonal_Shape::congruences(): we compute the system of
-   congruences of an octagon  that is defined by a system of
-   congruences that contains only a trivially false congruence.
+/* Test BD_Shape::congruences().
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -30,23 +28,23 @@ bool
 test01() {
   Variable A(0);
 
-  TBD_Shape oct1(2);
-  oct1.add_congruence((0*A %= 1) / 0);
+  TBD_Shape bds1(2);
+  bds1.add_congruence((0*A %= 1) / 0);
 
-  print_constraints(oct1, "*** oct1 ***");
+  print_constraints(bds1, "*** bds1 ***");
 
-  BD_Shape<mpq_class> known_result(oct1);
+  BD_Shape<mpq_class> known_result(bds1);
 
-  Constraint_System cs = oct1.minimized_constraints();
+  Constraint_System cs = bds1.minimized_constraints();
 
   print_constraints(cs, "*** cs ***");
 
-  Congruence_System cgs = oct1.congruences();
-  TBD_Shape oct2(cgs);
+  Congruence_System cgs = bds1.congruences();
+  TBD_Shape bds2(cgs);
 
-  print_constraints(oct2, "*** oct2 ***");
+  print_constraints(bds2, "*** bds2 ***");
 
-  bool ok = (BD_Shape<mpq_class>(oct2) == known_result);
+  bool ok = check_result(bds2, known_result);
 
   print_congruences(cgs, "*** cgs ***");
 
@@ -55,16 +53,16 @@ test01() {
 
 bool
 test02() {
-  TBD_Shape oct1(3, EMPTY);
+  TBD_Shape bds1(3, EMPTY);
 
-  print_constraints(oct1, "*** oct1 ***");
+  print_constraints(bds1, "*** bds1 ***");
 
-  BD_Shape<mpq_class> known_result(oct1);
+  BD_Shape<mpq_class> known_result(bds1);
 
-  Congruence_System cgs = oct1.congruences();
-  TBD_Shape oct2(cgs);
+  Congruence_System cgs = bds1.congruences();
+  TBD_Shape bds2(cgs);
 
-  bool ok = (BD_Shape<mpq_class>(oct2) == known_result);
+  bool ok = check_result(bds2, known_result);
 
   print_congruences(cgs, "*** cgs ***");
 
@@ -77,42 +75,42 @@ test03() {
   Variable y(1);
   Variable z(2);
 
-  TBD_Shape oct1(3);
-  oct1.add_congruence((x %= 1) / 0);
-  oct1.add_congruence((y %= 3) / 2);
-  oct1.add_congruence((y - z %= 0) / 3);
+  TBD_Shape bds1(3);
+  bds1.add_congruence((x %= 1) / 0);
+  bds1.add_congruence((y %= 3) / 2);
+  bds1.add_congruence((y - z %= 0) / 3);
 
-  print_constraints(oct1, "*** oct1 ***");
+  print_constraints(bds1, "*** bds1 ***");
 
-  BD_Shape<mpq_class> known_result(oct1);
+  BD_Shape<mpq_class> known_result(bds1);
 
-  Congruence_System cgs = oct1.congruences();
-  TBD_Shape oct2(3);
-  oct2.add_congruences(cgs);
+  Congruence_System cgs = bds1.congruences();
+  TBD_Shape bds2(3);
+  bds2.add_congruences(cgs);
 
-  bool ok = (BD_Shape<mpq_class>(oct2) == known_result);
+  bool ok = check_result(bds2, known_result);
 
-  print_constraints(oct2, "*** oct2 ***");
+  print_constraints(bds2, "*** bds2 ***");
 
   return ok;
 }
 
 bool
 test04() {
-  TBD_Shape oct1(0, EMPTY);
+  TBD_Shape bds1(0, EMPTY);
 
-  print_constraints(oct1, "*** oct1 ***");
+  print_constraints(bds1, "*** bds1 ***");
 
-  BD_Shape<mpq_class> known_result(oct1);
+  BD_Shape<mpq_class> known_result(bds1);
 
-  Congruence_System cgs = oct1.congruences();
-  print_constraints(oct1, "*** oct1 ***");
-  TBD_Shape oct2(cgs.space_dimension(), EMPTY);
+  Congruence_System cgs = bds1.congruences();
+  print_constraints(bds1, "*** bds1 ***");
+  TBD_Shape bds2(cgs.space_dimension(), EMPTY);
 
 
-  print_constraints(oct2, "*** oct2 ***");
+  print_constraints(bds2, "*** bds2 ***");
 
-  bool ok = (BD_Shape<mpq_class>(oct2) == known_result);
+  bool ok = check_result(bds2, known_result);
 
   print_congruences(cgs, "*** cgs ***");
 
@@ -121,16 +119,16 @@ test04() {
 
 bool
 test05() {
-  TBD_Shape oct1(0);
+  TBD_Shape bds1(0);
 
-  print_constraints(oct1, "*** oct1 ***");
+  print_constraints(bds1, "*** bds1 ***");
 
-  BD_Shape<mpq_class> known_result(oct1);
+  BD_Shape<mpq_class> known_result(bds1);
 
-  Congruence_System cgs = oct1.congruences();
-  TBD_Shape oct2(cgs);
+  Congruence_System cgs = bds1.congruences();
+  TBD_Shape bds2(cgs);
 
-  bool ok = (BD_Shape<mpq_class>(oct2) == known_result);
+  bool ok = check_result(bds2, known_result);
 
   print_congruences(cgs, "*** cgs ***");
 
@@ -143,42 +141,41 @@ test06() {
   Variable y(1);
   Variable z(2);
 
-  TBD_Shape oct1(3);
-  oct1.add_congruence((x %= 1) / 0);
-  oct1.add_congruence((y %= 3) / 2);
+  TBD_Shape bds1(3);
+  bds1.add_congruence((x %= 1) / 0);
+  bds1.add_congruence((y %= 3) / 2);
   bool b1 =
-    oct1.add_congruence_and_minimize((y + z %= 0) / 3);
+    bds1.add_congruence_and_minimize((y + z %= 0) / 3);
 
-  print_constraints(oct1, "*** oct1 ***");
+  print_constraints(bds1, "*** bds1 ***");
 
-  BD_Shape<mpq_class> known_result(oct1);
+  BD_Shape<mpq_class> known_result(bds1);
 
-  Congruence_System cgs = oct1.congruences();
-  TBD_Shape oct2(3);
+  Congruence_System cgs = bds1.congruences();
+  TBD_Shape bds2(3);
   bool b2 =
-    oct2.add_congruences_and_minimize(cgs);
+    bds2.add_congruences_and_minimize(cgs);
 
-  bool ok = b1 && b2 && (BD_Shape<mpq_class>(oct2) == known_result);
+  bool ok = b1 && b2 && check_result(bds2, known_result);
 
-  print_constraints(oct2, "*** oct2 ***");
+  print_constraints(bds2, "*** bds2 ***");
 
   return ok;
 }
 
 bool
 test07() {
-  TBD_Shape oct1(0, EMPTY);
+  TBD_Shape bds1(0, EMPTY);
 
-  print_constraints(oct1, "*** oct1 ***");
+  print_constraints(bds1, "*** bds1 ***");
 
-  BD_Shape<mpq_class> known_result(oct1);
+  BD_Shape<mpq_class> known_result(bds1);
 
-  Congruence_System cgs = oct1.congruences();
-  TBD_Shape oct2(cgs.space_dimension(), EMPTY);
-  bool b =
-    oct2.add_congruences_and_minimize(cgs);
+  Congruence_System cgs = bds1.congruences();
+  TBD_Shape bds2(cgs.space_dimension(), EMPTY);
+  bool b = bds2.add_congruences_and_minimize(cgs);
 
-  bool ok = !b && (BD_Shape<mpq_class>(oct2) == known_result);
+  bool ok = !b && check_result(bds2, known_result);
 
   print_congruences(cgs, "*** cgs ***");
 
