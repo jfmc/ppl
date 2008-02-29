@@ -29,13 +29,13 @@ bool
 test01() {
   Rational_Box box(2);
 
-  TBD_Shape bd(box);
+  TBD_Shape bds(box);
 
-  TBD_Shape known_bd(2);
+  TBD_Shape known_bds(2);
 
-  bool ok = (bd == known_bd);
+  bool ok = (bds == known_bds);
 
-  print_constraints(bd, "*** bd(box) ***");
+  print_constraints(bds, "*** bds(box) ***");
 
   return ok;
 }
@@ -48,14 +48,14 @@ test02() {
   Rational_Box box(2);
   box.add_constraint(3*B == 2);
 
-  TBD_Shape bd(box);
+  TBD_Shape bds(box);
 
-  TBD_Shape known_bd(2);
-  known_bd.add_constraint(3*B == 2);
+  TBD_Shape known_bds(2);
+  known_bds.add_constraint(3*B == 2);
 
-  bool ok = (bd == known_bd);
+  bool ok = (bds == known_bds);
 
-  print_constraints(bd, "*** bd(box) ***");
+  print_constraints(bds, "*** bds(box) ***");
 
   return ok;
 }
@@ -70,16 +70,16 @@ test03() {
   box.add_constraint(3*A == -2);
   box.add_constraint(B == -10);
 
-  TBD_Shape bd(box);
+  TBD_Shape bds(box);
 
-  TBD_Shape known_bd(2);
-  known_bd.add_constraint(3*A == -2);
-  known_bd.add_constraint(B == -10);
+  TBD_Shape known_bds(2);
+  known_bds.add_constraint(3*A == -2);
+  known_bds.add_constraint(B == -10);
 
-  bool ok = (bd == known_bd);
+  bool ok = (bds == known_bds);
 
-  print_constraints(bd, "*** bd(box) ***");
-  print_constraints(known_bd, "*** bd(box) ***");
+  print_constraints(bds, "*** bds(box) ***");
+  print_constraints(known_bds, "*** bds(box) ***");
 
   return ok;
 }
@@ -94,14 +94,14 @@ test04() {
   Rational_Box box(3);
   box.add_constraint(5*C == 15);
 
-  TBD_Shape bd(box);
+  TBD_Shape bds(box);
 
-  TBD_Shape known_bd(3);
-  known_bd.add_constraint(5*C == 15);
+  TBD_Shape known_bds(3);
+  known_bds.add_constraint(5*C == 15);
 
-  bool ok = (bd == known_bd);
+  bool ok = (bds == known_bds);
 
-  print_constraints(bd, "*** bd(box) ***");
+  print_constraints(bds, "*** bds(box) ***");
 
   return ok;
 }
@@ -111,13 +111,13 @@ bool
 test05() {
   Rational_Box box(0);
 
-  TBD_Shape bd(box);
+  TBD_Shape bds(box);
 
-  TBD_Shape known_bd;
+  TBD_Shape known_bds;
 
-  bool ok = (bd == known_bd);
+  bool ok = (bds == known_bds);
 
-  print_constraints(bd, "*** bd(box) ***");
+  print_constraints(bds, "*** bds(box) ***");
 
   return ok;
 }
@@ -128,13 +128,13 @@ test06() {
   Rational_Box box(2);
   box.set_empty();
 
-  TBD_Shape bd(box);
+  TBD_Shape bds(box);
 
-  TBD_Shape known_bd(2, EMPTY);
+  TBD_Shape known_bds(2, EMPTY);
 
-  bool ok = (bd == known_bd);
+  bool ok = (bds == known_bds);
 
-  print_constraints(bd, "*** bd(box) ***");
+  print_constraints(bds, "*** bds(box) ***");
 
   return ok;
 }
@@ -150,14 +150,14 @@ test07() {
   Rational_Box box(4);
   box.add_constraint(D == 4);
 
-  TBD_Shape bd(box);
+  TBD_Shape bds(box);
 
-  TBD_Shape known_bd(4);
-  known_bd.add_constraint(D == 4);
+  TBD_Shape known_bds(4);
+  known_bds.add_constraint(D == 4);
 
-  bool ok = (bd == known_bd);
+  bool ok = (bds == known_bds);
 
-  print_constraints(bd, "*** bd(box) ***");
+  print_constraints(bds, "*** bds(box) ***");
 
   return ok;
 }
@@ -174,17 +174,17 @@ test08() {
   box.add_constraint(B >= 0);
   box.add_constraint(B <= 1);
 
-  TBD_Shape bd(box);
+  TBD_Shape bds(box);
 
-  TBD_Shape known_bd(2);
-  known_bd.add_constraint(A >= 0);
-  known_bd.add_constraint(A <= 1);
-  known_bd.add_constraint(B >= 0);
-  known_bd.add_constraint(B <= 1);
+  TBD_Shape known_bds(2);
+  known_bds.add_constraint(A >= 0);
+  known_bds.add_constraint(A <= 1);
+  known_bds.add_constraint(B >= 0);
+  known_bds.add_constraint(B <= 1);
 
-  bool ok = (bd == known_bd);
+  bool ok = (bds == known_bds);
 
-  print_constraints(bd, "*** bd(box) ***");
+  print_constraints(bds, "*** bds(box) ***");
 
   return ok;
 }
@@ -199,15 +199,15 @@ test09() {
   box.add_constraint(A >= 0);
   box.add_constraint(2*B == 1);
 
-  TBD_Shape bd(box);
+  TBD_Shape bds(box);
 
-  TBD_Shape known_bd(2);
-  known_bd.add_constraint(A >= 0);
-  known_bd.add_constraint(2*B == 1);
+  TBD_Shape known_bds(2);
+  known_bds.add_constraint(A >= 0);
+  known_bds.add_constraint(2*B == 1);
 
-  bool ok = (bd == known_bd);
+  bool ok = (bds == known_bds);
 
-  print_constraints(bd, "*** bd(box) ***");
+  print_constraints(bds, "*** bds(box) ***");
 
   return ok;
 }
@@ -222,15 +222,15 @@ test10() {
   box.add_constraint(7*A <= 3);
   box.add_constraint(2*B == 1);
 
-  TBD_Shape bd(box);
+  TBD_Shape bds(box);
 
-  TBD_Shape known_bd(2);
-  known_bd.add_constraint(7*A <= 3);
-  known_bd.add_constraint(2*B == 1);
+  TBD_Shape known_bds(2);
+  known_bds.add_constraint(7*A <= 3);
+  known_bds.add_constraint(2*B == 1);
 
-  bool ok = (bd == known_bd);
+  bool ok = (bds == known_bds);
 
-  print_constraints(bd, "*** bd(box) ***");
+  print_constraints(bds, "*** bds(box) ***");
 
   return ok;
 }
@@ -247,16 +247,16 @@ test11() {
   box.add_constraint(2*B >= 1);
   box.add_constraint(2*B <= 0);
 
-  TBD_Shape bd(box);
+  TBD_Shape bds(box);
 
-  TBD_Shape known_bd(2);
-  known_bd.add_constraint(7*A == 3);
-  known_bd.add_constraint(2*B >= 1);
-  known_bd.add_constraint(2*B <= 0);
+  TBD_Shape known_bds(2);
+  known_bds.add_constraint(7*A == 3);
+  known_bds.add_constraint(2*B >= 1);
+  known_bds.add_constraint(2*B <= 0);
 
-  bool ok = (bd == known_bd);
+  bool ok = (bds == known_bds);
 
-  print_constraints(bd, "*** bd(box) ***");
+  print_constraints(bds, "*** bds(box) ***");
 
   return ok;
 }
@@ -267,13 +267,13 @@ test12() {
   Rational_Box box(0);
   box.set_empty();
 
-  TBD_Shape bd(box);
+  TBD_Shape bds(box);
 
-  TBD_Shape known_bd(0, EMPTY);
+  TBD_Shape known_bds(0, EMPTY);
 
-  bool ok = (bd == known_bd);
+  bool ok = (bds == known_bds);
 
-  print_constraints(bd, "*** bd(box) ***");
+  print_constraints(bds, "*** bds(box) ***");
 
   return ok;
 }
@@ -295,18 +295,18 @@ test13() {
   box.add_constraint(7*E == 15);
   box.add_constraint(7*F == -15);
 
-  TBD_Shape bd(box);
+  TBD_Shape bds(box);
 
-  TBD_Shape known_bd(6);
-  known_bd.add_constraint(3*A == -2);
-  known_bd.add_constraint(4*B == -11);
-  known_bd.add_constraint(3*D == 18);
-  known_bd.add_constraint(7*E == 15);
-  known_bd.add_constraint(7*F == -15);
+  TBD_Shape known_bds(6);
+  known_bds.add_constraint(3*A == -2);
+  known_bds.add_constraint(4*B == -11);
+  known_bds.add_constraint(3*D == 18);
+  known_bds.add_constraint(7*E == 15);
+  known_bds.add_constraint(7*F == -15);
 
-  bool ok = (bd == known_bd);
+  bool ok = (bds == known_bds);
 
-  print_constraints(bd, "*** bd(box) ***");
+  print_constraints(bds, "*** bds(box) ***");
 
   return ok;
 }
@@ -323,16 +323,16 @@ test14() {
   box.add_constraint(2*B >= 1);
   box.add_constraint(B >= 1);
 
-  TBD_Shape bd(box);
+  TBD_Shape bds(box);
 
-  TBD_Shape known_bd(2);
-  known_bd.add_constraint(7*A == 3);
-  known_bd.add_constraint(2*B >= 1);
-  known_bd.add_constraint(B >= 1);
+  TBD_Shape known_bds(2);
+  known_bds.add_constraint(7*A == 3);
+  known_bds.add_constraint(2*B >= 1);
+  known_bds.add_constraint(B >= 1);
 
-  bool ok = (bd == known_bd);
+  bool ok = (bds == known_bds);
 
-  print_constraints(bd, "*** bd(box) ***");
+  print_constraints(bds, "*** bds(box) ***");
 
   return ok;
 }

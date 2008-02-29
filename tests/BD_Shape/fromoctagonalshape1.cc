@@ -37,13 +37,13 @@ test01() {
   cs.insert(A - B <= 18);
   TOctagonal_Shape os(cs);
 
-  TBD_Shape bd(os);
+  TBD_Shape bds(os);
 
   BD_Shape<mpq_class> known_result(cs);
 
-  bool ok = (check_result(bd, known_result));
+  bool ok = (check_result(bds, known_result));
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
   return ok;
 }

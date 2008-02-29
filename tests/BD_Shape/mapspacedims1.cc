@@ -195,24 +195,24 @@ test07() {
   function.insert(0, 1);
   function.insert(1, 0);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(x <= 1);
-  bd.add_constraint(y <= -1);
-  bd.add_constraint(y - x <= 3);
+  TBD_Shape bds(2);
+  bds.add_constraint(x <= 1);
+  bds.add_constraint(y <= -1);
+  bds.add_constraint(y - x <= 3);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
   print_function(function, "*** function ***");
 
-  bd.map_space_dimensions(function);
+  bds.map_space_dimensions(function);
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(x <= -1);
   known_result.add_constraint(y <= 1);
   known_result.add_constraint(x - y <= 3);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
 
-  print_constraints(bd, "*** bd.map_space_dimension(function) ***");
+  print_constraints(bds, "*** bds.map_space_dimension(function) ***");
 
   return ok;
 }
@@ -230,7 +230,7 @@ test08() {
   cs.insert(C >= 0);
   cs.insert(D == 0);
   cs.insert(B - A == 0);
-  TBD_Shape bd(cs);
+  TBD_Shape bds(cs);
 
   Partial_Function function;
   function.insert(0, 2);
@@ -238,9 +238,9 @@ test08() {
   function.insert(3, 0);
 
   print_function(function, "*** function ***");
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd.map_space_dimensions(function);
+  bds.map_space_dimensions(function);
 
   BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(A == 0);
@@ -248,9 +248,9 @@ test08() {
   known_result.add_constraint(C >= 0);
   known_result.add_constraint(B - C == 0);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
 
-  print_constraints(bd, "*** bd.map_space_dimensions(function) ***");
+  print_constraints(bds, "*** bds.map_space_dimensions(function) ***");
 
   return ok;
 }
@@ -261,18 +261,18 @@ test09() {
   function.insert(0, 1);
   function.insert(1, 0);
 
-  TBD_Shape bd(0);
+  TBD_Shape bds(0);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
   print_function(function, "*** function ***");
 
-  bd.map_space_dimensions(function);
+  bds.map_space_dimensions(function);
 
   BD_Shape<mpq_class> known_result(0);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
 
-  print_constraints(bd, "*** bd.map_space_dimension(function) ***");
+  print_constraints(bds, "*** bds.map_space_dimension(function) ***");
 
   return ok;
 }

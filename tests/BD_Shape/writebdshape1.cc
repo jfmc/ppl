@@ -42,36 +42,36 @@ test01() {
   print_constraints(bds, "*** bds ***");
   s.str("");
 
-  bd.add_constraint(x <= 3);
+  bds.add_constraint(x <= 3);
 
-  s << bd;
+  s << bds;
   if (s.str() != "A <= 3")
     return false;
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
   s.str("");
 
-  bd.add_constraint(x - y <= 4);
+  bds.add_constraint(x - y <= 4);
 
-  s << bd;
+  s << bds;
   if (s.str() != "A <= 3, A - B <= 4")
     return false;
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
   s.str("");
 
-  bd.add_constraint(-y <= -2);
+  bds.add_constraint(-y <= -2);
 
-  s << bd;
+  s << bds;
   if (s.str() != "A <= 3, B >= 2, A - B <= 4")
     return false;
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
   s.str("");
 
-  bd.add_constraint(x-z <= 0);
+  bds.add_constraint(x-z <= 0);
 
-  s << bd;
+  s << bds;
   if (s.str() != "A <= 3, B >= 2, A - B <= 4, A - C <= 0")
     return false;
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
   s.str("");
 
   return true;

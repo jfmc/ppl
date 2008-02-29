@@ -102,7 +102,7 @@ test04() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape bd(1);
+  TBD_Shape bds(1);
 
   try {
     // This is an invalid use of the method
@@ -111,7 +111,7 @@ test04() {
     // with the polyhedron.
     Constraint_System cs;
     cs.insert(x - y >= 0);
-    bd.add_constraints_and_minimize(cs);
+    bds.add_constraints_and_minimize(cs);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -126,14 +126,14 @@ bool
 test05() {
   Variable y(1);
 
-  TBD_Shape bd(1);
+  TBD_Shape bds(1);
 
   try {
     // This is an invalid use of the method
     // BD_Shape::add_constraint(c): it is illegal to insert a
     // constraints that contains a variable that is not in the space
     // of the polyhedron.
-    bd.add_constraint(y >= 0);
+    bds.add_constraint(y >= 0);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -149,7 +149,7 @@ test06() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape bd(1);
+  TBD_Shape bds(1);
 
   try {
     // This is an invalid use of the method
@@ -158,7 +158,7 @@ test06() {
     // polyhedron.
     Constraint_System cs;
     cs.insert(x - y == 0);
-    bd.add_constraints(cs);
+    bds.add_constraints(cs);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;

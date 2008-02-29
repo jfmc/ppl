@@ -270,7 +270,7 @@ test10() {
   bds.add_constraint(C <= 0);
   bds.add_constraint(D == 3);
 
-  print_constraints(bds, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
   bds.affine_image(A, -B + 2*C + 1, -3);
 

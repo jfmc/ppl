@@ -141,19 +141,19 @@ test04() {
   Variable x1(0);
   Variable x2(1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(x1 <= 2);
-  bd.add_constraint(x2 <= 10);
+  TBD_Shape bds(2);
+  bds.add_constraint(x1 <= 2);
+  bds.add_constraint(x2 <= 10);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd.remove_higher_space_dimensions(0);
+  bds.remove_higher_space_dimensions(0);
 
   BD_Shape<mpq_class> known_result(0, UNIVERSE);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
 
-  print_constraints(bd, "*** bd.remove_higher_space_dimensions(0) ***");
+  print_constraints(bds, "*** bds.remove_higher_space_dimensions(0) ***");
 
   return ok;
 }
@@ -165,22 +165,22 @@ test05() {
   Variable x3(2);
   Variable x4(3);
 
-  TBD_Shape bd(4);
-  bd.add_constraint(x1 - x2 <=1);
-  bd.add_constraint(x2 - x3 <= -2);
-  bd.add_constraint(x3 - x1 <= 0);
-  bd.add_constraint(x2 >= 5);
-  bd.add_constraint(x4 >= 3);
+  TBD_Shape bds(4);
+  bds.add_constraint(x1 - x2 <=1);
+  bds.add_constraint(x2 - x3 <= -2);
+  bds.add_constraint(x3 - x1 <= 0);
+  bds.add_constraint(x2 >= 5);
+  bds.add_constraint(x4 >= 3);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd.remove_higher_space_dimensions(1);
+  bds.remove_higher_space_dimensions(1);
 
   BD_Shape<mpq_class> known_result(1, EMPTY);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
 
-  print_constraints(bd, "*** bd.remove_higher_space_dimensions(1) ***");
+  print_constraints(bds, "*** bds.remove_higher_space_dimensions(1) ***");
 
   return ok;
 }
@@ -193,17 +193,17 @@ test06() {
   Variable x4(3);
   Variable x5(4);
 
-  TBD_Shape bd(5);
-  bd.add_constraint(x1 - x2 <=1);
-  bd.add_constraint(x2 - x3 <= 2);
-  bd.add_constraint(x3 - x1 <= 0);
-  bd.add_constraint(x2 >= 5);
-  bd.add_constraint(x4 >= 3);
-  bd.add_constraint(x5 - x3 == 2);
+  TBD_Shape bds(5);
+  bds.add_constraint(x1 - x2 <=1);
+  bds.add_constraint(x2 - x3 <= 2);
+  bds.add_constraint(x3 - x1 <= 0);
+  bds.add_constraint(x2 >= 5);
+  bds.add_constraint(x4 >= 3);
+  bds.add_constraint(x5 - x3 == 2);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd.remove_higher_space_dimensions(3);
+  bds.remove_higher_space_dimensions(3);
 
   BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(x1 - x2 <=1);
@@ -211,9 +211,9 @@ test06() {
   known_result.add_constraint(x3 - x1 <= 0);
   known_result.add_constraint(x2 >= 5);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
 
-  print_constraints(bd, "*** bd.remove_higher_space_dimensions(3) ***");
+  print_constraints(bds, "*** bds.remove_higher_space_dimensions(3) ***");
 
   return ok;
 }
@@ -224,34 +224,34 @@ test07() {
   Variable x2(1);
   Variable x3(2);
 
-  TBD_Shape bd(3);
-  bd.add_constraint(x1 - x2 <=1);
-  bd.add_constraint(x2 - x3 <= 2);
-  bd.add_constraint(x3 - x1 <= 0);
-  bd.add_constraint(x2 >= 5);
+  TBD_Shape bds(3);
+  bds.add_constraint(x1 - x2 <=1);
+  bds.add_constraint(x2 - x3 <= 2);
+  bds.add_constraint(x3 - x1 <= 0);
+  bds.add_constraint(x2 >= 5);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  BD_Shape<mpq_class> known_result(bd);
+  BD_Shape<mpq_class> known_result(bds);
 
-  bd.remove_higher_space_dimensions(3);
+  bds.remove_higher_space_dimensions(3);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
 
-  print_constraints(bd, "*** bd.remove_higher_space_dimensions(3) ***");
+  print_constraints(bds, "*** bds.remove_higher_space_dimensions(3) ***");
 
   return ok;
 }
 
 bool
 test08() {
-  TBD_Shape bd(5);
+  TBD_Shape bds(5);
 
   try {
     // This is an invalid use of the method
     // BD_Shape::remove_higher_dimensions(n): it is illegal to erase
     // a variable that is not in the space of the polyhedron.
-    bd.remove_higher_space_dimensions(7);
+    bds.remove_higher_space_dimensions(7);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -271,12 +271,12 @@ test09() {
   Constraint_System cs;
   cs.insert(x <= 3);
   cs.insert(y - z <= 2);
-  TBD_Shape bd(cs);
+  TBD_Shape bds(cs);
 
   Variables_Set to_be_removed;
   to_be_removed.insert(z);
 
-  bd.remove_space_dimensions(to_be_removed);
+  bds.remove_space_dimensions(to_be_removed);
 
   try {
     to_be_removed.insert(x);
@@ -285,7 +285,7 @@ test09() {
     // Here the set `to_be_removed' still contains variable `z'.
     // This variable is now beyond the space dimension,
     // so that a dimension-incompatibility exception is obtained.
-    bd.remove_space_dimensions(to_be_removed);
+    bds.remove_space_dimensions(to_be_removed);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -311,12 +311,12 @@ test10() {
   cs.insert(x2 >= 6);
   cs.insert(x4 >= 4);
   cs.insert(x5 - x3 == 3);
-  TBD_Shape bd(cs);
+  TBD_Shape bds(cs);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  cs = bd.minimized_constraints();
-  bd.remove_higher_space_dimensions(3);
+  cs = bds.minimized_constraints();
+  bds.remove_higher_space_dimensions(3);
 
   BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(x1 - x2 <=1);
@@ -324,9 +324,9 @@ test10() {
   known_result.add_constraint(x3 - x1 <= 0);
   known_result.add_constraint(x2 >= 6);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
 
-  print_constraints(bd, "*** bd.remove_higher_space_dimensions(3) ***");
+  print_constraints(bds, "*** bds.remove_higher_space_dimensions(3) ***");
 
   return ok;
 }
@@ -346,16 +346,16 @@ test11() {
   cs.insert(x2 >= 6);
   cs.insert(x4 >= 4);
   cs.insert(x5 - x3 == 3);
-  TBD_Shape bd(cs);
+  TBD_Shape bds(cs);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
   Variables_Set to_be_removed;
   to_be_removed.insert(x4);
   to_be_removed.insert(x5);
 
-  cs = bd.minimized_constraints();
-  bd.remove_space_dimensions(to_be_removed);
+  cs = bds.minimized_constraints();
+  bds.remove_space_dimensions(to_be_removed);
 
   BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(x1 - x2 <=1);
@@ -363,9 +363,9 @@ test11() {
   known_result.add_constraint(x3 - x1 <= 0);
   known_result.add_constraint(x2 >= 6);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
 
-  print_constraints(bd, "*** bd.remove_space_dimensions({x4, x5}) ***");
+  print_constraints(bds, "*** bds.remove_space_dimensions({x4, x5}) ***");
 
   return ok;
 }

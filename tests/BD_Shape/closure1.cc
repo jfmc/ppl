@@ -323,7 +323,7 @@ perturbate(unsigned long a) {
 
 template <typename T>
 void
-add_edges(BD_Shape<T>& bd, const Edge* edges, unsigned n) {
+add_edges(BD_Shape<T>& bds, const Edge* edges, unsigned n) {
   for (unsigned i = 0; i < n; ++i) {
     const mpq_class& q = perturbate(edges[i].distance);
     Coefficient a;
@@ -333,7 +333,7 @@ add_edges(BD_Shape<T>& bd, const Edge* edges, unsigned n) {
 
     nout << "a = " << a << "; b = " << b << endl;
 
-    bd.add_constraint(a*Variable(edges[i].from) - a*Variable(edges[i].to)
+    bds.add_constraint(a*Variable(edges[i].from) - a*Variable(edges[i].to)
                       <= b);
   }
 }
@@ -357,10 +357,10 @@ test01() {
   BD_Shape<mpq_class> qbds1(126);
   add_edges(qbds1, hawaii, sizeof(hawaii)/sizeof(Edge));
 
-  TBD_Shape tbd(126);
-  add_edges(tbd, hawaii, sizeof(hawaii)/sizeof(Edge));
+  TBD_Shape tbds(126);
+  add_edges(tbds, hawaii, sizeof(hawaii)/sizeof(Edge));
 
-  BD_Shape<mpq_class> qbds2(tbd);
+  BD_Shape<mpq_class> qbds2(tbds);
   if (!qbds2.contains(qbds1))
     return false;
 
@@ -536,14 +536,14 @@ test03() {
 
   // Copy constraints (so that the BDS is marked as not closed)
   // and then force once again application of Floyd-Warshall.
-  BDS bd3(bds2.constraints());
-  bd3.is_empty();
+  BDS bds3(bds2.constraints());
+  bds3.is_empty();
 
   print_constraints(bds2.constraints(), "*** AFTER THIRD Floyd-Warshall ***");
   nout << "\n";
 
-  bool ok = bds1.contains(bds2) && bds2.contains(bd3)
-    && !bds2.contains(bds1) && !bd3.contains(bds2);
+  bool ok = bds1.contains(bds2) && bds2.contains(bds3)
+    && !bds2.contains(bds1) && !bds3.contains(bds2);
 
   return ok;
 }

@@ -469,7 +469,7 @@ test14() {
 
   try {
     // This is an invalid use of the method
-    // BD_Shape::limited_CC76_extrapolation_assign(bd, cs): it is
+    // BD_Shape::limited_CC76_extrapolation_assign(bds, cs): it is
     // illegal to apply the method to a system of constraints that
     // is not dimension-compatible with the two polyhedra.
     bds2.limited_CC76_extrapolation_assign(bds1, cs);
@@ -503,7 +503,7 @@ test15() {
 
   try {
     // This is an invalid use of the method
-    // BD_Shape::limited_CC76_extrapolation_assign(bd, cs): it is
+    // BD_Shape::limited_CC76_extrapolation_assign(bds, cs): it is
     // illegal to apply the method to a system of constraints that
     // in which there is a strict inequality.
     bds2.limited_CC76_extrapolation_assign(bds1, cs);

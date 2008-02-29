@@ -435,7 +435,7 @@ test11() {
 
   try {
     // This is an invalid use of the method
-    // BD_Shape::CC76_extrapolation_assign(bd): it is
+    // BD_Shape::CC76_extrapolation_assign(bds): it is
     // illegal to apply this method to two polyhedra that are not
     // dimension-compatible.
     bds2.CC76_extrapolation_assign(bds1);

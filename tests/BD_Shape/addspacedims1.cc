@@ -31,23 +31,23 @@ test01() {
   //Variable y(1);
   Variable z(2);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(x <= 2);
+  TBD_Shape bds(2);
+  bds.add_constraint(x <= 2);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd.add_space_dimensions_and_embed(2);
-  bd.add_constraint(z <= 2);
+  bds.add_space_dimensions_and_embed(2);
+  bds.add_constraint(z <= 2);
 
   BD_Shape<mpq_class> known_result(4);
   known_result.add_constraint(x <= 2);
   known_result.add_constraint(z <= 2);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
 
-  print_constraints(bd,
-                    "*** bd.add_space_dimensions_and_embed(2) "
-                    "and bd.add_constraint(z <= 2) ***");
+  print_constraints(bds,
+                    "*** bds.add_space_dimensions_and_embed(2) "
+                    "and bds.add_constraint(z <= 2) ***");
 
   return ok;
 }
@@ -164,12 +164,12 @@ test06() {
 
 bool
 test07() {
-  TBD_Shape bd(10, UNIVERSE);
+  TBD_Shape bds(10, UNIVERSE);
 
-  bd.remove_higher_space_dimensions(5);
-  bd.add_space_dimensions_and_embed(6);
+  bds.remove_higher_space_dimensions(5);
+  bds.add_space_dimensions_and_embed(6);
 
-  return bd == TBD_Shape(11, UNIVERSE);
+  return bds == TBD_Shape(11, UNIVERSE);
 }
 
 bool
@@ -179,21 +179,21 @@ test08() {
   Variable z(2);
   Variable w(3);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(x <= 2);
+  TBD_Shape bds(2);
+  bds.add_constraint(x <= 2);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bd.add_space_dimensions_and_project(2);
+  bds.add_space_dimensions_and_project(2);
 
   BD_Shape<mpq_class> known_result(4);
   known_result.add_constraint(x <= 2);
   known_result.add_constraint(w == 0);
   known_result.add_constraint(z == 0);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
 
-  print_constraints(bd, "*** bd.add_space_dimensions_and_project(2) ***");
+  print_constraints(bds, "*** bds.add_space_dimensions_and_project(2) ***");
 
   return ok;
 }

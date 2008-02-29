@@ -34,18 +34,18 @@ test01() {
 
   bds1.time_elapse_assign(bds2);
 
-  TBD_Shape bd3(2);
-  TBD_Shape bd4(2, EMPTY);
+  TBD_Shape bds3(2);
+  TBD_Shape bds4(2, EMPTY);
 
-  print_constraints(bd3, "*** bd3 ***");
-  print_constraints(bd4, "*** bd4 ***");
+  print_constraints(bds3, "*** bds3 ***");
+  print_constraints(bds4, "*** bds4 ***");
 
-  bd3.time_elapse_assign(bd4);
+  bds3.time_elapse_assign(bds4);
 
-  bool ok = (bds1.is_empty() && bd3.is_empty());
+  bool ok = (bds1.is_empty() && bds3.is_empty());
 
   print_constraints(bds1, "*** bds1_time_elapse_assign(bds2) ***");
-  print_constraints(bd3, "*** bd3_time_elapse_assign(bd4) ***");
+  print_constraints(bds3, "*** bds3_time_elapse_assign(bds4) ***");
 
   return ok;
 }

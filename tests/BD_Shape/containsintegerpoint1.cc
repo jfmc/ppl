@@ -36,14 +36,14 @@ test01() {
   cs.insert(3*y <= 2);
   cs.insert(3*y >= 1);
 
-  BD_Shape<mpz_class> bd(3);
-  bd.add_constraints(cs);
+  BD_Shape<mpz_class> bds(3);
+  bds.add_constraints(cs);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bool contains = bd.contains_integer_point();
+  bool contains = bds.contains_integer_point();
 
-  nout << "bd.contains_integer_point() == "
+  nout << "bds.contains_integer_point() == "
        << (contains ? "true" : "false") << endl;
 
   return contains;
@@ -61,14 +61,14 @@ test02() {
   cs.insert(3*y <= 2);
   cs.insert(3*y >= 1);
 
-  BD_Shape<mpq_class> bd(3);
-  bd.add_constraints(cs);
+  BD_Shape<mpq_class> bds(3);
+  bds.add_constraints(cs);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bool contains = bd.contains_integer_point();
+  bool contains = bds.contains_integer_point();
 
-  nout << "bd.contains_integer_point() == "
+  nout << "bds.contains_integer_point() == "
        << (contains ? "true" : "false") << endl;
 
   return !contains;
@@ -86,14 +86,14 @@ test03() {
   cs.insert(3*y <= 2);
   cs.insert(3*y >= 1);
 
-  BD_Shape<float> bd(3);
-  bd.add_constraints(cs);
+  BD_Shape<float> bds(3);
+  bds.add_constraints(cs);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bool contains = bd.contains_integer_point();
+  bool contains = bds.contains_integer_point();
 
-  nout << "bd.contains_integer_point() == "
+  nout << "bds.contains_integer_point() == "
        << (contains ? "true" : "false") << endl;
 
   return !contains;
@@ -111,14 +111,14 @@ test04() {
   cs.insert(3*y - 3*z <= 2);
   cs.insert(8*z - 8*y >= 7);
 
-  BD_Shape<mpq_class> bd(3);
-  bd.add_constraints(cs);
+  BD_Shape<mpq_class> bds(3);
+  bds.add_constraints(cs);
 
-  print_constraints(bd, "*** bd ***");
+  print_constraints(bds, "*** bds ***");
 
-  bool contains = bd.contains_integer_point();
+  bool contains = bds.contains_integer_point();
 
-  nout << "bd.contains_integer_point() == "
+  nout << "bds.contains_integer_point() == "
        << (contains ? "true" : "false") << endl;
 
   return contains;
