@@ -58,7 +58,7 @@ test01() {
   known_result.add_constraint(B >= 0);
   known_result.add_constraint(B <= 3);
 
-  bool ok = (num_constraints == 3 && known_result == ph_bds);
+  bool ok = (num_constraints == 3 && ph_bds == known_result);
 
   return ok;
 }

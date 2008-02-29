@@ -52,7 +52,7 @@ test01() {
   known_result.add_constraint(x2 <= 2);
   known_result.add_constraint(x4 <= 5);
 
-  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** bds.remove_space_dimensions({x3, x5}) ***");
 
@@ -95,7 +95,7 @@ test02() {
 
   BD_Shape<mpq_class> known_result(0);
 
-  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds,
                     "*** bds.remove_space_dimensions"
@@ -129,7 +129,7 @@ test03() {
 
   BD_Shape<mpq_class> known_result(1, EMPTY);
 
-  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** bds.remove_space_dimensions({x1, x3, x4}) ***");
 
@@ -151,7 +151,7 @@ test04() {
 
   BD_Shape<mpq_class> known_result(0, UNIVERSE);
 
-  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** bds.remove_higher_space_dimensions(0) ***");
 
@@ -178,7 +178,7 @@ test05() {
 
   BD_Shape<mpq_class> known_result(1, EMPTY);
 
-  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** bds.remove_higher_space_dimensions(1) ***");
 
@@ -211,7 +211,7 @@ test06() {
   known_result.add_constraint(x3 - x1 <= 0);
   known_result.add_constraint(x2 >= 5);
 
-  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** bds.remove_higher_space_dimensions(3) ***");
 
@@ -236,7 +236,7 @@ test07() {
 
   bds.remove_higher_space_dimensions(3);
 
-  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** bds.remove_higher_space_dimensions(3) ***");
 
@@ -324,7 +324,7 @@ test10() {
   known_result.add_constraint(x3 - x1 <= 0);
   known_result.add_constraint(x2 >= 6);
 
-  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** bds.remove_higher_space_dimensions(3) ***");
 
@@ -363,7 +363,7 @@ test11() {
   known_result.add_constraint(x3 - x1 <= 0);
   known_result.add_constraint(x2 >= 6);
 
-  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** bds.remove_space_dimensions({x4, x5}) ***");
 

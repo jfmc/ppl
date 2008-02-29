@@ -51,7 +51,7 @@ test01() {
   known_result.add_constraint(x1 <= 5);
   known_result.add_constraint(x1 - x2 <= 20);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1, "*** bds1.bds_hull_assign(bds2) ***");
 
@@ -88,7 +88,7 @@ test02() {
   known_result.add_constraint(x - y <= 8);
   known_result.add_constraint(y - x <= 2);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1, "*** bds1.bds_hull_assign(bds2) ***");
 
@@ -119,7 +119,7 @@ test03() {
 
   bds1.bds_hull_assign(bds2);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1, "*** bds1.bds_hull_assign(bds2) ***");
 
@@ -156,7 +156,7 @@ test04() {
   known_result.add_constraint(A - B <= 8);
   known_result.add_constraint(B - A <= 2);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1, "*** bds1.bds_hull_assign_and_minimize(bds2) ***");
 
@@ -227,7 +227,7 @@ test07() {
   BD_Shape<mpq_class> known_result(1);
   known_result.add_constraint(A <= 3);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result) ;
+  bool ok = check_result(bds1, known_result) ;
 
   print_constraints(bds1, "*** bds1.bds_hull_assign_and_minimize(bds2) ***");
 
@@ -259,7 +259,7 @@ test08() {
   known_result.add_constraint(A <= 0);
   known_result.add_constraint(A - B <= 0);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result) ;
+  bool ok = check_result(bds1, known_result) ;
 
   print_constraints(bds1, "*** bds1.bds_hull_assign_and_minimize(bds2) ***");
 

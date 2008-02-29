@@ -37,7 +37,7 @@ test01() {
 
   bds1.limited_CC76_extrapolation_assign(bds2, cs);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1,
                     "*** bds1.limited_CC76_extrapolation_assign(bds2) ***");
@@ -69,7 +69,7 @@ test02() {
 
   bds1.limited_CC76_extrapolation_assign(bds2, cs);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1,
                     "*** bds1.limited_CC76_extrapolation_assign(bds2, cs) ***");
@@ -100,7 +100,7 @@ test03() {
 
   BD_Shape<mpq_class> known_result(2);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1,
                     "*** bds1.limited_CC76_extrapolation_assign(bds2, cs) ***");
@@ -136,7 +136,7 @@ test04() {
   known_result.add_constraint(A <= 5);
   known_result.add_constraint(B >= 1);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1,
                     "*** bds1.limited_CC76_extrapolation_assign(bds2, cs) ***");
@@ -170,7 +170,7 @@ test05() {
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(B >= 1);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1,
                     "*** bds1.limited_CC76_extrapolation_assign(bds2, cs) ***");
@@ -205,7 +205,7 @@ test06() {
   known_result.add_constraint(B >= 1);
   known_result.add_constraint(A - B <= 6);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1,
                     "*** bds1.limited_CC76_extrapolation_assign(bds2, cs) ***");
@@ -240,7 +240,7 @@ test07() {
 
   BD_Shape<mpq_class> known_result(2, EMPTY);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1,
                     "*** bds1.limited_CC76_extrapolation_assign(bds2, cs) ***");
@@ -274,7 +274,7 @@ test08() {
 
   bds1.limited_CC76_extrapolation_assign(bds2, cs);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1,
                     "*** bds1.limited_CC76_extrapolation_assign(bds2, cs) ***");
@@ -314,7 +314,7 @@ test09() {
   known_result.add_constraint(A <= 4);
   known_result.add_constraint(C - D == 5);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1,
                     "*** bds1.limited_CC76_extrapolation_assign(bds2, cs) ***");
@@ -353,7 +353,7 @@ test10() {
   known_result.add_constraint(y >= 3);
   known_result.add_constraint(y - x >= 2);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1,
                     "*** bds1.limited_CC76_extrapolation_assign(bds2) ***");
@@ -381,7 +381,7 @@ test11() {
 
   bds1.limited_CC76_extrapolation_assign(bds2, cs);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1,
                     "*** bds1.limited_CC76_extrapolation_assign(bds2) ***");
@@ -414,7 +414,7 @@ test12() {
 
   bds1.limited_CC76_extrapolation_assign(bds2, cs2);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1,
                     "*** bds1.limited_CC76_extrapolation_assign(bds2, cs2) ***");

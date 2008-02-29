@@ -43,7 +43,7 @@ test01() {
 
   BD_Shape<mpq_class> known_result(2, EMPTY);
 
-  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds,
                     "*** bds.bounded_affine_preimage(A, 7, 3) ***");
@@ -72,7 +72,7 @@ test02() {
 
   bds.bounded_affine_preimage(A, Linear_Expression(3), Linear_Expression(7));
 
-  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds,
                     "*** bds.bounded_affine_preimage(A, 3, 7) ***");
@@ -100,7 +100,7 @@ test03() {
   bds.bounded_affine_preimage(A, Linear_Expression(3), Linear_Expression(7),
                               -1);
 
-  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds,
                     "*** bds.bounded_affine_preimage(A, 3, 7, -1) ***");
@@ -128,7 +128,7 @@ test04() {
   bds.bounded_affine_preimage(A, Linear_Expression(7),
                               Linear_Expression(3), -1);
 
-  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds,
                     "*** bds.bounded_affine_preimage(A, 7, 3, -1) ***");
@@ -160,7 +160,7 @@ test05() {
 
   bds.bounded_affine_preimage(A, Linear_Expression(3), A+2);
 
-  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds,
                     "*** bds.bounded_affine_preimage(A, 3, A+2) ***");
@@ -190,7 +190,7 @@ test06() {
 
   bds.bounded_affine_preimage(A, Linear_Expression(3), -A+2);
 
-  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds,
                     "*** bds.bounded_affine_preimage(A, 3, -A+2) ***");
@@ -219,7 +219,7 @@ test07() {
 
   bds.bounded_affine_preimage(A, Linear_Expression(3), B+5);
 
-  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds,
                     "*** bds.bounded_affine_preimage(A, 3, B+5) ***");
@@ -248,7 +248,7 @@ test08() {
 
   bds.bounded_affine_preimage(A, Linear_Expression(3), B-5, -1);
 
-  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds,
                     "*** bds.bounded_affine_preimage(A, 3, B-5, -1) ***");

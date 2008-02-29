@@ -36,7 +36,7 @@ test01() {
 
   TBD_Shape known_result(4);
 
-  bool ok = (bds == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** After bds.expand_space_dimension(A, 1) ***");
 
@@ -56,7 +56,7 @@ test02() {
 
   TBD_Shape known_result(4, EMPTY);
 
-  bool ok = (bds == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** bds.expand_space_dimension(B, 1) ***");
 
@@ -83,7 +83,7 @@ test03() {
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(A - B <= 2);
 
-  bool ok = (bds == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** bds.expand_space_dimension(A, 0) ***");
 
@@ -106,7 +106,7 @@ test04() {
 
   TBD_Shape known_result(3, EMPTY);
 
-  bool ok = (bds == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** bds.expand_space_dimension(A, 1) ***");
 
@@ -133,7 +133,7 @@ test05() {
   known_result.add_constraint(C >= 0);
   known_result.add_constraint(C - B <= 2);
 
-  bool ok = (bds == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** bds.expand_space_dimension(A, 1) ***");
 
@@ -163,7 +163,7 @@ test06() {
   known_result.add_constraint(D >= 0);
   known_result.add_constraint(D - B <= 2);
 
-  bool ok = (bds == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** bds.expand_space_dimension(A, 2) ***");
 
@@ -198,7 +198,7 @@ test07() {
   known_result.add_constraint(D <= 1);
   known_result.add_constraint(D - B >= 1);
 
-  bool ok = (bds == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds,
                     "*** bds.expand_space_dimension(A, 1);"
@@ -224,7 +224,7 @@ test08() {
 
   TBD_Shape known_result(3, EMPTY);
 
-  bool ok = (bds == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** bds.expand_space_dimension(A, 2) ***");
 

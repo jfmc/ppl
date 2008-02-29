@@ -59,7 +59,7 @@ test01() {
   known_result.add_constraint(x8 - x9 <= 2);
   known_result.add_constraint(x9 <= 7);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1, "*** bds1.concatenate_assign(bds2) ***");
 
@@ -84,7 +84,7 @@ test02() {
 
   BD_Shape<mpq_class> known_result(2, EMPTY);
 
-  bool ok = (BD_Shape<mpq_class>(bds2) == known_result);
+  bool ok = check_result(bds2, known_result);
 
   print_constraints(bds2, "*** bds2.concatenate_assign(bds1) ***");
 
@@ -116,7 +116,7 @@ test03() {
   known_result.add_constraint(y == 3);
   known_result.add_constraint(x - y <= 2);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1, "*** bds1.concatenate_assign(bds2) ***");
 
@@ -160,7 +160,7 @@ test04() {
   known_result.add_constraint(D - E <= 0);
   known_result.add_constraint(E - D <= 1);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1, "*** bds1.concatenate_assign(bds2) ***");
 
@@ -185,7 +185,7 @@ test05() {
 
   BD_Shape<mpq_class> known_result(2, EMPTY);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1, "*** bds1.concatenate_assign(bds2) ***");
 

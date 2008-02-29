@@ -37,7 +37,7 @@ test01() {
 
   BD_Shape<mpq_class> known_result;
 
-  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** bds.map_space_dimensions(function) ***");
 
@@ -57,7 +57,7 @@ test02() {
 
   BD_Shape<mpq_class> known_result(0, EMPTY);
 
-  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** bds.map_space_dimensions(function) ***");
 
@@ -79,7 +79,7 @@ test03() {
 
   BD_Shape<mpq_class> known_result(2, EMPTY);
 
-  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** bds.map_space_dimensions(function) ***");
 
@@ -112,7 +112,7 @@ test04() {
   known_result.add_constraint(x == 1);
   known_result.add_constraint(y - x <= 3);
 
-  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** bds.map_space_dimensions(function) ***");
 
@@ -144,7 +144,7 @@ test05() {
   BD_Shape<mpq_class> known_result(1);
   known_result.add_constraint(x <= 4);
 
-  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** bds.map_space_dimensions(function) ***");
 
@@ -179,7 +179,7 @@ test06() {
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(y - x <= 7);
 
-  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** bds.map_space_dimensions(function) ***");
 
@@ -210,7 +210,7 @@ test07() {
   known_result.add_constraint(y <= 1);
   known_result.add_constraint(x - y <= 3);
 
-  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** bds.map_space_dimension(function) ***");
 
@@ -248,7 +248,7 @@ test08() {
   known_result.add_constraint(C >= 0);
   known_result.add_constraint(B - C == 0);
 
-  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** bds.map_space_dimensions(function) ***");
 
@@ -270,7 +270,7 @@ test09() {
 
   BD_Shape<mpq_class> known_result(0);
 
-  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** bds.map_space_dimension(function) ***");
 

@@ -74,7 +74,7 @@ test02() {
   known_result.add_constraint(x >= 0);
   known_result.add_constraint(y >= 0);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1, "*** bds1_time_elapse_assign(bds2) ***");
 
@@ -103,7 +103,7 @@ test03() {
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(y >= 1);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1, "*** bds1_time_elapse_assign(bds2) ***");
 
@@ -130,7 +130,7 @@ test04() {
 
   BD_Shape<mpq_class> known_result(3);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1, "*** bds1_time_elapse_assign(bds2) ***");
 
@@ -164,7 +164,7 @@ test05() {
 
   BD_Shape<mpq_class> known_result(3, EMPTY);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1, "*** bds1.time_elapse_assign(bds2) ***");
 
@@ -223,7 +223,7 @@ test07() {
   known_result.add_constraint(y >= 1);
   known_result.add_constraint(x - y <= 2);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1, "*** bds1.time_elapse_assign(bds2) ***");
 

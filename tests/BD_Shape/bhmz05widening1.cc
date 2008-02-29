@@ -48,7 +48,7 @@ test01() {
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(x - y <= 2);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1, "*** bds1.BHMZ05_widening_assign(bds2) ***");
 
@@ -67,7 +67,7 @@ test02() {
 
   BD_Shape<mpq_class> known_result;
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1, "*** after bds1.BHMZ05_widening_assign(bds2) ***");
 
@@ -114,7 +114,7 @@ test03() {
   known_result.add_constraint(D >= 0);
   known_result.add_constraint(E - D == 0);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1, "*** bds1.BHMZ05_widening_assign(bds2) ***");
 
@@ -142,7 +142,7 @@ test04() {
 
   BD_Shape<mpq_class> known_result(3);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1, "*** bds1.BHMZ05_widening_assign(bds2) ***");
 
@@ -172,7 +172,7 @@ test05() {
 
   BD_Shape<mpq_class> known_result(3, EMPTY);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1, "*** bds1.BHMZ05_widening_assign(bds2) ***");
 
@@ -266,7 +266,7 @@ test07() {
 
   bds1.BHMZ05_widening_assign(bds2);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1, "*** bds1.BHMZ05_widening_assign(bds2) ***");
 
@@ -299,7 +299,7 @@ test08() {
 
   bds2.BHMZ05_widening_assign(bds1);
 
-  bool ok = (BD_Shape<mpq_class>(bds2) == known_result);
+  bool ok = check_result(bds2, known_result);
 
   print_constraints(bds2,
                     "*** bds2.BHMZ05_widening_assign(bds1) ***");

@@ -53,7 +53,7 @@ test01() {
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(D >= 0);
 
-  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds,
                     "*** bds.generalized_affine_preimage(3*B + C, "

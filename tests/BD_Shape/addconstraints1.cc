@@ -43,7 +43,7 @@ test01() {
   known_result.add_constraint(B == 5);
   known_result.add_constraint(B - A <= 5);
 
-  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(known_result, "*** known_result ***");
 

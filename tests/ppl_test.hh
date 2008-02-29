@@ -420,15 +420,11 @@ check_result(const BD_Shape<T>& computed_result,
 		     max_r_d_s, max_e_d_s, max_l_d_s);
 }
 
-template <>
-inline bool
-check_result(const BD_Shape<mpq_class>& computed_result,
-	     const BD_Shape<mpq_class>& known_result,
-	     const char*,
-	     const char*,
-	     const char*) {
-  return check_result_i(computed_result, known_result,
-			0, 0, 0);
+template <typename T>
+bool
+check_result(const BD_Shape<T>& computed_result,
+	     const BD_Shape<T>& known_result) {
+  return computed_result == known_result;
 }
 
 template <typename T>
@@ -438,6 +434,12 @@ check_result(const BD_Shape<T>& computed_result,
   return std::numeric_limits<T>::is_integer
     ? check_result_i(computed_result, known_result, "+inf", "+inf", "+inf")
     : check_result_i(computed_result, known_result, 0, 0, 0);
+}
+
+inline bool
+check_result(const BD_Shape<mpq_class>& computed_result,
+	     const BD_Shape<mpq_class>& known_result) {
+  return computed_result == known_result;
 }
 
 template <typename T>

@@ -65,7 +65,7 @@ test02() {
 
   BD_Shape<mpq_class> known_result(2, EMPTY);
 
-  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds,
                     "*** bds.generalized_affine_preimage(B, "

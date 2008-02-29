@@ -33,7 +33,7 @@ test01() {
   Constraint_System cs = bds1.constraints();
   TBD_Shape bds2(cs);
 
-  bool ok = (BD_Shape<mpq_class>(bds2) == known_result);
+  bool ok = check_result(bds2, known_result);
 
   print_constraints(bds1, "*** bds1 ***");
   print_constraints(bds2, "*** bds2 ***");
@@ -51,7 +51,7 @@ test02() {
   Constraint_System cs = bds1.constraints();
   TBD_Shape bds2(cs);
 
-  bool ok = (BD_Shape<mpq_class>(bds2) == known_result);
+  bool ok = check_result(bds2, known_result);
 
   print_constraints(bds1, "*** bds1 ***");
   print_constraints(bds2, "*** bds2 ***");
@@ -79,7 +79,7 @@ test03() {
   Constraint_System cs = bds1.constraints();
   TBD_Shape bds2(cs);
 
-  bool ok = (BD_Shape<mpq_class>(bds2) == known_result);
+  bool ok = check_result(bds2, known_result);
 
   print_constraints(bds1, "*** bds1 ***");
   print_constraints(bds2, "*** bds2 ***");
@@ -109,7 +109,7 @@ test04() {
 
   BD_Shape<mpq_class> known_result(bds1);
 
-  bool ok = (BD_Shape<mpq_class>(bds2) == known_result);
+  bool ok = check_result(bds2, known_result);
 
   return ok;
 }
@@ -127,7 +127,7 @@ test05() {
 
   BD_Shape<mpq_class> known_result(bds2);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   return ok;
 }

@@ -49,7 +49,7 @@ test01() {
   known_result.add_constraint(x <= 1);
   known_result.add_constraint(x - y <= 2);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1, "*** bds1.CC76_extrapolation_assign(bds2) ***");
 
@@ -123,7 +123,7 @@ test02() {
   known_result.add_constraint(B - D <= 2);
   known_result.add_constraint(C - D <= 4);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1,
                     "bds1.limited_CC76_extrapolation_assign(bds2, cs) ***");
@@ -232,7 +232,7 @@ test04() {
 
   bds1.CC76_extrapolation_assign(bds2);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1, "*** bds1.CC76_extrapolation_assign(bds2) ***");
 
@@ -311,7 +311,7 @@ test06() {
 
   bds1.CC76_extrapolation_assign(bds2);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1,
                     "*** bds1.CC76_extrapolation_assign(bds2) ***");
@@ -330,7 +330,7 @@ test07() {
 
   bds2.CC76_extrapolation_assign(bds1);
 
-  bool ok = (BD_Shape<mpq_class>(bds2) == known_result);
+  bool ok = check_result(bds2, known_result);
 
   print_constraints(bds2,
                     "*** bds2.CC76_extrapolation_assign(bds1) ***");
@@ -361,7 +361,7 @@ test08() {
 
   bds1.CC76_extrapolation_assign(bds2);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1,
                     "*** bds1.CC76_extrapolation_assign(bds2) ***");
@@ -388,7 +388,7 @@ test09() {
 
   bds1.CC76_extrapolation_assign(bds2);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1,
                     "*** bds1.CC76_extrapolation_assign(bds2) ***");
@@ -420,7 +420,7 @@ test10() {
 
   bds1.CC76_extrapolation_assign(bds2);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1,
                     "*** bds1.CC76_extrapolation_assign(bds2) ***");

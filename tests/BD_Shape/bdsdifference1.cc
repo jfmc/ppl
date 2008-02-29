@@ -47,7 +47,7 @@ test01() {
 
   BD_Shape<mpq_class> known_result(2, EMPTY);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1, "*** after bds1.bds_difference_assign(ph2) ***");
 
@@ -68,7 +68,7 @@ test02() {
   cs.insert(Linear_Expression(-4) >= 0);
   BD_Shape<mpq_class> known_result(cs);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1, "*** after bds1.bds_difference_assign(bds2) ***");
 
@@ -104,7 +104,7 @@ test03() {
   known_result.add_constraint(y >= 2);
   known_result.add_constraint(y - x >= 1);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1, "*** after bds1.bds_difference_assign(bds2) ***");
 
@@ -135,7 +135,7 @@ test04() {
 
   bds1.bds_difference_assign(bds2);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1, "*** after bds1.bds_difference_assign(bds2) ***");
 
@@ -166,7 +166,7 @@ test05() {
 
   BD_Shape<mpq_class> known_result(2, EMPTY);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1, "*** after bds1.bds_difference_assign(bds2) ***");
 
@@ -201,7 +201,7 @@ test06() {
   known_result.add_constraint(y >= 1);
   known_result.add_constraint(z <= 2);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1, "*** after bds1.bds_difference_assign(bds2) ***");
 
@@ -236,7 +236,7 @@ test07() {
 
   bds1.bds_difference_assign(bds2);
 
-  bool ok = (BD_Shape<mpq_class>(bds1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
   print_constraints(bds1, "*** after bds1.bds_difference_assign(bds2) ***");
   print_constraints(known_result, "*** known_result ***");

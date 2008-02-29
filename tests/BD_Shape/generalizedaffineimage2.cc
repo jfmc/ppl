@@ -43,7 +43,7 @@ test01() {
   known_result.add_constraint(x >= -6);
   known_result.add_constraint(y <= 1);
 
-  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** bds.generalized_affine_image(y, "
                         "LESS_OR_EQUAL, -y + 1) ***");
@@ -69,7 +69,7 @@ test02() {
   known_result.add_constraint(x >= -7);
   known_result.add_constraint(y == 0);
 
-  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** bds.generalized_affine_image(x, "
                         "GREATER_OR_EQUAL, -x - 3) ***");
@@ -94,7 +94,7 @@ test03() {
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(B <= 2);
 
-  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** bds.generalized_affine_image(B, "
                         "LESS_OR_EQUAL, 3*B + 1, 2) ***");
@@ -119,7 +119,7 @@ test04() {
   known_result.add_constraint(A == 0);
   known_result.add_constraint(B >= -1);
 
-  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** bds.generalized_affine_image(B, "
                         "GREATER_OR_EQUAL, B - 2) ***");
@@ -228,7 +228,7 @@ test08() {
   known_result.add_constraint(C - A <= 2);
   known_result.add_constraint(A <= 1);
 
-  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** bds.generalized_affine_image(B, "
                         "GREATER_OR_EQUAL, -B - 2, 3) ***");
@@ -255,7 +255,7 @@ test09() {
   known_result.add_constraint(A <= 1);
   known_result.add_constraint(C - A <= 2);
 
-  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** bds.generalized_affine_image(B, "
                         "LESS_OR_EQUAL, 4*A - 2*C + 3, -3) ***");
@@ -310,7 +310,7 @@ test11() {
   known_result.add_constraint(A == 1);
   known_result.add_constraint(B <= 5);
 
-  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** bds.generalized_affine_image(A, EQUAL, 1) ***");
 
@@ -338,7 +338,7 @@ test12() {
   known_result.add_constraint(A <= 4);
   known_result.add_constraint(B <= 9);
 
-  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds,
                     "*** bds.generalized_affine_image(B-3, EQUAL, B+1) ***");

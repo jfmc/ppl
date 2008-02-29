@@ -41,7 +41,7 @@ test01() {
 
   TBD_Shape known_result(2);
 
-  bool ok = (bds == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** after folding {A} into B ***");
 
@@ -65,7 +65,7 @@ test02() {
 
   TBD_Shape known_result(2, EMPTY);
 
-  bool ok = (bds == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** after folding {A} into B ***");
 
@@ -93,7 +93,7 @@ test03() {
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(A - C <= 2);
 
-  bool ok = (bds == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** after folding {} into B ***");
 
@@ -123,7 +123,7 @@ test04() {
   known_result.add_constraint(A >= 1);
   known_result.add_constraint(A <= 12);
 
-  bool ok = (bds == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** after folding {A} into B ***");
 
@@ -156,7 +156,7 @@ test05() {
   known_result.add_constraint(A >= 1);
   known_result.add_constraint(A <= 15);
 
-  bool ok = (bds == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** after folding {A, B} into C ***");
 
@@ -192,7 +192,7 @@ test06() {
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(A - B <= 2);
 
-  bool ok = (bds == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** after folding {C, D} into A ***");
 
@@ -230,7 +230,7 @@ test07() {
   known_result.add_constraint(B >= 0);
   known_result.add_constraint(B <= 2);
 
-  bool ok = (bds == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** after folding {B, D} into C ***");
 
@@ -260,7 +260,7 @@ test08() {
 
   TBD_Shape known_result(2, EMPTY);
 
-  bool ok = (bds == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** after folding {B, D} into C ***");
 
@@ -286,7 +286,7 @@ test09() {
 
   TBD_Shape known_result(1, EMPTY);
 
-  bool ok = (bds == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** after folding {A} into B ***");
 
@@ -314,7 +314,7 @@ test10() {
 
   TBD_Shape known_result(1, EMPTY);
 
-  bool ok = (bds == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** after folding {A} into B ***");
 

@@ -31,7 +31,7 @@ test01() {
 
   BD_Shape<mpq_class> known_result(0, EMPTY);
 
-  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** bds ***");
 
@@ -104,7 +104,7 @@ test04() {
   known_result.add_constraint(C == D-1);
   known_result.add_constraint(C <= A+2);
 
-  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** bds ***");
 
@@ -137,7 +137,7 @@ test05() {
   known_result.add_constraint(C - D <= 23);
   known_result.add_constraint(C - D >= 8);
 
-  bool ok = (BD_Shape<mpq_class>(bds) == known_result);
+  bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** bds ***");
 
