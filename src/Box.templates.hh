@@ -2961,7 +2961,6 @@ void
 Box<Interval>::ascii_dump(std::ostream& s) const {
   const char separator = ' ';
   status.ascii_dump(s);
-  s << separator;
   const dimension_type space_dim = space_dimension();
   s << "space_dim" << separator << space_dim;
   s << "\n";
