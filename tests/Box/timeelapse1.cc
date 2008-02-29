@@ -42,8 +42,7 @@ test01() {
 
   box3.time_elapse_assign(box4);
 
-  bool ok = (box1.is_empty()
-		&& box3.is_empty());
+  bool ok = (box1.is_empty() && box3.is_empty());
 
   print_constraints(box1, "*** box1_time_elapse_assign(box2) ***");
   print_constraints(box3, "*** box3_time_elapse_assign(box4) ***");

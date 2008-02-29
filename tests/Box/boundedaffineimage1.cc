@@ -159,7 +159,7 @@ test05() {
   bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.bounded_affine_image(A, "
-		        "-A - 3, B - C + 6*D + F, -1) ***");
+                        "-A - 3, B - C + 6*D + F, -1) ***");
 
   return ok;
 }
@@ -190,7 +190,7 @@ test06() {
   bool ok = check_result(box, known_result);
 
   print_constraints(box,
-		    "*** box.bounded_affine_image(x, -2*x+y+1, -2*x+y+1) ***");
+                    "*** box.bounded_affine_image(x, -2*x+y+1, -2*x+y+1) ***");
 
   return ok;
 }
@@ -222,11 +222,11 @@ test07() {
   bool ok = check_result(box, known_result);
 
   print_constraints(box,
-		    "*** box.bounded_affine_image("
-		    "x, -2*x+y+1, -2*x+y+1, -1) ***");
+                    "*** box.bounded_affine_image("
+                    "x, -2*x+y+1, -2*x+y+1, -1) ***");
   print_constraints(ph,
-		    "*** ph.bounded_affine_image("
-		    "x, -2*x+y+1, -2*x+y+1, -1) ***");
+                    "*** ph.bounded_affine_image("
+                    "x, -2*x+y+1, -2*x+y+1, -1) ***");
 
   return ok;
 }
@@ -257,8 +257,8 @@ test08() {
   bool ok = check_result(box, known_result);
 
   print_constraints(box,
-		    "*** box.bounded_affine_image("
-		    "x, -2*x+y+1, -2*x+y+1) ***");
+                    "*** box.bounded_affine_image("
+                    "x, -2*x+y+1, -2*x+y+1) ***");
 
   return ok;
 }
@@ -284,8 +284,8 @@ test09() {
   bool ok = check_result(box, known_result, "3.18e-7", "3.18e-7", "3.18e-7");
 
   print_constraints(box,
-		    "*** box.bounded_affine_image("
-		    "x, x + 4, x + 4, -1) ***");
+                    "*** box.bounded_affine_image("
+                    "x, x + 4, x + 4, -1) ***");
 
   return ok;
 }
@@ -311,7 +311,7 @@ test10() {
   bool ok = check_result(box, known_result, "3.18e-7", "3.18e-7", "3.18e-7");
 
   print_constraints(box,
-		    "*** box.bounded_affine_image(x, x + 4, x + 4) ***");
+                    "*** box.bounded_affine_image(x, x + 4, x + 4) ***");
 
   return ok;
 }
@@ -366,7 +366,7 @@ test12() {
   bool ok = check_result(box, known_result);
 
   print_constraints(box,
-		    "*** box.bounded_affine_image(x, 2*x-2, 2*x-2, 2) ***");
+                    "*** box.bounded_affine_image(x, 2*x-2, 2*x-2, 2) ***");
 
   return ok;
 }

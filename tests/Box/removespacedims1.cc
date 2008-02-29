@@ -91,8 +91,8 @@ test02() {
   bool ok = check_result(box, known_result);
 
   print_constraints(box,
-		    "*** box.remove_space_dimensions"
-		    "({x1, x2, x3, x4, x5, x6, x7, x8}) ***");
+                    "*** box.remove_space_dimensions"
+                    "({x1, x2, x3, x4, x5, x6, x7, x8}) ***");
 
   return ok;
 }
@@ -123,7 +123,7 @@ test03() {
   bool ok = check_result(box, known_result);
 
   print_constraints(box,
-		    "*** box.remove_space_dimensions({x1, x3, x4}) ***");
+                    "*** box.remove_space_dimensions({x1, x3, x4}) ***");
 
   return ok;
 }

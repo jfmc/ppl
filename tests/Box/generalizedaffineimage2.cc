@@ -72,7 +72,7 @@ test02() {
   bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.generalized_affine_image"
-		    "(A, EQUAL, A + 2) ***");
+                    "(A, EQUAL, A + 2) ***");
 
   return ok;
 }
@@ -93,7 +93,7 @@ test03() {
   bool ok = check_result(box, known_result);
 
   print_constraints(box, "*** box.generalized_affine_image"
-		    "(A, LESS_THAN, B + 1) ***");
+                    "(A, LESS_THAN, B + 1) ***");
 
   return ok;
 }
@@ -321,11 +321,11 @@ test11() {
   bool ok = check_result(box, Rational_Box(ph));
 
   print_constraints(box,
-		    "*** box.generalized_affine_image(3*A + 2, "
-		    "GREATER_THAN, 2*A - 3) ***");
+                    "*** box.generalized_affine_image(3*A + 2, "
+                    "GREATER_THAN, 2*A - 3) ***");
   print_constraints(Rational_Box(ph),
-		    "*** Rational_Box(ph).generalized_affine_image(3*A + 2, "
-		    "GREATER_THAN, 2*A - 3) ***");
+                    "*** Rational_Box(ph).generalized_affine_image(3*A + 2, "
+                    "GREATER_THAN, 2*A - 3) ***");
 
   return ok;
 }
@@ -344,9 +344,9 @@ test12() {
   NNC_Polyhedron ph(box);
 
   box.generalized_affine_image(2*B + 3*A,
-			      LESS_THAN, Linear_Expression(1));
+                              LESS_THAN, Linear_Expression(1));
   ph.generalized_affine_image(2*B + 3*A,
-			      LESS_THAN, Linear_Expression(1));
+                              LESS_THAN, Linear_Expression(1));
 
   bool ok = check_result(box, Rational_Box(ph));
 
@@ -381,11 +381,11 @@ test13() {
   bool ok = check_result(box, Rational_Box(ph));
 
   print_constraints(box,
-		    "*** box.generalized_affine_image(-4, "
-		    "LESS_THAN, A - 3*B + 2*C) ***");
+                    "*** box.generalized_affine_image(-4, "
+                    "LESS_THAN, A - 3*B + 2*C) ***");
   print_constraints(Rational_Box(ph),
-		    "*** Rational_Box(ph).generalized_affine_image("
-		    "-4, LESS_THAN, A - 3*B + 2*C) ***");
+                    "*** Rational_Box(ph).generalized_affine_image("
+                    "-4, LESS_THAN, A - 3*B + 2*C) ***");
 
   return ok;
 }
@@ -406,9 +406,9 @@ test14() {
   NNC_Polyhedron ph(box);
 
   box.generalized_affine_image(Linear_Expression(2),
-			      GREATER_THAN, A - 3*B + 2*C);
+                              GREATER_THAN, A - 3*B + 2*C);
   ph.generalized_affine_image(Linear_Expression(2),
-			      GREATER_THAN, A - 3*B + 2*C);
+                              GREATER_THAN, A - 3*B + 2*C);
 
   bool ok = check_result(box, Rational_Box(ph));
 
@@ -438,9 +438,9 @@ test15() {
   NNC_Polyhedron ph(box);
 
   box.generalized_affine_image(-2*A - B - 1,
-			      GREATER_THAN, 3*A + B + 4*C - 2);
+                              GREATER_THAN, 3*A + B + 4*C - 2);
   ph.generalized_affine_image(-2*A - B - 1,
-			      GREATER_THAN, 3*A + B + 4*C - 2);
+                              GREATER_THAN, 3*A + B + 4*C - 2);
 
   bool ok = check_result(box, Rational_Box(ph));
 
@@ -495,16 +495,16 @@ test17() {
   print_constraints(box, "*** box ***");
 
   box.generalized_affine_image(Linear_Expression(3),
-			      GREATER_THAN,
-			      Linear_Expression(4));
+                              GREATER_THAN,
+                              Linear_Expression(4));
 
   Rational_Box known_result(3, EMPTY);
 
   bool ok = check_result(box, known_result);
 
   print_constraints(box,
-		    "*** box.generalized_affine_image(3, "
-		    "GREATER_THAN, 4) ***");
+                    "*** box.generalized_affine_image(3, "
+                    "GREATER_THAN, 4) ***");
 
   return ok;
 }

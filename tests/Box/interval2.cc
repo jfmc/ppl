@@ -68,17 +68,17 @@ typedef double number_type;
 typedef Float_Interval interval_type;
 
 bool contains(const std::complex<interval_type>& i,
-	      const std::complex<number_type>& s) {
+              const std::complex<number_type>& s) {
   return contains(i.real(), s.real()) && contains(i.imag(), s.imag());
 }
 
 void
 polynomial_evaluate(const std::vector<number_type>& P,
-		    const std::complex<number_type>& x,
-		    std::complex<number_type>& P_x,
-		    const std::vector<interval_type>& iP,
-		    const std::complex<interval_type>& ix,
-		    std::complex<interval_type>& iP_x) {
+                    const std::complex<number_type>& x,
+                    std::complex<number_type>& P_x,
+                    const std::vector<interval_type>& iP,
+                    const std::complex<interval_type>& ix,
+                    std::complex<interval_type>& iP_x) {
   // Note: the coefficient of the leading term is implicitly 1.
   P_x = std::complex<number_type>(number_type(1.0), number_type(0.0));
   iP_x = std::complex<interval_type>(interval_type(1.0), interval_type(0.0));
@@ -106,9 +106,9 @@ solve(const std::vector<number_type>& P,
   double theta = 2*M_PI/degree;
   for (unsigned i = 0; i < degree; ++i) {
     x[i] = std::complex<number_type>(number_type(cos(i*theta)),
-				     number_type(sin(i*theta)));
+                                     number_type(sin(i*theta)));
     ix[i] = std::complex<interval_type>(interval_type(cos(i*theta)),
-					interval_type(sin(i*theta)));
+                                        interval_type(sin(i*theta)));
     assert(contains(ix[i], x[i]));
   }
 
@@ -124,14 +124,14 @@ solve(const std::vector<number_type>& P,
       std::complex<interval_type> id(interval_type(1.0), interval_type(0.0));
       assert(contains(id, d));
       for (unsigned j = 0; j < degree; ++j)
-	if (i != j) {
-	  assert(contains(id, d));
-	  assert(contains(ix[i], x[i]));
-	  assert(contains(ix[j], x[j]));
-	  d *= (x[i] - x[j]);
-	  id *= (ix[i] - ix[j]);
-	  assert(contains(id, d));
-	}
+        if (i != j) {
+          assert(contains(id, d));
+          assert(contains(ix[i], x[i]));
+          assert(contains(ix[j], x[j]));
+          d *= (x[i] - x[j]);
+          id *= (ix[i] - ix[j]);
+          assert(contains(id, d));
+        }
       P_x_i /= d;
       iP_x_i /= id;
       assert(contains(iP_x_i, P_x_i));
@@ -192,9 +192,9 @@ bool test04() {
   for (double d = 0.0; d <= 10.0; d += 1.0) {
     std::complex<number_type> P_x_i;
     polynomial_evaluate(P,
-			std::complex<number_type>(number_type(d),
-						  number_type(0.0)),
-			P_x_i);
+                        std::complex<number_type>(number_type(d),
+                                                  number_type(0.0)),
+                        P_x_i);
     nout << d << " " << P_x_i << endl;
   }
   return true;

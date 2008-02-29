@@ -46,8 +46,8 @@ test01() {
   bool ok = check_result(box, known_result);
 
   print_constraints(box,
-		    "*** box.add_space_dimensions_and_embed(2) "
-		    "and box.add_constraint(z <= 2) ***");
+                    "*** box.add_space_dimensions_and_embed(2) "
+                    "and box.add_constraint(z <= 2) ***");
 
   return ok;
 }
@@ -308,8 +308,8 @@ test13() {
   bool ok = check_result(box, known_result) ;
 
   print_constraints(box,
-		    "*** box.add_space_dimensions_and_embed(2) "
-		    "and box.add_constraint(z <= 2) ***");
+                    "*** box.add_space_dimensions_and_embed(2) "
+                    "and box.add_constraint(z <= 2) ***");
 
   return ok;
 }

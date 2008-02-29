@@ -45,7 +45,7 @@ test01() {
 
   dimension_type num_constraints = 0;
   for (Constraint_System::const_iterator i = cs.begin(),
-	 iend = cs.end(); i != iend; ++i) {
+         iend = cs.end(); i != iend; ++i) {
     nout << *i << endl;
     ++num_constraints;
   }
@@ -76,7 +76,7 @@ test02() {
 
   dimension_type num_constraints = 0;
   for (Constraint_System::const_iterator i = cs.begin(),
-	 iend = cs.end(); i != iend; ++i) {
+         iend = cs.end(); i != iend; ++i) {
     nout << *i << endl;
     ++num_constraints;
   }
