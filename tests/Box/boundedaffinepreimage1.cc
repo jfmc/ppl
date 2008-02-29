@@ -115,7 +115,7 @@ namespace {
     box.bounded_affine_preimage(C, 3*D - E, 2*C + 1, -5);
     ph.bounded_affine_preimage(C, 3*D - E, 2*C + 1, -5);
 
-    bool ok = (Rational_Box(box) == Rational_Box(ph));
+    bool ok = check_result(box, Rational_Box(ph));
 
     print_constraints(box, "*** box.bounded_affine_preimage(C, "
                       "3*D - E, 2*C + 1, -5) ***");
@@ -237,7 +237,7 @@ namespace {
     box.bounded_affine_preimage(x, x + y, x + y, -1);
     ph.bounded_affine_preimage(x, x + y, x + y, -1);
 
-    bool ok = Rational_Box(box) == Rational_Box(ph);
+    bool ok = check_result(box, Rational_Box(ph));
 
     print_constraints(box,
                       "*** box.bounded_affine_preimage("
