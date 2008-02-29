@@ -284,9 +284,9 @@ test09() {
   print_constraints(oct2, "*** oct2 ***");
 
   oct1.CC76_extrapolation_assign(oct2,
-				 stop_points,
-				 stop_points
-				 + sizeof(stop_points)/sizeof(stop_points[0]));
+                                 stop_points,
+                                 stop_points
+                                 + sizeof(stop_points)/sizeof(stop_points[0]));
 
   Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(x <= 1);
@@ -514,4 +514,3 @@ BEGIN_MAIN
   DO_TEST(test13);
   DO_TEST(test14);
 END_MAIN
-

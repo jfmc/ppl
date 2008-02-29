@@ -400,7 +400,7 @@ test14() {
   bool ok = check_result(oc, known_result, "1.98e-6", "9.26e-7", "5.25e-7");
 
   print_constraints(oc,
-		    "*** oc.affine_preimage(D, 4*A - B + 2*C + 5*D - 1, 3) ***");
+                    "*** oc.affine_preimage(D, 4*A - B + 2*C + 5*D - 1, 3) ***");
 
  return ok;
 }

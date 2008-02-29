@@ -62,7 +62,7 @@ test01() {
   bool ok = (Octagonal_Shape<mpq_class>(oct2) == known_result);
 
   print_constraints(oct2,
-		    "*** oct2.limited_BHMZ05_extrapolation_assign(oct1) ***");
+                    "*** oct2.limited_BHMZ05_extrapolation_assign(oct1) ***");
 
    return ok;
 }
@@ -95,7 +95,7 @@ test02() {
   bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
-		    "*** oct1.limited_BHMZ05_extrapolation_assign(oct2) ***");
+                    "*** oct1.limited_BHMZ05_extrapolation_assign(oct2) ***");
 
   return ok;
 }
@@ -117,7 +117,7 @@ test03() {
   bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
-		    "*** oct1.limited_BHMZ05_extrapolation_assign(oct2) ***");
+                    "*** oct1.limited_BHMZ05_extrapolation_assign(oct2) ***");
 
   return ok;
 }
@@ -143,7 +143,7 @@ test04() {
   bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
-		    "*** oct1.limited_BHMZ05_extrapolation_assign(oct2) ***");
+                    "*** oct1.limited_BHMZ05_extrapolation_assign(oct2) ***");
 
   return ok;
 }
@@ -173,7 +173,7 @@ test05() {
   bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
-		    "*** oct1.limited_BHMZ05_extrapolation_assign(oct2) ***");
+                    "*** oct1.limited_BHMZ05_extrapolation_assign(oct2) ***");
 
   return ok;
 }
@@ -220,7 +220,7 @@ test06() {
   bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
-		    "*** oct1.limited_BHMZ05_extrapolation_assign(oct2) ***");
+                    "*** oct1.limited_BHMZ05_extrapolation_assign(oct2) ***");
 
   return ok;
 }

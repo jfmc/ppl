@@ -74,7 +74,7 @@ test02() {
   bool ok = check_result(oct, known_result, "1.98e-6", "9.26e-7", "5.25e-7");
 
   print_constraints(oct, "*** oct.generalized_affine_image(6, "
-		    "EQUAL, 3*x - 4) ***");
+                    "EQUAL, 3*x - 4) ***");
 
   return ok;
 }
@@ -127,7 +127,7 @@ test04() {
   bool ok = check_result(oct, known_result);
 
   print_constraints(oct, "*** oct.generalized_affine_image(-2*A + 5, "
-		    "EQUAL, -4*B) ***");
+                    "EQUAL, -4*B) ***");
 
    return ok;
 }
@@ -211,7 +211,7 @@ test07() {
   bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct, "*** oct.generalized_affine_image(2*B + C + 1, "
-		         "GREATER_OR_EQUAL, A - 3*B + 2*C) ***");
+                         "GREATER_OR_EQUAL, A - 3*B + 2*C) ***");
 
    return ok;
 }
