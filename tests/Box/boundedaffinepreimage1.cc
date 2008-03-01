@@ -291,11 +291,14 @@ test09() {
   box.add_constraint(y <= 2);
 
   print_constraints(box, "*** box ***");
-  C_Polyhedron ph(box);
+  // FIXME: should this be C_Polyhedron or NNC_Polyhedron?
+  NNC_Polyhedron ph(box);
   box.bounded_affine_preimage(x, x + 5, x + 4, -1);
   ph.bounded_affine_preimage(x, x + 5, x + 4, -1);
 
-  bool ok = check_result(box, Rational_Box(ph));
+  //bool ok = check_result(box, Rational_Box(ph));
+  bool ok = check_result(box, Rational_Box(ph),
+                         "2.84e-07", "2.84e-07", "2.84e-07");
 
   print_constraints(box,
                     "*** box.bounded_affine_preimage("
