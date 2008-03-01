@@ -424,7 +424,17 @@ template <typename T>
 bool
 check_result(const BD_Shape<T>& computed_result,
 	     const BD_Shape<T>& known_result) {
-  return computed_result == known_result;
+  if (computed_result == known_result)
+    return true;
+  else {
+    nout << "Equality does not hold:"
+         << "\ncomputed result is\n"
+         << computed_result
+         << "\nknown result is\n"
+         << known_result
+         << endl;
+    return false;
+  }
 }
 
 template <typename T>
@@ -439,7 +449,18 @@ check_result(const BD_Shape<T>& computed_result,
 inline bool
 check_result(const BD_Shape<mpq_class>& computed_result,
 	     const BD_Shape<mpq_class>& known_result) {
-  return computed_result == known_result;
+  if (computed_result == known_result)
+    return true;
+  else {
+    using namespace IO_Operators;
+    nout << "Equality does not hold:"
+         << "\ncomputed result is\n"
+         << computed_result
+         << "\nknown result is\n"
+         << known_result
+         << endl;
+    return false;
+  }
 }
 
 template <typename T>
@@ -609,15 +630,21 @@ check_result(const Box<Interval>& computed_result,
 		     max_r_d_s, max_e_d_s, max_l_d_s);
 }
 
-template <>
-inline bool
-check_result(const Rational_Box& computed_result,
-	     const Rational_Box& known_result,
-	     const char*,
-	     const char*,
-	     const char*) {
-  return check_result_i(computed_result, known_result,
-			0, 0, 0);
+template <typename Interval>
+bool
+check_result(const Box<Interval>& computed_result,
+	     const Box<Interval>& known_result) {
+  if (computed_result == known_result)
+    return true;
+  else {
+    nout << "Equality does not hold:"
+         << "\ncomputed result is\n"
+         << computed_result
+         << "\nknown result is\n"
+         << known_result
+         << endl;
+    return false;
+  }
 }
 
 template <typename Interval>
@@ -627,6 +654,23 @@ check_result(const Box<Interval>& computed_result,
   return std::numeric_limits<typename Interval::boundary_type>::is_integer
     ? check_result_i(computed_result, known_result, "+inf", "+inf", "+inf")
     : check_result_i(computed_result, known_result, 0, 0, 0);
+}
+
+inline bool
+check_result(const Rational_Box& computed_result,
+	     const Rational_Box& known_result) {
+  if (computed_result == known_result)
+    return true;
+  else {
+    using namespace IO_Operators;
+    nout << "Equality does not hold:"
+         << "\ncomputed result is\n"
+         << computed_result
+         << "\nknown result is\n"
+         << known_result
+         << endl;
+    return false;
+  }
 }
 
 } // namespace Parma_Polyhedra_Library
