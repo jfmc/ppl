@@ -25,432 +25,432 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-  bool
-    test01() {
-    Variable A(0);
-    Variable B(1);
+bool
+test01() {
+  Variable A(0);
+  Variable B(1);
 
-    TBox box(2);
-    box.add_constraint(2*A == 1);
-    box.add_constraint(B >= 5);
+  TBox box(2);
+  box.add_constraint(2*A == 1);
+  box.add_constraint(B >= 5);
 
-    print_constraints(box, "*** box ***");
-    C_Polyhedron ph(box);
+  print_constraints(box, "*** box ***");
+  C_Polyhedron ph(box);
 
-    box.generalized_affine_preimage(B, GREATER_OR_EQUAL,
-                                    Linear_Expression(-1));
-    ph.generalized_affine_preimage(B, GREATER_OR_EQUAL,
-                                    Linear_Expression(-1));
+  box.generalized_affine_preimage(B, GREATER_OR_EQUAL,
+                                  Linear_Expression(-1));
+  ph.generalized_affine_preimage(B, GREATER_OR_EQUAL,
+                                 Linear_Expression(-1));
 
-    bool ok = check_result(box, Rational_Box(ph));
-
-    print_constraints(box,
-                      "*** box.generalized_affine_preimage(B, "
-                      "GREATER_OR_EQUAL, -1) ***");
-    print_constraints(ph,
-                      "*** ph.generalized_affine_preimage(B, "
-                      "GREATER_OR_EQUAL, -1) ***");
+  bool ok = check_result(box, Rational_Box(ph));
+
+  print_constraints(box,
+                    "*** box.generalized_affine_preimage(B, "
+                    "GREATER_OR_EQUAL, -1) ***");
+  print_constraints(ph,
+                    "*** ph.generalized_affine_preimage(B, "
+                    "GREATER_OR_EQUAL, -1) ***");
 
-    return ok;
-  }
+  return ok;
+}
 
-  bool
-    test02() {
-    Variable A(0);
-    Variable B(1);
-
-    TBox box(2);
-    box.add_constraint(2*A == 1);
-    box.add_constraint(B >= 5);
+bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+
+  TBox box(2);
+  box.add_constraint(2*A == 1);
+  box.add_constraint(B >= 5);
 
-    print_constraints(box, "*** box ***");
-    C_Polyhedron ph(box);
+  print_constraints(box, "*** box ***");
+  C_Polyhedron ph(box);
 
-    box.generalized_affine_preimage(B, LESS_OR_EQUAL, Linear_Expression(-1));
-    ph.generalized_affine_preimage(B, LESS_OR_EQUAL, Linear_Expression(-1));
+  box.generalized_affine_preimage(B, LESS_OR_EQUAL, Linear_Expression(-1));
+  ph.generalized_affine_preimage(B, LESS_OR_EQUAL, Linear_Expression(-1));
 
-    bool ok = check_result(box, Rational_Box(ph));
-
-    print_constraints(box,
-                      "*** box.generalized_affine_preimage(B, "
-                      "LESS_OR_EQUAL, -1) ***");
-    print_constraints(ph,
-                      "*** ph.generalized_affine_preimage(B, "
-                      "LESS_OR_EQUAL, -1) ***");
+  bool ok = check_result(box, Rational_Box(ph));
+
+  print_constraints(box,
+                    "*** box.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, -1) ***");
+  print_constraints(ph,
+                    "*** ph.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, -1) ***");
 
-    return ok;
-  }
+  return ok;
+}
 
-  bool
-    test03() {
-    Variable A(0);
-    Variable B(1);
+bool
+test03() {
+  Variable A(0);
+  Variable B(1);
 
-    TBox box(2);
-    box.add_constraint(4*A == 1);
-    box.add_constraint(B >= 5);
+  TBox box(2);
+  box.add_constraint(4*A == 1);
+  box.add_constraint(B >= 5);
 
-    print_constraints(box, "*** box ***");
-    C_Polyhedron ph(box);
+  print_constraints(box, "*** box ***");
+  C_Polyhedron ph(box);
 
-    box.generalized_affine_preimage(B, LESS_OR_EQUAL, -B+1);
-    ph.generalized_affine_preimage(B, LESS_OR_EQUAL, -B+1);
+  box.generalized_affine_preimage(B, LESS_OR_EQUAL, -B+1);
+  ph.generalized_affine_preimage(B, LESS_OR_EQUAL, -B+1);
 
-    bool ok = check_result(box, Rational_Box(ph));
+  bool ok = check_result(box, Rational_Box(ph));
 
-    print_constraints(box,
-                      "*** box.generalized_affine_preimage(B, "
-                      "LESS_OR_EQUAL, -B+1) ***");
-    print_constraints(ph,
-                      "*** ph.generalized_affine_preimage(B, "
-                      "LESS_OR_EQUAL, -B+1) ***");
+  print_constraints(box,
+                    "*** box.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, -B+1) ***");
+  print_constraints(ph,
+                    "*** ph.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, -B+1) ***");
 
-    return ok;
-  }
+  return ok;
+}
 
-  bool
-    test04() {
-    Variable A(0);
-    Variable B(1);
+bool
+test04() {
+  Variable A(0);
+  Variable B(1);
 
-    TBox box(2);
-    box.add_constraint(4*A == 1);
-    box.add_constraint(B >= 5);
+  TBox box(2);
+  box.add_constraint(4*A == 1);
+  box.add_constraint(B >= 5);
 
-    print_constraints(box, "*** box ***");
-    C_Polyhedron ph(box);
+  print_constraints(box, "*** box ***");
+  C_Polyhedron ph(box);
 
-    box.generalized_affine_preimage(B, LESS_OR_EQUAL, B+1);
-    ph.generalized_affine_preimage(B, LESS_OR_EQUAL, B+1);
+  box.generalized_affine_preimage(B, LESS_OR_EQUAL, B+1);
+  ph.generalized_affine_preimage(B, LESS_OR_EQUAL, B+1);
 
-    bool ok = check_result(box, Rational_Box(ph));
+  bool ok = check_result(box, Rational_Box(ph));
 
-    print_constraints(box,
-                      "*** box.generalized_affine_preimage(B, "
-                      "LESS_OR_EQUAL, B+1) ***");
-    print_constraints(ph,
-                      "*** ph.generalized_affine_preimage(B, "
-                      "LESS_OR_EQUAL, B+1) ***");
+  print_constraints(box,
+                    "*** box.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, B+1) ***");
+  print_constraints(ph,
+                    "*** ph.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, B+1) ***");
 
-    return ok;
-  }
+  return ok;
+}
 
-  bool
-    test05() {
-    Variable A(0);
-    Variable B(1);
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
 
-    TBox box(2);
-    box.add_constraint(2*A == 1);
-    box.add_constraint(B >= 5);
+  TBox box(2);
+  box.add_constraint(2*A == 1);
+  box.add_constraint(B >= 5);
 
-    print_constraints(box, "*** box ***");
-    C_Polyhedron ph(box);
+  print_constraints(box, "*** box ***");
+  C_Polyhedron ph(box);
 
-    box.generalized_affine_preimage(B, LESS_OR_EQUAL, 2*B+1);
-    ph.generalized_affine_preimage(B, LESS_OR_EQUAL, 2*B+1);
+  box.generalized_affine_preimage(B, LESS_OR_EQUAL, 2*B+1);
+  ph.generalized_affine_preimage(B, LESS_OR_EQUAL, 2*B+1);
 
-    bool ok = check_result(box, Rational_Box(ph));
+  bool ok = check_result(box, Rational_Box(ph));
 
-    print_constraints(box,
-                      "*** box.generalized_affine_preimage(B, "
-                      "LESS_OR_EQUAL, 2*B+1) ***");
-    print_constraints(ph,
-                      "*** ph.generalized_affine_preimage(B, "
-                      "LESS_OR_EQUAL, 2*B+1) ***");
+  print_constraints(box,
+                    "*** box.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, 2*B+1) ***");
+  print_constraints(ph,
+                    "*** ph.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, 2*B+1) ***");
 
-    return ok;
-  }
+  return ok;
+}
 
-  bool
-    test06() {
-    Variable A(0);
-    Variable B(1);
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
 
-    TBox box(2);
-    box.add_constraint(5*A == 1);
-    box.add_constraint(B >= 5);
+  TBox box(2);
+  box.add_constraint(5*A == 1);
+  box.add_constraint(B >= 5);
 
-    print_constraints(box, "*** box ***");
-    C_Polyhedron ph(box);
+  print_constraints(box, "*** box ***");
+  C_Polyhedron ph(box);
 
-    box.generalized_affine_preimage(B, LESS_OR_EQUAL, -2*B+1);
-    ph.generalized_affine_preimage(B, LESS_OR_EQUAL, -2*B+1);
-
-    bool ok = check_result(box, Rational_Box(ph));
-
-    print_constraints(box,
-                      "*** box.generalized_affine_preimage(B, "
-                      "LESS_OR_EQUAL, -2*B+1) ***");
-    print_constraints(ph,
-                      "*** ph.generalized_affine_preimage(B, "
-                      "LESS_OR_EQUAL, -2*B+1) ***");
-
-    return ok;
-  }
-
-  bool
-    test07() {
-    Variable A(0);
-    Variable B(1);
+  box.generalized_affine_preimage(B, LESS_OR_EQUAL, -2*B+1);
+  ph.generalized_affine_preimage(B, LESS_OR_EQUAL, -2*B+1);
+
+  bool ok = check_result(box, Rational_Box(ph));
+
+  print_constraints(box,
+                    "*** box.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, -2*B+1) ***");
+  print_constraints(ph,
+                    "*** ph.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, -2*B+1) ***");
+
+  return ok;
+}
+
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
 
-    TBox box(2);
-    box.add_constraint(5*A == 1);
-    box.add_constraint(B >= 5);
+  TBox box(2);
+  box.add_constraint(5*A == 1);
+  box.add_constraint(B >= 5);
 
-    print_constraints(box, "*** box ***");
-    C_Polyhedron ph(box);
-
-    box.generalized_affine_preimage(B, LESS_OR_EQUAL, 3*A-2*B+1);
-    ph.generalized_affine_preimage(B, LESS_OR_EQUAL, 3*A-2*B+1);
-
-    bool ok = check_result(box, Rational_Box(ph));
+  print_constraints(box, "*** box ***");
+  C_Polyhedron ph(box);
+
+  box.generalized_affine_preimage(B, LESS_OR_EQUAL, 3*A-2*B+1);
+  ph.generalized_affine_preimage(B, LESS_OR_EQUAL, 3*A-2*B+1);
+
+  bool ok = check_result(box, Rational_Box(ph));
 
-    print_constraints(box,
-                      "*** box.generalized_affine_preimage(B, "
-                      "LESS_OR_EQUAL, 3*A-2*B+1) ***");
-
-    return ok;
-  }
-
-  bool
-    test08() {
-    Variable A(0);
-    Variable B(1);
-
-    TBox box(2);
-    box.add_constraint(A == 1);
-    box.add_constraint(B >= 5);
+  print_constraints(box,
+                    "*** box.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, 3*A-2*B+1) ***");
+
+  return ok;
+}
+
+bool
+test08() {
+  Variable A(0);
+  Variable B(1);
+
+  TBox box(2);
+  box.add_constraint(A == 1);
+  box.add_constraint(B >= 5);
 
-    print_constraints(box, "*** box ***");
-    C_Polyhedron ph(box);
+  print_constraints(box, "*** box ***");
+  C_Polyhedron ph(box);
 
-    box.generalized_affine_preimage(B, LESS_OR_EQUAL, -3*A-2*B+1);
-    ph.generalized_affine_preimage(B, LESS_OR_EQUAL, -3*A-2*B+1);
-
-    bool ok = check_result(box, Rational_Box(ph));
-
-    print_constraints(box,
-                      "*** box.generalized_affine_preimage(B, "
-                      "LESS_OR_EQUAL, -3*A-2*B+1) ***");
-    print_constraints(ph,
-                      "*** ph.generalized_affine_preimage(B, "
-                      "LESS_OR_EQUAL, -3*A-2*B+1) ***");
-
-    return ok;
-  }
-
-  bool
-    test09() {
-    Variable A(0);
-    Variable B(1);
-    Variable C(2);
-
-    TBox box(3);
-    box.add_constraint(A == 1);
-    box.add_constraint(B >= 0);
-    box.add_constraint(2*C <= 1);
-
-    print_constraints(box, "*** box ***");
-    C_Polyhedron ph(box);
+  box.generalized_affine_preimage(B, LESS_OR_EQUAL, -3*A-2*B+1);
+  ph.generalized_affine_preimage(B, LESS_OR_EQUAL, -3*A-2*B+1);
+
+  bool ok = check_result(box, Rational_Box(ph));
+
+  print_constraints(box,
+                    "*** box.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, -3*A-2*B+1) ***");
+  print_constraints(ph,
+                    "*** ph.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, -3*A-2*B+1) ***");
+
+  return ok;
+}
+
+bool
+test09() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  TBox box(3);
+  box.add_constraint(A == 1);
+  box.add_constraint(B >= 0);
+  box.add_constraint(2*C <= 1);
+
+  print_constraints(box, "*** box ***");
+  C_Polyhedron ph(box);
 
-    box.generalized_affine_preimage(B, LESS_OR_EQUAL, -3*A-2*B+7*C+1, 2);
-    ph.generalized_affine_preimage(B, LESS_OR_EQUAL, -3*A-2*B+7*C+1, 2);
-
-    bool ok = check_result(box, Rational_Box(ph));
-
-    print_constraints(box,
-                      "*** box.generalized_affine_preimage(B, "
-                      "LESS_OR_EQUAL, -3*A-2*B+7*C+1, 2) ***");
-    print_constraints(ph,
-                      "*** ph.generalized_affine_preimage(B, "
-                      "LESS_OR_EQUAL, -3*A-2*B+7*C+1, 2) ***");
-
-    return ok;
-  }
-
-  bool
-    test10() {
-    // If the Coefficient type is not wide enough, do nothing.
-    if (std::numeric_limits<Coefficient>::is_bounded
-        && (std::numeric_limits<Coefficient>::min() > -203
-            || std::numeric_limits<Coefficient>::max() < 629))
-      return true;
-
-    Variable A(0);
-    Variable B(1);
-    Variable C(2);
-
-    TBox box(3);
-    box.add_constraint(A == 1);
-    box.add_constraint(B >= 7);
-    box.add_constraint(C >= 7);
-
-    print_constraints(box, "*** box ***");
-    C_Polyhedron ph(box);
-
-    box.generalized_affine_preimage(B, LESS_OR_EQUAL, -3*A-2*B-7*C+1, 3);
-    ph.generalized_affine_preimage(B, LESS_OR_EQUAL, -3*A-2*B-7*C+1, 3);
-
-    bool ok = check_result(box, Rational_Box(ph));
-
-    print_constraints(box,
-                      "*** box.generalized_affine_preimage(B, "
-                      "LESS_OR_EQUAL, -3*A-2*B-7*C+1, 3) ***");
-    print_constraints(ph,
-                      "*** ph.generalized_affine_preimage(B, "
-                      "LESS_OR_EQUAL, -3*A-2*B-7*C+1, 3) ***");
-
-    return ok;
-  }
-
-  bool
-    test11() {
-    Variable A(0);
-    Variable B(1);
-    Variable C(2);
-
-    TBox box(3);
-    box.add_constraint(4*A == 1);
-    box.add_constraint(2*B >= 7);
-    box.add_constraint(5*C <= 7);
-
-    print_constraints(box, "*** box ***");
-    C_Polyhedron ph(box);
-
-    box.generalized_affine_preimage(B, LESS_OR_EQUAL, -3*A-2*B+7*C+1, -2);
-    ph.generalized_affine_preimage(B, LESS_OR_EQUAL, -3*A-2*B+7*C+1, -2);
-
-    bool ok = check_result(box, Rational_Box(ph));
-
-    print_constraints(box,
-                      "*** box.generalized_affine_preimage(B, "
-                      "LESS_OR_EQUAL, -3*A-2*B+7*C+1, -2) ***");
-    print_constraints(ph,
-                      "*** ph.generalized_affine_preimage(B, "
-                      "LESS_OR_EQUAL, -3*A-2*B+7*C+1, -2) ***");
-
-    return ok;
-  }
-
-  bool
-    test12() {
-    Variable A(0);
-    Variable B(1);
-    Variable C(2);
-
-    TBox box(3);
-    box.add_constraint(A == 1);
-    box.add_constraint(B >= 7);
-    box.add_constraint(C >= 0);
-    box.add_constraint(C <= 1);
-
-    print_constraints(box, "*** box ***");
-    C_Polyhedron ph(box);
-
-    box.generalized_affine_preimage(B, LESS_OR_EQUAL, -3*A-2*B-7*C+1, -2);
-    ph.generalized_affine_preimage(B, LESS_OR_EQUAL, -3*A-2*B-7*C+1, -2);
-
-    bool ok = check_result(box, Rational_Box(ph));
-
-    print_constraints(box,
-                      "*** box.generalized_affine_preimage(B, "
-                      "LESS_OR_EQUAL, -3*A-2*B-7*C+1, -3) ***");
-    print_constraints(ph,
-                      "*** ph.generalized_affine_preimage(B, "
-                      "LESS_OR_EQUAL, -3*A-2*B-7*C+1, -3) ***");
-
-    return ok;
-  }
-
-  bool
-    test13() {
-    Variable A(0);
-    Variable B(1);
-    Variable C(2);
-
-    TBox box(3);
-    box.add_constraint(A == 1);
-    box.add_constraint(B <= 4);
-    box.add_constraint(C <= 2);
-
-    print_constraints(box, "*** box ***");
-    C_Polyhedron ph(box);
-
-    box.generalized_affine_preimage(B, GREATER_OR_EQUAL, -3*A-2*B+C+1, -2);
-    ph.generalized_affine_preimage(B, GREATER_OR_EQUAL, -3*A-2*B+C+1, -2);
-
-    bool ok = check_result(box, Rational_Box(ph));
-
-    print_constraints(box,
-                      "*** box.generalized_affine_preimage(B, "
-                      "GREATER_OR_EQUAL, -3*A-2*B+C+1, -2) ***");
-    print_constraints(ph,
-                      "*** ph.generalized_affine_preimage(B, "
-                      "GREATER_OR_EQUAL, -3*A-2*B+C+1, -2) ***");
-
-    return ok;
-  }
-
-  bool
-    test14() {
-    Variable A(0);
-    Variable B(1);
-    Variable C(2);
-
-    TBox box(3);
-    box.add_constraint(A == 1);
-    box.add_constraint(2*B <= 3);
-    box.add_constraint(C <= 9);
-    box.add_constraint(C >= 7);
-
-    print_constraints(box, "*** box ***");
-    C_Polyhedron ph(box);
-
-    box.generalized_affine_preimage(B, GREATER_OR_EQUAL, 3*A-2*B-C+1, -3);
-    ph.generalized_affine_preimage(B, GREATER_OR_EQUAL, 3*A-2*B-C+1, -3);
-
-    bool ok = check_result(box, Rational_Box(ph));
-
-    print_constraints(box,
-                      "*** box.generalized_affine_preimage(B, "
-                      "GREATER_OR_EQUAL, 3*A-2*B-C+1, -3) ***");
-    print_constraints(ph,
-                      "*** ph.generalized_affine_preimage(B, "
-                      "GREATER_OR_EQUAL, 3*A-2*B-C+1, -3) ***");
-
-    return ok;
-  }
-
-  bool
-    test15() {
-    Variable A(0);
-    Variable B(1);
-    Variable C(2);
-
-    TBox box(3);
-    box.add_constraint(A == 1);
-    box.add_constraint(2*B >= 7);
-    box.add_constraint(C <= 7);
-    box.add_constraint(5*C >= 7);
-
-    print_constraints(box, "*** box ***");
-    C_Polyhedron ph(box);
-
-    box.generalized_affine_preimage(B, GREATER_OR_EQUAL, 3*A-2*B-7*C+1, -3);
-    ph.generalized_affine_preimage(B, GREATER_OR_EQUAL, 3*A-2*B-7*C+1, -3);
-
-    bool ok = check_result(box, Rational_Box(ph));
-
-    print_constraints(box,
-                      "*** box.generalized_affine_preimage(B, "
-                      "GREATER_OR_EQUAL, 3*A-2*B-7*C+1, -3) ***");
-    print_constraints(ph,
-                      "*** ph.generalized_affine_preimage(B, "
-                      "GREATER_OR_EQUAL, 3*A-2*B-7*C+1, -3) ***");
-
-    return ok;
-  }
+  box.generalized_affine_preimage(B, LESS_OR_EQUAL, -3*A-2*B+7*C+1, 2);
+  ph.generalized_affine_preimage(B, LESS_OR_EQUAL, -3*A-2*B+7*C+1, 2);
+
+  bool ok = check_result(box, Rational_Box(ph));
+
+  print_constraints(box,
+                    "*** box.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, -3*A-2*B+7*C+1, 2) ***");
+  print_constraints(ph,
+                    "*** ph.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, -3*A-2*B+7*C+1, 2) ***");
+
+  return ok;
+}
+
+bool
+test10() {
+  // If the Coefficient type is not wide enough, do nothing.
+  if (std::numeric_limits<Coefficient>::is_bounded
+      && (std::numeric_limits<Coefficient>::min() > -203
+          || std::numeric_limits<Coefficient>::max() < 629))
+    return true;
+
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  TBox box(3);
+  box.add_constraint(A == 1);
+  box.add_constraint(B >= 7);
+  box.add_constraint(C >= 7);
+
+  print_constraints(box, "*** box ***");
+  C_Polyhedron ph(box);
+
+  box.generalized_affine_preimage(B, LESS_OR_EQUAL, -3*A-2*B-7*C+1, 3);
+  ph.generalized_affine_preimage(B, LESS_OR_EQUAL, -3*A-2*B-7*C+1, 3);
+
+  bool ok = check_result(box, Rational_Box(ph));
+
+  print_constraints(box,
+                    "*** box.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, -3*A-2*B-7*C+1, 3) ***");
+  print_constraints(ph,
+                    "*** ph.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, -3*A-2*B-7*C+1, 3) ***");
+
+  return ok;
+}
+
+bool
+test11() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  TBox box(3);
+  box.add_constraint(4*A == 1);
+  box.add_constraint(2*B >= 7);
+  box.add_constraint(5*C <= 7);
+
+  print_constraints(box, "*** box ***");
+  C_Polyhedron ph(box);
+
+  box.generalized_affine_preimage(B, LESS_OR_EQUAL, -3*A-2*B+7*C+1, -2);
+  ph.generalized_affine_preimage(B, LESS_OR_EQUAL, -3*A-2*B+7*C+1, -2);
+
+  bool ok = check_result(box, Rational_Box(ph));
+
+  print_constraints(box,
+                    "*** box.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, -3*A-2*B+7*C+1, -2) ***");
+  print_constraints(ph,
+                    "*** ph.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, -3*A-2*B+7*C+1, -2) ***");
+
+  return ok;
+}
+
+bool
+test12() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  TBox box(3);
+  box.add_constraint(A == 1);
+  box.add_constraint(B >= 7);
+  box.add_constraint(C >= 0);
+  box.add_constraint(C <= 1);
+
+  print_constraints(box, "*** box ***");
+  C_Polyhedron ph(box);
+
+  box.generalized_affine_preimage(B, LESS_OR_EQUAL, -3*A-2*B-7*C+1, -2);
+  ph.generalized_affine_preimage(B, LESS_OR_EQUAL, -3*A-2*B-7*C+1, -2);
+
+  bool ok = check_result(box, Rational_Box(ph));
+
+  print_constraints(box,
+                    "*** box.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, -3*A-2*B-7*C+1, -3) ***");
+  print_constraints(ph,
+                    "*** ph.generalized_affine_preimage(B, "
+                    "LESS_OR_EQUAL, -3*A-2*B-7*C+1, -3) ***");
+
+  return ok;
+}
+
+bool
+test13() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  TBox box(3);
+  box.add_constraint(A == 1);
+  box.add_constraint(B <= 4);
+  box.add_constraint(C <= 2);
+
+  print_constraints(box, "*** box ***");
+  C_Polyhedron ph(box);
+
+  box.generalized_affine_preimage(B, GREATER_OR_EQUAL, -3*A-2*B+C+1, -2);
+  ph.generalized_affine_preimage(B, GREATER_OR_EQUAL, -3*A-2*B+C+1, -2);
+
+  bool ok = check_result(box, Rational_Box(ph));
+
+  print_constraints(box,
+                    "*** box.generalized_affine_preimage(B, "
+                    "GREATER_OR_EQUAL, -3*A-2*B+C+1, -2) ***");
+  print_constraints(ph,
+                    "*** ph.generalized_affine_preimage(B, "
+                    "GREATER_OR_EQUAL, -3*A-2*B+C+1, -2) ***");
+
+  return ok;
+}
+
+bool
+test14() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  TBox box(3);
+  box.add_constraint(A == 1);
+  box.add_constraint(2*B <= 3);
+  box.add_constraint(C <= 9);
+  box.add_constraint(C >= 7);
+
+  print_constraints(box, "*** box ***");
+  C_Polyhedron ph(box);
+
+  box.generalized_affine_preimage(B, GREATER_OR_EQUAL, 3*A-2*B-C+1, -3);
+  ph.generalized_affine_preimage(B, GREATER_OR_EQUAL, 3*A-2*B-C+1, -3);
+
+  bool ok = check_result(box, Rational_Box(ph));
+
+  print_constraints(box,
+                    "*** box.generalized_affine_preimage(B, "
+                    "GREATER_OR_EQUAL, 3*A-2*B-C+1, -3) ***");
+  print_constraints(ph,
+                    "*** ph.generalized_affine_preimage(B, "
+                    "GREATER_OR_EQUAL, 3*A-2*B-C+1, -3) ***");
+
+  return ok;
+}
+
+bool
+test15() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  TBox box(3);
+  box.add_constraint(A == 1);
+  box.add_constraint(2*B >= 7);
+  box.add_constraint(C <= 7);
+  box.add_constraint(5*C >= 7);
+
+  print_constraints(box, "*** box ***");
+  C_Polyhedron ph(box);
+
+  box.generalized_affine_preimage(B, GREATER_OR_EQUAL, 3*A-2*B-7*C+1, -3);
+  ph.generalized_affine_preimage(B, GREATER_OR_EQUAL, 3*A-2*B-7*C+1, -3);
+
+  bool ok = check_result(box, Rational_Box(ph));
+
+  print_constraints(box,
+                    "*** box.generalized_affine_preimage(B, "
+                    "GREATER_OR_EQUAL, 3*A-2*B-7*C+1, -3) ***");
+  print_constraints(ph,
+                    "*** ph.generalized_affine_preimage(B, "
+                    "GREATER_OR_EQUAL, 3*A-2*B-7*C+1, -3) ***");
+
+  return ok;
+}
 
 } // namespace
 
