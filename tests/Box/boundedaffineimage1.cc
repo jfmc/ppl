@@ -483,8 +483,8 @@ BEGIN_MAIN
   DO_TEST(test06);
   DO_TEST(test07);
   DO_TEST(test08);
-  DO_TEST(test09);
-  DO_TEST(test10);
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test09, TBox);
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test10, TBox);
   DO_TEST(test11);
   DO_TEST(test12);
   DO_TEST(test13);
