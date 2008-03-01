@@ -199,7 +199,7 @@ test07() {
   box.add_constraint(B >= 5);
 
   print_constraints(box, "*** box ***");
-  C_Polyhedron ph(box);
+  NNC_Polyhedron ph(box);
 
   box.generalized_affine_preimage(B, LESS_OR_EQUAL, 3*A-2*B+1);
   ph.generalized_affine_preimage(B, LESS_OR_EQUAL, 3*A-2*B+1);
