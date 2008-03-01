@@ -2482,22 +2482,27 @@ bounded_affine_preimage(const Variable var,
   if (marked_empty())
     return;
 
+  const bool negative_denom = (denominator < 0);
+  const Coefficient& lb_var_coeff = lb_expr.coefficient(var);
+  const Coefficient& ub_var_coeff = ub_expr.coefficient(var);
+
   // If the implied constraint between `ub_expr and `lb_expr' is
   // independent of `var', then impose it now.
-  if (ub_expr.coefficient(var) == lb_expr.coefficient(var))
-    if (denominator > 0)
-      add_constraint(lb_expr <= ub_expr);
-    else
+  if (lb_var_coeff == ub_var_coeff) {
+    if (negative_denom)
       add_constraint(lb_expr >= ub_expr);
+    else
+      add_constraint(lb_expr <= ub_expr);
+  }
 
   Interval& seq_var = seq[var.id()];
   if (!seq_var.is_universe()) {
-
     // We want to work with a positive denominator,
     // so the sign and its (unsigned) value are separated.
-    bool denom_sgn = (denominator > 0) ? true : false;
     TEMP_INTEGER(pos_denominator);
-    pos_denominator = sgn(denominator) * denominator;
+    pos_denominator = denominator;
+    if (negative_denom)
+      neg_assign(pos_denominator, pos_denominator);
     // Store all the information about the upper and lower bounds
     // for `var' before making this interval unbounded.
     bool open_lower = seq_var.lower_is_open();
@@ -2508,10 +2513,9 @@ bounded_affine_preimage(const Variable var,
     if (!unbounded_lower) {
       assign_r(q_seq_var_lower, seq_var.lower(), ROUND_NOT_NEEDED);
       assign_r(num_lower, q_seq_var_lower.get_num(), ROUND_NOT_NEEDED);
-      if (denom_sgn)
-        assign_r(den_lower, q_seq_var_lower.get_den(), ROUND_NOT_NEEDED);
-      else
-        neg_assign_r(den_lower, q_seq_var_lower.get_den(), ROUND_NOT_NEEDED);
+      assign_r(den_lower, q_seq_var_lower.get_den(), ROUND_NOT_NEEDED);
+      if (negative_denom)
+        neg_assign(den_lower, den_lower);
       num_lower *= pos_denominator;
       seq_var.lower_set(UNBOUNDED);
     }
@@ -2523,43 +2527,36 @@ bounded_affine_preimage(const Variable var,
     if (!unbounded_upper) {
       assign_r(q_seq_var_upper, seq_var.upper(), ROUND_NOT_NEEDED);
       assign_r(num_upper, q_seq_var_upper.get_num(), ROUND_NOT_NEEDED);
-      if (denom_sgn)
-        assign_r(den_upper, q_seq_var_upper.get_den(), ROUND_NOT_NEEDED);
-      else
-        neg_assign_r(den_upper, q_seq_var_upper.get_den(), ROUND_NOT_NEEDED);
+      assign_r(den_upper, q_seq_var_upper.get_den(), ROUND_NOT_NEEDED);
+      if (negative_denom)
+        neg_assign(den_upper, den_upper);
       num_upper *= pos_denominator;
       seq_var.upper_set(UNBOUNDED);
     }
 
     if (!unbounded_lower) {
-      // The `lb_expr' is revised by removing the `var' component,
+      // `lb_expr' is revised by removing the `var' component,
       // multiplying by `-' denominator of the lower bound for `var',
-      // and adding the lower bound for `var' to the inhomogeneous
-      // term.
-      DIRTY_TEMP(Linear_Expression, revised_lb_expr);
-      TEMP_INTEGER(d);
-      d = - (den_lower * ub_expr.inhomogeneous_term()) + num_lower;
-      revised_lb_expr = Linear_Expression(d);
-      for (dimension_type dim = space_dim; dim > 0; dim--)
-        if (var.id() != dim - 1) {
-          d = - den_lower * ub_expr.coefficient(Variable(dim - 1));
-          revised_lb_expr += d * Variable(dim - 1);
-        }
+      // and adding the lower bound for `var' to the inhomogeneous term.
+      Linear_Expression revised_lb_expr(ub_expr);
+      revised_lb_expr -= ub_var_coeff * var;
+      DIRTY_TEMP(Coefficient, d);
+      neg_assign(d, den_lower);
+      revised_lb_expr *= d;
+      revised_lb_expr += num_lower;
 
       // Find the minimum value for the revised lower bound expression
       // and use this to refine the appropriate bound.
       bool included;
       DIRTY_TEMP(Coefficient, den);
       if (minimize(revised_lb_expr, num_lower, den, included)) {
-        DIRTY_TEMP(Coefficient, ub_var_coeff);
-        assign_r(ub_var_coeff, ub_expr.coefficient(var), ROUND_NOT_NEEDED);
         den_lower *= (den * ub_var_coeff);
         DIRTY_TEMP0(mpq_class, q);
         assign_r(q.get_num(), num_lower, ROUND_NOT_NEEDED);
         assign_r(q.get_den(), den_lower, ROUND_NOT_NEEDED);
         q.canonicalize();
         open_lower |= !included;
-        if ((ub_var_coeff >= 0) ? denom_sgn : !denom_sgn)
+        if ((ub_var_coeff >= 0) ? !negative_denom : negative_denom)
           seq_var.lower_narrow(q, open_lower);
         else
           seq_var.upper_narrow(q, open_lower);
@@ -2571,33 +2568,28 @@ bounded_affine_preimage(const Variable var,
     }
 
     if (!unbounded_upper) {
-      // The `ub_expr' is revised by removing the `var' component,
+      // `ub_expr' is revised by removing the `var' component,
       // multiplying by `-' denominator of the upper bound for `var',
-      // and adding the upper bound for `var' to the inhomogeneous
-      // term.
-      DIRTY_TEMP(Linear_Expression, revised_ub_expr);
-      TEMP_INTEGER(d);
-      d = - (den_upper * lb_expr.inhomogeneous_term()) + num_upper;
-      revised_ub_expr =  Linear_Expression(d);
-      for (dimension_type dim = space_dim; dim > 0; dim--)
-        if (var.id() != dim - 1) {
-          d = - den_upper * lb_expr.coefficient(Variable(dim - 1));
-          revised_ub_expr += d * Variable(dim - 1);
-        }
+      // and adding the upper bound for `var' to the inhomogeneous term.
+      Linear_Expression revised_ub_expr(lb_expr);
+      revised_ub_expr -= lb_var_coeff * var;
+      DIRTY_TEMP(Coefficient, d);
+      neg_assign(d, den_upper);
+      revised_ub_expr *= d;
+      revised_ub_expr += num_upper;
+
       // Find the maximum value for the revised upper bound expression
       // and use this to refine the appropriate bound.
       bool included;
       DIRTY_TEMP(Coefficient, den);
       if (maximize(revised_ub_expr, num_upper, den, included)) {
-        DIRTY_TEMP(Coefficient, lb_var_coeff);
-        assign_r(lb_var_coeff, lb_expr.coefficient(var), ROUND_NOT_NEEDED);
         den_upper *= (den * lb_var_coeff);
         DIRTY_TEMP0(mpq_class, q);
         assign_r(q.get_num(), num_upper, ROUND_NOT_NEEDED);
         assign_r(q.get_den(), den_upper, ROUND_NOT_NEEDED);
         q.canonicalize();
         open_upper |= !included;
-        if ((lb_var_coeff >= 0) ? denom_sgn : !denom_sgn)
+        if ((lb_var_coeff >= 0) ? !negative_denom : negative_denom)
           seq_var.upper_narrow(q, open_upper);
         else
           seq_var.lower_narrow(q, open_upper);
@@ -2611,7 +2603,7 @@ bounded_affine_preimage(const Variable var,
 
   // If the implied constraint between `ub_expr and `lb_expr' is
   // dependent on `var', then impose on the new box.
-  if (ub_expr.coefficient(var) != lb_expr.coefficient(var))
+  if (lb_var_coeff != ub_var_coeff)
     if (denominator > 0)
       add_constraint(lb_expr <= ub_expr);
     else
