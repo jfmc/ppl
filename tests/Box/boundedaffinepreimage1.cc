@@ -383,7 +383,8 @@ namespace {
    box.bounded_affine_preimage(x, 2*x - 2, 5*x + 2, 2);
    ph.bounded_affine_preimage(x, 2*x - 2, 5*x + 2, 2);
 
-   bool ok = check_result(box, Rational_Box(ph));
+   bool ok = check_result(box, Rational_Box(ph),
+                          "3.98e-08", "3.98e-08", "3.98e-08");
 
    print_constraints(box,
                      "*** box .bounded_affine_preimage("
