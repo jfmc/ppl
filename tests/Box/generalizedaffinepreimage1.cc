@@ -172,7 +172,7 @@ test06() {
   box.add_constraint(B >= 5);
 
   print_constraints(box, "*** box ***");
-  C_Polyhedron ph(box);
+  NNC_Polyhedron ph(box);
 
   box.generalized_affine_preimage(B, LESS_OR_EQUAL, -2*B+1);
   ph.generalized_affine_preimage(B, LESS_OR_EQUAL, -2*B+1);
@@ -204,7 +204,8 @@ test07() {
   box.generalized_affine_preimage(B, LESS_OR_EQUAL, 3*A-2*B+1);
   ph.generalized_affine_preimage(B, LESS_OR_EQUAL, 3*A-2*B+1);
 
-  bool ok = check_result(box, Rational_Box(ph));
+  bool ok = check_result(box, Rational_Box(ph),
+                         "6.71e-8", "6.71e-8", "6.71e-8");
 
   print_constraints(box,
                     "*** box.generalized_affine_preimage(B, "
@@ -316,7 +317,7 @@ test11() {
   box.add_constraint(5*C <= 7);
 
   print_constraints(box, "*** box ***");
-  C_Polyhedron ph(box);
+  NNC_Polyhedron ph(box);
 
   box.generalized_affine_preimage(B, LESS_OR_EQUAL, -3*A-2*B+7*C+1, -2);
   ph.generalized_affine_preimage(B, LESS_OR_EQUAL, -3*A-2*B+7*C+1, -2);
@@ -435,7 +436,7 @@ test15() {
   box.add_constraint(5*C >= 7);
 
   print_constraints(box, "*** box ***");
-  C_Polyhedron ph(box);
+  NNC_Polyhedron ph(box);
 
   box.generalized_affine_preimage(B, GREATER_OR_EQUAL, 3*A-2*B-7*C+1, -3);
   ph.generalized_affine_preimage(B, GREATER_OR_EQUAL, 3*A-2*B-7*C+1, -3);
