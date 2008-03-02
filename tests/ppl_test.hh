@@ -427,6 +427,7 @@ check_result(const BD_Shape<T>& computed_result,
   if (computed_result == known_result)
     return true;
   else {
+    using namespace IO_Operators;
     nout << "Equality does not hold:"
          << "\ncomputed result is\n"
          << computed_result
@@ -637,6 +638,7 @@ check_result(const Box<Interval>& computed_result,
   if (computed_result == known_result)
     return true;
   else {
+    using namespace IO_Operators;
     nout << "Equality does not hold:"
          << "\ncomputed result is\n"
          << computed_result
