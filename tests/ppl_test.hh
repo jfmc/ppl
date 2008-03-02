@@ -144,6 +144,7 @@ catch (const std::exception& e) {					\
 #define DO_TEST_F32A(test) DO_TEST(test)
 #define DO_TEST_F16(test) DO_TEST(test)
 #define DO_TEST_F16A(test) DO_TEST(test)
+#define DO_TEST_F8_MAY_OVERFLOW_IF_INEXACT(test, shape) DO_TEST(test)
 #define DO_TEST_F8(test) DO_TEST(test)
 #define DO_TEST_F8A(test) DO_TEST(test)
 
@@ -157,6 +158,7 @@ catch (const std::exception& e) {					\
 #define DO_TEST_F32A(test) DO_TEST(test)
 #define DO_TEST_F16(test) DO_TEST(test)
 #define DO_TEST_F16A(test) DO_TEST(test)
+#define DO_TEST_F8_MAY_OVERFLOW_IF_INEXACT(test, shape) DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
 #define DO_TEST_F8(test) DO_TEST(test)
 #define DO_TEST_F8A(test) DO_TEST(test)
 
@@ -168,6 +170,7 @@ catch (const std::exception& e) {					\
 #define DO_TEST_F32A(test) DO_TEST(test)
 #define DO_TEST_F16(test) DO_TEST(test)
 #define DO_TEST_F16A(test) DO_TEST(test)
+#define DO_TEST_F8_MAY_OVERFLOW_IF_INEXACT(test, shape) DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
 #define DO_TEST_F8(test) DO_TEST(test)
 #define DO_TEST_F8A(test) DO_TEST(test)
 
@@ -183,6 +186,7 @@ catch (const std::exception& e) {					\
 #define DO_TEST_F32A(test) DO_TEST(test)
 #define DO_TEST_F16(test) DO_TEST(test)
 #define DO_TEST_F16A(test) DO_TEST(test)
+#define DO_TEST_F8_MAY_OVERFLOW_IF_INEXACT(test, shape) DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
 #define DO_TEST_F8(test) DO_TEST(test)
 #define DO_TEST_F8A(test) DO_TEST(test)
 
@@ -194,6 +198,7 @@ catch (const std::exception& e) {					\
 #define DO_TEST_F32A(test) DO_TEST_OVERFLOW(test)
 #define DO_TEST_F16(test) DO_TEST(test)
 #define DO_TEST_F16A(test) DO_TEST(test)
+#define DO_TEST_F8_MAY_OVERFLOW_IF_INEXACT(test, shape) DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
 #define DO_TEST_F8(test) DO_TEST(test)
 #define DO_TEST_F8A(test) DO_TEST(test)
 
@@ -209,6 +214,7 @@ catch (const std::exception& e) {					\
 #define DO_TEST_F32A(test) DO_TEST_OVERFLOW(test)
 #define DO_TEST_F16(test) DO_TEST_OVERFLOW(test)
 #define DO_TEST_F16A(test) DO_TEST(test)
+#define DO_TEST_F8_MAY_OVERFLOW_IF_INEXACT(test, shape) DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
 #define DO_TEST_F8(test) DO_TEST(test)
 #define DO_TEST_F8A(test) DO_TEST(test)
 
@@ -220,6 +226,7 @@ catch (const std::exception& e) {					\
 #define DO_TEST_F32A(test) DO_TEST_OVERFLOW(test)
 #define DO_TEST_F16(test) DO_TEST_OVERFLOW(test)
 #define DO_TEST_F16A(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F8_MAY_OVERFLOW_IF_INEXACT(test, shape) DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
 #define DO_TEST_F8(test) DO_TEST(test)
 #define DO_TEST_F8A(test) DO_TEST(test)
 
@@ -235,6 +242,7 @@ catch (const std::exception& e) {					\
 #define DO_TEST_F32A(test) DO_TEST_OVERFLOW(test)
 #define DO_TEST_F16(test) DO_TEST_OVERFLOW(test)
 #define DO_TEST_F16A(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F8_MAY_OVERFLOW_IF_INEXACT(test, shape) DO_TEST_OVERFLOW(test)
 #define DO_TEST_F8(test) DO_TEST_OVERFLOW(test)
 #define DO_TEST_F8A(test) DO_TEST(test)
 
@@ -246,6 +254,7 @@ catch (const std::exception& e) {					\
 #define DO_TEST_F32A(test) DO_TEST_OVERFLOW(test)
 #define DO_TEST_F16(test) DO_TEST_OVERFLOW(test)
 #define DO_TEST_F16A(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F8_MAY_OVERFLOW_IF_INEXACT(test, shape) DO_TEST_OVERFLOW(test)
 #define DO_TEST_F8(test) DO_TEST_OVERFLOW(test)
 #define DO_TEST_F8A(test) DO_TEST_OVERFLOW(test)
 
