@@ -375,6 +375,70 @@ test13() {
   return ok;
 }
 
+bool
+test14() {
+  Variable x(0);
+
+  TBox box1(1);
+  box1.add_constraint(x > 0);
+  box1.add_constraint(x <= 1);
+
+  TBox box2(1);
+  box2.add_constraint(x == 0);
+
+  print_constraints(box1, "*** box1 ***");
+  print_constraints(box2, "*** box2 ***");
+
+  if (box1.is_empty())
+    return false;
+
+  bool non_empty = box1.intersection_assign_and_minimize(box2);
+
+  TBox known_result(1, EMPTY);
+
+  bool ok = (known_result == box1) && !non_empty;
+
+  print_constraints(box1, "*** box1.intersection_assign(box2) ***");
+  print_constraints(known_result, "*** known_result ***");
+
+  return ok;
+}
+bool
+test15() {
+  Variable x(0);
+  Variable y(1);
+
+  TBox box1(2);
+  box1.add_constraint(x >= 0);
+  box1.add_constraint(x <= 2);
+  box1.add_constraint(y <= 2);
+
+  TBox box2(2);
+  box2.add_constraint(x == 1);
+  box2.add_constraint(y >= 1);
+
+  print_constraints(box1, "*** box1 ***");
+  print_constraints(box2, "*** box2 ***");
+
+  if (box1.is_empty())
+    return false;
+
+  bool non_empty = box1.intersection_assign_and_minimize(box2);
+
+  TBox known_result(2);
+  known_result.add_constraint(x == 1);
+  known_result.add_constraint(y >= 1);
+  known_result.add_constraint(y <= 2);
+
+  bool ok = (known_result == box1) && non_empty;
+
+  print_constraints(box1, "*** box1.intersection_assign(box2) ***");
+  print_constraints(known_result, "*** known_result ***");
+
+  return ok;
+}
+
+
 } // namespace
 
 BEGIN_MAIN
@@ -391,4 +455,6 @@ BEGIN_MAIN
   DO_TEST(test11);
   DO_TEST(test12);
   DO_TEST(test13);
+  DO_TEST(test14);
+  DO_TEST(test15);
 END_MAIN

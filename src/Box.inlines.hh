@@ -220,10 +220,17 @@ Box<Interval>::minimize(const Linear_Expression& expr,
 }
 
 template <typename Interval>
-bool
+inline bool
 Box<Interval>::strictly_contains(const Box& y) const {
   const Box& x = *this;
   return x.contains(y) && !y.contains(x);
+}
+
+template <typename Interval>
+inline bool
+Box<Interval>::intersection_assign_and_minimize(const Box& y) {
+  intersection_assign(y);
+  return !is_empty();
 }
 
 template <typename Interval>

@@ -900,6 +900,16 @@ public:
   */
   void intersection_assign(const Box& y);
 
+  //! Assigns to \p *this the intersection of \p *this and \p y.
+  /*!
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
+  */
+  bool intersection_assign_and_minimize(const Box& y);
+
   /*! \brief
     Assigns to \p *this the smallest box containing the convex union
     of \p *this and \p y.
