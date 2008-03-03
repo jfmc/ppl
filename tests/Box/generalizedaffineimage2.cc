@@ -59,7 +59,7 @@ test02() {
 
   TBox box(2);
   box.add_constraint(B >= 0);
-  box.add_constraint(A - B >= 0);
+  box.add_constraint(A >= 0);
 
   print_constraints(box, "*** box ***");
 
@@ -105,7 +105,6 @@ test04() {
 
   TBox box(3);
 
-  box.add_constraint(x >= 2);
   box.add_constraint(x <= 5);
   box.add_constraint(y <= 2);
 
@@ -114,7 +113,6 @@ test04() {
   box.generalized_affine_image(x, GREATER_THAN, 2*x - 2, 2);
 
   Rational_Box known_result(3);
-  known_result.add_constraint(x > 1);
   known_result.add_constraint(y <= 2);
 
   bool ok = check_result(box, known_result);

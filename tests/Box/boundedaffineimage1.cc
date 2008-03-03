@@ -470,6 +470,26 @@ test16() {
   return false;
 }
 
+bool
+test17() {
+  Variable x(0);
+
+  TBox box(1);
+
+  print_constraints(box, "*** box ***");
+  box.bounded_affine_image(x, 3*x, 3*x);
+
+  Rational_Box known_result(1);
+
+  bool ok = check_result(box, known_result);
+
+  print_constraints(box,
+                    "*** box.bounded_affine_image(x, 3*x, 3*x) ***");
+
+  return ok;
+
+}
+
 
 
 } // namespace
@@ -491,4 +511,5 @@ BEGIN_MAIN
   DO_TEST(test14);
   DO_TEST(test15);
   DO_TEST(test16);
+  DO_TEST(test17);
 END_MAIN

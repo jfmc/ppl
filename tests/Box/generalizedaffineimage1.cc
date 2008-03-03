@@ -33,7 +33,6 @@ test01() {
   box.add_constraint(A >= 0);
   box.add_constraint(A <= 4);
   box.add_constraint(B <= 5);
-  box.add_constraint(A <= B);
 
   print_constraints(box, "*** box ***");
 
@@ -61,7 +60,7 @@ test02() {
 
   TBox box(2);
   box.add_constraint(B >= 0);
-  box.add_constraint(A - B >= 0);
+  box.add_constraint(A >= 0);
 
   print_constraints(box, "*** box ***");
 

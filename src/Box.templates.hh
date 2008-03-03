@@ -2443,7 +2443,8 @@ bounded_affine_image(const Variable var,
       // The `ub_expr' has no maximum value and the `lb_expr'
       // has no minimum value for the box.
       // So we set the bounds to be unbounded.
-      seq[var.id()].set_infinities();
+      seq_v.upper_set(UNBOUNDED);
+      seq_v.lower_set(UNBOUNDED);
     }
   }
   assert(OK());
@@ -2655,17 +2656,19 @@ generalized_affine_image(const Variable var,
   Interval& seq_var = seq[var.id()];
   switch (relsym) {
   case LESS_OR_EQUAL:
-    seq_var.lower_set_uninit(UNBOUNDED);
+    seq_var.lower_set(UNBOUNDED);
     break;
   case LESS_THAN:
-      seq_var.lower_set_uninit(UNBOUNDED);
+    seq_var.lower_set(UNBOUNDED);
+    if (!seq_var.upper_is_unbounded())
       seq_var.refine_existential(LESS_THAN, seq_var.upper());
     break;
   case GREATER_OR_EQUAL:
-      seq_var.upper_set_uninit(UNBOUNDED);
+    seq_var.upper_set(UNBOUNDED);
     break;
   case GREATER_THAN:
-      seq_var.upper_set_uninit(UNBOUNDED);
+    seq_var.upper_set(UNBOUNDED);
+    if (!seq_var.lower_is_unbounded())
       seq_var.refine_existential(GREATER_THAN, seq_var.lower());
     break;
   default:
