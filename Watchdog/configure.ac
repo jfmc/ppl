@@ -285,12 +285,7 @@ AC_PROG_MAKE_SET
 AC_PROG_INSTALL
 
 # Libtool.
-# Turn off shared libraries during beta-testing, since they
-# make debugging harder and the build process takes too long.
-#AC_DISABLE_SHARED
-AC_LIBTOOL_DLOPEN
-AC_LIBTOOL_WIN32_DLL
-AC_PROG_LIBTOOL
+LT_INIT([dlopen,win32-dll])
 
 # If we are using GCC we want to compile with warnings enabled.
 if test x"$GCC" = xyes
