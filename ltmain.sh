@@ -112,15 +112,15 @@ $lt_unset CDPATH
 
 : ${CP="cp -f"}
 : ${ECHO="echo"}
-: ${EGREP="/usr/bin/grep -E"}
-: ${FGREP="/usr/bin/grep -F"}
-: ${GREP="/usr/bin/grep"}
+: ${EGREP="/bin/grep -E"}
+: ${FGREP="/bin/grep -F"}
+: ${GREP="/bin/grep"}
 : ${LN_S="ln -s"}
 : ${MAKE="make"}
 : ${MKDIR="mkdir"}
 : ${MV="mv -f"}
 : ${RM="rm -f"}
-: ${SED="/usr/bin/sed"}
+: ${SED="/bin/sed"}
 : ${SHELL="${CONFIG_SHELL-/bin/sh}"}
 : ${Xsed="$SED -e 1s/^X//"}
 
@@ -1030,7 +1030,7 @@ func_lalib_p ()
 func_lalib_unsafe_p ()
 {
     lalib_p=no
-    if test -r "$1" && exec 5<&1 <"$1"; then
+    if test -r "$1" && exec 5<&0 <"$1"; then
 	for lalib_p_l in 1 2 3 4
 	do
 	    read lalib_p_line
@@ -1038,7 +1038,7 @@ func_lalib_unsafe_p ()
 		\#\ Generated\ by\ *$PACKAGE* ) lalib_p=yes; break;;
 	    esac
 	done
-	exec 1<&5 5<&-
+	exec 0<&5 5<&-
     fi
     test "$lalib_p" = yes
 }
@@ -2076,12 +2076,14 @@ func_mode_execute ()
 	# Do a test to see if this is really a libtool program.
 	if func_ltwrapper_script_p "$file"; then
 	  func_source "$file"
+	  # Transform arg to wrapped name.
+	  file="$progdir/$program"
 	elif func_ltwrapper_executable_p "$file"; then
 	  func_ltwrapper_scriptname "$file"
 	  func_source "$func_ltwrapper_scriptname_result"
+	  # Transform arg to wrapped name.
+	  file="$progdir/$program"
 	fi
-	# Transform arg to wrapped name.
-	file="$progdir/$program"
 	;;
       esac
       # Quote arguments (to preserve shell metacharacters).
@@ -2850,7 +2852,7 @@ else
 	  ;;
 	esac
 	$ECHO "\
-      \$ECHO \"\$0: cannot exec \$program \$*\"
+      \$ECHO \"\$0: cannot exec \$program \$*\" 1>&2
       exit 1
     fi
   else
