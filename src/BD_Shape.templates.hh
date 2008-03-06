@@ -1128,9 +1128,74 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
   dimension_type i = 0;
   dimension_type j = 0;
   TEMP_INTEGER(coeff);
-  // Constraints that are not bounded differences are not compatible.
-  if (!extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff))
-    throw_constraint_incompatible("relation_with(c)");
+  if (!extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff)) {
+    // Constraints that are not bounded differences.
+
+    // Find the linear expression for the constraint and use that to
+    // find if the expression is bounded from above or below and if it
+    // is, find the maximum and minimum values.
+    Linear_Expression le;
+    for (dimension_type i = c_space_dim; i-- > 0; )
+      le += c.coefficient(Variable(i)) * Variable(i);
+    le += c.inhomogeneous_term();
+    DIRTY_TEMP(Coefficient, max_num);
+    DIRTY_TEMP(Coefficient, max_den);
+    bool max_included;
+    DIRTY_TEMP(Coefficient, min_num);
+    DIRTY_TEMP(Coefficient, min_den);
+    bool min_included;
+    bool bounded_above = maximize(le, max_num, max_den, max_included);
+    bool bounded_below = minimize(le, min_num, min_den, min_included);
+    if (!bounded_above) {
+      if (!bounded_below)
+	return Poly_Con_Relation::strictly_intersects();
+      switch (sgn(min_num)) {
+      case 1:
+        if (c.is_equality())
+          return  Poly_Con_Relation::is_disjoint();
+        return  Poly_Con_Relation::is_included();
+      case 0:
+        if (c.is_strict_inequality())
+          return  Poly_Con_Relation::is_disjoint();
+        return  Poly_Con_Relation::strictly_intersects();
+      case -1:
+        return  Poly_Con_Relation::strictly_intersects();
+      }
+    }
+    if (!bounded_below) {
+      switch (sgn(max_num)) {
+      case 1:
+        return  Poly_Con_Relation::strictly_intersects();
+      case 0:
+        if (c.is_strict_inequality())
+          return  Poly_Con_Relation::is_disjoint();
+        return  Poly_Con_Relation::strictly_intersects();
+      case -1:
+        if (c.is_equality())
+          return  Poly_Con_Relation::is_disjoint();
+        return  Poly_Con_Relation::is_included();
+      }
+    }
+    else {
+      switch (sgn(max_num)) {
+      case 1:
+        if (min_num > 0 && c.is_equality())
+          return  Poly_Con_Relation::is_disjoint();
+        return  Poly_Con_Relation::is_included();
+      case 0:
+        if (min_num == 0) {
+          if (c.is_strict_inequality())
+            return  Poly_Con_Relation::is_disjoint()
+              && Poly_Con_Relation::saturates();
+           return  Poly_Con_Relation::is_included()
+            && Poly_Con_Relation::saturates();
+        }
+        return  Poly_Con_Relation::strictly_intersects();
+      case -1:
+        return  Poly_Con_Relation::is_disjoint();
+      }
+    }
+  }
 
   if (num_vars == 0) {
     // Dealing with a trivial constraint.

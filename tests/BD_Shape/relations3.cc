@@ -58,20 +58,11 @@ test02() {
   TBD_Shape bds(3);
   bds.add_constraint(A >= 1);
 
-  try {
-    // This is an incorrect use of method
-    // BD_Shape::relation_with(c):
-    // it is illegal to use a constraint that is
-    // not a bounded difference.
-    Poly_Con_Relation rel = bds.relation_with(A - 2*B <= 2);
-  }
-  catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << endl;
-    return true;
-  }
-  catch (...) {
-  }
-  return false;
+  Poly_Con_Relation rel = bds.relation_with(A - 2*B <= 2);
+  Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
+  print_constraints(bds, "*** bds ***");
+
+  return rel == known_result;
 }
 
 bool

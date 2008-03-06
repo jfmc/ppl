@@ -407,20 +407,15 @@ test20() {
   TBD_Shape bds(3);
   bds.add_constraint(A >= 1);
 
-  try {
-    // This is an incorrect use of method
-    // BD_Shape::relation_with(c):
-    // it is illegal to use a constraint with three
-    // dimensions.
-    Poly_Con_Relation rel = bds.relation_with(A - C - B <= 2);
-  }
-  catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << endl;
-    return true;
-  }
-  catch (...) {
-  }
-  return false;
+  Poly_Con_Relation rel = bds.relation_with(A - C - B <= 2);
+
+  print_constraints(bds, "*** bds ***");
+  using namespace IO_Operators;
+  nout << "bds.relation_with(A - C - B <= 2) == " << rel << endl;
+
+  Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
+
+  return rel == known_result;
 }
 
 } // namespace

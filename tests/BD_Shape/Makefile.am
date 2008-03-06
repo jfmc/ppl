@@ -90,7 +90,7 @@ max_min1 max_min2 \
 maxspacedim1 \
 membytes1 \
 minconstraints1 \
-relations1 relations2 relations3 \
+relations1 relations2 relations3 relations4 \
 removespacedims1 \
 timeelapse1 \
 universe1 \
@@ -246,6 +246,7 @@ minconstraints1_SOURCES = minconstraints1.cc
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
 relations3_SOURCES = relations3.cc
+relations4_SOURCES = relations4.cc
 
 removespacedims1_SOURCES = removespacedims1.cc
 
