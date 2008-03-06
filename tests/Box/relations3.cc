@@ -335,6 +335,27 @@ test14() {
   return rel == known_result;
 }
 
+bool
+test15() {
+  Variable A(0);
+  Variable B(1);
+
+  TBox box(2);
+  box.add_constraint(A >= 1);
+  box.add_constraint(B >= 1);
+
+  Constraint c(A == 1);
+  Poly_Con_Relation rel = box.relation_with(c);
+
+  print_constraints(box, "--- oc ---");
+  using namespace IO_Operators;
+  nout << "box.relation_with((A == 1) == " << rel << endl;
+
+  Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
+
+  return rel == known_result;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -352,4 +373,5 @@ BEGIN_MAIN
   DO_TEST(test12);
   DO_TEST(test13);
   DO_TEST(test14);
+  DO_TEST(test15);
 END_MAIN
