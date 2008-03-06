@@ -94,6 +94,7 @@ octdifference1 \
 octhull1 \
 relatwithcons1 \
 relatwithcons2 \
+relatwithcons3 \
 relatwithgen1 \
 removespacedims1 \
 timeelapse1 \
@@ -241,6 +242,7 @@ octhull1_SOURCES = octhull1.cc
 
 relatwithcons1_SOURCES = relatwithcons1.cc
 relatwithcons2_SOURCES = relatwithcons2.cc
+relatwithcons3_SOURCES = relatwithcons3.cc
 
 relatwithgen1_SOURCES = relatwithgen1.cc
 

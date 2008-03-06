@@ -1,4 +1,4 @@
-/* Test BD_Shape::relation_with().
+/* Test Octagonal_Shape::relation_with().
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -34,13 +34,13 @@ test01() {
   cs.insert(B >= 0);
   cs.insert(A - B <= 3);
 
-  TBD_Shape bds(cs);
+  TOctagonal_Shape oct(cs);
 
-  Poly_Con_Relation rel = bds.relation_with(A + B >= 1);
+  Poly_Con_Relation rel = oct.relation_with(A + 2*B >= 1);
 
-  print_constraints(bds, "*** bds ***");
+  print_constraints(oct, "*** oct ***");
   using namespace IO_Operators;
-  nout << "bds.relation_with(A + B >= 1) == " << rel << endl;
+  nout << "oct.relation_with(A + 2*B >= 1) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
 
@@ -57,13 +57,13 @@ test02() {
   cs.insert(B >= 0);
   cs.insert(A - B <= 3);
 
-  TBD_Shape bds(cs);
+  TOctagonal_Shape oct(cs);
 
-  Poly_Con_Relation rel = bds.relation_with(A + B >= 0);
+  Poly_Con_Relation rel = oct.relation_with(A + 2*B >= 0);
 
-  print_constraints(bds, "*** bds ***");
+  print_constraints(oct, "*** oct ***");
   using namespace IO_Operators;
-  nout << "bds.relation_with(A + B >= 0) == " << rel << endl;
+  nout << "oct.relation_with(A + 2*B >= 0) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_included();
 
@@ -80,13 +80,13 @@ test03() {
   cs.insert(B >= 0);
   cs.insert(A - B <= 3);
 
-  TBD_Shape bds(cs);
+  TOctagonal_Shape oct(cs);
 
-  Poly_Con_Relation rel = bds.relation_with(A + B == 0);
+  Poly_Con_Relation rel = oct.relation_with(A + 2*B == 0);
 
-  print_constraints(bds, "*** bds ***");
+  print_constraints(oct, "*** oct ***");
   using namespace IO_Operators;
-  nout << "bds.relation_with(A + B == 0) == " << rel << endl;
+  nout << "oct.relation_with(A + 2*B == 0) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
 
@@ -103,13 +103,13 @@ test04() {
   cs.insert(B >= 0);
   cs.insert(A - B <= 3);
 
-  TBD_Shape bds(cs);
+  TOctagonal_Shape oct(cs);
 
-  Poly_Con_Relation rel = bds.relation_with(A + B == 0);
+  Poly_Con_Relation rel = oct.relation_with(A + 2*B == 0);
 
-  print_constraints(bds, "*** bds ***");
+  print_constraints(oct, "*** oct ***");
   using namespace IO_Operators;
-  nout << "bds.relation_with(A + B == 0) == " << rel << endl;
+  nout << "oct.relation_with(A + 2*B >= 0) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
 
@@ -126,13 +126,13 @@ test05() {
   cs.insert(B <= 3);
   cs.insert(A - B >= -2);
 
-  TBD_Shape bds(cs);
+  TOctagonal_Shape oct(cs);
 
-  Poly_Con_Relation rel = bds.relation_with(B - 4*A >= 1);
+  Poly_Con_Relation rel = oct.relation_with(B - 4*A >= 1);
 
-  print_constraints(bds, "*** bds ***");
+  print_constraints(oct, "*** oct ***");
   using namespace IO_Operators;
-  nout << "bds.relation_with(B - 4*A >= 1) == " << rel << endl;
+  nout << "oct.relation_with(B - 4*A >= 1) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
 
@@ -149,13 +149,13 @@ test06() {
   cs.insert(B <= 3);
   cs.insert(A - B >= -2);
 
-  TBD_Shape bds(cs);
+  TOctagonal_Shape oct(cs);
 
-  Poly_Con_Relation rel = bds.relation_with(B + 4*A >= 1);
+  Poly_Con_Relation rel = oct.relation_with(B + 4*A >= 1);
 
-  print_constraints(bds, "*** bds ***");
+  print_constraints(oct, "*** oct ***");
   using namespace IO_Operators;
-  nout << "bds.relation_with(B + 4*A >= 1) == " << rel << endl;
+  nout << "oct.relation_with(B + 4*A >= 1) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
 
@@ -172,13 +172,13 @@ test07() {
   cs.insert(B <= 3);
   cs.insert(A - B >= -2);
 
-  TBD_Shape bds(cs);
+  TOctagonal_Shape oct(cs);
 
-  Poly_Con_Relation rel = bds.relation_with(B + 4*A == 5);
+  Poly_Con_Relation rel = oct.relation_with(B + 4*A == 5);
 
-  print_constraints(bds, "*** bds ***");
+  print_constraints(oct, "*** oct ***");
   using namespace IO_Operators;
-  nout << "bds.relation_with(B + 4*A == 5) == " << rel << endl;
+  nout << "oct.relation_with(B + 4*A == 5) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
 
@@ -195,13 +195,13 @@ test08() {
   cs.insert(B <= 3);
   cs.insert(A - B >= -2);
 
-  TBD_Shape bds(cs);
+  TOctagonal_Shape oct(cs);
 
-  Poly_Con_Relation rel = bds.relation_with(B + 4*A >= 6);
+  Poly_Con_Relation rel = oct.relation_with(B + 4*A >= 6);
 
-  print_constraints(bds, "*** bds ***");
+  print_constraints(oct, "*** oct ***");
   using namespace IO_Operators;
-  nout << "bds.relation_with(B + 4*A >= 6) == " << rel << endl;
+  nout << "oct.relation_with(B + 4*A >= 6) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
 
@@ -220,13 +220,13 @@ test09() {
   cs.insert(B <= 3);
   cs.insert(B >= 0);
 
-  TBD_Shape bds(cs);
+  TOctagonal_Shape oct(cs);
 
-  Poly_Con_Relation rel = bds.relation_with(A + B >= 1);
+  Poly_Con_Relation rel = oct.relation_with(A + 2*B >= 1);
 
-  print_constraints(bds, "*** bds ***");
+  print_constraints(oct, "*** oct ***");
   using namespace IO_Operators;
-  nout << "bds.relation_with(A + B >= 1) == " << rel << endl;
+  nout << "oct.relation_with(A + 2*B >= 1) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_included();
 
@@ -244,13 +244,13 @@ bool
   cs.insert(B <= 3);
   cs.insert(B >= 0);
 
-  TBD_Shape bds(cs);
+  TOctagonal_Shape oct(cs);
 
-  Poly_Con_Relation rel = bds.relation_with(A + B == 1);
+  Poly_Con_Relation rel = oct.relation_with(A + 2*B == 1);
 
-  print_constraints(bds, "*** bds ***");
+  print_constraints(oct, "*** oct ***");
   using namespace IO_Operators;
-  nout << "bds.relation_with(A + B == 1) == " << rel << endl;
+  nout << "oct.relation_with(A + 2*B == 1) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
 
@@ -268,13 +268,13 @@ test11() {
   cs.insert(B <= 3);
   cs.insert(B >= 0);
 
-  TBD_Shape bds(cs);
+  TOctagonal_Shape oct(cs);
 
-  Poly_Con_Relation rel = bds.relation_with(A + B >= 1);
+  Poly_Con_Relation rel = oct.relation_with(A + 2*B >= 1);
 
-  print_constraints(bds, "*** bds ***");
+  print_constraints(oct, "*** oct ***");
   using namespace IO_Operators;
-  nout << "bds.relation_with(A + B >= 1) == " << rel << endl;
+  nout << "oct.relation_with(A + 2*B >= 1) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_included();
 
@@ -292,13 +292,13 @@ test12() {
   cs.insert(B <= 3);
   cs.insert(B >= 3);
 
-  TBD_Shape bds(cs);
+  TOctagonal_Shape oct(cs);
 
-  Poly_Con_Relation rel = bds.relation_with(A + B >= 6);
+  Poly_Con_Relation rel = oct.relation_with(2*A - B >= 3);
 
-  print_constraints(bds, "*** bds ***");
+  print_constraints(oct, "*** oct ***");
   using namespace IO_Operators;
-  nout << "bds.relation_with(A + B >= 6) == " << rel << endl;
+  nout << "oct.relation_with(2*A - B >= 3) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_included()
     && Poly_Con_Relation::saturates();
@@ -317,13 +317,13 @@ test13() {
   cs.insert(B <= 3);
   cs.insert(B >= 1);
 
-  TBD_Shape bds(cs);
+  TOctagonal_Shape oct(cs);
 
-  Poly_Con_Relation rel = bds.relation_with(A + B >= 6);
+  Poly_Con_Relation rel = oct.relation_with(2*A + B >= 9);
 
-  print_constraints(bds, "*** bds ***");
+  print_constraints(oct, "*** oct ***");
   using namespace IO_Operators;
-  nout << "bds.relation_with(A + B >= 6) == " << rel << endl;
+  nout << "oct.relation_with(2*A + B >= 9) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
 
@@ -341,13 +341,13 @@ test14() {
   cs.insert(B <= 3);
   cs.insert(B >= 1);
 
-  TBD_Shape bds(cs);
+  TOctagonal_Shape oct(cs);
 
-  Poly_Con_Relation rel = bds.relation_with(A + B >= 8);
+  Poly_Con_Relation rel = oct.relation_with(2*A + B >= 10);
 
-  print_constraints(bds, "*** bds ***");
+  print_constraints(oct, "*** oct ***");
   using namespace IO_Operators;
-  nout << "bds.relation_with(A + B >= 8) == " << rel << endl;
+  nout << "oct.relation_with(2*A + B >= 10) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
 
@@ -361,13 +361,13 @@ test15() {
   Constraint_System cs;
   cs.insert(A - B == 3);
   cs.insert(B == 1);
-  TBD_Shape bds(cs);
+  TOctagonal_Shape oct(cs);
 
-  Poly_Con_Relation rel = bds.relation_with(A - 2*B > 2);
+  Poly_Con_Relation rel = oct.relation_with(A - 2*B > 2);
 
-  print_constraints(bds, "*** bds ***");
+  print_constraints(oct, "*** oct ***");
   using namespace IO_Operators;
-  nout << "bds.relation_with(A - 2*B > 2) == " << rel << endl;
+  nout << "oct.relation_with(A - 2*B > 2) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint()
     && Poly_Con_Relation::saturates();
@@ -381,13 +381,13 @@ test16() {
   Variable B(1);
   Constraint_System cs(A - B <= 3);
   cs.insert(A <= 1);
-  TBD_Shape bds(cs);
+  TOctagonal_Shape oct(cs);
 
-  Poly_Con_Relation rel = bds.relation_with(2*A - B > 4);
+  Poly_Con_Relation rel = oct.relation_with(2*A - B > 4);
 
-  print_constraints(bds, "*** bds ***");
+  print_constraints(oct, "*** oct ***");
   using namespace IO_Operators;
-  nout << "bds.relation_with(2*A - B > 4) == " << rel << endl;
+  nout << "oct.relation_with(2*A - B > 4) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
 
@@ -400,13 +400,13 @@ test17() {
   Variable B(1);
   Constraint_System cs(A - B >= 3);
   cs.insert(A >= 1);
-  TBD_Shape bds(cs);
+  TOctagonal_Shape oct(cs);
 
-  Poly_Con_Relation rel = bds.relation_with(2*A - B < 4);
+  Poly_Con_Relation rel = oct.relation_with(2*A - B < 4);
 
-  print_constraints(bds, "*** bds ***");
+  print_constraints(oct, "*** oct ***");
   using namespace IO_Operators;
-  nout << "bds.relation_with(2*A - B < 4) == " << rel << endl;
+  nout << "oct.relation_with(2*A - B < 4) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
 
