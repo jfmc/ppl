@@ -1130,6 +1130,7 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
   TEMP_INTEGER(coeff);
   if (!extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff)) {
     // Constraints that are not bounded differences.
+    // Use maximize() and minimize() to do much of the work.
 
     // Find the linear expression for the constraint and use that to
     // find if the expression is bounded from above or below and if it
@@ -1197,6 +1198,7 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
     }
   }
 
+  // Constraints that are bounded differences.
   if (num_vars == 0) {
     // Dealing with a trivial constraint.
     switch (sgn(c.inhomogeneous_term())) {
