@@ -420,5 +420,5 @@ BEGIN_MAIN
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
-  DO_TEST_F(test10);
+  DO_TEST(test10);
 END_MAIN
