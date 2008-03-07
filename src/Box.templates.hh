@@ -663,14 +663,10 @@ interval_relation(const Interval& i,
       case 0:
 	if (i.lower_is_open())
 	  return Poly_Con_Relation::is_disjoint();
-	if (i.upper_is_unbounded())
-	  return Poly_Con_Relation::strictly_intersects();
-        else {
-        Poly_Con_Relation result = Poly_Con_Relation::is_included();
         if (i.is_singleton())
-          result = result && Poly_Con_Relation::saturates();
-        return result;
-        }
+          return Poly_Con_Relation::is_included()
+            && Poly_Con_Relation::saturates();
+        return Poly_Con_Relation::strictly_intersects();
       case -1:
 	if (i.upper_is_unbounded())
 	  return Poly_Con_Relation::strictly_intersects();
