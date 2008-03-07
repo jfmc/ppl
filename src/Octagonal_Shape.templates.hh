@@ -1011,18 +1011,11 @@ Octagonal_Shape<T>::relation_with(const Congruence& cg) const {
     throw_dimension_incompatible("relation_with(cg)", cg);
   }
 
-  // If the congruence is an octagonal equality,
+  // If the congruence is an equality,
   // find the relation with the equivalent equality constraint.
   if (cg.is_equality()) {
     Constraint c(cg);
-    dimension_type num_vars = 0;
-    dimension_type i = 0;
-    dimension_type j = 0;
-    TEMP_INTEGER(coeff);
-    TEMP_INTEGER(c_term);
-    if (extract_octagonal_difference(c, cg_space_dim, num_vars,
-                                    i, j, coeff, c_term))
-      return relation_with(c);
+    return relation_with(c);
   }
 
   strong_closure_assign();
@@ -1040,13 +1033,40 @@ Octagonal_Shape<T>::relation_with(const Congruence& cg) const {
         && Poly_Con_Relation::is_included();
   }
 
-  // FIXME: If there is no obvious quick method, find the relation of the
-  //        equivalent polyhedron with the congruence.
-  const Octagonal_Shape<T>& x = *this;
-  const C_Polyhedron ph(x);
-  return ph.relation_with(cg);
-}
+  DIRTY_TEMP(Coefficient, min_num);
+  DIRTY_TEMP(Coefficient, min_den);
+  bool min_included;
+  TEMP_INTEGER(mod);
+  mod = cg.modulus();
+  Linear_Expression le;
+  for (dimension_type i = cg_space_dim; i-- > 0; )
+    le += cg.coefficient(Variable(i)) * Variable(i);
+  bool bounded_below = minimize(le, min_num, min_den, min_included);
 
+  if (!bounded_below)
+    return Poly_Con_Relation::strictly_intersects();
+
+  TEMP_INTEGER(v);
+  TEMP_INTEGER(lower_num);
+  TEMP_INTEGER(lower_den);
+  TEMP_INTEGER(lower);
+
+//   lower = min_num / min_den;
+//   v -= cg.inhomogeneous_term();
+//   v += ((lower / mod) * mod);
+//   if (v * min_den < min_num)
+//     v += mod;
+
+  assign_r(lower_num, min_num, ROUND_NOT_NEEDED);
+  assign_r(lower_den, min_den, ROUND_NOT_NEEDED);
+  v -= cg.inhomogeneous_term();
+  lower = lower_num / lower_den;
+  v += ((lower / mod) * mod);
+  if (v * lower_den < lower_num)
+    v += mod;
+  const Constraint& c(le == v);
+  return relation_with(c);
+}
 
 template <typename T>
 Poly_Con_Relation
@@ -1103,7 +1123,6 @@ Octagonal_Shape<T>::relation_with(const Constraint& c) const {
     Linear_Expression le;
     for (dimension_type i = c_space_dim; i-- > 0; )
       le += c.coefficient(Variable(i)) * Variable(i);
-    le += c.inhomogeneous_term();
     DIRTY_TEMP(Coefficient, max_num);
     DIRTY_TEMP(Coefficient, max_den);
     bool max_included;
@@ -1115,6 +1134,7 @@ Octagonal_Shape<T>::relation_with(const Constraint& c) const {
     if (!bounded_above) {
       if (!bounded_below)
         return Poly_Con_Relation::strictly_intersects();
+      min_num += c.inhomogeneous_term() * min_den;
       switch (sgn(min_num)) {
       case 1:
         if (c.is_equality())
@@ -1129,6 +1149,7 @@ Octagonal_Shape<T>::relation_with(const Constraint& c) const {
       }
     }
     if (!bounded_below) {
+      max_num += c.inhomogeneous_term() * max_den;
       switch (sgn(max_num)) {
       case 1:
         return  Poly_Con_Relation::strictly_intersects();
@@ -1143,6 +1164,8 @@ Octagonal_Shape<T>::relation_with(const Constraint& c) const {
       }
     }
     else {
+      max_num += c.inhomogeneous_term() * max_den;
+      min_num += c.inhomogeneous_term() * min_den;
       switch (sgn(max_num)) {
       case 1:
         if (min_num > 0 && c.is_equality())

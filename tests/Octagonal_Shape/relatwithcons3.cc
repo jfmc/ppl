@@ -413,6 +413,74 @@ test17() {
   return rel == known_result;
 }
 
+bool
+test18() {
+  Variable A(0);
+  Variable B(1);
+
+  TOctagonal_Shape oc(2);
+  oc.add_constraint(2*A >= 1);
+  oc.add_constraint(B >= 1);
+
+  Congruence cg((A + 4*B %= 1) / 2);
+  Poly_Con_Relation rel = oc.relation_with(cg);
+
+  print_constraints(oc, "--- oc ---");
+  print_congruence(cg, "--- cg ---");
+  using namespace IO_Operators;
+  nout << "oc.relation_with((A + 4*B %= 1)/2) == " << rel << endl;
+
+  Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
+
+  return rel == known_result;
+}
+
+bool
+test19() {
+  Variable A(0);
+  Variable B(1);
+
+  TOctagonal_Shape oc(2);
+  oc.add_constraint(A >= 1);
+  oc.add_constraint(A <= 2);
+  oc.add_constraint(B >= 1);
+  oc.add_constraint(B <= 2);
+
+  Congruence cg((A + 4*B %= 1) / 10);
+  Poly_Con_Relation rel = oc.relation_with(cg);
+
+  print_constraints(oc, "--- oc ---");
+  print_congruence(cg, "--- cg ---");
+  using namespace IO_Operators;
+  nout << "oc.relation_with((A + 4*B %= 1)/10) == " << rel << endl;
+
+  Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
+
+  return rel == known_result;
+}
+
+bool
+test20() {
+  Variable A(0);
+  Variable B(1);
+
+  TOctagonal_Shape oc(2);
+  oc.add_constraint(2*A <= 1);
+  oc.add_constraint(B <= 1);
+
+  Congruence cg((A + 4*B %= 1) / 2);
+  Poly_Con_Relation rel = oc.relation_with(cg);
+
+  print_constraints(oc, "--- oc ---");
+  print_congruence(cg, "--- cg ---");
+  using namespace IO_Operators;
+  nout << "oc.relation_with((A + 4*B %= 1)/2) == " << rel << endl;
+
+  Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
+
+  return rel == known_result;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -433,4 +501,7 @@ BEGIN_MAIN
   DO_TEST(test15);
   DO_TEST(test16);
   DO_TEST(test17);
+  DO_TEST(test18);
+  DO_TEST(test19);
+  DO_TEST(test20);
 END_MAIN
