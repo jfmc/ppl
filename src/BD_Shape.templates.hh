@@ -1080,11 +1080,32 @@ BD_Shape<T>::relation_with(const Congruence& cg) const {
         && Poly_Con_Relation::is_included();
   }
 
-  // FIXME: If there is no obvious quick method, find the relation of the
-  //        equivalent polyhedron with the congruence.
-  const BD_Shape<T>& x = *this;
-  const C_Polyhedron ph(x);
-  return ph.relation_with(cg);
+  DIRTY_TEMP(Coefficient, min_num);
+  DIRTY_TEMP(Coefficient, min_den);
+  bool min_included;
+  TEMP_INTEGER(mod);
+  mod = cg.modulus();
+  Linear_Expression le;
+  for (dimension_type i = cg_space_dim; i-- > 0; )
+    le += cg.coefficient(Variable(i)) * Variable(i);
+  bool bounded_below = minimize(le, min_num, min_den, min_included);
+
+  if (!bounded_below)
+    return Poly_Con_Relation::strictly_intersects();
+
+  TEMP_INTEGER(v);
+  TEMP_INTEGER(lower_num);
+  TEMP_INTEGER(lower_den);
+  TEMP_INTEGER(lower);
+  assign_r(lower_num, min_num, ROUND_NOT_NEEDED);
+  assign_r(lower_den, min_den, ROUND_NOT_NEEDED);
+  v -= cg.inhomogeneous_term();
+  lower = lower_num / lower_den;
+  v += ((lower / mod) * mod);
+  if (v * lower_den < lower_num)
+    v += mod;
+  const Constraint& c(le == v);
+  return relation_with(c);
 }
 
 
@@ -1138,7 +1159,6 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
     Linear_Expression le;
     for (dimension_type i = c_space_dim; i-- > 0; )
       le += c.coefficient(Variable(i)) * Variable(i);
-    le += c.inhomogeneous_term();
     DIRTY_TEMP(Coefficient, max_num);
     DIRTY_TEMP(Coefficient, max_den);
     bool max_included;
@@ -1150,20 +1170,22 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
     if (!bounded_above) {
       if (!bounded_below)
         return Poly_Con_Relation::strictly_intersects();
+      min_num += c.inhomogeneous_term() * min_den;
       switch (sgn(min_num)) {
       case 1:
         if (c.is_equality())
           return  Poly_Con_Relation::is_disjoint();
         return  Poly_Con_Relation::is_included();
       case 0:
-        if (c.is_strict_inequality())
-          return  Poly_Con_Relation::is_disjoint();
-        return  Poly_Con_Relation::strictly_intersects();
+        if (c.is_strict_inequality() || c.is_equality())
+          return  Poly_Con_Relation::strictly_intersects();
+        return  Poly_Con_Relation::is_included();
       case -1:
         return  Poly_Con_Relation::strictly_intersects();
       }
     }
     if (!bounded_below) {
+      max_num += c.inhomogeneous_term() * max_den;
       switch (sgn(max_num)) {
       case 1:
         return  Poly_Con_Relation::strictly_intersects();
@@ -1172,25 +1194,38 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
           return  Poly_Con_Relation::is_disjoint();
         return  Poly_Con_Relation::strictly_intersects();
       case -1:
-        if (c.is_equality())
-          return  Poly_Con_Relation::is_disjoint();
-        return  Poly_Con_Relation::is_included();
+        return  Poly_Con_Relation::is_disjoint();
       }
     }
     else {
+      max_num += c.inhomogeneous_term() * max_den;
+      min_num += c.inhomogeneous_term() * min_den;
       switch (sgn(max_num)) {
       case 1:
-        if (min_num > 0 && c.is_equality())
-          return  Poly_Con_Relation::is_disjoint();
-        return  Poly_Con_Relation::is_included();
-      case 0:
+        switch (sgn(min_num)) {
+        case 1:
+          if (c.is_equality())
+            return  Poly_Con_Relation::is_disjoint();
+          return  Poly_Con_Relation::is_included();
+        case 0:
+          if (c.is_equality())
+            return  Poly_Con_Relation::strictly_intersects();
+          if (c.is_strict_inequality())
+            return  Poly_Con_Relation::strictly_intersects();
+          return  Poly_Con_Relation::is_included();
+        case -1:
+          return  Poly_Con_Relation::strictly_intersects();
+        }
+     case 0:
         if (min_num == 0) {
           if (c.is_strict_inequality())
             return  Poly_Con_Relation::is_disjoint()
               && Poly_Con_Relation::saturates();
-           return  Poly_Con_Relation::is_included()
+          return  Poly_Con_Relation::is_included()
             && Poly_Con_Relation::saturates();
         }
+        if (c.is_strict_inequality())
+          return  Poly_Con_Relation::is_disjoint();
         return  Poly_Con_Relation::strictly_intersects();
       case -1:
         return  Poly_Con_Relation::is_disjoint();

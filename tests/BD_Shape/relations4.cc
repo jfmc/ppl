@@ -36,13 +36,13 @@ test01() {
 
   TBD_Shape bds(cs);
 
-  Poly_Con_Relation rel = bds.relation_with(A + B >= 1);
+  Poly_Con_Relation rel = bds.relation_with(A + B <= -1);
 
   print_constraints(bds, "*** bds ***");
   using namespace IO_Operators;
   nout << "bds.relation_with(A + B >= 1) == " << rel << endl;
 
-  Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
+  Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
 
   return rel == known_result;
 }
@@ -151,11 +151,11 @@ test06() {
 
   TBD_Shape bds(cs);
 
-  Poly_Con_Relation rel = bds.relation_with(B + 4*A >= 1);
+  Poly_Con_Relation rel = bds.relation_with(B + 4*A == 5);
 
   print_constraints(bds, "*** bds ***");
   using namespace IO_Operators;
-  nout << "bds.relation_with(B + 4*A >= 1) == " << rel << endl;
+  nout << "bds.relation_with(B + 4*A == 5) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
 
@@ -174,13 +174,13 @@ test07() {
 
   TBD_Shape bds(cs);
 
-  Poly_Con_Relation rel = bds.relation_with(B + 4*A == 5);
+  Poly_Con_Relation rel = bds.relation_with(B + 4*A > 14);
 
   print_constraints(bds, "*** bds ***");
   using namespace IO_Operators;
-  nout << "bds.relation_with(B + 4*A == 5) == " << rel << endl;
+  nout << "bds.relation_with(B + 4*A > 14) == " << rel << endl;
 
-  Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
+  Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
 
   return rel == known_result;
 }
@@ -197,17 +197,16 @@ test08() {
 
   TBD_Shape bds(cs);
 
-  Poly_Con_Relation rel = bds.relation_with(B + 4*A >= 6);
+  Poly_Con_Relation rel = bds.relation_with(B + 4*A >= 15);
 
   print_constraints(bds, "*** bds ***");
   using namespace IO_Operators;
-  nout << "bds.relation_with(B + 4*A >= 6) == " << rel << endl;
+  nout << "bds.relation_with(B + 4*A >= 15) == " << rel << endl;
 
-  Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
+  Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
 
   return rel == known_result;
 }
-
 
 bool
 test09() {

@@ -394,17 +394,43 @@ test19() {
 
   TBD_Shape bds(2);
   bds.add_constraint(A >= 0);
+  bds.add_constraint(B >= 0);
+  bds.add_constraint(B <= 2);
   bds.add_constraint(A - B <= 1);
 
-  Congruence cg((A + 3*B %= 0) / 1);
+  Congruence cg((A + 3*B %= 1) / 10);
   Poly_Con_Relation rel = bds.relation_with(cg);
 
   print_constraints(bds, "--- bds ---");
   print_congruence(cg, "--- cg ---");
   using namespace IO_Operators;
-  nout << "bds.relation_with((A %= 0)/1) == " << rel << endl;
+  nout << "bds.relation_with((A + 3*B %= 1)/10) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
+
+  return rel == known_result;
+}
+
+bool
+test20() {
+  Variable A(0);
+  Variable B(1);
+
+  TBD_Shape bds(2);
+  bds.add_constraint(A >= 0);
+  bds.add_constraint(B >= 0);
+  bds.add_constraint(B <= 2);
+  bds.add_constraint(A - B <= 1);
+
+  Congruence cg((A + 3*B %= 10) / 11);
+  Poly_Con_Relation rel = bds.relation_with(cg);
+
+  print_constraints(bds, "--- bds ---");
+  print_congruence(cg, "--- cg ---");
+  using namespace IO_Operators;
+  nout << "bds.relation_with((A + 3*B %= 1)/10) == " << rel << endl;
+
+  Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
 
   return rel == known_result;
 }
@@ -431,4 +457,5 @@ BEGIN_MAIN
   DO_TEST(test17);
   DO_TEST(test18);
   DO_TEST(test19);
+  DO_TEST(test20);
 END_MAIN

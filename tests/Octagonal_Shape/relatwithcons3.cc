@@ -42,36 +42,13 @@ test01() {
   using namespace IO_Operators;
   nout << "oct.relation_with(A + 2*B >= 1) == " << rel << endl;
 
-  Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
-
-  return rel == known_result;
-}
-
-bool
-test02() {
-  Variable A(0);
-  Variable B(1);
-
-  Constraint_System cs;
-  cs.insert(A >= 1);
-  cs.insert(B >= 0);
-  cs.insert(A - B <= 3);
-
-  TOctagonal_Shape oct(cs);
-
-  Poly_Con_Relation rel = oct.relation_with(A + 2*B >= 0);
-
-  print_constraints(oct, "*** oct ***");
-  using namespace IO_Operators;
-  nout << "oct.relation_with(A + 2*B >= 0) == " << rel << endl;
-
   Poly_Con_Relation known_result = Poly_Con_Relation::is_included();
 
   return rel == known_result;
 }
 
 bool
-test03() {
+test02() {
   Variable A(0);
   Variable B(1);
 
@@ -94,7 +71,7 @@ test03() {
 }
 
 bool
-test04() {
+test03() {
   Variable A(0);
   Variable B(1);
 
@@ -117,7 +94,7 @@ test04() {
 }
 
 bool
-test05() {
+test04() {
   Variable A(0);
   Variable B(1);
 
@@ -140,7 +117,7 @@ test05() {
 }
 
 bool
-test06() {
+test05() {
   Variable A(0);
   Variable B(1);
 
@@ -163,7 +140,7 @@ test06() {
 }
 
 bool
-test07() {
+test06() {
   Variable A(0);
   Variable B(1);
 
@@ -186,7 +163,7 @@ test07() {
 }
 
 bool
-test08() {
+test07() {
   Variable A(0);
   Variable B(1);
 
@@ -210,7 +187,7 @@ test08() {
 
 
 bool
-test09() {
+test08() {
   Variable A(0);
   Variable B(1);
 
@@ -234,7 +211,7 @@ test09() {
 }
 
 bool
-  test10() {
+  test09() {
   Variable A(0);
   Variable B(1);
 
@@ -258,7 +235,7 @@ bool
 }
 
 bool
-test11() {
+test10() {
   Variable A(0);
   Variable B(1);
 
@@ -282,7 +259,7 @@ test11() {
 }
 
 bool
-test12() {
+test11() {
   Variable A(0);
   Variable B(1);
 
@@ -307,7 +284,7 @@ test12() {
 }
 
 bool
-test13() {
+test12() {
   Variable A(0);
   Variable B(1);
 
@@ -331,7 +308,7 @@ test13() {
 }
 
 bool
-test14() {
+test13() {
   Variable A(0);
   Variable B(1);
 
@@ -355,7 +332,7 @@ test14() {
 }
 
 bool
-test15() {
+test14() {
   Variable A(0);
   Variable B(1);
   Constraint_System cs;
@@ -376,7 +353,7 @@ test15() {
 }
 
 bool
-test16() {
+test15() {
   Variable A(0);
   Variable B(1);
   Constraint_System cs(A - B <= 3);
@@ -395,7 +372,7 @@ test16() {
 }
 
 bool
-test17() {
+test16() {
   Variable A(0);
   Variable B(1);
   Constraint_System cs(A - B >= 3);
@@ -414,7 +391,7 @@ test17() {
 }
 
 bool
-test18() {
+test17() {
   Variable A(0);
   Variable B(1);
 
@@ -436,7 +413,7 @@ test18() {
 }
 
 bool
-test19() {
+test18() {
   Variable A(0);
   Variable B(1);
 
@@ -460,7 +437,7 @@ test19() {
 }
 
 bool
-test20() {
+test19() {
   Variable A(0);
   Variable B(1);
 
@@ -475,6 +452,30 @@ test20() {
   print_congruence(cg, "--- cg ---");
   using namespace IO_Operators;
   nout << "oc.relation_with((A + 4*B %= 1)/2) == " << rel << endl;
+
+  Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
+
+  return rel == known_result;
+}
+
+bool
+test20() {
+  Variable A(0);
+  Variable B(1);
+
+  TOctagonal_Shape oc(2);
+  oc.add_constraint(A >= 0);
+  oc.add_constraint(B >= 0);
+  oc.add_constraint(B <= 2);
+  oc.add_constraint(A - B <= 1);
+
+  Congruence cg((A + 3*B %= 1) / 10);
+  Poly_Con_Relation rel = oc.relation_with(cg);
+
+  print_constraints(oc, "--- oc ---");
+  print_congruence(cg, "--- cg ---");
+  using namespace IO_Operators;
+  nout << "oc.relation_with((A + 3*B %= 1)/10) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
 

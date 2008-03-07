@@ -1050,13 +1050,6 @@ Octagonal_Shape<T>::relation_with(const Congruence& cg) const {
   TEMP_INTEGER(lower_num);
   TEMP_INTEGER(lower_den);
   TEMP_INTEGER(lower);
-
-//   lower = min_num / min_den;
-//   v -= cg.inhomogeneous_term();
-//   v += ((lower / mod) * mod);
-//   if (v * min_den < min_num)
-//     v += mod;
-
   assign_r(lower_num, min_num, ROUND_NOT_NEEDED);
   assign_r(lower_den, min_den, ROUND_NOT_NEEDED);
   v -= cg.inhomogeneous_term();
@@ -1141,9 +1134,9 @@ Octagonal_Shape<T>::relation_with(const Constraint& c) const {
           return  Poly_Con_Relation::is_disjoint();
         return  Poly_Con_Relation::is_included();
       case 0:
-        if (c.is_strict_inequality())
-          return  Poly_Con_Relation::is_disjoint();
-        return  Poly_Con_Relation::strictly_intersects();
+        if (c.is_strict_inequality() || c.is_equality())
+          return  Poly_Con_Relation::strictly_intersects();
+        return  Poly_Con_Relation::is_included();
       case -1:
         return  Poly_Con_Relation::strictly_intersects();
       }
@@ -1158,9 +1151,7 @@ Octagonal_Shape<T>::relation_with(const Constraint& c) const {
           return  Poly_Con_Relation::is_disjoint();
         return  Poly_Con_Relation::strictly_intersects();
       case -1:
-        if (c.is_equality())
-          return  Poly_Con_Relation::is_disjoint();
-        return  Poly_Con_Relation::is_included();
+        return  Poly_Con_Relation::is_disjoint();
       }
     }
     else {
@@ -1168,10 +1159,21 @@ Octagonal_Shape<T>::relation_with(const Constraint& c) const {
       min_num += c.inhomogeneous_term() * min_den;
       switch (sgn(max_num)) {
       case 1:
-        if (min_num > 0 && c.is_equality())
-          return  Poly_Con_Relation::is_disjoint();
-        return  Poly_Con_Relation::is_included();
-      case 0:
+        switch (sgn(min_num)) {
+        case 1:
+          if (c.is_equality())
+            return  Poly_Con_Relation::is_disjoint();
+          return  Poly_Con_Relation::is_included();
+        case 0:
+          if (c.is_equality())
+            return  Poly_Con_Relation::strictly_intersects();
+          if (c.is_strict_inequality())
+            return  Poly_Con_Relation::strictly_intersects();
+          return  Poly_Con_Relation::is_included();
+        case -1:
+          return  Poly_Con_Relation::strictly_intersects();
+        }
+     case 0:
         if (min_num == 0) {
           if (c.is_strict_inequality())
             return  Poly_Con_Relation::is_disjoint()
@@ -1179,12 +1181,13 @@ Octagonal_Shape<T>::relation_with(const Constraint& c) const {
           return  Poly_Con_Relation::is_included()
             && Poly_Con_Relation::saturates();
         }
+        if (c.is_strict_inequality())
+          return  Poly_Con_Relation::is_disjoint();
         return  Poly_Con_Relation::strictly_intersects();
       case -1:
         return  Poly_Con_Relation::is_disjoint();
       }
     }
-    throw_constraint_incompatible("relation_with(c)");
   }
 
   if (num_vars == 0) {
