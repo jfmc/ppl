@@ -359,6 +359,54 @@ test09() {
   return ok;
 }
 
+bool
+test10() {
+  Variable A(0);
+  Variable B(1);
+
+  TBD_Shape bds(2);
+  bds.add_constraint(2*A >= 1);
+  bds.add_constraint(B >= 1);
+  bds.add_constraint(2*A <= 3);
+  bds.add_constraint(B <= 4);
+
+  print_constraints(bds, "*** bds ***");
+
+  Coefficient num;
+  Coefficient den;
+  bool included;
+  Generator g(point());
+  Linear_Expression LE(A + 4*B - 1);
+
+  bool ok_max = bds.maximize(LE, num, den, included, g)
+    && num == 33 && den == 2 && included
+    && g.is_point()
+    && g.coefficient(A) == 3 && g.coefficient(B) == 8
+    && g.divisor() == 2;
+
+  nout << (included ? "maximum" : "supremum") << " = " << num;
+  if (den != 1)
+    nout << "/" << den;
+  nout << " @ ";
+  print_generator(g);
+  nout << endl;
+
+  bool ok_min = bds.minimize(LE, num, den, included, g)
+    && num == 7 && den == 2 && included
+    && g.is_point()
+    && g.coefficient(A) == 1 && g.coefficient(B) == 2
+    && g.divisor() == 2;
+
+  nout << (included ? "minimum" : "infinum") << " = " << num;
+  if (den != 1)
+    nout << "/" << den;
+  nout << " @ ";
+  print_generator(g);
+  nout << endl;
+
+  return ok_max && ok_min;
+}
+
 
 } // namespace
 
@@ -372,4 +420,5 @@ BEGIN_MAIN
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
+  DO_TEST_F(test10);
 END_MAIN
