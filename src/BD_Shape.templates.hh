@@ -938,8 +938,8 @@ BD_Shape<T>::max_min(const Linear_Expression& expr,
   TEMP_INTEGER(coeff);
   // Check if `c' is a BD constraint.
   if (!extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff)) {
-    Optimization_Mode mode_max_min = maximize ? MAXIMIZATION
-      : MINIMIZATION;
+    Optimization_Mode mode_max_min
+      = maximize ? MAXIMIZATION : MINIMIZATION;
     MIP_Problem mip(space_dim, constraints(), expr, mode_max_min);
     if (mip.solve() == OPTIMIZED_MIP_PROBLEM) {
       mip.optimal_value(ext_n, ext_d);

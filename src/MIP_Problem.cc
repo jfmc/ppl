@@ -1437,12 +1437,13 @@ PPL::MIP_Problem
   const dimension_type working_space_dim
     = std::min(ep_space_dim, input_obj_function.space_dimension());
   // Compute the optimal value of the cost function.
-  ext_n = input_obj_function.inhomogeneous_term();
+  const Coefficient& divisor = evaluating_point.divisor();
+  ext_n = input_obj_function.inhomogeneous_term() * divisor;
   for (dimension_type i = working_space_dim; i-- > 0; )
     ext_n += evaluating_point.coefficient(Variable(i))
       * input_obj_function.coefficient(Variable(i));
   // Numerator and denominator should be coprime.
-  normalize2(ext_n, evaluating_point.divisor(), ext_n, ext_d);
+  normalize2(ext_n, divisor, ext_n, ext_d);
 }
 
 bool
