@@ -1333,6 +1333,42 @@
               respectable size and complexity."
 }
 
+@Inproceedings{PayetS07,
+  Author = "E. Payet and F. Spoto",
+  Title = " Magic-Sets Transformation for the Analysis of Java Bytecode",
+  Booktitle = "Static Analysis:
+               Proceedings of the 14th International Symposium",
+  Address = "Kongens Lyngby, Denmark",
+  Editor = "G. Fil\'e and H. R. Nielson",
+  Publisher = "Springer-Verlag, Berlin",
+  Series = "Lecture Notes in Computer Science",
+  Volume = 4634,
+  ISBN = "978-3-540-74060-5",
+  Pages = "452-467",
+  Year = 2007,
+  Abstract = "Denotational static analysis of Java bytecode has a nice
+              and clean compositional definition and an efficient
+              implementation with binary decision diagrams. But it
+              models only the \emph{functional} i.e., input/output
+              behaviour of a program $P$, not enough if one needs $P$'s
+              \emph{internal} behaviours i.e., from the input to some
+              internal program points. We overcome this limitation
+              with a technique used up to now for logic programs
+              only. It adds new \emph{magic} blocks of code to P, whose
+              functional behaviours are the internal behaviours of
+              $P$. We prove this transformation correct with an
+              operational semantics. We define an equivalent
+              denotational semantics, whose denotations for the
+              magic blocks are hence the internal behaviours of
+              $P$. We implement our transformation and instantiate
+              it with abstract domains modelling \emph{sharing} of two
+              variables and \emph{non-cyclicity} of variables. We get a
+              static analyser for full Java bytecode that is
+              faster and scales better than another operational
+              pair-sharing analyser and a constraint-based pointer
+              analyser."
+}
+
 @Techreport{Pop06,
   Author = "S. Pop and G.-A. Silber and A. Cohen and C. Bastoul
             and S. Girbal and N. Vasilache",
