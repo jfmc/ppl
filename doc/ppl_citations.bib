@@ -364,8 +364,8 @@
   Title = "Algorithmic Analysis of Complex Semantics
            for Timed and Hybrid Automata",
   School = "Universit\'e Libre de Bruxelles",
-  Month = jun,
   Address = "Bruxelles, Belgium",
+  Month = jun,
   Year = 2006,
   Abstract = "In the field of formal verification of real-time
               systems, major developments have been recorded in the
@@ -659,6 +659,89 @@
               verifying, for the first time, the limit cycle
               oscillation behavior of a third-order model of a
               differential VCO circuit."
+}
+
+@PhdThesis{Gobert07th,
+  Author = "F. Gobert",
+  Title = "Towards putting abstract interpretation of {Prolog} into practice:
+           design, implementation, and evaluation of a tool to verify
+           and optimise Prolog programs",
+  School = "Universit\'e catholique de Louvain",
+  Address = "Louvain-la-Neuve",
+  Month = dec,
+  Year = 2007,
+  Abstract = "Logic programming is an attractive paradigm that allows
+              the programmer to concentrate on the meaning (the logic)
+              of the problem to be solved - the \emph{declarative layer}.
+              An execution model is then used as the problem solver - the
+              \emph{operational layer}. In practice, for efficiency reasons,
+              the semantics of the two layers do not always match. For
+              instance, in Prolog, the computation of solutions is based
+              on an incomplete depth-first search rule, unifications and
+              negations may be unsound, some builtin language primitives
+              are not multidirectional, and there exist extralogical
+              features like the cut or dynamic predicates. A large number
+              of work has been realised to reconcile the declarative and
+              operational features of Prolog. Methodologies have been
+              proposed to construct operationally correct and efficient
+              Prolog code. Researchers have designed methods to automate
+              the verification of specific operational properties on which
+              optimisation of logic programs can be based. A few tools have
+              been implemented but there is a lack of a unified framework.
+              The goal and topic of this thesis is the design, implementation,
+              and evaluation of a static analyser of Prolog programs to
+              integrate `state-of-the-art' techniques into a unified abstract
+              interpretation framework. Abstract interpretation is an
+              adequate methodology to design, justify, and combine complex
+              analyses. The analyser that we present in this thesis is based
+              on a non-implemented original proposal. The original framework
+              defines the notion of \emph{abstract sequence}, which allows
+              one to verify many desirable operational properties of a logic
+              procedure. The properties include verifying type, mode, and
+              sharing of terms, proving termination, sure success or failure,
+              and determinacy of logic procedures, as well as linear
+              relations between the size of input/output terms and the
+              number of solutions to a call. An abstract sequence maintains
+              information about the input and output terms, as well as the
+              non-failure conditions on input terms, and the number of
+              solutions for such inputs. The domains of abstract sequences
+              cooperate together and improve each other. The abstract
+              execution is performed during a single global analysis,
+              and abstract sequences are derived at each program point
+              (the information of the various domains are computed
+              simultaneously). The intended operational properties of a
+              procedure are written in formal specifications.
+              The original framework is an interesting starting point for
+              combining several analyses inside a unified framework.
+              However, it is limited and inaccurate in many ways: it is
+              not implemented, and therefore, it has not been validated
+              by experiments, it accepts only a subset of Prolog (without
+              negation, cut, conditional and disjunctive constructs), and
+              some of the proposed domains are not precise enough.
+              The basic framework is only oriented towards the verification
+              of Prolog programs, but it cannot always prove the desirable
+              properties. In this thesis, we implement and evaluate the
+              basic framework, and, more importantly, we overcome its
+              limitations to make it accurate and usable in practice:
+              the improved framework accepts any Prolog program with modules,
+              new abstract domains and operations are added, and the
+              language of specifications is more expressive. We also
+              design and implement an optimiser that generates specialised
+              code. Optimisation is essential in Prolog, but it is not easy
+              to perform by hand and it is error prone. The optimiser uses
+              the information to safely apply source-to-source
+              transformations. Code transformations include clause and
+              literal reordering, introduction of cuts, and removal
+              of redundant literals. The optimiser follows a precise
+              strategy to choose the most rewarding transformations in best
+              order.
+              This thesis shows the feasibility of a unified framework
+              that integrates many complex analyses in a single global
+              analysis. Practically and theoretically, a single global
+              analysis is more attractive than a combination of a lot of
+              separate analyses and frameworks. Many extensions have been
+              performed to obtain an accurate and usable tool devoted to
+              verification and optimisation of Prolog programs."
 }
 
 @Inproceedings{GobertLC07,
