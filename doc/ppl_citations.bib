@@ -667,7 +667,7 @@
            design, implementation, and evaluation of a tool to verify
            and optimise Prolog programs",
   School = "Universit\'e catholique de Louvain",
-  Address = "Louvain-la-Neuve",
+  Address = "Louvain-la-Neuve, Belgium",
   Month = dec,
   Year = 2007,
   Abstract = "Logic programming is an attractive paradigm that allows
@@ -800,6 +800,65 @@
               a loop. This technique is fully compatible with the use
               of widening, and whenever it applies, it improves both
               the precision and the performance of the analysis.",
+}
+
+@PhdThesis{Gopan07th,
+  Author = "D. Gopan",
+  Title = "Numeric Program Analysis Techniques with Applications
+           to Array Analysis and Library Summarization",
+  School = "University of Wisconsin",
+  Address = "Madison, Wisconsin, USA",
+  Month = aug,
+  Year = 2007,
+  Abstract = "Numeric program analysis is of great importance for the
+              areas of software engineering, software
+              verification, and security: to identify many program
+              errors, such as out-of-bounds array accesses and
+              integer overflows, which constitute the lion's share
+              of security vulnerabilities reported by CERT, an
+              analyzer needs to establish numeric properties of
+              program variables. Many important program analyses,
+              such as low-level code analysis, memory-cleanness
+              analysis, and shape analysis, rely in some ways on
+              numeric-program-analysis techniques. However,
+              existing numeric abstractions are complex (numeric
+              abstract domains are typically non-distributive, and
+              form infinite-height lattices); thus, obtaining
+              precise numeric-analysis results is by no means a
+              trivial undertaking.
+              In this thesis, we develop a suite of techniques with
+              the common goal of improving the precision and applicability
+              of numeric program analysis. The techniques address
+              various aspects of numeric analysis, such as
+              handling dynamically-allocated memory, dealing with
+              programs that manipulate arrays, improving the
+              precision of extrapolation (widening), and
+              performing interprocedural analysis. The techniques
+              use existing numeric abstractions as building
+              blocks. The communication with existing abstractions
+              is done strictly through a generic abstract-domain
+              interface. The abstractions constructed by our
+              techniques also expose that same interface, and
+              thus, are compatible with existing analysis
+              engines. As a result, our techniques are independent
+              from specific abstractions and specific analysis
+              engines, can be easily incorporated into existing
+              program-analysis tools, and should be readily
+              compatible with new abstractions to be introduced in
+              the future.
+              A practical application of numeric analysis that we consider
+              in this thesis is the automatic generation of summaries for
+              library functions from their low-level
+              implementation (that is, from a library's
+              binary). The source code for library functions is
+              typically not available. This poses a stumbling
+              block for many source-level program
+              analyses. Automatic generation of summary functions
+              will both speed up and improve the accuracy of
+              library-modeling, a process that is currently
+              carried out by hand. This thesis addresses the
+              automatic generation of summaries for memory-safety
+              analysis."
 }
 
 @Inproceedings{GopanR06,
