@@ -2602,11 +2602,12 @@ bounded_affine_preimage(const Variable var,
 
   // If the implied constraint between `ub_expr and `lb_expr' is
   // dependent on `var', then impose on the new box.
-  if (lb_var_coeff != ub_var_coeff)
+  if (lb_var_coeff != ub_var_coeff) {
     if (denominator > 0)
       add_constraint(lb_expr <= ub_expr);
     else
       add_constraint(lb_expr >= ub_expr);
+  }
 
   assert(OK());
 }
