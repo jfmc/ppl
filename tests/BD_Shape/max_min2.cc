@@ -378,11 +378,13 @@ test10() {
   Generator g(point());
   Linear_Expression LE(A + 4*B - 1);
 
+  mpq_class known_max_value(33, 2);
+  Generator known_max_location = point(3*A + 8*B, 2);
+
   bool ok_max = bds.maximize(LE, num, den, included, g)
-    && num == 33 && den == 2 && included
-    && g.is_point()
-    && g.coefficient(A) == 3 && g.coefficient(B) == 8
-    && g.divisor() == 2;
+    && check_result(mpq_class(num, den), known_max_value, "0.5")
+    && included && g.is_point()
+    && check_result(g, known_max_location, "0.5", "0.5", "0.5");
 
   nout << (included ? "maximum" : "supremum") << " = " << num;
   if (den != 1)
@@ -391,11 +393,13 @@ test10() {
   print_generator(g);
   nout << endl;
 
+  mpq_class known_min_value(7, 2);
+  Generator known_min_location = point(A + 2*B, 2);
+
   bool ok_min = bds.minimize(LE, num, den, included, g)
-    && num == 7 && den == 2 && included
-    && g.is_point()
-    && g.coefficient(A) == 1 && g.coefficient(B) == 2
-    && g.divisor() == 2;
+    && check_result(mpq_class(num, den), known_min_value, "0.5")
+    && included && g.is_point()
+    && check_result(g, known_min_location, "0.5", "0.5", "0.5");
 
   nout << (included ? "minimum" : "infinum") << " = " << num;
   if (den != 1)
