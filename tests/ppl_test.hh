@@ -684,6 +684,48 @@ check_result(const Rational_Box& computed_result,
   }
 }
 
+inline bool
+check_result(const Generator& computed_result,
+             const Generator& known_result,
+             const char* max_r_d_s,
+             const char* max_e_d_s,
+             const char* max_l_d_s) {
+  using namespace IO_Operators;
+  // Handle in a more efficient way the case where equality is expected.
+  if (max_r_d_s == 0 && max_e_d_s == 0 && max_l_d_s == 0) {
+    if (computed_result != known_result) {
+      nout << "Equality does not hold:"
+           << "\ncomputed result is\n"
+           << computed_result
+           << "\nknown result is\n"
+           << known_result
+           << endl;
+      return false;
+    }
+    else
+      return true;
+  }
+
+  Checked_Number<mpq_class, Extended_Number_Policy> r_d;
+  rectilinear_distance_assign(r_d, known_result, computed_result, ROUND_UP);
+  Checked_Number<mpq_class, Extended_Number_Policy> e_d;
+  euclidean_distance_assign(e_d, known_result, computed_result, ROUND_UP);
+  Checked_Number<mpq_class, Extended_Number_Policy> l_d;
+  l_infinity_distance_assign(l_d, known_result, computed_result, ROUND_UP);
+  bool ok_r = check_distance(r_d, max_r_d_s, "rectilinear");
+  bool ok_e = check_distance(e_d, max_e_d_s, "euclidean");
+  bool ok_l = check_distance(l_d, max_l_d_s, "l_infinity");
+  bool ok = ok_r && ok_e && ok_l;
+  if (!ok) {
+    nout << "Computed result is\n"
+         << computed_result
+         << "\nknown result is\n"
+         << known_result
+         << endl;
+  }
+  return ok;
+}
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_ppl_test_hh)
