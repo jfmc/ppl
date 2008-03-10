@@ -726,6 +726,42 @@ check_result(const Generator& computed_result,
   return ok;
 }
 
+inline bool
+check_result(const mpq_class& computed_result,
+             const mpq_class& known_result,
+             const char* max_r_d_s) {
+  using namespace IO_Operators;
+  // Handle in a more efficient way the case where equality is expected.
+  if (max_r_d_s == 0) {
+    if (computed_result != known_result) {
+      nout << "Equality does not hold:"
+           << "\ncomputed result is\n"
+           << computed_result
+           << "\nknown result is\n"
+           << known_result
+           << endl;
+      return false;
+    }
+    else
+      return true;
+  }
+
+  mpq_class dist = known_result;
+  dist -= computed_result;
+  Checked_Number<mpq_class, Extended_Number_Policy> r_d;
+  assign_r(r_d, dist, ROUND_NOT_NEEDED);
+  abs_assign_r(r_d, r_d, ROUND_NOT_NEEDED);
+  bool ok = check_distance(r_d, max_r_d_s, "rectilinear");
+  if (!ok) {
+    nout << "Computed result is\n"
+         << computed_result
+         << "\nknown result is\n"
+         << known_result
+         << endl;
+  }
+  return ok;
+}
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_ppl_test_hh)
