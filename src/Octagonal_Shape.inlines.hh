@@ -129,7 +129,7 @@ Octagonal_Shape<T>::Octagonal_Shape(const Constraint_System& cs)
     space_dim(cs.space_dimension()),
     status() {
   if (cs.space_dimension() > 0)
-    // A (non zero-dim) universe octagon is strong closed.
+    // A (non zero-dim) universe octagon is strongly closed.
     set_strongly_closed();
   add_constraints(cs);
 }
@@ -140,6 +140,9 @@ Octagonal_Shape<T>::Octagonal_Shape(const Congruence_System& cgs)
   : matrix(cgs.space_dimension()),
     space_dim(cgs.space_dimension()),
     status() {
+  if (cgs.space_dimension() > 0)
+    // A (non zero-dim) universe octagon is strongly closed.
+    set_strongly_closed();
   add_congruences(cgs);
   return;
 }
@@ -179,7 +182,7 @@ Octagonal_Shape<T>::Octagonal_Shape(const BD_Shape<U>& bd)
     space_dim(bd.space_dimension()),
     status() {
   if (bd.space_dimension() > 0)
-    // A (non zero-dim) universe BDS is shortest-path closed.
+    // A (non zero-dim) universe OS is shortest-path closed.
     set_strongly_closed();
   add_constraints(bd.constraints());
   return;
