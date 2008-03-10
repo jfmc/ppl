@@ -378,32 +378,34 @@ test10() {
   Generator g(point());
   Linear_Expression LE(A + 4*B - 1);
 
-  mpq_class known_max_value(33, 2);
+  mpq_class known_max_value(33);
+  known_max_value /= 2;
   Generator known_max_location = point(3*A + 8*B, 2);
 
-  bool ok_max = bds.maximize(LE, num, den, included, g)
-    && check_result(mpq_class(num, den), known_max_value, "0.5")
-    && included && g.is_point()
+  bool ok_max = bds.maximize(LE, num, den, included, g);
+  mpq_class max_value(num);
+  max_value /= den;
+  ok_max &= included && g.is_point()
+    && check_result(max_value, known_max_value, "0.5")
     && check_result(g, known_max_location, "0.5", "0.5", "0.5");
 
-  nout << (included ? "maximum" : "supremum") << " = " << num;
-  if (den != 1)
-    nout << "/" << den;
+  nout << (included ? "maximum" : "supremum") << " = " << max_value;
   nout << " @ ";
   print_generator(g);
   nout << endl;
 
-  mpq_class known_min_value(7, 2);
+  mpq_class known_min_value(7);
+  known_min_value /= 2;
   Generator known_min_location = point(A + 2*B, 2);
 
-  bool ok_min = bds.minimize(LE, num, den, included, g)
-    && check_result(mpq_class(num, den), known_min_value, "0.5")
-    && included && g.is_point()
+  bool ok_min = bds.minimize(LE, num, den, included, g);
+  mpq_class min_value(num);
+  min_value /= den;
+  ok_min &= included && g.is_point()
+    && check_result(min_value, known_min_value, "0.5")
     && check_result(g, known_min_location, "0.5", "0.5", "0.5");
 
-  nout << (included ? "minimum" : "infinum") << " = " << num;
-  if (den != 1)
-    nout << "/" << den;
+  nout << (included ? "minimum" : "infinum") << " = " << min_value;
   nout << " @ ";
   print_generator(g);
   nout << endl;
