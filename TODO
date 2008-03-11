@@ -132,6 +132,32 @@ o  refine_with_constraint(), refine_with_constraints(),
 
 <TO BE CONTINUED>
 
+Upward approximation
+--------------------
+
+The Parma Polyhedra Library, for those cases where an exact result
+cannot be computed within the specified complexity limits, computes an
+<EM>upward approximation</EM> of the exact result.  For semantic GDs this
+means that the computed result is a possibly strict superset of the set of
+points of \f$ \Rset^n \f$ that constitutes the exact result.  Notice
+that the PPL does not provide direct support to compute <EM>downward
+approximations</EM> (i.e., possibly strict subsets of the exact
+results).  While downward approximations can often be computed from
+upward ones, the required algorithms and the conditions upon which
+they are correct are outside the current scope of the PPL.
+Beware, in particular, of the following possible pitfall:
+the library provides methods to compute upward approximations
+of set-theoretic difference, which is antitone in its second
+argument.  Applying a difference method to a second argument
+that is not an exact representation or a downward approximation of
+reality, would yield a result that, of course, is not an upward
+approximation of reality.  It is the responsibility of the
+library user to provide the PPL's method with approximations of reality
+that are consistent with respect to the desired results.
+
+
+
+------------------------------------------------------------------------------
 
 
 - For iterating over a Bit_Row object, unsigned long is overkill:
