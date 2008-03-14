@@ -378,13 +378,18 @@ test10() {
   Generator g(point());
   Linear_Expression LE(A + 4*B - 1);
 
-  mpq_class known_max_value(33);
-  known_max_value /= 2;
+  Checked_Number<mpq_class, Extended_Number_Policy> divisor;
+  assign_r(divisor, 2, ROUND_NOT_NEEDED);
+  Checked_Number<mpq_class, Extended_Number_Policy> known_max_value;
+  assign_r(known_max_value, 33, ROUND_NOT_NEEDED);
+  div_assign_r(known_max_value, known_max_value, divisor, ROUND_NOT_NEEDED);
   Generator known_max_location = point(3*A + 8*B, 2);
 
   bool ok_max = bds.maximize(LE, num, den, included, g);
-  mpq_class max_value(num);
-  max_value /= den;
+  Checked_Number<mpq_class, Extended_Number_Policy> max_value;
+  assign_r(max_value, num, ROUND_NOT_NEEDED);
+  assign_r(divisor, den, ROUND_NOT_NEEDED);
+  div_assign_r(max_value, max_value, divisor, ROUND_NOT_NEEDED);
   ok_max &= included && g.is_point()
     && check_result(max_value, known_max_value, "0.5")
     && check_result(g, known_max_location, "0.5", "0.5", "0.5");
@@ -394,13 +399,17 @@ test10() {
   print_generator(g);
   nout << endl;
 
-  mpq_class known_min_value(7);
-  known_min_value /= 2;
+  Checked_Number<mpq_class, Extended_Number_Policy> known_min_value;
+  assign_r(known_min_value, 7, ROUND_NOT_NEEDED);
+  assign_r(divisor, 2, ROUND_NOT_NEEDED);
+  div_assign_r(known_min_value, known_min_value, divisor, ROUND_NOT_NEEDED);
   Generator known_min_location = point(A + 2*B, 2);
 
   bool ok_min = bds.minimize(LE, num, den, included, g);
-  mpq_class min_value(num);
-  min_value /= den;
+  Checked_Number<mpq_class, Extended_Number_Policy> min_value;
+  assign_r(min_value, num, ROUND_NOT_NEEDED);
+  assign_r(divisor, den, ROUND_NOT_NEEDED);
+  div_assign_r(min_value, min_value, divisor, ROUND_NOT_NEEDED);
   ok_min &= included && g.is_point()
     && check_result(min_value, known_min_value, "0.5")
     && check_result(g, known_min_location, "0.5", "0.5", "0.5");
