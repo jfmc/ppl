@@ -32,12 +32,12 @@ test01() {
   Variable z(2);
 
   TBox box(3);
-  box.refine(x >= 0);
-  box.refine(x < 7);
-  box.refine(z < 3);
-  box.refine(x - y - 1 <= 0);
-  box.refine(2*x - 2*y >= 0);
-  box.refine(4*x - 2*y - z + 2 >= 0);
+  box.refine_with_constraint(x >= 0);
+  box.refine_with_constraint(x < 7);
+  box.refine_with_constraint(z < 3);
+  box.refine_with_constraint(x - y - 1 <= 0);
+  box.refine_with_constraint(2*x - 2*y >= 0);
+  box.refine_with_constraint(4*x - 2*y - z + 2 >= 0);
 
   using namespace IO_Operators;
   nout << "box = " << box << endl;
@@ -88,7 +88,7 @@ bool test02() {
        << pbox.external_memory_in_bytes()
        << endl;
 
-  pbox.refine(x < y);
+  pbox.refine_with_constraint(x < y);
 
   using namespace IO_Operators;
   nout << "pbox = " << pbox << endl;
