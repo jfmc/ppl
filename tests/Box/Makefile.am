@@ -92,6 +92,7 @@ membytes1 \
 minconstraints1 \
 pointsetpowerset1 \
 relations1 relations2 relations3 relations4 \
+refinewithconstraints1 refinewithcongruences1 \
 refine1 refine3 \
 removespacedims1 \
 timeelapse1 \
@@ -243,6 +244,9 @@ relations4_SOURCES = relations4.cc
 
 refine1_SOURCES = refine1.cc
 refine3_SOURCES = refine3.cc
+
+refinewithconstraints1_SOURCES = refinewithconstraints1.cc
+refinewithcongruences1_SOURCES = refinewithcongruences1.cc
 
 removespacedims1_SOURCES = removespacedims1.cc
 

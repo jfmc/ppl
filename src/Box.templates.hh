@@ -1808,6 +1808,64 @@ Box<Interval>::add_congruences_no_check(const Congruence_System& cgs) {
   assert(OK());
 }
 
+template <typename Interval>
+void
+Box<Interval>::refine_no_check(const Congruence& cg) {
+  assert(!marked_empty());
+
+  const dimension_type cg_space_dim = cg.space_dimension();
+  assert(cg_space_dim <= space_dimension());
+
+  // Only equality congruences can be intervals.
+  if (!cg.is_equality())
+    return;
+
+  dimension_type cg_num_vars = 0;
+  dimension_type cg_only_var = 0;
+  // Congruences that are not interval congruences are ignored.
+  if (!extract_interval_congruence(cg, cg_space_dim, cg_num_vars, cg_only_var))
+    return;
+
+  if (cg_num_vars == 0) {
+    // Dealing with a trivial congruence.
+    if (cg.inhomogeneous_term() != 0)
+      set_empty();
+    return;
+  }
+
+  assert(cg_num_vars == 1);
+  const Coefficient& d = cg.coefficient(Variable(cg_only_var));
+  const Coefficient& n = cg.inhomogeneous_term();
+  // The congruence `cg' is of the form
+  // `Variable(cg_only_var-1) + n / d rel 0', where
+  // `rel' is either the relation `==', `>=', or `>'.
+  // For the purpose of refining intervals, this is
+  // (morally) turned into `Variable(cg_only_var-1) rel -n/d'.
+  DIRTY_TEMP0(mpq_class, q);
+  assign_r(q.get_num(), n, ROUND_NOT_NEEDED);
+  assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
+  q.canonicalize();
+  // Turn `n/d' into `-n/d'.
+  q = -q;
+
+  Interval& seq_c = seq[cg_only_var];
+  seq_c.refine_existential(EQUAL, q);
+  // FIXME: do check the value returned by `refine' and
+  // set `empty' and `empty_up_to_date' as appropriate.
+  reset_empty_up_to_date();
+  assert(OK());
+}
+
+template <typename Interval>
+void
+Box<Interval>::refine_no_check(const Congruence_System& cgs) {
+  assert(cgs.space_dimension() <= space_dimension());
+  for (Congruence_System::const_iterator i = cgs.begin(),
+	 cgs_end = cgs.end(); !marked_empty() && i != cgs_end; ++i)
+    refine_no_check(*i);
+  assert(OK());
+}
+
 #if 1
 namespace {
 

@@ -418,17 +418,52 @@ Box<T>::add_congruences_and_minimize(const Congruence_System& cgs) {
   return !is_empty();
 }
 
-template <typename T>
+template <typename Interval>
 inline void
-Box<T>::add_recycled_congruences(Congruence_System& cgs) {
-  add_congruences(cgs);
+Box<Interval>::refine_with_constraint(const Constraint& c) {
+  const dimension_type c_space_dim = c.space_dimension();
+  // Dimension-compatibility check.
+  if (c_space_dim > space_dimension())
+    throw_dimension_incompatible("refine_with_constraint(c)", c);
+
+  // If the box is already empty, there is nothing left to do.
+  if (marked_empty())
+    return;
+
+  refine_no_check(c);
 }
 
-template <typename T>
-inline bool
-Box<T>::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
-  add_congruences(cgs);
-  return !is_empty();
+template <typename Interval>
+inline void
+Box<Interval>::refine_with_constraints(const Constraint_System& cs) {
+  // Dimension-compatibility check.
+  if (cs.space_dimension() > space_dimension())
+    throw_dimension_incompatible("refine_with_constraints(cs)", cs);
+
+  refine_no_check(cs);
+}
+
+template <typename Interval>
+inline void
+Box<Interval>::refine_with_congruence(const Congruence& cg) {
+  const dimension_type cg_space_dim = cg.space_dimension();
+  // Dimension-compatibility check.
+  if (cg_space_dim > space_dimension())
+    throw_dimension_incompatible("refine_with_congruence(cg)", cg);
+
+  // If the box is already empty, there is nothing left to do.
+  if (marked_empty())
+    return;
+
+  refine_no_check(cg);
+}
+
+template <typename Interval>
+inline void
+Box<Interval>::refine_with_congruences(const Congruence_System& cgs) {
+  if (cgs.space_dimension() > space_dimension())
+    throw_dimension_incompatible("refine_with_congruences(cgs)", cgs);
+  refine_no_check(cgs);
 }
 
 template <typename T>
@@ -462,7 +497,7 @@ Box<Interval>::refine(const Constraint& c) {
   const dimension_type c_space_dim = c.space_dimension();
   // Dimension-compatibility check.
   if (c_space_dim > space_dimension())
-    throw_dimension_incompatible("add_constraint(c)", c);
+    throw_dimension_incompatible("refine(c)", c);
 
   // If the box is already empty, there is nothing left to do.
   if (marked_empty())
@@ -476,7 +511,7 @@ inline void
 Box<Interval>::refine(const Constraint_System& cs) {
   // Dimension-compatibility check.
   if (cs.space_dimension() > space_dimension())
-    throw_dimension_incompatible("add_constraints(cs)", cs);
+    throw_dimension_incompatible("refine(cs)", cs);
 
   // If the box is already empty, there is nothing left to do.
   if (marked_empty())

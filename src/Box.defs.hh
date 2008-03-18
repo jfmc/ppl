@@ -856,10 +856,59 @@ public:
     Thrown if \p *this and \p cgs are dimension-incompatible.
 
     \warning
-    The only assumption that can be made on \p cs upon successful or
+    The only assumption that can be made on \p cgs upon successful or
     exceptional return is that it can be safely destroyed.
   */
   bool add_recycled_congruences_and_minimize(Congruence_System& cgs);
+
+  /*! \brief
+    Use the constraint \p c to refine \p *this.
+
+    \param c
+    The constraint to be added. If it is not an interval constraint, it
+    will be ignored.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p c are dimension-incompatible.
+  */
+  void refine_with_constraint(const Constraint& c);
+
+  /*! \brief
+     Use the constraints in \p cs to refine \p *this.
+
+     \param  cs
+     The constraints to be added. Constraints that are not interval
+     constraints are ignored.
+
+     \exception std::invalid_argument
+     Thrown if \p *this and \p cs are dimension-incompatible.
+  */
+  void refine_with_constraints(const Constraint_System& cs);
+
+  /*! \brief
+    Use the congruence \p cg to refine \p *this.
+
+    \param cg
+    The congruence to be used. If it is not a non-relational
+    equality, the box is not changed.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cg are dimension-incompatible.
+  */
+  void refine_with_congruence(const Congruence& cg);
+
+  /*! \brief
+    Use the congruences in \p cgs to refine \p *this.
+
+    \param  cgs
+    The congruences to be used. Congruences that are
+    not non-relational equalities are not added although their
+    space dimension is checked for compatibility.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cgs are dimension-incompatible.
+  */
+  void refine_with_congruences(const Congruence_System& cgs);
 
   /*! \brief
     Returns false indicating that this domain does not recycle constraints
@@ -1662,6 +1711,28 @@ private:
     dimension-incompatible with \p *this, the behavior is undefined.
   */
   void add_congruences_no_check(const Congruence_System& cgs);
+
+  /*! \brief
+    Use the congruence \p cg to refine \p *this.
+    FIXME: this is not true.
+
+    \param cg
+    The congruence to be added. If it is not a non-relational equality
+    congruence, it will be ignored.  If it is dimension-incompatible
+    with \p *this, the behavior is undefined.
+  */
+  void refine_no_check(const Congruence& cg);
+
+  /*! \brief
+    Use the congruences in \p cgs to refine \p *this.
+    FIXME: this is not true.
+
+    \param cgs
+    The congruences to be added. Congruences that are not non-relational
+    equality congruences will be ignored.  If it is
+    dimension-incompatible with \p *this, the behavior is undefined.
+  */
+  void refine_no_check(const Congruence_System& cgs);
 
   /*! \brief
     Use the constraint \p c to refine \p *this.
