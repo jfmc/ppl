@@ -1002,21 +1002,6 @@ void add_congruences(const Congruence_System& cgs);
   void refine_with_constraint(const Constraint& c);
 
   /*! \brief
-    Uses a copy of constraint \p c to refine the system of
-    octagonal constraints defining \p *this.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param c
-    The constraint. If it is not a octagonal constraint, it will be ignored.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and constraint \p c are dimension-incompatible.
-  */
-  bool refine_with_constraint_and_minimize(const Constraint& c);
-
-  /*! \brief
     Uses a copy of congruence \p cg to refine the system of
     octagonal constraints  of \p *this.
 
@@ -1028,22 +1013,6 @@ void add_congruences(const Congruence_System& cgs);
     Thrown if \p *this and congruence \p cg are dimension-incompatible.
   */
   void refine_with_congruence(const Congruence& cg);
-
-  /*! \brief
-    Uses a copy of congruence \p cg to refine the system of octagonal
-    constraints of \p *this, minimizing the result.
-
-    \param cg
-    The congruence. If it is not a octagonal equality, it
-    will be ignored.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and congruence \p cg are dimension-incompatible.
-  */
-  bool refine_with_congruence_and_minimize(const Congruence& cg);
 
   /*! \brief
     Uses a copy of the constraints in \p cs to refine the system of
@@ -1059,22 +1028,6 @@ void add_congruences(const Congruence_System& cgs);
   void refine_with_constraints(const Constraint_System& cs);
 
   /*! \brief
-    Uses a copy of the constraints in \p cs to refine the system of
-    octagonal constraints defining \p *this, minimizing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param  cs
-    The constraint system to be used. Constraints that are not octagonal
-    are ignored.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cs are dimension-incompatible.
-  */
-  bool refine_with_constraints_and_minimize(const Constraint_System& cs);
-
-  /*! \brief
     Uses a copy of the congruences in \p cgs to refine the system of
     octagonal constraints defining \p *this.
 
@@ -1086,22 +1039,6 @@ void add_congruences(const Congruence_System& cgs);
     Thrown if \p *this and \p cgs are dimension-incompatible.
   */
 void refine_with_congruences(const Congruence_System& cgs);
-
-  /*! \brief
-    Uses a copy of the congruences in \p cs to refine the system
-    of congruences of \p *this, minimizing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param cgs
-    The congruence system to be used. Congruences that are not octagonal
-    equalities are ignored.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cgs are dimension-incompatible.
-  */
-  bool refine_with_congruences_and_minimize(const Congruence_System& cgs);
 
   /*! \brief
     Returns false indicating that this domain cannot recycle constraints

@@ -165,39 +165,6 @@ test07() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
-  Variable D(3);
-
-  TBD_Shape bds(4);
-  bool ok_refine;
-  ok_refine = bds.refine_with_constraint_and_minimize(A > 0);
-  ok_refine = ok_refine
-    && bds.refine_with_constraint_and_minimize(B < 0);
-  ok_refine = ok_refine
-    && bds.refine_with_constraint_and_minimize(2*B - 2*C < 1);
-  ok_refine = ok_refine
-    && bds.refine_with_constraint_and_minimize(A - C > 2);
-  ok_refine = ok_refine
-    && bds.refine_with_constraint_and_minimize(A + 2*D >= 5);
-
-  BD_Shape<mpq_class> known_result(4);
-  known_result.add_constraint(A >= 0);
-  known_result.add_constraint(B <= 0);
-  known_result.add_constraint(2*B - 2*C <= 1);
-  known_result.add_constraint(A - C >= 2);
-  known_result.add_constraint(A + 2*D >= 5);
-
-  bool ok = check_result(bds, known_result) && ok_refine;
-
-  print_constraints(bds, "*** bds ***");
-
-  return ok;
-}
-
-bool
-test08() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
 
   Constraint_System cs(A > 0);
   cs.insert(2*B - 2*C <= 1);
@@ -218,31 +185,6 @@ test08() {
   return ok;
 }
 
-bool
-test09() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
-  Constraint_System cs(A > 0);
-  cs.insert(2*B - 2*C <= 1);
-  cs.insert(A - 5*C > 4);
-
-  TBD_Shape bds(3);
-  bool ok_refine = bds.refine_with_constraints_and_minimize(cs);
-
-  BD_Shape<mpq_class> known_result(3);
-  known_result.add_constraint(A >= 0);
-  known_result.add_constraint(2*B - 2*C <= 1);
-  known_result.add_constraint(A - 5*C >= 4);
-
-  bool ok = check_result(bds, known_result) && ok_refine;
-
-  print_constraints(bds, "*** bds ***");
-
-  return ok;
-}
-
 } // namespace
 
 BEGIN_MAIN
@@ -253,6 +195,4 @@ BEGIN_MAIN
   DO_TEST(test05);
   DO_TEST(test06);
   DO_TEST(test07);
-  DO_TEST(test08);
-  DO_TEST(test09);
 END_MAIN

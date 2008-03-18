@@ -211,34 +211,6 @@ test08() {
   return ok;
 }
 
-bool
-test09() {
-  Variable x(0);
-  Variable y(1);
-  Variable z(2);
-
-  TOctagonal_Shape oct1(3);
-  oct1.refine_with_congruence((x %= 1) / 0);
-  oct1.refine_with_congruence((y %= 3) / 2);
-  bool b1 =
-    oct1.refine_with_congruence_and_minimize((y + z %= 0) / 3);
-
-  print_constraints(oct1, "*** oct1 ***");
-
-  Octagonal_Shape<mpq_class> known_result(oct1);
-
-  Congruence_System cgs = oct1.congruences();
-  TOctagonal_Shape oct2(3);
-  bool b2 =
-    oct2.add_congruences_and_minimize(cgs);
-
-  bool ok = b1 && b2 && (Octagonal_Shape<mpq_class>(oct2) == known_result);
-
-  print_constraints(oct2, "*** oct2 ***");
-
-  return ok;
-}
-
 } // namespace
 
 BEGIN_MAIN
@@ -249,5 +221,6 @@ BEGIN_MAIN
   DO_TEST(test05);
   DO_TEST(test06);
   DO_TEST(test07);
+  DO_TEST(test08);
 END_MAIN
 

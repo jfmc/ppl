@@ -541,26 +541,6 @@ Octagonal_Shape<T>::refine_with_constraint(const Constraint& c) {
 }
 
 template <typename T>
-bool
-Octagonal_Shape<T>::refine_with_constraint_and_minimize(const Constraint& c) {
-  bool was_closed = marked_strongly_closed();
-  refine_with_constraint(c);
-  // If the OS was strongly closed and we add a single constraint,
-  // it is convenient to use the incremental strong-closure algorithm,
-  // as we known that the constraint has affected two variables at most.
-  // (The cost is O(n^2) instead of O(n^3).)
-  if (was_closed)
-    for (dimension_type i = c.space_dimension(); i-- > 0;)
-      if (c.coefficient(Variable(i)) != 0) {
-        incremental_strong_closure_assign(Variable(i));
-        break;
-      }
-  else
-    strong_closure_assign();
-  return !(marked_empty());
-}
-
-template <typename T>
 void
 Octagonal_Shape<T>::refine_with_congruence(const Congruence& cg) {
   const dimension_type cg_space_dim = cg.space_dimension();
