@@ -225,8 +225,27 @@ o  refine_with_constraint(), refine_with_constraints(),
 
      Semantic_GD.refine_with_constraint(c).
 
+o  constraints(), minimized_constraints(),
+   congruences(), minimized_congruences()
 
-<TO BE CONTINUED>
+   returns the indicated system of constraint GDs satisfied by
+   the semantic GD.
+
+o  can_recycle_constraint_systems(), can_recycle_congruence_systems()
+
+   returns true if and only if the semantic GD can recycle the
+   indicated constraint GD.
+
+o  relation_with()
+
+   This takes a constraint GD as an argument and returns the relations holding
+   between the semantic GD and the constraint GD.
+   The possible relations are:
+   IS_INCLUDED(), SATURATES(), STRICTLY_INTERSECTS(), IS_DISJOINT()
+   and NOTHING().
+   This operator also can take a polyhedron generator GD as an argument
+   and returns the relation SUBSUMES() or NOTHING() that holds between
+   the generator GD and the semantic GD.
 
 Upward approximation
 --------------------
