@@ -395,7 +395,15 @@ public:
   */
   void add_constraint(const Constraint& c);
 
-  // FIXME: documentation to be written.
+  /*! \brief
+    Use the constraint \p c to refine \p *this.
+
+    \param c
+    The constraint to be used for refinement.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p c are dimension-incompatible.
+  */
   void refine_with_constraint(const Constraint& c);
 
   //! Intersects \p *this with the constraint \p c, minimizing the result.
@@ -420,7 +428,15 @@ public:
   */
   void add_constraints(const Constraint_System& cs);
 
-  // FIXME: documentation to be written.
+  /*! \brief
+    Use the constraints in \p cs to refine \p *this.
+
+    \param  cs
+     The constraints to be used for refinement.
+
+     \exception std::invalid_argument
+     Thrown if \p *this and \p cs are dimension-incompatible.
+  */
   void refine_with_constraints(const Constraint_System& cs);
 
   /*! \brief
