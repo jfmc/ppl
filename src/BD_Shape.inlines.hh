@@ -250,6 +250,52 @@ BD_Shape<T>::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
 
 template <typename T>
 inline bool
+BD_Shape<T>::refine_with_constraint_and_minimize(const Constraint& c) {
+  refine_with_constraint(c);
+  shortest_path_closure_assign();
+  return !marked_empty();
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::refine_with_congruence_and_minimize(const Congruence& cg) {
+  refine_with_congruence(cg);
+  shortest_path_closure_assign();
+  return !marked_empty();
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::refine_with_constraints(const Constraint_System& cs) {
+  for (Constraint_System::const_iterator i = cs.begin(),
+	 cs_end = cs.end(); i != cs_end; ++i)
+    refine_with_constraint(*i);
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::refine_with_constraints_and_minimize(const Constraint_System& cs) {
+  refine_with_constraints(cs);
+  shortest_path_closure_assign();
+  return !marked_empty();
+}
+
+template <typename T>
+void
+BD_Shape<T>::refine_with_congruences(const Congruence_System& cgs) {
+  Constraint_System cs(cgs);
+  refine_with_constraints(cs);
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::refine_with_congruences_and_minimize(const Congruence_System& cgs) {
+  refine_with_congruences(cgs);
+  return !is_empty();
+}
+
+template <typename T>
+inline bool
 BD_Shape<T>::can_recycle_constraint_systems() {
   return false;
 }

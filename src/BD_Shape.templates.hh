@@ -398,6 +398,82 @@ BD_Shape<T>::add_congruence(const Congruence& cg) {
 
 template <typename T>
 void
+BD_Shape<T>::refine_with_constraint(const Constraint& c) {
+  const dimension_type c_space_dim = c.space_dimension();
+  // Dimension-compatibility check.
+  if (c_space_dim > space_dimension())
+    throw_dimension_incompatible("refine_with_constraint(c)", c);
+
+  dimension_type num_vars = 0;
+  dimension_type i = 0;
+  dimension_type j = 0;
+  TEMP_INTEGER(coeff);
+  // Constraints that are not bounded differences are ignored.
+  if (!extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff))
+    return;
+
+  if (num_vars == 0) {
+    // Dealing with a trivial constraint.
+    if (c.is_equality() && c.inhomogeneous_term() != 0)
+      set_empty();
+    if (c.inhomogeneous_term() < 0)
+      set_empty();
+    return;
+  }
+
+  // Select the cell to be modified for the "<=" part of the constraint,
+  // and set `coeff' to the absolute value of itself.
+  const bool negative = (coeff < 0);
+  N& x = negative ? dbm[i][j] : dbm[j][i];
+  N& y = negative ? dbm[j][i] : dbm[i][j];
+  if (negative)
+    neg_assign(coeff);
+
+  bool changed = false;
+  // Compute the bound for `x', rounding towards plus infinity.
+  DIRTY_TEMP(N, d);
+  div_round_up(d, c.inhomogeneous_term(), coeff);
+  if (x > d) {
+    x = d;
+    changed = true;
+  }
+
+  if (c.is_equality()) {
+    // Also compute the bound for `y', rounding towards plus infinity.
+    TEMP_INTEGER(minus_c_term);
+    neg_assign(minus_c_term, c.inhomogeneous_term());
+    div_round_up(d, minus_c_term, coeff);
+    if (y > d) {
+      y = d;
+      changed = true;
+    }
+  }
+
+  // In general, adding a constraint does not preserve the shortest-path
+  // closure or reduction of the bounded difference shape.
+  if (changed && marked_shortest_path_closed())
+    reset_shortest_path_closed();
+  assert(OK());
+}
+
+template <typename T>
+void
+BD_Shape<T>::refine_with_congruence(const Congruence& cg) {
+  const dimension_type cg_space_dim = cg.space_dimension();
+  if (cg.is_equality()) {
+    Linear_Expression expr;
+    for (dimension_type i = cg_space_dim; i-- > 0; ) {
+      const Variable v(i);
+      expr += cg.coefficient(v) * v;
+    }
+    expr += cg.inhomogeneous_term();
+    refine_with_constraint(expr == 0);
+  }
+  assert(OK());
+}
+
+template <typename T>
+void
 BD_Shape<T>::concatenate_assign(const BD_Shape& y) {
   BD_Shape& x = *this;
 

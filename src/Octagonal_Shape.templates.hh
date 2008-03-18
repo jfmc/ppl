@@ -374,7 +374,7 @@ Octagonal_Shape<T>::add_constraint(const Constraint& c) {
     throw_dimension_incompatible("add_constraint(c)", c);
   // Strict inequalities are not allowed.
   if (c.is_strict_inequality())
-    throw_constraint_incompatible("add_constraint(c)");
+   throw_constraint_incompatible("add_constraint(c)");
 
   dimension_type num_vars = 0;
   dimension_type i = 0;
@@ -437,14 +437,6 @@ Octagonal_Shape<T>::add_constraint(const Constraint& c) {
 }
 
 template <typename T>
-void
-Octagonal_Shape<T>::add_constraints(const Constraint_System& cs) {
-  Constraint_System::const_iterator i_end = cs.end();
-  for (Constraint_System::const_iterator i = cs.begin(); i != i_end; ++i)
-    add_constraint(*i);
-}
-
-template <typename T>
 bool
 Octagonal_Shape<T>::add_constraint_and_minimize(const Constraint& c) {
   bool was_closed = marked_strongly_closed();
@@ -476,6 +468,110 @@ Octagonal_Shape<T>::add_congruence(const Congruence& cg) {
     }
     expr += cg.inhomogeneous_term();
     add_constraint(expr == 0);
+  }
+  assert(OK());
+}
+
+template <typename T>
+void
+Octagonal_Shape<T>::refine_with_constraint(const Constraint& c) {
+  const dimension_type c_space_dim = c.space_dimension();
+  // Dimension-compatibility check.
+  if (c_space_dim > space_dim)
+    throw_dimension_incompatible("refine_with_constraint(c)", c);
+
+  dimension_type num_vars = 0;
+  dimension_type i = 0;
+  dimension_type j = 0;
+  TEMP_INTEGER(coeff);
+  TEMP_INTEGER(term);
+  // Constraints that are not octagonal differences are ignored.
+  if (!extract_octagonal_difference(c, c_space_dim, num_vars,
+                                    i, j, coeff, term))
+    return;
+
+  if (num_vars == 0) {
+    // Dealing with a trivial constraint.
+    if ((c.is_equality() && c.inhomogeneous_term() != 0)
+        || c.inhomogeneous_term() < 0)
+      set_empty();
+    return;
+  }
+
+  // Select the cell to be modified for the "<=" part of constraint.
+  typename OR_Matrix<N>::row_iterator i_iter = matrix.row_begin() + i;
+  typename OR_Matrix<N>::row_reference_type m_i = *i_iter;
+  N& m_i_j = m_i[j];
+  // Set `coeff' to the absolute value of itself.
+  if (coeff < 0)
+    neg_assign(coeff);
+
+  bool is_oct_changed = false;
+  // Compute the bound for `m_i_j', rounding towards plus infinity.
+  DIRTY_TEMP(N, d);
+  div_round_up(d, term, coeff);
+  if (m_i_j > d) {
+    m_i_j = d;
+    is_oct_changed = true;
+  }
+
+  if (c.is_equality()) {
+    // Select the cell to be modified for the ">=" part of constraint.
+    if (i%2 == 0)
+      ++i_iter;
+    else
+      --i_iter;
+
+    typename OR_Matrix<N>::row_reference_type m_ci = *i_iter;
+    dimension_type cj = coherent_index(j);
+    N& m_ci_cj = m_ci[cj];
+    // Also compute the bound for `m_ci_cj', rounding towards plus infinity.
+    neg_assign(term);
+    div_round_up(d, term, coeff);
+    if (m_ci_cj > d) {
+      m_ci_cj = d;
+      is_oct_changed = true;
+    }
+  }
+
+  // This method does not preserve closure.
+  if (is_oct_changed && marked_strongly_closed())
+    reset_strongly_closed();
+  assert(OK());
+}
+
+template <typename T>
+bool
+Octagonal_Shape<T>::refine_with_constraint_and_minimize(const Constraint& c) {
+  bool was_closed = marked_strongly_closed();
+  refine_with_constraint(c);
+  // If the OS was strongly closed and we add a single constraint,
+  // it is convenient to use the incremental strong-closure algorithm,
+  // as we known that the constraint has affected two variables at most.
+  // (The cost is O(n^2) instead of O(n^3).)
+  if (was_closed)
+    for (dimension_type i = c.space_dimension(); i-- > 0;)
+      if (c.coefficient(Variable(i)) != 0) {
+        incremental_strong_closure_assign(Variable(i));
+        break;
+      }
+  else
+    strong_closure_assign();
+  return !(marked_empty());
+}
+
+template <typename T>
+void
+Octagonal_Shape<T>::refine_with_congruence(const Congruence& cg) {
+  const dimension_type cg_space_dim = cg.space_dimension();
+  if (cg.is_equality()) {
+    Linear_Expression expr;
+    for (dimension_type i = cg_space_dim; i-- > 0; ) {
+      const Variable v(i);
+      expr += cg.coefficient(v) * v;
+    }
+    expr += cg.inhomogeneous_term();
+    refine_with_constraint(expr == 0);
   }
   assert(OK());
 }

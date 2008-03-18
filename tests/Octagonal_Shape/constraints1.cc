@@ -304,6 +304,107 @@ test12() {
   return ok;
 }
 
+bool
+test13() {
+  Variable A(0);
+  Variable B(1);
+
+  TOctagonal_Shape oct(3);
+
+  oct.refine_with_constraint(A > 0);
+  oct.refine_with_constraint(B < 0);
+  oct.refine_with_constraint(A + B > 1);
+  oct.refine_with_constraint(A + 2*B > 1);
+
+  Octagonal_Shape<mpq_class> known_result(3);
+  known_result.add_constraint(A >= 0);
+  known_result.add_constraint(B <= 0);
+  known_result.add_constraint(A + B >= 1);
+
+  bool ok = check_result(oct, known_result);
+
+  print_constraints(oct, "*** oct ***");
+
+  return ok;
+}
+
+bool
+test14() {
+  Variable A(0);
+  Variable B(1);
+
+  TOctagonal_Shape oct(3);
+
+  bool refine;
+  refine = oct.refine_with_constraint_and_minimize(A > 0);
+  refine = refine && oct.refine_with_constraint_and_minimize(B < 0);
+  refine = refine && oct.refine_with_constraint_and_minimize(A + B > 1);
+  refine = refine && oct.refine_with_constraint_and_minimize(A + 2*B > 1);
+
+  Octagonal_Shape<mpq_class> known_result(3);
+  known_result.add_constraint(A >= 0);
+  known_result.add_constraint(B <= 0);
+  known_result.add_constraint(A + B >= 1);
+
+  bool ok = check_result(oct, known_result) && refine;
+
+  print_constraints(oct, "*** oct ***");
+
+  return ok;
+}
+
+bool
+test15() {
+  Variable A(0);
+  Variable B(1);
+
+  Constraint_System cs;
+  cs.insert(A > 0);
+  cs.insert(B < 0);
+  cs.insert(A + B > 1);
+  cs.insert(A + 2*B > 1);
+
+  TOctagonal_Shape oct(3);
+  oct.refine_with_constraints(cs);
+
+  Octagonal_Shape<mpq_class> known_result(3);
+  known_result.add_constraint(A >= 0);
+  known_result.add_constraint(B <= 0);
+  known_result.add_constraint(A + B >= 1);
+
+  bool ok = check_result(oct, known_result);
+
+  print_constraints(oct, "*** oct ***");
+
+  return ok;
+}
+
+bool
+test16() {
+  Variable A(0);
+  Variable B(1);
+
+  Constraint_System cs;
+  cs.insert(A > 0);
+  cs.insert(B < 0);
+  cs.insert(A + B > 1);
+  cs.insert(A + 2*B > 1);
+
+  TOctagonal_Shape oct(3);
+  bool refine = oct.refine_with_constraints_and_minimize(cs);
+
+  Octagonal_Shape<mpq_class> known_result(3);
+  known_result.add_constraint(A >= 0);
+  known_result.add_constraint(B <= 0);
+  known_result.add_constraint(A + B >= 1);
+
+  bool ok = check_result(oct, known_result) && refine;
+
+  print_constraints(oct, "*** oct ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -319,5 +420,9 @@ BEGIN_MAIN
   DO_TEST(test10);
   DO_TEST(test11);
   DO_TEST(test12);
+  DO_TEST(test13);
+  DO_TEST(test14);
+  DO_TEST(test15);
+  DO_TEST(test16);
 END_MAIN
 
