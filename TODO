@@ -44,8 +44,7 @@ used.
 Basic geometric descriptors
 ---------------------------
 
-The following basic GDs currently supported by
-the PPL are:
+The following basic GDs currently supported by the PPL are:
 
 1) space dimension
 2) variable and variable set
@@ -99,27 +98,27 @@ a) Constructors of a universe or empty semantic GD with the given
 
 b) Operations on a semantic GD that do not depend on the syntactic GDs.
 
-o  is_empty(), is_universe(), is_topologically_closed(),
-   is_discrete(), is_bounded(), contains_integer_point()
+o  \p is_empty(), \p is_universe(), \p is_topologically_closed(),
+   \p is_discrete(), \p is_bounded(), \p contains_integer_point()
 
    test for the named properties of the semantic GD.
 
-o  total_memory_in_bytes(), external_memory_in_bytes()
+o  \p total_memory_in_bytes(), \p external_memory_in_bytes()
 
    return the total and external memory size in bytes.
 
-o  OK()
+o  \p OK()
 
    checks that the semantic GD has a valid internal representation.
    An optional Boolean argument allows a check for emptiness.
 
-o  space_dimension(), affine_dimension()
+o  \p space_dimension(), \p affine_dimension()
 
    returns, respectively, the space and affine dimensions of the GD.
 
-o  add_space_dimensions_and_embed(), add_space_dimensions_and_project(),
-   expand_space_dimension(), remove_space_dimensions(),
-   fold_space_dimensions() map_space_dimensions()
+o  \p add_space_dimensions_and_embed(), \p add_space_dimensions_and_project(),
+   \p expand_space_dimension(), \p remove_space_dimensions(),
+   \p fold_space_dimensions(), \p map_space_dimensions()
 
    modify the space dimensions of the semantic GD; where, depending on the
    operation, the arguments can include the number of space dimensions
@@ -127,28 +126,28 @@ o  add_space_dimensions_and_embed(), add_space_dimensions_and_project(),
    actual dimensions to be used and a partial function defining a mapping
    between the dimensions.
 
-o  contains(), strictly_contains() is_disjoint_from()
+o  \p contains(), strictly_contains(), \p is_disjoint_from()
 
    compare the semantic GD with an argument semantic GD of the same class.
 
-o  topological_closure_assign(), intersection_assign(),
-   intersection_assign_and_minimize(), upper_bound_assign(),
-   difference_assign(), time_elapse_assign(), widening_assign(),
-   concatenate_assign(), swap()
+o  \p topological_closure_assign(), \p intersection_assign(),
+   \p intersection_assign_and_minimize(), \p upper_bound_assign(),
+   \p difference_assign(), \p time_elapse_assign(), \p widening_assign(),
+   \p concatenate_assign(), \p swap()
 
    modify the semantic GD, possibly with an argument semantic GD of
    the same class.
 
-o  constrains(), bounds_from_above(), bounds_from_below(),
-   maximize(), minimize().
+o  \p constrains(), \p bounds_from_above(), \p bounds_from_below(),
+   \p maximize(), \p minimize().
 
    These find information about the bounds of the semantic GD where
    the argument variable or linear expression define the direction
    of the bound.
 
-o  affine_image(), affine_preimage(),
-   generalized_affine_image(), generalized_affine_preimage(),
-   bounded_affine_image(), bounded_affine_preimage().
+o  \p affine_image(), \p affine_preimage(),
+   \p generalized_affine_image(), \p generalized_affine_preimage(),
+   \p bounded_affine_image(), \p bounded_affine_preimage().
 
    These perform several variations of the affine image and preimage
    operations where, depending on the operation, the arguments can
@@ -157,7 +156,7 @@ o  affine_image(), affine_preimage(),
    with possibly a relation symbol and denominator value
    that define the exact form of the transformation.
 
-o  ascii_load(), ascii_dump()
+o  \p ascii_load(), \p ascii_dump()
 
    are the ascii input and output operations.
 
@@ -181,12 +180,8 @@ c) Constructors of a semantic GD from a constraint GD;
 
 e) Other interraction between the semantic GDs and constraint GDs
 
-o  add_constraint(), add_constraint_and_minimize(),
-   add_constraints(), add_constraints_and_minimize(),
-   add_recycled_constraints(), add_recycled_constraints_and_minimize(),
-   add_congruence(), add_congruence_and_minimize(),
-   add_congruences(), add_congruences_and_minimize(),
-   add_recycled_congruences(), add_recycled_congruences_and_minimize().
+o  \p add_constraint(), \p add_constraints(), \p add_recycled_constraints()
+   \p add_congruence(), \p add_congruences(), \p add_recycled_congruences().
 
    If the argument constraint GD can be completely incorporated into
    the semantic GD, this is what is done.  Otherwise an "invalid argument"
@@ -200,10 +195,10 @@ o  add_constraint(), add_constraint_and_minimize(),
    an enquiry for the same constraint GD with a "relation with" method
    is guaranteed to yield a "definitely implied" result.
 
-o  refine_with_constraint(), refine_with_constraints(),
-   refine_with_recycled_constraints(),
-   refine_with_congruence(), refine_with_congruences()
-   refine_with_recycled_congruences()
+o  \p refine_with_constraint(), \p refine_with_constraints(),
+   \p refine_with_recycled_constraints(),
+   \p refine_with_congruence(), \p refine_with_congruences()
+   \p refine_with_recycled_congruences()
 
    If the argument constraint GD can be completely incorporated into
    the semantic GD, this is what is done.  Otherwise the constraint
@@ -212,31 +207,37 @@ o  refine_with_constraint(), refine_with_constraints(),
    is pointless, this is not true for the refine operations.
    For example, in those cases where
 
+\code
      Semantic_GD.add_constraint(c)
+\endcode
 
    raises an exception, a fragment of the form
 
+\code
      Semantic_GD.refine_with_constraint(c)
      // Other add_constraint(s) or refine_with_constraint(s) operations
      // on Semantic_GD.
      Semantic_GD.refine_with_constraint(c)
+\endcode
 
    may give more precise results than a single
 
+\code
      Semantic_GD.refine_with_constraint(c).
+\endcode
 
-o  constraints(), minimized_constraints(),
-   congruences(), minimized_congruences()
+o  \p constraints(), \p minimized_constraints(),
+   \p congruences(), \p minimized_congruences()
 
    returns the indicated system of constraint GDs satisfied by
    the semantic GD.
 
-o  can_recycle_constraint_systems(), can_recycle_congruence_systems()
+o  \p can_recycle_constraint_systems(), \p can_recycle_congruence_systems()
 
    returns true if and only if the semantic GD can recycle the
    indicated constraint GD.
 
-o  relation_with()
+o  \p relation_with()
 
    This takes a constraint GD as an argument and returns the relations holding
    between the semantic GD and the constraint GD.
