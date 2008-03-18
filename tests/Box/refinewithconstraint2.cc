@@ -1,5 +1,4 @@
-/* Test Box::refine(const Constraint&)
-   and Box::refine(const Constraint_System&).
+/* Test Box::refine_with_constraint(const Constraint&).
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -59,9 +58,9 @@ test01() {
 
   print_constraints(box, "*** box ***");
 
-  box.refine(A == B);
+  box.refine_with_constraint(A == B);
 
-  print_constraints(box, "*** box.refine(A == B) ***");
+  print_constraints(box, "*** box.refine_with_constraint(A == B) ***");
 
   Rational_Box known_result(2);
   known_result.add_constraint(A >= 1);

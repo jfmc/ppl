@@ -865,8 +865,7 @@ public:
     Use the constraint \p c to refine \p *this.
 
     \param c
-    The constraint to be added. If it is not an interval constraint, it
-    will be ignored.
+    The constraint to be used for refinement.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p c are dimension-incompatible.
@@ -874,11 +873,10 @@ public:
   void refine_with_constraint(const Constraint& c);
 
   /*! \brief
-     Use the constraints in \p cs to refine \p *this.
+    Use the constraints in \p cs to refine \p *this.
 
-     \param  cs
-     The constraints to be added. Constraints that are not interval
-     constraints are ignored.
+    \param  cs
+     The constraints to be used for refinement.
 
      \exception std::invalid_argument
      Thrown if \p *this and \p cs are dimension-incompatible.
@@ -889,8 +887,7 @@ public:
     Use the congruence \p cg to refine \p *this.
 
     \param cg
-    The congruence to be used. If it is not a non-relational
-    equality, the box is not changed.
+    The congruence to be used for refinement.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cg are dimension-incompatible.
@@ -901,9 +898,7 @@ public:
     Use the congruences in \p cgs to refine \p *this.
 
     \param  cgs
-    The congruences to be used. Congruences that are
-    not non-relational equalities are not added although their
-    space dimension is checked for compatibility.
+    The congruences to be used for refinement.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cgs are dimension-incompatible.
@@ -919,28 +914,6 @@ public:
     Returns false indicating that this domain does not recycle congruences
   */
   static bool can_recycle_congruence_systems();
-
-  /*! \brief
-    Use the constraint \p c to refine \p *this.
-
-    \param c
-    The constraint to be used for refinement.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p c are dimension-incompatible.
-  */
-  void refine(const Constraint& c);
-
-  /*! \brief
-    Use the constraints in \p cs to refine \p *this.
-
-    \param  cs
-    The constraints to be used for refinement.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cs are dimension-incompatible.
-  */
-  void refine(const Constraint_System& cs);
 
   //! Assigns to \p *this the intersection of \p *this and \p y.
   /*!

@@ -92,8 +92,9 @@ membytes1 \
 minconstraints1 \
 pointsetpowerset1 \
 relations1 relations2 relations3 relations4 \
-refinewithconstraints1 refinewithcongruences1 \
-refine1 refine3 \
+refinewithconstraint1 refinewithconstraint2 \
+refinewithconstraints1 \
+refinewithcongruences1 \
 removespacedims1 \
 timeelapse1 \
 universe1 \
@@ -242,10 +243,11 @@ relations2_SOURCES = relations2.cc
 relations3_SOURCES = relations3.cc
 relations4_SOURCES = relations4.cc
 
-refine1_SOURCES = refine1.cc
-refine3_SOURCES = refine3.cc
+refinewithconstraint1_SOURCES = refinewithconstraint1.cc
+refinewithconstraint2_SOURCES = refinewithconstraint2.cc
 
 refinewithconstraints1_SOURCES = refinewithconstraints1.cc
+
 refinewithcongruences1_SOURCES = refinewithcongruences1.cc
 
 removespacedims1_SOURCES = removespacedims1.cc
@@ -256,17 +258,17 @@ universe1_SOURCES = universe1.cc
 
 writebox1_SOURCES = writebox1.cc
 
-refine2_SRCS = refine2.cc
+refinewithconstraints2_SRCS = refinewithconstraints2.cc
 
 if BUILD_WATCHDOG_LIBRARY
-WATCHDOG_TESTS = refine2
+WATCHDOG_TESTS = refinewithconstraints2
 
-refine2_SOURCES = $(refine2_SRCS)
-refine2_CPPFLAGS = \
+refinewithconstraints2_SOURCES = $(refinewithconstraints2_SRCS)
+refinewithconstraints2_CPPFLAGS = \
 $(AM_CPPFLAGS) \
 -I$(top_builddir)/Watchdog \
 -I$(top_builddir)/Watchdog/src
-refine2_LDADD = $(LDADD) $(top_builddir)/Watchdog/src/libpwl.la
+refinewithconstraints2_LDADD = $(LDADD) $(top_builddir)/Watchdog/src/libpwl.la
 
 endif BUILD_WATCHDOG_LIBRARY
 
@@ -283,7 +285,7 @@ BUGS =
 
 check_PROGRAMS = $(ALL_TESTS) $(BUGS)
 
-EXTRA_DIST = $(refine2_SRCS)
+EXTRA_DIST = $(refinewithconstraints2_SRCS)
 
 MOSTLYCLEANFILES = \
 ascii_dump_load1.dat

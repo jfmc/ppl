@@ -1,5 +1,5 @@
-/* Test Box::refine(const Constraint_System&) with instances that may
-   require a watchdog timer.
+/* Test Box::refine_with_constraints(const Constraint_System&) with
+   instances that may require a watchdog timer.
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -82,7 +82,7 @@ test01() {
       Parma_Watchdog_Library::Watchdog
         w(10, abandon_expensive_computations, t);
 
-      box.refine(cs);
+      box.refine_with_constraints(cs);
 
       // We should never get here.
       abandon_expensive_computations = 0;
@@ -105,12 +105,12 @@ test01() {
   else {
     // With interval boundaries other than rational numbers, this instance
     // of refinement terminates rather quickly: no timer is necessary.
-    box.refine(cs);
+    box.refine_with_constraints(cs);
 
     ok = check_result(box, known_result, "5.61e-45", "2.81e-45", "1.41e-45");
   }
 
-  print_constraints(box, "*** box.refine(cs) ***");
+  print_constraints(box, "*** box.refine_with_constraints(cs) ***");
 
   return ok;
 }
@@ -399,7 +399,7 @@ test02() {
       Parma_Watchdog_Library::Watchdog
         w(50, abandon_expensive_computations, t);
 
-      box.refine(cs);
+      box.refine_with_constraints(cs);
 
       // We should never get here.
       abandon_expensive_computations = 0;
@@ -423,12 +423,12 @@ test02() {
   else {
     // With interval boundaries other than rational numbers, this instance
     // of refinement terminates: no timer is necessary.
-    box.refine(cs);
+    box.refine_with_constraints(cs);
 
     ok = check_result(box, known_result, "624", "158", "121");
   }
 
-  print_constraints(box, "*** box.refine(cs) ***");
+  print_constraints(box, "*** box.refine_with_constraints(cs) ***");
 
   return ok;
 }
