@@ -6,29 +6,160 @@ Enhancements for PPL 0.10
   interfaces consequently, then add (an elaboration of) this text
   to the manuals.
 
-Kinds of geometric descriptions
+Kinds of geometric descriptors
+------------------------------
+
+The PPL supports several kinds of <EM>geometric descriptor</EM> (GD
+for short).  The top-level components provided by the PPL are called
+<EM>semantic GDs</EM> and denote a subset of \f$ \Rset^n \f$, while
+the lower-level components, which are called <EM>syntactic GDs</EM>,
+provide a means for describing a semantic GD and its properties in
+terms that are completely independent from the semantic GD's internal
+representation.
+
+
+Semantic geometric descriptors
+------------------------------
+
+A <EM>semantic geometric descriptor</EM> is a subset of \f$ \Rset^n \f$.
+The PPL provides several classes of semantic GDs.  These are
+identified by their C++ class name, together with the class template
+parameters, if any. A uniform set of operations is provided for
+creating, testing and maintaining each of the semantic GDs.
+However, as most of these will depend on one or more syntactic GDs,
+we first describe the syntactic GDs.
+
+Syntactic geometric descriptors
 -------------------------------
 
-The PPL offers way to create and manipulate two kinds of geometric
-descriptions (GD for short): the <EM>syntactic</EM> GDs and
-the <EM>semantic</EM> GDs.  The semantic GDs capture the essence of
-geometric objects;  the syntactic GDs provide the language with which
-an application can specify semantic GDs in terms that are completely
-independent from the semantic GDs internal representation.
+A <EM>syntactic geometric descriptor</EM> is for defining, modifying
+and inspecting a semantic GD.  There are three kinds of <EM>syntactic
+GDs</EM>: <EM>basic GDs</EM>, <EM>constraint GDs</EM>> and
+<EM>generator GDs</EM>. Some of these are <EM>generic</EM> and some
+<EM>specific</EM>; a generic syntactic GD is characterized by having a
+fixed meaning independent of its use while a specific syntactic GD
+has a meaning that is dependent on the semantic GD with which it is
+used.
 
+Basic geometric descriptors
+---------------------------
 
-Semantic geometric descriptions
+The following basic GDs currently supported by
+the PPL are:
+
+1) space dimension
+2) variable and variable set
+3) coefficient
+5) linear expression
+4) relation symbol
+
+These classes, which are all generic syntactic GDs, are used
+to build the constraint and generator GDs as
+well as support many generic operations on the semantic GDs.
+
+Constraint geometric descriptors
+--------------------------------
+
+The PPL currently supports the following classes of constraint GDs:
+
+1) linear constraint, which denotes a hyperplane;
+2) linear constraint system, which denotes a hyperspace;
+3) linear congruence;
+4) linear congruence system;
+
+All these classes are generic syntactic GDs.
+However, a semantic GD may only capture the precise
+meaning of a subset of the constraint GDs and any semantic
+GD operation that cannot capture the semantics of the constraint GD
+precisely will either indicate its unsuitability or apply an upward
+approximation semantics.
+
+Generator geometric descriptors
 -------------------------------
 
-A <EM>semantic geometric description</EM> is a subset of \f$ \Rset^n \f$.
-The PPL provides several classes of semantic GDs.  These are identified
-by their C++ class name, together with the class template parameters,
-if any.  The PPL provides the following kinds of operations on all semantic
-GDs:
+The PPL currently supports two classes of generator GDs.
 
-a) Operations on semantic GDs of the same class:
+1) Polyhedra generator: these are polyhedra points, rays and lines.
+   Notice that rays and lines are "space operators" that do not make
+   sense in themselves: they need a space to operate upon.
+2) Grid generator: these are grid points, parameters and grid lines.
+   Notice that parameters and grid lines are "space operators" that
+   do not make sense in themselves: they need a space to operate upon.
 
-   <LIST THEM ALL HERE>
+These classes are specific syntactic GDs since they can only be used
+by the appropriate classes. However there is an exception to this and a
+polyhedron point is also used in some generic PPL operations where it
+is interpreted as a point in the considered vector space.
+
+Generic operations on semantic geometric descriptors
+----------------------------------------------------
+
+a) Constructors of a universe or empty semantic GD with the given
+   space dimension.
+
+b) Operations on a semantic GD that do not depend on the syntactic GDs.
+
+o  is_empty(), is_universe(), is_topologically_closed(),
+   is_discrete(), is_bounded(), contains_integer_point()
+
+   test for the named properties of the semantic GD.
+
+o  total_memory_in_bytes(), external_memory_in_bytes()
+
+   return the total and external memory size in bytes.
+
+o  OK()
+
+   checks that the semantic GD has a valid internal representation.
+   An optional Boolean argument allows a check for emptiness.
+
+o  space_dimension(), affine_dimension()
+
+   returns, respectively, the space and affine dimensions of the GD.
+
+o  add_space_dimensions_and_embed(), add_space_dimensions_and_project(),
+   expand_space_dimension(), remove_space_dimensions(),
+   fold_space_dimensions() map_space_dimensions()
+
+   modify the space dimensions of the semantic GD; where, depending on the
+   operation, the arguments can include the number of space dimensions
+   to be added or removed a variable or set of variables denoting the
+   actual dimensions to be used and a partial function defining a mapping
+   between the dimensions.
+
+o  contains(), strictly_contains() is_disjoint_from()
+
+   compare the semantic GD with an argument semantic GD of the same class.
+
+o  topological_closure_assign(), intersection_assign(),
+   intersection_assign_and_minimize(), upper_bound_assign(),
+   difference_assign(), time_elapse_assign(), widening_assign(),
+   concatenate_assign(), swap()
+
+   modify the semantic GD, possibly with an argument semantic GD of
+   the same class.
+
+o  constrains(), bounds_from_above(), bounds_from_below(),
+   maximize(), minimize().
+
+   These find information about the bounds of the semantic GD where
+   the argument variable or linear expression define the direction
+   of the bound.
+
+o  affine_image(), affine_preimage(),
+   generalized_affine_image(), generalized_affine_preimage(),
+   bounded_affine_image(), bounded_affine_preimage().
+
+   These perform several variations of the affine image and preimage
+   operations where, depending on the operation, the arguments can
+   include a variable representing the space dimension to which the
+   transformation will be applied and linear expressions
+   with possibly a relation symbol and denominator value
+   that define the exact form of the transformation.
+
+o  ascii_load(), ascii_dump()
+
+   are the ascii input and output operations.
 
 b) Constructors of a semantic GD of one class from a semantic GD of any
    other class.
@@ -36,81 +167,46 @@ b) Constructors of a semantic GD of one class from a semantic GD of any
    These constructors obey an <EM>upward approximation semantics</EM>,
    meaning that the constructed semantic GD is guaranteed to contain
    all the points of the source semantic GD, but possibly more.
-   Some <SHOULD WE REPLACE SOME WITH ALL HERE?> such constructors
+   Some of <SHOULD WE REPLACE SOME OF WITH ALL HERE?> these constructors
    provide a complexity parameter with which the application can control
    the complexity/precision trade-off for the construction operation.
 
+<TO BE COMPLETED>
 
-Syntactic geometric descriptions
---------------------------------
+c) Constructors of a semantic GD from a constraint GD;
+   either a linear constraint system or a linear congruence system.
+   If the semantic GD cannot capture the precise meaning of the constraint GD
+   then it indicates its unsuitability by throwing an "invalid argument"
+   exception to signal that the operation could not be performed.
 
-A <EM>syntactic geometric description</EM> is an object that can be used
-by the application to define, modify and inspect a semantic GD.
-The PPL offers two kinds of syntactic GDs:
-<EM>generic</EM> syntactic GDs and <EM>specific</EM> syntactic GDs.
+e) Other interraction between the semantic GDs and constraint GDs
 
+o  add_constraint(), add_constraint_and_minimize(),
+   add_constraints(), add_constraints_and_minimize(),
+   add_recycled_constraints(), add_recycled_constraints_and_minimize(),
+   add_congruence(), add_congruence_and_minimize(),
+   add_congruences(), add_congruences_and_minimize(),
+   add_recycled_congruences(), add_recycled_congruences_and_minimize().
 
-Generic syntactic geometric descriptions
-----------------------------------------
-
-A <EM>generic</EM> syntactic GD is characterized by possessing a semantics
-that is completely internally defined.  In other words, the meaning of
-a generic syntactic GD depends neither on the class of semantic GD with
-which it can be used, nor on the presence or absence of other syntactic
-GDs.  The PPL currently supports two classes of generic syntactic GD:
-
-1) linear constraints, which denote hyperplanes and hyperspaces;
-2) linear congruences.
-
-
-Specific syntactic geometric descriptions
------------------------------------------
-
-In contrast with the <EM>generic</EM> ones, the meaning of a
-<EM>specific</EM> syntactic GDs may depend on the semantic GDs that
-constitutes the "universe of discourse" and/or on the presence or
-absence of other syntactic GDs.  The PPL currently supports two classes
-of specific syntactic GD:
-
-1) Polyhedra generator: these are polyhedra points, rays and lines.
-   Notice that rays do not make sense on, e.g, grids.  Notice also that
-   rays and lines are "space operators" that do not make sense in
-   themselves: they need a space to operate upon.
-2) Grid generators.
-
-
-Interaction between the semantic and syntactic geometric descriptions
----------------------------------------------------------------------
-
-From the discussion above, it is clear that, while specific syntactic GDs
-are only usable with respect to the corresponding semantic GDs,
-generic syntactic GDs can be used to interact with any semantic GD.
-However, it must be clear that any semantic GDs can only be expected
-to fully capture a subset of the generic syntactic GDs;  for the others
-the semantic GD will either signal its unsuitability or will apply
-the upward approximation semantics.  We list below the methods along
-with an informal description of their semantics:
-
-o  add_constraint(), add_constraints(), add_congruence(), add_congruences()
-
-   If the argument syntactic GD can be completely incorporated into
+   If the argument constraint GD can be completely incorporated into
    the semantic GD, this is what is done.  Otherwise an "invalid argument"
    exception is thrown to signal that the operation could not be performed.
    For example: the C_Polyhedron class can incorporate any non-strict
-   linear constraint, but cannot incorporate strict constraints or
-   non-trivial congruences.  A BD_Shape<T> class can incorporate
-   bounded-difference non-strict constraints, but not more complex
-   linear constraints.  An invariant that is satisfied by these method
-   is that successfully adding one or more syntactic GDs and then enquiring
-   with any of them with the "relation with" methods is guaranteed to
-   yield a "definitely implied" result.
-
+   linear constraint or equality congruence, but cannot incorporate
+   a strict constraint or a proper congruence.  A BD_Shape<T> class can
+   incorporate bounded-difference non-strict constraints, but not more
+   complex linear constraints.  An invariant of these
+   methods is that, if they successfully add a constraint GD, then
+   an enquiry for the same constraint GD with a "relation with" method
+   is guaranteed to yield a "definitely implied" result.
 
 o  refine_with_constraint(), refine_with_constraints(),
+   refine_with_recycled_constraints(),
    refine_with_congruence(), refine_with_congruences()
+   refine_with_recycled_congruences()
 
-   If the argument syntactic GD can be completely incorporated into
-   the semantic GD, this is what is done.  Otherwise the syntactic
+   If the argument constraint GD can be completely incorporated into
+   the semantic GD, this is what is done.  Otherwise the constraint
    GD is used only to a limited extent to refine the semantic GD;
    possibly not at all.  Notice that, while repeating an add operation
    is pointless, this is not true for the refine operations.
@@ -125,7 +221,7 @@ o  refine_with_constraint(), refine_with_constraints(),
      // on Semantic_GD.
      Semantic_GD.refine_with_constraint(c)
 
-   can give more precise results than a single
+   may give more precise results than a single
 
      Semantic_GD.refine_with_constraint(c).
 
