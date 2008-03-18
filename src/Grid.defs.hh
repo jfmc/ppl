@@ -1141,6 +1141,9 @@ public:
   /*!
     The addition can only affect \p *this if \p c is an equality.
 
+    \param c
+    The constraint.
+
     \exception std::invalid_argument
     Thrown if \p *this and \p c are dimension-incompatible.
   */
@@ -1149,6 +1152,9 @@ public:
   //! Adds constraint \p c to \p *this, reducing the result.
   /*!
     The addition can only affect \p *this if \p c is an equality.
+
+    \param c
+    The constraint.
 
     \return
     <CODE>false</CODE> if and only if the result is empty.
@@ -1160,6 +1166,9 @@ public:
 
   //! Adds copies of the equality constraints in \p cs to \p *this.
   /*!
+    \param cs
+    The constraints to be added.
+
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible.
   */
@@ -1168,6 +1177,9 @@ public:
   /*! \brief
     Adds copies of the equality constraints in \p cs to \p *this,
     reducing the result.
+
+    \param cs
+    The constraints to be added.
 
     \return
     <CODE>false</CODE> if and only if the result is empty.
@@ -1211,6 +1223,47 @@ public:
     or exceptional return is that it can be safely destroyed.
   */
   bool add_recycled_constraints_and_minimize(Constraint_System& cs);
+
+  //! Uses a copy of the congruence \p cg to refine \p *this.
+  /*!
+    \param cg
+    The congruence used.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and congruence \p cg are dimension-incompatible.
+  */
+  void refine_with_congruence(const Congruence& cg);
+
+ //! Uses a copy of the congruences in \p cgs to refine \p *this.
+  /*!
+    \param cgs
+    The congruences used.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cgs are dimension-incompatible.
+  */
+  void refine_with_congruences(const Congruence_System& cgs);
+
+  //! Uses a copy of the constraint \p c to refine \p *this.
+  /*!
+
+    \param c
+    The constraint used. If it is not an equality, it will be ignored
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p c are dimension-incompatible.
+  */
+  void refine_with_constraint(const Constraint& c);
+
+  //! Uses a copy of the constraints in \p cs to refine \p *this.
+  /*!
+    \param cs
+    The constraints used. Constraints that are not equalities are ignored.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are dimension-incompatible.
+  */
+  void refine_with_constraints(const Constraint_System& cs);
 
   /*! \brief
     Returns true indicating that this domain has methods that

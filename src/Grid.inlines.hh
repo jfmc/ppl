@@ -196,6 +196,16 @@ Grid::swap(Grid& y) {
   std::swap(dim_kinds, y.dim_kinds);
 }
 
+inline void
+Grid::refine_with_congruence(const Congruence& cg) {
+  add_congruence(cg);
+}
+
+inline void
+Grid::refine_with_congruences(const Congruence_System& cgs) {
+  add_congruences(cgs);
+}
+
 inline bool
 Grid::can_recycle_constraint_systems() {
   return true;

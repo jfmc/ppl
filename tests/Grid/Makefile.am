@@ -101,6 +101,8 @@ partition1 \
 powersetdifference1 \
 powersetgeometricallycovers1 \
 powersetgeometricallyequals1 \
+refinewithcongruences1 \
+refinewithconstraints1 \
 relations1 relations2 relations3 \
 removespacedims1 removespacedims2 \
 timeelapse1 \
@@ -254,6 +256,9 @@ partition1_SOURCES = partition1.cc
 powersetdifference1_SOURCES = powersetdifference1.cc
 powersetgeometricallycovers1_SOURCES = powersetgeometricallycovers1.cc
 powersetgeometricallyequals1_SOURCES = powersetgeometricallyequals1.cc
+
+refinewithcongruences1_SOURCES = refinewithcongruences1.cc
+refinewithconstraints1_SOURCES = refinewithconstraints1.cc
 
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
