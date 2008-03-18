@@ -419,6 +419,19 @@ Box<T>::add_congruences_and_minimize(const Congruence_System& cgs) {
 }
 
 template <typename T>
+inline void
+Box<T>::add_recycled_congruences(Congruence_System& cgs) {
+  add_congruences(cgs);
+}
+
+template <typename T>
+inline bool
+Box<T>::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
+  add_congruences(cgs);
+  return !is_empty();
+}
+
+template <typename T>
 inline bool
 Box<T>::can_recycle_constraint_systems() {
   return false;
