@@ -1306,7 +1306,101 @@ test52() {
   return false;
 }
 
-} // namespace
+bool
+test53() {
+  Variable y(1);
+
+  C_Polyhedron ph(1);
+
+  try {
+    // This is an invalid use of the function
+    // C_Polyhedron::refine_with_constraint(c): it is illegal to insert a
+    // constraint that contains a variable that is not in the space
+    // of the polyhedron.
+    ph.refine_with_constraint(y >= 0);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
+bool
+test54() {
+  Variable x(0);
+  Variable y(1);
+
+  C_Polyhedron ph(1);
+
+  try {
+    // This is an invalid use of the function
+    // C_Polyhedron::refine_with_constraints(cs): it is illegal to
+    // refine with a system of constraints that is dimensionally
+    // incompatible with the polyhedron.
+    Constraint_System cs;
+    cs.insert(x - y == 0);
+    ph.refine_with_constraints(cs);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
+}
+bool
+test55() {
+  Variable y(1);
+
+  C_Polyhedron ph(1);
+
+  try {
+    // This is an invalid use of the function
+    // C_Polyhedron::refine_with_congruence(cg): it is illegal to insert a
+    // congruence that contains a variable that is not in the space
+    // of the polyhedron.
+    ph.refine_with_congruence(y %= 0);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
+bool
+test56() {
+  Variable x(0);
+  Variable y(1);
+
+  C_Polyhedron ph(1);
+
+  try {
+    // This is an invalid use of the function
+    // C_Polyhedron::refine_with_congruences(cgs): it is illegal to
+    // refine with a system of congruences that is dimensionally
+    // incompatible with the polyhedron.
+    Congruence_System cgs;
+    cgs.insert(x - y == 0);
+    ph.refine_with_congruences(cgs);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+ // namespace
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
@@ -1360,4 +1454,8 @@ BEGIN_MAIN
   DO_TEST(test50);
   DO_TEST(test51);
   DO_TEST(test52);
+  DO_TEST(test53);
+  DO_TEST(test54);
+  DO_TEST(test55);
+  DO_TEST(test56);
 END_MAIN

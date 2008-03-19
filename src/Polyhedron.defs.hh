@@ -1107,6 +1107,50 @@ public:
   bool add_recycled_congruences_and_minimize(Congruence_System& cgs);
 
   /*! \brief
+    Uses a copy of constraint \p c to refine the system of constraints
+    of \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and constraint \p c are dimension-incompatible.
+  */
+  void refine_with_constraint(const Constraint& c);
+
+  /*! \brief
+    Uses a copy of congruence \p cg to refine the system of congruences of
+    \p *this (without minimizing the result).
+
+    \exception std::invalid_argument
+    Thrown if \p *this and congruence \p cg are dimension-incompatible.
+  */
+  void refine_with_congruence(const Congruence& cg);
+
+  /*! \brief
+    Uses a copy of the constraints in \p cs to refine the system
+    of constraints of \p *this.
+
+    \param cs
+    Contains the constraints used to refine the system of
+    constraints of \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are dimension-incompatible.
+  */
+  void refine_with_constraints(const Constraint_System& cs);
+
+  /*! \brief
+    Refines \p *this with constraints equivalent to the congruences
+    in \p cgs.
+
+    \param cgs
+    Contains the congruences used to refine the system of
+    constraints of \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cgs are dimension-incompatible.
+  */
+  void refine_with_congruences(const Congruence_System& cgs);
+
+  /*! \brief
     Returns true indicating that this domain has methods that
     can recycle constraints
   */

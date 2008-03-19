@@ -109,6 +109,10 @@ pointsetpowerset1 pointsetpowerset2 pointsetpowerset3 \
 pointsetpowerset4 pointsetpowerset5 \
 powerset1 \
 randphull1 \
+refinewithconstraint1 \
+refinewithconstraints1 \
+refinewithcongruence1 \
+refinewithcongruences1 \
 relations1 relations2 relations3 \
 removespacedims1 removespacedims2 \
 smm1 \
@@ -359,6 +363,11 @@ powerset1_SOURCES = powerset1.cc
 
 randphull1_SOURCES = randphull1.cc
 randphull1_LDADD = $(LDADD) -lm
+
+refinewithconstraint1_SOURCES = refinewithconstraint1.cc
+refinewithconstraints1_SOURCES = refinewithconstraints1.cc
+refinewithcongruence1_SOURCES = refinewithcongruence1.cc
+refinewithcongruences1_SOURCES = refinewithcongruences1.cc
 
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc

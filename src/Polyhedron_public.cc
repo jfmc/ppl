@@ -1828,6 +1828,207 @@ PPL::Polyhedron::add_congruences(const Congruence_System& cgs) {
 }
 
 void
+PPL::Polyhedron::refine_with_constraint(const Constraint& c) {
+  // Dimension-compatibility check:
+  // the dimension of `c' can not be greater than space_dim.
+  if (space_dim < c.space_dimension())
+    throw_dimension_incompatible("add_constraint(c)", "c", c);
+
+  // Adding a new constraint to an empty polyhedron
+  // results in an empty polyhedron.
+  if (marked_empty())
+    return;
+
+  // Dealing with a zero-dimensional space polyhedron first.
+  if (space_dim == 0) {
+    if (!c.is_tautological())
+      set_empty();
+    return;
+  }
+
+  // The constraints (possibly with pending rows) are required.
+  if (has_pending_generators())
+    process_pending_generators();
+  else if (!constraints_are_up_to_date())
+    update_constraints();
+
+  const bool adding_pending = can_have_something_pending();
+
+  // Here we know that the system of constraints has at least a row.
+  if (c.is_necessarily_closed() || !is_necessarily_closed())
+    // Since `con_sys' is not empty, the topology and space dimension
+    // of the inserted constraint are automatically adjusted.
+    if (adding_pending)
+      con_sys.insert_pending(c);
+    else
+      con_sys.insert(c);
+  else {
+    // Here we know that *this is necessarily closed so even if c is
+    // topologically closed, by barely invoking `con_sys.insert(c)' we
+    // would cause a change in the topology of `con_sys', which is
+    // wrong.  Thus, we insert a topology closed and "topology
+    // corrected" version of `c'.
+    Linear_Expression nc_expr = Linear_Expression(c);
+    if (c.is_equality())
+      if (adding_pending)
+	con_sys.insert_pending(nc_expr == 0);
+      else
+	con_sys.insert(nc_expr == 0);
+    else
+      if (adding_pending)
+	con_sys.insert_pending(nc_expr >= 0);
+      else
+	con_sys.insert(nc_expr >= 0);
+  }
+
+  if (adding_pending)
+    set_constraints_pending();
+  else {
+    // Constraints are not minimized and generators are not up-to-date.
+    clear_constraints_minimized();
+    clear_generators_up_to_date();
+  }
+  // Note: the constraint system may have become unsatisfiable, thus
+  // we do not check for satisfiability.
+  assert(OK());
+}
+
+void
+PPL::Polyhedron::refine_with_congruence(const Congruence& cg) {
+  // Dimension-compatibility check:
+  // the dimension of `cg' can not be greater than space_dim.
+  if (space_dim < cg.space_dimension())
+    throw_dimension_incompatible("add_congruence(cg)", "cg", cg);
+
+  // Adding a new congruence to an empty polyhedron results in an
+  // empty polyhedron.
+  if (marked_empty())
+    return;
+
+  // Dealing with a zero-dimensional space polyhedron first.
+  if (space_dim == 0) {
+    if (!cg.is_trivial_true())
+      set_empty();
+    return;
+  }
+
+  if (cg.is_equality()) {
+    Linear_Expression le(cg);
+    Constraint c(le, Constraint::EQUALITY, NECESSARILY_CLOSED);
+    // Enforce normalization.
+    c.strong_normalize();
+    add_constraint(c);
+  }
+}
+
+void
+PPL::Polyhedron::refine_with_constraints(const Constraint_System& cs) {
+  // TODO: this is just an executable specification.
+
+  // Dimension-compatibility check:
+  // the dimension of `cs' can not be greater than space_dim.
+  const dimension_type cs_space_dim = cs.space_dimension();
+  if (space_dim < cs_space_dim)
+    throw_dimension_incompatible("refine_with_constraints(cs)a",
+				 "cs", cs);
+
+  // Adding no constraints is a no-op.
+  if (cs.empty())
+    return;
+
+  if (space_dim == 0) {
+    // In a 0-dimensional space the constraints are
+    // tautologies (e.g., 0 == 0 or 1 >= 0 or 1 > 0) or
+    // inconsistent (e.g., 1 == 0 or -1 >= 0 or 0 > 0).
+    // In a system of constraints `begin()' and `end()' are equal
+    // if and only if the system only contains tautologies.
+    if (cs.begin() != cs.end())
+      // There is a constraint, it must be inconsistent,
+      // the polyhedron is empty.
+      status.set_empty();
+    return;
+  }
+
+  if (marked_empty())
+    return;
+
+  // The constraints (possibly with pending rows) are required.
+  if (has_pending_generators())
+    process_pending_generators();
+  else if (!constraints_are_up_to_date())
+    update_constraints();
+
+  const bool adding_pending = can_have_something_pending();
+  for (dimension_type i = cs.num_rows(); i-- > 0; ) {
+    const Constraint& c = cs[i];
+
+    if (c.is_necessarily_closed() || !is_necessarily_closed())
+      // Since `con_sys' is not empty, the topology and space dimension
+      // of the inserted constraint are automatically adjusted.
+      if (adding_pending)
+        con_sys.insert_pending(c);
+      else
+        con_sys.insert(c);
+    else {
+      // Here we know that *this is necessarily closed so even if c is
+      // topologically closed, by barely invoking `con_sys.insert(c)' we
+      // would cause a change in the topology of `con_sys', which is
+      // wrong.  Thus, we insert a topology closed and "topology
+      // corrected" version of `c'.
+      Linear_Expression nc_expr = Linear_Expression(c);
+      if (c.is_equality())
+        if (adding_pending)
+          con_sys.insert_pending(nc_expr == 0);
+        else
+          con_sys.insert(nc_expr == 0);
+      else
+        if (adding_pending)
+          con_sys.insert_pending(nc_expr >= 0);
+        else
+          con_sys.insert(nc_expr >= 0);
+    }
+  }
+
+  if (adding_pending)
+    set_constraints_pending();
+  else {
+    // Constraints are not minimized and generators are not up-to-date.
+    clear_constraints_minimized();
+    clear_generators_up_to_date();
+  }
+
+  // Note: the constraint system may have become unsatisfiable, thus
+  // we do not check for satisfiability.
+  assert(OK());
+}
+
+void
+PPL::Polyhedron::refine_with_congruences(const Congruence_System& cgs) {
+  // Dimension-compatibility check:
+  // the dimension of `cgs' can not be greater than space_dim.
+  if (space_dim < cgs.space_dimension())
+    throw_dimension_incompatible("add_congruences(cgs)", "cgs", cgs);
+
+  Constraint_System cs;
+  bool inserted = false;
+  for (Congruence_System::const_iterator i = cgs.begin(),
+         cgs_end = cgs.end(); i != cgs_end; ++i)
+    if (i->is_equality()) {
+      Linear_Expression le(*i);
+      Constraint c(le, Constraint::EQUALITY, NECESSARILY_CLOSED);
+      // Enforce normalization.
+      c.strong_normalize();
+      // TODO: Consider stealing the row in c when adding it to cs.
+      cs.insert(c);
+      inserted = true;
+    }
+  // Only add cgs if congruences were inserted into cgs, as the
+  // dimension of cs must be at most that of the polyhedron.
+  if (inserted)
+    add_recycled_constraints(cs);
+}
+
+void
 PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
   Polyhedron& x = *this;
   // Topology compatibility check.
