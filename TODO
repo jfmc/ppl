@@ -195,10 +195,12 @@ o  \p add_constraint(), \p add_constraints(), \p add_recycled_constraints()
    an enquiry for the same constraint GD with a "relation with" method
    is guaranteed to yield a "definitely implied" result.
 
+   For \p add_recycled_constraints() and  \p add_recycled_congruences(),
+   the only assumption that can be made after return (successful or
+   exceptional) on the constraint GD is that it can be safely destroyed.
+
 o  \p refine_with_constraint(), \p refine_with_constraints(),
-   \p refine_with_recycled_constraints(),
    \p refine_with_congruence(), \p refine_with_congruences()
-   \p refine_with_recycled_congruences()
 
    If the argument constraint GD can be completely incorporated into
    the semantic GD, this is what is done.  Otherwise the constraint
