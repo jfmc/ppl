@@ -1321,6 +1321,15 @@ PPL::Grid::add_constraint_and_minimize(const Constraint& c) {
   return minimize();
 }
 
+void
+PPL::Grid::add_constraints(const Constraint_System& cs) {
+  // The dimension of `cs' must be at most `space_dim'.
+  if (space_dim < cs.space_dimension())
+    throw_dimension_incompatible("add_constraints(cs)", "cs", cs);
+  Congruence_System cgs(cs);
+  add_recycled_congruences(cgs);
+}
+
 bool
 PPL::Grid::add_constraints_and_minimize(const Constraint_System& cs) {
   // The dimension of `cs' must be at most `space_dim'.
