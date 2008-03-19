@@ -58,7 +58,8 @@ ppl_@CLASS@_get_@GET_REPRESENT@s/2 +simple,
 ppl_@CLASS@_get_minimized_@GET_REPRESENT@s/2 +simple,
 dnl
 dnl FIXME: There is no get_bounding_box() method
-dnl        from the pointset_powerset or product domains.
+dnl        for the pointset_powerset or product domains.
+dnl        The Box domain does not have a get_bounding_box() method.
 dnl        Only the Grid domain has a get_covering_box() method.
 dnl
 ppl_@CLASS@_get_bounding_box/3 +simple -box,
@@ -73,11 +74,11 @@ ppl_@CLASS@_@COMPARISON@_@CLASS@/2 +all,
 ppl_@CLASS@_equals_@CLASS@/2 +all,
 ppl_@CLASS@_OK/1 +all,
 ppl_@CLASS@_add_@ADD_REPRESENT@/2 *nofail +all,
-ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize/2 +all,
+ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize/2 +polyhedron,
 ppl_@CLASS@_add_@ADD_REPRESENT@s/2 *nofail +all,
-ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize/2 +all,
+ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize/2 +polyhedron,
 ppl_@CLASS@_@BINOP@/2 *nofail +all,
-ppl_@CLASS@_@BINMINOP@/2 +all,
+ppl_@CLASS@_@BINMINOP@/2 +polyhedron,
 ppl_@CLASS@_@AFFIMAGE@/4 *nofail +all,
 ppl_@CLASS@_bounded_@AFFIMAGE@/5 *nofail +all,
 ppl_@CLASS@_generalized_@AFFIMAGE@/5 +all,

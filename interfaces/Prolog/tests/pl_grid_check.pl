@@ -166,9 +166,7 @@ run_one(grid_dimension) :-
 
 run_one(grid_basic_operators) :-
    grid_inters_assign,
-   grid_inters_assign_min,
    grid_join_assign,
-   grid_join_assign_min,
    grid_join_assign,
    grid_time_elapse,
    grid_top_close_assign,
@@ -178,13 +176,9 @@ run_one(grid_basic_operators) :-
 
 run_one(grid_add_to_system) :-
    grid_add_con,
-   grid_add_con_min,
    grid_add_gen,
-   grid_add_gen_min,
    grid_add_cons,
-   grid_add_cons_min,
    grid_add_gens,
-   grid_add_gens_min,
   (noisy(0) -> true ;
      display_message(['grid_add_to_system ok'])
   ).
@@ -601,36 +595,6 @@ grid_inters_assign :-
   ppl_delete_Grid(P1a),
   ppl_delete_Grid(P1b).
 
-% Tests ppl_Grid_intersection_assign_and_minimize/2.
-grid_inters_assign_min :-
-  make_vars(2, [A, B]),
-  clean_ppl_new_Grid_from_generators(
-                                     [grid_point(0), grid_point(B),
-                                      grid_point(A), grid_point(A, 2)],
-                                     P1),
-  clean_ppl_new_Grid_from_generators(
-                                     [grid_point(0), grid_point(A),
-                                      grid_point(A + B)],
-                                     P2),
-  ppl_Grid_intersection_assign_and_minimize(P1, P2),
-  clean_ppl_new_Grid_from_generators(
-                                     [grid_point(A + B),
-                                      grid_point(A), grid_point(0)],
-                                     P1a),
-  clean_ppl_new_Grid_from_congruences(
-                                      [A =:= 0, B =:= 0],
-                                      P1b),
-  ppl_Grid_equals_Grid(P1, P1a),
-  ppl_Grid_equals_Grid(P1, P1b),
-  clean_ppl_new_Grid_from_congruences( [A =:= 0, (2*B =:= 1)/2], P3),
-  \+ppl_Grid_intersection_assign_and_minimize(P1, P3),
-  !,
-  ppl_delete_Grid(P1),
-  ppl_delete_Grid(P2),
-  ppl_delete_Grid(P3),
-  ppl_delete_Grid(P1a),
-  ppl_delete_Grid(P1b).
-
 % Tests ppl_Grid_concatenate_assign/2.
 grid_conc_assign :-
   make_vars(5, [A, B, C, D, E]),
@@ -657,26 +621,6 @@ grid_join_assign :-
                                      [grid_point(0), grid_point(A + B)],
                                      P2),
   ppl_Grid_join_assign(P1, P2),
-  clean_ppl_new_Grid_from_generators(
-                                     [grid_point(0), grid_point(B),
-                                      parameter(A,2)],
-                                     P1a),
-  ppl_Grid_equals_Grid(P1, P1a),
-  !,
-  ppl_delete_Grid(P1),
-  ppl_delete_Grid(P2),
-  ppl_delete_Grid(P1a).
-
-% Tests ppl_Grid_join_assign_and_minimize/2.
-grid_join_assign_min :-
-  make_vars(2, [A, B]),
-  clean_ppl_new_Grid_from_space_dimension( 2, empty, P1),
-  clean_ppl_new_Grid_from_space_dimension( 2, empty, P2),
-  \+ ppl_Grid_join_assign_and_minimize(P1, P2),
-  ppl_Grid_add_grid_generators(P1, [grid_point(0), grid_point(2*B),
-                               parameter(A, 2)]),
-  ppl_Grid_add_grid_generators(P2, [grid_point(0), grid_point(A + B)]),
-  ppl_Grid_join_assign_and_minimize(P1, P2),
   clean_ppl_new_Grid_from_generators(
                                      [grid_point(0), grid_point(B),
                                       parameter(A,2)],
@@ -787,30 +731,6 @@ grid_add_con :-
   ppl_delete_Grid(Pb),
   ppl_delete_Grid(Pc).
 
-% Tests ppl_Grid_add_constraint_and_minimize/2.
-% and ppl_Grid_add_congruence_and_minimize/2.
-grid_add_con_min :-
-  make_vars(2, [A, B]),
-  clean_ppl_new_Grid_from_space_dimension( 2, universe, P),
-  ppl_Grid_add_congruence_and_minimize(P, A - B =:= 0),
-  clean_ppl_new_Grid_from_congruences(
-                                      [A - B =:= 0],
-                                      P1),
-  ppl_Grid_equals_Grid(P, P1),
-  clean_ppl_new_Grid_from_space_dimension( 2, universe, P2),
-  ppl_Grid_add_constraint_and_minimize(P2, A - B = 1),
-  clean_ppl_new_Grid_from_constraints(
-                                      [A - B = 1],
-                                      P3),
-  ppl_Grid_equals_Grid(P2, P3),
-  \+ ppl_Grid_add_congruence_and_minimize(P, (2*A - 2*B =:= 1)/2),
-  \+ ppl_Grid_add_constraint_and_minimize(P2, A - B = 0),
-  !,
-  ppl_delete_Grid(P),
-  ppl_delete_Grid(P1),
-  ppl_delete_Grid(P2),
-  ppl_delete_Grid(P3).
-
 % Tests ppl_Grid_add_grid_generator/2.
 grid_add_gen :-
   make_vars(2, [A, B]),
@@ -820,21 +740,6 @@ grid_add_gen :-
   ppl_Grid_add_grid_generator(P, grid_line(A)),
   clean_ppl_new_Grid_from_space_dimension(2, universe, P1),
   ppl_Grid_add_congruence(P1, B =:= 1),
-  ppl_Grid_equals_Grid(P, P1),
-  !,
-  ppl_delete_Grid(P),
-  ppl_delete_Grid(P1).
-
-% Tests ppl_Grid_grid_add_grid_generator_and_minimize/2.
-grid_add_gen_min :-
-  make_vars(2, [A, B]),
-  clean_ppl_new_Grid_from_space_dimension( 2, empty, P),
-  ppl_Grid_add_grid_generator(P, grid_point(A + B)),
-  ppl_Grid_add_grid_generator(P, grid_point(2*A)),
-  ppl_Grid_add_grid_generator(P, grid_point(0)),
-  ppl_Grid_add_grid_generator_and_minimize(P, grid_point(2*A + 2*B, 1)),
-  ppl_Grid_get_grid_generators(P, Gs),
-  clean_ppl_new_Grid_from_generators(Gs, P1),
   ppl_Grid_equals_Grid(P, P1),
   !,
   ppl_delete_Grid(P),
@@ -859,28 +764,6 @@ grid_add_cons :-
   ppl_delete_Grid(P),
   ppl_delete_Grid(P1).
 
-% Tests ppl_Grid_add_congruences_and_minimize/2.
-% and ppl_Grid_add_constraints_and_minimize/2.
-grid_add_cons_min :-
-  make_vars(2, [A, B]),
-  clean_ppl_new_Grid_from_space_dimension( 2, universe, P),
-  ppl_Grid_add_congruences_and_minimize(P,
-     [A =:= 1, B =:= 0, A + B =:= 0]),
-  clean_ppl_new_Grid_from_congruences([A =:= 1, B =:= 0], P1),
-  ppl_Grid_equals_Grid(P, P1),
-  \+ppl_Grid_add_congruences_and_minimize(P, [(5*A + 5*B =:= 2)/5]),
-  clean_ppl_new_Grid_from_space_dimension( 2, universe, P2),
-  ppl_Grid_add_constraints_and_minimize(P2,
-     [A = 1, B = 0, A + B = 1]),
-  clean_ppl_new_Grid_from_constraints([A = 1, B = 0], P3),
-  ppl_Grid_equals_Grid(P2, P3),
-  \+ppl_Grid_add_constraints_and_minimize(P2, [6*A + B = 2]),
-  !,
-  ppl_delete_Grid(P),
-  ppl_delete_Grid(P1),
-  ppl_delete_Grid(P2),
-  ppl_delete_Grid(P3).
-
 % Tests ppl_Grid_add_grid_generators/2.
 grid_add_gens :-
   make_vars(3, [A, B, C]),
@@ -891,22 +774,6 @@ grid_add_gens :-
   clean_ppl_new_Grid_from_generators([grid_point(A + B + C),
                 parameter(A), parameter(2*A), parameter(A + B + C, 1),
                 parameter(100*A + 5*B, -8)], P1),
-  ppl_Grid_equals_Grid(P, P1),
-  !,
-  ppl_delete_Grid(P),
-  ppl_delete_Grid(P1).
-
-% Tests ppl_Grid_add_grid_generators_and_minimize/2.
-grid_add_gens_min :-
-  make_vars(3, [A, B, C]),
-  clean_ppl_new_Grid_from_space_dimension( 3, empty, P),
-  \+  ppl_Grid_add_grid_generators_and_minimize(P, []),
-  ppl_Grid_add_grid_generators_and_minimize(P,
-            [grid_point(A + B + C), parameter(A),
-             parameter(2*A), grid_point(A + B + C)]),
-  clean_ppl_new_Grid_from_generators(
-            [grid_point(A + B + C), parameter(A),
-             parameter(2*A), grid_point(A + B + C)], P1),
   ppl_Grid_equals_Grid(P, P1),
   !,
   ppl_delete_Grid(P),
@@ -1837,10 +1704,8 @@ grid_exception_prolog(10, [A, B, C]) :-
   clean_ppl_new_Grid_from_space_dimension(3, universe, P),
   must_catch(ppl_Grid_add_congruences(P, _)),
   must_catch(ppl_Grid_add_congruences(P, not_a_list)),
-  must_catch(ppl_Grid_add_congruences_and_minimize(P, not_a_list)),
   must_catch(ppl_Grid_add_grid_generators(P, not_a_list)),
   must_catch(ppl_Grid_add_grid_generators(P, _)),
-  must_catch(ppl_Grid_add_grid_generators_and_minimize(P, _)),
   clean_ppl_new_Grid_from_space_dimension(3, empty, Q),
   must_catch(ppl_Grid_map_space_dimensions(Q, not_a_list)),
   must_catch(ppl_Grid_fold_space_dimensions(Q, not_a_list, B)),
@@ -1949,15 +1814,6 @@ grid_exception_cplusplus(2, [A,B,_]) :-
   must_catch(ppl_Grid_affine_image(P, A, A + B + 1, 0)),
   !,
   ppl_delete_Grid(P).
-
-grid_exception_cplusplus(3, [A, B, _]) :-
-  clean_ppl_new_Grid_from_space_dimension(0, universe, P1),
-  clean_ppl_new_Grid_from_generators(
-               [grid_point(A + B)], P2),
-  must_catch(ppl_Grid_join_assign_and_minimize(P1, P2)),
-  !,
-  ppl_delete_Grid(P1),
-  ppl_delete_Grid(P2).
 
 grid_exception_cplusplus(4, [A,B,C]) :-
    must_catch(ppl_new_Grid_from_grid_generators([grid_line(A + B + C)], _)).
@@ -2322,9 +2178,7 @@ group_predicates(grid_dimension,
 
 group_predicates(grid_basic_operators,
   [ppl_Grid_intersection_assign/2,
-   ppl_Grid_intersection_assign_and_minimize/2,
    ppl_Grid_join_assign/2,
-   ppl_Grid_join_assign_and_minimize/2,
    ppl_Grid_difference_assign/2,
    ppl_Grid_time_elapse_assign/2,
    ppl_Grid_topological_closure_assign/1
@@ -2332,17 +2186,11 @@ group_predicates(grid_basic_operators,
 
 group_predicates(grid_add_to_system,
   [ppl_Grid_add_congruence/2,
-   ppl_Grid_add_congruence_and_minimize/2,
    ppl_Grid_add_constraint/2,
-   ppl_Grid_add_constraint_and_minimize/2,
    ppl_Grid_add_grid_generator/2,
-   ppl_Grid_add_grid_generator_and_minimize/2,
    ppl_Grid_add_congruences/2,
-   ppl_Grid_add_congruences_and_minimize/2,
    ppl_Grid_add_constraints/2,
-   ppl_Grid_add_constraints_and_minimize/2,
-   ppl_Grid_add_grid_generators/2,
-   ppl_Grid_add_grid_generators_and_minimize/2
+   ppl_Grid_add_grid_generators/2
   ]).
 
 group_predicates(grid_revise_dimensions,
