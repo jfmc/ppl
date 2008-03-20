@@ -126,8 +126,8 @@ approximate_partition_aux(const PPL::Congruence& c,
   using namespace PPL;
   const Coefficient& c_modulus = c.modulus();
   Grid qq_copy(qq);
-
-  if (!qq.add_congruence_and_minimize(c)) {
+  qq.add_congruence(c);
+  if (qq.is_empty()) {
     r.add_disjunct(qq_copy);
     return true;
   }
@@ -165,7 +165,8 @@ approximate_partition_aux(const PPL::Congruence& c,
   for (i = c_modulus; i-- > 0; )
     if (i != n) {
       Grid qqq(qq_copy);
-      if (qqq.add_congruence_and_minimize((le+i %= 0) / c_modulus))
+      qqq.add_congruence((le+i %= 0) / c_modulus);
+      if (!qqq.is_empty())
 	r.add_disjunct(qqq);
     }
   return true;

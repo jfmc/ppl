@@ -775,10 +775,8 @@ PPL::Grid::contains_integer_point() const {
     cgs.insert(Variable(var_index) %= 0);
 
   Grid gr = *this;
-  if (gr.add_congruences_and_minimize(cgs))
-    return true;
-
-  return false;
+  gr.add_congruences(cgs);
+  return !gr.is_empty();
 }
 
 bool
@@ -2031,7 +2029,6 @@ generalized_affine_image(const Linear_Expression& lhs,
 			 const Relation_Symbol relsym,
 			 const Linear_Expression& rhs,
 			 Coefficient_traits::const_reference modulus) {
-
   // Dimension-compatibility checks.
   // The dimension of `lhs' should be at most the dimension of
   // `*this'.
@@ -2111,9 +2108,10 @@ generalized_affine_image(const Linear_Expression& lhs,
     add_space_dimensions_and_embed(1);
 
     // Constrain the new dimension to be equal to the right hand side.
-    // TODO: Use add_congruence_and_minimize() when it has been updated.
+    // TODO: Use add_congruence() when it has been updated.
     Congruence_System new_cgs1(new_var == rhs);
-    if (add_recycled_congruences_and_minimize(new_cgs1)) {
+    add_recycled_congruences(new_cgs1);
+    if (!is_empty()) {
       // The grid still contains points.
 
       // Existentially quantify all the variables occurring in the left
@@ -2121,7 +2119,8 @@ generalized_affine_image(const Linear_Expression& lhs,
 
       // Adjust `new_lines' to the right dimension.
       new_lines.insert(parameter(0*Variable(space_dim-1)));
-      // Add the lines to `gen_sys'.
+      // Add the lines to `gen_sys' (first make sure they are up-to-date).
+      update_generators();
       gen_sys.recycling_insert(new_lines);
       normalize_divisors(gen_sys);
       // Update the flags.
@@ -2241,9 +2240,10 @@ generalized_affine_preimage(const Linear_Expression& lhs,
     add_space_dimensions_and_embed(1);
 
     // Constrain the new dimension to be equal to `lhs'
-    // TODO: Use add_congruence_and_minimize() when it has been updated.
+    // TODO: Use add_congruence() when it has been updated.
     Congruence_System new_cgs1(new_var == lhs);
-    if (add_recycled_congruences_and_minimize(new_cgs1)) {
+    add_recycled_congruences(new_cgs1);
+    if (!is_empty()) {
       // The grid still contains points.
 
       // Existentially quantify all the variables occurring in the left
@@ -2251,7 +2251,8 @@ generalized_affine_preimage(const Linear_Expression& lhs,
 
       // Adjust `new_lines' to the right dimension.
       new_lines.insert(parameter(0*Variable(space_dim-1)));
-      // Add the lines to `gen_sys'.
+      // Add the lines to `gen_sys' (first make sure they are up-to-date).
+      update_generators();
       gen_sys.recycling_insert(new_lines);
       normalize_divisors(gen_sys);
       // Update the flags.
@@ -2478,7 +2479,8 @@ PPL::Grid::is_disjoint_from(const Grid& y) const {
   if (space_dim != y.space_dim)
     throw_dimension_incompatible("is_disjoint_from(y)", "y", y);
   Grid z = *this;
-  return !z.intersection_assign_and_minimize(y);
+  z.intersection_assign(y);
+  return z.is_empty();
 }
 
 void

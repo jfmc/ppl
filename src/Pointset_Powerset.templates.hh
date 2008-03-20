@@ -1409,7 +1409,8 @@ linear_partition_aux(const Constraint& c,
   Linear_Expression le(c);
   const Constraint& neg_c = c.is_strict_inequality() ? (le <= 0) : (le < 0);
   NNC_Polyhedron qqq(qq);
-  if (qqq.add_constraint_and_minimize(neg_c))
+  qqq.add_constraint(neg_c);
+  if (!qqq.is_empty())
     r.add_disjunct(qqq);
   qq.add_constraint(c);
 }
