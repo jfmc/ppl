@@ -211,6 +211,17 @@ Pointset_Powerset<PS>::add_congruence(const Congruence& c) {
 }
 
 template <typename PS>
+void
+Pointset_Powerset<PS>::refine_with_congruence(const Congruence& cg) {
+  Pointset_Powerset& x = *this;
+  for (Sequence_iterator si = x.sequence.begin(),
+	 s_end = x.sequence.end(); si != s_end; ++si)
+    si->element().refine_with_congruence(cg);
+  x.reduced = false;
+  assert(x.OK());
+}
+
+template <typename PS>
 bool
 Pointset_Powerset<PS>::add_congruence_and_minimize(const Congruence& c) {
   Pointset_Powerset& x = *this;
@@ -233,6 +244,17 @@ Pointset_Powerset<PS>::add_congruences(const Congruence_System& cs) {
   for (Sequence_iterator si = x.sequence.begin(),
 	 s_end = x.sequence.end(); si != s_end; ++si)
     si->element().add_congruences(cs);
+  x.reduced = false;
+  assert(x.OK());
+}
+
+template <typename PS>
+void
+Pointset_Powerset<PS>::refine_with_congruences(const Congruence_System& cgs) {
+  Pointset_Powerset& x = *this;
+  for (Sequence_iterator si = x.sequence.begin(),
+	 s_end = x.sequence.end(); si != s_end; ++si)
+    si->element().refine_with_congruences(cgs);
   x.reduced = false;
   assert(x.OK());
 }

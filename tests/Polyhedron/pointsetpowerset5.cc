@@ -404,6 +404,191 @@ test16() {
   return ok;
 }
 
+// Uses refine_with_constraint and refine_with_congruence
+bool
+test17() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+
+  C_Polyhedron ph1(4);
+  ph1.add_constraint(A == 1);
+  ph1.add_constraint(C >= 0);
+  ph1.add_constraint(B >= 0);
+
+  C_Polyhedron ph2(4);
+  ph2.add_constraint(A <= 2);
+  ph2.add_constraint(B >= 2);
+  Pointset_Powerset<C_Polyhedron> pps(4, EMPTY);
+
+  pps.add_disjunct(ph1);
+  pps.add_disjunct(ph2);
+
+  Pointset_Powerset<C_Polyhedron> known_pps(pps);
+
+  pps.refine_with_constraint(C == 0);
+  pps.refine_with_constraint(D < 0);
+  pps.refine_with_congruence(B + D %= 2);
+  pps.refine_with_congruence((B - D %= 2) / 0);
+
+
+  known_pps.add_constraint(C == 0);
+  known_pps.add_constraint(A <= 2);
+  known_pps.add_constraint(B <= 2);
+  known_pps.add_constraint(B - D == 2);
+
+
+  bool ok = (pps == known_pps);
+
+  Pointset_Powerset<C_Polyhedron>::const_iterator i = pps.begin();
+  C_Polyhedron phi = i -> element();
+  print_constraints(phi, "*** phi ***");
+  i++;
+  C_Polyhedron phi1 = i -> element();
+  print_constraints(phi1, "*** phi1 ***");
+
+  return ok;
+}
+
+// Uses refine_with_constraints and refine_with_congruences
+bool
+test18() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+
+  C_Polyhedron ph1(4);
+  ph1.add_constraint(A == 1);
+  ph1.add_constraint(C >= 0);
+
+  C_Polyhedron ph2(4);
+  ph2.add_constraint(A <= 2);
+  Pointset_Powerset<C_Polyhedron> pps(4, EMPTY);
+
+  pps.add_disjunct(ph1);
+  pps.add_disjunct(ph2);
+
+  Pointset_Powerset<C_Polyhedron> known_pps(pps);
+
+  Constraint_System cs;
+  cs.insert(A + 2*B >= 0);
+  cs.insert(B - C < 3);
+  cs.insert(D == 1);
+
+  Congruence_System cgs;
+  cgs.insert(A + B %= 0);
+  cgs.insert((C %= 2) / 0);
+
+  pps.refine_with_constraints(cs);
+  pps.refine_with_congruences(cgs);
+
+  known_pps.add_constraint(C == 2);
+  known_pps.add_constraint(D == 1);
+  known_pps.add_constraint(A + 2*B >= 0);
+  known_pps.add_constraint(B - C <= 3);
+
+  bool ok = (pps == known_pps);
+
+  Pointset_Powerset<C_Polyhedron>::const_iterator i = pps.begin();
+  C_Polyhedron phi = i -> element();
+  print_constraints(phi, "*** phi ***");
+
+  return ok;
+}
+
+// use of refine_with_constraints() makes the powerset empty.
+bool
+test19() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+
+  C_Polyhedron ph1(4);
+  ph1.add_constraint(A == 1);
+  ph1.add_constraint(C >= 0);
+
+  C_Polyhedron ph2(4);
+  ph2.add_constraint(A <= 2);
+  Pointset_Powerset<C_Polyhedron> pps(4, EMPTY);
+
+  pps.add_disjunct(ph1);
+  pps.add_disjunct(ph2);
+
+  Constraint_System cs;
+  cs.insert(A + 2*B >= 0);
+  cs.insert(B - C < 3);
+  cs.insert(A > 1);
+
+  Congruence_System cgs;
+  cgs.insert(A + B %= 0);
+  cgs.insert((B - C %= 4) / 0);
+
+  pps.refine_with_constraints(cs);
+  pps.refine_with_congruences(cgs);
+
+  Pointset_Powerset<C_Polyhedron> known_pps(4, EMPTY);
+
+  bool ok = (pps == known_pps);
+
+  return ok;
+}
+
+// Uses refine_with_constraints and refine_with_congruences
+// with NNC polyhedra
+bool
+test20() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+
+  NNC_Polyhedron ph1(4);
+  ph1.add_constraint(A == 1);
+  ph1.add_constraint(C >= 0);
+  ph1.add_constraint(B >= 0);
+
+  NNC_Polyhedron ph2(4);
+  ph2.add_constraint(A <= 2);
+  ph2.add_constraint(B >= 2);
+  Pointset_Powerset<NNC_Polyhedron> pps(4, EMPTY);
+
+  pps.add_disjunct(ph1);
+  pps.add_disjunct(ph2);
+
+  Pointset_Powerset<NNC_Polyhedron> known_pps(pps);
+
+  Constraint_System cs;
+  cs.insert(A + 2*B >= 0);
+  cs.insert(B - C < 3);
+  cs.insert(D == 1);
+
+  Congruence_System cgs;
+  cgs.insert(A + B %= 0);
+  cgs.insert((C %= 2) / 0);
+
+  pps.refine_with_constraints(cs);
+  pps.refine_with_congruences(cgs);
+
+  known_pps.add_constraint(C == 2);
+  known_pps.add_constraint(D == 1);
+  known_pps.add_constraint(A + 2*B >= 0);
+  known_pps.add_constraint(B - C < 3);
+
+  bool ok = (pps == known_pps);
+
+  Pointset_Powerset<NNC_Polyhedron>::const_iterator i = pps.begin();
+  NNC_Polyhedron phi = i -> element();
+  print_constraints(phi, "*** phi ***");
+  i++;
+  NNC_Polyhedron phi1 = i -> element();
+  print_constraints(phi1, "*** phi1 ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -423,4 +608,8 @@ BEGIN_MAIN
   DO_TEST(test14);
   DO_TEST(test15);
   DO_TEST(test16);
+  DO_TEST(test17);
+  DO_TEST(test18);
+  DO_TEST(test19);
+  DO_TEST(test20);
 END_MAIN

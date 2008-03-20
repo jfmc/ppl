@@ -463,6 +463,17 @@ public:
   */
   void add_congruence(const Congruence& c);
 
+  /*! \brief
+    Use the congruence \p cg to refine \p *this.
+
+    \param cg
+    The congruence to be used for refinement.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cg are dimension-incompatible.
+  */
+  void refine_with_congruence(const Congruence& cg);
+
   //! Intersects \p *this with the congruence \p c, minimizing the result.
   /*!
     \return
@@ -484,6 +495,17 @@ public:
     dimension-incompatible.
   */
   void add_congruences(const Congruence_System& cs);
+
+  /*! \brief
+    Use the congruences in \p cgs to refine \p *this.
+
+    \param  cgs
+     The congruences to be used for refinement.
+
+     \exception std::invalid_argument
+     Thrown if \p *this and \p cgs are dimension-incompatible.
+  */
+  void refine_with_congruences(const Congruence_System& cs);
 
   /*! \brief
     Intersects \p *this with the congruences in \p cs,
