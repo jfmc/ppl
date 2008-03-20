@@ -888,6 +888,21 @@ m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_code',
 
 ')
 
+m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_@CLASS@_refine_with_@REFINE_REPRESENT@(Prolog_term_ref t_ph, Prolog_term_ref t_c) {
+  static const char* where = "ppl_@CLASS@_refine_with_@REFINE_REPRESENT@/2";
+  try {
+    @CPP_CLASS@* ph = term_to_handle<@CPP_CLASS@ >(t_ph, where);
+    PPL_CHECK(ph);
+    ph->refine_with_@REFINE_REPRESENT@(build_@REFINE_REPRESENT@(t_c, where));
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+')
+
 m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code',
   `extern "C" Prolog_foreign_return_type
   ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize(Prolog_term_ref t_ph,
@@ -924,6 +939,33 @@ m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_code',
     check_nil_terminating(t_clist, where);
 
     ph->add_@ADD_REPRESENT@s(cs);
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+')
+
+m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s(Prolog_term_ref t_ph,
+				   Prolog_term_ref t_clist) {
+  static const char* where = "ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s/2";
+  try {
+    @CPP_CLASS@* ph = term_to_handle<@CPP_CLASS@ >(t_ph, where);
+    PPL_CHECK(ph);
+    @UREFINE_REPRESENT@_System cs;
+    Prolog_term_ref c = Prolog_new_term_ref();
+
+    while (Prolog_is_cons(t_clist)) {
+      Prolog_get_cons(t_clist, c, t_clist);
+      cs.insert(build_@REFINE_REPRESENT@(c, where));
+    }
+
+    // Check the list is properly terminated.
+    check_nil_terminating(t_clist, where);
+
+    ph->refine_with_@REFINE_REPRESENT@s(cs);
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;

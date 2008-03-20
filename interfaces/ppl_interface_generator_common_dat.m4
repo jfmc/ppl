@@ -493,6 +493,7 @@ disjunct,
 classtopology,
 build_represent,
 get_represent,
+refine_represent,
 relation_represent,
 add_represent,
 partition,
@@ -937,6 +938,13 @@ m4_define(`m4_Polyhedron_recycle_replacement',
          `@COMMA@ Recycle_Input()')
 m4_define(`m4_Grid_recycle_replacement',
          `@COMMA@ Recycle_Input()')
+
+dnl ---------------------------------------------------------------------
+dnl pattern == refine_represent
+dnl The different kinds of objects that can refine a class.
+dnl ---------------------------------------------------------------------
+
+m4_define(`m4_refine_represent_replacement', `constraint, congruence')
 
 dnl ---------------------------------------------------------------------
 dnl pattern == superclass
