@@ -806,6 +806,9 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and constraint \p c are dimension-incompatible,
     or if \p c is a strict inequality.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_constraint_and_minimize(const Constraint& c);
 
@@ -836,6 +839,9 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and congruence \p c are topology-incompatible
     or dimension-incompatible.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_congruence_and_minimize(const Congruence& cg);
 
@@ -885,6 +891,9 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible,
     or if \p cs contains a strict inequality.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_constraints_and_minimize(const Constraint_System& cs);
 
@@ -906,6 +915,9 @@ public:
     \warning
     The only assumption that can be made on \p cs upon successful or
     exceptional return is that it can be safely destroyed.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_recycled_constraints_and_minimize(Constraint_System& cs);
 
@@ -936,6 +948,9 @@ void add_congruences(const Congruence_System& cgs);
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_congruences_and_minimize(const Congruence_System& cs);
 
@@ -975,6 +990,9 @@ void add_congruences(const Congruence_System& cgs);
     \warning
     The only assumption that can be made on \p cs upon successful or
     exceptional return is that it can be safely destroyed.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_recycled_congruences_and_minimize(Congruence_System& cgs);
 
@@ -1058,6 +1076,9 @@ void refine_with_congruences(const Congruence_System& cgs);
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool intersection_assign_and_minimize(const BD_Shape& y);
 
@@ -1079,6 +1100,9 @@ void refine_with_congruences(const Congruence_System& cgs);
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool bds_hull_assign_and_minimize(const BD_Shape& y);
 

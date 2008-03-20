@@ -104,11 +104,6 @@ bool operator!=(const Grid& x, const Grid& y);
   and vice versa.
   These systems can contain redundant members, or they can be in the
   minimal form.
-  Most operators on grids are provided with two implementations:
-  one of these, denoted <CODE>\<operator-name\>_and_minimize</CODE>,
-  also enforces the minimization of the representations,
-  and returns the Boolean value <CODE>false</CODE> whenever
-  the resulting grid turns out to be empty.
 
   A key attribute of any grid is its space dimension (the dimension
   \f$n \in \Nset\f$ of the enclosing vector space):
@@ -977,6 +972,9 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this and congruence \p cg are dimension-incompatible.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_congruence_and_minimize(const Congruence& c);
 
@@ -989,6 +987,9 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this and constraint \p c are dimension-incompatible.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_congruence_and_minimize(const Constraint& c);
 
@@ -1012,6 +1013,9 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and generator \p g are dimension-incompatible,
     or if \p *this is an empty grid and \p g is not a point.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_grid_generator_and_minimize(const Grid_Generator& g);
 
@@ -1080,6 +1084,9 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cgs are dimension-incompatible.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_congruences_and_minimize(const Congruence_System& cgs);
 
@@ -1096,6 +1103,9 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_congruences_and_minimize(const Constraint_System& cs);
 
@@ -1116,6 +1126,9 @@ public:
     \warning
     The only assumption that can be made about \p cgs upon successful
     or exceptional return is that it can be safely destroyed.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_recycled_congruences_and_minimize(Congruence_System& cgs);
 
@@ -1134,6 +1147,9 @@ public:
     \warning
     The only assumption that can be made about \p cs upon successful
     or exceptional return is that it can be safely destroyed.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_recycled_congruences_and_minimize(Constraint_System& cs);
 
@@ -1161,6 +1177,9 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this and \p c are dimension-incompatible.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_constraint_and_minimize(const Constraint& c);
 
@@ -1186,6 +1205,9 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_constraints_and_minimize(const Constraint_System& cs);
 
@@ -1221,6 +1243,9 @@ public:
     \warning
     The only assumption that can be made about \p cs upon successful
     or exceptional return is that it can be safely destroyed.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_recycled_constraints_and_minimize(Constraint_System& cs);
 
@@ -1324,6 +1349,9 @@ public:
     Thrown if \p *this and \p gs are dimension-incompatible, or if \p
     *this is empty and the system of generators \p gs is not empty,
     but has no points.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_grid_generators_and_minimize(const Grid_Generator_System& gs);
 
@@ -1344,6 +1372,9 @@ public:
     \warning
     The only assumption that can be made about \p gs upon successful
     or exceptional return is that it can be safely destroyed.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_recycled_grid_generators_and_minimize(Grid_Generator_System& gs);
 
@@ -1365,6 +1396,9 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool intersection_assign_and_minimize(const Grid& y);
 
@@ -1385,6 +1419,9 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool join_assign_and_minimize(const Grid& y);
 
@@ -1392,6 +1429,10 @@ public:
   void upper_bound_assign(const Grid& y);
 
   //! Same as join_assign_and_minimize(y).
+  /*!
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
+  */
   void upper_bound_assign_and_minimize(const Grid& y);
 
   /*! \brief

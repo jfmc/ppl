@@ -104,11 +104,6 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
   and vice versa.
   These systems can contain redundant members: in this case we say
   that they are not in the minimal form.
-  Most operators on polyhedra are provided with two implementations:
-  one of these, denoted <CODE>\<operator-name\>_and_minimize</CODE>,
-  also enforces the minimization of the representations,
-  and returns the Boolean value <CODE>false</CODE> whenever
-  the resulting polyhedron turns out to be empty.
 
   Two key attributes of any polyhedron are its topological kind
   (recording whether it is a C_Polyhedron or an NNC_Polyhedron object)
@@ -833,6 +828,9 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and constraint \p c are topology-incompatible
     or dimension-incompatible.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_constraint_and_minimize(const Constraint& c);
 
@@ -858,6 +856,9 @@ public:
     Thrown if \p *this and generator \p g are topology-incompatible or
     dimension-incompatible, or if \p *this is an empty polyhedron and
     \p g is not a point.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_generator_and_minimize(const Generator& g);
 
@@ -865,6 +866,10 @@ public:
   void add_grid_generator(const Grid_Generator& g) const;
 
   //! Returns <CODE>true</CODE> if \p *this is empty else <CODE>false</CODE>.
+  /*!
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
+  */
   bool add_grid_generator_and_minimize(const Grid_Generator& g) const;
 
   /*! \brief
@@ -887,6 +892,9 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and congruence \p c are topology-incompatible
     or dimension-incompatible.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_congruence_and_minimize(const Congruence& cg);
 
@@ -936,6 +944,9 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are topology-incompatible or
     dimension-incompatible.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_constraints_and_minimize(const Constraint_System& cs);
 
@@ -957,6 +968,9 @@ public:
     \warning
     The only assumption that can be made on \p cs upon successful or
     exceptional return is that it can be safely destroyed.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_recycled_constraints_and_minimize(Constraint_System& cs);
 
@@ -1009,6 +1023,9 @@ public:
     Thrown if \p *this and \p gs are topology-incompatible or
     dimension-incompatible, or if \p *this is empty and the the system
     of generators \p gs is not empty, but has no points.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_generators_and_minimize(const Generator_System& gs);
 
@@ -1031,6 +1048,9 @@ public:
     \warning
     The only assumption that can be made on \p gs upon successful or
     exceptional return is that it can be safely destroyed.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_recycled_generators_and_minimize(Generator_System& gs);
 
@@ -1062,6 +1082,9 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are topology-incompatible or
     dimension-incompatible.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_congruences_and_minimize(const Congruence_System& cs);
 
@@ -1103,6 +1126,9 @@ public:
     \warning
     The only assumption that can be made on \p cs upon successful or
     exceptional return is that it can be safely destroyed.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_recycled_congruences_and_minimize(Congruence_System& cgs);
 
@@ -1181,6 +1207,9 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p y are topology-incompatible or
     dimension-incompatible.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool intersection_assign_and_minimize(const Polyhedron& y);
 
@@ -1204,6 +1233,9 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p y are topology-incompatible or
     dimension-incompatible.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool poly_hull_assign_and_minimize(const Polyhedron& y);
 
