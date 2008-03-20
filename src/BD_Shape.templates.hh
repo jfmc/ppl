@@ -1782,21 +1782,17 @@ BD_Shape<T>::bds_difference_assign(const BD_Shape& y) {
       continue;
     BD_Shape z = x;
     const Linear_Expression e = Linear_Expression(c);
-    bool change = false;
-    if (c.is_nonstrict_inequality())
-      change = z.add_constraint_and_minimize(e <= 0);
-    if (c.is_equality()) {
-      BD_Shape w = x;
-      if (w.add_constraint_and_minimize(e <= 0))
-        new_bd_shape.bds_hull_assign(w);
-      change = z.add_constraint_and_minimize(e >= 0);
-    }
-    if (change)
+    z.add_constraint(e <= 0);
+    if (!z.is_empty())
       new_bd_shape.bds_hull_assign(z);
+    if (c.is_equality()) {
+      z = x;
+      z.add_constraint(e >= 0);
+      if (!z.is_empty())
+        new_bd_shape.bds_hull_assign(z);
+    }
   }
   *this = new_bd_shape;
-  // The result is still closed, because both bds_hull_assign() and
-  // add_constraint_and_minimize() preserve closure.
   assert(OK());
 }
 
@@ -3488,7 +3484,7 @@ BD_Shape<T>
                                  lb_expr,
                                  denominator);
         // Now apply the affine upper bound, as recorded in `new_var'.
-        add_constraint_and_minimize(var <= new_var);
+        add_constraint(var <= new_var);
         // Remove the temporarily added dimension.
         remove_higher_space_dimensions(bds_space_dim);
         return;
@@ -3701,9 +3697,9 @@ BD_Shape<T>
   generalized_affine_preimage(var, LESS_OR_EQUAL,
                               ub_expr, denominator);
   if (sgn(denominator) == sgn(lb_inverse_den))
-    add_constraint_and_minimize(var >= new_var);
+    add_constraint(var >= new_var);
   else
-    add_constraint_and_minimize(var <= new_var);
+    add_constraint(var <= new_var);
   // Remove the temporarily added dimension.
   remove_higher_space_dimensions(space_dim);
   return;
