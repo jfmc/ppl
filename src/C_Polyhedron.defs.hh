@@ -141,9 +141,7 @@ public:
     The polyhedron inherits the space dimension of the congruence system.
 
     \param cgs
-    The system of congruences defining the polyhedron.  It is not
-    declared <CODE>const</CODE> because its data-structures may be
-    recycled to build the polyhedron.
+    The system of congruences defining the polyhedron.
   */
   explicit C_Polyhedron(const Congruence_System& cgs);
 
