@@ -2595,16 +2595,14 @@ bounded_affine_image(const Variable var,
     const Variable new_var = Variable(space_dim);
     add_space_dimensions_and_embed(1);
     // Constrain the new dimension to be equal to `ub_expr'.
-    // (we force minimization because we will need the generators).
-    add_constraint_and_minimize(denominator*new_var == ub_expr);
+    add_constraint(denominator*new_var == ub_expr);
     // Apply the affine lower bound.
     generalized_affine_image(var,
 			     GREATER_OR_EQUAL,
 			     lb_expr,
 			     denominator);
-    // Now apply the affine upper bound, as recorded in `new_var'
-    // (we force minimization because we will need the generators).
-    add_constraint_and_minimize(new_var >= var);
+    // Now apply the affine upper bound, as recorded in `new_var'.
+    add_constraint(new_var >= var);
     // Remove the temporarily added dimension.
     remove_higher_space_dimensions(space_dim-1);
   }
@@ -2747,7 +2745,8 @@ generalized_affine_image(const Variable var,
       assert(!is_necessarily_closed());
       // While adding the ray, we minimize the generators
       // in order to avoid adding too many redundant generators later.
-      add_generator_and_minimize(ray(relsym == GREATER_THAN ? var : -var));
+      add_generator(ray(relsym == GREATER_THAN ? var : -var));
+      minimize();
       // We split each point of the generator system into two generators:
       // a closure point, having the same coordinates of the given point,
       // and another point, having the same coordinates for all but the
@@ -2973,29 +2972,29 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
 
     // Constrain the new dimension to be equal to the right hand side.
     // (check for emptiness because we will add lines).
-    if (add_constraint_and_minimize(new_var == rhs)) {
-      // Existentially quantify all the variables occurring in the left hand
-      // side (we force minimization because we will need the constraints).
-      add_recycled_generators_and_minimize(new_lines);
+    add_constraint(new_var == rhs);
+    if (!is_empty()) {
+      // Existentially quantify the variables in the left hand side.
+      add_recycled_generators(new_lines);
 
       // Constrain the new dimension so that it is related to
       // the left hand side as dictated by `relsym'
       // (we force minimization because we will need the generators).
       switch (relsym) {
       case LESS_THAN:
-	add_constraint_and_minimize(lhs < new_var);
+	add_constraint(lhs < new_var);
 	break;
       case LESS_OR_EQUAL:
-	add_constraint_and_minimize(lhs <= new_var);
+	add_constraint(lhs <= new_var);
 	break;
       case EQUAL:
-	add_constraint_and_minimize(lhs == new_var);
+	add_constraint(lhs == new_var);
 	break;
       case GREATER_OR_EQUAL:
-	add_constraint_and_minimize(lhs >= new_var);
+	add_constraint(lhs >= new_var);
 	break;
       case GREATER_THAN:
-	add_constraint_and_minimize(lhs > new_var);
+	add_constraint(lhs > new_var);
 	break;
       case NOT_EQUAL:
 	// The NOT_EQUAL case has been already dealt with.
@@ -3015,9 +3014,8 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
     if (is_empty())
       return;
 
-    // Existentially quantify all the variables occurring in the left hand side
-    // (we force minimization because we will need the constraints).
-    add_recycled_generators_and_minimize(new_lines);
+    // Existentially quantify the variables in the left hand side.
+    add_recycled_generators(new_lines);
 
     // Constrain the left hand side expression so that it is related to
     // the right hand side expression as dictated by `relsym'.
@@ -3112,29 +3110,28 @@ PPL::Polyhedron::generalized_affine_preimage(const Linear_Expression& lhs,
 
     // Constrain the new dimension to be equal to `lhs'
     // (also check for emptiness because we have to add lines).
-    if (add_constraint_and_minimize(new_var == lhs)) {
-      // Existentially quantify all the variables occurring in the left hand
-      // side (we force minimization because we will need the constraints).
-      add_recycled_generators_and_minimize(new_lines);
+    add_constraint(new_var == lhs);
+    if (!is_empty()) {
+      // Existentially quantify the variables in the left hand side.
+      add_recycled_generators(new_lines);
 
       // Constrain the new dimension so that it is related to
-      // the right hand side as dictated by `relsym'
-      // (we force minimization because we will need the generators).
+      // the right hand side as dictated by `relsym'.
       switch (relsym) {
       case LESS_THAN:
-	add_constraint_and_minimize(new_var < rhs);
+	add_constraint(new_var < rhs);
 	break;
       case LESS_OR_EQUAL:
-	add_constraint_and_minimize(new_var <= rhs);
+	add_constraint(new_var <= rhs);
 	break;
       case EQUAL:
-	add_constraint_and_minimize(new_var == rhs);
+	add_constraint(new_var == rhs);
 	break;
       case GREATER_OR_EQUAL:
-	add_constraint_and_minimize(new_var >= rhs);
+	add_constraint(new_var >= rhs);
 	break;
       case GREATER_THAN:
-	add_constraint_and_minimize(new_var > rhs);
+	add_constraint(new_var > rhs);
 	break;
       case NOT_EQUAL:
 	// The NOT_EQUAL case has been already dealt with.
@@ -3426,7 +3423,7 @@ PPL::Polyhedron::contains(const Polyhedron& y) const {
 bool
 PPL::Polyhedron::is_disjoint_from(const Polyhedron& y) const {
   Polyhedron z = *this;
-  z.intersection_assign_and_minimize(y);
+  z.intersection_assign(y);
   return z.is_empty();
 }
 
