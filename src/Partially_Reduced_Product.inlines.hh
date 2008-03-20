@@ -355,6 +355,14 @@ Partially_Reduced_Product<D1, D2, R>::add_constraint(const Constraint& c) {
 }
 
 template <typename D1, typename D2, typename R>
+inline void
+Partially_Reduced_Product<D1, D2, R>::refine_with_constraint(const Constraint& c) {
+  d1.refine_with_constraint(c);
+  d2.refine_with_constraint(c);
+  clear_reduced_flag();
+}
+
+template <typename D1, typename D2, typename R>
 inline bool
 Partially_Reduced_Product<D1, D2, R>::add_constraint_and_minimize(const Constraint& c) {
   bool empty = d1.add_constraint_and_minimize(c);
@@ -368,6 +376,14 @@ inline void
 Partially_Reduced_Product<D1, D2, R>::add_congruence(const Congruence& cg) {
   d1.add_congruence(cg);
   d2.add_congruence(cg);
+  clear_reduced_flag();
+}
+
+template <typename D1, typename D2, typename R>
+inline void
+Partially_Reduced_Product<D1, D2, R>::refine_with_congruence(const Congruence& cg) {
+  d1.refine_with_congruence(cg);
+  d2.refine_with_congruence(cg);
   clear_reduced_flag();
 }
 
@@ -393,6 +409,15 @@ Partially_Reduced_Product<D1, D2, R>
 }
 
 template <typename D1, typename D2, typename R>
+inline void
+Partially_Reduced_Product<D1, D2, R>
+::refine_with_constraints(const Constraint_System& cs) {
+  d1.refine_with_constraints(cs);
+  d2.refine_with_constraints(cs);
+  clear_reduced_flag();
+}
+
+template <typename D1, typename D2, typename R>
 inline bool
 Partially_Reduced_Product<D1, D2, R>
 ::add_constraints_and_minimize(const Constraint_System& cs) {
@@ -408,6 +433,15 @@ Partially_Reduced_Product<D1, D2, R>
 ::add_congruences(const Congruence_System& cgs) {
   d1.add_congruences(cgs);
   d2.add_congruences(cgs);
+  clear_reduced_flag();
+}
+
+template <typename D1, typename D2, typename R>
+inline void
+Partially_Reduced_Product<D1, D2, R>
+::refine_with_congruences(const Congruence_System& cgs) {
+  d1.refine_with_congruences(cgs);
+  d2.refine_with_congruences(cgs);
   clear_reduced_flag();
 }
 

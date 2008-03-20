@@ -738,6 +738,17 @@ public:
   */
   void add_constraint(const Constraint& c);
 
+  /*! \brief
+    Use the constraint \p c to refine \p *this.
+
+    \param c
+    The constraint to be used for refinement.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p c are dimension-incompatible.
+  */
+  void refine_with_constraint(const Constraint& c);
+
   //! Adds constraint \p c to \p *this, reducing the result.
   /*!
     \return
@@ -755,6 +766,17 @@ public:
     dimension-incompatible.
   */
   void add_congruence(const Congruence& cg);
+
+  /*! \brief
+    Use the congruence \p cg to refine \p *this.
+
+    \param cg
+    The congruence to be used for refinement.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cg are dimension-incompatible.
+  */
+  void refine_with_congruence(const Congruence& cg);
 
   /*! \brief
     Adds a copy of congruence \p cg to the system of congruences of \p
@@ -777,6 +799,17 @@ public:
     Thrown if \p *this and \p cgs are dimension-incompatible.
   */
   void add_congruences(const Congruence_System& cgs);
+
+  /*! \brief
+    Use the congruences in \p cgs to refine \p *this.
+
+    \param  cgs
+     The congruences to be used for refinement.
+
+     \exception std::invalid_argument
+     Thrown if \p *this and \p cgs are dimension-incompatible.
+  */
+  void refine_with_congruences(const Congruence_System& cs);
 
   //! Adds the congruences in \p cgs to *this.
   /*!
@@ -833,6 +866,17 @@ public:
     Thrown if \p *this and \p cs are dimension-incompatible.
   */
   void add_constraints(const Constraint_System& cs);
+
+  /*! \brief
+    Use the constraints in \p cs to refine \p *this.
+
+    \param  cs
+     The constraints to be used for refinement.
+
+     \exception std::invalid_argument
+     Thrown if \p *this and \p cs are dimension-incompatible.
+  */
+  void refine_with_constraints(const Constraint_System& cs);
 
   /*! \brief
     Adds  a copy of the constraint system in \p cs to \p *this,

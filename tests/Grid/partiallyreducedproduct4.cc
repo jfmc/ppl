@@ -26,7 +26,15 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 
 // #define PH_IS_NNC
 // #define PH_IS_FIRST
-#define PH_IS_BOX
+
+// #define PH_IS_BOX
+
+#ifdef PH_IS_NNC
+#define PH_IS_BOX_OR_NNC
+#endif
+#ifdef PH_IS_BOX
+#define PH_IS_BOX_OR_NNC
+#endif
 
 #ifdef PH_IS_BOX
 typedef TBox Poly;
@@ -140,9 +148,131 @@ test02() {
   return ok;
 }
 
+// refine_with_constraints() and refine_with_congruences()
+bool
+test03() {
+  Variable A(0);
+  Variable B(1);
+
+  SProduct sp(2);
+  CProduct cp(2);
+  Constraint_System cs;
+  cs.insert(A >= 1);
+  cs.insert(A <= 6);
+  sp.add_constraints(cs);
+  cp.add_constraints(cs);
+
+  SProduct known_sp(sp);
+  CProduct known_cp(cp);
+
+  Constraint_System cs1;
+  cs1.insert(A > 2);
+  cs1.insert(B >= 2);
+  Congruence_System cgs1;
+  cgs1.insert((B %= 2) / 4);
+  cgs1.insert((A + B %= 6) / 0);
+  sp.refine_with_constraint(A > 2);
+  sp.refine_with_constraint(B >= 2);
+  sp.refine_with_congruence((B %= 2) / 4);
+  sp.refine_with_congruence((A + B %= 6) / 0);
+  cp.refine_with_constraint(A > 2);
+  cp.refine_with_constraint(B >= 2);
+  cp.refine_with_congruence((B %= 2) / 4);
+  cp.refine_with_congruence((A + B %= 6) / 0);
+
+  bool ok = sp.OK() && cp.OK();
+
+#ifdef PH_IS_BOX_OR_NNC
+  known_sp.add_constraint(A > 2);
+#else
+  known_sp.add_constraint(A >= 2);
+#endif
+  known_sp.add_constraint(B >= 2);
+  known_sp.add_congruence((B %= 2) / 4);
+  known_sp.add_congruence((A + B %= 6) / 0);
+#ifdef PH_IS_BOX_OR_NNC
+  known_cp.add_constraint(A > 2);
+#else
+  known_cp.add_constraint(A >= 2);
+#endif
+  known_cp.add_constraint(B >= 2);
+  known_cp.add_congruence((B %= 2) / 4);
+  known_cp.add_congruence((A + B %= 6) / 0);
+
+  ok = ok && sp == known_sp && cp == known_cp;
+
+  print_congruences(sp, "*** after ok check: sp congruences ***");
+  print_constraints(sp, "*** after ok check: sp constraints ***");
+
+  print_congruences(cp, "*** after ok check: cp congruences ***");
+  print_constraints(cp, "*** after ok check: cp constraints ***");
+
+  return ok;
+}
+
+// refine_with_constraints() and refine_with_congruences()
+bool
+test04() {
+  Variable A(0);
+  Variable B(1);
+
+  SProduct sp(2);
+  CProduct cp(2);
+  Constraint_System cs;
+  cs.insert(A >= 1);
+  cs.insert(A <= 6);
+  sp.add_constraints(cs);
+  cp.add_constraints(cs);
+
+  SProduct known_sp(sp);
+  CProduct known_cp(cp);
+
+  Constraint_System cs1;
+  cs1.insert(A > 2);
+  cs1.insert(B >= 2);
+  Congruence_System cgs1;
+  cgs1.insert((B %= 2) / 4);
+  cgs1.insert((A + B %= 6) / 0);
+  sp.refine_with_constraints(cs1);
+  sp.refine_with_congruences(cgs1);
+  cp.refine_with_constraints(cs1);
+  cp.refine_with_congruences(cgs1);
+
+  bool ok = sp.OK() && cp.OK();
+
+#ifdef PH_IS_BOX_OR_NNC
+  known_sp.add_constraint(A > 2);
+#else
+  known_sp.add_constraint(A >= 2);
+#endif
+  known_sp.add_constraint(B >= 2);
+  known_sp.add_congruence((B %= 2) / 4);
+  known_sp.add_congruence((A + B %= 6) / 0);
+#ifdef PH_IS_BOX_OR_NNC
+  known_cp.add_constraint(A > 2);
+#else
+  known_cp.add_constraint(A >= 2);
+#endif
+  known_cp.add_constraint(B >= 2);
+  known_cp.add_congruence((B %= 2) / 4);
+  known_cp.add_congruence((A + B %= 6) / 0);
+
+  ok = ok && sp == known_sp && cp == known_cp;
+
+  print_congruences(sp, "*** after ok check: sp congruences ***");
+  print_constraints(sp, "*** after ok check: sp constraints ***");
+
+  print_congruences(cp, "*** after ok check: cp congruences ***");
+  print_constraints(cp, "*** after ok check: cp constraints ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
 END_MAIN
