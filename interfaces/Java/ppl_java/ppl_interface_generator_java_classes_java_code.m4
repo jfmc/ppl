@@ -216,6 +216,13 @@ m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_code',
 
 ')
 
+m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@_code',
+`dnl
+%<--%<--%<-- @CLASS@.java
+    public native void refine_with_@REFINE_REPRESENT@(@UREFINE_REPRESENT@ c);
+
+')
+
 m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
@@ -227,6 +234,13 @@ m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
     public native void add_@ADD_REPRESENT@s(@UADD_REPRESENT@_System c);
+
+')
+
+m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s_code',
+`dnl
+%<--%<--%<-- @CLASS@.java
+    public native void refine_with_@REFINE_REPRESENT@s(@UREFINE_REPRESENT@_System c);
 
 ')
 

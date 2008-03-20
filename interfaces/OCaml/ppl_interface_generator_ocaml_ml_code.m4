@@ -103,6 +103,22 @@ external ppl_@TOPOLOGY@@CLASS@_add_@ADD_REPRESENT@s_and_minimize:
 
 ')
 
+m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@_code',
+`dnl
+external ppl_@TOPOLOGY@@CLASS@_refine_with_@REFINE_REPRESENT@:
+  @LTOPOLOGY@@LCLASS@ -> linear_@REFINE_REPRESENT@ -> unit
+  = "ppl_@TOPOLOGY@@CLASS@_refine_with_@REFINE_REPRESENT@"
+
+')
+
+m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s_code',
+`dnl
+external ppl_@TOPOLOGY@@CLASS@_refine_with_@REFINE_REPRESENT@s:
+  @LTOPOLOGY@@LCLASS@ -> @REFINE_REPRESENT@_system -> unit
+  = "ppl_@TOPOLOGY@@CLASS@_refine_with_@REFINE_REPRESENT@s"
+
+')
+
 m4_define(`ppl_@CLASS@_@COMPARISON@_@CLASS@_code',
 `dnl
 external ppl_@TOPOLOGY@@CLASS@_@COMPARISON@_@TOPOLOGY@@CLASS@:

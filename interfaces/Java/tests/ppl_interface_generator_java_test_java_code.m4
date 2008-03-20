@@ -131,6 +131,11 @@ m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_code', `
 
 ')
 
+m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@_code', `
+@LTOPOLOGY@@LCLASS@1.refine_with_@REFINE_REPRESENT@(@REFINE_REPRESENT@1);
+
+')
+
 m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code', `
 @LTOPOLOGY@@LCLASS@1.add_@ADD_REPRESENT@_and_minimize(@ADD_REPRESENT@1);
 
@@ -139,6 +144,12 @@ m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code', `
  m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_code', `
 
 @LTOPOLOGY@@LCLASS@1.add_@ADD_REPRESENT@s(@ADD_REPRESENT@s1);
+
+ ')
+
+ m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s_code', `
+
+@LTOPOLOGY@@LCLASS@1.refine_with_@REFINE_REPRESENT@s(@REFINE_REPRESENT@s1);
 
  ')
 

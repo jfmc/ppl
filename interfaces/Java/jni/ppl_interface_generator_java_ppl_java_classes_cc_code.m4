@@ -479,6 +479,21 @@ JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_add_1@1ADD_REPRESENT@
 
 ')
 
+m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@_code',
+`dnl
+JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_refine_1with_1@1REFINE_REPRESENT@
+(JNIEnv* env, jobject j_this_@LCLASS@, jobject j_@REFINE_REPRESENT@) {
+  try {
+    jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
+    @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
+    @UREFINE_REPRESENT@ c = build_ppl_@REFINE_REPRESENT@(env, j_@REFINE_REPRESENT@);
+    this_@LCLASS@->refine_with_@REFINE_REPRESENT@(c);
+  }
+  CATCH_ALL;
+}
+
+')
+
 m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code',
 `dnl
 JNIEXPORT jboolean JNICALL Java_ppl_1java_@1CLASS@_add_1@1ADD_REPRESENT@_1and_1minimize
@@ -504,6 +519,21 @@ JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_add_1@1ADD_REPRESENT@s
   @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
   @UADD_REPRESENT@_System cs = build_ppl_@ADD_REPRESENT@_system(env, j_@ADD_REPRESENT@s);
   this_@LCLASS@->add_@ADD_REPRESENT@s(cs);
+  }
+  CATCH_ALL;
+}
+
+')
+
+m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s_code',
+`dnl
+JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_refine_1with_1@1REFINE_REPRESENT@s
+(JNIEnv* env, jobject j_this_@LCLASS@, jobject j_@REFINE_REPRESENT@s) {
+  try {
+  jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
+  @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
+  @UREFINE_REPRESENT@_System cs = build_ppl_@REFINE_REPRESENT@_system(env, j_@REFINE_REPRESENT@s);
+  this_@LCLASS@->refine_with_@REFINE_REPRESENT@s(cs);
   }
   CATCH_ALL;
 }

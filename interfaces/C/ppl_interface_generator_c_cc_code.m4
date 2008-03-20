@@ -330,6 +330,20 @@ CATCH_ALL
 
 ')
 
+m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@_code',
+`int
+ppl_@CLASS@_refine_with_@REFINE_REPRESENT@
+(ppl_@CLASS@_t ph,
+ ppl_const_@UREFINE_REPRESENT@_t c) try {
+  @CPP_CLASS@& pph = *to_nonconst(ph);
+  const @UREFINE_REPRESENT@& cc = *to_const(c);
+  pph.refine_with_@REFINE_REPRESENT@(cc);
+  return 0;
+}
+CATCH_ALL
+
+')
+
 m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code',
 `int
 ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize
@@ -351,6 +365,20 @@ ppl_@CLASS@_add_@ADD_REPRESENT@s
   @CPP_CLASS@& pph = *to_nonconst(ph);
   const @UADD_REPRESENT@_System& ccs = *to_const(cs);
   pph.add_@ADD_REPRESENT@s(ccs);
+  return 0;
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s_code',
+`int
+ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s
+(ppl_@CLASS@_t ph,
+ ppl_const_@UREFINE_REPRESENT@_System_t cs) try {
+  @CPP_CLASS@& pph = *to_nonconst(ph);
+  const @UREFINE_REPRESENT@_System& ccs = *to_const(cs);
+  pph.refine_with_@REFINE_REPRESENT@s(ccs);
   return 0;
 }
 CATCH_ALL

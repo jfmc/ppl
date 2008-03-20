@@ -202,6 +202,36 @@ CATCH_ALL
 
 ')
 
+  m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@_code',
+`dnl
+extern "C"
+void
+ppl_@TOPOLOGY@@CLASS@_refine_with_@REFINE_REPRESENT@(value ph, value c) try {
+  CAMLparam2(ph, c);
+  @CPP_CLASS@& pph = *p_@TOPOLOGY@@CLASS@_val(ph);
+  @UREFINE_REPRESENT@ pc = build_ppl_@UREFINE_REPRESENT@(c);
+  pph.refine_with_@REFINE_REPRESENT@(pc);
+  CAMLreturn0;
+}
+CATCH_ALL
+
+')
+
+  m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s_code',
+`dnl
+extern "C"
+void
+ppl_@TOPOLOGY@@CLASS@_refine_with_@REFINE_REPRESENT@s(value ph, value cs) try {
+  CAMLparam2(ph, cs);
+  @CPP_CLASS@& pph = *p_@TOPOLOGY@@CLASS@_val(ph);
+  @UREFINE_REPRESENT@_System pcs = build_ppl_@UREFINE_REPRESENT@_System(cs);
+  pph.refine_with_@REFINE_REPRESENT@s(pcs);
+  CAMLreturn0;
+}
+CATCH_ALL
+
+')
+
   m4_define(`ppl_@CLASS@_@COMPARISON@_@CLASS@_code',
 `dnl
 extern "C"

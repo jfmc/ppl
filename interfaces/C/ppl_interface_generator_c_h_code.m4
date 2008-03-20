@@ -189,6 +189,14 @@ PPL_PROTO((ppl_@CLASS@_t ph,
 
 ')
 
+m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@_code',
+`int
+ppl_@CLASS@_refine_with_@REFINE_REPRESENT@
+PPL_PROTO((ppl_@CLASS@_t ph,
+           ppl_const_@UREFINE_REPRESENT@_t c));
+
+')
+
 m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code',
 `int
 ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize
@@ -202,6 +210,14 @@ m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_code',
 ppl_@CLASS@_add_@ADD_REPRESENT@s
 PPL_PROTO((ppl_@CLASS@_t ph,
            ppl_const_@UADD_REPRESENT@_System_t cs));
+
+')
+
+m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s_code',
+`int
+ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s
+PPL_PROTO((ppl_@CLASS@_t ph,
+           ppl_const_@UREFINE_REPRESENT@_System_t cs));
 
 ')
 
