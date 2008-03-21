@@ -96,7 +96,7 @@ test03() {
   return ok;
 }
 
-// add_congruences_and_minimize()
+// CHECKME: is this a duplicate of test03 ?
 bool
 test04() {
   Variable A(0);
@@ -110,7 +110,8 @@ test04() {
   cgs.insert(C %= 7);
 
   TBox box(3);
-  bool ok = box.add_congruences_and_minimize(cgs);
+  box.add_congruences(cgs);
+  bool ok = !box.is_empty();
 
   Rational_Box known_result(3);
   known_result.add_constraint(A == 7);
@@ -148,7 +149,7 @@ test05() {
   return ok;
 }
 
-// add_recycled_congruences_and_minimize()
+// add_recycled_congruences()
 bool
 test06() {
   Variable A(0);
@@ -162,7 +163,8 @@ test06() {
   cgs.insert(C %= 7);
 
   TBox box(3);
-  bool ok = box.add_recycled_congruences_and_minimize(cgs);
+  box.add_recycled_congruences(cgs);
+  bool ok = !box.is_empty();
 
   Rational_Box known_result(3);
   known_result.add_constraint(A == 7);
@@ -230,7 +232,7 @@ test08() {
   return ok;
 }
 
-// add_congruences_and_minimize for inconsistent equality congruences
+// add_congruences() for inconsistent equality congruences
 bool
 test09() {
   Variable A(0);
@@ -244,7 +246,8 @@ test09() {
   cgs.insert(C %= 7);
 
   TBox box(3);
-  bool ok = !box.add_congruences_and_minimize(cgs);
+  box.add_congruences(cgs);
+  bool ok = box.is_empty();
 
   Rational_Box known_result(3, EMPTY);
 
@@ -276,7 +279,7 @@ test10() {
   return ok;
 }
 
-// add_congruence_and_minimize()
+// CHECKME: is this a duplicate test?
 bool
 test11() {
   Variable A(0);
@@ -284,12 +287,16 @@ test11() {
   Variable C(2);
 
   TBox box(3);
-  bool ok = box.add_congruence_and_minimize((A %= 7) / 0);
-  ok = ok && box.add_congruence_and_minimize((A %= 2) / 3);
+  box.add_congruence((A %= 7) / 0);
+  bool ok = !box.is_empty();
+  box.add_congruence((A %= 2) / 3);
+  ok = ok && !box.is_empty();
   // Inconsistency in the two non-relational additions should
   // not be detected.
-  ok = ok && box.add_congruence_and_minimize((A + B %= 2) / 0);
-  ok = ok && box.add_congruence_and_minimize((A + B %= 3) / 0);
+  box.add_congruence((A + B %= 2) / 0);
+  ok = ok && !box.is_empty();
+  box.add_congruence((A + B %= 3) / 0);
+  ok = ok && !box.is_empty();
 
   Rational_Box known_result(3);
   known_result.add_constraint(A == 7);
@@ -301,14 +308,16 @@ test11() {
   return ok;
 }
 
-// add_congruence_and_minimize()
+// add_congruence()
 bool
 test12() {
   Variable A(0);
 
   TBox box(1);
-  bool ok = box.add_congruence_and_minimize((A %= 7) / 0);
-  ok = ok && !box.add_congruence_and_minimize((A %= 2) / 0);
+  box.add_congruence((A %= 7) / 0);
+  bool ok = !box.is_empty();
+  box.add_congruence((A %= 2) / 0);
+  ok = ok && box.is_empty();
 
   Rational_Box known_result(1, EMPTY);
 

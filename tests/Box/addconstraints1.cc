@@ -157,7 +157,8 @@ test06() {
   cs.insert(B <= 5);
 
   TBox box(2);
-  bool ok = box.add_constraints_and_minimize(cs);
+  box.add_constraints(cs);
+  bool ok = !box.is_empty();
 
   Rational_Box known_result(2);
   known_result.add_constraint(A >= 0);
@@ -207,7 +208,8 @@ test08() {
   cs.insert(B <= 5);
 
   TBox box(2);
-  bool ok = box.add_recycled_constraints_and_minimize(cs);
+  box.add_recycled_constraints(cs);
+  bool ok = !box.is_empty();
 
   Rational_Box known_result(2);
   known_result.add_constraint(A >= 0);
@@ -232,7 +234,8 @@ test09() {
   cs.insert(B <= 4);
 
   TBox box(2);
-  bool ok = !box.add_constraints_and_minimize(cs);
+  box.add_constraints(cs);
+  bool ok = box.is_empty();
 
   Rational_Box known_result(2, EMPTY);
 
@@ -256,7 +259,8 @@ test10() {
   cs.insert(A + 3 <= 2);
 
   TBox box(2);
-  bool ok = !box.add_recycled_constraints_and_minimize(cs);
+  box.add_recycled_constraints(cs);
+  bool ok = box.is_empty();
 
   Rational_Box known_result(2, EMPTY);
 

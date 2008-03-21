@@ -392,7 +392,8 @@ test14() {
   if (box1.is_empty())
     return false;
 
-  bool non_empty = box1.intersection_assign_and_minimize(box2);
+  box1.intersection_assign(box2);
+  bool non_empty = !box1.is_empty();
 
   TBox known_result(1, EMPTY);
 
@@ -423,7 +424,8 @@ test15() {
   if (box1.is_empty())
     return false;
 
-  bool non_empty = box1.intersection_assign_and_minimize(box2);
+  box1.intersection_assign(box2);
+  bool non_empty = !box1.is_empty();
 
   TBox known_result(2);
   known_result.add_constraint(x == 1);
