@@ -180,17 +180,6 @@ public:
   */
   void add_constraint(const Constraint& c);
 
-  //! Intersects \p *this with the constraint \p c, minimizing the result.
-  /*!
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p c are topology-incompatible or
-    dimension-incompatible.
-  */
-  bool add_constraint_and_minimize(const Constraint& c);
-
   //! Intersects \p *this with the constraints in \p cs.
   /*!
     \param cs
@@ -201,22 +190,6 @@ public:
     dimension-incompatible.
   */
   void add_constraints(const Constraint_System& cs);
-
-  /*! \brief
-    Intersects \p *this with the constraints in \p cs,
-    minimizing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param cs
-    The constraints to intersect with.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cs are topology-incompatible or
-    dimension-incompatible.
-  */
-  bool add_constraints_and_minimize(const Constraint_System& cs);
 
   /*! \brief
     Assign to \p *this the result of (recursively) merging together
