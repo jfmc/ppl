@@ -41,9 +41,7 @@ m4_define(`m4_procedure_list', `m4_echo_unquoted(`m4_common_procedure_list',
 ppl_new_@TOPOLOGY@@CLASS@_recycle_@BUILD_REPRESENT@s +simple,
 ppl_assign_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@ +simple,
 ppl_@CLASS@_add_recycled_@ADD_REPRESENT@ +simple,
-ppl_@CLASS@_add_recycled_@ADD_REPRESENT@_and_minimize +simple,
 ppl_@CLASS@_add_recycled_@ADD_REPRESENT@s +simple,
-ppl_@CLASS@_add_recycled_@ADD_REPRESENT@s_and_minimize +simple
 )
 ')
 
