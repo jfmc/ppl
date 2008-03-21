@@ -437,26 +437,6 @@ Octagonal_Shape<T>::add_constraint(const Constraint& c) {
 }
 
 template <typename T>
-bool
-Octagonal_Shape<T>::add_constraint_and_minimize(const Constraint& c) {
-  bool was_closed = marked_strongly_closed();
-  add_constraint(c);
-  // If the OS was strongly closed and we add a single constraint,
-  // it is convenient to use the incremental strong-closure algorithm,
-  // as we known that the constraint has affected two variables at most.
-  // (The cost is O(n^2) instead of O(n^3).)
-  if (was_closed)
-    for (dimension_type i = c.space_dimension(); i-- > 0;)
-      if (c.coefficient(Variable(i)) != 0) {
-        incremental_strong_closure_assign(Variable(i));
-        break;
-      }
-  else
-    strong_closure_assign();
-  return !(marked_empty());
-}
-
-template <typename T>
 void
 Octagonal_Shape<T>::add_congruence(const Congruence& cg) {
   const dimension_type cg_space_dim = cg.space_dimension();
@@ -2327,22 +2307,17 @@ Octagonal_Shape<T>::oct_difference_assign(const Octagonal_Shape& y) {
       continue;
     Octagonal_Shape z = x;
     const Linear_Expression e = Linear_Expression(c);
-    bool change = false;
-    if (c.is_nonstrict_inequality())
-      change = z.add_constraint_and_minimize(e <= 0);
-    if (c.is_equality()) {
-      Octagonal_Shape w = x;
-      if (w.add_constraint_and_minimize(e <= 0))
-        new_oct.oct_hull_assign(w);
-      change = z.add_constraint_and_minimize(e >= 0);
-    }
-    if (change)
+    z.add_constraint(e <= 0);
+    if (!z.is_empty())
       new_oct.oct_hull_assign(z);
+    if (c.is_equality()) {
+      z = x;
+      z.add_constraint(e >= 0);
+      if (!z.is_empty())
+        new_oct.oct_hull_assign(z);
+    }
   }
   *this = new_oct;
-  // The result is still transitively closed, because both
-  // oct_hull_assign() and add_constraint_and_minimize()
-  // preserve closure.
   assert(OK());
 }
 
@@ -5112,7 +5087,7 @@ Octagonal_Shape<T>::bounded_affine_image(const Variable var,
                                  ub_expr,
                                  denominator);
         // Now apply the affine lower bound, as recorded in `new_var'
-          add_constraint_and_minimize(var >= new_var);
+        add_constraint(var >= new_var);
         // Remove the temporarily added dimension.
         remove_higher_space_dimensions(space_dim-1);
         return;
@@ -5601,9 +5576,9 @@ Octagonal_Shape<T>::bounded_affine_preimage(const Variable var,
   generalized_affine_preimage(var, LESS_OR_EQUAL,
                               ub_expr, denominator);
   if (sgn(denominator) == sgn(inverse_den))
-    add_constraint_and_minimize(var >= new_var) ;
+    add_constraint(var >= new_var) ;
   else
-    add_constraint_and_minimize(var <= new_var);
+    add_constraint(var <= new_var);
   // Remove the temporarily added dimension.
   remove_higher_space_dimensions(space_dim-1);
   return;

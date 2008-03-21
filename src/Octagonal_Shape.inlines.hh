@@ -429,34 +429,11 @@ Octagonal_Shape<T>::add_recycled_constraints(Constraint_System& cs) {
 }
 
 template <typename T>
-inline bool
-Octagonal_Shape<T>
-::add_recycled_constraints_and_minimize(Constraint_System& cs) {
-  return add_constraints_and_minimize(cs);
-}
-
-template <typename T>
 inline void
 Octagonal_Shape<T>::add_constraints(const Constraint_System& cs) {
   Constraint_System::const_iterator i_end = cs.end();
   for (Constraint_System::const_iterator i = cs.begin(); i != i_end; ++i)
     add_constraint(*i);
-}
-
-template <typename T>
-inline bool
-Octagonal_Shape<T>::add_constraints_and_minimize(const Constraint_System& cs) {
-  add_constraints(cs);
-  strong_closure_assign();
-  return !marked_empty();
-}
-
-template <typename T>
-inline bool
-Octagonal_Shape<T>::add_congruence_and_minimize(const Congruence& cg) {
-  add_congruence(cg);
-  strong_closure_assign();
-  return !marked_empty();
 }
 
 template <typename T>
@@ -467,24 +444,9 @@ Octagonal_Shape<T>::add_congruences(const Congruence_System& cgs) {
 }
 
 template <typename T>
-inline bool
-Octagonal_Shape<T>
-::add_congruences_and_minimize(const Congruence_System& cgs) {
-  add_congruences(cgs);
-  return !is_empty();
-}
-
-template <typename T>
 inline void
 Octagonal_Shape<T>::add_recycled_congruences(Congruence_System& cgs) {
   add_congruences(cgs);
-}
-
-template <typename T>
-inline bool
-Octagonal_Shape<T>
-::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
-  return add_congruences_and_minimize(cgs);
 }
 
 template <typename T>
@@ -542,15 +504,6 @@ Octagonal_Shape<T>
 }
 
 template <typename T>
-inline bool
-Octagonal_Shape<T>
-::intersection_assign_and_minimize(const Octagonal_Shape& y) {
-  intersection_assign(y);
-  strong_closure_assign();
-  return !(marked_empty());
-}
-
-template <typename T>
 inline void
 Octagonal_Shape<T>::widening_assign(const Octagonal_Shape& y, unsigned* tp) {
   BHMZ05_widening_assign(y, tp);
@@ -595,14 +548,6 @@ Octagonal_Shape<T>::strictly_contains(const Octagonal_Shape& y) const {
   const Octagonal_Shape<T>& x = *this;
   return x.contains(y) && !y.contains(x);
 }
-
-template <typename T>
-inline bool
-Octagonal_Shape<T>::oct_hull_assign_and_minimize(const Octagonal_Shape& y) {
-  oct_hull_assign(y);
-  return !marked_empty();
-}
-
 
 template <typename T>
 inline void

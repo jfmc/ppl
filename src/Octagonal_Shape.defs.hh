@@ -812,23 +812,6 @@ public:
   void add_constraint(const Constraint& c);
 
   /*! \brief
-    Adds a copy of constraint \p c to the system of constraints
-    defining \p *this.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param c
-    The constraint to be added. If it is not an octagonal constraint, it
-    will be simply ignored.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and constraint \p c are dimension-incompatible
-    or \p c is a strict inequality.
-  */
-  bool add_constraint_and_minimize(const Constraint& c);
-
-  /*! \brief
     Adds the constraints in \p cs to the system of constraints
     defining \p *this.
 
@@ -841,23 +824,6 @@ public:
     or if \p cs contains a strict inequality.
   */
   void add_constraints(const Constraint_System& cs);
-
-  /*! \brief
-    Adds the constraints in \p cs to the system of constraints
-    defining \p *this.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param  cs
-    The constraints that will be added. Constraints that are not octagonal
-    constraints will be simply ignored.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cs are dimension-incompatible,
-    or if there is in \p cs a strict inequality.
-  */
-  bool add_constraints_and_minimize(const Constraint_System& cs);
 
   /*! \brief
     Adds the constraints in \p cs to the system of constraints
@@ -878,27 +844,6 @@ public:
   void add_recycled_constraints(Constraint_System& cs);
 
   /*! \brief
-    Adds the constraints in \p cs to the system of constraints
-    of \p *this, minimizing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param cs
-    The constraint system to be added to \p *this.  The constraints in
-    \p cs may be recycled.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cs are topology-incompatible or
-    dimension-incompatible.
-
-    \warning
-    The only assumption that can be made on \p cs upon successful or
-    exceptional return is that it can be safely destroyed.
-  */
-  bool add_recycled_constraints_and_minimize(Constraint_System& cs);
-
-  /*! \brief
     Adds a copy of congruence \p cg to the system of congruences of \p
     *this (without minimizing the result).
 
@@ -906,19 +851,6 @@ public:
     Thrown if \p *this and congruence \p cg are dimension-incompatible.
   */
   void add_congruence(const Congruence& cg);
-
-  /*! \brief
-    Adds a copy of congruence \p cg to the system of congruences
-    of \p *this, minimizing the result
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and congruence \p c are topology-incompatible
-    or dimension-incompatible.
-  */
-  bool add_congruence_and_minimize(const Congruence& cg);
 
   /*! \brief
     Adds to \p *this constraints equivalent to the congruences in \p
@@ -933,22 +865,6 @@ public:
     dimension-incompatible.
   */
 void add_congruences(const Congruence_System& cgs);
-
-  /*! \brief
-    Adds a copy of the congruences in \p cs to the system
-    of congruences of \p *this, minimizing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param cgs
-    Contains the congruences that will be added to the system of
-    congruences of \p *this.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cgs are dimension-incompatible.
-  */
-  bool add_congruences_and_minimize(const Congruence_System& cs);
 
   // FIXME
   /*! \brief
@@ -967,27 +883,6 @@ void add_congruences(const Congruence_System& cgs);
     exceptional return is that it can be safely destroyed.
   */
   void add_recycled_congruences(Congruence_System& cgs);
-
-  // FIXME
-  /*! \brief
-    Adds the congruences in \p cs to the system of congruences
-    of \p *this, minimizing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param cgs
-    The congruence system to be added to \p *this.  The congruences in
-    \p cgs may be recycled.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cs are dimension-incompatible.
-
-    \warning
-    The only assumption that can be made on \p cs upon successful or
-    exceptional return is that it can be safely destroyed.
-  */
-  bool add_recycled_congruences_and_minimize(Congruence_System& cgs);
 
   /*! \brief
     Uses a copy of constraint \p c to refine the system of octagonal
@@ -1057,16 +952,6 @@ void refine_with_congruences(const Congruence_System& cgs);
   */
   void intersection_assign(const Octagonal_Shape& y);
 
-  //! Assigns to \p *this the intersection of \p *this and \p y.
-  /*!
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p y are dimension-incompatible.
-  */
-  bool intersection_assign_and_minimize(const Octagonal_Shape& y);
-
   /*! \brief
     Assigns to \p *this the smallest OS that contains
     the convex union of \p *this and \p y.
@@ -1075,18 +960,6 @@ void refine_with_congruences(const Congruence_System& cgs);
     Thrown if \p *this and \p y are dimension-incompatible.
   */
   void oct_hull_assign(const Octagonal_Shape& y);
-
-  /*! \brief
-    Assigns to \p *this the smallest OS that contains
-    the convex union of \p *this and \p y.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p y are dimension-incompatible.
-  */
-  bool oct_hull_assign_and_minimize(const Octagonal_Shape& y);
 
   //! Same as oct_hull_assign.
   void upper_bound_assign(const Octagonal_Shape& y);
