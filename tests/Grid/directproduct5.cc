@@ -117,7 +117,7 @@ test02() {
   return ok;
 }
 
-// add_constraints_and_minimize
+// add_constraints
 bool
 test03() {
   Variable A(0);
@@ -132,7 +132,8 @@ test03() {
   print_constraints(dp, "*** dp constraints ***");
   print_congruences(dp, "*** dp congruences ***");
 
-  bool ok = dp.add_constraints_and_minimize(cs);
+  dp.add_constraints(cs);
+  bool ok = !dp.is_empty();
 
   Product known_dp(2);
   known_dp.add_constraint(A >= 0);
@@ -143,7 +144,7 @@ test03() {
   return ok;
 }
 
-// add_recycled_constraints_and_minimize
+// add_recycled_constraints
 bool
 test04() {
   Variable A(0);
@@ -158,7 +159,8 @@ test04() {
   print_constraints(dp, "*** dp constraints ***");
   print_congruences(dp, "*** dp congruences ***");
 
-  bool ok = dp.add_recycled_constraints_and_minimize(cs);
+  dp.add_recycled_constraints(cs);
+  bool ok = !dp.is_empty();
 
   Product known_dp(2);
   known_dp.add_constraint(B >= 0);
@@ -203,7 +205,7 @@ test05() {
   return ok;
 }
 
-// add_congruences_and_minimize
+// add_congruences
 bool
 test06() {
   Variable A(0);
@@ -218,7 +220,8 @@ test06() {
   print_constraints(dp, "*** dp constraints ***");
   print_congruences(dp, "*** dp congruences ***");
 
-  bool ok = dp.add_congruences_and_minimize(cgs);
+  dp.add_congruences(cgs);
+  bool ok = !dp.is_empty();
 
   Product known_dp(2);
   known_dp.add_congruence((A %= 0) / 2);
@@ -259,7 +262,7 @@ test07() {
   return ok;
 }
 
-// add_recycled_congruences_and_minimize
+// add_recycled_congruences
 bool
 test08() {
   Variable A(0);
@@ -274,7 +277,8 @@ test08() {
   print_constraints(dp, "*** dp constraints ***");
   print_congruences(dp, "*** dp congruences ***");
 
-  bool ok = dp.add_recycled_congruences_and_minimize(cgs);
+  dp.add_recycled_congruences(cgs);
+  bool ok = !dp.is_empty();
 
   Product known_dp(2);
   known_dp.add_congruence((B %= 0) / 2);

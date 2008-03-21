@@ -712,7 +712,7 @@ test17() {
   return ok;
 }
 
-// add_congruences_and_minimize
+// add_congruences
 bool
 test18() {
   Variable A(0);
@@ -727,8 +727,8 @@ test18() {
   SProduct sp(2);
   CProduct cp(2);
 
-  sp.add_congruences_and_minimize(cgs);
-  cp.add_congruences_and_minimize(cgs);
+  sp.add_congruences(cgs);
+  cp.add_congruences(cgs);
 
   SProduct known_sp(cgs);
   CProduct known_cp(cgs);
@@ -775,7 +775,7 @@ test19() {
   return ok;
 }
 
-// add_recycled_congruences_and_minimize
+// add_recycled_congruences
 bool
 test20() {
   Variable A(0);
@@ -793,8 +793,8 @@ test20() {
   Congruence_System cgs_copy = cgs;
   Congruence_System cgs_copy2 = cgs;
 
-  sp.add_recycled_congruences_and_minimize(cgs);
-  cp.add_recycled_congruences_and_minimize(cgs_copy);
+  sp.add_recycled_congruences(cgs);
+  cp.add_recycled_congruences(cgs_copy);
 
   SProduct known_sp(cgs_copy2);
   CProduct known_cp(cgs_copy2);

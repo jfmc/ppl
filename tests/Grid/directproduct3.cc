@@ -283,7 +283,8 @@ test06() {
 
   dp1.add_constraint(B <= 1);
   dp2.add_constraint(B >= 1);
-  ok = dp1.intersection_assign_and_minimize(dp2);
+  dp1.intersection_assign(dp2);
+  ok = !dp1.is_empty();
 
   if (!ok) {
     print_congruences(dp1, "*** dp1 congruences ***");
@@ -294,7 +295,8 @@ test06() {
   }
 
   dp2.add_constraint(B >= 2);
-  ok = !dp1.intersection_assign_and_minimize(dp2);
+  dp1.intersection_assign(dp2);
+  ok = dp1.is_empty();
 
   if (!ok) {
     print_congruences(dp1, "*** dp1 congruences ***");
