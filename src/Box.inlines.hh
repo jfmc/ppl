@@ -227,13 +227,6 @@ Box<Interval>::strictly_contains(const Box& y) const {
 }
 
 template <typename Interval>
-inline bool
-Box<Interval>::intersection_assign_and_minimize(const Box& y) {
-  intersection_assign(y);
-  return !is_empty();
-}
-
-template <typename Interval>
 inline void
 Box<Interval>::upper_bound_assign(const Box& y) {
   Box& x = *this;
@@ -344,13 +337,6 @@ Box<Interval>::add_constraint(const Constraint& c) {
   add_constraint_no_check(c);
 }
 
-template <typename T>
-inline bool
-Box<T>::add_constraint_and_minimize(const Constraint& c) {
-  add_constraint(c);
-  return !is_empty();
-}
-
 template <typename Interval>
 inline void
 Box<Interval>::add_constraints(const Constraint_System& cs) {
@@ -362,23 +348,9 @@ Box<Interval>::add_constraints(const Constraint_System& cs) {
 }
 
 template <typename T>
-inline bool
-Box<T>::add_constraints_and_minimize(const Constraint_System& cs) {
-  add_constraints(cs);
-  return !is_empty();
-}
-
-template <typename T>
 inline void
 Box<T>::add_recycled_constraints(Constraint_System& cs) {
   add_constraints(cs);
-}
-
-template <typename T>
-inline bool
-Box<T>::add_recycled_constraints_and_minimize(Constraint_System& cs) {
-  add_constraints(cs);
-  return !is_empty();
 }
 
 template <typename Interval>
@@ -396,13 +368,6 @@ Box<Interval>::add_congruence(const Congruence& cg) {
   add_congruence_no_check(cg);
 }
 
-template <typename T>
-inline bool
-Box<T>::add_congruence_and_minimize(const Congruence& cg) {
-  add_congruence(cg);
-  return !is_empty();
-}
-
 template <typename Interval>
 inline void
 Box<Interval>::add_congruences(const Congruence_System& cgs) {
@@ -412,23 +377,9 @@ Box<Interval>::add_congruences(const Congruence_System& cgs) {
 }
 
 template <typename T>
-inline bool
-Box<T>::add_congruences_and_minimize(const Congruence_System& cgs) {
-  add_congruences(cgs);
-  return !is_empty();
-}
-
-template <typename T>
 inline void
 Box<T>::add_recycled_congruences(Congruence_System& cgs) {
   add_congruences(cgs);
-}
-
-template <typename T>
-inline bool
-Box<T>::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
-  add_congruences(cgs);
-  return !is_empty();
 }
 
 template <typename T>
