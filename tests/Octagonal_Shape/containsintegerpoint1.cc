@@ -137,7 +137,7 @@ test05() {
 
   print_constraints(oct, "*** oct ***");
 
-  oct.add_constraint_and_minimize(x <= 0);
+  oct.add_constraint(x <= 0);
 
   print_constraints(oct, "*** oct ***");
 

@@ -137,6 +137,7 @@ test05() {
   return ok;
 }
 
+// CHECKME: is this a duplicate of test03? (was testing *_and_minimize)
 bool
 test06() {
   Variable x(0);
@@ -146,8 +147,8 @@ test06() {
   TOctagonal_Shape oct1(3);
   oct1.add_congruence((x %= 1) / 0);
   oct1.add_congruence((y %= 3) / 2);
-  bool b1 =
-    oct1.add_congruence_and_minimize((y + z %= 0) / 3);
+  oct1.add_congruence((y + z %= 0) / 3);
+  bool b1 = !oct1.is_empty();
 
   print_constraints(oct1, "*** oct1 ***");
 
@@ -155,8 +156,8 @@ test06() {
 
   Congruence_System cgs = oct1.congruences();
   TOctagonal_Shape oct2(3);
-  bool b2 =
-    oct2.add_congruences_and_minimize(cgs);
+  oct2.add_congruences(cgs);
+  bool b2 = !oct2.is_empty();
 
   bool ok = b1 && b2 && (Octagonal_Shape<mpq_class>(oct2) == known_result);
 
@@ -165,6 +166,7 @@ test06() {
   return ok;
 }
 
+// CHECKME: is this a duplicate of test02? (was testing *_and_minimize)
 bool
 test07() {
   TOctagonal_Shape oct1(0, EMPTY);
@@ -175,8 +177,8 @@ test07() {
 
   Congruence_System cgs = oct1.congruences();
   TOctagonal_Shape oct2(cgs.space_dimension(), EMPTY);
-  bool b =
-    oct2.add_congruences_and_minimize(cgs);
+  oct2.add_congruences(cgs);
+  bool b = !oct2.is_empty();
 
   bool ok = !b && (Octagonal_Shape<mpq_class>(oct2) == known_result);
 

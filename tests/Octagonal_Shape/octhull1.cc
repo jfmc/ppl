@@ -312,6 +312,7 @@ test10() {
   return false;
 }
 
+// CHEKME: is this a duplication of test10?
 bool
 test11() {
   Variable x(0);
@@ -324,9 +325,9 @@ test11() {
 
   try {
     // This is an invalid use of method
-    // Octagonal_Shape::oct_hull_assign_and_minimize(oc2): it is illegal
+    // Octagonal_Shape::oct_hull_assign(oc2): it is illegal
     // to apply this method to two polyhedra of different dimensions.
-    oc1.oct_hull_assign_and_minimize(oc2);
+    oc1.oct_hull_assign(oc2);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
@@ -358,7 +359,7 @@ test12() {
 
   print_constraints(oct2, "*** oct2 ***");
 
-  oct1.oct_hull_assign_and_minimize(oct2);
+  oct1.oct_hull_assign(oct2);
 
   Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(x1 <= 1);
@@ -367,7 +368,7 @@ test12() {
 
   bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
-  print_constraints(oct1, "*** oct1.oct_hull_assign_and_minimize(oct2) ***");
+  print_constraints(oct1, "*** oct1.oct_hull_assign(oct2) ***");
 
   return ok;
 }

@@ -155,7 +155,7 @@ test05() {
   Variable C(2);
 
   TOctagonal_Shape oct1(3);
-  oct1.add_constraint_and_minimize(A - B <= 1);
+  oct1.add_constraint(A - B <= 1);
 
   TOctagonal_Shape oct2(3, EMPTY);
 
