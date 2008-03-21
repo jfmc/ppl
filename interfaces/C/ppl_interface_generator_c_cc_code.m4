@@ -412,19 +412,6 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_add_recycled_@ADD_REPRESENT@s_and_minimize_code',
-`int
-ppl_@CLASS@_add_recycled_@ADD_REPRESENT@s_and_minimize
-(ppl_@CLASS@_t ph,
- ppl_@UADD_REPRESENT@_System_t cs) try {
-  @CPP_CLASS@& pph = *to_nonconst(ph);
-  @UADD_REPRESENT@_System& ccs = *to_nonconst(cs);
-  return pph.add_recycled_@ADD_REPRESENT@s_and_minimize(ccs) ? 1 : 0;
-}
-CATCH_ALL
-
-')
-
 m4_define(`ppl_@CLASS@_@AFFIMAGE@_code',
 `int
 ppl_@CLASS@_@AFFIMAGE@

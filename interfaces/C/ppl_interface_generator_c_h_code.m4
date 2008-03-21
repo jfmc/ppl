@@ -237,14 +237,6 @@ PPL_PROTO((ppl_@CLASS@_t ph,
 
 ')
 
-m4_define(`ppl_@CLASS@_add_recycled_@ADD_REPRESENT@s_and_minimize_code',
-`int
-ppl_@CLASS@_add_recycled_@ADD_REPRESENT@s_and_minimize
-PPL_PROTO((ppl_@CLASS@_t ph,
-           ppl_@UADD_REPRESENT@_System_t cs));
-
-')
-
 m4_define(`ppl_@CLASS@_@AFFIMAGE@_code',
 `int
 ppl_@CLASS@_@AFFIMAGE@
