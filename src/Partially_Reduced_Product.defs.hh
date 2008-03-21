@@ -749,16 +749,6 @@ public:
   */
   void refine_with_constraint(const Constraint& c);
 
-  //! Adds constraint \p c to \p *this, reducing the result.
-  /*!
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p c are dimension-incompatible.
-  */
-  bool add_constraint_and_minimize(const Constraint& c);
-
   //! Adds a copy of congruence \p cg to \p *this.
   /*!
     \exception std::invalid_argument
@@ -777,18 +767,6 @@ public:
     Thrown if \p *this and \p cg are dimension-incompatible.
   */
   void refine_with_congruence(const Congruence& cg);
-
-  /*! \brief
-    Adds a copy of congruence \p cg to the system of congruences of \p
-    *this, reducing the result
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and congruence \p cg are dimension-incompatible.
-  */
-  bool add_congruence_and_minimize(const Congruence& c);
 
   //! Adds a copy of the congruences in \p cgs to \p *this.
   /*!
@@ -825,38 +803,6 @@ public:
   */
   void add_recycled_congruences(Congruence_System& cgs);
 
-  /*! \brief
-    Adds a copy of the congruences in \p cgs to \p *this, reducing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param cgs
-    The congruence system to be be added.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cgs are dimension-incompatible.
-  */
-  bool add_congruences_and_minimize(const Congruence_System& cgs);
-
-  /*! \brief
-    Adds the congruences in \p cgs to \p *this, reducing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param cgs
-    The congruence system to be added that may be recycled.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cgs are dimension-incompatible.
-
-    \warning
-    The only assumption that can be made about \p cgs upon successful
-    or exceptional return is that it can be safely destroyed.
-  */
-  bool add_recycled_congruences_and_minimize(Congruence_System& cgs);
-
   //! Adds a copy of the constraint system in \p cs to \p *this.
   /*!
     \param cs
@@ -878,21 +824,6 @@ public:
   */
   void refine_with_constraints(const Constraint_System& cs);
 
-  /*! \brief
-    Adds  a copy of the constraint system in \p cs to \p *this,
-    reducing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param cs
-    The constraint system to be added.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cs are dimension-incompatible.
-  */
-  bool add_constraints_and_minimize(const Constraint_System& cs);
-
   //! Adds the constraint system in \p cs to \p *this.
   /*!
     \param cs
@@ -908,42 +839,12 @@ public:
   void add_recycled_constraints(Constraint_System& cs);
 
   /*! \brief
-    Adds the constraint system in \p cs to \p *this, reducing the result.
-
-    \param cs
-    The constraint system to be added that may be recycled.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cs are dimension-incompatible.
-
-    \warning
-    The only assumption that can be made about \p cs upon successful
-    or exceptional return is that it can be safely destroyed.
-  */
-  bool add_recycled_constraints_and_minimize(Constraint_System& cs);
-
-  /*! \brief
     Assigns to \p *this the componentwise intersection of \p *this and \p y.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
   void intersection_assign(const Partially_Reduced_Product& y);
-
-  /*! \brief
-    Assigns to \p *this the componentwise intersection of \p *this and \p y,
-    minimizing the components and reducing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p y are dimension-incompatible.
-  */
-  bool intersection_assign_and_minimize(const Partially_Reduced_Product& y);
 
   /*! \brief
     Assigns to \p *this an upper bound of \p *this and \p y

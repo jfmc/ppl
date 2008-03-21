@@ -176,20 +176,6 @@ Partially_Reduced_Product<D1, D2, R>
 }
 
 template <typename D1, typename D2, typename R>
-inline bool
-Partially_Reduced_Product<D1, D2, R>
-::intersection_assign_and_minimize(const Partially_Reduced_Product& y) {
-  if (!d1.intersection_assign_and_minimize(y.d1))
-    return false;
-  if (!d2.intersection_assign_and_minimize(y.d2))
-    return false;
-  reduce();
-  if (is_empty())
-    return false;
-  return true;
-}
-
-template <typename D1, typename D2, typename R>
 inline void
 Partially_Reduced_Product<D1, D2, R>
 ::difference_assign(const Partially_Reduced_Product& y) {
@@ -363,15 +349,6 @@ Partially_Reduced_Product<D1, D2, R>::refine_with_constraint(const Constraint& c
 }
 
 template <typename D1, typename D2, typename R>
-inline bool
-Partially_Reduced_Product<D1, D2, R>::add_constraint_and_minimize(const Constraint& c) {
-  bool empty = d1.add_constraint_and_minimize(c);
-  empty = empty && d2.add_constraint_and_minimize(c);
-  clear_reduced_flag();
-  return empty;
-}
-
-template <typename D1, typename D2, typename R>
 inline void
 Partially_Reduced_Product<D1, D2, R>::add_congruence(const Congruence& cg) {
   d1.add_congruence(cg);
@@ -385,18 +362,6 @@ Partially_Reduced_Product<D1, D2, R>::refine_with_congruence(const Congruence& c
   d1.refine_with_congruence(cg);
   d2.refine_with_congruence(cg);
   clear_reduced_flag();
-}
-
-template <typename D1, typename D2, typename R>
-inline bool
-Partially_Reduced_Product<D1, D2, R>::add_congruence_and_minimize(const Congruence& cg) {
-  d1.add_congruence(cg);
-  d2.add_congruence(cg);
-  (void) minimized_congruences();
-  clear_reduced_flag();
-  if (is_empty())
-    return false;
-  return true;
 }
 
 template <typename D1, typename D2, typename R>
@@ -418,16 +383,6 @@ Partially_Reduced_Product<D1, D2, R>
 }
 
 template <typename D1, typename D2, typename R>
-inline bool
-Partially_Reduced_Product<D1, D2, R>
-::add_constraints_and_minimize(const Constraint_System& cs) {
-  bool empty = d1.add_constraints_and_minimize(cs);
-  empty = empty && d2.add_constraints_and_minimize(cs);
-  clear_reduced_flag();
-  return empty;
-}
-
-template <typename D1, typename D2, typename R>
 inline void
 Partially_Reduced_Product<D1, D2, R>
 ::add_congruences(const Congruence_System& cgs) {
@@ -443,21 +398,6 @@ Partially_Reduced_Product<D1, D2, R>
   d1.refine_with_congruences(cgs);
   d2.refine_with_congruences(cgs);
   clear_reduced_flag();
-}
-
-template <typename D1, typename D2, typename R>
-inline bool
-Partially_Reduced_Product<D1, D2, R>
-::add_congruences_and_minimize(const Congruence_System& cgs) {
-  // FIXME: When the corresponding methods are in the non-grid classes
-  //        we can use these methods directly.
-  d1.add_congruences(cgs);
-  d2.add_congruences(cgs);
-  (void) minimized_congruences();
-  clear_reduced_flag();
-  if (is_empty())
-    return false;
-  return true;
 }
 
 template <typename D1, typename D2, typename R>
@@ -759,8 +699,8 @@ void Constraints_Reduction<D1, D2>::product_reduce(D1& d1, D2& d2) {
     std::swap(d2, new_d2);
   }
   else {
-  d1.add_constraints(d2.minimized_constraints());
-  d2.add_constraints(d1.minimized_constraints());
+    d1.add_constraints(d2.minimized_constraints());
+    d2.add_constraints(d1.minimized_constraints());
   }
 }
 
