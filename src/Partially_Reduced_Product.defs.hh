@@ -782,12 +782,12 @@ public:
     Use the congruences in \p cgs to refine \p *this.
 
     \param  cgs
-     The congruences to be used for refinement.
+    The congruences to be used for refinement.
 
-     \exception std::invalid_argument
-     Thrown if \p *this and \p cgs are dimension-incompatible.
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cgs are dimension-incompatible.
   */
-  void refine_with_congruences(const Congruence_System& cs);
+  void refine_with_congruences(const Congruence_System& cgs);
 
   //! Adds the congruences in \p cgs to *this.
   /*!

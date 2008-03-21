@@ -494,27 +494,27 @@ public:
   */
   bool add_congruence_and_minimize(const Congruence& c);
 
-  //! Intersects \p *this with the congruences in \p cs.
+  //! Intersects \p *this with the congruences in \p cgs.
   /*!
-    \param cs
+    \param cgs
     The congruences to intersect with.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p cs are topology-incompatible or
+    Thrown if \p *this and \p cgs are topology-incompatible or
     dimension-incompatible.
   */
-  void add_congruences(const Congruence_System& cs);
+  void add_congruences(const Congruence_System& cgs);
 
   /*! \brief
     Use the congruences in \p cgs to refine \p *this.
 
     \param  cgs
-     The congruences to be used for refinement.
+    The congruences to be used for refinement.
 
-     \exception std::invalid_argument
-     Thrown if \p *this and \p cgs are dimension-incompatible.
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cgs are dimension-incompatible.
   */
-  void refine_with_congruences(const Congruence_System& cs);
+  void refine_with_congruences(const Congruence_System& cgs);
 
   /*! \brief
     Intersects \p *this with the congruences in \p cs,
