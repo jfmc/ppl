@@ -1388,7 +1388,6 @@ Pointset_Powerset<PS>::OK() const {
   return x.Base::OK();
 }
 
-
 namespace Implementation {
 
 namespace Pointset_Powersets {

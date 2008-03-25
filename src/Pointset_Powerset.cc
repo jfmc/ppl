@@ -161,6 +161,8 @@ approximate_partition_aux(const PPL::Congruence& c,
   le -= c_inhomogeneous_term;
   TEMP_INTEGER(n);
   rem_assign(n, c_inhomogeneous_term, c_modulus);
+  if (n < 0)
+    n += c_modulus;
   TEMP_INTEGER(i);
   for (i = c_modulus; i-- > 0; )
     if (i != n) {

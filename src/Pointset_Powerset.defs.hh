@@ -698,6 +698,16 @@ public:
   void poly_difference_assign(const Pointset_Powerset& y);
 
   /*! \brief
+    Assigns to \p *this an (a smallest)
+    over-approximation as a powerset of the disjunct domain of the
+    set-theoretical difference of \p *this and \p y.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
+  */
+  void difference_assign(const Pointset_Powerset& y);
+
+  /*! \brief
     Assigns to \p *this the
     \ref Single_Update_Affine_Functions "affine image"
     of \p *this under the function mapping variable \p var to the
@@ -1083,7 +1093,6 @@ private:
   // but, apparently, this cannot be done.
   friend class Pointset_Powerset<NNC_Polyhedron>;
 };
-
 
 namespace Parma_Polyhedra_Library {
 

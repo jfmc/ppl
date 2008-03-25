@@ -150,7 +150,7 @@ template <typename PS>
 inline bool
 Pointset_Powerset<PS>
 ::geometrically_covers(const Pointset_Powerset& y) const {
-  // FIXME: this is buggy when PS is not an abstraction of NNC_Polyhedron.
+  // This code is only used when PS is an abstraction of NNC_Polyhedron.
   const Pointset_Powerset<NNC_Polyhedron> xx(*this);
   const Pointset_Powerset<NNC_Polyhedron> yy(y);
   return xx.geometrically_covers(yy);
@@ -160,7 +160,7 @@ template <typename PS>
 inline bool
 Pointset_Powerset<PS>
 ::geometrically_equals(const Pointset_Powerset& y) const {
-  // FIXME: this is buggy when PS is not an abstraction of NNC_Polyhedron.
+  // This code is only used when PS is an abstraction of NNC_Polyhedron.
   const Pointset_Powerset<NNC_Polyhedron> xx(*this);
   const Pointset_Powerset<NNC_Polyhedron> yy(y);
   return xx.geometrically_covers(yy) && yy.geometrically_covers(xx);
@@ -204,18 +204,25 @@ template <typename PS>
 inline void
 Pointset_Powerset<PS>
 ::poly_difference_assign(const Pointset_Powerset& y) {
-  // FIXME: can this become more accurate for, e.g., Grid instances?
+  // This code is only used when PS is an abstraction of NNC_Polyhedron.
   Pointset_Powerset<NNC_Polyhedron> nnc_this(*this);
   Pointset_Powerset<NNC_Polyhedron> nnc_y(y);
   nnc_this.poly_difference_assign(nnc_y);
   *this = nnc_this;
 }
 
+template <typename PS>
+inline void
+Pointset_Powerset<PS>
+::difference_assign(const Pointset_Powerset& y) {
+  poly_difference_assign(y);
+}
+
 /*! \relates Pointset_Powerset */
 template <typename PS>
 inline bool
 check_containment(const PS& ph, const Pointset_Powerset<PS>& ps) {
-  // FIXME: this is buggy when PS is not an abstraction of NNC_Polyhedron.
+  // This code is only used when PS is an abstraction of NNC_Polyhedron.
   const NNC_Polyhedron pph = NNC_Polyhedron(ph.constraints());
   const Pointset_Powerset<NNC_Polyhedron> pps(ps);
   return check_containment(pph, pps);
