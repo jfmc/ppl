@@ -1,6 +1,6 @@
 # Generated from ltmain.m4sh.
 
-# ltmain.sh (GNU libtool 1.2612 2008/03/07 08:07:49) 2.3a
+# ltmain.sh (GNU libtool) 2.2.2
 # Written by Gordon Matzigkeit <gord@gnu.ai.mit.edu>, 1996
 
 # Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2003, 2004, 2005, 2006, 2007 2008 Free Software Foundation, Inc.
@@ -65,7 +65,7 @@
 #       compiler:		$LTCC
 #       compiler flags:		$LTCFLAGS
 #       linker:		$LD (gnu? $with_gnu_ld)
-#       $progname:		(GNU libtool 1.2612 2008/03/07 08:07:49) 2.3a
+#       $progname:		(GNU libtool) 2.2.2
 #       automake:		$automake_version
 #       autoconf:		$autoconf_version
 #
@@ -73,9 +73,9 @@
 
 PROGRAM=ltmain.sh
 PACKAGE=libtool
-VERSION=2.3a
-TIMESTAMP=" 1.2612 2008/03/07 08:07:49"
-package_revision=1.2612
+VERSION=2.2.2
+TIMESTAMP=""
+package_revision=1.2627
 
 # Be Bourne compatible
 if test -n "${ZSH_VERSION+set}" && (emulate sh) >/dev/null 2>&1; then
@@ -95,12 +95,16 @@ DUALCASE=1; export DUALCASE # for MKS sh
 # Only set LANG and LC_ALL to C if already set.
 # These must not be set unconditionally because not all systems understand
 # e.g. LANG=C (notably SCO).
+lt_user_locale=
+lt_safe_locale=
 for lt_var in LANG LANGUAGE LC_ALL LC_CTYPE LC_COLLATE LC_MESSAGES
 do
   eval "if test \"\${$lt_var+set}\" = set; then
           save_$lt_var=\$$lt_var
           $lt_var=C
 	  export $lt_var
+	  lt_user_locale=\"$lt_var=\\\$save_\$lt_var; \$lt_user_locale\"
+	  lt_safe_locale=\"$lt_var=C; \$lt_safe_locale\"
 	fi"
 done
 
@@ -112,15 +116,15 @@ $lt_unset CDPATH
 
 : ${CP="cp -f"}
 : ${ECHO="echo"}
-: ${EGREP="/bin/grep -E"}
-: ${FGREP="/bin/grep -F"}
-: ${GREP="/bin/grep"}
+: ${EGREP="/usr/bin/grep -E"}
+: ${FGREP="/usr/bin/grep -F"}
+: ${GREP="/usr/bin/grep"}
 : ${LN_S="ln -s"}
 : ${MAKE="make"}
 : ${MKDIR="mkdir"}
 : ${MV="mv -f"}
 : ${RM="rm -f"}
-: ${SED="/bin/sed"}
+: ${SED="/opt/local/bin/gsed"}
 : ${SHELL="${CONFIG_SHELL-/bin/sh}"}
 : ${Xsed="$SED -e 1s/^X//"}
 
@@ -418,6 +422,32 @@ func_show_eval ()
     if ${opt_dry_run-false}; then :; else
       eval "$my_cmd"
       my_status=$?
+      if test "$my_status" -eq 0; then :; else
+	eval "(exit $my_status); $my_fail_exp"
+      fi
+    fi
+}
+
+
+# func_show_eval_locale cmd [fail_exp]
+# Unless opt_silent is true, then output CMD.  Then, if opt_dryrun is
+# not true, evaluate CMD.  If the evaluation of CMD fails, and FAIL_EXP
+# is given, then evaluate it.  Use the saved locale for evaluation.
+func_show_eval_locale ()
+{
+    my_cmd="$1"
+    my_fail_exp="${2-:}"
+
+    ${opt_silent-false} || {
+      func_quote_for_expand "$my_cmd"
+      eval "func_echo $func_quote_for_expand_result"
+    }
+
+    if ${opt_dry_run-false}; then :; else
+      eval "$lt_user_locale
+	    $my_cmd"
+      my_status=$?
+      eval "$lt_safe_locale"
       if test "$my_status" -eq 0; then :; else
 	eval "(exit $my_status); $my_fail_exp"
       fi
@@ -1897,7 +1927,7 @@ compiler."
 
       $opt_dry_run || $RM "$lobj" "$output_obj"
 
-      func_show_eval "$command"	\
+      func_show_eval_locale "$command"	\
           'test -n "$output_obj" && $RM $removelist; exit $EXIT_FAILURE'
 
       if test "$need_locks" = warn &&
@@ -1947,7 +1977,7 @@ compiler."
       # Suppress compiler output if we already did a PIC compilation.
       command="$command$suppress_output"
       $opt_dry_run || $RM "$obj" "$output_obj"
-      func_show_eval "$command" \
+      func_show_eval_locale "$command" \
         '$opt_dry_run || $RM $removelist; exit $EXIT_FAILURE'
 
       if test "$need_locks" = warn &&
@@ -2895,6 +2925,7 @@ EOF
 #ifdef _MSC_VER
 # include <direct.h>
 # include <process.h>
+# include <io.h>
 #else
 # include <unistd.h>
 # include <stdint.h>
@@ -2905,6 +2936,7 @@ EOF
 #include <string.h>
 #include <ctype.h>
 #include <errno.h>
+#include <fcntl.h>
 #include <sys/stat.h>
 
 #if defined(PATH_MAX)
@@ -2938,6 +2970,7 @@ EOF
 #if defined (_WIN32) || defined (__MSDOS__) || defined (__DJGPP__) || \
   defined (__OS2__)
 # define HAVE_DOS_BASED_FILE_SYSTEM
+# define FOPEN_WB "wb"
 # ifndef DIR_SEPARATOR_2
 #  define DIR_SEPARATOR_2 '\\'
 # endif
@@ -2958,6 +2991,17 @@ EOF
 #else /* PATH_SEPARATOR_2 */
 # define IS_PATH_SEPARATOR(ch) ((ch) == PATH_SEPARATOR_2)
 #endif /* PATH_SEPARATOR_2 */
+
+#ifdef __CYGWIN__
+# define FOPEN_WB "wb"
+#endif
+
+#ifndef FOPEN_WB
+# define FOPEN_WB "w"
+#endif
+#ifndef _O_BINARY
+# define _O_BINARY 0
+#endif
 
 #define XMALLOC(type, num)      ((type *) xmalloc ((num) * sizeof(type)))
 #define XFREE(stale) do { \
@@ -3024,6 +3068,15 @@ main (int argc, char *argv[])
     {
       if (strcmp (argv[i], dumpscript_opt) == 0)
 	{
+EOF
+	    case "$host" in
+	      *mingw* | *cygwin* )
+		# make stdout use "unix" line endings
+		echo "          _setmode(1,_O_BINARY);"
+		;;
+	      esac
+
+	    cat <<EOF
 	  printf ("%s", script_text);
 	  return 0;
 	}
@@ -3111,10 +3164,8 @@ EOF
   XFREE (shwrapper_name);
   XFREE (actual_cwrapper_path);
 
-  /* note: do NOT use "wt" here! -- defer to underlying
-   * mount type on cygwin
-   */
-  if ((shwrapper = fopen (newargz[1], "w")) == 0)
+  /* always write in binary mode */
+  if ((shwrapper = fopen (newargz[1], FOPEN_WB)) == 0)
     {
       lt_fatal ("Could not open %s for writing", newargz[1]);
     }
@@ -7208,7 +7259,12 @@ EOF
 	    $RM $func_ltwrapper_scriptname_result
 	    trap "$RM $func_ltwrapper_scriptname_result; exit $EXIT_FAILURE" 1 2 15
 	    $opt_dry_run || {
-	      $cwrapper --lt-dump-script > $func_ltwrapper_scriptname_result
+	      # note: this script will not be executed, so do not chmod.
+	      if test "x$build" = "x$host" ; then
+		$cwrapper --lt-dump-script > $func_ltwrapper_scriptname_result
+	      else
+		func_emit_wrapper no > $func_ltwrapper_scriptname_result
+	      fi
 	    }
 	  ;;
 	  * )
