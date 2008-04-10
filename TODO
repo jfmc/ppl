@@ -49,8 +49,9 @@ The following basic GDs currently supported by the PPL are:
 1) space dimension
 2) variable and variable set
 3) coefficient
-5) linear expression
-4) relation symbol
+4) linear expression
+5) relation symbol
+6) vector point
 
 These classes, which are all generic syntactic GDs, are used
 to build the constraint and generator GDs as
@@ -61,8 +62,8 @@ Constraint geometric descriptors
 
 The PPL currently supports the following classes of constraint GDs:
 
-1) linear constraint, which denotes a hyperplane;
-2) linear constraint system, which denotes a hyperspace;
+1) linear constraint;
+2) linear constraint system;
 3) linear congruence;
 4) linear congruence system;
 
@@ -79,16 +80,12 @@ Generator geometric descriptors
 The PPL currently supports two classes of generator GDs.
 
 1) Polyhedra generator: these are polyhedra points, rays and lines.
-   Notice that rays and lines are "space operators" that do not make
-   sense in themselves: they need a space to operate upon.
-2) Grid generator: these are grid points, parameters and grid lines.
-   Notice that parameters and grid lines are "space operators" that
-   do not make sense in themselves: they need a space to operate upon.
+2) Grid generator: these are grid points, parameters and lines.
 
-These classes are specific syntactic GDs since they can only be used
-by the appropriate classes. However there is an exception to this and a
-polyhedron point is also used in some generic PPL operations where it
-is interpreted as a point in the considered vector space.
+Rays, lines and parameters are specific of the mentioned semantic GDs
+and, therefore, they cannot be used by other semantic GDs.
+In contrast, as already mentioned above, points are basic geometric
+descriptors since they are also used in <EM>generic</EM> PPL operations.
 
 Generic operations on semantic geometric descriptors
 ----------------------------------------------------
@@ -131,8 +128,8 @@ o  \p contains(), strictly_contains(), \p is_disjoint_from()
    compare the semantic GD with an argument semantic GD of the same class.
 
 o  \p topological_closure_assign(), \p intersection_assign(),
-   \p intersection_assign_and_minimize(), \p upper_bound_assign(),
-   \p difference_assign(), \p time_elapse_assign(), \p widening_assign(),
+   \p upper_bound_assign(), \p difference_assign(),
+   \p time_elapse_assign(), \p widening_assign(),
    \p concatenate_assign(), \p swap()
 
    modify the semantic GD, possibly with an argument semantic GD of
@@ -178,7 +175,7 @@ c) Constructors of a semantic GD from a constraint GD;
    then it indicates its unsuitability by throwing an "invalid argument"
    exception to signal that the operation could not be performed.
 
-e) Other interraction between the semantic GDs and constraint GDs
+d) Other interaction between the semantic GDs and constraint GDs
 
 o  \p add_constraint(), \p add_constraints(), \p add_recycled_constraints()
    \p add_congruence(), \p add_congruences(), \p add_recycled_congruences().
@@ -226,6 +223,8 @@ o  \p refine_with_constraint(), \p refine_with_constraints(),
 
 \code
      Semantic_GD.refine_with_constraint(c).
+     // Other add_constraint(s) or refine_with_constraint(s) operations
+     // on Semantic_GD.
 \endcode
 
 o  \p constraints(), \p minimized_constraints(),
