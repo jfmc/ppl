@@ -77,6 +77,7 @@ expandspacedim1 \
 foldspacedims1 \
 frombdshape1 \
 fromoctagonalshape1 \
+frompolyhedron1 \
 generalizedaffineimage1 generalizedaffineimage2 generalizedaffineimage3 \
 generalizedaffinepreimage1 generalizedaffinepreimage2 \
 generalizedaffinepreimage3 \
@@ -194,6 +195,8 @@ expandspacedim1_SOURCES = expandspacedim1.cc
 frombdshape1_SOURCES = frombdshape1.cc
 
 fromoctagonalshape1_SOURCES = fromoctagonalshape1.cc
+
+frompolyhedron1_SOURCES = frompolyhedron1.cc
 
 foldspacedims1_SOURCES = foldspacedims1.cc
 

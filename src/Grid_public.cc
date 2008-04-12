@@ -137,7 +137,8 @@ PPL::Grid::Grid(const Polyhedron& ph,
 					     "the space dimension of ph "
 					     "exceeds the maximum allowed "
 					     "space dimension"), 0
-	    : ph.space_dimension()) {
+	    : ph.space_dimension()),
+    gen_sys(ph.space_dimension()) {
   space_dim = ph.space_dimension();
 
   // A zero-dim polyhedron causes no complexity problems.
@@ -161,7 +162,10 @@ PPL::Grid::Grid(const Polyhedron& ph,
   // Minimize the constraint description if it is needed and
   // the complexity allows it.
   if (use_constraints && complexity == ANY_COMPLEXITY)
-    ph.minimize();
+    if (!ph.minimize()) {
+      set_empty();
+      return;
+    }
 
   if (use_constraints) {
     // Only the equality constraints need be used.
