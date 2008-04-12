@@ -130,7 +130,8 @@ PPL::Grid::Grid(Constraint_System& cs, Recycle_Input)
   construct(cgs);
 }
 
-PPL::Grid::Grid(const Polyhedron& ph)
+PPL::Grid::Grid(const Polyhedron& ph,
+                Complexity_Class complexity)
   : con_sys(ph.space_dimension() > max_space_dimension()
 	    ? throw_space_dimension_overflow("Grid(ph)",
 					     "the space dimension of ph "
@@ -139,84 +140,91 @@ PPL::Grid::Grid(const Polyhedron& ph)
 	    : ph.space_dimension()) {
   space_dim = ph.space_dimension();
 
-  // If the polyhedron is empty, universe or has zero dimensions construct
-  // the grid accordingly.
-  if (ph.is_empty())
-    set_empty();
-  else if (space_dim == 0)
-    set_zero_dim_univ();
-  else if (ph.is_universe())
-    construct(space_dim, UNIVERSE);
-  else {
-
-    gen_sys = Grid_Generator_System(space_dim);
-    if (!ph.constraints_are_up_to_date()) {
-      // If the polyhedron's constraints are not up-to-date,
-      // use the generators instead to build the grid.
-
-      assert(ph.generators_are_up_to_date());
-
-      // First find a point or closure point and convert it to a
-      // grid point and add to the (initially empty) set of grid generators.
-      const Generator_System& gs = ph.generators();
-      Grid_Generator_System ggs(space_dim);
-      Linear_Expression point_expr;
-      Coefficient point_divisor;
-      for (Generator_System::const_iterator g = gs.begin(),
-	     gs_end = gs.end(); g != gs_end; ++g) {
-        if (g->is_point() || g->is_closure_point()) {
-	  for (dimension_type i = space_dim; i-- > 0; ) {
-            const Variable v(i);
-	    point_expr += g->coefficient(v) * v;
-            point_divisor = g->divisor();
-	  }
-	  ggs.insert(grid_point(point_expr, point_divisor));
-          break;
-	}
-      }
-
-      // Add grid lines for all the other generators.
-      // If the polyhedron's generator is a (closure) point, the grid line must
-      // have the direction given by a line that joins the grid point already
-      // inserted and the new point.
-      TEMP_INTEGER(coeff);
-      for (Generator_System::const_iterator g = gs.begin(),
-	     gs_end = gs.end(); g != gs_end; ++g) {
-	Linear_Expression e;
-        if (g->is_point() || g->is_closure_point()) {
-          Coefficient g_divisor = g->divisor();
-	  for (dimension_type i = space_dim; i-- > 0; ) {
-            const Variable v(i);
-            coeff = point_expr.coefficient(v) * g_divisor;
-            coeff -= g->coefficient(v) * point_divisor;
-	    e += coeff * v;
-	  }
-          if (e.all_homogeneous_terms_are_zero())
-            continue;
-	}
-        else
-	  for (dimension_type i = space_dim; i-- > 0; ) {
-            const Variable v(i);
-	    e += g->coefficient(v) * v;
-	  }
-	ggs.insert(grid_line(e));
-      }
-      construct(ggs);
-    }
-
-    else {
-      // If the polyhedron's constraints are up-to-date, use these to
-      // build the grid. Only the equality constraints need be used.
-      const Constraint_System& cs = ph.constraints();
-      Congruence_System cgs;
-      cgs.insert(0*Variable(space_dim - 1) %= 1);
-      for (Constraint_System::const_iterator i = cs.begin(),
-	     cs_end = cs.end(); i != cs_end; ++i)
-	if (i->is_equality())
-	  cgs.insert(*i);
-      construct(cgs);
-    }
+  // A zero-dim polyhedron causes no complexity problems.
+  if (space_dim == 0) {
+    if (ph.is_empty())
+      set_empty();
+    else
+      set_zero_dim_univ();
+    return;
   }
+
+  // A polyhedron known to be empty causes no complexity problems.
+  if (ph.marked_empty()) {
+    set_empty();
+    return;
+  }
+
+  bool use_constraints = ph.constraints_are_minimized()
+    || !ph.generators_are_up_to_date();
+
+  // Minimize the constraint description if it is needed and
+  // the complexity allows it.
+  if (use_constraints && complexity == ANY_COMPLEXITY)
+    ph.minimize();
+
+  if (use_constraints) {
+    // Only the equality constraints need be used.
+    assert(ph.constraints_are_up_to_date());
+    const Constraint_System& cs = ph.constraints();
+    Congruence_System cgs;
+    cgs.insert(0*Variable(space_dim - 1) %= 1);
+    for (Constraint_System::const_iterator i = cs.begin(),
+           cs_end = cs.end(); i != cs_end; ++i)
+      if (i->is_equality())
+        cgs.insert(*i);
+    construct(cgs);
+  }
+  else {
+    gen_sys = Grid_Generator_System(space_dim);
+    // First find a point or closure point and convert it to a
+    // grid point and add to the (initially empty) set of grid generators.
+    assert(ph.generators_are_up_to_date());
+    const Generator_System& gs = ph.generators();
+    Grid_Generator_System ggs(space_dim);
+    Linear_Expression point_expr;
+    Coefficient point_divisor;
+    for (Generator_System::const_iterator g = gs.begin(),
+           gs_end = gs.end(); g != gs_end; ++g) {
+      if (g->is_point() || g->is_closure_point()) {
+        for (dimension_type i = space_dim; i-- > 0; ) {
+          const Variable v(i);
+          point_expr += g->coefficient(v) * v;
+          point_divisor = g->divisor();
+        }
+        ggs.insert(grid_point(point_expr, point_divisor));
+        break;
+      }
+    }
+    // Add grid lines for all the other generators.
+    // If the polyhedron's generator is a (closure) point, the grid line must
+    // have the direction given by a line that joins the grid point already
+    // inserted and the new point.
+    TEMP_INTEGER(coeff);
+    for (Generator_System::const_iterator g = gs.begin(),
+           gs_end = gs.end(); g != gs_end; ++g) {
+      Linear_Expression e;
+      if (g->is_point() || g->is_closure_point()) {
+        Coefficient g_divisor = g->divisor();
+        for (dimension_type i = space_dim; i-- > 0; ) {
+          const Variable v(i);
+          coeff = point_expr.coefficient(v) * g_divisor;
+          coeff -= g->coefficient(v) * point_divisor;
+          e += coeff * v;
+        }
+        if (e.all_homogeneous_terms_are_zero())
+          continue;
+      }
+      else
+        for (dimension_type i = space_dim; i-- > 0; ) {
+          const Variable v(i);
+          e += g->coefficient(v) * v;
+        }
+      ggs.insert(grid_line(e));
+    }
+    construct(ggs);
+  }
+  assert(OK());
 }
 
 PPL::Grid&

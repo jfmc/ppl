@@ -586,18 +586,26 @@ public:
   template <typename Box>
   Grid(const Box& box, From_Covering_Box dummy);
 
-  //! Builds a grid, copying a polyhedron.
-  /*!
+  /*! \brief
+    Builds a grid from a polyhedron using algorithms whose complexity
+    does not exceed the one specified by \p complexity.
+    If \p complexity is \p ANY_COMPLEXITY, then the grid built is the
+    smallest one containing \p ph.
+
     The grid inherits the space dimension of polyhedron.
 
     \param ph
     The polyhedron.
 
+    \param complexity
+    The complexity class.
+
     \exception std::length_error
     Thrown if \p num_dimensions exceeds the maximum allowed space
     dimension.
   */
-  explicit Grid(const Polyhedron& ph);
+  explicit Grid(const Polyhedron& ph,
+                Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Ordinary copy-constructor.
   Grid(const Grid& y);
