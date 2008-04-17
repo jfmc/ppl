@@ -3222,6 +3222,53 @@ Octagonal_Shape<T>
 
 template <typename T>
 void
+Octagonal_Shape<T>::unconstrain(const Variable var) {
+  // Dimension-compatibility check.
+  const dimension_type dim = var.id();
+  if (space_dimension() < dim)
+    throw_dimension_incompatible("unconstrain(var)", dim);
+
+  // Enforce strong closure for precision.
+  strong_closure_assign();
+
+  // If the shape is empty, this is a no-op.
+  if (marked_empty())
+    return;
+
+  forget_all_octagonal_constraints(dim);
+  // Strong closure is preserved.
+  assert(OK());
+}
+
+template <typename T>
+void
+Octagonal_Shape<T>::unconstrain(const Variables_Set& to_be_unconstrained) {
+  // The cylindrification wrt no dimensions is a no-op.
+  // This case captures the only legal cylindrification in a 0-dim space.
+  if (to_be_unconstrained.empty())
+    return;
+
+  // Dimension-compatibility check.
+  const dimension_type min_space_dim = to_be_unconstrained.space_dimension();
+  if (space_dimension() < min_space_dim)
+    throw_dimension_incompatible("unconstrain(vs)", min_space_dim);
+
+  // Enforce strong closure for precision.
+  strong_closure_assign();
+
+  // If the shape is empty, this is a no-op.
+  if (marked_empty())
+    return;
+
+  for (Variables_Set::const_iterator tbu = to_be_unconstrained.begin(),
+         tbu_end = to_be_unconstrained.end(); tbu != tbu_end; ++tbu)
+    forget_all_octagonal_constraints(*tbu);
+  // Strong closure is preserved.
+  assert(OK());
+}
+
+template <typename T>
+void
 Octagonal_Shape<T>::refine(const Variable var,
                            const Relation_Symbol relsym,
                            const Linear_Expression& expr,

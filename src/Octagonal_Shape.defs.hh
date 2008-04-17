@@ -426,6 +426,16 @@ public:
   //! Returns the maximum space dimension that an OS can handle.
   static dimension_type max_space_dimension();
 
+  /*! \brief
+    Returns false indicating that this domain cannot recycle constraints
+  */
+  static bool can_recycle_constraint_systems();
+
+  /*! \brief
+    Returns false indicating that this domain cannot recycle congruences
+  */
+  static bool can_recycle_congruence_systems();
+
   //! \name Constructors, Assignment, Swap and Destructor
   //@{
 
@@ -864,7 +874,7 @@ public:
     Thrown if \p *this and \p cgs are topology-incompatible or
     dimension-incompatible.
   */
-void add_congruences(const Congruence_System& cgs);
+  void add_congruences(const Congruence_System& cgs);
 
   // FIXME
   /*! \brief
@@ -933,17 +943,33 @@ void add_congruences(const Congruence_System& cgs);
     \exception std::invalid_argument
     Thrown if \p *this and \p cgs are dimension-incompatible.
   */
-void refine_with_congruences(const Congruence_System& cgs);
+  void refine_with_congruences(const Congruence_System& cgs);
 
   /*! \brief
-    Returns false indicating that this domain cannot recycle constraints
+    Computes the \ref Cylindrification "cylindrification" of \p *this with
+    respect to space dimension \p var, assigning the result to \p *this.
+
+    \param var
+    The space dimension that will be unconstrained.
+
+    \exception std::invalid_argument
+    Thrown if \p var is not a space dimension of \p *this.
   */
-  static bool can_recycle_constraint_systems();
+  void unconstrain(Variable var);
 
   /*! \brief
-    Returns false indicating that this domain cannot recycle congruences
+    Computes the \ref Cylindrification "cylindrification" of \p *this with
+    respect to the set of space dimensions \p to_be_unconstrained,
+    assigning the result to \p *this.
+
+    \param to_be_unconstrained
+    The set of space dimension that will be unconstrained.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with one of the
+    Variable objects contained in \p to_be_removed.
   */
-  static bool can_recycle_congruence_systems();
+  void unconstrain(const Variables_Set& to_be_unconstrained);
 
   //! Assigns to \p *this the intersection of \p *this and \p y.
   /*!
