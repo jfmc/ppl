@@ -2029,6 +2029,77 @@ PPL::Polyhedron::refine_with_congruences(const Congruence_System& cgs) {
 }
 
 void
+PPL::Polyhedron::unconstrain(const Variable var) {
+  // Dimension-compatibility check.
+  if (space_dim < var.id())
+    throw_dimension_incompatible("unconstrain(var)", var.id());
+
+  // Do something only if the polyhedron is non-empty.
+  if (marked_empty()
+      || (has_pending_constraints() && !process_pending_constraints())
+      || (!generators_are_up_to_date() && !update_generators()))
+    // Empty: do nothing.
+    return;
+
+  assert(generators_are_up_to_date());
+  // Since `gen_sys' is not empty, the topology and space dimension
+  // of the inserted generator are automatically adjusted.
+  if (can_have_something_pending()) {
+    gen_sys.insert_pending(Generator::line(var));
+    set_generators_pending();
+  }
+  else {
+    gen_sys.insert(Generator::line(var));
+    // After adding the new generator,
+    // constraints are no longer up-to-date.
+    clear_generators_minimized();
+    clear_constraints_up_to_date();
+  }
+  assert(OK(true));
+}
+
+void
+PPL::Polyhedron::unconstrain(const Variables_Set& to_be_unconstrained) {
+  // The cylindrification wrt no dimensions is a no-op.
+  // This case also captures the only legal cylindrification
+  // of a polyhedron in a 0-dim space.
+  if (to_be_unconstrained.empty())
+    return;
+
+  // Dimension-compatibility check.
+  const dimension_type min_space_dim = to_be_unconstrained.space_dimension();
+  if (space_dim < min_space_dim)
+    throw_dimension_incompatible("unconstrain(vs)", min_space_dim);
+
+  // Do something only if the polyhedron is non-empty.
+  if (marked_empty()
+      || (has_pending_constraints() && !process_pending_constraints())
+      || (!generators_are_up_to_date() && !update_generators()))
+    // Empty: do nothing.
+    return;
+
+  assert(generators_are_up_to_date());
+  // Since `gen_sys' is not empty, the topology and space dimension
+  // of the inserted generators are automatically adjusted.
+  Variables_Set::const_iterator tbu = to_be_unconstrained.begin();
+  Variables_Set::const_iterator tbu_end = to_be_unconstrained.end();
+  if (can_have_something_pending()) {
+    for (++tbu; tbu != tbu_end; ++tbu)
+      gen_sys.insert_pending(Generator::line(Variable(*tbu)));
+    set_generators_pending();
+  }
+  else {
+    for (++tbu; tbu != tbu_end; ++tbu)
+      gen_sys.insert(Generator::line(Variable(*tbu)));
+    // After adding the new generators,
+    // constraints are no longer up-to-date.
+    clear_generators_minimized();
+    clear_constraints_up_to_date();
+  }
+  assert(OK(true));
+}
+
+void
 PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
   Polyhedron& x = *this;
   // Topology compatibility check.
@@ -2650,11 +2721,16 @@ bounded_affine_preimage(const Variable var,
       add_constraint(ub_expr <= denominator*var);
       add_constraint(denominator*var <= lb_expr);
     }
+#if 1
+    // ENEA: CHECKME.
+    unconstrain(var);
+#else
     // Any image of an empty polyhedron is empty.
     // Note: DO check for emptiness here, as we will later add a line.
     if (is_empty())
       return;
     add_generator(line(var));
+#endif
   }
   else {
     // Here `var' occurs in `lb_expr' or `ub_expr'.
@@ -2879,11 +2955,16 @@ generalized_affine_preimage(const Variable var,
     throw std::runtime_error("PPL internal error");
     break;
   }
+#if 1
+    // ENEA: CHECKME.
+    unconstrain(var);
+#else
   // If the shrunk polyhedron is empty, its preimage is empty too.
   // Note: DO check for emptiness here, as we will later add a line.
   if (is_empty())
     return;
   add_generator(line(var));
+#endif
   assert(OK());
 }
 
