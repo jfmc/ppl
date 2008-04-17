@@ -31,8 +31,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <typename Box>
-Polyhedron::Polyhedron(Topology topol, const Box& box,
-                       Complexity_Class)
+Polyhedron::Polyhedron(Topology topol, const Box& box, Complexity_Class)
   : con_sys(topol),
     gen_sys(topol),
     sat_c(),

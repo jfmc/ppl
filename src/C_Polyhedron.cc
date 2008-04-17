@@ -67,8 +67,7 @@ PPL::C_Polyhedron::C_Polyhedron(Congruence_System& cgs, Recycle_Input)
   add_congruences(cgs);
 }
 
-PPL::C_Polyhedron::C_Polyhedron(const Grid& grid,
-                Complexity_Class)
+PPL::C_Polyhedron::C_Polyhedron(const Grid& grid, Complexity_Class)
   : Polyhedron(NECESSARILY_CLOSED,
 	       grid.space_dimension() <= max_space_dimension()
 	       ? grid.space_dimension()

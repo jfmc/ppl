@@ -191,7 +191,7 @@ public:
   */
   template <typename Interval>
   explicit C_Polyhedron(const Box<Interval>& box,
-                Complexity_Class complexity = ANY_COMPLEXITY);
+                        Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Builds a C polyhedron out of a bounded-difference shape.
   /*!
@@ -208,7 +208,7 @@ public:
   */
   template <typename U>
   explicit C_Polyhedron(const BD_Shape<U>& bd,
-                Complexity_Class complexity = ANY_COMPLEXITY);
+                        Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Builds a C polyhedron out of an octagonal shape.
   /*!
@@ -225,7 +225,7 @@ public:
   */
   template <typename U>
   explicit C_Polyhedron(const Octagonal_Shape<U>& os,
-                Complexity_Class complexity = ANY_COMPLEXITY);
+                        Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Builds a C polyhedron that approximates a grid.
   /*!
@@ -241,7 +241,7 @@ public:
     polynomial complexity.
   */
   explicit C_Polyhedron(const Grid& grid,
-                Complexity_Class complexity = ANY_COMPLEXITY);
+                        Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Ordinary copy-constructor.
   C_Polyhedron(const C_Polyhedron& y);

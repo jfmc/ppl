@@ -164,7 +164,7 @@ public:
   */
   template <typename Interval>
   explicit NNC_Polyhedron(const Box<Interval>& box,
-                Complexity_Class complexity = ANY_COMPLEXITY);
+                          Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Builds an NNC polyhedron that approximates a grid.
   /*!
@@ -176,7 +176,7 @@ public:
     The grid used to build the polyhedron.
   */
   explicit NNC_Polyhedron(const Grid& grid,
-                Complexity_Class complexity = ANY_COMPLEXITY);
+                          Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Builds a NNC polyhedron out of a bd shape.
   /*!
@@ -193,7 +193,7 @@ public:
   */
   template <typename U>
   explicit NNC_Polyhedron(const BD_Shape<U>& bd,
-                Complexity_Class complexity = ANY_COMPLEXITY);
+                          Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Builds a NNC polyhedron out of an octagonal shape.
   /*!
@@ -210,7 +210,7 @@ public:
   */
   template <typename U>
   explicit NNC_Polyhedron(const Octagonal_Shape<U>& os,
-                Complexity_Class complexity = ANY_COMPLEXITY);
+                          Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Ordinary copy-constructor.
   NNC_Polyhedron(const NNC_Polyhedron& y);
