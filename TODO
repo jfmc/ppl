@@ -24,10 +24,24 @@ Semantic geometric descriptors
 A <EM>semantic geometric descriptor</EM> is a subset of \f$ \Rset^n \f$.
 The PPL provides several classes of semantic GDs.  These are
 identified by their C++ class name, together with the class template
-parameters, if any. A uniform set of operations is provided for
-creating, testing and maintaining each of the semantic GDs.
-However, as most of these will depend on one or more syntactic GDs,
-we first describe the syntactic GDs.
+parameters, if any. These classes include the <EM>simple classes</EM>:
+o C\_Polyhedron
+o NNC\_Polyhedron
+o BD_Shape<I>
+o Octagonal\_Shape<I>
+o Box<I>
+o Grid
+where I is a numeric type;
+
+and classes that can be built using constructors that include:
+o Pointset\_Powerset<PS>
+o Partially\_Reduced\_Product<PS1, PS2, R>
+where PS, PS1, PS2 can be any classes and R is the reduction operation
+to be applied to the component domains of the product class.
+
+A uniform set of operations is provided for creating, testing and
+maintaining each of the semantic GDs. However, as most of these will
+depend on one or more syntactic GDs, we first describe the syntactic GDs.
 
 Syntactic geometric descriptors
 -------------------------------
