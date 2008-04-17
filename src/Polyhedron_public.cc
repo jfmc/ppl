@@ -2084,12 +2084,12 @@ PPL::Polyhedron::unconstrain(const Variables_Set& to_be_unconstrained) {
   Variables_Set::const_iterator tbu = to_be_unconstrained.begin();
   Variables_Set::const_iterator tbu_end = to_be_unconstrained.end();
   if (can_have_something_pending()) {
-    for (++tbu; tbu != tbu_end; ++tbu)
+    for ( ; tbu != tbu_end; ++tbu)
       gen_sys.insert_pending(Generator::line(Variable(*tbu)));
     set_generators_pending();
   }
   else {
-    for (++tbu; tbu != tbu_end; ++tbu)
+    for ( ; tbu != tbu_end; ++tbu)
       gen_sys.insert(Generator::line(Variable(*tbu)));
     // After adding the new generators,
     // constraints are no longer up-to-date.
