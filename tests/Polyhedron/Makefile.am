@@ -119,6 +119,7 @@ smm1 \
 timeelapse1 timeelapse2 \
 topclosed1 \
 topclosure1 \
+unconstrain1 \
 universe1 universe2 \
 variablesset1 \
 writeconsys1 \
@@ -188,6 +189,7 @@ nnc_relations1 nnc_relations2 \
 nnc_removespacedims1 \
 nnc_smm1 \
 nnc_timeelapse1 \
+nnc_unconstrain1 \
 nnc_universe1 \
 nnc_writepolyhedron1
 
@@ -384,6 +386,8 @@ timeelapse2_SOURCES = timeelapse2.cc
 topclosed1_SOURCES = topclosed1.cc
 
 topclosure1_SOURCES = topclosure1.cc
+
+unconstrain1_SOURCES = unconstrain1.cc
 
 universe1_SOURCES = universe1.cc
 universe2_SOURCES = universe2.cc
@@ -597,6 +601,9 @@ nnc_smm1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_timeelapse1_SOURCES = timeelapse1.cc
 nnc_timeelapse1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_unconstrain1_SOURCES = unconstrain1.cc
+nnc_unconstrain1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_universe1_SOURCES = universe1.cc
 nnc_universe1_CXXFLAGS = $(DERIVED_CXXFLAGS)
