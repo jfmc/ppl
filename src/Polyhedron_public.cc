@@ -2674,16 +2674,7 @@ bounded_affine_preimage(const Variable var,
       add_constraint(ub_expr <= denominator*var);
       add_constraint(denominator*var <= lb_expr);
     }
-#if 1
-    // ENEA: CHECKME.
     unconstrain(var);
-#else
-    // Any image of an empty polyhedron is empty.
-    // Note: DO check for emptiness here, as we will later add a line.
-    if (is_empty())
-      return;
-    add_generator(line(var));
-#endif
   }
   else {
     // Here `var' occurs in `lb_expr' or `ub_expr'.
@@ -2908,16 +2899,7 @@ generalized_affine_preimage(const Variable var,
     throw std::runtime_error("PPL internal error");
     break;
   }
-#if 1
-    // ENEA: CHECKME.
-    unconstrain(var);
-#else
-  // If the shrunk polyhedron is empty, its preimage is empty too.
-  // Note: DO check for emptiness here, as we will later add a line.
-  if (is_empty())
-    return;
-  add_generator(line(var));
-#endif
+  unconstrain(var);
   assert(OK());
 }
 
