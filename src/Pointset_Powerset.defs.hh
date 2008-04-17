@@ -353,6 +353,33 @@ public:
   bool contains_integer_point() const;
 
   /*! \brief
+    Returns the relations holding between the powerset \p *this
+    and the constraint \p c.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and constraint \p c are dimension-incompatible.
+  */
+  Poly_Con_Relation relation_with(const Constraint& c) const;
+
+  /*! \brief
+    Returns the relations holding between the powerset \p *this
+    and the generator \p g.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and generator \p g are dimension-incompatible.
+  */
+  Poly_Gen_Relation relation_with(const Generator& g) const;
+
+  /*! \brief
+    Returns the relations holding between the powerset \p *this
+    and the congruence \p c.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and congruence \p c are dimension-incompatible.
+  */
+  Poly_Con_Relation relation_with(const Congruence& cg) const;
+
+  /*! \brief
     Returns a lower bound to the total size in bytes of the memory
     occupied by \p *this.
   */
@@ -535,142 +562,34 @@ public:
   */
   bool add_congruences_and_minimize(const Congruence_System& cs);
 
+  /*! \brief
+    Computes the \ref Cylindrification "cylindrification" of \p *this with
+    respect to space dimension \p var, assigning the result to \p *this.
+
+    \param var
+    The space dimension that will be unconstrained.
+
+    \exception std::invalid_argument
+    Thrown if \p var is not a space dimension of \p *this.
+  */
+  void unconstrain(Variable var);
+
+  /*! \brief
+    Computes the \ref Cylindrification "cylindrification" of \p *this with
+    respect to the set of space dimensions \p to_be_unconstrained,
+    assigning the result to \p *this.
+
+    \param to_be_unconstrained
+    The set of space dimension that will be unconstrained.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with one of the
+    Variable objects contained in \p to_be_removed.
+  */
+  void unconstrain(const Variables_Set& to_be_unconstrained);
+
   //! Assigns to \p *this its topological closure.
   void topological_closure_assign();
-
-  /*! \brief
-    Assign to \p *this the result of (recursively) merging together
-    the pairs of disjuncts whose upper-bound is the same as their
-    set-theoretical union.
-
-    On exit, for all the pairs \f$\cP\f$, \f$\cQ\f$ of different disjuncts
-    in \p *this, we have \f$\cP \uplus \cQ \neq \cP \union \cQ\f$.
-  */
-  void pairwise_reduce();
-
-  /*! \brief
-    Returns the relations holding between the powerset \p *this
-    and the constraint \p c.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and constraint \p c are dimension-incompatible.
-  */
-  Poly_Con_Relation relation_with(const Constraint& c) const;
-
-  /*! \brief
-    Returns the relations holding between the powerset \p *this
-    and the generator \p g.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and generator \p g are dimension-incompatible.
-  */
-  Poly_Gen_Relation relation_with(const Generator& g) const;
-
-  /*! \brief
-    Returns the relations holding between the powerset \p *this
-    and the congruence \p c.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and congruence \p c are dimension-incompatible.
-  */
-  Poly_Con_Relation relation_with(const Congruence& cg) const;
-
-  /*! \brief
-    Assigns to \p *this the result of applying the
-    \ref pps_bgp99_extrapolation "BGP99 extrapolation operator"
-    to \p *this and \p y, using the widening function \p wf
-    and the cardinality threshold \p max_disjuncts.
-
-    \param y
-    A powerset that <EM>must</EM> definitely entail \p *this;
-
-    \param wf
-    The widening function to be used on polyhedra objects. It is obtained
-    from the corresponding widening method by using the helper function
-    Parma_Polyhedra_Library::widen_fun_ref. Legal values are, e.g.,
-    <CODE>widen_fun_ref(&Polyhedron::H79_widening_assign)</CODE> and
-    <CODE>widen_fun_ref(&Polyhedron::limited_H79_extrapolation_assign, cs)</CODE>;
-
-    \param max_disjuncts
-    The maximum number of disjuncts occurring in the powerset \p *this
-    <EM>before</EM> starting the computation. If this number is exceeded,
-    some of the disjuncts in \p *this are collapsed (i.e., joined together).
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p y are dimension-incompatible.
-
-    For a description of the extrapolation operator,
-    see \ref BGP99 "[BGP99]" and \ref BHZ03b "[BHZ03b]".
-  */
-  template <typename Widening>
-  void BGP99_extrapolation_assign(const Pointset_Powerset& y,
-				  Widening wf,
-				  unsigned max_disjuncts);
-
-  /*! \brief
-    Assigns to \p *this the result of computing the
-    \ref pps_certificate_widening "BHZ03-widening"
-    between \p *this and \p y, using the widening function \p wf
-    certified by the convergence certificate \p Cert.
-
-    \param y
-    The finite powerset computed in the previous iteration step.
-    It <EM>must</EM> definitely entail \p *this;
-
-    \param wf
-    The widening function to be used on disjuncts.
-    It is obtained from the corresponding widening method by using
-    the helper function widen_fun_ref. Legal values are, e.g.,
-    <CODE>widen_fun_ref(&Polyhedron::H79_widening_assign)</CODE> and
-    <CODE>widen_fun_ref(&Polyhedron::limited_H79_extrapolation_assign, cs)</CODE>.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p y are dimension-incompatible.
-
-    \warning
-    In order to obtain a proper widening operator, the template parameter
-    \p Cert should be a finite convergence certificate for the base-level
-    widening function \p wf; otherwise, an extrapolation operator is
-    obtained.
-    For a description of the methods that should be provided
-    by \p Cert, see BHRZ03_Certificate or H79_Certificate.
-  */
-  template <typename Cert, typename Widening>
-  void BHZ03_widening_assign(const Pointset_Powerset& y, Widening wf);
-
-  //@} // Space Dimension Preserving Member Functions that May Modify [...]
-
-  //! \name Member Functions that May Modify the Dimension of the Vector Space
-  //@{
-
-  /*! \brief
-    The assignment operator
-    (\p *this and \p y can be dimension-incompatible).
-  */
-  Pointset_Powerset& operator=(const Pointset_Powerset& y);
-
-  /*! \brief
-    Conversion assignment: the type <CODE>QH</CODE> of the disjuncts
-    in the source powerset is different from <CODE>PS</CODE>
-    (\p *this and \p y can be dimension-incompatible).
-  */
-  template <typename QH>
-  Pointset_Powerset& operator=(const Pointset_Powerset<QH>& y);
-
-  //! Swaps \p *this with \p y.
-  void swap(Pointset_Powerset& y);
-
-  /*! \brief
-    Adds \p m new dimensions to the vector space containing \p *this
-    and embeds each disjunct in \p *this in the new space.
-  */
-  void add_space_dimensions_and_embed(dimension_type m);
-
-  /*! \brief
-    Adds \p m new dimensions to the vector space containing \p *this
-    without embedding the disjuncts in \p *this in the new space.
-  */
-  void add_space_dimensions_and_project(dimension_type m);
 
   //! Assigns to \p *this the intersection of \p *this and \p y.
   /*!
@@ -936,15 +855,6 @@ public:
 			       Coefficient_traits::const_reference denominator
 			       = Coefficient_one());
 
-
-  //! Assigns to \p *this the concatenation of \p *this and \p y.
-  /*!
-    The result is obtained by computing the pairwise
-    \ref Concatenating_Polyhedra "concatenation" of each disjunct
-    in \p *this with each disjunct in \p y.
-  */
-  void concatenate_assign(const Pointset_Powerset& y);
-
   /*! \brief
     Assigns to \p *this the result of computing the
     \ref Time_Elapse_Operator "time-elapse" between \p *this and \p y.
@@ -954,6 +864,121 @@ public:
     in \p *this with each disjunct in \p y.
   */
   void time_elapse_assign(const Pointset_Powerset& y);
+
+  /*! \brief
+    Assign to \p *this the result of (recursively) merging together
+    the pairs of disjuncts whose upper-bound is the same as their
+    set-theoretical union.
+
+    On exit, for all the pairs \f$\cP\f$, \f$\cQ\f$ of different disjuncts
+    in \p *this, we have \f$\cP \uplus \cQ \neq \cP \union \cQ\f$.
+  */
+  void pairwise_reduce();
+
+  /*! \brief
+    Assigns to \p *this the result of applying the
+    \ref pps_bgp99_extrapolation "BGP99 extrapolation operator"
+    to \p *this and \p y, using the widening function \p wf
+    and the cardinality threshold \p max_disjuncts.
+
+    \param y
+    A powerset that <EM>must</EM> definitely entail \p *this;
+
+    \param wf
+    The widening function to be used on polyhedra objects. It is obtained
+    from the corresponding widening method by using the helper function
+    Parma_Polyhedra_Library::widen_fun_ref. Legal values are, e.g.,
+    <CODE>widen_fun_ref(&Polyhedron::H79_widening_assign)</CODE> and
+    <CODE>widen_fun_ref(&Polyhedron::limited_H79_extrapolation_assign, cs)</CODE>;
+
+    \param max_disjuncts
+    The maximum number of disjuncts occurring in the powerset \p *this
+    <EM>before</EM> starting the computation. If this number is exceeded,
+    some of the disjuncts in \p *this are collapsed (i.e., joined together).
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
+
+    For a description of the extrapolation operator,
+    see \ref BGP99 "[BGP99]" and \ref BHZ03b "[BHZ03b]".
+  */
+  template <typename Widening>
+  void BGP99_extrapolation_assign(const Pointset_Powerset& y,
+				  Widening wf,
+				  unsigned max_disjuncts);
+
+  /*! \brief
+    Assigns to \p *this the result of computing the
+    \ref pps_certificate_widening "BHZ03-widening"
+    between \p *this and \p y, using the widening function \p wf
+    certified by the convergence certificate \p Cert.
+
+    \param y
+    The finite powerset computed in the previous iteration step.
+    It <EM>must</EM> definitely entail \p *this;
+
+    \param wf
+    The widening function to be used on disjuncts.
+    It is obtained from the corresponding widening method by using
+    the helper function widen_fun_ref. Legal values are, e.g.,
+    <CODE>widen_fun_ref(&Polyhedron::H79_widening_assign)</CODE> and
+    <CODE>widen_fun_ref(&Polyhedron::limited_H79_extrapolation_assign, cs)</CODE>.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
+
+    \warning
+    In order to obtain a proper widening operator, the template parameter
+    \p Cert should be a finite convergence certificate for the base-level
+    widening function \p wf; otherwise, an extrapolation operator is
+    obtained.
+    For a description of the methods that should be provided
+    by \p Cert, see BHRZ03_Certificate or H79_Certificate.
+  */
+  template <typename Cert, typename Widening>
+  void BHZ03_widening_assign(const Pointset_Powerset& y, Widening wf);
+
+  //@} // Space Dimension Preserving Member Functions that May Modify [...]
+
+  //! \name Member Functions that May Modify the Dimension of the Vector Space
+  //@{
+
+  /*! \brief
+    The assignment operator
+    (\p *this and \p y can be dimension-incompatible).
+  */
+  Pointset_Powerset& operator=(const Pointset_Powerset& y);
+
+  /*! \brief
+    Conversion assignment: the type <CODE>QH</CODE> of the disjuncts
+    in the source powerset is different from <CODE>PS</CODE>
+    (\p *this and \p y can be dimension-incompatible).
+  */
+  template <typename QH>
+  Pointset_Powerset& operator=(const Pointset_Powerset<QH>& y);
+
+  //! Swaps \p *this with \p y.
+  void swap(Pointset_Powerset& y);
+
+  /*! \brief
+    Adds \p m new dimensions to the vector space containing \p *this
+    and embeds each disjunct in \p *this in the new space.
+  */
+  void add_space_dimensions_and_embed(dimension_type m);
+
+  /*! \brief
+    Adds \p m new dimensions to the vector space containing \p *this
+    without embedding the disjuncts in \p *this in the new space.
+  */
+  void add_space_dimensions_and_project(dimension_type m);
+
+  //! Assigns to \p *this the concatenation of \p *this and \p y.
+  /*!
+    The result is obtained by computing the pairwise
+    \ref Concatenating_Polyhedra "concatenation" of each disjunct
+    in \p *this with each disjunct in \p y.
+  */
+  void concatenate_assign(const Pointset_Powerset& y);
 
   //! Removes all the specified space dimensions.
   /*!
