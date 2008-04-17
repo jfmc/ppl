@@ -150,7 +150,8 @@ Octagonal_Shape<T>::Octagonal_Shape(const Congruence_System& cgs)
 template <typename T>
 template <typename Interval>
 inline
-Octagonal_Shape<T>::Octagonal_Shape(const Box<Interval>& box)
+Octagonal_Shape<T>::Octagonal_Shape(const Box<Interval>& box,
+                                    Complexity_Class)
   : matrix(box.space_dimension()),
     space_dim(box.space_dimension()),
     status() {
@@ -163,7 +164,8 @@ Octagonal_Shape<T>::Octagonal_Shape(const Box<Interval>& box)
 
 template <typename T>
 inline
-Octagonal_Shape<T>::Octagonal_Shape(const Grid& grid)
+Octagonal_Shape<T>::Octagonal_Shape(const Grid& grid,
+                                    Complexity_Class)
   : matrix(grid.space_dimension()),
     space_dim(grid.space_dimension()),
     status() {
@@ -177,7 +179,8 @@ Octagonal_Shape<T>::Octagonal_Shape(const Grid& grid)
 template <typename T>
 template <typename U>
 inline
-Octagonal_Shape<T>::Octagonal_Shape(const BD_Shape<U>& bd)
+Octagonal_Shape<T>::Octagonal_Shape(const BD_Shape<U>& bd,
+                                    Complexity_Class)
   : matrix(bd.space_dimension()),
     space_dim(bd.space_dimension()),
     status() {

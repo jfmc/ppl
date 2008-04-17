@@ -478,12 +478,17 @@ public:
     \param box
     The box representing the grid to be built.
 
+    \param complexity
+    This argument is ignored as the algorithm used has
+    polynomial complexity.
+
     \exception std::length_error
     Thrown if the space dimension of \p box exceeds the maximum
     allowed space dimension.
   */
   template <typename Interval>
-  explicit Grid(const Box<Interval>& box);
+  explicit Grid(const Box<Interval>& box,
+                Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Builds a grid out of a bounded-difference shape.
   /*!
@@ -493,12 +498,17 @@ public:
     \param bd
     The BDS representing the grid to be built.
 
+    \param complexity
+    This argument is ignored as the algorithm used has
+    polynomial complexity.
+
     \exception std::length_error
     Thrown if the space dimension of \p bd exceeds the maximum
     allowed space dimension.
   */
   template <typename U>
-  explicit Grid(const BD_Shape<U>& bd);
+  explicit Grid(const BD_Shape<U>& bd,
+                Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Builds a grid out of an octagonal shape.
   /*!
@@ -508,12 +518,17 @@ public:
     \param os
     The octagonal shape representing the grid to be built.
 
+    \param complexity
+    This argument is ignored as the algorithm used has
+    polynomial complexity.
+
     \exception std::length_error
     Thrown if the space dimension of \p os exceeds the maximum
     allowed space dimension.
   */
   template <typename U>
-  explicit Grid(const Octagonal_Shape<U>& os);
+  explicit Grid(const Octagonal_Shape<U>& os,
+                Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Builds a grid out of a generic, interval-based covering box.
   /*!

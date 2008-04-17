@@ -55,7 +55,6 @@ bhz03widening1 \
 bounded1 \
 bounds1 \
 boundedaffineimage1 \
-boundingbox1 \
 boundedaffinepreimage1 \
 cc76narrowing1 \
 cc76extrapolation1 \
@@ -71,6 +70,7 @@ empty1 \
 equality1 \
 expandspacedim1 \
 foldspacedims1 \
+frombox1 \
 fromgensys1 \
 fromgrid1 \
 fromoctagonalshape1 \
@@ -174,8 +174,6 @@ boundedaffineimage1_SOURCES = boundedaffineimage1.cc
 
 boundedaffinepreimage1_SOURCES = boundedaffinepreimage1.cc
 
-boundingbox1_SOURCES = boundingbox1.cc
-
 cc76narrowing1_SOURCES = cc76narrowing1.cc
 
 cc76extrapolation1_SOURCES = cc76extrapolation1.cc
@@ -203,6 +201,8 @@ equality1_SOURCES = equality1.cc
 expandspacedim1_SOURCES = expandspacedim1.cc
 
 foldspacedims1_SOURCES = foldspacedims1.cc
+
+frombox1_SOURCES = frombox1.cc
 
 fromgensys1_SOURCES = fromgensys1.cc
 

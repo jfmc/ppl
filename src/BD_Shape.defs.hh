@@ -493,12 +493,17 @@ public:
     \param box
     The bounding box representing the BDS to be built.
 
+    \param complexity
+    This argument is ignored as the algorithm used has
+    polynomial complexity.
+
     \exception std::length_error
     Thrown if the space dimension of \p box exceeds the maximum
     allowed space dimension.
   */
   template <typename Interval>
-  explicit BD_Shape(const Box<Interval>& box);
+  explicit BD_Shape(const Box<Interval>& box,
+                    Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Builds a BDS out of a grid.
   /*!
@@ -508,11 +513,16 @@ public:
     \param grid
     The grid used to build the BDS.
 
+    \param complexity
+    This argument is ignored as the algorithm used has
+    polynomial complexity.
+
     \exception std::length_error
     Thrown if the space dimension of \p grid exceeds the maximum
     allowed space dimension.
   */
-  explicit BD_Shape(const Grid& grid);
+  explicit BD_Shape(const Grid& grid,
+                    Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Builds a BDS from an octagonal shape.
   /*!
@@ -522,12 +532,17 @@ public:
     \param os
     The octagonal shape used to build the BDS.
 
+    \param complexity
+    This argument is ignored as the algorithm used has
+    polynomial complexity.
+
     \exception std::length_error
     Thrown if the space dimension of \p os exceeds the maximum
     allowed space dimension.
   */
   template <typename U>
-  explicit BD_Shape(const Octagonal_Shape<U>& os);
+  explicit BD_Shape(const Octagonal_Shape<U>& os,
+                    Complexity_Class complexity = ANY_COMPLEXITY);
 
   /*! \brief
     The assignment operator

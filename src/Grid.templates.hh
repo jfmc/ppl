@@ -32,7 +32,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <typename Interval>
-Grid::Grid(const Box<Interval>& box)
+Grid::Grid(const Box<Interval>& box,
+           Complexity_Class)
   : con_sys(),
     gen_sys() {
   if (box.space_dimension() > max_space_dimension())
