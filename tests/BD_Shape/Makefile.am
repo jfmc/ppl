@@ -93,6 +93,7 @@ minconstraints1 \
 relations1 relations2 relations3 relations4 \
 removespacedims1 \
 timeelapse1 \
+unconstrain1 \
 universe1 \
 writebdshape1
 
@@ -251,6 +252,8 @@ relations4_SOURCES = relations4.cc
 removespacedims1_SOURCES = removespacedims1.cc
 
 timeelapse1_SOURCES = timeelapse1.cc
+
+unconstrain1_SOURCES = unconstrain1.cc
 
 universe1_SOURCES = universe1.cc
 

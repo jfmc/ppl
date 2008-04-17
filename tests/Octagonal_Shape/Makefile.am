@@ -98,6 +98,7 @@ relatwithcons3 \
 relatwithgen1 \
 removespacedims1 \
 timeelapse1 \
+unconstrain1 \
 universe1 \
 writeoctagon1
 
@@ -249,6 +250,8 @@ relatwithgen1_SOURCES = relatwithgen1.cc
 removespacedims1_SOURCES = removespacedims1.cc
 
 timeelapse1_SOURCES = timeelapse1.cc
+
+unconstrain1_SOURCES = unconstrain1.cc
 
 universe1_SOURCES = universe1.cc
 
