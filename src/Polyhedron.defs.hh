@@ -463,11 +463,17 @@ protected:
 
   //! Builds a polyhedron out of a generic, interval-based bounding box.
   /*!
+    This will use an algorithm whose complexity is polynomial and build
+    the smallest polyhedron with topology \p topol containing \p box.
+
     \param topol
     The topology of the polyhedron;
 
     \param box
-    The bounding box representing the polyhedron to be built.
+    The bounding box representing the polyhedron to be built;
+
+    \param complexity
+    This argument is ignored.
 
     \exception std::invalid_argument
     Thrown if \p box has intervals that are incompatible with \p topol.
@@ -517,7 +523,8 @@ protected:
     corresponds to the least upper bound of \f$I\f$.
   */
   template <typename Box>
-  Polyhedron(Topology topol, const Box& box);
+  Polyhedron(Topology topol, const Box& box,
+                Complexity_Class complexity = ANY_COMPLEXITY);
 
   /*! \brief
     The assignment operator.
@@ -823,6 +830,10 @@ public:
     Adds a copy of constraint \p c to the system of constraints
     of \p *this (without minimizing the result).
 
+    \param c
+    The constraint that will be added to the system of
+    constraints of \p *this.
+
     \exception std::invalid_argument
     Thrown if \p *this and constraint \p c are topology-incompatible
     or dimension-incompatible.
@@ -832,6 +843,10 @@ public:
   /*! \brief
     Adds a copy of constraint \p c to the system of constraints
     of \p *this, minimizing the result
+
+    \param c
+    The constraint that will be added to the system of
+    constraints of \p *this.
 
     \return
     <CODE>false</CODE> if and only if the result is empty.
@@ -2059,6 +2074,15 @@ private:
     is necessarily closed.
   */
   bool is_necessarily_closed() const;
+
+  /*! \brief
+    Uses a copy of constraint \p c to refine the system of constraints
+    of \p *this.
+
+    \param c The constraint to be added. If it is dimension-incompatible
+    with \p *this, the behavior is undefined.
+  */
+  void refine_no_check(const Constraint& c);
 
   //! \name Private Verifiers: Verify if Individual Flags are Set
   //@{

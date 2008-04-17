@@ -1224,63 +1224,7 @@ PPL::Polyhedron::add_constraint(const Constraint& c) {
   if (space_dim < c.space_dimension())
     throw_dimension_incompatible("add_constraint(c)", "c", c);
 
-  // Adding a new constraint to an empty polyhedron
-  // results in an empty polyhedron.
-  if (marked_empty())
-    return;
-
-  // Dealing with a zero-dimensional space polyhedron first.
-  if (space_dim == 0) {
-    if (!c.is_tautological())
-      set_empty();
-    return;
-  }
-
-  // The constraints (possibly with pending rows) are required.
-  if (has_pending_generators())
-    process_pending_generators();
-  else if (!constraints_are_up_to_date())
-    update_constraints();
-
-  const bool adding_pending = can_have_something_pending();
-
-  // Here we know that the system of constraints has at least a row.
-  if (c.is_necessarily_closed() || !is_necessarily_closed())
-    // Since `con_sys' is not empty, the topology and space dimension
-    // of the inserted constraint are automatically adjusted.
-    if (adding_pending)
-      con_sys.insert_pending(c);
-    else
-      con_sys.insert(c);
-  else {
-    // Note: here we have a _legal_ topology mismatch, because
-    // `c' is NOT a strict inequality.
-    // However, by barely invoking `con_sys.insert(c)' we would
-    // cause a change in the topology of `con_sys', which is wrong.
-    // Thus, we insert a "topology corrected" copy of `c'.
-    Linear_Expression nc_expr = Linear_Expression(c);
-    if (c.is_equality())
-      if (adding_pending)
-	con_sys.insert_pending(nc_expr == 0);
-      else
-	con_sys.insert(nc_expr == 0);
-    else
-      if (adding_pending)
-	con_sys.insert_pending(nc_expr >= 0);
-      else
-	con_sys.insert(nc_expr >= 0);
-  }
-
-  if (adding_pending)
-    set_constraints_pending();
-  else {
-    // Constraints are not minimized and generators are not up-to-date.
-    clear_constraints_minimized();
-    clear_generators_up_to_date();
-  }
-  // Note: the constraint system may have become unsatisfiable, thus
-  // we do not check for satisfiability.
-  assert(OK());
+  refine_no_check(c);
 }
 
 void
@@ -1834,63 +1778,7 @@ PPL::Polyhedron::refine_with_constraint(const Constraint& c) {
   if (space_dim < c.space_dimension())
     throw_dimension_incompatible("add_constraint(c)", "c", c);
 
-  // Adding a new constraint to an empty polyhedron
-  // results in an empty polyhedron.
-  if (marked_empty())
-    return;
-
-  // Dealing with a zero-dimensional space polyhedron first.
-  if (space_dim == 0) {
-    if (!c.is_tautological())
-      set_empty();
-    return;
-  }
-
-  // The constraints (possibly with pending rows) are required.
-  if (has_pending_generators())
-    process_pending_generators();
-  else if (!constraints_are_up_to_date())
-    update_constraints();
-
-  const bool adding_pending = can_have_something_pending();
-
-  // Here we know that the system of constraints has at least a row.
-  if (c.is_necessarily_closed() || !is_necessarily_closed())
-    // Since `con_sys' is not empty, the topology and space dimension
-    // of the inserted constraint are automatically adjusted.
-    if (adding_pending)
-      con_sys.insert_pending(c);
-    else
-      con_sys.insert(c);
-  else {
-    // Here we know that *this is necessarily closed so even if c is
-    // topologically closed, by barely invoking `con_sys.insert(c)' we
-    // would cause a change in the topology of `con_sys', which is
-    // wrong.  Thus, we insert a topology closed and "topology
-    // corrected" version of `c'.
-    Linear_Expression nc_expr = Linear_Expression(c);
-    if (c.is_equality())
-      if (adding_pending)
-	con_sys.insert_pending(nc_expr == 0);
-      else
-	con_sys.insert(nc_expr == 0);
-    else
-      if (adding_pending)
-	con_sys.insert_pending(nc_expr >= 0);
-      else
-	con_sys.insert(nc_expr >= 0);
-  }
-
-  if (adding_pending)
-    set_constraints_pending();
-  else {
-    // Constraints are not minimized and generators are not up-to-date.
-    clear_constraints_minimized();
-    clear_generators_up_to_date();
-  }
-  // Note: the constraint system may have become unsatisfiable, thus
-  // we do not check for satisfiability.
-  assert(OK());
+  refine_no_check(c);
 }
 
 void
@@ -1920,6 +1808,7 @@ PPL::Polyhedron::refine_with_congruence(const Congruence& cg) {
     add_constraint(c);
   }
 }
+
 
 void
 PPL::Polyhedron::refine_with_constraints(const Constraint_System& cs) {
@@ -2026,6 +1915,70 @@ PPL::Polyhedron::refine_with_congruences(const Congruence_System& cgs) {
   // dimension of cs must be at most that of the polyhedron.
   if (inserted)
     add_recycled_constraints(cs);
+}
+
+void
+PPL::Polyhedron::refine_no_check(const Constraint& c) {
+  // Dimension-compatibility check:
+  // the dimension of `c' can not be greater than space_dim.
+  assert(space_dim >= c.space_dimension());
+
+  // Adding a new constraint to an empty polyhedron
+  // results in an empty polyhedron.
+  if (marked_empty())
+    return;
+
+  // Dealing with a zero-dimensional space polyhedron first.
+  if (space_dim == 0) {
+    if (!c.is_tautological())
+      set_empty();
+    return;
+  }
+
+  // The constraints (possibly with pending rows) are required.
+  if (has_pending_generators())
+    process_pending_generators();
+  else if (!constraints_are_up_to_date())
+    update_constraints();
+
+  const bool adding_pending = can_have_something_pending();
+
+  if (c.is_necessarily_closed() || !is_necessarily_closed())
+    // Since `con_sys' is not empty, the topology and space dimension
+    // of the inserted constraint are automatically adjusted.
+    if (adding_pending)
+      con_sys.insert_pending(c);
+    else
+      con_sys.insert(c);
+  else {
+    // Here we know that the system of constraints has at least a row.
+    // However, by barely invoking `con_sys.insert(c)' we would
+    // cause a change in the topology of `con_sys', which is wrong.
+    // Thus, we insert a "topology corrected" copy of `c'.
+    Linear_Expression nc_expr = Linear_Expression(c);
+    if (c.is_equality())
+      if (adding_pending)
+        con_sys.insert_pending(nc_expr == 0);
+      else
+        con_sys.insert(nc_expr == 0);
+    else
+      if (adding_pending)
+        con_sys.insert_pending(nc_expr >= 0);
+      else
+        con_sys.insert(nc_expr >= 0);
+  }
+
+  if (adding_pending)
+    set_constraints_pending();
+  else {
+    // Constraints are not minimized and generators are not up-to-date.
+    clear_constraints_minimized();
+    clear_generators_up_to_date();
+  }
+
+  // Note: the constraint system may have become unsatisfiable, thus
+  // we do not check for satisfiability.
+  assert(OK());
 }
 
 void
