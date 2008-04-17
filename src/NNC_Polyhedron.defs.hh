@@ -143,7 +143,15 @@ public:
   NNC_Polyhedron(Congruence_System& cgs, Recycle_Input dummy);
 
   //! Builds an NNC polyhedron from the C polyhedron \p y.
-  explicit NNC_Polyhedron(const C_Polyhedron& y);
+  /*!
+    \param y
+    The C polyhedron to be used;
+
+    \param complexity
+    This argument is ignored.
+  */
+  explicit NNC_Polyhedron(const C_Polyhedron& y,
+                          Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Builds an NNC polyhedron out of a box.
   /*!

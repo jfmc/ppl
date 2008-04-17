@@ -164,8 +164,15 @@ public:
   /*! \brief
     Builds a C polyhedron representing the topological closure
     of the NNC polyhedron \p y.
+
+    \param y
+    The NNC polyhedron to be used;
+
+    \param complexity
+    This argument is ignored.
   */
-  explicit C_Polyhedron(const NNC_Polyhedron& y);
+  explicit C_Polyhedron(const NNC_Polyhedron& y,
+                        Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Builds a C polyhedron out of a box.
   /*!
