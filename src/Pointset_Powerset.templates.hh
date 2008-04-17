@@ -278,6 +278,30 @@ add_congruences_and_minimize(const Congruence_System& cs) {
 
 template <typename PS>
 void
+Pointset_Powerset<PS>::unconstrain(const Variable var) {
+  Pointset_Powerset& x = *this;
+  for (Sequence_iterator si = x.sequence.begin(),
+         s_end = x.sequence.end(); si != s_end; ++si) {
+    si->element().unconstrain(var);
+    x.reduced = false;
+  }
+  assert(x.OK());
+}
+
+template <typename PS>
+void
+Pointset_Powerset<PS>::unconstrain(const Variables_Set& to_be_unconstrained) {
+  Pointset_Powerset& x = *this;
+  for (Sequence_iterator si = x.sequence.begin(),
+         s_end = x.sequence.end(); si != s_end; ++si) {
+    si->element().unconstrain(to_be_unconstrained);
+    x.reduced = false;
+  }
+  assert(x.OK());
+}
+
+template <typename PS>
+void
 Pointset_Powerset<PS>::add_space_dimensions_and_embed(dimension_type m) {
   Pointset_Powerset& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
@@ -356,663 +380,663 @@ Pointset_Powerset<PS>::map_space_dimensions(const Partial_Function& pfunc) {
   assert(x.OK());
 }
 
-  template <typename PS>
-  void
-  Pointset_Powerset<PS>::expand_space_dimension(Variable var,
-						 dimension_type m) {
-    Pointset_Powerset& x = *this;
-    for (Sequence_iterator si = x.sequence.begin(),
-	   s_end = x.sequence.end(); si != s_end; ++si)
-      si->element().expand_space_dimension(var, m);
-    x.space_dim += m;
-    assert(x.OK());
-  }
-
-  template <typename PS>
-  void
-  Pointset_Powerset<PS>::fold_space_dimensions(const Variables_Set& to_be_folded,
-					       Variable var) {
-    Pointset_Powerset& x = *this;
-    Variables_Set::size_type num_folded = to_be_folded.size();
-    if (num_folded > 0) {
-      for (Sequence_iterator si = x.sequence.begin(),
-	     s_end = x.sequence.end(); si != s_end; ++si)
-	si->element().fold_space_dimensions(to_be_folded, var);
-    }
-    x.space_dim -= num_folded;
-    assert(x.OK());
-  }
-
-  template <typename PS>
-  void
-  Pointset_Powerset<PS>::affine_image(Variable var,
-				      const Linear_Expression& expr,
-				      Coefficient_traits::const_reference
-				      denominator) {
-    Pointset_Powerset& x = *this;
-    for (Sequence_iterator si = x.sequence.begin(),
-	   s_end = x.sequence.end(); si != s_end; ++si) {
-      si->element().affine_image(var, expr, denominator);
-      // Note that the underlying domain can apply conservative approximation:
-      // that is why it would not be correct to make the loss of reduction
-      // conditional on `var' and `expr'.
-      x.reduced = false;
-    }
-    assert(x.OK());
-  }
-
-  template <typename PS>
-  void
-  Pointset_Powerset<PS>::affine_preimage(Variable var,
-					 const Linear_Expression& expr,
-					 Coefficient_traits::const_reference
-					 denominator) {
-    Pointset_Powerset& x = *this;
-    for (Sequence_iterator si = x.sequence.begin(),
-	   s_end = x.sequence.end(); si != s_end; ++si) {
-      si->element().affine_preimage(var, expr, denominator);
-      // Note that the underlying domain can apply conservative approximation:
-      // that is why it would not be correct to make the loss of reduction
-      // conditional on `var' and `expr'.
-      x.reduced = false;
-    }
-    assert(x.OK());
-  }
-
-
-  template <typename PS>
-  void
-  Pointset_Powerset<PS>
-  ::generalized_affine_image(const Linear_Expression& lhs,
-			     const Relation_Symbol relsym,
-			     const Linear_Expression& rhs) {
-    Pointset_Powerset& x = *this;
-    for (Sequence_iterator si = x.sequence.begin(),
-	   s_end = x.sequence.end(); si != s_end; ++si) {
-      si->element().generalized_affine_image(lhs, relsym, rhs);
-      x.reduced = false;
-    }
-    assert(x.OK());
-  }
-
-  template <typename PS>
-  void
-  Pointset_Powerset<PS>
-  ::generalized_affine_preimage(const Linear_Expression& lhs,
-				const Relation_Symbol relsym,
-				const Linear_Expression& rhs) {
-    Pointset_Powerset& x = *this;
-    for (Sequence_iterator si = x.sequence.begin(),
-	   s_end = x.sequence.end(); si != s_end; ++si) {
-      si->element().generalized_affine_preimage(lhs, relsym, rhs);
-      x.reduced = false;
-    }
-    assert(x.OK());
-  }
-
-  template <typename PS>
-  void
-  Pointset_Powerset<PS>
-  ::generalized_affine_image(Variable var,
-			     const Relation_Symbol relsym,
-			     const Linear_Expression& expr,
-			     Coefficient_traits::const_reference denominator) {
-    Pointset_Powerset& x = *this;
-    for (Sequence_iterator si = x.sequence.begin(),
-	   s_end = x.sequence.end(); si != s_end; ++si) {
-      si->element().generalized_affine_image(var, relsym, expr, denominator);
-      x.reduced = false;
-    }
-    assert(x.OK());
-  }
-
-  template <typename PS>
-  void
-  Pointset_Powerset<PS>
-  ::generalized_affine_preimage(Variable var,
-				const Relation_Symbol relsym,
-				const Linear_Expression& expr,
-				Coefficient_traits::const_reference denominator) {  Pointset_Powerset& x = *this;
-    for (Sequence_iterator si = x.sequence.begin(),
-	   s_end = x.sequence.end(); si != s_end; ++si) {
-      si->element().generalized_affine_preimage(var, relsym, expr, denominator);
-      x.reduced = false;
-    }
-    assert(x.OK());
-  }
-
-
-  template <typename PS>
-  void
-  Pointset_Powerset<PS>
-  ::bounded_affine_image(Variable var,
-			 const Linear_Expression& lb_expr,
-			 const Linear_Expression& ub_expr,
-			 Coefficient_traits::const_reference denominator) {
-    Pointset_Powerset& x = *this;
-    for (Sequence_iterator si = x.sequence.begin(),
-	   s_end = x.sequence.end(); si != s_end; ++si) {
-      si->element().bounded_affine_image(var, lb_expr, ub_expr, denominator);
-      x.reduced = false;
-    }
-    assert(x.OK());
-  }
-
-  template <typename PS>
-  void
-  Pointset_Powerset<PS>
-  ::bounded_affine_preimage(Variable var,
-			    const Linear_Expression& lb_expr,
-			    const Linear_Expression& ub_expr,
-			    Coefficient_traits::const_reference denominator) {
-    Pointset_Powerset& x = *this;
-    for (Sequence_iterator si = x.sequence.begin(),
-	   s_end = x.sequence.end(); si != s_end; ++si) {
-      si->element().bounded_affine_preimage(var, lb_expr, ub_expr,
-                                            denominator);
-      x.reduced = false;
-    }
-    assert(x.OK());
-  }
-
-  template <typename PS>
-  dimension_type
-  Pointset_Powerset<PS>::affine_dimension() const {
-    // The affine dimension of the powerset is the affine dimension of
-    // the smallest vector space in which it can be embedded.
-    const Pointset_Powerset& x = *this;
-    C_Polyhedron x_ph(space_dim, EMPTY);
-
-    for (Sequence_const_iterator si = x.sequence.begin(),
-	   s_end = x.sequence.end(); si != s_end; ++si) {
-      C_Polyhedron phi(space_dim);
-      PS pi(si->element());
-      const Constraint_System& cs = pi.minimized_constraints();
-      for (Constraint_System::const_iterator i = cs.begin(),
-	     cs_end = cs.end(); i != cs_end; ++i) {
-        const Constraint& c = *i;
-        if (c.is_equality())
-          phi.add_constraint(c);
-      }
-      x_ph.poly_hull_assign(phi);
-    }
-
-    return x_ph.affine_dimension();
-  }
-
-  template <typename PS>
-  bool
-  Pointset_Powerset<PS>::is_universe() const {
-    // FIXME: this is not the most efficient implementation.
-    // FIXME: this is buggy when PS is not an abstraction of NNC_Polyhedron.
-    const NNC_Polyhedron ph = NNC_Polyhedron(space_dim);
-    const Pointset_Powerset<NNC_Polyhedron> pps(*this);
-    return check_containment(ph, pps);
-  }
-
-  template <typename PS>
-  bool
-  Pointset_Powerset<PS>::is_empty() const {
-    const Pointset_Powerset& x = *this;
-    for (Sequence_const_iterator si = x.sequence.begin(),
-	   s_end = x.sequence.end(); si != s_end; ++si)
-      if (!si->element().is_empty())
-	return false;
-    return true;
-  }
-
-  template <typename PS>
-  bool
-  Pointset_Powerset<PS>::is_discrete() const {
-    const Pointset_Powerset& x = *this;
-    for (Sequence_const_iterator si = x.sequence.begin(),
-	   s_end = x.sequence.end(); si != s_end; ++si)
-      if (!si->element().is_discrete())
-	return false;
-    return true;
-  }
-
-  template <typename PS>
-  bool
-  Pointset_Powerset<PS>::is_topologically_closed() const {
-    const Pointset_Powerset& x = *this;
-    // The powerset must be omega-reduced before checking
-    // topological closure.
-    x.omega_reduce();
-    for (Sequence_const_iterator si = x.sequence.begin(),
-	   s_end = x.sequence.end(); si != s_end; ++si)
-      if (!si->element().is_topologically_closed())
-	return false;
-    return true;
-  }
-
-  template <typename PS>
-  bool
-  Pointset_Powerset<PS>::is_bounded() const {
-    const Pointset_Powerset& x = *this;
-    for (Sequence_const_iterator si = x.sequence.begin(),
-	   s_end = x.sequence.end(); si != s_end; ++si)
-      if (!si->element().is_bounded())
-	return false;
-    return true;
-  }
-
-  template <typename PS>
-  bool
-  Pointset_Powerset<PS>::is_disjoint_from(const Pointset_Powerset& y) const {
-    const Pointset_Powerset& x = *this;
-    for (Sequence_const_iterator si = x.sequence.begin(),
-	   s_end = x.sequence.end(); si != s_end; ++si) {
-      const PS& pi = si->element();
-      for (Sequence_const_iterator sj = y.sequence.begin(),
-	     s_end = y.sequence.end(); sj != s_end; ++sj) {
-        const PS& pj = sj->element();
-        if (!pi.is_disjoint_from(pj))
-	  return false;
-      }
-    }
-    return true;
-  }
-
-  template <typename PS>
-  void
-  Pointset_Powerset<PS>::topological_closure_assign() {
-    Pointset_Powerset& x = *this;
-    for (Sequence_iterator si = x.sequence.begin(),
-	   s_end = x.sequence.end(); si != s_end; ++si)
-      si->element().topological_closure_assign();
+template <typename PS>
+void
+Pointset_Powerset<PS>::expand_space_dimension(Variable var,
+                                              dimension_type m) {
+  Pointset_Powerset& x = *this;
+  for (Sequence_iterator si = x.sequence.begin(),
+         s_end = x.sequence.end(); si != s_end; ++si)
+    si->element().expand_space_dimension(var, m);
+  x.space_dim += m;
   assert(x.OK());
+}
+
+template <typename PS>
+void
+Pointset_Powerset<PS>::fold_space_dimensions(const Variables_Set& to_be_folded,
+                                             Variable var) {
+  Pointset_Powerset& x = *this;
+  Variables_Set::size_type num_folded = to_be_folded.size();
+  if (num_folded > 0) {
+    for (Sequence_iterator si = x.sequence.begin(),
+           s_end = x.sequence.end(); si != s_end; ++si)
+      si->element().fold_space_dimensions(to_be_folded, var);
+  }
+  x.space_dim -= num_folded;
+  assert(x.OK());
+}
+
+template <typename PS>
+void
+Pointset_Powerset<PS>::affine_image(Variable var,
+                                    const Linear_Expression& expr,
+                                    Coefficient_traits::const_reference
+                                    denominator) {
+  Pointset_Powerset& x = *this;
+  for (Sequence_iterator si = x.sequence.begin(),
+         s_end = x.sequence.end(); si != s_end; ++si) {
+    si->element().affine_image(var, expr, denominator);
+    // Note that the underlying domain can apply conservative approximation:
+    // that is why it would not be correct to make the loss of reduction
+    // conditional on `var' and `expr'.
+    x.reduced = false;
+  }
+  assert(x.OK());
+}
+
+template <typename PS>
+void
+Pointset_Powerset<PS>::affine_preimage(Variable var,
+                                       const Linear_Expression& expr,
+                                       Coefficient_traits::const_reference
+                                       denominator) {
+  Pointset_Powerset& x = *this;
+  for (Sequence_iterator si = x.sequence.begin(),
+         s_end = x.sequence.end(); si != s_end; ++si) {
+    si->element().affine_preimage(var, expr, denominator);
+    // Note that the underlying domain can apply conservative approximation:
+    // that is why it would not be correct to make the loss of reduction
+    // conditional on `var' and `expr'.
+    x.reduced = false;
+  }
+  assert(x.OK());
+}
+
+
+template <typename PS>
+void
+Pointset_Powerset<PS>
+::generalized_affine_image(const Linear_Expression& lhs,
+                           const Relation_Symbol relsym,
+                           const Linear_Expression& rhs) {
+  Pointset_Powerset& x = *this;
+  for (Sequence_iterator si = x.sequence.begin(),
+         s_end = x.sequence.end(); si != s_end; ++si) {
+    si->element().generalized_affine_image(lhs, relsym, rhs);
+    x.reduced = false;
+  }
+  assert(x.OK());
+}
+
+template <typename PS>
+void
+Pointset_Powerset<PS>
+::generalized_affine_preimage(const Linear_Expression& lhs,
+                              const Relation_Symbol relsym,
+                              const Linear_Expression& rhs) {
+  Pointset_Powerset& x = *this;
+  for (Sequence_iterator si = x.sequence.begin(),
+         s_end = x.sequence.end(); si != s_end; ++si) {
+    si->element().generalized_affine_preimage(lhs, relsym, rhs);
+    x.reduced = false;
+  }
+  assert(x.OK());
+}
+
+template <typename PS>
+void
+Pointset_Powerset<PS>
+::generalized_affine_image(Variable var,
+                           const Relation_Symbol relsym,
+                           const Linear_Expression& expr,
+                           Coefficient_traits::const_reference denominator) {
+  Pointset_Powerset& x = *this;
+  for (Sequence_iterator si = x.sequence.begin(),
+         s_end = x.sequence.end(); si != s_end; ++si) {
+    si->element().generalized_affine_image(var, relsym, expr, denominator);
+    x.reduced = false;
+  }
+  assert(x.OK());
+}
+
+template <typename PS>
+void
+Pointset_Powerset<PS>
+::generalized_affine_preimage(Variable var,
+                              const Relation_Symbol relsym,
+                              const Linear_Expression& expr,
+                              Coefficient_traits::const_reference denominator) {  Pointset_Powerset& x = *this;
+  for (Sequence_iterator si = x.sequence.begin(),
+         s_end = x.sequence.end(); si != s_end; ++si) {
+    si->element().generalized_affine_preimage(var, relsym, expr, denominator);
+    x.reduced = false;
+  }
+  assert(x.OK());
+}
+
+
+template <typename PS>
+void
+Pointset_Powerset<PS>
+::bounded_affine_image(Variable var,
+                       const Linear_Expression& lb_expr,
+                       const Linear_Expression& ub_expr,
+                       Coefficient_traits::const_reference denominator) {
+  Pointset_Powerset& x = *this;
+  for (Sequence_iterator si = x.sequence.begin(),
+         s_end = x.sequence.end(); si != s_end; ++si) {
+    si->element().bounded_affine_image(var, lb_expr, ub_expr, denominator);
+    x.reduced = false;
+  }
+  assert(x.OK());
+}
+
+template <typename PS>
+void
+Pointset_Powerset<PS>
+::bounded_affine_preimage(Variable var,
+                          const Linear_Expression& lb_expr,
+                          const Linear_Expression& ub_expr,
+                          Coefficient_traits::const_reference denominator) {
+  Pointset_Powerset& x = *this;
+  for (Sequence_iterator si = x.sequence.begin(),
+         s_end = x.sequence.end(); si != s_end; ++si) {
+    si->element().bounded_affine_preimage(var, lb_expr, ub_expr,
+                                          denominator);
+    x.reduced = false;
+  }
+  assert(x.OK());
+}
+
+template <typename PS>
+dimension_type
+Pointset_Powerset<PS>::affine_dimension() const {
+  // The affine dimension of the powerset is the affine dimension of
+  // the smallest vector space in which it can be embedded.
+  const Pointset_Powerset& x = *this;
+  C_Polyhedron x_ph(space_dim, EMPTY);
+
+  for (Sequence_const_iterator si = x.sequence.begin(),
+         s_end = x.sequence.end(); si != s_end; ++si) {
+    C_Polyhedron phi(space_dim);
+    PS pi(si->element());
+    const Constraint_System& cs = pi.minimized_constraints();
+    for (Constraint_System::const_iterator i = cs.begin(),
+           cs_end = cs.end(); i != cs_end; ++i) {
+      const Constraint& c = *i;
+      if (c.is_equality())
+        phi.add_constraint(c);
+    }
+    x_ph.poly_hull_assign(phi);
   }
 
-  template <typename PS>
-  bool
-  Pointset_Powerset<PS>::contains(const Pointset_Powerset& y) const {
-    const Pointset_Powerset& x = *this;
-    for (Sequence_const_iterator si = y.sequence.begin(),
-	   s_end = y.sequence.end(); si != s_end; ++si) {
-      const PS& pi = si->element();
-      bool pi_is_contained = false;
-      for (Sequence_const_iterator sj = x.sequence.begin(),
-	     s_end = x.sequence.end();
-             (sj != s_end && !pi_is_contained); ++sj) {
-        const PS& pj = sj->element();
-        if (pj.contains(pi))
-	  pi_is_contained = true;
-      }
-      if (!pi_is_contained)
+  return x_ph.affine_dimension();
+}
+
+template <typename PS>
+bool
+Pointset_Powerset<PS>::is_universe() const {
+  // FIXME: this is not the most efficient implementation.
+  // FIXME: this is buggy when PS is not an abstraction of NNC_Polyhedron.
+  const NNC_Polyhedron ph = NNC_Polyhedron(space_dim);
+  const Pointset_Powerset<NNC_Polyhedron> pps(*this);
+  return check_containment(ph, pps);
+}
+
+template <typename PS>
+bool
+Pointset_Powerset<PS>::is_empty() const {
+  const Pointset_Powerset& x = *this;
+  for (Sequence_const_iterator si = x.sequence.begin(),
+         s_end = x.sequence.end(); si != s_end; ++si)
+    if (!si->element().is_empty())
+      return false;
+  return true;
+}
+
+template <typename PS>
+bool
+Pointset_Powerset<PS>::is_discrete() const {
+  const Pointset_Powerset& x = *this;
+  for (Sequence_const_iterator si = x.sequence.begin(),
+         s_end = x.sequence.end(); si != s_end; ++si)
+    if (!si->element().is_discrete())
+      return false;
+  return true;
+}
+
+template <typename PS>
+bool
+Pointset_Powerset<PS>::is_topologically_closed() const {
+  const Pointset_Powerset& x = *this;
+  // The powerset must be omega-reduced before checking
+  // topological closure.
+  x.omega_reduce();
+  for (Sequence_const_iterator si = x.sequence.begin(),
+         s_end = x.sequence.end(); si != s_end; ++si)
+    if (!si->element().is_topologically_closed())
+      return false;
+  return true;
+}
+
+template <typename PS>
+bool
+Pointset_Powerset<PS>::is_bounded() const {
+  const Pointset_Powerset& x = *this;
+  for (Sequence_const_iterator si = x.sequence.begin(),
+         s_end = x.sequence.end(); si != s_end; ++si)
+    if (!si->element().is_bounded())
+      return false;
+  return true;
+}
+
+template <typename PS>
+bool
+Pointset_Powerset<PS>::is_disjoint_from(const Pointset_Powerset& y) const {
+  const Pointset_Powerset& x = *this;
+  for (Sequence_const_iterator si = x.sequence.begin(),
+         s_end = x.sequence.end(); si != s_end; ++si) {
+    const PS& pi = si->element();
+    for (Sequence_const_iterator sj = y.sequence.begin(),
+           s_end = y.sequence.end(); sj != s_end; ++sj) {
+      const PS& pj = sj->element();
+      if (!pi.is_disjoint_from(pj))
         return false;
     }
-    return true;
+  }
+  return true;
+}
+
+template <typename PS>
+void
+Pointset_Powerset<PS>::topological_closure_assign() {
+  Pointset_Powerset& x = *this;
+  for (Sequence_iterator si = x.sequence.begin(),
+         s_end = x.sequence.end(); si != s_end; ++si)
+    si->element().topological_closure_assign();
+  assert(x.OK());
+}
+
+template <typename PS>
+bool
+Pointset_Powerset<PS>::contains(const Pointset_Powerset& y) const {
+  const Pointset_Powerset& x = *this;
+  for (Sequence_const_iterator si = y.sequence.begin(),
+         s_end = y.sequence.end(); si != s_end; ++si) {
+    const PS& pi = si->element();
+    bool pi_is_contained = false;
+    for (Sequence_const_iterator sj = x.sequence.begin(),
+           s_end = x.sequence.end();
+         (sj != s_end && !pi_is_contained); ++sj) {
+      const PS& pj = sj->element();
+      if (pj.contains(pi))
+        pi_is_contained = true;
+    }
+    if (!pi_is_contained)
+      return false;
+  }
+  return true;
+}
+
+template <typename PS>
+bool
+Pointset_Powerset<PS>::strictly_contains(const Pointset_Powerset& y) const {
+  /* omega reduction ensures that a disjunct of y cannot be strictly
+     contained in one disjunct and also contained but not strictly
+     contained in another disjunct of *this */
+  const Pointset_Powerset& x = *this;
+  x.omega_reduce();
+  for (Sequence_const_iterator si = y.sequence.begin(),
+         s_end = y.sequence.end(); si != s_end; ++si) {
+    const PS& pi = si->element();
+    bool pi_is_strictly_contained = false;
+    for (Sequence_const_iterator sj = x.sequence.begin(),
+           s_end = x.sequence.end();
+         (sj != s_end && !pi_is_strictly_contained); ++sj) {
+      const PS& pj = sj->element();
+      if (pj.strictly_contains(pi))
+        pi_is_strictly_contained = true;
+    }
+    if (!pi_is_strictly_contained)
+      return false;
+  }
+  return true;
+}
+
+template <typename PS>
+Poly_Con_Relation
+Pointset_Powerset<PS>::relation_with(const Congruence& cg) const {
+  const Pointset_Powerset& x = *this;
+
+  /* *this is included in cg if every disjunct is included in cg */
+  bool is_included = true;
+  /* *this is disjoint with cg if every disjunct is disjoint with cg */
+  bool is_disjoint = true;
+  /* *this strictly_intersects with cg if some disjunct strictly
+     intersects with cg */
+  bool is_strictly_intersecting = false;
+  /* *this saturates cg if some disjunct saturates cg and
+     every disjunct is either disjoint from cg or saturates cg */
+  bool saturates_once = false;
+  bool may_saturate = true;
+  for (Sequence_const_iterator si = x.sequence.begin(),
+         s_end = x.sequence.end(); si != s_end; ++si) {
+    Poly_Con_Relation relation_i = si->element().relation_with(cg);
+    if (!relation_i.implies(Poly_Con_Relation::is_included()))
+      is_included = false;
+    if (!relation_i.implies(Poly_Con_Relation::is_disjoint()))
+      is_disjoint = false;
+    if (relation_i.implies(Poly_Con_Relation::strictly_intersects()))
+      is_strictly_intersecting = true;
+    if (relation_i.implies(Poly_Con_Relation::saturates()))
+      saturates_once = true;
+    else if (!relation_i.implies(Poly_Con_Relation::is_disjoint()))
+      may_saturate = false;
   }
 
-  template <typename PS>
-  bool
-  Pointset_Powerset<PS>::strictly_contains(const Pointset_Powerset& y) const {
-    /* omega reduction ensures that a disjunct of y cannot be strictly
-       contained in one disjunct and also contained but not strictly
-       contained in another disjunct of *this */
-    const Pointset_Powerset& x = *this;
-    x.omega_reduce();
-    for (Sequence_const_iterator si = y.sequence.begin(),
-	   s_end = y.sequence.end(); si != s_end; ++si) {
-      const PS& pi = si->element();
-      bool pi_is_strictly_contained = false;
-      for (Sequence_const_iterator sj = x.sequence.begin(),
-	     s_end = x.sequence.end();
-             (sj != s_end && !pi_is_strictly_contained); ++sj) {
-        const PS& pj = sj->element();
-        if (pj.strictly_contains(pi))
-	  pi_is_strictly_contained = true;
+  Poly_Con_Relation result = Poly_Con_Relation::nothing();
+  if (is_included)
+    result = result && Poly_Con_Relation::is_included();
+  if (is_disjoint)
+    result = result && Poly_Con_Relation::is_disjoint();
+  if (is_strictly_intersecting)
+    result = result && Poly_Con_Relation::strictly_intersects();
+  if (saturates_once && may_saturate)
+    result = result && Poly_Con_Relation::saturates();
+
+  return result;
+}
+
+template <typename PS>
+Poly_Con_Relation
+Pointset_Powerset<PS>::relation_with(const Constraint& c) const {
+  const Pointset_Powerset& x = *this;
+
+  /* *this is included in c if every disjunct is included in c */
+  bool is_included = true;
+  /* *this is disjoint with c if every disjunct is disjoint with c */
+  bool is_disjoint = true;
+  /* *this strictly_intersects with c if some disjunct strictly
+     intersects with c */
+  bool is_strictly_intersecting = false;
+  /* *this saturates c if some disjunct saturates c and
+     every disjunct is either disjoint from c or saturates c */
+  bool saturates_once = false;
+  bool may_saturate = true;
+  for (Sequence_const_iterator si = x.sequence.begin(),
+         s_end = x.sequence.end(); si != s_end; ++si) {
+    Poly_Con_Relation relation_i = si->element().relation_with(c);
+    if (!relation_i.implies(Poly_Con_Relation::is_included()))
+      is_included = false;
+    if (!relation_i.implies(Poly_Con_Relation::is_disjoint()))
+      is_disjoint = false;
+    if (relation_i.implies(Poly_Con_Relation::strictly_intersects()))
+      is_strictly_intersecting = true;
+    if (relation_i.implies(Poly_Con_Relation::saturates()))
+      saturates_once = true;
+    else if (!relation_i.implies(Poly_Con_Relation::is_disjoint()))
+      may_saturate = false;
+  }
+
+  Poly_Con_Relation result = Poly_Con_Relation::nothing();
+  if (is_included)
+    result = result && Poly_Con_Relation::is_included();
+  if (is_disjoint)
+    result = result && Poly_Con_Relation::is_disjoint();
+  if (is_strictly_intersecting)
+    result = result && Poly_Con_Relation::strictly_intersects();
+  if (saturates_once && may_saturate)
+    result = result && Poly_Con_Relation::saturates();
+
+  return result;
+}
+
+template <typename PS>
+Poly_Gen_Relation
+Pointset_Powerset<PS>::relation_with(const Generator& g) const {
+  const Pointset_Powerset& x = *this;
+
+  for (Sequence_const_iterator si = x.sequence.begin(),
+         s_end = x.sequence.end(); si != s_end; ++si) {
+    Poly_Gen_Relation relation_i = si->element().relation_with(g);
+    if (relation_i.implies(Poly_Gen_Relation::subsumes()))
+      return Poly_Gen_Relation::subsumes();
+  }
+
+  return Poly_Gen_Relation::nothing();
+}
+
+template <typename PS>
+bool
+Pointset_Powerset<PS>
+::bounds_from_above(const Linear_Expression& expr) const {
+  const Pointset_Powerset& x = *this;
+  x.omega_reduce();
+  for (Sequence_const_iterator si = x.sequence.begin(),
+         s_end = x.sequence.end(); si != s_end; ++si)
+    if (!si->element().bounds_from_above(expr))
+      return false;
+  return true;
+}
+
+template <typename PS>
+bool
+Pointset_Powerset<PS>
+::bounds_from_below(const Linear_Expression& expr) const {
+  const Pointset_Powerset& x = *this;
+  x.omega_reduce();
+  for (Sequence_const_iterator si = x.sequence.begin(),
+         s_end = x.sequence.end(); si != s_end; ++si)
+    if (!si->element().bounds_from_below(expr))
+      return false;
+  return true;
+}
+
+template <typename PS>
+bool
+Pointset_Powerset<PS>::maximize(const Linear_Expression& expr,
+                                Coefficient& sup_n,
+                                Coefficient& sup_d,
+                                bool& maximum) const {
+  const Pointset_Powerset& x = *this;
+  x.omega_reduce();
+  bool first = true;
+
+  Coefficient supt_n = 0;
+  Coefficient supt_d = 1;
+  bool maxt = 0;
+
+  Coefficient supi_n = 0;
+  Coefficient supi_d = 1;
+  bool maxi = 0;
+  TEMP_INTEGER(tmp);
+
+  for (Sequence_const_iterator si = x.sequence.begin(),
+         s_end = x.sequence.end(); si != s_end; ++si) {
+    if (!si->element().maximize(expr, supi_n, supi_d, maxi))
+      return false;
+    else
+      if (first) {
+        first = false;
+        supt_n = supi_n;
+        supt_d = supi_d;
+        maxt = maxi;
       }
-      if (!pi_is_strictly_contained)
-        return false;
-    }
-    return true;
+      else {
+        tmp = (supt_n * supi_d) - (supi_n * supt_d);
+        if (tmp < 0) {
+          supt_n = supi_n;
+          supt_d = supi_d;
+          maxt = maxi;
+        }
+        else if (tmp == 0)
+          maxt = maxt || maxi;
+      }
   }
-
-  template <typename PS>
-  Poly_Con_Relation
-  Pointset_Powerset<PS>::relation_with(const Congruence& cg) const {
-    const Pointset_Powerset& x = *this;
-
-    /* *this is included in cg if every disjunct is included in cg */
-    bool is_included = true;
-    /* *this is disjoint with cg if every disjunct is disjoint with cg */
-    bool is_disjoint = true;
-    /* *this strictly_intersects with cg if some disjunct strictly
-       intersects with cg */
-    bool is_strictly_intersecting = false;
-    /* *this saturates cg if some disjunct saturates cg and
-       every disjunct is either disjoint from cg or saturates cg */
-    bool saturates_once = false;
-    bool may_saturate = true;
-    for (Sequence_const_iterator si = x.sequence.begin(),
-	   s_end = x.sequence.end(); si != s_end; ++si) {
-      Poly_Con_Relation relation_i = si->element().relation_with(cg);
-       if (!relation_i.implies(Poly_Con_Relation::is_included()))
-         is_included = false;
-       if (!relation_i.implies(Poly_Con_Relation::is_disjoint()))
-         is_disjoint = false;
-       if (relation_i.implies(Poly_Con_Relation::strictly_intersects()))
-         is_strictly_intersecting = true;
-       if (relation_i.implies(Poly_Con_Relation::saturates()))
-         saturates_once = true;
-       else if (!relation_i.implies(Poly_Con_Relation::is_disjoint()))
-         may_saturate = false;
-    }
-
-    Poly_Con_Relation result = Poly_Con_Relation::nothing();
-    if (is_included)
-      result = result && Poly_Con_Relation::is_included();
-    if (is_disjoint)
-      result = result && Poly_Con_Relation::is_disjoint();
-    if (is_strictly_intersecting)
-      result = result && Poly_Con_Relation::strictly_intersects();
-    if (saturates_once && may_saturate)
-      result = result && Poly_Con_Relation::saturates();
-
-    return result;
+  sup_n = supt_n;
+  sup_d = supt_d;
+  maximum = maxt;
+  return true;
 }
 
-  template <typename PS>
-  Poly_Con_Relation
-  Pointset_Powerset<PS>::relation_with(const Constraint& c) const {
-    const Pointset_Powerset& x = *this;
+template <typename PS>
+bool
+Pointset_Powerset<PS>::maximize(const Linear_Expression& expr,
+                                Coefficient& sup_n,
+                                Coefficient& sup_d,
+                                bool& maximum,
+                                Generator& g) const {
+  const Pointset_Powerset& x = *this;
+  x.omega_reduce();
+  bool first = true;
 
-    /* *this is included in c if every disjunct is included in c */
-    bool is_included = true;
-    /* *this is disjoint with c if every disjunct is disjoint with c */
-    bool is_disjoint = true;
-    /* *this strictly_intersects with c if some disjunct strictly
-       intersects with c */
-    bool is_strictly_intersecting = false;
-    /* *this saturates c if some disjunct saturates c and
-       every disjunct is either disjoint from c or saturates c */
-    bool saturates_once = false;
-    bool may_saturate = true;
-    for (Sequence_const_iterator si = x.sequence.begin(),
-	   s_end = x.sequence.end(); si != s_end; ++si) {
-      Poly_Con_Relation relation_i = si->element().relation_with(c);
-       if (!relation_i.implies(Poly_Con_Relation::is_included()))
-         is_included = false;
-       if (!relation_i.implies(Poly_Con_Relation::is_disjoint()))
-         is_disjoint = false;
-       if (relation_i.implies(Poly_Con_Relation::strictly_intersects()))
-         is_strictly_intersecting = true;
-       if (relation_i.implies(Poly_Con_Relation::saturates()))
-         saturates_once = true;
-       else if (!relation_i.implies(Poly_Con_Relation::is_disjoint()))
-         may_saturate = false;
-    }
+  Coefficient supt_n = 0;
+  Coefficient supt_d = 1;
+  bool maxt = 0;
+  Generator gt = point();
 
-    Poly_Con_Relation result = Poly_Con_Relation::nothing();
-    if (is_included)
-      result = result && Poly_Con_Relation::is_included();
-    if (is_disjoint)
-      result = result && Poly_Con_Relation::is_disjoint();
-    if (is_strictly_intersecting)
-      result = result && Poly_Con_Relation::strictly_intersects();
-    if (saturates_once && may_saturate)
-      result = result && Poly_Con_Relation::saturates();
+  Coefficient supi_n = 0;
+  Coefficient supi_d = 1;
+  bool maxi = 0;
+  Generator gi = point();
+  TEMP_INTEGER(tmp);
 
-    return result;
+  for (Sequence_const_iterator si = x.sequence.begin(),
+         s_end = x.sequence.end(); si != s_end; ++si) {
+    if (!si->element().maximize(expr, supi_n, supi_d, maxi, gi))
+      return false;
+    else
+      if (first) {
+        first = false;
+        supt_n = supi_n;
+        supt_d = supi_d;
+        maxt = maxi;
+        gt = gi;
+      }
+      else {
+        tmp = (supt_n * supi_d) - (supi_n * supt_d);
+        if (tmp < 0) {
+          supt_n = supi_n;
+          supt_d = supi_d;
+          maxt = maxi;
+          gt = gi;
+        }
+        else if (tmp == 0) {
+          maxt = maxt || maxi;
+          gt = gi;
+        }
+      }
+  }
+  sup_n = supt_n;
+  sup_d = supt_d;
+  maximum = maxt;
+  g = gt;
+  return true;
 }
 
-  template <typename PS>
-  Poly_Gen_Relation
-  Pointset_Powerset<PS>::relation_with(const Generator& g) const {
-    const Pointset_Powerset& x = *this;
+template <typename PS>
+bool
+Pointset_Powerset<PS>::minimize(const Linear_Expression& expr,
+                                Coefficient& inf_n,
+                                Coefficient& inf_d,
+                                bool& minimum) const {
+  const Pointset_Powerset& x = *this;
+  x.omega_reduce();
+  bool first = true;
 
-    for (Sequence_const_iterator si = x.sequence.begin(),
-	   s_end = x.sequence.end(); si != s_end; ++si) {
-      Poly_Gen_Relation relation_i = si->element().relation_with(g);
-       if (relation_i.implies(Poly_Gen_Relation::subsumes()))
-         return Poly_Gen_Relation::subsumes();
-    }
+  Coefficient inft_n = 0;
+  Coefficient inft_d = 1;
+  bool mint = 0;
 
-    return Poly_Gen_Relation::nothing();
+  Coefficient infi_n = 0;
+  Coefficient infi_d = 1;
+  bool mini = 0;
+  TEMP_INTEGER(tmp);
+
+  for (Sequence_const_iterator si = x.sequence.begin(),
+         s_end = x.sequence.end(); si != s_end; ++si) {
+    if (!si->element().minimize(expr, infi_n, infi_d, mini))
+      return false;
+    else
+      if (first) {
+        first = false;
+        inft_n = infi_n;
+        inft_d = infi_d;
+        mint = mini;
+      }
+      else {
+        tmp = (inft_n * infi_d) - (infi_n * inft_d);
+        if (tmp > 0) {
+          inft_n = infi_n;
+          inft_d = infi_d;
+          mint = mini;
+        }
+        else if (tmp == 0)
+          mint = mint || mini;
+      }
+  }
+  inf_n = inft_n;
+  inf_d = inft_d;
+  minimum = mint;
+  return true;
 }
 
-  template <typename PS>
-  bool
-  Pointset_Powerset<PS>
-  ::bounds_from_above(const Linear_Expression& expr) const {
-    const Pointset_Powerset& x = *this;
-    x.omega_reduce();
-    for (Sequence_const_iterator si = x.sequence.begin(),
-	   s_end = x.sequence.end(); si != s_end; ++si)
-      if (!si->element().bounds_from_above(expr))
-	return false;
-    return true;
+template <typename PS>
+bool
+Pointset_Powerset<PS>::minimize(const Linear_Expression& expr,
+                                Coefficient& inf_n,
+                                Coefficient& inf_d,
+                                bool& minimum,
+                                Generator& g) const {
+  const Pointset_Powerset& x = *this;
+  x.omega_reduce();
+  bool first = true;
+
+  Coefficient inft_n = 0;
+  Coefficient inft_d = 1;
+  bool mint = 0;
+  Generator gt = point();
+
+  Coefficient infi_n = 0;
+  Coefficient infi_d = 1;
+  bool mini = 0;
+  Generator gi = point();
+  TEMP_INTEGER(tmp);
+
+  for (Sequence_const_iterator si = x.sequence.begin(),
+         s_end = x.sequence.end(); si != s_end; ++si) {
+    if (!si->element().minimize(expr, infi_n, infi_d, mini, gi))
+      return false;
+    else
+      if (first) {
+        first = false;
+        inft_n = infi_n;
+        inft_d = infi_d;
+        mint = mini;
+        gt = gi;
+      }
+      else {
+        tmp = (inft_n * infi_d) - (infi_n * inft_d);
+        if (tmp > 0) {
+          inft_n = infi_n;
+          inft_d = infi_d;
+          mint = mini;
+          gt = gi;
+        }
+        else if (tmp == 0) {
+          mint = mint || mini;
+          gt = gi;
+        }
+      }
   }
+  inf_n = inft_n;
+  inf_d = inft_d;
+  minimum = mint;
+  g = gt;
+  return true;
+}
 
-  template <typename PS>
-  bool
-  Pointset_Powerset<PS>
-  ::bounds_from_below(const Linear_Expression& expr) const {
-    const Pointset_Powerset& x = *this;
-    x.omega_reduce();
-    for (Sequence_const_iterator si = x.sequence.begin(),
-	   s_end = x.sequence.end(); si != s_end; ++si)
-      if (!si->element().bounds_from_below(expr))
-	return false;
-    return true;
-  }
-
-  template <typename PS>
-  bool
-  Pointset_Powerset<PS>::maximize(const Linear_Expression& expr,
-		                  Coefficient& sup_n,
-                                  Coefficient& sup_d,
-                                  bool& maximum) const {
-    const Pointset_Powerset& x = *this;
-    x.omega_reduce();
-    bool first = true;
-
-    Coefficient supt_n = 0;
-    Coefficient supt_d = 1;
-    bool maxt = 0;
-
-    Coefficient supi_n = 0;
-    Coefficient supi_d = 1;
-    bool maxi = 0;
-    TEMP_INTEGER(tmp);
-
-    for (Sequence_const_iterator si = x.sequence.begin(),
-	   s_end = x.sequence.end(); si != s_end; ++si) {
-      if (!si->element().maximize(expr, supi_n, supi_d, maxi))
-	return false;
-      else
-	if (first) {
-	  first = false;
-	  supt_n = supi_n;
-	  supt_d = supi_d;
-	  maxt = maxi;
-	}
-	else {
-          tmp = (supt_n * supi_d) - (supi_n * supt_d);
-	  if (tmp < 0) {
-	    supt_n = supi_n;
-	    supt_d = supi_d;
-  	    maxt = maxi;
-	  }
-	  else if (tmp == 0)
-            maxt = maxt || maxi;
-	}
-    }
-    sup_n = supt_n;
-    sup_d = supt_d;
-    maximum = maxt;
-    return true;
-  }
-
-  template <typename PS>
-  bool
-  Pointset_Powerset<PS>::maximize(const Linear_Expression& expr,
-		                  Coefficient& sup_n,
-                                  Coefficient& sup_d,
-                                  bool& maximum,
-		                  Generator& g) const {
-    const Pointset_Powerset& x = *this;
-    x.omega_reduce();
-    bool first = true;
-
-    Coefficient supt_n = 0;
-    Coefficient supt_d = 1;
-    bool maxt = 0;
-    Generator gt = point();
-
-    Coefficient supi_n = 0;
-    Coefficient supi_d = 1;
-    bool maxi = 0;
-    Generator gi = point();
-    TEMP_INTEGER(tmp);
-
-    for (Sequence_const_iterator si = x.sequence.begin(),
-	   s_end = x.sequence.end(); si != s_end; ++si) {
-      if (!si->element().maximize(expr, supi_n, supi_d, maxi, gi))
-	return false;
-      else
-	if (first) {
-	  first = false;
-	  supt_n = supi_n;
-	  supt_d = supi_d;
-	  maxt = maxi;
-	  gt = gi;
-	}
-	else {
-          tmp = (supt_n * supi_d) - (supi_n * supt_d);
-	  if (tmp < 0) {
-	    supt_n = supi_n;
-	    supt_d = supi_d;
-  	    maxt = maxi;
-  	    gt = gi;
-	  }
-	  else if (tmp == 0) {
-            maxt = maxt || maxi;
-	    gt = gi;
-	  }
-	}
-    }
-    sup_n = supt_n;
-    sup_d = supt_d;
-    maximum = maxt;
-    g = gt;
-    return true;
-  }
-
-  template <typename PS>
-  bool
-  Pointset_Powerset<PS>::minimize(const Linear_Expression& expr,
-		                  Coefficient& inf_n,
-                                  Coefficient& inf_d,
-                                  bool& minimum) const {
-    const Pointset_Powerset& x = *this;
-    x.omega_reduce();
-    bool first = true;
-
-    Coefficient inft_n = 0;
-    Coefficient inft_d = 1;
-    bool mint = 0;
-
-    Coefficient infi_n = 0;
-    Coefficient infi_d = 1;
-    bool mini = 0;
-    TEMP_INTEGER(tmp);
-
-    for (Sequence_const_iterator si = x.sequence.begin(),
-	   s_end = x.sequence.end(); si != s_end; ++si) {
-      if (!si->element().minimize(expr, infi_n, infi_d, mini))
-	return false;
-      else
-	if (first) {
-	  first = false;
-	  inft_n = infi_n;
-	  inft_d = infi_d;
-	  mint = mini;
-	}
-	else {
-          tmp = (inft_n * infi_d) - (infi_n * inft_d);
-	  if (tmp > 0) {
-	    inft_n = infi_n;
-	    inft_d = infi_d;
-  	    mint = mini;
-	  }
-	  else if (tmp == 0)
-            mint = mint || mini;
-	}
-    }
-    inf_n = inft_n;
-    inf_d = inft_d;
-    minimum = mint;
-    return true;
-  }
-
-  template <typename PS>
-  bool
-  Pointset_Powerset<PS>::minimize(const Linear_Expression& expr,
-		                  Coefficient& inf_n,
-                                  Coefficient& inf_d,
-                                  bool& minimum,
-		                  Generator& g) const {
-    const Pointset_Powerset& x = *this;
-    x.omega_reduce();
-    bool first = true;
-
-    Coefficient inft_n = 0;
-    Coefficient inft_d = 1;
-    bool mint = 0;
-    Generator gt = point();
-
-    Coefficient infi_n = 0;
-    Coefficient infi_d = 1;
-    bool mini = 0;
-    Generator gi = point();
-    TEMP_INTEGER(tmp);
-
-    for (Sequence_const_iterator si = x.sequence.begin(),
-	   s_end = x.sequence.end(); si != s_end; ++si) {
-      if (!si->element().minimize(expr, infi_n, infi_d, mini, gi))
-	return false;
-      else
-	if (first) {
-	  first = false;
-	  inft_n = infi_n;
-	  inft_d = infi_d;
-	  mint = mini;
-	  gt = gi;
-	}
-	else {
-          tmp = (inft_n * infi_d) - (infi_n * inft_d);
-	  if (tmp > 0) {
-	    inft_n = infi_n;
-	    inft_d = infi_d;
-  	    mint = mini;
-  	    gt = gi;
-	  }
-	  else if (tmp == 0) {
-            mint = mint || mini;
-	    gt = gi;
-	  }
-	}
-    }
-    inf_n = inft_n;
-    inf_d = inft_d;
-    minimum = mint;
-    g = gt;
-    return true;
-  }
-
-  template <typename PS>
-  bool
-  Pointset_Powerset<PS>::contains_integer_point() const {
-    const Pointset_Powerset& x = *this;
-    for (Sequence_const_iterator si = x.sequence.begin(),
-	   s_end = x.sequence.end(); si != s_end; ++si)
-      if (si->element().contains_integer_point())
-	return true;
-    return false;
-  }
+template <typename PS>
+bool
+Pointset_Powerset<PS>::contains_integer_point() const {
+  const Pointset_Powerset& x = *this;
+  for (Sequence_const_iterator si = x.sequence.begin(),
+         s_end = x.sequence.end(); si != s_end; ++si)
+    if (si->element().contains_integer_point())
+      return true;
+  return false;
+}
 
 template <typename PS>
 void
@@ -1147,7 +1171,7 @@ template <typename Cert>
 void
 Pointset_Powerset<PS>::
 collect_certificates(std::map<Cert, size_type,
-		              typename Cert::Compare>& cert_ms) const {
+                     typename Cert::Compare>& cert_ms) const {
   const Pointset_Powerset& x = *this;
   assert(x.is_omega_reduced());
   assert(cert_ms.size() == 0);
@@ -1162,7 +1186,7 @@ template <typename Cert>
 bool
 Pointset_Powerset<PS>::
 is_cert_multiset_stabilizing(const std::map<Cert, size_type,
-			                    typename Cert::Compare>& y_cert_ms
+                             typename Cert::Compare>& y_cert_ms
 			     ) const {
   typedef std::map<Cert, size_type, typename Cert::Compare> Cert_Multiset;
   Cert_Multiset x_cert_ms;
@@ -1209,7 +1233,7 @@ template <typename PS>
 template <typename Cert, typename Widening>
 void
 Pointset_Powerset<PS>::BHZ03_widening_assign(const Pointset_Powerset& y,
-					      Widening wf) {
+                                             Widening wf) {
   // `x' is the current iteration value.
   Pointset_Powerset& x = *this;
 
@@ -1335,7 +1359,7 @@ Pointset_Powerset<PS>::ascii_dump(std::ostream& s) const {
 
 PPL_OUTPUT_TEMPLATE_DEFINITIONS(PS, Pointset_Powerset<PS>)
 
-template <typename PS>
+  template <typename PS>
 bool
 Pointset_Powerset<PS>::ascii_load(std::istream& s) {
   Pointset_Powerset& x = *this;
