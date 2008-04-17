@@ -357,6 +357,18 @@ public:
   //! Returns the maximum space dimension all kinds of Grid can handle.
   static dimension_type max_space_dimension();
 
+  /*! \brief
+    Returns true indicating that this domain has methods that
+    can recycle congruences
+  */
+  static bool can_recycle_congruence_systems();
+
+  /*! \brief
+    Returns true indicating that this domain has methods that
+    can recycle constraints
+  */
+  static bool can_recycle_constraint_systems();
+
   //! Builds a grid having the specified properties.
   /*!
     \param num_dimensions
@@ -705,16 +717,10 @@ public:
   // we keep using it without changing the name.
   Poly_Con_Relation relation_with(const Constraint& c) const;
 
-  /*! \brief
-    Returns <CODE>true</CODE> if and only if \p *this is an empty
-    grid.
-  */
+  //! Returns \c true if and only if \p *this is an empty grid.
   bool is_empty() const;
 
-  /*! \brief
-    Returns <CODE>true</CODE> if and only if \p *this is a universe
-    grid.
-  */
+  //! Returns \c true if and only if \p *this is a universe grid.
   bool is_universe() const;
 
   /*! \brief
@@ -1314,18 +1320,6 @@ public:
   void refine_with_constraints(const Constraint_System& cs);
 
   /*! \brief
-    Returns true indicating that this domain has methods that
-    can recycle congruences
-  */
-  static bool can_recycle_congruence_systems();
-
-  /*! \brief
-    Returns true indicating that this domain has methods that
-    can recycle constraints
-  */
-  static bool can_recycle_constraint_systems();
-
-  /*! \brief
     Adds a copy of the generators in \p gs to the system of generators
     of \p *this.
 
@@ -1400,6 +1394,32 @@ public:
     See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_recycled_grid_generators_and_minimize(Grid_Generator_System& gs);
+
+  /*! \brief
+    Computes the \ref Cylindrification "cylindrification" of \p *this with
+    respect to space dimension \p var, assigning the result to \p *this.
+
+    \param var
+    The space dimension that will be unconstrained.
+
+    \exception std::invalid_argument
+    Thrown if \p var is not a space dimension of \p *this.
+  */
+  void unconstrain(Variable var);
+
+  /*! \brief
+    Computes the \ref Cylindrification "cylindrification" of \p *this with
+    respect to the set of space dimensions \p to_be_unconstrained,
+    assigning the result to \p *this.
+
+    \param to_be_unconstrained
+    The set of space dimension that will be unconstrained.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with one of the
+    Variable objects contained in \p to_be_removed.
+  */
+  void unconstrain(const Variables_Set& to_be_unconstrained);
 
   /*! \brief
     Assigns to \p *this the intersection of \p *this and \p y.  The
@@ -2324,7 +2344,7 @@ private:
   //! Sets \p status to express that congruences are out of date.
   void clear_congruences_up_to_date();
 
-  //! Sets \p status to express that parameters are out of date.
+  //! Sets \p status to express that generators are out of date.
   void clear_generators_up_to_date();
 
   //! Sets \p status to express that congruences are no longer minimized.

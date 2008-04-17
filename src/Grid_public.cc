@@ -1526,6 +1526,60 @@ PPL::Grid::refine_with_constraints(const Constraint_System& cs) {
 }
 
 void
+PPL::Grid::unconstrain(const Variable var) {
+  // Dimension-compatibility check.
+  if (space_dim < var.id())
+    throw_dimension_incompatible("unconstrain(var)", var.id());
+
+  // Do something only if the grid is non-empty.
+  if (marked_empty()
+      || (!generators_are_up_to_date() && !update_generators()))
+    // Empty: do nothing.
+    return;
+
+  assert(generators_are_up_to_date());
+  Grid_Generator l = grid_line(var);
+  gen_sys.recycling_insert(l);
+  // With the added generator, congruences are out of date.
+  clear_congruences_up_to_date();
+  clear_generators_minimized();
+  assert(OK());
+}
+
+void
+PPL::Grid::unconstrain(const Variables_Set& to_be_unconstrained) {
+  // The cylindrification wrt no dimensions is a no-op.
+  // This case also captures the only legal cylindrification
+  // of a grid in a 0-dim space.
+  if (to_be_unconstrained.empty())
+    return;
+
+  // Dimension-compatibility check.
+  const dimension_type min_space_dim = to_be_unconstrained.space_dimension();
+  if (space_dim < min_space_dim)
+    throw_dimension_incompatible("unconstrain(vs)", min_space_dim);
+
+  // Do something only if the grid is non-empty.
+  if (marked_empty()
+      || (!generators_are_up_to_date() && !update_generators()))
+    // Empty: do nothing.
+    return;
+
+  assert(generators_are_up_to_date());
+  // Since `gen_sys' is not empty, the space dimension of the inserted
+  // generators are automatically adjusted.
+  for (Variables_Set::const_iterator tbu = to_be_unconstrained.begin(),
+         tbu_end = to_be_unconstrained.end(); tbu != tbu_end; ++tbu) {
+    Grid_Generator l = grid_line(Variable(*tbu));
+    gen_sys.recycling_insert(l);
+  }
+  // Constraints are no longer up-to-date.
+  clear_generators_minimized();
+  clear_congruences_up_to_date();
+  assert(OK());
+}
+
+void
 PPL::Grid::intersection_assign(const Grid& y) {
   Grid& x = *this;
   // Dimension-compatibility check.
