@@ -109,6 +109,7 @@ removespacedims1 removespacedims2 \
 timeelapse1 \
 topclosed1 \
 topclosure1 \
+unconstrain1 \
 widening1 widening2  widening3\
 writecongruencesystem
 
@@ -275,6 +276,8 @@ timeelapse1_SOURCES = timeelapse1.cc
 topclosed1_SOURCES = topclosed1.cc
 
 topclosure1_SOURCES = topclosure1.cc
+
+unconstrain1_SOURCES = unconstrain1.cc
 
 widening1_SOURCES = widening1.cc
 widening2_SOURCES = widening2.cc
