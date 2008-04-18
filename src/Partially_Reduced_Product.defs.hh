@@ -479,7 +479,8 @@ public:
                             Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Ordinary copy-constructor.
-  Partially_Reduced_Product(const Partially_Reduced_Product& y);
+  Partially_Reduced_Product(const Partially_Reduced_Product& y,
+                            Complexity_Class complexity = ANY_COMPLEXITY);
 
   /*! \brief
     The assignment operator.  (\p *this and \p y can be

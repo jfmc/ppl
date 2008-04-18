@@ -560,6 +560,32 @@ test18() {
   return ok;
 }
 
+// Product(box).
+bool
+test19() {
+  Variable A(0);
+
+  const Constraint_System cs(A >= 0);
+
+  Product src(cs);
+
+  Product dp(src, POLYNOMIAL_COMPLEXITY);
+
+  Product dp1(src);
+
+  Product known_dp(1);
+  known_dp.add_constraint(A >= 0);
+
+  bool ok = (dp == known_dp && dp1 == known_dp);
+
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
+  print_congruences(dp1, "*** dp1 congruences ***");
+  print_constraints(dp1, "*** dp1 constraints ***");
+
+  return ok && dp.OK();
+}
+
 } // namespace
 
 BEGIN_MAIN

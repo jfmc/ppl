@@ -130,7 +130,8 @@ Partially_Reduced_Product<D1, D2, R>
 template <typename D1, typename D2, typename R>
 inline
 Partially_Reduced_Product<D1, D2, R>
-::Partially_Reduced_Product(const Partially_Reduced_Product& y)
+::Partially_Reduced_Product(const Partially_Reduced_Product& y,
+                            Complexity_Class)
   : d1(y.d1), d2(y.d2) {
   reduced = y.reduced;
 }
