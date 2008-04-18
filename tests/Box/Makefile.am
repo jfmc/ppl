@@ -97,6 +97,7 @@ refinewithconstraints1 \
 refinewithcongruences1 \
 removespacedims1 \
 timeelapse1 \
+unconstrain1 \
 universe1 \
 writebox1
 
@@ -253,6 +254,8 @@ refinewithcongruences1_SOURCES = refinewithcongruences1.cc
 removespacedims1_SOURCES = removespacedims1.cc
 
 timeelapse1_SOURCES = timeelapse1.cc
+
+unconstrain1_SOURCES = unconstrain1.cc
 
 universe1_SOURCES = universe1.cc
 
