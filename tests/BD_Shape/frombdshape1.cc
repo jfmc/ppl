@@ -111,8 +111,7 @@ test04() {
   cs.insert(A - B <= 18);
   TBD_Shape bds1(cs);
 
-  BD_Shape<mpq_class> bds(1);
-  bds = bds1;
+  BD_Shape<mpq_class> bds(bds1);
 
   BD_Shape<mpq_class> known_result(cs);
 

@@ -111,8 +111,7 @@ test04() {
   cs.insert(A - B <= 18);
   TOctagonal_Shape os1(cs);
 
-  Octagonal_Shape<mpq_class> os(1);
-  os = os1;
+  Octagonal_Shape<mpq_class> os(os1);
 
   Octagonal_Shape<mpq_class> known_result(cs);
 
