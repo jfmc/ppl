@@ -560,7 +560,7 @@ test18() {
   return ok;
 }
 
-// Product(box).
+// Product(Product).
 bool
 test19() {
   Variable A(0);
@@ -568,6 +568,32 @@ test19() {
   const Constraint_System cs(A >= 0);
 
   Product src(cs);
+
+  Product dp(src, POLYNOMIAL_COMPLEXITY);
+
+  Product dp1(src);
+
+  Product known_dp(1);
+  known_dp.add_constraint(A >= 0);
+
+  bool ok = (dp == known_dp && dp1 == known_dp);
+
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
+  print_congruences(dp1, "*** dp1 congruences ***");
+  print_constraints(dp1, "*** dp1 constraints ***");
+
+  return ok && dp.OK();
+}
+
+// Product(Box_Product).
+bool
+test20() {
+  Variable A(0);
+
+  const Constraint_System cs(A >= 0);
+
+  Box_Product src(cs);
 
   Product dp(src, POLYNOMIAL_COMPLEXITY);
 
@@ -609,4 +635,6 @@ BEGIN_MAIN
   DO_TEST(test17);
 #endif
   DO_TEST(test18);
+  DO_TEST(test19);
+  DO_TEST(test20);
 END_MAIN

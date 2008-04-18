@@ -482,6 +482,15 @@ public:
   Partially_Reduced_Product(const Partially_Reduced_Product& y,
                             Complexity_Class complexity = ANY_COMPLEXITY);
 
+  //! Builds a conservative, upward approximation of \p y.
+  /*!
+    The complexity argument is ignored.
+  */
+  template <typename E1, typename E2, typename S>
+  explicit
+  Partially_Reduced_Product(const Partially_Reduced_Product<E1, E2, S>& y,
+                            Complexity_Class complexity = ANY_COMPLEXITY);
+
   /*! \brief
     The assignment operator.  (\p *this and \p y can be
     dimension-incompatible.)
