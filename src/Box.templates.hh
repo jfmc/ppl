@@ -1355,6 +1355,40 @@ Box<Interval>::contains_integer_point() const {
 
 template <typename Interval>
 void
+Box<Interval>::unconstrain(const Variables_Set& to_be_unconstrained) {
+  // The cylindrification wrt no dimensions is a no-op.
+  // This case also captures the only legal cylindrification
+  // of a box in a 0-dim space.
+  if (to_be_unconstrained.empty())
+    return;
+
+  // Dimension-compatibility check.
+  const dimension_type min_space_dim = to_be_unconstrained.space_dimension();
+  if (space_dimension() < min_space_dim)
+    throw_dimension_incompatible("unconstrain(vs)", min_space_dim);
+
+  // If the box is already empty, there is nothing left to do.
+  if (marked_empty())
+    return;
+
+  // Here the box might still be empty (but we haven't detected it yet):
+  // check emptyness of the interval for each of the variables in
+  // `to_be_unconstrained' before cylindrification.
+  for (Variables_Set::const_iterator tbu = to_be_unconstrained.begin(),
+         tbu_end = to_be_unconstrained.end(); tbu != tbu_end; ++tbu) {
+    Interval& seq_tbu = seq[*tbu];
+    if (!seq_tbu.is_empty())
+      seq_tbu.assign(UNIVERSE);
+    else {
+      set_empty();
+      break;
+    }
+  }
+  assert(OK());
+}
+
+template <typename Interval>
+void
 Box<Interval>::topological_closure_assign() {
   if (!Interval::info_type::store_open || is_empty())
     return;

@@ -465,6 +465,27 @@ Box<Interval>::refine_with_congruences(const Congruence_System& cgs) {
   refine_no_check(cgs);
 }
 
+template <typename Interval>
+inline void
+Box<Interval>::unconstrain(const Variable var) {
+  const dimension_type dim = var.id();
+  // Dimension-compatibility check.
+  if (dim > space_dimension())
+    throw_dimension_incompatible("unconstrain(var)", dim);
+
+  // If the box is already empty, there is nothing left to do.
+  if (marked_empty())
+    return;
+  // Here the box might still be empty (but we haven't detected it yet):
+  // check emptyness of the interval for `var' before cylindrification.
+  Interval& seq_var = seq[dim];
+  if (seq_var.is_empty())
+    set_empty();
+  else
+    seq_var.assign(UNIVERSE);
+  assert(OK());
+}
+
 /*! \relates Box */
 template <typename Temp, typename To, typename Interval>
 inline bool
