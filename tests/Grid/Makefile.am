@@ -66,7 +66,6 @@ congruences2 \
 constraints1 \
 contains1 \
 containsintegerpoint1 \
-copyconstruct1 \
 coveringbox1 coveringbox2 \
 directproduct1 directproduct2 directproduct3 directproduct4 \
 directproduct5 directproduct6 \
@@ -76,6 +75,7 @@ equals1 \
 expandspacedim1 \
 foldspacedims1 \
 frombdshape1 \
+fromgrid1 \
 fromoctagonalshape1 \
 frompolyhedron1 \
 generalizedaffineimage1 generalizedaffineimage2 generalizedaffineimage3 \
@@ -176,8 +176,6 @@ contains1_SOURCES = contains1.cc
 
 containsintegerpoint1_SOURCES = containsintegerpoint1.cc
 
-copyconstruct1_SOURCES = copyconstruct1.cc
-
 directproduct1_SOURCES = directproduct1.cc
 directproduct2_SOURCES = directproduct2.cc
 directproduct3_SOURCES = directproduct3.cc
@@ -194,6 +192,8 @@ equals1_SOURCES = equals1.cc
 expandspacedim1_SOURCES = expandspacedim1.cc
 
 frombdshape1_SOURCES = frombdshape1.cc
+
+fromgrid1_SOURCES = fromgrid1.cc
 
 fromoctagonalshape1_SOURCES = fromoctagonalshape1.cc
 

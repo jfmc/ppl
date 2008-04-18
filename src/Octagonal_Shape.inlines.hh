@@ -106,14 +106,15 @@ Octagonal_Shape<T>::Octagonal_Shape(const dimension_type num_dimensions,
 
 template <typename T>
 inline
-Octagonal_Shape<T>::Octagonal_Shape(const Octagonal_Shape& y)
+Octagonal_Shape<T>::Octagonal_Shape(const Octagonal_Shape& y, Complexity_Class)
   : matrix(y.matrix), space_dim(y.space_dim), status(y.status) {
 }
 
 template <typename T>
 template <typename U>
 inline
-Octagonal_Shape<T>::Octagonal_Shape(const Octagonal_Shape<U>& y)
+Octagonal_Shape<T>::Octagonal_Shape(const Octagonal_Shape<U>& y,
+                                    Complexity_Class)
   : matrix(y.matrix), space_dim(y.space_dim), status() {
   // TODO: handle flags properly, possibly taking special cases into account.
   if (y.marked_empty())

@@ -97,7 +97,7 @@ Box<Interval>::Box(const Congruence_System& cgs)
 template <typename Interval>
 template <typename Other_Interval>
 inline
-Box<Interval>::Box(const Box<Other_Interval>& y)
+Box<Interval>::Box(const Box<Other_Interval>& y, Complexity_Class)
   : seq(y.space_dimension()),
     // FIXME: why the following does not work?
     // status(y.status) {

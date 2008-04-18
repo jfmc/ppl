@@ -34,7 +34,7 @@ namespace PPL = Parma_Polyhedra_Library;
 // TODO: In the Grid constructors adapt and use the given system if it
 //       is modifiable, instead of using a copy.
 
-PPL::Grid::Grid(const Grid& y)
+PPL::Grid::Grid(const Grid& y, Complexity_Class)
   : con_sys(),
     gen_sys(),
     status(y.status),

@@ -451,11 +451,19 @@ public:
                            Degenerate_Element kind = UNIVERSE);
 
   //! Ordinary copy-constructor.
-  Octagonal_Shape(const Octagonal_Shape& x);
+  /*!
+    The complexity argument is ignored.
+  */
+  Octagonal_Shape(const Octagonal_Shape& x,
+                  Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Builds a conservative, upward approximation of \p y.
+  /*!
+    The complexity argument is ignored.
+  */
   template <typename U>
-  explicit Octagonal_Shape(const Octagonal_Shape<U>& y);
+  explicit Octagonal_Shape(const Octagonal_Shape<U>& y,
+                           Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Builds an OS from the system of constraints \p cs.
   /*!

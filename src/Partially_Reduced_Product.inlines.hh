@@ -77,23 +77,25 @@ Partially_Reduced_Product<D1, D2, R>
 template <typename D1, typename D2, typename R>
 inline
 Partially_Reduced_Product<D1, D2, R>
-::Partially_Reduced_Product(const C_Polyhedron& ph)
-  : d1(ph), d2(ph) {
+::Partially_Reduced_Product(const C_Polyhedron& ph,
+                            Complexity_Class complexity)
+  : d1(ph, complexity), d2(ph, complexity) {
   set_reduced_flag();
 }
 
 template <typename D1, typename D2, typename R>
 inline
 Partially_Reduced_Product<D1, D2, R>
-::Partially_Reduced_Product(const NNC_Polyhedron& ph)
-  : d1(ph), d2(ph) {
+::Partially_Reduced_Product(const NNC_Polyhedron& ph,
+                            Complexity_Class complexity)
+  : d1(ph, complexity), d2(ph, complexity) {
   set_reduced_flag();
 }
 
 template <typename D1, typename D2, typename R>
 inline
 Partially_Reduced_Product<D1, D2, R>
-::Partially_Reduced_Product(const Grid& gr)
+::Partially_Reduced_Product(const Grid& gr, Complexity_Class)
   : d1(gr), d2(gr) {
   set_reduced_flag();
 }
@@ -102,7 +104,7 @@ template <typename D1, typename D2, typename R>
 template <typename Interval>
 inline
 Partially_Reduced_Product<D1, D2, R>
-::Partially_Reduced_Product(const Box<Interval>& box)
+::Partially_Reduced_Product(const Box<Interval>& box, Complexity_Class)
   : d1(box), d2(box) {
   set_reduced_flag();
 }
@@ -111,7 +113,7 @@ template <typename D1, typename D2, typename R>
 template <typename U>
 inline
 Partially_Reduced_Product<D1, D2, R>
-::Partially_Reduced_Product(const BD_Shape<U>& bd)
+::Partially_Reduced_Product(const BD_Shape<U>& bd, Complexity_Class)
   : d1(bd), d2(bd) {
   set_reduced_flag();
 }
@@ -120,7 +122,7 @@ template <typename D1, typename D2, typename R>
 template <typename U>
 inline
 Partially_Reduced_Product<D1, D2, R>
-::Partially_Reduced_Product(const Octagonal_Shape<U>& os)
+::Partially_Reduced_Product(const Octagonal_Shape<U>& os, Complexity_Class)
   : d1(os), d2(os) {
   set_reduced_flag();
 }

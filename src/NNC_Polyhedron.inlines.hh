@@ -135,7 +135,7 @@ NNC_Polyhedron::NNC_Polyhedron(const Octagonal_Shape<U>& os, Complexity_Class)
 }
 
 inline
-NNC_Polyhedron::NNC_Polyhedron(const NNC_Polyhedron& y)
+NNC_Polyhedron::NNC_Polyhedron(const NNC_Polyhedron& y, Complexity_Class)
   : Polyhedron(y) {
 }
 

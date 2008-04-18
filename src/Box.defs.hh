@@ -301,11 +301,19 @@ public:
 	       Degenerate_Element kind = UNIVERSE);
 
   //! Ordinary copy-constructor.
-  Box(const Box& y);
+  /*!
+    The complexity argument is ignored.
+  */
+  Box(const Box& y,
+      Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Builds a conservative, upward approximation of \p y.
+  /*!
+    The complexity argument is ignored.
+  */
   template <typename Other_Interval>
-  explicit Box(const Box<Other_Interval>& y);
+  explicit Box(const Box<Other_Interval>& y,
+               Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Builds a box from the system of constraints \p cs.
   /*!

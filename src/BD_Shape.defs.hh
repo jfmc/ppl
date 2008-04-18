@@ -435,11 +435,19 @@ public:
                     Degenerate_Element kind = UNIVERSE);
 
   //! Ordinary copy-constructor.
-  BD_Shape(const BD_Shape& y);
+  /*!
+    The complexity argument is ignored.
+  */
+  BD_Shape(const BD_Shape& y,
+           Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Builds a conservative, upward approximation of \p y.
+  /*!
+    The complexity argument is ignored.
+  */
   template <typename U>
-  explicit BD_Shape(const BD_Shape<U>& y);
+  explicit BD_Shape(const BD_Shape<U>& y,
+                    Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Builds a BDS from the system of constraints \p cs.
   /*!

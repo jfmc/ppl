@@ -635,7 +635,11 @@ public:
                 Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Ordinary copy-constructor.
-  Grid(const Grid& y);
+  /*!
+    The complexity argument is ignored.
+  */
+  Grid(const Grid& y,
+       Complexity_Class complexity = ANY_COMPLEXITY);
 
   /*! \brief
     The assignment operator.  (\p *this and \p y can be

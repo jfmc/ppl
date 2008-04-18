@@ -358,86 +358,125 @@ public:
   */
   explicit Partially_Reduced_Product(Constraint_System& cs);
 
-  //! Builds a pair, from a C polyhedron.
+  //! Builds a product, from a C polyhedron.
   /*!
-    The pair inherits the space dimension of the polyhedron.
+    Builds a product containing \p ph using algorithms whose
+    complexity does not exceed the one specified by \p complexity.
+    If \p complexity is \p ANY_COMPLEXITY, then the built product is the
+    smallest one containing \p ph.
+    The product inherits the space dimension of the polyhedron.
 
     \param ph
-    The polyhedron to be approximated by the pair.
+    The polyhedron to be approximated by the product.
+
+    \param complexity
+    The complexity that will not be exceeded.
 
     \exception std::length_error
     Thrown if the space dimension of \p ph exceeds the maximum allowed
     space dimension.
   */
-  explicit Partially_Reduced_Product(const C_Polyhedron& ph);
+  explicit
+  Partially_Reduced_Product(const C_Polyhedron& ph,
+                            Complexity_Class complexity = ANY_COMPLEXITY);
 
-  //! Builds a pair, from an NNC polyhedron.
+  //! Builds a product, from an NNC polyhedron.
   /*!
-    The pair inherits the space dimension of the polyhedron.
+    Builds a product containing \p ph using algorithms whose
+    complexity does not exceed the one specified by \p complexity.
+    If \p complexity is \p ANY_COMPLEXITY, then the built product is the
+    smallest one containing \p ph.
+    The product inherits the space dimension of the polyhedron.
 
     \param ph
-    The polyhedron to be approximated by the pair.
+    The polyhedron to be approximated by the product.
+
+    \param complexity
+    The complexity that will not be exceeded.
 
     \exception std::length_error
     Thrown if the space dimension of \p ph exceeds the maximum allowed
     space dimension.
   */
-  explicit Partially_Reduced_Product(const NNC_Polyhedron& ph);
+  explicit
+  Partially_Reduced_Product(const NNC_Polyhedron& ph,
+                            Complexity_Class complexity = ANY_COMPLEXITY);
 
-  //! Builds a pair, from a grid.
+  //! Builds a product, from a grid.
   /*!
-    The pair inherits the space dimension of the grid.
+    Builds a product containing \p gr.
+    The product inherits the space dimension of the grid.
 
     \param gr
-    The grid to be approximated by the pair.
+    The grid to be approximated by the product.
+
+    \param complexity
+    The complexity is ignored.
 
     \exception std::length_error
     Thrown if the space dimension of \p gr exceeds the maximum allowed
     space dimension.
   */
-  explicit Partially_Reduced_Product(const Grid& gr);
+  explicit
+  Partially_Reduced_Product(const Grid& gr,
+                            Complexity_Class complexity = ANY_COMPLEXITY);
 
-  //! Builds a pair out of a box.
+  //! Builds a product out of a box.
   /*!
+    Builds a product containing \p box.
     The product inherits the space dimension of the box.
 
     \param box
     The box representing the pair to be built.
+
+    \param complexity
+    The complexity is ignored.
 
     \exception std::length_error
     Thrown if the space dimension of \p box exceeds the maximum
     allowed space dimension.
   */
   template <typename Interval>
-  Partially_Reduced_Product(const Box<Interval>& box);
+  Partially_Reduced_Product(const Box<Interval>& box,
+                            Complexity_Class complexity = ANY_COMPLEXITY);
 
-  //! Builds a pair out of a BD shape.
+  //! Builds a product out of a BD shape.
   /*!
+    Builds a product containing \p bd.
     The product inherits the space dimension of the BD shape.
 
     \param bd
-    The BD shape representing the pair to be built.
+    The BD shape representing the product to be built.
+
+    \param complexity
+    The complexity is ignored.
 
     \exception std::length_error
     Thrown if the space dimension of \p bd exceeds the maximum
     allowed space dimension.
   */
   template <typename U>
-  Partially_Reduced_Product(const BD_Shape<U>& bd);
+  Partially_Reduced_Product(const BD_Shape<U>& bd,
+                            Complexity_Class complexity = ANY_COMPLEXITY);
 
-  //! Builds a pair out of an octagonal shape.
+  //! Builds a product out of an octagonal shape.
   /*!
+    Builds a product containing \p os.
     The product inherits the space dimension of the octagonal shape.
 
     \param os
-    The octagonal shape representing the pair to be built.
+    The octagonal shape representing the product to be built.
+
+    \param complexity
+    The complexity is ignored.
 
     \exception std::length_error
     Thrown if the space dimension of \p os exceeds the maximum
     allowed space dimension.
   */
   template <typename U>
-  Partially_Reduced_Product(const Octagonal_Shape<U>& os);
+  Partially_Reduced_Product(const Octagonal_Shape<U>& os,
+                            Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Ordinary copy-constructor.
   Partially_Reduced_Product(const Partially_Reduced_Product& y);

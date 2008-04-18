@@ -136,7 +136,7 @@ C_Polyhedron::C_Polyhedron(const Octagonal_Shape<U>& os, Complexity_Class)
 }
 
 inline
-C_Polyhedron::C_Polyhedron(const C_Polyhedron& y)
+C_Polyhedron::C_Polyhedron(const C_Polyhedron& y, Complexity_Class)
   : Polyhedron(y) {
 }
 

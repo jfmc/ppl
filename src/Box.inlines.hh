@@ -66,7 +66,7 @@ Box<Interval>::reset_empty_up_to_date() {
 
 template <typename Interval>
 inline
-Box<Interval>::Box(const Box& y)
+Box<Interval>::Box(const Box& y, Complexity_Class)
   : seq(y.seq), status(y.status) {
 }
 

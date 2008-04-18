@@ -251,7 +251,11 @@ public:
                         Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Ordinary copy-constructor.
-  C_Polyhedron(const C_Polyhedron& y);
+  /*!
+    The complexity argument is ignored.
+  */
+  C_Polyhedron(const C_Polyhedron& y,
+               Complexity_Class complexity = ANY_COMPLEXITY);
 
   /*! \brief
     The assignment operator.

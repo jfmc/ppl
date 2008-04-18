@@ -221,7 +221,8 @@ public:
                           Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Ordinary copy-constructor.
-  NNC_Polyhedron(const NNC_Polyhedron& y);
+  NNC_Polyhedron(const NNC_Polyhedron& y,
+                 Complexity_Class complexity = ANY_COMPLEXITY);
 
   /*! \brief
     The assignment operator.

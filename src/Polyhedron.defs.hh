@@ -385,7 +385,11 @@ protected:
 	     Degenerate_Element kind);
 
   //! Ordinary copy-constructor.
-  Polyhedron(const Polyhedron& y);
+  /*!
+    The complexity argument is ignored.
+  */
+  Polyhedron(const Polyhedron& y,
+             Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Builds a polyhedron from a system of constraints.
   /*!

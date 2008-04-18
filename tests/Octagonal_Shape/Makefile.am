@@ -71,6 +71,7 @@ frombdshape1 \
 frombox1 \
 fromgensys1 \
 fromgrid1 \
+fromoctagonalshape1 \
 frompolyhedron1 \
 fromspacedim1 \
 generalizedaffineimage1 \
@@ -207,6 +208,8 @@ frombox1_SOURCES = frombox1.cc
 fromgensys1_SOURCES = fromgensys1.cc
 
 fromgrid1_SOURCES = fromgrid1.cc
+
+fromoctagonalshape1_SOURCES = fromoctagonalshape1.cc
 
 frompolyhedron1_SOURCES = frompolyhedron1.cc
 

@@ -124,7 +124,7 @@ BD_Shape<T>::BD_Shape(const dimension_type num_dimensions,
 
 template <typename T>
 inline
-BD_Shape<T>::BD_Shape(const BD_Shape& y)
+BD_Shape<T>::BD_Shape(const BD_Shape& y, Complexity_Class)
   : dbm(y.dbm), status(y.status), redundancy_dbm() {
   if (y.marked_shortest_path_reduced())
     redundancy_dbm = y.redundancy_dbm;
@@ -133,7 +133,7 @@ BD_Shape<T>::BD_Shape(const BD_Shape& y)
 template <typename T>
 template <typename U>
 inline
-BD_Shape<T>::BD_Shape(const BD_Shape<U>& y)
+BD_Shape<T>::BD_Shape(const BD_Shape<U>& y, Complexity_Class)
   : dbm(y.dbm), status(), redundancy_dbm() {
   // TODO: handle flags properly, possibly taking special cases into account.
   if (y.marked_empty())
