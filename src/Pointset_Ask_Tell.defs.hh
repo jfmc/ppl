@@ -202,6 +202,58 @@ public:
   void pairwise_reduce();
 
   /*! \brief
+    Computes the \ref Cylindrification "cylindrification" of \p *this with
+    respect to space dimension \p var, assigning the result to \p *this.
+
+    \param var
+    The space dimension that will be unconstrained.
+
+    \exception std::invalid_argument
+    Thrown if \p var is not a space dimension of \p *this.
+  */
+  void unconstrain(Variable var);
+
+  /*! \brief
+    Computes the \ref Cylindrification "cylindrification" of \p *this with
+    respect to the set of space dimensions \p to_be_unconstrained,
+    assigning the result to \p *this.
+
+    \param to_be_unconstrained
+    The set of space dimension that will be unconstrained.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with one of the
+    Variable objects contained in \p to_be_removed.
+  */
+  void unconstrain(const Variables_Set& to_be_unconstrained);
+
+  //! Assigns to \p *this the intersection of \p *this and \p y.
+  /*!
+    The result is obtained by intersecting each polyhedron in \p *this
+    with each polyhedron in \p y and collecting all these intersections.
+  */
+  void intersection_assign(const Pointset_Ask_Tell& y);
+
+  //! Assigns to \p *this the difference of \p *this and \p y.
+  /*!
+    The result is obtained by computing the
+    \ref Convex_Polyhedral_Difference "poly-difference" of each polyhedron
+    in \p *this with each polyhedron in \p y and collecting all these
+    differences.
+  */
+  void poly_difference_assign(const Pointset_Ask_Tell& y);
+
+  /*! \brief
+    Assigns to \p *this the result of computing the
+    \ref Time_Elapse_Operator "time-elapse" between \p *this and \p y.
+
+    The result is obtained by computing the pairwise
+    \ref Time_Elapse_Operator "time elapse" of each polyhedron
+    in \p *this with each polyhedron in \p y.
+  */
+  void time_elapse_assign(const Pointset_Ask_Tell& y);
+
+  /*! \brief
     Assigns to \p *this the result of applying the
     \ref pps_bgp99_extrapolation "BGP99 extrapolation operator"
     to \p *this and \p y, using the widening function \p wf
@@ -301,22 +353,6 @@ public:
   */
   void add_space_dimensions_and_project(dimension_type m);
 
-  //! Assigns to \p *this the intersection of \p *this and \p y.
-  /*!
-    The result is obtained by intersecting each polyhedron in \p *this
-    with each polyhedron in \p y and collecting all these intersections.
-  */
-  void intersection_assign(const Pointset_Ask_Tell& y);
-
-  //! Assigns to \p *this the difference of \p *this and \p y.
-  /*!
-    The result is obtained by computing the
-    \ref Convex_Polyhedral_Difference "poly-difference" of each polyhedron
-    in \p *this with each polyhedron in \p y and collecting all these
-    differences.
-  */
-  void poly_difference_assign(const Pointset_Ask_Tell& y);
-
   //! Assigns to \p *this the concatenation of \p *this and \p y.
   /*!
     The result is obtained by computing the pairwise
@@ -324,16 +360,6 @@ public:
     in \p *this with each polyhedron in \p y.
   */
   void concatenate_assign(const Pointset_Ask_Tell& y);
-
-  /*! \brief
-    Assigns to \p *this the result of computing the
-    \ref Time_Elapse_Operator "time-elapse" between \p *this and \p y.
-
-    The result is obtained by computing the pairwise
-    \ref Time_Elapse_Operator "time elapse" of each polyhedron
-    in \p *this with each polyhedron in \p y.
-  */
-  void time_elapse_assign(const Pointset_Ask_Tell& y);
 
   //! Removes all the specified space dimensions.
   /*!

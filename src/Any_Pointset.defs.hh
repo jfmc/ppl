@@ -411,6 +411,32 @@ public:
 #endif
 
   /*! \brief
+    Computes the \ref Cylindrification "cylindrification" of \p *this with
+    respect to space dimension \p var, assigning the result to \p *this.
+
+    \param var
+    The space dimension that will be unconstrained.
+
+    \exception std::invalid_argument
+    Thrown if \p var is not a space dimension of \p *this.
+  */
+  virtual void unconstrain(Variable var) = 0;
+
+  /*! \brief
+    Computes the \ref Cylindrification "cylindrification" of \p *this with
+    respect to the set of space dimensions \p to_be_unconstrained,
+    assigning the result to \p *this.
+
+    \param to_be_unconstrained
+    The set of space dimension that will be unconstrained.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with one of the
+    Variable objects contained in \p to_be_removed.
+  */
+  virtual void unconstrain(const Variables_Set& to_be_unconstrained) = 0;
+
+  /*! \brief
     Assigns to \p *this the intersection of \p *this and \p y.
     The result is not guaranteed to be minimized.
 

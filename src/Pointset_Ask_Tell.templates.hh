@@ -138,6 +138,28 @@ Pointset_Ask_Tell<PS>::add_constraints(const Constraint_System& cs) {
 
 template <typename PS>
 void
+Pointset_Ask_Tell<PS>::unconstrain(const Variable var) {
+  Pointset_Ask_Tell& x = *this;
+  for (Sequence_iterator si = x.sequence.begin(),
+	 s_end = x.sequence.end(); si != s_end; ++si)
+    si->element().unconstrain(var);
+  x.reduced = false;
+  assert(x.OK());
+}
+
+template <typename PS>
+void
+Pointset_Ask_Tell<PS>::unconstrain(const Variables_Set& to_be_unconstrained) {
+  Pointset_Ask_Tell& x = *this;
+  for (Sequence_iterator si = x.sequence.begin(),
+	 s_end = x.sequence.end(); si != s_end; ++si)
+    si->element().unconstrain(to_be_unconstrained);
+  x.reduced = false;
+  assert(x.OK());
+}
+
+template <typename PS>
+void
 Pointset_Ask_Tell<PS>::add_space_dimensions_and_embed(dimension_type m) {
   Pointset_Ask_Tell& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
