@@ -888,6 +888,32 @@ public:
   void add_recycled_constraints(Constraint_System& cs);
 
   /*! \brief
+    Computes the \ref Cylindrification "cylindrification" of \p *this with
+    respect to space dimension \p var, assigning the result to \p *this.
+
+    \param var
+    The space dimension that will be unconstrained.
+
+    \exception std::invalid_argument
+    Thrown if \p var is not a space dimension of \p *this.
+  */
+  void unconstrain(Variable var);
+
+  /*! \brief
+    Computes the \ref Cylindrification "cylindrification" of \p *this with
+    respect to the set of space dimensions \p to_be_unconstrained,
+    assigning the result to \p *this.
+
+    \param to_be_unconstrained
+    The set of space dimension that will be unconstrained.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with one of the
+    Variable objects contained in \p to_be_removed.
+  */
+  void unconstrain(const Variables_Set& to_be_unconstrained);
+
+  /*! \brief
     Assigns to \p *this the componentwise intersection of \p *this and \p y.
 
     \exception std::invalid_argument
@@ -1194,7 +1220,8 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void widening_assign(const Partially_Reduced_Product& y, unsigned* tp = NULL);
+  void widening_assign(const Partially_Reduced_Product& y,
+                       unsigned* tp = NULL);
 
   //@} // Space Dimension Preserving Member Functions that May Modify [...]
 

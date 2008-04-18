@@ -184,6 +184,24 @@ Partially_Reduced_Product<D1, D2, R>::affine_dimension() const {
 template <typename D1, typename D2, typename R>
 inline void
 Partially_Reduced_Product<D1, D2, R>
+::unconstrain(const Variable var) {
+  reduce();
+  d1.unconstrain(var);
+  d2.unconstrain(var);
+}
+
+template <typename D1, typename D2, typename R>
+inline void
+Partially_Reduced_Product<D1, D2, R>
+::unconstrain(const Variables_Set& to_be_unconstrained) {
+  reduce();
+  d1.unconstrain(to_be_unconstrained);
+  d2.unconstrain(to_be_unconstrained);
+}
+
+template <typename D1, typename D2, typename R>
+inline void
+Partially_Reduced_Product<D1, D2, R>
 ::intersection_assign(const Partially_Reduced_Product& y) {
   d1.intersection_assign(y.d1);
   d2.intersection_assign(y.d2);
