@@ -180,6 +180,10 @@ public:
     The built polyhedron is the most precise that includes the
     grid.
 
+    \param complexity
+    This argument is ignored as the algorithm used has
+    polynomial complexity.
+
     \param grid
     The grid used to build the polyhedron.
   */
