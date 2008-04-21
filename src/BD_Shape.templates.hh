@@ -2156,6 +2156,7 @@ BD_Shape<T>::get_limiting_shape(const Constraint_System& cs,
   TEMP_INTEGER(coeff);
   TEMP_INTEGER(minus_c_term);
   DIRTY_TEMP(N, d);
+  DIRTY_TEMP(N, d1);
   for (Constraint_System::const_iterator cs_i = cs.begin(),
          cs_end = cs.end(); cs_i != cs_end; ++cs_i) {
     const Constraint& c = *cs_i;
@@ -2177,18 +2178,21 @@ BD_Shape<T>::get_limiting_shape(const Constraint_System& cs,
       // Compute the bound for `x', rounding towards plus infinity.
       div_round_up(d, c.inhomogeneous_term(), coeff);
       if (x <= d)
-        if (c.is_inequality())
+        if (c.is_inequality()) {
           if (ls_x > d) {
             ls_x = d;
             changed = true;
           }
+	}
         else {
           // Compute the bound for `y', rounding towards plus infinity.
           neg_assign(minus_c_term, c.inhomogeneous_term());
-          div_round_up(d, minus_c_term, coeff);
-          if (y <= d && ls_y > d) {
-            ls_y = d;
-            changed = true;
+          div_round_up(d1, minus_c_term, coeff);
+          if (y <= d1)
+	    if((ls_x >= d && ls_y > d1) || (ls_x > d && ls_y >= d1)) {
+	      ls_x = d;
+	      ls_y = d1;
+	      changed = true;
           }
         }
     }
