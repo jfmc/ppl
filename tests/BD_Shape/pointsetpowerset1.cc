@@ -70,6 +70,85 @@ test02() {
   return ok;
 }
 
+
+// Constructs the powerset of bd shapes from a polyhedron.
+bool
+test03() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+  Variable w(3);
+
+  C_Polyhedron ph(4);
+  ph.add_constraint(3*x >= 2);
+  ph.add_constraint(z >= 1);
+  ph.add_constraint(3*x + z <= 3);
+  C_Polyhedron ph1(ph);
+
+  // With the default complexity, the implied equalities 4*x = 2 and z = 1.
+  // are found
+  Pointset_Powerset<TBD_Shape> pps(ph);
+  // With the polynomial complexity, implied equalities are not found.
+  Pointset_Powerset<TBD_Shape> pps1(ph1, POLYNOMIAL_COMPLEXITY);
+
+  BD_Shape<mpq_class> known_bds(4);
+  known_bds.add_constraint(3*x == 2);
+  known_bds.add_constraint(z == 1);
+  BD_Shape<mpq_class> known_bds1(4);
+  known_bds1.add_constraint(3*x >= 2);
+  known_bds1.add_constraint(z >= 1);
+
+  Pointset_Powerset<TBD_Shape>::const_iterator i = pps.begin();
+  TBD_Shape bdsi = i -> element();
+  Pointset_Powerset<TBD_Shape>::const_iterator i1 = pps1.begin();
+  TBD_Shape bdsi1 = i1 -> element();
+
+  bool ok = check_result(bdsi, known_bds, "1.92e-7", "8.89e-8", "7.95e-8")
+    && check_result(bdsi1, known_bds1, "1.92e-7", "8.89e-8", "7.95e-8");
+
+  print_constraints(bdsi, "*** bdsi ***");
+  print_constraints(bdsi1, "*** bdsi1 ***");
+
+  return ok && pps.OK() && pps1.OK();
+}
+
+// Constructs the powerset of bd shapes from a polyhedron whose
+// constraints are inconsistent (i.e., is empty but not marked as
+// empty).
+bool
+test04() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+  Variable w(3);
+
+  C_Polyhedron ph(4);
+  ph.add_constraint(3*x >= 2);
+  ph.add_constraint(z >= 1);
+  ph.add_constraint(3*x + z <= 2);
+  C_Polyhedron ph1(ph);
+
+  // With the default complexity, the built powerset is empty.
+  Pointset_Powerset<TBD_Shape> pps(ph);
+  // With the polynomial complexity, the built powerset is non-empty.
+  Pointset_Powerset<TBD_Shape> pps1(ph1, POLYNOMIAL_COMPLEXITY);
+
+  BD_Shape<mpq_class> known_bds1(4);
+  known_bds1.add_constraint(3*x >= 2);
+  known_bds1.add_constraint(z >= 1);
+
+  Pointset_Powerset<TBD_Shape>::const_iterator i1 = pps1.begin();
+  TBD_Shape bdsi1 = i1 -> element();
+
+  bool ok = check_result(bdsi1, known_bds1, "1.92e-7", "8.89e-8", "7.95e-8")
+    && pps.is_empty();
+
+  print_constraints(bdsi1, "*** bdsi1 ***");
+
+  return ok && pps.OK() && pps1.OK();
+}
+
+#if 0
 // Constructs the powerset of bd shapes from a polyhedron.
 bool
 test03() {
@@ -143,6 +222,7 @@ test04() {
 
   return ok && pps.OK() && pps1.OK();
 }
+#endif
 
 // Constructs the powerset of bd shapes from an empty polyhedron.
 bool
