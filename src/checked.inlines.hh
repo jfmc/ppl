@@ -291,6 +291,10 @@ template <typename To1_Policy, typename To2_Policy, typename To3_Policy,
 inline Result
 gcdext_exact(To1& to, To2& s, To3& t, const From1& x, const From2& y,
 	     Rounding_Dir dir) {
+  // In case this becomes a bottleneck, we may consider using the
+  // Stehle'-Zimmermann algorithm (see R. Crandall and C. Pomerance,
+  // Prime Numbers - A Computational Perspective, Second Edition,
+  // Springer, 2005).
   if (y == 0) {
     if (x == 0) {
       s = 0;
