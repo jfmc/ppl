@@ -248,7 +248,7 @@ octdifference1_SOURCES = octdifference1.cc
 
 octhull1_SOURCES = octhull1.cc
 
-pointsetpowerset11_SOURCES = pointsetpowerset11.cc
+pointsetpowerset1_SOURCES = pointsetpowerset1.cc
 
 relatwithcons1_SOURCES = relatwithcons1.cc
 relatwithcons2_SOURCES = relatwithcons2.cc
