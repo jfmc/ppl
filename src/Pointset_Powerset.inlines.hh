@@ -61,14 +61,87 @@ Pointset_Powerset<PS>::Pointset_Powerset(dimension_type num_dimensions,
 
 template <typename PS>
 inline
-Pointset_Powerset<PS>::Pointset_Powerset(const Pointset_Powerset& y)
+Pointset_Powerset<PS>::Pointset_Powerset(const Pointset_Powerset& y,
+                                         Complexity_Class)
   : Base(y), space_dim(y.space_dim) {
 }
 
 template <typename PS>
 inline
-Pointset_Powerset<PS>::Pointset_Powerset(const PS& ph)
-  : Base(ph), space_dim(ph.space_dimension()) {
+Pointset_Powerset<PS>::Pointset_Powerset(const C_Polyhedron& ph,
+                                         Complexity_Class complexity)
+  : Base(), space_dim(ph.space_dimension()) {
+  Pointset_Powerset& x = *this;
+  if (complexity == ANY_COMPLEXITY) {
+    if (ph.is_empty())
+      return;
+  }
+  else
+    x.reduced = false;
+  x.sequence.push_back(Determinate<PS>(PS(ph, complexity)));
+  x.reduced = false;
+  assert(OK());
+}
+
+template <typename PS>
+inline
+Pointset_Powerset<PS>::Pointset_Powerset(const NNC_Polyhedron& ph,
+                                         Complexity_Class complexity)
+  : Base(), space_dim(ph.space_dimension()) {
+  Pointset_Powerset& x = *this;
+  if (complexity == ANY_COMPLEXITY) {
+    if (ph.is_empty())
+      return;
+  }
+  else
+    x.reduced = false;
+  x.sequence.push_back(Determinate<PS>(PS(ph, complexity)));
+  assert(OK());
+}
+
+template <typename PS>
+inline
+Pointset_Powerset<PS>::Pointset_Powerset(const Grid& gr,
+                                         Complexity_Class)
+  : Base(), space_dim(gr.space_dimension()) {
+  Pointset_Powerset& x = *this;
+  if (!gr.is_empty()) {
+    x.sequence.push_back(Determinate<PS>(PS(gr)));
+  }
+  assert(OK());
+}
+
+template <typename PS>
+template <typename Interval>
+Pointset_Powerset<PS>::Pointset_Powerset(const Box<Interval>& box,
+                                         Complexity_Class)
+  : Base(), space_dim(box.space_dimension()) {
+  Pointset_Powerset& x = *this;
+  if (!box.is_empty())
+    x.sequence.push_back(Determinate<PS>(PS(box)));
+  assert(OK());
+}
+
+template <typename PS>
+template <typename T>
+Pointset_Powerset<PS>::Pointset_Powerset(const Octagonal_Shape<T>& os,
+                                         Complexity_Class)
+  : Base(), space_dim(os.space_dimension()) {
+  Pointset_Powerset& x = *this;
+  if (!os.is_empty())
+    x.sequence.push_back(Determinate<PS>(PS(os)));
+  assert(OK());
+}
+
+template <typename PS>
+template <typename T>
+Pointset_Powerset<PS>::Pointset_Powerset(const BD_Shape<T>& bds,
+                                         Complexity_Class)
+  : Base(), space_dim(bds.space_dimension()) {
+  Pointset_Powerset& x = *this;
+  if (!bds.is_empty())
+    x.sequence.push_back(Determinate<PS>(PS(bds)));
+  assert(OK());
 }
 
 template <typename PS>
@@ -82,16 +155,6 @@ template <typename PS>
 inline
 Pointset_Powerset<PS>::Pointset_Powerset(const Congruence_System& cgs)
   : Base(Determinate<PS>(cgs)), space_dim(cgs.space_dimension()) {
-  assert(OK());
-}
-
-template <typename PS>
-template <typename Interval>
-Pointset_Powerset<PS>::Pointset_Powerset(const Box<Interval>& box)
-  : Base(), space_dim(box.space_dimension()) {
-  Pointset_Powerset& x = *this;
-  if (!box.is_empty())
-    x.sequence.push_back(Determinate<PS>(PS(box)));
   assert(OK());
 }
 

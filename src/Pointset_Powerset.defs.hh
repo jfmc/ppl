@@ -33,6 +33,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "C_Polyhedron.types.hh"
 #include "NNC_Polyhedron.types.hh"
 #include "Polyhedron.defs.hh"
+#include "Grid.types.hh"
+#include "Grid.defs.hh"
 #include "Variables_Set.types.hh"
 #include "Determinate.defs.hh"
 #include "Powerset.defs.hh"
@@ -75,20 +77,25 @@ public:
 		    Degenerate_Element kind = UNIVERSE);
 
   //! Ordinary copy-constructor.
-  Pointset_Powerset(const Pointset_Powerset& y);
-
-  /*! \brief
-    If \p ph is nonempty, builds a powerset containing only \p ph.
-    Builds the empty powerset otherwise.
+  /*!
+    The complexity argument is ignored.
   */
-  explicit Pointset_Powerset(const PS& ph);
+  Pointset_Powerset(const Pointset_Powerset& y,
+                    Complexity_Class complexity = ANY_COMPLEXITY);
 
   /*! \brief
     Conversion constructor: the type <CODE>QH</CODE> of the disjuncts
     in the source powerset is different from <CODE>PS</CODE>.
+
+    \param y
+    The powerset to be used to build the new powerset.
+
+    \param complexity
+    The maximal complexity of any algorithms used.
   */
   template <typename QH>
-  explicit Pointset_Powerset(const Pointset_Powerset<QH>& y);
+  explicit Pointset_Powerset(const Pointset_Powerset<QH>& y,
+                             Complexity_Class complexity = ANY_COMPLEXITY);
 
   /*! \brief
     Creates a Pointset_Powerset with a single disjunct approximating
@@ -103,19 +110,129 @@ public:
   explicit Pointset_Powerset(const Congruence_System& cgs);
 
 
+  //! Builds a pointset_powerset out of a closed polyhedron.
+  /*!
+    Builds a powerset that is either empty (if the polyhedron is found
+    to be empty) or contains a single disjunct approximating the
+    polyhedron; this must only use algorithms that do not exceed the
+    specified complexity.  The powerset inherits the space dimension
+    of the polyhedron.
+
+    \param ph
+    The closed polyhedron to be used to build the powerset.
+
+    \param complexity
+    The maximal complexity of any algorithms used.
+
+    \exception std::length_error
+    Thrown if the space dimension of \p ph exceeds the maximum
+    allowed space dimension.
+  */
+  explicit Pointset_Powerset(const C_Polyhedron& ph,
+                             Complexity_Class complexity = ANY_COMPLEXITY);
+
+  //! Builds a pointset_powerset out of an nnc polyhedron.
+  /*!
+    Builds a powerset that is either empty (if the polyhedron is found
+    to be empty) or contains a single disjunct approximating the
+    polyhedron; this must only use algorithms that do not exceed the
+    specified complexity.  The powerset inherits the space dimension
+    of the polyhedron.
+
+    \param ph
+    The closed polyhedron to be used to build the powerset.
+
+    \param complexity
+    The maximal complexity of any algorithms used.
+
+    \exception std::length_error
+    Thrown if the space dimension of \p ph exceeds the maximum
+    allowed space dimension.
+  */
+  explicit Pointset_Powerset(const NNC_Polyhedron& ph,
+                             Complexity_Class complexity = ANY_COMPLEXITY);
+
+
+  //! Builds a pointset_powerset out of a grid.
+  /*!
+    If the grid is nonempty, builds a powerset containing a single
+    disjunct approximating the grid. Builds the empty powerset
+    otherwise. The powerset inherits the space dimension of the grid.
+
+    \param gr
+    The grid to be used to build the powerset.
+
+    \param complexity
+    This argument is ignored.
+
+    \exception std::length_error
+    Thrown if the space dimension of \p gr exceeds the maximum
+    allowed space dimension.
+  */
+  explicit Pointset_Powerset(const Grid& gr,
+                             Complexity_Class complexity = ANY_COMPLEXITY);
+
+  //! Builds a pointset_powerset out of an octagonal shape.
+  /*!
+    If the octagonal shape is nonempty, builds a powerset
+    containing a single disjunct approximating the octagonal
+    shape. Builds the empty powerset otherwise. The powerset
+    inherits the space dimension of the octagonal shape.
+
+    \param os
+    The octagonal shape to be used to build the powerset.
+
+    \param complexity
+    This argument is ignored.
+
+    \exception std::length_error
+    Thrown if the space dimension of \p os exceeds the maximum
+    allowed space dimension.
+  */
+  template <typename T>
+  explicit Pointset_Powerset(const Octagonal_Shape<T>& os,
+                             Complexity_Class complexity = ANY_COMPLEXITY);
+
+  //! Builds a pointset_powerset out of a bd shape.
+  /*!
+    If the bd shape is nonempty, builds a powerset containing a
+    single disjunct approximating the bd shape. Builds the empty
+    powerset otherwise.  The powerset inherits the space dimension
+    of the bd shape.
+
+    \param bds
+    The bd shape to be used to build the powerset.
+
+    \param complexity
+    This argument is ignored.
+
+    \exception std::length_error
+    Thrown if the space dimension of \p bdss exceeds the maximum
+    allowed space dimension.
+  */
+  template <typename T>
+  explicit Pointset_Powerset(const BD_Shape<T>& bds,
+                             Complexity_Class complexity = ANY_COMPLEXITY);
+
   //! Builds a pointset_powerset out of a box.
   /*!
-    The pointset_powerset inherits the space dimension of the box.
+    If the box is nonempty, builds a powerset containing a single
+    disjunct approximating the box. Builds the empty powerset
+    otherwise.  The powerset inherits the space dimension of the box.
 
     \param box
-    The box representing the pair to be built.
+    The box to be used to build the powerset.
+
+    \param complexity
+    This argument is ignored.
 
     \exception std::length_error
     Thrown if the space dimension of \p box exceeds the maximum
     allowed space dimension.
   */
   template <typename Interval>
-  Pointset_Powerset(const Box<Interval>& box);
+  explicit Pointset_Powerset(const Box<Interval>& box,
+                             Complexity_Class complexity = ANY_COMPLEXITY);
 
   //@} // Constructors and Destructor
 
@@ -1208,19 +1325,22 @@ check_containment(const PS& ph, const Pointset_Powerset<PS>& ps);
 template <>
 template <typename QH>
 Pointset_Powerset<NNC_Polyhedron>
-::Pointset_Powerset(const Pointset_Powerset<QH>& y);
+::Pointset_Powerset(const Pointset_Powerset<QH>& y,
+                    Complexity_Class);
 
 // Non-inline full specializations should be declared here
 // so as to inhibit multiple instantiations of the generic template.
 template <>
 template <>
 Pointset_Powerset<NNC_Polyhedron>
-::Pointset_Powerset(const Pointset_Powerset<C_Polyhedron>& y);
+::Pointset_Powerset(const Pointset_Powerset<C_Polyhedron>& y,
+                    Complexity_Class);
 
 template <>
 template <>
 Pointset_Powerset<C_Polyhedron>
-::Pointset_Powerset(const Pointset_Powerset<NNC_Polyhedron>& y);
+::Pointset_Powerset(const Pointset_Powerset<NNC_Polyhedron>& y,
+                    Complexity_Class);
 
 template <>
 void

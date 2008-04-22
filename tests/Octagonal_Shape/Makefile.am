@@ -94,6 +94,7 @@ membytes1 \
 minconstraints1 \
 octdifference1 \
 octhull1 \
+pointsetpowerset1 \
 relatwithcons1 \
 relatwithcons2 \
 relatwithcons3 \
@@ -246,6 +247,8 @@ minconstraints1_SOURCES = minconstraints1.cc
 octdifference1_SOURCES = octdifference1.cc
 
 octhull1_SOURCES = octhull1.cc
+
+pointsetpowerset11_SOURCES = pointsetpowerset11.cc
 
 relatwithcons1_SOURCES = relatwithcons1.cc
 relatwithcons2_SOURCES = relatwithcons2.cc

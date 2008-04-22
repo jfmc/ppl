@@ -89,6 +89,10 @@ o  Box ...
 
 o  shrink_bounding_box has gone ...
 
+o  All PPL semantic objects can be constructed from other PPL semantic
+   objects. All these constructors have an optional complexity argument
+   with default value allowing algorithms with any complexity to be used.
+
 o  As all PPL semantic objects can now be constructed from boxes,
    the constructors
 

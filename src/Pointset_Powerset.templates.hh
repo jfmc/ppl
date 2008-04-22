@@ -57,13 +57,14 @@ Pointset_Powerset<PS>::add_disjunct(const PS& ph) {
 template <>
 template <typename QH>
 Pointset_Powerset<NNC_Polyhedron>
-::Pointset_Powerset(const Pointset_Powerset<QH>& y)
+::Pointset_Powerset(const Pointset_Powerset<QH>& y,
+                    Complexity_Class complexity)
   : Base(), space_dim(y.space_dimension()) {
   Pointset_Powerset& x = *this;
   for (typename Pointset_Powerset<QH>::const_iterator i = y.begin(),
 	 y_end = y.end(); i != y_end; ++i)
     x.sequence.push_back(Determinate<NNC_Polyhedron>
-			 (NNC_Polyhedron(i->element().constraints())));
+			 (NNC_Polyhedron(i->element(), complexity)));
   // FIXME: the following is a bug!
   x.reduced = y.reduced;
   assert(x.OK());
@@ -72,12 +73,13 @@ Pointset_Powerset<NNC_Polyhedron>
 template <typename PS>
 template <typename QH>
 Pointset_Powerset<PS>
-::Pointset_Powerset(const Pointset_Powerset<QH>& y)
+::Pointset_Powerset(const Pointset_Powerset<QH>& y,
+                    Complexity_Class complexity)
   : Base(), space_dim(y.space_dimension()) {
   Pointset_Powerset& x = *this;
   for (typename Pointset_Powerset<QH>::const_iterator i = y.begin(),
 	 y_end = y.end(); i != y_end; ++i)
-    x.sequence.push_back(Determinate<PS>(PS(i->element().constraints())));
+    x.sequence.push_back(Determinate<PS>(PS(i->element(), complexity)));
   // Note: this might be non-reduced even when `y' is known to be
   // omega-reduced, because the constructor of PS may have made
   // different QH elements to become comparable.
