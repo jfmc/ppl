@@ -64,6 +64,9 @@ o  can_recycle_constraint_systems()
 
 o  constrains(Variable var) ...
 
+o  unconstrain(Variable var)
+   unconstrain(const Variables_Set& to_be_unconstrained) ...
+
 o  contains_integer_point() ...
 
 o  All PPL semantic objects now provide the method
