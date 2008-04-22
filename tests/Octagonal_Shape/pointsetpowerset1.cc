@@ -84,27 +84,29 @@ test03() {
   ph.add_constraint(3*x + z <= 3);
   C_Polyhedron ph1(ph);
 
-  // With the default complexity, the implied equalities 3*x = 2 and z = 1.
+  // With the default complexity, the implied equalities 4*x = 2 and z = 1.
   // are found
   Pointset_Powerset<TOctagonal_Shape> pps(ph);
   // With the polynomial complexity, implied equalities are not found.
   Pointset_Powerset<TOctagonal_Shape> pps1(ph1, POLYNOMIAL_COMPLEXITY);
 
-  Pointset_Powerset<TOctagonal_Shape> known_pps(4);
-  known_pps.add_constraint(3*x == 2);
-  known_pps.add_constraint(z == 1);
-  Pointset_Powerset<TOctagonal_Shape> known_pps1(4);
-  known_pps1.add_constraint(3*x >= 2);
-  known_pps1.add_constraint(z >= 1);
-
-  bool ok = (pps == known_pps && pps1 == known_pps1);
+  Octagonal_Shape<mpq_class> known_os(4);
+  known_os.add_constraint(3*x == 2);
+  known_os.add_constraint(z == 1);
+  Octagonal_Shape<mpq_class> known_os1(4);
+  known_os1.add_constraint(3*x >= 2);
+  known_os1.add_constraint(z >= 1);
 
   Pointset_Powerset<TOctagonal_Shape>::const_iterator i = pps.begin();
-  TOctagonal_Shape boxi = i -> element();
-  print_constraints(boxi, "*** boxi ***");
+  TOctagonal_Shape osi = i -> element();
   Pointset_Powerset<TOctagonal_Shape>::const_iterator i1 = pps1.begin();
-  TOctagonal_Shape boxi1 = i1 -> element();
-  print_constraints(boxi1, "*** boxi1 ***");
+  TOctagonal_Shape osi1 = i1 -> element();
+
+  bool ok = check_result(osi, known_os, "1.92e-7", "8.89e-8", "7.95e-8")
+    && check_result(osi1, known_os1, "1.92e-7", "8.89e-8", "7.95e-8");
+
+  print_constraints(osi, "*** osi ***");
+  print_constraints(osi1, "*** osi1 ***");
 
   return ok && pps.OK() && pps1.OK();
 }
@@ -130,15 +132,16 @@ test04() {
   // With the polynomial complexity, the built powerset is non-empty.
   Pointset_Powerset<TOctagonal_Shape> pps1(ph1, POLYNOMIAL_COMPLEXITY);
 
-  Pointset_Powerset<TOctagonal_Shape> known_pps(4, EMPTY);
-  Pointset_Powerset<TOctagonal_Shape> known_pps1(4);
-  known_pps1.add_constraint(3*x >= 2);
-  known_pps1.add_constraint(z >= 1);
-
-  bool ok = (pps == known_pps && pps1 == known_pps1);
+  Octagonal_Shape<mpq_class> known_os1(4);
+  known_os1.add_constraint(3*x >= 2);
+  known_os1.add_constraint(z >= 1);
 
   Pointset_Powerset<TOctagonal_Shape>::const_iterator i1 = pps1.begin();
   TOctagonal_Shape osi1 = i1 -> element();
+
+  bool ok = check_result(osi1, known_os1, "1.92e-7", "8.89e-8", "7.95e-8")
+    && pps.is_empty();
+
   print_constraints(osi1, "*** osi1 ***");
 
   return ok && pps.OK() && pps1.OK();
