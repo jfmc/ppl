@@ -88,28 +88,43 @@ test03() {
   // With the default complexity, the implied equalities 4*x = 2 and z = 1.
   // are found
   Pointset_Powerset<TBD_Shape> pps(ph);
-  // With the polynomial complexity, implied equalities are not found.
-  Pointset_Powerset<TBD_Shape> pps1(ph1, POLYNOMIAL_COMPLEXITY);
-
-  BD_Shape<mpq_class> known_bds(4);
-  known_bds.add_constraint(3*x == 2);
-  known_bds.add_constraint(z == 1);
-  BD_Shape<mpq_class> known_bds1(4);
-  known_bds1.add_constraint(3*x >= 2);
-  known_bds1.add_constraint(z >= 1);
-
   Pointset_Powerset<TBD_Shape>::const_iterator i = pps.begin();
   TBD_Shape bdsi = i->element();
+
+  BD_Shape<mpq_class> known_bdsi(4);
+  known_bdsi.add_constraint(3*x == 2);
+  known_bdsi.add_constraint(z == 1);
+
+  bool ok = check_result(bdsi, known_bdsi, "5.97e-8", "3.15e-8", "1.99e-8");
+
+  print_constraints(bdsi, "*** bdsi ***");
+  print_constraints(known_bdsi, "*** known_bdsi ***");
+
+  // With the polynomial complexity, implied equalities are not found.
+  Pointset_Powerset<TBD_Shape> pps1(ph1, POLYNOMIAL_COMPLEXITY);
   Pointset_Powerset<TBD_Shape>::const_iterator i1 = pps1.begin();
   TBD_Shape bdsi1 = i1->element();
 
-  bool ok = check_result(bdsi, known_bds, "1.92e-7", "8.89e-8", "7.95e-8")
-    && check_result(bdsi1, known_bds1, "1.92e-7", "8.89e-8", "7.95e-8");
+  BD_Shape<mpq_class> known_bdsi1(4);
+  known_bdsi1.add_constraint(3*x >= 2);
+  known_bdsi1.add_constraint(z >= 1);
 
-  print_constraints(bdsi, "*** bdsi ***");
+  ok = check_result(bdsi1, known_bdsi1, "3.98e-8", "3.98e-8", "3.98e-8") && ok;
+
   print_constraints(bdsi1, "*** bdsi1 ***");
+  print_constraints(known_bdsi1, "*** known_bds1i ***");
 
-  return ok && pps.OK() && pps1.OK();
+  ok = ok && pps.OK() && pps1.OK();
+
+  Pointset_Powerset<TBD_Shape>::const_iterator i_ok = pps.begin();
+  TBD_Shape bdsi_ok = i_ok->element();
+  Pointset_Powerset<TBD_Shape>::const_iterator i1_ok = pps1.begin();
+  TBD_Shape bdsi1_ok = i1_ok->element();
+
+  print_constraints(bdsi_ok, "*** bdsi after OK() ***");
+  print_constraints(bdsi1_ok, "*** bdsi1 after OK() ***");
+
+  return ok;
 }
 
 // Constructs the powerset of bd shapes from a polyhedron whose

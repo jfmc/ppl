@@ -87,28 +87,43 @@ test03() {
   // With the default complexity, the implied equalities 4*x = 2 and z = 1.
   // are found
   Pointset_Powerset<TOctagonal_Shape> pps(ph);
-  // With the polynomial complexity, implied equalities are not found.
-  Pointset_Powerset<TOctagonal_Shape> pps1(ph1, POLYNOMIAL_COMPLEXITY);
-
-  Octagonal_Shape<mpq_class> known_os(4);
-  known_os.add_constraint(3*x == 2);
-  known_os.add_constraint(z == 1);
-  Octagonal_Shape<mpq_class> known_os1(4);
-  known_os1.add_constraint(3*x >= 2);
-  known_os1.add_constraint(z >= 1);
-
   Pointset_Powerset<TOctagonal_Shape>::const_iterator i = pps.begin();
   TOctagonal_Shape osi = i->element();
+
+  Octagonal_Shape<mpq_class> known_osi(4);
+  known_osi.add_constraint(3*x == 2);
+  known_osi.add_constraint(z == 1);
+
+  bool ok = check_result(osi, known_osi, "1.193e-7", "5.45e-8", "3.98e-8");
+
+  print_constraints(osi, "*** osi ***");
+  print_constraints(known_osi, "*** known_osi ***");
+
+  // With the polynomial complexity, implied equalities are not found.
+  Pointset_Powerset<TOctagonal_Shape> pps1(ph1, POLYNOMIAL_COMPLEXITY);
   Pointset_Powerset<TOctagonal_Shape>::const_iterator i1 = pps1.begin();
   TOctagonal_Shape osi1 = i1->element();
 
-  bool ok = check_result(osi, known_os, "1.92e-7", "8.89e-8", "7.95e-8")
-    && check_result(osi1, known_os1, "1.92e-7", "8.89e-8", "7.95e-8");
+  Octagonal_Shape<mpq_class> known_osi1(4);
+  known_osi1.add_constraint(3*x >= 2);
+  known_osi1.add_constraint(z >= 1);
 
-  print_constraints(osi, "*** osi ***");
+  ok = check_result(osi1, known_osi1, "1.193e-7", "8.89e-8", "7.95e-8") && ok;
+
   print_constraints(osi1, "*** osi1 ***");
+  print_constraints(known_osi1, "*** known_osi1 ***");
 
-  return ok && pps.OK() && pps1.OK();
+  ok = ok && pps.OK() && pps1.OK();
+
+  Pointset_Powerset<TOctagonal_Shape>::const_iterator i_ok = pps.begin();
+  TOctagonal_Shape osi_ok = i_ok->element();
+  Pointset_Powerset<TOctagonal_Shape>::const_iterator i1_ok = pps1.begin();
+  TOctagonal_Shape osi1_ok = i1_ok->element();
+
+  print_constraints(osi_ok, "*** osi after OK() ***");
+  print_constraints(osi1_ok, "*** osi1 after OK() ***");
+
+  return ok;
 }
 
 // Constructs the powerset of octagonal_shapes from a polyhedron whose
