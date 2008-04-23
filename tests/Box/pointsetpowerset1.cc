@@ -425,9 +425,9 @@ test17() {
   pps_box.add_disjunct(box1);
 
   Pointset_Powerset<TBox>::const_iterator i = pps_box.begin();
-  TBox pps_boxi = i -> element();
+  TBox pps_boxi = i->element();
   i++;
-  TBox pps_boxi1 = i -> element();
+  TBox pps_boxi1 = i->element();
 
   bool ok = pps_boxi.OK() && pps_boxi == box;
 

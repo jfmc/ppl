@@ -44,10 +44,10 @@ test01() {
 
   print_congruences(gr, "*** gr ***");
   Pointset_Powerset<Grid>::const_iterator i = pps1.begin();
-  Grid gri = i -> element();
+  Grid gri = i->element();
   print_congruences(gri, "*** gri ***");
   Pointset_Powerset<Grid>::const_iterator i2 = pps2.begin();
-  Grid gri2 = i2 -> element();
+  Grid gri2 = i2->element();
   print_congruences(gri2, "*** gri2 ***");
 
   return ok && pps1.OK();
@@ -101,10 +101,10 @@ test03() {
   bool ok = (pps == known_pps && pps1 == known_pps1);
 
   Pointset_Powerset<Grid>::const_iterator i = pps.begin();
-  Grid gri = i -> element();
+  Grid gri = i->element();
   print_congruences(gri, "*** gri ***");
   Pointset_Powerset<Grid>::const_iterator i1 = pps1.begin();
-  Grid gri1 = i1 -> element();
+  Grid gri1 = i1->element();
   print_congruences(gri1, "*** gri1 ***");
 
   return ok && pps.OK() && pps1.OK();
@@ -139,7 +139,7 @@ test04() {
   bool ok = (pps == known_pps && pps1 == known_pps1);
 
   Pointset_Powerset<Grid>::const_iterator i1 = pps1.begin();
-  Grid gri1 = i1 -> element();
+  Grid gri1 = i1->element();
   print_congruences(gri1, "*** gri1 ***");
 
   return ok && pps.OK() && pps1.OK();
@@ -181,7 +181,7 @@ test06() {
   bool ok = (pps == known_pps);
 
   Pointset_Powerset<Grid>::const_iterator i = pps.begin();
-  Grid phi = i -> element();
+  Grid phi = i->element();
   print_congruences(phi, "*** phi ***");
 
   return ok;
@@ -225,7 +225,7 @@ test08() {
   bool ok = (pps == known_pps);
 
   Pointset_Powerset<Grid>::const_iterator i = pps.begin();
-  Grid phi = i -> element();
+  Grid phi = i->element();
   print_congruences(phi, "*** phi ***");
 
   return ok;
@@ -267,7 +267,7 @@ test10() {
   bool ok = (pps == known_pps);
 
   Pointset_Powerset<Grid>::const_iterator i = pps.begin();
-  Grid phi = i -> element();
+  Grid phi = i->element();
   print_congruences(phi, "*** phi ***");
 
   return ok;
@@ -312,7 +312,7 @@ test12() {
   bool ok = (pps == known_pps);
 
   Pointset_Powerset<Grid>::const_iterator i = pps.begin();
-  Grid gri = i -> element();
+  Grid gri = i->element();
   print_congruences(gri, "*** gri ***");
 
   return ok;
@@ -345,11 +345,11 @@ test13() {
   bool ok = (pps1 == known_pps1 && pps2 == known_pps2);
 
   Pointset_Powerset<Grid>::const_iterator i1 = pps1.begin();
-  Grid gri1 = i1 -> element();
+  Grid gri1 = i1->element();
   print_congruences(gri1, "*** gri1 ***");
 
   Pointset_Powerset<Grid>::const_iterator i2 = pps2.begin();
-  Grid gri2 = i2 -> element();
+  Grid gri2 = i2->element();
   print_congruences(gri2, "*** gri2 ***");
 
   return ok;
@@ -371,7 +371,7 @@ test14() {
   Pointset_Powerset<TBD_Shape> pps_bd(bd, POLYNOMIAL_COMPLEXITY);
 
   Pointset_Powerset<TBD_Shape>::const_iterator i_bd = pps_bd.begin();
-  TBD_Shape bdi = i_bd -> element();
+  TBD_Shape bdi = i_bd->element();
   print_constraints(bdi, "*** bdi ***");
 
   // The complexity should be ignored.
@@ -384,7 +384,7 @@ test14() {
   bool ok = (pps == known_pps);
 
   Pointset_Powerset<Grid>::const_iterator i_gr = pps.begin();
-  Grid gri = i_gr -> element();
+  Grid gri = i_gr->element();
   print_congruences(gri, "*** gri ***");
 
   return ok;
@@ -406,7 +406,7 @@ test15() {
   Pointset_Powerset<TOctagonal_Shape> pps_os(os, POLYNOMIAL_COMPLEXITY);
 
   Pointset_Powerset<TOctagonal_Shape>::const_iterator i_os = pps_os.begin();
-  TOctagonal_Shape osi = i_os -> element();
+  TOctagonal_Shape osi = i_os->element();
   print_constraints(osi, "*** osi ***");
 
   // The complexity should be ignored.
@@ -421,7 +421,7 @@ test15() {
   bool ok = (pps == known_pps);
 
   Pointset_Powerset<Grid>::const_iterator i_gr = pps.begin();
-  Grid gri = i_gr -> element();
+  Grid gri = i_gr->element();
   print_congruences(gri, "*** gri ***");
 
   return ok;
@@ -443,7 +443,7 @@ test16() {
   Pointset_Powerset<TBox> pps_box(box, POLYNOMIAL_COMPLEXITY);
 
   Pointset_Powerset<TBox>::const_iterator i_box = pps_box.begin();
-  TBox boxi = i_box -> element();
+  TBox boxi = i_box->element();
   print_constraints(boxi, "*** boxi ***");
 
   // The complexity should be ignored.
@@ -455,7 +455,7 @@ test16() {
   bool ok = (pps == known_pps);
 
   Pointset_Powerset<Grid>::const_iterator i_gr = pps.begin();
-  Grid gri = i_gr -> element();
+  Grid gri = i_gr->element();
   print_congruences(gri, "*** gri ***");
 
   return ok;

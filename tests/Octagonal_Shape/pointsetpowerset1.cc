@@ -44,10 +44,10 @@ test01() {
   bool ok = (pps1 == pps2);
 
   Pointset_Powerset<TOctagonal_Shape>::const_iterator i = pps1.begin();
-  TOctagonal_Shape osi = i -> element();
+  TOctagonal_Shape osi = i->element();
   print_constraints(osi, "*** osi ***");
   Pointset_Powerset<TOctagonal_Shape>::const_iterator i2 = pps2.begin();
-  TOctagonal_Shape osi2 = i2 -> element();
+  TOctagonal_Shape osi2 = i2->element();
   print_constraints(osi2, "*** osi2 ***");
 
   return ok && pps1.OK();
@@ -98,9 +98,9 @@ test03() {
   known_os1.add_constraint(z >= 1);
 
   Pointset_Powerset<TOctagonal_Shape>::const_iterator i = pps.begin();
-  TOctagonal_Shape osi = i -> element();
+  TOctagonal_Shape osi = i->element();
   Pointset_Powerset<TOctagonal_Shape>::const_iterator i1 = pps1.begin();
-  TOctagonal_Shape osi1 = i1 -> element();
+  TOctagonal_Shape osi1 = i1->element();
 
   bool ok = check_result(osi, known_os, "1.92e-7", "8.89e-8", "7.95e-8")
     && check_result(osi1, known_os1, "1.92e-7", "8.89e-8", "7.95e-8");
@@ -137,7 +137,7 @@ test04() {
   known_os1.add_constraint(z >= 1);
 
   Pointset_Powerset<TOctagonal_Shape>::const_iterator i1 = pps1.begin();
-  TOctagonal_Shape osi1 = i1 -> element();
+  TOctagonal_Shape osi1 = i1->element();
 
   bool ok = check_result(osi1, known_os1, "1.92e-7", "8.89e-8", "7.95e-8")
     && pps.is_empty();
@@ -185,7 +185,7 @@ test06() {
   bool ok = (pps == known_pps);
 
   Pointset_Powerset<TOctagonal_Shape>::const_iterator i = pps.begin();
-  TOctagonal_Shape osi = i -> element();
+  TOctagonal_Shape osi = i->element();
   print_constraints(osi, "*** osi ***");
 
   return ok;
@@ -228,7 +228,7 @@ test08() {
   bool ok = (pps == known_pps);
 
   Pointset_Powerset<TOctagonal_Shape>::const_iterator i = pps.begin();
-  TOctagonal_Shape osi = i -> element();
+  TOctagonal_Shape osi = i->element();
   print_constraints(osi, "*** osi ***");
 
   return ok;
@@ -269,7 +269,7 @@ test10() {
   bool ok = (pps == known_pps);
 
   Pointset_Powerset<TOctagonal_Shape>::const_iterator i = pps.begin();
-  TOctagonal_Shape osi = i -> element();
+  TOctagonal_Shape osi = i->element();
   print_constraints(osi, "*** osi ***");
 
   return ok;
@@ -318,7 +318,7 @@ test12() {
   bool ok = (pps == known_pps);
 
   Pointset_Powerset<TOctagonal_Shape>::const_iterator j = pps.begin();
-  TOctagonal_Shape osj = j -> element();
+  TOctagonal_Shape osj = j->element();
   print_constraints(osj, "*** pps disjunct ***");
 
   return ok;
@@ -353,11 +353,11 @@ test13() {
   bool ok = (pps1 == known_pps1 && pps2 == known_pps2);
 
   Pointset_Powerset<TOctagonal_Shape>::const_iterator i1 = pps1.begin();
-  TOctagonal_Shape osi1 = i1 -> element();
+  TOctagonal_Shape osi1 = i1->element();
   print_constraints(osi1, "*** osi1 ***");
 
   Pointset_Powerset<TOctagonal_Shape>::const_iterator i2 = pps2.begin();
-  TOctagonal_Shape osi2 = i2 -> element();
+  TOctagonal_Shape osi2 = i2->element();
   print_constraints(osi2, "*** osi2 ***");
 
   return ok;
@@ -388,7 +388,7 @@ test14() {
   bool ok = (pps == known_pps);
 
   Pointset_Powerset<TOctagonal_Shape>::const_iterator i_os = pps.begin();
-  TOctagonal_Shape osi = i_os -> element();
+  TOctagonal_Shape osi = i_os->element();
   print_constraints(osi, "*** osi ***");
 
   return ok;
@@ -418,7 +418,7 @@ test15() {
   bool ok = (pps == known_pps);
 
   Pointset_Powerset<TOctagonal_Shape>::const_iterator i_os = pps.begin();
-  TOctagonal_Shape osi = i_os -> element();
+  TOctagonal_Shape osi = i_os->element();
   print_constraints(osi, "*** osi ***");
 
   return ok;
@@ -445,7 +445,7 @@ test16() {
   bool ok = (pps == known_pps);
 
   Pointset_Powerset<TOctagonal_Shape>::const_iterator i = pps.begin();
-  TOctagonal_Shape osi = i -> element();
+  TOctagonal_Shape osi = i->element();
   print_constraints(osi, "*** osi ***");
 
   return ok;

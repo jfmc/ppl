@@ -44,10 +44,10 @@ test01() {
   bool ok = (pps1 == pps2);
 
   Pointset_Powerset<TBD_Shape>::const_iterator i = pps1.begin();
-  TBD_Shape bdsi = i -> element();
+  TBD_Shape bdsi = i->element();
   print_constraints(bdsi, "*** bdsi ***");
   Pointset_Powerset<TBD_Shape>::const_iterator i2 = pps2.begin();
-  TBD_Shape bdsi2 = i2 -> element();
+  TBD_Shape bdsi2 = i2->element();
   print_constraints(bdsi2, "*** bdsi2 ***");
 
   return ok && pps1.OK();
@@ -99,9 +99,9 @@ test03() {
   known_bds1.add_constraint(z >= 1);
 
   Pointset_Powerset<TBD_Shape>::const_iterator i = pps.begin();
-  TBD_Shape bdsi = i -> element();
+  TBD_Shape bdsi = i->element();
   Pointset_Powerset<TBD_Shape>::const_iterator i1 = pps1.begin();
-  TBD_Shape bdsi1 = i1 -> element();
+  TBD_Shape bdsi1 = i1->element();
 
   bool ok = check_result(bdsi, known_bds, "1.92e-7", "8.89e-8", "7.95e-8")
     && check_result(bdsi1, known_bds1, "1.92e-7", "8.89e-8", "7.95e-8");
@@ -138,7 +138,7 @@ test04() {
   known_bds1.add_constraint(z >= 1);
 
   Pointset_Powerset<TBD_Shape>::const_iterator i1 = pps1.begin();
-  TBD_Shape bdsi1 = i1 -> element();
+  TBD_Shape bdsi1 = i1->element();
 
   bool ok = check_result(bdsi1, known_bds1, "1.92e-7", "8.89e-8", "7.95e-8")
     && pps.is_empty();
@@ -179,10 +179,10 @@ test03() {
   bool ok = (pps == known_pps && pps1 == known_pps1);
 
   Pointset_Powerset<TBD_Shape>::const_iterator i = pps.begin();
-  TBD_Shape bdsi = i -> element();
+  TBD_Shape bdsi = i->element();
   print_constraints(bdsi, "*** bdsi ***");
   Pointset_Powerset<TBD_Shape>::const_iterator i1 = pps1.begin();
-  TBD_Shape bdsi1 = i1 -> element();
+  TBD_Shape bdsi1 = i1->element();
   print_constraints(bdsi1, "*** bdsi1 ***");
 
   return ok && pps.OK() && pps1.OK();
@@ -217,7 +217,7 @@ test04() {
   bool ok = (pps == known_pps && pps1 == known_pps1);
 
   Pointset_Powerset<TBD_Shape>::const_iterator i1 = pps1.begin();
-  TBD_Shape bdsi1 = i1 -> element();
+  TBD_Shape bdsi1 = i1->element();
   print_constraints(bdsi1, "*** bdsi1 ***");
 
   return ok && pps.OK() && pps1.OK();
@@ -262,7 +262,7 @@ test06() {
   bool ok = (pps == known_pps);
 
   Pointset_Powerset<TBD_Shape>::const_iterator i = pps.begin();
-  TBD_Shape bdsi = i -> element();
+  TBD_Shape bdsi = i->element();
   print_constraints(bdsi, "*** bdsi ***");
 
   return ok;
@@ -305,7 +305,7 @@ test08() {
   bool ok = (pps == known_pps);
 
   Pointset_Powerset<TBD_Shape>::const_iterator i = pps.begin();
-  TBD_Shape bdsi = i -> element();
+  TBD_Shape bdsi = i->element();
   print_constraints(bdsi, "*** bdsi ***");
 
   return ok;
@@ -346,7 +346,7 @@ test10() {
   bool ok = (pps == known_pps);
 
   Pointset_Powerset<TBD_Shape>::const_iterator i = pps.begin();
-  TBD_Shape bdsi = i -> element();
+  TBD_Shape bdsi = i->element();
   print_constraints(bdsi, "*** bdsi ***");
 
   return ok;
@@ -395,7 +395,7 @@ test12() {
   bool ok = (pps == known_pps);
 
   Pointset_Powerset<TBD_Shape>::const_iterator j = pps.begin();
-  TBD_Shape bdsj = j -> element();
+  TBD_Shape bdsj = j->element();
   print_constraints(bdsj, "*** pps disjunct ***");
 
   return ok;
@@ -430,11 +430,11 @@ test13() {
   bool ok = (pps1 == known_pps1 && pps2 == known_pps2);
 
   Pointset_Powerset<TBD_Shape>::const_iterator i1 = pps1.begin();
-  TBD_Shape bdsi1 = i1 -> element();
+  TBD_Shape bdsi1 = i1->element();
   print_constraints(bdsi1, "*** bdsi1 ***");
 
   Pointset_Powerset<TBD_Shape>::const_iterator i2 = pps2.begin();
-  TBD_Shape bdsi2 = i2 -> element();
+  TBD_Shape bdsi2 = i2->element();
   print_constraints(bdsi2, "*** bdsi2 ***");
 
   return ok;
@@ -465,7 +465,7 @@ test14() {
   bool ok = (pps == known_pps);
 
   Pointset_Powerset<TBD_Shape>::const_iterator i_bds = pps.begin();
-  TBD_Shape bdsi = i_bds -> element();
+  TBD_Shape bdsi = i_bds->element();
   print_constraints(bdsi, "*** bdsi ***");
 
   return ok;
@@ -495,7 +495,7 @@ test15() {
   bool ok = (pps == known_pps);
 
   Pointset_Powerset<TBD_Shape>::const_iterator i_bds = pps.begin();
-  TBD_Shape bdsi = i_bds -> element();
+  TBD_Shape bdsi = i_bds->element();
   print_constraints(bdsi, "*** bdsi ***");
 
   return ok;
@@ -522,7 +522,7 @@ test16() {
   bool ok = (pps == known_pps);
 
   Pointset_Powerset<TBD_Shape>::const_iterator i = pps.begin();
-  TBD_Shape bdsi = i -> element();
+  TBD_Shape bdsi = i->element();
   print_constraints(bdsi, "*** bdsi ***");
 
   return ok;

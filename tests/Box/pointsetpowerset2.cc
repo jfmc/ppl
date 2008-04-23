@@ -44,10 +44,10 @@ test01() {
 
   print_constraints(box, "*** box ***");
   Pointset_Powerset<TBox>::const_iterator i = pps1.begin();
-  TBox boxi = i -> element();
+  TBox boxi = i->element();
   print_constraints(boxi, "*** boxi ***");
   Pointset_Powerset<TBox>::const_iterator i2 = pps2.begin();
-  TBox boxi2 = i2 -> element();
+  TBox boxi2 = i2->element();
   print_constraints(boxi2, "*** boxi2 ***");
 
   return ok && pps1.OK();
@@ -103,10 +103,10 @@ test03() {
   bool ok = (pps == known_pps && pps1 == known_pps1);
 
   Pointset_Powerset<TBox>::const_iterator i = pps.begin();
-  TBox boxi = i -> element();
+  TBox boxi = i->element();
   print_constraints(boxi, "*** boxi ***");
   Pointset_Powerset<TBox>::const_iterator i1 = pps1.begin();
-  TBox boxi1 = i1 -> element();
+  TBox boxi1 = i1->element();
   print_constraints(boxi1, "*** boxi1 ***");
 
   return ok && pps.OK() && pps1.OK();
@@ -143,7 +143,7 @@ test04() {
   bool ok = (pps == known_pps && pps1 == known_pps1);
 
   Pointset_Powerset<TBox>::const_iterator i1 = pps1.begin();
-  TBox boxi1 = i1 -> element();
+  TBox boxi1 = i1->element();
   print_constraints(boxi1, "*** boxi1 ***");
 
   return ok && pps.OK() && pps1.OK();
@@ -186,7 +186,7 @@ test06() {
   bool ok = (pps == known_pps);
 
   Pointset_Powerset<TBox>::const_iterator i = pps.begin();
-  TBox phi = i -> element();
+  TBox phi = i->element();
   print_constraints(phi, "*** phi ***");
 
   return ok;
@@ -233,7 +233,7 @@ test08() {
   bool ok = (pps == known_pps);
 
   Pointset_Powerset<TBox>::const_iterator i = pps.begin();
-  TBox phi = i -> element();
+  TBox phi = i->element();
   print_constraints(phi, "*** phi ***");
 
   return ok;
@@ -274,7 +274,7 @@ test10() {
   bool ok = (pps == known_pps);
 
   Pointset_Powerset<TBox>::const_iterator i = pps.begin();
-  TBox phi = i -> element();
+  TBox phi = i->element();
   print_constraints(phi, "*** phi ***");
 
   return ok;
@@ -322,7 +322,7 @@ test12() {
   bool ok = (pps == known_pps);
 
   Pointset_Powerset<TBox>::const_iterator j = pps.begin();
-  TBox boxj = j -> element();
+  TBox boxj = j->element();
   print_constraints(boxj, "*** pps disjunct ***");
 
   return ok;
@@ -357,11 +357,11 @@ test13() {
   bool ok = (pps1 == known_pps1 && pps2 == known_pps2);
 
   Pointset_Powerset<TBox>::const_iterator i1 = pps1.begin();
-  TBox boxi1 = i1 -> element();
+  TBox boxi1 = i1->element();
   print_constraints(boxi1, "*** boxi1 ***");
 
   Pointset_Powerset<TBox>::const_iterator i2 = pps2.begin();
-  TBox boxi2 = i2 -> element();
+  TBox boxi2 = i2->element();
   print_constraints(boxi2, "*** boxi2 ***");
 
   return ok;
@@ -392,7 +392,7 @@ test14() {
   bool ok = (pps == known_pps);
 
   Pointset_Powerset<TBox>::const_iterator i_box = pps.begin();
-  TBox boxi = i_box -> element();
+  TBox boxi = i_box->element();
   print_constraints(boxi, "*** boxi ***");
 
   return ok;
@@ -423,7 +423,7 @@ test15() {
   bool ok = (pps == known_pps);
 
   Pointset_Powerset<TBox>::const_iterator i_box = pps.begin();
-  TBox boxi = i_box -> element();
+  TBox boxi = i_box->element();
   print_constraints(boxi, "*** boxi ***");
 
   return ok;
@@ -450,7 +450,7 @@ test16() {
   bool ok = (pps == known_pps);
 
   Pointset_Powerset<TBox>::const_iterator i = pps.begin();
-  TBox boxi = i -> element();
+  TBox boxi = i->element();
   print_constraints(boxi, "*** boxi ***");
 
   return ok;

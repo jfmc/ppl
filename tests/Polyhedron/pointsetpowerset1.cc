@@ -380,9 +380,9 @@ test17() {
   c_ps.add_disjunct(ph1);
 
   Pointset_Powerset<C_Polyhedron>::const_iterator i = c_ps.begin();
-  C_Polyhedron phi = i -> element();
+  C_Polyhedron phi = i->element();
   i++;
-  C_Polyhedron phi1 = i -> element();
+  C_Polyhedron phi1 = i->element();
 
   bool ok = phi.OK() && phi == ph;
 

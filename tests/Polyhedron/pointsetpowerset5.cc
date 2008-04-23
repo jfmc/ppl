@@ -442,10 +442,10 @@ test17() {
   bool ok = (pps == known_pps);
 
   Pointset_Powerset<C_Polyhedron>::const_iterator i = pps.begin();
-  C_Polyhedron phi = i -> element();
+  C_Polyhedron phi = i->element();
   print_constraints(phi, "*** phi ***");
   i++;
-  C_Polyhedron phi1 = i -> element();
+  C_Polyhedron phi1 = i->element();
   print_constraints(phi1, "*** phi1 ***");
 
   return ok;
@@ -492,7 +492,7 @@ test18() {
   bool ok = (pps == known_pps);
 
   Pointset_Powerset<C_Polyhedron>::const_iterator i = pps.begin();
-  C_Polyhedron phi = i -> element();
+  C_Polyhedron phi = i->element();
   print_constraints(phi, "*** phi ***");
 
   return ok;
@@ -580,10 +580,10 @@ test20() {
   bool ok = (pps == known_pps);
 
   Pointset_Powerset<NNC_Polyhedron>::const_iterator i = pps.begin();
-  NNC_Polyhedron phi = i -> element();
+  NNC_Polyhedron phi = i->element();
   print_constraints(phi, "*** phi ***");
   i++;
-  NNC_Polyhedron phi1 = i -> element();
+  NNC_Polyhedron phi1 = i->element();
   print_constraints(phi1, "*** phi1 ***");
 
   return ok;

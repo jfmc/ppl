@@ -50,9 +50,9 @@ test01() {
   ph1.affine_image(x, x + y);
 
   Pointset_Powerset<C_Polyhedron>::const_iterator i = c_ps.begin();
-  C_Polyhedron phi = i -> element();
+  C_Polyhedron phi = i->element();
   i++;
-  C_Polyhedron phi1 = i -> element();
+  C_Polyhedron phi1 = i->element();
 
   bool ok = phi.OK() && phi == ph;
 
@@ -93,9 +93,9 @@ test02() {
   ph1.affine_preimage(x, x + y);
 
   Pointset_Powerset<C_Polyhedron>::const_iterator i = c_ps.begin();
-  C_Polyhedron phi = i -> element();
+  C_Polyhedron phi = i->element();
   i++;
-  C_Polyhedron phi1 = i -> element();
+  C_Polyhedron phi1 = i->element();
 
   bool ok = phi.OK() && phi == ph;
 
@@ -136,9 +136,9 @@ test03() {
   ph1.generalized_affine_image(x - y, GREATER_OR_EQUAL, Linear_Expression(3));
 
   Pointset_Powerset<C_Polyhedron>::const_iterator i = c_ps.begin();
-  C_Polyhedron phi = i -> element();
+  C_Polyhedron phi = i->element();
   i++;
-  C_Polyhedron phi1 = i -> element();
+  C_Polyhedron phi1 = i->element();
 
   bool ok = phi.OK() && phi == ph;
 
@@ -179,9 +179,9 @@ test04() {
   ph1.generalized_affine_preimage(2*y, LESS_OR_EQUAL, 4*y);
 
   Pointset_Powerset<C_Polyhedron>::const_iterator i = c_ps.begin();
-  C_Polyhedron phi = i -> element();
+  C_Polyhedron phi = i->element();
   i++;
-  C_Polyhedron phi1 = i -> element();
+  C_Polyhedron phi1 = i->element();
 
   bool ok = phi.OK() && phi == ph;
 
@@ -222,9 +222,9 @@ test05() {
   ph1.generalized_affine_image(x, GREATER_OR_EQUAL, Linear_Expression(3), 2);
 
   Pointset_Powerset<C_Polyhedron>::const_iterator i = c_ps.begin();
-  C_Polyhedron phi = i -> element();
+  C_Polyhedron phi = i->element();
   i++;
-  C_Polyhedron phi1 = i -> element();
+  C_Polyhedron phi1 = i->element();
 
   bool ok = phi.OK() && phi == ph;
 
@@ -265,9 +265,9 @@ test06() {
   ph1.generalized_affine_image(x, GREATER_OR_EQUAL, Linear_Expression(3), 2);
 
   Pointset_Powerset<C_Polyhedron>::const_iterator i = c_ps.begin();
-  C_Polyhedron phi = i -> element();
+  C_Polyhedron phi = i->element();
   i++;
-  C_Polyhedron phi1 = i -> element();
+  C_Polyhedron phi1 = i->element();
 
   bool ok = phi.OK() && phi == ph;
 
@@ -308,9 +308,9 @@ test07() {
   ph1.bounded_affine_image(y, Linear_Expression(0), 2*y, 5);
 
   Pointset_Powerset<C_Polyhedron>::const_iterator i = c_ps.begin();
-  C_Polyhedron phi = i -> element();
+  C_Polyhedron phi = i->element();
   i++;
-  C_Polyhedron phi1 = i -> element();
+  C_Polyhedron phi1 = i->element();
 
   bool ok = phi.OK() && phi == ph;
 
@@ -351,9 +351,9 @@ test08() {
   ph1.bounded_affine_preimage(y, x, 2*y, 5);
 
   Pointset_Powerset<C_Polyhedron>::const_iterator i = c_ps.begin();
-  C_Polyhedron phi = i -> element();
+  C_Polyhedron phi = i->element();
   i++;
-  C_Polyhedron phi1 = i -> element();
+  C_Polyhedron phi1 = i->element();
 
   bool ok = phi.OK() && phi == ph;
 
@@ -398,9 +398,9 @@ test09() {
   bool ok = (d == 3);
 
   Pointset_Powerset<C_Polyhedron>::const_iterator i = c_ps.begin();
-  C_Polyhedron phi = i -> element();
+  C_Polyhedron phi = i->element();
   i++;
-  C_Polyhedron phi1 = i -> element();
+  C_Polyhedron phi1 = i->element();
 
   print_constraints(phi, "*** phi ***");
   print_constraints(phi1, "*** phi1 ***");
@@ -412,9 +412,9 @@ test09() {
   bool ok1 = (d1 == 2);
 
   Pointset_Powerset<C_Polyhedron>::const_iterator j = c_ps.begin();
-  C_Polyhedron phj = j -> element();
+  C_Polyhedron phj = j->element();
   j++;
-  C_Polyhedron phj1 = j -> element();
+  C_Polyhedron phj1 = j->element();
 
   print_constraints(phj, "*** phj ***");
   print_constraints(phj1, "*** phj1 ***");
@@ -452,9 +452,9 @@ test10() {
   bool ok = (d == 3);
 
   Pointset_Powerset<NNC_Polyhedron>::const_iterator i = c_ps.begin();
-  NNC_Polyhedron phi = i -> element();
+  NNC_Polyhedron phi = i->element();
   i++;
-  NNC_Polyhedron phi1 = i -> element();
+  NNC_Polyhedron phi1 = i->element();
 
   print_constraints(phi, "*** phi ***");
   print_constraints(phi1, "*** phi1 ***");
@@ -466,9 +466,9 @@ test10() {
   bool ok1 = (d1 == 2);
 
   Pointset_Powerset<NNC_Polyhedron>::const_iterator j = c_ps.begin();
-  NNC_Polyhedron phj = j -> element();
+  NNC_Polyhedron phj = j->element();
   j++;
-  NNC_Polyhedron phj1 = j -> element();
+  NNC_Polyhedron phj1 = j->element();
 
   print_constraints(phj, "*** phj ***");
   print_constraints(phj1, "*** phj1 ***");
