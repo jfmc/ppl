@@ -152,7 +152,6 @@ env->SetLongField(j_this_@LTOPOLOGY@@LCLASS@, pointer_field,
 
 ')
 
-
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_code',
 `dnl
 JNIEXPORT void JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_build_1cpp_1object__Lppl_1java_@UBUILD_REPRESENT@_1System_2
@@ -311,6 +310,21 @@ JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_@1SIMPLIFY@
   jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
   @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
   this_@LCLASS@->@SIMPLIFY@();
+  }
+  CATCH_ALL;
+}
+
+')
+
+m4_define(`ppl_@CLASS@_unconstrain_code',
+`dnl
+JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_1unconstrain
+(JNIEnv* env, jobject j_this_@LCLASS@, jobject j_var) {
+  try {
+  jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
+  @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
+  Variable v = build_ppl_variable(env, j_var);
+  this_@LCLASS@->unconstrain(v);
   }
   CATCH_ALL;
 }

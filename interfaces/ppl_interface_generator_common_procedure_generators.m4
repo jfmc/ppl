@@ -43,6 +43,7 @@ m4_define(`m4_common_procedure_list', `dnl
 ppl_delete_@CLASS@/1 *nofail +all,
 ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension/3 +all,
 ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@/2 +all,
+ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity/3 +all,
 ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s/2 +all,
 ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@/2 +all,
 ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@/2 +polyhedron,

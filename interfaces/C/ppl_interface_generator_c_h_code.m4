@@ -165,6 +165,22 @@ ppl_@CLASS@_@SIMPLIFY@ PPL_PROTO((ppl_@CLASS@_t ph));
 
 ')
 
+m4_define(`ppl_@CLASS@_constrains_code',
+`int
+ppl_@CLASS@_constrains
+PPL_PROTO((ppl_const_@CLASS@_t ph,
+           ppl_dimension_type var));
+
+')
+
+m4_define(`ppl_@CLASS@_unconstrain_code',
+`int
+ppl_@CLASS@_unconstrain
+PPL_PROTO((ppl_@CLASS@_t ph,
+           ppl_dimension_type var));
+
+')
+
 m4_define(`ppl_@CLASS@_@BINOP@_code',
 `int
 ppl_@CLASS@_@BINOP@

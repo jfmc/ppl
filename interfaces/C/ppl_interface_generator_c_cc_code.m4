@@ -289,6 +289,33 @@ CATCH_ALL
 
 ')
 
+m4_define(`ppl_@CLASS@_unconstrain_code',
+`int
+ppl_@CLASS@_unconstrain
+(ppl_@CLASS@_t ph,
+ ppl_dimension_type var
+) try {
+  @CPP_CLASS@& pph = *to_nonconst(ph);
+  pph.unconstrain(Variable(var));
+  return 0;
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_@CLASS@_constrains_code',
+`int
+ppl_@CLASS@_constrains
+(ppl_const_@CLASS@_t ph,
+ ppl_dimension_type var
+) try {
+  @CPP_CLASS@& pph = *to_nonconst(ph);
+  return pph.constrains(Variable(var)) ? 1 : 0;
+}
+CATCH_ALL
+
+')
+
 m4_define(`ppl_@CLASS@_@BINOP@_code',
 `int
 ppl_@CLASS@_@BINOP@

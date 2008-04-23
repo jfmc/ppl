@@ -147,6 +147,13 @@ m4_define(`ppl_@CLASS@_@SIMPLIFY@_code',
 
 ')
 
+m4_define(`ppl_@CLASS@_unconstrain_code',
+`dnl
+%<--%<--%<-- @CLASS@.java
+    public native void unconstrain(Variable var);
+
+')
+
 m4_define(`ppl_@CLASS@_bounds_from_@ABOVEBELOW@_code',
 `dnl
 %<--%<--%<-- @CLASS@.java

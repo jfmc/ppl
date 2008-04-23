@@ -86,6 +86,47 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@(
 
 ')
 
+  m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity_code',
+`extern "C" Prolog_foreign_return_type
+ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity(
+                     Prolog_term_ref t_ph_source,
+                     Prolog_term_ref t_ph,
+                     Prolog_term_ref t_cc)
+{
+  static const char* where =
+                   "ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity/3";
+  try {
+    @TOPOLOGY@@CPP_CLASS@* ph;
+    const @CPPX_FRIEND@* ph_source
+        = static_cast<const @CPPX_FRIEND@*>
+        (term_to_handle<@CPPX_FRIEND@ >(t_ph_source, where));
+
+    Prolog_atom p_cc = term_to_complexity_class(t_cc, where);
+    Complexity_Class cc;
+    if (p_cc == a_polynomial)
+      cc = POLYNOMIAL_COMPLEXITY;
+    else if (p_cc == a_simplex)
+      cc = SIMPLEX_COMPLEXITY;
+    else
+      cc = ANY_COMPLEXITY;
+
+    PPL_CHECK(ph_source);
+    ph = new @TOPOLOGY@@CPP_CLASS@(*ph_source, cc);
+
+    Prolog_term_ref tmp = Prolog_new_term_ref();
+    Prolog_put_address(tmp, ph);
+    if (Prolog_unify(t_ph, tmp)) {
+      PPL_REGISTER(ph);
+      return PROLOG_SUCCESS;
+    }
+    else
+      delete ph;
+  }
+  CATCH_ALL;
+}
+
+')
+
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_code',
   `extern "C" Prolog_foreign_return_type
   ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s(Prolog_term_ref t_clist,
@@ -741,6 +782,38 @@ m4_define(`ppl_@CLASS@_@SIMPLIFY@_code',
     PPL_CHECK(ph);
     ph->@SIMPLIFY@();
     return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+')
+
+m4_define(`ppl_@CLASS@_unconstrain_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_@CLASS@__unconstrain(Prolog_term_ref t_ph,
+                           Prolog_term_ref t_v) {
+  static const char* where = "ppl_@CLASS@__unconstrain/1";
+  try {
+    @CPP_CLASS@* ph = term_to_handle<@CPP_CLASS@ >(t_ph, where);
+    PPL_CHECK(ph);
+    ph->unconstrain(term_to_Variable(t_v, where));
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+')
+
+m4_define(`ppl_@CLASS@_constrains_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_@CLASS@__constrains(Prolog_term_ref t_ph,
+                          Prolog_term_ref t_v) {
+  static const char* where = "ppl_@CLASS@__constrains/1";
+  try {
+    @CPP_CLASS@* ph = term_to_handle<@CPP_CLASS@ >(t_ph, where);
+    PPL_CHECK(ph);
+    if (ph->constrains(term_to_Variable(t_v, where)))
+      return PROLOG_SUCCESS;
   }
   CATCH_ALL;
 }

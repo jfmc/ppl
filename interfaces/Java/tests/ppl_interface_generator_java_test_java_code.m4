@@ -213,6 +213,11 @@ m4_define(`ppl_@CLASS@_@SIMPLIFY@_code',`
 
 ')
 
+m4_define(`ppl_@CLASS@_unconstrain_code',`
+@LTOPOLOGY@@LCLASS@1.unconstrain(var);
+
+')
+
 
 m4_define(`ppl_@CLASS@_constrains_code', `
 boolean @LTOPOLOGY@@LCLASS@1_constrains

@@ -190,6 +190,20 @@ val ppl_@TOPOLOGY@@CLASS@_get_minimized_@GET_REPRESENT@s:
 
 ')
 
+m4_define(`ppl_@CLASS@_constrains_code',
+`dnl
+val ppl_@TOPOLOGY@@CLASS@_constrains:
+  @LTOPOLOGY@@LCLASS@ -> int -> bool
+
+')
+
+m4_define(`ppl_@CLASS@_unconstrain_code',
+`dnl
+val ppl_@TOPOLOGY@@CLASS@_unconstrain:
+  @LTOPOLOGY@@LCLASS@ -> int -> unit
+
+')
+
 m4_define(`ppl_@CLASS@_bounded_@AFFIMAGE@_code',
 `dnl
 val ppl_@TOPOLOGY@@CLASS@_bounded_@AFFIMAGE@:

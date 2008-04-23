@@ -432,6 +432,35 @@ CATCH_ALL
 
 ')
 
+  m4_define(`ppl_@CLASS@_constrains_code',
+`dnl
+extern "C"
+void
+ppl_@TOPOLOGY@@CLASS@_constrains(value ph, value var) try {
+  CAMLparam4(ph, var);
+  @CPP_CLASS@& pph = *p_@TOPOLOGY@@CLASS@_val(ph);
+  pph.constrains(build_ppl_Variable(var));
+  CAMLreturn0;
+  CAMLreturn(Val_bool(pph.constrains(var)));
+			    }
+CATCH_ALL
+
+')
+
+  m4_define(`ppl_@CLASS@_unconstrain_code',
+`dnl
+extern "C"
+void
+ppl_@TOPOLOGY@@CLASS@_unconstrain(value ph, value var) try {
+  CAMLparam4(ph, var);
+  @CPP_CLASS@& pph = *p_@TOPOLOGY@@CLASS@_val(ph);
+  pph.unconstrain(build_ppl_Variable(var));
+  CAMLreturn0;
+			    }
+CATCH_ALL
+
+')
+
   m4_define(`ppl_@CLASS@_bounded_@AFFIMAGE@_code',
 `dnl
 extern "C"
