@@ -592,8 +592,8 @@ public:
   Congruence_System congruences() const;
 
   /*! \brief
-      Returns a system of (equality) congruences in reduced form
-      satsified by \p *this with the same affine dimension as \p *this.
+    Returns a minimal system of (equality) congruences
+    satisfied by \p *this with the same affine dimension as \p *this.
   */
   Congruence_System minimized_congruences() const;
 
