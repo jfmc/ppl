@@ -660,21 +660,21 @@ public:
   dimension_type affine_dimension() const;
 
   /*! \brief
-      Returns a system of equality constraints satisfied by \p *this
-      with the same affine dimension as \p *this.
+    Returns a system of equality constraints satisfied by \p *this
+    with the same affine dimension as \p *this.
   */
   Constraint_System constraints() const;
 
   /*! \brief
-      Returns a system of equality constraints in reduced form
-      satisfied by \p *this with the same affine dimension as \p *this.
+    Returns a minimal system of equality constraints satisfied by
+    \p *this with the same affine dimension as \p *this.
   */
   Constraint_System minimized_constraints() const;
 
   //! Returns the system of congruences.
   const Congruence_System& congruences() const;
 
-  //! Returns the system of congruences in reduced form.
+  //! Returns the system of congruences in minimal form.
   const Congruence_System& minimized_congruences() const;
 
   //! Returns the system of generators.
@@ -1426,8 +1426,7 @@ public:
   void unconstrain(const Variables_Set& to_be_unconstrained);
 
   /*! \brief
-    Assigns to \p *this the intersection of \p *this and \p y.  The
-    result is not guaranteed to be reduced.
+    Assigns to \p *this the intersection of \p *this and \p y.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
