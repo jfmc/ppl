@@ -189,11 +189,11 @@ struct float_ieee754_quad {
 /*! \ingroup PPL_CXX_interface */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
-class Float;
+class Float : public False { };
 
 #if PPL_SUPPORTED_FLOAT
 template <>
-class Float<float> {
+class Float<float> : public True {
 public:
   typedef PPL_CXX_FLOAT_BINARY_FORMAT Binary;
   union {
@@ -208,7 +208,7 @@ public:
 
 #if PPL_SUPPORTED_DOUBLE
 template <>
-class Float<double> {
+class Float<double> : public True {
 public:
   typedef PPL_CXX_DOUBLE_BINARY_FORMAT Binary;
   union {
@@ -223,7 +223,7 @@ public:
 
 #if PPL_SUPPORTED_LONG_DOUBLE
 template <>
-class Float<long double> {
+class Float<long double> : public True {
 public:
   typedef PPL_CXX_LONG_DOUBLE_BINARY_FORMAT Binary;
   union {
