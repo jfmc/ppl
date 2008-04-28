@@ -23,6 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Float_defs_hh
 #define PPL_Float_defs_hh 1
 
+#include "meta_programming.hh"
 #include "compiler.hh"
 #include <gmp.h>
 #include <cassert>
