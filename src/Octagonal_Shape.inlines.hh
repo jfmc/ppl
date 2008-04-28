@@ -195,35 +195,7 @@ Octagonal_Shape<T>::Octagonal_Shape(const BD_Shape<U>& bd,
 template <typename T>
 inline Congruence_System
 Octagonal_Shape<T>::congruences() const {
-  Congruence_System cgs;
-  strong_closure_assign();
-  if (space_dim == 0) {
-    if (marked_empty())
-      cgs = Congruence_System::zero_dim_empty();
-      return cgs;
-  }
-  if (marked_empty()) {
-    cgs.insert((0*Variable(space_dim-1) %= 1) / 0);
-    return cgs;
-  }
-  return Congruence_System(minimized_constraints());
-}
-
-template <typename T>
-inline Congruence_System
-Octagonal_Shape<T>::minimized_congruences() const {
-  Congruence_System cgs;
-  strong_closure_assign();
-  if (space_dim == 0) {
-    if (marked_empty())
-      cgs = Congruence_System::zero_dim_empty();
-      return cgs;
-  }
-  if (marked_empty()) {
-    cgs.insert((0*Variable(space_dim-1) %= 1) / 0);
-    return cgs;
-  }
-  return Congruence_System(minimized_constraints());
+  return minimized_congruences();
 }
 
 template <typename T>

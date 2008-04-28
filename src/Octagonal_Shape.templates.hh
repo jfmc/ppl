@@ -569,6 +569,89 @@ Octagonal_Shape<T>::affine_dimension() const {
 }
 
 template <typename T>
+Congruence_System
+Octagonal_Shape<T>::minimized_congruences() const {
+  // Strong closure is necessary to detect emptiness
+  // and all (possibly implicit) equalities.
+  strong_closure_assign();
+  const dimension_type space_dim = space_dimension();
+  Congruence_System cgs;
+  if (space_dim == 0) {
+    if (marked_empty())
+      cgs = Congruence_System::zero_dim_empty();
+  }
+  else if (marked_empty())
+    cgs.insert((0*Variable(space_dim-1) %= 1) / 0);
+  else {
+    // KLUDGE: in the future `cgs' will be constructed of the right dimension.
+    // For the time being, we force the dimension with the following line.
+    cgs.insert(0*Variable(space_dim-1) == 0);
+
+    // The vector `leaders' is used to represent equivalence classes:
+    // `leaders[i] == i' if and only if `i' is the leader of its
+    // equivalence class (i.e., the minimum index in the class);
+    std::vector<dimension_type> leaders;
+    compute_leaders(leaders);
+
+    TEMP_INTEGER(num);
+    TEMP_INTEGER(den);
+    for (dimension_type i = 0, i_end = 2*space_dim; i != i_end; i += 2) {
+      const dimension_type lead_i = leaders[i];
+      if (i == lead_i) {
+        if (leaders[i+1] == i)
+          // `i' is the leader of the singular equivalence class.
+          goto singular;
+        else
+          // `i' is the leader of a non-singular equivalence class.
+          continue;
+      }
+      else {
+        // `i' is not a leader.
+        if (leaders[i+1] == lead_i)
+          // `i' belongs to the singular equivalence class.
+          goto singular;
+        else
+          // `i' does not belong to the singular equivalence class.
+          goto non_singular;
+      }
+
+    singular:
+      // `i' belongs to the singular equivalence class:
+      // we have a unary equality constraint.
+      {
+        const Variable x(i/2);
+        const N& c_ii_i = matrix[i+1][i];
+#ifndef NDEBUG
+        const N& c_i_ii = matrix[i][i+1];
+        assert(is_additive_inverse(c_i_ii, c_ii_i));
+#endif
+        numer_denom(c_ii_i, num, den);
+        den *= 2;
+        cgs.insert(den*x == num);
+      }
+      continue;
+
+    non_singular:
+      // `i' does not belong to the singular equivalence class.
+      // we have a binary equality constraint.
+      {
+        const N& c_i_li = matrix[i][lead_i];
+#ifndef NDEBUG
+        const N& c_ii_lii = matrix[i+1][lead_i+1];
+        assert(is_additive_inverse(c_ii_lii, c_i_li));
+#endif
+        const Variable x(lead_i/2);
+        const Variable y(i/2);
+        numer_denom(c_i_li, num, den);
+        cgs.insert(den*x - den*y == num);
+      }
+      continue;
+    }
+  }
+  return cgs;
+}
+
+template <typename T>
 void
 Octagonal_Shape<T>::concatenate_assign(const Octagonal_Shape& y) {
   // If `y' is an empty 0-dim space octagon, let `*this' become empty.
@@ -6157,28 +6240,34 @@ Octagonal_Shape<T>::OK() const {
     }
   }
 
-  // Check whether the closure information is legal.
-  if (marked_strongly_closed()) {
-    Octagonal_Shape x = *this;
-    x.reset_strongly_closed();
-    x.strong_closure_assign();
-    if (x.matrix != matrix) {
-#ifndef NDEBUG
-      std::cerr << "Octagonal_Shape is marked as strongly closed "
-                << "but it is not!\n";
-#endif
-      return false;
-    }
-  }
+  // The following tests might result in false alarms when using floating
+  // point coefficients: they are only meaningful if the coefficient type
+  // base is exact (since otherwise strong closure is approximated).
+  if (std::numeric_limits<coefficient_type_base>::is_exact) {
 
-  // A closed octagon must be strong-coherent.
-  if (marked_strongly_closed())
-    if (!is_strong_coherent()) {
+    // Check whether the closure information is legal.
+    if (marked_strongly_closed()) {
+      Octagonal_Shape x = *this;
+      x.reset_strongly_closed();
+      x.strong_closure_assign();
+      if (x.matrix != matrix) {
 #ifndef NDEBUG
-      std::cerr << "Octagonal_Shape is not strong-coherent!\n";
+        std::cerr << "Octagonal_Shape is marked as strongly closed "
+                  << "but it is not!\n";
 #endif
-      return false;
+        return false;
+      }
     }
+
+    // A closed octagon must be strong-coherent.
+    if (marked_strongly_closed())
+      if (!is_strong_coherent()) {
+#ifndef NDEBUG
+        std::cerr << "Octagonal_Shape is not strong-coherent!\n";
+#endif
+        return false;
+      }
+  }
 
   // All checks passed.
   return true;
