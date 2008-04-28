@@ -318,6 +318,60 @@ BD_Shape<T>::affine_dimension() const {
 }
 
 template <typename T>
+Congruence_System
+BD_Shape<T>::minimized_congruences() const {
+  // Shortest-path closure is necessary to detect emptiness
+  // and all (possibly implicit) equalities.
+  shortest_path_closure_assign();
+
+  const dimension_type space_dim = space_dimension();
+  Congruence_System cgs;
+  if (space_dim == 0) {
+    if (marked_empty())
+      cgs = Congruence_System::zero_dim_empty();
+  }
+  else if (marked_empty())
+    cgs.insert((0*Variable(space_dim-1) %= 1) / 0);
+  else {
+    // KLUDGE: in the future `cgs' will be constructed of the right dimension.
+    // For the time being, we force the dimension with the following line.
+    cgs.insert(0*Variable(space_dim-1) == 0);
+
+    TEMP_INTEGER(num);
+    TEMP_INTEGER(den);
+
+    // Compute leader information.
+    std::vector<dimension_type> leaders;
+    compute_leaders(leaders);
+    std::vector<dimension_type> leader_indices;
+    compute_leader_indices(leaders, leader_indices);
+    const dimension_type num_leaders = leader_indices.size();
+
+    // Go through the non-leaders to generate equality constraints.
+    const DB_Row<N>& dbm_0 = dbm[0];
+    for (dimension_type i = 1; i <= space_dim; ++i) {
+      const dimension_type leader = leaders[i];
+      if (i != leader) {
+        // Generate the constraint relating `i' and its leader.
+        if (leader == 0) {
+          // A unary equality has to be generated.
+          assert(!is_plus_infinity(dbm_0[i]));
+          numer_denom(dbm_0[i], num, den);
+          cgs.insert(den*Variable(i-1) == num);
+        }
+        else {
+          // A binary equality has to be generated.
+          assert(!is_plus_infinity(dbm[i][leader]));
+          numer_denom(dbm[i][leader], num, den);
+          cgs.insert(den*Variable(leader-1) - den*Variable(i-1) == num);
+        }
+      }
+    }
+  }
+  return cgs;
+}
+
+template <typename T>
 void
 BD_Shape<T>::add_constraint(const Constraint& c) {
   const dimension_type c_space_dim = c.space_dimension();
@@ -5033,30 +5087,36 @@ BD_Shape<T>::OK() const {
     }
   }
 
-  // Check whether the shortest-path reduction information is legal.
-  if (marked_shortest_path_reduced()) {
-    // A non-redundant constraint cannot be equal to PLUS_INFINITY.
-    for (dimension_type i = dbm.num_rows(); i-- > 0; )
-      for (dimension_type j = dbm.num_rows(); j-- > 0; )
-        if (!redundancy_dbm[i][j] && is_plus_infinity(dbm[i][j])) {
-#ifndef NDEBUG
-          using namespace Parma_Polyhedra_Library::IO_Operators;
-          std::cerr << "BD_Shape::dbm[" << i << "][" << j << "] = "
-                    << dbm[i][j] << " is marked as non-redundant!"
-                    << std::endl;
-#endif
-          return false;
-        }
+  // The following tests might result in false alarms when using floating
+  // point coefficients: they are only meaningful if the coefficient type
+  // base is exact (since otherwise shortest-path closure is approximated).
+  if (std::numeric_limits<coefficient_type_base>::is_exact) {
 
-    BD_Shape x = *this;
-    x.reset_shortest_path_reduced();
-    x.shortest_path_reduction_assign();
-    if (x.redundancy_dbm != redundancy_dbm) {
+    // Check whether the shortest-path reduction information is legal.
+    if (marked_shortest_path_reduced()) {
+      // A non-redundant constraint cannot be equal to PLUS_INFINITY.
+      for (dimension_type i = dbm.num_rows(); i-- > 0; )
+        for (dimension_type j = dbm.num_rows(); j-- > 0; )
+          if (!redundancy_dbm[i][j] && is_plus_infinity(dbm[i][j])) {
 #ifndef NDEBUG
-      std::cerr << "BD_Shape is marked as reduced but it is not!"
-                << std::endl;
+            using namespace Parma_Polyhedra_Library::IO_Operators;
+            std::cerr << "BD_Shape::dbm[" << i << "][" << j << "] = "
+                      << dbm[i][j] << " is marked as non-redundant!"
+                      << std::endl;
 #endif
-      return false;
+            return false;
+          }
+
+      BD_Shape x = *this;
+      x.reset_shortest_path_reduced();
+      x.shortest_path_reduction_assign();
+      if (x.redundancy_dbm != redundancy_dbm) {
+#ifndef NDEBUG
+        std::cerr << "BD_Shape is marked as reduced but it is not!"
+                  << std::endl;
+#endif
+        return false;
+      }
     }
   }
 
