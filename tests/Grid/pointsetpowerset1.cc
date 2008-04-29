@@ -413,8 +413,6 @@ test15() {
   Pointset_Powerset<Grid> pps(pps_os, POLYNOMIAL_COMPLEXITY);
 
   Pointset_Powerset<Grid> known_pps(2);
-// FIXME: The octagonal shape domain minimize_constraints
-//        should make the implied equalities explicit.
   known_pps.add_constraint(x == 1);
   known_pps.add_constraint(y == 0);
 
@@ -478,8 +476,6 @@ BEGIN_MAIN
   DO_TEST(test12);
   DO_TEST(test13);
   DO_TEST(test14);
-  // FIXME: The octagonal shape domain minimize_constraints
-  //        should make the implied equalities explicit.
-  DO_TEST_F(test15);
+  DO_TEST(test15);
   DO_TEST(test16);
 END_MAIN
