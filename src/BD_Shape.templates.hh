@@ -343,9 +343,6 @@ BD_Shape<T>::minimized_congruences() const {
     // Compute leader information.
     std::vector<dimension_type> leaders;
     compute_leaders(leaders);
-    std::vector<dimension_type> leader_indices;
-    compute_leader_indices(leaders, leader_indices);
-    const dimension_type num_leaders = leader_indices.size();
 
     // Go through the non-leaders to generate equality constraints.
     const DB_Row<N>& dbm_0 = dbm[0];
