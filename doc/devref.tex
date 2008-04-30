@@ -25,32 +25,37 @@
 % site: http://www.cs.unipr.it/ppl/ .
 
 \documentclass[a4paper]{article}
-\nonstopmode
 \usepackage{a4wide}
 \usepackage{makeidx}
 \usepackage{fancyhdr}
 \usepackage{graphicx}
+\usepackage{multicol}
 \usepackage{float}
+\usepackage{textcomp}
 \usepackage{alltt}
-\usepackage{doxygen}
 \usepackage{times}
-\ifx\pdfoutput\undefined
-\usepackage[ps2pdf,
-            pagebackref=true,
-            colorlinks=true,
-            linkcolor=blue
-           ]{hyperref}
-\usepackage{pspicture}
-\else
+\usepackage{ifpdf}
+\ifpdf
 \usepackage[pdftex,
             pagebackref=true,
             colorlinks=true,
-            linkcolor=blue
+            linkcolor=blue,
+            unicode
            ]{hyperref}
+\else
+\usepackage[ps2pdf,
+            pagebackref=true,
+            colorlinks=true,
+            linkcolor=blue,
+            unicode
+           ]{hyperref}
+\usepackage{pspicture}
 \fi
+\usepackage[utf8]{inputenc}
+\usepackage{doxygen}
 \usepackage{ppl}
 \makeindex
-\setcounter{tocdepth}{1}
+\setcounter{tocdepth}{2}
 \renewcommand{\footrulewidth}{0.4pt}
 
 \rfoot[\fancyplain{}{\scriptsize The Parma Polyhedra Library Developer's Manual (version $projectnumber). See \url{http://www.cs.unipr.it/ppl/} for more information.}]{}
