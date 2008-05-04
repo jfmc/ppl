@@ -2228,7 +2228,7 @@ BD_Shape<T>::get_limiting_shape(const Constraint_System& cs,
         neg_assign(coeff);
       // Compute the bound for `x', rounding towards plus infinity.
       div_round_up(d, c.inhomogeneous_term(), coeff);
-      if (x <= d)
+      if (x <= d) {
         if (c.is_inequality()) {
           if (ls_x > d) {
             ls_x = d;
@@ -2246,6 +2246,7 @@ BD_Shape<T>::get_limiting_shape(const Constraint_System& cs,
 	      changed = true;
           }
         }
+      }
     }
   }
 
