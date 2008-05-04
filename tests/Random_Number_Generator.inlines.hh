@@ -23,6 +23,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Random_Number_Generator_inlines_hh
 #define PPL_Random_Number_Generator_inlines_hh 1
 
+#include <ctime>
+
 namespace Parma_Polyhedra_Library {
 
 namespace Implementation {
