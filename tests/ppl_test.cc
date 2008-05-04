@@ -89,7 +89,10 @@ fpe_handler(int sig, siginfo_t* sip, void*) {
   else {
     std::cerr << "SIGFPE caught (unknown si_code " << sip->si_code << ")"
 	      << std::endl;
-#ifdef PPL_HAVE_FENV_H
+    // FIXME: as of GCC 4.3.0, defined(PPL_HAVE_FENV_H) does not provide
+    // the information we need (fenv.h is present, but does not contain
+    // the required definitions).
+#if defined(PPL_HAVE_FENV_H) && !defined(__CYGWIN__)
     std::cerr << "Inquire with fetestexcept(): ";
     if (fetestexcept(FE_INEXACT))
       std::cerr << "FE_INEXACT ";
