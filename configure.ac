@@ -31,6 +31,9 @@ AC_PREREQ(2.59)
 # Make sure the sources are there.
 AC_CONFIG_SRCDIR(src/Polyhedron_public.cc)
 
+# Specify the location of additional local Autoconf macros.
+AC_CONFIG_MACRO_DIR([m4])
+
 # Determine the system type and set output variables to the names of
 # the canonical system types.
 AC_CANONICAL_HOST
