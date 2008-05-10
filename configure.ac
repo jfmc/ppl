@@ -272,6 +272,8 @@ if test x"$enable_more_assertions" = xyes
 then
   enable_assertions=yes
   AC_DEFINE(ABI_BREAKING_EXTRA_DEBUG, 1, [ABI-breaking extra assertions are enabled when this is defined.])
+  AC_DEFINE(_GLIBCXX_DEBUG, 1, [When defined and libstdc++ is used, it is used in debug mode.])
+  AC_DEFINE(_GLIBCXX_DEBUG_PEDANTIC, 1, [When defined and libstdc++ is used, it is used in pedantic debug mode.])
 fi
 
 if test x"$enable_assertions" = xno
