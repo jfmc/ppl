@@ -94,8 +94,15 @@ PPL::Polyhedron::simplify(Linear_System& sys, Bit_Matrix& sat) {
 
   // `num_saturators[i]' will contain the number of generators
   // that saturate the constraint `sys[i]'.
-  static std::vector<dimension_type> num_saturators;
-  num_saturators.reserve(num_rows);
+  if (num_rows > simplify_num_saturators_size) {
+    delete [] simplify_num_saturators_p;
+    simplify_num_saturators_p = 0;
+    simplify_num_saturators_size = 0;
+    size_t new_size = compute_capacity(num_rows);
+    simplify_num_saturators_p = new dimension_type[new_size];
+    simplify_num_saturators_size = new_size;
+  }
+  dimension_type* num_saturators = simplify_num_saturators_p;
 
   // Computing the number of saturators for each inequality,
   // possibly identifying and swapping those that happen to be

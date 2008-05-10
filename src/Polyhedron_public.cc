@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Polyhedron.defs.hh"
 #include "Scalar_Products.defs.hh"
 #include "MIP_Problem.defs.hh"
+#include <cstdlib>
 #include <cassert>
 #include <iostream>
 
@@ -32,6 +33,24 @@ site: http://www.cs.unipr.it/ppl/ . */
 #endif
 
 namespace PPL = Parma_Polyhedra_Library;
+
+PPL::dimension_type* PPL::Polyhedron::simplify_num_saturators_p = 0;
+
+size_t PPL::Polyhedron::simplify_num_saturators_size = 0;
+
+void
+PPL::Polyhedron::initialize() {
+  assert(simplify_num_saturators_p == 0);
+  assert(simplify_num_saturators_size == 0);
+  simplify_num_saturators_p = new dimension_type[simplify_num_saturators_size];
+}
+
+void
+PPL::Polyhedron::finalize() {
+  delete [] simplify_num_saturators_p;
+  simplify_num_saturators_p = 0;
+  simplify_num_saturators_size = 0;
+}
 
 PPL::dimension_type
 PPL::Polyhedron::affine_dimension() const {

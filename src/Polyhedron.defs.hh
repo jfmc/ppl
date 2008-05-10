@@ -363,6 +363,12 @@ public:
   */
   static bool can_recycle_constraint_systems();
 
+  //! Initializes the class.
+  static void initialize();
+
+  //! Finalizes the class.
+  static void finalize();
+
   /*! \brief
     Returns \c false indicating that this domain cannot recycle congruences.
   */
@@ -2605,6 +2611,23 @@ private:
   static int simplify(Linear_System& mat, Bit_Matrix& sat);
 
   //@} // Minimization-Related Static Member Functions
+
+  /*! \brief
+    Pointer to an array used by simplify().
+
+    Holds (between class initialization and finalization) a pointer to
+    an array, allocated with operator new[](), of
+    simplify_num_saturators_size elements.
+  */
+  static dimension_type* simplify_num_saturators_p;
+
+  /*! \brief
+    Dimension of an array used by simplify().
+
+    Holds (between class initialization and finalization) the size of the
+    array pointed to by simplify_num_saturators_p.
+  */
+  static size_t simplify_num_saturators_size;
 
   template <typename Interval> friend class Parma_Polyhedra_Library::Box;
   template <typename T> friend class Parma_Polyhedra_Library::BD_Shape;

@@ -36,6 +36,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator_System.defs.hh"
 #include "Congruence_System.defs.hh"
 #include "Grid_Generator_System.defs.hh"
+#include "Polyhedron.defs.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
 
@@ -67,8 +68,8 @@ PPL::Init::Init() {
     // ... the Linear_Expression class is initialized, ...
     Linear_Expression::initialize();
     // ... the Constraint, Generator, Congruence, Grid_Generator,
-    // Constraint_System, Generator_System, Congruence_System, and
-    // Grid_Generator_System classes are initialized, ...
+    // Constraint_System, Generator_System, Congruence_System,
+    // Grid_Generator_System and Polyhedron classes are initialized, ...
     Constraint::initialize();
     Generator::initialize();
     Congruence::initialize();
@@ -77,6 +78,7 @@ PPL::Init::Init() {
     Generator_System::initialize();
     Congruence_System::initialize();
     Grid_Generator_System::initialize();
+    Polyhedron::initialize();
 #if PPL_CAN_CONTROL_FPU
     // ... and the FPU rounding direction is set.
     old_rounding_direction = fpu_get_rounding_direction();
@@ -94,10 +96,11 @@ PPL::Init::~Init() {
     // ... the FPU rounding direction is restored, ...
     fpu_set_rounding_direction(old_rounding_direction);
 #endif
-    // ... the Grid_Generator_System, Congruence_System,
+    // ... the Polyhedron, Grid_Generator_System, Congruence_System,
     // Generator_System, Constraint_System, Grid_Generator,
     // Congruence, Generator and Constraint classes are finalized
     // IN THAT ORDER, ...
+    Polyhedron::finalize();
     Grid_Generator_System::finalize();
     Congruence_System::finalize();
     Generator_System::finalize();
