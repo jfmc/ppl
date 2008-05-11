@@ -731,7 +731,6 @@ interval_relation(const Interval& i,
 	  else
 	    return Poly_Con_Relation::strictly_intersects();
 	}
-	break;
       case -1:
 	if (i.upper_is_unbounded())
 	  return Poly_Con_Relation::strictly_intersects();
@@ -781,7 +780,6 @@ interval_relation(const Interval& i,
 	  else
 	    return Poly_Con_Relation::strictly_intersects();
 	}
-	break;
       case 1:
 	if (i.lower_is_unbounded())
 	  return Poly_Con_Relation::strictly_intersects();
@@ -869,9 +867,6 @@ Box<Interval>::relation_with(const Congruence& cg) const {
   if (v + lower > 0)
     v -= mod;
   return interval_relation(r, Constraint::EQUALITY, v);
-
-  // Quiet a compiler warning: this program point is unreachable.
-  throw std::runtime_error("PPL internal error");
 }
 
 template <typename Interval>
@@ -2820,7 +2815,6 @@ generalized_affine_preimage(const Variable var,
   default:
     // The EQUAL and NOT_EQUAL cases have been already dealt with.
     throw std::runtime_error("PPL internal error");
-    break;
   }
 
   // Check whether the preimage of this affine relation can be easily
@@ -2905,7 +2899,6 @@ generalized_affine_preimage(const Variable var,
   default:
     // The EQUAL and NOT_EQUAL cases have been already dealt with.
     throw std::runtime_error("PPL internal error");
-    break;
   }
   // If the shrunk box is empty, its preimage is empty too.
   if (is_empty())
