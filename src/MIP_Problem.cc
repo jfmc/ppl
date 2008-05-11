@@ -1454,7 +1454,6 @@ PPL::MIP_Problem::is_lp_satisfiable() const {
   switch (status) {
   case UNSATISFIABLE:
     return false;
-    break;
   case SATISFIABLE:
    // Intentionally fall through.
   case UNBOUNDED:

@@ -2875,7 +2875,6 @@ generalized_affine_preimage(const Variable var,
   default:
     // The EQUAL and NOT_EQUAL cases have been already dealt with.
     throw std::runtime_error("PPL internal error");
-    break;
   }
 
   // Check whether the preimage of this affine relation can be easily
@@ -2916,7 +2915,6 @@ generalized_affine_preimage(const Variable var,
   default:
     // The EQUAL and NOT_EQUAL cases have been already dealt with.
     throw std::runtime_error("PPL internal error");
-    break;
   }
   unconstrain(var);
   assert(OK());
@@ -2981,7 +2979,6 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
     case NOT_EQUAL:
       // The NOT_EQUAL case has been already dealt with.
       throw std::runtime_error("PPL internal error");
-      break;
     }
     return;
   }
@@ -3034,7 +3031,6 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
       case NOT_EQUAL:
 	// The NOT_EQUAL case has been already dealt with.
 	throw std::runtime_error("PPL internal error");
-	break;
       }
     }
     // Remove the temporarily added dimension.
@@ -3073,7 +3069,6 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
     case NOT_EQUAL:
       // The NOT_EQUAL case has been already dealt with.
       throw std::runtime_error("PPL internal error");
-      break;
     }
   }
   assert(OK());
@@ -3171,7 +3166,6 @@ PPL::Polyhedron::generalized_affine_preimage(const Linear_Expression& lhs,
       case NOT_EQUAL:
 	// The NOT_EQUAL case has been already dealt with.
 	throw std::runtime_error("PPL internal error");
-	break;
       }
     }
     // Remove the temporarily added dimension.
@@ -3202,7 +3196,6 @@ PPL::Polyhedron::generalized_affine_preimage(const Linear_Expression& lhs,
     case NOT_EQUAL:
       // The NOT_EQUAL case has been already dealt with.
       throw std::runtime_error("PPL internal error");
-      break;
     }
     // Any image of an empty polyhedron is empty.
     // Note: DO check for emptiness here, as we will add lines.
