@@ -868,9 +868,7 @@ Box<Interval>::relation_with(const Congruence& cg) const {
   v -= ((lower / mod) * mod);
   if (v + lower > 0)
     v -= mod;
-  return interval_relation(r,
-			   Constraint::EQUALITY,
-			   v);
+  return interval_relation(r, Constraint::EQUALITY, v);
 
   // Quiet a compiler warning: this program point is unreachable.
   throw std::runtime_error("PPL internal error");
