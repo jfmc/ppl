@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Box.types.hh"
 #include "globals.types.hh"
-#include "Interval.defs.hh"
 #include "Coefficient.defs.hh"
 #include "Variable.types.hh"
 #include "Variables_Set.types.hh"
