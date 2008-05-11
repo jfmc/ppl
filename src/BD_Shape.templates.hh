@@ -2742,7 +2742,6 @@ BD_Shape<T>::refine(const Variable var,
     default:
       // We already dealt with the other cases.
       throw std::runtime_error("PPL internal error");
-      break;
     }
     return;
   }
@@ -2775,7 +2774,6 @@ BD_Shape<T>::refine(const Variable var,
     default:
       // We already dealt with the other cases.
       throw std::runtime_error("PPL internal error");
-      break;
     }
     return;
   }
@@ -3061,7 +3059,6 @@ BD_Shape<T>::refine(const Variable var,
   default:
     // We already dealt with the other cases.
     throw std::runtime_error("PPL internal error");
-    break;
   }
 
   assert(OK());
@@ -3909,7 +3906,6 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
     default:
       // We already dealt with the other cases.
       throw std::runtime_error("PPL internal error");
-      break;
     }
     assert(OK());
     return;
@@ -4033,7 +4029,6 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
       default:
         // We already dealt with the other cases.
         throw std::runtime_error("PPL internal error");
-        break;
       }
       assert(OK());
       return;
@@ -4210,7 +4205,6 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
   default:
     // We already dealt with the other cases.
     throw std::runtime_error("PPL internal error");
-    break;
   }
   assert(OK());
 }
@@ -4289,7 +4283,6 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
     default:
       // We already dealt with the other cases.
       throw std::runtime_error("PPL internal error");
-      break;
     }
   }
   else if (t_lhs == 1) {
@@ -4343,7 +4336,6 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       default:
         // We already dealt with the other cases.
         throw std::runtime_error("PPL internal error");
-        break;
       }
     }
     else {
@@ -4392,7 +4384,6 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       default:
         // We already dealt with the other cases.
         throw std::runtime_error("PPL internal error");
-        break;
       }
       // Remove the temporarily added dimension.
       remove_higher_space_dimensions(space_dim-1);
@@ -4589,7 +4580,6 @@ BD_Shape<T>::generalized_affine_preimage(const Linear_Expression& lhs,
       default:
         // We already dealt with the other cases.
         throw std::runtime_error("PPL internal error");
-        break;
       }
 
       // If the shrunk BD_Shape is empty, its preimage is empty too; ...
@@ -4636,7 +4626,6 @@ BD_Shape<T>::generalized_affine_preimage(const Linear_Expression& lhs,
       default:
         // We already dealt with the other cases.
         throw std::runtime_error("PPL internal error");
-        break;
       }
       // Remove the temporarily added dimension.
       remove_higher_space_dimensions(bds_space_dim);

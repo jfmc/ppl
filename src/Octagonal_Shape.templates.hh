@@ -3428,7 +3428,6 @@ Octagonal_Shape<T>::refine(const Variable var,
     default:
       // We already dealt with the other cases.
       throw std::runtime_error("PPL internal error");
-      break;
     }
   }
   else if (t == 1) {
@@ -3509,7 +3508,6 @@ Octagonal_Shape<T>::refine(const Variable var,
     default:
       // We already dealt with the other cases.
       throw std::runtime_error("PPL internal error");
-      break;
     }
   }
   else {
@@ -3906,7 +3904,6 @@ Octagonal_Shape<T>::refine(const Variable var,
     default:
       // We already dealt with the other cases.
       throw std::runtime_error("PPL internal error");
-      break;
     }
   }
 }
@@ -4529,7 +4526,6 @@ Octagonal_Shape<T>
     default:
       // We already dealt with the other cases.
       throw std::runtime_error("PPL internal error");
-      break;
     }
     assert(OK());
     return;
@@ -4685,7 +4681,6 @@ Octagonal_Shape<T>
       default:
         // We already dealt with the other cases.
         throw std::runtime_error("PPL internal error");
-        break;
       }
       assert(OK());
       return;
@@ -4916,7 +4911,6 @@ Octagonal_Shape<T>
   default:
     // We already dealt with the other cases.
     throw std::runtime_error("PPL internal error");
-    break;
   }
   incremental_strong_closure_assign(var);
   assert(OK());
@@ -4992,7 +4986,6 @@ Octagonal_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
     default:
       // We already dealt with the other cases.
       throw std::runtime_error("PPL internal error");
-      break;
     }
   }
 
@@ -5049,7 +5042,6 @@ Octagonal_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       default:
         // We already dealt with the other cases.
         throw std::runtime_error("PPL internal error");
-        break;
       }
     }
     else {
@@ -5102,7 +5094,6 @@ Octagonal_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       default:
         // We already dealt with the other cases.
         throw std::runtime_error("PPL internal error");
-        break;
       }
       // Remove the temporarily added dimension.
       remove_higher_space_dimensions(space_dim-1);
@@ -5584,7 +5575,6 @@ Octagonal_Shape<T>
       default:
         // We already dealt with the other cases.
         throw std::runtime_error("PPL internal error");
-        break;
       }
 
       // Any image of an empty octagon is empty.
@@ -5638,7 +5628,6 @@ Octagonal_Shape<T>
       default:
         // We already dealt with the other cases.
         throw std::runtime_error("PPL internal error");
-        break;
       }
       // Remove the temporarily added dimension.
       remove_higher_space_dimensions(space_dim-1);
