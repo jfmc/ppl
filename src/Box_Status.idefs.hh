@@ -1,4 +1,4 @@
-/* Box<Interval>::Status class declaration.
+/* Box<ITV>::Status class declaration.
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -27,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #error "Do not include Box_Status.idefs.hh directly; use Box.defs.hh instead."
 #endif
 
-//! A conjunctive assertion about a Box<Interval> object.
+//! A conjunctive assertion about a Box<ITV> object.
 /*! \ingroup PPL_CXX_interface
   The assertions supported are:
   - <EM>empty up-to-date</EM>: the empty flag is meaningful;
@@ -50,8 +50,8 @@ public:
   Status(const Status& y);
 
   //! Copy-constructor from a box of different type.
-  template <typename Other_Interval>
-  Status(const typename Box<Other_Interval>::Status& y);
+  template <typename Other_ITV>
+  Status(const typename Box<Other_ITV>::Status& y);
 
   //! \name Test, remove or add an individual assertion from the conjunction.
   //@{

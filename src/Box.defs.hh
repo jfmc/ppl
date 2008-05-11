@@ -53,23 +53,23 @@ namespace Parma_Polyhedra_Library {
   Note that \p x and \p y may be dimension-incompatible boxes:
   in this case, the value <CODE>false</CODE> is returned.
 */
-template <typename Interval>
-bool operator==(const Box<Interval>& x, const Box<Interval>& y);
+template <typename ITV>
+bool operator==(const Box<ITV>& x, const Box<ITV>& y);
 
 //! Returns <CODE>true</CODE> if and only if \p x and \p y aren't the same box.
 /*! \relates Box
   Note that \p x and \p y may be dimension-incompatible boxes:
   in this case, the value <CODE>true</CODE> is returned.
 */
-template <typename Interval>
-bool operator!=(const Box<Interval>& x, const Box<Interval>& y);
+template <typename ITV>
+bool operator!=(const Box<ITV>& x, const Box<ITV>& y);
 
 namespace IO_Operators {
 
 //! Output operator.
 /*! \relates Parma_Polyhedra_Library::Box */
-template <typename Interval>
-std::ostream& operator<<(std::ostream& s, const Box<Interval>& box);
+template <typename ITV>
+std::ostream& operator<<(std::ostream& s, const Box<ITV>& box);
 
 } // namespace IO_Operators
 
@@ -84,11 +84,11 @@ std::ostream& operator<<(std::ostream& s, const Box<Interval>& box);
   All computations are performed using variables of type
   Checked_Number<To, Extended_Number_Policy>.
 */
-template <typename To, typename Interval>
+template <typename To, typename ITV>
 bool
 rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			    const Box<Interval>& x,
-			    const Box<Interval>& y,
+			    const Box<ITV>& x,
+			    const Box<ITV>& y,
 			    Rounding_Dir dir);
 
 //! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
@@ -102,11 +102,11 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   All computations are performed using variables of type
   Checked_Number<Temp, Extended_Number_Policy>.
 */
-template <typename Temp, typename To, typename Interval>
+template <typename Temp, typename To, typename ITV>
 bool
 rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			    const Box<Interval>& x,
-			    const Box<Interval>& y,
+			    const Box<ITV>& x,
+			    const Box<ITV>& y,
 			    Rounding_Dir dir);
 
 //! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
@@ -120,11 +120,11 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   All computations are performed using the temporary variables
   \p tmp0, \p tmp1 and \p tmp2.
 */
-template <typename Temp, typename To, typename Interval>
+template <typename Temp, typename To, typename ITV>
 bool
 rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			    const Box<Interval>& x,
-			    const Box<Interval>& y,
+			    const Box<ITV>& x,
+			    const Box<ITV>& y,
 			    Rounding_Dir dir,
 			    Temp& tmp0,
 			    Temp& tmp1,
@@ -141,11 +141,11 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   All computations are performed using variables of type
   Checked_Number<To, Extended_Number_Policy>.
 */
-template <typename To, typename Interval>
+template <typename To, typename ITV>
 bool
 euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			  const Box<Interval>& x,
-			  const Box<Interval>& y,
+			  const Box<ITV>& x,
+			  const Box<ITV>& y,
 			  Rounding_Dir dir);
 
 //! Computes the euclidean distance between \p x and \p y.
@@ -159,11 +159,11 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   All computations are performed using variables of type
   Checked_Number<Temp, Extended_Number_Policy>.
 */
-template <typename Temp, typename To, typename Interval>
+template <typename Temp, typename To, typename ITV>
 bool
 euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			  const Box<Interval>& x,
-			  const Box<Interval>& y,
+			  const Box<ITV>& x,
+			  const Box<ITV>& y,
 			  Rounding_Dir dir);
 
 //! Computes the euclidean distance between \p x and \p y.
@@ -177,11 +177,11 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   All computations are performed using the temporary variables
   \p tmp0, \p tmp1 and \p tmp2.
 */
-template <typename Temp, typename To, typename Interval>
+template <typename Temp, typename To, typename ITV>
 bool
 euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			  const Box<Interval>& x,
-			  const Box<Interval>& y,
+			  const Box<ITV>& x,
+			  const Box<ITV>& y,
 			  Rounding_Dir dir,
 			  Temp& tmp0,
 			  Temp& tmp1,
@@ -198,11 +198,11 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   All computations are performed using variables of type
   Checked_Number<To, Extended_Number_Policy>.
 */
-template <typename To, typename Interval>
+template <typename To, typename ITV>
 bool
 l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			   const Box<Interval>& x,
-			   const Box<Interval>& y,
+			   const Box<ITV>& x,
+			   const Box<ITV>& y,
 			   Rounding_Dir dir);
 
 //! Computes the \f$L_\infty\f$ distance between \p x and \p y.
@@ -216,11 +216,11 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   All computations are performed using variables of type
   Checked_Number<Temp, Extended_Number_Policy>.
 */
-template <typename Temp, typename To, typename Interval>
+template <typename Temp, typename To, typename ITV>
 bool
 l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			   const Box<Interval>& x,
-			   const Box<Interval>& y,
+			   const Box<ITV>& x,
+			   const Box<ITV>& y,
 			   Rounding_Dir dir);
 
 //! Computes the \f$L_\infty\f$ distance between \p x and \p y.
@@ -234,11 +234,11 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   All computations are performed using the temporary variables
   \p tmp0, \p tmp1 and \p tmp2.
 */
-template <typename Temp, typename To, typename Interval>
+template <typename Temp, typename To, typename ITV>
 bool
 l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			   const Box<Interval>& x,
-			   const Box<Interval>& y,
+			   const Box<ITV>& x,
+			   const Box<ITV>& y,
 			   Rounding_Dir dir,
 			   Temp& tmp0,
 			   Temp& tmp1,
@@ -250,10 +250,10 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Specialization,
-	  typename Temp, typename To, typename Interval>
+	  typename Temp, typename To, typename ITV>
 bool
 l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-		    const Box<Interval>& x, const Box<Interval>& y,
+		    const Box<ITV>& x, const Box<ITV>& y,
 		    Rounding_Dir dir,
 		    Temp& tmp0, Temp& tmp1, Temp& tmp2);
 
@@ -263,14 +263,14 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 /*! \ingroup PPL_CXX_interface
   A Box object represents the Cartesian product of \f$n\f$
   not necessarily closed and possibly unbounded intervals
-  represented by objects of class \p Interval,
+  represented by objects of class \p ITV,
   where \f$n\f$ is the space dimension of the box.
 */
-template <typename Interval>
+template <typename ITV>
 class Parma_Polyhedra_Library::Box {
 public:
   //! The type of intervals used to implement the box.
-  typedef Interval interval_type;
+  typedef ITV interval_type;
 
   //! Returns the maximum space dimension that a Box can handle.
   static dimension_type max_space_dimension();
@@ -310,8 +310,8 @@ public:
   /*!
     The complexity argument is ignored.
   */
-  template <typename Other_Interval>
-  explicit Box(const Box<Other_Interval>& y,
+  template <typename Other_ITV>
+  explicit Box(const Box<Other_ITV>& y,
                Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Builds a box from the system of constraints \p cs.
@@ -1390,7 +1390,7 @@ public:
     \exception std::invalid_argument
     Thrown if \p var is not a space dimension of \p *this.
   */
-  const Interval& get_interval(Variable var) const;
+  const ITV& get_interval(Variable var) const;
 
   /*! \brief
     Sets to \p i the interval that bounds \p var.
@@ -1398,7 +1398,7 @@ public:
     \exception std::invalid_argument
     Thrown if \p var is not a space dimension of \p *this.
   */
-  void set_interval(Variable var, const Interval& i);
+  void set_interval(Variable var, const ITV& i);
 
   /*! \brief
     If the <CODE>k</CODE>-th space dimension is unbounded below, returns
@@ -1475,22 +1475,22 @@ public:
   bool ascii_load(std::istream& s);
 
 private:
-  template <typename Other_Interval>
+  template <typename Other_ITV>
   friend class Parma_Polyhedra_Library::Box;
 
   friend bool
-  operator==<Interval>(const Box<Interval>& x, const Box<Interval>& y);
+  operator==<ITV>(const Box<ITV>& x, const Box<ITV>& y);
 
 #ifdef __ICC
   // Work around bug of the Intel compiler: use `interval_type'
-  // instead of `Interval'.
+  // instead of `ITV'.
   friend std::ostream&
   Parma_Polyhedra_Library
   ::IO_Operators::operator<<<>(std::ostream& s, const Box<interval_type>& box);
 #elif !defined(__GNUC__) || __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ > 3)
   friend std::ostream&
   Parma_Polyhedra_Library
-  ::IO_Operators::operator<<<>(std::ostream& s, const Box<Interval>& box);
+  ::IO_Operators::operator<<<>(std::ostream& s, const Box<ITV>& box);
 #else
   // This is too lax than wanted.
   template <typename U>
@@ -1506,13 +1506,13 @@ private:
    Temp& tmp0, Temp& tmp1, Temp& tmp2);
 
   //! The type of sequence used to implement the box.
-  typedef std::vector<Interval> Sequence;
+  typedef std::vector<ITV> Sequence;
 
   /*! \brief
     The type of intervals used by inner computations when trying to limit
     the cumulative effect of approximation errors.
   */
-  typedef Interval Tmp_Interval_Type;
+  typedef ITV Tmp_Interval_Type;
 
   //! A sequence of intervals, one for each dimension of the vector space.
   Sequence seq;
@@ -1556,7 +1556,7 @@ private:
      Returns a reference the interval that bounds
      the box on the <CODE>k</CODE>-th space dimension.
    */
-  const Interval& operator[](dimension_type k) const;
+  const ITV& operator[](dimension_type k) const;
 
   /*! \brief
     Use the constraint \p c to refine \p *this.
@@ -1940,9 +1940,9 @@ namespace Parma_Polyhedra_Library {
   depending on the <CODE>constraint_type</CODE>.
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-template <typename Interval>
+template <typename ITV>
 Poly_Con_Relation
-interval_relation(const Interval& i,
+interval_relation(const ITV& i,
                   const Constraint::Type constraint_type,
                   Coefficient_traits::const_reference num,
                   Coefficient_traits::const_reference den = 1);
