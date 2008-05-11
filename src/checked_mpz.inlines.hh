@@ -298,7 +298,10 @@ assign_mpz_long_double(mpz_class& to, const From& from, Rounding_Dir dir) {
   std::stringstream ss;
   output<From_Policy>(ss, from, Numeric_Format(), dir);
   DIRTY_TEMP0(mpq_class, tmp);
-  Result r = input_mpq(tmp, ss);
+#ifndef NDEBUG
+  Result r =
+#endif
+    input_mpq(tmp, ss);
   assert(r == V_EQ);
   return assign<To_Policy, From_Policy>(to, tmp, dir);
 }
