@@ -2044,17 +2044,9 @@ private:
   */
   void compute_leaders(std::vector<dimension_type>& leaders) const;
 
-#if !defined(__GNUC__) || __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ > 3)
   friend std::ostream&
-  Parma_Polyhedra_Library::IO_Operators::operator<<<>(std::ostream& s,
-                                                      const BD_Shape<T>& c);
-#else
-  // This is too lax than wanted.
-  template <typename U>
-  friend std::ostream&
-  Parma_Polyhedra_Library::IO_Operators::operator<<(std::ostream& s,
-                                                    const BD_Shape<U>& c);
-#endif
+  Parma_Polyhedra_Library::IO_Operators
+  ::operator<<<>(std::ostream& s, const BD_Shape<T>& c);
 
   //! \name Exception Throwers
   //@{

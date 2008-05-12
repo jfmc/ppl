@@ -1906,17 +1906,10 @@ private:
                Coefficient& ext_n, Coefficient& ext_d, bool& included,
                Generator& g) const;
 
-#if !defined(__GNUC__) || __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ > 3)
+
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators
   ::operator<<<>(std::ostream& s, const Octagonal_Shape<T>& c);
-#else
-  // This is too lax than wanted.
-  template <typename S>
-  friend std::ostream&
-  Parma_Polyhedra_Library::IO_Operators
-  ::operator<<(std::ostream& s, const Octagonal_Shape<S>& c);
-#endif
 
   //! \name Exception Throwers
   //@{

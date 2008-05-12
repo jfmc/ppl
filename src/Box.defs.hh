@@ -1481,23 +1481,9 @@ private:
   friend bool
   operator==<ITV>(const Box<ITV>& x, const Box<ITV>& y);
 
-#ifdef __ICC
-  // Work around bug of the Intel compiler: use `interval_type'
-  // instead of `ITV'.
-  friend std::ostream&
-  Parma_Polyhedra_Library
-  ::IO_Operators::operator<<<>(std::ostream& s, const Box<interval_type>& box);
-#elif !defined(__GNUC__) || __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ > 3)
   friend std::ostream&
   Parma_Polyhedra_Library
   ::IO_Operators::operator<<<>(std::ostream& s, const Box<ITV>& box);
-#else
-  // This is too lax than wanted.
-  template <typename U>
-  friend std::ostream&
-  Parma_Polyhedra_Library
-  ::IO_Operators::operator<<(std::ostream& s, const Box<U>& box);
-#endif
 
   template <typename Specialization, typename Temp, typename To, typename I>
   friend bool Parma_Polyhedra_Library::l_m_distance_assign
