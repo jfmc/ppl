@@ -29,6 +29,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
+C_Polyhedron::~C_Polyhedron() {
+}
+
+inline
 C_Polyhedron::C_Polyhedron(dimension_type num_dimensions,
 			   Degenerate_Element kind)
   : Polyhedron(NECESSARILY_CLOSED,
@@ -151,10 +155,6 @@ C_Polyhedron::operator=(const NNC_Polyhedron& y) {
   C_Polyhedron c_y(y);
   swap(c_y);
   return *this;
-}
-
-inline
-C_Polyhedron::~C_Polyhedron() {
 }
 
 inline bool
