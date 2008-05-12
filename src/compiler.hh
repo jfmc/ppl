@@ -43,7 +43,7 @@ used(const T&) {
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 inline void avoid_cse(const T& x) {
-#if defined(__GNUC__)
+#if defined(__GNUC__) || defined(__INTEL_COMPILER)
   __asm__ __volatile__ ("" : "+m" (const_cast<T&>(x)));
 #else
   // FIXME: is it possible to achieve the same effect in a portable way?
