@@ -118,26 +118,26 @@ It should be noted that no version of GCC prior to 4.0.3 is known to
 reliably compile PPL 0.10.
 
 Here is an example of configuration that uses the Intel C/C++ compiler
-version 10.0.  Assuming you have configured GMP with a command like
+version 10.1.  Assuming you have configured GMP with a command like
 
   CC=icc CXX=icpc /path/to/gmp-4.2.2/configure --enable-cxx \
-    --prefix=/opt/intel/cce/10.0.026
+    --prefix=/opt/intel/cce/10.1.015
 
 you can configure the PPL with a command like
 
   /path/to/ppl-x.y/configure --with-cxx=icpc --with-cc=icc \
     --with-cxxflags="-strict-ansi" \
-    --with-libgmpxx-prefix=/opt/intel/cce/10.0.026
+    --with-libgmpxx-prefix=/opt/intel/cce/10.1.015
 
 Notice that the `--with-cxxflags' option is absolutely non-essential
 here and is only included to show how extra compiler options can be
 passed to the configure script.
 
 As another example, here is how you can compile the PPL with
-Comeau C/C++ 4.3.3.  First configure GMP with a command like
+Comeau C/C++ 4.3.10.1.  First configure GMP with a command like
 
-  CXX=como /path/to/gmp-4.1.4/configure --enable-cxx \
-    --disable-shared --prefix=/usr/local/lib/como433/local
+  CXX=como /path/to/gmp-4.2.2/configure --enable-cxx \
+    --disable-shared --prefix=/opt/comeau/local
 
 Then you can configure the PPL with a command like
 
@@ -148,7 +148,7 @@ Then you can configure the PPL with a command like
 
 Notice the use of the option `--disable-shared' both in the configuration
 of GMP and the configuration of the PPL.  This is due to the fact that
-Comeau C/C++ 4.3.3 does not support shared libraries.
+Comeau C/C++ 4.3.10.1 does not support shared libraries.
 
 
 Enabling the Use of Alternative Coefficient Types
