@@ -23,7 +23,7 @@
 # Process this file with autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library],[0.10pre18],[ppl-devel@cs.unipr.it],[ppl])
+AC_INIT([the Parma Polyhedra Library],[0.10pre19],[ppl-devel@cs.unipr.it],[ppl])
 
 # Minimum autoconf version required.
 AC_PREREQ(2.59)
@@ -817,15 +817,9 @@ AM_CONDITIONAL(BUILD_OCAML_INTERFACE, test x$OCAMLC = xocamlc && test x$ocamlgmp
 # Ciao Prolog
 if test x${ciao_prolog_interface_enabled} = xyes
 then
-  AC_CHECK_PROG(CIAO_PROLOG, ciao, ciao)
-  if test x"$CIAO_PROLOG" = xciao
-  then
-  AC_CHECK_HEADER(ciao_prolog.h,
-                  [],
-                  CIAO_PROLOG="")
-  fi
+  AC_CHECK_CIAO_PROLOG
 fi
-AM_CONDITIONAL(BUILD_CIAO_PROLOG_INTERFACE, test x$CIAO_PROLOG = xciao)
+AM_CONDITIONAL(BUILD_CIAO_PROLOG_INTERFACE, test x$have_ciao_prolog = xyes)
 
 # GNU Prolog
 if test x${gnu_prolog_interface_enabled} = xyes
@@ -875,7 +869,7 @@ fi
 AM_CONDITIONAL(BUILD_YAP_PROLOG_INTERFACE, test x$YAP_PROLOG = xyap)
 
 # Test if *any* Prolog system has to be built.
-if test x${CIAO_PROLOG} = xciao \
+if test x${have_ciao_prolog} = xyes \
 || test x${GNU_PROLOG} = xgprolog \
 || test x${have_sicstus_prolog} = xyes \
 || test x${have_swi_prolog} = xyes \

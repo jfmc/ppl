@@ -50,6 +50,7 @@ AM_CPPFLAGS = \
 -I$(top_srcdir)/interfaces/Prolog \
 -I$(top_builddir)/src \
 $(WATCHDOG_INCLUDE_OPTIONS) \
+$(CIAO_PROLOG_INCLUDE_OPTIONS) \
 @extra_includes@
 
 interface_generator_dependencies = \
