@@ -2039,6 +2039,35 @@
   Year = 1999
 }
 
+@InProceedings{SimonK07,
+  Author = "A. Simon and A. King",
+  Title = "Taming the Wrapping of Integer Arithmetic",
+  Booktitle = "Static Analysis:
+               Proceedings of the 14th International Symposium",
+  Address = "Kongens Lyngby, Denmark",
+  Editor = "H. {Riis Nielson} and G. Fil{\'e}",
+  Publisher = "Springer-Verlag, Berlin",
+  Series = "Lecture Notes in Computer Science",
+  Volume = 4634,
+  ISBN = "978-3-540-74060-5",
+  Year = 2007,
+  Pages = "121--136",
+  Abstract = "Variables in programs are usually confined to a fixed
+              number of bits and results that require more bits
+              are truncated. Due to the use of 32-bit and 64-bit
+              variables, inadvertent overflows are rare. However,
+              a sound static analysis must reason about
+              overflowing calculations and conversions between
+              unsigned and signed integers; the latter remaining a
+              common source of subtle programming errors. Rather
+              than polluting an analysis with the low-level
+              details of modelling two's complement wrapping
+              behaviour, this paper presents a computationally
+              light-weight solution based on polyhedral analysis
+              which eliminates the need to check for wrapping when
+              evaluating most (particularly linear) assignments."
+}
+
 @Article{Srivastava93,
   Author = "D. Srivastava",
   Title = "Subsumption and Indexing in Constraint Query Languages
