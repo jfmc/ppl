@@ -315,6 +315,7 @@ PPL::MIP_Problem::is_satisfiable() const {
 }
 #endif
 
+#ifdef PPL_USE_GLPK
 // FIXME: Deal with zero-dimensional case.
 bool PPL::MIP_Problem::
 compute_glpk_bounds(const Constraint_Sequence& input_cs,
@@ -726,6 +727,7 @@ load_glpk_data(const Constraint_Sequence& pure_constraints,
   // We should not be here!
   throw std::runtime_error("PPL internal error");
 }
+
 PPL::MIP_Problem_Status
 PPL::MIP_Problem::solve_with_glpk(const Constraint_Sequence& input_cs,
 				  const Linear_Expression& obj,
@@ -742,7 +744,6 @@ PPL::MIP_Problem::solve_with_glpk(const Constraint_Sequence& input_cs,
 
 }
 
-#ifdef PPL_USE_GLPK
 PPL::MIP_Problem_Status
 PPL::MIP_Problem::solve() const{
   switch (status) {
@@ -2018,12 +2019,13 @@ PPL::MIP_Problem
   const dimension_type working_space_dim
     = std::min(ep_space_dim, input_obj_function.space_dimension());
   // Compute the optimal value of the cost function.
-  ext_n = input_obj_function.inhomogeneous_term();
+  const Coefficient& divisor = evaluating_point.divisor();
+  ext_n = input_obj_function.inhomogeneous_term() * divisor;
   for (dimension_type i = working_space_dim; i-- > 0; )
     ext_n += evaluating_point.coefficient(Variable(i))
       * input_obj_function.coefficient(Variable(i));
   // Numerator and denominator should be coprime.
-  normalize2(ext_n, evaluating_point.divisor(), ext_n, ext_d);
+  normalize2(ext_n, divisor, ext_n, ext_d);
 }
 
 bool
@@ -2034,7 +2036,6 @@ PPL::MIP_Problem::is_lp_satisfiable() const {
   switch (status) {
   case UNSATISFIABLE:
     return false;
-    break;
   case SATISFIABLE:
    // Intentionally fall through.
   case UNBOUNDED:
