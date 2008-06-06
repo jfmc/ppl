@@ -399,7 +399,42 @@ public:
   //! Swaps \p *this with \p y.
   void swap(MIP_Problem& y);
 
+  // FIXME: Move this in the private section.
+  enum GLPK_Bound_Type {
+    GLPK_FR,
+    GLPK_LO,
+    GLPK_UP,
+    GLPK_FX,
+    GLPK_DB
+  };
+
+  struct GLPK_Bound {
+    GLPK_Bound_Type bound_type;
+    mpq_class lb_value;
+    mpq_class ub_value;
+  };
+
 private:
+
+  static MIP_Problem_Status
+  solve_with_glpk(const Constraint_Sequence& input_cs,
+		  const Linear_Expression& obj,
+		  const Optimization_Mode mode,
+		  Generator& g);
+
+  static bool compute_glpk_bounds(const Constraint_Sequence& input_cs,
+				  std::vector<GLPK_Bound>& bounds,
+				  Constraint_Sequence& pure_constraints,
+				  dimension_type& glpk_nnz);
+
+  static MIP_Problem_Status
+  load_glpk_data(const Constraint_Sequence& pure_constraints,
+		 const std::vector<GLPK_Bound>& bounds,
+		 const Optimization_Mode mode,
+		 const Linear_Expression& obj,
+		 const dimension_type glpk_nnz,
+		 Generator& optimal_point);
+
   //! The dimension of the vector space.
   dimension_type external_space_dim;
 

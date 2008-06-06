@@ -35,6 +35,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <algorithm>
 #include <cmath>
 
+#ifdef PPL_USE_GLPK
+extern "C" {
+#include <glpssx.h>
+#include <glpk.h>
+}
+#endif
+
 #ifndef PPL_NOISY_SIMPLEX
 #define PPL_NOISY_SIMPLEX 0
 #endif
@@ -207,6 +214,61 @@ PPL::MIP_Problem::optimizing_point() const {
  			    "*this doesn't have an optimizing point.");
 }
 
+#ifdef PPL_USE_GLPK
+bool
+PPL::MIP_Problem::is_satisfiable() const {
+ // Check `status' to filter out trivial cases.
+  switch (status) {
+  case UNSATISFIABLE:
+    assert(OK());
+    return false;
+  case SATISFIABLE:
+    // Intentionally fall through
+  case UNBOUNDED:
+    // Intentionally fall through.
+  case OPTIMIZED:
+    assert(OK());
+    return true;
+  case PARTIALLY_SATISFIABLE:
+    { // LP case.
+      if (i_variables.empty()) {
+	Generator g = point();
+	const PPL::MIP_Problem_Status glpk_status_returned =
+	  solve_with_glpk(input_cs, input_obj_function, opt_mode, g);
+	if (glpk_status_returned != UNFEASIBLE_MIP_PROBLEM) {
+	  MIP_Problem& x = const_cast<MIP_Problem&>(*this);
+	  x.last_generator = g;
+	  return true;
+	}
+	return false;
+      }
+      // MIP Case.
+      const Variables_Set this_variables_set = integer_space_dimensions();
+      MIP_Problem& x = const_cast<MIP_Problem&>(*this);
+      Generator p = point();
+      // This disable the Variable integrality check in OK() until we will
+      // find a feasible point.
+      x.i_variables.clear();
+      //      x.is_lp_satisfiable();
+         if (is_mip_satisfiable(x, p, this_variables_set)) {
+	x.last_generator = p;
+	x.status = SATISFIABLE;
+	// Restore i_variables;
+    	x.i_variables = this_variables_set;
+	return true;
+	 }
+      else {
+	x.status = UNSATISFIABLE;
+	// Restore i_variables;
+    	x.i_variables = this_variables_set;
+	return false;
+      }
+    }
+  }
+  // We should not be here!
+  throw std::runtime_error("PPL internal error");
+}
+#else
 bool
 PPL::MIP_Problem::is_satisfiable() const {
   // Check `status' to filter out trivial cases.
@@ -251,7 +313,526 @@ PPL::MIP_Problem::is_satisfiable() const {
   // We should not be here!
   throw std::runtime_error("PPL internal error");
 }
+#endif
 
+// FIXME: Deal with zero-dimensional case.
+bool PPL::MIP_Problem::
+compute_glpk_bounds(const Constraint_Sequence& input_cs,
+		    std::vector<PPL::MIP_Problem::GLPK_Bound>& bounds,
+		    Constraint_Sequence& pure_constraints,
+		    dimension_type& glpk_nnz){
+  dimension_type max_cs_dimension = 0;
+  dimension_type num_coeffs_found = 0;
+  const dimension_type input_cs_size = input_cs.size();
+  // Cycling in this way is wanted to put constraints as GLPK does.
+  for (dimension_type i = 0; i < input_cs_size; ++i) {
+    const Constraint& cs_i = input_cs[i];
+    const dimension_type cs_i_sd = cs_i.space_dimension();
+    if (cs_i_sd > max_cs_dimension) {
+      for (dimension_type j = 0; j < cs_i_sd - max_cs_dimension; ++j) {
+	// Initialize the bound to be free for each new variable.
+	GLPK_Bound new_bound;
+	new_bound.bound_type = GLPK_FR;
+	new_bound.lb_value = 0;
+	new_bound.ub_value = 0;
+	bounds.push_back(new_bound);
+      }
+      // Set the new maximum space dimension.
+      max_cs_dimension = cs_i_sd;
+    }
+
+    bool found_a_nonzero_coeff = false;
+    bool found_many_coeffs = false;
+    dimension_type constraint_coeffs_found = 0;
+    dimension_type nonzero_coeff_variable_index = 0;
+    // Try to detect if we are dealing with constraints or bounds.
+    for (dimension_type sd = cs_i.space_dimension(); sd-- > 0; ) {
+      if (cs_i.coefficient(Variable(sd)) != 0) {
+	++constraint_coeffs_found;
+	if (found_many_coeffs)
+	  continue;
+	if (found_a_nonzero_coeff) {
+	  found_many_coeffs = true;
+	  continue;
+	}
+	found_a_nonzero_coeff = true;
+	nonzero_coeff_variable_index = sd;
+      }
+    }
+    if (!found_a_nonzero_coeff) {
+      // All coefficients are 0.
+      // The constraint is either trivially true or trivially false.
+      if (cs_i.is_inequality()) {
+	if (cs_i.inhomogeneous_term() < 0)
+	  // A constraint such as -1 >= 0 is trivially false.
+	  return false;
+      }
+      else
+	// The constraint is an equality.
+	if (cs_i.inhomogeneous_term() != 0)
+	  // A constraint such as 1 == 0 is trivially false.
+	  return false;
+      // Here the constraint is trivially true.
+      continue;
+    }
+
+    // We are dealing with a bound. At least one pure constraint has to exist,
+    // otherwise GLPK will fail.
+    if (found_a_nonzero_coeff && !found_many_coeffs
+	&& !(input_cs_size-1 == i && pure_constraints.size() == 0)) {
+      GLPK_Bound new_bound;
+      // Set the value bounds for equalities as GLPK does.
+      if (cs_i.is_equality()) {
+	new_bound.bound_type = GLPK_FX;
+	neg_assign_r(new_bound.lb_value.get_num(), cs_i.inhomogeneous_term(),
+		     ROUND_NOT_NEEDED);
+	assign_r(new_bound.lb_value.get_den(),
+		 cs_i.coefficient(Variable(nonzero_coeff_variable_index)),
+		 ROUND_NOT_NEEDED);
+	new_bound.lb_value.canonicalize();
+	new_bound.ub_value = new_bound.lb_value;
+      }
+      // The constraint is an inequality.
+      else {
+	new_bound.bound_type =
+	  cs_i.coefficient(Variable(nonzero_coeff_variable_index)) > 0
+	  ? GLPK_LO : GLPK_UP;
+	if (new_bound.bound_type == GLPK_LO) {
+	  neg_assign_r(new_bound.lb_value.get_num(),
+		       cs_i.inhomogeneous_term(),
+		       ROUND_NOT_NEEDED);
+	  assign_r(new_bound.lb_value.get_den(),
+		   cs_i.coefficient(Variable(nonzero_coeff_variable_index)),
+		   ROUND_NOT_NEEDED);
+	  new_bound.lb_value.canonicalize();
+	}
+	else {
+	  neg_assign_r(new_bound.ub_value.get_num(),
+		       cs_i.inhomogeneous_term(),
+		       ROUND_NOT_NEEDED);
+	  assign_r(new_bound.ub_value.get_den(),
+		   cs_i.coefficient(Variable(nonzero_coeff_variable_index)),
+		   ROUND_NOT_NEEDED);
+	  new_bound.ub_value.canonicalize();
+	}
+      }
+      GLPK_Bound& previous_bound = bounds[nonzero_coeff_variable_index];
+      // The following code handles all the possible cases that can happen
+      // when parsing bounds.
+      switch (previous_bound.bound_type) {
+      case GLPK_FX:
+	switch(new_bound.bound_type) {
+	case GLPK_LO:
+	  if (new_bound.lb_value > previous_bound.lb_value)
+	    return false;
+	  break;
+	case GLPK_UP:
+	  if (new_bound.ub_value < previous_bound.ub_value)
+	    return false;
+	  break;
+	case GLPK_FX:
+	  if (new_bound.ub_value < previous_bound.ub_value)
+	    return false;
+	  break;
+	  // Other cases are not possible.
+	default:
+	  throw std::invalid_argument("GLPK driver failure");
+	}
+	break;
+      case GLPK_LO:
+	switch(new_bound.bound_type) {
+	case GLPK_LO:
+	  previous_bound.lb_value = std::max(new_bound.lb_value,
+					     previous_bound.lb_value);
+	  break;
+	case GLPK_UP:
+	  if (new_bound.ub_value < previous_bound.lb_value)
+	    return false;
+	  previous_bound.bound_type =
+	    new_bound.ub_value == previous_bound.lb_value ? GLPK_FX : GLPK_DB;
+	  previous_bound.ub_value = new_bound.ub_value;
+	  break;
+	case GLPK_FX:
+	  if (new_bound.lb_value < previous_bound.lb_value)
+	    return false;
+	  previous_bound.bound_type = GLPK_FX;
+	  previous_bound.lb_value = new_bound.lb_value;
+	  previous_bound.ub_value = new_bound.ub_value;
+	  break;
+	  // Other cases are not possible.
+	default:
+	  throw std::invalid_argument("GLPK driver not possible case");
+	}
+	break;
+      case GLPK_UP:
+	switch(new_bound.bound_type) {
+	case GLPK_LO:
+	  if (new_bound.lb_value > previous_bound.ub_value)
+	    return false;
+	  //throw std::invalid_argument("GLPK driver invalid case");
+	  previous_bound.bound_type = GLPK_DB;
+	  previous_bound.lb_value = new_bound.lb_value;
+	  break;
+	case GLPK_UP:
+	  previous_bound.ub_value = std::min(new_bound.ub_value,
+					     previous_bound.ub_value);
+	  break;
+	case GLPK_FX:
+	  if (new_bound.ub_value > previous_bound.ub_value)
+	    return false;
+	  previous_bound.bound_type = GLPK_FX;
+	  previous_bound.lb_value = new_bound.lb_value;
+	  previous_bound.ub_value = new_bound.ub_value;
+	  break;
+	default:
+	  throw std::invalid_argument("GLPK driver not possible case");
+	}
+	break;
+      case GLPK_DB:
+	switch(new_bound.bound_type) {
+	case GLPK_LO:
+	  previous_bound.lb_value = std::max(new_bound.lb_value,
+					     previous_bound.lb_value);
+	  break;
+	case GLPK_UP:
+	  previous_bound.ub_value = std::min(new_bound.ub_value,
+					     previous_bound.ub_value);
+	  break;
+	case GLPK_FX:
+	  if (new_bound.ub_value > previous_bound.ub_value
+	      || new_bound.lb_value < previous_bound.lb_value )
+	    return false;
+	  previous_bound.bound_type = GLPK_FX;
+	  previous_bound.lb_value = new_bound.lb_value;
+	  previous_bound.ub_value = new_bound.ub_value;
+	  break;
+	default:
+	  throw std::invalid_argument("GLPK driver not possible case");
+	}
+	break;
+      case GLPK_FR:
+	// A not constrained variable can be bounded without any problem.
+	previous_bound.lb_value = new_bound.lb_value;
+	previous_bound.ub_value = new_bound.ub_value;
+	previous_bound.bound_type = new_bound.bound_type;
+	break;
+      }
+    }
+    // The constraint is not a bound.
+    else {
+      num_coeffs_found += constraint_coeffs_found;
+      pure_constraints.push_back(cs_i);
+    }
+  }
+  // Set the number of non zereos detected, value needed for the next steps.
+  glpk_nnz = num_coeffs_found;
+  return true;
+}
+
+
+PPL::MIP_Problem_Status
+PPL::MIP_Problem::
+load_glpk_data(const Constraint_Sequence& pure_constraints,
+	       const std::vector<GLPK_Bound>& bounds,
+	       const Optimization_Mode mode,
+	       const Linear_Expression& obj,
+	       const dimension_type glpk_nnz,
+	       Generator& optimal_point) {
+  // Deal with Trivial cases
+  if (bounds.size() == 0 && pure_constraints.size() == 0) {
+    optimal_point = point();
+    return OPTIMIZED_MIP_PROBLEM;
+  }
+  const dimension_type glpk_m = pure_constraints.size();
+  const dimension_type glpk_n = bounds.size();
+  SSX* glpk_ssx = ssx_create(glpk_m, glpk_n, glpk_nnz);
+  // Load data in the GLPK solver.
+  // Load the bounds of the constraints.
+  const dimension_type pure_constraints_size = pure_constraints.size();
+  DIRTY_TEMP0(mpz_class, mpz_coeff);
+  for (dimension_type i = 0; i < pure_constraints_size; ++i) {
+    // Each constraint will enter the base: we will have a basis
+    // of just slacks.
+    glpk_ssx->stat[i+1] = SSX_BS;
+    glpk_ssx->type[i+1] = pure_constraints[i].is_inequality()
+      ? SSX_LO : SSX_FX;
+    if (glpk_ssx->type[i+1] == SSX_LO)
+      neg_assign_r(mpz_coeff, pure_constraints[i].inhomogeneous_term(),
+		   ROUND_NOT_NEEDED);
+    else
+      neg_assign_r(mpz_coeff, pure_constraints[i].inhomogeneous_term(),
+		   ROUND_NOT_NEEDED);
+    mpq_set_z(glpk_ssx->lb[i+1], mpz_coeff.get_mpz_t());
+    if (glpk_ssx->type[i+1] == SSX_LO)
+      assign_r(mpz_coeff, Coefficient_zero(), ROUND_NOT_NEEDED);
+    mpq_set_z(glpk_ssx->ub[i+1], mpz_coeff.get_mpz_t());
+  }
+
+  const dimension_type bounds_size = bounds.size();
+  // Set the basis role, using all slacks.
+  for (dimension_type i = 0; i < bounds_size; ++i) {
+    dimension_type glpk_index = i + pure_constraints_size;
+    switch(bounds[i].bound_type) {
+    case GLPK_FX:
+      glpk_ssx->stat[glpk_index + 1] = SSX_NS;
+      glpk_ssx->type[glpk_index + 1] = SSX_FX;
+      break;
+    case GLPK_LO:
+      glpk_ssx->stat[glpk_index + 1] = SSX_NL;
+      glpk_ssx->type[glpk_index + 1] = SSX_LO;
+      break;
+    case GLPK_UP:
+      glpk_ssx->stat[glpk_index + 1] = SSX_NU;
+      glpk_ssx->type[glpk_index + 1] = SSX_UP;
+      break;
+    case GLPK_DB:
+      // FIXME: i don't know what it is the right value to set, but
+      //        it should be good.
+      glpk_ssx->stat[glpk_index + 1] = SSX_NU;
+      glpk_ssx->type[glpk_index + 1] = SSX_DB;
+      break;
+    case GLPK_FR:
+      glpk_ssx->stat[glpk_index + 1] = SSX_NF;
+      glpk_ssx->type[glpk_index + 1] = SSX_FR;
+      break;
+    }
+    // Set the value of the bounds.
+    mpq_set(glpk_ssx->lb[glpk_index+1], bounds[i].lb_value.get_mpq_t());
+    mpq_set(glpk_ssx->ub[glpk_index+1], bounds[i].ub_value.get_mpq_t());
+  }
+
+  // Set the optimization mode.
+  glpk_ssx->dir = mode == MAXIMIZATION ? SSX_MAX : SSX_MIN;
+
+  // Set the optimization coefficients.
+  // Variables
+  for (dimension_type i = 0; i <= glpk_m + glpk_n; ++i) {
+    // Inhomogeneous Term.
+    if (i == 0)
+      assign_r(mpz_coeff, obj.inhomogeneous_term(), ROUND_NOT_NEEDED);
+    else if (i <= glpk_m)
+      assign_r(mpz_coeff, Coefficient_zero(), ROUND_NOT_NEEDED);
+    else
+      assign_r(mpz_coeff, obj.coefficient(Variable(i-glpk_m-1)),
+	       ROUND_NOT_NEEDED);
+    mpq_set_z(glpk_ssx->coef[i], mpz_coeff.get_mpz_t());
+  }
+
+  // Load the constraints coefficients (non zero values).
+  dimension_type loc = 0;
+  for (dimension_type i = 0; i < glpk_n; i++) {
+    glpk_ssx->A_ptr[i+1] = loc+1;
+    for (dimension_type j = 0; j < pure_constraints_size; ++j){
+      // dimension_type successful_constraint_insertions = 0;
+      // Check that the constraints has the mentioned variable.
+      if (pure_constraints[j].space_dimension() > i
+	  && pure_constraints[j].coefficient(Variable(i)) != 0) {
+	++loc;
+	glpk_ssx->A_ind[loc] = j+1;
+	assign_r(mpz_coeff, pure_constraints[j].coefficient(Variable(i)),
+		 ROUND_NOT_NEEDED);
+	mpq_set_z(glpk_ssx->A_val[loc], mpz_coeff.get_mpz_t());
+      }
+    }
+  }
+
+  // The following code is taken from the GLPK code.
+  // build permutation matix Q
+  dimension_type i = 0, j = 0;
+  int *Q_row = glpk_ssx->Q_row;
+  int *stat = glpk_ssx->stat;
+  int *Q_col = glpk_ssx->Q_col;
+  for (dimension_type k = 1; k <= glpk_m + glpk_n; k++)
+    {  if (stat[k] == SSX_BS)
+	{  i++;
+	  if (i > glpk_m)
+	    throw std::invalid_argument("GLPK driver base invalid");
+	  Q_row[k] = i, Q_col[i] = k;
+	}
+      else
+	{  j++;
+	  if (j > glpk_n)
+	    throw std::invalid_argument("GLPK driver base invalid");
+	  Q_row[k] = glpk_m+j, Q_col[glpk_m+j] = k;
+	}
+    }
+  glpk_ssx->it_lim = -1;
+  glpk_ssx->it_cnt = 10000;
+  glpk_ssx->tm_lim = 10000;
+  glpk_ssx->out_frq = 1000.0;
+  glpk_ssx->tm_beg = xtime();
+  glpk_ssx->tm_lag = ulset(0, 0);
+  // Disable the terminal output.
+  glp_term_out(0);
+  // Solve LP.
+  int ret = ssx_driver(glpk_ssx);
+  // Get the results.
+  dimension_type k = 0;
+  std::vector<mpq_class> basis_results;
+  std::vector<int> statuses;
+  for (k = 1; k <= glpk_m + glpk_n; k++) {
+    if (glpk_ssx->stat[k] == SSX_BS)
+      {  i = glpk_ssx->Q_row[k]; /* x[k] = xB[i] */
+	xassert(1 <= i && i <= glpk_m);
+	statuses.push_back(SSX_BS);
+	basis_results.push_back(mpq_class(glpk_ssx->bbar[i]));
+      }
+    else
+      {  j = glpk_ssx->Q_row[k] - glpk_m; /* x[k] = xN[j] */
+	xassert(1 <= j && j <= glpk_n);
+	switch (glpk_ssx->stat[k])
+	  {  case SSX_NF:
+	      statuses.push_back(SSX_NF);
+	      basis_results.push_back(mpq_class(0));
+	      break;
+	  case SSX_NL:
+	    statuses.push_back(SSX_NF);
+	    basis_results.push_back(mpq_class(glpk_ssx->lb[k]));
+	    break;
+	  case SSX_NU:
+	    statuses.push_back(SSX_NU);
+	    basis_results.push_back(mpq_class(glpk_ssx->ub[k]));
+	    break;
+	  case SSX_NS:
+	    statuses.push_back(SSX_NS);
+	    basis_results.push_back(mpq_class(glpk_ssx->lb[k]));
+	    break;
+	  }
+      }
+  }
+
+  TEMP_INTEGER(lcm);
+  assign_r(lcm, basis_results[glpk_m].get_den(), ROUND_NOT_NEEDED);
+  for (dimension_type i = glpk_m; i < basis_results.size(); ++i)
+    lcm_assign(lcm, lcm, basis_results[i].get_den());
+  Linear_Expression expr;
+  for (dimension_type i = glpk_n; i-- > 0; )
+    expr += (lcm/basis_results[glpk_m + i].get_den())
+      * basis_results[glpk_m + i].get_num() * Variable(i);
+  optimal_point = point(expr, lcm);
+
+  switch (ret) {
+  case 0: {
+    // Build the the optimal point.
+    return OPTIMIZED_MIP_PROBLEM;
+  }
+  case 1:  // Unfeasible problem
+    return UNFEASIBLE_MIP_PROBLEM;
+  case 2:
+    return UNBOUNDED_MIP_PROBLEM;
+  default:
+    throw std::runtime_error("PPL: GLPK returned not handled code.");
+  }
+  // We should not be here!
+  throw std::runtime_error("PPL internal error");
+}
+PPL::MIP_Problem_Status
+PPL::MIP_Problem::solve_with_glpk(const Constraint_Sequence& input_cs,
+				  const Linear_Expression& obj,
+				  const Optimization_Mode mode,
+				  Generator& g) {
+  std::vector<PPL::MIP_Problem::GLPK_Bound> glpk_bounds;
+  std::vector<Constraint> pure_constraints;
+  dimension_type glpk_nnz;
+  if (!compute_glpk_bounds(input_cs, glpk_bounds, pure_constraints,
+			   glpk_nnz))
+    return UNFEASIBLE_MIP_PROBLEM;
+  return load_glpk_data(pure_constraints, glpk_bounds, mode,
+			obj, glpk_nnz, g);
+
+}
+
+#ifdef PPL_USE_GLPK
+PPL::MIP_Problem_Status
+PPL::MIP_Problem::solve() const{
+  switch (status) {
+  case UNSATISFIABLE:
+    assert(OK());
+    return UNFEASIBLE_MIP_PROBLEM;
+  case UNBOUNDED:
+    assert(OK());
+    return UNBOUNDED_MIP_PROBLEM;
+  case OPTIMIZED:
+    assert(OK());
+    return OPTIMIZED_MIP_PROBLEM;
+  case SATISFIABLE:
+    // Intentionally fall through
+  case PARTIALLY_SATISFIABLE:
+    {
+      MIP_Problem& x = const_cast<MIP_Problem&>(*this);
+      if (i_variables.empty()) {
+	// LP Problem case.
+	// GLPK Section
+	Generator g = point();
+	const PPL::MIP_Problem_Status glpk_status_returned =
+	  solve_with_glpk(input_cs, input_obj_function, opt_mode, g);
+	switch (glpk_status_returned) {
+	case UNFEASIBLE_MIP_PROBLEM:
+	  x.status = UNSATISFIABLE;
+	  break;
+	case UNBOUNDED_MIP_PROBLEM:
+	  x.status = UNBOUNDED;
+	  break;
+	case OPTIMIZED_MIP_PROBLEM:
+	  x.last_generator = g;
+	  x.status = OPTIMIZED;
+	}
+	return glpk_status_returned;
+      }
+
+      // MIP Problem case.
+      // This disable the Variable integrality check in OK() until we will find
+      // an optimizing point.
+      const Variables_Set this_variables_set = integer_space_dimensions();
+      x.i_variables.clear();
+      Generator pg = point();
+      if (solve_with_glpk(x.input_cs, x.input_obj_function, x.opt_mode, pg)
+	  == UNFEASIBLE_MIP_PROBLEM)
+	{
+	  x.status = UNSATISFIABLE;
+	  // Restore i_variables;
+	  x.i_variables = this_variables_set;
+	  return UNFEASIBLE_MIP_PROBLEM;
+	}
+      DIRTY_TEMP0(mpq_class, incumbent_solution);
+      Generator g = point();
+      bool have_incumbent_solution = false;
+
+      MIP_Problem mip_copy(*this);
+      // Treat this MIP_Problem as an LP one: we have to deal with
+      // the relaxation in solve_mip().
+      mip_copy.i_variables.clear();
+      MIP_Problem_Status mip_status = solve_mip(have_incumbent_solution,
+						incumbent_solution, g,
+						mip_copy,
+						this_variables_set);
+      // Restore i_variables;
+      x.i_variables = this_variables_set;
+      switch (mip_status) {
+      case UNFEASIBLE_MIP_PROBLEM:
+	x.status = UNSATISFIABLE;
+	break;
+      case UNBOUNDED_MIP_PROBLEM:
+	x.status = UNBOUNDED;
+	// A feasible point has been set in `solve_mip()', so that
+	// a call to `feasible_point' will be successful.
+	x.last_generator = g;
+	break;
+      case OPTIMIZED_MIP_PROBLEM:
+	x.status = OPTIMIZED;
+	// Set the internal generator.
+	x.last_generator = g;
+	break;
+      }
+      assert(OK());
+      return mip_status;
+    }
+  }
+  // We should not be here!
+  throw std::runtime_error("PPL internal error");
+}
+
+#else
 PPL::MIP_Problem_Status
 PPL::MIP_Problem::solve() const{
   switch (status) {
@@ -332,7 +913,7 @@ PPL::MIP_Problem::solve() const{
   // We should not be here!
   throw std::runtime_error("PPL internal error");
 }
-
+#endif
 void
 PPL::MIP_Problem::add_space_dimensions_and_embed(const dimension_type m) {
   // The space dimension of the resulting MIP problem should not
@@ -1491,6 +2072,108 @@ PPL::MIP_Problem::is_lp_satisfiable() const {
   throw std::runtime_error("PPL internal error");
 }
 
+#ifdef PPL_USE_GLPK
+PPL::MIP_Problem_Status
+PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
+			    mpq_class& incumbent_solution_value,
+			    Generator& incumbent_solution_point,
+			    MIP_Problem& lp,
+			    const Variables_Set& i_vars) {
+  // Solve the problem as a non MIP one, it must be done internally.
+  Generator solution = point();
+  PPL::MIP_Problem_Status lp_status = solve_with_glpk(lp.input_cs,
+						      lp.objective_function(),
+						      lp.optimization_mode(),
+						      solution);
+  if (lp_status == UNFEASIBLE_MIP_PROBLEM)
+    return lp_status;
+
+  DIRTY_TEMP0(mpq_class, tmp_rational);
+
+  Generator p = point();
+  TEMP_INTEGER(tmp_coeff1);
+  TEMP_INTEGER(tmp_coeff2);
+
+  if (lp_status == UNBOUNDED_MIP_PROBLEM)
+    p = solution;
+  else {
+    assert(lp_status == OPTIMIZED_MIP_PROBLEM);
+    // Do not call optimizing_point().
+    p = solution;
+    lp.evaluate_objective_function(p, tmp_coeff1, tmp_coeff2);
+    assign_r(tmp_rational.get_num(), tmp_coeff1, ROUND_NOT_NEEDED);
+    assign_r(tmp_rational.get_den(), tmp_coeff2, ROUND_NOT_NEEDED);
+    assert(is_canonical(tmp_rational));
+    if (have_incumbent_solution
+	&& ((lp.optimization_mode() == MAXIMIZATION
+ 	     && tmp_rational <= incumbent_solution_value)
+ 	    || (lp.optimization_mode() == MINIMIZATION
+		&& tmp_rational >= incumbent_solution_value)))
+      // Abandon this path.
+      return lp_status;
+  }
+
+  bool found_satisfiable_generator = true;
+  TEMP_INTEGER(gcd);
+  const Coefficient& p_divisor = p.divisor();
+  dimension_type nonint_dim;
+  for (Variables_Set::const_iterator v_begin = i_vars.begin(),
+	 v_end = i_vars.end(); v_begin != v_end; ++v_begin) {
+    gcd_assign(gcd, p.coefficient(Variable(*v_begin)), p_divisor);
+    if (gcd != p_divisor) {
+      nonint_dim = *v_begin;
+      found_satisfiable_generator = false;
+      break;
+    }
+  }
+  if (found_satisfiable_generator) {
+    // All the coordinates of `point' are satisfiable.
+    if (lp_status == UNBOUNDED_MIP_PROBLEM) {
+      // This is a point that belongs to the MIP_Problem.
+      // In this way we are sure that we will return every time
+      // a feasible point if requested by the user.
+      incumbent_solution_point = p;
+      return lp_status;
+    }
+    if (!have_incumbent_solution
+	|| (lp.optimization_mode() == MAXIMIZATION
+	    && tmp_rational > incumbent_solution_value)
+	|| tmp_rational < incumbent_solution_value) {
+      incumbent_solution_value = tmp_rational;
+      incumbent_solution_point = p;
+      have_incumbent_solution = true;
+#if PPL_NOISY_SIMPLEX
+      TEMP_INTEGER(num);
+      TEMP_INTEGER(den);
+      lp.evaluate_objective_function(p, num, den);
+      std::cerr << "new value found: " << num << "/" << den << std::endl;
+#endif
+    }
+    return lp_status;
+  }
+
+  assert(nonint_dim < lp.space_dimension());
+
+  assign_r(tmp_rational.get_num(), p.coefficient(Variable(nonint_dim)),
+	   ROUND_NOT_NEEDED);
+  assign_r(tmp_rational.get_den(), p_divisor, ROUND_NOT_NEEDED);
+  tmp_rational.canonicalize();
+  assign_r(tmp_coeff1, tmp_rational, ROUND_DOWN);
+  assign_r(tmp_coeff2, tmp_rational, ROUND_UP);
+  {
+    MIP_Problem lp_aux = lp;
+    lp_aux.add_constraint(Variable(nonint_dim) <= tmp_coeff1);
+    solve_mip(have_incumbent_solution, incumbent_solution_value,
+	      incumbent_solution_point, lp_aux, i_vars);
+  }
+  // TODO: change this when we will be able to remove constraints.
+  lp.add_constraint(Variable(nonint_dim) >= tmp_coeff2);
+  solve_mip(have_incumbent_solution, incumbent_solution_value,
+	    incumbent_solution_point, lp, i_vars);
+  return have_incumbent_solution ? lp_status : UNFEASIBLE_MIP_PROBLEM;
+}
+
+#else
 PPL::MIP_Problem_Status
 PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
 			    mpq_class& incumbent_solution_value,
@@ -1591,6 +2274,7 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
 	    incumbent_solution_point, lp, i_vars);
   return have_incumbent_solution ? lp_status : UNFEASIBLE_MIP_PROBLEM;
 }
+#endif
 
 bool
 PPL::MIP_Problem::choose_branching_variable(const MIP_Problem& mip,
@@ -1646,6 +2330,68 @@ PPL::MIP_Problem::choose_branching_variable(const MIP_Problem& mip,
   return false;
 }
 
+#ifdef PPL_USE_GLPK
+bool
+PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp, Generator& p,
+				     const Variables_Set& i_vars) {
+  // Solve the problem as a non MIP one, it must be done internally.
+  Generator g = point();
+  const PPL::MIP_Problem_Status glpk_status_returned =
+    solve_with_glpk(lp.input_cs, lp.objective_function(),
+		    lp.optimization_mode(),
+		    g);
+
+  if (glpk_status_returned == UNFEASIBLE_MIP_PROBLEM)
+    return false;
+  DIRTY_TEMP0(mpq_class, tmp_rational);
+
+  TEMP_INTEGER(tmp_coeff1);
+  TEMP_INTEGER(tmp_coeff2);
+  p = g;
+  // This is called to not let crash choose_branching_variable;
+  lp.last_generator = g;
+  bool found_satisfiable_generator = true;
+  dimension_type nonint_dim;
+  const Coefficient& p_divisor = p.divisor();
+
+#if PPL_SIMPLEX_USE_MIP_HEURISTIC
+  found_satisfiable_generator
+    = choose_branching_variable(lp, i_vars, nonint_dim);
+#else
+  TEMP_INTEGER(gcd);
+  for (Variables_Set::const_iterator v_begin = i_vars.begin(),
+	 v_end = i_vars.end(); v_begin != v_end; ++v_begin) {
+    gcd_assign(gcd, p.coefficient(Variable(*v_begin)), p_divisor);
+    if (gcd != p_divisor) {
+      nonint_dim = *v_begin;
+      found_satisfiable_generator = false;
+      break;
+    }
+  }
+#endif
+
+  if (found_satisfiable_generator)
+    return true;
+
+
+  assert(nonint_dim < lp.space_dimension());
+
+  assign_r(tmp_rational.get_num(), p.coefficient(Variable(nonint_dim)),
+	   ROUND_NOT_NEEDED);
+  assign_r(tmp_rational.get_den(), p_divisor, ROUND_NOT_NEEDED);
+  tmp_rational.canonicalize();
+  assign_r(tmp_coeff1, tmp_rational, ROUND_DOWN);
+  assign_r(tmp_coeff2, tmp_rational, ROUND_UP);
+  {
+    MIP_Problem lp_aux = lp;
+    lp_aux.add_constraint(Variable(nonint_dim) <= tmp_coeff1);
+    if (is_mip_satisfiable(lp_aux, p, i_vars))
+      return true;
+  }
+  lp.add_constraint(Variable(nonint_dim) >= tmp_coeff2);
+  return is_mip_satisfiable(lp, p, i_vars);
+}
+#else
 bool
 PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp, Generator& p,
 				     const Variables_Set& i_vars) {
@@ -1699,6 +2445,7 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp, Generator& p,
   lp.add_constraint(Variable(nonint_dim) >= tmp_coeff2);
   return is_mip_satisfiable(lp, p, i_vars);
 }
+#endif
 
 bool
 PPL::MIP_Problem::OK() const {
