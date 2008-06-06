@@ -30,7 +30,8 @@ ppl_interface_generator_xsb_H.m4 \
 $(XSB_CFLI_FILES) \
 xsb_clpq.P \
 xsb_clpq2.P \
-xsb_pl_check.P
+xsb_pl_check.P \
+ppl_interface_generator_xsb_predicate_check_P.m4
 
 if BUILD_XSB_PROLOG_INTERFACE
 
@@ -52,8 +53,10 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../../ppl_interface_generator_common.m4 \
 ../../ppl_interface_generator_common_dat.m4 \
 ../../ppl_interface_generator_copyright \
-../ppl_interface_generator_prolog_dat.m4 \
-../ppl_interface_generator_prolog_systems.m4
+../../ppl_interface_generator_common_procedure_generators.m4 \
+../ppl_interface_generator_prolog_procedure_generators.m4 \
+../ppl_interface_generator_prolog_systems.m4 \
+ppl_interface_generator_xsb_predicate_check_P.m4
 
 ppl_xsb.H: $(interface_generator_dependencies) ppl_interface_generator_xsb_H.m4 Makefile
 	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
@@ -63,7 +66,12 @@ ppl_xsb.cc: $(interface_generator_dependencies) ppl_interface_generator_xsb_cc.m
 	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_xsb_cc.m4 > $@
 
+xsb_predicate_check.P: $(interface_generator_dependencies) ppl_interface_generator_xsb_predicate_check_P.m4 Makefile
+	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
+           $(srcdir)/ppl_interface_generator_xsb_predicate_check_P.m4 > $@
+
 AM_CPPFLAGS = \
+-I$(top_srcdir)/interfaces \
 -I$(top_srcdir)/interfaces/Prolog \
 -I$(top_buildir)/interfaces/Prolog \
 -I$(top_builddir)/src \
@@ -175,6 +183,20 @@ pl_check_test: ppl_xsb.la ppl_xsb.xwam xsb_pl_check.P ../tests/pl_check.pl
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  rm -f xsb_pl_check.P; \
 	fi
+	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
+
+predicate_check_test: ppl_xsb.la ppl_xsb.xwam xsb_predicate_check.P ../tests/ppl_predicate_check_main.pl
+	cp -f $(srcdir)/../tests/ppl_predicate_check_common.pl . ; \
+	cp -f ../tests/ppl_predicate_check_main.pl .
+	rm -f xsb_predicate_check.xwam
+	$(LIBTOOL) --mode=execute \
+		-dlopen ../../../src/libppl.la \
+		$(WATCHDOG_DLOPEN) \
+		-dlopen ppl_xsb.la \
+		xsb xsb_predicate_check \
+			>obtained_pchk
+	rm -f ppl_predicate_check_main.pl
+	rm -f xsb_predicate_check.P; \
 	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
 
 endif BUILD_XSB_PROLOG_INTERFACE

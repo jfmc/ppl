@@ -1,3 +1,7 @@
+m4_define(`dnl', `m4_dnl')`'dnl
+
+dnl This m4 file generates the file ppl_xsb.cc.
+
 m4_define(`dnl', `m4_dnl')
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
@@ -20,10 +24,11 @@ dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
-dnl This file generates ppl_xsb.cc.
+m4_include(`ppl_interface_generator_prolog_systems.m4')
+
+m4_divert`'dnl
 /* XSB Prolog interface: system-dependent part.
 m4_include(`ppl_interface_generator_copyright')
-
 */
 
 #include "ppl.hh"
@@ -168,7 +173,6 @@ init() {
   ppl_initialize();
 }
 m4_divert`'dnl
-m4_include(`ppl_interface_generator_prolog_systems.m4')dnl
 m4_define(`m4_extension', `#define $1 xsb_stub_$1
 ')dnl
 ppl_prolog_sys_code`'dnl
@@ -177,8 +181,12 @@ m4_divert`'dnl
 m4_define(`m4_extension', `#undef $1
 ')dnl
 ppl_prolog_sys_code`'dnl
-m4_undivert(2)`'dnl
-m4_divert`'dnl
+m4_undivert(2)
+
 m4_define(`m4_extension', `XSB_ENTRY_$2($1)
-')dnl
+')
+
+m4_divert`'dnl
 ppl_prolog_sys_code`'dnl
+dnl
+dnl End of file generation.

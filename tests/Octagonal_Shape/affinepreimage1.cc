@@ -270,7 +270,7 @@ test10() {
   mpq_known_result.add_constraint(3*A <= -2);
 
   bool ok = check_result(oc, mpq_known_result,
-			 "9.54e-8", "9.54e-8", "9.54e-8");
+                         "9.54e-8", "9.54e-8", "9.54e-8");
 
   print_constraints(oc, "*** oc.affine_preimage(A, 3*A, 2) ***");
 

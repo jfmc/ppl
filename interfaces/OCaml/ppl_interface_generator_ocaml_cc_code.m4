@@ -1,3 +1,8 @@
+dnl  -*- C++ -*-
+m4_divert(-1)
+
+dnl This m4 file contains the program code for generating ppl_ocaml.cc
+
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
@@ -19,7 +24,6 @@ dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
-m4_divert(-1)dnl
 m4_define(`m4_access_class_code',
 `dnl
 //! Give access to the embedded @CLASS@* in \p v.
@@ -54,7 +58,7 @@ val_p_@TOPOLOGY@@CLASS@(const @TOPOLOGY@@CPP_CLASS@& ph) {
 
 ')
 
-m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
+  m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 `dnl
 extern "C"
 CAMLprim value
@@ -69,7 +73,7 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_code',
+  m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_code',
 `dnl
 extern "C"
 CAMLprim value
@@ -82,7 +86,7 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_code',
+  m4_define(`ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_code',
 `dnl
 extern "C"
 CAMLprim value
@@ -97,7 +101,7 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_@DIMENSION@_code',
+  m4_define(`ppl_@CLASS@_@DIMENSION@_code',
 `dnl
 extern "C"
 CAMLprim value
@@ -113,7 +117,7 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_@HAS_PROPERTY@_code',
+  m4_define(`ppl_@CLASS@_@HAS_PROPERTY@_code',
 `dnl
 extern "C"
 CAMLprim value
@@ -126,7 +130,7 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_bounds_from_@ABOVEBELOW@_code',
+  m4_define(`ppl_@CLASS@_bounds_from_@ABOVEBELOW@_code',
 `dnl
 extern "C"
 CAMLprim value
@@ -140,7 +144,7 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_code',
+  m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_code',
 `dnl
 extern "C"
 void
@@ -155,7 +159,7 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code',
+  m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code',
 `dnl
 extern "C"
 CAMLprim value
@@ -169,7 +173,7 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_code',
+  m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_code',
 `dnl
 extern "C"
 void
@@ -184,7 +188,7 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize_code',
+  m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize_code',
 `dnl
 extern "C"
 CAMLprim value
@@ -198,7 +202,37 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_@COMPARISON@_@CLASS@_code',
+  m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@_code',
+`dnl
+extern "C"
+void
+ppl_@TOPOLOGY@@CLASS@_refine_with_@REFINE_REPRESENT@(value ph, value c) try {
+  CAMLparam2(ph, c);
+  @CPP_CLASS@& pph = *p_@TOPOLOGY@@CLASS@_val(ph);
+  @UREFINE_REPRESENT@ pc = build_ppl_@UREFINE_REPRESENT@(c);
+  pph.refine_with_@REFINE_REPRESENT@(pc);
+  CAMLreturn0;
+}
+CATCH_ALL
+
+')
+
+  m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s_code',
+`dnl
+extern "C"
+void
+ppl_@TOPOLOGY@@CLASS@_refine_with_@REFINE_REPRESENT@s(value ph, value cs) try {
+  CAMLparam2(ph, cs);
+  @CPP_CLASS@& pph = *p_@TOPOLOGY@@CLASS@_val(ph);
+  @UREFINE_REPRESENT@_System pcs = build_ppl_@UREFINE_REPRESENT@_System(cs);
+  pph.refine_with_@REFINE_REPRESENT@s(pcs);
+  CAMLreturn0;
+}
+CATCH_ALL
+
+')
+
+  m4_define(`ppl_@CLASS@_@COMPARISON@_@CLASS@_code',
 `dnl
 extern "C"
 CAMLprim value
@@ -212,7 +246,7 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_equals_@CLASS@_code',
+  m4_define(`ppl_@CLASS@_equals_@CLASS@_code',
 `dnl
 extern "C"
 CAMLprim value
@@ -226,7 +260,7 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_@BINOP@_code',
+  m4_define(`ppl_@CLASS@_@BINOP@_code',
 `dnl
 extern "C"
 void
@@ -241,7 +275,7 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_@BINMINOP@_code',
+  m4_define(`ppl_@CLASS@_@BINMINOP@_code',
 `dnl
 extern "C"
 CAMLprim value
@@ -255,7 +289,7 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@_code',
+  m4_define(`ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@_code',
 `dnl
 extern "C"
 void
@@ -272,7 +306,7 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_remove_space_dimensions_code',
+  m4_define(`ppl_@CLASS@_remove_space_dimensions_code',
 `dnl
 extern "C"
 void
@@ -286,7 +320,7 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_remove_higher_space_dimensions_code',
+  m4_define(`ppl_@CLASS@_remove_higher_space_dimensions_code',
 `dnl
 extern "C"
 void
@@ -303,7 +337,7 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_fold_space_dimensions_code',
+  m4_define(`ppl_@CLASS@_fold_space_dimensions_code',
 `dnl
 extern "C"
 void
@@ -329,7 +363,7 @@ CATCH_ALL
 ')
 
 
-m4_define(`ppl_@CLASS@_map_space_dimensions_code',
+  m4_define(`ppl_@CLASS@_map_space_dimensions_code',
 `dnl
 extern "C"
 void
@@ -353,7 +387,7 @@ CATCH_ALL
 ')
 
 
-m4_define(`ppl_@CLASS@_expand_space_dimension_code',
+  m4_define(`ppl_@CLASS@_expand_space_dimension_code',
 `dnl
 extern "C"
 void
@@ -372,7 +406,7 @@ CATCH_ALL
 ')
 
 
-m4_define(`ppl_@CLASS@_get_@GET_REPRESENT@s_code',
+  m4_define(`ppl_@CLASS@_get_@GET_REPRESENT@s_code',
 `dnl
 extern "C"
 CAMLprim value
@@ -385,7 +419,7 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_code',
+  m4_define(`ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_code',
 `dnl
 extern "C"
 CAMLprim value
@@ -398,7 +432,36 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_bounded_@AFFIMAGE@_code',
+  m4_define(`ppl_@CLASS@_constrains_code',
+`dnl
+extern "C"
+void
+ppl_@TOPOLOGY@@CLASS@_constrains(value ph, value var) try {
+  CAMLparam4(ph, var);
+  @CPP_CLASS@& pph = *p_@TOPOLOGY@@CLASS@_val(ph);
+  pph.constrains(build_ppl_Variable(var));
+  CAMLreturn0;
+  CAMLreturn(Val_bool(pph.constrains(var)));
+			    }
+CATCH_ALL
+
+')
+
+  m4_define(`ppl_@CLASS@_unconstrain_code',
+`dnl
+extern "C"
+void
+ppl_@TOPOLOGY@@CLASS@_unconstrain(value ph, value var) try {
+  CAMLparam4(ph, var);
+  @CPP_CLASS@& pph = *p_@TOPOLOGY@@CLASS@_val(ph);
+  pph.unconstrain(build_ppl_Variable(var));
+  CAMLreturn0;
+			    }
+CATCH_ALL
+
+')
+
+  m4_define(`ppl_@CLASS@_bounded_@AFFIMAGE@_code',
 `dnl
 extern "C"
 void
@@ -416,7 +479,7 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_@AFFIMAGE@_code',
+  m4_define(`ppl_@CLASS@_@AFFIMAGE@_code',
 `dnl
 extern "C"
 void
@@ -434,7 +497,7 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_code',
+  m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_code',
 `dnl
 extern "C"
 void
@@ -452,7 +515,7 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_code',
+  m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_code',
 `dnl
 extern "C"
 void
@@ -471,7 +534,29 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_code',
+  m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence_code',
+`dnl
+extern "C"
+void
+ppl_@TOPOLOGY@@CLASS@_generalized_@AFFIMAGE@1_with_congruence(value ph,
+                                         value le1,
+                                         value rel_sym,
+					 value le2,
+                                         value caml_modulus) try {
+  CAMLparam5(ph, le1, rel_sym, le2, caml_modulus);
+  build_ppl_relsym(rel_sym);
+  @CPP_CLASS@& pph = *p_@TOPOLOGY@@CLASS@_val(ph);
+  pph.generalized_@AFFIMAGE@(build_ppl_Linear_Expression(le1),
+			     build_ppl_relsym(rel_sym),
+			     build_ppl_Linear_Expression(le2),
+			     build_ppl_Coefficient(caml_modulus));
+  CAMLreturn0;
+ }
+CATCH_ALL
+
+')
+
+  m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_code',
 `dnl
 extern "C"
 void
@@ -487,7 +572,7 @@ CATCH_ALL
 ')
 
 
-m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_code',
+  m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_code',
 `dnl
 extern "C"
 CAMLprim value ppl_@TOPOLOGY@@CLASS@_@WIDEN@_widening_assign_with_tokens(value ph1, value ph2,
@@ -505,7 +590,7 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens_code',
+  m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens_code',
 `dnl
 extern "C"
 CAMLprim value
@@ -528,7 +613,7 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_code',
+  m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_code',
 `dnl
 extern "C"
 void
@@ -546,7 +631,7 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_@MAXMIN@_code',
+  m4_define(`ppl_@CLASS@_@MAXMIN@_code',
 `dnl
 extern "C"
 CAMLprim value
@@ -571,7 +656,7 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_OK_code',
+  m4_define(`ppl_@CLASS@_OK_code',
 `dnl
 extern "C"
 CAMLprim value
@@ -584,7 +669,20 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_swap_code',
+  m4_define(`ppl_@CLASS@_@MEMBYTES@_code',
+`dnl
+extern "C"
+CAMLprim value
+ppl_@TOPOLOGY@@CLASS@_@MEMBYTES@(value ph) try {
+  CAMLparam1(ph);
+  @CPP_CLASS@& pph = *p_@TOPOLOGY@@CLASS@_val(ph);
+  CAMLreturn(Val_int(pph.@MEMBYTES@()));
+}
+CATCH_ALL
+
+ ')
+
+  m4_define(`ppl_@CLASS@_swap_code',
 `dnl
 extern "C"
 void
@@ -599,20 +697,20 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@_code',
+  m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_code',
 `dnl
 extern "C"
 CAMLprim value
-ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@(value ph) try {
+ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@(value ph) try {
   CAMLparam1(ph);
-  @INTOPOLOGY@@ALT_FRIEND@& pph = *p_@INTOPOLOGY@@FRIEND@_val(ph);
+  @CPPX_FRIEND@& pph = *p_@FRIEND@_val(ph);
   CAMLreturn(val_p_@TOPOLOGY@@CLASS@(*new @TOPOLOGY@@CPP_CLASS@(pph)));
 }
 CATCH_ALL
 
 ')
 
-m4_define(`ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@_code',
+  m4_define(`ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@_code',
 `dnl
 extern "C"
 CAMLprim value
@@ -627,11 +725,12 @@ CATCH_ALL
 ')
 
 
- m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign_code',
+  m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign_code',
 `dnl
 extern "C"
 void
-ppl@TOPOLOGY@_@CLASS@_@EXTRAPOLATION@_narrowing_assign(value ph1, value ph2) try {
+ppl@TOPOLOGY@_@CLASS@_@EXTRAPOLATION@_narrowing_assign(value ph1,
+                                                       value ph2) try {
   CAMLparam2(ph1, ph2);
   @TOPOLOGY@@CPP_CLASS@& pph1 = *p_@TOPOLOGY@@CLASS@_val(ph1);
   const @TOPOLOGY@@CPP_CLASS@& pph2 = *p_@TOPOLOGY@@CLASS@_val(ph2);
@@ -642,106 +741,58 @@ CATCH_ALL
 
  ')
 
-m4_define(`ppl_@CLASS@_type_constructor_code',
+  m4_define(`ppl_@CLASS@_@BEGINEND@_iterator_code',
+ `dnl
+ extern "C"
+ CAMLprim value
+ ppl_@CLASS@_@BEGINEND@_iterator(value t_pps) try {
+   CAMLparam1(t_pps);
+   @CPP_CLASS@& pps = *p_@CLASS@_val(t_pps);
+  CAMLreturn(val_p_@CLASS@_iterator(*new @CPP_CLASS@::iterator(pps.@BEGINEND@())));
+
+ }
+ CATCH_ALL
+
+ ')
+
+
+  m4_define(`ppl_@CLASS@_get_disjunct_code',
 `dnl
-//! Give access to the embedded @CLASS@* in \p v.
-inline @TOPOLOGY@@CPP_CLASS@::iterator*&
-p_@TOPOLOGY@@CLASS@_iterator_val(value v) {
-  return *reinterpret_cast<@TOPOLOGY@@CPP_CLASS@::iterator**>(Data_custom_val(v));
-}
-
-void
-custom_@TOPOLOGY@@CLASS@_iterator_finalize(value v) {
-  std::cerr << "About to delete a polyhedron " << *p_@TOPOLOGY@@CLASS@_val(v)
-	    << std::endl;
-  delete p_@TOPOLOGY@@CLASS@_iterator_val(v);
-}
-
-static struct custom_operations @TOPOLOGY@@CLASS@_iterator_custom_operations = {
-  "it.unipr.cs.ppl" "." PPL_VERSION "." "@TOPOLOGY@@CLASS@_iterator"@COMMA@
-  custom_@TOPOLOGY@@CLASS@_iterator_finalize@COMMA@
-  custom_compare_default@COMMA@
-  custom_hash_default@COMMA@
-  custom_serialize_default@COMMA@
-  custom_deserialize_default
-};
-
-inline value
-val_p_@TOPOLOGY@@CLASS@_iterator(const @TOPOLOGY@@CPP_CLASS@::iterator& ph) {
-  value v = caml_alloc_custom(&@TOPOLOGY@@CLASS@_iterator_custom_operations,
-			      sizeof(@TOPOLOGY@@CPP_CLASS@::iterator*), 0, 1);
-  p_@TOPOLOGY@@CLASS@_iterator_val(v) = const_cast<@TOPOLOGY@@CPP_CLASS@::iterator*>(&ph);
-  return(v);
-}
-
-')
-
-m4_define(`ppl_@CLASS@_begin_iterator_code',
- `
- extern "C"
- CAMLprim value
- ppl_@CLASS@_begin_iterator(value t_pps) try {
-   CAMLparam1(t_pps);
-   @CPP_CLASS@& pps = *p_@TOPOLOGY@@CLASS@_val(t_pps);
-  CAMLreturn(val_p_@TOPOLOGY@@CLASS@_iterator(*new @TOPOLOGY@@CPP_CLASS@::iterator(pps.begin())));
-
- }
- CATCH_ALL
-
- ')
-
-m4_define(`ppl_@CLASS@_end_iterator_code',
- `
- extern "C"
- CAMLprim value
- ppl_@CLASS@_end_iterator(value t_pps) try {
-   CAMLparam1(t_pps);
-   @CPP_CLASS@& pps = *p_@TOPOLOGY@@CLASS@_val(t_pps);
-  CAMLreturn(val_p_@TOPOLOGY@@CLASS@_iterator(*new @TOPOLOGY@@CPP_CLASS@::iterator(pps.end())));
-
- }
- CATCH_ALL
-
- ')
-
-
-m4_define(`ppl_@CLASS@_get_disjunct_code',
-`
  extern "C"
  CAMLprim value
 ppl_@CLASS@_iterator_get_disjunct(value caml_it) {
    CAMLparam1(caml_it);
-   @CPP_CLASS@::iterator& cpp_it  = *p_@TOPOLOGY@@CLASS@_iterator_val(caml_it);
-   @ALT_CPP_DISJUNCT@ disjunct = cpp_it->element();
-  CAMLreturn(val_p_@ALT_CPP_DISJUNCT@(disjunct));
+   @CPP_CLASS@::iterator& cpp_it  = *p_@CLASS@_iterator_val(caml_it);
+   @CLASSTOPOLOGY@@CPP_DISJUNCT@ disjunct = cpp_it->element();
+  CAMLreturn(val_p_@CLASSTOPOLOGY@@DISJUNCT@(disjunct));
 
 }
 
 ')
 
- m4_define(`ppl_@CLASS@_add_disjunct_code',
- `
- extern "C"
+  m4_define(`ppl_@CLASS@_add_disjunct_code',
+`dnl
+extern "C"
 void
- ppl_@CLASS@_add_disjunct(value t_pps, value caml_item_to_add) try {
+ppl_@CLASS@_add_disjunct(value t_pps, value caml_item_to_add) try {
    CAMLparam2(t_pps, caml_item_to_add);
-   @CPP_CLASS@& pps = *p_@TOPOLOGY@@CLASS@_val(t_pps);
-   @ALT_CPP_DISJUNCT@& item = *p_@ALT_CPP_DISJUNCT@_val(caml_item_to_add);
+   @CPP_CLASS@& pps = *p_@CLASS@_val(t_pps);
+   @CLASSTOPOLOGY@@CPP_DISJUNCT@& item = *p_@CLASSTOPOLOGY@@DISJUNCT@_val(caml_item_to_add);
    pps.add_disjunct(item);
 CAMLreturn0;
- }
- CATCH_ALL
+}
+CATCH_ALL
 
  ')
 
-m4_define(`ppl_@CLASS@_drop_disjunct_code',
-`
+  m4_define(`ppl_@CLASS@_drop_disjunct_code',
+`dnl
  extern "C"
 void
  ppl_@CLASS@_drop_disjunct(value t_pps, value caml_item_to_drop) try {
    CAMLparam2(t_pps, caml_item_to_drop);
-   @CPP_CLASS@& pps = *p_@TOPOLOGY@@CLASS@_val(t_pps);
-   @CPP_CLASS@::iterator& itr = *p_@TOPOLOGY@@CLASS@_iterator_val(caml_item_to_drop);
+   @CPP_CLASS@& pps = *p_@CLASS@_val(t_pps);
+   @CPP_CLASS@::iterator& itr = *p_@CLASS@_iterator_val(caml_item_to_drop);
  pps.drop_disjunct(itr);
 CAMLreturn0;
  }
@@ -749,42 +800,58 @@ CAMLreturn0;
 
  ')
 
-m4_define(`ppl_@CLASS@_decrement_iterator_code',
-`
+  m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
+`dnl
  extern "C"
 void
- ppl_@CLASS@_iterator_decrement(value caml_itr) try {
+ ppl_@CLASS@_iterator_@INCDEC@(value caml_itr) try {
    CAMLparam1(caml_itr);
-   @CPP_CLASS@::iterator& itr = *p_@TOPOLOGY@@CLASS@_iterator_val(caml_itr);
-    --itr;
+   @CPP_CLASS@::iterator& itr = *p_@CLASS@_iterator_val(caml_itr);
+    @CPPX_INCDEC@itr;
    CAMLreturn0;
  }
  CATCH_ALL
 
  ')
 
-m4_define(`ppl_@CLASS@_increment_iterator_code',
-`
- extern "C"
+  m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
+`dnl
+//! Give access to the embedded @CLASS@* in \p v.
+inline @CPP_CLASS@::iterator*&
+p_@CLASS@_iterator_val(value v) {
+  return *reinterpret_cast<@CPP_CLASS@::iterator**>(Data_custom_val(v));
+}
+
 void
- ppl_@CLASS@_iterator_increment(value caml_itr) try {
-   CAMLparam1(caml_itr);
-   @CPP_CLASS@::iterator& itr = *p_@TOPOLOGY@@CLASS@_iterator_val(caml_itr);
-  ++itr;
-CAMLreturn0;
- }
- CATCH_ALL
+custom_@CLASS@_iterator_finalize(value v) {
+  std::cerr << "About to delete a polyhedron " << *p_@CLASS@_val(v)
+	    << std::endl;
+  delete p_@CLASS@_iterator_val(v);
+}
 
- ')
+static struct custom_operations @CLASS@_iterator_custom_operations = {
+  "it.unipr.cs.ppl" "." PPL_VERSION "." "@CLASS@_iterator"@COMMA@
+  custom_@CLASS@_iterator_finalize@COMMA@
+  custom_compare_default@COMMA@
+  custom_hash_default@COMMA@
+  custom_serialize_default@COMMA@
+  custom_deserialize_default
+};
 
-m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
-`
+inline value
+val_p_@CLASS@_iterator(const @CPP_CLASS@::iterator& ph) {
+  value v = caml_alloc_custom(&@CLASS@_iterator_custom_operations,
+			      sizeof(@CPP_CLASS@::iterator*), 0, 1);
+  p_@CLASS@_iterator_val(v) = const_cast<@CPP_CLASS@::iterator*>(&ph);
+  return(v);
+}
+
  extern "C"
 CAMLprim value
  ppl_@CLASS@_iterator_equals_iterator(value caml_itr1, value caml_itr2) try {
    CAMLparam2(caml_itr1, caml_itr2);
-  @CPP_CLASS@::iterator& itr1 = *p_@TOPOLOGY@@CLASS@_iterator_val(caml_itr1);
-  @CPP_CLASS@::iterator& itr2 = *p_@TOPOLOGY@@CLASS@_iterator_val(caml_itr2);
+  @CPP_CLASS@::iterator& itr1 = *p_@CLASS@_iterator_val(caml_itr1);
+  @CPP_CLASS@::iterator& itr2 = *p_@CLASS@_iterator_val(caml_itr2);
  if (itr1 == itr2)
    CAMLreturn(Val_bool(true));
  else
@@ -793,18 +860,3 @@ CAMLprim value
  CATCH_ALL
 
  ')
-
-m4_define(`ppl_@CLASS@_size_code',
-`
- extern "C"
-CAMLprim value
- ppl_@CLASS@_size(value caml_pps) try {
-CAMLparam1(caml_pps);
-@CPP_CLASS@& pps = *p_@TOPOLOGY@@CLASS@_val(caml_pps);
- CAMLreturn(Val_int(pps.size()));
- }
- CATCH_ALL
-
- ')
-
-m4_divert(-1)dnl

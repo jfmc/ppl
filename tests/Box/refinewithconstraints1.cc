@@ -1,5 +1,4 @@
-/* Test Box::refine(const Constraint&)
-   and Box::refine(const Constraint_System&).
+/* Test Box::refine_with_constraints().
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -30,38 +29,21 @@ test01() {
   Variable A(0);
   Variable B(1);
 
+  Constraint_System cs;
+  cs.insert(A >= 0);
+  cs.insert(B == 5);
+
   TBox box(2);
-  box.refine(A >= 0);
+  box.refine_with_constraints(cs);
 
-  print_constraints(box, "*** box.refine(A >= 0) ***");
-
-  box.refine(B >= A);
-
-  print_constraints(box, "*** box.refine(B >= A) ***");
-
-  box.refine(11*A < 127);
-
-  print_constraints(box, "*** box.refine(11*A < 127) ***");
-
-  box.refine(7*A - 15*B > 8);
-
-  print_constraints(box, "*** box.refine(7*A - 15*B > 8) ***");
-
-  box.refine(3*B > 2*A);
-
-  print_constraints(box, "*** box.refine(3*B > 2*A) ***");
-
-  box.refine(A == B);
-
-  print_constraints(box, "*** box.refine(A == B) ***");
+  print_constraints(box, "*** box.refine_with_constraints(cs) ***");
 
   Rational_Box known_result(2);
-  known_result.add_constraint(7*A > 8);
-  known_result.add_constraint(55*A < 267);
-  known_result.add_constraint(7*B > 8);
-  known_result.add_constraint(55*B < 267);
+  known_result.add_constraint(A >= 0);
+  known_result.add_constraint(B == 5);
+  known_result.refine_with_constraint(B - A <= 5);
 
-  bool ok = check_result(box, known_result, "2.33e-6", "1.55e-6", "1.10e-6");
+  bool ok = check_result(box, known_result);
 
   print_constraints(known_result, "*** known_result ***");
 
@@ -70,6 +52,129 @@ test01() {
 
 bool
 test02() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+
+  TBox box(2);
+
+  try {
+    // This is an invalid use of method
+    // Box::refine_with_constraint: it is illegal
+    // to add a constraint with bigger dimension.
+    box.refine_with_constraint(x <= 0);
+    box.refine_with_constraint(y - x + z >= 0);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
+bool
+test03() {
+  Variable x(0);
+  Variable y(1);
+
+  TBox box(1);
+
+  try {
+    // This is an invalid use of the method
+    // Box::refine_with_constraints(cs): it is illegal to
+    // add a system of constraints that is not dimensional incompatible
+    // with the polyhedron.
+    Constraint_System cs;
+    cs.insert(x - y >= 0);
+    box.refine_with_constraints(cs);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
+bool
+test04() {
+  Variable y(1);
+
+  TBox box(1);
+
+  try {
+    // This is an invalid use of the method
+    // Box::refine_with_constraint(c): it is illegal to insert a
+    // constraints that contains a variable that is not in the space
+    // of the polyhedron.
+    box.refine_with_constraint(y >= 0);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
+bool
+test05() {
+  Variable x(0);
+  Variable y(1);
+
+  TBox box(1);
+
+  try {
+    // This is an invalid use of the method
+    // Box::refine_with_constraints(cs): it is illegal to add a system
+    // of constraints that is dimensional incompatible with the
+    // polyhedron.
+    Constraint_System cs;
+    cs.insert(x - y == 0);
+    box.refine_with_constraints(cs);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
+#if 0
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+
+  Constraint_System cs;
+  cs.insert(A >= 0);
+  cs.insert(B >= 5);
+  cs.insert(B <= 5);
+
+  TBox box(2);
+  box.refine_with_recycled_constraints(cs);
+
+  Rational_Box known_result(2);
+  known_result.add_constraint(A >= 0);
+  known_result.add_constraint(B == 5);
+
+  bool ok = check_result(box, known_result);
+
+  print_constraints(box, "*** box.add_constraints(cs) ***");
+  print_constraints(known_result, "*** known_result ***");
+
+  return ok;
+}
+#endif
+
+bool
+test07() {
   Variable A(0);
   Variable B(1);
 
@@ -84,17 +189,17 @@ test02() {
   print_constraints(cs, "*** cs ***");
 
   TBox box(2);
-  box.refine(cs);
+  box.refine_with_constraints(cs);
 
   bool ok = box.is_empty();
 
-  print_constraints(box, "*** box.refine(cs) ***");
+  print_constraints(box, "*** box.refine_with_constraints(cs) ***");
 
   return ok;
 }
 
 bool
-test03() {
+test08() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -188,17 +293,17 @@ test03() {
   print_constraints(cs, "*** cs ***");
 
   TBox box(cs.space_dimension());
-  box.refine(cs);
+  box.refine_with_constraints(cs);
 
   bool ok = box.is_empty();
 
-  print_constraints(box, "*** box.refine(cs) ***");
+  print_constraints(box, "*** box.refine_with_constraints(cs) ***");
 
   return ok;
 }
 
 bool
-test04() {
+test09() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -431,17 +536,17 @@ test04() {
   print_constraints(cs, "*** cs ***");
 
   TBox box(cs.space_dimension());
-  box.refine(cs);
+  box.refine_with_constraints(cs);
 
   bool ok = box.is_empty();
 
-  print_constraints(box, "*** box.refine(cs) ***");
+  print_constraints(box, "*** box.refine_with_constraints(cs) ***");
 
   return ok;
 }
 
 bool
-test05() {
+test10() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -479,62 +584,11 @@ test05() {
   print_constraints(cs, "*** cs ***");
 
   TBox box(cs.space_dimension());
-  box.refine(cs);
+  box.refine_with_constraints(cs);
 
   bool ok = box.is_empty();
 
-  print_constraints(box, "*** box.refine(cs) ***");
-
-  return ok;
-}
-
-bool
-test06() {
-  Variable A(0);
-  Variable B(1);
-
-  TBox box(2);
-  box.add_constraint(B >= -2);
-  box.add_constraint(B <= 4);
-
-  print_constraints(box, "*** box ***");
-
-  box.refine(A - 2*B >= 0);
-
-  Rational_Box known_result(2);
-  known_result.add_constraint(A >= -4);
-  known_result.add_constraint(B >= -2);
-  known_result.add_constraint(B <= 4);
-
-  bool ok = (Rational_Box(box) == known_result);
-
-  print_constraints(box, "*** box.refine(A - 2*B >= 0) ***");
-  print_constraints(known_result, "*** known_result ***");
-
-  return ok;
-}
-
-bool
-test07() {
-  Variable A(0);
-
-  Constraint_System cs;
-
-  TBox box(1);
-  print_constraints(box, "*** box ***");
-
-  Constraint c(A == 1);
-  print_constraint(c, "*** c ***");
-
-  box.refine(c);
-
-  Rational_Box known_result(1);
-  known_result.add_constraint(A == 1);
-
-  bool ok = (Rational_Box(box) == known_result);
-
-  print_constraints(box, "*** box.refine(c) ***");
-  print_constraints(known_result, "*** known_result ***");
+  print_constraints(box, "*** box.refine_with_constraints(cs) ***");
 
   return ok;
 }
@@ -542,11 +596,16 @@ test07() {
 } // namespace
 
 BEGIN_MAIN
-  DO_TEST_F8(test01);
+  DO_TEST(test01);
   DO_TEST(test02);
-  DO_TEST_F8(test03);
-  DO_TEST_F8(test04);
+  DO_TEST(test03);
+  DO_TEST(test04);
   DO_TEST(test05);
+#if 0
   DO_TEST(test06);
+#endif
   DO_TEST(test07);
+  DO_TEST_F8(test08);
+  DO_TEST_F8(test09);
+  DO_TEST(test10);
 END_MAIN

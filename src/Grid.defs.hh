@@ -104,11 +104,6 @@ bool operator!=(const Grid& x, const Grid& y);
   and vice versa.
   These systems can contain redundant members, or they can be in the
   minimal form.
-  Most operators on grids are provided with two implementations:
-  one of these, denoted <CODE>\<operator-name\>_and_minimize</CODE>,
-  also enforces the minimization of the representations,
-  and returns the Boolean value <CODE>false</CODE> whenever
-  the resulting grid turns out to be empty.
 
   A key attribute of any grid is its space dimension (the dimension
   \f$n \in \Nset\f$ of the enclosing vector space):
@@ -362,6 +357,18 @@ public:
   //! Returns the maximum space dimension all kinds of Grid can handle.
   static dimension_type max_space_dimension();
 
+  /*! \brief
+    Returns true indicating that this domain has methods that
+    can recycle congruences
+  */
+  static bool can_recycle_congruence_systems();
+
+  /*! \brief
+    Returns true indicating that this domain has methods that
+    can recycle constraints
+  */
+  static bool can_recycle_constraint_systems();
+
   //! Builds a grid having the specified properties.
   /*!
     \param num_dimensions
@@ -483,12 +490,17 @@ public:
     \param box
     The box representing the grid to be built.
 
+    \param complexity
+    This argument is ignored as the algorithm used has
+    polynomial complexity.
+
     \exception std::length_error
     Thrown if the space dimension of \p box exceeds the maximum
     allowed space dimension.
   */
   template <typename Interval>
-  explicit Grid(const Box<Interval>& box);
+  explicit Grid(const Box<Interval>& box,
+                Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Builds a grid out of a bounded-difference shape.
   /*!
@@ -498,12 +510,17 @@ public:
     \param bd
     The BDS representing the grid to be built.
 
+    \param complexity
+    This argument is ignored as the algorithm used has
+    polynomial complexity.
+
     \exception std::length_error
     Thrown if the space dimension of \p bd exceeds the maximum
     allowed space dimension.
   */
   template <typename U>
-  explicit Grid(const BD_Shape<U>& bd);
+  explicit Grid(const BD_Shape<U>& bd,
+                Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Builds a grid out of an octagonal shape.
   /*!
@@ -513,12 +530,17 @@ public:
     \param os
     The octagonal shape representing the grid to be built.
 
+    \param complexity
+    This argument is ignored as the algorithm used has
+    polynomial complexity.
+
     \exception std::length_error
     Thrown if the space dimension of \p os exceeds the maximum
     allowed space dimension.
   */
   template <typename U>
-  explicit Grid(const Octagonal_Shape<U>& os);
+  explicit Grid(const Octagonal_Shape<U>& os,
+                Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Builds a grid out of a generic, interval-based covering box.
   /*!
@@ -591,21 +613,33 @@ public:
   template <typename Box>
   Grid(const Box& box, From_Covering_Box dummy);
 
-  //! Builds a grid, copying a polyhedron.
-  /*!
+  /*! \brief
+    Builds a grid from a polyhedron using algorithms whose complexity
+    does not exceed the one specified by \p complexity.
+    If \p complexity is \p ANY_COMPLEXITY, then the grid built is the
+    smallest one containing \p ph.
+
     The grid inherits the space dimension of polyhedron.
 
     \param ph
     The polyhedron.
 
+    \param complexity
+    The complexity class.
+
     \exception std::length_error
     Thrown if \p num_dimensions exceeds the maximum allowed space
     dimension.
   */
-  explicit Grid(const Polyhedron& ph);
+  explicit Grid(const Polyhedron& ph,
+                Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Ordinary copy-constructor.
-  Grid(const Grid& y);
+  /*!
+    The complexity argument is ignored.
+  */
+  Grid(const Grid& y,
+       Complexity_Class complexity = ANY_COMPLEXITY);
 
   /*! \brief
     The assignment operator.  (\p *this and \p y can be
@@ -626,21 +660,21 @@ public:
   dimension_type affine_dimension() const;
 
   /*! \brief
-      Returns a system of equality constraints satisfied by \p *this
-      with the same affine dimension as \p *this.
+    Returns a system of equality constraints satisfied by \p *this
+    with the same affine dimension as \p *this.
   */
   Constraint_System constraints() const;
 
   /*! \brief
-      Returns a system of equality constraints in reduced form
-      satisfied by \p *this with the same affine dimension as \p *this.
+    Returns a minimal system of equality constraints satisfied by
+    \p *this with the same affine dimension as \p *this.
   */
   Constraint_System minimized_constraints() const;
 
   //! Returns the system of congruences.
   const Congruence_System& congruences() const;
 
-  //! Returns the system of congruences in reduced form.
+  //! Returns the system of congruences in minimal form.
   const Congruence_System& minimized_congruences() const;
 
   //! Returns the system of generators.
@@ -687,16 +721,10 @@ public:
   // we keep using it without changing the name.
   Poly_Con_Relation relation_with(const Constraint& c) const;
 
-  /*! \brief
-    Returns <CODE>true</CODE> if and only if \p *this is an empty
-    grid.
-  */
+  //! Returns \c true if and only if \p *this is an empty grid.
   bool is_empty() const;
 
-  /*! \brief
-    Returns <CODE>true</CODE> if and only if \p *this is a universe
-    grid.
-  */
+  //! Returns \c true if and only if \p *this is a universe grid.
   bool is_universe() const;
 
   /*! \brief
@@ -977,6 +1005,9 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this and congruence \p cg are dimension-incompatible.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_congruence_and_minimize(const Congruence& c);
 
@@ -989,6 +1020,9 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this and constraint \p c are dimension-incompatible.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_congruence_and_minimize(const Constraint& c);
 
@@ -1012,6 +1046,9 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and generator \p g are dimension-incompatible,
     or if \p *this is an empty grid and \p g is not a point.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_grid_generator_and_minimize(const Grid_Generator& g);
 
@@ -1080,6 +1117,9 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cgs are dimension-incompatible.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_congruences_and_minimize(const Congruence_System& cgs);
 
@@ -1096,6 +1136,9 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_congruences_and_minimize(const Constraint_System& cs);
 
@@ -1116,6 +1159,9 @@ public:
     \warning
     The only assumption that can be made about \p cgs upon successful
     or exceptional return is that it can be safely destroyed.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_recycled_congruences_and_minimize(Congruence_System& cgs);
 
@@ -1134,12 +1180,18 @@ public:
     \warning
     The only assumption that can be made about \p cs upon successful
     or exceptional return is that it can be safely destroyed.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_recycled_congruences_and_minimize(Constraint_System& cs);
 
   //! Adds constraint \p c to \p *this.
   /*!
     The addition can only affect \p *this if \p c is an equality.
+
+    \param c
+    The constraint.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p c are dimension-incompatible.
@@ -1150,16 +1202,25 @@ public:
   /*!
     The addition can only affect \p *this if \p c is an equality.
 
+    \param c
+    The constraint.
+
     \return
     <CODE>false</CODE> if and only if the result is empty.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p c are dimension-incompatible.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_constraint_and_minimize(const Constraint& c);
 
   //! Adds copies of the equality constraints in \p cs to \p *this.
   /*!
+    \param cs
+    The constraints to be added.
+
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible.
   */
@@ -1169,11 +1230,17 @@ public:
     Adds copies of the equality constraints in \p cs to \p *this,
     reducing the result.
 
+    \param cs
+    The constraints to be added.
+
     \return
     <CODE>false</CODE> if and only if the result is empty.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_constraints_and_minimize(const Constraint_System& cs);
 
@@ -1209,20 +1276,52 @@ public:
     \warning
     The only assumption that can be made about \p cs upon successful
     or exceptional return is that it can be safely destroyed.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_recycled_constraints_and_minimize(Constraint_System& cs);
 
-  /*! \brief
-    Returns true indicating that this domain has methods that
-    can recycle congruences
-  */
-  static bool can_recycle_congruence_systems();
+  //! Uses a copy of the congruence \p cg to refine \p *this.
+  /*!
+    \param cg
+    The congruence used.
 
-  /*! \brief
-    Returns true indicating that this domain has methods that
-    can recycle constraints
+    \exception std::invalid_argument
+    Thrown if \p *this and congruence \p cg are dimension-incompatible.
   */
-  static bool can_recycle_constraint_systems();
+  void refine_with_congruence(const Congruence& cg);
+
+ //! Uses a copy of the congruences in \p cgs to refine \p *this.
+  /*!
+    \param cgs
+    The congruences used.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cgs are dimension-incompatible.
+  */
+  void refine_with_congruences(const Congruence_System& cgs);
+
+  //! Uses a copy of the constraint \p c to refine \p *this.
+  /*!
+
+    \param c
+    The constraint used. If it is not an equality, it will be ignored
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p c are dimension-incompatible.
+  */
+  void refine_with_constraint(const Constraint& c);
+
+  //! Uses a copy of the constraints in \p cs to refine \p *this.
+  /*!
+    \param cs
+    The constraints used. Constraints that are not equalities are ignored.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are dimension-incompatible.
+  */
+  void refine_with_constraints(const Constraint_System& cs);
 
   /*! \brief
     Adds a copy of the generators in \p gs to the system of generators
@@ -1271,6 +1370,9 @@ public:
     Thrown if \p *this and \p gs are dimension-incompatible, or if \p
     *this is empty and the system of generators \p gs is not empty,
     but has no points.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_grid_generators_and_minimize(const Grid_Generator_System& gs);
 
@@ -1291,12 +1393,40 @@ public:
     \warning
     The only assumption that can be made about \p gs upon successful
     or exceptional return is that it can be safely destroyed.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_recycled_grid_generators_and_minimize(Grid_Generator_System& gs);
 
   /*! \brief
-    Assigns to \p *this the intersection of \p *this and \p y.  The
-    result is not guaranteed to be reduced.
+    Computes the \ref Cylindrification "cylindrification" of \p *this with
+    respect to space dimension \p var, assigning the result to \p *this.
+
+    \param var
+    The space dimension that will be unconstrained.
+
+    \exception std::invalid_argument
+    Thrown if \p var is not a space dimension of \p *this.
+  */
+  void unconstrain(Variable var);
+
+  /*! \brief
+    Computes the \ref Cylindrification "cylindrification" of \p *this with
+    respect to the set of space dimensions \p to_be_unconstrained,
+    assigning the result to \p *this.
+
+    \param to_be_unconstrained
+    The set of space dimension that will be unconstrained.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with one of the
+    Variable objects contained in \p to_be_removed.
+  */
+  void unconstrain(const Variables_Set& to_be_unconstrained);
+
+  /*! \brief
+    Assigns to \p *this the intersection of \p *this and \p y.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
@@ -1312,6 +1442,9 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool intersection_assign_and_minimize(const Grid& y);
 
@@ -1332,6 +1465,9 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool join_assign_and_minimize(const Grid& y);
 
@@ -1339,6 +1475,10 @@ public:
   void upper_bound_assign(const Grid& y);
 
   //! Same as join_assign_and_minimize(y).
+  /*!
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
+  */
   void upper_bound_assign_and_minimize(const Grid& y);
 
   /*! \brief
@@ -2207,7 +2347,7 @@ private:
   //! Sets \p status to express that congruences are out of date.
   void clear_congruences_up_to_date();
 
-  //! Sets \p status to express that parameters are out of date.
+  //! Sets \p status to express that generators are out of date.
   void clear_generators_up_to_date();
 
   //! Sets \p status to express that congruences are no longer minimized.
@@ -2222,11 +2362,7 @@ private:
   //@{
 
   //! Updates and minimizes the congruences from the generators.
-  /*!
-    \return
-    Always <CODE>true</CODE>.
-  */
-  bool update_congruences() const;
+  void update_congruences() const;
 
   //! Updates and minimizes the generators from the congruences.
   /*!

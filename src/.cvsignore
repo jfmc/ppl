@@ -1,5 +1,6 @@
 *.la
 *.lo
+*.loT
 .deps
 .libs
 BUGS.cc
@@ -7,6 +8,7 @@ COPYING.cc
 CREDITS.cc
 Makefile
 Makefile.in
+ppl-config
 ppl-config.cc
 ppl.hh
 ppl_include_files.hh

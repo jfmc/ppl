@@ -143,54 +143,90 @@ public:
   NNC_Polyhedron(Congruence_System& cgs, Recycle_Input dummy);
 
   //! Builds an NNC polyhedron from the C polyhedron \p y.
-  explicit NNC_Polyhedron(const C_Polyhedron& y);
+  /*!
+    \param y
+    The C polyhedron to be used;
+
+    \param complexity
+    This argument is ignored.
+  */
+  explicit NNC_Polyhedron(const C_Polyhedron& y,
+                          Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Builds an NNC polyhedron out of a box.
   /*!
+    The polyhedron inherits the space dimension of the box.
+    The built polyhedron is the most precise that includes the
+    box.
+
     \param box
     The bounding box representing the polyhedron to be built;
+
+    \param complexity
+    This argument is ignored as the algorithm used has
+    polynomial complexity.
 
     \exception std::length_error
     Thrown if the space dimension of \p box exceeds the maximum allowed
     space dimension.
   */
   template <typename Interval>
-  explicit NNC_Polyhedron(const Box<Interval>& box);
+  explicit NNC_Polyhedron(const Box<Interval>& box,
+                          Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Builds an NNC polyhedron that approximates a grid.
   /*!
     The polyhedron inherits the space dimension of the grid.
-    The built polyhedron is the most precise that includes the grid.
+    The built polyhedron is the most precise that includes the
+    grid.
 
     \param grid
     The grid used to build the polyhedron.
+
+    \param complexity
+    This argument is ignored as the algorithm used has
+    polynomial complexity.
   */
-  explicit NNC_Polyhedron(const Grid& grid);
+  explicit NNC_Polyhedron(const Grid& grid,
+                          Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Builds a NNC polyhedron out of a bd shape.
   /*!
     The polyhedron inherits the space dimension of the bd shape.
-    The built polyhedron is the most precise that includes the bd shape.
+    The built polyhedron is the most precise that includes the
+    bd shape.
 
     \param bd
     The bd shape used to build the polyhedron.
+
+    \param complexity
+    This argument is ignored as the algorithm used has
+    polynomial complexity.
   */
   template <typename U>
-  explicit NNC_Polyhedron(const BD_Shape<U>& bd);
+  explicit NNC_Polyhedron(const BD_Shape<U>& bd,
+                          Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Builds a NNC polyhedron out of an octagonal shape.
   /*!
     The polyhedron inherits the space dimension of the octagonal shape.
-    The built polyhedron is the most precise that includes the octagonal shape.
+    The built polyhedron is the most precise that includes the
+    octagonal shape.
 
     \param os
     The octagonal shape used to build the polyhedron.
+
+    \param complexity
+    This argument is ignored as the algorithm used has
+    polynomial complexity.
   */
   template <typename U>
-  explicit NNC_Polyhedron(const Octagonal_Shape<U>& os);
+  explicit NNC_Polyhedron(const Octagonal_Shape<U>& os,
+                          Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Ordinary copy-constructor.
-  NNC_Polyhedron(const NNC_Polyhedron& y);
+  NNC_Polyhedron(const NNC_Polyhedron& y,
+                 Complexity_Class complexity = ANY_COMPLEXITY);
 
   /*! \brief
     The assignment operator.

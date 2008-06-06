@@ -334,13 +334,13 @@ add_edges(Box<T>& box, const Edge* edges, unsigned n) {
     nout << "a = " << a << "; b = " << b << endl;
 
     box.add_constraint(a*Variable(edges[i].from) - a*Variable(edges[i].to)
-		      <= b);
+                      <= b);
   }
 }
 
 } // namespace
 
-#define DISTANCE(To, Temp)			       \
+#define DISTANCE(To, Temp)                             \
   do { \
     Checked_Number<To, Extended_Number_Policy> distance; \
     rectilinear_distance_assign<Temp>(distance, qbox1, qbox2, ROUND_UP); \

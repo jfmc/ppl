@@ -71,6 +71,7 @@ round_dir_check(Boundary_Type t, bool check = false) {
 template <typename T, typename Info>
 inline Result
 special_set_boundary_infinity(Boundary_Type type, T&, Info& info) {
+  assert(Info::store_special);
   info.set_boundary_property(type, SPECIAL);
   return V_EQ;
 }
@@ -428,7 +429,8 @@ adjust_boundary(Boundary_Type type, T& x, Info& info,
       open = true;
       /* Fall through */
     case VC_MINUS_INFINITY:
-      assert(Info::store_special);
+      if (!Info::store_special)
+	return r;
       if (open)
 	info.set_boundary_property(type, OPEN);
       return special_set_boundary_infinity(type, x, info);
@@ -452,7 +454,8 @@ adjust_boundary(Boundary_Type type, T& x, Info& info,
       open = true;
       /* Fall through */
     case VC_PLUS_INFINITY:
-      assert(Info::store_special);
+      if (!Info::store_special)
+	return r;
       if (open)
 	info.set_boundary_property(type, OPEN);
       return special_set_boundary_infinity(type, x, info);

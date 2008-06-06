@@ -55,6 +55,14 @@ inline
 Congruence::~Congruence() {
 }
 
+inline
+Congruence::Congruence(Linear_Expression& le,
+		       Coefficient_traits::const_reference m) {
+  Row::swap(static_cast<Row&>(le));
+  assert(m >= 0);
+  (*this)[size()-1] = m;
+}
+
 inline Congruence
 Congruence::create(const Linear_Expression& e,
 		   Coefficient_traits::const_reference n) {
@@ -207,14 +215,6 @@ Congruence::external_memory_in_bytes() const {
 inline memory_size_type
 Congruence::total_memory_in_bytes() const {
   return Row::total_memory_in_bytes();
-}
-
-inline
-Congruence::Congruence(Linear_Expression& le,
-		       Coefficient_traits::const_reference m) {
-  Row::swap(static_cast<Row&>(le));
-  assert(m >= 0);
-  (*this)[size()-1] = m;
 }
 
 inline void

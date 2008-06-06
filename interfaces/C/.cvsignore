@@ -1,7 +1,10 @@
 *.la
 *.lo
+*.loT
 .deps
 .libs
 Makefile
 Makefile.in
+ppl_c.cc
 ppl_c.h
+ppl_c_version.h

@@ -27,7 +27,8 @@ ppl_interface_generator_sicstus_sd_cc.m4 \
 $(SICSTUS_CFLI_FILES) \
 ppl_sicstus.pl \
 sp_clpq.pl \
-sp_pl_check.pl
+sp_pl_check.pl \
+sp_predicate_check.pl
 
 if BUILD_SICSTUS_PROLOG_INTERFACE
 
@@ -41,6 +42,7 @@ WATCHDOG_LINK_OPTIONS = -L$(top_builddir)/Watchdog/src/.libs -lpwl
 endif BUILD_WATCHDOG_LIBRARY
 
 AM_CPPFLAGS = \
+-I$(top_srcdir)/interfaces \
 -I$(top_srcdir)/interfaces/Prolog \
 -I$(top_builddir)/src \
 $(WATCHDOG_INCLUDE_OPTIONS) \
@@ -55,7 +57,8 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../../ppl_interface_generator_common.m4 \
 ../../ppl_interface_generator_common_dat.m4 \
 ../../ppl_interface_generator_copyright \
-../ppl_interface_generator_prolog_dat.m4 \
+../../ppl_interface_generator_common_procedure_generators.m4 \
+../ppl_interface_generator_prolog_procedure_generators.m4 \
 ../ppl_interface_generator_prolog_systems.m4 \
 ppl_interface_generator_sicstus_sd_cc.m4
 
@@ -73,7 +76,8 @@ pkglib_DATA = ppl_sicstus.pl ppl_sicstus.s.o
 
 ppl_sicstus.so: ppl_sicstus.pl $(top_builddir)/src/libppl.la $(WATCHDOG_LIBRARY) .libs/ppl_sicstus_sd.o
 	$(LIBTOOL) --mode=link --tag=CXX \
-	splfr $(srcdir)/ppl_sicstus.pl .libs/ppl_sicstus_sd.o -o $@ \
+	splfr --cflag="$(AM_CPPFLAGS)" \
+		$(srcdir)/ppl_sicstus.pl .libs/ppl_sicstus_sd.o -o $@ \
 		$(top_builddir)/src/libppl.la \
 		$(WATCHDOG_LIBRARY) \
 		@extra_libraries@
@@ -95,7 +99,7 @@ ppl_sicstus_sd_la_LDFLAGS = -module -avoid-version
 ppl_sicstus$(EXEEXT): ppl_sicstus.s.o $(top_builddir)/src/libppl.la $(WATCHDOG_LIBRARY)
 	$(LIBTOOL) --mode=link --tag=CXX \
 	spld --main=prolog \
-		--cflag=`echo '$(AM_CXXFLAGS) $(CXXFLAGS)' | tr " " ","` \
+		--cflag=`echo '$(AM_CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)' | tr " " ","` \
 		--resources=ppl_sicstus.s.o -o $@ \
 		$(top_builddir)/src/libppl.la \
 		$(WATCHDOG_LIBRARY) \
@@ -104,12 +108,14 @@ ppl_sicstus$(EXEEXT): ppl_sicstus.s.o $(top_builddir)/src/libppl.la $(WATCHDOG_L
 if ENABLE_STATIC
 
 ppl_sicstus.s.o: ppl_sicstus.pl ppl_sicstus_sd.o
-	splfr --static $(srcdir)/ppl_sicstus.pl ppl_sicstus_sd.o
+	splfr --cflag="$(AM_CPPFLAGS)" \
+		--static $(srcdir)/ppl_sicstus.pl ppl_sicstus_sd.o
 
 else !ENABLE_STATIC
 
 ppl_sicstus.s.o: ppl_sicstus.pl .libs/ppl_sicstus_sd.o
-	splfr --static $(srcdir)/ppl_sicstus.pl .libs/ppl_sicstus_sd.o
+	splfr --cflag="$(AM_CPPFLAGS)" \
+		--static $(srcdir)/ppl_sicstus.pl .libs/ppl_sicstus_sd.o
 
 endif !ENABLE_STATIC
 
@@ -185,6 +191,21 @@ clpq2_test: ppl_sicstus ppl_sicstus.pl sp_clpq.pl ../tests/clpq2.pl ../tests/scr
 	    --goal "main('$(top_srcdir)/interfaces/Prolog/tests/clpq2')." \
 	      <$(srcdir)/../tests/script_clpq2 >obtained_clpq2
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
+
+predicate_check_test: ppl_sicstus ppl_sicstus.pl sp_predicate_check.pl ../tests/ppl_predicate_check_main.pl $(EXPECTED_PCHK)
+	if [ $(srcdir) != `pwd` ]; then \
+	  cp -f $(srcdir)/../tests/ppl_predicate_check_common.pl . ; \
+	fi
+	cp -f ../tests/ppl_predicate_check_main.pl . ; \
+	$(LIBTOOL) --mode=execute \
+		-dlopen ../../../src/libppl.la \
+		$(WATCHDOG_DLOPEN) \
+		./ppl_sicstus -l $(srcdir)/sp_predicate_check.pl \
+        --goal "main."  \
+			>obtained_pchk
+	rm -f ppl_predicate_check_main.pl; \
+	rm -f ppl_predicate_check_common.pl; \
+	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
 
 endif BUILD_SICSTUS_PROLOG_INTERFACE
 

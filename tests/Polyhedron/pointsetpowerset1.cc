@@ -380,9 +380,9 @@ test17() {
   c_ps.add_disjunct(ph1);
 
   Pointset_Powerset<C_Polyhedron>::const_iterator i = c_ps.begin();
-  C_Polyhedron phi = i -> element();
+  C_Polyhedron phi = i->element();
   i++;
-  C_Polyhedron phi1 = i -> element();
+  C_Polyhedron phi1 = i->element();
 
   bool ok = phi.OK() && phi == ph;
 
@@ -459,6 +459,28 @@ test20() {
   return true;
 }
 
+bool
+test21() {
+  Variable x(0);
+  Variable y(1);
+  Pointset_Powerset<C_Polyhedron> c_ps1(2, UNIVERSE);
+
+  Pointset_Powerset<C_Polyhedron> c_ps2(2);
+  Constraint_System cs;
+  cs.insert(x >= 0);
+  cs.insert(x <= 1);
+  cs.insert(y >= 0);
+  cs.insert(y <= 1);
+  c_ps2.add_constraints(cs);
+
+  using namespace IO_Operators;
+  c_ps1.difference_assign(c_ps2);
+
+  nout << c_ps1 << endl;
+
+  return true;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -482,4 +504,5 @@ BEGIN_MAIN
   DO_TEST(test18);
   DO_TEST(test19);
   DO_TEST(test20);
+  DO_TEST(test21);
 END_MAIN

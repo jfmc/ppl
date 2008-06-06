@@ -1,4 +1,9 @@
-m4_define(`dnl', `m4_dnl')
+m4_define(`dnl', `m4_dnl')`'dnl
+m4_divert(-1)
+
+dnl This m4 file generates the file ppl_prolog.icc
+dnl using the code in ppl_interface_generator_prolog_icc_code.m4.
+
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
@@ -23,18 +28,14 @@ dnl site: http://www.cs.unipr.it/ppl/ .
 dnl This file generates ppl_prolog.icc.
 dnl
 dnl Include files defining macros that generate the non-fixed part.
-m4_include(`ppl_interface_generator_prolog_icc_code.m4')dnl
-m4_include(`ppl_interface_generator_common.m4')dnl
-m4_include(`ppl_interface_generator_prolog_dat.m4')dnl
-dnl
-m4_divert(-1)dnl
+m4_include(`ppl_interface_generator_prolog_icc_code.m4')
+m4_include(`ppl_interface_generator_prolog_procedure_generators.m4')
 
-dnl m4_pre_all_classes_code
-dnl
-dnl Definition for converting a term to a class handle code for all
-dnl classes must be placed before all the generated code so that one class
-dnl can be copied from another.
-m4_define(`m4_pre_all_classes_code', `')
+m4_divert`'dnl
+/* Prolog interface code.
+m4_include(`ppl_interface_generator_copyright')
+*/
+m4_divert(-1)
 
 dnl m4_add_bop_assign_code(Class, CPP_Class)
 dnl
@@ -52,7 +53,7 @@ m4_add_bop_assign_code($1)`'dnl
 ')
 
 m4_divert`'dnl
-dnl.
+dnl
 `#'include "ppl_prolog_common.icc"
 dnl
 dnl Generate the non-fixed part of the file.

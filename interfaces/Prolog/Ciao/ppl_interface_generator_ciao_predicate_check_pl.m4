@@ -1,4 +1,9 @@
-m4_define(`dnl', `m4_dnl')
+m4_define(`dnl', `m4_dnl')`'dnl
+m4_divert(-1)
+
+dnl This m4 file defines macros needed for generating
+dnl the Ciao dependent code for ciao_predicate_check.pl.
+
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
@@ -20,7 +25,6 @@ dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
-dnl This file generates ppl_ciao_predicate_check.pl
 /* Ciao Prolog interface: Ciao Prolog part for checking all predicates.
 m4_include(`ppl_interface_generator_copyright')
 */
@@ -39,7 +43,7 @@ m4_divert(1)
 
 :- set_prolog_flag(multi_arity_warnings, off).
 
-:- `include'('pl_check.pl').
+:-  `include'('ppl_predicate_check_main.pl').
 
 prolog_system('Ciao').
 
@@ -57,3 +61,5 @@ m4_define(`m4_extension', `m4_ifelse($4, 0, , `COMMA
 ')  $1/$2')dnl
 m4_patsubst(ppl_prolog_sys_code, COMMA, `,')`'dnl
 m4_undivert(1)`'dnl
+dnl
+dnl End of file generation.

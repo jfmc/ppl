@@ -22,6 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <jni.h>
 #include <ppl.hh>
+#include "interfaced_boxes.hh"
 
 
 using namespace Parma_Polyhedra_Library;
@@ -84,21 +85,21 @@ handle_exception(JNIEnv* env);
   The Java native number of type V to be converted.
 
   \exception std::invalid_argument
-  Thrown if the Java number is negative or if exceeds the maximum
-  value that type U allows to store.
+  Thrown if the Java number is negative.
 */
 template <typename U, typename V>
 U
 jtype_to_unsigned(const V& value) {
+  if (value < 0)
+    throw std::invalid_argument("not an unsigned integer.");
 
-  U d = 0;
-   if (value < 0)
-     throw std::invalid_argument("not an unsigned integer.");
-   else if (value > std::numeric_limits<U>::max())
-     throw std::invalid_argument("unsigned integer out of range.");
-   else
-       d = value;
-   return d;
+  if (sizeof(U) < sizeof(V)) {
+    if (value
+        > static_cast<V>(std::numeric_limits<U>::max()))
+      throw std::invalid_argument("unsigned integer out of range.");
+  }
+
+  return value;
 }
 
  // Converts a C++ bool to a Java boolean.
@@ -396,7 +397,7 @@ public:
  			 "max_in_codomain",
  			 "()J");
      jlong value = env->CallLongMethod(j_p_func, j_max_in_codomain_id);
-     return jtype_to_unsigned<dimension_type> (value);
+     return jtype_to_unsigned<dimension_type>(value);
   }
 
   bool maps(dimension_type i, dimension_type& j) const {

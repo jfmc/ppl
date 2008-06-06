@@ -109,29 +109,6 @@ Partially_Reduced_Product<D1, D2, R>
 }
 
 template <typename D1, typename D2, typename R>
-bool
-Partially_Reduced_Product<D1, D2, R>
-::add_recycled_constraints_and_minimize(Constraint_System& cs) {
-  bool empty1;
-  bool empty2;
-  if (d1.can_recycle_constraint_systems()) {
-    empty2 = d2.add_constraints_and_minimize(cs);
-    empty1 = d1.add_recycled_constraints_and_minimize(cs);
-  }
-  else
-    if (d2.can_recycle_constraint_systems()) {
-      empty1 = d1.add_constraints_and_minimize(cs);
-      empty2 = d2.add_recycled_constraints_and_minimize(cs);
-    }
-    else {
-      empty1 = d1.add_constraints_and_minimize(cs);
-      empty2 = d2.add_constraints_and_minimize(cs);
-    }
-  clear_reduced_flag();
-  return empty1 && empty2;
-}
-
-template <typename D1, typename D2, typename R>
 void
 Partially_Reduced_Product<D1, D2, R>
 ::add_recycled_congruences(Congruence_System& cgs) {
@@ -149,29 +126,6 @@ Partially_Reduced_Product<D1, D2, R>
       d2.add_congruences(cgs);
     }
   clear_reduced_flag();
-}
-
-template <typename D1, typename D2, typename R>
-bool
-Partially_Reduced_Product<D1, D2, R>
-::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
-  bool empty1;
-  bool empty2;
-  if (d1.can_recycle_congruence_systems()) {
-    empty2 = d2.add_congruences_and_minimize(cgs);
-    empty1 = d1.add_recycled_congruences_and_minimize(cgs);
-  }
-  else
-    if (d2.can_recycle_congruence_systems()) {
-      empty1 = d1.add_congruences_and_minimize(cgs);
-      empty2 = d2.add_recycled_congruences_and_minimize(cgs);
-    }
-    else {
-      empty1 = d1.add_congruences_and_minimize(cgs);
-      empty2 = d2.add_congruences_and_minimize(cgs);
-    }
-  clear_reduced_flag();
-  return empty1 && empty2;
 }
 
 template <typename D1, typename D2, typename R>

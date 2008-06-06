@@ -126,8 +126,8 @@ approximate_partition_aux(const PPL::Congruence& c,
   using namespace PPL;
   const Coefficient& c_modulus = c.modulus();
   Grid qq_copy(qq);
-
-  if (!qq.add_congruence_and_minimize(c)) {
+  qq.add_congruence(c);
+  if (qq.is_empty()) {
     r.add_disjunct(qq_copy);
     return true;
   }
@@ -161,11 +161,14 @@ approximate_partition_aux(const PPL::Congruence& c,
   le -= c_inhomogeneous_term;
   TEMP_INTEGER(n);
   rem_assign(n, c_inhomogeneous_term, c_modulus);
+  if (n < 0)
+    n += c_modulus;
   TEMP_INTEGER(i);
   for (i = c_modulus; i-- > 0; )
     if (i != n) {
       Grid qqq(qq_copy);
-      if (qqq.add_congruence_and_minimize((le+i %= 0) / c_modulus))
+      qqq.add_congruence((le+i %= 0) / c_modulus);
+      if (!qqq.is_empty())
 	r.add_disjunct(qqq);
     }
   return true;
@@ -287,7 +290,8 @@ PPL::Pointset_Powerset<PPL::Grid>
 template <>
 template <>
 PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
-::Pointset_Powerset(const Pointset_Powerset<C_Polyhedron>& y)
+::Pointset_Powerset(const Pointset_Powerset<C_Polyhedron>& y,
+                    Complexity_Class)
   : Base(), space_dim(y.space_dimension()) {
   Pointset_Powerset& x = *this;
   for (Pointset_Powerset<C_Polyhedron>::const_iterator i = y.begin(),
@@ -301,7 +305,8 @@ PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
 template <>
 template <>
 PPL::Pointset_Powerset<PPL::C_Polyhedron>
-::Pointset_Powerset(const Pointset_Powerset<NNC_Polyhedron>& y)
+::Pointset_Powerset(const Pointset_Powerset<NNC_Polyhedron>& y,
+                    Complexity_Class)
   : Base(), space_dim(y.space_dimension()) {
   Pointset_Powerset& x = *this;
   for (Pointset_Powerset<NNC_Polyhedron>::const_iterator i = y.begin(),

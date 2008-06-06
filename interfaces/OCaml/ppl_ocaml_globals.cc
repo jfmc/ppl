@@ -21,6 +21,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl.hh"
+#include "interfaced_boxes.hh"
 
 // OCaml include files.
 #define CAML_NAME_SPACE

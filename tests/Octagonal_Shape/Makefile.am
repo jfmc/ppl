@@ -58,6 +58,7 @@ cc76extrapolation1 \
 cc76narrowing1 \
 chinainit \
 concatenate1 \
+congruences1 \
 constraints1 \
 contains1 \
 containsintegerpoint1 \
@@ -67,8 +68,10 @@ empty1 \
 expandspacedim1 \
 foldspacedims1 \
 frombdshape1 \
+frombox1 \
 fromgensys1 \
 fromgrid1 \
+fromoctagonalshape1 \
 frompolyhedron1 \
 fromspacedim1 \
 generalizedaffineimage1 \
@@ -91,11 +94,14 @@ membytes1 \
 minconstraints1 \
 octdifference1 \
 octhull1 \
+pointsetpowerset1 \
 relatwithcons1 \
 relatwithcons2 \
+relatwithcons3 \
 relatwithgen1 \
 removespacedims1 \
 timeelapse1 \
+unconstrain1 \
 universe1 \
 writeoctagon1
 
@@ -178,6 +184,8 @@ chinainit_SOURCES = chinainit.cc
 
 concatenate1_SOURCES = concatenate1.cc
 
+congruences1_SOURCES = congruences1.cc
+
 constraints1_SOURCES = constraints1.cc
 
 contains1_SOURCES = contains1.cc
@@ -196,9 +204,13 @@ foldspacedims1_SOURCES = foldspacedims1.cc
 
 frombdshape1_SOURCES = frombdshape1.cc
 
+frombox1_SOURCES = frombox1.cc
+
 fromgensys1_SOURCES = fromgensys1.cc
 
 fromgrid1_SOURCES = fromgrid1.cc
+
+fromoctagonalshape1_SOURCES = fromoctagonalshape1.cc
 
 frompolyhedron1_SOURCES = frompolyhedron1.cc
 
@@ -236,14 +248,19 @@ octdifference1_SOURCES = octdifference1.cc
 
 octhull1_SOURCES = octhull1.cc
 
+pointsetpowerset1_SOURCES = pointsetpowerset1.cc
+
 relatwithcons1_SOURCES = relatwithcons1.cc
 relatwithcons2_SOURCES = relatwithcons2.cc
+relatwithcons3_SOURCES = relatwithcons3.cc
 
 relatwithgen1_SOURCES = relatwithgen1.cc
 
 removespacedims1_SOURCES = removespacedims1.cc
 
 timeelapse1_SOURCES = timeelapse1.cc
+
+unconstrain1_SOURCES = unconstrain1.cc
 
 universe1_SOURCES = universe1.cc
 

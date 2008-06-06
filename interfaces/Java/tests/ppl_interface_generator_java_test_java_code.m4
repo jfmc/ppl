@@ -41,6 +41,20 @@ m4_define(`m4_new_class_element_code',
     System.gc();
 ')
 
+m4_define(`m4_more_new_class_element_code',
+`
+    if (("@FRIEND@" != "@TOPOLOGY@@CLASS@")) {
+       @FRIEND@ @LFRIEND@_@FRIEND@1 = new @FRIEND@(@CONSTRAINER@s1);
+       @TOPOLOGY@@CLASS@ @LTOPOLOGY@@LCLASS@_@FRIEND@2
+         = new @TOPOLOGY@@CLASS@(@LFRIEND@_@FRIEND@1);
+    System.gc();
+    System.out.println(
+      "@TOPOLOGY@@CLASS@ @LTOPOLOGY@@LCLASS@_@FRIEND@");
+    System.out.println(
+      "   = new @TOPOLOGY@@CLASS@(@LFRIEND@_@FRIEND@1) ok.");
+}
+')
+
 m4_define(`ppl_@CLASS@_bounds_from_@ABOVEBELOW@_code',`
 boolean @LTOPOLOGY@@CLASS@1_bounds_from_@ABOVEBELOW@ = @LTOPOLOGY@@LCLASS@1.bounds_from_@ABOVEBELOW@(le);
 ')
@@ -117,6 +131,11 @@ m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_code', `
 
 ')
 
+m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@_code', `
+@LTOPOLOGY@@LCLASS@1.refine_with_@REFINE_REPRESENT@(@REFINE_REPRESENT@1);
+
+')
+
 m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code', `
 @LTOPOLOGY@@LCLASS@1.add_@ADD_REPRESENT@_and_minimize(@ADD_REPRESENT@1);
 
@@ -125,6 +144,12 @@ m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code', `
  m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_code', `
 
 @LTOPOLOGY@@LCLASS@1.add_@ADD_REPRESENT@s(@ADD_REPRESENT@s1);
+
+ ')
+
+ m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s_code', `
+
+@LTOPOLOGY@@LCLASS@1.refine_with_@REFINE_REPRESENT@s(@REFINE_REPRESENT@s1);
 
  ')
 
@@ -150,10 +175,16 @@ boolean @LTOPOLOGY@@LCLASS@1_@UB_EXACT@
 
 ')
 
-m4_define(`ppl_Grid_generalized_@AFFIMAGE@_code', `
-@LTOPOLOGY@@LCLASS@1.generalized_@AFFIMAGE@(var, Relation_Symbol.EQUAL,
+m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruence_code', `
+@LTOPOLOGY@@LCLASS@1.generalized_@AFFIMAGE@_with_congruence(var,
+                                                    Relation_Symbol.EQUAL,
 						    le, coeff1, coeff1);
+')
 
+m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence_code', `
+@LTOPOLOGY@@LCLASS@1.generalized_@AFFIMAGE@_lhs_rhs_with_congruence(le,
+                                                    Relation_Symbol.EQUAL,
+						    le, coeff1);
 ')
 
 m4_define(`ppl_@CLASS@_equals_@CLASS@_code', `
@@ -182,6 +213,11 @@ m4_define(`ppl_@CLASS@_@SIMPLIFY@_code',`
 
 ')
 
+m4_define(`ppl_@CLASS@_unconstrain_code',`
+@LTOPOLOGY@@LCLASS@1.unconstrain(var);
+
+')
+
 
 m4_define(`ppl_@CLASS@_constrains_code', `
 boolean @LTOPOLOGY@@LCLASS@1_constrains
@@ -206,9 +242,9 @@ System.out.println(@LTOPOLOGY@@LCLASS@1.toString());
 
 ');
 
-m4_define(`ppl_@CLASS@_total_memory_in_bytes_code', `
-System.out.print("Total memory in bytes of @LTOPOLOGY@@LCLASS@1: ");
-System.out.println(@LTOPOLOGY@@LCLASS@1.total_memory_in_bytes());
+m4_define(`ppl_@CLASS@_@MEMBYTES@_code', `
+System.out.print("@UMEMBYTES@ of @LTOPOLOGY@@LCLASS@1: ");
+System.out.println(@LTOPOLOGY@@LCLASS@1.@MEMBYTES@());
 
 ');
 

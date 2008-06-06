@@ -34,7 +34,7 @@ namespace PPL = Parma_Polyhedra_Library;
 // TODO: In the Grid constructors adapt and use the given system if it
 //       is modifiable, instead of using a copy.
 
-PPL::Grid::Grid(const Grid& y)
+PPL::Grid::Grid(const Grid& y, Complexity_Class)
   : con_sys(),
     gen_sys(),
     status(y.status),
@@ -130,93 +130,105 @@ PPL::Grid::Grid(Constraint_System& cs, Recycle_Input)
   construct(cgs);
 }
 
-PPL::Grid::Grid(const Polyhedron& ph)
+PPL::Grid::Grid(const Polyhedron& ph,
+                Complexity_Class complexity)
   : con_sys(ph.space_dimension() > max_space_dimension()
 	    ? throw_space_dimension_overflow("Grid(ph)",
 					     "the space dimension of ph "
 					     "exceeds the maximum allowed "
 					     "space dimension"), 0
-	    : ph.space_dimension()) {
+	    : ph.space_dimension()),
+    gen_sys(ph.space_dimension()) {
   space_dim = ph.space_dimension();
 
-  // If the polyhedron is empty, universe or has zero dimensions construct
-  // the grid accordingly.
-  if (ph.is_empty())
-    set_empty();
-  else if (space_dim == 0)
-    set_zero_dim_univ();
-  else if (ph.is_universe())
-    construct(space_dim, UNIVERSE);
-  else {
-
-    gen_sys = Grid_Generator_System(space_dim);
-    if (!ph.constraints_are_up_to_date()) {
-      // If the polyhedron's constraints are not up-to-date,
-      // use the generators instead to build the grid.
-
-      assert(ph.generators_are_up_to_date());
-
-      // First find a point or closure point and convert it to a
-      // grid point and add to the (initially empty) set of grid generators.
-      const Generator_System& gs = ph.generators();
-      Grid_Generator_System ggs(space_dim);
-      Linear_Expression point_expr;
-      Coefficient point_divisor;
-      for (Generator_System::const_iterator g = gs.begin(),
-	     gs_end = gs.end(); g != gs_end; ++g) {
-        if (g->is_point() || g->is_closure_point()) {
-	  for (dimension_type i = space_dim; i-- > 0; ) {
-            const Variable v(i);
-	    point_expr += g->coefficient(v) * v;
-            point_divisor = g->divisor();
-	  }
-	  ggs.insert(grid_point(point_expr, point_divisor));
-          break;
-	}
-      }
-
-      // Add grid lines for all the other generators.
-      // If the polyhedron's generator is a (closure) point, the grid line must
-      // have the direction given by a line that joins the grid point already
-      // inserted and the new point.
-      TEMP_INTEGER(coeff);
-      for (Generator_System::const_iterator g = gs.begin(),
-	     gs_end = gs.end(); g != gs_end; ++g) {
-	Linear_Expression e;
-        if (g->is_point() || g->is_closure_point()) {
-          Coefficient g_divisor = g->divisor();
-	  for (dimension_type i = space_dim; i-- > 0; ) {
-            const Variable v(i);
-            coeff = point_expr.coefficient(v) * g_divisor;
-            coeff -= g->coefficient(v) * point_divisor;
-	    e += coeff * v;
-	  }
-          if (e.all_homogeneous_terms_are_zero())
-            continue;
-	}
-        else
-	  for (dimension_type i = space_dim; i-- > 0; ) {
-            const Variable v(i);
-	    e += g->coefficient(v) * v;
-	  }
-	ggs.insert(grid_line(e));
-      }
-      construct(ggs);
-    }
-
-    else {
-      // If the polyhedron's constraints are up-to-date, use these to
-      // build the grid. Only the equality constraints need be used.
-      const Constraint_System& cs = ph.constraints();
-      Congruence_System cgs;
-      cgs.insert(0*Variable(space_dim - 1) %= 1);
-      for (Constraint_System::const_iterator i = cs.begin(),
-	     cs_end = cs.end(); i != cs_end; ++i)
-	if (i->is_equality())
-	  cgs.insert(*i);
-      construct(cgs);
-    }
+  // A zero-dim polyhedron causes no complexity problems.
+  if (space_dim == 0) {
+    if (ph.is_empty())
+      set_empty();
+    else
+      set_zero_dim_univ();
+    return;
   }
+
+  // A polyhedron known to be empty causes no complexity problems.
+  if (ph.marked_empty()) {
+    set_empty();
+    return;
+  }
+
+  bool use_constraints = ph.constraints_are_minimized()
+    || !ph.generators_are_up_to_date();
+
+  // Minimize the constraint description if it is needed and
+  // the complexity allows it.
+  if (use_constraints && complexity == ANY_COMPLEXITY)
+    if (!ph.minimize()) {
+      set_empty();
+      return;
+    }
+
+  if (use_constraints) {
+    // Only the equality constraints need be used.
+    assert(ph.constraints_are_up_to_date());
+    const Constraint_System& cs = ph.constraints();
+    Congruence_System cgs;
+    cgs.insert(0*Variable(space_dim - 1) %= 1);
+    for (Constraint_System::const_iterator i = cs.begin(),
+           cs_end = cs.end(); i != cs_end; ++i)
+      if (i->is_equality())
+        cgs.insert(*i);
+    construct(cgs);
+  }
+  else {
+    gen_sys = Grid_Generator_System(space_dim);
+    // First find a point or closure point and convert it to a
+    // grid point and add to the (initially empty) set of grid generators.
+    assert(ph.generators_are_up_to_date());
+    const Generator_System& gs = ph.generators();
+    Grid_Generator_System ggs(space_dim);
+    Linear_Expression point_expr;
+    Coefficient point_divisor;
+    for (Generator_System::const_iterator g = gs.begin(),
+           gs_end = gs.end(); g != gs_end; ++g) {
+      if (g->is_point() || g->is_closure_point()) {
+        for (dimension_type i = space_dim; i-- > 0; ) {
+          const Variable v(i);
+          point_expr += g->coefficient(v) * v;
+          point_divisor = g->divisor();
+        }
+        ggs.insert(grid_point(point_expr, point_divisor));
+        break;
+      }
+    }
+    // Add grid lines for all the other generators.
+    // If the polyhedron's generator is a (closure) point, the grid line must
+    // have the direction given by a line that joins the grid point already
+    // inserted and the new point.
+    TEMP_INTEGER(coeff);
+    for (Generator_System::const_iterator g = gs.begin(),
+           gs_end = gs.end(); g != gs_end; ++g) {
+      Linear_Expression e;
+      if (g->is_point() || g->is_closure_point()) {
+        Coefficient g_divisor = g->divisor();
+        for (dimension_type i = space_dim; i-- > 0; ) {
+          const Variable v(i);
+          coeff = point_expr.coefficient(v) * g_divisor;
+          coeff -= g->coefficient(v) * point_divisor;
+          e += coeff * v;
+        }
+        if (e.all_homogeneous_terms_are_zero())
+          continue;
+      }
+      else
+        for (dimension_type i = space_dim; i-- > 0; ) {
+          const Variable v(i);
+          e += g->coefficient(v) * v;
+        }
+      ggs.insert(grid_line(e));
+    }
+    construct(ggs);
+  }
+  assert(OK());
 }
 
 PPL::Grid&
@@ -269,25 +281,14 @@ PPL::Grid::congruences() const {
     return con_sys;
   }
 
-  congruences_are_up_to_date() || update_congruences();
+  if (!congruences_are_up_to_date())
+    update_congruences();
 
   return con_sys;
 }
 
 const PPL::Congruence_System&
 PPL::Grid::minimized_congruences() const {
-  if (space_dim == 0) {
-    if (!marked_empty()) {
-      // Ensure the congruences are minimal by extending a zero dim
-      // universe congruence system to the appropriate dimension and
-      // then storing it in `con_sys'.
-      Congruence_System cgs(Congruence::zero_dim_integrality());
-      cgs.increase_space_dimension(space_dim);
-      cgs[0][0] = 1; // Recover minimal form after cgs(zdi) normalization.
-      const_cast<Congruence_System&>(con_sys).swap(cgs);
-    }
-    return con_sys;
-  }
   if (congruences_are_up_to_date() && !congruences_are_minimized()) {
     // Minimize the congruences.
     Grid& gr = const_cast<Grid&>(*this);
@@ -519,7 +520,8 @@ PPL::Grid::relation_with(const Grid_Generator& g) const {
   if (space_dim == 0)
     return Poly_Gen_Relation::subsumes();
 
-  congruences_are_up_to_date() || update_congruences();
+  if (!congruences_are_up_to_date())
+    update_congruences();
 
   return
     con_sys.satisfies_all_congruences(g)
@@ -544,7 +546,8 @@ PPL::Grid::relation_with(const Generator& g) const {
   if (space_dim == 0)
     return Poly_Gen_Relation::subsumes();
 
-  congruences_are_up_to_date() || update_congruences();
+  if (!congruences_are_up_to_date())
+    update_congruences();
 
   Linear_Expression expr;
   for (dimension_type i = g_space_dim; i-- > 0; ) {
@@ -784,10 +787,8 @@ PPL::Grid::contains_integer_point() const {
     cgs.insert(Variable(var_index) %= 0);
 
   Grid gr = *this;
-  if (gr.add_congruences_and_minimize(cgs))
-    return true;
-
-  return false;
+  gr.add_congruences(cgs);
+  return !gr.is_empty();
 }
 
 bool
@@ -1068,7 +1069,8 @@ PPL::Grid::add_congruence(const Congruence& cg) {
     return;
   }
 
-  congruences_are_up_to_date() || update_congruences();
+  if (!congruences_are_up_to_date())
+    update_congruences();
 
   con_sys.insert(cg);
 
@@ -1187,7 +1189,8 @@ PPL::Grid::add_recycled_congruences(Congruence_System& cgs) {
   }
 
   // The congruences are required.
-  congruences_are_up_to_date() || update_congruences();
+  if (!congruences_are_up_to_date())
+    update_congruences();
 
   // Swap (instead of copying) the coefficients of `cgs' (which is
   // writable).
@@ -1261,7 +1264,8 @@ PPL::Grid::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
   if (marked_empty())
     return false;
 
-  congruences_are_up_to_date() || update_congruences();
+  if (!congruences_are_up_to_date())
+    update_congruences();
 
   con_sys.recycling_insert(cgs);
 
@@ -1389,10 +1393,11 @@ PPL::Grid::add_recycled_grid_generators(Grid_Generator_System& gs) {
     return;
   }
 
-  if (!marked_empty()
-      && (generators_are_up_to_date() || update_generators())) {
+  if (!marked_empty()) {
     // The grid contains at least one point.
 
+    if (!generators_are_up_to_date())
+      update_generators();
     normalize_divisors(gs, gen_sys);
 
     gen_sys.recycling_insert(gs);
@@ -1460,9 +1465,11 @@ PPL
   // Adjust `gs' to the right dimension.
   gs.insert(parameter(0*Variable(space_dim-1)));
 
-  if (!marked_empty()
-      && (generators_are_up_to_date() || update_generators())) {
+  if (!marked_empty()) {
     // The grid contains at least one point.
+
+    if (!generators_are_up_to_date())
+      update_generators();
     normalize_divisors(gs, gen_sys);
 
     for (dimension_type row = 0,
@@ -1493,6 +1500,86 @@ PPL::Grid::add_grid_generators_and_minimize(const Grid_Generator_System& gs) {
 }
 
 void
+PPL::Grid::refine_with_constraint(const Constraint& c) {
+  // FIXME: This is a currently copy of add_constraint() since that will
+  //        be changed to throw an exception unless the constraint
+  //        is an equality.
+  // The dimension of `c' must be at most `space_dim'.
+  if (space_dim < c.space_dimension())
+    throw_dimension_incompatible("add_constraint(c)", "c", c);
+  if (c.is_equality()) {
+    Congruence cg(c);
+    add_congruence(cg);
+  }
+}
+
+void
+PPL::Grid::refine_with_constraints(const Constraint_System& cs) {
+  // FIXME: This is a currently copy of add_constraints() since that will
+  //        be changed to throw an exception unless the constraint
+  //        is an equality.
+  // The dimension of `cs' must be at most `space_dim'.
+  if (space_dim < cs.space_dimension())
+    throw_dimension_incompatible("add_constraints(cs)", "cs", cs);
+  Congruence_System cgs(cs);
+  add_recycled_congruences(cgs);
+}
+
+void
+PPL::Grid::unconstrain(const Variable var) {
+  // Dimension-compatibility check.
+  if (space_dim < var.id())
+    throw_dimension_incompatible("unconstrain(var)", var.id());
+
+  // Do something only if the grid is non-empty.
+  if (marked_empty()
+      || (!generators_are_up_to_date() && !update_generators()))
+    // Empty: do nothing.
+    return;
+
+  assert(generators_are_up_to_date());
+  Grid_Generator l = grid_line(var);
+  gen_sys.recycling_insert(l);
+  // With the added generator, congruences are out of date.
+  clear_congruences_up_to_date();
+  clear_generators_minimized();
+  assert(OK());
+}
+
+void
+PPL::Grid::unconstrain(const Variables_Set& to_be_unconstrained) {
+  // The cylindrification wrt no dimensions is a no-op.
+  // This case also captures the only legal cylindrification
+  // of a grid in a 0-dim space.
+  if (to_be_unconstrained.empty())
+    return;
+
+  // Dimension-compatibility check.
+  const dimension_type min_space_dim = to_be_unconstrained.space_dimension();
+  if (space_dim < min_space_dim)
+    throw_dimension_incompatible("unconstrain(vs)", min_space_dim);
+
+  // Do something only if the grid is non-empty.
+  if (marked_empty()
+      || (!generators_are_up_to_date() && !update_generators()))
+    // Empty: do nothing.
+    return;
+
+  assert(generators_are_up_to_date());
+  // Since `gen_sys' is not empty, the space dimension of the inserted
+  // generators are automatically adjusted.
+  for (Variables_Set::const_iterator tbu = to_be_unconstrained.begin(),
+         tbu_end = to_be_unconstrained.end(); tbu != tbu_end; ++tbu) {
+    Grid_Generator l = grid_line(Variable(*tbu));
+    gen_sys.recycling_insert(l);
+  }
+  // Constraints are no longer up-to-date.
+  clear_generators_minimized();
+  clear_congruences_up_to_date();
+  assert(OK());
+}
+
+void
 PPL::Grid::intersection_assign(const Grid& y) {
   Grid& x = *this;
   // Dimension-compatibility check.
@@ -1513,8 +1600,10 @@ PPL::Grid::intersection_assign(const Grid& y) {
     return;
 
   // The congruences must be up-to-date.
-  x.congruences_are_up_to_date() || x.update_congruences();
-  y.congruences_are_up_to_date() || y.update_congruences();
+  if (!x.congruences_are_up_to_date())
+    x.update_congruences();
+  if (!y.congruences_are_up_to_date())
+    y.update_congruences();
 
   if (!y.con_sys.empty()) {
     x.con_sys.insert(y.con_sys);
@@ -1870,7 +1959,8 @@ generalized_affine_image(const Variable var,
       throw_invalid_argument("generalized_affine_image(v, r, e, d, m)",
                              "r != EQUAL && m != 0");
 
-    generators_are_up_to_date() || minimize();
+    if (!generators_are_up_to_date())
+      minimize();
 
     // Any image of an empty grid is empty.
     if (marked_empty())
@@ -1891,7 +1981,8 @@ generalized_affine_image(const Variable var,
 
   // Modulate dimension `var' according to `modulus'.
 
-  generators_are_up_to_date() || minimize();
+  if (!generators_are_up_to_date())
+    minimize();
 
   // Test if minimization, possibly in affine_image, found an empty
   // grid.
@@ -1944,7 +2035,8 @@ generalized_affine_preimage(const Variable var,
       throw_invalid_argument("generalized_affine_preimage(v, r, e, d, m)",
                              "r != EQUAL && m != 0");
 
-    generators_are_up_to_date() || minimize();
+    if (!generators_are_up_to_date())
+      minimize();
 
     // Any image of an empty grid is empty.
     if (marked_empty())
@@ -2003,7 +2095,6 @@ generalized_affine_image(const Linear_Expression& lhs,
 			 const Relation_Symbol relsym,
 			 const Linear_Expression& rhs,
 			 Coefficient_traits::const_reference modulus) {
-
   // Dimension-compatibility checks.
   // The dimension of `lhs' should be at most the dimension of
   // `*this'.
@@ -2030,7 +2121,8 @@ generalized_affine_image(const Linear_Expression& lhs,
       throw_invalid_argument("generalized_affine_image(e1, r, e2, m)",
                              "r != EQUAL && m != 0");
 
-    generators_are_up_to_date() || minimize();
+    if (!generators_are_up_to_date())
+      minimize();
 
     // Any image of an empty grid is empty.
     if (marked_empty())
@@ -2082,9 +2174,10 @@ generalized_affine_image(const Linear_Expression& lhs,
     add_space_dimensions_and_embed(1);
 
     // Constrain the new dimension to be equal to the right hand side.
-    // TODO: Use add_congruence_and_minimize() when it has been updated.
+    // TODO: Use add_congruence() when it has been updated.
     Congruence_System new_cgs1(new_var == rhs);
-    if (add_recycled_congruences_and_minimize(new_cgs1)) {
+    add_recycled_congruences(new_cgs1);
+    if (!is_empty()) {
       // The grid still contains points.
 
       // Existentially quantify all the variables occurring in the left
@@ -2092,7 +2185,8 @@ generalized_affine_image(const Linear_Expression& lhs,
 
       // Adjust `new_lines' to the right dimension.
       new_lines.insert(parameter(0*Variable(space_dim-1)));
-      // Add the lines to `gen_sys'.
+      // Add the lines to `gen_sys' (first make sure they are up-to-date).
+      update_generators();
       gen_sys.recycling_insert(new_lines);
       normalize_divisors(gen_sys);
       // Update the flags.
@@ -2158,7 +2252,8 @@ generalized_affine_preimage(const Linear_Expression& lhs,
       throw_invalid_argument("generalized_affine_preimage(e1, r, e2, m)",
                              "r != EQUAL && m != 0");
 
-    generators_are_up_to_date() || minimize();
+    if (!generators_are_up_to_date())
+      minimize();
 
     // Any image of an empty grid is empty.
     if (marked_empty())
@@ -2211,9 +2306,10 @@ generalized_affine_preimage(const Linear_Expression& lhs,
     add_space_dimensions_and_embed(1);
 
     // Constrain the new dimension to be equal to `lhs'
-    // TODO: Use add_congruence_and_minimize() when it has been updated.
+    // TODO: Use add_congruence() when it has been updated.
     Congruence_System new_cgs1(new_var == lhs);
-    if (add_recycled_congruences_and_minimize(new_cgs1)) {
+    add_recycled_congruences(new_cgs1);
+    if (!is_empty()) {
       // The grid still contains points.
 
       // Existentially quantify all the variables occurring in the left
@@ -2221,7 +2317,8 @@ generalized_affine_preimage(const Linear_Expression& lhs,
 
       // Adjust `new_lines' to the right dimension.
       new_lines.insert(parameter(0*Variable(space_dim-1)));
-      // Add the lines to `gen_sys'.
+      // Add the lines to `gen_sys' (first make sure they are up-to-date).
+      update_generators();
       gen_sys.recycling_insert(new_lines);
       normalize_divisors(gen_sys);
       // Update the flags.
@@ -2448,7 +2545,8 @@ PPL::Grid::is_disjoint_from(const Grid& y) const {
   if (space_dim != y.space_dim)
     throw_dimension_incompatible("is_disjoint_from(y)", "y", y);
   Grid z = *this;
-  return !z.intersection_assign_and_minimize(y);
+  z.intersection_assign(y);
+  return z.is_empty();
 }
 
 void

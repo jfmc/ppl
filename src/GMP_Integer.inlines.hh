@@ -104,16 +104,6 @@ raw_value(GMP_Integer& x) {
   return x;
 }
 
-inline memory_size_type
-external_memory_in_bytes(const GMP_Integer& x) {
-  return x.get_mpz_t()[0]._mp_alloc * PPL_SIZEOF_MP_LIMB_T;
-}
-
-inline memory_size_type
-total_memory_in_bytes(const GMP_Integer& x) {
-  return sizeof(x) + external_memory_in_bytes(x);
-}
-
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_GMP_Integer_inlines_hh)

@@ -2,6 +2,7 @@
 *.itf
 *.la
 *.lo
+*.loT
 *.po
 *_glue.c
 .deps
@@ -14,3 +15,4 @@ ciao_pl_check
 obtained
 obtained2
 obtained3
+ppl_ciao.pl

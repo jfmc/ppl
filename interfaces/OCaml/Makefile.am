@@ -25,7 +25,7 @@ abs_srcdir = @abs_srcdir@
 interface_generator_files = \
 ppl_interface_generator_ocaml_cc.m4 \
 ppl_interface_generator_ocaml_cc_code.m4 \
-ppl_interface_generator_ocaml_dat.m4 \
+ppl_interface_generator_ocaml_procedure_generators.m4 \
 ppl_interface_generator_ocaml_ml.m4 \
 ppl_interface_generator_ocaml_ml_code.m4 \
 ppl_interface_generator_ocaml_mli.m4 \
@@ -55,9 +55,11 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../ppl_interface_generator_common.m4 \
 ../ppl_interface_generator_common_dat.m4 \
 ../ppl_interface_generator_copyright \
-ppl_interface_generator_ocaml_dat.m4 \
+ppl_interface_generator_ocaml_procedure_generators.m4 \
 ppl_interface_generator_ocaml_ml.m4 \
 ppl_interface_generator_ocaml_ml_code.m4 \
+ppl_interface_generator_ocaml_mli.m4 \
+ppl_interface_generator_ocaml_mli_code.m4 \
 ppl_interface_generator_ocaml_cc.m4 \
 ppl_interface_generator_ocaml_cc_code.m4
 
@@ -113,7 +115,12 @@ noinst_LIBRARIES = libppl_ocaml.a
 nodist_libppl_ocaml_a_SOURCES = \
 ppl_ocaml.cc
 
-AM_CPPFLAGS = -I$(OCAMLC_ROOT) -I$(top_srcdir)/src -I$(top_builddir)/src @extra_includes@
+AM_CPPFLAGS = \
+-I$(OCAMLC_ROOT) \
+-I$(top_srcdir)/interfaces \
+-I$(top_srcdir)/src \
+-I$(top_builddir)/src \
+@extra_includes@
 
 noinst_PROGRAM = test1
 

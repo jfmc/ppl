@@ -379,6 +379,12 @@ Polyhedron::minimized_grid_generators() const {
 }
 
 inline bool
+Polyhedron::add_congruence_and_minimize(const Congruence& cg) {
+  add_congruence(cg);
+  return minimize();
+}
+
+inline bool
 Polyhedron::add_congruences_and_minimize(const Congruence_System& cgs) {
   add_congruences(cgs);
   return minimize();

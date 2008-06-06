@@ -59,7 +59,7 @@ test01() {
   known_result.add_constraint(x8 - x9 <= 2);
   known_result.add_constraint(x9 <= 7);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** box1.concatenate_assign(box2) ***");
 
@@ -84,7 +84,7 @@ test02() {
 
   Rational_Box known_result(2, EMPTY);
 
-  bool ok = (Rational_Box(box2) == known_result);
+  bool ok = check_result(box2, known_result);
 
   print_constraints(box2, "*** box2.concatenate_assign(box1) ***");
 
@@ -116,7 +116,7 @@ test03() {
   known_result.add_constraint(y == 3);
   known_result.add_constraint(x - y <= 2);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** box1.concatenate_assign(box2) ***");
 
@@ -160,7 +160,7 @@ test04() {
   known_result.add_constraint(D - E <= 0);
   known_result.add_constraint(E - D <= 1);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** box1.concatenate_assign(box2) ***");
 
@@ -185,7 +185,40 @@ test05() {
 
   Rational_Box known_result(2, EMPTY);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box1, known_result);
+
+  print_constraints(box1, "*** box1.concatenate_assign(box2) ***");
+
+  return ok;
+}
+
+/* Concatenate an empty box to a universe */
+/*
+   This shows a bug in either concatenate_assign() or OK()
+   When executing box1.concatenate_assign(box2),
+   the assertion `box1.OK()' fails.
+*/
+bool
+test06() {
+  Variable x(0);
+
+  TBox box1(1);
+
+  TBox box2(1);
+  box2.add_constraint(x <= 0);
+  box2.add_constraint(x >= 1);
+
+  print_constraints(box1, "*** box1 ***");
+  print_constraints(box2, "*** box2 ***");
+
+  box1.OK();
+  box2.OK();
+
+  box1.concatenate_assign(box2);
+
+  Rational_Box known_result(2, EMPTY);
+
+  bool ok = check_result(box1, known_result);
 
   print_constraints(box1, "*** box1.concatenate_assign(box2) ***");
 
@@ -200,4 +233,5 @@ BEGIN_MAIN
   DO_TEST(test03);
   DO_TEST(test04);
   DO_TEST(test05);
+  DO_TEST(test06);
 END_MAIN

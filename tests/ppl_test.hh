@@ -147,6 +147,15 @@ catch (const std::exception& e) {					\
 #define DO_TEST_F8(test) DO_TEST(test)
 #define DO_TEST_F8A(test) DO_TEST(test)
 
+#define DO_TEST_F64_MAY_OVERFLOW_IF_INEXACT(test, shape) DO_TEST(test)
+#define DO_TEST_F64A_MAY_OVERFLOW_IF_INEXACT(test, shape) DO_TEST(test)
+#define DO_TEST_F32_MAY_OVERFLOW_IF_INEXACT(test, shape) DO_TEST(test)
+#define DO_TEST_F32A_MAY_OVERFLOW_IF_INEXACT(test, shape) DO_TEST(test)
+#define DO_TEST_F16_MAY_OVERFLOW_IF_INEXACT(test, shape) DO_TEST(test)
+#define DO_TEST_F16A_MAY_OVERFLOW_IF_INEXACT(test, shape) DO_TEST(test)
+#define DO_TEST_F8_MAY_OVERFLOW_IF_INEXACT(test, shape) DO_TEST(test)
+#define DO_TEST_F8A_MAY_OVERFLOW_IF_INEXACT(test, shape) DO_TEST(test)
+
 #elif PPL_COEFFICIENT_BITS == 64
 
 #ifdef NDEBUG
@@ -160,7 +169,24 @@ catch (const std::exception& e) {					\
 #define DO_TEST_F8(test) DO_TEST(test)
 #define DO_TEST_F8A(test) DO_TEST(test)
 
-#else
+#define DO_TEST_F64_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F64A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F32_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F32A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F16_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F16A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F8_MAY_OVERFLOW_IF_INEXACT(test, shape)   \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F8A_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+
+#else // PPL_COEFFICIENT_BITS == 64 && !defined(NDEBUG)
 
 #define DO_TEST_F64(test) DO_TEST_OVERFLOW(test)
 #define DO_TEST_F64A(test) DO_TEST_OVERFLOW(test)
@@ -170,6 +196,23 @@ catch (const std::exception& e) {					\
 #define DO_TEST_F16A(test) DO_TEST(test)
 #define DO_TEST_F8(test) DO_TEST(test)
 #define DO_TEST_F8A(test) DO_TEST(test)
+
+#define DO_TEST_F64_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F64A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F32A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F16_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F16A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F8_MAY_OVERFLOW_IF_INEXACT(test, shape)   \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F8A_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
 
 #endif // !defined(NDEBUG)
 
@@ -186,7 +229,24 @@ catch (const std::exception& e) {					\
 #define DO_TEST_F8(test) DO_TEST(test)
 #define DO_TEST_F8A(test) DO_TEST(test)
 
-#else
+#define DO_TEST_F64_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F64A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F16_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F16A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F8_MAY_OVERFLOW_IF_INEXACT(test, shape)   \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F8A_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+
+#else // PPL_COEFFICIENT_BITS == 32 && !defined(NDEBUG)
 
 #define DO_TEST_F64(test) DO_TEST_OVERFLOW(test)
 #define DO_TEST_F64A(test) DO_TEST_OVERFLOW(test)
@@ -196,6 +256,23 @@ catch (const std::exception& e) {					\
 #define DO_TEST_F16A(test) DO_TEST(test)
 #define DO_TEST_F8(test) DO_TEST(test)
 #define DO_TEST_F8A(test) DO_TEST(test)
+
+#define DO_TEST_F64_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F64A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F16_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F16A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F8_MAY_OVERFLOW_IF_INEXACT(test, shape)   \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F8A_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
 
 #endif // !defined(NDEBUG)
 
@@ -212,7 +289,24 @@ catch (const std::exception& e) {					\
 #define DO_TEST_F8(test) DO_TEST(test)
 #define DO_TEST_F8A(test) DO_TEST(test)
 
-#else
+#define DO_TEST_F64_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F64A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F16_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F16A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F8_MAY_OVERFLOW_IF_INEXACT(test, shape)   \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F8A_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+
+#else // PPL_COEFFICIENT_BITS == 16 && !defined(NDEBUG)
 
 #define DO_TEST_F64(test) DO_TEST_OVERFLOW(test)
 #define DO_TEST_F64A(test) DO_TEST_OVERFLOW(test)
@@ -222,6 +316,23 @@ catch (const std::exception& e) {					\
 #define DO_TEST_F16A(test) DO_TEST_OVERFLOW(test)
 #define DO_TEST_F8(test) DO_TEST(test)
 #define DO_TEST_F8A(test) DO_TEST(test)
+
+#define DO_TEST_F64_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F64A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F16_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F16A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F8_MAY_OVERFLOW_IF_INEXACT(test, shape)   \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+#define DO_TEST_F8A_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
 
 #endif // !defined(NDEBUG)
 
@@ -238,7 +349,24 @@ catch (const std::exception& e) {					\
 #define DO_TEST_F8(test) DO_TEST_OVERFLOW(test)
 #define DO_TEST_F8A(test) DO_TEST(test)
 
-#else
+#define DO_TEST_F64_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F64A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F16_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F16A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F8_MAY_OVERFLOW_IF_INEXACT(test, shape)   \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F8A_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)
+
+#else // PPL_COEFFICIENT_BITS == 8 && !defined(NDEBUG)
 
 #define DO_TEST_F64(test) DO_TEST_OVERFLOW(test)
 #define DO_TEST_F64A(test) DO_TEST_OVERFLOW(test)
@@ -248,6 +376,23 @@ catch (const std::exception& e) {					\
 #define DO_TEST_F16A(test) DO_TEST_OVERFLOW(test)
 #define DO_TEST_F8(test) DO_TEST_OVERFLOW(test)
 #define DO_TEST_F8A(test) DO_TEST_OVERFLOW(test)
+
+#define DO_TEST_F64_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F64A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F16_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F16A_MAY_OVERFLOW_IF_INEXACT(test, shape) \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F8_MAY_OVERFLOW_IF_INEXACT(test, shape)   \
+  DO_TEST_OVERFLOW(test)
+#define DO_TEST_F8A_MAY_OVERFLOW_IF_INEXACT(test, shape)  \
+  DO_TEST_OVERFLOW(test)
 
 #endif // !defined(NDEBUG)
 
@@ -420,15 +565,22 @@ check_result(const BD_Shape<T>& computed_result,
 		     max_r_d_s, max_e_d_s, max_l_d_s);
 }
 
-template <>
-inline bool
-check_result(const BD_Shape<mpq_class>& computed_result,
-	     const BD_Shape<mpq_class>& known_result,
-	     const char*,
-	     const char*,
-	     const char*) {
-  return check_result_i(computed_result, known_result,
-			0, 0, 0);
+template <typename T>
+bool
+check_result(const BD_Shape<T>& computed_result,
+	     const BD_Shape<T>& known_result) {
+  if (computed_result == known_result)
+    return true;
+  else {
+    using namespace IO_Operators;
+    nout << "Equality does not hold:"
+         << "\ncomputed result is\n"
+         << computed_result
+         << "\nknown result is\n"
+         << known_result
+         << endl;
+    return false;
+  }
 }
 
 template <typename T>
@@ -438,6 +590,23 @@ check_result(const BD_Shape<T>& computed_result,
   return std::numeric_limits<T>::is_integer
     ? check_result_i(computed_result, known_result, "+inf", "+inf", "+inf")
     : check_result_i(computed_result, known_result, 0, 0, 0);
+}
+
+inline bool
+check_result(const BD_Shape<mpq_class>& computed_result,
+	     const BD_Shape<mpq_class>& known_result) {
+  if (computed_result == known_result)
+    return true;
+  else {
+    using namespace IO_Operators;
+    nout << "Equality does not hold:"
+         << "\ncomputed result is\n"
+         << computed_result
+         << "\nknown result is\n"
+         << known_result
+         << endl;
+    return false;
+  }
 }
 
 template <typename T>
@@ -607,15 +776,22 @@ check_result(const Box<Interval>& computed_result,
 		     max_r_d_s, max_e_d_s, max_l_d_s);
 }
 
-template <>
-inline bool
-check_result(const Rational_Box& computed_result,
-	     const Rational_Box& known_result,
-	     const char*,
-	     const char*,
-	     const char*) {
-  return check_result_i(computed_result, known_result,
-			0, 0, 0);
+template <typename Interval>
+bool
+check_result(const Box<Interval>& computed_result,
+	     const Box<Interval>& known_result) {
+  if (computed_result == known_result)
+    return true;
+  else {
+    using namespace IO_Operators;
+    nout << "Equality does not hold:"
+         << "\ncomputed result is\n"
+         << computed_result
+         << "\nknown result is\n"
+         << known_result
+         << endl;
+    return false;
+  }
 }
 
 template <typename Interval>
@@ -625,6 +801,99 @@ check_result(const Box<Interval>& computed_result,
   return std::numeric_limits<typename Interval::boundary_type>::is_integer
     ? check_result_i(computed_result, known_result, "+inf", "+inf", "+inf")
     : check_result_i(computed_result, known_result, 0, 0, 0);
+}
+
+inline bool
+check_result(const Rational_Box& computed_result,
+	     const Rational_Box& known_result) {
+  if (computed_result == known_result)
+    return true;
+  else {
+    using namespace IO_Operators;
+    nout << "Equality does not hold:"
+         << "\ncomputed result is\n"
+         << computed_result
+         << "\nknown result is\n"
+         << known_result
+         << endl;
+    return false;
+  }
+}
+
+inline bool
+check_result(const Generator& computed_result,
+             const Generator& known_result,
+             const char* max_r_d_s,
+             const char* max_e_d_s,
+             const char* max_l_d_s) {
+  using namespace IO_Operators;
+  // Handle in a more efficient way the case where equality is expected.
+  if (max_r_d_s == 0 && max_e_d_s == 0 && max_l_d_s == 0) {
+    if (computed_result != known_result) {
+      nout << "Equality does not hold:"
+           << "\ncomputed result is\n"
+           << computed_result
+           << "\nknown result is\n"
+           << known_result
+           << endl;
+      return false;
+    }
+    else
+      return true;
+  }
+
+  Checked_Number<mpq_class, Extended_Number_Policy> r_d;
+  rectilinear_distance_assign(r_d, known_result, computed_result, ROUND_UP);
+  Checked_Number<mpq_class, Extended_Number_Policy> e_d;
+  euclidean_distance_assign(e_d, known_result, computed_result, ROUND_UP);
+  Checked_Number<mpq_class, Extended_Number_Policy> l_d;
+  l_infinity_distance_assign(l_d, known_result, computed_result, ROUND_UP);
+  bool ok_r = check_distance(r_d, max_r_d_s, "rectilinear");
+  bool ok_e = check_distance(e_d, max_e_d_s, "euclidean");
+  bool ok_l = check_distance(l_d, max_l_d_s, "l_infinity");
+  bool ok = ok_r && ok_e && ok_l;
+  if (!ok) {
+    nout << "Computed result is\n"
+         << computed_result
+         << "\nknown result is\n"
+         << known_result
+         << endl;
+  }
+  return ok;
+}
+
+inline bool
+check_result(const Checked_Number<mpq_class, Extended_Number_Policy>& computed,
+             const Checked_Number<mpq_class, Extended_Number_Policy>& known,
+             const char* max_r_d_s) {
+  using namespace IO_Operators;
+  // Handle in a more efficient way the case where equality is expected.
+  if (max_r_d_s == 0) {
+    if (computed != known) {
+      nout << "Equality does not hold:"
+           << "\ncomputed result is\n"
+           << computed
+           << "\nknown result is\n"
+           << known
+           << endl;
+      return false;
+    }
+    else
+      return true;
+  }
+
+  Checked_Number<mpq_class, Extended_Number_Policy> r_d;
+  sub_assign_r(r_d, known, computed, ROUND_NOT_NEEDED);
+  abs_assign_r(r_d, r_d, ROUND_NOT_NEEDED);
+  bool ok = check_distance(r_d, max_r_d_s, "rectilinear");
+  if (!ok) {
+    nout << "Computed result is\n"
+         << computed
+         << "\nknown result is\n"
+         << known
+         << endl;
+  }
+  return ok;
 }
 
 } // namespace Parma_Polyhedra_Library

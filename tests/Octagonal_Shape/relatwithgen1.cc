@@ -197,11 +197,11 @@ test09() {
   Variable A(0);
   Variable B(1);
 
-  TOctagonal_Shape oct	(2);
+  TOctagonal_Shape oct  (2);
   oct.add_constraint(A <= 0);
   oct.add_constraint(B == 2);
 
-  print_constraints(oct	, "*** oct	 ***");
+  print_constraints(oct , "*** oct       ***");
 
   Poly_Gen_Relation rel = oct.relation_with(closure_point(A));
 

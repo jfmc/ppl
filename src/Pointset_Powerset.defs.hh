@@ -30,12 +30,15 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint_System.types.hh"
 #include "Congruence.types.hh"
 #include "Congruence_System.types.hh"
-#include "C_Polyhedron.types.hh"
-#include "NNC_Polyhedron.types.hh"
+#include "C_Polyhedron.defs.hh"
+#include "NNC_Polyhedron.defs.hh"
 #include "Polyhedron.defs.hh"
+#include "Grid.defs.hh"
 #include "Variables_Set.types.hh"
 #include "Determinate.defs.hh"
 #include "Powerset.defs.hh"
+#include "Poly_Con_Relation.defs.hh"
+#include "Poly_Gen_Relation.defs.hh"
 #include <iosfwd>
 #include <list>
 #include <map>
@@ -73,20 +76,25 @@ public:
 		    Degenerate_Element kind = UNIVERSE);
 
   //! Ordinary copy-constructor.
-  Pointset_Powerset(const Pointset_Powerset& y);
-
-  /*! \brief
-    If \p ph is nonempty, builds a powerset containing only \p ph.
-    Builds the empty powerset otherwise.
+  /*!
+    The complexity argument is ignored.
   */
-  explicit Pointset_Powerset(const PS& ph);
+  Pointset_Powerset(const Pointset_Powerset& y,
+                    Complexity_Class complexity = ANY_COMPLEXITY);
 
   /*! \brief
     Conversion constructor: the type <CODE>QH</CODE> of the disjuncts
     in the source powerset is different from <CODE>PS</CODE>.
+
+    \param y
+    The powerset to be used to build the new powerset.
+
+    \param complexity
+    The maximal complexity of any algorithms used.
   */
   template <typename QH>
-  explicit Pointset_Powerset(const Pointset_Powerset<QH>& y);
+  explicit Pointset_Powerset(const Pointset_Powerset<QH>& y,
+                             Complexity_Class complexity = ANY_COMPLEXITY);
 
   /*! \brief
     Creates a Pointset_Powerset with a single disjunct approximating
@@ -100,6 +108,131 @@ public:
   */
   explicit Pointset_Powerset(const Congruence_System& cgs);
 
+
+  //! Builds a pointset_powerset out of a closed polyhedron.
+  /*!
+    Builds a powerset that is either empty (if the polyhedron is found
+    to be empty) or contains a single disjunct approximating the
+    polyhedron; this must only use algorithms that do not exceed the
+    specified complexity.  The powerset inherits the space dimension
+    of the polyhedron.
+
+    \param ph
+    The closed polyhedron to be used to build the powerset.
+
+    \param complexity
+    The maximal complexity of any algorithms used.
+
+    \exception std::length_error
+    Thrown if the space dimension of \p ph exceeds the maximum
+    allowed space dimension.
+  */
+  explicit Pointset_Powerset(const C_Polyhedron& ph,
+                             Complexity_Class complexity = ANY_COMPLEXITY);
+
+  //! Builds a pointset_powerset out of an nnc polyhedron.
+  /*!
+    Builds a powerset that is either empty (if the polyhedron is found
+    to be empty) or contains a single disjunct approximating the
+    polyhedron; this must only use algorithms that do not exceed the
+    specified complexity.  The powerset inherits the space dimension
+    of the polyhedron.
+
+    \param ph
+    The closed polyhedron to be used to build the powerset.
+
+    \param complexity
+    The maximal complexity of any algorithms used.
+
+    \exception std::length_error
+    Thrown if the space dimension of \p ph exceeds the maximum
+    allowed space dimension.
+  */
+  explicit Pointset_Powerset(const NNC_Polyhedron& ph,
+                             Complexity_Class complexity = ANY_COMPLEXITY);
+
+
+  //! Builds a pointset_powerset out of a grid.
+  /*!
+    If the grid is nonempty, builds a powerset containing a single
+    disjunct approximating the grid. Builds the empty powerset
+    otherwise. The powerset inherits the space dimension of the grid.
+
+    \param gr
+    The grid to be used to build the powerset.
+
+    \param complexity
+    This argument is ignored.
+
+    \exception std::length_error
+    Thrown if the space dimension of \p gr exceeds the maximum
+    allowed space dimension.
+  */
+  explicit Pointset_Powerset(const Grid& gr,
+                             Complexity_Class complexity = ANY_COMPLEXITY);
+
+  //! Builds a pointset_powerset out of an octagonal shape.
+  /*!
+    If the octagonal shape is nonempty, builds a powerset
+    containing a single disjunct approximating the octagonal
+    shape. Builds the empty powerset otherwise. The powerset
+    inherits the space dimension of the octagonal shape.
+
+    \param os
+    The octagonal shape to be used to build the powerset.
+
+    \param complexity
+    This argument is ignored.
+
+    \exception std::length_error
+    Thrown if the space dimension of \p os exceeds the maximum
+    allowed space dimension.
+  */
+  template <typename T>
+  explicit Pointset_Powerset(const Octagonal_Shape<T>& os,
+                             Complexity_Class complexity = ANY_COMPLEXITY);
+
+  //! Builds a pointset_powerset out of a bd shape.
+  /*!
+    If the bd shape is nonempty, builds a powerset containing a
+    single disjunct approximating the bd shape. Builds the empty
+    powerset otherwise.  The powerset inherits the space dimension
+    of the bd shape.
+
+    \param bds
+    The bd shape to be used to build the powerset.
+
+    \param complexity
+    This argument is ignored.
+
+    \exception std::length_error
+    Thrown if the space dimension of \p bdss exceeds the maximum
+    allowed space dimension.
+  */
+  template <typename T>
+  explicit Pointset_Powerset(const BD_Shape<T>& bds,
+                             Complexity_Class complexity = ANY_COMPLEXITY);
+
+  //! Builds a pointset_powerset out of a box.
+  /*!
+    If the box is nonempty, builds a powerset containing a single
+    disjunct approximating the box. Builds the empty powerset
+    otherwise.  The powerset inherits the space dimension of the box.
+
+    \param box
+    The box to be used to build the powerset.
+
+    \param complexity
+    This argument is ignored.
+
+    \exception std::length_error
+    Thrown if the space dimension of \p box exceeds the maximum
+    allowed space dimension.
+  */
+  template <typename Interval>
+  explicit Pointset_Powerset(const Box<Interval>& box,
+                             Complexity_Class complexity = ANY_COMPLEXITY);
+
   //@} // Constructors and Destructor
 
   //! \name Member Functions that Do Not Modify the Pointset_Powerset
@@ -110,6 +243,178 @@ public:
 
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type affine_dimension() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is
+    an empty powerset.
+  */
+  bool is_empty() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this
+    is a universe powerset.
+  */
+  bool is_universe() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this
+    is a topologically closed subset of the vector space.
+  */
+  bool is_topologically_closed() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if all elements in \p *this
+    are bounded.
+  */
+  bool is_bounded() const;
+
+  //! Returns <CODE>true</CODE> if and only if \p *this and \p y are disjoint.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p x and \p y are topology-incompatible or
+    dimension-incompatible.
+  */
+  bool is_disjoint_from(const Pointset_Powerset& y) const;
+
+  //! Returns <CODE>true</CODE> if and only if \p *this is discrete.
+  bool is_discrete() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p expr is
+    bounded from above in \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+  */
+  bool bounds_from_above(const Linear_Expression& expr) const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p expr is
+    bounded from below in \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+  */
+  bool bounds_from_below(const Linear_Expression& expr) const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is not empty
+    and \p expr is bounded from above in \p *this, in which case
+    the supremum value is computed.
+
+    \param expr
+    The linear expression to be maximized subject to \p *this;
+
+    \param sup_n
+    The numerator of the supremum value;
+
+    \param sup_d
+    The denominator of the supremum value;
+
+    \param maximum
+    <CODE>true</CODE> if and only if the supremum is also the maximum value.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+
+    If \p *this is empty or \p expr is not bounded from above,
+    <CODE>false</CODE> is returned and \p sup_n, \p sup_d
+    and \p maximum are left untouched.
+  */
+  bool maximize(const Linear_Expression& expr,
+		Coefficient& sup_n, Coefficient& sup_d, bool& maximum) const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is not empty
+    and \p expr is bounded from above in \p *this, in which case
+    the supremum value and a point where \p expr reaches it are computed.
+
+    \param expr
+    The linear expression to be maximized subject to \p *this;
+
+    \param sup_n
+    The numerator of the supremum value;
+
+    \param sup_d
+    The denominator of the supremum value;
+
+    \param maximum
+    <CODE>true</CODE> if and only if the supremum is also the maximum value;
+
+    \param g
+    When maximization succeeds, will be assigned the point or
+    closure point where \p expr reaches its supremum value.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+
+    If \p *this is empty or \p expr is not bounded from above,
+    <CODE>false</CODE> is returned and \p sup_n, \p sup_d, \p maximum
+    and \p g are left untouched.
+  */
+  bool maximize(const Linear_Expression& expr,
+		Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
+		Generator& g) const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is not empty
+    and \p expr is bounded from below in \p *this, in which case
+    the infimum value is computed.
+
+    \param expr
+    The linear expression to be minimized subject to \p *this;
+
+    \param inf_n
+    The numerator of the infimum value;
+
+    \param inf_d
+    The denominator of the infimum value;
+
+    \param minimum
+    <CODE>true</CODE> if and only if the infimum is also the minimum value.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+
+    If \p *this is empty or \p expr is not bounded from below,
+    <CODE>false</CODE> is returned and \p inf_n, \p inf_d
+    and \p minimum are left untouched.
+  */
+  bool minimize(const Linear_Expression& expr,
+		Coefficient& inf_n, Coefficient& inf_d, bool& minimum) const;
+
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is not empty
+    and \p expr is bounded from below in \p *this, in which case
+    the infimum value and a point where \p expr reaches it are computed.
+
+    \param expr
+    The linear expression to be minimized subject to \p *this;
+
+    \param inf_n
+    The numerator of the infimum value;
+
+    \param inf_d
+    The denominator of the infimum value;
+
+    \param minimum
+    <CODE>true</CODE> if and only if the infimum is also the minimum value;
+
+    \param g
+    When minimization succeeds, will be assigned a point or
+    closure point where \p expr reaches its infimum value.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+
+    If \p *this is empty or \p expr is not bounded from below,
+    <CODE>false</CODE> is returned and \p inf_n, \p inf_d, \p minimum
+    and \p g are left untouched.
+  */
+  bool minimize(const Linear_Expression& expr,
+		Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
+		Generator& g) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this geometrically
@@ -137,11 +442,58 @@ public:
   */
   bool geometrically_equals(const Pointset_Powerset& y) const;
 
+  /*! brief
+    Returns <CODE>true</CODE> if and only if each disjunct
+      of \p y is contained in a disjunct of \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are topology-incompatible or
+    dimension-incompatible.
+  */
+  bool contains(const Pointset_Powerset& y) const;
+
+  /*! brief
+    Returns <CODE>true</CODE> if and only if each disjunct
+      of \p y is strictly contained in a disjunct of \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are topology-incompatible or
+    dimension-incompatible.
+  */
+  bool strictly_contains(const Pointset_Powerset& y) const;
+
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this
     contains at least one integer point.
   */
   bool contains_integer_point() const;
+
+  /*! \brief
+    Returns the relations holding between the powerset \p *this
+    and the constraint \p c.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and constraint \p c are dimension-incompatible.
+  */
+  Poly_Con_Relation relation_with(const Constraint& c) const;
+
+  /*! \brief
+    Returns the relations holding between the powerset \p *this
+    and the generator \p g.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and generator \p g are dimension-incompatible.
+  */
+  Poly_Gen_Relation relation_with(const Generator& g) const;
+
+  /*! \brief
+    Returns the relations holding between the powerset \p *this
+    and the congruence \p c.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and congruence \p c are dimension-incompatible.
+  */
+  Poly_Con_Relation relation_with(const Congruence& cg) const;
 
   /*! \brief
     Returns a lower bound to the total size in bytes of the memory
@@ -186,8 +538,16 @@ public:
   */
   void add_constraint(const Constraint& c);
 
-  // FIXME: documentation to be written.
-  void refine(const Constraint& c);
+  /*! \brief
+    Use the constraint \p c to refine \p *this.
+
+    \param c
+    The constraint to be used for refinement.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p c are dimension-incompatible.
+  */
+  void refine_with_constraint(const Constraint& c);
 
   //! Intersects \p *this with the constraint \p c, minimizing the result.
   /*!
@@ -197,6 +557,9 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p c are topology-incompatible or
     dimension-incompatible.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_constraint_and_minimize(const Constraint& c);
 
@@ -211,8 +574,16 @@ public:
   */
   void add_constraints(const Constraint_System& cs);
 
-  // FIXME: documentation to be written.
-  void refine(const Constraint_System& cs);
+  /*! \brief
+    Use the constraints in \p cs to refine \p *this.
+
+    \param  cs
+     The constraints to be used for refinement.
+
+     \exception std::invalid_argument
+     Thrown if \p *this and \p cs are dimension-incompatible.
+  */
+  void refine_with_constraints(const Constraint_System& cs);
 
   /*! \brief
     Intersects \p *this with the constraints in \p cs,
@@ -227,115 +598,114 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are topology-incompatible or
     dimension-incompatible.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_constraints_and_minimize(const Constraint_System& cs);
 
-  /*! \brief
-    Assign to \p *this the result of (recursively) merging together
-    the pairs of disjuncts whose upper-bound is the same as their
-    set-theoretical union.
-
-    On exit, for all the pairs \f$\cP\f$, \f$\cQ\f$ of different disjuncts
-    in \p *this, we have \f$\cP \uplus \cQ \neq \cP \union \cQ\f$.
+  //! Intersects \p *this with congruence \p c.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p *this and congruence \p c are topology-incompatible
+    or dimension-incompatible.
   */
-  void pairwise_reduce();
+  void add_congruence(const Congruence& c);
 
   /*! \brief
-    Assigns to \p *this the result of applying the
-    \ref pps_bgp99_extrapolation "BGP99 extrapolation operator"
-    to \p *this and \p y, using the widening function \p wf
-    and the cardinality threshold \p max_disjuncts.
+    Use the congruence \p cg to refine \p *this.
 
-    \param y
-    A powerset that <EM>must</EM> definitely entail \p *this;
-
-    \param wf
-    The widening function to be used on polyhedra objects. It is obtained
-    from the corresponding widening method by using the helper function
-    Parma_Polyhedra_Library::widen_fun_ref. Legal values are, e.g.,
-    <CODE>widen_fun_ref(&Polyhedron::H79_widening_assign)</CODE> and
-    <CODE>widen_fun_ref(&Polyhedron::limited_H79_extrapolation_assign, cs)</CODE>;
-
-    \param max_disjuncts
-    The maximum number of disjuncts occurring in the powerset \p *this
-    <EM>before</EM> starting the computation. If this number is exceeded,
-    some of the disjuncts in \p *this are collapsed (i.e., joined together).
+    \param cg
+    The congruence to be used for refinement.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p y are dimension-incompatible.
-
-    For a description of the extrapolation operator,
-    see \ref BGP99 "[BGP99]" and \ref BHZ03b "[BHZ03b]".
+    Thrown if \p *this and \p cg are dimension-incompatible.
   */
-  template <typename Widening>
-  void BGP99_extrapolation_assign(const Pointset_Powerset& y,
-				  Widening wf,
-				  unsigned max_disjuncts);
+  void refine_with_congruence(const Congruence& cg);
 
-  /*! \brief
-    Assigns to \p *this the result of computing the
-    \ref pps_certificate_widening "BHZ03-widening"
-    between \p *this and \p y, using the widening function \p wf
-    certified by the convergence certificate \p Cert.
-
-    \param y
-    The finite powerset computed in the previous iteration step.
-    It <EM>must</EM> definitely entail \p *this;
-
-    \param wf
-    The widening function to be used on disjuncts.
-    It is obtained from the corresponding widening method by using
-    the helper function widen_fun_ref. Legal values are, e.g.,
-    <CODE>widen_fun_ref(&Polyhedron::H79_widening_assign)</CODE> and
-    <CODE>widen_fun_ref(&Polyhedron::limited_H79_extrapolation_assign, cs)</CODE>.
+  //! Intersects \p *this with the congruence \p c, minimizing the result.
+  /*!
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p y are dimension-incompatible.
+    Thrown if \p *this and \p c are topology-incompatible or
+    dimension-incompatible.
 
-    \warning
-    In order to obtain a proper widening operator, the template parameter
-    \p Cert should be a finite convergence certificate for the base-level
-    widening function \p wf; otherwise, an extrapolation operator is
-    obtained.
-    For a description of the methods that should be provided
-    by \p Cert, see BHRZ03_Certificate or H79_Certificate.
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
-  template <typename Cert, typename Widening>
-  void BHZ03_widening_assign(const Pointset_Powerset& y, Widening wf);
+  bool add_congruence_and_minimize(const Congruence& c);
 
-  //@} // Space Dimension Preserving Member Functions that May Modify [...]
+  //! Intersects \p *this with the congruences in \p cgs.
+  /*!
+    \param cgs
+    The congruences to intersect with.
 
-  //! \name Member Functions that May Modify the Dimension of the Vector Space
-  //@{
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cgs are topology-incompatible or
+    dimension-incompatible.
+  */
+  void add_congruences(const Congruence_System& cgs);
 
   /*! \brief
-    The assignment operator
-    (\p *this and \p y can be dimension-incompatible).
+    Use the congruences in \p cgs to refine \p *this.
+
+    \param  cgs
+    The congruences to be used for refinement.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cgs are dimension-incompatible.
   */
-  Pointset_Powerset& operator=(const Pointset_Powerset& y);
+  void refine_with_congruences(const Congruence_System& cgs);
 
   /*! \brief
-    Conversion assignment: the type <CODE>QH</CODE> of the disjuncts
-    in the source powerset is different from <CODE>PS</CODE>
-    (\p *this and \p y can be dimension-incompatible).
-  */
-  template <typename QH>
-  Pointset_Powerset& operator=(const Pointset_Powerset<QH>& y);
+    Intersects \p *this with the congruences in \p cs,
+    minimizing the result.
 
-  //! Swaps \p *this with \p y.
-  void swap(Pointset_Powerset& y);
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \param cs
+    The congruences to intersect with.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are topology-incompatible or
+    dimension-incompatible.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
+  */
+  bool add_congruences_and_minimize(const Congruence_System& cs);
 
   /*! \brief
-    Adds \p m new dimensions to the vector space containing \p *this
-    and embeds each disjunct in \p *this in the new space.
+    Computes the \ref Cylindrification "cylindrification" of \p *this with
+    respect to space dimension \p var, assigning the result to \p *this.
+
+    \param var
+    The space dimension that will be unconstrained.
+
+    \exception std::invalid_argument
+    Thrown if \p var is not a space dimension of \p *this.
   */
-  void add_space_dimensions_and_embed(dimension_type m);
+  void unconstrain(Variable var);
 
   /*! \brief
-    Adds \p m new dimensions to the vector space containing \p *this
-    without embedding the disjuncts in \p *this in the new space.
+    Computes the \ref Cylindrification "cylindrification" of \p *this with
+    respect to the set of space dimensions \p to_be_unconstrained,
+    assigning the result to \p *this.
+
+    \param to_be_unconstrained
+    The set of space dimension that will be unconstrained.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with one of the
+    Variable objects contained in \p to_be_removed.
   */
-  void add_space_dimensions_and_project(dimension_type m);
+  void unconstrain(const Variables_Set& to_be_unconstrained);
+
+  //! Assigns to \p *this its topological closure.
+  void topological_closure_assign();
 
   //! Assigns to \p *this the intersection of \p *this and \p y.
   /*!
@@ -344,9 +714,33 @@ public:
   */
   void intersection_assign(const Pointset_Powerset& y);
 
+  //! Assigns to \p *this the intersection of \p *this and \p y.
+  /*!
+    The result is obtained by intersecting each disjunct in \p *this
+    with each disjunct in \p y, minimizing the result
+    and collecting all these intersections.
+
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
+  */
+  bool intersection_assign_and_minimize(const Pointset_Powerset& y);
+
   //! Assigns to \p *this the difference of \p *this and \p y.
   // FIXME: document the intended semantics.
   void poly_difference_assign(const Pointset_Powerset& y);
+
+  /*! \brief
+    Assigns to \p *this an (a smallest)
+    over-approximation as a powerset of the disjunct domain of the
+    set-theoretical difference of \p *this and \p y.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
+  */
+  void difference_assign(const Pointset_Powerset& y);
 
   /*! \brief
     Assigns to \p *this the
@@ -577,15 +971,6 @@ public:
 			       Coefficient_traits::const_reference denominator
 			       = Coefficient_one());
 
-
-  //! Assigns to \p *this the concatenation of \p *this and \p y.
-  /*!
-    The result is obtained by computing the pairwise
-    \ref Concatenating_Polyhedra "concatenation" of each disjunct
-    in \p *this with each disjunct in \p y.
-  */
-  void concatenate_assign(const Pointset_Powerset& y);
-
   /*! \brief
     Assigns to \p *this the result of computing the
     \ref Time_Elapse_Operator "time-elapse" between \p *this and \p y.
@@ -595,6 +980,121 @@ public:
     in \p *this with each disjunct in \p y.
   */
   void time_elapse_assign(const Pointset_Powerset& y);
+
+  /*! \brief
+    Assign to \p *this the result of (recursively) merging together
+    the pairs of disjuncts whose upper-bound is the same as their
+    set-theoretical union.
+
+    On exit, for all the pairs \f$\cP\f$, \f$\cQ\f$ of different disjuncts
+    in \p *this, we have \f$\cP \uplus \cQ \neq \cP \union \cQ\f$.
+  */
+  void pairwise_reduce();
+
+  /*! \brief
+    Assigns to \p *this the result of applying the
+    \ref pps_bgp99_extrapolation "BGP99 extrapolation operator"
+    to \p *this and \p y, using the widening function \p wf
+    and the cardinality threshold \p max_disjuncts.
+
+    \param y
+    A powerset that <EM>must</EM> definitely entail \p *this;
+
+    \param wf
+    The widening function to be used on polyhedra objects. It is obtained
+    from the corresponding widening method by using the helper function
+    Parma_Polyhedra_Library::widen_fun_ref. Legal values are, e.g.,
+    <CODE>widen_fun_ref(&Polyhedron::H79_widening_assign)</CODE> and
+    <CODE>widen_fun_ref(&Polyhedron::limited_H79_extrapolation_assign, cs)</CODE>;
+
+    \param max_disjuncts
+    The maximum number of disjuncts occurring in the powerset \p *this
+    <EM>before</EM> starting the computation. If this number is exceeded,
+    some of the disjuncts in \p *this are collapsed (i.e., joined together).
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
+
+    For a description of the extrapolation operator,
+    see \ref BGP99 "[BGP99]" and \ref BHZ03b "[BHZ03b]".
+  */
+  template <typename Widening>
+  void BGP99_extrapolation_assign(const Pointset_Powerset& y,
+				  Widening wf,
+				  unsigned max_disjuncts);
+
+  /*! \brief
+    Assigns to \p *this the result of computing the
+    \ref pps_certificate_widening "BHZ03-widening"
+    between \p *this and \p y, using the widening function \p wf
+    certified by the convergence certificate \p Cert.
+
+    \param y
+    The finite powerset computed in the previous iteration step.
+    It <EM>must</EM> definitely entail \p *this;
+
+    \param wf
+    The widening function to be used on disjuncts.
+    It is obtained from the corresponding widening method by using
+    the helper function widen_fun_ref. Legal values are, e.g.,
+    <CODE>widen_fun_ref(&Polyhedron::H79_widening_assign)</CODE> and
+    <CODE>widen_fun_ref(&Polyhedron::limited_H79_extrapolation_assign, cs)</CODE>.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
+
+    \warning
+    In order to obtain a proper widening operator, the template parameter
+    \p Cert should be a finite convergence certificate for the base-level
+    widening function \p wf; otherwise, an extrapolation operator is
+    obtained.
+    For a description of the methods that should be provided
+    by \p Cert, see BHRZ03_Certificate or H79_Certificate.
+  */
+  template <typename Cert, typename Widening>
+  void BHZ03_widening_assign(const Pointset_Powerset& y, Widening wf);
+
+  //@} // Space Dimension Preserving Member Functions that May Modify [...]
+
+  //! \name Member Functions that May Modify the Dimension of the Vector Space
+  //@{
+
+  /*! \brief
+    The assignment operator
+    (\p *this and \p y can be dimension-incompatible).
+  */
+  Pointset_Powerset& operator=(const Pointset_Powerset& y);
+
+  /*! \brief
+    Conversion assignment: the type <CODE>QH</CODE> of the disjuncts
+    in the source powerset is different from <CODE>PS</CODE>
+    (\p *this and \p y can be dimension-incompatible).
+  */
+  template <typename QH>
+  Pointset_Powerset& operator=(const Pointset_Powerset<QH>& y);
+
+  //! Swaps \p *this with \p y.
+  void swap(Pointset_Powerset& y);
+
+  /*! \brief
+    Adds \p m new dimensions to the vector space containing \p *this
+    and embeds each disjunct in \p *this in the new space.
+  */
+  void add_space_dimensions_and_embed(dimension_type m);
+
+  /*! \brief
+    Adds \p m new dimensions to the vector space containing \p *this
+    without embedding the disjuncts in \p *this in the new space.
+  */
+  void add_space_dimensions_and_project(dimension_type m);
+
+  //! Assigns to \p *this the concatenation of \p *this and \p y.
+  /*!
+    The result is obtained by computing the pairwise
+    \ref Concatenating_Polyhedra "concatenation" of each disjunct
+    in \p *this with each disjunct in \p y.
+  */
+  void concatenate_assign(const Pointset_Powerset& y);
 
   //! Removes all the specified space dimensions.
   /*!
@@ -626,6 +1126,57 @@ public:
   */
   template <typename Partial_Function>
   void map_space_dimensions(const Partial_Function& pfunc);
+
+  //! Creates \p m copies of the space dimension corresponding to \p var.
+  /*!
+    \param var
+    The variable corresponding to the space dimension to be replicated;
+
+    \param m
+    The number of replicas to be created.
+
+    \exception std::invalid_argument
+    Thrown if \p var does not correspond to a dimension of the vector
+    space.
+
+    \exception std::length_error
+    Thrown if adding \p m new space dimensions would cause the vector
+    space to exceed dimension <CODE>max_space_dimension()</CODE>.
+
+    If \p *this has space dimension \f$n\f$, with \f$n > 0\f$,
+    and <CODE>var</CODE> has space dimension \f$k \leq n\f$,
+    then the \f$k\f$-th space dimension is
+    \ref Expanding_One_Dimension_of_the_Vector_Space_to_Multiple_Dimensions
+    "expanded" to \p m new space dimensions
+    \f$n\f$, \f$n+1\f$, \f$\dots\f$, \f$n+m-1\f$.
+  */
+  void expand_space_dimension(Variable var, dimension_type m);
+
+  //! Folds the space dimensions in \p to_be_folded into \p var.
+  /*!
+    \param to_be_folded
+    The set of Variable objects corresponding to the space dimensions
+    to be folded;
+
+    \param var
+    The variable corresponding to the space dimension that is the
+    destination of the folding operation.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with \p var or with
+    one of the Variable objects contained in \p to_be_folded.  Also
+    thrown if \p var is contained in \p to_be_folded.
+
+    If \p *this has space dimension \f$n\f$, with \f$n > 0\f$,
+    <CODE>var</CODE> has space dimension \f$k \leq n\f$,
+    \p to_be_folded is a set of variables whose maximum space dimension
+    is also less than or equal to \f$n\f$, and \p var is not a member
+    of \p to_be_folded, then the space dimensions corresponding to
+    variables in \p to_be_folded are
+    \ref Folding_Multiple_Dimensions_of_the_Vector_Space_into_One_Dimension
+    "folded" into the \f$k\f$-th space dimension.
+  */
+  void fold_space_dimensions(const Variables_Set& to_be_folded, Variable var);
 
   //@} // Member Functions that May Modify the Dimension of the Vector Space
 
@@ -683,7 +1234,6 @@ private:
   // but, apparently, this cannot be done.
   friend class Pointset_Powerset<NNC_Polyhedron>;
 };
-
 
 namespace Parma_Polyhedra_Library {
 
@@ -774,19 +1324,22 @@ check_containment(const PS& ph, const Pointset_Powerset<PS>& ps);
 template <>
 template <typename QH>
 Pointset_Powerset<NNC_Polyhedron>
-::Pointset_Powerset(const Pointset_Powerset<QH>& y);
+::Pointset_Powerset(const Pointset_Powerset<QH>& y,
+                    Complexity_Class);
 
 // Non-inline full specializations should be declared here
 // so as to inhibit multiple instantiations of the generic template.
 template <>
 template <>
 Pointset_Powerset<NNC_Polyhedron>
-::Pointset_Powerset(const Pointset_Powerset<C_Polyhedron>& y);
+::Pointset_Powerset(const Pointset_Powerset<C_Polyhedron>& y,
+                    Complexity_Class);
 
 template <>
 template <>
 Pointset_Powerset<C_Polyhedron>
-::Pointset_Powerset(const Pointset_Powerset<NNC_Polyhedron>& y);
+::Pointset_Powerset(const Pointset_Powerset<NNC_Polyhedron>& y,
+                    Complexity_Class);
 
 template <>
 void

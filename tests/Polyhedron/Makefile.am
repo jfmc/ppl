@@ -105,15 +105,21 @@ onepoint \
 permute \
 polydifference1 polydifference2 \
 polyhull1 polyhull2 \
-pointsetpowerset1 pointsetpowerset2 \
+pointsetpowerset1 pointsetpowerset2 pointsetpowerset3 \
+pointsetpowerset4 pointsetpowerset5 pointsetpowerset6 \
 powerset1 \
 randphull1 \
+refinewithconstraint1 \
+refinewithconstraints1 \
+refinewithcongruence1 \
+refinewithcongruences1 \
 relations1 relations2 relations3 \
 removespacedims1 removespacedims2 \
 smm1 \
 timeelapse1 timeelapse2 \
 topclosed1 \
 topclosure1 \
+unconstrain1 \
 universe1 universe2 \
 variablesset1 \
 writeconsys1 \
@@ -183,6 +189,7 @@ nnc_relations1 nnc_relations2 \
 nnc_removespacedims1 \
 nnc_smm1 \
 nnc_timeelapse1 \
+nnc_unconstrain1 \
 nnc_universe1 \
 nnc_writepolyhedron1
 
@@ -350,11 +357,20 @@ polyhull2_SOURCES = polyhull2.cc
 
 pointsetpowerset1_SOURCES = pointsetpowerset1.cc
 pointsetpowerset2_SOURCES = pointsetpowerset2.cc
+pointsetpowerset3_SOURCES = pointsetpowerset3.cc
+pointsetpowerset4_SOURCES = pointsetpowerset4.cc
+pointsetpowerset5_SOURCES = pointsetpowerset5.cc
+pointsetpowerset6_SOURCES = pointsetpowerset6.cc
 
 powerset1_SOURCES = powerset1.cc
 
 randphull1_SOURCES = randphull1.cc
 randphull1_LDADD = $(LDADD) -lm
+
+refinewithconstraint1_SOURCES = refinewithconstraint1.cc
+refinewithconstraints1_SOURCES = refinewithconstraints1.cc
+refinewithcongruence1_SOURCES = refinewithcongruence1.cc
+refinewithcongruences1_SOURCES = refinewithcongruences1.cc
 
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
@@ -371,6 +387,8 @@ timeelapse2_SOURCES = timeelapse2.cc
 topclosed1_SOURCES = topclosed1.cc
 
 topclosure1_SOURCES = topclosure1.cc
+
+unconstrain1_SOURCES = unconstrain1.cc
 
 universe1_SOURCES = universe1.cc
 universe2_SOURCES = universe2.cc
@@ -584,6 +602,9 @@ nnc_smm1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_timeelapse1_SOURCES = timeelapse1.cc
 nnc_timeelapse1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_unconstrain1_SOURCES = unconstrain1.cc
+nnc_unconstrain1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_universe1_SOURCES = universe1.cc
 nnc_universe1_CXXFLAGS = $(DERIVED_CXXFLAGS)

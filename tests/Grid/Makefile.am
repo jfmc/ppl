@@ -66,7 +66,6 @@ congruences2 \
 constraints1 \
 contains1 \
 containsintegerpoint1 \
-copyconstruct1 \
 coveringbox1 coveringbox2 \
 directproduct1 directproduct2 directproduct3 directproduct4 \
 directproduct5 directproduct6 \
@@ -76,7 +75,9 @@ equals1 \
 expandspacedim1 \
 foldspacedims1 \
 frombdshape1 \
+fromgrid1 \
 fromoctagonalshape1 \
+frompolyhedron1 \
 generalizedaffineimage1 generalizedaffineimage2 generalizedaffineimage3 \
 generalizedaffinepreimage1 generalizedaffinepreimage2 \
 generalizedaffinepreimage3 \
@@ -96,15 +97,20 @@ mingenerators1 \
 mincongruences1 \
 outputoperator1 outputoperator2 outputoperator3 \
 partiallyreducedproduct1 partiallyreducedproduct2 partiallyreducedproduct3 \
+partiallyreducedproduct4 \
 partition1 \
 powersetdifference1 \
 powersetgeometricallycovers1 \
 powersetgeometricallyequals1 \
+pointsetpowerset1 \
+refinewithcongruences1 \
+refinewithconstraints1 \
 relations1 relations2 relations3 \
 removespacedims1 removespacedims2 \
 timeelapse1 \
 topclosed1 \
 topclosure1 \
+unconstrain1 \
 widening1 widening2  widening3\
 writecongruencesystem
 
@@ -171,8 +177,6 @@ contains1_SOURCES = contains1.cc
 
 containsintegerpoint1_SOURCES = containsintegerpoint1.cc
 
-copyconstruct1_SOURCES = copyconstruct1.cc
-
 directproduct1_SOURCES = directproduct1.cc
 directproduct2_SOURCES = directproduct2.cc
 directproduct3_SOURCES = directproduct3.cc
@@ -190,7 +194,11 @@ expandspacedim1_SOURCES = expandspacedim1.cc
 
 frombdshape1_SOURCES = frombdshape1.cc
 
+fromgrid1_SOURCES = fromgrid1.cc
+
 fromoctagonalshape1_SOURCES = fromoctagonalshape1.cc
+
+frompolyhedron1_SOURCES = frompolyhedron1.cc
 
 foldspacedims1_SOURCES = foldspacedims1.cc
 
@@ -246,12 +254,18 @@ outputoperator3_SOURCES = outputoperator3.cc
 partiallyreducedproduct1_SOURCES = partiallyreducedproduct1.cc
 partiallyreducedproduct2_SOURCES = partiallyreducedproduct2.cc
 partiallyreducedproduct3_SOURCES = partiallyreducedproduct3.cc
+partiallyreducedproduct4_SOURCES = partiallyreducedproduct4.cc
 
 partition1_SOURCES = partition1.cc
 
 powersetdifference1_SOURCES = powersetdifference1.cc
 powersetgeometricallycovers1_SOURCES = powersetgeometricallycovers1.cc
 powersetgeometricallyequals1_SOURCES = powersetgeometricallyequals1.cc
+
+pointsetpowerset1_SOURCES = pointsetpowerset1.cc
+
+refinewithcongruences1_SOURCES = refinewithcongruences1.cc
+refinewithconstraints1_SOURCES = refinewithconstraints1.cc
 
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
@@ -265,6 +279,8 @@ timeelapse1_SOURCES = timeelapse1.cc
 topclosed1_SOURCES = topclosed1.cc
 
 topclosure1_SOURCES = topclosure1.cc
+
+unconstrain1_SOURCES = unconstrain1.cc
 
 widening1_SOURCES = widening1.cc
 widening2_SOURCES = widening2.cc

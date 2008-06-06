@@ -1,3 +1,8 @@
+dnl  -*- C -*-
+m4_divert(-1)
+
+dnl This m4 file contains the code for generating ppl_c.h.
+
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
@@ -19,8 +24,6 @@ dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
-m4_divert(-1)dnl
-
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 `int
 ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension
@@ -28,21 +31,21 @@ PPL_PROTO((ppl_@CLASS@_t* pph, ppl_dimension_type d, int empty));
 
 ')
 
-m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@CLASS@_code',
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_code',
 `int
-ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@CLASS@
+ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@
 PPL_PROTO((ppl_@CLASS@_t* pph, ppl_const_@CLASS@_t ph));
 
 ')
 
-m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@UBUILD_REPRESENT@_System_code',
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_code',
 `int
 ppl_new_@TOPOLOGY@@CLASS@_from_@UBUILD_REPRESENT@_System
 PPL_PROTO((ppl_@CLASS@_t* pph, ppl_const_@UBUILD_REPRESENT@_System_t cs));
 
 ')
 
-m4_define(`ppl_new_@TOPOLOGY@@CLASS@_recycle_@UBUILD_REPRESENT@_System_code',
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_recycle_@BUILD_REPRESENT@s_code',
 `int
 ppl_new_@TOPOLOGY@@CLASS@_recycle_@UBUILD_REPRESENT@_System
 PPL_PROTO((ppl_@CLASS@_t* pph, ppl_@UBUILD_REPRESENT@_System_t cs));
@@ -100,7 +103,7 @@ PPL_PROTO((ppl_const_@CLASS@_t ph,
 
 ')
 
-m4_define(`ppl_@CLASS@_relation_with_@URELATION_REPRESENT@_code',
+m4_define(`ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_code',
 `int
 ppl_@CLASS@_relation_with_@URELATION_REPRESENT@
 PPL_PROTO((ppl_const_@CLASS@_t ph,
@@ -156,9 +159,25 @@ ppl_@CLASS@_OK PPL_PROTO((ppl_const_@CLASS@_t ph));
 
 ')
 
-m4_define(`ppl_@CLASS@_topological_closure_assign_code',
+m4_define(`ppl_@CLASS@_@SIMPLIFY@_code',
 `int
-ppl_@CLASS@_topological_closure_assign PPL_PROTO((ppl_@CLASS@_t ph));
+ppl_@CLASS@_@SIMPLIFY@ PPL_PROTO((ppl_@CLASS@_t ph));
+
+')
+
+m4_define(`ppl_@CLASS@_constrains_code',
+`int
+ppl_@CLASS@_constrains
+PPL_PROTO((ppl_const_@CLASS@_t ph,
+           ppl_dimension_type var));
+
+')
+
+m4_define(`ppl_@CLASS@_unconstrain_code',
+`int
+ppl_@CLASS@_unconstrain
+PPL_PROTO((ppl_@CLASS@_t ph,
+           ppl_dimension_type var));
 
 ')
 
@@ -186,6 +205,14 @@ PPL_PROTO((ppl_@CLASS@_t ph,
 
 ')
 
+m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@_code',
+`int
+ppl_@CLASS@_refine_with_@REFINE_REPRESENT@
+PPL_PROTO((ppl_@CLASS@_t ph,
+           ppl_const_@UREFINE_REPRESENT@_t c));
+
+')
+
 m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code',
 `int
 ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize
@@ -202,6 +229,14 @@ PPL_PROTO((ppl_@CLASS@_t ph,
 
 ')
 
+m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s_code',
+`int
+ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s
+PPL_PROTO((ppl_@CLASS@_t ph,
+           ppl_const_@UREFINE_REPRESENT@_System_t cs));
+
+')
+
 m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize_code',
 `int
 ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize
@@ -213,14 +248,6 @@ PPL_PROTO((ppl_@CLASS@_t ph,
 m4_define(`ppl_@CLASS@_add_recycled_@ADD_REPRESENT@s_code',
 `int
 ppl_@CLASS@_add_recycled_@ADD_REPRESENT@s
-PPL_PROTO((ppl_@CLASS@_t ph,
-           ppl_@UADD_REPRESENT@_System_t cs));
-
-')
-
-m4_define(`ppl_@CLASS@_add_recycled_@ADD_REPRESENT@s_and_minimize_code',
-`int
-ppl_@CLASS@_add_recycled_@ADD_REPRESENT@s_and_minimize
 PPL_PROTO((ppl_@CLASS@_t ph,
            ppl_@UADD_REPRESENT@_System_t cs));
 
@@ -268,6 +295,29 @@ PPL_PROTO((ppl_@CLASS@_t ph,
 
 ')
 
+m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruence_code',
+`int
+ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruence
+PPL_PROTO((ppl_@CLASS@_t ph,
+           ppl_dimension_type var,
+           enum ppl_enum_Constraint_Type relsym,
+           ppl_const_Linear_Expression_t le,
+           ppl_const_Coefficient_t d,
+           ppl_const_Coefficient_t m));
+
+')
+
+m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence_code',
+`int
+ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence
+PPL_PROTO((ppl_@CLASS@_t ph,
+           ppl_const_Linear_Expression_t lhs,
+           enum ppl_enum_Constraint_Type relsym,
+           ppl_const_Linear_Expression_t rhs,
+           ppl_const_Coefficient_t m));
+
+')
+
 m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_code',
 `int
 ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens
@@ -285,9 +335,9 @@ PPL_PROTO((ppl_@CLASS@_t x,
 
 ')
 
-m4_define(`ppl_@CLASS@_limited_@WIDENEXPN@_extrapolation_assign_with_tokens_code',
+m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens_code',
 `int
-ppl_@CLASS@_limited_@WIDENEXPN@_extrapolation_assign_with_tokens
+ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens
 PPL_PROTO((ppl_@CLASS@_t x,
            ppl_const_@CLASS@_t y,
            ppl_const_Constraint_System_t cs,
@@ -295,9 +345,9 @@ PPL_PROTO((ppl_@CLASS@_t x,
 
 ')
 
-m4_define(`ppl_@CLASS@_limited_@WIDENEXPN@_extrapolation_assign_code',
+m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_code',
 `int
-ppl_@CLASS@_limited_@WIDENEXPN@_extrapolation_assign
+ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign
 PPL_PROTO((ppl_@CLASS@_t x,
            ppl_const_@CLASS@_t y,
            ppl_const_Constraint_System_t cs));
@@ -373,6 +423,96 @@ PPL_PROTO((ppl_@CLASS@_t ph,
            ppl_dimension_type ds[],
            size_t n,
            ppl_dimension_type d));
+
+')
+
+m4_define(`ppl_@CLASS@_@MEMBYTES@_code',
+`int
+ppl_@CLASS@_@MEMBYTES@
+PPL_PROTO((ppl_const_@CLASS@_t ps,
+           size_t* sz));
+
+')
+
+m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
+`dnl
+PPL_TYPE_DECLARATION(@CLASS@_iterator);
+PPL_TYPE_DECLARATION(@CLASS@_const_iterator);
+
+int
+ppl_@CLASS@_iterator_equal_test
+PPL_PROTO((ppl_const_@CLASS@_iterator_t x,
+           ppl_const_@CLASS@_iterator_t y));
+
+int
+ppl_@CLASS@_const_iterator_equal_test
+PPL_PROTO((ppl_const_@CLASS@_const_iterator_t x,
+           ppl_const_@CLASS@_const_iterator_t y));
+
+')
+
+m4_define(`ppl_@CLASS@_@BEGINEND@_iterator_code',
+`dnl
+int
+ppl_@CLASS@_iterator_@BEGINEND@
+PPL_PROTO((ppl_const_@CLASS@_t ps,
+           ppl_const_@CLASS@_iterator_t psit));
+
+int
+ppl_@CLASS@_const_iterator_@BEGINEND@
+PPL_PROTO((ppl_const_@CLASS@_t ps,
+           ppl_const_@CLASS@_const_iterator_t psit));
+
+')
+
+m4_define(`ppl_@CLASS@_delete_iterator_code',
+`dnl
+int
+ppl_delete_@CLASS@_iterator
+PPL_PROTO((ppl_const_@CLASS@_iterator_t psit));
+
+int
+ppl_delete_@CLASS@_const_iterator
+PPL_PROTO((ppl_const_@CLASS@_const_iterator_t psit));
+
+')
+
+m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
+`dnl
+int
+ppl_@CLASS@_iterator_@INCDEC@
+PPL_PROTO((ppl_const_@CLASS@_t ps,
+           ppl_const_@CLASS@_iterator_t psit));
+
+int
+ppl_@CLASS@_const_iterator_@INCDEC@
+PPL_PROTO((ppl_const_@CLASS@_t ps,
+           ppl_const_@CLASS@_const_iterator_t psit));
+
+')
+
+m4_define(`ppl_@CLASS@_drop_disjunct_code',
+`dnl
+int
+ppl_@CLASS@_drop_disjunct
+PPL_PROTO((ppl_@CLASS@_t ps,
+ ppl_const_@CLASS@_iterator_t cit,
+ ppl_@CLASS@_iterator_t it));
+
+int
+ppl_@CLASS@_drop_disjuncts
+PPL_PROTO((ppl_@CLASS@_t ps,
+ ppl_const_@CLASS@_iterator_t first,
+ ppl_const_@CLASS@_iterator_t last));
+
+')
+
+m4_define(`ppl_@CLASS@_add_disjunct_code',
+`dnl
+int
+ppl_@CLASS@_add_disjunct
+PPL_PROTO((ppl_@CLASS@_t ps,
+           ppl_const_@DISJUNCT@_t d));
 
 ')
 

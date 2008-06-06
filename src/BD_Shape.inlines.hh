@@ -49,22 +49,14 @@ BD_Shape<T>::max_space_dimension() {
 
 template <typename T>
 inline bool
+BD_Shape<T>::marked_zero_dim_univ() const {
+  return status.test_zero_dim_univ();
+}
+
+template <typename T>
+inline bool
 BD_Shape<T>::marked_empty() const {
   return status.test_empty();
-}
-
-template <typename T>
-inline void
-BD_Shape<T>::set_empty() {
-  status.set_empty();
-  assert(OK());
-  assert(marked_empty());
-}
-
-template <typename T>
-inline void
-BD_Shape<T>::set_zero_dim_univ() {
-  status.set_zero_dim_univ();
 }
 
 template <typename T>
@@ -80,6 +72,42 @@ BD_Shape<T>::marked_shortest_path_reduced() const {
 }
 
 template <typename T>
+inline void
+BD_Shape<T>::set_zero_dim_univ() {
+  status.set_zero_dim_univ();
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::set_empty() {
+  status.set_empty();
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::set_shortest_path_closed() {
+  status.set_shortest_path_closed();
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::set_shortest_path_reduced() {
+  status.set_shortest_path_reduced();
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::reset_shortest_path_closed() {
+  status.reset_shortest_path_closed();
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::reset_shortest_path_reduced() {
+  status.reset_shortest_path_reduced();
+}
+
+template <typename T>
 inline
 BD_Shape<T>::BD_Shape(const dimension_type num_dimensions,
 		      const Degenerate_Element kind)
@@ -89,14 +117,14 @@ BD_Shape<T>::BD_Shape(const dimension_type num_dimensions,
   else {
     if (num_dimensions > 0)
       // A (non zero-dim) universe BDS is closed.
-      status.set_shortest_path_closed();
-    assert(OK());
+      set_shortest_path_closed();
   }
+  assert(OK());
 }
 
 template <typename T>
 inline
-BD_Shape<T>::BD_Shape(const BD_Shape& y)
+BD_Shape<T>::BD_Shape(const BD_Shape& y, Complexity_Class)
   : dbm(y.dbm), status(y.status), redundancy_dbm() {
   if (y.marked_shortest_path_reduced())
     redundancy_dbm = y.redundancy_dbm;
@@ -105,31 +133,33 @@ BD_Shape<T>::BD_Shape(const BD_Shape& y)
 template <typename T>
 template <typename U>
 inline
-BD_Shape<T>::BD_Shape(const BD_Shape<U>& y)
+BD_Shape<T>::BD_Shape(const BD_Shape<U>& y, Complexity_Class)
   : dbm(y.dbm), status(), redundancy_dbm() {
   // TODO: handle flags properly, possibly taking special cases into account.
   if (y.marked_empty())
     set_empty();
-  else if (y.status.test_zero_dim_univ())
+  else if (y.marked_zero_dim_univ())
     set_zero_dim_univ();
 }
 
 template <typename T>
 inline Congruence_System
 BD_Shape<T>::congruences() const {
-  return Congruence_System(minimized_constraints());
-}
-
-template <typename T>
-inline Congruence_System
-BD_Shape<T>::minimized_congruences() const {
-  return Congruence_System(minimized_constraints());
+  return minimized_congruences();
 }
 
 template <typename T>
 inline bool
 BD_Shape<T>::add_constraint_and_minimize(const Constraint& c) {
   add_constraint(c);
+  shortest_path_closure_assign();
+  return !marked_empty();
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::add_congruence_and_minimize(const Congruence& cg) {
+  add_congruence(cg);
   shortest_path_closure_assign();
   return !marked_empty();
 }
@@ -189,6 +219,21 @@ BD_Shape<T>::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
 }
 
 template <typename T>
+inline void
+BD_Shape<T>::refine_with_constraints(const Constraint_System& cs) {
+  for (Constraint_System::const_iterator i = cs.begin(),
+	 cs_end = cs.end(); i != cs_end; ++i)
+    refine_with_constraint(*i);
+}
+
+template <typename T>
+void
+BD_Shape<T>::refine_with_congruences(const Congruence_System& cgs) {
+  Constraint_System cs(cgs);
+  refine_with_constraints(cs);
+}
+
+template <typename T>
 inline bool
 BD_Shape<T>::can_recycle_constraint_systems() {
   return false;
@@ -207,29 +252,31 @@ BD_Shape<T>::BD_Shape(const Constraint_System& cs)
   : dbm(cs.space_dimension() + 1), status(), redundancy_dbm() {
   if (cs.space_dimension() > 0)
     // A (non zero-dim) universe BDS is shortest-path closed.
-    status.set_shortest_path_closed();
+    set_shortest_path_closed();
   add_constraints(cs);
 }
 
 template <typename T>
 template <typename Interval>
 inline
-BD_Shape<T>::BD_Shape(const Box<Interval>& box)
+BD_Shape<T>::BD_Shape(const Box<Interval>& box,
+                      Complexity_Class)
   : dbm(box.space_dimension() + 1), status(), redundancy_dbm() {
   if (box.space_dimension() > 0)
     // A (non zero-dim) universe BDS is shortest-path closed.
-    status.set_shortest_path_closed();
+    set_shortest_path_closed();
   add_constraints(box.constraints());
   return;
 }
 
 template <typename T>
 inline
-BD_Shape<T>::BD_Shape(const Grid& grid)
+BD_Shape<T>::BD_Shape(const Grid& grid,
+                Complexity_Class)
   : dbm(grid.space_dimension() + 1), status(), redundancy_dbm() {
   if (grid.space_dimension() > 0)
     // A (non zero-dim) universe BDS is shortest-path closed.
-    status.set_shortest_path_closed();
+    set_shortest_path_closed();
   add_congruences(grid.congruences());
   return;
 }
@@ -237,11 +284,12 @@ BD_Shape<T>::BD_Shape(const Grid& grid)
 template <typename T>
 template <typename U>
 inline
-BD_Shape<T>::BD_Shape(const Octagonal_Shape<U>& os)
+BD_Shape<T>::BD_Shape(const Octagonal_Shape<U>& os,
+                Complexity_Class)
   : dbm(os.space_dimension() + 1), status(), redundancy_dbm() {
   if (os.space_dimension() > 0)
     // A (non zero-dim) universe BDS is shortest-path closed.
-    status.set_shortest_path_closed();
+    set_shortest_path_closed();
   add_constraints(os.constraints());
   return;
 }
@@ -590,7 +638,7 @@ BD_Shape<T>::add_dbm_constraint(const dimension_type i,
   if (dbm_ij > k) {
     dbm_ij = k;
     if (marked_shortest_path_closed())
-      status.reset_shortest_path_closed();
+      reset_shortest_path_closed();
   }
 }
 
@@ -688,7 +736,7 @@ BD_Shape<T>::remove_higher_space_dimensions(const dimension_type new_dim) {
   // Shortest-path closure is maintained.
   // TODO: see whether or not reduction can be (efficiently!) maintained too.
   if (marked_shortest_path_reduced())
-    status.reset_shortest_path_reduced();
+    reset_shortest_path_reduced();
 
   // If we removed _all_ dimensions from a non-empty BDS,
   // the zero-dim universe BDS has been obtained.

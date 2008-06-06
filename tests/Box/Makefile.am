@@ -41,11 +41,7 @@ $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
 # Tests that do not compile yet.
-#boundedaffineimage1
 #closure1
-#generalizedaffineimage1
-#generalizedaffinepreimage1
-#membytes1
 
 # Tests that do not succeed yet (maybe even known result is wrong).
 #ascii_dump_load1
@@ -60,6 +56,8 @@ affinepreimage1 \
 bgp99extrapolation1 \
 bhz03widening1 \
 bounded1 \
+boundedaffineimage1 \
+boundedaffinepreimage1 \
 boxdifference1 \
 boxhull1 \
 cc76narrowing1 \
@@ -83,17 +81,23 @@ frompartiallyreducedproduct1 \
 frompolyhedron1 \
 frompolyhedron2 \
 fromspacedim1 \
+generalizedaffineimage1 generalizedaffineimage2 \
+generalizedaffinepreimage1 \
 geomcovers1 \
 intersection1 \
 mapspacedims1 \
 max_min1 \
 maxspacedim1 \
+membytes1 \
 minconstraints1 \
-pointsetpowerset1 \
-relations1 relations2 \
-refine1 refine3 \
+pointsetpowerset1 pointsetpowerset2 \
+relations1 relations2 relations3 relations4 \
+refinewithconstraint1 refinewithconstraint2 \
+refinewithconstraints1 \
+refinewithcongruences1 \
 removespacedims1 \
 timeelapse1 \
+unconstrain1 \
 universe1 \
 writebox1
 
@@ -161,7 +165,8 @@ bhz03widening1_SOURCES = bhz03widening1.cc
 
 bounded1_SOURCES = bounded1.cc
 
-#boundedaffineimage1_SOURCES = boundedaffineimage1.cc
+boundedaffineimage1_SOURCES = boundedaffineimage1.cc
+boundedaffinepreimage1_SOURCES = boundedaffinepreimage1.cc
 
 boxdifference1_SOURCES = boxdifference1.cc
 
@@ -210,9 +215,10 @@ frompartiallyreducedproduct1_SOURCES = frompartiallyreducedproduct1.cc
 
 fromspacedim1_SOURCES = fromspacedim1.cc
 
-#generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
+generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
+generalizedaffineimage2_SOURCES = generalizedaffineimage2.cc
 
-#generalizedaffinepreimage1_SOURCES = generalizedaffinepreimage1.cc
+generalizedaffinepreimage1_SOURCES = generalizedaffinepreimage1.cc
 
 geomcovers1_SOURCES = geomcovers1.cc
 
@@ -227,37 +233,46 @@ max_min1_SOURCES = max_min1.cc
 
 maxspacedim1_SOURCES = maxspacedim1.cc
 
-#membytes1_SOURCES = membytes1.cc
+membytes1_SOURCES = membytes1.cc
 
 minconstraints1_SOURCES = minconstraints1.cc
 
 pointsetpowerset1_SOURCES = pointsetpowerset1.cc
+pointsetpowerset2_SOURCES = pointsetpowerset2.cc
 
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
+relations3_SOURCES = relations3.cc
+relations4_SOURCES = relations4.cc
 
-refine1_SOURCES = refine1.cc
-refine3_SOURCES = refine3.cc
+refinewithconstraint1_SOURCES = refinewithconstraint1.cc
+refinewithconstraint2_SOURCES = refinewithconstraint2.cc
+
+refinewithconstraints1_SOURCES = refinewithconstraints1.cc
+
+refinewithcongruences1_SOURCES = refinewithcongruences1.cc
 
 removespacedims1_SOURCES = removespacedims1.cc
 
 timeelapse1_SOURCES = timeelapse1.cc
 
+unconstrain1_SOURCES = unconstrain1.cc
+
 universe1_SOURCES = universe1.cc
 
 writebox1_SOURCES = writebox1.cc
 
-refine2_SRCS = refine2.cc
+refinewithconstraints2_SRCS = refinewithconstraints2.cc
 
 if BUILD_WATCHDOG_LIBRARY
-WATCHDOG_TESTS = refine2
+WATCHDOG_TESTS = refinewithconstraints2
 
-refine2_SOURCES = $(refine2_SRCS)
-refine2_CPPFLAGS = \
+refinewithconstraints2_SOURCES = $(refinewithconstraints2_SRCS)
+refinewithconstraints2_CPPFLAGS = \
 $(AM_CPPFLAGS) \
 -I$(top_builddir)/Watchdog \
 -I$(top_builddir)/Watchdog/src
-refine2_LDADD = $(LDADD) $(top_builddir)/Watchdog/src/libpwl.la
+refinewithconstraints2_LDADD = $(LDADD) $(top_builddir)/Watchdog/src/libpwl.la
 
 endif BUILD_WATCHDOG_LIBRARY
 
@@ -274,7 +289,7 @@ BUGS =
 
 check_PROGRAMS = $(ALL_TESTS) $(BUGS)
 
-EXTRA_DIST = $(refine2_SRCS)
+EXTRA_DIST = $(refinewithconstraints2_SRCS)
 
 MOSTLYCLEANFILES = \
 ascii_dump_load1.dat

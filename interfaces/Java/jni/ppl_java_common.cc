@@ -306,7 +306,6 @@ build_ppl_relsym(JNIEnv* env, const jobject& j_relsym) {
   throw std::runtime_error("PPL Java interface internal error");
 }
 
-
 Optimization_Mode
 build_ppl_optimization_mode(JNIEnv* env, const jobject& j_opt_mode) {
   jclass opt_mode_class = env->FindClass("ppl_java/Optimization_Mode");

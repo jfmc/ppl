@@ -112,7 +112,8 @@ Grid::Grid(Grid_Generator_System& ggs, Recycle_Input)
 
 template <typename U>
 inline
-Grid::Grid(const BD_Shape<U>& bd)
+Grid::Grid(const BD_Shape<U>& bd,
+           Complexity_Class)
   : con_sys(bd.space_dimension() > max_space_dimension()
 	    ? throw_space_dimension_overflow("Grid(bd)",
 					     "the space dimension of bd "
@@ -126,7 +127,8 @@ Grid::Grid(const BD_Shape<U>& bd)
 
 template <typename U>
 inline
-Grid::Grid(const Octagonal_Shape<U>& os)
+Grid::Grid(const Octagonal_Shape<U>& os,
+           Complexity_Class)
   : con_sys(os.space_dimension() > max_space_dimension()
 	    ? throw_space_dimension_overflow("Grid(os)",
 					     "the space dimension of os "
@@ -194,6 +196,16 @@ Grid::swap(Grid& y) {
   std::swap(status, y.status);
   std::swap(space_dim, y.space_dim);
   std::swap(dim_kinds, y.dim_kinds);
+}
+
+inline void
+Grid::refine_with_congruence(const Congruence& cg) {
+  add_congruence(cg);
+}
+
+inline void
+Grid::refine_with_congruences(const Congruence_System& cgs) {
+  add_congruences(cgs);
 }
 
 inline bool

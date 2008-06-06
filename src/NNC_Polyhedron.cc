@@ -29,7 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-PPL::NNC_Polyhedron::NNC_Polyhedron(const C_Polyhedron& y)
+PPL::NNC_Polyhedron::NNC_Polyhedron(const C_Polyhedron& y, Complexity_Class)
   : Polyhedron(NOT_NECESSARILY_CLOSED, y.space_dimension(), UNIVERSE) {
   add_constraints(y.constraints());
   assert(OK());
@@ -64,7 +64,7 @@ PPL::NNC_Polyhedron::NNC_Polyhedron(Congruence_System& cgs, Recycle_Input)
   assert(OK());
 }
 
-PPL::NNC_Polyhedron::NNC_Polyhedron(const Grid& grid)
+PPL::NNC_Polyhedron::NNC_Polyhedron(const Grid& grid, Complexity_Class)
   : Polyhedron(NOT_NECESSARILY_CLOSED,
 	       grid.space_dimension() <= max_space_dimension()
 	       ? grid.space_dimension()

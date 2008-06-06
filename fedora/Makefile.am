@@ -21,4 +21,7 @@
 # site: http://www.cs.unipr.it/ppl/ .
 
 EXTRA_DIST = \
-ppl.spec
+ppl.spec \
+ppl.hh \
+ppl_c.h \
+pwl.hh

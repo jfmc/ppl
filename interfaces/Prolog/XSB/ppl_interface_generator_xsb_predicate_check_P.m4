@@ -1,4 +1,9 @@
-m4_define(`dnl', `m4_dnl')
+m4_define(`dnl', `m4_dnl')`'dnl
+m4_divert(-1)
+
+dnl This m4 file defines macros needed for generating
+dnl the Ciao dependent code for xsb_predicate_check.pl.
+
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
@@ -20,7 +25,10 @@ dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
-dnl This file generates ppl_ciao_predicate_check.pl
+m4_include(`ppl_interface_generator_common_dat.m4')
+m4_include(`ppl_interface_generator_prolog_systems.m4')
+
+m4_divert`'dnl
 /* XSB Prolog interface: XSB Prolog part for checking all predicates.
 m4_include(`ppl_interface_generator_copyright')
 */
@@ -29,6 +37,25 @@ m4_include(`ppl_interface_generator_copyright')
 :- import xpp_include_dir/1 from parse.
 :- assert(xpp_include_dir('.')).
 
+#include "ppl_predicate_check_main.pl"
+#include "ppl_predicate_check_common.pl"
+m4_divert(-1)
+
+m4_pushdef(`m4_one_class_code', `dnl
+m4_replace_all_patterns_in_string($1,
+                                  `#includeSPACE"../tests/ppl_predicate_check_@CLASS@.pl"
+',
+                                  m4_pattern_list)`'dnl
+')`'dnl
+dnl
+dnl -----------------------------------------------------------------
+dnl Generate #include declarations for all the classes.
+dnl -----------------------------------------------------------------
+dnl
+m4_divert
+m4_patsubst(m4_patsubst(m4_all_code, ` ', `'), SPACE, ` ')`'dnl
+m4_popdef(`m4_one_class_code')`'dnl
+
 :- import append/3, length/2, member/2 from basics.
 :- import
 m4_divert(1)
@@ -36,9 +63,10 @@ m4_divert(1)
 
 :- [ppl_xsb].
 
-#include "pl_check.pl"
-
 prolog_system('XSB').
+
+discontiguous(_).
+include(_).
 
 main :-
     (check_all ->
@@ -50,8 +78,9 @@ main :-
 
 :- main.
 m4_divert`'dnl
-m4_include(`ppl_interface_generator_prolog_systems.m4')dnl
 m4_define(`m4_extension', `m4_ifelse($4, 0, , `COMMA
 ')	  $1/$2')dnl
 m4_patsubst(ppl_prolog_sys_code, COMMA, `,')`'dnl
-m4_undivert(1)`'dnl
+m4_undivert(1)
+dnl
+dnl End of file generation.

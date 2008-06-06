@@ -215,17 +215,16 @@ public:
   is empty; thus, if \p R defines no reduction between its components and
   \f$d = (G, P) \in (\Gset \times \Pset)\f$
   is a direct product in one dimension where \f$G\f$ denotes the set of
-  numbers that are integral multiples of 3 while \f$P\$ denotes the
+  numbers that are integral multiples of 3 while \f$P\f$ denotes the
   set of numbers between 1 and 2, then an operation that tests for
   emptiness should return false.
   However, the test for the universe returns true if and only if the
   test <CODE>is_universe()</CODE> on both components returns true.
 
   \par
-  In all the examples it is assumed that the template <CODE>R</CODE>
-  is the <CODE>No_Reduction<D1, D2></CODE> class and that variables
-  <CODE>x</CODE> and <CODE>y</CODE> are defined (where they are
-  used) as follows:
+  In all the examples it is assumed that the template \c R is the
+  <CODE>No_Reduction<D1, D2></CODE> class and that variables
+  \c x and \c y are defined (where they are used) as follows:
   \code
   Variable x(0);
   Variable y(1);
@@ -354,94 +353,143 @@ public:
     The system of constraints to be approximated by the pair.
 
     \exception std::length_error
-    Thrown if \p num_dimensions exceeds the maximum allowed space
-    dimension.
+    Thrown if the space dimension of \p cs exceeds the maximum allowed
+    space dimension.
   */
   explicit Partially_Reduced_Product(Constraint_System& cs);
 
-  //! Builds a pair, from a C polyhedron.
+  //! Builds a product, from a C polyhedron.
   /*!
-    The pair inherits the space dimension of the polyhedron.
+    Builds a product containing \p ph using algorithms whose
+    complexity does not exceed the one specified by \p complexity.
+    If \p complexity is \p ANY_COMPLEXITY, then the built product is the
+    smallest one containing \p ph.
+    The product inherits the space dimension of the polyhedron.
 
-    \param cs
-    The polyhedron to be approximated by the pair.
+    \param ph
+    The polyhedron to be approximated by the product.
+
+    \param complexity
+    The complexity that will not be exceeded.
 
     \exception std::length_error
-    Thrown if \p num_dimensions exceeds the maximum allowed space
-    dimension.
+    Thrown if the space dimension of \p ph exceeds the maximum allowed
+    space dimension.
   */
-  explicit Partially_Reduced_Product(const C_Polyhedron& ph);
+  explicit
+  Partially_Reduced_Product(const C_Polyhedron& ph,
+                            Complexity_Class complexity = ANY_COMPLEXITY);
 
-  //! Builds a pair, from an NNC polyhedron.
+  //! Builds a product, from an NNC polyhedron.
   /*!
-    The pair inherits the space dimension of the polyhedron.
+    Builds a product containing \p ph using algorithms whose
+    complexity does not exceed the one specified by \p complexity.
+    If \p complexity is \p ANY_COMPLEXITY, then the built product is the
+    smallest one containing \p ph.
+    The product inherits the space dimension of the polyhedron.
 
-    \param cs
-    The polyhedron to be approximated by the pair.
+    \param ph
+    The polyhedron to be approximated by the product.
+
+    \param complexity
+    The complexity that will not be exceeded.
 
     \exception std::length_error
-    Thrown if \p num_dimensions exceeds the maximum allowed space
-    dimension.
+    Thrown if the space dimension of \p ph exceeds the maximum allowed
+    space dimension.
   */
-  explicit Partially_Reduced_Product(const NNC_Polyhedron& ph);
+  explicit
+  Partially_Reduced_Product(const NNC_Polyhedron& ph,
+                            Complexity_Class complexity = ANY_COMPLEXITY);
 
-  //! Builds a pair, from a grid.
+  //! Builds a product, from a grid.
   /*!
-    The pair inherits the space dimension of the grid.
+    Builds a product containing \p gr.
+    The product inherits the space dimension of the grid.
 
-    \param cs
-    The grid to be approximated by the pair.
+    \param gr
+    The grid to be approximated by the product.
+
+    \param complexity
+    The complexity is ignored.
 
     \exception std::length_error
-    Thrown if \p num_dimensions exceeds the maximum allowed space
-    dimension.
+    Thrown if the space dimension of \p gr exceeds the maximum allowed
+    space dimension.
   */
-  explicit Partially_Reduced_Product(const Grid& gr);
+  explicit
+  Partially_Reduced_Product(const Grid& gr,
+                            Complexity_Class complexity = ANY_COMPLEXITY);
 
-  //! Builds a pair out of a box.
+  //! Builds a product out of a box.
   /*!
+    Builds a product containing \p box.
     The product inherits the space dimension of the box.
 
     \param box
     The box representing the pair to be built.
+
+    \param complexity
+    The complexity is ignored.
 
     \exception std::length_error
     Thrown if the space dimension of \p box exceeds the maximum
     allowed space dimension.
   */
   template <typename Interval>
-  Partially_Reduced_Product(const Box<Interval>& box);
+  Partially_Reduced_Product(const Box<Interval>& box,
+                            Complexity_Class complexity = ANY_COMPLEXITY);
 
-  //! Builds a pair out of a bd shape.
+  //! Builds a product out of a BD shape.
   /*!
-    The product inherits the space dimension of the bd shape.
+    Builds a product containing \p bd.
+    The product inherits the space dimension of the BD shape.
 
-    \param box
-    The bd shape representing the pair to be built.
+    \param bd
+    The BD shape representing the product to be built.
+
+    \param complexity
+    The complexity is ignored.
 
     \exception std::length_error
     Thrown if the space dimension of \p bd exceeds the maximum
     allowed space dimension.
   */
   template <typename U>
-  Partially_Reduced_Product(const BD_Shape<U>& bd);
+  Partially_Reduced_Product(const BD_Shape<U>& bd,
+                            Complexity_Class complexity = ANY_COMPLEXITY);
 
-  //! Builds a pair out of an octagonal shape.
+  //! Builds a product out of an octagonal shape.
   /*!
+    Builds a product containing \p os.
     The product inherits the space dimension of the octagonal shape.
 
     \param os
-    The octagonal shape representing the pair to be built.
+    The octagonal shape representing the product to be built.
+
+    \param complexity
+    The complexity is ignored.
 
     \exception std::length_error
     Thrown if the space dimension of \p os exceeds the maximum
     allowed space dimension.
   */
   template <typename U>
-  Partially_Reduced_Product(const Octagonal_Shape<U>& os);
+  Partially_Reduced_Product(const Octagonal_Shape<U>& os,
+                            Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Ordinary copy-constructor.
-  Partially_Reduced_Product(const Partially_Reduced_Product& y);
+  Partially_Reduced_Product(const Partially_Reduced_Product& y,
+                            Complexity_Class complexity = ANY_COMPLEXITY);
+
+  //! Builds a conservative, upward approximation of \p y.
+  /*!
+    The complexity argument is ignored.
+  */
+  template <typename E1, typename E2, typename S>
+  explicit
+  Partially_Reduced_Product(const Partially_Reduced_Product<E1, E2, S>& y,
+                            Complexity_Class complexity = ANY_COMPLEXITY);
 
   /*! \brief
     The assignment operator.  (\p *this and \p y can be
@@ -739,15 +787,16 @@ public:
   */
   void add_constraint(const Constraint& c);
 
-  //! Adds constraint \p c to \p *this, reducing the result.
-  /*!
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
+  /*! \brief
+    Use the constraint \p c to refine \p *this.
+
+    \param c
+    The constraint to be used for refinement.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p c are dimension-incompatible.
   */
-  bool add_constraint_and_minimize(const Constraint& c);
+  void refine_with_constraint(const Constraint& c);
 
   //! Adds a copy of congruence \p cg to \p *this.
   /*!
@@ -758,16 +807,15 @@ public:
   void add_congruence(const Congruence& cg);
 
   /*! \brief
-    Adds a copy of congruence \p cg to the system of congruences of \p
-    *this, reducing the result
+    Use the congruence \p cg to refine \p *this.
 
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
+    \param cg
+    The congruence to be used for refinement.
 
     \exception std::invalid_argument
-    Thrown if \p *this and congruence \p cg are dimension-incompatible.
+    Thrown if \p *this and \p cg are dimension-incompatible.
   */
-  bool add_congruence_and_minimize(const Congruence& c);
+  void refine_with_congruence(const Congruence& cg);
 
   //! Adds a copy of the congruences in \p cgs to \p *this.
   /*!
@@ -778,6 +826,17 @@ public:
     Thrown if \p *this and \p cgs are dimension-incompatible.
   */
   void add_congruences(const Congruence_System& cgs);
+
+  /*! \brief
+    Use the congruences in \p cgs to refine \p *this.
+
+    \param  cgs
+    The congruences to be used for refinement.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cgs are dimension-incompatible.
+  */
+  void refine_with_congruences(const Congruence_System& cgs);
 
   //! Adds the congruences in \p cgs to *this.
   /*!
@@ -793,38 +852,6 @@ public:
   */
   void add_recycled_congruences(Congruence_System& cgs);
 
-  /*! \brief
-    Adds a copy of the congruences in \p cgs to \p *this, reducing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param cgs
-    The congruence system to be be added.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cgs are dimension-incompatible.
-  */
-  bool add_congruences_and_minimize(const Congruence_System& cgs);
-
-  /*! \brief
-    Adds the congruences in \p cgs to \p *this, reducing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param cgs
-    The congruence system to be added that may be recycled.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cgs are dimension-incompatible.
-
-    \warning
-    The only assumption that can be made about \p cgs upon successful
-    or exceptional return is that it can be safely destroyed.
-  */
-  bool add_recycled_congruences_and_minimize(Congruence_System& cgs);
-
   //! Adds a copy of the constraint system in \p cs to \p *this.
   /*!
     \param cs
@@ -836,19 +863,15 @@ public:
   void add_constraints(const Constraint_System& cs);
 
   /*! \brief
-    Adds  a copy of the constraint system in \p cs to \p *this,
-    reducing the result.
+    Use the constraints in \p cs to refine \p *this.
 
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
+    \param  cs
+     The constraints to be used for refinement.
 
-    \param cs
-    The constraint system to be added.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cs are dimension-incompatible.
+     \exception std::invalid_argument
+     Thrown if \p *this and \p cs are dimension-incompatible.
   */
-  bool add_constraints_and_minimize(const Constraint_System& cs);
+  void refine_with_constraints(const Constraint_System& cs);
 
   //! Adds the constraint system in \p cs to \p *this.
   /*!
@@ -865,22 +888,30 @@ public:
   void add_recycled_constraints(Constraint_System& cs);
 
   /*! \brief
-    Adds the constraint system in \p cs to \p *this, reducing the result.
+    Computes the \ref Cylindrification "cylindrification" of \p *this with
+    respect to space dimension \p var, assigning the result to \p *this.
 
-    \param cs
-    The constraint system to be added that may be recycled.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
+    \param var
+    The space dimension that will be unconstrained.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p cs are dimension-incompatible.
-
-    \warning
-    The only assumption that can be made about \p cs upon successful
-    or exceptional return is that it can be safely destroyed.
+    Thrown if \p var is not a space dimension of \p *this.
   */
-  bool add_recycled_constraints_and_minimize(Constraint_System& cs);
+  void unconstrain(Variable var);
+
+  /*! \brief
+    Computes the \ref Cylindrification "cylindrification" of \p *this with
+    respect to the set of space dimensions \p to_be_unconstrained,
+    assigning the result to \p *this.
+
+    \param to_be_unconstrained
+    The set of space dimension that will be unconstrained.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with one of the
+    Variable objects contained in \p to_be_removed.
+  */
+  void unconstrain(const Variables_Set& to_be_unconstrained);
 
   /*! \brief
     Assigns to \p *this the componentwise intersection of \p *this and \p y.
@@ -1189,7 +1220,8 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void widening_assign(const Partially_Reduced_Product& y, unsigned* tp = NULL);
+  void widening_assign(const Partially_Reduced_Product& y,
+                       unsigned* tp = NULL);
 
   //@} // Space Dimension Preserving Member Functions that May Modify [...]
 
@@ -1396,6 +1428,14 @@ public:
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
 
+  /*! \brief
+    Returns a 32-bit hash code for \p *this.
+
+    If \p x and \p y are such that <CODE>x == y</CODE>,
+    then <CODE>x.hash_code() == y.hash_code()</CODE>.
+  */
+  int32_t hash_code() const;
+
   //@} // Miscellaneous Member Functions
 
   //! Reduce.
@@ -1459,7 +1499,7 @@ public:
   Constraints_Product;
 };
 
-}; // namespace Parma_Polyhedra_Library
+} // namespace Parma_Polyhedra_Library
 
 namespace std {
 

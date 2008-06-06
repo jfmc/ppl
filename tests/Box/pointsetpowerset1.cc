@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
+// Construct powerset from zero dimension empty constraint system.
 bool
 test01() {
   Constraint_System cs = Constraint_System::zero_dim_empty();
@@ -34,6 +35,7 @@ test01() {
   return ps.OK();
 }
 
+// add_disjunct(), affine_image() and intersection_assign().
 bool
 test02() {
   Variable x(0);
@@ -105,376 +107,390 @@ test03() {
   return ok;
 }
 
-#if 0
+// add_disjunct() and concatenate_assign().
 bool
 test04() {
   Variable x(0);
-  Pointset_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+  Pointset_Powerset<TBox> pps_box(1, EMPTY);
   Constraint_System cs;
 
   cs.insert(x >= 0);
   cs.insert(x <= 2);
-  c_ps.add_disjunct(C_Polyhedron(cs));
+  pps_box.add_disjunct(TBox(cs));
 
   cs.clear();
   cs.insert(x >= 1);
   cs.insert(x <= 3);
-  c_ps.add_disjunct(C_Polyhedron(cs));
+  pps_box.add_disjunct(TBox(cs));
 
-  c_ps.concatenate_assign(c_ps);
+  pps_box.concatenate_assign(pps_box);
 
-  return c_ps.OK();
+  return pps_box.OK();
 }
 
+// total_memory_in_bytes() and external_memory_in_bytes().
 bool
 test05() {
-  Pointset_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+  Pointset_Powerset<TBox> pps_box(1, EMPTY);
 
-  bool ok = c_ps.is_bottom();
+  bool ok = pps_box.is_bottom();
 
-  c_ps.add_disjunct(C_Polyhedron(1, UNIVERSE));
+  pps_box.add_disjunct(TBox(1, UNIVERSE));
 
-  bool ok1 = c_ps.is_top();
+  bool ok1 = pps_box.is_top();
 
-  c_ps.total_memory_in_bytes();
-  c_ps.external_memory_in_bytes();
+  pps_box.total_memory_in_bytes();
+  pps_box.external_memory_in_bytes();
 
   return ok && ok1;
 }
 
+// definitely_entails().
 bool
 test06() {
   Variable x(0);
-  Pointset_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+  Pointset_Powerset<TBox> pps_box(1, EMPTY);
   Constraint_System cs;
   cs.insert(x >= 0);
-  c_ps.add_disjunct(C_Polyhedron(cs));
+  pps_box.add_disjunct(TBox(cs));
 
-  Pointset_Powerset<C_Polyhedron> c_ps1(1, EMPTY);
+  Pointset_Powerset<TBox> pps_box1(1, EMPTY);
   Constraint_System cs1;
   cs1.insert(x >= 0);
   cs1.insert(x <= 2);
-  c_ps1.add_disjunct(C_Polyhedron(cs1));
+  pps_box1.add_disjunct(TBox(cs1));
 
-  bool ok = c_ps1.definitely_entails(c_ps);
+  bool ok = pps_box1.definitely_entails(pps_box);
 
   return ok;
 }
 
+// size().
 bool
 test07() {
   Variable x(0);
-  Pointset_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+  Pointset_Powerset<TBox> pps_box(1, EMPTY);
   Constraint_System cs;
 
   cs.insert(x >= 0);
   cs.insert(x <= 2);
-  c_ps.add_disjunct(C_Polyhedron(cs));
+  pps_box.add_disjunct(TBox(cs));
 
   cs.clear();
   cs.insert(x >= 1);
   cs.insert(x <= 3);
-  c_ps.add_disjunct(C_Polyhedron(cs));
+  pps_box.add_disjunct(TBox(cs));
 
-  bool ok = (c_ps.size() == 2);
+  bool ok = (pps_box.size() == 2);
 
   return ok;
 }
 
+// omega_reduce().
 bool
 test08() {
   Variable x(0);
-  Pointset_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+  Pointset_Powerset<TBox> pps_box(1, EMPTY);
   Constraint_System cs;
 
   cs.insert(x >= 0);
   cs.insert(x <= 2);
-  c_ps.add_disjunct(C_Polyhedron(cs));
+  pps_box.add_disjunct(TBox(cs));
 
   cs.clear();
   cs.insert(x >= 0);
   cs.insert(x <= 3);
-  c_ps.add_disjunct(C_Polyhedron(cs));
-  c_ps.omega_reduce();
+  pps_box.add_disjunct(TBox(cs));
+  pps_box.omega_reduce();
 
-  bool ok = (c_ps.size() == 1);
+  bool ok = (pps_box.size() == 1);
 
   return ok;
 }
 
+// space_dimension().
 bool
 test09() {
-  Pointset_Powerset<C_Polyhedron> c_ps(1, EMPTY);
-  bool ok = (c_ps.space_dimension() == 1);
+  Pointset_Powerset<TBox> pps_box(1, EMPTY);
+  bool ok = (pps_box.space_dimension() == 1);
   return ok;
 }
 
+// add_disjunct(), drop_disjuncts(), empty().
 bool
 test10() {
   Variable x(0);
-  Pointset_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+  Pointset_Powerset<TBox> pps_box(1, EMPTY);
   Constraint_System cs;
   cs.insert(x >= 0);
   cs.insert(x <= 2);
   Constraint_System cs1 = cs;
-  c_ps.add_disjunct(C_Polyhedron(cs));
-  c_ps.drop_disjunct(c_ps.begin());
+  pps_box.add_disjunct(TBox(cs));
+  pps_box.drop_disjunct(pps_box.begin());
 
-  bool ok = c_ps.empty();
+  bool ok = pps_box.empty();
 
   Constraint_System cs2 = cs1;
-  c_ps.add_disjunct(C_Polyhedron(cs1));
+  pps_box.add_disjunct(TBox(cs1));
 
   cs.insert(x >= 0);
   cs.insert(x <= 3);
-  c_ps.add_disjunct(C_Polyhedron(cs));
-  c_ps.drop_disjuncts(c_ps.begin(), c_ps.end());
+  pps_box.add_disjunct(TBox(cs));
+  pps_box.drop_disjuncts(pps_box.begin(), pps_box.end());
 
-  bool ok1 = c_ps.empty();
+  bool ok1 = pps_box.empty();
 
   return ok && ok1;
 }
 
+// !empty().
 bool
 test11() {
   Variable x(0);
-  Pointset_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+  Pointset_Powerset<TBox> pps_box(1, EMPTY);
   Constraint_System cs;
 
   cs.insert(x >= 0);
   cs.insert(x <= 2);
-  c_ps.add_disjunct(C_Polyhedron(cs));
+  pps_box.add_disjunct(TBox(cs));
 
-  Pointset_Powerset<C_Polyhedron> c_ps1;
-  c_ps1 = c_ps;
+  Pointset_Powerset<TBox> pps_box1;
+  pps_box1 = pps_box;
 
-  bool ok = !c_ps.empty();
+  bool ok = !pps_box.empty();
   return ok;
 }
 
+// swap().
 bool
 test12() {
   Variable x(0);
-  Pointset_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+  Pointset_Powerset<TBox> pps_box(1, EMPTY);
   Constraint_System cs;
 
   cs.insert(x >= 0);
   cs.insert(x <= 2);
-  c_ps.add_disjunct(C_Polyhedron(cs));
+  pps_box.add_disjunct(TBox(cs));
 
-  Pointset_Powerset<C_Polyhedron> c_ps1(1, EMPTY);
-  c_ps.swap(c_ps1);
+  Pointset_Powerset<TBox> pps_box1(1, EMPTY);
+  pps_box.swap(pps_box1);
 
-  bool ok = (c_ps.empty() && !c_ps1.empty());
+  bool ok = (pps_box.empty() && !pps_box1.empty());
   return ok;
 }
 
+// least_upper_bound_assign().
 bool
 test13() {
   Variable x(0);
-  Pointset_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+  Pointset_Powerset<TBox> pps_box(1, EMPTY);
   Constraint_System cs;
 
   cs.insert(x >= 0);
   cs.insert(x <= 2);
-  c_ps.add_disjunct(C_Polyhedron(cs));
+  pps_box.add_disjunct(TBox(cs));
 
   cs.clear();
   cs.insert(x >= 1);
   cs.insert(x <= 3);
 
-  Pointset_Powerset<C_Polyhedron> c_ps1(1, EMPTY);
-  c_ps1.add_disjunct(C_Polyhedron(cs));
-  c_ps.least_upper_bound_assign(c_ps1);
+  Pointset_Powerset<TBox> pps_box1(1, EMPTY);
+  pps_box1.add_disjunct(TBox(cs));
+  pps_box.least_upper_bound_assign(pps_box1);
 
   cs.clear();
   cs.insert(x >= 0);
   cs.insert(x <= 3);
 
-  Pointset_Powerset<C_Polyhedron> c_ps2(1, EMPTY);
-  c_ps2.add_disjunct(C_Polyhedron(cs));
+  Pointset_Powerset<TBox> pps_box2(1, EMPTY);
+  pps_box2.add_disjunct(TBox(cs));
 
-  bool ok = c_ps.definitely_entails(c_ps2);
-  bool ok1 = !c_ps2.definitely_entails(c_ps);
+  bool ok = pps_box.definitely_entails(pps_box2);
+  bool ok1 = !pps_box2.definitely_entails(pps_box);
 
   return ok && ok1;
 }
 
+// upper_bound_assign().
 bool
 test14() {
   Variable x(0);
-  Pointset_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+  Pointset_Powerset<TBox> pps_box(1, EMPTY);
   Constraint_System cs;
 
   cs.insert(x >= 0);
   cs.insert(x <= 2);
-  c_ps.add_disjunct(C_Polyhedron(cs));
+  pps_box.add_disjunct(TBox(cs));
 
   cs.clear();
   cs.insert(x >= 1);
   cs.insert(x <= 3);
 
-  Pointset_Powerset<C_Polyhedron> c_ps1(1, EMPTY);
-  c_ps1.add_disjunct(C_Polyhedron(cs));
-  c_ps.upper_bound_assign(c_ps1);
+  Pointset_Powerset<TBox> pps_box1(1, EMPTY);
+  pps_box1.add_disjunct(TBox(cs));
+  pps_box.upper_bound_assign(pps_box1);
 
   cs.clear();
   cs.insert(x >= 0);
   cs.insert(x <= 3);
 
-  Pointset_Powerset<C_Polyhedron> c_ps2(1, EMPTY);
-  c_ps2.add_disjunct(C_Polyhedron(cs));
+  Pointset_Powerset<TBox> pps_box2(1, EMPTY);
+  pps_box2.add_disjunct(TBox(cs));
 
-  bool ok = c_ps.definitely_entails(c_ps2);
-  bool ok1 = !c_ps2.definitely_entails(c_ps);
+  bool ok = pps_box.definitely_entails(pps_box2);
+  bool ok1 = !pps_box2.definitely_entails(pps_box);
 
   return ok && ok1;
 }
 
+// meet_assign().
 bool
 test15() {
   Variable x(0);
-  Pointset_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+  Pointset_Powerset<TBox> pps_box(1, EMPTY);
   Constraint_System cs;
 
   cs.insert(x >= 0);
   cs.insert(x <= 2);
-  c_ps.add_disjunct(C_Polyhedron(cs));
+  pps_box.add_disjunct(TBox(cs));
 
-  Pointset_Powerset<C_Polyhedron> c_ps1(1, EMPTY);
+  Pointset_Powerset<TBox> pps_box1(1, EMPTY);
 
   cs.clear();
   cs.insert(x >= 1);
   cs.insert(x <= 3);
 
-  c_ps.meet_assign(c_ps1);
+  pps_box.meet_assign(pps_box1);
 
   cs.clear();
   cs.insert(x >= 1);
   cs.insert(x <= 2);
-  Pointset_Powerset<C_Polyhedron> c_ps_expected(1, EMPTY);
-  c_ps_expected.add_disjunct(C_Polyhedron(cs));
+  Pointset_Powerset<TBox> pps_box_expected(1, EMPTY);
+  pps_box_expected.add_disjunct(TBox(cs));
 
-  bool ok = c_ps.definitely_entails(c_ps_expected);
-  bool ok1 = !c_ps_expected.definitely_entails(c_ps);
+  bool ok = pps_box.definitely_entails(pps_box_expected);
+  bool ok1 = !pps_box_expected.definitely_entails(pps_box);
 
   return ok && ok1;
 }
 
+// collapse().
 bool
 test16() {
   Variable x(0);
-  Pointset_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+  Pointset_Powerset<TBox> pps_box(1, EMPTY);
   Constraint_System cs;
 
   cs.insert(x >= 0);
   cs.insert(x <= 2);
-  c_ps.add_disjunct(C_Polyhedron(cs));
+  pps_box.add_disjunct(TBox(cs));
 
   cs.clear();
   cs.insert(x >= 1);
   cs.insert(x <= 3);
-  c_ps.add_disjunct(C_Polyhedron(cs));
+  pps_box.add_disjunct(TBox(cs));
 
-  c_ps.collapse();
+  pps_box.collapse();
 
   cs.clear();
   cs.insert(x >= 0);
   cs.insert(x <= 3);
-  Pointset_Powerset<C_Polyhedron> c_ps_expected(1, EMPTY);
-  c_ps_expected.add_disjunct(C_Polyhedron(cs));
+  Pointset_Powerset<TBox> pps_box_expected(1, EMPTY);
+  pps_box_expected.add_disjunct(TBox(cs));
 
-  bool ok = c_ps.definitely_entails(c_ps_expected);
-  bool ok1 = c_ps_expected.definitely_entails(c_ps);
-  bool ok2 = (c_ps.size() == 1);
+  bool ok = pps_box.definitely_entails(pps_box_expected);
+  bool ok1 = pps_box_expected.definitely_entails(pps_box);
+  bool ok2 = (pps_box.size() == 1);
 
   return ok && ok1 && ok2;
 }
-
+// box_hull_assign().
 bool
 test17() {
   Variable x(0);
   Variable y(1);
-  Pointset_Powerset<C_Polyhedron> c_ps(2, EMPTY);
+  Pointset_Powerset<TBox> pps_box(2, EMPTY);
   Constraint_System cs;
   cs.insert(x >= 0);
   cs.insert(x <= 2);
-  C_Polyhedron ph(2);
-  ph.add_constraints(cs);
-  c_ps.add_disjunct(ph);
+  TBox box(2);
+  box.add_constraints(cs);
+  pps_box.add_disjunct(box);
 
   Constraint_System cs1;
   cs1.insert(y >= 3);
   cs1.insert(y <= 5);
-  C_Polyhedron ph1(2);
-  ph1.add_constraints(cs1);
-  c_ps.add_disjunct(ph1);
+  TBox box1(2);
+  box1.add_constraints(cs1);
+  pps_box.add_disjunct(box1);
 
-  Pointset_Powerset<C_Polyhedron>::const_iterator i = c_ps.begin();
-  C_Polyhedron phi = i -> element();
+  Pointset_Powerset<TBox>::const_iterator i = pps_box.begin();
+  TBox pps_boxi = i->element();
   i++;
-  C_Polyhedron phi1 = i -> element();
+  TBox pps_boxi1 = i->element();
 
-  bool ok = phi.OK() && phi == ph;
+  bool ok = pps_boxi.OK() && pps_boxi == box;
 
-  print_constraints(ph, "*** ph ***");
-  print_constraints(phi, "*** phi ***");
+  print_constraints(box, "*** box ***");
+  print_constraints(pps_boxi, "*** pps_boxi ***");
 
-  bool ok1 = phi1.OK() && phi1 == ph1;
+  bool ok1 = pps_boxi1.OK() && pps_boxi1 == box1;
 
-  print_constraints(ph1, "*** ph1 ***");
-  print_constraints(phi1, "*** phi1 ***");
+  print_constraints(box1, "*** box1 ***");
+  print_constraints(pps_boxi1, "*** pps_boxi1 ***");
 
-  phi.poly_hull_assign(phi1);
-  print_constraints(phi, "*** phi ***");
+  pps_boxi.box_hull_assign(pps_boxi1);
+  print_constraints(pps_boxi, "*** pps_boxi ***");
 
   return ok && ok1;
 }
 
+// geometrically_equals().
 bool
 test18() {
   Variable x(0);
-  Pointset_Powerset<C_Polyhedron> c_ps(1);
+  Pointset_Powerset<TBox> pps_box(1);
   Constraint_System cs;
   cs.insert(x >= 5);
   cs.insert(x <= 3);
-  c_ps.add_constraints(cs);
+  pps_box.add_constraints(cs);
 
-  Pointset_Powerset<C_Polyhedron> c_ps1(1, EMPTY);
+  Pointset_Powerset<TBox> pps_box1(1, EMPTY);
 
-  // c_ps.ascii_dump();
-  // c_ps1.ascii_dump();
+  // pps_box.ascii_dump();
+  // pps_box1.ascii_dump();
 
-  bool ok = c_ps.geometrically_equals(c_ps1);
-  bool ok1 = c_ps.geometrically_equals(c_ps1);
+  bool ok = pps_box.geometrically_equals(pps_box1);
+  bool ok1 = pps_box.geometrically_equals(pps_box1);
 
   return ok && ok1;
 }
 
+// geometrically_equals().
 bool
 test19() {
   Variable x(0);
-  Pointset_Powerset<C_Polyhedron> c_ps(1);
+  Pointset_Powerset<TBox> pps_box(1);
   Constraint_System cs;
   cs.insert(x >= 5);
   cs.insert(x >= 8);
-  c_ps.add_constraints(cs);
+  pps_box.add_constraints(cs);
 
-  Pointset_Powerset<C_Polyhedron> c_ps1(1);
+  Pointset_Powerset<TBox> pps_box1(1);
   cs.clear();
   cs.insert(x >= 8);
-  c_ps1.add_constraints(cs);
+  pps_box1.add_constraints(cs);
 
-  // c_ps.ascii_dump();
-  // c_ps1.ascii_dump();
+  // pps_box.ascii_dump();
+  // pps_box1.ascii_dump();
 
-  bool ok = c_ps.geometrically_equals(c_ps1);
-  bool ok1 = c_ps.geometrically_equals(c_ps1);
+  bool ok = pps_box.geometrically_equals(pps_box1);
+  bool ok1 = pps_box.geometrically_equals(pps_box1);
 
   return ok && ok1;
 }
-#endif
 
+// set_interval(), get_interval() and affine_image().
 bool
 test20() {
   Variable x(0);
@@ -483,13 +499,13 @@ test20() {
 
   Pointset_Powerset<TBox> ps(3, EMPTY);
   for (int i = -10; i <= 9; ++i) {
-    TBox box(3, UNIVERSE);
-    box.add_constraint(i <= x);
-    box.add_constraint(x <= i+1);
-    const TBox::interval_type& ix = box.get_interval(x);
+    TBox pps_box(3, UNIVERSE);
+    pps_box.add_constraint(i <= x);
+    pps_box.add_constraint(x <= i+1);
+    const TBox::interval_type& ix = pps_box.get_interval(x);
     TBox::interval_type iy = ix*ix;
-    box.set_interval(y, iy);
-    ps.add_disjunct(box);
+    pps_box.set_interval(y, iy);
+    ps.add_disjunct(pps_box);
   }
 
   print_constraints(ps, "*** ps ***");
@@ -508,7 +524,6 @@ BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
   DO_TEST(test03);
-#if 0
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
@@ -525,6 +540,5 @@ BEGIN_MAIN
   DO_TEST(test17);
   DO_TEST(test18);
   DO_TEST(test19);
-#endif
   DO_TEST(test20);
 END_MAIN

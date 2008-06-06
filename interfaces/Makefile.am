@@ -34,9 +34,13 @@ ppl_interface_instantiations.m4: Makefile
 	echo "m4_define(\`m4_interface_classes_names', \`$(REQUIRED_INSTANTIATIONS_CANONICAL_NAMES)')" > $@
 	echo "m4_define(\`m4_cplusplus_classes_names', \`$(REQUIRED_INSTANTIATIONS)')" >> $@
 
+noinst_HEADERS = \
+interfaced_boxes.hh
+
 EXTRA_DIST = \
 ppl_interface_generator_common.m4 \
 ppl_interface_generator_common_dat.m4 \
+ppl_interface_generator_common_procedure_generators.m4 \
 ppl_interface_generator_copyright
 
 DISTCLEANFILES = \

@@ -23,13 +23,16 @@
 # Process this file with autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library],[0.10pre14],[ppl-devel@cs.unipr.it],[ppl])
+AC_INIT([the Parma Polyhedra Library],[0.10pre19],[ppl-devel@cs.unipr.it],[ppl])
 
 # Minimum autoconf version required.
 AC_PREREQ(2.59)
 
 # Make sure the sources are there.
 AC_CONFIG_SRCDIR(src/Polyhedron_public.cc)
+
+# Specify the location of additional local Autoconf macros.
+AC_CONFIG_MACRO_DIR([m4])
 
 # Determine the system type and set output variables to the names of
 # the canonical system types.
@@ -269,6 +272,8 @@ if test x"$enable_more_assertions" = xyes
 then
   enable_assertions=yes
   AC_DEFINE(ABI_BREAKING_EXTRA_DEBUG, 1, [ABI-breaking extra assertions are enabled when this is defined.])
+  AC_DEFINE(_GLIBCXX_DEBUG, 1, [When defined and libstdc++ is used, it is used in debug mode.])
+  AC_DEFINE(_GLIBCXX_DEBUG_PEDANTIC, 1, [When defined and libstdc++ is used, it is used in pedantic debug mode.])
 fi
 
 if test x"$enable_assertions" = xno
@@ -812,15 +817,9 @@ AM_CONDITIONAL(BUILD_OCAML_INTERFACE, test x$OCAMLC = xocamlc && test x$ocamlgmp
 # Ciao Prolog
 if test x${ciao_prolog_interface_enabled} = xyes
 then
-  AC_CHECK_PROG(CIAO_PROLOG, ciao, ciao)
-  if test x"$CIAO_PROLOG" = xciao
-  then
-  AC_CHECK_HEADER(ciao_prolog.h,
-                  [],
-                  CIAO_PROLOG="")
-  fi
+  AC_CHECK_CIAO_PROLOG
 fi
-AM_CONDITIONAL(BUILD_CIAO_PROLOG_INTERFACE, test x$CIAO_PROLOG = xciao)
+AM_CONDITIONAL(BUILD_CIAO_PROLOG_INTERFACE, test x$have_ciao_prolog = xyes)
 
 # GNU Prolog
 if test x${gnu_prolog_interface_enabled} = xyes
@@ -870,7 +869,7 @@ fi
 AM_CONDITIONAL(BUILD_YAP_PROLOG_INTERFACE, test x$YAP_PROLOG = xyap)
 
 # Test if *any* Prolog system has to be built.
-if test x${CIAO_PROLOG} = xciao \
+if test x${have_ciao_prolog} = xyes \
 || test x${GNU_PROLOG} = xgprolog \
 || test x${have_sicstus_prolog} = xyes \
 || test x${have_swi_prolog} = xyes \
@@ -930,20 +929,15 @@ bool valid = ${instantiation}::valid_instantiation();
   done
   CPPFLAGS="$ac_save_CPPFLAGS"
   required_instantiations_canonical_names=`echo "${required_instantiations}" | sed -e 's/> //g' -e 's/>//g' -e 's/[[< ,]]/_/g'`
-  required_instantiations_java_sources=`echo "${required_instantiations_canonical_names}" | sed -e 's/^Polyhedron/Polyhedron@C_Polyhedron@NNC_Polyhedron/g' -e 's/@Polyhedron/@Polyhedron@C_Polyhedron@NNC_Polyhedron/g' -e 's/@Pointset_Powerset_Polyhedron/@Pointset_Powerset_C_Polyhedron@Pointset_Powerset_NNC_Polyhedron/g' -e 's/^Pointset_Powerset_Polyhedron/Pointset_Powerset_C_Polyhedron@Pointset_Powerset_NNC_Polyhedron/g' | sed -e 's/Pointset_Powerset_[[a-zA-Z_]]*/&@&_Iterator/g' | sed -e 's/@/.java /g' -e 's/$/.java/g'`
+  required_instantiations_java_sources=`echo "${required_instantiations_canonical_names}" | sed -e 's/^Polyhedron/Polyhedron@C_Polyhedron@NNC_Polyhedron/g' -e 's/@Polyhedron/@Polyhedron@C_Polyhedron@NNC_Polyhedron/g' -e 's/@Pointset_Powerset_Polyhedron/@Pointset_Powerset_C_Polyhedron@Pointset_Powerset_NNC_Polyhedron/g' -e 's/^Pointset_Powerset_Polyhedron/Pointset_Powerset_C_Polyhedron@Pointset_Powerset_NNC_Polyhedron/g' | sed -e 's/Pointset_Powerset_[[a-zA-Z0-9_]]*/&@&_Iterator/g' | sed -e 's/@/.java /g' -e 's/$/.java/g'`
   required_instantiations_java_cxx_headers=`echo "${required_instantiations_java_sources}" | sed -e 's/\([[^. ]]*\).java/ppl_java.\1/g'`
   required_instantiations_java_cxx_headers_sources=`echo "${required_instantiations_java_sources}" | sed -e 's/\([[^. ]]*\).java/ppl_java_\1.h/g'`
   AC_MSG_RESULT([${required_instantiations}])
   ;;
 esac
-#sed -e 's/Pointset_Powerset_[a-zA-Z_]*/&@&_Iterator/g
+
 # Libtool.
-# Turn off shared libraries during beta-testing, since they
-# make debugging harder and the build process takes too long.
-#AC_DISABLE_SHARED
-AC_LIBTOOL_DLOPEN
-AC_LIBTOOL_WIN32_DLL
-AC_PROG_LIBTOOL
+LT_INIT([dlopen,win32-dll])
 AM_CONDITIONAL(ENABLE_SHARED, test x"$enable_shared" = xyes)
 AM_CONDITIONAL(ENABLE_STATIC, test x"$enable_static" = xyes)
 

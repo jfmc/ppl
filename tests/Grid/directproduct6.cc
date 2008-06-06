@@ -522,6 +522,96 @@ test17() {
 }
 #endif
 
+typedef Domain_Product<TBox, Grid>::Direct_Product Box_Product;
+
+// Box_Product(nnc_polyhedron, POLYNOMIAL_COMPLEXITY).
+bool
+test18() {
+  Variable x(0);
+  Variable y(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(3*x + y >= 2);
+  ph.add_constraint(x <= 4);
+  ph.add_constraint(y <= 4);
+
+  Box_Product pdp(ph, POLYNOMIAL_COMPLEXITY);
+
+  Box_Product ndp(ph);
+
+  Box_Product known_ndp(2);
+  known_ndp.add_constraint(3*x >= -2);
+  known_ndp.add_constraint(x <= 4);
+  known_ndp.add_constraint(y >= -10);
+  known_ndp.add_constraint(y <= 4);
+
+  Box_Product known_pdp(2);
+  known_pdp.add_constraint(x <= 4);
+  known_pdp.add_constraint(y <= 4);
+
+  bool ok = (ndp == known_ndp && pdp == known_pdp && pdp.contains(ndp));
+
+  print_constraints(ph, "*** ph ***");
+  print_constraints(ndp, "*** ndp ***");
+  print_congruences(ndp, "*** ndp ***");
+  print_constraints(pdp, "*** pdp ***");
+  print_congruences(pdp, "*** pdp ***");
+
+  return ok;
+}
+
+// Product(Product).
+bool
+test19() {
+  Variable A(0);
+
+  const Constraint_System cs(A >= 0);
+
+  Product src(cs);
+
+  Product dp(src, POLYNOMIAL_COMPLEXITY);
+
+  Product dp1(src);
+
+  Product known_dp(1);
+  known_dp.add_constraint(A >= 0);
+
+  bool ok = (dp == known_dp && dp1 == known_dp);
+
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
+  print_congruences(dp1, "*** dp1 congruences ***");
+  print_constraints(dp1, "*** dp1 constraints ***");
+
+  return ok && dp.OK();
+}
+
+// Product(Box_Product).
+bool
+test20() {
+  Variable A(0);
+
+  const Constraint_System cs(A >= 0);
+
+  Box_Product src(cs);
+
+  Product dp(src, POLYNOMIAL_COMPLEXITY);
+
+  Product dp1(src);
+
+  Product known_dp(1);
+  known_dp.add_constraint(A >= 0);
+
+  bool ok = (dp == known_dp && dp1 == known_dp);
+
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
+  print_congruences(dp1, "*** dp1 congruences ***");
+  print_constraints(dp1, "*** dp1 constraints ***");
+
+  return ok && dp.OK();
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -544,4 +634,7 @@ BEGIN_MAIN
   DO_TEST(test16);
   DO_TEST(test17);
 #endif
+  DO_TEST(test18);
+  DO_TEST(test19);
+  DO_TEST(test20);
 END_MAIN

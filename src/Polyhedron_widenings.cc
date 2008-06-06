@@ -193,8 +193,9 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
     // to also hold for the corresponding eps-representations:
     // this is obtained by intersecting the two eps-representations.
     Polyhedron& yy = const_cast<Polyhedron&>(y);
-    if (!yy.intersection_assign_and_minimize(x))
-      // `y' is empty: the result is `x'.
+    yy.intersection_assign(x);
+    if (yy.is_empty())
+      // The result is `x'.
       return;
   }
 
@@ -485,7 +486,9 @@ PPL::Polyhedron
   // The resulting polyhedron is obtained by adding the constraints
   // in `new_cs' to polyhedron `H79'.
   Polyhedron result = H79;
-  result.add_recycled_constraints_and_minimize(new_cs);
+  result.add_recycled_constraints(new_cs);
+  // Force minimization.
+  result.minimize();
 
   // Check for stabilization with respect to `y_cert' and improvement
   // over `H79'.
@@ -552,8 +555,10 @@ PPL::Polyhedron::BHRZ03_evolving_points(const Polyhedron& y,
 
   // Be non-intrusive.
   Polyhedron result = x;
-  result.add_recycled_generators_and_minimize(candidate_rays);
-  result.intersection_assign_and_minimize(H79);
+  result.add_recycled_generators(candidate_rays);
+  result.intersection_assign(H79);
+  // Force minimization.
+  result.minimize();
 
   // Check for stabilization with respect to `y_cert' and improvement
   // over `H79'.
@@ -640,10 +645,10 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
 
   // Be non-intrusive.
   Polyhedron result = x;
-  // Add to `result' the rays in `candidate_rays'
-  result.add_recycled_generators_and_minimize(candidate_rays);
-  // Intersect with `H79'.
-  result.intersection_assign_and_minimize(H79);
+  result.add_recycled_generators(candidate_rays);
+  result.intersection_assign(H79);
+  // Force minimization.
+  result.minimize();
 
   // Check for stabilization with respect to `y' and improvement over `H79'.
   if (y_cert.is_stabilizing(result) && !result.contains(H79)) {
@@ -722,7 +727,9 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
   // Be careful to obtain the right space dimension
   // (because `H79_cs' may be empty).
   Polyhedron H79(topol, x.space_dim, UNIVERSE);
-  H79.add_recycled_constraints_and_minimize(H79_cs);
+  H79.add_recycled_constraints(H79_cs);
+  // Force minimization.
+  H79.minimize();
 
   // NOTE: none of the following widening heuristics is intrusive:
   // they will modify `x' only when returning successfully.

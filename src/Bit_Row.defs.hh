@@ -96,6 +96,12 @@ void set_union(const Bit_Row& x, const Bit_Row& y, Bit_Row& z);
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 void set_intersection(const Bit_Row& x, const Bit_Row& y, Bit_Row& z);
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Set-theoretic difference.
+/*! \relates Bit_Row */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+void set_difference(const Bit_Row& x, const Bit_Row& y, Bit_Row& z);
+
 } // namespace Parma_Polyhedra_Library
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -146,6 +152,7 @@ public:
   friend bool strict_subset(const Bit_Row& x, const Bit_Row& y);
   friend void set_union(const Bit_Row& x, const Bit_Row& y, Bit_Row& z);
   friend void set_intersection(const Bit_Row& x, const Bit_Row& y, Bit_Row& z);
+  friend void set_difference(const Bit_Row& x, const Bit_Row& y, Bit_Row& z);
 
   //! Returns the index of the first set bit or ULONG_MAX if no bit is set.
   unsigned long first() const;

@@ -27,8 +27,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-template <> struct Is_Native<mpz_class> : public True { };
-
 namespace Checked {
 
 template <typename Policy>
@@ -300,7 +298,10 @@ assign_mpz_long_double(mpz_class& to, const From& from, Rounding_Dir dir) {
   std::stringstream ss;
   output<From_Policy>(ss, from, Numeric_Format(), dir);
   DIRTY_TEMP0(mpq_class, tmp);
-  Result r = input_mpq(tmp, ss);
+#ifndef NDEBUG
+  Result r =
+#endif
+    input_mpq(tmp, ss);
   assert(r == V_EQ);
   return assign<To_Policy, From_Policy>(to, tmp, dir);
 }
@@ -561,11 +562,6 @@ output_mpz(std::ostream& os, const mpz_class& from, const Numeric_Format&,
 
 SPECIALIZE_INPUT(input_generic, mpz_class)
 SPECIALIZE_OUTPUT(output_mpz, mpz_class)
-
-inline memory_size_type
-external_memory_in_bytes(const mpz_class& x) {
-  return x.get_mpz_t()[0]._mp_alloc * PPL_SIZEOF_MP_LIMB_T;
-}
 
 } // namespace Checked
 

@@ -42,7 +42,7 @@ test01() {
   known_result.add_constraint(x <= 1);
   known_result.add_constraint(y <= 8);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(known_result, "*** known_result ***");
   print_constraints(box, "*** box ***");
@@ -71,7 +71,7 @@ test02() {
   known_result.add_constraint(y >= -5);
   known_result.add_constraint(y <= 2);
 
-  bool ok = (Rational_Box(box) == known_result);
+  bool ok = check_result(box, known_result);
 
   print_constraints(known_result, "*** known_result ***");
   print_constraints(box, "*** box ***");

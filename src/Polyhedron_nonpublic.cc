@@ -67,7 +67,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol,
   assert(OK());
 }
 
-PPL::Polyhedron::Polyhedron(const Polyhedron& y)
+PPL::Polyhedron::Polyhedron(const Polyhedron& y, Complexity_Class)
   : con_sys(y.topology()),
     gen_sys(y.topology()),
     status(y.status),

@@ -50,7 +50,8 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../../ppl_interface_generator_common.m4 \
 ../../ppl_interface_generator_common_dat.m4 \
 ../../ppl_interface_generator_copyright \
-../ppl_interface_generator_prolog_dat.m4 \
+../../ppl_interface_generator_common_procedure_generators.m4 \
+../ppl_interface_generator_prolog_procedure_generators.m4 \
 ../ppl_interface_generator_prolog_systems.m4 \
 ppl_interface_generator_yap_cc.m4
 
@@ -61,6 +62,7 @@ ppl_yap.cc: $(interface_generator_dependencies) Makefile
 if ENABLE_SHARED
 
 AM_CPPFLAGS = \
+-I$(top_srcdir)/interfaces \
 -I$(top_srcdir)/interfaces/Prolog \
 -I$(top_buildir)/interfaces/Prolog \
 -I$(top_builddir)/src \

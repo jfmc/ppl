@@ -1,3 +1,8 @@
+dnl  -*- java -*-
+m4_divert(-1)
+
+dnl This m4 file contains the code for generating files <CLASS_NAME>.java
+
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
@@ -19,8 +24,6 @@ dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
-m4_divert(-1)dnl
-
 m4_define(`m4_class_build_cpp_object1_code',
 `dnl
 %<--%<--%<-- @TOPOLOGY@@CLASS@.java
@@ -39,7 +42,7 @@ m4_define(`m4_class_build_cpp_object2_code',
 m4_define(`m4_class_build_cpp_object3_code',
 `dnl
 %<--%<--%<-- @TOPOLOGY@@CLASS@.java
-    private native void build_cpp_object(@TOPOLOGY@@CLASS@ y);
+    private native void build_cpp_object(@FRIEND@ y);
 
 ')
 
@@ -56,10 +59,10 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 
 ')
 
-m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@_code',
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_code',
 `dnl
 %<--%<--%<-- @TOPOLOGY@@CLASS@.java
-    public @TOPOLOGY@@CLASS@(@TOPOLOGY@@CLASS@ y) {
+    public @TOPOLOGY@@CLASS@(@FRIEND@ y) {
         build_cpp_object(y);
     }
 
@@ -144,6 +147,13 @@ m4_define(`ppl_@CLASS@_@SIMPLIFY@_code',
 
 ')
 
+m4_define(`ppl_@CLASS@_unconstrain_code',
+`dnl
+%<--%<--%<-- @CLASS@.java
+    public native void unconstrain(Variable var);
+
+')
+
 m4_define(`ppl_@CLASS@_bounds_from_@ABOVEBELOW@_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
@@ -213,6 +223,13 @@ m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_code',
 
 ')
 
+m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@_code',
+`dnl
+%<--%<--%<-- @CLASS@.java
+    public native void refine_with_@REFINE_REPRESENT@(@UREFINE_REPRESENT@ c);
+
+')
+
 m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
@@ -224,6 +241,13 @@ m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
     public native void add_@ADD_REPRESENT@s(@UADD_REPRESENT@_System c);
+
+')
+
+m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s_code',
+`dnl
+%<--%<--%<-- @CLASS@.java
+    public native void refine_with_@REFINE_REPRESENT@s(@UREFINE_REPRESENT@_System c);
 
 ')
 
@@ -294,10 +318,10 @@ m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign_code',
 
 ')
 
-m4_define(`ppl_Grid_generalized_@AFFIMAGE@_code',
+m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruence_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
-    public native void generalized_@AFFIMAGE@(Variable var,
+    public native void generalized_@AFFIMAGE@_with_congruence(Variable var,
 				Relation_Symbol relsym,
 				Linear_Expression expr,
 				Coefficient denominator,
@@ -306,10 +330,10 @@ m4_define(`ppl_Grid_generalized_@AFFIMAGE@_code',
 ')
 
 
-m4_define(`ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs_code',
+m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
-    public native void generalized_@AFFIMAGE@(Linear_Expression lhs,
+    public native void generalized_@AFFIMAGE@_lhs_rhs_with_congruence(Linear_Expression lhs,
 				Relation_Symbol relsym,
 				Linear_Expression rhs,
 				Coefficient modulus);
@@ -385,24 +409,24 @@ m4_define(`ppl_@CLASS@_string_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_begin_iterator_code',
+m4_define(`ppl_@CLASS@_@BEGINEND@_iterator_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
-    public native @CLASS@_Iterator begin_iterator();
+    public native @CLASS@_Iterator @BEGINEND@_iterator();
 
 ')
 
-m4_define(`ppl_@CLASS@_end_iterator_code',
+m4_define(`ppl_@CLASS@_delete_iterator_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
-    public native @CLASS@_Iterator end_iterator();
+    public native void delete_iterator();
 
 ')
 
 m4_define(`ppl_@CLASS@_get_disjunct_code',
 `dnl
 %<--%<--%<-- @CLASS@_Iterator.java
-  public native @ALT_CPP_DISJUNCT@ get_disjunct();
+  public native @CLASSTOPOLOGY@@DISJUNCT@ get_disjunct();
 
 ')
 
@@ -420,31 +444,17 @@ m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_increment_iterator_code',
+m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
 `dnl
 %<--%<--%<-- @CLASS@_Iterator.java
-  public native void next();
+  public native void @ALT_INCDEC@();
 
 ')
 
-m4_define(`ppl_@CLASS@_decrement_iterator_code',
-`dnl
-%<--%<--%<-- @CLASS@_Iterator.java
-  public native void prev();
-
-')
-
-m4_define(`ppl_@CLASS@_size_code',
+m4_define(`ppl_@CLASS@_@MEMBYTES@_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
-  public native long size();
-
-')
-
-m4_define(`ppl_@CLASS@_total_memory_in_bytes_code',
-`dnl
-%<--%<--%<-- @CLASS@.java
-  public native long total_memory_in_bytes();
+  public native long @MEMBYTES@();
 
 ')
 

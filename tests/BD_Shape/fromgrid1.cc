@@ -38,17 +38,17 @@ test01() {
   gr.add_congruence((y - z %= 0) / 0);
   gr.add_congruence((z %= 0) / 1);
 
-  TBD_Shape bd(gr);
+  TBD_Shape bds(gr);
 
 
-  BD_Shape<mpq_class> known_bd(gr.space_dimension());
-  known_bd.add_constraint(x - y == 0);
-  known_bd.add_constraint(y - z == 0);
+  BD_Shape<mpq_class> known_bds(gr.space_dimension());
+  known_bds.add_constraint(x - y == 0);
+  known_bds.add_constraint(y - z == 0);
 
-  bool ok = (check_result(bd, known_bd));
+  bool ok = (check_result(bds, known_bds));
 
-  print_constraints(bd, "*** bd ***");
-  print_constraints(known_bd, "*** known_bd ***");
+  print_constraints(bds, "*** bds ***");
+  print_constraints(known_bds, "*** known_bds ***");
 
   return ok;
 }
@@ -58,14 +58,14 @@ bool
 test02() {
   Grid gr(2);
 
-  TBD_Shape bd(gr);
+  TBD_Shape bds(gr);
 
-  BD_Shape<mpq_class> known_bd(gr.space_dimension());
+  BD_Shape<mpq_class> known_bds(gr.space_dimension());
 
-  bool ok = (check_result(bd, known_bd));
+  bool ok = (check_result(bds, known_bds));
 
-  print_constraints(bd, "*** bd ***");
-  print_constraints(known_bd, "*** known_bd ***");
+  print_constraints(bds, "*** bds ***");
+  print_constraints(known_bds, "*** known_bds ***");
 
   return ok;
 }
@@ -81,14 +81,14 @@ test03() {
   gr.add_congruence((x + y %= 1) / 3);
   gr.add_congruence((y - z %= 2) / 5);
 
-  TBD_Shape bd(gr);
+  TBD_Shape bds(gr);
 
-  BD_Shape<mpq_class> known_bd(gr.space_dimension());
+  BD_Shape<mpq_class> known_bds(gr.space_dimension());
 
-  bool ok = (check_result(bd, known_bd));
+  bool ok = (check_result(bds, known_bds));
 
-  print_constraints(bd, "*** bd ***");
-  print_constraints(known_bd, "*** known_bd ***");
+  print_constraints(bds, "*** bds ***");
+  print_constraints(known_bds, "*** known_bds ***");
 
   return ok;
 }
@@ -98,14 +98,14 @@ bool
 test04() {
   Grid gr(0);
 
-  TBD_Shape bd(gr);
+  TBD_Shape bds(gr);
 
-  BD_Shape<mpq_class> known_bd;
+  BD_Shape<mpq_class> known_bds;
 
-  bool ok = (check_result(bd, known_bd));
+  bool ok = (check_result(bds, known_bds));
 
-  print_constraints(bd, "*** bd ***");
-  print_constraints(known_bd, "*** known_bd ***");
+  print_constraints(bds, "*** bds ***");
+  print_constraints(known_bds, "*** known_bds ***");
 
   return ok;
 }
@@ -115,14 +115,14 @@ bool
 test05() {
   Grid gr(2, EMPTY);
 
-  TBD_Shape bd(gr);
+  TBD_Shape bds(gr);
 
-  BD_Shape<mpq_class> known_bd(2, EMPTY);
+  BD_Shape<mpq_class> known_bds(2, EMPTY);
 
-  bool ok = (check_result(bd, known_bd));
+  bool ok = (check_result(bds, known_bds));
 
-  print_constraints(bd, "*** bd ***");
-  print_constraints(known_bd, "*** known_bd ***");
+  print_constraints(bds, "*** bds ***");
+  print_constraints(known_bds, "*** known_bds ***");
 
   return ok;
 }
@@ -138,16 +138,16 @@ test06() {
   gr.add_congruence((x - y %= 1) / 0);
   gr.add_congruence((y %= 0) / 0);
 
-  TBD_Shape bd(gr);
+  TBD_Shape bds(gr);
 
-  BD_Shape<mpq_class> known_bd(gr.space_dimension());
-  known_bd.add_constraint(x == 1);
-  known_bd.add_constraint(y == 0);
+  BD_Shape<mpq_class> known_bds(gr.space_dimension());
+  known_bds.add_constraint(x == 1);
+  known_bds.add_constraint(y == 0);
 
-  bool ok = (check_result(bd, known_bd));
+  bool ok = (check_result(bds, known_bds));
 
-  print_constraints(bd, "*** bd ***");
-  print_constraints(known_bd, "*** known_bd ***");
+  print_constraints(bds, "*** bds ***");
+  print_constraints(known_bds, "*** known_bds ***");
 
   return ok;
 }
@@ -157,14 +157,14 @@ bool
 test07() {
   Grid gr(0, EMPTY);
 
-  TBD_Shape bd(gr);
+  TBD_Shape bds(gr);
 
-  BD_Shape<mpq_class> known_bd(0, EMPTY);
+  BD_Shape<mpq_class> known_bds(0, EMPTY);
 
-  bool ok = (check_result(bd, known_bd));
+  bool ok = (check_result(bds, known_bds));
 
-  print_constraints(bd, "*** bd ***");
-  print_constraints(known_bd, "*** known_bd ***");
+  print_constraints(bds, "*** bds ***");
+  print_constraints(known_bds, "*** known_bds ***");
 
   return ok;
 }
@@ -175,14 +175,14 @@ test08() {
   Grid gr(2);
   Constraint_System cs = gr.constraints();
 
-  TBD_Shape bd(cs);
+  TBD_Shape bds(cs);
 
-  BD_Shape<mpq_class> known_bd(gr.space_dimension());
+  BD_Shape<mpq_class> known_bds(gr.space_dimension());
 
-  bool ok = (check_result(bd, known_bd));
+  bool ok = (check_result(bds, known_bds));
 
-  print_constraints(bd, "*** bd ***");
-  print_constraints(known_bd, "*** known_bd ***");
+  print_constraints(bds, "*** bds ***");
+  print_constraints(known_bds, "*** known_bds ***");
 
   return ok;
 }

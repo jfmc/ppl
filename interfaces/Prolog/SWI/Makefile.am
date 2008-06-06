@@ -29,6 +29,7 @@ ppl_swiprolog.pl \
 pl_clpq.cc \
 pl_clpq.pl \
 swi_pl_check.pl \
+swi_predicate_check.pl \
 README.swiprolog
 
 if BUILD_SWI_PROLOG_INTERFACE
@@ -43,6 +44,7 @@ WATCHDOG_LINK_OPTIONS = -L$(top_builddir)/Watchdog/src/.libs -lpwl
 endif BUILD_WATCHDOG_LIBRARY
 
 AM_CPPFLAGS = \
+-I$(top_srcdir)/interfaces \
 -I$(top_srcdir)/interfaces/Prolog \
 -I$(top_buildir)/interfaces/Prolog \
 -I$(top_builddir)/src \
@@ -58,7 +60,8 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../../ppl_interface_generator_common.m4 \
 ../../ppl_interface_generator_common_dat.m4 \
 ../../ppl_interface_generator_copyright \
-../ppl_interface_generator_prolog_dat.m4 \
+../../ppl_interface_generator_common_procedure_generators.m4 \
+../ppl_interface_generator_prolog_procedure_generators.m4 \
 ../ppl_interface_generator_prolog_systems.m4 \
 ppl_interface_generator_swiprolog_cc.m4
 
@@ -174,6 +177,18 @@ clpq2_test: pl_clpq2 ../tests/script_clpq2 $(EXPECTED_CLPQ2)
 		$(WATCHDOG_DLOPEN) \
 		./pl_clpq2 <$(srcdir)/../tests/script_clpq2 >obtained_clpq2
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
+
+predicate_check_test: swi_predicate_check.pl ../tests/ppl_predicate_check_main.pl $(EXPECTED_PCHK)
+	cp -f $(srcdir)/../tests/ppl_predicate_check_common.pl . ; \
+	cp -f ../tests/ppl_predicate_check_main.pl . ; \
+        echo "ensure_loaded('$(srcdir)/swi_predicate_check'). main." > script_pchk
+	$(LIBTOOL) --mode=execute \
+		-dlopen ../../../src/libppl.la \
+		$(WATCHDOG_DLOPEN) \
+                ./ppl_pl < script_pchk
+	rm -f ppl_predicate_check_main.pl; \
+	rm -f ppl_predicate_check_common.pl; \
+	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
 
 endif BUILD_SWI_PROLOG_INTERFACE
 

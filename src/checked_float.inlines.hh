@@ -29,16 +29,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-#if PPL_SUPPORTED_FLOAT
-template <> struct Is_Native<float> : public True { };
-#endif
-#if PPL_SUPPORTED_DOUBLE
-template <> struct Is_Native<double> : public True { };
-#endif
-#if PPL_SUPPORTED_LONG_DOUBLE
-template <> struct Is_Native<long double> : public True { };
-#endif
-
 namespace Checked {
 
 inline float

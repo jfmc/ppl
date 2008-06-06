@@ -29,48 +29,48 @@ test01() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd1(2);
-  bd1.add_constraint(A >= 0);
-  bd1.add_constraint(A <= -2);
-  bd1.add_constraint(B == 0);
+  TBD_Shape bds1(2);
+  bds1.add_constraint(A >= 0);
+  bds1.add_constraint(A <= -2);
+  bds1.add_constraint(B == 0);
 
-  TBD_Shape bd2(2);
-  bd2.add_constraint(A >= 0);
-  bd2.add_constraint(A <= 2);
-  bd2.add_constraint(B >= 0);
-  bd2.add_constraint(B <= 2);
+  TBD_Shape bds2(2);
+  bds2.add_constraint(A >= 0);
+  bds2.add_constraint(A <= 2);
+  bds2.add_constraint(B >= 0);
+  bds2.add_constraint(B <= 2);
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** ph2 ***");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** ph2 ***");
 
-  bd1.bds_difference_assign(bd2);
+  bds1.bds_difference_assign(bds2);
 
   BD_Shape<mpq_class> known_result(2, EMPTY);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
-  print_constraints(bd1, "*** after bd1.bds_difference_assign(ph2) ***");
+  print_constraints(bds1, "*** after bds1.bds_difference_assign(ph2) ***");
 
   return ok;
 }
 
 bool
 test02() {
-  TBD_Shape bd1;
-  TBD_Shape bd2;
+  TBD_Shape bds1;
+  TBD_Shape bds2;
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
 
-  bd1.bds_difference_assign(bd2);
+  bds1.bds_difference_assign(bds2);
 
   Constraint_System cs;
   cs.insert(Linear_Expression(-4) >= 0);
   BD_Shape<mpq_class> known_result(cs);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
-  print_constraints(bd1, "*** after bd1.bds_difference_assign(bd2) ***");
+  print_constraints(bds1, "*** after bds1.bds_difference_assign(bds2) ***");
 
   return ok;
 }
@@ -80,22 +80,22 @@ test03() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape bd1(2);
-  bd1.add_constraint(x <= 2);
-  bd1.add_constraint(x >= 0);
-  bd1.add_constraint(y <= 5);
-  bd1.add_constraint(y >= 2);
+  TBD_Shape bds1(2);
+  bds1.add_constraint(x <= 2);
+  bds1.add_constraint(x >= 0);
+  bds1.add_constraint(y <= 5);
+  bds1.add_constraint(y >= 2);
 
-  TBD_Shape bd2(2);
-  bd2.add_constraint(x <= 3);
-  bd2.add_constraint(x >= 1);
-  bd2.add_constraint(y <= 4);
-  bd2.add_constraint(y >= 1);
+  TBD_Shape bds2(2);
+  bds2.add_constraint(x <= 3);
+  bds2.add_constraint(x >= 1);
+  bds2.add_constraint(y <= 4);
+  bds2.add_constraint(y >= 1);
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
 
-  bd1.bds_difference_assign(bd2);
+  bds1.bds_difference_assign(bds2);
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(x >= 0);
@@ -104,9 +104,9 @@ test03() {
   known_result.add_constraint(y >= 2);
   known_result.add_constraint(y - x >= 1);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
-  print_constraints(bd1, "*** after bd1.bds_difference_assign(bd2) ***");
+  print_constraints(bds1, "*** after bds1.bds_difference_assign(bds2) ***");
 
   return ok;
 }
@@ -116,28 +116,28 @@ test04() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape bd1(2);
-  bd1.add_constraint(x <= 8);
-  bd1.add_constraint(x >= 0);
-  bd1.add_constraint(y <= 7);
-  bd1.add_constraint(y >= 2);
+  TBD_Shape bds1(2);
+  bds1.add_constraint(x <= 8);
+  bds1.add_constraint(x >= 0);
+  bds1.add_constraint(y <= 7);
+  bds1.add_constraint(y >= 2);
 
-  TBD_Shape bd2(2);
-  bd2.add_constraint(x <= 3);
-  bd2.add_constraint(x >= 1);
-  bd2.add_constraint(y <= 0);
-  bd2.add_constraint(y >= 1);
+  TBD_Shape bds2(2);
+  bds2.add_constraint(x <= 3);
+  bds2.add_constraint(x >= 1);
+  bds2.add_constraint(y <= 0);
+  bds2.add_constraint(y >= 1);
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
 
-  BD_Shape<mpq_class> known_result(bd1);
+  BD_Shape<mpq_class> known_result(bds1);
 
-  bd1.bds_difference_assign(bd2);
+  bds1.bds_difference_assign(bds2);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
-  print_constraints(bd1, "*** after bd1.bds_difference_assign(bd2) ***");
+  print_constraints(bds1, "*** after bds1.bds_difference_assign(bds2) ***");
 
   return ok;
 }
@@ -147,28 +147,28 @@ test05() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape bd1(2);
-  bd1.add_constraint(x <= 8);
-  bd1.add_constraint(x >= 0);
-  bd1.add_constraint(y <= 7);
-  bd1.add_constraint(y >= 2);
+  TBD_Shape bds1(2);
+  bds1.add_constraint(x <= 8);
+  bds1.add_constraint(x >= 0);
+  bds1.add_constraint(y <= 7);
+  bds1.add_constraint(y >= 2);
 
-  TBD_Shape bd2(2);
-  bd2.add_constraint(x <= 9);
-  bd2.add_constraint(x >= 0);
-  bd2.add_constraint(y <= 8);
-  bd2.add_constraint(y >= 1);
+  TBD_Shape bds2(2);
+  bds2.add_constraint(x <= 9);
+  bds2.add_constraint(x >= 0);
+  bds2.add_constraint(y <= 8);
+  bds2.add_constraint(y >= 1);
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
 
-  bd1.bds_difference_assign(bd2);
+  bds1.bds_difference_assign(bds2);
 
   BD_Shape<mpq_class> known_result(2, EMPTY);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
-  print_constraints(bd1, "*** after bd1.bds_difference_assign(bd2) ***");
+  print_constraints(bds1, "*** after bds1.bds_difference_assign(bds2) ***");
 
   return ok;
 }
@@ -179,21 +179,21 @@ test06() {
   Variable y(1);
   Variable z(2);
 
-  TBD_Shape bd1(3);
-  bd1.add_constraint(x <= 8);
-  bd1.add_constraint(y <= 7);
-  bd1.add_constraint(y >= 1);
-  bd1.add_constraint(z <= 2);
+  TBD_Shape bds1(3);
+  bds1.add_constraint(x <= 8);
+  bds1.add_constraint(y <= 7);
+  bds1.add_constraint(y >= 1);
+  bds1.add_constraint(z <= 2);
 
-  TBD_Shape bd2(3);
-  bd2.add_constraint(x == 8);
-  bd2.add_constraint(y <= 2);
-  bd2.add_constraint(y >= 1);
+  TBD_Shape bds2(3);
+  bds2.add_constraint(x == 8);
+  bds2.add_constraint(y <= 2);
+  bds2.add_constraint(y >= 1);
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
 
-  bd1.bds_difference_assign(bd2);
+  bds1.bds_difference_assign(bds2);
 
   BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(x <= 8);
@@ -201,9 +201,9 @@ test06() {
   known_result.add_constraint(y >= 1);
   known_result.add_constraint(z <= 2);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
-  print_constraints(bd1, "*** after bd1.bds_difference_assign(bd2) ***");
+  print_constraints(bds1, "*** after bds1.bds_difference_assign(bds2) ***");
 
   return ok;
 }
@@ -213,20 +213,20 @@ test07() {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd1(2);
-  bd1.add_constraint(A >= 0);
-  bd1.add_constraint(A <= 4);
-  bd1.add_constraint(B >= 0);
-  bd1.add_constraint(B <= 2);
+  TBD_Shape bds1(2);
+  bds1.add_constraint(A >= 0);
+  bds1.add_constraint(A <= 4);
+  bds1.add_constraint(B >= 0);
+  bds1.add_constraint(B <= 2);
 
-  TBD_Shape bd2(2);
-  bd2.add_constraint(A >= 2);
-  bd2.add_constraint(A <= 4);
-  bd2.add_constraint(B >= 0);
-  bd2.add_constraint(B <= 2);
+  TBD_Shape bds2(2);
+  bds2.add_constraint(A >= 2);
+  bds2.add_constraint(A <= 4);
+  bds2.add_constraint(B >= 0);
+  bds2.add_constraint(B <= 2);
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(A >= 0);
@@ -234,11 +234,11 @@ test07() {
   known_result.add_constraint(B >= 0);
   known_result.add_constraint(B <= 2);
 
-  bd1.bds_difference_assign(bd2);
+  bds1.bds_difference_assign(bds2);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+  bool ok = check_result(bds1, known_result);
 
-  print_constraints(bd1, "*** after bd1.bds_difference_assign(bd2) ***");
+  print_constraints(bds1, "*** after bds1.bds_difference_assign(bds2) ***");
   print_constraints(known_result, "*** known_result ***");
 
   return ok;
@@ -246,14 +246,14 @@ test07() {
 
 bool
 test08() {
-  TBD_Shape bd1(3);
-  TBD_Shape bd2(5);
+  TBD_Shape bds1(3);
+  TBD_Shape bds2(5);
 
   try {
     // This is an incorrect use of method
-    // BD_Shape::bds_difference_assign(bd2): it is impossible to apply
+    // BD_Shape::bds_difference_assign(bds2): it is impossible to apply
     // this method to two polyhedra of different dimensions.
-    bd1.bds_difference_assign(bd2);
+    bds1.bds_difference_assign(bds2);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;

@@ -42,6 +42,7 @@ WATCHDOG_LINK_OPTIONS = -L$(top_builddir)/Watchdog/src/.libs -lpwl
 endif BUILD_WATCHDOG_LIBRARY
 
 AM_CPPFLAGS = \
+-I$(top_srcdir)/interfaces \
 -I$(top_srcdir)/interfaces/Prolog \
 -I$(top_builddir)/src \
 $(WATCHDOG_INCLUDE_OPTIONS) \
@@ -63,7 +64,8 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../../ppl_interface_generator_common.m4 \
 ../../ppl_interface_generator_common_dat.m4 \
 ../../ppl_interface_generator_copyright \
-../ppl_interface_generator_prolog_dat.m4 \
+../../ppl_interface_generator_common_procedure_generators.m4 \
+../ppl_interface_generator_prolog_procedure_generators.m4 \
 ../ppl_interface_generator_prolog_systems.m4 \
 ppl_interface_generator_gprolog_pl.m4
 

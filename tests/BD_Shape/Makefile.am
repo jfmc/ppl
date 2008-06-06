@@ -55,12 +55,12 @@ bhz03widening1 \
 bounded1 \
 bounds1 \
 boundedaffineimage1 \
-boundingbox1 \
 boundedaffinepreimage1 \
 cc76narrowing1 \
 cc76extrapolation1 \
 closure1 \
 concatenate1 \
+congruences1 \
 constraints1 \
 contains1 \
 containsintegerpoint1 \
@@ -70,6 +70,8 @@ empty1 \
 equality1 \
 expandspacedim1 \
 foldspacedims1 \
+frombdshape1 \
+frombox1 \
 fromgensys1 \
 fromgrid1 \
 fromoctagonalshape1 \
@@ -89,9 +91,11 @@ max_min1 max_min2 \
 maxspacedim1 \
 membytes1 \
 minconstraints1 \
-relations1 relations2 relations3 \
+pointsetpowerset1 \
+relations1 relations2 relations3 relations4 \
 removespacedims1 \
 timeelapse1 \
+unconstrain1 \
 universe1 \
 writebdshape1
 
@@ -172,8 +176,6 @@ boundedaffineimage1_SOURCES = boundedaffineimage1.cc
 
 boundedaffinepreimage1_SOURCES = boundedaffinepreimage1.cc
 
-boundingbox1_SOURCES = boundingbox1.cc
-
 cc76narrowing1_SOURCES = cc76narrowing1.cc
 
 cc76extrapolation1_SOURCES = cc76extrapolation1.cc
@@ -181,6 +183,8 @@ cc76extrapolation1_SOURCES = cc76extrapolation1.cc
 closure1_SOURCES = closure1.cc
 
 concatenate1_SOURCES = concatenate1.cc
+
+congruences1_SOURCES = constraints1.cc
 
 constraints1_SOURCES = constraints1.cc
 
@@ -199,6 +203,10 @@ equality1_SOURCES = equality1.cc
 expandspacedim1_SOURCES = expandspacedim1.cc
 
 foldspacedims1_SOURCES = foldspacedims1.cc
+
+frombdshape1_SOURCES = frombdshape1.cc
+
+frombox1_SOURCES = frombox1.cc
 
 fromgensys1_SOURCES = fromgensys1.cc
 
@@ -240,13 +248,18 @@ membytes1_SOURCES = membytes1.cc
 
 minconstraints1_SOURCES = minconstraints1.cc
 
+pointsetpowerset1_SOURCES = pointsetpowerset1.cc
+
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
 relations3_SOURCES = relations3.cc
+relations4_SOURCES = relations4.cc
 
 removespacedims1_SOURCES = removespacedims1.cc
 
 timeelapse1_SOURCES = timeelapse1.cc
+
+unconstrain1_SOURCES = unconstrain1.cc
 
 universe1_SOURCES = universe1.cc
 

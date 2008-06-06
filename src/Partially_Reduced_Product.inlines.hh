@@ -77,23 +77,25 @@ Partially_Reduced_Product<D1, D2, R>
 template <typename D1, typename D2, typename R>
 inline
 Partially_Reduced_Product<D1, D2, R>
-::Partially_Reduced_Product(const C_Polyhedron& ph)
-  : d1(ph), d2(ph) {
+::Partially_Reduced_Product(const C_Polyhedron& ph,
+                            Complexity_Class complexity)
+  : d1(ph, complexity), d2(ph, complexity) {
   set_reduced_flag();
 }
 
 template <typename D1, typename D2, typename R>
 inline
 Partially_Reduced_Product<D1, D2, R>
-::Partially_Reduced_Product(const NNC_Polyhedron& ph)
-  : d1(ph), d2(ph) {
+::Partially_Reduced_Product(const NNC_Polyhedron& ph,
+                            Complexity_Class complexity)
+  : d1(ph, complexity), d2(ph, complexity) {
   set_reduced_flag();
 }
 
 template <typename D1, typename D2, typename R>
 inline
 Partially_Reduced_Product<D1, D2, R>
-::Partially_Reduced_Product(const Grid& gr)
+::Partially_Reduced_Product(const Grid& gr, Complexity_Class)
   : d1(gr), d2(gr) {
   set_reduced_flag();
 }
@@ -102,7 +104,7 @@ template <typename D1, typename D2, typename R>
 template <typename Interval>
 inline
 Partially_Reduced_Product<D1, D2, R>
-::Partially_Reduced_Product(const Box<Interval>& box)
+::Partially_Reduced_Product(const Box<Interval>& box, Complexity_Class)
   : d1(box), d2(box) {
   set_reduced_flag();
 }
@@ -111,7 +113,7 @@ template <typename D1, typename D2, typename R>
 template <typename U>
 inline
 Partially_Reduced_Product<D1, D2, R>
-::Partially_Reduced_Product(const BD_Shape<U>& bd)
+::Partially_Reduced_Product(const BD_Shape<U>& bd, Complexity_Class)
   : d1(bd), d2(bd) {
   set_reduced_flag();
 }
@@ -120,7 +122,7 @@ template <typename D1, typename D2, typename R>
 template <typename U>
 inline
 Partially_Reduced_Product<D1, D2, R>
-::Partially_Reduced_Product(const Octagonal_Shape<U>& os)
+::Partially_Reduced_Product(const Octagonal_Shape<U>& os, Complexity_Class)
   : d1(os), d2(os) {
   set_reduced_flag();
 }
@@ -128,9 +130,22 @@ Partially_Reduced_Product<D1, D2, R>
 template <typename D1, typename D2, typename R>
 inline
 Partially_Reduced_Product<D1, D2, R>
-::Partially_Reduced_Product(const Partially_Reduced_Product& y)
+::Partially_Reduced_Product(const Partially_Reduced_Product& y,
+                            Complexity_Class)
   : d1(y.d1), d2(y.d2) {
   reduced = y.reduced;
+}
+
+template <typename D1, typename D2, typename R>
+template <typename E1, typename E2, typename S>
+inline
+Partially_Reduced_Product<D1, D2, R>
+::Partially_Reduced_Product(const Partially_Reduced_Product<E1, E2, S>& y,
+                            Complexity_Class complexity)
+  : d1(y.domain1(), complexity), d2(y.domain2(), complexity) {
+  /* Even if y is reduced, the built product may not be reduced as
+     the reduction method may have changed (i.e., S != R). */
+  clear_reduced_flag();
 }
 
 template <typename D1, typename D2, typename R>
@@ -169,6 +184,24 @@ Partially_Reduced_Product<D1, D2, R>::affine_dimension() const {
 template <typename D1, typename D2, typename R>
 inline void
 Partially_Reduced_Product<D1, D2, R>
+::unconstrain(const Variable var) {
+  reduce();
+  d1.unconstrain(var);
+  d2.unconstrain(var);
+}
+
+template <typename D1, typename D2, typename R>
+inline void
+Partially_Reduced_Product<D1, D2, R>
+::unconstrain(const Variables_Set& to_be_unconstrained) {
+  reduce();
+  d1.unconstrain(to_be_unconstrained);
+  d2.unconstrain(to_be_unconstrained);
+}
+
+template <typename D1, typename D2, typename R>
+inline void
+Partially_Reduced_Product<D1, D2, R>
 ::intersection_assign(const Partially_Reduced_Product& y) {
   d1.intersection_assign(y.d1);
   d2.intersection_assign(y.d2);
@@ -195,7 +228,8 @@ Partially_Reduced_Product<D1, D2, R>
   y.reduce();
   d1.upper_bound_assign(y.d1);
   d2.upper_bound_assign(y.d2);
-  // CHECKME: if upper_bound_assign is not a least_upper_bound.
+  // CHECKME: if upper_bound_assign is not a least_upper_bound
+  //          it may not be reduced.
   // clear_reduced_flag();
 }
 
@@ -341,9 +375,25 @@ Partially_Reduced_Product<D1, D2, R>::add_constraint(const Constraint& c) {
 
 template <typename D1, typename D2, typename R>
 inline void
+Partially_Reduced_Product<D1, D2, R>::refine_with_constraint(const Constraint& c) {
+  d1.refine_with_constraint(c);
+  d2.refine_with_constraint(c);
+  clear_reduced_flag();
+}
+
+template <typename D1, typename D2, typename R>
+inline void
 Partially_Reduced_Product<D1, D2, R>::add_congruence(const Congruence& cg) {
   d1.add_congruence(cg);
   d2.add_congruence(cg);
+  clear_reduced_flag();
+}
+
+template <typename D1, typename D2, typename R>
+inline void
+Partially_Reduced_Product<D1, D2, R>::refine_with_congruence(const Congruence& cg) {
+  d1.refine_with_congruence(cg);
+  d2.refine_with_congruence(cg);
   clear_reduced_flag();
 }
 
@@ -357,11 +407,11 @@ Partially_Reduced_Product<D1, D2, R>
 }
 
 template <typename D1, typename D2, typename R>
-inline bool
+inline void
 Partially_Reduced_Product<D1, D2, R>
-::add_constraints_and_minimize(const Constraint_System& cs) {
-  bool empty = d1.add_constraints_and_minimize(cs);
-  return (d2.add_constraints_and_minimize(cs) && empty);
+::refine_with_constraints(const Constraint_System& cs) {
+  d1.refine_with_constraints(cs);
+  d2.refine_with_constraints(cs);
   clear_reduced_flag();
 }
 
@@ -375,18 +425,12 @@ Partially_Reduced_Product<D1, D2, R>
 }
 
 template <typename D1, typename D2, typename R>
-inline bool
+inline void
 Partially_Reduced_Product<D1, D2, R>
-::add_congruences_and_minimize(const Congruence_System& cgs) {
-  // FIXME: When the corresponding methods are in the non-grid classes
-  //        we can use these methods directly.
-  d1.add_congruences(cgs);
-  d2.add_congruences(cgs);
-  (void) minimized_congruences();
+::refine_with_congruences(const Congruence_System& cgs) {
+  d1.refine_with_congruences(cgs);
+  d2.refine_with_congruences(cgs);
   clear_reduced_flag();
-  if (is_empty())
-    return false;
-  return true;
 }
 
 template <typename D1, typename D2, typename R>
@@ -618,6 +662,12 @@ Partially_Reduced_Product<D1, D2, R>::ascii_dump(std::ostream& s) const {
   d2.ascii_dump(s);
 }
 
+template <typename D1, typename D2, typename R>
+inline int32_t
+Partially_Reduced_Product<D1, D2, R>::hash_code() const {
+  return space_dimension() & 0x7fffffff;
+}
+
 /*! \relates Parma_Polyhedra_Library::Partially_Reduced_Product */
 template <typename D1, typename D2, typename R>
 inline bool
@@ -671,8 +721,20 @@ Constraints_Reduction<D1, D2>::Constraints_Reduction() {
 
 template <typename D1, typename D2>
 void Constraints_Reduction<D1, D2>::product_reduce(D1& d1, D2& d2) {
-  d1.add_constraints(d2.minimized_constraints());
-  d2.add_constraints(d1.minimized_constraints());
+  if (d2.is_empty()) {
+    if (!d1.is_empty()) {
+      D1 new_d1(d1.space_dimension(), EMPTY);
+      std::swap(d1, new_d1);
+    }
+  }
+  else if (d1.is_empty()) {
+    D2 new_d2(d2.space_dimension(), EMPTY);
+    std::swap(d2, new_d2);
+  }
+  else {
+    d1.add_constraints(d2.minimized_constraints());
+    d2.add_constraints(d1.minimized_constraints());
+  }
 }
 
 template <typename D1, typename D2>

@@ -1,4 +1,8 @@
-m4_define(`dnl', `m4_dnl')
+m4_define(`dnl', `m4_dnl')`'dnl
+m4_divert(-1)
+
+dnl This m4 file generates the file ppl_ciao.pl.
+
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
@@ -20,7 +24,9 @@ dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
-dnl This file generates ppl_ciao.pl.
+m4_include(`ppl_interface_generator_prolog_systems.m4')
+
+m4_divert`'dnl
 /* Ciao Prolog interface: Ciao Prolog part.
 m4_include(`ppl_interface_generator_copyright')
 */
@@ -48,7 +54,6 @@ m4_divert(3)
 :- comment(version_maintenance,off).
 
 m4_divert`'dnl
-m4_include(`ppl_interface_generator_prolog_systems.m4')dnl
 m4_define(`m4_extension', `m4_ifelse($4, 0, , `COMMA
 ')	  $1/$2')dnl
 m4_patsubst(ppl_prolog_sys_code, COMMA, `,')`'dnl
@@ -78,3 +83,5 @@ m4_define(`m4_extension',
   `m4_ifelse(check_fail($3), nofail, ,m4_ifelse($4, 0, , `COMMA
 ')	`'$1_2/m4_incr($2))')dnl
 m4_patsubst(ppl_prolog_sys_code, COMMA, `,')`'dnl
+dnl
+dnl End of file generation.

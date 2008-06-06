@@ -126,22 +126,6 @@ Pointset_Ask_Tell<PS>::add_constraint(const Constraint& c) {
 }
 
 template <typename PS>
-bool
-Pointset_Ask_Tell<PS>::add_constraint_and_minimize(const Constraint& c) {
-  Pointset_Ask_Tell& x = *this;
-  for (Sequence_iterator si = x.sequence.begin(),
-	 s_end = x.sequence.end(); si != s_end; )
-    if (!si->element().add_constraint_and_minimize(c))
-      si = x.sequence.erase(si);
-    else {
-      x.reduced = false;
-      ++si;
-    }
-  assert(x.OK());
-  return !x.empty();
-}
-
-template <typename PS>
 void
 Pointset_Ask_Tell<PS>::add_constraints(const Constraint_System& cs) {
   Pointset_Ask_Tell& x = *this;
@@ -153,20 +137,25 @@ Pointset_Ask_Tell<PS>::add_constraints(const Constraint_System& cs) {
 }
 
 template <typename PS>
-bool
-Pointset_Ask_Tell<PS>::
-add_constraints_and_minimize(const Constraint_System& cs) {
+void
+Pointset_Ask_Tell<PS>::unconstrain(const Variable var) {
   Pointset_Ask_Tell& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
-	 s_end = x.sequence.end(); si != s_end; )
-    if (!si->element().add_constraints_and_minimize(cs))
-      si = x.sequence.erase(si);
-    else {
-      x.reduced = false;
-      ++si;
-    }
+	 s_end = x.sequence.end(); si != s_end; ++si)
+    si->element().unconstrain(var);
+  x.reduced = false;
   assert(x.OK());
-  return !x.empty();
+}
+
+template <typename PS>
+void
+Pointset_Ask_Tell<PS>::unconstrain(const Variables_Set& to_be_unconstrained) {
+  Pointset_Ask_Tell& x = *this;
+  for (Sequence_iterator si = x.sequence.begin(),
+	 s_end = x.sequence.end(); si != s_end; ++si)
+    si->element().unconstrain(to_be_unconstrained);
+  x.reduced = false;
+  assert(x.OK());
 }
 
 template <typename PS>

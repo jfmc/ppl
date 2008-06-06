@@ -29,8 +29,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-template <> struct Is_Native<mpq_class> : public True { };
-
 namespace Checked {
 
 template <typename Policy>
@@ -466,12 +464,6 @@ assign_mpq_long_double(mpq_class& to, const From& from, Rounding_Dir dir) {
 }
 
 SPECIALIZE_ASSIGN(assign_mpq_long_double, mpq_class, long double)
-
-inline memory_size_type
-external_memory_in_bytes(const mpq_class& x) {
-  return external_memory_in_bytes(x.get_num())
-    + external_memory_in_bytes(x.get_den());
-}
 
 } // namespace Checked
 

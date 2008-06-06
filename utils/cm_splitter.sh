@@ -26,7 +26,7 @@ CUTTING_MARKER_PREFIX="%<--%<--%<-- "
 
 open="false"
 
-while read line
+while IFS= read -r line
 do
   case "$line" in
       $CUTTING_MARKER_PREFIX*)

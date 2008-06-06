@@ -1,3 +1,8 @@
+dnl  -*- C++ -*-
+m4_divert(-1)
+
+dnl This m4 file contains the code for generating ppl_c.cc.
+
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
@@ -19,8 +24,6 @@ dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
-m4_divert(-1)dnl
-
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 `int
 ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension
@@ -34,13 +37,13 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@CLASS@_code',
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_code',
 `int
-ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@CLASS@
+ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@
 (ppl_@CLASS@_t* pph,
- ppl_const_@CLASS@_t ph) try {
-  const @INTOPOLOGY@@CPP_CLASS@& phh
-    = *static_cast<const @INTOPOLOGY@@CPP_CLASS@*>(to_const(ph));
+ ppl_const_@ALT_FRIEND@_t ph) try {
+  const @CPPX_FRIEND@& phh
+    = *static_cast<const @CPPX_FRIEND@*>(to_const(ph));
   *pph = to_nonconst(new @TOPOLOGY@@CPP_CLASS@(phh));
   return 0;
 }
@@ -48,7 +51,7 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@UBUILD_REPRESENT@_System_code',
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_code',
 `int
 ppl_new_@TOPOLOGY@@CLASS@_from_@UBUILD_REPRESENT@_System
 (ppl_@CLASS@_t* pph, ppl_const_@UBUILD_REPRESENT@_System_t cs) try {
@@ -60,7 +63,7 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_new_@TOPOLOGY@@CLASS@_recycle_@UBUILD_REPRESENT@_System_code',
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_recycle_@BUILD_REPRESENT@s_code',
 `int
 ppl_new_@TOPOLOGY@@CLASS@_recycle_@UBUILD_REPRESENT@_System
 (ppl_@CLASS@_t* pph, ppl_@UBUILD_REPRESENT@_System_t cs) try {
@@ -180,7 +183,7 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_relation_with_@URELATION_REPRESENT@_code',
+m4_define(`ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_code',
 `int
 ppl_@CLASS@_relation_with_@URELATION_REPRESENT@
 (ppl_const_@CLASS@_t ph,
@@ -275,12 +278,39 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_topological_closure_assign_code',
+m4_define(`ppl_@CLASS@_@SIMPLIFY@_code',
 `int
-ppl_@CLASS@_topological_closure_assign(ppl_@CLASS@_t ph) try {
+ppl_@CLASS@_@SIMPLIFY@(ppl_@CLASS@_t ph) try {
   @CPP_CLASS@& pph = *to_nonconst(ph);
-  pph.topological_closure_assign();
+  pph.@SIMPLIFY@();
   return 0;
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_@CLASS@_unconstrain_code',
+`int
+ppl_@CLASS@_unconstrain
+(ppl_@CLASS@_t ph,
+ ppl_dimension_type var
+) try {
+  @CPP_CLASS@& pph = *to_nonconst(ph);
+  pph.unconstrain(Variable(var));
+  return 0;
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_@CLASS@_constrains_code',
+`int
+ppl_@CLASS@_constrains
+(ppl_const_@CLASS@_t ph,
+ ppl_dimension_type var
+) try {
+  @CPP_CLASS@& pph = *to_nonconst(ph);
+  return pph.constrains(Variable(var)) ? 1 : 0;
 }
 CATCH_ALL
 
@@ -327,6 +357,20 @@ CATCH_ALL
 
 ')
 
+m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@_code',
+`int
+ppl_@CLASS@_refine_with_@REFINE_REPRESENT@
+(ppl_@CLASS@_t ph,
+ ppl_const_@UREFINE_REPRESENT@_t c) try {
+  @CPP_CLASS@& pph = *to_nonconst(ph);
+  const @UREFINE_REPRESENT@& cc = *to_const(c);
+  pph.refine_with_@REFINE_REPRESENT@(cc);
+  return 0;
+}
+CATCH_ALL
+
+')
+
 m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code',
 `int
 ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize
@@ -348,6 +392,20 @@ ppl_@CLASS@_add_@ADD_REPRESENT@s
   @CPP_CLASS@& pph = *to_nonconst(ph);
   const @UADD_REPRESENT@_System& ccs = *to_const(cs);
   pph.add_@ADD_REPRESENT@s(ccs);
+  return 0;
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s_code',
+`int
+ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s
+(ppl_@CLASS@_t ph,
+ ppl_const_@UREFINE_REPRESENT@_System_t cs) try {
+  @CPP_CLASS@& pph = *to_nonconst(ph);
+  const @UREFINE_REPRESENT@_System& ccs = *to_const(cs);
+  pph.refine_with_@REFINE_REPRESENT@s(ccs);
   return 0;
 }
 CATCH_ALL
@@ -376,19 +434,6 @@ ppl_@CLASS@_add_recycled_@ADD_REPRESENT@s
   @UADD_REPRESENT@_System& ccs = *to_nonconst(cs);
   pph.add_recycled_@ADD_REPRESENT@s(ccs);
   return 0;
-}
-CATCH_ALL
-
-')
-
-m4_define(`ppl_@CLASS@_add_recycled_@ADD_REPRESENT@s_and_minimize_code',
-`int
-ppl_@CLASS@_add_recycled_@ADD_REPRESENT@s_and_minimize
-(ppl_@CLASS@_t ph,
- ppl_@UADD_REPRESENT@_System_t cs) try {
-  @CPP_CLASS@& pph = *to_nonconst(ph);
-  @UADD_REPRESENT@_System& ccs = *to_nonconst(cs);
-  return pph.add_recycled_@ADD_REPRESENT@s_and_minimize(ccs) ? 1 : 0;
 }
 CATCH_ALL
 
@@ -466,6 +511,46 @@ CATCH_ALL
 
 ')
 
+m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruence_code',
+`int
+ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruence
+(ppl_@CLASS@_t ph,
+ ppl_dimension_type var,
+ enum ppl_enum_Constraint_Type relsym,
+ ppl_const_Linear_Expression_t le,
+ ppl_const_Coefficient_t d,
+ ppl_const_Coefficient_t m) try {
+  @CPP_CLASS@& pph = *to_nonconst(ph);
+  const Linear_Expression& lle = *to_const(le);
+  const Coefficient& dd = *to_const(d);
+  const Coefficient& mm = *to_const(m);
+  pph.generalized_@AFFIMAGE@
+    (Variable(var), relation_symbol(relsym), lle, dd, mm);
+  return 0;
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence_code',
+`int
+ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence
+(ppl_@CLASS@_t ph,
+ ppl_const_Linear_Expression_t lhs,
+ enum ppl_enum_Constraint_Type relsym,
+ ppl_const_Linear_Expression_t rhs,
+ ppl_const_Coefficient_t m) try {
+  @CPP_CLASS@& pph = *to_nonconst(ph);
+  const Linear_Expression& llhs = *to_const(lhs);
+  const Linear_Expression& rrhs = *to_const(rhs);
+  const Coefficient& mm = *to_const(m);
+  pph.generalized_@AFFIMAGE@(llhs, relation_symbol(relsym), rrhs, mm);
+  return 0;
+}
+CATCH_ALL
+
+')
+
 m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_code',
 `int
 ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens
@@ -492,9 +577,9 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_limited_@WIDENEXPN@_extrapolation_assign_with_tokens_code',
+m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens_code',
 `int
-ppl_@CLASS@_limited_@WIDENEXPN@_extrapolation_assign_with_tokens
+ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens
 (ppl_@CLASS@_t x,
  ppl_const_@CLASS@_t y,
  ppl_const_@UCONSTRAINER@_System_t cs,
@@ -502,21 +587,21 @@ ppl_@CLASS@_limited_@WIDENEXPN@_extrapolation_assign_with_tokens
   @CPP_CLASS@& xx = *to_nonconst(x);
   const @CPP_CLASS@& yy = *to_const(y);
   const @UCONSTRAINER@_System& ccs = *to_const(cs);
-  xx.limited_@WIDENEXPN@_extrapolation_assign(yy, ccs, tp);
+  xx.@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(yy, ccs, tp);
   return 0;
 }
 CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_limited_@WIDENEXPN@_extrapolation_assign_code',
+m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_code',
 `int
-ppl_@CLASS@_limited_@WIDENEXPN@_extrapolation_assign
+ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign
 (ppl_@CLASS@_t x,
  ppl_const_@CLASS@_t y,
  ppl_const_@UCONSTRAINER@_System_t cs) try {
   return
-    ppl_@CLASS@_limited_@WIDENEXPN@_extrapolation_assign_with_tokens
+    ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens
       (x, y, cs, 0);
 }
 CATCH_ALL
@@ -638,6 +723,166 @@ ppl_@CLASS@_fold_space_dimensions
   for (ppl_dimension_type i = n; i-- > 0; )
     to_be_folded.insert(ds[i]);
   pph.fold_space_dimensions(to_be_folded, Variable(d));
+  return 0;
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_@CLASS@_@MEMBYTES@_code',
+`int
+ppl_@CLASS@_@MEMBYTES@
+(ppl_const_@CLASS@_t ps,
+ size_t* sz) try {
+  *sz = to_const(ps)->@MEMBYTES@();
+  return 0;
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
+`dnl
+
+typedef @CPP_CLASS@::iterator
+        @CLASS@_iterator;
+typedef @CPP_CLASS@::const_iterator
+        @CLASS@_const_iterator;
+
+DECLARE_CONVERSIONS(@CLASS@_iterator,
+                    @CLASS@_iterator)
+DECLARE_CONVERSIONS(@CLASS@_const_iterator,
+                    @CLASS@_const_iterator)
+
+
+int
+ppl_@CLASS@_iterator_equal_test
+(ppl_const_@CLASS@_iterator_t x,
+ ppl_const_@CLASS@_iterator_t y) try {
+  return (*to_const(x) == *to_const(y)) ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_@CLASS@_const_iterator_equal_test
+(ppl_const_@CLASS@_const_iterator_t x,
+ ppl_const_@CLASS@_const_iterator_t y) try {
+  return (*to_const(x) == *to_const(y)) ? 1 : 0;
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_@CLASS@_@BEGINEND@_iterator_code',
+`dnl
+int
+ppl_@CLASS@_@BEGINEND@
+(ppl_@CLASS@_t ps,
+ ppl_@CLASS@_iterator_t psit) try {
+  @CPP_CLASS@::iterator& ppsit = *to_nonconst(psit);
+  ppsit = to_nonconst(ps)->@BEGINEND@();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_@CLASS@_const_@BEGINEND@
+(ppl_const_@CLASS@_t ps,
+ ppl_@CLASS@_const_iterator_t psit) try {
+  @CPP_CLASS@::const_iterator& ppsit = *to_nonconst(psit);
+  ppsit = to_const(ps)->@BEGINEND@();
+  return 0;
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_@CLASS@_delete_iterator_code',
+`dnl
+int
+ppl_delete_@CLASS@_iterator
+(ppl_const_@CLASS@_iterator_t it)
+  try {
+  delete to_const(it);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_delete_@CLASS@_const_iterator
+(ppl_const_@CLASS@_const_iterator_t it)
+  try {
+  delete to_const(it);
+  return 0;
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
+`dnl
+int
+ppl_@CLASS@_iterator_@INCDEC@
+(ppl_@CLASS@_iterator_t it)
+  try {
+    @CPP_CLASS@::iterator& iit = *to_nonconst(it);
+    @CPPX_INCDEC@iit;
+    return 0;
+}
+CATCH_ALL
+
+int
+ppl_@CLASS@_const_iterator_@INCDEC@
+(ppl_@CLASS@_const_iterator_t it)
+  try {
+    @CPP_CLASS@::const_iterator& iit = *to_nonconst(it);
+    @CPPX_INCDEC@iit;
+    return 0;
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_@CLASS@_drop_disjunct_code',
+`dnl
+int
+ppl_@CLASS@_drop_disjunct
+(ppl_@CLASS@_t ps,
+ ppl_const_@CLASS@_iterator_t cit,
+ ppl_@CLASS@_iterator_t it) try {
+  @CPP_CLASS@& pps = *to_nonconst(ps);
+  const @CPP_CLASS@::iterator& ccit = *to_const(cit);
+  @CPP_CLASS@::iterator& iit = *to_nonconst(it);
+  iit = pps.drop_disjunct(ccit);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_@CLASS@_drop_disjuncts
+(ppl_@CLASS@_t ps,
+ ppl_const_@CLASS@_iterator_t first,
+ ppl_const_@CLASS@_iterator_t last) try {
+  @CPP_CLASS@& pps = *to_nonconst(ps);
+  const @CPP_CLASS@::iterator& ffirst = *to_const(first);
+  const @CPP_CLASS@::iterator& llast = *to_const(last);
+  pps.drop_disjuncts(ffirst, llast);
+  return 0;
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_@CLASS@_add_disjunct_code',
+`dnl
+int
+ppl_@CLASS@_add_disjunct
+(ppl_@CLASS@_t ps,
+ ppl_const_@DISJUNCT@_t d) try {
+  @CPP_CLASS@& pps = *to_nonconst(ps);
+  const @CLASSTOPOLOGY@@CPP_DISJUNCT@& dd
+     = *static_cast<const @CLASSTOPOLOGY@@CPP_DISJUNCT@*>(to_const(d));
+  pps.add_disjunct(dd);
   return 0;
 }
 CATCH_ALL

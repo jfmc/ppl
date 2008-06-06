@@ -1,4 +1,4 @@
-/* Test copy construction of grids.
+/* Test copy construction and assignment for grids.
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-// Universe and empty grids of the first ten dimensions.
+// Assignment for universe and empty grids of the first ten dimensions.
 
 bool
 test01() {
@@ -32,31 +32,61 @@ test01() {
   for (unsigned int dim = 0; dim < 10; ++dim) {
 
     nout << "dimension: " << dim << endl;
-
     // Universe.
-
     Grid gr(dim);
     print_congruences(gr, "*** gr ***");
 
-    Grid gr_copy = gr;
-    print_congruences(gr_copy, "*** gr_copy ***");
+    Grid gr_copy(0);
+    gr_copy = gr;
 
     Grid known_gr(dim);
-
     ok &= (gr_copy == known_gr);
+    print_congruences(gr_copy, "*** gr_copy ***");
+
     if (ok) {
-
       // Empty.
-
       gr = Grid(dim, EMPTY);
       print_generators(gr, "*** gr ***");
 
-      Grid gr_copy = gr;
-      print_generators(gr_copy, "*** gr_copy ***");
+      Grid gr_copy(0);
+      gr_copy = gr;
 
       Grid known_gr(dim, EMPTY);
-
       ok &= (gr_copy == known_gr);
+      print_generators(gr_copy, "*** gr_copy ***");
+    }
+  };
+
+  return ok;
+}
+
+// Copy construct for universe and empty grids of the first ten dimensions.
+bool
+test02() {
+  bool ok = true;
+  for (unsigned int dim = 0; dim < 10; ++dim) {
+
+    nout << "dimension: " << dim << endl;
+    // Universe.
+    Grid gr(dim);
+    print_congruences(gr, "*** gr ***");
+
+    Grid gr_copy(gr);
+
+    Grid known_gr(dim);
+    ok &= (gr_copy == known_gr);
+    print_congruences(gr_copy, "*** gr_copy ***");
+
+    if (ok) {
+      // Empty.
+      gr = Grid(dim, EMPTY);
+      print_generators(gr, "*** gr ***");
+
+      Grid gr_copy(gr);
+
+      Grid known_gr(dim, EMPTY);
+      ok &= (gr_copy == known_gr);
+      print_generators(gr_copy, "*** gr_copy ***");
     }
   };
 
@@ -67,4 +97,5 @@ test01() {
 
 BEGIN_MAIN
   DO_TEST(test01);
+  DO_TEST(test02);
 END_MAIN

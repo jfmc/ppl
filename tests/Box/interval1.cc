@@ -69,8 +69,8 @@ typedef Float_Interval number_type;
 
 void
 polynomial_evaluate(const std::vector<number_type>& P,
-		    const std::complex<number_type>& x,
-		    std::complex<number_type>& P_x) {
+                    const std::complex<number_type>& x,
+                    std::complex<number_type>& P_x) {
   // Note: the coefficient of the leading term is implicitly 1.
   P_x = std::complex<number_type>(number_type(1.0), number_type(0.0));
   for (int i = P.size(); i >= 1; --i)
@@ -89,7 +89,7 @@ solve(const std::vector<number_type>& P,
   double theta = 2*M_PI/degree;
   for (int i = 0; i < degree; ++i)
     x[i] = std::complex<number_type>(number_type(cos(i*theta)),
-					number_type(sin(i*theta)));
+                                        number_type(sin(i*theta)));
 
   while (true) {
     for (int i = 0; i < degree; ++i)
@@ -99,8 +99,8 @@ solve(const std::vector<number_type>& P,
       polynomial_evaluate(P, x[i], P_x_i);
       std::complex<number_type> d(number_type(1.0), number_type(0.0));
       for (int j = 0; j < degree; ++j)
-	if (i != j)
-	  d *= (x[i] - x[j]);
+        if (i != j)
+          d *= (x[i] - x[j]);
       P_x_i /= d;
       x[i] -= P_x_i;
     }
@@ -141,9 +141,9 @@ bool test04() {
   for (double d = 0.0; d <= 10.0; d += 1.0) {
     std::complex<number_type> P_x_i;
     polynomial_evaluate(P,
-			std::complex<number_type>(number_type(d),
-						  number_type(0.0)),
-			P_x_i);
+                        std::complex<number_type>(number_type(d),
+                                                  number_type(0.0)),
+                        P_x_i);
     nout << d << " " << P_x_i << endl;
   }
   return true;

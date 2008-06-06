@@ -20,22 +20,29 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-:- set_prolog_flag(language, iso).
-
 prolog_system('SICStus').
 
 :- ensure_loaded('ppl_sicstus.pl').
-:- use_module(library(lists), [append/3, member/2]).
+
+version_dependent_declarations :-
+	prolog_flag(version, V),
+	atom_codes(V, VList),
+	VList = [_S, _I, _C, _S, _t, _u, _s, _, N|_],
+	(N is "4" ->
+	    true
+	;
+	    set_prolog_flag(language, iso),
+	    use_module(library(lists), [append/3, member/2])
+	).
 
 main :-
-    ensure_loaded('ppl_predicate_check.pl'),
-    ensure_loaded('ppl_predicate_check_common.pl'),
-    set_prolog_flag(language, iso),	% FIXME: this is not ISO Prolog
-    nofileerrors,
-    (check_all ->
-	write('OK')
-    ;
-	write('FAILURE')
-    ),
-    nl,
-    halt.
+	version_dependent_declarations,
+        ensure_loaded('ppl_predicate_check_main.pl'),
+	set_prolog_flag(fileerrors, off),
+	(check_all ->
+	    write('OK')
+	;
+	    write('FAILURE')
+	),
+	nl,
+	halt.

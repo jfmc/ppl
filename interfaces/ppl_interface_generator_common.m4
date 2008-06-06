@@ -1,3 +1,9 @@
+m4_divert(-1)
+
+dnl This m4 file includes macro definitions for:
+dnl - application independent helper macros used here and by other m4 files.
+dnl - defining the main code generation macro m4_all_code.
+
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
@@ -18,8 +24,6 @@ dnl Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
-
-m4_divert(-1)
 
 dnl =====================================================================
 dnl ====== The following are application independent helper macros ======
@@ -66,8 +70,7 @@ dnl m4_add_one_after_underscore(String)
 dnl
 dnl Adds a 1 after any underscore (needed for Java interface code)..
 dnl Example: m4_capfirstletter(`xyz_abc') ==> xyz_1abc
-m4_define(`m4_add_one_after_underscore', `m4_patsubst(`$1', `_', `_1')`'dnl
-')
+m4_define(`m4_add_one_after_underscore', `m4_patsubst(`$1', `_', `_1')')
 
 dnl m4_ifndef(Macro, Default Definition)
 dnl
@@ -109,6 +112,78 @@ dnl
 dnl Code copied from m4 documentation where it is called echo2.
 m4_define(`m4_echo_quoted', `$@')
 
+dnl ----------------------------------------------------------------------
+dnl m4_two_seq_intersection,
+dnl m4_three_seq_intersection and helper macros
+dnl
+dnl These find the intersection of two and three sequences, respectively.
+dnl ----------------------------------------------------------------------
+dnl
+dnl m4_seq_intersection
+dnl
+dnl This macro with its helper macros below,
+dnl intersects two or three sequences that must be previously defined
+dnl as `m4_1st_sequence', `m4_2nd_sequence' and, if there is a third,
+dnl `m4_3rd_sequence'. The number of sequences (2 or 3) must also be defined
+dnl by the macro `m4_number_of_sequences'. The order of the
+dnl intersected sequence is that of m4_1st_sequence.
+dnl
+dnl For example, if m4_1st_sequence is defined to be `a, b, c, d' and
+dnl m4_2nd_sequence is defined to be `b, d, e, a, f',
+dnl this macro is defined to be `a, b, d'.
+m4_define(`m4_seq_intersection', `dnl
+m4_define(`m4_add_one_first', 1)`'dnl
+m4_patsubst(m4_seq_intersection_aux(m4_1st_sequence),
+            @COMMA@, `, ')`'dnl
+')
+
+dnl m4_seq_intersection_aux(...)
+dnl
+dnl The arguments are the first sequence to be intersected.
+dnl It calls either the helper macro for 3 sequences or the helper
+dnl macro for 2 sequences (depending on the number of sequences).
+dnl It calls itself recursively with the tail of the sequence.
+m4_define(`m4_seq_intersection_aux', `dnl
+m4_ifelse($#, 0, , $#, 1,
+  m4_`'m4_num_of_sequences`'_seq_intersection_aux($1, m4_2nd_sequence),
+  m4_`'m4_num_of_sequences`'_seq_intersection_aux($1, m4_2nd_sequence)`'dnl
+`m4_seq_intersection_aux(m4_shift($@))')`'dnl
+')
+
+dnl m4_3_seq_intersection_aux(String, ...)
+dnl
+dnl This is defined to be `String' if `String' also occurs
+dnl in the 2nd or in a later argument position
+dnl as well as in m4_3rd_sequence.
+dnl It calls itself recursively with the tail of the sequence.
+m4_define(`m4_3_seq_intersection_aux', `dnl
+m4_ifelse($#, 0, , $#, 1, , $#, 2,
+  `m4_ifelse($1, $2, `m4_2_seq_intersection_aux($1, m4_3rd_sequence)')',
+  `m4_ifelse($1, $2, `m4_2_seq_intersection_aux($1, m4_3rd_sequence)',
+`m4_3_seq_intersection_aux($1, m4_shift(m4_shift($@)))')')`'dnl
+')
+
+dnl m4_2_seq_intersection_aux(String, ...)
+dnl
+dnl This is defined to be `String' if `String' also occurs
+dnl in the 2nd or in a later argument position.
+dnl It calls itself recursively with the tail of the sequence.
+m4_define(`m4_2_seq_intersection_aux', `dnl
+m4_ifelse($#, 0, , $#, 1, , $#, 2,
+  `m4_ifelse($1, $2, `m4_add_one($1)')',
+  `m4_ifelse($1, $2, `m4_add_one($1)',
+`m4_2_seq_intersection_aux($1, m4_shift(m4_shift($@)))')')`'dnl
+')
+
+dnl m4_add_one(String)
+dnl
+dnl This separates the new sequence temporarily with @COMMA@ to avoid
+dnl the `,' being mis-interpreted by m4.
+m4_define(`m4_add_one', `dnl
+m4_ifelse(m4_add_one_first, 1,
+  $1`'m4_undefine(`m4_add_one_first'), @COMMA@$1)`'dnl
+')
+
 dnl =====================================================================
 dnl ====== The following are application dependent macros: their meaning
 dnl ====== is influenced by the overall interface generator architecture.
@@ -133,6 +208,8 @@ dnl m4_replacements.
 dnl Additional codes help provide the right form of the replacmement:
 dnl - alt_ means that the alternative replacement in m4_alt_replacements
 dnl must be used if one exists.
+dnl - cppx_ means that the alternative replacement in m4_cppx_replacements
+dnl must be used if one exists.
 dnl - when the alt_replace is NONE, then the code is replaced by the
 dnl   the empty string.
 dnl - U means that the alt_actual string must be capitalised at start
@@ -144,12 +221,16 @@ m4_define(`m4_replace', `m4_arg($2, m4_replacements)')`'dnl
 dnl
 dnl m4_alt_replace is the replacement for alt_pattern
 m4_define(`m4_alt_replace', `m4_arg($2, m4_alt_replacements)')`'dnl
+dnl m4_alt_replace is the replacement for alt_pattern
+m4_define(`m4_cppx_replace', `m4_arg($2, m4_cppx_replacements)')`'dnl
 dnl
 m4_ifelse(m4_replace, NONE, `',
           m4_alt_replace, NONE, `',
 m4_patsubst(m4_patsubst(m4_patsubst(m4_patsubst(
             m4_patsubst(m4_patsubst(m4_patsubst(m4_patsubst(
-            m4_patsubst(m4_patsubst(m4_patsubst(m4_patsubst($1,
+            m4_patsubst(m4_patsubst(m4_patsubst(m4_patsubst(
+            m4_patsubst(m4_patsubst(m4_patsubst(m4_patsubst(
+            m4_patsubst(m4_patsubst($1,
   m4_pattern_delimiter`'1U`'PATTERN`'m4_pattern_delimiter,
     m4_add_one_after_underscore(m4_capfirstletters(m4_replace))),
   m4_pattern_delimiter`'1L`'PATTERN`'m4_pattern_delimiter,
@@ -172,6 +253,18 @@ m4_patsubst(m4_patsubst(m4_patsubst(m4_patsubst(
     m4_add_one_after_underscore(m4_alt_replace)),
   m4_pattern_delimiter`'ALT_`'PATTERN`'m4_pattern_delimiter,
     m4_alt_replace),
+  m4_pattern_delimiter`'1UCPPX_`'PATTERN`'m4_pattern_delimiter,
+    m4_add_one_after_underscore(m4_capfirstletters(m4_alt_replace))),
+  m4_pattern_delimiter`'UCPPX_`'PATTERN`'m4_pattern_delimiter,
+    m4_capfirstletters(m4_alt_replace)),
+  m4_pattern_delimiter`'1LCPPX_`'PATTERN`'m4_pattern_delimiter,
+    m4_add_one_after_underscore(m4_downcase(m4_alt_replace))),
+  m4_pattern_delimiter`'LCPPX_`'PATTERN`'m4_pattern_delimiter,
+    m4_downcase(m4_alt_replace)),
+  m4_pattern_delimiter`'1CPPX_`'PATTERN`'m4_pattern_delimiter,
+    m4_add_one_after_underscore(m4_alt_replace)),
+  m4_pattern_delimiter`'CPPX_`'PATTERN`'m4_pattern_delimiter,
+    m4_cppx_replace),
   m4_pattern_delimiter`'PATTERN`'m4_pattern_delimiter,
     m4_replace)`'dnl
 )`'dnl
@@ -210,17 +303,15 @@ m4_define(`PATTERN', m4_upcase($3))`'dnl
 dnl
 dnl m4_replacements is the replacement list for the pattern.
 m4_define(`m4_replacements', `dnl
-  m4_ifdef(m4_`'m4_class_kind$1`'_$3_replacement,
-    m4_`'m4_class_kind$1`'_$3_replacement($1),
-    `m4_$3_replacement($1)')')`'dnl
+m4_class_pattern_replacement($1, $3, `')')`'dnl
 dnl
 dnl m4_alt_replacements is the alternative replacement list for pattern.
 m4_define(`m4_alt_replacements', `dnl
-  m4_ifdef(m4_`'m4_class_kind$1`'_$3_alt_replacement,
-    m4_`'m4_class_kind$1`'_$3_alt_replacement($1),
-    `m4_ifdef(`m4_$3_alt_replacement',
-      `m4_$3_alt_replacement($1)',
-      `m4_replacements')')')`'dnl
+m4_class_pattern_replacement($1, $3, `_alt')')`'dnl
+dnl
+dnl m4_cppx_replacements is the cplusplus replacement list for pattern.
+m4_define(`m4_cppx_replacements', `dnl
+m4_class_pattern_replacement($1, $3, `_cppx')')`'dnl
 dnl
 m4_ifelse(m4_index(`$2', PATTERN), `-1', $2, `dnl
 m4_expand_pattern_by_replacements($2, 1)')`'dnl
@@ -228,6 +319,7 @@ dnl
 m4_undefine(`PATTERN')`'dnl
 m4_undefine(`m4_replacements')`'dnl
 m4_undefine(`m4_alt_replacements')`'dnl
+m4_undefine(`m4_cppx_replacements')`'dnl
 ')
 
 dnl m4_replace_all_patterns_in_string(
@@ -356,7 +448,7 @@ dnl if it is, it checks if +Group or -Group
 dnl (depending if +_or_- is + or -) is included in the Procedure_Spec;
 dnl if it is, then it expands to 1, otherwise, expands to 0.
 m4_define(`m4_keep_or_throw_for_one_group', `dnl
-m4_ifelse(m4_arg_counter(m4_class_kind$1, m4_$4_group), `', 0,
+m4_ifelse(m4_arg_counter($1, m4_$4_group), `', 0,
   `m4_ifelse(m4_index($2, $3$4), -1, 0, 1)')`'dnl
 ')
 
@@ -373,8 +465,8 @@ m4_define(`m4_keep_or_throw', `dnl
 m4_ifelse($#, 0, 0, $#, 1, 0, $#, 2, 0, $#, 3, 0,
   $#, 4, `m4_keep_or_throw_for_one_group($1, $2, $3, $4)',
     `m4_ifelse(m4_keep_or_throw_for_one_group($1, $2, $3, $4), 1, 1,
-      m4_keep_or_throw($1, $2, $3,
-                       m4_shift(m4_shift(m4_shift(m4_shift($@))))))')`'dnl
+      `m4_keep_or_throw($1, $2, $3,
+                       m4_shift(m4_shift(m4_shift(m4_shift($@)))))')')`'dnl
 ')
 
 dnl m4_filter_one_procedure(Class_Counter, Procedure_Spec)
@@ -391,8 +483,21 @@ dnl if so, it expands to Procedure_Spec.
 m4_define(`m4_filter_one_procedure', `dnl
 m4_define(`m4_proc_info_string',
        `m4_patsubst(`$2', `[ ]*ppl_[^ ]+ \(.*\)', \1)')`'dnl
-m4_ifelse(m4_keep_or_throw($1, m4_proc_info_string, -, m4_group_names), 1, 0,
-  m4_keep_or_throw($1, m4_proc_info_string, +, m4_group_names))`'dnl
+m4_ifelse(m4_keep_or_throw(m4_class_kind$1,
+                           m4_proc_info_string, -,
+                           m4_group_names),
+  1, 0,
+  m4_keep_or_throw(m4_class_body_kind$1,
+                             m4_proc_info_string, \,
+                             m4_group_names),
+  1, 0,
+  m4_keep_or_throw(m4_class_body_2nd_kind$1,
+                             m4_proc_info_string, ?,
+                             m4_group_names),
+  1, 0,
+  `m4_keep_or_throw(m4_class_kind$1,
+                   m4_proc_info_string, +,
+                   m4_group_names)')`'dnl
 m4_undefine(m4_proc_info_string)`'dnl
 ')
 
@@ -470,7 +575,7 @@ dnl The actual code for each class is generated by m4_one_class_code.
 dnl The generated code then has the pattern "@COMMA@" replaced by ",".
 m4_define(`m4_all_classes_code', `dnl
 m4_ifdef(m4_interface_class`'$1,
-  `m4_patsubst(m4_one_class_code($1), @COMMA@, `,')`'dnl
+`m4_patsubst(m4_one_class_code($1), @COMMA@, `,')`'dnl
 m4_all_classes_code(m4_incr($1))')`'dnl
 ')
 
@@ -482,6 +587,13 @@ dnl This is required for code that depends on the instantiated classes
 dnl (so must be generated from a schema) but has to be included before
 dnl all classes (as in ppl_prolog_icc.m4).
 m4_define(`m4_pre_all_classes_code', `')
+
+dnl m4_class_definitions_initialized/0
+dnl
+dnl Avoids initializing the class macro definitions more than once
+dnl when the main macro m4_all_code/0 is called more than once in a
+dnl file generation.
+m4_define(`m4_class_definitions_initialized', `false')
 
 dnl m4_all_code
 dnl
@@ -496,13 +608,14 @@ dnl
 dnl The main loop macro m4_all_classes_loop is called to generate
 dnl code for all the required classes.
 m4_define(`m4_all_code', `dnl
-dnl Provides the class name macro definitions by calling
-m4_init_interface_classes(m4_interface_classes_names)`'dnl
-m4_init_cplusplus_classes(m4_cplusplus_classes_names)`'dnl
+dnl
+dnl Provides the class name macro definitions if not
+dnl already initialized
+m4_ifelse(m4_class_definitions_initialized, `false',
+  `m4_init_class_definitions', `')`'dnl
+dnl
 dnl then adds the extra code for all classes
 m4_pre_all_classes_code`'dnl
 dnl and then generates code for each class.
 m4_all_classes_code(1)`'dnl
 ')
-
-m4_divert`'dnl

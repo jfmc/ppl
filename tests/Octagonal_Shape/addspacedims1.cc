@@ -47,8 +47,8 @@ test01() {
   bool ok = (Octagonal_Shape<mpq_class>(oc) == known_result);
 
   print_constraints(oc,
-		    "*** oc.add_space_dimensions_and_embed(2) "
-		    "and oc.add_constraint(w <= 2) ***");
+                    "*** oc.add_space_dimensions_and_embed(2) "
+                    "and oc.add_constraint(w <= 2) ***");
 
   return ok;
 }

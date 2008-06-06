@@ -1016,6 +1016,29 @@ are unprimed; for instance, the transfer relations
 \f$\mathrm{rhs}' \geq \mathrm{lhs}\f$
 are not equivalent in general.
 
+\subsection Cylindrification Cylindrification Operator
+
+The operator <CODE>unconstrain</CODE> computes
+the <EM>cylindrification</EM> \ref HMT71 "[HMT71]"
+of a polyhedron with respect to one of its variables.
+Formally, the cylindrification \f$\cQ \in \Pset_n\f$
+of an NNC polyhedron \f$\cP \in \Pset_n\f$ with respect to
+variable index \f$i \in \{ 0, \ldots, n-1 \}\f$ is defined as follows:
+\f[
+  \cQ
+    = \bigl\{\,
+        \vect{w} \in \Rset^n
+      \bigm|
+        \exists \vect{v} \in \cP \st
+          \forall j \in \{0, \ldots, n-1\} \itc
+            j \neq i \implies w_j = v_j
+      \,\bigr\}.
+\f]
+Cylindrification is an idempotent operation; in particular, note that
+the computed result has the same space dimension of the original polyhedron.
+A variant of the operator above allows for the cylindrification of
+a polyhedron with respect to a finite set of variables.
+
 \subsection Time_Elapse_Operator Time-Elapse Operator
 
 The <EM>time-elapse</EM> operator has been defined in
@@ -2204,8 +2227,8 @@ have been refined to achieve a better integration: as a consequence,
 the lazy versions of the operators are now almost always more efficient
 than the eager versions.
 
-One of the cases when an eager computation still makes sense is when
-the well-known <EM>fail-first</EM> principle comes into play.
+One of the cases when an eager computation might still make sense
+is when the well-known <EM>fail-first</EM> principle comes into play.
 For instance, if you have to compute the intersection of several
 polyhedra and you strongly suspect that the result will become empty
 after a few of these intersections, then you may obtain a better
@@ -2213,6 +2236,13 @@ performance by calling the eager version of the intersection operator,
 since the minimization process also enforces an emptiness check.
 Note anyway that the same effect can be obtained by interleaving
 the calls of the lazy operator with explicit emptiness checks.
+
+\warning
+For the reasons mentioned above, starting from version 0.10 of the
+library, the usage of the eager versions (i.e., the ones having a
+name ending with <CODE>_and_minimize</CODE>) of these operators is
+\em deprecated; this is in preparation of their complete removal,
+which will occur starting from version 0.11.
 
 \subsection On_Object_Orientation_and_Polymorphism_A_Disclaimer On Object-Orientation and Polymorphism: A Disclaimer
 
@@ -2483,6 +2513,16 @@ P.&nbsp;Cousot and R.&nbsp;Cousot.
 
 </DD>
 
+<DT> [CC79] </DT>
+<DD>
+\anchor CC79
+P.&nbsp;Cousot and R.&nbsp;Cousot.
+ Systematic design of program analysis frameworks.
+ In <em>Proceedings of the Sixth Annual ACM Symposium on Principles
+  of Programming Languages</em>, pages 269-282, New York, 1979. ACM Press.
+
+</DD>
+
 
 <DT> [CC92] </DT>
 <DD>
@@ -2674,6 +2714,16 @@ V.&nbsp;Van Dongen H.&nbsp;Le Verge and D.&nbsp;K. Wilde.
   Loop nest synthesis using the polyhedral library.
   <em>Publication interne</em> 830, IRISA, Campus de Beaulieu, Rennes,
   France, 1994.
+
+</DD>
+
+
+<DT> [HMT71] </DT>
+<DD>
+\anchor HMT71
+L.&nbsp;Henkin, J.&nbsp;D. Monk, and A.&nbsp;Tarski.
+ <em>Cylindric Algebras: Part I</em>.
+ North-Holland, Amsterdam, 1971.
 
 </DD>
 

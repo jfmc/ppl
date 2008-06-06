@@ -1,5 +1,4 @@
-/* Test Box::refine(const Constraint&)
-   and Box::refine(const Constraint_System&).
+/* Rational_Interval class declaration and implementation.
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,13 +20,17 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include "ppl_test.hh"
+#ifndef PPL_Rational_Interval_hh
+#define PPL_Rational_Interval_hh 1
 
-namespace {
+#include "Interval.defs.hh"
+#include <gmpxx.h>
 
-struct Unsigned_Integer_Closed_Interval_Info_Policy {
+namespace Parma_Polyhedra_Library {
+
+struct Rational_Interval_Info_Policy {
   const_bool_nodef(store_special, true);
-  const_bool_nodef(store_open, false);
+  const_bool_nodef(store_open, true);
   const_bool_nodef(cache_empty, true);
   const_bool_nodef(cache_singleton, true);
   const_bool_nodef(cache_normalized, false);
@@ -38,44 +41,16 @@ struct Unsigned_Integer_Closed_Interval_Info_Policy {
   const_bool_nodef(check_inexact, false);
 };
 
-typedef Interval_Restriction_None
-<Interval_Info_Bitset<unsigned int,
-		      Unsigned_Integer_Closed_Interval_Info_Policy> >
-Unsigned_Integer_Closed_Interval_Info;
+typedef
+Interval_Restriction_None<Interval_Info_Bitset<unsigned int,
+                                               Rational_Interval_Info_Policy> >
+Rational_Interval_Info;
 
-typedef Interval<unsigned long long, Unsigned_Integer_Closed_Interval_Info>
-Unsigned_Integer_Closed_Interval;
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! An interval with rational, possibly open boundaries.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+typedef Interval<mpq_class, Rational_Interval_Info> Rational_Interval;
 
-typedef Box<Unsigned_Integer_Closed_Interval> UILL_Box;
+} // namespace Parma_Polyhedra_Library
 
-bool
-test01() {
-  Variable A(0);
-  Variable B(1);
-
-  UILL_Box box(2);
-  box.add_constraint(A >= 0);
-  box.add_constraint(B >= 1);
-
-  print_constraints(box, "*** box ***");
-
-  box.refine(A == B);
-
-  print_constraints(box, "*** box.refine(A == B) ***");
-
-  Rational_Box known_result(2);
-  known_result.add_constraint(A >= 1);
-  known_result.add_constraint(B >= 1);
-
-  bool ok = (Rational_Box(box) == known_result);
-
-  print_constraints(known_result, "*** known_result ***");
-
-  return ok;
-}
-
-} // namespace
-
-BEGIN_MAIN
-  DO_TEST(test01);
-END_MAIN
+#endif // !defined(PPL_Rational_Interval_hh)

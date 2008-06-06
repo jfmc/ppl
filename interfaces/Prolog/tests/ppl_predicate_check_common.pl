@@ -140,6 +140,9 @@ choose_2_tests(TEST_DATA1, TEST_DATA2, Dim) :-
 :- discontiguous(ppl_property_test_data/4).
 :- discontiguous(ppl_bounds_test_data/5).
 :- discontiguous(ppl_maxmin_test_data/10).
+:- discontiguous(ppl_constrains_test_data/3).
+:- dynamic(all_class_dependent_predicates/1).
+:- discontiguous(all_class_dependent_predicates/1).
 
 ppl_initial_test_system(constraint, universe).
 ppl_initial_test_system(congruence, universe).
@@ -172,8 +175,15 @@ ppl_relation_test_data(test00, constraint, 0 = 1, Rel) :-
   ; Rel = [is_disjoint, is_included]
   ; Rel = [is_included, is_disjoint].
 ppl_relation_test_data(test00, generator, point(0), []).
-ppl_relation_test_data(test00, congruence, 0 = 1, Rel) :-
-  Rel = [is_included, is_disjoint] ; Rel = [is_disjoint, is_included].
+ppl_relation_test_data(test00, congruence, (0 =:= 1) / 0, Rel) :-
+  Rel = [saturates, is_included, is_disjoint]
+  ; Rel = [saturates, is_disjoint, is_included]
+  ; Rel = [is_included, is_disjoint, saturates]
+  ; Rel = [is_included, saturates, is_disjoint]
+  ; Rel = [is_disjoint, is_included, saturates]
+  ; Rel = [is_disjoint, saturates, is_included]
+  ; Rel = [is_disjoint, is_included]
+  ; Rel = [is_included, is_disjoint].
 ppl_relation_test_data(test00, grid_generator, grid_point(0), []).
 
 ppl_property_test_data(test00, _, _, is_empty).
@@ -210,7 +220,14 @@ ppl_relation_test_data(test01, constraint, 0 = 1, Rel) :-
   ; Rel = [is_included, is_disjoint].
 ppl_relation_test_data(test01, generator, point(0), []).
 ppl_relation_test_data(test01, congruence, 0 = 1, Rel) :-
-  Rel = [is_included, is_disjoint] ; Rel = [is_disjoint, is_included].
+  Rel = [saturates, is_included, is_disjoint]
+  ; Rel = [saturates, is_disjoint, is_included]
+  ; Rel = [is_included, is_disjoint, saturates]
+  ; Rel = [is_included, saturates, is_disjoint]
+  ; Rel = [is_disjoint, is_included, saturates]
+  ; Rel = [is_disjoint, saturates, is_included]
+  ; Rel = [is_disjoint, is_included]
+  ; Rel = [is_included, is_disjoint].
 ppl_relation_test_data(test01, grid_generator, grid_point(0), []).
 
 ppl_property_test_data(test01, _, _, is_empty).
@@ -222,6 +239,8 @@ ppl_bounds_test_data(test01, _, A, _, true) :-
   make_vars(1, [A]).
 
 ppl_maxmin_test_data(test01, _Topology, _, _, 0, _, _, _, _, false).
+
+ppl_constrains_test_data(test01, _, true).
 
 /* Test data for test test02 (a universe object in 0 dimensions) */
 
@@ -236,7 +255,9 @@ ppl_relation_test_data(test02, constraint, 0 = 0, Rel) :-
   Rel = [saturates, is_included] ; Rel = [is_included, saturates]
   ; Rel = [is_included].
 ppl_relation_test_data(test02, generator, point(0), [subsumes]).
-ppl_relation_test_data(test02, congruence, 0 = 0, [is_included]).
+ppl_relation_test_data(test02, congruence, 0 = 0, Rel) :-
+  Rel = [saturates, is_included] ; Rel = [is_included, saturates]
+  ; Rel = [is_included].
 ppl_relation_test_data(test02, grid_generator, grid_point(0), [subsumes]).
 
 ppl_property_test_data(test02, _, _, is_bounded).
@@ -285,6 +306,8 @@ ppl_bounds_test_data(test03, _, A, _, false) :-
 ppl_maxmin_test_data(test03, _Topology, _, _, A, _, _, _, _, false) :-
    make_vars(1, [A]).
 
+ppl_constrains_test_data(test03, _, false).
+
 /* Test data for test test04 and test05
    (an object in 1 dimension with a single point) */
 
@@ -327,6 +350,8 @@ ppl_maxmin_test_data(test04, _Topology, congruence, _, A, 1, 1, true,
              grid_point(A), true) :-
    make_vars(1, [A]).
 
+ppl_constrains_test_data(test04, _, true).
+
 ppl_build_test_data(test05, _Topology, constraints, CS) :-
   (make_vars(1, [A]),
    CS = [A = -1]).
@@ -365,8 +390,10 @@ ppl_maxmin_test_data(test05, _Topology, congruence, _, A, -1, 1, true,
              grid_point(-1*A), true) :-
    make_vars(1, [A]).
 
+ppl_constrains_test_data(test05, _, true).
+
 /* Test data for test test06,
-            a non-universe object in 1 dimensionwith no upper bound */
+            a non-universe object in 1 dimension with no upper bound */
 
 ppl_build_test_data(test06, T, constraints, CS) :-
   (\+ T == t_NNC_,
@@ -393,7 +420,7 @@ ppl_dimension_test_data(test06, _, 1).
 
 ppl_relation_test_data(test06, constraint, A =< 3, [strictly_intersects]) :-
   make_vars(1, [A]).
-ppl_relation_test_data(test06, generator, point(3*A, 2), [subsumes]) :-
+ppl_relation_test_data(test06, generator, point(3*A), [subsumes]) :-
   make_vars(1, [A]).
 ppl_relation_test_data(test06, congruence, (2*A =:= 1) / 3,
                                               [strictly_intersects]) :-
@@ -428,6 +455,8 @@ ppl_maxmin_test_data(test06, t_NNC_, constraint, minimize, A, 0, 1, false,
 ppl_maxmin_test_data(test06, _, congruence, _, A, _, _, _, _, false) :-
    make_vars(1, [A]).
 
+ppl_constrains_test_data(test06, _, true).
+
 /* Test data for test test07,
     a non-universe object in 1 dimension with no lower bound */
 
@@ -456,7 +485,7 @@ ppl_dimension_test_data(test07, _, 1).
 
 ppl_relation_test_data(test07, constraint, A >= -3, [strictly_intersects]) :-
   make_vars(1, [A]).
-ppl_relation_test_data(test07, generator, point(-3*A, 2), [subsumes]) :-
+ppl_relation_test_data(test07, generator, point(-4*A), [subsumes]) :-
   make_vars(1, [A]).
 ppl_relation_test_data(test07, congruence, (2*A =:= 1) / 3,
                                               [strictly_intersects]) :-
@@ -490,6 +519,8 @@ ppl_maxmin_test_data(test07, t_NNC_, constraint, maximize, A, 0, 1, false,
    make_vars(1, [A]).
 ppl_maxmin_test_data(test07, _, congruence, _, A, _, _, _, _, false) :-
    make_vars(1, [A]).
+
+ppl_constrains_test_data(test07, _, true).
 
 /* Test data for test test08,
     a non-universe bounded object in 1 dimension */
@@ -557,6 +588,8 @@ ppl_maxmin_test_data(test08, t_NNC_, constraint, maximize, A, 5, 1, false,
 ppl_maxmin_test_data(test08, _, congruence, _, A, _, _, _, _, false) :-
    make_vars(1, [A]).
 
+ppl_constrains_test_data(test08, _, true).
+
 /* boxes  */
 
 ppl_dimension_test_data(test10, _, 2).
@@ -576,5 +609,5 @@ ppl_build_test_data(test10, _Topology, box,
                                [i(c(1/2), o(pinf)), i(o(minf), c(-1/2))]).
 ppl_build_test_data(test11, _Topology, box, [i(c(-4), c(1)), i(c(-1), c(1))]).
 ppl_build_test_data(test12, T, box, [i(c(0/2), o(pinf)), i(o(minf), c(1))]) :-
-  T \= t_NNC_.
+  \+ T == t_NNC_.
 ppl_build_test_data(test12, t_NNC_, box, [i(o(0/2), o(pinf)), i(o(minf), o(1))]).

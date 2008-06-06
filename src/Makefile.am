@@ -185,6 +185,8 @@ Coefficient.defs.hh \
 Coefficient.inlines.hh \
 globals.defs.hh \
 globals.inlines.hh \
+math_utilities.defs.hh \
+math_utilities.inlines.hh \
 iterator_to_const.defs.hh \
 iterator_to_const.inlines.hh \
 distances.defs.hh \
@@ -197,8 +199,10 @@ Interval.defs.hh \
 Interval.inlines.hh \
 Interval.templates.hh \
 Box.defs.hh \
+Box_Status.inlines.hh \
 Box.inlines.hh \
 Box.templates.hh \
+Rational_Interval.hh \
 Rational_Box.hh \
 Variable.defs.hh \
 Variable.inlines.hh \
@@ -318,6 +322,7 @@ algorithms.hh
 NESTED_INCLUDE_FILES = \
 Ph_Status.idefs.hh \
 Grid_Status.idefs.hh \
+Box_Status.idefs.hh \
 BDS_Status.idefs.hh \
 Og_Status.idefs.hh
 

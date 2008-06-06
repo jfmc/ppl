@@ -104,11 +104,6 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
   and vice versa.
   These systems can contain redundant members: in this case we say
   that they are not in the minimal form.
-  Most operators on polyhedra are provided with two implementations:
-  one of these, denoted <CODE>\<operator-name\>_and_minimize</CODE>,
-  also enforces the minimization of the representations,
-  and returns the Boolean value <CODE>false</CODE> whenever
-  the resulting polyhedron turns out to be empty.
 
   Two key attributes of any polyhedron are its topological kind
   (recording whether it is a C_Polyhedron or an NNC_Polyhedron object)
@@ -362,6 +357,23 @@ public:
   //! Returns the maximum space dimension all kinds of Polyhedron can handle.
   static dimension_type max_space_dimension();
 
+  /*! \brief
+    Returns \c true indicating that this domain has methods that
+    can recycle constraints.
+  */
+  static bool can_recycle_constraint_systems();
+
+  //! Initializes the class.
+  static void initialize();
+
+  //! Finalizes the class.
+  static void finalize();
+
+  /*! \brief
+    Returns \c false indicating that this domain cannot recycle congruences.
+  */
+  static bool can_recycle_congruence_systems();
+
 protected:
   //! Builds a polyhedron having the specified properties.
   /*!
@@ -379,7 +391,11 @@ protected:
 	     Degenerate_Element kind);
 
   //! Ordinary copy-constructor.
-  Polyhedron(const Polyhedron& y);
+  /*!
+    The complexity argument is ignored.
+  */
+  Polyhedron(const Polyhedron& y,
+             Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Builds a polyhedron from a system of constraints.
   /*!
@@ -457,11 +473,17 @@ protected:
 
   //! Builds a polyhedron out of a generic, interval-based bounding box.
   /*!
+    This will use an algorithm whose complexity is polynomial and build
+    the smallest polyhedron with topology \p topol containing \p box.
+
     \param topol
     The topology of the polyhedron;
 
     \param box
-    The bounding box representing the polyhedron to be built.
+    The bounding box representing the polyhedron to be built;
+
+    \param complexity
+    This argument is ignored.
 
     \exception std::invalid_argument
     Thrown if \p box has intervals that are incompatible with \p topol.
@@ -511,7 +533,8 @@ protected:
     corresponds to the least upper bound of \f$I\f$.
   */
   template <typename Box>
-  Polyhedron(Topology topol, const Box& box);
+  Polyhedron(Topology topol, const Box& box,
+                Complexity_Class complexity = ANY_COMPLEXITY);
 
   /*! \brief
     The assignment operator.
@@ -549,8 +572,9 @@ public:
   Congruence_System congruences() const;
 
   /*! \brief
-      Returns a system of (equality) congruences in reduced form
-      satsified by \p *this with the same affine dimension as \p *this.
+    Returns a system of (equality) congruences satisfied by \p *this,
+    with no redundant congruences and having the same affine dimension
+    as \p *this.
   */
   Congruence_System minimized_congruences() const;
 
@@ -817,6 +841,10 @@ public:
     Adds a copy of constraint \p c to the system of constraints
     of \p *this (without minimizing the result).
 
+    \param c
+    The constraint that will be added to the system of
+    constraints of \p *this.
+
     \exception std::invalid_argument
     Thrown if \p *this and constraint \p c are topology-incompatible
     or dimension-incompatible.
@@ -827,12 +855,19 @@ public:
     Adds a copy of constraint \p c to the system of constraints
     of \p *this, minimizing the result
 
+    \param c
+    The constraint that will be added to the system of
+    constraints of \p *this.
+
     \return
     <CODE>false</CODE> if and only if the result is empty.
 
     \exception std::invalid_argument
     Thrown if \p *this and constraint \p c are topology-incompatible
     or dimension-incompatible.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_constraint_and_minimize(const Constraint& c);
 
@@ -858,6 +893,9 @@ public:
     Thrown if \p *this and generator \p g are topology-incompatible or
     dimension-incompatible, or if \p *this is an empty polyhedron and
     \p g is not a point.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_generator_and_minimize(const Generator& g);
 
@@ -865,6 +903,10 @@ public:
   void add_grid_generator(const Grid_Generator& g) const;
 
   //! Returns <CODE>true</CODE> if \p *this is empty else <CODE>false</CODE>.
+  /*!
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
+  */
   bool add_grid_generator_and_minimize(const Grid_Generator& g) const;
 
   /*! \brief
@@ -876,6 +918,22 @@ public:
     or dimension-incompatible.
   */
   void add_congruence(const Congruence& cg);
+
+  /*! \brief
+    Adds a copy of congruence \p cg to the system of congruences
+    of \p *this, minimizing the result
+
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and congruence \p c are topology-incompatible
+    or dimension-incompatible.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
+  */
+  bool add_congruence_and_minimize(const Congruence& cg);
 
   /*! \brief
     Adds a copy of the constraints in \p cs to the system
@@ -923,6 +981,9 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are topology-incompatible or
     dimension-incompatible.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_constraints_and_minimize(const Constraint_System& cs);
 
@@ -944,6 +1005,9 @@ public:
     \warning
     The only assumption that can be made on \p cs upon successful or
     exceptional return is that it can be safely destroyed.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_recycled_constraints_and_minimize(Constraint_System& cs);
 
@@ -996,6 +1060,9 @@ public:
     Thrown if \p *this and \p gs are topology-incompatible or
     dimension-incompatible, or if \p *this is empty and the the system
     of generators \p gs is not empty, but has no points.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_generators_and_minimize(const Generator_System& gs);
 
@@ -1018,6 +1085,9 @@ public:
     \warning
     The only assumption that can be made on \p gs upon successful or
     exceptional return is that it can be safely destroyed.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_recycled_generators_and_minimize(Generator_System& gs);
 
@@ -1049,6 +1119,9 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are topology-incompatible or
     dimension-incompatible.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_congruences_and_minimize(const Congruence_System& cs);
 
@@ -1090,19 +1163,81 @@ public:
     \warning
     The only assumption that can be made on \p cs upon successful or
     exceptional return is that it can be safely destroyed.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_recycled_congruences_and_minimize(Congruence_System& cgs);
 
   /*! \brief
-    Returns true indicating that this domain has methods that
-    can recycle constraints
+    Uses a copy of constraint \p c to refine the system of constraints
+    of \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and constraint \p c are dimension-incompatible.
   */
-  static bool can_recycle_constraint_systems();
+  void refine_with_constraint(const Constraint& c);
 
   /*! \brief
-    Returns false indicating that this domain cannot recycle congruences
+    Uses a copy of congruence \p cg to refine the system of congruences of
+    \p *this (without minimizing the result).
+
+    \exception std::invalid_argument
+    Thrown if \p *this and congruence \p cg are dimension-incompatible.
   */
-  static bool can_recycle_congruence_systems();
+  void refine_with_congruence(const Congruence& cg);
+
+  /*! \brief
+    Uses a copy of the constraints in \p cs to refine the system
+    of constraints of \p *this.
+
+    \param cs
+    Contains the constraints used to refine the system of
+    constraints of \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are dimension-incompatible.
+  */
+  void refine_with_constraints(const Constraint_System& cs);
+
+  /*! \brief
+    Refines \p *this with constraints equivalent to the congruences
+    in \p cgs.
+
+    \param cgs
+    Contains the congruences used to refine the system of
+    constraints of \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cgs are dimension-incompatible.
+  */
+  void refine_with_congruences(const Congruence_System& cgs);
+
+  /*! \brief
+    Computes the \ref Cylindrification "cylindrification" of \p *this with
+    respect to space dimension \p var, assigning the result to \p *this.
+
+    \param var
+    The space dimension that will be unconstrained.
+
+    \exception std::invalid_argument
+    Thrown if \p var is not a space dimension of \p *this.
+  */
+  void unconstrain(Variable var);
+
+  /*! \brief
+    Computes the \ref Cylindrification "cylindrification" of \p *this with
+    respect to the set of space dimensions \p to_be_unconstrained,
+    assigning the result to \p *this.
+
+    \param to_be_unconstrained
+    The set of space dimension that will be unconstrained.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with one of the
+    Variable objects contained in \p to_be_removed.
+  */
+  void unconstrain(const Variables_Set& to_be_unconstrained);
 
   /*! \brief
     Assigns to \p *this the intersection of \p *this and \p y.
@@ -1124,6 +1259,9 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p y are topology-incompatible or
     dimension-incompatible.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool intersection_assign_and_minimize(const Polyhedron& y);
 
@@ -1147,6 +1285,9 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p y are topology-incompatible or
     dimension-incompatible.
+
+    \deprecated
+    See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool poly_hull_assign_and_minimize(const Polyhedron& y);
 
@@ -1945,6 +2086,15 @@ private:
   */
   bool is_necessarily_closed() const;
 
+  /*! \brief
+    Uses a copy of constraint \p c to refine the system of constraints
+    of \p *this.
+
+    \param c The constraint to be added. If it is dimension-incompatible
+    with \p *this, the behavior is undefined.
+  */
+  void refine_no_check(const Constraint& c);
+
   //! \name Private Verifiers: Verify if Individual Flags are Set
   //@{
 
@@ -2461,6 +2611,23 @@ private:
   static int simplify(Linear_System& mat, Bit_Matrix& sat);
 
   //@} // Minimization-Related Static Member Functions
+
+  /*! \brief
+    Pointer to an array used by simplify().
+
+    Holds (between class initialization and finalization) a pointer to
+    an array, allocated with operator new[](), of
+    simplify_num_saturators_size elements.
+  */
+  static dimension_type* simplify_num_saturators_p;
+
+  /*! \brief
+    Dimension of an array used by simplify().
+
+    Holds (between class initialization and finalization) the size of the
+    array pointed to by simplify_num_saturators_p.
+  */
+  static size_t simplify_num_saturators_size;
 
   template <typename Interval> friend class Parma_Polyhedra_Library::Box;
   template <typename T> friend class Parma_Polyhedra_Library::BD_Shape;

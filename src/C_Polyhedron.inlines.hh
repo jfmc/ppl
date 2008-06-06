@@ -29,6 +29,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
+C_Polyhedron::~C_Polyhedron() {
+}
+
+inline
 C_Polyhedron::C_Polyhedron(dimension_type num_dimensions,
 			   Degenerate_Element kind)
   : Polyhedron(NECESSARILY_CLOSED,
@@ -94,7 +98,7 @@ C_Polyhedron::C_Polyhedron(Generator_System& gs, Recycle_Input)
 
 template <typename Interval>
 inline
-C_Polyhedron::C_Polyhedron(const Box<Interval>& box)
+C_Polyhedron::C_Polyhedron(const Box<Interval>& box, Complexity_Class)
   : Polyhedron(NECESSARILY_CLOSED,
 	       box.space_dimension() <= max_space_dimension()
 	       ? box
@@ -107,7 +111,7 @@ C_Polyhedron::C_Polyhedron(const Box<Interval>& box)
 
 template <typename U>
 inline
-C_Polyhedron::C_Polyhedron(const BD_Shape<U>& bd)
+C_Polyhedron::C_Polyhedron(const BD_Shape<U>& bd, Complexity_Class)
   : Polyhedron(NECESSARILY_CLOSED,
 	       bd.space_dimension() <= max_space_dimension()
 	       ? bd.space_dimension()
@@ -122,7 +126,7 @@ C_Polyhedron::C_Polyhedron(const BD_Shape<U>& bd)
 
 template <typename U>
 inline
-C_Polyhedron::C_Polyhedron(const Octagonal_Shape<U>& os)
+C_Polyhedron::C_Polyhedron(const Octagonal_Shape<U>& os, Complexity_Class)
   : Polyhedron(NECESSARILY_CLOSED,
 	       os.space_dimension() <= max_space_dimension()
 	       ? os.space_dimension()
@@ -136,7 +140,7 @@ C_Polyhedron::C_Polyhedron(const Octagonal_Shape<U>& os)
 }
 
 inline
-C_Polyhedron::C_Polyhedron(const C_Polyhedron& y)
+C_Polyhedron::C_Polyhedron(const C_Polyhedron& y, Complexity_Class)
   : Polyhedron(y) {
 }
 
@@ -151,10 +155,6 @@ C_Polyhedron::operator=(const NNC_Polyhedron& y) {
   C_Polyhedron c_y(y);
   swap(c_y);
   return *this;
-}
-
-inline
-C_Polyhedron::~C_Polyhedron() {
 }
 
 inline bool

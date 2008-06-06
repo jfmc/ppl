@@ -1,4 +1,11 @@
-/*! \page GPL GNU General Public License
+/*!
+\if PPL_HTML_Tag_Documentation_of_Interfaces
+\page GPL_different_HTML_tag GNU General Public License
+\else
+\page GPL GNU General Public License
+\endif
+
+\anchor GPL
 
 Version 3, 29 June 2007
 

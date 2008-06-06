@@ -201,6 +201,8 @@ test06() {
   return ok;
 }
 
+// CHECKME: is this now duplicating test01?
+// (was originally testing *_and_minimize)
 bool
 test07() {
   Variable x(0);
@@ -220,7 +222,7 @@ test07() {
 
   print_constraints(oc2, "*** oc2 ***");
 
-  oc1.intersection_assign_and_minimize(oc2);
+  oc1.intersection_assign(oc2);
 
   Constraint_System cs;
   cs.insert(x <= 3);
@@ -229,7 +231,7 @@ test07() {
   cs.insert(x + y <= 6);
 
   Octagonal_Shape<mpq_class> known_result(3);
-  known_result.add_constraints_and_minimize(cs);
+  known_result.add_constraints(cs);
 
   bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
@@ -250,9 +252,9 @@ test08() {
 
   try {
     // This is an invalid use of method
-    // Octagonal_Shape::intersection_assign_and_minimize(oc2): it is illegal
+    // Octagonal_Shape::intersection_assign(oc2): it is illegal
     // to apply this method to two polyhedra of different dimensions.
-    oc1.intersection_assign_and_minimize(oc2);
+    oc1.intersection_assign(oc2);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
@@ -264,6 +266,8 @@ test08() {
   return false;
 }
 
+// CHECKME: is this now duplicating test08?
+// (was originally testing *_and_minimize)
 bool
 test09() {
   Variable x(0);
@@ -329,7 +333,7 @@ test11() {
   cs.insert(A + B <= -1);
 
   TOctagonal_Shape oc1(3);
-  oc1.add_constraints_and_minimize(cs);
+  oc1.add_constraints(cs);
 
   print_constraints(oc1, "*** oc1 ***");
 
