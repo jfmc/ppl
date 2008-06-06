@@ -949,10 +949,36 @@ then
   AC_TEXT_MD5SUM
 fi
 
-# Check for the GLPK library.
+# Check if the PPL should use the GLPK MIP solver.
+AC_ARG_WITH([glpk],
+  [AS_HELP_STRING([--with-glpk], [use the GLPK MIP solver, if available])],
+  [],
+  [with_glpk=no])
+
+if test x$with_glpk = xyes
+then
+  AC_ARG_WITH([glpk-glpssx],
+    [AS_HELP_STRING([--with-glpk-glpssx=dir],
+      [look for GLPK's glpssx.h in dir])],
+    [],
+    [with_glpk_glpssx=no])
+
+  if test x$with_glpk_glpssx != xno
+  then
+    CPPFLAGS="-I$with_glpk_glpssx $CPPFLAGS"
+  fi
+
+  AC_CHECK_HEADER([glpssx.h], have_glpk_glpssx=yes, have_glpk_glpssx=no)
+
+  if test x$have_glpk_glpssx != xyes
+  then
+    AC_MSG_ERROR([unable to find glpssx.h])
+  fi
+fi
+
+# Check for the presence and usability of the GLPK library.
 AC_LANG_PUSH(C)
 AC_CHECK_HEADERS([glpk.h glpk/glpk.h], have_glpk=yes)
-AM_CONDITIONAL(HAVE_GLPK, test x$have_glpk = xyes)
 if test x$have_glpk = xyes
 then
   ac_save_LIBS="$LIBS"
@@ -975,6 +1001,11 @@ then
                           [Defined if GLPK provides glp_term_hook().]))
 fi
 AC_LANG_POP(C)
+AM_CONDITIONAL(HAVE_GLPK, test x$have_glpk = xyes)
+if test x$with_glpk = xyes && test x$have_glpk = xyes && test x$have_glpk_glpssx = xyes
+then
+  AC_DEFINE(USE_GLPK_MIP_SOLVER, 1, [Defined if the PPL should use the GLPK MIP solver.])
+fi
 
 # Checks for header files.
 AC_CHECK_HEADERS([fenv.h ieeefp.h getopt.h signal.h sys/resource.h sys/time.h sys/types.h unistd.h])
