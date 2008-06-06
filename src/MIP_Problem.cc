@@ -35,12 +35,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <algorithm>
 #include <cmath>
 
-#ifdef PPL_USE_GLPK
+#ifdef PPL_USE_GLPK_MIP_SOLVER
+
 extern "C" {
+#define HAVE_GMP 1
 #include <glpssx.h>
 #include <glpk.h>
+#undef HAVE_GMP
 }
-#endif
+
+#endif // !defined(PPL_USE_GLPK_MIP_SOLVER)
 
 #ifndef PPL_NOISY_SIMPLEX
 #define PPL_NOISY_SIMPLEX 0
@@ -214,7 +218,7 @@ PPL::MIP_Problem::optimizing_point() const {
  			    "*this doesn't have an optimizing point.");
 }
 
-#ifdef PPL_USE_GLPK
+#ifdef PPL_USE_GLPK_MIP_SOLVER
 bool
 PPL::MIP_Problem::is_satisfiable() const {
  // Check `status' to filter out trivial cases.
@@ -315,7 +319,7 @@ PPL::MIP_Problem::is_satisfiable() const {
 }
 #endif
 
-#ifdef PPL_USE_GLPK
+#ifdef PPL_USE_GLPK_MIP_SOLVER
 // FIXME: Deal with zero-dimensional case.
 bool PPL::MIP_Problem::
 compute_glpk_bounds(const Constraint_Sequence& input_cs,
@@ -662,7 +666,7 @@ load_glpk_data(const Constraint_Sequence& pure_constraints,
   glpk_ssx->tm_lim = 10000;
   glpk_ssx->out_frq = 1000.0;
   glpk_ssx->tm_beg = xtime();
-  glpk_ssx->tm_lag = ulset(0, 0);
+  glpk_ssx->tm_lag = xlset(0);
   // Disable the terminal output.
   glp_term_out(0);
   // Solve LP.
@@ -2073,7 +2077,7 @@ PPL::MIP_Problem::is_lp_satisfiable() const {
   throw std::runtime_error("PPL internal error");
 }
 
-#ifdef PPL_USE_GLPK
+#ifdef PPL_USE_GLPK_MIP_SOLVER
 PPL::MIP_Problem_Status
 PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
 			    mpq_class& incumbent_solution_value,
@@ -2331,7 +2335,7 @@ PPL::MIP_Problem::choose_branching_variable(const MIP_Problem& mip,
   return false;
 }
 
-#ifdef PPL_USE_GLPK
+#ifdef PPL_USE_GLPK_MIP_SOLVER
 bool
 PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp, Generator& p,
 				     const Variables_Set& i_vars) {
