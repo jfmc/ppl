@@ -32,9 +32,13 @@ Current contributors:
                         intervals.  He also helps on other design and
                         implementation issues.
 
-  Andrea Cimino         (University of Parma) wrote the initial version
-                        of our primal simplex solver.  He is still
-                        working on its refinement and optimization.
+  Andrea Cimino         (formerly at the University of Parma) wrote the
+                        initial version of our primal simplex solver
+                        and of the Java interface.  He also finished the
+                        OCaml interface and wrote the interface (optional
+                        and disabled by default) whereby the PPL can use
+                        GLPK's MIP solver.  He is still graciously helping
+                        us maintaining and refining the library.
 
   Katy Dobson           [4] (University of Leeds) is working on the
                         formalization and definition of algorithms
@@ -109,8 +113,8 @@ Past contributors:
                         based on Fabio's work, will be available in a
                         future release of the library.
 
-  Claudio Trento        (University of Pisa) worked on an experimental
-                        OCaml interface for the PPL.
+  Claudio Trento        (formerly at the University of Pisa) worked on
+                        an experimental OCaml interface for the PPL.
 
   Tatiana Zolo          (former student of the University of Parma) is
                         one of the four students with which the PPL
