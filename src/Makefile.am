@@ -346,6 +346,8 @@ Linear_System.cc \
 Matrix.cc \
 Scalar_Products.cc \
 MIP_Problem.cc \
+MIP_Problem_PPL.icc \
+MIP_Problem_GLPK.icc \
 Poly_Con_Relation.cc \
 Poly_Gen_Relation.cc \
 BHRZ03_Certificate.cc \

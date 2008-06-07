@@ -1,0 +1,307 @@
+/* MIP_Problem class implementation: non-inline functions.  -*- C++ -*-
+   Code for the PPL's native MIP solver.
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+
+This file is part of the Parma Polyhedra Library (PPL).
+
+The PPL is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.
+
+The PPL is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
+
+For the most up-to-date information see the Parma Polyhedra Library
+site: http://www.cs.unipr.it/ppl/ . */
+
+bool
+PPL::MIP_Problem::is_satisfiable() const {
+  // Check `status' to filter out trivial cases.
+  switch (status) {
+  case UNSATISFIABLE:
+    assert(OK());
+    return false;
+  case SATISFIABLE:
+    // Intentionally fall through
+  case UNBOUNDED:
+    // Intentionally fall through.
+  case OPTIMIZED:
+    assert(OK());
+    return true;
+  case PARTIALLY_SATISFIABLE:
+    { // LP case.
+      if (i_variables.empty())
+	return is_lp_satisfiable();
+      // MIP Case.
+      const Variables_Set this_variables_set = integer_space_dimensions();
+      MIP_Problem& x = const_cast<MIP_Problem&>(*this);
+      Generator p = point();
+      // This disable the Variable integrality check in OK() until we will
+      // find a feasible point.
+      x.i_variables.clear();
+      x.is_lp_satisfiable();
+         if (is_mip_satisfiable(x, p, this_variables_set)) {
+	x.last_generator = p;
+	x.status = SATISFIABLE;
+	// Restore i_variables;
+    	x.i_variables = this_variables_set;
+	return true;
+	 }
+      else {
+	x.status = UNSATISFIABLE;
+	// Restore i_variables;
+    	x.i_variables = this_variables_set;
+	return false;
+      }
+    }
+  }
+  // We should not be here!
+  throw std::runtime_error("PPL internal error");
+}
+
+PPL::MIP_Problem_Status
+PPL::MIP_Problem::solve() const{
+  switch (status) {
+  case UNSATISFIABLE:
+    assert(OK());
+    return UNFEASIBLE_MIP_PROBLEM;
+  case UNBOUNDED:
+    assert(OK());
+    return UNBOUNDED_MIP_PROBLEM;
+  case OPTIMIZED:
+    assert(OK());
+    return OPTIMIZED_MIP_PROBLEM;
+  case SATISFIABLE:
+    // Intentionally fall through
+  case PARTIALLY_SATISFIABLE:
+    {
+      MIP_Problem& x = const_cast<MIP_Problem&>(*this);
+      if (i_variables.empty()) {
+	// LP Problem case.
+	if (is_lp_satisfiable()) {
+	  x.second_phase();
+	  if (x.status == UNBOUNDED)
+	    return UNBOUNDED_MIP_PROBLEM;
+	  else {
+	    assert(x.status == OPTIMIZED);
+	    return OPTIMIZED_MIP_PROBLEM;
+	  }
+	}
+	return UNFEASIBLE_MIP_PROBLEM;
+      }
+      // MIP Problem case.
+      // This disable the Variable integrality check in OK() until we will find
+      // an optimizing point.
+      const Variables_Set this_variables_set = integer_space_dimensions();
+      x.i_variables.clear();
+      if (x.is_lp_satisfiable())
+	x.second_phase();
+      else {
+	x.status = UNSATISFIABLE;
+	// Restore i_variables;
+	x.i_variables = this_variables_set;
+	return UNFEASIBLE_MIP_PROBLEM;
+      }
+      DIRTY_TEMP0(mpq_class, incumbent_solution);
+      Generator g = point();
+      bool have_incumbent_solution = false;
+
+      MIP_Problem mip_copy(*this);
+      // Treat this MIP_Problem as an LP one: we have to deal with
+      // the relaxation in solve_mip().
+      mip_copy.i_variables.clear();
+      MIP_Problem_Status mip_status = solve_mip(have_incumbent_solution,
+						incumbent_solution, g,
+						mip_copy,
+						this_variables_set);
+      // Restore i_variables;
+      x.i_variables = this_variables_set;
+      switch (mip_status) {
+      case UNFEASIBLE_MIP_PROBLEM:
+	x.status = UNSATISFIABLE;
+	break;
+      case UNBOUNDED_MIP_PROBLEM:
+	x.status = UNBOUNDED;
+	// A feasible point has been set in `solve_mip()', so that
+	// a call to `feasible_point' will be successful.
+	x.last_generator = g;
+	break;
+      case OPTIMIZED_MIP_PROBLEM:
+	x.status = OPTIMIZED;
+	// Set the internal generator.
+	x.last_generator = g;
+	break;
+      }
+      assert(OK());
+      return mip_status;
+    }
+  }
+  // We should not be here!
+  throw std::runtime_error("PPL internal error");
+}
+
+PPL::MIP_Problem_Status
+PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
+			    mpq_class& incumbent_solution_value,
+			    Generator& incumbent_solution_point,
+			    MIP_Problem& lp,
+			    const Variables_Set& i_vars) {
+  // Solve the problem as a non MIP one, it must be done internally.
+  PPL::MIP_Problem_Status lp_status;
+  if (lp.is_lp_satisfiable()) {
+    lp.second_phase();
+    lp_status = (lp.status == OPTIMIZED) ? OPTIMIZED_MIP_PROBLEM
+      : UNBOUNDED_MIP_PROBLEM;
+  }
+  else
+    return UNFEASIBLE_MIP_PROBLEM;
+
+  DIRTY_TEMP0(mpq_class, tmp_rational);
+
+  Generator p = point();
+  TEMP_INTEGER(tmp_coeff1);
+  TEMP_INTEGER(tmp_coeff2);
+
+  if (lp_status == UNBOUNDED_MIP_PROBLEM)
+    p = lp.last_generator;
+  else {
+    assert(lp_status == OPTIMIZED_MIP_PROBLEM);
+    // Do not call optimizing_point().
+    p = lp.last_generator;
+    lp.evaluate_objective_function(p, tmp_coeff1, tmp_coeff2);
+    assign_r(tmp_rational.get_num(), tmp_coeff1, ROUND_NOT_NEEDED);
+    assign_r(tmp_rational.get_den(), tmp_coeff2, ROUND_NOT_NEEDED);
+    assert(is_canonical(tmp_rational));
+    if (have_incumbent_solution
+	&& ((lp.optimization_mode() == MAXIMIZATION
+ 	     && tmp_rational <= incumbent_solution_value)
+ 	    || (lp.optimization_mode() == MINIMIZATION
+		&& tmp_rational >= incumbent_solution_value)))
+      // Abandon this path.
+      return lp_status;
+  }
+
+  bool found_satisfiable_generator = true;
+  TEMP_INTEGER(gcd);
+  const Coefficient& p_divisor = p.divisor();
+  dimension_type nonint_dim;
+  for (Variables_Set::const_iterator v_begin = i_vars.begin(),
+	 v_end = i_vars.end(); v_begin != v_end; ++v_begin) {
+    gcd_assign(gcd, p.coefficient(Variable(*v_begin)), p_divisor);
+    if (gcd != p_divisor) {
+      nonint_dim = *v_begin;
+      found_satisfiable_generator = false;
+      break;
+    }
+  }
+  if (found_satisfiable_generator) {
+    // All the coordinates of `point' are satisfiable.
+    if (lp_status == UNBOUNDED_MIP_PROBLEM) {
+      // This is a point that belongs to the MIP_Problem.
+      // In this way we are sure that we will return every time
+      // a feasible point if requested by the user.
+      incumbent_solution_point = p;
+      return lp_status;
+    }
+    if (!have_incumbent_solution
+	|| (lp.optimization_mode() == MAXIMIZATION
+	    && tmp_rational > incumbent_solution_value)
+	|| tmp_rational < incumbent_solution_value) {
+      incumbent_solution_value = tmp_rational;
+      incumbent_solution_point = p;
+      have_incumbent_solution = true;
+#if PPL_NOISY_SIMPLEX
+      TEMP_INTEGER(num);
+      TEMP_INTEGER(den);
+      lp.evaluate_objective_function(p, num, den);
+      std::cerr << "new value found: " << num << "/" << den << std::endl;
+#endif
+    }
+    return lp_status;
+  }
+
+  assert(nonint_dim < lp.space_dimension());
+
+  assign_r(tmp_rational.get_num(), p.coefficient(Variable(nonint_dim)),
+	   ROUND_NOT_NEEDED);
+  assign_r(tmp_rational.get_den(), p_divisor, ROUND_NOT_NEEDED);
+  tmp_rational.canonicalize();
+  assign_r(tmp_coeff1, tmp_rational, ROUND_DOWN);
+  assign_r(tmp_coeff2, tmp_rational, ROUND_UP);
+  {
+    MIP_Problem lp_aux = lp;
+    lp_aux.add_constraint(Variable(nonint_dim) <= tmp_coeff1);
+    solve_mip(have_incumbent_solution, incumbent_solution_value,
+	      incumbent_solution_point, lp_aux, i_vars);
+  }
+  // TODO: change this when we will be able to remove constraints.
+  lp.add_constraint(Variable(nonint_dim) >= tmp_coeff2);
+  solve_mip(have_incumbent_solution, incumbent_solution_value,
+	    incumbent_solution_point, lp, i_vars);
+  return have_incumbent_solution ? lp_status : UNFEASIBLE_MIP_PROBLEM;
+}
+
+bool
+PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp, Generator& p,
+				     const Variables_Set& i_vars) {
+  // Solve the problem as a non MIP one, it must be done internally.
+  if (!lp.is_lp_satisfiable())
+    return false;
+  DIRTY_TEMP0(mpq_class, tmp_rational);
+
+  TEMP_INTEGER(tmp_coeff1);
+  TEMP_INTEGER(tmp_coeff2);
+  p = lp.last_generator;
+
+  bool found_satisfiable_generator = true;
+  dimension_type nonint_dim;
+  const Coefficient& p_divisor = p.divisor();
+
+#if PPL_SIMPLEX_USE_MIP_HEURISTIC
+
+  found_satisfiable_generator
+    = choose_branching_variable(lp, i_vars, nonint_dim);
+
+#else // !PPL_SIMPLEX_USE_MIP_HEURISTIC
+
+  TEMP_INTEGER(gcd);
+  for (Variables_Set::const_iterator v_begin = i_vars.begin(),
+	 v_end = i_vars.end(); v_begin != v_end; ++v_begin) {
+    gcd_assign(gcd, p.coefficient(Variable(*v_begin)), p_divisor);
+    if (gcd != p_divisor) {
+      nonint_dim = *v_begin;
+      found_satisfiable_generator = false;
+      break;
+    }
+  }
+
+#endif // !PPL_SIMPLEX_USE_MIP_HEURISTIC
+
+  if (found_satisfiable_generator)
+    return true;
+
+
+  assert(nonint_dim < lp.space_dimension());
+
+  assign_r(tmp_rational.get_num(), p.coefficient(Variable(nonint_dim)),
+	   ROUND_NOT_NEEDED);
+  assign_r(tmp_rational.get_den(), p_divisor, ROUND_NOT_NEEDED);
+  tmp_rational.canonicalize();
+  assign_r(tmp_coeff1, tmp_rational, ROUND_DOWN);
+  assign_r(tmp_coeff2, tmp_rational, ROUND_UP);
+  {
+    MIP_Problem lp_aux = lp;
+    lp_aux.add_constraint(Variable(nonint_dim) <= tmp_coeff1);
+    if (is_mip_satisfiable(lp_aux, p, i_vars))
+      return true;
+  }
+  lp.add_constraint(Variable(nonint_dim) >= tmp_coeff2);
+  return is_mip_satisfiable(lp, p, i_vars);
+}
