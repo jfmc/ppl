@@ -66,11 +66,13 @@ extern "C" {
 namespace PPL = Parma_Polyhedra_Library;
 
 #if PPL_NOISY_SIMPLEX
+
 namespace {
 
 unsigned long num_iterations = 0;
 
 } // namespace
+
 #endif // PPL_NOISY_SIMPLEX
 
 PPL::MIP_Problem::MIP_Problem(const dimension_type dim)
@@ -219,6 +221,7 @@ PPL::MIP_Problem::optimizing_point() const {
 }
 
 #ifdef PPL_USE_GLPK_MIP_SOLVER
+
 bool
 PPL::MIP_Problem::is_satisfiable() const {
  // Check `status' to filter out trivial cases.
@@ -272,7 +275,9 @@ PPL::MIP_Problem::is_satisfiable() const {
   // We should not be here!
   throw std::runtime_error("PPL internal error");
 }
-#else
+
+#else // !defined(PPL_USE_GLPK_MIP_SOLVER)
+
 bool
 PPL::MIP_Problem::is_satisfiable() const {
   // Check `status' to filter out trivial cases.
@@ -317,9 +322,11 @@ PPL::MIP_Problem::is_satisfiable() const {
   // We should not be here!
   throw std::runtime_error("PPL internal error");
 }
-#endif
+
+#endif // !defined(PPL_USE_GLPK_MIP_SOLVER)
 
 #ifdef PPL_USE_GLPK_MIP_SOLVER
+
 // FIXME: Deal with zero-dimensional case.
 bool PPL::MIP_Problem::
 compute_glpk_bounds(const Constraint_Sequence& input_cs,
@@ -837,7 +844,8 @@ PPL::MIP_Problem::solve() const{
   throw std::runtime_error("PPL internal error");
 }
 
-#else
+#else // !defined(PPL_USE_GLPK_MIP_SOLVER)
+
 PPL::MIP_Problem_Status
 PPL::MIP_Problem::solve() const{
   switch (status) {
@@ -918,7 +926,9 @@ PPL::MIP_Problem::solve() const{
   // We should not be here!
   throw std::runtime_error("PPL internal error");
 }
-#endif
+
+#endif // !defined(PPL_USE_GLPK_MIP_SOLVER)
+
 void
 PPL::MIP_Problem::add_space_dimensions_and_embed(const dimension_type m) {
   // The space dimension of the resulting MIP problem should not
@@ -1438,7 +1448,9 @@ PPL::MIP_Problem::process_pending_constraints() {
   assert(OK());
   return true;
 }
+
 #if PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT
+
 PPL::dimension_type
 PPL::MIP_Problem::steepest_edge_entering_index() const {
   DIRTY_TEMP0(mpq_class, real_coeff);
@@ -1484,7 +1496,8 @@ PPL::MIP_Problem::steepest_edge_entering_index() const {
   return entering_index;
 }
 
-#else
+#else // !PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT
+
 PPL::dimension_type
 PPL::MIP_Problem::steepest_edge_entering_index() const {
   const dimension_type tableau_num_rows = tableau.num_rows();
@@ -1555,7 +1568,8 @@ PPL::MIP_Problem::steepest_edge_entering_index() const {
   }
   return entering_index;
 }
-#endif // PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT
+
+#endif // !PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT
 
 // See page 47 of [PapadimitriouS98].
 PPL::dimension_type
@@ -1678,8 +1692,9 @@ PPL::MIP_Problem
   return exiting_base_index;
 }
 
-// See page 49 of [PapadimitriouS98].
 #if PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT
+
+// See page 49 of [PapadimitriouS98].
 bool
 PPL::MIP_Problem::compute_simplex() {
   const unsigned long allowed_non_increasing_loops = 200;
@@ -1763,7 +1778,8 @@ PPL::MIP_Problem::compute_simplex() {
   }
 }
 
-#else
+#else // !PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT
+
 bool
 PPL::MIP_Problem::compute_simplex() {
   assert(tableau.num_columns() == working_cost.size());
@@ -1799,7 +1815,7 @@ PPL::MIP_Problem::compute_simplex() {
 #endif
   }
 }
-#endif // PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT
+#endif // !PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT
 
 
 // See pages 55-56 of [PapadimitriouS98].
@@ -2078,6 +2094,7 @@ PPL::MIP_Problem::is_lp_satisfiable() const {
 }
 
 #ifdef PPL_USE_GLPK_MIP_SOLVER
+
 PPL::MIP_Problem_Status
 PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
 			    mpq_class& incumbent_solution_value,
@@ -2178,7 +2195,8 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
   return have_incumbent_solution ? lp_status : UNFEASIBLE_MIP_PROBLEM;
 }
 
-#else
+#else // !defined(PPL_USE_GLPK_MIP_SOLVER)
+
 PPL::MIP_Problem_Status
 PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
 			    mpq_class& incumbent_solution_value,
@@ -2279,7 +2297,8 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
 	    incumbent_solution_point, lp, i_vars);
   return have_incumbent_solution ? lp_status : UNFEASIBLE_MIP_PROBLEM;
 }
-#endif
+
+#endif // !defined(PPL_USE_GLPK_MIP_SOLVER)
 
 bool
 PPL::MIP_Problem::choose_branching_variable(const MIP_Problem& mip,
@@ -2336,6 +2355,7 @@ PPL::MIP_Problem::choose_branching_variable(const MIP_Problem& mip,
 }
 
 #ifdef PPL_USE_GLPK_MIP_SOLVER
+
 bool
 PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp, Generator& p,
 				     const Variables_Set& i_vars) {
@@ -2360,9 +2380,12 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp, Generator& p,
   const Coefficient& p_divisor = p.divisor();
 
 #if PPL_SIMPLEX_USE_MIP_HEURISTIC
+
   found_satisfiable_generator
     = choose_branching_variable(lp, i_vars, nonint_dim);
-#else
+
+#else // !PPL_SIMPLEX_USE_MIP_HEURISTIC
+
   TEMP_INTEGER(gcd);
   for (Variables_Set::const_iterator v_begin = i_vars.begin(),
 	 v_end = i_vars.end(); v_begin != v_end; ++v_begin) {
@@ -2373,7 +2396,8 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp, Generator& p,
       break;
     }
   }
-#endif
+
+#endif // !PPL_SIMPLEX_USE_MIP_HEURISTIC
 
   if (found_satisfiable_generator)
     return true;
@@ -2396,7 +2420,9 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp, Generator& p,
   lp.add_constraint(Variable(nonint_dim) >= tmp_coeff2);
   return is_mip_satisfiable(lp, p, i_vars);
 }
-#else
+
+#else // !defined(PPL_USE_GLPK_MIP_SOLVER)
+
 bool
 PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp, Generator& p,
 				     const Variables_Set& i_vars) {
@@ -2414,9 +2440,12 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp, Generator& p,
   const Coefficient& p_divisor = p.divisor();
 
 #if PPL_SIMPLEX_USE_MIP_HEURISTIC
+
   found_satisfiable_generator
     = choose_branching_variable(lp, i_vars, nonint_dim);
-#else
+
+#else // !PPL_SIMPLEX_USE_MIP_HEURISTIC
+
   TEMP_INTEGER(gcd);
   for (Variables_Set::const_iterator v_begin = i_vars.begin(),
 	 v_end = i_vars.end(); v_begin != v_end; ++v_begin) {
@@ -2427,7 +2456,8 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp, Generator& p,
       break;
     }
   }
-#endif
+
+#endif // !PPL_SIMPLEX_USE_MIP_HEURISTIC
 
   if (found_satisfiable_generator)
     return true;
@@ -2450,7 +2480,8 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp, Generator& p,
   lp.add_constraint(Variable(nonint_dim) >= tmp_coeff2);
   return is_mip_satisfiable(lp, p, i_vars);
 }
-#endif
+
+#endif // !defined(PPL_USE_GLPK_MIP_SOLVER)
 
 bool
 PPL::MIP_Problem::OK() const {
