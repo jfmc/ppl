@@ -450,9 +450,9 @@ compute_glpk_bounds(const Constraint_Sequence& input_cs,
 	  if (new_bound.ub_value < previous_bound.ub_value)
 	    return false;
 	  break;
-	  // Other cases are not possible.
 	default:
-	  throw std::invalid_argument("GLPK driver failure");
+	  // Other cases are not possible.
+          throw std::runtime_error("PPL internal error");
 	}
 	break;
       case GLPK_LO:
@@ -475,9 +475,9 @@ compute_glpk_bounds(const Constraint_Sequence& input_cs,
 	  previous_bound.lb_value = new_bound.lb_value;
 	  previous_bound.ub_value = new_bound.ub_value;
 	  break;
-	  // Other cases are not possible.
 	default:
-	  throw std::invalid_argument("GLPK driver not possible case");
+	  // Other cases are not possible.
+          throw std::runtime_error("PPL internal error");
 	}
 	break;
       case GLPK_UP:
@@ -485,7 +485,6 @@ compute_glpk_bounds(const Constraint_Sequence& input_cs,
 	case GLPK_LO:
 	  if (new_bound.lb_value > previous_bound.ub_value)
 	    return false;
-	  //throw std::invalid_argument("GLPK driver invalid case");
 	  previous_bound.bound_type = GLPK_DB;
 	  previous_bound.lb_value = new_bound.lb_value;
 	  break;
@@ -501,7 +500,8 @@ compute_glpk_bounds(const Constraint_Sequence& input_cs,
 	  previous_bound.ub_value = new_bound.ub_value;
 	  break;
 	default:
-	  throw std::invalid_argument("GLPK driver not possible case");
+	  // Other cases are not possible.
+          throw std::runtime_error("PPL internal error");
 	}
 	break;
       case GLPK_DB:
@@ -523,7 +523,8 @@ compute_glpk_bounds(const Constraint_Sequence& input_cs,
 	  previous_bound.ub_value = new_bound.ub_value;
 	  break;
 	default:
-	  throw std::invalid_argument("GLPK driver not possible case");
+	  // Other cases are not possible.
+          throw std::runtime_error("PPL internal error");
 	}
 	break;
       case GLPK_FR:
@@ -658,30 +659,35 @@ load_glpk_data(const Constraint_Sequence& pure_constraints,
   int *Q_row = glpk_ssx->Q_row;
   int *stat = glpk_ssx->stat;
   int *Q_col = glpk_ssx->Q_col;
-  for (dimension_type k = 1; k <= glpk_m + glpk_n; k++)
-    {  if (stat[k] == SSX_BS)
-	{  i++;
-	  if (i > glpk_m)
-	    throw std::invalid_argument("GLPK driver base invalid");
-	  Q_row[k] = i, Q_col[i] = k;
-	}
-      else
-	{  j++;
-	  if (j > glpk_n)
-	    throw std::invalid_argument("GLPK driver base invalid");
-	  Q_row[k] = glpk_m+j, Q_col[glpk_m+j] = k;
-	}
+  for (dimension_type k = 1; k <= glpk_m + glpk_n; k++) {
+    if (stat[k] == SSX_BS) {
+      i++;
+      if (i > glpk_m)
+        // FIXME: why invalid_argument?
+        throw std::invalid_argument("GLPK driver base invalid");
+      Q_row[k] = i, Q_col[i] = k;
     }
+    else {
+      j++;
+      if (j > glpk_n)
+        // FIXME: why invalid_argument?
+        throw std::invalid_argument("GLPK driver base invalid");
+      Q_row[k] = glpk_m+j, Q_col[glpk_m+j] = k;
+    }
+  }
   glpk_ssx->it_lim = -1;
   glpk_ssx->it_cnt = 10000;
   glpk_ssx->tm_lim = 10000;
   glpk_ssx->out_frq = 1000.0;
   glpk_ssx->tm_beg = xtime();
   glpk_ssx->tm_lag = xlset(0);
+
   // Disable the terminal output.
   glp_term_out(0);
+
   // Solve LP.
   int ret = ssx_driver(glpk_ssx);
+
   // Get the results.
   dimension_type k = 0;
   std::vector<mpq_class> basis_results;
@@ -732,11 +738,13 @@ load_glpk_data(const Constraint_Sequence& pure_constraints,
     // Build the the optimal point.
     return OPTIMIZED_MIP_PROBLEM;
   }
-  case 1:  // Unfeasible problem
+  case 1:
+    // Unfeasible problem
     return UNFEASIBLE_MIP_PROBLEM;
   case 2:
     return UNBOUNDED_MIP_PROBLEM;
   default:
+    // FIXME: what does that mean?
     throw std::runtime_error("PPL: GLPK returned not handled code.");
   }
   // We should not be here!
@@ -2069,28 +2077,28 @@ PPL::MIP_Problem::is_lp_satisfiable() const {
     return true;
   case PARTIALLY_SATISFIABLE:
     {
-    MIP_Problem& x = const_cast<MIP_Problem&>(*this);
-  // This code tries to handle the case that happens if the tableau is
-  // empty, so it must be initialized.
-  if (tableau.num_columns() == 0) {
-    // Add two columns, the first that handles the inhomogeneous term and
-    // the second that represent the `sign'.
-    x.tableau.add_zero_columns(2);
-    // Sync `mapping' for the inhomogeneous term.
-    x.mapping.push_back(std::make_pair(0, 0));
-    // The internal data structures are ready, so prepare for more
-    // assertion to be checked.
-    x.initialized = true;
-  }
+      MIP_Problem& x = const_cast<MIP_Problem&>(*this);
+      // This code tries to handle the case that happens if the tableau is
+      // empty, so it must be initialized.
+      if (tableau.num_columns() == 0) {
+        // Add two columns, the first that handles the inhomogeneous term and
+        // the second that represent the `sign'.
+        x.tableau.add_zero_columns(2);
+        // Sync `mapping' for the inhomogeneous term.
+        x.mapping.push_back(std::make_pair(0, 0));
+        // The internal data structures are ready, so prepare for more
+        // assertion to be checked.
+        x.initialized = true;
+      }
 
-  // Apply incrementality to the pending constraint system.
-  x.process_pending_constraints();
-  // Update `first_pending_constraint': no more pending.
-  x.first_pending_constraint = input_cs.size();
-  // Update also `internal_space_dim'.
-  x.internal_space_dim = x.external_space_dim;
-  assert(OK());
-  return (status != UNSATISFIABLE);
+      // Apply incrementality to the pending constraint system.
+      x.process_pending_constraints();
+      // Update `first_pending_constraint': no more pending.
+      x.first_pending_constraint = input_cs.size();
+      // Update also `internal_space_dim'.
+      x.internal_space_dim = x.external_space_dim;
+      assert(OK());
+      return status != UNSATISFIABLE;
     }
   }
   // We should not be here!
