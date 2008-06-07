@@ -1,4 +1,4 @@
-/* MIP_Problem class implementation: non-inline functions.  -*- C++ -*-
+</* MIP_Problem class implementation: non-inline functions.  -*- C++ -*-
    Code to interface with GLPK's MIP solver.
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -297,7 +297,6 @@ compute_glpk_bounds(const Constraint_Sequence& input_cs,
   return true;
 }
 
-
 PPL::MIP_Problem_Status
 PPL::MIP_Problem::
 load_glpk_data(const Constraint_Sequence& pure_constraints,
@@ -445,32 +444,27 @@ load_glpk_data(const Constraint_Sequence& pure_constraints,
   // Get the results.
   dimension_type k = 0;
   std::vector<mpq_class> basis_results;
-  std::vector<int> statuses;
+  //std::vector<int> statuses;
   for (k = 1; k <= glpk_m + glpk_n; k++) {
     if (glpk_ssx->stat[k] == SSX_BS) {
       i = glpk_ssx->Q_row[k]; /* x[k] = xB[i] */
-      xassert(1 <= i && i <= glpk_m);
-      statuses.push_back(SSX_BS);
+      assert(1 <= i && i <= glpk_m);
       basis_results.push_back(mpq_class(glpk_ssx->bbar[i]));
     }
     else {
       j = glpk_ssx->Q_row[k] - glpk_m; /* x[k] = xN[j] */
-      xassert(1 <= j && j <= glpk_n);
+      assert(1 <= j && j <= glpk_n);
       switch (glpk_ssx->stat[k]) {
       case SSX_NF:
-        statuses.push_back(SSX_NF);
         basis_results.push_back(mpq_class(0));
         break;
       case SSX_NL:
-        statuses.push_back(SSX_NF);
         basis_results.push_back(mpq_class(glpk_ssx->lb[k]));
         break;
       case SSX_NU:
-        statuses.push_back(SSX_NU);
         basis_results.push_back(mpq_class(glpk_ssx->ub[k]));
         break;
       case SSX_NS:
-        statuses.push_back(SSX_NS);
         basis_results.push_back(mpq_class(glpk_ssx->lb[k]));
         break;
       }
