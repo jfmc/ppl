@@ -1,4 +1,4 @@
-</* MIP_Problem class implementation: non-inline functions.  -*- C++ -*-
+/* MIP_Problem class implementation: non-inline functions.  -*- C++ -*-
    Code to interface with GLPK's MIP solver.
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -403,8 +403,8 @@ load_glpk_data(const Constraint_Sequence& pure_constraints,
     }
   }
 
-  // The following code is taken from the GLPK code.
-  // build permutation matix Q
+  // The following code is taken from the GLPK code
+  // (load_basis() in glplpx10.c).
   dimension_type i = 0;
   dimension_type j = 0;
   int* Q_row = glpk_ssx->Q_row;
@@ -444,7 +444,6 @@ load_glpk_data(const Constraint_Sequence& pure_constraints,
   // Get the results.
   dimension_type k = 0;
   std::vector<mpq_class> basis_results;
-  //std::vector<int> statuses;
   for (k = 1; k <= glpk_m + glpk_n; k++) {
     if (glpk_ssx->stat[k] == SSX_BS) {
       i = glpk_ssx->Q_row[k]; /* x[k] = xB[i] */
@@ -535,8 +534,8 @@ PPL::MIP_Problem::solve() const{
       if (i_variables.empty()) {
 	// LP Problem case.
 	Generator g = point();
-	const PPL::MIP_Problem_Status glpk_status_returned =
-	  solve_with_glpk(input_cs, input_obj_function, opt_mode, g);
+	const PPL::MIP_Problem_Status glpk_status_returned
+          = solve_with_glpk(input_cs, input_obj_function, opt_mode, g);
 	switch (glpk_status_returned) {
 	case UNFEASIBLE_MIP_PROBLEM:
 	  x.status = UNSATISFIABLE;
