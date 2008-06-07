@@ -47,6 +47,10 @@ extern "C" {
 #endif // !defined(PPL_USE_GLPK_MIP_SOLVER)
 
 #ifndef PPL_NOISY_SIMPLEX
+/*! \brief
+  When nonzero, the PPL implementation of the simplex algorithm,
+  prints informative messages useful for debugging on std::cerr.
+*/
 #define PPL_NOISY_SIMPLEX 0
 #endif
 
@@ -1430,7 +1434,7 @@ PPL::MIP_Problem::process_pending_constraints() {
   bool first_phase_succesful = compute_simplex();
 
 #if PPL_NOISY_SIMPLEX
-  std::cout << "MIP_Problem::solve: 1st phase ended at iteration "
+  std::cerr << "MIP_Problem::solve: 1st phase ended at iteration "
  	    << num_iterations << "." << std::endl;
 #endif
 
@@ -1751,7 +1755,7 @@ PPL::MIP_Problem::compute_simplex() {
 #if PPL_NOISY_SIMPLEX
     ++num_iterations;
     if (num_iterations % 200 == 0)
-      std::cout << "Primal Simplex: iteration "
+      std::cerr << "Primal Simplex: iteration "
 		<< num_iterations << "." << std::endl;
 #endif
      //  If the following condition fails, probably there's a bug.
@@ -1810,7 +1814,7 @@ PPL::MIP_Problem::compute_simplex() {
 #if PPL_NOISY_SIMPLEX
     ++num_iterations;
     if (num_iterations % 200 == 0)
-      std::cout << "Primal Simplex: iteration "
+      std::cerr << "Primal Simplex: iteration "
                 << num_iterations << "." << std::endl;
 #endif
   }
@@ -2012,7 +2016,7 @@ PPL::MIP_Problem::second_phase() {
   bool second_phase_successful = compute_simplex();
   compute_generator();
 #if PPL_NOISY_SIMPLEX
-  std::cout << "MIP_Problem::solve: 2nd phase ended at iteration "
+  std::cerr << "MIP_Problem::solve: 2nd phase ended at iteration "
 	    << num_iterations << "." << std::endl;
 #endif
   status = second_phase_successful ? OPTIMIZED : UNBOUNDED;
