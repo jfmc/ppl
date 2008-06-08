@@ -629,7 +629,7 @@ PPL::Polyhedron::fold_space_dimensions(const Variables_Set& to_be_folded,
   // hence we will need to compute the generators of the polyehdron.
   // Since we keep taking copies, make sure that a single conversion
   // from constraints to generators is computed.
-  generators();
+  (void) generators();
   // Having generators, we now know if the polyhedron is empty:
   // in that case, folding is equivalent to just removing space dimensions.
   if (!marked_empty()) {
