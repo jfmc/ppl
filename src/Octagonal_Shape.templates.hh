@@ -938,7 +938,7 @@ Octagonal_Shape<T>::is_strongly_reduced() const {
     for (dimension_type j = iter.row_size(); j-- > 0; ) {
       if (!is_plus_infinity(m_i[j])) {
         Octagonal_Shape x_copy = *this;
-assign_r(        x_copy.matrix[i][j], PLUS_INFINITY, ROUND_NOT_NEEDED);
+        assign_r(x_copy.matrix[i][j], PLUS_INFINITY, ROUND_NOT_NEEDED);
         if (x == x_copy)
           return false;
       }
