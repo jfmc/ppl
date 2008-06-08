@@ -186,6 +186,7 @@ compute_glpk_bounds(const Constraint_Sequence& input_cs,
       GLPK_Bound& previous_bound = bounds[nonzero_coeff_variable_index];
       // The following code handles all the possible cases that can happen
       // when parsing bounds.
+
       switch (previous_bound.bound_type) {
       case GLPK_FX:
 	switch(new_bound.bound_type) {
@@ -236,7 +237,8 @@ compute_glpk_bounds(const Constraint_Sequence& input_cs,
 	case GLPK_LO:
 	  if (new_bound.lb_value > previous_bound.ub_value)
 	    return false;
-	  previous_bound.bound_type = GLPK_DB;
+	  previous_bound.bound_type =
+	    new_bound.ub_value == previous_bound.lb_value ? GLPK_FX : GLPK_DB;
 	  previous_bound.lb_value = new_bound.lb_value;
 	  break;
 	case GLPK_UP:
@@ -260,10 +262,18 @@ compute_glpk_bounds(const Constraint_Sequence& input_cs,
 	case GLPK_LO:
 	  previous_bound.lb_value = std::max(new_bound.lb_value,
 					     previous_bound.lb_value);
+	  if (previous_bound.lb_value > previous_bound.ub_value)
+	    return false;
+	  if (previous_bound.lb_value == previous_bound.ub_value)
+	    previous_bound.bound_type = GLPK_FX;
 	  break;
 	case GLPK_UP:
 	  previous_bound.ub_value = std::min(new_bound.ub_value,
 					     previous_bound.ub_value);
+	  if (previous_bound.lb_value > previous_bound.ub_value)
+	    return false;
+	  if (previous_bound.lb_value == previous_bound.ub_value)
+	    previous_bound.bound_type = GLPK_FX;
 	  break;
 	case GLPK_FX:
 	  if (new_bound.ub_value > previous_bound.ub_value
@@ -766,4 +776,3 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp, Generator& p,
   lp.add_constraint(Variable(nonint_dim) >= tmp_coeff2);
   return is_mip_satisfiable(lp, p, i_vars);
 }
-
