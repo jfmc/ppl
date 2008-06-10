@@ -467,7 +467,7 @@ PPL::Grid::fold_space_dimensions(const Variables_Set& to_be_folded,
   // hence we will need to compute the grid generators of the polyhedron.
   // Since we keep taking copies, make sure that a single conversion
   // from congruences to grid generators is computed.
-  grid_generators();
+  (void) grid_generators();
   // Having grid generators, we now know if the grid is empty:
   // in that case, folding is equivalent to just removing space dimensions.
   if (!marked_empty()) {
