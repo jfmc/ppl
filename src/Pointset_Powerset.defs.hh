@@ -1272,8 +1272,11 @@ check_containment(const NNC_Polyhedron& ph,
 		  const Pointset_Powerset<NNC_Polyhedron>& ps);
 
 
-//! Uses the grid \p q to partition the grid \p p if the partition is finite.
-/*! \relates Parma_Polyhedra_Library::Pointset_Powerset
+/*! \brief
+  Partitions the grid \p q with respect to grid \p p if and only if
+  such a partition is finite.
+
+  \relates Parma_Polyhedra_Library::Pointset_Powerset
   Let \p p and \p q be two grids.
   The function returns an object <CODE>r</CODE> of type
   <CODE>std::pair\<PS, Pointset_Powerset\<Grid\> \></CODE>

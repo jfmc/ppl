@@ -1688,6 +1688,10 @@ PPL::Grid::join_assign_if_exact(const Grid& y) {
     return true;
   }
 
+  // The above test 'x.is_included_in(y)' will ensure the generators of x
+  // are up to date.
+  assert(generators_are_up_to_date());
+
   Grid x_copy = x;
   x_copy.join_assign(y);
   x_copy.grid_difference_assign(y);
