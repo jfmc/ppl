@@ -419,10 +419,10 @@ Interval<To_Boundary, To_Info>::difference_assign(const From& x) {
     if (nu)
       return assign(EMPTY);
     else
-      rl = Boundary_NS::assign(LOWER, lower(), info(), UPPER, f_upper(x), f_info(x), true);
+      rl = complement(LOWER, lower(), info(), UPPER, f_upper(x), f_info(x));
   }
   else if (nu)
-    ru = Boundary_NS::assign(UPPER, upper(), info(), LOWER, f_lower(x), f_info(x), true);
+    ru = complement(UPPER, upper(), info(), LOWER, f_lower(x), f_info(x));
   return combine(rl, ru);
 }
 
@@ -446,12 +446,12 @@ Interval<To_Boundary, To_Info>::difference_assign(const From1& x,
     if (nu)
       return assign(EMPTY);
     else {
-      rl = Boundary_NS::complement(LOWER, lower(), info(), UPPER, f_upper(y), f_info(y));
+      rl = complement(LOWER, lower(), info(), UPPER, f_upper(y), f_info(y));
       ru = Boundary_NS::assign(UPPER, upper(), info(), UPPER, f_upper(x), f_info(x));
     }
   }
   else if (nu) {
-    ru = Boundary_NS::complement(UPPER, upper(), info(), LOWER, f_lower(y), f_info(y));
+    ru = complement(UPPER, upper(), info(), LOWER, f_lower(y), f_info(y));
     rl = Boundary_NS::assign(LOWER, lower(), info(), LOWER, f_lower(x), f_info(x));
   }
   return combine(rl, ru);
