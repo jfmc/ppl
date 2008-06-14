@@ -477,6 +477,27 @@ adjust_boundary(Boundary_Type type, T& x, Info& info,
 
 template <typename To, typename To_Info, typename T, typename Info>
 inline Result
+complement(Boundary_Type to_type, To& to, To_Info& to_info,
+	   Boundary_Type type, const T& x, const Info& info) {
+  assert(to_type != type);
+  bool shrink;
+  if (info.get_boundary_property(type, SPECIAL)
+      && special_is_boundary_infinity(type, x, info)) {
+    shrink = !special_is_open(type, x, info);
+    if (type == LOWER)
+      return set_minus_infinity(to_type, to, to_info, shrink);
+    else
+      return set_plus_infinity(to_type, to, to_info, shrink);
+  }
+  shrink = !normal_is_open(type, x, info);
+  bool check = (To_Info::check_inexact
+		|| (!shrink && (To_Info::store_open || to_info.has_restriction())));
+  Result r = assign_r(to, x, round_dir_check(to_type, check));
+  return adjust_boundary(to_type, to, to_info, shrink, r);
+}
+
+template <typename To, typename To_Info, typename T, typename Info>
+inline Result
 assign(Boundary_Type to_type, To& to, To_Info& to_info,
        Boundary_Type type, const T& x, const Info& info,
        bool shrink = false) {
