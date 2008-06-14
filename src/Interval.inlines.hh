@@ -412,8 +412,8 @@ Interval<To_Boundary, To_Info>::difference_assign(const From& x) {
   if (lt(UPPER, upper(), info(), LOWER, f_lower(x), f_info(x)) ||
       gt(LOWER, lower(), info(), UPPER, f_upper(x), f_info(x)))
     return combine(V_EQ, V_EQ);
-  bool nl = ge(LOWER, lower(), info, LOWER, f_lower(x), f_info(x));
-  bool nu = le(UPPER, upper(), info, UPPER, f_upper(x), f_info(x));
+  bool nl = ge(LOWER, lower(), info(), LOWER, f_lower(x), f_info(x));
+  bool nu = le(UPPER, upper(), info(), UPPER, f_upper(x), f_info(x));
   Result rl = V_EQ, ru = V_EQ;
   if (nl) {
     if (nu)
