@@ -452,28 +452,31 @@ PPL::Linear_System::add_pending_row(const Linear_Row::Flags flags) {
 void
 PPL::Linear_System::normalize() {
   Linear_System& x = *this;
+  const dimension_type nrows = x.num_rows();
   // We normalize also the pending rows.
-  for (dimension_type i = num_rows(); i-- > 0; )
+  for (dimension_type i = nrows; i-- > 0; )
     x[i].normalize();
-  set_sorted(false);
+  set_sorted(nrows <= 1);
 }
 
 void
 PPL::Linear_System::strong_normalize() {
   Linear_System& x = *this;
+  const dimension_type nrows = x.num_rows();
   // We strongly normalize also the pending rows.
-  for (dimension_type i = num_rows(); i-- > 0; )
+  for (dimension_type i = nrows; i-- > 0; )
     x[i].strong_normalize();
-  set_sorted(false);
+  set_sorted(nrows <= 1);
 }
 
 void
 PPL::Linear_System::sign_normalize() {
   Linear_System& x = *this;
+  const dimension_type nrows = x.num_rows();
   // We sign-normalize also the pending rows.
   for (dimension_type i = num_rows(); i-- > 0; )
     x[i].sign_normalize();
-  set_sorted(false);
+  set_sorted(nrows <= 1);
 }
 
 /*! \relates Parma_Polyhedra_Library::Linear_System */
