@@ -417,7 +417,7 @@ test12() {
   return ok;
 }
 
-// Different number of dimansions.
+// Different number of dimensions.
 bool
 test13() {
   TBox box1(3);
@@ -426,7 +426,7 @@ test13() {
   try {
     // This is an incorrect use of method
     // Box::box_difference_assign(box2): it is impossible to apply
-    // this method to two polyhedra of different dimensions.
+    // this method to two boxes of different dimensions.
     box1.box_difference_assign(box2);
   }
   catch (std::invalid_argument& e) {
