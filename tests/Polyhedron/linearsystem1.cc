@@ -47,7 +47,6 @@ test01() {
 #define COLS 3
 
   Linear_System ls1(NOT_NECESSARILY_CLOSED);
-  TEMP_INTEGER(tem);
   for (dimension_type rowi = 0; rowi < ROWS; ++rowi) {
     Linear_Row row(COLS,
 		   Linear_Row::Flags(NOT_NECESSARILY_CLOSED,
