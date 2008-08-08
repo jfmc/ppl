@@ -38,6 +38,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+inline void
+fpu_initialize_control_functions() {
+}
+
 inline fpu_rounding_direction_type
 fpu_get_rounding_direction() {
   return static_cast<fpu_rounding_direction_type>(fegetround());

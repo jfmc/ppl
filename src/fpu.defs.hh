@@ -27,6 +27,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+//! Initializes the FPU control functions.
+void
+fpu_initialize_control_functions();
+
 //! Returns the current FPU rounding direction.
 fpu_rounding_direction_type
 fpu_get_rounding_direction();

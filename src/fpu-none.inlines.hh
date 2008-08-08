@@ -24,6 +24,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+inline void
+fpu_initialize_control_functions() {
+  throw std::logic_error("PPL::fpu_initialize_control_functions():"
+			 " cannot control the FPU");
+}
+
 inline int
 fpu_get_rounding_direction() {
   throw std::logic_error("PPL::fpu_get_rounding_direction():"

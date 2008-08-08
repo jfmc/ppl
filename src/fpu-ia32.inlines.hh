@@ -114,6 +114,11 @@ sse_get_control() {
 }
 #endif
 
+inline void
+fpu_initialize_control_functions() {
+  // To be written.
+}
+
 inline fpu_rounding_direction_type
 fpu_get_rounding_direction() {
   return static_cast<fpu_rounding_direction_type>(fpu_get_control() & FPU_ROUNDING_MASK);
