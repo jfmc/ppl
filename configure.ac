@@ -23,7 +23,7 @@
 # Process this file with autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library],[0.10pre19],[ppl-devel@cs.unipr.it],[ppl])
+AC_INIT([the Parma Polyhedra Library],[0.10pre20],[ppl-devel@cs.unipr.it],[ppl])
 
 # Minimum autoconf version required.
 AC_PREREQ(2.59)
@@ -682,7 +682,8 @@ available_interfaces="cxx c ciao_prolog gnu_prolog sicstus_prolog swi_prolog xsb
 
 # This is the list of interfaces that are enabled by default.
 #default_interfaces="cxx c swi_prolog"
-default_interfaces=${available_interfaces}
+#default_interfaces=${available_interfaces}
+default_interfaces="cxx c gnu_prolog sicstus_prolog swi_prolog xsb_prolog yap_prolog ocaml java"
 
 enableval=not_specified
 AC_MSG_CHECKING([which interfaces are enabled])
