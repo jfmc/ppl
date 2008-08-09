@@ -20,6 +20,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+#include <ppl-config.h>
 #if defined(PPL_FPMATH_MAY_USE_SSE) && defined(__i386__) && (defined(__GNUC__) || defined(__INTEL_COMPILER))
 
 #include "fpu.defs.hh"
