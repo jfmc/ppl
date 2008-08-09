@@ -38,6 +38,8 @@ illegal_instruction_catcher(int) {
 
 } // namespace
 
+namespace Parma_Polyhedra_Library {
+
 bool have_sse_unit = true;
 
 void
@@ -58,5 +60,7 @@ detect_sse_unit() {
   // Restore the default signal handler for SIGILL.
   signal(SIGILL, SIG_DFL);
 }
+
+} // namespace Parma_Polyhedra_Library
 
 #endif // defined(PPL_FPMATH_MAY_USE_SSE) && defined(__i386__) && (defined(__GNUC__) || defined(__INTEL_COMPILER))
