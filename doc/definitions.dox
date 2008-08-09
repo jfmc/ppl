@@ -86,6 +86,306 @@ that are available to the PPL user.
 In the final section of this chapter (Section \ref use_of_library),
 we provide some additional advice on the use of the library.
 
+\section Kinds_of_Geometric_Descriptors Kinds of Geometric Descriptors
+
+The PPL supports several kinds of <EM>geometric descriptor</EM> (GD
+for short).  The top-level components provided by the PPL are called
+<EM>semantic GDs</EM> and denote a subset of \f$ \Rset^n \f$, while
+the lower-level components, which are called <EM>syntactic GDs</EM>,
+provide a means for describing a semantic GD and its properties in
+terms that are completely independent from the semantic GD's internal
+representation.
+
+
+\subsection Semantic_Geometric_Descriptors Semantic Geometric Descriptors
+
+A <EM>semantic geometric descriptor</EM> is a subset of \f$ \Rset^n \f$.
+The PPL provides several classes of semantic GDs.  These are
+identified by their C++ class name, together with the class template
+parameters, if any. These classes include the <EM>simple classes</EM>:
+  - \link Parma_Polyhedra_Library::C_Polyhedron \c C_Polyhedron \endlink,
+  - \link Parma_Polyhedra_Library::NNC_Polyhedron NNC_Polyhedron \endlink,
+  - \link Parma_Polyhedra_Library::BD_Shape \c BD_Shape\<T\> \endlink,
+  - \link Parma_Polyhedra_Library::Octagonal_Shape \c Octagonal_Shape\<T\> \endlink,
+  - \link Parma_Polyhedra_Library::Box \c Box\<ITV\> \endlink, and
+  - \link Parma_Polyhedra_Library::Grid \c Grid \endlink,
+
+where:
+  - \c T is a numeric type chosen among
+    \c mpz_class, \c mpq_class,
+    <CODE>signed char</CODE>, \c short, \c int, \c long, \c long long
+    (or any of the C99 exact width integer equivalents \c int8_t, int16_t,
+    and so forth); and
+  - \c ITV is an instance of the
+    \link Parma_Polyhedra_Library::Interval \c Interval \endlink
+    template class.
+
+Other semantic GDs can be constructed from the simple classes.
+These include:
+  - \link Parma_Polyhedra_Library::Pointset_Powerset \c Pointset_Powerset\<PS\> \endlink;
+  - \link Parma_Polyhedra_Library::Partially_Reduced_Product <CODE>Partially_Reduced_Product\<PS1, PS2, R\></CODE> \endlink.
+
+where \c PS, \c PS1 and \c PS2 can be any classes and \c R is the
+reduction operation to be applied to the component domains of the
+product class.
+
+A uniform set of operations is provided for creating, testing and
+maintaining each of the semantic GDs. However, as most of these will
+depend on one or more syntactic GDs, we first describe the syntactic GDs.
+
+
+\subsection Syntactic_Geometric_Descriptors Syntactic Geometric Descriptors
+
+A <EM>syntactic geometric descriptor</EM> is for defining, modifying
+and inspecting a semantic GD.  There are three kinds of <EM>syntactic
+GDs</EM>: <EM>basic GDs</EM>, <EM>constraint GDs</EM>> and
+<EM>generator GDs</EM>. Some of these are <EM>generic</EM> and some
+<EM>specific</EM>; a generic syntactic GD is characterized by having a
+fixed meaning independent of its use while a specific syntactic GD
+has a meaning that is dependent on the semantic GD with which it is
+used.
+
+\subsubsection Basic_Geometric_Descriptors Basic Geometric Descriptors
+
+The following basic GDs currently supported by the PPL are:
+  - space dimension;
+  - variable and variable set;
+  - coefficient;
+  - linear expression;
+  - relation symbol;
+  - vector point.
+
+These classes, which are all generic syntactic GDs, are used
+to build the constraint and generator GDs as
+well as support many generic operations on the semantic GDs.
+
+
+\subsubsection Constraint_Geometric_Descriptors Constraint Geometric Descriptors
+
+The PPL currently supports the following classes of constraint GDs:
+  - linear constraint;
+  - linear constraint system;
+  - linear congruence;
+  - linear congruence system.
+
+All these classes are generic syntactic GDs.
+However, a semantic GD may only capture the precise
+meaning of a subset of the constraint GDs and any semantic
+GD operation that cannot capture the semantics of the constraint GD
+precisely will either indicate its unsuitability or apply an upward
+approximation semantics.
+
+
+\subsubsection Generator_Geometric_Descriptors Generator Geometric Descriptors
+
+The PPL currently supports two classes of generator GDs:
+  - polyhedra generator: these are polyhedra points, rays and lines;
+  - grid generator: these are grid points, parameters and lines.
+
+Rays, lines and parameters are specific of the mentioned semantic GDs
+and, therefore, they cannot be used by other semantic GDs.
+In contrast, as already mentioned above, points are basic geometric
+descriptors since they are also used in <EM>generic</EM> PPL operations.
+
+
+\subsection Generic_Operations_on_Semantic_Geometric_Descriptors Generic Operations on Semantic Geometric Descriptors
+
+<OL>
+<LI>
+  Constructors of a universe or empty semantic GD with the given
+  space dimension.
+</LI>
+<LI>
+  Operations on a semantic GD that do not depend on the syntactic GDs.
+  <UL>
+  <LI>
+    <CODE>is_empty()</CODE>, <CODE>is_universe()</CODE>,
+    <CODE>is_topologically_closed()</CODE>, <CODE>is_discrete()</CODE>,
+    <CODE>is_bounded()</CODE>, <CODE>contains_integer_point()</CODE>
+
+    test for the named properties of the semantic GD.
+  </LI>
+  <LI>
+    <CODE>%total_memory_in_bytes()</CODE>,
+    <CODE>%external_memory_in_bytes()</CODE>
+
+    return the total and external memory size in bytes.
+  </LI>
+  <LI>
+    <CODE>OK()</CODE>
+
+    checks that the semantic GD has a valid internal
+    representation. An optional Boolean argument allows a check
+    for emptiness.
+  </LI>
+  <LI>
+    <CODE>space_dimension()</CODE>, <CODE>affine_dimension()</CODE>
+
+    return, respectively, the space and affine dimensions of the GD.
+  </LI>
+  <LI>
+    <CODE>add_space_dimensions_and_embed()</CODE>,
+    <CODE>add_space_dimensions_and_project()</CODE>,
+    <CODE>expand_space_dimension()</CODE>,
+    <CODE>remove_space_dimensions()</CODE>,
+    <CODE>fold_space_dimensions()</CODE>, <CODE>map_space_dimensions()</CODE>
+
+    modify the space dimensions of the semantic GD; where, depending on the
+    operation, the arguments can include the number of space dimensions
+    to be added or removed a variable or set of variables denoting the
+    actual dimensions to be used and a partial function defining a mapping
+    between the dimensions.
+  </LI>
+  <LI>
+    <CODE>contains()</CODE>, <CODE>strictly_contains()</CODE>,
+    <CODE>is_disjoint_from()</CODE>
+
+    compare the semantic GD with an argument semantic GD of the same class.
+  </LI>
+  <LI>
+    <CODE>topological_closure_assign()</CODE>,
+    <CODE>intersection_assign()</CODE>,
+    <CODE>upper_bound_assign()</CODE>, <CODE>difference_assign()</CODE>,
+    <CODE>time_elapse_assign()</CODE>, <CODE>widening_assign()</CODE>,
+    <CODE>concatenate_assign()</CODE>, <CODE>%swap()</CODE>
+
+    modify the semantic GD, possibly with an argument semantic GD of
+    the same class.
+  </LI>
+  <LI>
+    <CODE>constrains()</CODE>, <CODE>bounds_from_above()</CODE>,
+    <CODE>bounds_from_below()</CODE>, <CODE>maximize()</CODE>,
+    <CODE>minimize()</CODE>.
+
+    These find information about the bounds of the semantic GD where
+    the argument variable or linear expression define the direction
+    of the bound.
+  </LI>
+  <LI>
+    <CODE>affine_image()</CODE>, <CODE>affine_preimage()</CODE>,
+    <CODE>generalized_affine_image()</CODE>,
+    <CODE>generalized_affine_preimage()</CODE>,
+    <CODE>bounded_affine_image()</CODE>,
+    <CODE>bounded_affine_preimage()</CODE>.
+
+    These perform several variations of the affine image and preimage
+    operations where, depending on the operation, the arguments can
+    include a variable representing the space dimension to which the
+    transformation will be applied and linear expressions
+    with possibly a relation symbol and denominator value
+    that define the exact form of the transformation.
+  </LI>
+  <LI>
+    <CODE>ascii_load()</CODE>, <CODE>ascii_dump()</CODE>
+
+    are the ascii input and output operations.
+  </UL>
+</LI>
+<LI>
+  Constructors of a semantic GD of one class from a semantic GD of any
+  other class.
+  These constructors obey an <EM>upward approximation semantics</EM>,
+  meaning that the constructed semantic GD is guaranteed to contain
+  all the points of the source semantic GD, but possibly more.
+  Some of <B>SHOULD WE REPLACE SOME OF WITH ALL HERE?</B> these constructors
+  provide a complexity parameter with which the application can control
+  the complexity/precision trade-off for the construction operation.
+  TO BE COMPLETED
+</LI>
+<LI>
+  Constructors of a semantic GD from a constraint GD;
+  either a linear constraint system or a linear congruence system.
+  If the semantic GD cannot capture the precise meaning of the constraint GD
+  then it indicates its unsuitability by throwing an "invalid argument"
+  exception to signal that the operation could not be performed.
+</LI>
+<LI>
+  Other interaction between the semantic GDs and constraint GDs
+  <UL>
+  <LI>
+    <CODE>add_constraint()</CODE>, <CODE>add_constraints()</CODE>,
+    <CODE>add_recycled_constraints()</CODE>,
+    <CODE>add_congruence()</CODE>, <CODE>add_congruences()</CODE>,
+    <CODE>add_recycled_congruences()</CODE>.
+
+    If the argument constraint GD can be completely incorporated into
+    the semantic GD, this is what is done.  Otherwise an "invalid argument"
+    exception is thrown to signal that the operation could not be performed.
+    For example: the <CODE>C_Polyhedron</CODE> class can incorporate any
+    non-strict linear constraint or equality congruence, but cannot
+    incorporate a strict constraint or a proper congruence.
+    A <CODE>BD_Shape\<T\></CODE> class can incorporate bounded-difference
+    non-strict constraints, but not more complex linear constraints.
+    An invariant of these methods is that, if they successfully add a
+    constraint GD, then an enquiry for the same constraint GD with a
+    "relation with" method is guaranteed to yield a "definitely implied"
+    result.
+
+    For <CODE>add_recycled_constraints()</CODE> and
+    <CODE>add_recycled_congruences()</CODE>,
+    the only assumption that can be made after return (successful or
+    exceptional) on the constraint GD is that it can be safely destroyed.
+  </LI>
+  <LI>
+    <CODE>refine_with_constraint()</CODE>,
+    <CODE>refine_with_constraints()</CODE>,
+    <CODE>refine_with_congruence()</CODE>,
+    <CODE>refine_with_congruences()</CODE>
+
+    If the argument constraint GD can be completely incorporated into
+    the semantic GD, this is what is done.  Otherwise the constraint
+    GD is used only to a limited extent to refine the semantic GD;
+    possibly not at all.  Notice that, while repeating an add operation
+    is pointless, this is not true for the refine operations.
+    For example, in those cases where
+\code
+      Semantic_GD.add_constraint(c)
+\endcode
+    raises an exception, a fragment of the form
+\code
+      Semantic_GD.refine_with_constraint(c)
+      // Other add_constraint(s) or refine_with_constraint(s) operations
+      // on Semantic_GD.
+      Semantic_GD.refine_with_constraint(c)
+\endcode
+    may give more precise results than a single
+\code
+      Semantic_GD.refine_with_constraint(c).
+      // Other add_constraint(s) or refine_with_constraint(s) operations
+      // on Semantic_GD.
+\endcode
+  </LI>
+  <LI>
+    <CODE>constraints()</CODE>, <CODE>minimized_constraints()</CODE>,
+    <CODE>congruences()</CODE>, <CODE>minimized_congruences()</CODE>
+
+    returns the indicated system of constraint GDs satisfied by
+    the semantic GD.
+  </LI>
+  <LI>
+    <CODE>can_recycle_constraint_systems()</CODE>,
+    <CODE>can_recycle_congruence_systems()</CODE>
+
+    return true if and only if the semantic GD can recycle the
+    indicated constraint GD.
+  </LI>
+  <LI>
+    <CODE>relation_with()</CODE>
+
+    This takes a constraint GD as an argument and returns the relations holding
+    between the semantic GD and the constraint GD.
+    The possible relations are:
+    <CODE>IS_INCLUDED()</CODE>, <CODE>SATURATES()</CODE>,
+    <CODE>STRICTLY_INTERSECTS()</CODE>, <CODE>IS_DISJOINT()</CODE>
+    and <CODE>NOTHING()</CODE>.
+    This operator also can take a polyhedron generator GD as an argument
+    and returns the relation <CODE>SUBSUMES()</CODE> or <CODE>NOTHING()</CODE>
+    that holds between the generator GD and the semantic GD.
+  </LI>
+  </UL>
+</LI>
+</OL>
+
 \section convex_polys Convex Polyhedra
 
 In this section we introduce convex polyhedra,
