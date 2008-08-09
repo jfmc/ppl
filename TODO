@@ -2,11 +2,6 @@
 Enhancements for PPL 0.10
 =========================
 
-- For iterating over a Bit_Row object, unsigned long is overkill:
-  replace with unsigned int.
-
-- Consider renaming Bit_Row::empty() Bit_Row::is_empty().
-
 - Write interfaces/OCaml/README.ocaml.
 
 - Provide PPL-specific documentation on the use of `make check'.
@@ -58,8 +53,6 @@ Enhancements for PPL 0.10
 - `make check' in ppl_lpsol must run also the incremental version
   of the simplex solver.
 - MIP_Problem: ensure ascii_load() and operator<< are correct.
-- Incorporate the domain of intervals.
-- Reduce the number of FIXMEs to no more than 20.
 - Complete the manual pages for ppl-config, ppl_lpsol and ppl_lcdd.
 - Write a manual page for ppl (3).
 - Clearly explain, in the documentation, how (not) to use
@@ -74,7 +67,7 @@ Enhancements for PPL 0.10
   and use the Polyhedron relation_with_congruences method.
   These should be rewritten to work directly with the shape domain.
 
-Enhancements for PPL 0.10 or later versions
+Enhancements for PPL 0.11 or later versions
 ===========================================
 
 - Add a "quick assign" function to checked numbers that allows
@@ -84,11 +77,8 @@ Enhancements for PPL 0.10 or later versions
 - Consider whether or not our interface for method time_elapse_assign()
   is the one needed by users: in particular, see if it should take as
   an argument a generator system, instead of an abstract element.
-
-
-Enhancements for PPL 0.11 or later versions
-===========================================
-
+- Finish the domain of intervals.
+- Reduce the number of FIXMEs to no more than 20.
 - Provide a generic implementation for the `widening with tokens'.
 - In the OK() methods, instead of having all those #ifndef NDEBUG,
   it is probably worthwhile to use a suitable defined `barf' stream
