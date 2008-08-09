@@ -241,11 +241,11 @@ public:
   }
 };
 
-template <typename PH>
+template <typename PS>
 class Pointset_Powerset {
 public:
   static bool valid_instantiation() {
-    return PH::valid_Pointset_Powerset_argument();
+    return PS::valid_Pointset_Powerset_argument();
   }
 };
 
@@ -323,30 +323,27 @@ public:
   }
 };
 
-  template <typename PH1, typename PH2>
+template <typename D1, typename D2>
 class Direct_Product {
 public:
   static bool valid_instantiation() {
-    return PH1::valid_Product_argument()
-             && PH2::valid_Product_argument();
+    return D1::valid_Product_argument() && D2::valid_Product_argument();
   }
 };
 
-  template <typename PH1, typename PH2>
+template <typename D1, typename D2>
 class Smash_Product {
 public:
   static bool valid_instantiation() {
-    return PH1::valid_Product_argument()
-             && PH2::valid_Product_argument();
+    return D1::valid_Product_argument() && D2::valid_Product_argument();
   }
 };
 
-  template <typename PH1, typename PH2>
+template <typename D1, typename D2>
 class Constraints_Product {
 public:
   static bool valid_instantiation() {
-    return PH1::valid_Product_argument()
-             && PH2::valid_Product_argument();
+    return D1::valid_Product_argument() && D2::valid_Product_argument();
   }
 };
 
