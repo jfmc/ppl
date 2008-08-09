@@ -1104,6 +1104,7 @@ AC_CONFIG_FILES(Makefile
                 tests/Grid/Makefile
                 tests/MIP_Problem/Makefile
                 tests/Octagonal_Shape/Makefile
+                tests/Partially_Reduced_Product/Makefile
                 tests/Polyhedron/Makefile
                 utils/Makefile
                 m4/Makefile
