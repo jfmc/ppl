@@ -120,25 +120,26 @@ where:
     \link Parma_Polyhedra_Library::Interval \c Interval \endlink
     template class.
 
-Other semantic GDs can be constructed from the simple classes.
+Other semantic GDs, the <EM>compound classes</EM>, can be constructed
+(also recursively) from all the GDs classes.
 These include:
-  - \link Parma_Polyhedra_Library::Pointset_Powerset \c Pointset_Powerset\<PS\> \endlink;
-  - \link Parma_Polyhedra_Library::Partially_Reduced_Product <CODE>Partially_Reduced_Product\<PS1, PS2, R\></CODE> \endlink.
+  - \link Parma_Polyhedra_Library::Pointset_Powerset \c Pointset_Powerset\<PS\> \endlink,
+  - \link Parma_Polyhedra_Library::Partially_Reduced_Product <CODE>Partially_Reduced_Product\<D1, D2, R\></CODE> \endlink,
 
-where \c PS, \c PS1 and \c PS2 can be any classes and \c R is the
+where \c PS, \c D1 and \c D2 can be any semantic GD classes and \c R is the
 reduction operation to be applied to the component domains of the
 product class.
 
 A uniform set of operations is provided for creating, testing and
-maintaining each of the semantic GDs. However, as most of these will
+maintaining each of the semantic GDs.  However, as many of these
 depend on one or more syntactic GDs, we first describe the syntactic GDs.
 
 
 \subsection Syntactic_Geometric_Descriptors Syntactic Geometric Descriptors
 
 A <EM>syntactic geometric descriptor</EM> is for defining, modifying
-and inspecting a semantic GD.  There are three kinds of <EM>syntactic
-GDs</EM>: <EM>basic GDs</EM>, <EM>constraint GDs</EM>> and
+and inspecting a semantic GD.  There are three kinds of
+<EM>syntactic GDs</EM>: <EM>basic GDs</EM>, <EM>constraint GDs</EM> and
 <EM>generator GDs</EM>. Some of these are <EM>generic</EM> and some
 <EM>specific</EM>; a generic syntactic GD is characterized by having a
 fixed meaning independent of its use while a specific syntactic GD
