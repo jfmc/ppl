@@ -81,7 +81,7 @@ fpu_set_control(int c) {
 
 inline int
 fpu_get_status() {
-  int sw;
+  unsigned short sw;
   __asm__ __volatile__ ("fnstsw %0" : "=a" (sw) : : "memory");
   return sw;
 }
