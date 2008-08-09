@@ -105,9 +105,6 @@ onepoint \
 permute \
 polydifference1 polydifference2 \
 polyhull1 polyhull2 \
-pointsetpowerset1 pointsetpowerset2 pointsetpowerset3 \
-pointsetpowerset4 pointsetpowerset5 pointsetpowerset6 \
-powerset1 \
 randphull1 \
 refinewithconstraint1 \
 refinewithconstraints1 \
@@ -354,15 +351,6 @@ polydifference2_SOURCES = polydifference2.cc
 
 polyhull1_SOURCES = polyhull1.cc
 polyhull2_SOURCES = polyhull2.cc
-
-pointsetpowerset1_SOURCES = pointsetpowerset1.cc
-pointsetpowerset2_SOURCES = pointsetpowerset2.cc
-pointsetpowerset3_SOURCES = pointsetpowerset3.cc
-pointsetpowerset4_SOURCES = pointsetpowerset4.cc
-pointsetpowerset5_SOURCES = pointsetpowerset5.cc
-pointsetpowerset6_SOURCES = pointsetpowerset6.cc
-
-powerset1_SOURCES = powerset1.cc
 
 randphull1_SOURCES = randphull1.cc
 randphull1_LDADD = $(LDADD) -lm
