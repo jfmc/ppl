@@ -331,6 +331,7 @@ Box.cc \
 checked.cc \
 Checked_Number.cc \
 Float.cc \
+fpu-ia32.cc \
 Constraint.cc \
 Constraint_System.cc \
 Congruence.cc \
