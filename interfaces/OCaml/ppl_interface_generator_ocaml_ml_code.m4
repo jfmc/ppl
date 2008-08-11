@@ -337,7 +337,7 @@ external ppl_@TOPOLOGY@@CLASS@_OK:
 m4_define(`ppl_@CLASS@_@MEMBYTES@_code',
  `
 external ppl_@TOPOLOGY@@CLASS@_@MEMBYTES@:
-  @LTOPOLOGY@@LCLASS@  -> int = "ppl_@TOPOLOGY@@CLASS@__@MEMBYTES@"
+  @LTOPOLOGY@@LCLASS@  -> int = "ppl_@TOPOLOGY@@CLASS@_@MEMBYTES@"
 
 ')
 
