@@ -132,7 +132,13 @@ private:
     //! Assignment operator.
     Pseudo_Row& operator=(const Pseudo_Row& y);
 
+#if !defined(__GNUC__) || __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ > 0)
   private:
+#else
+  // Work around a bug of GCC 4.0.x (and, likely, previous versions).
+  public:
+#endif
+
 #if PPL_OR_MATRIX_EXTRA_DEBUG
 
     //! Private constructor for a Pseudo_Row with size \p s beginning at \p y.
@@ -147,6 +153,12 @@ private:
 
     //! Holds a reference to the beginning of this row.
     U* first;
+
+#if !defined(__GNUC__) || __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ > 0)
+#else
+  // Work around a bug of GCC 4.0.x (and, likely, previous versions).
+  private:
+#endif
 
 #if PPL_OR_MATRIX_EXTRA_DEBUG
 
