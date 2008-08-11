@@ -20,6 +20,8 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
+SUBDIRS = . tests
+
 abs_srcdir = @abs_srcdir@
 
 interface_generator_files = \
@@ -31,14 +33,13 @@ ppl_interface_generator_ocaml_ml_code.m4 \
 ppl_interface_generator_ocaml_mli.m4 \
 ppl_interface_generator_ocaml_mli_code.m4
 
-original_mls = \
+ml_source_files = \
 ppl_ocaml_globals.ml \
-ppl_ocaml_types.ml \
-test1.ml
+ppl_ocaml_types.ml
 
 EXTRA_DIST = \
 $(interface_generator_files) \
-$(original_mls) \
+$(ml_source_files) \
 ppl_ocaml_globals.cc
 
 
@@ -47,8 +48,7 @@ if BUILD_OCAML_INTERFACE
 BUILT_SOURCES = \
 ppl_ocaml.cc \
 ppl_ocaml.ml \
-ppl_ocaml.mli \
-test1.ml
+ppl_ocaml.mli
 
 interface_generator_dependencies = \
 $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
@@ -65,7 +65,7 @@ ppl_interface_generator_ocaml_cc_code.m4
 
 copied_mls.stamp:
 	if [ $(abs_srcdir) != `pwd` ]; then \
-	for mlfile in $(original_mls); \
+	for mlfile in $(ml_source_files); \
 	 do \
 	cp -f $(srcdir)/$$mlfile . ; \
 	done \
@@ -85,7 +85,7 @@ ppl_ocaml.cmo: ppl_ocaml_globals.cmo ppl_ocaml.cmi
 
 delete_mls.stamp: ppl_ocaml_types.cmo ppl_ocaml_globals.cmo
 	if [ $(abs_srcdir) != `pwd` ]; then \
-	for mlfile in $(original_mls); \
+	for mlfile in $(ml_source_files); \
 	 do \
 	if [ -a $(top_builddir)/interfaces/OCaml/$$mlfile ]; then \
 	  rm -f $(top_builddir)/interfaces/OCaml/$$mlfile  ; \
@@ -122,24 +122,15 @@ AM_CPPFLAGS = \
 -I$(top_builddir)/src \
 @extra_includes@
 
-noinst_PROGRAM = test1
+ppl_ocaml.cma: ppl_ocaml_types.cmo ppl_ocaml_globals.cmo ppl_ocaml.cmo
+	ocamlc -o $@ -a -custom \
+		ppl_ocaml_types.cmo ppl_ocaml_globals.cmo ppl_ocaml.cmo \
+		$(OCAMLC_FLAGS) -cclib -lppl_ocaml   -cclib -lppl
 
-ppl_ocaml.cma: ppl_ocaml.cmo
-	 ocamlc -a -custom ppl_ocaml.cmo -I . $(OCAMLC_FLAGS) -cclib -lppl_ocaml   -cclib -lppl -o ppl_ocaml.cma
 
 # Force to create the interface when a `make' is given.
 # FIXME: this is a temporary patch.
 all:  libppl_ocaml.a ppl_ocaml.cma delete_mls.stamp
-
-test1$(EXEEXT):  all
-	if [ $(abs_srcdir) != `pwd` ]; then \
-	cp -f $(srcdir)/test1.ml . ; \
-	fi
-	ocamlc -g -c  $(OCAMLC_FLAGS) test1.ml
-	ocamlc -o $@ -cc g++ -g -custom $(OCAMLC_FLAGS)  ppl_ocaml.cma gmp.cma -ccopt -g test1.cmo
-	if [ $(abs_srcdir) != `pwd` ]; then \
-	rm -f test1.ml ; \
-	fi
 
 ocamldir = $(pkglibdir)
 
@@ -147,12 +138,9 @@ ocaml_DATA = \
 libppl_ocaml.a \
 ppl_ocaml.cma \
 ppl_ocaml.cmi \
-ppl_ocaml.cmo \
 ppl_ocaml.mli \
 ppl_ocaml_globals.cmi \
-ppl_ocaml_globals.cmo \
-ppl_ocaml_types.cmi \
-ppl_ocaml_types.cmo
+ppl_ocaml_types.cmi
 
 endif BUILD_OCAML_INTERFACE
 
@@ -168,6 +156,4 @@ ppl_ocaml.mli \
 ppl_ocaml_globals.cmi \
 ppl_ocaml_globals.cmo \
 ppl_ocaml_types.cmi \
-ppl_ocaml_types.cmo \
-test1.cmi \
-test1.cmo
+ppl_ocaml_types.cmo
