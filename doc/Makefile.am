@@ -124,13 +124,13 @@ DIST_C_INTERFACE_PS_DOCS = \
 ppl-user-c-interface-@VERSION@.ps.gz
 
 USER_C_INTERFACE_STUFF = \
-user.tex \
+user-c-interface.tex \
 ppl.sty \
 ../interfaces/C/C_interface.dox \
 $(top_builddir)/interfaces/C/ppl_c.h
 
 DEVREF_C_INTERFACE_STUFF = \
-devref.tex \
+devref-c-interface.tex \
 ppl.sty \
 $(top_builddir)/interfaces/C/ppl_c.cc
 
@@ -166,10 +166,9 @@ DIST_PROLOG_INTERFACE_PS_DOCS = \
 ppl-user-prolog-interface-@VERSION@.ps.gz
 
 USER_PROLOG_INTERFACE_STUFF = \
-user.tex \
+user-prolog-interface.tex \
 ppl.sty \
-../interfaces/Prolog/Prolog_interface.dox \
-$(top_builddir)/interfaces/Prolog/ppl_prolog.icc
+../interfaces/Prolog/Prolog_interface.dox
 
 DEVREF_PROLOG_INTERFACE_STUFF = \
 devref.tex \
@@ -182,41 +181,87 @@ $(top_builddir)/interfaces/Prolog/ppl_prolog.icc
 endif BUILD_SOME_PROLOG_INTERFACES
 
 
+# OCaml Language Interface Manuals
+if BUILD_OCAML_INTERFACE
+
+HTML_OCAML_INTERFACE_MANUALS = \
+ppl-user-ocaml-interface-@VERSION@-html.tar.gz \
+ppl-devref-ocaml-interface-@VERSION@-html.tar.gz
+
+PDF_OCAML_INTERFACE_MANUALS = \
+ppl-user-ocaml-interface-@VERSION@.pdf \
+ppl-devref-ocaml-interface-@VERSION@.pdf
+
+PS_OCAML_INTERFACE_MANUALS = \
+ppl-user-ocaml-interface-@VERSION@.ps.gz \
+ppl-devref-ocaml-interface-@VERSION@.ps.gz
+
+OCAML_INTERFACE_HTML_DIRS = \
+ppl-user-ocaml-interface-@VERSION@-html \
+ppl-devref-ocaml-interface-@VERSION@-html
+
+DIST_OCAML_INTERFACE_HTML_DOCS = \
+ppl-user-ocaml-interface-@VERSION@-html.tar.gz
+
+DIST_OCAML_INTERFACE_PDF_DOCS = \
+ppl-user-ocaml-interface-@VERSION@.pdf
+
+DIST_OCAML_INTERFACE_PS_DOCS = \
+ppl-user-ocaml-interface-@VERSION@.ps.gz
+
+USER_OCAML_INTERFACE_STUFF = \
+user-ocaml-interface.tex \
+ppl.sty \
+../interfaces/OCaml/OCaml_interface.dox \
+../interfaces/OCaml/ppl_ocaml.mli
+
+DEVREF_OCAML_INTERFACE_STUFF =
+
+endif BUILD_OCAML_INTERFACE
+
+
 MANUALS = \
 $(HTML_CORE_MANUALS) \
 $(HTML_C_INTERFACE_MANUALS) \
 $(HTML_PROLOG_INTERFACE_MANUALS) \
+$(HTML_OCAML_INTERFACE_MANUALS) \
 $(PDF_CORE_MANUALS) \
 $(PDF_C_INTERFACE_MANUALS) \
 $(PDF_PROLOG_INTERFACE_MANUALS) \
+$(PDF_OCAML_INTERFACE_MANUALS) \
 $(PS_CORE_MANUALS) \
 $(PS_C_INTERFACE_MANUALS) \
-$(PS_PROLOG_INTERFACE_MANUALS)
+$(PS_PROLOG_INTERFACE_MANUALS) \
+$(PS_OCAML_INTERFACE_MANUALS)
 
 HTML_DIRS = \
 $(CORE_HTML_DIRS) \
 $(C_INTERFACE_HTML_DIRS) \
-$(PROLOG_INTERFACE_HTML_DIRS)
+$(PROLOG_INTERFACE_HTML_DIRS) \
+$(OCAML_INTERFACE_HTML_DIRS)
 
 DIST_HTML_DOCS = \
 $(DIST_CORE_HTML_DOCS)
 # FIXME: should we distribute manuals for the "foreign" interfaces?
 #$(DIST_C_INTERFACE_HTML_DOCS) \
-#$(DIST_PROLOG_INTERFACE_HTML_DOCS)
+#$(DIST_PROLOG_INTERFACE_HTML_DOCS) \
+#$(DIST_OCAML_INTERFACE_HTML_DOCS)
 
 DIST_PDF_DOCS = \
 $(PDF_LICENSES) \
 $(DIST_CORE_PDF_DOCS)
 # FIXME: should we distribute manuals for the "foreign" interfaces?
 #$(DIST_C_INTERFACE_PDF_DOCS) \
-#$(DIST_PROLOG_INTERFACE_PDF_DOCS)
+#$(DIST_PROLOG_INTERFACE_PDF_DOCS) \
+#$(DIST_OCAML_INTERFACE_PDF_DOCS)
 
 DIST_PS_DOCS = \
 $(PS_LICENSES) \
 $(DIST_CORE_PS_DOCS)
 # FIXME: should we distribute manuals for the "foreign" interfaces?
 #$(DIST_C_INTERFACE_PS_DOCS) \
-#$(DIST_PROLOG_INTERFACE_PS_DOCS)
+#$(DIST_PROLOG_INTERFACE_PS_DOCS) \
+#$(DIST_OCAML_INTERFACE_PS_DOCS)
 
 DIST_TXT_DOCS = \
 $(TXT_LICENSES)
@@ -343,7 +388,9 @@ devref.latex-dir \
 user-c-interface.latex-dir \
 devref-c-interface.latex-dir \
 user-prolog-interface.latex-dir \
-devref-prolog-interface.latex-dir
+devref-prolog-interface.latex-dir \
+user-ocaml-interface.latex-dir \
+devref-ocaml-interface.latex-dir
 
 TEX_ENV = TEXINPUTS=$(abs_srcdir):$(TEXINPUTS)
 
@@ -442,6 +489,46 @@ $(DEVREF_PROLOG_INTERFACE_STUFF) $(DEVREF_HTML_DIR)
 
 endif BUILD_SOME_PROLOG_INTERFACES
 
+
+# OCaml Language Interface
+if BUILD_OCAML_INTERFACE
+
+user-ocaml-interface.latex-dir: \
+user-ocaml-interface.doxyconf-latex \
+$(USER_OCAML_INTERFACE_STUFF)
+	rm -rf $@
+	$(TEX_ENV) $(DOXYGEN) $<
+	(cd $@; ocamldoc -I +gmp \
+			-latex -noheader -notrailer -notoc -o ocamldoc.tex \
+			../../interfaces/OCaml/ppl_ocaml.mli)
+
+devref-ocaml-interface.latex-dir: $(DEVREF_OCAML_INTERFACE_STUFF)
+	rm -rf $@
+	$(TEX_ENV) $(DOXYGEN) $<
+
+ppl-user-ocaml-interface-@VERSION@.pdf: user-ocaml-interface.latex-dir
+	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
+
+ppl-devref-ocaml-interface-@VERSION@.pdf: devref-ocaml-interface.latex-dir
+	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
+
+ppl-user-ocaml-interface-@VERSION@-html: \
+user-ocaml-interface.doxyconf-html \
+$(USER_OCAML_INTERFACE_STUFF) $(USER_HTML_DIR)
+	rm -rf $@
+	$(TEX_ENV) $(DOXYGEN) $<
+	(cd $@; $(INSTALLDOX) -l $(USER_HTML_DIR).tag@../$(USER_HTML_DIR))
+
+ppl-devref-ocaml-interface-@VERSION@-html: \
+devref-ocaml-interface.doxyconf-html \
+$(DEVREF_OCAML_INTERFACE_STUFF) $(DEVREF_HTML_DIR)
+	rm -rf $@
+	$(TEX_ENV) $(DOXYGEN) $<
+	(cd $@; $(INSTALLDOX) -l $(DEVREF_HTML_DIR).tag@../$(DEVREF_HTML_DIR))
+
+endif BUILD_OCAML_INTERFACE
+
+
 %.tar: %
 	tar cf $@ $<
 
@@ -469,8 +556,13 @@ user-prolog-interface.doxyconf-html \
 devref-prolog-interface.doxyconf-html \
 user-prolog-interface.doxyconf-latex \
 devref-prolog-interface.doxyconf-latex \
+user-ocaml-interface.doxyconf-latex \
 user.tex \
+user-c-interface.tex \
+user-prolog-interface.tex \
+user-ocaml-interface.tex \
 devref.tex \
+devref-c-interface.tex \
 gpl.tex \
 fdl.tex \
 ppl.sty \
