@@ -73,17 +73,14 @@ if BUILD_OCAML_INTERFACE
 
 OCAMLC_FLAGS = -I +gmp -I $(srcdir) -I ..
 
-noinst_PROGRAM = test1
+DISABLED_TESTS = \
+test1
 
-test1$(EXEEXT): all
-	if [ $(abs_srcdir) != `pwd` ]; then \
-	cp -f $(srcdir)/test1.ml . ; \
-	fi
-	ocamlc -g -c $(OCAMLC_FLAGS) test1.ml
+check_PROGRAMS = $(DISABLED_TESTS)
+
+test1$(EXEEXT): test1.ml
+	ocamlc -g -c $(OCAMLC_FLAGS) $(srcdir)/test1.ml
 	ocamlc -o $@ -cc g++ -g -custom $(OCAMLC_FLAGS) ppl_ocaml.cma gmp.cma -ccopt -g test1.cmo
-	if [ $(abs_srcdir) != `pwd` ]; then \
-	rm -f test1.ml ; \
-	fi
 
 #ocamlc -verbose -o test1 -cc g++ -g -custom -I +gmp -I /home/roberto/ppl/ppl/interfaces/OCaml/tests -I .. ppl_ocaml.cma gmp.cma -ccopt "-g -L.. -lppl_ocaml" test1.cmo
 

@@ -63,36 +63,14 @@ ppl_interface_generator_ocaml_mli_code.m4 \
 ppl_interface_generator_ocaml_cc.m4 \
 ppl_interface_generator_ocaml_cc_code.m4
 
-copied_mls.stamp:
-	if [ $(abs_srcdir) != `pwd` ]; then \
-	for mlfile in $(ml_source_files); \
-	 do \
-	cp -f $(srcdir)/$$mlfile . ; \
-	done \
-	fi
-	echo timestamp > copied_mls.stamp
-
-# Use basename to always use the build directory sources.
 .mli.cmi:
-	ocamlc -g -c  $(OCAMLC_FLAGS) `basename $<`
+	ocamlc -g -c $(OCAMLC_FLAGS) $<
 
 .ml.cmo:
-	ocamlc -g -c  $(OCAMLC_FLAGS) `basename  $<`
+	ocamlc -g -c $(OCAMLC_FLAGS) $<
 
-ppl_ocaml_types.cmo: copied_mls.stamp
 ppl_ocaml_globals.cmo: ppl_ocaml_types.cmo
 ppl_ocaml.cmo: ppl_ocaml_globals.cmo ppl_ocaml.cmi
-
-delete_mls.stamp: ppl_ocaml_types.cmo ppl_ocaml_globals.cmo
-	if [ $(abs_srcdir) != `pwd` ]; then \
-	for mlfile in $(ml_source_files); \
-	 do \
-	if [ -a $(top_builddir)/interfaces/OCaml/$$mlfile ]; then \
-	  rm -f $(top_builddir)/interfaces/OCaml/$$mlfile  ; \
-	fi \
-	done \
-	fi
-	echo timestamp > delete_mls.stamp
 
 ppl_ocaml.ml: $(interface_generator_dependencies) Makefile
 	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
@@ -130,7 +108,7 @@ ppl_ocaml.cma: ppl_ocaml_types.cmo ppl_ocaml_globals.cmo ppl_ocaml.cmo
 
 # Force to create the interface when a `make' is given.
 # FIXME: this is a temporary patch.
-all:  libppl_ocaml.a ppl_ocaml.cma delete_mls.stamp
+all:  libppl_ocaml.a ppl_ocaml.cma
 
 ocamldir = $(pkglibdir)
 
@@ -145,8 +123,6 @@ ppl_ocaml_types.cmi
 endif BUILD_OCAML_INTERFACE
 
 CLEANFILES = \
-delete_mls.stamp \
-copied_mls.stamp \
 ppl_ocaml.cc \
 ppl_ocaml.cma \
 ppl_ocaml.cmi \
