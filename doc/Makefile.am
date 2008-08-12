@@ -171,7 +171,7 @@ ppl.sty \
 ../interfaces/Prolog/Prolog_interface.dox
 
 DEVREF_PROLOG_INTERFACE_STUFF = \
-devref.tex \
+devref-prolog-interface.tex \
 ppl.sty \
 ../interfaces/Prolog/Prolog_interface.dox \
 ../interfaces/Prolog/exceptions.hh \
@@ -215,7 +215,10 @@ ppl.sty \
 ../interfaces/OCaml/OCaml_interface.dox \
 ../interfaces/OCaml/ppl_ocaml.mli
 
-DEVREF_OCAML_INTERFACE_STUFF =
+DEVREF_OCAML_INTERFACE_STUFF = \
+devref-ocaml-interface.tex \
+ppl.sty \
+$(top_builddir)/interfaces/OCaml/ppl_ocaml.cc
 
 endif BUILD_OCAML_INTERFACE
 
@@ -502,9 +505,14 @@ $(USER_OCAML_INTERFACE_STUFF)
 			-latex -noheader -notrailer -notoc -o ocamldoc.tex \
 			../../interfaces/OCaml/ppl_ocaml.mli)
 
-devref-ocaml-interface.latex-dir: $(DEVREF_OCAML_INTERFACE_STUFF)
+devref-ocaml-interface.latex-dir: \
+devref-ocaml-interface.doxyconf-latex \
+$(DEVREF_OCAML_INTERFACE_STUFF)
 	rm -rf $@
 	$(TEX_ENV) $(DOXYGEN) $<
+	(cd $@; ocamldoc -I +gmp \
+			-latex -noheader -notrailer -notoc -o ocamldoc.tex \
+			../../interfaces/OCaml/ppl_ocaml.mli)
 
 ppl-user-ocaml-interface-@VERSION@.pdf: user-ocaml-interface.latex-dir
 	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
@@ -566,6 +574,8 @@ user-prolog-interface.tex \
 user-ocaml-interface.tex \
 devref.tex \
 devref-c-interface.tex \
+devref-prolog-interface.tex \
+devref-ocaml-interface.tex \
 gpl.tex \
 fdl.tex \
 ppl.sty \
