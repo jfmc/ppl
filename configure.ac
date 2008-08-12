@@ -1129,6 +1129,7 @@ AC_CONFIG_FILES(Makefile
                 doc/devref-prolog-interface.doxyconf-html
                 doc/user-ocaml-interface.doxyconf-html
                 doc/user-ocaml-interface.doxyconf-latex
+                doc/devref-ocaml-interface.doxyconf-html
                 doc/devref-ocaml-interface.doxyconf-latex
                 interfaces/Makefile
                 interfaces/C/Makefile
