@@ -46,7 +46,7 @@ public class Congruence {
     //! The value of the right hand side of \p this.
     Linear_Expression rhs;
 
-    //! Returns the congruence \f$e1 = e2 \pmod{$mod}\f$.
+    //! Returns the congruence \f$\mathtt{e1} = \mathtt{e2} \pmod \mathtt{m}\f$.
     public Congruence(Linear_Expression e1, Linear_Expression e2,
 		      Coefficient mod) {
 	modulus = new Coefficient(mod);
