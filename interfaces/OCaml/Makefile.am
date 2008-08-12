@@ -40,7 +40,8 @@ ppl_ocaml_types.ml
 EXTRA_DIST = \
 $(interface_generator_files) \
 $(ml_source_files) \
-ppl_ocaml_globals.cc
+ppl_ocaml_globals.cc \
+OCaml_interface.dox
 
 
 if BUILD_OCAML_INTERFACE
