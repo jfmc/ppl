@@ -25,7 +25,7 @@ package ppl_java;
 //! A linear congruence.
 /*! \ingroup PPL_Java_interface
   An object of the class Congruence is an object represeting a congruence:
-  - \f$\cg = \sum_{i=0}^{n-1} a_i x_i + b = 0 \pmod m\f$
+  - \f$\cg = \sum_{i=0}^{n-1} a_i x_i + b = 0 \pmod{m}\f$
 
   where \f$n\f$ is the dimension of the space,
   \f$a_i\f$ is the integer coefficient of variable \f$x_i\f$,
@@ -46,10 +46,13 @@ public class Congruence {
     //! The value of the right hand side of \p this.
     Linear_Expression rhs;
 
-    //! Returns the congruence \f$\mathtt{e1} = \mathtt{e2} \pmod \mathtt{m}\f$.
+    /*! \brief
+      Returns the congruence
+      \f$\mathtt{e1} = \mathtt{e2} \pmod{\mathtt{m}}\f$.
+    */
     public Congruence(Linear_Expression e1, Linear_Expression e2,
-		      Coefficient mod) {
-	modulus = new Coefficient(mod);
+		      Coefficient m) {
+	modulus = new Coefficient(m);
 	lhs = e1.clone();
 	rhs = e2.clone();
     }

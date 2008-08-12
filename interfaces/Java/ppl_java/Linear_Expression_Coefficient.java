@@ -31,7 +31,7 @@ public class Linear_Expression_Coefficient
     //! The coefficient representing the linear expression.
     protected Coefficient coeff;
 
-    //! Builds the object corresponding to a copy of the coefficient \c.
+    //! Builds the object corresponding to a copy of the coefficient \p c.
     public Linear_Expression_Coefficient(Coefficient c) {
 	coeff = new Coefficient(c);
     }
