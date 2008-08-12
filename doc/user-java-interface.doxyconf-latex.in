@@ -81,10 +81,47 @@ WARN_LOGFILE           =
 # configuration options related to the input files
 #---------------------------------------------------------------------------
 INPUT                  = @srcdir@/../interfaces/Java/Java_interface.dox \
+                         @srcdir@/../interfaces/Java/ppl_java/By_Reference.java \
+                         @srcdir@/../interfaces/Java/ppl_java/Coefficient.java \
+                         @srcdir@/../interfaces/Java/ppl_java/Congruence.java \
+                         @srcdir@/../interfaces/Java/ppl_java/Congruence_System.java \
+                         @srcdir@/../interfaces/Java/ppl_java/Constraint.java \
+                         @srcdir@/../interfaces/Java/ppl_java/Constraint_System.java \
+                         @srcdir@/../interfaces/Java/ppl_java/Degenerate_Element.java \
+                         @srcdir@/../interfaces/Java/ppl_java/Domain_Error_Exception.java \
+                         @srcdir@/../interfaces/Java/ppl_java/Generator.java \
+                         @srcdir@/../interfaces/Java/ppl_java/Generator_System.java \
+                         @srcdir@/../interfaces/Java/ppl_java/Generator_Type.java \
+                         @srcdir@/../interfaces/Java/ppl_java/Grid_Generator.java \
+                         @srcdir@/../interfaces/Java/ppl_java/Grid_Generator_System.java \
+                         @srcdir@/../interfaces/Java/ppl_java/Grid_Generator_Type.java \
+                         @srcdir@/../interfaces/Java/ppl_java/Invalid_Argument_Exception.java \
+                         @srcdir@/../interfaces/Java/ppl_java/Length_Error_Exception.java \
+                         @srcdir@/../interfaces/Java/ppl_java/Linear_Expression_Coefficient.java \
+                         @srcdir@/../interfaces/Java/ppl_java/Linear_Expression_Difference.java \
+                         @srcdir@/../interfaces/Java/ppl_java/Linear_Expression.java \
+                         @srcdir@/../interfaces/Java/ppl_java/Linear_Expression_Sum.java \
+                         @srcdir@/../interfaces/Java/ppl_java/Linear_Expression_Times.java \
+                         @srcdir@/../interfaces/Java/ppl_java/Linear_Expression_Unary_Minus.java \
+                         @srcdir@/../interfaces/Java/ppl_java/Linear_Expression_Variable.java \
+                         @srcdir@/../interfaces/Java/ppl_java/Logic_Error_Exception.java \
+                         @srcdir@/../interfaces/Java/ppl_java/MIP_Problem.java \
+                         @srcdir@/../interfaces/Java/ppl_java/MIP_Problem_Status.java \
+                         @srcdir@/../interfaces/Java/ppl_java/Optimization_Mode.java \
+                         @srcdir@/../interfaces/Java/ppl_java/Overflow_Error_Exception.java \
+                         @srcdir@/../interfaces/Java/ppl_java/Parma_Polyhedra_Library.java \
+                         @srcdir@/../interfaces/Java/ppl_java/Partial_Function.java \
+                         @srcdir@/../interfaces/Java/ppl_java/Poly_Con_Relation.java \
+                         @srcdir@/../interfaces/Java/ppl_java/Poly_Gen_Relation.java \
+                         @srcdir@/../interfaces/Java/ppl_java/PPL_Object.java \
+                         @srcdir@/../interfaces/Java/ppl_java/Relation_Symbol.java \
+                         @srcdir@/../interfaces/Java/ppl_java/Variable.java \
+                         @srcdir@/../interfaces/Java/ppl_java/Variables_Set.java \
+                         ../interfaces/Java/ppl_java \
                          @srcdir@/gpl.dox \
                          @srcdir@/fdl.dox
 INPUT_ENCODING         = UTF-8
-FILE_PATTERNS          = 
+FILE_PATTERNS          = *.java
 RECURSIVE              = NO
 EXCLUDE                = 
 EXCLUDE_SYMLINKS       = NO

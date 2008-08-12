@@ -22,8 +22,12 @@
 
 SUBDIRS = ppl_java jni . tests
 
-EXTRA_DIST = \
+interface_generator_files = \
 ppl_interface_generator_java_procedure_generators.m4
+
+EXTRA_DIST = \
+$(interface_generator_files) \
+Java_interface.dox
 
 if BUILD_JAVA_INTERFACE
 
