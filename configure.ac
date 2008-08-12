@@ -1131,6 +1131,10 @@ AC_CONFIG_FILES(Makefile
                 doc/user-ocaml-interface.doxyconf-latex
                 doc/devref-ocaml-interface.doxyconf-html
                 doc/devref-ocaml-interface.doxyconf-latex
+                doc/user-java-interface.doxyconf-html
+                doc/user-java-interface.doxyconf-latex
+                doc/devref-java-interface.doxyconf-html
+                doc/devref-java-interface.doxyconf-latex
                 interfaces/Makefile
                 interfaces/C/Makefile
                 interfaces/C/ppl_c_version.h

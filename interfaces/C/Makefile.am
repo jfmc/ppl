@@ -29,7 +29,9 @@ ppl_interface_generator_c_cc.m4 \
 ppl_interface_generator_c_cc_code.m4 \
 ppl_interface_generator_c_cc_preamble
 
-EXTRA_DIST = $(interface_generator_files)
+EXTRA_DIST = \
+$(interface_generator_files) \
+C_interface.dox
 
 if BUILD_C_INTERFACE
 
