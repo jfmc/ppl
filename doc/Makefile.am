@@ -517,6 +517,9 @@ user-ocaml-interface.doxyconf-html \
 $(USER_OCAML_INTERFACE_STUFF) $(USER_HTML_DIR)
 	rm -rf $@
 	$(TEX_ENV) $(DOXYGEN) $<
+	mkdir $@/ocamldoc
+	ocamldoc -I +gmp \
+		-html -d $@/ocamldoc ../interfaces/OCaml/ppl_ocaml.mli
 	(cd $@; $(INSTALLDOX) -l $(USER_HTML_DIR).tag@../$(USER_HTML_DIR))
 
 ppl-devref-ocaml-interface-@VERSION@-html: \

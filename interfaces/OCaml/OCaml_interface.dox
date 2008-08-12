@@ -2030,9 +2030,15 @@ When the Parma Polyhedra Library is configured, it tests for the existence
 of the OCaml system.  If OCaml is correctly installed in a standard location,
 things are arranged so that the OCaml interface is built and installed.
 
-
 \latexonly
 \input ocamldoc.tex
 \endlatexonly
+\htmlonly
+\anchor OI_OCamldoc_Documentation
+<H1>OCamldoc Documentation</H1>
+
+For the details about the PPL's OCaml interface, see the
+<A HREF="ocamldoc/Ppl_ocaml.html">OCamldoc-generated documentation</a>.
+\endhtmlonly
 
 */ /* \mainpage */
