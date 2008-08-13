@@ -73,6 +73,9 @@ if BUILD_OCAML_INTERFACE
 
 OCAMLC_FLAGS = -I +gmp -I $(srcdir) -I ..
 
+.ml.cmo:
+	ocamlc -o $@ -g -c $(OCAMLC_FLAGS) $<
+
 DISABLED_TESTS = \
 test1
 
@@ -80,9 +83,8 @@ check_PROGRAMS = $(DISABLED_TESTS)
 
 test1_SOURCES = test1.ml
 
-test1$(EXEEXT): test1.ml
-	ocamlc -g -c $(OCAMLC_FLAGS) $(srcdir)/test1.ml
-	ocamlc -o $@ -cc g++ -g -custom $(OCAMLC_FLAGS) ppl_ocaml.cma gmp.cma -ccopt -g test1.cmo
+test1$(EXEEXT): test1.cmo
+	ocamlc -o $@ -cc g++ -g -custom $(OCAMLC_FLAGS) ppl_ocaml.cma gmp.cma -ccopt -g $<
 
 #ocamlc -verbose -o test1 -cc g++ -g -custom -I +gmp -I /home/roberto/ppl/ppl/interfaces/OCaml/tests -I .. ppl_ocaml.cma gmp.cma -ccopt "-g -L.. -lppl_ocaml" test1.cmo
 
