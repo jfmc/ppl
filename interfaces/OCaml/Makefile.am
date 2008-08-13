@@ -65,10 +65,10 @@ ppl_interface_generator_ocaml_cc.m4 \
 ppl_interface_generator_ocaml_cc_code.m4
 
 .mli.cmi:
-	ocamlc -g -c $(OCAMLC_FLAGS) $<
+	ocamlc -o $@ -g -c $(OCAMLC_FLAGS) $<
 
 .ml.cmo:
-	ocamlc -g -c $(OCAMLC_FLAGS) $<
+	ocamlc -o $@ -g -c $(OCAMLC_FLAGS) $<
 
 ppl_ocaml_globals.cmo: ppl_ocaml_types.cmo
 ppl_ocaml.cmo: ppl_ocaml_globals.cmo ppl_ocaml.cmi
