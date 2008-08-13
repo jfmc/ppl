@@ -78,6 +78,8 @@ test1
 
 check_PROGRAMS = $(DISABLED_TESTS)
 
+test1_SOURCES = test1.ml
+
 test1$(EXEEXT): test1.ml
 	ocamlc -g -c $(OCAMLC_FLAGS) $(srcdir)/test1.ml
 	ocamlc -o $@ -cc g++ -g -custom $(OCAMLC_FLAGS) ppl_ocaml.cma gmp.cma -ccopt -g test1.cmo
