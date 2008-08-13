@@ -155,9 +155,9 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_@GET_REPRESENT@s_code',
+m4_define(`ppl_@CLASS@_get_@GET_REPRESENT@s_code',
 `int
-ppl_@CLASS@_@GET_REPRESENT@s
+ppl_@CLASS@_get_@GET_REPRESENT@s
 (ppl_const_@CLASS@_t ph,
  ppl_const_@UGET_REPRESENT@_System_t* pcs) try {
   const @CPP_CLASS@& pph = *to_const(ph);
@@ -169,9 +169,9 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_minimized_@GET_REPRESENT@s_code',
+m4_define(`ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_code',
 `int
-ppl_@CLASS@_minimized_@GET_REPRESENT@s
+ppl_@CLASS@_get_minimized_@GET_REPRESENT@s
 (ppl_const_@CLASS@_t ph,
  ppl_const_@UGET_REPRESENT@_System_t* pcs) try {
   const @CPP_CLASS@& pph = *to_const(ph);
