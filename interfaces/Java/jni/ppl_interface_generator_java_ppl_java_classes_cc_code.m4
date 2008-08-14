@@ -1,3 +1,4 @@
+
 dnl  -*- C++ -*-
 m4_divert(-1)
 
@@ -316,15 +317,30 @@ JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_@1SIMPLIFY@
 
 ')
 
-m4_define(`ppl_@CLASS@_unconstrain_code',
+m4_define(`ppl_@CLASS@_unconstrain_space_dimension_code',
 `dnl
-JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_1unconstrain
+JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_1unconstrain_space_dimension
 (JNIEnv* env, jobject j_this_@LCLASS@, jobject j_var) {
   try {
   jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
   @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
   Variable v = build_ppl_variable(env, j_var);
   this_@LCLASS@->unconstrain(v);
+  }
+  CATCH_ALL;
+}
+
+')
+
+m4_define(`ppl_@CLASS@_unconstrain_space_dimensions_code',
+`dnl
+JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_1unconstrain_space_dimensions
+(JNIEnv* env, jobject j_this_@LCLASS@, jobject j_v_set) {
+  try {
+  jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
+  @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
+  Variables_Set v_set = build_ppl_variables_set(env, j_v_set);
+  this_@LCLASS@->unconstrain(v_set);
   }
   CATCH_ALL;
 }

@@ -168,16 +168,25 @@ ppl_@CLASS@_@SIMPLIFY@ PPL_PROTO((ppl_@CLASS@_t ph));
 m4_define(`ppl_@CLASS@_constrains_code',
 `int
 ppl_@CLASS@_constrains
-PPL_PROTO((ppl_const_@CLASS@_t ph,
+PPL_PROTO((ppl_@CLASS@_t ph,
            ppl_dimension_type var));
 
 ')
 
-m4_define(`ppl_@CLASS@_unconstrain_code',
+m4_define(`ppl_@CLASS@_unconstrain_space_dimension_code',
 `int
-ppl_@CLASS@_unconstrain
+ppl_@CLASS@_unconstrain_space_dimension
 PPL_PROTO((ppl_@CLASS@_t ph,
            ppl_dimension_type var));
+
+')
+
+m4_define(`ppl_@CLASS@_unconstrain_space_dimensions_code',
+`int
+ppl_@CLASS@_unconstrain_space_dimensions
+PPL_PROTO((ppl_@CLASS@_t ph,
+           ppl_dimension_type ds[],
+           size_t n));
 
 ')
 

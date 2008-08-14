@@ -289,9 +289,9 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_unconstrain_code',
+m4_define(`ppl_@CLASS@_unconstrain_space_dimension_code',
 `int
-ppl_@CLASS@_unconstrain
+ppl_@CLASS@_unconstrain_space_dimension
 (ppl_@CLASS@_t ph,
  ppl_dimension_type var
 ) try {
@@ -303,10 +303,27 @@ CATCH_ALL
 
 ')
 
+m4_define(`ppl_@CLASS@_unconstrain_space_dimensions_code',
+`int
+ppl_@CLASS@_unconstrain_space_dimensions
+(ppl_@CLASS@_t ph,
+ ppl_dimension_type ds[],
+ size_t n) try {
+  @CPP_CLASS@& pph = *to_nonconst(ph);
+  Variables_Set to_be_unconstrained;
+  for (ppl_dimension_type i = n; i-- > 0; )
+    to_be_unconstrained.insert(ds[i]);
+  pph.unconstrain(to_be_unconstrained);
+  return 0;
+}
+CATCH_ALL
+
+')
+
 m4_define(`ppl_@CLASS@_constrains_code',
 `int
 ppl_@CLASS@_constrains
-(ppl_const_@CLASS@_t ph,
+(ppl_@CLASS@_t ph,
  ppl_dimension_type var
 ) try {
   @CPP_CLASS@& pph = *to_nonconst(ph);

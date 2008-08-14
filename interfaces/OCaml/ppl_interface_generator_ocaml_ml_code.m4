@@ -224,11 +224,19 @@ external ppl_@TOPOLOGY@@CLASS@_constrains:
 
 ')
 
-m4_define(`ppl_@CLASS@_unconstrain_code',
+m4_define(`ppl_@CLASS@_unconstrain_space_dimension_code',
 `dnl
-external ppl_@TOPOLOGY@@CLASS@_unconstrain:
+external ppl_@TOPOLOGY@@CLASS@_unconstrain_space_dimension:
   @LTOPOLOGY@@LCLASS@ -> int -> unit
-  = "ppl_@TOPOLOGY@@CLASS@_unconstrain"
+  = "ppl_@TOPOLOGY@@CLASS@_unconstrain_space_dimension"
+
+')
+
+m4_define(`ppl_@CLASS@_unconstrain_space_dimensions_code',
+`dnl
+external ppl_@TOPOLOGY@@CLASS@_unconstrain_space_dimensions:
+  @LTOPOLOGY@@LCLASS@ -> int list -> unit
+  = "ppl_@TOPOLOGY@@CLASS@_unconstrain_space_dimensions"
 
 ')
 

@@ -147,10 +147,18 @@ m4_define(`ppl_@CLASS@_@SIMPLIFY@_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_unconstrain_code',
+m4_define(`ppl_@CLASS@_unconstrain_space_dimension_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
-    public native void unconstrain(Variable var);
+    public native void unconstrain_space_dimension(Variable var);
+
+')
+
+m4_define(`ppl_@CLASS@_unconstrain_space_dimensions_code',
+`dnl
+%<--%<--%<-- @CLASS@.java
+    public native void
+      unconstrain_space_dimensions(Variables_Set to_be_constrained);
 
 ')
 

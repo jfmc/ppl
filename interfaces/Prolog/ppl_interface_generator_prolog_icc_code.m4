@@ -788,9 +788,9 @@ m4_define(`ppl_@CLASS@_@SIMPLIFY@_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_unconstrain_code',
+m4_define(`ppl_@CLASS@_unconstrain_space_dimension_code',
   `extern "C" Prolog_foreign_return_type
-  ppl_@CLASS@__unconstrain(Prolog_term_ref t_ph,
+  ppl_@CLASS@_unconstrain_space_dimension(Prolog_term_ref t_ph,
                            Prolog_term_ref t_v) {
   static const char* where = "ppl_@CLASS@__unconstrain/1";
   try {
@@ -804,9 +804,34 @@ m4_define(`ppl_@CLASS@_unconstrain_code',
 
 ')
 
+m4_define(`ppl_@CLASS@_unconstrain_space_dimensions_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_@CLASS@_unconstrain_space_dimensions(Prolog_term_ref t_ph,
+                           Prolog_term_ref t_vlist) {
+  static const char* where = "ppl_@CLASS@__unconstrain/1";
+  try {
+    @CPP_CLASS@* ph = term_to_handle<@CPP_CLASS@ >(t_ph, where);
+    PPL_CHECK(ph);
+    Variables_Set unconstrain_variables;
+    Prolog_term_ref v = Prolog_new_term_ref();
+    while (Prolog_is_cons(t_vlist)) {
+      Prolog_get_cons(t_vlist, v, t_vlist);
+      unconstrain_variables.insert(term_to_Variable(v, where).id());
+    }
+
+    // Check the list is properly terminated.
+    check_nil_terminating(t_vlist, where);
+    ph->unconstrain(unconstrain_variables);
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+')
+
 m4_define(`ppl_@CLASS@_constrains_code',
   `extern "C" Prolog_foreign_return_type
-  ppl_@CLASS@__constrains(Prolog_term_ref t_ph,
+  ppl_@CLASS@_constrains(Prolog_term_ref t_ph,
                           Prolog_term_ref t_v) {
   static const char* where = "ppl_@CLASS@__constrains/1";
   try {

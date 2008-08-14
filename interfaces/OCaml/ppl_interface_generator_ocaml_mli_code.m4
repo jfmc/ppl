@@ -197,10 +197,17 @@ val ppl_@TOPOLOGY@@CLASS@_constrains:
 
 ')
 
-m4_define(`ppl_@CLASS@_unconstrain_code',
+m4_define(`ppl_@CLASS@_unconstrain_space_dimension_code',
 `dnl
-val ppl_@TOPOLOGY@@CLASS@_unconstrain:
+val ppl_@TOPOLOGY@@CLASS@_unconstrain_space_dimension:
   @LTOPOLOGY@@LCLASS@ -> int -> unit
+
+')
+
+m4_define(`ppl_@CLASS@_unconstrain_space_dimensions_code',
+`dnl
+val ppl_@TOPOLOGY@@CLASS@_unconstrain_space_dimensions:
+  @LTOPOLOGY@@LCLASS@ -> int list -> unit
 
 ')
 

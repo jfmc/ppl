@@ -435,27 +435,40 @@ CATCH_ALL
   m4_define(`ppl_@CLASS@_constrains_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@TOPOLOGY@@CLASS@_constrains(value ph, value var) try {
-  CAMLparam4(ph, var);
+  CAMLparam2(ph, var);
   @CPP_CLASS@& pph = *p_@TOPOLOGY@@CLASS@_val(ph);
-  pph.constrains(build_ppl_Variable(var));
-  CAMLreturn0;
-  CAMLreturn(Val_bool(pph.constrains(var)));
+  CAMLreturn(Val_bool(pph.constrains(build_ppl_Variable(var))));
 			    }
 CATCH_ALL
 
 ')
 
-  m4_define(`ppl_@CLASS@_unconstrain_code',
+  m4_define(`ppl_@CLASS@_unconstrain_space_dimension_code',
 `dnl
 extern "C"
 void
-ppl_@TOPOLOGY@@CLASS@_unconstrain(value ph, value var) try {
-  CAMLparam4(ph, var);
+ppl_@TOPOLOGY@@CLASS@_unconstrain_space_dimension(value ph, value var) try {
+  CAMLparam2(ph, var);
   @CPP_CLASS@& pph = *p_@TOPOLOGY@@CLASS@_val(ph);
   pph.unconstrain(build_ppl_Variable(var));
   CAMLreturn0;
+			    }
+CATCH_ALL
+
+')
+
+  m4_define(`ppl_@CLASS@_unconstrain_space_dimensions_code',
+`dnl
+extern "C"
+void
+ppl_@TOPOLOGY@@CLASS@_unconstrain_space_dimensions(value ph, value caml_vset)
+  try {
+    CAMLparam2(ph, caml_vset);
+    @CPP_CLASS@& pph = *p_@TOPOLOGY@@CLASS@_val(ph);
+    pph.unconstrain(build_ppl_Variables_Set(caml_vset));
+    CAMLreturn0;
 			    }
 CATCH_ALL
 
@@ -575,7 +588,8 @@ CATCH_ALL
   m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_code',
 `dnl
 extern "C"
-CAMLprim value ppl_@TOPOLOGY@@CLASS@_@WIDEN@_widening_assign_with_tokens(value ph1, value ph2,
+CAMLprim value
+ppl_@TOPOLOGY@@CLASS@_@WIDEN@_widening_assign_with_tokens(value ph1, value ph2,
 						     value integer) try {
   CAMLparam3(ph1, ph2, integer);
   @CPP_CLASS@& pph1 = *p_@TOPOLOGY@@CLASS@_val(ph1);

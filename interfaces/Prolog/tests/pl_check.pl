@@ -159,7 +159,10 @@ run_one(swap_polyhedra) :-
 
 run_one(polyhedron_dimension) :-
    space,
-   affine_dim.
+   affine_dim,
+   constrains,
+   unconstrain_space_dimension,
+   unconstrain_space_dimensions.
 
 run_one(basic_operators) :-
    inters_assign,
@@ -560,6 +563,52 @@ affine_dim(T) :-
   ppl_delete_Polyhedron(P2),
   ppl_delete_Polyhedron(P3),
   ppl_delete_Polyhedron(P4).
+
+% Tests ppl_Polyhedron_constrains/2.
+constrains :-
+  constrains(c), constrains(nnc).
+
+constrains(T) :-
+  make_vars(3, [A, B, C]),
+  clean_ppl_new_Polyhedron_from_space_dimension(T, 3, universe, P),
+  ppl_Polyhedron_add_constraints(P, [B >= 0, B - C >= 2]),
+  ppl_Polyhedron_constrains(P, B),
+  \+ppl_Polyhedron_constrains(P, A),
+  ppl_Polyhedron_OK(P),
+  !,
+  ppl_delete_Polyhedron(P).
+
+% Tests ppl_Polyhedron_unconstrain_space_dimension/2.
+unconstrain_space_dimension :-
+  unconstrain_space_dimension(c), unconstrain_space_dimension(nnc).
+
+unconstrain_space_dimension(T) :-
+  make_vars(3, [_A, B, C]),
+  clean_ppl_new_Polyhedron_from_space_dimension(T, 3, universe, P),
+  ppl_Polyhedron_add_constraints(P, [B >= 0, B - C >= 2]),
+  ppl_Polyhedron_unconstrain_space_dimension(P, B),
+  \+ppl_Polyhedron_constrains(P, B),
+  ppl_Polyhedron_OK(P),
+  !,
+  ppl_delete_Polyhedron(P).
+
+% Tests ppl_Polyhedron_unconstrain_space_dimensions/2.
+unconstrain_space_dimensions :-
+  unconstrain_space_dimensions(c), unconstrain_space_dimensions(nnc).
+
+unconstrain_space_dimensions(T) :-
+  make_vars(3, [_A, B, C]),
+  clean_ppl_new_Polyhedron_from_space_dimension(T, 3, universe, P),
+  ppl_Polyhedron_add_constraints(P, [B >= 0, B - C >= 2]),
+  ppl_Polyhedron_unconstrain_space_dimensions(P, []),
+  ppl_Polyhedron_constrains(P, B),
+  ppl_Polyhedron_unconstrain_space_dimensions(P, [B]),
+  \+ppl_Polyhedron_constrains(P, B),
+  ppl_Polyhedron_unconstrain_space_dimensions(P, [B]),
+  \+ppl_Polyhedron_constrains(P, B),
+  ppl_Polyhedron_OK(P),
+  !,
+  ppl_delete_Polyhedron(P).
 
 %%%%%%%%%%%%%%%% Basic Operators %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -3209,7 +3258,10 @@ group_predicates(swap_polyhedra,
 
 group_predicates(polyhedron_dimension,
   [ppl_Polyhedron_affine_dimension/2,
-   ppl_Polyhedron_space_dimension/2]).
+   ppl_Polyhedron_space_dimension/2,
+   ppl_Polyhedron_constrains/2,
+   ppl_Polyhedron_unconstrain_space_dimension/2,
+   ppl_Polyhedron_unconstrain_space_dimensions/2]).
 
 group_predicates(basic_operators,
   [ppl_Polyhedron_intersection_assign/2,

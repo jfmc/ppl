@@ -248,6 +248,10 @@ print_string "Space dimension is: ";
 print_int i;;
 print_string "\n";;
 ppl_C_Polyhedron_map_space_dimensions ph dimensions_to_map;;
+ppl_C_Polyhedron_constrains ph 1;;
+ppl_C_Polyhedron_unconstrain_space_dimension ph 1;;
+let dimensions_to_unconstrain = [1];;
+ppl_C_Polyhedron_unconstrain_space_dimensions ph dimensions_to_unconstrain;;
 (* Pointset_Powersed_Grid is not enabled by default, the following code is *)
 (* commented *)
 (* let pps = ppl_new_Pointset_Powerset_Grid_from_space_dimension 3;; *)

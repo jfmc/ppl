@@ -213,11 +213,15 @@ m4_define(`ppl_@CLASS@_@SIMPLIFY@_code',`
 
 ')
 
-m4_define(`ppl_@CLASS@_unconstrain_code',`
-@LTOPOLOGY@@LCLASS@1.unconstrain(var);
+m4_define(`ppl_@CLASS@_1unconstrain_space_dimension_code',`
+@LTOPOLOGY@@LCLASS@1.1unconstrain_space_dimension(var);
 
 ')
 
+m4_define(`__ppl_@CLASS@_1unconstrain_space_dimensions_code',`
+@LTOPOLOGY@@LCLASS@1.1unconstrain_space_dimensions(var_set);
+
+')
 
 m4_define(`ppl_@CLASS@_constrains_code', `
 boolean @LTOPOLOGY@@LCLASS@1_constrains
