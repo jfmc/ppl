@@ -753,9 +753,9 @@ ppl_@CLASS@_@SIMPLIFY@_1_test :-
 
 ')
 
-m4_define(`ppl_@CLASS@_unconstrain_code',
+m4_define(`ppl_@CLASS@_unconstrain_space_dimensions_code',
 `
-ppl_@CLASS@_unconstrain_2_test :-
+ppl_@CLASS@_unconstrain_space_dimensions_2_test :-
   (
    choose_test(TEST_DATA, Space_Dim),
    \+ TEST_DATA = test00, \+ TEST_DATA = test02,
@@ -763,7 +763,45 @@ ppl_@CLASS@_unconstrain_2_test :-
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS1, Space_Dim),
      make_vars(Space_Dim, [Var| _Var_List]),
-     ppl_@CLASS@_unconstrain(PS, Var),
+     ppl_@CLASS@_unconstrain_space_dimensions(PS, [Var]),
+     ppl_@CLASS@_OK(PS),
+     (predicate_exists(ppl_@CLASS@_contains_@CLASS@)
+     ->
+       ppl_@CLASS@_contains_@CLASS@(PS, PS1)
+     ;
+       true
+     ),
+     ppl_delete_@CLASS@(PS1),
+     ppl_delete_@CLASS@(PS)
+   ->
+    fail ; true)
+  ).
+
+ppl_@CLASS@_unconstrain_space_dimensions_2_test :-
+  (
+   choose_test(TEST_DATA, 0),
+   (
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, 0),
+     ppl_@CLASS@_unconstrain_space_dimensions(PS, []),
+     ppl_@CLASS@_OK(PS),
+     ppl_delete_@CLASS@(PS)
+   ->
+    fail ; true)
+  ).
+
+')
+
+m4_define(`ppl_@CLASS@_unconstrain_space_dimension_code',
+`
+ppl_@CLASS@_unconstrain_space_dimension_2_test :-
+  (
+   choose_test(TEST_DATA, Space_Dim),
+   \+ TEST_DATA = test00, \+ TEST_DATA = test02,
+   (
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS1, Space_Dim),
+     make_vars(Space_Dim, [Var| _Var_List]),
+     ppl_@CLASS@_unconstrain_space_dimension(PS, Var),
      ppl_@CLASS@_OK(PS),
      (predicate_exists(ppl_@CLASS@_contains_@CLASS@)
      ->
@@ -779,7 +817,7 @@ ppl_@CLASS@_unconstrain_2_test :-
 
 ')
 
-m4_define(`ppl_@CLASS@_unconstrain_code',
+m4_define(`ppl_@CLASS@_constrains_code',
 `
 ppl_@CLASS@_constrains_2_test :-
   (
@@ -789,7 +827,7 @@ ppl_@CLASS@_constrains_2_test :-
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS1, Space_Dim),
      make_vars(Space_Dim, [Var| _Var_List]),
-     ppl__constrains_test_data(TEST_DATA, _, Bool),
+     ppl_constrains_test_data(TEST_DATA, _, Bool),
      (ppl_@CLASS@_constrains(PS, Var)
         -> Bool = true
         ; Bool = false
