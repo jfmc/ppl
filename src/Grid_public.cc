@@ -792,6 +792,70 @@ PPL::Grid::contains_integer_point() const {
 }
 
 bool
+PPL::Grid::constrains(const Variable var) const {
+  // `var' should be one of the dimensions of the polyhedron.
+  const dimension_type var_space_dim = var.space_dimension();
+  if (space_dim < var_space_dim)
+    throw_dimension_incompatible("constrains(v)", "v", var);
+
+  // An empty grid constrains all variables.
+  if (marked_empty())
+    return true;
+
+  if (generators_are_up_to_date()) {
+    // Since generators are up-to-date, the generator system (since it is
+    // well formed) contains a point.  Hence the grid is not empty.
+    if (congruences_are_up_to_date())
+      // Here a variable is constrained if and only if it is
+      // syntactically constrained.
+      goto syntactic_check;
+
+    if (generators_are_minimized()) {
+      // Try a quick, incomplete check for the universe grid:
+      // a universe polyhedron constrains no variable.
+      // Count the number of lines (they are linearly independent).
+      dimension_type num_lines = 0;
+      for (dimension_type i = gen_sys.num_rows(); i-- > 0; )
+	if (gen_sys[i].is_line())
+	  ++num_lines;
+
+      if (num_lines == space_dim)
+	return false;
+    }
+
+    // Scan generators: perhaps we will find line(var).
+    const dimension_type var_id = var.id();
+    for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
+      const Grid_Generator& g_i = gen_sys[i];
+      if (g_i.is_line()) {
+	if (sgn(g_i.coefficient(var)) != 0) {
+	  for (dimension_type j = 0; j < space_dim; ++j)
+	    if (g_i.coefficient(Variable(j)) != 0 && j != var_id)
+	      goto next;
+          return true;
+	}
+      }
+    next:
+      ;
+    }
+
+    // We are still here: at least we know that the grid is not empty.
+    update_congruences();
+    goto syntactic_check;
+  }
+
+  // We must minimize to detect emptiness and obtain constraints.
+  if (!minimize())
+    return true;
+
+ syntactic_check:
+  for (dimension_type i = con_sys.num_rows(); i-- > 0; )
+    if (con_sys[i].coefficient(var) != 0)
+      return true;
+  return false;
+}
+
+bool
 PPL::Grid::OK(bool check_not_empty) const {
 #ifndef NDEBUG
   using std::endl;
