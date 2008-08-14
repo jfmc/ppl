@@ -272,7 +272,7 @@ BD_Shape<T>::BD_Shape(const Box<Interval>& box,
 template <typename T>
 inline
 BD_Shape<T>::BD_Shape(const Grid& grid,
-                Complexity_Class)
+                      Complexity_Class)
   : dbm(grid.space_dimension() + 1), status(), redundancy_dbm() {
   if (grid.space_dimension() > 0)
     // A (non zero-dim) universe BDS is shortest-path closed.
@@ -285,7 +285,7 @@ template <typename T>
 template <typename U>
 inline
 BD_Shape<T>::BD_Shape(const Octagonal_Shape<U>& os,
-                Complexity_Class)
+                      Complexity_Class)
   : dbm(os.space_dimension() + 1), status(), redundancy_dbm() {
   if (os.space_dimension() > 0)
     // A (non zero-dim) universe BDS is shortest-path closed.

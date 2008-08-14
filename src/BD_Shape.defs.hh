@@ -801,6 +801,15 @@ public:
   bool contains_integer_point() const;
 
   /*! \brief
+    Returns <CODE>true</CODE> if and only if \p var is constrained in
+    \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p var is not a space dimension of \p *this.
+  */
+  bool constrains(Variable var) const;
+
+  /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this satisfies
     all its invariants.
   */

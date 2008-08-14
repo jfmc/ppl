@@ -759,6 +759,32 @@ BD_Shape<T>::contains_integer_point() const {
 }
 
 template <typename T>
+bool
+BD_Shape<T>::constrains(const Variable var) const {
+  // `var' should be one of the dimensions of the polyhedron.
+  const dimension_type var_space_dim = var.space_dimension();
+  if (space_dimension() < var_space_dim)
+    throw_dimension_incompatible("constrains(v)", "v", var);
+
+  // A polyhedron known to be empty constrains all variables.
+  // (Note: do not force emptyness check _yet_)
+  if (marked_empty())
+    return true;
+
+  // Check whether `var' is syntactically constrained.
+  const DB_Row<N>& dbm_v = dbm[var_space_dim];
+  for (dimension_type i = dbm.num_rows(); i-- > 0; ) {
+    if (!is_plus_infinity(dbm_v[i])
+        || !is_plus_infinity(dbm[i][var_space_dim]))
+      return true;
+  }
+
+  // `var' is not syntactically constrained:
+  // now force an emptyness check.
+  return is_empty();
+}
+
+template <typename T>
 void
 BD_Shape<T>
 ::compute_predecessors(std::vector<dimension_type>& predecessor) const {
