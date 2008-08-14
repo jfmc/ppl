@@ -24,26 +24,22 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "interfaced_boxes.hh"
 
 // OCaml include files.
-#define CAML_NAME_SPACE
 extern "C" {
+
+#define CAML_NAME_SPACE
 #include "caml/mlvalues.h"
 #include "caml/memory.h"
 #include "caml/custom.h"
 #include "caml/fail.h"
 #include "caml/callback.h"
 #include "caml/alloc.h"
-}
+#undef CAML_NAME_SPACE
+
+} // extern "C"
 
 #include <stdexcept>
-#include <sstream>
-#include <cstdio>
-#include <cerrno>
-#include <climits>
-#include <iostream>
-#include <algorithm>
 
 using namespace Parma_Polyhedra_Library;
-using namespace Parma_Polyhedra_Library::IO_Operators;
 
 class PFunc {
  private:
@@ -373,7 +369,7 @@ build_caml_generator(const Generator& ppl_generator) {
     Field(caml_generator, 0) = get_linear_expression(ppl_generator);
     return caml_generator;
   }
-  case Generator::POINT:  {
+  case Generator::POINT: {
     // Allocates two blocks (the linear expression and the divisor)
     // of tag 2 (Point).
     value caml_generator = caml_alloc(2,2);
@@ -412,7 +408,7 @@ build_caml_grid_generator(const Grid_Generator& ppl_grid_generator) {
     Field(caml_generator, 1) = build_caml_coefficient(divisor);
     return caml_generator;
   }
-  case Grid_Generator::POINT:  {
+  case Grid_Generator::POINT: {
     // Allocates two blocks (the linear expression and the divisor)
     // of tag 2 (Point).
     value caml_generator = caml_alloc(2,2);
@@ -442,7 +438,7 @@ build_caml_constraint(const Constraint& ppl_constraint) {
     Field(caml_constraint, 1) = get_inhomogeneous_term(ppl_constraint);
     return caml_constraint;
   }
-  case Constraint::NONSTRICT_INEQUALITY:  {
+  case Constraint::NONSTRICT_INEQUALITY: {
     value caml_constraint = caml_alloc(2,4);
     Field(caml_constraint, 0) = get_linear_expression(ppl_constraint);
     Field(caml_constraint, 1) = get_inhomogeneous_term(ppl_constraint);
@@ -681,8 +677,6 @@ p_MIP_Problem_val(value v) {
 
 void
 custom_MIP_Problem_finalize(value v) {
-  std::cerr << "About to delete a polyhedron " << *p_MIP_Problem_val(v)
-	    << std::endl;
   delete p_MIP_Problem_val(v);
 }
 
@@ -707,7 +701,6 @@ extern "C"
 CAMLprim value
 ppl_new_MIP_Problem_from_space_dimension(value d) try {
   CAMLparam1(d);
-  std::cerr << "Allocated a new MIP_Problem" << std::endl;
   int dd = Int_val(d);
   if (dd < 0)
     abort();
@@ -719,7 +712,6 @@ CAMLprim value
 ppl_new_MIP_Problem(value d, value caml_cs, value caml_cost,
 		    value caml_opt_mode) try {
   CAMLparam4(d, caml_cs, caml_cost, caml_opt_mode);
-  std::cerr << "Allocated a new MIP_Problem" << std::endl;
   int dd = Int_val(d);
   if (dd < 0)
     abort();
@@ -975,53 +967,8 @@ ppl_MIP_Problem_swap(value caml_mip1, value caml_mip2) try{
 }
 CATCH_ALL
 
-extern "C"
-CAMLprim void
-test_linear_expression(value ocaml_le) {
-  CAMLparam1(ocaml_le);
-  Linear_Expression cxx_le = build_ppl_Linear_Expression(ocaml_le);
-  std::cout << cxx_le << std::endl;
-  CAMLreturn0;
-}
 
-extern "C"
-CAMLprim void
-test_linear_constraint(value ocaml_c) {
-  CAMLparam1(ocaml_c);
-  Constraint cxx_c = build_ppl_Constraint(ocaml_c);
-  std::cout << cxx_c << std::endl;
-  CAMLreturn0;
-}
-
-extern "C"
-CAMLprim void
-test_constraint_system(value cl) {
-  CAMLparam1(cl);
-  Constraint_System cs = build_ppl_Constraint_System(cl);
-  std::cout << cs << std::endl;
-  CAMLreturn0;
-}
-
-extern "C"
-CAMLprim void
-test_linear_generator(value ocaml_g) {
-  CAMLparam1(ocaml_g);
-  Generator cxx_g = build_ppl_Generator(ocaml_g);
-  std::cout << cxx_g << std::endl;
-  CAMLreturn0;
-}
-
-extern "C"
-CAMLprim void
-test_generator_system(value gl) {
-  CAMLparam1(gl);
-  Generator_System gs = build_ppl_Generator_System(gl);
-  std::cout << gs << std::endl;
-  CAMLreturn0;
-}
-
-
-
+// FIXME: what is this?
 #if 0
 void
 ppl_error_out_of_memory() {

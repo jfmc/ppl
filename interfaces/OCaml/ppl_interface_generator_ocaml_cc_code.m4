@@ -34,8 +34,6 @@ p_@TOPOLOGY@@CLASS@_val(value v) {
 
 void
 custom_@TOPOLOGY@@CLASS@_finalize(value v) {
-  std::cerr << "About to delete a polyhedron " << *p_@TOPOLOGY@@CLASS@_val(v)
-	    << std::endl;
   delete p_@TOPOLOGY@@CLASS@_val(v);
 }
 
@@ -838,8 +836,6 @@ p_@CLASS@_iterator_val(value v) {
 
 void
 custom_@CLASS@_iterator_finalize(value v) {
-  std::cerr << "About to delete a polyhedron " << *p_@CLASS@_val(v)
-	    << std::endl;
   delete p_@CLASS@_iterator_val(v);
 }
 

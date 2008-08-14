@@ -105,4 +105,5 @@ endif BUILD_OCAML_INTERFACE
 
 CLEANFILES = \
 test1.cmi \
-test1.cmo
+test1.cmo \
+test1
