@@ -1346,6 +1346,20 @@ Box<ITV>::contains_integer_point() const {
 }
 
 template <typename ITV>
+bool
+Box<ITV>::constrains(Variable var) const {
+  // `var' should be one of the dimensions of the polyhedron.
+  const dimension_type var_space_dim = var.space_dimension();
+  if (space_dimension() < var_space_dim)
+    throw_dimension_incompatible("constrains(v)", "v", var);
+
+  if (marked_empty() || !seq[var_space_dim-1].is_universe())
+    return true;
+  // Now force an emptyness check.
+  return is_empty();
+}
+
+template <typename ITV>
 void
 Box<ITV>::unconstrain(const Variables_Set& to_be_unconstrained) {
   // The cylindrification wrt no dimensions is a no-op.
