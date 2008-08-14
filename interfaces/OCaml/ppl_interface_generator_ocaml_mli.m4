@@ -185,33 +185,6 @@ val ppl_MIP_Problem_set_optimization_mode:
 val ppl_MIP_Problem_swap:
   mip_problem -> mip_problem -> unit
 
-val test_linear_expression:
-  linear_expression -> unit
-
-val test_linear_constraint:
-  linear_constraint -> unit
-
-val test_linear_generator:
-  linear_generator -> unit
-
-val test_constraint_system:
-  constraint_system -> unit
-
-val test_generator_system:
-  generator_system -> unit
-
-val test_linear_constraint:
-  linear_constraint -> unit
-
-val test_linear_generator:
-  linear_generator -> unit
-
-val test_constraint_system:
-  constraint_system -> unit
-
-val test_generator_system:
-  generator_system -> unit
-
 m4_define(`m4_pre_all_classes_code', `')
 m4_pushdef(`m4_one_class_code', `dnl
 m4_replace_all_patterns_in_string($1,
