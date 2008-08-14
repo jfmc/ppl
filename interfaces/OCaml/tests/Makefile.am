@@ -76,7 +76,18 @@ OCAMLC_FLAGS = -I +gmp -I $(srcdir) -I ..
 .ml.cmo:
 	ocamlc -o $@ -g -c $(OCAMLC_FLAGS) $<
 
-DISABLED_TESTS = \
+LDADD = \
+$(top_builddir)/utils/libppl_utils.a \
+$(top_builddir)/tests/libppl_tests.a \
+$(top_builddir)/src/libppl.la \
+@extra_libraries@
+
+TESTS_ENVIRONMENT = \
+$(LIBTOOL) --mode=execute \
+	-dlopen ../../../src/libppl.la \
+	$(WATCHDOG_DLOPEN)
+
+TESTS = \
 test1
 
 check_PROGRAMS = $(DISABLED_TESTS)
@@ -84,7 +95,8 @@ check_PROGRAMS = $(DISABLED_TESTS)
 test1_SOURCES = test1.ml
 
 test1$(EXEEXT): test1.cmo
-	ocamlc -o $@ -cc g++ -g -custom $(OCAMLC_FLAGS) ppl_ocaml.cma gmp.cma -ccopt -g $<
+	ocamlc -o $@ -cc g++ -g -custom $(OCAMLC_FLAGS) ppl_ocaml.cma gmp.cma -ccopt -g -ccopt -L$(top_builddir)/src/.libs $<
+
 
 #ocamlc -verbose -o test1 -cc g++ -g -custom -I +gmp -I /home/roberto/ppl/ppl/interfaces/OCaml/tests -I .. ppl_ocaml.cma gmp.cma -ccopt "-g -L.. -lppl_ocaml" test1.cmo
 
