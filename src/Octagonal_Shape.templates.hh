@@ -885,6 +885,41 @@ Octagonal_Shape<T>::contains_integer_point() const {
 
 template <typename T>
 bool
+Octagonal_Shape<T>::constrains(const Variable var) const {
+  // `var' should be one of the dimensions of the polyhedron.
+  const dimension_type var_space_dim = var.space_dimension();
+  if (space_dimension() < var_space_dim)
+    throw_dimension_incompatible("constrains(v)", "v", var);
+
+  // A polyhedron known to be empty constrains all variables.
+  // (Note: do not force emptyness check _yet_)
+  if (marked_empty())
+    return true;
+
+  // Check whether `var' is syntactically constrained.
+  const dimension_type n_v = 2*(var_space_dim - 1);
+  typename OR_Matrix<N>::const_row_iterator m_iter = matrix.row_begin() + n_v;
+  typename OR_Matrix<N>::const_row_reference_type r_v = *m_iter;
+  typename OR_Matrix<N>::const_row_reference_type r_cv = *(++m_iter);
+  for (dimension_type h = m_iter.row_size(); h-- > 0; ) {
+    if (!is_plus_infinity(r_v[h]) || !is_plus_infinity(r_cv[h]))
+      return true;
+  }
+  ++m_iter;
+  for (typename OR_Matrix<N>::const_row_iterator m_end = matrix.row_end();
+       m_iter != m_end; ++m_iter) {
+    typename OR_Matrix<N>::const_row_reference_type r = *m_iter;
+    if (!is_plus_infinity(r[n_v]) || !is_plus_infinity(r[n_v+1]))
+      return true;
+  }
+
+  // `var' is not syntactically constrained:
+  // now force an emptyness check.
+  return is_empty();
+}
+
+template <typename T>
+bool
 Octagonal_Shape<T>::is_strong_coherent() const {
   // This method is only used by method OK() so as to check if a
   // strongly closed matrix is also strong-coherent, as it must be.
