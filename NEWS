@@ -124,6 +124,24 @@ o  Added constructors so that objects of classes C_Polyhedron,
    NNC_Polyhedron, Grid, Box, BD_Shape and Octagonal_Shape are always
    constructible from one another.
 
+o  In the interfaces, the methods/functions/predicates named
+
+     ppl_ABSTRACTION_{constraints,generators,congruences}
+
+   and
+
+     ppl_ABSTRACTION_minimized_{constraints,generators,congruences}
+
+   have been renamed
+
+     ppl_ABSTRACTION_get_{constraints,generators,congruences}
+
+   and
+
+     ppl_ABSTRACTION_get_minimized_{constraints,generators,congruences},
+
+  respectively.
+
 o  In the interfaces, the interface procedures for
    ppl_Grid_generalized_image_lhs_rhs/5 and
    ppl_Grid_generalized_preimage_lhs_rhs/5
