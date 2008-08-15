@@ -302,53 +302,53 @@ Partially_Reduced_Product<D1, D2, R>
   d2.generalized_affine_image(lhs, relsym, rhs);
 }
 
-  template <typename D1, typename D2, typename R>
-  inline void
-  Partially_Reduced_Product<D1, D2, R>
-  ::generalized_affine_preimage(const Linear_Expression& lhs,
-				const Relation_Symbol relsym,
-				const Linear_Expression& rhs) {
-    d1.generalized_affine_preimage(lhs, relsym, rhs);
-    d2.generalized_affine_preimage(lhs, relsym, rhs);
-  }
+template <typename D1, typename D2, typename R>
+inline void
+Partially_Reduced_Product<D1, D2, R>
+::generalized_affine_preimage(const Linear_Expression& lhs,
+                              const Relation_Symbol relsym,
+                              const Linear_Expression& rhs) {
+  d1.generalized_affine_preimage(lhs, relsym, rhs);
+  d2.generalized_affine_preimage(lhs, relsym, rhs);
+}
 
 
-  template <typename D1, typename D2, typename R>
-  inline void
-  Partially_Reduced_Product<D1, D2, R>
-  ::bounded_affine_image(Variable var,
-			 const Linear_Expression& lb_expr,
-			 const Linear_Expression& ub_expr,
-			 Coefficient_traits::const_reference denominator) {
-    d1.bounded_affine_image(var, lb_expr, ub_expr, denominator);
-    d2.bounded_affine_image(var, lb_expr, ub_expr, denominator);
-    // FIXME: check this.
-    clear_reduced_flag();
-  }
+template <typename D1, typename D2, typename R>
+inline void
+Partially_Reduced_Product<D1, D2, R>
+::bounded_affine_image(Variable var,
+                       const Linear_Expression& lb_expr,
+                       const Linear_Expression& ub_expr,
+                       Coefficient_traits::const_reference denominator) {
+  d1.bounded_affine_image(var, lb_expr, ub_expr, denominator);
+  d2.bounded_affine_image(var, lb_expr, ub_expr, denominator);
+  // FIXME: check this.
+  clear_reduced_flag();
+}
 
-  template <typename D1, typename D2, typename R>
-  inline void
-  Partially_Reduced_Product<D1, D2, R>
-  ::bounded_affine_preimage(Variable var,
-			    const Linear_Expression& lb_expr,
-			    const Linear_Expression& ub_expr,
-			    Coefficient_traits::const_reference denominator) {
-    d1.bounded_affine_preimage(var, lb_expr, ub_expr, denominator);
-    d2.bounded_affine_preimage(var, lb_expr, ub_expr, denominator);
-    // FIXME: check this.
-    clear_reduced_flag();
-  }
+template <typename D1, typename D2, typename R>
+inline void
+Partially_Reduced_Product<D1, D2, R>
+::bounded_affine_preimage(Variable var,
+                          const Linear_Expression& lb_expr,
+                          const Linear_Expression& ub_expr,
+                          Coefficient_traits::const_reference denominator) {
+  d1.bounded_affine_preimage(var, lb_expr, ub_expr, denominator);
+  d2.bounded_affine_preimage(var, lb_expr, ub_expr, denominator);
+  // FIXME: check this.
+  clear_reduced_flag();
+}
 
-  template <typename D1, typename D2, typename R>
-  inline void
-  Partially_Reduced_Product<D1, D2, R>
-  ::time_elapse_assign(const Partially_Reduced_Product& y) {
-    reduce();
-    d1.time_elapse_assign(y.d1);
-    d2.time_elapse_assign(y.d2);
-    // FIXME: check this.
-    clear_reduced_flag();
-  }
+template <typename D1, typename D2, typename R>
+inline void
+Partially_Reduced_Product<D1, D2, R>
+::time_elapse_assign(const Partially_Reduced_Product& y) {
+  reduce();
+  d1.time_elapse_assign(y.d1);
+  d2.time_elapse_assign(y.d2);
+  // FIXME: check this.
+  clear_reduced_flag();
+}
 
 template <typename D1, typename D2, typename R>
 inline void
@@ -498,29 +498,36 @@ inline bool
 Partially_Reduced_Product<D1, D2, R>::is_bounded() const {
   reduce();
   return d1.is_bounded() || d2.is_bounded();
- }
+}
 
 template <typename D1, typename D2, typename R>
 inline bool
-  Partially_Reduced_Product<D1, D2, R>
+Partially_Reduced_Product<D1, D2, R>
 ::bounds_from_above(const Linear_Expression& expr) const {
   reduce();
   return d1.bounds_from_above(expr) || d2.bounds_from_above(expr);
- }
+}
 
 template <typename D1, typename D2, typename R>
 inline bool
-  Partially_Reduced_Product<D1, D2, R>
+Partially_Reduced_Product<D1, D2, R>
 ::bounds_from_below(const Linear_Expression& expr) const {
   reduce();
   return d1.bounds_from_below(expr) || d2.bounds_from_below(expr);
- }
+}
+
+template <typename D1, typename D2, typename R>
+inline bool
+Partially_Reduced_Product<D1, D2, R>::constrains(Variable var) const {
+  reduce();
+  return d1.constrains(var) || d2.constrains(var);
+}
 
 template <typename D1, typename D2, typename R>
 inline void
 Partially_Reduced_Product<D1, D2, R>
 ::widening_assign(const Partially_Reduced_Product& y,
-					unsigned* tp) {
+                  unsigned* tp) {
   // FIXME: In general this is _NOT_ a widening since the reduction
   //        may mean that the sequence does not satisfy the ascending
   //        chain condition.
@@ -650,10 +657,10 @@ Partially_Reduced_Product<D1, D2, R>::set_reduced_flag() const {
   const_cast<Partially_Reduced_Product&>(*this).reduced = true;
 }
 
-  // FIXME: Improve this name.
+// FIXME: Improve this name.
 PPL_OUTPUT_3_PARAM_TEMPLATE_DEFINITIONS(D1, D2, R, Partially_Reduced_Product)
 
-template <typename D1, typename D2, typename R>
+  template <typename D1, typename D2, typename R>
 inline void
 Partially_Reduced_Product<D1, D2, R>::ascii_dump(std::ostream& s) const {
   s << "Domain 1:\n";

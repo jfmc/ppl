@@ -618,6 +618,15 @@ public:
   */
   bool is_bounded() const;
 
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p var is constrained in
+    \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p var is not a space dimension of \p *this.
+  */
+  bool constrains(Variable var) const;
+
   //! Returns <CODE>true</CODE> if and only if \p expr is bounded in \p *this.
   /*!
     This method is the same as bounds_from_below.
