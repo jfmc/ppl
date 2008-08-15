@@ -2,6 +2,9 @@
 Enhancements for PPL 0.10
 =========================
 
+- Document --enable-interfaces and --enable-instantiations in the
+  README.configure file.
+
 - Fix the handling of interfaces/Prolog/tests/ppl_predicate_check_common.pl
   (it is removed by `make distclean', it is sometimes copied unconditionally,
   sometimes conditionally, ...).
