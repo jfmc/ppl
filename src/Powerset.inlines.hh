@@ -205,6 +205,13 @@ Powerset<D>::upper_bound_assign(const Powerset& y) {
 }
 
 template <typename D>
+inline bool
+Powerset<D>::upper_bound_assign_if_exact(const Powerset& y) {
+  least_upper_bound_assign(y);
+  return true;
+}
+
+template <typename D>
 inline memory_size_type
 Powerset<D>::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
