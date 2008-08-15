@@ -23,7 +23,7 @@
 # Process this file with autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library],[0.10pre21],[ppl-devel@cs.unipr.it],[ppl])
+AC_INIT([the Parma Polyhedra Library],[0.10pre22],[ppl-devel@cs.unipr.it],[ppl])
 
 # Minimum autoconf version required.
 AC_PREREQ(2.60)
@@ -884,7 +884,7 @@ AM_CONDITIONAL(BUILD_SOME_PROLOG_INTERFACES, test x$SOME_PROLOG = xyes)
 
 # This is the list of interfaces that are enabled by default.
 # Different instantiations are separated by a '@' character.
-default_instantiations="Polyhedron @ Grid @ Octagonal_Shape<double>"
+default_instantiations="Polyhedron @ Grid @ Octagonal_Shape<double> @ Pointset_Powerset<C_Polyhedron> @ Pointset_Powerset<NNC_Polyhedron>"
 
 enableval=not_specified
 AC_MSG_CHECKING([which instantiations are enabled])
