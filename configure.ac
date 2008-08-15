@@ -26,7 +26,7 @@
 AC_INIT([the Parma Polyhedra Library],[0.10pre21],[ppl-devel@cs.unipr.it],[ppl])
 
 # Minimum autoconf version required.
-AC_PREREQ(2.59)
+AC_PREREQ(2.60)
 
 # Make sure the sources are there.
 AC_CONFIG_SRCDIR(src/Polyhedron_public.cc)
@@ -561,6 +561,7 @@ AC_LANG(C)
 AC_C_CONST
 AC_C_INLINE
 AC_C_BIGENDIAN
+AC_C_TYPEOF
 
 # Checks for C type sizes.
 AC_CHECK_SIZEOF(char)
