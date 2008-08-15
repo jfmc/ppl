@@ -123,6 +123,13 @@ Enhancements for PPL 0.11 or later versions
     of convex polytopes.
     J. Symbolic Comput., 38(4):1261-1272, 2004.
 
+- Pointset_Powerset and Partially_Reduced_Product domains:
+  Improve and add to the existing methods for the powerset and product domains
+  so that they can be subdomains of themselves and of each other;
+  tidy the tests directories for these domains and ensure the code
+  with all likely instantiations is fully tested;
+  add the same functionaity to the C, Java, OCaml and Prolog interfaces.
+
 
 Efficiency Issues
 =================
