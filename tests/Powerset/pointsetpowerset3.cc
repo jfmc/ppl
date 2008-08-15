@@ -331,6 +331,30 @@ test19() {
   return b && b1;
 }
 
+bool
+test20() {
+  Variable A(0);
+  Variable B(1);
+  Pointset_Powerset<Grid> ps(2, EMPTY);
+  bool b0 = !ps.is_universe();
+
+  Grid g(2);
+  g.add_congruence((A %= 0) / 2);
+  ps.add_disjunct(g);
+  bool b1 = !ps.is_universe();
+
+  g = Grid(2);
+  g.add_congruence((A + B %= 0) / 2);
+  ps.add_disjunct(g);
+  bool b2 = !ps.is_universe();
+
+  g = Grid(2);
+  ps.add_disjunct(g);
+  bool b3 = ps.is_universe();
+
+  return b0 && b1 && b2 && b3;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -353,4 +377,5 @@ BEGIN_MAIN
   DO_TEST(test17);
   DO_TEST(test18);
   DO_TEST(test19);
+  DO_TEST(test20);
 END_MAIN
