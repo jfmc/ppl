@@ -42,7 +42,8 @@ $(top_builddir)/src/libppl.la \
 TESTS = \
 powerset1 \
 pointsetpowerset1 pointsetpowerset2 pointsetpowerset3 \
-pointsetpowerset4 pointsetpowerset5 pointsetpowerset6
+pointsetpowerset4 pointsetpowerset5 pointsetpowerset6 \
+product1
 
 XFAIL_TESTS =
 
@@ -58,6 +59,8 @@ pointsetpowerset3_SOURCES = pointsetpowerset3.cc
 pointsetpowerset4_SOURCES = pointsetpowerset4.cc
 pointsetpowerset5_SOURCES = pointsetpowerset5.cc
 pointsetpowerset6_SOURCES = pointsetpowerset6.cc
+
+product1_SOURCES = product1.cc
 
 check_PROGRAMS = $(TESTS)
 

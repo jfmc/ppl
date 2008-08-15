@@ -34,6 +34,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "NNC_Polyhedron.defs.hh"
 #include "Polyhedron.defs.hh"
 #include "Grid.defs.hh"
+#include "Partially_Reduced_Product.defs.hh"
 #include "Variables_Set.types.hh"
 #include "Determinate.defs.hh"
 #include "Powerset.defs.hh"
@@ -95,6 +96,16 @@ public:
   template <typename QH>
   explicit Pointset_Powerset(const Pointset_Powerset<QH>& y,
                              Complexity_Class complexity = ANY_COMPLEXITY);
+
+  /*! \brief
+    Creates a Pointset_Powerset from a product
+    This will be craeted as a single disjunct of type PS that
+    approximates the product.
+  */
+   template <typename QH1, typename QH2, typename R>
+   explicit
+     Pointset_Powerset(const Partially_Reduced_Product<QH1, QH2, R>& prp,
+                       Complexity_Class complexity = ANY_COMPLEXITY);
 
   /*! \brief
     Creates a Pointset_Powerset with a single disjunct approximating
