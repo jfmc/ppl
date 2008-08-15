@@ -167,36 +167,6 @@ print_linear_expression e3; print_string "\n" ;;
    the Camlp4 preprocessor: see
    http://caml.inria.fr/pub/docs/manual-ocaml/manual003.html#htoc10 *)
 
-(* Build a PPL::Linear_Expression out of an OCaml linear_expression. *)
-
-print_string "Build and print the corresponding PPL::Linear_Expression:\n" ;;
-
-test_linear_expression e3 ;;
-
-(* Build a PPL::Constraint out of an OCaml linear_constraint. *)
-
-print_string "Build and print a PPL::Constraint:\n" ;;
-
-test_linear_constraint (e3 >/ e1) ;;
-
-(* Build a PPL::Generator out of an OCaml linear_generator. *)
-
-print_string "Build and print a PPL::Generator:\n" ;;
-
-test_linear_generator (Ray e3) ;;
-
-(* Build a PPL::Constraint_System out of an OCaml constraint_system. *)
-
-print_string "Build and print a PPL::Constraint_System:\n" ;;
-
-test_constraint_system [e3 >/ e1; e1 >/ e2; e1 <=/ e2 -/ n] ;;
-
-(* Build a PPL::Generator_System out of an OCaml generator_system. *)
-
-print_string "Build and print a PPL::Generator_System:\n" ;;
-
-test_generator_system [(Ray e3); (Line e1); (Closure_Point (e2, (Z.from_int 5)))] ;;
-
 (* Build some PPL::C_Polyhedron. *)
 
 for i = 6 downto 0 do
