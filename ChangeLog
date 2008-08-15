@@ -1,3 +1,1878 @@
+2008-08-15 Friday 15:08  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.320), src/checked_mpz.inlines.hh (1.55): FIXME
+	  resolved.  We now require (for developers) Autoconf 2.60 or later
+	  version.
+
+2008-08-15 Friday 12:28  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Powerset/pointsetpowerset3.cc (1.2): Testing Grid
+	  specialization for is_universe().
+
+2008-08-15 Friday 12:27  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Pointset_Powerset.cc (1.21), Pointset_Powerset.defs.hh
+	  (1.41): Added specialization of method is_universe() for
+	  powersets of grids.
+
+2008-08-15 Friday 10:24  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/OCaml/tests/test1.ml (1.3): Obsolete code removed.
+
+2008-08-15 Friday 10:21  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Powerset.defs.hh (1.32), Powerset.inlines.hh (1.22): Added
+	  method upper_bound_assign_if_exact().
+
+2008-08-15 Friday 09:57  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Partially_Reduced_Product.defs.hh (1.31),
+	  Partially_Reduced_Product.inlines.hh (1.28): Drafted
+	  implementation for method bool constrains(Variable var) const;
+
+2008-08-14 Thursday 21:59  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/ppl_interface_generator_common_procedure_generators.m4
+	  (1.22): Disable constrains/2 for the powersets in the interfaces.
+
+2008-08-14 Thursday 20:28  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/OCaml/: ppl_interface_generator_ocaml_ml_code.m4
+	  (1.29), ppl_interface_generator_ocaml_mli.m4 (1.14),
+	  ppl_ocaml_globals.ml (1.9): More test code removed.
+
+2008-08-14 Thursday 20:22  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/OCaml/: ppl_interface_generator_ocaml_cc_code.m4
+	  (1.33), ppl_ocaml_globals.cc (1.14), tests/Makefile.am (1.6):
+	  Removed forgotten debug print statements.  Removed useless file
+	  inclusions, namespace directives, and test functions.
+
+2008-08-14 Thursday 20:03  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.319): Version number bumped.
+
+2008-08-14 Thursday 20:03  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/OCaml/tests/Makefile.am (1.5): Link options fixed.
+
+2008-08-14 Thursday 19:08  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/:
+	  ppl_interface_generator_common_procedure_generators.m4 (1.21),
+	  Prolog/tests/ppl_interface_generator_predicate_check_code.m4
+	  (1.76): Now enabled constrains, unconstrain_space_dimension and
+	  unconstrain_space_dimensions for all simple domains ie Polyhedra,
+	  Grids, Octagonal_Shapes, BD_Shapes, and Boxes
+
+	  M4 code for generating tests for the different domains added to
+	  the Prolog tests directory.
+
+2008-08-14 Thursday 16:56  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Grid.defs.hh (1.72), Grid_public.cc (1.74): Drafted
+	  implementation of method bool constrains(Variable var) const;
+
+2008-08-14 Thursday 16:23  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/:
+	  ppl_interface_generator_common_procedure_generators.m4 (1.20),
+	  C/ppl_interface_generator_c_cc_code.m4 (1.35),
+	  C/ppl_interface_generator_c_h_code.m4 (1.25),
+	  Java/jni/ppl_interface_generator_java_ppl_java_classes_cc_code.m4
+	  (1.50),
+	  Java/ppl_java/ppl_interface_generator_java_classes_java_code.m4
+	  (1.44), Java/tests/ppl_interface_generator_java_test_java_code.m4
+	  (1.30), Java/tests/ppl_java_tests_common (1.8),
+	  OCaml/ppl_interface_generator_ocaml_cc_code.m4 (1.32),
+	  OCaml/ppl_interface_generator_ocaml_ml_code.m4 (1.28),
+	  OCaml/ppl_interface_generator_ocaml_mli_code.m4 (1.21),
+	  OCaml/tests/test1.ml (1.2),
+	  Prolog/ppl_interface_generator_prolog_icc_code.m4 (1.67),
+	  Prolog/tests/pl_check.pl (1.54): Added constrains,
+	  unconstrain_space_dimension and unconstrain_space_dimensions for
+	  the Polyhedron domain to all the interfaces.
+
+	  Tests added for OCaml, Java and Prolog.
+
+2008-08-14 Thursday 16:09  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Box/: Makefile.am (1.60), constrains1.cc (1.1): Added test
+	  for method constrains().
+
+2008-08-14 Thursday 16:09  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Box.defs.hh (1.56), Box.templates.hh (1.113): Drfated
+	  implementation for method bool constrains(Variable var) const;
+
+2008-08-14 Thursday 15:13  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Octagonal_Shape/: Makefile.am (1.31), constrains1.cc (1.1):
+	  Added test for new method constrains().
+
+2008-08-14 Thursday 15:13  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Octagonal_Shape.defs.hh (1.50),
+	  Octagonal_Shape.templates.hh (1.79): Drafted implementation for
+	  method   bool constrains(Variable var) const;
+
+2008-08-14 Thursday 14:42  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/BD_Shape/: Makefile.am (1.77), constrains1.cc (1.1): Added
+	  test for new method constrains().  Corrected a bug in the tests
+	  whereby the test congruences1 was using the sources for
+	  constraints1.
+
+2008-08-14 Thursday 14:41  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: BD_Shape.defs.hh (1.124), BD_Shape.inlines.hh (1.163),
+	  BD_Shape.templates.hh (1.107): Drafted implementation of method
+	  bool constrains() const;
+
+2008-08-14 Thursday 00:35  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/OCaml/tests/Makefile.am (1.4): Use the -o option of
+	  `ocamlc'.
+
+2008-08-13 Wednesday 13:11  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/C/: ppl_interface_generator_c_cc_code.m4 (1.34),
+	  ppl_interface_generator_c_h_code.m4 (1.24): Fixed a bug(s) that
+	  was preventing the generation of code for
+	  get_[minimized_]_[constraints,generators,congruences] methods.
+
+2008-08-13 Wednesday 12:42  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/OCaml/tests/Makefile.am (1.3): Define test1_SOURCES.
+
+2008-08-13 Wednesday 12:30  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/OCaml/Makefile.am (1.42): Use the -o option of
+	  `ocamlc'.  Note: it should be specified before the source file.
+
+2008-08-12 Tuesday 18:06  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO (1.247): Added one item for PPL 0.10.
+
+2008-08-12 Tuesday 17:53  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/Makefile.am (1.60),
+	  doc/devref-java-interface.doxyconf-html.in (1.2),
+	  doc/devref-java-interface.doxyconf-latex.in (1.2),
+	  doc/devref-java-interface.tex (1.2),
+	  doc/user-java-interface.doxyconf-html.in (1.2),
+	  doc/user-java-interface.doxyconf-latex.in (1.2),
+	  doc/user-java-interface.tex (1.2),
+	  interfaces/Java/Java_interface.dox (1.1),
+	  interfaces/Java/Makefile.am (1.17): Added the required machinery
+	  to generate the documentation for the Java interface.
+
+2008-08-12 Tuesday 17:11  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Java/ppl_java/Coefficient.java (1.8): FIXME removed.
+
+2008-08-12 Tuesday 17:09  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Java/ppl_java/: Congruence.java (1.9),
+	  Linear_Expression_Coefficient.java (1.6): Doxygen comments fixed.
+
+2008-08-12 Tuesday 16:47  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/OCaml/Makefile.am (1.41): Distribute also
+	  OCaml_interface.dox.
+
+2008-08-12 Tuesday 16:46  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Java/ppl_java/Congruence.java (1.8): Doxygen comment
+	  fixed.
+
+2008-08-12 Tuesday 16:14  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/Makefile.am (1.48): Distribute also
+	  Prolog_interface.dox.
+
+2008-08-12 Tuesday 16:06  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/: devref-java-interface.doxyconf-html.in (1.1),
+	  devref-java-interface.doxyconf-latex.in (1.1),
+	  devref-java-interface.tex (1.1),
+	  user-java-interface.doxyconf-html.in (1.1),
+	  user-java-interface.doxyconf-latex.in (1.1),
+	  user-java-interface.tex (1.1): New files for the Java interface
+	  documentation.
+
+2008-08-12 Tuesday 16:04  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.318), interfaces/C/Makefile.am (1.41): Distribute
+	  also C_interface.dox.
+
+2008-08-12 Tuesday 12:54  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.317), doc/devref-ocaml-interface.doxyconf-html.in
+	  (1.1), doc/devref-ocaml-interface.doxyconf-latex.in (1.1),
+	  doc/devref-prolog-interface.doxyconf-html.in (1.6): The machinery
+	  to generate the OCaml documentation should now be in place.  (The
+	  documentation itself still needs a lot of work.)
+
+2008-08-12 Tuesday 11:41  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.316), doc/Makefile.am (1.59),
+	  doc/devref-ocaml-interface.tex (1.1),
+	  doc/devref-prolog-interface.doxyconf-latex.in (1.6),
+	  doc/devref-prolog-interface.tex (1.1): Added machinery to
+	  generate the LaTeX developer's manual for the OCaml interface.
+	  Fixed the generation of the same kind of documentation for the
+	  Prolog interface.
+
+2008-08-12 Tuesday 10:33  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.315), doc/Makefile.am (1.58),
+	  doc/user-ocaml-interface.doxyconf-html.in (1.1),
+	  interfaces/OCaml/OCaml_interface.dox (1.2): Added machinery to
+	  generate the HTML documentation for the OCaml interface.
+
+2008-08-11 Monday 19:17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.314): Configure the interfaces/OCaml/tests
+	  directory.
+
+2008-08-11 Monday 19:00  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/user-prolog-interface.doxyconf-latex.in (1.7): File
+	  ppl_prolog.icc plays no role in the generation of the user's
+	  manual.
+
+2008-08-11 Monday 18:57  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/OCaml/: Makefile.am (1.40), tests/Makefile.am (1.2):
+	  Got rid of some old kludges.
+
+2008-08-11 Monday 18:35  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/OCaml/: Makefile.am (1.39), test1.ml (1.32),
+	  tests/.cvsignore (1.1), tests/Makefile.am (1.1), tests/test1.ml
+	  (1.1): The OCaml test programs now have their own directory.	Do
+	  not install .cmo files: now everything is packed into
+	  ppl_ocaml.cma.
+
+2008-08-11 Monday 17:48  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/OCaml/ppl_interface_generator_ocaml_ml_code.m4 (1.27):
+	  Erroneous double underscore changed to single.
+
+2008-08-11 Monday 16:12  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.313), doc/Makefile.am (1.57),
+	  doc/user-ocaml-interface.doxyconf-latex.in (1.1),
+	  doc/user-ocaml-interface.tex (1.1): New machinery to generate the
+	  user's manual of the OCaml interface.
+
+2008-08-11 Monday 16:11  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/OCaml/OCaml_interface.dox (1.1): This will contain the
+	  OCaml interface documentation that is not automatically
+	  generated.
+
+2008-08-11 Monday 11:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/OR_Matrix.defs.hh (1.15): Work around a bug of GCC 4.0.x.
+
+2008-08-10 Sunday 12:11  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/OCaml/ppl_interface_generator_ocaml_mli.m4 (1.13):
+	  Started the adaptation required to produce the OCaml interface
+	  documentation using ocamldoc.
+
+2008-08-09 Saturday 22:52  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO (1.246): Some items dealt with;	others reconsidered.
+
+2008-08-09 Saturday 20:01  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO (1.245), doc/definitions.dox (1.213): Added a section on
+	  upward approximation to the library's documentation.
+
+2008-08-09 Saturday 19:19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.312), tests/Makefile.am (1.266),
+	  tests/Polyhedron/Makefile.am (1.123),
+	  tests/Polyhedron/pointsetpowerset1.cc (1.11),
+	  tests/Polyhedron/pointsetpowerset2.cc (1.5),
+	  tests/Polyhedron/pointsetpowerset3.cc (1.3),
+	  tests/Polyhedron/pointsetpowerset4.cc (1.7),
+	  tests/Polyhedron/pointsetpowerset5.cc (1.5),
+	  tests/Polyhedron/pointsetpowerset6.cc (1.3),
+	  tests/Polyhedron/powerset1.cc (1.23), tests/Powerset/.cvsignore
+	  (1.1), tests/Powerset/Makefile.am (1.1),
+	  tests/Powerset/pointsetpowerset1.cc (1.1),
+	  tests/Powerset/pointsetpowerset2.cc (1.1),
+	  tests/Powerset/pointsetpowerset3.cc (1.1),
+	  tests/Powerset/pointsetpowerset4.cc (1.1),
+	  tests/Powerset/pointsetpowerset5.cc (1.1),
+	  tests/Powerset/pointsetpowerset6.cc (1.1),
+	  tests/Powerset/powerset1.cc (1.1): Tests for the Powerset class
+	  have now their own directory.
+
+2008-08-09 Saturday 19:09  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.311), tests/Makefile.am (1.265),
+	  tests/Grid/Makefile.am (1.66), tests/Grid/directproduct1.cc
+	  (1.49), tests/Grid/directproduct2.cc (1.16),
+	  tests/Grid/directproduct3.cc (1.19), tests/Grid/directproduct4.cc
+	  (1.15), tests/Grid/directproduct5.cc (1.11),
+	  tests/Grid/directproduct6.cc (1.15),
+	  tests/Grid/partiallyreducedproduct1.cc (1.12),
+	  tests/Grid/partiallyreducedproduct2.cc (1.6),
+	  tests/Grid/partiallyreducedproduct3.cc (1.5),
+	  tests/Grid/partiallyreducedproduct4.cc (1.5),
+	  tests/Partially_Reduced_Product/.cvsignore (1.1),
+	  tests/Partially_Reduced_Product/Makefile.am (1.1),
+	  tests/Partially_Reduced_Product/directproduct1.cc (1.1),
+	  tests/Partially_Reduced_Product/directproduct2.cc (1.1),
+	  tests/Partially_Reduced_Product/directproduct3.cc (1.1),
+	  tests/Partially_Reduced_Product/directproduct4.cc (1.1),
+	  tests/Partially_Reduced_Product/directproduct5.cc (1.1),
+	  tests/Partially_Reduced_Product/directproduct6.cc (1.1),
+	  tests/Partially_Reduced_Product/partiallyreducedproduct1.cc
+	  (1.1),
+	  tests/Partially_Reduced_Product/partiallyreducedproduct2.cc
+	  (1.1),
+	  tests/Partially_Reduced_Product/partiallyreducedproduct3.cc
+	  (1.1),
+	  tests/Partially_Reduced_Product/partiallyreducedproduct4.cc
+	  (1.1): Tests for the Partially_Reduced_Product class have now
+	  their own directory.
+
+2008-08-09 Saturday 18:51  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* instchk.hh (1.16): Use consistent template parameters.
+	  Indentation fixed.
+
+2008-08-09 Saturday 18:51  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/definitions.dox (1.212): Improved the section on semantic
+	  geometric descriptors.
+
+2008-08-09 Saturday 17:09  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO (1.244), doc/definitions.dox (1.211): Started working on the
+	  completion and integration into the PPL manuals of the section
+	  about the different kinds of geometric descriptors implemented by
+	  the library.
+
+2008-08-09 Saturday 13:03  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/fpu-ia32.cc (1.3): Added missing inclusion of <ppl-config.h>.
+
+2008-08-09 Saturday 12:44  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/fpu-ia32.cc (1.2): Added missing namespace qualification.
+
+2008-08-09 Saturday 12:25  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Makefile.am (1.180), fpu-ia32.inlines.hh (1.21): Drafted
+	  code to autodetect the presence of an SSE unit.
+
+2008-08-09 Saturday 12:23  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/fpu-ia32.cc (1.1): New source file containing IA-32 floating
+	  point unit non-inline related functions.
+
+2008-08-09 Saturday 11:48  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/fpu-ia32.inlines.hh (1.20): Starting from the 2.18.50.0.4
+	  release of binutils, the x86 assembler no longer accepts `fnstsw
+	  %eax': `fnstsw %ax' should be used instead.
+
+2008-08-08 Friday 19:34  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.310): The Ciao-Prolog interface is no longer
+	  enabled by default.  Version number bumped.
+
+2008-08-08 Friday 19:32  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Init.cc (1.35), fpu-c99.inlines.hh (1.17),
+	  fpu-ia32.inlines.hh (1.19), fpu-none.inlines.hh (1.9),
+	  fpu-sparc.inlines.hh (1.11), fpu.defs.hh (1.20): Added stubs for
+	  fpu_initialize_control_functions(): this will allow, e.g.,
+	  detecting the presence of SSE support at run-time.
+
+2008-07-21 Monday 08:46  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Polyhedron/linearsystem1.cc (1.11): Unused variable
+	  removed.
+
+2008-07-06 Sunday 08:40  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Box/boxdifference1.cc (1.10): Fixed a couple of comments.
+
+2008-07-05 Saturday 21:32  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/Box/boxdifference1.cc (1.9): More tests added. Comments
+	  added to indicate what is being tested.
+
+2008-06-24 Tuesday 20:46  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Linear_System.cc (1.48): In methods normalize(),
+	  sign_normalize() and strong_normalize(), do not reset the
+	  sortedness flag if the number of rows is less than or equal to
+	  one.
+
+2008-06-14 Saturday 23:25  Abramo Bagnara
+
+	* src/Interval.inlines.hh (1.37): Fixed typo.
+
+2008-06-14 Saturday 16:41  Abramo Bagnara
+
+	* src/Interval.inlines.hh (1.36): Forgotten fixes.
+
+2008-06-14 Saturday 16:17  Abramo Bagnara
+
+	* src/Boundary.defs.hh (1.12): Added boundary complement.
+
+2008-06-14 Saturday 16:17  Abramo Bagnara
+
+	* src/Interval.inlines.hh (1.35): Untested attempt to implement
+	  interval difference.
+
+2008-06-10 Tuesday 11:37  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/: Grid_public.cc (1.73), Pointset_Powerset.cc (1.20),
+	  Pointset_Powerset.defs.hh (1.40): In
+	  Grid::join_assign_if_exact(), added an assertion.
+
+	  In Pointset_Powerset.defs.hh corrected and improved brief
+	  description for approximate_partition().
+
+	  In Pointset_Powerset.cc, in approximate_partition(), ensure
+	  congruence system of grid q is minimized before copying;
+
+	  in approximate_partition_aux(), now there is no need to minimize
+	  the congruence system here.
+
+2008-06-10 Tuesday 09:42  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/Grid_chdims.cc (1.24): In Grid::fold_space_dimensions(),
+	  emphasize the fact tha Grid::generators() is only called for its
+	  side-effects.
+
+2008-06-10 Tuesday 09:31  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/Grid_chdims.cc (1.23): Efficiency bug fixed in
+	  fold_space_dimensions().
+
+2008-06-08 Sunday 20:44  Andrea Cimino
+
+	* src/MIP_Problem_GLPK.icc (simplex.4): Solved a bug when computing
+	  the bounds to pass to the GLPK exact solver.	This commit makes
+	  'mippproblem3' test pass.
+
+2008-06-08 Sunday 18:53  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Polyhedron_chdims.cc (1.47): In
+	  Polyhedron::fold_space_dimensions(), emphasize the fact that
+	  Polyhedron::generators() is only called for its side-effects.
+
+2008-06-08 Sunday 18:50  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Octagonal_Shape.templates.hh (1.78): Spurious indentation
+	  fixed.
+
+2008-06-08 Sunday 18:35  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Polyhedron_chdims.cc (1.46): Improved the efficiency of
+	  method fold_space_dimensions() by making sure that we compute at
+	  most one conversion from the constraint to the generator
+	  representation.
+
+2008-06-07 Saturday 15:33  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/MIP_Problem_GLPK.icc (simplex.3): Previous commit corrected
+	  and completed.  Code formatting fixed.
+
+2008-06-07 Saturday 15:19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/MIP_Problem_GLPK.icc (simplex.2): Declaration and uses of the
+	  `statuses' write-only variable have been removed.
+
+2008-06-07 Saturday 15:10  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: MIP_Problem.cc, MIP_Problem_GLPK.icc, MIP_Problem_PPL.icc,
+	  Makefile.am (simplex.[9,1,1,7]): Not the code for the PPL's MIP
+	  native solver and the code for the GLPK interface are completely
+	  separated.
+
+2008-06-07 Saturday 14:49  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/MIP_Problem.cc (simplex.8): Indentation fixed.  In many
+	  places, throw std::run_time_error instead of
+	  std::invalid_argument.
+
+2008-06-07 Saturday 14:27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/MIP_Problem.cc (simplex.7): The code controlled by
+	  PPL_NOISY_SIMPLEX now systematically prints on std:cerr.  That
+	  macro has also been documented.
+
+2008-06-07 Saturday 14:09  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/MIP_Problem.cc (simplex.6): Properly commented long-scope
+	  #if's, #else's and #endif's.
+
+2008-06-07 Saturday 08:52  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* CREDITS (simplex.2): Updated the text concerning Andrea Cimino.
+
+2008-06-07 Saturday 07:42  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* config.rpath (1.5), m4/lib-link.m4 (1.3), m4/lib-prefix.m4 (1.4):
+	  Updated from Gettext 0.17.
+
+2008-06-06 Friday 22:33  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (simplex.5): New configure options:  `--with-glpk'
+	  checks whether the PPL should use the GLPK MIP solver, if
+	  available (the default is not to use it); `--with-glpk-glpssx'
+	  allows to specify the path where GLPK's glpssx.h can be found.
+
+2008-06-06 Friday 22:14  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/MIP_Problem.cc (simplex.5): Use the `PPL_USE_GLPK_MIP_SOLVER'
+	  symbol instead of `PPL_USE_GLPK'.  Define HAVE_GMP before
+	  including <glpssx.h> and <glpk.h>, undefining it after these
+	  inclusions.  The ulset() function does not exist in GLPK 4.28:
+	  use xlset() instead.
+
+2008-06-06 Friday 16:21  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* .cvsignore, ChangeLog, INSTALL, NEWS, README.configure, TODO,
+	  config.guess, config.sub, configure.ac, depcomp, install-sh,
+	  instchk.hh, ltmain.sh, Watchdog/.cvsignore, Watchdog/ChangeLog,
+	  Watchdog/INSTALL, Watchdog/config.guess, Watchdog/config.sub,
+	  Watchdog/configure.ac, Watchdog/depcomp, Watchdog/install-sh,
+	  Watchdog/ltmain.sh, Watchdog/doc/devref.doxyconf-html.in,
+	  Watchdog/doc/devref.doxyconf-latex.in, Watchdog/doc/devref.tex,
+	  Watchdog/doc/fdl.dox, Watchdog/doc/gpl.dox,
+	  Watchdog/doc/user.doxyconf-html.in,
+	  Watchdog/doc/user.doxyconf-latex.in, Watchdog/doc/user.tex,
+	  Watchdog/m4/libtool.m4, Watchdog/m4/ltoptions.m4,
+	  Watchdog/m4/ltsugar.m4, Watchdog/m4/ltversion.m4,
+	  Watchdog/m4/lt~obsolete.m4, Watchdog/src/.cvsignore,
+	  doc/definitions.dox, doc/devref-c-interface.doxyconf-html.in,
+	  doc/devref-c-interface.doxyconf-latex.in,
+	  doc/devref-c-interface.tex,
+	  doc/devref-prolog-interface.doxyconf-html.in,
+	  doc/devref-prolog-interface.doxyconf-latex.in,
+	  doc/devref.doxyconf-html.in, doc/devref.doxyconf-latex.in,
+	  doc/devref.tex, doc/fdl.dox, doc/gpl.dox,
+	  doc/user-c-interface.doxyconf-html.in,
+	  doc/user-c-interface.doxyconf-latex.in, doc/user-c-interface.tex,
+	  doc/user-prolog-interface.doxyconf-html.in,
+	  doc/user-prolog-interface.doxyconf-latex.in,
+	  doc/user-prolog-interface.tex, doc/user.doxyconf-html.in,
+	  doc/user.doxyconf-latex.in, doc/user.tex, fedora/Makefile.am,
+	  fedora/ppl.hh, fedora/ppl.spec, fedora/ppl_c.h, fedora/pwl.hh,
+	  interfaces/.cvsignore, interfaces/Makefile.am,
+	  interfaces/README.interfaces, interfaces/interfaced_boxes.hh,
+	  interfaces/ppl_interface_generator_common.m4,
+	  interfaces/ppl_interface_generator_common_dat.m4,
+	  interfaces/ppl_interface_generator_common_procedure_generators.m4,
+	  interfaces/C/.cvsignore, interfaces/C/Makefile.am,
+	  interfaces/C/ppl_interface_generator_c_cc.m4,
+	  interfaces/C/ppl_interface_generator_c_cc_code.m4,
+	  interfaces/C/ppl_interface_generator_c_dat.m4,
+	  interfaces/C/ppl_interface_generator_c_h.m4,
+	  interfaces/C/ppl_interface_generator_c_h_code.m4,
+	  interfaces/C/ppl_interface_generator_c_procedure_generators.m4,
+	  interfaces/Java/.cvsignore, interfaces/Java/Makefile.am,
+	  interfaces/Java/ppl_interface_generator_java_dat.m4,
+	  interfaces/Java/ppl_interface_generator_java_procedure_generators.m4,
+	  interfaces/Java/jni/.cvsignore, interfaces/Java/jni/Makefile.am,
+	  interfaces/Java/jni/ppl_interface_generator_java_ppl_java_classes_cc.m4,
+	  interfaces/Java/jni/ppl_interface_generator_java_ppl_java_classes_cc_code.m4,
+	  interfaces/Java/jni/ppl_java_common.cc,
+	  interfaces/Java/jni/ppl_java_common.hh,
+	  interfaces/Java/ppl_java/.cvsignore,
+	  interfaces/Java/ppl_java/Makefile.am,
+	  interfaces/Java/ppl_java/ppl_interface_generator_java_classes_java.m4,
+	  interfaces/Java/ppl_java/ppl_interface_generator_java_classes_java_code.m4,
+	  interfaces/Java/tests/.cvsignore,
+	  interfaces/Java/tests/Makefile.am,
+	  interfaces/Java/tests/ppl_interface_generator_java_test_java.m4,
+	  interfaces/Java/tests/ppl_interface_generator_java_test_java_code.m4,
+	  interfaces/OCaml/.cvsignore, interfaces/OCaml/Makefile.am,
+	  interfaces/OCaml/README.ocaml,
+	  interfaces/OCaml/ppl_interface_generator_ocaml_cc.m4,
+	  interfaces/OCaml/ppl_interface_generator_ocaml_cc_code.m4,
+	  interfaces/OCaml/ppl_interface_generator_ocaml_dat.m4,
+	  interfaces/OCaml/ppl_interface_generator_ocaml_ml.m4,
+	  interfaces/OCaml/ppl_interface_generator_ocaml_ml_code.m4,
+	  interfaces/OCaml/ppl_interface_generator_ocaml_mli.m4,
+	  interfaces/OCaml/ppl_interface_generator_ocaml_mli_code.m4,
+	  interfaces/OCaml/ppl_interface_generator_ocaml_procedure_generators.m4,
+	  interfaces/OCaml/ppl_ocaml_globals.cc,
+	  interfaces/Prolog/.cvsignore, interfaces/Prolog/Makefile.am,
+	  interfaces/Prolog/ppl_interface_generator_prolog_dat.m4,
+	  interfaces/Prolog/ppl_interface_generator_prolog_icc.m4,
+	  interfaces/Prolog/ppl_interface_generator_prolog_icc_code.m4,
+	  interfaces/Prolog/ppl_interface_generator_prolog_procedure_generators.m4,
+	  interfaces/Prolog/ppl_interface_generator_prolog_systems.m4,
+	  interfaces/Prolog/ppl_prolog_common.icc,
+	  interfaces/Prolog/Ciao/.cvsignore,
+	  interfaces/Prolog/Ciao/Makefile.am,
+	  interfaces/Prolog/Ciao/ppl_interface_generator_ciao_pl.m4,
+	  interfaces/Prolog/Ciao/ppl_interface_generator_ciao_predicate_check_pl.m4,
+	  interfaces/Prolog/GNU/.cvsignore,
+	  interfaces/Prolog/GNU/Makefile.am,
+	  interfaces/Prolog/GNU/ppl_interface_generator_gprolog_pl.m4,
+	  interfaces/Prolog/SICStus/.cvsignore,
+	  interfaces/Prolog/SICStus/Makefile.am,
+	  interfaces/Prolog/SICStus/ppl_interface_generator_sicstus_sd_cc.m4,
+	  interfaces/Prolog/SICStus/sp_predicate_check.pl,
+	  interfaces/Prolog/SWI/.cvsignore,
+	  interfaces/Prolog/SWI/Makefile.am,
+	  interfaces/Prolog/SWI/ppl_interface_generator_swiprolog_cc.m4,
+	  interfaces/Prolog/SWI/swi_predicate_check.pl,
+	  interfaces/Prolog/XSB/.cvsignore,
+	  interfaces/Prolog/XSB/Makefile.am,
+	  interfaces/Prolog/XSB/ppl_interface_generator_xsb_H.m4,
+	  interfaces/Prolog/XSB/ppl_interface_generator_xsb_cc.m4,
+	  interfaces/Prolog/XSB/ppl_interface_generator_xsb_predicate_check_P.m4,
+	  interfaces/Prolog/YAP/.cvsignore,
+	  interfaces/Prolog/YAP/Makefile.am,
+	  interfaces/Prolog/YAP/ppl_interface_generator_yap_cc.m4,
+	  interfaces/Prolog/tests/.cvsignore,
+	  interfaces/Prolog/tests/Makefile.am,
+	  interfaces/Prolog/tests/pl_grid_check.pl,
+	  interfaces/Prolog/tests/ppl_interface_generator_predicate_check_code.m4,
+	  interfaces/Prolog/tests/ppl_interface_generator_predicate_check_pl.m4,
+	  interfaces/Prolog/tests/ppl_predicate_check_common.pl,
+	  m4/ac_check_ciao.m4, m4/libtool.m4, m4/ltoptions.m4,
+	  m4/ltsugar.m4, m4/ltversion.m4, m4/lt~obsolete.m4,
+	  src/.cvsignore, src/Any_Pointset.defs.hh,
+	  src/BDS_Status.idefs.hh, src/BDS_Status.inlines.hh,
+	  src/BD_Shape.defs.hh, src/BD_Shape.inlines.hh,
+	  src/BD_Shape.templates.hh, src/Bit_Row.defs.hh,
+	  src/Bit_Row.inlines.hh, src/Boundary.defs.hh, src/Box.defs.hh,
+	  src/Box.inlines.hh, src/Box.templates.hh,
+	  src/Box_Status.idefs.hh, src/Box_Status.inlines.hh,
+	  src/C_Integer.hh, src/C_Polyhedron.cc, src/C_Polyhedron.defs.hh,
+	  src/C_Polyhedron.inlines.hh, src/Checked_Number.defs.hh,
+	  src/Checked_Number.inlines.hh, src/Congruence.inlines.hh,
+	  src/Float.defs.hh, src/GMP_Integer.defs.hh,
+	  src/GMP_Integer.inlines.hh, src/Generator.defs.hh,
+	  src/Generator.inlines.hh, src/Grid.defs.hh, src/Grid.inlines.hh,
+	  src/Grid.templates.hh, src/Grid_Generator_System.inlines.hh,
+	  src/Grid_Status.idefs.hh, src/Grid_chdims.cc,
+	  src/Grid_nonpublic.cc, src/Grid_public.cc, src/Init.cc,
+	  src/Interval.defs.hh, src/Interval.inlines.hh,
+	  src/Interval_Info.defs.hh, src/Makefile.am,
+	  src/NNC_Polyhedron.cc, src/NNC_Polyhedron.defs.hh,
+	  src/NNC_Polyhedron.inlines.hh, src/Octagonal_Shape.defs.hh,
+	  src/Octagonal_Shape.inlines.hh, src/Octagonal_Shape.templates.hh,
+	  src/Og_Status.idefs.hh, src/Partially_Reduced_Product.defs.hh,
+	  src/Partially_Reduced_Product.inlines.hh,
+	  src/Partially_Reduced_Product.templates.hh,
+	  src/Ph_Status.idefs.hh, src/Pointset_Ask_Tell.defs.hh,
+	  src/Pointset_Ask_Tell.templates.hh, src/Pointset_Powerset.cc,
+	  src/Pointset_Powerset.defs.hh, src/Pointset_Powerset.inlines.hh,
+	  src/Pointset_Powerset.templates.hh, src/Polyhedron.defs.hh,
+	  src/Polyhedron.inlines.hh, src/Polyhedron.templates.hh,
+	  src/Polyhedron_nonpublic.cc, src/Polyhedron_public.cc,
+	  src/Polyhedron_widenings.cc, src/Rational_Box.hh,
+	  src/Rational_Interval.hh, src/Row.inlines.hh,
+	  src/Temp.inlines.hh, src/checked.defs.hh, src/checked.inlines.hh,
+	  src/checked_float.inlines.hh, src/checked_int.inlines.hh,
+	  src/checked_mpq.inlines.hh, src/checked_mpz.inlines.hh,
+	  src/compiler.hh, src/fpu.defs.hh, src/globals.cc,
+	  src/globals.defs.hh, src/globals.inlines.hh,
+	  src/math_utilities.defs.hh, src/math_utilities.inlines.hh,
+	  src/meta_programming.hh, src/ppl_header.hh, src/simplify.cc,
+	  tests/Random_Number_Generator.inlines.hh, tests/ppl_test.cc,
+	  tests/ppl_test.hh, tests/Ask_Tell/append1.cc,
+	  tests/BD_Shape/Makefile.am, tests/BD_Shape/addconstraints1.cc,
+	  tests/BD_Shape/addspacedims1.cc,
+	  tests/BD_Shape/affinedimension1.cc,
+	  tests/BD_Shape/affineimage1.cc, tests/BD_Shape/affineimage2.cc,
+	  tests/BD_Shape/affinepreimage1.cc,
+	  tests/BD_Shape/ascii_dump_load1.cc,
+	  tests/BD_Shape/bdsdifference1.cc, tests/BD_Shape/bdshull1.cc,
+	  tests/BD_Shape/bhmz05widening1.cc, tests/BD_Shape/bounded1.cc,
+	  tests/BD_Shape/boundedaffineimage1.cc,
+	  tests/BD_Shape/boundedaffinepreimage1.cc,
+	  tests/BD_Shape/boundingbox1.cc, tests/BD_Shape/bounds1.cc,
+	  tests/BD_Shape/cc76extrapolation1.cc,
+	  tests/BD_Shape/cc76narrowing1.cc, tests/BD_Shape/closure1.cc,
+	  tests/BD_Shape/concatenate1.cc, tests/BD_Shape/congruences1.cc,
+	  tests/BD_Shape/constraints1.cc, tests/BD_Shape/contains1.cc,
+	  tests/BD_Shape/containsintegerpoint1.cc,
+	  tests/BD_Shape/discrete1.cc, tests/BD_Shape/disjoint1.cc,
+	  tests/BD_Shape/empty1.cc, tests/BD_Shape/equality1.cc,
+	  tests/BD_Shape/expandspacedim1.cc,
+	  tests/BD_Shape/foldspacedims1.cc, tests/BD_Shape/frombdshape1.cc,
+	  tests/BD_Shape/frombox1.cc, tests/BD_Shape/fromgensys1.cc,
+	  tests/BD_Shape/fromgrid1.cc,
+	  tests/BD_Shape/fromoctagonalshape1.cc,
+	  tests/BD_Shape/frompolyhedron1.cc,
+	  tests/BD_Shape/fromspacedim1.cc,
+	  tests/BD_Shape/generalizedaffineimage1.cc,
+	  tests/BD_Shape/generalizedaffineimage2.cc,
+	  tests/BD_Shape/generalizedaffinepreimage1.cc,
+	  tests/BD_Shape/generalizedaffinepreimage2.cc,
+	  tests/BD_Shape/generalizedaffinepreimage3.cc,
+	  tests/BD_Shape/geomcovers1.cc, tests/BD_Shape/h79widening1.cc,
+	  tests/BD_Shape/intersection1.cc,
+	  tests/BD_Shape/limitedbhmz05extrapolation1.cc,
+	  tests/BD_Shape/limitedcc76extrapolation1.cc,
+	  tests/BD_Shape/limitedh79extrapolation1.cc,
+	  tests/BD_Shape/mapspacedims1.cc, tests/BD_Shape/max_min1.cc,
+	  tests/BD_Shape/max_min2.cc, tests/BD_Shape/membytes1.cc,
+	  tests/BD_Shape/minconstraints1.cc,
+	  tests/BD_Shape/pointsetpowerset1.cc,
+	  tests/BD_Shape/relations1.cc, tests/BD_Shape/relations2.cc,
+	  tests/BD_Shape/relations3.cc, tests/BD_Shape/relations4.cc,
+	  tests/BD_Shape/removespacedims1.cc,
+	  tests/BD_Shape/timeelapse1.cc, tests/BD_Shape/unconstrain1.cc,
+	  tests/BD_Shape/universe1.cc, tests/BD_Shape/writebdshape1.cc,
+	  tests/Box/Makefile.am, tests/Box/addconstraints1.cc,
+	  tests/Box/addspacedims1.cc, tests/Box/affineimage1.cc,
+	  tests/Box/affinepreimage1.cc, tests/Box/bdsdifference1.cc,
+	  tests/Box/boundedaffineimage1.cc,
+	  tests/Box/boundedaffinepreimage1.cc, tests/Box/boxdifference1.cc,
+	  tests/Box/boxhull.cc, tests/Box/boxhull1.cc,
+	  tests/Box/cc76narrowing1.cc, tests/Box/cc76widening.cc,
+	  tests/Box/closure1.cc, tests/Box/concatenate1.cc,
+	  tests/Box/congruences1.cc, tests/Box/constraints1.cc,
+	  tests/Box/expandspacedim1.cc, tests/Box/foldspacedims1.cc,
+	  tests/Box/frombdshape1.cc, tests/Box/fromgensys1.cc,
+	  tests/Box/frompolyhedron1.cc,
+	  tests/Box/generalizedaffineimage1.cc,
+	  tests/Box/generalizedaffineimage2.cc,
+	  tests/Box/generalizedaffinepreimage1.cc,
+	  tests/Box/geomcovers1.cc, tests/Box/intersection1.cc,
+	  tests/Box/interval1.cc, tests/Box/interval2.cc,
+	  tests/Box/mapspacedims1.cc, tests/Box/max_min1.cc,
+	  tests/Box/membytes1.cc, tests/Box/minconstraints1.cc,
+	  tests/Box/pointsetpowerset1.cc, tests/Box/pointsetpowerset2.cc,
+	  tests/Box/refine1.cc, tests/Box/refine2.cc, tests/Box/refine3.cc,
+	  tests/Box/refinewithcongruences1.cc,
+	  tests/Box/refinewithconstraint1.cc,
+	  tests/Box/refinewithconstraint2.cc,
+	  tests/Box/refinewithconstraints1.cc,
+	  tests/Box/refinewithconstraints2.cc, tests/Box/relations2.cc,
+	  tests/Box/relations3.cc, tests/Box/relations4.cc,
+	  tests/Box/removespacedims1.cc, tests/Box/timeelapse1.cc,
+	  tests/Box/unconstrain1.cc, tests/Grid/Makefile.am,
+	  tests/Grid/congruences1.cc, tests/Grid/copyconstruct1.cc,
+	  tests/Grid/directproduct3.cc, tests/Grid/directproduct5.cc,
+	  tests/Grid/directproduct6.cc, tests/Grid/fromgrid1.cc,
+	  tests/Grid/frompolyhedron1.cc, tests/Grid/grid3.cc,
+	  tests/Grid/mincongruences1.cc,
+	  tests/Grid/partiallyreducedproduct1.cc,
+	  tests/Grid/partiallyreducedproduct2.cc,
+	  tests/Grid/partiallyreducedproduct3.cc,
+	  tests/Grid/partiallyreducedproduct4.cc,
+	  tests/Grid/pointsetpowerset1.cc,
+	  tests/Grid/powersetdifference1.cc,
+	  tests/Grid/refinewithcongruences1.cc,
+	  tests/Grid/refinewithconstraints1.cc, tests/Grid/unconstrain1.cc,
+	  tests/Octagonal_Shape/Makefile.am,
+	  tests/Octagonal_Shape/addspacedims1.cc,
+	  tests/Octagonal_Shape/affinepreimage1.cc,
+	  tests/Octagonal_Shape/affinepreimage2.cc,
+	  tests/Octagonal_Shape/boundedaffineimage1.cc,
+	  tests/Octagonal_Shape/boundedaffinepreimage1.cc,
+	  tests/Octagonal_Shape/cc76extrapolation1.cc,
+	  tests/Octagonal_Shape/congruences1.cc,
+	  tests/Octagonal_Shape/constraints1.cc,
+	  tests/Octagonal_Shape/containsintegerpoint1.cc,
+	  tests/Octagonal_Shape/expandspacedim1.cc,
+	  tests/Octagonal_Shape/frombox1.cc,
+	  tests/Octagonal_Shape/fromoctagonalshape1.cc,
+	  tests/Octagonal_Shape/frompolyhedron1.cc,
+	  tests/Octagonal_Shape/generalizedaffineimage1.cc,
+	  tests/Octagonal_Shape/generalizedaffineimage2.cc,
+	  tests/Octagonal_Shape/generalizedaffineimage3.cc,
+	  tests/Octagonal_Shape/generalizedaffineimage4.cc,
+	  tests/Octagonal_Shape/generalizedaffineimage5.cc,
+	  tests/Octagonal_Shape/generalizedaffinepreimage1.cc,
+	  tests/Octagonal_Shape/generalizedaffinepreimage2.cc,
+	  tests/Octagonal_Shape/generalizedaffinepreimage3.cc,
+	  tests/Octagonal_Shape/generalizedaffinepreimage4.cc,
+	  tests/Octagonal_Shape/intersection1.cc,
+	  tests/Octagonal_Shape/limitedbhmz05extrapolation1.cc,
+	  tests/Octagonal_Shape/limitedcc76extrapolation1.cc,
+	  tests/Octagonal_Shape/max_min2.cc,
+	  tests/Octagonal_Shape/membytes1.cc,
+	  tests/Octagonal_Shape/minconstraints1.cc,
+	  tests/Octagonal_Shape/octhull1.cc,
+	  tests/Octagonal_Shape/pointsetpowerset1.cc,
+	  tests/Octagonal_Shape/relatwithcons2.cc,
+	  tests/Octagonal_Shape/relatwithcons3.cc,
+	  tests/Octagonal_Shape/relatwithgen1.cc,
+	  tests/Octagonal_Shape/unconstrain1.cc,
+	  tests/Polyhedron/Makefile.am, tests/Polyhedron/addcongruence1.cc,
+	  tests/Polyhedron/boundedaffineimage1.cc,
+	  tests/Polyhedron/cnncconversion1.cc,
+	  tests/Polyhedron/exceptions1.cc, tests/Polyhedron/hybrid.cc,
+	  tests/Polyhedron/pointsetpowerset1.cc,
+	  tests/Polyhedron/pointsetpowerset2.cc,
+	  tests/Polyhedron/pointsetpowerset3.cc,
+	  tests/Polyhedron/pointsetpowerset4.cc,
+	  tests/Polyhedron/pointsetpowerset5.cc,
+	  tests/Polyhedron/pointsetpowerset6.cc,
+	  tests/Polyhedron/refinewithcongruence1.cc,
+	  tests/Polyhedron/refinewithcongruences1.cc,
+	  tests/Polyhedron/refinewithconstraint1.cc,
+	  tests/Polyhedron/refinewithconstraints1.cc,
+	  tests/Polyhedron/unconstrain1.cc, utils/cm_cleaner.sh,
+	  utils/cm_splitter.sh
+	  (simplex.[1,4,3,4,4,7,5,5,4,2,4,4,3,1,4,3,5,5,3,1,3,3,3,3,3,3,3,3,3,3,2,2,2,2,2,2,4,3,3,3,3,3,5,4,4,1,2,3,3,3,3,3,3,4,4,4,3,2,3,2,2,1,4,2,2,3,3,2,1,4,3,3,3,3,3,2,3,3,3,2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,1,4,3,3,3,3,3,3,3,3,2,3,1,4,3,3,3,2,3,3,1,4,3,3,1,4,3,2,4,3,3,1,4,3,3,1,4,3,3,3,1,4,3,1,4,3,3,3,3,2,2,2,2,2,2,2,3,4,4,5,6,5,3,3,3,3,3,3,2,2,3,4,5,5,5,5,5,4,5,5,7,4,5,5,5,5,4,5,5,5,4,4,3,3,6,4,5,5,3,3,3,3,3,3,3,4,3,3,3,3,3,3,5,5,4,5,5,3,3,2,3,3,4,4,4,5,4,4,4,4,3,5,3,2,2,3,3,3,4,5,5,3,5,5,4,4,5,4,5,4,5,5,6,4,3,3,3,3,5,5,4,4,2,4,5,3,3,3,4,4,3,3,2,2,5,3,3,4,3,4,5,5,6,4,4,4,5,6,6,4,4,3,3,3,4,2,4,5,5,3,5,5,2,4,4,3,3,3,3,3,3,3,2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,2,3,3,3,3,3,3,3,3,3,3,2,3,3,3,2,2,2,2,2,3,2,2,3,3,2,5,5,4,3,3,3,2,2,5,4,3,3,3,2,2,3,2,2,2,3,3,3,3,3,3,3,2,3,3,3,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,2,3,2,3,2,9,4,4,4,3,3,3,3,2,2,2,2,2,2,2,2,2,3,3]):
+	  Fifth merge of the trunk to the `simplex' branch.
+
+2008-06-06 Friday 16:19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/MIP_Problem.cc (simplex.4): Extended the scope of an #ifdef
+	  PPL_USE_GLPK.
+
+2008-06-06 Friday 14:10  Andrea Cimino
+
+	* src/: MIP_Problem.cc, MIP_Problem.defs.hh (simplex.[3,3]): As an
+	  option, now the PPL can use the exact simplex solver of GLPK.
+
+2008-06-05 Thursday 15:55  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Polyhedron/: Makefile.am, wrap1.cc
+	  (bounded_arithmetic.[1,1]): New file wrap1.cc will contain tests
+	  for method Polyhedron::wrap_assign().
+
+2008-06-05 Thursday 15:39  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Polyhedron.defs.hh, Polyhedron_public.cc
+	  (bounded_arithmetic.[1,1]): Added the declaration and a stub
+	  implementation of new method Polyhedron::wrap_assign().
+
+2008-06-05 Thursday 15:10  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/globals.types.hh (bounded_arithmetic.1): New enumerations
+	  Bounded_Integer_Type_Width, Bounded_Integer_Type_Signedness and
+	  Bounded_Integer_Type_Overflow to encode the width, signedness and
+	  overflow behavior of bounded integer types, respectively.
+
+2008-05-26 Monday 22:35  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Box/max_min1.cc (1.8): Capitalization fixed.
+
+2008-05-25 Sunday 10:52  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/ac_check_ciao.m4 (simplex.1): file ac_check_ciao.m4 was added
+	  on branch simplex on 2008-06-06 14:22:04 +0000
+
+2008-05-25 Sunday 10:52  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.309), interfaces/Prolog/Ciao/Makefile.am (1.73),
+	  m4/ac_check_ciao.m4 (1.1): Added machinery to automatically find
+	  the header files of the Ciao Prolog foreign language interface.
+
+2008-05-24 Saturday 14:23  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.308): Version number bumped.
+
+2008-05-24 Saturday 14:22  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README.configure (1.26): Updated.
+
+2008-05-12 Monday 20:30  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: C_Polyhedron.inlines.hh (1.43), Congruence.inlines.hh
+	  (1.20), Grid_Generator_System.inlines.hh (1.18),
+	  NNC_Polyhedron.inlines.hh (1.44): Define inline methods before
+	  their first invocation.
+
+2008-05-12 Monday 08:33  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: BD_Shape.defs.hh (1.123), Octagonal_Shape.defs.hh (1.49):
+	  Obsolete workarounds removed.
+
+2008-05-12 Monday 08:30  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Box.defs.hh (1.55): Obsolete workarounds removed.
+
+2008-05-12 Monday 08:09  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: compiler.hh (1.14), fpu.defs.hh (1.19): The Intel C/C++
+	  compilers accept the same asm() syntax as GCC.
+
+2008-05-11 Sunday 23:30  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Box.defs.hh (1.54), Box.inlines.hh (1.33), Box.templates.hh
+	  (1.112), Box_Status.idefs.hh (1.3), Box_Status.inlines.hh (1.3):
+	  Avoid name clashes between the parameter of class Box and class
+	  Interval.
+
+2008-05-11 Sunday 23:30  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Box_Status.idefs.hh (simplex.1): file Box_Status.idefs.hh was
+	  added on branch simplex on 2008-06-06 14:22:04 +0000
+
+2008-05-11 Sunday 23:30  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Box_Status.inlines.hh (simplex.1): file Box_Status.inlines.hh
+	  was added on branch simplex on 2008-06-06 14:22:04 +0000
+
+2008-05-11 Sunday 22:26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Box.templates.hh (1.111): Dead code removed.
+
+2008-05-11 Sunday 22:26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Box.defs.hh (1.53): Useless inclusion removed.
+
+2008-05-11 Sunday 22:13  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: BD_Shape.templates.hh (1.106), Octagonal_Shape.templates.hh
+	  (1.77): Unreachable breaks removed.
+
+2008-05-11 Sunday 22:12  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Pointset_Ask_Tell.defs.hh (1.17): Inclusions fixed.
+
+2008-05-11 Sunday 21:58  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: MIP_Problem.cc (1.67), Polyhedron_public.cc (1.117):
+	  Unreachable breaks removed.
+
+2008-05-11 Sunday 21:58  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Pointset_Powerset.defs.hh (1.39): Inclusions fixed.
+
+2008-05-11 Sunday 21:46  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: compiler.hh (1.13), fpu.defs.hh (1.18): Do not try to use
+	  asm() statements unless defined(__GNUC__).
+
+2008-05-11 Sunday 21:45  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/checked_mpz.inlines.hh (1.54): Warning avoided.
+
+2008-05-11 Sunday 21:45  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Box.templates.hh (1.110): Code formatting improved.
+
+2008-05-11 Sunday 21:44  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: BD_Shape.templates.hh (1.105), Octagonal_Shape.templates.hh
+	  (1.76): Avoid shadowing and repeated computations.
+
+2008-05-10 Saturday 10:54  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.307): When the --enable-more-assertions option is
+	  given, we define both _GLIBCXX_DEBUG and _GLIBCXX_DEBUG_PEDANTIC;
+	  this way, when libstdc++ is used, it is used in pedantic debug
+	  mode.
+
+2008-05-10 Saturday 10:52  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Init.cc (1.34), Polyhedron.defs.hh (1.337),
+	  Polyhedron_public.cc (1.116), simplify.cc (1.51): Fixed an (until
+	  now) inconsequential problem whereby we were using the STL
+	  outside its specifications (problem spotted by Stefano Soffia and
+	  further analyzed by Enea Zaffanella).
+
+2008-05-05 Monday 13:45  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/libtool.m4 (simplex.1): file libtool.m4 was added on branch
+	  simplex on 2008-06-06 14:22:04 +0000
+
+2008-05-05 Monday 13:45  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/ltoptions.m4 (simplex.1): file ltoptions.m4 was added on
+	  branch simplex on 2008-06-06 14:22:04 +0000
+
+2008-05-05 Monday 13:45  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/ltversion.m4 (simplex.1): file ltversion.m4 was added on
+	  branch simplex on 2008-06-06 14:22:04 +0000
+
+2008-05-05 Monday 13:45  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/lt~obsolete.m4 (simplex.1): file lt~obsolete.m4 was added on
+	  branch simplex on 2008-06-06 14:22:04 +0000
+
+2008-05-05 Monday 13:45  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/m4/libtool.m4 (simplex.1): file libtool.m4 was added on
+	  branch simplex on 2008-06-06 14:21:55 +0000
+
+2008-05-05 Monday 13:45  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/m4/ltoptions.m4 (simplex.1): file ltoptions.m4 was added
+	  on branch simplex on 2008-06-06 14:21:55 +0000
+
+2008-05-05 Monday 13:45  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/m4/ltversion.m4 (simplex.1): file ltversion.m4 was added
+	  on branch simplex on 2008-06-06 14:21:55 +0000
+
+2008-05-05 Monday 13:45  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/m4/lt~obsolete.m4 (simplex.1): file lt~obsolete.m4 was
+	  added on branch simplex on 2008-06-06 14:21:55 +0000
+
+2008-05-05 Monday 13:45  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.306), ltmain.sh (1.34), Watchdog/configure.ac
+	  (1.45), Watchdog/ltmain.sh (1.23), Watchdog/m4/libtool.m4 (1.5),
+	  Watchdog/m4/ltoptions.m4 (1.3), Watchdog/m4/ltversion.m4 (1.4),
+	  Watchdog/m4/lt~obsolete.m4 (1.2), m4/libtool.m4 (1.5),
+	  m4/ltoptions.m4 (1.3), m4/ltversion.m4 (1.4), m4/lt~obsolete.m4
+	  (1.2): Updated to Libtool 2.2.4.
+
+2008-05-04 Sunday 09:29  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/ppl_test.cc (1.13): Temporarily work around a problem
+	  whereby testing for the existence of <fenv.h> is no longer enough
+	  for our purposes.
+
+2008-05-04 Sunday 09:27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Random_Number_Generator.inlines.hh (1.12): Include <ctime>.
+
+2008-05-04 Sunday 09:25  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/BD_Shape.templates.hh (1.104): Use explicit braces to avoid
+	  ambiguous `else'.
+
+2008-04-30 Wednesday 12:54  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/: devref-c-interface.tex (1.5), devref.tex (1.26),
+	  user-c-interface.tex (1.5), user-prolog-interface.tex (1.5),
+	  user.tex (1.27): Package inclusions updated.	We now set the
+	  `tocdepth' counter to 2 in order to obtain a more useful index.
+
+2008-04-29 Tuesday 14:53  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/BD_Shape.templates.hh (1.103): Avoid useless computation in
+	  minimized_congruences(), thereby also silencing a compiler
+	  warning.
+
+2008-04-29 Tuesday 14:51  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Grid/pointsetpowerset1.cc (1.3): Test 15 is no longer
+	  failing.
+
+2008-04-29 Tuesday 14:51  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Grid/pointsetpowerset1.cc (simplex.1): file
+	  pointsetpowerset1.cc was added on branch simplex on 2008-06-06
+	  14:22:11 +0000
+
+2008-04-28 Monday 16:47  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Octagonal_Shape.inlines.hh (1.35),
+	  Octagonal_Shape.templates.hh (1.75): Corrected an efficiency bug
+	  in methods minimized_congruences() and congruences().  In method
+	  OK(), do not check for closure if the shape is based on non-exact
+	  (i.e., floating point) coefficients.
+
+2008-04-28 Monday 15:01  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: BD_Shape.inlines.hh (1.162), BD_Shape.templates.hh (1.102):
+	  Corrected an efficiency bug in methods minimized_congruences()
+	  and congruences().
+
+2008-04-28 Monday 12:28  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Float.defs.hh (1.29): Added missing inclusion of
+	  meta_programming.hh.
+
+2008-04-27 Sunday 16:28  Abramo Bagnara
+
+	* src/Temp.inlines.hh (1.5): Added missing inline.
+
+2008-04-27 Sunday 16:28  Abramo Bagnara
+
+	* src/Float.defs.hh (1.28): Added True/False helper.
+
+2008-04-24 Thursday 08:37  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Octagonal_Shape.defs.hh (1.48), Polyhedron.defs.hh (1.336):
+	  Do not refer to the undefined concept `reduced' for congruence
+	  systems.
+
+2008-04-24 Thursday 08:36  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Grid.defs.hh (1.71): Minor improvements in documentation: do
+	  not refer to `reduced' congruence systems since it is undefined
+	  terminology at the user level.
+
+2008-04-24 Thursday 08:29  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/BD_Shape.defs.hh (1.122): Minor fix in the indentation of the
+	  documentation.
+
+2008-04-23 Wednesday 16:21  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/:
+	  ppl_interface_generator_common_procedure_generators.m4 (1.19),
+	  C/ppl_interface_generator_c_cc_code.m4 (1.33),
+	  C/ppl_interface_generator_c_h_code.m4 (1.23),
+	  Java/jni/ppl_interface_generator_java_ppl_java_classes_cc_code.m4
+	  (1.49), Java/jni/ppl_java_common.cc (1.38),
+	  Java/ppl_java/ppl_interface_generator_java_classes_java_code.m4
+	  (1.43), Java/tests/ppl_interface_generator_java_test_java_code.m4
+	  (1.29), OCaml/ppl_interface_generator_ocaml_cc_code.m4 (1.31),
+	  OCaml/ppl_interface_generator_ocaml_ml_code.m4 (1.26),
+	  OCaml/ppl_interface_generator_ocaml_mli_code.m4 (1.20),
+	  Prolog/ppl_interface_generator_prolog_icc_code.m4 (1.66),
+	  Prolog/tests/ppl_interface_generator_predicate_check_code.m4
+	  (1.75), Prolog/tests/ppl_predicate_check_common.pl (1.11): Added
+	  to all the interfaces the unconstrain() procedure.
+
+	  Added (except to the C interface which already had it) the
+	  constrains() procedure.
+
+	  Added to the Prolog interface the option of building from a
+	  friend with complexity specified.
+
+	  Tests added for all new code in the Prolog and Java interfaces.
+
+2008-04-23 Wednesday 16:21  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/ppl_interface_generator_common_procedure_generators.m4
+	  (simplex.1): file
+	  ppl_interface_generator_common_procedure_generators.m4 was added
+	  on branch simplex on 2008-06-06 14:21:58 +0000
+
+2008-04-23 Wednesday 12:20  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/: BD_Shape/pointsetpowerset1.cc (1.4),
+	  Octagonal_Shape/pointsetpowerset1.cc (1.4): Revised the distances
+	  from the exact values in test 03.
+
+2008-04-23 Wednesday 12:20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/BD_Shape/pointsetpowerset1.cc (simplex.1): file
+	  pointsetpowerset1.cc was added on branch simplex on 2008-06-06
+	  14:22:09 +0000
+
+2008-04-23 Wednesday 12:20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Octagonal_Shape/pointsetpowerset1.cc (simplex.1): file
+	  pointsetpowerset1.cc was added on branch simplex on 2008-06-06
+	  14:22:12 +0000
+
+2008-04-23 Wednesday 09:15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Polyhedron/pointsetpowerset5.cc (simplex.1): file
+	  pointsetpowerset5.cc was added on branch simplex on 2008-06-06
+	  14:22:13 +0000
+
+2008-04-23 Wednesday 09:15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Polyhedron/pointsetpowerset6.cc (simplex.1): file
+	  pointsetpowerset6.cc was added on branch simplex on 2008-06-06
+	  14:22:13 +0000
+
+2008-04-23 Wednesday 09:15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Box/pointsetpowerset2.cc (simplex.1): file
+	  pointsetpowerset2.cc was added on branch simplex on 2008-06-06
+	  14:22:10 +0000
+
+2008-04-23 Wednesday 09:15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/: BD_Shape/pointsetpowerset1.cc (1.3),
+	  Box/pointsetpowerset1.cc (1.6), Box/pointsetpowerset2.cc (1.2),
+	  Grid/pointsetpowerset1.cc (1.2),
+	  Octagonal_Shape/pointsetpowerset1.cc (1.3), Polyhedron/hybrid.cc
+	  (1.6), Polyhedron/pointsetpowerset1.cc (1.10),
+	  Polyhedron/pointsetpowerset2.cc (1.4),
+	  Polyhedron/pointsetpowerset5.cc (1.4),
+	  Polyhedron/pointsetpowerset6.cc (1.2): Do not put spaces around
+	  operator->().
+
+2008-04-22 Tuesday 19:50  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/Octagonal_Shape/Makefile.am (1.30): Type corrected.
+
+2008-04-22 Tuesday 17:38  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/BD_Shape/pointsetpowerset1.cc (1.2): Allow for non-integral
+	  numbers using check_result().
+
+2008-04-22 Tuesday 17:21  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/Octagonal_Shape/pointsetpowerset1.cc (1.2): Allow for non
+	  integral results using check_results() on the disjuncts.
+
+2008-04-22 Tuesday 11:59  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* NEWS (1.228), src/Pointset_Powerset.cc (1.19),
+	  src/Pointset_Powerset.defs.hh (1.38),
+	  src/Pointset_Powerset.inlines.hh (1.15),
+	  src/Pointset_Powerset.templates.hh (1.32),
+	  tests/BD_Shape/Makefile.am (1.76),
+	  tests/BD_Shape/pointsetpowerset1.cc (1.1), tests/Box/Makefile.am
+	  (1.59), tests/Box/pointsetpowerset2.cc (1.1),
+	  tests/Grid/Makefile.am (1.65), tests/Grid/pointsetpowerset1.cc
+	  (1.1), tests/Octagonal_Shape/Makefile.am (1.29),
+	  tests/Octagonal_Shape/pointsetpowerset1.cc (1.1),
+	  tests/Polyhedron/Makefile.am (1.122),
+	  tests/Polyhedron/pointsetpowerset6.cc (1.1): Added constructors
+	  for the pointset powerset domain from other domains that are not
+	  products or powersets.
+
+	  Added to all the constructors for the pointset powerset domain
+	  from other sematic domains an optional complexity argument.
+
+	  Tests for these new constructors added.  A note added in the NEWS
+	  file on these additions
+
+2008-04-22 Tuesday 11:53  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/NNC_Polyhedron.defs.hh (1.60): Properly order the list of
+	  parameters of NNC_Polyhedron(grid, complexity) in the doxygen
+	  documentation.
+
+2008-04-22 Tuesday 11:49  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* NEWS (1.227): Mention the new unconstrain() methods.
+
+2008-04-22 Tuesday 09:55  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/Box/pointsetpowerset1.cc (1.5): Tests 4 to 19 uncommented
+	  and adapted to use the box domain.
+
+2008-04-22 Tuesday 09:32  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/checked.inlines.hh (1.43): Added a note on the implementation
+	  of gcdext_exact().
+
+2008-04-21 Monday 22:48  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/NNC_Polyhedron.defs.hh (1.59): Document the parameter
+	  complexity in: NNC_Polyhedron(const Grid &grid,
+	  Complexity_Class complexity=ANY_COMPLEXITY)
+
+2008-04-21 Monday 12:13  Elena Mazzi
+
+	* src/BD_Shape.templates.hh (1.101): Corrected the private method
+	  `get_limiting_shape' when `cs' contains an equality.
+
+2008-04-18 Friday 14:25  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Partially_Reduced_Product.defs.hh (1.30),
+	  Partially_Reduced_Product.inlines.hh (1.27): Added methods
+	  unconstrain() to class Partially_Reduced_Product.
+
+2008-04-18 Friday 14:24  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Octagonal_Shape/fromoctagonalshape1.cc (simplex.1): file
+	  fromoctagonalshape1.cc was added on branch simplex on 2008-06-06
+	  14:22:12 +0000
+
+2008-04-18 Friday 14:24  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/: BD_Shape/frombdshape1.cc (1.2),
+	  Octagonal_Shape/fromoctagonalshape1.cc (1.2): Corrected typos:
+	  the assignment operator is not meant to implement a conversion
+	  between different kinds of BD_ or Octagonal_ shapes.
+
+2008-04-18 Friday 14:24  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/BD_Shape/frombdshape1.cc (simplex.1): file frombdshape1.cc
+	  was added on branch simplex on 2008-06-06 14:22:09 +0000
+
+2008-04-18 Friday 11:06  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/Partially_Reduced_Product.defs.hh (1.29),
+	  src/Partially_Reduced_Product.inlines.hh (1.26),
+	  tests/Grid/directproduct6.cc (1.14): Added a constructor for a
+	  product from another product but with possibly different
+	  templatic parameters.
+
+2008-04-18 Friday 10:32  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/Partially_Reduced_Product.defs.hh (1.28),
+	  src/Partially_Reduced_Product.inlines.hh (1.25),
+	  tests/Grid/directproduct6.cc (1.13): Added the complexity class
+	  parameter for the copy constructor for the product domain.
+
+2008-04-18 Friday 10:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Grid/fromgrid1.cc (simplex.1): file fromgrid1.cc was added
+	  on branch simplex on 2008-06-06 14:22:11 +0000
+
+2008-04-18 Friday 10:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Grid/partiallyreducedproduct4.cc (simplex.1): file
+	  partiallyreducedproduct4.cc was added on branch simplex on
+	  2008-06-06 14:22:11 +0000
+
+2008-04-18 Friday 10:15  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/BD_Shape.defs.hh (1.121), src/BD_Shape.inlines.hh (1.161),
+	  src/Box.defs.hh (1.52), src/Box.inlines.hh (1.32),
+	  src/Box.templates.hh (1.109), src/C_Polyhedron.defs.hh (1.58),
+	  src/C_Polyhedron.inlines.hh (1.42), src/Grid.defs.hh (1.70),
+	  src/Grid_public.cc (1.72), src/NNC_Polyhedron.defs.hh (1.58),
+	  src/NNC_Polyhedron.inlines.hh (1.43), src/Octagonal_Shape.defs.hh
+	  (1.47), src/Octagonal_Shape.inlines.hh (1.34),
+	  src/Partially_Reduced_Product.defs.hh (1.27),
+	  src/Partially_Reduced_Product.inlines.hh (1.24),
+	  src/Polyhedron.defs.hh (1.335), src/Polyhedron_nonpublic.cc
+	  (1.83), tests/BD_Shape/Makefile.am (1.75),
+	  tests/BD_Shape/frombdshape1.cc (1.1), tests/Grid/Makefile.am
+	  (1.64), tests/Grid/copyconstruct1.cc (1.10),
+	  tests/Grid/directproduct6.cc (1.12), tests/Grid/fromgrid1.cc
+	  (1.1), tests/Grid/partiallyreducedproduct1.cc (1.11),
+	  tests/Grid/partiallyreducedproduct2.cc (1.5),
+	  tests/Grid/partiallyreducedproduct3.cc (1.4),
+	  tests/Grid/partiallyreducedproduct4.cc (1.4),
+	  tests/Octagonal_Shape/Makefile.am (1.28),
+	  tests/Octagonal_Shape/fromoctagonalshape1.cc (1.1): Added to the
+	  Partially_Reduced_Product<> class in the semantic GD constructors
+	  from other classes a complexity parameter.
+
+	  Tests for this have been added as needed. Also some comments wrt
+	  the tests for the product domain have been corrected.
+
+	  In the Grid, Box, BD_Shape and Octagonal_Shape added a complexity
+	  class parameter to the copy constructor and to the constructor
+	  from the same class but with a different numeric class (where
+	  applicable).
+
+	  Test files added where no obvious test for the copy constructor
+	  could be found. For the grid tests, the test file
+	  copyconstruct1.cc has been renamed for uniformity with other
+	  tests and the other classes.
+
+2008-04-18 Friday 09:54  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Any_Pointset.defs.hh (1.19), Pointset_Ask_Tell.defs.hh
+	  (1.16), Pointset_Ask_Tell.templates.hh (1.14): Added the
+	  unconstrain() methods to Any_Pointset and Pointset_Ask_Tell.
+
+2008-04-18 Friday 09:32  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Box/: Makefile.am (1.58), unconstrain1.cc (1.1): Added a
+	  test for the new Box::unconstrain() methods.
+
+2008-04-18 Friday 09:32  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Box/unconstrain1.cc (simplex.1): file unconstrain1.cc was
+	  added on branch simplex on 2008-06-06 14:22:10 +0000
+
+2008-04-18 Friday 09:30  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Box.defs.hh (1.51), Box.inlines.hh (1.31), Box.templates.hh
+	  (1.108): Added methods unconstrain().
+
+2008-04-17 Thursday 18:34  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/C_Polyhedron.cc (1.27), src/C_Polyhedron.defs.hh (1.57),
+	  src/NNC_Polyhedron.cc (1.27), src/NNC_Polyhedron.defs.hh (1.57),
+	  tests/Polyhedron/cnncconversion1.cc (1.6): Added a complexity
+	  parameter for converting between C and NNC polyhedra. This is
+	  ignored.
+
+	  A couple of tests added to cnncconversion1.cc.
+
+2008-04-17 Thursday 17:36  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/Grid/: Makefile.am (1.63), unconstrain1.cc (1.1): Added
+	  tests for unconstrain() for the grids.
+
+2008-04-17 Thursday 17:36  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Grid/unconstrain1.cc (simplex.1): file unconstrain1.cc was
+	  added on branch simplex on 2008-06-06 14:22:11 +0000
+
+2008-04-17 Thursday 17:07  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Grid.defs.hh (1.69), Grid_public.cc (1.71): Added methods
+	  unconstrain().
+
+2008-04-17 Thursday 17:05  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: C_Polyhedron.cc (1.26), C_Polyhedron.defs.hh (1.56),
+	  C_Polyhedron.inlines.hh (1.41), NNC_Polyhedron.cc (1.26),
+	  NNC_Polyhedron.defs.hh (1.56), NNC_Polyhedron.inlines.hh (1.42),
+	  Polyhedron.templates.hh (1.19): Fixed indentation.
+
+2008-04-17 Thursday 16:46  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/BD_Shape/frombox1.cc (simplex.1): file frombox1.cc was
+	  added on branch simplex on 2008-06-06 14:22:09 +0000
+
+2008-04-17 Thursday 16:46  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Octagonal_Shape/frombox1.cc (simplex.1): file frombox1.cc
+	  was added on branch simplex on 2008-06-06 14:22:12 +0000
+
+2008-04-17 Thursday 16:46  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/BD_Shape.defs.hh (1.120), src/BD_Shape.inlines.hh (1.160),
+	  src/Grid.defs.hh (1.68), src/Grid.inlines.hh (1.24),
+	  src/Grid.templates.hh (1.34), src/Octagonal_Shape.defs.hh (1.46),
+	  src/Octagonal_Shape.inlines.hh (1.33), tests/BD_Shape/Makefile.am
+	  (1.74), tests/BD_Shape/boundingbox1.cc (1.4),
+	  tests/BD_Shape/frombox1.cc (1.1),
+	  tests/Octagonal_Shape/Makefile.am (1.27),
+	  tests/Octagonal_Shape/frombox1.cc (1.1): Added a complexity
+	  parameter for the constructors for the grid, bd_shape and
+	  octagonal_shape from the other semantic GD's.  In all cases the
+	  parameter is ignored.
+
+	  Added tests for the Octagonal_Shape domain for building from a
+	  box.	This file is a clone (with only trivial changes for the
+	  change of domain) of the old boundingbox1.cc (renamed for
+	  consistency as frombox1.cc) in BD_Shape tests directory.
+
+2008-04-17 Thursday 16:00  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/: C_Polyhedron.cc (1.25), C_Polyhedron.defs.hh (1.55),
+	  C_Polyhedron.inlines.hh (1.40), NNC_Polyhedron.cc (1.25),
+	  NNC_Polyhedron.defs.hh (1.55), NNC_Polyhedron.inlines.hh (1.41):
+	  Added an extra complexity parameter for building polyhedra from a
+	  box, bd shape, octagonal shape, and a grid.  In all cases the
+	  parameter is ignored.
+
+2008-04-17 Thursday 15:52  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Pointset_Powerset.templates.hh (1.31): Fixed indentation;
+	  added implementation of methods unconstrain().
+
+2008-04-17 Thursday 15:51  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Pointset_Powerset.defs.hh (1.37): Fixed indentation and
+	  grouping of methods.	Declared new methods unconstrain().
+
+2008-04-17 Thursday 15:44  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/definitions.dox (1.210): Added bibligraphic entry HMT71.
+
+2008-04-17 Thursday 15:38  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/definitions.dox (1.209): Added a subsection about
+	  cylindrification of polyhedra.
+
+2008-04-17 Thursday 13:48  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Polyhedron_public.cc (1.115): In the implementation of affine
+	  images/preimages, use new methods unconstrain() when appropriate.
+
+2008-04-17 Thursday 13:46  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Octagonal_Shape/unconstrain1.cc (simplex.1): file
+	  unconstrain1.cc was added on branch simplex on 2008-06-06
+	  14:22:12 +0000
+
+2008-04-17 Thursday 13:46  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/: BD_Shape/Makefile.am (1.73), BD_Shape/unconstrain1.cc
+	  (1.1), Octagonal_Shape/Makefile.am (1.26),
+	  Octagonal_Shape/unconstrain1.cc (1.1): Added tests for the
+	  unconstrain() methods for BD_Shape and Octagonal_Shape.
+
+2008-04-17 Thursday 13:46  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/BD_Shape/unconstrain1.cc (simplex.1): file unconstrain1.cc
+	  was added on branch simplex on 2008-06-06 14:22:09 +0000
+
+2008-04-17 Thursday 13:45  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: BD_Shape.defs.hh (1.119), BD_Shape.templates.hh (1.100),
+	  Octagonal_Shape.defs.hh (1.45), Octagonal_Shape.templates.hh
+	  (1.74): Added methods unconstrain() for BD_Shape and
+	  Octagonal_Shape.
+
+2008-04-17 Thursday 13:10  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/: Polyhedron.defs.hh (1.334), Polyhedron.templates.hh (1.18),
+	  Polyhedron_public.cc (1.114): Replaced common code in
+	  add_constraint() and refine_with_constraint() with a call to a
+	  private method refine_no_check() that does the same thing as the
+	  common code.
+
+	  Added an extra complexity parameter for the constructor of a
+	  polyhedron from a box. This is ignored (as algorithm is
+	  polynomial).
+
+2008-04-17 Thursday 12:56  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Polyhedron/: Makefile.am (1.121), unconstrain1.cc (1.1):
+	  Added some tests for new methods unconstrain().
+
+2008-04-17 Thursday 12:56  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Polyhedron/unconstrain1.cc (simplex.1): file
+	  unconstrain1.cc was added on branch simplex on 2008-06-06
+	  14:22:13 +0000
+
+2008-04-17 Thursday 11:34  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Polyhedron_public.cc (1.113): Corrected cut&paste error in
+	  the implementation of unconstrain(vs).
+
+2008-04-17 Thursday 11:05  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Polyhedron.defs.hh (1.333), Polyhedron_public.cc (1.112):
+	  Added new methods   void unconstrain(Variable var);	void
+	  unconstrain(const Variable_Set& to_be_unconstrained); that modify
+	  the polyhedron by computing the cylindrification on the specified
+	  space dimensions.  In the documentation, moved the static methods
+	  can_recycle_constraints and can_recycle_congruences to a better
+	  place.
+
+2008-04-17 Thursday 09:31  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* TODO (1.243): Added (partial) lists of the semantic GDs (simple
+	  and the constructors) in the section on Semantic geometric
+	  descriptors.
+
+2008-04-12 Saturday 22:20  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/Grid_public.cc (1.70), tests/Grid/Makefile.am (1.62),
+	  tests/Grid/frompolyhedron1.cc (1.1), tests/Grid/grid3.cc (1.26):
+	  Corrected two bugs in the revised code for constructing a grid
+	  from a polyhedron with complexity class:
+
+	  The space dimension of the generator system must be set to be
+	  that of the polyhedron.
+
+	  After minimizing the polyhedron (in the case that the complexity
+	  is ANY_COMPLEXITY), we must check if the polyhedron is empty, and
+	  if it is return the empty grid.
+
+	  Added a new test file for checking this constructor, moved
+	  existing tests for it that were in grid3.cc to the new test file,
+	  and added a few extra tests to check the use of complexity
+	  classes.
+
+2008-04-12 Saturday 22:20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Grid/frompolyhedron1.cc (simplex.1): file
+	  frompolyhedron1.cc was added on branch simplex on 2008-06-06
+	  14:22:11 +0000
+
+2008-04-12 Saturday 12:33  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Grid.defs.hh (1.67), Grid_public.cc (1.69): The constructor
+	  of a grid from a polyhedron now takes an optional argument
+	  specifying an upper bound to the complexity of the conversion to
+	  be applied.
+
+2008-04-10 Thursday 17:23  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* TODO (1.242): Small improvements to the description of
+	  syntactic/semantics GDs.
+
+2008-04-02 Wednesday 08:03  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ltmain.sh (1.33), Watchdog/ltmain.sh (1.22),
+	  Watchdog/m4/libtool.m4 (1.4), Watchdog/m4/ltoptions.m4 (1.2),
+	  Watchdog/m4/ltversion.m4 (1.3), m4/libtool.m4 (1.4),
+	  m4/ltoptions.m4 (1.2), m4/ltversion.m4 (1.3): Updated from
+	  Libtool 2.2.2.
+
+2008-03-29 Saturday 08:44  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.305): Version number bumped.
+
+2008-03-25 Tuesday 10:27  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/Pointset_Powerset.cc (1.18), src/Pointset_Powerset.defs.hh
+	  (1.36), src/Pointset_Powerset.inlines.hh (1.14),
+	  src/Pointset_Powerset.templates.hh (1.30),
+	  tests/Grid/powersetdifference1.cc (1.5),
+	  tests/Polyhedron/pointsetpowerset1.cc (1.9): Changes mainly
+	  affect poly_difference_assign().
+
+	  Added difference_assign() to be a clone of
+	  poly_difference_assign().  Added a couple of tests and improved
+	  an existing test.
+
+	  Replaced all lines: // FIXME: this is buggy when PS is not an
+	  abstraction of NNC_Polyhedron.  by // This code is only used when
+	  PS is an abstraction of NNC_Polyhedron.  since the Grid domains
+	  are specialised separately.
+
+	  Corrected a bug in poly_difference_assign() for Grids where some
+	  precision was wrongly lost (when a remainder was negative and had
+	  been assumed to be positive).
+
+2008-03-22 Saturday 10:32  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* Watchdog/doc/: devref.tex (1.5), fdl.dox (1.2), gpl.dox (1.3),
+	  user.tex (1.5): Properly named page anchors so as to avoid
+	  undefined references in the LaTeX documentation.
+
+2008-03-22 Saturday 10:32  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* Watchdog/doc/: devref.doxyconf-html.in (1.2),
+	  devref.doxyconf-latex.in (1.2), user.doxyconf-html.in (1.3),
+	  user.doxyconf-latex.in (1.3): Doxygen configuration files
+	  upgraded.
+
+2008-03-21 Friday 10:24  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/C/: ppl_interface_generator_c_cc_code.m4 (1.32),
+	  ppl_interface_generator_c_h_code.m4 (1.22): Removed the now
+	  redundant code for add_recycled_..._and_minimize procedures.
+
+2008-03-21 Friday 10:20  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/C/ppl_interface_generator_c_procedure_generators.m4
+	  (1.6): Removed the
+	  add_recycled_constraints/congruences_and_minimize from the list
+	  of procedures to build.
+
+2008-03-21 Friday 10:20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/ppl_interface_generator_c_procedure_generators.m4
+	  (simplex.1): file
+	  ppl_interface_generator_c_procedure_generators.m4 was added on
+	  branch simplex on 2008-06-06 14:21:58 +0000
+
+2008-03-21 Friday 09:23  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Partially_Reduced_Product.defs.hh (1.26),
+	  Pointset_Powerset.defs.hh (1.35): Corrected a couple of typos in
+	  the documentation resulting in Doxygen warnings.
+
+2008-03-21 Friday 09:11  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Octagonal_Shape.defs.hh (1.44), Octagonal_Shape.inlines.hh
+	  (1.32), Octagonal_Shape.templates.hh (1.73): Removed eager
+	  methods for the addition of constraints/congruences.
+
+2008-03-21 Friday 09:10  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Octagonal_Shape/: limitedbhmz05extrapolation1.cc (1.8),
+	  limitedcc76extrapolation1.cc (1.8), intersection1.cc (1.6): No
+	  longer using eager methods for adding constraints/congruences.
+
+2008-03-21 Friday 09:06  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Octagonal_Shape/: congruences1.cc (1.4),
+	  containsintegerpoint1.cc (1.6), octhull1.cc (1.6): No longer
+	  using eager methods for adding constraints/congruences.
+
+2008-03-21 Friday 09:06  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Octagonal_Shape/congruences1.cc (simplex.1): file
+	  congruences1.cc was added on branch simplex on 2008-06-06
+	  14:22:12 +0000
+
+2008-03-21 Friday 08:58  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Grid/: directproduct3.cc (1.18), directproduct5.cc (1.10):
+	  No longer using eager methods for adding constraints/congruences.
+
+2008-03-21 Friday 08:55  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Grid/partiallyreducedproduct1.cc (1.10): No longer using
+	  eager methods for adding constraints/congruences.
+
+2008-03-21 Friday 08:52  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Partially_Reduced_Product.defs.hh (1.25),
+	  Partially_Reduced_Product.inlines.hh (1.23),
+	  Partially_Reduced_Product.templates.hh (1.9): Removed eager
+	  versions of methods adding constraints/congruences.
+
+2008-03-21 Friday 08:49  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Pointset_Ask_Tell.defs.hh (1.15),
+	  Pointset_Ask_Tell.templates.hh (1.13): Removed eager methods of
+	  methods adding constraints/congruences.
+
+2008-03-21 Friday 08:48  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Ask_Tell/append1.cc (1.8): Corrected typo in the noisy
+	  output.
+
+2008-03-21 Friday 08:44  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Box/: addconstraints1.cc (1.13), congruences1.cc (1.4),
+	  intersection1.cc (1.10): No longer using eager methods for adding
+	  constraints/congruences.
+
+2008-03-21 Friday 08:36  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Box.defs.hh (1.50), Box.inlines.hh (1.30): Removed eager
+	  versions of methods adding constraints and congruences.
+
+2008-03-20 Thursday 17:56  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/C_Polyhedron.defs.hh (1.54): Comment corrected.
+
+2008-03-20 Thursday 16:00  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Polyhedron_public.cc (1.111), Polyhedron_widenings.cc
+	  (1.66): Avoid using deprecated methods.
+
+2008-03-20 Thursday 15:37  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/BD_Shape.templates.hh (1.99): Avoid using deprecated methods;
+	  while at it, slightly simplified a few lines.
+
+2008-03-20 Thursday 15:34  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Pointset_Powerset.templates.hh (1.29), Pointset_Powerset.cc
+	  (1.17), Grid_public.cc (1.68): Avoid using deprecated method.
+
+2008-03-20 Thursday 15:22  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/: C/ppl_interface_generator_c_cc_code.m4 (1.31),
+	  C/ppl_interface_generator_c_h_code.m4 (1.21),
+	  Java/jni/ppl_interface_generator_java_ppl_java_classes_cc_code.m4
+	  (1.48),
+	  Java/ppl_java/ppl_interface_generator_java_classes_java_code.m4
+	  (1.42), Java/tests/ppl_interface_generator_java_test_java_code.m4
+	  (1.28), OCaml/ppl_interface_generator_ocaml_cc_code.m4 (1.30),
+	  OCaml/ppl_interface_generator_ocaml_ml_code.m4 (1.25),
+	  OCaml/ppl_interface_generator_ocaml_mli_code.m4 (1.19): Added the
+	  code for the refine_with methods to the C, Java and Ocaml
+	  interfaces.  All the refine_with methods in all the interfaces
+	  enabled.
+
+2008-03-20 Thursday 15:01  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Polyhedron.defs.hh (1.332), BD_Shape.defs.hh (1.118),
+	  Pointset_Powerset.defs.hh (1.34), Grid.defs.hh (1.66):
+	  Documentation of the eager versions of some methods now states
+	  that their usage is deprecated (linking to the manual for an
+	  explanation).
+
+2008-03-20 Thursday 14:59  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/definitions.dox (1.208): In the section of the manual
+	  discussing lazy and eager version of some of the operators, added
+	  a paragraph stressing that the use of the eager versions is
+	  deprecated starting from PPL 0.10 and will be removed starting
+	  from PPL 0.11.
+
+2008-03-20 Thursday 12:47  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/: ppl_interface_generator_common_dat.m4 (1.71),
+	  ppl_interface_generator_common_procedure_generators.m4 (1.18),
+	  Prolog/ppl_interface_generator_prolog_icc_code.m4 (1.65): Added
+	  code in the Prolog interface for the refine_with methods.
+
+2008-03-20 Thursday 10:57  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/Partially_Reduced_Product.defs.hh (1.24),
+	  src/Partially_Reduced_Product.inlines.hh (1.22),
+	  tests/Grid/partiallyreducedproduct4.cc (1.3): Added refine_with
+	  methods to the product domains.
+
+2008-03-20 Thursday 09:09  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/Pointset_Powerset.defs.hh (1.33),
+	  src/Pointset_Powerset.templates.hh (1.28),
+	  tests/Polyhedron/pointsetpowerset5.cc (1.3): Added
+	  refine_with_congruence() and	refine_with_congruences().  Tests
+	  added for all the refine_with methods for pointset powersets of
+	  polyhedra.
+
+2008-03-19 Wednesday 14:47  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/:
+	  ppl_interface_generator_common_procedure_generators.m4 (1.17),
+	  Prolog/tests/pl_grid_check.pl (1.10): Disabled the and_minimize
+	  methods for all domains except for the Polyhedron domains.
+	  Removed all tests for the and_minimize methods from
+	  Prolog/tests/pl_grid_check.pl.
+
+2008-03-19 Wednesday 14:05  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/Polyhedron.defs.hh (1.331), src/Polyhedron_public.cc (1.110),
+	  tests/Polyhedron/Makefile.am (1.120),
+	  tests/Polyhedron/exceptions1.cc (1.16),
+	  tests/Polyhedron/refinewithcongruence1.cc (1.1),
+	  tests/Polyhedron/refinewithcongruences1.cc (1.1),
+	  tests/Polyhedron/refinewithconstraint1.cc (1.1),
+	  tests/Polyhedron/refinewithconstraints1.cc (1.1): Added
+	  refine_with methods for constraint(s) and congruence(s).
+
+2008-03-19 Wednesday 14:05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Polyhedron/refinewithcongruence1.cc (simplex.1): file
+	  refinewithcongruence1.cc was added on branch simplex on
+	  2008-06-06 14:22:13 +0000
+
+2008-03-19 Wednesday 14:05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Polyhedron/refinewithcongruences1.cc (simplex.1): file
+	  refinewithcongruences1.cc was added on branch simplex on
+	  2008-06-06 14:22:13 +0000
+
+2008-03-19 Wednesday 14:05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Polyhedron/refinewithconstraint1.cc (simplex.1): file
+	  refinewithconstraint1.cc was added on branch simplex on
+	  2008-06-06 14:22:13 +0000
+
+2008-03-19 Wednesday 14:05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Polyhedron/refinewithconstraints1.cc (simplex.1): file
+	  refinewithconstraints1.cc was added on branch simplex on
+	  2008-06-06 14:22:13 +0000
+
+2008-03-19 Wednesday 08:36  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* TODO (1.241): Revised the geometric descriptors draft
+	  documentation for the add and refine_with methods for constraints
+	  and congruences.
+
+2008-03-19 Wednesday 08:25  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/Box/refinewithconstraints1.cc (1.3): tests 08 and 09 fail
+	  with checked-int8
+
+2008-03-19 Wednesday 08:25  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Box/refinewithconstraints1.cc (simplex.1): file
+	  refinewithconstraints1.cc was added on branch simplex on
+	  2008-06-06 14:22:10 +0000
+
+2008-03-19 Wednesday 07:43  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/Grid_public.cc (1.67): Restored implementation of
+	  add_constraints().
+
+2008-03-18 Tuesday 22:39  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/Grid.defs.hh (1.65), src/Grid.inlines.hh (1.23),
+	  src/Grid_public.cc (1.66), tests/Grid/Makefile.am (1.61),
+	  tests/Grid/congruences1.cc (1.14),
+	  tests/Grid/refinewithcongruences1.cc (1.1),
+	  tests/Grid/refinewithconstraints1.cc (1.1): Added methods
+	  refine_with_congruence(),  refine_with_congruences(),
+	  refine_with_constraint(),  refine_with_constraints().
+
+	  Removed some old redundant (commented out) tests in
+	  tests/Grid/congruences1.cc
+
+2008-03-18 Tuesday 22:39  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Grid/refinewithcongruences1.cc (simplex.1): file
+	  refinewithcongruences1.cc was added on branch simplex on
+	  2008-06-06 14:22:11 +0000
+
+2008-03-18 Tuesday 22:39  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Grid/refinewithconstraints1.cc (simplex.1): file
+	  refinewithconstraints1.cc was added on branch simplex on
+	  2008-06-06 14:22:11 +0000
+
+2008-03-18 Tuesday 20:58  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog (1.28), Watchdog/ChangeLog (1.17): Updated.
+
 2008-03-18 Tuesday 20:26  Patricia M. Hill <hill@comp.leeds.ac.uk>
 
 	* src/Box.inlines.hh (1.29), tests/Box/Makefile.am (1.57): Restored
@@ -37,6 +1912,24 @@
 	  tests/Box/refinewithconstraints2.cc (1.1): Duplicate code
 	  avoided.  Fixed some comments.  Test programs reorganized.
 
+2008-03-18 Tuesday 18:29  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Box/refinewithconstraint1.cc (simplex.1): file
+	  refinewithconstraint1.cc was added on branch simplex on
+	  2008-06-06 14:22:10 +0000
+
+2008-03-18 Tuesday 18:29  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Box/refinewithconstraint2.cc (simplex.1): file
+	  refinewithconstraint2.cc was added on branch simplex on
+	  2008-06-06 14:22:10 +0000
+
+2008-03-18 Tuesday 18:29  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Box/refinewithconstraints2.cc (simplex.1): file
+	  refinewithconstraints2.cc was added on branch simplex on
+	  2008-06-06 14:22:10 +0000
+
 2008-03-18 Tuesday 14:54  Patricia M. Hill <hill@comp.leeds.ac.uk>
 
 	* src/Box.defs.hh (1.48), src/Box.inlines.hh (1.27),
@@ -46,6 +1939,12 @@
 	  refine_with_constraint(),  refine_with_constraints(),
 	  refine_with_congruence(),  refine_with_congruences() methods to
 	  the Box domain.
+
+2008-03-18 Tuesday 14:54  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Box/refinewithcongruences1.cc (simplex.1): file
+	  refinewithcongruences1.cc was added on branch simplex on
+	  2008-06-06 14:22:10 +0000
 
 2008-03-18 Tuesday 14:50  Patricia M. Hill <hill@comp.leeds.ac.uk>
 
@@ -64,6 +1963,11 @@
 	  tests/Octagonal_Shape/congruences1.cc (1.3),
 	  tests/Octagonal_Shape/constraints1.cc (1.7): Removed the
 	  and_minimize versions of the new refine_with methods.
+
+2008-03-18 Tuesday 14:11  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/BD_Shape/congruences1.cc (simplex.1): file congruences1.cc
+	  was added on branch simplex on 2008-06-06 14:22:09 +0000
 
 2008-03-18 Tuesday 13:47  Patricia M. Hill <hill@comp.leeds.ac.uk>
 
@@ -207,6 +2111,12 @@
 	  implementation that converted to polyhedra to compute the
 	  relations.
 
+2008-03-07 Friday 11:38  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Octagonal_Shape/relatwithcons3.cc (simplex.1): file
+	  relatwithcons3.cc was added on branch simplex on 2008-06-06
+	  14:22:12 +0000
+
 2008-03-07 Friday 09:30  Patricia M. Hill <hill@comp.leeds.ac.uk>
 
 	* tests/Octagonal_Shape/relatwithcons3.cc (1.2),
@@ -218,6 +2128,11 @@
 	  Fixed a bug in relation_with() for a (non-octagonal) constraint
 	  due to the inclusion of the inhomogeneous term in the linear
 	  expression when calling maximize() and minimize().
+
+2008-03-07 Friday 07:49  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Box/relations3.cc (simplex.1): file relations3.cc was added
+	  on branch simplex on 2008-06-06 14:22:10 +0000
 
 2008-03-07 Friday 07:49  Patricia M. Hill <hill@comp.leeds.ac.uk>
 
@@ -332,6 +2247,22 @@
 	  Some tests in generalizedaffineimage1.cc used constraints that
 	  were not non-relational. Corrected.
 
+2008-03-03 Monday 08:52  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Box/generalizedaffineimage2.cc (simplex.1): file
+	  generalizedaffineimage2.cc was added on branch simplex on
+	  2008-06-06 14:22:10 +0000
+
+2008-03-02 Sunday 23:03  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/ltsugar.m4 (simplex.1): file ltsugar.m4 was added on branch
+	  simplex on 2008-06-06 14:22:04 +0000
+
+2008-03-02 Sunday 23:03  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/m4/ltsugar.m4 (simplex.1): file ltsugar.m4 was added on
+	  branch simplex on 2008-06-06 14:21:55 +0000
+
 2008-03-02 Sunday 23:03  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* config.guess (1.41), ltmain.sh (1.30), Watchdog/config.guess
@@ -363,6 +2294,12 @@
 	  boundedaffinepreimage1.cc (1.8), generalizedaffinepreimage1.cc
 	  (1.14): A few tests may overflow if bounded integers coefficients
 	  *and* inexact interval boundary types are used together.
+
+2008-03-01 Saturday 23:49  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Box/boundedaffinepreimage1.cc (simplex.1): file
+	  boundedaffinepreimage1.cc was added on branch simplex on
+	  2008-06-06 14:22:10 +0000
 
 2008-03-01 Saturday 21:25  Enea Zaffanella <zaffanella@cs.unipr.it>
 
@@ -692,6 +2629,12 @@
 	  Implementation of function is_canonical() is now inlines and in a
 	  proper place.
 
+2008-02-28 Thursday 14:49  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/math_utilities.inlines.hh (simplex.1): file
+	  math_utilities.inlines.hh was added on branch simplex on
+	  2008-06-06 14:22:05 +0000
+
 2008-02-28 Thursday 11:21  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* doc/definitions.dox (1.207): Reference CC79 added.
@@ -841,6 +2784,11 @@
 	  relation_with() for a congruence.  Added a test to check this
 	  change.
 
+2008-02-16 Saturday 23:51  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Box/relations4.cc (simplex.1): file relations4.cc was added
+	  on branch simplex on 2008-06-06 14:22:10 +0000
+
 2008-02-16 Saturday 23:06  Patricia M. Hill <hill@comp.leeds.ac.uk>
 
 	* interfaces/ppl_interface_generator_common_dat.m4 (1.69),
@@ -925,6 +2873,30 @@
 
 	* interfaces/Prolog/ppl_interface_generator_prolog_icc.m4 (1.16):
 	  Add a copyright notice to the generated file.
+
+2008-02-15 Friday 10:46  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	*
+	  interfaces/OCaml/ppl_interface_generator_ocaml_procedure_generators.m4
+	  (simplex.1): file
+	  ppl_interface_generator_ocaml_procedure_generators.m4 was added
+	  on branch simplex on 2008-06-06 14:22:00 +0000
+
+2008-02-15 Friday 10:46  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	*
+	  interfaces/Prolog/ppl_interface_generator_prolog_procedure_generators.m4
+	  (simplex.1): file
+	  ppl_interface_generator_prolog_procedure_generators.m4 was added
+	  on branch simplex on 2008-06-06 14:22:00 +0000
+
+2008-02-15 Friday 10:46  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	*
+	  interfaces/Java/ppl_interface_generator_java_procedure_generators.m4
+	  (simplex.1): file
+	  ppl_interface_generator_java_procedure_generators.m4 was added on
+	  branch simplex on 2008-06-06 14:21:58 +0000
 
 2008-02-15 Friday 10:46  Patricia M. Hill <hill@comp.leeds.ac.uk>
 
@@ -1064,6 +3036,12 @@
 	  (1.1): New sources containing some math utility functions
 	  previously in globals.*.
 
+2008-02-13 Wednesday 08:56  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/math_utilities.defs.hh (simplex.1): file
+	  math_utilities.defs.hh was added on branch simplex on 2008-06-06
+	  14:22:05 +0000
+
 2008-02-12 Tuesday 22:12  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* src/Box.templates.hh (1.81): Several improvements in
@@ -1089,6 +3067,11 @@
 	* src/Rational_Interval.hh (1.1): Rational_Interval is an internal
 	  class implementing an interval with rational, possibly open
 	  boundaries.
+
+2008-02-12 Tuesday 21:03  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Rational_Interval.hh (simplex.1): file Rational_Interval.hh
+	  was added on branch simplex on 2008-06-06 14:22:05 +0000
 
 2008-02-12 Tuesday 21:01  Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -1222,6 +3205,12 @@
 
 	* interfaces/interfaced_boxes.hh (1.4): Added declarations for the
 	  native integer boxes.
+
+2008-02-08 Friday 22:13  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/interfaced_boxes.hh (simplex.1): file
+	  interfaced_boxes.hh was added on branch simplex on 2008-06-06
+	  14:21:57 +0000
 
 2008-02-08 Friday 21:58  Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -1866,6 +3855,12 @@
 	* tests/Polyhedron/pointsetpowerset4.cc (1.6): Tests 5, 6 and 9
 	  fail for check-int8.
 
+2008-01-23 Wednesday 11:34  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Polyhedron/pointsetpowerset4.cc (simplex.1): file
+	  pointsetpowerset4.cc was added on branch simplex on 2008-06-06
+	  14:22:13 +0000
+
 2008-01-23 Wednesday 07:55  Patricia M. Hill <hill@comp.leeds.ac.uk>
 
 	* interfaces/Prolog/XSB/Makefile.am (1.59): Fixed two bugs
@@ -2008,6 +4003,11 @@
 	* README.configure (1.25), interfaces/README.interfaces (1.1):
 	  Brief notes on how to generate and use code for a choice of
 	  domains in the (mainly Prolog) interfaces.
+
+2008-01-18 Friday 15:07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/README.interfaces (simplex.1): file README.interfaces
+	  was added on branch simplex on 2008-06-06 14:21:57 +0000
 
 2008-01-18 Friday 13:25  Patricia M. Hill <hill@comp.leeds.ac.uk>
 
@@ -2156,6 +4156,12 @@
 	  domains, added methods: bounds_from_above(), bounds_from_below(),
 	  maximize() and minimize() - both with and without returning the
 	  point.  Tests added to check these.
+
+2008-01-16 Wednesday 09:09  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Polyhedron/pointsetpowerset3.cc (simplex.1): file
+	  pointsetpowerset3.cc was added on branch simplex on 2008-06-06
+	  14:22:13 +0000
 
 2008-01-16 Wednesday 09:09  Patricia M. Hill <hill@comp.leeds.ac.uk>
 
@@ -2363,6 +4369,21 @@
 	* fedora/: ppl.hh (1.1), ppl_c.h (1.1), pwl.hh (1.1): Header file
 	  switchers to avoid multiarch conflicts when the PPL and PWL are
 	  installed for multiple architectures (e.g., i386 and x86_64).
+
+2008-01-09 Wednesday 12:20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* fedora/ppl.hh (simplex.1): file ppl.hh was added on branch
+	  simplex on 2008-06-06 14:21:56 +0000
+
+2008-01-09 Wednesday 12:20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* fedora/ppl_c.h (simplex.1): file ppl_c.h was added on branch
+	  simplex on 2008-06-06 14:21:56 +0000
+
+2008-01-09 Wednesday 12:20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* fedora/pwl.hh (simplex.1): file pwl.hh was added on branch
+	  simplex on 2008-06-06 14:21:56 +0000
 
 2008-01-07 Monday 12:15  Roberto Bagnara <bagnara@cs.unipr.it>
 
