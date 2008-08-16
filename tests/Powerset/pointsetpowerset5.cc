@@ -276,7 +276,21 @@ test11() {
   ps.remove_higher_space_dimensions(4);
   bool ok2 = (ps.space_dimension() == 4 && ps.affine_dimension() == 3);
 
-  return ok && ok1 && ok2 && ps.OK();
+  Pointset_Powerset<Rational_Box> psb(7, EMPTY);
+  Rational_Box b(7);
+  b.add_constraint(x >= 1);
+  b.add_constraint(x <= 0);
+  psb.add_disjunct(b);
+  bool ok3 = (psb.space_dimension() == 7 && psb.affine_dimension() == 0);
+
+  Pointset_Powerset<Grid> psg(7, EMPTY);
+  Grid g(7);
+  g.add_congruence((x %= 0) / 2);
+  g.add_congruence((x %= 1) / 2);
+  psg.add_disjunct(g);
+  bool ok4 = (psg.space_dimension() == 7 && psg.affine_dimension() == 0);
+
+  return ok && ok1 && ok2 && ok3 && ok4 && ps.OK();
 }
 
 bool
