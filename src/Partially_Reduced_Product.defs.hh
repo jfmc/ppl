@@ -598,7 +598,6 @@ public:
   /*! \brief
     Returns <CODE>true</CODE> if and only if both of the components
     of \p *this are the universe.
-    product.
   */
   bool is_universe() const;
 
