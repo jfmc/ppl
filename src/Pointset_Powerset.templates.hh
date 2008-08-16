@@ -551,16 +551,18 @@ Pointset_Powerset<PS>::affine_dimension() const {
 
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
-    C_Polyhedron phi(space_dim);
     PS pi(si->element());
-    const Constraint_System& cs = pi.minimized_constraints();
-    for (Constraint_System::const_iterator i = cs.begin(),
-           cs_end = cs.end(); i != cs_end; ++i) {
-      const Constraint& c = *i;
-      if (c.is_equality())
-        phi.add_constraint(c);
+    if (!pi.is_empty()) {
+      C_Polyhedron phi(space_dim);
+      const Constraint_System& cs = pi.minimized_constraints();
+      for (Constraint_System::const_iterator i = cs.begin(),
+             cs_end = cs.end(); i != cs_end; ++i) {
+        const Constraint& c = *i;
+        if (c.is_equality())
+          phi.add_constraint(c);
+      }
+      x_ph.poly_hull_assign(phi);
     }
-    x_ph.poly_hull_assign(phi);
   }
 
   return x_ph.affine_dimension();
