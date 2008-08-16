@@ -1387,6 +1387,16 @@ the above set is also a closed polyhedron.
 In contrast, when \f$\cQ\f$ is not topologically closed,
 the above set might not be an NNC polyhedron.
 
+\subsection Intersection_Preserving_Enlargement Intersection-Preserving Enlargement
+
+Let \f$\cP, \cQ \in \Pset_n\f$ be any two NNC polyhedra.
+An <EM>intersection-preserving enlargement</EM> of \f$\cP\f$
+with respect to \f$\cQ\f$ is any NNC polyhedron \f$\cP'\f$
+such that \f$\cP' \Sseq \cP\f$ and \f$\cP' \inters \cQ = \cP \inters \cQ\f$.
+
+FIXME: describe the generalization of this concept to powersets.
+
+
 \anchor relation_with
 \subsection Relation_With_Operators Relation-With Operators
 
