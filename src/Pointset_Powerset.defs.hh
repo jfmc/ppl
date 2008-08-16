@@ -1395,10 +1395,6 @@ bool
 Pointset_Powerset<Grid>
 ::geometrically_covers(const Pointset_Powerset& y) const;
 
-template <>
-bool
-Pointset_Powerset<Grid>::is_universe() const;
-
 } // namespace Parma_Polyhedra_Library
 
 

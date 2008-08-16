@@ -28,17 +28,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 template <>
-bool
-PPL::Pointset_Powerset<PPL::Grid>::is_universe() const {
-  const Pointset_Powerset& x = *this;
-  // A powerset of grids is universe iff one of its disjuncts is.
-  for (const_iterator x_i = x.begin(), x_end = x.end(); x_i != x_end; ++x_i)
-    if (x_i->element().is_universe())
-      return true;
-  return false;
-}
-
-template <>
 void
 PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
 ::poly_difference_assign(const Pointset_Powerset& y) {

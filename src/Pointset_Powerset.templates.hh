@@ -569,11 +569,12 @@ Pointset_Powerset<PS>::affine_dimension() const {
 template <typename PS>
 bool
 Pointset_Powerset<PS>::is_universe() const {
-  // FIXME: this is not the most efficient implementation.
-  // FIXME: this is buggy when PS is not an abstraction of NNC_Polyhedron.
-  const NNC_Polyhedron ph = NNC_Polyhedron(space_dim);
-  const Pointset_Powerset<NNC_Polyhedron> pps(*this);
-  return check_containment(ph, pps);
+  const Pointset_Powerset& x = *this;
+  // A powerset is universe iff one of its disjuncts is.
+  for (const_iterator x_i = x.begin(), x_end = x.end(); x_i != x_end; ++x_i)
+    if (x_i->element().is_universe())
+      return true;
+  return false;
 }
 
 template <typename PS>
@@ -621,6 +622,30 @@ Pointset_Powerset<PS>::is_bounded() const {
     if (!si->element().is_bounded())
       return false;
   return true;
+}
+
+template <typename PS>
+bool
+Pointset_Powerset<PS>::constrains(Variable var) const {
+  const Pointset_Powerset& x = *this;
+  // `var' should be one of the dimensions of the powerset.
+  const dimension_type var_space_dim = var.space_dimension();
+  if (x.space_dimension() < var_space_dim) {
+    std::ostringstream s;
+    s << "PPL::Pointset_Powerset<PS>::constrains(v):\n"
+      << "this->space_dimension() == " << x.space_dimension() << ", "
+      << "v.space_dimension() == " << var_space_dim << ".";
+    throw std::invalid_argument(s.str());
+  }
+  // omega_reduction needed, since a redundant disjunct may constrain var.
+  x.omega_reduce();
+  // An empty powerset constrains all variables.
+  if (x.is_empty())
+    return true;
+  for (const_iterator x_i = x.begin(), x_end = x.end(); x_i != x_end; ++x_i)
+    if (x_i->element().constrains(var))
+      return true;
+  return false;
 }
 
 template <typename PS>
