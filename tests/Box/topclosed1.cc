@@ -131,7 +131,7 @@ test07() {
 
   bool ok = !box.is_topologically_closed();
 
-  return !ok;
+  return ok;
 }
 
 bool
