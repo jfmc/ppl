@@ -583,7 +583,7 @@ Pointset_Powerset<PS>::is_universe() const {
       if (x.size() > 1) {
         Pointset_Powerset<PS> universe(x.space_dimension(), UNIVERSE);
         Pointset_Powerset& xx = const_cast<Pointset_Powerset&>(x);
-        x.swap(universe);
+        xx.swap(universe);
       }
       return true;
     }
