@@ -290,13 +290,12 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
 
   // The space dimension of the resulting polyhedron should not
   // overflow the maximum allowed space dimension.
-  if (y.space_dim > max_space_dimension() - space_dimension())
+  const dimension_type added_columns = y.space_dim;
+  if (added_columns > max_space_dimension() - space_dim)
     throw_space_dimension_overflow(topology(),
 				   "concatenate_assign(y)",
 				   "concatenation exceeds the maximum "
 				   "allowed space dimension");
-
-  const dimension_type added_columns = y.space_dim;
 
   // If `*this' or `y' are empty polyhedra, it is sufficient to adjust
   // the dimension of the space.
@@ -350,8 +349,7 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
   for (dimension_type i = added_rows; i-- > 0; ) {
     Constraint& c_old = cs[i];
     Constraint& c_new = con_sys[old_num_rows + i];
-    // Method `add_zero_rows_and_columns', by default, added
-    // inequalities.
+    // Method `add_zero_rows_and_columns', by default, added inequalities.
     if (c_old.is_equality())
       c_new.set_is_equality();
     // The inhomogeneous term is not displaced.
