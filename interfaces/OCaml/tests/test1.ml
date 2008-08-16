@@ -56,50 +56,55 @@ let rec print_linear_expression = function
       print_string ")";
 ;;
 
-let rec print_constraints = function
+let rec print_constraint = function
     Less_Than (le1, le2) ->
       print_linear_expression le1;
       print_string " < ";
       print_linear_expression le2;
+      print_string ", ";
   | Less_Or_Equal (le1, le2) ->
       print_linear_expression le1;
       print_string " <= ";
       print_linear_expression le2;
+      print_string ", ";
   | Equal (le1, le2) ->
       print_linear_expression le1;
       print_string " == ";
       print_linear_expression le2;
+      print_string ", ";
   | Greater_Than (le1, le2) ->
       print_linear_expression le1;
       print_string " > ";
       print_linear_expression le2;
+      print_string ", ";
   | Greater_Or_Equal (le1, le2) ->
       print_linear_expression le1;
       print_string " >= ";
       print_linear_expression le2;
+      print_string ", ";
 ;;
 
 let rec print_generator = function
     Ray (le1) ->
       print_string "Ray: ";
       print_linear_expression le1;
-      print_newline();
+      print_string ", ";
   |  Line (le1) ->
       print_string "Line: ";
       print_linear_expression le1;
-      print_newline();
+      print_string ", ";
   | Point (le1, c) ->
       print_string "Point: ";
       print_linear_expression le1;
       print_string " den: ";
       print_int(Z.to_int c);
-      print_newline();
+      print_string ", ";
 | Closure_Point (le1, c) ->
       print_string "Closure_Point: ";
       print_linear_expression le1;
       print_string " den: ";
       print_int(Z.to_int c);
-      print_newline();;
+      print_string ", ";;
 
 let print_congruence = function x,y,z ->
    print_linear_expression x;
@@ -107,7 +112,7 @@ let print_congruence = function x,y,z ->
   print_linear_expression y;
   print_string " mod ";
   print_int(Z.to_int z);
-  print_newline();;
+  print_string ", ";;
 
 
 (* Build linear expressions the hard way. *)
@@ -169,51 +174,72 @@ print_linear_expression e3; print_string "\n" ;;
 
 (* Build some PPL::C_Polyhedron. *)
 
+let constraints1 = [e3 >=/ e1; e1 >=/ e2; e1 <=/ e2 -/ n] ;;
+let generators1 = [Point (e2, (Z.from_int 1)); Point (e1, (Z.from_int 2))] ;;
+let congruences1 = (e2, e2 , (Z.from_int 1));;
+let congruences2 = [e3, e2 , (Z.from_int 20)];;
+
+let mip1 =  ppl_new_MIP_Problem 10 constraints1 e3 Maximization;;
+let objective_func = ppl_MIP_Problem_objective_function mip1;;
+print_linear_expression objective_func;;
+print_newline();;
+let i = ppl_MIP_Problem_space_dimension mip1;;
+print_int i;;
+print_newline();;
+let i = ppl_MIP_Problem_constraints mip1;;
+List.iter print_constraint i;;
+print_newline();;
+
+print_string ("space dimensions: ");;
 for i = 6 downto 0 do
   let ph = ppl_new_C_Polyhedron_from_space_dimension i Empty
   in let dimension =  ppl_C_Polyhedron_space_dimension(ph)
-  in printf "dimension %d\n" dimension
+  in printf "%d, " dimension
 done;;
 print_newline();;
 
-let cs = [e3 >=/ e1; e1 >=/ e2; e1 <=/ e2 -/ n] ;;
-let gs1 = [Point (e2, (Z.from_int 1)); Point (e1, (Z.from_int 2))] ;;
-
-let cong = (e2, e2 , (Z.from_int 1));;
-let cgs = [e3, e2 , (Z.from_int 20)];;
-let ph =  ppl_new_MIP_Problem 10 cs e3 Maximization;;
-let objective_func = ppl_MIP_Problem_objective_function ph;;
-print_linear_expression objective_func;;
-let i = ppl_MIP_Problem_space_dimension ph;;
-print_int i;;
-let i = ppl_MIP_Problem_constraints ph;;
-print_newline();;
-let ph = ppl_new_C_Polyhedron_from_constraints(cs);;
+let ph = ppl_new_C_Polyhedron_from_constraints(constraints1);;
 let result =  ppl_C_Polyhedron_bounds_from_above ph e2;;
 ppl_C_Polyhedron_add_constraint ph (e2 >=/ e2);;
-let ph2 = ppl_new_C_Polyhedron_from_generators(gs1);;
+let ph2 = ppl_new_C_Polyhedron_from_generators(generators1);;
 let b = ppl_C_Polyhedron_is_disjoint_from_C_Polyhedron ph ph2;;
 ppl_C_Polyhedron_concatenate_assign ph ph2;;
 let constr = ppl_C_Polyhedron_get_congruences ph in
 List.iter print_congruence constr;;
+print_newline();;
 ppl_C_Polyhedron_bounded_affine_preimage ph 1 e1 e2 (Z.from_int 10);;
 ppl_C_Polyhedron_bounded_affine_preimage ph 1 e1 e2 (Z.from_int 10);;
 ppl_C_Polyhedron_affine_image ph 1 e1 (Z.from_int 10);;
-let a = ppl_C_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens ph ph cs 10;;
-let b = ppl_C_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens ph ph cs 10;;
-let b = ppl_C_Polyhedron_bounded_H79_extrapolation_assign_with_tokens ph ph cs 10;;
+let a = ppl_C_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens ph ph constraints1 10;;
+let b = ppl_C_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens ph ph constraints1 10;;
+let b = ppl_C_Polyhedron_bounded_H79_extrapolation_assign_with_tokens ph ph constraints1 10;;
  ppl_C_Polyhedron_H79_widening_assign ph ;;
 print_int b;;
 let b = ppl_C_Polyhedron_OK ph;;
 ppl_C_Polyhedron_generalized_affine_preimage_lhs_rhs ph e1 Equal_RS e1;;
 ppl_C_Polyhedron_generalized_affine_image ph 1 Equal_RS e2 (Z.from_int 10);;
+print_newline();;
+print_string "Testing minimization";;
 let is_bounded, num, den, is_supremum, gen = ppl_C_Polyhedron_minimize ph e3;;
+print_newline();;
+print_string "Value: ";;
+print_int(Z.to_int num);;
+print_string "/";;
+print_int(Z.to_int den);;
+print_string ", is_bounded: ";;
+print_string (string_of_bool is_bounded);;
+print_string ", is_supremum: ";;
+print_string (string_of_bool is_supremum);;
+print_string ", generator: ";;
+print_generator(gen);;
+print_newline();;
 let dimensions_to_remove = [3;0];;
 ppl_C_Polyhedron_remove_space_dimensions ph dimensions_to_remove;;
 let dimensions_to_fold = [1];;
 ppl_C_Polyhedron_fold_space_dimensions ph dimensions_to_fold 0;;
 let dimensions_to_map = [(0,1);(1,2);(2,0);];;
 let i = ppl_C_Polyhedron_space_dimension ph;;
+print_newline();;
 print_string "Space dimension is: ";
 print_int i;;
 print_string "\n";;
@@ -222,11 +248,13 @@ ppl_C_Polyhedron_constrains ph 1;;
 ppl_C_Polyhedron_unconstrain_space_dimension ph 1;;
 let dimensions_to_unconstrain = [1];;
 ppl_C_Polyhedron_unconstrain_space_dimensions ph dimensions_to_unconstrain;;
+print_newline();;
+ppl_C_Polyhedron_swap ph ph2;;
 (* Pointset_Powersed_Grid is not enabled by default, the following code is *)
 (* commented *)
 (* let pps = ppl_new_Pointset_Powerset_Grid_from_space_dimension 3;; *)
 (* let space_dim = ppl_Pointset_Powerset_Grid_space_dimension pps;; *)
-(* ppl_Pointset_Powerset_Grid_add_constraints  pps cs;; *)
+(* ppl_Pointset_Powerset_Grid_add_constraints  pps constraints1;; *)
 (* let caml_grid_it = ppl_Pointset_Powerset_Grid_begin_iterator pps;; *)
 (* let grid1 =  ppl_Pointset_Powerset_Grid_iterator_get_disjunct caml_grid_it;; *)
 (* let space_dim = ppl_Grid_space_dimension grid1;; *)
@@ -243,20 +271,5 @@ ppl_C_Polyhedron_unconstrain_space_dimensions ph dimensions_to_unconstrain;;
 (* print_string "PPS size : ";; *)
 (* let size = ppl_Pointset_Powerset_Grid_size pps;; *)
 (* print_int size;; *)
-print_newline();
-print_string "Testing minimization";
-print_newline();
-print_string "Value ";
-print_int(Z.to_int num);
-print_string "/";
-print_int(Z.to_int den);
-print_newline();
-print_string (string_of_bool is_bounded);
-print_newline();
-print_string (string_of_bool is_supremum);
-print_newline();
-print_generator(gen);
-print_newline();
-ppl_C_Polyhedron_swap ph ph2;
 at_exit Gc.full_major;;
 print_string "Bye!\n"
