@@ -60,7 +60,7 @@ test02() {
 
   print_constraints(box, "*** box ***");
 
-  bool ok = box.is__topologically_closed();
+  bool ok = box.is_topologically_closed();
 
   return ok;
 }
@@ -165,7 +165,7 @@ test09() {
 
   print_constraints(box, "*** box ***");
 
-  bool ok = box.is_is_topologically_closed();
+  bool ok = box.is_topologically_closed();
 
   return ok;
 }
