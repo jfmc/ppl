@@ -42,6 +42,7 @@ $(top_builddir)/src/libppl.la \
 
 # Tests that do not compile yet.
 #closure1
+#topclosed1
 
 # Tests that do not succeed yet (maybe even known result is wrong).
 #ascii_dump_load1
@@ -98,6 +99,7 @@ refinewithconstraints1 \
 refinewithcongruences1 \
 removespacedims1 \
 timeelapse1 \
+topclosed1 \
 unconstrain1 \
 universe1 \
 writebox1
@@ -258,6 +260,8 @@ refinewithcongruences1_SOURCES = refinewithcongruences1.cc
 removespacedims1_SOURCES = removespacedims1.cc
 
 timeelapse1_SOURCES = timeelapse1.cc
+
+#topclosed1_SOURCES = topclosed1.cc
 
 unconstrain1_SOURCES = unconstrain1.cc
 
