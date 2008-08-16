@@ -99,7 +99,6 @@ refinewithconstraints1 \
 refinewithcongruences1 \
 removespacedims1 \
 timeelapse1 \
-topclosed1 \
 unconstrain1 \
 universe1 \
 writebox1
