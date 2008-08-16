@@ -572,10 +572,21 @@ template <typename PS>
 bool
 Pointset_Powerset<PS>::is_universe() const {
   const Pointset_Powerset& x = *this;
+  // Exploit omega-reduction, if already computed.
+  if (x.is_omega_reduced())
+    return x.size() == 1 && x.begin()->element().is_universe();
+
   // A powerset is universe iff one of its disjuncts is.
   for (const_iterator x_i = x.begin(), x_end = x.end(); x_i != x_end; ++x_i)
-    if (x_i->element().is_universe())
+    if (x_i->element().is_universe()) {
+      // Speculative omega-reduction, if it is worth.
+      if (x.size() > 1) {
+        Pointset_Powerset<PS> universe(x.space_dimension(), UNIVERSE);
+        Pointset_Powerset& xx = const_cast<Pointset_Powerset&>(x);
+        x.swap(universe);
+      }
       return true;
+    }
   return false;
 }
 

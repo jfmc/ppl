@@ -274,13 +274,13 @@ public:
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this
-    is a universe powerset.
+    is the top element of the powerser lattice.
   */
   bool is_universe() const;
 
   /*! \brief
-    Returns <CODE>true</CODE> if and only if \p *this
-    is a topologically closed subset of the vector space.
+    Returns <CODE>true</CODE> if and only if all the disjuncts
+    in \p *this are topologically closed.
   */
   bool is_topologically_closed() const;
 
@@ -307,6 +307,18 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p var is not a space dimension of \p *this.
+
+    \note
+    A variable is constrained if there exists a non-redundant disjunct
+    that is constraining the variable: this definition relies on the
+    powerset lattice structure and may be somewhat different from the
+    geometric intuition.
+    For instance, variable \f$x\f$ is constrained in the powerset
+    \f[
+      \mathit{ps} = \bigl\{ \{ x \geq 0 \}, \{ x \leq 0 \} \bigr\},
+    \f]
+    even though \f$\mathit{ps}\f$ is geometrically equal to the
+    whole vector space.
   */
   bool constrains(Variable var) const;
 
