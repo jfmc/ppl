@@ -2206,6 +2206,68 @@ PPL::Polyhedron::intersection_assign_and_minimize(const Polyhedron& y) {
 }
 
 void
+PPL::Polyhedron::intersection_preserving_enlarge_assign(const Polyhedron& y) {
+  Polyhedron& x = *this;
+  // Topology compatibility check.
+  if (x.topology() != y.topology())
+    throw_topology_incompatible("intersection_preserving_enlarge_assign(y)",
+				"y", y);
+  // Dimension-compatibility check.
+  if (x.space_dim != y.space_dim)
+    throw_dimension_incompatible("intersection_preserving_enlarge_assign(y)",
+				 "y", y);
+
+  // If `y' is empty, the biggest enlargement for `x' is the universe.
+  if (!y.minimize()) {
+    Polyhedron ph(topology(), x.space_dim, UNIVERSE);
+    swap(ph);
+    return;
+  }
+
+  // If `x' is empty, the intersection is empty.
+  if (!x.minimize()) {
+    // Search for a constraint of `y' that is not a tautology.
+    assert(!y.has_pending_generators() && y.constraints_are_up_to_date());
+    for (dimension_type i = y.con_sys.num_rows(); i-- > 0; ) {
+      const Constraint& y_con_sys_i = y.con_sys[i];
+      if (!y_con_sys_i.is_tautological()) {
+        // Found: we obtain a constraint `c' contradicting the one we
+        // found, and assign to `x' the polyhedron `ph' with `c' as
+        // the only constraint.
+        Polyhedron ph(topology(), x.space_dim, UNIVERSE);
+        Linear_Expression le(y_con_sys_i);
+        switch (y_con_sys_i.type()) {
+        case Constraint::EQUALITY:
+          ph.add_constraint(le == 1);
+          break;
+        case Constraint::NONSTRICT_INEQUALITY:
+          ph.add_constraint(le <= -1);
+          break;
+        case Constraint::STRICT_INEQUALITY:
+          ph.add_constraint(le == 0);
+          break;
+        }
+        swap(ph);
+        assert(OK());
+	return;
+      }
+    }
+    // `y' is the universe: `x' cannot be enlarged.
+    return;
+  }
+
+  // If both polyhedra are zero-dimensional, then at this point they
+  // are necessarily non-empty, so that their intersection is
+  // non-empty and `x' cannot be enlarged.
+  if (x.space_dim == 0)
+    return;
+
+  // FIXME: continue here.
+
+  assert(OK());
+}
+
+void
 PPL::Polyhedron::poly_hull_assign(const Polyhedron& y) {
   Polyhedron& x = *this;
   // Topology compatibility check.
