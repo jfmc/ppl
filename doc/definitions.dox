@@ -2569,6 +2569,28 @@ name ending with <CODE>_and_minimize</CODE>) of these operators is
 \em deprecated; this is in preparation of their complete removal,
 which will occur starting from version 0.11.
 
+\subsection On_Pointset_Powerset_and_Partially_Reduced_Product_Domains_A_Warning On Pointset_Powerset and Partially_Reduced_Product Domains: A Warning
+
+  For future versions of the PPL library all practical instantiations
+for the disjuncts for a pointset_powerset and component domains for
+the partially_reduced_product domains will be fully
+supported. However, for version 0.10, these compound domains should
+not themselves occur as one of their argument domains.  Therefore their
+use comes with the following warning.
+
+\warning
+The <CODE>Pointset_Powerset<PS></CODE> and
+<CODE>Partially_Reduced_Product<D1, D2, R></CODE>
+should only be used with the following instantiations
+for the disjunct domain template \p PS and component domain
+templates \p D1 and \p D2:
+<CODE>C_Polyhedron</CODE>,
+<CODE>NNC_Polyhedron</CODE>,
+<CODE>Grid</CODE>,
+<CODE>Octagonal_Shape<T></CODE>,
+<CODE>BD_Shape<T></CODE>,
+<CODE>Box<T></CODE>.
+
 \subsection On_Object_Orientation_and_Polymorphism_A_Disclaimer On Object-Orientation and Polymorphism: A Disclaimer
 
 The PPL library is mainly a collection of so-called ``concrete data

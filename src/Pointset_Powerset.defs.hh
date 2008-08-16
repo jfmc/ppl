@@ -46,6 +46,17 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 //! The powerset construction instantiated on PPL polyhedra.
 /*! \ingroup PPL_CXX_interface */
+/*!
+  \warning
+  At present, the supported instantiations for the
+  disjunct domain template \p PS are the simple pointset domains:
+  <CODE>C_Polyhedron</CODE>,
+  <CODE>NNC_Polyhedron</CODE>,
+  <CODE>Grid</CODE>,
+  <CODE>Octagonal_Shape<T></CODE>,
+  <CODE>BD_Shape<T></CODE>,
+  <CODE>Box<T></CODE>.
+*/
 template <typename PS>
 class Parma_Polyhedra_Library::Pointset_Powerset
   : public Parma_Polyhedra_Library::Powerset

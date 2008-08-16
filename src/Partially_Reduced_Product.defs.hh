@@ -182,6 +182,17 @@ public:
 
 //! The partially reduced product of two abstractions.
 /*! \ingroup PPL_CXX_interface
+
+  \warning
+  At present, the supported instantiations for the
+  two domain templates \p D1 and \p D2 are the simple pointset domains:
+  <CODE>C_Polyhedron</CODE>,
+  <CODE>NNC_Polyhedron</CODE>,
+  <CODE>Grid</CODE>,
+  <CODE>Octagonal_Shape<T></CODE>,
+  <CODE>BD_Shape<T></CODE>,
+  <CODE>Box<T></CODE>.
+
   An object of the class <CODE>Partially_Reduced_Product<D1, D2, R></CODE>
   represents the (partially reduced) product of two pointset domains \p D1
   and \p D2 where the form of any reduction is defined by the
