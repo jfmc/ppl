@@ -1307,7 +1307,7 @@ Box<ITV>::is_topologically_closed() const {
     return true;
 
   for (dimension_type k = seq.size(); k-- > 0; )
-    if (!seq[k].topologically_closed())
+    if (!seq[k].is_topologically_closed())
       return false;
   return true;
 }
