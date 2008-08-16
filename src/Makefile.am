@@ -301,14 +301,6 @@ Pointset_Powerset.types.hh \
 Pointset_Powerset.defs.hh \
 Pointset_Powerset.inlines.hh \
 Pointset_Powerset.templates.hh \
-Ask_Tell.types.hh \
-Ask_Tell.defs.hh \
-Ask_Tell.inlines.hh \
-Ask_Tell.templates.hh \
-Pointset_Ask_Tell.types.hh \
-Pointset_Ask_Tell.defs.hh \
-Pointset_Ask_Tell.inlines.hh \
-Pointset_Ask_Tell.templates.hh \
 Partially_Reduced_Product.types.hh \
 Partially_Reduced_Product.defs.hh \
 Partially_Reduced_Product.inlines.hh \
@@ -318,6 +310,14 @@ Any_Pointset.defs.hh \
 Any_Pointset.inlines.hh \
 max_space_dimension.hh \
 algorithms.hh
+#Ask_Tell.types.hh \
+#Ask_Tell.defs.hh \
+#Ask_Tell.inlines.hh \
+#Ask_Tell.templates.hh \
+#Pointset_Ask_Tell.types.hh \
+#Pointset_Ask_Tell.defs.hh \
+#Pointset_Ask_Tell.inlines.hh \
+#Pointset_Ask_Tell.templates.hh
 
 NESTED_INCLUDE_FILES = \
 Ph_Status.idefs.hh \
@@ -365,7 +365,6 @@ Grid_widenings.cc \
 BD_Shape.cc \
 Octagonal_Shape.cc \
 Pointset_Powerset.cc \
-Pointset_Ask_Tell.cc \
 Row.cc \
 Linear_Row.cc \
 Bit_Matrix.cc \
@@ -385,6 +384,8 @@ version.cc \
 $(INCLUDE_FILES) \
 $(NESTED_INCLUDE_FILES) \
 swapping_sort.icc
+#Pointset_Ask_Tell.cc
+
 
 if NO_UNDEFINED
 

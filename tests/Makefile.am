@@ -25,12 +25,12 @@ SUBDIRS = \
 Powerset \
 Partially_Reduced_Product \
 Box \
-Ask_Tell \
 MIP_Problem \
 Octagonal_Shape \
 BD_Shape \
 Polyhedron \
 Grid
+#Ask_Tell
 
 AM_CPPFLAGS = -I$(top_builddir)/src -I$(top_srcdir)/src @extra_includes@
 
