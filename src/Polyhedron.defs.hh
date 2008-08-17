@@ -534,7 +534,7 @@ protected:
   */
   template <typename Box>
   Polyhedron(Topology topol, const Box& box,
-                Complexity_Class complexity = ANY_COMPLEXITY);
+             Complexity_Class complexity = ANY_COMPLEXITY);
 
   /*! \brief
     The assignment operator.
