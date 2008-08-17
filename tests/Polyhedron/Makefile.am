@@ -85,6 +85,7 @@ generators1 \
 geomcovers1 \
 h79widening1 h79widening2 \
 intersection1 \
+interspreservenlarge1 \
 limitedbhrz03extrapolation1 \
 limitedh79extrapolation1 \
 linearpartition1 \
@@ -168,6 +169,7 @@ nnc_generators1 \
 nnc_geomcovers1 \
 nnc_h79widening1 \
 nnc_intersection1 \
+nnc_interspreservenlarge1 \
 nnc_limitedbhrz03extrapolation1 \
 nnc_limitedh79extrapolation1 \
 nnc_linearpartition1 \
@@ -305,6 +307,8 @@ h79widening1_SOURCES = h79widening1.cc
 h79widening2_SOURCES = h79widening2.cc
 
 intersection1_SOURCES = intersection1.cc
+
+interspreservenlarge1_SOURCES = interspreservenlarge1.cc
 
 limitedbhrz03extrapolation1_SOURCES = limitedbhrz03extrapolation1.cc
 
@@ -533,6 +537,9 @@ nnc_h79widening1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_intersection1_SOURCES = intersection1.cc
 nnc_intersection1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_interspreservenlarge1_SOURCES = interspreservenlarge1.cc
+nnc_interspreservenlarge1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_limitedbhrz03extrapolation1_SOURCES = limitedbhrz03extrapolation1.cc
 nnc_limitedbhrz03extrapolation1_CXXFLAGS = $(DERIVED_CXXFLAGS)
