@@ -206,7 +206,7 @@ PPL::Polyhedron::add_space_dimensions_and_project(dimension_type m) {
   }
 
   if (space_dim == 0) {
-    assert(status.test_zero_dim_univ() && gen_sys.empty());
+    assert(status.test_zero_dim_univ() && gen_sys.has_no_rows());
     // The system of generators for this polyhedron has only
     // the origin as a point.
     // In an NNC polyhedron, all points have to be accompanied

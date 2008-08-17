@@ -256,7 +256,7 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
   Constraint_System x_minus_H79_cs(topol);
   x.select_H79_constraints(y, H79_cs, x_minus_H79_cs);
 
-  if (x_minus_H79_cs.empty())
+  if (x_minus_H79_cs.has_no_rows())
     // We selected all of the constraints of `x',
     // thus the result of the widening is `x'.
     return;
@@ -640,7 +640,7 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
   }
 
   // If there are no candidate rays, we cannot obtain stabilization.
-  if (candidate_rays.empty())
+  if (candidate_rays.has_no_rows())
     return false;
 
   // Be non-intrusive.
@@ -723,7 +723,7 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
 
   // We cannot have selected all of the rows, since otherwise
   // the iteration should have been immediately stabilizing.
-  assert(!x_minus_H79_cs.empty());
+  assert(!x_minus_H79_cs.has_no_rows());
   // Be careful to obtain the right space dimension
   // (because `H79_cs' may be empty).
   Polyhedron H79(topol, x.space_dim, UNIVERSE);

@@ -156,7 +156,7 @@ const_iterator(const Linear_System::const_iterator& iter,
 
 inline bool
 Generator_System::empty() const {
-  return Linear_System::empty();
+  return Linear_System::has_no_rows();
 }
 
 inline Generator_System::const_iterator

@@ -97,7 +97,7 @@ Matrix::const_iterator::operator!=(const const_iterator& y) const {
 }
 
 inline bool
-Matrix::empty() const {
+Matrix::has_no_rows() const {
   return rows.empty();
 }
 

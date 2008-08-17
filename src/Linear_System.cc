@@ -287,7 +287,7 @@ PPL::Linear_System::add_rows(const Linear_System& y) {
   assert(num_pending_rows() == 0);
 
   // Adding no rows is a no-op.
-  if (y.empty())
+  if (y.has_no_rows())
     return;
 
   // Check if sortedness is preserved.
@@ -846,7 +846,7 @@ PPL::Linear_System::OK(const bool check_strong_normalized) const {
 
   // An empty system is OK,
   // unless it is an NNC system with exactly one column.
-  if (empty()) {
+  if (has_no_rows()) {
     if (is_necessarily_closed() || num_columns() != 1)
       return true;
     else {

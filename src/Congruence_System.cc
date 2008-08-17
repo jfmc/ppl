@@ -76,7 +76,7 @@ PPL::Congruence_System::insert_verbatim(const Congruence& cg) {
   if (cg_size > old_num_columns) {
     // Resize the system, if necessary.
     add_zero_columns(cg_size - old_num_columns);
-    if (!empty())
+    if (!has_no_rows())
       // Move the moduli to the last column.
       swap_columns(old_num_columns - 1, cg_size - 1);
     add_row(cg);
@@ -108,7 +108,7 @@ PPL::Congruence_System::insert(const Constraint& c) {
     if (cg_size > old_num_columns) {
       // Resize the system, if necessary.
       add_zero_columns(cg_size - old_num_columns);
-      if (!empty())
+      if (!has_no_rows())
 	// Move the moduli to the last column.
 	swap_columns(old_num_columns - 1, cg_size - 1);
     }

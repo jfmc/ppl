@@ -277,7 +277,7 @@ PPL::Grid::congruences() const {
 
   if (space_dim == 0) {
     // Zero-dimensional universe.
-    assert(con_sys.empty() && con_sys.num_columns() == 2);
+    assert(con_sys.num_rows() == 0 && con_sys.num_columns() == 2);
     return con_sys;
   }
 
@@ -309,7 +309,7 @@ PPL::Grid::grid_generators() const {
   }
 
   if (marked_empty()) {
-    assert(gen_sys.empty());
+    assert(gen_sys.has_no_rows());
     return gen_sys;
   }
 
@@ -331,7 +331,7 @@ PPL::Grid::minimized_grid_generators() const {
   }
 
   if (marked_empty()) {
-    assert(gen_sys.empty());
+    assert(gen_sys.has_no_rows());
     return gen_sys;
   }
 
@@ -891,7 +891,7 @@ PPL::Grid::OK(bool check_not_empty) const {
   // congruences `con_sys' is empty, and the generator system contains
   // one point.
   if (space_dim == 0) {
-    if (con_sys.empty())
+    if (con_sys.has_no_rows())
       if (gen_sys.num_rows() == 1 && gen_sys[0].is_point())
 	return true;
 #ifndef NDEBUG
@@ -957,7 +957,7 @@ PPL::Grid::OK(bool check_not_empty) const {
 
       // A non-empty system of generators describing a grid is valid
       // if and only if it contains a point.
-      if (!gen_sys.empty() && !gen_sys.has_points()) {
+      if (!gen_sys.has_no_rows() && !gen_sys.has_points()) {
 #ifndef NDEBUG
 	cerr << "Non-empty generator system declared up-to-date "
 	     << "has no points!"
@@ -1005,11 +1005,11 @@ PPL::Grid::OK(bool check_not_empty) const {
 	Dimension_Kinds dk = dim_kinds;
 	// `gs' is minimized and marked_empty returned false, so `gs'
 	// should contain rows.
-	assert(!gs.empty());
+	assert(!gs.has_no_rows());
 	simplify(gs, dk);
 	// gs contained rows before being reduced, so it should
 	// contain at least a single point afterward.
-	assert(!gs.empty());
+	assert(!gs.has_no_rows());
 	for (dimension_type row = gen_sys.num_rows(); row-- > 0; ) {
 	  Grid_Generator& g = gs[row];
 	  const Grid_Generator& g_copy = gen_sys[row];
@@ -1232,7 +1232,7 @@ PPL::Grid::add_recycled_congruences(Congruence_System& cgs) {
   if (space_dim < cgs_space_dim)
     throw_dimension_incompatible("add_recycled_congruences(cgs)", "cgs", cgs);
 
-  if (cgs.empty())
+  if (cgs.has_no_rows())
     return;
 
   if (space_dim == 0) {
@@ -1308,7 +1308,7 @@ PPL::Grid::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
 				 "cgs", cgs);
 
   // Adding no congruences: just minimize.
-  if (cgs.empty())
+  if (cgs.has_no_rows())
     return minimize();
 
   // Dealing with zero-dimensional space grids first.
@@ -1443,7 +1443,7 @@ PPL::Grid::add_recycled_grid_generators(Grid_Generator_System& gs) {
     throw_dimension_incompatible("add_recycled_generators(gs)", "gs", gs);
 
   // Adding no generators leaves the grid the same.
-  if (gs.empty())
+  if (gs.has_no_rows())
     return;
 
   // Adding valid generators to a zero-dimensional grid transforms it
@@ -1512,7 +1512,7 @@ PPL
 				 "gs", gs);
 
   // Adding no generators is equivalent to just requiring reduction.
-  if (gs.empty())
+  if (gs.has_no_rows())
     return minimize();
 
   // Adding valid generators to a zero-dimensional grid produces the
@@ -1669,7 +1669,7 @@ PPL::Grid::intersection_assign(const Grid& y) {
   if (!y.congruences_are_up_to_date())
     y.update_congruences();
 
-  if (!y.con_sys.empty()) {
+  if (!y.con_sys.has_no_rows()) {
     x.con_sys.insert(y.con_sys);
     // Grid_Generators may be out of date and congruences may have changed
     // from minimal form.

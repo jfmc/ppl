@@ -238,7 +238,7 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
   // If there are pending constraints, using `generators()' we process them.
   const Generator_System& old_gensys = generators();
 
-  if (old_gensys.empty()) {
+  if (old_gensys.has_no_rows()) {
     // The polyhedron is empty.
     Polyhedron new_polyhedron(topology(), new_space_dimension, EMPTY);
     std::swap(*this, new_polyhedron);

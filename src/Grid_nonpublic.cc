@@ -107,8 +107,8 @@ PPL::Grid::construct(Congruence_System& cgs) {
   // Preparing con_sys and gen_sys is up to the caller.
   assert(cgs.space_dimension() == con_sys.space_dimension());
   assert(cgs.space_dimension() == gen_sys.space_dimension());
-  assert(con_sys.empty());
-  assert(gen_sys.empty());
+  assert(con_sys.has_no_rows());
+  assert(gen_sys.has_no_rows());
 
   // Set the space dimension.
   space_dim = cgs.space_dimension();
@@ -145,14 +145,14 @@ PPL::Grid::construct(Grid_Generator_System& ggs) {
   // Preparing con_sys and gen_sys is up to the caller.
   assert(ggs.space_dimension() == con_sys.space_dimension());
   assert(ggs.space_dimension() == gen_sys.space_dimension());
-  assert(con_sys.empty());
-  assert(gen_sys.empty());
+  assert(con_sys.has_no_rows());
+  assert(gen_sys.has_no_rows());
 
   // Set the space dimension.
   space_dim = ggs.space_dimension();
 
   // An empty set of generators defines the empty grid.
-  if (ggs.empty()) {
+  if (ggs.has_no_rows()) {
     status.set_empty();
     // Insert the zero dim false congruence system into `con_sys'.
     // `gen_sys' is already in empty form.
@@ -373,7 +373,7 @@ PPL::Grid::update_congruences() const {
   // The caller must ensure that the generators are up to date.
   assert(space_dim > 0);
   assert(!marked_empty());
-  assert(!gen_sys.empty());
+  assert(!gen_sys.has_no_rows());
   assert(gen_sys.space_dimension() > 0);
 
   Grid& gr = const_cast<Grid&>(*this);
@@ -383,7 +383,7 @@ PPL::Grid::update_congruences() const {
 
   // `gen_sys' contained rows before being reduced, so it should
   // contain at least a single point afterward.
-  assert(!gen_sys.empty());
+  assert(!gen_sys.has_no_rows());
 
   // Populate `con_sys' with congruences characterizing the grid
   // described by `gen_sys'.

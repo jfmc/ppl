@@ -324,7 +324,7 @@ Grid::rows_are_zero(M& system, dimension_type first,
 
 void
 Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
-  assert(!sys.empty());
+  assert(!sys.has_no_rows());
   // For reduce_pc_with_pc.
   assert(sys.num_columns() > 0);
 

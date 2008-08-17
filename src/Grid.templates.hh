@@ -258,7 +258,7 @@ Grid::get_covering_box(Box<Interval>& box) const {
     return;
   }
 
-  assert(!gen_sys.empty());
+  assert(!gen_sys.has_no_rows());
 
   dimension_type num_dims = gen_sys.num_columns() - 2 /* parameter divisor */;
   dimension_type num_rows = gen_sys.num_rows();
@@ -467,7 +467,7 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
 
   const Grid_Generator_System& old_gensys = grid_generators();
 
-  if (old_gensys.empty()) {
+  if (old_gensys.has_no_rows()) {
     // The grid is empty.
     Grid new_grid(new_space_dimension, EMPTY);
     std::swap(*this, new_grid);
