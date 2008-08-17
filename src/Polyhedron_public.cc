@@ -2219,7 +2219,7 @@ PPL::Polyhedron::intersection_preserving_enlarge_assign(const Polyhedron& y) {
 
   // If `y' is empty, the biggest enlargement for `x' is the universe.
   if (!y.minimize()) {
-    Polyhedron ph(topology(), x.space_dim, UNIVERSE);
+    Polyhedron ph(x.topology(), x.space_dim, UNIVERSE);
     swap(ph);
     return;
   }
@@ -2234,7 +2234,7 @@ PPL::Polyhedron::intersection_preserving_enlarge_assign(const Polyhedron& y) {
         // Found: we obtain a constraint `c' contradicting the one we
         // found, and assign to `x' the polyhedron `ph' with `c' as
         // the only constraint.
-        Polyhedron ph(topology(), x.space_dim, UNIVERSE);
+        Polyhedron ph(x.topology(), x.space_dim, UNIVERSE);
         Linear_Expression le(y_con_sys_i);
         switch (y_con_sys_i.type()) {
         case Constraint::EQUALITY:
@@ -2262,7 +2262,46 @@ PPL::Polyhedron::intersection_preserving_enlarge_assign(const Polyhedron& y) {
   if (x.space_dim == 0)
     return;
 
-  // FIXME: continue here.
+  // Compute into `z' the minimized intersection of `x' and `y'.
+  Polyhedron z = x;
+  if (!z.intersection_assign_and_minimize(y))
+    // FIXME: continue here.
+    return;
+
+  // FIXME: check if it would be convenient to reuse memory instead of
+  // reallocating it everytime.
+
+  // FIXME: check if we can reuse x.con_sys;
+  const Constraint_System& x_cs = x.con_sys;
+  Constraint_System tmp_cs;
+  const Generator_System& y_gs = y.gen_sys;
+  for (Constraint_System::const_iterator i = x_cs.begin(),
+         x_cs_end = x_cs.end(); i != x_cs_end; ++i) {
+    const Constraint& x_cs_i = *i;
+    if (!y_gs.satisfied_by_all_generators(x_cs_i))
+      tmp_cs.insert(x_cs_i);
+  }
+
+  const dimension_type tmp_cs_num_rows = tmp_cs.num_rows();
+  if (tmp_cs_num_rows == 0) {
+    Polyhedron ph(x.topology(), x.space_dim, UNIVERSE);
+    swap(ph);
+  }
+  else {
+    const Generator_System& z_gs = z.gen_sys;
+    const dimension_type z_gs_num_rows = z_gs.num_rows();
+    Bit_Matrix sat(tmp_cs_num_rows, z_gs_num_rows);
+    for (dimension_type i = tmp_cs_num_rows; i-- > 0; ) {
+      const Constraint& tmp_cs_i = tmp_cs[i];
+      Bit_Row& sat_i = sat[i];
+      for (dimension_type j = z_gs_num_rows; j-- > 0; )
+        if (Scalar_Products::sign(tmp_cs_i, z_gs[j]))
+          sat_i.set(j);
+    }
+    simplify(tmp_cs, sat);
+    Polyhedron ph(x.topology(), tmp_cs, Recycle_Input());
+    swap(ph);
+  }
 
   assert(OK());
 }
