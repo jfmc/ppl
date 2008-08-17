@@ -459,7 +459,7 @@ Box<ITV>::Box(const Grid& gr, Complexity_Class)
     return;
   }
 
-  assert(!gr.gen_sys.has_no_rows());
+  assert(!gr.gen_sys.empty());
 
   // Create a vector to record which dimensions are bounded.
   std::vector<bool> bounded_interval(space_dim, true);
