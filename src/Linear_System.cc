@@ -596,6 +596,8 @@ PPL::Linear_System
   // lines or equalities, all of which occur before the first ray
   // or point or inequality.
   assert(x.OK(true));
+  assert(x.num_rows() >= 1);
+  assert(x.num_columns() >= 1);
   assert(x.num_pending_rows() == 0);
   assert(n_lines_or_equalities <= x.num_lines_or_equalities());
 #ifndef NDEBUG
