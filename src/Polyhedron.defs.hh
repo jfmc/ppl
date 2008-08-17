@@ -2618,7 +2618,7 @@ private:
     <CODE>conversion()</CODE>.
   */
   // Detailed Doxygen comment to be found in file simplify.cc.
-  static int simplify(Linear_System& mat, Bit_Matrix& sat);
+  static dimension_type simplify(Linear_System& mat, Bit_Matrix& sat);
 
   //@} // Minimization-Related Static Member Functions
 
