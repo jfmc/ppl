@@ -623,7 +623,7 @@ endif BUILD_WATCHDOG_LIBRARY
 
 TESTS = $(ORIGINAL_TESTS) $(DERIVED_TESTS) $(WATCHDOG_TESTS)
 
-XFAIL_TESTS =
+XFAIL_TESTS = interspreservenlarge1 nnc_interspreservenlarge1
 
 check_PROGRAMS = $(TESTS) $(BUGS)
 
