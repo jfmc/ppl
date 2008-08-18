@@ -2278,13 +2278,12 @@ PPL::Polyhedron::intersection_preserving_enlarge_assign(const Polyhedron& y) {
       std::swap(x_cs_i, x_cs[x_cs_num_rows]);
     }
   }
-  bool x_cs_is_minimized = true;
-  if (x_cs_num_rows != old_x_cs_num_rows) {
+  bool x_cs_changed = (x_cs_num_rows != old_x_cs_num_rows);
+  if (x_cs_changed) {
     x_cs.erase_to_end(x_cs_num_rows);
     x_cs.unset_pending_rows();
-    // We removed some constraints: we need to invalidate the generators
-    // and saturation matrices.
-    x_cs_is_minimized = false;
+    x_cs.set_sorted(false);
+    clear_constraints_minimized();
     clear_generators_up_to_date();
     clear_sat_c_up_to_date();
     clear_sat_g_up_to_date();
@@ -2293,11 +2292,17 @@ PPL::Polyhedron::intersection_preserving_enlarge_assign(const Polyhedron& y) {
 
   if (x_cs_num_rows > 0) {
     // Compute into `z' the minimized intersection of `x' and `y'.
-    bool x_first = (x_cs_is_minimized && x_cs_num_rows > y.con_sys.num_rows());
+    bool x_first = (!x_cs_changed && x_cs_num_rows > y.con_sys.num_rows());
     Polyhedron z(x_first ? x : y);
-    if (!z.intersection_assign_and_minimize(x_first ? y : x))
+    z.add_constraints(x_first ? y.con_sys : x_cs);
+    if (!z.minimize()) {
       // FIXME: continue here.
+      if (x_cs_changed) {
+        x_cs.add_low_level_constraints();
+        x_cs.set_sorted(false);
+      }
       return;
+    }
 
     const Generator_System& z_gs = z.gen_sys;
     const dimension_type z_gs_num_rows = z_gs.num_rows();
@@ -2310,15 +2315,20 @@ PPL::Polyhedron::intersection_preserving_enlarge_assign(const Polyhedron& y) {
           sat_i.set(j);
     }
     simplify(x_cs, sat);
-    if (x_cs_is_minimized && x_cs_num_rows != old_x_cs_num_rows) {
+    if (!x_cs_changed && x_cs.num_rows() != old_x_cs_num_rows) {
       // We removed some constraints: we need to invalidate the generators
       // and saturation matrices, since we did not do it before.
+      x_cs_changed = true;
       clear_generators_up_to_date();
       clear_sat_c_up_to_date();
       clear_sat_g_up_to_date();
     }
   }
 
+  if (x_cs_changed) {
+    x_cs.add_low_level_constraints();
+    x_cs.set_sorted(false);
+  }
   assert(OK());
 }
 
