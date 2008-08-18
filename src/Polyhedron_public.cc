@@ -2263,15 +2263,12 @@ PPL::Polyhedron::intersection_preserving_enlarge_assign(const Polyhedron& y) {
     return;
   }
 
-  // FIXME: check if it would be convenient to reuse memory instead of
-  // reallocating it everytime.
-
   const Constraint_System& x_cs = x.con_sys;
   const dimension_type x_cs_num_rows = x_cs.num_rows();
   const Generator_System& y_gs = y.gen_sys;
 
   Constraint_System tmp_cs;
-  // Put in `tmp_cs' all the constraints of `x' that are implied by `y'.
+  // Put in `tmp_cs' all the constraints of `x' that are not implied by `y'.
   for (Constraint_System::const_iterator i = x_cs.begin(),
          x_cs_end = x_cs.end(); i != x_cs_end; ++i) {
     const Constraint& x_cs_i = *i;
@@ -2281,13 +2278,57 @@ PPL::Polyhedron::intersection_preserving_enlarge_assign(const Polyhedron& y) {
 
   const dimension_type tmp_cs_num_rows = tmp_cs.num_rows();
   if (tmp_cs_num_rows > 0) {
+    const Constraint_System& y_cs = y.con_sys;
+    const dimension_type y_cs_num_rows = y_cs.num_rows();
     // Compute into `z' the minimized intersection of `x' and `y'.
-    const bool x_first = (x_cs_num_rows > y.con_sys.num_rows());
+    const bool x_first = (x_cs_num_rows > y_cs_num_rows);
     Polyhedron z(x_first ? x : y);
-    z.add_constraints(x_first ? y.con_sys : x_cs);
+    z.add_constraints(x_first ? y_cs : x_cs);
     if (!z.minimize()) {
-      // FIXME: continue here.
-      goto finish;
+      // The intersection is empty.
+
+      // The objective function is the default, zero.
+      // We do not care about minimization or maximization, since
+      // we are only interested in satisfiability.
+      MIP_Problem lp;
+      if (x.is_necessarily_closed()) {
+        lp.add_space_dimensions_and_embed(x.space_dim);
+        lp.add_constraints(y_cs);
+      }
+      else {
+        // KLUDGE: temporarily mark `y_cs' if it was necessarily
+        // closed, so that we can interpret the epsilon dimension as a
+        // standard dimension. Be careful to reset the topology of `cs'
+        // even on exceptional execution path.
+        const_cast<Constraint_System&>(y_cs).set_necessarily_closed();
+        try {
+          lp.add_space_dimensions_and_embed(x.space_dim+1);
+          lp.add_constraints(y_cs);
+          const_cast<Constraint_System&>(y_cs).set_not_necessarily_closed();
+        }
+        catch (...) {
+          const_cast<Constraint_System&>(y_cs).set_not_necessarily_closed();
+          throw;
+        }
+      }
+      // FIXME: apply a sensible heuristic here.  For example, constraints
+      // of `x' could be added depending on the number of generators of `y'
+      // they rule out: the more generators they rule out, the sooner
+      // they are added.
+      Constraint_System irreducible_tmp_cs_subset;
+      for (Constraint_System::const_iterator i = tmp_cs.begin(),
+             tmp_cs_end = tmp_cs.end(); i != tmp_cs_end; ++i) {
+        const Constraint& tmp_cs_i = *i;
+        irreducible_tmp_cs_subset.insert(tmp_cs_i);
+	lp.add_constraint(tmp_cs_i);
+        MIP_Problem_Status status = lp.solve();
+        if (status == UNFEASIBLE_MIP_PROBLEM) {
+          tmp_cs.swap(irreducible_tmp_cs_subset);
+          goto finish;
+        }
+      }
+      // Cannot exit from here.
+      assert(false);
     }
 
     const Generator_System& z_gs = z.gen_sys;

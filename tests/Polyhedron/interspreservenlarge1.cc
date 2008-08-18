@@ -24,8 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-#if 0
-// Intersection of an icosahedron with a column.
 bool
 test01() {
   Variable x(0);
@@ -61,8 +59,9 @@ test01() {
   column.add_constraint(x <= 1);
 
   C_Polyhedron computed_result = icosahedron;
-  computed_result.intersection_assign_and_minimize(column);
+  computed_result.intersection_preserving_enlarge_assign(column);
 
+#if 0
   C_Polyhedron known_result(3);
   known_result.add_constraint(-4*x - 2*y + z >= -8);
   known_result.add_constraint(-4*x + 2*y + z >= 4);
@@ -77,15 +76,67 @@ test01() {
   known_result.add_constraint(x >= 0);
 
   bool ok = (computed_result == known_result);
+#endif
 
   print_constraints(icosahedron, "*** icosahedron ***");
   print_constraints(column, "*** column ***");
+  print_constraints(computed_result, "*** computed_result ***");
+#if 0
+  print_constraints(known_result, "*** known_result ***");
+#endif
+  return true;
+  //return ok;
+}
+
+bool
+test02() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+
+  C_Polyhedron icosahedron1(3);
+  icosahedron1.add_constraint(4*x - 2*y - z + 14 >= 0);
+  icosahedron1.add_constraint(4*x + 2*y - z + 2 >= 0);
+  icosahedron1.add_constraint(x + y - 1 >= 0);
+  icosahedron1.add_constraint(x + y + 2*z - 5 >= 0);
+  icosahedron1.add_constraint(x + 1 >= 0);
+  icosahedron1.add_constraint(x + z - 1 >= 0);
+  icosahedron1.add_constraint(2*x + y -2*z + 7 >= 0);
+  icosahedron1.add_constraint(x - y + 2*z + 1 >= 0);
+  icosahedron1.add_constraint(x - y + 5 >= 0);
+  icosahedron1.add_constraint(2*x - y - 2*z + 13 >= 0);
+  icosahedron1.add_constraint(-2*x - y + 2*z + 1 >= 0);
+  icosahedron1.add_constraint(-x + y - 1 >= 0);
+  icosahedron1.add_constraint(-x + y -2*z + 7 >= 0);
+  icosahedron1.add_constraint(-4*x + 2*y + z - 4 >= 0);
+  icosahedron1.add_constraint(-2*x + y + 2*z - 5 >= 0);
+  icosahedron1.add_constraint(-x + 1 >= 0);
+  icosahedron1.add_constraint(-x - z + 5 >= 0);
+  icosahedron1.add_constraint(-4*x - 2*y + z + 8 >= 0);
+  icosahedron1.add_constraint(-x - y + 5 >= 0);
+  icosahedron1.add_constraint(-x - y -2*z +13 >= 0);
+
+  C_Polyhedron icosahedron2 = icosahedron1;
+  icosahedron2.affine_image(x, x+5);
+
+
+  C_Polyhedron computed_result = icosahedron1;
+  computed_result.intersection_preserving_enlarge_assign(icosahedron2);
+
+  C_Polyhedron known_result(3);
+  known_result.add_constraint(-4*x - 2*y + z >= -8);
+
+  bool ok = (computed_result == known_result);
+
+  print_constraints(icosahedron1, "*** icosahedron1 ***");
+  print_constraints(icosahedron2, "*** icosahedron2 ***");
   print_constraints(computed_result, "*** computed_result ***");
   print_constraints(known_result, "*** known_result ***");
 
   return ok;
 }
 
+#if 0
 int
 aux_test02(const C_Polyhedron& ph) {
   if (ph.is_empty() || ph.space_dimension() == 0)
@@ -544,10 +595,8 @@ test15() {
 } // namespace
 
 BEGIN_MAIN
-#if 0
   DO_TEST(test01);
-  DO_TEST_F8A(test02);
-#endif
+  DO_TEST(test02);
   DO_TEST(test03);
 #if 0
   DO_TEST(test04);
