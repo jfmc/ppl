@@ -497,6 +497,26 @@ test13() {
 }
 #endif
 
+bool
+test14() {
+  C_Polyhedron ph1(0, EMPTY);
+  C_Polyhedron ph2;
+
+  print_constraints(ph1, "*** ph1 ***");
+  print_constraints(ph2, "*** ph2 ***");
+
+  C_Polyhedron known_result = ph1;
+
+  ph1.intersection_preserving_enlarge_assign(ph2);
+
+  bool ok = (ph1 == known_result);
+
+  print_constraints(ph1,
+            "*** after ph1.intersection_preserving_enlarge_assign(ph2) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -517,4 +537,5 @@ BEGIN_MAIN
   DO_TEST(test12);
   DO_TEST(test13);
 #endif
+  DO_TEST(test14);
 END_MAIN
