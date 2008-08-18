@@ -689,6 +689,14 @@ Pointset_Powerset<PS>::topological_closure_assign() {
 }
 
 template <typename PS>
+void
+Pointset_Powerset<PS>
+::intersection_preserving_enlarge_assign(const Pointset_Powerset& y) {
+  // FIXME: provide a real implementation.
+  used(y);
+}
+
+template <typename PS>
 bool
 Pointset_Powerset<PS>::contains(const Pointset_Powerset& y) const {
   const Pointset_Powerset& x = *this;

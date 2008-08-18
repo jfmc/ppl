@@ -1519,6 +1519,16 @@ public:
   void difference_assign(const Grid& y);
 
   /*! \brief
+    Assigns to \p *this an \ref Intersection-Preserving Enlargement
+    "intersection-preserving enlargement" of \p *this with respect to \p y.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are topology-incompatible or
+    dimension-incompatible.
+  */
+  void intersection_preserving_enlarge_assign(const Grid& y);
+
+  /*! \brief
     Assigns to \p *this the \ref Grid_Affine_Transformation
     "affine image" of \p
     *this under the function mapping variable \p var to the affine

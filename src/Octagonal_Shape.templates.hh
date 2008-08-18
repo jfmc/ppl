@@ -2443,6 +2443,14 @@ Octagonal_Shape<T>::oct_difference_assign(const Octagonal_Shape& y) {
 
 template <typename T>
 void
+Octagonal_Shape<T>
+::intersection_preserving_enlarge_assign(const Octagonal_Shape& y) {
+  // FIXME: provide a real implementation.
+  used(y);
+}
+
+template <typename T>
+void
 Octagonal_Shape<T>::add_space_dimensions_and_embed(dimension_type m) {
   // Adding no dimensions is a no-op.
   if (m == 0)

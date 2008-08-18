@@ -1543,6 +1543,13 @@ Box<ITV>::box_difference_assign(const Box& y) {
 
 template <typename ITV>
 void
+Box<ITV>::intersection_preserving_enlarge_assign(const Box& y) {
+  // FIXME: provide a real implementation.
+  used(y);
+}
+
+template <typename ITV>
+void
 Box<ITV>::time_elapse_assign(const Box& y) {
   Box& x = *this;
   const dimension_type x_space_dim = x.space_dimension();

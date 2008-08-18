@@ -1836,6 +1836,12 @@ PPL::Grid::grid_difference_assign(const Grid& y) {
 }
 
 void
+PPL::Grid::intersection_preserving_enlarge_assign(const Grid& y) {
+  // FIXME: provide a real implementation.
+  used(y);
+}
+
+void
 PPL::Grid::affine_image(const Variable var,
 			const Linear_Expression& expr,
 			Coefficient_traits::const_reference denominator) {

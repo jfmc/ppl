@@ -1048,6 +1048,16 @@ public:
   void difference_assign(const Octagonal_Shape& y);
 
   /*! \brief
+    Assigns to \p *this an \ref Intersection-Preserving Enlargement
+    "intersection-preserving enlargement" of \p *this with respect to \p y.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are topology-incompatible or
+    dimension-incompatible.
+  */
+  void intersection_preserving_enlarge_assign(const Octagonal_Shape& y);
+
+  /*! \brief
     Assigns to \p *this the \ref affine_relation "affine image"
     of \p *this under the function mapping variable \p var into the
     affine expression specified by \p expr and \p denominator.

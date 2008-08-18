@@ -1877,6 +1877,13 @@ BD_Shape<T>::bds_difference_assign(const BD_Shape& y) {
 
 template <typename T>
 void
+BD_Shape<T>::intersection_preserving_enlarge_assign(const BD_Shape& y) {
+  // FIXME: provide a real implementation.
+  used(y);
+}
+
+template <typename T>
+void
 BD_Shape<T>::add_space_dimensions_and_embed(const dimension_type m) {
   // Adding no dimensions is a no-op.
   if (m == 0)
