@@ -596,7 +596,6 @@ PPL::Linear_System
   // lines or equalities, all of which occur before the first ray
   // or point or inequality.
   assert(x.OK(true));
-  assert(x.num_rows() >= 1);
   assert(x.num_columns() >= 1);
   assert(x.num_pending_rows() == 0);
   assert(n_lines_or_equalities <= x.num_lines_or_equalities());
@@ -676,7 +675,7 @@ PPL::Linear_System
   }
 
   // Trying to keep sortedness.
-  for (dimension_type i = 0; still_sorted && i < nrows-1; ++i)
+  for (dimension_type i = 0; still_sorted && i+1 < nrows; ++i)
     if (check_for_sortedness[i])
       // Have to check sortedness of `x[i]' with respect to `x[i+1]'.
       still_sorted = (compare(x[i], x[i+1]) <= 0);
