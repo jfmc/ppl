@@ -358,7 +358,7 @@ m4_define(`ppl_@CLASS@_@DIMENSION@_code',
 `
 ppl_@CLASS@_@DIMENSION@_2_test :-
   (
-   choose_test(TEST_DATA, Space_Dim),
+   choose_test(TEST_DATA, Space_Dim), TEST_DATA \= test07,
     (
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
      \+ppl_@CLASS@_@DIMENSION@(PS, 3),

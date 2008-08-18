@@ -180,6 +180,7 @@ let generator1 = Point (e3, (Z.from_int 1));;
 let generators1 = [Point (e2, (Z.from_int 1)); Point (e1, (Z.from_int 2))] ;;
 let congruence1 = (e2, e2 , (Z.from_int 1));;
 let congruences1 = [e3, e2 , (Z.from_int 20)];;
+let grid_generator1 = Grid_Point (e3, (Z.from_int 1));;
 
 let mip1 =  ppl_new_MIP_Problem 10 constraints1 e3 Maximization;;
 let objective_func = ppl_MIP_Problem_objective_function mip1;;
@@ -204,8 +205,8 @@ print_newline();;
 let polyhedron1 = ppl_new_C_Polyhedron_from_constraints(constraints1);;
 let polyhedron2 = ppl_new_C_Polyhedron_from_generators(generators1);;
 let result =  ppl_C_Polyhedron_bounds_from_above polyhedron1 e2;;
-ppl_C_Polyhedron_add_constraint polyhedron1 (constraint1);;
-ppl_C_Polyhedron_add_generator polyhedron1 (generator1);;
+ppl_C_Polyhedron_add_constraint polyhedron1 constraint1;;
+ppl_C_Polyhedron_add_generator polyhedron1 generator1;;
 let b = ppl_C_Polyhedron_is_disjoint_from_C_Polyhedron
   polyhedron1 polyhedron2;;
 ppl_C_Polyhedron_concatenate_assign polyhedron1 polyhedron2;;
@@ -263,6 +264,8 @@ ppl_C_Polyhedron_unconstrain_space_dimensions
   polyhedron1 dimensions_to_unconstrain;;
 print_newline();;
 ppl_C_Polyhedron_swap polyhedron1 polyhedron2;;
+let grid1 = ppl_new_Grid_from_congruences(congruences1);;
+ppl_Grid_add_grid_generator grid1 grid_generator1;;
 (* Pointset_Powersed_Grid is not enabled by default, the following code is *)
 (* commented *)
 (* let pps = ppl_new_Pointset_Powerset_Grid_from_space_dimension 3;; *)
