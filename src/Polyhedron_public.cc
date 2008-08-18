@@ -2266,71 +2266,48 @@ PPL::Polyhedron::intersection_preserving_enlarge_assign(const Polyhedron& y) {
   // FIXME: check if it would be convenient to reuse memory instead of
   // reallocating it everytime.
 
-  Constraint_System& x_cs = x.con_sys;
+  const Constraint_System& x_cs = x.con_sys;
+  const dimension_type x_cs_num_rows = x_cs.num_rows();
   const Generator_System& y_gs = y.gen_sys;
-  dimension_type old_x_cs_num_rows = x_cs.num_rows();
-  dimension_type x_cs_num_rows = old_x_cs_num_rows;
-  // Remove all the constraints of `x' that are implied by `y'.
-  for (dimension_type i = x_cs_num_rows; i-- > 0; ) {
-    Constraint& x_cs_i = x_cs[i];
-    if (!x_cs_i.is_tautological()
-        && y_gs.satisfied_by_all_generators(x_cs_i)) {
-      --x_cs_num_rows;
-      std::swap(x_cs_i, x_cs[x_cs_num_rows]);
-    }
-  }
-  bool x_cs_changed = (x_cs_num_rows != old_x_cs_num_rows);
-  if (x_cs_changed) {
-    x_cs.erase_to_end(x_cs_num_rows);
-    x_cs.unset_pending_rows();
-    x_cs.set_sorted(false);
-    clear_constraints_minimized();
-    clear_generators_up_to_date();
-    clear_sat_c_up_to_date();
-    clear_sat_g_up_to_date();
-    old_x_cs_num_rows = x_cs_num_rows;
+
+  Constraint_System tmp_cs;
+  // Put in `tmp_cs' all the constraints of `x' that are implied by `y'.
+  for (Constraint_System::const_iterator i = x_cs.begin(),
+         x_cs_end = x_cs.end(); i != x_cs_end; ++i) {
+    const Constraint& x_cs_i = *i;
+    if (!y_gs.satisfied_by_all_generators(x_cs_i))
+      tmp_cs.insert(x_cs_i);
   }
 
-  if (x_cs_num_rows > 0) {
+  const dimension_type tmp_cs_num_rows = tmp_cs.num_rows();
+  if (tmp_cs_num_rows > 0) {
     // Compute into `z' the minimized intersection of `x' and `y'.
-    bool x_first = (!x_cs_changed && x_cs_num_rows > y.con_sys.num_rows());
+    const bool x_first = (x_cs_num_rows > y.con_sys.num_rows());
     Polyhedron z(x_first ? x : y);
     z.add_constraints(x_first ? y.con_sys : x_cs);
     if (!z.minimize()) {
       // FIXME: continue here.
-      if (x_cs_changed) {
-        x_cs.add_low_level_constraints();
-        x_cs.set_sorted(false);
-      }
-      return;
+      goto finish;
     }
 
     const Generator_System& z_gs = z.gen_sys;
     const dimension_type z_gs_num_rows = z_gs.num_rows();
-    Bit_Matrix sat(x_cs_num_rows, z_gs_num_rows);
-    for (dimension_type i = x_cs_num_rows; i-- > 0; ) {
-      const Constraint& x_cs_i = x_cs[i];
+    Bit_Matrix sat(tmp_cs_num_rows, z_gs_num_rows);
+    for (dimension_type i = tmp_cs_num_rows; i-- > 0; ) {
+      const Constraint& tmp_cs_i = tmp_cs[i];
       Bit_Row& sat_i = sat[i];
       for (dimension_type j = z_gs_num_rows; j-- > 0; )
-        if (Scalar_Products::sign(x_cs_i, z_gs[j]))
+        if (Scalar_Products::sign(tmp_cs_i, z_gs[j]))
           sat_i.set(j);
     }
-    simplify(x_cs, sat);
-    if (!x_cs_changed && x_cs.num_rows() != old_x_cs_num_rows) {
-      // We removed some constraints: we need to invalidate the generators
-      // and saturation matrices, since we did not do it before.
-      x_cs_changed = true;
-      clear_generators_up_to_date();
-      clear_sat_c_up_to_date();
-      clear_sat_g_up_to_date();
-    }
+    simplify(tmp_cs, sat);
   }
 
-  if (x_cs_changed) {
-    x_cs.add_low_level_constraints();
-    x_cs.set_sorted(false);
-  }
-  assert(OK());
+ finish:
+  Polyhedron tmp_ph(x.topology(), x.space_dim, UNIVERSE);
+  tmp_ph.add_constraints(tmp_cs);
+  x.swap(tmp_ph);
+  assert(x.OK());
 }
 
 void
