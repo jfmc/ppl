@@ -1,4 +1,4 @@
-/* Test Box::is_discrete().
+/* Test Box::is_topologically_closed().
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
+/* unbounded 2-dimensional box */
 bool
 test01() {
   Variable x(0);
@@ -41,6 +42,7 @@ test01() {
   return ok;
 }
 
+/* bounded 5-dimensional box */
 bool
 test02() {
   Variable A(0);
@@ -52,9 +54,10 @@ test02() {
   TBox box(5);
 
   box.add_constraint(A <= 5);
-  box.add_constraint(A == 3);
+  box.add_constraint(A >= 3);
   box.add_constraint(B == 0);
   box.add_constraint(C <= 2);
+  box.add_constraint(C >= 1);
   box.add_constraint(D == -7);
   box.add_constraint(E == 1);
 
@@ -65,6 +68,7 @@ test02() {
   return ok;
 }
 
+/* 0-dimensional universe box */
 bool
 test03() {
   TBox box(0);
@@ -76,6 +80,7 @@ test03() {
   return ok;
 }
 
+/* 2-dimensional empty box */
 bool
 test04() {
   Variable A(0);
@@ -94,6 +99,7 @@ test04() {
   return ok;
 }
 
+/* 2-dimensional empty box */
 bool
 test05() {
   TBox box(2, EMPTY);
@@ -105,6 +111,7 @@ test05() {
   return ok;
 }
 
+/* 2-dimensional universe box */
 bool
 test06() {
   TBox box(2);
@@ -116,6 +123,7 @@ test06() {
   return ok;
 }
 
+/* 4-dimensional topologically open box */
 bool
 test07() {
   Variable A(0);
@@ -124,7 +132,6 @@ test07() {
 
   TBox box(4);
   box.add_constraint(A < 1);
-  box.add_constraint(A - D == 8);
   box.add_constraint(B <= 7);
 
   print_constraints(box, "*** box ***");
@@ -134,24 +141,17 @@ test07() {
   return ok;
 }
 
+/* 0-dimensional empty box */
 bool
 test08() {
-  Variable A(0);
-  Variable B(1);
-  Variable D(3);
-  Variable E(4);
 
-  TBox box(5);
-  box.add_constraint(A == 1);
-  box.add_constraint(E == 1);
-  box.add_constraint(A - D > 8);
-  box.add_constraint(B <= 7);
+  TBox box(0, EMPTY);
 
   print_constraints(box, "*** box ***");
 
-  bool ok = !box.is_topologically_closed();
+  bool ok = box.is_topologically_closed();
 
-  return !ok;
+  return ok;
 }
 
 bool
