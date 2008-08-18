@@ -264,8 +264,8 @@ ppl_C_Polyhedron_unconstrain_space_dimensions
   polyhedron1 dimensions_to_unconstrain;;
 print_newline();;
 ppl_C_Polyhedron_swap polyhedron1 polyhedron2;;
-let grid1 = ppl_new_Grid_from_congruences(congruences1);;
-ppl_Grid_add_grid_generator grid1 grid_generator1;;
+ppl_C_Polyhedron_intersection_preserving_enlarge_assign
+  polyhedron1 polyhedron2;;
 (* Pointset_Powersed_Grid is not enabled by default, the following code is *)
 (* commented *)
 (* let pps = ppl_new_Pointset_Powerset_Grid_from_space_dimension 3;; *)

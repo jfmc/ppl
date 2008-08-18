@@ -981,9 +981,7 @@ m4_define(`m4_has_property_replacement', `is_empty, is_universe,
             is_bounded, contains_integer_point, is_topologically_closed,
             is_discrete')
 
-dnl For products, we take the intersection of the properties of
-dnl each of the component domains with the possible properties for products.
-dnl contains_integer_point
+dnl For products, contains_integer_point is not yet implemented.
 m4_define(`m4_product_has_property_replacement', `dnl
   is_empty, is_universe, is_bounded, is_topologically_closed, is_discrete')
 
@@ -1055,13 +1053,17 @@ m4_define(`m4_binop_replacement',
          `intersection_assign, upper_bound_assign, difference_assign,
           concatenate_assign, time_elapse_assign')
 m4_define(`m4_Polyhedron_binop_replacement',
-         `m4_binop_replacement, poly_hull_assign, poly_difference_assign')
+         `m4_binop_replacement, poly_hull_assign, poly_difference_assign,
+          intersection_preserving_enlarge_assign')
 m4_define(`m4_Grid_binop_replacement',
-         `m4_binop_replacement, join_assign')
+         `m4_binop_replacement, join_assign,
+          intersection_preserving_enlarge_assign')
 m4_define(`m4_BD_Shape_binop_replacement',
-         `m4_binop_replacement, bds_hull_assign')
+         `m4_binop_replacement, bds_hull_assign,
+          intersection_preserving_enlarge_assign')
 m4_define(`m4_Octagonal_Shape_binop_replacement',
-         `m4_binop_replacement, oct_hull_assign')
+         `m4_binop_replacement, oct_hull_assign,
+          intersection_preserving_enlarge_assign')
 dnl For the powerset domains, we intersect the replacements for the
 dnl disjuncts with the replacements for a powerset.
 dnl The poly_difference_assign has been defined for powersets of polyhedra.
@@ -1069,7 +1071,9 @@ dnl FIXME: poly_difference_assign
 dnl does not appear to work for disjuncts that are not polyhedra or grids.
 m4_define(`m4_Pointset_Powerset_binop_replacement', `dnl
 m4_define(`m4_1st_sequence',
-  `poly_difference_assign, intersection_assign, concatenate_assign, time_elapse_assign')`'dnl
+  `poly_difference_assign, intersection_assign,
+   concatenate_assign, time_elapse_assign,
+   intersection_preserving_enlarge_assign')`'dnl
 m4_define(`m4_2nd_sequence',
   `m4_class_pattern_replacement(m4_class_body_counter$1,
     binop, `')')`'dnl
