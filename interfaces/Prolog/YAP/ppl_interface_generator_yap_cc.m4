@@ -121,7 +121,7 @@ Prolog_unify_Coefficient(Prolog_term_ref t, const PPL::Coefficient& n) {
 
 } // namespace
 
-#include "../ppl_prolog.icc"
+#include "../ppl_prolog_main.icc"
 
 #define YAP_STUB_0(name) \
 extern "C" Prolog_foreign_return_type \

@@ -99,7 +99,7 @@ Prolog_unify_Coefficient(Prolog_term_ref t, const PPL::Coefficient& n) {
 
 m4_divert(1)dnl
 
-#include "../ppl_prolog.icc"
+#include "../ppl_prolog_main.icc"
 
 m4_divert(2)dnl
 

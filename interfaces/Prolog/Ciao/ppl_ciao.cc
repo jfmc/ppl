@@ -104,7 +104,7 @@ Prolog_unify_Coefficient(Prolog_term_ref t, const PPL::Coefficient& n) {
 
 } // namespace
 
-#include "../ppl_prolog.icc"
+#include "../ppl_prolog_main.icc"
 
 extern "C" void
 init() {

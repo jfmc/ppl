@@ -102,7 +102,7 @@ Prolog_put_Coefficient(Prolog_term_ref t, const PPL::Coefficient& n) {
 
 } // namespace
 
-#include "../ppl_prolog.icc"
+#include "../ppl_prolog_main.icc"
 
 #define PL_EXTENSION_ENTRY(name, arity) { #name, arity, (void*) name, 0 },
 

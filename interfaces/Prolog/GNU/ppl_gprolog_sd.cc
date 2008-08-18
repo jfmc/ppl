@@ -96,4 +96,4 @@ Prolog_unify_Coefficient(Prolog_term_ref t, const PPL::Coefficient& n) {
 
 #undef CS
 
-#include "../ppl_prolog.icc"
+#include "../ppl_prolog_main.icc"
