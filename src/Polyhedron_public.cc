@@ -2217,6 +2217,13 @@ PPL::Polyhedron::intersection_preserving_enlarge_assign(const Polyhedron& y) {
     throw_dimension_incompatible("intersection_preserving_enlarge_assign(y)",
 				 "y", y);
 
+  // Filter away the zero-dimensional case.
+  if (x.space_dim == 0) {
+    if (y.is_empty())
+      x.status.set_zero_dim_univ();
+    return;
+  }
+
   // If `y' is empty, the biggest enlargement for `x' is the universe.
   if (!y.minimize()) {
     Polyhedron ph(x.topology(), x.space_dim, UNIVERSE);
@@ -2255,12 +2262,6 @@ PPL::Polyhedron::intersection_preserving_enlarge_assign(const Polyhedron& y) {
     // `y' is the universe: `x' cannot be enlarged.
     return;
   }
-
-  // If both polyhedra are zero-dimensional, then at this point they
-  // are necessarily non-empty, so that their intersection is
-  // non-empty and `x' cannot be enlarged.
-  if (x.space_dim == 0)
-    return;
 
   // FIXME: check if it would be convenient to reuse memory instead of
   // reallocating it everytime.
