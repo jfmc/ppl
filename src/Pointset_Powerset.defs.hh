@@ -1261,6 +1261,16 @@ private:
   dimension_type space_dim;
 
   /*! \brief
+    Assigns to \p to_be_enlarged an \ref Intersection-Preserving Enlargement
+    "intersection-preserving enlargement" of itself with respect to \p *this.
+
+    \note
+    It is assumed that \p *this and \p to_be_enlarged are
+    topology-compatible and dimension-compatible.
+  */
+  void intersection_preserving_enlarge(PS& to_be_enlarged) const;
+
+  /*! \brief
     Assigns to \p *this the result of applying the BGP99 heuristics
     to \p *this and \p y, using the widening function \p wf.
   */

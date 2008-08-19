@@ -691,9 +691,38 @@ Pointset_Powerset<PS>::topological_closure_assign() {
 template <typename PS>
 void
 Pointset_Powerset<PS>
+::intersection_preserving_enlarge(PS& to_be_enlarged) const {
+  // FIXME: this is just an executable specification.
+  const Pointset_Powerset& context = *this;
+  assert(context.space_dimension() == to_be_enlarged.space_dimension());
+  // TODO: maybe use a *sorted* constraint system?
+  PS enlarged(context.space_dimension(), UNIVERSE);
+  for (Sequence_const_iterator si = context.sequence.begin(),
+         s_end = context.sequence.end(); si != s_end; ++si) {
+    PS context_i(si->element());
+    context_i.intersection_assign(enlarged);
+    PS enlarged_i(to_be_enlarged);
+    enlarged_i.intersection_preserving_enlarge_assign(context_i);
+    // TODO: merge the sorted constraints of `enlarged' and `enlarged_i'?
+    enlarged.intersection_assign(enlarged_i);
+  }
+  to_be_enlarged.swap(enlarged);
+}
+
+template <typename PS>
+void
+Pointset_Powerset<PS>
 ::intersection_preserving_enlarge_assign(const Pointset_Powerset& y) {
-  // FIXME: provide a real implementation.
-  used(y);
+  Pointset_Powerset& x = *this;
+  for (Sequence_iterator si = x.sequence.begin(),
+         s_end = x.sequence.end(); si != s_end; ++si) {
+    // TODO: check whether it would be useful (i.e., more efficient)
+    // to eagerly test whether *si is omega-redundant due to any of
+    // the elements preceding it (which have been already enlarged).
+    y.intersection_preserving_enlarge(si->element());
+  }
+  x.reduced = false;
+  assert(x.OK());
 }
 
 template <typename PS>
