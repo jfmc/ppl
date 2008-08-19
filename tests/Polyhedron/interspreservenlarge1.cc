@@ -255,40 +255,42 @@ test03() {
   return ok;
 }
 
-#if 0
 bool
 test04() {
-  Variable x(0);
-  Variable y(1);
+  Variable i(0);
+  Variable j(1);
+  Variable k(2);
 
-  C_Polyhedron ph1(2);
-  ph1.add_constraint(x >= y);
-  ph1.add_constraint(x >= 0);
+  C_Polyhedron ph1 = C_Polyhedron(3, UNIVERSE);
+  ph1.add_constraint(i >= 1);
+  ph1.add_constraint(i <= 10);
+  ph1.add_constraint(j >= 1);
+  ph1.add_constraint(j <= 10);
+  ph1.add_constraint(k == 0);
 
-  C_Polyhedron ph2(2, EMPTY);
+  C_Polyhedron ph2 = C_Polyhedron(3, UNIVERSE);
+  ph2.add_constraint(i >= 0);
+  ph2.add_constraint(i <= 2);
+  ph2.add_constraint(j >= 2);
+  ph2.add_constraint(j <= 9);
+  ph2.add_constraint(k == 0);
 
-  print_constraints(ph1, "*** ph1 ***");
-  print_constraints(ph2, "*** ph2 ***");
+  print_constraints(ph1, "=== ph1 ===");
+  print_constraints(ph2, "=== ph2 ===");
 
-  C_Polyhedron computed_result1(ph1);
-  computed_result1.intersection_assign_and_minimize(ph2);
+  C_Polyhedron known_result = C_Polyhedron(3, UNIVERSE);
+  known_result.add_constraint(i >= 1);
 
-  Constraint_System cs_computed_result2 = ph1.constraints();
-  C_Polyhedron computed_result2(cs_computed_result2);
-  computed_result2.intersection_assign(ph2);
+  ph1.intersection_preserving_enlarge_assign(ph2);
 
-  C_Polyhedron known_result(2, EMPTY);
+  bool ok = (ph1 == known_result);
 
-  bool ok = (computed_result1 == known_result
-	     && computed_result2 == known_result);
-
-  print_constraints(computed_result1,
-		    "*** after intersection_assign_and_minimize ***");
-  print_constraints(computed_result2, "*** after intersection_assign ***");
+  print_constraints(ph1, "=== ph1.enlarge(ph2) ===");
 
   return ok;
 }
 
+#if 0
 bool
 test05() {
   Variable x(0);
@@ -592,14 +594,47 @@ test15() {
   return ok;
 }
 
+bool
+test16() {
+  Variable i(0);
+  Variable j(1);
+  Variable k(2);
+
+  C_Polyhedron ph1(3, UNIVERSE);
+  ph1.add_constraint(i >= 1);
+  ph1.add_constraint(i <= 10);
+  ph1.add_constraint(j >= 1);
+  ph1.add_constraint(j <= 10);
+  ph1.add_constraint(k == 0);
+
+  C_Polyhedron ph2(3, UNIVERSE);
+  ph2.add_constraint(i <= 25);
+  ph2.add_constraint(j <= 25);
+  ph2.add_constraint(i + j >= 25);
+  ph2.add_constraint(k == 0);
+
+  // CHECKME: C_Polyhedron known_result(3, EMPTY); ?
+  C_Polyhedron known_result(3, UNIVERSE);
+  known_result.add_constraint(i <= 10);
+  known_result.add_constraint(j <= 10);
+
+  ph1.intersection_preserving_enlarge_assign(ph2);
+
+  bool ok = (ph1 == known_result);
+
+  print_constraints(ph1);
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
   DO_TEST(test03);
-#if 0
   DO_TEST(test04);
+#if 0
   DO_TEST(test05);
   DO_TEST(test06);
   DO_TEST(test07);
@@ -612,4 +647,5 @@ BEGIN_MAIN
 #endif
   DO_TEST(test14);
   DO_TEST(test15);
+  DO_TEST(test16);
 END_MAIN
