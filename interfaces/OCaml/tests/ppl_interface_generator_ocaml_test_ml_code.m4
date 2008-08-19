@@ -728,3 +728,60 @@ let out = if (ppl_@TOPOLOGY@@CLASS@_OK copy01)
     in (print_string out);;
 print_newline();;
 ')
+
+m4_define(`ppl_@CLASS@_@BEGINEND@_iterator_code',
+`
+print_string "testing ppl_@BEGINEND@_iterator: " ;;
+let it = ppl_@CLASS@_@BEGINEND@_iterator @LTOPOLOGY@@LCLASS@01;;
+let out = if (ppl_@TOPOLOGY@@CLASS@_OK copy01)
+  then "success" else "failed"
+    in (print_string out);;
+print_newline();;
+')
+
+m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
+`
+print_string "testing ppl_@CLASS@_iterator_equals_iterator: " ;;
+let it = ppl_@CLASS@_begin_iterator @LTOPOLOGY@@LCLASS@01;;
+let it_begin = ppl_@CLASS@_begin_iterator @LTOPOLOGY@@LCLASS@01;;
+let b = ppl_@CLASS@_iterator_equals_iterator it it_begin;;
+let out = if (ppl_@TOPOLOGY@@CLASS@_OK @LTOPOLOGY@@LCLASS@01)
+  then "success" else "failed"
+    in (print_string out);;
+print_newline();;
+')
+
+m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
+`
+print_string "testing ppl_@CLASS@_@INCDEC@_iterator: " ;;
+let it = ppl_@CLASS@_begin_iterator @LTOPOLOGY@@LCLASS@01;;
+ppl_@CLASS@_@INCDEC@_iterator it;;
+let out = if (ppl_@TOPOLOGY@@CLASS@_OK @LTOPOLOGY@@LCLASS@01)
+  then "success" else "failed"
+    in (print_string out);;
+print_newline();;
+')
+
+m4_define(`ppl_@CLASS@_get_disjunct_code',
+`
+print_string "testing ppl_@CLASS@_get_disjunct: " ;;
+let it = ppl_@CLASS@_begin_iterator @LTOPOLOGY@@LCLASS@01;;
+let d = ppl_@CLASS@_get_disjunct it;;
+let out = if (ppl_@TOPOLOGY@@CLASS@_OK @LTOPOLOGY@@LCLASS@01)
+  then "success" else "failed"
+    in (print_string out);;
+print_newline();;
+')
+
+m4_define(`ppl_@CLASS@_drop_disjunct_code',
+`
+print_string "testing ppl_@CLASS@_drop_disjunct: " ;;
+let copy01
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
+let it = ppl_@CLASS@_begin_iterator copy01;;
+ppl_@CLASS@_drop_disjunct copy01 it;;
+let out = if (ppl_@TOPOLOGY@@CLASS@_OK copy01)
+  then "success" else "failed"
+    in (print_string out);;
+print_newline();;
+')

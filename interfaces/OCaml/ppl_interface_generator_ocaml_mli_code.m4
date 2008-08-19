@@ -378,7 +378,7 @@ val ppl_@CLASS@_@BEGINEND@_iterator:
 
 m4_define(`ppl_@CLASS@_get_disjunct_code',
  `dnl
-val ppl_@CLASS@_iterator_get_disjunct:
+val ppl_@CLASS@_get_disjunct:
   @LCLASS@_iterator  ->  @LCLASSTOPOLOGY@@LDISJUNCT@
 
 ')
@@ -408,7 +408,7 @@ val ppl_@CLASS@_iterator_equals_iterator:
 
 m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
  `dnl
-val ppl_@CLASS@_iterator_@INCDEC@:
+val ppl_@CLASS@_@INCDEC@_iterator:
   @LCLASS@_iterator -> unit
 
 ')

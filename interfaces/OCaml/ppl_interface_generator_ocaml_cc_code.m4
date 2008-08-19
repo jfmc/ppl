@@ -871,7 +871,7 @@ CATCH_ALL
 `dnl
  extern "C"
  CAMLprim value
-ppl_@CLASS@_iterator_get_disjunct(value caml_it) {
+ppl_@CLASS@_get_disjunct(value caml_it) {
    CAMLparam1(caml_it);
    @CPP_CLASS@::iterator& cpp_it  = *p_@CLASS@_iterator_val(caml_it);
    @CLASSTOPOLOGY@@CPP_DISJUNCT@ disjunct = cpp_it->element();
@@ -915,7 +915,7 @@ CAMLreturn0;
 `dnl
  extern "C"
 void
- ppl_@CLASS@_iterator_@INCDEC@(value caml_itr) try {
+ ppl_@CLASS@_@INCDEC@_iterator(value caml_itr) try {
    CAMLparam1(caml_itr);
    @CPP_CLASS@::iterator& itr = *p_@CLASS@_iterator_val(caml_itr);
     @CPPX_INCDEC@itr;

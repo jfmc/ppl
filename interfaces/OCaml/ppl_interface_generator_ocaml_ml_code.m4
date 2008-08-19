@@ -428,9 +428,9 @@ external ppl_@CLASS@_@BEGINEND@_iterator:
 
 m4_define(`ppl_@CLASS@_get_disjunct_code',
  `
-external ppl_@CLASS@_iterator_get_disjunct:
+external ppl_@CLASS@_get_disjunct:
    @LCLASS@_iterator  ->  @LCLASSTOPOLOGY@@LDISJUNCT@
-   = "ppl_@CLASS@_iterator_get_disjunct"
+   = "ppl_@CLASS@_get_disjunct"
 
 
 ')
@@ -455,9 +455,9 @@ m4_define(`ppl_@CLASS@_drop_disjunct_code',
 
 m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
  `
- external ppl_@CLASS@_iterator_@INCDEC@:
+ external ppl_@CLASS@_@INCDEC@_iterator:
    @LCLASS@_iterator -> unit
-   = "ppl_@CLASS@_iterator_@INCDEC@"
+   = "ppl_@CLASS@_@INCDEC@_iterator"
 
 
 ')
