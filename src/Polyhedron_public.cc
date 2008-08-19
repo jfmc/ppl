@@ -2263,27 +2263,46 @@ PPL::Polyhedron::intersection_preserving_enlarge_assign(const Polyhedron& y) {
     return;
   }
 
+  assert(x.constraints_are_minimized()
+         && !x.has_something_pending()
+         && y.generators_are_minimized()
+         && !y.has_something_pending());
   const Constraint_System& x_cs = x.con_sys;
   const dimension_type x_cs_num_rows = x_cs.num_rows();
   const Generator_System& y_gs = y.gen_sys;
 
-  Constraint_System tmp_cs;
-  // Put in `tmp_cs' all the constraints of `x' that are not implied by `y'.
-  for (Constraint_System::const_iterator i = x_cs.begin(),
-         x_cs_end = x_cs.end(); i != x_cs_end; ++i) {
-    const Constraint& x_cs_i = *i;
-    if (!y_gs.satisfied_by_all_generators(x_cs_i))
-      tmp_cs.insert(x_cs_i);
-  }
+  // Record into `redundant_by_y' the info about
+  // which constraints of `x' are redundant in the context `y'.
+  std::vector<bool> redundant_by_y(x_cs_num_rows, false);
+  for (dimension_type i = 0; i < x_cs_num_rows; ++i)
+    redundant_by_y[i] = y_gs.satisfied_by_all_generators(x_cs[i]);
 
-  const dimension_type tmp_cs_num_rows = tmp_cs.num_rows();
-  if (tmp_cs_num_rows > 0) {
+  // Count the number of redundancies found.
+  dimension_type num_redundant_by_y = 0;
+  for (dimension_type i = 0; i < x_cs_num_rows; ++i)
+    if (redundant_by_y[i])
+      ++num_redundant_by_y;
+
+  Constraint_System result_cs;
+  if (num_redundant_by_y < x_cs_num_rows) {
+    // Some constraints were not identified as redundant (yet?).
     const Constraint_System& y_cs = y.con_sys;
     const dimension_type y_cs_num_rows = y_cs.num_rows();
     // Compute into `z' the minimized intersection of `x' and `y'.
     const bool x_first = (x_cs_num_rows > y_cs_num_rows);
     Polyhedron z(x_first ? x : y);
-    z.add_constraints(x_first ? y_cs : x_cs);
+    if (x_first)
+      z.add_constraints(y_cs);
+    else {
+      // Only copy (and then recycle) the non-redundant constraints.
+      Constraint_System tmp_cs;
+      for (dimension_type i = 0; i < x_cs_num_rows; ++i) {
+        if (!redundant_by_y[i])
+          tmp_cs.insert(x_cs[i]);
+      }
+      z.add_recycled_constraints(tmp_cs);
+    }
+
     if (!z.minimize()) {
       // The intersection is empty.
 
@@ -2315,39 +2334,84 @@ PPL::Polyhedron::intersection_preserving_enlarge_assign(const Polyhedron& y) {
       // of `x' could be added depending on the number of generators of `y'
       // they rule out: the more generators they rule out, the sooner
       // they are added.
-      Constraint_System irreducible_tmp_cs_subset;
-      for (Constraint_System::const_iterator i = tmp_cs.begin(),
-             tmp_cs_end = tmp_cs.end(); i != tmp_cs_end; ++i) {
-        const Constraint& tmp_cs_i = *i;
-        irreducible_tmp_cs_subset.insert(tmp_cs_i);
-	lp.add_constraint(tmp_cs_i);
-        MIP_Problem_Status status = lp.solve();
-        if (status == UNFEASIBLE_MIP_PROBLEM) {
-          tmp_cs.swap(irreducible_tmp_cs_subset);
-          goto finish;
+      for (dimension_type i = 0; i < x_cs_num_rows; ++i) {
+        if (!redundant_by_y[i]) {
+          const Constraint& x_cs_i = x_cs[i];
+          result_cs.insert(x_cs_i);
+          lp.add_constraint(x_cs_i);
+          MIP_Problem_Status status = lp.solve();
+          if (status == UNFEASIBLE_MIP_PROBLEM)
+            goto finish;
         }
       }
       // Cannot exit from here.
       assert(false);
     }
+    else {
+      // Here `z' is not empty and minimized.
+      assert(z.constraints_are_minimized()
+             && z.generators_are_minimized()
+             && !z.has_something_pending());
+      const Constraint_System& z_cs = z.con_sys;
+      const Generator_System& z_gs = z.gen_sys;
+      const dimension_type z_gs_num_rows = z_gs.num_rows();
 
-    const Generator_System& z_gs = z.gen_sys;
-    const dimension_type z_gs_num_rows = z_gs.num_rows();
-    Bit_Matrix sat(tmp_cs_num_rows, z_gs_num_rows);
-    for (dimension_type i = tmp_cs_num_rows; i-- > 0; ) {
-      const Constraint& tmp_cs_i = tmp_cs[i];
-      Bit_Row& sat_i = sat[i];
-      for (dimension_type j = z_gs_num_rows; j-- > 0; )
-        if (Scalar_Products::sign(tmp_cs_i, z_gs[j]))
-          sat_i.set(j);
+      // CHECKME: use y_cs or z_cs ????
+      // Compute the number of equalities in y_cs.
+      const dimension_type y_cs_num_eq = y_cs.num_equalities();
+      // Compute the number of non-redundant equality constraints in x_cs.
+      dimension_type x_cs_num_nonred_eq = 0;
+      for (dimension_type i = 0; i < x_cs_num_rows; ++i) {
+        // Exploit knowledge that all equalities occur before inequalities.
+        if (!x_cs[i].is_equality())
+          break;
+        if (!redundant_by_y[i])
+          ++x_cs_num_nonred_eq;
+      }
+#ifndef NDEBUG
+      const dimension_type z_cs_num_eq = z_cs.num_equalities();
+      assert(z_cs_num_eq >= y_cs_num_eq + x_cs_num_nonred_eq);
+#endif
+
+      // Populate result_cs with enough equalities (from y_cs and x_cs)
+      // and all the non-redundant inequalities from x_cs.
+      for (dimension_type i = 0; i < y_cs_num_eq; ++i)
+        result_cs.insert(y_cs[i]);
+      for (dimension_type i = 0; i < x_cs_num_rows; ++i)
+        if (!redundant_by_y[i])
+          result_cs.insert(x_cs[i]);
+      const dimension_type result_cs_num_rows = result_cs.num_rows();
+      assert(result_cs_num_rows
+             == y_cs_num_eq + (x_cs_num_rows - num_redundant_by_y));
+
+      Bit_Matrix sat(result_cs_num_rows, z_gs_num_rows);
+      for (dimension_type i = result_cs_num_rows; i-- > 0; ) {
+        const Constraint& result_cs_i = result_cs[i];
+        Bit_Row& sat_i = sat[i];
+        for (dimension_type j = z_gs_num_rows; j-- > 0; )
+          if (Scalar_Products::sign(result_cs_i, z_gs[j]))
+            sat_i.set(j);
+      }
+      simplify(result_cs, sat);
+
+      // CHECKME: now remove from `result_cs' the first `y_cs_num_eq' rows,
+      // which still contain the equalities of `y_cs'.
+      assert(result_cs.num_equalities() >= y_cs_num_eq);
+      if (y_cs_num_eq > 0) {
+        const dimension_type new_num_rows = result_cs.num_rows() - y_cs_num_eq;
+        for (dimension_type i = y_cs_num_eq; i-- > 0; )
+          result_cs[i].swap(result_cs[new_num_rows + i]);
+        result_cs.erase_to_end(new_num_rows);
+        result_cs.unset_pending_rows();
+        result_cs.set_sorted(new_num_rows <= 1);
+      }
     }
-    simplify(tmp_cs, sat);
   }
 
  finish:
-  Polyhedron tmp_ph(x.topology(), x.space_dim, UNIVERSE);
-  tmp_ph.add_constraints(tmp_cs);
-  x.swap(tmp_ph);
+  Polyhedron result_ph(x.topology(), x.space_dim, UNIVERSE);
+  result_ph.add_constraints(result_cs);
+  x.swap(result_ph);
   assert(x.OK());
 }
 
