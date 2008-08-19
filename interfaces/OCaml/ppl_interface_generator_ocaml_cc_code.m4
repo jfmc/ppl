@@ -128,6 +128,20 @@ CATCH_ALL
 
 ')
 
+  m4_define(`ppl_@CLASS@_@SIMPLIFY@_code',
+`dnl
+extern "C"
+void
+ppl_@TOPOLOGY@@CLASS@_@SIMPLIFY@(value ph) try {
+  CAMLparam1(ph);
+  @CPP_CLASS@& pph = *p_@TOPOLOGY@@CLASS@_val(ph);
+  pph.@SIMPLIFY@();
+  CAMLreturn0;
+}
+CATCH_ALL
+
+')
+
   m4_define(`ppl_@CLASS@_bounds_from_@ABOVEBELOW@_code',
 `dnl
 extern "C"

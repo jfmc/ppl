@@ -64,6 +64,14 @@ external ppl_@TOPOLOGY@@CLASS@_@HAS_PROPERTY@:
 
 ')
 
+m4_define(`ppl_@CLASS@_@SIMPLIFY@_code',
+`dnl
+external ppl_@TOPOLOGY@@CLASS@_@SIMPLIFY@:
+  @LTOPOLOGY@@LCLASS@ -> unit = "ppl_@TOPOLOGY@@CLASS@_@SIMPLIFY@"
+
+
+')
+
 m4_define(`ppl_@CLASS@_bounds_from_@ABOVEBELOW@_code',
 `dnl
 external ppl_@TOPOLOGY@@CLASS@_bounds_from_@ABOVEBELOW@:

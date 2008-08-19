@@ -20,16 +20,21 @@ dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 m4_divert(-1)
 
+dnl Code for generating the domain elements to be used in the tests.
+dnl Note that if a test may change these at all, then a copy should be used.
 m4_define(`m4_add_init_class_code', `dnl
 let @LTOPOLOGY@@LCLASS@01
   = ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension 3 Universe;;
-ppl_@TOPOLOGY@@CLASS@_add_@CONSTRAINER@s @LTOPOLOGY@@LCLASS@01 @CONSTRAINER@s01;;
+ppl_@TOPOLOGY@@CLASS@_add_@CONSTRAINER@s
+  @LTOPOLOGY@@LCLASS@01 @CONSTRAINER@s01;;
 let @LTOPOLOGY@@LCLASS@02
   = ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension 3 Universe;;
-ppl_@TOPOLOGY@@CLASS@_add_@CONSTRAINER@s @LTOPOLOGY@@LCLASS@02 @CONSTRAINER@s02;;
+ppl_@TOPOLOGY@@CLASS@_add_@CONSTRAINER@s
+  @LTOPOLOGY@@LCLASS@02 @CONSTRAINER@s02;;
 let @LTOPOLOGY@@LCLASS@03
   = ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension 3 Universe;;
-ppl_@TOPOLOGY@@CLASS@_add_@CONSTRAINER@s @LTOPOLOGY@@LCLASS@03 @CONSTRAINER@s03;;
+ppl_@TOPOLOGY@@CLASS@_add_@CONSTRAINER@s
+  @LTOPOLOGY@@LCLASS@03 @CONSTRAINER@s03;;
 print_newline();;
 ')
 
@@ -49,102 +54,363 @@ print_newline();;
 
 ')
 
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_code',
+`
+print_string "testing ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@: " ;;
+let ps
+  = ppl_new_@FRIEND@_from_space_dimension 3 Universe;;
+let ps1
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@(ps);;
+let out = if (ppl_@FRIEND@_OK ps & ppl_@TOPOLOGY@@CLASS@_OK ps1)
+  then "success" else "failed"
+    in (print_string out);;
+print_newline();;
+')
+
+m4_define(`__ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity_code',
+`
+print_string
+  "testing ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity: " ;;
+let ps
+  = ppl_new_@FRIEND@_from_space_dimension 3 Universe;;
+let ps1
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity ps ;;
+let out = if (ppl_@FRIEND@_OK ps & ppl_@TOPOLOGY@@CLASS@_OK ps1)
+  then "success" else "failed"
+    in (print_string out);;
+print_newline();;
+')
+
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_code',
 `
-print_string "testing ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s" ;;
-print_newline();;
-let _@LTOPOLOGY@@LCLASS@
+print_string "testing ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s: " ;;
+let @LTOPOLOGY@@LCLASS@
   = ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s(@BUILD_REPRESENT@s1);;
+let out = if (ppl_@TOPOLOGY@@CLASS@_OK @LTOPOLOGY@@LCLASS@)
+  then "success" else "failed"
+    in (print_string out);;
+print_newline();;
+')
+
+m4_define(`ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@_code',
+`
+print_string "testing ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@: " ;;
+let copy01
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
+let copy02
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
+let _result
+  =  ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@ copy01 copy02;;
+let out
+  = if (ppl_@TOPOLOGY@@CLASS@_OK copy01 & ppl_@TOPOLOGY@@CLASS@_OK copy02)
+  then "success" else "failed"
+    in (print_string out);;
+print_newline();;
+')
+
+m4_define(`ppl_@CLASS@_swap_code',
+`
+print_string "testing ppl_@CLASS@_swap: ";;
+let copy01
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
+let copy02
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
+ppl_@TOPOLOGY@@CLASS@_swap copy01 copy02;;
+let out
+  = if (ppl_@TOPOLOGY@@CLASS@_OK copy01 & ppl_@TOPOLOGY@@CLASS@_OK copy02)
+  then "success" else "failed"
+    in (print_string out);;
+print_newline();;
+')
+
+m4_define(`ppl_@CLASS@_@DIMENSION@_code',
+`
+print_string "testing ppl_@CLASS@_@DIMENSION@: " ;;
+let dim
+  =  ppl_@TOPOLOGY@@CLASS@_@DIMENSION@ @LTOPOLOGY@@LCLASS@01;;
+let out = if (ppl_@TOPOLOGY@@CLASS@_OK @LTOPOLOGY@@LCLASS@01)
+  then "success" else "failed"
+    in (print_string out);;
+print_newline();;
+printf "@DIMENSION@: %d" dim;;
+print_newline();;
+')
+
+m4_define(`ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_code',
+`
+print_string "testing ppl_@CLASS@_relation_with_@RELATION_REPRESENT@: " ;;
+let _result
+  = ppl_@TOPOLOGY@@CLASS@_relation_with_@RELATION_REPRESENT@
+    @LTOPOLOGY@@LCLASS@01 @RELATION_REPRESENT@1;;
+let out = if (ppl_@TOPOLOGY@@CLASS@_OK @LTOPOLOGY@@LCLASS@01)
+  then "success" else "failed"
+    in (print_string out);;
+print_newline();;
+')
+
+m4_define(`ppl_@CLASS@_get_@GET_REPRESENT@s_code',
+`
+print_string "testing ppl_@CLASS@_get_@GET_REPRESENT@s: ";;
+let @GET_REPRESENT@s = ppl_@TOPOLOGY@@CLASS@_get_@GET_REPRESENT@s
+  @LTOPOLOGY@@LCLASS@01;;
+let out = if (ppl_@TOPOLOGY@@CLASS@_OK @LTOPOLOGY@@LCLASS@01)
+  then "success" else "failed"
+    in (print_string out);;
+print_newline();;
+List.iter print_@GET_REPRESENT@ @GET_REPRESENT@s;;
+print_newline();;
+')
+
+m4_define(`ppl_@CLASS@_@HAS_PROPERTY@_code',
+`
+print_string "testing ppl_@CLASS@_@HAS_PROPERTY@: ";;
+let result = ppl_@TOPOLOGY@@CLASS@_@HAS_PROPERTY@ @LTOPOLOGY@@LCLASS@01;;
+let out = if (ppl_@TOPOLOGY@@CLASS@_OK @LTOPOLOGY@@LCLASS@01)
+  then "success" else "failed"
+    in (print_string out);;
+print_newline();;
+printf "@HAS_PROPERTY@: %b" result;;
+print_newline();;
+')
+
+m4_define(`ppl_@CLASS@_@SIMPLIFY@_code',
+`
+print_string "testing ppl_@CLASS@_@SIMPLIFY@: ";;
+let copy01
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
+ppl_@TOPOLOGY@@CLASS@_@SIMPLIFY@ copy01;;
+let out = if (ppl_@TOPOLOGY@@CLASS@_OK copy01)
+  then "success" else "failed"
+    in (print_string out);;
+print_newline();;
 ')
 
 m4_define(`ppl_@CLASS@_bounds_from_@ABOVEBELOW@_code',
 `
-let result =  ppl_@TOPOLOGY@@CLASS@_bounds_from_above @LTOPOLOGY@@LCLASS@01 e2;;
+print_string "testing ppl_@CLASS@_bounds_from_@ABOVEBELOW@: " ;;
+let _result
+  =  ppl_@TOPOLOGY@@CLASS@_bounds_from_above @LTOPOLOGY@@LCLASS@01 e2;;
+let out = if (ppl_@TOPOLOGY@@CLASS@_OK @LTOPOLOGY@@LCLASS@01)
+  then "success" else "failed"
+    in (print_string out);;
+print_newline();;
 ')
 
-m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_code',
+m4_define(`ppl_@CLASS@_@MAXMIN@_with_point_code',
 `
-print_string "testing ppl_@TOPOLOGY@@CLASS@_add_@ADD_REPRESENT@" ;;
+print_string "testing ppl_@CLASS@_@MAXMIN@_with_point: ";;
+let (is_bounded, num, den, is_supremum, gen)
+  = ppl_@TOPOLOGY@@CLASS@_minimize @LTOPOLOGY@@LCLASS@01 e3;;
+let out = if (ppl_@TOPOLOGY@@CLASS@_OK @LTOPOLOGY@@LCLASS@01)
+  then "success" else "failed"
+    in (print_string out);;
 print_newline();;
-let copy01
-  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
-ppl_@TOPOLOGY@@CLASS@_add_@ADD_REPRESENT@ copy01 @ADD_REPRESENT@1;;
+print_int(Z.to_int num);;
+print_string "/";;
+print_int(Z.to_int den);;
+print_string (", bound: ");;
+print_string (string_of_bool is_bounded);;
+print_string (", sup: ");;
+print_string (string_of_bool is_supremum);;
+print_string (", ");;
+print_generator(gen);;
+print_newline();;
 ')
 
 m4_define(`ppl_@CLASS@_@COMPARISON@_@CLASS@_code',
 `
-print_string "testing ppl_@CLASS@_@COMPARISON@_@CLASS@" ;;
-print_newline();;
+print_string "testing ppl_@CLASS@_@COMPARISON@_@CLASS@: " ;;
 let b = ppl_@TOPOLOGY@@CLASS@_@COMPARISON@_@TOPOLOGY@@CLASS@
   @LTOPOLOGY@@LCLASS@01 @LTOPOLOGY@@LCLASS@02;;
+let out = if (ppl_@TOPOLOGY@@CLASS@_OK @LTOPOLOGY@@LCLASS@01
+               & ppl_@TOPOLOGY@@CLASS@_OK @LTOPOLOGY@@LCLASS@02)
+  then "success" else "failed"
+    in (print_string out);;
+print_newline();;
+')
+
+m4_define(`ppl_@CLASS@_OK_code',
+`
+print_string "testing ppl_@CLASS@_OK: ";;
+let out = if (ppl_@TOPOLOGY@@CLASS@_OK @LTOPOLOGY@@LCLASS@01
+               & ppl_@TOPOLOGY@@CLASS@_OK @LTOPOLOGY@@LCLASS@02)
+  then "success" else "failed"
+    in (print_string out);;
+print_newline();;
+')
+
+m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_code',
+`
+print_string "testing ppl_@TOPOLOGY@@CLASS@_add_@ADD_REPRESENT@: " ;;
+let copy01
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
+ppl_@TOPOLOGY@@CLASS@_add_@ADD_REPRESENT@ copy01 @ADD_REPRESENT@1;;
+let out = if (ppl_@TOPOLOGY@@CLASS@_OK copy01)
+  then "success" else "failed"
+    in (print_string out);;
+print_newline();;
 ')
 
 m4_define(`ppl_@CLASS@_@BINOP@_code',
 `
-print_string "testing ppl_@CLASS@_@BINOP@" ;;
-print_newline();;
+print_string "testing ppl_@CLASS@_@BINOP@: " ;;
 let copy01
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
 let copy02
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
 ppl_@TOPOLOGY@@CLASS@_@BINOP@ copy01 copy02;;
+let out
+  = if (ppl_@TOPOLOGY@@CLASS@_OK copy01 & ppl_@TOPOLOGY@@CLASS@_OK copy02)
+  then "success" else "failed"
+    in (print_string out);;
+print_newline();;
 ')
 
-m4_define(`ppl_@CLASS@_get_@GET_REPRESENT@s_code',
+m4_define(`ppl_@CLASS@_@AFFIMAGE@_code',
 `
-print_string "testing ppl_@CLASS@_get_@GET_REPRESENT@s";;
-print_newline();;
-let @GET_REPRESENT@s = ppl_@TOPOLOGY@@CLASS@_get_@GET_REPRESENT@s
-  @LTOPOLOGY@@LCLASS@01 in
-List.iter print_@GET_REPRESENT@ @GET_REPRESENT@s;;
+print_string "testing ppl_@CLASS@_@AFFIMAGE@: ";;
+let copy01
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
+ppl_@TOPOLOGY@@CLASS@_@AFFIMAGE@ copy01 1 ((Z.of_int 2) */ v2) (Z.from_int 2);;
+let out = if (ppl_@TOPOLOGY@@CLASS@_OK copy01)
+  then "success" else "failed"
+    in (print_string out);;
 print_newline();;
 ')
 
 m4_define(`ppl_@CLASS@_bounded_@AFFIMAGE@_code',
 `
-print_string "testing ppl_@CLASS@_bounded_@AFFIMAGE@";;
-print_newline();;
+print_string "testing ppl_@CLASS@_bounded_@AFFIMAGE@: ";;
 let copy01
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
 ppl_@TOPOLOGY@@CLASS@_bounded_@AFFIMAGE@ copy01 1
   ((Z.of_int 2) */ v2) v2 (Z.from_int 10);;
+let out = if (ppl_@TOPOLOGY@@CLASS@_OK copy01)
+  then "success" else "failed"
+    in (print_string out);;
+print_newline();;
 ')
 
 m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_code',
 `
-print_string "testing ppl_@CLASS@_generalized_@AFFIMAGE@";;
-print_newline();;
+print_string "testing ppl_@CLASS@_generalized_@AFFIMAGE@: ";;
 let copy01
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
 ppl_@TOPOLOGY@@CLASS@_generalized_@AFFIMAGE@
   copy01 1 Equal_RS v1 (Z.from_int 10);;
+let out = if (ppl_@TOPOLOGY@@CLASS@_OK copy01)
+  then "success" else "failed"
+    in (print_string out);;
+print_newline();;
 ')
 
 m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_code',
 `
-print_string "testing ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs";;
-print_newline();;
+print_string "testing ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs: ";;
 let copy01
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
 ppl_@TOPOLOGY@@CLASS@_generalized_@AFFIMAGE@_lhs_rhs
   copy01 ((Z.of_int 1) */ v0) Equal_RS (linear_expression_of_int 7);;
+let out = if (ppl_@TOPOLOGY@@CLASS@_OK copy01)
+  then "success" else "failed"
+    in (print_string out);;
+print_newline();;
 ')
 
-m4_define(`ppl_@CLASS@_@AFFIMAGE@_code',
+m4_define(`ppl_@CLASS@_remove_space_dimensions_code',
 `
+print_string "testing ppl_@CLASS@_remove_space_dimensions: ";;
 let copy01
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
-print_string "testing ppl_@CLASS@_@AFFIMAGE@";;
+let dimensions_to_remove = [2;0];;
+ppl_@TOPOLOGY@@CLASS@_remove_space_dimensions copy01 dimensions_to_remove;;
+let out = if (ppl_@TOPOLOGY@@CLASS@_OK copy01)
+  then "success" else "failed"
+    in (print_string out);;
 print_newline();;
-ppl_@TOPOLOGY@@CLASS@_@AFFIMAGE@ copy01 1 ((Z.of_int 2) */ v2) (Z.from_int 2);;
+')
+
+m4_define(`ppl_@CLASS@_fold_space_dimensions_code',
+`
+print_string "testing ppl_@CLASS@_fold_space_dimensions: ";;
+let copy01
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
+let dimensions_to_fold = [1];;
+ppl_@TOPOLOGY@@CLASS@_fold_space_dimensions copy01 dimensions_to_fold 0;;
+let out = if (ppl_@TOPOLOGY@@CLASS@_OK copy01)
+  then "success" else "failed"
+    in (print_string out);;
+print_newline();;
+')
+
+m4_define(`ppl_@CLASS@_map_space_dimensions_code',
+`
+print_string "testing ppl_@CLASS@_map_space_dimensions: ";;
+let copy01
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
+let dimensions_to_map = [(0,1);(1,2);(2,0);];;
+ppl_@TOPOLOGY@@CLASS@_map_space_dimensions copy01 dimensions_to_map;;
+let out = if (ppl_@TOPOLOGY@@CLASS@_OK copy01)
+  then "success" else "failed"
+    in (print_string out);;
+print_newline();;
+')
+
+m4_define(`ppl_@CLASS@_constrains_code',
+`
+print_string "testing ppl_@CLASS@_constrains: ";;
+let copy01
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
+ppl_@TOPOLOGY@@CLASS@_constrains copy01 1;;
+ppl_@TOPOLOGY@@CLASS@_map_space_dimensions copy01 dimensions_to_map;;
+let out = if (ppl_@TOPOLOGY@@CLASS@_OK copy01)
+  then "success" else "failed"
+    in (print_string out);;
+print_newline();;
+')
+
+m4_define(`ppl_@CLASS@_unconstrain_space_dimension_code',
+`
+print_string "testing ppl_@CLASS@_unconstrain_space_dimension: ";;
+let copy01
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
+ppl_@TOPOLOGY@@CLASS@_unconstrain_space_dimension copy01 1;;
+let out = if (ppl_@TOPOLOGY@@CLASS@_OK copy01)
+  then "success" else "failed"
+    in (print_string out);;
+print_newline();;
+')
+
+m4_define(`ppl_@CLASS@_unconstrain_space_dimensions_code',
+`
+print_string "testing ppl_@CLASS@_unconstrain_space_dimensions: ";;
+let copy01
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
+let dimensions_to_unconstrain = [1];;
+ppl_@TOPOLOGY@@CLASS@_unconstrain_space_dimensions
+  copy01 dimensions_to_unconstrain;;
+let out = if (ppl_@TOPOLOGY@@CLASS@_OK copy01)
+  then "success" else "failed"
+    in (print_string out);;
+print_newline();;
+')
+
+m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_code',
+`
+print_string "testing ppl_@CLASS@_@WIDEN@_widening_assign: ";;
+let copy01
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
+ppl_@TOPOLOGY@@CLASS@_@WIDEN@_widening_assign copy01 ;;
+let out = if (ppl_@TOPOLOGY@@CLASS@_OK copy01)
+  then "success" else "failed"
+    in (print_string out);;
+print_newline();;
 ')
 
 m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens_code',
 `
 print_string
-  "testing ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens";;
-print_newline();;
-print_string "tokens after widening = ";;
+  "testing ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens: ";;
 let copy01
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
 let copy03
@@ -152,110 +418,11 @@ let copy03
 let tokens
   = ppl_@TOPOLOGY@@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens
   copy01 copy03 @CONSTRAINER@s04 10;;
+let out = if (ppl_@TOPOLOGY@@CLASS@_OK copy01)
+  then "success" else "failed"
+    in (print_string out);;
+print_newline();;
+print_string "tokens after widening = ";;
 print_int tokens;;
-')
-
-m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_code',
-`
-print_string "testing ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens";;
 print_newline();;
-ppl_@TOPOLOGY@@CLASS@_@WIDEN@_widening_assign @LTOPOLOGY@@LCLASS@01 ;;
-')
-
-m4_define(`ppl_@CLASS@_OK_code',
-`
-print_string "testing ppl_@CLASS@_OK";;
-print_newline();;
-let b = ppl_@TOPOLOGY@@CLASS@_OK @LTOPOLOGY@@LCLASS@01;;
-')
-
-m4_define(`ppl_@CLASS@_@MAXMIN@_with_point_code',
-`
-print_string "testing ppl_@CLASS@_@MAXMIN@_with_point";;
-print_newline();;
-print_string "Testing minimization";;
-let (is_bounded, num, den, is_supremum, gen)
-  = ppl_@TOPOLOGY@@CLASS@_minimize @LTOPOLOGY@@LCLASS@01 e3;;
-print_newline();;
-print_string "Value: ";;
-print_int(Z.to_int num);;
-print_string "/";;
-print_int(Z.to_int den);;
-print_string (", is_bounded: ");;
-print_string (string_of_bool is_bounded);;
-print_string (", is_supremum: ");;
-print_string (string_of_bool is_supremum);;
-print_string (", generator: ");;
-print_generator(gen);;
-print_newline();;
-')
-
-m4_define(`ppl_@CLASS@_remove_space_dimensions_code',
-`
-print_string "testing ppl_@CLASS@_remove_space_dimensions";;
-print_newline();;
-let copy
-  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
-let dimensions_to_remove = [2;0];;
-ppl_@TOPOLOGY@@CLASS@_remove_space_dimensions copy dimensions_to_remove;;
-')
-
-m4_define(`ppl_@CLASS@_fold_space_dimensions_code',
-`
-print_string "testing ppl_@CLASS@_fold_space_dimensions";;
-print_newline();;
-let copy
-  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
-let dimensions_to_fold = [1];;
-ppl_@TOPOLOGY@@CLASS@_fold_space_dimensions copy dimensions_to_fold 0;;
-')
-
-m4_define(`ppl_@CLASS@_map_space_dimensions_code',
-`
-print_string "testing ppl_@CLASS@_map_space_dimensions";;
-print_newline();;
-let copy
-  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
-let dimensions_to_map = [(0,1);(1,2);(2,0);];;
-let i = ppl_@TOPOLOGY@@CLASS@_space_dimension copy;;
-print_string "Space dimension is: ";
-print_int i;;
-print_newline();;
-ppl_@TOPOLOGY@@CLASS@_map_space_dimensions copy dimensions_to_map;;
-')
-
-m4_define(`ppl_@CLASS@_constrains_code',
-`
-print_string "testing ppl_@CLASS@_constrains";;
-print_newline();;
-ppl_@TOPOLOGY@@CLASS@_constrains @LTOPOLOGY@@LCLASS@01 1;;
-')
-
-m4_define(`ppl_@CLASS@_unconstrain_space_dimension_code',
-`
-print_string "testing ppl_@CLASS@_unconstrain_space_dimension";;
-print_newline();;
-ppl_@TOPOLOGY@@CLASS@_unconstrain_space_dimension @LTOPOLOGY@@LCLASS@01 1;;
-')
-
-m4_define(`ppl_@CLASS@_unconstrain_space_dimensions_code',
-`
-print_string "testing ppl_@CLASS@_unconstrain_space_dimensions";;
-print_newline();;
-let copy01
-  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
-let dimensions_to_unconstrain = [1];;
-ppl_@TOPOLOGY@@CLASS@_unconstrain_space_dimensions
-  copy01 dimensions_to_unconstrain;;
-')
-
-m4_define(`ppl_@CLASS@_swap_code',
-`
-print_string "testing ppl_@CLASS@_swap";;
-print_newline();;
-let copy01
-  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
-let copy02
-  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
-ppl_@TOPOLOGY@@CLASS@_swap copy01 copy02;;
 ')
