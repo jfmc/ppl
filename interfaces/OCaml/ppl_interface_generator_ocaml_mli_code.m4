@@ -270,7 +270,7 @@ m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_to
 `dnl
 val ppl_@TOPOLOGY@@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens:
   @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@
-  -> constraint_system -> int -> int
+  -> @CONSTRAINER@_system -> int -> int
 
 ')
 
@@ -278,7 +278,7 @@ m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_code',
 `dnl
 val ppl_@TOPOLOGY@@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign:
   @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@
-  -> constraint_system -> unit
+  -> @CONSTRAINER@_system -> unit
 
 ')
 

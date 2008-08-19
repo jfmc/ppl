@@ -22,9 +22,14 @@ m4_divert(-1)
 
 m4_define(`m4_add_init_class_code', `dnl
 let @LTOPOLOGY@@LCLASS@01
-        = ppl_new_@TOPOLOGY@@CLASS@_from_constraints constraints01;;
+  = ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension 3 Universe;;
+ppl_@TOPOLOGY@@CLASS@_add_@CONSTRAINER@s @LTOPOLOGY@@LCLASS@01 @CONSTRAINER@s01;;
 let @LTOPOLOGY@@LCLASS@02
-        = ppl_new_@TOPOLOGY@@CLASS@_from_constraints constraints02;;
+  = ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension 3 Universe;;
+ppl_@TOPOLOGY@@CLASS@_add_@CONSTRAINER@s @LTOPOLOGY@@LCLASS@02 @CONSTRAINER@s02;;
+let @LTOPOLOGY@@LCLASS@03
+  = ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension 3 Universe;;
+ppl_@TOPOLOGY@@CLASS@_add_@CONSTRAINER@s @LTOPOLOGY@@LCLASS@03 @CONSTRAINER@s03;;
 print_newline();;
 ')
 
@@ -35,9 +40,10 @@ print_newline();;
 print_string ("space_dimension: ");;
 for i = 6 downto 0 do
   (let @LTOPOLOGY@@LCLASS@
-        = ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension i Empty
-        in let dimension =  ppl_@TOPOLOGY@@CLASS@_space_dimension(@LTOPOLOGY@@LCLASS@)
-         in printf "%d, " dimension)
+    = ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension i Empty
+    in let dimension
+       =  ppl_@TOPOLOGY@@CLASS@_space_dimension(@LTOPOLOGY@@LCLASS@)
+       in printf "%d, " dimension)
 done;;
 print_newline();;
 
@@ -60,7 +66,9 @@ m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_code',
 `
 print_string "testing ppl_@TOPOLOGY@@CLASS@_add_@ADD_REPRESENT@" ;;
 print_newline();;
-ppl_@TOPOLOGY@@CLASS@_add_@ADD_REPRESENT@ @LTOPOLOGY@@LCLASS@01 @ADD_REPRESENT@1;;
+let copy01
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
+ppl_@TOPOLOGY@@CLASS@_add_@ADD_REPRESENT@ copy01 @ADD_REPRESENT@1;;
 ')
 
 m4_define(`ppl_@CLASS@_@COMPARISON@_@CLASS@_code',
@@ -68,24 +76,26 @@ m4_define(`ppl_@CLASS@_@COMPARISON@_@CLASS@_code',
 print_string "testing ppl_@CLASS@_@COMPARISON@_@CLASS@" ;;
 print_newline();;
 let b = ppl_@TOPOLOGY@@CLASS@_@COMPARISON@_@TOPOLOGY@@CLASS@
-  @LTOPOLOGY@@LCLASS@01 @LTOPOLOGY@@LCLASS@01;;
+  @LTOPOLOGY@@LCLASS@01 @LTOPOLOGY@@LCLASS@02;;
 ')
 
 m4_define(`ppl_@CLASS@_@BINOP@_code',
 `
 print_string "testing ppl_@CLASS@_@BINOP@" ;;
 print_newline();;
-let copy
+let copy01
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
-ppl_@TOPOLOGY@@CLASS@_@BINOP@
-  copy @LTOPOLOGY@@LCLASS@02;;
+let copy02
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
+ppl_@TOPOLOGY@@CLASS@_@BINOP@ copy01 copy02;;
 ')
 
 m4_define(`ppl_@CLASS@_get_@GET_REPRESENT@s_code',
 `
 print_string "testing ppl_@CLASS@_get_@GET_REPRESENT@s";;
 print_newline();;
-let @GET_REPRESENT@s = ppl_@TOPOLOGY@@CLASS@_get_@GET_REPRESENT@s @LTOPOLOGY@@LCLASS@01 in
+let @GET_REPRESENT@s = ppl_@TOPOLOGY@@CLASS@_get_@GET_REPRESENT@s
+  @LTOPOLOGY@@LCLASS@01 in
 List.iter print_@GET_REPRESENT@ @GET_REPRESENT@s;;
 print_newline();;
 ')
@@ -94,48 +104,55 @@ m4_define(`ppl_@CLASS@_bounded_@AFFIMAGE@_code',
 `
 print_string "testing ppl_@CLASS@_bounded_@AFFIMAGE@";;
 print_newline();;
-let copy_@AFFIMAGE@
+let copy01
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
-ppl_@TOPOLOGY@@CLASS@_bounded_@AFFIMAGE@ copy_@AFFIMAGE@ 1
-  ((Z.of_int 2) */ var2) var2 (Z.from_int 10);;
+ppl_@TOPOLOGY@@CLASS@_bounded_@AFFIMAGE@ copy01 1
+  ((Z.of_int 2) */ v2) v2 (Z.from_int 10);;
 ')
 
 m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_code',
 `
 print_string "testing ppl_@CLASS@_generalized_@AFFIMAGE@";;
 print_newline();;
-let copy_@AFFIMAGE@
+let copy01
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
 ppl_@TOPOLOGY@@CLASS@_generalized_@AFFIMAGE@
-  copy_@AFFIMAGE@ 1 Equal_RS var1 (Z.from_int 10);;
+  copy01 1 Equal_RS v1 (Z.from_int 10);;
 ')
 
 m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_code',
 `
 print_string "testing ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs";;
 print_newline();;
-let copy_@AFFIMAGE@
+let copy01
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
 ppl_@TOPOLOGY@@CLASS@_generalized_@AFFIMAGE@_lhs_rhs
-  copy_@AFFIMAGE@ ((Z.of_int 1) */ var0) Equal_RS (linear_expression_of_int 7);;
+  copy01 ((Z.of_int 1) */ v0) Equal_RS (linear_expression_of_int 7);;
 ')
 
 m4_define(`ppl_@CLASS@_@AFFIMAGE@_code',
 `
-let copy_@AFFIMAGE@
+let copy01
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
 print_string "testing ppl_@CLASS@_@AFFIMAGE@";;
 print_newline();;
-ppl_@TOPOLOGY@@CLASS@_@AFFIMAGE@ copy_@AFFIMAGE@ 1 ((Z.of_int 2) */ var2) (Z.from_int 2);;
+ppl_@TOPOLOGY@@CLASS@_@AFFIMAGE@ copy01 1 ((Z.of_int 2) */ v2) (Z.from_int 2);;
 ')
 
-m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens',
+m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens_code',
 `
 print_string
   "testing ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens";;
 print_newline();;
-let a = ppl_@TOPOLOGY@@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens
-  @LTOPOLOGY@@LCLASS@01 @LTOPOLOGY@@LCLASS@01 constraints1 10;;
+print_string "tokens after widening = ";;
+let copy01
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
+let copy03
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@03);;
+let tokens
+  = ppl_@TOPOLOGY@@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens
+  copy01 copy03 @CONSTRAINER@s04 10;;
+print_int tokens;;
 ')
 
 m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_code',
@@ -223,14 +240,22 @@ ppl_@TOPOLOGY@@CLASS@_unconstrain_space_dimension @LTOPOLOGY@@LCLASS@01 1;;
 
 m4_define(`ppl_@CLASS@_unconstrain_space_dimensions_code',
 `
+print_string "testing ppl_@CLASS@_unconstrain_space_dimensions";;
+print_newline();;
+let copy01
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
 let dimensions_to_unconstrain = [1];;
 ppl_@TOPOLOGY@@CLASS@_unconstrain_space_dimensions
-  @LTOPOLOGY@@LCLASS@01 dimensions_to_unconstrain;;
+  copy01 dimensions_to_unconstrain;;
 ')
 
 m4_define(`ppl_@CLASS@_swap_code',
 `
 print_string "testing ppl_@CLASS@_swap";;
 print_newline();;
-ppl_@TOPOLOGY@@CLASS@_swap @LTOPOLOGY@@LCLASS@01 @LTOPOLOGY@@LCLASS@02;;
+let copy01
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
+let copy02
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
+ppl_@TOPOLOGY@@CLASS@_swap copy01 copy02;;
 ')
