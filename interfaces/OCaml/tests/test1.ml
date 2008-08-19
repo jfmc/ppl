@@ -233,7 +233,7 @@ ppl_C_Polyhedron_generalized_affine_image
 print_newline();;
 print_string "Testing minimization";;
 let is_bounded, num, den, is_supremum, gen
-  = ppl_C_Polyhedron_minimize polyhedron1 e3;;
+  = ppl_C_Polyhedron_minimize_with_point polyhedron1 e3;;
 print_newline();;
 print_string "Value: ";;
 print_int(Z.to_int num);;

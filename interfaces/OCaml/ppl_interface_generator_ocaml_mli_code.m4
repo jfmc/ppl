@@ -250,6 +250,14 @@ val ppl_@TOPOLOGY@@CLASS@_generalized_@AFFIMAGE@:
 
 ')
 
+m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruence_code',
+`dnl
+val ppl_@TOPOLOGY@@CLASS@_generalized_@AFFIMAGE@_with_congruence:
+  @LTOPOLOGY@@LCLASS@ -> int -> relation_symbol -> linear_expression
+  -> Z.t -> Z.t -> unit
+
+')
+
 m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence_code',
 `dnl
 val ppl_@TOPOLOGY@@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence:
@@ -293,6 +301,14 @@ m4_define(`ppl_@CLASS@_@MAXMIN@_code',
 `dnl
 val ppl_@TOPOLOGY@@CLASS@_@MAXMIN@:
   @LTOPOLOGY@@LCLASS@ -> linear_expression
+  -> bool * Z.t * Z.t * bool
+
+')
+
+m4_define(`ppl_@CLASS@_@MAXMIN@_with_point_code',
+`dnl
+val ppl_@TOPOLOGY@@CLASS@_@MAXMIN@_with_point:
+  @LTOPOLOGY@@LCLASS@ -> linear_expression
   -> bool * Z.t * Z.t * bool * linear_generator
 
 ')
@@ -331,6 +347,20 @@ val ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@:
   @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> bool
 
 ')
+
+ m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_code',
+ `dnl
+val ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign:
+  @LTOPOLOGY@@LCLASS@  -> @LTOPOLOGY@@LCLASS@ -> unit
+
+ ')
+
+ m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens_code',
+ `dnl
+val ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens:
+  @LTOPOLOGY@@LCLASS@  -> @LTOPOLOGY@@LCLASS@ -> int -> int
+
+ ')
 
  m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign_code',
  `dnl
@@ -380,5 +410,20 @@ m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
  `dnl
 val ppl_@CLASS@_iterator_@INCDEC@:
   @LCLASS@_iterator -> unit
+
+')
+
+
+m4_define(`ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code',
+`dnl
+val ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign:
+  @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> unit
+
+')
+
+m4_define(`ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign_code',
+`dnl
+val ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign:
+  @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> int -> unit
 
 ')

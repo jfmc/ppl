@@ -212,6 +212,7 @@ let i = ppl_MIP_Problem_constraints mip1;;
 print_newline();;
 List.iter print_constraint i;;
 
+let constraint01 = (v0 >=/ (linear_expression_of_int 1));;
 let constraints01 = [(v0 >=/ (linear_expression_of_int 1));
                      (v1 >=/ (linear_expression_of_int 1));
                      (v2 >=/ (linear_expression_of_int 1))];;
@@ -221,6 +222,7 @@ let constraints03 = [(v0 >=/ (linear_expression_of_int 2));
                      (v1 >=/ (linear_expression_of_int 1));
                      (v2 >=/ (linear_expression_of_int 1))];;
 let constraints04 = [(v0 >=/ (linear_expression_of_int 2))];;
+let congruence01 = (v0, (linear_expression_of_int 0), (Z.from_int 2));;
 let congruences01 = [(v0, (linear_expression_of_int 0), (Z.from_int 2));
                     (v1, (linear_expression_of_int 0), (Z.from_int 1));
                     (v2, (linear_expression_of_int 0), (Z.from_int 1))];;
