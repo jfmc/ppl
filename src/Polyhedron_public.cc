@@ -2205,6 +2205,22 @@ PPL::Polyhedron::intersection_assign_and_minimize(const Polyhedron& y) {
   return !empty;
 }
 
+namespace {
+
+struct Ruled_Out_Pair {
+  PPL::dimension_type constraint_index;
+  PPL::dimension_type num_ruled_out;
+};
+
+struct Ruled_Out_Less_Than {
+  bool operator()(const Ruled_Out_Pair& x,
+                  const Ruled_Out_Pair& y) const {
+    return x.num_ruled_out > y.num_ruled_out;
+  }
+};
+
+} // namespace
+
 bool
 PPL::Polyhedron::intersection_preserving_enlarge_assign(const Polyhedron& y) {
   Polyhedron& x = *this;
@@ -2274,17 +2290,16 @@ PPL::Polyhedron::intersection_preserving_enlarge_assign(const Polyhedron& y) {
   const dimension_type x_cs_num_rows = x_cs.num_rows();
   const Generator_System& y_gs = y.gen_sys;
 
-  // Record into `redundant_by_y' the info about
-  // which constraints of `x' are redundant in the context `y'.
+  // Record into `redundant_by_y' the info about which constraints of
+  // `x' are redundant in the context `y'.  Count the number of
+  // redundancies found.
   std::vector<bool> redundant_by_y(x_cs_num_rows, false);
-  for (dimension_type i = 0; i < x_cs_num_rows; ++i)
-    redundant_by_y[i] = y_gs.satisfied_by_all_generators(x_cs[i]);
-
-  // Count the number of redundancies found.
   dimension_type num_redundant_by_y = 0;
   for (dimension_type i = 0; i < x_cs_num_rows; ++i)
-    if (redundant_by_y[i])
+    if (y_gs.satisfied_by_all_generators(x_cs[i])) {
+      redundant_by_y[i] = true;
       ++num_redundant_by_y;
+    }
 
   Constraint_System result_cs;
 
@@ -2331,23 +2346,110 @@ PPL::Polyhedron::intersection_preserving_enlarge_assign(const Polyhedron& y) {
           throw;
         }
       }
-      // FIXME: apply a sensible heuristic here.  For example, constraints
-      // of `x' could be added depending on the number of generators of `y'
-      // they rule out: the more generators they rule out, the sooner
-      // they are added.
-      for (dimension_type i = 0; i < x_cs_num_rows; ++i) {
+      // We apply the following heuristics here: constraints of `x' that
+      // are not made redundant by `y' are added to `lp' depending on
+      // the number of generators of `y' they rule out (the more generators
+      // they rule out, the sooner they are added).  Of course, as soon
+      // as `lp' becomes unsatisfiable, we stopp adding.
+      std::vector<Ruled_Out_Pair>
+        ruled_out_vec(x_cs_num_rows - num_redundant_by_y);
+      for (dimension_type i = 0, j = 0; i < x_cs_num_rows; ++i) {
         if (!redundant_by_y[i]) {
-          const Constraint& x_cs_i = x_cs[i];
-          result_cs.insert(x_cs_i);
-          lp.add_constraint(x_cs_i);
-          MIP_Problem_Status status = lp.solve();
-          if (status == UNFEASIBLE_MIP_PROBLEM) {
-            Polyhedron result_ph(x.topology(), x.space_dim, UNIVERSE);
-            result_ph.add_constraints(result_cs);
-            x.swap(result_ph);
-            assert(x.OK());
-            return false;
+          const Constraint& c = x_cs[i];
+          Topology_Adjusted_Scalar_Product_Sign sps(c);
+          dimension_type num_ruled_out_generators = 0;
+          for (Generator_System::const_iterator k = y_gs.begin(),
+                 y_gs_end = y_gs.end(); k != y_gs_end; ++k) {
+            const Generator& g = *k;
+            const int sp_sign = sps(g, c);
+            if (x.is_necessarily_closed()) {
+              if (g.is_line()) {
+                // Lines must saturate the constraint.
+                if (sp_sign != 0)
+                  goto ruled_out;
+              }
+              else {
+                // `g' is either a ray, a point or a closure point.
+                if (c.is_inequality()) {
+                  // `c' is a non-strict inequality.
+                  if (sp_sign < 0)
+                    goto ruled_out;
+                }
+                else
+                  // `c' is an equality.
+                  if (sp_sign != 0)
+                    goto ruled_out;
+              }
+            }
+            else
+              // The topology is not necessarily closed.
+              switch (g.type()) {
+              case Generator::LINE:
+                // Lines must saturate the constraint.
+                if (sp_sign != 0)
+                  goto ruled_out;
+                break;
+              case Generator::POINT:
+                // Have to perform the special test when dealing with
+                // a strict inequality.
+                switch (c.type()) {
+                case Constraint::EQUALITY:
+                  if (sp_sign != 0)
+                    goto ruled_out;
+                  break;
+                case Constraint::NONSTRICT_INEQUALITY:
+                  if (sp_sign < 0)
+                    goto ruled_out;
+                  break;
+                case Constraint::STRICT_INEQUALITY:
+                  if (sp_sign <= 0)
+                    goto ruled_out;
+                  break;
+                }
+                break;
+              case Generator::RAY:
+                // Intentionally fall through.
+              case Generator::CLOSURE_POINT:
+                if (c.is_inequality()) {
+                  // Constraint `c' is either a strict or a non-strict
+                  // inequality.
+                  if (sp_sign < 0)
+                    goto ruled_out;
+                }
+                else
+                  // Constraint `c' is an equality.
+                  if (sp_sign != 0)
+                    goto ruled_out;
+                break;
+              }
+
+            // If we reach this point, `g' satisfies `c'.
+            continue;
+          ruled_out:
+            ++num_ruled_out_generators;
           }
+          ruled_out_vec[j].constraint_index = i;
+          ruled_out_vec[j].num_ruled_out = num_ruled_out_generators;
+          ++j;
+        }
+      }
+      std::sort(ruled_out_vec.begin(), ruled_out_vec.end(),
+                Ruled_Out_Less_Than());
+
+      for (std::vector<Ruled_Out_Pair>::const_iterator
+             j = ruled_out_vec.begin(), rov_end = ruled_out_vec.end();
+           j != rov_end;
+           ++j) {
+        const Constraint& c = x_cs[j->constraint_index];
+        result_cs.insert(c);
+        lp.add_constraint(c);
+        MIP_Problem_Status status = lp.solve();
+        if (status == UNFEASIBLE_MIP_PROBLEM) {
+          Polyhedron result_ph(x.topology(), x.space_dim, UNIVERSE);
+          result_ph.add_constraints(result_cs);
+          x.swap(result_ph);
+          assert(x.OK());
+          return false;
         }
       }
       // Cannot exit from here.
