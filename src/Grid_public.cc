@@ -1835,10 +1835,11 @@ PPL::Grid::grid_difference_assign(const Grid& y) {
   assert(OK());
 }
 
-void
+bool
 PPL::Grid::intersection_preserving_enlarge_assign(const Grid& y) {
   // FIXME: provide a real implementation.
   used(y);
+  return true;
 }
 
 void

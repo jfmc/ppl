@@ -689,12 +689,13 @@ Pointset_Powerset<PS>::topological_closure_assign() {
 }
 
 template <typename PS>
-void
+bool
 Pointset_Powerset<PS>
-::intersection_preserving_enlarge(PS& to_be_enlarged) const {
+::intersection_preserving_enlarge_element(PS& to_be_enlarged) const {
   // FIXME: this is just an executable specification.
   const Pointset_Powerset& context = *this;
   assert(context.space_dimension() == to_be_enlarged.space_dimension());
+  bool nonempty_intersection = false;
   // TODO: maybe use a *sorted* constraint system?
   PS enlarged(context.space_dimension(), UNIVERSE);
   for (Sequence_const_iterator si = context.sequence.begin(),
@@ -702,27 +703,34 @@ Pointset_Powerset<PS>
     PS context_i(si->element());
     context_i.intersection_assign(enlarged);
     PS enlarged_i(to_be_enlarged);
-    enlarged_i.intersection_preserving_enlarge_assign(context_i);
+    nonempty_intersection
+      |= enlarged_i.intersection_preserving_enlarge_assign(context_i);
     // TODO: merge the sorted constraints of `enlarged' and `enlarged_i'?
     enlarged.intersection_assign(enlarged_i);
   }
   to_be_enlarged.swap(enlarged);
+  return nonempty_intersection;
 }
 
 template <typename PS>
-void
+bool
 Pointset_Powerset<PS>
 ::intersection_preserving_enlarge_assign(const Pointset_Powerset& y) {
   Pointset_Powerset& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
-         s_end = x.sequence.end(); si != s_end; ++si) {
+         s_end = x.sequence.end(); si != s_end; ) {
     // TODO: check whether it would be useful (i.e., more efficient)
     // to eagerly test whether *si is omega-redundant due to any of
     // the elements preceding it (which have been already enlarged).
-    y.intersection_preserving_enlarge(si->element());
+    if (y.intersection_preserving_enlarge_element(si->element()))
+      ++si;
+    else
+      // Intersection with `*si' is empty: drop the disjunct.
+      si = x.sequence.erase(si);
   }
   x.reduced = false;
   assert(x.OK());
+  return !x.sequence.empty();
 }
 
 template <typename PS>

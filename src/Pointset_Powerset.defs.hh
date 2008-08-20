@@ -788,12 +788,13 @@ public:
   /*! \brief
     Assigns to \p *this an \ref Intersection-Preserving Enlargement
     "intersection-preserving enlargement" of \p *this with respect to \p y.
+    If \c false is returned, then the intersection is empty.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are topology-incompatible or
     dimension-incompatible.
   */
-  void intersection_preserving_enlarge_assign(const Pointset_Powerset& y);
+  bool intersection_preserving_enlarge_assign(const Pointset_Powerset& y);
 
   /*! \brief
     Assigns to \p *this the
@@ -1263,12 +1264,13 @@ private:
   /*! \brief
     Assigns to \p to_be_enlarged an \ref Intersection-Preserving Enlargement
     "intersection-preserving enlargement" of itself with respect to \p *this.
+    If \c false is returned, then the intersection is empty.
 
     \note
     It is assumed that \p *this and \p to_be_enlarged are
     topology-compatible and dimension-compatible.
   */
-  void intersection_preserving_enlarge(PS& to_be_enlarged) const;
+  bool intersection_preserving_enlarge_element(PS& to_be_enlarged) const;
 
   /*! \brief
     Assigns to \p *this the result of applying the BGP99 heuristics

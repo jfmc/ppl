@@ -1542,10 +1542,11 @@ Box<ITV>::box_difference_assign(const Box& y) {
 }
 
 template <typename ITV>
-void
+bool
 Box<ITV>::intersection_preserving_enlarge_assign(const Box& y) {
   // FIXME: provide a real implementation.
   used(y);
+  return true;
 }
 
 template <typename ITV>

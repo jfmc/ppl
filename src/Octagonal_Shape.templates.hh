@@ -2442,11 +2442,12 @@ Octagonal_Shape<T>::oct_difference_assign(const Octagonal_Shape& y) {
 }
 
 template <typename T>
-void
+bool
 Octagonal_Shape<T>
 ::intersection_preserving_enlarge_assign(const Octagonal_Shape& y) {
   // FIXME: provide a real implementation.
   used(y);
+  return true;
 }
 
 template <typename T>

@@ -1876,10 +1876,11 @@ BD_Shape<T>::bds_difference_assign(const BD_Shape& y) {
 }
 
 template <typename T>
-void
+bool
 BD_Shape<T>::intersection_preserving_enlarge_assign(const BD_Shape& y) {
   // FIXME: provide a real implementation.
   used(y);
+  return true;
 }
 
 template <typename T>
