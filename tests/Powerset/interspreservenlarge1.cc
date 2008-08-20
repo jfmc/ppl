@@ -135,7 +135,6 @@ test03() {
 
   ps2.add_disjunct(ph);
 
-  // CHECKME: someone claims this to be the correct result.
   Pointset_Powerset<C_Polyhedron> known_result(3, EMPTY);
 
   ps1.intersection_preserving_enlarge_assign(ps2);
@@ -203,11 +202,150 @@ test04() {
   return ok;
 }
 
+bool
+test05() {
+  Variable i(0);
+  Variable j(1);
+  Variable k(2);
+
+  C_Polyhedron ph(3, EMPTY);
+  Pointset_Powerset<C_Polyhedron> ps1(3, EMPTY);
+  Pointset_Powerset<C_Polyhedron> ps2(3, EMPTY);
+
+  ph = C_Polyhedron(3, UNIVERSE);
+  ph.add_constraint(i >= 1);
+  ph.add_constraint(i <= 10);
+  ph.add_constraint(j >= 1);
+  ph.add_constraint(j <= 10);
+  ph.add_constraint(k == 0);
+
+  ps1.add_disjunct(ph);
+
+  ph = C_Polyhedron(3, UNIVERSE);
+  ph.add_constraint(i >= 28);
+  ph.add_constraint(i <= 31);
+  ph.add_constraint(j >= 1);
+  ph.add_constraint(j <= 10);
+  ph.add_constraint(k == 0);
+
+  ps1.add_disjunct(ph);
+
+  ph = C_Polyhedron(3, UNIVERSE);
+  ph.add_constraint(i <= 25);
+  ph.add_constraint(j <= 25);
+  ph.add_constraint(i + j >= 25);
+  ph.add_constraint(k == 0);
+
+  ps2.add_disjunct(ph);
+
+  ph = C_Polyhedron(3, UNIVERSE);
+  ph.add_constraint(i >= 30);
+  ph.add_constraint(i <= 32);
+  ph.add_constraint(j >= 2);
+  ph.add_constraint(j <= 9);
+  ph.add_constraint(k == 0);
+
+  ps2.add_disjunct(ph);
+
+  Pointset_Powerset<C_Polyhedron> known_result(3, EMPTY);
+  ph = C_Polyhedron(3, UNIVERSE);
+  ph.add_constraint(i >= 28);
+  ph.add_constraint(i <= 31);
+  known_result.add_disjunct(ph);
+
+  ps1.intersection_preserving_enlarge_assign(ps2);
+
+  bool ok = (ps1 == known_result);
+
+  for (Pointset_Powerset<C_Polyhedron>::const_iterator i = ps1.begin(),
+         iend = ps1.end(); i != iend; ++i)
+    print_constraints(i->element());
+
+  return ok;
+}
+
+bool
+test06() {
+  Variable i(0);
+  Variable j(1);
+  Variable k(2);
+
+  C_Polyhedron ph(3, EMPTY);
+  Pointset_Powerset<C_Polyhedron> ps1(3, EMPTY);
+  Pointset_Powerset<C_Polyhedron> ps2(3, EMPTY);
+
+  ph = C_Polyhedron(3, UNIVERSE);
+  ph.add_constraint(i == 1);
+  ph.add_constraint(j + 1 == 0);
+  ph.add_constraint(k == 3);
+
+  ps1.add_disjunct(ph);
+
+  ph = C_Polyhedron(3, UNIVERSE);
+  ph.add_constraint(i == 1);
+  ph.add_constraint(j + k == 2);
+  ph.add_constraint(k >= 0);
+  ph.add_constraint(k <= 3);
+
+  ps2.add_disjunct(ph);
+
+  Pointset_Powerset<C_Polyhedron> known_result(3, EMPTY);
+  ph = C_Polyhedron(3, UNIVERSE);
+  ph.add_constraint(k == 3);
+  // ph.add_constraint(j + 1 == 0);
+  known_result.add_disjunct(ph);
+
+  ps1.intersection_preserving_enlarge_assign(ps2);
+
+  bool ok = (ps1 == known_result);
+
+  for (Pointset_Powerset<C_Polyhedron>::const_iterator i = ps1.begin(),
+         iend = ps1.end(); i != iend; ++i)
+    print_constraints(i->element());
+
+  return ok;
+}
+
+bool
+test07() {
+  Variable i(0);
+  Variable j(1);
+
+  C_Polyhedron ph(2, EMPTY);
+  Pointset_Powerset<C_Polyhedron> ps1(2, EMPTY);
+  Pointset_Powerset<C_Polyhedron> ps2(2, EMPTY);
+
+  ph = C_Polyhedron(2, UNIVERSE);
+  ph.add_constraint(i <= j);
+
+  ps1.add_disjunct(ph);
+
+  ph = C_Polyhedron(2, UNIVERSE);
+  ph.add_constraint(i == j);
+
+  ps2.add_disjunct(ph);
+
+  Pointset_Powerset<C_Polyhedron> known_result(2, UNIVERSE);
+
+  ps1.intersection_preserving_enlarge_assign(ps2);
+
+  bool ok = (ps1 == known_result);
+
+  for (Pointset_Powerset<C_Polyhedron>::const_iterator i = ps1.begin(),
+         iend = ps1.end(); i != iend; ++i)
+    print_constraints(i->element());
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
-  DO_TEST_F(test03);
+  DO_TEST(test03);
   DO_TEST(test04);
+  DO_TEST_F(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
 END_MAIN
