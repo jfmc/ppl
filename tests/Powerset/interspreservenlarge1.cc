@@ -338,6 +338,47 @@ test07() {
   return ok;
 }
 
+bool
+test08() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2, EMPTY);
+  Pointset_Powerset<C_Polyhedron> ps1(2, EMPTY);
+  Pointset_Powerset<C_Polyhedron> ps2(2, EMPTY);
+
+  ph = C_Polyhedron(2, UNIVERSE);
+  ph.add_constraint(A >= 0);
+
+  ps1.add_disjunct(ph);
+
+  ph = C_Polyhedron(2, UNIVERSE);
+  ph.add_constraint(A <= 0);
+
+  ps2.add_disjunct(ph);
+
+  ph = C_Polyhedron(2, UNIVERSE);
+  ph.add_constraint(B >= 0);
+
+  ps2.add_disjunct(ph);
+
+  Pointset_Powerset<C_Polyhedron> known_result(2, EMPTY);
+  ph = C_Polyhedron(2, UNIVERSE);
+  ph.add_constraint(A >= 0);
+  ph.add_constraint(B >= 0);
+  known_result.add_disjunct(ph);
+
+  ps1.intersection_preserving_enlarge_assign(ps2);
+
+  bool ok = (ps1 == known_result);
+
+  for (Pointset_Powerset<C_Polyhedron>::const_iterator i = ps1.begin(),
+         iend = ps1.end(); i != iend; ++i)
+    print_constraints(i->element());
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -345,7 +386,8 @@ BEGIN_MAIN
   DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
-  DO_TEST_F(test05);
+  DO_TEST(test05);
   DO_TEST(test06);
   DO_TEST(test07);
+  DO_TEST_F(test08);
 END_MAIN
