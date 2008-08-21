@@ -56,7 +56,7 @@ m4_define(`m4_current_interface', m4_interface_class`'$1)`'dnl
 %<--%<--%<-- ppl_prolog_`'m4_current_interface.cc
 /*
 Prolog m4_current_interface interface code.
-FIXME: Copyright block to go here
+m4_include(`ppl_interface_generator_copyright')`'dnl
 */
 
 #include "sysdep.hh"

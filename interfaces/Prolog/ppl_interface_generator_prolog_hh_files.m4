@@ -45,8 +45,11 @@ m4_define(`m4_current_interface', m4_interface_class`'$1)`'dnl
 %<--%<--%<-- ppl_prolog_main.hh
 `#'include "ppl_prolog_`'m4_current_interface.hh"
 %<--%<--%<-- ppl_prolog_`'m4_current_interface.hh
-/* Prolog m4_current_interface interface code.
+/*
+Prolog m4_current_interface interface code.
+m4_include(`ppl_interface_generator_copyright')`'dnl
 */
+
 m4_undefine(`m4_current_interface')`'dnl
 ')
 
