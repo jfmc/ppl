@@ -684,7 +684,8 @@ available_interfaces="cxx c ciao_prolog gnu_prolog sicstus_prolog swi_prolog xsb
 # This is the list of interfaces that are enabled by default.
 #default_interfaces="cxx c swi_prolog"
 #default_interfaces=${available_interfaces}
-default_interfaces="cxx c gnu_prolog sicstus_prolog swi_prolog xsb_prolog yap_prolog ocaml java"
+default_interfaces="cxx c ocaml java"
+#default_interfaces="cxx c gnu_prolog sicstus_prolog swi_prolog xsb_prolog yap_prolog ocaml java"
 
 enableval=not_specified
 AC_MSG_CHECKING([which interfaces are enabled])
@@ -936,11 +937,12 @@ bool valid = ${instantiation}::valid_instantiation();
   done
   CPPFLAGS="$ac_save_CPPFLAGS"
   required_instantiations_canonical_names=`echo "${required_instantiations}" | sed -e 's/> //g' -e 's/>//g' -e 's/[[< ,]]/_/g'`
-  required_instantiations_source_names=`echo "${required_instantiations_canonical_names}" | sed -e 's/^Polyhedron/Polyhedron@C_Polyhedron@NNC_Polyhedron/g' -e 's/@Polyhedron/@Polyhedron@C_Polyhedron@NNC_Polyhedron/g' -e 's/@Pointset_Powerset_Polyhedron/@Pointset_Powerset_C_Polyhedron@Pointset_Powerset_NNC_Polyhedron/g' -e 's/^Pointset_Powerset_Polyhedron/Pointset_Powerset_C_Polyhedron@Pointset_Powerset_NNC_Polyhedron/g' | sed -e 's/Pointset_Powerset_[[a-zA-Z0-9_]]*/&@&_Iterator/g'`
-  required_instantiations_prolog_cxx_objects=`echo "${required_instantiations_source_names}" | sed -e 's/@/.o /g' -e 's/$/.o/g' | sed -e 's/\([[^. ]]*\).o/ppl_prolog_\1.o/g'`
+  required_instantiations_prolog_source_names=`echo "${required_instantiations_canonical_names}" | sed -e 's/@Pointset_Powerset_Polyhedron/@Pointset_Powerset_C_Polyhedron@Pointset_Powerset_NNC_Polyhedron/g' -e 's/^Pointset_Powerset_Polyhedron/Pointset_Powerset_C_Polyhedron@Pointset_Powerset_NNC_Polyhedron/g'`
+  required_instantiations_prolog_cxx_objects=`echo "${required_instantiations_prolog_source_names}" | sed -e 's/@/.o /g' -e 's/$/.o/g' | sed -e 's/\([[^. ]]*\).o/ppl_prolog_\1.o/g'`
   required_instantiations_prolog_cxx_sources=`echo "${required_instantiations_prolog_cxx_objects}" | sed -e 's/\([[^. ]]*\).o/..\/\1.cc/g'`
   required_instantiations_prolog_cxx_headers=`echo "${required_instantiations_prolog_cxx_sources}" | sed -e 's/.cc/.hh/g'`
-  required_instantiations_java_sources=`echo "${required_instantiations_source_names}" | sed -e 's/@/.java /g' -e 's/$/.java/g'`
+  required_instantiations_java_source_names=`echo "${required_instantiations_canonical_names}" | sed -e 's/^Polyhedron/Polyhedron@C_Polyhedron@NNC_Polyhedron/g' -e 's/@Polyhedron/@Polyhedron@C_Polyhedron@NNC_Polyhedron/g' -e 's/@Pointset_Powerset_Polyhedron/@Pointset_Powerset_C_Polyhedron@Pointset_Powerset_NNC_Polyhedron/g' -e 's/^Pointset_Powerset_Polyhedron/Pointset_Powerset_C_Polyhedron@Pointset_Powerset_NNC_Polyhedron/g' | sed -e 's/Pointset_Powerset_[[a-zA-Z0-9_]]*/&@&_Iterator/g'`
+  required_instantiations_java_sources=`echo "${required_instantiations_java_source_names}" | sed -e 's/@/.java /g' -e 's/$/.java/g'`
   required_instantiations_java_cxx_headers=`echo "${required_instantiations_java_sources}" | sed -e 's/\([[^. ]]*\).java/ppl_java.\1/g'`
   required_instantiations_java_cxx_headers_sources=`echo "${required_instantiations_java_sources}" | sed -e 's/\([[^. ]]*\).java/ppl_java_\1.h/g'`
   AC_MSG_RESULT([${required_instantiations}])
