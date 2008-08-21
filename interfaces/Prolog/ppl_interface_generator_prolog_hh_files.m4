@@ -28,7 +28,7 @@ dnl site: http://www.cs.unipr.it/ppl/ .
 dnl This file generates ppl_prolog.icc.
 dnl
 dnl Include files defining macros that generate the non-fixed part.
-m4_include(`ppl_interface_generator_prolog_cc_code.m4')
+m4_include(`ppl_interface_generator_prolog_hh_code.m4')
 m4_include(`ppl_interface_generator_prolog_procedure_generators.m4')
 
 m4_divert`'dnl
