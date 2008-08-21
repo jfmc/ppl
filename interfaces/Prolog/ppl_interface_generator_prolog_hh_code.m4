@@ -301,6 +301,13 @@ m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize_code',
 
 ')
 
+m4_define(`ppl_@CLASS@_@BINOP@_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_@CLASS@_@BINOP@
+  (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs);
+
+')
+
 m4_define(`ppl_@CLASS@_@BINMINOP@_code',
   `extern "C" Prolog_foreign_return_type
   ppl_@CLASS@_@BINMINOP@
