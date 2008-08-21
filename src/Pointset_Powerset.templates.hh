@@ -704,7 +704,7 @@ Pointset_Powerset<PS>
     context_i.intersection_assign(enlarged);
     PS enlarged_i(to_be_enlarged);
     nonempty_intersection
-      |= enlarged_i.intersection_preserving_enlarge_assign(context_i);
+      |= enlarged_i.simplify_using_context_assign(context_i);
     // TODO: merge the sorted constraints of `enlarged' and `enlarged_i'?
     enlarged.intersection_assign(enlarged_i);
   }
@@ -715,7 +715,7 @@ Pointset_Powerset<PS>
 template <typename PS>
 bool
 Pointset_Powerset<PS>
-::intersection_preserving_enlarge_assign(const Pointset_Powerset& y) {
+::simplify_using_context_assign(const Pointset_Powerset& y) {
   Pointset_Powerset& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ) {

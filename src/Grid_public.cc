@@ -1836,7 +1836,7 @@ PPL::Grid::grid_difference_assign(const Grid& y) {
 }
 
 bool
-PPL::Grid::intersection_preserving_enlarge_assign(const Grid& y) {
+PPL::Grid::simplify_using_context_assign(const Grid& y) {
   // FIXME: provide a real implementation.
   used(y);
   return true;

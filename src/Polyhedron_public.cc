@@ -2241,16 +2241,14 @@ add_to_system_and_check_independence(PPL::Linear_System& eq_sys,
 } // namespace
 
 bool
-PPL::Polyhedron::intersection_preserving_enlarge_assign(const Polyhedron& y) {
+PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
   Polyhedron& x = *this;
   // Topology compatibility check.
   if (x.topology() != y.topology())
-    throw_topology_incompatible("intersection_preserving_enlarge_assign(y)",
-				"y", y);
+    throw_topology_incompatible("simplify_using_context_assign(y)", "y", y);
   // Dimension-compatibility check.
   if (x.space_dim != y.space_dim)
-    throw_dimension_incompatible("intersection_preserving_enlarge_assign(y)",
-				 "y", y);
+    throw_dimension_incompatible("simplify_using_context_assign(y)", "y", y);
 
   // Filter away the zero-dimensional case.
   if (x.space_dim == 0) {

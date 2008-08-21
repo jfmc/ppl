@@ -1056,7 +1056,7 @@ public:
     Thrown if \p *this and \p y are topology-incompatible or
     dimension-incompatible.
   */
-  bool intersection_preserving_enlarge_assign(const Octagonal_Shape& y);
+  bool simplify_using_context_assign(const Octagonal_Shape& y);
 
   /*! \brief
     Assigns to \p *this the \ref affine_relation "affine image"

@@ -903,7 +903,7 @@ public:
     Thrown if \p *this and \p y are topology-incompatible or
     dimension-incompatible.
   */
-  bool intersection_preserving_enlarge_assign(const Box& y);
+  bool simplify_using_context_assign(const Box& y);
 
   /*! \brief
     Assigns to \p *this the
