@@ -1,4 +1,4 @@
-/* Test Pointset_Powerset::intersection_preserving_enlarge_assign().
+/* Test Pointset_Powerset::simplify_using_context_assign().
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -59,7 +59,7 @@ test01() {
   ph.add_constraint(k == 0);
   known_result.add_disjunct(ph);
 
-  ps1.intersection_preserving_enlarge_assign(ps2);
+  ps1.simplify_using_context_assign(ps2);
 
   bool ok = (ps1 == known_result);
 
@@ -101,7 +101,7 @@ test02() {
   ph.add_constraint(k >= 1);
   known_result.add_disjunct(ph);
 
-  ps1.intersection_preserving_enlarge_assign(ps2);
+  ps1.simplify_using_context_assign(ps2);
 
   bool ok = (ps1 == known_result);
 
@@ -137,7 +137,7 @@ test03() {
 
   Pointset_Powerset<C_Polyhedron> known_result(3, EMPTY);
 
-  ps1.intersection_preserving_enlarge_assign(ps2);
+  ps1.simplify_using_context_assign(ps2);
 
   bool ok = (ps1 == known_result);
 
@@ -191,7 +191,7 @@ test04() {
   ph.add_constraint(j <= 10);
   known_result.add_disjunct(ph);
 
-  ps1.intersection_preserving_enlarge_assign(ps2);
+  ps1.simplify_using_context_assign(ps2);
 
   bool ok = (ps1 == known_result);
 
@@ -253,7 +253,7 @@ test05() {
   ph.add_constraint(i <= 31);
   known_result.add_disjunct(ph);
 
-  ps1.intersection_preserving_enlarge_assign(ps2);
+  ps1.simplify_using_context_assign(ps2);
 
   bool ok = (ps1 == known_result);
 
@@ -295,7 +295,7 @@ test06() {
   // ph.add_constraint(j + 1 == 0);
   known_result.add_disjunct(ph);
 
-  ps1.intersection_preserving_enlarge_assign(ps2);
+  ps1.simplify_using_context_assign(ps2);
 
   bool ok = (ps1 == known_result);
 
@@ -327,7 +327,7 @@ test07() {
 
   Pointset_Powerset<C_Polyhedron> known_result(2, UNIVERSE);
 
-  ps1.intersection_preserving_enlarge_assign(ps2);
+  ps1.simplify_using_context_assign(ps2);
 
   bool ok = (ps1 == known_result);
 
@@ -367,7 +367,7 @@ test08() {
   ph.add_constraint(A >= 0);
   known_result.add_disjunct(ph);
 
-  ps1.intersection_preserving_enlarge_assign(ps2);
+  ps1.simplify_using_context_assign(ps2);
 
   bool ok = (ps1 == known_result);
 

@@ -1,4 +1,4 @@
-/* Test Polyhedron::intersection_preserving_enlarge_assign().
+/* Test Polyhedron::simplify_using_context_assign().
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -59,7 +59,7 @@ test01() {
   column.add_constraint(x <= 1);
 
   C_Polyhedron computed_result = icosahedron;
-  computed_result.intersection_preserving_enlarge_assign(column);
+  computed_result.simplify_using_context_assign(column);
 
 #if 0
   C_Polyhedron known_result(3);
@@ -121,7 +121,7 @@ test02() {
 
 
   C_Polyhedron computed_result = icosahedron1;
-  computed_result.intersection_preserving_enlarge_assign(icosahedron2);
+  computed_result.simplify_using_context_assign(icosahedron2);
 
   C_Polyhedron known_result(3);
   known_result.add_constraint(-4*x - 2*y + z >= -8);
@@ -243,14 +243,14 @@ test03() {
 
   C_Polyhedron computed_result = ph1;
 
-  computed_result.intersection_preserving_enlarge_assign(ph2);
+  computed_result.simplify_using_context_assign(ph2);
 
   C_Polyhedron known_result(1);
 
   bool ok = (computed_result == known_result);
 
   print_constraints(computed_result,
-                    "*** ph1.intersection_preserving_enlarge_assign ***");
+                    "*** ph1.simplify_using_context_assign ***");
 
   return ok;
 }
@@ -281,11 +281,11 @@ test04() {
   C_Polyhedron known_result = C_Polyhedron(3, UNIVERSE);
   known_result.add_constraint(i >= 1);
 
-  ph1.intersection_preserving_enlarge_assign(ph2);
+  ph1.simplify_using_context_assign(ph2);
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "=== ph1.enlarge(ph2) ===");
+  print_constraints(ph1, "=== ph1.simplify_using_context_assign(ph2) ===");
 
   return ok;
 }
@@ -311,11 +311,11 @@ test05() {
   known_result.add_constraint(k == 3);
   // known_result.add_constraint(j + 1 == 0);
 
-  ph1.intersection_preserving_enlarge_assign(ph2);
+  ph1.simplify_using_context_assign(ph2);
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "=== ph1.enlarge(ph2) ===");
+  print_constraints(ph1, "=== ph1.simplify_using_context_assign(ph2) ===");
 
   return ok;
 }
@@ -561,12 +561,12 @@ test14() {
 
   C_Polyhedron known_result = ph1;
 
-  ph1.intersection_preserving_enlarge_assign(ph2);
+  ph1.simplify_using_context_assign(ph2);
 
   bool ok = (ph1 == known_result);
 
   print_constraints(ph1,
-            "*** after ph1.intersection_preserving_enlarge_assign(ph2) ***");
+            "*** after ph1.simplify_using_context_assign(ph2) ***");
 
   return ok;
 }
@@ -585,12 +585,12 @@ test15() {
 
   C_Polyhedron known_result = ph1;
 
-  ph1.intersection_preserving_enlarge_assign(ph2);
+  ph1.simplify_using_context_assign(ph2);
 
   bool ok = (ph1 == known_result);
 
   print_constraints(ph1,
-                    "*** after ph1.intersection_preserving_enlarge_assign(ph2) ***");
+                    "*** after ph1.simplify_using_context_assign(ph2) ***");
 
   return ok;
 }
@@ -619,7 +619,7 @@ test16() {
   known_result.add_constraint(i <= 10);
   known_result.add_constraint(j <= 10);
 
-  ph1.intersection_preserving_enlarge_assign(ph2);
+  ph1.simplify_using_context_assign(ph2);
 
   bool ok = (ph1 == known_result);
 
