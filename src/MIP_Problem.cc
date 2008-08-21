@@ -853,14 +853,29 @@ PPL::MIP_Problem::process_pending_constraints() {
   return true;
 }
 #if PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT
+
+// This is the only place in the library where we use doubles for
+// internal purposes.  However, we may have PPL_SUPPORTED_DOUBLE
+// defined to 0 if we were unable to detect the binary format
+// used by doubles.
+#if PPL_SUPPORTED_DOUBLE
+#define STEEPEST_EDGE_FP_TYPE double
+#define STEEPEST_EDGE_SQRT sqrt
+#define STEEPEST_EDGE_FABS fabs
+#else
+#define STEEPEST_EDGE_FP_TYPE float
+#define STEEPEST_EDGE_SQRT sqrtf
+#define STEEPEST_EDGE_FABS fabsf
+#endif
+
 PPL::dimension_type
 PPL::MIP_Problem::steepest_edge_entering_index() const {
   DIRTY_TEMP0(mpq_class, real_coeff);
   const dimension_type tableau_num_rows = tableau.num_rows();
   assert(tableau_num_rows == base.size());
-  double challenger_num = 0.0;
-  double challenger_den = 0.0;
-  double current_value = 0.0;
+  STEEPEST_EDGE_FP_TYPE challenger_num = 0.0;
+  STEEPEST_EDGE_FP_TYPE challenger_den = 0.0;
+  STEEPEST_EDGE_FP_TYPE current_value = 0.0;
   dimension_type entering_index = 0;
   const int cost_sign = sgn(working_cost[working_cost.size() - 1]);
   for (dimension_type j = tableau.num_columns() - 1; j-- > 1; ) {
@@ -869,7 +884,7 @@ PPL::MIP_Problem::steepest_edge_entering_index() const {
       // We cannot compute the (exact) square root of abs(\Delta x_j).
       // The workaround is to compute the square of `cost[j]'.
       assign_r(challenger_num, cost_j, ROUND_IGNORE);
-      challenger_num = fabs(challenger_num);
+      challenger_num = STEEPEST_EDGE_FABS(challenger_num);
       // Due to our integer implementation, the `1' term in the denominator
       // of the original formula has to be replaced by `squared_lcm_basis'.
       challenger_den = 1.0;
@@ -881,12 +896,13 @@ PPL::MIP_Problem::steepest_edge_entering_index() const {
 	  assign_r(real_coeff.get_num(), tableau_ij, ROUND_NOT_NEEDED);
 	  assign_r(real_coeff.get_den(), tableau_i[base[i]], ROUND_NOT_NEEDED);
 	  real_coeff.canonicalize();
-	  double float_tableau_value;
+	  STEEPEST_EDGE_FP_TYPE float_tableau_value;
 	  assign_r(float_tableau_value, real_coeff, ROUND_IGNORE);
 	  challenger_den += float_tableau_value * float_tableau_value;
 	}
       }
-      double challenger_value = challenger_num / sqrt(challenger_den);
+      STEEPEST_EDGE_FP_TYPE challenger_value
+        = challenger_num / STEEPEST_EDGE_SQRT(challenger_den);
       // Initialize `current_value' during the first iteration.
       // Otherwise update if the challenger wins.
       if (entering_index == 0 || challenger_value > current_value) {
@@ -897,6 +913,10 @@ PPL::MIP_Problem::steepest_edge_entering_index() const {
   }
   return entering_index;
 }
+
+#undef STEEPEST_EDGE_FP_TYPE
+#undef STEEPEST_EDGE_SQRT
+#undef STEEPEST_EDGE_FABS
 
 #else
 PPL::dimension_type
