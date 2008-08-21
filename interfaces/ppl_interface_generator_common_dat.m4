@@ -1053,17 +1053,13 @@ m4_define(`m4_binop_replacement',
          `intersection_assign, upper_bound_assign, difference_assign,
           concatenate_assign, time_elapse_assign')
 m4_define(`m4_Polyhedron_binop_replacement',
-         `m4_binop_replacement, poly_hull_assign, poly_difference_assign,
-          intersection_preserving_enlarge_assign')
+         `m4_binop_replacement, poly_hull_assign, poly_difference_assign')
 m4_define(`m4_Grid_binop_replacement',
-         `m4_binop_replacement, join_assign,
-          intersection_preserving_enlarge_assign')
+         `m4_binop_replacement, join_assign')
 m4_define(`m4_BD_Shape_binop_replacement',
-         `m4_binop_replacement, bds_hull_assign,
-          intersection_preserving_enlarge_assign')
+         `m4_binop_replacement, bds_hull_assign')
 m4_define(`m4_Octagonal_Shape_binop_replacement',
-         `m4_binop_replacement, oct_hull_assign,
-          intersection_preserving_enlarge_assign')
+         `m4_binop_replacement, oct_hull_assign')
 dnl For the powerset domains, we intersect the replacements for the
 dnl disjuncts with the replacements for a powerset.
 dnl The poly_difference_assign has been defined for powersets of polyhedra.
@@ -1085,7 +1081,8 @@ m4_undefine(`m4_num_of_sequences')`'dnl
 ')
 
 dnl  The different kinds of "and_minimize" binary operators.
-m4_define(`m4_binminop_replacement', `intersection_assign_and_minimize')
+m4_define(`m4_binminop_replacement', `intersection_assign_and_minimize,
+          intersection_preserving_enlarge_assign')
 m4_define(`m4_Polyhedron_binminop_replacement',
          `m4_binminop_replacement, poly_hull_assign_and_minimize')
 m4_define(`m4_Grid_binminop_replacement',
