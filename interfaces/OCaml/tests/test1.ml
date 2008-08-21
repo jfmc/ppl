@@ -264,7 +264,7 @@ ppl_C_Polyhedron_unconstrain_space_dimensions
   polyhedron1 dimensions_to_unconstrain;;
 print_newline();;
 ppl_C_Polyhedron_swap polyhedron1 polyhedron2;;
-ppl_C_Polyhedron_intersection_preserving_enlarge_assign
+let result = ppl_C_Polyhedron_simplify_using_context_assign
   polyhedron1 polyhedron2;;
 (* Pointset_Powersed_Grid is not enabled by default, the following code is *)
 (* commented *)

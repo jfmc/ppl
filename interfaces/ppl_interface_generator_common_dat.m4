@@ -1068,8 +1068,7 @@ dnl does not appear to work for disjuncts that are not polyhedra or grids.
 m4_define(`m4_Pointset_Powerset_binop_replacement', `dnl
 m4_define(`m4_1st_sequence',
   `poly_difference_assign, intersection_assign,
-   concatenate_assign, time_elapse_assign,
-   intersection_preserving_enlarge_assign')`'dnl
+   concatenate_assign, time_elapse_assign')`'dnl
 m4_define(`m4_2nd_sequence',
   `m4_class_pattern_replacement(m4_class_body_counter$1,
     binop, `')')`'dnl
@@ -1081,7 +1080,7 @@ m4_undefine(`m4_num_of_sequences')`'dnl
 ')
 
 dnl  The different kinds of "and_minimize" binary operators.
-m4_define(`m4_binminop_replacement', `intersection_preserving_enlarge_assign')
+m4_define(`m4_binminop_replacement', `simplify_using_context_assign')
 m4_define(`m4_Polyhedron_binminop_replacement',
          `m4_binminop_replacement,
           intersection_assign_and_minimize,
