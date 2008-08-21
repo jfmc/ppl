@@ -1081,12 +1081,11 @@ m4_undefine(`m4_num_of_sequences')`'dnl
 ')
 
 dnl  The different kinds of "and_minimize" binary operators.
-m4_define(`m4_binminop_replacement', `intersection_assign_and_minimize,
-          intersection_preserving_enlarge_assign')
+m4_define(`m4_binminop_replacement', `intersection_preserving_enlarge_assign')
 m4_define(`m4_Polyhedron_binminop_replacement',
-         `m4_binminop_replacement, poly_hull_assign_and_minimize')
-m4_define(`m4_Grid_binminop_replacement',
-         `m4_binminop_replacement, join_assign_and_minimize')
+         `m4_binminop_replacement,
+          intersection_assign_and_minimize,
+          poly_hull_assign_and_minimize')
 
 dnl  The different kinds of "upper_bound_if_exact" binary operators.
 m4_define(`m4_ub_exact_replacement', `upper_bound_assign_if_exact')
