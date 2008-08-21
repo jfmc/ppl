@@ -950,7 +950,7 @@ bool valid = ${instantiation}::valid_instantiation();
 esac
 
 # Libtool.
-LT_INIT([dlopen,win32-dll])
+LT_INIT([dlopen])
 AM_CONDITIONAL(ENABLE_SHARED, test x"$enable_shared" = xyes)
 AM_CONDITIONAL(ENABLE_STATIC, test x"$enable_static" = xyes)
 
