@@ -365,7 +365,6 @@ test08() {
   Pointset_Powerset<C_Polyhedron> known_result(2, EMPTY);
   ph = C_Polyhedron(2, UNIVERSE);
   ph.add_constraint(A >= 0);
-  ph.add_constraint(B >= 0);
   known_result.add_disjunct(ph);
 
   ps1.intersection_preserving_enlarge_assign(ps2);
@@ -389,5 +388,5 @@ BEGIN_MAIN
   DO_TEST(test05);
   DO_TEST(test06);
   DO_TEST(test07);
-  DO_TEST_F(test08);
+  DO_TEST(test08);
 END_MAIN
