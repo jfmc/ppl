@@ -786,8 +786,8 @@ public:
   void difference_assign(const Pointset_Powerset& y);
 
   /*! \brief
-    Assigns to \p *this an \ref Intersection-Preserving Enlargement
-    "intersection-preserving enlargement" of \p *this with respect to \p y.
+    Assigns to \p *this a \ref Powerset_Meet_Preserving_Simplification
+    "meet-preserving simplification" of \p *this with respect to \p y.
     If \c false is returned, then the intersection is empty.
 
     \exception std::invalid_argument
