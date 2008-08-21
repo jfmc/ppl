@@ -2219,6 +2219,25 @@ struct Ruled_Out_Less_Than {
   }
 };
 
+bool
+add_to_system_and_check_independence(PPL::Linear_System& eq_sys,
+                                     const PPL::Linear_Row& eq) {
+  // Check if equality eqn is linear independent from eq_sys.
+  assert(eq.is_line_or_equality());
+  eq_sys.insert(eq);
+  const PPL::dimension_type eq_sys_num_rows = eq_sys.num_rows();
+  const PPL::dimension_type rank = eq_sys.gauss(eq_sys_num_rows);
+  if (rank == eq_sys_num_rows)
+    // eq is linear independent.
+    return true;
+  else {
+    // eq is not linear independent.
+    assert(rank == eq_sys_num_rows - 1);
+    eq_sys.erase_to_end(rank);
+    return false;
+  }
+}
+
 } // namespace
 
 bool
@@ -2465,7 +2484,7 @@ PPL::Polyhedron::intersection_preserving_enlarge_assign(const Polyhedron& y) {
       const dimension_type z_gs_num_rows = z_gs.num_rows();
 
       // Compute the number of equalities in x_cs, y_cs and z_cs
-      // (exploiting minimal form).
+      // (exploiting minimal form knowledge).
       dimension_type x_cs_num_eq = 0;
       while (x_cs[x_cs_num_eq].is_equality())
         ++x_cs_num_eq;
@@ -2478,31 +2497,35 @@ PPL::Polyhedron::intersection_preserving_enlarge_assign(const Polyhedron& y) {
       assert(x_cs_num_eq <= z_cs_num_eq && y_cs_num_eq <= z_cs_num_eq);
 
       // Identify non-redundant equalities.
-      const dimension_type num_nonred_eq = z_cs_num_eq - y_cs_num_eq;
       Constraint_System nonred_eq;
-      if (num_nonred_eq > 0) {
-        Linear_System eqs(x.topology());
+      dimension_type num_nonred_eq = 0;
+      const dimension_type needed_nonred_eq = z_cs_num_eq - y_cs_num_eq;
+      Linear_System eqs(x.topology());
+      if (needed_nonred_eq > 0) {
+        // Populate eqs with the equalities from y.
         for (dimension_type i = 0; i < y_cs_num_eq; ++i)
           eqs.insert(y_cs[i]);
-        dimension_type eqs_num_rows = y_cs_num_eq;
-        for (dimension_type i = 0; i < z_cs_num_eq; ++i) {
-          const Constraint& z_cs_i = z_cs[i];
-          // Check if equality z_cs_i is linear independent from eqs.
-          eqs.insert(z_cs_i);
-          const dimension_type rank = eqs.gauss(1 + eqs_num_rows);
-          if (rank == eqs_num_rows)
-            // z_cs_i is not linear independent.
-            eqs.erase_to_end(rank);
-          else {
-            // z_cs_i is linear independent.
-            assert(rank == eqs_num_rows + 1);
-            nonred_eq.insert(z_cs_i);
-            if (rank == z_cs_num_eq)
-              // Already found the needed equalities.
+        // Try to find another `needed_nonred_eq' linear independent
+        // equalities among those from x.
+        for (dimension_type i = 0; i < x_cs_num_eq; ++i) {
+          const Constraint& x_cs_i = x_cs[i];
+          if (add_to_system_and_check_independence(eqs, x_cs_i)) {
+            // x_cs_i is linear independent.
+            nonred_eq.insert(x_cs_i);
+            ++num_nonred_eq;
+            if (num_nonred_eq == needed_nonred_eq)
+              // Already found all the needed equalities.
               break;
-            ++eqs_num_rows;
           }
         }
+        // NOTE: if num_nonred_eq < needed_nonred_eq
+        // then we haven't found all the needed equalities yet:
+        // this means that some inequalities from x actually holds
+        // as "masked" equalities in the context of y.
+        assert(eqs.num_rows() <= z_cs_num_eq);
+        assert(num_nonred_eq <= needed_nonred_eq);
+        assert(z_cs_num_eq - eqs.num_rows()
+               == needed_nonred_eq - num_nonred_eq);
       }
 
       // Identify non-redundant inequalities.
@@ -2524,7 +2547,21 @@ PPL::Polyhedron::intersection_preserving_enlarge_assign(const Polyhedron& y) {
         for (dimension_type j = z_gs_num_rows; j-- > 0; )
           if (Scalar_Products::sign(nonred_ineq_i, z_gs[j]))
             sat_i.set(j);
+        if (sat_i.empty() && num_nonred_eq < needed_nonred_eq) {
+          // nonred_ineq_i is actually masking an equality:
+          // check if the equality is independent in eqs.
+          Linear_Row masked_eq = Linear_Row(nonred_ineq_i);
+          masked_eq.set_is_line_or_equality();
+          masked_eq.sign_normalize();
+          if (add_to_system_and_check_independence(eqs, masked_eq)) {
+            // It is independent: add the *inequality* to nonred_eq.
+            nonred_eq.insert(nonred_ineq_i);
+            ++num_nonred_eq;
+          }
+        }
       }
+      // Here we have already found all the needed (masked) equalities.
+      assert(num_nonred_eq == needed_nonred_eq);
       simplify(nonred_ineq, sat);
 #ifndef NDEBUG
       // nonred_ineq still has `z_cs_num_eq' equalities at the beginning.
