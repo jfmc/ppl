@@ -1387,15 +1387,33 @@ the above set is also a closed polyhedron.
 In contrast, when \f$\cQ\f$ is not topologically closed,
 the above set might not be an NNC polyhedron.
 
-\subsection Intersection_Preserving_Enlargement Intersection-Preserving Enlargement
+\subsection Meet_Preserving_Simplification Meet-Preserving Enlargement and Simplification
 
-Let \f$\cP, \cQ \in \Pset_n\f$ be any two NNC polyhedra.
-An <EM>intersection-preserving enlargement</EM> of \f$\cP\f$
-with respect to \f$\cQ\f$ is any NNC polyhedron \f$\cP'\f$
-such that \f$\cP' \Sseq \cP\f$ and \f$\cP' \inters \cQ = \cP \inters \cQ\f$.
+Let \f$\cP, \cQ, \cR \in \Pset_n\f$ be NNC polyhedra. Then:
 
-FIXME: describe the generalization of this concept to powersets.
+ - \f$\cR\f$ is <EM>meet-preserving</EM> with respect to \f$\cP\f$
+   using context \f$\cQ\f$ if \f$\cR \inters \cQ = \cP \inters \cQ\f$;
 
+ - \f$\cR\f$ is an <EM>enlargement</EM> of \f$\cP\f$ if \f$\cR \Sseq \cP\f$.
+
+ - \f$\cR\f$ is a <EM>simplification</EM> with respect to \f$\cP\f$
+   if \f$r \leq p\f$, where \f$p\f$ and \f$r\f$ are the cardinalities
+   of minimized constraint representations for \f$\cP\f$ and \f$\cR\f$,
+   respectively.
+
+Notice that an enlargement need not be a simplification, and vice versa;
+moreover, the identity function is (trivially)
+a meet-preserving enlargement and simplification.
+
+The library provides a binary operator (<em>simplify_using_context</em>)
+for the domain of NNC polyhedra that returns a polyhedron which is a
+meet-preserving enlargement simplification of its first argument
+using the second argument as context.
+
+The concept of meet-preserving enlargement and simplification also
+applies to the other basic domains (boxes, grids, BD and octagonal shapes).
+See below for a definition of the concept of
+\ref Powerset_Meet_Preserving_Simplification "meet-preserving simplification for powerset domains".
 
 \anchor relation_with
 \subsection Relation_With_Operators Relation-With Operators
@@ -1802,6 +1820,31 @@ are specific to this instantiation.  Of these, most correspond to the
 application of the equivalent operation on each of the NNC polyhedra
 that are in the given set. Here we just describe those operations that
 are particular to the polyhedra powerset domain.
+
+\subsection Powerset_Meet_Preserving_Simplification Meet-Preserving Simplification
+
+Let \f$\cS_1 = \{ d_1, \ldots, d_m \}\f$,
+\f$\cS_2 = \{ c_1, \ldots, c_n \}\f$ and
+\f$\cS = \{ s_1, \ldots, s_q \}\f$
+be Omega-reduced elements of a powerset domain.
+Then, powerset \f$\cS\f$ is a <EM>meet-preserving simplification</EM>
+for powerset \f$\cS_1\f$ using the powerset context \f$\cS_2\f$
+if the following conditions hold:
+  - \f$\cS \sqcap \cS_2 = \cS_1 \sqcap \cS_2\f$ (meet-preservation);
+  - \f$q \leq m\f$ (powerset simplification);
+  - for each \f$s_k \in \cS\f$,
+    there exist \f$d_i \in \cS_1\f$ such that
+    for each \f$c_j \in \cS_2\f$,
+    \f$s_k\f$ is a meet-preserving enlargement and simplification
+    of \f$d_i\f$ using context \f$c_j\f$ (disjuncts' simplification).
+
+[EZ: should we drop the meet-preserving and enlargement requirements in
+the disjunct's simplification property?]
+
+Notice that, due to the powerset simplification property, in general
+a meet-preserving powerset simplification is <em>not</em> an enlargement
+with respect to the ordering defined on the powerset lattice.
+
 
 \anchor pps_geometric
 \subsection Geometric_Comparisons Geometric Comparisons
