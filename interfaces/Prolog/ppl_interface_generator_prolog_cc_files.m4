@@ -54,8 +54,12 @@ m4_define(`m4_current_interface', m4_interface_class`'$1)`'dnl
 %<--%<--%<-- ppl_prolog_main.cc
 `#'include "ppl_prolog_`'m4_current_interface.cc"
 %<--%<--%<-- ppl_prolog_`'m4_current_interface.cc
-/* Prolog m4_current_interface interface code.
+/*
+Prolog m4_current_interface interface code.
+FIXME: Copyright block to go here
 */
+
+#include "sysdep.hh"
 m4_add_bop_assign_code($1)`'dnl
 m4_undefine(`m4_current_interface')`'dnl
 ')
