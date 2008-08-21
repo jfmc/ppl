@@ -1355,7 +1355,7 @@ Box<ITV>::constrains(Variable var) const {
 
   if (marked_empty() || !seq[var_space_dim-1].is_universe())
     return true;
-  // Now force an emptyness check.
+  // Now force an emptiness check.
   return is_empty();
 }
 
@@ -1378,7 +1378,7 @@ Box<ITV>::unconstrain(const Variables_Set& to_be_unconstrained) {
     return;
 
   // Here the box might still be empty (but we haven't detected it yet):
-  // check emptyness of the interval for each of the variables in
+  // check emptiness of the interval for each of the variables in
   // `to_be_unconstrained' before cylindrification.
   for (Variables_Set::const_iterator tbu = to_be_unconstrained.begin(),
          tbu_end = to_be_unconstrained.end(); tbu != tbu_end; ++tbu) {
@@ -3332,7 +3332,7 @@ Box<ITV>::minimized_constraints() const {
     if (marked_empty())
       cs = Constraint_System::zero_dim_empty();
   }
-  // Make sure emptyness is detected.
+  // Make sure emptiness is detected.
   else if (is_empty())
     cs.insert(0*Variable(space_dim-1) <= -1);
   else {
@@ -3376,7 +3376,7 @@ Box<ITV>::congruences() const {
     if (marked_empty())
       cgs = Congruence_System::zero_dim_empty();
   }
-  // Make sure emptyness is detected.
+  // Make sure emptiness is detected.
   else if (is_empty())
     cgs.insert((0*Variable(space_dim-1) %= -1) / 0);
   else {

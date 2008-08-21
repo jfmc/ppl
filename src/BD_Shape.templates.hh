@@ -730,7 +730,7 @@ BD_Shape<T>::contains_integer_point() const {
     return true;
 
   // Build an integer BD_Shape z with bounds at least as tight as
-  // those in *this and then recheck for emptyness.
+  // those in *this and then recheck for emptiness.
   BD_Shape<mpz_class> bds_z(space_dim);
   typedef BD_Shape<mpz_class>::N Z;
   bds_z.reset_shortest_path_closed();
@@ -767,7 +767,7 @@ BD_Shape<T>::constrains(const Variable var) const {
     throw_dimension_incompatible("constrains(v)", "v", var);
 
   // A polyhedron known to be empty constrains all variables.
-  // (Note: do not force emptyness check _yet_)
+  // (Note: do not force emptiness check _yet_)
   if (marked_empty())
     return true;
 
@@ -780,7 +780,7 @@ BD_Shape<T>::constrains(const Variable var) const {
   }
 
   // `var' is not syntactically constrained:
-  // now force an emptyness check.
+  // now force an emptiness check.
   return is_empty();
 }
 
