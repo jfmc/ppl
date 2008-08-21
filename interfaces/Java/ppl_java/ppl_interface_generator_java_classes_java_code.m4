@@ -276,7 +276,7 @@ m4_define(`ppl_@CLASS@_@BINOP@_code',
 m4_define(`ppl_@CLASS@_@BINMINOP@_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
-    public native boolean @BINOP@_and_minimize(@CLASS@ p);
+    public native boolean @BINMINOP@(@CLASS@ p);
 
 ')
 
