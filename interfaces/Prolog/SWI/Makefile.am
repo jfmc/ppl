@@ -53,7 +53,9 @@ $(SWI_PROLOG_INCLUDE_OPTIONS) \
 @extra_includes@
 
 BUILT_SOURCES = \
-ppl_swiprolog.cc
+ppl_swiprolog.cc \
+@required_instantiations_prolog_cxx_headers@ \
+@required_instantiations_prolog_cxx_sources@
 
 interface_generator_dependencies = \
 $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
@@ -72,6 +74,7 @@ ppl_swiprolog.cc: $(interface_generator_dependencies) Makefile
 pkglib_LTLIBRARIES = libppl_swiprolog.la
 nodist_libppl_swiprolog_la_SOURCES = ppl_swiprolog.cc
 libppl_swiprolog_la_LIBADD = \
+@required_instantiations_prolog_cxx_objects@ \
 $(top_builddir)/src/libppl.la \
 $(WATCHDOG_LIBRARY) \
 @extra_libraries@
