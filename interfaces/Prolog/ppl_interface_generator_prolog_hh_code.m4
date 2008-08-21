@@ -165,7 +165,7 @@ m4_define(`ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_code',
   `extern "C" Prolog_foreign_return_type
   ppl_@CLASS@_relation_with_@RELATION_REPRESENT@(Prolog_term_ref t_ph,
 						 Prolog_term_ref t_c,
-						 Prolog_term_ref t_r)
+						 Prolog_term_ref t_r);
 
 ')
 
