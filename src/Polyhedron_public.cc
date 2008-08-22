@@ -2577,7 +2577,7 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
           nonred_ineq[i].swap(nonred_eq[i]);
         const dimension_type num_nonred = num_nonred_eq + num_nonred_ineq;
         for (dimension_type i = num_nonred_eq; i < z_cs_num_eq; ++i)
-          nonred_ineq[i].swap(nonred_ineq[i + num_nonred]);
+          nonred_ineq[i].swap(nonred_ineq[i + num_nonred_ineq]);
         nonred_ineq.erase_to_end(num_nonred);
         nonred_ineq.unset_pending_rows();
         nonred_ineq.set_sorted(false);
