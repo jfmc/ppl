@@ -301,6 +301,20 @@ CATCH_ALL
 
 ')
 
+  m4_define(`ppl_@CLASS@_simplify_using_context_assign_code',
+`dnl
+extern "C"
+CAMLprim value
+ppl_@TOPOLOGY@@CLASS@_simplify_using_context_assign(value ph1, value ph2) try {
+  CAMLparam2(ph1, ph2);
+  @CPP_CLASS@& pph1 = *p_@TOPOLOGY@@CLASS@_val(ph1);
+  @CPP_CLASS@& pph2 = *p_@TOPOLOGY@@CLASS@_val(ph2);
+  CAMLreturn(Val_bool(pph1.simplify_using_context_assign(pph2)));
+}
+CATCH_ALL
+
+')
+
   m4_define(`ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@_code',
 `dnl
 extern "C"

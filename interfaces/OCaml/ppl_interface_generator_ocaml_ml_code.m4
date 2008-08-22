@@ -160,6 +160,14 @@ external ppl_@TOPOLOGY@@CLASS@_@BINMINOP@:
 
 ')
 
+m4_define(`ppl_@CLASS@_simplify_using_context_assign_code',
+`dnl
+external ppl_@TOPOLOGY@@CLASS@_simplify_using_context_assign:
+  @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> bool
+  = "ppl_@TOPOLOGY@@CLASS@_simplify_using_context_assign"
+
+')
+
 m4_define(`ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@_code',
 `dnl
 external ppl_@TOPOLOGY@@CLASS@_add_space_dimensions_@EMBEDPROJECT@:

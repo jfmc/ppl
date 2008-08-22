@@ -380,6 +380,21 @@ let out
 print_newline();;
 ')
 
+m4_define(`ppl_@CLASS@_simplify_using_context_assign_code',
+`
+print_string "testing ppl_@CLASS@_simplify_using_context_assign: " ;;
+let copy01
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
+let copy02
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
+let b = ppl_@TOPOLOGY@@CLASS@_simplify_using_context_assign copy01 copy02;;
+let out
+  = if (ppl_@TOPOLOGY@@CLASS@_OK copy01 & ppl_@TOPOLOGY@@CLASS@_OK copy02)
+  then "success" else "failed"
+    in (print_string out);;
+print_newline();;
+')
+
 m4_define(`ppl_@CLASS@_@AFFIMAGE@_code',
 `
 print_string "testing ppl_@CLASS@_@AFFIMAGE@: ";;
