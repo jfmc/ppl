@@ -324,22 +324,29 @@ bool
 test06() {
   Variable A(0);
   Variable B(1);
+  Variable C(2);
 
-  C_Polyhedron ph1(2, UNIVERSE);
-  ph1.add_constraint(A == B);
-  ph1.add_constraint(A >= 2);
+  C_Polyhedron ph1(3, UNIVERSE);
+  ph1.add_constraint(A == 0);
+  ph1.add_constraint(B == C);
+  ph1.add_constraint(B >= 2);
   print_constraints(ph1, "\n=== ph1 ===");
 
-  C_Polyhedron ph2(2, UNIVERSE);
-  ph2.add_constraint(B >= 2);
+  C_Polyhedron ph2(3, UNIVERSE);
+  ph2.add_constraint(A == 0);
+  ph2.add_constraint(C >= 2);
   print_constraints(ph2, "\n=== ph2 ===");
 
   ph1.simplify_using_context_assign(ph2);
 
-  assert(ph1.OK());
-  print_constraints(ph1, "\n=== ph1.simplify_using_context(ph2) ===");
+  C_Polyhedron known_result(3, UNIVERSE);
+  known_result.add_constraint(B == C);
 
-  return true;
+  bool ok = (ph1 == known_result);
+
+  print_constraints(ph1, "\n=== ph1.simplify_using_context_assign(ph2) ===");
+
+  return ok;
 }
 
 #if 0
