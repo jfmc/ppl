@@ -320,44 +320,29 @@ test05() {
   return ok;
 }
 
-#if 0
 bool
 test06() {
-  Variable x(0);
-  Variable y(1);
+  Variable A(0);
+  Variable B(1);
 
-  Generator_System gs1;
-  gs1.insert(point());
-  gs1.insert(point(3*x));
-  gs1.insert(point(3*y));
-  gs1.insert(point(3*x+ 3*y));
-  C_Polyhedron ph1(gs1);
+  C_Polyhedron ph1(2, UNIVERSE);
+  ph1.add_constraint(A == B);
+  ph1.add_constraint(A >= 2);
+  print_constraints(ph1, "\n=== ph1 ===");
 
-  Generator_System gs2;
-  gs2.insert(point(x));
-  gs2.insert(point(4*x));
-  gs2.insert(point(x + 3*y));
-  gs2.insert(point(4*x+ 3*y));
-  C_Polyhedron ph2(gs2);
+  C_Polyhedron ph2(2, UNIVERSE);
+  ph2.add_constraint(B >= 2);
+  print_constraints(ph2, "\n=== ph2 ===");
 
-  print_generators(ph1, "*** ph1 ***");
-  print_generators(ph2, "*** ph2 ***");
+  ph1.simplify_using_context_assign(ph2);
 
-  ph1.intersection_assign(ph2);
+  assert(ph1.OK());
+  print_constraints(ph1, "\n=== ph1.simplify_using_context(ph2) ===");
 
-  C_Polyhedron known_result(2, EMPTY);
-  known_result.add_generator(point(x));
-  known_result.add_generator(point(3*x));
-  known_result.add_generator(point(x + 3*y));
-  known_result.add_generator(point(3*x + 3*y));
-
-  bool ok = (ph1 == known_result);
-
-  print_constraints(ph1, "*** after intersection_assign ***");
-
-  return ok;
+  return true;
 }
 
+#if 0
 bool
 aux_test07(C_Polyhedron& ph1,
 	   const C_Polyhedron& ph2,
@@ -636,8 +621,8 @@ BEGIN_MAIN
   DO_TEST(test03);
   DO_TEST(test04);
   DO_TEST(test05);
-#if 0
   DO_TEST(test06);
+#if 0
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
