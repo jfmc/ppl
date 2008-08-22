@@ -794,6 +794,12 @@ ppl_Polyhedron_poly_difference_assign(ppl_Polyhedron_t x,
 int
 ppl_Polyhedron_difference_assign(ppl_Polyhedron_t x,
 				 ppl_const_Polyhedron_t y);
+/*! \brief
+   Assigns to \p x a meet preserving enlargement and simplification of \p y.
+*/
+int
+ppl_Polyhedron_simplify_using_context_assign(ppl_Polyhedron_t x,
+				  ppl_const_Polyhedron_t y);
 
 /*! \brief
   Assigns to \p x the \extref{Time_Elapse_Operator, time-elapse} between

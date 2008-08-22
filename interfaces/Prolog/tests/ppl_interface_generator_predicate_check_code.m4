@@ -1251,22 +1251,26 @@ ppl_@CLASS@_@BINMINOP@_2_test :-
          \+ ppl_@CLASS@_@BINMINOP@(PS1_Copy, PS2)
        )
      ;
-       member(@BINMINOP@,
+       (member(@BINMINOP@,
                      [upper_bound_assign_and_minimize,
                       poly_hull_assign_and_minimize,
                       join_assign_and_minimize,
                       bds_hull_assign_and_minimize,
-                      oct_hull_assign_and_minimize]),
-       ppl_@CLASS@_upper_bound_assign(PS1_Copy_n, PS2),
-       (\+ ppl_@CLASS@_is_empty(PS1_Copy_n)
-       ->
-         ppl_@CLASS@_@BINMINOP@(PS1_Copy, PS2),
-         \+ ppl_@CLASS@_is_empty(PS1_Copy),
-         ppl_@CLASS@_contains_@CLASS@(PS1_Copy, PS1),
-         ppl_@CLASS@_contains_@CLASS@(PS1_Copy, PS2)
-       ;
-         \+ ppl_@CLASS@_@BINMINOP@(PS1_Copy, PS2)
-       )
+                      oct_hull_assign_and_minimize])
+        ->
+          ppl_@CLASS@_upper_bound_assign(PS1_Copy_n, PS2),
+          (\+ ppl_@CLASS@_is_empty(PS1_Copy_n)
+          ->
+            ppl_@CLASS@_@BINMINOP@(PS1_Copy, PS2),
+            \+ ppl_@CLASS@_is_empty(PS1_Copy),
+            ppl_@CLASS@_contains_@CLASS@(PS1_Copy, PS1),
+            ppl_@CLASS@_contains_@CLASS@(PS1_Copy, PS2)
+          ;
+            \+ ppl_@CLASS@_@BINMINOP@(PS1_Copy, PS2)
+          )
+        ;
+          fail
+        )
      ),
      ppl_@CLASS@_OK(PS1),
      ppl_@CLASS@_OK(PS1_Copy),
@@ -1276,6 +1280,29 @@ ppl_@CLASS@_@BINMINOP@_2_test :-
      ppl_delete_@CLASS@(PS1_Copy_n),
      ppl_delete_@CLASS@(PS2),
      ppl_delete_@CLASS@(PS2a)
+   ->
+     fail ; true)
+ ).
+
+')
+
+m4_define(`ppl_@CLASS@_simplify_using_context_assign_code',
+`
+ppl_@CLASS@_simplify_using_context_assign_2_test :-
+  (
+   choose_2_tests(TEST_DATA1, TEST_DATA2, Space_Dim),
+   (
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1, Space_Dim),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2, Space_Dim),
+     ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1_Copy),
+     ppl_@CLASS@_simplify_using_context_assign(PS1_Copy, PS2,
+                                               _Is_Intersection),
+     ppl_@CLASS@_OK(PS1),
+     ppl_@CLASS@_OK(PS1_Copy),
+     ppl_@CLASS@_OK(PS2),
+     ppl_delete_@CLASS@(PS1),
+     ppl_delete_@CLASS@(PS1_Copy),
+     ppl_delete_@CLASS@(PS2)
    ->
      fail ; true)
  ).

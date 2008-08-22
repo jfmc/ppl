@@ -103,6 +103,12 @@ boolean @LTOPOLOGY@@LCLASS@1_@BINMINOP@
 
 ')
 
+m4_define(`ppl_@CLASS@_simplify_using_context_assign_code',`
+boolean @LTOPOLOGY@@LCLASS@1_simplify_using_context_assign
+  = @LTOPOLOGY@@LCLASS@1.simplify_using_context_assign(@LTOPOLOGY@@LCLASS@1);
+
+')
+
 m4_define(`ppl_@CLASS@_get_@GET_REPRESENT@s_code', `
 @UGET_REPRESENT@_System @LTOPOLOGY@@LCLASS@1_@GET_REPRESENT@
   = @LTOPOLOGY@@LCLASS@1.@GET_REPRESENT@s();

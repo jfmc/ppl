@@ -619,6 +619,23 @@ JNIEXPORT jboolean JNICALL Java_ppl_1java_@1CLASS@_@1BINMINOP@
 
 ')
 
+m4_define(`ppl_@CLASS@_simplify_using_context_assign_code',
+`dnl
+JNIEXPORT jboolean JNICALL Java_ppl_1java_@1CLASS@_simplify_1using_1context_1assign
+(JNIEnv* env, jobject j_this_@LCLASS@, jobject j_@LCLASS@) {
+  try {
+  jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
+  jlong @LCLASS@_ptr = get_ptr(env, j_@LCLASS@);
+  @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
+  @CPP_CLASS@* @LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(@LCLASS@_ptr);
+  return this_@LCLASS@->simplify_using_context_assign(*@LCLASS@);
+  }
+  CATCH_ALL;
+  return false;
+}
+
+')
+
 m4_define(`ppl_@CLASS@_@AFFIMAGE@_code',
 `dnl
 JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_@1AFFIMAGE@

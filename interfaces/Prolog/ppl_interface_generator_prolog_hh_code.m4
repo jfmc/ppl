@@ -315,6 +315,13 @@ m4_define(`ppl_@CLASS@_@BINMINOP@_code',
 
 ')
 
+m4_define(`ppl_@CLASS@_simplify_using_context_assign_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_@CLASS@_simplify_using_context_assign
+  (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs, Prolog_term_ref t_b);
+
+')
+
 m4_define(`ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@_code',
   `extern "C" Prolog_foreign_return_type
   ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@

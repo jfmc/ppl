@@ -280,6 +280,13 @@ m4_define(`ppl_@CLASS@_@BINMINOP@_code',
 
 ')
 
+m4_define(`ppl_@CLASS@_simplify_using_context_assign_code',
+`dnl
+%<--%<--%<-- @CLASS@.java
+    public native boolean simplify_using_context_assign(@CLASS@ p);
+
+')
+
 m4_define(`ppl_@CLASS@_@AFFIMAGE@_code',
 `dnl
 %<--%<--%<-- @CLASS@.java

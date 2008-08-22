@@ -360,6 +360,19 @@ CATCH_ALL
 
 ')
 
+m4_define(`ppl_@CLASS@_simplify_using_context_assign_code',
+`int
+ppl_@CLASS@_simplify_using_context_assign
+(ppl_@CLASS@_t x,
+ ppl_const_@CLASS@_t y) try {
+  @CPP_CLASS@& xx = *to_nonconst(x);
+  const @CPP_CLASS@& yy = *to_const(y);
+  return xx.simplify_using_context_assign(yy) ? 1 : 0;
+}
+CATCH_ALL
+
+')
+
 m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_code',
 `int
 ppl_@CLASS@_add_@ADD_REPRESENT@

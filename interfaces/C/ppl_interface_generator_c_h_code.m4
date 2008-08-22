@@ -206,6 +206,14 @@ PPL_PROTO((ppl_@CLASS@_t x,
 
 ')
 
+m4_define(`ppl_@CLASS@_simplify_using_context_assign_code',
+`int
+ppl_@CLASS@_simplify_using_context_assign
+PPL_PROTO((ppl_@CLASS@_t x,
+           ppl_const_@CLASS@_t y));
+
+')
+
 m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_code',
 `int
 ppl_@CLASS@_add_@ADD_REPRESENT@

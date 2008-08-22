@@ -1159,6 +1159,28 @@ m4_define(`ppl_@CLASS@_@BINMINOP@_code',
 
 ')
 
+m4_define(`ppl_@CLASS@_simplify_using_context_assign_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_@CLASS@_simplify_using_context_assign
+  (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs, Prolog_term_ref t_b) {
+  static const char* where = "ppl_@CLASS@_simplify_using_context_assign";
+  try {
+    @CPP_CLASS@* lhs = term_to_handle<@CPP_CLASS@ >(t_lhs, where);
+    const @CPP_CLASS@* rhs = term_to_handle<@CPP_CLASS@ >(t_rhs, where);
+    PPL_CHECK(lhs);
+    PPL_CHECK(rhs);
+    Prolog_term_ref t_is_intersect = Prolog_new_term_ref();
+    Prolog_atom is_intersect
+      = (lhs->simplify_using_context_assign(*rhs) ? a_true : a_false);
+    Prolog_put_atom(t_is_intersect, is_intersect);
+    if (Prolog_unify(t_b, t_is_intersect))
+      return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+')
+
 m4_define(`ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@_code',
   `extern "C" Prolog_foreign_return_type
   ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@
