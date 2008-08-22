@@ -23,7 +23,7 @@
 # Process this file with autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library],[0.10pre23],[ppl-devel@cs.unipr.it],[ppl])
+AC_INIT([the Parma Polyhedra Library],[0.10pre24],[ppl-devel@cs.unipr.it],[ppl])
 
 # Minimum autoconf version required.
 AC_PREREQ(2.60)
@@ -938,8 +938,8 @@ bool valid = ${instantiation}::valid_instantiation();
   CPPFLAGS="$ac_save_CPPFLAGS"
   required_instantiations_canonical_names=`echo "${required_instantiations}" | sed -e 's/> //g' -e 's/>//g' -e 's/[[< ,]]/_/g'`
   required_instantiations_prolog_source_names=`echo "${required_instantiations_canonical_names}" | sed -e 's/@Pointset_Powerset_Polyhedron/@Pointset_Powerset_C_Polyhedron@Pointset_Powerset_NNC_Polyhedron/g' -e 's/^Pointset_Powerset_Polyhedron/Pointset_Powerset_C_Polyhedron@Pointset_Powerset_NNC_Polyhedron/g'`
-  required_instantiations_prolog_cxx_objects=`echo "${required_instantiations_prolog_source_names}" | sed -e 's/@/.o /g' -e 's/$/.o/g' | sed -e 's/\([[^. ]]*\).o/ppl_prolog_\1.o/g'`
-  required_instantiations_prolog_cxx_sources=`echo "${required_instantiations_prolog_cxx_objects}" | sed -e 's/\([[^. ]]*\).o/..\/\1.cc/g'`
+  required_instantiations_prolog_cxx_objects=`echo "${required_instantiations_prolog_source_names}" | sed -e 's/@/.lo /g' -e 's/$/.lo/g' | sed -e 's/\([[^. ]]*\).lo/ppl_prolog_\1.lo/g'`
+  required_instantiations_prolog_cxx_sources=`echo "${required_instantiations_prolog_cxx_objects}" | sed -e 's/\([[^. ]]*\).lo/..\/\1.cc/g'`
   required_instantiations_prolog_cxx_headers=`echo "${required_instantiations_prolog_cxx_sources}" | sed -e 's/.cc/.hh/g'`
   required_instantiations_java_source_names=`echo "${required_instantiations_canonical_names}" | sed -e 's/^Polyhedron/Polyhedron@C_Polyhedron@NNC_Polyhedron/g' -e 's/@Polyhedron/@Polyhedron@C_Polyhedron@NNC_Polyhedron/g' -e 's/@Pointset_Powerset_Polyhedron/@Pointset_Powerset_C_Polyhedron@Pointset_Powerset_NNC_Polyhedron/g' -e 's/^Pointset_Powerset_Polyhedron/Pointset_Powerset_C_Polyhedron@Pointset_Powerset_NNC_Polyhedron/g' | sed -e 's/Pointset_Powerset_[[a-zA-Z0-9_]]*/&@&_Iterator/g'`
   required_instantiations_java_sources=`echo "${required_instantiations_java_source_names}" | sed -e 's/@/.java /g' -e 's/$/.java/g'`
