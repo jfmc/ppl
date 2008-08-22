@@ -2238,6 +2238,62 @@ add_to_system_and_check_independence(PPL::Linear_System& eq_sys,
   }
 }
 
+/*
+  Modifies the vector of pointers \p p_ineqs, setting to 0 those entries
+  that point to redundant inequalities or masked equalities.
+  The redundancy test is based on saturation matrix \p sat and
+  on knowing that there exists \p rank nonredundant equalities
+  (they are implicit, i.e., not explicitly listed in \p p_ineqs).
+*/
+void
+drop_redundant_inequalities(std::vector<const PPL::Constraint*>& p_ineqs,
+                            const PPL::Topology topology,
+                            const PPL::Bit_Matrix& sat,
+                            const PPL::dimension_type rank) {
+  using namespace Parma_Polyhedra_Library;
+  const dimension_type num_rows = p_ineqs.size();
+  assert(num_rows > 0);
+  // `rank' is the rank of the (implicit) system of equalities.
+  const dimension_type space_dim = p_ineqs[0]->space_dimension();
+  assert(space_dim > 0 && space_dim >= rank);
+  const dimension_type num_coefficients
+    = space_dim + (topology == NECESSARILY_CLOSED ? 0 : 1);
+  const dimension_type min_sat = num_coefficients - rank;
+  const dimension_type num_cols_sat = sat.num_columns();
+
+  // Perform quick redundancy test based on the number of saturators.
+  for (dimension_type i = num_rows; i-- > 0; ) {
+    if (sat[i].empty())
+      // Masked equalities are redundant.
+      p_ineqs[i] = 0;
+    else {
+      const dimension_type num_sat = num_cols_sat - sat[i].count_ones();
+      if (num_sat < min_sat)
+        p_ineqs[i] = 0;
+    }
+  }
+
+  // Re-examine remaining inequalities.
+  // Iteration index `i' is _intentionally_ increasing.
+  for (dimension_type i = 0; i < num_rows; ++i) {
+    if (p_ineqs[i]) {
+      for (dimension_type j = 0; j < num_rows; ++j) {
+        bool strict_subset;
+        if (p_ineqs[j] && i != j
+            && subset_or_equal(sat[j], sat[i], strict_subset)) {
+          if (strict_subset) {
+            p_ineqs[i] = 0;
+            break;
+          }
+          else
+            // Here `sat[j] == sat[i]'.
+            p_ineqs[j] = 0;
+        }
+      }
+    }
+  }
+}
+
 } // namespace
 
 bool
@@ -2527,32 +2583,39 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
       }
 
       // Identify non-redundant inequalities.
-      Constraint_System nonred_ineq;
-      // Populate nonred_ineq with all the equalities from z_cs
-      // and all the non-redundant inequalities from x_cs.
-      for (dimension_type i = 0; i < z_cs_num_eq; ++i)
-        nonred_ineq.insert(z_cs[i]);
-      for (dimension_type i = x_cs_num_eq; i < x_cs_num_rows; ++i) {
-        assert(x_cs[i].is_inequality());
+      // Avoid useless copies (no modifications are needed).
+      std::vector<const Constraint*> p_nonred_ineq;
+      // Fill p_nonred_ineq with (pointers to) inequalities from y_cs ...
+      for (dimension_type i = y_cs_num_eq; i < y_cs_num_rows; ++i)
+        p_nonred_ineq.push_back(&y_cs[i]);
+      // ... and (pointers to) non-redundant inequalities from x_cs.
+      for (dimension_type i = x_cs_num_eq; i < x_cs_num_rows; ++i)
         if (!redundant_by_y[i])
-          nonred_ineq.insert(x_cs[i]);
-      }
-      const dimension_type sat_num_rows = nonred_ineq.num_rows();
+          p_nonred_ineq.push_back(&x_cs[i]);
+
+      const dimension_type p_nonred_ineq_size = p_nonred_ineq.size();
+      const dimension_type y_cs_num_ineq = y_cs_num_rows - y_cs_num_eq;
+
+      // Compute saturation info.
+      const dimension_type sat_num_rows = p_nonred_ineq_size;
       Bit_Matrix sat(sat_num_rows, z_gs_num_rows);
       for (dimension_type i = sat_num_rows; i-- > 0; ) {
-        const Constraint& nonred_ineq_i = nonred_ineq[i];
+        const Constraint& nonred_ineq_i = *(p_nonred_ineq[i]);
         Bit_Row& sat_i = sat[i];
         for (dimension_type j = z_gs_num_rows; j-- > 0; )
           if (Scalar_Products::sign(nonred_ineq_i, z_gs[j]))
             sat_i.set(j);
         if (sat_i.empty() && num_nonred_eq < needed_nonred_eq) {
-          // nonred_ineq_i is actually masking an equality:
-          // check if the equality is independent in eqs.
+          // `nonred_ineq_i' is actually masking an equality
+          // and we are still looking for some masked inequalities.
+          // Iteration goes downwards, so the inequality comes from x_cs.
+          assert(i >= y_cs_num_ineq);
+          // Check if the equality is independent in eqs.
           Linear_Row masked_eq = Linear_Row(nonred_ineq_i);
           masked_eq.set_is_line_or_equality();
           masked_eq.sign_normalize();
           if (add_to_system_and_check_independence(eqs, masked_eq)) {
-            // It is independent: add the *inequality* to nonred_eq.
+            // It is independent: add the _inequality_ to nonred_eq.
             nonred_eq.insert(nonred_ineq_i);
             ++num_nonred_eq;
           }
@@ -2560,29 +2623,17 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
       }
       // Here we have already found all the needed (masked) equalities.
       assert(num_nonred_eq == needed_nonred_eq);
-      simplify(nonred_ineq, sat);
-#ifndef NDEBUG
-      // nonred_ineq still has `z_cs_num_eq' equalities at the beginning.
-      assert(nonred_ineq.num_equalities() == z_cs_num_eq);
-      for (dimension_type i = z_cs_num_eq; i-- > 0; )
-        assert(nonred_ineq[i].is_equality());
-#endif
-      const dimension_type num_nonred_ineq
-        = nonred_ineq.num_rows() - z_cs_num_eq;
-      if (num_nonred_ineq == 0)
-        result_cs.swap(nonred_eq);
-      else {
-        // Replace the equalities in nonred_ineq with those in nonred_eq.
-        for (dimension_type i = 0; i < num_nonred_eq; ++i)
-          nonred_ineq[i].swap(nonred_eq[i]);
-        const dimension_type num_nonred = num_nonred_eq + num_nonred_ineq;
-        for (dimension_type i = num_nonred_eq; i < z_cs_num_eq; ++i)
-          nonred_ineq[i].swap(nonred_ineq[i + num_nonred_ineq]);
-        nonred_ineq.erase_to_end(num_nonred);
-        nonred_ineq.unset_pending_rows();
-        nonred_ineq.set_sorted(false);
-        result_cs.swap(nonred_ineq);
-      }
+
+      drop_redundant_inequalities(p_nonred_ineq, x.topology(),
+                                  sat, z_cs_num_eq);
+
+      // Place the nonredundant (masked) equalities into result_cs.
+      result_cs.swap(nonred_eq);
+      // Add to result_cs the nonredundant inequalities from x_cs,
+      // i.e., those having indices no smaller than y_cs_num_ineq.
+      for (dimension_type i = y_cs_num_ineq; i < p_nonred_ineq_size; ++i)
+        if (p_nonred_ineq[i])
+          result_cs.insert(*p_nonred_ineq[i]);
     }
   }
 
