@@ -40,7 +40,7 @@ $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
 TESTS = \
-interspreservenlarge1 \
+simplifyusingcontext1 \
 powerset1 \
 pointsetpowerset1 pointsetpowerset2 pointsetpowerset3 \
 pointsetpowerset4 pointsetpowerset5 pointsetpowerset6 \
@@ -54,7 +54,7 @@ XFAIL_TESTS =
 
 powerset1_SOURCES = powerset1.cc
 
-interspreservenlarge1_SOURCES = interspreservenlarge1.cc
+simplifyusingcontext1_SOURCES = simplifyusingcontext1.cc
 
 pointsetpowerset1_SOURCES = pointsetpowerset1.cc
 pointsetpowerset2_SOURCES = pointsetpowerset2.cc
