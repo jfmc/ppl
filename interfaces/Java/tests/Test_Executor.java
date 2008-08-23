@@ -45,7 +45,7 @@ public class Test_Executor {
 		    single_test_result_ok =
 			(Boolean) currentMethod.invoke(new Object(),
 						       new Object[0]);
-		    if (!single_test_result_ok.booleanValue()) {
+		    if (!single_test_result_ok) {
 			global_test_result_ok = new Boolean(false);
 			System.out.println(currentMethod.getName() + " failed");
 		    }
@@ -56,8 +56,6 @@ public class Test_Executor {
 		return new Boolean(false);
 	    }
 	}
-	if (!global_test_result_ok)
-	    return false;
-	return true;
+	return global_test_result_ok;
     }
 }
