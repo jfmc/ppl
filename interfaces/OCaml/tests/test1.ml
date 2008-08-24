@@ -266,6 +266,16 @@ print_newline();;
 ppl_C_Polyhedron_swap polyhedron1 polyhedron2;;
 let result = ppl_C_Polyhedron_simplify_using_context_assign
   polyhedron1 polyhedron2;;
+let c_polyhedron1 = ppl_new_C_Polyhedron_from_space_dimension 10 Universe;;
+let constraints = ppl_C_Polyhedron_get_minimized_constraints c_polyhedron1;;
+let cs_size =  List.length constraints;;
+print_string "\nSize of minimized constraints get from a C_Polyhedron built from Universe : ";;
+print_int(cs_size);;
+let nnc_polyhedron1 = ppl_new_NNC_Polyhedron_from_space_dimension 10 Universe;;
+let constraints = ppl_NNC_Polyhedron_get_minimized_constraints nnc_polyhedron1;;
+let cs_size =  List.length constraints;;
+print_string "\nSize of minimized constraints get from a NNC_Polyhedron built from Universe : ";;
+print_int(cs_size);;
 (* Pointset_Powersed_Grid is not enabled by default, the following code is *)
 (* commented *)
 (* let pps = ppl_new_Pointset_Powerset_Grid_from_space_dimension 3;; *)
@@ -288,4 +298,4 @@ let result = ppl_C_Polyhedron_simplify_using_context_assign
 (* let size = ppl_Pointset_Powerset_Grid_size pps;; *)
 (* print_int size;; *)
 at_exit Gc.full_major;;
-print_string "Bye!\n"
+print_string "\nBye!\n"
