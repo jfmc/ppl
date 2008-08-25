@@ -1,4 +1,4 @@
-/* Main program for the toy PPL/SICStus-Prolog CLP(Q) predicate checker.
+/* Main program for the PPL/SWI-Prolog predicate checker.
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
