@@ -1,4 +1,4 @@
-/* SWI Prolog extended foreign language interface: declarations.
+/* SWI-Prolog extended foreign language interface: declarations.
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).

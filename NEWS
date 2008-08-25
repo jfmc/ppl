@@ -1125,7 +1125,7 @@ o  New, complete C interface.  As a demo, a toy solver for pure linear
    as a demo is only a toy provided as a demo.
 
 o  Revised and completed Prolog interface:
-   - now supporting GNU Prolog, SICStus Prolog, SWI Prolog and YAP.
+   - now supporting GNU Prolog, SICStus Prolog, SWI-Prolog and YAP.
    - all predicates have been renamed to match their intended
      semantics;
    - arguments have been reordered where necessary so as to follow the

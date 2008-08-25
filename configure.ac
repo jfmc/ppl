@@ -844,7 +844,7 @@ then
 fi
 AM_CONDITIONAL(BUILD_SICSTUS_PROLOG_INTERFACE, test x$have_sicstus_prolog = xyes)
 
-# SWI Prolog
+# SWI-Prolog
 if test x${swi_prolog_interface_enabled} = xyes
 then
   AC_CHECK_SWI_PROLOG

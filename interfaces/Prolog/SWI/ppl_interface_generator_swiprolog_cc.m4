@@ -26,7 +26,7 @@ dnl site: http://www.cs.unipr.it/ppl/ .
 m4_include(`ppl_interface_generator_prolog_systems.m4')
 
 m4_divert`'dnl
-/* SWI Prolog interface.
+/* SWI-Prolog interface.
 m4_include(`ppl_interface_generator_copyright')`'dnl
 */
 
@@ -56,7 +56,7 @@ uninstall() {
 m4_divert(-1)
 dnl Include common macros for generating system dependent code.
 dnl
-dnl Redefine m4_extension as useful for SWI Prolog.
+dnl Redefine m4_extension as useful for SWI-Prolog.
 dnl m4_extension(Predicate_Name, Arity)
 dnl Note: SPACES is just a marker to generated the two spaces of
 dnl indentation following it.
