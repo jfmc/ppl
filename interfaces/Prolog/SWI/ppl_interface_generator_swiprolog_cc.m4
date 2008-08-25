@@ -31,78 +31,7 @@ m4_divert`'dnl
 m4_include(`ppl_interface_generator_copyright')`'dnl
 */
 
-#define __STDC_LIMIT_MACROS
-#define PPL_NO_AUTOMATIC_INITIALIZATION
-#include "ppl.hh"
-#include "swi_cfli.hh"
-#include "../exceptions.hh"
-#include <cassert>
-
-namespace PPL = Parma_Polyhedra_Library;
-
-namespace {
-
-/*!
-  True if and only if the Prolog engine supports unbounded integers.
-*/
-bool Prolog_has_unbounded_integers;
-
-/*!
-  If \p Prolog_has_unbounded_integers is false, holds the minimum
-  integer value representable by a Prolog integer.
-  Holds zero otherwise.
-*/
-long Prolog_min_integer;
-
-/*!
-  If \p Prolog_has_unbounded_integers is false, holds the maximum
-  integer value representable by a Prolog integer.
-  Holds zero otherwise.
-*/
-long Prolog_max_integer;
-
-/*!
-  Performs system-dependent initialization.
-*/
-void
-ppl_Prolog_sysdep_init() {
-  Prolog_has_unbounded_integers = true;
-  Prolog_min_integer = 0;
-  Prolog_max_integer = 0;
-}
-
-/*!
-  Perform system-dependent de-itialization.
-*/
-void
-ppl_Prolog_sysdep_deinit() {
-}
-
-int
-Prolog_get_Coefficient(Prolog_term_ref t, PPL::Coefficient& n) {
-  assert(Prolog_is_integer(t));
-  DIRTY_TEMP0(mpz_class, tmp);
-  PL_get_mpz(t, tmp.get_mpz_t());
-  n = tmp;
-  return 1;
-}
-
-int
-Prolog_unify_Coefficient(Prolog_term_ref t, const PPL::Coefficient& n) {
-  DIRTY_TEMP0(mpz_class, tmp);
-  PPL::assign_r(tmp, n, PPL::ROUND_NOT_NEEDED);
-  return PL_unify_mpz(t, tmp.get_mpz_t());
-}
-
-int
-Prolog_put_Coefficient(Prolog_term_ref t, const PPL::Coefficient& n) {
-  PL_put_variable(t);
-  return Prolog_unify_Coefficient(t, n);
-}
-
-} // namespace
-
-#include "../ppl_prolog_main.icc"
+#include "../ppl_prolog_domains.hh"
 
 #define PL_EXTENSION_ENTRY(name, arity) { #name, arity, (void*) name, 0 },
 

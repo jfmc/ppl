@@ -32,7 +32,7 @@ m4_include(`ppl_interface_generator_prolog_cc_code.m4')
 m4_include(`ppl_interface_generator_prolog_procedure_generators.m4')
 
 m4_divert`'dnl
-%<--%<--%<-- ppl_prolog_main.cc
+%<--%<--%<-- ppl_prolog_domains.cc
 /* Prolog interface code.
 m4_include(`ppl_interface_generator_copyright')
 */
@@ -51,7 +51,7 @@ dnl m4_pre_extra_class_code(Class_Counter)
 dnl Prefix extra code for each class.
 m4_define(`m4_pre_extra_class_code', `dnl
 m4_define(`m4_current_interface', m4_interface_class`'$1)`'dnl
-%<--%<--%<-- ppl_prolog_main.cc
+%<--%<--%<-- ppl_prolog_domains.cc
 `#'include "ppl_prolog_`'m4_current_interface.cc"
 %<--%<--%<-- ppl_prolog_`'m4_current_interface.cc
 /*
@@ -59,7 +59,9 @@ Prolog m4_current_interface interface code.
 m4_include(`ppl_interface_generator_copyright')`'dnl
 */
 
-#include "sysdep.hh"
+#include "ppl_prolog_sysdep.hh"
+#include "ppl_prolog_common.defs.hh"
+
 m4_add_bop_assign_code($1)`'dnl
 m4_undefine(`m4_current_interface')`'dnl
 ')

@@ -26,24 +26,20 @@ interface_generator_files = \
 ppl_interface_generator_prolog_procedure_generators.m4 \
 ppl_interface_generator_prolog_cc_files.m4 \
 ppl_interface_generator_prolog_hh_files.m4 \
-ppl_interface_generator_prolog_systems.m4 \
-ppl_interface_generator_prolog_icc_code.m4
+ppl_interface_generator_prolog_systems.m4
 
 EXTRA_DIST = \
 $(interface_generator_files) \
 Prolog_interface.dox \
-ppl_prolog_common.hh \
+ppl_prolog_common.defs.hh \
+ppl_prolog_common.inlines.hh \
 ppl_prolog_common.cc
-
-noinst_HEADERS = \
-exceptions.hh \
-track_allocation.hh
 
 if BUILD_SOME_PROLOG_INTERFACES
 
 BUILT_SOURCES = \
-ppl_prolog_main.hh \
-ppl_prolog_main.cc
+ppl_prolog_domains.hh \
+ppl_prolog_domains.cc
 
 interface_generator_dependencies = \
 $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
@@ -57,7 +53,7 @@ ppl_interface_generator_prolog_hh_code.m4 \
 ppl_interface_generator_prolog_cc_files.m4 \
 ppl_interface_generator_prolog_cc_code.m4
 
-ppl_prolog_main.hh: $(interface_generator_dependencies) Makefile
+ppl_prolog_domains.hh: $(interface_generator_dependencies) Makefile
 	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_prolog_hh_files.m4 \
                 > ppl_prolog_hh_blob
@@ -65,7 +61,7 @@ ppl_prolog_main.hh: $(interface_generator_dependencies) Makefile
 	$(top_srcdir)/utils/cm_splitter.sh < ppl_prolog_hh_blob
 	rm -f ppl_prolog_hh_blob
 
-ppl_prolog_main.cc: $(interface_generator_dependencies) Makefile
+ppl_prolog_domains.cc: $(interface_generator_dependencies) Makefile
 	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_prolog_cc_files.m4 \
                 > ppl_prolog_cc_blob

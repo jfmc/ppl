@@ -1,4 +1,4 @@
-/* Common part of the Prolog interfaces.  -*- C++ -*-
+/* Common part of the Prolog interfaces: variables and non-inline functions.
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -20,22 +20,15 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include "ppl.hh"
-#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
-#include "pwl.hh"
-#endif
-#include "track_allocation.hh"
-#include "interfaced_boxes.hh"
-#include <set>
-#include <vector>
+#include "ppl_prolog_common.defs.hh"
 #include <exception>
 #include <stdexcept>
 #include <sstream>
 #include <climits>
 
-using namespace Parma_Polyhedra_Library;
+namespace Parma_Polyhedra_Library {
 
-namespace {
+namespace Prolog_Interfaces {
 
 Prolog_atom out_of_memory_exception_atom;
 
@@ -521,18 +514,6 @@ handle_exception() {
   Prolog_raise_exception(et);
 }
 
-class timeout_exception : public Throwable {
-public:
-  void throw_me() const {
-    throw *this;
-  }
-  int priority() const {
-    return 0;
-  }
-  timeout_exception() {
-  }
-};
-
 #ifdef PPL_WATCHDOG_LIBRARY_ENABLED
 
 Parma_Watchdog_Library::Watchdog* p_timeout_object = 0;
@@ -642,34 +623,6 @@ get_unsigned_int(long n) {
 }
 #endif
 
-template <typename U>
-U
-term_to_unsigned(Prolog_term_ref t, const char* where) {
-  if (!Prolog_is_integer(t))
-    throw not_unsigned_integer(t, where);
-
-  U d = 0;
-  long l;
-  if (Prolog_get_long(t, &l))
-    if (l < 0)
-      throw not_unsigned_integer(t, where);
-    else if (static_cast<unsigned long>(l) > std::numeric_limits<U>::max())
-      throw Prolog_unsigned_out_of_range(t, where,
-					 std::numeric_limits<U>::max());
-    else
-      d = l;
-  else {
-    TEMP_INTEGER(v);
-    Prolog_get_Coefficient(t, v);
-    if (v < 0)
-      throw not_unsigned_integer(t, where);
-    if (assign_r(d, raw_value(v), ROUND_NOT_NEEDED) != V_EQ)
-      throw Prolog_unsigned_out_of_range(t, where,
-					 std::numeric_limits<U>::max());
-  }
-  return d;
-}
-
 Prolog_atom
 term_to_universe_or_empty(Prolog_term_ref t, const char* where) {
   if (Prolog_is_atom(t)) {
@@ -681,18 +634,7 @@ term_to_universe_or_empty(Prolog_term_ref t, const char* where) {
   throw not_universe_or_empty(t, where);
 }
 
-template <typename T>
-T*
-term_to_handle(Prolog_term_ref t, const char* where) {
-  if (Prolog_is_address(t)) {
-    void* p;
-    if (Prolog_get_address(t, &p))
-      return static_cast<T*>(p);
-  }
-  throw ppl_handle_mismatch(t, where);
-}
-
-PPL::Coefficient
+Coefficient
 integer_term_to_Coefficient(Prolog_term_ref t) {
   TEMP_INTEGER(n);
   assert(Prolog_is_integer(t));
@@ -702,7 +644,7 @@ integer_term_to_Coefficient(Prolog_term_ref t) {
 }
 
 Prolog_term_ref
-Coefficient_to_integer_term(const PPL::Coefficient& n) {
+Coefficient_to_integer_term(const Coefficient& n) {
   Prolog_term_ref t = Prolog_new_term_ref();
   if (!Prolog_put_Coefficient(t, n))
     abort();
@@ -1231,61 +1173,172 @@ check_nil_terminating(Prolog_term_ref t, const char* where) {
   throw not_a_nil_terminated_list(t, where);
 }
 
-} // namespace
+inline dimension_type
+max_representable_dimension(dimension_type d) {
+  return
+    Prolog_has_unbounded_integers
+    ? d
+    : std::min(d, static_cast<dimension_type>(Prolog_max_integer));
+}
 
-namespace {
+bool
+term_to_boundary(Prolog_term_ref t_b, Boundary_Kind kind,
+		 bool& finite, bool& closed,
+		 Coefficient& n, Coefficient& d) {
+  if (!Prolog_is_compound(t_b))
+    return false;
 
-class PFunc {
-private:
-  std::set<dimension_type> codomain;
-  std::vector<dimension_type> vec;
+  Prolog_atom functor;
+  int arity;
 
-public:
-  PFunc() {
+  Prolog_get_compound_name_arity(t_b, &functor, &arity);
+  // A boundary term is either of the form c(Limit) or o(Limit).
+  if (arity != 1 || (functor != a_c && functor != a_o))
+    return false;
+
+  Prolog_atom open_closed_atom = functor;
+
+  Prolog_term_ref t_limit = Prolog_new_term_ref();
+  Prolog_get_arg(1, t_b, t_limit);
+  if (Prolog_is_integer(t_limit)) {
+    // A finite, integral limit.
+    finite = true;
+    closed = (open_closed_atom == a_c);
+    n = integer_term_to_Coefficient(t_limit);
+    d = 1;
   }
-
-  bool has_empty_codomain() const {
-    return codomain.empty();
-  }
-
-  dimension_type max_in_codomain() const {
-    if (codomain.empty())
-      throw unknown_interface_error("PFunc::max_in_codomain()");
-    return *codomain.rbegin();
-  }
-
-  bool maps(dimension_type i, dimension_type& j) const {
-    if (i >= vec.size())
+  else if (Prolog_is_atom(t_limit)) {
+    Prolog_atom a;
+    Prolog_get_atom_name(t_limit, &a);
+    Prolog_atom allowed_infinity = (kind == LOWER_BOUNDARY ? a_minf : a_pinf);
+    // Only open bounds may be unbounded.
+    if (a != allowed_infinity || open_closed_atom != a_o)
       return false;
-    dimension_type vec_i = vec[i];
-    if (vec_i == not_a_dimension())
-      return false;
-    j = vec_i;
-    return true;
-  }
 
-  bool insert(dimension_type i, dimension_type j) {
-    std::pair<std::set<dimension_type>::iterator, bool> s
-      = codomain.insert(j);
-    if (!s.second)
-      // *this is not injective!
+    finite = false;
+  }
+  else if (Prolog_is_compound(t_limit)) {
+    Prolog_get_compound_name_arity(t_limit, &functor, &arity);
+    if (arity != 2 || functor != a_slash)
       return false;
-    if (i > vec.size())
-      vec.insert(vec.end(), i - vec.size(), not_a_dimension());
-    if (i == vec.size()) {
-      vec.insert(vec.end(), j);
-      return true;
+
+    Prolog_term_ref t_n = Prolog_new_term_ref();
+    Prolog_term_ref t_d = Prolog_new_term_ref();
+    Prolog_get_arg(1, t_limit, t_n);
+    Prolog_get_arg(2, t_limit, t_d);
+
+    if (!Prolog_is_integer(t_n) || !Prolog_is_integer(t_d))
+      return false;
+    else {
+      finite = true;
+      closed = (open_closed_atom == a_c);
+      n = integer_term_to_Coefficient(t_n);
+      d = integer_term_to_Coefficient(t_d);
+      // Catch negative denominators and divisions by zero here.
+      if (d <= 0)
+        return false;
     }
-    dimension_type& vec_i = vec[i];
-    if (vec_i != not_a_dimension())
-      // Already mapped: *this is not a function!
-      return false;
-    vec_i = j;
-    return true;
   }
-};
+  return true;
+}
 
-} // namespace
+Prolog_atom
+term_to_relation(Prolog_term_ref t, const char* where) {
+  if (Prolog_is_atom(t)) {
+    Prolog_atom name;
+    if (Prolog_get_atom_name(t, &name)
+	&& (name == a_equal
+	    || name == a_greater_than_equal
+	    || name == a_equal_less_than
+	    || name == a_greater_than
+	    || name == a_less_than))
+      return name;
+  }
+  throw not_a_relation(t, where);
+}
+
+Relation_Symbol
+term_to_relation_symbol(Prolog_term_ref t_r, const char* where) {
+  Prolog_atom ra = term_to_relation(t_r, where);
+  Relation_Symbol r;
+  if (ra == a_less_than)
+    r = LESS_THAN;
+  else if (ra == a_equal_less_than)
+    r = LESS_OR_EQUAL;
+  else if (ra == a_equal)
+    r = EQUAL;
+  else if (ra == a_greater_than_equal)
+    r = GREATER_OR_EQUAL;
+  else {
+    assert(ra == a_greater_than);
+    r = GREATER_THAN;
+  }
+  return r;
+}
+
+Prolog_term_ref
+rational_term(const Rational_Box::interval_type::boundary_type& q) {
+  Prolog_term_ref t = Prolog_new_term_ref();
+  TEMP_INTEGER(numerator);
+  TEMP_INTEGER(denominator);
+  numerator = q.get_num();
+  denominator = q.get_den();
+  if (denominator == 1)
+    Prolog_put_Coefficient(t, numerator);
+  else
+    Prolog_construct_compound(t, a_slash,
+			      Coefficient_to_integer_term(numerator),
+			      Coefficient_to_integer_term(denominator));
+  return t;
+}
+
+Prolog_term_ref
+interval_term(const Rational_Box::interval_type& i) {
+  Prolog_term_ref t = Prolog_new_term_ref();
+  if (i.is_empty())
+    Prolog_put_atom(t, a_empty);
+  else {
+    // Lower bound.
+    const Prolog_atom& l_oc = i.lower_is_open() ? a_o : a_c;
+    Prolog_term_ref l_b = Prolog_new_term_ref();
+    if (i.lower_is_unbounded())
+      Prolog_put_atom(l_b, a_minf);
+    else
+      Prolog_put_term(l_b, rational_term(i.lower()));
+    Prolog_term_ref l_t = Prolog_new_term_ref();
+    Prolog_construct_compound(l_t, l_oc, l_b);
+
+    // Upper bound.
+    const Prolog_atom& u_oc = i.upper_is_open() ? a_o : a_c;
+    Prolog_term_ref u_b = Prolog_new_term_ref();
+    if (i.upper_is_unbounded())
+      Prolog_put_atom(u_b, a_pinf);
+    else
+      Prolog_put_term(u_b, rational_term(i.upper()));
+    Prolog_term_ref u_t = Prolog_new_term_ref();
+    Prolog_construct_compound(u_t, u_oc, u_b);
+
+    Prolog_construct_compound(t, a_i, l_t, u_t);
+  }
+  return t;
+}
+
+Prolog_atom
+term_to_complexity_class(Prolog_term_ref t, const char* where) {
+  if (Prolog_is_atom(t)) {
+    Prolog_atom name;
+    if (Prolog_get_atom_name(t, &name)
+	&& (name == a_polynomial || name == a_simplex || name == a_any))
+      return name;
+  }
+  throw not_a_complexity_class(t, where);
+}
+
+} // namespace Prolog_Interfaces
+
+} // namespace Parma_Polyhedra_Library
+
+using namespace Parma_Polyhedra_Library::Prolog_Interfaces;
 
 extern "C" Prolog_foreign_return_type
 ppl_version_major(Prolog_term_ref t_v) {
@@ -1344,18 +1397,6 @@ ppl_banner(Prolog_term_ref t_b) {
   }
   CATCH_ALL;
 }
-
-namespace {
-
-inline dimension_type
-max_representable_dimension(dimension_type d) {
-  return
-    Prolog_has_unbounded_integers
-    ? d
-    : std::min(d, static_cast<dimension_type>(Prolog_max_integer));
-}
-
-} // namespace
 
 extern "C" Prolog_foreign_return_type
 ppl_max_space_dimension(Prolog_term_ref t_msd) {
@@ -1521,177 +1562,6 @@ ppl_Coefficient_max(Prolog_term_ref t_max) {
   }
   CATCH_ALL;
 }
-
-namespace {
-
-enum Boundary_Kind {
-  LOWER_BOUNDARY,
-  UPPER_BOUNDARY
-};
-
-bool
-term_to_boundary(Prolog_term_ref t_b, Boundary_Kind kind,
-		 bool& finite, bool& closed,
-		 Coefficient& n, Coefficient& d) {
-  if (!Prolog_is_compound(t_b))
-    return false;
-
-  Prolog_atom functor;
-  int arity;
-
-  Prolog_get_compound_name_arity(t_b, &functor, &arity);
-  // A boundary term is either of the form c(Limit) or o(Limit).
-  if (arity != 1 || (functor != a_c && functor != a_o))
-    return false;
-
-  Prolog_atom open_closed_atom = functor;
-
-  Prolog_term_ref t_limit = Prolog_new_term_ref();
-  Prolog_get_arg(1, t_b, t_limit);
-  if (Prolog_is_integer(t_limit)) {
-    // A finite, integral limit.
-    finite = true;
-    closed = (open_closed_atom == a_c);
-    n = integer_term_to_Coefficient(t_limit);
-    d = 1;
-  }
-  else if (Prolog_is_atom(t_limit)) {
-    Prolog_atom a;
-    Prolog_get_atom_name(t_limit, &a);
-    Prolog_atom allowed_infinity = (kind == LOWER_BOUNDARY ? a_minf : a_pinf);
-    // Only open bounds may be unbounded.
-    if (a != allowed_infinity || open_closed_atom != a_o)
-      return false;
-
-    finite = false;
-  }
-  else if (Prolog_is_compound(t_limit)) {
-    Prolog_get_compound_name_arity(t_limit, &functor, &arity);
-    if (arity != 2 || functor != a_slash)
-      return false;
-
-    Prolog_term_ref t_n = Prolog_new_term_ref();
-    Prolog_term_ref t_d = Prolog_new_term_ref();
-    Prolog_get_arg(1, t_limit, t_n);
-    Prolog_get_arg(2, t_limit, t_d);
-
-    if (!Prolog_is_integer(t_n) || !Prolog_is_integer(t_d))
-      return false;
-    else {
-      finite = true;
-      closed = (open_closed_atom == a_c);
-      n = integer_term_to_Coefficient(t_n);
-      d = integer_term_to_Coefficient(t_d);
-      // Catch negative denominators and divisions by zero here.
-      if (d <= 0)
-        return false;
-    }
-  }
-  return true;
-}
-
-} // namespace
-
-
-namespace {
-
-Prolog_atom
-term_to_relation(Prolog_term_ref t, const char* where) {
-  if (Prolog_is_atom(t)) {
-    Prolog_atom name;
-    if (Prolog_get_atom_name(t, &name)
-	&& (name == a_equal
-	    || name == a_greater_than_equal
-	    || name == a_equal_less_than
-	    || name == a_greater_than
-	    || name == a_less_than))
-      return name;
-  }
-  throw not_a_relation(t, where);
-}
-
-Relation_Symbol
-term_to_relation_symbol(Prolog_term_ref t_r, const char* where) {
-  Prolog_atom ra = term_to_relation(t_r, where);
-  Relation_Symbol r;
-  if (ra == a_less_than)
-    r = LESS_THAN;
-  else if (ra == a_equal_less_than)
-    r = LESS_OR_EQUAL;
-  else if (ra == a_equal)
-    r = EQUAL;
-  else if (ra == a_greater_than_equal)
-    r = GREATER_OR_EQUAL;
-  else {
-    assert(ra == a_greater_than);
-    r = GREATER_THAN;
-  }
-  return r;
-}
-
-} // namespace
-
-namespace {
-
-Prolog_term_ref
-rational_term(const Rational_Box::interval_type::boundary_type& q) {
-  Prolog_term_ref t = Prolog_new_term_ref();
-  TEMP_INTEGER(numerator);
-  TEMP_INTEGER(denominator);
-  numerator = q.get_num();
-  denominator = q.get_den();
-  if (denominator == 1)
-    Prolog_put_Coefficient(t, numerator);
-  else
-    Prolog_construct_compound(t, a_slash,
-			      Coefficient_to_integer_term(numerator),
-			      Coefficient_to_integer_term(denominator));
-  return t;
-}
-
-Prolog_term_ref
-interval_term(const Rational_Box::interval_type& i) {
-  Prolog_term_ref t = Prolog_new_term_ref();
-  if (i.is_empty())
-    Prolog_put_atom(t, a_empty);
-  else {
-    // Lower bound.
-    const Prolog_atom& l_oc = i.lower_is_open() ? a_o : a_c;
-    Prolog_term_ref l_b = Prolog_new_term_ref();
-    if (i.lower_is_unbounded())
-      Prolog_put_atom(l_b, a_minf);
-    else
-      Prolog_put_term(l_b, rational_term(i.lower()));
-    Prolog_term_ref l_t = Prolog_new_term_ref();
-    Prolog_construct_compound(l_t, l_oc, l_b);
-
-    // Upper bound.
-    const Prolog_atom& u_oc = i.upper_is_open() ? a_o : a_c;
-    Prolog_term_ref u_b = Prolog_new_term_ref();
-    if (i.upper_is_unbounded())
-      Prolog_put_atom(u_b, a_pinf);
-    else
-      Prolog_put_term(u_b, rational_term(i.upper()));
-    Prolog_term_ref u_t = Prolog_new_term_ref();
-    Prolog_construct_compound(u_t, u_oc, u_b);
-
-    Prolog_construct_compound(t, a_i, l_t, u_t);
-  }
-  return t;
-}
-
-Prolog_atom
-term_to_complexity_class(Prolog_term_ref t, const char* where) {
-  if (Prolog_is_atom(t)) {
-    Prolog_atom name;
-    if (Prolog_get_atom_name(t, &name)
-	&& (name == a_polynomial || name == a_simplex || name == a_any))
-      return name;
-  }
-  throw not_a_complexity_class(t, where);
-}
-
-} // namespace
 
 extern "C" Prolog_foreign_return_type
 ppl_new_MIP_Problem_from_space_dimension
