@@ -479,3 +479,17 @@ m4_define(`ppl_@CLASS@_constrains_code',
   public native boolean constrains(Variable var);
 
 ')
+
+m4_define(`ppl_@CLASS@_ascii_dump_code',
+`dnl
+%<--%<--%<-- @CLASS@.java
+  public native String ascii_dump();
+
+')dd
+
+m4_define(`ppl_@CLASS@_@PARTITION@_code',
+`dnl
+%<--%<--%<-- @CLASS@.java
+
+  public static native Pair <@CLASSTOPOLOGY@@CPP_DISJUNCT@@COMMA@ @CLASS@> @PARTITION@(@CLASSTOPOLOGY@@DISJUNCT@ p, @CLASSTOPOLOGY@@DISJUNCT@ q);
+')

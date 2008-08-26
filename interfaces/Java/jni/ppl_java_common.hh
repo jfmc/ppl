@@ -271,7 +271,7 @@ get_le_inhomogeneous_term(JNIEnv* env, const Coefficient& c);
 
 void set_generator(JNIEnv* env, jobject& to_be_set,
 		   const jobject& gen);
-// FIXME: implement me.
+
 void set_grid_generator(JNIEnv* env, jobject& to_be_set,
 			const jobject& g_gen);
 
@@ -282,6 +282,16 @@ void set_by_reference(JNIEnv* env, jobject& by_ref_to_be_set,
 		      const jobject& to_insert);
 
 jobject get_by_reference(JNIEnv* env, const jobject& by_ref_integer);
+
+
+// Utility to set a value a ppl_java Pair. the argument `arg' has two
+// possible values: 0 to set `first', 1 to `second'.
+void set_pair_element(JNIEnv* env, jobject& pair_to_be_set, int arg,
+		      const jobject& obj_to_insert);
+
+// Utility to get a value from a ppl_java Pair. the argument `arg' has two
+// possible values: 0 to set `first', 1 to `second'.
+jobject get_pair_element(JNIEnv* env, int arg, const jobject& pair);
 
 jboolean is_null(JNIEnv* env, jobject obj);
 // Builds the Java linear expression starting from a congruence,

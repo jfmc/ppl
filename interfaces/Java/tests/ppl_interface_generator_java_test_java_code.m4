@@ -252,9 +252,28 @@ System.out.println(@LTOPOLOGY@@LCLASS@1.toString());
 
 ');
 
+m4_define(`ppl_@CLASS@_string_code', `
+System.out.println(@LTOPOLOGY@@LCLASS@1.toString());
+
+');
+
 m4_define(`ppl_@CLASS@_@MEMBYTES@_code', `
 System.out.print("@UMEMBYTES@ of @LTOPOLOGY@@LCLASS@1: ");
 System.out.println(@LTOPOLOGY@@LCLASS@1.@MEMBYTES@());
+
+');
+
+m4_define(`ppl_@CLASS@_ascii_dump_code', `
+System.out.println(@LTOPOLOGY@@LCLASS@1.ascii_dump());
+
+');
+
+m4_define(`ppl_@CLASS@_@PARTITION@_code', `
+@CLASSTOPOLOGY@@CPP_DISJUNCT@ @LCLASSTOPOLOGY@@LCPP_DISJUNCT@1 = new @CLASSTOPOLOGY@@CPP_DISJUNCT@(constraints1);
+Pair p =  @CLASS@.@PARTITION@(@LCLASSTOPOLOGY@@LCPP_DISJUNCT@1, @LCLASSTOPOLOGY@@LCPP_DISJUNCT@1);
+System.out.println("Printing Pair from @PARTITION@");
+System.out.println(p.getFirst());
+System.out.println(p.getSecond());
 
 ');
 

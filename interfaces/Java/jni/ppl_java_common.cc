@@ -72,7 +72,7 @@ handle_exception(JNIEnv* env) {
 
 jobject
 build_java_poly_gen_relation(JNIEnv* env,
-			  Poly_Gen_Relation& r) {
+			     Poly_Gen_Relation& r) {
   jclass j_poly_gen_relation_class
     = env->FindClass("ppl_java/Poly_Gen_Relation");
   jmethodID j_poly_gen_relation_ctr_id
@@ -314,12 +314,10 @@ build_ppl_optimization_mode(JNIEnv* env, const jobject& j_opt_mode) {
   jint opt_mode = env->CallIntMethod(j_opt_mode, opt_mode_ordinal_id);
   switch (opt_mode) {
   case 0: {
-    if (opt_mode == 0)
-      return MINIMIZATION;
+    return MINIMIZATION;
   }
   case 1: {
-    if (opt_mode == 1)
-      return MAXIMIZATION;
+    return MAXIMIZATION;
   }
   default:
     ;
@@ -828,6 +826,55 @@ jobject get_by_reference(JNIEnv* env, const jobject& by_ref_integer) {
 					  "Ljava/lang/Object;");
   return env->GetObjectField(by_ref_integer, obj_field_id);
 }
+
+void set_pair_element(JNIEnv* env, jobject& pair_to_be_set,
+		      int arg,  const jobject& to_insert) {
+  jclass pair_class = env->FindClass("ppl_java/Pair");
+  switch (arg) {
+  case 0: {
+    jfieldID obj_field_id = env->GetFieldID(pair_class,
+					    "first",
+					    "Ljava/lang/Object;");
+    env->SetObjectField(pair_to_be_set, obj_field_id, to_insert);
+    return;
+  }
+  case 1: {
+    jfieldID obj_field_id = env->GetFieldID(pair_class,
+					    "second",
+					    "Ljava/lang/Object;");
+    env->SetObjectField(pair_to_be_set, obj_field_id, to_insert);
+    return;
+  }
+  default:
+    throw std::runtime_error("PPL Java interface internal error: pair value"
+			     " not allowed");
+  }
+  throw std::runtime_error("PPL Java interface internal error");
+}
+
+
+jobject get_pair_element(JNIEnv* env, int arg, const jobject& j_pair) {
+  jclass pair_class = env->FindClass("ppl_java/Pair");
+  switch (arg) {
+  case 0: {
+    jfieldID obj_field_id = env->GetFieldID(pair_class,
+					    "first",
+					    "Ljava/lang/Object;");
+    return env->GetObjectField(j_pair, obj_field_id);
+  }
+  case 1: {
+    jfieldID obj_field_id = env->GetFieldID(pair_class,
+					    "second",
+					    "Ljava/lang/Object;");
+    return env->GetObjectField(j_pair, obj_field_id);
+  }
+  default:
+    throw std::runtime_error("PPL Java interface internal error: pair value"
+			     " not allowed");
+ }
+ throw std::runtime_error("PPL Java interface internal error");
+}
+
 
 
 jboolean is_null(JNIEnv* env, jobject obj) {

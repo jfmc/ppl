@@ -959,3 +959,55 @@ JNIEXPORT jboolean JNICALL Java_ppl_1java_@1CLASS@_constrains
 
 ')
 
+m4_define(`ppl_@CLASS@_ascii_dump_code',
+`dnl
+JNIEXPORT jstring JNICALL Java_ppl_1java_@1CLASS@_ascii_1dump
+(JNIEnv* env , jobject j_this_@LCLASS@) {
+  try {
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+  jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
+  @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
+  std::ostringstream s;
+  this_@LCLASS@->ascii_dump(s);
+  return env->NewStringUTF(s.str().c_str());
+  }
+  CATCH_ALL;
+  return 0;
+}
+')
+
+m4_define(`ppl_@CLASS@_@PARTITION@_code',
+`dnl
+JNIEXPORT jobject JNICALL Java_ppl_1java_@1CLASS@_@1PARTITION@
+(JNIEnv* env, jclass pps_class, jobject j_p_@LCLASS@, jobject j_q_@LCLASS@) {
+  try {
+   // Suppress warnings concerning `ppl_class' not used.
+   pps_class = 0;
+   jlong p_ptr = get_ptr(env, j_p_@LCLASS@);
+   @CLASSTOPOLOGY@@CPP_DISJUNCT@* ph = reinterpret_cast<@CLASSTOPOLOGY@@CPP_DISJUNCT@*>(p_ptr);
+  jlong q_ptr = get_ptr(env, j_q_@LCLASS@);
+   @CLASSTOPOLOGY@@CPP_DISJUNCT@* qh = reinterpret_cast<@CLASSTOPOLOGY@@CPP_DISJUNCT@*>(q_ptr);
+   std::pair<@CLASSTOPOLOGY@@CPP_DISJUNCT@@COMMA@ Pointset_Powerset<@SUPERCLASS@> > r =
+       @PARTITION@(*ph, *qh);
+ jclass j_pair_class = env->FindClass("ppl_java/Pair");
+ jmethodID j_ctr_id_pair = env->GetMethodID(j_pair_class, "<init>", "()V");
+ jobject j_pair_obj = env->NewObject(j_pair_class, j_ctr_id_pair);
+
+ jclass j_class_r1 = env->FindClass("ppl_java/@CLASSTOPOLOGY@@CPP_DISJUNCT@");
+ jmethodID j_ctr_id_r1 = env->GetMethodID(j_class_r1, "<init>", "()V");
+ jobject j_obj_r1 = env->NewObject(j_class_r1, j_ctr_id_r1);
+  set_ptr(env, j_obj_r1, (long long) new @CLASSTOPOLOGY@@CPP_DISJUNCT@(r.first));
+
+ jclass j_class_r2 = env->FindClass("ppl_java/@CLASS@");
+ jmethodID j_ctr_id_r2 = env->GetMethodID(j_class_r2, "<init>", "()V");
+ jobject j_obj_r2 = env->NewObject(j_class_r2, j_ctr_id_r2);
+  set_ptr(env, j_obj_r2, (long long) new Pointset_Powerset<@SUPERCLASS@>(r.second));
+   set_pair_element(env, j_pair_obj, 0, j_obj_r1);
+   set_pair_element(env, j_pair_obj, 1, j_obj_r2);
+ return  j_pair_obj;
+  }
+  CATCH_ALL;
+  return 0;
+}
+
+')
