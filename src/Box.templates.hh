@@ -1474,7 +1474,7 @@ Box<ITV>::concatenate_assign(const Box& y) {
   if (y_space_dim == 0)
     return;
 
-  // Here `y_space_dim > 0', so that a non-trivial concatenation wil occur:
+  // Here `y_space_dim > 0', so that a non-trivial concatenation will occur:
   // make sure that reallocation will occur once at most.
   x.seq.reserve(x_space_dim + y_space_dim);
 
