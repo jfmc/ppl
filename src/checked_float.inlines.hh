@@ -85,7 +85,7 @@ rint(long double x) {
 #elif defined(__i386__) && (defined(__GNUC__) || defined(__INTEL_COMPILER))
 // On Cygwin, we have proper long doubles but rintl() is not defined:
 // luckily, one machine instruction is enough to save the day.
-long double
+inline long double
 rintl(long double x) {
   long double i;
   __asm__ ("frndint" : "=t" (i) : "0" (x));
