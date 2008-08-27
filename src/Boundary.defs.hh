@@ -330,7 +330,9 @@ sgn_b(Boundary_Type type, const T& x, const Info& info) {
       special_is_boundary_infinity(type, x, info))
     return type == LOWER ? -1 : 1;
   else
-    return sgn(x);
+    // The following Parma_Polyhedra_Library:: qualification is to work
+    // around a bug of GCC 4.0.x.
+    return Parma_Polyhedra_Library::sgn(x);
 }
 
 template <typename T, typename Info>
