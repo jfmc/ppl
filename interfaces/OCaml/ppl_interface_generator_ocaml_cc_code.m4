@@ -27,14 +27,21 @@ dnl site: http://www.cs.unipr.it/ppl/ .
 m4_define(`m4_access_class_code',
 `dnl
 //! Give access to the embedded @CLASS@* in \p v.
-inline @TOPOLOGY@@CPP_CLASS@*&
+inline @TOPOLOGY@@CPP_CLASS@*
 p_@TOPOLOGY@@CLASS@_val(value v) {
+  return unmark(*reinterpret_cast<@TOPOLOGY@@CPP_CLASS@**>(Data_custom_val(v)));
+}
+
+//! Give access to the embedded @CLASS@* in \p v.
+inline @TOPOLOGY@@CPP_CLASS@*&
+actual_p_@TOPOLOGY@@CLASS@_val(value v) {
   return *reinterpret_cast<@TOPOLOGY@@CPP_CLASS@**>(Data_custom_val(v));
 }
 
 void
 custom_@TOPOLOGY@@CLASS@_finalize(value v) {
-  delete p_@TOPOLOGY@@CLASS@_val(v);
+   if (!marked(actual_p_@TOPOLOGY@@CLASS@_val(v)))
+      delete actual_p_@TOPOLOGY@@CLASS@_val(v);
 }
 
 static struct custom_operations @TOPOLOGY@@CLASS@_custom_operations = {
@@ -50,7 +57,7 @@ inline value
 val_p_@TOPOLOGY@@CLASS@(const @TOPOLOGY@@CPP_CLASS@& ph) {
   value v = caml_alloc_custom(&@TOPOLOGY@@CLASS@_custom_operations,
 			      sizeof(@TOPOLOGY@@CPP_CLASS@*), 0, 1);
-  p_@TOPOLOGY@@CLASS@_val(v) = const_cast<@TOPOLOGY@@CPP_CLASS@*>(&ph);
+  actual_p_@TOPOLOGY@@CLASS@_val(v) = const_cast<@TOPOLOGY@@CPP_CLASS@*>(&ph);
   return(v);
 }
 
@@ -889,7 +896,10 @@ ppl_@CLASS@_get_disjunct(value caml_it) {
    CAMLparam1(caml_it);
    @CPP_CLASS@::iterator& cpp_it  = *p_@CLASS@_iterator_val(caml_it);
    @CLASSTOPOLOGY@@CPP_DISJUNCT@ disjunct = cpp_it->element();
-  CAMLreturn(val_p_@CLASSTOPOLOGY@@DISJUNCT@(disjunct));
+   value value_to_return = val_p_@CLASSTOPOLOGY@@DISJUNCT@(disjunct);
+   actual_p_@CLASSTOPOLOGY@@CPP_DISJUNCT@_val(value_to_return) =
+                                              mark(&disjunct);
+   CAMLreturn(value_to_return);
 
 }
 
