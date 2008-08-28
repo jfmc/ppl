@@ -86,7 +86,7 @@ rint(long double x) {
 // On Cygwin, we have proper long doubles but rintl() is not defined:
 // luckily, one machine instruction is enough to save the day.
 inline long double
-rintl(long double x) {
+rint(long double x) {
   long double i;
   __asm__ ("frndint" : "=t" (i) : "0" (x));
   return i;
