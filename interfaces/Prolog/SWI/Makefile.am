@@ -133,7 +133,7 @@ pl_clpq2_SOURCES = pl_clpq.cc
 
 # Notice: we are linking statically until we understand whether
 # and if Libtool and plld can interoperate.
-ppl_pl$(EXEEXT): ppl_swiprolog.lo ppl_pl.o
+ppl_pl$(EXEEXT): libppl_swiprolog.la ppl_pl.o
 	plld -pl $(SWI_PROLOG) -cc $(CC) -c++ $(CXX) -ld $(CXX) \
 		-ld-options`echo '' $(AM_CXXFLAGS) $(CXXFLAGS) | tr " " "/"` \
 		-o $@ -L.libs -lppl_swiprolog ppl_pl.o \
@@ -141,7 +141,7 @@ ppl_pl$(EXEEXT): ppl_swiprolog.lo ppl_pl.o
 		$(WATCHDOG_LINK_OPTIONS) \
 		@extra_libraries@
 
-pl_clpq$(EXEEXT): ppl_swiprolog.lo pl_clpq.o pl_clpq.pl ../tests/clpq.pl
+pl_clpq$(EXEEXT): libppl_swiprolog.la pl_clpq.o pl_clpq.pl ../tests/clpq.pl
 	plld -pl $(SWI_PROLOG) -cc $(CC) -c++ $(CXX) -ld $(CXX) \
 		-ld-options`echo '' $(AM_CXXFLAGS) $(CXXFLAGS) | tr " " "/"` \
 		-o $@ -L.libs -lppl_swiprolog pl_clpq.o \
@@ -150,7 +150,7 @@ pl_clpq$(EXEEXT): ppl_swiprolog.lo pl_clpq.o pl_clpq.pl ../tests/clpq.pl
 		$(WATCHDOG_LINK_OPTIONS) \
 		@extra_libraries@
 
-pl_clpq2$(EXEEXT): ppl_swiprolog.lo pl_clpq.o pl_clpq.pl ../tests/clpq2.pl
+pl_clpq2$(EXEEXT): libppl_swiprolog.la pl_clpq.o pl_clpq.pl ../tests/clpq2.pl
 	plld -pl $(SWI_PROLOG) -cc $(CC) -c++ $(CXX) -ld $(CXX) \
 		-ld-options`echo '' $(AM_CXXFLAGS) $(CXXFLAGS) | tr " " "/"` \
 		-o $@ -L.libs -lppl_swiprolog pl_clpq.o \
