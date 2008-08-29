@@ -22,6 +22,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl.hh"
 #include "interfaced_boxes.hh"
+#include "marked_pointers.hh"
+
 // OCaml include files.
 extern "C" {
 
@@ -38,29 +40,6 @@ extern "C" {
 
 #include <stdexcept>
 using namespace Parma_Polyhedra_Library;
-
-// Sets the less significative bit of the pointer `p' to 1
-// and returns it.
-template <typename T> T* mark(T* p) {
-  // CHECKME: is this the right type?
-  unsigned long ulong_ptr = reinterpret_cast<unsigned long>(p);
-  return reinterpret_cast<T*>(ulong_ptr | 1);
-}
-
-// Sets the less significative bit of the pointer `p' to 0
-// and returns it.
-template <typename T> T* unmark(T* p) {
-  // CHECKME: is this the right type?
-  unsigned long ulong_ptr = reinterpret_cast<unsigned long>(p);
-  return reinterpret_cast<T*>(ulong_ptr & ~1);
-}
-
-// Returns `true' if and only if the less significative
-// bit of the pointer `p' is set to 1.
-template <typename T> bool marked(T* p) {
-  unsigned long ulong_ptr = reinterpret_cast<unsigned long>(p);
-  return (ulong_ptr & 1) == 1;
-}
 
 class PFunc {
  private:
