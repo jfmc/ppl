@@ -24,17 +24,30 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_ppl_hh 1
 
 #ifdef NDEBUG
-# define PPL_SAVE_NDEBUG 1
+# define PPL_SAVE_NDEBUG NDEBUG
 # undef NDEBUG
+#endif
+
+#ifdef __STDC_LIMIT_MACROS
+# define PPL_SAVE_STDC_LIMIT_MACROS __STDC_LIMIT_MACROS
 #endif
 
 #include "ppl-config.h"
 #include "version.hh"
 #include "ppl_include_files.hh"
 
+#ifndef __STDC_LIMIT_MACROS
+# error "__STD_LIMIT_MACROS should have been defined at this point"
+#endif
+#undef __STDC_LIMIT_MACROS
+#ifdef PPL_SAVE_STDC_LIMIT_MACROS
+# define __STDC_LIMIT_MACROS PPL_SAVE_STDC_LIMIT_MACROS
+# undef PPL_SAVE_STDC_LIMIT_MACROS
+#endif
+
 #ifdef PPL_SAVE_NDEBUG
 # ifndef NDEBUG
-#  define NDEBUG 1
+#  define NDEBUG PPL_SAVE_NDEBUG
 # endif
 # undef PPL_SAVE_NDEBUG
 #else
