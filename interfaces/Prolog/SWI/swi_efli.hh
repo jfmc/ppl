@@ -23,11 +23,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_swi_efli_hh
 #define PPL_swi_efli_hh 1
 
-#include "swi_cfli.hh"
-
-#define __STDC_LIMIT_MACROS
 #define PPL_NO_AUTOMATIC_INITIALIZATION
 #include "ppl.hh"
+// By including "ppl.hh" first, we ensure the limit macros provided by
+// <stdint.h> and/or <inttypes.h> are already defined.
+#include "swi_cfli.hh"
 
 namespace Parma_Polyhedra_Library {
 
