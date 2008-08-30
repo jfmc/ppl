@@ -28,12 +28,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <cstdlib>
 #include <climits>
 #include <string>
-#ifdef PPL_HAVE_STDINT_H
-#include <stdint.h>
-#endif
-#ifdef PPL_HAVE_INTTYPES_H
-#include <inttypes.h>
-#endif
 
 #if !PPL_HAVE_DECL_STRTOLL
 signed long long
