@@ -84,20 +84,27 @@ ISODATE=`date +%Y-%m-%d`
 AC_SUBST(ISODATE)
 
 AH_BOTTOM([
+#ifdef PPL_NDEBUG
+# define NDEBUG PPL_NDEBUG
+#endif
+
 /*
   In order for the definition of `int64_t' to be seen by Comeau C/C++,
   we must make sure <stdint.h> is included before <sys/types.hh> is
   (even indirectly) included.
+
+  Moreover we need to define __STDC_LIMIT_MACROS before the first
+  inclusion of <stdint.h> in order to have the macros defined also in C++.
 */
 #ifdef PPL_HAVE_STDINT_H
-#include <stdint.h>
-#endif
-#ifdef PPL_HAVE_INTTYPES_H
-#include <inttypes.h>
+# ifndef __STDC_LIMIT_MACROS
+#  define __STDC_LIMIT_MACROS 1
+# endif
+# include <stdint.h>
 #endif
 
-#ifdef PPL_NDEBUG
-# define NDEBUG PPL_NDEBUG
+#ifdef PPL_HAVE_INTTYPES_H
+# include <inttypes.h>
 #endif
 ])
 
