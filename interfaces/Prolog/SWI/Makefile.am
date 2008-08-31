@@ -106,7 +106,8 @@ libppl_swiprolog_la_DEPENDENCIES = \
 @required_instantiations_prolog_cxx_objects@
 
 libppl_swiprolog_la_LDFLAGS = \
--module -avoid-version
+-module \
+-avoid-version
 
 bin_PROGRAMS = ppl_pl
 ppl_pl_SOURCES = ppl_pl.cc

@@ -64,12 +64,15 @@ ppl_Prolog_sysdep_init();
 void
 ppl_Prolog_sysdep_deinit();
 
+// FIXME: write the documentation.
 int
 Prolog_get_Coefficient(Prolog_term_ref t, Coefficient& n);
 
+// FIXME: write the documentation.
 int
 Prolog_unify_Coefficient(Prolog_term_ref t, const Coefficient& n);
 
+// FIXME: write the documentation.
 int
 Prolog_put_Coefficient(Prolog_term_ref t, const Coefficient& n);
 
