@@ -1,4 +1,4 @@
-/* GNU Prolog interface: system-dependent part.
+/* GNU Prolog extended foreign language interface: declarations.
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -20,80 +20,61 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+#ifndef PPL_gprolog_efli_hh
+#define PPL_gprolog_efli_hh 1
+
 #include "ppl.hh"
 #include "gprolog_cfli.hh"
 
-#include "../exceptions.hh"
+namespace Parma_Polyhedra_Library {
 
-namespace PPL = Parma_Polyhedra_Library;
-
-namespace {
+namespace Prolog_Interfaces {
 
 /*!
   True if and only if the Prolog engine supports unbounded integers.
 */
-bool Prolog_has_unbounded_integers;
+extern bool Prolog_has_unbounded_integers;
 
 /*!
   If \p Prolog_has_unbounded_integers is false, holds the minimum
   integer value representable by a Prolog integer.
   Holds zero otherwise.
 */
-long Prolog_min_integer;
+extern long Prolog_min_integer;
 
 /*!
   If \p Prolog_has_unbounded_integers is false, holds the maximum
   integer value representable by a Prolog integer.
   Holds zero otherwise.
 */
-long Prolog_max_integer;
-
-#include <iostream>
-using namespace std;
+extern long Prolog_max_integer;
 
 /*!
   Performs system-dependent initialization.
 */
 void
-ppl_Prolog_sysdep_init() {
-  Prolog_has_unbounded_integers = false;
-  Prolog_min_integer = INT_LOWEST_VALUE;
-  Prolog_max_integer = INT_GREATEST_VALUE;
-}
+ppl_Prolog_sysdep_init();
 
 /*!
   Perform system-dependent de-initialization.
 */
 void
-ppl_Prolog_sysdep_deinit() {
-}
+ppl_Prolog_sysdep_deinit();
 
-inline int
-Prolog_get_Coefficient(Prolog_term_ref t, PPL::Coefficient& n) {
-  long v;
-  Prolog_get_long(t, &v);
-  n = v;
-  return 1;
-}
-
+// FIXME: write the documentation.
 int
-Prolog_put_Coefficient(Prolog_term_ref& t, const PPL::Coefficient& n) {
-  long l = 0;
-  if (PPL::assign_r(l, n, PPL::ROUND_NOT_NEEDED) != PPL::V_EQ
-      || !Prolog_put_long(t, l))
-    throw PPL_integer_out_of_range(n);
-  return 1;
-}
+Prolog_get_Coefficient(Prolog_term_ref t, Coefficient& n);
 
+// FIXME: write the documentation.
 int
-Prolog_unify_Coefficient(Prolog_term_ref t, const PPL::Coefficient& n) {
-  Prolog_term_ref u = Prolog_new_term_ref();
-  Prolog_put_Coefficient(u, n);
-  return Prolog_unify(t, u);
-}
+Prolog_put_Coefficient(Prolog_term_ref& t, const Coefficient& n);
 
-} // namespace
+// FIXME: write the documentation.
+int
+Prolog_unify_Coefficient(Prolog_term_ref t, const Coefficient& n);
 
-#undef CS
+} // namespace Prolog_Interfaces
 
-#include "../ppl_prolog_main.icc"
+} // namespace Parma_Polyhedra_Library
+
+#endif // !defined(PPL_gprolog_efli_hh)

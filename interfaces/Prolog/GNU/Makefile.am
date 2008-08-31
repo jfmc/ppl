@@ -25,7 +25,6 @@ GPROLOG_CFLI_FILES = gprolog_cfli.hh
 EXTRA_DIST = \
 ppl_interface_generator_gprolog_pl.m4 \
 $(GPROLOG_CFLI_FILES) \
-ppl_gprolog_sd.cc \
 gp_clpq.pl \
 gnu_pl_check.pl \
 README.gprolog
@@ -44,20 +43,14 @@ endif BUILD_WATCHDOG_LIBRARY
 AM_CPPFLAGS = \
 -I$(top_srcdir)/interfaces \
 -I$(top_srcdir)/interfaces/Prolog \
+-I$(top_buildir)/interfaces/Prolog \
 -I$(top_builddir)/src \
 $(WATCHDOG_INCLUDE_OPTIONS) \
 @extra_includes@
 
-bin_PROGRAMS = ppl_gprolog
-ppl_gprolog_SOURCES =
-
-pkglib_LTLIBRARIES = libppl_gprolog.la
-nodist_libppl_gprolog_la_SOURCES = ppl_gprolog_sd.cc
-libppl_gprolog_la_LIBADD = \
-$(top_builddir)/src/libppl.la \
-$(WATCHDOG_LIBRARY) \
-@extra_libraries@
-libppl_gprolog_la_LDFLAGS = -module -avoid-version
+BUILT_SOURCES = \
+@required_instantiations_prolog_cxx_headers@ \
+@required_instantiations_prolog_cxx_sources@
 
 interface_generator_dependencies = \
 $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
@@ -69,11 +62,52 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../ppl_interface_generator_prolog_systems.m4 \
 ppl_interface_generator_gprolog_pl.m4
 
+pkglib_LTLIBRARIES = libppl_gprolog.la
+
+nodist_libppl_gprolog_la_SOURCES = \
+ppl_prolog_sysdep.hh \
+gprolog_efli.hh \
+gprolog_efli.cc \
+../ppl_prolog_common.cc
+
+EXTRA_libppl_gprolog_la_SOURCES = \
+../ppl_prolog_BD_Shape_double.cc \
+../ppl_prolog_BD_Shape_mpq_class.cc \
+../ppl_prolog_BD_Shape_mpz_class.cc \
+../ppl_prolog_Constraints_Product_C_Polyhedron_Grid.cc \
+../ppl_prolog_Double_Box.cc \
+../ppl_prolog_Grid.cc \
+../ppl_prolog_main.cc \
+../ppl_prolog_Octagonal_Shape_double.cc \
+../ppl_prolog_Octagonal_Shape_mpq_class.cc \
+../ppl_prolog_Octagonal_Shape_mpz_class.cc \
+../ppl_prolog_Pointset_Powerset_C_Polyhedron.cc \
+../ppl_prolog_Pointset_Powerset_NNC_Polyhedron.cc \
+../ppl_prolog_Polyhedron.cc \
+../ppl_prolog_Rational_Box.cc
+
+libppl_gprolog_la_LIBADD = \
+@required_instantiations_prolog_cxx_objects@ \
+$(top_builddir)/src/libppl.la \
+$(WATCHDOG_LIBRARY) \
+@extra_libraries@
+
+libppl_gprolog_la_DEPENDENCIES = \
+@required_instantiations_prolog_cxx_objects@
+
+libppl_gprolog_la_LDFLAGS = \
+-module \
+-avoid-version
+
 ppl_gprolog.pl: $(interface_generator_dependencies) Makefile
 	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_gprolog_pl.m4 > $@
 
 pkglib_DATA = ppl_gprolog.pl
+
+bin_PROGRAMS = ppl_gprolog
+ppl_gprolog_SOURCES =
+
 
 if ENABLE_SHARED
 

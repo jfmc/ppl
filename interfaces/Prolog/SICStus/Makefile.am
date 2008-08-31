@@ -44,13 +44,16 @@ endif BUILD_WATCHDOG_LIBRARY
 AM_CPPFLAGS = \
 -I$(top_srcdir)/interfaces \
 -I$(top_srcdir)/interfaces/Prolog \
+-I$(top_buildir)/interfaces/Prolog \
 -I$(top_builddir)/src \
 $(WATCHDOG_INCLUDE_OPTIONS) \
 $(SICSTUS_PROLOG_INCLUDE_OPTIONS) \
 @extra_includes@
 
 BUILT_SOURCES = \
-ppl_sicstus_sd.cc
+ppl_sicstus_sd.cc \
+@required_instantiations_prolog_cxx_headers@ \
+@required_instantiations_prolog_cxx_sources@
 
 interface_generator_dependencies = \
 $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \

@@ -23,7 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_ppl_prolog_common_defs_hh
 #define PPL_ppl_prolog_common_defs_hh 1
 
-#define __STDC_LIMIT_MACROS
 #define PPL_NO_AUTOMATIC_INITIALIZATION
 #include "ppl.hh"
 #ifdef PPL_WATCHDOG_LIBRARY_ENABLED
@@ -35,21 +34,18 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <vector>
 #include <exception>
 #include <stdexcept>
-
-namespace Parma_Polyhedra_Library {
-
-namespace Prolog_Interfaces {
+#include <iostream>
 
 #ifndef PROLOG_TRACK_ALLOCATION
 #define PROLOG_TRACK_ALLOCATION 0
 #endif
 
+namespace Parma_Polyhedra_Library {
+
+namespace Prolog_Interfaces {
+
 #if PROLOG_TRACK_ALLOCATION
 
-#include <set>
-#include <iostream>
-
-namespace Parma_Polyhedra_Library {
 
 class Poly_Tracker {
 public:
@@ -162,9 +158,6 @@ poly_tracker() {
 }
 
 } // namespace
-
-} // namespace Parma_Polyhedra_Library
-
 
 #define PPL_REGISTER(x) Parma_Polyhedra_Library::poly_tracker().insert(x)
 #define PPL_WEAK_REGISTER(x) Parma_Polyhedra_Library::poly_tracker().weak_insert(x)
@@ -318,6 +311,7 @@ public:
   }
 };
 
+#if 0
 int
 Prolog_get_Coefficient(Prolog_term_ref t, Coefficient& n);
 
@@ -326,6 +320,7 @@ Prolog_unify_Coefficient(Prolog_term_ref t, const Coefficient& n);
 
 int
 Prolog_put_Coefficient(Prolog_term_ref t, const Coefficient& n);
+#endif
 
 #if 0
 Prolog_atom out_of_memory_exception_atom;
@@ -587,22 +582,6 @@ public:
   }
 };
 
-#if 0
-#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
-
-Parma_Watchdog_Library::Watchdog* p_timeout_object = 0;
-
-void
-reset_timeout() {
-  if (p_timeout_object) {
-    delete p_timeout_object;
-    p_timeout_object = 0;
-    abandon_expensive_computations = 0;
-  }
-}
-#endif
-#endif
-
 void
 handle_exception(const timeout_exception&);
 
@@ -691,6 +670,8 @@ get_unsigned_int(long n) {
 template <typename U>
 U
 term_to_unsigned(Prolog_term_ref t, const char* where) {
+  using namespace Parma_Polyhedra_Library;
+  using namespace Parma_Polyhedra_Library::Prolog_Interfaces;
   if (!Prolog_is_integer(t))
     throw not_unsigned_integer(t, where);
 
@@ -720,7 +701,7 @@ Prolog_atom
 term_to_universe_or_empty(Prolog_term_ref t, const char* where);
 
 Prolog_term_ref
-interval_term(const Rational_Box::interval_type& i);
+interval_term(const Parma_Polyhedra_Library::Rational_Box::interval_type& i);
 
 Prolog_atom
 term_to_complexity_class(Prolog_term_ref t, const char* where);
@@ -744,16 +725,16 @@ enum Boundary_Kind {
 bool
 term_to_boundary(Prolog_term_ref t_b, Boundary_Kind kind,
 		 bool& finite, bool& closed,
-		 Coefficient& n, Coefficient& d);
+		 Parma_Polyhedra_Library::Coefficient& n, Parma_Polyhedra_Library::Coefficient& d);
 
-Relation_Symbol
+Parma_Polyhedra_Library::Relation_Symbol
 term_to_relation_symbol(Prolog_term_ref t_r, const char* where);
 
-Coefficient
+Parma_Polyhedra_Library::Coefficient
 integer_term_to_Coefficient(Prolog_term_ref t);
 
 Prolog_term_ref
-Coefficient_to_integer_term(const Coefficient& n);
+Coefficient_to_integer_term(const Parma_Polyhedra_Library::Coefficient& n);
 
 bool
 unify_long(Prolog_term_ref t, long l);
@@ -761,81 +742,40 @@ unify_long(Prolog_term_ref t, long l);
 bool
 unify_ulong(Prolog_term_ref t, unsigned long l);
 
-Linear_Expression
+Parma_Polyhedra_Library::Linear_Expression
 build_linear_expression(Prolog_term_ref t, const char* where);
 
-Constraint
+Parma_Polyhedra_Library::Constraint
 build_constraint(Prolog_term_ref t, const char* where);
 
-Congruence
+Parma_Polyhedra_Library::Congruence
 build_congruence(Prolog_term_ref t, const char* where);
 
-Generator
+Parma_Polyhedra_Library::Generator
 build_generator(Prolog_term_ref t, const char* where);
 
-Grid_Generator
+Parma_Polyhedra_Library::Grid_Generator
 build_grid_generator(Prolog_term_ref t, const char* where);
 
-#if 0
-template <typename R>
 Prolog_term_ref
-get_homogeneous_expression(const R& r) {
-  Prolog_term_ref so_far = Prolog_new_term_ref();
-  TEMP_INTEGER(coefficient);
-  dimension_type varid = 0;
-  dimension_type space_dimension = r.space_dimension();
-  while (varid < space_dimension
-	 && (coefficient = r.coefficient(Variable(varid))) == 0)
-    ++varid;
-  if (varid >= space_dimension) {
-    Prolog_put_long(so_far, 0);
-  }
-  else {
-    Prolog_construct_compound(so_far, a_asterisk,
-			      Coefficient_to_integer_term(coefficient),
-			      variable_term(varid));
-    while (true) {
-      ++varid;
-      while (varid < space_dimension
-	     && (coefficient = r.coefficient(Variable(varid))) == 0)
-	++varid;
-      if (varid >= space_dimension)
-	break;
-      else {
-	Prolog_term_ref addendum = Prolog_new_term_ref();
-	Prolog_construct_compound(addendum, a_asterisk,
-				  Coefficient_to_integer_term(coefficient),
-				  variable_term(varid));
-	Prolog_term_ref new_so_far = Prolog_new_term_ref();
-	Prolog_construct_compound(new_so_far, a_plus,
-				  so_far, addendum);
-	so_far = new_so_far;
-      }
-    }
-  }
-  return so_far;
-}
-#endif
+get_linear_expression(const Parma_Polyhedra_Library::Linear_Expression& le);
 
 Prolog_term_ref
-get_linear_expression(const Linear_Expression& le);
+constraint_term(const Parma_Polyhedra_Library::Constraint& c);
 
 Prolog_term_ref
-constraint_term(const Constraint& c);
+congruence_term(const Parma_Polyhedra_Library::Congruence& cg);
 
 Prolog_term_ref
-congruence_term(const Congruence& cg);
+generator_term(const Parma_Polyhedra_Library::Generator& g);
 
 Prolog_term_ref
-generator_term(const Generator& g);
+grid_generator_term(const Parma_Polyhedra_Library::Grid_Generator& g);
 
-Prolog_term_ref
-grid_generator_term(const Grid_Generator& g);
-
-Variable
+Parma_Polyhedra_Library::Variable
 term_to_Variable(Prolog_term_ref t, const char* where);
 
-Coefficient
+Parma_Polyhedra_Library::Coefficient
 term_to_Coefficient(Prolog_term_ref t, const char* where);
 
 Prolog_atom
