@@ -580,6 +580,11 @@ AC_CHECK_SIZEOF(size_t)
 AC_CHECK_SIZEOF(float)
 AC_CHECK_SIZEOF(double)
 AC_CHECK_SIZEOF(long double)
+# The following are required to validate an horrible kludge working
+# around an horrible bug in <gprolog.h> (see
+# http://www.cs.unipr.it/pipermail/ppl-devel/2008-August/012277.html).
+AC_CHECK_SIZEOF([int*])
+AC_CHECK_SIZEOF([fp], [], [typedef int *(*fp)();])
 
 # Use C++ for the remaining checks.
 AC_LANG(C++)
