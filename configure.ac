@@ -696,7 +696,7 @@ available_interfaces="cxx c ciao_prolog gnu_prolog sicstus_prolog swi_prolog xsb
 # This is the list of interfaces that are enabled by default.
 #default_interfaces="cxx c swi_prolog"
 #default_interfaces=${available_interfaces}
-default_interfaces="cxx c gnu_prolog swi_prolog ocaml java"
+default_interfaces="cxx c gnu_prolog swi_prolog yap_prolog ocaml java"
 #default_interfaces="cxx c gnu_prolog sicstus_prolog swi_prolog xsb_prolog yap_prolog ocaml java"
 
 enableval=not_specified
@@ -899,9 +899,9 @@ AM_CONDITIONAL(BUILD_SOME_PROLOG_INTERFACES, test x$SOME_PROLOG = xyes)
 # Different instantiations are separated by a '@' character.
 default_instantiations="Polyhedron @ Grid"
 default_instantiations="${default_instantiations} @ Octagonal_Shape<mpz_class> @ Octagonal_Shape<mpq_class> @ Octagonal_Shape<double>"
-default_instantiations="${default_instantiations} @ BD_Shape<mpz_class> @ BD_Shape<mpq_class> @ BD_Shape<double>"
-default_instantiations="${default_instantiations} @ Rational_Box @ Double_Box"
-default_instantiations="${default_instantiations} @ Constraints_Product<C_Polyhedron, Grid>"
+#default_instantiations="${default_instantiations} @ BD_Shape<mpz_class> @ BD_Shape<mpq_class> @ BD_Shape<double>"
+#default_instantiations="${default_instantiations} @ Rational_Box @ Double_Box"
+#default_instantiations="${default_instantiations} @ Constraints_Product<C_Polyhedron, Grid>"
 default_instantiations="${default_instantiations} @ Pointset_Powerset<C_Polyhedron> @ Pointset_Powerset<NNC_Polyhedron>"
 
 enableval=not_specified

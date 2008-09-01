@@ -76,14 +76,46 @@ NO_UNDEFINED_FLAG = -no-undefined
 endif NO_UNDEFINED
 
 pkglib_LTLIBRARIES = ppl_yap.la
-nodist_ppl_yap_la_SOURCES = ppl_yap.cc
+
+nodist_ppl_yap_la_SOURCES = \
+ppl_yap.cc \
+ppl_prolog_sysdep.hh \
+yap_efli.hh \
+yap_efli.cc \
+../ppl_prolog_common.cc
+
+EXTRA_ppl_yap_la_SOURCES = \
+../ppl_prolog_BD_Shape_double.cc \
+../ppl_prolog_BD_Shape_mpq_class.cc \
+../ppl_prolog_BD_Shape_mpz_class.cc \
+../ppl_prolog_Constraints_Product_C_Polyhedron_Grid.cc \
+../ppl_prolog_Double_Box.cc \
+../ppl_prolog_Grid.cc \
+../ppl_prolog_main.cc \
+../ppl_prolog_Octagonal_Shape_double.cc \
+../ppl_prolog_Octagonal_Shape_mpq_class.cc \
+../ppl_prolog_Octagonal_Shape_mpz_class.cc \
+../ppl_prolog_Pointset_Powerset_C_Polyhedron.cc \
+../ppl_prolog_Pointset_Powerset_NNC_Polyhedron.cc \
+../ppl_prolog_Polyhedron.cc \
+../ppl_prolog_Rational_Box.cc
+
 ppl_yap_la_LIBADD = \
+@required_instantiations_prolog_cxx_objects@ \
 -lYap \
 $(top_builddir)/src/libppl.la \
 $(WATCHDOG_LIBRARY) \
 @extra_libraries@
 
-ppl_yap_la_LDFLAGS = $(NO_UNDEFINED_FLAG) -module -avoid-version
+ppl_yap_la_DEPENDENCIES = \
+@required_instantiations_prolog_cxx_objects@
+
+ppl_yap_la_LDFLAGS = \
+-no-undefined \
+-module \
+-avoid-version
+
+#$(NO_UNDEFINED_FLAG)
 
 pkglib_DATA = ppl_yap.pl
 
