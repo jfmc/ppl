@@ -430,84 +430,16 @@ Prolog_atom a_ppl_representation_error;
 Prolog_atom a_expected;
 Prolog_atom a_found;
 Prolog_atom a_where;
+#endif
 
-struct {
+struct Prolog_Interface_Atom {
   Prolog_atom* p_atom;
   const char* name;
-} const prolog_interface_atoms[] = {
-  { &a_nil,                      "[]" },
-
-  { &a_dollar_VAR,               "$VAR" },
-
-  { &a_plus,                     "+" },
-  { &a_minus,                    "-" },
-  { &a_asterisk,                 "*" },
-
-  { &a_slash,                    "/" },
-
-  { &a_equal,                    "=" },
-  { &a_greater_than_equal,       ">=" },
-  { &a_equal_less_than,          "=<" },
-  { &a_greater_than,             ">" },
-  { &a_less_than,                "<" },
-
-  { &a_is_congruent_to,          "=:=" },
-  { &a_modulo,                   "/" },
-
-  { &a_line,                     "line" },
-  { &a_ray,                      "ray" },
-  { &a_point,                    "point" },
-  { &a_closure_point,            "closure_point" },
-
-  { &a_grid_line,                "grid_line" },
-  { &a_parameter,                "parameter" },
-  { &a_grid_point,               "grid_point" },
-
-  { &a_is_disjoint,              "is_disjoint" },
-  { &a_strictly_intersects,      "strictly_intersects" },
-  { &a_is_included,              "is_included" },
-  { &a_saturates,                "saturates" },
-
-  { &a_subsumes,                 "subsumes" },
-
-  { &a_c,                        "c" },
-
-  { &a_empty,                    "empty" },
-  { &a_universe,                 "universe" },
-
-  { &a_max,                      "max" },
-  { &a_min,                      "min" },
-
-  { &a_unfeasible,               "unfeasible" },
-  { &a_unbounded,                "unbounded" },
-  { &a_optimized,                "optimized" },
-
-  { &a_o,                        "o" },
-  { &a_i,                        "i" },
-
-  { &a_minf,                     "minf" },
-  { &a_pinf,                     "pinf" },
-
-  { &a_polynomial,               "polynomial" },
-  { &a_simplex,                  "simplex" },
-  { &a_any,                      "any" },
-
-  { &a_time_out,                 "time_out" },
-  { &a_out_of_memory,            "out_of_memory" },
-
-  { &a_true,                     "true" },
-  { &a_false,                    "false" },
-
-  { &a_ppl_invalid_argument,     "ppl_invalid_argument" },
-  { &a_ppl_overflow_error,       "ppl_overflow_error" },
-  { &a_ppl_domain_error,         "ppl_domain_error" },
-  { &a_ppl_length_error,         "ppl_length_error" },
-  { &a_ppl_representation_error, "ppl_representation_error" },
-  { &a_expected,                 "expected" },
-  { &a_found,                    "found" },
-  { &a_where,                    "where" }
 };
 
+extern const Prolog_Interface_Atom prolog_interface_atoms[];
+
+#if 0
 Prolog_term_ref
 Prolog_atom_term_from_string(const char* s) {
   Prolog_term_ref t = Prolog_new_term_ref();

@@ -132,10 +132,7 @@ Prolog_atom a_expected;
 Prolog_atom a_found;
 Prolog_atom a_where;
 
-struct {
-  Prolog_atom* p_atom;
-  const char* name;
-} const prolog_interface_atoms[] = {
+const Prolog_Interface_Atom prolog_interface_atoms[] = {
   { &a_nil,                      "[]" },
 
   { &a_dollar_VAR,               "$VAR" },
@@ -206,7 +203,8 @@ struct {
   { &a_ppl_representation_error, "ppl_representation_error" },
   { &a_expected,                 "expected" },
   { &a_found,                    "found" },
-  { &a_where,                    "where" }
+  { &a_where,                    "where" },
+  { 0,                           0 }
 };
 
 Prolog_term_ref
@@ -1414,9 +1412,7 @@ ppl_initialize() {
       return PROLOG_SUCCESS;
     // Initialize the core library.
     initialize();
-    for (size_t i
-	   = sizeof(prolog_interface_atoms)/sizeof(prolog_interface_atoms[0]);
-	 i-- > 0; ) {
+    for (size_t i = 0; prolog_interface_atoms[i].p_atom != 0; ++i) {
       Prolog_atom a = Prolog_atom_from_string(prolog_interface_atoms[i].name);
       *prolog_interface_atoms[i].p_atom = a;
     }
