@@ -36,10 +36,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "version.hh"
 #include "ppl_include_files.hh"
 
-#ifndef __STDC_LIMIT_MACROS
-# error "__STD_LIMIT_MACROS should have been defined at this point"
+#ifdef __STDC_LIMIT_MACROS
+# undef __STDC_LIMIT_MACROS
 #endif
-#undef __STDC_LIMIT_MACROS
 #ifdef PPL_SAVE_STDC_LIMIT_MACROS
 # define __STDC_LIMIT_MACROS PPL_SAVE_STDC_LIMIT_MACROS
 # undef PPL_SAVE_STDC_LIMIT_MACROS
