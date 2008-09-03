@@ -26,28 +26,12 @@ namespace Parma_Polyhedra_Library {
 
 namespace Prolog_Interfaces {
 
-/*!
-  True if and only if the Prolog engine supports unbounded integers.
-*/
 bool Prolog_has_unbounded_integers;
 
-/*!
-  If \p Prolog_has_unbounded_integers is false, holds the minimum
-  integer value representable by a Prolog integer.
-  Holds zero otherwise.
-*/
 long Prolog_min_integer;
 
-/*!
-  If \p Prolog_has_unbounded_integers is false, holds the maximum
-  integer value representable by a Prolog integer.
-  Holds zero otherwise.
-*/
 long Prolog_max_integer;
 
-/*!
-  Performs system-dependent initialization.
-*/
 void
 ppl_Prolog_sysdep_init() {
   Prolog_has_unbounded_integers = true;
@@ -55,9 +39,6 @@ ppl_Prolog_sysdep_init() {
   Prolog_max_integer = 0;
 }
 
-/*!
-  Perform system-dependent de-itialization.
-*/
 void
 ppl_Prolog_sysdep_deinit() {
 }
