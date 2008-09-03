@@ -52,7 +52,7 @@ test01() {
   string str;
   do
     f >> str;
-  while (str != "-EM");
+  while (str != "-EUP");
   f.seekp(0, ios_base::cur);
   f << " A";
   close(f);
@@ -83,7 +83,7 @@ test02() {
   string str;
   do
     f >> str;
-  while (str != "+ZE");
+  while (str != "-EM");
   f.seekp(0, ios_base::cur);
   f << "A";
   close(f);
@@ -114,7 +114,7 @@ test03() {
   string str;
   do
     f >> str;
-  while (str != "-SPC");
+  while (str != "-UN");
   f.seekp(0, ios_base::cur);
   f << "A";
   close(f);
@@ -133,8 +133,10 @@ test04() {
   Variable B(1);
 
   TBox box(2);
-  box.add_constraint(A >= 0);
+  box.add_constraint(A >= -10);
+  box.add_constraint(A <= 10);
   box.add_constraint(B >= 3);
+  box.add_constraint(B <= 6);
 
   fstream f;
   open(f, my_file, ios_base::out);
@@ -145,43 +147,9 @@ test04() {
   string str;
   do
     f >> str;
-  while (str != "+inf");
+  while (str != "3");
   f.seekp(0, ios_base::cur);
   f << "A";
-  close(f);
-
-  open(f, my_file, ios_base::in);
-  TBox box2;
-  bool ok = !box2.ascii_load(f);
-  close(f);
-
-  return ok;
-}
-
-bool
-test05() {
-  Variable A(0);
-  Variable B(1);
-
-  TBox box(2);
-  box.add_constraint(A >= 0);
-  box.add_constraint(B >= 3);
-
-  fstream f;
-  open(f, my_file, ios_base::out);
-  box.ascii_dump(f);
-  close(f);
-
-  open(f, my_file, ios_base::in | ios_base::out);
-  string str;
-  do
-    f >> str;
-  while (str != "+inf");
-  do
-    f >> str;
-  while (str != "+inf");
-  f.seekp(0, ios_base::cur);
-  f << " 3 ";
   close(f);
 
   open(f, my_file, ios_base::in);
@@ -198,7 +166,7 @@ test06() {
   Variable B(1);
 
   TBox box1(3);
-  box1.add_constraint(A - B >= 2);
+  box1.add_constraint(A >= 2);
   box1.add_constraint(B >= 0);
 
   fstream f;
@@ -275,10 +243,10 @@ test07() {
 
 BEGIN_MAIN
   DO_TEST(test01);
-//DO_TEST(test02);
-//DO_TEST(test03);
-//DO_TEST(test04);
-//DO_TEST(test05);
+  DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
+//  DO_TEST(test05);
   DO_TEST(test06);
-//DO_TEST(test07);
+  DO_TEST(test07);
 END_MAIN
