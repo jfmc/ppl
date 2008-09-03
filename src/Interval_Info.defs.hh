@@ -150,21 +150,10 @@ public:
       return Boundary_NS::Property::unsupported_value;
     }
   }
-  void ascii_dump(std::ostream& s) const {
-    s << (open ? "open" : "closed");
-  }
-  bool ascii_load(std::istream& s) {
-    std::string str;
-    if (!(s >> str))
-      return false;
-    if (str == "open")
-      open = true;
-    else if (str == "closed")
-      open = false;
-    else
-      return false;
-    return true;
-  }
+
+  void ascii_dump(std::ostream& s) const;
+  bool ascii_load(std::istream& s);
+
 private:
   bool open;
 };
