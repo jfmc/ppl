@@ -1150,16 +1150,20 @@ operator<<(std::ostream& os, const Interval<Boundary, Info>& x) {
 template <typename Boundary, typename Info>
 inline void
 Interval<Boundary, Info>::ascii_dump(std::ostream& s) const {
+  using Parma_Polyhedra_Library::ascii_dump;
   s << "info ";
   info().ascii_dump(s);
-  s << " lower " << lower()
-    << " upper " << upper()
-    << '\n';
+  s << " lower ";
+  ascii_dump(s, lower());
+  s << " upper ";
+  ascii_dump(s, upper());
+  s << '\n';
 }
 
 template <typename Boundary, typename Info>
 inline bool
 Interval<Boundary, Info>::ascii_load(std::istream& s) {
+  using Parma_Polyhedra_Library::ascii_load;
   std::string str;
   if (!(s >> str) || str != "info")
     return false;
@@ -1167,14 +1171,13 @@ Interval<Boundary, Info>::ascii_load(std::istream& s) {
     return false;
   if (!(s >> str) || str != "lower")
     return false;
-  if (!(s >> lower()))
+  if (!ascii_load(s, lower()))
     return false;
   if (!(s >> str) || str != "upper")
     return false;
-  if (!(s >> upper()))
+  if (!ascii_load(s, upper()))
     return false;
 #ifdef PPL_ABI_BREAKING_EXTRA_DEBUG
-  // CHECKME.
   complete_init_internal();
 #endif
   assert(OK());
