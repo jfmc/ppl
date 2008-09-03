@@ -73,11 +73,13 @@ ppl_swiprolog.cc: $(interface_generator_dependencies)
 
 pkglib_LTLIBRARIES = libppl_swiprolog.la
 
-nodist_libppl_swiprolog_la_SOURCES = \
-ppl_swiprolog.cc \
+libppl_swiprolog_la_SOURCES = \
 ppl_prolog_sysdep.hh \
 swi_efli.hh \
-swi_efli.cc \
+swi_efli.cc
+
+nodist_libppl_swiprolog_la_SOURCES = \
+ppl_swiprolog.cc \
 ../ppl_prolog_common.cc
 
 EXTRA_libppl_swiprolog_la_SOURCES = \

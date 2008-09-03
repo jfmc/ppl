@@ -64,10 +64,12 @@ ppl_interface_generator_gprolog_pl.m4
 
 pkglib_LTLIBRARIES = libppl_gprolog.la
 
-nodist_libppl_gprolog_la_SOURCES = \
+libppl_gprolog_la_SOURCES = \
 ppl_prolog_sysdep.hh \
 gprolog_efli.hh \
-gprolog_efli.cc \
+gprolog_efli.cc
+
+nodist_libppl_gprolog_la_SOURCES = \
 ../ppl_prolog_common.cc
 
 EXTRA_libppl_gprolog_la_SOURCES = \

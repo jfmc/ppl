@@ -99,11 +99,13 @@ endif !ENABLE_SHARED
 
 noinst_LTLIBRARIES = libppl_sicstus.la
 
-nodist_libppl_sicstus_la_SOURCES = \
-ppl_sicstus_sd.cc \
+libppl_sicstus_la_SOURCES = \
 ppl_prolog_sysdep.hh \
 sicstus_efli.hh \
-sicstus_efli.cc \
+sicstus_efli.cc
+
+nodist_libppl_sicstus_la_SOURCES = \
+ppl_sicstus_sd.cc \
 ../ppl_prolog_common.cc
 
 EXTRA_libppl_sicstus_la_SOURCES = \

@@ -81,11 +81,14 @@ $(XSB_PROLOG_INCLUDE_OPTIONS) \
 
 pkglib_LTLIBRARIES = ppl_xsb.la
 
-nodist_ppl_xsb_la_SOURCES = \
-ppl_xsb.cc \
+
+ppl_xsb_la_SOURCES = \
 ppl_prolog_sysdep.hh \
 xsb_efli.hh \
-xsb_efli.cc \
+xsb_efli.cc
+
+nodist_ppl_xsb_la_SOURCES = \
+ppl_xsb.cc \
 ../ppl_prolog_common.cc
 
 EXTRA_ppl_xsb_la_SOURCES = \

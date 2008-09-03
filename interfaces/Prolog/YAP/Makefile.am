@@ -77,11 +77,13 @@ endif NO_UNDEFINED
 
 pkglib_LTLIBRARIES = ppl_yap.la
 
-nodist_ppl_yap_la_SOURCES = \
-ppl_yap.cc \
+ppl_yap_la_SOURCES = \
 ppl_prolog_sysdep.hh \
 yap_efli.hh \
-yap_efli.cc \
+yap_efli.cc
+
+nodist_ppl_yap_la_SOURCES = \
+ppl_yap.cc \
 ../ppl_prolog_common.cc
 
 EXTRA_ppl_yap_la_SOURCES = \
