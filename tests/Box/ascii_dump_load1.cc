@@ -36,9 +36,6 @@ const char* my_file = "ascii_dump_load1.dat";
 
 bool
 test01() {
-
-  nout << "test01()" << endl;
-
   Variable A(0);
   Variable B(1);
 
@@ -70,9 +67,6 @@ test01() {
 
 bool
 test02() {
-
-  nout << "test02()" << endl;
-
   Variable A(0);
   Variable B(1);
 
@@ -104,9 +98,6 @@ test02() {
 
 bool
 test03() {
-
-  nout << "test03()" << endl;
-
   Variable A(0);
   Variable B(1);
 
@@ -138,9 +129,6 @@ test03() {
 
 bool
 test04() {
-
-  nout << "test04()" << endl;
-
   Variable A(0);
   Variable B(1);
 
@@ -172,9 +160,6 @@ test04() {
 
 bool
 test05() {
-
-  nout << "test05()" << endl;
-
   Variable A(0);
   Variable B(1);
 
@@ -223,13 +208,65 @@ test06() {
 
   open(f, my_file, ios_base::in);
   TBox box2;
-  box2.ascii_load(f);
+  bool ok = box2.ascii_load(f);
   close(f);
+
+  if (!ok) {
+    nout << "ascii_load() failed" << endl;
+    return false;
+  }
+
+  ok = (box1 == box2);
 
   print_constraints(box1, "*** box1 ***");
   print_constraints(box2, "*** box2 ***");
 
-  bool ok = (box1 == box2);
+  return ok;
+}
+
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Constraint_System cs;
+  cs.insert(3*A + C == 5);
+  TBox box1(cs);
+
+  print_constraints(box1, "*** box1(cs) ***");
+
+  box1.difference_assign(box1);
+
+  print_constraints(box1, "*** box1.difference_assign(box1) ***");
+
+  box1.concatenate_assign(box1);
+
+  print_constraints(box1, "*** box1.concatenate_assign(box1) ***");
+
+  nout << "box1.space_dimension() = " << box1.space_dimension() << endl;
+
+  fstream f;
+  open(f, my_file, ios_base::out);
+  box1.ascii_dump(f);
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  TBox box2;
+  bool ok = box2.ascii_load(f);
+  close(f);
+
+  if (!ok) {
+    nout << "ascii_load() failed" << endl;
+    return false;
+  }
+
+  ok = (box1 == box2);
+
+  nout << "box2.space_dimension() = " << box2.space_dimension() << endl;
+
+  print_constraints(box1, "*** box1 ***");
+  print_constraints(box2, "*** box2 ***");
 
   return ok;
 }
@@ -238,9 +275,10 @@ test06() {
 
 BEGIN_MAIN
   DO_TEST(test01);
-  DO_TEST(test02);
-  DO_TEST(test03);
-  DO_TEST(test04);
-  DO_TEST(test05);
+//DO_TEST(test02);
+//DO_TEST(test03);
+//DO_TEST(test04);
+//DO_TEST(test05);
   DO_TEST(test06);
+  DO_TEST_F(test07);
 END_MAIN

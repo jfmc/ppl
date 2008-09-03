@@ -44,7 +44,6 @@ $(top_builddir)/src/libppl.la \
 #closure1
 
 # Tests that do not succeed yet (maybe even known result is wrong).
-#ascii_dump_load1
 #interval1 interval2
 
 ORIGINAL_TESTS = \
@@ -53,6 +52,7 @@ addspacedims1 \
 affinedimension1 \
 affineimage1 \
 affinepreimage1 \
+ascii_dump_load1 \
 bgp99extrapolation1 \
 bhz03widening1 \
 bounded1 \
@@ -159,7 +159,7 @@ affineimage1_SOURCES = affineimage1.cc
 
 affinepreimage1_SOURCES = affinepreimage1.cc
 
-#ascii_dump_load1_SOURCES = ascii_dump_load1.cc
+ascii_dump_load1_SOURCES = ascii_dump_load1.cc
 
 bgp99extrapolation1_SOURCES = bgp99extrapolation1.cc
 
