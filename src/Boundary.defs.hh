@@ -738,8 +738,8 @@ div_assign_z(Boundary_Type to_type, To& to, To_Info& to_info,
   }
 }
 
-}
+} // namespace Boundary_NS
 
-}
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Boundary_defs_hh)
