@@ -137,8 +137,8 @@ ascii_load(std::istream& s, T& t) {
     // ... then read and discard pretty printed value.
     if (!(s >> str))
       return false;
-    assert(str.size() > 2 && str[0] == '(' && str[str.size()-1] == ')');
-    return true;
+    const unsigned sz = str.size();
+    return sz > 2 && str[0] == '(' && str[sz-1] == ')';
   }
 }
 
