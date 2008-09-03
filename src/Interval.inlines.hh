@@ -1147,6 +1147,40 @@ operator<<(std::ostream& os, const Interval<Boundary, Info>& x) {
   return os;
 }
 
+template <typename Boundary, typename Info>
+inline void
+Interval<Boundary, Info>::ascii_dump(std::ostream& s) const {
+  s << "info ";
+  info().ascii_dump(s);
+  s << " lower " << lower()
+    << " upper " << upper()
+    << '\n';
+}
+
+template <typename Boundary, typename Info>
+inline bool
+Interval<Boundary, Info>::ascii_load(std::istream& s) {
+  std::string str;
+  if (!(s >> str) || str != "info")
+    return false;
+  if (!info().ascii_load(s))
+    return false;
+  if (!(s >> str) || str != "lower")
+    return false;
+  if (!(s >> lower()))
+    return false;
+  if (!(s >> str) || str != "upper")
+    return false;
+  if (!(s >> upper()))
+    return false;
+#ifdef PPL_ABI_BREAKING_EXTRA_DEBUG
+  // CHECKME.
+  complete_init_internal();
+#endif
+  assert(OK());
+  return true;
+}
+
 /*! \brief
   Helper class to select the appropriate numerical type to perform
   boundary computations so as to reduce the chances of overflow without

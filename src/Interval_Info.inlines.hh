@@ -30,10 +30,57 @@ inline void
 Interval_Info_Null<Policy>::swap(Interval_Info_Null<Policy>&) {
 }
 
+template <typename Policy>
+inline void
+Interval_Info_Null<Policy>::ascii_dump(std::ostream& s) const {
+}
+
+template <typename Policy>
+inline bool
+Interval_Info_Null<Policy>::ascii_load(std::istream& s) {
+  return true;
+}
+
+template <typename Policy>
+inline void
+Interval_Info_Null_Open<Policy>::ascii_dump(std::ostream& s) const {
+  s << (open ? "open" : "closed");
+}
+
+template <typename Policy>
+inline bool
+Interval_Info_Null_Open<Policy>::ascii_load(std::istream& s) {
+  std::string str;
+  if (!(s >> str))
+    return false;
+  if (str == "open") {
+    open = true;
+    return true;
+  }
+  if (str == "closed") {
+    open = false;
+    return true;
+  }
+  return false;
+}
+
 template <typename T, typename Policy>
 inline void
 Interval_Info_Bitset<T, Policy>::swap(Interval_Info_Bitset<T, Policy>& y) {
   std::swap(bitset, y.bitset);
+}
+
+template <typename T, typename Policy>
+inline void
+Interval_Info_Bitset<T, Policy>::ascii_dump(std::ostream& s) const {
+  // CHECKME: decode bitset?
+  s << bitset;
+}
+
+template <typename T, typename Policy>
+inline bool
+Interval_Info_Bitset<T, Policy>::ascii_load(std::istream& s) {
+  return (s >> bitset);
 }
 
 } // namespace Parma_Polyhedra_Library

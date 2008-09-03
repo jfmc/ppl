@@ -577,14 +577,8 @@ public:
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
 
-  void ascii_dump(std::ostream& s) const {
-    s << *this << std::endl;
-  }
-
-  bool ascii_load(std::istream& s) {
-    s >> *this;
-    return s;
-  }
+  void ascii_dump(std::ostream& s) const;
+  bool ascii_load(std::istream& s);
 
   bool OK() const {
 #ifdef PPL_ABI_BREAKING_EXTRA_DEBUG

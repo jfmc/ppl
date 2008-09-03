@@ -130,6 +130,9 @@ public:
 
   //! Swaps \p *this with \p y.
   void swap(Interval_Info_Null& y);
+
+  void ascii_dump(std::ostream& s) const;
+  bool ascii_load(std::istream& s);
 };
 
 template <typename Policy>
@@ -146,6 +149,21 @@ public:
     default:
       return Boundary_NS::Property::unsupported_value;
     }
+  }
+  void ascii_dump(std::ostream& s) const {
+    s << (open ? "open" : "closed");
+  }
+  bool ascii_load(std::istream& s) {
+    std::string str;
+    if (!(s >> str))
+      return false;
+    if (str == "open")
+      open = true;
+    else if (str == "closed")
+      open = false;
+    else
+      return false;
+    return true;
   }
 private:
   bool open;
@@ -276,6 +294,9 @@ public:
 
   //! Swaps \p *this with \p y.
   void swap(Interval_Info_Bitset& y);
+
+  void ascii_dump(std::ostream& s) const;
+  bool ascii_load(std::istream& s);
 
 protected:
   T bitset;
