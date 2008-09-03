@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Boundary.defs.hh"
 #include "Interval_Restriction.defs.hh"
 
+#include <iostream>
 
 namespace Parma_Polyhedra_Library {
 

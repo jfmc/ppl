@@ -23,6 +23,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Interval_Info_inlines_hh
 #define PPL_Interval_Info_inlines_hh 1
 
+#include <iomanip>
+
 namespace Parma_Polyhedra_Library {
 
 template <typename Policy>
@@ -73,14 +75,21 @@ Interval_Info_Bitset<T, Policy>::swap(Interval_Info_Bitset<T, Policy>& y) {
 template <typename T, typename Policy>
 inline void
 Interval_Info_Bitset<T, Policy>::ascii_dump(std::ostream& s) const {
-  // CHECKME: decode bitset?
-  s << bitset;
+  std::ios_base::fmtflags old = s.flags();
+  s << std::hex << bitset;
+  s.flags(old);
 }
 
 template <typename T, typename Policy>
 inline bool
 Interval_Info_Bitset<T, Policy>::ascii_load(std::istream& s) {
-  return (s >> bitset);
+  std::ios_base::fmtflags old = s.flags();
+  if (s >> std::hex >> bitset) {
+    s.flags(old);
+    return s;
+  }
+  else
+    return false;
 }
 
 } // namespace Parma_Polyhedra_Library
