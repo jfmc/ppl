@@ -1142,7 +1142,7 @@ public:
 
   /*! \brief
     Constrains \p *this by adding the equalities in \p cgs,
-    minimizing the its constraint representation.
+    minimizing its constraint representation.
 
     \return
     <CODE>false</CODE> if and only if the result is empty.
