@@ -91,7 +91,6 @@ EXTRA_ppl_yap_la_SOURCES = \
 ../ppl_prolog_Constraints_Product_C_Polyhedron_Grid.cc \
 ../ppl_prolog_Double_Box.cc \
 ../ppl_prolog_Grid.cc \
-../ppl_prolog_main.cc \
 ../ppl_prolog_Octagonal_Shape_double.cc \
 ../ppl_prolog_Octagonal_Shape_mpq_class.cc \
 ../ppl_prolog_Octagonal_Shape_mpz_class.cc \

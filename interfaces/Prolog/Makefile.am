@@ -24,8 +24,10 @@ SUBDIRS = . tests Ciao GNU SICStus SWI XSB YAP
 
 interface_generator_files = \
 ppl_interface_generator_prolog_procedure_generators.m4 \
-ppl_interface_generator_prolog_cc_files.m4 \
 ppl_interface_generator_prolog_hh_files.m4 \
+ppl_interface_generator_prolog_hh_code.m4 \
+ppl_interface_generator_prolog_cc_files.m4 \
+ppl_interface_generator_prolog_cc_code.m4 \
 ppl_interface_generator_prolog_systems.m4
 
 EXTRA_DIST = \
