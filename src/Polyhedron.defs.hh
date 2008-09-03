@@ -1125,43 +1125,36 @@ public:
   */
   bool add_congruences_and_minimize(const Congruence_System& cs);
 
-  // FIXME
   /*! \brief
-    Adds the congruences in \p cs to the system of congruences
-    of \p *this (without minimizing the result).
+    Constrains \p *this by adding the equalities in \p cgs.
 
     \param cgs
-    The congruence system to be added to \p *this.  The congruences in
-    \p cgs may be recycled.
+    The congruence system. Its elements may be recycled.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p cs are topology-incompatible or
-    dimension-incompatible.
+    Thrown if \p *this and \p cgs are dimension-incompatible.
 
     \warning
-    The only assumption that can be made on \p cs upon successful or
+    The only assumption that can be made on \p cgs upon successful or
     exceptional return is that it can be safely destroyed.
   */
   void add_recycled_congruences(Congruence_System& cgs);
 
-  // FIXME
   /*! \brief
-    Adds the congruences in \p cs to the system of congruences
-    of \p *this, minimizing the result.
+    Constrains \p *this by adding the equalities in \p cgs,
+    minimizing the its constraint representation.
 
     \return
     <CODE>false</CODE> if and only if the result is empty.
 
     \param cgs
-    The congruence system to be added to \p *this.  The congruences in
-    \p cgs may be recycled.
+    The congruence system. Its elements may be recycled.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p cs are topology-incompatible or
-    dimension-incompatible.
+    Thrown if \p *this and \p cgs are dimension-incompatible.
 
     \warning
-    The only assumption that can be made on \p cs upon successful or
+    The only assumption that can be made on \p cgs upon successful or
     exceptional return is that it can be safely destroyed.
 
     \deprecated
