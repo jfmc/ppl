@@ -23,26 +23,6 @@ Enhancements for PPL 0.10
   programs in the demos directory (they constitute additional examples
   of use of the C and C++ interfaces) and in the directories under tests
   (these are currently covered by a README file).
-
-- Suppose we want to sum three numbers, and suppose we do it by
-
-    add(T& to, const T& x, const T& y, const T& z) {
-      add(to, x, y);
-      add(to, to, z);
-    }
-
-  Now suppose that &to == &z, so that we compute the wrong result.
-  Perform a code audit to ensure that the above situation never happens.
-  In order to ensure that, ensure that the following rule (to be added
-  to STANDARDS) is always obeyed:
-
-    if an argument of type T and passed by reference is changed,
-    after the change no argument of type U and passed by const or
-    non-const reference should be read unless U is incompatible with T
-    or we are otherwise 100% sure that the changed argument and the
-    argument that is read afterward are not aliases (in the latter
-    case an assert(&to != &z) shall be added.
-
 - Define functions rem() and remp() to compute the remainder of division
   in the general case, for rem(), and in the case where the second
   argument is known to be positive, for remp().  In the implementation
@@ -76,6 +56,24 @@ Enhancements for PPL 0.10
 Enhancements for PPL 0.11 or later versions
 ===========================================
 
+- Suppose we want to sum three numbers, and suppose we do it by
+
+    add(T& to, const T& x, const T& y, const T& z) {
+      add(to, x, y);
+      add(to, to, z);
+    }
+
+  Now suppose that &to == &z, so that we compute the wrong result.
+  Perform a code audit to ensure that the above situation never happens.
+  In order to ensure that, ensure that the following rule (to be added
+  to STANDARDS) is always obeyed:
+
+    if an argument of type T and passed by reference is changed,
+    after the change no argument of type U and passed by const or
+    non-const reference should be read unless U is incompatible with T
+    or we are otherwise 100% sure that the changed argument and the
+    argument that is read afterward are not aliases (in the latter
+    case an assert(&to != &z) shall be added.
 - Improve the handling of the --enable-instantiations configure
   option so that "closure by subdomain" is automatically implemented
   (e.g., if Pointset_Powerset(X) is specified, X should be automatically
