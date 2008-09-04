@@ -471,7 +471,7 @@ protected:
   */
   Polyhedron(Topology topol, Generator_System& gs, Recycle_Input dummy);
 
-  //! Builds a polyhedron out of a generic, interval-based bounding box.
+  //! Builds a polyhedron from a box.
   /*!
     This will use an algorithm whose complexity is polynomial and build
     the smallest polyhedron with topology \p topol containing \p box.
@@ -480,60 +480,13 @@ protected:
     The topology of the polyhedron;
 
     \param box
-    The bounding box representing the polyhedron to be built;
+    The box representing the polyhedron to be built;
 
     \param complexity
     This argument is ignored.
-
-    \exception std::invalid_argument
-    Thrown if \p box has intervals that are incompatible with \p topol.
-
-    The template class Box must provide the following methods.
-    \code
-      dimension_type space_dimension() const
-    \endcode
-    returns the dimension of the vector space enclosing the polyhedron
-    represented by the bounding box.
-    \code
-      bool is_empty() const
-    \endcode
-    returns <CODE>true</CODE> if and only if the bounding box
-    describes the empty set.
-    The <CODE>is_empty()</CODE> method will always be called before the
-    methods below.  However, if <CODE>is_empty()</CODE> returns
-    <CODE>true</CODE>, none of the functions below will be called.
-    \code
-      bool get_lower_bound(dimension_type k, bool& closed,
-                           Coefficient& n, Coefficient& d) const
-    \endcode
-    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
-    space dimension.  If \f$I\f$ is not bounded from below, simply return
-    <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
-    <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
-    is set to <CODE>true</CODE> if the the lower boundary of \f$I\f$
-    is closed and is set to <CODE>false</CODE> otherwise;
-    <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
-    \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
-    corresponds to the greatest lower bound of \f$I\f$.  The fraction
-    \f$n/d\f$ is in canonical form if and only if \f$n\f$ and \f$d\f$
-    have no common factors and \f$d\f$ is positive, \f$0/1\f$ being
-    the unique representation for zero.
-    \code
-      bool get_upper_bound(dimension_type k, bool& closed,
-                           Coefficient& n, Coefficient& d) const
-    \endcode
-    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
-    space dimension.  If \f$I\f$ is not bounded from above, simply return
-    <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
-    <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
-    is set to <CODE>true</CODE> if the the upper boundary of \f$I\f$
-    is closed and is set to <CODE>false</CODE> otherwise;
-    <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
-    \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
-    corresponds to the least upper bound of \f$I\f$.
   */
-  template <typename Box>
-  Polyhedron(Topology topol, const Box& box,
+  template <typename Interval>
+  Polyhedron(Topology topol, const Box<Interval>& box,
              Complexity_Class complexity = ANY_COMPLEXITY);
 
   /*! \brief
@@ -910,25 +863,28 @@ public:
   bool add_grid_generator_and_minimize(const Grid_Generator& g) const;
 
   /*! \brief
-    Adds a copy of congruence \p cg to the system of congruences of \p
-    *this (without minimizing the result).
+    Adds a copy of congruence \p cg to \p *this,
+    if \p cg can be exactly represented by a polyhedron.
 
     \exception std::invalid_argument
-    Thrown if \p *this and congruence \p cg are topology-incompatible
-    or dimension-incompatible.
+    Thrown if \p *this and congruence \p cg are dimension-incompatible,
+    of if \p cg is a proper congruence which is neither a tautology,
+    nor a contradiction
   */
   void add_congruence(const Congruence& cg);
 
   /*! \brief
-    Adds a copy of congruence \p cg to the system of congruences
-    of \p *this, minimizing the result
+    Adds a copy of congruence \p cg to \p *this,
+    if \p cg can be exactly represented by a polyhedron,
+    minimizing the result.
 
     \return
     <CODE>false</CODE> if and only if the result is empty.
 
     \exception std::invalid_argument
-    Thrown if \p *this and congruence \p c are topology-incompatible
-    or dimension-incompatible.
+    Thrown if \p *this and congruence \p cg are dimension-incompatible,
+    of if \p cg is a proper congruence which is neither a tautology,
+    nor a contradiction
 
     \deprecated
     See \ref A_Note_on_the_Implementation_of_the_Operators.
@@ -1092,47 +1048,51 @@ public:
   bool add_recycled_generators_and_minimize(Generator_System& gs);
 
   /*! \brief
-    Adds to \p *this constraints equivalent to the congruences in \p
-    cgs (without minimizing the result).
+    Adds a copy of the congruences in \p cgs to \p *this,
+    if all the congruences can be exactly represented by a polyhedron.
 
     \param cgs
-    Contains the congruences that will be added to the system of
-    constraints of \p *this.
+    The congruences to be added.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p cgs are topology-incompatible or
-    dimension-incompatible.
+    Thrown if \p *this and \p cgs are dimension-incompatible,
+    of if there exists in \p cgs a proper congruence which is
+    neither a tautology, nor a contradiction
   */
   void add_congruences(const Congruence_System& cgs);
 
   /*! \brief
-    Adds a copy of the congruences in \p cs to the system
-    of congruences of \p *this, minimizing the result.
+    Adds a copy of the congruences in \p cgs to \p *this,
+    if all the congruences can be exactly represented by a polyhedron,
+    minimizing the result.
 
     \return
     <CODE>false</CODE> if and only if the result is empty.
 
-    \param cs
-    Contains the congruences that will be added to the system of
-    congruences of \p *this.
+    \param cgs
+    The congruences to be added.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p cs are topology-incompatible or
-    dimension-incompatible.
+    Thrown if \p *this and \p cgs are dimension-incompatible,
+    of if there exists in \p cgs a proper congruence which is
+    neither a tautology, nor a contradiction
 
     \deprecated
     See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
-  bool add_congruences_and_minimize(const Congruence_System& cs);
+  bool add_congruences_and_minimize(const Congruence_System& cgs);
 
   /*! \brief
-    Constrains \p *this by adding the equalities in \p cgs.
+    Adds the congruences in \p cgs to \p *this,
+    if all the congruences can be exactly represented by a polyhedron.
 
     \param cgs
-    The congruence system. Its elements may be recycled.
+    The congruences to be added. Its elements may be recycled.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p cgs are dimension-incompatible.
+    Thrown if \p *this and \p cgs are dimension-incompatible,
+    of if there exists in \p cgs a proper congruence which is
+    neither a tautology, nor a contradiction
 
     \warning
     The only assumption that can be made on \p cgs upon successful or
@@ -1141,17 +1101,20 @@ public:
   void add_recycled_congruences(Congruence_System& cgs);
 
   /*! \brief
-    Constrains \p *this by adding the equalities in \p cgs,
-    minimizing its constraint representation.
+    Adds the congruences in \p cgs to \p *this,
+    if all the congruences can be exactly represented by a polyhedron,
+    minimizing the result.
 
     \return
     <CODE>false</CODE> if and only if the result is empty.
 
     \param cgs
-    The congruence system. Its elements may be recycled.
+    The congruences to be added. Its elements may be recycled.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p cgs are dimension-incompatible.
+    Thrown if \p *this and \p cgs are dimension-incompatible,
+    of if there exists in \p cgs a proper congruence which is
+    neither a tautology, nor a contradiction
 
     \warning
     The only assumption that can be made on \p cgs upon successful or
