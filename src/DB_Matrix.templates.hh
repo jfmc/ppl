@@ -298,7 +298,7 @@ DB_Matrix<T>::OK() const {
 }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-/*! \relates Parma_Polyhedra_Library::DB_Matrix */  //FIXME!!
+/*! \relates Parma_Polyhedra_Library::DB_Matrix */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 std::ostream&
