@@ -32,6 +32,15 @@ configure
 dist_noinst_HEADERS = \
 instchk.hh
 
+dist-hook:
+	sed -e "s/^enableval=thorough$$/enableval=quick/g" \
+		<$(distdir)/configure.ac >$(distdir)/configure.ac.new \
+	&& mv $(distdir)/configure.ac.new $(distdir)/configure.ac
+	sed -e "s/^enableval=thorough$$/enableval=quick/g" \
+		<$(distdir)/configure >$(distdir)/configure.new \
+	&& mv $(distdir)/configure.new $(distdir)/configure \
+	&& chmod +x $(distdir)/configure
+
 EXTRA_DIST = \
 ppl.lsm.in \
 BUGS CREDITS README.configure STANDARDS

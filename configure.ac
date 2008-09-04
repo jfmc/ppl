@@ -961,6 +961,24 @@ bool valid = ${instantiation}::valid_instantiation();
   ;;
 esac
 
+enableval=thorough
+AC_MSG_CHECKING([whether `make check' does a thorough or quick check])
+AC_ARG_ENABLE(check,
+  AC_HELP_STRING([--enable-check],
+    [select thorough or quick `make check']))
+case "${enableval}" in
+thorough)
+  AC_MSG_RESULT(thorough)
+  ;;
+quick)
+  AC_MSG_RESULT(quick)
+  ;;
+*)
+  AC_MSG_ERROR([bad value ${enableval} for --enable-check, needs thorough or quick])
+  ;;
+esac
+AM_CONDITIONAL(THOROUGH_MAKE_CHECK, test x"$enableval" = xthorough)
+
 # Libtool.
 LT_INIT([dlopen])
 AM_CONDITIONAL(ENABLE_SHARED, test x"$enable_shared" = xyes)
