@@ -147,9 +147,9 @@ test04() {
   string str;
   do
     f >> str;
-  while (str != "3");
+  while (str != "(3)");
   f.seekp(0, ios_base::cur);
-  f << "A";
+  f << "Z(";
   close(f);
 
   open(f, my_file, ios_base::in);
