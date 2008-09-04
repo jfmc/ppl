@@ -447,14 +447,14 @@ test12() {
 bool
 test13() {
   Variable x(0);
-  Congruence cg = (x %= 0);
+  Congruence cg = (Linear_Expression(0) %= 0);
   Pointset_Powerset<C_Polyhedron> ps(1, EMPTY);
   ps.add_disjunct(C_Polyhedron(1));
   ps.add_congruence(cg);
-  Congruence cg1 = ((x %= 0) / 2);
-  bool ok = ps.add_congruence_and_minimize(cg1);
-
-  return ok && ps.OK();
+  Congruence cg1 = ((Linear_Expression(25) %= 1) / 2);
+  ps.add_congruence(cg1);
+  bool ok = !ps.is_empty() && ps.OK();
+  return ok;
 }
 
 bool
@@ -469,7 +469,7 @@ test14() {
   cs.insert(x <= 3);
   bool ok = ps.add_constraints_and_minimize(cs);
   cs.insert(x <= 2);
-  ok = ok && !ps.add_constraints_and_minimize(cs);
+  ok &= !ps.add_constraints_and_minimize(cs);
 
   return ok && ps.OK();
 }
@@ -478,17 +478,19 @@ bool
 test15() {
   Variable x(0);
   Congruence_System cgs;
-  cgs.insert(x %= 0);
+  cgs.insert((x %= 0) / 0);
   Pointset_Powerset<C_Polyhedron> ps(1, EMPTY);
   ps.add_disjunct(C_Polyhedron(1));
   ps.add_congruences(cgs);
-  cgs.insert((x %= 0) / 2);
-  bool ok = ps.add_congruences_and_minimize(cgs);
+  cgs.insert((x %= 0) / 0);
+  ps.add_congruences(cgs);
+  bool ok = !ps.is_empty();
   cgs.insert((x %= 0) / 0);
   cgs.insert((x %= 1) / 0);
-  ok = ok && !ps.add_congruences_and_minimize(cgs);
+  ps.add_congruences(cgs);
+  ok &= ps.is_empty() && ps.OK();
 
-  return ok && ps.OK();
+  return ok;
 }
 
 bool
