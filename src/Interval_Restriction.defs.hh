@@ -316,7 +316,8 @@ class Interval_Restriction_Integer_Modulo : public Interval_Restriction_Integer_
 public:
   COMPILE_TIME_CHECK(std::numeric_limits<T>::is_exact, "Type for modulo values must be exact.");
   Interval_Restriction_Integer_Modulo() {
-    // FIXME: we'd have speed benefits with uninitialized info? (Dirty_Temp)
+    // FIXME: would we have speed benefits with uninitialized info?
+    // (Dirty_Temp)
     clear();
   }
   bool has_restriction() const {

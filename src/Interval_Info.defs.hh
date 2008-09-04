@@ -183,7 +183,8 @@ public:
   const_int_nodef(cardinality_1_bit, cardinality_0_bit + cache_empty);
   const_int_nodef(next_bit, cardinality_1_bit + cache_singleton);
   Interval_Info_Bitset() {
-    // FIXME: we'd have speed benefits with uninitialized info? (Dirty_Temp)
+    // FIXME: would we have speed benefits with uninitialized info?
+    // (Dirty_Temp)
     clear();
   }
 
