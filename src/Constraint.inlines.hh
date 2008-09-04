@@ -172,10 +172,8 @@ operator>=(const Linear_Expression& e1, const Linear_Expression& e2) {
 /*! \relates Constraint */
 inline Constraint
 operator>=(const Variable v1, const Variable v2) {
-  // TODO: this is just an executable specification.
-  // As this is frequently used by client code, it is important
-  // to provide a more efficient implementation.
-  return Linear_Expression(v1) >= Linear_Expression(v2);
+  Linear_Expression diff = v1-v2;
+  return Constraint(diff, Constraint::NONSTRICT_INEQUALITY, NECESSARILY_CLOSED);
 }
 
 /*! \relates Constraint */
@@ -200,10 +198,11 @@ operator>(const Linear_Expression& e1, const Linear_Expression& e2) {
 /*! \relates Constraint */
 inline Constraint
 operator>(const Variable v1, const Variable v2) {
-  // TODO: this is just an executable specification.
-  // As this is frequently used by client code, it is important
-  // to provide a more efficient implementation.
-  return Linear_Expression(v1) > Linear_Expression(v2);
+  Linear_Expression diff = v1-v2;
+  diff -= Variable(std::max(v1.space_dimension(), v2.space_dimension()));
+  return Constraint(diff,
+                    Constraint::STRICT_INEQUALITY,
+                    NOT_NECESSARILY_CLOSED);
 }
 
 /*! \relates Constraint */

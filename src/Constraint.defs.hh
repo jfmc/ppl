@@ -485,6 +485,8 @@ private:
   friend Constraint
   operator>=(const Linear_Expression& e1, const Linear_Expression& e2);
   friend Constraint
+  operator>=(Variable v1, Variable v2);
+  friend Constraint
   operator>=(const Linear_Expression& e, Coefficient_traits::const_reference n);
   friend Constraint
   operator>=(Coefficient_traits::const_reference n, const Linear_Expression& e);
@@ -498,6 +500,8 @@ private:
 
   friend Constraint
   operator>(const Linear_Expression& e1, const Linear_Expression& e2);
+  friend Constraint
+  operator>(Variable v1, Variable v2);
   friend Constraint
   operator>(const Linear_Expression& e, Coefficient_traits::const_reference n);
   friend Constraint
