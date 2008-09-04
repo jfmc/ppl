@@ -155,12 +155,11 @@ public:
 
   //! Builds an NNC polyhedron out of a box.
   /*!
-    The polyhedron inherits the space dimension of the box.
-    The built polyhedron is the most precise that includes the
-    box.
+    The polyhedron inherits the space dimension of the box
+    and is the most precise that includes the box.
 
     \param box
-    The bounding box representing the polyhedron to be built;
+    The box representing the polyhedron to be built;
 
     \param complexity
     This argument is ignored as the algorithm used has
@@ -174,11 +173,10 @@ public:
   explicit NNC_Polyhedron(const Box<Interval>& box,
                           Complexity_Class complexity = ANY_COMPLEXITY);
 
-  //! Builds an NNC polyhedron that approximates a grid.
+  //! Builds an NNC polyhedron out of a grid.
   /*!
-    The polyhedron inherits the space dimension of the grid.
-    The built polyhedron is the most precise that includes the
-    grid.
+    The polyhedron inherits the space dimension of the grid
+    and is the most precise that includes the grid.
 
     \param grid
     The grid used to build the polyhedron.
@@ -190,14 +188,13 @@ public:
   explicit NNC_Polyhedron(const Grid& grid,
                           Complexity_Class complexity = ANY_COMPLEXITY);
 
-  //! Builds a NNC polyhedron out of a bd shape.
+  //! Builds a NNC polyhedron out of a BD shape.
   /*!
-    The polyhedron inherits the space dimension of the bd shape.
-    The built polyhedron is the most precise that includes the
-    bd shape.
+    The polyhedron inherits the space dimension of the BD shape
+    and is the most precise that includes the BD shape.
 
     \param bd
-    The bd shape used to build the polyhedron.
+    The BD shape used to build the polyhedron.
 
     \param complexity
     This argument is ignored as the algorithm used has
@@ -209,9 +206,8 @@ public:
 
   //! Builds a NNC polyhedron out of an octagonal shape.
   /*!
-    The polyhedron inherits the space dimension of the octagonal shape.
-    The built polyhedron is the most precise that includes the
-    octagonal shape.
+    The polyhedron inherits the space dimension of the octagonal shape
+    and is the most precise that includes the octagonal shape.
 
     \param os
     The octagonal shape used to build the polyhedron.

@@ -176,14 +176,12 @@ public:
 
   //! Builds a C polyhedron out of a box.
   /*!
-    FIXME: we should build a sound approximation, not throw invalid argument.
-
-    The polyhedron inherits the space dimension of the Box.
-    The built polyhedron is the most precise that includes the
-    Box. The algorithm used has polynomial complexity.
+    The polyhedron inherits the space dimension of the box
+    and is the most precise that includes the box.
+    The algorithm used has polynomial complexity.
 
     \param box
-    The bounding box representing the polyhedron to be approximated;
+    The box representing the polyhedron to be approximated;
 
     \param complexity
     This argument is ignored.
@@ -191,20 +189,15 @@ public:
     \exception std::length_error
     Thrown if the space dimension of \p box exceeds the maximum allowed
     space dimension.
-
-    \exception std::invalid_argument
-    Thrown if \p box has intervals that are not topologically closed
-    (i.e., having some finite but open bounds).
   */
   template <typename Interval>
   explicit C_Polyhedron(const Box<Interval>& box,
                         Complexity_Class complexity = ANY_COMPLEXITY);
 
-  //! Builds a C polyhedron out of a bounded-difference shape.
+  //! Builds a C polyhedron out of a BD shape.
   /*!
-    The polyhedron inherits the space dimension of the BDS.
-    The built polyhedron is the most precise that includes the
-    BDS.
+    The polyhedron inherits the space dimension of the BDS and is
+    the most precise that includes the BDS.
 
     \param bd
     The BDS used to build the polyhedron.
@@ -219,9 +212,8 @@ public:
 
   //! Builds a C polyhedron out of an octagonal shape.
   /*!
-    The polyhedron inherits the space dimension of the octagonal shape.
-    The built polyhedron is the most precise that includes the
-    octagonal shape.
+    The polyhedron inherits the space dimension of the octagonal shape
+    and is the most precise that includes the octagonal shape.
 
     \param os
     The octagonal shape used to build the polyhedron.
@@ -234,11 +226,10 @@ public:
   explicit C_Polyhedron(const Octagonal_Shape<U>& os,
                         Complexity_Class complexity = ANY_COMPLEXITY);
 
-  //! Builds a C polyhedron that approximates a grid.
+  //! Builds a C polyhedron out of a grid.
   /*!
-    The polyhedron inherits the space dimension of the grid.
-    The built polyhedron is the most precise that includes the
-    grid.
+    The polyhedron inherits the space dimension of the grid
+    and is the most precise that includes the grid.
 
     \param grid
     The grid used to build the polyhedron.
