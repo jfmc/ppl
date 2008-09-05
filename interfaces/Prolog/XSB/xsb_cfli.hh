@@ -122,7 +122,7 @@ Prolog_put_address(Prolog_term_ref& t, void* p) {
 /*!
   Return an atom whose name is given by the null-terminated string \p s.
 */
-Prolog_atom
+inline Prolog_atom
 Prolog_atom_from_string(const char* s) {
   return string_find(const_cast<char*>(s), 1);
 }
