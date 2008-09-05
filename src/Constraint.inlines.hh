@@ -155,7 +155,8 @@ operator==(const Linear_Expression& e1, const Linear_Expression& e2) {
 /*! \relates Constraint */
 inline Constraint
 operator==(const Variable v1, const Variable v2) {
-  Linear_Expression diff = v1-v2;
+  Linear_Expression diff
+    = (v1.space_dimension() < v2.space_dimension()) ? v1-v2 : v2-v1;
   return Constraint(diff, Constraint::EQUALITY, NECESSARILY_CLOSED);
 }
 
