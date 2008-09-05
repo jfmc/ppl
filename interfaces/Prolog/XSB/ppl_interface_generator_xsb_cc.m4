@@ -32,6 +32,10 @@ m4_include(`ppl_interface_generator_copyright')dnl
 
 #include "../ppl_prolog_domains.hh"
 
+m4_divert(1)dnl
+
+m4_divert(2)dnl
+
 #define XSB_ENTRY_0(name) \
 extern "C" Prolog_foreign_return_type \
 name() { \
