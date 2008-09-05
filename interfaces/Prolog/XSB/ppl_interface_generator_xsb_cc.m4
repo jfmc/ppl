@@ -30,11 +30,9 @@ m4_divert`'dnl
 m4_include(`ppl_interface_generator_copyright')dnl
 */
 
-m4_divert(1)dnl
-
 #include "../ppl_prolog_domains.hh"
 
-m4_divert(2)dnl
+m4_divert(1)dnl
 
 #define XSB_ENTRY_0(name) \
 extern "C" Prolog_foreign_return_type \
@@ -99,22 +97,17 @@ name() { \
   return xsb_stub_##name(arg1, arg2, arg3, arg4, arg5, arg6); \
 }
 
-m4_divert(3)dnl
+m4_divert(2)dnl
 
 extern "C" void
 init() {
-  ppl_initialize();
+   ppl_initialize();
 }
-m4_divert`'dnl
-m4_define(`m4_extension', `#define $1 xsb_stub_$1
-')dnl
-ppl_prolog_sys_code`'dnl
-m4_undivert(1)`'dnl
 m4_divert`'dnl
 m4_define(`m4_extension', `#undef $1
 ')dnl
 ppl_prolog_sys_code`'dnl
-m4_undivert(2)
+m4_undivert(1)
 
 m4_define(`m4_extension', `XSB_ENTRY_$2($1)
 ')
