@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "globals.defs.hh"
 #include <iostream>
 #include <string>
+#include <climits>
 
 #include "swapping_sort.icc"
 
