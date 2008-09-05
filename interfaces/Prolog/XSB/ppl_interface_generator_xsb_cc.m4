@@ -30,9 +30,9 @@ m4_divert`'dnl
 m4_include(`ppl_interface_generator_copyright')dnl
 */
 
-#include "../ppl_prolog_domains.hh"
-
 m4_divert(1)dnl
+
+#include "../ppl_prolog_domains.hh"
 
 m4_divert(2)dnl
 
