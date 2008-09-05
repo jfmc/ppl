@@ -283,7 +283,7 @@ bool test13() {
   Variable y(1);
 
   Congruence_System cgs;
-  cgs.insert(x %= 3);
+  cgs.insert(0*x %= 3);
   cgs.insert(y == 3);
 
   C_Polyhedron ph(cgs);
