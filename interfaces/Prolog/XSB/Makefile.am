@@ -26,6 +26,7 @@ XSB_CFLI_FILES = xsb_cfli.hh
 
 EXTRA_DIST = \
 ppl_interface_generator_xsb_cc.m4 \
+ppl_interface_generator_xsb_hh.m4 \
 ppl_interface_generator_xsb_H.m4 \
 $(XSB_CFLI_FILES) \
 xsb_clpq.P \
@@ -61,6 +62,10 @@ ppl_interface_generator_xsb_predicate_check_P.m4
 ppl_xsb.H: $(interface_generator_dependencies) ppl_interface_generator_xsb_H.m4 Makefile
 	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_xsb_H.m4 > $@
+
+ppl_xsb.hh: $(interface_generator_dependencies) ppl_interface_generator_xsb_hh.m4 Makefile
+	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
+           $(srcdir)/ppl_interface_generator_xsb_hh.m4 > $@
 
 ppl_xsb.cc: $(interface_generator_dependencies) ppl_interface_generator_xsb_cc.m4 Makefile
 	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
