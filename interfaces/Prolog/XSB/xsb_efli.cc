@@ -44,7 +44,7 @@ ppl_Prolog_sysdep_deinit() {
 }
 
 inline int
-Prolog_get_Coefficient(Prolog_term_ref t, PPL::Coefficient& n) {
+Prolog_get_Coefficient(Prolog_term_ref t, Coefficient& n) {
   // XSB supports only 32-bit integers.
   long l;
   Prolog_get_long(t, &l);
@@ -53,15 +53,17 @@ Prolog_get_Coefficient(Prolog_term_ref t, PPL::Coefficient& n) {
 }
 
 int
-Prolog_put_Coefficient(Prolog_term_ref& t, const PPL::Coefficient& n) {
+Prolog_put_Coefficient(Prolog_term_ref& t, const Coefficient& n) {
   long l = 0;
-  if (PPL::assign_r(l, n, PPL::ROUND_NOT_NEEDED) != PPL::V_EQ)
-    throw PPL_integer_out_of_range(n);
+  if (assign_r(l, n, ROUND_NOT_NEEDED) != V_EQ)
+    //FIXME
+    throw 0;
+    //throw PPL_integer_out_of_range(n);
   return Prolog_put_long(t, l);
 }
 
 int
-Prolog_unify_Coefficient(Prolog_term_ref t, const PPL::Coefficient& n) {
+Prolog_unify_Coefficient(Prolog_term_ref t, const Coefficient& n) {
   Prolog_term_ref u = Prolog_new_term_ref();
   return Prolog_put_Coefficient(u, n) && Prolog_unify(t, u);
 }
