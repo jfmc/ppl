@@ -21,3 +21,4 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "xsb_efli.hh"
+#include "ppl_xsb.hh"

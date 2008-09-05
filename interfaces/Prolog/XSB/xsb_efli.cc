@@ -43,7 +43,7 @@ void
 ppl_Prolog_sysdep_deinit() {
 }
 
-inline int
+int
 Prolog_get_Coefficient(Prolog_term_ref t, Coefficient& n) {
   // XSB supports only 32-bit integers.
   long l;
