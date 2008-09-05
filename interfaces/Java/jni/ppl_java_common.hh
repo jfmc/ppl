@@ -24,7 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <ppl.hh>
 #include "interfaced_boxes.hh"
 
-
 using namespace Parma_Polyhedra_Library;
 
 #define CATCH_ALL \
@@ -213,9 +212,6 @@ build_java_grid_generator(JNIEnv* env, const Grid_Generator& grid_g);
 jlong
 get_ptr(JNIEnv* env, const jobject& ppl_object);
 
-// Get a pointer to the underlying C++ object from a Java object.
-void
-set_ptr(JNIEnv* env, const jobject& ppl_object, const long long address);
 
 // Builds a PPL grid generator system from a Java grid generator system.
 Parma_Polyhedra_Library::Grid_Generator_System
@@ -294,10 +290,25 @@ void set_pair_element(JNIEnv* env, jobject& pair_to_be_set, int arg,
 jobject get_pair_element(JNIEnv* env, int arg, const jobject& pair);
 
 jboolean is_null(JNIEnv* env, jobject obj);
+
+
+
+
+// FIXME: this section is in the header file to allow g++ to build
+//        templatic code
+
+// Set the pointer of the underlying C++ object in the Java object
+template <typename T>
+void
+set_ptr(JNIEnv* env, const jobject& ppl_object, const T* address) {
+  jclass ppl_object_class = env->GetObjectClass(ppl_object);
+  jfieldID pointer_field = env->GetFieldID(ppl_object_class, "ptr","J");
+  env->SetLongField(ppl_object, pointer_field, (long long) address);
+
+}
+
 // Builds the Java linear expression starting from a congruence,
 // a constraint or a generator.
-// FIXME: left in the header file to allow g++ to build template code
-// properly.
 template <typename R>
 jobject
 get_linear_expression(JNIEnv* env, const R& r) {

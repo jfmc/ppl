@@ -634,12 +634,6 @@ get_ptr(JNIEnv* env, const jobject& ppl_object) {
   return  env->GetLongField(ppl_object, pointer_field);
 }
 
-void
-set_ptr(JNIEnv* env, const jobject& ppl_object, const long long address) {
-  jclass ppl_object_class = env->GetObjectClass(ppl_object);
-  jfieldID pointer_field = env->GetFieldID(ppl_object_class, "ptr","J");
-  env->SetLongField(ppl_object, pointer_field, address);
-}
 
 void
 set_is_a_reference(JNIEnv* env, const jobject& ppl_object, const bool reference) {
