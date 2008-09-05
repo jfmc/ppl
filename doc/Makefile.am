@@ -377,6 +377,7 @@ $(PS_LICENSES) \
 $(MANUALS)
 
 dist_man_MANS = \
+libppl.3 \
 ppl-config.1 \
 ppl_lcdd.1 \
 ppl_lpsol.1
