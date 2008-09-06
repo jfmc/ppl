@@ -21,6 +21,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "gprolog_efli.hh"
+#include "ppl_prolog_common.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -56,9 +57,7 @@ Prolog_put_Coefficient(Prolog_term_ref& t, const Coefficient& n) {
   long l = 0;
   if (assign_r(l, n, ROUND_NOT_NEEDED) != V_EQ
       || !Prolog_put_long(t, l))
-    //throw PPL_integer_out_of_range(n);
-    // FIXME
-    throw 0;
+    throw PPL_integer_out_of_range(n);
   return 1;
 }
 
