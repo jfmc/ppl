@@ -115,6 +115,13 @@ random_polytope(C_Polyhedron& ph,
 		unsigned num_points,
 		float radius = 1.0) {
   assert(dimension >= 2);
+
+  // This setting and resetting of the rounding mode was prompted by
+  // the GLIBC bug http://sources.redhat.com/bugzilla/show_bug.cgi?id=6869 .
+  // However, even when this bug will be fixed, we want to keep this
+  // rounding mode setting/resetting code, so that it gets tested.
+  restore_pre_PPL_rounding();
+
   std::vector<float> theta(dimension-1);
   std::vector<float> coordinate(dimension);
 
@@ -132,13 +139,22 @@ random_polytope(C_Polyhedron& ph,
       le += Variable(i)*Coefficient(coordinate[i]*1000000.0);
     ph.add_generator(point(le));
   }
+
+  // Restore the rounding mode as needed by the PPL.
+  set_rounding_for_PPL();
 }
 
 } // namespace test02_namespace
 
 bool
 test02() {
-  for (unsigned dimension = 2; dimension <= 6; ++dimension) {
+  for (unsigned dimension = 2;
+#ifdef NDEBUG
+       dimension <= 6;
+#else
+       dimension <= 4;
+#endif
+       ++dimension) {
     C_Polyhedron ph(dimension, EMPTY);
     test02_namespace::random_polytope(ph, dimension, dimension*dimension);
     // Count the number of constraints.
