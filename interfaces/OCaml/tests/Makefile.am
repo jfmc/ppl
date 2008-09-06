@@ -69,7 +69,7 @@ test1$(EXEEXT): test1.cmo
 		 -ccopt -g -ccopt -L$(top_builddir)/src/.libs $<
 
 
-ppl_ocaml_generated_test_SOURCES = ppl_ocaml_generated_test.ml
+nodist_ppl_ocaml_generated_test_SOURCES = ppl_ocaml_generated_test.ml
 
 ppl_ocaml_generated_test.ml: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I../.. \
