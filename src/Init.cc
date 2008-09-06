@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Init.defs.hh"
 #include "Variable.defs.hh"
 #include "fpu.defs.hh"
+#include "Rounding_Dir.defs.hh"
 #include "checked.defs.hh"
 #include "Coefficient.defs.hh"
 #include "Linear_Expression.defs.hh"

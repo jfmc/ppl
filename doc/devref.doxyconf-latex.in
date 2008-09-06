@@ -109,6 +109,7 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/checked.cc \
                          @srcdir@/../src/Init.types.hh \
                          @srcdir@/../src/Init.defs.hh \
+                         @srcdir@/../src/Init.inlines.hh \
                          @srcdir@/../src/Init.cc \
                          @srcdir@/../src/initializer.hh \
                          @srcdir@/../src/globals.types.hh \

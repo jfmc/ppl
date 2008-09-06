@@ -210,6 +210,7 @@ Variable.inlines.hh \
 Variables_Set.defs.hh \
 Variables_Set.inlines.hh \
 Init.defs.hh \
+Init.inlines.hh \
 initializer.hh \
 Topology.hh \
 Row.defs.hh \
