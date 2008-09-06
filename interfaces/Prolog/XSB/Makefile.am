@@ -91,6 +91,9 @@ nodist_libppl_xsb_la_SOURCES = \
 ppl_xsb.hh \
 ../ppl_prolog_common.cc
 
+BUILT_SOURCES = \
+ppl_xsb.hh
+
 nodist_EXTRA_libppl_xsb_la_SOURCES = \
 ../ppl_prolog_BD_Shape_double.cc \
 ../ppl_prolog_BD_Shape_mpq_class.cc \
