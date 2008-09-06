@@ -32,15 +32,16 @@ namespace Parma_Polyhedra_Library {
   Sets the FPU rounding mode so that the PPL abstractions based on
   floating point numbers work correctly.
 
-  This is performed automatically at initialization-time.  You only need
-  to use this function if you called restore_pre_PPL_rounding().
+  This is performed automatically at initialization-time.  Calling
+  this function is needed only if restore_pre_PPL_rounding() has been
+  previously called.
 */
 void set_rounding_for_PPL();
 
 /*! \brief
   Sets the FPU rounding mode as it was before initialization of the PPL.
 
-  After calling this function you absolutely need to call
+  After calling this function it is absolutely necessary to call
   set_rounding_for_PPL() before using any PPL abstractions based on
   floating point numbers.
   This is performed automatically at finalization-time.
