@@ -51,13 +51,11 @@ OCAMLC_FLAGS = -I +gmp -I $(srcdir) -I ..
 
 TESTS_ENVIRONMENT = \
 	$(LIBTOOL) --mode=execute \
-		-dlopen ../../../src/libppl.la $(WATCHDOG_DLOPEN)
+		 -dlopen ../../../src/libppl.la $(WATCHDOG_DLOPEN)
 
 TESTS = \
 test1 \
 ppl_ocaml_generated_test
-
-#check-local: $(TESTS)
 
 check_PROGRAMS = $(TESTS)
 
