@@ -46,11 +46,6 @@ OCaml_interface.dox
 
 if BUILD_OCAML_INTERFACE
 
-BUILT_SOURCES = \
-ppl_ocaml.cc \
-ppl_ocaml.ml \
-ppl_ocaml.mli
-
 interface_generator_dependencies = \
 $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../ppl_interface_generator_common.m4 \

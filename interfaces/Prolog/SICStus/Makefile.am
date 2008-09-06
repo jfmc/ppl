@@ -50,11 +50,6 @@ $(WATCHDOG_INCLUDE_OPTIONS) \
 $(SICSTUS_PROLOG_INCLUDE_OPTIONS) \
 @extra_includes@
 
-BUILT_SOURCES = \
-ppl_sicstus_sd.cc \
-@required_instantiations_prolog_cxx_headers@ \
-@required_instantiations_prolog_cxx_sources@
-
 interface_generator_dependencies = \
 $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../../ppl_interface_generator_common.m4 \

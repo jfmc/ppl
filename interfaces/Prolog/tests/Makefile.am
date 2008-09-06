@@ -61,8 +61,7 @@ $(required_instantiations_predicate_check_sources)
 
 if BUILD_SOME_PROLOG_INTERFACES
 
-BUILT_SOURCES = \
-ppl_predicate_check_main.pl
+check-local: ppl_predicate_check_main.pl
 
 interface_generator_dependencies = \
 $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \

@@ -42,9 +42,6 @@ WATCHDOG_LINK_OPTIONS = -L$(top_builddir)/Watchdog/src/.libs -lpwl
 
 endif BUILD_WATCHDOG_LIBRARY
 
-BUILT_SOURCES = \
-ppl_yap.cc
-
 interface_generator_dependencies = \
 $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../../ppl_interface_generator_common.m4 \
