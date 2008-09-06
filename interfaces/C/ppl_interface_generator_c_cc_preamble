@@ -224,6 +224,20 @@ ppl_finalize(void) try {
 CATCH_ALL
 
 int
+ppl_set_rounding_for_PPL(void) try {
+  set_rounding_for_PPL();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_restore_pre_PPL_rounding(void) try {
+  restore_pre_PPL_rounding();
+  return 0;
+}
+CATCH_ALL
+
+int
 ppl_version_major(void) try {
   return version_major();
 }
