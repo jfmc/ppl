@@ -86,7 +86,7 @@ nodist_ppl_yap_la_SOURCES = \
 ppl_yap.cc \
 ../ppl_prolog_common.cc
 
-EXTRA_ppl_yap_la_SOURCES = \
+nodist_EXTRA_ppl_yap_la_SOURCES = \
 ../ppl_prolog_BD_Shape_double.cc \
 ../ppl_prolog_BD_Shape_mpq_class.cc \
 ../ppl_prolog_BD_Shape_mpz_class.cc \
