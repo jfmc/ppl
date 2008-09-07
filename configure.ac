@@ -1016,6 +1016,7 @@ then
                 AC_DEFINE(GLPK_HAS_GLP_TERM_HOOK,
                           1,
                           [Defined if GLPK provides glp_term_hook().]))
+  LIBS="$ac_save_LIBS"
 fi
 AC_LANG_POP(C)
 
