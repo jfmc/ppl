@@ -388,7 +388,6 @@ $(NESTED_INCLUDE_FILES) \
 swapping_sort.icc
 #Pointset_Ask_Tell.cc
 
-
 if NO_UNDEFINED
 
 NO_UNDEFINED_FLAG = -no-undefined
@@ -396,6 +395,7 @@ NO_UNDEFINED_FLAG = -no-undefined
 endif NO_UNDEFINED
 
 libppl_la_LIBADD = @extra_libraries@
+
 libppl_la_LDFLAGS = \
 $(NO_UNDEFINED_FLAG) \
 -version-info $(LIBPPL_LT_CURRENT):$(LIBPPL_LT_REVISION):$(LIBPPL_LT_AGE)
