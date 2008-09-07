@@ -52,7 +52,7 @@ OCAMLC_LINK_FLAGS = \
 `echo " $(extra_libraries) -L$(top_builddir)/src/.libs" | sed -e "s/ -/ -cclib -/g"`
 
 .ml.cmo:
-	ocamlc -o $@ -g -c $(OCAMLC_COMPILEFLAGS) $<
+	ocamlc -o $@ -g -c $(OCAMLC_COMPILE_FLAGS) $<
 
 TESTS_ENVIRONMENT = \
 	$(LIBTOOL) --mode=execute \
