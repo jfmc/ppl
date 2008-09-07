@@ -81,13 +81,13 @@ ppl_ocaml.cma: ppl_ocaml_types.cmo ppl_ocaml_globals.cmo ppl_ocaml.cmo
 		ppl_ocaml_types.cmo ppl_ocaml_globals.cmo ppl_ocaml.cmo \
 		$(OCAMLC_FLAGS) -cclib -lppl_ocaml   -cclib -lppl
 
-ppl_ocaml.cmo: ppl_ocaml.ml ppl_ocaml.cmi
+ppl_ocaml.cmo: ppl_ocaml.ml ppl_ocaml.cmi ppl_ocaml_types.cmi
 	ocamlc -o $@ -g -c $(OCAMLC_FLAGS) ppl_ocaml.ml
 
 ppl_ocaml.cmi: ppl_ocaml.mli
 	ocamlc -o $@ -g -c $(OCAMLC_FLAGS) $<
 
-ppl_ocaml_globals.cmo ppl_ocaml_globals.cmi: ppl_ocaml_globals.ml
+ppl_ocaml_globals.cmo: ppl_ocaml_globals.ml ppl_ocaml_types.cmi
 	ocamlc -o $@ -g -c $(OCAMLC_FLAGS) $(srcdir)/ppl_ocaml_globals.ml
 
 ppl_ocaml_globals.cmi: ppl_ocaml_globals.cmo
@@ -96,7 +96,7 @@ ppl_ocaml_globals.cmi: ppl_ocaml_globals.cmo
 		$(MAKE) $(AM_MAKEFLAGS) ppl_ocaml_globals.cmo; \
 	fi
 
-ppl_ocaml_types.cmo ppl_ocaml_types.cmi: ppl_ocaml_types.ml
+ppl_ocaml_types.cmo: ppl_ocaml_types.ml
 	ocamlc -o $@ -g -c $(OCAMLC_FLAGS) $(srcdir)/ppl_ocaml_types.ml
 
 ppl_ocaml_types.cmi: ppl_ocaml_types.cmo
