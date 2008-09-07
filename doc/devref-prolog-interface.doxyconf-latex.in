@@ -83,9 +83,11 @@ WARN_LOGFILE           =
 # configuration options related to the input files
 #---------------------------------------------------------------------------
 INPUT                  = @srcdir@/../interfaces/Prolog/Prolog_interface.dox \
-                         @srcdir@/../interfaces/Prolog/exceptions.hh \
-                         @srcdir@/../interfaces/Prolog/track_allocation.hh \
-                         ../interfaces/Prolog/ppl_prolog.icc \
+                         @srcdir@/../interfaces/Prolog/ppl_prolog_common.defs.hh \
+                         @srcdir@/../interfaces/Prolog/ppl_prolog_common.inlines.hh \
+                         @srcdir@/../interfaces/Prolog/ppl_prolog_common.cc \
+                         ../interfaces/Prolog/ppl_prolog_domains.hh \
+                         ../interfaces/Prolog/ppl_prolog_domains.cc \
                          @srcdir@/gpl.dox \
                          @srcdir@/fdl.dox
 INPUT_ENCODING         = UTF-8
