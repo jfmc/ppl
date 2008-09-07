@@ -22,8 +22,6 @@
 
 SUBDIRS = . tests
 
-abs_srcdir = @abs_srcdir@
-
 interface_generator_files = \
 ppl_interface_generator_ocaml_cc.m4 \
 ppl_interface_generator_ocaml_cc_code.m4 \
