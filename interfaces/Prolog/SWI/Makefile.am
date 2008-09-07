@@ -128,6 +128,16 @@ check_PROGRAMS = pl_clpq pl_clpq2
 pl_clpq_SOURCES = pl_clpq.cc
 pl_clpq2_SOURCES = pl_clpq.cc
 
+if HOST_OS_CYGWIN
+
+# Under Cygwin, plld gets the link options wrong: -lpl (PLLIB)
+# comes before -lppl_swiprolog, with the result that all the
+# symbols of the SWI-Prolog foreign interface are undefined.
+# Repeating the link options works around this problem.
+EXTRA_LINK_OPTIONS = $(SWI_PROLOG_LD_OPTIONS)
+
+endif HOST_OS_CYGWIN
+
 # Notice: we are linking statically until we understand whether
 # and if Libtool and plld can interoperate.
 ppl_pl$(EXEEXT): libppl_swiprolog.la ppl_pl.o
@@ -136,7 +146,8 @@ ppl_pl$(EXEEXT): libppl_swiprolog.la ppl_pl.o
 		-o $@ -L.libs -lppl_swiprolog ppl_pl.o \
 		-L$(top_builddir)/src/.libs -lppl \
 		$(WATCHDOG_LINK_OPTIONS) \
-		@extra_libraries@
+		@extra_libraries@ \
+		$(EXTRA_LINK_OPTIONS)
 
 pl_clpq$(EXEEXT): libppl_swiprolog.la pl_clpq.o pl_clpq.pl ../tests/clpq.pl
 	plld -pl $(SWI_PROLOG) -cc $(CC) -c++ $(CXX) -ld $(CXX) \
@@ -145,7 +156,9 @@ pl_clpq$(EXEEXT): libppl_swiprolog.la pl_clpq.o pl_clpq.pl ../tests/clpq.pl
                 $(srcdir)/pl_clpq.pl $(srcdir)/../tests/clpq.pl \
 		-L$(top_builddir)/src/.libs -lppl \
 		$(WATCHDOG_LINK_OPTIONS) \
-		@extra_libraries@
+		@extra_libraries@ \
+		$(EXTRA_LINK_OPTIONS)
+
 
 pl_clpq2$(EXEEXT): libppl_swiprolog.la pl_clpq.o pl_clpq.pl ../tests/clpq2.pl
 	plld -pl $(SWI_PROLOG) -cc $(CC) -c++ $(CXX) -ld $(CXX) \
@@ -154,7 +167,8 @@ pl_clpq2$(EXEEXT): libppl_swiprolog.la pl_clpq.o pl_clpq.pl ../tests/clpq2.pl
                 $(srcdir)/pl_clpq.pl $(srcdir)/../tests/clpq2.pl \
 		-L$(top_builddir)/src/.libs -lppl \
 		$(WATCHDOG_LINK_OPTIONS) \
-		@extra_libraries@
+		@extra_libraries@ \
+		$(EXTRA_LINK_OPTIONS)
 
 COEFFICIENT_MNEMONIC = @coefficient_mnemonic@
 
