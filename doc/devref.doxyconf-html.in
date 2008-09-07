@@ -272,6 +272,10 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Pointset_Powerset.inlines.hh \
                          @srcdir@/../src/Pointset_Powerset.templates.hh \
                          @srcdir@/../src/Pointset_Powerset.cc \
+                         @srcdir@/../src/Partially_Reduced_Product.types.hh \
+                         @srcdir@/../src/Partially_Reduced_Product.defs.hh \
+                         @srcdir@/../src/Partially_Reduced_Product.inlines.hh \
+                         @srcdir@/../src/Partially_Reduced_Product.templates.hh \
                          @srcdir@/../src/algorithms.hh \
                          @srcdir@/../src/Box.types.hh \
                          @srcdir@/../src/Box.defs.hh \
