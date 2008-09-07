@@ -748,6 +748,12 @@ extern "C" Prolog_foreign_return_type
 ppl_finalize();
 
 extern "C" Prolog_foreign_return_type
+ppl_set_rounding_for_PPL();
+
+extern "C" Prolog_foreign_return_type
+ppl_restore_pre_PPL_rounding();
+
+extern "C" Prolog_foreign_return_type
 ppl_set_timeout_exception_atom(Prolog_term_ref t_tea);
 
 extern "C" Prolog_foreign_return_type

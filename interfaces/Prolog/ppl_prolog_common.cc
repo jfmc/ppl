@@ -1445,6 +1445,24 @@ ppl_finalize() {
 }
 
 extern "C" Prolog_foreign_return_type
+ppl_set_rounding_for_PPL() {
+  try {
+    set_rounding_for_PPL();
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_restore_pre_PPL_rounding() {
+  try {
+    restore_pre_PPL_rounding();
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+extern "C" Prolog_foreign_return_type
 ppl_set_timeout_exception_atom(Prolog_term_ref t_tea) {
   try {
     if (Prolog_is_atom(t_tea)) {
