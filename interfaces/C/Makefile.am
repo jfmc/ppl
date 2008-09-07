@@ -94,11 +94,21 @@ AM_CPPFLAGS = \
 @extra_includes@
 
 lib_LTLIBRARIES = libppl_c.la
+
 nodist_libppl_c_la_SOURCES = ppl_c.cc
+
+if NO_UNDEFINED
+
+NO_UNDEFINED_FLAG = -no-undefined
+
+endif NO_UNDEFINED
+
 libppl_c_la_LIBADD = \
 $(top_builddir)/src/libppl.la \
 @extra_libraries@
+
 libppl_c_la_LDFLAGS = \
+$(NO_UNDEFINED_FLAG) \
 -version-info $(LIBPPL_C_LT_CURRENT):$(LIBPPL_C_LT_REVISION):$(LIBPPL_C_LT_AGE)
 
 nodist_include_HEADERS = ppl_c.h ppl_c_version.h
