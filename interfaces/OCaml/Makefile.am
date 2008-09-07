@@ -64,7 +64,7 @@ OCAMLC_COMPILE_FLAGS = \
 -ccopt -g
 
 OCAMLC_LINK_FLAGS = \
-`echo " -L$(top_builddir)/src/.libs -lppl $(extra_libraries)" | sed -e "s/ -/ -cclib -/g"`
+`echo " -L$(top_builddir)/src/.libs -lppl $(extra_libraries) " | sed -e "s/ -R[^ ]*//g" -e "s/ -/ -cclib -/g"`
 
 OCAMLC_ROOT = @ocamlc_root@
 
