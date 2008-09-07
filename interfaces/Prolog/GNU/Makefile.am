@@ -96,7 +96,7 @@ libppl_gprolog_la_LDFLAGS = \
 -module \
 -avoid-version
 
-ppl_gprolog.pl: $(interface_generator_dependencies) Makefile
+ppl_gprolog.pl: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_gprolog_pl.m4 > $@
 

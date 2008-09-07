@@ -55,7 +55,7 @@ ppl_interface_generator_prolog_hh_code.m4 \
 ppl_interface_generator_prolog_cc_files.m4 \
 ppl_interface_generator_prolog_cc_code.m4
 
-ppl_prolog_domains.hh: $(interface_generator_dependencies) Makefile
+ppl_prolog_domains.hh: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_prolog_hh_files.m4 \
                 > ppl_prolog_hh_blob
@@ -63,7 +63,7 @@ ppl_prolog_domains.hh: $(interface_generator_dependencies) Makefile
 	$(top_srcdir)/utils/cm_splitter.sh < ppl_prolog_hh_blob
 	rm -f ppl_prolog_hh_blob
 
-ppl_prolog_domains.cc: $(interface_generator_dependencies) Makefile
+ppl_prolog_domains.cc: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_prolog_cc_files.m4 \
                 > ppl_prolog_cc_blob

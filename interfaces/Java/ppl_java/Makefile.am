@@ -143,7 +143,7 @@ java_cxx_headers.stamp: java_classes.stamp
 # be built, independently from all configuration options.
 BUILT_SOURCES = C_Polyhedron.java
 
-source_generation.stamp: $(interface_generator_dependencies) Makefile
+source_generation.stamp: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I../.. \
 		-I$(srcdir) -I$(srcdir)/.. -I$(srcdir)/../.. \
 		$(srcdir)/ppl_interface_generator_java_classes_java.m4 \

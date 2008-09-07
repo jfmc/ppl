@@ -79,11 +79,11 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../ppl_interface_generator_common_procedure_generators.m4 \
 $(interface_generator_files)
 
-ppl_c.h: $(interface_generator_dependencies) Makefile
+ppl_c.h: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_c_h.m4 > $@
 
-ppl_c.cc: $(interface_generator_dependencies) Makefile
+ppl_c.cc: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_c_cc.m4 > $@
 
