@@ -1262,8 +1262,9 @@ private:
   dimension_type space_dim;
 
   /*! \brief
-    Assigns to \p to_be_enlarged an \ref Intersection-Preserving Enlargement
-    "intersection-preserving enlargement" of itself with respect to \p *this.
+    Assigns to \p to_be_enlarged a
+    \ref Powerset_Meet_Preserving_Simplification
+    "powerset meet-preserving enlargement" of itself with respect to \p *this.
     If \c false is returned, then the intersection is empty.
 
     \note
