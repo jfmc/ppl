@@ -49,7 +49,7 @@ OCAMLC_COMPILE_FLAGS = \
 -ccopt -g
 
 OCAMLC_LINK_FLAGS = \
-`echo " $(extra_libraries) -L$(top_builddir)/src/.libs" | sed -e "s/ -/ -cclib -/g"`
+`echo " -L$(top_builddir)/src/.libs -lppl $(extra_libraries)" | sed -e "s/ -/ -cclib -/g"`
 
 .ml.cmo:
 	ocamlc -o $@ -g -c $(OCAMLC_COMPILE_FLAGS) $<
