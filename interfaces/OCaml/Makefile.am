@@ -59,7 +59,12 @@ noinst_LIBRARIES = libppl_ocaml.a
 nodist_libppl_ocaml_a_SOURCES = \
 ppl_ocaml.cc
 
-OCAMLC_FLAGS = -I +gmp -I $(srcdir)
+OCAMLC_COMPILE_FLAGS = \
+-I +gmp -I $(srcdir) -I .. \
+-ccopt -g
+
+OCAMLC_LINK_FLAGS = \
+`echo " -L$(top_builddir)/src/.libs -lppl $(extra_libraries)" | sed -e "s/ -/ -cclib -/g"`
 
 OCAMLC_ROOT = @ocamlc_root@
 
@@ -77,16 +82,18 @@ ppl_ocaml.cc: $(interface_generator_dependencies)
 ppl_ocaml.cma: ppl_ocaml_types.cmo ppl_ocaml_globals.cmo ppl_ocaml.cmo
 	ocamlc -o $@ -a -custom \
 		ppl_ocaml_types.cmo ppl_ocaml_globals.cmo ppl_ocaml.cmo \
-		$(OCAMLC_FLAGS) -cclib -lppl_ocaml   -cclib -lppl
+		$(OCAMLC_COMPILE_FLAGS) -cclib -lppl_ocaml \
+		$(OCAMLC_LINK_FLAGS)
 
 ppl_ocaml.cmo: ppl_ocaml.ml ppl_ocaml.cmi ppl_ocaml_types.cmi
-	ocamlc -o $@ -g -c $(OCAMLC_FLAGS) ppl_ocaml.ml
+	ocamlc -o $@ -g -c $(OCAMLC_COMPILE_FLAGS) ppl_ocaml.ml
 
 ppl_ocaml.cmi: ppl_ocaml.mli
-	ocamlc -o $@ -g -c $(OCAMLC_FLAGS) $<
+	ocamlc -o $@ -g -c $(OCAMLC_COMPILE_FLAGS) $<
 
 ppl_ocaml_globals.cmo: ppl_ocaml_globals.ml ppl_ocaml_types.cmi
-	ocamlc -o $@ -g -c $(OCAMLC_FLAGS) $(srcdir)/ppl_ocaml_globals.ml
+	ocamlc -o $@ -g -c $(OCAMLC_COMPILE_FLAGS) \
+		$(srcdir)/ppl_ocaml_globals.ml
 
 ppl_ocaml_globals.cmi: ppl_ocaml_globals.cmo
 	@if test -f $@; then :; else \
@@ -95,7 +102,8 @@ ppl_ocaml_globals.cmi: ppl_ocaml_globals.cmo
 	fi
 
 ppl_ocaml_types.cmo: ppl_ocaml_types.ml
-	ocamlc -o $@ -g -c $(OCAMLC_FLAGS) $(srcdir)/ppl_ocaml_types.ml
+	ocamlc -o $@ -g -c $(OCAMLC_COMPILE_FLAGS) \
+		$(srcdir)/ppl_ocaml_types.ml
 
 ppl_ocaml_types.cmi: ppl_ocaml_types.cmo
 	@if test -f $@; then :; else \
