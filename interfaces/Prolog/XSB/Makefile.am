@@ -235,6 +235,7 @@ endif BUILD_XSB_PROLOG_INTERFACE
 
 DISTCLEANFILES = \
 ppl_xsb.H \
+ppl_xsb.hh \
 ppl_xsb.cc
 
 MOSTLYCLEANFILES = \
