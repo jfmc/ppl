@@ -174,11 +174,11 @@ DEVREF_PROLOG_INTERFACE_STUFF = \
 devref-prolog-interface.tex \
 ppl.sty \
 ../interfaces/Prolog/Prolog_interface.dox \
-ppl_prolog_common.defs.hh \
-ppl_prolog_common.inlines.hh \
-ppl_prolog_common.cc  \
-$(top_builddir)/ppl_prolog_domains.hh \
-$(top_builddir)/ppl_prolog_domains.cc
+../interfaces/Prolog/ppl_prolog_common.defs.hh \
+../interfaces/Prolog/ppl_prolog_common.inlines.hh \
+../interfaces/Prolog/ppl_prolog_common.cc  \
+$(top_builddir)/interfaces/Prolog/ppl_prolog_domains.hh \
+$(top_builddir)/interfaces/Prolog/ppl_prolog_domains.cc
 
 endif BUILD_SOME_PROLOG_INTERFACES
 
