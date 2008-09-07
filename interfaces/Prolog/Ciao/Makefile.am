@@ -20,8 +20,6 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-abs_srcdir = @abs_srcdir@
-
 CIAO_CFLI_FILES = ciao_cfli.hh
 
 EXTRA_DIST = \

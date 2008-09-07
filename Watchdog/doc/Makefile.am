@@ -20,8 +20,6 @@
 # For the most up-to-date information see the Parma Watchdog Library
 # site: http://www.cs.unipr.it/pwl/ .
 
-abs_srcdir = @abs_srcdir@
-
 # All the documentation in docdir.
 docdir = @docdir@
 htmldir = $(docdir)
