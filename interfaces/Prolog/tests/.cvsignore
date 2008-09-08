@@ -1,3 +1,6 @@
 Makefile
 Makefile.in
 ppl_predicate_check.pl
+ppl_predicate_check_[A-Z]*.pl
+ppl_predicate_check_main.pl
+predicate_check_all

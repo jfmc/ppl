@@ -6,10 +6,10 @@
 .libs
 Makefile
 Makefile.in
-check_script3
-obtained
-obtained2
-obtained3
+script_pchk
+obtained_clpq
+obtained_clpq2
+obtained_pchk
 pl_clpq
 pl_clpq2
 ppl_pl
