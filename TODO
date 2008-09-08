@@ -16,8 +16,8 @@ Enhancements for PPL 0.10
   README.configure file.
 
 - Fix the handling of interfaces/Prolog/tests/ppl_predicate_check_common.pl
-  (it is removed by `make distclean', it is sometimes copied unconditionally,
-  sometimes conditionally, ...).
+  (it is sometimes copied unconditionally, sometimes conditionally,
+  sometimes is removed, sometimes not, ...).
 
 - Write interfaces/OCaml/README.ocaml.
 

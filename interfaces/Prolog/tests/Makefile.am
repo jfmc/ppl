@@ -85,8 +85,9 @@ ppl_predicate_check_main.pl: $(interface_generator_dependencies)
 
 endif BUILD_SOME_PROLOG_INTERFACES
 
+# FIXME: why both in CLEANFILES and DISTCLEANFILES?
 CLEANFILES = \
-ppl_predicate_check_*.pl
+ppl_predicate_check_main.pl
 
 DISTCLEANFILES = \
-ppl_predicate_check_*.pl
+ppl_predicate_check_main.pl
