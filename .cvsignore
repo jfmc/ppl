@@ -6,12 +6,15 @@ Makefile.in
 _configs.sed
 aclocal.m4
 autom4te.cache
+confdefs.h
 config.cache
 config.h
 config.h.in
 config.log
 config.status
 configure
+conftest
+conftest.c
 libtool
 ppl-*.*
 ppl.lsm
