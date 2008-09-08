@@ -41,10 +41,12 @@ if HAVE_GLPK
 AM_CPPFLAGS = -I$(top_builddir)/interfaces/C @extra_includes@
 
 bin_PROGRAMS = ppl_lpsol
+
 # dummy.cc serves the only purpose to force linking using the C++ compiler.
 ppl_lpsol_SOURCES = \
 ppl_lpsol.c \
 dummy.cc
+
 ppl_lpsol_LDADD = \
 -lglpk \
 $(top_builddir)/interfaces/C/libppl_c.la \
@@ -267,8 +269,8 @@ endif BUILD_C_INTERFACE
 MOSTLYCLEANFILES = \
 do_not_check_problems \
 do_not_output_location \
-tough_examples \
-obtained \
 expected_optima \
+lp_problems \
+obtained \
 obtained_optima \
-lp_problems
+tough_examples
