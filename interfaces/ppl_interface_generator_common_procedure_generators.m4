@@ -32,6 +32,10 @@ dnl These are defined in ../ppl_interface_generator_common_dat.m4.
 dnl The actual classes the schema applies to is the set difference
 dnl +group1 \ -group2 where a missing +group1 or -group2 is
 dnl assumed to be the empty set.
+dnl For the pointset-powerset classes, the schema they apply to may also
+dnl depend on the disjunct. In this case, a schema with
+dnl "+pointset_powerset \group" will apply to any powerset
+dnl whose disjunct is not in "group".
 dnl Where "@CLASS@" is replaced by the class name, then that class only
 dnl is applicable for that schema.
 dnl
