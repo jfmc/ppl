@@ -23,7 +23,7 @@
 # Process this file with autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library],[0.10pre27],[ppl-devel@cs.unipr.it],[ppl])
+AC_INIT([the Parma Polyhedra Library],[0.10pre28],[ppl-devel@cs.unipr.it],[ppl])
 
 # Minimum autoconf version required.
 AC_PREREQ(2.60)
@@ -201,6 +201,7 @@ no)
   AC_MSG_ERROR([bad value ${enableval} for --enable-debugging, needs yes or no])
   ;;
 esac
+AM_CONDITIONAL(DEBUGGING_ENABLED, test x"$enableval" = xyes)
 
 enableval=no
 AC_MSG_CHECKING([whether to compile for profiling])
