@@ -82,7 +82,7 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = ../interfaces/OCaml/ppl_ocaml.cc \
+INPUT                  = @top_builddir@/interfaces/OCaml/ppl_ocaml.cc \
                          @srcdir@/../interfaces/OCaml/OCaml_interface.dox \
                          @srcdir@/gpl.dox \
                          @srcdir@/fdl.dox

@@ -213,11 +213,12 @@ USER_OCAML_INTERFACE_STUFF = \
 user-ocaml-interface.tex \
 ppl.sty \
 ../interfaces/OCaml/OCaml_interface.dox \
-../interfaces/OCaml/ppl_ocaml.mli
+$(top_builddir)/interfaces/OCaml/ppl_ocaml.mli
 
 DEVREF_OCAML_INTERFACE_STUFF = \
 devref-ocaml-interface.tex \
 ppl.sty \
+../interfaces/OCaml/OCaml_interface.dox \
 $(top_builddir)/interfaces/OCaml/ppl_ocaml.cc
 
 endif BUILD_OCAML_INTERFACE
