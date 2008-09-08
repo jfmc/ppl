@@ -59,20 +59,4 @@ Random_Number_Generator.defs.hh \
 Random_Number_Generator.inlines.hh \
 Random_Number_Generator.types.hh
 
-if USE_PRECOMPILED_HEADERS
-
-ppl_test.hh.gch: ppl_test.hh
-	$(CXXCOMPILE) -xc++-header -o $@ $<
-
-PRECOMPILED = ppl_test.hh.gch
-
-else
-
-PRECOMPILED =
-
-endif
-
-BUILT_SOURCES = \
-$(PRECOMPILED)
-
 MOSTLYCLEANFILES =
