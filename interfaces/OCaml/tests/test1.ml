@@ -276,6 +276,9 @@ let constraints = ppl_NNC_Polyhedron_get_minimized_constraints nnc_polyhedron1;;
 let cs_size =  List.length constraints;;
 print_string "\nSize of minimized constraints get from a NNC_Polyhedron built from Universe : ";;
 print_int(cs_size);;
+ppl_set_rounding_for_PPL ();;
+ppl_restore_pre_PPL_rounding ();;
+
 (* Pointset_Powersed_Grid is not enabled by default, the following code is *)
 (* commented *)
 (* let pps = ppl_new_Pointset_Powerset_Grid_from_space_dimension 3;; *)

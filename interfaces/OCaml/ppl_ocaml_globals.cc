@@ -967,6 +967,25 @@ ppl_MIP_Problem_swap(value caml_mip1, value caml_mip2) try{
 }
 CATCH_ALL
 
+extern "C"
+void
+ppl_set_rounding_for_PPL(value unit) try {
+  CAMLparam0();
+  set_rounding_for_PPL();
+  CAMLreturn0;
+}
+CATCH_ALL
+
+
+extern "C"
+void
+ppl_restore_pre_PPL_rounding(value unit) try {
+  CAMLparam0();
+  restore_pre_PPL_rounding();
+  CAMLreturn0;
+}
+CATCH_ALL
+
 
 // FIXME: what is this?
 #if 0

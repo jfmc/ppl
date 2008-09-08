@@ -24,6 +24,12 @@ open Ppl_ocaml_types
 open Gmp
 type mip_problem
 
+external ppl_set_rounding_for_PPL:
+unit -> unit = "ppl_set_rounding_for_PPL"
+
+external ppl_restore_pre_PPL_rounding:
+unit -> unit = "ppl_restore_pre_PPL_rounding"
+
 external ppl_new_MIP_Problem_from_space_dimension:
   int -> mip_problem = "ppl_new_MIP_Problem_from_space_dimension"
 
