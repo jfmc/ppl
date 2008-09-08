@@ -36,8 +36,8 @@ public class Parma_Polyhedra_Library {
 
     public static native String banner();
 
-    public static native void ppl_set_rounding_for_PPL();
+    public static native void set_rounding_for_PPL();
 
-    public static native void ppl_restore_pre_PPL_rounding();
+    public static native void restore_pre_PPL_rounding();
 
 }
