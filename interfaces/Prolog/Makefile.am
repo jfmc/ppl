@@ -28,7 +28,11 @@ ppl_interface_generator_prolog_hh_files.m4 \
 ppl_interface_generator_prolog_hh_code.m4 \
 ppl_interface_generator_prolog_cc_files.m4 \
 ppl_interface_generator_prolog_cc_code.m4 \
-ppl_interface_generator_prolog_systems.m4
+ppl_interface_generator_prolog_systems.m4 \
+ppl_interface_generator_prolog_dox.m4 \
+ppl_interface_generator_prolog_dox_code.m4 \
+ppl_prolog_sysdep_dox \
+ppl_prolog_sysindep_dox
 
 EXTRA_DIST = \
 $(interface_generator_files) \
@@ -40,6 +44,7 @@ ppl_prolog_common.cc
 if BUILD_SOME_PROLOG_INTERFACES
 
 BUILT_SOURCES = \
+Prolog_interface.dox \
 ppl_prolog_domains.hh \
 ppl_prolog_domains.cc
 
@@ -50,6 +55,8 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../ppl_interface_generator_copyright \
 ../ppl_interface_generator_common_procedure_generators.m4 \
 ppl_interface_generator_prolog_procedure_generators.m4 \
+ppl_interface_generator_prolog_dox.m4 \
+ppl_interface_generator_prolog_dox_code.m4 \
 ppl_interface_generator_prolog_hh_files.m4 \
 ppl_interface_generator_prolog_hh_code.m4 \
 ppl_interface_generator_prolog_cc_files.m4 \
@@ -71,8 +78,22 @@ ppl_prolog_domains.cc: $(interface_generator_dependencies)
 	$(top_srcdir)/utils/cm_splitter.sh < ppl_prolog_cc_blob
 	rm -f ppl_prolog_cc_blob
 
+ppl_prolog_main.icc: $(interface_generator_dependencies) Makefile
+	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
+           $(srcdir)/ppl_interface_generator_prolog_icc_files.m4 \
+                > ppl_prolog_icc_blob
+	$(top_srcdir)/utils/cm_cleaner.sh < ppl_prolog_icc_blob
+	$(top_srcdir)/utils/cm_splitter.sh < ppl_prolog_icc_blob
+	rm -f ppl_prolog_icc_blob
+
+Prolog_interface.dox: $(interface_generator_dependencies) Makefile
+	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
+           $(srcdir)/ppl_interface_generator_prolog_dox.m4 \
+                > Prolog_interface.dox
+
 endif BUILD_SOME_PROLOG_INTERFACES
 
 DISTCLEANFILES = \
 ppl_prolog_*.hh \
-ppl_prolog_*.cc
+ppl_prolog_*.cc \
+Prolog_interface.dox

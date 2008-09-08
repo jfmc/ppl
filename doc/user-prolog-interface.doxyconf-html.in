@@ -82,7 +82,7 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = @srcdir@/../interfaces/Prolog/Prolog_interface.dox \
+INPUT                  = ../interfaces/Prolog/Prolog_interface.dox \
                          @srcdir@/gpl.dox \
                          @srcdir@/fdl.dox
 INPUT_ENCODING         = UTF-8

@@ -82,7 +82,7 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = @srcdir@/../interfaces/Prolog/Prolog_interface.dox \
+INPUT                  = @top_builddir@/interfaces/Prolog/Prolog_interface.dox \
                          @srcdir@/../interfaces/Prolog/ppl_prolog_common.defs.hh \
                          @srcdir@/../interfaces/Prolog/ppl_prolog_common.inlines.hh \
                          @srcdir@/../interfaces/Prolog/ppl_prolog_common.cc \

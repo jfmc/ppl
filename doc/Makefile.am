@@ -166,12 +166,12 @@ ppl-user-prolog-interface-@VERSION@.ps.gz
 USER_PROLOG_INTERFACE_STUFF = \
 user-prolog-interface.tex \
 ppl.sty \
-../interfaces/Prolog/Prolog_interface.dox
+$(top_builddir)/interfaces/Prolog/Prolog_interface.dox
 
 DEVREF_PROLOG_INTERFACE_STUFF = \
 devref-prolog-interface.tex \
 ppl.sty \
-../interfaces/Prolog/Prolog_interface.dox \
+$(top_builddir)/interfaces/Prolog/Prolog_interface.dox \
 ../interfaces/Prolog/ppl_prolog_common.defs.hh \
 ../interfaces/Prolog/ppl_prolog_common.inlines.hh \
 ../interfaces/Prolog/ppl_prolog_common.cc  \

@@ -1,3 +1,4 @@
+m4_define(`dnl', `m4_dnl')`'dnl
 /* Documentation for the Prolog interfaces.
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -50,18 +51,52 @@ The Prolog interface provides access to the numerical abstractions
 by the PPL library.
 A general introduction to the numerical abstractions,
 their representation in the PPL and the operations provided
-by the PPL is given in Sections
-\extref{preamble, The Main Features}, \extref{convex_polys, Convex Polyhedra},
-\extref{representation, Representations of Convex Polyhedra}
-and \extref{Operations_on_Convex_Polyhedra, Operations on Convex Polyhedra}
-in the main PPL user manual.
+by the PPL is given in the main \extref{preamble, PPL user manual}.
 Here we just describe those aspects that are specific to the Prolog interface.
+<H4>Contents:</H4>
+- \ref Prolog_Interface_Overview "Overview";
+- \ref Predicate_Specifications "Predicate Specifications";
+- \ref predicate_descriptions "Predicate Descriptions"
+    - \ref di_predicates "Domain Independent Predicates",
+    - \ref mip_predicates "MIP Predicates",
+    - \ref main_polyhedron_predicates "Main Polyhedron Predicates";
+- \ref generated_predicates "Examples of Generated Domains with Predicates".
 
+\anchor Prolog_Interface_Overview
 <H2>Overview</H2>
 
 First, here is a list of notes with general information and advice
 on the use of the interface.
 
+- The numerical abstract domains available to the Prolog user consist
+  of the <EM>simple</EM> domains, <EM>powersets</EM> of a simple domain and
+  <EM>products</EM> of simple domains.
+  - The simple domains are:
+     - convex polyhedra, which consist of C_Polyhedron and
+       NNC_Polyhedron;<BR>
+     - weakly relational, which consist of BD_Shape_N and
+       Octagonal_Shape_N
+       where N is one of the numeric types
+       short, signed_char, int, long, long_long,
+       mpz_class, mpq_class;<BR>
+     - boxes which consist of
+       Int8_Box, Int16_Box,
+       Int32_Box, Int64_Box,
+       Uint8_Box, Uint16_Box,
+       Uint32_Box, Uint64_Box,
+       Double_Box, Long_Double_Box,
+       Z_Box, Rational_Box, Float_Box; and<BR>
+     - the Grid domain.
+  - The powerset domains are Pointset_Powerset_S where S is
+    a simple domain.
+  - The product domains consist of
+    Direct_Product_S_T,
+    Smash_Product_S_T and
+    Constraints_Product_S_T where S
+    and T are simple domains.
+- In the following, any of the above numerical
+  abstract domains  is called a PPL <EM>domain</EM>
+  and any element of a PPL domain is called a <EM>PPL object</EM>.
 - The Prolog interface files are all installed in the directory
   <CODE>prefix/lib/ppl</CODE>.  Since this includes shared and
   dynamically loaded libraries, you must make your dynamic
@@ -87,31 +122,28 @@ on the use of the interface.
   explicitly: since they can be called multiple times without problems,
   this will result in enhanced portability at a cost that is, by all means,
   negligible.
-
-- A PPL polyhedron can only be accessed by means of a Prolog term
-  called a <EM>handle</EM>.
+- A PPL object such as a polyhedron can only be accessed
+  by means of a Prolog term called a <EM>handle</EM>.
   Note, however, that the data structure of a handle,
   is implementation-dependent, system-dependent and
   version-dependent, and, for this reason, deliberately left unspecified.
   What we do guarantee is that the handle requires very little memory.
-
-- A Prolog term can be bound to a valid handle by using
+- A Prolog term can be bound to a valid handle for a PPL object by using
   predicates such as
 \code
   ppl_new_C_Polyhedron_from_space_dimension/3,
   ppl_new_C_Polyhedron_from_C_Polyhedron/2,
   ppl_new_C_Polyhedron_from_constraints/2,
   ppl_new_C_Polyhedron_from_generators/2,
-  ppl_new_C_Polyhedron_from_bounding_box/2.
 \endcode
   These predicates will create or copy a PPL polyhedron
   and construct a valid handle for referencing it.
   The last argument is a Prolog term that is
   unified with a new valid handle for accessing this polyhedron.
 
-- As soon as a PPL polyhedron is no longer required,
+- As soon as a PPL object is no longer required,
   the memory occupied by it should be released
-  using the PPL predicate <CODE>ppl_delete_Polyhedron/1</CODE>.
+  using the PPL predicate such as <CODE>ppl_delete_Polyhedron/1</CODE>.
   To understand why this is important,
   consider a Prolog program and a variable that is bound to
   a Herbrand term.
@@ -126,26 +158,23 @@ on the use of the interface.
   Once a handle has been used as an argument in
   <CODE>ppl_delete_Polyhedron/1</CODE>,
   it becomes invalid.
-
-- For a PPL polyhedron with space dimension \p k,
+- For a PPL object with space dimension \p k,
   the identifiers used for the PPL variables
   must lie between 0 and \f$k-1\f$ and correspond to the indices of the
   associated Cartesian axes.
-  When using the predicates that combine PPL polyhedra
+  For example, when using the predicates that combine PPL polyhedra
   or add constraints or generators to a representation of
   a PPL polyhedron,
   the polyhedra referenced and any constraints or generators in the call
   should follow all the (space) dimension-compatibility rules stated in
   Section \extref{representation, Representations of Convex Polyhedra}
   of the main PPL user manual.
-
 - As explained above, a polyhedron has a fixed topology C or NNC,
   that is determined at the time of its initialization.
   All subsequent operations on the polyhedron must respect all the
   topological compatibility rules stated in Section
   \extref{representation, Representations of Convex Polyhedra}
   of the main PPL user manual.
-
 - Any application using the PPL should make sure that only the
   intended version(s) of the library are ever used.
   Predicates
@@ -159,528 +188,8 @@ on the use of the interface.
 \endcode
   allow run-time checking of information about the version being used.
 
-<H2>PPL Predicate List</H2>
-
-Here is a list of all the PPL predicates provided by the Prolog interface.
-
-<CODE>
-  ppl_version_major(?C_int)
-</CODE>
-
-<CODE>
-  ppl_version_minor(?C_int)
-</CODE>
-
-<CODE>
-  ppl_version_revision(?C_int)
-</CODE>
-
-<CODE>
-  ppl_version_beta(?C_int)
-</CODE>
-
-<CODE>
-  ppl_version(?Atom)
-</CODE>
-
-<CODE>
-  ppl_banner(?Atom)
-</CODE>
-
-<CODE>
-  ppl_max_space_dimension(?Dimension_Type)
-</CODE>
-
-<CODE>
-  ppl_Coefficient_is_bounded
-</CODE>
-
-<CODE>
-  ppl_Coefficient_max(?Coefficient)
-</CODE>
-
-<CODE>
-  ppl_Coefficient_min(?Coefficient)
-</CODE>
-
-<CODE>
-  ppl_initialize
-</CODE>
-
-<CODE>
-  ppl_finalize
-</CODE>
-
-<CODE>
-  ppl_set_timeout_exception_atom(+Atom)
-</CODE>
-
-<CODE>
-  ppl_set_timeout(+C_unsigned)
-</CODE>
-
-<CODE>
-  ppl_reset_timeout
-</CODE>
-
-<CODE>
-  ppl_new_C_Polyhedron_from_space_dimension(+Dimension_Type,
-                                          +Universe_or_Empty, -Handle)
-</CODE>
-
-<CODE>
-  ppl_new_NNC_Polyhedron_from_space_dimension(+Dimension_Type,
-                                          +Universe_or_Empty, -Handle)
-</CODE>
-
-<CODE>
-  ppl_new_C_Polyhedron_from_C_Polyhedron(+Handle_1, -Handle_2)
-</CODE>
-
-<CODE>
-  ppl_new_C_Polyhedron_from_NNC_Polyhedron(+Handle_1, -Handle_2)
-</CODE>
-
-<CODE>
-  ppl_new_NNC_Polyhedron_from_C_Polyhedron(+Handle_1, -Handle_2)
-</CODE>
-
-<CODE>
-  ppl_new_NNC_Polyhedron_from_NNC_Polyhedron(+Handle_1, -Handle_2)
-</CODE>
-
-<CODE>
-  ppl_new_C_Polyhedron_from_constraints(+Constraint_System, -Handle)
-</CODE>
-
-<CODE>
-  ppl_new_NNC_Polyhedron_from_constraints(+Constraint_System, -Handle)
-</CODE>
-
-<CODE>
-  ppl_new_C_Polyhedron_from_generators(+Generator_System, -Handle)
-</CODE>
-
-<CODE>
-  ppl_new_NNC_Polyhedron_from_generators(+Generator_System, -Handle)
-</CODE>
-
-<CODE>
-  ppl_new_C_Polyhedron_from_bounding_box(+Box, -Handle)
-</CODE>
-
-<CODE>
-  ppl_new_NNC_Polyhedron_from_bounding_box(+Box, -Handle)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_swap(+Handle_1, +Handle_2)
-</CODE>
-
-<CODE>
-  ppl_delete_Polyhedron(+Handle)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_space_dimension(+Handle, ?Dimension_Type)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_affine_dimension(+Handle, ?Dimension_Type)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_get_constraints(+Handle, -Constraint_System)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_get_minimized_constraints(+Handle, -Constraint_System)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_get_generators(+Handle, -Generator_System)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_get_minimized_generators(+Handle, -Generator_System)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_relation_with_constraint(+Handle, +Constraint, -Relation)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_relation_with_generator(+Handle, +Generator, -Relation)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_get_bounding_box(+Handle, +Complexity, -Box)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_is_empty(+Handle)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_is_universe(+Handle)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_is_bounded(+Handle)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_contains_integer_point(+Handle)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_bounds_from_above(+Handle, +Lin_Expr)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_bounds_from_below(+Handle, +Lin_Expr)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_maximize(+Handle, +Lin_Expr,
-                          ?Coefficient_1, ?Coefficient_2, ?Boolean)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_maximize_with_point(+Handle, +Lin_Expr,
-                                     ?Coefficient_1, ?Coefficient_2,
-                                     ?Boolean, ?Point)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_minimize(+Handle, +Lin_Expr,
-                          ?Coefficient_1, ?Coefficient_2, ?Boolean)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_minimize_with_point(+Handle, +Lin_Expr,
-                                     ?Coefficient_1, ?Coefficient_2,
-                                     ?Boolean, ?Point)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_is_topologically_closed(+Handle)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_contains_Polyhedron(+Handle_1, +Handle_2)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_strictly_contains_Polyhedron(+Handle_1, +Handle_2)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_is_disjoint_from_Polyhedron(+Handle_1, +Handle_2)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_equals_Polyhedron(+Handle_1, +Handle_2)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_OK(+Handle)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_add_constraint(+Handle, +Constraint)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_add_constraint_and_minimize(+Handle, +Constraint)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_add_generator(+Handle, +Generator)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_add_generator_and_minimize(+Handle, +Generator)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_add_constraints(+Handle, +Constraint_System)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_add_constraints_and_minimize(+Handle, +Constraint_System)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_add_generators(+Handle, +Generator_System)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_add_generators_and_minimize(+Handle, +Generator_System)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_intersection_assign(+Handle_1, +Handle_2)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_intersection_assign_and_minimize(+Handle_1, +Handle_2)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_poly_hull_assign(+Handle_1, +Handle_2)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_poly_hull_assign_and_minimize(+Handle_1, +Handle_2)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_poly_difference_assign(+Handle_1, +Handle_2)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_affine_image(+Handle, +PPL_Var, +Lin_Expr, +Coefficient)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_affine_preimage(+Handle, +PPL_Var, +Lin_Expr, +Coefficient)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_bounded_affine_image(+Handle,
-                                      +PPL_Var,
-                                      +Lin_Expr_1,
-                                      +Lin_Expr_2,
-                                      +Coefficient)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_generalized_affine_image(+Handle,
-					  +PPL_Var,
-					  +Relation_Symbol,
-					  +Lin_Expr,
-					  +Coefficient)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_generalized_affine_image_lhs_rhs(+Handle,
-						  +Lin_Expr_1,
-						  +Relation_Symbol,
-						  +Lin_Expr_2)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_time_elapse_assign(+Handle_1, +Handle_2)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_BHRZ03_widening_assign_with_tokens(+Handle_1, +Handle_2,
-					+C_unsigned_1, ?C_unsigned_2)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_BHRZ03_widening_assign(+Handle_1, +Handle_2)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens(+Handle_1,
-                                                     +Handle_2,
-						     +Constraint_System,
-						     +C_unsigned_1,
-						     ?C_unsigned_2)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_limited_BHRZ03_extrapolation_assign(+Handle_1, +Handle_2,
-						     +Constraint_System)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens(+Handle_1,
-                                                     +Handle_2,
-						     +Constraint_System,
-						     +C_unsigned_1,
-						     ?C_unsigned_2)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign(+Handle_1, +Handle_2,
-						     +Constraint_System)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_H79_widening_assign_with_tokens(+Handle_1, +Handle_2,
-						+C_unsigned_1,
-						?C_unsigned_2)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_H79_widening_assign(+Handle_1, +Handle_2)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens(+Handle_1,
-                                                  +Handle_2,
-						  +Constraint_System,
-						   +C_unsigned_1,
-						   ?C_unsigned_2)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_limited_H79_extrapolation_assign(+Handle_1, +Handle_2,
-						  +Constraint_System)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens(+Handle_1,
-                                                  +Handle_2,
-						  +Constraint_System,
-						  +C_unsigned_1,
-						  ?C_unsigned_2)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_bounded_H79_extrapolation_assign(+Handle_1, +Handle_2,
-						  +Constraint_System)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_topological_closure_assign(+Handle)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_add_space_dimensions_and_embed(+Handle, +Dimension_Type)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_add_space_dimensions_and_project(+Handle, +Dimension_Type)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_concatenate_assign(+Handle_1, +Handle_2)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_remove_space_dimensions(+Handle, +List_of_PPL_Vars)
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_remove_higher_space_dimensions(+Handle, +Dimension_Type))
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_expand_space_dimension(+Handle, +PPL_Var, +Dimension_Type))
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_fold_space_dimensions(+Handle, +List_of_PPL_Vars, +PPL_Var))
-</CODE>
-
-<CODE>
-  ppl_Polyhedron_map_space_dimensions(+Handle, +P_Func))
-</CODE>
-
-<CODE>
-  ppl_new_MIP_Problem_from_space_dimension(+Dimension_Type, -Handle)
-</CODE>
-
-<CODE>
-  ppl_new_MIP_Problem(+Constraint_System, +Lin_Expr, +Optimization_Mode,
-                      -Handle)
-</CODE>
-
-<CODE>
-  ppl_new_MIP_Problem_from_MIP_Problem(+Handle_1, -Handle_2)
-</CODE>
-
-<CODE>
-  ppl_MIP_Problem_swap(+Handle_1, +Handle_2)
-</CODE>
-
-<CODE>
-  ppl_delete_MIP_Problem(+Handle)
-</CODE>
-
-<CODE>
-  ppl_MIP_Problem_space_dimension(+Handle, ?Dimension_Type)
-</CODE>
-
-<CODE>
-  ppl_MIP_Problem_integer_space_dimensions(+Handle, -Vars_List)
-</CODE>
-
-<CODE>
-  ppl_MIP_Problem_constraints(+Handle, -Constraint_System)
-</CODE>
-
-<CODE>
-  ppl_MIP_Problem_objective_function(+Handle, -Lin_Expr)
-</CODE>
-
-<CODE>
-  ppl_MIP_Problem_optimization_mode(+Handle, ?Optimization_Mode)
-</CODE>
-
-<CODE>
-  ppl_MIP_Problem_clear(+Handle)
-</CODE>
-
-<CODE>
-  ppl_MIP_Problem_add_space_dimensions_and_embed(+Handle, +Dimension_Type)
-</CODE>
-
-<CODE>
-  ppl_MIP_Problem_add_to_integer_space_dimensions(+Handle, +Vars_List)
-</CODE>
-
-<CODE>
-  ppl_MIP_Problem_add_constraint(+Handle, +Constraint)
-</CODE>
-
-<CODE>
-  ppl_MIP_Problem_add_constraints(+Handle, +Constraint_System)
-</CODE>
-
-<CODE>
-  ppl_MIP_Problem_set_objective_function(+Handle, +Lin_Expr)
-</CODE>
-
-<CODE>
-  ppl_MIP_Problem_set_optimization_mode(+Handle, +Optimization_Mode)
-</CODE>
-
-<CODE>
-  ppl_MIP_Problem_is_satisfiable(+Handle)
-</CODE>
-
-<CODE>
-  ppl_MIP_Problem_solve(+Handle, ?MIP_Problem_Status)
-</CODE>
-
-<CODE>
-  ppl_MIP_Problem_feasible_point(+Handle, -Generator)
-</CODE>
-
-<CODE>
-  ppl_MIP_Problem_optimizing_point(+Handle, -Generator)
-</CODE>
-
-<CODE>
-  ppl_MIP_Problem_optimal_value(+Handle, ?Coefficient_1, ?Coefficient_2)
-</CODE>
-
-<CODE>
-  ppl_MIP_Problem_evaluate_objective_function(+Handle, +Generator,
-                                              ?Coefficient_1, ?Coefficient_2)
-</CODE>
-
-<CODE>
-  ppl_MIP_Problem_OK(+Handle)
-</CODE>
-
-
-<H2>PPL Predicate Specifications</H2>
+\anchor Predicate_Specifications
+<H2>Predicate Specifications</H2>
 
 The PPL predicates provided by the Prolog interface are specified below.
 The specification uses the following grammar rules:
@@ -770,9 +279,9 @@ The specification uses the following grammar rules:
 	    | saturates			with a constraint
             | subsumes			with a generator
 
- Poly_Relation_List			list of polyhedron relations
+ Relation_List			list of polyhedron relations
 	     --> []
-	    | [Poly_Relation | Poly_Relation_List]
+	    | [Poly_Relation | Relation_List]
 
  Complexity  --> polynomial | simplex | any
 
@@ -810,15 +319,17 @@ The specification uses the following grammar rules:
             | [PPL_Var | Vars_List].
 \endcode
 
-\anchor predicates
-Below is a short description of each of the interface predicates.
-For full definitions of terminology used here, see Sections
-\extref{preamble, The Main Features},
-\extref{convex_polys, Convex Polyhedra},
-\extref{representation, Representations of Convex Polyhedra} and
-\extref{Operations_on_Convex_Polyhedra, Operations on Convex Polyhedra}
-in the main PPL user manual.
+\anchor predicate_descriptions
+<H2> Predicate Descriptions </H2>
 
+Below is a short description of many of the interface predicates.
+For full definitions of terminology used here, see the main PPL user manual.
+
+\anchor di_predicates
+<H3> Domain Independent Predicates </H3>
+
+First we describe the domain independent predicates
+that are included with all instantiations of the Prolog interfaces.
 
 <H2><CODE> ppl_version_major(?C_int) </CODE></H2>
   Unifies <CODE>C_int</CODE> with the major number of the PPL version.
@@ -907,6 +418,216 @@ in the main PPL user manual.
 <H2><CODE> ppl_reset_timeout </CODE></H2>
 
    Resets the timeout time so that the computation is not interrupted.
+
+<BR>
+
+\anchor mip_predicates
+<H3> MIP Predicates </H3>
+Here we describe the predicates available for PPL objects
+defining mixed integer (linear) programming problems.
+
+<H2><CODE>
+  ppl_new_MIP_Problem_from_space_dimension(+Dimension_Type, -Handle)
+</CODE></H2>
+
+   Creates an MIP Problem \f$\mathrm{MIP}\f$ with the feasible region
+   the vector space of dimension <CODE>Dimension_Type</CODE>,
+   objective function \f$0\f$ and optimization mode <CODE>max</CODE>.
+   <CODE>Handle</CODE> is unified with the handle for \f$\mathrm{MIP}\f$.
+
+<H2><CODE>
+  ppl_new_MIP_Problem(+Constraint_System, +Lin_Expr, +Optimization_Mode,
+                      -Handle)
+</CODE></H2>
+
+   Creates an MIP Problem \f$\mathrm{MIP}\f$ with
+   the feasible region represented by <CODE>Constraint_System</CODE>,
+   objective function <CODE>Lin_Expr</CODE> and optimization mode
+   <CODE>Optimization_Mode</CODE>.
+   <CODE>Handle</CODE> is unified with the handle for \f$\mathrm{MIP}\f$.
+
+<H2><CODE>
+  ppl_MIP_Problem_swap(+Handle_1, +Handle_2)
+</CODE></H2>
+
+   Swaps the MIP Problem referenced by <CODE>Handle_1</CODE>
+   with the one referenced by <CODE>Handle_2</CODE>.
+
+<H2><CODE>
+  ppl_delete_MIP_Problem(+Handle)
+</CODE></H2>
+
+   Deletes the MIP Problem referenced by <CODE>Handle</CODE>.
+   After execution,
+   <CODE>Handle</CODE> is no longer a valid handle for a PPL MIP Problem.
+
+<H2><CODE>
+  ppl_MIP_Problem_space_dimension(+Handle, ?Dimension_Type)
+</CODE></H2>
+
+   Unifies the dimension of the vector space in which the
+   MIP Problem referenced by <CODE>Handle</CODE> is embedded
+   with <CODE>Dimension_Type</CODE>.
+
+<H2><CODE>
+  ppl_MIP_Problem_integer_space_dimensions(+Handle, -Vars_List)
+</CODE></H2>
+
+   Unifies <CODE>Vars_List</CODE> with a list of variables representing
+   representing the integer space dimensions of the MIP Problem
+   referenced by <CODE>Handle</CODE>.
+
+<H2><CODE>
+  ppl_MIP_Problem_constraints(+Handle, -Constraint_System)
+</CODE></H2>
+
+   Unifies <CODE>Constraint_System</CODE> with a list of
+   the constraints in the constraints system
+   representing the feasible region for the MIP Problem
+   referenced by <CODE>Handle</CODE>.
+
+<H2><CODE>
+  ppl_MIP_Problem_objective_function(+Handle, -Lin_Expr)
+</CODE></H2>
+
+   Unifies <CODE>Lin_Expr</CODE> with the objective function
+   for the MIP Problem referenced by <CODE>Handle</CODE>.
+
+<H2><CODE>
+  ppl_MIP_Problem_optimization_mode(+Handle, ?Optimization_Mode)
+</CODE></H2>
+
+   Unifies <CODE>Optimization_Mode</CODE> with the optimization mode
+   for the MIP Problem referenced by <CODE>Handle</CODE>.
+
+<H2><CODE>
+  ppl_MIP_Problem_clear(+Handle)
+</CODE></H2>
+
+  Resets the MIP problem referenced by <CODE>Handle</CODE>
+  to be the trivial problem with
+  the feasible region the \f$0\f$-dimensional universe,
+  objective function \f$0\f$ and optimization mode <CODE>max</CODE>.
+
+<H2><CODE> ppl_MIP_Problem_add_space_dimensions_and_embed(
+             +Handle, +Dimension_Type)
+ </CODE></H2>
+
+   Embeds the MIP problem referenced by <CODE>Handle</CODE>
+   in a space that is enlarged by <CODE>Dimension_Type</CODE> dimensions,
+
+<H2><CODE>
+  ppl_MIP_Problem_add_to_integer_space_dimensions(+Handle, +Vars_List)
+</CODE></H2>
+
+   Updates the MIP Problem referenced by <CODE>Handle</CODE>
+   so that the variables in <CODE>Vars_List</CODE> are added to
+   the set of integer space dimensions.
+
+<H2><CODE>
+  ppl_MIP_Problem_add_constraint(+Handle, +Constraint)
+</CODE></H2>
+
+   Updates the MIP Problem referenced by <CODE>Handle</CODE>
+   so that the feasible region is represented by the original constraint
+   system together with the constraint <CODE>Constraint</CODE>.
+
+<H2><CODE>
+  ppl_MIP_Problem_add_constraints(+Handle, +Constraint_System)
+</CODE></H2>
+
+   Updates the MIP Problem referenced by <CODE>Handle</CODE>
+   so that the feasible region is represented by the original constraint
+   system together with all the constraints in <CODE>Constraint_System</CODE>.
+
+<H2><CODE>
+  ppl_MIP_Problem_set_objective_function(+Handle, +Lin_Expr)
+</CODE></H2>
+
+   Updates the MIP Problem referenced by <CODE>Handle</CODE>
+   so that the objective function is changed to <CODE>Lin_Expr</CODE>.
+
+<H2><CODE>
+  ppl_MIP_Problem_set_optimization_mode(+Handle, +Optimization_Mode)
+</CODE></H2>
+
+   Updates the MIP Problem referenced by <CODE>Handle</CODE>
+   so that the optimization mode is changed to <CODE>Optimization_Mode</CODE>.
+
+<H2><CODE>
+  ppl_MIP_Problem_is_satisfiable(+Handle)
+</CODE></H2>
+
+  Succeeds if and only if the MIP Problem referenced by
+  <CODE>Handle</CODE> is satisfiable.
+
+<H2><CODE>
+  ppl_MIP_Problem_solve(+Handle, ?MIP_Problem_Status)
+</CODE></H2>
+
+  Solves the MIP problem  referenced by
+  <CODE>Handle</CODE> and unifies <CODE>MIP_Problem_Status</CODE>
+  with:
+  <CODE>unfeasible</CODE>, if the MIP problem is not satisfiable;
+  <CODE>unbounded</CODE>, if the MIP problem is satisfiable but
+  there is no finite bound to the value of the objective function;
+  <CODE>optimized</CODE>, if the MIP problem admits an optimal solution.
+
+<H2><CODE>
+  ppl_MIP_Problem_feasible_point(+Handle, ?Generator)
+</CODE></H2>
+
+  Unifies  <CODE>Generator</CODE> with a feasible point for the MIP problem
+  referenced by <CODE>Handle</CODE>.
+
+<H2><CODE>
+  ppl_MIP_Problem_optimizing_point(+Handle, ?Generator)
+</CODE></H2>
+
+  Unifies  <CODE>Generator</CODE> with an optimizing point for the MIP problem
+  referenced by <CODE>Handle</CODE>.
+
+<H2><CODE>
+  ppl_MIP_Problem_optimal_value(+Handle, ?Coefficient_1, ?Coefficient_2)
+</CODE></H2>
+
+  Unifies <CODE>Coefficient_1</CODE> and <CODE>Coefficient_2</CODE>
+  with the numerator and denominator, respectively, for the optimal value
+  for the MIP problem  referenced by <CODE>Handle</CODE>.
+
+<H2><CODE>
+  ppl_MIP_Problem_evaluate_objective_function(+Handle, +Generator,
+                                             ?Coefficient_1, ?Coefficient_2)
+</CODE></H2>
+  Evaluates the objective function of the MIP problem  referenced by
+  <CODE>Handle</CODE> at point <CODE>Generator</CODE>.
+  <CODE>Coefficient_1</CODE> is unified with the numerator and
+  <CODE>Coefficient_2</CODE> is unified with the denominator of the
+  objective function value at <CODE>Generator</CODE>.
+
+<H2><CODE>
+  ppl_MIP_Problem_OK(+Handle)
+</CODE></H2>
+
+   Succeeds only if the MIP Problem referenced by
+   <CODE>Handle</CODE> is well formed, i.e., if it
+   satisfies all its implementation invariants.  Useful for debugging purposes.
+
+<BR>
+
+\anchor main_polyhedron_predicates
+<H3> Convex Polyhedron Predicates </H3>
+Here we describe the main predicates available for PPL objects
+defining convex polyhedra. A full list of the available
+PPL domains for convex polyhedra that have been instantiated
+for the Prolog interface is given in
+Section \ref Polyhedron_predicates "Polyhedron Predicate List".
+
+<H2><CODE> ppl_delete_Polyhedron(+Handle) </CODE></H2>
+
+   Deletes the polyhedron referenced by <CODE>Handle</CODE>.
+   After execution,
+   <CODE>Handle</CODE> is no longer a valid handle for a PPL polyhedron.
 
 <H2><CODE>
   ppl_new_C_Polyhedron_from_space_dimension(+Dimension_Type,
@@ -1043,12 +764,6 @@ ppl_new_NNC_Polyhedron_from_NNC_Polyhedron(+Handle_1, -Handle_2)
    with the one referenced by <CODE>Handle_2</CODE>.
    The polyhedra \f$\cP\f$ and \f$\cQ\f$ must have the same topology.
 
-<H2><CODE> ppl_delete_Polyhedron(+Handle) </CODE></H2>
-
-   Deletes the polyhedron referenced by <CODE>Handle</CODE>.
-   After execution,
-   <CODE>Handle</CODE> is no longer a valid handle for a PPL polyhedron.
-
 <H2><CODE> ppl_Polyhedron_space_dimension(+Handle, ?Dimension_Type) </CODE></H2>
 
    Unifies the dimension of the vector space in which the
@@ -1091,9 +806,9 @@ ppl_new_NNC_Polyhedron_from_NNC_Polyhedron(+Handle_1, -Handle_2)
    representing the polyhedron referenced by <CODE>Handle</CODE>.
 
 <H2><CODE> ppl_Polyhedron_relation_with_constraint(+Handle, +Constraint,
-               ?Poly_Relation_List) </CODE></H2>
+               ?Relation_List) </CODE></H2>
 
-Unifies <CODE>Poly_Relation_List</CODE> with the list of relations the
+Unifies <CODE>Relation_List</CODE> with the list of relations the
 polyhedron referenced by <CODE>Handle</CODE> has with
 <CODE>Constraint</CODE>.  The possible relations are listed in the
 grammar rules above; their meaning is given in Section
@@ -1101,9 +816,9 @@ grammar rules above; their meaning is given in Section
 of the main PPL user manual.
 
 <H2><CODE> ppl_Polyhedron_relation_with_generator(+Handle, +Generator,
-               ?Poly_Relation_List) </CODE></H2>
+               ?Relation_List) </CODE></H2>
 
-Unifies <CODE>Poly_Relation_List</CODE> with the list of relations the
+Unifies <CODE>Relation_List</CODE> with the list of relations the
 polyhedron referenced by <CODE>Handle</CODE> has with
 <CODE>Generator</CODE>.  The possible relations are listed in the
 grammar rules above; their meaning is given in
@@ -1450,7 +1165,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
 
 <H2><CODE> ppl_Polyhedron_generalized_affine_image(+Handle,
                +PPL_Var,
-               +Relation_Symbol
+               +Relation_Symbol,
                +Lin_Expr,
                +Coefficient) </CODE></H2>
 
@@ -1463,7 +1178,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
 
 <H2><CODE> ppl_Polyhedron_generalized_affine_image_lhs_rhs(+Handle,
                +Lin_Expr_1,
-               +Relation_Symbol
+               +Relation_Symbol,
                +Lin_Expr_2) </CODE></H2>
 
    Transforms the polyhedron referenced by <CODE>Handle</CODE>
@@ -1720,8 +1435,8 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    Assigns to the polyhedron referenced by <CODE>Handle</CODE>
    its topological closure.
 
-<H2><CODE> ppl_Polyhedron_add_space_dimensions_and_embed(
-             +Handle, +Dimension_Type)
+<H2><CODE> ppl_Polyhedron_add_space_dimensions_and_embed(+Handle,
+	+Dimension_Type)
  </CODE></H2>
 
    Embeds the polyhedron  referenced by <CODE>Handle</CODE>
@@ -1796,7 +1511,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    GS = [point(0),line(1*A),line(1*B),line(0)]
 \endcode
 
-<H2><CODE> ppl_Polyhedron_remove_higher_space_dimensions(+Handle, +Dimension_Type)) </CODE></H2>
+<H2><CODE> ppl_Polyhedron_remove_higher_space_dimensions(+Handle, +Dimension_Type) </CODE></H2>
 
    Projects the polyhedron  referenced to by <CODE>Handle</CODE>
    onto  the first <CODE>Dimension_Type</CODE> dimension.
@@ -1808,7 +1523,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
 \endcode
 
 <H2><CODE>
-  ppl_Polyhedron_expand_space_dimension(+Handle, +PPL_Var, +Dimension_Type))
+  ppl_Polyhedron_expand_space_dimension(+Handle, +PPL_Var, +Dimension_Type)
 </CODE></H2>
 
    <CODE>Dimension_Type</CODE> copies of the space dimension referenced by
@@ -1816,7 +1531,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    referenced to by <CODE>Handle</CODE>.
 
 <H2><CODE>
-  ppl_Polyhedron_fold_space_dimensions(+Handle, +List_of_PPL_Vars, +PPL_Var))
+  ppl_Polyhedron_fold_space_dimensions(+Handle, +List_of_PPL_Vars, +PPL_Var)
 </CODE></H2>
 
    The space dimensions referenced by the PPL variables in list
@@ -1824,416 +1539,16 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    by <CODE>PPL_Var</CODE> and removed.
    The result is undefined if <CODE>List_of_PPL_Vars</CODE>
    does not have the properties described in Section
-   \extref{fold_space_dimensions,
-   Folding Multiple Dimensions of the Vector Space into One Dimension}
+   \extref{fold_space_dimensions, Folding Multiple Dimensions of the Vector Space into One Dimension}
    of the main PPL user manual.
 
-<H2><CODE> ppl_Polyhedron_map_space_dimensions(+Handle, +P_Func)) </CODE></H2>
+<H2><CODE> ppl_Polyhedron_map_space_dimensions(+Handle, +P_Func) </CODE></H2>
 
    Maps the space dimensions of the polyhedron referenced by
    <CODE>Handle</CODE>
    using the partial function defined by <CODE>P_Func</CODE>.
    The result is undefined if \p P_Func does not encode a partial
    function with the properties described in
-   Section \extref{Mapping_the_Dimensions_of_the_Vector_Space,
-   Mapping the Dimensions of the Vector Space}
+   Section \extref{Mapping_the_Dimensions_of_the_Vector_Space, Mapping the Dimensions of the Vector Space}
    of the main PPL user manual.
 
-<H2><CODE>
-  ppl_new_MIP_Problem_from_space_dimension(+Dimension_Type, -Handle)
-</CODE></H2>
-
-   Creates an MIP Problem \f$\mathrm{MIP}\f$ with the feasible region
-   the vector space of dimension <CODE>Dimension_Type</CODE>,
-   objective function \f$0\f$ and optimization mode <CODE>max</CODE>.
-   <CODE>Handle</CODE> is unified with the handle for \f$\mathrm{MIP}\f$.
-
-<H2><CODE>
-  ppl_new_MIP_Problem(+Constraint_System, +Lin_Expr, +Optimization_Mode,
-                      -Handle)
-</CODE></H2>
-
-   Creates an MIP Problem \f$\mathrm{MIP}\f$ with
-   the feasible region represented by <CODE>Constraint_System</CODE>,
-   objective function <CODE>Lin_Expr</CODE> and optimization mode
-   <CODE>Optimization_Mode</CODE>.
-   <CODE>Handle</CODE> is unified with the handle for \f$\mathrm{MIP}\f$.
-
-<H2><CODE>
-  ppl_MIP_Problem_swap(+Handle_1, +Handle_2)
-</CODE></H2>
-
-   Swaps the MIP Problem referenced by <CODE>Handle_1</CODE>
-   with the one referenced by <CODE>Handle_2</CODE>.
-
-<H2><CODE>
-  ppl_delete_MIP_Problem(+Handle)
-</CODE></H2>
-
-   Deletes the MIP Problem referenced by <CODE>Handle</CODE>.
-   After execution,
-   <CODE>Handle</CODE> is no longer a valid handle for a PPL MIP Problem.
-
-<H2><CODE>
-  ppl_MIP_Problem_space_dimension(+Handle, ?Dimension_Type)
-</CODE></H2>
-
-   Unifies the dimension of the vector space in which the
-   MIP Problem referenced by <CODE>Handle</CODE> is embedded
-   with <CODE>Dimension_Type</CODE>.
-
-<H2><CODE>
-  ppl_MIP_Problem_integer_space_dimensions(+Handle, -Vars_List)
-</CODE></H2>
-
-   Unifies <CODE>Vars_List</CODE> with a list of variables representing
-   representing the integer space dimensions of the MIP Problem
-   referenced by <CODE>Handle</CODE>.
-
-<H2><CODE>
-  ppl_MIP_Problem_constraints(+Handle, -Constraint_System)
-</CODE></H2>
-
-   Unifies <CODE>Constraint_System</CODE> with a list of
-   the constraints in the constraints system
-   representing the feasible region for the MIP Problem
-   referenced by <CODE>Handle</CODE>.
-
-<H2><CODE>
-  ppl_MIP_Problem_objective_function(+Handle, -Lin_Expr)
-</CODE></H2>
-
-   Unifies <CODE>Lin_Expr</CODE> with the objective function
-   for the MIP Problem referenced by <CODE>Handle</CODE>.
-
-<H2><CODE>
-  ppl_MIP_Problem_optimization_mode(+Handle, ?Optimization_Mode)
-</CODE></H2>
-
-   Unifies <CODE>Optimization_Mode</CODE> with the optimization mode
-   for the MIP Problem referenced by <CODE>Handle</CODE>.
-
-<H2><CODE>
-  ppl_MIP_Problem_clear(+Handle)
-</CODE></H2>
-
-  Resets the MIP problem referenced by <CODE>Handle</CODE>
-  to be the trivial problem with
-  the feasible region the \f$0\f$-dimensional universe,
-  objective function \f$0\f$ and optimization mode <CODE>max</CODE>.
-
-<H2><CODE> ppl_MIP_Problem_add_space_dimensions_and_embed(
-             +Handle, +Dimension_Type)
- </CODE></H2>
-
-   Embeds the MIP problem referenced by <CODE>Handle</CODE>
-   in a space that is enlarged by <CODE>Dimension_Type</CODE> dimensions,
-
-<H2><CODE>
-  ppl_MIP_Problem_add_to_integer_space_dimensions(+Handle, +Vars_List)
-</CODE></H2>
-
-   Updates the MIP Problem referenced by <CODE>Handle</CODE>
-   so that the variables in <CODE>Vars_List</CODE> are added to
-   the set of integer space dimensions.
-
-<H2><CODE>
-  ppl_MIP_Problem_add_constraint(+Handle, +Constraint)
-</CODE></H2>
-
-   Updates the MIP Problem referenced by <CODE>Handle</CODE>
-   so that the feasible region is represented by the original constraint
-   system together with the constraint <CODE>Constraint</CODE>.
-
-<H2><CODE>
-  ppl_MIP_Problem_add_constraints(+Handle, +Constraint_System)
-</CODE></H2>
-
-   Updates the MIP Problem referenced by <CODE>Handle</CODE>
-   so that the feasible region is represented by the original constraint
-   system together with all the constraints in <CODE>Constraint_System</CODE>.
-
-<H2><CODE>
-  ppl_MIP_Problem_set_objective_function(+Handle, +Lin_Expr)
-</CODE></H2>
-
-   Updates the MIP Problem referenced by <CODE>Handle</CODE>
-   so that the objective function is changed to <CODE>Lin_Expr</CODE>.
-
-<H2><CODE>
-  ppl_MIP_Problem_set_optimization_mode(+Handle, +Optimization_Mode)
-</CODE></H2>
-
-   Updates the MIP Problem referenced by <CODE>Handle</CODE>
-   so that the optimization mode is changed to <CODE>Optimization_Mode</CODE>.
-
-<H2><CODE>
-  ppl_MIP_Problem_is_satisfiable(+Handle)
-</CODE></H2>
-
-  Succeeds if and only if the MIP Problem referenced by
-  <CODE>Handle</CODE> is satisfiable.
-
-<H2><CODE>
-  ppl_MIP_Problem_solve(+Handle, ?MIP_Problem_Status)
-</CODE></H2>
-
-  Solves the MIP problem  referenced by
-  <CODE>Handle</CODE> and unifies <CODE>MIP_Problem_Status</CODE>
-  with:
-  <CODE>unfeasible</CODE>, if the MIP problem is not satisfiable;
-  <CODE>unbounded</CODE>, if the MIP problem is satisfiable but
-  there is no finite bound to the value of the objective function;
-  <CODE>optimized</CODE>, if the MIP problem admits an optimal solution.
-
-<H2><CODE>
-  ppl_MIP_Problem_feasible_point(+Handle, ?Generator)
-</CODE></H2>
-
-  Unifies  <CODE>Generator</CODE> with a feasible point for the MIP problem
-  referenced by <CODE>Handle</CODE>.
-
-<H2><CODE>
-  ppl_MIP_Problem_optimizing_point(+Handle, ?Generator)
-</CODE></H2>
-
-  Unifies  <CODE>Generator</CODE> with an optimizing point for the MIP problem
-  referenced by <CODE>Handle</CODE>.
-
-<H2><CODE>
-  ppl_MIP_Problem_optimal_value(+Handle, ?Coefficient_1, ?Coefficient_2)
-</CODE></H2>
-
-  Unifies <CODE>Coefficient_1</CODE> and <CODE>Coefficient_2</CODE>
-  with the numerator and denominator, respectively, for the optimal value
-  for the MIP problem  referenced by <CODE>Handle</CODE>.
-
-<H2><CODE>
-  ppl_MIP_Problem_evaluate_objective_function(+Handle, +Generator,
-                                             ?Coefficient_1, ?Coefficient_2)
-</CODE></H2>
-  Evaluates the objective function of the MIP problem  referenced by
-  <CODE>Handle</CODE> at point <CODE>Generator</CODE>.
-  <CODE>Coefficient_1</CODE> is unified with the numerator and
-  <CODE>Coefficient_2</CODE> is unified with the denominator of the
-  objective function value at <CODE>Generator</CODE>.
-
-<H2><CODE>
-  ppl_MIP_Problem_OK(+Handle)
-</CODE></H2>
-
-   Succeeds only if the MIP Problem referenced by
-   <CODE>Handle</CODE> is well formed, i.e., if it
-   satisfies all its implementation invariants.  Useful for debugging purposes.
-
-\anchor PI_Compilation
-<H1>Compilation and Installation</H1>
-
-When the Parma Polyhedra Library is configured, it tests for the existence
-of each supported Prolog system.  If a supported Prolog system is
-correctly installed in a standard location, things are arranged
-so that the corresponding interface is built and installed.
-
-As an option, the Prolog interface can track the creation and disposal
-of polyhedra.  In fact, differently from native Prolog data, PPL polyhedra
-must be explicitly disposed and forgetting to do so is a very common mistake.
-To enable this option, configure the library adding
-<CODE>-DPROLOG_TRACK_ALLOCATION</CODE> to the options passed to the
-C++ compiler.
-Your configure command would then look like
-\code
-  path/to/configure --with-cxxflags="-DPROLOG_TRACK_ALLOCATION" ...
-\endcode
-
-
-\anchor PI_SD_Features
-<H1>System-Dependent Features</H1>
-
-<H2>CIAO Prolog</H2>
-
-The Ciao Prolog interface to the PPL is available
-both as ``PPL enhanced'' Ciao Prolog interpreter
-and as a library that can be linked to Ciao Prolog programs.
-Only Ciao Prolog versions 1.10 #5 and later are supported.
-
-So that it can be used with the Ciao Prolog PPL interface, the
-Ciao Prolog installation must be configured with the
-<CODE>--disable-regs</CODE> option.
-
-<H3>The <CODE>ppl_ciao</CODE> Executable</H3>
-
-If an appropriate version of Ciao Prolog is installed on the machine
-on which you compiled the library, the command <CODE>make install</CODE>
-will install the executable <CODE>ppl_ciao</CODE> in the directory
-<CODE>prefix/bin</CODE>.
-The <CODE>ppl_ciao</CODE> executable is simply the Ciao Prolog
-interpreter with the Parma Polyhedra Library linked in.
-The only thing you should do to use the library is to
-call <CODE>ppl_initialize/0</CODE> before any other PPL predicate
-and to call <CODE>ppl_finalize/0</CODE> when you are done with the
-library.
-
-<H3>Linking the Library To Ciao Prolog Programs</H3>
-
-In order to allow linking Ciao Prolog programs to the PPL,
-the following files are installed in the directory
-<CODE>prefix/lib/ppl</CODE>:
-<CODE>ppl_ciao.pl</CODE> contains the required foreign declarations;
-<CODE>libppl_ciao.*</CODE> contain the executable code for the
-Ciao Prolog interface in various formats (static library, shared library,
-libtool library).
-If your Ciao Prolog program is constituted by, say, <CODE>source1.pl</CODE>
-and <CODE>source2.pl</CODE> and you want to create the executable
-<CODE>myprog</CODE>, your compilation command may look like
-\code
-ciaoc -o myprog prefix/lib/ppl/ppl_ciao.pl ciao_pl_check.pl \
-  -L '-Lprefix/lib/ppl -lppl_ciao -Lprefix/lib -lppl -lgmpxx -lgmp -lstdc++'
-\endcode
-
-<H2>GNU Prolog</H2>
-
-The GNU Prolog interface to the PPL is available both as a
-``PPL enhanced'' GNU Prolog interpreter and as a library that can be
-linked to GNU Prolog programs.
-The only GNU Prolog version that is known to work is a patched
-version of the ``unstable version'' tagged
-<A HREF="ftp://ftp.inria.fr/INRIA/Projects/contraintes/gprolog/unstable/gprolog-20040608.tgz">20040608</A>
-(which unpacks to a directory called <CODE>gprolog-1.2.18</CODE>).
-The patch is contained in the
-<CODE>interfaces/Prolog/GNU/README</CODE> file of the PPL's distribution.
-
-So that it can be used with the GNU Prolog PPL interface
-(and, for that matter, with any foreign code),
-the GNU Prolog installation must be configured with the
-<CODE>--disable-regs</CODE> option.
-
-<H3>The <CODE>ppl_gprolog</CODE> Executable</H3>
-
-If an appropriate version of GNU Prolog is installed on the machine
-on which you compiled the library, the command <CODE>make install</CODE>
-will install the executable <CODE>ppl_gprolog</CODE> in the directory
-<CODE>prefix/bin</CODE>.
-The <CODE>ppl_gprolog</CODE> executable is simply the GNU Prolog
-interpreter with the Parma Polyhedra Library linked in.
-The only thing you should do to use the library is to
-call <CODE>ppl_initialize/0</CODE> before any other PPL predicate
-and to call <CODE>ppl_finalize/0</CODE> when you are done with the
-library.
-
-<H3>Linking the Library To GNU Prolog Programs</H3>
-
-In order to allow linking GNU Prolog programs to the PPL,
-the following files are installed in the directory
-<CODE>prefix/lib/ppl</CODE>:
-<CODE>ppl_gprolog.pl</CODE> contains the required foreign declarations;
-<CODE>libppl_gprolog.*</CODE> contain the executable code for the
-GNU Prolog interface in various formats (static library, shared library,
-libtool library).
-If your GNU Prolog program is constituted by, say, <CODE>source1.pl</CODE>
-and <CODE>source2.pl</CODE> and you want to create the executable
-<CODE>myprog</CODE>, your compilation command may look like
-\code
-gplc -o myprog prefix/lib/ppl/ppl_gprolog.pl source1.pl source2.pl \
-  -L '-Lprefix/lib/ppl -lppl_gprolog -Lprefix/lib -lppl -lgmpxx -lgmp -lstdc++'
-\endcode
-
-
-<H2>SICStus Prolog</H2>
-
-The SICStus Prolog interface to the PPL is available
-both as a statically linked module or as a dynamically linked one.
-Only SICStus Prolog versions 3.9.0 and later are supported.
-
-<H3>The Statically Linked <CODE>ppl_sicstus</CODE> Executable</H3>
-
-If an appropriate version of SICStus Prolog is installed on the machine
-on which you compiled the library, the command <CODE>make install</CODE>
-will install the executable <CODE>ppl_sicstus</CODE> in the directory
-<CODE>prefix/bin</CODE>.
-The <CODE>ppl_sicstus</CODE> executable is simply the SICStus Prolog
-system with the Parma Polyhedra Library statically linked.
-The only thing you should do to use the library is to
-load <CODE>prefix/lib/ppl/ppl_sicstus.pl</CODE>.
-
-<H3>Loading the SICStus Interface Dynamically</H3>
-
-In order to dynamically load the library from SICStus Prolog you should
-simply load <CODE>prefix/lib/ppl/ppl_sicstus.pl</CODE>.
-Notice that, for dynamic linking to work, you should have configured
-the library with the <CODE>--enable-shared</CODE> option.
-
-
-<H2>SWI-Prolog</H2>
-
-The SWI-Prolog interface to the PPL is available
-both as a statically linked module or as a dynamically linked one.
-Only SWI-Prolog version 5.6.0 and later versions are supported.
-
-<H3>The <CODE>ppl_pl</CODE> Executable</H3>
-
-If an appropriate version of SWI-Prolog is installed on the machine
-on which you compiled the library, the command <CODE>make install</CODE>
-will install the executable <CODE>ppl_pl</CODE> in the directory
-<CODE>prefix/bin</CODE>.
-The <CODE>ppl_pl</CODE> executable is simply the SWI-Prolog
-shell with the Parma Polyhedra Library statically linked:
-from within <CODE>ppl_pl</CODE> all the services of the library
-are available without further action.
-
-<H3>Loading the SWI-Prolog Interface Dynamically</H3>
-
-In order to dynamically load the library from SWI-Prolog you should
-simply load <CODE>prefix/lib/ppl/ppl_swiprolog.pl</CODE>.
-This will invoke <CODE>ppl_initialize/0</CODE> and
-<CODE>ppl_finalize/0</CODE> automatically.
-Alternatively, you can load the library directly with
-\code
-:- load_foreign_library('prefix/lib/ppl/libppl_swiprolog').
-\endcode
-This will call <CODE>ppl_initialize/0</CODE> automatically.
-Analogously,
-\code
-:- unload_foreign_library('prefix/lib/ppl/libppl_swiprolog').
-\endcode
-will, as part of the unload process, invoke <CODE>ppl_finalize/0</CODE>.
-
-Notice that, for dynamic linking to work, you should have configured
-the library with the <CODE>--enable-shared</CODE> option.
-
-
-<H2>XSB</H2>
-
-The XSB Prolog interface to the PPL is available
-as a dynamically linked module.
-Only some CVS versions of XSB starting from 2 July 2005 are known to work.
-CVS versions starting from 11 November 2005 are known not to work.
-
-In order to dynamically load the library from XSB you should
-load the <CODE>ppl_xsb</CODE> module and import the predicates
-you need.
-For things to work, you may have to copy the files
-<CODE>prefix/lib/ppl/ppl_xsb.xwam</CODE>
-and
-<CODE>prefix/lib/ppl/ppl_xsb.so</CODE>
-in your current directory or in one of the XSB library directories.
-
-
-<H2>YAP</H2>
-
-The YAP Prolog interface to the PPL is available
-as a dynamically linked module.
-Only YAP versions following 5.1.0 and CVS HEAD versions starting from
-4 January 2006 are supported.  Notice that support for unbounded
-integers in YAP is young and may have errors that could affect
-programs using the PPL (see, e.g.,
-<A HREF="http://www.cs.unipr.it/pipermail/ppl-devel/2006-January/007780.html">http://www.cs.unipr.it/pipermail/ppl-devel/2006-January/007780.html</A>).
-
-In order to dynamically load the library from YAP you should
-simply load <CODE>prefix/lib/ppl/ppl_yap.pl</CODE>.
-This will invoke <CODE>ppl_initialize/0</CODE> automatically;
-it is the programmer's responsibility to call <CODE>ppl_finalize/0</CODE>
-when the PPL library is no longer needed.
-Notice that, for dynamic linking to work, you should have configured
-the library with the <CODE>--enable-shared</CODE> option.
-
-*/ /* \mainpage */
