@@ -817,7 +817,7 @@ then
      ocamlc_root=`ocamlc -where`
      # checking for OCaml GMP
      AC_MSG_CHECKING(for Caml-GMP module gmp.cma)
-     if test -f ${ocamlc_root}/gmp/gmp.cma -a -f ${ocamlc_root}/gmp/libmlgmp.a;
+     if test -f ${ocamlc_root}/gmp/gmp.cma;
      then
          AC_MSG_RESULT(yes)
 	 ocamlgmp="yes"
