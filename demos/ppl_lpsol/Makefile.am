@@ -174,9 +174,9 @@ if HOST_OS_SOLARIS
 
 DIFF_COMMAND = \
 grep "^Optimum value: " $(srcdir)/$(EXPECTED) \
-| sed -e "s/^Optimum value: \(-*[0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\.]\)[0-9]*$/Optimum value: \1/g" >expected_optima \
+| $(SED) -e "s/^Optimum value: \(-*[0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\.]\)[0-9]*$/Optimum value: \1/g" >expected_optima \
 && grep "^Optimum value: " obtained \
-| sed -e "s/^Optimum value: \(-*[0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\\.][0-9\.][0-9\.]\)[0-9]*$/Optimum value: \1/g" >obtained_optima \
+| $(SED) -e "s/^Optimum value: \(-*[0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\\.][0-9\.][0-9\.]\)[0-9]*$/Optimum value: \1/g" >obtained_optima \
 && diff -u expected_optima obtained_optima
 
 else !HOST_OS_SOLARIS

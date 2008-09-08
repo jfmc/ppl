@@ -148,7 +148,7 @@ ppl_sicstus.s.o: ppl_sicstus.pl libppl_sicstus.la
 		ppl_sicstus_sd.o \
 		sicstus_efli.o \
 		ppl_prolog_common.o \
-		`echo @required_instantiations_prolog_cxx_objects@ | sed -e "s/\.lo/.o/g"`
+		`echo @required_instantiations_prolog_cxx_objects@ | $(SED) -e "s/\.lo/.o/g"`
 
 else !ENABLE_STATIC
 
@@ -158,7 +158,7 @@ ppl_sicstus.s.o: ppl_sicstus.pl libppl_sicstus.la
 		.libs/ppl_sicstus_sd.o \
 		.libs/sicstus_efli.o \
 		.libs/ppl_prolog_common.o \
-		`echo @required_instantiations_prolog_cxx_objects@ | sed -e "s/\([^. ]*\)\.lo/.libs\/\1.o/g"`
+		`echo @required_instantiations_prolog_cxx_objects@ | $(SED) -e "s/\([^. ]*\)\.lo/.libs\/\1.o/g"`
 
 endif !ENABLE_STATIC
 

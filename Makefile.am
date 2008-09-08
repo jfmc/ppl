@@ -33,11 +33,11 @@ dist_noinst_HEADERS = \
 instchk.hh
 
 dist-hook:
-	sed -e "s/^enableval=thorough$$/enableval=quick/g" \
+	$(SED) -e "s/^enableval=thorough$$/enableval=quick/g" \
 		<$(distdir)/configure.ac >$(distdir)/configure.ac.new \
 	&& touch $(distdir)/configure.ac.new -r $(distdir)/configure.ac \
 	&& mv -f $(distdir)/configure.ac.new $(distdir)/configure.ac
-	sed -e "s/^enableval=thorough$$/enableval=quick/g" \
+	$(SED) -e "s/^enableval=thorough$$/enableval=quick/g" \
 		<$(distdir)/configure >$(distdir)/configure.new \
 	&& touch $(distdir)/configure.new -r $(distdir)/configure \
 	&& mv -f $(distdir)/configure.new $(distdir)/configure \
