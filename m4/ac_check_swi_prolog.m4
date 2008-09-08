@@ -44,7 +44,8 @@ then
 
   dnl Additional version checks could be inserted here, if necessary.
 
-  SWI_PROLOG_INCLUDE_OPTIONS="-I${swi_prolog_base}/include"
+  # In Fedora, SWI-Prolog.h is installed in /usr/include/pl.
+  SWI_PROLOG_INCLUDE_OPTIONS="-I${swi_prolog_base}/include -I/usr/include/pl"
   SWI_PROLOG_LD_OPTIONS="-L${swi_prolog_base}/lib/${swi_prolog_arch} ${swi_prolog_lib} ${swi_prolog_libs}"
   ac_save_CPPFLAGS="$CPPFLAGS"
   CPPFLAGS="$CPPFLAGS $SWI_PROLOG_INCLUDE_OPTIONS"
