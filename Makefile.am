@@ -36,11 +36,11 @@ dist-hook:
 	sed -e "s/^enableval=thorough$$/enableval=quick/g" \
 		<$(distdir)/configure.ac >$(distdir)/configure.ac.new \
 	&& touch $(distdir)/configure.ac.new -r $(distdir)/configure.ac \
-	&& mv $(distdir)/configure.ac.new $(distdir)/configure.ac
+	&& mv -f $(distdir)/configure.ac.new $(distdir)/configure.ac
 	sed -e "s/^enableval=thorough$$/enableval=quick/g" \
 		<$(distdir)/configure >$(distdir)/configure.new \
 	&& touch $(distdir)/configure.new -r $(distdir)/configure \
-	&& mv $(distdir)/configure.new $(distdir)/configure \
+	&& mv -f $(distdir)/configure.new $(distdir)/configure \
 	&& chmod +x $(distdir)/configure
 
 EXTRA_DIST = \
