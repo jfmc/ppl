@@ -23,7 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Grid_defs_hh
 #define PPL_Grid_defs_hh 1
 
-#define STRONG_REDUCTION
+#define STRONG_REDUCTION 1
 
 #include "Grid.types.hh"
 #include "globals.defs.hh"
@@ -2681,6 +2681,7 @@ private:
 					      dimension_type col,
 					      Congruence_System& sys);
 
+#ifdef STRONG_REDUCTION
   //! Reduce column \p dim in rows preceding \p pivot_index in \p sys.
   /*!
     Only consider from index \p start to index \p end of the row at \p
@@ -2693,6 +2694,7 @@ private:
 			     dimension_type start, dimension_type end,
 			     const Dimension_Kinds& dim_kinds,
 			     bool generators = true);
+#endif
 
   //! Multiply the elements of \p dest by \p multiplier.
   // A member of Grid for access to Matrix::rows and cgs::operator[].
