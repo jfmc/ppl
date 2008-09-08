@@ -65,7 +65,8 @@ JNIEXPORT jstring JNICALL Java_ppl_1java_Parma_1Polyhedra_1Library_banner
   return env->NewStringUTF(banner());
 }
 
-JNIEXPORT void JNICALL Java_ppl_1java_Parma_1Polyhedra_1Library_ppl_1set_1rounding_1for_1PPL
+
+JNIEXPORT void JNICALL Java_ppl_1java_Parma_1Polyhedra_1Library_set_1rounding_1for_1PPL
 (JNIEnv* env, jclass) {
   try {
     set_rounding_for_PPL();
@@ -73,7 +74,8 @@ JNIEXPORT void JNICALL Java_ppl_1java_Parma_1Polyhedra_1Library_ppl_1set_1roundi
   CATCH_ALL;
 }
 
-JNIEXPORT void JNICALL Java_ppl_1java_Parma_1Polyhedra_1Library_ppl_1restore_1pre_1PPL_1rounding
+
+JNIEXPORT void JNICALL Java_ppl_1java_Parma_1Polyhedra_1Library_restore_1pre_1PPL_1rounding
 (JNIEnv* env, jclass) {
   try {
     restore_pre_PPL_rounding();
