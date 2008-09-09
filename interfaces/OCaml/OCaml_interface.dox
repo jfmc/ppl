@@ -362,7 +362,7 @@ defining mixed integer (linear) programming problems.
 <H3> C_Polyhedron Functions </H3>
 Here we describe the main functions available for PPL objects
 defining convex and closed polyhedra. A list of the available
-PPL domains for convex polyhedra for the OCaml interface is given in
+PPL functions for convex polyhedra for the OCaml interface is given in
 Section \ref OCamldoc_Documentation "OCamldoc Documentation".
 
 <H2><CODE>
@@ -546,7 +546,7 @@ ppl_new_C_Polyhedron_from_NNC_Polyhedron handle
 
 <H2><CODE> ppl_Polyhedron_is_topologically_closed handle </CODE></H2>
    Returns true if the polyhedron referenced by
-   <CODE>handle</CODE> is topologicallyclosed and false, otherwise.
+   <CODE>handle</CODE> is topologically closed and false, otherwise.
 
 <H2><CODE> ppl_Polyhedron_contains_Polyhedron handle_1 handle_2
 </CODE></H2>
@@ -702,7 +702,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
 <H2><CODE> ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens
                handle_1
                handle_2
-               constraint_system,
+               constraint_system
                c_unsigned_1 </CODE></H2>
    It is assumed that the polyhedron \f$\cP_1\f$ referenced by
    <CODE>handle_1</CODE> contains the polyhedron \f$\cP_2\f$
