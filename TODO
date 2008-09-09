@@ -9,9 +9,6 @@ Enhancements for PPL 0.10
 
   available in all the interfaces.
 
-- The definition.dox file still talks about "polyhedra powersets":
-  this must be changed to describe the notion of "pointset powerset".
-
 - Document --enable-interfaces and --enable-instantiations in the
   README.configure file.
 
