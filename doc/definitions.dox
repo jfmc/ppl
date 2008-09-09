@@ -104,7 +104,7 @@ The PPL provides several classes of semantic GDs.  These are
 identified by their C++ class name, together with the class template
 parameters, if any. These classes include the <EM>simple classes</EM>:
   - \link Parma_Polyhedra_Library::C_Polyhedron \c C_Polyhedron \endlink,
-  - \link Parma_Polyhedra_Library::NNC_Polyhedron NNC_Polyhedron \endlink,
+  - \link Parma_Polyhedra_Library::NNC_Polyhedron \c NNC_Polyhedron \endlink,
   - \link Parma_Polyhedra_Library::BD_Shape \c BD_Shape\<T\> \endlink,
   - \link Parma_Polyhedra_Library::Octagonal_Shape \c Octagonal_Shape\<T\> \endlink,
   - \link Parma_Polyhedra_Library::Box \c Box\<ITV\> \endlink, and
@@ -1693,241 +1693,6 @@ and OSs, is not provided with a convergence guarantee and is therefore an
 extrapolation operator.
 
 
-\section powerset The Powerset Construction
-
-The PPL provides the finite powerset construction; this takes a
-pre-existing domain and upgrades it to one that can represent
-disjunctive information (by using a <EM>finite</EM> number of
-disjuncts).  The construction follows the approach described in
-\ref Bag98 "[Bag98]", also summarized in \ref BHZ04 "[BHZ04]" where there
-is an account of generic widenings for the powerset domain (some of
-which are supported in the instantiation of this construction by the
-domain of convex polyhedra and described in Section \ref poly_powerset).
-
-\anchor powerset_domain
-\subsection The_Powerset_Domain The Powerset Domain
-
-The domain is built from a pre-existing base-level domain
-\f$D\f$ which must include an entailment relation `\f$\mathord{\entails}\f$',
-meet operation `\f$\mathord{\meet}\f$', a top element `\f$\true\f$' and
-bottom element `\f$\false\f$'.
-
-A set \f$\cS \in \wp(D)\f$ is called <EM>non-redundant</EM>
-with respect to `\f$\mathord{\entails}\f$' if and only if
-\f$\false \notin \cS\f$
-and \f$\forall d_1, d_2 \in \cS \itc d_1 \entails d_2 \implies d_1 = d_2\f$.
-The set of finite non-redundant subsets of \f$D\f$
-(with respect to `\f$\mathord{\entails}\f$')
-is denoted by \f$\wpfn{D}{\entails}\f$.
-The function
-\f$\fund{\nonredmap}{\wpf(D)}{\wpfn{D}{\entails}}\f$,
-called <EM>Omega-reduction</EM>,
-maps a finite set into its non-redundant counterpart;
-it is defined, for each \f$\cS \in \wpf(D)\f$, by
-\f[
-  \nonredmap(\cS)
-    \defeq
-      \cS \setdiff \{\,
-                   d \in \cS
-                 \mid
-                   d = \false \text{ or } \exists d' \in \cS \st d \sentails d'
-                 \,\}.
-\f]
-where \f$d \sentails d'\f$ denotes \f$d \entails d' \land d \ne d'\f$.
-
-As the intended semantics of a powerset domain element \f$\cS \in \wpf(D)\f$
-is that of disjunction of the semantics of \f$D\f$,
-the finite set \f$\cS\f$ is semantically equivalent
-to the non-redundant set \f$\nonredmap(\cS)\f$;
-and elements of \f$\cS\f$ will be called <EM>disjuncts</EM>.
-The restriction to the finite subsets reflects the fact that here
-disjunctions are implemented by explicit collections of disjuncts.
-As a consequence of this restriction, for any \f$\cS \in \wpf(D)\f$
-such that \f$\cS \neq \{ \false \}\f$, \f$\nonredmap(\cS)\f$ is the (finite)
-set of the maximal elements of \f$\cS\f$.
-
-The <EM>finite powerset domain</EM> over a domain \f$D\f$ is the set
-of all finite non-redundant sets of \f$D\f$ and denoted by \f$D_{\smallP}\f$.
-The domain includes an approximation ordering
-`\f$\mathord{\entailsP}\f$' defined so that,
-for any \f$\cS_1\f$ and \f$\cS_2 \in D_{\smallP}\f$,
-\f$\cS_1 \entailsP \cS_2\f$ if and only if
-\f[
-  \forall d_1 \in \cS_1 \itc
-    \exists d_2 \in \cS_2 \st
-      d_1 \entails d_2.
-\f]
-Therefore the top element is \f$\{\true\}\f$ and the bottom element is the
-emptyset.
-
-\note
-As far as Omega-reduction is concerned, the library adopts a
-<EM>lazy</EM> approach: an element of the powerset domain is
-represented by a potentially redundant sequence of disjuncts.
-Redundancies can be eliminated by explicitly invoking the operator
-<CODE>omega_reduce()</CODE>, e.g., before performing the output of a
-powerset element. Note that all the documented operators automatically
-perform Omega-reductions on their arguments, when needed or appropriate.
-
-\section ps_operations Operations on the Powerset Construction
-
-In this section we briefly describe the generic operations on Powerset Domains
-that are provided by the library for any given base-level domain \f$D\f$.
-
-\anchor ps_meet_upper_bound
-\subsection Meet_and_Upper_Bound Meet and Upper Bound
-
-Given the sets \f$\cS_1\f$ and \f$\cS_2 \in D_{\smallP}\f$, the
-<EM>meet</EM> and <EM>upper bound</EM> operators provided by the
-library returns the set
-\f$
-  \nonredmap
-    \bigl(
-      \{\,
-        d_1 \meet d_2
-      \mid
-        d_1 \in \cS_1, d_2 \in \cS_2
-      \,\}
-    \bigr)
-\f$
-and Omega-reduced set union \f$\nonredmap(\cS_1 \union \cS_2)\f$ respectively.
-
-\anchor ps_add_disjunct
-\subsection Adding_a_Disjunct Adding a Disjunct
-
-Given the powerset element \f$\cS \in D_{\smallP}\f$ and the base-level
-element \f$d \in D\f$, the <EM>add disjunct</EM> operator provided by
-the library returns the powerset element
-\f$\nonredmap\bigl(\cS \union \{d\}\bigr)\f$.
-
-\anchor ps_collapse
-\subsection Collapsing_a_Powerset_Element Collapsing a Powerset Element
-
-If the given powerset element is not empty, then the
-<EM>collapse</EM> operator returns the
-singleton powerset consisting of an upper-bound of all the disjuncts.
-
-\section poly_powerset The Polyhedra Powerset Domain
-
-The Polyhedra powerset domain \f$(\Pset_n)_{\smallP}\f$
-provided by the PPL is the finite
-powerset domain (defined in Section \ref powerset) over the domain of
-NNC polyhedra \f$\Pset_n\f$.
-
-In addition to the operations described for the generic powerset
-domain in Section \ref ps_operations, we provide some operations that
-are specific to this instantiation.  Of these, most correspond to the
-application of the equivalent operation on each of the NNC polyhedra
-that are in the given set. Here we just describe those operations that
-are particular to the polyhedra powerset domain.
-
-\subsection Powerset_Meet_Preserving_Simplification Meet-Preserving Simplification
-
-Let \f$\cS_1 = \{ d_1, \ldots, d_m \}\f$,
-\f$\cS_2 = \{ c_1, \ldots, c_n \}\f$ and
-\f$\cS = \{ s_1, \ldots, s_q \}\f$
-be Omega-reduced elements of a powerset domain.
-Then, powerset \f$\cS\f$ is a <EM>meet-preserving simplification</EM>
-for powerset \f$\cS_1\f$ using the powerset context \f$\cS_2\f$
-if the following conditions hold:
-  - \f$\cS \sqcap \cS_2 = \cS_1 \sqcap \cS_2\f$ (meet-preservation);
-  - \f$q \leq m\f$ (powerset simplification);
-  - for each \f$s_k \in \cS\f$,
-    there exist \f$d_i \in \cS_1\f$ such that
-    for each \f$c_j \in \cS_2\f$,
-    \f$s_k\f$ is a meet-preserving enlargement and simplification
-    of \f$d_i\f$ using context \f$c_j\f$ (disjuncts' simplification).
-
-[EZ: should we drop the meet-preserving and enlargement requirements in
-the disjunct's simplification property?]
-
-Notice that, due to the powerset simplification property, in general
-a meet-preserving powerset simplification is <em>not</em> an enlargement
-with respect to the ordering defined on the powerset lattice.
-
-
-\anchor pps_geometric
-\subsection Geometric_Comparisons Geometric Comparisons
-
-Given the sets \f$\cS_1, \cS_2 \in (\Pset_n)_{\smallP}\f$, then
-we say that \f$\cS_1\f$ <EM>geometrically covers</EM> \f$\cS_2\f$
-if every point (in some element) in a polyhedron in \f$\cS_2\f$ is also
-a point in a polyhedron in \f$\cS_1\f$.
-If \f$\cS_1\f$ geometrically covers \f$\cS_2\f$
-and \f$\cS_2\f$ geometrically covers \f$\cS_1\f$,
-then we say that they are <EM>geometrically equal</EM>.
-
-\anchor pps_pairwise_merge
-\subsection Pairwise_Merge Pairwise Merge
-
-Given the powerset \f$\cS \in (\Pset_n)_{\smallP}\f$, then the
-<EM>pairwise merge</EM> operator takes pairs of distinct elements in
-\f$\cS\f$ whose poly-hull is the same as their set-theoretical union
-and replaces them by their union.  This replacement is done
-recursively so that, for each pair \f$\cP, \cQ\f$ of distinct
-polyhedra in the result set, we have
-\f$\cP \uplus \cQ \neq \cP \union \cQ\f$.
-
-\anchor pps_bgp99_extrapolation
-\subsection Powerset_Extrapolation_Operators Extrapolation Operators
-
-The library implements a generalization of the extrapolation operator
-for powerset domains proposed in \ref BGP99 "[BGP99]".
-The operator <CODE>BGP99_extrapolation_assign</CODE> is made parametric
-by allowing for the specification of a base-level extrapolation operator
-different from the H79 widening (e.g., the BHRZ03 widening can be used).
-Note that, in the general case, this operator cannot guarantee the
-convergence of the iteration sequence in a finite number of steps
-(for a counter-example, see \ref BHZ04 "[BHZ04]").
-
-\anchor pps_certificate_widening
-\subsection Certificate_Based_Widenings Certificate-Based Widenings
-
-The PPL library provides support for the specification of proper widening
-operators on the powerset domain of convex polyhedra. In particular,
-this version of the library implements an instance of the
-<EM>certificate-based widening framework</EM> proposed in
-\ref BHZ03b "[BHZ03b]".
-
-A <EM>finite convergence certificate</EM> for an extrapolation operator
-is a formal way of ensuring that such an operator is indeed a widening
-on the considered domain. Given a widening operator on the base-level
-domain, together with the corresponding convergence certificate,
-the BHZ03 framework shows how it is possible to lift this widening
-so as to work on the finite powerset domain, while still ensuring
-convergence in a finite number of iterations.
-
-Being highly parametric, the BHZ03 widening framework can be
-instantiated in many ways. The current implementation provides
-the templatic operator
-<CODE>BHZ03_widening_assign\<Certificate, Widening\></CODE>
-which only exploits a fraction of this generality, by allowing the
-user to specify the base-level widening function and the corresponding
-certificate. The widening strategy is fixed and uses two extrapolation
-heuristics: first, the least upper bound is tried; second, the
-\ref pps_bgp99_extrapolation "BGP99 extrapolation operator" is tried,
-possibly applying
-\ref pps_pairwise_merge "pairwise merging".
-If both heuristics fail to converge according to the convergence
-certificate, then an attempt is made to apply the base-level widening
-to the poly-hulls of the two arguments, possibly improving the result
-obtained by means of the \ref Convex_Polyhedral_Difference "poly-difference"
-operator.
-For more details and a justification of the overall approach,
-see \ref BHZ03b "[BHZ03b]" and \ref BHZ04 "[BHZ04]".
-
-The library provides two convergence certificates: while
-\ref Parma_Polyhedra_Library::BHRZ03_Certificate "BHRZ03_Certificate"
-is compatible with both the BHRZ03 and the H79 widenings,
-\ref Parma_Polyhedra_Library::H79_Certificate "H79_Certificate"
-is only compatible with the latter.
-Note that using different certificates will change the results obtained,
-even when using the same base-level widening operator.
-It is also worth stressing that it is up to the user
-to see that the widening operator is actually compatible with
-a given convergence certificate. If such a requirement is not met,
-then an extrapolation operator will be obtained.
-
 \section sect_rational_grids Rational Grids
 
 In this section we introduce rational grids
@@ -2579,6 +2344,260 @@ by the corresponding widening operator. Note that,
 as in the case for convex polyhedra, a convergence guarantee
 can only be obtained by suitably restricting the set of
 congruence relations that can occur in this additional parameter.
+
+\section powerset The Powerset Construction
+
+The PPL provides the finite powerset construction; this takes a
+pre-existing domain and upgrades it to one that can represent
+disjunctive information (by using a <EM>finite</EM> number of
+disjuncts).  The construction follows the approach described in
+\ref Bag98 "[Bag98]", also summarized in \ref BHZ04 "[BHZ04]" where there
+is an account of generic widenings for the powerset domain (some of
+which are supported in the pointset powerset domain instantiation
+of this construction described in Section \ref pointset_powerset).
+
+\anchor powerset_domain
+\subsection The_Powerset_Domain The Powerset Domain
+
+The domain is built from a pre-existing base-level domain
+\f$D\f$ which must include an entailment relation `\f$\mathord{\entails}\f$',
+meet operation `\f$\mathord{\meet}\f$', a top element `\f$\true\f$' and
+bottom element `\f$\false\f$'.
+
+A set \f$\cS \in \wp(D)\f$ is called <EM>non-redundant</EM>
+with respect to `\f$\mathord{\entails}\f$' if and only if
+\f$\false \notin \cS\f$
+and \f$\forall d_1, d_2 \in \cS \itc d_1 \entails d_2 \implies d_1 = d_2\f$.
+The set of finite non-redundant subsets of \f$D\f$
+(with respect to `\f$\mathord{\entails}\f$')
+is denoted by \f$\wpfn{D}{\entails}\f$.
+The function
+\f$\fund{\nonredmap}{\wpf(D)}{\wpfn{D}{\entails}}\f$,
+called <EM>Omega-reduction</EM>,
+maps a finite set into its non-redundant counterpart;
+it is defined, for each \f$\cS \in \wpf(D)\f$, by
+\f[
+  \nonredmap(\cS)
+    \defeq
+      \cS \setdiff \{\,
+                   d \in \cS
+                 \mid
+                   d = \false \text{ or } \exists d' \in \cS \st d \sentails d'
+                 \,\}.
+\f]
+where \f$d \sentails d'\f$ denotes \f$d \entails d' \land d \ne d'\f$.
+
+As the intended semantics of a powerset domain element \f$\cS \in \wpf(D)\f$
+is that of disjunction of the semantics of \f$D\f$,
+the finite set \f$\cS\f$ is semantically equivalent
+to the non-redundant set \f$\nonredmap(\cS)\f$;
+and elements of \f$\cS\f$ will be called <EM>disjuncts</EM>.
+The restriction to the finite subsets reflects the fact that here
+disjunctions are implemented by explicit collections of disjuncts.
+As a consequence of this restriction, for any \f$\cS \in \wpf(D)\f$
+such that \f$\cS \neq \{ \false \}\f$, \f$\nonredmap(\cS)\f$ is the (finite)
+set of the maximal elements of \f$\cS\f$.
+
+The <EM>finite powerset domain</EM> over a domain \f$D\f$ is the set
+of all finite non-redundant sets of \f$D\f$ and denoted by \f$D_{\smallP}\f$.
+The domain includes an approximation ordering
+`\f$\mathord{\entailsP}\f$' defined so that,
+for any \f$\cS_1\f$ and \f$\cS_2 \in D_{\smallP}\f$,
+\f$\cS_1 \entailsP \cS_2\f$ if and only if
+\f[
+  \forall d_1 \in \cS_1 \itc
+    \exists d_2 \in \cS_2 \st
+      d_1 \entails d_2.
+\f]
+Therefore the top element is \f$\{\true\}\f$ and the bottom element is the
+emptyset.
+
+\note
+As far as Omega-reduction is concerned, the library adopts a
+<EM>lazy</EM> approach: an element of the powerset domain is
+represented by a potentially redundant sequence of disjuncts.
+Redundancies can be eliminated by explicitly invoking the operator
+<CODE>omega_reduce()</CODE>, e.g., before performing the output of a
+powerset element. Note that all the documented operators automatically
+perform Omega-reductions on their arguments, when needed or appropriate.
+
+\section ps_operations Operations on the Powerset Construction
+
+In this section we briefly describe the generic operations on Powerset Domains
+that are provided by the library for any given base-level domain \f$D\f$.
+
+\anchor ps_meet_upper_bound
+\subsection Meet_and_Upper_Bound Meet and Upper Bound
+
+Given the sets \f$\cS_1\f$ and \f$\cS_2 \in D_{\smallP}\f$, the
+<EM>meet</EM> and <EM>upper bound</EM> operators provided by the
+library returns the set
+\f$
+  \nonredmap
+    \bigl(
+      \{\,
+        d_1 \meet d_2
+      \mid
+        d_1 \in \cS_1, d_2 \in \cS_2
+      \,\}
+    \bigr)
+\f$
+and Omega-reduced set union \f$\nonredmap(\cS_1 \union \cS_2)\f$ respectively.
+
+\anchor ps_add_disjunct
+\subsection Adding_a_Disjunct Adding a Disjunct
+
+Given the powerset element \f$\cS \in D_{\smallP}\f$ and the base-level
+element \f$d \in D\f$, the <EM>add disjunct</EM> operator provided by
+the library returns the powerset element
+\f$\nonredmap\bigl(\cS \union \{d\}\bigr)\f$.
+
+\anchor ps_collapse
+\subsection Collapsing_a_Powerset_Element Collapsing a Powerset Element
+
+If the given powerset element is not empty, then the
+<EM>collapse</EM> operator returns the
+singleton powerset consisting of an upper-bound of all the disjuncts.
+
+\section pointset_powerset The Pointset Powerset Domain
+
+The pointset powerset domain provided by the PPL is the finite
+powerset domain (defined in Section \ref powerset) whose base-level domain
+\f$D\f$ is one of the classes of semantic geometric descriptors listed in
+Section \ref Semantic_Geometric_Descriptors.
+
+In addition to the operations described for the generic powerset
+domain in Section \ref ps_operations, the PPL provides
+all the generic operations
+listed in \ref Generic_Operations_on_Semantic_Geometric_Descriptors.
+Here we just describe those operations that
+are particular to the pointset powerset domain.
+
+\subsection Powerset_Meet_Preserving_Simplification Meet-Preserving Simplification
+
+Let \f$\cS_1 = \{ d_1, \ldots, d_m \}\f$,
+\f$\cS_2 = \{ c_1, \ldots, c_n \}\f$ and
+\f$\cS = \{ s_1, \ldots, s_q \}\f$
+be Omega-reduced elements of a pointset powerset domain
+over the same base-level domain.
+Then:
+
+ - \f$\cS\f$ is <EM>powerset meet-preserving</EM> with respect to \f$\cS_1\f$
+   using <EM>context</EM> \f$\cS_2\f$ if
+   the meet of \f$\cS\f$ and \f$\cS_2\f$
+   \f$=\f$ the meet of \f$\cS_1\f$ and \f$\cS_2\f$;
+
+ - \f$\cS\f$ is a <EM>powerset simplification</EM> with respect to
+   \f$\cS_1\f$ if  \f$q \leq m\f$.
+
+ - \f$\cS\f$ is a <EM>disjunct meet-preserving simplification</EM>
+    with respect to \f$\cS_1\f$
+    if, for each \f$s_k \in \cS\f$,
+    there exists \f$d_i \in \cS_1\f$ such that, for each \f$c_j \in \cS_2\f$,
+    \f$s_k\f$ is a meet-preserving enlargement and simplification
+    of \f$d_i\f$ using context \f$c_j\f$.
+
+The library provides a binary operator (<em>simplify_using_context</em>)
+for the pointset powerset domain that returns a powerset which is a
+powerset meet-preserving, powerset simplification and
+disjunct meet-preserving simplification
+of its first argument using the second argument as context.
+
+Notice that, due to the powerset simplification property, in general
+a meet-preserving powerset simplification is <em>not</em> an enlargement
+with respect to the ordering defined on the powerset lattice.
+Note also that because of this, this method is only well-defined
+when the disjunct is not itself a powerset domain.
+
+
+\anchor pps_geometric
+\subsection Geometric_Comparisons Geometric Comparisons
+
+Given the pointset powersets \f$\cS_1, \cS_2\f$ over the same base-level domain
+and with the same space dimension, then
+we say that \f$\cS_1\f$ <EM>geometrically covers</EM> \f$\cS_2\f$
+if every point (in some disjunct) of \f$\cS_2\f$ is also
+a point in a disjunct of \f$\cS_1\f$.
+If \f$\cS_1\f$ geometrically covers \f$\cS_2\f$
+and \f$\cS_2\f$ geometrically covers \f$\cS_1\f$,
+then we say that they are <EM>geometrically equal</EM>.
+
+
+\anchor pps_pairwise_merge
+\subsection Pairwise_Merge Pairwise Merge
+
+Given the pointset powerset \f$\cS\f$ over a base-level semantic GD domain
+\f$D\f$, then the
+<EM>pairwise merge</EM> operator takes pairs of distinct elements in
+\f$\cS\f$ whose upper bound (denoted here by \f$\uplus\f$) in \f$D\f$
+(using the PPL operator <CODE>upper_bound_assign()</CODE> for \f$D\f$)
+is the same as their set-theoretical union
+and replaces them by their union.  This replacement is done
+recursively so that, for each pair \f$c, d\f$ of distinct
+disjuncts in the result set, we have
+\f$c \uplus d \neq c \union d\f$.
+
+\anchor pps_bgp99_extrapolation
+\subsection Powerset_Extrapolation_Operators Extrapolation Operators
+
+The library implements a generalization of the extrapolation operator
+for powerset domains proposed in \ref BGP99 "[BGP99]".
+The operator <CODE>BGP99_extrapolation_assign</CODE> is made parametric
+by allowing for the specification of any PPL extrapolation operator
+for the base-level domain.
+Note that, even when the extrapolation operator for the
+base-level domain \f$D\f$ is known to be a widening on \f$D\f$,
+the <CODE>BGP99_extrapolation_assign</CODE> operator cannot guarantee the
+convergence of the iteration sequence in a finite number of steps
+(for a counter-example, see \ref BHZ04 "[BHZ04]").
+
+\anchor pps_certificate_widening
+\subsection Certificate_Based_Widenings Certificate-Based Widenings
+
+The PPL library provides support for the specification of proper widening
+operators on the pointset powerset domain. In particular,
+this version of the library implements an instance of the
+<EM>certificate-based widening framework</EM> proposed in
+\ref BHZ03b "[BHZ03b]".
+
+A <EM>finite convergence certificate</EM> for an extrapolation operator
+is a formal way of ensuring that such an operator is indeed a widening
+on the considered domain. Given a widening operator on the base-level
+domain \f$D\f$, together with the corresponding convergence certificate,
+the BHZ03 framework is able to lift this widening on \f$D\f$
+to a widening on the pointset powerset domain; ensuring
+convergence in a finite number of iterations.
+
+Being highly parametric, the BHZ03 widening framework can be
+instantiated in many ways. The current implementation provides
+the templatic operator
+<CODE>BHZ03_widening_assign\<Certificate, Widening\></CODE>
+which only exploits a fraction of this generality, by allowing the
+user to specify the base-level widening function and the corresponding
+certificate. The widening strategy is fixed and uses two extrapolation
+heuristics: first, the upper bound operator for the base-level domain
+is tried; second,
+the \ref pps_bgp99_extrapolation "BGP99 extrapolation operator" is tried,
+possibly applying \ref pps_pairwise_merge "pairwise merging".
+If both heuristics fail to converge according to the convergence
+certificate, then an attempt is made to apply the base-level widening
+to the upper bound of the two arguments, possibly improving the result
+obtained by means of the difference operator for the base-level domain.
+For more details and a justification of the overall approach,
+see \ref BHZ03b "[BHZ03b]" and \ref BHZ04 "[BHZ04]".
+
+The library provides several convergence certificates.
+Note that, for the domain of Polyhedra, while
+\ref Parma_Polyhedra_Library::BHRZ03_Certificate the "BHRZ03_Certificate"
+is compatible with both the BHRZ03 and the H79 widenings,
+\ref Parma_Polyhedra_Library::H79_Certificate "H79_Certificate"
+is only compatible with the latter.
+Note that using different certificates will change the results obtained,
+even when using the same base-level widening operator.
+It is also worth stressing that it is up to the user
+to see that the widening operator is actually compatible with
+a given convergence certificate. If such a requirement is not met,
+then an extrapolation operator will be obtained.
 
 \section use_of_library Using the Library
 
