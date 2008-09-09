@@ -141,7 +141,8 @@ run_one(all_versions_and_banner) :-
 % are printed.
 run_one(numeric_bounds) :-
   max_dimension,
-  coefficient_bounds.
+  coefficient_bounds,
+  set_restore_rounding.
 
 run_one(new_polyhedron_from_dimension) :-
   new_polyhedron_from_dim.
@@ -313,6 +314,10 @@ cpp_unbounded_check :-
 cpp_bounded_values(Max, Min) :-
   ppl_Coefficient_max(Max),
   ppl_Coefficient_min(Min).
+
+set_restore_rounding :-
+  ppl_set_rounding_for_PPL,
+  ppl_restore_pre_PPL_rounding.
 
 %%%%%%%%%%%%%%%%% New Polyhedron %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -3222,7 +3227,9 @@ group_predicates(numeric_bounds,
   [ppl_max_space_dimension/1,
    ppl_Coefficient_is_bounded/0,
    ppl_Coefficient_max/1,
-   ppl_Coefficient_min/1
+   ppl_Coefficient_min/1,
+   ppl_set_rounding_for_PPL/0,
+   ppl_restore_pre_PPL_rounding/0
   ]).
 
 group_predicates(new_polyhedron_from_dimension,

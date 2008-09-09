@@ -2,13 +2,6 @@
 Enhancements for PPL 0.10
 =========================
 
-- Make
-
-    void set_rounding_for_PPL()
-    void restore_pre_PPL_rounding()
-
-  available in all the interfaces.
-
 - Document --enable-interfaces and --enable-instantiations in the
   README.configure file.
 
