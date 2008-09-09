@@ -1122,6 +1122,8 @@ AM_CONDITIONAL(HOST_CPU_X86_64, test x$x86_64 = xyes)
 
 AM_CONDITIONAL(NO_UNDEFINED, test x$no_undefined = xyes)
 
+AC_SUBST(LIBEXT, [$libext])
+AC_SUBST(SHREXT, [$shrext_cmds])
 AC_SUBST(extra_includes)
 AC_SUBST(extra_libraries)
 AC_SUBST(debug_flag)
