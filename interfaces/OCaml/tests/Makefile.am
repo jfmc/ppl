@@ -48,8 +48,20 @@ OCAMLC_COMPILE_FLAGS = \
 -I +gmp -I $(srcdir) -I .. \
 -ccopt -g
 
+if ENABLE_SHARED
+
+BUILT_PPL = \
+$(top_builddir)/src/.libs/libppl$(SHREXT)
+
+else !ENABLE_SHARED
+
+BUILT_PPL = \
+$(top_builddir)/src/.libs/libppl.$(LIBEXT)
+
+endif !ENABLE_SHARED
+
 OCAMLC_LINK_FLAGS = \
-`echo " -L$(top_builddir)/src/.libs -lppl $(extra_libraries) " | $(SED) -e "s/ -R[^ ]*//g" -e "s/ -/ -cclib -/g"`
+`echo " $(extra_libraries) " | $(SED) -e "s/ -R[^ ]*//g" -e "s/ -/ -cclib -/g"`
 
 .ml.cmo:
 	ocamlc -o $@ -g -c $(OCAMLC_COMPILE_FLAGS) $<
@@ -69,6 +81,7 @@ test1_SOURCES = test1.ml
 test1$(EXEEXT): test1.cmo
 	ocamlc -o $@ -cc g++ -g -custom $(OCAMLC_COMPILE_FLAGS) \
 		ppl_ocaml.cma gmp.cma \
+		-cclib $(BUILT_PPL) \
 		$(OCAMLC_LINK_FLAGS) $<
 
 
@@ -83,6 +96,7 @@ ppl_ocaml_generated_test.ml: $(interface_generator_dependencies)
 ppl_ocaml_generated_test$(EXEEXT): ppl_ocaml_generated_test.cmo
 	ocamlc -o $@ -cc g++ -g -custom $(OCAMLC_COMPILE_FLAGS) \
 		ppl_ocaml.cma gmp.cma \
+		-cclib $(BUILT_PPL) \
 		$(OCAMLC_LINK_FLAGS) $<
 
 endif BUILD_OCAML_INTERFACE
