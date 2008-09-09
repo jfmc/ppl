@@ -253,7 +253,7 @@ DIST_JAVA_INTERFACE_PS_DOCS = \
 ppl-user-java-interface-@VERSION@.ps.gz
 
 JAVA_INTERFACE_JAVA_FILES = \
-../interfaces/Java/Java_interface.dox \
+@top_builddir@/interfaces/Java/Java_interface.dox \
 ../interfaces/Java/ppl_java/By_Reference.java \
 ../interfaces/Java/ppl_java/Coefficient.java \
 ../interfaces/Java/ppl_java/Congruence.java \
