@@ -102,14 +102,14 @@ PostScript or PDF documentation, LaTeX dies with a "TeX capacity
 exceeded" error message.  The error should contain the indication of
 the TeX buffer whose capacity has been exceeded, e.g.:
 
-  ! TeX capacity exceeded, sorry [save size=10000].
+  ! TeX capacity exceeded, sorry [save size=5000].
 
 You than need to edit the file texmf.cfg that defines the buffer sizes,
 increasing the value of the corresponding buffer.  Continuing our
 example, we can double save_size by editing texmf.cfg so that
 the relevant line becomes
 
-  save_size = 5000        % for saving values outside current group
+  save_size = 10000        % for saving values outside current group
 
 Any change to texmf.cfg should be followed by running the command
 
