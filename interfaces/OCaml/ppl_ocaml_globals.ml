@@ -24,6 +24,24 @@ open Ppl_ocaml_types
 open Gmp
 type mip_problem
 
+external ppl_version_major:
+unit -> int = "ppl_version_major"
+
+external ppl_version_minor:
+unit -> int = "ppl_version_minor"
+
+external ppl_version_revision:
+unit -> int = "ppl_version_revision"
+
+external ppl_version_beta:
+unit -> int = "ppl_version_beta"
+
+external ppl_version:
+unit -> string = "ppl_version"
+
+external ppl_banner:
+unit -> string = "ppl_banner"
+
 external ppl_set_rounding_for_PPL:
 unit -> unit = "ppl_set_rounding_for_PPL"
 

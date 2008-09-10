@@ -1,3 +1,4 @@
+
 (* FIXME: to be written.
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -278,7 +279,24 @@ print_string "\nSize of minimized constraints get from a NNC_Polyhedron built fr
 print_int(cs_size);;
 ppl_set_rounding_for_PPL ();;
 ppl_restore_pre_PPL_rounding ();;
-
+print_newline();;
+print_string "Major version is: ";
+print_int(ppl_version_major ());;
+print_string ", minor version is: ";
+print_int(ppl_version_minor ());;
+print_string ", revision is: ";
+print_int(ppl_version_revision ());;
+print_string ", beta is: ";
+print_int(ppl_version_beta ());;
+print_newline();;
+let v = ppl_version ();;
+print_string "Version is: ";
+print_string(v);;
+let b = ppl_banner ();;
+print_newline();;
+print_string "Banner is: ";
+print_string(b);;
+print_newline();;
 (* Pointset_Powersed_Grid is not enabled by default, the following code is *)
 (* commented *)
 (* let pps = ppl_new_Pointset_Powerset_Grid_from_space_dimension 3;; *)

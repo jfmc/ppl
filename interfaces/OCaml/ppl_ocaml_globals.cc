@@ -968,9 +968,57 @@ ppl_MIP_Problem_swap(value caml_mip1, value caml_mip2) try{
 CATCH_ALL
 
 extern "C"
+CAMLprim value
+ppl_version_major(value unit) try {
+  CAMLparam1(unit);
+  CAMLreturn(Val_long(version_major()));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_version_minor(value unit) try {
+  CAMLparam1(unit);
+  CAMLreturn(Val_long(version_minor()));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_version_revision(value unit) try {
+  CAMLparam1(unit);
+  CAMLreturn(Val_long(version_revision()));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_version_beta(value unit) try {
+  CAMLparam1(unit);
+  CAMLreturn(Val_long(version_beta()));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_version(value unit) try {
+  CAMLparam1(unit);
+  CAMLreturn(caml_copy_string(version()));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_banner(value unit) try {
+  CAMLparam1(unit);
+  CAMLreturn(caml_copy_string(banner()));
+}
+CATCH_ALL
+
+extern "C"
 void
 ppl_set_rounding_for_PPL(value unit) try {
-  CAMLparam0();
+  CAMLparam1(unit);
   set_rounding_for_PPL();
   CAMLreturn0;
 }
@@ -980,7 +1028,7 @@ CATCH_ALL
 extern "C"
 void
 ppl_restore_pre_PPL_rounding(value unit) try {
-  CAMLparam0();
+  CAMLparam1(unit);
   restore_pre_PPL_rounding();
   CAMLreturn0;
 }

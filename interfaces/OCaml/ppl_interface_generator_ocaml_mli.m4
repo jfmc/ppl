@@ -117,11 +117,30 @@ type optimization_mode = Minimization | Maximization
 
 type mip_problem_status = Unfeasible_Mip_Problem | Unbounded_Mip_Problem
                         | Optimized_Mip_Problem
-external ppl_set_rounding_for_PPL:
-unit -> unit = "ppl_set_rounding_for_PPL"
 
-external ppl_restore_pre_PPL_rounding:
-unit -> unit = "ppl_restore_pre_PPL_rounding"
+val ppl_version_major:
+  unit -> int
+
+val ppl_version_minor:
+  unit -> int
+
+val ppl_version_revision:
+  unit -> int
+
+val ppl_version_beta:
+  unit -> int
+
+val ppl_version:
+  unit -> string
+
+val ppl_banner:
+  unit -> string
+
+val ppl_set_rounding_for_PPL:
+unit -> unit
+
+val ppl_restore_pre_PPL_rounding:
+unit -> unit
 
 type mip_problem
 
