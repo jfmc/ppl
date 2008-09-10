@@ -104,18 +104,18 @@ the TeX buffer whose capacity has been exceeded, e.g.:
 
   ! TeX capacity exceeded, sorry [save size=10000].
 
-You have then to edit texmf.cfg file that defines the buffer sizes,
+You than need to edit the file texmf.cfg that defines the buffer sizes,
 increasing the value of the corresponding buffer.  Continuing our
-example, we may double save_size by editing texmf.cfg so that
-the relevant lines becomes
+example, we can double save_size by editing texmf.cfg so that
+the relevant line becomes
 
   save_size = 5000        % for saving values outside current group
 
-Any change to texmf.cfg required running the command
+Any change to texmf.cfg should be followed by running the command
 
   texconfig init
 
-to become effective.
+for the change to become effective.
 
 --------
 
