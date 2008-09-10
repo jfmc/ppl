@@ -1374,13 +1374,14 @@ PPL::Grid::add_congruences_and_minimize(const Constraint_System& cs) {
 
 void
 PPL::Grid::add_constraint(const Constraint& c) {
+  // Equality check.
+  if (!c.is_equality())
+    throw_invalid_constraint("add_constraint(c)", "c");
   // The dimension of `c' must be at most `space_dim'.
   if (space_dim < c.space_dimension())
     throw_dimension_incompatible("add_constraint(c)", "c", c);
-  if (c.is_equality()) {
-    Congruence cg(c);
-    add_congruence(cg);
-  }
+  Congruence cg(c);
+  add_congruence(cg);
 }
 
 bool
@@ -1397,6 +1398,11 @@ PPL::Grid::add_constraint_and_minimize(const Constraint& c) {
 
 void
 PPL::Grid::add_constraints(const Constraint_System& cs) {
+  // Every constraint in cs must be an equality.
+  for (Constraint_System::const_iterator i = cs.begin(),
+         cs_end = cs.end(); i != cs_end; ++i)
+    if (!i->is_equality())
+      throw_invalid_constraints("add_constraints(cs)", "cs");
   // The dimension of `cs' must be at most `space_dim'.
   if (space_dim < cs.space_dimension())
     throw_dimension_incompatible("add_constraints(cs)", "cs", cs);
@@ -1416,6 +1422,11 @@ PPL::Grid::add_constraints_and_minimize(const Constraint_System& cs) {
 
 void
 PPL::Grid::add_recycled_constraints(Constraint_System& cs) {
+  // Every constraint in cs must be an equality.
+  for (Constraint_System::const_iterator i = cs.begin(),
+         cs_end = cs.end(); i != cs_end; ++i)
+    if (!i->is_equality())
+      throw_invalid_constraints("add_constraints(cs)", "cs");
   // The dimension of `cs' must be at most `space_dim'.
   if (space_dim < cs.space_dimension())
     throw_dimension_incompatible("add_recycled_constraints(cs)",
@@ -1565,9 +1576,6 @@ PPL::Grid::add_grid_generators_and_minimize(const Grid_Generator_System& gs) {
 
 void
 PPL::Grid::refine_with_constraint(const Constraint& c) {
-  // FIXME: This is a currently copy of add_constraint() since that will
-  //        be changed to throw an exception unless the constraint
-  //        is an equality.
   // The dimension of `c' must be at most `space_dim'.
   if (space_dim < c.space_dimension())
     throw_dimension_incompatible("add_constraint(c)", "c", c);
@@ -1579,9 +1587,6 @@ PPL::Grid::refine_with_constraint(const Constraint& c) {
 
 void
 PPL::Grid::refine_with_constraints(const Constraint_System& cs) {
-  // FIXME: This is a currently copy of add_constraints() since that will
-  //        be changed to throw an exception unless the constraint
-  //        is an equality.
   // The dimension of `cs' must be at most `space_dim'.
   if (space_dim < cs.space_dimension())
     throw_dimension_incompatible("add_constraints(cs)", "cs", cs);

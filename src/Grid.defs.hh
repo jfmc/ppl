@@ -1203,7 +1203,8 @@ public:
     The constraint.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p c are dimension-incompatible.
+    Thrown if \p c is not an equality constraint
+    or if \p *this and \p c are dimension-incompatible.
   */
   void add_constraint(const Constraint& c);
 
@@ -1231,7 +1232,8 @@ public:
     The constraints to be added.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p cs are dimension-incompatible.
+    Thrown if \p cs contains an equality constraint
+    or if \p *this and \p cs are dimension-incompatible.
   */
   void add_constraints(const Constraint_System& cs);
 
@@ -1260,7 +1262,8 @@ public:
     \p cs may be recycled.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p cs are dimension-incompatible.
+    Thrown if \p cs contains an equality constraint
+    or if \p *this and \p cs are dimension-incompatible.
 
     \warning
     The only assumption that can be made about \p cs upon successful
@@ -2791,6 +2794,10 @@ protected:
   static void throw_space_dimension_overflow(const char* method,
 					     const char* reason);
 
+  void throw_invalid_constraint(const char* method,
+			       const char* c_name) const;
+  void throw_invalid_constraints(const char* method,
+				const char* cs_name) const;
   void throw_invalid_generator(const char* method,
 			       const char* g_name) const;
   void throw_invalid_generators(const char* method,

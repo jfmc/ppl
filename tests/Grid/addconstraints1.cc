@@ -61,8 +61,6 @@ test02() {
 
   Constraint_System cs;
   cs.insert(B == 0);
-  cs.insert(A >= 0);
-  cs.insert(C > 0);
 
   Grid gr(3);
 
@@ -88,9 +86,6 @@ test03() {
   Variable C(2);
 
   Constraint_System cs;
-  cs.insert(B < 0);
-  cs.insert(A >= 0);
-  cs.insert(C > 0);
 
   Grid gr(3);
 
@@ -501,8 +496,7 @@ test19() {
 
   Constraint_System cs;
   cs.insert(B == 0);
-  cs.insert(A >= 0);
-  cs.insert(C > 0);
+  cs.insert(2*C + A == 3);
 
   Congruence_System cgs(cs);
 
@@ -517,12 +511,37 @@ test19() {
 
   Grid known_gr(3);
   known_gr.add_congruence(B == 0);
+  known_gr.add_congruence(2*C + A == 3);
 
   ok &= (gr == known_gr);
 
   print_congruences(gr, "*** gr.add_constraints(cs) ***");
 
   return ok;
+}
+
+// add_constraints(cs) -- non-equality conatraint in constraint system.
+bool
+test20() {
+  Variable A(0);
+  Variable B(1);
+
+  Constraint_System cs;
+  cs.insert(A + B == 0);
+  cs.insert(A + B >= 0);
+
+  Grid gr(1);
+
+  try {
+    gr.add_constraints(cs);
+  }
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
 }
 
 } // namespace
@@ -547,4 +566,5 @@ BEGIN_MAIN
   DO_TEST(test17);
   DO_TEST(test18);
   DO_TEST(test19);
+  DO_TEST(test20);
 END_MAIN

@@ -36,7 +36,6 @@ test01() {
 
   gr.add_constraint(A == 3);
   print_congruences(gr, "*** gr.add_constraint(A == 3) ***");
-  gr.add_constraint(B >= 0);
 
   Grid known_gr(2);
   known_gr.add_congruence(A == 3);
@@ -228,6 +227,25 @@ test09() {
   return false;
 }
 
+// add_constraint_and_minimize -- space dimension exception
+bool
+test10() {
+  Variable B(1);
+
+  Grid gr(1);
+
+  try {
+    gr.add_constraint(B >= 0);
+  }
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -240,4 +258,5 @@ BEGIN_MAIN
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
+  DO_TEST(test10);
 END_MAIN

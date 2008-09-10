@@ -673,6 +673,25 @@ PPL::Grid::throw_space_dimension_overflow(const char* method,
 }
 
 void
+PPL::Grid::throw_invalid_constraint(const char* method,
+				    const char* c_name) const {
+  std::ostringstream s;
+  s << "PPL::Grid::" << method << ":" << std::endl
+    << c_name << " is not an equality constraint.";
+  throw std::invalid_argument(s.str());
+}
+
+void
+PPL::Grid::throw_invalid_constraints(const char* method,
+				    const char* cs_name) const {
+  std::ostringstream s;
+  s << "PPL::Grid::" << method << ":" << std::endl
+    << "the constraint system " << cs_name
+    << " contains inequalities.";
+  throw std::invalid_argument(s.str());
+}
+
+void
 PPL::Grid::throw_invalid_generator(const char* method,
 				   const char* g_name) const {
   std::ostringstream s;
