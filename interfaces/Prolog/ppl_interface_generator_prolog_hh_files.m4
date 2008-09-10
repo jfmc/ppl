@@ -1,8 +1,10 @@
 m4_define(`dnl', `m4_dnl')`'dnl
 m4_divert(-1)
 
-dnl This m4 file generates the file ppl_prolog.icc
-dnl using the code in ppl_interface_generator_prolog_icc_code.m4.
+dnl This m4 file is used to generate ppl_prlog_domains.hh
+dnl and files ppl_prolog_DOMAIN.hh, for each interface domain DOMAIN
+dnl in ppl_interface instantiations.m4 using the code in
+dnl ppl_interface_generator_prolog_hh_code.m4.
 
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
@@ -25,8 +27,6 @@ dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
-dnl This file generates ppl_prolog.icc.
-dnl
 dnl Include files defining macros that generate the non-fixed part.
 m4_include(`ppl_interface_generator_prolog_hh_code.m4')
 m4_include(`ppl_interface_generator_prolog_procedure_generators.m4')

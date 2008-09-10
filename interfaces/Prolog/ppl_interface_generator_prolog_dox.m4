@@ -24,8 +24,6 @@ dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
-dnl This file generates ppl_prolog.icc.
-dnl
 dnl Include files defining macros that generate the non-fixed part.
 m4_include(`ppl_interface_generator_prolog_dox_code.m4')
 m4_include(`ppl_interface_generator_prolog_procedure_generators.m4')
