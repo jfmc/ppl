@@ -46,14 +46,6 @@ Enhancements for PPL 0.10
 - Clearly explain, in the documentation, how (not) to use
   set_GMP_memory_allocation_functions().  More generally, explain how
   to have memory-guarded computations.
-- Octagonal_Shape relation_with_constraints and BD_Shape
-  relation_with_constraints should consider constraints
-  that are not octagonal, resp., bd_shapes; at present
-  they throw an exception when these conditions are not met.
-- Octagonal_Shape relation_with_congruences and BD_Shape
-  relation_with_congruences construct the equivalent polyhedron
-  and use the Polyhedron relation_with_congruences method.
-  These should be rewritten to work directly with the shape domain.
 
 Enhancements for PPL 0.11 or later versions
 ===========================================
