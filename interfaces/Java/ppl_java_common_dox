@@ -134,45 +134,53 @@ For full definitions of terminology used here, see the main PPL user manual.
 First we describe some domain independent methods
 included with all instantiations of the OCaml interfaces.
 
-<H2><CODE> version_major</CODE></H2>
+<H2><CODE> version_major() </CODE></H2>
   Returns the major number of the PPL version.
 
-<H2><CODE> version_minor</CODE></H2>
+<H2><CODE> version_minor() </CODE></H2>
   Returns the minor number of the PPL version.
 
-<H2><CODE> version_revision</CODE></H2>
+<H2><CODE> version_revision() </CODE></H2>
   Returns the revision number of the PPL version.
 
-<H2><CODE> version_beta</CODE></H2>
+<H2><CODE> version_beta() </CODE></H2>
   Returns the beta number of the PPL version.
 
-<H2><CODE> version</CODE></H2>
+<H2><CODE> version() </CODE></H2>
   Returns the PPL version.
 
-<H2><CODE> banner</CODE></H2>
+<H2><CODE> banner() </CODE></H2>
   Returns information about the PPL version, the licensing, the lack of any
   warranty whatsoever, the C++ compiler used to build the library,
   where to report bugs and where to look for further information.
 
-<H2><CODE> max_space_dimension</CODE></H2>
+<H2><CODE> ppl_set_rounding_for_PPL() </CODE></H2>
+  Sets the FPU rounding mode so that the PPL abstractions based on
+  floating point numbers work correctly.
+
+<H2><CODE> ppl_restore_pre_PPL_rounding() </CODE></H2>
+  Restores the FPU rounding mode to what it was before the initialization
+  of the PPL.
+
+<H2><CODE> max_space_dimension() </CODE></H2>
   Returns the maximum space dimension this library can handle.
 
-<H2><CODE> set_timeout_exception_atom name </CODE></H2>
+<H2><CODE> set_timeout_exception_atom(name) </CODE></H2>
    Sets the term to be thrown by timeout exceptions
    to <CODE>name</CODE>.
    The default value is <CODE>time_out</CODE>.
 
-<H2><CODE> timeout_exception_atom</CODE></H2>
+<H2><CODE> timeout_exception_atom() </CODE></H2>
    Returns the name to be thrown by timeout exceptions
 
-<H2><CODE> set_timeout c_unsigned </CODE></H2>
+<H2><CODE> set_timeout(c_unsigned) </CODE></H2>
    Computations taking exponential time will be interrupted
    some time after <CODE>c_unsigned</CODE> ms after that call.
    If the computation is interrupted that way, the current timeout
    exception atom will be thrown.
    <CODE>c_unsigned</CODE> must be strictly greater than zero.
 
-<H2><CODE> reset_timeout </CODE></H2>
+<H2><CODE> reset_timeout() </CODE></H2>
    Resets the timeout time so that the computation is not interrupted.
 
 <BR>
@@ -185,14 +193,14 @@ defining mixed integer (linear) programming problems.
 <H2><CODE>
   MIP_Problem(dimension)
 </CODE></H2>
-   Initializes a handle to an MIP Problem \f$\mathrm{MIP}\f$ with the
+   Initializes a reference to an MIP Problem \f$\mathrm{MIP}\f$ with the
    feasible region the vector space of dimension <CODE>dimension</CODE>,
    objective function \f$0\f$ and optimization mode <CODE>max</CODE>.
 
 <H2><CODE>
   MIP_Problem(constraint_system, lin_expr, optimization_mode)
 </CODE></H2>
-   Initializes a handle to an MIP Problem \f$\mathrm{MIP}\f$ with the
+   Initializes a reference to an MIP Problem \f$\mathrm{MIP}\f$ with the
    feasible region represented by <CODE>constraint_system</CODE>,
    objective function <CODE>lin_expr</CODE> and optimization mode
    <CODE>optimization_mode</CODE>.
@@ -455,7 +463,7 @@ C_Polyhedron(nnc_poly)
   and false, otherwise.
 
 <H2><CODE>
-  maximize_with_point(lin_expr, coeff_0, coeff_1, bool, generator)
+  maximize(lin_expr, coeff_0, coeff_1, bool, generator)
  </CODE></H2>
   Returns true if the polyhedron \f$P\f$ referred to by
    \c this is not empty
@@ -483,7 +491,7 @@ C_Polyhedron(nnc_poly)
   and false, otherwise.
 
 <H2><CODE>
-  minimize_with_point(lin_expr, coeff_0, coeff_1, bool, generator)
+  minimize(lin_expr, coeff_0, coeff_1, bool, generator)
 </CODE></H2>
   Returns true if the polyhedron \f$P\f$ referred to by
    \c this is not empty
@@ -501,13 +509,13 @@ C_Polyhedron(nnc_poly)
    Returns true if the polyhedron referred to by
    \c this is topologically closed and false, otherwise.
 
-<H2><CODE> contains_Polyhedron(c_poly)
+<H2><CODE> contains(c_poly)
 </CODE></H2>
    Returns true if the polyhedron referenced by <CODE>c_poly</CODE>
    is included in or equal to the polyhedron referred to by
    \c this and false, otherwise.
 
-<H2><CODE> strictly_contains_Polyhedron(c_poly)
+<H2><CODE> strictly_contains(c_poly)
 </CODE></H2>
    Returns true if the polyhedron referenced by <CODE>c_poly</CODE>
    is included in but not equal to the polyhedron referred to by
@@ -582,6 +590,11 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    assigning the image with respect to the transfer relation
    <CODE>lin_expr_1/coefficient <= var <= lin_expr_2/coefficient</CODE>.
 
+<H2><CODE> bounded_affine_preimage(var, lin_expr_1, lin_expr_2, coefficient)
+</CODE></H2>
+This is the inverse transformation to that for
+<CODE>ppl_bounded_affine_image</CODE>.
+
 <H2><CODE> generalized_affine_image(var, Relation_Symbol, lin_expr,
                                     coefficient)
 </CODE></H2>
@@ -592,7 +605,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    <CODE>lin_expr</CODE>/<CODE>coefficient</CODE>.
 
 
-<H2><CODE> generalized_affine_image_lhs_rhs(lin_expr_1, Relation_Symbol,
+<H2><CODE> generalized_affine_image(lin_expr_1, Relation_Symbol,
                                             lin_expr_2)
 </CODE></H2>
    Transforms the polyhedron referred to by \c this
@@ -601,156 +614,77 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    <CODE>lin_expr_1</CODE> <CODE>Relation_Symbol</CODE>
    <CODE>lin_expr_2</CODE>.
 
+<H2><CODE> generalized_affine_preimage(lin_expr_1, Relation_Symbol,
+                                       lin_expr_2)
+</CODE></H2>
+<H2><CODE> generalized_affine_preimage(lin_expr_1, Relation_Symbol,
+                                       lin_expr_2)
+</CODE></H2>
+Thes are the inverse transformations to those for
+<CODE>ppl_generalized_affine_image</CODE>.
+
 <H2><CODE> time_elapse_assign(c_poly) </CODE></H2>
    Assigns to the polyhedron \f$\cP\f$ referred to by \c this
    the time-elapse \f$ (\cP \nearrow \cQ)\f$
    with the polyhedron \f$\cQ\f$ referenced by <CODE>c_poly</CODE>.
 
-<H2><CODE> BHRZ03_widening_assign(c_poly)
+<H2><CODE> BHRZ03_widening_assign(c_poly, num_of_tokens)
+</CODE></H2>
+<H2><CODE> H79_widening_assign(c_poly, num_of_tokens)
 </CODE></H2>
    If the polyhedron \f$\cP_1\f$ referred to by \c this
    contains the polyhedron \f$\cP_2\f$ referenced by <CODE>c_poly</CODE>,
    then \c this will refer to
-   the BHRZ03-widening of \f$\cP_1\f$ with \f$\cP_2\f$.
-
-<H2><CODE> BHRZ03_widening_assign_with_tokens(c_poly,
-                                                             c_unsigned)
-</CODE></H2>
+   the widening of \f$\cP_1\f$ with \f$\cP_2\f$ using either
+   the BHRZ03 or the H79 widening.
    It is assumed that the polyhedron \f$\cP_1\f$ referred to by \c this
    contains the polyhedron \f$\cP_2\f$ referenced by <CODE>c_poly</CODE>;
    let \f$\cP\f$ denote the BHRZ03-widening of
-   \f$\cP_1\f$ with \f$\cP_2\f$,
-   Assuming that the quantity \f$t_1\f$ given by <CODE>c_unsigned</CODE>
-   is the number of tokens available,
-   Then this method will return the number of tokens remaining at the
-   end of the operation.
+   \f$\cP_1\f$ with \f$\cP_2\f$.
+   See the sections on widening wperators
+   and widening with tokens in
+   the main PPL user manual for more information
+   on these operations and the use of the tokens.
 
 <H2><CODE>
-   limited_BHRZ03_extrapolation_assign(c_poly, constraint_system)
+   limited_BHRZ03_extrapolation_assign(c_poly, constraint_system,
+                                       num_of_tokens)
+</CODE></H2>
+<H2><CODE>
+   limited_H79_extrapolation_assign(c_poly, constraint_system,
+                                    num_of_tokens)
 </CODE></H2>
    If the polyhedron \f$\cP_1\f$ referred to by \c this
    contains the polyhedron \f$\cP_2\f$ referenced by <CODE>c_poly</CODE>,
    then  \c this will refer to
-   the BHRZ03-extrapolation of \f$\cP_1\f$ with \f$\cP_2\f$
-   improved by enforcing the constraints in
+   the extrapolation of \f$\cP_1\f$ with \f$\cP_2\f$ using either
+   the BHRZ03 or the H79 widening improved by enforcing the constraints in
    <CODE>constraint_system</CODE>.
+   See the sections on extrapolation operators
+   and widening with tokens in
+   the main PPL user manual for more information
+   on these operations and the use of the tokens.
 
 <H2><CODE>
-   limited_BHRZ03_extrapolation_assign_with_tokens(c_poly, constraint_system,
-                                                   c_unsigned)
+   bounded_BHRZ03_extrapolation_assign(c_poly, constraint_system,
+                                       num_of_tokens)
 </CODE></H2>
-   It is assumed that the polyhedron \f$\cP_1\f$ referred to by \c this
-   contains the polyhedron \f$\cP_2\f$
-   referenced by <CODE>c_poly</CODE>;
-   let \f$\cP\f$ denote the BHRZ03-extrapolation of
-   \f$\cP_1\f$ with \f$\cP_2\f$,
-   improved by enforcing those constraints in <CODE>constraint_system</CODE>.
-   <BR>
-   Assuming that the quantity \f$t_1\f$ given by <CODE>c_unsigned</CODE>
-   is the number of tokens available,
-   then this method will return the number of tokens
-   \f$t_2\f$ remaining at the end of the operation.
-
-<H2><CODE> bounded_BHRZ03_extrapolation_assign(c_poly, constraint_system)
+<H2><CODE>
+   bounded_H79_extrapolation_assign(c_poly, constraint_system,
+                                    num_of_tokens)
 </CODE></H2>
    If the polyhedron \f$\cP_1\f$ referred to by \c this
    contains the polyhedron \f$\cP_2\f$ referenced by <CODE>c_poly</CODE>,
    then  \c this will refer to
-   the BHRZ03-extrapolation of \f$\cP_1\f$ with \f$\cP_2\f$
-   improved by enforcing the constraints in
+   the extrapolation of \f$\cP_1\f$ with \f$\cP_2\f$ using either
+   the BHRZ03 or the H79 widening improved by enforcing the constraints in
    <CODE>constraint_system</CODE> together with all constraints of
    the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$ that are satisfied
    by every point in \f$\cP_1\f$.
-
-<H2><CODE> bounded_BHRZ03_extrapolation_assign_with_tokens(c_poly,
-                                                           constraint_system,
-                                                           c_unsigned)
-</CODE></H2>
-   It is assumed that the polyhedron \f$\cP_1\f$ referred to by \c this
-   contains the polyhedron \f$\cP_2\f$ referenced by <CODE>c_poly</CODE>;
-   let \f$\cP\f$ denote the BHRZ03-extrapolation of \f$\cP_1\f$ with
-   \f$\cP_2\f$ improved by enforcing those constraints in
-   <CODE>constraint_system</CODE> together with all constraints of
-   the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$ that are satisfied
-   by every point in \f$\cP_1\f$.
-   <BR>
-   Assuming that the quantity \f$t_1\f$ given by <CODE>c_unsigned</CODE>
-   is the number of tokens available,
-   this method will return the number of tokens
-   \f$t_2\f$ remaining at the end of the operation.
-
-<H2><CODE> H79_widening_assign(c_poly)
-</CODE></H2>
-   If the polyhedron \f$\cP_1\f$ referred to by \c this
-   contains the polyhedron \f$\cP_2\f$ referenced by <CODE>c_poly</CODE>,
-   then \c this will refer to
-   the H79-widening of \f$\cP_1\f$ with \f$\cP_2\f$.
-
-<H2><CODE> H79_widening_assign_with_tokens(c_poly, c_unsigned)
-</CODE></H2>
-   It is assumed that the polyhedron \f$\cP_1\f$ referred to by \c this
-   contains the polyhedron \f$\cP_2\f$
-   referenced by <CODE>c_poly</CODE>;
-   let \f$\cP\f$ denote the H79-widening of
-   \f$\cP_1\f$ with \f$\cP_2\f$,
-   Assuming that the quantity \f$t_1\f$ given by <CODE>c_unsigned</CODE>
-   is the number of tokens available,
-   Then this method will return the number of tokens remaining at the
-   end of the operation.
-
-<H2><CODE>
-   limited_H79_extrapolation_assign(c_poly, constraint_system)
-</CODE></H2>
-   If the polyhedron \f$\cP_1\f$ referred to by \c this
-   contains the polyhedron \f$\cP_2\f$ referenced by <CODE>c_poly</CODE>,
-   then \c this will refer to
-   the H79-extrapolation of \f$\cP_1\f$ with \f$\cP_2\f$
-   improved by enforcing the constraints in
-   <CODE>constraint_system</CODE>.
-
-<H2><CODE> limited_H79_extrapolation_assign_with_tokens(c_poly,
-                                                        constraint_system,
-                                                        c_unsigned)
-</CODE></H2>
-   It is assumed that the polyhedron \f$\cP_1\f$ referred to by \c this
-   contains the polyhedron \f$\cP_2\f$
-   referenced by <CODE>c_poly</CODE>;
-   let \f$\cP\f$ denote the H79-extrapolation of
-   \f$\cP_1\f$ with \f$\cP_2\f$,
-   improved by enforcing those constraints in <CODE>constraint_system</CODE>.
-   <BR>
-   Assuming that the quantity \f$t_1\f$ given by <CODE>c_unsigned</CODE>
-   is the number of tokens available,
-   then this method will return the number of tokens
-   \f$t_2\f$ remaining at the end of the operation.
-
-<H2><CODE> bounded_H79_extrapolation_assign(c_poly, constraint_system)
-</CODE></H2>
-   If the polyhedron \f$\cP_1\f$ referenced by <CODE>c_poly_1</CODE>
-   contains the polyhedron \f$\cP_2\f$ referred to by \c this,
-   then \c this will refer to
-   the H79-extrapolation of \f$\cP_1\f$ with \f$\cP_2\f$
-   improved by enforcing the constraints in
-   <CODE>constraint_system</CODE> together with all constraints of
-   the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$ that are satisfied
-   by every point in \f$\cP_1\f$.
-
-<H2><CODE> bounded_H79_extrapolation_assign_with_tokens(c_poly,
-                                                        constraint_system,
-                                                        c_unsigned)
-</CODE></H2>
-   It is assumed that the polyhedron \f$\cP_1\f$ referred to by \c this
-   contains the polyhedron \f$\cP_2\f$ referenced by <CODE>c_poly</CODE>;
-   let \f$\cP\f$ denote the H79-extrapolation of \f$\cP_1\f$ with
-   \f$\cP_2\f$, improved by enforcing those constraints in
-   <CODE>constraint_system</CODE> together with all constraints of
-   the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$ that are satisfied
-   by every point in \f$\cP_1\f$.
-   <BR>
-   Assuming that the quantity \f$t_1\f$ given by <CODE>c_unsigned</CODE>
-   is the number of tokens available,
-   this method will return the number of tokens
-   \f$t_2\f$ remaining at the end of the operation.
+   See the sections on extrapolation operators
+   and widening with tokens in
+   the main PPL user manual for more information
+   on these operations and the use of the tokens.
 
 <H2><CODE> topological_closure_assign() </CODE></H2>
    Assigns to the polyhedron referred to by \c this
