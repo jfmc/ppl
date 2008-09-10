@@ -641,8 +641,8 @@ Thes are the inverse transformations to those for
    contains the polyhedron \f$\cP_2\f$ referenced by <CODE>c_poly</CODE>;
    let \f$\cP\f$ denote the BHRZ03-widening of
    \f$\cP_1\f$ with \f$\cP_2\f$.
-   See the sections on widening wperators
-   and widening with tokens in
+   See Sections \extref{Widening_Operators, Widening Operators}
+   and \extref{Widening_with_Tokens, Widening with tokens} in
    the main PPL user manual for more information
    on these operations and the use of the tokens.
 
@@ -660,8 +660,8 @@ Thes are the inverse transformations to those for
    the extrapolation of \f$\cP_1\f$ with \f$\cP_2\f$ using either
    the BHRZ03 or the H79 widening improved by enforcing the constraints in
    <CODE>constraint_system</CODE>.
-   See the sections on extrapolation operators
-   and widening with tokens in
+   See Sections \extref{Extrapolation_Operators, Extrapolation Operators}
+   and \extref{Widening_with_Tokens, Widening with tokens} in
    the main PPL user manual for more information
    on these operations and the use of the tokens.
 
@@ -681,8 +681,8 @@ Thes are the inverse transformations to those for
    <CODE>constraint_system</CODE> together with all constraints of
    the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$ that are satisfied
    by every point in \f$\cP_1\f$.
-   See the sections on extrapolation operators
-   and widening with tokens in
+   See Sections \extref{Extrapolation_Operators, Extrapolation Operators}
+   and \extref{Widening_with_Tokens, Widening with tokens} in
    the main PPL user manual for more information
    on these operations and the use of the tokens.
 
