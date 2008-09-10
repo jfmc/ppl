@@ -642,7 +642,7 @@ Thes are the inverse transformations to those for
    let \f$\cP\f$ denote the BHRZ03-widening of
    \f$\cP_1\f$ with \f$\cP_2\f$.
    See Sections \extref{Widening_Operators, Widening Operators}
-   and \extref{Widening_with_Tokens, Widening with tokens} in
+   and \extref{Widening_with_Tokens, Widening with Tokens} in
    the main PPL user manual for more information
    on these operations and the use of the tokens.
 
@@ -661,7 +661,7 @@ Thes are the inverse transformations to those for
    the BHRZ03 or the H79 widening improved by enforcing the constraints in
    <CODE>constraint_system</CODE>.
    See Sections \extref{Extrapolation_Operators, Extrapolation Operators}
-   and \extref{Widening_with_Tokens, Widening with tokens} in
+   and \extref{Widening_with_Tokens, Widening with Tokens} in
    the main PPL user manual for more information
    on these operations and the use of the tokens.
 
@@ -682,7 +682,7 @@ Thes are the inverse transformations to those for
    the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$ that are satisfied
    by every point in \f$\cP_1\f$.
    See Sections \extref{Extrapolation_Operators, Extrapolation Operators}
-   and \extref{Widening_with_Tokens, Widening with tokens} in
+   and \extref{Widening_with_Tokens, Widening with Tokens} in
    the main PPL user manual for more information
    on these operations and the use of the tokens.
 
