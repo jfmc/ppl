@@ -45,11 +45,14 @@ directproduct5 directproduct6 \
 partiallyreducedproduct1 partiallyreducedproduct2 partiallyreducedproduct3 \
 partiallyreducedproduct4
 
-XFAIL_TESTS =
+XFAIL_TESTS = \
+asciidumpload1
 
 #
 # Sources for the tests
 #
+
+asciidumpload1_SOURCES = asciidumpload1.cc
 
 directproduct1_SOURCES = directproduct1.cc
 directproduct2_SOURCES = directproduct2.cc

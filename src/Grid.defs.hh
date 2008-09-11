@@ -422,6 +422,9 @@ public:
     \param cs
     The system of constraints defining the grid.
 
+    \exception std::invalid_argument
+    Thrown if the constraint system \p cs contains inequality constraints.
+
     \exception std::length_error
     Thrown if \p num_dimensions exceeds the maximum allowed space
     dimension.
@@ -439,6 +442,9 @@ public:
     \param dummy
     A dummy tag to syntactically differentiate this one
     from the other constructors.
+
+    \exception std::invalid_argument
+    Thrown if the constraint system \p cs contains inequality constraints.
 
     \exception std::length_error
     Thrown if \p num_dimensions exceeds the maximum allowed space

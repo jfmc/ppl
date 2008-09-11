@@ -71,7 +71,8 @@ test01() {
   Constraint_System cs(A + E <= 9);
 #endif
 
-  Product dp(cs);
+  Product dp(5);
+  dp.refine_with_constraints(cs);
 
   bool ok = (dp.space_dimension() == 5);
 

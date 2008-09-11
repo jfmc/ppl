@@ -209,10 +209,10 @@ test02() {
   Variable z(2);
 
   Grid gr1(3);
-  gr1.add_constraint(4*x - 2*y - z + 14 >= 0);
-  gr1.add_constraint(4*x + 2*y - z + 2 >= 0);
-  gr1.add_constraint(x + y - 1 >= 0);
-  gr1.add_constraint(x + y + 2*z - 5 >= 0);
+  gr1.refine_with_constraint(4*x - 2*y - z + 14 >= 0);
+  gr1.refine_with_constraint(4*x + 2*y - z + 2 >= 0);
+  gr1.refine_with_constraint(x + y - 1 >= 0);
+  gr1.refine_with_constraint(x + y + 2*z - 5 >= 0);
 
   const memory_size_type gr1_total_size = gr1.total_memory_in_bytes();
   const memory_size_type gr1_external_size = gr1.external_memory_in_bytes();
@@ -234,12 +234,12 @@ test02() {
   Pointset_Powerset<Grid> pgr1(gr1);
 
   Grid gr2(3);
-  gr2.add_constraint(x >= 0);
-  gr2.add_constraint(y >= 0);
-  gr2.add_constraint(z >= 0);
-  gr2.add_constraint(x <= 1);
-  gr2.add_constraint(y <= 1);
-  gr2.add_constraint(z <= 1);
+  gr2.refine_with_constraint(x >= 0);
+  gr2.refine_with_constraint(y >= 0);
+  gr2.refine_with_constraint(z >= 0);
+  gr2.refine_with_constraint(x <= 1);
+  gr2.refine_with_constraint(y <= 1);
+  gr2.refine_with_constraint(z <= 1);
   Pointset_Powerset<Grid> pgr2(gr2);
 
   Pointset_Powerset<Grid> p2gr2 = pgr2;

@@ -55,7 +55,8 @@ test01() {
   Constraint_System cs(A + E <= 9);
 #endif
 
-  SProduct sp(cs);
+  SProduct sp(5);
+  sp.refine_with_constraints(cs);
 
   bool smash_ok = (sp.space_dimension() == 5);
 
@@ -468,7 +469,8 @@ test11() {
   cs.insert(A + E <= 9);
   cs.insert(A + E >= 9);
 
-  CProduct cp(cs);
+  CProduct cp(5);
+  cp.refine_with_constraints(cs);
 
   bool cons_ok = (cp.space_dimension() == 5);
 

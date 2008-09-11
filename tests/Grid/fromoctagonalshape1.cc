@@ -37,7 +37,9 @@ test01() {
 
   Grid gr(os);
 
-  Grid known_result(cs);
+  Grid known_result(2);
+
+  known_result.refine_with_constraints(cs);
 
   bool ok = gr == known_result;
 

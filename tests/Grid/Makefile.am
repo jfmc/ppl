@@ -51,7 +51,7 @@ affinedim1 \
 affineimage1 affineimage2 \
 affinepreimage1 affinepreimage2 \
 asciidumpload1 asciidumpload2 asciidumpload3 asciidumpload4 asciidumpload5 \
-asciidumpload6 asciidumpload7 \
+asciidumpload6 \
 bhz03widening1 \
 bounded1 \
 bounds1 \
@@ -143,7 +143,6 @@ asciidumpload3_SOURCES = asciidumpload3.cc
 asciidumpload4_SOURCES = asciidumpload4.cc
 asciidumpload5_SOURCES = asciidumpload5.cc
 asciidumpload6_SOURCES = asciidumpload6.cc
-asciidumpload7_SOURCES = asciidumpload7.cc
 
 bhz03widening1_SOURCES = bhz03widening1.cc
 

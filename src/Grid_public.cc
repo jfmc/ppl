@@ -56,20 +56,20 @@ PPL::Grid::Grid(const Grid& y, Complexity_Class)
   }
 }
 
-PPL::Grid::Grid(const Constraint_System& ccs)
-  : con_sys(ccs.space_dimension() > max_space_dimension()
-	    ? throw_space_dimension_overflow("Grid(ccs)",
-					     "the space dimension of ccs "
+PPL::Grid::Grid(const Constraint_System& cs)
+  : con_sys(cs.space_dimension() > max_space_dimension()
+	    ? throw_space_dimension_overflow("Grid(cs)",
+					     "the space dimension of cs "
 					     "exceeds the maximum allowed "
 					     "space dimension"), 0
-	    : ccs.space_dimension()),
-    gen_sys(ccs.space_dimension()) {
-  space_dim = ccs.space_dimension();
+	    : cs.space_dimension()),
+    gen_sys(cs.space_dimension()) {
+  space_dim = cs.space_dimension();
 
   if (space_dim == 0) {
     // See if an inconsistent constraint has been passed.
-    for (Constraint_System::const_iterator i = ccs.begin(),
-         ccs_end = ccs.end(); i != ccs_end; ++i)
+    for (Constraint_System::const_iterator i = cs.begin(),
+         cs_end = cs.end(); i != cs_end; ++i)
       if (i->is_inconsistent()) {
 	// Inconsistent constraint found: the grid is empty.
 	status.set_empty();
@@ -86,10 +86,12 @@ PPL::Grid::Grid(const Constraint_System& ccs)
 
   Congruence_System cgs;
   cgs.insert(0*Variable(space_dim - 1) %= 1);
-  for (Constraint_System::const_iterator i = ccs.begin(),
-	 ccs_end = ccs.end(); i != ccs_end; ++i)
+  for (Constraint_System::const_iterator i = cs.begin(),
+	 cs_end = cs.end(); i != cs_end; ++i)
     if (i->is_equality())
       cgs.insert(*i);
+    else
+      throw_invalid_constraints("Grid(cs)", "cs");
   construct(cgs);
 }
 
@@ -127,6 +129,8 @@ PPL::Grid::Grid(Constraint_System& cs, Recycle_Input)
 	 cs_end = cs.end(); i != cs_end; ++i)
     if (i->is_equality())
       cgs.insert(*i);
+    else
+      throw_invalid_constraint("Grid(cs)", "cs");
   construct(cgs);
 }
 

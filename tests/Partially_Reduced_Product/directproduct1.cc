@@ -100,12 +100,12 @@ bool
 test03() {
   Variable A(0);
 
-  const Congruence_System cgs((A %= 0) / 4);
+  const Congruence_System cgs((A == 0) / 0);
 
   Product dp1(cgs);
 
   Product dp2(1);
-  dp2.refine_with_congruence((A %= 0) / 4);
+  dp2.refine_with_congruence((A == 0) / 0);
 
   bool ok = (dp1 == dp2);
 
@@ -125,7 +125,8 @@ test04() {
 
   Congruence_System cgs((A %= 0) / 4);
 
-  Product dp(cgs);
+  Product dp(1);
+  dp.refine_with_congruence((A %= 0) / 4);
 
   Poly known_ph(1);
 
@@ -151,12 +152,12 @@ bool
 test05() {
   Variable A(0);
 
-  const Constraint_System cs(A >= 0);
+  const Constraint_System cs(A == 0);
 
   Product dp1(cs);
 
   Product dp2(1);
-  dp2.refine_with_constraint(static_cast<const Constraint>(A >= 0));
+  dp2.refine_with_constraint(static_cast<const Constraint>(A == 0));
 
   bool ok = (dp1 == dp2);
 
@@ -255,9 +256,10 @@ test09() {
   Variable A(0);
   Variable B(1);
 
-  Constraint_System cs(A + B <= 9);
+  Constraint_System cs(A + B >= 9);
 
-  Product dp1(cs);
+  Product dp1(2);
+  dp1.refine_with_constraints(cs);
   dp1.refine_with_congruence((A %= 9) / 19);
 
   Product dp2 = dp1;

@@ -567,7 +567,8 @@ test19() {
 
   const Constraint_System cs(A >= 0);
 
-  Product src(cs);
+  Product src(1);
+  src.refine_with_constraints(cs);
 
   Product dp(src, POLYNOMIAL_COMPLEXITY);
 
@@ -593,7 +594,8 @@ test20() {
 
   const Constraint_System cs(A >= 0);
 
-  Box_Product src(cs);
+  Box_Product src(1);
+  src.refine_with_constraints(cs);
 
   Product dp(src, POLYNOMIAL_COMPLEXITY);
 
