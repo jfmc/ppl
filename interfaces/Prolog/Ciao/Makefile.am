@@ -63,12 +63,39 @@ ppl_interface_generator_ciao_pl.m4 \
 ppl_interface_generator_ciao_predicate_check_pl.m4
 
 pkglib_LTLIBRARIES = libppl_ciao.la
-libppl_ciao_la_SOURCES = ppl_ciao.cc
+
+libppl_ciao_la_SOURCES = \
+ppl_prolog_sysdep.hh \
+ciao_efli.hh \
+ciao_efli.cc
+
+nodist_libppl_swiprolog_la_SOURCES = \
+../ppl_prolog_common.cc
+
+nodist_EXTRA_libppl_ciao_la_SOURCES = \
+../ppl_prolog_BD_Shape_double.cc \
+../ppl_prolog_BD_Shape_mpq_class.cc \
+../ppl_prolog_BD_Shape_mpz_class.cc \
+../ppl_prolog_Constraints_Product_C_Polyhedron_Grid.cc \
+../ppl_prolog_Double_Box.cc \
+../ppl_prolog_Grid.cc \
+../ppl_prolog_Octagonal_Shape_double.cc \
+../ppl_prolog_Octagonal_Shape_mpq_class.cc \
+../ppl_prolog_Octagonal_Shape_mpz_class.cc \
+../ppl_prolog_Pointset_Powerset_C_Polyhedron.cc \
+../ppl_prolog_Pointset_Powerset_NNC_Polyhedron.cc \
+../ppl_prolog_Polyhedron.cc \
+../ppl_prolog_Rational_Box.cc
+
 libppl_ciao_la_LIBADD = \
+@required_instantiations_prolog_cxx_objects@ \
 $(top_builddir)/src/libppl.la \
 $(WATCHDOG_LIBRARY) \
 @extra_libraries@
-libppl_ciao_la_LDFLAGS = -module -avoid-version
+
+libppl_ciao_la_LDFLAGS = \
+-module \
+-avoid-version
 
 pkglib_DATA = ppl_ciao.po
 
