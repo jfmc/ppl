@@ -1397,15 +1397,15 @@ Let \f$\cP, \cQ, \cR \in \Pset_n\f$ be NNC polyhedra. Then:
  - \f$\cR\f$ is an <EM>enlargement</EM> of \f$\cP\f$ if \f$\cR \Sseq \cP\f$.
 
  - \f$\cR\f$ is a <EM>simplification</EM> with respect to \f$\cP\f$
-   if \f$r \leq p\f$, where \f$p\f$ and \f$r\f$ are the cardinalities
-   of minimized constraint representations for \f$\cP\f$ and \f$\cR\f$,
+   if \f$r \leq p\f$, where \f$r\f$ and \f$p\f$ are the cardinalities
+   of minimized constraint representations for \f$\cR\f$ and \f$\cP\f$,
    respectively.
 
 Notice that an enlargement need not be a simplification, and vice versa;
 moreover, the identity function is (trivially)
 a meet-preserving enlargement and simplification.
 
-The library provides a binary operator (<em>simplify_using_context</em>)
+The library provides a binary operator (<CODE>simplify_using_context</CODE>)
 for the domain of NNC polyhedra that returns a polyhedron which is a
 meet-preserving enlargement simplification of its first argument
 using the second argument as context.
@@ -2482,13 +2482,14 @@ be Omega-reduced elements of a pointset powerset domain
 over the same base-level domain.
 Then:
 
- - \f$\cS\f$ is <EM>powerset meet-preserving</EM> with respect to \f$\cS_1\f$
-   using <EM>context</EM> \f$\cS_2\f$ if
+ - \f$\cS\f$ is <EM>powerset meet-preserving</EM>
+   with respect to \f$\cS_1\f$ using context \f$\cS_2\f$ if
    the meet of \f$\cS\f$ and \f$\cS_2\f$
-   \f$=\f$ the meet of \f$\cS_1\f$ and \f$\cS_2\f$;
+   is equal to
+   the meet of \f$\cS_1\f$ and \f$\cS_2\f$;
 
  - \f$\cS\f$ is a <EM>powerset simplification</EM> with respect to
-   \f$\cS_1\f$ if  \f$q \leq m\f$.
+   \f$\cS_1\f$ if \f$q \leq m\f$.
 
  - \f$\cS\f$ is a <EM>disjunct meet-preserving simplification</EM>
     with respect to \f$\cS_1\f$
@@ -2497,7 +2498,7 @@ Then:
     \f$s_k\f$ is a meet-preserving enlargement and simplification
     of \f$d_i\f$ using context \f$c_j\f$.
 
-The library provides a binary operator (<em>simplify_using_context</em>)
+The library provides a binary operator (<CODE>simplify_using_context</CODE>)
 for the pointset powerset domain that returns a powerset which is a
 powerset meet-preserving, powerset simplification and
 disjunct meet-preserving simplification
@@ -2506,8 +2507,9 @@ of its first argument using the second argument as context.
 Notice that, due to the powerset simplification property, in general
 a meet-preserving powerset simplification is <em>not</em> an enlargement
 with respect to the ordering defined on the powerset lattice.
-Note also that because of this, this method is only well-defined
-when the disjunct is not itself a powerset domain.
+Because of this, the operator provided by the library
+is only well-defined when the base-level domain
+is not itself a powerset domain.
 
 
 \anchor pps_geometric
