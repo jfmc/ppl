@@ -1253,25 +1253,35 @@ PPL::Polyhedron::add_congruence(const Congruence& cg) {
   if (space_dim < cg.space_dimension())
     throw_dimension_incompatible("add_congruence(cg)", "cg", cg);
 
-  // Adding a new congruence to an empty polyhedron results in an
-  // empty polyhedron.
+  // Handle the case of proper congruences first.
+  if (cg.is_proper_congruence()) {
+    if (cg.is_trivial_true())
+      return;
+    if (cg.is_trivial_false()) {
+      set_empty();
+      return;
+    }
+    // Non-trivial and proper congruences are not allowed.
+    throw_invalid_argument("add_congruence(cg)",
+			   "cg is a non-trivial, proper congruence");
+  }
+
+  assert(cg.is_equality());
+  // Handle empty and 0-dim cases first.
   if (marked_empty())
     return;
-
-  // Dealing with a zero-dimensional space polyhedron first.
   if (space_dim == 0) {
-    if (!cg.is_trivial_true())
+    if (cg.is_trivial_false())
       set_empty();
     return;
   }
 
-  if (cg.is_equality()) {
-    Linear_Expression le(cg);
-    Constraint c(le, Constraint::EQUALITY, NECESSARILY_CLOSED);
-    // Enforce normalization.
-    c.strong_normalize();
-    add_constraint(c);
-  }
+  // Add the equality.
+  Linear_Expression le(cg);
+  Constraint c(le, Constraint::EQUALITY, NECESSARILY_CLOSED);
+  // Enforce normalization.
+  c.strong_normalize();
+  add_constraint(c);
 }
 
 bool
@@ -1774,9 +1784,10 @@ PPL::Polyhedron::add_congruences(const Congruence_System& cgs) {
   Constraint_System cs;
   bool inserted = false;
   for (Congruence_System::const_iterator i = cgs.begin(),
-         cgs_end = cgs.end(); i != cgs_end; ++i)
-    if (i->is_equality()) {
-      Linear_Expression le(*i);
+         cgs_end = cgs.end(); i != cgs_end; ++i) {
+    const Congruence& cg = *i;
+    if (cg.is_equality()) {
+      Linear_Expression le(cg);
       Constraint c(le, Constraint::EQUALITY, NECESSARILY_CLOSED);
       // Enforce normalization.
       c.strong_normalize();
@@ -1784,8 +1795,18 @@ PPL::Polyhedron::add_congruences(const Congruence_System& cgs) {
       cs.insert(c);
       inserted = true;
     }
-  // Only add cgs if congruences were inserted into cgs, as the
-  // dimension of cs must be at most that of the polyhedron.
+    else {
+      assert(cg.is_proper_congruence());
+      if (cg.is_trivial_false()) {
+        set_empty();
+        return;
+      }
+      if (!cg.is_trivial_true())
+        throw_invalid_argument("add_congruences(cgs)",
+                               "cgs has a non-trivial, proper congruence");
+    }
+  }
+  // Only add cs if it contains something.
   if (inserted)
     add_recycled_constraints(cs);
 }
