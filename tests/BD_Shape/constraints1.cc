@@ -151,7 +151,6 @@ test06() {
   known_result.add_constraint(B <= 0);
   known_result.add_constraint(2*B - 2*C <= 1);
   known_result.add_constraint(A - C >= 2);
-  known_result.add_constraint(A + 2*D >= 5);
 
   bool ok = check_result(bds, known_result);
 
@@ -176,7 +175,6 @@ test07() {
   BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(2*B - 2*C <= 1);
-  known_result.add_constraint(A - 5*C >= 4);
 
   bool ok = check_result(bds, known_result);
 
