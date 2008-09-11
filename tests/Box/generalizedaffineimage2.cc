@@ -493,8 +493,8 @@ test17() {
   print_constraints(box, "*** box ***");
 
   box.generalized_affine_image(Linear_Expression(3),
-                              GREATER_THAN,
-                              Linear_Expression(4));
+                               GREATER_THAN,
+                               Linear_Expression(4));
 
   Rational_Box known_result(3, EMPTY);
 
