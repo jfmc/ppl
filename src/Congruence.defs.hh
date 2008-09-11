@@ -215,7 +215,7 @@ public:
   //! Copy-constructs (modulo 0) from equality constraint \p c.
   /*!
     \exception std::invalid_argument
-    Thrown if \p c is a relation.
+    Thrown if \p c is an inequality.
   */
   explicit Congruence(const Constraint& c);
 
