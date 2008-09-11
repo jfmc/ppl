@@ -249,10 +249,7 @@ test11() {
 
   TBD_Shape bds(box);
 
-  TBD_Shape known_bds(2);
-  known_bds.add_constraint(7*A == 3);
-  known_bds.add_constraint(2*B >= 1);
-  known_bds.add_constraint(2*B <= 0);
+  TBD_Shape known_bds(2, EMPTY);
 
   bool ok = (bds == known_bds);
 
