@@ -372,6 +372,10 @@ ppl_Polyhedron_is_topologically_closed(ppl_const_Polyhedron_t ph);
 int
 ppl_Polyhedron_is_discrete(ppl_const_Polyhedron_t ph);
 
+/*! \brief
+  Returns a positive integer if \p ph constrains \p var;
+  returns 0 if \p ph does not constrain \p var.
+*/
 int
 ppl_Polyhedron_constrains
 (ppl_Polyhedron_t ph, ppl_dimension_type var);
@@ -569,18 +573,30 @@ int
 ppl_Polyhedron_add_recycled_congruences
 (ppl_Polyhedron_t ph, ppl_Congruence_System_t cs);
 
+/*! \brief
+  Refines \p ph using constraint \p c.
+*/
 int
 ppl_Polyhedron_refine_with_constraint
 (ppl_Polyhedron_t ph, ppl_const_Constraint_t c);
 
+/*! \brief
+  Refines \p ph using congruence \p c.
+*/
 int
 ppl_Polyhedron_refine_with_congruence
 (ppl_Polyhedron_t ph, ppl_const_Congruence_t c);
 
+/*! \brief
+  Refines \p ph using the constraints in \p cs.
+*/
 int
 ppl_Polyhedron_refine_with_constraints
 (ppl_Polyhedron_t ph, ppl_const_Constraint_System_t cs);
 
+/*! \brief
+  Refines \p ph using the congruences in \p cs.
+*/
 int
 ppl_Polyhedron_refine_with_congruences
 (ppl_Polyhedron_t ph, ppl_const_Congruence_System_t cs);
@@ -627,10 +643,18 @@ ppl_Polyhedron_time_elapse_assign
 int
 ppl_Polyhedron_topological_closure_assign(ppl_Polyhedron_t ph);
 
+/*! \brief
+  Modifies \p ph by unconstraining the space dimension \p var.
+*/
 int
 ppl_Polyhedron_unconstrain_space_dimension
 (ppl_Polyhedron_t ph, ppl_dimension_type var);
 
+/*! \brief
+  Modifies \p ph by unconstraining the space dimensions that are
+  specified in the first \p n positions of the array \p ds.
+  The presence of duplicates in \p ds is a waste but an innocuous one.
+*/
 int
 ppl_Polyhedron_unconstrain_space_dimensions
 (ppl_Polyhedron_t ph, ppl_dimension_type ds[], size_t n);
