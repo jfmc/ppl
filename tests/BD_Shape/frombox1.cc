@@ -337,6 +337,25 @@ test14() {
   return ok;
 }
 
+bool
+test15() {
+  Variable A(0);
+
+  Rational_Box box(1);
+  box.add_constraint(A >= 5);
+  box.add_constraint(A <= -5);
+
+  TBD_Shape bds(box);
+
+  TBD_Shape known_bds(1, EMPTY);
+
+  bool ok = (bds == known_bds);
+
+  print_constraints(bds, "*** bds(box) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -354,4 +373,5 @@ BEGIN_MAIN
   DO_TEST(test12);
   DO_TEST(test13);
   DO_TEST(test14);
+  DO_TEST(test15);
 END_MAIN
