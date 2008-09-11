@@ -673,7 +673,7 @@ test16() {
   Variable B(1);
   Variable C(2);
 
-  Constraint_System cs1;
+  Constraint_System cs;
   cs.insert(A - C <= 8);
   cs.insert(A - C >= 9);
 
