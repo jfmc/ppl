@@ -3889,13 +3889,13 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
   // The relation symbol cannot be a strict relation symbol.
   if (relsym == LESS_THAN || relsym == GREATER_THAN)
     throw_generic("generalized_affine_image(v, r, e, d)",
-                    "r is a strict relation symbol and "
-                    "*this is a BD_Shape");
+                  "r is a strict relation symbol and "
+                  "*this is a BD_Shape");
   // The relation symbol cannot be a disequality.
   if (relsym == NOT_EQUAL)
     throw_generic("generalized_affine_image(v, r, e, d)",
-                    "r is the disequality relation symbol and "
-                    "*this is a BD_Shape");
+                  "r is the disequality relation symbol and "
+                  "*this is a BD_Shape");
 
   if (relsym == EQUAL) {
     // The relation symbol is "==":
@@ -4321,13 +4321,13 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
     // approximations for this constraint?
     switch (relsym) {
     case LESS_OR_EQUAL:
-      add_constraint(lhs <= rhs);
+      refine_with_constraint(lhs <= rhs);
       break;
     case EQUAL:
-      add_constraint(lhs == rhs);
+      refine_with_constraint(lhs == rhs);
       break;
     case GREATER_OR_EQUAL:
-      add_constraint(lhs >= rhs);
+      refine_with_constraint(lhs >= rhs);
       break;
     default:
       // We already dealt with the other cases.
@@ -4374,13 +4374,13 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       // it will be simply ignored. Should we compute approximations for it?
       switch (relsym) {
       case LESS_OR_EQUAL:
-        add_constraint(lhs <= rhs);
+        refine_with_constraint(lhs <= rhs);
         break;
       case EQUAL:
-        add_constraint(lhs == rhs);
+        refine_with_constraint(lhs == rhs);
         break;
       case GREATER_OR_EQUAL:
-        add_constraint(lhs >= rhs);
+        refine_with_constraint(lhs >= rhs);
         break;
       default:
         // We already dealt with the other cases.
@@ -4404,7 +4404,7 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       const Variable new_var = Variable(space_dim);
       add_space_dimensions_and_embed(1);
       // Constrain the new dimension to be equal to `rhs'.
-      // NOTE: calling affine_image() instead of add_constraint()
+      // NOTE: calling affine_image() instead of refine_with_constraint()
       // ensures some approximation is tried even when the constraint
       // is not a bounded difference.
       affine_image(new_var, rhs);
@@ -4418,17 +4418,17 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       // the left hand side as dictated by `relsym'.
       // TODO: each one of the following constraints is definitely NOT
       // a bounded differences (since it has 3 variables at least).
-      // Thus, the method add_constraint() will simply ignore it.
+      // Thus, the method refine_with_constraint() will simply ignore it.
       // Should we compute approximations for this constraint?
       switch (relsym) {
       case LESS_OR_EQUAL:
-        add_constraint(lhs <= new_var);
+        refine_with_constraint(lhs <= new_var);
         break;
       case EQUAL:
-        add_constraint(lhs == new_var);
+        refine_with_constraint(lhs == new_var);
         break;
       case GREATER_OR_EQUAL:
-        add_constraint(lhs >= new_var);
+        refine_with_constraint(lhs >= new_var);
         break;
       default:
         // We already dealt with the other cases.
@@ -4618,13 +4618,13 @@ BD_Shape<T>::generalized_affine_preimage(const Linear_Expression& lhs,
       // it will be simply ignored. Should we compute approximations for it?
       switch (relsym) {
       case LESS_OR_EQUAL:
-        add_constraint(lhs <= rhs);
+        refine_with_constraint(lhs <= rhs);
         break;
       case EQUAL:
-        add_constraint(lhs == rhs);
+        refine_with_constraint(lhs == rhs);
         break;
       case GREATER_OR_EQUAL:
-        add_constraint(lhs >= rhs);
+        refine_with_constraint(lhs >= rhs);
         break;
       default:
         // We already dealt with the other cases.
@@ -4645,7 +4645,7 @@ BD_Shape<T>::generalized_affine_preimage(const Linear_Expression& lhs,
       const Variable new_var = Variable(bds_space_dim);
       add_space_dimensions_and_embed(1);
       // Constrain the new dimension to be equal to `lhs'.
-      // NOTE: calling affine_image() instead of add_constraint()
+      // NOTE: calling affine_image() instead of refine_with_constraint()
       // ensures some approximation is tried even when the constraint
       // is not a bounded difference.
       affine_image(new_var, lhs);
@@ -4659,18 +4659,18 @@ BD_Shape<T>::generalized_affine_preimage(const Linear_Expression& lhs,
       // the left hand side as dictated by `relsym'.
       // Note: if `rhs == a_rhs*v + b_rhs' where `a_rhs' is in {0, 1},
       // then one of the following constraints will be added,
-      // since it is a bounded difference. Else the method add_constraint()
-      // will ignore it, 'cause the constraint is NOT a bounded
-      // difference.
+      // since it is a bounded difference. Else the method
+      // refine_with_constraint() will ignore it, because the
+      // constraint is NOT a bounded difference.
       switch (relsym) {
       case LESS_OR_EQUAL:
-        add_constraint(new_var <= rhs);
+        refine_with_constraint(new_var <= rhs);
         break;
       case EQUAL:
-        add_constraint(new_var == rhs);
+        refine_with_constraint(new_var == rhs);
         break;
       case GREATER_OR_EQUAL:
-        add_constraint(new_var >= rhs);
+        refine_with_constraint(new_var >= rhs);
         break;
       default:
         // We already dealt with the other cases.
