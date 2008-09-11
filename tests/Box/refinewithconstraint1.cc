@@ -118,10 +118,33 @@ test03() {
   return ok;
 }
 
+bool
+test04() {
+  Variable A(0);
+
+  TBox box(1);
+  print_constraints(box, "*** box ***");
+
+  Constraint c(Linear_Expression(1) <= 0);
+  print_constraint(c, "*** c ***");
+
+  box.refine_with_constraint(c);
+
+  Rational_Box known_result(1, EMPTY);
+
+  bool ok = check_result(box, known_result);
+
+  print_constraints(box, "*** box.refine_with_constraint(c) ***");
+  print_constraints(known_result, "*** known_result ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
   DO_TEST_F8(test01);
   DO_TEST(test02);
   DO_TEST(test03);
+  DO_TEST(test04);
 END_MAIN
