@@ -87,11 +87,12 @@ test02() {
 
   Constraint_System cs(A + B <= 9);
 
-  SProduct sp1(cs);
+  SProduct sp1(2);
   sp1.refine_with_congruence((A %= 9) / 19);
   sp1.refine_with_congruence((A %= 8) / 19);
   SProduct sp2 = sp1;
-  CProduct cp1(cs);
+  CProduct cp1(2);
+  cp1.refine_with_constraints(cs);
   cp1.refine_with_constraint(A >= 9);
   cp1.refine_with_constraint(A <= 9);
   CProduct cp2 = cp1;
@@ -185,15 +186,19 @@ test05() {
   cs2.insert(A - C <= 9);
   cs2.insert(A - C >= 9);
 
-  SProduct sp(cs1);
-  CProduct cp(cs2);
+  SProduct sp(3);
+  sp.refine_with_constraints(cs1);
+  CProduct cp(3);
+  cp.refine_with_constraints(cs2);
 
   DProduct known_dp1(3, EMPTY);
   DProduct known_dp2(3);
   known_dp2.refine_with_constraint(A - C == 9);
 
-  DProduct dp1(sp.congruences());
-  DProduct dp2(cp.congruences());
+  DProduct dp1(3);
+  dp1.refine_with_congruences(sp.congruences());
+  DProduct dp2(3);
+  dp2.refine_with_congruences(cp.congruences());
 
   bool ok = (dp1 == known_dp1 && dp2 == known_dp2);
 
@@ -221,15 +226,20 @@ test06() {
   cs2.insert(A - C <= 9);
   cs2.insert(A - C >= 9);
 
-  SProduct sp(cs1);
-  CProduct cp(cs2);
+
+  SProduct sp(3);
+  sp.refine_with_constraints(cs1);
+  CProduct cp(3);
+  cp.refine_with_constraints(cs2);
 
   DProduct known_dp1(3, EMPTY);
   DProduct known_dp2(3);
   known_dp2.refine_with_constraint(A - C == 9);
 
-  DProduct dp1(sp.minimized_congruences());
-  DProduct dp2(cp.minimized_congruences());
+  DProduct dp1(3);
+  dp1.refine_with_congruences(sp.minimized_congruences());
+  DProduct dp2(3);
+  dp2.refine_with_congruences(cp.minimized_congruences());
 
   bool ok = (dp1 == known_dp1 && dp2 == known_dp2);
 
@@ -670,8 +680,10 @@ test16() {
   cs2.insert(A - C <= 9);
   cs2.insert(A - C >= 9);
 
-  SProduct sp(cs1);
-  CProduct cp(cs2);
+  SProduct sp(3);
+  CProduct cp(3);
+  sp.refine_with_constraints(cs1);
+  cp.refine_with_constraints(cs2);
 
 
   bool ok = sp.OK() && cp.OK();
@@ -692,10 +704,9 @@ test17() {
   Variable C(2);
 
   Congruence_System cgs1;
-  cgs1.insert((A - C %= 8) / 10);
-  cgs1.insert((A - C %= 9) / 10);
+  cgs1.insert((A - C %= 8) / 0);
   Congruence_System cgs2;
-  cgs2.insert(A - C %= 9);
+  cgs2.insert((A - C %= 9) / 0);
   cgs2.insert((B %= 21) / 0);
 
   SProduct sp(cgs1);
@@ -730,8 +741,10 @@ test18() {
   sp.refine_with_congruences(cgs);
   cp.refine_with_congruences(cgs);
 
-  SProduct known_sp(cgs);
-  CProduct known_cp(cgs);
+  Grid gr(cgs);
+
+  SProduct known_sp(gr);
+  CProduct known_cp(gr);
 
   bool ok = (sp == known_sp && cp == known_cp);
 
@@ -762,8 +775,10 @@ test19() {
   sp.add_recycled_congruences(cgs);
   cp.add_recycled_congruences(cgs_copy);
 
-  SProduct known_sp(cgs_copy2);
-  CProduct known_cp(cgs_copy2);
+  Grid gr(cgs_copy2);
+
+  SProduct known_sp(gr);
+  CProduct known_cp(gr);
 
   bool ok = (sp == known_sp && cp == known_cp);
 
@@ -796,8 +811,10 @@ test20() {
   sp.add_recycled_congruences(cgs);
   cp.add_recycled_congruences(cgs_copy);
 
-  SProduct known_sp(cgs_copy2);
-  CProduct known_cp(cgs_copy2);
+  Grid gr(cgs_copy2);
+
+  SProduct known_sp(gr);
+  CProduct known_cp(gr);
 
   bool ok = (sp == known_sp && cp == known_cp);
 
