@@ -30,12 +30,13 @@ REQUIRED_INSTANTIATIONS_CANONICAL_NAMES = \
 
 BUILT_SOURCES = ppl_interface_instantiations.m4
 
-ppl_interface_instantiations.m4: Makefile
+ppl_interface_instantiations.m4:
 	echo "m4_define(\`m4_interface_classes_names', \`$(REQUIRED_INSTANTIATIONS_CANONICAL_NAMES)')" > $@
 	echo "m4_define(\`m4_cplusplus_classes_names', \`$(REQUIRED_INSTANTIATIONS)')" >> $@
 
 noinst_HEADERS = \
-interfaced_boxes.hh
+interfaced_boxes.hh \
+marked_pointers.hh
 
 EXTRA_DIST = \
 ppl_interface_generator_common.m4 \

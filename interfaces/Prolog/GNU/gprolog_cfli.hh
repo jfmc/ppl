@@ -23,7 +23,44 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PCFLI_gprolog_cfli_hh
 #define PCFLI_gprolog_cfli_hh 1
 
+#if SIZEOF_FP == SIZEOF_INTP
+// Horrible kludge working around an horrible bug in <gprolog.h> (see
+// http://www.cs.unipr.it/pipermail/ppl-devel/2008-August/012277.html).
+#define byte_code byte_code(void)
+#define last_read_line last_read_line(void)
+#define last_read_col last_read_col(void)
 #include <gprolog.h>
+#undef byte_code
+#undef last_read_line
+#undef last_read_col
+#else
+#include <gprolog.h>
+#endif
+
+// <gprolog.h> pollutes the namespace: try to clean up
+// (see http://www.cs.unipr.it/pipermail/ppl-devel/2004-April/004270.html).
+#ifdef B
+#undef B
+#endif
+#ifdef H
+#undef H
+#endif
+#ifdef CP
+#undef CP
+#endif
+#ifdef E
+#undef E
+#endif
+#ifdef CS
+#undef CS
+#endif
+#ifdef S
+#undef S
+#endif
+#ifdef STAMP
+#undef STAMP
+#endif
+
 #include <cassert>
 
 typedef PlTerm Prolog_term_ref;
@@ -37,13 +74,19 @@ namespace {
 
 inline Prolog_atom
 a_dollar_address() {
-  static Prolog_atom a = Create_Allocate_Atom("$address");
-  return a;
+  // We use the `name' variable, instead of directly using the string
+  // literal, in order to avoid a compiler warning.
+  static char name[] = "$address";
+  static Prolog_atom atom = Create_Allocate_Atom(name);
+  return atom;
 }
 
 inline Prolog_atom
 a_throw() {
-  static Prolog_atom a = Find_Atom("throw");
+  // We use the `name' variable, instead of directly using the string
+  // literal, in order to avoid a compiler warning.
+  static char name[] = "throw";
+  static Prolog_atom a = Find_Atom(name);
   return a;
 }
 
@@ -115,12 +158,10 @@ Prolog_put_atom(Prolog_term_ref& t, Prolog_atom a) {
 /*!
   Return an atom whose name is given by the null-terminated string \p s.
 */
-Prolog_atom
+inline Prolog_atom
 Prolog_atom_from_string(const char* s) {
   return Create_Allocate_Atom(const_cast<char*>(s));
 }
-
-Prolog_term_ref args[4];
 
 /*!
   Assign to \p t a compound term whose principal functor is \p f
@@ -129,6 +170,7 @@ Prolog_term_ref args[4];
 inline int
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1) {
+  Prolog_term_ref args[1];
   args[0] = a1;
   t = Mk_Compound(f, 1, args);
   return 1;
@@ -141,6 +183,7 @@ Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 inline int
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2) {
+  Prolog_term_ref args[2];
   args[0] = a1;
   args[1] = a2;
   t = Mk_Compound(f, 2, args);
@@ -155,6 +198,7 @@ inline int
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2,
 			  Prolog_term_ref a3) {
+  Prolog_term_ref args[3];
   args[0] = a1;
   args[1] = a2;
   args[2] = a3;
@@ -170,6 +214,7 @@ inline int
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2,
 			  Prolog_term_ref a3, Prolog_term_ref a4) {
+  Prolog_term_ref args[4];
   args[0] = a1;
   args[1] = a2;
   args[2] = a3;
@@ -184,6 +229,7 @@ Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 inline int
 Prolog_construct_cons(Prolog_term_ref& c,
 		      Prolog_term_ref h, Prolog_term_ref t) {
+  Prolog_term_ref args[2];
   args[0] = h;
   args[1] = t;
   c = Mk_List(args);

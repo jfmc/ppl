@@ -37,7 +37,29 @@ test01() {
 
   Grid gr(os);
 
-  Grid known_result(cs);
+  Grid known_result(2);
+
+  known_result.refine_with_constraints(cs);
+
+  bool ok = gr == known_result;
+
+  print_congruences(gr, "*** gr ***");
+
+  return ok;
+}
+
+bool
+test02() {
+  Variable A(0);
+
+  Constraint_System cs;
+  cs.insert(A >= 5);
+  cs.insert(A <= -7);
+  TOctagonal_Shape bd(cs);
+
+  Grid gr(bd);
+
+  Grid known_result(1, EMPTY);
 
   bool ok = gr == known_result;
 
@@ -50,4 +72,5 @@ test01() {
 
 BEGIN_MAIN
   DO_TEST(test01);
+  DO_TEST(test02);
 END_MAIN

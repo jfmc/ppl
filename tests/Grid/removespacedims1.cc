@@ -33,7 +33,7 @@ test01() {
   Variable B(1);
 
   Grid gr(2);
-  gr.add_congruence(A - B == 0);
+  gr.add_constraint(A - B == 0);
   gr.add_congruence(A %= 0);
   print_congruences(gr, "*** gr ***");
 
@@ -173,7 +173,7 @@ test06() {
   Variable C(2);
 
   Grid gr(3);
-  gr.add_congruence(A - B == 0);
+  gr.add_constraint(A - B == 0);
   gr.add_congruence(A %= 0);
   print_congruences(gr, "*** gr ***");
 

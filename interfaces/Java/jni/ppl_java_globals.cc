@@ -65,6 +65,24 @@ JNIEXPORT jstring JNICALL Java_ppl_1java_Parma_1Polyhedra_1Library_banner
   return env->NewStringUTF(banner());
 }
 
+
+JNIEXPORT void JNICALL Java_ppl_1java_Parma_1Polyhedra_1Library_set_1rounding_1for_1PPL
+(JNIEnv* env, jclass) {
+  try {
+    set_rounding_for_PPL();
+  }
+  CATCH_ALL;
+}
+
+
+JNIEXPORT void JNICALL Java_ppl_1java_Parma_1Polyhedra_1Library_restore_1pre_1PPL_1rounding
+(JNIEnv* env, jclass) {
+  try {
+    restore_pre_PPL_rounding();
+  }
+  CATCH_ALL;
+}
+
 JNIEXPORT jlong JNICALL Java_ppl_1java_MIP_1Problem_max_1space_1dimension
 (JNIEnv* env , jobject j_this_mip_problem) {
   try {
@@ -343,11 +361,9 @@ JNIEXPORT jboolean JNICALL Java_ppl_1java_MIP_1Problem_OK
 JNIEXPORT void JNICALL Java_ppl_1java_MIP_1Problem_build_1cpp_1object__J
 (JNIEnv* env, jobject j_this_mip_problem, jlong j_dim) {
   try {
-    jclass j_mip_problem_class = env->GetObjectClass(j_this_mip_problem);
     dimension_type ppl_dim = jtype_to_unsigned<dimension_type>(j_dim);
     MIP_Problem* mip_ptr = new MIP_Problem(ppl_dim);
-    jfieldID pointer_field = env->GetFieldID(j_mip_problem_class, "ptr", "J");
-    env->SetLongField(j_this_mip_problem, pointer_field, (long long) mip_ptr);
+    set_ptr(env, j_this_mip_problem,  mip_ptr);
   }
   CATCH_ALL;
 }
@@ -356,14 +372,12 @@ JNIEXPORT void JNICALL Java_ppl_1java_MIP_1Problem_build_1cpp_1object__JLppl_1ja
 (JNIEnv* env , jobject j_this_mip_problem, jlong j_dim, jobject j_cs,
  jobject j_le, jobject j_opt_mode) {
   try {
-    jclass j_mip_problem_class = env->GetObjectClass(j_this_mip_problem);
     dimension_type ppl_dim = jtype_to_unsigned<dimension_type>(j_dim);
     Constraint_System cs = build_ppl_constraint_system(env, j_cs);
     Linear_Expression le = build_linear_expression(env, j_le);
     Optimization_Mode opt_mode =  build_ppl_optimization_mode(env, j_opt_mode);
     MIP_Problem* mip_ptr = new MIP_Problem(ppl_dim, cs, le, opt_mode);
-    jfieldID pointer_field = env->GetFieldID(j_mip_problem_class, "ptr", "J");
-    env->SetLongField(j_this_mip_problem, pointer_field, (long long) mip_ptr);
+    set_ptr(env, j_this_mip_problem, mip_ptr);
   }
   CATCH_ALL;
 }

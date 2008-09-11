@@ -358,7 +358,7 @@ m4_define(`ppl_@CLASS@_@DIMENSION@_code',
 `
 ppl_@CLASS@_@DIMENSION@_2_test :-
   (
-   choose_test(TEST_DATA, Space_Dim),
+   choose_test(TEST_DATA, Space_Dim), TEST_DATA \= test07,
     (
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
      \+ppl_@CLASS@_@DIMENSION@(PS, 3),
@@ -753,9 +753,9 @@ ppl_@CLASS@_@SIMPLIFY@_1_test :-
 
 ')
 
-m4_define(`ppl_@CLASS@_unconstrain_code',
+m4_define(`ppl_@CLASS@_unconstrain_space_dimensions_code',
 `
-ppl_@CLASS@_unconstrain_2_test :-
+ppl_@CLASS@_unconstrain_space_dimensions_2_test :-
   (
    choose_test(TEST_DATA, Space_Dim),
    \+ TEST_DATA = test00, \+ TEST_DATA = test02,
@@ -763,7 +763,45 @@ ppl_@CLASS@_unconstrain_2_test :-
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS1, Space_Dim),
      make_vars(Space_Dim, [Var| _Var_List]),
-     ppl_@CLASS@_unconstrain(PS, Var),
+     ppl_@CLASS@_unconstrain_space_dimensions(PS, [Var]),
+     ppl_@CLASS@_OK(PS),
+     (predicate_exists(ppl_@CLASS@_contains_@CLASS@)
+     ->
+       ppl_@CLASS@_contains_@CLASS@(PS, PS1)
+     ;
+       true
+     ),
+     ppl_delete_@CLASS@(PS1),
+     ppl_delete_@CLASS@(PS)
+   ->
+    fail ; true)
+  ).
+
+ppl_@CLASS@_unconstrain_space_dimensions_2_test :-
+  (
+   choose_test(TEST_DATA, 0),
+   (
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, 0),
+     ppl_@CLASS@_unconstrain_space_dimensions(PS, []),
+     ppl_@CLASS@_OK(PS),
+     ppl_delete_@CLASS@(PS)
+   ->
+    fail ; true)
+  ).
+
+')
+
+m4_define(`ppl_@CLASS@_unconstrain_space_dimension_code',
+`
+ppl_@CLASS@_unconstrain_space_dimension_2_test :-
+  (
+   choose_test(TEST_DATA, Space_Dim),
+   \+ TEST_DATA = test00, \+ TEST_DATA = test02,
+   (
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS1, Space_Dim),
+     make_vars(Space_Dim, [Var| _Var_List]),
+     ppl_@CLASS@_unconstrain_space_dimension(PS, Var),
      ppl_@CLASS@_OK(PS),
      (predicate_exists(ppl_@CLASS@_contains_@CLASS@)
      ->
@@ -779,7 +817,7 @@ ppl_@CLASS@_unconstrain_2_test :-
 
 ')
 
-m4_define(`ppl_@CLASS@_unconstrain_code',
+m4_define(`ppl_@CLASS@_constrains_code',
 `
 ppl_@CLASS@_constrains_2_test :-
   (
@@ -789,7 +827,7 @@ ppl_@CLASS@_constrains_2_test :-
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS1, Space_Dim),
      make_vars(Space_Dim, [Var| _Var_List]),
-     ppl__constrains_test_data(TEST_DATA, _, Bool),
+     ppl_constrains_test_data(TEST_DATA, _, Bool),
      (ppl_@CLASS@_constrains(PS, Var)
         -> Bool = true
         ; Bool = false
@@ -1213,22 +1251,26 @@ ppl_@CLASS@_@BINMINOP@_2_test :-
          \+ ppl_@CLASS@_@BINMINOP@(PS1_Copy, PS2)
        )
      ;
-       member(@BINMINOP@,
+       (member(@BINMINOP@,
                      [upper_bound_assign_and_minimize,
                       poly_hull_assign_and_minimize,
                       join_assign_and_minimize,
                       bds_hull_assign_and_minimize,
-                      oct_hull_assign_and_minimize]),
-       ppl_@CLASS@_upper_bound_assign(PS1_Copy_n, PS2),
-       (\+ ppl_@CLASS@_is_empty(PS1_Copy_n)
-       ->
-         ppl_@CLASS@_@BINMINOP@(PS1_Copy, PS2),
-         \+ ppl_@CLASS@_is_empty(PS1_Copy),
-         ppl_@CLASS@_contains_@CLASS@(PS1_Copy, PS1),
-         ppl_@CLASS@_contains_@CLASS@(PS1_Copy, PS2)
-       ;
-         \+ ppl_@CLASS@_@BINMINOP@(PS1_Copy, PS2)
-       )
+                      oct_hull_assign_and_minimize])
+        ->
+          ppl_@CLASS@_upper_bound_assign(PS1_Copy_n, PS2),
+          (\+ ppl_@CLASS@_is_empty(PS1_Copy_n)
+          ->
+            ppl_@CLASS@_@BINMINOP@(PS1_Copy, PS2),
+            \+ ppl_@CLASS@_is_empty(PS1_Copy),
+            ppl_@CLASS@_contains_@CLASS@(PS1_Copy, PS1),
+            ppl_@CLASS@_contains_@CLASS@(PS1_Copy, PS2)
+          ;
+            \+ ppl_@CLASS@_@BINMINOP@(PS1_Copy, PS2)
+          )
+        ;
+          fail
+        )
      ),
      ppl_@CLASS@_OK(PS1),
      ppl_@CLASS@_OK(PS1_Copy),
@@ -1238,6 +1280,29 @@ ppl_@CLASS@_@BINMINOP@_2_test :-
      ppl_delete_@CLASS@(PS1_Copy_n),
      ppl_delete_@CLASS@(PS2),
      ppl_delete_@CLASS@(PS2a)
+   ->
+     fail ; true)
+ ).
+
+')
+
+m4_define(`ppl_@CLASS@_simplify_using_context_assign_code',
+`
+ppl_@CLASS@_simplify_using_context_assign_2_test :-
+  (
+   choose_2_tests(TEST_DATA1, TEST_DATA2, Space_Dim),
+   (
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1, Space_Dim),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2, Space_Dim),
+     ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1_Copy),
+     ppl_@CLASS@_simplify_using_context_assign(PS1_Copy, PS2,
+                                               _Is_Intersection),
+     ppl_@CLASS@_OK(PS1),
+     ppl_@CLASS@_OK(PS1_Copy),
+     ppl_@CLASS@_OK(PS2),
+     ppl_delete_@CLASS@(PS1),
+     ppl_delete_@CLASS@(PS1_Copy),
+     ppl_delete_@CLASS@(PS2)
    ->
      fail ; true)
  ).

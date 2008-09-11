@@ -102,7 +102,9 @@ OR_Matrix<T>::ascii_load(std::istream& s) {
   return true;
 }
 
-/*! \relates Parma_Polyhedra_Library::OR_Matrix */  //FIXME!!
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \relates Parma_Polyhedra_Library::OR_Matrix */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 std::ostream&
 IO_Operators::operator<<(std::ostream& s, const OR_Matrix<T>& m) {

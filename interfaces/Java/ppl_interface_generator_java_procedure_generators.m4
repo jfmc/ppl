@@ -46,8 +46,6 @@ ppl_@CLASS@_string/1 +all)dnl
 
 dnl TODO
 dnl Some methods are not yet implemented for the Java interface:
-dnl ppl_@CLASS@_ascii_dump/1
-dnl ppl_@CLASS@_@PARTITION@/4 +pointset_powerset \grid,
 dnl ppl_@CLASS@_approximate_partition/5 +pointset_powerset \shape,
 dnl ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign/2
 dnl ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign/3

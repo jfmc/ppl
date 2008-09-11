@@ -49,7 +49,6 @@ BD_Shape<T>::BD_Shape(const Congruence_System& cgs)
     status(),
     redundancy_dbm() {
   add_congruences(cgs);
-  return;
 }
 
 template <typename T>
@@ -123,9 +122,9 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
 
   if (!point_seen)
     // The generator system is not empty, but contains no points.
-    throw std::invalid_argument("PPL::BD_Shape<T>::BD_Shape(gs):\n"
-                                "the non-empty generator system gs "
-                                "contains no points.");
+    throw_invalid_argument("PPL::BD_Shape<T>::BD_Shape(gs)",
+                           "the non-empty generator system gs "
+                           "contains no points.");
 
   // Going through all the lines and rays.
   for (Generator_System::const_iterator gs_i = gs_begin;
@@ -283,7 +282,9 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
   }
 
   // Extract easy-to-find bounds from constraints.
-  *this = BD_Shape<T>(ph.constraints());
+  assert(complexity == POLYNOMIAL_COMPLEXITY);
+  *this = BD_Shape<T>(num_dimensions, UNIVERSE);
+  refine_with_constraints(ph.constraints());
 }
 
 template <typename T>
@@ -377,15 +378,17 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
     throw_dimension_incompatible("add_constraint(c)", c);
   // Strict inequalities are not allowed.
   if (c.is_strict_inequality())
-    throw_constraint_incompatible("add_constraint(c)");
+    throw_invalid_argument("add_constraint(c)",
+                           "strict inequalities are not allowed");
 
   dimension_type num_vars = 0;
   dimension_type i = 0;
   dimension_type j = 0;
   TEMP_INTEGER(coeff);
-  // Constraints that are not bounded differences are ignored.
+  // Constraints that are not bounded differences are not allowed.
   if (!extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff))
-    return;
+    throw_invalid_argument("add_constraint(c)",
+			   "c is not a bounded difference constraint");
 
   if (num_vars == 0) {
     // Dealing with a trivial constraint.
@@ -435,16 +438,27 @@ template <typename T>
 void
 BD_Shape<T>::add_congruence(const Congruence& cg) {
   const dimension_type cg_space_dim = cg.space_dimension();
-  if (cg.is_equality()) {
-    Linear_Expression expr;
-    for (dimension_type i = cg_space_dim; i-- > 0; ) {
-      const Variable v(i);
-      expr += cg.coefficient(v) * v;
+  // Dimension-compatibility check:
+  // the dimension of `cg' can not be greater than space_dim.
+  if (space_dimension() < cg_space_dim)
+    throw_dimension_incompatible("add_congruence(cg)", cg);
+
+  // Handle the case of proper congruences first.
+  if (cg.is_proper_congruence()) {
+    if (cg.is_trivial_true())
+      return;
+    if (cg.is_trivial_false()) {
+      set_empty();
+      return;
     }
-    expr += cg.inhomogeneous_term();
-    add_constraint(expr == 0);
+    // Non-trivial and proper congruences are not allowed.
+    throw_invalid_argument("add_congruence(cg)",
+			   "cg is a non-trivial, proper congruence");
   }
-  assert(OK());
+
+  assert(cg.is_equality());
+  Constraint c(cg);
+  add_constraint(c);
 }
 
 template <typename T>
@@ -730,7 +744,7 @@ BD_Shape<T>::contains_integer_point() const {
     return true;
 
   // Build an integer BD_Shape z with bounds at least as tight as
-  // those in *this and then recheck for emptyness.
+  // those in *this and then recheck for emptiness.
   BD_Shape<mpz_class> bds_z(space_dim);
   typedef BD_Shape<mpz_class>::N Z;
   bds_z.reset_shortest_path_closed();
@@ -756,6 +770,32 @@ BD_Shape<T>::contains_integer_point() const {
     }
   }
   return all_integers || !bds_z.is_empty();
+}
+
+template <typename T>
+bool
+BD_Shape<T>::constrains(const Variable var) const {
+  // `var' should be one of the dimensions of the polyhedron.
+  const dimension_type var_space_dim = var.space_dimension();
+  if (space_dimension() < var_space_dim)
+    throw_dimension_incompatible("constrains(v)", "v", var);
+
+  // A polyhedron known to be empty constrains all variables.
+  // (Note: do not force emptiness check _yet_)
+  if (marked_empty())
+    return true;
+
+  // Check whether `var' is syntactically constrained.
+  const DB_Row<N>& dbm_v = dbm[var_space_dim];
+  for (dimension_type i = dbm.num_rows(); i-- > 0; ) {
+    if (!is_plus_infinity(dbm_v[i])
+        || !is_plus_infinity(dbm[i][var_space_dim]))
+      return true;
+  }
+
+  // `var' is not syntactically constrained:
+  // now force an emptiness check.
+  return is_empty();
 }
 
 template <typename T>
@@ -1850,6 +1890,14 @@ BD_Shape<T>::bds_difference_assign(const BD_Shape& y) {
 }
 
 template <typename T>
+bool
+BD_Shape<T>::simplify_using_context_assign(const BD_Shape& y) {
+  // FIXME: provide a real implementation.
+  used(y);
+  return true;
+}
+
+template <typename T>
 void
 BD_Shape<T>::add_space_dimensions_and_embed(const dimension_type m) {
   // Adding no dimensions is a no-op.
@@ -2273,11 +2321,13 @@ BD_Shape<T>::limited_CC76_extrapolation_assign(const BD_Shape& y,
   // of bounded differences.
   const dimension_type cs_space_dim = cs.space_dimension();
   if (space_dim < cs_space_dim)
-    throw_constraint_incompatible("limited_CC76_extrapolation_assign(y, cs)");
+    throw_invalid_argument("limited_CC76_extrapolation_assign(y, cs)",
+                           "cs is space_dimension incompatible");
 
   // Strict inequalities not allowed.
   if (cs.has_strict_inequalities())
-    throw_constraint_incompatible("limited_CC76_extrapolation_assign(y, cs)");
+    throw_invalid_argument("limited_CC76_extrapolation_assign(y, cs)",
+                           "cs has strict inequalities");
 
   // The limited CC76-extrapolation between two systems of bounded
   // differences in a zero-dimensional space is a system of bounded
@@ -2391,13 +2441,13 @@ BD_Shape<T>::limited_BHMZ05_extrapolation_assign(const BD_Shape& y,
   // of bounded differences.
   const dimension_type cs_space_dim = cs.space_dimension();
   if (space_dim < cs_space_dim)
-    throw_constraint_incompatible("limited_BHMZ05_extrapolation_assign"
-                                  "(y, cs)");
+    throw_invalid_argument("limited_BHMZ05_extrapolation_assign(y, cs)",
+                           "cs is space-dimension incompatible");
 
   // Strict inequalities are not allowed.
   if (cs.has_strict_inequalities())
-    throw_constraint_incompatible("limited_BHMZ05_extrapolation_assign"
-                                  "(y, cs)");
+    throw_invalid_argument("limited_BHMZ05_extrapolation_assign(y, cs)",
+                           "cs has strict inequalities");
 
   // The limited BHMZ05-extrapolation between two systems of bounded
   // differences in a zero-dimensional space is a system of bounded
@@ -3808,7 +3858,6 @@ BD_Shape<T>
     add_constraint(var <= new_var);
   // Remove the temporarily added dimension.
   remove_higher_space_dimensions(space_dim);
-  return;
 }
 
 template <typename T>
@@ -3840,13 +3889,13 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
   // The relation symbol cannot be a strict relation symbol.
   if (relsym == LESS_THAN || relsym == GREATER_THAN)
     throw_generic("generalized_affine_image(v, r, e, d)",
-                    "r is a strict relation symbol and "
-                    "*this is a BD_Shape");
+                  "r is a strict relation symbol and "
+                  "*this is a BD_Shape");
   // The relation symbol cannot be a disequality.
   if (relsym == NOT_EQUAL)
     throw_generic("generalized_affine_image(v, r, e, d)",
-                    "r is the disequality relation symbol and "
-                    "*this is a BD_Shape");
+                  "r is the disequality relation symbol and "
+                  "*this is a BD_Shape");
 
   if (relsym == EQUAL) {
     // The relation symbol is "==":
@@ -4272,13 +4321,13 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
     // approximations for this constraint?
     switch (relsym) {
     case LESS_OR_EQUAL:
-      add_constraint(lhs <= rhs);
+      refine_with_constraint(lhs <= rhs);
       break;
     case EQUAL:
-      add_constraint(lhs == rhs);
+      refine_with_constraint(lhs == rhs);
       break;
     case GREATER_OR_EQUAL:
-      add_constraint(lhs >= rhs);
+      refine_with_constraint(lhs >= rhs);
       break;
     default:
       // We already dealt with the other cases.
@@ -4325,13 +4374,13 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       // it will be simply ignored. Should we compute approximations for it?
       switch (relsym) {
       case LESS_OR_EQUAL:
-        add_constraint(lhs <= rhs);
+        refine_with_constraint(lhs <= rhs);
         break;
       case EQUAL:
-        add_constraint(lhs == rhs);
+        refine_with_constraint(lhs == rhs);
         break;
       case GREATER_OR_EQUAL:
-        add_constraint(lhs >= rhs);
+        refine_with_constraint(lhs >= rhs);
         break;
       default:
         // We already dealt with the other cases.
@@ -4355,7 +4404,7 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       const Variable new_var = Variable(space_dim);
       add_space_dimensions_and_embed(1);
       // Constrain the new dimension to be equal to `rhs'.
-      // NOTE: calling affine_image() instead of add_constraint()
+      // NOTE: calling affine_image() instead of refine_with_constraint()
       // ensures some approximation is tried even when the constraint
       // is not a bounded difference.
       affine_image(new_var, rhs);
@@ -4369,17 +4418,17 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       // the left hand side as dictated by `relsym'.
       // TODO: each one of the following constraints is definitely NOT
       // a bounded differences (since it has 3 variables at least).
-      // Thus, the method add_constraint() will simply ignore it.
+      // Thus, the method refine_with_constraint() will simply ignore it.
       // Should we compute approximations for this constraint?
       switch (relsym) {
       case LESS_OR_EQUAL:
-        add_constraint(lhs <= new_var);
+        refine_with_constraint(lhs <= new_var);
         break;
       case EQUAL:
-        add_constraint(lhs == new_var);
+        refine_with_constraint(lhs == new_var);
         break;
       case GREATER_OR_EQUAL:
-        add_constraint(lhs >= new_var);
+        refine_with_constraint(lhs >= new_var);
         break;
       default:
         // We already dealt with the other cases.
@@ -4569,13 +4618,13 @@ BD_Shape<T>::generalized_affine_preimage(const Linear_Expression& lhs,
       // it will be simply ignored. Should we compute approximations for it?
       switch (relsym) {
       case LESS_OR_EQUAL:
-        add_constraint(lhs <= rhs);
+        refine_with_constraint(lhs <= rhs);
         break;
       case EQUAL:
-        add_constraint(lhs == rhs);
+        refine_with_constraint(lhs == rhs);
         break;
       case GREATER_OR_EQUAL:
-        add_constraint(lhs >= rhs);
+        refine_with_constraint(lhs >= rhs);
         break;
       default:
         // We already dealt with the other cases.
@@ -4596,7 +4645,7 @@ BD_Shape<T>::generalized_affine_preimage(const Linear_Expression& lhs,
       const Variable new_var = Variable(bds_space_dim);
       add_space_dimensions_and_embed(1);
       // Constrain the new dimension to be equal to `lhs'.
-      // NOTE: calling affine_image() instead of add_constraint()
+      // NOTE: calling affine_image() instead of refine_with_constraint()
       // ensures some approximation is tried even when the constraint
       // is not a bounded difference.
       affine_image(new_var, lhs);
@@ -4610,18 +4659,18 @@ BD_Shape<T>::generalized_affine_preimage(const Linear_Expression& lhs,
       // the left hand side as dictated by `relsym'.
       // Note: if `rhs == a_rhs*v + b_rhs' where `a_rhs' is in {0, 1},
       // then one of the following constraints will be added,
-      // since it is a bounded difference. Else the method add_constraint()
-      // will ignore it, 'cause the constraint is NOT a bounded
-      // difference.
+      // since it is a bounded difference. Else the method
+      // refine_with_constraint() will ignore it, because the
+      // constraint is NOT a bounded difference.
       switch (relsym) {
       case LESS_OR_EQUAL:
-        add_constraint(new_var <= rhs);
+        refine_with_constraint(new_var <= rhs);
         break;
       case EQUAL:
-        add_constraint(new_var == rhs);
+        refine_with_constraint(new_var == rhs);
         break;
       case GREATER_OR_EQUAL:
-        add_constraint(new_var >= rhs);
+        refine_with_constraint(new_var >= rhs);
         break;
       default:
         // We already dealt with the other cases.
@@ -5170,10 +5219,10 @@ BD_Shape<T>::throw_dimension_incompatible(const char* method,
 
 template <typename T>
 void
-BD_Shape<T>::throw_constraint_incompatible(const char* method) {
+BD_Shape<T>::throw_invalid_argument(const char* method, const char* reason) {
   std::ostringstream s;
   s << "PPL::BD_Shape::" << method << ":" << std::endl
-    << "the constraint is incompatible.";
+    << reason << ".";
   throw std::invalid_argument(s.str());
 }
 

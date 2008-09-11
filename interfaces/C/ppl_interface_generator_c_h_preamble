@@ -303,6 +303,28 @@ ppl_initialize PPL_PROTO((void));
 int
 ppl_finalize PPL_PROTO((void));
 
+/*! \brief
+  Sets the FPU rounding mode so that the PPL abstractions based on
+  floating point numbers work correctly.
+
+  This is performed automatically at initialization-time.  Calling
+  this function is needed only if restore_pre_PPL_rounding() has been
+  previously called.
+*/
+int
+ppl_set_rounding_for_PPL PPL_PROTO((void));
+
+/*! \brief
+  Sets the FPU rounding mode as it was before initialization of the PPL.
+
+  After calling this function it is absolutely necessary to call
+  set_rounding_for_PPL() before using any PPL abstractions based on
+  floating point numbers.
+  This is performed automatically at finalization-time.
+*/
+int
+ppl_restore_pre_PPL_rounding PPL_PROTO((void));
+
 /*@}*/ /* Init */
 
 #undef PPL_TYPE_DECLARATION
@@ -808,6 +830,14 @@ ppl_Constraint_System_space_dimension
 PPL_PROTO((ppl_const_Constraint_System_t cs, ppl_dimension_type* m));
 
 /*! \brief
+  Returns a positive integer if \p cs contains no (non-trivial) constraint;
+  returns 0 otherwise.
+*/
+int
+ppl_Constraint_System_empty
+PPL_PROTO((ppl_const_Constraint_System_t cs));
+
+/*! \brief
   Returns a positive integer if \p cs contains any (non-trivial) strict
   inequality; returns 0 otherwise.
 */
@@ -1088,6 +1118,14 @@ ppl_Generator_System_space_dimension
 PPL_PROTO((ppl_const_Generator_System_t gs, ppl_dimension_type* m));
 
 /*! \brief
+  Returns a positive integer if \p gs contains no generators;
+  returns 0 otherwise.
+*/
+int
+ppl_Generator_System_empty
+PPL_PROTO((ppl_const_Generator_System_t gs));
+
+/*! \brief
   Removes all the generators from the generator system \p gs
   and sets its space dimension to 0.
 */
@@ -1339,6 +1377,14 @@ PPL_PROTO((ppl_Congruence_System_t dst, ppl_const_Congruence_System_t src));
 int
 ppl_Congruence_System_space_dimension
 PPL_PROTO((ppl_const_Congruence_System_t cs, ppl_dimension_type* m));
+
+/*! \brief
+  Returns a positive integer if \p cs contains no (non-trivial) congruence;
+  returns 0 otherwise.
+*/
+int
+ppl_Congruence_System_empty
+PPL_PROTO((ppl_const_Congruence_System_t cs));
 
 /*! \brief
   Removes all the congruences from the congruence system \p cs
@@ -1607,6 +1653,14 @@ PPL_PROTO((ppl_Grid_Generator_System_t dst,
 int
 ppl_Grid_Generator_System_space_dimension
 PPL_PROTO((ppl_const_Grid_Generator_System_t gs, ppl_dimension_type* m));
+
+/*! \brief
+  Returns a positive integer if \p gs contains no generator;
+  returns 0 otherwise.
+*/
+int
+ppl_Grid_Generator_System_empty
+PPL_PROTO((ppl_const_Grid_Generator_System_t gs));
 
 /*! \brief
   Removes all the generators from the grid generator system \p gs

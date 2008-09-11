@@ -231,8 +231,8 @@ test09() {
   Variable B(1);
 
   Grid gr(2);
-  gr.add_congruence(A == 3);
-  gr.add_congruence(B == 0);
+  gr.add_congruence((A == 3) / 0);
+  gr.add_congruence((B == 0) / 0);
 
   print_congruences(gr, "*** gr ***");
 
@@ -254,15 +254,15 @@ test10() {
   Variable B(1);
 
   Grid gr(2);
-  gr.add_congruence(A == 3);
-  gr.add_congruence(B == 3);
+  gr.add_congruence((A == 3) / 0);
+  gr.add_congruence((B == 3) / 0);
 
   print_congruences(gr, "*** gr ***");
 
   gr.affine_preimage(B, A);
 
   Grid known_gr(2);
-  known_gr.add_congruence(A == 3);
+  known_gr.add_congruence((A == 3) / 0);
 
   bool ok = (gr == known_gr);
 

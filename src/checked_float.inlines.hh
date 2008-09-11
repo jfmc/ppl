@@ -82,6 +82,15 @@ inline long double
 rint(long double x) {
   return ::rint(x);
 }
+#elif defined(__i386__) && (defined(__GNUC__) || defined(__INTEL_COMPILER))
+// On Cygwin, we have proper long doubles but rintl() is not defined:
+// luckily, one machine instruction is enough to save the day.
+inline long double
+rint(long double x) {
+  long double i;
+  __asm__ ("frndint" : "=t" (i) : "0" (x));
+  return i;
+}
 #endif
 
 inline bool
@@ -854,6 +863,11 @@ output_float(std::ostream& os, const Type from, const Numeric_Format&,
     os << "nan";
   else {
     int old_precision = os.precision(10000);
+    // FIXME: here correctness depends on the behavior of the standard
+    // output operator which, in turn, may depend on the behavior
+    // of printf().  The C99 standard, 7.19.6#13, does not give
+    // enough guarantees.  We could not find something similar
+    // in the C++ standard, but perhaps there is a concrete danger here.
     os << from;
     os.precision(old_precision);
   }

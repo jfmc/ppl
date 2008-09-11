@@ -30,8 +30,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-template <typename Box>
-Polyhedron::Polyhedron(Topology topol, const Box& box, Complexity_Class)
+template <typename Interval>
+Polyhedron::Polyhedron(Topology topol,
+                       const Box<Interval>& box,
+                       Complexity_Class)
   : con_sys(topol),
     gen_sys(topol),
     sat_c(),
@@ -238,7 +240,7 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
   // If there are pending constraints, using `generators()' we process them.
   const Generator_System& old_gensys = generators();
 
-  if (old_gensys.empty()) {
+  if (old_gensys.has_no_rows()) {
     // The polyhedron is empty.
     Polyhedron new_polyhedron(topology(), new_space_dimension, EMPTY);
     std::swap(*this, new_polyhedron);

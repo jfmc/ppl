@@ -20,12 +20,11 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-abs_srcdir = @abs_srcdir@
-
 XSB_CFLI_FILES = xsb_cfli.hh
 
 EXTRA_DIST = \
 ppl_interface_generator_xsb_cc.m4 \
+ppl_interface_generator_xsb_hh.m4 \
 ppl_interface_generator_xsb_H.m4 \
 $(XSB_CFLI_FILES) \
 xsb_clpq.P \
@@ -44,10 +43,6 @@ WATCHDOG_LINK_OPTIONS = -L$(top_builddir)/Watchdog/src/.libs -lpwl
 
 endif BUILD_WATCHDOG_LIBRARY
 
-BUILT_SOURCES = \
-ppl_xsb.H \
-ppl_xsb.cc
-
 interface_generator_dependencies = \
 $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../../ppl_interface_generator_common.m4 \
@@ -58,15 +53,19 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../ppl_interface_generator_prolog_systems.m4 \
 ppl_interface_generator_xsb_predicate_check_P.m4
 
-ppl_xsb.H: $(interface_generator_dependencies) ppl_interface_generator_xsb_H.m4 Makefile
+ppl_xsb.H: $(interface_generator_dependencies) ppl_interface_generator_xsb_H.m4
 	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_xsb_H.m4 > $@
 
-ppl_xsb.cc: $(interface_generator_dependencies) ppl_interface_generator_xsb_cc.m4 Makefile
+ppl_xsb.hh: $(interface_generator_dependencies) ppl_interface_generator_xsb_hh.m4
+	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
+           $(srcdir)/ppl_interface_generator_xsb_hh.m4 > $@
+
+ppl_xsb.cc: $(interface_generator_dependencies) ppl_interface_generator_xsb_cc.m4
 	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_xsb_cc.m4 > $@
 
-xsb_predicate_check.P: $(interface_generator_dependencies) ppl_interface_generator_xsb_predicate_check_P.m4 Makefile
+xsb_predicate_check.P: $(interface_generator_dependencies) ppl_interface_generator_xsb_predicate_check_P.m4
 	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_xsb_predicate_check_P.m4 > $@
 
@@ -79,21 +78,56 @@ $(WATCHDOG_INCLUDE_OPTIONS) \
 $(XSB_PROLOG_INCLUDE_OPTIONS) \
 @extra_includes@
 
-pkglib_LTLIBRARIES = ppl_xsb.la
-nodist_ppl_xsb_la_SOURCES = ppl_xsb.cc
-ppl_xsb_la_LIBADD = \
+noinst_LTLIBRARIES = libppl_xsb.la
+
+libppl_xsb_la_SOURCES = \
+ppl_prolog_sysdep.hh \
+xsb_efli.hh \
+xsb_efli.cc
+
+nodist_libppl_xsb_la_SOURCES = \
+ppl_xsb.hh \
+../ppl_prolog_common.cc
+
+BUILT_SOURCES = \
+ppl_xsb.hh
+
+nodist_EXTRA_libppl_xsb_la_SOURCES = \
+../ppl_prolog_BD_Shape_double.cc \
+../ppl_prolog_BD_Shape_mpq_class.cc \
+../ppl_prolog_BD_Shape_mpz_class.cc \
+../ppl_prolog_Constraints_Product_C_Polyhedron_Grid.cc \
+../ppl_prolog_Double_Box.cc \
+../ppl_prolog_Grid.cc \
+../ppl_prolog_Octagonal_Shape_double.cc \
+../ppl_prolog_Octagonal_Shape_mpq_class.cc \
+../ppl_prolog_Octagonal_Shape_mpz_class.cc \
+../ppl_prolog_Pointset_Powerset_C_Polyhedron.cc \
+../ppl_prolog_Pointset_Powerset_NNC_Polyhedron.cc \
+../ppl_prolog_Polyhedron.cc \
+../ppl_prolog_Rational_Box.cc
+
+libppl_xsb_la_LIBADD = \
+@required_instantiations_prolog_cxx_objects@ \
 $(top_builddir)/src/libppl.la \
 $(WATCHDOG_LIBRARY) \
 @extra_libraries@
-ppl_xsb_la_LDFLAGS = -module -avoid-version
+
+libppl_xsb_la_DEPENDENCIES = \
+@required_instantiations_prolog_cxx_objects@
+
+libppl_xsb_la_LDFLAGS = \
+-module \
+-avoid-version
 
 pkglib_DATA = ppl_xsb.xwam
 
-ppl_xsb.xwam: ppl_xsb.H ppl_xsb.cc ppl_xsb.la Makefile
+ppl_xsb.xwam: ppl_xsb.H ppl_xsb.cc libppl_xsb.la
 	cp -f ppl_xsb.cc ppl_xsb.c
 	echo "consult(ppl_xsb," \
 	  "[cc('$(CXX)'), cc_opts('$(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) " \
 	    "$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -fPIC " \
+	    "-L.libs -lppl_xsb" \
 	    "-L../../../src/.libs -L../../../Watchdog/src/.libs')])." \
 		| $(LIBTOOL) --mode=execute \
 			-dlopen ../../../src/libppl.la \
@@ -131,7 +165,7 @@ EXPECTED_PCHK = $(srcdir)/../tests/expected_pchk_$(COEFFICIENT_MNEMONIC)
 
 endif !ASSERTIONS_ENABLED
 
-check-local: ppl_xsb.la xsb_clpq.P ../tests/clpq.pl ../tests/script_clpq xsb_clpq2.P ../tests/clpq2.pl ../tests/script_clpq2 pl_check_test
+check-local: libppl_xsb.la xsb_clpq.P ../tests/clpq.pl ../tests/script_clpq xsb_clpq2.P ../tests/clpq2.pl ../tests/script_clpq2 pl_check_test
 	LANG=C; \
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
 	if [ $(abs_srcdir) != `pwd` ]; then \
@@ -142,7 +176,6 @@ check-local: ppl_xsb.la xsb_clpq.P ../tests/clpq.pl ../tests/script_clpq xsb_clp
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		$(WATCHDOG_DLOPEN) \
-		-dlopen ppl_xsb.la \
 		xsb xsb_clpq \
 			<$(srcdir)/../tests/script_clpq >obtained_clpq
 	rm -f clpq.pl
@@ -158,7 +191,6 @@ check-local: ppl_xsb.la xsb_clpq.P ../tests/clpq.pl ../tests/script_clpq xsb_clp
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		$(WATCHDOG_DLOPEN) \
-		-dlopen ppl_xsb.la \
 		xsb xsb_clpq2 \
 			<$(srcdir)/../tests/script_clpq2 >obtained_clpq2
 	rm -f clpq2.pl
@@ -167,7 +199,7 @@ check-local: ppl_xsb.la xsb_clpq.P ../tests/clpq.pl ../tests/script_clpq xsb_clp
 	fi
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
 
-pl_check_test: ppl_xsb.la ppl_xsb.xwam xsb_pl_check.P ../tests/pl_check.pl
+pl_check_test: libppl_xsb.la ppl_xsb.xwam xsb_pl_check.P ../tests/pl_check.pl
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  cp -f $(srcdir)/xsb_pl_check.P . ; \
 	fi
@@ -176,7 +208,6 @@ pl_check_test: ppl_xsb.la ppl_xsb.xwam xsb_pl_check.P ../tests/pl_check.pl
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		$(WATCHDOG_DLOPEN) \
-		-dlopen ppl_xsb.la \
 		xsb xsb_pl_check \
 			>obtained_pchk
 	rm -f pl_check.pl
@@ -185,14 +216,13 @@ pl_check_test: ppl_xsb.la ppl_xsb.xwam xsb_pl_check.P ../tests/pl_check.pl
 	fi
 	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
 
-predicate_check_test: ppl_xsb.la ppl_xsb.xwam xsb_predicate_check.P ../tests/ppl_predicate_check_main.pl
+predicate_check_test: libppl_xsb.la ppl_xsb.xwam xsb_predicate_check.P ../tests/ppl_predicate_check_main.pl
 	cp -f $(srcdir)/../tests/ppl_predicate_check_common.pl . ; \
 	cp -f ../tests/ppl_predicate_check_main.pl .
 	rm -f xsb_predicate_check.xwam
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		$(WATCHDOG_DLOPEN) \
-		-dlopen ppl_xsb.la \
 		xsb xsb_predicate_check \
 			>obtained_pchk
 	rm -f ppl_predicate_check_main.pl
@@ -203,6 +233,7 @@ endif BUILD_XSB_PROLOG_INTERFACE
 
 DISTCLEANFILES = \
 ppl_xsb.H \
+ppl_xsb.hh \
 ppl_xsb.cc
 
 MOSTLYCLEANFILES = \

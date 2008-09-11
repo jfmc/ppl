@@ -22,6 +22,7 @@ dnl site: http://www.cs.unipr.it/ppl/ .
 
 AC_DEFUN([AC_CXX_DOUBLE_BINARY_FORMAT],
 [
+AC_REQUIRE([AC_C_BIGENDIAN])
 ac_save_CPPFLAGS="$CPPFLAGS"
 ac_save_LIBS="$LIBS"
 AC_LANG_PUSH(C++)
@@ -31,6 +32,9 @@ ac_cxx_double_binary_format=unknown
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <limits>
 #ifdef HAVE_STDINT_H
+#ifndef __STDC_LIMIT_MACROS
+#define __STDC_LIMIT_MACROS 1
+#endif
 #include <stdint.h>
 #endif
 #ifdef HAVE_INTTYPES_H

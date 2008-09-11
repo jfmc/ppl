@@ -844,7 +844,7 @@ Octagonal_Shape<T>::contains_integer_point() const {
     return !tight_coherence_would_make_empty();
 
   // Build an integer Octagonal_Shape oct_z with bounds at least as
-  // tight as those in *this and then recheck for emptyness, also
+  // tight as those in *this and then recheck for emptiness, also
   // exploiting tight-coherence.
   Octagonal_Shape<mpz_class> oct_z(space_dim);
   oct_z.reset_strongly_closed();
@@ -881,6 +881,41 @@ Octagonal_Shape<T>::contains_integer_point() const {
       return false;
   }
   return !oct_z.tight_coherence_would_make_empty();
+}
+
+template <typename T>
+bool
+Octagonal_Shape<T>::constrains(const Variable var) const {
+  // `var' should be one of the dimensions of the polyhedron.
+  const dimension_type var_space_dim = var.space_dimension();
+  if (space_dimension() < var_space_dim)
+    throw_dimension_incompatible("constrains(v)", "v", var);
+
+  // A polyhedron known to be empty constrains all variables.
+  // (Note: do not force emptiness check _yet_)
+  if (marked_empty())
+    return true;
+
+  // Check whether `var' is syntactically constrained.
+  const dimension_type n_v = 2*(var_space_dim - 1);
+  typename OR_Matrix<N>::const_row_iterator m_iter = matrix.row_begin() + n_v;
+  typename OR_Matrix<N>::const_row_reference_type r_v = *m_iter;
+  typename OR_Matrix<N>::const_row_reference_type r_cv = *(++m_iter);
+  for (dimension_type h = m_iter.row_size(); h-- > 0; ) {
+    if (!is_plus_infinity(r_v[h]) || !is_plus_infinity(r_cv[h]))
+      return true;
+  }
+  ++m_iter;
+  for (typename OR_Matrix<N>::const_row_iterator m_end = matrix.row_end();
+       m_iter != m_end; ++m_iter) {
+    typename OR_Matrix<N>::const_row_reference_type r = *m_iter;
+    if (!is_plus_infinity(r[n_v]) || !is_plus_infinity(r[n_v+1]))
+      return true;
+  }
+
+  // `var' is not syntactically constrained:
+  // now force an emptiness check.
+  return is_empty();
 }
 
 template <typename T>
@@ -938,7 +973,7 @@ Octagonal_Shape<T>::is_strongly_reduced() const {
     for (dimension_type j = iter.row_size(); j-- > 0; ) {
       if (!is_plus_infinity(m_i[j])) {
         Octagonal_Shape x_copy = *this;
-assign_r(        x_copy.matrix[i][j], PLUS_INFINITY, ROUND_NOT_NEEDED);
+        assign_r(x_copy.matrix[i][j], PLUS_INFINITY, ROUND_NOT_NEEDED);
         if (x == x_copy)
           return false;
       }
@@ -2404,6 +2439,15 @@ Octagonal_Shape<T>::oct_difference_assign(const Octagonal_Shape& y) {
   }
   *this = new_oct;
   assert(OK());
+}
+
+template <typename T>
+bool
+Octagonal_Shape<T>
+::simplify_using_context_assign(const Octagonal_Shape& y) {
+  // FIXME: provide a real implementation.
+  used(y);
+  return true;
 }
 
 template <typename T>

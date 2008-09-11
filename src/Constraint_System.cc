@@ -56,7 +56,7 @@ adjust_topology_and_space_dimension(const Topology new_topology,
   dimension_type cols_to_be_added = new_space_dim - old_space_dim;
 
   // Dealing with empty constraint systems first.
-  if (empty()) {
+  if (num_rows() == 0) {
     if (num_columns() == 0)
       if (new_topology == NECESSARILY_CLOSED) {
 	add_zero_columns(++cols_to_be_added);

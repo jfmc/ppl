@@ -197,8 +197,8 @@ test09() {
   Variable A(0);
 
   Grid gr1(7);
-  gr1.add_congruence(A == 1);
-  gr1.add_congruence(A == 0);
+  gr1.add_constraint(A == 1);
+  gr1.add_constraint(A == 0);
 
   Grid known_gr = gr1;
 

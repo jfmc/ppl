@@ -30,7 +30,7 @@ test01() {
   Variable B(1);
 
   C_Polyhedron ph(2);
-  ph.add_congruence(A %= 0);
+  ph.add_congruence(Linear_Expression(0) %= 0);
   ph.add_congruence((B == 5) / 0);
 
   C_Polyhedron known_result(2);
@@ -50,7 +50,7 @@ test02() {
 
   C_Polyhedron ph(2);
 
-  ph.add_congruence((A + B %= 3) / 4);
+  ph.add_congruence((0*(A + B) %= 0) / 4);
   ph.add_congruence((A == -1) / 0);
 
   C_Polyhedron known_result(2);
@@ -75,7 +75,7 @@ test03() {
   C_Polyhedron known_result(ph);
 
   ph.add_congruence((A - B == 0) / 0);
-  ph.add_congruence((A + B %= 1) / 2);
+  ph.add_congruence((Linear_Expression(0) %= 1) / 2);
 
   bool ok = (ph == known_result);
 
@@ -124,7 +124,7 @@ test06() {
   Variable B(1);
 
   C_Polyhedron ph(2);
-  ph.add_congruence(A %= 0);
+  ph.add_congruence(0*A %= 0);
   bool b = ph.add_congruence_and_minimize((B == 5) / 0);
 
   C_Polyhedron known_result(2);
@@ -144,7 +144,7 @@ test07() {
 
   C_Polyhedron ph(2);
 
-  ph.add_congruence((A + B %= 3) / 4);
+  ph.add_congruence((Linear_Expression(0) %= 8) / 4);
   bool b = ph.add_congruence_and_minimize((A == -1) / 0);
 
   C_Polyhedron known_result(2);
@@ -169,7 +169,7 @@ test08() {
   C_Polyhedron known_result(ph);
 
   ph.add_congruence((A - B == 0) / 0);
-  bool b = ph.add_congruence_and_minimize((A + B %= 1) / 2);
+  bool b = ph.add_congruence_and_minimize((Linear_Expression(0) %= 1) / 2);
 
   bool ok = !b && (ph == known_result);
 

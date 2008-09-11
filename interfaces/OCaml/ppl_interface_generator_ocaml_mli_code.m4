@@ -59,6 +59,13 @@ val ppl_@TOPOLOGY@@CLASS@_@HAS_PROPERTY@:
 
 ')
 
+m4_define(`ppl_@CLASS@_@SIMPLIFY@_code',
+`dnl
+val ppl_@TOPOLOGY@@CLASS@_@SIMPLIFY@:
+  @LTOPOLOGY@@LCLASS@ -> unit
+
+')
+
 m4_define(`ppl_@CLASS@_bounds_from_@ABOVEBELOW@_code',
 `dnl
 val ppl_@TOPOLOGY@@CLASS@_bounds_from_@ABOVEBELOW@:
@@ -136,6 +143,13 @@ val ppl_@TOPOLOGY@@CLASS@_@BINMINOP@:
 
 ')
 
+m4_define(`ppl_@CLASS@_simplify_using_context_assign_code',
+`dnl
+val ppl_@TOPOLOGY@@CLASS@_simplify_using_context_assign:
+  @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> bool
+
+')
+
 m4_define(`ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@_code',
 `dnl
 val ppl_@TOPOLOGY@@CLASS@_add_space_dimensions_@EMBEDPROJECT@:
@@ -197,10 +211,17 @@ val ppl_@TOPOLOGY@@CLASS@_constrains:
 
 ')
 
-m4_define(`ppl_@CLASS@_unconstrain_code',
+m4_define(`ppl_@CLASS@_unconstrain_space_dimension_code',
 `dnl
-val ppl_@TOPOLOGY@@CLASS@_unconstrain:
+val ppl_@TOPOLOGY@@CLASS@_unconstrain_space_dimension:
   @LTOPOLOGY@@LCLASS@ -> int -> unit
+
+')
+
+m4_define(`ppl_@CLASS@_unconstrain_space_dimensions_code',
+`dnl
+val ppl_@TOPOLOGY@@CLASS@_unconstrain_space_dimensions:
+  @LTOPOLOGY@@LCLASS@ -> int list -> unit
 
 ')
 
@@ -236,6 +257,14 @@ val ppl_@TOPOLOGY@@CLASS@_generalized_@AFFIMAGE@:
 
 ')
 
+m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruence_code',
+`dnl
+val ppl_@TOPOLOGY@@CLASS@_generalized_@AFFIMAGE@_with_congruence:
+  @LTOPOLOGY@@LCLASS@ -> int -> relation_symbol -> linear_expression
+  -> Z.t -> Z.t -> unit
+
+')
+
 m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence_code',
 `dnl
 val ppl_@TOPOLOGY@@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence:
@@ -263,7 +292,7 @@ m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_to
 `dnl
 val ppl_@TOPOLOGY@@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens:
   @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@
-  -> constraint_system -> int -> int
+  -> @CONSTRAINER@_system -> int -> int
 
 ')
 
@@ -271,13 +300,21 @@ m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_code',
 `dnl
 val ppl_@TOPOLOGY@@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign:
   @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@
-  -> constraint_system -> unit
+  -> @CONSTRAINER@_system -> unit
 
 ')
 
 m4_define(`ppl_@CLASS@_@MAXMIN@_code',
 `dnl
 val ppl_@TOPOLOGY@@CLASS@_@MAXMIN@:
+  @LTOPOLOGY@@LCLASS@ -> linear_expression
+  -> bool * Z.t * Z.t * bool
+
+')
+
+m4_define(`ppl_@CLASS@_@MAXMIN@_with_point_code',
+`dnl
+val ppl_@TOPOLOGY@@CLASS@_@MAXMIN@_with_point:
   @LTOPOLOGY@@LCLASS@ -> linear_expression
   -> bool * Z.t * Z.t * bool * linear_generator
 
@@ -318,6 +355,20 @@ val ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@:
 
 ')
 
+ m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_code',
+ `dnl
+val ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign:
+  @LTOPOLOGY@@LCLASS@  -> @LTOPOLOGY@@LCLASS@ -> unit
+
+ ')
+
+ m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens_code',
+ `dnl
+val ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens:
+  @LTOPOLOGY@@LCLASS@  -> @LTOPOLOGY@@LCLASS@ -> int -> int
+
+ ')
+
  m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign_code',
  `dnl
 val ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign:
@@ -334,7 +385,7 @@ val ppl_@CLASS@_@BEGINEND@_iterator:
 
 m4_define(`ppl_@CLASS@_get_disjunct_code',
  `dnl
-val ppl_@CLASS@_iterator_get_disjunct:
+val ppl_@CLASS@_get_disjunct:
   @LCLASS@_iterator  ->  @LCLASSTOPOLOGY@@LDISJUNCT@
 
 ')
@@ -364,7 +415,22 @@ val ppl_@CLASS@_iterator_equals_iterator:
 
 m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
  `dnl
-val ppl_@CLASS@_iterator_@INCDEC@:
+val ppl_@CLASS@_@INCDEC@_iterator:
   @LCLASS@_iterator -> unit
+
+')
+
+
+m4_define(`ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code',
+`dnl
+val ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign:
+  @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> unit
+
+')
+
+m4_define(`ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign_code',
+`dnl
+val ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign:
+  @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> int -> unit
 
 ')

@@ -149,6 +149,7 @@ print_congruences(const Parma_Polyhedra_Library::Pointset_Powerset<PH>& pps,
   s << pps << std::endl;
 }
 
+/*
 template <typename PH>
 void
 print_constraints(const Parma_Polyhedra_Library::Pointset_Ask_Tell<PH>& pat,
@@ -159,6 +160,7 @@ print_constraints(const Parma_Polyhedra_Library::Pointset_Ask_Tell<PH>& pat,
     s << intro << std::endl;
   s << pat << std::endl;
 }
+*/
 
 void
 print_congruence(const Parma_Polyhedra_Library::Congruence& c,

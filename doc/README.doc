@@ -80,24 +80,43 @@ reason you should go to the doc subdirectory of your build directory
 (i.e., the one where you compiled the library) and build all the
 documents you want by executing a command of the form
 
-    make doc1 doc2 ...
+  make doc1 doc2 ...
 
 Here, doc1, doc2 and so forth are the names of the documents to be built.
 Document names may be obtained from the following list by replacing
 X.Y.Z with the version number you have already determined, and by
 replacing KIND with either `user' or `devref':
 
-    ppl-KIND-X.Y.Z.pdf
-    ppl-KIND-X.Y.Z.ps.gz
-    ppl-KIND-X.Y.Z-html.tar.gz
+  ppl-KIND-X.Y.Z.pdf
+  ppl-KIND-X.Y.Z.ps.gz
+  ppl-KIND-X.Y.Z-html.tar.gz
 
 For example, the command
 
-    make ppl-user-0.6.3pre4.pdf ppl-devref-0.6.3pre4.pdf
+  make ppl-user-0.6.3pre4.pdf ppl-devref-0.6.3pre4.pdf
 
 will build both kinds of manuals in a PDF format.  Alternatively, the
 command `make world' will build all the available documentation in all
-of the above formats.
+of the above formats.  It is possible that, while compiling some
+PostScript or PDF documentation, LaTeX dies with a "TeX capacity
+exceeded" error message.  The error should contain the indication of
+the TeX buffer whose capacity has been exceeded, e.g.:
+
+  ! TeX capacity exceeded, sorry [save size=5000].
+
+You than need to edit the file that defines the buffer sizes
+(texmf.cfg on teTeX, 20sizes.cnf on TeX Live) increasing the value of
+the corresponding buffer.  Continuing our example, we can double
+save_size by editing texmf.cfg so that the relevant line becomes
+
+  save_size = 10000        % for saving values outside current group
+
+Any change to such configuration files should be followed by running
+the command
+
+  texconfig init
+
+for the change to become effective.
 
 --------
 

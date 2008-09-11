@@ -73,8 +73,8 @@ test04() {
   gr_gs_needs_min.add_grid_generator(grid_point(3*A + 2*B));
 
   Grid gr_cgs_needs_min(2);
-  gr_cgs_needs_min.add_congruence(A == 3);
-  gr_cgs_needs_min.add_congruence(B == 2);
+  gr_cgs_needs_min.add_congruence((A == 3) / 0);
+  gr_cgs_needs_min.add_congruence((B == 2) / 0);
 
   // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
   // same grids.
@@ -107,8 +107,8 @@ test05() {
   gr_gs_needs_min.add_grid_generator(grid_line(C));
 
   Grid gr_cgs_needs_min(3);
-  gr_cgs_needs_min.add_congruence(A == 3);
-  gr_cgs_needs_min.add_congruence(B == 2);
+  gr_cgs_needs_min.add_congruence((A == 3) / 0);
+  gr_cgs_needs_min.add_congruence((B == 2) / 0);
 
   // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
   // same grids.
@@ -141,9 +141,9 @@ test06() {
   gr_gs_needs_min.add_grid_generator(grid_point(3*A + B));
 
   Grid gr_cgs_needs_min(3);
-  gr_cgs_needs_min.add_congruence(A == 3);
+  gr_cgs_needs_min.add_congruence((A == 3) / 0);
   gr_cgs_needs_min.add_congruence(B %= 0);
-  gr_cgs_needs_min.add_congruence(C == 0);
+  gr_cgs_needs_min.add_congruence((C == 0) / 0);
 
   // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
   // same grids.
@@ -178,7 +178,7 @@ test07() {
   gr_gs_needs_min.add_grid_generator(grid_line(C));
 
   Grid gr_cgs_needs_min(3);
-  gr_cgs_needs_min.add_congruence(A == 3);
+  gr_cgs_needs_min.add_congruence((A == 3) / 0);
   gr_cgs_needs_min.add_congruence(B %= 0);
 
   // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
@@ -288,8 +288,8 @@ test10() {
   gr_gs_needs_min.add_grid_generator(grid_line(C));
 
   Grid gr_cgs_needs_min(4);
-  gr_cgs_needs_min.add_congruence(A == 0);
-  gr_cgs_needs_min.add_congruence(D == 0);
+  gr_cgs_needs_min.add_congruence((A == 0) / 0);
+  gr_cgs_needs_min.add_congruence((D == 0) / 0);
 
   // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
   // same grids.

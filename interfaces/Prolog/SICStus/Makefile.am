@@ -44,13 +44,11 @@ endif BUILD_WATCHDOG_LIBRARY
 AM_CPPFLAGS = \
 -I$(top_srcdir)/interfaces \
 -I$(top_srcdir)/interfaces/Prolog \
+-I$(top_buildir)/interfaces/Prolog \
 -I$(top_builddir)/src \
 $(WATCHDOG_INCLUDE_OPTIONS) \
 $(SICSTUS_PROLOG_INCLUDE_OPTIONS) \
 @extra_includes@
-
-BUILT_SOURCES = \
-ppl_sicstus_sd.cc
 
 interface_generator_dependencies = \
 $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
@@ -62,7 +60,7 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../ppl_interface_generator_prolog_systems.m4 \
 ppl_interface_generator_sicstus_sd_cc.m4
 
-ppl_sicstus_sd.cc: $(interface_generator_dependencies) Makefile
+ppl_sicstus_sd.cc: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_sicstus_sd_cc.m4 > $@
 
@@ -74,13 +72,15 @@ if ENABLE_SHARED
 
 pkglib_DATA = ppl_sicstus.pl ppl_sicstus.s.o
 
-ppl_sicstus.so: ppl_sicstus.pl $(top_builddir)/src/libppl.la $(WATCHDOG_LIBRARY) .libs/ppl_sicstus_sd.o
+ppl_sicstus.so: ppl_sicstus.pl $(top_builddir)/src/libppl.la $(WATCHDOG_LIBRARY) libppl_sicstus.la
 	$(LIBTOOL) --mode=link --tag=CXX \
-	splfr --cflag="$(AM_CPPFLAGS)" \
-		$(srcdir)/ppl_sicstus.pl .libs/ppl_sicstus_sd.o -o $@ \
-		$(top_builddir)/src/libppl.la \
-		$(WATCHDOG_LIBRARY) \
-		@extra_libraries@
+		splfr --cflag="$(AM_CPPFLAGS)" -o $@ \
+			$(srcdir)/ppl_sicstus.pl \
+			libppl_sicstus.la \
+			$(WATCHDOG_LIBRARY) \
+			@extra_libraries@
+
+#			@required_instantiations_prolog_cxx_objects@
 
 install-data-local: ppl_sicstus.so
 	$(LIBTOOL) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) \
@@ -92,30 +92,73 @@ pkglib_DATA = ppl_sicstus.pl
 
 endif !ENABLE_SHARED
 
-noinst_LTLIBRARIES = ppl_sicstus_sd.la
-nodist_ppl_sicstus_sd_la_SOURCES = ppl_sicstus_sd.cc
-ppl_sicstus_sd_la_LDFLAGS = -module -avoid-version
+noinst_LTLIBRARIES = libppl_sicstus.la
+
+libppl_sicstus_la_SOURCES = \
+ppl_prolog_sysdep.hh \
+sicstus_efli.hh \
+sicstus_efli.cc
+
+nodist_libppl_sicstus_la_SOURCES = \
+ppl_sicstus_sd.cc \
+../ppl_prolog_common.cc
+
+nodist_EXTRA_libppl_sicstus_la_SOURCES = \
+../ppl_prolog_BD_Shape_double.cc \
+../ppl_prolog_BD_Shape_mpq_class.cc \
+../ppl_prolog_BD_Shape_mpz_class.cc \
+../ppl_prolog_Constraints_Product_C_Polyhedron_Grid.cc \
+../ppl_prolog_Double_Box.cc \
+../ppl_prolog_Grid.cc \
+../ppl_prolog_Octagonal_Shape_double.cc \
+../ppl_prolog_Octagonal_Shape_mpq_class.cc \
+../ppl_prolog_Octagonal_Shape_mpz_class.cc \
+../ppl_prolog_Pointset_Powerset_C_Polyhedron.cc \
+../ppl_prolog_Pointset_Powerset_NNC_Polyhedron.cc \
+../ppl_prolog_Polyhedron.cc \
+../ppl_prolog_Rational_Box.cc
+
+libppl_sicstus_la_LIBADD = \
+@required_instantiations_prolog_cxx_objects@ \
+$(top_builddir)/src/libppl.la \
+$(WATCHDOG_LIBRARY) \
+@extra_libraries@
+
+libppl_sicstus_la_DEPENDENCIES = \
+@required_instantiations_prolog_cxx_objects@
+
+libppl_sicstus_la_LDFLAGS = \
+-module \
+-avoid-version
 
 ppl_sicstus$(EXEEXT): ppl_sicstus.s.o $(top_builddir)/src/libppl.la $(WATCHDOG_LIBRARY)
 	$(LIBTOOL) --mode=link --tag=CXX \
-	spld --main=prolog \
-		--cflag=`echo '$(AM_CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)' | tr " " ","` \
-		--resources=ppl_sicstus.s.o -o $@ \
-		$(top_builddir)/src/libppl.la \
-		$(WATCHDOG_LIBRARY) \
-		@extra_libraries@
+		spld --main=prolog \
+			--cflag=`echo '$(AM_CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)' | tr " " ","` \
+			--resources=ppl_sicstus.s.o -o $@ \
+			$(top_builddir)/src/libppl.la \
+			$(WATCHDOG_LIBRARY) \
+			@extra_libraries@
 
 if ENABLE_STATIC
 
-ppl_sicstus.s.o: ppl_sicstus.pl ppl_sicstus_sd.o
-	splfr --cflag="$(AM_CPPFLAGS)" \
-		--static $(srcdir)/ppl_sicstus.pl ppl_sicstus_sd.o
+ppl_sicstus.s.o: ppl_sicstus.pl libppl_sicstus.la
+	splfr --static --cflag="$(AM_CPPFLAGS)" -o $@ \
+		$(srcdir)/ppl_sicstus.pl \
+		ppl_sicstus_sd.o \
+		sicstus_efli.o \
+		ppl_prolog_common.o \
+		`echo @required_instantiations_prolog_cxx_objects@ | $(SED) -e "s/\.lo/.o/g"`
 
 else !ENABLE_STATIC
 
-ppl_sicstus.s.o: ppl_sicstus.pl .libs/ppl_sicstus_sd.o
-	splfr --cflag="$(AM_CPPFLAGS)" \
-		--static $(srcdir)/ppl_sicstus.pl .libs/ppl_sicstus_sd.o
+ppl_sicstus.s.o: ppl_sicstus.pl libppl_sicstus.la
+	splfr --cflag="$(AM_CPPFLAGS)" -o $@ \
+		$(srcdir)/ppl_sicstus.pl \
+		.libs/ppl_sicstus_sd.o \
+		.libs/sicstus_efli.o \
+		.libs/ppl_prolog_common.o \
+		`echo @required_instantiations_prolog_cxx_objects@ | $(SED) -e "s/\([^. ]*\)\.lo/.libs\/\1.o/g"`
 
 endif !ENABLE_STATIC
 

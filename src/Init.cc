@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Init.defs.hh"
 #include "Variable.defs.hh"
 #include "fpu.defs.hh"
+#include "Rounding_Dir.defs.hh"
 #include "checked.defs.hh"
 #include "Coefficient.defs.hh"
 #include "Linear_Expression.defs.hh"
@@ -81,6 +82,7 @@ PPL::Init::Init() {
     Polyhedron::initialize();
 #if PPL_CAN_CONTROL_FPU
     // ... and the FPU rounding direction is set.
+    fpu_initialize_control_functions();
     old_rounding_direction = fpu_get_rounding_direction();
     fpu_set_rounding_direction(round_fpu_dir(ROUND_DIRECT));
 #endif

@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "iterator_to_const.types.hh"
 #include "Powerset.types.hh"
-#include "Ask_Tell.types.hh"
+//#include "Ask_Tell.types.hh"
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! An iterator on a sequence of read-only objects.
@@ -63,7 +63,7 @@ private:
 
   friend class const_iterator_to_const<Container>;
   template <typename T> friend class Powerset;
-  template <typename T> friend class Ask_Tell;
+  //template <typename T> friend class Ask_Tell;
 
 public:
   // Same traits of the const_iterator, therefore
@@ -136,7 +136,7 @@ private:
 
   friend class iterator_to_const<Container>;
   template <typename T> friend class Powerset;
-  template <typename T> friend class Ask_Tell;
+  //template <typename T> friend class Ask_Tell;
 
 public:
   // Same traits of the underlying const_iterator.

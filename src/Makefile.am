@@ -179,6 +179,7 @@ checked_mpq.inlines.hh \
 checked_ext.inlines.hh \
 Checked_Number.defs.hh \
 Checked_Number.inlines.hh \
+Checked_Number.templates.hh \
 checked_numeric_limits.hh \
 $(COEFFICIENT_DEFS_INCLUDE_FILES) \
 Coefficient.defs.hh \
@@ -209,6 +210,7 @@ Variable.inlines.hh \
 Variables_Set.defs.hh \
 Variables_Set.inlines.hh \
 Init.defs.hh \
+Init.inlines.hh \
 initializer.hh \
 Topology.hh \
 Row.defs.hh \
@@ -301,14 +303,6 @@ Pointset_Powerset.types.hh \
 Pointset_Powerset.defs.hh \
 Pointset_Powerset.inlines.hh \
 Pointset_Powerset.templates.hh \
-Ask_Tell.types.hh \
-Ask_Tell.defs.hh \
-Ask_Tell.inlines.hh \
-Ask_Tell.templates.hh \
-Pointset_Ask_Tell.types.hh \
-Pointset_Ask_Tell.defs.hh \
-Pointset_Ask_Tell.inlines.hh \
-Pointset_Ask_Tell.templates.hh \
 Partially_Reduced_Product.types.hh \
 Partially_Reduced_Product.defs.hh \
 Partially_Reduced_Product.inlines.hh \
@@ -318,6 +312,14 @@ Any_Pointset.defs.hh \
 Any_Pointset.inlines.hh \
 max_space_dimension.hh \
 algorithms.hh
+#Ask_Tell.types.hh \
+#Ask_Tell.defs.hh \
+#Ask_Tell.inlines.hh \
+#Ask_Tell.templates.hh \
+#Pointset_Ask_Tell.types.hh \
+#Pointset_Ask_Tell.defs.hh \
+#Pointset_Ask_Tell.inlines.hh \
+#Pointset_Ask_Tell.templates.hh
 
 NESTED_INCLUDE_FILES = \
 Ph_Status.idefs.hh \
@@ -331,6 +333,7 @@ Box.cc \
 checked.cc \
 Checked_Number.cc \
 Float.cc \
+fpu-ia32.cc \
 Constraint.cc \
 Constraint_System.cc \
 Congruence.cc \
@@ -364,7 +367,6 @@ Grid_widenings.cc \
 BD_Shape.cc \
 Octagonal_Shape.cc \
 Pointset_Powerset.cc \
-Pointset_Ask_Tell.cc \
 Row.cc \
 Linear_Row.cc \
 Bit_Matrix.cc \
@@ -384,6 +386,7 @@ version.cc \
 $(INCLUDE_FILES) \
 $(NESTED_INCLUDE_FILES) \
 swapping_sort.icc
+#Pointset_Ask_Tell.cc
 
 if NO_UNDEFINED
 
@@ -392,6 +395,7 @@ NO_UNDEFINED_FLAG = -no-undefined
 endif NO_UNDEFINED
 
 libppl_la_LIBADD = @extra_libraries@
+
 libppl_la_LDFLAGS = \
 $(NO_UNDEFINED_FLAG) \
 -version-info $(LIBPPL_LT_CURRENT):$(LIBPPL_LT_REVISION):$(LIBPPL_LT_AGE)

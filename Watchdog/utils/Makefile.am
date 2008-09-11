@@ -35,10 +35,10 @@ dist-hook: $(noinst_SCRIPTS)
 generated_automatically = Generated automatically: \
 do not modify; modify the .in file instead.
 
-do_subst = sed -e 's,[@]PERL[@],$(PERL),g' \
+do_subst = $(SED) -e 's,[@]PERL[@],$(PERL),g' \
 	-e 's,[@]generated_automatically[@],$(generated_automatically),g'
 
-build_header: build_header.in Makefile
+build_header: build_header.in
 	$(do_subst) < $(srcdir)/build_header.in > build_header
 	chmod +x build_header
 

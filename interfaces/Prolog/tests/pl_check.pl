@@ -141,7 +141,8 @@ run_one(all_versions_and_banner) :-
 % are printed.
 run_one(numeric_bounds) :-
   max_dimension,
-  coefficient_bounds.
+  coefficient_bounds,
+  set_restore_rounding.
 
 run_one(new_polyhedron_from_dimension) :-
   new_polyhedron_from_dim.
@@ -159,7 +160,10 @@ run_one(swap_polyhedra) :-
 
 run_one(polyhedron_dimension) :-
    space,
-   affine_dim.
+   affine_dim,
+   constrains,
+   unconstrain_space_dimension,
+   unconstrain_space_dimensions.
 
 run_one(basic_operators) :-
    inters_assign,
@@ -310,6 +314,10 @@ cpp_unbounded_check :-
 cpp_bounded_values(Max, Min) :-
   ppl_Coefficient_max(Max),
   ppl_Coefficient_min(Min).
+
+set_restore_rounding :-
+  ppl_set_rounding_for_PPL,
+  ppl_restore_pre_PPL_rounding.
 
 %%%%%%%%%%%%%%%%% New Polyhedron %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -560,6 +568,52 @@ affine_dim(T) :-
   ppl_delete_Polyhedron(P2),
   ppl_delete_Polyhedron(P3),
   ppl_delete_Polyhedron(P4).
+
+% Tests ppl_Polyhedron_constrains/2.
+constrains :-
+  constrains(c), constrains(nnc).
+
+constrains(T) :-
+  make_vars(3, [A, B, C]),
+  clean_ppl_new_Polyhedron_from_space_dimension(T, 3, universe, P),
+  ppl_Polyhedron_add_constraints(P, [B >= 0, B - C >= 2]),
+  ppl_Polyhedron_constrains(P, B),
+  \+ppl_Polyhedron_constrains(P, A),
+  ppl_Polyhedron_OK(P),
+  !,
+  ppl_delete_Polyhedron(P).
+
+% Tests ppl_Polyhedron_unconstrain_space_dimension/2.
+unconstrain_space_dimension :-
+  unconstrain_space_dimension(c), unconstrain_space_dimension(nnc).
+
+unconstrain_space_dimension(T) :-
+  make_vars(3, [_A, B, C]),
+  clean_ppl_new_Polyhedron_from_space_dimension(T, 3, universe, P),
+  ppl_Polyhedron_add_constraints(P, [B >= 0, B - C >= 2]),
+  ppl_Polyhedron_unconstrain_space_dimension(P, B),
+  \+ppl_Polyhedron_constrains(P, B),
+  ppl_Polyhedron_OK(P),
+  !,
+  ppl_delete_Polyhedron(P).
+
+% Tests ppl_Polyhedron_unconstrain_space_dimensions/2.
+unconstrain_space_dimensions :-
+  unconstrain_space_dimensions(c), unconstrain_space_dimensions(nnc).
+
+unconstrain_space_dimensions(T) :-
+  make_vars(3, [_A, B, C]),
+  clean_ppl_new_Polyhedron_from_space_dimension(T, 3, universe, P),
+  ppl_Polyhedron_add_constraints(P, [B >= 0, B - C >= 2]),
+  ppl_Polyhedron_unconstrain_space_dimensions(P, []),
+  ppl_Polyhedron_constrains(P, B),
+  ppl_Polyhedron_unconstrain_space_dimensions(P, [B]),
+  \+ppl_Polyhedron_constrains(P, B),
+  ppl_Polyhedron_unconstrain_space_dimensions(P, [B]),
+  \+ppl_Polyhedron_constrains(P, B),
+  ppl_Polyhedron_OK(P),
+  !,
+  ppl_delete_Polyhedron(P).
 
 %%%%%%%%%%%%%%%% Basic Operators %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -3173,7 +3227,9 @@ group_predicates(numeric_bounds,
   [ppl_max_space_dimension/1,
    ppl_Coefficient_is_bounded/0,
    ppl_Coefficient_max/1,
-   ppl_Coefficient_min/1
+   ppl_Coefficient_min/1,
+   ppl_set_rounding_for_PPL/0,
+   ppl_restore_pre_PPL_rounding/0
   ]).
 
 group_predicates(new_polyhedron_from_dimension,
@@ -3209,7 +3265,10 @@ group_predicates(swap_polyhedra,
 
 group_predicates(polyhedron_dimension,
   [ppl_Polyhedron_affine_dimension/2,
-   ppl_Polyhedron_space_dimension/2]).
+   ppl_Polyhedron_space_dimension/2,
+   ppl_Polyhedron_constrains/2,
+   ppl_Polyhedron_unconstrain_space_dimension/2,
+   ppl_Polyhedron_unconstrain_space_dimensions/2]).
 
 group_predicates(basic_operators,
   [ppl_Polyhedron_intersection_assign/2,

@@ -24,6 +24,30 @@ open Ppl_ocaml_types
 open Gmp
 type mip_problem
 
+external ppl_version_major:
+unit -> int = "ppl_version_major"
+
+external ppl_version_minor:
+unit -> int = "ppl_version_minor"
+
+external ppl_version_revision:
+unit -> int = "ppl_version_revision"
+
+external ppl_version_beta:
+unit -> int = "ppl_version_beta"
+
+external ppl_version:
+unit -> string = "ppl_version"
+
+external ppl_banner:
+unit -> string = "ppl_banner"
+
+external ppl_set_rounding_for_PPL:
+unit -> unit = "ppl_set_rounding_for_PPL"
+
+external ppl_restore_pre_PPL_rounding:
+unit -> unit = "ppl_restore_pre_PPL_rounding"
+
 external ppl_new_MIP_Problem_from_space_dimension:
   int -> mip_problem = "ppl_new_MIP_Problem_from_space_dimension"
 
@@ -105,18 +129,3 @@ external ppl_MIP_Problem_set_optimization_mode:
 external ppl_MIP_Problem_swap:
   mip_problem -> mip_problem -> unit
       = "ppl_MIP_Problem_swap"
-
-external test_linear_expression:
-  linear_expression -> unit = "test_linear_expression"
-
-external test_linear_constraint:
-  linear_constraint -> unit = "test_linear_constraint"
-
-external test_linear_generator:
-  linear_generator -> unit = "test_linear_generator"
-
-external test_constraint_system:
-  constraint_system -> unit = "test_constraint_system"
-
-external test_generator_system:
-  generator_system -> unit = "test_generator_system"

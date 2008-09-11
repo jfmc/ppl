@@ -258,7 +258,7 @@ Grid::get_covering_box(Box<Interval>& box) const {
     return;
   }
 
-  assert(!gen_sys.empty());
+  assert(!gen_sys.has_no_rows());
 
   dimension_type num_dims = gen_sys.num_columns() - 2 /* parameter divisor */;
   dimension_type num_rows = gen_sys.num_rows();
@@ -467,7 +467,7 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
 
   const Grid_Generator_System& old_gensys = grid_generators();
 
-  if (old_gensys.empty()) {
+  if (old_gensys.has_no_rows()) {
     // The grid is empty.
     Grid new_grid(new_space_dimension, EMPTY);
     std::swap(*this, new_grid);
@@ -528,6 +528,83 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
 
   assert(OK(true));
 }
+
+#ifdef STRONG_REDUCTION
+template <typename M, typename R>
+void
+Grid::reduce_reduced(M& sys,
+		     const dimension_type dim,
+		     const dimension_type pivot_index,
+		     const dimension_type start,
+		     const dimension_type end,
+		     const Dimension_Kinds& dim_kinds,
+		     const bool generators) {
+  R& pivot = sys[pivot_index];
+
+  const Coefficient& pivot_dim = pivot[dim];
+
+  if (pivot_dim == 0)
+    return;
+
+  TEMP_INTEGER(pivot_dim_half);
+  pivot_dim_half = (pivot_dim + 1) / 2;
+  Dimension_Kind row_kind = dim_kinds[dim];
+  Dimension_Kind line_or_equality, virtual_kind;
+  int jump;
+  if (generators) {
+    line_or_equality = LINE;
+    virtual_kind = GEN_VIRTUAL;
+    jump = -1;
+  }
+  else {
+    line_or_equality = EQUALITY;
+    virtual_kind = CON_VIRTUAL;
+    jump = 1;
+  }
+
+  TEMP_INTEGER(num_rows_to_subtract);
+  TEMP_INTEGER(row_dim_remainder);
+  for (dimension_type row_index = pivot_index, kinds_index = dim + jump;
+       row_index-- > 0;
+       kinds_index += jump) {
+    // Move over any virtual rows.
+    while (dim_kinds[kinds_index] == virtual_kind)
+      kinds_index += jump;
+
+    // row_kind CONGRUENCE is included as PARAMETER
+    if (row_kind == line_or_equality
+	|| (row_kind == PARAMETER
+	    && dim_kinds[kinds_index] == PARAMETER)) {
+      R& row = sys[row_index];
+
+      const Coefficient& row_dim = row[dim];
+      // num_rows_to_subtract may be positive or negative.
+      num_rows_to_subtract = row_dim / pivot_dim;
+
+      // Ensure that after subtracting num_rows_to_subtract * r_dim
+      // from row_dim, -pivot_dim_half < row_dim <= pivot_dim_half.
+      // E.g., if pivot[dim] = 9, then after strong reduction
+      // -5 < row_dim <= 5.
+      row_dim_remainder = row_dim % pivot_dim;
+      if (row_dim_remainder < 0) {
+	if (row_dim_remainder <= -pivot_dim_half)
+	  --num_rows_to_subtract;
+      }
+      else if (row_dim_remainder > 0 && row_dim_remainder > pivot_dim_half)
+	++num_rows_to_subtract;
+
+      // Subtract num_rows_to_subtract copies of pivot from row i.  Only the
+      // entries from dim need to be subtracted, as the preceding
+      // entries are all zero.
+      // If num_rows_to_subtract is negative, these copies of pivot are
+      // added to row i.
+      if (num_rows_to_subtract != 0)
+	for (dimension_type col = start; col <= end; ++col)
+	  sub_mul_assign(row[col], num_rows_to_subtract, pivot[col]);
+    }
+  }
+}
+#endif // STRONG_REDUCTION
 
 } // namespace Parma_Polyhedra_Library
 

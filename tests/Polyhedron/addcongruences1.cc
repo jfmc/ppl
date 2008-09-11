@@ -35,7 +35,7 @@ test01() {
   gs.insert(ray(x + y));
 
   Congruence_System cgs;
-  cgs.insert(x %= 3);
+  cgs.insert(0*x %= 0);
   cgs.insert(y == 3);
 
   C_Polyhedron ph(gs);
@@ -64,7 +64,7 @@ test02() {
   C_Polyhedron ph1(2, EMPTY);
 
   Congruence_System cgs;
-  cgs.insert(A - B %= 0);
+  cgs.insert(Linear_Expression(0) %= 0);
   cgs.insert(B == 7);
 
   print_constraints(ph1, "*** ph1 ***");
@@ -90,14 +90,14 @@ test03() {
   ph.add_constraint(A >= 0);
   ph.add_constraint(B >= 0);
 
-  Constraint_System cs;
+  Congruence_System cgs;
 
   print_constraints(ph, "*** ph ***");
-  print_constraints(cs, "*** cs ***");
+  print_congruences(cgs, "*** cgs ***");
 
   C_Polyhedron known_result(ph);
 
-  ph.add_constraints(cs);
+  ph.add_congruences(cgs);
 
   bool ok = (ph == known_result);
 
@@ -162,7 +162,7 @@ test06() {
   C_Polyhedron ph1(2);
 
   Congruence_System cgs;
-  cgs.insert(A - B %= 0);
+  cgs.insert((Linear_Expression(26) %= 0) / 13);
   cgs.insert(B == 7);
 
   print_constraints(ph1, "*** ph1 ***");
@@ -187,7 +187,7 @@ test07() {
   C_Polyhedron ph1(2);
 
   Congruence_System cgs;
-  cgs.insert(A - B %= 0);
+  cgs.insert(Linear_Expression(0) %= 0);
   cgs.insert(B == 7);
 
   Congruence_System cgs_copy = cgs;
@@ -214,7 +214,7 @@ test08() {
   C_Polyhedron ph1(2);
 
   Congruence_System cgs;
-  cgs.insert(A - B %= 0);
+  cgs.insert((Linear_Expression(18) %= 3) / 5);
   cgs.insert(A == 0);
   cgs.insert(A + B == 7);
   cgs.insert(B == 7);

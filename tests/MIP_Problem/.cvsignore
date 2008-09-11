@@ -2,5 +2,9 @@
 .libs
 Makefile
 Makefile.in
+ascii_dump_load1
+ascii_dump_load1.dat
 exceptions1
-lpproblem1
+mipproblem1
+mipproblem2
+mipproblem3

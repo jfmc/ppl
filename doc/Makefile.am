@@ -20,8 +20,6 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-abs_srcdir = @abs_srcdir@
-
 # All the documentation in docdir.
 docdir = @docdir@
 htmldir = $(docdir)
@@ -124,13 +122,13 @@ DIST_C_INTERFACE_PS_DOCS = \
 ppl-user-c-interface-@VERSION@.ps.gz
 
 USER_C_INTERFACE_STUFF = \
-user.tex \
+user-c-interface.tex \
 ppl.sty \
 ../interfaces/C/C_interface.dox \
 $(top_builddir)/interfaces/C/ppl_c.h
 
 DEVREF_C_INTERFACE_STUFF = \
-devref.tex \
+devref-c-interface.tex \
 ppl.sty \
 $(top_builddir)/interfaces/C/ppl_c.cc
 
@@ -166,57 +164,200 @@ DIST_PROLOG_INTERFACE_PS_DOCS = \
 ppl-user-prolog-interface-@VERSION@.ps.gz
 
 USER_PROLOG_INTERFACE_STUFF = \
-user.tex \
+user-prolog-interface.tex \
 ppl.sty \
-../interfaces/Prolog/Prolog_interface.dox \
-$(top_builddir)/interfaces/Prolog/ppl_prolog.icc
+$(top_builddir)/interfaces/Prolog/Prolog_interface.dox
 
 DEVREF_PROLOG_INTERFACE_STUFF = \
-devref.tex \
+devref-prolog-interface.tex \
 ppl.sty \
-../interfaces/Prolog/Prolog_interface.dox \
-../interfaces/Prolog/exceptions.hh \
-../interfaces/Prolog/track_allocation.hh \
-$(top_builddir)/interfaces/Prolog/ppl_prolog.icc
+$(top_builddir)/interfaces/Prolog/Prolog_interface.dox \
+../interfaces/Prolog/ppl_prolog_common.defs.hh \
+../interfaces/Prolog/ppl_prolog_common.inlines.hh \
+../interfaces/Prolog/ppl_prolog_common.cc  \
+$(top_builddir)/interfaces/Prolog/ppl_prolog_domains.hh \
+$(top_builddir)/interfaces/Prolog/ppl_prolog_domains.cc
 
 endif BUILD_SOME_PROLOG_INTERFACES
+
+
+# OCaml Language Interface Manuals
+if BUILD_OCAML_INTERFACE
+
+HTML_OCAML_INTERFACE_MANUALS = \
+ppl-user-ocaml-interface-@VERSION@-html.tar.gz \
+ppl-devref-ocaml-interface-@VERSION@-html.tar.gz
+
+PDF_OCAML_INTERFACE_MANUALS = \
+ppl-user-ocaml-interface-@VERSION@.pdf \
+ppl-devref-ocaml-interface-@VERSION@.pdf
+
+PS_OCAML_INTERFACE_MANUALS = \
+ppl-user-ocaml-interface-@VERSION@.ps.gz \
+ppl-devref-ocaml-interface-@VERSION@.ps.gz
+
+OCAML_INTERFACE_HTML_DIRS = \
+ppl-user-ocaml-interface-@VERSION@-html \
+ppl-devref-ocaml-interface-@VERSION@-html
+
+DIST_OCAML_INTERFACE_HTML_DOCS = \
+ppl-user-ocaml-interface-@VERSION@-html.tar.gz
+
+DIST_OCAML_INTERFACE_PDF_DOCS = \
+ppl-user-ocaml-interface-@VERSION@.pdf
+
+DIST_OCAML_INTERFACE_PS_DOCS = \
+ppl-user-ocaml-interface-@VERSION@.ps.gz
+
+USER_OCAML_INTERFACE_STUFF = \
+user-ocaml-interface.tex \
+ppl.sty \
+../interfaces/OCaml/OCaml_interface.dox \
+$(top_builddir)/interfaces/OCaml/ppl_ocaml.mli
+
+DEVREF_OCAML_INTERFACE_STUFF = \
+devref-ocaml-interface.tex \
+ppl.sty \
+../interfaces/OCaml/OCaml_interface.dox \
+$(top_builddir)/interfaces/OCaml/ppl_ocaml.cc
+
+endif BUILD_OCAML_INTERFACE
+
+
+# Java Language Interface Manuals
+if BUILD_JAVA_INTERFACE
+
+HTML_JAVA_INTERFACE_MANUALS = \
+ppl-user-java-interface-@VERSION@-html.tar.gz \
+ppl-devref-java-interface-@VERSION@-html.tar.gz
+
+PDF_JAVA_INTERFACE_MANUALS = \
+ppl-user-java-interface-@VERSION@.pdf \
+ppl-devref-java-interface-@VERSION@.pdf
+
+PS_JAVA_INTERFACE_MANUALS = \
+ppl-user-java-interface-@VERSION@.ps.gz \
+ppl-devref-java-interface-@VERSION@.ps.gz
+
+JAVA_INTERFACE_HTML_DIRS = \
+ppl-user-java-interface-@VERSION@-html \
+ppl-devref-java-interface-@VERSION@-html
+
+DIST_JAVA_INTERFACE_HTML_DOCS = \
+ppl-user-java-interface-@VERSION@-html.tar.gz
+
+DIST_JAVA_INTERFACE_PDF_DOCS = \
+ppl-user-java-interface-@VERSION@.pdf
+
+DIST_JAVA_INTERFACE_PS_DOCS = \
+ppl-user-java-interface-@VERSION@.ps.gz
+
+JAVA_INTERFACE_JAVA_FILES = \
+@top_builddir@/interfaces/Java/Java_interface.dox \
+../interfaces/Java/ppl_java/By_Reference.java \
+../interfaces/Java/ppl_java/Coefficient.java \
+../interfaces/Java/ppl_java/Congruence.java \
+../interfaces/Java/ppl_java/Congruence_System.java \
+../interfaces/Java/ppl_java/Constraint.java \
+../interfaces/Java/ppl_java/Constraint_System.java \
+../interfaces/Java/ppl_java/Degenerate_Element.java \
+../interfaces/Java/ppl_java/Domain_Error_Exception.java \
+../interfaces/Java/ppl_java/Generator.java \
+../interfaces/Java/ppl_java/Generator_System.java \
+../interfaces/Java/ppl_java/Generator_Type.java \
+../interfaces/Java/ppl_java/Grid_Generator.java \
+../interfaces/Java/ppl_java/Grid_Generator_System.java \
+../interfaces/Java/ppl_java/Grid_Generator_Type.java \
+../interfaces/Java/ppl_java/Invalid_Argument_Exception.java \
+../interfaces/Java/ppl_java/Length_Error_Exception.java \
+../interfaces/Java/ppl_java/Linear_Expression_Coefficient.java \
+../interfaces/Java/ppl_java/Linear_Expression_Difference.java \
+../interfaces/Java/ppl_java/Linear_Expression.java \
+../interfaces/Java/ppl_java/Linear_Expression_Sum.java \
+../interfaces/Java/ppl_java/Linear_Expression_Times.java \
+../interfaces/Java/ppl_java/Linear_Expression_Unary_Minus.java \
+../interfaces/Java/ppl_java/Linear_Expression_Variable.java \
+../interfaces/Java/ppl_java/Logic_Error_Exception.java \
+../interfaces/Java/ppl_java/MIP_Problem.java \
+../interfaces/Java/ppl_java/MIP_Problem_Status.java \
+../interfaces/Java/ppl_java/Optimization_Mode.java \
+../interfaces/Java/ppl_java/Overflow_Error_Exception.java \
+../interfaces/Java/ppl_java/Parma_Polyhedra_Library.java \
+../interfaces/Java/ppl_java/Partial_Function.java \
+../interfaces/Java/ppl_java/Poly_Con_Relation.java \
+../interfaces/Java/ppl_java/Poly_Gen_Relation.java \
+../interfaces/Java/ppl_java/PPL_Object.java \
+../interfaces/Java/ppl_java/Relation_Symbol.java \
+../interfaces/Java/ppl_java/Variable.java \
+../interfaces/Java/ppl_java/Variables_Set.java
+# FIXME add the automatically-generated files.
+
+USER_JAVA_INTERFACE_STUFF = \
+user-java-interface.tex \
+ppl.sty \
+$(JAVA_INTERFACE_JAVA_FILES)
+
+DEVREF_JAVA_INTERFACE_STUFF = \
+devref-java-interface.tex \
+ppl.sty \
+$(JAVA_INTERFACE_JAVA_FILES) \
+../interfaces/Java/jni/ppl_java_common.cc \
+../interfaces/Java/jni/ppl_java_common.hh \
+../interfaces/Java/jni/ppl_java_globals.cc
+# FIXME add the automatically-generated files.
+
+endif BUILD_JAVA_INTERFACE
 
 
 MANUALS = \
 $(HTML_CORE_MANUALS) \
 $(HTML_C_INTERFACE_MANUALS) \
 $(HTML_PROLOG_INTERFACE_MANUALS) \
+$(HTML_OCAML_INTERFACE_MANUALS) \
+$(HTML_JAVA_INTERFACE_MANUALS) \
 $(PDF_CORE_MANUALS) \
 $(PDF_C_INTERFACE_MANUALS) \
 $(PDF_PROLOG_INTERFACE_MANUALS) \
+$(PDF_OCAML_INTERFACE_MANUALS) \
+$(PDF_JAVA_INTERFACE_MANUALS) \
 $(PS_CORE_MANUALS) \
 $(PS_C_INTERFACE_MANUALS) \
-$(PS_PROLOG_INTERFACE_MANUALS)
+$(PS_PROLOG_INTERFACE_MANUALS) \
+$(PS_OCAML_INTERFACE_MANUALS) \
+$(PS_JAVA_INTERFACE_MANUALS)
 
 HTML_DIRS = \
 $(CORE_HTML_DIRS) \
 $(C_INTERFACE_HTML_DIRS) \
-$(PROLOG_INTERFACE_HTML_DIRS)
+$(PROLOG_INTERFACE_HTML_DIRS) \
+$(OCAML_INTERFACE_HTML_DIRS) \
+$(JAVA_INTERFACE_HTML_DIRS)
 
 DIST_HTML_DOCS = \
 $(DIST_CORE_HTML_DOCS)
 # FIXME: should we distribute manuals for the "foreign" interfaces?
 #$(DIST_C_INTERFACE_HTML_DOCS) \
-#$(DIST_PROLOG_INTERFACE_HTML_DOCS)
+#$(DIST_PROLOG_INTERFACE_HTML_DOCS) \
+#$(DIST_OCAML_INTERFACE_HTML_DOCS) \
+#$(DIST_JAVA_INTERFACE_HTML_DOCS)
 
 DIST_PDF_DOCS = \
 $(PDF_LICENSES) \
 $(DIST_CORE_PDF_DOCS)
 # FIXME: should we distribute manuals for the "foreign" interfaces?
 #$(DIST_C_INTERFACE_PDF_DOCS) \
-#$(DIST_PROLOG_INTERFACE_PDF_DOCS)
+#$(DIST_PROLOG_INTERFACE_PDF_DOCS) \
+#$(DIST_OCAML_INTERFACE_PDF_DOCS) \
+#$(DIST_JAVA_INTERFACE_PDF_DOCS)
 
 DIST_PS_DOCS = \
 $(PS_LICENSES) \
 $(DIST_CORE_PS_DOCS)
 # FIXME: should we distribute manuals for the "foreign" interfaces?
 #$(DIST_C_INTERFACE_PS_DOCS) \
-#$(DIST_PROLOG_INTERFACE_PS_DOCS)
+#$(DIST_PROLOG_INTERFACE_PS_DOCS) \
+#$(DIST_OCAML_INTERFACE_PS_DOCS) \
+#$(DIST_JAVA_INTERFACE_PS_DOCS)
 
 DIST_TXT_DOCS = \
 $(TXT_LICENSES)
@@ -235,6 +376,7 @@ $(PS_LICENSES) \
 $(MANUALS)
 
 dist_man_MANS = \
+libppl.3 \
 ppl-config.1 \
 ppl_lcdd.1 \
 ppl_lpsol.1
@@ -343,7 +485,11 @@ devref.latex-dir \
 user-c-interface.latex-dir \
 devref-c-interface.latex-dir \
 user-prolog-interface.latex-dir \
-devref-prolog-interface.latex-dir
+devref-prolog-interface.latex-dir \
+user-ocaml-interface.latex-dir \
+devref-ocaml-interface.latex-dir \
+user-java-interface.latex-dir \
+devref-java-interface.latex-dir
 
 TEX_ENV = TEXINPUTS=$(abs_srcdir):$(TEXINPUTS)
 
@@ -442,6 +588,95 @@ $(DEVREF_PROLOG_INTERFACE_STUFF) $(DEVREF_HTML_DIR)
 
 endif BUILD_SOME_PROLOG_INTERFACES
 
+
+# OCaml Language Interface
+if BUILD_OCAML_INTERFACE
+
+user-ocaml-interface.latex-dir: \
+user-ocaml-interface.doxyconf-latex \
+$(USER_OCAML_INTERFACE_STUFF)
+	rm -rf $@
+	$(TEX_ENV) $(DOXYGEN) $<
+	(cd $@; ocamldoc -I +gmp \
+			-latex -noheader -notrailer -notoc -o ocamldoc.tex \
+			../../interfaces/OCaml/ppl_ocaml.mli)
+
+devref-ocaml-interface.latex-dir: \
+devref-ocaml-interface.doxyconf-latex \
+$(DEVREF_OCAML_INTERFACE_STUFF)
+	rm -rf $@
+	$(TEX_ENV) $(DOXYGEN) $<
+	(cd $@; ocamldoc -I +gmp \
+			-latex -noheader -notrailer -notoc -o ocamldoc.tex \
+			../../interfaces/OCaml/ppl_ocaml.mli)
+
+ppl-user-ocaml-interface-@VERSION@.pdf: user-ocaml-interface.latex-dir
+	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
+
+ppl-devref-ocaml-interface-@VERSION@.pdf: devref-ocaml-interface.latex-dir
+	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
+
+ppl-user-ocaml-interface-@VERSION@-html: \
+user-ocaml-interface.doxyconf-html \
+$(USER_OCAML_INTERFACE_STUFF) $(USER_HTML_DIR)
+	rm -rf $@
+	$(TEX_ENV) $(DOXYGEN) $<
+	mkdir $@/ocamldoc
+	ocamldoc -I +gmp \
+		-html -d $@/ocamldoc ../interfaces/OCaml/ppl_ocaml.mli
+	(cd $@; $(INSTALLDOX) -l $(USER_HTML_DIR).tag@../$(USER_HTML_DIR))
+
+ppl-devref-ocaml-interface-@VERSION@-html: \
+devref-ocaml-interface.doxyconf-html \
+$(DEVREF_OCAML_INTERFACE_STUFF) $(DEVREF_HTML_DIR)
+	rm -rf $@
+	$(TEX_ENV) $(DOXYGEN) $<
+	mkdir $@/ocamldoc
+	ocamldoc -I +gmp \
+		-html -d $@/ocamldoc ../interfaces/OCaml/ppl_ocaml.mli
+	(cd $@; $(INSTALLDOX) -l $(DEVREF_HTML_DIR).tag@../$(DEVREF_HTML_DIR))
+
+endif BUILD_OCAML_INTERFACE
+
+
+# Java Language Interface
+if BUILD_JAVA_INTERFACE
+
+user-java-interface.latex-dir: \
+user-java-interface.doxyconf-latex \
+$(USER_JAVA_INTERFACE_STUFF)
+	rm -rf $@
+	$(TEX_ENV) $(DOXYGEN) $<
+
+devref-java-interface.latex-dir: \
+devref-java-interface.doxyconf-latex \
+$(DEVREF_JAVA_INTERFACE_STUFF)
+	rm -rf $@
+	$(TEX_ENV) $(DOXYGEN) $<
+
+ppl-user-java-interface-@VERSION@.pdf: user-java-interface.latex-dir
+	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
+
+ppl-devref-java-interface-@VERSION@.pdf: devref-java-interface.latex-dir
+	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
+
+ppl-user-java-interface-@VERSION@-html: \
+user-java-interface.doxyconf-html \
+$(USER_JAVA_INTERFACE_STUFF) $(USER_HTML_DIR)
+	rm -rf $@
+	$(TEX_ENV) $(DOXYGEN) $<
+	(cd $@; $(INSTALLDOX) -l $(USER_HTML_DIR).tag@../$(USER_HTML_DIR))
+
+ppl-devref-java-interface-@VERSION@-html: \
+devref-java-interface.doxyconf-html \
+$(DEVREF_JAVA_INTERFACE_STUFF) $(DEVREF_HTML_DIR)
+	rm -rf $@
+	$(TEX_ENV) $(DOXYGEN) $<
+	(cd $@; $(INSTALLDOX) -l $(DEVREF_HTML_DIR).tag@../$(DEVREF_HTML_DIR))
+
+endif BUILD_JAVA_INTERFACE
+
+
 %.tar: %
 	tar cf $@ $<
 
@@ -457,24 +692,36 @@ endif BUILD_SOME_PROLOG_INTERFACES
 EXTRA_DIST= \
 $(DIST_DOCS) \
 $(DOX_FILES) \
-user.doxyconf-latex \
-devref.doxyconf-latex \
-user.doxyconf-html \
-devref.doxyconf-html \
-user-c-interface.doxyconf-html \
+README.doc \
 devref-c-interface.doxyconf-html \
-user-c-interface.doxyconf-latex \
 devref-c-interface.doxyconf-latex \
-user-prolog-interface.doxyconf-html \
+devref-c-interface.tex \
+devref-java-interface.doxyconf-latex \
+devref-java-interface.tex \
+devref-ocaml-interface.doxyconf-latex \
+devref-ocaml-interface.tex \
 devref-prolog-interface.doxyconf-html \
-user-prolog-interface.doxyconf-latex \
 devref-prolog-interface.doxyconf-latex \
-user.tex \
+devref-prolog-interface.tex \
+devref.doxyconf-html \
+devref.doxyconf-latex \
 devref.tex \
-gpl.tex \
 fdl.tex \
+gpl.tex \
 ppl.sty \
-README.doc
+user-c-interface.doxyconf-html \
+user-c-interface.doxyconf-latex \
+user-c-interface.tex \
+user-java-interface.doxyconf-latex \
+user-java-interface.tex \
+user-ocaml-interface.doxyconf-latex \
+user-ocaml-interface.tex \
+user-prolog-interface.doxyconf-html \
+user-prolog-interface.doxyconf-latex \
+user-prolog-interface.tex \
+user.doxyconf-html \
+user.doxyconf-latex \
+user.tex
 
 mostlyclean-local:
 	rm -rf $(ALL_TARGETS) $(LATEX_DIRS) $(HTML_DIRS) *.aux *.log

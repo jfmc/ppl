@@ -14,9 +14,9 @@ o  The Parma Polyhedra Library is now released under the terms of the
    version 3 (or later) of the GNU General Public License.
 
 o  The new class Octagonal_Shape provides an implementation of the domain
-   of octagonal shapes (including a provably correct widening) as proposed
-   by Roberto Bagnara, Patricia Hill, Elena Mazzi and Enea Zaffanella in
-   their SAS 2005 paper.
+   of octagonal shapes (including optimized algorithms and a provably
+   correct widening and optimized algorithms) as proposed by Roberto Bagnara,
+   Patricia Hill, Elena Mazzi and Enea Zaffanella in their SAS 2005 paper.
 
 o  The class LP_Problem has been renamed MIP_Problem and now supports
    the solution of Mixed Integer (Linear) Programming problems. Also
@@ -26,6 +26,35 @@ o  The class LP_Problem has been renamed MIP_Problem and now supports
    optimization mode, while still exploiting some of the computational
    work done before these changes. See the documentation of class
    MIP_Problem for a detailed description of the public interface.
+
+o  All PPL semantic objects now provide the method
+
+     int32_t hash_code() const
+
+   returning a 32-bit hash code for *this.  If x and y are such that
+   x == y evaluates to true, so does x.hash_code() == y.hash_code().
+
+o  The method relations_with(Congruence) has been added to the Polyhedron
+   class for compatibility with the Grid class methods.
+
+o  The class Polyhedra_Powerset has been renamed Pointset_Powerset,
+   since it can be applied to non-polyhedral abstractions, such as
+   the one offered by the Grid class.
+
+o  The new methods
+
+     bool Constraint_System::empty() const
+     bool Generator_System::empty() const
+     bool Congruence_System::empty() const
+     bool Grid_Generator_System::empty() const
+
+   return true if and only if the system in question is empty (i.e.,
+   it has no constraints, generators, congruences or grid-generators,
+   respectively).
+
+o  All identifiers containing the strings `less_than_or_equal' or
+   `greater_than_or_equal', any case, have been renamed so as to contain
+   `less_or_equal' or `greater_or_equal', respectively.
 
 o  Users of the C++ interface of the library can now decide to disable
    the automatic initialization mechanism of the PPL.  To do so, the
@@ -69,23 +98,7 @@ o  unconstrain(Variable var)
 
 o  contains_integer_point() ...
 
-o  All PPL semantic objects now provide the method
-
-     int32_t hash_code() const
-
-   returning a 32-bit hash code for *this.  If x and y are such that
-   x == y evaluates to true, so does x.hash_code() == y.hash_code().
-
-o  The method relations_with(Congruence) has been added to the Polyhedron
-   class for compatibility with the Grid class methods.
-
 o  Partially_Reduced_Product ...
-
-o  Ask_Tell ...
-
-o  Pointset_Ask_Tell ...
-
-o  Box ...
 
 o  shrink_bounding_box has gone ...
 
@@ -102,31 +115,30 @@ o  As all PPL semantic objects can now be constructed from boxes,
 
    have been removed.
 
-o  The class Polyhedra_Powerset has been renamed Pointset_Powerset,
-   since it can be applied to non-polyhedral abstractions, such as
-   the one offered by the Grid class.
-
-o  The new methods
-
-     bool Constraint_System::empty() const
-     bool Generator_System::empty() const
-     bool Congruence_System::empty() const
-     bool Grid_Generator_System::empty() const
-
-  return true if and only if the system in question is empty (i.e.,
-  it has no constraints, generators, congruences or grid-generators,
-  respectively).
-
 o  The `ppl.hh' header file no longer defines macros not prefixed
    by "PPL_".
-
-o  All identifiers containing the strings `less_than_or_equal' or
-   `greater_than_or_equal', any case, have been renamed so as to contain
-   `less_or_equal' or `greater_or_equal', respectively.
 
 o  Added constructors so that objects of classes C_Polyhedron,
    NNC_Polyhedron, Grid, Box, BD_Shape and Octagonal_Shape are always
    constructible from one another.
+
+o  In the interfaces, the methods/functions/predicates named
+
+     ppl_ABSTRACTION_{constraints,generators,congruences}
+
+   and
+
+     ppl_ABSTRACTION_minimized_{constraints,generators,congruences}
+
+   have been renamed
+
+     ppl_ABSTRACTION_get_{constraints,generators,congruences}
+
+   and
+
+     ppl_ABSTRACTION_get_minimized_{constraints,generators,congruences},
+
+  respectively.
 
 o  In the interfaces, the interface procedures for
    ppl_Grid_generalized_image_lhs_rhs/5 and
@@ -1113,7 +1125,7 @@ o  New, complete C interface.  As a demo, a toy solver for pure linear
    as a demo is only a toy provided as a demo.
 
 o  Revised and completed Prolog interface:
-   - now supporting GNU Prolog, SICStus Prolog, SWI Prolog and YAP.
+   - now supporting GNU Prolog, SICStus Prolog, SWI-Prolog and YAP.
    - all predicates have been renamed to match their intended
      semantics;
    - arguments have been reordered where necessary so as to follow the

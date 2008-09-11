@@ -51,10 +51,9 @@ affinedim1 \
 affineimage1 affineimage2 \
 affinepreimage1 affinepreimage2 \
 asciidumpload1 asciidumpload2 asciidumpload3 asciidumpload4 asciidumpload5 \
-asciidumpload6 asciidumpload7 \
+asciidumpload6 \
 bhz03widening1 \
 bounded1 \
-boundingbox1 \
 bounds1 \
 boundedaffineimage1 \
 boundedaffinepreimage1 \
@@ -67,14 +66,13 @@ constraints1 \
 contains1 \
 containsintegerpoint1 \
 coveringbox1 coveringbox2 \
-directproduct1 directproduct2 directproduct3 directproduct4 \
-directproduct5 directproduct6 \
 discrete1 \
 disjoint1 \
 equals1 \
 expandspacedim1 \
 foldspacedims1 \
 frombdshape1 \
+frombox1 \
 fromgrid1 \
 fromoctagonalshape1 \
 frompolyhedron1 \
@@ -96,8 +94,6 @@ membytes1 \
 mingenerators1 \
 mincongruences1 \
 outputoperator1 outputoperator2 outputoperator3 \
-partiallyreducedproduct1 partiallyreducedproduct2 partiallyreducedproduct3 \
-partiallyreducedproduct4 \
 partition1 \
 powersetdifference1 \
 powersetgeometricallycovers1 \
@@ -148,13 +144,10 @@ asciidumpload3_SOURCES = asciidumpload3.cc
 asciidumpload4_SOURCES = asciidumpload4.cc
 asciidumpload5_SOURCES = asciidumpload5.cc
 asciidumpload6_SOURCES = asciidumpload6.cc
-asciidumpload7_SOURCES = asciidumpload7.cc
 
 bhz03widening1_SOURCES = bhz03widening1.cc
 
 bounded1_SOURCES = bounded1.cc
-
-boundingbox1_SOURCES = boundingbox1.cc
 
 bounds1_SOURCES = bounds1.cc
 
@@ -177,13 +170,6 @@ contains1_SOURCES = contains1.cc
 
 containsintegerpoint1_SOURCES = containsintegerpoint1.cc
 
-directproduct1_SOURCES = directproduct1.cc
-directproduct2_SOURCES = directproduct2.cc
-directproduct3_SOURCES = directproduct3.cc
-directproduct4_SOURCES = directproduct4.cc
-directproduct5_SOURCES = directproduct5.cc
-directproduct6_SOURCES = directproduct6.cc
-
 discrete1_SOURCES = discrete1.cc
 
 disjoint1_SOURCES = disjoint1.cc
@@ -193,6 +179,8 @@ equals1_SOURCES = equals1.cc
 expandspacedim1_SOURCES = expandspacedim1.cc
 
 frombdshape1_SOURCES = frombdshape1.cc
+
+frombox1_SOURCES = frombox1.cc
 
 fromgrid1_SOURCES = fromgrid1.cc
 
@@ -250,11 +238,6 @@ mingenerators1_SOURCES = mingenerators1.cc
 outputoperator1_SOURCES = outputoperator1.cc
 outputoperator2_SOURCES = outputoperator2.cc
 outputoperator3_SOURCES = outputoperator3.cc
-
-partiallyreducedproduct1_SOURCES = partiallyreducedproduct1.cc
-partiallyreducedproduct2_SOURCES = partiallyreducedproduct2.cc
-partiallyreducedproduct3_SOURCES = partiallyreducedproduct3.cc
-partiallyreducedproduct4_SOURCES = partiallyreducedproduct4.cc
 
 partition1_SOURCES = partition1.cc
 

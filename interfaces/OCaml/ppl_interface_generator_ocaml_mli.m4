@@ -30,9 +30,12 @@ m4_include(`ppl_interface_generator_ocaml_mli_code.m4')
 m4_include(`ppl_interface_generator_ocaml_procedure_generators.m4')
 
 m4_divert`'dnl
-(** OCaml interface code.
-m4_include(`ppl_interface_generator_copyright')
+(* OCaml interface code.
+m4_define(`bagnara', ``bagnara'\')dnl
+m4_include(`ppl_interface_generator_copyright')dnl
+m4_undefine(`bagnara')dnl
 *)
+(** OCaml interface code. *)
 m4_divert(-1)
 
 dnl m4_pre_all_classes_code
@@ -43,14 +46,15 @@ dnl can be copied from another.
 
 m4_divert`'dnl
 dnl
-(**Interfaces file to define new exceptions, new types and interfaces function to PPL*)
 
 open Gmp
 
+(** Kinds of degenerate abstract elements. *)
 type degenerate_element =
-    Universe
-  | Empty
+    Universe (** The universe element, i.e., the whole vector space. *)
+  | Empty (** The empty element, i.e., the empty set. *)
 
+(** A linear expression. *)
 type linear_expression =
     Variable of int
   | Coefficient of Z.t
@@ -60,6 +64,7 @@ type linear_expression =
   | Minus of linear_expression * linear_expression
   | Times of Z.t * linear_expression
 
+(** A linear equality or inequality. *)
 type linear_constraint =
     Less_Than of linear_expression * linear_expression
   | Less_Or_Equal of linear_expression * linear_expression
@@ -67,12 +72,14 @@ type linear_constraint =
   | Greater_Than of linear_expression * linear_expression
   | Greater_Or_Equal of linear_expression * linear_expression
 
+(** A line, ray, point or closure point. *)
 type linear_generator =
     Line of linear_expression
   | Ray of linear_expression
   | Point of linear_expression * Z.t
   | Closure_Point of linear_expression * Z.t
 
+(** A grid line, parameter or grid point. *)
 type linear_grid_generator =
     Grid_Line of linear_expression
   | Grid_Parameter of linear_expression * Z.t
@@ -111,11 +118,34 @@ type optimization_mode = Minimization | Maximization
 type mip_problem_status = Unfeasible_Mip_Problem | Unbounded_Mip_Problem
                         | Optimized_Mip_Problem
 
+val ppl_version_major:
+  unit -> int
+
+val ppl_version_minor:
+  unit -> int
+
+val ppl_version_revision:
+  unit -> int
+
+val ppl_version_beta:
+  unit -> int
+
+val ppl_version:
+  unit -> string
+
+val ppl_banner:
+  unit -> string
+
+val ppl_set_rounding_for_PPL:
+unit -> unit
+
+val ppl_restore_pre_PPL_rounding:
+unit -> unit
 
 type mip_problem
 
- val ppl_new_MIP_Problem_from_space_dimension:
- int -> mip_problem
+val ppl_new_MIP_Problem_from_space_dimension:
+int -> mip_problem
 
 val ppl_new_MIP_Problem:
       int -> constraint_system -> linear_expression
@@ -177,33 +207,6 @@ val ppl_MIP_Problem_set_optimization_mode:
 
 val ppl_MIP_Problem_swap:
   mip_problem -> mip_problem -> unit
-
-val test_linear_expression:
-  linear_expression -> unit
-
-val test_linear_constraint:
-  linear_constraint -> unit
-
-val test_linear_generator:
-  linear_generator -> unit
-
-val test_constraint_system:
-  constraint_system -> unit
-
-val test_generator_system:
-  generator_system -> unit
-
-val test_linear_constraint:
-  linear_constraint -> unit
-
-val test_linear_generator:
-  linear_generator -> unit
-
-val test_constraint_system:
-  constraint_system -> unit
-
-val test_generator_system:
-  generator_system -> unit
 
 m4_define(`m4_pre_all_classes_code', `')
 m4_pushdef(`m4_one_class_code', `dnl

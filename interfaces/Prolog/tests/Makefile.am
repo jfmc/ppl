@@ -61,8 +61,7 @@ $(required_instantiations_predicate_check_sources)
 
 if BUILD_SOME_PROLOG_INTERFACES
 
-BUILT_SOURCES = \
-ppl_predicate_check_main.pl
+check-local: ppl_predicate_check_main.pl
 
 interface_generator_dependencies = \
 $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
@@ -75,7 +74,7 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ppl_interface_generator_predicate_check_pl.m4 \
 ppl_interface_generator_predicate_check_code.m4
 
-ppl_predicate_check_main.pl: $(interface_generator_dependencies) Makefile
+ppl_predicate_check_main.pl: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I../.. \
 		-I$(srcdir) -I$(srcdir)/.. -I$(srcdir)/../.. \
 		$(srcdir)/ppl_interface_generator_predicate_check_pl.m4 \
@@ -86,8 +85,9 @@ ppl_predicate_check_main.pl: $(interface_generator_dependencies) Makefile
 
 endif BUILD_SOME_PROLOG_INTERFACES
 
+# FIXME: why both in CLEANFILES and DISTCLEANFILES?
 CLEANFILES = \
-ppl_predicate_check_*.pl
+ppl_predicate_check_main.pl
 
 DISTCLEANFILES = \
-ppl_predicate_check_*.pl
+ppl_predicate_check_main.pl

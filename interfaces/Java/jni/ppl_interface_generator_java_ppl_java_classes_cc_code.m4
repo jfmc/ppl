@@ -1,3 +1,4 @@
+
 dnl  -*- C++ -*-
 m4_divert(-1)
 
@@ -47,7 +48,7 @@ jclass j_it_class = env->FindClass("ppl_java/@TOPOLOGY@@CLASS@_Iterator");
 jmethodID j_it_ctr_id = env->GetMethodID(j_it_class, "<init>", "()V");
 jobject j_it = env->NewObject(j_it_class, j_it_ctr_id);
 @TOPOLOGY@@CPP_CLASS@::iterator* ppl_it = new @TOPOLOGY@@CPP_CLASS@::iterator(this_@LCLASS@->@BEGINEND@());
-set_ptr(env, j_it, (long long) ppl_it);
+set_ptr(env, j_it,  ppl_it);
 return j_it;
 }
 ')
@@ -86,7 +87,8 @@ JNIEXPORT jobject JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_1Iterator_get_1disj
 jclass j_class = env->FindClass("ppl_java/@CLASSTOPOLOGY@@CPP_DISJUNCT@");
 jmethodID j_ctr_id = env->GetMethodID(j_class, "<init>", "()V");
 jobject j_obj = env->NewObject(j_class, j_ctr_id);
-  set_ptr(env, j_obj, (long long) &((*@LTOPOLOGY@@LCLASS@_itr_ptr)->element()));set_is_a_reference(env, j_obj, true);
+set_ptr(env, j_obj,  &((*@LTOPOLOGY@@LCLASS@_itr_ptr)->element()));
+set_is_a_reference(env, j_obj, true);
 return j_obj;
 }
 ')
@@ -117,7 +119,6 @@ JNIEXPORT void JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_build_1cpp_1object__JL
   jint j_degenerate_element_int
     = env->CallIntMethod(j_degenerate_element, degenerate_element_ordinal_id);
 
-  jclass j_@LTOPOLOGY@@LCLASS@_class = env->GetObjectClass(j_@LTOPOLOGY@@LCLASS@);
   @TOPOLOGY@@CPP_CLASS@* c_ptr;
   switch (j_degenerate_element_int) {
   case 0:
@@ -129,8 +130,7 @@ JNIEXPORT void JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_build_1cpp_1object__JL
   default:
     throw std::runtime_error("PPL Java interface internal error");
   }
-  jfieldID pointer_field = env->GetFieldID(j_@LTOPOLOGY@@LCLASS@_class, "ptr", "J");
-  env->SetLongField(j_@LTOPOLOGY@@LCLASS@, pointer_field, (long long) c_ptr);
+ set_ptr(env, j_@LTOPOLOGY@@LCLASS@, c_ptr);
 }
 
 ')
@@ -140,14 +140,10 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_code',
 JNIEXPORT void JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_build_1cpp_1object__Lppl_1java_@1FRIEND@_2
 (JNIEnv* env, jobject  j_this_@LTOPOLOGY@@LCLASS@, jobject j_@LFRIEND@)
 {
- jclass j_@LTOPOLOGY@@LCLASS@_class = env->GetObjectClass(j_this_@LTOPOLOGY@@LCLASS@);
  jlong ptr = get_ptr(env, j_@LFRIEND@);
  @CPPX_FRIEND@* @LFRIEND@_ptr = reinterpret_cast<@CPPX_FRIEND@*>(ptr);
  @TOPOLOGY@@CPP_CLASS@* @LTOPOLOGY@_this_@LCLASS@_ptr = new @TOPOLOGY@@CPP_CLASS@(*@LFRIEND@_ptr);
-jfieldID pointer_field = env->GetFieldID(j_@LTOPOLOGY@@LCLASS@_class, "ptr", "J");
-env->SetLongField(j_this_@LTOPOLOGY@@LCLASS@, pointer_field,
-		   (long long) @LTOPOLOGY@_this_@LCLASS@_ptr);
-
+ set_ptr(env, j_this_@LTOPOLOGY@@LCLASS@, @LTOPOLOGY@_this_@LCLASS@_ptr);
 }
 
 ')
@@ -156,11 +152,10 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_code',
 `dnl
 JNIEXPORT void JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_build_1cpp_1object__Lppl_1java_@UBUILD_REPRESENT@_1System_2
 (JNIEnv* env, jobject j_@LTOPOLOGY@@LCLASS@, jobject j_iterable) {
-  jclass j_@LTOPOLOGY@@LCLASS@_class = env->GetObjectClass(j_@LTOPOLOGY@@LCLASS@);
   @UBUILD_REPRESENT@_System cs = build_ppl_@BUILD_REPRESENT@_system(env, j_iterable);
+
   @TOPOLOGY@@CPP_CLASS@* c_ptr = new @TOPOLOGY@@CPP_CLASS@(cs@RECYCLE@);
-  jfieldID pointer_field = env->GetFieldID(j_@LTOPOLOGY@@LCLASS@_class, "ptr", "J");
-  env->SetLongField(j_@LTOPOLOGY@@LCLASS@, pointer_field, (long long) c_ptr);
+  set_ptr(env, j_@LTOPOLOGY@@LCLASS@,  c_ptr);
 }
 
 ')
@@ -199,7 +194,8 @@ JNIEXPORT void JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_free
        reinterpret_cast<@TOPOLOGY@@CPP_CLASS@*>(this_ptr);
     if (!is_a_reference(env, j_@LTOPOLOGY@@LCLASS@)) {
   	delete str;
-  	set_ptr(env, j_@LTOPOLOGY@@LCLASS@, 0);
+        void* null_ptr = 0;
+  	set_ptr(env, j_@LTOPOLOGY@@LCLASS@, null_ptr);
    }
 }
 
@@ -316,15 +312,30 @@ JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_@1SIMPLIFY@
 
 ')
 
-m4_define(`ppl_@CLASS@_unconstrain_code',
+m4_define(`ppl_@CLASS@_unconstrain_space_dimension_code',
 `dnl
-JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_1unconstrain
+JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_1unconstrain_space_dimension
 (JNIEnv* env, jobject j_this_@LCLASS@, jobject j_var) {
   try {
   jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
   @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
   Variable v = build_ppl_variable(env, j_var);
   this_@LCLASS@->unconstrain(v);
+  }
+  CATCH_ALL;
+}
+
+')
+
+m4_define(`ppl_@CLASS@_unconstrain_space_dimensions_code',
+`dnl
+JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_1unconstrain_space_dimensions
+(JNIEnv* env, jobject j_this_@LCLASS@, jobject j_v_set) {
+  try {
+  jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
+  @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
+  Variables_Set v_set = build_ppl_variables_set(env, j_v_set);
+  this_@LCLASS@->unconstrain(v_set);
   }
   CATCH_ALL;
 }
@@ -596,6 +607,23 @@ JNIEXPORT jboolean JNICALL Java_ppl_1java_@1CLASS@_@1BINMINOP@
   @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
   @CPP_CLASS@* @LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(@LCLASS@_ptr);
   return this_@LCLASS@->@BINMINOP@(*@LCLASS@);
+  }
+  CATCH_ALL;
+  return false;
+}
+
+')
+
+m4_define(`ppl_@CLASS@_simplify_using_context_assign_code',
+`dnl
+JNIEXPORT jboolean JNICALL Java_ppl_1java_@1CLASS@_simplify_1using_1context_1assign
+(JNIEnv* env, jobject j_this_@LCLASS@, jobject j_@LCLASS@) {
+  try {
+  jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
+  jlong @LCLASS@_ptr = get_ptr(env, j_@LCLASS@);
+  @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
+  @CPP_CLASS@* @LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(@LCLASS@_ptr);
+  return this_@LCLASS@->simplify_using_context_assign(*@LCLASS@);
   }
   CATCH_ALL;
   return false;
@@ -926,3 +954,55 @@ JNIEXPORT jboolean JNICALL Java_ppl_1java_@1CLASS@_constrains
 
 ')
 
+m4_define(`ppl_@CLASS@_ascii_dump_code',
+`dnl
+JNIEXPORT jstring JNICALL Java_ppl_1java_@1CLASS@_ascii_1dump
+(JNIEnv* env , jobject j_this_@LCLASS@) {
+  try {
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+  jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
+  @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
+  std::ostringstream s;
+  this_@LCLASS@->ascii_dump(s);
+  return env->NewStringUTF(s.str().c_str());
+  }
+  CATCH_ALL;
+  return 0;
+}
+')
+
+m4_define(`ppl_@CLASS@_@PARTITION@_code',
+`dnl
+JNIEXPORT jobject JNICALL Java_ppl_1java_@1CLASS@_@1PARTITION@
+(JNIEnv* env, jclass pps_class, jobject j_p_@LCLASS@, jobject j_q_@LCLASS@) {
+  try {
+   // Suppress warnings concerning `ppl_class' not used.
+   pps_class = 0;
+   jlong p_ptr = get_ptr(env, j_p_@LCLASS@);
+   @CLASSTOPOLOGY@@CPP_DISJUNCT@* ph = reinterpret_cast<@CLASSTOPOLOGY@@CPP_DISJUNCT@*>(p_ptr);
+  jlong q_ptr = get_ptr(env, j_q_@LCLASS@);
+   @CLASSTOPOLOGY@@CPP_DISJUNCT@* qh = reinterpret_cast<@CLASSTOPOLOGY@@CPP_DISJUNCT@*>(q_ptr);
+   std::pair<@CLASSTOPOLOGY@@CPP_DISJUNCT@@COMMA@ Pointset_Powerset<@SUPERCLASS@> > r =
+       @PARTITION@(*ph, *qh);
+ jclass j_pair_class = env->FindClass("ppl_java/Pair");
+ jmethodID j_ctr_id_pair = env->GetMethodID(j_pair_class, "<init>", "()V");
+ jobject j_pair_obj = env->NewObject(j_pair_class, j_ctr_id_pair);
+
+ jclass j_class_r1 = env->FindClass("ppl_java/@CLASSTOPOLOGY@@CPP_DISJUNCT@");
+ jmethodID j_ctr_id_r1 = env->GetMethodID(j_class_r1, "<init>", "()V");
+ jobject j_obj_r1 = env->NewObject(j_class_r1, j_ctr_id_r1);
+ set_ptr(env, j_obj_r1,  new @CLASSTOPOLOGY@@CPP_DISJUNCT@(r.first));
+
+ jclass j_class_r2 = env->FindClass("ppl_java/@CLASS@");
+ jmethodID j_ctr_id_r2 = env->GetMethodID(j_class_r2, "<init>", "()V");
+ jobject j_obj_r2 = env->NewObject(j_class_r2, j_ctr_id_r2);
+ set_ptr(env, j_obj_r2,  new Pointset_Powerset<@SUPERCLASS@>(r.second));
+ set_pair_element(env, j_pair_obj, 0, j_obj_r1);
+ set_pair_element(env, j_pair_obj, 1, j_obj_r2);
+ return  j_pair_obj;
+  }
+  CATCH_ALL;
+  return 0;
+}
+
+')

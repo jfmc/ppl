@@ -44,7 +44,6 @@ $(top_builddir)/src/libppl.la \
 #closure1
 
 # Tests that do not succeed yet (maybe even known result is wrong).
-#ascii_dump_load1
 #interval1 interval2
 
 ORIGINAL_TESTS = \
@@ -53,6 +52,7 @@ addspacedims1 \
 affinedimension1 \
 affineimage1 \
 affinepreimage1 \
+ascii_dump_load1 \
 bgp99extrapolation1 \
 bhz03widening1 \
 bounded1 \
@@ -64,6 +64,7 @@ cc76narrowing1 \
 cc76widening \
 concatenate1 \
 congruences1 \
+constrains1 \
 constraints1 \
 contains1 \
 containsintegerpoint1 \
@@ -97,6 +98,7 @@ refinewithconstraints1 \
 refinewithcongruences1 \
 removespacedims1 \
 timeelapse1 \
+topclosed1 \
 unconstrain1 \
 universe1 \
 writebox1
@@ -157,7 +159,7 @@ affineimage1_SOURCES = affineimage1.cc
 
 affinepreimage1_SOURCES = affinepreimage1.cc
 
-#ascii_dump_load1_SOURCES = ascii_dump_load1.cc
+ascii_dump_load1_SOURCES = ascii_dump_load1.cc
 
 bgp99extrapolation1_SOURCES = bgp99extrapolation1.cc
 
@@ -181,6 +183,8 @@ cc76widening_SOURCES = cc76widening.cc
 concatenate1_SOURCES = concatenate1.cc
 
 congruences1_SOURCES = congruences1.cc
+
+constrains1_SOURCES = constrains1.cc
 
 constraints1_SOURCES = constraints1.cc
 
@@ -255,6 +259,8 @@ refinewithcongruences1_SOURCES = refinewithcongruences1.cc
 removespacedims1_SOURCES = removespacedims1.cc
 
 timeelapse1_SOURCES = timeelapse1.cc
+
+topclosed1_SOURCES = topclosed1.cc
 
 unconstrain1_SOURCES = unconstrain1.cc
 

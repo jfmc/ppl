@@ -77,10 +77,11 @@ namespace PPL = Parma_Polyhedra_Library;
   \f]
   where \f$\lambda_1, \lambda_2\f$ can be any real number.
 */
-int
+PPL::dimension_type
 PPL::Polyhedron::simplify(Linear_System& sys, Bit_Matrix& sat) {
   // This method is only applied to a well-formed system `sys'.
   assert(sys.OK(true));
+  assert(sys.num_columns() >= 1);
 
   dimension_type num_rows = sys.num_rows();
   const dimension_type num_columns = sys.num_columns();

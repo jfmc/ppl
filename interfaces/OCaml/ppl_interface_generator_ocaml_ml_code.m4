@@ -64,6 +64,14 @@ external ppl_@TOPOLOGY@@CLASS@_@HAS_PROPERTY@:
 
 ')
 
+m4_define(`ppl_@CLASS@_@SIMPLIFY@_code',
+`dnl
+external ppl_@TOPOLOGY@@CLASS@_@SIMPLIFY@:
+  @LTOPOLOGY@@LCLASS@ -> unit = "ppl_@TOPOLOGY@@CLASS@_@SIMPLIFY@"
+
+
+')
+
 m4_define(`ppl_@CLASS@_bounds_from_@ABOVEBELOW@_code',
 `dnl
 external ppl_@TOPOLOGY@@CLASS@_bounds_from_@ABOVEBELOW@:
@@ -152,6 +160,14 @@ external ppl_@TOPOLOGY@@CLASS@_@BINMINOP@:
 
 ')
 
+m4_define(`ppl_@CLASS@_simplify_using_context_assign_code',
+`dnl
+external ppl_@TOPOLOGY@@CLASS@_simplify_using_context_assign:
+  @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> bool
+  = "ppl_@TOPOLOGY@@CLASS@_simplify_using_context_assign"
+
+')
+
 m4_define(`ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@_code',
 `dnl
 external ppl_@TOPOLOGY@@CLASS@_add_space_dimensions_@EMBEDPROJECT@:
@@ -224,11 +240,19 @@ external ppl_@TOPOLOGY@@CLASS@_constrains:
 
 ')
 
-m4_define(`ppl_@CLASS@_unconstrain_code',
+m4_define(`ppl_@CLASS@_unconstrain_space_dimension_code',
 `dnl
-external ppl_@TOPOLOGY@@CLASS@_unconstrain:
+external ppl_@TOPOLOGY@@CLASS@_unconstrain_space_dimension:
   @LTOPOLOGY@@LCLASS@ -> int -> unit
-  = "ppl_@TOPOLOGY@@CLASS@_unconstrain"
+  = "ppl_@TOPOLOGY@@CLASS@_unconstrain_space_dimension"
+
+')
+
+m4_define(`ppl_@CLASS@_unconstrain_space_dimensions_code',
+`dnl
+external ppl_@TOPOLOGY@@CLASS@_unconstrain_space_dimensions:
+  @LTOPOLOGY@@LCLASS@ -> int list -> unit
+  = "ppl_@TOPOLOGY@@CLASS@_unconstrain_space_dimensions"
 
 ')
 
@@ -267,12 +291,21 @@ external ppl_@TOPOLOGY@@CLASS@_generalized_@AFFIMAGE@:
 
 ')
 
+m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruence_code',
+`dnl
+external ppl_@TOPOLOGY@@CLASS@_generalized_@AFFIMAGE@_with_congruence:
+  @LTOPOLOGY@@LCLASS@ -> int -> relation_symbol
+  -> linear_expression -> Z.t -> Z.t -> unit
+  = "ppl_@TOPOLOGY@@CLASS@_generalized_@AFFIMAGE@1_with_congruence"
+
+')
+
 m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence_code',
 `dnl
 external ppl_@TOPOLOGY@@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence:
   @LTOPOLOGY@@LCLASS@ -> linear_expression -> relation_symbol
   -> linear_expression -> Z.t -> unit
-  = "ppl_@TOPOLOGY@@CLASS@_generalized_@AFFIMAGE@1_with_congruence"
+  = "ppl_@TOPOLOGY@@CLASS@_generalized_@AFFIMAGE@1_lhs_rhs_with_congruence"
 
 ')
 
@@ -295,15 +328,7 @@ external ppl_@TOPOLOGY@@CLASS@_@WIDEN@_widening_assign_with_tokens:
 m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_code',
 `dnl
 external ppl_@TOPOLOGY@@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign:
-  @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> constraint_system -> int -> int
-  = "ppl_@TOPOLOGY@@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign"
-
-')
-
-m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_code',
-`dnl
-external ppl_@TOPOLOGY@@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign:
-  @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> constraint_system -> unit
+  @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> @CONSTRAINER@_system -> unit
   = "ppl_@TOPOLOGY@@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign"
 
 ')
@@ -311,7 +336,7 @@ external ppl_@TOPOLOGY@@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign
 m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens_code',
 `dnl
 external ppl_@TOPOLOGY@@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens:
-  @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> constraint_system -> int -> int
+  @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> @CONSTRAINER@_system -> int -> int
   = "ppl_@TOPOLOGY@@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens"
 
 ')
@@ -321,8 +346,17 @@ m4_define(`ppl_@CLASS@_@MAXMIN@_code',
 `dnl
 external ppl_@TOPOLOGY@@CLASS@_@MAXMIN@:
   @LTOPOLOGY@@LCLASS@ -> linear_expression
-  -> bool * Z.t * Z.t * bool * linear_generator
+  -> bool * Z.t * Z.t * bool
   = "ppl_@TOPOLOGY@@CLASS@_@MAXMIN@"
+
+')
+
+m4_define(`ppl_@CLASS@_@MAXMIN@_with_point_code',
+`dnl
+external ppl_@TOPOLOGY@@CLASS@_@MAXMIN@_with_point:
+  @LTOPOLOGY@@LCLASS@ -> linear_expression
+  -> bool * Z.t * Z.t * bool * linear_generator
+  = "ppl_@TOPOLOGY@@CLASS@_@MAXMIN@_with_point"
 
 ')
 
@@ -337,7 +371,7 @@ external ppl_@TOPOLOGY@@CLASS@_OK:
 m4_define(`ppl_@CLASS@_@MEMBYTES@_code',
  `
 external ppl_@TOPOLOGY@@CLASS@_@MEMBYTES@:
-  @LTOPOLOGY@@LCLASS@  -> int = "ppl_@TOPOLOGY@@CLASS@__@MEMBYTES@"
+  @LTOPOLOGY@@LCLASS@  -> int = "ppl_@TOPOLOGY@@CLASS@_@MEMBYTES@"
 
 ')
 
@@ -370,7 +404,7 @@ external ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@:
  m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens_code',
  `dnl
  external ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens:
-   @LTOPOLOGY@@LCLASS@ -> int -> int
+   @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> int -> int
    = "ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens"
 
  ')
@@ -379,7 +413,7 @@ external ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@:
  m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_code',
  `dnl
  external ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign:
-   @LTOPOLOGY@@LCLASS@ -> unit
+   @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> unit
    = "ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign"
 
  ')
@@ -402,9 +436,9 @@ external ppl_@CLASS@_@BEGINEND@_iterator:
 
 m4_define(`ppl_@CLASS@_get_disjunct_code',
  `
-external ppl_@CLASS@_iterator_get_disjunct:
+external ppl_@CLASS@_get_disjunct:
    @LCLASS@_iterator  ->  @LCLASSTOPOLOGY@@LDISJUNCT@
-   = "ppl_@CLASS@_iterator_get_disjunct"
+   = "ppl_@CLASS@_get_disjunct"
 
 
 ')
@@ -429,9 +463,9 @@ m4_define(`ppl_@CLASS@_drop_disjunct_code',
 
 m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
  `
- external ppl_@CLASS@_iterator_@INCDEC@:
+ external ppl_@CLASS@_@INCDEC@_iterator:
    @LCLASS@_iterator -> unit
-   = "ppl_@CLASS@_iterator_@INCDEC@"
+   = "ppl_@CLASS@_@INCDEC@_iterator"
 
 
 ')
@@ -478,17 +512,18 @@ external ppl_@CLASS@_iterator_equals_iterator:
 
 # ')
 
-external test_linear_expression:
-  linear_expression -> unit = "test_linear_expression"
+m4_define(`ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code',
+`dnl
+external ppl_@TOPOLOGY@@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign:
+  @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> unit
+  = "ppl_@TOPOLOGY@@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign"
 
-external test_linear_constraint:
-  linear_constraint -> unit = "test_linear_constraint"
+')
 
-external test_linear_generator:
-  linear_generator -> unit = "test_linear_generator"
+m4_define(`ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign_code',
+`dnl
+external ppl_@TOPOLOGY@@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign:
+  @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> int -> unit
+  = "ppl_@TOPOLOGY@@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign"
 
-external test_constraint_system:
-  constraint_system -> unit = "test_constraint_system"
-
-external test_generator_system:
-  generator_system -> unit = "test_generator_system"
+')

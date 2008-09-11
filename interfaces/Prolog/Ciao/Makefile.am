@@ -20,8 +20,6 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-abs_srcdir = @abs_srcdir@
-
 CIAO_CFLI_FILES = ciao_cfli.hh
 
 EXTRA_DIST = \
@@ -74,11 +72,11 @@ libppl_ciao_la_LDFLAGS = -module -avoid-version
 
 pkglib_DATA = ppl_ciao.po
 
-ppl_ciao.pl: $(interface_generator_dependencies) Makefile
+ppl_ciao.pl: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_ciao_pl.m4 > $@
 
-ciao_predicate_check.pl: $(interface_generator_dependencies) Makefile
+ciao_predicate_check.pl: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_ciao_predicate_check_pl.m4 > $@
 

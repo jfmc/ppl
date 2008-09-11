@@ -130,7 +130,7 @@ test04() {
   gr1.ascii_dump(vnout);
 
   Grid gr2(4);
-  gr2.add_congruence(3*A == 0);
+  gr2.add_congruence((3*A == 0) / 0);
 
   print_congruences(gr2, "*** gr2 ***");
 
@@ -163,7 +163,7 @@ test05() {
   gr1.ascii_dump(vnout);
 
   Grid gr2(4);
-  gr2.add_congruence(3*A == 0);
+  gr2.add_congruence((3*A == 0) / 0);
 
   print_congruences(gr2, "*** gr2 ***");
 

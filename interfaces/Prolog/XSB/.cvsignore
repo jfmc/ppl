@@ -7,12 +7,11 @@
 .libs
 Makefile
 Makefile.in
-check_script
-check_script2
 clpq.pl
 clpq2.pl
-obtained
-obtained2
-obtained3
+obtained_clpq
+obtained_clpq2
+obtained_pchk
 ppl_xsb.H
 ppl_xsb.cc
+ppl_xsb.hh

@@ -85,6 +85,7 @@ generators1 \
 geomcovers1 \
 h79widening1 h79widening2 \
 intersection1 \
+simplifyusingcontext1 \
 limitedbhrz03extrapolation1 \
 limitedh79extrapolation1 \
 linearpartition1 \
@@ -105,9 +106,6 @@ onepoint \
 permute \
 polydifference1 polydifference2 \
 polyhull1 polyhull2 \
-pointsetpowerset1 pointsetpowerset2 pointsetpowerset3 \
-pointsetpowerset4 pointsetpowerset5 pointsetpowerset6 \
-powerset1 \
 randphull1 \
 refinewithconstraint1 \
 refinewithconstraints1 \
@@ -172,6 +170,7 @@ nnc_generators1 \
 nnc_geomcovers1 \
 nnc_h79widening1 \
 nnc_intersection1 \
+nnc_simplifyusingcontext1 \
 nnc_limitedbhrz03extrapolation1 \
 nnc_limitedh79extrapolation1 \
 nnc_linearpartition1 \
@@ -311,6 +310,8 @@ h79widening2_SOURCES = h79widening2.cc
 
 intersection1_SOURCES = intersection1.cc
 
+simplifyusingcontext1_SOURCES = simplifyusingcontext1.cc
+
 limitedbhrz03extrapolation1_SOURCES = limitedbhrz03extrapolation1.cc
 
 limitedh79extrapolation1_SOURCES = limitedh79extrapolation1.cc
@@ -356,15 +357,6 @@ polydifference2_SOURCES = polydifference2.cc
 
 polyhull1_SOURCES = polyhull1.cc
 polyhull2_SOURCES = polyhull2.cc
-
-pointsetpowerset1_SOURCES = pointsetpowerset1.cc
-pointsetpowerset2_SOURCES = pointsetpowerset2.cc
-pointsetpowerset3_SOURCES = pointsetpowerset3.cc
-pointsetpowerset4_SOURCES = pointsetpowerset4.cc
-pointsetpowerset5_SOURCES = pointsetpowerset5.cc
-pointsetpowerset6_SOURCES = pointsetpowerset6.cc
-
-powerset1_SOURCES = powerset1.cc
 
 randphull1_SOURCES = randphull1.cc
 randphull1_LDADD = $(LDADD) -lm
@@ -549,6 +541,9 @@ nnc_h79widening1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_intersection1_SOURCES = intersection1.cc
 nnc_intersection1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_simplifyusingcontext1_SOURCES = simplifyusingcontext1.cc
+nnc_simplifyusingcontext1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_limitedbhrz03extrapolation1_SOURCES = limitedbhrz03extrapolation1.cc
 nnc_limitedbhrz03extrapolation1_CXXFLAGS = $(DERIVED_CXXFLAGS)

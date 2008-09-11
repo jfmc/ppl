@@ -182,6 +182,17 @@ public:
 
 //! The partially reduced product of two abstractions.
 /*! \ingroup PPL_CXX_interface
+
+  \warning
+  At present, the supported instantiations for the
+  two domain templates \p D1 and \p D2 are the simple pointset domains:
+  <CODE>C_Polyhedron</CODE>,
+  <CODE>NNC_Polyhedron</CODE>,
+  <CODE>Grid</CODE>,
+  <CODE>Octagonal_Shape<T></CODE>,
+  <CODE>BD_Shape<T></CODE>,
+  <CODE>Box<T></CODE>.
+
   An object of the class <CODE>Partially_Reduced_Product<D1, D2, R></CODE>
   represents the (partially reduced) product of two pointset domains \p D1
   and \p D2 where the form of any reduction is defined by the
@@ -587,7 +598,6 @@ public:
   /*! \brief
     Returns <CODE>true</CODE> if and only if both of the components
     of \p *this are the universe.
-    product.
   */
   bool is_universe() const;
 
@@ -617,6 +627,15 @@ public:
     is bounded.
   */
   bool is_bounded() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p var is constrained in
+    \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p var is not a space dimension of \p *this.
+  */
+  bool constrains(Variable var) const;
 
   //! Returns <CODE>true</CODE> if and only if \p expr is bounded in \p *this.
   /*!

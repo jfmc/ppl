@@ -22,6 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <ppl-config.h>
 #include "checked.defs.hh"
+#include <climits>
 
 namespace Parma_Polyhedra_Library {
 

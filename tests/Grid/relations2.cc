@@ -296,8 +296,8 @@ test15() {
   Variable B(1);
 
   Grid gr(2);
-  gr.add_congruence(A == 1);
-  gr.add_congruence(A == 2);
+  gr.add_constraint(A == 1);
+  gr.add_constraint(A == 2);
   print_generators(gr, "*** gr ***");
 
   bool ok

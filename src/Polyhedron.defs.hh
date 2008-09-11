@@ -471,7 +471,7 @@ protected:
   */
   Polyhedron(Topology topol, Generator_System& gs, Recycle_Input dummy);
 
-  //! Builds a polyhedron out of a generic, interval-based bounding box.
+  //! Builds a polyhedron from a box.
   /*!
     This will use an algorithm whose complexity is polynomial and build
     the smallest polyhedron with topology \p topol containing \p box.
@@ -480,61 +480,14 @@ protected:
     The topology of the polyhedron;
 
     \param box
-    The bounding box representing the polyhedron to be built;
+    The box representing the polyhedron to be built;
 
     \param complexity
     This argument is ignored.
-
-    \exception std::invalid_argument
-    Thrown if \p box has intervals that are incompatible with \p topol.
-
-    The template class Box must provide the following methods.
-    \code
-      dimension_type space_dimension() const
-    \endcode
-    returns the dimension of the vector space enclosing the polyhedron
-    represented by the bounding box.
-    \code
-      bool is_empty() const
-    \endcode
-    returns <CODE>true</CODE> if and only if the bounding box
-    describes the empty set.
-    The <CODE>is_empty()</CODE> method will always be called before the
-    methods below.  However, if <CODE>is_empty()</CODE> returns
-    <CODE>true</CODE>, none of the functions below will be called.
-    \code
-      bool get_lower_bound(dimension_type k, bool& closed,
-                           Coefficient& n, Coefficient& d) const
-    \endcode
-    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
-    space dimension.  If \f$I\f$ is not bounded from below, simply return
-    <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
-    <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
-    is set to <CODE>true</CODE> if the the lower boundary of \f$I\f$
-    is closed and is set to <CODE>false</CODE> otherwise;
-    <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
-    \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
-    corresponds to the greatest lower bound of \f$I\f$.  The fraction
-    \f$n/d\f$ is in canonical form if and only if \f$n\f$ and \f$d\f$
-    have no common factors and \f$d\f$ is positive, \f$0/1\f$ being
-    the unique representation for zero.
-    \code
-      bool get_upper_bound(dimension_type k, bool& closed,
-                           Coefficient& n, Coefficient& d) const
-    \endcode
-    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
-    space dimension.  If \f$I\f$ is not bounded from above, simply return
-    <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
-    <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
-    is set to <CODE>true</CODE> if the the upper boundary of \f$I\f$
-    is closed and is set to <CODE>false</CODE> otherwise;
-    <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
-    \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
-    corresponds to the least upper bound of \f$I\f$.
   */
-  template <typename Box>
-  Polyhedron(Topology topol, const Box& box,
-                Complexity_Class complexity = ANY_COMPLEXITY);
+  template <typename Interval>
+  Polyhedron(Topology topol, const Box<Interval>& box,
+             Complexity_Class complexity = ANY_COMPLEXITY);
 
   /*! \brief
     The assignment operator.
@@ -910,25 +863,28 @@ public:
   bool add_grid_generator_and_minimize(const Grid_Generator& g) const;
 
   /*! \brief
-    Adds a copy of congruence \p cg to the system of congruences of \p
-    *this (without minimizing the result).
+    Adds a copy of congruence \p cg to \p *this,
+    if \p cg can be exactly represented by a polyhedron.
 
     \exception std::invalid_argument
-    Thrown if \p *this and congruence \p cg are topology-incompatible
-    or dimension-incompatible.
+    Thrown if \p *this and congruence \p cg are dimension-incompatible,
+    of if \p cg is a proper congruence which is neither a tautology,
+    nor a contradiction
   */
   void add_congruence(const Congruence& cg);
 
   /*! \brief
-    Adds a copy of congruence \p cg to the system of congruences
-    of \p *this, minimizing the result
+    Adds a copy of congruence \p cg to \p *this,
+    if \p cg can be exactly represented by a polyhedron,
+    minimizing the result.
 
     \return
     <CODE>false</CODE> if and only if the result is empty.
 
     \exception std::invalid_argument
-    Thrown if \p *this and congruence \p c are topology-incompatible
-    or dimension-incompatible.
+    Thrown if \p *this and congruence \p cg are dimension-incompatible,
+    of if \p cg is a proper congruence which is neither a tautology,
+    nor a contradiction
 
     \deprecated
     See \ref A_Note_on_the_Implementation_of_the_Operators.
@@ -1092,76 +1048,76 @@ public:
   bool add_recycled_generators_and_minimize(Generator_System& gs);
 
   /*! \brief
-    Adds to \p *this constraints equivalent to the congruences in \p
-    cgs (without minimizing the result).
+    Adds a copy of the congruences in \p cgs to \p *this,
+    if all the congruences can be exactly represented by a polyhedron.
 
     \param cgs
-    Contains the congruences that will be added to the system of
-    constraints of \p *this.
+    The congruences to be added.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p cgs are topology-incompatible or
-    dimension-incompatible.
+    Thrown if \p *this and \p cgs are dimension-incompatible,
+    of if there exists in \p cgs a proper congruence which is
+    neither a tautology, nor a contradiction
   */
   void add_congruences(const Congruence_System& cgs);
 
   /*! \brief
-    Adds a copy of the congruences in \p cs to the system
-    of congruences of \p *this, minimizing the result.
+    Adds a copy of the congruences in \p cgs to \p *this,
+    if all the congruences can be exactly represented by a polyhedron,
+    minimizing the result.
 
     \return
     <CODE>false</CODE> if and only if the result is empty.
 
-    \param cs
-    Contains the congruences that will be added to the system of
-    congruences of \p *this.
+    \param cgs
+    The congruences to be added.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p cs are topology-incompatible or
-    dimension-incompatible.
+    Thrown if \p *this and \p cgs are dimension-incompatible,
+    of if there exists in \p cgs a proper congruence which is
+    neither a tautology, nor a contradiction
 
     \deprecated
     See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
-  bool add_congruences_and_minimize(const Congruence_System& cs);
+  bool add_congruences_and_minimize(const Congruence_System& cgs);
 
-  // FIXME
   /*! \brief
-    Adds the congruences in \p cs to the system of congruences
-    of \p *this (without minimizing the result).
+    Adds the congruences in \p cgs to \p *this,
+    if all the congruences can be exactly represented by a polyhedron.
 
     \param cgs
-    The congruence system to be added to \p *this.  The congruences in
-    \p cgs may be recycled.
+    The congruences to be added. Its elements may be recycled.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p cs are topology-incompatible or
-    dimension-incompatible.
+    Thrown if \p *this and \p cgs are dimension-incompatible,
+    of if there exists in \p cgs a proper congruence which is
+    neither a tautology, nor a contradiction
 
     \warning
-    The only assumption that can be made on \p cs upon successful or
+    The only assumption that can be made on \p cgs upon successful or
     exceptional return is that it can be safely destroyed.
   */
   void add_recycled_congruences(Congruence_System& cgs);
 
-  // FIXME
   /*! \brief
-    Adds the congruences in \p cs to the system of congruences
-    of \p *this, minimizing the result.
+    Adds the congruences in \p cgs to \p *this,
+    if all the congruences can be exactly represented by a polyhedron,
+    minimizing the result.
 
     \return
     <CODE>false</CODE> if and only if the result is empty.
 
     \param cgs
-    The congruence system to be added to \p *this.  The congruences in
-    \p cgs may be recycled.
+    The congruences to be added. Its elements may be recycled.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p cs are topology-incompatible or
-    dimension-incompatible.
+    Thrown if \p *this and \p cgs are dimension-incompatible,
+    of if there exists in \p cgs a proper congruence which is
+    neither a tautology, nor a contradiction
 
     \warning
-    The only assumption that can be made on \p cs upon successful or
+    The only assumption that can be made on \p cgs upon successful or
     exceptional return is that it can be safely destroyed.
 
     \deprecated
@@ -1170,8 +1126,7 @@ public:
   bool add_recycled_congruences_and_minimize(Congruence_System& cgs);
 
   /*! \brief
-    Uses a copy of constraint \p c to refine the system of constraints
-    of \p *this.
+    Uses a copy of constraint \p c to refine \p *this.
 
     \exception std::invalid_argument
     Thrown if \p *this and constraint \p c are dimension-incompatible.
@@ -1179,8 +1134,7 @@ public:
   void refine_with_constraint(const Constraint& c);
 
   /*! \brief
-    Uses a copy of congruence \p cg to refine the system of congruences of
-    \p *this (without minimizing the result).
+    Uses a copy of congruence \p cg to refine \p *this.
 
     \exception std::invalid_argument
     Thrown if \p *this and congruence \p cg are dimension-incompatible.
@@ -1188,8 +1142,7 @@ public:
   void refine_with_congruence(const Congruence& cg);
 
   /*! \brief
-    Uses a copy of the constraints in \p cs to refine the system
-    of constraints of \p *this.
+    Uses a copy of the constraints in \p cs to refine \p *this.
 
     \param cs
     Contains the constraints used to refine the system of
@@ -1201,8 +1154,7 @@ public:
   void refine_with_constraints(const Constraint_System& cs);
 
   /*! \brief
-    Refines \p *this with constraints equivalent to the congruences
-    in \p cgs.
+    Uses a copy of the congruences in \p cgs to refine \p *this.
 
     \param cgs
     Contains the congruences used to refine the system of
@@ -1307,6 +1259,17 @@ public:
 
   //! Same as poly_difference_assign(y).
   void difference_assign(const Polyhedron& y);
+
+  /*! \brief
+    Assigns to \p *this a \ref Meet_Preserving_Simplification
+    "meet-preserving simplification" of \p *this with respect to \p y.
+    If \c false is returned, then the intersection is empty.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are topology-incompatible or
+    dimension-incompatible.
+  */
+  bool simplify_using_context_assign(const Polyhedron& y);
 
   /*! \brief
     Assigns to \p *this the
@@ -2648,7 +2611,7 @@ private:
     <CODE>conversion()</CODE>.
   */
   // Detailed Doxygen comment to be found in file simplify.cc.
-  static int simplify(Linear_System& mat, Bit_Matrix& sat);
+  static dimension_type simplify(Linear_System& mat, Bit_Matrix& sat);
 
   //@} // Minimization-Related Static Member Functions
 

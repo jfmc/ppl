@@ -52,9 +52,6 @@ $(WATCHDOG_INCLUDE_OPTIONS) \
 $(SWI_PROLOG_INCLUDE_OPTIONS) \
 @extra_includes@
 
-BUILT_SOURCES = \
-ppl_swiprolog.cc
-
 interface_generator_dependencies = \
 $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../../ppl_interface_generator_common.m4 \
@@ -65,17 +62,48 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../ppl_interface_generator_prolog_systems.m4 \
 ppl_interface_generator_swiprolog_cc.m4
 
-ppl_swiprolog.cc: $(interface_generator_dependencies) Makefile
+ppl_swiprolog.cc: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_swiprolog_cc.m4 > $@
 
 pkglib_LTLIBRARIES = libppl_swiprolog.la
-nodist_libppl_swiprolog_la_SOURCES = ppl_swiprolog.cc
+
+libppl_swiprolog_la_SOURCES = \
+ppl_prolog_sysdep.hh \
+swi_efli.hh \
+swi_efli.cc
+
+nodist_libppl_swiprolog_la_SOURCES = \
+ppl_swiprolog.cc \
+../ppl_prolog_common.cc
+
+nodist_EXTRA_libppl_swiprolog_la_SOURCES = \
+../ppl_prolog_BD_Shape_double.cc \
+../ppl_prolog_BD_Shape_mpq_class.cc \
+../ppl_prolog_BD_Shape_mpz_class.cc \
+../ppl_prolog_Constraints_Product_C_Polyhedron_Grid.cc \
+../ppl_prolog_Double_Box.cc \
+../ppl_prolog_Grid.cc \
+../ppl_prolog_Octagonal_Shape_double.cc \
+../ppl_prolog_Octagonal_Shape_mpq_class.cc \
+../ppl_prolog_Octagonal_Shape_mpz_class.cc \
+../ppl_prolog_Pointset_Powerset_C_Polyhedron.cc \
+../ppl_prolog_Pointset_Powerset_NNC_Polyhedron.cc \
+../ppl_prolog_Polyhedron.cc \
+../ppl_prolog_Rational_Box.cc
+
 libppl_swiprolog_la_LIBADD = \
+@required_instantiations_prolog_cxx_objects@ \
 $(top_builddir)/src/libppl.la \
 $(WATCHDOG_LIBRARY) \
 @extra_libraries@
-libppl_swiprolog_la_LDFLAGS = -module -avoid-version
+
+libppl_swiprolog_la_DEPENDENCIES = \
+@required_instantiations_prolog_cxx_objects@
+
+libppl_swiprolog_la_LDFLAGS = \
+-module \
+-avoid-version
 
 bin_PROGRAMS = ppl_pl
 ppl_pl_SOURCES = ppl_pl.cc
@@ -100,33 +128,47 @@ check_PROGRAMS = pl_clpq pl_clpq2
 pl_clpq_SOURCES = pl_clpq.cc
 pl_clpq2_SOURCES = pl_clpq.cc
 
+if HOST_OS_CYGWIN
+
+# Under Cygwin, plld gets the link options wrong: -lpl (PLLIB)
+# comes before -lppl_swiprolog, with the result that all the
+# symbols of the SWI-Prolog foreign interface are undefined.
+# Repeating the link options works around this problem.
+EXTRA_LINK_OPTIONS = $(SWI_PROLOG_LD_OPTIONS)
+
+endif HOST_OS_CYGWIN
+
 # Notice: we are linking statically until we understand whether
 # and if Libtool and plld can interoperate.
-ppl_pl$(EXEEXT): ppl_swiprolog.lo ppl_pl.o
+ppl_pl$(EXEEXT): libppl_swiprolog.la ppl_pl.o
 	plld -pl $(SWI_PROLOG) -cc $(CC) -c++ $(CXX) -ld $(CXX) \
 		-ld-options`echo '' $(AM_CXXFLAGS) $(CXXFLAGS) | tr " " "/"` \
-		-o $@ ppl_swiprolog.o ppl_pl.o \
+		-o $@ -L.libs -lppl_swiprolog ppl_pl.o \
 		-L$(top_builddir)/src/.libs -lppl \
 		$(WATCHDOG_LINK_OPTIONS) \
-		@extra_libraries@
+		@extra_libraries@ \
+		$(EXTRA_LINK_OPTIONS)
 
-pl_clpq$(EXEEXT): ppl_swiprolog.lo pl_clpq.o pl_clpq.pl ../tests/clpq.pl
+pl_clpq$(EXEEXT): libppl_swiprolog.la pl_clpq.o pl_clpq.pl ../tests/clpq.pl
 	plld -pl $(SWI_PROLOG) -cc $(CC) -c++ $(CXX) -ld $(CXX) \
 		-ld-options`echo '' $(AM_CXXFLAGS) $(CXXFLAGS) | tr " " "/"` \
-		-o $@ ppl_swiprolog.o pl_clpq.o \
+		-o $@ -L.libs -lppl_swiprolog pl_clpq.o \
                 $(srcdir)/pl_clpq.pl $(srcdir)/../tests/clpq.pl \
 		-L$(top_builddir)/src/.libs -lppl \
 		$(WATCHDOG_LINK_OPTIONS) \
-		@extra_libraries@
+		@extra_libraries@ \
+		$(EXTRA_LINK_OPTIONS)
 
-pl_clpq2$(EXEEXT): ppl_swiprolog.lo pl_clpq.o pl_clpq.pl ../tests/clpq2.pl
+
+pl_clpq2$(EXEEXT): libppl_swiprolog.la pl_clpq.o pl_clpq.pl ../tests/clpq2.pl
 	plld -pl $(SWI_PROLOG) -cc $(CC) -c++ $(CXX) -ld $(CXX) \
 		-ld-options`echo '' $(AM_CXXFLAGS) $(CXXFLAGS) | tr " " "/"` \
-		-o $@ ppl_swiprolog.o pl_clpq.o \
+		-o $@ -L.libs -lppl_swiprolog pl_clpq.o \
                 $(srcdir)/pl_clpq.pl $(srcdir)/../tests/clpq2.pl \
 		-L$(top_builddir)/src/.libs -lppl \
 		$(WATCHDOG_LINK_OPTIONS) \
-		@extra_libraries@
+		@extra_libraries@ \
+		$(EXTRA_LINK_OPTIONS)
 
 COEFFICIENT_MNEMONIC = @coefficient_mnemonic@
 
@@ -154,6 +196,7 @@ pl_check_test: swi_pl_check.pl ../tests/pl_check.pl $(EXPECTED_PCHK)
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		$(WATCHDOG_DLOPEN) \
+		-dlopen libppl_swiprolog.la \
                 ./ppl_pl < script_pchk
 	if [ $(srcdir) != `pwd` ]; then \
 	  rm -f pl_check.pl; \
@@ -166,6 +209,7 @@ clpq_test: pl_clpq ../tests/script_clpq $(EXPECTED_CLPQ)
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		$(WATCHDOG_DLOPEN) \
+		-dlopen libppl_swiprolog.la \
 		./pl_clpq <$(srcdir)/../tests/script_clpq >obtained_clpq
 	diff -u --ignore-all-space $(EXPECTED_CLPQ) obtained_clpq
 
@@ -175,6 +219,7 @@ clpq2_test: pl_clpq2 ../tests/script_clpq2 $(EXPECTED_CLPQ2)
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		$(WATCHDOG_DLOPEN) \
+		-dlopen libppl_swiprolog.la \
 		./pl_clpq2 <$(srcdir)/../tests/script_clpq2 >obtained_clpq2
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
 

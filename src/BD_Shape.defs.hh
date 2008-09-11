@@ -493,13 +493,13 @@ public:
   explicit BD_Shape(const Polyhedron& ph,
                     Complexity_Class complexity = ANY_COMPLEXITY);
 
-  //! Builds a BDS that approximates a box.
+  //! Builds a BDS out of a box.
   /*!
     The BDS inherits the space dimension of the box.
     The built BDS is the most precise BDS that includes the box.
 
     \param box
-    The bounding box representing the BDS to be built.
+    The box representing the BDS to be built.
 
     \param complexity
     This argument is ignored as the algorithm used has
@@ -799,6 +799,15 @@ public:
     contains at least one integer point.
   */
   bool contains_integer_point() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p var is constrained in
+    \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p var is not a space dimension of \p *this.
+  */
+  bool constrains(Variable var) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this satisfies
@@ -1178,6 +1187,17 @@ public:
 
   //! Same as bds_difference_assign.
   void difference_assign(const BD_Shape& y);
+
+  /*! \brief
+    Assigns to \p *this a \ref Meet_Preserving_Simplification
+    "meet-preserving simplification" of \p *this with respect to \p y.
+    If \c false is returned, then the intersection is empty.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are topology-incompatible or
+    dimension-incompatible.
+  */
+  bool simplify_using_context_assign(const BD_Shape& y);
 
   /*! \brief
     Assigns to \p *this the
@@ -2069,7 +2089,7 @@ private:
                                     const char* name_row,
                                     const Linear_Expression& y) const;
 
-  static void throw_constraint_incompatible(const char* method);
+  static void throw_invalid_argument(const char* method, const char* reason);
 
   static void throw_expression_too_complex(const char* method,
                                            const Linear_Expression& e);

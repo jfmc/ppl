@@ -34,7 +34,7 @@ test01() {
 
   Grid gr(4);
   gr.add_congruence(x %= 2);
-  gr.add_congruence(z == 1);
+  gr.add_constraint(z == 1);
 
   Pointset_Powerset<Grid> pps1(gr);
   Pointset_Powerset<Grid> pps2(4, EMPTY);

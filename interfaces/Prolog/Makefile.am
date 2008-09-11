@@ -24,22 +24,29 @@ SUBDIRS = . tests Ciao GNU SICStus SWI XSB YAP
 
 interface_generator_files = \
 ppl_interface_generator_prolog_procedure_generators.m4 \
-ppl_interface_generator_prolog_icc.m4 \
+ppl_interface_generator_prolog_hh_files.m4 \
+ppl_interface_generator_prolog_hh_code.m4 \
+ppl_interface_generator_prolog_cc_files.m4 \
+ppl_interface_generator_prolog_cc_code.m4 \
 ppl_interface_generator_prolog_systems.m4 \
-ppl_interface_generator_prolog_icc_code.m4
+ppl_interface_generator_prolog_dox.m4 \
+ppl_interface_generator_prolog_dox_code.m4 \
+ppl_prolog_sysdep_dox \
+ppl_prolog_sysindep_dox
 
 EXTRA_DIST = \
 $(interface_generator_files) \
-ppl_prolog_common.icc
-
-noinst_HEADERS = \
-exceptions.hh \
-track_allocation.hh
+Prolog_interface.dox \
+ppl_prolog_common.defs.hh \
+ppl_prolog_common.inlines.hh \
+ppl_prolog_common.cc
 
 if BUILD_SOME_PROLOG_INTERFACES
 
 BUILT_SOURCES = \
-ppl_prolog.icc
+Prolog_interface.dox \
+ppl_prolog_domains.hh \
+ppl_prolog_domains.cc
 
 interface_generator_dependencies = \
 $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
@@ -48,14 +55,37 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../ppl_interface_generator_copyright \
 ../ppl_interface_generator_common_procedure_generators.m4 \
 ppl_interface_generator_prolog_procedure_generators.m4 \
-ppl_interface_generator_prolog_icc.m4 \
-ppl_interface_generator_prolog_icc_code.m4
+ppl_interface_generator_prolog_dox.m4 \
+ppl_interface_generator_prolog_dox_code.m4 \
+ppl_interface_generator_prolog_hh_files.m4 \
+ppl_interface_generator_prolog_hh_code.m4 \
+ppl_interface_generator_prolog_cc_files.m4 \
+ppl_interface_generator_prolog_cc_code.m4
 
-ppl_prolog.icc: $(interface_generator_dependencies) Makefile
+ppl_prolog_domains.hh: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
-           $(srcdir)/ppl_interface_generator_prolog_icc.m4 > $@
+           $(srcdir)/ppl_interface_generator_prolog_hh_files.m4 \
+                > ppl_prolog_hh_blob
+	$(top_srcdir)/utils/cm_cleaner.sh < ppl_prolog_hh_blob
+	$(top_srcdir)/utils/cm_splitter.sh < ppl_prolog_hh_blob
+	rm -f ppl_prolog_hh_blob
+
+ppl_prolog_domains.cc: $(interface_generator_dependencies)
+	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
+           $(srcdir)/ppl_interface_generator_prolog_cc_files.m4 \
+                > ppl_prolog_cc_blob
+	$(top_srcdir)/utils/cm_cleaner.sh < ppl_prolog_cc_blob
+	$(top_srcdir)/utils/cm_splitter.sh < ppl_prolog_cc_blob
+	rm -f ppl_prolog_cc_blob
+
+Prolog_interface.dox: $(interface_generator_dependencies) Makefile
+	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
+           $(srcdir)/ppl_interface_generator_prolog_dox.m4 \
+                > Prolog_interface.dox
 
 endif BUILD_SOME_PROLOG_INTERFACES
 
 DISTCLEANFILES = \
-ppl_prolog.icc
+ppl_prolog_*.hh \
+ppl_prolog_*.cc \
+Prolog_interface.dox

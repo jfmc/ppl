@@ -147,10 +147,18 @@ m4_define(`ppl_@CLASS@_@SIMPLIFY@_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_unconstrain_code',
+m4_define(`ppl_@CLASS@_unconstrain_space_dimension_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
-    public native void unconstrain(Variable var);
+    public native void unconstrain_space_dimension(Variable var);
+
+')
+
+m4_define(`ppl_@CLASS@_unconstrain_space_dimensions_code',
+`dnl
+%<--%<--%<-- @CLASS@.java
+    public native void
+      unconstrain_space_dimensions(Variables_Set to_be_constrained);
 
 ')
 
@@ -268,7 +276,14 @@ m4_define(`ppl_@CLASS@_@BINOP@_code',
 m4_define(`ppl_@CLASS@_@BINMINOP@_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
-    public native boolean @BINOP@_and_minimize(@CLASS@ p);
+    public native boolean @BINMINOP@(@CLASS@ p);
+
+')
+
+m4_define(`ppl_@CLASS@_simplify_using_context_assign_code',
+`dnl
+%<--%<--%<-- @CLASS@.java
+    public native boolean simplify_using_context_assign(@CLASS@ p);
 
 ')
 
@@ -463,4 +478,18 @@ m4_define(`ppl_@CLASS@_constrains_code',
 %<--%<--%<-- @CLASS@.java
   public native boolean constrains(Variable var);
 
+')
+
+m4_define(`ppl_@CLASS@_ascii_dump_code',
+`dnl
+%<--%<--%<-- @CLASS@.java
+  public native String ascii_dump();
+
+')dd
+
+m4_define(`ppl_@CLASS@_@PARTITION@_code',
+`dnl
+%<--%<--%<-- @CLASS@.java
+
+  public static native Pair <@CLASSTOPOLOGY@@CPP_DISJUNCT@@COMMA@ @CLASS@> @PARTITION@(@CLASSTOPOLOGY@@DISJUNCT@ p, @CLASSTOPOLOGY@@DISJUNCT@ q);
 ')

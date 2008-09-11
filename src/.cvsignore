@@ -11,5 +11,6 @@ Makefile.in
 ppl-config
 ppl-config.cc
 ppl.hh
+ppl.hh.gch
 ppl_include_files.hh
 version.hh

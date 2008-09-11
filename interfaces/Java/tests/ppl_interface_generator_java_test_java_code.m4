@@ -103,6 +103,12 @@ boolean @LTOPOLOGY@@LCLASS@1_@BINMINOP@
 
 ')
 
+m4_define(`ppl_@CLASS@_simplify_using_context_assign_code',`
+boolean @LTOPOLOGY@@LCLASS@1_simplify_using_context_assign
+  = @LTOPOLOGY@@LCLASS@1.simplify_using_context_assign(@LTOPOLOGY@@LCLASS@1);
+
+')
+
 m4_define(`ppl_@CLASS@_get_@GET_REPRESENT@s_code', `
 @UGET_REPRESENT@_System @LTOPOLOGY@@LCLASS@1_@GET_REPRESENT@
   = @LTOPOLOGY@@LCLASS@1.@GET_REPRESENT@s();
@@ -213,11 +219,15 @@ m4_define(`ppl_@CLASS@_@SIMPLIFY@_code',`
 
 ')
 
-m4_define(`ppl_@CLASS@_unconstrain_code',`
-@LTOPOLOGY@@LCLASS@1.unconstrain(var);
+m4_define(`ppl_@CLASS@_1unconstrain_space_dimension_code',`
+@LTOPOLOGY@@LCLASS@1.1unconstrain_space_dimension(var);
 
 ')
 
+m4_define(`__ppl_@CLASS@_1unconstrain_space_dimensions_code',`
+@LTOPOLOGY@@LCLASS@1.1unconstrain_space_dimensions(var_set);
+
+')
 
 m4_define(`ppl_@CLASS@_constrains_code', `
 boolean @LTOPOLOGY@@LCLASS@1_constrains
@@ -242,9 +252,28 @@ System.out.println(@LTOPOLOGY@@LCLASS@1.toString());
 
 ');
 
+m4_define(`ppl_@CLASS@_string_code', `
+System.out.println(@LTOPOLOGY@@LCLASS@1.toString());
+
+');
+
 m4_define(`ppl_@CLASS@_@MEMBYTES@_code', `
 System.out.print("@UMEMBYTES@ of @LTOPOLOGY@@LCLASS@1: ");
 System.out.println(@LTOPOLOGY@@LCLASS@1.@MEMBYTES@());
+
+');
+
+m4_define(`ppl_@CLASS@_ascii_dump_code', `
+System.out.println(@LTOPOLOGY@@LCLASS@1.ascii_dump());
+
+');
+
+m4_define(`ppl_@CLASS@_@PARTITION@_code', `
+@CLASSTOPOLOGY@@CPP_DISJUNCT@ @LCLASSTOPOLOGY@@LCPP_DISJUNCT@1 = new @CLASSTOPOLOGY@@CPP_DISJUNCT@(constraints1);
+Pair p =  @CLASS@.@PARTITION@(@LCLASSTOPOLOGY@@LCPP_DISJUNCT@1, @LCLASSTOPOLOGY@@LCPP_DISJUNCT@1);
+System.out.println("Printing Pair from @PARTITION@");
+System.out.println(p.getFirst());
+System.out.println(p.getSecond());
 
 ');
 

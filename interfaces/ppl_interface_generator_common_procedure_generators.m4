@@ -32,6 +32,10 @@ dnl These are defined in ../ppl_interface_generator_common_dat.m4.
 dnl The actual classes the schema applies to is the set difference
 dnl +group1 \ -group2 where a missing +group1 or -group2 is
 dnl assumed to be the empty set.
+dnl For the pointset-powerset classes, the schema they apply to may also
+dnl depend on the disjunct. In this case, a schema with
+dnl "+pointset_powerset \group" will apply to any powerset
+dnl whose disjunct is not in "group".
 dnl Where "@CLASS@" is replaced by the class name, then that class only
 dnl is applicable for that schema.
 dnl
@@ -82,6 +86,7 @@ ppl_@CLASS@_refine_with_@REFINE_REPRESENT@/2 *nofail +all,
 ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s/2 *nofail +all,
 ppl_@CLASS@_@BINOP@/2 *nofail +all,
 ppl_@CLASS@_@BINMINOP@/2 +polyhedron,
+ppl_@CLASS@_simplify_using_context_assign/3 +simple_pps,
 ppl_@CLASS@_@AFFIMAGE@/4 *nofail +all,
 ppl_@CLASS@_bounded_@AFFIMAGE@/5 *nofail +all,
 ppl_@CLASS@_generalized_@AFFIMAGE@/5 +all,
@@ -94,6 +99,9 @@ ppl_@CLASS@_remove_higher_space_dimensions/2 *nofail +all,
 ppl_@CLASS@_expand_space_dimension/3 *nofail +all,
 ppl_@CLASS@_fold_space_dimensions/3  +all,
 ppl_@CLASS@_map_space_dimensions/2 +all,
+ppl_@CLASS@_constrains/2 +simple,
+ppl_@CLASS@_unconstrain_space_dimension/2 +simple,
+ppl_@CLASS@_unconstrain_space_dimensions/2 +simple,
 ppl_@CLASS@_ascii_dump/1 +all,
 ppl_@CLASS@_@MEMBYTES@/2 +all,
 dnl

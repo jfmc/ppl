@@ -23,7 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Grid_defs_hh
 #define PPL_Grid_defs_hh 1
 
-#define STRONG_REDUCTION
+#define STRONG_REDUCTION 1
 
 #include "Grid.types.hh"
 #include "globals.defs.hh"
@@ -422,6 +422,9 @@ public:
     \param cs
     The system of constraints defining the grid.
 
+    \exception std::invalid_argument
+    Thrown if the constraint system \p cs contains inequality constraints.
+
     \exception std::length_error
     Thrown if \p num_dimensions exceeds the maximum allowed space
     dimension.
@@ -439,6 +442,9 @@ public:
     \param dummy
     A dummy tag to syntactically differentiate this one
     from the other constructors.
+
+    \exception std::invalid_argument
+    Thrown if the constraint system \p cs contains inequality constraints.
 
     \exception std::length_error
     Thrown if \p num_dimensions exceeds the maximum allowed space
@@ -761,6 +767,15 @@ public:
   */
   bool contains_integer_point() const;
 
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p var is constrained in
+    \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p var is not a space dimension of \p *this.
+  */
+  bool constrains(Variable var) const;
+
   //! Returns <CODE>true</CODE> if and only if \p expr is bounded in \p *this.
   /*!
     This method is the same as bounds_from_below.
@@ -987,15 +1002,6 @@ public:
   */
   void add_congruence(const Congruence& cg);
 
-  //! Adds constraint \p c to \p *this.
-  /*!
-    The addition can only affect \p *this if \p c is an equality.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and constraint \p c are dimension-incompatible.
-  */
-  void add_congruence(const Constraint& c);
-
   /*! \brief
     Adds a copy of congruence \p cg to the system of congruences of \p
     *this, reducing the result
@@ -1010,21 +1016,6 @@ public:
     See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_congruence_and_minimize(const Congruence& c);
-
-  //! Adds a copy of constraint \p c to \p *this, reducing the result.
-  /*!
-    The addition can only affect \p *this if \p c is an equality.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and constraint \p c are dimension-incompatible.
-
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool add_congruence_and_minimize(const Constraint& c);
 
   /*! \brief
     Adds a copy of grid generator \p g to the system of generators of
@@ -1063,17 +1054,6 @@ public:
   */
   void add_congruences(const Congruence_System& cgs);
 
-  //! Adds a copy of each equality constraint in \p cs to \p *this.
-  /*!
-    \param cs
-    The congruences that will be considered for addition to the system
-    of congruences of \p *this.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cgs are dimension-incompatible.
-  */
-  void add_congruences(const Constraint_System& cs);
-
   //! Adds the congruences in \p cgs to *this.
   /*!
     \param cgs
@@ -1088,21 +1068,6 @@ public:
     or exceptional return is that it can be safely destroyed.
   */
   void add_recycled_congruences(Congruence_System& cgs);
-
-  //! Adds the equality constraints in \p cs to \p *this.
-  /*!
-    \param cs
-    The constraint system to be added to \p *this.  The equalities in
-    \p cs may be recycled.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cs are dimension-incompatible.
-
-    \warning
-    The only assumption that can be made about \p cs upon successful
-    or exceptional return is that it can be safely destroyed.
-  */
-  void add_recycled_congruences(Constraint_System& cs);
 
   /*! \brief
     Adds a copy of the congruences in \p cgs to the system of
@@ -1122,25 +1087,6 @@ public:
     See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_congruences_and_minimize(const Congruence_System& cgs);
-
-  /*! \brief
-    Adds a copy of each equality constraint in \p cs to \p *this,
-    reducing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param cs
-    Contains the constraints that will be added to the system of
-    congruences of \p *this.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cs are dimension-incompatible.
-
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool add_congruences_and_minimize(const Constraint_System& cs);
 
   /*! \brief
     Adds the congruences in \p cgs to the system of congruences of \p
@@ -1165,27 +1111,6 @@ public:
   */
   bool add_recycled_congruences_and_minimize(Congruence_System& cgs);
 
-  //! Adds the equalities in \p cs to \p *this, reducing the result.
-  /*!
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param cs
-    The constraint system to be added to \p *this.  The equalities in
-    \p cs may be recycled.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cs are dimension-incompatible.
-
-    \warning
-    The only assumption that can be made about \p cs upon successful
-    or exceptional return is that it can be safely destroyed.
-
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool add_recycled_congruences_and_minimize(Constraint_System& cs);
-
   //! Adds constraint \p c to \p *this.
   /*!
     The addition can only affect \p *this if \p c is an equality.
@@ -1194,7 +1119,8 @@ public:
     The constraint.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p c are dimension-incompatible.
+    Thrown if \p c is not an equality constraint
+    or if \p *this and \p c are dimension-incompatible.
   */
   void add_constraint(const Constraint& c);
 
@@ -1222,7 +1148,8 @@ public:
     The constraints to be added.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p cs are dimension-incompatible.
+    Thrown if \p cs contains an equality constraint
+    or if \p *this and \p cs are dimension-incompatible.
   */
   void add_constraints(const Constraint_System& cs);
 
@@ -1251,7 +1178,8 @@ public:
     \p cs may be recycled.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p cs are dimension-incompatible.
+    Thrown if \p cs contains an equality constraint
+    or if \p *this and \p cs are dimension-incompatible.
 
     \warning
     The only assumption that can be made about \p cs upon successful
@@ -1508,6 +1436,17 @@ public:
 
   //! Same as grid_difference_assign(y).
   void difference_assign(const Grid& y);
+
+  /*! \brief
+    Assigns to \p *this a \ref Meet_Preserving_Simplification
+    "meet-preserving simplification" of \p *this with respect to \p y.
+    If \c false is returned, then the intersection is empty.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are topology-incompatible or
+    dimension-incompatible.
+  */
+  bool simplify_using_context_assign(const Grid& y);
 
   /*! \brief
     Assigns to \p *this the \ref Grid_Affine_Transformation
@@ -2661,6 +2600,7 @@ private:
 					      dimension_type col,
 					      Congruence_System& sys);
 
+#ifdef STRONG_REDUCTION
   //! Reduce column \p dim in rows preceding \p pivot_index in \p sys.
   /*!
     Only consider from index \p start to index \p end of the row at \p
@@ -2673,6 +2613,7 @@ private:
 			     dimension_type start, dimension_type end,
 			     const Dimension_Kinds& dim_kinds,
 			     bool generators = true);
+#endif
 
   //! Multiply the elements of \p dest by \p multiplier.
   // A member of Grid for access to Matrix::rows and cgs::operator[].
@@ -2769,6 +2710,10 @@ protected:
   static void throw_space_dimension_overflow(const char* method,
 					     const char* reason);
 
+  void throw_invalid_constraint(const char* method,
+			       const char* c_name) const;
+  void throw_invalid_constraints(const char* method,
+				const char* cs_name) const;
   void throw_invalid_generator(const char* method,
 			       const char* g_name) const;
   void throw_invalid_generators(const char* method,

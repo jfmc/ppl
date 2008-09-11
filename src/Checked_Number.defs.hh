@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "checked.defs.hh"
 #include "meta_programming.hh"
 #include "Slow_Copy.hh"
+#include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
 
@@ -885,6 +886,11 @@ template <typename T, typename Policy>
 std::ostream&
 operator<<(std::ostream& os, const Checked_Number<T, Policy>& x);
 
+//! Ascii dump for native or checked.
+template <typename T>
+typename Enable_If<Is_Native_Or_Checked<T>::value, void>::type
+ascii_dump(std::ostream& s, const T& t);
+
 //! Input function.
 /*!
   \relates Checked_Number
@@ -1016,6 +1022,11 @@ template <typename T, typename Policy>
 std::istream&
 operator>>(std::istream& is, Checked_Number<T, Policy>& x);
 
+//! Ascii load for native or checked.
+template <typename T>
+typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type
+ascii_load(std::ostream& s, T& t);
+
 //@} // Input-Output Operators
 
 void throw_result_exception(Result r);
@@ -1050,5 +1061,6 @@ int maybe_check_fpu_inexact();
 
 #include "Checked_Number.inlines.hh"
 #include "checked_numeric_limits.hh"
+#include "Checked_Number.templates.hh"
 
 #endif // !defined(PPL_Checked_Number_defs_hh)

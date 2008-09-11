@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
+// Difference of an empty with a non-empty box.
 bool
 test01() {
   Variable A(0);
@@ -55,8 +56,37 @@ test01() {
   return ok;
 }
 
+// Difference of a non-empty with an empty box.
 bool
 test02() {
+  Variable A(0);
+  Variable B(1);
+
+  TBox box1(2);
+  box1.add_constraint(A >= 0);
+  box1.add_constraint(A <= 2);
+  box1.add_constraint(B >= 0);
+  box1.add_constraint(B <= 2);
+
+  TBox box2(2, EMPTY);
+
+  print_constraints(box1, "*** box1 ***");
+  print_constraints(box2, "*** ph2 ***");
+
+  Rational_Box known_result(box1);
+
+  box1.box_difference_assign(box2);
+
+  bool ok = check_result(box1, known_result);
+
+  print_constraints(box1, "*** after box1.box_difference_assign(ph2) ***");
+
+  return ok;
+}
+
+// Both universe.
+bool
+test03() {
   TBox box1;
   TBox box2;
 
@@ -76,8 +106,9 @@ test02() {
   return ok;
 }
 
+// Intersecting rectangles; difference leaves the original box unchanged.
 bool
-test03() {
+test04() {
   Variable x(0);
   Variable y(1);
 
@@ -103,7 +134,6 @@ test03() {
   known_result.add_constraint(x <= 2);
   known_result.add_constraint(y <= 5);
   known_result.add_constraint(y >= 2);
-  known_result.add_constraint(y - x >= 1);
 
   bool ok = check_result(box1, known_result);
 
@@ -112,8 +142,10 @@ test03() {
   return ok;
 }
 
+// Both are rectangles, second strictly included in first;
+// so the first box is unchanged.
 bool
-test04() {
+test05() {
   Variable x(0);
   Variable y(1);
 
@@ -143,8 +175,9 @@ test04() {
   return ok;
 }
 
+// Both rectangles; original box unchanged.
 bool
-test05() {
+test06() {
   Variable x(0);
   Variable y(1);
 
@@ -174,8 +207,9 @@ test05() {
   return ok;
 }
 
+// Unbounded boxes in 3D; original box is unchanged.
 bool
-test06() {
+test07() {
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -209,8 +243,9 @@ test06() {
   return ok;
 }
 
+// Both closed rectangles; the difference makes the first strictly smaller.
 bool
-test07() {
+test08() {
   Variable A(0);
   Variable B(1);
 
@@ -231,6 +266,43 @@ test07() {
 
   Rational_Box known_result(2);
   known_result.add_constraint(A >= 0);
+  known_result.add_constraint(A < 2);
+  known_result.add_constraint(B >= 0);
+  known_result.add_constraint(B <= 2);
+
+  box1.box_difference_assign(box2);
+
+  bool ok = check_result(box1, known_result);
+
+  print_constraints(box1, "*** after box1.box_difference_assign(box2) ***");
+  print_constraints(known_result, "*** known_result ***");
+
+  return ok;
+}
+
+// Both rectangles; difference removes an open section of the original box.
+bool
+test09() {
+  Variable A(0);
+  Variable B(1);
+
+  TBox box1(2);
+  box1.add_constraint(A >= 0);
+  box1.add_constraint(A <= 4);
+  box1.add_constraint(B >= 0);
+  box1.add_constraint(B <= 2);
+
+  TBox box2(2);
+  box2.add_constraint(A > 2);
+  box2.add_constraint(A <= 8);
+  box2.add_constraint(B >= 0);
+  box2.add_constraint(B <= 5);
+
+  print_constraints(box1, "*** box1 ***");
+  print_constraints(box2, "*** box2 ***");
+
+  Rational_Box known_result(2);
+  known_result.add_constraint(A >= 0);
   known_result.add_constraint(A <= 2);
   known_result.add_constraint(B >= 0);
   known_result.add_constraint(B <= 2);
@@ -245,15 +317,116 @@ test07() {
   return ok;
 }
 
+// Both rectangles; difference removes a closed section of the original box.
 bool
-test08() {
+test10() {
+  Variable A(0);
+  Variable B(1);
+
+  TBox box1(2);
+  box1.add_constraint(A >= 0);
+  box1.add_constraint(A <= 4);
+  box1.add_constraint(B >= 0);
+  box1.add_constraint(B <= 2);
+
+  TBox box2(2);
+  box2.add_constraint(A >= 2);
+  box2.add_constraint(A <= 8);
+  box2.add_constraint(B >= 0);
+  box2.add_constraint(B <= 5);
+
+  print_constraints(box1, "*** box1 ***");
+  print_constraints(box2, "*** box2 ***");
+
+  Rational_Box known_result(2);
+  known_result.add_constraint(A >= 0);
+  known_result.add_constraint(A < 2);
+  known_result.add_constraint(B >= 0);
+  known_result.add_constraint(B <= 2);
+
+  box1.box_difference_assign(box2);
+
+  bool ok = check_result(box1, known_result);
+
+  print_constraints(box1, "*** after box1.box_difference_assign(box2) ***");
+  print_constraints(known_result, "*** known_result ***");
+
+  return ok;
+}
+
+// Both empty.
+bool
+test11() {
+  Variable A(0);
+  Variable B(1);
+
+  TBox box1(2);
+  box1.add_constraint(A >= 0);
+  box1.add_constraint(A <= -2);
+  print_constraints(box1, "*** box1 ***");
+
+  TBox box2(2, EMPTY);
+
+  print_constraints(box1, "*** box1 ***");
+  print_constraints(box2, "*** ph2 ***");
+
+  box1.box_difference_assign(box2);
+
+  Rational_Box known_result(2, EMPTY);
+
+  bool ok = check_result(box1, known_result);
+
+  print_constraints(box1, "*** after box1.box_difference_assign(ph2) ***");
+
+  return ok;
+}
+
+// Find difference of a rectangle and a boundary edge.
+bool
+test12() {
+  Variable A(0);
+  Variable B(1);
+
+  TBox box1(2);
+  box1.add_constraint(A >= 0);
+  box1.add_constraint(A <= 4);
+  box1.add_constraint(B >= 0);
+  box1.add_constraint(B <= 2);
+
+  TBox box2(2);
+  box2.add_constraint(A == 4);
+  box2.add_constraint(B >= 0);
+  box2.add_constraint(B <= 3);
+
+  print_constraints(box1, "*** box1 ***");
+  print_constraints(box2, "*** box2 ***");
+
+  Rational_Box known_result(2);
+  known_result.add_constraint(A >= 0);
+  known_result.add_constraint(A < 4);
+  known_result.add_constraint(B >= 0);
+  known_result.add_constraint(B <= 2);
+
+  box1.box_difference_assign(box2);
+
+  bool ok = check_result(box1, known_result);
+
+  print_constraints(box1, "*** after box1.box_difference_assign(box2) ***");
+  print_constraints(known_result, "*** known_result ***");
+
+  return ok;
+}
+
+// Different number of dimensions.
+bool
+test13() {
   TBox box1(3);
   TBox box2(5);
 
   try {
     // This is an incorrect use of method
     // Box::box_difference_assign(box2): it is impossible to apply
-    // this method to two polyhedra of different dimensions.
+    // this method to two boxes of different dimensions.
     box1.box_difference_assign(box2);
   }
   catch (std::invalid_argument& e) {
@@ -274,7 +447,11 @@ BEGIN_MAIN
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
-// CHECKME.
-//  DO_TEST(test07);
+  DO_TEST(test07);
   DO_TEST(test08);
+  DO_TEST(test09);
+  DO_TEST(test10);
+  DO_TEST(test11);
+  DO_TEST(test12);
+  DO_TEST(test13);
 END_MAIN

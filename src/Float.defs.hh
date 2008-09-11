@@ -28,12 +28,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <gmp.h>
 #include <cassert>
 #include <cmath>
-#ifdef PPL_HAVE_STDINT_H
-#include <stdint.h>
-#endif
-#ifdef PPL_HAVE_INTTYPES_H
-#include <inttypes.h>
-#endif
 
 #ifndef NAN
 #define NAN (HUGE_VAL - HUGE_VAL)

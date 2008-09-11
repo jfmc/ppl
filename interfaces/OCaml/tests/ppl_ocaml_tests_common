@@ -1,0 +1,235 @@
+(* FIXME: to be written.
+   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+
+This file is part of the Parma Polyhedra Library (PPL).
+
+The PPL is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.
+
+The PPL is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
+
+For the most up-to-date information see the Parma Polyhedra Library
+site: http://www.cs.unipr.it/ppl/ . *)
+
+open Ppl_ocaml
+open Printf
+open Gmp
+
+let rec print_linear_expression = function
+    Variable v ->
+      print_string "V(";
+      print_int v;
+      print_string ")";
+  | Coefficient c ->
+      print_int(Z.to_int c)
+  | Unary_Minus e ->
+      print_string "-(";
+      print_linear_expression e;
+      print_string ")";
+  | Unary_Plus e ->
+      print_linear_expression e
+  | Plus (e1, e2) ->
+      print_string "(";
+      print_linear_expression e1;
+      print_string " + ";
+      print_linear_expression e2;
+      print_string ")";
+  | Minus (e1, e2) ->
+      print_string "(";
+      print_linear_expression e1;
+      print_string " - ";
+      print_linear_expression e2;
+      print_string ")";
+  | Times (c, e) ->
+      print_int(Z.to_int c);
+      print_string "*(";
+      print_linear_expression e;
+      print_string ")";
+;;
+
+let rec print_constraint = function
+    Less_Than (le1, le2) ->
+      print_linear_expression le1;
+      print_string " < ";
+      print_linear_expression le2;
+      print_string ", ";
+  | Less_Or_Equal (le1, le2) ->
+      print_linear_expression le1;
+      print_string " <= ";
+      print_linear_expression le2;
+      print_string ", ";
+  | Equal (le1, le2) ->
+      print_linear_expression le1;
+      print_string " == ";
+      print_linear_expression le2;
+      print_string ", ";
+  | Greater_Than (le1, le2) ->
+      print_linear_expression le1;
+      print_string " > ";
+      print_linear_expression le2;
+      print_string ", ";
+  | Greater_Or_Equal (le1, le2) ->
+      print_linear_expression le1;
+      print_string " >= ";
+      print_linear_expression le2;
+      print_string ", ";
+;;
+
+let rec print_generator = function
+    Ray (le1) ->
+      print_string "Ray: ";
+      print_linear_expression le1;
+      print_string ", ";
+  |  Line (le1) ->
+      print_string "Line: ";
+      print_linear_expression le1;
+      print_string ", ";
+  | Point (le1, c) ->
+      print_string "Point: ";
+      print_linear_expression le1;
+      print_string " den: ";
+      print_int(Z.to_int c);
+      print_string ", ";
+| Closure_Point (le1, c) ->
+      print_string "Closure_Point: ";
+      print_linear_expression le1;
+      print_string " den: ";
+      print_int(Z.to_int c);
+      print_string ", ";;
+
+let print_congruence = function x,y,z ->
+   print_linear_expression x;
+  print_string " %= ";
+  print_linear_expression y;
+  print_string " mod ";
+  print_int(Z.to_int z);
+  print_string ", ";;
+
+
+let rec print_grid_generator = function
+  |  Grid_Line (le1) ->
+      print_string "Line: ";
+      print_linear_expression le1;
+      print_string ", ";
+  | Grid_Point (le1, c) ->
+      print_string "Point: ";
+      print_linear_expression le1;
+      print_string " den: ";
+      print_int(Z.to_int c);
+      print_string ", ";
+  | Grid_Parameter (le1, c) ->
+      print_string "Parameter: ";
+      print_linear_expression le1;
+      print_string " den: ";
+      print_int(Z.to_int c);
+      print_string ", ";;
+
+(* Build linear expressions the hard way. *)
+
+print_string "Build linear expressions manually:\n" ;;
+
+let rec v0 = Variable 0
+and v1 = Variable 1
+and v2 = Variable 2
+and n = Coefficient (Z.from_int 3)
+and e1 = Plus (v2, v2)
+and e2 = Times ((Z.from_int 7), v0)
+and e3 = Plus (n, v2)
+;;
+
+print_linear_expression v0; print_string "\n" ;;
+print_linear_expression v1; print_string "\n" ;;
+print_linear_expression v2; print_string "\n" ;;
+print_linear_expression n; print_string "\n" ;;
+print_linear_expression e1; print_string "\n" ;;
+print_linear_expression e2; print_string "\n" ;;
+
+(* See whether operators can make life better. *)
+
+print_string "Build linear expressions with operators:\n" ;;
+
+let linear_expression_of_int n = Coefficient (Z.of_int n) ;;
+let linear_expression_plus e1 e2 = Plus (e1, e2) ;;
+let linear_expression_minus e1 e2 = Minus (e1, e2) ;;
+let linear_expression_times v2 e = Times (v2, e) ;;
+let linear_constraint_eq e1 e2 = Equal (e1, e2) ;;
+let linear_constraint_lt e1 e2 = Less_Than (e1, e2) ;;
+let linear_constraint_gt e1 e2 = Greater_Than (e1, e2) ;;
+let linear_constraint_le e1 e2 = Less_Or_Equal (e1, e2) ;;
+let linear_constraint_ge e1 e2 = Greater_Or_Equal (e1, e2) ;;
+
+let ( +/ ) = linear_expression_plus
+let ( -/ ) = linear_expression_minus
+let ( */ ) = linear_expression_times
+let ( =/ ) = linear_constraint_eq
+let ( </ ) = linear_constraint_lt
+let ( >/ ) = linear_constraint_gt
+let ( <=/ ) = linear_constraint_le
+let ( >=/ ) = linear_constraint_ge
+
+let e3 =
+  (Z.of_int 3) */ v0
+  +/
+  (Z.of_int 4) */ v1
+  -/
+  (linear_expression_of_int 7)
+;;
+
+print_linear_expression e3; print_string "\n" ;;
+
+(* Probably the most convenient thing for the user will be to use the
+   the Camlp4 preprocessor: see
+   http://caml.inria.fr/pub/docs/manual-ocaml/manual003.html#htoc10 *)
+
+(* Build some PPL::C_Polyhedron. *)
+
+let constraint1 = (e2 >=/ e2);;
+let constraints1 = [e3 >=/ e1; e1 >=/ e2; e1 <=/ e2 -/ n] ;;
+let generator1 = Point (e3, (Z.from_int 1));;
+let generators1 = [Point (e2, (Z.from_int 1)); Point (e1, (Z.from_int 2))] ;;
+let congruence1 = (e2, e2 , (Z.from_int 1));;
+let congruences1 = [e3, e2 , (Z.from_int 20)];;
+let grid_generator1 = Grid_Point (e3, (Z.from_int 1));;
+let grid_generators1 = [Grid_Point (e3, (Z.from_int 1))];;
+
+let mip1 =  ppl_new_MIP_Problem 10 constraints1 e3 Maximization;;
+let objective_func = ppl_MIP_Problem_objective_function mip1;;
+print_newline();;
+print_linear_expression objective_func;;
+let i = ppl_MIP_Problem_space_dimension mip1;;
+print_newline();;
+print_int i;;
+let i = ppl_MIP_Problem_constraints mip1;;
+print_newline();;
+List.iter print_constraint i;;
+
+let constraint01 = (v0 >=/ (linear_expression_of_int 1));;
+let constraints01 = [(v0 >=/ (linear_expression_of_int 1));
+                     (v1 >=/ (linear_expression_of_int 1));
+                     (v2 >=/ (linear_expression_of_int 1))];;
+let constraints02 = [(v0 <=/ (linear_expression_of_int 1));
+                     (v1 >=/ (linear_expression_of_int 1))];;
+let constraints03 = [(v0 >=/ (linear_expression_of_int 2));
+                     (v1 >=/ (linear_expression_of_int 1));
+                     (v2 >=/ (linear_expression_of_int 1))];;
+let constraints04 = [(v0 >=/ (linear_expression_of_int 2))];;
+let congruence01 = (v0, (linear_expression_of_int 0), (Z.from_int 2));;
+let congruences01 = [(v0, (linear_expression_of_int 0), (Z.from_int 2));
+                    (v1, (linear_expression_of_int 0), (Z.from_int 1));
+                    (v2, (linear_expression_of_int 0), (Z.from_int 1))];;
+let congruences02 = [(v0, (linear_expression_of_int 1), (Z.from_int 3));
+                    (v1, (linear_expression_of_int 0), (Z.from_int 1));
+                    (v2, (linear_expression_of_int 0), (Z.from_int 1))];;
+let congruences03 = [(v0, (linear_expression_of_int 0), (Z.from_int 4));
+                    (v1, (linear_expression_of_int 0), (Z.from_int 1));
+                    (v2, (linear_expression_of_int 0), (Z.from_int 1))];;
+let congruences04 = [(v0, (linear_expression_of_int 0), (Z.from_int 4))];;

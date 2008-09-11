@@ -1307,7 +1307,7 @@ Box<ITV>::is_topologically_closed() const {
     return true;
 
   for (dimension_type k = seq.size(); k-- > 0; )
-    if (!seq[k].topologically_closed())
+    if (!seq[k].is_topologically_closed())
       return false;
   return true;
 }
@@ -1346,6 +1346,20 @@ Box<ITV>::contains_integer_point() const {
 }
 
 template <typename ITV>
+bool
+Box<ITV>::constrains(Variable var) const {
+  // `var' should be one of the dimensions of the polyhedron.
+  const dimension_type var_space_dim = var.space_dimension();
+  if (space_dimension() < var_space_dim)
+    throw_dimension_incompatible("constrains(v)", "v", var);
+
+  if (marked_empty() || !seq[var_space_dim-1].is_universe())
+    return true;
+  // Now force an emptiness check.
+  return is_empty();
+}
+
+template <typename ITV>
 void
 Box<ITV>::unconstrain(const Variables_Set& to_be_unconstrained) {
   // The cylindrification wrt no dimensions is a no-op.
@@ -1364,7 +1378,7 @@ Box<ITV>::unconstrain(const Variables_Set& to_be_unconstrained) {
     return;
 
   // Here the box might still be empty (but we haven't detected it yet):
-  // check emptyness of the interval for each of the variables in
+  // check emptiness of the interval for each of the variables in
   // `to_be_unconstrained' before cylindrification.
   for (Variables_Set::const_iterator tbu = to_be_unconstrained.begin(),
          tbu_end = to_be_unconstrained.end(); tbu != tbu_end; ++tbu) {
@@ -1460,7 +1474,7 @@ Box<ITV>::concatenate_assign(const Box& y) {
   if (y_space_dim == 0)
     return;
 
-  // Here `y_space_dim > 0', so that a non-trivial concatenation wil occur:
+  // Here `y_space_dim > 0', so that a non-trivial concatenation will occur:
   // make sure that reallocation will occur once at most.
   x.seq.reserve(x_space_dim + y_space_dim);
 
@@ -1525,6 +1539,14 @@ Box<ITV>::box_difference_assign(const Box& y) {
     break;
   }
   assert(OK());
+}
+
+template <typename ITV>
+bool
+Box<ITV>::simplify_using_context_assign(const Box& y) {
+  // FIXME: provide a real implementation.
+  used(y);
+  return true;
 }
 
 template <typename ITV>
@@ -3310,7 +3332,7 @@ Box<ITV>::minimized_constraints() const {
     if (marked_empty())
       cs = Constraint_System::zero_dim_empty();
   }
-  // Make sure emptyness is detected.
+  // Make sure emptiness is detected.
   else if (is_empty())
     cs.insert(0*Variable(space_dim-1) <= -1);
   else {
@@ -3354,7 +3376,7 @@ Box<ITV>::congruences() const {
     if (marked_empty())
       cgs = Congruence_System::zero_dim_empty();
   }
-  // Make sure emptyness is detected.
+  // Make sure emptiness is detected.
   else if (is_empty())
     cgs.insert((0*Variable(space_dim-1) %= -1) / 0);
   else {

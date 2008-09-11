@@ -744,7 +744,6 @@ dnl ---------------------------------------------------------------------
 dnl pattern == dimension
 dnl ---------------------------------------------------------------------
 m4_define(`m4_dimension_replacement', `space_dimension, affine_dimension')
-m4_define(`m4_Pointset_Powerset_dimension_replacement',`space_dimension')
 
 dnl ---------------------------------------------------------------------
 dnl pattern == generator
@@ -979,45 +978,12 @@ dnl product domains.
 dnl ---------------------------------------------------------------------
 
 m4_define(`m4_has_property_replacement', `is_empty, is_universe,
-            is_bounded, contains_integer_point, is_topologically_closed')
-m4_define(`m4_Polyhedron_has_property_replacement',
-          `m4_has_property_replacement, is_discrete')
-m4_define(`m4_Grid_has_property_replacement',
-          `m4_has_property_replacement, is_discrete')
-m4_define(`m4_box_has_property_replacement', `is_empty, is_universe,
-            is_bounded, contains_integer_point')
-dnl For pointset_powersets, we take the intersection of the properties of
-dnl the disjunct domain with all the properties.
-m4_define(`m4_Pointset_Powerset_has_property_replacement', `dnl
-m4_define(`m4_1st_sequence',
-  `m4_has_property_replacement, is_discrete')`'dnl
-m4_define(`m4_2nd_sequence',
-  `m4_class_pattern_replacement(m4_class_body_counter$1,
-                                has_property, `')')`'dnl
-m4_define(`m4_num_of_sequences', 2)`'dnl
-m4_seq_intersection`'dnl
-m4_undefine(`m4_1st_sequence')`'dnl
-m4_undefine(`m4_2nd_sequence')`'dnl
-m4_undefine(`m4_num_of_sequences')`'dnl
-')
-dnl For products, we take the intersection of the properties of
-dnl each of the component domains with the possible properties for products.
+            is_bounded, contains_integer_point, is_topologically_closed,
+            is_discrete')
+
+dnl For products, contains_integer_point is not yet implemented.
 m4_define(`m4_product_has_property_replacement', `dnl
-m4_define(`m4_1st_sequence',
-  `is_empty, is_universe, is_bounded, is_topologically_closed')`'dnl
-m4_define(`m4_2nd_sequence',
-  `m4_class_pattern_replacement(m4_class_body_1st_counter$1,
-    has_property, `')')`'dnl
-m4_define(`m4_3rd_sequence',
-  `m4_class_pattern_replacement(m4_class_body_2nd_counter$1,
-    has_property, `')')`'dnl
-m4_define(`m4_num_of_sequences', 3)`'dnl
-m4_seq_intersection`'dnl
-m4_undefine(`m4_1st_sequence')`'dnl
-m4_undefine(`m4_2nd_sequence')`'dnl
-m4_undefine(`m4_3rd_sequence')`'dnl
-m4_undefine(`m4_num_of_sequences')`'dnl
-')
+  is_empty, is_universe, is_bounded, is_topologically_closed, is_discrete')
 
 dnl ---------------------------------------------------------------------
 dnl pattern == simplify
@@ -1101,7 +1067,8 @@ dnl FIXME: poly_difference_assign
 dnl does not appear to work for disjuncts that are not polyhedra or grids.
 m4_define(`m4_Pointset_Powerset_binop_replacement', `dnl
 m4_define(`m4_1st_sequence',
-  `poly_difference_assign, intersection_assign, concatenate_assign, time_elapse_assign')`'dnl
+  `poly_difference_assign, intersection_assign,
+   concatenate_assign, time_elapse_assign')`'dnl
 m4_define(`m4_2nd_sequence',
   `m4_class_pattern_replacement(m4_class_body_counter$1,
     binop, `')')`'dnl
@@ -1113,11 +1080,10 @@ m4_undefine(`m4_num_of_sequences')`'dnl
 ')
 
 dnl  The different kinds of "and_minimize" binary operators.
-m4_define(`m4_binminop_replacement', `intersection_assign_and_minimize')
+m4_define(`m4_binminop_replacement', `')
 m4_define(`m4_Polyhedron_binminop_replacement',
-         `m4_binminop_replacement, poly_hull_assign_and_minimize')
-m4_define(`m4_Grid_binminop_replacement',
-         `m4_binminop_replacement, join_assign_and_minimize')
+         `intersection_assign_and_minimize,
+          poly_hull_assign_and_minimize')
 
 dnl  The different kinds of "upper_bound_if_exact" binary operators.
 m4_define(`m4_ub_exact_replacement', `upper_bound_assign_if_exact')

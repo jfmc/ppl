@@ -287,7 +287,7 @@ PPL::Linear_System::add_rows(const Linear_System& y) {
   assert(num_pending_rows() == 0);
 
   // Adding no rows is a no-op.
-  if (y.empty())
+  if (y.has_no_rows())
     return;
 
   // Check if sortedness is preserved.
@@ -452,28 +452,31 @@ PPL::Linear_System::add_pending_row(const Linear_Row::Flags flags) {
 void
 PPL::Linear_System::normalize() {
   Linear_System& x = *this;
+  const dimension_type nrows = x.num_rows();
   // We normalize also the pending rows.
-  for (dimension_type i = num_rows(); i-- > 0; )
+  for (dimension_type i = nrows; i-- > 0; )
     x[i].normalize();
-  set_sorted(false);
+  set_sorted(nrows <= 1);
 }
 
 void
 PPL::Linear_System::strong_normalize() {
   Linear_System& x = *this;
+  const dimension_type nrows = x.num_rows();
   // We strongly normalize also the pending rows.
-  for (dimension_type i = num_rows(); i-- > 0; )
+  for (dimension_type i = nrows; i-- > 0; )
     x[i].strong_normalize();
-  set_sorted(false);
+  set_sorted(nrows <= 1);
 }
 
 void
 PPL::Linear_System::sign_normalize() {
   Linear_System& x = *this;
+  const dimension_type nrows = x.num_rows();
   // We sign-normalize also the pending rows.
   for (dimension_type i = num_rows(); i-- > 0; )
     x[i].sign_normalize();
-  set_sorted(false);
+  set_sorted(nrows <= 1);
 }
 
 /*! \relates Parma_Polyhedra_Library::Linear_System */
@@ -593,6 +596,7 @@ PPL::Linear_System
   // lines or equalities, all of which occur before the first ray
   // or point or inequality.
   assert(x.OK(true));
+  assert(x.num_columns() >= 1);
   assert(x.num_pending_rows() == 0);
   assert(n_lines_or_equalities <= x.num_lines_or_equalities());
 #ifndef NDEBUG
@@ -671,7 +675,7 @@ PPL::Linear_System
   }
 
   // Trying to keep sortedness.
-  for (dimension_type i = 0; still_sorted && i < nrows-1; ++i)
+  for (dimension_type i = 0; still_sorted && i+1 < nrows; ++i)
     if (check_for_sortedness[i])
       // Have to check sortedness of `x[i]' with respect to `x[i+1]'.
       still_sorted = (compare(x[i], x[i+1]) <= 0);
@@ -843,7 +847,7 @@ PPL::Linear_System::OK(const bool check_strong_normalized) const {
 
   // An empty system is OK,
   // unless it is an NNC system with exactly one column.
-  if (empty()) {
+  if (has_no_rows()) {
     if (is_necessarily_closed() || num_columns() != 1)
       return true;
     else {

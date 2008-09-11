@@ -477,7 +477,7 @@ Box<ITV>::unconstrain(const Variable var) {
   if (marked_empty())
     return;
   // Here the box might still be empty (but we haven't detected it yet):
-  // check emptyness of the interval for `var' before cylindrification.
+  // check emptiness of the interval for `var' before cylindrification.
   ITV& seq_var = seq[dim];
   if (seq_var.is_empty())
     set_empty();

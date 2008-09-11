@@ -1,4 +1,4 @@
-/* IA-32 floating point unit related functions.
+/* IA-32 floating point unit inline related functions.
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,6 +21,8 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "compiler.hh"
+#include <csetjmp>
+#include <csignal>
 
 #define FPU_INVALID       0x01
 #define FPU_DIVBYZERO     0x04
@@ -49,8 +51,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-typedef struct
-{
+typedef struct {
   unsigned short control_word;
   unsigned short unused1;
   unsigned short status_word;
@@ -81,7 +82,7 @@ fpu_set_control(int c) {
 
 inline int
 fpu_get_status() {
-  int sw;
+  unsigned short sw;
   __asm__ __volatile__ ("fnstsw %0" : "=a" (sw) : : "memory");
   return sw;
 }
@@ -114,6 +115,14 @@ sse_get_control() {
 }
 #endif
 
+inline void
+fpu_initialize_control_functions() {
+#if PPL_FPMATH_MAY_USE_SSE
+  extern void detect_sse_unit();
+  detect_sse_unit();
+#endif
+}
+
 inline fpu_rounding_direction_type
 fpu_get_rounding_direction() {
   return static_cast<fpu_rounding_direction_type>(fpu_get_control() & FPU_ROUNDING_MASK);
@@ -125,7 +134,9 @@ fpu_set_rounding_direction(fpu_rounding_direction_type dir) {
   fpu_set_control(PPL_FPU_CONTROL_DEFAULT_BASE | dir);
 #endif
 #if PPL_FPMATH_MAY_USE_SSE
-  sse_set_control(PPL_SSE_CONTROL_DEFAULT_BASE | (dir << 3));
+  extern bool have_sse_unit;
+  if (have_sse_unit)
+    sse_set_control(PPL_SSE_CONTROL_DEFAULT_BASE | (dir << 3));
 #endif
 }
 
@@ -135,7 +146,9 @@ fpu_save_rounding_direction(fpu_rounding_direction_type dir) {
   fpu_set_control(PPL_FPU_CONTROL_DEFAULT_BASE | dir);
 #endif
 #if PPL_FPMATH_MAY_USE_SSE
-  sse_set_control(PPL_SSE_CONTROL_DEFAULT_BASE | (dir << 3));
+  extern bool have_sse_unit;
+  if (have_sse_unit)
+    sse_set_control(PPL_SSE_CONTROL_DEFAULT_BASE | (dir << 3));
 #endif
   return static_cast<fpu_rounding_control_word_type>(0);
 }
@@ -146,9 +159,11 @@ fpu_reset_inexact() {
   fpu_clear_exceptions();
 #endif
 #if PPL_FPMATH_MAY_USE_SSE
-  /* WARNING: On entry to this function current rounding mode
-     have to be the default one. */
-  sse_set_control(PPL_SSE_CONTROL_DEFAULT);
+  // NOTE: on entry to this function the current rounding mode
+  // has to be the default one.
+  extern bool have_sse_unit;
+  if (have_sse_unit)
+    sse_set_control(PPL_SSE_CONTROL_DEFAULT);
 #endif
 }
 
@@ -158,7 +173,9 @@ fpu_restore_rounding_direction(fpu_rounding_control_word_type) {
   fpu_set_control(PPL_FPU_CONTROL_DEFAULT);
 #endif
 #if PPL_FPMATH_MAY_USE_SSE
-  sse_set_control(PPL_SSE_CONTROL_DEFAULT);
+  extern bool have_sse_unit;
+  if (have_sse_unit)
+    sse_set_control(PPL_SSE_CONTROL_DEFAULT);
 #endif
 }
 
@@ -169,7 +186,8 @@ fpu_check_inexact() {
     return 1;
 #endif
 #if PPL_FPMATH_MAY_USE_SSE
-  if (sse_get_control() & SSE_INEXACT)
+  extern bool have_sse_unit;
+  if (have_sse_unit && (sse_get_control() & SSE_INEXACT))
     return 1;
 #endif
   return 0;

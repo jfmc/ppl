@@ -105,7 +105,7 @@ test04() {
   print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(2);
-  gr2.add_congruence(A == 5);
+  gr2.add_constraint(A == 5);
 
   Grid known_gr(gr1);
 
@@ -185,7 +185,7 @@ test07() {
   gr1.grid_difference_assign(gr2);
 
   Grid known_gr(3);
-  known_gr.add_congruence(2*A + C == 0);
+  known_gr.add_constraint(2*A + C == 0);
   known_gr.add_congruence((B %= 0) / 3);
   known_gr.add_congruence((A %= 0) / 2);
 
@@ -281,8 +281,8 @@ test11() {
 
   Grid gr1(3);
   gr1.add_congruence((A %= 0) / 2);
-  gr1.add_congruence(B == 0);
-  gr1.add_congruence(C == 0);
+  gr1.add_constraint(B == 0);
+  gr1.add_constraint(C == 0);
   print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(3);
@@ -293,8 +293,8 @@ test11() {
 
   Grid known_gr(3);
   known_gr.add_congruence((A %= 2) / 4);
-  known_gr.add_congruence(B == 0);
-  known_gr.add_congruence(C == 0);
+  known_gr.add_constraint(B == 0);
+  known_gr.add_constraint(C == 0);
 
   bool ok = (gr1 == known_gr);
 
@@ -316,9 +316,9 @@ test12() {
   Grid gr1(gs);
 
   Grid gr2(4);
-  gr2.add_congruence(A == 0);
-  gr2.add_congruence(B == 0);
-  gr2.add_congruence(C == 0);
+  gr2.add_constraint(A == 0);
+  gr2.add_constraint(B == 0);
+  gr2.add_constraint(C == 0);
 
   try {
     gr1.difference_assign(gr2);

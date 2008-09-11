@@ -687,6 +687,15 @@ public:
   bool contains_integer_point() const;
 
   /*! \brief
+    Returns <CODE>true</CODE> if and only if \p var is constrained in
+    \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p var is not a space dimension of \p *this.
+  */
+  bool constrains(Variable var) const;
+
+  /*! \brief
     Returns <CODE>true</CODE> if and only if \p expr is
     bounded from above in \p *this.
 
@@ -1037,6 +1046,17 @@ public:
 
   //! Same as oct_difference_assign.
   void difference_assign(const Octagonal_Shape& y);
+
+  /*! \brief
+    Assigns to \p *this a \ref Meet_Preserving_Simplification
+    "meet-preserving simplification" of \p *this with respect to \p y.
+    If \c false is returned, then the intersection is empty.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are topology-incompatible or
+    dimension-incompatible.
+  */
+  bool simplify_using_context_assign(const Octagonal_Shape& y);
 
   /*! \brief
     Assigns to \p *this the \ref affine_relation "affine image"

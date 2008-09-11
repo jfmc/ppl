@@ -31,6 +31,9 @@ ac_cxx_float_binary_format=unknown
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <limits>
 #ifdef HAVE_STDINT_H
+#ifndef __STDC_LIMIT_MACROS
+#define __STDC_LIMIT_MACROS 1
+#endif
 #include <stdint.h>
 #endif
 #ifdef HAVE_INTTYPES_H

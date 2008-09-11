@@ -10,6 +10,7 @@
     Grid_Generator grid_generator1;
     Congruence congruence1;
     Variable var;
+    Variables_Set var_set;
     Linear_Expression le;
     By_Reference<Boolean> bool_by_ref1;
     Coefficient coeff0;
@@ -22,6 +23,8 @@
 	Variable B = new Variable(1);
 	Variable C = new Variable(2);
 	var = C;
+        var_set = new Variables_Set();
+        var_set.add(A);
 
 	// Coefficient declaration.
 	coeff0 = new Coefficient("0");

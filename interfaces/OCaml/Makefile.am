@@ -20,7 +20,7 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-abs_srcdir = @abs_srcdir@
+SUBDIRS = . tests
 
 interface_generator_files = \
 ppl_interface_generator_ocaml_cc.m4 \
@@ -31,24 +31,85 @@ ppl_interface_generator_ocaml_ml_code.m4 \
 ppl_interface_generator_ocaml_mli.m4 \
 ppl_interface_generator_ocaml_mli_code.m4
 
-original_mls = \
+ml_source_files = \
 ppl_ocaml_globals.ml \
-ppl_ocaml_types.ml \
-test1.ml
+ppl_ocaml_types.ml
 
 EXTRA_DIST = \
 $(interface_generator_files) \
-$(original_mls) \
-ppl_ocaml_globals.cc
+$(ml_source_files) \
+ppl_ocaml_globals.cc \
+OCaml_interface.dox
 
 
 if BUILD_OCAML_INTERFACE
 
-BUILT_SOURCES = \
-ppl_ocaml.cc \
-ppl_ocaml.ml \
+ocamldir = $(pkglibdir)
+
+ocaml_DATA = \
+libppl_ocaml.a \
+ppl_ocaml.cma \
+ppl_ocaml.cmi \
 ppl_ocaml.mli \
-test1.ml
+ppl_ocaml_globals.cmi \
+ppl_ocaml_types.cmi
+
+noinst_LIBRARIES = libppl_ocaml.a
+
+nodist_libppl_ocaml_a_SOURCES = \
+ppl_ocaml.cc
+
+OCAMLC_COMPILE_FLAGS = \
+-I +gmp -I $(srcdir) -I .. \
+-ccopt -g
+
+OCAMLC_LINK_FLAGS = \
+`echo " $(extra_libraries) " | $(SED) -e "s/ -R[^ ]*//g" -e "s/ -/ -cclib -/g"`
+
+OCAMLC_ROOT = @ocamlc_root@
+
+AM_CPPFLAGS = \
+-I$(OCAMLC_ROOT) \
+-I$(top_srcdir)/interfaces \
+-I$(top_srcdir)/src \
+-I$(top_builddir)/src \
+@extra_includes@
+
+ppl_ocaml.cc: $(interface_generator_dependencies)
+	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
+           $(srcdir)/ppl_interface_generator_ocaml_cc.m4 > $@
+
+ppl_ocaml.cma: ppl_ocaml_types.cmo ppl_ocaml_globals.cmo ppl_ocaml.cmo
+	ocamlc -o $@ -a -custom \
+		ppl_ocaml_types.cmo ppl_ocaml_globals.cmo ppl_ocaml.cmo \
+		$(OCAMLC_COMPILE_FLAGS) -cclib -lppl_ocaml \
+		$(OCAMLC_LINK_FLAGS)
+
+ppl_ocaml.cmo: ppl_ocaml.ml ppl_ocaml.cmi ppl_ocaml_types.cmi
+	ocamlc -o $@ -g -c $(OCAMLC_COMPILE_FLAGS) ppl_ocaml.ml
+
+ppl_ocaml.cmi: ppl_ocaml.mli
+	ocamlc -o $@ -g -c $(OCAMLC_COMPILE_FLAGS) $<
+
+ppl_ocaml_globals.cmo: ppl_ocaml_globals.ml ppl_ocaml_types.cmi
+	ocamlc -o $@ -g -c $(OCAMLC_COMPILE_FLAGS) \
+		$(srcdir)/ppl_ocaml_globals.ml
+
+ppl_ocaml_globals.cmi: ppl_ocaml_globals.cmo
+	@if test -f $@; then :; else \
+		rm -f ppl_ocaml_globals.cmo; \
+		$(MAKE) $(AM_MAKEFLAGS) ppl_ocaml_globals.cmo; \
+	fi
+
+ppl_ocaml_types.cmo: ppl_ocaml_types.ml
+	ocamlc -o $@ -g -c $(OCAMLC_COMPILE_FLAGS) \
+		$(srcdir)/ppl_ocaml_types.ml
+
+ppl_ocaml_types.cmi: ppl_ocaml_types.cmo
+	@if test -f $@; then :; else \
+		rm -f ppl_ocaml_types.cmo; \
+		$(MAKE) $(AM_MAKEFLAGS) ppl_ocaml_types.cmo; \
+	fi
 
 interface_generator_dependencies = \
 $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
@@ -63,102 +124,17 @@ ppl_interface_generator_ocaml_mli_code.m4 \
 ppl_interface_generator_ocaml_cc.m4 \
 ppl_interface_generator_ocaml_cc_code.m4
 
-copied_mls.stamp:
-	if [ $(abs_srcdir) != `pwd` ]; then \
-	for mlfile in $(original_mls); \
-	 do \
-	cp -f $(srcdir)/$$mlfile . ; \
-	done \
-	fi
-	echo timestamp > copied_mls.stamp
-
-# Use basename to always use the build directory sources.
-.mli.cmi:
-	ocamlc -g -c  $(OCAMLC_FLAGS) `basename $<`
-
-.ml.cmo:
-	ocamlc -g -c  $(OCAMLC_FLAGS) `basename  $<`
-
-ppl_ocaml_types.cmo: copied_mls.stamp
-ppl_ocaml_globals.cmo: ppl_ocaml_types.cmo
-ppl_ocaml.cmo: ppl_ocaml_globals.cmo ppl_ocaml.cmi
-
-delete_mls.stamp: ppl_ocaml_types.cmo ppl_ocaml_globals.cmo
-	if [ $(abs_srcdir) != `pwd` ]; then \
-	for mlfile in $(original_mls); \
-	 do \
-	if [ -a $(top_builddir)/interfaces/OCaml/$$mlfile ]; then \
-	  rm -f $(top_builddir)/interfaces/OCaml/$$mlfile  ; \
-	fi \
-	done \
-	fi
-	echo timestamp > delete_mls.stamp
-
-ppl_ocaml.ml: $(interface_generator_dependencies) Makefile
+ppl_ocaml.ml: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_ocaml_ml.m4 > $@
 
-ppl_ocaml.mli: $(interface_generator_dependencies) Makefile
+ppl_ocaml.mli: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_ocaml_mli.m4 > $@
-
-ppl_ocaml.cc: $(interface_generator_dependencies) Makefile
-	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
-           $(srcdir)/ppl_interface_generator_ocaml_cc.m4 > $@
-
-OCAMLC_FLAGS = -I +gmp -I $(srcdir)
-
-OCAMLC_ROOT = @ocamlc_root@
-
-noinst_LIBRARIES = libppl_ocaml.a
-
-nodist_libppl_ocaml_a_SOURCES = \
-ppl_ocaml.cc
-
-AM_CPPFLAGS = \
--I$(OCAMLC_ROOT) \
--I$(top_srcdir)/interfaces \
--I$(top_srcdir)/src \
--I$(top_builddir)/src \
-@extra_includes@
-
-noinst_PROGRAM = test1
-
-ppl_ocaml.cma: ppl_ocaml.cmo
-	 ocamlc -a -custom ppl_ocaml.cmo -I . $(OCAMLC_FLAGS) -cclib -lppl_ocaml   -cclib -lppl -o ppl_ocaml.cma
-
-# Force to create the interface when a `make' is given.
-# FIXME: this is a temporary patch.
-all:  libppl_ocaml.a ppl_ocaml.cma delete_mls.stamp
-
-test1$(EXEEXT):  all
-	if [ $(abs_srcdir) != `pwd` ]; then \
-	cp -f $(srcdir)/test1.ml . ; \
-	fi
-	ocamlc -g -c  $(OCAMLC_FLAGS) test1.ml
-	ocamlc -o $@ -cc g++ -g -custom $(OCAMLC_FLAGS)  ppl_ocaml.cma gmp.cma -ccopt -g test1.cmo
-	if [ $(abs_srcdir) != `pwd` ]; then \
-	rm -f test1.ml ; \
-	fi
-
-ocamldir = $(pkglibdir)
-
-ocaml_DATA = \
-libppl_ocaml.a \
-ppl_ocaml.cma \
-ppl_ocaml.cmi \
-ppl_ocaml.cmo \
-ppl_ocaml.mli \
-ppl_ocaml_globals.cmi \
-ppl_ocaml_globals.cmo \
-ppl_ocaml_types.cmi \
-ppl_ocaml_types.cmo
 
 endif BUILD_OCAML_INTERFACE
 
 CLEANFILES = \
-delete_mls.stamp \
-copied_mls.stamp \
 ppl_ocaml.cc \
 ppl_ocaml.cma \
 ppl_ocaml.cmi \
@@ -168,6 +144,4 @@ ppl_ocaml.mli \
 ppl_ocaml_globals.cmi \
 ppl_ocaml_globals.cmo \
 ppl_ocaml_types.cmi \
-ppl_ocaml_types.cmo \
-test1.cmi \
-test1.cmo
+ppl_ocaml_types.cmo

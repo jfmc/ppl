@@ -23,10 +23,10 @@
 # Process this file with autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library],[0.10pre19],[ppl-devel@cs.unipr.it],[ppl])
+AC_INIT([the Parma Polyhedra Library],[0.10pre28],[ppl-devel@cs.unipr.it],[ppl])
 
 # Minimum autoconf version required.
-AC_PREREQ(2.59)
+AC_PREREQ(2.60)
 
 # Make sure the sources are there.
 AC_CONFIG_SRCDIR(src/Polyhedron_public.cc)
@@ -84,20 +84,27 @@ ISODATE=`date +%Y-%m-%d`
 AC_SUBST(ISODATE)
 
 AH_BOTTOM([
+#ifdef PPL_NDEBUG
+# define NDEBUG PPL_NDEBUG
+#endif
+
 /*
   In order for the definition of `int64_t' to be seen by Comeau C/C++,
   we must make sure <stdint.h> is included before <sys/types.hh> is
   (even indirectly) included.
+
+  Moreover we need to define __STDC_LIMIT_MACROS before the first
+  inclusion of <stdint.h> in order to have the macros defined also in C++.
 */
 #ifdef PPL_HAVE_STDINT_H
-#include <stdint.h>
-#endif
-#ifdef PPL_HAVE_INTTYPES_H
-#include <inttypes.h>
+# ifndef __STDC_LIMIT_MACROS
+#  define __STDC_LIMIT_MACROS 1
+# endif
+# include <stdint.h>
 #endif
 
-#ifdef PPL_NDEBUG
-# define NDEBUG PPL_NDEBUG
+#ifdef PPL_HAVE_INTTYPES_H
+# include <inttypes.h>
 #endif
 ])
 
@@ -167,6 +174,7 @@ choke me
 fi
 
 AC_PROG_EGREP
+AC_PROG_SED
 AC_PROG_CXXCPP
 AC_PROG_MAKE_SET
 AC_PROG_INSTALL
@@ -193,6 +201,7 @@ no)
   AC_MSG_ERROR([bad value ${enableval} for --enable-debugging, needs yes or no])
   ;;
 esac
+AM_CONDITIONAL(DEBUGGING_ENABLED, test x"$enableval" = xyes)
 
 enableval=no
 AC_MSG_CHECKING([whether to compile for profiling])
@@ -561,6 +570,7 @@ AC_LANG(C)
 AC_C_CONST
 AC_C_INLINE
 AC_C_BIGENDIAN
+AC_C_TYPEOF
 
 # Checks for C type sizes.
 AC_CHECK_SIZEOF(char)
@@ -572,6 +582,11 @@ AC_CHECK_SIZEOF(size_t)
 AC_CHECK_SIZEOF(float)
 AC_CHECK_SIZEOF(double)
 AC_CHECK_SIZEOF(long double)
+# The following are required to validate an horrible kludge working
+# around an horrible bug in <gprolog.h> (see
+# http://www.cs.unipr.it/pipermail/ppl-devel/2008-August/012277.html).
+AC_CHECK_SIZEOF([int*])
+AC_CHECK_SIZEOF([fp], [], [typedef int *(*fp)();])
 
 # Use C++ for the remaining checks.
 AC_LANG(C++)
@@ -682,7 +697,9 @@ available_interfaces="cxx c ciao_prolog gnu_prolog sicstus_prolog swi_prolog xsb
 
 # This is the list of interfaces that are enabled by default.
 #default_interfaces="cxx c swi_prolog"
-default_interfaces=${available_interfaces}
+#default_interfaces=${available_interfaces}
+default_interfaces="cxx c sicstus_prolog swi_prolog xsb_prolog ocaml java"
+#default_interfaces="cxx c gnu_prolog sicstus_prolog swi_prolog xsb_prolog yap_prolog ocaml java"
 
 enableval=not_specified
 AC_MSG_CHECKING([which interfaces are enabled])
@@ -802,7 +819,7 @@ then
      ocamlc_root=`ocamlc -where`
      # checking for OCaml GMP
      AC_MSG_CHECKING(for Caml-GMP module gmp.cma)
-     if test -f ${ocamlc_root}/gmp/gmp.cma -a -f ${ocamlc_root}/gmp/libmlgmp.a;
+     if test -f ${ocamlc_root}/gmp/gmp.cma;
      then
          AC_MSG_RESULT(yes)
 	 ocamlgmp="yes"
@@ -841,7 +858,7 @@ then
 fi
 AM_CONDITIONAL(BUILD_SICSTUS_PROLOG_INTERFACE, test x$have_sicstus_prolog = xyes)
 
-# SWI Prolog
+# SWI-Prolog
 if test x${swi_prolog_interface_enabled} = xyes
 then
   AC_CHECK_SWI_PROLOG
@@ -880,9 +897,14 @@ then
 fi
 AM_CONDITIONAL(BUILD_SOME_PROLOG_INTERFACES, test x$SOME_PROLOG = xyes)
 
-# This is the list of interfaces that are enabled by default.
+# Define the list of interfaces that are enabled by default.
 # Different instantiations are separated by a '@' character.
-default_instantiations="Polyhedron @ Grid @ Octagonal_Shape<double>"
+default_instantiations="Polyhedron @ Grid"
+default_instantiations="${default_instantiations} @ Octagonal_Shape<mpz_class> @ Octagonal_Shape<mpq_class> @ Octagonal_Shape<double>"
+#default_instantiations="${default_instantiations} @ BD_Shape<mpz_class> @ BD_Shape<mpq_class> @ BD_Shape<double>"
+#default_instantiations="${default_instantiations} @ Rational_Box @ Double_Box"
+#default_instantiations="${default_instantiations} @ Constraints_Product<C_Polyhedron, Grid>"
+default_instantiations="${default_instantiations} @ Pointset_Powerset<C_Polyhedron> @ Pointset_Powerset<NNC_Polyhedron>"
 
 enableval=not_specified
 AC_MSG_CHECKING([which instantiations are enabled])
@@ -929,15 +951,38 @@ bool valid = ${instantiation}::valid_instantiation();
   done
   CPPFLAGS="$ac_save_CPPFLAGS"
   required_instantiations_canonical_names=`echo "${required_instantiations}" | sed -e 's/> //g' -e 's/>//g' -e 's/[[< ,]]/_/g'`
-  required_instantiations_java_sources=`echo "${required_instantiations_canonical_names}" | sed -e 's/^Polyhedron/Polyhedron@C_Polyhedron@NNC_Polyhedron/g' -e 's/@Polyhedron/@Polyhedron@C_Polyhedron@NNC_Polyhedron/g' -e 's/@Pointset_Powerset_Polyhedron/@Pointset_Powerset_C_Polyhedron@Pointset_Powerset_NNC_Polyhedron/g' -e 's/^Pointset_Powerset_Polyhedron/Pointset_Powerset_C_Polyhedron@Pointset_Powerset_NNC_Polyhedron/g' | sed -e 's/Pointset_Powerset_[[a-zA-Z0-9_]]*/&@&_Iterator/g' | sed -e 's/@/.java /g' -e 's/$/.java/g'`
+  required_instantiations_prolog_source_names=`echo "${required_instantiations_canonical_names}" | sed -e 's/@Pointset_Powerset_Polyhedron/@Pointset_Powerset_C_Polyhedron@Pointset_Powerset_NNC_Polyhedron/g' -e 's/^Pointset_Powerset_Polyhedron/Pointset_Powerset_C_Polyhedron@Pointset_Powerset_NNC_Polyhedron/g'`
+  required_instantiations_prolog_cxx_objects=`echo "${required_instantiations_prolog_source_names}" | sed -e 's/@/.lo /g' -e 's/$/.lo/g' | sed -e 's/\([[^. ]]*\).lo/ppl_prolog_\1.lo/g'`
+  required_instantiations_prolog_cxx_sources=`echo "${required_instantiations_prolog_cxx_objects}" | sed -e 's/\([[^. ]]*\).lo/..\/\1.cc/g'`
+  required_instantiations_prolog_cxx_headers=`echo "${required_instantiations_prolog_cxx_sources}" | sed -e 's/.cc/.hh/g'`
+  required_instantiations_java_source_names=`echo "${required_instantiations_canonical_names}" | sed -e 's/^Polyhedron/Polyhedron@C_Polyhedron@NNC_Polyhedron/g' -e 's/@Polyhedron/@Polyhedron@C_Polyhedron@NNC_Polyhedron/g' -e 's/@Pointset_Powerset_Polyhedron/@Pointset_Powerset_C_Polyhedron@Pointset_Powerset_NNC_Polyhedron/g' -e 's/^Pointset_Powerset_Polyhedron/Pointset_Powerset_C_Polyhedron@Pointset_Powerset_NNC_Polyhedron/g' | sed -e 's/Pointset_Powerset_[[a-zA-Z0-9_]]*/&@&_Iterator/g'`
+  required_instantiations_java_sources=`echo "${required_instantiations_java_source_names}" | sed -e 's/@/.java /g' -e 's/$/.java/g'`
   required_instantiations_java_cxx_headers=`echo "${required_instantiations_java_sources}" | sed -e 's/\([[^. ]]*\).java/ppl_java.\1/g'`
   required_instantiations_java_cxx_headers_sources=`echo "${required_instantiations_java_sources}" | sed -e 's/\([[^. ]]*\).java/ppl_java_\1.h/g'`
   AC_MSG_RESULT([${required_instantiations}])
   ;;
 esac
 
+enableval=thorough
+AC_MSG_CHECKING([whether `make check' does a thorough or quick check])
+AC_ARG_ENABLE(check,
+  AC_HELP_STRING([--enable-check],
+    [select thorough or quick `make check']))
+case "${enableval}" in
+thorough)
+  AC_MSG_RESULT(thorough)
+  ;;
+quick)
+  AC_MSG_RESULT(quick)
+  ;;
+*)
+  AC_MSG_ERROR([bad value ${enableval} for --enable-check, needs thorough or quick])
+  ;;
+esac
+AM_CONDITIONAL(THOROUGH_MAKE_CHECK, test x"$enableval" = xthorough)
+
 # Libtool.
-LT_INIT([dlopen,win32-dll])
+LT_INIT([dlopen])
 AM_CONDITIONAL(ENABLE_SHARED, test x"$enable_shared" = xyes)
 AM_CONDITIONAL(ENABLE_STATIC, test x"$enable_static" = xyes)
 
@@ -973,6 +1018,7 @@ then
                 AC_DEFINE(GLPK_HAS_GLP_TERM_HOOK,
                           1,
                           [Defined if GLPK provides glp_term_hook().]))
+  LIBS="$ac_save_LIBS"
 fi
 AC_LANG_POP(C)
 
@@ -1076,14 +1122,20 @@ AM_CONDITIONAL(HOST_CPU_X86_64, test x$x86_64 = xyes)
 
 AM_CONDITIONAL(NO_UNDEFINED, test x$no_undefined = xyes)
 
+AC_SUBST(LIBEXT, [$libext])
+AC_SUBST(SHREXT, [$shrext_cmds])
 AC_SUBST(extra_includes)
 AC_SUBST(extra_libraries)
 AC_SUBST(debug_flag)
 AC_SUBST(coefficient_mnemonic)
 AC_SUBST(required_instantiations)
 AC_SUBST(required_instantiations_canonical_names)
+AC_SUBST(required_instantiations_prolog_cxx_headers)
+AC_SUBST(required_instantiations_prolog_cxx_sources)
+AC_SUBST(required_instantiations_prolog_cxx_objects)
 AC_SUBST(required_instantiations_java_sources)
 AC_SUBST(required_instantiations_java_cxx_headers)
+# FIXME: rename headers_sources into sources.
 AC_SUBST(required_instantiations_java_cxx_headers_sources)
 AC_SUBST(ocamlc_root)
 
@@ -1097,13 +1149,14 @@ AC_CONFIG_FILES(Makefile
                 src/version.hh
                 src/ppl-config.cc
                 tests/Makefile
-                tests/Ask_Tell/Makefile
                 tests/BD_Shape/Makefile
                 tests/Box/Makefile
                 tests/Grid/Makefile
                 tests/MIP_Problem/Makefile
                 tests/Octagonal_Shape/Makefile
+                tests/Partially_Reduced_Product/Makefile
                 tests/Polyhedron/Makefile
+                tests/Powerset/Makefile
                 utils/Makefile
                 m4/Makefile
                 demos/Makefile
@@ -1124,6 +1177,14 @@ AC_CONFIG_FILES(Makefile
                 doc/devref-prolog-interface.doxyconf-latex
                 doc/user-prolog-interface.doxyconf-html
                 doc/devref-prolog-interface.doxyconf-html
+                doc/user-ocaml-interface.doxyconf-html
+                doc/user-ocaml-interface.doxyconf-latex
+                doc/devref-ocaml-interface.doxyconf-html
+                doc/devref-ocaml-interface.doxyconf-latex
+                doc/user-java-interface.doxyconf-html
+                doc/user-java-interface.doxyconf-latex
+                doc/devref-java-interface.doxyconf-html
+                doc/devref-java-interface.doxyconf-latex
                 interfaces/Makefile
                 interfaces/C/Makefile
                 interfaces/C/ppl_c_version.h
@@ -1132,6 +1193,7 @@ AC_CONFIG_FILES(Makefile
 		interfaces/Java/tests/Makefile
                 interfaces/Java/ppl_java/Makefile
 		interfaces/OCaml/Makefile
+		interfaces/OCaml/tests/Makefile
                 interfaces/Prolog/Makefile
                 interfaces/Prolog/Ciao/Makefile
                 interfaces/Prolog/GNU/Makefile
@@ -1139,7 +1201,9 @@ AC_CONFIG_FILES(Makefile
                 interfaces/Prolog/SWI/Makefile
                 interfaces/Prolog/XSB/Makefile
                 interfaces/Prolog/YAP/Makefile
-                interfaces/Prolog/tests/Makefile)
+                interfaces/Prolog/tests/Makefile
+                )
+#               tests/Ask_Tell/Makefile
 AC_OUTPUT
 
 if test x"$gmp_supports_exceptions" = xno

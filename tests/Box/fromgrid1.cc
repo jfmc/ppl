@@ -264,7 +264,7 @@ test09() {
   Grid gr(3);
   gr.add_congruence((A + 2*C %= 0) / 2);
   gr.add_congruence((A %= 0) / 5);
-  gr.add_congruence(2*B == 3);
+  gr.add_constraint(2*B == 3);
 
   print_congruences(gr, "*** gr before ***");
 

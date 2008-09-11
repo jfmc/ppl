@@ -31,8 +31,6 @@ test01() {
   Variable B(1);
 
   Constraint_System cs;
-  cs.insert(A + B <= 5);
-  cs.insert(A + B >= -10);
   cs.insert(A >= 0);
   cs.insert(B <= 7);
   cs.insert(A - B <= 18);
@@ -55,8 +53,6 @@ test02() {
   Variable B(1);
 
   Constraint_System cs;
-  cs.insert(A + B <= 5);
-  cs.insert(A + B >= -10);
   cs.insert(A >= 0);
   cs.insert(B <= 7);
   cs.insert(A - B <= 18);
@@ -79,8 +75,6 @@ test03() {
   Variable B(1);
 
   Constraint_System cs;
-  cs.insert(A + B <= 5);
-  cs.insert(A + B >= -10);
   cs.insert(A >= 0);
   cs.insert(B <= 7);
   cs.insert(A - B <= 18);
@@ -104,8 +98,6 @@ test04() {
   Variable B(1);
 
   Constraint_System cs;
-  cs.insert(A + B <= 5);
-  cs.insert(A + B >= -10);
   cs.insert(A >= 0);
   cs.insert(B <= 7);
   cs.insert(A - B <= 18);
@@ -122,6 +114,27 @@ test04() {
   return ok;
 }
 
+bool
+test05() {
+  Variable A(0);
+
+  BD_Shape<mpq_class> bds_q(1, UNIVERSE);
+  bds_q.refine_with_constraint(3*A <= 1);
+  bds_q.refine_with_constraint(3*A >= 2);
+
+  print_constraints(bds_q, "*** bds_q ***");
+
+  BD_Shape<mpz_class> bds_z(bds_q);
+
+  BD_Shape<mpz_class> known_result(bds_q.space_dimension(), EMPTY);
+
+  bool ok = (check_result(bds_z, known_result));
+
+  print_constraints(bds_z, "*** bds_z ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -129,4 +142,5 @@ BEGIN_MAIN
   DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
+  DO_TEST(test05);
 END_MAIN

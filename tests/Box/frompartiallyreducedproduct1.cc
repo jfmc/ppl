@@ -33,9 +33,9 @@ test01() {
   Variable A(0);
 
   DProduct dp(1);
-  dp.add_constraint(A <= 4);
-  dp.add_constraint(A >= 2);
-  dp.add_congruence((A %= 1) / 5);
+  dp.refine_with_constraint(A <= 4);
+  dp.refine_with_constraint(A >= 2);
+  dp.refine_with_congruence((A %= 1) / 5);
 
   print_congruences(dp, "*** dp.congruences ***");
   print_constraints(dp, "*** dp constraints ***");
@@ -43,8 +43,8 @@ test01() {
   Rational_Box box(dp);
 
   Rational_Box known_box(1);
-  known_box.add_constraint(A >= 2);
-  known_box.add_constraint(A <= 4);
+  known_box.refine_with_constraint(A >= 2);
+  known_box.refine_with_constraint(A <= 4);
 
   bool ok = (box == known_box);
 
@@ -59,20 +59,20 @@ test02() {
   Variable A(0);
 
   DProduct dp(1);
-  dp.add_constraint(A <= 4);
-  dp.add_constraint(A >= 2);
-  dp.add_congruence((A %= 0) / 3);
+  dp.refine_with_constraint(A <= 4);
+  dp.refine_with_constraint(A >= 2);
+  dp.refine_with_congruence((A %= 0) / 3);
 
   Rational_Box box(dp);
-  box.add_constraint(3*A >= 2);
-  box.add_constraint(A <= 6);
+  box.refine_with_constraint(3*A >= 2);
+  box.refine_with_constraint(A <= 6);
 
   print_congruences(dp, "*** dp.congruences ***");
   print_constraints(dp, "*** dp constraints ***");
 
   Rational_Box known_box(1);
-  known_box.add_constraint(A >= 2);
-  known_box.add_constraint(A <= 4);
+  known_box.refine_with_constraint(A >= 2);
+  known_box.refine_with_constraint(A <= 4);
 
   bool ok = (box == known_box);
 
@@ -87,9 +87,9 @@ test03() {
   Variable A(0);
 
   SProduct sp(1);
-  sp.add_constraint(A >= 4);
-  sp.add_constraint(A <= 2);
-  sp.add_congruence((A %= 0) / 3);
+  sp.refine_with_constraint(A >= 4);
+  sp.refine_with_constraint(A <= 2);
+  sp.refine_with_congruence((A %= 0) / 3);
 
   Rational_Box box(sp);
 
@@ -108,9 +108,9 @@ test04() {
   Variable A(0);
 
   CProduct cp(1);
-  cp.add_constraint(A <= 4);
-  cp.add_constraint(A >= 4);
-  cp.add_congruence((A %= 0) / 3);
+  cp.refine_with_constraint(A <= 4);
+  cp.refine_with_constraint(A >= 4);
+  cp.refine_with_congruence((A %= 0) / 3);
 
   Rational_Box box(cp);
 

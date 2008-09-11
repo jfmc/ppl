@@ -193,7 +193,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const Generator_System& cgs)
   Generator_System gs = cgs;
 
   // An empty set of generators defines the empty polyhedron.
-  if (gs.empty()) {
+  if (gs.has_no_rows()) {
     space_dim = gs.space_dimension();
     status.set_empty();
     assert(OK());
@@ -255,7 +255,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol,
   assert(gs.space_dimension() <= max_space_dimension());
 
   // An empty set of generators defines the empty polyhedron.
-  if (gs.empty()) {
+  if (gs.has_no_rows()) {
     space_dim = gs.space_dimension();
     status.set_empty();
     assert(OK());

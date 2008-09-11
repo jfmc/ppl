@@ -155,9 +155,9 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_@GET_REPRESENT@s_code',
+m4_define(`ppl_@CLASS@_get_@GET_REPRESENT@s_code',
 `int
-ppl_@CLASS@_@GET_REPRESENT@s
+ppl_@CLASS@_get_@GET_REPRESENT@s
 (ppl_const_@CLASS@_t ph,
  ppl_const_@UGET_REPRESENT@_System_t* pcs) try {
   const @CPP_CLASS@& pph = *to_const(ph);
@@ -169,9 +169,9 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_minimized_@GET_REPRESENT@s_code',
+m4_define(`ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_code',
 `int
-ppl_@CLASS@_minimized_@GET_REPRESENT@s
+ppl_@CLASS@_get_minimized_@GET_REPRESENT@s
 (ppl_const_@CLASS@_t ph,
  ppl_const_@UGET_REPRESENT@_System_t* pcs) try {
   const @CPP_CLASS@& pph = *to_const(ph);
@@ -289,9 +289,9 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_unconstrain_code',
+m4_define(`ppl_@CLASS@_unconstrain_space_dimension_code',
 `int
-ppl_@CLASS@_unconstrain
+ppl_@CLASS@_unconstrain_space_dimension
 (ppl_@CLASS@_t ph,
  ppl_dimension_type var
 ) try {
@@ -303,10 +303,27 @@ CATCH_ALL
 
 ')
 
+m4_define(`ppl_@CLASS@_unconstrain_space_dimensions_code',
+`int
+ppl_@CLASS@_unconstrain_space_dimensions
+(ppl_@CLASS@_t ph,
+ ppl_dimension_type ds[],
+ size_t n) try {
+  @CPP_CLASS@& pph = *to_nonconst(ph);
+  Variables_Set to_be_unconstrained;
+  for (ppl_dimension_type i = n; i-- > 0; )
+    to_be_unconstrained.insert(ds[i]);
+  pph.unconstrain(to_be_unconstrained);
+  return 0;
+}
+CATCH_ALL
+
+')
+
 m4_define(`ppl_@CLASS@_constrains_code',
 `int
 ppl_@CLASS@_constrains
-(ppl_const_@CLASS@_t ph,
+(ppl_@CLASS@_t ph,
  ppl_dimension_type var
 ) try {
   @CPP_CLASS@& pph = *to_nonconst(ph);
@@ -338,6 +355,19 @@ ppl_@CLASS@_@BINMINOP@
   @CPP_CLASS@& xx = *to_nonconst(x);
   const @CPP_CLASS@& yy = *to_const(y);
   return xx.@BINMINOP@(yy) ? 1 : 0;
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_@CLASS@_simplify_using_context_assign_code',
+`int
+ppl_@CLASS@_simplify_using_context_assign
+(ppl_@CLASS@_t x,
+ ppl_const_@CLASS@_t y) try {
+  @CPP_CLASS@& xx = *to_nonconst(x);
+  const @CPP_CLASS@& yy = *to_const(y);
+  return xx.simplify_using_context_assign(yy) ? 1 : 0;
 }
 CATCH_ALL
 

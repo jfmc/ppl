@@ -71,7 +71,7 @@ PPL::Polyhedron::constraints() const {
   if (marked_empty()) {
     // We want `con_sys' to only contain the unsatisfiable constraint
     // of the appropriate dimension.
-    if (con_sys.empty()) {
+    if (con_sys.has_no_rows()) {
       // The 0-dim unsatisfiable constraint is extended to
       // the appropriate dimension and then stored in `con_sys'.
       Constraint_System unsat_cs = Constraint_System::zero_dim_empty();
@@ -89,7 +89,7 @@ PPL::Polyhedron::constraints() const {
 
   if (space_dim == 0) {
     // Zero-dimensional universe.
-    assert(con_sys.empty() && con_sys.num_columns() == 0);
+    assert(con_sys.num_rows() == 0 && con_sys.num_columns() == 0);
     return con_sys;
   }
 
@@ -125,7 +125,7 @@ PPL::Polyhedron::minimized_constraints() const {
 const PPL::Generator_System&
 PPL::Polyhedron::generators() const {
   if (marked_empty()) {
-    assert(gen_sys.empty());
+    assert(gen_sys.has_no_rows());
     // We want `gen_sys' to have the appropriate space dimension,
     // even though it is an empty generator system.
     if (gen_sys.space_dimension() != space_dim) {
@@ -137,7 +137,7 @@ PPL::Polyhedron::generators() const {
   }
 
   if (space_dim == 0) {
-    assert(gen_sys.empty() && gen_sys.num_columns() == 0);
+    assert(gen_sys.num_rows() == 0 && gen_sys.num_columns() == 0);
     return Generator_System::zero_dim_univ();
   }
 
@@ -147,7 +147,7 @@ PPL::Polyhedron::generators() const {
   if ((has_pending_constraints() && !process_pending_constraints())
       || (!generators_are_up_to_date() && !update_generators())) {
     // We have just discovered that `*this' is empty.
-    assert(gen_sys.empty());
+    assert(gen_sys.has_no_rows());
     // We want `gen_sys' to have the appropriate space dimension,
     // even though it is an empty generator system.
     if (gen_sys.space_dimension() != space_dim) {
@@ -812,7 +812,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 #endif
       goto bomb;
     }
-    if (con_sys.empty())
+    if (con_sys.has_no_rows())
       return true;
     else {
       if (con_sys.space_dimension() != space_dim) {
@@ -856,7 +856,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 #endif
       goto bomb;
     }
-    if (!con_sys.empty() || !gen_sys.empty()) {
+    if (!con_sys.has_no_rows() || !gen_sys.has_no_rows()) {
 #ifndef NDEBUG
       cerr << "Zero-dimensional polyhedron with a non-empty"
 	   << endl
@@ -959,7 +959,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 
     // A non-empty system of generators describing a polyhedron
     // is valid if and only if it contains a point.
-    if (!gen_sys.empty() && !gen_sys.has_points()) {
+    if (!gen_sys.has_no_rows() && !gen_sys.has_points()) {
 #ifndef NDEBUG
       cerr << "Non-empty generator system declared up-to-date "
 	   << "has no points!"
@@ -1253,30 +1253,39 @@ PPL::Polyhedron::add_congruence(const Congruence& cg) {
   if (space_dim < cg.space_dimension())
     throw_dimension_incompatible("add_congruence(cg)", "cg", cg);
 
-  // Adding a new congruence to an empty polyhedron results in an
-  // empty polyhedron.
+  // Handle the case of proper congruences first.
+  if (cg.is_proper_congruence()) {
+    if (cg.is_trivial_true())
+      return;
+    if (cg.is_trivial_false()) {
+      set_empty();
+      return;
+    }
+    // Non-trivial and proper congruences are not allowed.
+    throw_invalid_argument("add_congruence(cg)",
+			   "cg is a non-trivial, proper congruence");
+  }
+
+  assert(cg.is_equality());
+  // Handle empty and 0-dim cases first.
   if (marked_empty())
     return;
-
-  // Dealing with a zero-dimensional space polyhedron first.
   if (space_dim == 0) {
-    if (!cg.is_trivial_true())
+    if (cg.is_trivial_false())
       set_empty();
     return;
   }
 
-  if (cg.is_equality()) {
-    Linear_Expression le(cg);
-    Constraint c(le, Constraint::EQUALITY, NECESSARILY_CLOSED);
-    // Enforce normalization.
-    c.strong_normalize();
-    add_constraint(c);
-  }
+  // Add the equality.
+  Linear_Expression le(cg);
+  Constraint c(le, Constraint::EQUALITY, NECESSARILY_CLOSED);
+  // Enforce normalization.
+  c.strong_normalize();
+  add_constraint(c);
 }
 
 bool
 PPL::Polyhedron::add_constraint_and_minimize(const Constraint& c) {
-  // TODO: this is just an executable specification.
   Constraint_System cs(c);
   return add_recycled_constraints_and_minimize(cs);
 }
@@ -1435,7 +1444,7 @@ PPL::Polyhedron::add_recycled_constraints(Constraint_System& cs) {
     throw_dimension_incompatible("add_recycled_constraints(cs)", "cs", cs);
 
   // Adding no constraints is a no-op.
-  if (cs.empty())
+  if (cs.has_no_rows())
     return;
 
   if (space_dim == 0) {
@@ -1524,7 +1533,7 @@ PPL::Polyhedron::add_recycled_constraints_and_minimize(Constraint_System& cs) {
 				 "cs", cs);
 
   // Adding no constraints: just minimize.
-  if (cs.empty())
+  if (cs.has_no_rows())
     return minimize();
 
   // Dealing with zero-dimensional space polyhedra first.
@@ -1595,7 +1604,7 @@ PPL::Polyhedron::add_recycled_generators(Generator_System& gs) {
     throw_dimension_incompatible("add_recycled_generators(gs)", "gs", gs);
 
   // Adding no generators is a no-op.
-  if (gs.empty())
+  if (gs.has_no_rows())
     return;
 
   // Adding valid generators to a zero-dimensional polyhedron
@@ -1697,7 +1706,7 @@ PPL::Polyhedron::add_recycled_generators_and_minimize(Generator_System& gs) {
 				 "gs", gs);
 
   // Adding no generators is equivalent to just requiring minimization.
-  if (gs.empty())
+  if (gs.has_no_rows())
     return minimize();
 
   // Adding valid generators to a zero-dimensional polyhedron
@@ -1774,9 +1783,10 @@ PPL::Polyhedron::add_congruences(const Congruence_System& cgs) {
   Constraint_System cs;
   bool inserted = false;
   for (Congruence_System::const_iterator i = cgs.begin(),
-         cgs_end = cgs.end(); i != cgs_end; ++i)
-    if (i->is_equality()) {
-      Linear_Expression le(*i);
+         cgs_end = cgs.end(); i != cgs_end; ++i) {
+    const Congruence& cg = *i;
+    if (cg.is_equality()) {
+      Linear_Expression le(cg);
       Constraint c(le, Constraint::EQUALITY, NECESSARILY_CLOSED);
       // Enforce normalization.
       c.strong_normalize();
@@ -1784,8 +1794,18 @@ PPL::Polyhedron::add_congruences(const Congruence_System& cgs) {
       cs.insert(c);
       inserted = true;
     }
-  // Only add cgs if congruences were inserted into cgs, as the
-  // dimension of cs must be at most that of the polyhedron.
+    else {
+      assert(cg.is_proper_congruence());
+      if (cg.is_trivial_false()) {
+        set_empty();
+        return;
+      }
+      if (!cg.is_trivial_true())
+        throw_invalid_argument("add_congruences(cgs)",
+                               "cgs has a non-trivial, proper congruence");
+    }
+  }
+  // Only add cs if it contains something.
   if (inserted)
     add_recycled_constraints(cs);
 }
@@ -1841,7 +1861,7 @@ PPL::Polyhedron::refine_with_constraints(const Constraint_System& cs) {
 				 "cs", cs);
 
   // Adding no constraints is a no-op.
-  if (cs.empty())
+  if (cs.has_no_rows())
     return;
 
   if (space_dim == 0) {
@@ -2203,6 +2223,445 @@ PPL::Polyhedron::intersection_assign_and_minimize(const Polyhedron& y) {
   }
   assert(x.OK(!empty));
   return !empty;
+}
+
+namespace {
+
+struct Ruled_Out_Pair {
+  PPL::dimension_type constraint_index;
+  PPL::dimension_type num_ruled_out;
+};
+
+struct Ruled_Out_Less_Than {
+  bool operator()(const Ruled_Out_Pair& x,
+                  const Ruled_Out_Pair& y) const {
+    return x.num_ruled_out > y.num_ruled_out;
+  }
+};
+
+bool
+add_to_system_and_check_independence(PPL::Linear_System& eq_sys,
+                                     const PPL::Linear_Row& eq) {
+  // Check if equality eqn is linear independent from eq_sys.
+  assert(eq.is_line_or_equality());
+  eq_sys.insert(eq);
+  const PPL::dimension_type eq_sys_num_rows = eq_sys.num_rows();
+  const PPL::dimension_type rank = eq_sys.gauss(eq_sys_num_rows);
+  if (rank == eq_sys_num_rows)
+    // eq is linear independent.
+    return true;
+  else {
+    // eq is not linear independent.
+    assert(rank == eq_sys_num_rows - 1);
+    eq_sys.erase_to_end(rank);
+    return false;
+  }
+}
+
+/*
+  Modifies the vector of pointers \p p_ineqs, setting to 0 those entries
+  that point to redundant inequalities or masked equalities.
+  The redundancy test is based on saturation matrix \p sat and
+  on knowing that there exists \p rank nonredundant equalities
+  (they are implicit, i.e., not explicitly listed in \p p_ineqs).
+*/
+void
+drop_redundant_inequalities(std::vector<const PPL::Constraint*>& p_ineqs,
+                            const PPL::Topology topology,
+                            const PPL::Bit_Matrix& sat,
+                            const PPL::dimension_type rank) {
+  using namespace Parma_Polyhedra_Library;
+  const dimension_type num_rows = p_ineqs.size();
+  assert(num_rows > 0);
+  // `rank' is the rank of the (implicit) system of equalities.
+  const dimension_type space_dim = p_ineqs[0]->space_dimension();
+  assert(space_dim > 0 && space_dim >= rank);
+  const dimension_type num_coefficients
+    = space_dim + (topology == NECESSARILY_CLOSED ? 0 : 1);
+  const dimension_type min_sat = num_coefficients - rank;
+  const dimension_type num_cols_sat = sat.num_columns();
+
+  // Perform quick redundancy test based on the number of saturators.
+  for (dimension_type i = num_rows; i-- > 0; ) {
+    if (sat[i].empty())
+      // Masked equalities are redundant.
+      p_ineqs[i] = 0;
+    else {
+      const dimension_type num_sat = num_cols_sat - sat[i].count_ones();
+      if (num_sat < min_sat)
+        p_ineqs[i] = 0;
+    }
+  }
+
+  // Re-examine remaining inequalities.
+  // Iteration index `i' is _intentionally_ increasing.
+  for (dimension_type i = 0; i < num_rows; ++i) {
+    if (p_ineqs[i]) {
+      for (dimension_type j = 0; j < num_rows; ++j) {
+        bool strict_subset;
+        if (p_ineqs[j] && i != j
+            && subset_or_equal(sat[j], sat[i], strict_subset)) {
+          if (strict_subset) {
+            p_ineqs[i] = 0;
+            break;
+          }
+          else
+            // Here `sat[j] == sat[i]'.
+            p_ineqs[j] = 0;
+        }
+      }
+    }
+  }
+}
+
+} // namespace
+
+bool
+PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
+  Polyhedron& x = *this;
+  // Topology compatibility check.
+  if (x.topology() != y.topology())
+    throw_topology_incompatible("simplify_using_context_assign(y)", "y", y);
+  // Dimension-compatibility check.
+  if (x.space_dim != y.space_dim)
+    throw_dimension_incompatible("simplify_using_context_assign(y)", "y", y);
+
+  // Filter away the zero-dimensional case.
+  if (x.space_dim == 0) {
+    if (y.is_empty()) {
+      x.status.set_zero_dim_univ();
+      return false;
+    }
+    else
+      return !x.is_empty();
+  }
+
+  // If `y' is empty, the biggest enlargement for `x' is the universe.
+  if (!y.minimize()) {
+    Polyhedron ph(x.topology(), x.space_dim, UNIVERSE);
+    swap(ph);
+    return false;
+  }
+
+  // If `x' is empty, the intersection is empty.
+  if (!x.minimize()) {
+    // Search for a constraint of `y' that is not a tautology.
+    assert(!y.has_pending_generators() && y.constraints_are_up_to_date());
+    for (dimension_type i = y.con_sys.num_rows(); i-- > 0; ) {
+      const Constraint& y_con_sys_i = y.con_sys[i];
+      if (!y_con_sys_i.is_tautological()) {
+        // Found: we obtain a constraint `c' contradicting the one we
+        // found, and assign to `x' the polyhedron `ph' with `c' as
+        // the only constraint.
+        Polyhedron ph(x.topology(), x.space_dim, UNIVERSE);
+        Linear_Expression le(y_con_sys_i);
+        switch (y_con_sys_i.type()) {
+        case Constraint::EQUALITY:
+          ph.add_constraint(le == 1);
+          break;
+        case Constraint::NONSTRICT_INEQUALITY:
+          ph.add_constraint(le <= -1);
+          break;
+        case Constraint::STRICT_INEQUALITY:
+          ph.add_constraint(le == 0);
+          break;
+        }
+        swap(ph);
+        assert(OK());
+	return false;
+      }
+    }
+    // `y' is the universe: `x' cannot be enlarged.
+    return false;
+  }
+
+  assert(x.constraints_are_minimized()
+         && !x.has_something_pending()
+         && y.generators_are_minimized()
+         && !y.has_something_pending());
+  const Constraint_System& x_cs = x.con_sys;
+  const dimension_type x_cs_num_rows = x_cs.num_rows();
+  const Generator_System& y_gs = y.gen_sys;
+
+  // Record into `redundant_by_y' the info about which constraints of
+  // `x' are redundant in the context `y'.  Count the number of
+  // redundancies found.
+  std::vector<bool> redundant_by_y(x_cs_num_rows, false);
+  dimension_type num_redundant_by_y = 0;
+  for (dimension_type i = 0; i < x_cs_num_rows; ++i)
+    if (y_gs.satisfied_by_all_generators(x_cs[i])) {
+      redundant_by_y[i] = true;
+      ++num_redundant_by_y;
+    }
+
+  Constraint_System result_cs;
+
+  if (num_redundant_by_y < x_cs_num_rows) {
+    // Some constraints were not identified as redundant (yet?).
+    const Constraint_System& y_cs = y.con_sys;
+    const dimension_type y_cs_num_rows = y_cs.num_rows();
+    // Compute into `z' the minimized intersection of `x' and `y'.
+    const bool x_first = (x_cs_num_rows > y_cs_num_rows);
+    Polyhedron z(x_first ? x : y);
+    if (x_first)
+      z.add_constraints(y_cs);
+    else {
+      // Only copy (and then recycle) the non-redundant constraints.
+      Constraint_System tmp_cs;
+      for (dimension_type i = 0; i < x_cs_num_rows; ++i) {
+        if (!redundant_by_y[i])
+          tmp_cs.insert(x_cs[i]);
+      }
+      z.add_recycled_constraints(tmp_cs);
+    }
+    if (!z.minimize()) {
+      // The objective function is the default, zero.
+      // We do not care about minimization or maximization, since
+      // we are only interested in satisfiability.
+      MIP_Problem lp;
+      if (x.is_necessarily_closed()) {
+        lp.add_space_dimensions_and_embed(x.space_dim);
+        lp.add_constraints(y_cs);
+      }
+      else {
+        // KLUDGE: temporarily mark `y_cs' if it was necessarily
+        // closed, so that we can interpret the epsilon dimension as a
+        // standard dimension. Be careful to reset the topology of `cs'
+        // even on exceptional execution path.
+        const_cast<Constraint_System&>(y_cs).set_necessarily_closed();
+        try {
+          lp.add_space_dimensions_and_embed(x.space_dim+1);
+          lp.add_constraints(y_cs);
+          const_cast<Constraint_System&>(y_cs).set_not_necessarily_closed();
+        }
+        catch (...) {
+          const_cast<Constraint_System&>(y_cs).set_not_necessarily_closed();
+          throw;
+        }
+      }
+      // We apply the following heuristics here: constraints of `x' that
+      // are not made redundant by `y' are added to `lp' depending on
+      // the number of generators of `y' they rule out (the more generators
+      // they rule out, the sooner they are added).  Of course, as soon
+      // as `lp' becomes unsatisfiable, we stopp adding.
+      std::vector<Ruled_Out_Pair>
+        ruled_out_vec(x_cs_num_rows - num_redundant_by_y);
+      for (dimension_type i = 0, j = 0; i < x_cs_num_rows; ++i) {
+        if (!redundant_by_y[i]) {
+          const Constraint& c = x_cs[i];
+          Topology_Adjusted_Scalar_Product_Sign sps(c);
+          dimension_type num_ruled_out_generators = 0;
+          for (Generator_System::const_iterator k = y_gs.begin(),
+                 y_gs_end = y_gs.end(); k != y_gs_end; ++k) {
+            const Generator& g = *k;
+            const int sp_sign = sps(g, c);
+            if (x.is_necessarily_closed()) {
+              if (g.is_line()) {
+                // Lines must saturate the constraint.
+                if (sp_sign != 0)
+                  goto ruled_out;
+              }
+              else {
+                // `g' is either a ray, a point or a closure point.
+                if (c.is_inequality()) {
+                  // `c' is a non-strict inequality.
+                  if (sp_sign < 0)
+                    goto ruled_out;
+                }
+                else
+                  // `c' is an equality.
+                  if (sp_sign != 0)
+                    goto ruled_out;
+              }
+            }
+            else
+              // The topology is not necessarily closed.
+              switch (g.type()) {
+              case Generator::LINE:
+                // Lines must saturate the constraint.
+                if (sp_sign != 0)
+                  goto ruled_out;
+                break;
+              case Generator::POINT:
+                // Have to perform the special test when dealing with
+                // a strict inequality.
+                switch (c.type()) {
+                case Constraint::EQUALITY:
+                  if (sp_sign != 0)
+                    goto ruled_out;
+                  break;
+                case Constraint::NONSTRICT_INEQUALITY:
+                  if (sp_sign < 0)
+                    goto ruled_out;
+                  break;
+                case Constraint::STRICT_INEQUALITY:
+                  if (sp_sign <= 0)
+                    goto ruled_out;
+                  break;
+                }
+                break;
+              case Generator::RAY:
+                // Intentionally fall through.
+              case Generator::CLOSURE_POINT:
+                if (c.is_inequality()) {
+                  // Constraint `c' is either a strict or a non-strict
+                  // inequality.
+                  if (sp_sign < 0)
+                    goto ruled_out;
+                }
+                else
+                  // Constraint `c' is an equality.
+                  if (sp_sign != 0)
+                    goto ruled_out;
+                break;
+              }
+
+            // If we reach this point, `g' satisfies `c'.
+            continue;
+          ruled_out:
+            ++num_ruled_out_generators;
+          }
+          ruled_out_vec[j].constraint_index = i;
+          ruled_out_vec[j].num_ruled_out = num_ruled_out_generators;
+          ++j;
+        }
+      }
+      std::sort(ruled_out_vec.begin(), ruled_out_vec.end(),
+                Ruled_Out_Less_Than());
+
+      for (std::vector<Ruled_Out_Pair>::const_iterator
+             j = ruled_out_vec.begin(), rov_end = ruled_out_vec.end();
+           j != rov_end;
+           ++j) {
+        const Constraint& c = x_cs[j->constraint_index];
+        result_cs.insert(c);
+        lp.add_constraint(c);
+        MIP_Problem_Status status = lp.solve();
+        if (status == UNFEASIBLE_MIP_PROBLEM) {
+          Polyhedron result_ph(x.topology(), x.space_dim, UNIVERSE);
+          result_ph.add_constraints(result_cs);
+          x.swap(result_ph);
+          assert(x.OK());
+          return false;
+        }
+      }
+      // Cannot exit from here.
+      assert(false);
+    }
+    else {
+      // Here `z' is not empty and minimized.
+      assert(z.constraints_are_minimized()
+             && z.generators_are_minimized()
+             && !z.has_something_pending());
+      const Constraint_System& z_cs = z.con_sys;
+      const Generator_System& z_gs = z.gen_sys;
+      const dimension_type z_gs_num_rows = z_gs.num_rows();
+
+      // Compute the number of equalities in x_cs, y_cs and z_cs
+      // (exploiting minimal form knowledge).
+      dimension_type x_cs_num_eq = 0;
+      while (x_cs[x_cs_num_eq].is_equality())
+        ++x_cs_num_eq;
+      dimension_type y_cs_num_eq = 0;
+      while (y_cs[y_cs_num_eq].is_equality())
+        ++y_cs_num_eq;
+      dimension_type z_cs_num_eq = 0;
+      while (z_cs[z_cs_num_eq].is_equality())
+        ++z_cs_num_eq;
+      assert(x_cs_num_eq <= z_cs_num_eq && y_cs_num_eq <= z_cs_num_eq);
+
+      // Identify non-redundant equalities.
+      Constraint_System nonred_eq;
+      dimension_type num_nonred_eq = 0;
+      const dimension_type needed_nonred_eq = z_cs_num_eq - y_cs_num_eq;
+      Linear_System eqs(x.topology());
+      if (needed_nonred_eq > 0) {
+        // Populate eqs with the equalities from y.
+        for (dimension_type i = 0; i < y_cs_num_eq; ++i)
+          eqs.insert(y_cs[i]);
+        // Try to find another `needed_nonred_eq' linear independent
+        // equalities among those from x.
+        for (dimension_type i = 0; i < x_cs_num_eq; ++i) {
+          const Constraint& x_cs_i = x_cs[i];
+          if (add_to_system_and_check_independence(eqs, x_cs_i)) {
+            // x_cs_i is linear independent.
+            nonred_eq.insert(x_cs_i);
+            ++num_nonred_eq;
+            if (num_nonred_eq == needed_nonred_eq)
+              // Already found all the needed equalities.
+              break;
+          }
+        }
+        // NOTE: if num_nonred_eq < needed_nonred_eq
+        // then we haven't found all the needed equalities yet:
+        // this means that some inequalities from x actually holds
+        // as "masked" equalities in the context of y.
+        assert(eqs.num_rows() <= z_cs_num_eq);
+        assert(num_nonred_eq <= needed_nonred_eq);
+        assert(z_cs_num_eq - eqs.num_rows()
+               == needed_nonred_eq - num_nonred_eq);
+      }
+
+      // Identify non-redundant inequalities.
+      // Avoid useless copies (no modifications are needed).
+      std::vector<const Constraint*> p_nonred_ineq;
+      // Fill p_nonred_ineq with (pointers to) inequalities from y_cs ...
+      for (dimension_type i = y_cs_num_eq; i < y_cs_num_rows; ++i)
+        p_nonred_ineq.push_back(&y_cs[i]);
+      // ... and (pointers to) non-redundant inequalities from x_cs.
+      for (dimension_type i = x_cs_num_eq; i < x_cs_num_rows; ++i)
+        if (!redundant_by_y[i])
+          p_nonred_ineq.push_back(&x_cs[i]);
+
+      const dimension_type p_nonred_ineq_size = p_nonred_ineq.size();
+      const dimension_type y_cs_num_ineq = y_cs_num_rows - y_cs_num_eq;
+
+      // Compute saturation info.
+      const dimension_type sat_num_rows = p_nonred_ineq_size;
+      Bit_Matrix sat(sat_num_rows, z_gs_num_rows);
+      for (dimension_type i = sat_num_rows; i-- > 0; ) {
+        const Constraint& nonred_ineq_i = *(p_nonred_ineq[i]);
+        Bit_Row& sat_i = sat[i];
+        for (dimension_type j = z_gs_num_rows; j-- > 0; )
+          if (Scalar_Products::sign(nonred_ineq_i, z_gs[j]))
+            sat_i.set(j);
+        if (sat_i.empty() && num_nonred_eq < needed_nonred_eq) {
+          // `nonred_ineq_i' is actually masking an equality
+          // and we are still looking for some masked inequalities.
+          // Iteration goes downwards, so the inequality comes from x_cs.
+          assert(i >= y_cs_num_ineq);
+          // Check if the equality is independent in eqs.
+          Linear_Row masked_eq = Linear_Row(nonred_ineq_i);
+          masked_eq.set_is_line_or_equality();
+          masked_eq.sign_normalize();
+          if (add_to_system_and_check_independence(eqs, masked_eq)) {
+            // It is independent: add the _inequality_ to nonred_eq.
+            nonred_eq.insert(nonred_ineq_i);
+            ++num_nonred_eq;
+          }
+        }
+      }
+      // Here we have already found all the needed (masked) equalities.
+      assert(num_nonred_eq == needed_nonred_eq);
+
+      drop_redundant_inequalities(p_nonred_ineq, x.topology(),
+                                  sat, z_cs_num_eq);
+
+      // Place the nonredundant (masked) equalities into result_cs.
+      result_cs.swap(nonred_eq);
+      // Add to result_cs the nonredundant inequalities from x_cs,
+      // i.e., those having indices no smaller than y_cs_num_ineq.
+      for (dimension_type i = y_cs_num_ineq; i < p_nonred_ineq_size; ++i)
+        if (p_nonred_ineq[i])
+          result_cs.insert(*p_nonred_ineq[i]);
+    }
+  }
+
+  Polyhedron result_ph(x.topology(), x.space_dim, UNIVERSE);
+  result_ph.add_constraints(result_cs);
+  x.swap(result_ph);
+  assert(x.OK());
+  return true;
 }
 
 void

@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "globals.defs.hh"
 #include <cassert>
 // For the declaration of ffs(3).
-#include <cstring>
+#include <strings.h>
 
 namespace Parma_Polyhedra_Library {
 

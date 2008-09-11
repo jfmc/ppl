@@ -24,7 +24,7 @@ package ppl_java;
 
 import java.math.BigInteger;
 
-//! FIXME: A PPL coefficient.
+//! A PPL coefficient.
 /*! \ingroup PPL_Java_interface
   Objects of type Coefficient are used to implement the integral valued
   coefficients occurring in linear expressions, constraints, generators,
@@ -68,8 +68,8 @@ public class Coefficient {
     public BigInteger getBigInteger() {
 	return value;
     }
-    
+
     private void set(Coefficient c) {
-       value = c.getBigInteger();
+        value = c.getBigInteger();
     }
 }

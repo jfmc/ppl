@@ -34,6 +34,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "NNC_Polyhedron.defs.hh"
 #include "Polyhedron.defs.hh"
 #include "Grid.defs.hh"
+#include "Partially_Reduced_Product.defs.hh"
 #include "Variables_Set.types.hh"
 #include "Determinate.defs.hh"
 #include "Powerset.defs.hh"
@@ -45,6 +46,17 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 //! The powerset construction instantiated on PPL polyhedra.
 /*! \ingroup PPL_CXX_interface */
+/*!
+  \warning
+  At present, the supported instantiations for the
+  disjunct domain template \p PS are the simple pointset domains:
+  <CODE>C_Polyhedron</CODE>,
+  <CODE>NNC_Polyhedron</CODE>,
+  <CODE>Grid</CODE>,
+  <CODE>Octagonal_Shape<T></CODE>,
+  <CODE>BD_Shape<T></CODE>,
+  <CODE>Box<T></CODE>.
+*/
 template <typename PS>
 class Parma_Polyhedra_Library::Pointset_Powerset
   : public Parma_Polyhedra_Library::Powerset
@@ -95,6 +107,16 @@ public:
   template <typename QH>
   explicit Pointset_Powerset(const Pointset_Powerset<QH>& y,
                              Complexity_Class complexity = ANY_COMPLEXITY);
+
+  /*! \brief
+    Creates a Pointset_Powerset from a product
+    This will be craeted as a single disjunct of type PS that
+    approximates the product.
+  */
+   template <typename QH1, typename QH2, typename R>
+   explicit
+     Pointset_Powerset(const Partially_Reduced_Product<QH1, QH2, R>& prp,
+                       Complexity_Class complexity = ANY_COMPLEXITY);
 
   /*! \brief
     Creates a Pointset_Powerset with a single disjunct approximating
@@ -252,13 +274,13 @@ public:
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this
-    is a universe powerset.
+    is the top element of the powerser lattice.
   */
   bool is_universe() const;
 
   /*! \brief
-    Returns <CODE>true</CODE> if and only if \p *this
-    is a topologically closed subset of the vector space.
+    Returns <CODE>true</CODE> if and only if all the disjuncts
+    in \p *this are topologically closed.
   */
   bool is_topologically_closed() const;
 
@@ -278,6 +300,27 @@ public:
 
   //! Returns <CODE>true</CODE> if and only if \p *this is discrete.
   bool is_discrete() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p var is constrained in
+    \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p var is not a space dimension of \p *this.
+
+    \note
+    A variable is constrained if there exists a non-redundant disjunct
+    that is constraining the variable: this definition relies on the
+    powerset lattice structure and may be somewhat different from the
+    geometric intuition.
+    For instance, variable \f$x\f$ is constrained in the powerset
+    \f[
+      \mathit{ps} = \bigl\{ \{ x \geq 0 \}, \{ x \leq 0 \} \bigr\},
+    \f]
+    even though \f$\mathit{ps}\f$ is geometrically equal to the
+    whole vector space.
+  */
+  bool constrains(Variable var) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p expr is
@@ -741,6 +784,17 @@ public:
     Thrown if \p *this and \p y are dimension-incompatible.
   */
   void difference_assign(const Pointset_Powerset& y);
+
+  /*! \brief
+    Assigns to \p *this a \ref Powerset_Meet_Preserving_Simplification
+    "meet-preserving simplification" of \p *this with respect to \p y.
+    If \c false is returned, then the intersection is empty.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are topology-incompatible or
+    dimension-incompatible.
+  */
+  bool simplify_using_context_assign(const Pointset_Powerset& y);
 
   /*! \brief
     Assigns to \p *this the
@@ -1208,6 +1262,18 @@ private:
   dimension_type space_dim;
 
   /*! \brief
+    Assigns to \p to_be_enlarged a
+    \ref Powerset_Meet_Preserving_Simplification
+    "powerset meet-preserving enlargement" of itself with respect to \p *this.
+    If \c false is returned, then the intersection is empty.
+
+    \note
+    It is assumed that \p *this and \p to_be_enlarged are
+    topology-compatible and dimension-compatible.
+  */
+  bool intersection_preserving_enlarge_element(PS& to_be_enlarged) const;
+
+  /*! \brief
     Assigns to \p *this the result of applying the BGP99 heuristics
     to \p *this and \p y, using the widening function \p wf.
   */
@@ -1272,8 +1338,11 @@ check_containment(const NNC_Polyhedron& ph,
 		  const Pointset_Powerset<NNC_Polyhedron>& ps);
 
 
-//! Uses the grid \p q to partition the grid \p p if the partition is finite.
-/*! \relates Parma_Polyhedra_Library::Pointset_Powerset
+/*! \brief
+  Partitions the grid \p q with respect to grid \p p if and only if
+  such a partition is finite.
+
+  \relates Parma_Polyhedra_Library::Pointset_Powerset
   Let \p p and \p q be two grids.
   The function returns an object <CODE>r</CODE> of type
   <CODE>std::pair\<PS, Pointset_Powerset\<Grid\> \></CODE>

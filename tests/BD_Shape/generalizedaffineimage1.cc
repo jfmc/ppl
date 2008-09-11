@@ -368,14 +368,14 @@ test13() {
   print_constraints(bds, "*** bds ***");
 
   bds.generalized_affine_image(2*B + 3*A,
-                              LESS_OR_EQUAL, Linear_Expression(1));
+                               LESS_OR_EQUAL, Linear_Expression(1));
 
   BD_Shape<mpq_class> known_result(2);
 
   bool ok = check_result(bds, known_result);
 
   print_constraints(bds, "*** bds.generalized_affine_image(3*A + 2*B, "
-                        "LESS_OR_EQUAL, 1) ***");
+                         "LESS_OR_EQUAL, 1) ***");
 
   return ok;
 }
@@ -546,13 +546,12 @@ test20() {
   TBD_Shape bds(3);
   bds.add_constraint(A - B == 0);
   bds.add_constraint(B <= 1);
-  bds.add_constraint(C + A <=2);
 
   print_constraints(bds, "*** bds ***");
 
   bds.generalized_affine_image(Linear_Expression(3),
-                              GREATER_OR_EQUAL,
-                              Linear_Expression(4));
+                               GREATER_OR_EQUAL,
+                               Linear_Expression(4));
 
   BD_Shape<mpq_class> known_result(3, EMPTY);
 

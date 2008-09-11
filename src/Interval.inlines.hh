@@ -409,8 +409,21 @@ inline typename Enable_If<Is_Singleton<From>::value
                           || Is_Interval<From>::value, I_Result>::type
 Interval<To_Boundary, To_Info>::difference_assign(const From& x) {
   assert(f_OK(x));
-  Parma_Polyhedra_Library::used(x);
-  return combine(V_LE, V_GE);
+  if (lt(UPPER, upper(), info(), LOWER, f_lower(x), f_info(x)) ||
+      gt(LOWER, lower(), info(), UPPER, f_upper(x), f_info(x)))
+    return combine(V_EQ, V_EQ);
+  bool nl = ge(LOWER, lower(), info(), LOWER, f_lower(x), f_info(x));
+  bool nu = le(UPPER, upper(), info(), UPPER, f_upper(x), f_info(x));
+  Result rl = V_EQ, ru = V_EQ;
+  if (nl) {
+    if (nu)
+      return assign(EMPTY);
+    else
+      rl = complement(LOWER, lower(), info(), UPPER, f_upper(x), f_info(x));
+  }
+  else if (nu)
+    ru = complement(UPPER, upper(), info(), LOWER, f_lower(x), f_info(x));
+  return combine(rl, ru);
 }
 
 template <typename To_Boundary, typename To_Info>
@@ -423,7 +436,25 @@ Interval<To_Boundary, To_Info>::difference_assign(const From1& x,
                                                   const From2& y) {
   assert(f_OK(x));
   assert(f_OK(y));
-  return combine(V_LE, V_GE);
+  if (lt(UPPER, f_upper(x), f_info(x), LOWER, f_lower(y), f_info(y)) ||
+      gt(LOWER, f_lower(x), f_info(x), UPPER, f_upper(y), f_info(y)))
+    return assign(x);
+  bool nl = ge(LOWER, f_lower(x), f_info(x), LOWER, f_lower(y), f_info(y));
+  bool nu = le(UPPER, f_upper(x), f_info(x), UPPER, f_upper(y), f_info(y));
+  Result rl = V_EQ, ru = V_EQ;
+  if (nl) {
+    if (nu)
+      return assign(EMPTY);
+    else {
+      rl = complement(LOWER, lower(), info(), UPPER, f_upper(y), f_info(y));
+      ru = Boundary_NS::assign(UPPER, upper(), info(), UPPER, f_upper(x), f_info(x));
+    }
+  }
+  else if (nu) {
+    ru = complement(UPPER, upper(), info(), LOWER, f_lower(y), f_info(y));
+    rl = Boundary_NS::assign(LOWER, lower(), info(), LOWER, f_lower(x), f_info(x));
+  }
+  return combine(rl, ru);
 }
 
 template <typename To_Boundary, typename To_Info>
@@ -535,7 +566,7 @@ Interval<To_Boundary, To_Info>::refine_universal(Relation_Symbol rel,
 	return combine(V_EQ, V_EQ);
       info().clear_boundary_properties(UPPER);
       Result ru = Boundary_NS::assign(UPPER, upper(), info(),
-				      LOWER, f_lower(x), f_info(x), true);
+				      LOWER, f_lower(x), SCALAR_INFO, !is_open(LOWER, f_lower(x), f_info(x)));
       invalidate_cardinality_cache();
       normalize();
       // The following Parma_Polyhedra_Library:: qualification is to work
@@ -549,7 +580,7 @@ Interval<To_Boundary, To_Info>::refine_universal(Relation_Symbol rel,
 	return combine(V_EQ, V_EQ);
       info().clear_boundary_properties(UPPER);
       Result ru = Boundary_NS::assign(UPPER, upper(), info(),
-				      LOWER, f_lower(x), f_info(x));
+				      LOWER, f_lower(x), SCALAR_INFO);
       invalidate_cardinality_cache();
       normalize();
       // The following Parma_Polyhedra_Library:: qualification is to work
@@ -563,7 +594,7 @@ Interval<To_Boundary, To_Info>::refine_universal(Relation_Symbol rel,
 	return combine(V_EQ, V_EQ);
       info().clear_boundary_properties(LOWER);
       Result rl = Boundary_NS::assign(LOWER, lower(), info(),
-				      UPPER, f_upper(x), f_info(x), true);
+				      UPPER, f_upper(x), SCALAR_INFO, !is_open(UPPER, f_upper(x), f_info(x)));
       invalidate_cardinality_cache();
       normalize();
       // The following Parma_Polyhedra_Library:: qualification is to work
@@ -577,7 +608,7 @@ Interval<To_Boundary, To_Info>::refine_universal(Relation_Symbol rel,
 	return combine(V_EQ, V_EQ);
       info().clear_boundary_properties(LOWER);
       Result rl = Boundary_NS::assign(LOWER, lower(), info(),
-				      UPPER, f_upper(x), f_info(x));
+				      UPPER, f_upper(x), SCALAR_INFO);
       invalidate_cardinality_cache();
       normalize();
       // The following Parma_Polyhedra_Library:: qualification is to work
@@ -1094,7 +1125,7 @@ operator/(const Interval<B, Info>& x, const Interval<B, Info>& y) {
 template <typename Boundary, typename Info>
 inline std::ostream&
 operator<<(std::ostream& os, const Interval<Boundary, Info>& x) {
-  assert(x.OK());
+  // assert(x.OK());
   if (check_empty_arg(x))
     return os << "[]";
   if (x.is_singleton()) {
@@ -1114,6 +1145,43 @@ operator<<(std::ostream& os, const Interval<Boundary, Info>& x) {
   os << (x.upper_is_open() ? ")" : "]");
   output_restriction(os, x.info());
   return os;
+}
+
+template <typename Boundary, typename Info>
+inline void
+Interval<Boundary, Info>::ascii_dump(std::ostream& s) const {
+  using Parma_Polyhedra_Library::ascii_dump;
+  s << "info ";
+  info().ascii_dump(s);
+  s << " lower ";
+  ascii_dump(s, lower());
+  s << " upper ";
+  ascii_dump(s, upper());
+  s << '\n';
+}
+
+template <typename Boundary, typename Info>
+inline bool
+Interval<Boundary, Info>::ascii_load(std::istream& s) {
+  using Parma_Polyhedra_Library::ascii_load;
+  std::string str;
+  if (!(s >> str) || str != "info")
+    return false;
+  if (!info().ascii_load(s))
+    return false;
+  if (!(s >> str) || str != "lower")
+    return false;
+  if (!ascii_load(s, lower()))
+    return false;
+  if (!(s >> str) || str != "upper")
+    return false;
+  if (!ascii_load(s, upper()))
+    return false;
+#ifdef PPL_ABI_BREAKING_EXTRA_DEBUG
+  complete_init_internal();
+#endif
+  assert(OK());
+  return true;
 }
 
 /*! \brief

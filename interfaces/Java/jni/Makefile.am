@@ -58,10 +58,7 @@ ppl_java_globals.cc
 nodist_libppl_java_la_SOURCES = \
 ppl_java_classes.cc
 
-BUILT_SOURCES = \
-ppl_java_classes.cc
-
-ppl_java_classes.cc: $(interface_generator_dependencies) Makefile
+ppl_java_classes.cc: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I../.. \
 		-I$(srcdir) -I$(srcdir)/.. -I$(srcdir)/../.. \
 		$(srcdir)/ppl_interface_generator_java_ppl_java_classes_cc.m4 \
@@ -73,6 +70,6 @@ $(interface_generator_files)
 libppl_java_la_LIBADD = $(top_builddir)/src/libppl.la @extra_libraries@
 
 CLEANFILES = \
-$(BUILT_SOURCES)
+ppl_java_classes.cc
 
 endif BUILD_JAVA_INTERFACE

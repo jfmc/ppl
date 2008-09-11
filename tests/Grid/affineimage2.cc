@@ -167,7 +167,7 @@ test06() {
   gr.affine_image(A, B);
 
   Grid known_gr(2);
-  known_gr.add_congruence(A - B == 0);
+  known_gr.add_congruence((A - B == 0) / 0);
   known_gr.add_congruence((A %= 0) / 2);
 
   bool ok = (gr == known_gr);

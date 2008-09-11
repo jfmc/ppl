@@ -44,12 +44,7 @@ m4_define(`m4_procedure_list', `m4_common_procedure_list')
 
 dnl TODO
 dnl Some method schemas are not yet implemented for the OCaml interface:
-dnl ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruence/6 +grid,
-dnl ppl_@CLASS@_@MAXMIN@_with_point/6 +all,
-dnl These have 6 arguments which seems to cause a problem
 dnl ppl_@CLASS@_ascii_dump/1
 dnl ppl_@CLASS@_@PARTITION@/4 +pointset_powerset \grid,
 dnl ppl_@CLASS@_approximate_partition/5  +pointset_powerset \shape,
-dnl ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign/2
-dnl ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign/3
 dnl ppl_@CLASS@_BGP99_@DISJUNCT_EXTRAPOLATION@_extrapolation_assign/3

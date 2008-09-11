@@ -110,7 +110,7 @@ PPL::check_containment(const NNC_Polyhedron& ph,
 
 namespace {
 
-#if PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Uses the congruence \p c to approximately partition the grid \p qq.
 /*! \relates Parma_Polyhedra_Library::Pointset_Powerset
   On exit, the intersection of \p qq and congruence \p c is stored
@@ -133,7 +133,7 @@ approximate_partition_aux(const PPL::Congruence& c,
   }
 
   Congruence_System cgs = qq.congruences();
-  Congruence_System cgs_copy = qq_copy.minimized_congruences();
+  Congruence_System cgs_copy = qq_copy.congruences();
   // When c is an equality, not satisfied by Grid qq
   // then add qq to the set r. There is no finite
   // partition in this case.
@@ -183,6 +183,9 @@ PPL::approximate_partition(const Grid& p, const Grid& q,
   using namespace PPL;
   finite_partition = true;
   Pointset_Powerset<Grid> r(p.space_dimension(), EMPTY);
+  // Ensure that the congruence system of q is minimized
+  // before copying and calling approximate_partition_aux().
+  (void) q.minimized_congruences();
   Grid qq = q;
   const Congruence_System& pcs = p.congruences();
   for (Congruence_System::const_iterator i = pcs.begin(),

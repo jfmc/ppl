@@ -36,10 +36,9 @@ test01() {
 
   gr.add_constraint(A == 3);
   print_congruences(gr, "*** gr.add_constraint(A == 3) ***");
-  gr.add_constraint(B >= 0);
 
   Grid known_gr(2);
-  known_gr.add_congruence(A == 3);
+  known_gr.add_congruence((A %= 3) / 0);
   bool ok = (gr == known_gr);
 
   print_congruences(gr, "*** gr.add_constraint(B >= 0) ***");
@@ -66,7 +65,7 @@ test02() {
   gr.add_constraint(*ph.constraints().begin());
 
   Grid known_gr(3);
-  known_gr.add_congruence(B == 0);
+  known_gr.add_congruence((B %= 0) / 0);
 
   bool ok = (gr == known_gr);
 
@@ -94,8 +93,8 @@ test03() {
   gr.add_constraint_and_minimize(B > 2);
 
   Grid known_gr(4);
-  known_gr.add_congruence(2*A == C);
-  known_gr.add_congruence(D == 0);
+  known_gr.add_congruence((2*A %= C) / 0);
+  known_gr.add_congruence((D %= 0) / 0);
 
   bool ok = (gr == known_gr);
 
@@ -112,11 +111,11 @@ test04() {
   Grid gr(4);
   print_congruences(gr, "*** gr ***");
 
-  gr.add_congruence(D == 4);
+  gr.add_congruence((D %= 4) / 0);
 
   Grid known_gr(4);
 
-  known_gr.add_congruence(D == 4);
+  known_gr.add_congruence((D %= 4) / 0);
 
   bool ok = (gr == known_gr);
 
@@ -125,6 +124,7 @@ test04() {
   return ok;
 }
 
+#if 0
 // add_congruence(c), where grid stays the same
 bool
 test05() {
@@ -143,6 +143,7 @@ test05() {
 
   return ok;
 }
+#endif
 
 // add_congruence_and_minimize(c), add equality.
 bool
@@ -155,10 +156,10 @@ test06() {
 
   print_congruences(gr, "*** gr ***");
 
-  gr.add_congruence_and_minimize(C == 4*A);
+  gr.add_congruence_and_minimize((C %= 4*A) / 0);
 
   Grid known_gr(3);
-  known_gr.add_congruence(C == 4*A);
+  known_gr.add_congruence((C %= 4*A) / 0);
 
   bool ok = (gr == known_gr);
 
@@ -167,6 +168,7 @@ test06() {
   return ok;
 }
 
+#if 0
 // add_congruence_and_minimize(c), where grid stays the same.
 bool
 test07() {
@@ -189,6 +191,7 @@ test07() {
 
   return ok;
 }
+#endif
 
 // add_constraint -- space dimension exception
 bool
@@ -228,6 +231,25 @@ test09() {
   return false;
 }
 
+// add_constraint_and_minimize -- space dimension exception
+bool
+test10() {
+  Variable B(1);
+
+  Grid gr(1);
+
+  try {
+    gr.add_constraint(B >= 0);
+  }
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -235,9 +257,14 @@ BEGIN_MAIN
   DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
+#if 0
   DO_TEST(test05);
+#endif
   DO_TEST(test06);
+#if 0
   DO_TEST(test07);
+#endif
   DO_TEST(test08);
   DO_TEST(test09);
+  DO_TEST(test10);
 END_MAIN

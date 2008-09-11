@@ -551,16 +551,18 @@ Pointset_Powerset<PS>::affine_dimension() const {
 
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
-    C_Polyhedron phi(space_dim);
     PS pi(si->element());
-    const Constraint_System& cs = pi.minimized_constraints();
-    for (Constraint_System::const_iterator i = cs.begin(),
-           cs_end = cs.end(); i != cs_end; ++i) {
-      const Constraint& c = *i;
-      if (c.is_equality())
-        phi.add_constraint(c);
+    if (!pi.is_empty()) {
+      C_Polyhedron phi(space_dim);
+      const Constraint_System& cs = pi.minimized_constraints();
+      for (Constraint_System::const_iterator i = cs.begin(),
+             cs_end = cs.end(); i != cs_end; ++i) {
+        const Constraint& c = *i;
+        if (c.is_equality())
+          phi.add_constraint(c);
+      }
+      x_ph.poly_hull_assign(phi);
     }
-    x_ph.poly_hull_assign(phi);
   }
 
   return x_ph.affine_dimension();
@@ -569,11 +571,23 @@ Pointset_Powerset<PS>::affine_dimension() const {
 template <typename PS>
 bool
 Pointset_Powerset<PS>::is_universe() const {
-  // FIXME: this is not the most efficient implementation.
-  // FIXME: this is buggy when PS is not an abstraction of NNC_Polyhedron.
-  const NNC_Polyhedron ph = NNC_Polyhedron(space_dim);
-  const Pointset_Powerset<NNC_Polyhedron> pps(*this);
-  return check_containment(ph, pps);
+  const Pointset_Powerset& x = *this;
+  // Exploit omega-reduction, if already computed.
+  if (x.is_omega_reduced())
+    return x.size() == 1 && x.begin()->element().is_universe();
+
+  // A powerset is universe iff one of its disjuncts is.
+  for (const_iterator x_i = x.begin(), x_end = x.end(); x_i != x_end; ++x_i)
+    if (x_i->element().is_universe()) {
+      // Speculative omega-reduction, if it is worth.
+      if (x.size() > 1) {
+        Pointset_Powerset<PS> universe(x.space_dimension(), UNIVERSE);
+        Pointset_Powerset& xx = const_cast<Pointset_Powerset&>(x);
+        xx.swap(universe);
+      }
+      return true;
+    }
+  return false;
 }
 
 template <typename PS>
@@ -625,6 +639,30 @@ Pointset_Powerset<PS>::is_bounded() const {
 
 template <typename PS>
 bool
+Pointset_Powerset<PS>::constrains(Variable var) const {
+  const Pointset_Powerset& x = *this;
+  // `var' should be one of the dimensions of the powerset.
+  const dimension_type var_space_dim = var.space_dimension();
+  if (x.space_dimension() < var_space_dim) {
+    std::ostringstream s;
+    s << "PPL::Pointset_Powerset<PS>::constrains(v):\n"
+      << "this->space_dimension() == " << x.space_dimension() << ", "
+      << "v.space_dimension() == " << var_space_dim << ".";
+    throw std::invalid_argument(s.str());
+  }
+  // omega_reduction needed, since a redundant disjunct may constrain var.
+  x.omega_reduce();
+  // An empty powerset constrains all variables.
+  if (x.is_empty())
+    return true;
+  for (const_iterator x_i = x.begin(), x_end = x.end(); x_i != x_end; ++x_i)
+    if (x_i->element().constrains(var))
+      return true;
+  return false;
+}
+
+template <typename PS>
+bool
 Pointset_Powerset<PS>::is_disjoint_from(const Pointset_Powerset& y) const {
   const Pointset_Powerset& x = *this;
   for (Sequence_const_iterator si = x.sequence.begin(),
@@ -648,6 +686,51 @@ Pointset_Powerset<PS>::topological_closure_assign() {
          s_end = x.sequence.end(); si != s_end; ++si)
     si->element().topological_closure_assign();
   assert(x.OK());
+}
+
+template <typename PS>
+bool
+Pointset_Powerset<PS>
+::intersection_preserving_enlarge_element(PS& to_be_enlarged) const {
+  // FIXME: this is just an executable specification.
+  const Pointset_Powerset& context = *this;
+  assert(context.space_dimension() == to_be_enlarged.space_dimension());
+  bool nonempty_intersection = false;
+  // TODO: maybe use a *sorted* constraint system?
+  PS enlarged(context.space_dimension(), UNIVERSE);
+  for (Sequence_const_iterator si = context.sequence.begin(),
+         s_end = context.sequence.end(); si != s_end; ++si) {
+    PS context_i(si->element());
+    context_i.intersection_assign(enlarged);
+    PS enlarged_i(to_be_enlarged);
+    nonempty_intersection
+      |= enlarged_i.simplify_using_context_assign(context_i);
+    // TODO: merge the sorted constraints of `enlarged' and `enlarged_i'?
+    enlarged.intersection_assign(enlarged_i);
+  }
+  to_be_enlarged.swap(enlarged);
+  return nonempty_intersection;
+}
+
+template <typename PS>
+bool
+Pointset_Powerset<PS>
+::simplify_using_context_assign(const Pointset_Powerset& y) {
+  Pointset_Powerset& x = *this;
+  for (Sequence_iterator si = x.sequence.begin(),
+         s_end = x.sequence.end(); si != s_end; ) {
+    // TODO: check whether it would be useful (i.e., more efficient)
+    // to eagerly test whether *si is omega-redundant due to any of
+    // the elements preceding it (which have been already enlarged).
+    if (y.intersection_preserving_enlarge_element(si->element()))
+      ++si;
+    else
+      // Intersection with `*si' is empty: drop the disjunct.
+      si = x.sequence.erase(si);
+  }
+  x.reduced = false;
+  assert(x.OK());
+  return !x.sequence.empty();
 }
 
 template <typename PS>

@@ -577,26 +577,21 @@ public:
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
 
-  void ascii_dump(std::ostream& s) const {
-    s << *this << std::endl;
-  }
-
-  bool ascii_load(std::istream& s) {
-    s >> *this;
-    return s;
-  }
+  void ascii_dump(std::ostream& s) const;
+  bool ascii_load(std::istream& s);
 
   bool OK() const {
 #ifdef PPL_ABI_BREAKING_EXTRA_DEBUG
     if (!completed) {
-	std::cerr << "The interval initialization has not been completed." << std::endl;
+	std::cerr << "The interval initialization has not been completed."
+                  << std::endl;
 	return false;
     }
 #endif
 #if 0
     if (!Info::may_be_empty && is_empty()) {
 #ifndef NDEBUG
-	std::cerr << "The interval is unexpectedly empty." << std::endl;
+	std::cerr << "The interval is unexpectedly empty.\n";
 #endif
 	return false;
     }
@@ -605,7 +600,7 @@ public:
     if (is_open(LOWER, lower(), info())) {
       if (is_plus_infinity(LOWER, lower(), info())) {
 #ifndef NDEBUG
-	std::cerr << "The lower boundary is +inf open." << std::endl;
+	std::cerr << "The lower boundary is +inf open.\n";
 #endif
       }
     }
@@ -613,14 +608,14 @@ public:
 	     && (is_minus_infinity(LOWER, lower(), info())
 		 || is_plus_infinity(LOWER, lower(), info()))) {
 #ifndef NDEBUG
-      std::cerr << "The lower boundary is unexpectedly infinity." << std::endl;
+      std::cerr << "The lower boundary is unexpectedly infinity.\n";
 #endif
       return false;
     }
     if (!info().get_boundary_property(LOWER, SPECIAL)) {
       if (is_not_a_number(lower())) {
 #ifndef NDEBUG
-	std::cerr << "The lower boundary is not a number." << std::endl;
+	std::cerr << "The lower boundary is not a number.\n";
 #endif
 	return false;
       }
@@ -628,7 +623,8 @@ public:
       if (info().get_boundary_property(LOWER, NORMALIZED)
 	  && !info().is_restricted(lower())) {
 #ifndef NDEBUG
-	std::cerr << "The lower boundary is marked to be normalized, but it is not." << std::endl;
+	std::cerr << "The lower boundary is marked to be normalized, "
+                  << "but it is not.\n";
 #endif
 	return false;
       }
@@ -638,7 +634,7 @@ public:
     if (is_open(UPPER, upper(), info())) {
       if (is_minus_infinity(UPPER, upper(), info())) {
 #ifndef NDEBUG
-	std::cerr << "The upper boundary is -inf open." << std::endl;
+	std::cerr << "The upper boundary is -inf open.\n";
 #endif
       }
     }
@@ -646,14 +642,15 @@ public:
 	     && (is_minus_infinity(UPPER, upper(), info())
 		 || is_plus_infinity(UPPER, upper(), info()))) {
 #ifndef NDEBUG
-      std::cerr << "The upper boundary is unexpectedly infinity." << std::endl;
+      std::cerr << "The upper boundary is unexpectedly infinity."
+                << std::endl;
 #endif
       return false;
     }
     if (!info().get_boundary_property(UPPER, SPECIAL)) {
       if (is_not_a_number(upper())) {
 #ifndef NDEBUG
-	std::cerr << "The upper boundary is not a number." << std::endl;
+	std::cerr << "The upper boundary is not a number.\n";
 #endif
 	return false;
       }
@@ -661,7 +658,8 @@ public:
       if (info().get_boundary_property(UPPER, NORMALIZED)
 	  && !info().is_restricted(upper())) {
 #ifndef NDEBUG
-	std::cerr << "The upper boundary is marked to be normalized, but it is not." << std::endl;
+	std::cerr << "The upper boundary is marked to be normalized, "
+                  << "but it is not.\n";
 #endif
 	return false;
       }
@@ -674,7 +672,8 @@ public:
     if (t == T_YES) {
       if (!is_empty_nocache()) {
 #ifndef NDEBUG
-	std::cerr << "The interval is marked to be empty but actually it is not empty." << std::endl;
+	std::cerr << "The interval is marked to be empty, "
+                  << "but actually it is not empty.\n";
 #endif
 	return false;
       }
@@ -682,7 +681,8 @@ public:
     else if (t == T_NO) {
       if (is_empty_nocache()) {
 #ifndef NDEBUG
-	std::cerr << "The interval is marked to be not empty but actually it is empty." << std::endl;
+	std::cerr << "The interval is marked to be not empty, "
+                  << "but actually it is empty.\n";
 #endif
 	return false;
       }
@@ -692,7 +692,8 @@ public:
     if (t == T_YES) {
       if (!is_singleton_nocache()) {
 #ifndef NDEBUG
-	std::cerr << "The interval is marked to be singleton but actually it is not singleton." << std::endl;
+	std::cerr << "The interval is marked to be singleton, "
+                  << "but actually it is not singleton.\n";
 #endif
 	return false;
       }
@@ -700,16 +701,19 @@ public:
     else if (t == T_NO) {
       if (is_singleton_nocache()) {
 #ifndef NDEBUG
-	std::cerr << "The interval is marked to be not singleton but actually it is singleton." << std::endl;
+	std::cerr << "The interval is marked to be not singleton, "
+                  << "but actually it is singleton.\n";
 #endif
 	return false;
       }
     }
 
     if (info().get_interval_property(CARDINALITY_IS) &&
-	info().get_interval_property(CARDINALITY_0) == info().get_interval_property(CARDINALITY_1)) {
+	info().get_interval_property(CARDINALITY_0)
+        == info().get_interval_property(CARDINALITY_1)) {
 #ifndef NDEBUG
-      std::cerr << "The interval is marked to know its cardinality, but this is unspecified or ambiguous." << std::endl;
+      std::cerr << "The interval is marked to know its cardinality, "
+                << "but this is unspecified or ambiguous.\n";
 #endif
       return false;
     }

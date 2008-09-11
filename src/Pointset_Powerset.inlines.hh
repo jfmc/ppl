@@ -112,6 +112,25 @@ Pointset_Powerset<PS>::Pointset_Powerset(const Grid& gr,
 }
 
 template <typename PS>
+template <typename QH1, typename QH2, typename R>
+inline
+Pointset_Powerset<PS>
+::Pointset_Powerset(const Partially_Reduced_Product<QH1, QH2, R>& prp,
+                    Complexity_Class complexity)
+  : Base(), space_dim(prp.space_dimension()) {
+  Pointset_Powerset& x = *this;
+  if (complexity == ANY_COMPLEXITY) {
+    if (prp.is_empty())
+      return;
+  }
+  else
+    x.reduced = false;
+  x.sequence.push_back(Determinate<PS>(PS(prp, complexity)));
+  x.reduced = false;
+  assert(OK());
+}
+
+template <typename PS>
 template <typename Interval>
 Pointset_Powerset<PS>::Pointset_Powerset(const Box<Interval>& box,
                                          Complexity_Class)

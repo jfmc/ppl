@@ -59,6 +59,7 @@ cc76narrowing1 \
 chinainit \
 concatenate1 \
 congruences1 \
+constrains1 \
 constraints1 \
 contains1 \
 containsintegerpoint1 \
@@ -185,6 +186,8 @@ chinainit_SOURCES = chinainit.cc
 concatenate1_SOURCES = concatenate1.cc
 
 congruences1_SOURCES = congruences1.cc
+
+constrains1_SOURCES = constrains1.cc
 
 constraints1_SOURCES = constraints1.cc
 

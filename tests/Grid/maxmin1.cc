@@ -146,8 +146,8 @@ test04() {
   print_generators(gr_gs_needs_min, "*** gr_gs_needs_min ***");
 
   Grid gr_cgs_needs_min(2);
-  gr_cgs_needs_min.add_congruence(A == 1);
-  gr_cgs_needs_min.add_congruence(3*B == 2);
+  gr_cgs_needs_min.add_constraint(A == 1);
+  gr_cgs_needs_min.add_constraint(3*B == 2);
   print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min ***");
 
   // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
@@ -188,7 +188,7 @@ test05() {
   print_generators(gr_gs_needs_min, "*** gr_gs_needs_min ***");
 
   Grid gr_cgs_needs_min(2);
-  gr_cgs_needs_min.add_congruence(A == 0);
+  gr_cgs_needs_min.add_constraint(A == 0);
   print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min ***");
 
   // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
@@ -220,7 +220,7 @@ test06() {
   print_generators(gr_gs_needs_min, "*** gr_gs_needs_min ***");
 
   Grid gr_cgs_needs_min(2);
-  gr_cgs_needs_min.add_congruence(A - 2*B == 0);
+  gr_cgs_needs_min.add_constraint(A - 2*B == 0);
   print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min ***");
 
   // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
@@ -252,7 +252,7 @@ test07() {
   print_generators(gr_gs_needs_min, "*** gr_gs_needs_min ***");
 
   Grid gr_cgs_needs_min(2);
-  gr_cgs_needs_min.add_congruence(2*A - B == 0);
+  gr_cgs_needs_min.add_constraint(2*A - B == 0);
   print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min ***");
 
   // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
@@ -293,7 +293,7 @@ test08() {
   print_generators(gr_gs_needs_min, "*** gr_gs_needs_min ***");
 
   Grid gr_cgs_needs_min(2);
-  gr_cgs_needs_min.add_congruence(2*A - B == 0);
+  gr_cgs_needs_min.add_constraint(2*A - B == 0);
   gr_cgs_needs_min.add_congruence((B %= 0) / 2);
   print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min ***");
 
@@ -372,7 +372,7 @@ test10() {
   print_generators(gr_gs_needs_min, "*** gr_gs_needs_min ***");
 
   Grid gr_cgs_needs_min(3);
-  gr_cgs_needs_min.add_congruence(B - C == 0);
+  gr_cgs_needs_min.add_constraint(B - C == 0);
   gr_cgs_needs_min.add_congruence(B %= 0);
   print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min ***");
 
@@ -408,7 +408,7 @@ test11() {
   print_generators(gr_gs_needs_min, "*** gr_gs_needs_min ***");
 
   Grid gr_cgs_needs_min(3);
-  gr_cgs_needs_min.add_congruence(2*A + B - 3*C - 2 == 0);
+  gr_cgs_needs_min.add_constraint(2*A + B - 3*C - 2 == 0);
   print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min ***");
 
   // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
@@ -453,12 +453,12 @@ test12() {
   print_generators(gr_gs_needs_min, "*** gr_gs_needs_min ***");
 
   Grid gr_cgs_needs_min(6);
-  gr_cgs_needs_min.add_congruence(A == 7);
-  gr_cgs_needs_min.add_congruence(B == -11);
-  gr_cgs_needs_min.add_congruence(C == 0);
-  gr_cgs_needs_min.add_congruence(D == 0);
-  gr_cgs_needs_min.add_congruence(E == 0);
-  gr_cgs_needs_min.add_congruence(F == 19);
+  gr_cgs_needs_min.add_constraint(A == 7);
+  gr_cgs_needs_min.add_constraint(B == -11);
+  gr_cgs_needs_min.add_constraint(C == 0);
+  gr_cgs_needs_min.add_constraint(D == 0);
+  gr_cgs_needs_min.add_constraint(E == 0);
+  gr_cgs_needs_min.add_constraint(F == 19);
   print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min ***");
 
   // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the

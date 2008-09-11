@@ -1,4 +1,8 @@
 .deps
 Makefile
 Makefile.in
-ppl_prolog.icc
+Prolog_interface.dox
+ppl_prolog_[A-Z]*.cc
+ppl_prolog_[A-Z]*.hh
+ppl_prolog_domains.cc
+ppl_prolog_domains.hh

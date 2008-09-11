@@ -1157,6 +1157,13 @@ main(int argc, char* argv[]) {
   if (ppl_initialize() < 0)
     fatal("cannot initialize the Parma Polyhedra Library");
 
+  // The PPL solver does not use floating point numbers, except
+  // perhaps for the steepest edge heuristics.  In contrast, GLPK does
+  // use them, so it is best to restore the rounding mode as it was
+  // prior to the PPL initialization.
+  if (ppl_restore_pre_PPL_rounding() < 0)
+    fatal("cannot restore the rounding mode");
+
   if (ppl_set_error_handler(error_handler) < 0)
     fatal("cannot install the custom error handler");
 

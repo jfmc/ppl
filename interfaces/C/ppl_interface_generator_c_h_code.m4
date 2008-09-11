@@ -87,17 +87,17 @@ PPL_PROTO((ppl_const_@CLASS@_t ph, ppl_dimension_type* m));
 
 ')
 
-m4_define(`ppl_@CLASS@_@GET_REPRESENT@s_code',
+m4_define(`ppl_@CLASS@_get_@GET_REPRESENT@s_code',
 `int
-ppl_@CLASS@_@GET_REPRESENT@s
+ppl_@CLASS@_get_@GET_REPRESENT@s
 PPL_PROTO((ppl_const_@CLASS@_t ph,
            ppl_const_@UGET_REPRESENT@_System_t* pcs));
 
 ')
 
-m4_define(`ppl_@CLASS@_minimized_@GET_REPRESENT@s_code',
+m4_define(`ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_code',
 `int
-ppl_@CLASS@_minimized_@GET_REPRESENT@s
+ppl_@CLASS@_get_minimized_@GET_REPRESENT@s
 PPL_PROTO((ppl_const_@CLASS@_t ph,
            ppl_const_@UGET_REPRESENT@_System_t* pcs));
 
@@ -168,16 +168,25 @@ ppl_@CLASS@_@SIMPLIFY@ PPL_PROTO((ppl_@CLASS@_t ph));
 m4_define(`ppl_@CLASS@_constrains_code',
 `int
 ppl_@CLASS@_constrains
-PPL_PROTO((ppl_const_@CLASS@_t ph,
+PPL_PROTO((ppl_@CLASS@_t ph,
            ppl_dimension_type var));
 
 ')
 
-m4_define(`ppl_@CLASS@_unconstrain_code',
+m4_define(`ppl_@CLASS@_unconstrain_space_dimension_code',
 `int
-ppl_@CLASS@_unconstrain
+ppl_@CLASS@_unconstrain_space_dimension
 PPL_PROTO((ppl_@CLASS@_t ph,
            ppl_dimension_type var));
+
+')
+
+m4_define(`ppl_@CLASS@_unconstrain_space_dimensions_code',
+`int
+ppl_@CLASS@_unconstrain_space_dimensions
+PPL_PROTO((ppl_@CLASS@_t ph,
+           ppl_dimension_type ds[],
+           size_t n));
 
 ')
 
@@ -192,6 +201,14 @@ PPL_PROTO((ppl_@CLASS@_t x,
 m4_define(`ppl_@CLASS@_@BINMINOP@_code',
 `int
 ppl_@CLASS@_@BINMINOP@
+PPL_PROTO((ppl_@CLASS@_t x,
+           ppl_const_@CLASS@_t y));
+
+')
+
+m4_define(`ppl_@CLASS@_simplify_using_context_assign_code',
+`int
+ppl_@CLASS@_simplify_using_context_assign
 PPL_PROTO((ppl_@CLASS@_t x,
            ppl_const_@CLASS@_t y));
 

@@ -171,11 +171,6 @@ const_iterator(const Matrix::const_iterator& iter,
   : i(iter), csp(&csys) {
 }
 
-inline bool
-Congruence_System::empty() const {
-  return Matrix::empty();
-}
-
 inline Congruence_System::const_iterator
 Congruence_System::begin() const {
   const_iterator i(Matrix::begin(), *this);
@@ -187,6 +182,11 @@ inline Congruence_System::const_iterator
 Congruence_System::end() const {
   const const_iterator i(Matrix::end(), *this);
   return i;
+}
+
+inline bool
+Congruence_System::empty() const {
+  return begin() == end();
 }
 
 inline void

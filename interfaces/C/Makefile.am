@@ -29,7 +29,9 @@ ppl_interface_generator_c_cc.m4 \
 ppl_interface_generator_c_cc_code.m4 \
 ppl_interface_generator_c_cc_preamble
 
-EXTRA_DIST = $(interface_generator_files)
+EXTRA_DIST = \
+$(interface_generator_files) \
+C_interface.dox
 
 if BUILD_C_INTERFACE
 
@@ -77,11 +79,11 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../ppl_interface_generator_common_procedure_generators.m4 \
 $(interface_generator_files)
 
-ppl_c.h: $(interface_generator_dependencies) Makefile
+ppl_c.h: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_c_h.m4 > $@
 
-ppl_c.cc: $(interface_generator_dependencies) Makefile
+ppl_c.cc: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_c_cc.m4 > $@
 
@@ -92,11 +94,21 @@ AM_CPPFLAGS = \
 @extra_includes@
 
 lib_LTLIBRARIES = libppl_c.la
+
 nodist_libppl_c_la_SOURCES = ppl_c.cc
+
+if NO_UNDEFINED
+
+NO_UNDEFINED_FLAG = -no-undefined
+
+endif NO_UNDEFINED
+
 libppl_c_la_LIBADD = \
 $(top_builddir)/src/libppl.la \
 @extra_libraries@
+
 libppl_c_la_LDFLAGS = \
+$(NO_UNDEFINED_FLAG) \
 -version-info $(LIBPPL_C_LT_CURRENT):$(LIBPPL_C_LT_REVISION):$(LIBPPL_C_LT_AGE)
 
 nodist_include_HEADERS = ppl_c.h ppl_c_version.h

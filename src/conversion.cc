@@ -30,6 +30,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Scalar_Products.defs.hh"
 #include "Temp.defs.hh"
 #include <cstddef>
+#include <climits>
 
 namespace PPL = Parma_Polyhedra_Library;
 

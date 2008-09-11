@@ -76,7 +76,7 @@ test04() {
   Variable A(0);
 
   Grid gr(2);
-  gr.add_congruence(A == 0);
+  gr.add_constraint(A == 0);
   print_congruences(gr, "*** gr ***");
 
   bool ok
@@ -213,7 +213,7 @@ test13() {
   Variable A(0);
 
   Grid gr(2);
-  gr.add_congruence(A == 0);
+  gr.add_constraint(A == 0);
   print_congruences(gr, "*** gr ***");
 
   bool ok
