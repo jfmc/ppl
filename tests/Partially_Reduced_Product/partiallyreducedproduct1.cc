@@ -666,7 +666,7 @@ test15() {
   return ok;
 }
 
-// Building from constraints()
+// Building from inequality constraints()
 bool
 test16() {
   Variable A(0);
@@ -674,29 +674,22 @@ test16() {
   Variable C(2);
 
   Constraint_System cs1;
-  cs1.insert(A - C <= 8);
-  cs1.insert(A - C >= 9);
-  Constraint_System cs2;
-  cs2.insert(A - C <= 9);
-  cs2.insert(A - C >= 9);
+  cs.insert(A - C <= 8);
+  cs.insert(A - C >= 9);
 
-  SProduct sp(3);
-  CProduct cp(3);
-  sp.refine_with_constraints(cs1);
-  cp.refine_with_constraints(cs2);
-
-
-  bool ok = sp.OK() && cp.OK();
-
-  print_congruences(sp, "*** sp congruences ***");
-  print_constraints(sp, "*** sp constraints ***");
-  print_congruences(cp, "*** cp congruences ***");
-  print_constraints(cp, "*** cp constraints ***");
-
-  return ok;
+  try {
+    SProduct sp(cs);
+   }
+  catch (const std::invalid_argument& e) {
+    nout << "cs contains an inequality constraint: " << e.what() << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
 }
 
-// Building from congruences()
+// Building from equality congruences()
 bool
 test17() {
   Variable A(0);
