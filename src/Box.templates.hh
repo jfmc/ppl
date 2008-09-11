@@ -359,8 +359,18 @@ Box<ITV>::Box(const Polyhedron& ph, Complexity_Class complexity)
 
   if (complexity == POLYNOMIAL_COMPLEXITY) {
     // Extract easy-to-find bounds from constraints.
-    Box tmp(ph.simplified_constraints(), Recycle_Input());
-    swap(tmp);
+    // FIXME.
+    // CHECKME: cannot use constructor from Constraint_System.
+    // Neither can use refine_with_constraints(cs), since it
+    // will enter a potentially expensive (see test14 of frompolyhedron1)
+    // fixpoint computation.
+    // (This is the one and only use of simplified_constraints.)
+    for (dimension_type i = space_dimension(); i-- > 0; )
+      seq[i].assign(UNIVERSE);
+    Constraint_System cs = ph.simplified_constraints();
+    for (Constraint_System::const_iterator i = cs.begin(),
+	   cs_end = cs.end(); i != cs_end; ++i)
+      refine_with_constraint(*i);
   }
   else if (complexity == SIMPLEX_COMPLEXITY) {
     MIP_Problem lp(space_dim);
@@ -448,7 +458,7 @@ Box<ITV>::Box(const Grid& gr, Complexity_Class)
   // The empty flag will be meaningful, whatever happens from now on.
   set_empty_up_to_date();
 
-  dimension_type space_dim = gr.space_dimension();
+  const dimension_type space_dim = gr.space_dimension();
 
   if (space_dim == 0)
     return;
@@ -524,6 +534,7 @@ Box<ITV>::Box(const Partially_Reduced_Product<D1, D2, R>& dp,
   // The empty flag will be meaningful, whatever happens from now on.
   set_empty_up_to_date();
 
+  // FIXME: this initialization is useless.
   for (dimension_type i = dp.space_dimension(); i-- > 0; )
     seq[i].assign(UNIVERSE);
 
@@ -1733,28 +1744,37 @@ Box<ITV>::fold_space_dimensions(const Variables_Set& to_be_folded,
 template <typename ITV>
 void
 Box<ITV>::add_constraint_no_check(const Constraint& c) {
-  assert(!marked_empty());
-
   const dimension_type c_space_dim = c.space_dimension();
   assert(c_space_dim <= space_dimension());
 
   dimension_type c_num_vars = 0;
   dimension_type c_only_var = 0;
-  // Constraints that are not interval constraints are ignored.
+  // Throw an exception if c is not an interval constraints.
   if (!extract_interval_constraint(c, c_space_dim, c_num_vars, c_only_var))
+    throw_generic("add_constraint(c)", "c is not an interval constraint");
+
+  // Throw an exception if c is a nontrivial strict constraint
+  // and ITV does not support open boundaries.
+  if (c.is_strict_inequality() && c_num_vars != 0
+      && !Box::interval_type::info_type::store_open)
+    throw_generic("add_constraint(c)", "c is a nontrivial strict constraint");
+
+  // Avoid doing useless work if the box is known to be empty.
+  if (marked_empty())
     return;
 
+  const Coefficient& n = c.inhomogeneous_term();
   if (c_num_vars == 0) {
     // Dealing with a trivial constraint.
-    if ((c.is_equality() && c.inhomogeneous_term() != 0)
-	|| c.inhomogeneous_term() < 0)
+    if (n < 0
+        || (c.is_equality() && n != 0)
+	|| (c.is_strict_inequality() && n == 0))
       set_empty();
     return;
   }
 
   assert(c_num_vars == 1);
   const Coefficient& d = c.coefficient(Variable(c_only_var));
-  const Coefficient& n = c.inhomogeneous_term();
   // The constraint `c' is of the form
   // `Variable(c_only_var-1) + n / d rel 0', where
   // `rel' is either the relation `==', `>=', or `>'.
@@ -1782,7 +1802,7 @@ Box<ITV>::add_constraint_no_check(const Constraint& c) {
     seq_c.refine_existential((d > 0) ? GREATER_THAN : LESS_THAN, q);
     break;
   }
-  // FIXME: do check the value returned by `refine' and
+  // FIXME: do check the value returned by `refine_existential' and
   // set `empty' and `empty_up_to_date' as appropriate.
   reset_empty_up_to_date();
   assert(OK());
@@ -1792,8 +1812,11 @@ template <typename ITV>
 void
 Box<ITV>::add_constraints_no_check(const Constraint_System& cs) {
   assert(cs.space_dimension() <= space_dimension());
+  // Note: even when the box is known to be empty, we need to go
+  // through all the constraints to fulfill the method's contract
+  // for what concerns exception throwing.
   for (Constraint_System::const_iterator i = cs.begin(),
-	 cs_end = cs.end(); !marked_empty() && i != cs_end; ++i)
+	 cs_end = cs.end(); i != cs_end; ++i)
     add_constraint_no_check(*i);
   assert(OK());
 }
@@ -1801,31 +1824,44 @@ Box<ITV>::add_constraints_no_check(const Constraint_System& cs) {
 template <typename ITV>
 void
 Box<ITV>::add_congruence_no_check(const Congruence& cg) {
-  assert(!marked_empty());
-
   const dimension_type cg_space_dim = cg.space_dimension();
   assert(cg_space_dim <= space_dimension());
 
-  // Only equality congruences can be intervals.
-  if (!cg.is_equality())
-    return;
+  // Set aside the case of proper congruences.
+  if (cg.is_proper_congruence()) {
+    if (cg.is_trivial_false()) {
+      set_empty();
+      return;
+    }
+    else if (cg.is_trivial_true())
+      return;
+    else
+      // FIXME: what about intervals with restrictions?
+      throw_generic("add_congruence(cg)",
+                    "cg is a nontrivial proper congruence");
+  }
 
+  assert(cg.is_equality());
   dimension_type cg_num_vars = 0;
   dimension_type cg_only_var = 0;
-  // Congruences that are not interval congruences are ignored.
+  // Throw an exception if c is not an interval congruence.
   if (!extract_interval_congruence(cg, cg_space_dim, cg_num_vars, cg_only_var))
+    throw_generic("add_congruence(cg)", "cg is not an interval congruence");
+
+  // Avoid doing useless work if the box is known to be empty.
+  if (marked_empty())
     return;
 
+  const Coefficient& n = cg.inhomogeneous_term();
   if (cg_num_vars == 0) {
-    // Dealing with a trivial congruence.
-    if (cg.inhomogeneous_term() != 0)
+    // Dealing with a trivial equality congruence.
+    if (n != 0)
       set_empty();
     return;
   }
 
   assert(cg_num_vars == 1);
   const Coefficient& d = cg.coefficient(Variable(cg_only_var));
-  const Coefficient& n = cg.inhomogeneous_term();
   // The congruence `cg' is of the form
   // `Variable(cg_only_var-1) + n / d rel 0', where
   // `rel' is either the relation `==', `>=', or `>'.
@@ -1850,8 +1886,11 @@ template <typename ITV>
 void
 Box<ITV>::add_congruences_no_check(const Congruence_System& cgs) {
   assert(cgs.space_dimension() <= space_dimension());
+  // Note: even when the box is known to be empty, we need to go
+  // through all the congruences to fulfill the method's contract
+  // for what concerns exception throwing.
   for (Congruence_System::const_iterator i = cgs.begin(),
-	 cgs_end = cgs.end(); !marked_empty() && i != cgs_end; ++i)
+	 cgs_end = cgs.end(); i != cgs_end; ++i)
     add_congruence_no_check(*i);
   assert(OK());
 }
@@ -2444,9 +2483,9 @@ Box<ITV>
 
   // Add the constraint implied by the `lb_expr' and `ub_expr'.
   if (denominator > 0)
-    add_constraint(lb_expr <= ub_expr);
+    refine_with_constraint(lb_expr <= ub_expr);
   else
-    add_constraint(lb_expr >= ub_expr);
+    refine_with_constraint(lb_expr >= ub_expr);
 
   // Check whether `var' occurs in `lb_expr' and/or `ub_expr'.
   if (lb_expr.coefficient(var) == 0) {
@@ -2456,9 +2495,9 @@ Box<ITV>
 			     ub_expr,
 			     denominator);
     if (denominator > 0)
-      add_constraint(lb_expr <= denominator*var);
+      refine_with_constraint(lb_expr <= denominator*var);
     else
-      add_constraint(denominator*var <= lb_expr);
+      refine_with_constraint(denominator*var <= lb_expr);
   }
   else if (ub_expr.coefficient(var) == 0) {
     // Here `var' can only occur in `lb_expr'.
@@ -2467,9 +2506,9 @@ Box<ITV>
 			     lb_expr,
 			     denominator);
     if (denominator > 0)
-      add_constraint(denominator*var <= ub_expr);
+      refine_with_constraint(denominator*var <= ub_expr);
     else
-      add_constraint(ub_expr <= denominator*var);
+      refine_with_constraint(ub_expr <= denominator*var);
   }
   else {
     // Here `var' occurs in both `lb_expr' and `ub_expr'.  As boxes
@@ -2595,9 +2634,9 @@ Box<ITV>
   // independent of `var', then impose it now.
   if (lb_var_coeff == ub_var_coeff) {
     if (negative_denom)
-      add_constraint(lb_expr >= ub_expr);
+      refine_with_constraint(lb_expr >= ub_expr);
     else
-      add_constraint(lb_expr <= ub_expr);
+      refine_with_constraint(lb_expr <= ub_expr);
   }
 
   ITV& seq_var = seq[var.id()];
@@ -2710,9 +2749,9 @@ Box<ITV>
   // dependent on `var', then impose on the new box.
   if (lb_var_coeff != ub_var_coeff) {
     if (denominator > 0)
-      add_constraint(lb_expr <= ub_expr);
+      refine_with_constraint(lb_expr <= ub_expr);
     else
-      add_constraint(lb_expr >= ub_expr);
+      refine_with_constraint(lb_expr >= ub_expr);
   }
 
   assert(OK());
@@ -2882,8 +2921,7 @@ Box<ITV>
     if (bound_below) {
       for ( ; dim > 0; dim--) {
         d = min_den * expr.coefficient(Variable(dim - 1));
-        revised_expr
-          += d * Variable(dim - 1);
+        revised_expr += d * Variable(dim - 1);
       }
     }
   }
@@ -2891,8 +2929,7 @@ Box<ITV>
     if (bound_above) {
       for ( ; dim > 0; dim--) {
         d = max_den * expr.coefficient(Variable(dim - 1));
-        revised_expr
-          += d * Variable(dim - 1);
+        revised_expr += d * Variable(dim - 1);
       }
     }
   }
@@ -2900,23 +2937,23 @@ Box<ITV>
   switch (corrected_relsym) {
   case LESS_THAN:
     if (bound_below)
-      add_constraint(min_num < revised_expr);
+      refine_with_constraint(min_num < revised_expr);
     break;
   case LESS_OR_EQUAL:
     if (bound_below)
       (min_included)
-        ? add_constraint(min_num <= revised_expr)
-        : add_constraint(min_num < revised_expr);
+        ? refine_with_constraint(min_num <= revised_expr)
+        : refine_with_constraint(min_num < revised_expr);
     break;
   case GREATER_OR_EQUAL:
     if (bound_above)
       (max_included)
-        ? add_constraint(max_num >= revised_expr)
-        : add_constraint(max_num > revised_expr);
+        ? refine_with_constraint(max_num >= revised_expr)
+        : refine_with_constraint(max_num > revised_expr);
     break;
   case GREATER_THAN:
     if (bound_above)
-      add_constraint(max_num > revised_expr);
+      refine_with_constraint(max_num > revised_expr);
     break;
   default:
     // The EQUAL and NOT_EQUAL cases have been already dealt with.
@@ -2971,7 +3008,7 @@ Box<ITV>
   bool min_included;
   bool min_rhs = minimize(rhs, min_num, min_den, min_included);
 
-  // Check whether there is 0, 1 or more thna one variable in the lhs
+  // Check whether there is 0, 1 or more than one variable in the lhs
   // and record the variable with the highest dimension; set the box
   // intervals to be unbounded for all other dimensions with non-zero
   // coefficients in the lhs.
@@ -3119,19 +3156,19 @@ Box<ITV>
     const Coefficient& inhomo = lhs.inhomogeneous_term();
     switch (relsym) {
     case LESS_THAN:
-      add_constraint(inhomo < rhs);
+      refine_with_constraint(inhomo < rhs);
       break;
     case LESS_OR_EQUAL:
-      add_constraint(inhomo <= rhs);
+      refine_with_constraint(inhomo <= rhs);
       break;
     case EQUAL:
-      add_constraint(inhomo == rhs);
+      refine_with_constraint(inhomo == rhs);
       break;
     case GREATER_OR_EQUAL:
-      add_constraint(inhomo >= rhs);
+      refine_with_constraint(inhomo >= rhs);
       break;
     case GREATER_THAN:
-      add_constraint(inhomo > rhs);
+      refine_with_constraint(inhomo > rhs);
       break;
     default:
       // The NOT_EQUAL case has been already dealt with.

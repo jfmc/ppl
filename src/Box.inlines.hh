@@ -250,7 +250,7 @@ Box<ITV>::upper_bound_assign_if_exact(const Box& y) {
 template <typename ITV>
 inline void
 Box<ITV>::expand_space_dimension(const Variable var,
-				      const dimension_type m) {
+                                 const dimension_type m) {
   const dimension_type space_dim = space_dimension();
   // `var' should be one of the dimensions of the vector space.
   if (var.space_dimension() > space_dim)
@@ -278,7 +278,7 @@ operator!=(const Box<ITV>& x, const Box<ITV>& y) {
 template <typename ITV>
 inline bool
 Box<ITV>::get_lower_bound(const dimension_type k, bool& closed,
-			       Coefficient& n, Coefficient& d) const {
+                          Coefficient& n, Coefficient& d) const {
   assert(k < seq.size());
   const ITV& seq_k = seq[k];
 
@@ -298,7 +298,7 @@ Box<ITV>::get_lower_bound(const dimension_type k, bool& closed,
 template <typename ITV>
 inline bool
 Box<ITV>::get_upper_bound(const dimension_type k, bool& closed,
-			       Coefficient& n, Coefficient& d) const {
+                          Coefficient& n, Coefficient& d) const {
   assert(k < seq.size());
   const ITV& seq_k = seq[k];
 
@@ -330,10 +330,6 @@ Box<ITV>::add_constraint(const Constraint& c) {
   if (c_space_dim > space_dimension())
     throw_dimension_incompatible("add_constraint(c)", c);
 
-  // If the box is already empty, there is nothing left to do.
-  if (marked_empty())
-    return;
-
   add_constraint_no_check(c);
 }
 
@@ -360,10 +356,6 @@ Box<ITV>::add_congruence(const Congruence& cg) {
   // Dimension-compatibility check.
   if (cg_space_dim > space_dimension())
     throw_dimension_incompatible("add_congruence(cg)", cg);
-
-  // If the box is already empty, there is nothing left to do.
-  if (marked_empty())
-    return;
 
   add_congruence_no_check(cg);
 }
