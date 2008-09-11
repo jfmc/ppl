@@ -31,8 +31,6 @@ test01() {
   Variable B(1);
 
   Constraint_System cs;
-  cs.insert(A + B <= 5);
-  cs.insert(A + B >= -10);
   cs.insert(A >= 0);
   cs.insert(B <= 7);
   cs.insert(A - B <= 18);
@@ -55,8 +53,6 @@ test02() {
   Variable B(1);
 
   Constraint_System cs;
-  cs.insert(A + B <= 5);
-  cs.insert(A + B >= -10);
   cs.insert(A >= 0);
   cs.insert(B <= 7);
   cs.insert(A - B <= 18);
@@ -79,8 +75,6 @@ test03() {
   Variable B(1);
 
   Constraint_System cs;
-  cs.insert(A + B <= 5);
-  cs.insert(A + B >= -10);
   cs.insert(A >= 0);
   cs.insert(B <= 7);
   cs.insert(A - B <= 18);
@@ -104,8 +98,6 @@ test04() {
   Variable B(1);
 
   Constraint_System cs;
-  cs.insert(A + B <= 5);
-  cs.insert(A + B >= -10);
   cs.insert(A >= 0);
   cs.insert(B <= 7);
   cs.insert(A - B <= 18);
