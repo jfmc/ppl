@@ -1286,7 +1286,6 @@ PPL::Polyhedron::add_congruence(const Congruence& cg) {
 
 bool
 PPL::Polyhedron::add_constraint_and_minimize(const Constraint& c) {
-  // TODO: this is just an executable specification.
   Constraint_System cs(c);
   return add_recycled_constraints_and_minimize(cs);
 }
