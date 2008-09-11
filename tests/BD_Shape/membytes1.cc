@@ -113,14 +113,12 @@ test01() {
 
   TBD_Shape bds(3);
   add_constraint(bds, 2*x - 2*y >= 0);
-  add_constraint(bds, 4*x - 2*y - z + 2 >= 0);
   add_constraint(bds, x - y - 1 <= 0);
   add_constraint(bds, x >= 0);
   minimize(bds);
   add_constraint(bds, x + 1 >= 0);
   add_constraint(bds, x - z - 1 >= 0);
   add_constraint(bds, 2*x - 2*z + 7 >= 0);
-  add_constraint(bds, y - 2*z + 1 >= 0);
   minimize(bds);
   add_constraint(bds, x - y + 5 >= 0);
   add_constraint(bds, 2*x - 2*z + 13 >= 0);
@@ -132,10 +130,7 @@ test01() {
   add_constraint(bds, -2*x + 2*z - 5 >= 0);
   add_constraint(bds, -x + 1 >= 0);
   minimize(bds);
-  add_constraint(bds, -x - z + 5 >= 0);
-  add_constraint(bds, -4*x - 2*y + z + 8 >= 0);
   add_constraint(bds, -x + y + 5 >= 0);
-  add_constraint(bds, -x - y -2*z +13 >= 0);
   minimize(bds);
 
   const memory_size_type bd_total_size = bds.total_memory_in_bytes();
@@ -181,7 +176,6 @@ bool test02() {
   TBD_Shape bds(3);
   bds.add_constraint(4*x - 4*y + 14 >= 0);
   bds.add_constraint(x - z + 2 >= 0);
-  bds.add_constraint(x + y - 1 >= 0);
   bds.add_constraint(y - z - 5 >= 0);
 
   const memory_size_type bd_total_size = bds.total_memory_in_bytes();

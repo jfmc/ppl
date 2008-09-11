@@ -58,7 +58,6 @@ test02() {
   TBD_Shape bds1(2);
   bds1.add_constraint(x >= 0);
   bds1.add_constraint(y >= 0);
-  bds1.add_constraint(x + y - 2 <= 0);
 
   TBD_Shape bds2(2);
   bds2.add_constraint(x >= 2);
