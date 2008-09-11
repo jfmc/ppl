@@ -49,7 +49,6 @@ BD_Shape<T>::BD_Shape(const Congruence_System& cgs)
     status(),
     redundancy_dbm() {
   add_congruences(cgs);
-  return;
 }
 
 template <typename T>
@@ -123,9 +122,9 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
 
   if (!point_seen)
     // The generator system is not empty, but contains no points.
-    throw std::invalid_argument("PPL::BD_Shape<T>::BD_Shape(gs):\n"
-                                "the non-empty generator system gs "
-                                "contains no points.");
+    throw_invalid_argument("PPL::BD_Shape<T>::BD_Shape(gs)",
+                           "the non-empty generator system gs "
+                           "contains no points.");
 
   // Going through all the lines and rays.
   for (Generator_System::const_iterator gs_i = gs_begin;
@@ -283,7 +282,9 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
   }
 
   // Extract easy-to-find bounds from constraints.
-  *this = BD_Shape<T>(ph.constraints());
+  assert(complexity == POLYNOMIAL_COMPLEXITY);
+  *this = BD_Shape<T>(num_dimensions, UNIVERSE);
+  refine_with_constraints(ph.constraints());
 }
 
 template <typename T>
@@ -377,15 +378,17 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
     throw_dimension_incompatible("add_constraint(c)", c);
   // Strict inequalities are not allowed.
   if (c.is_strict_inequality())
-    throw_constraint_incompatible("add_constraint(c)");
+    throw_invalid_argument("add_constraint(c)",
+                           "strict inequalities are not allowed");
 
   dimension_type num_vars = 0;
   dimension_type i = 0;
   dimension_type j = 0;
   TEMP_INTEGER(coeff);
-  // Constraints that are not bounded differences are ignored.
+  // Constraints that are not bounded differences are not allowed.
   if (!extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff))
-    return;
+    throw_invalid_argument("add_constraint(c)",
+			   "c is not a bounded difference constraint");
 
   if (num_vars == 0) {
     // Dealing with a trivial constraint.
@@ -435,16 +438,31 @@ template <typename T>
 void
 BD_Shape<T>::add_congruence(const Congruence& cg) {
   const dimension_type cg_space_dim = cg.space_dimension();
-  if (cg.is_equality()) {
-    Linear_Expression expr;
-    for (dimension_type i = cg_space_dim; i-- > 0; ) {
-      const Variable v(i);
-      expr += cg.coefficient(v) * v;
+  // Dimension-compatibility check:
+  // the dimension of `cg' can not be greater than space_dim.
+  if (space_dimension() < cg_space_dim)
+    throw_dimension_incompatible("add_congruence(cg)", "cg", cg);
+
+  // Handle the case of proper congruences first.
+  if (cg.is_proper_congruence()) {
+    if (cg.is_trivial_true())
+      return;
+    if (cg.is_trivial_false()) {
+      set_empty();
+      return;
     }
-    expr += cg.inhomogeneous_term();
-    add_constraint(expr == 0);
+    // Non-trivial and proper congruences are not allowed.
+    throw_invalid_argument("add_congruence(cg)",
+			   "cg is a non-trivial, proper congruence");
   }
-  assert(OK());
+
+  assert(cg.is_equality());
+  // Add the equality.
+  Linear_Expression le(cg);
+  Constraint c(le, Constraint::EQUALITY, NECESSARILY_CLOSED);
+  // Enforce normalization.
+  c.strong_normalize();
+  add_constraint(c);
 }
 
 template <typename T>
@@ -2307,11 +2325,13 @@ BD_Shape<T>::limited_CC76_extrapolation_assign(const BD_Shape& y,
   // of bounded differences.
   const dimension_type cs_space_dim = cs.space_dimension();
   if (space_dim < cs_space_dim)
-    throw_constraint_incompatible("limited_CC76_extrapolation_assign(y, cs)");
+    throw_invalid_argument("limited_CC76_extrapolation_assign(y, cs)",
+                           "cs is space_dimension incompatible");
 
   // Strict inequalities not allowed.
   if (cs.has_strict_inequalities())
-    throw_constraint_incompatible("limited_CC76_extrapolation_assign(y, cs)");
+    throw_invalid_argument("limited_CC76_extrapolation_assign(y, cs)",
+                           "cs has strict inequalities");
 
   // The limited CC76-extrapolation between two systems of bounded
   // differences in a zero-dimensional space is a system of bounded
@@ -2425,13 +2445,13 @@ BD_Shape<T>::limited_BHMZ05_extrapolation_assign(const BD_Shape& y,
   // of bounded differences.
   const dimension_type cs_space_dim = cs.space_dimension();
   if (space_dim < cs_space_dim)
-    throw_constraint_incompatible("limited_BHMZ05_extrapolation_assign"
-                                  "(y, cs)");
+    throw_invalid_argument("limited_BHMZ05_extrapolation_assign(y, cs)",
+                           "cs is space-dimension incompatible");
 
   // Strict inequalities are not allowed.
   if (cs.has_strict_inequalities())
-    throw_constraint_incompatible("limited_BHMZ05_extrapolation_assign"
-                                  "(y, cs)");
+    throw_invalid_argument("limited_BHMZ05_extrapolation_assign(y, cs)",
+                           "cs has strict inequalities");
 
   // The limited BHMZ05-extrapolation between two systems of bounded
   // differences in a zero-dimensional space is a system of bounded
@@ -3842,7 +3862,6 @@ BD_Shape<T>
     add_constraint(var <= new_var);
   // Remove the temporarily added dimension.
   remove_higher_space_dimensions(space_dim);
-  return;
 }
 
 template <typename T>
@@ -5204,10 +5223,10 @@ BD_Shape<T>::throw_dimension_incompatible(const char* method,
 
 template <typename T>
 void
-BD_Shape<T>::throw_constraint_incompatible(const char* method) {
+BD_Shape<T>::throw_invalid_argument(const char* method, const char* reason) {
   std::ostringstream s;
   s << "PPL::BD_Shape::" << method << ":" << std::endl
-    << "the constraint is incompatible.";
+    << reason << ".";
   throw std::invalid_argument(s.str());
 }
 

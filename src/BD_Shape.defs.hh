@@ -493,13 +493,13 @@ public:
   explicit BD_Shape(const Polyhedron& ph,
                     Complexity_Class complexity = ANY_COMPLEXITY);
 
-  //! Builds a BDS that approximates a box.
+  //! Builds a BDS out of a box.
   /*!
     The BDS inherits the space dimension of the box.
     The built BDS is the most precise BDS that includes the box.
 
     \param box
-    The bounding box representing the BDS to be built.
+    The box representing the BDS to be built.
 
     \param complexity
     This argument is ignored as the algorithm used has
@@ -2089,7 +2089,7 @@ private:
                                     const char* name_row,
                                     const Linear_Expression& y) const;
 
-  static void throw_constraint_incompatible(const char* method);
+  static void throw_invalid_argument(const char* method, const char* reason);
 
   static void throw_expression_too_complex(const char* method,
                                            const Linear_Expression& e);

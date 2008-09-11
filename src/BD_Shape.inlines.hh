@@ -193,10 +193,11 @@ BD_Shape<T>::add_recycled_constraints_and_minimize(Constraint_System& cs) {
 }
 
 template <typename T>
-void
+inline void
 BD_Shape<T>::add_congruences(const Congruence_System& cgs) {
-  Constraint_System cs(cgs);
-  add_constraints(cs);
+  for (Congruence_System::const_iterator i = cgs.begin(),
+	 cgs_end = cgs.end(); i != cgs_end; ++i)
+    add_congruence(*i);
 }
 
 template <typename T>
@@ -262,11 +263,14 @@ inline
 BD_Shape<T>::BD_Shape(const Box<Interval>& box,
                       Complexity_Class)
   : dbm(box.space_dimension() + 1), status(), redundancy_dbm() {
-  if (box.space_dimension() > 0)
+  // Check for emptyness for maximum precision.
+  if (box.is_empty())
+    set_empty();
+  else if (box.space_dimension() > 0) {
     // A (non zero-dim) universe BDS is shortest-path closed.
     set_shortest_path_closed();
-  add_constraints(box.constraints());
-  return;
+    refine_with_constraints(box.constraints());
+  }
 }
 
 template <typename T>
@@ -277,8 +281,8 @@ BD_Shape<T>::BD_Shape(const Grid& grid,
   if (grid.space_dimension() > 0)
     // A (non zero-dim) universe BDS is shortest-path closed.
     set_shortest_path_closed();
-  add_congruences(grid.congruences());
-  return;
+  // Taking minimized congruences ensures maximum precision.
+  refine_with_congruences(grid.minimized_congruences());
 }
 
 template <typename T>
@@ -287,11 +291,17 @@ inline
 BD_Shape<T>::BD_Shape(const Octagonal_Shape<U>& os,
                       Complexity_Class)
   : dbm(os.space_dimension() + 1), status(), redundancy_dbm() {
-  if (os.space_dimension() > 0)
+  // Check for emptyness for maximum precision.
+  if (os.is_empty())
+    set_empty();
+  else if (os.space_dimension() > 0) {
     // A (non zero-dim) universe BDS is shortest-path closed.
     set_shortest_path_closed();
-  add_constraints(os.constraints());
-  return;
+    refine_with_constraints(os.constraints());
+    // After refining, shortest-path closure is possibly lost
+    // (even when `os' was strongly closed: recall that U
+    // is possibly different from T).
+  }
 }
 
 template <typename T>
