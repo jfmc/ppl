@@ -48,8 +48,29 @@ test01() {
   return ok;
 }
 
+bool
+test02() {
+  Variable A(0);
+
+  Constraint_System cs;
+  cs.insert(A >= 5);
+  cs.insert(A <= -7);
+  TBD_Shape bd(cs);
+
+  Grid gr(bd);
+
+  Grid known_result(1, EMPTY);
+
+  bool ok = gr == known_result;
+
+  print_congruences(gr, "*** gr ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
   DO_TEST(test01);
+  DO_TEST(test02);
 END_MAIN

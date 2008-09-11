@@ -46,7 +46,7 @@ test01() {
 }
 
 
-// Space dimension exception.
+// Building from an inequality exception.
 bool
 test02() {
   Variable A(0);
