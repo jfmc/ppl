@@ -2089,8 +2089,6 @@ private:
                                     const char* name_row,
                                     const Linear_Expression& y) const;
 
-  static void throw_invalid_argument(const char* method, const char* reason);
-
   static void throw_expression_too_complex(const char* method,
                                            const Linear_Expression& e);
 

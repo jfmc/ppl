@@ -122,9 +122,8 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
 
   if (!point_seen)
     // The generator system is not empty, but contains no points.
-    throw_invalid_argument("PPL::BD_Shape<T>::BD_Shape(gs)",
-                           "the non-empty generator system gs "
-                           "contains no points.");
+    throw_generic("BD_Shape(gs)",
+                  "the non-empty generator system gs contains no points.");
 
   // Going through all the lines and rays.
   for (Generator_System::const_iterator gs_i = gs_begin;
@@ -376,10 +375,11 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
   // Dimension-compatibility check.
   if (c_space_dim > space_dimension())
     throw_dimension_incompatible("add_constraint(c)", c);
+  // ENEA: CHECKME: trivial strict inequalities?
   // Strict inequalities are not allowed.
   if (c.is_strict_inequality())
-    throw_invalid_argument("add_constraint(c)",
-                           "strict inequalities are not allowed");
+    throw_generic("add_constraint(c)",
+                  "strict inequalities are not allowed");
 
   dimension_type num_vars = 0;
   dimension_type i = 0;
@@ -387,8 +387,8 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
   TEMP_INTEGER(coeff);
   // Constraints that are not bounded differences are not allowed.
   if (!extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff))
-    throw_invalid_argument("add_constraint(c)",
-			   "c is not a bounded difference constraint");
+    throw_generic("add_constraint(c)",
+                  "c is not a bounded difference constraint");
 
   if (num_vars == 0) {
     // Dealing with a trivial constraint.
@@ -452,8 +452,8 @@ BD_Shape<T>::add_congruence(const Congruence& cg) {
       return;
     }
     // Non-trivial and proper congruences are not allowed.
-    throw_invalid_argument("add_congruence(cg)",
-			   "cg is a non-trivial, proper congruence");
+    throw_generic("add_congruence(cg)",
+                  "cg is a non-trivial, proper congruence");
   }
 
   assert(cg.is_equality());
@@ -2321,13 +2321,13 @@ BD_Shape<T>::limited_CC76_extrapolation_assign(const BD_Shape& y,
   // of bounded differences.
   const dimension_type cs_space_dim = cs.space_dimension();
   if (space_dim < cs_space_dim)
-    throw_invalid_argument("limited_CC76_extrapolation_assign(y, cs)",
-                           "cs is space_dimension incompatible");
+    throw_generic("limited_CC76_extrapolation_assign(y, cs)",
+                  "cs is space_dimension incompatible");
 
   // Strict inequalities not allowed.
   if (cs.has_strict_inequalities())
-    throw_invalid_argument("limited_CC76_extrapolation_assign(y, cs)",
-                           "cs has strict inequalities");
+    throw_generic("limited_CC76_extrapolation_assign(y, cs)",
+                  "cs has strict inequalities");
 
   // The limited CC76-extrapolation between two systems of bounded
   // differences in a zero-dimensional space is a system of bounded
@@ -2441,13 +2441,13 @@ BD_Shape<T>::limited_BHMZ05_extrapolation_assign(const BD_Shape& y,
   // of bounded differences.
   const dimension_type cs_space_dim = cs.space_dimension();
   if (space_dim < cs_space_dim)
-    throw_invalid_argument("limited_BHMZ05_extrapolation_assign(y, cs)",
-                           "cs is space-dimension incompatible");
+    throw_generic("limited_BHMZ05_extrapolation_assign(y, cs)",
+                  "cs is space-dimension incompatible");
 
   // Strict inequalities are not allowed.
   if (cs.has_strict_inequalities())
-    throw_invalid_argument("limited_BHMZ05_extrapolation_assign(y, cs)",
-                           "cs has strict inequalities");
+    throw_generic("limited_BHMZ05_extrapolation_assign(y, cs)",
+                  "cs has strict inequalities");
 
   // The limited BHMZ05-extrapolation between two systems of bounded
   // differences in a zero-dimensional space is a system of bounded
@@ -4287,8 +4287,8 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
   // The relation symbol cannot be a disequality.
   if (relsym == NOT_EQUAL)
     throw_generic("generalized_affine_image(e1, r, e2)",
-                    "r is the disequality relation symbol and "
-                    "*this is a BD_Shape");
+                  "r is the disequality relation symbol and "
+                  "*this is a BD_Shape");
 
   // The image of an empty BDS is empty.
   shortest_path_closure_assign();
@@ -4472,13 +4472,13 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
   // The relation symbol cannot be a strict relation symbol.
   if (relsym == LESS_THAN || relsym == GREATER_THAN)
     throw_generic("generalized_affine_preimage(v, r, e, d)",
-                    "r is a strict relation symbol and "
-                    "*this is a BD_Shape");
+                  "r is a strict relation symbol and "
+                  "*this is a BD_Shape");
   // The relation symbol cannot be a disequality.
   if (relsym == NOT_EQUAL)
     throw_generic("generalized_affine_preimage(v, r, e, d)",
-                    "r is the disequality relation symbol and "
-                    "*this is a BD_Shape");
+                  "r is the disequality relation symbol and "
+                  "*this is a BD_Shape");
 
   if (relsym == EQUAL) {
     // The relation symbol is "==":
@@ -4550,8 +4550,8 @@ BD_Shape<T>::generalized_affine_preimage(const Linear_Expression& lhs,
   // The relation symbol cannot be a disequality.
   if (relsym == NOT_EQUAL)
     throw_generic("generalized_affine_preimage(e1, r, e2)",
-                    "r is the disequality relation symbol and "
-                    "*this is a BD_Shape");
+                  "r is the disequality relation symbol and "
+                  "*this is a BD_Shape");
 
   // The preimage of an empty BDS is empty.
   shortest_path_closure_assign();
@@ -5219,15 +5219,6 @@ BD_Shape<T>::throw_dimension_incompatible(const char* method,
 
 template <typename T>
 void
-BD_Shape<T>::throw_invalid_argument(const char* method, const char* reason) {
-  std::ostringstream s;
-  s << "PPL::BD_Shape::" << method << ":" << std::endl
-    << reason << ".";
-  throw std::invalid_argument(s.str());
-}
-
-template <typename T>
-void
 BD_Shape<T>::throw_expression_too_complex(const char* method,
                                           const Linear_Expression& e) {
   using namespace IO_Operators;
@@ -5256,7 +5247,7 @@ void
 BD_Shape<T>::throw_generic(const char* method, const char* reason) {
   std::ostringstream s;
   s << "PPL::BD_Shape::" << method << ":" << std::endl
-    << reason;
+    << reason << ".";
   throw std::invalid_argument(s.str());
 }
 
