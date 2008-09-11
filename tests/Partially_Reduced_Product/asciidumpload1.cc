@@ -64,7 +64,7 @@ test02() {
   Variable A(0);
 
   No_Reduction_Product dp1(3);
-  dp1.add_congruence((2*A %= 3) / 3);
+  dp1.refine_with_congruence((2*A %= 3) / 3);
 
   fstream f;
   open(f, my_file, ios_base::out);
@@ -88,7 +88,7 @@ test03() {
   Variable A(0);
 
   No_Reduction_Product dp1(3);
-  dp1.add_constraint(3*A > 2);
+  dp1.refine_with_constraint(3*A > 2);
 
   fstream f;
   open(f, my_file, ios_base::out);
@@ -113,8 +113,8 @@ test04() {
   Variable B(1);
 
   No_Reduction_Product dp1(3);
-  dp1.add_constraint(3*B > 2);
-  dp1.add_congruence((A %= 0) / 2);
+  dp1.refine_with_constraint(3*B > 2);
+  dp1.refine_with_congruence((A %= 0) / 2);
 
   fstream f;
   open(f, my_file, ios_base::out);
@@ -141,8 +141,8 @@ test05() {
   Variable D(3);
 
   No_Reduction_Product dp1(4);
-  dp1.add_constraint(3*A + D > 2);
-  dp1.add_congruence((A - 3*C %= 0) / 2);
+  dp1.refine_with_constraint(3*A + D > 2);
+  dp1.refine_with_congruence((A - 3*C %= 0) / 2);
 
   fstream f;
   open(f, my_file, ios_base::out);
