@@ -187,6 +187,26 @@ test08() {
   return ok;
 }
 
+// An empty grid, but not known to be so (yet).
+bool
+test09() {
+  Variable A(0);
+  Grid gr(1);
+  gr.add_congruence((A %= 0) / 2);
+  gr.add_congruence((A %= 1) / 2);
+
+  TBD_Shape bds(gr);
+
+  BD_Shape<mpq_class> known_bds(gr.space_dimension(), EMPTY);
+
+  bool ok = (check_result(bds, known_bds));
+
+  print_constraints(bds, "*** bds ***");
+  print_constraints(known_bds, "*** known_bds ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -198,4 +218,5 @@ BEGIN_MAIN
   DO_TEST(test06);
   DO_TEST(test07);
   DO_TEST(test08);
+  DO_TEST(test09);
 END_MAIN
