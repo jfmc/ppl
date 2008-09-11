@@ -69,7 +69,7 @@ ppl_prolog_sysdep.hh \
 ciao_efli.hh \
 ciao_efli.cc
 
-nodist_libppl_swiprolog_la_SOURCES = \
+nodist_libppl_ciao_la_SOURCES = \
 ../ppl_prolog_common.cc
 
 nodist_EXTRA_libppl_ciao_la_SOURCES = \
