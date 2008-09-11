@@ -134,7 +134,11 @@ template <typename T>
 template <typename U>
 inline
 BD_Shape<T>::BD_Shape(const BD_Shape<U>& y, Complexity_Class)
-  : dbm(y.dbm), status(), redundancy_dbm() {
+  // For maximum precision, enforce shortest-path closure
+  // before copying the DB matrix.
+  : dbm((y.shortest_path_closure_assign(), y.dbm)),
+    status(),
+    redundancy_dbm() {
   // TODO: handle flags properly, possibly taking special cases into account.
   if (y.marked_empty())
     set_empty();
