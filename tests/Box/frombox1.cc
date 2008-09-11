@@ -155,4 +155,5 @@ BEGIN_MAIN
   DO_TEST(test03);
   DO_TEST(test04);
   DO_TEST_F64(test05);
+  DO_TEST(test04);
 END_MAIN
