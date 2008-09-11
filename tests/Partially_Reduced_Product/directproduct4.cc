@@ -67,17 +67,17 @@ test01() {
   Variable C(2);
 
   Product dp(3);
-  dp.add_congruence((B %= 2) / 14);
-  dp.add_constraint(A <= 5);
-  dp.add_constraint(B <= 10);
+  dp.refine_with_congruence((B %= 2) / 14);
+  dp.refine_with_constraint(A <= 5);
+  dp.refine_with_constraint(B <= 10);
 
   dp.affine_image(A, B + C);
 
   Product known_dp(3);
-  known_dp.add_congruence((B %= 2) / 14);
-  known_dp.add_constraint(A - B - C == 0);
-  known_dp.add_constraint(A - C <= 10);
-  known_dp.add_constraint(B <= 10);
+  known_dp.refine_with_congruence((B %= 2) / 14);
+  known_dp.refine_with_constraint(A - B - C == 0);
+  known_dp.refine_with_constraint(A - C <= 10);
+  known_dp.refine_with_constraint(B <= 10);
 
   bool ok = (dp == known_dp);
 
@@ -94,13 +94,13 @@ test02() {
   Variable B(1);
 
   Product dp(3);
-  dp.add_constraint(A - B == 0);
-  dp.add_congruence((A %= 0) / 3);
+  dp.refine_with_constraint(A - B == 0);
+  dp.refine_with_congruence((A %= 0) / 3);
 
   dp.affine_preimage(A, B);
 
   Product known_dp(3);
-  known_dp.add_congruence((B %= 0) / 3);
+  known_dp.refine_with_congruence((B %= 0) / 3);
 
   bool ok = (dp == known_dp);
 
@@ -118,20 +118,20 @@ test03() {
   Variable B(1);
 
   Product dp(3);
-  dp.add_congruence(A %= 0);
-  dp.add_congruence((A + B %= 0) / 2);
-  dp.add_constraint(B >= 0);
-  dp.add_constraint(A - B >= 0);
+  dp.refine_with_congruence(A %= 0);
+  dp.refine_with_congruence((A + B %= 0) / 2);
+  dp.refine_with_constraint(B >= 0);
+  dp.refine_with_constraint(A - B >= 0);
 
   Linear_Expression le(A+2);
 
   dp.generalized_affine_image(A, EQUAL, le);
 
   Product known_dp(3);
-  known_dp.add_congruence(A %= 0);
-  known_dp.add_congruence((A + B %= 0) / 2);
-  known_dp.add_constraint(B >= 0);
-  known_dp.add_constraint(A - B >= 2);
+  known_dp.refine_with_congruence(A %= 0);
+  known_dp.refine_with_congruence((A + B %= 0) / 2);
+  known_dp.refine_with_constraint(B >= 0);
+  known_dp.refine_with_constraint(A - B >= 2);
 
   bool ok = (dp == known_dp);
 
@@ -148,17 +148,17 @@ test04() {
   Variable B(1);
 
   Product dp(3);
-  dp.add_congruence(A %= 0);
-  dp.add_congruence((A + B %= 0) / 2);
-  dp.add_constraint(A >= 3);
+  dp.refine_with_congruence(A %= 0);
+  dp.refine_with_congruence((A + B %= 0) / 2);
+  dp.refine_with_constraint(A >= 3);
 
   dp.generalized_affine_image(B, EQUAL, A + 1, 2);
 
   Product known_dp(3);
-  known_dp.add_constraint(A - 2*B == -1);
-  known_dp.add_congruence(A %= 0);
-  known_dp.add_constraint(A >= 3);
-  known_dp.add_constraint(B >= 2);
+  known_dp.refine_with_constraint(A - 2*B == -1);
+  known_dp.refine_with_congruence(A %= 0);
+  known_dp.refine_with_constraint(A >= 3);
+  known_dp.refine_with_constraint(B >= 2);
 
   bool ok = (dp == known_dp);
 
@@ -175,17 +175,17 @@ test05() {
   Variable B(1);
 
   Product dp(3);
-  dp.add_constraint(A >= 0);
-  dp.add_constraint(A <= 4);
-  dp.add_constraint(B <= 5);
-  dp.add_constraint(A <= B);
-  dp.add_congruence(A %= B);
+  dp.refine_with_constraint(A >= 0);
+  dp.refine_with_constraint(A <= 4);
+  dp.refine_with_constraint(B <= 5);
+  dp.refine_with_constraint(A <= B);
+  dp.refine_with_congruence(A %= B);
 
   dp.generalized_affine_preimage(B, GREATER_OR_EQUAL, A+2);
 
   Product known_dp(3);
-  known_dp.add_constraint(0 <= A);
-  known_dp.add_constraint(A <= 3);
+  known_dp.refine_with_constraint(0 <= A);
+  known_dp.refine_with_constraint(A <= 3);
 
   bool ok = (dp == known_dp);
 
@@ -203,14 +203,14 @@ test06() {
   Variable C(2);
 
   Product dp(3);
-  dp.add_congruence(A %= 0);
-  dp.add_congruence((B %= 0) / 2);
+  dp.refine_with_congruence(A %= 0);
+  dp.refine_with_congruence((B %= 0) / 2);
 
   dp.generalized_affine_preimage(B, EQUAL, A + B, 1);
 
   Product known_dp(3);
-  known_dp.add_congruence((A + B %= 0) / 2);
-  known_dp.add_congruence(A %= 0);
+  known_dp.refine_with_congruence((A + B %= 0) / 2);
+  known_dp.refine_with_congruence(A %= 0);
 
   bool ok = (dp == known_dp);
 
@@ -227,17 +227,17 @@ test07() {
   Variable B(1);
 
   Product dp(3);
-  dp.add_congruence(A %= 0);
-  dp.add_constraint(B >= 0);
-  dp.add_constraint(A - B >= 1);
+  dp.refine_with_congruence(A %= 0);
+  dp.refine_with_constraint(B >= 0);
+  dp.refine_with_constraint(A - B >= 1);
 
   dp.generalized_affine_image(Linear_Expression(2), LESS_OR_EQUAL, A + B);
 
   Product known_dp(3);
-  known_dp.add_congruence(A %= 0);
-  known_dp.add_constraint(B >= 0);
-  known_dp.add_constraint(A - B >= 1);
-  known_dp.add_constraint(2 <= A + B);
+  known_dp.refine_with_congruence(A %= 0);
+  known_dp.refine_with_constraint(B >= 0);
+  known_dp.refine_with_constraint(A - B >= 1);
+  known_dp.refine_with_constraint(2 <= A + B);
 
   bool ok = (dp == known_dp);
 
@@ -248,7 +248,7 @@ test07() {
 }
 
 // generalized_affine_image(lhs, EQUAL, rhs),
-// add_congruences(cgs)
+// refine_with_congruences(cgs)
 bool
 test08() {
   Variable A(0);
@@ -259,13 +259,13 @@ test08() {
   cs.insert((B %= 0) / 2);
 
   Product dp(2);
-  dp.add_congruences(cs);
-  dp.add_constraint(A <= 3);
+  dp.refine_with_congruences(cs);
+  dp.refine_with_constraint(A <= 3);
 
   dp.generalized_affine_image(A + 2*B, EQUAL, A - B);
 
   Product known_dp(2);
-  known_dp.add_congruence((A + 2*B %= 0) / 1);
+  known_dp.refine_with_congruence((A + 2*B %= 0) / 1);
 
   bool ok = (dp == known_dp);
 
@@ -275,7 +275,7 @@ test08() {
   return ok;
 }
 
-// generalized_affine_preimage(lhs, relsym, rhs), add_constraints(cs)
+// generalized_affine_preimage(lhs, relsym, rhs), refine_with_constraints(cs)
 bool
 test09() {
   Variable A(0);
@@ -288,14 +288,14 @@ test09() {
   cs.insert(A <= B);
 
   Product dp(3);
-  dp.add_constraints(cs);
-  dp.add_congruence(A %= B);
+  dp.refine_with_constraints(cs);
+  dp.refine_with_congruence(A %= B);
 
   dp.generalized_affine_preimage(1*B, GREATER_OR_EQUAL, A+2);
 
   Product known_dp(3);
-  known_dp.add_constraint(0 <= A);
-  known_dp.add_constraint(A <= 3);
+  known_dp.refine_with_constraint(0 <= A);
+  known_dp.refine_with_constraint(A <= 3);
 
   bool ok = (dp == known_dp);
 
@@ -313,12 +313,12 @@ test10() {
   Variable C(2);
 
   Product dp(3);
-  dp.add_constraint(A - B == 1);
+  dp.refine_with_constraint(A - B == 1);
 
   dp.generalized_affine_preimage(A - B, EQUAL, 2*A - 2*B);
 
   Product known_dp(3);
-  known_dp.add_congruence((2*A - 2*B %= 1) / 0);
+  known_dp.refine_with_congruence((2*A - 2*B %= 1) / 0);
 
 #if BD_Shape_Class || Octagonal_Shape_Class
   #ifdef PH_IS_FIRST

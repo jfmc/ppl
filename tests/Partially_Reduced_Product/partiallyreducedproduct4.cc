@@ -70,8 +70,8 @@ test01() {
   Constraint_System cs;
   cs.insert(A >= 1);
   cs.insert(A <= 0);
-  sp1.add_constraints(cs);
-  cp1.add_constraints(cs);
+  sp1.refine_with_constraints(cs);
+  cp1.refine_with_constraints(cs);
   SProduct sp2(sp1);
   CProduct cp2(cp1);
 
@@ -118,15 +118,15 @@ test02() {
   Constraint_System cs1;
   cs1.insert(A >= 1);
   cs1.insert(A <= 0);
-  sp1.add_constraints(cs1);
-  cp1.add_constraints(cs1);
+  sp1.refine_with_constraints(cs1);
+  cp1.refine_with_constraints(cs1);
 
   SProduct sp2(1);
   CProduct cp2(1);
   Constraint_System cs2;
   cs2.insert(A == 1);
-  sp2.add_constraints(cs2);
-  cp2.add_constraints(cs2);
+  sp2.refine_with_constraints(cs2);
+  cp2.refine_with_constraints(cs2);
 
   SProduct sp1_copy(sp1);
   CProduct cp1_copy(cp1);
@@ -159,8 +159,8 @@ test03() {
   Constraint_System cs;
   cs.insert(A >= 1);
   cs.insert(A <= 6);
-  sp.add_constraints(cs);
-  cp.add_constraints(cs);
+  sp.refine_with_constraints(cs);
+  cp.refine_with_constraints(cs);
 
   SProduct known_sp(sp);
   CProduct known_cp(cp);
@@ -183,21 +183,21 @@ test03() {
   bool ok = sp.OK() && cp.OK();
 
 #ifdef PH_IS_BOX_OR_NNC
-  known_sp.add_constraint(A > 2);
+  known_sp.refine_with_constraint(A > 2);
 #else
-  known_sp.add_constraint(A >= 2);
+  known_sp.refine_with_constraint(A >= 2);
 #endif
-  known_sp.add_constraint(B >= 2);
-  known_sp.add_congruence((B %= 2) / 4);
-  known_sp.add_congruence((A + B %= 6) / 0);
+  known_sp.refine_with_constraint(B >= 2);
+  known_sp.refine_with_congruence((B %= 2) / 4);
+  known_sp.refine_with_congruence((A + B %= 6) / 0);
 #ifdef PH_IS_BOX_OR_NNC
-  known_cp.add_constraint(A > 2);
+  known_cp.refine_with_constraint(A > 2);
 #else
-  known_cp.add_constraint(A >= 2);
+  known_cp.refine_with_constraint(A >= 2);
 #endif
-  known_cp.add_constraint(B >= 2);
-  known_cp.add_congruence((B %= 2) / 4);
-  known_cp.add_congruence((A + B %= 6) / 0);
+  known_cp.refine_with_constraint(B >= 2);
+  known_cp.refine_with_congruence((B %= 2) / 4);
+  known_cp.refine_with_congruence((A + B %= 6) / 0);
 
   ok = ok && sp == known_sp && cp == known_cp;
 
@@ -221,8 +221,8 @@ test04() {
   Constraint_System cs;
   cs.insert(A >= 1);
   cs.insert(A <= 6);
-  sp.add_constraints(cs);
-  cp.add_constraints(cs);
+  sp.refine_with_constraints(cs);
+  cp.refine_with_constraints(cs);
 
   SProduct known_sp(sp);
   CProduct known_cp(cp);
@@ -241,21 +241,21 @@ test04() {
   bool ok = sp.OK() && cp.OK();
 
 #ifdef PH_IS_BOX_OR_NNC
-  known_sp.add_constraint(A > 2);
+  known_sp.refine_with_constraint(A > 2);
 #else
-  known_sp.add_constraint(A >= 2);
+  known_sp.refine_with_constraint(A >= 2);
 #endif
-  known_sp.add_constraint(B >= 2);
-  known_sp.add_congruence((B %= 2) / 4);
-  known_sp.add_congruence((A + B %= 6) / 0);
+  known_sp.refine_with_constraint(B >= 2);
+  known_sp.refine_with_congruence((B %= 2) / 4);
+  known_sp.refine_with_congruence((A + B %= 6) / 0);
 #ifdef PH_IS_BOX_OR_NNC
-  known_cp.add_constraint(A > 2);
+  known_cp.refine_with_constraint(A > 2);
 #else
-  known_cp.add_constraint(A >= 2);
+  known_cp.refine_with_constraint(A >= 2);
 #endif
-  known_cp.add_constraint(B >= 2);
-  known_cp.add_congruence((B %= 2) / 4);
-  known_cp.add_congruence((A + B %= 6) / 0);
+  known_cp.refine_with_constraint(B >= 2);
+  known_cp.refine_with_congruence((B %= 2) / 4);
+  known_cp.refine_with_congruence((A + B %= 6) / 0);
 
   ok = ok && sp == known_sp && cp == known_cp;
 

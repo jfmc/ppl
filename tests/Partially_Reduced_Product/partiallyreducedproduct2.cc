@@ -73,16 +73,16 @@ test02() {
   Variable C(2);
 
   SProduct sp(3);
-  sp.add_constraint(A - C <= 9);
-  sp.add_constraint(A - C >= 9);
-  sp.add_constraint(B >= 2);
+  sp.refine_with_constraint(A - C <= 9);
+  sp.refine_with_constraint(A - C >= 9);
+  sp.refine_with_constraint(B >= 2);
 
   bool smash_ok = sp.space_dimension() == 3;
   smash_ok = smash_ok && sp.affine_dimension() == 2;
 
   if (smash_ok) {
-    sp.add_constraint(A - C >= 4);
-    sp.add_constraint(A - C <= 4);
+    sp.refine_with_constraint(A - C >= 4);
+    sp.refine_with_constraint(A - C <= 4);
 
     smash_ok = smash_ok && sp.affine_dimension() == 0;
   }
@@ -99,13 +99,13 @@ test03() {
   Variable A(0);
 
   SProduct sp1(1);
-  sp1.add_constraint(A <= 3);
-  sp1.add_congruence((A %= 1) / 2);
+  sp1.refine_with_constraint(A <= 3);
+  sp1.refine_with_congruence((A %= 1) / 2);
 
   SProduct sp2(1);
-  sp2.add_constraint(A <= 3);
-  sp2.add_constraint(A >= 4);
-  sp2.add_congruence((A %= 0) / 2);
+  sp2.refine_with_constraint(A <= 3);
+  sp2.refine_with_constraint(A >= 4);
+  sp2.refine_with_congruence((A %= 0) / 2);
 
   bool smash_ok1 = sp1.contains(sp2) && sp1.strictly_contains(sp2);
 
@@ -116,13 +116,13 @@ test03() {
     return smash_ok1;
 
   SProduct sp3(1);
-  sp3.add_constraint(A <= 3);
-  sp3.add_congruence((A %= 1) / 2);
+  sp3.refine_with_constraint(A <= 3);
+  sp3.refine_with_congruence((A %= 1) / 2);
 
   SProduct sp4(1);
-  sp4.add_constraint(A <= 4);
-  sp4.add_congruence((A %= 0) / 2);
-  sp4.add_congruence((A %= 1) / 2);
+  sp4.refine_with_constraint(A <= 4);
+  sp4.refine_with_congruence((A %= 0) / 2);
+  sp4.refine_with_congruence((A %= 1) / 2);
 
   bool smash_ok2 = sp3.contains(sp4) && sp3.strictly_contains(sp4);
 
@@ -133,10 +133,10 @@ test03() {
     return smash_ok2;
 
   SProduct sp5(1);
-  sp5.add_constraint(A <= 3);
-  sp5.add_constraint(A >= 4);
-  sp5.add_congruence((A %= 1) / 2);
-  sp5.add_congruence((A %= 0) / 2);
+  sp5.refine_with_constraint(A <= 3);
+  sp5.refine_with_constraint(A >= 4);
+  sp5.refine_with_congruence((A %= 1) / 2);
+  sp5.refine_with_congruence((A %= 0) / 2);
 
   SProduct sp6(1, EMPTY);
 
@@ -155,17 +155,17 @@ test04() {
   Variable B(1);
 
   SProduct sp1(3);
-  sp1.add_constraint(A >= 0);
-  sp1.add_congruence((A %= 0) / 2);
+  sp1.refine_with_constraint(A >= 0);
+  sp1.refine_with_congruence((A %= 0) / 2);
 
   SProduct sp2(3);
-  sp2.add_constraint(A <= 0);
-  sp2.add_congruence((A %= 0) / 1);
+  sp2.refine_with_constraint(A <= 0);
+  sp2.refine_with_congruence((A %= 0) / 1);
 
   sp1.intersection_assign(sp2);
 
   SProduct known_sp(3);
-  known_sp.add_constraint(A == 0);
+  known_sp.refine_with_constraint(A == 0);
 
   bool smash_ok1 = !(sp1 == known_sp);
   if (!smash_ok1) {
@@ -176,10 +176,10 @@ test04() {
     return smash_ok1;
   }
 
-  sp2.add_constraint(A >= 1);
+  sp2.refine_with_constraint(A >= 1);
   sp1.intersection_assign(sp2);
 
-  known_sp.add_constraint(A == 1);
+  known_sp.refine_with_constraint(A == 1);
 
   bool smash_ok2 = (sp1 == known_sp);
 
@@ -198,14 +198,14 @@ test05() {
   Variable B(1);
 
   SProduct sp(1);
-  sp.add_constraint(A <= 18);
-  sp.add_constraint(A >= 18);
+  sp.refine_with_constraint(A <= 18);
+  sp.refine_with_constraint(A >= 18);
 
   SProduct sp1(sp);
 
   SProduct sp2(1);
-  sp2.add_congruence((A %= 19) / 20);
-  sp2.add_congruence((A %= 18) / 20);
+  sp2.refine_with_congruence((A %= 19) / 20);
+  sp2.refine_with_congruence((A %= 18) / 20);
 
   sp1.upper_bound_assign(sp2);
 
@@ -234,14 +234,14 @@ test06() {
   Variable B(1);
 
   SProduct sp(3);
-  sp.add_congruence((A %= 0) / 2);
-  sp.add_congruence((B %= 0) / 2);
+  sp.refine_with_congruence((A %= 0) / 2);
+  sp.refine_with_congruence((B %= 0) / 2);
 
   SProduct sp1(sp);
 
   SProduct sp2(3);
-  sp2.add_congruence((A %= 1) / 3);
-  sp2.add_congruence((B %= 1) / 3);
+  sp2.refine_with_congruence((A %= 1) / 3);
+  sp2.refine_with_congruence((B %= 1) / 3);
 
   bool smash_ok = (!sp1.upper_bound_assign_if_exact(sp2)
 		   && !sp2.upper_bound_assign_if_exact(sp1));
@@ -266,13 +266,13 @@ test06() {
 
   // The grid component is empty so that the smash product
   // reduces the polyhedron component to empty.
-  sp1.add_congruence((B %= 1) / 2);
-  sp1.add_congruence((B %= 0) / 2);
+  sp1.refine_with_congruence((B %= 1) / 2);
+  sp1.refine_with_congruence((B %= 0) / 2);
 
   // The polyhedron component is empty so that the smash product
   // reduces the grid component to empty.
-  sp2.add_constraint(B >= 1);
-  sp2.add_constraint(B <= 0);
+  sp2.refine_with_constraint(B >= 1);
+  sp2.refine_with_constraint(B <= 0);
 
   smash_ok = sp1.upper_bound_assign_if_exact(sp2)
    && sp2.upper_bound_assign_if_exact(sp1);
@@ -299,14 +299,14 @@ test07() {
   Variable B(1);
 
   SProduct sp(1);
-  sp.add_constraint(A <= 18);
-  sp.add_constraint(A >= 18);
+  sp.refine_with_constraint(A <= 18);
+  sp.refine_with_constraint(A >= 18);
 
   SProduct sp1(sp);
 
   SProduct sp2(1);
-  sp2.add_congruence((A %= 19) / 20);
-  sp2.add_congruence((A %= 18) / 20);
+  sp2.refine_with_congruence((A %= 19) / 20);
+  sp2.refine_with_congruence((A %= 18) / 20);
 
   sp1.difference_assign(sp2);
 
@@ -338,27 +338,27 @@ test08() {
   Variable C(2);
 
   SProduct sp1(3);
-  sp1.add_constraint(A >= 0);
-  sp1.add_constraint(B >= 0);
-  sp1.add_constraint(A + B >= 3);
-  sp1.add_constraint(2*A - B == 0);
-  sp1.add_constraint(3*A + C == 0);
-  sp1.add_congruence(3*A %= 0);
+  sp1.refine_with_constraint(A >= 0);
+  sp1.refine_with_constraint(B >= 0);
+  sp1.refine_with_constraint(A + B >= 3);
+  sp1.refine_with_constraint(2*A - B == 0);
+  sp1.refine_with_constraint(3*A + C == 0);
+  sp1.refine_with_congruence(3*A %= 0);
 
   SProduct sp2(3);
-  sp2.add_constraint(7*C == 4);
-  sp2.add_constraint(7*B == -1);
-  sp2.add_constraint(7*A == 3);
+  sp2.refine_with_constraint(7*C == 4);
+  sp2.refine_with_constraint(7*B == -1);
+  sp2.refine_with_constraint(7*A == 3);
 
   sp1.time_elapse_assign(sp2);
 
   SProduct known_sp(3);
-  known_sp.add_constraint(5*A - 13*B - 7*C == 0);
-  known_sp.add_constraint(3*A + C >= 0);
-  known_sp.add_constraint(A + B >= 3);
-  known_sp.add_constraint(4*A - 3*C >= 13);
-  known_sp.add_congruence((65*A - B %= 0) / 7);
-  known_sp.add_congruence(21*A %= 0);
+  known_sp.refine_with_constraint(5*A - 13*B - 7*C == 0);
+  known_sp.refine_with_constraint(3*A + C >= 0);
+  known_sp.refine_with_constraint(A + B >= 3);
+  known_sp.refine_with_constraint(4*A - 3*C >= 13);
+  known_sp.refine_with_congruence((65*A - B %= 0) / 7);
+  known_sp.refine_with_congruence(21*A %= 0);
 
   bool smash_ok = (sp1 == known_sp);
 
@@ -378,14 +378,14 @@ test09() {
   Variable C(2);
 
   SProduct sp(3);
-  sp.add_constraint(B >= 0);
-  sp.add_constraint(3*A + C == 0);
-  sp.add_constraint(2*A - B == 0);
-  sp.add_congruence(3*A %= 0);
+  sp.refine_with_constraint(B >= 0);
+  sp.refine_with_constraint(3*A + C == 0);
+  sp.refine_with_constraint(2*A - B == 0);
+  sp.refine_with_congruence(3*A %= 0);
 #ifdef PH_IS_NNC
-  sp.add_constraint(A > 0);
+  sp.refine_with_constraint(A > 0);
 #else
-  sp.add_constraint(A >= 0);
+  sp.refine_with_constraint(A >= 0);
 #endif
 
   print_congruences(sp, "*** sp congruences ***");
@@ -394,11 +394,11 @@ test09() {
   sp.topological_closure_assign();
 
   SProduct known_sp(3);
-  known_sp.add_constraint(B >= 0);
-  known_sp.add_constraint(3*A + C == 0);
-  known_sp.add_constraint(2*A - B == 0);
-  known_sp.add_congruence(3*A %= 0);
-  known_sp.add_constraint(A >= 0);
+  known_sp.refine_with_constraint(B >= 0);
+  known_sp.refine_with_constraint(3*A + C == 0);
+  known_sp.refine_with_constraint(2*A - B == 0);
+  known_sp.refine_with_congruence(3*A %= 0);
+  known_sp.refine_with_constraint(A >= 0);
 
   bool smash_ok = (sp == known_sp);
 
@@ -416,24 +416,24 @@ test10() {
   Variable C(2);
 
   SProduct sp_prev(3);
-  sp_prev.add_constraint(C == 0);
-  sp_prev.add_constraint(A - B >= 1);
-  sp_prev.add_constraint(A <= 2);
-  sp_prev.add_constraint(B >= 0);
-  sp_prev.add_congruence((B %= 0) / 2);
-  sp_prev.add_congruence(3*A %= 0);
+  sp_prev.refine_with_constraint(C == 0);
+  sp_prev.refine_with_constraint(A - B >= 1);
+  sp_prev.refine_with_constraint(A <= 2);
+  sp_prev.refine_with_constraint(B >= 0);
+  sp_prev.refine_with_congruence((B %= 0) / 2);
+  sp_prev.refine_with_congruence(3*A %= 0);
 
   print_congruences(sp_prev, "*** sp_prev congruences ***");
   print_constraints(sp_prev, "*** sp_prev constraints ***");
 
   SProduct sp(3);
-  sp.add_constraint(C == 0);
-  sp.add_constraint(A <= 2);
-  sp.add_constraint(B >= 0);
-  sp.add_constraint(2*A - B >= 2);
-  sp.add_constraint(B >= 0);
-  sp.add_congruence(6*A %= 0);
-  sp.add_congruence((B %= 0) / 2);
+  sp.refine_with_constraint(C == 0);
+  sp.refine_with_constraint(A <= 2);
+  sp.refine_with_constraint(B >= 0);
+  sp.refine_with_constraint(2*A - B >= 2);
+  sp.refine_with_constraint(B >= 0);
+  sp.refine_with_congruence(6*A %= 0);
+  sp.refine_with_congruence((B %= 0) / 2);
 
   sp.upper_bound_assign(sp_prev);
 
@@ -443,10 +443,10 @@ test10() {
   sp.widening_assign(sp_prev);
 
   SProduct known_sp(3);
-  known_sp.add_constraint(C == 0);
-  known_sp.add_constraint(A <= 2);
-  known_sp.add_constraint(B >= 0);
-  known_sp.add_congruence((B %= 0) / 2);
+  known_sp.refine_with_constraint(C == 0);
+  known_sp.refine_with_constraint(A <= 2);
+  known_sp.refine_with_constraint(B >= 0);
+  known_sp.refine_with_congruence((B %= 0) / 2);
 
   bool smash_ok = (sp == known_sp);
 
@@ -486,16 +486,16 @@ test12() {
   Variable C(2);
 
   CProduct cp(3);
-  cp.add_constraint(A - C <= 9);
-  cp.add_constraint(A - C >= 9);
-  cp.add_constraint(B >= 2);
+  cp.refine_with_constraint(A - C <= 9);
+  cp.refine_with_constraint(A - C >= 9);
+  cp.refine_with_constraint(B >= 2);
 
   bool cons_ok = cp.space_dimension() == 3;
   cons_ok = cons_ok && cp.affine_dimension() == 2;
 
   if (cons_ok) {
-    cp.add_constraint(A - B >= 4);
-    cp.add_constraint(A - B <= 4);
+    cp.refine_with_constraint(A - B >= 4);
+    cp.refine_with_constraint(A - B <= 4);
 
     cons_ok = cons_ok && cp.affine_dimension() == 1;
   }
@@ -512,13 +512,13 @@ test13() {
   Variable A(0);
 
   CProduct cp1(1);
-  cp1.add_constraint(A <= 3);
-  cp1.add_congruence((A %= 1) / 2);
+  cp1.refine_with_constraint(A <= 3);
+  cp1.refine_with_congruence((A %= 1) / 2);
 
   CProduct cp2(1);
-  cp2.add_constraint(A <= 2);
-  cp2.add_constraint(A >= 2);
-  cp2.add_congruence((A %= 1) / 4);
+  cp2.refine_with_constraint(A <= 2);
+  cp2.refine_with_constraint(A >= 2);
+  cp2.refine_with_congruence((A %= 1) / 4);
 
   bool cons_ok1 = cp1.contains(cp2) && cp1.strictly_contains(cp2);
 
@@ -529,11 +529,11 @@ test13() {
     return cons_ok1;
 
   CProduct cp3(1);
-  cp3.add_constraint(A <= 3);
-  cp3.add_congruence((A %= 1) / 0);
+  cp3.refine_with_constraint(A <= 3);
+  cp3.refine_with_congruence((A %= 1) / 0);
 
   CProduct cp4(1);
-  cp4.add_constraint(A == 1);
+  cp4.refine_with_constraint(A == 1);
 
   bool cons_ok2 = cp3.contains(cp4) && !cp3.strictly_contains(cp4);
 
@@ -544,10 +544,10 @@ test13() {
     return cons_ok2;
 
   CProduct cp5(1);
-  cp5.add_constraint(A <= 3);
-  cp5.add_constraint(A >= 4);
-  cp5.add_congruence((A %= 1) / 2);
-  cp5.add_congruence((A %= 0) / 2);
+  cp5.refine_with_constraint(A <= 3);
+  cp5.refine_with_constraint(A >= 4);
+  cp5.refine_with_congruence((A %= 1) / 2);
+  cp5.refine_with_congruence((A %= 0) / 2);
 
   CProduct cp6(1, EMPTY);
 
@@ -566,18 +566,18 @@ test14() {
   Variable B(1);
 
   CProduct cp1(3);
-  cp1.add_constraint(A >= 0);
-  cp1.add_congruence((A %= 0) / 2);
+  cp1.refine_with_constraint(A >= 0);
+  cp1.refine_with_congruence((A %= 0) / 2);
 
   CProduct cp2(3);
-  cp2.add_constraint(A <= 0);
-  cp2.add_congruence((A %= 0) / 2);
+  cp2.refine_with_constraint(A <= 0);
+  cp2.refine_with_congruence((A %= 0) / 2);
 
   cp1.intersection_assign(cp2);
 
   CProduct known_cp(3);
-  known_cp.add_constraint(A == 0);
-  known_cp.add_congruence((A %= 0) / 2);
+  known_cp.refine_with_constraint(A == 0);
+  known_cp.refine_with_congruence((A %= 0) / 2);
 
   bool cons_ok1 = (cp1 == known_cp);
   if (!cons_ok1) {
@@ -588,10 +588,10 @@ test14() {
     return cons_ok1;
   }
 
-  cp2.add_constraint(A >= 1);
+  cp2.refine_with_constraint(A >= 1);
   cp1.intersection_assign(cp2);
 
-  known_cp.add_constraint(A == 1);
+  known_cp.refine_with_constraint(A == 1);
 
   bool cons_ok2 = (cp1 == known_cp);
 
@@ -609,18 +609,18 @@ test15() {
   Variable A(0);
 
   CProduct cp(1);
-  cp.add_constraint(A <= 18);
-  cp.add_constraint(A >= 18);
+  cp.refine_with_constraint(A <= 18);
+  cp.refine_with_constraint(A >= 18);
 
   CProduct cp1(cp);
 
   CProduct cp2(1);
-  cp2.add_congruence((A %= 18) / 20);
+  cp2.refine_with_congruence((A %= 18) / 20);
 
   cp1.upper_bound_assign(cp2);
 
   CProduct known_cp(1);
-  known_cp.add_congruence((A %= 18) / 20);
+  known_cp.refine_with_congruence((A %= 18) / 20);
 
   bool cons_ok = (cp1 == known_cp);
 
@@ -648,14 +648,14 @@ test16() {
   Variable B(1);
 
   CProduct cp(3);
-  cp.add_congruence((A %= 0) / 2);
-  cp.add_congruence((B %= 0) / 2);
+  cp.refine_with_congruence((A %= 0) / 2);
+  cp.refine_with_congruence((B %= 0) / 2);
 
   CProduct cp1(cp);
 
   CProduct cp2(3);
-  cp2.add_congruence((A %= 1) / 3);
-  cp2.add_congruence((B %= 1) / 3);
+  cp2.refine_with_congruence((A %= 1) / 3);
+  cp2.refine_with_congruence((B %= 1) / 3);
 
   bool cons_ok = (!cp1.upper_bound_assign_if_exact(cp2)
 		   && !cp2.upper_bound_assign_if_exact(cp1));
@@ -678,10 +678,10 @@ test16() {
   if (!cons_ok)
     return false;
 
-  cp1.add_congruence((B %= 1) / 2);
+  cp1.refine_with_congruence((B %= 1) / 2);
 
-  cp2.add_constraint(B >= 1);
-  cp2.add_constraint(B <= 1);
+  cp2.refine_with_constraint(B >= 1);
+  cp2.refine_with_constraint(B <= 1);
 
   cons_ok = cp1.upper_bound_assign_if_exact(cp2)
    && cp2.upper_bound_assign_if_exact(cp1);
@@ -690,8 +690,8 @@ test16() {
     return false;
 
   CProduct known_cp(3);
-  known_cp.add_congruence((B %= 1) / 0);
-  known_cp.add_congruence((A %= 1) / 3);
+  known_cp.refine_with_congruence((B %= 1) / 0);
+  known_cp.refine_with_congruence((A %= 1) / 3);
 
   cons_ok = (cp1 == known_cp) && (cp2 == known_cp);
 
@@ -710,13 +710,13 @@ test17() {
   Variable B(1);
 
   CProduct cp(1);
-  cp.add_constraint(A <= 18);
-  cp.add_constraint(A >= 18);
+  cp.refine_with_constraint(A <= 18);
+  cp.refine_with_constraint(A >= 18);
 
   CProduct cp1(cp);
 
   CProduct cp2(1);
-  cp2.add_congruence((A %= 18) / 20);
+  cp2.refine_with_congruence((A %= 18) / 20);
 
   cp1.difference_assign(cp2);
 
@@ -731,7 +731,7 @@ test17() {
   cp2.difference_assign(cp1);
 
   CProduct known_cp(1);
-  known_cp.add_congruence((A %= 18) / 20);
+  known_cp.refine_with_congruence((A %= 18) / 20);
 
   cons_ok = (cp2 == known_cp);
 
@@ -749,27 +749,27 @@ test18() {
   Variable C(2);
 
   CProduct cp1(3);
-  cp1.add_constraint(A >= 0);
-  cp1.add_constraint(B >= 0);
-  cp1.add_constraint(A + B >= 3);
-  cp1.add_constraint(2*A - B == 0);
-  cp1.add_constraint(3*A + C == 0);
-  cp1.add_congruence(3*A %= 0);
+  cp1.refine_with_constraint(A >= 0);
+  cp1.refine_with_constraint(B >= 0);
+  cp1.refine_with_constraint(A + B >= 3);
+  cp1.refine_with_constraint(2*A - B == 0);
+  cp1.refine_with_constraint(3*A + C == 0);
+  cp1.refine_with_congruence(3*A %= 0);
 
   CProduct cp2(3);
-  cp2.add_constraint(7*C == 4);
-  cp2.add_constraint(7*B == -1);
-  cp2.add_constraint(7*A == 3);
+  cp2.refine_with_constraint(7*C == 4);
+  cp2.refine_with_constraint(7*B == -1);
+  cp2.refine_with_constraint(7*A == 3);
 
   cp1.time_elapse_assign(cp2);
 
   CProduct known_cp(3);
-  known_cp.add_constraint(5*A - 13*B - 7*C == 0);
-  known_cp.add_constraint(3*A + C >= 0);
-  known_cp.add_constraint(A + B >= 3);
-  known_cp.add_constraint(4*A - 3*C >= 13);
-  known_cp.add_congruence((65*A - B %= 0) / 7);
-  known_cp.add_congruence(21*A %= 0);
+  known_cp.refine_with_constraint(5*A - 13*B - 7*C == 0);
+  known_cp.refine_with_constraint(3*A + C >= 0);
+  known_cp.refine_with_constraint(A + B >= 3);
+  known_cp.refine_with_constraint(4*A - 3*C >= 13);
+  known_cp.refine_with_congruence((65*A - B %= 0) / 7);
+  known_cp.refine_with_congruence(21*A %= 0);
 
   bool cons_ok = (cp1 == known_cp);
 
@@ -789,14 +789,14 @@ test19() {
   Variable C(2);
 
   CProduct cp(3);
-  cp.add_constraint(B >= 0);
-  cp.add_constraint(3*A + C == 0);
-  cp.add_constraint(2*A - B == 0);
-  cp.add_congruence(3*A %= 0);
+  cp.refine_with_constraint(B >= 0);
+  cp.refine_with_constraint(3*A + C == 0);
+  cp.refine_with_constraint(2*A - B == 0);
+  cp.refine_with_congruence(3*A %= 0);
 #ifdef PH_IS_NNC
-  cp.add_constraint(A > 0);
+  cp.refine_with_constraint(A > 0);
 #else
-  cp.add_constraint(A >= 0);
+  cp.refine_with_constraint(A >= 0);
 #endif
 
   print_congruences(cp, "*** cp congruences ***");
@@ -805,11 +805,11 @@ test19() {
   cp.topological_closure_assign();
 
   CProduct known_cp(3);
-  known_cp.add_constraint(B >= 0);
-  known_cp.add_constraint(3*A + C == 0);
-  known_cp.add_constraint(2*A - B == 0);
-  known_cp.add_congruence(3*A %= 0);
-  known_cp.add_constraint(A >= 0);
+  known_cp.refine_with_constraint(B >= 0);
+  known_cp.refine_with_constraint(3*A + C == 0);
+  known_cp.refine_with_constraint(2*A - B == 0);
+  known_cp.refine_with_congruence(3*A %= 0);
+  known_cp.refine_with_constraint(A >= 0);
 
   bool cons_ok = (cp == known_cp);
 
@@ -827,24 +827,24 @@ test20() {
   Variable C(2);
 
   CProduct cp_prev(3);
-  cp_prev.add_constraint(C == 0);
-  cp_prev.add_constraint(A - B >= 1);
-  cp_prev.add_constraint(A <= 2);
-  cp_prev.add_constraint(B >= 0);
-  cp_prev.add_congruence((B %= 0) / 2);
-  cp_prev.add_congruence(3*A %= 0);
+  cp_prev.refine_with_constraint(C == 0);
+  cp_prev.refine_with_constraint(A - B >= 1);
+  cp_prev.refine_with_constraint(A <= 2);
+  cp_prev.refine_with_constraint(B >= 0);
+  cp_prev.refine_with_congruence((B %= 0) / 2);
+  cp_prev.refine_with_congruence(3*A %= 0);
 
   print_congruences(cp_prev, "*** cp_prev congruences ***");
   print_constraints(cp_prev, "*** cp_prev constraints ***");
 
   CProduct cp(3);
-  cp.add_constraint(C == 0);
-  cp.add_constraint(A <= 2);
-  cp.add_constraint(B >= 0);
-  cp.add_constraint(2*A - B >= 2);
-  cp.add_constraint(B >= 0);
-  cp.add_congruence(6*A %= 0);
-  cp.add_congruence((B %= 0) / 2);
+  cp.refine_with_constraint(C == 0);
+  cp.refine_with_constraint(A <= 2);
+  cp.refine_with_constraint(B >= 0);
+  cp.refine_with_constraint(2*A - B >= 2);
+  cp.refine_with_constraint(B >= 0);
+  cp.refine_with_congruence(6*A %= 0);
+  cp.refine_with_congruence((B %= 0) / 2);
 
   cp.upper_bound_assign(cp_prev);
 
@@ -854,10 +854,10 @@ test20() {
   cp.widening_assign(cp_prev);
 
   CProduct known_cp(3);
-  known_cp.add_constraint(C == 0);
-  known_cp.add_constraint(A <= 2);
-  known_cp.add_constraint(B >= 0);
-  known_cp.add_congruence((B %= 0) / 2);
+  known_cp.refine_with_constraint(C == 0);
+  known_cp.refine_with_constraint(A <= 2);
+  known_cp.refine_with_constraint(B >= 0);
+  known_cp.refine_with_congruence((B %= 0) / 2);
 
   bool cons_ok = (cp == known_cp);
 

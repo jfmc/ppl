@@ -111,8 +111,8 @@ test04() {
   Variable B(1);
 
   Product dp(2);
-  dp.add_constraint(A == 1);
-  dp.add_constraint(3*B == 2);
+  dp.refine_with_constraint(A == 1);
+  dp.refine_with_constraint(3*B == 2);
 
   Linear_Expression le = A + B;
   bool ok = dp.bounds_from_above(le)
@@ -132,15 +132,15 @@ test05() {
 
   Product dp(2);
 #if Box_Class
-  dp.add_constraint(A >= 1);
-  dp.add_constraint(A <= 1);
-  dp.add_constraint(B >= 1);
-  dp.add_constraint(B <= 0);
+  dp.refine_with_constraint(A >= 1);
+  dp.refine_with_constraint(A <= 1);
+  dp.refine_with_constraint(B >= 1);
+  dp.refine_with_constraint(B <= 0);
 #else
-  dp.add_constraint(A - B >= 1);
-  dp.add_constraint(A - B <= 1);
+  dp.refine_with_constraint(A - B >= 1);
+  dp.refine_with_constraint(A - B <= 1);
 #endif
-  dp.add_congruence(3*B %= 2);
+  dp.refine_with_congruence(3*B %= 2);
 
   Linear_Expression le = A - B;
   bool ok = dp.bounds_from_above(le)
@@ -159,7 +159,7 @@ test06() {
   Variable B(1);
 
   Product dp(2);
-  dp.add_constraint(B == 1);
+  dp.refine_with_constraint(B == 1);
 
   Linear_Expression le = 2*A - B;
 
@@ -233,8 +233,8 @@ test10() {
   Variable B(1);
 
   Product dp(2);
-  dp.add_constraint(A == 1);
-  dp.add_constraint(3*B == 2);
+  dp.refine_with_constraint(A == 1);
+  dp.refine_with_constraint(3*B == 2);
 
   Linear_Expression le = A + B;
 
@@ -274,15 +274,15 @@ test11() {
 
   Product dp(2);
 #if Box_Class
-  dp.add_constraint(A >= 2);
-  dp.add_constraint(A <= 2);
-  dp.add_constraint(B >= 1);
-  dp.add_constraint(B <= 1);
+  dp.refine_with_constraint(A >= 2);
+  dp.refine_with_constraint(A <= 2);
+  dp.refine_with_constraint(B >= 1);
+  dp.refine_with_constraint(B <= 1);
 #else
-  dp.add_constraint(A - B >= 1);
-  dp.add_constraint(A - B <= 1);
+  dp.refine_with_constraint(A - B >= 1);
+  dp.refine_with_constraint(A - B <= 1);
 #endif
-  dp.add_congruence(3*B %= 2);
+  dp.refine_with_congruence(3*B %= 2);
 ;
   Linear_Expression le = A - B;
 
@@ -319,7 +319,7 @@ test12() {
   Variable B(1);
 
   Product dp(2);
-  dp.add_constraint(B == 1);
+  dp.refine_with_constraint(B == 1);
 
   Linear_Expression le = 2*A - B;
 
@@ -352,20 +352,20 @@ test13() {
   Product dp(2);
 
 #if NNC_Poly_Class
-  dp.add_constraint(A - B > 0);
-  dp.add_constraint(A - B < 1);
+  dp.refine_with_constraint(A - B > 0);
+  dp.refine_with_constraint(A - B < 1);
 #else
 #if !Box_Class
-  dp.add_constraint(A - B >= 0);
-  dp.add_constraint(A - B <= 1);
+  dp.refine_with_constraint(A - B >= 0);
+  dp.refine_with_constraint(A - B <= 1);
 #else
-  dp.add_constraint(A >= 2);
-  dp.add_constraint(A <= 2);
-  dp.add_constraint(B <= 2);
-  dp.add_constraint(B >= 1);
+  dp.refine_with_constraint(A >= 2);
+  dp.refine_with_constraint(A <= 2);
+  dp.refine_with_constraint(B <= 2);
+  dp.refine_with_constraint(B >= 1);
 #endif
 #endif
-  dp.add_congruence(3*B %= 2);
+  dp.refine_with_congruence(3*B %= 2);
 
   Linear_Expression le = A - B;
 
@@ -409,9 +409,9 @@ test14() {
   Variable C(2);
 
   Product dp(3);
-  dp.add_congruence((A ==  0) / 0);
-  dp.add_congruence((B ==  0) / 0);
-  dp.add_congruence((C == -2) / 0);
+  dp.refine_with_congruence((A ==  0) / 0);
+  dp.refine_with_congruence((B ==  0) / 0);
+  dp.refine_with_congruence((C == -2) / 0);
 
   print_congruences(dp, "*** dp congruences ***");
   print_constraints(dp, "*** dp constraints ***");
@@ -419,10 +419,10 @@ test14() {
   dp.bounded_affine_image(A, 7-B, B+3);
 
   Product known_dp(3);
-  known_dp.add_constraint(C == -2);
-  known_dp.add_constraint(B == 0);
-  known_dp.add_constraint(A <= 3);
-  known_dp.add_constraint(A - B >= 7);
+  known_dp.refine_with_constraint(C == -2);
+  known_dp.refine_with_constraint(B == 0);
+  known_dp.refine_with_constraint(A <= 3);
+  known_dp.refine_with_constraint(A - B >= 7);
 
   bool ok = (dp == known_dp);
 
@@ -442,9 +442,9 @@ test15() {
   Variable C(2);
 
   Product dp(3);
-  dp.add_constraint(A ==  0);
-  dp.add_constraint(A ==  1);
-  dp.add_constraint(C == -2);
+  dp.refine_with_constraint(A ==  0);
+  dp.refine_with_constraint(A ==  1);
+  dp.refine_with_constraint(C == -2);
 
   print_congruences(dp, "*** dp congruences ***");
   print_constraints(dp, "*** dp constraints ***");
@@ -469,9 +469,9 @@ test16() {
   Variable C(2);
 
   Product dp(3);
-  dp.add_congruence((A ==  0) / 0);
-  dp.add_congruence((B ==  0) / 0);
-  dp.add_congruence((C == -2) / 0);
+  dp.refine_with_congruence((A ==  0) / 0);
+  dp.refine_with_congruence((B ==  0) / 0);
+  dp.refine_with_congruence((C == -2) / 0);
 
   print_congruences(dp, "*** dp congruences ***");
   print_constraints(dp, "*** dp constraints ***");
@@ -484,7 +484,7 @@ test16() {
   cs.insert(C >= 3);
 
   Product known_dp(3);
-  known_dp.add_constraints(cs);
+  known_dp.refine_with_constraints(cs);
 
   bool ok = (dp == known_dp);
 
@@ -502,9 +502,9 @@ test17() {
   Variable C(2);
 
   Product dp(3);
-  dp.add_constraint(A ==  0);
-  dp.add_constraint(A ==  1);
-  dp.add_constraint(C == -2);
+  dp.refine_with_constraint(A ==  0);
+  dp.refine_with_constraint(A ==  1);
+  dp.refine_with_constraint(C == -2);
 
   print_congruences(dp, "*** dp congruences ***");
   print_constraints(dp, "*** dp constraints ***");
@@ -531,23 +531,23 @@ test18() {
   Variable y(1);
 
   C_Polyhedron ph(2);
-  ph.add_constraint(3*x + y >= 2);
-  ph.add_constraint(x <= 4);
-  ph.add_constraint(y <= 4);
+  ph.refine_with_constraint(3*x + y >= 2);
+  ph.refine_with_constraint(x <= 4);
+  ph.refine_with_constraint(y <= 4);
 
   Box_Product pdp(ph, POLYNOMIAL_COMPLEXITY);
 
   Box_Product ndp(ph);
 
   Box_Product known_ndp(2);
-  known_ndp.add_constraint(3*x >= -2);
-  known_ndp.add_constraint(x <= 4);
-  known_ndp.add_constraint(y >= -10);
-  known_ndp.add_constraint(y <= 4);
+  known_ndp.refine_with_constraint(3*x >= -2);
+  known_ndp.refine_with_constraint(x <= 4);
+  known_ndp.refine_with_constraint(y >= -10);
+  known_ndp.refine_with_constraint(y <= 4);
 
   Box_Product known_pdp(2);
-  known_pdp.add_constraint(x <= 4);
-  known_pdp.add_constraint(y <= 4);
+  known_pdp.refine_with_constraint(x <= 4);
+  known_pdp.refine_with_constraint(y <= 4);
 
   bool ok = (ndp == known_ndp && pdp == known_pdp && pdp.contains(ndp));
 
@@ -574,7 +574,7 @@ test19() {
   Product dp1(src);
 
   Product known_dp(1);
-  known_dp.add_constraint(A >= 0);
+  known_dp.refine_with_constraint(A >= 0);
 
   bool ok = (dp == known_dp && dp1 == known_dp);
 
@@ -600,7 +600,7 @@ test20() {
   Product dp1(src);
 
   Product known_dp(1);
-  known_dp.add_constraint(A >= 0);
+  known_dp.refine_with_constraint(A >= 0);
 
   bool ok = (dp == known_dp && dp1 == known_dp);
 

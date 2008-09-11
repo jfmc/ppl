@@ -69,8 +69,8 @@ test01() {
   Variable C(2);
 
   Product dp(3);
-  dp.add_congruence(A %= 9);
-  dp.add_congruence(B + C %= 3);
+  dp.refine_with_congruence(A %= 9);
+  dp.refine_with_congruence(B + C %= 3);
 
   bool ok = !dp.is_empty();
 
@@ -87,8 +87,8 @@ test02() {
 
   Product dp(3);
 
-  dp.add_congruence((A %= 0) / 2);
-  dp.add_congruence((A %= 1) / 2);
+  dp.refine_with_congruence((A %= 0) / 2);
+  dp.refine_with_congruence((A %= 1) / 2);
 
   bool ok = dp.is_empty();
 
@@ -104,8 +104,8 @@ test03() {
   Variable A(0);
 
   Product dp(3);
-  dp.add_constraint(A == 1);
-  dp.add_constraint(A == 3);
+  dp.refine_with_constraint(A == 1);
+  dp.refine_with_constraint(A == 3);
 
   bool ok = dp.is_empty();
 
@@ -134,8 +134,8 @@ test05() {
   Variable A(0);
 
   Product dp(3);
-  dp.add_congruence((A %= 0) / 2);
-  dp.add_congruence((A %= 1) / 2);
+  dp.refine_with_congruence((A %= 0) / 2);
+  dp.refine_with_congruence((A %= 1) / 2);
 
   bool ok = !dp.is_universe();
 
@@ -167,11 +167,11 @@ test07() {
 
   Product dp(3);
 #if NNC_Poly_Class
-  dp.add_constraint(A < 3);
+  dp.refine_with_constraint(A < 3);
 #else
-  dp.add_constraint(A <= 3);
+  dp.refine_with_constraint(A <= 3);
 #endif
-  dp.add_congruence((A %= 0) / 3);
+  dp.refine_with_congruence((A %= 0) / 3);
 
 #if NNC_Poly_Class
   bool ok = !dp.is_topologically_closed();
@@ -192,8 +192,8 @@ test08() {
   Variable A(0);
 
   Product dp(3);
-  dp.add_constraint(A <= 3);
-  dp.add_congruence((A %= 0) / 3);
+  dp.refine_with_constraint(A <= 3);
+  dp.refine_with_congruence((A %= 0) / 3);
 
   bool ok = dp.is_topologically_closed();
 
@@ -210,13 +210,13 @@ test09() {
   Variable A(0);
 
   Product dp(3);
-  dp.add_congruence((A %= 0) / 4);
+  dp.refine_with_congruence((A %= 0) / 4);
 #if NNC_Poly_Class
-  dp.add_constraint(A < 3);
+  dp.refine_with_constraint(A < 3);
 
   bool ok = !dp.is_topologically_closed();
 #else
-  dp.add_constraint(A <= 3);
+  dp.refine_with_constraint(A <= 3);
 
   bool ok = dp.is_topologically_closed();
 #endif
@@ -236,12 +236,12 @@ test10() {
   Product dp1(12);
   Product dp2(12);
 #if NNC_Poly_Class
-  dp1.add_constraint(B < 3);
-  dp2.add_constraint(B > 3);
+  dp1.refine_with_constraint(B < 3);
+  dp2.refine_with_constraint(B > 3);
   bool ok = dp1.is_disjoint_from(dp2);
 #else
-  dp1.add_constraint(B <= 3);
-  dp2.add_constraint(B >= 4);
+  dp1.refine_with_constraint(B <= 3);
+  dp2.refine_with_constraint(B >= 4);
   bool ok = dp1.is_disjoint_from(dp2);
 #endif
 
@@ -259,10 +259,10 @@ test11() {
   Variable A(0);
 
   Product dp1(3);
-  dp1.add_congruence((A %= 0) / 7);
+  dp1.refine_with_congruence((A %= 0) / 7);
 
   Product dp2(3);
-  dp2.add_congruence((A %= 1) / 7);
+  dp2.refine_with_congruence((A %= 1) / 7);
 
   bool ok = dp1.is_disjoint_from(dp2);
 
@@ -280,17 +280,17 @@ test12() {
   Variable A(0);
 
   Product dp1(3);
-  dp1.add_congruence((A %= 0) / 7);
+  dp1.refine_with_congruence((A %= 0) / 7);
   Product dp2(3);
-  dp2.add_congruence((A %= 1) / 7);
+  dp2.refine_with_congruence((A %= 1) / 7);
 #if NNC_Poly_Class
-  dp1.add_constraint(A < 3);
-  dp2.add_constraint(A > 3);
+  dp1.refine_with_constraint(A < 3);
+  dp2.refine_with_constraint(A > 3);
 
   bool ok = dp1.is_disjoint_from(dp2);
 #else
-  dp1.add_constraint(A <= 2);
-  dp2.add_constraint(A >= 4);
+  dp1.refine_with_constraint(A <= 2);
+  dp2.refine_with_constraint(A >= 4);
 
   bool ok = dp1.is_disjoint_from(dp2);
 #endif
@@ -309,17 +309,17 @@ test13() {
   Variable A(0);
 
   Product dp1(3);
-  dp1.add_congruence((A %= 1) / 7);
+  dp1.refine_with_congruence((A %= 1) / 7);
   Product dp2(3);
-  dp2.add_congruence((A %= 1) / 14);
+  dp2.refine_with_congruence((A %= 1) / 14);
 #if NNC_Poly_Class
-  dp1.add_constraint(A < 6);
-  dp2.add_constraint(A > 3);
+  dp1.refine_with_constraint(A < 6);
+  dp2.refine_with_constraint(A > 3);
 
   bool ok = !dp1.is_disjoint_from(dp2);
 #else
-  dp1.add_constraint(A <= 6);
-  dp2.add_constraint(A >= 3);
+  dp1.refine_with_constraint(A <= 6);
+  dp2.refine_with_constraint(A >= 3);
 
   bool ok = !dp1.is_disjoint_from(dp2);
 #endif
@@ -341,21 +341,21 @@ test14() {
   Variable B(1);
 
   Product dp1(2);
-  dp1.add_constraint(A <= 4);
-  dp1.add_constraint(A >= 0);
-  dp1.add_constraint(A - B <= 0);
-  dp1.add_constraint(A - B >= 2);
-  dp1.add_congruence((A %= 0) / 2);
-  dp1.add_congruence((A %= 0) / 4);
+  dp1.refine_with_constraint(A <= 4);
+  dp1.refine_with_constraint(A >= 0);
+  dp1.refine_with_constraint(A - B <= 0);
+  dp1.refine_with_constraint(A - B >= 2);
+  dp1.refine_with_congruence((A %= 0) / 2);
+  dp1.refine_with_congruence((A %= 0) / 4);
 
   Product dp2(2);
-  dp2.add_constraint(A <= 4);
-  dp2.add_constraint(A <= 0);
-  dp2.add_constraint(A + B >= 4);
-  dp2.add_constraint(A + B <= 6);
+  dp2.refine_with_constraint(A <= 4);
+  dp2.refine_with_constraint(A <= 0);
+  dp2.refine_with_constraint(A + B >= 4);
+  dp2.refine_with_constraint(A + B <= 6);
   // Same grid as dp1.
-  dp2.add_congruence((A %= 0) / 2);
-  dp2.add_congruence((A %= 0) / 4);
+  dp2.refine_with_congruence((A %= 0) / 2);
+  dp2.refine_with_congruence((A %= 0) / 4);
 
 #if Box_Class
   bool ok = !dp1.is_disjoint_from(dp2);
@@ -379,10 +379,10 @@ test15() {
   Variable C(2);
 
   Product dp(3);
-  dp.add_constraint(A == 1);
-  dp.add_constraint(B == 2);
-  dp.add_constraint(C <= 3);
-  dp.add_congruence((C %= 0) / 3);
+  dp.refine_with_constraint(A == 1);
+  dp.refine_with_constraint(B == 2);
+  dp.refine_with_constraint(C <= 3);
+  dp.refine_with_congruence((C %= 0) / 3);
 
   bool ok = dp.is_discrete();
 
@@ -399,9 +399,9 @@ test16() {
   Variable B(1);
 
   Product dp(2);
-  dp.add_constraint(A <= 3);
-  dp.add_constraint(A >= 3);
-  dp.add_constraint(B == 0);
+  dp.refine_with_constraint(A <= 3);
+  dp.refine_with_constraint(A >= 3);
+  dp.refine_with_constraint(B == 0);
 
   bool ok = dp.is_discrete();
 
@@ -419,9 +419,9 @@ test17() {
   Variable B(1);
 
   Product dp(3);
-  dp.add_congruence((A - B %= 0) / 0);
-  dp.add_constraint(B >= 0);
-  dp.add_constraint(B <= 0);
+  dp.refine_with_congruence((A - B %= 0) / 0);
+  dp.refine_with_constraint(B >= 0);
+  dp.refine_with_constraint(B <= 0);
 
   bool ok = !dp.is_discrete();
 
@@ -438,17 +438,17 @@ test18() {
   Variable B(1);
 
   Product dp(2);
-  dp.add_congruence((A %= 1) / 3);
+  dp.refine_with_congruence((A %= 1) / 3);
 #if NNC_Poly_Class
-  dp.add_constraint(A > 1);
-  dp.add_constraint(A < 4);
-  dp.add_constraint(B > 1);
-  dp.add_constraint(B < 4);
+  dp.refine_with_constraint(A > 1);
+  dp.refine_with_constraint(A < 4);
+  dp.refine_with_constraint(B > 1);
+  dp.refine_with_constraint(B < 4);
 #else
-  dp.add_constraint(A >= 1);
-  dp.add_constraint(A <= 4);
-  dp.add_constraint(B >= 1);
-  dp.add_constraint(B <= 4);
+  dp.refine_with_constraint(A >= 1);
+  dp.refine_with_constraint(A <= 4);
+  dp.refine_with_constraint(B >= 1);
+  dp.refine_with_constraint(B <= 4);
 #endif
 
   bool ok = dp.is_bounded();
@@ -466,9 +466,9 @@ test19() {
   Variable B(1);
 
   Product dp(2);
-  dp.add_congruence((A %= 0) / 0);
-  dp.add_congruence((B %= 0) / 0);
-  dp.add_constraint(B <= 0);
+  dp.refine_with_congruence((A %= 0) / 0);
+  dp.refine_with_congruence((B %= 0) / 0);
+  dp.refine_with_constraint(B <= 0);
 
   bool ok = dp.is_bounded();
 

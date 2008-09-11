@@ -59,7 +59,7 @@ typedef Domain_Product<Grid, Poly>::Direct_Product Product;
 
 namespace {
 
-// add_constraints
+// refine_with_constraints
 bool
 test01() {
 
@@ -76,11 +76,11 @@ test01() {
   print_constraints(dp, "*** dp constraints ***");
   print_congruences(dp, "*** dp congruences ***");
 
-  dp.add_constraints(cs);
+  dp.refine_with_constraints(cs);
 
   Product known_dp(2);
-  known_dp.add_constraint(A >= 0);
-  known_dp.add_constraint(B == 0);
+  known_dp.refine_with_constraint(A >= 0);
+  known_dp.refine_with_constraint(B == 0);
 
   bool ok = (dp == known_dp);
 
@@ -90,7 +90,7 @@ test01() {
   return ok;
 }
 
-// add_recycled_constraints
+// refine_with_constraints
 bool
 test02() {
   Variable A(0);
@@ -104,10 +104,10 @@ test02() {
   print_constraints(dp, "*** dp constraints ***");
   print_congruences(dp, "*** dp congruences ***");
 
-  dp.add_recycled_constraints(cs);
+  dp.refine_with_constraints(cs);
 
   Product known_dp(2);
-  known_dp.add_constraint(A + B <= 0);
+  known_dp.refine_with_constraint(A + B <= 0);
 
   bool ok = (dp == known_dp);
 
@@ -117,7 +117,7 @@ test02() {
   return ok;
 }
 
-// add_constraints
+// refine_with_constraints
 bool
 test03() {
   Variable A(0);
@@ -132,19 +132,19 @@ test03() {
   print_constraints(dp, "*** dp constraints ***");
   print_congruences(dp, "*** dp congruences ***");
 
-  dp.add_constraints(cs);
+  dp.refine_with_constraints(cs);
   bool ok = !dp.is_empty();
 
   Product known_dp(2);
-  known_dp.add_constraint(A >= 0);
-  known_dp.add_constraint(A + B == 0);
+  known_dp.refine_with_constraint(A >= 0);
+  known_dp.refine_with_constraint(A + B == 0);
 
   ok = ok && (dp == known_dp);
 
   return ok;
 }
 
-// add_recycled_constraints
+// refine_with_constraints
 bool
 test04() {
   Variable A(0);
@@ -159,12 +159,12 @@ test04() {
   print_constraints(dp, "*** dp constraints ***");
   print_congruences(dp, "*** dp congruences ***");
 
-  dp.add_recycled_constraints(cs);
+  dp.refine_with_constraints(cs);
   bool ok = !dp.is_empty();
 
   Product known_dp(2);
-  known_dp.add_constraint(B >= 0);
-  known_dp.add_constraint(A - B == 0);
+  known_dp.refine_with_constraint(B >= 0);
+  known_dp.refine_with_constraint(A - B == 0);
 
   ok = ok && (dp == known_dp);
 
@@ -174,7 +174,7 @@ test04() {
   return ok;
 }
 
-// add_congruences
+// refine_with_congruences
 bool
 test05() {
 
@@ -191,11 +191,11 @@ test05() {
   print_constraints(dp, "*** dp constraints ***");
   print_congruences(dp, "*** dp congruences ***");
 
-  dp.add_congruences(cgs);
+  dp.refine_with_congruences(cgs);
 
   Product known_dp(2);
-  known_dp.add_congruence((A %= 0) / 2);
-  known_dp.add_congruence((B == 0) / 2);
+  known_dp.refine_with_congruence((A %= 0) / 2);
+  known_dp.refine_with_congruence((B == 0) / 2);
 
   bool ok = (dp == known_dp);
 
@@ -205,7 +205,7 @@ test05() {
   return ok;
 }
 
-// add_congruences
+// refine_with_congruences
 bool
 test06() {
   Variable A(0);
@@ -220,12 +220,12 @@ test06() {
   print_constraints(dp, "*** dp constraints ***");
   print_congruences(dp, "*** dp congruences ***");
 
-  dp.add_congruences(cgs);
+  dp.refine_with_congruences(cgs);
   bool ok = !dp.is_empty();
 
   Product known_dp(2);
-  known_dp.add_congruence((A %= 0) / 2);
-  known_dp.add_constraint(A + B == 0);
+  known_dp.refine_with_congruence((A %= 0) / 2);
+  known_dp.refine_with_constraint(A + B == 0);
 
   ok = ok && (dp == known_dp);
 
@@ -235,7 +235,7 @@ test06() {
   return ok;
 }
 
-// add_recycled_congruences
+// refine_with_congruences
 bool
 test07() {
   Variable A(0);
@@ -249,10 +249,10 @@ test07() {
   print_constraints(dp, "*** dp constraints ***");
   print_congruences(dp, "*** dp congruences ***");
 
-  dp.add_recycled_congruences(cgs);
+  dp.refine_with_congruences(cgs);
 
   Product known_dp(2);
-  known_dp.add_congruence((A + B %= 0) / 2);
+  known_dp.refine_with_congruence((A + B %= 0) / 2);
 
   bool ok = (dp == known_dp);
 
@@ -262,7 +262,7 @@ test07() {
   return ok;
 }
 
-// add_recycled_congruences
+// refine_with_congruences
 bool
 test08() {
   Variable A(0);
@@ -277,12 +277,12 @@ test08() {
   print_constraints(dp, "*** dp constraints ***");
   print_congruences(dp, "*** dp congruences ***");
 
-  dp.add_recycled_congruences(cgs);
+  dp.refine_with_congruences(cgs);
   bool ok = !dp.is_empty();
 
   Product known_dp(2);
-  known_dp.add_congruence((B %= 0) / 2);
-  known_dp.add_constraint(A - B == 0);
+  known_dp.refine_with_congruence((B %= 0) / 2);
+  known_dp.refine_with_constraint(A - B == 0);
 
   ok = ok &&(dp == known_dp);
 
@@ -336,8 +336,8 @@ test11() {
   Variable B(1);
 
   Product dp(2);
-  dp.add_constraint(A == 1);
-  dp.add_congruence((A %= 2) / 0);
+  dp.refine_with_constraint(A == 1);
+  dp.refine_with_congruence((A %= 2) / 0);
 
   bool ok = (dp.relation_with(B == 0)
 	     == (Poly_Con_Relation::is_included()
@@ -364,9 +364,9 @@ test12() {
   Variable C(2);
 
   Product dp(3);
-  dp.add_constraint(3*A + 3*B + C == 7);
-  dp.add_constraint(3*A - C >= 2);
-  dp.add_congruence(6*A + 3*B %= 0);
+  dp.refine_with_constraint(3*A + 3*B + C == 7);
+  dp.refine_with_constraint(3*A - C >= 2);
+  dp.refine_with_congruence(6*A + 3*B %= 0);
 
   Poly_Con_Relation rel1 = dp.domain1().relation_with(2*A + B >= 3);
   Poly_Con_Relation rel2 = dp.domain2().relation_with(2*A + B >= 3);
@@ -420,8 +420,8 @@ test13() {
   Variable C(2);
 
   Product dp(3);
-  dp.add_constraint(C == 0);
-  dp.add_congruence(6*A + 3*B %= 0);
+  dp.refine_with_constraint(C == 0);
+  dp.refine_with_congruence(6*A + 3*B %= 0);
 
   Poly_Con_Relation rel1 = dp.domain1().relation_with(2*A + B >= 3);
   Poly_Con_Relation rel2 = dp.domain2().relation_with(2*A + B >= 3);
@@ -473,8 +473,8 @@ test15() {
   Variable B(1);
 
   Product dp(2);
-  dp.add_constraint(A == 1);
-  dp.add_congruence((A %= 2) / 0);
+  dp.refine_with_constraint(A == 1);
+  dp.refine_with_congruence((A %= 2) / 0);
 
   Poly_Con_Relation rel = dp.relation_with(B %= 0);
   bool ok = (rel == (Poly_Con_Relation::is_included()
@@ -496,9 +496,9 @@ test16() {
   Variable C(2);
 
   Product dp(3);
-  dp.add_constraint(3*A + 3*B + C == 7);
-  dp.add_constraint(3*A - C >= 2);
-  dp.add_congruence((2*A + B %= 0) / 2);
+  dp.refine_with_constraint(3*A + 3*B + C == 7);
+  dp.refine_with_constraint(3*A - C >= 2);
+  dp.refine_with_congruence((2*A + B %= 0) / 2);
 
   Poly_Con_Relation rel1 = dp.domain1().relation_with(2*A + B %= 3);
   Poly_Con_Relation rel2 = dp.domain2().relation_with(2*A + B %= 3);
@@ -553,8 +553,8 @@ test17() {
   Variable C(2);
 
   Product dp(3);
-  dp.add_constraint(C == 0);
-  dp.add_congruence(6*A + 3*B %= 0);
+  dp.refine_with_constraint(C == 0);
+  dp.refine_with_congruence(6*A + 3*B %= 0);
 
   bool okdp1 = (dp.domain1().relation_with(2*A + B %= 3)
 		== Poly_Con_Relation::strictly_intersects());

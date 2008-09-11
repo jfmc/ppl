@@ -95,7 +95,7 @@ test02() {
   return ok && dp1.OK() && dp2.OK();
 }
 
-// Product(cgs), add_congruence(cg)
+// Product(cgs), refine_with_congruence(cg)
 bool
 test03() {
   Variable A(0);
@@ -105,7 +105,7 @@ test03() {
   Product dp1(cgs);
 
   Product dp2(1);
-  dp2.add_congruence((A %= 0) / 4);
+  dp2.refine_with_congruence((A %= 0) / 4);
 
   bool ok = (dp1 == dp2);
 
@@ -130,7 +130,7 @@ test04() {
   Poly known_ph(1);
 
   Grid known_gr(1);
-  known_gr.add_congruence((A %= 0) / 4);
+  known_gr.refine_with_congruence((A %= 0) / 4);
 
 #ifdef PH_IS_FIRST
   bool ok = (dp.domain2() == known_gr
@@ -146,7 +146,7 @@ test04() {
   return ok && dp.OK();
 }
 
-// Product(cs), add_constraint(c)
+// Product(cs), refine_with_constraint(c)
 bool
 test05() {
   Variable A(0);
@@ -156,7 +156,7 @@ test05() {
   Product dp1(cs);
 
   Product dp2(1);
-  dp2.add_constraint(static_cast<const Constraint>(A >= 0));
+  dp2.refine_with_constraint(static_cast<const Constraint>(A >= 0));
 
   bool ok = (dp1 == dp2);
 
@@ -168,7 +168,7 @@ test05() {
   return ok && dp1.OK() && dp2.OK();
 }
 
-// Product(cs), add_congruence(c)
+// Product(cs), refine_with_congruence(c)
 bool
 test06() {
   Variable A(0);
@@ -178,10 +178,10 @@ test06() {
   Product dp1(cs);
 
   Product dp2(1);
-  dp2.add_constraint(A == 9);
+  dp2.refine_with_constraint(A == 9);
 
   Grid known_gr(1);
-  known_gr.add_congruence(A == 9);
+  known_gr.refine_with_congruence((A %= 9) / 0);
 
 #ifdef PH_IS_FIRST
   bool ok = (dp1 == dp2 && dp1.domain2() == known_gr);
@@ -204,15 +204,15 @@ test07() {
   Variable B(1);
 
   Rational_Box box(2);
-  box.add_constraint(3*B >= 2);
-  box.add_constraint(A >= 2);
-  box.add_constraint(A <= 2);
+  box.refine_with_constraint(3*B >= 2);
+  box.refine_with_constraint(A >= 2);
+  box.refine_with_constraint(A <= 2);
 
   Product dp(box);
 
   Product known_dp(2);
-  known_dp.add_constraint(3*B >= 2);
-  known_dp.add_constraint(A == 2);
+  known_dp.refine_with_constraint(3*B >= 2);
+  known_dp.refine_with_constraint(A == 2);
 
   bool ok = (dp == known_dp) && dp.OK();
 
@@ -231,14 +231,14 @@ test08() {
   Variable B(1);
 
   Rational_Box box(2);
-  box.add_constraint(A == 0);
-  box.add_constraint(3*B >= 2);
-  box.add_constraint(3*B <= 3);
+  box.refine_with_constraint(A == 0);
+  box.refine_with_constraint(3*B >= 2);
+  box.refine_with_constraint(3*B <= 3);
 
   Product dp(box, From_Covering_Box());
 
   Product known_dp(2);
-  known_dp.add_congruence(3*B %= 0);
+  known_dp.refine_with_congruence(3*B %= 0);
 
   bool ok = (dp == known_dp);
 
@@ -258,7 +258,7 @@ test09() {
   Constraint_System cs(A + B <= 9);
 
   Product dp1(cs);
-  dp1.add_congruence((A %= 9) / 19);
+  dp1.refine_with_congruence((A %= 9) / 19);
 
   Product dp2 = dp1;
 
@@ -302,8 +302,8 @@ test11() {
   Variable C(2);
 
   Product dp(3);
-  dp.add_congruence(A %= 9);
-  dp.add_congruence(B + C %= 3);
+  dp.refine_with_congruence(A %= 9);
+  dp.refine_with_congruence(B + C %= 3);
 
   Congruence_System cgs;
   cgs.insert(B + C %= 0);
@@ -329,9 +329,9 @@ test12() {
   Variable C(2);
 
   Product dp(3);
-  dp.add_congruence(B + C %= 3);
-  dp.add_constraint(A >= 9);
-  dp.add_constraint(A <= 9);
+  dp.refine_with_congruence(B + C %= 3);
+  dp.refine_with_constraint(A >= 9);
+  dp.refine_with_constraint(A <= 9);
 
   Congruence_System cgs;
   cgs.insert(B + C %= 3);
@@ -357,24 +357,24 @@ test13() {
   Variable C(2);
 
   Product dp(3);
-  dp.add_congruence((B + C %= 3) / 0);
+  dp.refine_with_congruence((B + C %= 3) / 0);
 #if NNC_Poly_Class
-  dp.add_constraint(A > 9);
+  dp.refine_with_constraint(A > 9);
 #else
-  dp.add_constraint(A >= 9);
+  dp.refine_with_constraint(A >= 9);
 #endif
-  dp.add_constraint(A <= 11);
+  dp.refine_with_constraint(A <= 11);
 
   Poly ph(dp.space_dimension());
-  ph.add_constraints(dp.constraints());
+  ph.refine_with_constraints(dp.constraints());
 
   Poly known_ph(dp.space_dimension());
-  known_ph.add_constraint(B + C == 3);
-  known_ph.add_constraint(A <= 11);
+  known_ph.refine_with_constraint(B + C == 3);
+  known_ph.refine_with_constraint(A <= 11);
 #if NNC_Poly_Class
-  known_ph.add_constraint(A > 9);
+  known_ph.refine_with_constraint(A > 9);
 #else
-  known_ph.add_constraint(A >= 9);
+  known_ph.refine_with_constraint(A >= 9);
 #endif
 
   bool ok = (ph == known_ph);
@@ -395,25 +395,25 @@ test14() {
   Variable C(2);
 
   Product dp(3);
-  dp.add_congruence((B + C %= 3) / 0);
+  dp.refine_with_congruence((B + C %= 3) / 0);
 #if NNC_Poly_Class
-  dp.add_constraint(A > 9);
+  dp.refine_with_constraint(A > 9);
 #else
-  dp.add_constraint(A >= 9);
+  dp.refine_with_constraint(A >= 9);
 #endif
-  dp.add_constraint(A <= 11);
+  dp.refine_with_constraint(A <= 11);
 
   Poly ph(dp.space_dimension());
-  ph.add_constraints(dp.minimized_constraints());
+  ph.refine_with_constraints(dp.minimized_constraints());
 
   Poly known_ph(dp.space_dimension());
-  known_ph.add_constraint(B + C == 3);
+  known_ph.refine_with_constraint(B + C == 3);
 #if NNC_Poly_Class
-  known_ph.add_constraint(A > 9);
+  known_ph.refine_with_constraint(A > 9);
 #else
-  known_ph.add_constraint(A >= 9);
+  known_ph.refine_with_constraint(A >= 9);
 #endif
-  known_ph.add_constraint(A <= 11);
+  known_ph.refine_with_constraint(A <= 11);
 
   bool ok = (ph == known_ph);
 
@@ -435,7 +435,7 @@ test15() {
   Product dp1(ph);
 
   Product dp2(1);
-  dp2.add_congruence((A %= 0) / 0);
+  dp2.refine_with_congruence((A %= 0) / 0);
 
   bool ok = (dp1 == dp2);
 
@@ -464,9 +464,9 @@ test16() {
 
   Product dp2(1);
 #if NNC_Poly_Class
-  dp2.add_constraint(A > 0);
+  dp2.refine_with_constraint(A > 0);
 #else
-  dp2.add_constraint(A >= 0);
+  dp2.refine_with_constraint(A >= 0);
 #endif
 
   bool ok = (dp1 == dp2);
@@ -491,7 +491,7 @@ test17() {
   Product dp1(gr);
 
   Product dp2(1);
-  dp2.add_congruence((A %= 0) / 1);
+  dp2.refine_with_congruence((A %= 0) / 1);
 
   bool ok = (dp1 == dp2);
 
@@ -515,7 +515,7 @@ test18() {
   Product dp1(box);
 
   Product dp2(1);
-  dp2.add_constraint(A > 0);
+  dp2.refine_with_constraint(A > 0);
 
   bool ok = (dp1 == dp2);
 
@@ -541,8 +541,8 @@ test19() {
   Product dp1(bd);
 
   Product dp2(2);
-  dp2.add_constraint(A >= 0);
-  dp2.add_constraint(2*A - 2*B >= 5);
+  dp2.refine_with_constraint(A >= 0);
+  dp2.refine_with_constraint(2*A - 2*B >= 5);
 
   bool ok = (dp1 == dp2);
 
@@ -568,8 +568,8 @@ test20() {
   Product dp1(os);
 
   Product dp2(2);
-  dp2.add_constraint(A >= 0);
-  dp2.add_constraint(2*A + 2*B >= 5);
+  dp2.refine_with_constraint(A >= 0);
+  dp2.refine_with_constraint(2*A + 2*B >= 5);
 
   bool ok = (dp1 == dp2);
 

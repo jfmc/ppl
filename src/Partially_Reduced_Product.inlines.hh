@@ -739,8 +739,8 @@ void Constraints_Reduction<D1, D2>::product_reduce(D1& d1, D2& d2) {
     std::swap(d2, new_d2);
   }
   else {
-    d1.add_constraints(d2.minimized_constraints());
-    d2.add_constraints(d1.minimized_constraints());
+    d1.refine_with_constraints(d2.minimized_constraints());
+    d2.refine_with_constraints(d1.minimized_constraints());
   }
 }
 
