@@ -93,12 +93,12 @@ void
 Partially_Reduced_Product<D1, D2, R>
 ::add_recycled_constraints(Constraint_System& cs) {
   if (d1.can_recycle_constraint_systems()) {
-    d2.add_constraints(cs);
+    d2.refine_with_constraints(cs);
     d1.add_recycled_constraints(cs);
   }
   else
     if (d2.can_recycle_constraint_systems()) {
-      d1.add_constraints(cs);
+      d1.refine_with_constraints(cs);
       d2.add_recycled_constraints(cs);
     }
     else {
@@ -113,12 +113,12 @@ void
 Partially_Reduced_Product<D1, D2, R>
 ::add_recycled_congruences(Congruence_System& cgs) {
   if (d1.can_recycle_congruence_systems()) {
-    d2.add_congruences(cgs);
+    d2.refine_with_congruences(cgs);
     d1.add_recycled_congruences(cgs);
   }
   else
     if (d2.can_recycle_congruence_systems()) {
-      d1.add_congruences(cgs);
+      d1.refine_with_congruences(cgs);
       d2.add_recycled_congruences(cgs);
     }
     else {
