@@ -441,7 +441,7 @@ BD_Shape<T>::add_congruence(const Congruence& cg) {
   // Dimension-compatibility check:
   // the dimension of `cg' can not be greater than space_dim.
   if (space_dimension() < cg_space_dim)
-    throw_dimension_incompatible("add_congruence(cg)", "cg", cg);
+    throw_dimension_incompatible("add_congruence(cg)", cg);
 
   // Handle the case of proper congruences first.
   if (cg.is_proper_congruence()) {
@@ -457,11 +457,7 @@ BD_Shape<T>::add_congruence(const Congruence& cg) {
   }
 
   assert(cg.is_equality());
-  // Add the equality.
-  Linear_Expression le(cg);
-  Constraint c(le, Constraint::EQUALITY, NECESSARILY_CLOSED);
-  // Enforce normalization.
-  c.strong_normalize();
+  Constraint c(cg);
   add_constraint(c);
 }
 
