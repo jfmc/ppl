@@ -420,9 +420,18 @@ Partially_Reduced_Product<D1, D2, R>::OK() const {
 template <typename D1, typename D2, typename R>
 bool
 Partially_Reduced_Product<D1, D2, R>::ascii_load(std::istream& s) {
+  const char yes = '+';
+  const char no = '-';
   std::string str;
+  if (!(s >> str) || str != "Partially_Reduced_Product")
+    return false;
+  if (!(s >> str)
+      || (str[0] != yes && str[0] != no)
+      || str.substr(1) != "reduced")
+    return false;
+  reduced = (str[0] == yes);
   return ((s >> str) && str == "Domain"
-	  && (s >> str) && str == "1:"
+          && (s >> str) && str == "1:"
 	  && d1.ascii_load(s)
 	  && (s >> str) && str == "Domain"
 	  && (s >> str) && str == "2:"

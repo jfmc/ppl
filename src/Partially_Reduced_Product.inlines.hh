@@ -660,9 +660,13 @@ Partially_Reduced_Product<D1, D2, R>::set_reduced_flag() const {
 // FIXME: Improve this name.
 PPL_OUTPUT_3_PARAM_TEMPLATE_DEFINITIONS(D1, D2, R, Partially_Reduced_Product)
 
-  template <typename D1, typename D2, typename R>
+template <typename D1, typename D2, typename R>
 inline void
 Partially_Reduced_Product<D1, D2, R>::ascii_dump(std::ostream& s) const {
+  const char yes = '+';
+  const char no = '-';
+  s << "Partially_Reduced_Product\n";
+  s << (reduced ? yes : no) << "reduced\n";
   s << "Domain 1:\n";
   d1.ascii_dump(s);
   s << "Domain 2:\n";
