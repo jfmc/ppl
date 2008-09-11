@@ -58,7 +58,7 @@ test02() {
   ps.add_disjunct(p);
 
   Grid q(2);
-  q.add_congruence(x == 1);
+  q.add_constraint(x == 1);
 
   Pointset_Powerset<Grid> qs(2, EMPTY);
   qs.add_disjunct(q);

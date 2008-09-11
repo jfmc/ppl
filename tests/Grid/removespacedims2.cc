@@ -244,9 +244,9 @@ test10() {
   Variable C(2);
 
   Grid gr(3);
-  gr.add_congruence(B - C == 0);
+  gr.add_constraint(B - C == 0);
   gr.add_congruence(B %= 0);
-  gr.add_congruence(A == 4);
+  gr.add_constraint(A == 4);
   print_congruences(gr, "*** gr ***");
 
   gr.remove_higher_space_dimensions(2);
@@ -272,9 +272,9 @@ test11() {
   Variable C(2);
 
   Grid gr(3);
-  gr.add_congruence(B - C == 0);
+  gr.add_constraint(B - C == 0);
   gr.add_congruence(B %= 0);
-  gr.add_congruence(A == 4);
+  gr.add_constraint(A == 4);
   print_congruences(gr, "*** gr ***");
 
   gr.remove_higher_space_dimensions(1);

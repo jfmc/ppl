@@ -39,7 +39,7 @@ test01() {
   Grid gr(cs);
 
   Grid known_gr(3);
-  known_gr.add_congruence(B == 0);
+  known_gr.add_constraint(B == 0);
 
   bool ok = (gr == known_gr);
 
@@ -106,7 +106,7 @@ test04() {
   Grid gr(ccs);
 
   Grid known_gr(3);
-  known_gr.add_congruence(2*B == A);
+  known_gr.add_constraint(2*B == A);
 
   bool ok = (gr == known_gr);
 

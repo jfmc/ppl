@@ -996,15 +996,6 @@ public:
   */
   void add_congruence(const Congruence& cg);
 
-  //! Adds constraint \p c to \p *this.
-  /*!
-    The addition can only affect \p *this if \p c is an equality.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and constraint \p c are dimension-incompatible.
-  */
-  void add_congruence(const Constraint& c);
-
   /*! \brief
     Adds a copy of congruence \p cg to the system of congruences of \p
     *this, reducing the result
@@ -1019,21 +1010,6 @@ public:
     See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_congruence_and_minimize(const Congruence& c);
-
-  //! Adds a copy of constraint \p c to \p *this, reducing the result.
-  /*!
-    The addition can only affect \p *this if \p c is an equality.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and constraint \p c are dimension-incompatible.
-
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool add_congruence_and_minimize(const Constraint& c);
 
   /*! \brief
     Adds a copy of grid generator \p g to the system of generators of
@@ -1072,17 +1048,6 @@ public:
   */
   void add_congruences(const Congruence_System& cgs);
 
-  //! Adds a copy of each equality constraint in \p cs to \p *this.
-  /*!
-    \param cs
-    The congruences that will be considered for addition to the system
-    of congruences of \p *this.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cgs are dimension-incompatible.
-  */
-  void add_congruences(const Constraint_System& cs);
-
   //! Adds the congruences in \p cgs to *this.
   /*!
     \param cgs
@@ -1097,21 +1062,6 @@ public:
     or exceptional return is that it can be safely destroyed.
   */
   void add_recycled_congruences(Congruence_System& cgs);
-
-  //! Adds the equality constraints in \p cs to \p *this.
-  /*!
-    \param cs
-    The constraint system to be added to \p *this.  The equalities in
-    \p cs may be recycled.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cs are dimension-incompatible.
-
-    \warning
-    The only assumption that can be made about \p cs upon successful
-    or exceptional return is that it can be safely destroyed.
-  */
-  void add_recycled_congruences(Constraint_System& cs);
 
   /*! \brief
     Adds a copy of the congruences in \p cgs to the system of
@@ -1131,25 +1081,6 @@ public:
     See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_congruences_and_minimize(const Congruence_System& cgs);
-
-  /*! \brief
-    Adds a copy of each equality constraint in \p cs to \p *this,
-    reducing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param cs
-    Contains the constraints that will be added to the system of
-    congruences of \p *this.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cs are dimension-incompatible.
-
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool add_congruences_and_minimize(const Constraint_System& cs);
 
   /*! \brief
     Adds the congruences in \p cgs to the system of congruences of \p
@@ -1173,27 +1104,6 @@ public:
     See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
   bool add_recycled_congruences_and_minimize(Congruence_System& cgs);
-
-  //! Adds the equalities in \p cs to \p *this, reducing the result.
-  /*!
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param cs
-    The constraint system to be added to \p *this.  The equalities in
-    \p cs may be recycled.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cs are dimension-incompatible.
-
-    \warning
-    The only assumption that can be made about \p cs upon successful
-    or exceptional return is that it can be safely destroyed.
-
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool add_recycled_congruences_and_minimize(Constraint_System& cs);
 
   //! Adds constraint \p c to \p *this.
   /*!

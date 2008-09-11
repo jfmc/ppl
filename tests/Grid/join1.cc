@@ -148,9 +148,9 @@ test05() {
   Variable C(2);
 
   Grid gr1(3);
-  gr1.add_congruence(A == 0);
-  gr1.add_congruence(B == 0);
-  gr1.add_congruence(C == 0);
+  gr1.add_constraint(A == 0);
+  gr1.add_constraint(B == 0);
+  gr1.add_constraint(C == 0);
   print_generators(gr1, "*** gr1 ***");
 
   Grid_Generator_System gs2;
@@ -188,9 +188,9 @@ test06() {
   print_generators(gr1, "*** gr1 ***");
 
   Grid gr2(3);
-  gr2.add_congruence(A == 0);
-  gr2.add_congruence(B == 0);
-  gr2.add_congruence(C == 0);
+  gr2.add_constraint(A == 0);
+  gr2.add_constraint(B == 0);
+  gr2.add_constraint(C == 0);
   print_congruences(gr2, "*** gr2 ***");
 
   gr1.upper_bound_assign(gr2);
@@ -221,9 +221,9 @@ test07() {
   Grid gr1(gs);
 
   Grid gr2(4);
-  gr2.add_congruence(A == 0);
-  gr2.add_congruence(B == 0);
-  gr2.add_congruence(C == 0);
+  gr2.add_constraint(A == 0);
+  gr2.add_constraint(B == 0);
+  gr2.add_constraint(C == 0);
 
   try {
     gr1.upper_bound_assign(gr2);
@@ -245,8 +245,8 @@ test08() {
   Variable C(2);
 
   Grid gr1(3);
-  gr1.add_congruence(A == 0);
-  gr1.add_congruence(A == 1);
+  gr1.add_constraint(A == 0);
+  gr1.add_constraint(A == 1);
   print_congruences(gr1, "*** gr1 ***");
 
   Grid_Generator_System gs2;
@@ -278,25 +278,25 @@ test09() {
 
   // initial point
   Grid gr0(4);
-  gr0.add_congruence(A == 2);
-  gr0.add_congruence(B == 0);
+  gr0.add_constraint(A == 2);
+  gr0.add_constraint(B == 0);
 
   // a pass through the procedure may do nothing
   Grid gr1(gr0);
-  gr1.add_congruence(A == C);
-  gr1.add_congruence(B == D);
+  gr1.add_constraint(A == C);
+  gr1.add_constraint(B == D);
 
   // one non-trivial pass through procedure
   Grid gr2(gr0);
-  gr2.add_congruence(15 * A == C);
-  gr2.add_congruence(18 * A + B == D);
+  gr2.add_constraint(15 * A == C);
+  gr2.add_constraint(18 * A + B == D);
   // combine alternative paths 1 and 2
   gr2.join_assign(gr1);
 
   // two non-trivial passes through procedure
   Grid gr3(gr0);
-  gr3.add_congruence(225 * A == C);
-  gr3.add_congruence(282 * A + B == D);
+  gr3.add_constraint(225 * A == C);
+  gr3.add_constraint(282 * A + B == D);
   // combine alternative paths 1, 2 and 3
   gr3.join_assign(gr2);
 

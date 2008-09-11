@@ -35,7 +35,7 @@ test01() {
 
   Grid gr1(3);
   gr1.add_congruence(A + C %= 0);
-  gr1.add_congruence(B == 3);
+  gr1.add_constraint(B == 3);
 
   Grid_Certificate grc1(gr1);
 
@@ -63,7 +63,7 @@ test02() {
 
   Grid gr1(3);
   gr1.add_congruence(A + C %= 0);
-  gr1.add_congruence(B == 3);
+  gr1.add_constraint(B == 3);
 
   Grid_Certificate grc1(gr1);
 
@@ -88,7 +88,7 @@ test03() {
 
   Grid gr1(3);
   gr1.add_congruence(A + C %= 0);
-  gr1.add_congruence(B == 3);
+  gr1.add_constraint(B == 3);
 
   Grid_Certificate grc1(gr1);
 
@@ -123,7 +123,7 @@ test04() {
 
   Grid gr2(3);
   gr2.add_congruence(A + C %= 0);
-  gr2.add_congruence(B == 3);
+  gr2.add_constraint(B == 3);
 
   bool ok = grc1.compare(gr2) == 1
     && grc1.is_stabilizing(gr2);
@@ -195,7 +195,7 @@ test07() {
 
   Grid gr1(3);
   gr1.add_congruence(A + C %= 0);
-  gr1.add_congruence(B == 3);
+  gr1.add_constraint(B == 3);
 
   Grid_Certificate grc1(gr1);
 

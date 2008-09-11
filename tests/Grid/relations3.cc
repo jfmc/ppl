@@ -266,8 +266,8 @@ test12() {
   Variable B(1);
 
   Grid gr(2);
-  gr.add_congruence(A == 1);
-  gr.add_congruence(A == 2);
+  gr.add_constraint(A == 1);
+  gr.add_constraint(A == 2);
   print_congruences(gr, "*** gr ***");
 
   bool ok = (gr.relation_with(B == 0)

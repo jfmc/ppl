@@ -1147,30 +1147,11 @@ PPL::Grid::add_congruence(const Congruence& cg) {
   assert(OK());
 }
 
-void
-PPL::Grid::add_congruence(const Constraint& c) {
-  // TODO: this is just an executable specification.
-  if (c.is_equality()) {
-    Congruence_System cgs(c);
-    add_recycled_congruences(cgs);
-  }
-}
-
 bool
 PPL::Grid::add_congruence_and_minimize(const Congruence& cg) {
   // TODO: this is just an executable specification.
   Congruence_System cgs(cg);
   return add_recycled_congruences_and_minimize(cgs);
-}
-
-bool
-PPL::Grid::add_congruence_and_minimize(const Constraint& c) {
-  // TODO: this is just an executable specification.
-  if (c.is_equality()) {
-    Congruence_System cgs(c);
-    return add_recycled_congruences_and_minimize(cgs);
-  }
-  return minimize();
 }
 
 void
@@ -1269,16 +1250,6 @@ PPL::Grid::add_recycled_congruences(Congruence_System& cgs) {
 }
 
 void
-PPL::Grid::add_recycled_congruences(Constraint_System& cs) {
-  // TODO: this is just an executable specification.
-  // The dimension of `cs' must be at most `space_dim'.
-  if (space_dim < cs.space_dimension())
-    throw_dimension_incompatible("add_recycled_congruences(cs)", "cs", cs);
-  Congruence_System cgs(cs);
-  add_recycled_congruences(cgs);
-}
-
-void
 PPL::Grid::add_congruences(const Congruence_System& cgs) {
   // TODO: this is just an executable specification.
   // The dimension of `cgs' must be at most `space_dim'.
@@ -1286,16 +1257,6 @@ PPL::Grid::add_congruences(const Congruence_System& cgs) {
     throw_dimension_incompatible("add_congruences(cgs)", "cgs", cgs);
   Congruence_System cgs_copy = cgs;
   add_recycled_congruences(cgs_copy);
-}
-
-void
-PPL::Grid::add_congruences(const Constraint_System& cs) {
-  // TODO: this is just an executable specification.
-  // The dimension of `cs' must be at most `space_dim'.
-  if (space_dim < cs.space_dimension())
-    throw_dimension_incompatible("add_congruences(cs)", "cs", cs);
-  Congruence_System cgs(cs);
-  add_recycled_congruences(cgs);
 }
 
 bool
@@ -1345,31 +1306,10 @@ PPL::Grid::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
 }
 
 bool
-PPL::Grid::add_recycled_congruences_and_minimize(Constraint_System& cs) {
-  // TODO: this is just an executable specification.
-  // The dimension of `cs' must be at most `space_dim'.
-  if (space_dim < cs.space_dimension())
-    throw_dimension_incompatible("add_recycled_congruences_and_minimize(cs)",
-				 "cs", cs);
-  Congruence_System cgs(cs);
-  return add_recycled_congruences_and_minimize(cgs);
-}
-
-bool
 PPL::Grid::add_congruences_and_minimize(const Congruence_System& cgs) {
   // TODO: this is just an executable specification.
   Congruence_System cgs_copy = cgs;
   return add_recycled_congruences_and_minimize(cgs_copy);
-}
-
-bool
-PPL::Grid::add_congruences_and_minimize(const Constraint_System& cs) {
-  // TODO: this is just an executable specification.
-  // The dimension of `cs' must be at most `space_dim'.
-  if (space_dim < cs.space_dimension())
-    throw_dimension_incompatible("add_congruences_and_minimize(cs)", "cs", cs);
-  Congruence_System cgs(cs);
-  return add_recycled_congruences_and_minimize(cgs);
 }
 
 void

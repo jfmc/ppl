@@ -82,7 +82,7 @@ test02() {
   ps.add_disjunct(p);
 
   Grid q(2);
-  q.add_congruence(x == 1);
+  q.add_constraint(x == 1);
 
   Pointset_Powerset<Grid> qs(2, EMPTY);
   qs.add_disjunct(q);
@@ -106,7 +106,7 @@ test03() {
   Variable y(1);
 
   Grid p(2);
-  p.add_congruence(x == 0);
+  p.add_constraint(x == 0);
 
   Pointset_Powerset<Grid> ps(2, EMPTY);
   ps.add_disjunct(p);
@@ -281,7 +281,7 @@ test09() {
   Variable y(1);
 
   Grid p(2);
-  p.add_congruence(x == 0);
+  p.add_constraint(x == 0);
 
   Pointset_Powerset<Grid> ps(2, EMPTY);
   ps.add_disjunct(p);

@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
+#if 0
 // add_congruences_and_minimize(cs)
 bool
 test01() {
@@ -43,7 +44,7 @@ test01() {
   gr.add_congruences_and_minimize(cs);
 
   Grid known_gr(3);
-  known_gr.add_congruence(B == 0);
+  known_gr.add_congruence((B == 0) / 0);
 
   bool ok = (gr == known_gr);
 
@@ -51,6 +52,7 @@ test01() {
 
   return ok;
 }
+#endif
 
 // add_constraints
 bool
@@ -69,7 +71,7 @@ test02() {
   gr.add_constraints(cs);
 
   Grid known_gr(3);
-  known_gr.add_congruence(B == 0);
+  known_gr.add_congruence((B == 0) / 0);
 
   bool ok = (gr == known_gr);
 
@@ -102,6 +104,7 @@ test03() {
   return ok;
 }
 
+#if 0
 // add_congruences(cs)
 bool
 test04() {
@@ -189,6 +192,7 @@ test06() {
 
   return ok;
 }
+#endif
 
 // add_constraints_and_minimize(cs)
 
@@ -200,7 +204,6 @@ test07() {
   Variable D(3);
 
   Constraint_System cs;
-  cs.insert(2*B >= 3);
   cs.insert(D == 0);
   cs.insert(2*A == C);
 
@@ -211,8 +214,8 @@ test07() {
   gr.add_constraints_and_minimize(cs);
 
   Grid known_gr(4);
-  known_gr.add_congruence(2*A == C);
-  known_gr.add_congruence(D == 0);
+  known_gr.add_congruence((2*A == C) / 0);
+  known_gr.add_congruence((D == 0) / 0);
 
   bool ok = (gr == known_gr);
 
@@ -230,7 +233,6 @@ test08() {
   Variable D(3);
 
   Constraint_System cs;
-  cs.insert(2*B > 2);
   cs.insert(2*D == 0);
 
   Grid gr(4);
@@ -240,7 +242,7 @@ test08() {
   gr.add_recycled_constraints(cs);
 
   Grid known_gr(4);
-  known_gr.add_congruence(D == 0);
+  known_gr.add_congruence((D == 0) / 0);
 
   bool ok = (gr == known_gr);
 
@@ -258,7 +260,6 @@ test09() {
   Variable D(3);
 
   Constraint_System cs;
-  cs.insert(2*B > 6);
   cs.insert(2*C == 6*D);
 
   Grid gr(4);
@@ -268,7 +269,7 @@ test09() {
   gr.add_recycled_constraints_and_minimize(cs);
 
   Grid known_gr(4);
-  known_gr.add_congruence(C == 3*D);
+  known_gr.add_congruence((C == 3*D) / 0);
 
   bool ok = (gr == known_gr);
 
@@ -278,6 +279,7 @@ test09() {
   return ok;
 }
 
+#if 0
 // add_recycled_congruences(cs) -- space dimension exception
 bool
 test10() {
@@ -370,6 +372,7 @@ test13() {
   }
   return false;
 }
+#endif
 
 // add_constraints(cs) -- space dimension exception
 bool
@@ -510,8 +513,8 @@ test19() {
   bool ok = (gr1 == gr);
 
   Grid known_gr(3);
-  known_gr.add_congruence(B == 0);
-  known_gr.add_congruence(2*C + A == 3);
+  known_gr.add_congruence((B == 0) / 0);
+                          known_gr.add_congruence((2*C + A == 3) / 0);
 
   ok &= (gr == known_gr);
 
@@ -520,7 +523,8 @@ test19() {
   return ok;
 }
 
-// add_constraints(cs) -- non-equality conatraint in constraint system.
+#if 0
+// add_constraints(cs) -- non-equality constraint in constraint system.
 bool
 test20() {
   Variable A(0);
@@ -543,28 +547,37 @@ test20() {
   }
   return false;
 }
+#endif
 
 } // namespace
 
 BEGIN_MAIN
+#if 0
   DO_TEST(test01);
+#endif
   DO_TEST(test02);
   DO_TEST(test03);
+#if 0
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
+#endif
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
+#if 0
   DO_TEST(test10);
   DO_TEST(test11);
   DO_TEST(test12);
   DO_TEST(test13);
+#endif
   DO_TEST(test14);
   DO_TEST(test15);
   DO_TEST(test16);
   DO_TEST(test17);
   DO_TEST(test18);
   DO_TEST(test19);
+#if 0
   DO_TEST(test20);
+#endif
 END_MAIN

@@ -400,7 +400,7 @@ test14() {
   Grid gr1(3);
   gr1.add_congruence((A - B %= 2) / 5);
   gr1.add_congruence(B %= 0);
-  gr1.add_congruence(C == 4);
+  gr1.add_congruence((C == 4) / 0);
 
   gr1.minimized_grid_generators();
 

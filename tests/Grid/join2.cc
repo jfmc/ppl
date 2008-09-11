@@ -206,7 +206,7 @@ test08() {
   print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(2);
-  gr2.add_congruence(A - B == 0);
+  gr2.add_constraint(A - B == 0);
   print_congruences(gr2, "*** gr2 ***");
 
   Grid known_gr = gr1;
@@ -292,9 +292,9 @@ test11() {
   Grid gr1(gs);
 
   Grid gr2(4);
-  gr2.add_congruence(A == 0);
-  gr2.add_congruence(B == 0);
-  gr2.add_congruence(C == 0);
+  gr2.add_constraint(A == 0);
+  gr2.add_constraint(B == 0);
+  gr2.add_constraint(C == 0);
 
   try {
     gr1.upper_bound_assign_if_exact(gr2);

@@ -207,8 +207,8 @@ test09() {
   Variable C(2);
 
   Grid gr1(4);
-  gr1.add_congruence(C == 4);
-  gr1.add_congruence(C == 0);
+  gr1.add_constraint(C == 4);
+  gr1.add_constraint(C == 0);
   print_congruences(gr1, "*** gr1 ***");
 
   Grid known_gr = gr1;

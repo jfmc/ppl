@@ -40,7 +40,7 @@ test01() {
   Grid gr(ph);
 
   Grid known_gr(3);
-  known_gr.add_congruence(B == 0);
+  known_gr.add_constraint(B == 0);
 
   bool ok = (gr == known_gr);
 
@@ -122,7 +122,7 @@ test05() {
   Grid gr(ph);
 
   Grid known_gr(3);
-  known_gr.add_congruence(A - B + C == 0);
+  known_gr.add_constraint(A - B + C == 0);
 
   bool ok = (gr == known_gr);
 
@@ -152,7 +152,7 @@ test06() {
   print_constraints(ph, "*** ph ***");
 
   Grid known_gr(3);
-  known_gr.add_congruence(2*A + 7*B + 2*C == 3);
+  known_gr.add_constraint(2*A + 7*B + 2*C == 3);
 
   bool ok = (gr == known_gr);
 
@@ -233,7 +233,7 @@ test09() {
   print_constraints(ph, "*** ph ***");
 
   Grid known_gr(3);
-  known_gr.add_congruence(A + 2*B + C == 3);
+  known_gr.add_constraint(A + 2*B + C == 3);
 
   bool ok = (gr == known_gr);
 
@@ -263,7 +263,7 @@ test10() {
   Grid gr(ph, ANY_COMPLEXITY);
 
   Grid known_gr(2);
-  known_gr.add_congruence(B == 0);
+  known_gr.add_constraint(B == 0);
 
   bool ok = (gr == known_gr);
 

@@ -142,7 +142,7 @@ test05() {
   Variable B(1);
 
   Grid gr1(3);
-  gr1.add_congruence(A == 0);
+  gr1.add_constraint(A == 0);
 
   gr1.minimized_congruences();
 

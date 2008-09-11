@@ -167,15 +167,15 @@ test07() {
   Variable E(4);
 
   Grid gr(3);
-  gr.add_congruence(2*C == 1);
+  gr.add_constraint(2*C == 1);
   gr.add_congruence(A - B %= 0);
 
   gr.expand_space_dimension(A, 1);
   gr.expand_space_dimension(C, 1);
 
   Grid known_gr(5);
-  known_gr.add_congruence(2*C == 1);
-  known_gr.add_congruence(2*E == 1);
+  known_gr.add_constraint(2*C == 1);
+  known_gr.add_constraint(2*E == 1);
   known_gr.add_congruence(A - B         %= 0);
   known_gr.add_congruence(  - B + D     %= 0);
 

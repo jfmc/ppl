@@ -55,8 +55,8 @@ test02() {
   Variable A(0);
 
   Grid gr1(1);
-  gr1.add_congruence(A == 0);
-  gr1.add_congruence(A == 1);
+  gr1.add_constraint(A == 0);
+  gr1.add_constraint(A == 1);
 
   print_congruences(gr1, "*** gr1 ***");
 

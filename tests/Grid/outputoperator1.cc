@@ -95,7 +95,7 @@ test04() {
   ss1 << gr1;
 
   Grid gr2(4);
-  gr2.add_congruence(3*A == 0);
+  gr2.add_constraint(3*A == 0);
 
   std::stringstream ss2;
   ss2 << gr2;
@@ -119,7 +119,7 @@ test05() {
   ss1 << gr1;
 
   Grid gr2(4);
-  gr2.add_congruence(3*A == 0);
+  gr2.add_constraint(3*A == 0);
 
   std::stringstream ss2;
   ss2 << gr2;
