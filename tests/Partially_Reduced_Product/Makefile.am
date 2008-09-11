@@ -40,13 +40,13 @@ $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
 TESTS = \
+asciidumpload1 \
 directproduct1 directproduct2 directproduct3 directproduct4 \
 directproduct5 directproduct6 \
 partiallyreducedproduct1 partiallyreducedproduct2 partiallyreducedproduct3 \
 partiallyreducedproduct4
 
-XFAIL_TESTS = \
-asciidumpload1
+XFAIL_TESTS =
 
 #
 # Sources for the tests
