@@ -178,7 +178,6 @@ test09() {
   Constraint_System cs;
   cs.insert(A >= 1);
   cs.insert(B >= 0);
-  cs.insert(A - B <= 3);
 
   TBox box(cs);
 

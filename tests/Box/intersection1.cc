@@ -31,11 +31,9 @@ test01() {
 
   TBox box1(3);
   box1.add_constraint(x <= 3);
-  box1.add_constraint(x - y <= 4);
 
   TBox box2(3);
   box2.add_constraint(-y <= -2);
-  box2.add_constraint(x - y <= 5);
 
   print_constraints(box1, "*** box1 ***");
   print_constraints(box2, "*** box2 ***");
@@ -45,7 +43,6 @@ test01() {
   Rational_Box known_result(3);
   known_result.add_constraint(x <= 3);
   known_result.add_constraint(-y <= -2);
-  known_result.add_constraint(x - y <= 4);
 
   bool ok = check_result(box1, known_result);
 
@@ -61,14 +58,10 @@ test02() {
   Variable z(2);
 
   TBox box1(4);
-  box1.add_constraint(x - y <= 4);
   box1.add_constraint(x <= 3);
 
   TBox box2(4);
-  box2.add_constraint(x - y <= 5);
   box2.add_constraint(-y <= -2);
-  box2.add_constraint(z - x <= 0);
-  box2.add_constraint(y - z <= -1);
 
   print_constraints(box1, "*** box1 ***");
   print_constraints(box2, "*** box2 ***");
@@ -76,11 +69,8 @@ test02() {
   box1.intersection_assign(box2);
 
   Rational_Box known_result(4);
-  known_result.add_constraint(x - y <= 4);
   known_result.add_constraint(x <= 3);
   known_result.add_constraint(-y <= -2);
-  known_result.add_constraint(z - x <= 0);
-  known_result.add_constraint(y - z <= -1);
 
   bool ok = check_result(box1, known_result);
 
@@ -100,10 +90,8 @@ test03() {
   box1.add_constraint(-x <= -1);
   box1.add_constraint(y <= 3);
   box1.add_constraint(-y <= -1);
-  box1.add_constraint(x - y <= 1);
 
   TBox box2(3);
-  box2.add_constraint(y - x <= -1);
   box2.add_constraint(x <= 3);
   box2.add_constraint(-y <= 5);
 
@@ -117,8 +105,6 @@ test03() {
   known_result.add_constraint(-x <= -1);
   known_result.add_constraint(y <= 3);
   known_result.add_constraint(-y <= -1);
-  known_result.add_constraint(y - x <= -1);
-  known_result.add_constraint(x - y <= 1);
 
   bool ok = check_result(box1, known_result);
 
@@ -138,10 +124,8 @@ test04() {
   box1.add_constraint(x >= 5);
   box1.add_constraint(y <= 3);
   box1.add_constraint(y >= 1);
-  box1.add_constraint(x - y <= 1);
 
   TBox box2(3);
-  box2.add_constraint(y - x <= -1);
   box2.add_constraint(x <= 3);
   box2.add_constraint(y >= -5);
 
@@ -170,10 +154,8 @@ test05() {
   box1.add_constraint(x >= 5);
   box1.add_constraint(y <= 3);
   box1.add_constraint(y >= 1);
-  box1.add_constraint(x - y <= 1);
 
   TBox box2(3);
-  box2.add_constraint(y - x <= -1);
   box2.add_constraint(x <= 3);
   box2.add_constraint(y >= -5);
 
@@ -219,7 +201,6 @@ test07() {
   TBox box1(3);
 
   TBox box2(3);
-  box2.add_constraint(y - x <= -1);
   box2.add_constraint(x <= 3);
   box2.add_constraint(y >= -5);
 
@@ -245,7 +226,6 @@ test08() {
 
   TBox box1(3);
   TBox box2(3);
-  box2.add_constraint(y - x <= -1);
   box2.add_constraint(x <= 3);
   box2.add_constraint(y >= -5);
 
@@ -269,7 +249,6 @@ test09() {
   Variable y(1);
 
   TBox box1(2);
-  box1.add_constraint(x >= y);
 
   TBox box2(3);
 

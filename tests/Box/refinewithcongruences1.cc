@@ -59,10 +59,10 @@ test02() {
   cgs.insert(A + B %= 0);
   cgs.insert((1*A + 2*B + 3*C + 4*D %= 0) / 0);
   cgs.insert((2*A + 3*B + 4*C + 5*D %= 1) / 0);
-  TBox box(cgs);
+  TBox box(4);
+  box.refine_with_congruences(cgs);
 
   Rational_Box known_result(4);
-  known_result.add_congruences(cgs);
 
   bool ok = check_result(box, known_result);
 
@@ -84,7 +84,8 @@ test03() {
   cgs.insert(B %= 0);
   cgs.insert(C %= 7);
 
-  TBox box(cgs);
+  TBox box(3);
+  box.refine_with_congruences(cgs);
 
   Rational_Box known_result(3);
   known_result.add_constraint(A == 7);
@@ -214,7 +215,8 @@ test08() {
   cgs.insert(B %= 0);
   cgs.insert(C %= 7);
 
-  TBox box(cgs);
+  TBox box(3);
+  box.refine_with_congruences(cgs);
 
   TBox box1(box.congruences());
 
@@ -240,7 +242,8 @@ test09() {
   cgs.insert((B %= 3) / 0);
   cgs.insert((C %= 3) / 5);
 
-  TBox box(cgs);
+  TBox box(3);
+  box.refine_with_congruences(cgs);
   TBox box1(box.minimized_congruences());
 
   Rational_Box known_result(3);

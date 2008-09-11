@@ -106,7 +106,6 @@ test03() {
   box2.add_constraint(-y <= 3);
   box2.add_constraint(x >= 4);
   box2.add_constraint(x <= 3);
-  box2.add_constraint(y - x <= 4);
   box2.add_constraint(z <= 0);
 
   print_constraints(box1, "*** box1 ***");
@@ -135,7 +134,6 @@ test04() {
   box2.add_constraint(-y <= 3);
   box2.add_constraint(x >= 4);
   box2.add_constraint(x <= 3);
-  box2.add_constraint(y - x <= 4);
   box2.add_constraint(z <= 0);
 
   print_constraints(box1, "*** box1 ***");

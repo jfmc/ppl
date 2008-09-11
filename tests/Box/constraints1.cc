@@ -69,8 +69,6 @@ test03() {
   TBox box1(3);
   box1.add_constraint(A >= 0);
   box1.add_constraint(B >= 0);
-  box1.add_constraint(B - C >= 1);
-  box1.add_constraint(C - A <= 9);
 
   Rational_Box known_result(box1);
 
@@ -97,8 +95,6 @@ test04() {
   TBox box1(3);
   box1.add_constraint(A >= 0);
   box1.add_constraint(B >= 0);
-  box1.add_constraint(B - C == 1);
-  box1.add_constraint(C - A <= 9);
 
   Constraint_System cs = box1.constraints();
   TBox box2(cs);

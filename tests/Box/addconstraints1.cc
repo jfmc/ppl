@@ -30,8 +30,10 @@ test01() {
   Variable B(1);
 
   Constraint_System cs;
+  cs.insert(B >= 0);
   cs.insert(A >= 0);
   cs.insert(B == 5);
+  cs.insert(B <= 7);
 
   TBox box(2);
   box.add_constraints(cs);
@@ -41,7 +43,6 @@ test01() {
   Rational_Box known_result(2);
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(B == 5);
-  known_result.add_constraint(B - A <= 5);
 
   bool ok = check_result(box, known_result);
 

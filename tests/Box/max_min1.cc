@@ -157,7 +157,6 @@ test05() {
   TBox box(2);
   box.add_constraint(A <= 0);
   box.add_constraint(B >= 0);
-  box.add_constraint(A - B <= 0);
 
   print_constraints(box, "*** box ***");
 
@@ -310,9 +309,6 @@ test09() {
 
   TBox box(5);
   box.add_constraint(A >= 0);
-  box.add_constraint(B - C >= 0);
-  box.add_constraint(B - C <= -1);
-  box.add_constraint(E - D >= 0);
 
   print_constraints(box, "*** box ***");
 
@@ -337,8 +333,6 @@ test10() {
 
   TBox box(5);
   box.add_constraint(A >= 0);
-  box.add_constraint(B - C >= 0);
-  box.add_constraint(E - D >= 0);
 
   print_constraints(box, "*** box ***");
 
@@ -384,7 +378,6 @@ test11() {
   Variable z(2);
 
   TBox box(2);
-  box.add_constraint(x >= y);
 
   Coefficient num;
   Coefficient den;
@@ -415,7 +408,6 @@ test12() {
   Variable z(2);
 
   TBox box(2);
-  box.add_constraint(x >= y);
 
   Coefficient num;
   Coefficient den;
@@ -449,8 +441,6 @@ test13() {
   box.add_constraint(A <= 5);
   box.add_constraint(B <= 3);
   box.add_constraint(B >= -5);
-  box.add_constraint(A - B <= 6);
-  box.add_constraint(B - A <= 2);
 
   print_constraints(box, "*** box ***");
 
@@ -489,8 +479,6 @@ test14() {
   box.add_constraint(A <= 5);
   box.add_constraint(B <= 3);
   box.add_constraint(B >= -5);
-  box.add_constraint(A - B <= 6);
-  box.add_constraint(B - A <= 2);
 
   print_constraints(box, "*** box ***");
 

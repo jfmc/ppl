@@ -80,7 +80,6 @@ test03() {
 
   TBox box(3);
   box.add_constraint(A >= 0);
-  box.add_constraint(A - C <= 2);
 
   print_constraints(box, "*** box ***");
 
@@ -91,7 +90,6 @@ test03() {
 
   TBox known_result(3);
   known_result.add_constraint(A >= 0);
-  known_result.add_constraint(A - C <= 2);
 
   bool ok = (box == known_result);
 
@@ -173,11 +171,8 @@ test06() {
 
   TBox box(4);
   box.add_constraint(A >= 0);
-  box.add_constraint(A - B <= 2);
   box.add_constraint(C >= 0);
-  box.add_constraint(C - B <= 2);
   box.add_constraint(D >= 0);
-  box.add_constraint(D - B <= 2);
 
   print_constraints(box, "*** box ***");
 
@@ -190,7 +185,6 @@ test06() {
 
   TBox known_result(2);
   known_result.add_constraint(A >= 0);
-  known_result.add_constraint(A - B <= 2);
 
   bool ok = (box == known_result);
 
@@ -241,9 +235,7 @@ test08() {
   TBox box(3);
   box.add_constraint(A >= 0);
   box.add_constraint(A <= -1);
-  box.add_constraint(A - B <= 2);
   box.add_constraint(C >= 0);
-  box.add_constraint(C - B <= 2);
 
   print_constraints(box, "*** box ***");
 

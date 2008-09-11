@@ -32,20 +32,12 @@ test01() {
   Variable B(1);
 
   TBox box1(2);
-  box1.add_constraint(-A + B >= 2);
-  box1.add_constraint(A - B >= -4);
   box1.add_constraint(A >= 0);
   TBox box2(2);
-  box2.add_constraint(-A + B >= 3);
-  box2.add_constraint(A - B >= -8);
   box2.add_constraint(A >= 1);
   TBox box3(2);
-  box3.add_constraint(-A + B >= 4);
-  box3.add_constraint(A - B >= -12);
   box3.add_constraint(A >= 2);
   TBox box4(2);
-  box4.add_constraint(-A + B >= 6);
-  box4.add_constraint(A - B >= -16);
   box4.add_constraint(A >= 3);
 
   Box_Set box_set1(2, EMPTY);
@@ -63,7 +55,6 @@ test01() {
        << box_set2 << endl;
 
   TBox box5(2);
-  box5.add_constraint(-A + B >= 4);
   box5.add_constraint(A >= 2);
   box5.add_constraint(B >= 6);
 

@@ -30,10 +30,7 @@ test01() {
   Variable y(1);
 
   TBox box(4);
-
   box.add_constraint(-x <= 4);
-  box.add_constraint(y - x <= 0);
-  box.add_constraint(x - y <= -5);
 
   bool universe = box.is_universe();
 

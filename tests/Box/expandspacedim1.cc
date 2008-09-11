@@ -73,7 +73,6 @@ test03() {
 
   TBox box(2);
   box.add_constraint(A >= 0);
-  box.add_constraint(A - B <= 2);
 
   print_constraints(box, "*** box ***");
 
@@ -81,7 +80,6 @@ test03() {
 
   TBox known_result(2);
   known_result.add_constraint(A >= 0);
-  known_result.add_constraint(A - B <= 2);
 
   bool ok = (box == known_result);
 
@@ -120,7 +118,6 @@ test05() {
 
   TBox box(2);
   box.add_constraint(A >= 0);
-  box.add_constraint(A - B <= 2);
 
   print_constraints(box, "*** box ***");
 
@@ -128,9 +125,7 @@ test05() {
 
   TBox known_result(3);
   known_result.add_constraint(A >= 0);
-  known_result.add_constraint(A - B <= 2);
   known_result.add_constraint(C >= 0);
-  known_result.add_constraint(C - B <= 2);
 
   bool ok = (box == known_result);
 
@@ -148,7 +143,6 @@ test06() {
 
   TBox box(2);
   box.add_constraint(A >= 0);
-  box.add_constraint(A - B <= 2);
 
   print_constraints(box, "*** box ***");
 
@@ -156,11 +150,8 @@ test06() {
 
   TBox known_result(4);
   known_result.add_constraint(A >= 0);
-  known_result.add_constraint(A - B <= 2);
   known_result.add_constraint(C >= 0);
-  known_result.add_constraint(C - B <= 2);
   known_result.add_constraint(D >= 0);
-  known_result.add_constraint(D - B <= 2);
 
   bool ok = (box == known_result);
 
@@ -180,7 +171,6 @@ test07() {
   TBox box(3);
   box.add_constraint(A <= 1);
   box.add_constraint(C == 1);
-  box.add_constraint(A - B >= 1);
   box.add_constraint(B <= 1);
 
   print_constraints(box, "*** box ***");
@@ -190,12 +180,10 @@ test07() {
 
   TBox known_result(5);
   known_result.add_constraint(A <= 1);
-  known_result.add_constraint(A - B >= 1);
   known_result.add_constraint(C == 1);
   known_result.add_constraint(E == 1);
   known_result.add_constraint(B <= 1);
   known_result.add_constraint(D <= 1);
-  known_result.add_constraint(D - B >= 1);
 
   bool ok = (box == known_result);
 
@@ -214,7 +202,6 @@ test08() {
 
   TBox box(2, EMPTY);
   box.add_constraint(A <= 2);
-  box.add_constraint(A - B >= 1);
   box.add_constraint(B <= 1);
 
   print_constraints(box, "*** box ***");

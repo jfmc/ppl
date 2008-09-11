@@ -31,7 +31,6 @@ test01() {
 
   TBox box(3);
   box.add_constraint(x <= 2);
-  box.add_constraint(x - y <= 3);
   box.add_constraint(y <= 2);
 
   print_constraints(box, "*** box ***");
@@ -56,7 +55,6 @@ test02() {
   TBox box(2);
   box.add_constraint(A >= 0);
   box.add_constraint(B >= 0);
-  box.add_constraint(A - B - 3 >= 0);
 
   print_constraints(box, "*** box ***");
 
@@ -125,7 +123,6 @@ test05() {
   Variable y(1);
 
   TBox box(2);
-  box.add_constraint(x >= y);
 
   try {
     // This is an incorrect use of the method
@@ -151,7 +148,6 @@ test06() {
   Variable z(2);
 
   TBox box(2);
-  box.add_constraint(x >= y);
 
   try {
     // This is an incorrect use of the method

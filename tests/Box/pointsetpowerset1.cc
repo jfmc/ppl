@@ -511,7 +511,6 @@ test20() {
   print_constraints(ps, "*** ps ***");
 
   ps.affine_image(z, y+2*x+1, 2);
-  ps.add_constraint(z == y);
 
   print_constraints(ps, "*** ps ***");
 

@@ -347,9 +347,6 @@ test16() {
   Variable z(2);
 
   TBox box(3);
-
-  box.add_constraint(x - y <= 2);
-  box.add_constraint(x - z >= -1);
   box.add_constraint(y <= 3);
 
   Poly_Con_Relation rel = box.relation_with(y > 3);
@@ -370,9 +367,6 @@ test17() {
   Variable z(2);
 
   TBox box(3);
-
-  box.add_constraint(x - y <= 2);
-  box.add_constraint(x - z >= -1);
   box.add_constraint(y <= 3);
 
   Poly_Con_Relation rel = box.relation_with(-y >= -4);

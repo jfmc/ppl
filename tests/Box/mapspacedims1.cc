@@ -98,9 +98,9 @@ test04() {
 
   Constraint_System cs;
   cs.insert(x == 1);
-  cs.insert(z - x <= 3);
 
-  TBox box(cs);
+  TBox box(3);
+  box.add_constraints(cs);
 
   print_function(function, "*** function ***");
   print_constraints(box, "*** box ***");
@@ -110,7 +110,6 @@ test04() {
 
   Rational_Box known_result(2);
   known_result.add_constraint(x == 1);
-  known_result.add_constraint(y - x <= 3);
 
   bool ok = check_result(box, known_result);
 
@@ -130,11 +129,9 @@ test05() {
 
   Constraint_System cs;
   cs.insert(x == 1);
-  cs.insert(z - x <= 3);
-  cs.insert(z - y <= 7);
-  cs.insert(y - x <= 2);
 
-  TBox box(cs);
+  TBox box(3);
+  box.add_constraints(cs);
 
   print_function(function, "*** function ***");
   print_constraints(box, "*** box ***");
@@ -162,11 +159,9 @@ test06() {
 
   Constraint_System cs;
   cs.insert(x == 1);
-  cs.insert(z - x <= 1);
-  cs.insert(z - y <= 7);
-  cs.insert(y - x <= 1);
 
-  TBox box(cs);
+  TBox box(3);
+  box.add_constraints(cs);
 
   print_function(function, "*** function ***");
   print_constraints(box, "*** box ***");
@@ -194,7 +189,6 @@ test07() {
   TBox box(2);
   box.add_constraint(x <= 1);
   box.add_constraint(y <= -1);
-  box.add_constraint(y - x <= 3);
 
   print_constraints(box, "*** box ***");
   print_function(function, "*** function ***");
@@ -204,7 +198,6 @@ test07() {
   Rational_Box known_result(2);
   known_result.add_constraint(x <= -1);
   known_result.add_constraint(y <= 1);
-  known_result.add_constraint(x - y <= 3);
 
   bool ok = check_result(box, known_result);
 
@@ -225,7 +218,6 @@ test08() {
   cs.insert(B >= 0);
   cs.insert(C >= 0);
   cs.insert(D == 0);
-  cs.insert(B - A == 0);
   TBox box(cs);
 
   Partial_Function function;
@@ -242,7 +234,6 @@ test08() {
   known_result.add_constraint(A == 0);
   known_result.add_constraint(B >= 0);
   known_result.add_constraint(C >= 0);
-  known_result.add_constraint(B - C == 0);
 
   bool ok = check_result(box, known_result);
 

@@ -58,7 +58,6 @@ test02() {
   TBox box1(2);
   box1.add_constraint(x >= 0);
   box1.add_constraint(y >= 0);
-  box1.add_constraint(x + y - 2 <= 0);
 
   TBox box2(2);
   box2.add_constraint(x >= 2);
