@@ -1111,10 +1111,8 @@ public:
   */
   bool add_recycled_congruences_and_minimize(Congruence_System& cgs);
 
-  //! Adds constraint \p c to \p *this.
+  //! If the constraint \p c is an equality, it is added to \p *this.
   /*!
-    The addition can only affect \p *this if \p c is an equality.
-
     \param c
     The constraint.
 
@@ -1124,9 +1122,9 @@ public:
   */
   void add_constraint(const Constraint& c);
 
-  //! Adds constraint \p c to \p *this, reducing the result.
-  /*!
-    The addition can only affect \p *this if \p c is an equality.
+  /*! \brief
+    If the constraint \p c is an equality, it is added
+    to \p *this, reducing the result.
 
     \param c
     The constraint.
@@ -1142,8 +1140,10 @@ public:
   */
   bool add_constraint_and_minimize(const Constraint& c);
 
-  //! Adds copies of the equality constraints in \p cs to \p *this.
-  /*!
+  /*! \brief
+    If all constraints in \p cs are equality constraints,
+    then copies are added to \p *this.
+
     \param cs
     The constraints to be added.
 
@@ -1154,8 +1154,8 @@ public:
   void add_constraints(const Constraint_System& cs);
 
   /*! \brief
-    Adds copies of the equality constraints in \p cs to \p *this,
-    reducing the result.
+    If all the constraints in \p cs are equality constraints,
+    then copies are added to \p *this, reducing the result.
 
     \param cs
     The constraints to be added.
@@ -1171,8 +1171,10 @@ public:
   */
   bool add_constraints_and_minimize(const Constraint_System& cs);
 
-  //! Adds the equality constraints in \p cs to \p *this.
-  /*!
+  /*! \brief
+    If all the constraints in \p cs are equality constraints,
+    then they are added to \p *this.
+
     \param cs
     The constraint system to be added to \p *this.  The equalities in
     \p cs may be recycled.
@@ -1188,8 +1190,8 @@ public:
   void add_recycled_constraints(Constraint_System& cs);
 
   /*! \brief
-    Adds the equality constraints in \p cs to \p *this, reducing the
-    result.
+    If all the constraints in \p cs are equality constraints,
+    then they are added to \p *this, reducing the result.
 
     \param cs
     The constraint system to be added to \p *this.  The equalities in
