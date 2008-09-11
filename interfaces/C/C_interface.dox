@@ -609,7 +609,10 @@ ppl_Polyhedron_intersection_assign
 (ppl_Polyhedron_t x, ppl_const_Polyhedron_t y);
 
 /*! \brief
-  Same as ppl_Polyhedron_poly_hull_assign(x, y).
+  Assigns to \p x an upper bound of \p x and \p y.
+
+  For the domain of polyhedra, this is the same as
+  <CODE>ppl_Polyhedron_poly_hull_assign(x, y)</CODE>.
 */
 int
 ppl_Polyhedron_upper_bound_assign
@@ -623,7 +626,11 @@ ppl_Polyhedron_difference_assign
 (ppl_Polyhedron_t x, ppl_const_Polyhedron_t y);
 
 /*! \brief
-  Assigns to \p x a meet-preserving enlargement and simplification of \p y.
+  Assigns to \p x the
+  \extref{Meet_Preserving_Simplification, meet-preserving simplification}
+  of \p x with respect to context \p y. Returns a positive integer if
+  \p x and \p y have a nonempty intersection; returns \c 0 if they
+  are disjoint.
 */
 int
 ppl_Polyhedron_simplify_using_context_assign
@@ -644,15 +651,17 @@ int
 ppl_Polyhedron_topological_closure_assign(ppl_Polyhedron_t ph);
 
 /*! \brief
-  Modifies \p ph by unconstraining the space dimension \p var.
+  Modifies \p ph by \extref{Cylindrification, unconstraining}
+  the space dimension \p var.
 */
 int
 ppl_Polyhedron_unconstrain_space_dimension
 (ppl_Polyhedron_t ph, ppl_dimension_type var);
 
 /*! \brief
-  Modifies \p ph by unconstraining the space dimensions that are
-  specified in the first \p n positions of the array \p ds.
+  Modifies \p ph by \extref{Cylindrification, unconstraining}
+  the space dimensions that are specified in the first \p n positions
+  of the array \p ds.
   The presence of duplicates in \p ds is a waste but an innocuous one.
 */
 int
@@ -1128,7 +1137,7 @@ ppl_Polyhedron_fold_space_dimensions
 /*! \name Output Functions */
 /*@{*/
 
-/*! \brief Prints \p x to <CODE>stdout</CODE>. */
+/*! \brief Prints \p x to \c stdout. */
 int
 ppl_io_print_Polyhedron(ppl_const_Polyhedron_t x);
 
