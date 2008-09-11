@@ -1,4 +1,4 @@
-/* Test BD_Shape::BD_Shape(const C_Polyhedron&).
+/* Test BD_Shape::BD_Shape(const Octagonal_Shape&).
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -30,16 +30,40 @@ test01() {
   Variable B(1);
 
   Constraint_System cs;
-  cs.insert(A + B <= 5);
-  cs.insert(A + B >= -10);
   cs.insert(A >= 0);
   cs.insert(B <= 7);
   cs.insert(A - B <= 18);
   TOctagonal_Shape os(cs);
+  os.add_constraint(A + B <= 5);
+  os.add_constraint(A + B >= -10);
 
   TBD_Shape bds(os);
 
   BD_Shape<mpq_class> known_result(cs);
+  known_result.add_constraint(2*A <= 23);
+  known_result.add_constraint(B >= -14);
+  known_result.add_constraint(B <= 5);
+
+  bool ok = (check_result(bds, known_result));
+
+  print_constraints(bds, "*** bds ***");
+
+  return ok;
+}
+
+bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+
+  Constraint_System cs;
+  cs.insert(A + B <= 5);
+  cs.insert(A + B >= 10);
+  TOctagonal_Shape os(cs);
+
+  TBD_Shape bds(os);
+
+  BD_Shape<mpq_class> known_result(os.space_dimension(), EMPTY);
 
   bool ok = (check_result(bds, known_result));
 
@@ -52,4 +76,5 @@ test01() {
 
 BEGIN_MAIN
   DO_TEST(test01);
+  DO_TEST(test02);
 END_MAIN
