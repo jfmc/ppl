@@ -226,7 +226,7 @@ test09() {
   return ok;
 }
 
-// is_trivial_true and is_trivial_false.
+// is_tautological and is_inconsistent.
 static bool
 test10() {
   Variable A(0);
@@ -235,49 +235,49 @@ test10() {
 
   Test_Congruence a(0*A + 0*B + 0*C %= 17);
 
-  bool ok = (a.is_trivial_true()) && (!a.is_trivial_false());
+  bool ok = (a.is_tautological()) && (!a.is_inconsistent());
 
   print_congruence(a,
     "*** a(0*A + 0*B + 0*C %= 17) ***");
 
   a = Test_Congruence((0*A + 0*B + 0*C %= 0) / 3);
-  ok &= a.is_trivial_true()
-    && !a.is_trivial_false();
+  ok &= a.is_tautological()
+    && !a.is_inconsistent();
 
   a = Test_Congruence((0*A + 0*B + 8 %= 0) / 4);
-  ok &= a.is_trivial_true()
-    && !a.is_trivial_false();
+  ok &= a.is_tautological()
+    && !a.is_inconsistent();
 
   print_congruence(a,
     "*** a = Test_Congruence((0*A + 0*B + 8 %= 0) / 4) ***");
 
   a = Test_Congruence(0*A + 0*B %= 17);
   a /= 0;
-  ok &= !a.is_trivial_true()
-    && a.is_trivial_false();
+  ok &= !a.is_tautological()
+    && a.is_inconsistent();
 
   print_congruence(a,
     "*** a = Test_Congruence(0*A + 0*B %= 17) ***");
 
   a = Test_Congruence((0*A + 0*B + 3 %= 0) / 0);
   a.strong_normalize();
-  ok &= !a.is_trivial_true()
-    && a.is_trivial_false();
+  ok &= !a.is_tautological()
+    && a.is_inconsistent();
 
   print_congruence(a,
     "*** a = Test_Congruence((0*A + 0*B + 3 %= 0) / 0) ***");
 
   a = Test_Congruence((0*A + 0*B + 4 %= 0) / 3);
   a.strong_normalize();
-  ok &= !a.is_trivial_true()
-    && a.is_trivial_false();
+  ok &= !a.is_tautological()
+    && a.is_inconsistent();
 
   print_congruence(a,
     "*** a = Test_Congruence((0*A + 0*B + 4 %= 0) / 3) ***");
 
   a = Test_Congruence((0*A + 1*B %= 1) / 3);
-  ok &= !a.is_trivial_true()
-    && !a.is_trivial_false();
+  ok &= !a.is_tautological()
+    && !a.is_inconsistent();
 
   print_congruence(a,
     "*** a = Test_Congruence((0*A + 1*B %= 1) / 3) ***");

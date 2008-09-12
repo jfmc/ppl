@@ -286,7 +286,7 @@ PPL::Polyhedron::relation_with(const Congruence& cg) const {
       && Poly_Con_Relation::is_disjoint();
 
   if (space_dim == 0) {
-    if (cg.is_trivial_false())
+    if (cg.is_inconsistent())
       return Poly_Con_Relation::is_disjoint();
     else
       return Poly_Con_Relation::saturates()
@@ -1255,9 +1255,9 @@ PPL::Polyhedron::add_congruence(const Congruence& cg) {
 
   // Handle the case of proper congruences first.
   if (cg.is_proper_congruence()) {
-    if (cg.is_trivial_true())
+    if (cg.is_tautological())
       return;
-    if (cg.is_trivial_false()) {
+    if (cg.is_inconsistent()) {
       set_empty();
       return;
     }
@@ -1271,7 +1271,7 @@ PPL::Polyhedron::add_congruence(const Congruence& cg) {
   if (marked_empty())
     return;
   if (space_dim == 0) {
-    if (cg.is_trivial_false())
+    if (cg.is_inconsistent())
       set_empty();
     return;
   }
@@ -1796,11 +1796,11 @@ PPL::Polyhedron::add_congruences(const Congruence_System& cgs) {
     }
     else {
       assert(cg.is_proper_congruence());
-      if (cg.is_trivial_false()) {
+      if (cg.is_inconsistent()) {
         set_empty();
         return;
       }
-      if (!cg.is_trivial_true())
+      if (!cg.is_tautological())
         throw_invalid_argument("add_congruences(cgs)",
                                "cgs has a non-trivial, proper congruence");
     }
@@ -1834,7 +1834,7 @@ PPL::Polyhedron::refine_with_congruence(const Congruence& cg) {
 
   // Dealing with a zero-dimensional space polyhedron first.
   if (space_dim == 0) {
-    if (!cg.is_trivial_true())
+    if (!cg.is_tautological())
       set_empty();
     return;
   }

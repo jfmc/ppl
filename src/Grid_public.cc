@@ -368,7 +368,7 @@ PPL::Grid::relation_with(const Congruence& cg) const {
       && Poly_Con_Relation::is_disjoint();
 
   if (space_dim == 0) {
-    if (cg.is_trivial_false())
+    if (cg.is_inconsistent())
       return Poly_Con_Relation::is_disjoint();
     else if (cg.is_equality())
       return Poly_Con_Relation::saturates()
@@ -708,11 +708,11 @@ PPL::Grid::is_universe() const {
     if (congruences_are_minimized())
       // The minimized universe congruence system has only one row,
       // the integrality congruence.
-      return con_sys.num_rows() == 1 && con_sys[0].is_trivial_true();
+      return con_sys.num_rows() == 1 && con_sys[0].is_tautological();
   }
   else {
     update_congruences();
-    return con_sys.num_rows() == 1 && con_sys[0].is_trivial_true();
+    return con_sys.num_rows() == 1 && con_sys[0].is_tautological();
   }
 
   // Test con_sys's inclusion in a universe generator system.
@@ -1132,7 +1132,7 @@ PPL::Grid::add_congruence(const Congruence& cg) {
 
   // Dealing with a zero-dimensional space grid first.
   if (space_dim == 0) {
-    if (!cg.is_trivial_true())
+    if (!cg.is_tautological())
       set_empty();
     return;
   }

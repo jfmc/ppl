@@ -833,7 +833,7 @@ Box<ITV>::relation_with(const Congruence& cg) const {
       && Poly_Con_Relation::is_disjoint();
 
    if (space_dim == 0) {
-    if (cg.is_trivial_false())
+    if (cg.is_inconsistent())
       return Poly_Con_Relation::is_disjoint();
     else
       return Poly_Con_Relation::saturates()
@@ -1829,11 +1829,11 @@ Box<ITV>::add_congruence_no_check(const Congruence& cg) {
 
   // Set aside the case of proper congruences.
   if (cg.is_proper_congruence()) {
-    if (cg.is_trivial_false()) {
+    if (cg.is_inconsistent()) {
       set_empty();
       return;
     }
-    else if (cg.is_trivial_true())
+    else if (cg.is_tautological())
       return;
     else
       // FIXME: what about intervals with restrictions?
@@ -1907,7 +1907,7 @@ Box<ITV>::refine_no_check(const Congruence& cg) {
     // FIXME: also deal with the case of interval with restrictions.
     // A proper congruences is also an interval constraint
     // if and only if it is trivial.
-    if (cg.is_trivial_false())
+    if (cg.is_inconsistent())
       set_empty();
     return;
   }

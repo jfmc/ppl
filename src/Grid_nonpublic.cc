@@ -124,7 +124,7 @@ PPL::Grid::construct(Congruence_System& cgs) {
     if (cgs.num_columns() > 1)
       // See if an inconsistent congruence has been passed.
       for (dimension_type i = cgs.num_rows(); i-- > 0; )
-	if (cgs[i].is_trivial_false()) {
+	if (cgs[i].is_inconsistent()) {
 	  // Inconsistent congruence found: the grid is empty.
 	  status.set_empty();
 	  // Insert the zero dim false congruence system into `con_sys'.

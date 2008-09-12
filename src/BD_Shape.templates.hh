@@ -375,11 +375,18 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
   // Dimension-compatibility check.
   if (c_space_dim > space_dimension())
     throw_dimension_incompatible("add_constraint(c)", c);
-  // ENEA: CHECKME: trivial strict inequalities?
-  // Strict inequalities are not allowed.
-  if (c.is_strict_inequality())
-    throw_generic("add_constraint(c)",
-                  "strict inequalities are not allowed");
+
+  // Get rid of strict inequalities.
+  if (c.is_strict_inequality()) {
+    if (c.is_inconsistent()) {
+      set_empty();
+      return;
+    }
+    if (c.is_tautological())
+      return;
+    // Nontrivial strict inequalities are not allowed.
+    throw_generic("add_constraint(c)", "strict inequalities are not allowed");
+  }
 
   dimension_type num_vars = 0;
   dimension_type i = 0;
@@ -392,9 +399,8 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
 
   if (num_vars == 0) {
     // Dealing with a trivial constraint.
-    if (c.is_equality() && c.inhomogeneous_term() != 0)
-      set_empty();
-    if (c.inhomogeneous_term() < 0)
+    if (c.inhomogeneous_term() < 0
+        || (c.inhomogeneous_term() == 0 && !c.is_nonstrict_inequality()))
       set_empty();
     return;
   }
@@ -445,9 +451,9 @@ BD_Shape<T>::add_congruence(const Congruence& cg) {
 
   // Handle the case of proper congruences first.
   if (cg.is_proper_congruence()) {
-    if (cg.is_trivial_true())
+    if (cg.is_tautological())
       return;
-    if (cg.is_trivial_false()) {
+    if (cg.is_inconsistent()) {
       set_empty();
       return;
     }
@@ -479,9 +485,8 @@ BD_Shape<T>::refine_with_constraint(const Constraint& c) {
 
   if (num_vars == 0) {
     // Dealing with a trivial constraint.
-    if (c.is_equality() && c.inhomogeneous_term() != 0)
-      set_empty();
-    if (c.inhomogeneous_term() < 0)
+    if (c.inhomogeneous_term() < 0
+        || (c.inhomogeneous_term() == 0 && !c.is_nonstrict_inequality()))
       set_empty();
     return;
   }
@@ -1240,7 +1245,7 @@ BD_Shape<T>::relation_with(const Congruence& cg) const {
       && Poly_Con_Relation::is_disjoint();
 
   if (space_dim == 0) {
-    if (cg.is_trivial_false())
+    if (cg.is_inconsistent())
       return Poly_Con_Relation::is_disjoint();
     else if (cg.inhomogeneous_term() % cg.modulus() == 0)
       return Poly_Con_Relation::saturates()
