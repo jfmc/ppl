@@ -33,7 +33,6 @@ dnl -----------------------------------------------------------------
 dnl Output the fixed preamble.
 dnl -----------------------------------------------------------------
 m4_divert`'dnl
-%<--%<--%<-- ppl_c_fixed.cc
 dnl As the preamble has quotes, first change the quote characters.
 m4_changequote(`@<<@',`@>>@')@<<@@>>@dnl
 m4_include(@<<@ppl_interface_generator_c_cc_preamble@>>@)@<<@@>>@dnl
@@ -60,7 +59,6 @@ dnl -----------------------------------------------------------------
 dnl Output conversion declarations for all the classes.
 dnl -----------------------------------------------------------------
 m4_divert`'dnl
-
 `#include "interfaced_boxes.hh"'
 m4_all_code`'dnl
 m4_divert(-1)
@@ -71,11 +69,8 @@ dnl Macros needed for the class-dependent code.
 dnl -----------------------------------------------------------------
 dnl Prefix extra code for each class.
 m4_define(`m4_pre_extra_class_code', `dnl
-m4_define(`m4_current_interface', m4_interface_class`'$1)`'dnl
-%<--%<--%<-- ppl_m4_current_interface.cc
-/* Interfacing m4_current_interface */
+/* Interfacing m4_interface_class`'$1 */
 
-/* Prolog m4_current_interface interface code: definitions.
 ')
 
 dnl Postfix extra code for each class.
