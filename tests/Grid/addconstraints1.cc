@@ -104,8 +104,7 @@ test03() {
   return ok;
 }
 
-#if 0
-// add_congruences(cs)
+// add_constraints with inconsistency
 bool
 test04() {
   Variable A(0);
@@ -114,19 +113,16 @@ test04() {
   Variable D(3);
 
   Constraint_System cs;
-  cs.insert(B < 0);
-  cs.insert(B > 0);
   cs.insert(A == 0);
-  cs.insert(C > 0);
 
   Grid gr(3);
 
   print_congruences(gr, "*** gr ***");
 
-  gr.add_congruences(cs);
+  gr.add_constraints(cs);
 
   Grid known_gr(3);
-  known_gr.add_congruence(A == 0);
+  known_gr.add_congruence((A %= 0) / 0);
 
   bool ok = (gr == known_gr);
 
@@ -135,7 +131,7 @@ test04() {
   return ok;
 }
 
-// add_recycled_congruences(cs)
+// add_constraints with inconsistency
 bool
 test05() {
   Variable A(0);
@@ -143,19 +139,15 @@ test05() {
   Variable C(2);
 
   Constraint_System cs;
-  cs.insert(2*B == 3);
-  cs.insert(A == 0);
-  cs.insert(C > 0);
+  cs.insert(Linear_Expression(1) >= 3);
 
   Grid gr(3);
 
   print_congruences(gr, "*** gr ***");
 
-  gr.add_recycled_congruences(cs);
+  gr.add_constraints(cs);
 
-  Grid known_gr(3);
-  known_gr.add_congruence(A == 0);
-  known_gr.add_congruence(2*B == 3);
+  Grid known_gr(3, EMPTY);
 
   bool ok = (gr == known_gr);
 
@@ -164,7 +156,7 @@ test05() {
   return ok;
 }
 
-// add_recycled_congruences_and_minimize(cs)
+// add_recycled_constraints - inconsistent inequality
 bool
 test06() {
   Variable A(0);
@@ -172,18 +164,16 @@ test06() {
   Variable C(2);
 
   Constraint_System cs;
-  cs.insert(2*B >= 3);
-  cs.insert(2*A == 7);
-  cs.insert(C > 0);
+  cs.insert(B >= 3);
+  cs.insert(0*B >= 7);
 
   Grid gr(3);
 
   print_congruences(gr, "*** gr ***");
 
-  gr.add_recycled_congruences_and_minimize(cs);
+  gr.add_recycled_constraints(cs);
 
-  Grid known_gr(3);
-  known_gr.add_congruence(2*A == 7);
+  Grid known_gr(3, EMPTY);
 
   bool ok = (gr == known_gr);
 
@@ -192,10 +182,8 @@ test06() {
 
   return ok;
 }
-#endif
 
 // add_constraints_and_minimize(cs)
-
 bool
 test07() {
   Variable A(0);
@@ -557,11 +545,9 @@ BEGIN_MAIN
 #endif
   DO_TEST(test02);
   DO_TEST(test03);
-#if 0
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
-#endif
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);

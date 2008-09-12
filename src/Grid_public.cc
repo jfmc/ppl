@@ -1319,8 +1319,13 @@ PPL::Grid::add_congruences_and_minimize(const Congruence_System& cgs) {
 void
 PPL::Grid::add_constraint(const Constraint& c) {
   // Equality check.
-  if (!c.is_equality())
+  if (!c.is_equality()) {
+    if (c.is_inconsistent()) {
+      set_empty();
+      return;
+    }
     throw_invalid_constraint("add_constraint(c)", "c");
+  }
   // The dimension of `c' must be at most `space_dim'.
   if (space_dim < c.space_dimension())
     throw_dimension_incompatible("add_constraint(c)", "c", c);
@@ -1343,9 +1348,17 @@ PPL::Grid::add_constraint_and_minimize(const Constraint& c) {
 void
 PPL::Grid::add_constraints(const Constraint_System& cs) {
   // Every constraint in cs must be an equality.
+  bool invalid = false;
   for (Constraint_System::const_iterator i = cs.begin(),
          cs_end = cs.end(); i != cs_end; ++i)
-    if (!i->is_equality())
+    if (!i->is_equality()) {
+      invalid = true;
+      if (i->is_inconsistent()) {
+        set_empty();
+        return;
+      }
+    }
+  if (invalid)
       throw_invalid_constraints("add_constraints(cs)", "cs");
   // The dimension of `cs' must be at most `space_dim'.
   if (space_dim < cs.space_dimension())
@@ -1367,9 +1380,17 @@ PPL::Grid::add_constraints_and_minimize(const Constraint_System& cs) {
 void
 PPL::Grid::add_recycled_constraints(Constraint_System& cs) {
   // Every constraint in cs must be an equality.
+  bool invalid = false;
   for (Constraint_System::const_iterator i = cs.begin(),
          cs_end = cs.end(); i != cs_end; ++i)
-    if (!i->is_equality())
+    if (!i->is_equality()) {
+      invalid = true;
+      if (i->is_inconsistent()) {
+        set_empty();
+        return;
+      }
+    }
+  if (invalid)
       throw_invalid_constraints("add_constraints(cs)", "cs");
   // The dimension of `cs' must be at most `space_dim'.
   if (space_dim < cs.space_dimension())
@@ -1522,7 +1543,9 @@ void
 PPL::Grid::refine_with_constraint(const Constraint& c) {
   // The dimension of `c' must be at most `space_dim'.
   if (space_dim < c.space_dimension())
-    throw_dimension_incompatible("add_constraint(c)", "c", c);
+    throw_dimension_incompatible("refine_with_constraint(c)", "c", c);
+  if (c.is_inconsistent())
+    set_empty();
   if (c.is_equality()) {
     Congruence cg(c);
     add_congruence(cg);
@@ -1533,7 +1556,11 @@ void
 PPL::Grid::refine_with_constraints(const Constraint_System& cs) {
   // The dimension of `cs' must be at most `space_dim'.
   if (space_dim < cs.space_dimension())
-    throw_dimension_incompatible("add_constraints(cs)", "cs", cs);
+    throw_dimension_incompatible("refine_with_constraints(cs)", "cs", cs);
+  for (Constraint_System::const_iterator i = cs.begin(),
+	 cs_end = cs.end(); i != cs_end; ++i)
+    if (i->is_inconsistent())
+      set_empty();
   Congruence_System cgs(cs);
   add_recycled_congruences(cgs);
 }
