@@ -515,7 +515,7 @@ public:
     The built OS is the most precise OS that includes the box.
 
     \param box
-    The bounding box representing the BDS to be built.
+    The box representing the BDS to be built.
 
     \param complexity
     This argument is ignored as the algorithm used has
@@ -548,13 +548,13 @@ public:
   explicit Octagonal_Shape(const Grid& grid,
                            Complexity_Class complexity = ANY_COMPLEXITY);
 
-  //! Builds an OS from a bd shape.
+  //! Builds an OS from a BD shape.
   /*!
-    The OS inherits the space dimension of the bd shape.
-    The built OS is the most precise OS that includes the bd shape.
+    The OS inherits the space dimension of the BD shape.
+    The built OS is the most precise OS that includes the BD shape.
 
     \param bd
-    The bd shape used to build the OS.
+    The BD shape used to build the OS.
 
     \param complexity
     This argument is ignored as the algorithm used has

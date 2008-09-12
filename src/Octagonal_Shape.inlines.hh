@@ -115,7 +115,11 @@ template <typename U>
 inline
 Octagonal_Shape<T>::Octagonal_Shape(const Octagonal_Shape<U>& y,
                                     Complexity_Class)
-  : matrix(y.matrix), space_dim(y.space_dim), status() {
+  // For maximum precision, enforce shortest-path closure
+  // before copying the DB matrix.
+  : matrix((y.strong_closure_assign(), y.matrix)),
+    space_dim(y.space_dim),
+    status() {
   // TODO: handle flags properly, possibly taking special cases into account.
   if (y.marked_empty())
     set_empty();
@@ -145,7 +149,6 @@ Octagonal_Shape<T>::Octagonal_Shape(const Congruence_System& cgs)
     // A (non zero-dim) universe octagon is strongly closed.
     set_strongly_closed();
   add_congruences(cgs);
-  return;
 }
 
 template <typename T>
@@ -156,11 +159,14 @@ Octagonal_Shape<T>::Octagonal_Shape(const Box<Interval>& box,
   : matrix(box.space_dimension()),
     space_dim(box.space_dimension()),
     status() {
-  if (box.space_dimension() > 0)
+  // Check for emptyness for maximum precision.
+  if (box.is_empty())
+    set_empty();
+  else if (box.space_dimension() > 0) {
     // A (non zero-dim) universe OS is strongly closed.
     set_strongly_closed();
-  add_constraints(box.constraints());
-  return;
+    refine_with_constraints(box.constraints());
+  }
 }
 
 template <typename T>
@@ -173,8 +179,8 @@ Octagonal_Shape<T>::Octagonal_Shape(const Grid& grid,
   if (grid.space_dimension() > 0)
     // A (non zero-dim) universe OS is strongly closed.
     set_strongly_closed();
-  add_congruences(grid.congruences());
-  return;
+  // Taking minimized congruences ensures maximum precision.
+  refine_with_congruences(grid.minimized_congruences());
 }
 
 template <typename T>
@@ -185,11 +191,14 @@ Octagonal_Shape<T>::Octagonal_Shape(const BD_Shape<U>& bd,
   : matrix(bd.space_dimension()),
     space_dim(bd.space_dimension()),
     status() {
-  if (bd.space_dimension() > 0)
-    // A (non zero-dim) universe OS is shortest-path closed.
+  // Check for emptyness for maximum precision.
+  if (bd.is_empty())
+    set_empty();
+  else if (bd.space_dimension() > 0) {
+    // A (non zero-dim) universe OS is strongly closed.
     set_strongly_closed();
-  add_constraints(bd.constraints());
-  return;
+    refine_with_constraints(bd.constraints());
+  }
 }
 
 template <typename T>
@@ -400,12 +409,6 @@ Octagonal_Shape<T>
 
 template <typename T>
 inline void
-Octagonal_Shape<T>::add_recycled_constraints(Constraint_System& cs) {
-  add_constraints(cs);
-}
-
-template <typename T>
-inline void
 Octagonal_Shape<T>::add_constraints(const Constraint_System& cs) {
   Constraint_System::const_iterator i_end = cs.end();
   for (Constraint_System::const_iterator i = cs.begin(); i != i_end; ++i)
@@ -414,8 +417,7 @@ Octagonal_Shape<T>::add_constraints(const Constraint_System& cs) {
 
 template <typename T>
 inline void
-Octagonal_Shape<T>::add_congruences(const Congruence_System& cgs) {
-  Constraint_System cs(cgs);
+Octagonal_Shape<T>::add_recycled_constraints(Constraint_System& cs) {
   add_constraints(cs);
 }
 
@@ -423,6 +425,14 @@ template <typename T>
 inline void
 Octagonal_Shape<T>::add_recycled_congruences(Congruence_System& cgs) {
   add_congruences(cgs);
+}
+
+template <typename T>
+inline void
+Octagonal_Shape<T>::add_congruences(const Congruence_System& cgs) {
+  for (Congruence_System::const_iterator i = cgs.begin(),
+         cgs_end = cgs.end(); i != cgs_end; ++i)
+    add_congruence(*i);
 }
 
 template <typename T>

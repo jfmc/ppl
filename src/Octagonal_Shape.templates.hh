@@ -187,7 +187,9 @@ Octagonal_Shape<T>::Octagonal_Shape(const Polyhedron& ph,
   }
 
   // Extract easy-to-find bounds from constraints.
-  *this = Octagonal_Shape(ph.constraints());
+  assert(complexity == POLYNOMIAL_COMPLEXITY);
+  *this = Octagonal_Shape(num_dimensions, UNIVERSE);
+  refine_with_constraints(ph.constraints());
 }
 
 template <typename T>
@@ -286,10 +288,8 @@ Octagonal_Shape<T>::Octagonal_Shape(const Generator_System& gs)
 
   if (!point_seen)
     // The generator system is not empty, but contains no points.
-    throw std::invalid_argument("PPL::Octagonal_Shape<T>"
-                                "::Octagonal_Shape(gs):\n"
-                                "the non-empty generator system gs "
-                                "contains no points.");
+    throw_generic("Octagonal_Shape(gs)",
+                  "the non-empty generator system gs contains no points.");
 
   // Going through all the lines and rays.
   for (Generator_System::const_iterator k = gs_begin; k != gs_end; ++k) {
@@ -372,24 +372,34 @@ Octagonal_Shape<T>::add_constraint(const Constraint& c) {
   // Dimension-compatibility check.
   if (c_space_dim > space_dim)
     throw_dimension_incompatible("add_constraint(c)", c);
-  // Strict inequalities are not allowed.
-  if (c.is_strict_inequality())
-   throw_constraint_incompatible("add_constraint(c)");
+
+  // Get rid of strict inequalities.
+  if (c.is_strict_inequality()) {
+    if (c.is_inconsistent()) {
+      set_empty();
+      return;
+    }
+    if (c.is_tautological())
+      return;
+    // Nontrivial strict inequalities are not allowed.
+    throw_generic("add_constraint(c)", "strict inequalities are not allowed");
+  }
 
   dimension_type num_vars = 0;
   dimension_type i = 0;
   dimension_type j = 0;
   TEMP_INTEGER(coeff);
   TEMP_INTEGER(term);
-  // Constraints that are not octagonal differences are ignored.
+  // Constraints that are not octagonal differences are not allowed.
   if (!extract_octagonal_difference(c, c_space_dim, num_vars,
                                     i, j, coeff, term))
-    return;
+    throw_generic("add_constraint(c)",
+                  "c is not an octagonal constraint");
 
   if (num_vars == 0) {
-    // Dealing with a trivial constraint.
-    if ((c.is_equality() && c.inhomogeneous_term() != 0)
-        || c.inhomogeneous_term() < 0)
+    // Dealing with a trivial constraint (not a strict inequality).
+    if (c.inhomogeneous_term() < 0
+        || (c.is_equality() && c.inhomogeneous_term() != 0))
       set_empty();
     return;
   }
@@ -440,16 +450,27 @@ template <typename T>
 void
 Octagonal_Shape<T>::add_congruence(const Congruence& cg) {
   const dimension_type cg_space_dim = cg.space_dimension();
-  if (cg.is_equality()) {
-    Linear_Expression expr;
-    for (dimension_type i = cg_space_dim; i-- > 0; ) {
-      const Variable v(i);
-      expr += cg.coefficient(v) * v;
+  // Dimension-compatibility check:
+  // the dimension of `cg' can not be greater than space_dim.
+  if (space_dimension() < cg_space_dim)
+    throw_dimension_incompatible("add_congruence(cg)", cg);
+
+  // Handle the case of proper congruences first.
+  if (cg.is_proper_congruence()) {
+    if (cg.is_tautological())
+      return;
+    if (cg.is_inconsistent()) {
+      set_empty();
+      return;
     }
-    expr += cg.inhomogeneous_term();
-    add_constraint(expr == 0);
+    // Non-trivial and proper congruences are not allowed.
+    throw_generic("add_congruence(cg)",
+                  "cg is a non-trivial, proper congruence");
   }
-  assert(OK());
+
+  assert(cg.is_equality());
+  Constraint c(cg);
+  add_constraint(c);
 }
 
 template <typename T>
@@ -459,6 +480,9 @@ Octagonal_Shape<T>::refine_with_constraint(const Constraint& c) {
   // Dimension-compatibility check.
   if (c_space_dim > space_dim)
     throw_dimension_incompatible("refine_with_constraint(c)", c);
+
+  if (marked_empty())
+    return;
 
   dimension_type num_vars = 0;
   dimension_type i = 0;
@@ -471,9 +495,11 @@ Octagonal_Shape<T>::refine_with_constraint(const Constraint& c) {
     return;
 
   if (num_vars == 0) {
-    // Dealing with a trivial constraint.
-    if ((c.is_equality() && c.inhomogeneous_term() != 0)
-        || c.inhomogeneous_term() < 0)
+    const Coefficient& c_inhomo = c.inhomogeneous_term();
+    // Dealing with a trivial constraint (maybe a strict inequality).
+    if (c_inhomo < 0
+        || (c_inhomo != 0 && c.is_equality())
+        || (c_inhomo == 0 && c.is_strict_inequality()))
       set_empty();
     return;
   }
@@ -4497,8 +4523,8 @@ Octagonal_Shape<T>
   // The relation symbol cannot be a strict relation symbol.
   if (relsym == LESS_THAN || relsym == GREATER_THAN)
     throw_generic("generalized_affine_image(v, r, e, d)",
-                    "r is a strict relation symbol and "
-                    "*this is an Octagonal_Shape");
+                  "r is a strict relation symbol and "
+                  "*this is an Octagonal_Shape");
 
   if (relsym == EQUAL) {
     // The relation symbol is "==":
@@ -5019,13 +5045,13 @@ Octagonal_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
     // approximations for this constraint?
     switch (relsym) {
     case LESS_OR_EQUAL:
-      add_constraint(lhs <= rhs);
+      refine_with_constraint(lhs <= rhs);
       break;
     case EQUAL:
-      add_constraint(lhs == rhs);
+      refine_with_constraint(lhs == rhs);
       break;
     case GREATER_OR_EQUAL:
-      add_constraint(lhs >= rhs);
+      refine_with_constraint(lhs >= rhs);
       break;
     default:
       // We already dealt with the other cases.
@@ -5075,13 +5101,13 @@ Octagonal_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       // it will be simply ignored. Should we compute approximations for it?
       switch (relsym) {
       case LESS_OR_EQUAL:
-        add_constraint(lhs <= rhs);
+        refine_with_constraint(lhs <= rhs);
         break;
       case EQUAL:
-        add_constraint(lhs == rhs);
+        refine_with_constraint(lhs == rhs);
         break;
       case GREATER_OR_EQUAL:
-        add_constraint(lhs >= rhs);
+        refine_with_constraint(lhs >= rhs);
         break;
       default:
         // We already dealt with the other cases.
@@ -5107,9 +5133,9 @@ Octagonal_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       const Variable new_var = Variable(space_dim);
       add_space_dimensions_and_embed(1);
       // Constrain the new dimension to be equal to `rhs'.
-      // NOTE: calling affine_image() instead of add_constraint()
+      // NOTE: calling affine_image() instead of refine_with_constraint()
       // ensures some approximation is tried even when the constraint
-      // is not a bounded difference.
+      // is not an octagonal constraint.
       affine_image(new_var, rhs);
       // Existentially quantify all variables in the lhs.
       // NOTE: enforce strong closure for precision.
@@ -5123,17 +5149,17 @@ Octagonal_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       // the left hand side as dictated by `relsym'.
       // TODO: each one of the following constraints is definitely NOT
       // an octagonal difference (since it has 3 variables at least).
-      // Thus, the method add_constraint() will simply ignore it.
+      // Thus, the method refine_with_constraint() will simply ignore it.
       // Should we compute approximations for this constraint?
       switch (relsym) {
       case LESS_OR_EQUAL:
-        add_constraint(lhs <= new_var);
+        refine_with_constraint(lhs <= new_var);
         break;
       case EQUAL:
-        add_constraint(lhs == new_var);
+        refine_with_constraint(lhs == new_var);
         break;
       case GREATER_OR_EQUAL:
-        add_constraint(lhs >= new_var);
+        refine_with_constraint(lhs >= new_var);
         break;
       default:
         // We already dealt with the other cases.
@@ -5254,7 +5280,7 @@ Octagonal_Shape<T>::bounded_affine_image(const Variable var,
                                  ub_expr,
                                  denominator);
         // Now apply the affine lower bound, as recorded in `new_var'
-        add_constraint(var >= new_var);
+        refine_with_constraint(var >= new_var);
         // Remove the temporarily added dimension.
         remove_higher_space_dimensions(space_dim-1);
         return;
@@ -5468,8 +5494,8 @@ Octagonal_Shape<T>
   // The relation symbol cannot be a strict relation symbol.
   if (relsym == LESS_THAN || relsym == GREATER_THAN)
     throw_generic("generalized_affine_preimage(v, r, e, d)",
-                    "r is a strict relation symbol and "
-                    "*this is an Octagonal_Shape");
+                  "r is a strict relation symbol and "
+                  "*this is an Octagonal_Shape");
 
   if (relsym == EQUAL) {
     // The relation symbol is "==":
@@ -5608,13 +5634,13 @@ Octagonal_Shape<T>
       // it will be simply ignored. Should we compute approximations for it?
       switch (relsym) {
       case LESS_OR_EQUAL:
-        add_constraint(lhs <= rhs);
+        refine_with_constraint(lhs <= rhs);
         break;
       case EQUAL:
-        add_constraint(lhs == rhs);
+        refine_with_constraint(lhs == rhs);
         break;
       case GREATER_OR_EQUAL:
-        add_constraint(lhs >= rhs);
+        refine_with_constraint(lhs >= rhs);
         break;
       default:
         // We already dealt with the other cases.
@@ -5640,7 +5666,7 @@ Octagonal_Shape<T>
       const Variable new_var = Variable(space_dim);
       add_space_dimensions_and_embed(1);
       // Constrain the new dimension to be equal to `rhs'.
-      // NOTE: calling affine_image() instead of add_constraint()
+      // NOTE: calling affine_image() instead of refine_with_constraint()
       // ensures some approximation is tried even when the constraint
       // is not an octagonal difference.
       affine_image(new_var, lhs);
@@ -5658,16 +5684,16 @@ Octagonal_Shape<T>
       // one of the following constraints will be added, because they
       // are octagonal differences.
       // Else the following constraints are NOT octagonal differences,
-      // so the method add_constraint() will ignore them.
+      // so the method refine_with_constraint() will ignore them.
       switch (relsym) {
       case LESS_OR_EQUAL:
-        add_constraint(new_var <= rhs);
+        refine_with_constraint(new_var <= rhs);
         break;
       case EQUAL:
-        add_constraint(new_var == rhs);
+        refine_with_constraint(new_var == rhs);
         break;
       case GREATER_OR_EQUAL:
-        add_constraint(new_var >= rhs);
+        refine_with_constraint(new_var >= rhs);
         break;
       default:
         // We already dealt with the other cases.
@@ -5741,12 +5767,11 @@ Octagonal_Shape<T>::bounded_affine_preimage(const Variable var,
   generalized_affine_preimage(var, LESS_OR_EQUAL,
                               ub_expr, denominator);
   if (sgn(denominator) == sgn(inverse_den))
-    add_constraint(var >= new_var) ;
+    refine_with_constraint(var >= new_var) ;
   else
-    add_constraint(var <= new_var);
+    refine_with_constraint(var <= new_var);
   // Remove the temporarily added dimension.
   remove_higher_space_dimensions(space_dim-1);
-  return;
 }
 
 template <typename T>
@@ -6408,7 +6433,7 @@ Octagonal_Shape<T>::throw_generic(const char* method,
                                   const char* reason) const {
   std::ostringstream s;
   s << "PPL::Octagonal_Shape::" << method << ":\n"
-    << reason;
+    << reason << ".";
   throw std::invalid_argument(s.str());
 }
 
