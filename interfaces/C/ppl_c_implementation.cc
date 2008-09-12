@@ -28,6 +28,8 @@ namespace Parma_Polyhedra_Library {
 
 namespace C_Interface {
 
+error_handler_type user_error_handler = 0;
+
 extern "C" const char*
 c_variable_default_output_function(ppl_dimension_type var) {
 #if PPL_SIZEOF_SIZE_T == PPL_SIZEOF_INT
@@ -83,12 +85,24 @@ c_variable_output_function_type(ppl_dimension_type var);
 // Holds a pointer to the C++ saved output function.
 Variable::output_function_type* saved_cxx_Variable_output_function;
 
+void
+notify_error(enum ppl_enum_error_code code, const char* description) {
+  if (user_error_handler != 0)
+    user_error_handler(code, description);
+}
+
 } // namespace C_Interface
 
 } // namespace Parma_Polyhedra_Library
 
-//using namespace Parma_Polyhedra_Library;
+using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::C_Interface;
+
+int
+ppl_set_error_handler(error_handler_type h) {
+  user_error_handler = h;
+  return 0;
+}
 
 int
 ppl_initialize(void) try {
@@ -1657,90 +1671,6 @@ ppl_Grid_Generator_System_const_iterator_equal_test
 }
 CATCH_ALL
 
-
-namespace {
-
-class PIFunc {
-private:
-  //! Holds the vector implementing the map.
-  dimension_type* vec;
-
-  //! Holds the size of \p vec.
-  size_t vec_size;
-
-  //! Cache for computing the maximum dimension in the codomain.
-  mutable dimension_type max_in_codomain_;
-
-  //! Cache for computing emptiness:
-  //! -1 if we still don't know, 0 if not empty, 1 if empty.
-  mutable int empty;
-
-public:
-  PIFunc(dimension_type* v, size_t n)
-    : vec(v), vec_size(n), max_in_codomain_(not_a_dimension()), empty(-1) {
-  }
-
-  bool has_empty_codomain() const {
-    if (empty < 0) {
-      empty = 1;
-      for (size_t i = vec_size; i-- > 0; )
-	if (vec[i] != not_a_dimension()) {
-	  empty = 0;
-	  break;
-	}
-    }
-    return empty;
-  }
-
-  dimension_type max_in_codomain() const {
-    if (max_in_codomain_ == not_a_dimension()) {
-      for (size_t i = vec_size; i-- > 0; ) {
-	dimension_type vec_i = vec[i];
-	if (vec_i != not_a_dimension()
-	    && (max_in_codomain_ == not_a_dimension()
-		|| vec_i > max_in_codomain_))
-	  max_in_codomain_ = vec_i;
-      }
-    }
-    return max_in_codomain_;
-  }
-
-  bool maps(dimension_type i, dimension_type& j) const {
-    if (i >= vec_size)
-      return false;
-    dimension_type vec_i = vec[i];
-    if (vec_i == not_a_dimension())
-      return false;
-    j = vec_i;
-    return true;
-  }
-};
-
-} // namespace
-
-
-namespace {
-
-inline Relation_Symbol
-relation_symbol(enum ppl_enum_Constraint_Type t) {
-  switch (t) {
-  case PPL_CONSTRAINT_TYPE_LESS_THAN:
-    return LESS_THAN;
-  case PPL_CONSTRAINT_TYPE_LESS_OR_EQUAL:
-    return LESS_OR_EQUAL;
-  case PPL_CONSTRAINT_TYPE_EQUAL:
-    return EQUAL;
-  case PPL_CONSTRAINT_TYPE_GREATER_OR_EQUAL:
-    return GREATER_OR_EQUAL;
-  case PPL_CONSTRAINT_TYPE_GREATER_THAN:
-    return GREATER_THAN;
-  default:
-    return static_cast<Relation_Symbol>(t);
-  }
-}
-
-} // namespace
-
 int
 ppl_new_MIP_Problem_from_space_dimension(ppl_MIP_Problem_t* pmip,
                                          ppl_dimension_type d) try {
@@ -2005,44 +1935,6 @@ ppl_io_fprint_variable(FILE* stream, ppl_dimension_type var) try {
   return 0;
 }
 CATCH_ALL
-
-#define DEFINE_PRINT_FUNCTIONS(Type) \
-int \
-ppl_io_print_ ## Type(ppl_const_ ## Type ## _t x) try { \
-  using namespace IO_Operators; \
-  std::ostringstream s; \
-  s << *to_const(x); \
-  if (puts(s.str().c_str()) < 0) \
-    return PPL_STDIO_ERROR; \
-  return 0; \
-} \
-CATCH_ALL \
- \
-int \
-ppl_io_fprint_ ## Type(FILE* stream, ppl_const_ ## Type ## _t x) try { \
-  using namespace IO_Operators; \
-  std::ostringstream s; \
-  s << *to_const(x); \
-  if (fputs(s.str().c_str(), stream) < 0) \
-    return PPL_STDIO_ERROR; \
-  return 0; \
-} \
-CATCH_ALL
-
-#define DEFINE_ASCII_DUMP_FUNCTIONS(Type) \
-int \
-ppl_ ## Type ## _ascii_dump(ppl_const_ ## Type ## _t x, FILE* stream) try { \
-  std::ostringstream s; \
-  to_const(x)->ascii_dump(s);		  \
-  if (fputs(s.str().c_str(), stream) < 0) \
-    return PPL_STDIO_ERROR; \
-  return 0; \
-} \
-CATCH_ALL
-
-#define DEFINE_OUTPUT_FUNCTIONS(Type) \
-DEFINE_PRINT_FUNCTIONS(Type) \
-DEFINE_ASCII_DUMP_FUNCTIONS(Type)
 
 /* No ascii dump for Coefficient. */
 DEFINE_PRINT_FUNCTIONS(Coefficient)

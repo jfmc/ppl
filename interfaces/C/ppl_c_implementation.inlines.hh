@@ -33,27 +33,6 @@ reinterpret_mpz_class(mpz_t n) {
   return reinterpret_cast<mpz_class&>(*n);
 }
 
-#define DECLARE_CONVERSIONS(Type, CPP_Type) \
-inline const CPP_Type* \
-to_const(ppl_const_ ## Type ## _t x) { \
-  return reinterpret_cast<const CPP_Type*>(x); \
-} \
- \
-inline CPP_Type* \
-to_nonconst(ppl_ ## Type ## _t x) { \
-  return reinterpret_cast<CPP_Type*>(x); \
-} \
- \
-inline ppl_const_ ## Type ## _t \
-to_const(const CPP_Type* x) { \
-  return reinterpret_cast<ppl_const_ ## Type ## _t>(x); \
-} \
- \
-inline ppl_ ## Type ## _t \
-to_nonconst(CPP_Type* x) { \
-  return reinterpret_cast<ppl_ ## Type ## _t>(x); \
-}
-
 DECLARE_CONVERSIONS(Coefficient, Coefficient)
 
 DECLARE_CONVERSIONS(Linear_Expression, Linear_Expression)
@@ -92,6 +71,24 @@ DECLARE_CONVERSIONS(Grid_Generator_System_const_iterator,
                     Grid_Generator_System_const_iterator)
 
 DECLARE_CONVERSIONS(MIP_Problem, MIP_Problem)
+
+inline Relation_Symbol
+relation_symbol(enum ppl_enum_Constraint_Type t) {
+  switch (t) {
+  case PPL_CONSTRAINT_TYPE_LESS_THAN:
+    return LESS_THAN;
+  case PPL_CONSTRAINT_TYPE_LESS_OR_EQUAL:
+    return LESS_OR_EQUAL;
+  case PPL_CONSTRAINT_TYPE_EQUAL:
+    return EQUAL;
+  case PPL_CONSTRAINT_TYPE_GREATER_OR_EQUAL:
+    return GREATER_OR_EQUAL;
+  case PPL_CONSTRAINT_TYPE_GREATER_THAN:
+    return GREATER_THAN;
+  default:
+    return static_cast<Relation_Symbol>(t);
+  }
+}
 
 } // namespace C_Interface
 

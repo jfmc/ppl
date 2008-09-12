@@ -68,10 +68,10 @@ LIBPPL_C_LT_CURRENT =  1
 LIBPPL_C_LT_REVISION = 0
 LIBPPL_C_LT_AGE =      1
 
-BUILT_SOURCES = \
-ppl_c.h \
-ppl_c.cc \
-ppl_c_domains.cc
+BUILT_SOURCES =
+# ppl_c.h
+# ppl_c.cc
+# ppl_c_domains.cc
 
 interface_generator_dependencies = \
 $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \

@@ -33,29 +33,79 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <cerrno>
 #include <climits>
 
-using namespace Parma_Polyhedra_Library;
+namespace Parma_Polyhedra_Library {
 
-
-namespace {
+namespace C_Interface {
 
 extern "C" typedef void
 (*error_handler_type)(enum ppl_enum_error_code code, const char* description);
 
-error_handler_type user_error_handler = 0;
+extern error_handler_type user_error_handler;
 
-void
-notify_error(enum ppl_enum_error_code code, const char* description) {
-  if (user_error_handler != 0)
-    user_error_handler(code, description);
-}
+void notify_error(enum ppl_enum_error_code code, const char* description);
 
-} // namespace
+Relation_Symbol relation_symbol(enum ppl_enum_Constraint_Type t);
 
-int
-ppl_set_error_handler(error_handler_type h) {
-  user_error_handler = h;
-  return 0;
-}
+class PIFunc {
+private:
+  //! Holds the vector implementing the map.
+  dimension_type* vec;
+
+  //! Holds the size of \p vec.
+  size_t vec_size;
+
+  //! Cache for computing the maximum dimension in the codomain.
+  mutable dimension_type max_in_codomain_;
+
+  //! Cache for computing emptiness:
+  //! -1 if we still don't know, 0 if not empty, 1 if empty.
+  mutable int empty;
+
+public:
+  PIFunc(dimension_type* v, size_t n)
+    : vec(v), vec_size(n), max_in_codomain_(not_a_dimension()), empty(-1) {
+  }
+
+  bool has_empty_codomain() const {
+    if (empty < 0) {
+      empty = 1;
+      for (size_t i = vec_size; i-- > 0; )
+	if (vec[i] != not_a_dimension()) {
+	  empty = 0;
+	  break;
+	}
+    }
+    return empty;
+  }
+
+  dimension_type max_in_codomain() const {
+    if (max_in_codomain_ == not_a_dimension()) {
+      for (size_t i = vec_size; i-- > 0; ) {
+	dimension_type vec_i = vec[i];
+	if (vec_i != not_a_dimension()
+	    && (max_in_codomain_ == not_a_dimension()
+		|| vec_i > max_in_codomain_))
+	  max_in_codomain_ = vec_i;
+      }
+    }
+    return max_in_codomain_;
+  }
+
+  bool maps(dimension_type i, dimension_type& j) const {
+    if (i >= vec_size)
+      return false;
+    dimension_type vec_i = vec[i];
+    if (vec_i == not_a_dimension())
+      return false;
+    j = vec_i;
+    return true;
+  }
+};
+
+} // namespace C_Interface
+
+} // namespace Parma_Polyhedra_Library
+
 
 #define CATCH_STD_EXCEPTION(exception, code) \
 catch (const std::exception& e) {	     \
@@ -94,6 +144,66 @@ int PPL_MIP_PROBLEM_STATUS_OPTIMIZED;
 
 int PPL_OPTIMIZATION_MODE_MINIMIZATION;
 int PPL_OPTIMIZATION_MODE_MAXIMIZATION;
+
+#define DECLARE_CONVERSIONS(Type, CPP_Type)             \
+  inline const CPP_Type*                                \
+  to_const(ppl_const_##Type##_t x) {                    \
+    return reinterpret_cast<const CPP_Type*>(x);        \
+  }                                                     \
+                                                        \
+  inline CPP_Type*                                      \
+  to_nonconst(ppl_##Type##_t x) {                       \
+    return reinterpret_cast<CPP_Type*>(x);              \
+  }                                                     \
+                                                        \
+  inline ppl_const_##Type##_t                           \
+  to_const(const CPP_Type* x) {                         \
+    return reinterpret_cast<ppl_const_##Type##_t>(x);   \
+  }                                                     \
+                                                        \
+  inline ppl_##Type##_t                                 \
+  to_nonconst(CPP_Type* x) {                            \
+    return reinterpret_cast<ppl_##Type##_t>(x);         \
+  }
+
+#define DEFINE_PRINT_FUNCTIONS(Type)                                    \
+  int                                                                   \
+  ppl_io_print_##Type(ppl_const_##Type##_t x) try {                     \
+    using namespace IO_Operators;                                       \
+    std::ostringstream s;                                               \
+    s << *to_const(x);                                                  \
+    if (puts(s.str().c_str()) < 0)                                      \
+      return PPL_STDIO_ERROR;                                           \
+    return 0;                                                           \
+  }                                                                     \
+  CATCH_ALL                                                             \
+                                                                        \
+  int                                                                   \
+  ppl_io_fprint_##Type(FILE* stream, ppl_const_##Type##_t x) try {      \
+    using namespace IO_Operators;                                       \
+    std::ostringstream s;                                               \
+    s << *to_const(x);                                                  \
+    if (fputs(s.str().c_str(), stream) < 0)                             \
+      return PPL_STDIO_ERROR;                                           \
+    return 0;                                                           \
+  }                                                                     \
+  CATCH_ALL
+
+#define DEFINE_ASCII_DUMP_FUNCTIONS(Type)                               \
+  int                                                                   \
+  ppl_##Type##_ascii_dump(ppl_const_##Type##_t x, FILE* stream) try {   \
+    std::ostringstream s;                                               \
+    to_const(x)->ascii_dump(s);                                         \
+    if (fputs(s.str().c_str(), stream) < 0)                             \
+      return PPL_STDIO_ERROR;                                           \
+    return 0;                                                           \
+  }                                                                     \
+  CATCH_ALL
+
+#define DEFINE_OUTPUT_FUNCTIONS(Type)           \
+  DEFINE_PRINT_FUNCTIONS(Type)                  \
+  DEFINE_ASCII_DUMP_FUNCTIONS(Type)
+
 
 #include "ppl_c_implementation.inlines.hh"
 
