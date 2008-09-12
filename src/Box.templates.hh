@@ -1903,10 +1903,16 @@ Box<ITV>::refine_no_check(const Congruence& cg) {
   const dimension_type cg_space_dim = cg.space_dimension();
   assert(cg_space_dim <= space_dimension());
 
-  // Only equality congruences can be intervals.
-  if (!cg.is_equality())
+  if (cg.is_proper_congruence()) {
+    // FIXME: also deal with the case of interval with restrictions.
+    // A proper congruences is also an interval constraint
+    // if and only if it is trivial.
+    if (cg.is_trivial_false())
+      set_empty();
     return;
+  }
 
+  assert(cg.is_equality());
   dimension_type cg_num_vars = 0;
   dimension_type cg_only_var = 0;
   // Congruences that are not interval congruences are ignored.
