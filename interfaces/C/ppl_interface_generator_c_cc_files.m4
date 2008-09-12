@@ -79,6 +79,19 @@ m4_define(`m4_current_interface', m4_interface_class`'$1)`'dnl
 m4_include(`ppl_interface_generator_copyright')`'dnl
 */
 
+
+`#'define PPL_NO_AUTOMATIC_INITIALIZATION
+`#'include "ppl.hh"
+`#'include "ppl_c.h"
+`#'include <stdexcept>
+`#'include <limits>
+`#'include <sstream>
+`#'include <cstdio>
+`#'include <cerrno>
+`#'include <climits>
+
+using namespace Parma_Polyhedra_Library;
+
 ')
 
 dnl Postfix extra code for each class.
