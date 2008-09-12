@@ -516,29 +516,15 @@ template <typename ITV>
 template <typename D1, typename D2, typename R>
 Box<ITV>::Box(const Partially_Reduced_Product<D1, D2, R>& dp,
               Complexity_Class complexity)
-  : seq(dp.space_dimension() <= max_space_dimension()
-	? dp.space_dimension()
-	: (throw_space_dimension_overflow("Box(dp)",
-					  "dp exceeds the maximum "
-					  "allowed space dimension"),
-	   dp.space_dimension())),
-    status() {
-  // The empty flag will be meaningful, whatever happens from now on.
-  set_empty_up_to_date();
-
-  // FIXME: this initialization is useless.
-  for (dimension_type i = dp.space_dimension(); i-- > 0; )
-    seq[i].assign(UNIVERSE);
-
-  {
-    Box tmp(dp.domain1(), complexity);
-    intersection_assign(tmp);
-  }
-
-  {
-    Box tmp(dp.domain2(), complexity);
-    intersection_assign(tmp);
-  }
+  : seq(), status() {
+  if (dp.space_dimension() > max_space_dimension())
+    throw_space_dimension_overflow("Box(dp)",
+                                   "dp exceeds the maximum "
+                                   "allowed space dimension");
+  Box tmp1(dp.domain1(), complexity);
+  Box tmp2(dp.domain2(), complexity);
+  tmp1.intersection_assign(tmp2);
+  swap(tmp1);
 }
 
 template <typename ITV>
