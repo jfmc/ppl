@@ -225,17 +225,71 @@ BD_Shape<T>::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
 
 template <typename T>
 inline void
+BD_Shape<T>::refine_with_constraint(const Constraint& c) {
+  const dimension_type c_space_dim = c.space_dimension();
+  // Dimension-compatibility check.
+  if (c_space_dim > space_dimension())
+    throw_dimension_incompatible("refine_with_constraint(c)", c);
+
+  if (!marked_empty())
+    refine_no_check(c);
+}
+
+template <typename T>
+inline void
 BD_Shape<T>::refine_with_constraints(const Constraint_System& cs) {
+  // Dimension-compatibility check.
+  if (cs.space_dimension() > space_dimension())
+    throw_generic("refine_with_constraints(cs)",
+                  "cs and *this are space-dimension incompatible");
+
   for (Constraint_System::const_iterator i = cs.begin(),
-	 cs_end = cs.end(); i != cs_end; ++i)
-    refine_with_constraint(*i);
+	 cs_end = cs.end(); !marked_empty() && i != cs_end; ++i)
+    refine_no_check(*i);
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::refine_with_congruence(const Congruence& cg) {
+  const dimension_type cg_space_dim = cg.space_dimension();
+  // Dimension-compatibility check.
+  if (cg_space_dim > space_dimension())
+    throw_dimension_incompatible("refine_with_congruence(cg)", cg);
+
+  if (!marked_empty())
+    refine_no_check(cg);
 }
 
 template <typename T>
 void
 BD_Shape<T>::refine_with_congruences(const Congruence_System& cgs) {
-  Constraint_System cs(cgs);
-  refine_with_constraints(cs);
+  // Dimension-compatibility check.
+  if (cgs.space_dimension() > space_dimension())
+    throw_generic("refine_with_congruences(cgs)",
+                  "cgs and *this are space-dimension incompatible");
+
+  for (Congruence_System::const_iterator i = cgs.begin(),
+	 cgs_end = cgs.end(); !marked_empty() && i != cgs_end; ++i)
+    refine_no_check(*i);
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::refine_no_check(const Congruence& cg) {
+  assert(!marked_empty());
+  const dimension_type cg_space_dim = cg.space_dimension();
+  assert(cg_space_dim <= space_dimension());
+
+  if (cg.is_proper_congruence()) {
+    if (cg.is_inconsistent())
+      set_empty();
+    // Other proper congruences are just ignored.
+    return;
+  }
+
+  assert(cg.is_equality());
+  Constraint c(cg);
+  refine_no_check(c);
 }
 
 template <typename T>

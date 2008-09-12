@@ -397,10 +397,11 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
     throw_generic("add_constraint(c)",
                   "c is not a bounded difference constraint");
 
+  const Coefficient& inhomo = c.inhomogeneous_term();
   if (num_vars == 0) {
-    // Dealing with a trivial constraint.
-    if (c.inhomogeneous_term() < 0
-        || (c.inhomogeneous_term() == 0 && !c.is_nonstrict_inequality()))
+    // Dealing with a trivial constraint (not a strict inequality).
+    if (inhomo < 0
+        || (inhomo != 0 && c.is_equality()))
       set_empty();
     return;
   }
@@ -416,7 +417,7 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
   bool changed = false;
   // Compute the bound for `x', rounding towards plus infinity.
   DIRTY_TEMP(N, d);
-  div_round_up(d, c.inhomogeneous_term(), coeff);
+  div_round_up(d, inhomo, coeff);
   if (x > d) {
     x = d;
     changed = true;
@@ -425,7 +426,7 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
   if (c.is_equality()) {
     // Also compute the bound for `y', rounding towards plus infinity.
     TEMP_INTEGER(minus_c_term);
-    neg_assign(minus_c_term, c.inhomogeneous_term());
+    neg_assign(minus_c_term, inhomo);
     div_round_up(d, minus_c_term, coeff);
     if (y > d) {
       y = d;
@@ -469,11 +470,10 @@ BD_Shape<T>::add_congruence(const Congruence& cg) {
 
 template <typename T>
 void
-BD_Shape<T>::refine_with_constraint(const Constraint& c) {
+BD_Shape<T>::refine_no_check(const Constraint& c) {
+  assert(!marked_empty());
   const dimension_type c_space_dim = c.space_dimension();
-  // Dimension-compatibility check.
-  if (c_space_dim > space_dimension())
-    throw_dimension_incompatible("refine_with_constraint(c)", c);
+  assert(c_space_dim <= space_dimension());
 
   dimension_type num_vars = 0;
   dimension_type i = 0;
@@ -483,10 +483,12 @@ BD_Shape<T>::refine_with_constraint(const Constraint& c) {
   if (!extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff))
     return;
 
+  const Coefficient& inhomo = c.inhomogeneous_term();
   if (num_vars == 0) {
-    // Dealing with a trivial constraint.
-    if (c.inhomogeneous_term() < 0
-        || (c.inhomogeneous_term() == 0 && !c.is_nonstrict_inequality()))
+    // Dealing with a trivial constraint (might be a strict inequality).
+    if (inhomo < 0
+        || (c.is_equality() && inhomo != 0)
+        || (c.is_strict_inequality() && inhomo == 0))
       set_empty();
     return;
   }
@@ -502,7 +504,7 @@ BD_Shape<T>::refine_with_constraint(const Constraint& c) {
   bool changed = false;
   // Compute the bound for `x', rounding towards plus infinity.
   DIRTY_TEMP(N, d);
-  div_round_up(d, c.inhomogeneous_term(), coeff);
+  div_round_up(d, inhomo, coeff);
   if (x > d) {
     x = d;
     changed = true;
@@ -511,7 +513,7 @@ BD_Shape<T>::refine_with_constraint(const Constraint& c) {
   if (c.is_equality()) {
     // Also compute the bound for `y', rounding towards plus infinity.
     TEMP_INTEGER(minus_c_term);
-    neg_assign(minus_c_term, c.inhomogeneous_term());
+    neg_assign(minus_c_term, inhomo);
     div_round_up(d, minus_c_term, coeff);
     if (y > d) {
       y = d;
@@ -523,22 +525,6 @@ BD_Shape<T>::refine_with_constraint(const Constraint& c) {
   // closure or reduction of the bounded difference shape.
   if (changed && marked_shortest_path_closed())
     reset_shortest_path_closed();
-  assert(OK());
-}
-
-template <typename T>
-void
-BD_Shape<T>::refine_with_congruence(const Congruence& cg) {
-  const dimension_type cg_space_dim = cg.space_dimension();
-  if (cg.is_equality()) {
-    Linear_Expression expr;
-    for (dimension_type i = cg_space_dim; i-- > 0; ) {
-      const Variable v(i);
-      expr += cg.coefficient(v) * v;
-    }
-    expr += cg.inhomogeneous_term();
-    refine_with_constraint(expr == 0);
-  }
   assert(OK());
 }
 
@@ -4326,13 +4312,13 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
     // approximations for this constraint?
     switch (relsym) {
     case LESS_OR_EQUAL:
-      refine_with_constraint(lhs <= rhs);
+      refine_no_check(lhs <= rhs);
       break;
     case EQUAL:
-      refine_with_constraint(lhs == rhs);
+      refine_no_check(lhs == rhs);
       break;
     case GREATER_OR_EQUAL:
-      refine_with_constraint(lhs >= rhs);
+      refine_no_check(lhs >= rhs);
       break;
     default:
       // We already dealt with the other cases.
@@ -4379,13 +4365,13 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       // it will be simply ignored. Should we compute approximations for it?
       switch (relsym) {
       case LESS_OR_EQUAL:
-        refine_with_constraint(lhs <= rhs);
+        refine_no_check(lhs <= rhs);
         break;
       case EQUAL:
-        refine_with_constraint(lhs == rhs);
+        refine_no_check(lhs == rhs);
         break;
       case GREATER_OR_EQUAL:
-        refine_with_constraint(lhs >= rhs);
+        refine_no_check(lhs >= rhs);
         break;
       default:
         // We already dealt with the other cases.
@@ -4409,7 +4395,7 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       const Variable new_var = Variable(space_dim);
       add_space_dimensions_and_embed(1);
       // Constrain the new dimension to be equal to `rhs'.
-      // NOTE: calling affine_image() instead of refine_with_constraint()
+      // NOTE: calling affine_image() instead of refine_no_check()
       // ensures some approximation is tried even when the constraint
       // is not a bounded difference.
       affine_image(new_var, rhs);
@@ -4423,17 +4409,17 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       // the left hand side as dictated by `relsym'.
       // TODO: each one of the following constraints is definitely NOT
       // a bounded differences (since it has 3 variables at least).
-      // Thus, the method refine_with_constraint() will simply ignore it.
+      // Thus, the method refine_no_check() will simply ignore it.
       // Should we compute approximations for this constraint?
       switch (relsym) {
       case LESS_OR_EQUAL:
-        refine_with_constraint(lhs <= new_var);
+        refine_no_check(lhs <= new_var);
         break;
       case EQUAL:
-        refine_with_constraint(lhs == new_var);
+        refine_no_check(lhs == new_var);
         break;
       case GREATER_OR_EQUAL:
-        refine_with_constraint(lhs >= new_var);
+        refine_no_check(lhs >= new_var);
         break;
       default:
         // We already dealt with the other cases.
@@ -4623,13 +4609,13 @@ BD_Shape<T>::generalized_affine_preimage(const Linear_Expression& lhs,
       // it will be simply ignored. Should we compute approximations for it?
       switch (relsym) {
       case LESS_OR_EQUAL:
-        refine_with_constraint(lhs <= rhs);
+        refine_no_check(lhs <= rhs);
         break;
       case EQUAL:
-        refine_with_constraint(lhs == rhs);
+        refine_no_check(lhs == rhs);
         break;
       case GREATER_OR_EQUAL:
-        refine_with_constraint(lhs >= rhs);
+        refine_no_check(lhs >= rhs);
         break;
       default:
         // We already dealt with the other cases.
@@ -4650,7 +4636,7 @@ BD_Shape<T>::generalized_affine_preimage(const Linear_Expression& lhs,
       const Variable new_var = Variable(bds_space_dim);
       add_space_dimensions_and_embed(1);
       // Constrain the new dimension to be equal to `lhs'.
-      // NOTE: calling affine_image() instead of refine_with_constraint()
+      // NOTE: calling affine_image() instead of refine_no_check()
       // ensures some approximation is tried even when the constraint
       // is not a bounded difference.
       affine_image(new_var, lhs);
@@ -4665,17 +4651,17 @@ BD_Shape<T>::generalized_affine_preimage(const Linear_Expression& lhs,
       // Note: if `rhs == a_rhs*v + b_rhs' where `a_rhs' is in {0, 1},
       // then one of the following constraints will be added,
       // since it is a bounded difference. Else the method
-      // refine_with_constraint() will ignore it, because the
+      // refine_no_check() will ignore it, because the
       // constraint is NOT a bounded difference.
       switch (relsym) {
       case LESS_OR_EQUAL:
-        refine_with_constraint(new_var <= rhs);
+        refine_no_check(new_var <= rhs);
         break;
       case EQUAL:
-        refine_with_constraint(new_var == rhs);
+        refine_no_check(new_var == rhs);
         break;
       case GREATER_OR_EQUAL:
-        refine_with_constraint(new_var >= rhs);
+        refine_no_check(new_var >= rhs);
         break;
       default:
         // We already dealt with the other cases.

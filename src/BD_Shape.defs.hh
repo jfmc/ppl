@@ -1978,6 +1978,32 @@ private:
                bool maximize,
                Coefficient& ext_n, Coefficient& ext_d, bool& included) const;
 
+  /*! \brief
+    Uses the constraint \p c to refine \p *this.
+
+    \param c
+    The constraint to be added. Non BD constraints are ignored.
+
+    \warning
+    If \p c and \p *this are dimension-incompatible,
+    the behavior is undefined.
+  */
+  void refine_no_check(const Constraint& c);
+
+  /*! \brief
+    Uses the congruence \p cg to refine \p *this.
+
+    \param cg
+    The congruence to be added.
+    Nontrivial proper congruences are ignored.
+    Non BD equalities are ignored.
+
+    \warning
+    If \p cg and \p *this are dimension-incompatible,
+    the behavior is undefined.
+  */
+  void refine_no_check(const Congruence& cg);
+
   //! Adds the constraint <CODE>dbm[i][j] \<= k</CODE>.
   void add_dbm_constraint(dimension_type i, dimension_type j, const N& k);
 
