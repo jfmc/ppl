@@ -75,7 +75,10 @@ m4_define(`m4_current_interface', m4_interface_class`'$1)`'dnl
 %<--%<--%<-- ppl_c_`'m4_current_interface`'.cc
 /* Interfacing m4_current_interface */
 
-/* m4_current_interface interface code: definitions.
+/*
+m4_include(`ppl_interface_generator_copyright')`'dnl
+*/
+
 ')
 
 dnl Postfix extra code for each class.
