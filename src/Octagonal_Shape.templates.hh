@@ -475,14 +475,10 @@ Octagonal_Shape<T>::add_congruence(const Congruence& cg) {
 
 template <typename T>
 void
-Octagonal_Shape<T>::refine_with_constraint(const Constraint& c) {
+Octagonal_Shape<T>::refine_no_check(const Constraint& c) {
+  assert(!marked_empty());
   const dimension_type c_space_dim = c.space_dimension();
-  // Dimension-compatibility check.
-  if (c_space_dim > space_dim)
-    throw_dimension_incompatible("refine_with_constraint(c)", c);
-
-  if (marked_empty())
-    return;
+  assert(c_space_dim <= space_dim);
 
   dimension_type num_vars = 0;
   dimension_type i = 0;
@@ -543,22 +539,6 @@ Octagonal_Shape<T>::refine_with_constraint(const Constraint& c) {
   // This method does not preserve closure.
   if (is_oct_changed && marked_strongly_closed())
     reset_strongly_closed();
-  assert(OK());
-}
-
-template <typename T>
-void
-Octagonal_Shape<T>::refine_with_congruence(const Congruence& cg) {
-  const dimension_type cg_space_dim = cg.space_dimension();
-  if (cg.is_equality()) {
-    Linear_Expression expr;
-    for (dimension_type i = cg_space_dim; i-- > 0; ) {
-      const Variable v(i);
-      expr += cg.coefficient(v) * v;
-    }
-    expr += cg.inhomogeneous_term();
-    refine_with_constraint(expr == 0);
-  }
   assert(OK());
 }
 
@@ -5045,13 +5025,13 @@ Octagonal_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
     // approximations for this constraint?
     switch (relsym) {
     case LESS_OR_EQUAL:
-      refine_with_constraint(lhs <= rhs);
+      refine_no_check(lhs <= rhs);
       break;
     case EQUAL:
-      refine_with_constraint(lhs == rhs);
+      refine_no_check(lhs == rhs);
       break;
     case GREATER_OR_EQUAL:
-      refine_with_constraint(lhs >= rhs);
+      refine_no_check(lhs >= rhs);
       break;
     default:
       // We already dealt with the other cases.
@@ -5101,13 +5081,13 @@ Octagonal_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       // it will be simply ignored. Should we compute approximations for it?
       switch (relsym) {
       case LESS_OR_EQUAL:
-        refine_with_constraint(lhs <= rhs);
+        refine_no_check(lhs <= rhs);
         break;
       case EQUAL:
-        refine_with_constraint(lhs == rhs);
+        refine_no_check(lhs == rhs);
         break;
       case GREATER_OR_EQUAL:
-        refine_with_constraint(lhs >= rhs);
+        refine_no_check(lhs >= rhs);
         break;
       default:
         // We already dealt with the other cases.
@@ -5133,7 +5113,7 @@ Octagonal_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       const Variable new_var = Variable(space_dim);
       add_space_dimensions_and_embed(1);
       // Constrain the new dimension to be equal to `rhs'.
-      // NOTE: calling affine_image() instead of refine_with_constraint()
+      // NOTE: calling affine_image() instead of refine_no_check()
       // ensures some approximation is tried even when the constraint
       // is not an octagonal constraint.
       affine_image(new_var, rhs);
@@ -5149,17 +5129,17 @@ Octagonal_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       // the left hand side as dictated by `relsym'.
       // TODO: each one of the following constraints is definitely NOT
       // an octagonal difference (since it has 3 variables at least).
-      // Thus, the method refine_with_constraint() will simply ignore it.
+      // Thus, the method refine_no_check() will simply ignore it.
       // Should we compute approximations for this constraint?
       switch (relsym) {
       case LESS_OR_EQUAL:
-        refine_with_constraint(lhs <= new_var);
+        refine_no_check(lhs <= new_var);
         break;
       case EQUAL:
-        refine_with_constraint(lhs == new_var);
+        refine_no_check(lhs == new_var);
         break;
       case GREATER_OR_EQUAL:
-        refine_with_constraint(lhs >= new_var);
+        refine_no_check(lhs >= new_var);
         break;
       default:
         // We already dealt with the other cases.
@@ -5280,7 +5260,7 @@ Octagonal_Shape<T>::bounded_affine_image(const Variable var,
                                  ub_expr,
                                  denominator);
         // Now apply the affine lower bound, as recorded in `new_var'
-        refine_with_constraint(var >= new_var);
+        refine_no_check(var >= new_var);
         // Remove the temporarily added dimension.
         remove_higher_space_dimensions(space_dim-1);
         return;
@@ -5634,13 +5614,13 @@ Octagonal_Shape<T>
       // it will be simply ignored. Should we compute approximations for it?
       switch (relsym) {
       case LESS_OR_EQUAL:
-        refine_with_constraint(lhs <= rhs);
+        refine_no_check(lhs <= rhs);
         break;
       case EQUAL:
-        refine_with_constraint(lhs == rhs);
+        refine_no_check(lhs == rhs);
         break;
       case GREATER_OR_EQUAL:
-        refine_with_constraint(lhs >= rhs);
+        refine_no_check(lhs >= rhs);
         break;
       default:
         // We already dealt with the other cases.
@@ -5666,7 +5646,7 @@ Octagonal_Shape<T>
       const Variable new_var = Variable(space_dim);
       add_space_dimensions_and_embed(1);
       // Constrain the new dimension to be equal to `rhs'.
-      // NOTE: calling affine_image() instead of refine_with_constraint()
+      // NOTE: calling affine_image() instead of refine_no_check()
       // ensures some approximation is tried even when the constraint
       // is not an octagonal difference.
       affine_image(new_var, lhs);
@@ -5684,16 +5664,16 @@ Octagonal_Shape<T>
       // one of the following constraints will be added, because they
       // are octagonal differences.
       // Else the following constraints are NOT octagonal differences,
-      // so the method refine_with_constraint() will ignore them.
+      // so the method refine_no_check() will ignore them.
       switch (relsym) {
       case LESS_OR_EQUAL:
-        refine_with_constraint(new_var <= rhs);
+        refine_no_check(new_var <= rhs);
         break;
       case EQUAL:
-        refine_with_constraint(new_var == rhs);
+        refine_no_check(new_var == rhs);
         break;
       case GREATER_OR_EQUAL:
-        refine_with_constraint(new_var >= rhs);
+        refine_no_check(new_var >= rhs);
         break;
       default:
         // We already dealt with the other cases.
@@ -5767,9 +5747,9 @@ Octagonal_Shape<T>::bounded_affine_preimage(const Variable var,
   generalized_affine_preimage(var, LESS_OR_EQUAL,
                               ub_expr, denominator);
   if (sgn(denominator) == sgn(inverse_den))
-    refine_with_constraint(var >= new_var) ;
+    refine_no_check(var >= new_var) ;
   else
-    refine_with_constraint(var <= new_var);
+    refine_no_check(var <= new_var);
   // Remove the temporarily added dimension.
   remove_higher_space_dimensions(space_dim-1);
 }
