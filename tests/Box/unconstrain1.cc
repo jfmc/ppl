@@ -68,13 +68,11 @@ test03() {
 
   TBox box(2);
   box.add_constraint(B >= 0);
-  box.refine_with_constraint(A == B);
   print_constraints(box, "*** box ***");
 
   box.unconstrain(B);
 
   TBox known_result(2);
-  known_result.add_constraint(A >= 0);
 
   bool ok = (box == known_result);
 
@@ -90,14 +88,12 @@ test04() {
 
   TBox box(2);
   box.add_constraint(B >= 0);
-  box.refine_with_constraint(A == B);
   print_constraints(box, "*** box ***");
 
   Variables_Set vs(B);
   box.unconstrain(vs);
 
   TBox known_result(2);
-  known_result.add_constraint(A >= 0);
 
   bool ok = (box == known_result);
 
@@ -194,9 +190,9 @@ test09() {
   TBox box(5);
   box.add_constraint(A == 9);
   box.add_constraint(E >= 0);
-  box.refine_with_constraint(A >= D + 2);
-  box.refine_with_constraint(C <= D);
-  box.refine_with_constraint(E <= B);
+  box.add_constraint(9 >= D + 2);
+  box.add_constraint(C <= 7);
+  box.add_constraint(0 <= B);
   print_constraints(box, "*** box ***");
 
   Variables_Set vs(A, B);
