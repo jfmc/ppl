@@ -358,19 +358,11 @@ Box<ITV>::Box(const Polyhedron& ph, Complexity_Class complexity)
   assert(ph.constraints_are_up_to_date());
 
   if (complexity == POLYNOMIAL_COMPLEXITY) {
-    // Extract easy-to-find bounds from constraints.
-    // FIXME.
-    // CHECKME: cannot use constructor from Constraint_System.
-    // Neither can use refine_with_constraints(cs), since it
-    // will enter a potentially expensive (see test14 of frompolyhedron1)
-    // fixpoint computation.
-    // (This is the one and only use of simplified_constraints.)
+    // FIXME: is there a way to avoid this initialization?
     for (dimension_type i = space_dimension(); i-- > 0; )
       seq[i].assign(UNIVERSE);
-    Constraint_System cs = ph.simplified_constraints();
-    for (Constraint_System::const_iterator i = cs.begin(),
-	   cs_end = cs.end(); i != cs_end; ++i)
-      refine_with_constraint(*i);
+    // Extract easy-to-find bounds from constraints.
+    refine_with_constraints(ph.simplified_constraints());
   }
   else if (complexity == SIMPLEX_COMPLEXITY) {
     MIP_Problem lp(space_dim);
@@ -1775,37 +1767,7 @@ Box<ITV>::add_constraint_no_check(const Constraint& c) {
 
   assert(c_num_vars == 1);
   const Coefficient& d = c.coefficient(Variable(c_only_var));
-  // The constraint `c' is of the form
-  // `Variable(c_only_var-1) + n / d rel 0', where
-  // `rel' is either the relation `==', `>=', or `>'.
-  // For the purpose of refining intervals, this is
-  // (morally) turned into `Variable(c_only_var-1) rel -n/d'.
-  DIRTY_TEMP0(mpq_class, q);
-  assign_r(q.get_num(), n, ROUND_NOT_NEEDED);
-  assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
-  q.canonicalize();
-  // Turn `n/d' into `-n/d'.
-  q = -q;
-
-  ITV& seq_c = seq[c_only_var];
-  const Constraint::Type c_type = c.type();
-  switch (c_type) {
-  case Constraint::EQUALITY:
-    seq_c.refine_existential(EQUAL, q);
-    break;
-  case Constraint::NONSTRICT_INEQUALITY:
-    seq_c.refine_existential((d > 0) ? GREATER_OR_EQUAL : LESS_OR_EQUAL, q);
-    // FIXME: this assertion fails due to a bug in refine.
-    assert(seq_c.OK());
-    break;
-  case Constraint::STRICT_INEQUALITY:
-    seq_c.refine_existential((d > 0) ? GREATER_THAN : LESS_THAN, q);
-    break;
-  }
-  // FIXME: do check the value returned by `refine_existential' and
-  // set `empty' and `empty_up_to_date' as appropriate.
-  reset_empty_up_to_date();
-  assert(OK());
+  add_interval_constraint_no_check(c_only_var, c.type(), n, d);
 }
 
 template <typename ITV>
@@ -1862,24 +1824,7 @@ Box<ITV>::add_congruence_no_check(const Congruence& cg) {
 
   assert(cg_num_vars == 1);
   const Coefficient& d = cg.coefficient(Variable(cg_only_var));
-  // The congruence `cg' is of the form
-  // `Variable(cg_only_var-1) + n / d rel 0', where
-  // `rel' is either the relation `==', `>=', or `>'.
-  // For the purpose of refining intervals, this is
-  // (morally) turned into `Variable(cg_only_var-1) rel -n/d'.
-  DIRTY_TEMP0(mpq_class, q);
-  assign_r(q.get_num(), n, ROUND_NOT_NEEDED);
-  assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
-  q.canonicalize();
-  // Turn `n/d' into `-n/d'.
-  q = -q;
-
-  ITV& seq_c = seq[cg_only_var];
-  seq_c.refine_existential(EQUAL, q);
-  // FIXME: do check the value returned by `refine' and
-  // set `empty' and `empty_up_to_date' as appropriate.
-  reset_empty_up_to_date();
-  assert(OK());
+  add_interval_constraint_no_check(cg_only_var, Constraint::EQUALITY, n, d);
 }
 
 template <typename ITV>
@@ -1892,6 +1837,44 @@ Box<ITV>::add_congruences_no_check(const Congruence_System& cgs) {
   for (Congruence_System::const_iterator i = cgs.begin(),
 	 cgs_end = cgs.end(); i != cgs_end; ++i)
     add_congruence_no_check(*i);
+  assert(OK());
+}
+
+template <typename ITV>
+void
+Box<ITV>::refine_no_check(const Constraint& c) {
+  const dimension_type c_space_dim = c.space_dimension();
+  assert(c_space_dim <= space_dimension());
+  assert(!marked_empty());
+
+  dimension_type c_num_vars = 0;
+  dimension_type c_only_var = 0;
+  // Non-interval constraints are ignored.
+  if (!extract_interval_constraint(c, c_space_dim, c_num_vars, c_only_var))
+    return;
+
+  const Coefficient& n = c.inhomogeneous_term();
+  if (c_num_vars == 0) {
+    // Dealing with a trivial constraint.
+    if (n < 0
+        || (c.is_equality() && n != 0)
+	|| (c.is_strict_inequality() && n == 0))
+      set_empty();
+    return;
+  }
+
+  assert(c_num_vars == 1);
+  const Coefficient& d = c.coefficient(Variable(c_only_var));
+  add_interval_constraint_no_check(c_only_var, c.type(), n, d);
+}
+
+template <typename ITV>
+void
+Box<ITV>::refine_no_check(const Constraint_System& cs) {
+  assert(cs.space_dimension() <= space_dimension());
+  for (Constraint_System::const_iterator i = cs.begin(),
+	 cs_end = cs.end(); !marked_empty() && i != cs_end; ++i)
+    refine_no_check(*i);
   assert(OK());
 }
 
@@ -1927,26 +1910,9 @@ Box<ITV>::refine_no_check(const Congruence& cg) {
   }
 
   assert(cg_num_vars == 1);
-  const Coefficient& d = cg.coefficient(Variable(cg_only_var));
   const Coefficient& n = cg.inhomogeneous_term();
-  // The congruence `cg' is of the form
-  // `Variable(cg_only_var-1) + n / d rel 0', where
-  // `rel' is either the relation `==', `>=', or `>'.
-  // For the purpose of refining intervals, this is
-  // (morally) turned into `Variable(cg_only_var-1) rel -n/d'.
-  DIRTY_TEMP0(mpq_class, q);
-  assign_r(q.get_num(), n, ROUND_NOT_NEEDED);
-  assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
-  q.canonicalize();
-  // Turn `n/d' into `-n/d'.
-  q = -q;
-
-  ITV& seq_c = seq[cg_only_var];
-  seq_c.refine_existential(EQUAL, q);
-  // FIXME: do check the value returned by `refine' and
-  // set `empty' and `empty_up_to_date' as appropriate.
-  reset_empty_up_to_date();
-  assert(OK());
+  const Coefficient& d = cg.coefficient(Variable(cg_only_var));
+  add_interval_constraint_no_check(cg_only_var, Constraint::EQUALITY, n, d);
 }
 
 template <typename ITV>
@@ -1963,7 +1929,7 @@ Box<ITV>::refine_no_check(const Congruence_System& cgs) {
 namespace {
 
 inline bool
-refine_no_check_check_result(Result r, Ternary& open) {
+propagate_constraint_check_result(Result r, Ternary& open) {
   switch (r) {
   case V_NEG_OVERFLOW:
   case V_POS_OVERFLOW:
@@ -1991,7 +1957,7 @@ refine_no_check_check_result(Result r, Ternary& open) {
 
 template <typename ITV>
 void
-Box<ITV>::refine_no_check(const Constraint& c) {
+Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
   assert(c.space_dimension() <= space_dimension());
 
   typedef
@@ -2036,12 +2002,12 @@ Box<ITV>::refine_no_check(const Constraint& c) {
       if (open == T_NO)
 	maybe_reset_fpu_inexact<Temp_Boundary_Type>();
       r = assign_r(t_bound, c_inhomogeneous_term, ROUND_UP);
-      if (refine_no_check_check_result(r, open))
+      if (propagate_constraint_check_result(r, open))
 	goto maybe_refine_upper_1;
       r = neg_assign_r(t_bound, t_bound, ROUND_DOWN);
-      if (refine_no_check_check_result(r, open))
+      if (propagate_constraint_check_result(r, open))
 	goto maybe_refine_upper_1;
-      for (dimension_type i = c_space_dim; i-- > 0; ) {
+      for (dimension_type i = last_k+1; i-- > 0; ) {
 	if (i == k)
 	  continue;
 	const Coefficient& a_i = c.coefficient(Variable(i));
@@ -2053,15 +2019,15 @@ Box<ITV>::refine_no_check(const Constraint& c) {
 	  if (x_i.lower_is_unbounded())
 	    goto maybe_refine_upper_1;
 	  r = assign_r(t_a, a_i, ROUND_DOWN);
-	  if (refine_no_check_check_result(r, open))
+	  if (propagate_constraint_check_result(r, open))
 	    goto maybe_refine_upper_1;
 	  r = assign_r(t_x, x_i.lower(), ROUND_DOWN);
-	  if (refine_no_check_check_result(r, open))
+	  if (propagate_constraint_check_result(r, open))
 	    goto maybe_refine_upper_1;
 	  if (x_i.lower_is_open())
 	    open = T_YES;
 	  r = sub_mul_assign_r(t_bound, t_a, t_x, ROUND_DOWN);
-	  if (refine_no_check_check_result(r, open))
+	  if (propagate_constraint_check_result(r, open))
 	    goto maybe_refine_upper_1;
 	}
 	else {
@@ -2069,23 +2035,23 @@ Box<ITV>::refine_no_check(const Constraint& c) {
 	  if (x_i.upper_is_unbounded())
 	    goto maybe_refine_upper_1;
 	  r = assign_r(t_a, a_i, ROUND_UP);
-	  if (refine_no_check_check_result(r, open))
+	  if (propagate_constraint_check_result(r, open))
 	    goto maybe_refine_upper_1;
 	  r = assign_r(t_x, x_i.upper(), ROUND_UP);
-	  if (refine_no_check_check_result(r, open))
+	  if (propagate_constraint_check_result(r, open))
 	    goto maybe_refine_upper_1;
 	  if (x_i.upper_is_open())
 	    open = T_YES;
 	  r = sub_mul_assign_r(t_bound, t_a, t_x, ROUND_DOWN);
-	  if (refine_no_check_check_result(r, open))
+	  if (propagate_constraint_check_result(r, open))
 	    goto maybe_refine_upper_1;
 	}
       }
       r = assign_r(t_a, a_k, ROUND_UP);
-      if (refine_no_check_check_result(r, open))
+      if (propagate_constraint_check_result(r, open))
 	goto maybe_refine_upper_1;
       r = div_assign_r(t_bound, t_bound, t_a, ROUND_DOWN);
-      if (refine_no_check_check_result(r, open))
+      if (propagate_constraint_check_result(r, open))
 	goto maybe_refine_upper_1;
 
       // Refine the lower bound of `seq[k]' with `t_bound'.
@@ -2100,10 +2066,10 @@ Box<ITV>::refine_no_check(const Constraint& c) {
       open = T_NO;
       maybe_reset_fpu_inexact<Temp_Boundary_Type>();
       r = assign_r(t_bound, c_inhomogeneous_term, ROUND_DOWN);
-      if (refine_no_check_check_result(r, open))
+      if (propagate_constraint_check_result(r, open))
 	goto next_k;
       r = neg_assign_r(t_bound, t_bound, ROUND_UP);
-      if (refine_no_check_check_result(r, open))
+      if (propagate_constraint_check_result(r, open))
 	goto next_k;
       for (dimension_type i = c_space_dim; i-- > 0; ) {
 	if (i == k)
@@ -2117,15 +2083,15 @@ Box<ITV>::refine_no_check(const Constraint& c) {
 	  if (x_i.upper_is_unbounded())
 	    goto next_k;
 	  r = assign_r(t_a, a_i, ROUND_UP);
-	  if (refine_no_check_check_result(r, open))
+	  if (propagate_constraint_check_result(r, open))
 	    goto next_k;
 	  r = assign_r(t_x, x_i.upper(), ROUND_UP);
-	  if (refine_no_check_check_result(r, open))
+	  if (propagate_constraint_check_result(r, open))
 	    goto next_k;
 	  if (x_i.upper_is_open())
 	    open = T_YES;
 	  r = sub_mul_assign_r(t_bound, t_a, t_x, ROUND_UP);
-	  if (refine_no_check_check_result(r, open))
+	  if (propagate_constraint_check_result(r, open))
 	    goto next_k;
 	}
 	else {
@@ -2133,23 +2099,23 @@ Box<ITV>::refine_no_check(const Constraint& c) {
 	  if (x_i.lower_is_unbounded())
 	    goto next_k;
 	  r = assign_r(t_a, a_i, ROUND_DOWN);
-	  if (refine_no_check_check_result(r, open))
+	  if (propagate_constraint_check_result(r, open))
 	    goto next_k;
 	  r = assign_r(t_x, x_i.lower(), ROUND_DOWN);
-	  if (refine_no_check_check_result(r, open))
+	  if (propagate_constraint_check_result(r, open))
 	    goto next_k;
 	  if (x_i.lower_is_open())
 	    open = T_YES;
 	  r = sub_mul_assign_r(t_bound, t_a, t_x, ROUND_UP);
-	  if (refine_no_check_check_result(r, open))
+	  if (propagate_constraint_check_result(r, open))
 	    goto next_k;
 	}
       }
       r = assign_r(t_a, a_k, ROUND_DOWN);
-      if (refine_no_check_check_result(r, open))
+      if (propagate_constraint_check_result(r, open))
 	goto next_k;
       r = div_assign_r(t_bound, t_bound, t_a, ROUND_UP);
-      if (refine_no_check_check_result(r, open))
+      if (propagate_constraint_check_result(r, open))
 	goto next_k;
 
       // Refine the upper bound of seq[k] with t_bound.
@@ -2165,10 +2131,10 @@ Box<ITV>::refine_no_check(const Constraint& c) {
       if (open == T_NO)
 	maybe_reset_fpu_inexact<Temp_Boundary_Type>();
       r = assign_r(t_bound, c_inhomogeneous_term, ROUND_UP);
-      if (refine_no_check_check_result(r, open))
+      if (propagate_constraint_check_result(r, open))
 	goto maybe_refine_upper_2;
       r = neg_assign_r(t_bound, t_bound, ROUND_DOWN);
-      if (refine_no_check_check_result(r, open))
+      if (propagate_constraint_check_result(r, open))
 	goto maybe_refine_upper_2;
       for (dimension_type i = c_space_dim; i-- > 0; ) {
 	if (i == k)
@@ -2182,15 +2148,15 @@ Box<ITV>::refine_no_check(const Constraint& c) {
 	  if (x_i.lower_is_unbounded())
 	    goto maybe_refine_upper_2;
 	  r = assign_r(t_a, a_i, ROUND_DOWN);
-	  if (refine_no_check_check_result(r, open))
+	  if (propagate_constraint_check_result(r, open))
 	    goto maybe_refine_upper_2;
 	  r = assign_r(t_x, x_i.lower(), ROUND_DOWN);
-	  if (refine_no_check_check_result(r, open))
+	  if (propagate_constraint_check_result(r, open))
 	    goto maybe_refine_upper_2;
 	  if (x_i.lower_is_open())
 	    open = T_YES;
 	  r = sub_mul_assign_r(t_bound, t_a, t_x, ROUND_UP);
-	  if (refine_no_check_check_result(r, open))
+	  if (propagate_constraint_check_result(r, open))
 	    goto maybe_refine_upper_2;
 	}
 	else {
@@ -2198,23 +2164,23 @@ Box<ITV>::refine_no_check(const Constraint& c) {
 	  if (x_i.upper_is_unbounded())
 	    goto maybe_refine_upper_2;
 	  r = assign_r(t_a, a_i, ROUND_UP);
-	  if (refine_no_check_check_result(r, open))
+	  if (propagate_constraint_check_result(r, open))
 	    goto maybe_refine_upper_2;
 	  r = assign_r(t_x, x_i.upper(), ROUND_UP);
-	  if (refine_no_check_check_result(r, open))
+	  if (propagate_constraint_check_result(r, open))
 	    goto maybe_refine_upper_2;
 	  if (x_i.upper_is_open())
 	    open = T_YES;
 	  r = sub_mul_assign_r(t_bound, t_a, t_x, ROUND_UP);
-	  if (refine_no_check_check_result(r, open))
+	  if (propagate_constraint_check_result(r, open))
 	    goto maybe_refine_upper_2;
 	}
       }
       r = assign_r(t_a, a_k, ROUND_UP);
-      if (refine_no_check_check_result(r, open))
+      if (propagate_constraint_check_result(r, open))
 	goto maybe_refine_upper_2;
       r = div_assign_r(t_bound, t_bound, t_a, ROUND_UP);
-      if (refine_no_check_check_result(r, open))
+      if (propagate_constraint_check_result(r, open))
 	goto maybe_refine_upper_2;
 
       // Refine the upper bound of seq[k] with t_bound.
@@ -2229,10 +2195,10 @@ Box<ITV>::refine_no_check(const Constraint& c) {
       open = T_NO;
       maybe_reset_fpu_inexact<Temp_Boundary_Type>();
       r = assign_r(t_bound, c_inhomogeneous_term, ROUND_DOWN);
-      if (refine_no_check_check_result(r, open))
+      if (propagate_constraint_check_result(r, open))
 	goto next_k;
       r = neg_assign_r(t_bound, t_bound, ROUND_UP);
-      if (refine_no_check_check_result(r, open))
+      if (propagate_constraint_check_result(r, open))
 	goto next_k;
       for (dimension_type i = c_space_dim; i-- > 0; ) {
 	if (i == k)
@@ -2246,15 +2212,15 @@ Box<ITV>::refine_no_check(const Constraint& c) {
 	  if (x_i.upper_is_unbounded())
 	    goto next_k;
 	  r = assign_r(t_a, a_i, ROUND_UP);
-	  if (refine_no_check_check_result(r, open))
+	  if (propagate_constraint_check_result(r, open))
 	    goto next_k;
 	  r = assign_r(t_x, x_i.upper(), ROUND_UP);
-	  if (refine_no_check_check_result(r, open))
+	  if (propagate_constraint_check_result(r, open))
 	    goto next_k;
 	  if (x_i.upper_is_open())
 	    open = T_YES;
 	  r = sub_mul_assign_r(t_bound, t_a, t_x, ROUND_UP);
-	  if (refine_no_check_check_result(r, open))
+	  if (propagate_constraint_check_result(r, open))
 	    goto next_k;
 	}
 	else {
@@ -2262,23 +2228,23 @@ Box<ITV>::refine_no_check(const Constraint& c) {
 	  if (x_i.lower_is_unbounded())
 	    goto next_k;
 	  r = assign_r(t_a, a_i, ROUND_DOWN);
-	  if (refine_no_check_check_result(r, open))
+	  if (propagate_constraint_check_result(r, open))
 	    goto next_k;
 	  r = assign_r(t_x, x_i.lower(), ROUND_DOWN);
-	  if (refine_no_check_check_result(r, open))
+	  if (propagate_constraint_check_result(r, open))
 	    goto next_k;
 	  if (x_i.lower_is_open())
 	    open = T_YES;
 	  r = sub_mul_assign_r(t_bound, t_a, t_x, ROUND_UP);
-	  if (refine_no_check_check_result(r, open))
+	  if (propagate_constraint_check_result(r, open))
 	    goto next_k;
 	}
       }
       r = assign_r(t_a, a_k, ROUND_DOWN);
-      if (refine_no_check_check_result(r, open))
+      if (propagate_constraint_check_result(r, open))
 	goto next_k;
       r = div_assign_r(t_bound, t_bound, t_a, ROUND_DOWN);
-      if (refine_no_check_check_result(r, open))
+      if (propagate_constraint_check_result(r, open))
 	goto next_k;
 
       // Refine the lower bound of seq[k] with t_bound.
@@ -2297,7 +2263,7 @@ Box<ITV>::refine_no_check(const Constraint& c) {
 
 template <typename ITV>
 void
-Box<ITV>::refine_no_check(const Constraint& c) {
+Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
   assert(c.space_dimension() <= space_dimension());
 
   dimension_type c_space_dim = c.space_dimension();
@@ -2353,7 +2319,7 @@ Box<ITV>::refine_no_check(const Constraint& c) {
 
 template <typename ITV>
 void
-Box<ITV>::refine_no_check(const Constraint_System& cs) {
+Box<ITV>::propagate_constraints_no_check(const Constraint_System& cs) {
   assert(cs.space_dimension() <= space_dimension());
 
   bool changed;
@@ -2361,7 +2327,7 @@ Box<ITV>::refine_no_check(const Constraint_System& cs) {
     Sequence copy(seq);
     for (Constraint_System::const_iterator i = cs.begin(),
 	   cs_end = cs.end(); i != cs_end; ++i)
-      refine_no_check(*i);
+      propagate_constraint_no_check(*i);
 
     // Check if the client has requested abandoning all expensive
     // computations.  If so, the exception specified by the client
