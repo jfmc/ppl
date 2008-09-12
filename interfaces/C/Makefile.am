@@ -106,7 +106,28 @@ AM_CPPFLAGS = \
 
 lib_LTLIBRARIES = libppl_c.la
 
-nodist_libppl_c_la_SOURCES = ppl_c.cc
+libppl_c_la_SOURCES = \
+ppl_c_implementation.defs.hh \
+ppl_c_implementation.inlines.hh \
+ppl_c_implementation.cc
+
+nodist_libppl_c_la_SOURCES = \
+ppl_c.cc
+
+nodist_EXTRA_libppl_c_la_SOURCES = \
+ppl_c_BD_Shape_double.cc \
+ppl_c_BD_Shape_mpq_class.cc \
+ppl_c_BD_Shape_mpz_class.cc \
+ppl_c_Constraints_Product_C_Polyhedron_Grid.cc \
+ppl_c_Double_Box.cc \
+ppl_c_Grid.cc \
+ppl_c_Octagonal_Shape_double.cc \
+ppl_c_Octagonal_Shape_mpq_class.cc \
+ppl_c_Octagonal_Shape_mpz_class.cc \
+ppl_c_Pointset_Powerset_C_Polyhedron.cc \
+ppl_c_Pointset_Powerset_NNC_Polyhedron.cc \
+ppl_c_Polyhedron.cc \
+ppl_c_Rational_Box.cc
 
 if NO_UNDEFINED
 
@@ -115,8 +136,12 @@ NO_UNDEFINED_FLAG = -no-undefined
 endif NO_UNDEFINED
 
 libppl_c_la_LIBADD = \
+@required_instantiations_c_cxx_objects@ \
 $(top_builddir)/src/libppl.la \
 @extra_libraries@
+
+libppl_c_la_DEPENDENCIES = \
+@required_instantiations_c_cxx_objects@
 
 libppl_c_la_LDFLAGS = \
 $(NO_UNDEFINED_FLAG) \
