@@ -79,8 +79,6 @@ test03() {
 
   TOctagonal_Shape oct1(3);
   oct1.add_congruence((x %= 1) / 0);
-  oct1.add_congruence((y %= 3) / 2);
-  oct1.add_congruence((y + z %= 0) / 3);
 
   print_constraints(oct1, "*** oct1 ***");
 
@@ -146,8 +144,6 @@ test06() {
 
   TOctagonal_Shape oct1(3);
   oct1.add_congruence((x %= 1) / 0);
-  oct1.add_congruence((y %= 3) / 2);
-  oct1.add_congruence((y + z %= 0) / 3);
   bool b1 = !oct1.is_empty();
 
   print_constraints(oct1, "*** oct1 ***");

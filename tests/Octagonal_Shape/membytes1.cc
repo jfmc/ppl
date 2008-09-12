@@ -121,7 +121,6 @@ test01() {
   add_constraint(oct, -x + 1 >= 0);
 
   add_constraint(oct, -x - z + 5 <= 0);
-  add_constraint(oct, -4*x - 2*y + 8 <= 0);
   add_constraint(oct, -x - y + 5 <= 0);
   add_constraint(oct, -x - y +13 <= 0);
 

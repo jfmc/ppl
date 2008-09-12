@@ -267,14 +267,12 @@ test09() {
   TOctagonal_Shape oct1(3);
   oct1.add_constraint(x1 <= 2);
   oct1.add_constraint(- x1 - x2 >= 1);
-  oct1.add_constraint(x1 + x2 + x3 <= 1);
 
   print_constraints(oct1, "*** oct1 ***");
 
   TOctagonal_Shape oct2(3);
   oct2.add_constraint(x2  >= 1);
   oct2.add_constraint(x1 + x2 <= 2);
-  oct2.add_constraint(2*x2 + 3*x3 <= 3);
 
   print_constraints(oct2, "*** oct2 ***");
 
