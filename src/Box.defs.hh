@@ -1565,79 +1565,98 @@ private:
   const ITV& operator[](dimension_type k) const;
 
   /*! \brief
-    Use the constraint \p c to refine \p *this.
-    FIXME: this is not true.
+    WRITE ME.
+  */
+  void
+  add_interval_constraint_no_check(dimension_type var_id,
+                                   Constraint::Type type,
+                                   Coefficient_traits::const_reference num,
+                                   Coefficient_traits::const_reference den);
 
-    \param c
-    The constraint to be added. If it is not an interval constraint, it
-    will be simply ignored.  If it is dimension-incompatible with \p *this,
-    the behavior is undefined.
+  /*! \brief
+    WRITE ME.
   */
   void add_constraint_no_check(const Constraint& c);
 
   /*! \brief
-    Use the constraints in \p cs to refine \p *this.
-    FIXME: this is not true.
-
-    \param  cs
-    The constraints to be added. Constraints that are not interval
-    constraints will be simply ignored.  If it is
-    dimension-incompatible with \p *this, the behavior is undefined.
+    WRITE ME.
   */
   void add_constraints_no_check(const Constraint_System& cs);
 
   /*! \brief
-    Use the congruence \p cg to refine \p *this.
-    FIXME: this is not true.
-
-    \param cg
-    The congruence to be added. If it is not a non-relational equality
-    congruence, it will be ignored.  If it is dimension-incompatible
-    with \p *this, the behavior is undefined.
+    WRITE ME.
   */
   void add_congruence_no_check(const Congruence& cg);
 
   /*! \brief
-    Use the congruences in \p cgs to refine \p *this.
-    FIXME: this is not true.
-
-    \param cgs
-    The congruences to be added. Congruences that are not non-relational
-    equality congruences will be ignored.  If it is
-    dimension-incompatible with \p *this, the behavior is undefined.
+    WRITE ME.
   */
   void add_congruences_no_check(const Congruence_System& cgs);
 
   /*! \brief
-    Use the congruence \p cg to refine \p *this.
-    FIXME: this is not true.
+    Uses the constraint \p c to refine \p *this.
+
+    \param c
+    The constraint to be added.
+    Non-interval constraints are ignored.
+
+    \warning
+    If \p c and \p *this are dimension-incompatible,
+    the behavior is undefined.
+  */
+  void refine_no_check(const Constraint& c);
+
+  /*! \brief
+    Uses the constraints in \p cs to refine \p *this.
+
+    \param cs
+    The constraints to be added.
+    Non-interval constraints are ignored.
+
+    \warning
+    If \p cs and \p *this are dimension-incompatible,
+    the behavior is undefined.
+  */
+  void refine_no_check(const Constraint_System& cs);
+
+  /*! \brief
+    Uses the congruence \p cg to refine \p *this.
 
     \param cg
-    The congruence to be added. If it is not a non-relational equality
-    congruence, it will be ignored.  If it is dimension-incompatible
-    with \p *this, the behavior is undefined.
+    The congruence to be added.
+    Nontrivial proper congruences are ignored.
+
+    \warning
+    If \p cg and \p *this are dimension-incompatible,
+    the behavior is undefined.
   */
   void refine_no_check(const Congruence& cg);
 
   /*! \brief
-    Use the congruences in \p cgs to refine \p *this.
-    FIXME: this is not true.
+    Uses the congruences in \p cgs to refine \p *this.
 
     \param cgs
-    The congruences to be added. Congruences that are not non-relational
-    equality congruences will be ignored.  If it is
-    dimension-incompatible with \p *this, the behavior is undefined.
+    The congruences to be added.
+    Nontrivial proper congruences are ignored.
+
+    \warning
+    If \p cgs and \p *this are dimension-incompatible,
+    the behavior is undefined.
   */
   void refine_no_check(const Congruence_System& cgs);
 
   /*! \brief
-    Use the constraint \p c to refine \p *this.
+    Propagates the constraint \p c to refine \p *this.
 
     \param c
-    The constraint to be added. If it is dimension-incompatible with
-    \p *this, the behavior is undefined.
+    The constraint to be propagated.
 
-    FIXME: mention the possibility of non-termination.
+    \warning
+    If \p c and \p *this are dimension-incompatible,
+    the behavior is undefined.
+
+    \warning
+    This method may lead to non-termination.
 
     \if Include_Implementation_Details
 
@@ -1786,18 +1805,22 @@ private:
     \f$i \in N \setdiff \{ k \}\f$, or if the computation is inexact.
     \endif
   */
-  void refine_no_check(const Constraint& c);
+  void propagate_constraint_no_check(const Constraint& c);
 
   /*! \brief
-    Use the constraints in \p cs to refine \p *this.
+    Propagates the constraints in \p cs to refine \p *this.
 
     \param  cs
-    The constraints to be added. If it is dimension-incompatible with
-    \p *this, the behavior is undefined.
+    The constraints to be propagated.
 
-    FIXME: mention the possibility of non-termination.
+    \warning
+    If \p cs and \p *this are dimension-incompatible,
+    the behavior is undefined.
+
+    \warning
+    This method may lead to non-termination.
   */
-  void refine_no_check(const Constraint_System& cs);
+  void propagate_constraints_no_check(const Constraint_System& cs);
 
   //! Checks if and how \p expr is bounded in \p *this.
   /*!

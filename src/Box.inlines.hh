@@ -401,6 +401,49 @@ Box<ITV>::minimized_congruences() const {
 
 template <typename ITV>
 inline void
+Box<ITV>
+::add_interval_constraint_no_check(const dimension_type var_id,
+                                   const Constraint::Type type,
+                                   Coefficient_traits::const_reference num,
+                                   Coefficient_traits::const_reference den) {
+  assert(!marked_empty());
+  assert(var_id < space_dimension());
+  assert(den != 0);
+
+  // The interval constraint is of the form
+  // `Variable(var_id) + num / den rel 0', where
+  // `rel' is either the relation `==', `>=', or `>'.
+  // For the purpose of refining the interval, this is
+  // (morally) turned into `Variable(var_id) rel -num/den'.
+  DIRTY_TEMP0(mpq_class, q);
+  assign_r(q.get_num(), num, ROUND_NOT_NEEDED);
+  assign_r(q.get_den(), den, ROUND_NOT_NEEDED);
+  q.canonicalize();
+  // Turn `num/den' into `-num/den'.
+  q = -q;
+
+  ITV& seq_v = seq[var_id];
+  switch (type) {
+  case Constraint::EQUALITY:
+    seq_v.refine_existential(EQUAL, q);
+    break;
+  case Constraint::NONSTRICT_INEQUALITY:
+    seq_v.refine_existential((den > 0) ? GREATER_OR_EQUAL : LESS_OR_EQUAL, q);
+    // FIXME: this assertion fails due to a bug in refine.
+    assert(seq_v.OK());
+    break;
+  case Constraint::STRICT_INEQUALITY:
+    seq_v.refine_existential((den > 0) ? GREATER_THAN : LESS_THAN, q);
+    break;
+  }
+  // FIXME: do check the value returned by `refine_existential' and
+  // set `empty' and `empty_up_to_date' as appropriate.
+  reset_empty_up_to_date();
+  assert(OK());
+}
+
+template <typename ITV>
+inline void
 Box<ITV>::refine_with_constraint(const Constraint& c) {
   const dimension_type c_space_dim = c.space_dimension();
   // Dimension-compatibility check.
