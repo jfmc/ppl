@@ -72,7 +72,7 @@ dnl -----------------------------------------------------------------
 dnl Prefix extra code for each class.
 m4_define(`m4_pre_extra_class_code', `dnl
 m4_define(`m4_current_interface', m4_interface_class`'$1)`'dnl
-%<--%<--%<-- ppl_m4_current_interface.cc
+%<--%<--%<-- ppl_`'m4_current_interface`'.cc
 /* Interfacing m4_current_interface */
 
 /* Prolog m4_current_interface interface code: definitions.

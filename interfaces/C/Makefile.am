@@ -26,6 +26,7 @@ ppl_interface_generator_c_h.m4 \
 ppl_interface_generator_c_h_code.m4 \
 ppl_interface_generator_c_h_preamble \
 ppl_interface_generator_c_cc.m4 \
+ppl_interface_generator_c_cc_files.m4 \
 ppl_interface_generator_c_cc_code.m4 \
 ppl_interface_generator_c_cc_preamble
 
@@ -69,13 +70,15 @@ LIBPPL_C_LT_AGE =      1
 
 BUILT_SOURCES = \
 ppl_c.h \
-ppl_c.cc
+ppl_c.cc \
+ppl_c_domains.cc
 
 interface_generator_dependencies = \
 $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../ppl_interface_generator_common.m4 \
 ../ppl_interface_generator_common_dat.m4 \
 ../ppl_interface_generator_copyright \
+ppl_interface_generator_c_cc_files.m4 \
 ../ppl_interface_generator_common_procedure_generators.m4 \
 $(interface_generator_files)
 
@@ -86,6 +89,14 @@ ppl_c.h: $(interface_generator_dependencies)
 ppl_c.cc: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_c_cc.m4 > $@
+
+ppl_c_domains.cc: $(interface_generator_dependencies)
+	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
+           $(srcdir)/ppl_interface_generator_c_cc_files.m4 \
+                > ppl_c_cc_blob
+	$(top_srcdir)/utils/cm_cleaner.sh < ppl_c_cc_blob
+	$(top_srcdir)/utils/cm_splitter.sh < ppl_c_cc_blob
+	rm -f ppl_c_cc_blob
 
 AM_CPPFLAGS = \
 -I$(top_srcdir)/interfaces \
