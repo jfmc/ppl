@@ -1,4 +1,4 @@
-/* Test Box::Box(const Generator_System&).
+/* Test Box::refine_with_congruences(const Congruence_System&).
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,14 +21,6 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
-
-#include "files.hh"
-#include <string>
-#include <fstream>
-
-using std::string;
-using std::fstream;
-using std::ios_base;
 
 namespace {
 
@@ -97,25 +89,17 @@ test03() {
   return ok;
 }
 
-#if 0
-// refine_with_recycled_congruences()
 bool
 test04() {
   Variable A(0);
-  Variable B(1);
-  Variable C(2);
-  Variable D(3);
 
   Congruence_System cgs;
-  cgs.insert(A + B %= 0);
-  cgs.insert((1*A + 2*B + 3*C + 4*D %= 0) / 0);
-  cgs.insert((2*A + 3*B + 4*C + 5*D %= 1) / 0);
-  TBox box(4);
-  box.refine_with_recycled_congruences(cgs);
+  cgs.insert((0*A %= 1) / 2);
 
-  Rational_Box known_result(4);
-  known_result.add_constraint(1*A + 2*B + 3*C + 4*D == 0);
-  known_result.add_constraint(2*A + 3*B + 4*C + 5*D == 1);
+  TBox box(1);
+  box.refine_with_congruences(cgs);
+
+  Rational_Box known_result(1, EMPTY);
 
   bool ok = check_result(box, known_result);
 
@@ -123,7 +107,6 @@ test04() {
 
   return ok;
 }
-#endif
 
 // Box constructed from non-empty congruences; congruences().
 bool
@@ -391,9 +374,7 @@ BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
   DO_TEST(test03);
-#if 0
   DO_TEST(test04);
-#endif
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
