@@ -1992,15 +1992,35 @@ Box<ITV>::refine_no_check(const Constraint& c) {
     typename Select_Temp_Boundary_Type<typename ITV::boundary_type>::type
     Temp_Boundary_Type;
 
-  dimension_type c_space_dim = c.space_dimension();
-  Constraint::Type c_type = c.type();
+  const dimension_type c_space_dim = c.space_dimension();
+  const Constraint::Type c_type = c.type();
   const Coefficient& c_inhomogeneous_term = c.inhomogeneous_term();
+
+  // Find a space dimension having a non-zero coefficient (if any).
+  dimension_type last_k = c_space_dim;
+  for (dimension_type k = c_space_dim; k-- > 0; ) {
+    if (c.coefficient(Variable(k)) != 0) {
+      last_k = k;
+      break;
+    }
+  }
+  if (last_k == c_space_dim) {
+    // Constraint c is trivial: check if it is inconsistent.
+    if (c_inhomogeneous_term < 0
+        || (c_inhomogeneous_term == 0
+            && c_type != Constraint::NONSTRICT_INEQUALITY))
+      set_empty();
+    return;
+  }
+
+  // Here constraint c is non-trivial.
+  assert(last_k < c_space_dim);
   Result r;
   Temp_Boundary_Type t_bound;
   Temp_Boundary_Type t_a;
   Temp_Boundary_Type t_x;
   Ternary open;
-  for (dimension_type k = c_space_dim; k-- > 0; ) {
+  for (dimension_type k = last_k+1; k-- > 0; ) {
     const Coefficient& a_k = c.coefficient(Variable(k));
     int sgn_a_k = sgn(a_k);
     if (sgn_a_k == 0)
