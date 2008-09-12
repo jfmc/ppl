@@ -74,13 +74,13 @@ m4_define(`m4_pre_extra_class_code', `dnl
 m4_define(`m4_current_interface', m4_interface_class`'$1)`'dnl
 %<--%<--%<-- ppl_c_`'m4_current_interface`'.cc
 /* Interfacing m4_current_interface */
-
 /*
 m4_include(`ppl_interface_generator_copyright')`'dnl
 */
 
 
 `#'include "ppl_c_implementation.defs.hh"
+`#'include "ppl_c_domains.hh"
 
 using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::C_Interface;
