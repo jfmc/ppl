@@ -34,7 +34,7 @@ o  All PPL semantic objects now provide the method
    returning a 32-bit hash code for *this.  If x and y are such that
    x == y evaluates to true, so does x.hash_code() == y.hash_code().
 
-o  The method relations_with(Congruence) has been added to the Polyhedron
+o  The method relation_with(Congruence) has been added to the Polyhedron
    class for compatibility with the Grid class methods.
 
 o  The class Polyhedra_Powerset has been renamed Pointset_Powerset,
@@ -51,6 +51,10 @@ o  The new methods
    return true if and only if the system in question is empty (i.e.,
    it has no constraints, generators, congruences or grid-generators,
    respectively).
+
+o  In the Congruence class, for consistency with the Constraint class,
+   the methods is_trivial_true() and is_trivial_false() have been renamed
+   as is_tautological() and is_inconsistent(), respectively.
 
 o  All identifiers containing the strings `less_than_or_equal' or
    `greater_than_or_equal', any case, have been renamed so as to contain
