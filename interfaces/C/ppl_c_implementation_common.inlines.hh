@@ -20,8 +20,8 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_ppl_c_implementation_inlines_hh
-#define PPL_ppl_c_implementation_inlines_hh 1
+#ifndef PPL_ppl_c_implementation_common_inlines_hh
+#define PPL_ppl_c_implementation_common_inlines_hh 1
 
 namespace Parma_Polyhedra_Library {
 
@@ -139,4 +139,4 @@ Array_Partial_Function_Wrapper::maps(dimension_type i,
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(PPL_ppl_c_implementation_inlines_hh)
+#endif // !defined(PPL_ppl_c_implementation_common_inlines_hh)

@@ -60,11 +60,17 @@ if BUILD_C_INTERFACE
 #	    0.2			    -----
 #	    0.3			    -----
 #	    0.4			    0:0:0
-#	    0.5			    1:0:0
+#	    0.5			    1:0:1
+#	    0.6			    1:0:1
+#	    0.6.1		    1:0:1
+#	    0.7			    1:0:1
+#	    0.8			    1:0:1
+#	    0.9			    1:0:1
+#	    0.10		    2:0:0
 
-LIBPPL_C_LT_CURRENT =  1
+LIBPPL_C_LT_CURRENT =  2
 LIBPPL_C_LT_REVISION = 0
-LIBPPL_C_LT_AGE =      1
+LIBPPL_C_LT_AGE =      0
 
 if HAVE_PERL
 
@@ -83,8 +89,8 @@ endif !HAVE_PERL
 BUILT_SOURCES = \
 $(include_HEADERS) \
 $(nodist_noinst_HEADERS) \
-ppl_c_domains.hh \
-ppl_c_domains.cc
+ppl_c_implementation_domains.hh \
+ppl_c_implementation_domains.cc
 
 interface_generator_dependencies = \
 $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
@@ -100,7 +106,7 @@ ppl_c_domains.h: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_c_h.m4 > $@
 
-ppl_c_domains.cc: $(interface_generator_dependencies)
+ppl_c_implementation_domains.cc: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_c_cc_files.m4 \
                 > ppl_c_cc_blob
@@ -108,7 +114,7 @@ ppl_c_domains.cc: $(interface_generator_dependencies)
 	$(top_srcdir)/utils/cm_splitter.sh < ppl_c_cc_blob
 	rm -f ppl_c_cc_blob
 
-ppl_c_domains.hh: $(interface_generator_dependencies)
+ppl_c_implementation_domains.hh: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_c_hh_files.m4 \
                 > ppl_c_hh_blob
@@ -125,9 +131,9 @@ AM_CPPFLAGS = \
 lib_LTLIBRARIES = libppl_c.la
 
 libppl_c_la_SOURCES = \
-ppl_c_implementation.defs.hh \
-ppl_c_implementation.inlines.hh \
-ppl_c_implementation.cc
+ppl_c_implementation_common.defs.hh \
+ppl_c_implementation_common.inlines.hh \
+ppl_c_implementation_common.cc
 
 nodist_libppl_c_la_SOURCES =
 
@@ -170,9 +176,19 @@ nodist_noinst_HEADERS = \
 ppl_c_domains.h \
 ppl_c_version.h
 
+# ppl_c.h is not distributed.
+# ppl_c.h.dist, which is distributed, is a copy of ppl_c.h.
+dist-hook:
+	mv -f $(distdir)/ppl_c.h $(distdir)/ppl_c.h.dist
+
 endif BUILD_C_INTERFACE
 
+MOSTLYCLEANFILES = $(BUILT_SOURCES) \
+@required_instantiations_c_cxx_objects@
+
 DISTCLEANFILES = \
+@required_instantiations_c_cxx_sources@ \
+@required_instantiations_c_cxx_headers@ \
 ppl_c.h \
 ppl_c_*.h \
 ppl_c_*.cc

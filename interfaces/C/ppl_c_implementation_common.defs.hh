@@ -20,8 +20,8 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_ppl_c_implementation_defs_hh
-#define PPL_ppl_c_implementation_defs_hh 1
+#ifndef PPL_ppl_c_implementation_common_defs_hh
+#define PPL_ppl_c_implementation_common_defs_hh 1
 
 #define PPL_NO_AUTOMATIC_INITIALIZATION
 #include "ppl.hh"
@@ -180,6 +180,6 @@ catch (...) {						     \
   DEFINE_PRINT_FUNCTIONS(Type)                  \
   DEFINE_ASCII_DUMP_FUNCTIONS(Type)
 
-#include "ppl_c_implementation.inlines.hh"
+#include "ppl_c_implementation_common.inlines.hh"
 
-#endif // !defined(PPL_ppl_c_implementation_defs_hh)
+#endif // !defined(PPL_ppl_c_implementation_common_defs_hh)

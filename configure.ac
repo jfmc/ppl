@@ -954,7 +954,7 @@ bool valid = ${instantiation}::valid_instantiation();
 
   required_instantiations_c_source_names=`echo "${required_instantiations_canonical_names}" | sed -e 's/@Pointset_Powerset_Polyhedron/@Pointset_Powerset_C_Polyhedron@Pointset_Powerset_NNC_Polyhedron/g' -e 's/^Pointset_Powerset_Polyhedron/Pointset_Powerset_C_Polyhedron@Pointset_Powerset_NNC_Polyhedron/g'`
   required_instantiations_c_cxx_objects=`echo "${required_instantiations_c_source_names}" | sed -e 's/@/.lo /g' -e 's/$/.lo/g' | sed -e 's/\([[^. ]]*\).lo/ppl_c_\1.lo/g'`
-  required_instantiations_c_cxx_sources=`echo "${required_instantiations_c_cxx_objects}" | sed -e 's/\([[^. ]]*\).lo/..\/\1.cc/g'`
+  required_instantiations_c_cxx_sources=`echo "${required_instantiations_c_cxx_objects}" | sed -e 's/\([[^. ]]*\).lo/\1.cc/g'`
   required_instantiations_c_cxx_headers=`echo "${required_instantiations_c_cxx_sources}" | sed -e 's/.cc/.hh/g'`
 
   required_instantiations_prolog_source_names=`echo "${required_instantiations_canonical_names}" | sed -e 's/@Pointset_Powerset_Polyhedron/@Pointset_Powerset_C_Polyhedron@Pointset_Powerset_NNC_Polyhedron/g' -e 's/^Pointset_Powerset_Polyhedron/Pointset_Powerset_C_Polyhedron@Pointset_Powerset_NNC_Polyhedron/g'`

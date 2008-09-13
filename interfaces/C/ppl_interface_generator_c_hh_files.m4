@@ -29,7 +29,7 @@ dnl Include files defining macros that generate the non-fixed part.
 m4_include(`ppl_interface_generator_c_procedure_generators.m4')
 
 m4_divert`'dnl
-%<--%<--%<-- ppl_c_domains.hh
+%<--%<--%<-- ppl_c_implementation_domains.hh
 /* C interface code: inclusion of all domain declarations.
 m4_include(`ppl_interface_generator_copyright')dnl
 */
@@ -44,7 +44,7 @@ DECLARE_CONVERSIONS(m4_interface_class`'$1, @CPPDEF_CLASS@)
 
 m4_pushdef(`m4_one_class_code', `dnl
 m4_define(`m4_current_interface', m4_interface_class`'$1)`'dnl
-%<--%<--%<-- ppl_c_domains.hh
+%<--%<--%<-- ppl_c_implementation_domains.hh
 `#'include "ppl_c_`'m4_current_interface.hh"
 %<--%<--%<-- ppl_c_`'m4_current_interface.hh
 /* C m4_current_interface interface code: declarations.
