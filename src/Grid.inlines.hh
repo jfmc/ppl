@@ -199,6 +199,37 @@ Grid::swap(Grid& y) {
 }
 
 inline void
+Grid::add_congruence(const Congruence& cg) {
+  // Dimension-compatibility check.
+  if (space_dim < cg.space_dimension())
+    throw_dimension_incompatible("add_congruence(cg)", "cg", cg);
+
+  if (!marked_empty())
+    add_congruence_no_check(cg);
+}
+
+inline void
+Grid::add_congruences(const Congruence_System& cgs) {
+  // TODO: this is just an executable specification.
+  // Space dimension compatibility check.
+  if (space_dim < cgs.space_dimension())
+    throw_dimension_incompatible("add_congruences(cgs)", "cgs", cgs);
+
+  if (!marked_empty()) {
+    Congruence_System cgs_copy = cgs;
+    add_recycled_congruences(cgs_copy);
+  }
+}
+
+inline void
+Grid::add_constraint(const Constraint& c) {
+  // Space dimension compatibility check.
+  if (space_dim < c.space_dimension())
+    throw_dimension_incompatible("add_constraint(c)", "c", c);
+  add_constraint_no_check(c);
+}
+
+inline void
 Grid::refine_with_congruence(const Congruence& cg) {
   add_congruence(cg);
 }
@@ -212,7 +243,6 @@ inline bool
 Grid::can_recycle_constraint_systems() {
   return true;
 }
-
 
 inline bool
 Grid::can_recycle_congruence_systems() {

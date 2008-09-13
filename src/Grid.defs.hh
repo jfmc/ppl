@@ -2403,6 +2403,43 @@ private:
 	       Coefficient& ext_n, Coefficient& ext_d, bool& included,
 	       Generator* point = NULL) const;
 
+  /*! \brief
+    Adds the congruence \p cg to \p *this.
+
+    \warning
+    If \p cg and \p *this are dimension-incompatible,
+    the behavior is undefined.
+  */
+  void add_congruence_no_check(const Congruence& cg);
+
+  /*! \brief
+    Uses the constraint \p c to refine \p *this.
+
+    \param c
+    The constraint to be added.
+
+    \exception std::invalid_argument
+    Thrown if c is a non-trivial inequality constraint.
+
+    \warning
+    If \p c and \p *this are dimension-incompatible,
+    the behavior is undefined.
+  */
+  void add_constraint_no_check(const Constraint& c);
+
+  /*! \brief
+    Uses the constraint \p c to refine \p *this.
+
+    \param c
+    The constraint to be added.
+    Non-trivial inequalities are ignored.
+
+    \warning
+    If \p c and \p *this are dimension-incompatible,
+    the behavior is undefined.
+  */
+  void refine_no_check(const Constraint& c);
+
   //! \name Widening- and Extrapolation-Related Functions
   //@{
 

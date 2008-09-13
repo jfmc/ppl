@@ -552,6 +552,66 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
 }
 
 void
+PPL::Grid::add_congruence_no_check(const Congruence& cg) {
+  assert(!marked_empty());
+  assert(space_dim >= cg.space_dimension());
+
+  // Dealing with a zero-dimensional space grid first.
+  if (space_dim == 0) {
+    if (cg.is_inconsistent())
+      set_empty();
+    return;
+  }
+
+  if (!congruences_are_up_to_date())
+    update_congruences();
+
+  con_sys.insert(cg);
+
+  clear_congruences_minimized();
+  set_congruences_up_to_date();
+  clear_generators_up_to_date();
+
+  // Note: the congruence system may have become unsatisfiable, thus
+  // we do not check for satisfiability.
+  assert(OK());
+}
+
+void
+PPL::Grid::add_constraint_no_check(const Constraint& c) {
+  assert(space_dim >= c.space_dimension());
+
+  if (c.is_inequality()) {
+    // Only trivial inequalities can be handled.
+    if (c.is_inconsistent()) {
+      set_empty();
+      return;
+    }
+    if (c.is_tautological())
+      return;
+    // Non-trivial inequality constraints are not allowed.
+    throw_invalid_constraint("add_constraint(c)", "c");
+  }
+
+  assert(c.is_equality());
+  Congruence cg(c);
+  add_congruence_no_check(cg);
+}
+
+void
+PPL::Grid::refine_no_check(const Constraint& c) {
+  assert(!marked_empty());
+  assert(space_dim >= c.space_dimension());
+
+  if (c.is_equality()) {
+    Congruence cg(c);
+    add_congruence_no_check(cg);
+  }
+  else if (c.is_inconsistent())
+    set_empty();
+}
+
+void
 PPL::Grid::throw_runtime_error(const char* method) const {
   std::ostringstream s;
   s << "PPL::Grid::" << method << "." << std::endl;
