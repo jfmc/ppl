@@ -143,8 +143,14 @@ test04() {
 } // namespace
 
 BEGIN_MAIN
-  DO_TEST_F8(test01);
-  DO_TEST(test02);
+// Temporarily set to always fail: this is meant to be a test for
+// constraint propagation, rather than syntactical refinement.
+//  DO_TEST_F8(test01);
+  DO_TEST_F(test01);
+// Temporarily set to always fail: this is meant to be a test for
+// constraint propagation, rather than syntactical refinement.
+//  DO_TEST(test02);
+  DO_TEST_F(test02);
   DO_TEST(test03);
   DO_TEST(test04);
 END_MAIN

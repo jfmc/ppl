@@ -604,8 +604,17 @@ BEGIN_MAIN
 #if 0
   DO_TEST(test06);
 #endif
-  DO_TEST(test07);
-  DO_TEST_F8(test08);
-  DO_TEST_F8(test09);
-  DO_TEST(test10);
+// Temporarily set to always fail: this is meant to be a test for
+// constraint propagation, rather than syntactical refinement.
+//  DO_TEST(test07);
+  DO_TEST_F(test07);
+// Temporarily set to always fail: this is meant to be a test for
+// constraint propagation, rather than syntactical refinement.
+//  DO_TEST_F8(test08);
+  DO_TEST_F(test08);
+  DO_TEST(test09);
+// Temporarily set to always fail: this is meant to be a test for
+// constraint propagation, rather than syntactical refinement.
+//  DO_TEST(test10);
+  DO_TEST_F(test10);
 END_MAIN
