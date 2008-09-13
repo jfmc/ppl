@@ -44,7 +44,6 @@ $(top_builddir)/src/libppl.la \
 #closure1
 
 # Tests that do not succeed yet (maybe even known result is wrong).
-#interval1 interval2
 
 ORIGINAL_TESTS = \
 addconstraints1 \
@@ -86,6 +85,7 @@ generalizedaffineimage1 generalizedaffineimage2 \
 generalizedaffinepreimage1 \
 geomcovers1 \
 intersection1 \
+interval1 \
 mapspacedims1 \
 max_min1 \
 maxspacedim1 \
@@ -229,8 +229,7 @@ geomcovers1_SOURCES = geomcovers1.cc
 
 intersection1_SOURCES = intersection1.cc
 
-#interval1_SOURCES = interval1.cc
-#interval2_SOURCES = interval2.cc
+interval1_SOURCES = interval1.cc
 
 mapspacedims1_SOURCES = mapspacedims1.cc
 
