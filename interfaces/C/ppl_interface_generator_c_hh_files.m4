@@ -26,7 +26,6 @@ dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
 dnl Include files defining macros that generate the non-fixed part.
-dnl m4_include(`ppl_interface_generator_c_h_code.m4')
 m4_include(`ppl_interface_generator_c_procedure_generators.m4')
 
 m4_divert`'dnl
@@ -36,8 +35,6 @@ m4_include(`ppl_interface_generator_copyright')dnl
 */
 m4_divert(-1)
 
-dnl m4_pre_extra_class_code(Class, CPP_Class, Class_Kind)
-dnl Prefix extra code for each class.
 m4_define(`m4_declaration_code', `dnl
 m4_ifelse(m4_class_group$1, product,
             `typedef @CPP_CLASS@ @CPPDEF_CLASS@;')
@@ -45,7 +42,7 @@ m4_ifelse(m4_class_group$1, product,
 DECLARE_CONVERSIONS(m4_interface_class`'$1, @CPPDEF_CLASS@)
 ')
 
-m4_define(`m4_pre_extra_class_code', `dnl
+m4_pushdef(`m4_one_class_code', `dnl
 m4_define(`m4_current_interface', m4_interface_class`'$1)`'dnl
 %<--%<--%<-- ppl_c_domains.hh
 `#'include "ppl_c_`'m4_current_interface.hh"
@@ -53,36 +50,22 @@ m4_define(`m4_current_interface', m4_interface_class`'$1)`'dnl
 /* C m4_current_interface interface code: declarations.
 m4_include(`ppl_interface_generator_copyright')`'dnl
 */
+namespace Parma_Polyhedra_Library {
 
-dnl PPL_TYPE_DECLARATION(m4_interface_class$1);
-dnl
-dnl /*! \name Functions Related to m4_interface_class$1 */
-dnl /*@{*/
+namespace C_Interface {
 
 m4_replace_all_patterns_in_string($1,
                                   `m4_declaration_code($1)',
                                   m4_pattern_list)
 
+} // namespace C_Interface
+
+} // namespace Parma_Polyhedra_Library
 m4_undefine(`m4_current_interface')`'dnl
-
 ')
 
-dnl m4_post_extra_class_code(Class, CPP_Class, Class_Kind)
-dnl Postfix extra code for each class.
-m4_define(`m4_post_extra_class_code', `dnl
-dnl PPL_DECLARE_OUTPUT_FUNCTIONS(m4_interface_class$1)
-')
-
-m4_divert`'dnl
-dnl
-dnl Output the fixed preamble.
-dnl As the preamble has quotes, first change the quote characters.
-m4_changequote(`@<<@',`@>>@')@<<@@>>@dnl
-dnl m4_include(@<<@ppl_interface_generator_c_h_preamble@>>@)@<<@@>>@dnl
-dnl Change the quote characters back to the standard.
-m4_changequote`'dnl
-dnl
 dnl Generate the non-fixed part of the file.
+m4_divert`'dnl
 m4_all_code`'dnl
 dnl
 dnl End of file generation.
