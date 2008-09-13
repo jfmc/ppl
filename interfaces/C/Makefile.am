@@ -24,11 +24,9 @@ interface_generator_files = \
 ppl_interface_generator_c_procedure_generators.m4 \
 ppl_interface_generator_c_h.m4 \
 ppl_interface_generator_c_h_code.m4 \
-ppl_interface_generator_c_h_preamble \
 ppl_interface_generator_c_cc_files.m4 \
 ppl_interface_generator_c_hh_files.m4 \
-ppl_interface_generator_c_cc_code.m4 \
-ppl_interface_generator_c_cc_preamble
+ppl_interface_generator_c_cc_code.m4
 
 EXTRA_DIST = \
 $(interface_generator_files) \
@@ -68,8 +66,23 @@ LIBPPL_C_LT_CURRENT =  1
 LIBPPL_C_LT_REVISION = 0
 LIBPPL_C_LT_AGE =      1
 
+if HAVE_PERL
+
+ppl_c.h: ppl_c_header.h ppl_c_version.h ppl_c_domains.h Makefile $(top_builddir)/utils/build_header
+	$(top_builddir)/utils/build_header \
+		-I $(top_builddir)/interfaces/C \
+		$(top_srcdir)/interfaces/C/ppl_c_header.h >$@
+
+else !HAVE_PERL
+
+ppl_c.h: ppl_c.h.dist
+	cp -f $< $@
+
+endif !HAVE_PERL
+
 BUILT_SOURCES = \
-ppl_c.h \
+$(include_HEADERS) \
+$(nodist_noinst_HEADERS) \
 ppl_c_domains.hh \
 ppl_c_domains.cc
 
@@ -83,7 +96,7 @@ ppl_interface_generator_c_hh_files.m4 \
 ../ppl_interface_generator_common_procedure_generators.m4 \
 $(interface_generator_files)
 
-ppl_c.h: $(interface_generator_dependencies)
+ppl_c_domains.h: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_c_h.m4 > $@
 
@@ -151,7 +164,11 @@ libppl_c_la_LDFLAGS = \
 $(NO_UNDEFINED_FLAG) \
 -version-info $(LIBPPL_C_LT_CURRENT):$(LIBPPL_C_LT_REVISION):$(LIBPPL_C_LT_AGE)
 
-nodist_include_HEADERS = ppl_c.h ppl_c_version.h
+include_HEADERS = ppl_c.h
+
+nodist_noinst_HEADERS = \
+ppl_c_domains.h \
+ppl_c_version.h
 
 endif BUILD_C_INTERFACE
 
