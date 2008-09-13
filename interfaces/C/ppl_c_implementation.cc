@@ -98,6 +98,24 @@ notify_error(enum ppl_enum_error_code code, const char* description) {
 using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::C_Interface;
 
+unsigned int PPL_POLY_CON_RELATION_IS_DISJOINT;
+unsigned int PPL_POLY_CON_RELATION_STRICTLY_INTERSECTS;
+unsigned int PPL_POLY_CON_RELATION_IS_INCLUDED;
+unsigned int PPL_POLY_CON_RELATION_SATURATES;
+
+unsigned int PPL_POLY_GEN_RELATION_SUBSUMES;
+
+unsigned int PPL_COMPLEXITY_CLASS_POLYNOMIAL;
+unsigned int PPL_COMPLEXITY_CLASS_SIMPLEX;
+unsigned int PPL_COMPLEXITY_CLASS_ANY;
+
+int PPL_MIP_PROBLEM_STATUS_UNFEASIBLE;
+int PPL_MIP_PROBLEM_STATUS_UNBOUNDED;
+int PPL_MIP_PROBLEM_STATUS_OPTIMIZED;
+
+int PPL_OPTIMIZATION_MODE_MINIMIZATION;
+int PPL_OPTIMIZATION_MODE_MAXIMIZATION;
+
 int
 ppl_set_error_handler(error_handler_type h) {
   user_error_handler = h;

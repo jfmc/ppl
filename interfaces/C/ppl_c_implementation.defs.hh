@@ -127,24 +127,6 @@ catch (...) {						     \
   return PPL_ERROR_UNEXPECTED_ERROR; \
 }
 
-unsigned int PPL_POLY_CON_RELATION_IS_DISJOINT;
-unsigned int PPL_POLY_CON_RELATION_STRICTLY_INTERSECTS;
-unsigned int PPL_POLY_CON_RELATION_IS_INCLUDED;
-unsigned int PPL_POLY_CON_RELATION_SATURATES;
-
-unsigned int PPL_POLY_GEN_RELATION_SUBSUMES;
-
-unsigned int PPL_COMPLEXITY_CLASS_POLYNOMIAL;
-unsigned int PPL_COMPLEXITY_CLASS_SIMPLEX;
-unsigned int PPL_COMPLEXITY_CLASS_ANY;
-
-int PPL_MIP_PROBLEM_STATUS_UNFEASIBLE;
-int PPL_MIP_PROBLEM_STATUS_UNBOUNDED;
-int PPL_MIP_PROBLEM_STATUS_OPTIMIZED;
-
-int PPL_OPTIMIZATION_MODE_MINIMIZATION;
-int PPL_OPTIMIZATION_MODE_MAXIMIZATION;
-
 #define DECLARE_CONVERSIONS(Type, CPP_Type)             \
   inline const CPP_Type*                                \
   to_const(ppl_const_##Type##_t x) {                    \

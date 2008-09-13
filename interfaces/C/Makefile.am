@@ -69,10 +69,11 @@ LIBPPL_C_LT_CURRENT =  1
 LIBPPL_C_LT_REVISION = 0
 LIBPPL_C_LT_AGE =      1
 
-BUILT_SOURCES =
-# ppl_c.h
-# ppl_c.cc
-# ppl_c_domains.cc
+BUILT_SOURCES = \
+ppl_c.h \
+ppl_c.cc \
+ppl_c_domains.hh \
+ppl_c_domains.cc
 
 interface_generator_dependencies = \
 $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
@@ -121,8 +122,8 @@ ppl_c_implementation.defs.hh \
 ppl_c_implementation.inlines.hh \
 ppl_c_implementation.cc
 
-nodist_libppl_c_la_SOURCES = \
-ppl_c.cc
+nodist_libppl_c_la_SOURCES =
+#ppl_c.cc
 
 nodist_EXTRA_libppl_c_la_SOURCES = \
 ppl_c_BD_Shape_double.cc \
