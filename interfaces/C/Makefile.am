@@ -25,7 +25,6 @@ ppl_interface_generator_c_procedure_generators.m4 \
 ppl_interface_generator_c_h.m4 \
 ppl_interface_generator_c_h_code.m4 \
 ppl_interface_generator_c_h_preamble \
-ppl_interface_generator_c_cc.m4 \
 ppl_interface_generator_c_cc_files.m4 \
 ppl_interface_generator_c_hh_files.m4 \
 ppl_interface_generator_c_cc_code.m4 \
@@ -71,7 +70,6 @@ LIBPPL_C_LT_AGE =      1
 
 BUILT_SOURCES = \
 ppl_c.h \
-ppl_c.cc \
 ppl_c_domains.hh \
 ppl_c_domains.cc
 
@@ -88,10 +86,6 @@ $(interface_generator_files)
 ppl_c.h: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_c_h.m4 > $@
-
-ppl_c.cc: $(interface_generator_dependencies)
-	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
-           $(srcdir)/ppl_interface_generator_c_cc.m4 > $@
 
 ppl_c_domains.cc: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
@@ -123,7 +117,6 @@ ppl_c_implementation.inlines.hh \
 ppl_c_implementation.cc
 
 nodist_libppl_c_la_SOURCES =
-#ppl_c.cc
 
 nodist_EXTRA_libppl_c_la_SOURCES = \
 ppl_c_BD_Shape_double.cc \
@@ -164,4 +157,5 @@ endif BUILD_C_INTERFACE
 
 DISTCLEANFILES = \
 ppl_c.h \
-ppl_c.cc
+ppl_c_*.h \
+ppl_c_*.cc
