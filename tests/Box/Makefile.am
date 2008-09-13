@@ -92,6 +92,7 @@ maxspacedim1 \
 membytes1 \
 minconstraints1 \
 pointsetpowerset1 pointsetpowerset2 \
+propagateconstraints1 \
 relations1 relations2 relations3 relations4 \
 refinewithconstraint1 refinewithconstraint2 \
 refinewithconstraints1 \
@@ -248,6 +249,8 @@ relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
 relations3_SOURCES = relations3.cc
 relations4_SOURCES = relations4.cc
+
+propagateconstraints1_SOURCES = propagateconstraints1.cc
 
 refinewithconstraint1_SOURCES = refinewithconstraint1.cc
 refinewithconstraint2_SOURCES = refinewithconstraint2.cc
