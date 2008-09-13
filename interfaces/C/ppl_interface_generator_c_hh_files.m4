@@ -71,8 +71,6 @@ dnl m4_post_extra_class_code(Class, CPP_Class, Class_Kind)
 dnl Postfix extra code for each class.
 m4_define(`m4_post_extra_class_code', `dnl
 dnl PPL_DECLARE_OUTPUT_FUNCTIONS(m4_interface_class$1)
-dnl
-dnl /*@}*/ /* Functions Related to m4_interface_class$1 */
 ')
 
 m4_divert`'dnl
@@ -86,21 +84,5 @@ m4_changequote`'dnl
 dnl
 dnl Generate the non-fixed part of the file.
 m4_all_code`'dnl
-dnl
-dnl Generate the fixed postamble.
-
-#ifdef __cplusplus
-} /* extern "C" */
-#endif
-
-#undef PPL_TYPE_DECLARATION
-#undef PPL_DECLARE_PRINT_FUNCTIONS
-#undef PPL_DECLARE_ASCII_DUMP_FUNCTIONS
-#undef PPL_DECLARE_OUTPUT_FUNCTIONS
-#undef PPL_PROTO
-
-/*@}*/ /* \defgroup PPL_C_interface */
-
-#endif /* !defined(PPL_ppl_c_h) */
 dnl
 dnl End of file generation.
