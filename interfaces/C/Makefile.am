@@ -87,6 +87,7 @@ ppl_c.h: ppl_c.h.dist
 endif !HAVE_PERL
 
 BUILT_SOURCES = \
+ppl_c.h \
 ppl_c_implementation_domains.hh \
 ppl_c_implementation_domains.cc.stamp
 
