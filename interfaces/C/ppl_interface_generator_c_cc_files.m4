@@ -61,11 +61,9 @@ dnl Prefix extra code for each class.
 m4_define(`m4_pre_extra_class_code', `dnl
 m4_define(`m4_current_interface', m4_interface_class`'$1)`'dnl
 %<--%<--%<-- ppl_c_`'m4_current_interface`'.cc
-/* Interfacing m4_current_interface */
-/*
+/* C m4_current_interface interface code: definitions.
 m4_include(`ppl_interface_generator_copyright')`'dnl
 */
-
 
 `#'include "ppl_c_implementation_common.defs.hh"
 `#'include "ppl_c_implementation_domains.hh"
@@ -78,7 +76,6 @@ using namespace Parma_Polyhedra_Library::C_Interface;
 dnl Postfix extra code for each class.
 m4_define(`m4_post_extra_class_code', `dnl
 DEFINE_OUTPUT_FUNCTIONS(m4_interface_class`'$1)
-
 ')
 
 dnl -----------------------------------------------------------------

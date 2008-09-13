@@ -30,7 +30,7 @@ m4_include(`ppl_interface_generator_c_procedure_generators.m4')
 
 m4_divert`'dnl
 %<--%<--%<-- ppl_c_implementation_domains.hh
-/* C interface code: inclusion of all domain declarations.
+/* C interface code: inclusion of all the domain-dependent declarations.
 m4_include(`ppl_interface_generator_copyright')dnl
 */
 m4_divert(-1)

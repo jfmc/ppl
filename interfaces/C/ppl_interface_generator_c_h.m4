@@ -32,7 +32,6 @@ m4_include(`ppl_interface_generator_c_procedure_generators.m4')
 dnl m4_pre_extra_class_code(Class, CPP_Class, Class_Kind)
 dnl Prefix extra code for each class.
 m4_define(`m4_pre_extra_class_code', `dnl
-
 PPL_TYPE_DECLARATION(m4_interface_class$1);
 
 /*! \name Functions Related to m4_interface_class$1 */
