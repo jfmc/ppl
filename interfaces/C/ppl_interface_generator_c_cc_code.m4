@@ -719,8 +719,8 @@ ppl_@CLASS@_map_space_dimensions
  ppl_dimension_type maps[],
  size_t n) try {
   @CPP_CLASS@& pph = *to_nonconst(ph);
-  PIFunc pifunc(maps, n);
-  pph.map_space_dimensions(pifunc);
+  Array_Partial_Function_Wrapper function(maps, n);
+  pph.map_space_dimensions(function);
   return 0;
 }
 CATCH_ALL

@@ -46,7 +46,41 @@ void notify_error(enum ppl_enum_error_code code, const char* description);
 
 Relation_Symbol relation_symbol(enum ppl_enum_Constraint_Type t);
 
-class PIFunc {
+/*! \brief
+  A class to wrap an array of fixed length into a partial function interface
+  suitable for the map_space_dimension() methods.
+*/
+class Array_Partial_Function_Wrapper {
+public:
+  /*! \brief
+    Construct a partial function wrapping the first \p n positions of
+    \p v.
+  */
+  Array_Partial_Function_Wrapper(dimension_type* v, size_t n);
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if the represented partial
+    function has an empty codomain (i.e., it is always undefined).
+  */
+  bool has_empty_codomain() const;
+
+  /*! \brief
+    Returns the maximum value that belongs to the codomain
+    of the partial function.
+  */
+  dimension_type max_in_codomain() const;
+
+  /*! \brief
+    Assigns to \p j the value associated to \p i by \p *this, if any.
+
+    Let \f$f\f$ be the function represented by \p *this and \f$k\f$ be
+    the value of \p i.  If \f$f\f$ is defined in \f$k\f$, then
+    \f$f(k)\f$ is assigned to \p j and <CODE>true</CODE> is returned.
+    If \f$f\f$ is undefined in \f$k\f$, then <CODE>false</CODE> is
+    returned.
+  */
+  bool maps(dimension_type i, dimension_type& j) const;
+
 private:
   //! Holds the vector implementing the map.
   dimension_type* vec;
@@ -60,46 +94,6 @@ private:
   //! Cache for computing emptiness:
   //! -1 if we still don't know, 0 if not empty, 1 if empty.
   mutable int empty;
-
-public:
-  PIFunc(dimension_type* v, size_t n)
-    : vec(v), vec_size(n), max_in_codomain_(not_a_dimension()), empty(-1) {
-  }
-
-  bool has_empty_codomain() const {
-    if (empty < 0) {
-      empty = 1;
-      for (size_t i = vec_size; i-- > 0; )
-	if (vec[i] != not_a_dimension()) {
-	  empty = 0;
-	  break;
-	}
-    }
-    return empty;
-  }
-
-  dimension_type max_in_codomain() const {
-    if (max_in_codomain_ == not_a_dimension()) {
-      for (size_t i = vec_size; i-- > 0; ) {
-	dimension_type vec_i = vec[i];
-	if (vec_i != not_a_dimension()
-	    && (max_in_codomain_ == not_a_dimension()
-		|| vec_i > max_in_codomain_))
-	  max_in_codomain_ = vec_i;
-      }
-    }
-    return max_in_codomain_;
-  }
-
-  bool maps(dimension_type i, dimension_type& j) const {
-    if (i >= vec_size)
-      return false;
-    dimension_type vec_i = vec[i];
-    if (vec_i == not_a_dimension())
-      return false;
-    j = vec_i;
-    return true;
-  }
 };
 
 } // namespace C_Interface
@@ -185,7 +179,6 @@ catch (...) {						     \
 #define DEFINE_OUTPUT_FUNCTIONS(Type)           \
   DEFINE_PRINT_FUNCTIONS(Type)                  \
   DEFINE_ASCII_DUMP_FUNCTIONS(Type)
-
 
 #include "ppl_c_implementation.inlines.hh"
 

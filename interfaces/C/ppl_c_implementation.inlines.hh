@@ -90,6 +90,51 @@ relation_symbol(enum ppl_enum_Constraint_Type t) {
   }
 }
 
+inline
+Array_Partial_Function_Wrapper
+::Array_Partial_Function_Wrapper(dimension_type* v, size_t n)
+  : vec(v), vec_size(n), max_in_codomain_(not_a_dimension()), empty(-1) {
+}
+
+inline bool
+Array_Partial_Function_Wrapper::has_empty_codomain() const {
+  if (empty < 0) {
+    empty = 1;
+    for (size_t i = vec_size; i-- > 0; )
+      if (vec[i] != not_a_dimension()) {
+        empty = 0;
+        break;
+      }
+  }
+  return empty;
+}
+
+inline dimension_type
+Array_Partial_Function_Wrapper::max_in_codomain() const {
+  if (max_in_codomain_ == not_a_dimension()) {
+    for (size_t i = vec_size; i-- > 0; ) {
+      dimension_type vec_i = vec[i];
+      if (vec_i != not_a_dimension()
+          && (max_in_codomain_ == not_a_dimension()
+              || vec_i > max_in_codomain_))
+        max_in_codomain_ = vec_i;
+    }
+  }
+  return max_in_codomain_;
+}
+
+inline bool
+Array_Partial_Function_Wrapper::maps(dimension_type i,
+                                     dimension_type& j) const {
+  if (i >= vec_size)
+    return false;
+  dimension_type vec_i = vec[i];
+  if (vec_i == not_a_dimension())
+    return false;
+  j = vec_i;
+  return true;
+}
+
 } // namespace C_Interface
 
 } // namespace Parma_Polyhedra_Library
