@@ -75,10 +75,13 @@ ppl-user-@VERSION@.pdf
 DIST_CORE_PS_DOCS = \
 ppl-user-@VERSION@.ps.gz
 
-DOX_FILES = \
-definitions.dox \
+DOX_LICENCE_FILES = \
 gpl.dox \
 fdl.dox
+
+DOX_FILES = \
+$(DOX_LICENCE_FILES) \
+definitions.dox
 
 USER_CORE_STUFF = \
 $(DOX_FILES) \
@@ -122,12 +125,14 @@ DIST_C_INTERFACE_PS_DOCS = \
 ppl-user-c-interface-@VERSION@.ps.gz
 
 USER_C_INTERFACE_STUFF = \
+$(DOX_LICENCE_FILES) \
 user-c-interface.tex \
 ppl.sty \
 ../interfaces/C/C_interface.dox \
 $(top_builddir)/interfaces/C/ppl_c.h
 
 DEVREF_C_INTERFACE_STUFF = \
+$(DOX_LICENCE_FILES) \
 devref-c-interface.tex \
 ppl.sty \
 $(top_builddir)/interfaces/C/ppl_c.cc
@@ -164,11 +169,13 @@ DIST_PROLOG_INTERFACE_PS_DOCS = \
 ppl-user-prolog-interface-@VERSION@.ps.gz
 
 USER_PROLOG_INTERFACE_STUFF = \
+$(DOX_LICENCE_FILES) \
 user-prolog-interface.tex \
 ppl.sty \
 $(top_builddir)/interfaces/Prolog/Prolog_interface.dox
 
 DEVREF_PROLOG_INTERFACE_STUFF = \
+$(DOX_LICENCE_FILES) \
 devref-prolog-interface.tex \
 ppl.sty \
 $(top_builddir)/interfaces/Prolog/Prolog_interface.dox \
@@ -210,12 +217,14 @@ DIST_OCAML_INTERFACE_PS_DOCS = \
 ppl-user-ocaml-interface-@VERSION@.ps.gz
 
 USER_OCAML_INTERFACE_STUFF = \
+$(DOX_LICENCE_FILES) \
 user-ocaml-interface.tex \
 ppl.sty \
 ../interfaces/OCaml/OCaml_interface.dox \
 $(top_builddir)/interfaces/OCaml/ppl_ocaml.mli
 
 DEVREF_OCAML_INTERFACE_STUFF = \
+$(DOX_LICENCE_FILES) \
 devref-ocaml-interface.tex \
 ppl.sty \
 ../interfaces/OCaml/OCaml_interface.dox \
@@ -293,11 +302,13 @@ JAVA_INTERFACE_JAVA_FILES = \
 # FIXME add the automatically-generated files.
 
 USER_JAVA_INTERFACE_STUFF = \
+$(DOX_LICENCE_FILES) \
 user-java-interface.tex \
 ppl.sty \
 $(JAVA_INTERFACE_JAVA_FILES)
 
 DEVREF_JAVA_INTERFACE_STUFF = \
+$(DOX_LICENCE_FILES) \
 devref-java-interface.tex \
 ppl.sty \
 $(JAVA_INTERFACE_JAVA_FILES) \
