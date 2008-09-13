@@ -30,18 +30,6 @@ m4_include(`ppl_interface_generator_c_cc_code.m4')
 m4_include(`ppl_interface_generator_c_procedure_generators.m4')
 
 dnl -----------------------------------------------------------------
-dnl Output the fixed preamble.
-dnl -----------------------------------------------------------------
-m4_divert`'dnl
-%<--%<--%<-- ppl_c_fixed.cc
-dnl As the preamble has quotes, first change the quote characters.
-m4_changequote(`@<<@',`@>>@')@<<@@>>@dnl
-m4_include(@<<@ppl_interface_generator_c_cc_preamble@>>@)@<<@@>>@dnl
-dnl Change the quote characters back to the standard.
-m4_changequote`'dnl
-m4_divert(-1)
-
-dnl -----------------------------------------------------------------
 dnl Macros needed for the class conversion declarations.
 dnl -----------------------------------------------------------------
 m4_define(`m4_declaration_code', `dnl
