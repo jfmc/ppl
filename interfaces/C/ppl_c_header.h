@@ -331,9 +331,9 @@ ppl_restore_pre_PPL_rounding PPL_PROTO((void));
 
 #define PPL_TYPE_DECLARATION(Type)                                    \
 /*! \brief Opaque pointer. */                                         \
-typedef struct ppl_ ## Type ## _tag* ppl_ ## Type ## _t;              \
+typedef struct ppl_##Type##_tag* ppl_##Type##_t;                      \
 /*! \brief Opaque pointer to const object. */                         \
-typedef struct ppl_ ## Type ## _tag const* ppl_const_ ## Type ## _t
+typedef struct ppl_##Type##_tag const* ppl_const_##Type##_t
 
 PPL_TYPE_DECLARATION(Coefficient);
 
@@ -406,23 +406,23 @@ ppl_io_get_variable_output_function(ppl_io_variable_output_function_type** pp);
 #undef PPL_DECLARE_ASCII_DUMP_FUNCTIONS
 #undef PPL_DECLARE_OUTPUT_FUNCTIONS
 
-#define PPL_DECLARE_PRINT_FUNCTIONS(Type) \
-/*! \brief Prints \p x to <CODE>stdout</CODE>. */ \
-int \
-ppl_io_print_ ## Type PPL_PROTO((ppl_const_ ## Type ## _t x)); \
- \
-/*! \brief Prints \p x to the given output \p stream. */ \
-int \
-ppl_io_fprint_ ## Type PPL_PROTO((FILE* stream, ppl_const_ ## Type ## _t x));
+#define PPL_DECLARE_PRINT_FUNCTIONS(Type)                             \
+/*! \brief Prints \p x to <CODE>stdout</CODE>. */                     \
+int                                                                   \
+ppl_io_print_##Type PPL_PROTO((ppl_const_##Type##_t x));              \
+                                                                      \
+/*! \brief Prints \p x to the given output \p stream. */              \
+int                                                                   \
+ppl_io_fprint_##Type PPL_PROTO((FILE* stream, ppl_const_##Type##_t x));
 
-#define PPL_DECLARE_ASCII_DUMP_FUNCTIONS(Type) \
-/*! \brief Dumps an ascii representation of \p x on \p stream. */ \
-int \
-ppl_ ## Type ## _ascii_dump PPL_PROTO((ppl_const_ ## Type ## _t x, \
+#define PPL_DECLARE_ASCII_DUMP_FUNCTIONS(Type)                        \
+/*! \brief Dumps an ascii representation of \p x on \p stream. */     \
+int                                                                   \
+ppl_##Type##_ascii_dump PPL_PROTO((ppl_const_##Type##_t x,            \
                                        FILE* stream));
 
-#define PPL_DECLARE_OUTPUT_FUNCTIONS(Type) \
-PPL_DECLARE_PRINT_FUNCTIONS(Type) \
+#define PPL_DECLARE_OUTPUT_FUNCTIONS(Type)    \
+PPL_DECLARE_PRINT_FUNCTIONS(Type)             \
 PPL_DECLARE_ASCII_DUMP_FUNCTIONS(Type)
 
 /*@}*/ /* Simple I/O Functions */
