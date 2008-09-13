@@ -502,6 +502,35 @@ Box<ITV>::refine_with_congruences(const Congruence_System& cgs) {
 
 template <typename ITV>
 inline void
+Box<ITV>::propagate_constraint(const Constraint& c) {
+  const dimension_type c_space_dim = c.space_dimension();
+  // Dimension-compatibility check.
+  if (c_space_dim > space_dimension())
+    throw_dimension_incompatible("propagate_constraint(c)", c);
+
+  // If the box is already empty, there is nothing left to do.
+  if (marked_empty())
+    return;
+
+  propagate_constraint_no_check(c);
+}
+
+template <typename ITV>
+inline void
+Box<ITV>::propagate_constraints(const Constraint_System& cs) {
+  // Dimension-compatibility check.
+  if (cs.space_dimension() > space_dimension())
+    throw_dimension_incompatible("propagate_constraints(cs)", cs);
+
+  // If the box is already empty, there is nothing left to do.
+  if (marked_empty())
+    return;
+
+  propagate_constraints_no_check(cs);
+}
+
+template <typename ITV>
+inline void
 Box<ITV>::unconstrain(const Variable var) {
   const dimension_type dim = var.id();
   // Dimension-compatibility check.

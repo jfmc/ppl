@@ -826,6 +826,28 @@ public:
   void refine_with_congruences(const Congruence_System& cgs);
 
   /*! \brief
+    Use the constraint \p c for constraint propagation on \p *this.
+
+    \param c
+    The constraint to be used for constraint propagation.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p c are dimension-incompatible.
+  */
+  void propagate_constraint(const Constraint& c);
+
+  /*! \brief
+    Use the constraints in \p cs for constraint propagagion on \p *this.
+
+    \param  cs
+     The constraints to be used for constraint propagation.
+
+     \exception std::invalid_argument
+     Thrown if \p *this and \p cs are dimension-incompatible.
+  */
+  void propagate_constraints(const Constraint_System& cs);
+
+  /*! \brief
     Computes the \ref Cylindrification "cylindrification" of \p *this with
     respect to space dimension \p var, assigning the result to \p *this.
 
