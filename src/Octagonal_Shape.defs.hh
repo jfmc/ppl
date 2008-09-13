@@ -1682,7 +1682,7 @@ private:
     Uses the constraint \p c to refine \p *this.
 
     \param c
-    The constraint to be added. Non-ocatgonal constraints are ignored.
+    The constraint to be added. Non-octagonal constraints are ignored.
 
     \warning
     If \p c and \p *this are dimension-incompatible,
