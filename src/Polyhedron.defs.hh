@@ -859,7 +859,7 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and congruence \p cg are dimension-incompatible,
     of if \p cg is a proper congruence which is neither a tautology,
-    nor a contradiction
+    nor a contradiction.
   */
   void add_congruence(const Congruence& cg);
 
@@ -874,7 +874,7 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and congruence \p cg are dimension-incompatible,
     of if \p cg is a proper congruence which is neither a tautology,
-    nor a contradiction
+    nor a contradiction.
 
     \deprecated
     See \ref A_Note_on_the_Implementation_of_the_Operators.
@@ -1047,7 +1047,7 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p cgs are dimension-incompatible,
     of if there exists in \p cgs a proper congruence which is
-    neither a tautology, nor a contradiction
+    neither a tautology, nor a contradiction.
   */
   void add_congruences(const Congruence_System& cgs);
 

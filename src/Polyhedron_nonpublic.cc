@@ -1353,6 +1353,64 @@ PPL::Polyhedron::strongly_minimize_generators() const {
 }
 
 void
+PPL::Polyhedron::refine_no_check(const Constraint& c) {
+  assert(!marked_empty());
+  assert(space_dim >= c.space_dimension());
+
+  // Dealing with a zero-dimensional space polyhedron first.
+  if (space_dim == 0) {
+    if (c.is_inconsistent())
+      set_empty();
+    return;
+  }
+
+  // The constraints (possibly with pending rows) are required.
+  if (has_pending_generators())
+    process_pending_generators();
+  else if (!constraints_are_up_to_date())
+    update_constraints();
+
+  const bool adding_pending = can_have_something_pending();
+
+  if (c.is_necessarily_closed() || !is_necessarily_closed())
+    // Since `con_sys' is not empty, the topology and space dimension
+    // of the inserted constraint are automatically adjusted.
+    if (adding_pending)
+      con_sys.insert_pending(c);
+    else
+      con_sys.insert(c);
+  else {
+    // Here we know that the system of constraints has at least a row.
+    // However, by barely invoking `con_sys.insert(c)' we would
+    // cause a change in the topology of `con_sys', which is wrong.
+    // Thus, we insert a "topology corrected" copy of `c'.
+    Linear_Expression nc_expr = Linear_Expression(c);
+    if (c.is_equality())
+      if (adding_pending)
+        con_sys.insert_pending(nc_expr == 0);
+      else
+        con_sys.insert(nc_expr == 0);
+    else
+      if (adding_pending)
+        con_sys.insert_pending(nc_expr >= 0);
+      else
+        con_sys.insert(nc_expr >= 0);
+  }
+
+  if (adding_pending)
+    set_constraints_pending();
+  else {
+    // Constraints are not minimized and generators are not up-to-date.
+    clear_constraints_minimized();
+    clear_generators_up_to_date();
+  }
+
+  // Note: the constraint system may have become unsatisfiable, thus
+  // we do not check for satisfiability.
+  assert(OK());
+}
+
+void
 PPL::Polyhedron::throw_runtime_error(const char* method) const {
   std::ostringstream s;
   s << "PPL::";
