@@ -34,7 +34,7 @@ PPL_PROTO((ppl_@CLASS@_t* pph, ppl_dimension_type d, int empty));
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_code',
 `int
 ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@
-PPL_PROTO((ppl_@CLASS@_t* pph, ppl_const_@CLASS@_t ph));
+PPL_PROTO((ppl_@CLASS@_t* pph, ppl_const_@FRIEND@_t ph));
 
 ')
 
@@ -357,7 +357,7 @@ m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_to
 ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens
 PPL_PROTO((ppl_@CLASS@_t x,
            ppl_const_@CLASS@_t y,
-           ppl_const_Constraint_System_t cs,
+           ppl_const_@UCONSTRAINER@_System_t cs,
            unsigned* tp));
 
 ')
@@ -367,7 +367,7 @@ m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_code',
 ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign
 PPL_PROTO((ppl_@CLASS@_t x,
            ppl_const_@CLASS@_t y,
-           ppl_const_Constraint_System_t cs));
+           ppl_const_@UCONSTRAINER@_System_t cs));
 
 ')
 
@@ -472,12 +472,12 @@ m4_define(`ppl_@CLASS@_@BEGINEND@_iterator_code',
 `dnl
 int
 ppl_@CLASS@_iterator_@BEGINEND@
-PPL_PROTO((ppl_const_@CLASS@_t ps,
-           ppl_const_@CLASS@_iterator_t psit));
+PPL_PROTO((ppl_@CLASS@_t ps,
+           ppl_@CLASS@_iterator_t psit));
 
 int
 ppl_@CLASS@_const_iterator_@BEGINEND@
-PPL_PROTO((ppl_const_@CLASS@_t ps,
+PPL_PROTO((ppl_@CLASS@_t ps,
            ppl_const_@CLASS@_const_iterator_t psit));
 
 ')
@@ -498,12 +498,12 @@ m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
 `dnl
 int
 ppl_@CLASS@_iterator_@INCDEC@
-PPL_PROTO((ppl_const_@CLASS@_t ps,
-           ppl_const_@CLASS@_iterator_t psit));
+PPL_PROTO((ppl_@CLASS@_t ps,
+           ppl_@CLASS@_iterator_t psit));
 
 int
 ppl_@CLASS@_const_iterator_@INCDEC@
-PPL_PROTO((ppl_const_@CLASS@_t ps,
+PPL_PROTO((ppl_@CLASS@_t ps,
            ppl_const_@CLASS@_const_iterator_t psit));
 
 ')
