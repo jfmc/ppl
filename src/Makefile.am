@@ -307,11 +307,11 @@ Partially_Reduced_Product.types.hh \
 Partially_Reduced_Product.defs.hh \
 Partially_Reduced_Product.inlines.hh \
 Partially_Reduced_Product.templates.hh \
-Any_Pointset.types.hh \
-Any_Pointset.defs.hh \
-Any_Pointset.inlines.hh \
 max_space_dimension.hh \
 algorithms.hh
+#Any_Pointset.types.hh \
+#Any_Pointset.defs.hh \
+#Any_Pointset.inlines.hh \
 #Ask_Tell.types.hh \
 #Ask_Tell.defs.hh \
 #Ask_Tell.inlines.hh \
