@@ -852,16 +852,6 @@ public:
   */
   bool add_generator_and_minimize(const Generator& g);
 
-  //! Domain compatibility method.
-  void add_grid_generator(const Grid_Generator& g) const;
-
-  //! Returns <CODE>true</CODE> if \p *this is empty else <CODE>false</CODE>.
-  /*!
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool add_grid_generator_and_minimize(const Grid_Generator& g) const;
-
   /*! \brief
     Adds a copy of congruence \p cg to \p *this,
     if \p cg can be exactly represented by a polyhedron.

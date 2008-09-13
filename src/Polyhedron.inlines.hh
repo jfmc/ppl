@@ -400,17 +400,6 @@ Polyhedron::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
   return add_congruences_and_minimize(cgs);
 }
 
-inline void
-Polyhedron::add_grid_generator(const Grid_Generator& g) const {
-  used(g);
-}
-
-inline bool
-Polyhedron::add_grid_generator_and_minimize(const Grid_Generator& g) const {
-  used(g);
-  return !is_empty();
-}
-
 /*! \relates Polyhedron */
 inline bool
 operator!=(const Polyhedron& x, const Polyhedron& y) {
