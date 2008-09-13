@@ -1,4 +1,4 @@
-/* Test shortest path closure.
+/* Test Box::propagate_constraints().
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -317,13 +317,14 @@ const mpq_class&
 perturbate(unsigned long a) {
   static mpq_class q;
   q = a;
-  q = (q*q)/(q-1);
+  //q = (q*q)/(q-1);
   return q;
 }
 
 template <typename T>
 void
-add_edges(Box<T>& box, const Edge* edges, unsigned n) {
+propagate_edges(Box<T>& box, const Edge* edges, unsigned n) {
+  Constraint_System cs;
   for (unsigned i = 0; i < n; ++i) {
     const mpq_class& q = perturbate(edges[i].distance);
     Coefficient a;
@@ -331,11 +332,11 @@ add_edges(Box<T>& box, const Edge* edges, unsigned n) {
     Coefficient b;
     assign_r(b, q.get_num(), ROUND_NOT_NEEDED);
 
-    nout << "a = " << a << "; b = " << b << endl;
+    vnout << "a = " << a << "; b = " << b << endl;
 
-    box.add_constraint(a*Variable(edges[i].from) - a*Variable(edges[i].to)
-                      <= b);
+    cs.insert(a*Variable(edges[i].from) - a*Variable(edges[i].to) <= b);
   }
+  box.propagate_constraints(cs);
 }
 
 } // namespace
@@ -356,10 +357,14 @@ add_edges(Box<T>& box, const Edge* edges, unsigned n) {
 
 bool test01() {
   Rational_Box qbox1(126);
-  add_edges(qbox1, hawaii, sizeof(hawaii)/sizeof(Edge));
+  qbox1.add_constraint(Variable(0) >= 1);
+  qbox1.add_constraint(Variable(0) <= 2);
+  propagate_edges(qbox1, hawaii, sizeof(hawaii)/sizeof(Edge));
+
+  print_constraints(qbox1, "*** qbox1 ***");
 
   TBox tbox(126);
-  add_edges(tbox, hawaii, sizeof(hawaii)/sizeof(Edge));
+  propagate_edges(tbox, hawaii, sizeof(hawaii)/sizeof(Edge));
 
   Rational_Box qbox2(tbox);
   if (!qbox2.contains(qbox1))

@@ -40,11 +40,6 @@ $(top_builddir)/tests/libppl_tests.a \
 $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
-# Tests that do not compile yet.
-#closure1
-
-# Tests that do not succeed yet (maybe even known result is wrong).
-
 ORIGINAL_TESTS = \
 addconstraints1 \
 addspacedims1 \
@@ -61,6 +56,7 @@ boxdifference1 \
 boxhull1 \
 cc76narrowing1 \
 cc76widening \
+closure1 \
 concatenate1 \
 congruences1 \
 constrains1 \
@@ -179,7 +175,7 @@ cc76narrowing1_SOURCES = cc76narrowing1.cc
 
 cc76widening_SOURCES = cc76widening.cc
 
-#closure1_SOURCES = closure1.cc
+closure1_SOURCES = closure1.cc
 
 concatenate1_SOURCES = concatenate1.cc
 
