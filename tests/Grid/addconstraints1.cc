@@ -156,7 +156,7 @@ test05() {
   return ok;
 }
 
-// add_recycled_constraints - inconsistent inequality
+// refine_with_constraints
 bool
 test06() {
   Variable A(0);
@@ -171,14 +171,13 @@ test06() {
 
   print_congruences(gr, "*** gr ***");
 
-  gr.add_recycled_constraints(cs);
+  gr.refine_with_constraints(cs);
 
   Grid known_gr(3, EMPTY);
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-		    "*** gr.add_recycled_congruences_and_minimize(cs) ***");
+  print_congruences(gr, "*** gr.refine_with_constraints(cs) ***");
 
   return ok;
 }

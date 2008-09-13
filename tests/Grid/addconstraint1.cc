@@ -75,7 +75,6 @@ test02() {
   return ok;
 }
 
-// add_constraint_and_minimize(cs)
 bool
 test03() {
   Variable A(0);
@@ -86,11 +85,11 @@ test03() {
   Grid gr(4);
   print_congruences(gr, "*** gr ***");
 
-  gr.add_constraint_and_minimize(2*A == C);
-  print_congruences(gr, "*** gr.add_constraint_and_minimize(2*A == C) ***");
-  gr.add_constraint_and_minimize(D == 0);
-  print_congruences(gr, "*** gr.add_constraint_and_minimize(D == 0) ***");
-  gr.add_constraint_and_minimize(B > 2);
+  gr.add_constraint(2*A == C);
+  print_congruences(gr, "*** gr.add_constraint(2*A == C) ***");
+  gr.add_constraint(D == 0);
+  print_congruences(gr, "*** gr.add_constraint(D == 0) ***");
+  gr.refine_with_constraint(B > 2);
 
   Grid known_gr(4);
   known_gr.add_congruence((2*A %= C) / 0);
@@ -98,7 +97,7 @@ test03() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr, "*** gr.add_constraint_and_minimize(B > 2) ***");
+  print_congruences(gr, "*** gr.refine_with_constraint(B > 2) ***");
 
   return ok;
 }
