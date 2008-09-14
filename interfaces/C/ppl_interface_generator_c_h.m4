@@ -31,9 +31,19 @@ m4_include(`ppl_interface_generator_c_procedure_generators.m4')
 
 dnl m4_pre_extra_class_code(Class, CPP_Class, Class_Kind)
 dnl Prefix extra code for each class.
-m4_define(`m4_pre_extra_class_code', `dnl
+m4_pushdef(`m4_one_class_code', `dnl
 PPL_TYPE_DECLARATION(m4_interface_class$1);
+')
 
+dnl -----------------------------------------------------------------
+dnl Output conversion declarations for all the classes.
+dnl -----------------------------------------------------------------
+m4_divert`'dnl
+m4_all_code`'dnl
+m4_divert(-1)
+m4_popdef(`m4_one_class_code')
+
+m4_define(`m4_pre_extra_class_code', `
 /*! \name Functions Related to m4_interface_class$1 */
 /*@{*/
 
