@@ -193,11 +193,11 @@ print_linear_expression e3; print_string "\n" ;;
 (* Build some PPL::C_Polyhedron. *)
 
 let constraint1 = (e2 >=/ e2);;
-let constraints1 = [e3 >=/ e1; e1 >=/ e2; e1 <=/ e2 -/ n] ;;
+let constraints1 = [e1 =/ n; e1 <=/ e1; e1 >=/ e1 -/ n] ;;
 let generator1 = Point (e3, (Z.from_int 1));;
 let generators1 = [Point (e2, (Z.from_int 1)); Point (e1, (Z.from_int 2))] ;;
 let congruence1 = (e2, e2 , (Z.from_int 1));;
-let congruences1 = [e3, e2 , (Z.from_int 20)];;
+let congruences1 = [e1, (linear_expression_of_int 5), (Z.from_int 0)];;
 let grid_generator1 = Grid_Point (e3, (Z.from_int 1));;
 let grid_generators1 = [Grid_Point (e3, (Z.from_int 1))];;
 
