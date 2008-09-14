@@ -246,7 +246,8 @@ relations3_SOURCES = relations3.cc
 relations4_SOURCES = relations4.cc
 
 propagateconstraints1_SOURCES = propagateconstraints1.cc
-propagateconstraints2_SOURCES = propagateconstraints2.cc
+# TEMPORARILY DISABLE
+#propagateconstraints2_SOURCES = propagateconstraints2.cc
 
 refinewithconstraint1_SOURCES = refinewithconstraint1.cc
 refinewithconstraint2_SOURCES = refinewithconstraint2.cc
