@@ -34,7 +34,7 @@ PPL_PROTO((ppl_@CLASS@_t* pph, ppl_dimension_type d, int empty));
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_code',
 `int
 ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@
-PPL_PROTO((ppl_@CLASS@_t* pph, ppl_const_@FRIEND@_t ph));
+PPL_PROTO((ppl_@CLASS@_t* pph, ppl_const_@ALT_FRIEND@_t ph));
 
 ')
 
