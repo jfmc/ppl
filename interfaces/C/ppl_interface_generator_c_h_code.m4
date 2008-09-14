@@ -504,7 +504,7 @@ PPL_PROTO((ppl_@CLASS@_t ps,
 int
 ppl_@CLASS@_const_iterator_@INCDEC@
 PPL_PROTO((ppl_@CLASS@_t ps,
-           ppl_const_@CLASS@_const_iterator_t psit));
+           ppl_@CLASS@_const_iterator_t psit));
 
 ')
 
