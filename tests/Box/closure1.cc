@@ -317,7 +317,7 @@ const mpq_class&
 perturbate(unsigned long a) {
   static mpq_class q;
   q = a;
-  //q = (q*q)/(q-1);
+  q = (q*q)/(q-1);
   return q;
 }
 
@@ -341,41 +341,67 @@ propagate_edges(Box<T>& box, const Edge* edges, unsigned n) {
 
 } // namespace
 
-#define DISTANCE(To, Temp)                             \
-  do { \
-    Checked_Number<To, Extended_Number_Policy> distance; \
-    rectilinear_distance_assign<Temp>(distance, qbox1, qbox2, ROUND_UP); \
-    nout << "Rectilinear distance<" #To ", " #Temp "> = " << distance \
-         << endl; \
-    euclidean_distance_assign<Temp>(distance, qbox1, qbox2, ROUND_UP); \
-    nout << "Euclidean distance<" #To ", " #Temp "> = " << distance \
-         << endl; \
-    l_infinity_distance_assign<Temp>(distance, qbox1, qbox2, ROUND_UP); \
-    nout << "L-infinity distance<" #To ", " #Temp "> = " << distance \
-         << endl; \
-  } while (0)
-
 bool test01() {
   Rational_Box qbox1(126);
-  qbox1.add_constraint(Variable(0) >= 1);
-  qbox1.add_constraint(Variable(0) <= 2);
-  propagate_edges(qbox1, hawaii, sizeof(hawaii)/sizeof(Edge));
 
-  print_constraints(qbox1, "*** qbox1 ***");
+  qbox1.add_constraint(Variable(0) >= 100000);
+  qbox1.add_constraint(Variable(0) <= 100001);
+  qbox1.add_constraint(Variable(12) >= 110000);
+  qbox1.add_constraint(Variable(12) <= 110001);
+  qbox1.add_constraint(Variable(14) >= 120000);
+  qbox1.add_constraint(Variable(14) <= 120001);
+  qbox1.add_constraint(Variable(27) >= 130000);
+  qbox1.add_constraint(Variable(27) <= 130001);
+  qbox1.add_constraint(Variable(42) >= 140000);
+  qbox1.add_constraint(Variable(42) <= 140001);
+  qbox1.add_constraint(Variable(113) >= 150000);
+  qbox1.add_constraint(Variable(113) <= 150001);
+  qbox1.add_constraint(Variable(125) >= 200000);
+  qbox1.add_constraint(Variable(125) <= 200001);
 
-  TBox tbox(126);
+  Rational_Box qbox2(qbox1);
+
+  print_constraints(qbox1, "*** qbox1, qbox2 ***");
+
+  propagate_edges(qbox2, hawaii, sizeof(hawaii)/sizeof(Edge));
+
+  print_constraints(qbox2, "*** qbox2.propagate_edges() ***");
+
+  TBox tbox(qbox1);
+
+  print_constraints(tbox, "*** tbox ***");
+
   propagate_edges(tbox, hawaii, sizeof(hawaii)/sizeof(Edge));
 
-  Rational_Box qbox2(tbox);
-  if (!qbox2.contains(qbox1))
+  print_constraints(tbox, "*** tbox.propagate_edges() ***");
+
+  Rational_Box qbox3(tbox);
+  if (!qbox3.contains(qbox2))
     return false;
 
-  // FIXME!!!
-#if 1
-  DISTANCE(double, float);
-  DISTANCE(double, mpq_class);
-  DISTANCE(int, double);
-#endif
+  Checked_Number<double, Extended_Number_Policy> distance;
+
+  rectilinear_distance_assign(distance, qbox2, qbox3, ROUND_UP);
+  nout << "Rectilinear distance<double> = " << distance
+       << endl;
+
+  if (distance > 5.59e-9)
+    return false;
+
+  euclidean_distance_assign(distance, qbox2, qbox3, ROUND_UP);
+  nout << "Euclidean distance<double> = " << distance
+       << endl;
+
+  if (distance > 4.09e-10)
+    return false;
+
+  l_infinity_distance_assign(distance, qbox2, qbox3, ROUND_UP);
+  nout << "L-infinity distance<double> = " << distance
+       << endl;
+
+  if (distance > 5.83e-11)
+    return false;
+
   return true;
 }
 
