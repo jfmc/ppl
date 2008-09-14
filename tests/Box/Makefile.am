@@ -87,7 +87,7 @@ maxspacedim1 \
 membytes1 \
 minconstraints1 \
 pointsetpowerset1 pointsetpowerset2 \
-propagateconstraints1 propagateconstraints2 \
+propagateconstraints1 \
 relations1 relations2 relations3 relations4 \
 refinewithconstraint1 refinewithconstraint2 \
 refinewithconstraints1 \
@@ -98,6 +98,9 @@ topclosed1 \
 unconstrain1 \
 universe1 \
 writebox1
+
+## TEMPORARILY COMMENTED OUT.
+## propagateconstraints2 \
 
 DERIVED_TESTS = \
 nnc_frompolyhedron1
