@@ -379,30 +379,7 @@ bool test01() {
   if (!qbox3.contains(qbox2))
     return false;
 
-  Checked_Number<double, Extended_Number_Policy> distance;
-
-  rectilinear_distance_assign(distance, qbox2, qbox3, ROUND_UP);
-  nout << "Rectilinear distance<double> = " << distance
-       << endl;
-
-  if (distance > 5.59e-9)
-    return false;
-
-  euclidean_distance_assign(distance, qbox2, qbox3, ROUND_UP);
-  nout << "Euclidean distance<double> = " << distance
-       << endl;
-
-  if (distance > 4.09e-10)
-    return false;
-
-  l_infinity_distance_assign(distance, qbox2, qbox3, ROUND_UP);
-  nout << "L-infinity distance<double> = " << distance
-       << endl;
-
-  if (distance > 5.83e-11)
-    return false;
-
-  return true;
+  return check_result(tbox, qbox2, " 18.36", "1.52", "0.25");
 }
 
 BEGIN_MAIN
