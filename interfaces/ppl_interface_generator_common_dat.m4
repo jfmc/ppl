@@ -1054,12 +1054,6 @@ m4_define(`m4_binop_replacement',
           concatenate_assign, time_elapse_assign')
 m4_define(`m4_Polyhedron_binop_replacement',
          `m4_binop_replacement, poly_hull_assign, poly_difference_assign')
-m4_define(`m4_Grid_binop_replacement',
-         `m4_binop_replacement, join_assign')
-m4_define(`m4_BD_Shape_binop_replacement',
-         `m4_binop_replacement, bds_hull_assign')
-m4_define(`m4_Octagonal_Shape_binop_replacement',
-         `m4_binop_replacement, oct_hull_assign')
 dnl For the powerset domains, we intersect the replacements for the
 dnl disjuncts with the replacements for a powerset.
 m4_define(`m4_Pointset_Powerset_binop_replacement', `dnl
@@ -1086,8 +1080,6 @@ dnl  The different kinds of "upper_bound_if_exact" binary operators.
 m4_define(`m4_ub_exact_replacement', `upper_bound_assign_if_exact')
 m4_define(`m4_Polyhedron_ub_exact_replacement',
          `m4_ub_exact_replacement, poly_hull_assign_if_exact')
-m4_define(`m4_Grid_ub_exact_replacement',
-         `m4_ub_exact_replacement, join_assign_if_exact')
 
 dnl  The iterators for the Powerset domains can increment or decrement
 m4_define(`m4_incdec_replacement', `increment, decrement')
