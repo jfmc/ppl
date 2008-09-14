@@ -50,8 +50,8 @@ ppl_interface_generator_java_dox_code.m4
 jardir = $(pkglibdir)
 jar_DATA = ppl_java.jar
 
-ppl_java.jar: ppl_java/java_classes.stamp
-	$(JAR) cf ppl_java.jar ppl_java/*.class
+ppl_java.jar: parma_polyhedra_library/java_classes.stamp
+	$(JAR) cf ppl_java.jar parma_polyhedra_library/*.class
 
 Java_interface.dox: $(interface_generator_dependencies) Makefile
 	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \

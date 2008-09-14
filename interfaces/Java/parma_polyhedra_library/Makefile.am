@@ -33,30 +33,30 @@ ppl_interface_generator_java_classes_java.m4 \
 ppl_interface_generator_java_classes_java_code.m4
 
 fixed_java_cxx_headers = \
-ppl_java.Congruence \
-ppl_java.Congruence_System \
-ppl_java.Constraint \
-ppl_java.Constraint_System \
-ppl_java.Generator \
-ppl_java.Generator_System \
-ppl_java.Grid_Generator \
-ppl_java.Grid_Generator_System \
-ppl_java.Linear_Expression \
-ppl_java.MIP_Problem \
-ppl_java.Parma_Polyhedra_Library
+parma_polyhedra_library.Congruence \
+parma_polyhedra_library.Congruence_System \
+parma_polyhedra_library.Constraint \
+parma_polyhedra_library.Constraint_System \
+parma_polyhedra_library.Generator \
+parma_polyhedra_library.Generator_System \
+parma_polyhedra_library.Grid_Generator \
+parma_polyhedra_library.Grid_Generator_System \
+parma_polyhedra_library.Linear_Expression \
+parma_polyhedra_library.MIP_Problem \
+parma_polyhedra_library.Parma_Polyhedra_Library
 
 fixed_java_cxx_headers_sources = \
-ppl_java_Congruence.h \
-ppl_java_Congruence_System.h \
-ppl_java_Constraint.h \
-ppl_java_Constraint_System.h \
-ppl_java_Generator.h \
-ppl_java_Generator_System.h \
-ppl_java_Grid_Generator.h \
-ppl_java_Grid_Generator_System.h \
-ppl_java_Linear_Expression.h \
-ppl_java_MIP_Problem.h \
-ppl_java_Parma_Polyhedra_Library.h
+parma_polyhedra_library_Congruence.h \
+parma_polyhedra_library_Congruence_System.h \
+parma_polyhedra_library_Constraint.h \
+parma_polyhedra_library_Constraint_System.h \
+parma_polyhedra_library_Generator.h \
+parma_polyhedra_library_Generator_System.h \
+parma_polyhedra_library_Grid_Generator.h \
+parma_polyhedra_library_Grid_Generator_System.h \
+parma_polyhedra_library_Linear_Expression.h \
+parma_polyhedra_library_MIP_Problem.h \
+parma_polyhedra_library_Parma_Polyhedra_Library.h
 
 fixed_java_sources = \
 By_Reference.java \

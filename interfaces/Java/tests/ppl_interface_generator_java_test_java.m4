@@ -40,7 +40,7 @@ m4_include(`ppl_interface_generator_copyright')dnl
 import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.Vector;
-import ppl_java.*;
+import parma_polyhedra_library.*;
 
 public class ppl_java_generated_tests {
 static {
@@ -107,7 +107,7 @@ m4_replace_all_patterns_in_string($1,
 ')
 m4_pushdef(`m4_post_extra_class_code', `dnl
 }
-catch (ppl_java.Overflow_Error_Exception e) {
+catch (parma_polyhedra_library.Overflow_Error_Exception e) {
 System.out.println("*Overflow detected*::exception caught");
 }
 return true;

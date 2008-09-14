@@ -21,7 +21,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 
-package ppl_java;
+package parma_polyhedra_library;
 
 //! A system of grid generators.
 /*! \ingroup PPL_Java_interface

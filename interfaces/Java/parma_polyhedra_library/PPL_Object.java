@@ -20,7 +20,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-package ppl_java;
+package parma_polyhedra_library;
 
 //! Smart pointer to a PPL, C++ object.
 public class PPL_Object {

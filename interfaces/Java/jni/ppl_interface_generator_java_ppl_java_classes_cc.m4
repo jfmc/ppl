@@ -1,7 +1,7 @@
 m4_define(`dnl', `m4_dnl')`'dnl
 m4_divert(-1)
 
-dnl This m4 file generates the file ppl_java_classes.cc
+dnl This m4 file generates the file parma_polyhedra_library_classes.cc
 dnl using the code in ppl_interface_generator_java_classes_cc_code.m4.
 
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
@@ -39,10 +39,10 @@ dnl m4_pre_extra_class_code(Class, CPP_Class, Class_Kind)
 dnl Prefix extra code for each class.
 m4_define(`m4_pre_extra_class_code', `dnl
 m4_define(`m4_this_class', `m4_interface_class$1')`'dnl
-`#'include "ppl_java_`'m4_this_class`'.h"
+`#'include "parma_polyhedra_library_`'m4_this_class`'.h"
 m4_ifelse(m4_this_class, Polyhedron,
-`#'include "ppl_java_C_Polyhedron.h"
-`#'include "ppl_java_NNC_Polyhedron.h"
+`#'include "parma_polyhedra_library_C_Polyhedron.h"
+`#'include "parma_polyhedra_library_NNC_Polyhedron.h"
 )`'dnl
 m4_undefine(`m4_this_class')
 using namespace Parma_Polyhedra_Library;

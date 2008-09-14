@@ -21,7 +21,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 
-package ppl_java;
+package parma_polyhedra_library;
 
 public class Invalid_Argument_Exception extends RuntimeException {
     public Invalid_Argument_Exception(String s) {

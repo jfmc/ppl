@@ -280,12 +280,12 @@ void set_by_reference(JNIEnv* env, jobject& by_ref_to_be_set,
 jobject get_by_reference(JNIEnv* env, const jobject& by_ref_integer);
 
 
-// Utility to set a value a ppl_java Pair. the argument `arg' has two
+// Utility to set a value a parma_polyhedra_library Pair. the argument `arg' has two
 // possible values: 0 to set `first', 1 to `second'.
 void set_pair_element(JNIEnv* env, jobject& pair_to_be_set, int arg,
 		      const jobject& obj_to_insert);
 
-// Utility to get a value from a ppl_java Pair. the argument `arg' has two
+// Utility to get a value from a parma_polyhedra_library Pair. the argument `arg' has two
 // possible values: 0 to set `first', 1 to `second'.
 jobject get_pair_element(JNIEnv* env, int arg, const jobject& pair);
 
@@ -313,13 +313,13 @@ template <typename R>
 jobject
 get_linear_expression(JNIEnv* env, const R& r) {
   jclass j_le_coeff_class
-    = env->FindClass("ppl_java/Linear_Expression_Coefficient");
+    = env->FindClass("parma_polyhedra_library/Linear_Expression_Coefficient");
   jclass j_le_class
-    = env->FindClass("ppl_java/Linear_Expression");
+    = env->FindClass("parma_polyhedra_library/Linear_Expression");
   jclass j_le_variable_class
-    = env->FindClass("ppl_java/Linear_Expression_Variable");
+    = env->FindClass("parma_polyhedra_library/Linear_Expression_Variable");
   jclass j_variable_class
-    = env->FindClass("ppl_java/Variable");
+    = env->FindClass("parma_polyhedra_library/Variable");
   TEMP_INTEGER(coefficient);
   dimension_type varid = 0;
   dimension_type space_dimension = r.space_dimension();
@@ -331,12 +331,12 @@ get_linear_expression(JNIEnv* env, const R& r) {
   jmethodID j_le_variable_ctr_id
     = env->GetMethodID(j_le_variable_class,
 		       "<init>",
-		       "(Lppl_java/Variable;)V");
+		       "(Lparma_polyhedra_library/Variable;)V");
 
   jmethodID j_le_times_id
     = env->GetMethodID(j_le_class,
 		       "times",
-		       "(Lppl_java/Coefficient;)Lppl_java/Linear_Expression;");
+		       "(Lparma_polyhedra_library/Coefficient;)Lparma_polyhedra_library/Linear_Expression;");
 
   while (varid < space_dimension
  	 && (coefficient = r.coefficient(Variable(varid))) == 0)
@@ -345,7 +345,7 @@ get_linear_expression(JNIEnv* env, const R& r) {
     jobject j_coefficient_zero = build_java_coeff(env, Coefficient(0));
     jmethodID j_le_coeff_ctr_id
       = env->GetMethodID(j_le_coeff_class, "<init>",
-			 "(Lppl_java/Coefficient;)V");
+			 "(Lparma_polyhedra_library/Coefficient;)V");
     return env->NewObject(j_le_coeff_class, j_le_coeff_ctr_id,
 			  j_coefficient_zero);
   }
@@ -379,8 +379,8 @@ get_linear_expression(JNIEnv* env, const R& r) {
   	jmethodID j_le_sum_id
   	  = env->GetMethodID(j_le_class,
   			     "sum",
-  			     "(Lppl_java/Linear_Expression;)"
-			     "Lppl_java/Linear_Expression;");
+  			     "(Lparma_polyhedra_library/Linear_Expression;)"
+			     "Lparma_polyhedra_library/Linear_Expression;");
  	j_le_term = env->CallObjectMethod(j_le_term, j_le_sum_id, j_le_term2);
       }
     }
@@ -402,7 +402,7 @@ public:
 
   bool has_empty_codomain() const {
     jclass j_partial_function_class
-       = env->FindClass("ppl_java/Partial_Function");
+       = env->FindClass("parma_polyhedra_library/Partial_Function");
      jmethodID j_has_empty_codomain_id
        = env->GetMethodID(j_partial_function_class,
  			 "has_empty_codomain",
@@ -412,7 +412,7 @@ public:
 
   dimension_type max_in_codomain() const {
      jclass j_partial_function_class
-       = env->FindClass("ppl_java/Partial_Function");
+       = env->FindClass("parma_polyhedra_library/Partial_Function");
      jmethodID j_max_in_codomain_id
        = env->GetMethodID(j_partial_function_class,
  			 "max_in_codomain",
@@ -423,9 +423,9 @@ public:
 
   bool maps(dimension_type i, dimension_type& j) const {
     jclass j_partial_function_class
-       = env->FindClass("ppl_java/Partial_Function");
+       = env->FindClass("parma_polyhedra_library/Partial_Function");
     jclass j_by_reference_class
-      = env->FindClass("ppl_java/By_Reference");
+      = env->FindClass("parma_polyhedra_library/By_Reference");
     jmethodID j_by_reference_ctr_id
       = env->GetMethodID(j_by_reference_class,
 			 "<init>",
@@ -437,7 +437,7 @@ public:
     jmethodID j_maps_id
       = env->GetMethodID(j_partial_function_class,
 			 "maps",
-			 "(Ljava/lang/Long;Lppl_java/By_Reference;)Z");
+			 "(Ljava/lang/Long;Lparma_polyhedra_library/By_Reference;)Z");
     if(env->CallBooleanMethod(j_p_func, j_maps_id,
 			      j_long_to_j_long_class(env, i),
 			      new_by_ref)) {

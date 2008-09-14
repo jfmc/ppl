@@ -24,13 +24,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.Vector;
-import ppl_java.*;
+import parma_polyhedra_library.*;
 
 
 public class NNC_Polyhedron_test1 {
 static {
     try {
-        System.loadLibrary("ppl_java");
+        System.loadLibrary("parma_polyhedra_library");
     }
 
    catch (UnsatisfiedLinkError  e) {

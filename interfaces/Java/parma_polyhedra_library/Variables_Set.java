@@ -20,7 +20,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-package ppl_java;
+package parma_polyhedra_library;
 
 //! A java.util.TreeSet of variables' indexes.
 public class Variables_Set extends java.util.TreeSet<Variable>{

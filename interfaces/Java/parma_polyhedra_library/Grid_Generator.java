@@ -21,7 +21,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 
-package ppl_java;
+package parma_polyhedra_library;
 
 
 //! A grid line, parameter or grid point.

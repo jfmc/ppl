@@ -20,7 +20,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-package ppl_java;
+package parma_polyhedra_library;
 
 import java.util.*;
 import javax.management.RuntimeErrorException;
@@ -64,7 +64,7 @@ public class Generator {
     public static Generator closure_point(Linear_Expression e,
 					   Coefficient c) {
         if (c.getBigInteger().equals(java.math.BigInteger.ZERO)) {
-            Error cause = new Error("ppl_java.Generatpr::Generator(le, c): \n"
+            Error cause = new Error("parma_polyhedra_library.Generatpr::Generator(le, c): \n"
 				    + "the divisor can not be a zero.");
             throw new RuntimeErrorException(cause);
         }
@@ -91,7 +91,7 @@ public class Generator {
     */
     public static Generator point(Linear_Expression le, Coefficient d) {
         if (d.getBigInteger().equals(java.math.BigInteger.ZERO)) {
-	    Error cause = new Error("ppl_java.Generatpr::Generator(le, d): \n"
+	    Error cause = new Error("parma_polyhedra_library.Generatpr::Generator(le, d): \n"
 				    + "the divisor can not be a zero.");
             throw new RuntimeErrorException(cause);
         }
@@ -120,7 +120,7 @@ public class Generator {
         if (this.gt == Generator_Type.POINT
 	    || this.gt == Generator_Type.CLOSURE_POINT)
 	    return den;
-	Error cause = new Error("ppl_java.Generator::divisor: \n"
+	Error cause = new Error("parma_polyhedra_library.Generator::divisor: \n"
 				+ "this is neither a point nor a"
 				+ " closure point");
 	throw new RuntimeErrorException(cause);

@@ -40,7 +40,7 @@ $(interface_generator_files)
 AM_CPPFLAGS = \
 -I$(top_srcdir)/interfaces \
 -I$(top_builddir)/src \
--I../ppl_java \
+-I../parma_polyhedra_library \
 -I$(top_srcdir)/src \
 @extra_includes@ @JNIFLAGS@
 

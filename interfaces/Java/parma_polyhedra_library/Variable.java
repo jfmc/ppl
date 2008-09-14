@@ -20,7 +20,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-package ppl_java;
+package parma_polyhedra_library;
 
 import javax.management.RuntimeErrorException;
 
@@ -46,7 +46,7 @@ public class Variable implements Comparable<Variable> {
     public Variable(int i) {
 	if (i < 0)
 	    throw new
-		RuntimeErrorException(new Error("ppl_java.Variable::"
+		RuntimeErrorException(new Error("parma_polyhedra_library.Variable::"
 						+ "Variable:"
 						+ " an index variable"
 						+ " cannot be negative."));
