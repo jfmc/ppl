@@ -277,8 +277,7 @@ template <typename T>
 inline void
 BD_Shape<T>::refine_no_check(const Congruence& cg) {
   assert(!marked_empty());
-  const dimension_type cg_space_dim = cg.space_dimension();
-  assert(cg_space_dim <= space_dimension());
+  assert(cg.space_dimension() <= space_dimension());
 
   if (cg.is_proper_congruence()) {
     if (cg.is_inconsistent())
