@@ -154,11 +154,11 @@ included with all instantiations of the OCaml interfaces.
   warranty whatsoever, the C++ compiler used to build the library,
   where to report bugs and where to look for further information.
 
-<H2><CODE> ppl_set_rounding_for_PPL() </CODE></H2>
+<H2><CODE> set_rounding_for_PPL() </CODE></H2>
   Sets the FPU rounding mode so that the PPL abstractions based on
   floating point numbers work correctly.
 
-<H2><CODE> ppl_restore_pre_PPL_rounding() </CODE></H2>
+<H2><CODE> restore_pre_PPL_rounding() </CODE></H2>
   Restores the FPU rounding mode to what it was before the initialization
   of the PPL.
 
@@ -582,7 +582,7 @@ C_Polyhedron(nnc_poly)
 
 <H2><CODE> affine_preimage(var, lin_expr, coefficient)
 </CODE></H2>
-This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
+This is the inverse transformation to that for <CODE>affine_image</CODE>.
 
 <H2><CODE> bounded_affine_image(var, lin_expr_1, lin_expr_2, coefficient)
 </CODE></H2>
@@ -593,7 +593,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
 <H2><CODE> bounded_affine_preimage(var, lin_expr_1, lin_expr_2, coefficient)
 </CODE></H2>
 This is the inverse transformation to that for
-<CODE>ppl_bounded_affine_image</CODE>.
+<CODE>bounded_affine_image</CODE>.
 
 <H2><CODE> generalized_affine_image(var, Relation_Symbol, lin_expr,
                                     coefficient)
@@ -621,7 +621,7 @@ This is the inverse transformation to that for
                                        lin_expr_2)
 </CODE></H2>
 Thes are the inverse transformations to those for
-<CODE>ppl_generalized_affine_image</CODE>.
+<CODE>generalized_affine_image</CODE>.
 
 <H2><CODE> time_elapse_assign(c_poly) </CODE></H2>
    Assigns to the polyhedron \f$\cP\f$ referred to by \c this
