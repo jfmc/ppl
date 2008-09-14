@@ -120,7 +120,7 @@ Enhancements for PPL 0.11 or later versions
   tidy the tests directories for these domains and ensure the code
   with all likely instantiations is fully tested;
   add the same functionaity to the C, Java, OCaml and Prolog interfaces.
-
+- Any_Pointset domain: check the interface for lacking or useless methods.
 
 Efficiency Issues
 =================
