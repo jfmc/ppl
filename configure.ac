@@ -1202,7 +1202,7 @@ AC_CONFIG_FILES(Makefile
                	interfaces/Java/Makefile
 		interfaces/Java/jni/Makefile
 		interfaces/Java/tests/Makefile
-                interfaces/Java/ppl_java/Makefile
+                interfaces/Java/parma_polyhedra_library/Makefile
 		interfaces/OCaml/Makefile
 		interfaces/OCaml/tests/Makefile
                 interfaces/Prolog/Makefile

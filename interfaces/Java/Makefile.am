@@ -20,7 +20,7 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-SUBDIRS = ppl_java jni . tests
+SUBDIRS = parma_polyhedra_library jni . tests
 
 interface_generator_files = \
 ppl_interface_generator_java_procedure_generators.m4 \
