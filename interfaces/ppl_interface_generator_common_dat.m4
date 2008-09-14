@@ -1062,12 +1062,9 @@ m4_define(`m4_Octagonal_Shape_binop_replacement',
          `m4_binop_replacement, oct_hull_assign')
 dnl For the powerset domains, we intersect the replacements for the
 dnl disjuncts with the replacements for a powerset.
-dnl The poly_difference_assign has been defined for powersets of polyhedra.
-dnl FIXME: poly_difference_assign
-dnl does not appear to work for disjuncts that are not polyhedra or grids.
 m4_define(`m4_Pointset_Powerset_binop_replacement', `dnl
 m4_define(`m4_1st_sequence',
-  `poly_difference_assign, intersection_assign,
+  `difference_assign, intersection_assign,
    concatenate_assign, time_elapse_assign')`'dnl
 m4_define(`m4_2nd_sequence',
   `m4_class_pattern_replacement(m4_class_body_counter$1,
