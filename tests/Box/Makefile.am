@@ -56,7 +56,6 @@ boxdifference1 \
 boxhull1 \
 cc76narrowing1 \
 cc76widening \
-closure1 \
 concatenate1 \
 congruences1 \
 constrains1 \
@@ -88,7 +87,7 @@ maxspacedim1 \
 membytes1 \
 minconstraints1 \
 pointsetpowerset1 pointsetpowerset2 \
-propagateconstraints1 \
+propagateconstraints1 propagateconstraints2 \
 relations1 relations2 relations3 relations4 \
 refinewithconstraint1 refinewithconstraint2 \
 refinewithconstraints1 \
@@ -175,8 +174,6 @@ cc76narrowing1_SOURCES = cc76narrowing1.cc
 
 cc76widening_SOURCES = cc76widening.cc
 
-closure1_SOURCES = closure1.cc
-
 concatenate1_SOURCES = concatenate1.cc
 
 congruences1_SOURCES = congruences1.cc
@@ -246,6 +243,7 @@ relations3_SOURCES = relations3.cc
 relations4_SOURCES = relations4.cc
 
 propagateconstraints1_SOURCES = propagateconstraints1.cc
+propagateconstraints2_SOURCES = propagateconstraints2.cc
 
 refinewithconstraint1_SOURCES = refinewithconstraint1.cc
 refinewithconstraint2_SOURCES = refinewithconstraint2.cc
