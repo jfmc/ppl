@@ -56,7 +56,7 @@ m4_define(`m4_more_new_class_element_code',
 ')
 
 m4_define(`ppl_@CLASS@_bounds_from_@ABOVEBELOW@_code',`
-boolean @LTOPOLOGY@@CLASS@1_bounds_from_@ABOVEBELOW@ = @LTOPOLOGY@@LCLASS@1.bounds_from_@ABOVEBELOW@(le);
+boolean @LTOPOLOGY@@CLASS@1_bounds_from_@ABOVEBELOW@ = @LTOPOLOGY@@LCLASS@1.bounds_from_@ABOVEBELOW@(le_A);
 ')
 
 
@@ -166,12 +166,12 @@ boolean @LTOPOLOGY@@LCLASS@1_add_@ADD_REPRESENT@s_and_minimize
 ')
 
 m4_define(`ppl_@CLASS@_@AFFIMAGE@_code', `
-@LTOPOLOGY@@LCLASS@1.@AFFIMAGE@(var, le, coeff1);
+@LTOPOLOGY@@LCLASS@1.@AFFIMAGE@(var_C, le_A, coeff_5);
 
 ')
 
 m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_code', `
-@LTOPOLOGY@@LCLASS@1.generalized_@AFFIMAGE@(le, Relation_Symbol.EQUAL , le);
+@LTOPOLOGY@@LCLASS@1.generalized_@AFFIMAGE@(le_A, Relation_Symbol.EQUAL , le_A);
 
 ')
 
@@ -182,15 +182,15 @@ boolean @LTOPOLOGY@@LCLASS@1_@UB_EXACT@
 ')
 
 m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruence_code', `
-@LTOPOLOGY@@LCLASS@1.generalized_@AFFIMAGE@_with_congruence(var,
+@LTOPOLOGY@@LCLASS@1.generalized_@AFFIMAGE@_with_congruence(var_C,
                                                     Relation_Symbol.EQUAL,
-						    le, coeff1, coeff1);
+						    le_A, coeff_5, coeff_5);
 ')
 
 m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence_code', `
-@LTOPOLOGY@@LCLASS@1.generalized_@AFFIMAGE@_lhs_rhs_with_congruence(le,
+@LTOPOLOGY@@LCLASS@1.generalized_@AFFIMAGE@_lhs_rhs_with_congruence(le_A,
                                                     Relation_Symbol.EQUAL,
-						    le, coeff1);
+						    le_A, coeff_5);
 ')
 
 m4_define(`ppl_@CLASS@_equals_@CLASS@_code', `
@@ -209,7 +209,7 @@ boolean @LTOPOLOGY@@LCLASS@1_OK
 
 
 m4_define(`ppl_@CLASS@_bounded_@AFFIMAGE@_code', `
-@LTOPOLOGY@@LCLASS@1.bounded_@AFFIMAGE@(var, le, le, coeff1);
+@LTOPOLOGY@@LCLASS@1.bounded_@AFFIMAGE@(var_C, le_A, le_A, coeff_5);
 
 
 ')
@@ -220,30 +220,30 @@ m4_define(`ppl_@CLASS@_@SIMPLIFY@_code',`
 ')
 
 m4_define(`ppl_@CLASS@_1unconstrain_space_dimension_code',`
-@LTOPOLOGY@@LCLASS@1.1unconstrain_space_dimension(var);
+@LTOPOLOGY@@LCLASS@1.1unconstrain_space_dimension(var_C);
 
 ')
 
 m4_define(`__ppl_@CLASS@_1unconstrain_space_dimensions_code',`
-@LTOPOLOGY@@LCLASS@1.1unconstrain_space_dimensions(var_set);
+@LTOPOLOGY@@LCLASS@1.1unconstrain_space_dimensions(var_set_A);
 
 ')
 
 m4_define(`ppl_@CLASS@_constrains_code', `
 boolean @LTOPOLOGY@@LCLASS@1_constrains
-  = @LTOPOLOGY@@LCLASS@1.constrains(var);
+  = @LTOPOLOGY@@LCLASS@1.constrains(var_C);
 
 ')
 
 m4_define(`ppl_@CLASS@_@MAXMIN@_code', `
 boolean @LTOPOLOGY@@LCLASS@1_@MAXMIN@
-  = @LTOPOLOGY@@LCLASS@1.@MAXMIN@(le, coeff0, coeff1, bool_by_ref1);
+  = @LTOPOLOGY@@LCLASS@1.@MAXMIN@(le_A, coeff_0, coeff_5, bool_by_ref1);
 
 ')
 
 m4_define(`ppl_@CLASS@_@MAXMIN@_with_point_code', `
 boolean @LTOPOLOGY@@LCLASS@1_@MAXMIN@_with_point
-  = @LTOPOLOGY@@LCLASS@1.@MAXMIN@(le, coeff0, coeff1, bool_by_ref1, generator1);
+  = @LTOPOLOGY@@LCLASS@1.@MAXMIN@(le_A, coeff_0, coeff_5, bool_by_ref1, generator1);
 
 ');
 
