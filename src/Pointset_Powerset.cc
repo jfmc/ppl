@@ -30,7 +30,7 @@ namespace PPL = Parma_Polyhedra_Library;
 template <>
 void
 PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
-::poly_difference_assign(const Pointset_Powerset& y) {
+::difference_assign(const Pointset_Powerset& y) {
   Pointset_Powerset& x = *this;
   // Ensure omega-reduction.
   x.omega_reduce();
@@ -254,7 +254,7 @@ PPL::check_containment(const Grid& ph,
 template <>
 void
 PPL::Pointset_Powerset<PPL::Grid>
-::poly_difference_assign(const Pointset_Powerset& y) {
+::difference_assign(const Pointset_Powerset& y) {
   Pointset_Powerset& x = *this;
   // Ensure omega-reduction.
   x.omega_reduce();

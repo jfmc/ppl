@@ -771,10 +771,6 @@ public:
   */
   bool intersection_assign_and_minimize(const Pointset_Powerset& y);
 
-  //! Assigns to \p *this the difference of \p *this and \p y.
-  // FIXME: document the intended semantics.
-  void poly_difference_assign(const Pointset_Powerset& y);
-
   /*! \brief
     Assigns to \p *this an (a smallest)
     over-approximation as a powerset of the disjunct domain of the
@@ -1413,12 +1409,12 @@ Pointset_Powerset<C_Polyhedron>
 template <>
 void
 Pointset_Powerset<NNC_Polyhedron>
-::poly_difference_assign(const Pointset_Powerset& y);
+::difference_assign(const Pointset_Powerset& y);
 
 template <>
 void
 Pointset_Powerset<Grid>
-::poly_difference_assign(const Pointset_Powerset& y);
+::difference_assign(const Pointset_Powerset& y);
 
 template <>
 bool
