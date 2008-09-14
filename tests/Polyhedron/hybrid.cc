@@ -334,7 +334,8 @@ test02() {
       return ok;
     }
 
-    ph0.upper_bound_assign_and_minimize(ph0_prev);
+    ph0.upper_bound_assign(ph0_prev);
+    (void) ph0.is_empty();
     // ph0.H79_widening_assign(ph0_prev);
 
     ph0_prev = ph0;
@@ -565,7 +566,8 @@ powerset_upper_bound(Pointset_Powerset<NNC_Polyhedron>& ps,
   for (Pointset_Powerset<NNC_Polyhedron>::iterator i = ps.begin(),
                                    ps_end = ps.end(); i != ps_end; ++i) {
     NNC_Polyhedron phi = i->element();
-    ph.upper_bound_assign_and_minimize(phi);
+    ph.upper_bound_assign(phi);
+    (void) ph.is_empty();
   }
 }
 
@@ -692,7 +694,7 @@ test04() {
     ph_t1.upper_bound_assign(ph_tmp);
     time_elapse(ph_t1, ph_tea1);
     ph_t1.add_constraint_and_minimize(x1 <= 4);
-
+    (void) ph_t1.is_empty();
 
     //ph_t2
     ph_tmp = ph_idle;
