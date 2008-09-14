@@ -170,26 +170,6 @@ Grid::minimized_constraints() const {
 }
 
 inline void
-Grid::upper_bound_assign(const Grid& y) {
-  join_assign(y);
-}
-
-inline void
-Grid::upper_bound_assign_and_minimize(const Grid& y) {
-  join_assign_and_minimize(y);
-}
-
-inline bool
-Grid::upper_bound_assign_if_exact(const Grid& y) {
-  return join_assign_if_exact(y);
-}
-
-inline void
-Grid::difference_assign(const Grid& y) {
-  grid_difference_assign(y);
-}
-
-inline void
 Grid::swap(Grid& y) {
   std::swap(con_sys, y.con_sys);
   std::swap(gen_sys, y.gen_sys);

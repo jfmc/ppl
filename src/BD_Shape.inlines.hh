@@ -748,36 +748,18 @@ BD_Shape<T>::strictly_contains(const BD_Shape& y) const {
 
 template <typename T>
 inline bool
-BD_Shape<T>::bds_hull_assign_and_minimize(const BD_Shape& y) {
-  bds_hull_assign(y);
+BD_Shape<T>::upper_bound_assign_and_minimize(const BD_Shape& y) {
+  upper_bound_assign(y);
   assert(marked_empty()
 	 || space_dimension() == 0 || marked_shortest_path_closed());
   return !marked_empty();
 }
 
 template <typename T>
-inline void
-BD_Shape<T>::upper_bound_assign(const BD_Shape& y) {
-  bds_hull_assign(y);
-}
-
-template <typename T>
 inline bool
-BD_Shape<T>::bds_hull_assign_if_exact(const BD_Shape&) {
+BD_Shape<T>::upper_bound_assign_if_exact(const BD_Shape&) {
   // TODO: this must be properly implemented.
   return false;
-}
-
-template <typename T>
-inline bool
-BD_Shape<T>::upper_bound_assign_if_exact(const BD_Shape& y) {
-  return bds_hull_assign_if_exact(y);
-}
-
-template <typename T>
-inline void
-BD_Shape<T>::difference_assign(const BD_Shape& y) {
-  bds_difference_assign(y);
 }
 
 template <typename T>

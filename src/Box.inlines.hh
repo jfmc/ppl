@@ -227,24 +227,10 @@ Box<ITV>::strictly_contains(const Box& y) const {
 }
 
 template <typename ITV>
-inline void
-Box<ITV>::upper_bound_assign(const Box& y) {
-  Box& x = *this;
-  x.box_hull_assign(y);
-}
-
-template <typename ITV>
 inline bool
-Box<ITV>::box_hull_assign_if_exact(const Box&) {
+Box<ITV>::upper_bound_assign_if_exact(const Box&) {
   // TODO: this must be properly implemented.
   return false;
-}
-
-template <typename ITV>
-inline bool
-Box<ITV>::upper_bound_assign_if_exact(const Box& y) {
-  Box& x = *this;
-  return x.box_hull_assign_if_exact(y);
 }
 
 template <typename ITV>
@@ -313,13 +299,6 @@ Box<ITV>::get_upper_bound(const dimension_type k, bool& closed,
   d = ur.get_den();
 
   return true;
-}
-
-template <typename ITV>
-inline void
-Box<ITV>::difference_assign(const Box& y) {
-  Box& x = *this;
-  x.box_difference_assign(y);
 }
 
 template <typename ITV>

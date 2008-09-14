@@ -2357,10 +2357,10 @@ Octagonal_Shape<T>::strong_reduction_assign() const {
 
 template <typename T>
 void
-Octagonal_Shape<T>::oct_hull_assign(const Octagonal_Shape& y) {
+Octagonal_Shape<T>::upper_bound_assign(const Octagonal_Shape& y) {
   // Dimension-compatibility check.
   if (space_dim != y.space_dim)
-    throw_dimension_incompatible("oct_hull_assign(y)", y);
+    throw_dimension_incompatible("upper_bound_assign(y)", y);
 
   // The hull of an octagon `x' with an empty octagon is `x'.
   y.strong_closure_assign();
@@ -2385,10 +2385,10 @@ Octagonal_Shape<T>::oct_hull_assign(const Octagonal_Shape& y) {
 
 template <typename T>
 void
-Octagonal_Shape<T>::oct_difference_assign(const Octagonal_Shape& y) {
+Octagonal_Shape<T>::difference_assign(const Octagonal_Shape& y) {
   // Dimension-compatibility check.
   if (space_dim != y.space_dim)
-    throw_dimension_incompatible("oct_difference_assign(y)", y);
+    throw_dimension_incompatible("difference_assign(y)", y);
 
   Octagonal_Shape& x = *this;
 
@@ -2428,19 +2428,19 @@ Octagonal_Shape<T>::oct_difference_assign(const Octagonal_Shape& y) {
     // If the octagon `x' is included the octagon defined by `c',
     // then `c' _must_ be skipped, as adding its complement to `x'
     // would result in the empty octagon, and as we would obtain
-    // a result that is less precise than the oct_difference.
+    // a result that is less precise than the difference.
     if (x.relation_with(c).implies(Poly_Con_Relation::is_included()))
       continue;
     Octagonal_Shape z = x;
     const Linear_Expression e = Linear_Expression(c);
     z.add_constraint(e <= 0);
     if (!z.is_empty())
-      new_oct.oct_hull_assign(z);
+      new_oct.upper_bound_assign(z);
     if (c.is_equality()) {
       z = x;
       z.add_constraint(e >= 0);
       if (!z.is_empty())
-        new_oct.oct_hull_assign(z);
+        new_oct.upper_bound_assign(z);
     }
   }
   *this = new_oct;

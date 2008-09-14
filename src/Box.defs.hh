@@ -881,28 +881,22 @@ public:
   void intersection_assign(const Box& y);
 
   /*! \brief
-    Assigns to \p *this the smallest box containing the convex union
+    Assigns to \p *this the smallest box containing the union
     of \p *this and \p y.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void box_hull_assign(const Box& y);
-
-  //! Same as box_hull_assign.
   void upper_bound_assign(const Box& y);
 
   /*! \brief
-    If the box-hull of \p *this and \p y is exact, it is assigned
+    If the upper bound of \p *this and \p y is exact, it is assigned
     to \p *this and <CODE>true</CODE> is returned,
     otherwise <CODE>false</CODE> is returned.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  bool box_hull_assign_if_exact(const Box& y);
-
-  //! Same as box_hull_assign_if_exact.
   bool upper_bound_assign_if_exact(const Box& y);
 
   /*! \brief
@@ -911,9 +905,6 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void box_difference_assign(const Box& y);
-
-  //! Same as box_difference_assign.
   void difference_assign(const Box& y);
 
   /*! \brief

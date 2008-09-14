@@ -1427,14 +1427,14 @@ Box<ITV>::intersection_assign(const Box& y) {
 
 template <typename ITV>
 void
-Box<ITV>::box_hull_assign(const Box& y) {
+Box<ITV>::upper_bound_assign(const Box& y) {
   Box& x = *this;
 
   // Dimension-compatibility check.
   if (x.space_dimension() != y.space_dimension())
-    x.throw_dimension_incompatible("box_hull_assign(y)", y);
+    x.throw_dimension_incompatible("upper_bound_assign(y)", y);
 
-  // The hull of a box with an empty box is equal to the first box.
+  // The lub of a box with an empty box is equal to the first box.
   if (y.marked_empty())
     return;
   if (x.marked_empty()) {
@@ -1487,12 +1487,12 @@ Box<ITV>::concatenate_assign(const Box& y) {
 
 template <typename ITV>
 void
-Box<ITV>::box_difference_assign(const Box& y) {
+Box<ITV>::difference_assign(const Box& y) {
   const dimension_type space_dim = space_dimension();
 
   // Dimension-compatibility check.
   if (space_dim != y.space_dimension())
-    throw_dimension_incompatible("box_difference_assign(y)", y);
+    throw_dimension_incompatible("difference_assign(y)", y);
 
   Box& x = *this;
   if (x.is_empty() || y.is_empty())

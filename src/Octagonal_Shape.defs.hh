@@ -1017,34 +1017,25 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void oct_hull_assign(const Octagonal_Shape& y);
-
-  //! Same as oct_hull_assign.
   void upper_bound_assign(const Octagonal_Shape& y);
 
   /*! \brief
-    If the oct-hull of \p *this and \p y is exact, it is assigned
+    If the upper bound of \p *this and \p y is exact, it is assigned
     to \p *this and <CODE>true</CODE> is returned,
     otherwise <CODE>false</CODE> is returned.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  bool oct_hull_assign_if_exact(const Octagonal_Shape& y);
-
-  //! Same as oct_hull_assign_if_exact.
   bool upper_bound_assign_if_exact(const Octagonal_Shape& y);
 
   /*! \brief
-    Assigns to \p *this the smallest octagon containing the set difference
-    of \p *this and \p y.
+    Assigns to \p *this the smallest octagon containing
+    the set difference of \p *this and \p y.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void oct_difference_assign(const Octagonal_Shape& y);
-
-  //! Same as oct_difference_assign.
   void difference_assign(const Octagonal_Shape& y);
 
   /*! \brief

@@ -1547,11 +1547,11 @@ PPL::Grid::intersection_assign_and_minimize(const Grid& y) {
 }
 
 void
-PPL::Grid::join_assign(const Grid& y) {
+PPL::Grid::upper_bound_assign(const Grid& y) {
   Grid& x = *this;
   // Dimension-compatibility check.
   if (x.space_dim != y.space_dim)
-    throw_dimension_incompatible("join_assign(y)", "y", y);
+    throw_dimension_incompatible("upper_bound_assign(y)", "y", y);
 
   // The join of a grid `gr' with an empty grid is `gr'.
   if (y.marked_empty())
@@ -1590,25 +1590,25 @@ PPL::Grid::join_assign(const Grid& y) {
 }
 
 bool
-PPL::Grid::join_assign_and_minimize(const Grid& y) {
-  join_assign(y);
+PPL::Grid::upper_bound_assign_and_minimize(const Grid& y) {
+  upper_bound_assign(y);
   return minimize();
 }
 
 bool
-PPL::Grid::join_assign_if_exact(const Grid& y) {
+PPL::Grid::upper_bound_assign_if_exact(const Grid& y) {
   Grid& x = *this;
 
   // Dimension-compatibility check.
   if (x.space_dim != y.space_dim)
-    throw_dimension_incompatible("join_assign_if_exact(y)", "y", y);
+    throw_dimension_incompatible("upper_bound_assign_if_exact(y)", "y", y);
 
   if (x.marked_empty()
       || y.marked_empty()
       || x.space_dim == 0
       || x.is_included_in(y)
       || y.is_included_in(x)) {
-    join_assign(y);
+    upper_bound_assign(y);
     return true;
   }
 
@@ -1617,10 +1617,10 @@ PPL::Grid::join_assign_if_exact(const Grid& y) {
   assert(generators_are_up_to_date());
 
   Grid x_copy = x;
-  x_copy.join_assign(y);
-  x_copy.grid_difference_assign(y);
+  x_copy.upper_bound_assign(y);
+  x_copy.difference_assign(y);
   if (x_copy.is_included_in(x)) {
-    join_assign(y);
+    upper_bound_assign(y);
     return true;
   }
 
@@ -1628,11 +1628,11 @@ PPL::Grid::join_assign_if_exact(const Grid& y) {
 }
 
 void
-PPL::Grid::grid_difference_assign(const Grid& y) {
+PPL::Grid::difference_assign(const Grid& y) {
   Grid& x = *this;
   // Dimension-compatibility check.
   if (x.space_dim != y.space_dim)
-    throw_dimension_incompatible("poly_difference_assign(y)", "y", y);
+    throw_dimension_incompatible("difference_assign(y)", "y", y);
 
   if (y.marked_empty() || x.marked_empty())
     return;
@@ -1683,7 +1683,7 @@ PPL::Grid::grid_difference_assign(const Grid& y) {
 	  .implies(Poly_Con_Relation::is_included())) {
 	Grid z = x;
 	z.add_congruence_no_check((2*e %= m) / (2*m));
-	new_grid.join_assign(z);
+	new_grid.upper_bound_assign(z);
 	continue;
       }
     }

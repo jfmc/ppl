@@ -1379,16 +1379,16 @@ public:
   bool intersection_assign_and_minimize(const Grid& y);
 
   /*! \brief
-    Assigns to \p *this the join of \p *this and \p y.
+    Assigns to \p *this the least upper bound of \p *this and \p y.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void join_assign(const Grid& y);
+  void upper_bound_assign(const Grid& y);
 
   /*! \brief
-    Assigns to \p *this the join of \p *this and \p y, reducing the
-    result.
+    Assigns to \p *this the least upper bound of \p *this and \p y,
+    reducing the result.
 
     \return
     <CODE>false</CODE> if and only if the result is empty.
@@ -1399,29 +1399,16 @@ public:
     \deprecated
     See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
-  bool join_assign_and_minimize(const Grid& y);
-
-  //! Same as join_assign(y).
-  void upper_bound_assign(const Grid& y);
-
-  //! Same as join_assign_and_minimize(y).
-  /*!
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  void upper_bound_assign_and_minimize(const Grid& y);
+  bool upper_bound_assign_and_minimize(const Grid& y);
 
   /*! \brief
-    If the join of \p *this and \p y is exact it is assigned to \p
+    If the upper bound of \p *this and \p y is exact it is assigned to \p
     *this and <CODE>true</CODE> is returned, otherwise
     <CODE>false</CODE> is returned.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  bool join_assign_if_exact(const Grid& y);
-
-  //! Same as join_assign_if_exact(y).
   bool upper_bound_assign_if_exact(const Grid& y);
 
   /*! \brief
@@ -1434,9 +1421,6 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void grid_difference_assign(const Grid& y);
-
-  //! Same as grid_difference_assign(y).
   void difference_assign(const Grid& y);
 
   /*! \brief
@@ -2449,7 +2433,7 @@ private:
 
   //! Copies widened generators from \p y to \p widened_ggs.
   void select_wider_generators(const Grid& y,
-				Grid_Generator_System& widened_ggs) const;
+                               Grid_Generator_System& widened_ggs) const;
 
   //@} // Widening- and Extrapolation-Related Functions
 

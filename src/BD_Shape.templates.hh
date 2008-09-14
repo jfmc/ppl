@@ -1773,12 +1773,12 @@ BD_Shape<T>::shortest_path_reduction_assign() const {
 
 template <typename T>
 void
-BD_Shape<T>::bds_hull_assign(const BD_Shape& y) {
+BD_Shape<T>::upper_bound_assign(const BD_Shape& y) {
   const dimension_type space_dim = space_dimension();
 
   // Dimension-compatibility check.
   if (space_dim != y.space_dimension())
-    throw_dimension_incompatible("bds_hull_assign(y)", y);
+    throw_dimension_incompatible("upper_bound_assign(y)", y);
 
   // The poly-hull of a polyhedron `bd' with an empty polyhedron is `bd'.
   y.shortest_path_closure_assign();
@@ -1812,12 +1812,12 @@ BD_Shape<T>::bds_hull_assign(const BD_Shape& y) {
 
 template <typename T>
 void
-BD_Shape<T>::bds_difference_assign(const BD_Shape& y) {
+BD_Shape<T>::difference_assign(const BD_Shape& y) {
   const dimension_type space_dim = space_dimension();
 
   // Dimension-compatibility check.
   if (space_dim != y.space_dimension())
-    throw_dimension_incompatible("bds_difference_assign(y)", y);
+    throw_dimension_incompatible("difference_assign(y)", y);
 
   BD_Shape new_bd_shape(space_dim, EMPTY);
 
@@ -1868,12 +1868,12 @@ BD_Shape<T>::bds_difference_assign(const BD_Shape& y) {
     const Linear_Expression e = Linear_Expression(c);
     z.add_constraint(e <= 0);
     if (!z.is_empty())
-      new_bd_shape.bds_hull_assign(z);
+      new_bd_shape.upper_bound_assign(z);
     if (c.is_equality()) {
       z = x;
       z.add_constraint(e >= 0);
       if (!z.is_empty())
-        new_bd_shape.bds_hull_assign(z);
+        new_bd_shape.upper_bound_assign(z);
     }
   }
   *this = new_bd_shape;

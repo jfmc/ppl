@@ -588,28 +588,10 @@ Octagonal_Shape<T>::strictly_contains(const Octagonal_Shape& y) const {
 }
 
 template <typename T>
-inline void
-Octagonal_Shape<T>::upper_bound_assign(const Octagonal_Shape& y) {
-  oct_hull_assign(y);
-}
-
-template <typename T>
-inline bool
-Octagonal_Shape<T>::oct_hull_assign_if_exact(const Octagonal_Shape&) {
-  // TODO: this must be properly implemented.
-  return false;
-}
-
-template <typename T>
 inline bool
 Octagonal_Shape<T>::upper_bound_assign_if_exact(const Octagonal_Shape& y) {
-  return oct_hull_assign_if_exact(y);
-}
-
-template <typename T>
-inline void
-Octagonal_Shape<T>::difference_assign(const Octagonal_Shape& y) {
-  oct_difference_assign(y);
+  // TODO: this must be properly implemented.
+  return false;
 }
 
 /*! \relates Octagonal_Shape */

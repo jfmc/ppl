@@ -1236,6 +1236,9 @@ public:
   //! Same as poly_hull_assign(y).
   void upper_bound_assign(const Polyhedron& y);
 
+  //! Same as poly_hull_assign_and_minimize(y).
+  bool upper_bound_assign_and_minimize(const Polyhedron& y);
+
   /*! \brief
     Assigns to \p *this
     the \ref Convex_Polyhedral_Difference "poly-difference"
