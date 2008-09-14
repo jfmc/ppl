@@ -30,7 +30,7 @@ import parma_polyhedra_library.*;
 public class C_Polyhedron_test1 {
 static {
     try {
-        System.loadLibrary("parma_polyhedra_library");
+        System.loadLibrary("ppl_java");
     }
 
    catch (UnsatisfiedLinkError  e) {
