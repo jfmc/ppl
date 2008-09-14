@@ -32,29 +32,13 @@ Current contributors:
                         intervals.  He also helps on other design and
                         implementation issues.
 
-  Andrea Cimino         (University of Parma) wrote the initial version
-                        of our primal simplex solver.  He is still
-                        working on its refinement and optimization.
+  Andrea Cimino         (University of Parma) wrote most of our mixed
+                        integer programming solver, and of the Java
+                        and OCaml interfaces.
 
   Katy Dobson           [4] (University of Leeds) is working on the
                         formalization and definition of algorithms
                         for rational grids.
-
-  Elena Mazzi           (University of Parma) has been working on our
-                        first implementation of bounded differences
-                        and octagons.  She also participated in the
-                        theoretical and practical work concerning
-                        widening operators for weakly relational
-                        domains.  She is still working on this.
-
-  Andrea Pescetti       (University of Parma) is helping with the
-                        library's documentation.  Andrea was also one
-                        of the four students with which the PPL
-                        project started.
-
-  Barbara Quartieri     (University of Parma) is working on the
-                        implementation of bounded differences
-                        and octagons.
 
   Alessandro Zaccagnini [5] (University of Parma) has helped with
                         the efficient implementation of GCD and LCM
@@ -67,14 +51,15 @@ Current contributors:
 Past contributors:
 ------------------
 
-  Irene Bacchi          (University of Parma) worked on a development
-                        branch where she implemented several variants of
-                        algorithms, checking whether or not the set-union
-                        of two polyhedra is the same as their poly-hull.
+  Irene Bacchi          (former student of the University of Parma) worked
+                        on a development branch where she implemented
+                        several variants of algorithms, checking whether
+                        or not the set-union of two polyhedra is the same
+                        as their poly-hull.
 
-  Danilo Bonardi        (University of Parma) worked on a development
-                        branch where he experimented with the use of
-                        metaprogramming techniques based on
+  Danilo Bonardi        (former student of the University of Parma) worked
+                        on a development branch where he experimented with
+                        the use of metaprogramming techniques based on
                         "expression templates".  The objective of this
                         work was to check the effectiveness of these
                         techniques for moving computations from
@@ -91,9 +76,23 @@ Past contributors:
   Maximiliano Marchesi  (University of Parma) helped to improve the
                         documentation for bounded differences.
 
+  Elena Mazzi           (University of Parma) worked on our implementation
+                        of bounded differences and octagons.  She also
+                        participated in the theoretical and practical
+                        work concerning widening operators for weakly
+                        relational domains.
+
   David Merchat         (formerly at the University of Parma) helped us
                         with the generation of the library's documentation
                         using Doxygen.
+
+  Andrea Pescetti       (University of Parma) was one of the four students
+                        with which the PPL project started.  Later, he
+                        helped with the library's documentation.
+
+  Barbara Quartieri     (former student of the University of Parma) worked
+                        on our implementation of bounded differences and
+                        octagons.
 
   Matthew Mundell       [6] (formerly at the University of Leeds) worked
                         on the implementation of rational grids.  He has
@@ -102,15 +101,14 @@ Past contributors:
   Angela Stazzone       (former student of the University of Parma)
                         worked on the library's documentation.
 
-
   Fabio Trabucchi       (University of Parma) worked on a development
                         branch where he added serializers for all the
                         objects of the PPL.  Support for serialization
                         based on Fabio's work, will be available in a
                         future release of the library.
 
-  Claudio Trento        (University of Pisa) worked on an experimental
-                        OCaml interface for the PPL.
+  Claudio Trento        (former student of the University of Pisa) worked
+                        on an experimental OCaml interface for the PPL.
 
   Tatiana Zolo          (former student of the University of Parma) is
                         one of the four students with which the PPL
@@ -145,8 +143,8 @@ The following people have given important help to the project:
                         has set the stage for subsequent
                         implementation work, including our own.
 
-  Francesco Logozzo     [13] (Ecole Polytechnique) helped us straighten
-                        out some portability issues on Cygwin.
+  Francesco Logozzo     [13] (formerly at Ecole Polytechnique) helped us
+                        straighten out some portability issues on Cygwin.
 
   Costantino Medori     [14] (University of Parma) helped us on the
                         mathematical aspects of the development.
@@ -166,6 +164,9 @@ The following people have given important help to the project:
                         this gave us excellent opportunities for our
                         initial testing and debugging work.
 
+  Ralf Wildenhues       [18] (University of Bonn) helped us with
+                        several issues concerning the proper use of
+                        the Autotools.
 
 This work has been partly supported by the following projects and
 organizations:
@@ -174,26 +175,26 @@ organizations:
      ``Pure and Applied Mathematics'';
 
   2. MURST project ``Automatic Program Certification by Abstract
-     Interpretation'' [18];
+     Interpretation'' [19];
 
   3. MURST project ``Abstract Interpretation, Type Systems and
      Control-Flow Analysis''.
 
   4. MURST project ``Automatic Aggregate- and Number-Reasoning for
      Computing: from Decision Algorithms to Constraint Programming
-     with Multisets, Sets, and Maps'' [19].
+     with Multisets, Sets, and Maps'' [20].
 
   5. MURST project ``Constraint Based Verification of Reactive
-     Systems'' [20].
+     Systems'' [21].
 
   6. MURST project ``AIDA - Abstract Interpretation: Design and
-     Applications'' [21].
+     Applications'' [22].
 
   7. Royal Society Joint project 2004/R1-EU (UK-Italy)
      ``Automatic Detection of Unstable Numerical Computations''.
 
   8. EPSRC (UK) project EP/C520726/1
-     ``Numerical Domains for Software Analysis'' [22].
+     ``Numerical Domains for Software Analysis'' [23].
 
 --------
 
@@ -214,8 +215,9 @@ organizations:
 [15] http://www.univ-reunion.fr/~fred/
 [16] http://www.cs.unipr.it/cTI/
 [17] http://www.cs.unipr.it/China/
-[18] http://theory.sci.univr.it/p40/
-[19] http://www.cs.unipr.it/Projects/COFIN01
-[20] http://www.disi.unige.it/person/DelzannoG/cover/
-[21] http://www.cs.unipr.it/Projects/AIDA/
-[22] http://www.comp.leeds.ac.uk/hill/linda/
+[18] http://wissrech.ins.uni-bonn.de/people/wildenhues.html
+[19] http://theory.sci.univr.it/p40/
+[20] http://www.cs.unipr.it/Projects/COFIN01
+[21] http://www.disi.unige.it/person/DelzannoG/cover/
+[22] http://www.cs.unipr.it/Projects/AIDA/
+[23] http://www.comp.leeds.ac.uk/hill/linda/
