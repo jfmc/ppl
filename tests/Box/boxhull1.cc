@@ -254,13 +254,13 @@ test08() {
 } // namespace
 
 BEGIN_MAIN
-// CHECKME: tests from 1 to 7 were commented out.
-  DO_TEST(test01);
-  DO_TEST(test02);
-  DO_TEST(test03);
-  DO_TEST(test04);
-  DO_TEST(test05);
-  DO_TEST(test06);
-  DO_TEST(test07);
+// CHECKME: why test from 1 to 7 are commented out?
+//   DO_TEST(test01);
+//   DO_TEST(test02);
+//   DO_TEST(test03);
+//   DO_TEST(test04);
+//   DO_TEST(test05);
+//   DO_TEST(test06);
+//   DO_TEST(test07);
   DO_TEST(test08);
 END_MAIN
