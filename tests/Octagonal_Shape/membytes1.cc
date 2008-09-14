@@ -199,7 +199,7 @@ bool test02() {
   Pointset_Powerset<TOctagonal_Shape> pqoct(qoct);
 
   Pointset_Powerset<TOctagonal_Shape> proct = pqoct;
-  proct.poly_difference_assign(poct);
+  proct.difference_assign(poct);
 
   const memory_size_type poct_total_size = poct.total_memory_in_bytes();
   const memory_size_type poct_external_size = poct.external_memory_in_bytes();

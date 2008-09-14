@@ -1,4 +1,4 @@
-/* Test Grid::join_assign() (a.k.a. Grid::upper_bound_assign()).
+/* Test Grid::upper_bound_assign()
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -41,7 +41,7 @@ test01() {
   Grid gr2(gs2);
   print_generators(gr2, "*** gr2 ***");
 
-  gr1.join_assign(gr2);
+  gr1.upper_bound_assign(gr2);
 
   Grid_Generator_System known_gs;
   known_gs.insert(grid_point(C));
@@ -51,7 +51,7 @@ test01() {
 
   bool ok = (gr1 == known_gr);
 
-  print_congruences(gr1, "*** gr1.join_assign(gr2) ***");
+  print_congruences(gr1, "*** gr1.upper_bound_assign(gr2) ***");
 
   return ok;
 }
@@ -94,13 +94,13 @@ test03() {
   Grid gr2(gs);
   print_generators(gr2, "*** gr2 ***");
 
-  gr1.join_assign(gr2);
+  gr1.upper_bound_assign(gr2);
 
   Grid known_gr(3);
 
   bool ok = (gr1 == known_gr);
 
-  print_congruences(gr1, "*** gr1.join_assign(gr2) ***");
+  print_congruences(gr1, "*** gr1.upper_bound_assign(gr2) ***");
 
   return ok;
 }
@@ -135,7 +135,7 @@ test04() {
 
   bool ok = (gr1 == known_gr);
 
-  print_congruences(gr1, "*** gr1.join_assign(gr2) ***");
+  print_congruences(gr1, "*** gr1.upper_bound_assign(gr2) ***");
 
   return ok;
 }
@@ -159,7 +159,7 @@ test05() {
   Grid gr2(gs2);
   print_generators(gr2, "*** gr2 ***");
 
-  gr1.join_assign(gr2);
+  gr1.upper_bound_assign(gr2);
 
   Grid_Generator_System known_gs;
   known_gs.insert(grid_point());
@@ -169,7 +169,7 @@ test05() {
 
   bool ok = (gr1 == known_gr);
 
-  print_congruences(gr1, "*** gr1.join_assign(gr2) ***");
+  print_congruences(gr1, "*** gr1.upper_bound_assign(gr2) ***");
 
   return ok;
 }
@@ -257,11 +257,11 @@ test08() {
 
   Grid known_gr = gr2;
 
-  gr1.join_assign(gr2);
+  gr1.upper_bound_assign(gr2);
 
   bool ok = (gr1 == known_gr);
 
-  print_congruences(gr1, "*** gr1.join_assign(gr2) ***");
+  print_congruences(gr1, "*** gr1.upper_bound_assign(gr2) ***");
 
   return ok;
 }
@@ -291,14 +291,14 @@ test09() {
   gr2.add_constraint(15 * A == C);
   gr2.add_constraint(18 * A + B == D);
   // combine alternative paths 1 and 2
-  gr2.join_assign(gr1);
+  gr2.upper_bound_assign(gr1);
 
   // two non-trivial passes through procedure
   Grid gr3(gr0);
   gr3.add_constraint(225 * A == C);
   gr3.add_constraint(282 * A + B == D);
   // combine alternative paths 1, 2 and 3
-  gr3.join_assign(gr2);
+  gr3.upper_bound_assign(gr2);
 
   Variables_Set vars;
   vars.insert(A);

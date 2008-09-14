@@ -41,14 +41,14 @@ test01() {
 
   print_constraints(oct2, "*** oct2 ***");
 
-  oct1.oct_hull_assign(oct2);
+  oct1.upper_bound_assign(oct2);
 
   Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(x1 - x2 <= 3);
 
   bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
-  print_constraints(oct1, "*** oct1.oct_hull_assign(oct2) ***");
+  print_constraints(oct1, "*** oct1.upper_bound_assign(oct2) ***");
 
   return ok;
 }
@@ -70,14 +70,14 @@ test02() {
 
   print_constraints(oct2, "*** oct2 ***");
 
-  oct1.oct_hull_assign(oct2);
+  oct1.upper_bound_assign(oct2);
 
   Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(x1 + x2 >= 1);
 
   bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
-  print_constraints(oct1, "*** oct1.oct_hull_assign(oct2) ***");
+  print_constraints(oct1, "*** oct1.upper_bound_assign(oct2) ***");
 
   return ok;
 }
@@ -104,7 +104,7 @@ test03() {
 
   print_constraints(oct2, "*** oct2 ***");
 
-  oct1.oct_hull_assign(oct2);
+  oct1.upper_bound_assign(oct2);
 
   Octagonal_Shape<mpq_class> known_result(5);
   known_result.add_constraint(x1 <= 5);
@@ -112,7 +112,7 @@ test03() {
 
   bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
-  print_constraints(oct1, "*** oct1.oct_hull_assign(oct2) ***");
+  print_constraints(oct1, "*** oct1.upper_bound_assign(oct2) ***");
 
   return ok;
 }
@@ -137,7 +137,7 @@ test04() {
 
   print_constraints(oct2, "*** oct2 ***");
 
-  oct1.oct_hull_assign(oct2);
+  oct1.upper_bound_assign(oct2);
 
   Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(x1 <= 1);
@@ -146,7 +146,7 @@ test04() {
 
   bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
-  print_constraints(oct1, "*** oct1.oct_hull_assign(oct2) ***");
+  print_constraints(oct1, "*** oct1.upper_bound_assign(oct2) ***");
 
   return ok;
 }
@@ -172,13 +172,13 @@ test05() {
 
   print_constraints(oct2, "*** oct2 ***");
 
-  oct1.oct_hull_assign(oct2);
+  oct1.upper_bound_assign(oct2);
 
   Octagonal_Shape<mpq_class> known_result(oct2);
 
   bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
-  print_constraints(oct1, "*** oct1.oct_hull_assign(oct2) ***");
+  print_constraints(oct1, "*** oct1.upper_bound_assign(oct2) ***");
 
   return ok;
 }
@@ -209,13 +209,13 @@ test06() {
 
   print_constraints(oct2, "*** oct2 ***");
 
-  oct1.oct_hull_assign(oct2);
+  oct1.upper_bound_assign(oct2);
 
   Octagonal_Shape<mpq_class> known_result(cs1);
 
   bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
-  print_constraints(oct1, "*** oct1.oct_hull_assign(oct2) ***");
+  print_constraints(oct1, "*** oct1.upper_bound_assign(oct2) ***");
 
   return ok;
 }
@@ -228,13 +228,13 @@ test07() {
   print_constraints(oct1, "*** oct1 ***");
   print_constraints(oct2, "*** oct2 ***");
 
-  oct1.oct_hull_assign(oct2);
+  oct1.upper_bound_assign(oct2);
 
   Octagonal_Shape<mpq_class> known_result;
 
   bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
-  print_constraints(oct1, "*** oct1.oct_hull_assign(oct2) ***");
+  print_constraints(oct1, "*** oct1.upper_bound_assign(oct2) ***");
 
   return ok;
 }
@@ -247,13 +247,13 @@ test08() {
   print_constraints(oct1, "*** oct1 ***");
   print_constraints(oct2, "*** oct2 ***");
 
-  oct1.oct_hull_assign(oct2);
+  oct1.upper_bound_assign(oct2);
 
   Octagonal_Shape<mpq_class> known_result(8);
 
   bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
-  print_constraints(oct1, "*** oct1.oct_hull_assign(oct2) ***");
+  print_constraints(oct1, "*** oct1.upper_bound_assign(oct2) ***");
 
   return ok;
 }
@@ -276,7 +276,7 @@ test09() {
 
   print_constraints(oct2, "*** oct2 ***");
 
-  oct1.oct_hull_assign(oct2);
+  oct1.upper_bound_assign(oct2);
 
   Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(x1 <= 2);
@@ -284,7 +284,7 @@ test09() {
 
   bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
-  print_constraints(oct1, "*** oct1.oct_hull_assign(oct2) ***");
+  print_constraints(oct1, "*** oct1.upper_bound_assign(oct2) ***");
 
   return ok;
 }
@@ -296,9 +296,9 @@ test10() {
 
   try {
     // This is an incorrect use of method
-    // Octagonal_Shape::oct_hull_assign(oc2): it is impossible to apply
+    // Octagonal_Shape::upper_bound_assign(oc2): it is impossible to apply
     // this method to two polyhedra of different dimensions.
-    oc1.oct_hull_assign(oc2);
+    oc1.upper_bound_assign(oc2);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
@@ -323,9 +323,9 @@ test11() {
 
   try {
     // This is an invalid use of method
-    // Octagonal_Shape::oct_hull_assign(oc2): it is illegal
+    // Octagonal_Shape::upper_bound_assign(oc2): it is illegal
     // to apply this method to two polyhedra of different dimensions.
-    oc1.oct_hull_assign(oc2);
+    oc1.upper_bound_assign(oc2);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
@@ -357,7 +357,7 @@ test12() {
 
   print_constraints(oct2, "*** oct2 ***");
 
-  oct1.oct_hull_assign(oct2);
+  oct1.upper_bound_assign(oct2);
 
   Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(x1 <= 1);
@@ -366,7 +366,7 @@ test12() {
 
   bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
-  print_constraints(oct1, "*** oct1.oct_hull_assign(oct2) ***");
+  print_constraints(oct1, "*** oct1.upper_bound_assign(oct2) ***");
 
   return ok;
 }

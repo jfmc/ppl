@@ -1,4 +1,4 @@
-/* Test BD_Shape::bds_hull_assign().
+/* Test BD_Shape::upper_bound_assign().
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -45,7 +45,7 @@ test01() {
   print_constraints(bds1, "*** bds1 ***");
   print_constraints(bds2, "*** bds2 ***");
 
-  bds1.bds_hull_assign(bds2);
+  bds1.upper_bound_assign(bds2);
 
   BD_Shape<mpq_class> known_result(5);
   known_result.add_constraint(x1 <= 5);
@@ -53,7 +53,7 @@ test01() {
 
   bool ok = check_result(bds1, known_result);
 
-  print_constraints(bds1, "*** bds1.bds_hull_assign(bds2) ***");
+  print_constraints(bds1, "*** bds1.upper_bound_assign(bds2) ***");
 
   return ok;
 }
@@ -78,7 +78,7 @@ test02() {
   print_constraints(bds1, "*** bds1 ***");
   print_constraints(bds2, "*** bds2 ***");
 
-  bds1.bds_hull_assign(bds2);
+  bds1.upper_bound_assign(bds2);
 
   BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(x <= 4);
@@ -90,7 +90,7 @@ test02() {
 
   bool ok = check_result(bds1, known_result);
 
-  print_constraints(bds1, "*** bds1.bds_hull_assign(bds2) ***");
+  print_constraints(bds1, "*** bds1.upper_bound_assign(bds2) ***");
 
   return ok;
 }
@@ -117,11 +117,11 @@ test03() {
 
   BD_Shape<mpq_class> known_result(bds1);
 
-  bds1.bds_hull_assign(bds2);
+  bds1.upper_bound_assign(bds2);
 
   bool ok = check_result(bds1, known_result);
 
-  print_constraints(bds1, "*** bds1.bds_hull_assign(bds2) ***");
+  print_constraints(bds1, "*** bds1.upper_bound_assign(bds2) ***");
 
   return ok;
 }
@@ -146,7 +146,7 @@ test04() {
   print_constraints(bds1, "*** bds1 ***");
   print_constraints(bds2, "*** bds2 ***");
 
-  bds1.bds_hull_assign_and_minimize(bds2);
+  bds1.upper_bound_assign_and_minimize(bds2);
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(A <= 4);
@@ -158,7 +158,7 @@ test04() {
 
   bool ok = check_result(bds1, known_result);
 
-  print_constraints(bds1, "*** bds1.bds_hull_assign_and_minimize(bds2) ***");
+  print_constraints(bds1, "*** bds1.upper_bound_assign_and_minimize(bds2) ***");
 
   return ok;
 }
@@ -170,9 +170,9 @@ test05() {
 
   try {
     // This is an incorrect use of method
-    // BD_Shape::bds_hull_assign(bds2): it is impossible to apply
+    // BD_Shape::upper_bound_assign(bds2): it is impossible to apply
     // this method to two polyhedra of different dimensions.
-    bds1.bds_hull_assign(bds2);
+    bds1.upper_bound_assign(bds2);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -195,9 +195,9 @@ test06() {
 
   try {
     // This is an invalid use of method
-    // BD_Shape::bds_hull_assign_and_minimize(bds2): it is illegal
+    // BD_Shape::upper_bound_assign_and_minimize(bds2): it is illegal
     // to apply the method to two polyhedra of different dimensions.
-    bds1.bds_hull_assign_and_minimize(bds2);
+    bds1.upper_bound_assign_and_minimize(bds2);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -222,14 +222,14 @@ test07() {
   print_constraints(bds1, "*** bds1 ***");
   print_constraints(bds2, "*** bds2 ***");
 
-  bds1.bds_hull_assign_and_minimize(bds2);
+  bds1.upper_bound_assign_and_minimize(bds2);
 
   BD_Shape<mpq_class> known_result(1);
   known_result.add_constraint(A <= 3);
 
   bool ok = check_result(bds1, known_result) ;
 
-  print_constraints(bds1, "*** bds1.bds_hull_assign_and_minimize(bds2) ***");
+  print_constraints(bds1, "*** bds1.upper_bound_assign_and_minimize(bds2) ***");
 
   return ok;
 }
@@ -253,7 +253,7 @@ test08() {
 
   (void) bds1.minimized_constraints();
 
-  bds1.bds_hull_assign(bds2);
+  bds1.upper_bound_assign(bds2);
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(A <= 0);
@@ -261,7 +261,7 @@ test08() {
 
   bool ok = check_result(bds1, known_result) ;
 
-  print_constraints(bds1, "*** bds1.bds_hull_assign_and_minimize(bds2) ***");
+  print_constraints(bds1, "*** bds1.upper_bound_assign_and_minimize(bds2) ***");
 
   return ok;
 }

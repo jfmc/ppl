@@ -259,7 +259,7 @@ computation(std::vector<NNC_Polyhedron>& ph, bool enhanced) {
   gs_23.ascii_dump(vnout);
   vnout << endl;
 
-  ph[0].poly_hull_assign(ph[2]);
+  ph[0].upper_bound_assign(ph[2]);
 
   /**** Final conversion ****/
 

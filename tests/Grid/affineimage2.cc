@@ -275,11 +275,11 @@ test10() {
   gr2.affine_image(A, 225*A);
                   // third grid - 2 passes through procedure
 
-  gr.join_assign(gr1); // join of gr0 and gr1
+  gr.upper_bound_assign(gr1); // join of gr0 and gr1
 
-  print_congruences(gr, "*** gr.join_assign(gr1) ***");
+  print_congruences(gr, "*** gr.upper_bound_assign(gr1) ***");
 
-  gr.join_assign(gr2); // join of gr0, gr1 and gr2
+  gr.upper_bound_assign(gr2); // join of gr0, gr1 and gr2
 
   Grid known_gr(2);
 
@@ -288,7 +288,7 @@ test10() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr, "*** gr.join_assign(gr2) ***");
+  print_congruences(gr, "*** gr.upper_bound_assign(gr2) ***");
 
   return ok;
 }
@@ -317,7 +317,7 @@ test11() {
       gr.affine_image(A, 5*A);
       gr.affine_image(B, B + A);
     }
-    gr1.join_assign(gr);
+    gr1.upper_bound_assign(gr);
   }
 
   gr.add_grid_generators_and_minimize(ggs);
@@ -362,7 +362,7 @@ test12() {
       gr.affine_image(A, *tem2*A);
       gr.affine_image(B, B + A);
     }
-    gr1.join_assign(gr);
+    gr1.upper_bound_assign(gr);
   }
 
   gr.add_grid_generators_and_minimize(ggs);

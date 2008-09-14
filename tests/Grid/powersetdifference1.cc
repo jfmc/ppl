@@ -45,7 +45,7 @@ test01() {
   print_congruences(ps, "*** ps ***");
   print_congruences(qs, "*** qs ***");
 
-  ps.poly_difference_assign(qs);
+  ps.difference_assign(qs);
 
   Grid known_gr1(2);
   known_gr1.add_congruence((x %= 0) / 1);
@@ -90,8 +90,8 @@ test02() {
   print_congruences(ps, "*** ps ***");
   print_congruences(qs, "*** qs ***");
 
-  ps.poly_difference_assign(qs);
-  print_congruences(ps, "*** ps.poly_difference(qs) ***");
+  ps.difference_assign(qs);
+  print_congruences(ps, "*** ps.difference(qs) ***");
 
   Grid known_gr(2);
   known_gr.add_congruence((x %= 0) / 1);
@@ -120,8 +120,8 @@ test03() {
   print_congruences(ps, "*** ps ***");
   print_congruences(qs, "*** qs ***");
 
-  ps.poly_difference_assign(qs);
-  print_congruences(ps, "*** ps.poly_difference(qs) ***");
+  ps.difference_assign(qs);
+  print_congruences(ps, "*** ps.difference(qs) ***");
 
   return (ps.begin() == ps.end());
 }
@@ -146,8 +146,8 @@ test04() {
   print_congruences(ps, "*** ps ***");
   print_congruences(qs, "*** qs ***");
 
-  ps.poly_difference_assign(qs);
-  print_congruences(ps, "*** ps.poly_difference(qs) ***");
+  ps.difference_assign(qs);
+  print_congruences(ps, "*** ps.difference(qs) ***");
 
   Grid known_gr(2);
   known_gr.add_congruence((x %= 0) / 1);
@@ -172,8 +172,8 @@ test05() {
   print_congruences(ps, "*** ps ***");
   print_congruences(qs, "*** qs ***");
 
-  ps.poly_difference_assign(qs);
-  print_congruences(ps, "*** ps.poly_difference(qs) ***");
+  ps.difference_assign(qs);
+  print_congruences(ps, "*** ps.difference(qs) ***");
 
   return (ps.begin() == ps.end());
 }
@@ -194,8 +194,8 @@ test06() {
   print_congruences(ps, "*** ps ***");
   print_congruences(qs, "*** qs ***");
 
-  ps.poly_difference_assign(qs);
-  print_congruences(ps, "*** ps.poly_difference(qs) ***");
+  ps.difference_assign(qs);
+  print_congruences(ps, "*** ps.difference(qs) ***");
 
   Grid known_gr(p);
 
@@ -219,8 +219,8 @@ test07() {
   print_congruences(ps, "*** ps ***");
   print_congruences(qs, "*** qs ***");
 
-  ps.poly_difference_assign(qs);
-  print_congruences(ps, "*** ps.poly_difference(qs) ***");
+  ps.difference_assign(qs);
+  print_congruences(ps, "*** ps.difference(qs) ***");
 
   Grid known_gr(p);
 

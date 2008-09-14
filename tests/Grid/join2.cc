@@ -1,4 +1,4 @@
-/* Test Grid::join_assign_and_minimize().
+/* Test Grid::upper_bound_assign_and_minimize().
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-// join_assign_and_minimize - two grids in 3D
+// upper_bound_assign_and_minimize - two grids in 3D
 // each defined by a single point.
 bool
 test01() {
@@ -43,7 +43,7 @@ test01() {
   Grid gr2(gs2);
   print_generators(gr2, "*** gr2 ***");
 
-  gr1.join_assign_and_minimize(gr2);
+  gr1.upper_bound_assign_and_minimize(gr2);
 
   Grid_Generator_System known_gs;
   known_gs.insert(grid_point(A + 0*C));
@@ -53,12 +53,12 @@ test01() {
 
   bool ok = (gr1 == known_gr);
 
-  print_congruences(gr1, "*** gr1.join_assign_and_minimize(gr2) ***");
+  print_congruences(gr1, "*** gr1.upper_bound_assign_and_minimize(gr2) ***");
 
   return ok;
 }
 
-// join_assign_and_minimize - Two universe grids.
+// upper_bound_assign_and_minimize - Two universe grids.
 bool
 test02() {
   Grid gr1(3);
@@ -66,18 +66,18 @@ test02() {
   Grid gr2(3);
   print_generators(gr2, "*** gr2 ***");
 
-  gr1.join_assign_and_minimize(gr2);
+  gr1.upper_bound_assign_and_minimize(gr2);
 
   Grid known_gr(3);
 
   bool ok = (gr1 == known_gr);
 
-  print_congruences(gr1, "*** gr1.join_assign_and_minimize(gr2) ***");
+  print_congruences(gr1, "*** gr1.upper_bound_assign_and_minimize(gr2) ***");
 
   return ok;
 }
 
-// join_assign and join_assign_if_exact - Two empty grids.
+// upper_bound_assign and upper_bound_assign_if_exact - Two empty grids.
 bool
 test03() {
   Variable A(0);
@@ -91,17 +91,17 @@ test03() {
 
   Grid known_gr(4, EMPTY);
 
-  bool ok = (gr1.join_assign_if_exact(gr2));
+  bool ok = (gr1.upper_bound_assign_if_exact(gr2));
 
   if (ok)
     ok &= (gr1 == known_gr);
 
-  print_congruences(gr1, "*** gr1.join_assign_if_exact(gr2) ***");
+  print_congruences(gr1, "*** gr1.upper_bound_assign_if_exact(gr2) ***");
 
   return ok;
 }
 
-// join_assign_if_exact - First grid empty.
+// upper_bound_assign_if_exact - First grid empty.
 bool
 test04() {
   Variable A(0);
@@ -115,17 +115,17 @@ test04() {
 
   Grid known_gr = gr2;
 
-  bool ok = (gr1.join_assign_if_exact(gr2));
+  bool ok = (gr1.upper_bound_assign_if_exact(gr2));
 
   if (ok)
     ok &= (gr1 == known_gr);
 
-  print_congruences(gr1, "*** gr1.join_assign_if_exact(gr2) ***");
+  print_congruences(gr1, "*** gr1.upper_bound_assign_if_exact(gr2) ***");
 
   return ok;
 }
 
-// join_assign_if_exact - Second grid empty.
+// upper_bound_assign_if_exact - Second grid empty.
 bool
 test05() {
   Variable B(1);
@@ -140,17 +140,17 @@ test05() {
 
   Grid known_gr = gr1;
 
-  bool ok = (gr1.join_assign_if_exact(gr2));
+  bool ok = (gr1.upper_bound_assign_if_exact(gr2));
 
   if (ok)
     ok &= (gr1 == known_gr);
 
-  print_congruences(gr1, "*** gr1.join_assign_if_exact(gr2) ***");
+  print_congruences(gr1, "*** gr1.upper_bound_assign_if_exact(gr2) ***");
 
   return ok;
 }
 
-// join_assign_if_exact - Zero dimension universes.
+// upper_bound_assign_if_exact - Zero dimension universes.
 bool
 test06() {
   Grid gr1(0);
@@ -160,17 +160,17 @@ test06() {
 
   Grid known_gr = gr1;
 
-  bool ok = (gr1.join_assign_if_exact(gr2));
+  bool ok = (gr1.upper_bound_assign_if_exact(gr2));
 
   if (ok)
     ok &= (gr1 == known_gr);
 
-  print_congruences(gr1, "*** gr1.join_assign_if_exact(gr2) ***");
+  print_congruences(gr1, "*** gr1.upper_bound_assign_if_exact(gr2) ***");
 
   return ok;
 }
 
-// join_assign_if_exact - First included in second.
+// upper_bound_assign_if_exact - First included in second.
 bool
 test07() {
   Variable A(0);
@@ -185,17 +185,17 @@ test07() {
 
   Grid known_gr = gr2;
 
-  bool ok = (gr1.join_assign_if_exact(gr2));
+  bool ok = (gr1.upper_bound_assign_if_exact(gr2));
 
   if (ok)
     ok &= (gr1 == known_gr);
 
-  print_congruences(gr1, "*** gr1.join_assign_if_exact(gr2) ***");
+  print_congruences(gr1, "*** gr1.upper_bound_assign_if_exact(gr2) ***");
 
   return ok;
 }
 
-// join_assign_if_exact - Second included in first.
+// upper_bound_assign_if_exact - Second included in first.
 bool
 test08() {
   Variable A(0);
@@ -211,17 +211,17 @@ test08() {
 
   Grid known_gr = gr1;
 
-  bool ok = (gr1.join_assign_if_exact(gr2));
+  bool ok = (gr1.upper_bound_assign_if_exact(gr2));
 
   if (ok)
     ok &= (gr1 == known_gr);
 
-  print_congruences(gr1, "*** gr1.join_assign_if_exact(gr2) ***");
+  print_congruences(gr1, "*** gr1.upper_bound_assign_if_exact(gr2) ***");
 
   return ok;
 }
 
-// join_assign_if_exact - Exact join.
+// upper_bound_assign_if_exact - Exact join.
 bool
 test09() {
   Variable A(0);
@@ -241,17 +241,17 @@ test09() {
   known_gr.add_congruence((A - B %= 0) / 2);
   known_gr.add_congruence(A %= 0);
 
-  bool ok = (gr1.join_assign_if_exact(gr2));
+  bool ok = (gr1.upper_bound_assign_if_exact(gr2));
 
   if (ok)
     ok &= (gr1 == known_gr);
 
-  print_congruences(gr1, "*** gr1.join_assign_if_exact(gr2) ***");
+  print_congruences(gr1, "*** gr1.upper_bound_assign_if_exact(gr2) ***");
 
   return ok;
 }
 
-// join_assign_if_exact - Two points (join adds more points).
+// upper_bound_assign_if_exact - Two points (join adds more points).
 bool
 test10() {
   Variable A(0);
@@ -269,12 +269,12 @@ test10() {
 
   Grid known_gr = gr1;
 
-  bool ok = (!gr1.join_assign_if_exact(gr2));
+  bool ok = (!gr1.upper_bound_assign_if_exact(gr2));
 
   if (ok)
     ok &= (gr1 == known_gr);
 
-  print_congruences(gr1, "*** gr1.join_assign_if_exact(gr2) ***");
+  print_congruences(gr1, "*** gr1.upper_bound_assign_if_exact(gr2) ***");
 
   return ok;
 }
@@ -308,7 +308,7 @@ test11() {
   return false;
 }
 
-// join_assign_and_minimize - Divisor normalization.
+// upper_bound_assign_and_minimize - Divisor normalization.
 bool
 test12() {
   Variable A(0);
@@ -330,7 +330,7 @@ test12() {
   Grid gr2(gs2);
   print_generators(gr2, "*** gr2 ***");
 
-  gr1.join_assign_and_minimize(gr2);
+  gr1.upper_bound_assign_and_minimize(gr2);
 
   Congruence_System known_cgs;
   known_cgs.insert((3*C %= 0) / 1);
@@ -339,7 +339,7 @@ test12() {
 
   bool ok = (gr1 == known_gr);
 
-  print_congruences(gr1, "*** gr1.join_assign_and_minimize(gr2) ***");
+  print_congruences(gr1, "*** gr1.upper_bound_assign_and_minimize(gr2) ***");
 
   return ok;
 }

@@ -1,4 +1,4 @@
-/* Test Box::box_hull_assign().
+/* Test Box::upper_bound_assign().
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -45,7 +45,7 @@ test01() {
   print_constraints(box1, "*** box1 ***");
   print_constraints(box2, "*** box2 ***");
 
-  box1.box_hull_assign(box2);
+  box1.upper_bound_assign(box2);
 
   Rational_Box known_result(5);
   known_result.add_constraint(x1 <= 5);
@@ -53,7 +53,7 @@ test01() {
 
   bool ok = check_result(box1, known_result);
 
-  print_constraints(box1, "*** box1.box_hull_assign(box2) ***");
+  print_constraints(box1, "*** box1.upper_bound_assign(box2) ***");
 
   return ok;
 }
@@ -78,7 +78,7 @@ test02() {
   print_constraints(box1, "*** box1 ***");
   print_constraints(box2, "*** box2 ***");
 
-  box1.box_hull_assign(box2);
+  box1.upper_bound_assign(box2);
 
   Rational_Box known_result(3);
   known_result.add_constraint(x <= 4);
@@ -90,7 +90,7 @@ test02() {
 
   bool ok = check_result(box1, known_result);
 
-  print_constraints(box1, "*** box1.box_hull_assign(box2) ***");
+  print_constraints(box1, "*** box1.upper_bound_assign(box2) ***");
 
   return ok;
 }
@@ -117,11 +117,11 @@ test03() {
 
   Rational_Box known_result(box1);
 
-  box1.box_hull_assign(box2);
+  box1.upper_bound_assign(box2);
 
   bool ok = check_result(box1, known_result);
 
-  print_constraints(box1, "*** box1.box_hull_assign(box2) ***");
+  print_constraints(box1, "*** box1.upper_bound_assign(box2) ***");
 
   return ok;
 }
@@ -146,7 +146,7 @@ test04() {
   print_constraints(box1, "*** box1 ***");
   print_constraints(box2, "*** box2 ***");
 
-  box1.box_hull_assign(box2);
+  box1.upper_bound_assign(box2);
 
   Rational_Box known_result(2);
   known_result.add_constraint(A <= 4);
@@ -158,7 +158,7 @@ test04() {
 
   bool ok = check_result(box1, known_result);
 
-  print_constraints(box1, "*** box1.box_hull_assign(box2) ***");
+  print_constraints(box1, "*** box1.upper_bound_assign(box2) ***");
 
   return ok;
 }
@@ -170,9 +170,9 @@ test05() {
 
   try {
     // This is an incorrect use of method
-    // Box::box_hull_assign(box2): it is impossible to apply
+    // Box::upper_bound_assign(box2): it is impossible to apply
     // this method to two polyhedra of different dimensions.
-    box1.box_hull_assign(box2);
+    box1.upper_bound_assign(box2);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -195,9 +195,9 @@ test06() {
 
   try {
     // This is an invalid use of method
-    // Box::box_hull_assign(box2): it is illegal
+    // Box::upper_bound_assign(box2): it is illegal
     // to apply the method to two polyhedra of different dimensions.
-    box1.box_hull_assign(box2);
+    box1.upper_bound_assign(box2);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -222,14 +222,14 @@ test07() {
   print_constraints(box1, "*** box1 ***");
   print_constraints(box2, "*** box2 ***");
 
-  box1.box_hull_assign(box2);
+  box1.upper_bound_assign(box2);
 
   Rational_Box known_result(1);
   known_result.add_constraint(A <= 3);
 
   bool ok = check_result(box1, known_result) ;
 
-  print_constraints(box1, "*** box1.box_hull_assign(box2) ***");
+  print_constraints(box1, "*** box1.upper_bound_assign(box2) ***");
 
   return ok;
 }
@@ -246,7 +246,7 @@ test08() {
   print_constraints(box1, "*** box1 ***");
   print_constraints(box2, "*** box2 ***");
 
-  box1.box_hull_assign(box2);
+  box1.upper_bound_assign(box2);
 
   return true;
 }
@@ -254,12 +254,13 @@ test08() {
 } // namespace
 
 BEGIN_MAIN
-//   DO_TEST(test01);
-//   DO_TEST(test02);
-//   DO_TEST(test03);
-//   DO_TEST(test04);
-//   DO_TEST(test05);
-//   DO_TEST(test06);
-//   DO_TEST(test07);
+// CHECKME: tests from 1 to 7 were commented out.
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
   DO_TEST(test08);
 END_MAIN

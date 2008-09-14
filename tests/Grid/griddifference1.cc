@@ -1,4 +1,4 @@
-/* Test Grid::grid_difference_assign() (a.k.a. Grid::difference_assign()).
+/* Test Grid::difference_assign() (a.k.a. Grid::difference_assign()).
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -36,7 +36,7 @@ test01() {
   Grid gr2(1);
   gr2.add_congruence((A %= 0) / 2);
 
-  gr1.grid_difference_assign(gr2);
+  gr1.difference_assign(gr2);
 
   Grid known_gr(1, EMPTY);
   known_gr.add_grid_generator(grid_point(A));
@@ -44,7 +44,7 @@ test01() {
 
   bool ok = (gr1 == known_gr);
 
-  print_congruences(gr1, "*** gr1.grid_difference_assign(gr2) ***");
+  print_congruences(gr1, "*** gr1.difference_assign(gr2) ***");
 
   return ok;
 }
@@ -62,7 +62,7 @@ test02() {
 
   bool ok = (gr1 == known_gr);
 
-  print_congruences(gr1, "*** gr1.grid_difference_assign(gr2) ***");
+  print_congruences(gr1, "*** gr1.difference_assign(gr2) ***");
 
   return ok;
 }
@@ -82,13 +82,13 @@ test03() {
   gr2.add_congruence(A %= 0);
   gr2.add_congruence(B %= 0);
 
-  gr1.grid_difference_assign(gr2);
+  gr1.difference_assign(gr2);
 
   Grid known_gr(2, EMPTY);
 
   bool ok = (gr1 == known_gr);
 
-  print_congruences(gr1, "*** gr1.grid_difference_assign(gr2) ***");
+  print_congruences(gr1, "*** gr1.difference_assign(gr2) ***");
 
   return ok;
 }
@@ -109,11 +109,11 @@ test04() {
 
   Grid known_gr(gr1);
 
-  gr1.grid_difference_assign(gr2);
+  gr1.difference_assign(gr2);
 
   bool ok = (gr1 == known_gr);
 
-  print_congruences(gr1, "*** gr1.grid_difference_assign(gr2) ***");
+  print_congruences(gr1, "*** gr1.difference_assign(gr2) ***");
 
   return ok;
 }
@@ -135,7 +135,7 @@ test05() {
 
   bool ok = (gr1 == known_gr);
 
-  print_congruences(gr1, "*** gr1.grid_difference_assign(gr2) ***");
+  print_congruences(gr1, "*** gr1.difference_assign(gr2) ***");
 
   return ok;
 }
@@ -152,13 +152,13 @@ test06() {
   Grid gr2(2);
   gr2.add_congruence(A + 2*B %= 0);
 
-  gr1.grid_difference_assign(gr2);
+  gr1.difference_assign(gr2);
 
   Grid known_gr(2, EMPTY);
 
   bool ok = (gr1 == known_gr);
 
-  print_congruences(gr1, "*** gr1.grid_difference_assign(gr2) ***");
+  print_congruences(gr1, "*** gr1.difference_assign(gr2) ***");
 
   return ok;
 }
@@ -182,7 +182,7 @@ test07() {
   gr2.add_grid_generator(grid_point(3*A));
   gr2.add_grid_generator(grid_point(A + 3*B));
 
-  gr1.grid_difference_assign(gr2);
+  gr1.difference_assign(gr2);
 
   Grid known_gr(3);
   known_gr.add_constraint(2*A + C == 0);
@@ -191,7 +191,7 @@ test07() {
 
   bool ok = (gr1 == known_gr);
 
-  print_congruences(gr1, "*** gr1.grid_difference_assign(gr2) ***");
+  print_congruences(gr1, "*** gr1.difference_assign(gr2) ***");
 
   return ok;
 }
@@ -203,13 +203,13 @@ test08() {
 
   Grid gr2(0);
 
-  gr1.grid_difference_assign(gr2);
+  gr1.difference_assign(gr2);
 
   Grid known_gr(0, EMPTY);
 
   bool ok = (gr1 == known_gr);
 
-  print_congruences(gr1, "*** gr1.grid_difference_assign(gr2) ***");
+  print_congruences(gr1, "*** gr1.difference_assign(gr2) ***");
 
   return ok;
 }
@@ -232,11 +232,11 @@ test09() {
 
   Grid known_gr(gr1);
 
-  gr1.grid_difference_assign(gr2);
+  gr1.difference_assign(gr2);
 
   bool ok = (gr1 == known_gr);
 
-  print_congruences(gr1, "*** gr1.grid_difference_assign(gr2) ***");
+  print_congruences(gr1, "*** gr1.difference_assign(gr2) ***");
 
   return ok;
 }
@@ -266,7 +266,7 @@ test10() {
 
   bool ok = (gr1 == known_gr);
 
-  print_congruences(gr1, "*** gr1.grid_difference_assign(gr2) ***");
+  print_congruences(gr1, "*** gr1.difference_assign(gr2) ***");
 
   return ok;
 }
@@ -298,7 +298,7 @@ test11() {
 
   bool ok = (gr1 == known_gr);
 
-  print_congruences(gr1, "*** gr1.grid_difference_assign(gr2) ***");
+  print_congruences(gr1, "*** gr1.difference_assign(gr2) ***");
 
   return ok;
 }

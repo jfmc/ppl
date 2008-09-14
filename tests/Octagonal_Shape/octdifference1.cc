@@ -1,5 +1,5 @@
-/* Test Octagonal_Shape::oct_difference_assign(): if `oct1' is
-   contained in `oct2', the result of `oct1.oct_difference_assign(oct2)'
+/* Test Octagonal_Shape::difference_assign(): if `oct1' is
+   contained in `oct2', the result of `oct1.difference_assign(oct2)'
    is an empty octagon.
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -46,13 +46,13 @@ test01() {
 
   print_constraints(oct2, "*** oct2 ***");
 
-  oct1.oct_difference_assign(oct2);
+  oct1.difference_assign(oct2);
 
   Octagonal_Shape<mpq_class> known_result(2, EMPTY);
 
   bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
-  print_constraints(oct1, "*** oct1.oct_difference_assign(oc2) ***");
+  print_constraints(oct1, "*** oct1.difference_assign(oc2) ***");
 
   return ok;
 }
@@ -65,7 +65,7 @@ test02() {
   print_constraints(oct1, "*** oct1 ***");
   print_constraints(oct2, "*** oct2 ***");
 
-  oct1.oct_difference_assign(oct2);
+  oct1.difference_assign(oct2);
 
   Octagonal_Shape<mpq_class> known_result(0, EMPTY);
 
@@ -91,7 +91,7 @@ test03() {
 
   print_constraints(oct2, "*** oct2 ***");
 
-  oct1.oct_difference_assign(oct2);
+  oct1.difference_assign(oct2);
 
   Octagonal_Shape<mpq_class> known_result(1);
   known_result.add_constraint(A >= 0);
@@ -111,9 +111,9 @@ test04() {
 
   try {
     // This is an incorrect use of method
-    // Octagonal_Shape::oct_difference_assign(oc2): it is impossible to apply
+    // Octagonal_Shape::difference_assign(oc2): it is impossible to apply
     // this method to two polyhedra of different dimensions.
-    oc1.oct_difference_assign(oc2);
+    oc1.difference_assign(oc2);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
@@ -143,11 +143,11 @@ test05() {
 
   Octagonal_Shape<mpq_class> known_result(oct1);
 
-  oct1.oct_difference_assign(oct2);
+  oct1.difference_assign(oct2);
 
   bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
-  print_constraints(oct1, "*** oct1.oct_difference_assign(oc2) ***");
+  print_constraints(oct1, "*** oct1.difference_assign(oc2) ***");
 
   return ok;
 }
@@ -177,11 +177,11 @@ test06() {
 
   Octagonal_Shape<mpq_class> known_result(4, EMPTY);
 
-  oc1.oct_difference_assign(oc2);
+  oc1.difference_assign(oc2);
 
   bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
-  print_constraints(oc1, "*** oc1.oct_difference_assign(oc2) ***");
+  print_constraints(oc1, "*** oc1.difference_assign(oc2) ***");
 
   return ok;
 }
@@ -206,11 +206,11 @@ test07() {
   Octagonal_Shape<mpq_class> known_result(2, EMPTY);
   print_constraints(oct2, "*** oct2 ***");
 
-  oct1.oct_difference_assign(oct2);
+  oct1.difference_assign(oct2);
 
   bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
-  print_constraints(oct1, "*** oct1.oct_difference_assign(oct2) ***");
+  print_constraints(oct1, "*** oct1.difference_assign(oct2) ***");
 
   return ok;
 }
@@ -234,11 +234,11 @@ test08() {
   Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(A + B <= 1);
 
-  oct1.oct_difference_assign(oct2);
+  oct1.difference_assign(oct2);
 
   bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
-  print_constraints(oct1, "*** oct1.oct_difference_assign(oct2) ***");
+  print_constraints(oct1, "*** oct1.difference_assign(oct2) ***");
 
   return ok;
 }

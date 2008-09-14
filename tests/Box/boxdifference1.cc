@@ -1,4 +1,4 @@
-/* Test Box::box_difference_assign().
+/* Test Box::difference_assign().
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -45,13 +45,13 @@ test01() {
   print_constraints(box1, "*** box1 ***");
   print_constraints(box2, "*** ph2 ***");
 
-  box1.box_difference_assign(box2);
+  box1.difference_assign(box2);
 
   Rational_Box known_result(2, EMPTY);
 
   bool ok = check_result(box1, known_result);
 
-  print_constraints(box1, "*** after box1.box_difference_assign(ph2) ***");
+  print_constraints(box1, "*** after box1.difference_assign(ph2) ***");
 
   return ok;
 }
@@ -75,11 +75,11 @@ test02() {
 
   Rational_Box known_result(box1);
 
-  box1.box_difference_assign(box2);
+  box1.difference_assign(box2);
 
   bool ok = check_result(box1, known_result);
 
-  print_constraints(box1, "*** after box1.box_difference_assign(ph2) ***");
+  print_constraints(box1, "*** after box1.difference_assign(ph2) ***");
 
   return ok;
 }
@@ -93,7 +93,7 @@ test03() {
   print_constraints(box1, "*** box1 ***");
   print_constraints(box2, "*** box2 ***");
 
-  box1.box_difference_assign(box2);
+  box1.difference_assign(box2);
 
   Constraint_System cs;
   cs.insert(Linear_Expression(-4) >= 0);
@@ -101,7 +101,7 @@ test03() {
 
   bool ok = check_result(box1, known_result);
 
-  print_constraints(box1, "*** after box1.box_difference_assign(box2) ***");
+  print_constraints(box1, "*** after box1.difference_assign(box2) ***");
 
   return ok;
 }
@@ -127,7 +127,7 @@ test04() {
   print_constraints(box1, "*** box1 ***");
   print_constraints(box2, "*** box2 ***");
 
-  box1.box_difference_assign(box2);
+  box1.difference_assign(box2);
 
   Rational_Box known_result(2);
   known_result.add_constraint(x >= 0);
@@ -137,7 +137,7 @@ test04() {
 
   bool ok = check_result(box1, known_result);
 
-  print_constraints(box1, "*** after box1.box_difference_assign(box2) ***");
+  print_constraints(box1, "*** after box1.difference_assign(box2) ***");
 
   return ok;
 }
@@ -166,11 +166,11 @@ test05() {
 
   Rational_Box known_result(box1);
 
-  box1.box_difference_assign(box2);
+  box1.difference_assign(box2);
 
   bool ok = check_result(box1, known_result);
 
-  print_constraints(box1, "*** after box1.box_difference_assign(box2) ***");
+  print_constraints(box1, "*** after box1.difference_assign(box2) ***");
 
   return ok;
 }
@@ -196,13 +196,13 @@ test06() {
   print_constraints(box1, "*** box1 ***");
   print_constraints(box2, "*** box2 ***");
 
-  box1.box_difference_assign(box2);
+  box1.difference_assign(box2);
 
   Rational_Box known_result(2, EMPTY);
 
   bool ok = check_result(box1, known_result);
 
-  print_constraints(box1, "*** after box1.box_difference_assign(box2) ***");
+  print_constraints(box1, "*** after box1.difference_assign(box2) ***");
 
   return ok;
 }
@@ -228,7 +228,7 @@ test07() {
   print_constraints(box1, "*** box1 ***");
   print_constraints(box2, "*** box2 ***");
 
-  box1.box_difference_assign(box2);
+  box1.difference_assign(box2);
 
   Rational_Box known_result(3);
   known_result.add_constraint(x <= 8);
@@ -238,7 +238,7 @@ test07() {
 
   bool ok = check_result(box1, known_result);
 
-  print_constraints(box1, "*** after box1.box_difference_assign(box2) ***");
+  print_constraints(box1, "*** after box1.difference_assign(box2) ***");
 
   return ok;
 }
@@ -270,11 +270,11 @@ test08() {
   known_result.add_constraint(B >= 0);
   known_result.add_constraint(B <= 2);
 
-  box1.box_difference_assign(box2);
+  box1.difference_assign(box2);
 
   bool ok = check_result(box1, known_result);
 
-  print_constraints(box1, "*** after box1.box_difference_assign(box2) ***");
+  print_constraints(box1, "*** after box1.difference_assign(box2) ***");
   print_constraints(known_result, "*** known_result ***");
 
   return ok;
@@ -307,11 +307,11 @@ test09() {
   known_result.add_constraint(B >= 0);
   known_result.add_constraint(B <= 2);
 
-  box1.box_difference_assign(box2);
+  box1.difference_assign(box2);
 
   bool ok = check_result(box1, known_result);
 
-  print_constraints(box1, "*** after box1.box_difference_assign(box2) ***");
+  print_constraints(box1, "*** after box1.difference_assign(box2) ***");
   print_constraints(known_result, "*** known_result ***");
 
   return ok;
@@ -344,11 +344,11 @@ test10() {
   known_result.add_constraint(B >= 0);
   known_result.add_constraint(B <= 2);
 
-  box1.box_difference_assign(box2);
+  box1.difference_assign(box2);
 
   bool ok = check_result(box1, known_result);
 
-  print_constraints(box1, "*** after box1.box_difference_assign(box2) ***");
+  print_constraints(box1, "*** after box1.difference_assign(box2) ***");
   print_constraints(known_result, "*** known_result ***");
 
   return ok;
@@ -370,13 +370,13 @@ test11() {
   print_constraints(box1, "*** box1 ***");
   print_constraints(box2, "*** ph2 ***");
 
-  box1.box_difference_assign(box2);
+  box1.difference_assign(box2);
 
   Rational_Box known_result(2, EMPTY);
 
   bool ok = check_result(box1, known_result);
 
-  print_constraints(box1, "*** after box1.box_difference_assign(ph2) ***");
+  print_constraints(box1, "*** after box1.difference_assign(ph2) ***");
 
   return ok;
 }
@@ -407,11 +407,11 @@ test12() {
   known_result.add_constraint(B >= 0);
   known_result.add_constraint(B <= 2);
 
-  box1.box_difference_assign(box2);
+  box1.difference_assign(box2);
 
   bool ok = check_result(box1, known_result);
 
-  print_constraints(box1, "*** after box1.box_difference_assign(box2) ***");
+  print_constraints(box1, "*** after box1.difference_assign(box2) ***");
   print_constraints(known_result, "*** known_result ***");
 
   return ok;
@@ -425,9 +425,9 @@ test13() {
 
   try {
     // This is an incorrect use of method
-    // Box::box_difference_assign(box2): it is impossible to apply
+    // Box::difference_assign(box2): it is impossible to apply
     // this method to two boxes of different dimensions.
-    box1.box_difference_assign(box2);
+    box1.difference_assign(box2);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;

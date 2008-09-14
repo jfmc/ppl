@@ -88,9 +88,9 @@ test01() {
 
     print_constraints(current, "*** after remove_space_dimensions ***");
 
-    current.poly_hull_assign_and_minimize(previous);
+    current.upper_bound_assign_and_minimize(previous);
 
-    print_constraints(current, "*** after poly_hull_assign_and_minimize ***");
+    print_constraints(current, "*** after upper_bound_assign_and_minimize ***");
 
   } while (current != previous);
 

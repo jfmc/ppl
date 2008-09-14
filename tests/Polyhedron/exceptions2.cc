@@ -357,10 +357,10 @@ test13() {
 
    try {
      // This is an invalid use of the function
-     // `poly_hull_assign_and_minimize': it is illegal to apply
+     // `upper_bound_assign_and_minimize': it is illegal to apply
      // this function to a closed polyhedron and a
      // non-closed polyhedron.
-    ph1.poly_hull_assign_and_minimize(ph2);
+    ph1.upper_bound_assign_and_minimize(ph2);
    }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
@@ -392,9 +392,9 @@ test14() {
 
    try {
     // This is an invalid use of the function
-    // `poly_hull_assign': it is illegal to apply this function
+    // `upper_bound_assign': it is illegal to apply this function
     // to a closed polyhedron and a non-closed polyhedron.
-    ph1.poly_hull_assign(ph2);
+    ph1.upper_bound_assign(ph2);
    }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
@@ -427,9 +427,9 @@ test15() {
 
   try {
     // This is an invalid use of the function
-    // `poly_difference_assign': it is illegal to apply this function
+    // `difference_assign': it is illegal to apply this function
     // to a closed polyhedron and a non-closed polyhedron.
-    ph1.poly_difference_assign(ph2);
+    ph1.difference_assign(ph2);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;

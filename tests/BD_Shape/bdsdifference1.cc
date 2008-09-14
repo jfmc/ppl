@@ -1,4 +1,4 @@
-/* Test BD_Shape::bds_difference_assign().
+/* Test BD_Shape::difference_assign().
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -43,13 +43,13 @@ test01() {
   print_constraints(bds1, "*** bds1 ***");
   print_constraints(bds2, "*** ph2 ***");
 
-  bds1.bds_difference_assign(bds2);
+  bds1.difference_assign(bds2);
 
   BD_Shape<mpq_class> known_result(2, EMPTY);
 
   bool ok = check_result(bds1, known_result);
 
-  print_constraints(bds1, "*** after bds1.bds_difference_assign(ph2) ***");
+  print_constraints(bds1, "*** after bds1.difference_assign(ph2) ***");
 
   return ok;
 }
@@ -62,7 +62,7 @@ test02() {
   print_constraints(bds1, "*** bds1 ***");
   print_constraints(bds2, "*** bds2 ***");
 
-  bds1.bds_difference_assign(bds2);
+  bds1.difference_assign(bds2);
 
   Constraint_System cs;
   cs.insert(Linear_Expression(-4) >= 0);
@@ -70,7 +70,7 @@ test02() {
 
   bool ok = check_result(bds1, known_result);
 
-  print_constraints(bds1, "*** after bds1.bds_difference_assign(bds2) ***");
+  print_constraints(bds1, "*** after bds1.difference_assign(bds2) ***");
 
   return ok;
 }
@@ -95,7 +95,7 @@ test03() {
   print_constraints(bds1, "*** bds1 ***");
   print_constraints(bds2, "*** bds2 ***");
 
-  bds1.bds_difference_assign(bds2);
+  bds1.difference_assign(bds2);
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(x >= 0);
@@ -106,7 +106,7 @@ test03() {
 
   bool ok = check_result(bds1, known_result);
 
-  print_constraints(bds1, "*** after bds1.bds_difference_assign(bds2) ***");
+  print_constraints(bds1, "*** after bds1.difference_assign(bds2) ***");
 
   return ok;
 }
@@ -133,11 +133,11 @@ test04() {
 
   BD_Shape<mpq_class> known_result(bds1);
 
-  bds1.bds_difference_assign(bds2);
+  bds1.difference_assign(bds2);
 
   bool ok = check_result(bds1, known_result);
 
-  print_constraints(bds1, "*** after bds1.bds_difference_assign(bds2) ***");
+  print_constraints(bds1, "*** after bds1.difference_assign(bds2) ***");
 
   return ok;
 }
@@ -162,13 +162,13 @@ test05() {
   print_constraints(bds1, "*** bds1 ***");
   print_constraints(bds2, "*** bds2 ***");
 
-  bds1.bds_difference_assign(bds2);
+  bds1.difference_assign(bds2);
 
   BD_Shape<mpq_class> known_result(2, EMPTY);
 
   bool ok = check_result(bds1, known_result);
 
-  print_constraints(bds1, "*** after bds1.bds_difference_assign(bds2) ***");
+  print_constraints(bds1, "*** after bds1.difference_assign(bds2) ***");
 
   return ok;
 }
@@ -193,7 +193,7 @@ test06() {
   print_constraints(bds1, "*** bds1 ***");
   print_constraints(bds2, "*** bds2 ***");
 
-  bds1.bds_difference_assign(bds2);
+  bds1.difference_assign(bds2);
 
   BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(x <= 8);
@@ -203,7 +203,7 @@ test06() {
 
   bool ok = check_result(bds1, known_result);
 
-  print_constraints(bds1, "*** after bds1.bds_difference_assign(bds2) ***");
+  print_constraints(bds1, "*** after bds1.difference_assign(bds2) ***");
 
   return ok;
 }
@@ -234,11 +234,11 @@ test07() {
   known_result.add_constraint(B >= 0);
   known_result.add_constraint(B <= 2);
 
-  bds1.bds_difference_assign(bds2);
+  bds1.difference_assign(bds2);
 
   bool ok = check_result(bds1, known_result);
 
-  print_constraints(bds1, "*** after bds1.bds_difference_assign(bds2) ***");
+  print_constraints(bds1, "*** after bds1.difference_assign(bds2) ***");
   print_constraints(known_result, "*** known_result ***");
 
   return ok;
@@ -251,9 +251,9 @@ test08() {
 
   try {
     // This is an incorrect use of method
-    // BD_Shape::bds_difference_assign(bds2): it is impossible to apply
+    // BD_Shape::difference_assign(bds2): it is impossible to apply
     // this method to two polyhedra of different dimensions.
-    bds1.bds_difference_assign(bds2);
+    bds1.difference_assign(bds2);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;

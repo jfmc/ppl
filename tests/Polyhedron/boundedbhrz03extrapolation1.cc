@@ -55,7 +55,7 @@ test01() {
     ph.affine_image(j, j+k);
     ph.affine_image(k, k-1);
 
-    old_ph.poly_hull_assign(ph);
+    old_ph.upper_bound_assign(ph);
 
     ph = old_ph;
   }
@@ -78,7 +78,7 @@ test01() {
     ph.affine_image(j, j+k);
     ph.affine_image(k, k-1);
 
-    ph.poly_hull_assign(old_ph);
+    ph.upper_bound_assign(old_ph);
     if (old_ph.contains(ph))
       break;
 

@@ -1,4 +1,4 @@
-/* Test Polyhedron::poly_difference_assign().
+/* Test Polyhedron::difference_assign().
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -49,7 +49,7 @@ test01() {
 
   C_Polyhedron computed_result = ph1;
 
-  computed_result.poly_difference_assign(ph2);
+  computed_result.difference_assign(ph2);
 
   Generator_System gs_known_result;
   gs_known_result.insert(point());
@@ -62,11 +62,11 @@ test01() {
   C_Polyhedron ph3(2);
   ph3.add_constraint(2*y >= 3);
 
-  known_result.poly_difference_assign(ph3);
+  known_result.difference_assign(ph3);
 
   bool ok = (computed_result == known_result);
 
-  print_generators(computed_result, "*** after poly_difference_assign ***");
+  print_generators(computed_result, "*** after difference_assign ***");
   print_generators(known_result, "*** known_result ***");
 
   return ok;
@@ -84,11 +84,11 @@ test02() {
   cs.insert(Linear_Expression(-4) >= 0);
   C_Polyhedron known_result(cs);
 
-  ph1.poly_difference_assign(ph2);
+  ph1.difference_assign(ph2);
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** after ph1.poly_difference_assign(ph2) ***");
+  print_constraints(ph1, "*** after ph1.difference_assign(ph2) ***");
 
   return ok;
 }
@@ -114,11 +114,11 @@ test03() {
 
   C_Polyhedron known_result(2, EMPTY);
 
-  ph1.poly_difference_assign(ph2);
+  ph1.difference_assign(ph2);
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** after ph1.poly_difference_assign(ph2) ***");
+  print_constraints(ph1, "*** after ph1.difference_assign(ph2) ***");
 
   return ok;
 }
@@ -138,11 +138,11 @@ test04() {
 
   C_Polyhedron known_result(ph1);
 
-  ph1.poly_difference_assign(ph2);
+  ph1.difference_assign(ph2);
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** after ph1.poly_difference_assign(ph2) ***");
+  print_constraints(ph1, "*** after ph1.difference_assign(ph2) ***");
 
   return ok;
 }
@@ -161,11 +161,11 @@ test05() {
 
   C_Polyhedron known_result(ph1);
 
-  ph1.poly_difference_assign(ph2);
+  ph1.difference_assign(ph2);
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** after ph1.poly_difference_assign(ph2) ***");
+  print_constraints(ph1, "*** after ph1.difference_assign(ph2) ***");
 
   return ok;
 }
@@ -184,11 +184,11 @@ test06() {
 
   C_Polyhedron known_result(ph1);
 
-  ph1.poly_difference_assign(ph2);
+  ph1.difference_assign(ph2);
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** after ph1.poly_difference_assign(ph2) ***");
+  print_constraints(ph1, "*** after ph1.difference_assign(ph2) ***");
 
   return ok;
 }
@@ -225,7 +225,7 @@ test07() {
   nout << "squares = " << squares << endl;
 
   Pointset_Powerset<C_Polyhedron> difference = cross;
-  difference.poly_difference_assign(squares);
+  difference.difference_assign(squares);
 
   nout << "cross - squares = " << difference << endl;
 

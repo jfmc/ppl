@@ -243,7 +243,7 @@ test02() {
   Pointset_Powerset<Grid> pgr2(gr2);
 
   Pointset_Powerset<Grid> p2gr2 = pgr2;
-  p2gr2.poly_difference_assign(pgr1);
+  p2gr2.difference_assign(pgr1);
 
   const memory_size_type pgr1_total_size = pgr1.total_memory_in_bytes();
   const memory_size_type pgr1_external_size = pgr1.external_memory_in_bytes();
