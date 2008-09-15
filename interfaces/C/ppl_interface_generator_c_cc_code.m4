@@ -919,4 +919,28 @@ CATCH_ALL
 
 ')
 
-m4_divert`'dnl
+m4_define(`ppl_@CLASS@_get_disjunct_code',
+`dnl
+int
+ppl_@CLASS@_iterator_dereference
+(ppl_const_@CLASS@_iterator_t psit,
+ ppl_const_@DISJUNCT@_t* cd) try {
+   const @CPP_CLASS@::iterator& cpsit = *to_const(psit);
+   const @CLASSTOPOLOGY@@CPP_DISJUNCT@& d = cpsit->element();
+   *cd = to_const(&d);
+   return 0;
+}
+CATCH_ALL
+
+int
+ppl_@CLASS@_const_iterator_dereference
+(ppl_const_@CLASS@_const_iterator_t psit,
+ ppl_const_@DISJUNCT@_t* cd) try {
+   const @CPP_CLASS@::const_iterator& cpsit = *to_const(psit);
+   const @CLASSTOPOLOGY@@CPP_DISJUNCT@& d = cpsit->element();
+   *cd = to_const(&d);
+   return 0;
+}
+CATCH_ALL
+
+')
