@@ -175,7 +175,7 @@ m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_code', `
 
 ')
 
- m4_define(`ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@_code', `
+ m4_define(`ppl_@CLASS@_@UB_EXACT@_code', `
 boolean @LTOPOLOGY@@LCLASS@1_@UB_EXACT@
   = @LTOPOLOGY@@LCLASS@1.@UB_EXACT@(@LTOPOLOGY@@LCLASS@1);
 

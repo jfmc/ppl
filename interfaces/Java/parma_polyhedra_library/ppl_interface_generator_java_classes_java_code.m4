@@ -91,7 +91,7 @@ m4_define(`ppl_free_@CLASS@_code',
 
 ')
 
-m4_define(`ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@_code',
+m4_define(`ppl_@CLASS@_@UB_EXACT@_code',
 `dnl
 %<--%<--%<-- @TOPOLOGY@@CLASS@.java
     public native boolean @UB_EXACT@(@TOPOLOGY@@CLASS@ y);

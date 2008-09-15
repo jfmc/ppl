@@ -92,7 +92,7 @@ let out = if (ppl_@TOPOLOGY@@CLASS@_OK @LTOPOLOGY@@LCLASS@)
 print_newline();;
 ')
 
-m4_define(`ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@_code',
+m4_define(`ppl_@CLASS@_@UB_EXACT@_code',
 `
 print_string "testing ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@: " ;;
 let copy01
