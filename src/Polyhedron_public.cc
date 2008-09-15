@@ -3001,6 +3001,10 @@ bounded_affine_image(const Variable var,
 			     GREATER_OR_EQUAL,
 			     lb_expr,
 			     denominator);
+    if (marked_empty()) {
+      remove_higher_space_dimensions(space_dim-1);
+      return;
+    }
     // Now apply the affine upper bound, as recorded in `new_var'.
     refine_no_check(new_var >= var);
     // Remove the temporarily added dimension.

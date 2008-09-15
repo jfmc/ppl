@@ -245,7 +245,5 @@ BEGIN_MAIN
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
-#if 0
   DO_TEST(test07);
-#endif
 END_MAIN
