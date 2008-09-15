@@ -77,7 +77,7 @@ CATCH_ALL
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@_code',
 `int
-ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@
+ppl_new_@TOPOLOGY@@CLASS@_from_bounding_box
 (ppl_@CLASS@_t* pph,
  ppl_dimension_type (*space_dimension)(void),
  int (*is_empty)(void),
@@ -806,7 +806,7 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_@BEGINEND@_iterator_code',
 `dnl
 int
-ppl_@CLASS@_@BEGINEND@
+ppl_@CLASS@_iterator_@BEGINEND@
 (ppl_@CLASS@_t ps,
  ppl_@CLASS@_iterator_t psit) try {
   @CPP_CLASS@::iterator& ppsit = *to_nonconst(psit);
@@ -816,8 +816,8 @@ ppl_@CLASS@_@BEGINEND@
 CATCH_ALL
 
 int
-ppl_@CLASS@_const_@BEGINEND@
-(ppl_const_@CLASS@_t ps,
+ppl_@CLASS@_const_iterator_@BEGINEND@
+(ppl_@CLASS@_t ps,
  ppl_@CLASS@_const_iterator_t psit) try {
   @CPP_CLASS@::const_iterator& ppsit = *to_nonconst(psit);
   ppsit = to_const(ps)->@BEGINEND@();
@@ -853,7 +853,8 @@ m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
 `dnl
 int
 ppl_@CLASS@_iterator_@INCDEC@
-(ppl_@CLASS@_iterator_t it)
+(ppl_@CLASS@_t ps,
+ ppl_@CLASS@_iterator_t it)
   try {
     @CPP_CLASS@::iterator& iit = *to_nonconst(it);
     @CPPX_INCDEC@iit;
@@ -863,7 +864,8 @@ CATCH_ALL
 
 int
 ppl_@CLASS@_const_iterator_@INCDEC@
-(ppl_@CLASS@_const_iterator_t it)
+(ppl_@CLASS@_t ps,
+ ppl_@CLASS@_const_iterator_t it)
   try {
     @CPP_CLASS@::const_iterator& iit = *to_nonconst(it);
     @CPPX_INCDEC@iit;

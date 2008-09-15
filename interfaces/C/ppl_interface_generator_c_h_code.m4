@@ -478,7 +478,7 @@ PPL_PROTO((ppl_@CLASS@_t ps,
 int
 ppl_@CLASS@_const_iterator_@BEGINEND@
 PPL_PROTO((ppl_@CLASS@_t ps,
-           ppl_const_@CLASS@_const_iterator_t psit));
+           ppl_@CLASS@_const_iterator_t psit));
 
 ')
 
@@ -535,6 +535,11 @@ PPL_PROTO((ppl_@CLASS@_t ps,
 
 m4_define(`ppl_@CLASS@_get_disjunct_code',
 `dnl
+int
+ppl_@CLASS@_iterator_dereference
+PPL_PROTO((ppl_const_@CLASS@_iterator_t ps,
+           ppl_const_@DISJUNCT@_t* d));
+
 int
 ppl_@CLASS@_const_iterator_dereference
 PPL_PROTO((ppl_const_@CLASS@_const_iterator_t ps,
