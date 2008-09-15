@@ -480,35 +480,11 @@ external ppl_@CLASS@_iterator_equals_iterator:
 
 ')
 
-# m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@_code',
-# `dnl
-# external ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@:
-  # @LFRIEND@ -> @LTOPOLOGY@@LCLASS@
-    # = "ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@"
-
-# ')
-
 # m4_define(`ppl_@CLASS@_get_disjuncts_code',
 # `dnl
 # external ppl_@CLASS@_get_disjuncts:
   # @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> bool
     # = "ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@"
-
-# ')
-
-# m4_define(`ppl_@CLASS@_get_bounding_box_code',
-# `dnl
-# external ppl_@CLASS@_get_bounding_box:
-  # @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> bool
-    # = "ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@"
-
-# ')
-
-# m4_define(`ppl_@CLASS@_get_covering_box_code',
-# `dnl
-# external ppl_@CLASS@_get_covering_box:
-  # @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> bool
-    # = "ppl_@CLASS@_get_covering_box"
 
 # ')
 

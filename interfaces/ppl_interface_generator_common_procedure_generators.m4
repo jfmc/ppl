@@ -49,7 +49,6 @@ ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension/3 +all,
 ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@/2 +all,
 ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity/3 +all,
 ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s/2 +all,
-ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@/2 +all,
 ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@/2 +polyhedron,
 ppl_@CLASS@_swap/2 *nofail +all,
 ppl_@CLASS@_@DIMENSION@/2 +all,
@@ -61,15 +60,6 @@ dnl       constraints) that represents a domain from a simple domain.
 dnl
 ppl_@CLASS@_get_@GET_REPRESENT@s/2 +simple,
 ppl_@CLASS@_get_minimized_@GET_REPRESENT@s/2 +simple,
-dnl
-dnl FIXME: There is no get_bounding_box() method
-dnl        for the pointset_powerset or product domains.
-dnl        The Box domain does not have a get_bounding_box() method.
-dnl        Only the Grid domain has a get_covering_box() method.
-dnl
-ppl_@CLASS@_get_bounding_box/3 +simple -box,
-ppl_@CLASS@_get_covering_box/2 +grid,
-dnl
 ppl_@CLASS@_@HAS_PROPERTY@/1 +all,
 ppl_@CLASS@_@SIMPLIFY@/1 *nofail +all,
 ppl_@CLASS@_bounds_from_@ABOVEBELOW@/2 +all,

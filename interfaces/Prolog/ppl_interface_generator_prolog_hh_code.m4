@@ -56,18 +56,6 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_code',
 						    Prolog_term_ref t_ph);
 ')
 
-m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@_code',
-  `extern "C" Prolog_foreign_return_type
-  ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(Prolog_term_ref t_bb,
-				       Prolog_term_ref t_ph);
-')
-
-m4_define(`new_bounding_box_code', `')
-
-m4_define(`new_covering_box_code', `, From_Covering_Box()`'');
-
-')
-
   m4_define(`ppl_@CLASS@_swap_code',
   `extern "C" Prolog_foreign_return_type
   ppl_@CLASS@_swap(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs);
@@ -168,20 +156,6 @@ m4_define(`ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_code',
   ppl_@CLASS@_relation_with_@RELATION_REPRESENT@(Prolog_term_ref t_ph,
 						 Prolog_term_ref t_c,
 						 Prolog_term_ref t_r);
-
-')
-
-m4_define(`ppl_@CLASS@_get_covering_box_code',
-  `extern "C" Prolog_foreign_return_type
-  ppl_@CLASS@_get_covering_box(Prolog_term_ref t_ph, Prolog_term_ref t_bb);
-
-')
-
-m4_define(`ppl_@CLASS@_get_bounding_box_code',
-  `extern "C" Prolog_foreign_return_type
-  ppl_@CLASS@_get_bounding_box(Prolog_term_ref t_ph,
-			       Prolog_term_ref t_cc,
-			       Prolog_term_ref t_bb);
 
 ')
 

@@ -52,21 +52,6 @@ PPL_PROTO((ppl_@CLASS@_t* pph, ppl_@UBUILD_REPRESENT@_System_t cs));
 
 ')
 
-m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@_code',
-`int
-ppl_new_@TOPOLOGY@@CLASS@_from_bounding_box
-PPL_PROTO((ppl_@CLASS@_t* pph,
-	   ppl_dimension_type (*space_dimension)(void),
-	   int (*is_empty)(void),
-	   int (*get_lower_bound)(ppl_dimension_type k, int closed,
-				  ppl_Coefficient_t n,
-				  ppl_Coefficient_t d),
-	   int (*get_upper_bound)(ppl_dimension_type k, int closed,
-				  ppl_Coefficient_t n,
-				  ppl_Coefficient_t d)));
-
-')
-
 m4_define(`ppl_delete_@CLASS@_code',
 `int
 ppl_delete_@CLASS@ PPL_PROTO((ppl_const_@CLASS@_t ph));
@@ -498,13 +483,11 @@ m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
 `dnl
 int
 ppl_@CLASS@_iterator_@INCDEC@
-PPL_PROTO((ppl_@CLASS@_t ps,
-           ppl_@CLASS@_iterator_t psit));
+PPL_PROTO((ppl_@CLASS@_iterator_t psit));
 
 int
 ppl_@CLASS@_const_iterator_@INCDEC@
-PPL_PROTO((ppl_@CLASS@_t ps,
-           ppl_@CLASS@_const_iterator_t psit));
+PPL_PROTO((ppl_@CLASS@_const_iterator_t psit));
 
 ')
 

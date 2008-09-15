@@ -152,8 +152,7 @@ run_one(new_polyhedron_from_polyhedron) :-
 
 run_one(new_polyhedron_from_representations) :-
   new_polyhedron_from_cons,
-  new_polyhedron_from_gens,
-  new_polyhedron_from_bounding_box.
+  new_polyhedron_from_gens.
 
 run_one(swap_polyhedra) :-
   swap.
@@ -243,9 +242,6 @@ run_one(compare_polyhedra) :-
    disjoint_from,
    equals,
    ok.
-
-run_one(polyhedron_boxes) :-
-   get_bounding_box.
 
 run_one(catch_time) :-
    time_out.
@@ -433,49 +429,6 @@ new_polyhedron_from_gens(T, GS) :-
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(Pa).
 
-% Tests ppl_new_C_Polyhedron_from_bounding_box/2 and
-%       ppl_new_NNC_Polyhedron_from_bounding_box/2.
-new_polyhedron_from_bounding_box :-
-  new_polyhedron_from_bounding_box(c, [i(c(1/2), o(pinf)), i(o(minf), c(-1/2))]),
-  new_polyhedron_from_bounding_box(c, [empty]),
-  new_polyhedron_from_bounding_box(nnc,[i(o(0/2), o(pinf)), i(o(minf), o(1))]),
-  Max = -4,
-  new_polyhedron_from_bounding_box(c, [i(c(Max), c(1)), i(c(-1), c(1))]),
-  new_polyhedron_from_bounding_box(nnc, [i(c(Max), c(1)), i(c(-1), c(1))]).
-
-new_polyhedron_from_bounding_box(T, Box) :-
-  clean_ppl_new_Polyhedron_from_bounding_box(T, Box, P),
-  ppl_Polyhedron_get_bounding_box(P, any, Box1),
-  clean_ppl_new_Polyhedron_from_bounding_box(T, Box1, P1),
-  ppl_Polyhedron_equals_Polyhedron(P, P1),
-  \+ clean_ppl_new_Polyhedron_from_bounding_box(T, Box, 0),
-  \+ clean_ppl_new_Polyhedron_from_bounding_box(T,
-             [i(x, c(1/2)), i(c(0), o(pinf))], _),
-  \+ clean_ppl_new_Polyhedron_from_bounding_box(T,
-             [i(x(minf), c(1/2)), i(c(0), o(pinf))], _),
-  \+ clean_ppl_new_Polyhedron_from_bounding_box(T,
-             [i(o(minf), c(1/2)), i(c(0), c(pinf))], _),
-  \+ clean_ppl_new_Polyhedron_from_bounding_box(T,
-             [i(c(minf), c(1/2)), i(c(0), o(pinf))], _),
-  \+ clean_ppl_new_Polyhedron_from_bounding_box(T,
-             [i(o(minf), c(inf)), i(c(0), o(pinf))], _),
-  \+ clean_ppl_new_Polyhedron_from_bounding_box(T,
-             [i(c(minf), c(1+2)), i(c(0), o(pinf))], _),
-  \+ clean_ppl_new_Polyhedron_from_bounding_box(T,
-             [i(c(minf), c(n/2)), i(c(0), o(pinf))], _),
-  \+ clean_ppl_new_Polyhedron_from_bounding_box(T,
-             [i(c(minf), c(2/d)), i(c(0), o(pinf))], _),
-  \+ clean_ppl_new_Polyhedron_from_bounding_box(T,
-             [i(c(minf), c(2/1)), i(c(n), o(pinf))], _),
-  \+ clean_ppl_new_Polyhedron_from_bounding_box(T,
-             [i(e), i(c(n), o(pinf))], _),
-  \+ clean_ppl_new_Polyhedron_from_bounding_box(T,
-             [i(c(minf), c(2/1), c(1)), i(c(n), o(pinf))], _),
-  \+ clean_ppl_new_Polyhedron_from_bounding_box(T,
-             [x(c(minf), c(2/1)), i(c(n), o(pinf))], _),
-  !,
-  ppl_delete_Polyhedron(P),
-  ppl_delete_Polyhedron(P1).
 
 %%%%%%%%%%%%%%%%% Swap Polyhedra %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -1983,48 +1936,6 @@ ok(T) :-
 
 %%%%%%%%%%%%%%%%%%%%%%%%% Polyhedron Bounding Values %%%%%%%%%%%%%%%%%%%%%%%
 
-% Tests ppl_Polyhedron_get_bounding_box/3.
-
-get_bounding_box:-
-  make_vars(2, [A, B]),
-  get_bounding_box(c, [B >= 0, 4*A =< 2],
-                     [i(o(minf), c(1/2)), i(c(0), o(pinf))]),
-  get_bounding_box(c, [], [i(o(minf), o(pinf)), i(o(minf), o(pinf))]),
-  get_bounding_box(c, [1=0], [empty]),
-  get_bounding_box(c, [A =< 4, B =< 4, 3*A + B >= 2],
-                     [i(c(-2/3), c(4)), i(c(-10), c(4))]),
-  get_bounding_box(nnc, [B > 0, 4*A =< 2],
-                     [i(o(minf), c(1/2)), i(o(0), o(pinf))]),
-  get_bounding_box(nnc,[A > 1, B > 1, A < 1, B < 1], [empty]),
-  get_bounding_box(nnc, [A =< 4, B =< 4, 3*A + B > 2],
-                     [i(o(-2/3), c(4)), i(o(-10), c(4))]).
-
-get_bounding_box(T, CS, Box) :-
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 2, universe, P),
-  ppl_Polyhedron_add_constraints(P, CS),
-  \+ppl_Polyhedron_get_bounding_box(P, any, box),
-  ppl_Polyhedron_get_bounding_box(P, any, Box),
-  ppl_Polyhedron_get_bounding_box(P, polynomial, Box1),
-  ppl_Polyhedron_get_bounding_box(P, simplex, Box2),
-  clean_ppl_new_Polyhedron_from_bounding_box(T, Box, P1),
-  clean_ppl_new_Polyhedron_from_bounding_box(T, Box1, P2),
-  clean_ppl_new_Polyhedron_from_bounding_box(T, Box2, P3),
-  (Box \== [empty]
-  ->
-    ppl_Polyhedron_contains_Polyhedron(P1, P),
-    ppl_Polyhedron_contains_Polyhedron(P2, P1),
-    ppl_Polyhedron_contains_Polyhedron(P3, P1)
-   ;
-    ppl_Polyhedron_is_empty(P1),
-    ppl_Polyhedron_is_empty(P2),
-    ppl_Polyhedron_is_empty(P3)
-  ),
-  !,
-  ppl_delete_Polyhedron(P),
-  ppl_delete_Polyhedron(P1),
-  ppl_delete_Polyhedron(P2),
-  ppl_delete_Polyhedron(P3).
-
 % Tests ppl_Polyhedron_bounds_from_above/2.
 bounds_from_above :-
   make_vars(2, [A, B]),
@@ -2695,7 +2606,9 @@ exception_prolog(8, _) :-
 exception_prolog(9, [A, _, _]) :-
    clean_ppl_new_Polyhedron_from_generators(c,
                [point(A)], P),
-   must_catch(ppl_Polyhedron_get_bounding_box(P, a, _Box)),
+   must_catch(
+     clean_new_ppl_Polyhedron_from_Polyhedron_with_complexity(a, c, P,
+                                                              c, P_copy)),
    !,
    ppl_delete_Polyhedron(P).
 
@@ -3046,11 +2959,19 @@ clean_ppl_new_Polyhedron_from_Polyhedron(TQ, Q, TP, P) :-
   ),
   cleanup_ppl_Polyhedron(P).
 
-clean_ppl_new_Polyhedron_from_bounding_box(T, Box, P) :-
-  (T = c ->
-    ppl_new_C_Polyhedron_from_bounding_box(Box, P)
-  ;
-    ppl_new_NNC_Polyhedron_from_bounding_box(Box, P)
+clean_ppl_new_Polyhedron_from_Polyhedron_with_complexity(C, TQ, Q, TP, P) :-
+  ((TP == c, TQ == c) ->
+    ppl_new_C_Polyhedron_from_C_Polyhedron_with_complexity(C, Q, P)
+   ;
+    ((TP == c, TQ == nnc) ->
+      ppl_new_C_Polyhedron_from_NNC_Polyhedron_with_complexity(C, Q, P)
+    ;
+      ((TP == nnc, TQ == c) ->
+        ppl_new_NNC_Polyhedron_from_C_Polyhedron_with_complexity(C, Q, P)
+      ;
+        ppl_new_NNC_Polyhedron_from_NNC_Polyhedron_with_complexity(C, Q, P)
+      )
+    )
   ),
   cleanup_ppl_Polyhedron(P).
 
@@ -3204,7 +3125,6 @@ list_groups( [
    compare_polyhedra,
    mip_problem,
    transform_polyhedron,
-   polyhedron_boxes,
    add_to_system,
    catch_time,
    handle_exceptions
@@ -3254,9 +3174,7 @@ group_predicates(new_polyhedron_from_representations,
   [ppl_new_C_Polyhedron_from_constraints/2,
    ppl_new_NNC_Polyhedron_from_constraints/2,
    ppl_new_C_Polyhedron_from_generators/2,
-   ppl_new_NNC_Polyhedron_from_generators/2,
-   ppl_new_C_Polyhedron_from_bounding_box/2,
-   ppl_new_NNC_Polyhedron_from_bounding_box/2
+   ppl_new_NNC_Polyhedron_from_generators/2
   ]).
 
 group_predicates(swap_polyhedra,
@@ -3361,9 +3279,6 @@ group_predicates(compare_polyhedra,
    ppl_Polyhedron_is_disjoint_from_Polyhedron/2,
    ppl_Polyhedron_equals_Polyhedron/2
   ]).
-
-group_predicates(polyhedron_boxes,
-  [ppl_Polyhedron_get_bounding_box/3]).
 
 group_predicates(catch_time,
   [ppl_set_timeout_exception_atom/1,

@@ -1524,7 +1524,7 @@ ppl_new_Grid_Generator_System_zero_dim_univ
 CATCH_ALL
 
 int
-ppl_new_Grid_Generator_System_from_Generator
+ppl_new_Grid_Generator_System_from_Grid_Generator
 (ppl_Grid_Generator_System_t* pgs, ppl_const_Grid_Generator_t g) try {
   const Grid_Generator& gg = *to_const(g);
   *pgs = to_nonconst(new Grid_Generator_System(gg));

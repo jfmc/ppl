@@ -75,48 +75,6 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@_code',
-`int
-ppl_new_@TOPOLOGY@@CLASS@_from_bounding_box
-(ppl_@CLASS@_t* pph,
- ppl_dimension_type (*space_dimension)(void),
- int (*is_empty)(void),
- int (*get_lower_bound)(ppl_dimension_type k, int closed,
-			ppl_Coefficient_t n,
-			ppl_Coefficient_t d),
- int (*get_upper_bound)(ppl_dimension_type k, int closed,
-			ppl_Coefficient_t n,
-			ppl_Coefficient_t d)) try {
-  dimension_type space_dim = space_dimension();
-  if (is_empty())
-    *pph = to_nonconst(new @TOPOLOGY@@CPP_CLASS@(space_dim, EMPTY));
-  else {
-    *pph = to_nonconst(new @TOPOLOGY@@CPP_CLASS@(space_dim, UNIVERSE));
-    // Initialization is just to avoid compilation warnings.
-    bool closed = false;
-    TEMP_INTEGER(n);
-    TEMP_INTEGER(d);
-    for (dimension_type k = space_dim; k-- > 0; ) {
-      if (get_lower_bound(k, closed, to_nonconst(&n), to_nonconst(&d))) {
-        if (closed)
-          to_nonconst(*pph)->add_constraint(d*Variable(k) >= n);
-        else
-          to_nonconst(*pph)->add_constraint(d*Variable(k) > n);
-      }
-      if (get_upper_bound(k, closed, to_nonconst(&n), to_nonconst(&d))) {
-        if (closed)
-          to_nonconst(*pph)->add_constraint(d*Variable(k) <= n);
-        else
-          to_nonconst(*pph)->add_constraint(d*Variable(k) < n);
-      }
-    }
-  }
-  return 0;
-}
-CATCH_ALL
-
-')
-
 m4_define(`ppl_delete_@CLASS@_code',
 `int
 ppl_delete_@CLASS@(ppl_const_@CLASS@_t ph) try {
@@ -853,8 +811,7 @@ m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
 `dnl
 int
 ppl_@CLASS@_iterator_@INCDEC@
-(ppl_@CLASS@_t ps,
- ppl_@CLASS@_iterator_t it)
+(ppl_@CLASS@_iterator_t it)
   try {
     @CPP_CLASS@::iterator& iit = *to_nonconst(it);
     @CPPX_INCDEC@iit;
@@ -864,8 +821,7 @@ CATCH_ALL
 
 int
 ppl_@CLASS@_const_iterator_@INCDEC@
-(ppl_@CLASS@_t ps,
- ppl_@CLASS@_const_iterator_t it)
+(ppl_@CLASS@_const_iterator_t it)
   try {
     @CPP_CLASS@::const_iterator& iit = *to_nonconst(it);
     @CPPX_INCDEC@iit;

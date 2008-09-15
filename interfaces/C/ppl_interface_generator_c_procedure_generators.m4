@@ -47,10 +47,6 @@ ppl_@CLASS@_add_recycled_@ADD_REPRESENT@s +simple,
 
 dnl IMPLEMENTATION CODE MISSING FOR:
 dnl ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@/2 +polyhedron,
-dnl ppl_@CLASS@_get_bounding_box/3 +simple,
-dnl ppl_@CLASS@_get_covering_box/2 +grid,
-dnl ppl_@CLASS@_ascii_dump/1 +simple_pps,
-dnl ppl_@CLASS@_get_disjunct/2 +pointset_powerset,
 dnl ppl_@CLASS@_@PARTITION@/4 +pointset_powerset \grid,
 dnl ppl_@CLASS@_approximate_partition/5 +pointset_powerset \shape,
 dnl ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign/2 +pointset_powerset,
