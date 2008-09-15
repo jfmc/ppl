@@ -54,6 +54,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_new_NNC_Polyhedron_from_constraints/2,
 	ppl_new_C_Polyhedron_from_generators/2,
 	ppl_new_NNC_Polyhedron_from_generators/2,
+        ppl_C_Polyhedron_upper_bound_assign_if_exact/2,
+        ppl_NNC_Polyhedron_upper_bound_assign_if_exact/2,
 	ppl_Polyhedron_swap/2,
 	ppl_delete_Polyhedron/1,
 	ppl_Polyhedron_space_dimension/2,

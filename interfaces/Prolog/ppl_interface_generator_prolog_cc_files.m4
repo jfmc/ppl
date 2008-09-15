@@ -62,7 +62,6 @@ m4_include(`ppl_interface_generator_copyright')`'dnl
 #include "ppl_prolog_common.defs.hh"
 
 m4_add_bop_assign_code($1)`'dnl
-m4_undefine(`m4_current_interface')`'dnl
 ')
 
 m4_divert`'dnl

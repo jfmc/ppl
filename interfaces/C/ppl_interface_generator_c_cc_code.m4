@@ -312,10 +312,42 @@ ppl_@CLASS@_@BINMINOP@
  ppl_const_@CLASS@_t y) try {
   @CPP_CLASS@& xx = *to_nonconst(x);
   const @CPP_CLASS@& yy = *to_const(y);
-  return xx.@BINMINOP@(yy) ? 1 : 0;
+  return xx.@BINMINOP@(yy);
 }
 CATCH_ALL
 
+')
+
+m4_define(`ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@_code',
+`int
+ppl_@CLASS@_@UB_EXACT@
+(ppl_@CLASS@_t x,
+ ppl_const_@CLASS@_t y) try {
+`m4_ifelse(m4_current_interface, `Polyhedron',
+  `m4_ub_exact_for_polyhedron_domains',
+          `m4_ub_exact_for_non_polyhedron_domains')'
+}
+CATCH_ALL
+
+  ')
+
+m4_define(`m4_ub_exact_for_polyhedron_domains',
+` if (to_const(x)->topology() == NECESSARILY_CLOSED) {
+    C_Polyhedron& xx = static_cast<C_Polyhedron&>(*to_nonconst(x));
+    const C_Polyhedron& yy = static_cast<const C_Polyhedron&>(*to_const(y));
+    return xx.upper_bound_assign_if_exact(yy) ? 1 : 0;
+  }
+  else {
+    NNC_Polyhedron& xx = static_cast<NNC_Polyhedron&>(*to_nonconst(x));
+    const NNC_Polyhedron& yy = static_cast<const NNC_Polyhedron&>(*to_const(y));
+    return xx.upper_bound_assign_if_exact(yy) ? 1 : 0;
+  }
+')
+
+m4_define(`m4_ub_exact_for_non_polyhedron_domains',
+`  @CPP_CLASS@& xx = *to_nonconst(x);
+  const @CPP_CLASS@& yy = *to_const(y);
+  return xx.@UB_EXACT@(yy) ? 1 : 0;
 ')
 
 m4_define(`ppl_@CLASS@_simplify_using_context_assign_code',

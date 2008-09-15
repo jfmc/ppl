@@ -392,7 +392,7 @@ external ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@:
 ')
 
 
-m4_define(`ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@_code',
+m4_define(`ppl_@CLASS@_@UB_EXACT@_code',
 `dnl
 external ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@:
   @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> bool

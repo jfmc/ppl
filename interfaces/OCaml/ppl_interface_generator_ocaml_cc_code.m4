@@ -805,7 +805,7 @@ CATCH_ALL
 
 ')
 
-  m4_define(`ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@_code',
+  m4_define(`ppl_@CLASS@_@UB_EXACT@_code',
 `dnl
 extern "C"
 CAMLprim value

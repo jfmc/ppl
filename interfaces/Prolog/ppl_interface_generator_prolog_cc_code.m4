@@ -1039,18 +1039,45 @@ m4_define(`ppl_@CLASS@_simplify_using_context_assign_code',
 
 ')
 
-m4_define(`ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@_code',
+m4_define(`ppl_@CLASS@_@UB_EXACT@_code',
   `extern "C" Prolog_foreign_return_type
-  ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@
+  ppl_@CLASS@_@UB_EXACT@
   (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
-  static const char* where = "ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@";
-  @TOPOLOGY@@CPP_CLASS@* lhs = term_to_handle<@TOPOLOGY@@CPP_CLASS@ >(t_lhs, where);
-  const @TOPOLOGY@@CPP_CLASS@* rhs = term_to_handle<@TOPOLOGY@@CPP_CLASS@ >(t_rhs, where);
-  PPL_CHECK(lhs);
-  PPL_CHECK(rhs);
-  return lhs->@UB_EXACT@(*rhs);
+  static const char* where = "ppl_@CLASS@_@UB_EXACT@";
+  try {
+`m4_ifelse(m4_current_interface, `Polyhedron',
+  `m4_ub_exact_for_polyhedron_domains',
+           `m4_ub_exact_for_non_polyhedron_domains')'
+  }
+  CATCH_ALL;
 }
 
+')
+
+m4_define(`m4_ub_exact_for_polyhedron_domains',
+`   const Polyhedron* xlhs = term_to_handle<Polyhedron >(t_lhs, where);
+   if (xlhs->topology() == NECESSARILY_CLOSED) {
+     C_Polyhedron* lhs = term_to_handle<C_Polyhedron >(t_lhs, where);
+     const C_Polyhedron* rhs = term_to_handle<C_Polyhedron >(t_rhs, where);
+     PPL_CHECK(lhs);
+     PPL_CHECK(rhs);
+     return lhs->@UB_EXACT@(*rhs);
+   }
+   else {
+     NNC_Polyhedron* lhs = term_to_handle<NNC_Polyhedron >(t_lhs, where);
+     const NNC_Polyhedron* rhs = term_to_handle<NNC_Polyhedron >(t_rhs, where);
+     PPL_CHECK(lhs);
+     PPL_CHECK(rhs);
+     return lhs->@UB_EXACT@(*rhs);
+   }
+')
+
+m4_define(`m4_ub_exact_for_non_polyhedron_domains',
+`   @CPP_CLASS@* lhs = term_to_handle<@CPP_CLASS@ >(t_lhs, where);
+    const @CPP_CLASS@* rhs = term_to_handle<@CPP_CLASS@ >(t_rhs, where);
+    PPL_CHECK(lhs);
+    PPL_CHECK(rhs);
+    return lhs->@UB_EXACT@(*rhs);
 ')
 
 m4_define(`ppl_@CLASS@_@AFFIMAGE@_code',

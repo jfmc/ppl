@@ -216,7 +216,7 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_code',
 `
 ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_2_test :-
   (
-   member(TEST_DATA, [test00, test02, test03, test04, test05, test06]),
+   member(TEST_DATA, [test00, test02, test03, test04, test05]),
    (
     ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@,
                         @BUILD_REPRESENT@s, RS1),
@@ -233,9 +233,9 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_2_test :-
 
 ')
 
-m4_define(`ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@_code',
+m4_define(`ppl_@CLASS@_@UB_EXACT@_code',
 `
-ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@_2_test :-
+ppl_@CLASS@_@UB_EXACT@_2_test :-
   (
    choose_2_tests(TEST_DATA1, TEST_DATA2, Space_Dim),
    (
@@ -243,7 +243,7 @@ ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@_2_test :-
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2, Space_Dim),
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2a, Space_Dim),
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1_Copy),
-     (ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@(PS1_Copy, PS2) ->
+     (ppl_@CLASS@_@UB_EXACT@(PS1_Copy, PS2) ->
        (predicate_exists(ppl_@CLASS@_contains_@CLASS@)
        ->
          ppl_@CLASS@_equals_@CLASS@(PS2, PS2a),
@@ -332,9 +332,9 @@ ppl_@CLASS@_get_@GET_REPRESENT@s_2_test :-
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS1, Space_Dim),
      ppl_@CLASS@_get_@GET_REPRESENT@s(PS, RS),
-     (predicate_exists(ppl_@CLASS@_add_@GET_REPRESENT@s)
+     (predicate_exists(ppl_@CLASS@_refine_with_@GET_REPRESENT@s)
      ->
-         ppl_@CLASS@_add_@GET_REPRESENT@s(PS1, RS)
+         ppl_@CLASS@_refine_with_@GET_REPRESENT@s(PS1, RS)
      ;
          true
      ),
@@ -858,6 +858,7 @@ m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_code',
 
 ppl_@CLASS@_add_@ADD_REPRESENT@_2_test :-
   (
+   member(TEST_DATA, [test00, test02, test03, test04, test05]),
    choose_test(TEST_DATA, Space_Dim),
    ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS),
    ppl_initial_test_system(@ADD_REPRESENT@, U_or_E),
@@ -894,6 +895,7 @@ m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code',
 
 ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test :-
   (
+   member(TEST_DATA, [test00, test02, test03, test04, test05]),
    choose_test(TEST_DATA, Space_Dim),
    (
      ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS),
@@ -941,6 +943,8 @@ m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_code',
 `
 ppl_@CLASS@_add_@ADD_REPRESENT@s_2_test :-
   (
+   member(TEST_DATA1, [test00, test02, test03, test04, test05]),
+   member(TEST_DATA2, [test00, test02, test03, test04, test05]),
    choose_2_tests(TEST_DATA1, TEST_DATA2, Space_Dim),
    (
      ppl_build_test_data(TEST_DATA1, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS),
@@ -970,6 +974,8 @@ m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize_code',
 `
 ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize_2_test :-
   (
+   member(TEST_DATA1, [test00, test02, test03, test04, test05]),
+   member(TEST_DATA2, [test00, test02, test03, test04, test05]),
    choose_2_tests(TEST_DATA1, TEST_DATA2, Dim),
    (
      ppl_build_test_data(TEST_DATA1, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS),

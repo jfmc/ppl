@@ -160,7 +160,7 @@ predicate_exists(Predicate) :-
 
 ppl_build_test_data(test00, _Topology, constraints, [0 = 1]).
 ppl_build_test_data(test00, _Topology, generators, []).
-ppl_build_test_data(test00, _Topology, congruences, [0 = 1]).
+ppl_build_test_data(test00, _Topology, congruences, [(0 =:= 1) / 0]).
 ppl_build_test_data(test00, _Topology, grid_generators, []).
 
 ppl_dimension_test_data(test00, _, 0).
@@ -219,7 +219,7 @@ ppl_relation_test_data(test01, constraint, 0 = 1, Rel) :-
   ; Rel = [is_disjoint, is_included]
   ; Rel = [is_included, is_disjoint].
 ppl_relation_test_data(test01, generator, point(0), []).
-ppl_relation_test_data(test01, congruence, 0 = 1, Rel) :-
+ppl_relation_test_data(test01, congruence, (0 =:= 1) / 0, Rel) :-
   Rel = [saturates, is_included, is_disjoint]
   ; Rel = [saturates, is_disjoint, is_included]
   ; Rel = [is_included, is_disjoint, saturates]
@@ -255,7 +255,7 @@ ppl_relation_test_data(test02, constraint, 0 = 0, Rel) :-
   Rel = [saturates, is_included] ; Rel = [is_included, saturates]
   ; Rel = [is_included].
 ppl_relation_test_data(test02, generator, point(0), [subsumes]).
-ppl_relation_test_data(test02, congruence, 0 = 0, Rel) :-
+ppl_relation_test_data(test02, congruence, (0 =:= 0) / 0, Rel) :-
   Rel = [saturates, is_included] ; Rel = [is_included, saturates]
   ; Rel = [is_included].
 ppl_relation_test_data(test02, grid_generator, grid_point(0), [subsumes]).
@@ -282,7 +282,7 @@ ppl_build_test_data(test03, _Topology, generators, GS) :-
    GS = [point(0), line(A)]).
 ppl_build_test_data(test03, _Topology, congruences, CS) :-
   (make_vars(1, [A]),
-   CS = [A = A]).
+   CS = [(A =:= A) / 0]).
 ppl_build_test_data(test03, _Topology, grid_generators, GS) :-
   (make_vars(1, [A]),
    GS = [grid_point(0), grid_line(A)]).
@@ -292,7 +292,7 @@ ppl_dimension_test_data(test03, _, 1).
 ppl_relation_test_data(test03, constraint, A = 0, [strictly_intersects]) :-
   make_vars(1, [A]).
 ppl_relation_test_data(test03, generator, point(0), [subsumes]).
-ppl_relation_test_data(test03, congruence, A = 0, [strictly_intersects]) :-
+ppl_relation_test_data(test03, congruence, (A =:= 0) / 0, [strictly_intersects]) :-
   make_vars(1, [A]).
 ppl_relation_test_data(test03, grid_generator, grid_point(0), [subsumes]).
 
@@ -320,7 +320,7 @@ ppl_build_test_data(test04, _Topology, generators, GS) :-
    GS = [point(1*A)]).
 ppl_build_test_data(test04, _Topology, congruences, CS) :-
   (make_vars(1, [A]),
-   CS = [A = 1]).
+   CS = [(A =:= 1) / 0]).
 ppl_build_test_data(test04, _Topology, grid_generators, GS) :-
   (make_vars(1, [A]),
    GS = [grid_point(1*A)]).
@@ -331,7 +331,7 @@ ppl_dimension_test_data(test04, affine_dimension, 0).
 ppl_relation_test_data(test04, constraint, A = 0, [is_disjoint]) :-
   make_vars(1, [A]).
 ppl_relation_test_data(test04, generator, point(0), []).
-ppl_relation_test_data(test04, congruence, A = 0, [is_disjoint]) :-
+ppl_relation_test_data(test04, congruence, (A =:= 0) / 0, [is_disjoint]) :-
   make_vars(1, [A]).
 ppl_relation_test_data(test04, grid_generator, grid_point(0), []).
 
@@ -360,7 +360,7 @@ ppl_build_test_data(test05, _Topology, generators, GS) :-
    GS = [point(-1*A)]).
 ppl_build_test_data(test05, _Topology, congruences, CS) :-
   (make_vars(1, [A]),
-   CS = [A = -1]).
+   CS = [(A =:= -1) / 0]).
 ppl_build_test_data(test05, _Topology, grid_generators, GS) :-
   (make_vars(1, [A]),
    GS = [grid_point(-1*A)]).
@@ -371,7 +371,7 @@ ppl_dimension_test_data(test05, affine_dimension, 0).
 ppl_relation_test_data(test05, constraint, A = 0, [is_disjoint]) :-
   make_vars(1, [A]).
 ppl_relation_test_data(test05, generator, point(0), []).
-ppl_relation_test_data(test05, congruence, A = 0, [is_disjoint]) :-
+ppl_relation_test_data(test05, congruence, (A =:= 0) / 0, [is_disjoint]) :-
   make_vars(1, [A]).
 ppl_relation_test_data(test05, grid_generator, grid_point(0), []).
 
