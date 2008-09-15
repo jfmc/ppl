@@ -627,13 +627,12 @@ build_ppl_grid_generator(JNIEnv* env, const jobject& j_grid_generator) {
   throw std::runtime_error("PPL Java interface internal error");
 }
 
-jlong
+void*
 get_ptr(JNIEnv* env, const jobject& ppl_object) {
   jclass ppl_object_class = env->GetObjectClass(ppl_object);
   jfieldID pointer_field = env->GetFieldID(ppl_object_class, "ptr","J");
-  return  env->GetLongField(ppl_object, pointer_field);
+  return reinterpret_cast<void*>(env->GetLongField(ppl_object, pointer_field));
 }
-
 
 void
 set_is_a_reference(JNIEnv* env, const jobject& ppl_object, const bool reference) {

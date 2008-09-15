@@ -86,8 +86,8 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_
 JNIEXPORT jlong JNICALL Java_parma_1polyhedra_1library_MIP_1Problem_max_1space_1dimension
 (JNIEnv* env , jobject j_this_mip_problem) {
   try {
-    jlong ptr = get_ptr(env, j_this_mip_problem);
-    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(ptr);
+
+    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
     return mip->max_space_dimension();
   }
   CATCH_ALL;
@@ -97,8 +97,8 @@ JNIEXPORT jlong JNICALL Java_parma_1polyhedra_1library_MIP_1Problem_max_1space_1
 JNIEXPORT jlong JNICALL Java_parma_1polyhedra_1library_MIP_1Problem_space_1dimension
 (JNIEnv* env , jobject j_this_mip_problem) {
   try {
-    jlong ptr = get_ptr(env, j_this_mip_problem);
-    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(ptr);
+
+    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
     return mip->space_dimension();
   }
   CATCH_ALL;
@@ -108,8 +108,8 @@ JNIEXPORT jlong JNICALL Java_parma_1polyhedra_1library_MIP_1Problem_space_1dimen
 JNIEXPORT jobject JNICALL Java_parma_1polyhedra_1library_MIP_1Problem_integer_1space_1dimensions
 (JNIEnv* env , jobject j_this_mip_problem) {
   try {
-    jlong ptr = get_ptr(env, j_this_mip_problem);
-    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(ptr);
+
+    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
     return build_java_variables_set(env, mip->integer_space_dimensions());
   }
   CATCH_ALL;
@@ -132,8 +132,8 @@ JNIEXPORT jobject JNICALL Java_parma_1polyhedra_1library_MIP_1Problem_objective_
     jmethodID j_le_coeff_ctr_id
       = env->GetMethodID(j_le_coeff_class, "<init>",
 			 "(Lparma_polyhedra_library/Coefficient;)V");
-    jlong ptr = get_ptr(env, j_this_mip_problem);
-    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(ptr);
+
+    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
     TEMP_INTEGER(inhomogeneous_term);
     inhomogeneous_term = mip->objective_function().inhomogeneous_term();
     jobject j_coeff_inhomogeneous_term
@@ -152,8 +152,8 @@ JNIEXPORT jobject JNICALL Java_parma_1polyhedra_1library_MIP_1Problem_objective_
 JNIEXPORT jobject JNICALL Java_parma_1polyhedra_1library_MIP_1Problem_optimization_1mode
 (JNIEnv* env , jobject j_this_mip_problem) {
   try {
-    jlong ptr = get_ptr(env, j_this_mip_problem);
-    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(ptr);
+
+    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
     return build_java_optimization_mode(env, mip->optimization_mode());
   }
   CATCH_ALL;
@@ -169,8 +169,8 @@ JNIEXPORT jobject JNICALL Java_parma_1polyhedra_1library_MIP_1Problem_constraint
     jmethodID j_cs_add_id = env->GetMethodID(j_cs_class, "add",
 					     "(Ljava/lang/Object;)Z");
     jobject j_cs = env->NewObject(j_cs_class, j_cs_ctr_id);
-    jlong ptr = get_ptr(env, j_this_mip_problem);
-    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(ptr);
+
+    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
     for (MIP_Problem::const_iterator cs_it = mip->constraints_begin(),
 	   cs_end = mip->constraints_end(); cs_it != cs_end; ++cs_it) {
       jobject j_constraint = build_java_constraint(env, *cs_it);
@@ -187,8 +187,8 @@ JNIEXPORT jobject JNICALL Java_parma_1polyhedra_1library_MIP_1Problem_constraint
 JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_MIP_1Problem_clear
 (JNIEnv* env , jobject j_this_mip_problem) {
   try {
-    jlong ptr = get_ptr(env, j_this_mip_problem);
-    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(ptr);
+
+    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
     mip->clear();
   }
   CATCH_ALL;
@@ -197,8 +197,8 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_MIP_1Problem_clear
 JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_MIP_1Problem_add_1space_1dimensions_1and_1embed
 (JNIEnv* env , jobject j_this_mip_problem, jlong j_dim) {
   try {
-    jlong ptr = get_ptr(env, j_this_mip_problem);
-    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(ptr);
+
+    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
     dimension_type ppl_dim = jtype_to_unsigned<dimension_type>(j_dim);
     mip->add_space_dimensions_and_embed(ppl_dim);
   }
@@ -209,8 +209,8 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_MIP_1Problem_add_1space_1d
 JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_MIP_1Problem_add_1to_1integer_1space_1dimensions
 (JNIEnv* env , jobject j_this_mip_problem, jobject j_vset) {
   try {
-    jlong ptr = get_ptr(env, j_this_mip_problem);
-    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(ptr);
+
+    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
     Variables_Set v_set = build_ppl_variables_set(env, j_vset);
     mip->add_to_integer_space_dimensions(v_set);
   }
@@ -220,8 +220,8 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_MIP_1Problem_add_1to_1inte
 JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_MIP_1Problem_add_1constraint
 (JNIEnv* env , jobject j_this_mip_problem, jobject j_c) {
   try {
-    jlong ptr = get_ptr(env, j_this_mip_problem);
-    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(ptr);
+
+    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
     Constraint c = build_ppl_constraint(env, j_c);
     mip->add_constraint(c);
   }
@@ -231,8 +231,8 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_MIP_1Problem_add_1constrai
 JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_MIP_1Problem_add_1constraints
 (JNIEnv* env , jobject j_this_mip_problem, jobject j_cs) {
   try {
-    jlong ptr = get_ptr(env, j_this_mip_problem);
-    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(ptr);
+
+    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
     Constraint_System cs = build_ppl_constraint_system(env, j_cs);
     mip->add_constraints(cs);
   }
@@ -242,8 +242,8 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_MIP_1Problem_add_1constrai
 JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_MIP_1Problem_set_1objective_1function
 (JNIEnv* env , jobject j_this_mip_problem, jobject j_le) {
   try {
-    jlong ptr = get_ptr(env, j_this_mip_problem);
-    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(ptr);
+
+    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
     Linear_Expression le = build_linear_expression(env, j_le);
     mip->set_objective_function(le);
   }
@@ -253,8 +253,8 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_MIP_1Problem_set_1objectiv
 JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_MIP_1Problem_set_1optimization_1mode
 (JNIEnv* env , jobject j_this_mip_problem, jobject j_opt_mode) {
   try {
-    jlong ptr = get_ptr(env, j_this_mip_problem);
-    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(ptr);
+
+    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
     Optimization_Mode opt_mode = build_ppl_optimization_mode(env, j_opt_mode);
     mip->set_optimization_mode(opt_mode);
   }
@@ -264,8 +264,8 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_MIP_1Problem_set_1optimiza
 JNIEXPORT jboolean JNICALL Java_parma_1polyhedra_1library_MIP_1Problem_is_1satisfiable
 (JNIEnv* env , jobject j_this_mip_problem) {
   try {
-    jlong ptr = get_ptr(env, j_this_mip_problem);
-    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(ptr);
+
+    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
     return mip->is_satisfiable();
   }
   CATCH_ALL;
@@ -275,8 +275,8 @@ JNIEXPORT jboolean JNICALL Java_parma_1polyhedra_1library_MIP_1Problem_is_1satis
 JNIEXPORT jobject JNICALL Java_parma_1polyhedra_1library_MIP_1Problem_solve
 (JNIEnv* env , jobject j_this_mip_problem) {
   try {
-    jlong ptr = get_ptr(env, j_this_mip_problem);
-    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(ptr);
+
+    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
     return build_java_mip_status(env, mip->solve());
   }
   CATCH_ALL;
@@ -288,8 +288,8 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_MIP_1Problem_evaluate_1obj
 (JNIEnv* env, jobject j_this_mip_problem, jobject j_gen, jobject j_coeff_num,
  jobject j_coeff_den) {
   try {
-    jlong ptr = get_ptr(env, j_this_mip_problem);
-    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(ptr);
+
+    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
     Generator g = build_ppl_generator(env, j_gen);
     TEMP_INTEGER(num);
     TEMP_INTEGER(den);
@@ -305,8 +305,8 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_MIP_1Problem_evaluate_1obj
 JNIEXPORT jobject JNICALL Java_parma_1polyhedra_1library_MIP_1Problem_feasible_1point
 (JNIEnv* env , jobject j_this_mip_problem) {
   try {
-    jlong ptr = get_ptr(env, j_this_mip_problem);
-    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(ptr);
+
+    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
     Generator g = mip->feasible_point();
     return build_java_generator(env, g);
   }
@@ -318,8 +318,8 @@ JNIEXPORT jobject JNICALL Java_parma_1polyhedra_1library_MIP_1Problem_feasible_1
 JNIEXPORT jobject JNICALL Java_parma_1polyhedra_1library_MIP_1Problem_optimizing_1point
 (JNIEnv* env , jobject j_this_mip_problem) {
   try {
-    jlong ptr = get_ptr(env, j_this_mip_problem);
-    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(ptr);
+
+    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
     Generator g = mip->optimizing_point();
     return build_java_generator(env, g);
   }
@@ -336,8 +336,8 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_MIP_1Problem_optimal_1valu
     TEMP_INTEGER(coeff_den);
     coeff_num = build_ppl_coeff(env, j_coeff_num);
     coeff_den = build_ppl_coeff(env, j_coeff_den);
-    jlong ptr = get_ptr(env, j_this_mip_problem);
-    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(ptr);
+
+    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
     mip->optimal_value(coeff_num, coeff_den);
     jobject j_coeff_num_result = build_java_coeff(env, coeff_num);
     jobject j_coeff_den_result = build_java_coeff(env, coeff_den);
@@ -350,8 +350,8 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_MIP_1Problem_optimal_1valu
 JNIEXPORT jboolean JNICALL Java_parma_1polyhedra_1library_MIP_1Problem_OK
 (JNIEnv* env , jobject j_this_mip_problem) {
   try {
-    jlong ptr = get_ptr(env, j_this_mip_problem);
-    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(ptr);
+
+    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
     return mip->OK();
   }
   CATCH_ALL;
@@ -386,8 +386,7 @@ JNIEXPORT jstring JNICALL Java_parma_1polyhedra_1library_MIP_1Problem_toString
 (JNIEnv* env, jobject j_this_mip_problem) {
  using namespace Parma_Polyhedra_Library::IO_Operators;
   std::ostringstream s;
-  jlong ptr = get_ptr(env, j_this_mip_problem);
-  MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(ptr);
+  MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
   s << mip;
   return env->NewStringUTF(s.str().c_str());
 }
@@ -476,8 +475,8 @@ JNIEXPORT jstring JNICALL Java_parma_1polyhedra_1library_Congruence_1System_toSt
 JNIEXPORT jlong JNICALL Java_parma_1polyhedra_1library_MIP_1Problem_total_1memory_1in_1bytes
 (JNIEnv* env , jobject j_this_mip_problem) {
   try {
-    jlong ptr = get_ptr(env, j_this_mip_problem);
-    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(ptr);
+
+    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
     return mip->total_memory_in_bytes();
   }
   CATCH_ALL;
