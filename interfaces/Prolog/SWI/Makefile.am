@@ -230,6 +230,7 @@ predicate_check_test: swi_predicate_check.pl ../tests/ppl_predicate_check_main.p
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		$(WATCHDOG_DLOPEN) \
+		-dlopen libppl_swiprolog.la \
                 ./ppl_pl < script_pchk
 	rm -f ppl_predicate_check_main.pl; \
 	rm -f ppl_predicate_check_common.pl; \
