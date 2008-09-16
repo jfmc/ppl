@@ -1001,7 +1001,15 @@ m4_define(`ppl_@CLASS@_@BINOP@_code',
   ppl_@CLASS@_@BINOP@
   (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
   static const char* where = "ppl_@CLASS@_@BINOP@";
-  return bop_assign(t_lhs, t_rhs, &@CPP_CLASS@::@BINOP@, where);
+  try {
+    @CPP_CLASS@* lhs = term_to_handle<@CPP_CLASS@ >(t_lhs, where);
+    const @CPP_CLASS@* rhs = term_to_handle<@CPP_CLASS@ >(t_rhs, where);
+    PPL_CHECK(lhs);
+    PPL_CHECK(rhs);
+    lhs->@BINOP@(*rhs);
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
 }
 
 ')
@@ -1011,8 +1019,15 @@ m4_define(`ppl_@CLASS@_@BINMINOP@_code',
   ppl_@CLASS@_@BINMINOP@
   (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
   static const char* where = "ppl_@CLASS@_@BINMINOP@";
-  return bop_assign_and_minimize(t_lhs, t_rhs,
-                                 &@CPP_CLASS@::@BINMINOP@, where);
+  try {
+    @CPP_CLASS@* lhs = term_to_handle<@CPP_CLASS@ >(t_lhs, where);
+    const @CPP_CLASS@* rhs = term_to_handle<@CPP_CLASS@ >(t_rhs, where);
+    PPL_CHECK(lhs);
+    PPL_CHECK(rhs);
+    if (lhs->@BINMINOP@(*rhs))
+      return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
 }
 
 ')

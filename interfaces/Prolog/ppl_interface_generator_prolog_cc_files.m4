@@ -38,15 +38,6 @@ m4_include(`ppl_interface_generator_copyright')dnl
 */
 m4_divert(-1)
 
-dnl m4_add_bop_assign_code(Class, CPP_Class)
-dnl
-dnl Adds the extra code used by the binary operators.
-m4_define(`m4_add_bop_assign_code', `dnl
-m4_replace_all_patterns_in_string($1,
-  bop_assign_code,
-  m4_pattern_list)`'dnl
-')
-
 dnl m4_pre_extra_class_code(Class_Counter)
 dnl Prefix extra code for each class.
 m4_define(`m4_pre_extra_class_code', `dnl
@@ -61,7 +52,6 @@ m4_include(`ppl_interface_generator_copyright')`'dnl
 #include "ppl_prolog_sysdep.hh"
 #include "ppl_prolog_common.defs.hh"
 
-m4_add_bop_assign_code($1)`'dnl
 ')
 
 m4_divert`'dnl

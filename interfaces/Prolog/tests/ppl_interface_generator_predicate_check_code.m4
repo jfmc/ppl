@@ -244,12 +244,12 @@ ppl_@CLASS@_@UB_EXACT@_2_test :-
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2a, Space_Dim),
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1_Copy),
      (ppl_@CLASS@_@UB_EXACT@(PS1_Copy, PS2) ->
-       (predicate_exists(ppl_@CLASS@_contains_@CLASS@)
+       (predicate_exists(ppl_@CLASS@_geometrically_covers_@CLASS@)
        ->
          ppl_@CLASS@_equals_@CLASS@(PS2, PS2a),
-         ppl_@CLASS@_contains_@CLASS@(PS1_Copy, PS1),
+         ppl_@CLASS@_geometrically_covers_@CLASS@(PS1_Copy, PS1),
          ppl_@CLASS@_upper_bound_assign(PS2a, PS1),
-         ppl_@CLASS@_contains_@CLASS@(PS2a, PS1_Copy)
+         ppl_@CLASS@_geometrically_covers_@CLASS@(PS2a, PS1_Copy)
        ;
          true
        )
@@ -1063,39 +1063,49 @@ ppl_@CLASS@_@BINOP@_2_test :-
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2a, Space_Dim),
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1_Copy),
      ppl_@CLASS@_@BINOP@(PS1_Copy, PS2),
-     (predicate_exists(ppl_@CLASS@_contains_@CLASS@)
+     ((@BINOP@ == upper_bound_assign ; @BINOP@ == poly_hull_assign)
      ->
-       (@BINOP@ == intersection_assign
+       (predicate_exists(ppl_@CLASS@_geometrically_covers_@CLASS@)
        ->
+         ppl_@CLASS@_geometrically_covers_@CLASS@(PS1_Copy, PS1),
+         ppl_@CLASS@_geometrically_covers_@CLASS@(PS1_Copy, PS2)
+       ;
+         ppl_@CLASS@_contains_@CLASS@(PS1_Copy, PS1),
+         ppl_@CLASS@_contains_@CLASS@(PS1_Copy, PS2)
+       )
+     ;
+       true
+     ),
+     (@BINOP@ == intersection_assign
+     ->
+       (predicate_exists(ppl_@CLASS@_geometrically_covers_@CLASS@)
+       ->
+         ppl_@CLASS@_geometrically_covers_@CLASS@(PS1, PS1_Copy),
+         ppl_@CLASS@_geometrically_covers_@CLASS@(PS2, PS1_Copy)
+       ;
          ppl_@CLASS@_contains_@CLASS@(PS1, PS1_Copy),
          ppl_@CLASS@_contains_@CLASS@(PS2, PS1_Copy)
-       ;
-         (@BINOP@ == difference_assign ; @BINOP@ == poly_difference_assign
-         ->
-           ppl_@CLASS@_contains_@CLASS@(PS1, PS1_Copy)
-         ;
-           (@BINOP@ == concatenate_assign
-            ->
-             ppl_@CLASS@_space_dimension(PS1, Dim1),
-             ppl_@CLASS@_space_dimension(PS2, Dim2),
-             Dim_Conc is Dim1 + Dim2,
-             ppl_@CLASS@_space_dimension(PS1_Copy, Dim_Conc)
-           ;
-             (member(@BINOP@,
-                         [upper_bound_assign,
-                          poly_hull_assign,
-                          join_assign,
-                          bds_hull_assign,
-                          oct_hull_assign])
-             ->
-               ppl_@CLASS@_contains_@CLASS@(PS1_Copy, PS1),
-               ppl_@CLASS@_contains_@CLASS@(PS1_Copy, PS2)
-             ;
-               true
-             )
-           )
-         )
        )
+     ;
+       true
+     ),
+     (@BINOP@ == difference_assign ; @BINOP@ == poly_difference_assign
+     ->
+       (predicate_exists(ppl_@CLASS@_geometrically_covers_@CLASS@)
+       ->
+         ppl_@CLASS@_geometrically_covers_@CLASS@(PS1, PS1_Copy)
+       ;
+         ppl_@CLASS@_contains_@CLASS@(PS1, PS1_Copy)
+       )
+     ;
+       true
+     ),
+     (@BINOP@ == concatenate_assign
+     ->
+       ppl_@CLASS@_space_dimension(PS1, Dim1),
+       ppl_@CLASS@_space_dimension(PS2, Dim2),
+       Dim_Conc is Dim1 + Dim2,
+       ppl_@CLASS@_space_dimension(PS1_Copy, Dim_Conc)
      ;
        true
      ),

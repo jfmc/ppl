@@ -39,7 +39,7 @@ main :-
 	version_dependent_declarations,
         ensure_loaded('ppl_predicate_check_main.pl'),
 	set_prolog_flag(fileerrors, off),
-	(check_noisy ->
+	(check_all ->
 	    write('OK')
 	;
 	    write('FAILURE')

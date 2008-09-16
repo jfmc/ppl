@@ -242,22 +242,6 @@ Grid::add_constraint_and_minimize(const Constraint& c) {
   return minimize();
 }
 
-inline void
-Grid::add_constraints(const Constraint_System& cs) {
-  // The dimension of `cs' must be at most `space_dim'.
-  if (space_dim < cs.space_dimension())
-    throw_dimension_incompatible("add_constraints(cs)", "cs", cs);
-  if (marked_empty())
-    return;
-
-  for (Constraint_System::const_iterator i = cs.begin(),
-         cs_end = cs.end(); i != cs_end; ++i) {
-    add_constraint_no_check(*i);
-    if (marked_empty())
-      return;
-  }
-}
-
 inline bool
 Grid::add_constraints_and_minimize(const Constraint_System& cs) {
   add_constraints(cs);

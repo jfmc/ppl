@@ -1058,7 +1058,7 @@ dnl For the powerset domains, we intersect the replacements for the
 dnl disjuncts with the replacements for a powerset.
 m4_define(`m4_Pointset_Powerset_binop_replacement', `dnl
 m4_define(`m4_1st_sequence',
-  `difference_assign, intersection_assign,
+  `difference_assign, intersection_assign, upper_bound_assign,
    concatenate_assign, time_elapse_assign')`'dnl
 m4_define(`m4_2nd_sequence',
   `m4_class_pattern_replacement(m4_class_body_counter$1,

@@ -1125,6 +1125,22 @@ PPL::Grid::add_congruence_and_minimize(const Congruence& cg) {
 }
 
 void
+PPL::Grid::add_constraints(const Constraint_System& cs) {
+  // The dimension of `cs' must be at most `space_dim'.
+  if (space_dim < cs.space_dimension())
+    throw_dimension_incompatible("add_constraints(cs)", "cs", cs);
+  if (marked_empty())
+    return;
+
+  for (Constraint_System::const_iterator i = cs.begin(),
+         cs_end = cs.end(); i != cs_end; ++i) {
+    add_constraint_no_check(*i);
+    if (marked_empty())
+      return;
+  }
+}
+
+void
 PPL::Grid::add_grid_generator(const Grid_Generator& g) {
   // The dimension of `g' must be at most space_dim.
   const dimension_type g_space_dim = g.space_dimension();
