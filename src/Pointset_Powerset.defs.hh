@@ -44,7 +44,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <list>
 #include <map>
 
-//! The powerset construction instantiated on PPL polyhedra.
+//! The powerset construction instantiated on PPL pointset domains.
 /*! \ingroup PPL_CXX_interface */
 /*!
   \warning

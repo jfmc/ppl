@@ -1054,21 +1054,6 @@ m4_define(`m4_binop_replacement',
           concatenate_assign, time_elapse_assign')
 m4_define(`m4_Polyhedron_binop_replacement',
          `m4_binop_replacement, poly_hull_assign, poly_difference_assign')
-dnl For the powerset domains, we intersect the replacements for the
-dnl disjuncts with the replacements for a powerset.
-m4_define(`m4_Pointset_Powerset_binop_replacement', `dnl
-m4_define(`m4_1st_sequence',
-  `difference_assign, intersection_assign, upper_bound_assign,
-   concatenate_assign, time_elapse_assign')`'dnl
-m4_define(`m4_2nd_sequence',
-  `m4_class_pattern_replacement(m4_class_body_counter$1,
-    binop, `')')`'dnl
-m4_define(`m4_num_of_sequences', 2)`'dnl
-m4_seq_intersection`'dnl
-m4_undefine(`m4_1st_sequence')`'dnl
-m4_undefine(`m4_2nd_sequence')`'dnl
-m4_undefine(`m4_num_of_sequences')`'dnl
-')
 
 dnl  The different kinds of "and_minimize" binary operators.
 m4_define(`m4_binminop_replacement', `')
