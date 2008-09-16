@@ -201,12 +201,10 @@ Grid::add_congruences(const Congruence_System& cgs) {
   }
 }
 
-inline void
-Grid::add_constraint(const Constraint& c) {
-  // Space dimension compatibility check.
-  if (space_dim < c.space_dimension())
-    throw_dimension_incompatible("add_constraint(c)", "c", c);
-  add_constraint_no_check(c);
+inline bool
+Grid::add_congruences_and_minimize(const Congruence_System& cgs) {
+  Congruence_System cgs_copy = cgs;
+  return add_recycled_congruences_and_minimize(cgs_copy);
 }
 
 inline void
@@ -227,6 +225,55 @@ Grid::can_recycle_constraint_systems() {
 inline bool
 Grid::can_recycle_congruence_systems() {
   return true;
+}
+
+inline void
+Grid::add_constraint(const Constraint& c) {
+  // Space dimension compatibility check.
+  if (space_dim < c.space_dimension())
+    throw_dimension_incompatible("add_constraint(c)", "c", c);
+  if (!marked_empty())
+    add_constraint_no_check(c);
+}
+
+inline bool
+Grid::add_constraint_and_minimize(const Constraint& c) {
+  add_constraint(c);
+  return minimize();
+}
+
+inline void
+Grid::add_constraints(const Constraint_System& cs) {
+  // The dimension of `cs' must be at most `space_dim'.
+  if (space_dim < cs.space_dimension())
+    throw_dimension_incompatible("add_constraints(cs)", "cs", cs);
+  if (marked_empty())
+    return;
+
+  for (Constraint_System::const_iterator i = cs.begin(),
+         cs_end = cs.end(); i != cs_end; ++i) {
+    add_constraint_no_check(*i);
+    if (marked_empty())
+      return;
+  }
+}
+
+inline bool
+Grid::add_constraints_and_minimize(const Constraint_System& cs) {
+  add_constraints(cs);
+  return minimize();
+}
+
+inline void
+Grid::add_recycled_constraints(Constraint_System& cs) {
+  // TODO: really recycle the constraints.
+  add_constraints(cs);
+}
+
+inline bool
+Grid::add_recycled_constraints_and_minimize(Constraint_System& cs) {
+  add_constraints(cs);
+  return minimize();
 }
 
 } // namespace Parma_Polyhedra_Library

@@ -24,35 +24,27 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-#if 0
-// add_congruences_and_minimize(cs)
+// add_constraints(1 == 0) to an empty 0-dimensional grid
 bool
 test01() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
 
-  Grid gr(3);
+  Grid gr(0, EMPTY);
 
   print_congruences(gr, "*** gr ***");
 
   Constraint_System cs;
-  cs.insert(B == 0);
-  cs.insert(A >= 0);
-  cs.insert(C > 0);
+  cs.insert(Linear_Expression(1) == 0);
 
-  gr.add_congruences_and_minimize(cs);
+  gr.add_constraints(cs);
 
-  Grid known_gr(3);
-  known_gr.add_congruence((B == 0) / 0);
+  Grid known_gr(0, EMPTY);
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr, "*** gr.add_congruences_and_minimize(cs) ***");
+  print_congruences(gr, "*** gr.add_constraints(cs) ***");
 
   return ok;
 }
-#endif
 
 // add_constraints
 bool
@@ -539,9 +531,7 @@ test20() {
 } // namespace
 
 BEGIN_MAIN
-#if 0
   DO_TEST(test01);
-#endif
   DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);

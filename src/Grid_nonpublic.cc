@@ -579,6 +579,7 @@ PPL::Grid::add_congruence_no_check(const Congruence& cg) {
 
 void
 PPL::Grid::add_constraint_no_check(const Constraint& c) {
+  assert(!marked_empty());
   assert(space_dim >= c.space_dimension());
 
   if (c.is_inequality()) {

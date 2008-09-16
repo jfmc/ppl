@@ -1259,47 +1259,6 @@ PPL::Grid::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
 #endif
 }
 
-bool
-PPL::Grid::add_congruences_and_minimize(const Congruence_System& cgs) {
-  Congruence_System cgs_copy = cgs;
-  return add_recycled_congruences_and_minimize(cgs_copy);
-}
-
-bool
-PPL::Grid::add_constraint_and_minimize(const Constraint& c) {
-  add_constraint(c);
-  return minimize();
-}
-
-void
-PPL::Grid::add_constraints(const Constraint_System& cs) {
-  // The dimension of `cs' must be at most `space_dim'.
-  if (space_dim < cs.space_dimension())
-    throw_dimension_incompatible("add_constraints(cs)", "cs", cs);
-
-  for (Constraint_System::const_iterator i = cs.begin(),
-         cs_end = cs.end(); i != cs_end; ++i)
-    add_constraint_no_check(*i);
-}
-
-bool
-PPL::Grid::add_constraints_and_minimize(const Constraint_System& cs) {
-  add_constraints(cs);
-  return minimize();
-}
-
-void
-PPL::Grid::add_recycled_constraints(Constraint_System& cs) {
-  // TODO: really recycle the constraints.
-  add_constraints(cs);
-}
-
-bool
-PPL::Grid::add_recycled_constraints_and_minimize(Constraint_System& cs) {
-  add_constraints(cs);
-  return minimize();
-}
-
 void
 PPL::Grid::add_recycled_grid_generators(Grid_Generator_System& gs) {
   // Dimension-compatibility check.

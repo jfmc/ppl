@@ -244,6 +244,25 @@ test10() {
   return false;
 }
 
+// add_constraints(1 == 0) to an empty 0-dimensional grid
+bool
+test11() {
+
+  Grid gr(0, EMPTY);
+
+  print_congruences(gr, "*** gr ***");
+
+  gr.add_constraint(Linear_Expression(1) == 0);
+
+  Grid known_gr(0, EMPTY);
+
+  bool ok = (gr == known_gr);
+
+  print_congruences(gr, "*** gr.add_constraints(cs) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -257,4 +276,5 @@ BEGIN_MAIN
   DO_TEST(test08);
   DO_TEST(test09);
   DO_TEST(test10);
+  DO_TEST(test11);
 END_MAIN
