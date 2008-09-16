@@ -482,7 +482,7 @@ PPL_PROTO((ppl_@CLASS@_t ps,
 
 int
 ppl_@CLASS@_const_iterator_@BEGINEND@
-PPL_PROTO((ppl_@CLASS@_t ps,
+PPL_PROTO((ppl_const_@CLASS@_t ps,
            ppl_@CLASS@_const_iterator_t psit));
 
 ')

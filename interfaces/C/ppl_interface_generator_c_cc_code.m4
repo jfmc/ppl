@@ -826,7 +826,7 @@ CATCH_ALL
 
 int
 ppl_@CLASS@_const_iterator_@BEGINEND@
-(ppl_@CLASS@_t ps,
+(ppl_const_@CLASS@_t ps,
  ppl_@CLASS@_const_iterator_t psit) try {
   @CPP_CLASS@::const_iterator& ppsit = *to_nonconst(psit);
   ppsit = to_const(ps)->@BEGINEND@();
