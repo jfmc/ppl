@@ -48,7 +48,6 @@ ppl_@CLASS@_add_recycled_@ADD_REPRESENT@s +simple,
 ')
 
 dnl IMPLEMENTATION CODE MISSING FOR:
-dnl ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@/2 +polyhedron,
 dnl ppl_@CLASS@_@PARTITION@/4 +pointset_powerset \grid,
 dnl ppl_@CLASS@_approximate_partition/5 +pointset_powerset \shape,
 dnl ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign/2 +pointset_powerset,
