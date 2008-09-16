@@ -774,6 +774,21 @@ DECLARE_CONVERSIONS(@CLASS@_iterator,
 DECLARE_CONVERSIONS(@CLASS@_const_iterator,
                     @CLASS@_const_iterator)
 
+int
+ppl_new_@CLASS@_iterator
+(ppl_@CLASS@_iterator_t* pit) try {
+  *pit = to_nonconst(new @CLASS@_iterator());
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_@CLASS@_const_iterator
+(ppl_@CLASS@_const_iterator_t* pit) try {
+  *pit = to_nonconst(new @CLASS@_const_iterator());
+  return 0;
+}
+CATCH_ALL
 
 int
 ppl_@CLASS@_iterator_equal_test

@@ -450,6 +450,14 @@ PPL_TYPE_DECLARATION(@CLASS@_iterator);
 PPL_TYPE_DECLARATION(@CLASS@_const_iterator);
 
 int
+ppl_new_@CLASS@_iterator
+PPL_PROTO((ppl_@CLASS@_iterator_t* pit));
+
+int
+ppl_new_@CLASS@_const_iterator
+PPL_PROTO((ppl_@CLASS@_const_iterator_t* pit));
+
+int
 ppl_@CLASS@_iterator_equal_test
 PPL_PROTO((ppl_const_@CLASS@_iterator_t x,
            ppl_const_@CLASS@_iterator_t y));
