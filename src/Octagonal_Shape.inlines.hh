@@ -590,6 +590,7 @@ template <typename T>
 inline bool
 Octagonal_Shape<T>::upper_bound_assign_if_exact(const Octagonal_Shape& y) {
   // TODO: this must be properly implemented.
+  used(y);
   return false;
 }
 

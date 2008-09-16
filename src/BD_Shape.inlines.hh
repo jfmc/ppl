@@ -756,8 +756,9 @@ BD_Shape<T>::upper_bound_assign_and_minimize(const BD_Shape& y) {
 
 template <typename T>
 inline bool
-BD_Shape<T>::upper_bound_assign_if_exact(const BD_Shape&) {
+BD_Shape<T>::upper_bound_assign_if_exact(const BD_Shape& y) {
   // TODO: this must be properly implemented.
+  used(y);
   return false;
 }
 
