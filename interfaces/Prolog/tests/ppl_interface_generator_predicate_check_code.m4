@@ -29,7 +29,7 @@ m4_define(`m4_add_build_class_code', `dnl
 ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Dim) :-
   (clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Dim, universe, PS),
   ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@, @CONSTRAINER@s, RS),
-  ppl_@CLASS@_add_@CONSTRAINER@s(PS, RS)).
+  ppl_@CLASS@_refine_with_@CONSTRAINER@s(PS, RS)).
 
 ')
 
@@ -377,10 +377,9 @@ m4_define(`ppl_@CLASS@_@MEMBYTES@_code',
 `
 ppl_@CLASS@_@MEMBYTES@_2_test :-
   (
-   choose_test(TEST_DATA, _Space_Dim),
-   ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@, @CONSTRAINER@s, RS),
+   choose_test(TEST_DATA, Space_Dim),
    (
-     clean_ppl_new_@TOPOLOGY@@CLASS@_from_@CONSTRAINER@s(RS, PH),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PH, Space_Dim),
      ppl_@CLASS@_@MEMBYTES@(PH, S),
      ((noisy(N), N < 2) -> true ;
        display_message([nl, for, TEST_DATA, the, @MEMBYTES@, is, S, nl])
