@@ -2608,7 +2608,7 @@ exception_prolog(9, [A, _, _]) :-
                [point(A)], P),
    must_catch(
      clean_new_ppl_Polyhedron_from_Polyhedron_with_complexity(a, c, P,
-                                                              c, P_copy)),
+                                                              c, _P_copy)),
    !,
    ppl_delete_Polyhedron(P).
 
