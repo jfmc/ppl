@@ -239,7 +239,7 @@ Interval<Boundary, Info>::strictly_contains(const T& y) const {
     return !check_empty_arg(*this);
   if (check_empty_arg(*this))
     return false;
-  if (!contains_restriction(y))
+  if (!contains_restriction(info(), f_info(y)))
       return false;
   else if (!eq_restriction(*this, y))
     return le(LOWER, lower(), info(), LOWER, f_lower(y), f_info(y))
