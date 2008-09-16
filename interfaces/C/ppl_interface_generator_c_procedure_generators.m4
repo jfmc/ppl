@@ -37,7 +37,9 @@ dnl Note that the code for the schema "<name>_code" must be defined
 dnl in the ppl_interface_generator_*_code.m4 file.
 dnl The <name> must be exactly as written here.
 
-m4_define(`m4_procedure_list', `m4_echo_unquoted(`m4_common_procedure_list',
+m4_define(`m4_procedure_list',
+  `m4_echo_unquoted(ppl_new_@CLASS@_iterator +pointset_powerset,
+`m4_common_procedure_list',
 ppl_new_@TOPOLOGY@@CLASS@_recycle_@BUILD_REPRESENT@s +simple,
 ppl_assign_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@ +simple,
 ppl_@CLASS@_add_recycled_@ADD_REPRESENT@ +simple,

@@ -444,7 +444,7 @@ PPL_PROTO((ppl_const_@CLASS@_t ps,
 
 ')
 
-m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
+m4_define(`ppl_new_@CLASS@_iterator_code',
 `dnl
 PPL_TYPE_DECLARATION(@CLASS@_iterator);
 PPL_TYPE_DECLARATION(@CLASS@_const_iterator);
@@ -457,6 +457,10 @@ int
 ppl_new_@CLASS@_const_iterator
 PPL_PROTO((ppl_@CLASS@_const_iterator_t* pit));
 
+')
+
+m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
+`dnl
 int
 ppl_@CLASS@_iterator_equal_test
 PPL_PROTO((ppl_const_@CLASS@_iterator_t x,

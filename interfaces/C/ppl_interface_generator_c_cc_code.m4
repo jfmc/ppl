@@ -761,7 +761,7 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
+m4_define(`ppl_new_@CLASS@_iterator_code',
 `dnl
 
 typedef @CPP_CLASS@::iterator
@@ -790,6 +790,10 @@ ppl_new_@CLASS@_const_iterator
 }
 CATCH_ALL
 
+')
+
+m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
+`dnl
 int
 ppl_@CLASS@_iterator_equal_test
 (ppl_const_@CLASS@_iterator_t x,
