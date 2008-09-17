@@ -123,17 +123,6 @@ Polyhedron::can_recycle_congruence_systems() {
   return false;
 }
 
-} // namespace Parma_Polyhedra_Library
-
-/*! \relates Parma_Polyhedra_Library::Polyhedron */
-inline void
-std::swap(Parma_Polyhedra_Library::Polyhedron& x,
-	  Parma_Polyhedra_Library::Polyhedron& y) {
-  x.swap(y);
-}
-
-namespace Parma_Polyhedra_Library {
-
 inline bool
 Polyhedron::marked_empty() const {
   return status.test_empty();
@@ -418,5 +407,16 @@ Polyhedron::strictly_contains(const Polyhedron& y) const {
 }
 
 } // namespace Parma_Polyhedra_Library
+
+namespace std {
+
+/*! \relates Parma_Polyhedra_Library::Polyhedron */
+inline void
+swap(Parma_Polyhedra_Library::Polyhedron& x,
+     Parma_Polyhedra_Library::Polyhedron& y) {
+  x.swap(y);
+}
+
+} // namespace std
 
 #endif // !defined(PPL_Polyhedron_inlines_hh)
