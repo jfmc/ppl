@@ -2045,10 +2045,8 @@ private:
   //! The number of dimensions of the enclosing vector space.
   dimension_type space_dim;
 
-public:
   //! Returns the topological kind of the polyhedron.
   Topology topology() const;
-private:
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if the polyhedron
