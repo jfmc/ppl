@@ -81,8 +81,7 @@ test01() {
     && !x.contains_integer_point()
     && x.is_disjoint_from(1.41420757770538330078125)
     && x.is_disjoint_from(1.41421949863433837890625)
-    //&& z.strictly_contains(x)
-    ;
+    && z.strictly_contains(x);
 }
 
 // Note: this function works both with interval and native floating
