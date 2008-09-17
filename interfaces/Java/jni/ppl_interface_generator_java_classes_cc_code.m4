@@ -58,7 +58,7 @@ m4_define(`ppl_@CLASS@_delete_iterator_code',
 JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_delete_1iterator
 (JNIEnv* env) {
 jclass j_it_class = env->FindClass("parma_polyhedra_library/@CLASS@_Iterator");
- if (!is_a_reference(env, j_it_class))
+ if (!is_java_marked(env, j_it_class))
   delete j_it_class;
 }
 
@@ -87,8 +87,7 @@ JNIEXPORT jobject JNICALL Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_1It
 jclass j_class = env->FindClass("parma_polyhedra_library/@CLASSTOPOLOGY@@CPP_DISJUNCT@");
 jmethodID j_ctr_id = env->GetMethodID(j_class, "<init>", "()V");
 jobject j_obj = env->NewObject(j_class, j_ctr_id);
-set_ptr(env, j_obj,  &((*@LTOPOLOGY@@LCLASS@_itr_ptr)->element()));
-set_is_a_reference(env, j_obj, true);
+set_ptr(env, j_obj,  &((*@LTOPOLOGY@@LCLASS@_itr_ptr)->element()), true);
 return j_obj;
 }
 ')
@@ -178,7 +177,7 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_finali
 (JNIEnv* env, jobject j_@LTOPOLOGY@@LCLASS@) {
   @TOPOLOGY@@CPP_CLASS@* str
  = reinterpret_cast<@TOPOLOGY@@CPP_CLASS@*>(get_ptr(env, j_@LTOPOLOGY@@LCLASS@));
- if (!is_a_reference(env, j_@LTOPOLOGY@@LCLASS@))
+ if (!is_java_marked(env, j_@LTOPOLOGY@@LCLASS@))
   delete str;
 }
 
@@ -190,7 +189,7 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_free
 (JNIEnv* env, jobject j_@LTOPOLOGY@@LCLASS@) {
   @TOPOLOGY@@CPP_CLASS@* str  =
        reinterpret_cast<@TOPOLOGY@@CPP_CLASS@*>(get_ptr(env, j_@LTOPOLOGY@@LCLASS@));
-    if (!is_a_reference(env, j_@LTOPOLOGY@@LCLASS@)) {
+ if (!is_java_marked(env, j_@LTOPOLOGY@@LCLASS@)) {
   	delete str;
         void* null_ptr = 0;
   	set_ptr(env, j_@LTOPOLOGY@@LCLASS@, null_ptr);

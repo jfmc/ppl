@@ -631,25 +631,17 @@ void*
 get_ptr(JNIEnv* env, const jobject& ppl_object) {
   jclass ppl_object_class = env->GetObjectClass(ppl_object);
   jfieldID pointer_field = env->GetFieldID(ppl_object_class, "ptr","J");
-  return reinterpret_cast<void*>(env->GetLongField(ppl_object, pointer_field));
+  return unmark(reinterpret_cast<void*>(env->GetLongField(ppl_object,
+							  pointer_field)));
 }
 
-void
-set_is_a_reference(JNIEnv* env, const jobject& ppl_object, const bool reference) {
-  jclass ppl_object_class = env->GetObjectClass(ppl_object);
-  jfieldID is_a_reference_field = env->GetFieldID(ppl_object_class,
-						 "is_a_reference","Z");
- env->SetBooleanField(ppl_object, is_a_reference_field, reference);
-
-}
 
 bool
-is_a_reference(JNIEnv* env, const jobject& ppl_object) {
+is_java_marked(JNIEnv* env, const jobject& ppl_object) {
   jclass ppl_object_class = env->GetObjectClass(ppl_object);
-  jfieldID is_a_reference_field = env->GetFieldID(ppl_object_class,
-						 "is_a_reference","Z");
-  return env->GetBooleanField(ppl_object, is_a_reference_field);
-
+  jfieldID pointer_field = env->GetFieldID(ppl_object_class, "ptr","J");
+  return marked(reinterpret_cast<void*>(env->GetLongField(ppl_object,
+							  pointer_field)));
 }
 
 

@@ -23,7 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <jni.h>
 #include <ppl.hh>
 #include "interfaced_boxes.hh"
-
+#include "marked_pointers.hh"
 using namespace Parma_Polyhedra_Library;
 
 #define CATCH_ALL \
@@ -118,17 +118,10 @@ j_long_class_to_j_long(JNIEnv* env, const jobject& j_long);
 jobject
 j_long_to_j_long_class(JNIEnv* env, const jlong& jlong_value);
 
-// Sets a Java object to be (or not) deleted after the automatic
-// call to `finalize()'. For example, object that are taken from iterators
-// should not be deleted.
-void
-set_is_a_reference(JNIEnv* env, const jobject& ppl_object,
-		   const bool reference);
-
 // Returns a <CODE>true</CODE> if and only if the Java object
 // is a reference to a C++ object, <CODE>false</CODE> otherwise.
 bool
-is_a_reference(JNIEnv* env, const jobject& ppl_object);
+is_java_marked(JNIEnv* env, const jobject& ppl_object);
 
 
 // Converts a PPL Poly_Gen_Relation to a Java Poly_Gen_Relation.
@@ -300,11 +293,12 @@ jboolean is_null(JNIEnv* env, jobject obj);
 // Set the pointer of the underlying C++ object in the Java object
 template <typename T>
 void
-set_ptr(JNIEnv* env, const jobject& ppl_object, const T* address) {
+set_ptr(JNIEnv* env, const jobject& ppl_object,
+	const T* address, bool to_be_marked = false) {
   jclass ppl_object_class = env->GetObjectClass(ppl_object);
   jfieldID pointer_field = env->GetFieldID(ppl_object_class, "ptr","J");
-  env->SetLongField(ppl_object, pointer_field, (long long) address);
-
+  env->SetLongField(ppl_object, pointer_field,
+		    (long long) (to_be_marked ? mark(address) : address));
 }
 
 // Builds the Java linear expression starting from a congruence,

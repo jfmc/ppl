@@ -277,4 +277,16 @@ System.out.println(p.getSecond());
 
 ');
 
+m4_define(`ppl_@CLASS@_@BEGINEND@_iterator_code',
+`dnl
+@TOPOLOGY@@CLASS@_Iterator it_@LTOPOLOGY@@LCLASS@ =
+			    @LTOPOLOGY@@LCLASS@1.begin_iterator();
+
+')
+
+m4_define(`ppl_@CLASS@_get_disjunct_code',
+`dnl
+@TOPOLOGY@@DISJUNCT@ @LTOPOLOGY@@LCLASS@get_disjunct
+		   = it_@LTOPOLOGY@@LCLASS@.get_disjunct();
+')
 m4_divert`'dnl

@@ -110,6 +110,7 @@ m4_pushdef(`m4_post_extra_class_code', `dnl
 catch (parma_polyhedra_library.Overflow_Error_Exception e) {
 System.out.println("*Overflow detected*::exception caught");
 }
+System.gc();
 return true;
 
     }
