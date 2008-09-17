@@ -30,31 +30,6 @@ m4_include(`ppl_interface_generator_c_cc_code.m4')
 m4_include(`ppl_interface_generator_c_procedure_generators.m4')
 
 dnl -----------------------------------------------------------------
-dnl Macros needed for the class conversion declarations.
-dnl -----------------------------------------------------------------
-m4_define(`m4_declaration_code', `dnl
-m4_ifelse(m4_class_group$1, product,
-            `typedef @CPP_CLASS@ @CPPDEF_CLASS@;')
-
-DECLARE_CONVERSIONS(m4_interface_class`'$1, @CPPDEF_CLASS@)
-')
-m4_pushdef(`m4_one_class_code', `dnl
-m4_replace_all_patterns_in_string($1,
-                                  `m4_declaration_code($1)',
-                                  m4_pattern_list)
-')
-
-dnl -----------------------------------------------------------------
-dnl Output conversion declarations for all the classes.
-dnl -----------------------------------------------------------------
-m4_divert`'dnl
-
-`#include "interfaced_boxes.hh"'
-m4_all_code`'dnl
-m4_divert(-1)
-m4_popdef(`m4_one_class_code')
-
-dnl -----------------------------------------------------------------
 dnl Macros needed for the class-dependent code.
 dnl -----------------------------------------------------------------
 dnl Prefix extra code for each class.
