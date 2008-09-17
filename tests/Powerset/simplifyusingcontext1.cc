@@ -141,9 +141,9 @@ test03() {
 
   bool ok = (ps1 == known_result);
 
-  for (Pointset_Powerset<C_Polyhedron>::const_iterator i = ps1.begin(),
-         iend = ps1.end(); i != iend; ++i)
-    print_constraints(i->element());
+  for (Pointset_Powerset<C_Polyhedron>::const_iterator it = ps1.begin(),
+         ps1_end = ps1.end(); it != ps1_end; ++it)
+    print_constraints(it->element());
 
   return ok;
 }
@@ -195,9 +195,9 @@ test04() {
 
   bool ok = (ps1 == known_result);
 
-  for (Pointset_Powerset<C_Polyhedron>::const_iterator i = ps1.begin(),
-         iend = ps1.end(); i != iend; ++i)
-    print_constraints(i->element());
+  for (Pointset_Powerset<C_Polyhedron>::const_iterator it = ps1.begin(),
+         ps1_end = ps1.end(); it != ps1_end; ++it)
+    print_constraints(it->element());
 
   return ok;
 }
@@ -257,9 +257,9 @@ test05() {
 
   bool ok = (ps1 == known_result);
 
-  for (Pointset_Powerset<C_Polyhedron>::const_iterator i = ps1.begin(),
-         iend = ps1.end(); i != iend; ++i)
-    print_constraints(i->element());
+  for (Pointset_Powerset<C_Polyhedron>::const_iterator it = ps1.begin(),
+         ps1_end = ps1.end(); it != ps1_end; ++it)
+    print_constraints(it->element());
 
   return ok;
 }
@@ -299,9 +299,9 @@ test06() {
 
   bool ok = (ps1 == known_result);
 
-  for (Pointset_Powerset<C_Polyhedron>::const_iterator i = ps1.begin(),
-         iend = ps1.end(); i != iend; ++i)
-    print_constraints(i->element());
+  for (Pointset_Powerset<C_Polyhedron>::const_iterator it = ps1.begin(),
+         ps1_end = ps1.end(); it != ps1_end; ++it)
+    print_constraints(it->element());
 
   return ok;
 }
@@ -331,9 +331,9 @@ test07() {
 
   bool ok = (ps1 == known_result);
 
-  for (Pointset_Powerset<C_Polyhedron>::const_iterator i = ps1.begin(),
-         iend = ps1.end(); i != iend; ++i)
-    print_constraints(i->element());
+  for (Pointset_Powerset<C_Polyhedron>::const_iterator it = ps1.begin(),
+         ps1_end = ps1.end(); it != ps1_end; ++it)
+    print_constraints(it->element());
 
   return ok;
 }
