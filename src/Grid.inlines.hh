@@ -30,6 +30,82 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+inline bool
+Grid::marked_empty() const {
+  return status.test_empty();
+}
+
+inline bool
+Grid::congruences_are_up_to_date() const {
+  return status.test_c_up_to_date();
+}
+
+inline bool
+Grid::generators_are_up_to_date() const {
+  return status.test_g_up_to_date();
+}
+
+inline bool
+Grid::congruences_are_minimized() const {
+  return status.test_c_minimized();
+}
+
+inline bool
+Grid::generators_are_minimized() const {
+  return status.test_g_minimized();
+}
+
+inline void
+Grid::set_generators_up_to_date() {
+  status.set_g_up_to_date();
+}
+
+inline void
+Grid::set_congruences_up_to_date() {
+  status.set_c_up_to_date();
+}
+
+inline void
+Grid::set_congruences_minimized() {
+  set_congruences_up_to_date();
+  status.set_c_minimized();
+}
+
+inline void
+Grid::set_generators_minimized() {
+  set_generators_up_to_date();
+  status.set_g_minimized();
+}
+
+inline void
+Grid::clear_empty() {
+  status.reset_empty();
+}
+
+inline void
+Grid::clear_congruences_minimized() {
+  status.reset_c_minimized();
+}
+
+inline void
+Grid::clear_generators_minimized() {
+  status.reset_g_minimized();
+}
+
+inline void
+Grid::clear_congruences_up_to_date() {
+  clear_congruences_minimized();
+  status.reset_c_up_to_date();
+  // Can get rid of con_sys here.
+}
+
+inline void
+Grid::clear_generators_up_to_date() {
+  clear_generators_minimized();
+  status.reset_g_up_to_date();
+  // Can get rid of gen_sys here.
+}
+
 inline dimension_type
 Grid::max_space_dimension() {
   // One dimension is reserved to have a value of type dimension_type
@@ -39,11 +115,6 @@ Grid::max_space_dimension() {
 			   Grid_Generator_System::max_space_dimension()
 			   )
 		  );
-}
-
-inline void
-Grid::set_congruences_up_to_date() {
-  status.set_c_up_to_date();
 }
 
 inline
@@ -260,88 +331,6 @@ Grid::add_recycled_constraints_and_minimize(Constraint_System& cs) {
   return minimize();
 }
 
-} // namespace Parma_Polyhedra_Library
-
-/*! \relates Parma_Polyhedra_Library::Grid */
-inline void
-std::swap(Parma_Polyhedra_Library::Grid& x,
-	  Parma_Polyhedra_Library::Grid& y) {
-  x.swap(y);
-}
-
-namespace Parma_Polyhedra_Library {
-
-inline bool
-Grid::marked_empty() const {
-  return status.test_empty();
-}
-
-inline bool
-Grid::congruences_are_up_to_date() const {
-  return status.test_c_up_to_date();
-}
-
-inline bool
-Grid::generators_are_up_to_date() const {
-  return status.test_g_up_to_date();
-}
-
-inline bool
-Grid::congruences_are_minimized() const {
-  return status.test_c_minimized();
-}
-
-inline bool
-Grid::generators_are_minimized() const {
-  return status.test_g_minimized();
-}
-
-inline void
-Grid::set_generators_up_to_date() {
-  status.set_g_up_to_date();
-}
-
-inline void
-Grid::set_congruences_minimized() {
-  set_congruences_up_to_date();
-  status.set_c_minimized();
-}
-
-inline void
-Grid::set_generators_minimized() {
-  set_generators_up_to_date();
-  status.set_g_minimized();
-}
-
-inline void
-Grid::clear_empty() {
-  status.reset_empty();
-}
-
-inline void
-Grid::clear_congruences_minimized() {
-  status.reset_c_minimized();
-}
-
-inline void
-Grid::clear_generators_minimized() {
-  status.reset_g_minimized();
-}
-
-inline void
-Grid::clear_congruences_up_to_date() {
-  clear_congruences_minimized();
-  status.reset_c_up_to_date();
-  // Can get rid of con_sys here.
-}
-
-inline void
-Grid::clear_generators_up_to_date() {
-  clear_generators_minimized();
-  status.reset_g_up_to_date();
-  // Can get rid of gen_sys here.
-}
-
 inline bool
 Grid::bounds_from_above(const Linear_Expression& expr) const {
   return bounds(expr, "bounds_from_above(e)");
@@ -403,5 +392,16 @@ Grid::topological_closure_assign() {
 }
 
 } // namespace Parma_Polyhedra_Library
+
+namespace std {
+
+/*! \relates Parma_Polyhedra_Library::Grid */
+inline void
+swap(Parma_Polyhedra_Library::Grid& x,
+     Parma_Polyhedra_Library::Grid& y) {
+  x.swap(y);
+}
+
+} // namespace std
 
 #endif // !defined(PPL_Grid_inlines_hh)
