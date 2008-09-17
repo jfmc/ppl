@@ -1829,6 +1829,54 @@
               workflows."
 }
 
+@PhdThesis{Vasconcelos08th,
+  Author = "P. B. Vasconcelos",
+  Title = "Space Cost Analysis Using Sized Types",
+  School = "School of Computer Science, University of St Andrews",
+  Address = "St Andrews, UK",
+  Month = aug,
+  Year = 2008,
+  Abstract = "Programming resource-sensitive systems, such as
+              real-time embedded systems, requires guaranteeing both
+              the functional correctness of computations and also that
+              time and space usage fit within constraints imposed
+              by hardware limits or the environment.  Functional
+              programming languages have proved very good at
+              meeting the former logical kind of guarantees but
+              not the latter resource guarantees.
+
+              This thesis contributes to demonstrate the applicability
+              of functional programming in resource-sensitive
+              systems with an automatic program analysis for
+              obtaining guaranteed upper bounds on dynamic space
+              usage of functional programs.
+
+              Our analysis is developed for a core subset of
+              \emph{Hume}, a domain-specific functional language
+              targeting resource-sensitive systems (Hammond et
+              al. 2007), and presented as a type and effeect
+              system that builds on previous sized type systems
+              (Hughes et al. 1996, Chin and Khoo 2001) and effeect
+              systems for costs (Dornic et al. 1992, Reistad and
+              Gifford 1994, Hughes and Pareto 1999). It extends
+              previous approaches by using abstract interpretation
+              techniques to \emph{automatically} infer linear
+              approximations of the sizes of recursive data types
+              and the stack and heap costs of recursive functions.
+
+              The correctness of the analysis is formally proved with
+              respect to an operational semantics for the language
+              and an inferrence algorithm that automatically
+              reconstructs size and cost bounds is presented.
+
+              A prototype implementation of the analysis and
+              operational semantics has been constructed and used
+              to experimentally assess the quality of the cost
+              bounds with some examples, including implementations
+              of textbook functional programming algorithms and
+              simplified embedded systems."
+}
+
 @Incollection{Vigna07,
   Author = "G. Vigna",
   Editor = "M. Christodorescu and S. Jha and D. Maughan
