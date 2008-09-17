@@ -36,7 +36,7 @@ dnl m4_pre_extra_class_code(Class, CPP_Class, Class_Kind)
 dnl Prefix extra code for each class.
 m4_define(`m4_pre_extra_class_code', `dnl
 m4_define(`m4_current_interface', `m4_interface_class$1')`'dnl
-%<--%<--%<-- ppl_c_`'m4_current_interface`'.cc
+%<--%<--%<-- ppl_java_`'m4_current_interface`'.cc
 /* Java m4_current_interface interface code.
 m4_include(`ppl_interface_generator_copyright')
 */
