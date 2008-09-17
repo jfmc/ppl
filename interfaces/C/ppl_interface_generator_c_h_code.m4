@@ -191,7 +191,7 @@ PPL_PROTO((ppl_@CLASS@_t x,
 
 ')
 
-m4_define(`ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@_code',
+m4_define(`ppl_@CLASS@_@UB_EXACT@_code',
 `int
 ppl_@CLASS@_@UB_EXACT@
 PPL_PROTO((ppl_@CLASS@_t x,

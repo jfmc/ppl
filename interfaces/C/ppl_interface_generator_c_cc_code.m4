@@ -318,7 +318,7 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@_code',
+m4_define(`ppl_@CLASS@_@UB_EXACT@_code',
 `int
 ppl_@CLASS@_@UB_EXACT@
 (ppl_@CLASS@_t x,
@@ -332,7 +332,7 @@ CATCH_ALL
   ')
 
 m4_define(`m4_ub_exact_for_polyhedron_domains',
-` if (Interfaces::is_necessarily_closed_for_interfaces(to_const(x)) {
+` if (Interfaces::is_necessarily_closed_for_interfaces(*to_const(x))) {
     C_Polyhedron& xx = static_cast<C_Polyhedron&>(*to_nonconst(x));
     const C_Polyhedron& yy = static_cast<const C_Polyhedron&>(*to_const(y));
     return xx.upper_bound_assign_if_exact(yy) ? 1 : 0;
