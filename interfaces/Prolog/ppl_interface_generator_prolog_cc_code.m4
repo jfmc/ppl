@@ -1066,12 +1066,11 @@ m4_define(`ppl_@CLASS@_@UB_EXACT@_code',
   }
   CATCH_ALL;
 }
-
 ')
 
 m4_define(`m4_ub_exact_for_polyhedron_domains',
 `   const Polyhedron* xlhs = term_to_handle<Polyhedron >(t_lhs, where);
-   if (xlhs->topology() == NECESSARILY_CLOSED) {
+ if (Interfaces::is_necessarily_closed_for_interfaces(*xlhs)) {
      C_Polyhedron* lhs = term_to_handle<C_Polyhedron >(t_lhs, where);
      const C_Polyhedron* rhs = term_to_handle<C_Polyhedron >(t_rhs, where);
      PPL_CHECK(lhs);
