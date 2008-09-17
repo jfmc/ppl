@@ -42,11 +42,11 @@ test01() {
   print_constraints(p1, "*** p1 ***");
   print_constraints(p2, "*** p2 ***");
 
-  p1.upper_bound_assign_and_minimize(p2);
+  p1.upper_bound_assign(p2);
 
   bool ok = p1.is_empty();
 
-  print_constraints(p1, "*** p1.upper_bound_assign_and_minimize(p2) ***");
+  print_constraints(p1, "*** p1.upper_bound_assign(p2) ***");
 
   return ok;
 }

@@ -81,11 +81,6 @@ Polyhedron::upper_bound_assign(const Polyhedron& y) {
   poly_hull_assign(y);
 }
 
-inline bool
-Polyhedron::upper_bound_assign_and_minimize(const Polyhedron& y) {
-  return poly_hull_assign_and_minimize(y);
-}
-
 inline void
 Polyhedron::difference_assign(const Polyhedron& y) {
   poly_difference_assign(y);

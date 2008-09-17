@@ -81,19 +81,14 @@ test02() {
 
   C_Polyhedron computed_result1(ph1);
 
-  computed_result1.upper_bound_assign_and_minimize(ph2);
-
-  C_Polyhedron computed_result2(ph1);
-  computed_result2.upper_bound_assign(ph2);
+  computed_result1.upper_bound_assign(ph2);
 
   C_Polyhedron known_result(ph2);
 
-  bool ok = (computed_result1 == known_result
-	     && computed_result2 == known_result);
+  bool ok = (computed_result1 == known_result);
 
   print_generators(computed_result1,
-		   "*** after upper_bound_assign_and_minimize ***");
-  print_generators(computed_result2, "*** after upper_bound_assign ***");
+		   "*** after upper_bound_assign ***");
 
   return ok;
 }
@@ -140,7 +135,7 @@ aux_test04(C_Polyhedron& ph1, const C_Polyhedron& ph2,
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");
 
-  ph1.upper_bound_assign_and_minimize(ph2);
+  ph1.upper_bound_assign(ph2);
 
   print_generators(ph1, "*** after upper_bound_assign ***");
 
@@ -189,12 +184,12 @@ test05() {
 
   C_Polyhedron known_result(ph1);
 
-  ph1.upper_bound_assign_and_minimize(ph2);
+  ph1.upper_bound_assign(ph2);
 
   bool ok = (ph1 == known_result);
 
   print_generators(ph1,
-		   "*** after ph1.upper_bound_assign_and_minimize(ph2) ***");
+		   "*** after ph1.upper_bound_assign(ph2) ***");
 
   return ok;
 }
@@ -209,12 +204,12 @@ test06() {
 
   C_Polyhedron known_result(ph1);
 
-  ph1.upper_bound_assign_and_minimize(ph2);
+  ph1.upper_bound_assign(ph2);
 
   bool ok = (ph1 == known_result);
 
   print_generators(ph1,
-		   "*** after ph1.upper_bound_assign_and_minimize(ph2) ***");
+		   "*** after ph1.upper_bound_assign(ph2) ***");
 
   return ok;
 }
@@ -241,7 +236,7 @@ test07() {
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
 
-  ph1.upper_bound_assign_and_minimize(ph2);
+  ph1.upper_bound_assign(ph2);
 
   C_Polyhedron known_result(2);
   known_result.add_constraint(A >= 0);
@@ -250,7 +245,7 @@ test07() {
   bool ok = (ph1 == known_result);
 
   print_generators(ph1,
-		   "*** after ph1.upper_bound_assign_and_minimize(ph2) ***");
+		   "*** after ph1.upper_bound_assign(ph2) ***");
 
   return ok;
 }
@@ -322,7 +317,7 @@ test10() {
 
   print_generators(ph1, "*** after upper_bound_assign ***");
   print_generators(copy_ph1,
-		    "*** after upper_bound_assign_and_minimize ***");
+		    "*** after upper_bound_assign ***");
 
   return ok;
 }
@@ -356,7 +351,7 @@ test11() {
 
   print_generators(ph1, "*** after upper_bound_assign ***");
   print_generators(copy_ph1,
-		    "*** after upper_bound_assign_and_minimize ***");
+		    "*** after upper_bound_assign ***");
 
   return ok;
 }
@@ -377,11 +372,11 @@ test12() {
   print_constraints(p, "*** p ***");
   print_constraints(q, "*** q ***");
 
-  p.upper_bound_assign_and_minimize(q);
+  p.upper_bound_assign(q);
 
   bool ok = (p == q);
 
-  print_constraints(p, "*** p.upper_bound_assign_and_minimize(q) ***");
+  print_constraints(p, "*** p.upper_bound_assign(q) ***");
 
   return ok;
 }
