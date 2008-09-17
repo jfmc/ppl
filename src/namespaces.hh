@@ -72,6 +72,12 @@ namespace Checked {
 namespace Implementation {
 } // namespace Implementation
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! %Data and function related to foreign language interfaces.
+/*! \ingroup PPL_CXX_interface */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+namespace Interfaces {
+} // namespace Interfaces
 
 } // namespace Parma_Polyhedra_Library
 
