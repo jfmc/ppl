@@ -520,7 +520,6 @@ widen,
 extrapolation,
 narrow,
 limitedbounded,
-box,
 incdec,
 beginend,
 membytes')
@@ -730,15 +729,6 @@ dnl operations.
 dnl ---------------------------------------------------------------------
 m4_define(`m4_limitedbounded_replacement', `limited')
 m4_define(`m4_Polyhedron_limitedbounded_replacement', `limited, bounded')
-
-
-dnl ---------------------------------------------------------------------
-dnl pattern == box
-dnl The shape classes have bounding boxes while the grid classes also
-dnl have covering boxes.
-dnl ---------------------------------------------------------------------
-m4_define(`m4_box_replacement', `bounding_box')
-m4_define(`m4_Grid_box_replacement', `m4_box_replacement, covering_box')
 
 dnl ---------------------------------------------------------------------
 dnl pattern == dimension
