@@ -88,6 +88,18 @@ bool operator==(const Polyhedron& x, const Polyhedron& y);
 */
 bool operator!=(const Polyhedron& x, const Polyhedron& y);
 
+namespace Interfaces {
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \brief
+  Returns \c true if and only if
+  <code>ph.topology() == NECESSARILY_CLOSED</code>.
+*/
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+bool is_necessarily_closed_for_interfaces(const Polyhedron& ph);
+
+} // namespace Interfaces
+
 } // namespace Parma_Polyhedra_Library
 
 
@@ -2033,16 +2045,18 @@ private:
   //! The number of dimensions of the enclosing vector space.
   dimension_type space_dim;
 
-public:
   //! Returns the topological kind of the polyhedron.
   Topology topology() const;
 
-private:
   /*! \brief
     Returns <CODE>true</CODE> if and only if the polyhedron
     is necessarily closed.
   */
   bool is_necessarily_closed() const;
+
+  friend bool
+  Parma_Polyhedra_Library::Interfaces
+  ::is_necessarily_closed_for_interfaces(const Polyhedron&);
 
   /*! \brief
     Uses a copy of constraint \p c to refine the system of constraints

@@ -406,6 +406,15 @@ Polyhedron::strictly_contains(const Polyhedron& y) const {
   return x.contains(y) && !y.contains(x);
 }
 
+namespace Interfaces {
+
+inline bool
+is_necessarily_closed_for_interfaces(const Polyhedron& ph) {
+  return ph.is_necessarily_closed();
+}
+
+} // namespace Interfaces
+
 } // namespace Parma_Polyhedra_Library
 
 namespace std {
