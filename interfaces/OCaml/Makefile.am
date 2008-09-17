@@ -23,9 +23,12 @@
 SUBDIRS = . tests
 
 interface_generator_files = \
-ppl_interface_generator_ocaml_cc.m4 \
-ppl_interface_generator_ocaml_cc_code.m4 \
 ppl_interface_generator_ocaml_procedure_generators.m4 \
+ppl_interface_generator_ocaml_cc.m4 \
+ppl_interface_generator_ocaml_hh_files.m4 \
+ppl_interface_generator_ocaml_cc_files.m4 \
+ppl_interface_generator_ocaml_hh_code.m4 \
+ppl_interface_generator_ocaml_cc_code.m4 \
 ppl_interface_generator_ocaml_ml.m4 \
 ppl_interface_generator_ocaml_ml_code.m4 \
 ppl_interface_generator_ocaml_mli.m4 \
@@ -38,6 +41,7 @@ ppl_ocaml_types.ml
 EXTRA_DIST = \
 $(interface_generator_files) \
 $(ml_source_files) \
+ppl_ocaml_globals.hh \
 ppl_ocaml_globals.cc \
 OCaml_interface.dox
 
@@ -75,6 +79,13 @@ AM_CPPFLAGS = \
 -I$(top_builddir)/src \
 @extra_includes@
 
+interface_generator_dependencies = \
+$(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
+../ppl_interface_generator_common.m4 \
+../ppl_interface_generator_common_dat.m4 \
+../ppl_interface_generator_copyright \
+$(interface_generator_files)
+
 ppl_ocaml.cc: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_ocaml_cc.m4 > $@
@@ -111,19 +122,6 @@ ppl_ocaml_types.cmi: ppl_ocaml_types.cmo
 		$(MAKE) $(AM_MAKEFLAGS) ppl_ocaml_types.cmo; \
 	fi
 
-interface_generator_dependencies = \
-$(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
-../ppl_interface_generator_common.m4 \
-../ppl_interface_generator_common_dat.m4 \
-../ppl_interface_generator_copyright \
-ppl_interface_generator_ocaml_procedure_generators.m4 \
-ppl_interface_generator_ocaml_ml.m4 \
-ppl_interface_generator_ocaml_ml_code.m4 \
-ppl_interface_generator_ocaml_mli.m4 \
-ppl_interface_generator_ocaml_mli_code.m4 \
-ppl_interface_generator_ocaml_cc.m4 \
-ppl_interface_generator_ocaml_cc_code.m4
-
 ppl_ocaml.ml: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_ocaml_ml.m4 > $@
@@ -131,6 +129,24 @@ ppl_ocaml.ml: $(interface_generator_dependencies)
 ppl_ocaml.mli: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_ocaml_mli.m4 > $@
+
+ppl_ocaml_domains_cc_files: $(interface_generator_dependencies)
+	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
+           $(srcdir)/ppl_interface_generator_ocaml_cc_files.m4 \
+                > ppl_ocaml_cc_blob
+	$(top_srcdir)/utils/cm_cleaner.sh < ppl_ocaml_cc_blob
+	$(top_srcdir)/utils/cm_splitter.sh < ppl_ocaml_cc_blob
+	rm -f ppl_ocaml_cc_blob
+	touch $@
+
+ppl_ocaml_domains_hh_files: $(interface_generator_dependencies)
+	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
+           $(srcdir)/ppl_interface_generator_ocaml_hh_files.m4 \
+                > ppl_ocaml_hh_blob
+	$(top_srcdir)/utils/cm_cleaner.sh < ppl_ocaml_hh_blob
+	$(top_srcdir)/utils/cm_splitter.sh < ppl_ocaml_hh_blob
+	rm -f ppl_ocaml_hh_blob
+	touch $@
 
 endif BUILD_OCAML_INTERFACE
 

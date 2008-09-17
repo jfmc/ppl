@@ -27,40 +27,27 @@ dnl site: http://www.cs.unipr.it/ppl/ .
 
 dnl Include files defining macros that generate the non-fixed part.
 m4_include(`ppl_interface_generator_ocaml_cc_code.m4')
-m4_include(`ppl_interface_generator_ocaml_hh_code.m4')
 m4_include(`ppl_interface_generator_ocaml_procedure_generators.m4')
 
-m4_divert`'dnl
-/* OCaml interface implementation.
+dnl -----------------------------------------------------------------
+dnl Macros needed for the class-dependent code.
+dnl -----------------------------------------------------------------
+dnl Prefix extra code for each class.
+m4_define(`m4_pre_extra_class_code', `dnl
+m4_define(`m4_current_interface', m4_interface_class`'$1)`'dnl
+%<--%<--%<-- ppl_ocaml_`'m4_current_interface`'.cc
+/* OCaml m4_current_interface interface code.
 m4_include(`ppl_interface_generator_copyright')
 */
-m4_divert(-1)dnl
 
-dnl m4_pre_all_classes_code
-dnl
-dnl Definition for converting a term to a class handle code for all
-dnl classes must be placed before all the generated code so that one class
-dnl can be copied from another.
-m4_define(`m4_pre_all_classes_code', `')
+`#'include "ppl_ocaml_domains.hh"
 
-m4_pushdef(`m4_one_class_code', `dnl
-m4_replace_all_patterns_in_string($1,
-                                  m4_access_class_code,
-                                  m4_pattern_list)`'dnl
 ')
 
 dnl -----------------------------------------------------------------
-dnl Generate type declarations for all the classes.
-dnl -----------------------------------------------------------------
-
-m4_divert`'dnl
-`#'include "ppl_ocaml_globals.cc"
-m4_all_code
-m4_popdef(`m4_one_class_code')`'dnl
-dnl
-dnl -----------------------------------------------------------------
 dnl Generate the main class-dependent code.
 dnl -----------------------------------------------------------------
+m4_divert`'dnl
 m4_all_code
 dnl
 dnl End of file generation.
