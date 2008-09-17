@@ -25,15 +25,15 @@ dnl Note that if a test may change these at all, then a copy should be used.
 m4_define(`m4_add_init_class_code', `dnl
 let @LTOPOLOGY@@LCLASS@01
   = ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension 3 Universe;;
-ppl_@TOPOLOGY@@CLASS@_add_@CONSTRAINER@s
+ppl_@TOPOLOGY@@CLASS@_refine_with_@CONSTRAINER@s
   @LTOPOLOGY@@LCLASS@01 @CONSTRAINER@s01;;
 let @LTOPOLOGY@@LCLASS@02
   = ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension 3 Universe;;
-ppl_@TOPOLOGY@@CLASS@_add_@CONSTRAINER@s
+ppl_@TOPOLOGY@@CLASS@_refine_with_@CONSTRAINER@s
   @LTOPOLOGY@@LCLASS@02 @CONSTRAINER@s02;;
 let @LTOPOLOGY@@LCLASS@03
   = ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension 3 Universe;;
-ppl_@TOPOLOGY@@CLASS@_add_@CONSTRAINER@s
+ppl_@TOPOLOGY@@CLASS@_refine_with_@CONSTRAINER@s
   @LTOPOLOGY@@LCLASS@03 @CONSTRAINER@s03;;
 print_newline();;
 ')
