@@ -112,7 +112,7 @@ ppl_c_implementation_domains.cc.stamp: $(interface_generator_dependencies)
 	$(top_srcdir)/utils/cm_cleaner.sh < ppl_c_cc_blob
 	$(top_srcdir)/utils/cm_splitter.sh < ppl_c_cc_blob
 	rm -f ppl_c_cc_blob
-	touch $@
+	echo timestamp >$@
 
 ppl_c_implementation_domains.hh: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \

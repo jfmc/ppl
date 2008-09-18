@@ -128,14 +128,14 @@ java_classes.stamp: $(all_java_sources)
 		$(CLASSPATH_ENV) $(JAVAC) -d $(JAVAROOT) \
 		$(AM_JAVACFLAGS) $(JAVACFLAGS) $?; \
 	else :; fi
-	echo timestamp > java_classes.stamp
+	echo timestamp >$@
 
 java_cxx_headers.stamp: java_classes.stamp
 	@if test -n "$?"; then \
 		echo '$(JAVAH) -classpath .. $(fixed_java_cxx_headers) $(required_instantiations_java_cxx_headers)' ; \
 		$(JAVAH) -classpath .. $(fixed_java_cxx_headers) $(required_instantiations_java_cxx_headers) ; \
 	else :; fi
-	echo timestamp > java_cxx_headers.stamp
+	echo timestamp >$@
 
 source_generation.stamp: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I../.. \
@@ -145,7 +145,7 @@ source_generation.stamp: $(interface_generator_dependencies)
 	$(top_srcdir)/utils/cm_cleaner.sh < java_blob
 	$(top_srcdir)/utils/cm_splitter.sh < java_blob
 	rm -f java_blob
-	echo timestamp > source_generation.stamp
+	echo timestamp >$@
 
 $(required_instantiations_java_sources): source_generation.stamp
 

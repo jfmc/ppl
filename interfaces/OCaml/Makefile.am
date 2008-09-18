@@ -137,7 +137,7 @@ ppl_ocaml_domains_cc_files: $(interface_generator_dependencies)
 	$(top_srcdir)/utils/cm_cleaner.sh < ppl_ocaml_cc_blob
 	$(top_srcdir)/utils/cm_splitter.sh < ppl_ocaml_cc_blob
 	rm -f ppl_ocaml_cc_blob
-	touch $@
+	echo timestamp >$@
 
 ppl_ocaml_domains_hh_files: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
@@ -146,7 +146,7 @@ ppl_ocaml_domains_hh_files: $(interface_generator_dependencies)
 	$(top_srcdir)/utils/cm_cleaner.sh < ppl_ocaml_hh_blob
 	$(top_srcdir)/utils/cm_splitter.sh < ppl_ocaml_hh_blob
 	rm -f ppl_ocaml_hh_blob
-	touch $@
+	echo timestamp >$@
 
 endif BUILD_OCAML_INTERFACE
 

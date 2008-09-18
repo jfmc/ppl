@@ -91,7 +91,7 @@ ppl_java_implementation_domains.cc.stamp: $(interface_generator_dependencies)
 	$(top_srcdir)/utils/cm_cleaner.sh < ppl_java_cc_blob
 	$(top_srcdir)/utils/cm_splitter.sh < ppl_java_cc_blob
 	rm -f ppl_java_cc_blob
-	touch $@
+	echo timestamp >$@
 
 EXTRA_DIST = \
 $(interface_generator_files)
