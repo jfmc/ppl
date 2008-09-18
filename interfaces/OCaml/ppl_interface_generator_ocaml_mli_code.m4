@@ -39,6 +39,7 @@ m4_define(`ppl_@CLASS@_widening_assign_code', `')
 m4_define(`ppl_@CLASS@_@PARTITION@_code', `')
 m4_define(`ppl_@CLASS@_approximate_partition_code', `')
 `')
+m4_define(`ppl_@CLASS@_@UB_EXACT@_code', `')
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 `dnl
