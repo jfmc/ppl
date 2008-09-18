@@ -38,8 +38,9 @@ m4_define(`m4_pre_extra_class_code', `dnl
 m4_define(`m4_current_interface', `m4_interface_class$1')`'dnl
 %<--%<--%<-- ppl_java_`'m4_current_interface`'.cc
 /* Java m4_current_interface interface code.
-m4_include(`ppl_interface_generator_copyright')
+m4_include(`ppl_interface_generator_copyright')`'dnl
 */
+
 `#'include "ppl_java_common.hh"
 `#'include "parma_polyhedra_library_`'m4_current_interface`'.h"
 m4_ifelse(m4_current_interface, Polyhedron,
@@ -48,6 +49,7 @@ m4_ifelse(m4_current_interface, Polyhedron,
 )`'dnl
 m4_undefine(`m4_current_interface')
 using namespace Parma_Polyhedra_Library;
+
 ')
 
 dnl -----------------------------------------------------------------
