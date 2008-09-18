@@ -131,10 +131,9 @@ java_classes.stamp: $(all_java_sources)
 	echo timestamp >$@
 
 java_cxx_headers.stamp: java_classes.stamp
-	@if test -n "$?"; then \
-		echo '$(JAVAH) -classpath .. $(fixed_java_cxx_headers) $(required_instantiations_java_cxx_headers)' ; \
-		$(JAVAH) -classpath .. $(fixed_java_cxx_headers) $(required_instantiations_java_cxx_headers) ; \
-	else :; fi
+	$(JAVAH) -classpath .. \
+		$(fixed_java_cxx_headers) \
+		$(required_instantiations_java_cxx_headers)
 	echo timestamp >$@
 
 source_generation.stamp: $(interface_generator_dependencies)
