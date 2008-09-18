@@ -36,17 +36,29 @@ m4_define(`m4_this_class', `m4_interface_class$1')`'dnl
 m4_define(`m4_this_class_kind', `m4_class_kind$1')`'dnl
 m4_divert
 %<--%<--%<-- m4_this_class`'.java
+/* PPL Java interface: m4_this_class definition.
+m4_include(`ppl_interface_generator_copyright')`'dnl
+*/
+
 package parma_polyhedra_library;
 
 public class m4_this_class extends PPL_Object {`'dnl
 m4_ifelse(m4_this_class, Polyhedron,
   `
 %<--%<--%<-- C_`'m4_this_class`'.java
+/* PPL Java interface: m4_this_class definition.
+m4_include(`ppl_interface_generator_copyright')`'dnl
+*/
+
 package parma_polyhedra_library;
 
 public class C_`'m4_this_class extends Polyhedron {
 
 %<--%<--%<-- NNC_`'m4_this_class`'.java
+/* PPL Java interface: m4_this_class definition.
+m4_include(`ppl_interface_generator_copyright')`'dnl
+*/
+
 package parma_polyhedra_library;
 
 public class NNC_`'m4_this_class extends Polyhedron {
@@ -54,6 +66,10 @@ public class NNC_`'m4_this_class extends Polyhedron {
 m4_this_class_kind, Pointset_Powerset,
 `
 %<--%<--%<-- m4_this_class`'_Iterator.java
+/* PPL Java interface: m4_this_class definition.
+m4_include(`ppl_interface_generator_copyright')`'dnl
+*/
+
 package parma_polyhedra_library;
 
 public class m4_this_class`'_Iterator extends PPL_Object {
