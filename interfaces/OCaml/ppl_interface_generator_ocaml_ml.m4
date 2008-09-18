@@ -65,6 +65,9 @@ m4_popdef(`m4_one_class_code')
 dnl -----------------------------------------------------------------
 dnl Generate the main class-dependent code.
 dnl -----------------------------------------------------------------
+dnl Ensure any schematic procedure macro that is not defined
+dnl in the code file outputs a warning message.
+m4_define(`m4_default_code', `m4_dumpdef($1`'_code)')
 m4_divert`'dnl
 m4_all_code
 dnl

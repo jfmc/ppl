@@ -31,21 +31,9 @@ m4_include(`ppl_interface_generator_ocaml_procedure_generators.m4')
 
 m4_divert`'dnl
 (* OCaml interface code.
-m4_define(`bagnara', ``bagnara'\')dnl
-m4_include(`ppl_interface_generator_copyright')dnl
-m4_undefine(`bagnara')dnl
+m4_include(`ppl_interface_generator_copyright')`'dnl
 *)
 (** OCaml interface code. *)
-m4_divert(-1)
-
-dnl m4_pre_all_classes_code
-dnl
-dnl Definition for converting a term to a class handle code for all
-dnl classes must be placed before all the generated code so that one class
-dnl can be copied from another.
-
-m4_divert`'dnl
-dnl
 
 open Gmp
 
@@ -208,6 +196,8 @@ val ppl_MIP_Problem_set_optimization_mode:
 val ppl_MIP_Problem_swap:
   mip_problem -> mip_problem -> unit
 
+dnl m4_pre_all_classes_code
+dnl
 m4_define(`m4_pre_all_classes_code', `')
 m4_pushdef(`m4_one_class_code', `dnl
 m4_replace_all_patterns_in_string($1,
@@ -220,6 +210,9 @@ dnl -----------------------------------------------------------------
 dnl Generate type declarations for all the classes.
 dnl -----------------------------------------------------------------
 
+dnl Ensure any schematic procedure macro that is not defined
+dnl in the code file outputs a warning message.
+m4_define(`m4_default_code', `m4_dumpdef($1`'_code)')
 m4_divert`'dnl
 m4_all_code`'dnl
 m4_popdef(`m4_one_class_code')`'dnl

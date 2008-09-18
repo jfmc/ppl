@@ -36,6 +36,9 @@ m4_include(`ppl_interface_generator_copyright')
 */
 m4_divert(-1)dnl
 
+dnl Ensure any schematic procedure macro that is not defined
+dnl in the code file outputs a warning message.
+m4_define(`m4_default_code', `m4_dumpdef($1`'_code)')
 dnl m4_pre_all_classes_code
 dnl
 dnl Definition for converting a term to a class handle code for all

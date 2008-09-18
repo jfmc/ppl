@@ -1,7 +1,9 @@
 dnl  -*- C++ -*-
 m4_divert(-1)
 
-dnl This m4 file contains the program code for generating ppl_ocaml.cc
+This m4 file contains the program implementation code for generating the
+files ppl_ocaml_DOMAIN.cc for each interface domain DOMAIN
+in ppl_interface instantiations.m4.
 
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
@@ -23,6 +25,21 @@ dnl Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
+
+dnl No code is needed for these procedure schemas in the OCaml interface.
+dnl
+m4_define(`ppl_delete_@CLASS@_code', `')
+m4_define(`ppl_@CLASS@_delete_iterator_code', `')
+
+dnl There is no code at present for these procedures in the OCaml interface.
+dnl Remove the macro if its definition is added.
+dnl
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity_code', `')
+m4_define(`ppl_@CLASS@_ascii_dump_code', `')
+m4_define(`ppl_@CLASS@_widening_assign_with_tokens_code', `')
+m4_define(`ppl_@CLASS@_widening_assign_code', `')
+m4_define(`ppl_@CLASS@_@PARTITION@_code', `')
+m4_define(`ppl_@CLASS@_approximate_partition_code', `')
 
   m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 `dnl
