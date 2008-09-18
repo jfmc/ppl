@@ -29,6 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <stdexcept>
 #include <limits>
 #include <sstream>
+#include <ext/stdio_sync_filebuf.h>
 #include <cstdio>
 #include <cerrno>
 #include <climits>
@@ -176,9 +177,24 @@ catch (...) {						     \
   }                                                                     \
   CATCH_ALL
 
+#define DEFINE_ASCII_LOAD_FUNCTIONS(Type)                               \
+  int                                                                   \
+  ppl_##Type##_ascii_load(ppl_##Type##_t x, FILE* stream) try {         \
+    __gnu_cxx::stdio_sync_filebuf<char> fb(stream);                     \
+    std::istream ifs(&fb);                                              \
+    if (!to_nonconst(x)->ascii_load(ifs))                               \
+      return PPL_STDIO_ERROR;                                           \
+    return 0;                                                           \
+  }                                                                     \
+  CATCH_ALL
+
+#define DEFINE_ASCII_DUMP_LOAD_FUNCTIONS(Type)  \
+  DEFINE_ASCII_DUMP_FUNCTIONS(Type)             \
+  DEFINE_ASCII_LOAD_FUNCTIONS(Type)
+
 #define DEFINE_OUTPUT_FUNCTIONS(Type)           \
   DEFINE_PRINT_FUNCTIONS(Type)                  \
-  DEFINE_ASCII_DUMP_FUNCTIONS(Type)
+  DEFINE_ASCII_DUMP_LOAD_FUNCTIONS(Type)
 
 #include "ppl_c_implementation_common.inlines.hh"
 

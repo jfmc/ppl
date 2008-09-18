@@ -403,7 +403,7 @@ int
 ppl_io_get_variable_output_function(ppl_io_variable_output_function_type** pp);
 
 #undef PPL_DECLARE_PRINT_FUNCTIONS
-#undef PPL_DECLARE_ASCII_DUMP_FUNCTIONS
+#undef PPL_DECLARE_ASCII_DUMP_LOAD_FUNCTIONS
 #undef PPL_DECLARE_OUTPUT_FUNCTIONS
 
 #define PPL_DECLARE_PRINT_FUNCTIONS(Type)                             \
@@ -415,15 +415,19 @@ ppl_io_print_##Type PPL_PROTO((ppl_const_##Type##_t x));              \
 int                                                                   \
 ppl_io_fprint_##Type PPL_PROTO((FILE* stream, ppl_const_##Type##_t x));
 
-#define PPL_DECLARE_ASCII_DUMP_FUNCTIONS(Type)                        \
+#define PPL_DECLARE_ASCII_DUMP_LOAD_FUNCTIONS(Type)                   \
 /*! \brief Dumps an ascii representation of \p x on \p stream. */     \
 int                                                                   \
 ppl_##Type##_ascii_dump PPL_PROTO((ppl_const_##Type##_t x,            \
+                                       FILE* stream));                \
+/*! \brief Loads an ascii representation of \p x from \p stream. */   \
+int                                                                   \
+ppl_##Type##_ascii_load PPL_PROTO((ppl_##Type##_t x,                  \
                                        FILE* stream));
 
 #define PPL_DECLARE_OUTPUT_FUNCTIONS(Type)    \
 PPL_DECLARE_PRINT_FUNCTIONS(Type)             \
-PPL_DECLARE_ASCII_DUMP_FUNCTIONS(Type)
+PPL_DECLARE_ASCII_DUMP_LOAD_FUNCTIONS(Type)
 
 /*@}*/ /* Simple I/O Functions */
 
