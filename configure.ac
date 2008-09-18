@@ -966,6 +966,8 @@ bool valid = ${instantiation}::valid_instantiation();
   required_instantiations_java_sources=`echo "${required_instantiations_java_source_names}" | sed -e 's/@/.java /g' -e 's/$/.java/g'`
   required_instantiations_java_cxx_headers=`echo "${required_instantiations_java_sources}" | sed -e 's/\([[^. ]]*\).java/parma_polyhedra_library.\1/g'`
   required_instantiations_java_cxx_headers_sources=`echo "${required_instantiations_java_sources}" | sed -e 's/\([[^. ]]*\).java/parma_polyhedra_library_\1.h/g'`
+  required_instantiations_java_cxx_objects=`echo "${required_instantiations_canonical_names}" | sed -e 's/@/.lo /g' -e 's/$/.lo/g' | sed -e 's/\([[^. ]]*\).lo/ppl_java_\1.lo/g'`
+  required_instantiations_java_cxx_sources=`echo "${required_instantiations_java_cxx_objects}" | sed -e 's/\([[^. ]]*\).lo/\1.cc/g'`
 
   AC_MSG_RESULT([${required_instantiations}])
   ;;
@@ -1148,6 +1150,8 @@ AC_SUBST(required_instantiations_java_sources)
 AC_SUBST(required_instantiations_java_cxx_headers)
 # FIXME: rename headers_sources into sources.
 AC_SUBST(required_instantiations_java_cxx_headers_sources)
+AC_SUBST(required_instantiations_java_cxx_sources)
+AC_SUBST(required_instantiations_java_cxx_objects)
 AC_SUBST(ocamlc_root)
 
 AC_CONFIG_FILES(Makefile

@@ -108,12 +108,6 @@ $(fixed_java_sources)
 
 if BUILD_JAVA_INTERFACE
 
-# This is to force Automake to generate the required Java infrastructure
-# and all the class files.
-noinst_JAVA = Variable.java
-
-all:	java_classes.stamp java_cxx_headers.stamp
-
 interface_generator_dependencies = \
 $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../../ppl_interface_generator_common.m4 \
@@ -122,6 +116,11 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../../ppl_interface_generator_common_procedure_generators.m4 \
 ../ppl_interface_generator_java_procedure_generators.m4 \
 $(interface_generator_files)
+
+BUILT_SOURCES = \
+java_classes.stamp \
+java_cxx_headers.stamp
+
 
 java_classes.stamp: $(all_java_sources)
 	@if test -n "$?"; then \
@@ -133,15 +132,10 @@ java_classes.stamp: $(all_java_sources)
 
 java_cxx_headers.stamp: java_classes.stamp
 	@if test -n "$?"; then \
-		echo '$(JAVAH) -classpath ..  $(fixed_java_cxx_headers) $(required_instantiations_java_cxx_headers)' ; \
+		echo '$(JAVAH) -classpath .. $(fixed_java_cxx_headers) $(required_instantiations_java_cxx_headers)' ; \
 		$(JAVAH) -classpath .. $(fixed_java_cxx_headers) $(required_instantiations_java_cxx_headers) ; \
 	else :; fi
 	echo timestamp > java_cxx_headers.stamp
-
-# In general, several java sources will be built and the same process
-# will build all of them.  We assume that C_Polyhedron.java will always
-# be built, independently from all configuration options.
-BUILT_SOURCES = C_Polyhedron.java
 
 source_generation.stamp: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I../.. \

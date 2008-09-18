@@ -26,9 +26,7 @@ if BUILD_JAVA_INTERFACE
 
 interface_generator_files = \
 ppl_interface_generator_java_classes_cc_files.m4 \
-ppl_interface_generator_java_classes_cc_code.m4 \
-ppl_interface_generator_java_ppl_java_classes_cc.m4 \
-ppl_interface_generator_java_ppl_java_classes_cc_code.m4
+ppl_interface_generator_java_classes_cc_code.m4
 
 interface_generator_dependencies = \
 $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
@@ -46,10 +44,15 @@ AM_CPPFLAGS = \
 -I$(top_srcdir)/src \
 @extra_includes@ @JNIFLAGS@
 
+BUILT_SOURCES = \
+ppl_java_implementation_domains.cc.stamp
+
 lib_LTLIBRARIES = libppl_java.la
 
 if HOST_OS_DARWIN
-libppl_java_la_LDFLAGS=-shrext .jnilib
+
+libppl_java_la_LDFLAGS = "-shrext .jnilib"
+
 endif HOST_OS_DARWIN
 
 libppl_java_la_SOURCES = \
@@ -57,16 +60,30 @@ ppl_java_common.hh \
 ppl_java_common.cc \
 ppl_java_globals.cc
 
-nodist_libppl_java_la_SOURCES = \
-ppl_java_classes.cc
+nodist_EXTRA_libppl_java_la_SOURCES = \
+ppl_java_BD_Shape_double.cc \
+ppl_java_BD_Shape_mpq_class.cc \
+ppl_java_BD_Shape_mpz_class.cc \
+ppl_java_Constraints_Product_C_Polyhedron_Grid.cc \
+ppl_java_Double_Box.cc \
+ppl_java_Grid.cc \
+ppl_java_Octagonal_Shape_double.cc \
+ppl_java_Octagonal_Shape_mpq_class.cc \
+ppl_java_Octagonal_Shape_mpz_class.cc \
+ppl_java_Pointset_Powerset_C_Polyhedron.cc \
+ppl_java_Pointset_Powerset_NNC_Polyhedron.cc \
+ppl_java_Polyhedron.cc \
+ppl_java_Rational_Box.cc
 
-ppl_java_classes.cc: $(interface_generator_dependencies)
-	m4 --prefix-builtin -I../.. \
-		-I$(srcdir) -I$(srcdir)/.. -I$(srcdir)/../.. \
-		$(srcdir)/ppl_interface_generator_java_ppl_java_classes_cc.m4 \
-			> $@
+libppl_java_la_LIBADD = \
+@required_instantiations_java_cxx_objects@ \
+$(top_builddir)/src/libppl.la \
+@extra_libraries@
 
-ppl_java_implementation_domains: $(interface_generator_dependencies)
+libppl_java_la_DEPENDENCIES = \
+@required_instantiations_java_cxx_objects@
+
+ppl_java_implementation_domains.cc.stamp: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I../.. \
 		-I$(srcdir) -I$(srcdir)/.. -I$(srcdir)/../.. \
 		$(srcdir)/ppl_interface_generator_java_classes_cc_files.m4 \
@@ -79,9 +96,8 @@ ppl_java_implementation_domains: $(interface_generator_dependencies)
 EXTRA_DIST = \
 $(interface_generator_files)
 
-libppl_java_la_LIBADD = $(top_builddir)/src/libppl.la @extra_libraries@
-
 CLEANFILES = \
-ppl_java_classes.cc
+@required_instantiations_java_cxx_sources@ \
+ppl_java_implementation_domains.cc.stamp
 
 endif BUILD_JAVA_INTERFACE
