@@ -198,43 +198,43 @@ print_newline();;
 print_string ("space dimensions: ");;
 for i = 6 downto 0 do
   let polyhedron1 = ppl_new_C_Polyhedron_from_space_dimension i Empty
-  in let dimension =  ppl_C_Polyhedron_space_dimension(polyhedron1)
+  in let dimension =  ppl_Polyhedron_space_dimension(polyhedron1)
   in printf "%d, " dimension
 done;;
 print_newline();;
 
 let polyhedron1 = ppl_new_C_Polyhedron_from_constraints(constraints1);;
 let polyhedron2 = ppl_new_C_Polyhedron_from_generators(generators1);;
-let result =  ppl_C_Polyhedron_bounds_from_above polyhedron1 e2;;
-ppl_C_Polyhedron_add_constraint polyhedron1 constraint1;;
-ppl_C_Polyhedron_add_generator polyhedron1 generator1;;
-let b = ppl_C_Polyhedron_is_disjoint_from_C_Polyhedron
+let result =  ppl_Polyhedron_bounds_from_above polyhedron1 e2;;
+ppl_Polyhedron_add_constraint polyhedron1 constraint1;;
+ppl_Polyhedron_add_generator polyhedron1 generator1;;
+let b = ppl_Polyhedron_is_disjoint_from_Polyhedron
   polyhedron1 polyhedron2;;
-ppl_C_Polyhedron_concatenate_assign polyhedron1 polyhedron2;;
-let congruences = ppl_C_Polyhedron_get_congruences polyhedron1 in
+ppl_Polyhedron_concatenate_assign polyhedron1 polyhedron2;;
+let congruences = ppl_Polyhedron_get_congruences polyhedron1 in
 List.iter print_congruence congruences;;
 print_newline();;
-ppl_C_Polyhedron_bounded_affine_preimage polyhedron1 1 e1 e2 (Z.from_int 10);;
-ppl_C_Polyhedron_bounded_affine_preimage polyhedron1 1 e1 e2 (Z.from_int 10);;
-ppl_C_Polyhedron_affine_image polyhedron1 1 e1 (Z.from_int 10);;
-let a = ppl_C_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens
+ppl_Polyhedron_bounded_affine_preimage polyhedron1 1 e1 e2 (Z.from_int 10);;
+ppl_Polyhedron_bounded_affine_preimage polyhedron1 1 e1 e2 (Z.from_int 10);;
+ppl_Polyhedron_affine_image polyhedron1 1 e1 (Z.from_int 10);;
+let a = ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens
   polyhedron1 polyhedron1 constraints1 10;;
-let b = ppl_C_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens
+let b = ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens
   polyhedron1 polyhedron1 constraints1 10;;
-let b = ppl_C_Polyhedron_bounded_H79_extrapolation_assign_with_tokens
+let b = ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens
   polyhedron1 polyhedron1 constraints1 10;;
- ppl_C_Polyhedron_H79_widening_assign polyhedron1 ;;
+ ppl_Polyhedron_H79_widening_assign polyhedron1 ;;
 print_int b;;
 
-let b = ppl_C_Polyhedron_OK polyhedron1;;
-ppl_C_Polyhedron_generalized_affine_preimage_lhs_rhs
+let b = ppl_Polyhedron_OK polyhedron1;;
+ppl_Polyhedron_generalized_affine_preimage_lhs_rhs
   polyhedron1 e1 Equal_RS e1;;
-ppl_C_Polyhedron_generalized_affine_image
+ppl_Polyhedron_generalized_affine_image
   polyhedron1 1 Equal_RS e2 (Z.from_int 10);;
 print_newline();;
 print_string "Testing minimization";;
 let is_bounded, num, den, is_supremum, gen
-  = ppl_C_Polyhedron_minimize_with_point polyhedron1 e3;;
+  = ppl_Polyhedron_minimize_with_point polyhedron1 e3;;
 print_newline();;
 print_string "Value: ";;
 print_int(Z.to_int num);;
@@ -248,32 +248,32 @@ print_string ", generator: ";;
 print_generator(gen);;
 print_newline();;
 let dimensions_to_remove = [3;0];;
-ppl_C_Polyhedron_remove_space_dimensions polyhedron1 dimensions_to_remove;;
+ppl_Polyhedron_remove_space_dimensions polyhedron1 dimensions_to_remove;;
 let dimensions_to_fold = [1];;
-ppl_C_Polyhedron_fold_space_dimensions polyhedron1 dimensions_to_fold 0;;
+ppl_Polyhedron_fold_space_dimensions polyhedron1 dimensions_to_fold 0;;
 let dimensions_to_map = [(0,1);(1,2);(2,0);];;
-let i = ppl_C_Polyhedron_space_dimension polyhedron1;;
+let i = ppl_Polyhedron_space_dimension polyhedron1;;
 print_newline();;
 print_string "Space dimension is: ";
 print_int i;;
 print_string "\n";;
-ppl_C_Polyhedron_map_space_dimensions polyhedron1 dimensions_to_map;;
-ppl_C_Polyhedron_constrains polyhedron1 1;;
-ppl_C_Polyhedron_unconstrain_space_dimension polyhedron1 1;;
+ppl_Polyhedron_map_space_dimensions polyhedron1 dimensions_to_map;;
+ppl_Polyhedron_constrains polyhedron1 1;;
+ppl_Polyhedron_unconstrain_space_dimension polyhedron1 1;;
 let dimensions_to_unconstrain = [1];;
-ppl_C_Polyhedron_unconstrain_space_dimensions
+ppl_Polyhedron_unconstrain_space_dimensions
   polyhedron1 dimensions_to_unconstrain;;
 print_newline();;
-ppl_C_Polyhedron_swap polyhedron1 polyhedron2;;
-let result = ppl_C_Polyhedron_simplify_using_context_assign
+ppl_Polyhedron_swap polyhedron1 polyhedron2;;
+let result = ppl_Polyhedron_simplify_using_context_assign
   polyhedron1 polyhedron2;;
 let c_polyhedron1 = ppl_new_C_Polyhedron_from_space_dimension 10 Universe;;
-let constraints = ppl_C_Polyhedron_get_minimized_constraints c_polyhedron1;;
+let constraints = ppl_Polyhedron_get_minimized_constraints c_polyhedron1;;
 let cs_size =  List.length constraints;;
 print_string "\nSize of minimized constraints get from a C_Polyhedron built from Universe : ";;
 print_int(cs_size);;
 let nnc_polyhedron1 = ppl_new_NNC_Polyhedron_from_space_dimension 10 Universe;;
-let constraints = ppl_NNC_Polyhedron_get_minimized_constraints nnc_polyhedron1;;
+let constraints = ppl_Polyhedron_get_minimized_constraints nnc_polyhedron1;;
 let cs_size =  List.length constraints;;
 print_string "\nSize of minimized constraints get from a NNC_Polyhedron built from Universe : ";;
 print_int(cs_size);;

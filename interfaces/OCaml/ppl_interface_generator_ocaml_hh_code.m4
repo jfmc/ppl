@@ -22,26 +22,26 @@ dnl site: http://www.cs.unipr.it/ppl/ .
 m4_define(`m4_access_class_code',
 `dnl
 //! Give access to the embedded @CLASS@* in \p v.
-inline @TOPOLOGY@@CPP_CLASS@*
-p_@TOPOLOGY@@CLASS@_val(value v) {
-  return unmark(*reinterpret_cast<@TOPOLOGY@@CPP_CLASS@**>(Data_custom_val(v)));
+inline @CPP_CLASS@*
+p_@CLASS@_val(value v) {
+  return unmark(*reinterpret_cast<@CPP_CLASS@**>(Data_custom_val(v)));
 }
 
 //! Give access to the embedded @CLASS@* in \p v.
-inline @TOPOLOGY@@CPP_CLASS@*&
-actual_p_@TOPOLOGY@@CLASS@_val(value v) {
-  return *reinterpret_cast<@TOPOLOGY@@CPP_CLASS@**>(Data_custom_val(v));
+inline @CPP_CLASS@*&
+actual_p_@CLASS@_val(value v) {
+  return *reinterpret_cast<@CPP_CLASS@**>(Data_custom_val(v));
 }
 
 void
-custom_@TOPOLOGY@@CLASS@_finalize(value v) {
-   if (!marked(actual_p_@TOPOLOGY@@CLASS@_val(v)))
-      delete actual_p_@TOPOLOGY@@CLASS@_val(v);
+custom_@CLASS@_finalize(value v) {
+   if (!marked(actual_p_@CLASS@_val(v)))
+      delete actual_p_@CLASS@_val(v);
 }
 
-static struct custom_operations @TOPOLOGY@@CLASS@_custom_operations = {
-  "it.unipr.cs.ppl" "." PPL_VERSION "." "@TOPOLOGY@@CLASS@"@COMMA@
-  custom_@TOPOLOGY@@CLASS@_finalize@COMMA@
+static struct custom_operations @CLASS@_custom_operations = {
+  "it.unipr.cs.ppl" "." PPL_VERSION "." "@CLASS@"@COMMA@
+  custom_@CLASS@_finalize@COMMA@
   custom_compare_default@COMMA@
   custom_hash_default@COMMA@
   custom_serialize_default@COMMA@
@@ -49,10 +49,10 @@ static struct custom_operations @TOPOLOGY@@CLASS@_custom_operations = {
 };
 
 inline value
-val_p_@TOPOLOGY@@CLASS@(const @TOPOLOGY@@CPP_CLASS@& ph) {
-  value v = caml_alloc_custom(&@TOPOLOGY@@CLASS@_custom_operations,
-			      sizeof(@TOPOLOGY@@CPP_CLASS@*), 0, 1);
-  actual_p_@TOPOLOGY@@CLASS@_val(v) = const_cast<@TOPOLOGY@@CPP_CLASS@*>(&ph);
+val_p_@CLASS@(const @CPP_CLASS@& ph) {
+  value v = caml_alloc_custom(&@CLASS@_custom_operations,
+			      sizeof(@CPP_CLASS@*), 0, 1);
+  actual_p_@CLASS@_val(v) = const_cast<@CPP_CLASS@*>(&ph);
   return(v);
 }
 
