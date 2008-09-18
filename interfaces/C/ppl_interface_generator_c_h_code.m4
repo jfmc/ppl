@@ -1,7 +1,8 @@
 dnl  -*- C -*-
 m4_divert(-1)
 
-dnl This m4 file contains the code for generating ppl_c.h.
+This m4 file contains the program header code for generating the
+files ppl_c_domains.h.
 
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
@@ -23,6 +24,21 @@ dnl Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
+
+dnl No code is needed for these procedure schemas in the C interface.
+dnl
+m4_define(`ppl_@CLASS@_swap_code', `')
+m4_define(`ppl_@CLASS@_ascii_dump_code', `')
+
+dnl There is no code at present for these procedures in the C interface.
+dnl Remove the macro if its definition is added.
+dnl
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity_code', `')
+m4_define(`ppl_@CLASS@_@PARTITION@_code', `')
+m4_define(`ppl_@CLASS@_approximate_partition_code', `')
+m4_define(`ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code', `')
+m4_define(`ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign_code', `')
+m4_define(`ppl_@CLASS@_BGP99_@DISJUNCT_EXTRAPOLATION@_extrapolation_assign_code', `')
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 `int
@@ -113,6 +129,17 @@ PPL_PROTO((ppl_const_@CLASS@_t ph,
 m4_define(`ppl_@CLASS@_@MAXMIN@_code',
 `int
 ppl_@CLASS@_@MAXMIN@
+PPL_PROTO((ppl_const_@CLASS@_t ph,
+           ppl_const_Linear_Expression_t le,
+           ppl_Coefficient_t ext_n,
+           ppl_Coefficient_t ext_d,
+           int* poptimum));
+
+')
+
+m4_define(`ppl_@CLASS@_@MAXMIN@_with_point_code',
+`int
+ppl_@CLASS@_@MAXMIN@_with_point
 PPL_PROTO((ppl_const_@CLASS@_t ph,
            ppl_const_Linear_Expression_t le,
            ppl_Coefficient_t ext_n,
@@ -345,6 +372,23 @@ PPL_PROTO((ppl_@CLASS@_t x,
 
 ')
 
+m4_define(`ppl_@CLASS@_widening_assign_with_tokens_code',
+`int
+ppl_@CLASS@_widening_assign_with_tokens
+PPL_PROTO((ppl_@CLASS@_t x,
+           ppl_const_@CLASS@_t y,
+           unsigned* tp));
+
+')
+
+m4_define(`ppl_@CLASS@_widening_assign_code',
+`int
+ppl_@CLASS@_widening_assign
+PPL_PROTO((ppl_@CLASS@_t x,
+           ppl_const_@CLASS@_t y));
+
+')
+
 m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens_code',
 `int
 ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens
@@ -364,22 +408,28 @@ PPL_PROTO((ppl_@CLASS@_t x,
 
 ')
 
-m4_define(`ppl_@CLASS@_bounded_@WIDENEXPN@_extrapolation_assign_with_tokens_code',
+m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens_code',
 `int
-ppl_@CLASS@_bounded_@WIDENEXPN@_extrapolation_assign_with_tokens
+ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens
 PPL_PROTO((ppl_@CLASS@_t x,
            ppl_const_@CLASS@_t y,
-           ppl_const_Constraint_System_t cs,
            unsigned* tp));
 
 ')
 
-m4_define(`ppl_@CLASS@_bounded_@WIDENEXPN@_extrapolation_assign_code',
+m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_code',
 `int
-ppl_@CLASS@_bounded_@WIDENEXPN@_extrapolation_assign
+ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign
 PPL_PROTO((ppl_@CLASS@_t x,
-           ppl_const_@CLASS@_t y,
-           ppl_const_Constraint_System_t cs));
+           ppl_const_@CLASS@_t y));
+
+')
+
+m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign_code',
+`int
+ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign
+PPL_PROTO((ppl_@CLASS@_t x,
+           ppl_const_@CLASS@_t y));
 
 ')
 

@@ -42,12 +42,12 @@ m4_define(`m4_procedure_list',
 `m4_common_procedure_list',
 ppl_new_@TOPOLOGY@@CLASS@_recycle_@BUILD_REPRESENT@s +simple,
 ppl_assign_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@ +simple,
-ppl_@CLASS@_add_recycled_@ADD_REPRESENT@ +simple,
 ppl_@CLASS@_add_recycled_@ADD_REPRESENT@s +simple,
 )
 ')
 
 dnl IMPLEMENTATION CODE MISSING FOR:
+dnl ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity_code
 dnl ppl_@CLASS@_@PARTITION@/4 +pointset_powerset \grid,
 dnl ppl_@CLASS@_approximate_partition/5 +pointset_powerset \shape,
 dnl ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign/2 +pointset_powerset,

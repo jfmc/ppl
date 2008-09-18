@@ -29,6 +29,9 @@ dnl Include files defining macros that generate the non-fixed part.
 m4_include(`ppl_interface_generator_c_h_code.m4')
 m4_include(`ppl_interface_generator_c_procedure_generators.m4')
 
+dnl Ensure any schematic procedure macro that is not defined
+dnl in the code file outputs a warning message.
+m4_define(`m4_default_code', `m4_dumpdef($1`'_code)')
 dnl m4_pre_extra_class_code(Class, CPP_Class, Class_Kind)
 dnl Prefix extra code for each class.
 m4_pushdef(`m4_one_class_code', `dnl

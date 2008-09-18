@@ -1,7 +1,9 @@
 dnl  -*- C++ -*-
 m4_divert(-1)
 
-dnl This m4 file contains the code for generating ppl_c.cc.
+This m4 file contains the program implementation code for generating the
+files ppl_c_DOMAIN.cc for each interface domain DOMAIN
+in ppl_interface instantiations.m4.
 
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
@@ -23,6 +25,20 @@ dnl Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
+
+dnl No code is needed for these procedure schemas in the C interface.
+
+m4_define(`ppl_@CLASS@_swap_code', `')
+m4_define(`ppl_@CLASS@_ascii_dump_code', `')
+
+dnl There is no code at present for these procedures in the C interface.
+dnl Remove the macro if its definition is added.
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity_code', `')
+m4_define(`ppl_@CLASS@_@PARTITION@_code', `')
+m4_define(`ppl_@CLASS@_approximate_partition_code', `')
+m4_define(`ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code', `')
+m4_define(`ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign_code', `')
+m4_define(`ppl_@CLASS@_BGP99_@DISJUNCT_EXTRAPOLATION@_extrapolation_assign_code', `')
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 `int
@@ -180,6 +196,28 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_@MAXMIN@_code',
 `int
 ppl_@CLASS@_@MAXMIN@
+(ppl_const_@CLASS@_t ph,
+ ppl_const_Linear_Expression_t le,
+ ppl_Coefficient_t sup_n,
+ ppl_Coefficient_t sup_d,
+ int* poptimum) try {
+  const @CPP_CLASS@& pph = *to_const(ph);
+  const Linear_Expression& lle = *to_const(le);
+  Coefficient& ssup_n = *to_nonconst(sup_n);
+  Coefficient& ssup_d = *to_nonconst(sup_d);
+  bool optimum;
+  bool ok = pph.@MAXMIN@(lle, ssup_n, ssup_d, optimum);
+  if (ok)
+    *poptimum = optimum ? 1 : 0;
+  return ok ? 1 : 0;
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_@CLASS@_@MAXMIN@_with_point_code',
+`int
+ppl_@CLASS@_@MAXMIN@_with_point
 (ppl_const_@CLASS@_t ph,
  ppl_const_Linear_Expression_t le,
  ppl_Coefficient_t sup_n,
@@ -597,6 +635,32 @@ CATCH_ALL
 
 ')
 
+m4_define(`ppl_@CLASS@_widening_assign_with_tokens_code',
+`int
+ppl_@CLASS@_widening_assign_with_tokens
+(ppl_@CLASS@_t x,
+ ppl_const_@CLASS@_t y,
+ unsigned* tp) try {
+  @CPP_CLASS@& xx = *to_nonconst(x);
+  const @CPP_CLASS@& yy = *to_const(y);
+  xx.widening_assign(yy, tp);
+  return 0;
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_@CLASS@_widening_assign_code',
+`int
+ppl_@CLASS@_widening_assign
+(ppl_@CLASS@_t x,
+ ppl_const_@CLASS@_t y) try {
+  return ppl_@CLASS@_widening_assign_with_tokens(x, y, 0);
+}
+CATCH_ALL
+
+')
+
 m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens_code',
 `int
 ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens
@@ -628,32 +692,43 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_bounded_@WIDENEXPN@_extrapolation_assign_with_tokens_code',
+m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens_code',
 `int
-ppl_@CLASS@_bounded_@WIDENEXPN@_extrapolation_assign_with_tokens
+ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens
 (ppl_@CLASS@_t x,
  ppl_const_@CLASS@_t y,
- ppl_const_@UCONSTRAINER@_System_t cs,
  unsigned* tp) try {
   @CPP_CLASS@& xx = *to_nonconst(x);
   const @CPP_CLASS@& yy = *to_const(y);
-  const @UCONSTRAINER@_System& ccs = *to_const(cs);
-  xx.bounded_@WIDENEXPN@_extrapolation_assign(yy, ccs, tp);
+  xx.@EXTRAPOLATION@_extrapolation_assign(yy, tp);
   return 0;
 }
 CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_bounded_@WIDENEXPN@_extrapolation_assign_code',
+m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_code',
 `int
-ppl_@CLASS@_bounded_@WIDENEXPN@_extrapolation_assign
+ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign
 (ppl_@CLASS@_t x,
- ppl_const_@CLASS@_t y,
- ppl_const_@UCONSTRAINER@_System_t cs) try {
+ ppl_const_@CLASS@_t y) try {
   return
-    ppl_@CLASS@_bounded_@WIDENEXPN@_extrapolation_assign_with_tokens
-      (x, y, cs, 0);
+    ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens
+      (x, y, 0);
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign_code',
+`int
+ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign
+(ppl_@CLASS@_t x,
+ ppl_const_@CLASS@_t y) try {
+  @CPP_CLASS@& xx = *to_nonconst(x);
+  const @CPP_CLASS@& yy = *to_const(y);
+  xx.@EXTRAPOLATION@_narrowing_assign(yy);
+  return 0;
 }
 CATCH_ALL
 
