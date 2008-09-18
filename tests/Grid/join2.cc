@@ -1,4 +1,4 @@
-/* Test Grid::upper_bound_assign_and_minimize().
+/* Test Grid::upper_bound_assign().
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -24,8 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-// upper_bound_assign_and_minimize - two grids in 3D
-// each defined by a single point.
 bool
 test01() {
   Variable A(0);
@@ -43,7 +41,7 @@ test01() {
   Grid gr2(gs2);
   print_generators(gr2, "*** gr2 ***");
 
-  gr1.upper_bound_assign_and_minimize(gr2);
+  gr1.upper_bound_assign(gr2);
 
   Grid_Generator_System known_gs;
   known_gs.insert(grid_point(A + 0*C));
@@ -53,26 +51,7 @@ test01() {
 
   bool ok = (gr1 == known_gr);
 
-  print_congruences(gr1, "*** gr1.upper_bound_assign_and_minimize(gr2) ***");
-
-  return ok;
-}
-
-// upper_bound_assign_and_minimize - Two universe grids.
-bool
-test02() {
-  Grid gr1(3);
-  print_generators(gr1, "*** gr1 ***");
-  Grid gr2(3);
-  print_generators(gr2, "*** gr2 ***");
-
-  gr1.upper_bound_assign_and_minimize(gr2);
-
-  Grid known_gr(3);
-
-  bool ok = (gr1 == known_gr);
-
-  print_congruences(gr1, "*** gr1.upper_bound_assign_and_minimize(gr2) ***");
+  print_congruences(gr1, "*** gr1.upper_bound_assign(gr2) ***");
 
   return ok;
 }
@@ -308,7 +287,7 @@ test11() {
   return false;
 }
 
-// upper_bound_assign_and_minimize - Divisor normalization.
+// upper_bound_assign - Divisor normalization.
 bool
 test12() {
   Variable A(0);
@@ -330,7 +309,7 @@ test12() {
   Grid gr2(gs2);
   print_generators(gr2, "*** gr2 ***");
 
-  gr1.upper_bound_assign_and_minimize(gr2);
+  gr1.upper_bound_assign(gr2);
 
   Congruence_System known_cgs;
   known_cgs.insert((3*C %= 0) / 1);
@@ -339,43 +318,7 @@ test12() {
 
   bool ok = (gr1 == known_gr);
 
-  print_congruences(gr1, "*** gr1.upper_bound_assign_and_minimize(gr2) ***");
-
-  return ok;
-}
-
-// Previous test using upper_bound_assign_and_minimize.
-bool
-test13() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
-  Grid_Generator_System gs1;
-  gs1.insert(grid_point(0*C));
-  gs1.insert(grid_line(A));
-  gs1.insert(grid_line(B));
-
-  Grid gr1(gs1);
-  print_generators(gr1, "*** gr1 ***");
-
-  Grid_Generator_System gs2;
-  gs2.insert(grid_point());
-  gs2.insert(grid_point(C, 3));
-
-  Grid gr2(gs2);
-  print_generators(gr2, "*** gr2 ***");
-
-  gr1.upper_bound_assign_and_minimize(gr2);
-
-  Congruence_System known_cgs;
-  known_cgs.insert((3*C %= 0) / 1);
-
-  Grid known_gr(known_cgs);
-
-  bool ok = (gr1 == known_gr);
-
-  print_congruences(gr1, "*** gr1.upper_bound_assign_and_minimize(gr2) ***");
+  print_congruences(gr1, "*** gr1.upper_bound_assign(gr2) ***");
 
   return ok;
 }
@@ -384,7 +327,6 @@ test13() {
 
 BEGIN_MAIN
   DO_TEST(test01);
-  DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
   DO_TEST(test05);
@@ -395,5 +337,4 @@ BEGIN_MAIN
   DO_TEST(test10);
   DO_TEST(test11);
   DO_TEST(test12);
-  DO_TEST(test13);
 END_MAIN
