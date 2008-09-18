@@ -736,10 +736,10 @@ solve_with_generators(ppl_Constraint_System_t ppl_cs,
   }
 
   ok = maximize
-    ? ppl_Polyhedron_maximize(ppl_ph, ppl_objective_le,
+    ? ppl_Polyhedron_maximize_with_point(ppl_ph, ppl_objective_le,
 			      optimum_n, optimum_d, &included,
 			      point)
-    : ppl_Polyhedron_minimize(ppl_ph, ppl_objective_le,
+    : ppl_Polyhedron_minimize_with_point(ppl_ph, ppl_objective_le,
 			      optimum_n, optimum_d, &included,
 			      point);
 
