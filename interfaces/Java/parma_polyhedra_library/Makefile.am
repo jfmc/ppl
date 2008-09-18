@@ -59,44 +59,44 @@ parma_polyhedra_library_MIP_Problem.h \
 parma_polyhedra_library_Parma_Polyhedra_Library.h
 
 fixed_java_sources = \
-By_Reference.java \
-Coefficient.java \
-Congruence.java \
-Congruence_System.java \
-Constraint.java \
-Constraint_System.java \
-Constraint_System.java \
-Degenerate_Element.java \
-Domain_Error_Exception.java \
-Generator.java \
-Generator_System.java \
-Generator_Type.java \
-Grid_Generator.java \
-Grid_Generator_System.java \
-Grid_Generator_Type.java \
-Invalid_Argument_Exception.java \
-Length_Error_Exception.java \
-Linear_Expression.java \
-Linear_Expression_Coefficient.java \
-Linear_Expression_Difference.java \
-Linear_Expression_Sum.java \
-Linear_Expression_Times.java \
-Linear_Expression_Unary_Minus.java \
-Linear_Expression_Variable.java \
-Logic_Error_Exception.java \
-MIP_Problem.java \
-MIP_Problem_Status.java \
-Optimization_Mode.java \
-Overflow_Error_Exception.java \
-PPL_Object.java \
-Parma_Polyhedra_Library.java \
-Pair.java \
-Partial_Function.java \
-Poly_Con_Relation.java \
-Poly_Gen_Relation.java \
-Relation_Symbol.java \
-Variable.java \
-Variables_Set.java
+$(srcdir)/By_Reference.java \
+$(srcdir)/Coefficient.java \
+$(srcdir)/Congruence.java \
+$(srcdir)/Congruence_System.java \
+$(srcdir)/Constraint.java \
+$(srcdir)/Constraint_System.java \
+$(srcdir)/Constraint_System.java \
+$(srcdir)/Degenerate_Element.java \
+$(srcdir)/Domain_Error_Exception.java \
+$(srcdir)/Generator.java \
+$(srcdir)/Generator_System.java \
+$(srcdir)/Generator_Type.java \
+$(srcdir)/Grid_Generator.java \
+$(srcdir)/Grid_Generator_System.java \
+$(srcdir)/Grid_Generator_Type.java \
+$(srcdir)/Invalid_Argument_Exception.java \
+$(srcdir)/Length_Error_Exception.java \
+$(srcdir)/Linear_Expression.java \
+$(srcdir)/Linear_Expression_Coefficient.java \
+$(srcdir)/Linear_Expression_Difference.java \
+$(srcdir)/Linear_Expression_Sum.java \
+$(srcdir)/Linear_Expression_Times.java \
+$(srcdir)/Linear_Expression_Unary_Minus.java \
+$(srcdir)/Linear_Expression_Variable.java \
+$(srcdir)/Logic_Error_Exception.java \
+$(srcdir)/MIP_Problem.java \
+$(srcdir)/MIP_Problem_Status.java \
+$(srcdir)/Optimization_Mode.java \
+$(srcdir)/Overflow_Error_Exception.java \
+$(srcdir)/PPL_Object.java \
+$(srcdir)/Parma_Polyhedra_Library.java \
+$(srcdir)/Pair.java \
+$(srcdir)/Partial_Function.java \
+$(srcdir)/Poly_Con_Relation.java \
+$(srcdir)/Poly_Gen_Relation.java \
+$(srcdir)/Relation_Symbol.java \
+$(srcdir)/Variable.java \
+$(srcdir)/Variables_Set.java
 
 all_java_sources = \
 $(fixed_java_sources) \
@@ -121,13 +121,10 @@ BUILT_SOURCES = \
 java_classes.stamp \
 java_cxx_headers.stamp
 
-
 java_classes.stamp: $(all_java_sources)
-	@if test -n "$?"; then \
-		echo '$(CLASSPATH_ENV) $(JAVAC) -d $(JAVAROOT) $(AM_JAVACFLAGS) $(JAVACFLAGS) $?' ; \
-		$(CLASSPATH_ENV) $(JAVAC) -d $(JAVAROOT) \
-		$(AM_JAVACFLAGS) $(JAVACFLAGS) $?; \
-	else :; fi
+	$(CLASSPATH_ENV) $(JAVAC) -d $(JAVAROOT) \
+		$(AM_JAVACFLAGS) $(JAVACFLAGS) \
+		$(all_java_sources)
 	echo timestamp >$@
 
 java_cxx_headers.stamp: java_classes.stamp
