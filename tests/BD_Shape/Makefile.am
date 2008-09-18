@@ -47,8 +47,6 @@ affinedimension1 \
 affineimage1 affineimage2 \
 affinepreimage1 \
 ascii_dump_load1 \
-bdsdifference1 \
-bdshull1 \
 bgp99extrapolation1 \
 bhmz05widening1 \
 bhz03widening1 \
@@ -65,6 +63,7 @@ constrains1 \
 constraints1 \
 contains1 \
 containsintegerpoint1 \
+difference1 \
 discrete1 \
 disjoint1 \
 empty1 \
@@ -98,6 +97,7 @@ removespacedims1 \
 timeelapse1 \
 unconstrain1 \
 universe1 \
+upperbound1 \
 writebdshape1
 
 # This will be overridden by the `run_tests' script.
@@ -159,10 +159,6 @@ affinepreimage1_SOURCES = affinepreimage1.cc
 
 ascii_dump_load1_SOURCES = ascii_dump_load1.cc
 
-bdsdifference1_SOURCES = bdsdifference1.cc
-
-bdshull1_SOURCES = bdshull1.cc
-
 bgp99extrapolation1_SOURCES = bgp99extrapolation1.cc
 
 bhmz05widening1_SOURCES = bhmz05widening1.cc
@@ -194,6 +190,8 @@ constraints1_SOURCES = constraints1.cc
 contains1_SOURCES = contains1.cc
 
 containsintegerpoint1_SOURCES = containsintegerpoint1.cc
+
+difference1_SOURCES = difference1.cc
 
 discrete1_SOURCES = discrete1.cc
 
@@ -265,6 +263,8 @@ timeelapse1_SOURCES = timeelapse1.cc
 unconstrain1_SOURCES = unconstrain1.cc
 
 universe1_SOURCES = universe1.cc
+
+upperbound1_SOURCES = upperbound1.cc
 
 writebdshape1_SOURCES = writebdshape1.cc
 

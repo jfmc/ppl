@@ -63,6 +63,7 @@ constrains1 \
 constraints1 \
 contains1 \
 containsintegerpoint1 \
+difference1 \
 discrete1 \
 disjoint1 \
 empty1 \
@@ -93,8 +94,6 @@ max_min2 \
 maxspacedim1 \
 membytes1 \
 minconstraints1 \
-octdifference1 \
-octhull1 \
 pointsetpowerset1 \
 relatwithcons1 \
 relatwithcons2 \
@@ -104,6 +103,7 @@ removespacedims1 \
 timeelapse1 \
 unconstrain1 \
 universe1 \
+upperbound1 \
 writeoctagon1
 
 
@@ -195,6 +195,8 @@ contains1_SOURCES = contains1.cc
 
 containsintegerpoint1_SOURCES = containsintegerpoint1.cc
 
+difference1_SOURCES = difference1.cc
+
 discrete1_SOURCES = discrete1.cc
 
 disjoint1_SOURCES = disjoint1.cc
@@ -247,10 +249,6 @@ membytes1_SOURCES = membytes1.cc
 
 minconstraints1_SOURCES = minconstraints1.cc
 
-octdifference1_SOURCES = octdifference1.cc
-
-octhull1_SOURCES = octhull1.cc
-
 pointsetpowerset1_SOURCES = pointsetpowerset1.cc
 
 relatwithcons1_SOURCES = relatwithcons1.cc
@@ -266,6 +264,8 @@ timeelapse1_SOURCES = timeelapse1.cc
 unconstrain1_SOURCES = unconstrain1.cc
 
 universe1_SOURCES = universe1.cc
+
+upperbound1_SOURCES = upperbound1.cc
 
 writeoctagon1_SOURCES = writeoctagon1.cc
 

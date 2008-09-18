@@ -52,8 +52,6 @@ bhz03widening1 \
 bounded1 \
 boundedaffineimage1 \
 boundedaffinepreimage1 \
-boxdifference1 \
-boxhull1 \
 cc76narrowing1 \
 cc76widening \
 concatenate1 \
@@ -62,6 +60,7 @@ constrains1 \
 constraints1 \
 contains1 \
 containsintegerpoint1 \
+difference1 \
 discrete1 \
 disjoint1 \
 empty1 \
@@ -97,6 +96,7 @@ timeelapse1 \
 topclosed1 \
 unconstrain1 \
 universe1 \
+upperbound1 \
 writebox1
 
 DERIVED_TESTS = \
@@ -166,10 +166,6 @@ bounded1_SOURCES = bounded1.cc
 boundedaffineimage1_SOURCES = boundedaffineimage1.cc
 boundedaffinepreimage1_SOURCES = boundedaffinepreimage1.cc
 
-boxdifference1_SOURCES = boxdifference1.cc
-
-boxhull1_SOURCES = boxhull1.cc
-
 cc76narrowing1_SOURCES = cc76narrowing1.cc
 
 cc76widening_SOURCES = cc76widening.cc
@@ -185,6 +181,8 @@ constraints1_SOURCES = constraints1.cc
 contains1_SOURCES = contains1.cc
 
 containsintegerpoint1_SOURCES = containsintegerpoint1.cc
+
+difference1_SOURCES = difference1.cc
 
 discrete1_SOURCES = discrete1.cc
 
@@ -261,6 +259,8 @@ topclosed1_SOURCES = topclosed1.cc
 unconstrain1_SOURCES = unconstrain1.cc
 
 universe1_SOURCES = universe1.cc
+
+upperbound1_SOURCES = upperbound1.cc
 
 writebox1_SOURCES = writebox1.cc
 
