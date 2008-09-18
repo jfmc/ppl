@@ -88,7 +88,7 @@ test03() {
     // This is an incorrect use of function
     // C_Polyhedron::upper_bound_assign(p): it is illegal to use
     // it with two polyhedra of different dimensions.
-    ph1.upper_bound_assign_and_minimize(ph2);
+    ph1.upper_bound_assign(ph2);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;

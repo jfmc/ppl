@@ -337,41 +337,6 @@ test12() {
 }
 
 bool
-test13() {
-  Variable A(0);
-  Variable B(1);
-
-  Generator_System gs1;
-  gs1.insert(point());
-  gs1.insert(point(3*A));
-  C_Polyhedron ph1(gs1);
-
-  Generator_System gs2;
-  gs2.insert(point(B));
-  gs2.insert(closure_point());
-  gs2.insert(closure_point(3*B));
-  NNC_Polyhedron ph2(gs2);
-
-  print_generators(ph1, "*** ph1 ***");
-  print_generators(ph2, "*** ph2 ***");
-
-   try {
-     // This is an invalid use of the function
-     // `upper_bound_assign_and_minimize': it is illegal to apply
-     // this function to a closed polyhedron and a
-     // non-closed polyhedron.
-    ph1.upper_bound_assign_and_minimize(ph2);
-   }
-  catch (std::invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl << endl;
-    return true;
-  }
-  catch (...) {
-  }
-   return false;
-}
-
-bool
 test14() {
   Variable A(0);
   Variable B(1);
@@ -923,7 +888,6 @@ BEGIN_MAIN
   DO_TEST(test10);
   DO_TEST(test11);
   DO_TEST(test12);
-  DO_TEST(test13);
   DO_TEST(test14);
   DO_TEST(test15);
   DO_TEST(test16);

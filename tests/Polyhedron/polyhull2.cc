@@ -1,4 +1,4 @@
-/* Test Polyhedron::upper_bound_assign_and_minimize().
+/* Test Polyhedron::upper_bound_assign().
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
