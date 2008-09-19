@@ -32,21 +32,20 @@ AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <climits>
 
 int minus_one(int n) {
-   return (n+1)*(n-1)-n*n;
+  return (n+1)*(n-1)-n*n;
 }
 
 int p(int x, int y) {
-   int z = x % y;
-   return z;
+  int z = x % y;
+  return z;
 }
 
 int main(int argc, char** argv) {
-   if (p(INT_MIN, minus_one(argc)) != 0)
-     return 1;
-   else
-     return 0;
+  if (p(INT_MIN, minus_one(argc)) != 0)
+    return 1;
+  else
+    return 0;
 }
-
 ]])],
   AC_MSG_RESULT(no)
   ac_cv_cxx_has_remainder_bug=no,
