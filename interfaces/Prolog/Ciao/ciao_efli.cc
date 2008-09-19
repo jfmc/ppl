@@ -44,13 +44,13 @@ ppl_Prolog_sysdep_deinit() {
 }
 
 inline int
-Prolog_get_Coefficient(Prolog_term_ref t, PPL::Coefficient& n) {
+Prolog_get_Coefficient(Prolog_term_ref t, Coefficient& n) {
   assert(Prolog_is_integer(t));
   if (ciao_fits_in_int(t))
     n = ciao_to_integer(t);
   else {
     const char* s = ciao_get_number_chars(t);
-    n = PPL::Coefficient(s);
+    n = Coefficient(s);
     // TODO: remove the const_cast when the Ciao people fix ciao_prolog.h.
     ciao_free(const_cast<char*>(s));
   }
@@ -58,9 +58,9 @@ Prolog_get_Coefficient(Prolog_term_ref t, PPL::Coefficient& n) {
 }
 
 inline int
-Prolog_put_Coefficient(Prolog_term_ref& t, const PPL::Coefficient& n) {
+Prolog_put_Coefficient(Prolog_term_ref& t, const Coefficient& n) {
   int i;
-  if (PPL::assign_r(i, n, PPL::ROUND_NOT_NEEDED) == PPL::V_EQ)
+  if (assign_r(i, n, ROUND_NOT_NEEDED) == V_EQ)
     t = ciao_integer(i);
   else {
     std::ostringstream s;
@@ -72,7 +72,7 @@ Prolog_put_Coefficient(Prolog_term_ref& t, const PPL::Coefficient& n) {
 }
 
 inline int
-Prolog_unify_Coefficient(Prolog_term_ref t, const PPL::Coefficient& n) {
+Prolog_unify_Coefficient(Prolog_term_ref t, const Coefficient& n) {
   Prolog_term_ref u = Prolog_new_term_ref();
   Prolog_put_Coefficient(u, n);
   return ciao_unify(t, u);
