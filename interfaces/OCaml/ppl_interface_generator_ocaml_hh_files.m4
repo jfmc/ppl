@@ -53,10 +53,10 @@ dnl -----------------------------------------------------------------
 m4_divert`'dnl
 %<--%<--%<-- ppl_ocaml_domains.hh
 /* OCaml interface code: inclusion of all the domain-dependent declarations.
-m4_include(`ppl_interface_generator_copyright')
+m4_include(`ppl_interface_generator_copyright')`'dnl
 */
 
-`#'include "ppl_ocaml_globals.hh"
+`#'include "ppl_ocaml_common.defs.hh"
 m4_all_code
 dnl
 dnl End of file generation.

@@ -24,7 +24,6 @@ SUBDIRS = . tests
 
 interface_generator_files = \
 ppl_interface_generator_ocaml_procedure_generators.m4 \
-ppl_interface_generator_ocaml_cc.m4 \
 ppl_interface_generator_ocaml_hh_files.m4 \
 ppl_interface_generator_ocaml_cc_files.m4 \
 ppl_interface_generator_ocaml_hh_code.m4 \
@@ -41,8 +40,6 @@ ppl_ocaml_types.ml
 EXTRA_DIST = \
 $(interface_generator_files) \
 $(ml_source_files) \
-ppl_ocaml_globals.hh \
-ppl_ocaml_globals.cc \
 OCaml_interface.dox
 
 
@@ -58,10 +55,37 @@ ppl_ocaml.mli \
 ppl_ocaml_globals.cmi \
 ppl_ocaml_types.cmi
 
+BUILT_SOURCES = \
+ppl_ocaml_domains.hh \
+ppl_ocaml_domains_cc_files.stamp
+
 noinst_LIBRARIES = libppl_ocaml.a
 
-nodist_libppl_ocaml_a_SOURCES = \
-ppl_ocaml.cc
+libppl_ocaml_a_SOURCES = \
+ppl_ocaml_common.defs.hh \
+ppl_ocaml_common.inlines.hh \
+ppl_ocaml_common.cc
+
+nodist_EXTRA_libppl_ocaml_a_SOURCES = \
+ppl_ocaml_BD_Shape_double.cc \
+ppl_ocaml_BD_Shape_mpq_class.cc \
+ppl_ocaml_BD_Shape_mpz_class.cc \
+ppl_ocaml_Constraints_Product_C_Polyhedron_Grid.cc \
+ppl_ocaml_Double_Box.cc \
+ppl_ocaml_Grid.cc \
+ppl_ocaml_Octagonal_Shape_double.cc \
+ppl_ocaml_Octagonal_Shape_mpq_class.cc \
+ppl_ocaml_Octagonal_Shape_mpz_class.cc \
+ppl_ocaml_Pointset_Powerset_C_Polyhedron.cc \
+ppl_ocaml_Pointset_Powerset_NNC_Polyhedron.cc \
+ppl_ocaml_Polyhedron.cc \
+ppl_ocaml_Rational_Box.cc
+
+libppl_ocaml_a_LIBADD = \
+@required_instantiations_ocaml_cxx_objects@
+
+libppl_ocaml_a_DEPENDENCIES = \
+@required_instantiations_ocaml_cxx_objects@
 
 OCAMLC_COMPILE_FLAGS = \
 -I +gmp -I $(srcdir) -I .. \
@@ -85,10 +109,6 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../ppl_interface_generator_common_dat.m4 \
 ../ppl_interface_generator_copyright \
 $(interface_generator_files)
-
-ppl_ocaml.cc: $(interface_generator_dependencies)
-	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
-           $(srcdir)/ppl_interface_generator_ocaml_cc.m4 > $@
 
 ppl_ocaml.cma: ppl_ocaml_types.cmo ppl_ocaml_globals.cmo ppl_ocaml.cmo
 	ocamlc -o $@ -a -custom \
@@ -130,7 +150,7 @@ ppl_ocaml.mli: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_ocaml_mli.m4 > $@
 
-ppl_ocaml_domains_cc_files: $(interface_generator_dependencies)
+ppl_ocaml_domains_cc_files.stamp: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_ocaml_cc_files.m4 \
                 > ppl_ocaml_cc_blob
@@ -139,19 +159,23 @@ ppl_ocaml_domains_cc_files: $(interface_generator_dependencies)
 	rm -f ppl_ocaml_cc_blob
 	echo timestamp >$@
 
-ppl_ocaml_domains_hh_files: $(interface_generator_dependencies)
+ppl_ocaml_domains.hh: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_ocaml_hh_files.m4 \
                 > ppl_ocaml_hh_blob
 	$(top_srcdir)/utils/cm_cleaner.sh < ppl_ocaml_hh_blob
 	$(top_srcdir)/utils/cm_splitter.sh < ppl_ocaml_hh_blob
 	rm -f ppl_ocaml_hh_blob
-	echo timestamp >$@
 
 endif BUILD_OCAML_INTERFACE
 
+MOSTLYCLEANFILES = \
+@required_instantiations_ocaml_cxx_objects@
+
 CLEANFILES = \
-ppl_ocaml.cc \
+@required_instantiations_ocaml_cxx_sources@ \
+@required_instantiations_ocaml_cxx_headers@ \
+ppl_ocaml_domains.hh \
 ppl_ocaml.cma \
 ppl_ocaml.cmi \
 ppl_ocaml.cmo \
@@ -160,4 +184,5 @@ ppl_ocaml.mli \
 ppl_ocaml_globals.cmi \
 ppl_ocaml_globals.cmo \
 ppl_ocaml_types.cmi \
-ppl_ocaml_types.cmo
+ppl_ocaml_types.cmo \
+ppl_ocaml_domains_cc_files.stamp

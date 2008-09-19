@@ -21,6 +21,12 @@ dnl site: http://www.cs.unipr.it/ppl/ .
 
 m4_define(`m4_access_class_code',
 `dnl
+namespace Parma_Polyhedra_Library {
+
+namespace Interfaces {
+
+namespace OCaml {
+
 //! Give access to the embedded @CLASS@* in \p v.
 inline @CPP_CLASS@*
 p_@CLASS@_val(value v) {
@@ -33,27 +39,25 @@ actual_p_@CLASS@_val(value v) {
   return *reinterpret_cast<@CPP_CLASS@**>(Data_custom_val(v));
 }
 
-void
+inline void
 custom_@CLASS@_finalize(value v) {
    if (!marked(actual_p_@CLASS@_val(v)))
       delete actual_p_@CLASS@_val(v);
 }
 
-static struct custom_operations @CLASS@_custom_operations = {
-  "it.unipr.cs.ppl" "." PPL_VERSION "." "@CLASS@"@COMMA@
-  custom_@CLASS@_finalize@COMMA@
-  custom_compare_default@COMMA@
-  custom_hash_default@COMMA@
-  custom_serialize_default@COMMA@
-  custom_deserialize_default
-};
-
 inline value
 val_p_@CLASS@(const @CPP_CLASS@& ph) {
+  extern struct custom_operations @CLASS@_custom_operations;
   value v = caml_alloc_custom(&@CLASS@_custom_operations,
 			      sizeof(@CPP_CLASS@*), 0, 1);
   actual_p_@CLASS@_val(v) = const_cast<@CPP_CLASS@*>(&ph);
   return(v);
 }
+
+} // namespace OCaml
+
+} // namespace Interfaces
+
+} // namespace Parma_Polyhedra_Library
 
 ')

@@ -38,12 +38,20 @@ m4_define(`m4_default_code', `m4_dumpdef($1`'_code)')
 dnl Prefix extra code for each class.
 m4_define(`m4_pre_extra_class_code', `dnl
 m4_define(`m4_current_interface', m4_interface_class`'$1)`'dnl
+
 %<--%<--%<-- ppl_ocaml_`'m4_current_interface`'.cc
 /* OCaml m4_current_interface interface code.
-m4_include(`ppl_interface_generator_copyright')
+m4_include(`ppl_interface_generator_copyright')`'dnl
 */
 
 `#'include "ppl_ocaml_domains.hh"
+
+m4_replace_all_patterns_in_string($1,
+                                  `m4_custom_operations_class_code',
+                                  m4_pattern_list)`'dnl
+
+using namespace Parma_Polyhedra_Library;
+using namespace Parma_Polyhedra_Library::Interfaces::OCaml;
 
 ')
 

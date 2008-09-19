@@ -31,7 +31,7 @@ m4_include(`ppl_interface_generator_ocaml_procedure_generators.m4')
 
 m4_divert`'dnl
 (** OCaml interface code.
-m4_include(`ppl_interface_generator_copyright')
+m4_include(`ppl_interface_generator_copyright')`'dnl
 *)
 
 include Ppl_ocaml_globals

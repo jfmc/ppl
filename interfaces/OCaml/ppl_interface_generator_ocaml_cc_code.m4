@@ -42,6 +42,32 @@ m4_define(`ppl_@CLASS@_@PARTITION@_code', `')
 m4_define(`ppl_@CLASS@_approximate_partition_code', `')
 m4_define(`ppl_@CLASS@_@UB_EXACT@_code', `')
 
+  m4_define(`m4_custom_operations_class_code',
+`dnl
+
+namespace Parma_Polyhedra_Library {
+
+namespace Interfaces {
+
+namespace OCaml {
+
+struct custom_operations @CLASS@_custom_operations = {
+  "it.unipr.cs.ppl" "." PPL_VERSION "." "@CLASS@"@COMMA@
+  custom_@CLASS@_finalize@COMMA@
+  custom_compare_default@COMMA@
+  custom_hash_default@COMMA@
+  custom_serialize_default@COMMA@
+  custom_deserialize_default
+};
+
+} // namespace OCaml
+
+} // namespace Interfaces
+
+} // namespace Parma_Polyhedra_Library
+
+')
+
   m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 `dnl
 extern "C"
@@ -50,7 +76,7 @@ ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(value d, value caml_de) try {
   CAMLparam2(d, caml_de);
   int dd = Int_val(d);
   check_int_is_unsigned(dd);
-  Degenerate_Element ppl_de = build_ppl_degenerate_element(caml_de);
+  Degenerate_Element ppl_de = build_ppl_Degenerate_Element(caml_de);
   CAMLreturn(val_p_@CLASS@(*new @TOPOLOGY@@CPP_CLASS@(dd, ppl_de)));
 }
 CATCH_ALL
@@ -382,7 +408,7 @@ void
 ppl_@CLASS@_map_space_dimensions(value ph, value caml_mapped_dims) try {
   CAMLparam2(ph, caml_mapped_dims);
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
-  PFunc pfunc;
+  Partial_Function pfunc;
   while (caml_mapped_dims != Val_int(0)) {
     Int_val(Field(Field(caml_mapped_dims, 0),0));
     int domain_value = Int_val(Field(Field(caml_mapped_dims, 0),0));
@@ -425,7 +451,7 @@ CAMLprim value
 ppl_@CLASS@_get_@GET_REPRESENT@s(value ph) try {
   CAMLparam1(ph);
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
-  CAMLreturn(build_caml_@GET_REPRESENT@_system(pph.@GET_REPRESENT@s()));
+  CAMLreturn(build_ocaml_@GET_REPRESENT@_system(pph.@GET_REPRESENT@s()));
 }
 CATCH_ALL
 
@@ -438,7 +464,7 @@ CAMLprim value
 ppl_@CLASS@_get_minimized_@GET_REPRESENT@s(value ph) try {
   CAMLparam1(ph);
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
-  CAMLreturn(build_caml_@GET_REPRESENT@_system(pph.minimized_@GET_REPRESENT@s()));
+  CAMLreturn(build_ocaml_@GET_REPRESENT@_system(pph.minimized_@GET_REPRESENT@s()));
 }
 CATCH_ALL
 
@@ -696,8 +722,8 @@ ppl_@CLASS@_@MAXMIN@(value ph, value caml_le) try {
 				      num, den, is_supremum);
   value caml_return_value = caml_alloc(4,0);
   Field(caml_return_value, 0) = Val_bool(ppl_return_value);
-  Field(caml_return_value, 1) = build_caml_coefficient(num);
-  Field(caml_return_value, 2) = build_caml_coefficient(den);
+  Field(caml_return_value, 1) = build_ocaml_coefficient(num);
+  Field(caml_return_value, 2) = build_ocaml_coefficient(den);
   Field(caml_return_value, 3) = Val_bool(is_supremum);
   CAMLreturn(caml_return_value);
 }
@@ -720,10 +746,10 @@ ppl_@CLASS@_@MAXMIN@_with_point(value ph, value caml_le) try {
 				      num, den, is_supremum, g);
   value caml_return_value = caml_alloc(5,0);
   Field(caml_return_value, 0) = Val_bool(ppl_return_value);
-  Field(caml_return_value, 1) = build_caml_coefficient(num);
-  Field(caml_return_value, 2) = build_caml_coefficient(den);
+  Field(caml_return_value, 1) = build_ocaml_coefficient(num);
+  Field(caml_return_value, 2) = build_ocaml_coefficient(den);
   Field(caml_return_value, 3) = Val_bool(is_supremum);
-  Field(caml_return_value, 4) = build_caml_generator(g);
+  Field(caml_return_value, 4) = build_ocaml_generator(g);
   CAMLreturn(caml_return_value);
 }
 CATCH_ALL
@@ -940,7 +966,7 @@ custom_@CLASS@_iterator_finalize(value v) {
   delete p_@CLASS@_iterator_val(v);
 }
 
-static struct custom_operations @CLASS@_iterator_custom_operations = {
+struct custom_operations @CLASS@_iterator_custom_operations = {
   "it.unipr.cs.ppl" "." PPL_VERSION "." "@CLASS@_iterator"@COMMA@
   custom_@CLASS@_iterator_finalize@COMMA@
   custom_compare_default@COMMA@
