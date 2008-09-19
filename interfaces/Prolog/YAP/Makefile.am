@@ -84,19 +84,77 @@ ppl_yap.cc \
 ../ppl_prolog_common.cc
 
 nodist_EXTRA_ppl_yap_la_SOURCES = \
+../ppl_prolog_Int8_Box.cc \
+../ppl_prolog_Int16_Box.cc \
+../ppl_prolog_Int32_Box.cc \
+../ppl_prolog_Int64_Box.cc \
+../ppl_prolog_Uint8_Box.cc \
+../ppl_prolog_Uint16_Box.cc \
+../ppl_prolog_Uint32_Box.cc \
+../ppl_prolog_Uint64_Box.cc \
+../ppl_prolog_Float_Box.cc \
+../ppl_prolog_Double_Box.cc \
+../ppl_prolog_Long_Double_Box.cc \
+../ppl_prolog_Rational_Box.cc \
+../ppl_prolog_Z_Box.cc \
+../ppl_prolog_BD_Shape_int8_t.cc \
+../ppl_prolog_BD_Shape_int16_t.cc \
+../ppl_prolog_BD_Shape_int32_t.cc \
+../ppl_prolog_BD_Shape_int64_t.cc \
+../ppl_prolog_BD_Shape_float.cc \
 ../ppl_prolog_BD_Shape_double.cc \
+../ppl_prolog_BD_Shape_long_double.cc \
 ../ppl_prolog_BD_Shape_mpq_class.cc \
 ../ppl_prolog_BD_Shape_mpz_class.cc \
-../ppl_prolog_Constraints_Product_C_Polyhedron_Grid.cc \
-../ppl_prolog_Double_Box.cc \
-../ppl_prolog_Grid.cc \
+../ppl_prolog_Octagonal_Shape_int8_t.cc \
+../ppl_prolog_Octagonal_Shape_int16_t.cc \
+../ppl_prolog_Octagonal_Shape_int32_t.cc \
+../ppl_prolog_Octagonal_Shape_int64_t.cc \
+../ppl_prolog_Octagonal_Shape_float.cc \
 ../ppl_prolog_Octagonal_Shape_double.cc \
+../ppl_prolog_Octagonal_Shape_long_double.cc \
 ../ppl_prolog_Octagonal_Shape_mpq_class.cc \
 ../ppl_prolog_Octagonal_Shape_mpz_class.cc \
+../ppl_prolog_Polyhedron.cc \
+../ppl_prolog_Grid.cc \
+../ppl_prolog_Pointset_Powerset_Int8_Box.cc \
+../ppl_prolog_Pointset_Powerset_Int16_Box.cc \
+../ppl_prolog_Pointset_Powerset_Int32_Box.cc \
+../ppl_prolog_Pointset_Powerset_Int64_Box.cc \
+../ppl_prolog_Pointset_Powerset_Uint8_Box.cc \
+../ppl_prolog_Pointset_Powerset_Uint16_Box.cc \
+../ppl_prolog_Pointset_Powerset_Uint32_Box.cc \
+../ppl_prolog_Pointset_Powerset_Uint64_Box.cc \
+../ppl_prolog_Pointset_Powerset_Float_Box.cc \
+../ppl_prolog_Pointset_Powerset_Double_Box.cc \
+../ppl_prolog_Pointset_Powerset_Long_Double_Box.cc \
+../ppl_prolog_Pointset_Powerset_Rational_Box.cc \
+../ppl_prolog_Pointset_Powerset_Z_Box.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_int8_t.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_int16_t.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_int32_t.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_int64_t.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_float.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_double.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_long_double.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_mpq_class.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_mpz_class.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_int8_t.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_int16_t.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_int32_t.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_int64_t.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_float.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_double.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_long_double.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_mpq_class.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_mpz_class.cc \
 ../ppl_prolog_Pointset_Powerset_C_Polyhedron.cc \
 ../ppl_prolog_Pointset_Powerset_NNC_Polyhedron.cc \
-../ppl_prolog_Polyhedron.cc \
-../ppl_prolog_Rational_Box.cc
+../ppl_prolog_Pointset_Powerset_Grid.cc \
+../ppl_prolog_Constraints_Product_C_Polyhedron_Grid.cc \
+../ppl_prolog_Constraints_Product_NNC_Polyhedron_Grid.cc \
+../ppl_prolog_Constraints_Product_Grid_C_Polyhedron.cc \
+../ppl_prolog_Constraints_Product_Grid_NNC_Polyhedron.cc
 
 ppl_yap_la_LIBADD = \
 @required_instantiations_prolog_cxx_objects@ \

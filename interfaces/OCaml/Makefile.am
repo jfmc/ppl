@@ -67,19 +67,77 @@ ppl_ocaml_common.inlines.hh \
 ppl_ocaml_common.cc
 
 nodist_EXTRA_libppl_ocaml_a_SOURCES = \
+ppl_ocaml_Int8_Box.cc \
+ppl_ocaml_Int16_Box.cc \
+ppl_ocaml_Int32_Box.cc \
+ppl_ocaml_Int64_Box.cc \
+ppl_ocaml_Uint8_Box.cc \
+ppl_ocaml_Uint16_Box.cc \
+ppl_ocaml_Uint32_Box.cc \
+ppl_ocaml_Uint64_Box.cc \
+ppl_ocaml_Float_Box.cc \
+ppl_ocaml_Double_Box.cc \
+ppl_ocaml_Long_Double_Box.cc \
+ppl_ocaml_Rational_Box.cc \
+ppl_ocaml_Z_Box.cc \
+ppl_ocaml_BD_Shape_int8_t.cc \
+ppl_ocaml_BD_Shape_int16_t.cc \
+ppl_ocaml_BD_Shape_int32_t.cc \
+ppl_ocaml_BD_Shape_int64_t.cc \
+ppl_ocaml_BD_Shape_float.cc \
 ppl_ocaml_BD_Shape_double.cc \
+ppl_ocaml_BD_Shape_long_double.cc \
 ppl_ocaml_BD_Shape_mpq_class.cc \
 ppl_ocaml_BD_Shape_mpz_class.cc \
-ppl_ocaml_Constraints_Product_C_Polyhedron_Grid.cc \
-ppl_ocaml_Double_Box.cc \
-ppl_ocaml_Grid.cc \
+ppl_ocaml_Octagonal_Shape_int8_t.cc \
+ppl_ocaml_Octagonal_Shape_int16_t.cc \
+ppl_ocaml_Octagonal_Shape_int32_t.cc \
+ppl_ocaml_Octagonal_Shape_int64_t.cc \
+ppl_ocaml_Octagonal_Shape_float.cc \
 ppl_ocaml_Octagonal_Shape_double.cc \
+ppl_ocaml_Octagonal_Shape_long_double.cc \
 ppl_ocaml_Octagonal_Shape_mpq_class.cc \
 ppl_ocaml_Octagonal_Shape_mpz_class.cc \
+ppl_ocaml_Polyhedron.cc \
+ppl_ocaml_Grid.cc \
+ppl_ocaml_Pointset_Powerset_Int8_Box.cc \
+ppl_ocaml_Pointset_Powerset_Int16_Box.cc \
+ppl_ocaml_Pointset_Powerset_Int32_Box.cc \
+ppl_ocaml_Pointset_Powerset_Int64_Box.cc \
+ppl_ocaml_Pointset_Powerset_Uint8_Box.cc \
+ppl_ocaml_Pointset_Powerset_Uint16_Box.cc \
+ppl_ocaml_Pointset_Powerset_Uint32_Box.cc \
+ppl_ocaml_Pointset_Powerset_Uint64_Box.cc \
+ppl_ocaml_Pointset_Powerset_Float_Box.cc \
+ppl_ocaml_Pointset_Powerset_Double_Box.cc \
+ppl_ocaml_Pointset_Powerset_Long_Double_Box.cc \
+ppl_ocaml_Pointset_Powerset_Rational_Box.cc \
+ppl_ocaml_Pointset_Powerset_Z_Box.cc \
+ppl_ocaml_Pointset_Powerset_BD_Shape_int8_t.cc \
+ppl_ocaml_Pointset_Powerset_BD_Shape_int16_t.cc \
+ppl_ocaml_Pointset_Powerset_BD_Shape_int32_t.cc \
+ppl_ocaml_Pointset_Powerset_BD_Shape_int64_t.cc \
+ppl_ocaml_Pointset_Powerset_BD_Shape_float.cc \
+ppl_ocaml_Pointset_Powerset_BD_Shape_double.cc \
+ppl_ocaml_Pointset_Powerset_BD_Shape_long_double.cc \
+ppl_ocaml_Pointset_Powerset_BD_Shape_mpq_class.cc \
+ppl_ocaml_Pointset_Powerset_BD_Shape_mpz_class.cc \
+ppl_ocaml_Pointset_Powerset_Octagonal_Shape_int8_t.cc \
+ppl_ocaml_Pointset_Powerset_Octagonal_Shape_int16_t.cc \
+ppl_ocaml_Pointset_Powerset_Octagonal_Shape_int32_t.cc \
+ppl_ocaml_Pointset_Powerset_Octagonal_Shape_int64_t.cc \
+ppl_ocaml_Pointset_Powerset_Octagonal_Shape_float.cc \
+ppl_ocaml_Pointset_Powerset_Octagonal_Shape_double.cc \
+ppl_ocaml_Pointset_Powerset_Octagonal_Shape_long_double.cc \
+ppl_ocaml_Pointset_Powerset_Octagonal_Shape_mpq_class.cc \
+ppl_ocaml_Pointset_Powerset_Octagonal_Shape_mpz_class.cc \
 ppl_ocaml_Pointset_Powerset_C_Polyhedron.cc \
 ppl_ocaml_Pointset_Powerset_NNC_Polyhedron.cc \
-ppl_ocaml_Polyhedron.cc \
-ppl_ocaml_Rational_Box.cc
+ppl_ocaml_Pointset_Powerset_Grid.cc \
+ppl_ocaml_Constraints_Product_C_Polyhedron_Grid.cc \
+ppl_ocaml_Constraints_Product_NNC_Polyhedron_Grid.cc \
+ppl_ocaml_Constraints_Product_Grid_C_Polyhedron.cc \
+ppl_ocaml_Constraints_Product_Grid_NNC_Polyhedron.cc
 
 libppl_ocaml_a_LIBADD = \
 @required_instantiations_ocaml_cxx_objects@
