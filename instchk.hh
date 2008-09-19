@@ -285,6 +285,24 @@ valid_BD_Shape_argument<long long>() {
 
 template <>
 bool
+valid_BD_Shape_argument<float>() {
+  return true;
+}
+
+template <>
+bool
+valid_BD_Shape_argument<double>() {
+  return true;
+}
+
+template <>
+bool
+valid_BD_Shape_argument<long double>() {
+  return true;
+}
+
+template <>
+bool
 valid_BD_Shape_argument<mpz_class>() {
   return true;
 }
