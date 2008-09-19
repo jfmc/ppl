@@ -74,7 +74,7 @@ Prolog_unify_Coefficient(Prolog_term_ref t, const Coefficient& n);
 
 // FIXME: write the documentation.
 int
-Prolog_put_Coefficient(Prolog_term_ref t, const Coefficient& n);
+Prolog_put_Coefficient(Prolog_term_ref& t, const Coefficient& n);
 
 } // namespace Prolog_Interfaces
 
