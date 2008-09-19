@@ -693,7 +693,7 @@ test04() {
     ph_tmp.add_constraint(x1 <= 4);
     ph_t1.upper_bound_assign(ph_tmp);
     time_elapse(ph_t1, ph_tea1);
-    ph_t1.add_constraint_and_minimize(x1 <= 4);
+    ph_t1.add_constraint(x1 <= 4);
     (void) ph_t1.is_empty();
 
     //ph_t2
@@ -866,5 +866,5 @@ BEGIN_MAIN
   DO_TEST_F8(test01);
   DO_TEST_F8(test02);
   DO_TEST(test03);
-  DO_TEST_F8A(test04);
+  DO_TEST(test04);
 END_MAIN
