@@ -94,6 +94,9 @@ $(top_builddir)/src/libppl.la \
 $(WATCHDOG_LIBRARY) \
 @extra_libraries@
 
+libppl_ciao_la_DEPENDENCIES = \
+@required_instantiations_prolog_cxx_objects@
+
 libppl_ciao_la_LDFLAGS = \
 -module \
 -avoid-version
