@@ -1,9 +1,9 @@
 dnl  -*- C++ -*-
 m4_divert(-1)
 
-dnl This m4 file contains the program code for generating the
-dnl files ppl_prolog_DOMAIN.cc for each interface domain DOMAIN
-dnl in ppl_interface instantiations.m4.
+This m4 file contains the program code for generating the
+files ppl_prolog_DOMAIN.cc for each interface domain DOMAIN
+in ppl_interface instantiations.m4.
 
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
