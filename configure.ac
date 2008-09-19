@@ -969,6 +969,11 @@ bool valid = ${instantiation}::valid_instantiation();
   required_instantiations_java_cxx_objects=`echo "${required_instantiations_canonical_names}" | sed -e 's/@/.lo /g' -e 's/$/.lo/g' | sed -e 's/\([[^. ]]*\).lo/ppl_java_\1.lo/g'`
   required_instantiations_java_cxx_sources=`echo "${required_instantiations_java_cxx_objects}" | sed -e 's/\([[^. ]]*\).lo/\1.cc/g'`
 
+  required_instantiations_ocaml_source_names=`echo "${required_instantiations_canonical_names}" | sed -e 's/@Pointset_Powerset_Polyhedron/@Pointset_Powerset_C_Polyhedron@Pointset_Powerset_NNC_Polyhedron/g' -e 's/^Pointset_Powerset_Polyhedron/Pointset_Powerset_C_Polyhedron@Pointset_Powerset_NNC_Polyhedron/g'`
+  required_instantiations_ocaml_cxx_objects=`echo "${required_instantiations_ocaml_source_names}" | sed -e 's/@/.o /g' -e 's/$/.o/g' | sed -e 's/\([[^. ]]*\).o/ppl_ocaml_\1.o/g'`
+  required_instantiations_ocaml_cxx_sources=`echo "${required_instantiations_ocaml_cxx_objects}" | sed -e 's/\([[^. ]]*\).o/\1.cc/g'`
+  required_instantiations_ocaml_cxx_headers=`echo "${required_instantiations_ocaml_cxx_sources}" | sed -e 's/.cc/.hh/g'`
+
   AC_MSG_RESULT([${required_instantiations}])
   ;;
 esac
@@ -1152,6 +1157,9 @@ AC_SUBST(required_instantiations_java_cxx_headers)
 AC_SUBST(required_instantiations_java_cxx_headers_sources)
 AC_SUBST(required_instantiations_java_cxx_sources)
 AC_SUBST(required_instantiations_java_cxx_objects)
+AC_SUBST(required_instantiations_ocaml_cxx_headers)
+AC_SUBST(required_instantiations_ocaml_cxx_sources)
+AC_SUBST(required_instantiations_ocaml_cxx_objects)
 AC_SUBST(ocamlc_root)
 
 AC_CONFIG_FILES(Makefile
