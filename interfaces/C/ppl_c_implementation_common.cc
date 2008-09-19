@@ -113,6 +113,11 @@ int PPL_MIP_PROBLEM_STATUS_UNFEASIBLE;
 int PPL_MIP_PROBLEM_STATUS_UNBOUNDED;
 int PPL_MIP_PROBLEM_STATUS_OPTIMIZED;
 
+int PPL_MIP_PROBLEM_CONTROL_PARAMETER_NAME_PRICING;
+int PPL_MIP_PROBLEM_CONTROL_PARAMETER_PRICING_STEEPEST_EDGE_FLOAT;
+int PPL_MIP_PROBLEM_CONTROL_PARAMETER_PRICING_STEEPEST_EDGE_EXACT;
+int PPL_MIP_PROBLEM_CONTROL_PARAMETER_PRICING_TEXTBOOK;
+
 int PPL_OPTIMIZATION_MODE_MINIMIZATION;
 int PPL_OPTIMIZATION_MODE_MAXIMIZATION;
 
@@ -145,6 +150,15 @@ ppl_initialize(void) try {
   PPL_MIP_PROBLEM_STATUS_UNFEASIBLE = UNFEASIBLE_MIP_PROBLEM;
   PPL_MIP_PROBLEM_STATUS_UNBOUNDED = UNBOUNDED_MIP_PROBLEM;
   PPL_MIP_PROBLEM_STATUS_OPTIMIZED = OPTIMIZED_MIP_PROBLEM;
+
+  PPL_MIP_PROBLEM_CONTROL_PARAMETER_NAME_PRICING
+    = MIP_Problem::PRICING;
+  PPL_MIP_PROBLEM_CONTROL_PARAMETER_PRICING_STEEPEST_EDGE_FLOAT
+    = MIP_Problem::PRICING_STEEPEST_EDGE_FLOAT;
+  PPL_MIP_PROBLEM_CONTROL_PARAMETER_PRICING_STEEPEST_EDGE_EXACT
+    = MIP_Problem::PRICING_STEEPEST_EDGE_EXACT;
+  PPL_MIP_PROBLEM_CONTROL_PARAMETER_PRICING_TEXTBOOK
+    = MIP_Problem::PRICING_TEXTBOOK;
 
   PPL_OPTIMIZATION_MODE_MINIMIZATION = MINIMIZATION;
   PPL_OPTIMIZATION_MODE_MAXIMIZATION = MAXIMIZATION;
@@ -1926,6 +1940,25 @@ ppl_MIP_Problem_optimal_value(ppl_const_MIP_Problem_t mip,
   Coefficient& nnum = *to_nonconst(num);
   Coefficient& dden = *to_nonconst(den);
   to_const(mip)->optimal_value(nnum, dden);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_MIP_Problem_get_control_parameter(ppl_const_MIP_Problem_t mip,
+                                      int name) try {
+  MIP_Problem::Control_Parameter_Name n
+    = static_cast<MIP_Problem::Control_Parameter_Name>(name);
+  return to_const(mip)->get_control_parameter(n);
+}
+CATCH_ALL
+
+int
+ppl_MIP_Problem_set_control_parameter(ppl_MIP_Problem_t mip,
+                                      int value) try {
+  MIP_Problem::Control_Parameter_Value v
+    = static_cast<MIP_Problem::Control_Parameter_Value>(value);
+  to_nonconst(mip)->set_control_parameter(v);
   return 0;
 }
 CATCH_ALL

@@ -1804,6 +1804,26 @@ extern int PPL_MIP_PROBLEM_STATUS_UNBOUNDED;
 extern int PPL_MIP_PROBLEM_STATUS_OPTIMIZED;
 
 /*! \brief
+  Code for the MIP problem's "pricing" control parameter name.
+*/
+extern int PPL_MIP_PROBLEM_CONTROL_PARAMETER_NAME_PRICING;
+
+/*! \brief
+  Code of MIP problem's "textbook" pricing method.
+*/
+extern int PPL_MIP_PROBLEM_CONTROL_PARAMETER_PRICING_TEXTBOOK;
+
+/*! \brief
+  Code of MIP problem's "exact steepest-edge" pricing method.
+*/
+extern int PPL_MIP_PROBLEM_CONTROL_PARAMETER_PRICING_STEEPEST_EDGE_EXACT;
+
+/*! \brief
+  Code of MIP problem's "float steepest-edge" pricing method.
+*/
+extern int PPL_MIP_PROBLEM_CONTROL_PARAMETER_PRICING_STEEPEST_EDGE_FLOAT;
+
+/*! \brief
   Code of the "maximization" optimization mode.
 */
 extern int PPL_OPTIMIZATION_MODE_MAXIMIZATION;
@@ -2069,6 +2089,20 @@ int
 ppl_MIP_Problem_optimal_value
 PPL_PROTO((ppl_const_MIP_Problem_t mip,
 	   ppl_Coefficient_t num, ppl_Coefficient_t den));
+
+/*! \brief
+  Returns the value of control parameter \p name in problem \p mip.
+*/
+int
+ppl_MIP_Problem_get_control_parameter
+PPL_PROTO((ppl_const_MIP_Problem_t mip, int name));
+
+/*! \brief
+  Sets control parameter \p value in problem \p mip.
+*/
+int
+ppl_MIP_Problem_set_control_parameter
+PPL_PROTO((ppl_MIP_Problem_t mip, int value));
 
 /*! \brief
   Returns a positive integer if \p mip is well formed, i.e., if it
