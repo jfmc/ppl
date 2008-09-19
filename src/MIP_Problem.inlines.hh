@@ -107,6 +107,7 @@ MIP_Problem::integer_space_dimensions() const {
 
 inline MIP_Problem::Control_Parameter_Value
 MIP_Problem::get_control_parameter(Control_Parameter_Name name) const {
+  used(name);
   assert(name == PRICING);
   return pricing;
 }
