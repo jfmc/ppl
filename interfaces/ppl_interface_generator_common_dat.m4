@@ -184,7 +184,7 @@ dnl this also parses and defines macros for these components.
 m4_define(`m4_init_all_cplusplus_class_components', `dnl
 m4_init_cplusplus_class_components($1, m4_cplusplus_class`'$1, class)`'dnl
 m4_ifelse($1, m4_num_classes, ,
-    `m4_init_all_cplusplus_class_components(m4_incr($1))')
+    `m4_init_all_cplusplus_class_components(m4_incr($1))')`'dnl
 ')
 
 dnl m4_init_cplusplus_class_components(Class_Counter,
