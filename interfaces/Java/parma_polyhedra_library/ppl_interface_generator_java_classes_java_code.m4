@@ -37,7 +37,6 @@ dnl the Java interface.
 dnl Remove the macro if its definition is added.
 dnl
 m4_define(`ppl_@CLASS@_approximate_partition', `')
-m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity_code', `')
 m4_define(`ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code', `')
 m4_define(`ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign_code', `')
 
@@ -61,6 +60,10 @@ m4_define(`m4_class_build_cpp_object3_code',
 %<--%<--%<-- @TOPOLOGY@@CLASS@.java
     private native void build_cpp_object(@FRIEND@ y);
 
+%<--%<--%<-- @TOPOLOGY@@CLASS@.java
+    private native void build_cpp_object(@FRIEND@ y,
+                                         Complexity_Class complexity);
+
 ')
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
@@ -81,6 +84,15 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_code',
 %<--%<--%<-- @TOPOLOGY@@CLASS@.java
     public @TOPOLOGY@@CLASS@(@FRIEND@ y) {
         build_cpp_object(y);
+    }
+
+')
+
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity_code',
+`dnl
+%<--%<--%<-- @TOPOLOGY@@CLASS@.java
+    public @TOPOLOGY@@CLASS@(@FRIEND@ y, Complexity_Class complexity) {
+        build_cpp_object(y, complexity);
     }
 
 ')

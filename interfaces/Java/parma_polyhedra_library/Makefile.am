@@ -62,6 +62,7 @@ fixed_java_sources = \
 $(srcdir)/By_Reference.java \
 $(srcdir)/Coefficient.java \
 $(srcdir)/Congruence.java \
+$(srcdir)/Complexity_Class.java \
 $(srcdir)/Congruence_System.java \
 $(srcdir)/Constraint.java \
 $(srcdir)/Constraint_System.java \

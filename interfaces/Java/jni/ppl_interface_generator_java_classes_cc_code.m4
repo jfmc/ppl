@@ -37,7 +37,6 @@ dnl the Java interface.
 dnl Remove the macro if its definition is added.
 dnl
 m4_define(`ppl_@CLASS@_approximate_partition', `')
-m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity_code', `')
 m4_define(`ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code', `')
 m4_define(`ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign_code', `')
 
@@ -170,6 +169,40 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_build_
  = reinterpret_cast<@CPPX_FRIEND@*>(get_ptr(env, j_@LFRIEND@));
  @TOPOLOGY@@CPP_CLASS@* @LTOPOLOGY@_this_@LCLASS@_ptr = new @TOPOLOGY@@CPP_CLASS@(*@LFRIEND@_ptr);
  set_ptr(env, j_this_@LTOPOLOGY@@LCLASS@, @LTOPOLOGY@_this_@LCLASS@_ptr);
+}
+
+')
+
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity_code',
+`dnl
+JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_build_1cpp_1object__Lparma_1polyhedra_1library_@1FRIEND@_2Lparma_1polyhedra_1library_Complexity_1Class_2
+(JNIEnv* env, jobject j_this_@LTOPOLOGY@@LCLASS@,
+              jobject j_@LFRIEND@,
+              jobject j_complexity)
+{
+  @CPPX_FRIEND@* @LFRIEND@_ptr
+  = reinterpret_cast<@CPPX_FRIEND@*>(get_ptr(env, j_@LFRIEND@));
+  jclass complexity
+    = env->FindClass("parma_polyhedra_library/Complexity_Class");
+  jmethodID complexity_ordinal_id
+    = env->GetMethodID(complexity, "ordinal", "()I");
+  jint j_complexity_int
+    = env->CallIntMethod(j_complexity, complexity_ordinal_id);
+  @TOPOLOGY@@CPP_CLASS@* c_ptr;
+  switch (j_complexity_int) {
+  case 0:
+    c_ptr = new @TOPOLOGY@@CPP_CLASS@(*@LFRIEND@_ptr, POLYNOMIAL_COMPLEXITY);
+    break;
+  case 1:
+    c_ptr = new @TOPOLOGY@@CPP_CLASS@(*@LFRIEND@_ptr, SIMPLEX_COMPLEXITY);
+    break;
+  case 2:
+    c_ptr = new @TOPOLOGY@@CPP_CLASS@(*@LFRIEND@_ptr, ANY_COMPLEXITY);
+    break;
+  default:
+    throw std::runtime_error("PPL Java interface internal error");
+  set_ptr(env, j_this_@LTOPOLOGY@@LCLASS@, c_ptr);
+  }
 }
 
 ')
