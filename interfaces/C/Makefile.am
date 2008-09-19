@@ -30,6 +30,7 @@ ppl_interface_generator_c_cc_code.m4
 
 EXTRA_DIST = \
 $(interface_generator_files) \
+ppl_c_header.h \
 C_interface.dox
 
 if BUILD_C_INTERFACE
