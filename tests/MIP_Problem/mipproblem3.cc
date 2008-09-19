@@ -188,6 +188,10 @@ test06() {
 
   MIP_Problem mip(cs.space_dimension(), cs.begin(), cs.end(), cost,
 		  MAXIMIZATION);
+  // Disallow floating point based steepest-edge pricing, so that
+  // predictable overflow behavior is obtained when configured
+  // to use checked 8-bit integers as coefficients.
+  mip.set_control_parameter(MIP_Problem::PRICING_STEEPEST_EDGE_EXACT);
 
   if (mip.solve() != OPTIMIZED_MIP_PROBLEM)
     return false;
@@ -886,7 +890,7 @@ BEGIN_MAIN
   DO_TEST(test03);
   DO_TEST(test04);
   DO_TEST(test05);
-  DO_TEST(test06);
+  DO_TEST_F8(test06);
   DO_TEST(test07);
   DO_TEST_F64(test08);
   DO_TEST_F32(test09);
