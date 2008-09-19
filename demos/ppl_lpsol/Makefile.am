@@ -191,6 +191,14 @@ endif !HOST_OS_DARWIN
 
 endif !HOST_OS_CYGWIN
 
+# NOTE: use exact steepest-edge pricing (-p1) instead float-based one.
+# This has an efficiency penalty, but it guarantees deterministic
+# results across different architectures.
+SIMPLEX = ./ppl_lpsol -s -p1 $(CHECK_OPTION) -oobtained
+SIMPLEX_NOCHECK = ./ppl_lpsol -s -p1 -oobtained
+ECHO_SIMPLEX = echo "***" $(SIMPLEX)
+ECHO_SIMPLEX_NOCHECK = echo "***" $(SIMPLEX_NOCHECK)
+
 check-local: ppl_lpsol
 	echo $(ECHO_N) "$(ECHO_C)" >obtained
 	echo $(LP_PROBLEMS) >lp_problems
@@ -203,8 +211,8 @@ check-local: ppl_lpsol
 	  grep $$file lp_problems >/dev/null 2>&1 && continue; \
 	  grep $$file do_not_check_problems >/dev/null 2>&1 && continue; \
 	  grep $$file tough_examples >/dev/null 2>&1 && continue; \
-	  echo "*** ppl_lpsol -s -n $$m -oobtained $$file" >>obtained; \
-	  ./ppl_lpsol -s -n $(CHECK_OPTION) -oobtained $$path >/dev/null; \
+	  $(ECHO_SIMPLEX) "-n $$m $$file" >>obtained; \
+	  $(SIMPLEX) -n $$path >/dev/null; \
 	done
 	echo $(TOUGH_EXAMPLES_FOR_BB_OPTIMALITY) >tough_examples
 	-for path in $(srcdir)/examples/*.mps; \
@@ -215,8 +223,8 @@ check-local: ppl_lpsol
 	  grep $$file tough_examples >/dev/null 2>&1 && continue; \
 	  for m in -m -M; \
 	  do \
-	    echo "*** ppl_lpsol -s $$m -oobtained $$file" >>obtained; \
-	    ./ppl_lpsol -s $(CHECK_OPTION) $$m -oobtained $$path >/dev/null; \
+	    $(ECHO_SIMPLEX) "$$m $$file" >>obtained; \
+	    $(SIMPLEX) $$m $$path >/dev/null; \
 	  done \
 	done
 	echo $(TOUGH_EXAMPLES_FOR_SIMPLEX) >tough_examples
@@ -230,8 +238,8 @@ check-local: ppl_lpsol
 	 grep $$file do_not_output_location >/dev/null 2>&1 && verbosity='-v 2'; \
 	 for m in -m -M; \
 	 do \
-	    echo "*** ppl_lpsol -r -s $$m -oobtained $$file" >>obtained; \
-	    ./ppl_lpsol -r -s $(CHECK_OPTION) $$verbosity $$m -oobtained $$path >/dev/null; \
+	    $(ECHO_SIMPLEX) "-r $$m $$file" >>obtained; \
+	    $(SIMPLEX) -r $$verbosity $$m $$path >/dev/null; \
 	  done \
 	done
 	echo $(TOUGH_EXAMPLES_FOR_ENUM) >tough_examples
@@ -243,24 +251,24 @@ check-local: ppl_lpsol
 	  echo "*** ppl_lpsol -e -r $$m -oobtained $$file" >>obtained; \
 	  ./ppl_lpsol -e -r $(CHECK_OPTION) $$m -oobtained $$path >/dev/null; \
 	done
-	echo "*** ppl_lpsol -r -s -m -oobtained mas74.mps" >>obtained
-	-./ppl_lpsol -r -s -m $(CHECK_OPTION) $(srcdir)/examples/mas74.mps -oobtained >/dev/null
-	echo "*** ppl_lpsol -r -s -M -c0.000123 -oobtained mas74.mps" >>obtained
-	-./ppl_lpsol -r -s -M -c0.000123 $(srcdir)/examples/mas74.mps $$m -oobtained >/dev/null
-	echo "*** ppl_lpsol -n -s -oobtained mas74.mps" >>obtained
-	-./ppl_lpsol -n -s $(CHECK_OPTION) $(srcdir)/examples/mas74.mps -oobtained >/dev/null
-	echo "*** ppl_lpsol -r -s -m -oobtained mas76.mps" >>obtained
-	-./ppl_lpsol -r -s -m $(CHECK_OPTION) $(srcdir)/examples/mas76.mps -oobtained >/dev/null
-	echo "*** ppl_lpsol -r -s -M -c0.000123 -oobtained mas76.mps" >>obtained
-	-./ppl_lpsol -r -s -M -c0.000123 $(srcdir)/examples/mas76.mps -oobtained >/dev/null
-	echo "*** ppl_lpsol -n -s -oobtained mas76.mps" >>obtained
-	-./ppl_lpsol -n -s $(CHECK_OPTION) $(srcdir)/examples/mas76.mps -oobtained >/dev/null
-	echo "*** ppl_lpsol -r -s -m -c0.0000002 -oobtained modglob.mps" >>obtained
-	-./ppl_lpsol -r -s -m -c0.0000002 $(srcdir)/examples/modglob.mps -oobtained >/dev/null
-	echo "*** ppl_lpsol -r -s -M -c0.000003 -oobtained modglob.mps" >>obtained
-	-./ppl_lpsol -r -s -M -c0.000003 $(srcdir)/examples/modglob.mps -oobtained >/dev/null
-	echo "*** ppl_lpsol -n -s -oobtained modglob.mps" >>obtained
-	-./ppl_lpsol -n -s $(CHECK_OPTION) $(srcdir)/examples/modglob.mps -oobtained >/dev/null
+	$(ECHO_SIMPLEX) "-r -m mas74.mps" >>obtained
+	-$(SIMPLEX) -r -m $(srcdir)/examples/mas74.mps >/dev/null
+	$(ECHO_SIMPLEX_NOCHECK) "-r -M -c0.000123 mas74.mps" >>obtained
+	-$(SIMPLEX_NOCHECK) -r -M -c0.000123 $(srcdir)/examples/mas74.mps $$m >/dev/null
+	$(ECHO_SIMPLEX) "-n mas74.mps" >>obtained
+	-$(SIMPLEX) -n $(srcdir)/examples/mas74.mps >/dev/null
+	$(ECHO_SIMPLEX) "-r -m mas76.mps" >>obtained
+	-$(SIMPLEX) -r -m $(srcdir)/examples/mas76.mps >/dev/null
+	$(ECHO_SIMPLEX) "-r -M -c0.000123 mas76.mps" >>obtained
+	-$(SIMPLEX_NOCHECK) -r -M -c0.000123 $(srcdir)/examples/mas76.mps >/dev/null
+	$(ECHO_SIMPLEX) "-n mas76.mps" >>obtained
+	-$(SIMPLEX) -n $(srcdir)/examples/mas76.mps >/dev/null
+	$(ECHO_SIMPLEX_NOCHECK) "-r -m -c0.0000002 modglob.mps" >>obtained
+	-$(SIMPLEX_NOCHECK) -r -m -c0.0000002 $(srcdir)/examples/modglob.mps >/dev/null
+	$(ECHO_SIMPLEX_NOCHECK) "-r -M -c0.000003 modglob.mps" >>obtained
+	-$(SIMPLEX_NOCHECK) -r -M -c0.000003 $(srcdir)/examples/modglob.mps >/dev/null
+	$(ECHO_SIMPLEX) "-n modglob.mps" >>obtained
+	-$(SIMPLEX) -n $(srcdir)/examples/modglob.mps >/dev/null
 	$(DIFF_COMMAND)
 
 endif HAVE_GLPK
