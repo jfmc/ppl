@@ -609,6 +609,9 @@ AC_CXX_LONG_DOUBLE_BINARY_FORMAT
 # Check whether the C++ compiler supports flexible arrays.
 AC_CXX_SUPPORTS_FLEXIBLE_ARRAYS
 
+# Check whether the IEEE inexact flag is supported in C++.
+AC_CXX_SUPPORTS_IEEE_INEXACT_FLAG
+
 # Check whether the C++ compiler has the remainder bug
 AC_CXX_HAS_REMAINDER_BUG
 
