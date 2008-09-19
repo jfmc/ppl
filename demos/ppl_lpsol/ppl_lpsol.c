@@ -87,6 +87,7 @@ static struct option long_options[] = {
   {"max-cpu",         required_argument, 0, 'C'},
   {"max-memory",      required_argument, 0, 'R'},
   {"output",          required_argument, 0, 'o'},
+  {"pricing",         required_argument, 0, 'p'},
   {"enumerate",       no_argument,       0, 'e'},
   {"simplex",         no_argument,       0, 's'},
   {"timings",         no_argument,       0, 't'},
@@ -110,6 +111,11 @@ static const char* usage_string
 "  -h, --help              prints this help text to stdout\n"
 "  -oPATH, --output=PATH   appends output to PATH\n"
 "  -e, --enumerate         use the (expensive!) enumeration method\n"
+"  -pM, --pricing=M        use pricing method M for simplex (assumes -s);\n"
+"                          M is an int from 0 to 2, default 0:\n"
+"                          0 --> steepest-edge using floating point\n"
+"                          1 --> steepest-edge using exact arithmetic\n"
+"                          2 --> textbook\n"
 "  -s, --simplex           use the simplex method\n"
 "  -t, --timings           prints timings to stderr\n"
 "  -v, --verbosity=LEVEL   sets verbosity level (from 0 to 4, default 3):\n"
@@ -126,7 +132,7 @@ static const char* usage_string
 #endif
 ;
 
-#define OPTION_LETTERS "bc::eimnMC:R:ho:rstVv:"
+#define OPTION_LETTERS "bc::eimnMC:R:ho:p:rstVv:"
 
 static const char* program_name = 0;
 
@@ -136,6 +142,7 @@ static const char* output_argument = 0;
 FILE* output_file = NULL;
 static int check_results = 0;
 static int use_simplex = 0;
+static int pricing_method = 0;
 static int print_timings = 0;
 static int verbosity = 3;
 static int maximize = 1;
@@ -279,6 +286,14 @@ process_options(int argc, char* argv[]) {
 
     case 'o':
       output_argument = optarg;
+      break;
+
+    case 'p':
+      l = strtol(optarg, &endptr, 10);
+      if (*endptr || l < 0 || l > 2)
+	fatal("0 or 1 or 2 must follow `-p'");
+      else
+	pricing_method = l;
       break;
 
     case 'e':
@@ -768,6 +783,7 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
 		   ppl_Coefficient_t optimum_d,
 		   ppl_Generator_t point) {
   ppl_MIP_Problem_t ppl_mip;
+  int pricing = 0;
   int status = 0;
   int satisfiable = 0;
   ppl_dimension_type space_dim;
@@ -782,6 +798,20 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
 
   ppl_Constraint_System_space_dimension(cs, &space_dim);
   ppl_new_MIP_Problem_from_space_dimension(&ppl_mip, space_dim);
+  switch (pricing_method) {
+  case 0:
+    pricing = PPL_MIP_PROBLEM_CONTROL_PARAMETER_PRICING_STEEPEST_EDGE_FLOAT;
+    break;
+  case 1:
+    pricing = PPL_MIP_PROBLEM_CONTROL_PARAMETER_PRICING_STEEPEST_EDGE_EXACT;
+    break;
+  case 2:
+    pricing = PPL_MIP_PROBLEM_CONTROL_PARAMETER_PRICING_TEXTBOOK;
+    break;
+  default:
+    fatal("ppl_lpsol internal error");
+  }
+  ppl_MIP_Problem_set_control_parameter(ppl_mip, pricing);
   ppl_MIP_Problem_set_objective_function(ppl_mip, objective);
   ppl_MIP_Problem_set_optimization_mode(ppl_mip, mode);
   if (!no_mip)
