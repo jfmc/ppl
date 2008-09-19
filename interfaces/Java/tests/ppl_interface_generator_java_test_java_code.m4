@@ -243,9 +243,46 @@ boolean @LTOPOLOGY@@LCLASS@1_@MAXMIN@
 
 m4_define(`ppl_@CLASS@_@MAXMIN@_with_point_code', `
 boolean @LTOPOLOGY@@LCLASS@1_@MAXMIN@_with_point
-  = @LTOPOLOGY@@LCLASS@1.@MAXMIN@(le_A, coeff_0, coeff_5, bool_by_ref1, generator1);
+  = @LTOPOLOGY@@LCLASS@1.@MAXMIN@(le_A, coeff_0, coeff_5, bool_by_ref2,
+                                  generator1);
 
 ');
+
+m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_code',`
+@LTOPOLOGY@@LCLASS@1.@WIDEN@_widening_assign(@LTOPOLOGY@@LCLASS@1);
+
+')
+
+m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_code',`
+@LTOPOLOGY@@LCLASS@1.@WIDEN@_widening_assign(@LTOPOLOGY@@LCLASS@1,
+                                             int_by_ref1);
+
+')
+
+m4_define(`ppl_@CLASS@_widening_assign_code',`
+@LTOPOLOGY@@LCLASS@1.widening_assign(@LTOPOLOGY@@LCLASS@1,
+                                     int_by_ref1);
+
+')
+
+m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_code',`
+@LTOPOLOGY@@LCLASS@1.@EXTRAPOLATION@_extrapolation_assign(@LTOPOLOGY@@LCLASS@1,
+                                     int_by_ref1);
+
+')
+
+m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign_code',`
+@LTOPOLOGY@@LCLASS@1.@EXTRAPOLATION@_narrowing_assign(@LTOPOLOGY@@LCLASS@1);
+
+')
+
+m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_code',`
+@LTOPOLOGY@@LCLASS@1.@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(
+                                     @LTOPOLOGY@@LCLASS@1,
+                                     @CONSTRAINER@s1,
+                                     zero_by_ref1);
+
+')
 
 m4_define(`ppl_@CLASS@_string_code', `
 System.out.println(@LTOPOLOGY@@LCLASS@1.toString());

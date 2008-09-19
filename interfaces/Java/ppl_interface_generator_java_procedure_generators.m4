@@ -46,7 +46,7 @@ ppl_@CLASS@_string/1 +all)dnl
 
 dnl TODO
 dnl Some methods are not yet implemented for the Java interface:
+dnl ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity_code/3 +all,
 dnl ppl_@CLASS@_approximate_partition/5 +pointset_powerset \shape,
 dnl ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign/2
 dnl ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign/3
-dnl ppl_@CLASS@_BGP99_@DISJUNCT_EXTRAPOLATION@_extrapolation_assign/3

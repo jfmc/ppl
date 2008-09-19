@@ -24,6 +24,23 @@ dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
+dnl No code is needed for these procedure schemas in the Java interface
+dnl as the tokens argument for widening and extrapolation is optional.
+dnl
+m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_code', `')
+m4_define(`ppl_@CLASS@_widening_assign_with_tokens_code', `')
+m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens_code', `')
+m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens_code', `')
+
+dnl FIXME: There is no code at present for the following procedures in
+dnl the Java interface.
+dnl Remove the macro if its definition is added.
+dnl
+m4_define(`ppl_@CLASS@_approximate_partition', `')
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity_code', `')
+m4_define(`ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code', `')
+m4_define(`ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign_code', `')
+
 m4_define(`m4_class_build_cpp_object1_code',
 `dnl
 %<--%<--%<-- @TOPOLOGY@@CLASS@.java
@@ -325,6 +342,15 @@ m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_code',
 
 ')
 
+m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_code',
+`dnl
+%<--%<--%<-- @CLASS@.java
+    public native void
+    @EXTRAPOLATION@_extrapolation_assign(@TOPOLOGY@@CLASS@ arg,
+                                By_Reference<Integer> tp);
+
+')
+
 m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
@@ -359,6 +385,14 @@ m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
 public native void @WIDEN@_widening_assign(@CLASS@ y,
+                                By_Reference<Integer> tp);
+
+')
+
+m4_define(`ppl_@CLASS@_widening_assign_code',
+`dnl
+%<--%<--%<-- @CLASS@.java
+public native void widening_assign(@CLASS@ y,
                                 By_Reference<Integer> tp);
 
 ')
@@ -449,6 +483,13 @@ m4_define(`ppl_@CLASS@_drop_disjunct_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
   public native void drop_disjunct(@CLASS@_Iterator itr);
+
+')
+
+m4_define(`ppl_@CLASS@_add_disjunct_code',
+`dnl
+%<--%<--%<-- @CLASS@.java
+  public native void add_disjunct(@CLASSTOPOLOGY@@DISJUNCT@ j_disj);
 
 ')
 

@@ -32,6 +32,9 @@ m4_include(`ppl_interface_generator_java_procedure_generators.m4')
 dnl -----------------------------------------------------------------
 dnl Macros needed for the class-dependent code.
 dnl -----------------------------------------------------------------
+dnl Ensure any schematic procedure macro that is not defined
+dnl in the code file outputs a warning message.
+m4_define(`m4_default_code', `m4_dumpdef($1`'_code)')
 dnl m4_pre_extra_class_code(Class, CPP_Class, Class_Kind)
 dnl Prefix extra code for each class.
 m4_define(`m4_pre_extra_class_code', `dnl

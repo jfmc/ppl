@@ -19,6 +19,9 @@
     Grid_Generator_System grid_generators1;
 
     By_Reference<Boolean> bool_by_ref1;
+    By_Reference<Boolean> bool_by_ref2;
+    By_Reference<Integer> int_by_ref1;
+    By_Reference<Integer> zero_by_ref1;
 
     // Common initialization.
     public void initialize() {
@@ -128,4 +131,8 @@
 	grid_generators1.add(gg4);
 
         bool_by_ref1 = new By_Reference<Boolean>(true);
+        bool_by_ref2 = new By_Reference<Boolean>(true);
+
+        int_by_ref1 = new By_Reference<Integer>(1);
+        zero_by_ref1 = new By_Reference<Integer>(0);
 }

@@ -24,6 +24,23 @@ dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
+dnl No code is needed for these procedure schemas in the Java interface
+dnl as the tokens argument for widening and extrapolation is optional.
+dnl
+m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_code', `')
+m4_define(`ppl_@CLASS@_widening_assign_with_tokens_code', `')
+m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens_code', `')
+m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens_code', `')
+
+dnl FIXME: There is no code at present for the following procedures in
+dnl the Java interface.
+dnl Remove the macro if its definition is added.
+dnl
+m4_define(`ppl_@CLASS@_approximate_partition', `')
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity_code', `')
+m4_define(`ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code', `')
+m4_define(`ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign_code', `')
+
 m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
 `dnl
 #include "parma_polyhedra_library_@CLASS@_Iterator.h"
@@ -103,6 +120,18 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_drop_1
 }
 ')
 
+
+m4_define(`ppl_@CLASS@_add_disjunct_code',
+`dnl
+JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_add_1disjunct
+(JNIEnv* env, jobject j_pps, jobject j_disj) {
+ @TOPOLOGY@@CPP_CLASS@* pps_ptr
+ = reinterpret_cast<@TOPOLOGY@@CPP_CLASS@*>(get_ptr(env, j_pps));
+ @CLASSTOPOLOGY@@CPP_DISJUNCT@* disj_ptr
+ = reinterpret_cast<@CLASSTOPOLOGY@@CPP_DISJUNCT@*>(get_ptr(env, j_disj));
+pps_ptr->add_disjunct(*disj_ptr);
+}
+')
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 `dnl
@@ -771,6 +800,58 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_@1WIDEN@_1widenin
 
 ')
 
+m4_define(`ppl_@CLASS@_widening_assign_code',
+`dnl
+JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_widening_1assign
+(JNIEnv* env , jobject j_this_@LCLASS@ , jobject j_@LCLASS@,
+ jobject j_by_ref_int) {
+  try {
+    @CPP_CLASS@* this_@LCLASS@
+ = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this_@LCLASS@));
+    @CPP_CLASS@* @LCLASS@
+ = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_@LCLASS@));
+    if (is_null(env, j_by_ref_int))
+      this_@LCLASS@->widening_assign(*@LCLASS@);
+    else {
+      jobject j_integer = get_by_reference(env, j_by_ref_int);
+      unsigned int tokens =
+        jtype_to_unsigned<unsigned int>(j_integer_to_j_int(env, j_integer));
+      this_@LCLASS@->widening_assign(*@LCLASS@, &tokens);
+      j_integer = j_int_to_j_integer(env, tokens);
+      set_by_reference(env, j_by_ref_int, j_integer);
+    }
+  }
+  CATCH_ALL;
+}
+
+')
+
+m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_code',
+`dnl
+JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_@1EXTRAPOLATION@_1extrapolation_1assign
+(JNIEnv* env , jobject j_this_@LCLASS@ , jobject j_@LCLASS@,
+ jobject j_by_ref_int) {
+  try {
+    @CPP_CLASS@* this_@LCLASS@
+ = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this_@LCLASS@));
+    @CPP_CLASS@* @LCLASS@
+ = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_@LCLASS@));
+    if (is_null(env, j_by_ref_int))
+      this_@LCLASS@->@EXTRAPOLATION@_extrapolation_assign(*@LCLASS@);
+    else {
+      jobject j_integer = get_by_reference(env, j_by_ref_int);
+      unsigned int tokens =
+        jtype_to_unsigned<unsigned int>(j_integer_to_j_int(env, j_integer));
+      this_@LCLASS@->@EXTRAPOLATION@_extrapolation_assign(*@LCLASS@, &tokens);
+      j_integer = j_int_to_j_integer(env, tokens);
+      set_by_reference(env, j_by_ref_int, j_integer);
+    }
+  }
+  CATCH_ALL;
+}
+
+')
+
 m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign_code',
 `dnl
 JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_@1EXTRAPOLATION@_1narrowing_1assign
@@ -790,7 +871,7 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_@1EXTRAPOLATION@_
 m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_code',
 `dnl
 JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_@1LIMITEDBOUNDED@_1@1WIDENEXPN@_1extrapolation_1assign
-(JNIEnv* env , jobject j_this_@LCLASS@, jobject j_cs, jobject j_@LCLASS@,
+(JNIEnv* env , jobject j_this_@LCLASS@, jobject j_@LCLASS@, jobject j_cs,
  jobject j_by_ref_int) {
   try {
     @CPP_CLASS@* this_@LCLASS@
