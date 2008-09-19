@@ -39,10 +39,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_NOISY_SIMPLEX 0
 #endif
 
-#ifndef PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT
-#define PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT 1
-#endif
-
 #ifndef PPL_SIMPLEX_USE_MIP_HEURISTIC
 #define PPL_SIMPLEX_USE_MIP_HEURISTIC 1
 #endif
@@ -70,6 +66,7 @@ PPL::MIP_Problem::MIP_Problem(const dimension_type dim)
     mapping(),
     base(),
     status(PARTIALLY_SATISFIABLE),
+    pricing(PRICING_STEEPEST_EDGE_FLOAT),
     initialized(false),
     input_cs(),
     first_pending_constraint(0),
@@ -97,6 +94,7 @@ PPL::MIP_Problem::MIP_Problem(const dimension_type dim,
     mapping(),
     base(),
     status(PARTIALLY_SATISFIABLE),
+    pricing(PRICING_STEEPEST_EDGE_FLOAT),
     initialized(false),
     input_cs(),
     first_pending_constraint(0),
@@ -799,7 +797,7 @@ PPL::MIP_Problem::process_pending_constraints() {
   // is only delimited by non-negativity constraints. Therefore,
   // the problem is unbounded as soon as the cost function has
   // a variable with a positive coefficient.
- if (tableau_num_rows == 0) {
+  if (tableau_num_rows == 0) {
     const dimension_type input_obj_function_size
       = input_obj_function.space_dimension();
     for (dimension_type i = input_obj_function_size; i-- > 0; )
@@ -831,7 +829,10 @@ PPL::MIP_Problem::process_pending_constraints() {
   }
 
   // Now we are ready to solve the first phase.
-  bool first_phase_succesful = compute_simplex();
+  bool first_phase_succesful
+    = (get_control_parameter(PRICING) == PRICING_STEEPEST_EDGE_FLOAT)
+    ? compute_simplex_using_steepest_edge_float()
+    : compute_simplex_using_exact_pricing();
 
 #if PPL_NOISY_SIMPLEX
   std::cout << "MIP_Problem::solve: 1st phase ended at iteration "
@@ -852,7 +853,7 @@ PPL::MIP_Problem::process_pending_constraints() {
   assert(OK());
   return true;
 }
-#if PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT
+
 
 // This is the only place in the library where we use doubles for
 // internal purposes.  However, we may have PPL_SUPPORTED_DOUBLE
@@ -869,7 +870,7 @@ PPL::MIP_Problem::process_pending_constraints() {
 #endif
 
 PPL::dimension_type
-PPL::MIP_Problem::steepest_edge_entering_index() const {
+PPL::MIP_Problem::steepest_edge_float_entering_index() const {
   DIRTY_TEMP0(mpq_class, real_coeff);
   const dimension_type tableau_num_rows = tableau.num_rows();
   assert(tableau_num_rows == base.size());
@@ -918,9 +919,8 @@ PPL::MIP_Problem::steepest_edge_entering_index() const {
 #undef STEEPEST_EDGE_SQRT
 #undef STEEPEST_EDGE_FABS
 
-#else
 PPL::dimension_type
-PPL::MIP_Problem::steepest_edge_entering_index() const {
+PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
   const dimension_type tableau_num_rows = tableau.num_rows();
   assert(tableau_num_rows == base.size());
   // The square of the lcm of all the coefficients of variables in base.
@@ -989,7 +989,7 @@ PPL::MIP_Problem::steepest_edge_entering_index() const {
   }
   return entering_index;
 }
-#endif // PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT
+
 
 // See page 47 of [PapadimitriouS98].
 PPL::dimension_type
@@ -1113,17 +1113,19 @@ PPL::MIP_Problem
 }
 
 // See page 49 of [PapadimitriouS98].
-#if PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT
 bool
-PPL::MIP_Problem::compute_simplex() {
+PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
+  // We may need to temporarily switch to the textbook pricing.
   const unsigned long allowed_non_increasing_loops = 200;
   unsigned long non_increased_times = 0;
-  bool call_textbook = false;
+  bool textbook_pricing = false;
+
   TEMP_INTEGER(cost_sgn_coeff);
   TEMP_INTEGER(current_num);
   TEMP_INTEGER(current_den);
   TEMP_INTEGER(challenger);
   TEMP_INTEGER(current);
+
   cost_sgn_coeff = working_cost[working_cost.size()-1];
   current_num = working_cost[0];
   if (cost_sgn_coeff < 0)
@@ -1131,10 +1133,13 @@ PPL::MIP_Problem::compute_simplex() {
   abs_assign(current_den, cost_sgn_coeff);
   assert(tableau.num_columns() == working_cost.size());
   const dimension_type tableau_num_rows = tableau.num_rows();
+
   while (true) {
     // Choose the index of the variable entering the base, if any.
-    const dimension_type entering_var_index = call_textbook
-      ? textbook_entering_index() : steepest_edge_entering_index();
+    const dimension_type entering_var_index
+      = textbook_pricing
+      ? textbook_entering_index()
+      : steepest_edge_float_entering_index();
 
     // If no entering index was computed, the problem is solved.
     if (entering_var_index == 0)
@@ -1173,7 +1178,7 @@ PPL::MIP_Problem::compute_simplex() {
       std::cout << "Primal Simplex: iteration "
 		<< num_iterations << "." << std::endl;
 #endif
-     //  If the following condition fails, probably there's a bug.
+    // If the following condition fails, probably there's a bug.
     assert(challenger >= current);
     // If the value of the objective function does not improve,
     // keep track of that.
@@ -1182,13 +1187,13 @@ PPL::MIP_Problem::compute_simplex() {
       // In the following case we will proceed using the `textbook'
       // technique, until the objective function is not improved.
       if (non_increased_times > allowed_non_increasing_loops)
-	call_textbook = true;
+	textbook_pricing = true;
     }
-    // The objective function has an improvement, reset `non_increased_times'.
+    // The objective function has an improvement:
+    // reset `non_increased_times' and `textbook_pricing'.
     else {
       non_increased_times = 0;
-      if (call_textbook)
-	call_textbook = false;
+      textbook_pricing = false;
     }
     current_num = working_cost[0];
     if (cost_sgn_coeff < 0)
@@ -1197,14 +1202,22 @@ PPL::MIP_Problem::compute_simplex() {
   }
 }
 
-#else
 bool
-PPL::MIP_Problem::compute_simplex() {
+PPL::MIP_Problem::compute_simplex_using_exact_pricing() {
   assert(tableau.num_columns() == working_cost.size());
+  assert(get_control_parameter(PRICING) == PRICING_STEEPEST_EDGE_EXACT
+         || get_control_parameter(PRICING) == PRICING_TEXTBOOK);
+
   const dimension_type tableau_num_rows = tableau.num_rows();
+  const bool textbook_pricing
+    = (PRICING_TEXTBOOK == get_control_parameter(PRICING));
+
   while (true) {
     // Choose the index of the variable entering the base, if any.
-    const dimension_type entering_var_index = steepest_edge_entering_index();
+    const dimension_type entering_var_index
+      = textbook_pricing
+      ? textbook_entering_index()
+      : steepest_edge_exact_entering_index();
     // If no entering index was computed, the problem is solved.
     if (entering_var_index == 0)
       return true;
@@ -1233,7 +1246,6 @@ PPL::MIP_Problem::compute_simplex() {
 #endif
   }
 }
-#endif // PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT
 
 
 // See pages 55-56 of [PapadimitriouS98].
@@ -1427,7 +1439,10 @@ PPL::MIP_Problem::second_phase() {
       linear_combine(working_cost, tableau[i], base_i);
   }
   // Solve the second phase problem.
-  bool second_phase_successful = compute_simplex();
+  bool second_phase_successful
+    = (get_control_parameter(PRICING) == PRICING_STEEPEST_EDGE_FLOAT)
+    ? compute_simplex_using_steepest_edge_float()
+    : compute_simplex_using_exact_pricing();
   compute_generator();
 #if PPL_NOISY_SIMPLEX
   std::cout << "MIP_Problem::solve: 2nd phase ended at iteration "
