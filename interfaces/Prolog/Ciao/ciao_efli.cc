@@ -1,4 +1,4 @@
-/* Ciao Prolog interface: system-dependent part.
+/* Ciao Prolog extended foreign language interface: definitions.
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -20,39 +20,18 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include "ppl.hh"
-#include <ciao_prolog.h>
-#include <cassert>
-#include <sstream>
-#include "ciao_cfli.hh"
-#include "../exceptions.hh"
+#include "ciao_efli.hh"
 
-namespace PPL = Parma_Polyhedra_Library;
+namespace Parma_Polyhedra_Library {
 
-namespace {
+namespace Prolog_Interfaces {
 
-/*!
-  True if and only if the Prolog engine supports unbounded integers.
-*/
 bool Prolog_has_unbounded_integers;
 
-/*!
-  If \p Prolog_has_unbounded_integers is false, holds the minimum
-  integer value representable by a Prolog integer.
-  Holds zero otherwise.
-*/
 long Prolog_min_integer;
 
-/*!
-  If \p Prolog_has_unbounded_integers is false, holds the maximum
-  integer value representable by a Prolog integer.
-  Holds zero otherwise.
-*/
 long Prolog_max_integer;
 
-/*!
-  Performs system-dependent initialization.
-*/
 void
 ppl_Prolog_sysdep_init() {
   Prolog_has_unbounded_integers = true;
@@ -60,9 +39,6 @@ ppl_Prolog_sysdep_init() {
   Prolog_max_integer = 0;
 }
 
-/*!
-  Perform system-dependent de-initialization.
-*/
 void
 ppl_Prolog_sysdep_deinit() {
 }
@@ -102,9 +78,9 @@ Prolog_unify_Coefficient(Prolog_term_ref t, const PPL::Coefficient& n) {
   return ciao_unify(t, u);
 }
 
-} // namespace
+} // namespace Prolog_Interfaces
 
-#include "../ppl_prolog_main.icc"
+} // namespace Parma_Polyhedra_Library
 
 extern "C" void
 init() {
