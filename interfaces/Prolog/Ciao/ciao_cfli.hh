@@ -107,12 +107,10 @@ Prolog_put_address(Prolog_term_ref& t, void* p) {
 /*!
   Return an atom whose name is given by the null-terminated string \p s.
 */
-Prolog_atom
+inline Prolog_atom
 Prolog_atom_from_string(const char* s) {
   return ciao_atom_name(ciao_atom(s));
 }
-
-static Prolog_term_ref args[4];
 
 /*!
   Assign to \p t a compound term whose principal functor is \p f
@@ -121,6 +119,7 @@ static Prolog_term_ref args[4];
 inline int
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1) {
+  Prolog_term_ref args[1];
   args[0] = a1;
   t = ciao_structure_a(f, 1, args);
   return 1;
@@ -133,6 +132,7 @@ Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 inline int
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2) {
+  Prolog_term_ref args[2];
   args[0] = a1;
   args[1] = a2;
   t = ciao_structure_a(f, 2, args);
@@ -147,6 +147,7 @@ inline int
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2,
 			  Prolog_term_ref a3) {
+  Prolog_term_ref args[3];
   args[0] = a1;
   args[1] = a2;
   args[2] = a3;
@@ -162,6 +163,7 @@ inline int
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2,
 			  Prolog_term_ref a3, Prolog_term_ref a4) {
+  Prolog_term_ref args[4];
   args[0] = a1;
   args[1] = a2;
   args[2] = a3;
