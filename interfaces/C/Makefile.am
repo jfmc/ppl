@@ -220,7 +220,7 @@ libppl_c_la_LDFLAGS = \
 $(NO_UNDEFINED_FLAG) \
 -version-info $(LIBPPL_C_LT_CURRENT):$(LIBPPL_C_LT_REVISION):$(LIBPPL_C_LT_AGE)
 
-include_HEADERS = ppl_c.h
+nodist_include_HEADERS = ppl_c.h
 
 nodist_noinst_HEADERS = \
 ppl_c_domains.h \
