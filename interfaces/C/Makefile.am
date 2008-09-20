@@ -73,19 +73,10 @@ LIBPPL_C_LT_CURRENT =  2
 LIBPPL_C_LT_REVISION = 0
 LIBPPL_C_LT_AGE =      0
 
-if HAVE_PERL
-
 ppl_c.h: ppl_c_header.h ppl_c_version.h ppl_c_domains.h Makefile $(top_builddir)/utils/build_header
 	$(top_builddir)/utils/build_header \
 		-I $(top_builddir)/interfaces/C \
 		$(top_srcdir)/interfaces/C/ppl_c_header.h >$@
-
-else !HAVE_PERL
-
-ppl_c.h: ppl_c.h.dist
-	cp -f $< $@
-
-endif !HAVE_PERL
 
 BUILT_SOURCES = \
 ppl_c.h \
@@ -234,11 +225,6 @@ include_HEADERS = ppl_c.h
 nodist_noinst_HEADERS = \
 ppl_c_domains.h \
 ppl_c_version.h
-
-# ppl_c.h is not distributed.
-# ppl_c.h.dist, which is distributed, is a copy of ppl_c.h.
-dist-hook:
-	mv -f $(distdir)/ppl_c.h $(distdir)/ppl_c.h.dist
 
 endif BUILD_C_INTERFACE
 

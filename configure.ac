@@ -763,7 +763,7 @@ xall)
 esac
 
 # Set an Automake conditional to build or not to build the C interface.
-AM_CONDITIONAL(BUILD_C_INTERFACE, test x${c_interface_enabled} = xyes)
+AM_CONDITIONAL(BUILD_C_INTERFACE, test x${c_interface_enabled} = xyes && test x"$PERL" != xno)
 
 # Checks for systems for which the interface is enabled.
 
@@ -1294,13 +1294,23 @@ fi
 
 if test x"$PERL" = xno
 then
-  AC_MSG_WARN([PERL UNAVAILABLE:
+  if test x${c_interface_enabled} = xyes
+  then
+    AC_MSG_ERROR([PERL UNAVAILABLE:
+***  CANNOT BUILD THE C_INTERFACE.
+*** Perl could not be found on your system, so that the C interface cannot
+*** be built.  You should either disable the generation of the C interface
+*** (with the `--enable-interfaces' configure option) or add Perl to your
+*** development environment: see http://www.perl.org/ for more information.])
+  else
+    AC_MSG_WARN([PERL UNAVAILABLE:
 ***  CANNOT REBUILD SOME FILES IF SOURCES ARE CHANGED.
 *** Perl could not be found on your system.  This is OK, if you only plan
 *** to build the PPL without modifying the sources and without trying to
 *** build a distribution out of a CVS working copy.  If this is not the case,
 *** then you need to add Perl to your development environment:
 *** see http://www.perl.org/ for more information.])
+  fi
 fi
 
 if test x"$coefficient_kind" = xnative
