@@ -972,7 +972,7 @@ xno | xnone)
     ai="${ai} @ Pointset_Powerset<Octagonal_Shape<mpq_class> >"
     ai="${ai} @ Pointset_Powerset<Octagonal_Shape<mpz_class> >"
     ai="${ai} @ Pointset_Powerset<C_Polyhedron>"
-    ai="${ai} @ Pointset_Powerset<NNC_Polyhedron>
+    ai="${ai} @ Pointset_Powerset<NNC_Polyhedron>"
     ai="${ai} @ Pointset_Powerset<Grid>"
     ai="${ai} @ Constraints_Product<C_Polyhedron, Grid>"
     ai="${ai} @ Constraints_Product<NNC_Polyhedron, Grid>"
