@@ -289,7 +289,7 @@ AC_PROG_MAKE_SET
 AC_PROG_INSTALL
 
 # Libtool.
-LT_INIT([dlopen,win32-dll])
+LT_INIT([dlopen])
 
 # If we are using GCC we want to compile with warnings enabled.
 if test x"$GCC" = xyes
