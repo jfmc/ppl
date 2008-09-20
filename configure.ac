@@ -902,12 +902,16 @@ AM_CONDITIONAL(BUILD_SOME_PROLOG_INTERFACES, test x$SOME_PROLOG = xyes)
 
 # Define the list of interfaces that are enabled by default.
 # Different instantiations are separated by a '@' character.
-default_instantiations="Polyhedron @ Grid"
-default_instantiations="${default_instantiations} @ Octagonal_Shape<mpz_class> @ Octagonal_Shape<mpq_class> @ Octagonal_Shape<double>"
-default_instantiations="${default_instantiations} @ BD_Shape<mpz_class> @ BD_Shape<mpq_class> @ BD_Shape<double>"
-default_instantiations="${default_instantiations} @ Rational_Box @ Double_Box"
-default_instantiations="${default_instantiations} @ Constraints_Product<C_Polyhedron, Grid>"
-default_instantiations="${default_instantiations} @ Pointset_Powerset<C_Polyhedron> @ Pointset_Powerset<NNC_Polyhedron>"
+di="Polyhedron @ Grid"
+di="${di} @ Octagonal_Shape<double>"
+di="${di} @ Octagonal_Shape<mpz_class> @ Octagonal_Shape<mpq_class>"
+di="${di} @ BD_Shape<double>"
+di="${di} @ BD_Shape<mpz_class> @ BD_Shape<mpq_class>"
+di="${di} @ Double_Box @ Rational_Box"
+di="${di} @ Constraints_Product<C_Polyhedron, Grid>"
+di="${di} @ Pointset_Powerset<C_Polyhedron>"
+di="${di} @ Pointset_Powerset<NNC_Polyhedron>"
+default_instantiations="${di}"
 
 enableval=not_specified
 AC_MSG_CHECKING([which instantiations are enabled])
