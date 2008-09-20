@@ -78,10 +78,15 @@ test01() {
   nout << "z = " << x << endl;
 
   return !x.is_empty()
-    && !x.contains_integer_point()
+#if PPL_CXX_SUPPORTS_IEEE_INEXACT_FLAG
     && x.is_disjoint_from(1.41420757770538330078125)
     && x.is_disjoint_from(1.41421949863433837890625)
-    && z.strictly_contains(x);
+    && z.strictly_contains(x)
+#else
+    && x.is_topologically_closed()
+    && z.contains(x)
+#endif
+    && !x.contains_integer_point();
 }
 
 // Note: this function works both with interval and native floating
