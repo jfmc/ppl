@@ -215,7 +215,7 @@ main() {
            << endl;
       exit(1);
   }
-  return 0;
+  exit(0);
 }
 ],, no_ppl=yes,[echo $ac_n "cross compiling; assumed OK... $ac_c"])
 

@@ -26,6 +26,8 @@ AC_LANG_PUSH(C++)
 AC_CHECK_HEADERS([fenv.h ieeefp.h])
 AC_MSG_CHECKING([for the possibility to control the FPU])
 AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+#include <cstdlib>
+
 int
 main() {
 #if i386
@@ -36,7 +38,7 @@ main() {
 #endif
 
   ;
-  return 0;
+  exit(0);
 }
 ]])],
   AC_MSG_RESULT(yes)

@@ -214,7 +214,7 @@ main() {
              "\n*** so that the correct libraries are found at run-time.)\n");
       exit(1);
   }
-  return 0;
+  exit(0);
 }
 ],, no_ppl=yes,[echo $ac_n "cross compiling; assumed OK... $ac_c"])
 

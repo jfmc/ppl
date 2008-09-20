@@ -45,6 +45,7 @@ AC_LANG_PUSH(C++)
 AC_MSG_CHECKING([for the GMP library version 4.1.3 or above])
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <gmpxx.h>
+#include <cstdlib>
 
 #if __GNU_MP_VERSION < 4 || (__GNU_MP_VERSION == 4 && __GNU_MP_VERSION_MINOR < 1) || (__GNU_MP_VERSION == 4 && __GNU_MP_VERSION_MINOR == 1 && __GNU_MP_VERSION_PATCHLEVEL < 3)
 #error "GMP version 4.1.3 or higher is required"
@@ -52,7 +53,7 @@ AC_RUN_IFELSE([AC_LANG_SOURCE([[
 
 int main() {
   mpz_class n("3141592653589793238462643383279502884");
-  return 0;
+  exit(0);
 }
 ]])],
   AC_MSG_RESULT(yes)
@@ -74,6 +75,7 @@ AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <gmpxx.h>
 #include <new>
 #include <cstddef>
+#include <cstdlib>
 
 static void*
 x_malloc(size_t) {
@@ -95,9 +97,9 @@ int main() {
     mpz_class n("3141592653589793238462643383279502884");
   }
   catch (std::bad_alloc&) {
-    return 0;
+    exit(0);
   }
-  return 1;
+  exit(1);
 }
 ]])],
   AC_MSG_RESULT(yes)

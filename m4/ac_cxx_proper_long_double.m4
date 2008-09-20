@@ -30,14 +30,16 @@ AC_LANG_PUSH(C++)
 AC_MSG_CHECKING([whether the C++ compiler provides proper long doubles])
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <cfloat>
+#include <cstdlib>
 
 long double f = 0.0;
 
 int main() {
-  return ((LDBL_MAX <= DBL_MAX) && (DBL_EPSILON <= LDBL_EPSILON)
-	  && (LDBL_MAX_EXP <= DBL_MAX_EXP) && (LDBL_MANT_DIG <= DBL_MANT_DIG))
-    ? 1
-    : 0;
+  if ((LDBL_MAX <= DBL_MAX) && (DBL_EPSILON <= LDBL_EPSILON)
+      && (LDBL_MAX_EXP <= DBL_MAX_EXP) && (LDBL_MANT_DIG <= DBL_MANT_DIG))
+    exit(1);
+  else
+    exit(0);
 }
 ]])],
   AC_MSG_RESULT(yes)

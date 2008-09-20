@@ -40,6 +40,7 @@ AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #ifdef HAVE_INTTYPES_H
 #include <inttypes.h>
 #endif
+#include <cstdlib>
 
 #if SIZEOF_DOUBLE == 8
 
@@ -65,19 +66,21 @@ convert(uint32_t msp, uint32_t lsp) {
 
 int
 main() {
-  return std::numeric_limits<double>::is_iec559
-    && (convert(0xaaacccaaUL, 0xacccaaacUL)
-	== -4.018242396032647e-103
-    &&	convert(0xcccaaaccUL, 0xcaaacccaUL)
-	  == -85705035845709846787631445265530356117787053916987832397725696.0)
-    ? 0 : 1;
+  if (std::numeric_limits<double>::is_iec559
+      && (convert(0xaaacccaaUL, 0xacccaaacUL)
+          == -4.018242396032647e-103
+          &&	convert(0xcccaaaccUL, 0xcaaacccaUL)
+	  == -85705035845709846787631445265530356117787053916987832397725696.0))
+    exit(0);
+  else
+    exit(1);
 }
 
 #else // SIZEOF_DOUBLE != 8
 
 int
 main() {
-  return 1;
+  exit(1);
 }
 
 #endif // SIZEOF_DOUBLE != 8

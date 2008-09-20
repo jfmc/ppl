@@ -39,6 +39,7 @@ AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #ifdef HAVE_INTTYPES_H
 #include <inttypes.h>
 #endif
+#include <cstdlib>
 
 #if SIZEOF_FLOAT == 4
 
@@ -55,19 +56,21 @@ convert(uint32_t x) {
 
 int
 main() {
-  return std::numeric_limits<float>::is_iec559
-    && (convert(0xaaacccaaUL)
-	== -3.069535185924732179074680971098132431507110595703125e-13
-    &&  convert(0xcccaaaccUL)
-	== -106255968)
-  ? 0 : 1;
+  if (std::numeric_limits<float>::is_iec559
+      && (convert(0xaaacccaaUL)
+          == -3.069535185924732179074680971098132431507110595703125e-13
+          &&  convert(0xcccaaaccUL)
+          == -106255968))
+    exit(0);
+  else
+    exit(1);
 }
 
 #else // SIZEOF_FLOAT != 4
 
 int
 main() {
-  return 1;
+  exit(1);
 }
 
 #endif // SIZEOF_FLOAT != 4
