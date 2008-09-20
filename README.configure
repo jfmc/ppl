@@ -5,6 +5,20 @@ See below for the copying conditions.
 Configuration of the Parma Polyhedra Library
 ============================================
 
+Contents
+--------
+
+1. The Standard Thing (configure, make, make install)
+2. Using the Right Version of GMP
+3. Using the Right C and C++ Compilers
+4. Enabling the Use of Alternative Coefficient Types
+5. Configuring the Foreign Language Interfaces
+6. Using the CVS Sources
+
+
+1. The Standard Thing (configure, make, make install)
+-----------------------------------------------------
+
 In an ideal situation (i.e., on a more or less standard Un*x
 environment, with the right compilers, the GMP library installed in a
 standard place and provided the user is satisfied with all the options
@@ -36,8 +50,8 @@ The PPL-specific aspects of the configuration, compilation and
 installation process are discussed in the following sections.
 
 
-Using the Right Version of GMP
-------------------------------
+2. Using the Right Version of GMP
+---------------------------------
 
 In order to use this version of the PPL you must make sure that:
 
@@ -92,8 +106,8 @@ runtime (setting the environment variable `LD_LIBRARY_PATH' to
 "<GMPprefix>/lib:$LD_LIBRARY_PATH" is the most commonly used solution).
 
 
-Using the Right C and C++ Compilers
------------------------------------
+3. Using the Right C and C++ Compilers
+--------------------------------------
 
 The configure script of the PPL, as you can see by using its `--help'
 option, besides recognizing `CC', `CXX', `CFLAGS', `CXXFLAGS' and
@@ -120,7 +134,7 @@ reliably compile PPL 0.10.
 Here is an example of configuration that uses the Intel C/C++ compiler
 version 10.1.  Assuming you have configured GMP with a command like
 
-  CC=icc CXX=icpc /path/to/gmp-4.2.3/configure --enable-cxx \
+  CC=icc CXX=icpc /path/to/gmp-4.2.4/configure --enable-cxx \
     --prefix=/opt/intel/cce/10.1.018
 
 you can configure the PPL with a command like
@@ -139,7 +153,7 @@ extra compiler options can be passed to the configure script.
 As another example, here is how you can compile the PPL with
 Comeau C/C++ 4.3.10.1.  First configure GMP with a command like
 
-  CXX=como /path/to/gmp-4.2.2/configure --enable-cxx \
+  CXX=como /path/to/gmp-4.2.4/configure --enable-cxx \
     --disable-shared --prefix=/opt/comeau/local
 
 Then you can configure the PPL with a command like
@@ -154,8 +168,8 @@ of GMP and the configuration of the PPL.  This is due to the fact that
 Comeau C/C++ 4.3.10.1 does not support shared libraries.
 
 
-Enabling the Use of Alternative Coefficient Types
--------------------------------------------------
+4. Enabling the Use of Alternative Coefficient Types
+----------------------------------------------------
 
 When speed is important and the numerical coefficients involved are
 likely to be small, you can configure the PPL to use checked native
@@ -194,8 +208,9 @@ choices for TYPE are available:
   native-int32     use 32-bit *unchecked* integers
   native-int64     use 64-bit *unchecked* integers
 
-Configuring for the interfaces
-------------------------------
+
+5. Configuring the Foreign Language Interfaces
+----------------------------------------------
 
 The instantiations for the domains for interfaces other than the main
 C++ interface can be customized via the `instantiations' option for
@@ -231,6 +246,21 @@ where "I" can be
 Note that the domain "Polyhedron" must be specified
 without any topology "C_" and "NNC_" as they are added automatically
 and both the domains "C_Polyhedron" and "NNC_Polyhedron" will be generated.
+
+
+6. Using the CVS Sources
+------------------------
+
+If you use the CVS sources, then you need recent versions of Autoconf
+and Automake installed.  After a `cvs checkout' or `cvs update'
+you should run the `autoreconf' command.  In case you have fiddled
+around with some of the configuration files, or if you have problems
+you cannot explain otherwise, use `autoreconf -f'.
+
+In case you do not have a recent enough version of Autoconf installed,
+you can simply do a `cp configure.repo configure' followed by `autoreconf'.
+You still need Automake, of course.
+
 
 --------
 
