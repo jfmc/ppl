@@ -24,7 +24,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-namespace Prolog_Interfaces {
+namespace Interfaces {
+
+namespace Prolog {
+
+namespace SWI {
 
 bool Prolog_has_unbounded_integers;
 
@@ -65,6 +69,10 @@ Prolog_put_Coefficient(Prolog_term_ref t, const Coefficient& n) {
   return Prolog_unify_Coefficient(t, n);
 }
 
-} // namespace Prolog_Interfaces
+} // namespace SWI
+
+} // namespace Prolog
+
+} // namespace Interfaces
 
 } // namespace Parma_Polyhedra_Library

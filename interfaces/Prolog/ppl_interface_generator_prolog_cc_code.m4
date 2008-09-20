@@ -953,7 +953,9 @@ m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize_code',
 m4_define(`bop_assign_code',
 `namespace Parma_Polyhedra_Library {
 
-namespace Prolog_Interfaces {
+namespace Interfaces {
+
+namespace Prolog {
 
 Prolog_foreign_return_type
 bop_assign(Prolog_term_ref t_lhs,
@@ -988,11 +990,13 @@ bop_assign_and_minimize(Prolog_term_ref t_lhs,
   CATCH_ALL;
 }
 
-} // namespace Prolog_Interfaces
+} // namespace Prolog
+
+} // namespace Interfaces
 
 } // namespace Parma_Polyhedra_Library
 
-using namespace Parma_Polyhedra_Library::Prolog_Interfaces;
+using namespace Parma_Polyhedra_Library::Interfaces::Prolog;
 
 ')
 

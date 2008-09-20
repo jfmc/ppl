@@ -48,7 +48,7 @@ m4_include(`ppl_interface_generator_copyright')`'dnl
 `#'include "ppl_c_implementation_domains.hh"
 
 using namespace Parma_Polyhedra_Library;
-using namespace Parma_Polyhedra_Library::C_Interface;
+using namespace Parma_Polyhedra_Library::Interfaces::C;
 
 ')
 

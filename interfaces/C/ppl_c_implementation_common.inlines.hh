@@ -25,7 +25,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-namespace C_Interface {
+namespace Interfaces {
+
+namespace C {
 
 //! Reinterpret an mpz_t as mpz_class.
 inline mpz_class&
@@ -135,7 +137,9 @@ Array_Partial_Function_Wrapper::maps(dimension_type i,
   return true;
 }
 
-} // namespace C_Interface
+} // namespace C
+
+} // namespace Interfaces
 
 } // namespace Parma_Polyhedra_Library
 

@@ -52,13 +52,17 @@ m4_include(`ppl_interface_generator_copyright')`'dnl
 */
 namespace Parma_Polyhedra_Library {
 
-namespace C_Interface {
+namespace Interfaces {
+
+namespace C {
 
 m4_replace_all_patterns_in_string($1,
                                   `m4_declaration_code($1)',
                                   m4_pattern_list)
 
-} // namespace C_Interface
+} // namespace C
+
+} // namespace Interfaces
 
 } // namespace Parma_Polyhedra_Library
 m4_undefine(`m4_current_interface')`'dnl

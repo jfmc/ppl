@@ -21,3 +21,5 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "swi_efli.hh"
+
+using namespace Parma_Polyhedra_Library::Interfaces::Prolog::SWI;

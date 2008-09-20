@@ -26,7 +26,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-namespace C_Interface {
+namespace Interfaces {
+
+namespace C {
 
 error_handler_type user_error_handler = 0;
 
@@ -91,12 +93,14 @@ notify_error(enum ppl_enum_error_code code, const char* description) {
     user_error_handler(code, description);
 }
 
-} // namespace C_Interface
+} // namespace C
+
+} // namespace Interfaces
 
 } // namespace Parma_Polyhedra_Library
 
 using namespace Parma_Polyhedra_Library;
-using namespace Parma_Polyhedra_Library::C_Interface;
+using namespace Parma_Polyhedra_Library::Interfaces::C;
 
 unsigned int PPL_POLY_CON_RELATION_IS_DISJOINT;
 unsigned int PPL_POLY_CON_RELATION_STRICTLY_INTERSECTS;

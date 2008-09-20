@@ -28,7 +28,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-namespace Prolog_Interfaces {
+namespace Interfaces {
+
+namespace Prolog {
 
 Prolog_atom out_of_memory_exception_atom;
 
@@ -1332,11 +1334,13 @@ term_to_complexity_class(Prolog_term_ref t, const char* where) {
   throw not_a_complexity_class(t, where);
 }
 
-} // namespace Prolog_Interfaces
+} // namespace Prolog
+
+} // namespace Interfaces
 
 } // namespace Parma_Polyhedra_Library
 
-using namespace Parma_Polyhedra_Library::Prolog_Interfaces;
+using namespace Parma_Polyhedra_Library::Interfaces::Prolog;
 
 extern "C" Prolog_foreign_return_type
 ppl_version_major(Prolog_term_ref t_v) {

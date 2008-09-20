@@ -36,7 +36,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-namespace C_Interface {
+namespace Interfaces {
+
+namespace C {
 
 extern "C" typedef void
 (*error_handler_type)(enum ppl_enum_error_code code, const char* description);
@@ -97,7 +99,9 @@ private:
   mutable int empty;
 };
 
-} // namespace C_Interface
+} // namespace C
+
+} // namespace Interfaces
 
 } // namespace Parma_Polyhedra_Library
 

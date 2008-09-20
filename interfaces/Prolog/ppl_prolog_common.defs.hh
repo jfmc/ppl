@@ -42,7 +42,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-namespace Prolog_Interfaces {
+namespace Interfaces {
+
+namespace Prolog {
 
 #if PROLOG_TRACK_ALLOCATION
 
@@ -603,7 +605,7 @@ template <typename U>
 U
 term_to_unsigned(Prolog_term_ref t, const char* where) {
   using namespace Parma_Polyhedra_Library;
-  using namespace Parma_Polyhedra_Library::Prolog_Interfaces;
+  using namespace Parma_Polyhedra_Library::Interfaces::Prolog;
   if (!Prolog_is_integer(t))
     throw not_unsigned_integer(t, where);
 
@@ -716,7 +718,9 @@ term_to_optimization_mode(Prolog_term_ref t, const char* where);
 void
 check_nil_terminating(Prolog_term_ref t, const char* where);
 
-} // namespace Prolog_Interfaces
+} // namespace Prolog
+
+} // namespace Interfaces
 
 } // namespace Parma_Polyhedra_Library
 
@@ -866,7 +870,7 @@ ppl_MIP_Problem_evaluate_objective_function(Prolog_term_ref t_mip,
 					    Prolog_term_ref t_d);
 
 using namespace Parma_Polyhedra_Library;
-using namespace Parma_Polyhedra_Library::Prolog_Interfaces;
+using namespace Parma_Polyhedra_Library::Interfaces::Prolog;
 
 extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_OK(Prolog_term_ref t_mip);
