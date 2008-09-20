@@ -21,7 +21,12 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_java_common.hh"
-using namespace Parma_Polyhedra_Library;
+
+namespace Parma_Polyhedra_Library {
+
+namespace Interfaces {
+
+namespace Java {
 
 void
 handle_exception(JNIEnv* env, const std::overflow_error& e) {
@@ -1098,3 +1103,9 @@ build_java_congruence_system(JNIEnv* env, const Congruence_System& cgs) {
   }
   return j_cgs;
 }
+
+} // namespace Java
+
+} // namespace Interfaces
+
+} // namespace Parma_Polyhedra_Library

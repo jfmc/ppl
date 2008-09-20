@@ -24,7 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <ppl.hh>
 #include "interfaced_boxes.hh"
 #include "marked_pointers.hh"
-using namespace Parma_Polyhedra_Library;
 
 #define CATCH_ALL \
   catch(const std::overflow_error& e) { \
@@ -52,6 +51,11 @@ using namespace Parma_Polyhedra_Library;
     handle_exception(env); \
   };
 
+namespace Parma_Polyhedra_Library {
+
+namespace Interfaces {
+
+namespace Java {
 
 void
 handle_exception(JNIEnv* env, const std::logic_error& e);
@@ -443,3 +447,9 @@ public:
     return false;
   }
 };
+
+} // namespace Java
+
+} // namespace Interfaces
+
+} // namespace Parma_Polyhedra_Library

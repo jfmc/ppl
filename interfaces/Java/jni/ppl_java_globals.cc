@@ -33,6 +33,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "parma_polyhedra_library_Grid_Generator.h"
 #include "parma_polyhedra_library_Grid_Generator_System.h"
 
+using namespace Parma_Polyhedra_Library;
+using namespace Parma_Polyhedra_Library::Interfaces::Java;
+
 JNIEXPORT jint JNICALL
 Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_version_1major
 (JNIEnv *, jclass) {
