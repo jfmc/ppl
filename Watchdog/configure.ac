@@ -25,7 +25,7 @@
 # Every other copy of the package version number gets its value from here.
 AC_INIT([the Parma Watchdog Library],[0.6],[bagnara@cs.unipr.it],[pwl])
 
-# Minimum autoconf version required.
+# Minimum Autoconf version required.
 AC_PREREQ(2.60)
 
 # Make sure the sources are there.

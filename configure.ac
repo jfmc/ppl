@@ -25,7 +25,7 @@
 # Every other copy of the package version number gets its value from here.
 AC_INIT([the Parma Polyhedra Library],[0.10pre30],[ppl-devel@cs.unipr.it],[ppl])
 
-# Minimum autoconf version required.
+# Minimum Autoconf version required.
 AC_PREREQ(2.60)
 
 # Make sure the sources are there.
