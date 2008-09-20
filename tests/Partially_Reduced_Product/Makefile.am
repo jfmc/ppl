@@ -68,4 +68,5 @@ partiallyreducedproduct4_SOURCES = partiallyreducedproduct4.cc
 
 check_PROGRAMS = $(TESTS)
 
-MOSTLYCLEANFILES =
+MOSTLYCLEANFILES = \
+ascii_dump_load1.dat
