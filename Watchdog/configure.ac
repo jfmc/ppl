@@ -26,7 +26,7 @@
 AC_INIT([the Parma Watchdog Library],[0.6],[bagnara@cs.unipr.it],[pwl])
 
 # Minimum autoconf version required.
-AC_PREREQ(2.59)
+AC_PREREQ(2.60)
 
 # Make sure the sources are there.
 AC_CONFIG_SRCDIR(src/Watchdog.cc)
@@ -57,7 +57,7 @@ AH_BOTTOM([
 #endif
 ])
 
-# C compiler
+# C compiler.
 
 AC_ARG_WITH(cc,
 [  --with-cc=xxx           use XXX as the C compiler],
@@ -68,7 +68,7 @@ AC_LANG(C)
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 
-# C++ compiler
+# C++ compiler.
 
 AC_ARG_WITH(cxx,
 [  --with-cxx=xxx          use XXX as the C++ compiler],
@@ -81,7 +81,7 @@ AC_PATH_PROG([PERL], perl, no)
 AC_SUBST([PERL])
 AM_CONDITIONAL(HAVE_PERL, test x"$PERL" != xno)
 
-# Compilation flags
+# Compilation flags.
 
 COMP_FLAGS=""
 OPT_FLAGS=""
@@ -227,7 +227,7 @@ esac
 CFLAGS="$COMP_FLAGS $OPT_FLAGS $CFLAGS"
 CXXFLAGS="$COMP_FLAGS $OPT_FLAGS $CXXFLAGS"
 
-# Allow additions to C and C++ compilation flags
+# Allow additions to C and C++ compilation flags.
 
 AC_ARG_WITH(cflags,
 [  --with-cflags=xxx       add XXX to the options for the C compiler],
