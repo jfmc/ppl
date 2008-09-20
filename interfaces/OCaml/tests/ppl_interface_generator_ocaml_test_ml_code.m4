@@ -92,21 +92,21 @@ let out = if (ppl_@CLASS@_OK @LTOPOLOGY@@LCLASS@)
 print_newline();;
 ')
 
-# m4_define(`ppl_@CLASS@_@UB_EXACT@_code',
-# `
-# print_string "testing ppl_@CLASS@_@UB_EXACT@: " ;;
-# let copy01
-#   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
-# let copy02
-#   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
-# let _result
-#   =  ppl_@CLASS@_@UB_EXACT@ copy01 copy02;;
-# let out
-#   = if (ppl_@CLASS@_OK copy01 & ppl_@CLASS@_OK copy02)
-#   then "success" else "failed"
-#     in (print_string out);;
-# print_newline();;
-# ')
+m4_define(`ppl_@CLASS@_@UB_EXACT@_code',
+`
+print_string "testing ppl_@CLASS@_@UB_EXACT@: " ;;
+let copy01
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
+let copy02
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
+let _result
+  =  ppl_@CLASS@_@UB_EXACT@ copy01 copy02;;
+let out
+  = if (ppl_@CLASS@_OK copy01 & ppl_@CLASS@_OK copy02)
+  then "success" else "failed"
+    in (print_string out);;
+print_newline();;
+')
 
 m4_define(`ppl_@CLASS@_swap_code',
 `

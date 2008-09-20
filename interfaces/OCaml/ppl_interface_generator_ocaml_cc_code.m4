@@ -40,7 +40,6 @@ m4_define(`ppl_@CLASS@_widening_assign_with_tokens_code', `')
 m4_define(`ppl_@CLASS@_widening_assign_code', `')
 m4_define(`ppl_@CLASS@_@PARTITION@_code', `')
 m4_define(`ppl_@CLASS@_approximate_partition_code', `')
-m4_define(`ppl_@CLASS@_@UB_EXACT@_code', `')
 
   m4_define(`m4_custom_operations_class_code',
 `dnl
@@ -810,19 +809,45 @@ CATCH_ALL
 
 ')
 
-#   m4_define(`ppl_@CLASS@_@UB_EXACT@_code',
-# `dnl
-# extern "C"
-# CAMLprim value
-# ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@(value ph1, value ph2) try {
-#   CAMLparam2(ph1, ph2);
-#   @TOPOLOGY@@CPP_CLASS@& pph1 = *p_@TOPOLOGY@@CLASS@_val(ph1);
-#   const @TOPOLOGY@@CPP_CLASS@& pph2 = *p_@TOPOLOGY@@CLASS@_val(ph2);
-#   CAMLreturn(Val_bool(pph1.@UB_EXACT@(pph2)));
-# }
-# CATCH_ALL
 
-# ')
+  m4_define(`ppl_@CLASS@_@UB_EXACT@_code',
+ `dnl
+ extern "C"
+ CAMLprim value
+ ppl_@CLASS@_@UB_EXACT@(value ph1, value ph2) try {
+ CAMLparam2(ph1, ph2);
+`m4_ifelse(m4_current_interface, `Polyhedron',
+  `m4_ub_exact_for_polyhedron_domains',
+          `m4_ub_exact_for_non_polyhedron_domains')'
+ }
+ CATCH_ALL
+
+ ')
+
+m4_define(`m4_ub_exact_for_polyhedron_domains',
+`
+if (Interfaces::is_necessarily_closed_for_interfaces(*p_Polyhedron_val(ph1))) {
+    C_Polyhedron& xx = static_cast<C_Polyhedron&>(*p_Polyhedron_val(ph1));
+    const C_Polyhedron& yy = static_cast<const C_Polyhedron&>(*p_Polyhedron_val(ph2));
+   CAMLreturn(Val_bool(xx.upper_bound_assign_if_exact(yy)));
+
+ }
+
+ else {
+     NNC_Polyhedron& xx = static_cast<NNC_Polyhedron&>(*p_Polyhedron_val(ph1));
+    const NNC_Polyhedron& yy = static_cast<const NNC_Polyhedron&>(*p_Polyhedron_val(ph2));
+   CAMLreturn(Val_bool(xx.upper_bound_assign_if_exact(yy)));
+  }
+')
+
+
+
+m4_define(`m4_ub_exact_for_non_polyhedron_domains',
+` @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
+  const @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
+  CAMLreturn(Val_bool(pph1.@UB_EXACT@(pph2)));
+')
+
 
   m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_code',
 `dnl
