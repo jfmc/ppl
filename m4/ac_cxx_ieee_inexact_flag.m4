@@ -44,13 +44,31 @@ struct A {
 };
 
 int main() {
-  for (int i = 0; i < sizeof(a)/sizeof(a[0]); ++i) {
-    float x = a[i].dividend;
-    float y = a[i].divisor;
-    feclearexcept(FE_INEXACT);
-    x = x / y;
-    if ((fetestexcept(FE_INEXACT) != 0) != a[i].inexact)
-      exit(1);
+  for (unsigned i = 0; i < sizeof(a)/sizeof(a[0]); ++i) {
+    {
+      volatile float x = a[i].dividend;
+      volatile float y = a[i].divisor;
+      feclearexcept(FE_INEXACT);
+      x = x / y;
+      if ((fetestexcept(FE_INEXACT) != 0) != a[i].inexact)
+        exit(1);
+    }
+    {
+      volatile double x = a[i].dividend;
+      volatile double y = a[i].divisor;
+      feclearexcept(FE_INEXACT);
+      x = x / y;
+      if ((fetestexcept(FE_INEXACT) != 0) != a[i].inexact)
+        exit(1);
+    }
+    {
+      volatile long double x = a[i].dividend;
+      volatile long double y = a[i].divisor;
+      feclearexcept(FE_INEXACT);
+      x = x / y;
+      if ((fetestexcept(FE_INEXACT) != 0) != a[i].inexact)
+        exit(1);
+    }
   }
   exit(0);
 }
