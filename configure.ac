@@ -109,14 +109,14 @@ AH_BOTTOM([
 ])
 
 
-# C compiler
+# C compiler.
 
 AC_ARG_WITH(cc,
   AC_HELP_STRING([--with-cc=XXX],
     [use XXX as the C compiler]),
   CC=$with_cc)
 
-# C++ compiler
+# C++ compiler.
 
 AC_ARG_WITH(cxx,
   AC_HELP_STRING([--with-cxx=XXX],
@@ -179,7 +179,7 @@ AC_PROG_CXXCPP
 AC_PROG_MAKE_SET
 AC_PROG_INSTALL
 
-# Compilation flags
+# Compilation flags.
 
 COMP_FLAGS=""
 OPT_FLAGS=""
@@ -548,7 +548,7 @@ then
   AC_DEFINE(GMP_INTEGERS, 1, [Defined if the integral type to be used for coefficients is GMP's one.])
 fi
 
-# Allow additions to C and C++ compilation flags
+# Allow additions to C and C++ compilation flags.
 
 AC_ARG_WITH(cflags,
   AC_HELP_STRING([--with-cflags=XXX],
@@ -612,7 +612,7 @@ AC_CXX_SUPPORTS_FLEXIBLE_ARRAYS
 # Check whether the IEEE inexact flag is supported in C++.
 AC_CXX_SUPPORTS_IEEE_INEXACT_FLAG
 
-# Check whether the C++ compiler has the remainder bug
+# Check whether the C++ compiler has the remainder bug.
 AC_CXX_HAS_REMAINDER_BUG
 
 # Check whether the C++ compiler supports __attribute__ ((weak)).
@@ -629,7 +629,7 @@ AC_CHECK_TYPES([int_fast16_t,int_fast32_t,int_fast64_t,uint_fast16_t,uint_fast32
 # Must link everything with libm.
 extra_libraries="${extra_libraries} -lm"
 
-# GMP library
+# GMP library.
 
 AC_CHECK_GMP
 if test x"$have_gmp" = xno
@@ -797,7 +797,7 @@ then
   JAVAPREFIX="${JAVA_HOME}/bin"
 fi
 
-# Java
+# Java.
 if test x${java_interface_enabled} = xyes
 then
   # Check for Java programs. Order here is important: check first
@@ -812,7 +812,7 @@ fi
 # the Java interface is enabled.
 AM_CONDITIONAL(BUILD_JAVA_INTERFACE, test "x$JAVA" != xno &&  test "x$ac_cv_javac_supports_enums" != xno && test "x$JAR" != xno && test "x$JAVAH" != xno && test x${java_interface_enabled} = xyes)
 
-# OCaml
+# OCaml.
 if test x${ocaml_interface_enabled} = xyes
 then
   AC_CHECK_PROG(OCAMLC, ocamlc, ocamlc)
@@ -820,8 +820,8 @@ then
   if test x"$OCAMLC" = xocamlc
   then
      ocamlc_root=`ocamlc -where`
-     # checking for OCaml GMP
-     AC_MSG_CHECKING(for Caml-GMP module gmp.cma)
+     # Checking for OCaml GMP.
+     AC_MSG_CHECKING(for OCaml-GMP module gmp.cma)
      if test -f ${ocamlc_root}/gmp/gmp.cma;
      then
          AC_MSG_RESULT(yes)
@@ -834,14 +834,14 @@ then
 fi
 AM_CONDITIONAL(BUILD_OCAML_INTERFACE, test x$OCAMLC = xocamlc && test x$ocamlgmp = xyes)
 
-# Ciao Prolog
+# Ciao Prolog.
 if test x${ciao_prolog_interface_enabled} = xyes
 then
   AC_CHECK_CIAO_PROLOG
 fi
 AM_CONDITIONAL(BUILD_CIAO_PROLOG_INTERFACE, test x$have_ciao_prolog = xyes)
 
-# GNU Prolog
+# GNU Prolog.
 if test x${gnu_prolog_interface_enabled} = xyes
 then
   AC_CHECK_PROG(GNU_PROLOG, gprolog, gprolog)
@@ -854,28 +854,28 @@ then
 fi
 AM_CONDITIONAL(BUILD_GNU_PROLOG_INTERFACE, test x$GNU_PROLOG = xgprolog)
 
-# SICStus
+# SICStus.
 if test x${sicstus_prolog_interface_enabled} = xyes
 then
   AC_CHECK_SICSTUS_PROLOG
 fi
 AM_CONDITIONAL(BUILD_SICSTUS_PROLOG_INTERFACE, test x$have_sicstus_prolog = xyes)
 
-# SWI-Prolog
+# SWI-Prolog.
 if test x${swi_prolog_interface_enabled} = xyes
 then
   AC_CHECK_SWI_PROLOG
 fi
 AM_CONDITIONAL(BUILD_SWI_PROLOG_INTERFACE, test x$have_swi_prolog = xyes)
 
-# XSB
+# XSB.
 if test x${xsb_prolog_interface_enabled} = xyes
 then
   AC_CHECK_XSB_PROLOG
 fi
 AM_CONDITIONAL(BUILD_XSB_PROLOG_INTERFACE, test x$have_xsb_prolog = xyes)
 
-# YAP
+# YAP.
 if test x${yap_prolog_interface_enabled} = xyes
 then
   AC_CHECK_PROG(YAP_PROLOG, yap, yap)
