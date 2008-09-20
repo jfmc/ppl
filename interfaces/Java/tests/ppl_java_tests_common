@@ -45,13 +45,13 @@
 	Linear_Expression le_0 = new Linear_Expression_Coefficient(coeff_0);
 	Linear_Expression le_5 = new Linear_Expression_Coefficient(coeff_5);
 	le_A = new Linear_Expression_Variable(A);
-	Linear_Expression le_3A = le_A.times(coeff_3);
+	Linear_Expression le_2A = le_A.times(coeff_3);
 	Linear_Expression le_C = new Linear_Expression_Variable(C);
-	Linear_Expression le_3A_plus_C = le_3A.sum(le_C);
-	Linear_Expression le_30A_plus_10C = le_3A_plus_C.times(coeff_10);
+	Linear_Expression le_2A_plus_C = le_2A.sum(le_C);
+	Linear_Expression le_30A_plus_10C = le_2A_plus_C.times(coeff_10);
 
-	System.out.print("Printing a linear expression (3A + C): ");
-        System.out.println(le_3A_plus_C.toString());
+	System.out.print("Printing a linear expression (2A + C): ");
+        System.out.println(le_2A_plus_C.toString());
 
 	// Constraint declarations.
 	Constraint c_5_geq_0
@@ -59,22 +59,22 @@
 	constraint1 = c_5_geq_0;
 	Constraint c_C_eq_5
           = new Constraint(le_C, Relation_Symbol.EQUAL, le_5);
-	Constraint c_3A_eq_5
-          = new Constraint(le_3A, Relation_Symbol.EQUAL, le_5);
-	Constraint c_3A_plus_C_eq_3A
-          = new Constraint(le_3A_plus_C, Relation_Symbol.EQUAL, le_3A);
-	Constraint c_3A_plus_C_geq_5
-          = new Constraint(le_3A_plus_C,
+	Constraint c_2A_eq_5
+          = new Constraint(le_2A, Relation_Symbol.EQUAL, le_5);
+	Constraint c_2A_plus_C_eq_2A
+          = new Constraint(le_2A_plus_C, Relation_Symbol.EQUAL, le_2A);
+	Constraint c_2A_plus_C_geq_5
+          = new Constraint(le_2A_plus_C,
 		           Relation_Symbol.GREATER_OR_EQUAL,
 			   le_5);
-	System.out.print("Printing a constraint (3A + C >= 5): ");
-	System.out.println(c_3A_plus_C_geq_5.toString());
+	System.out.print("Printing a constraint (2A + C >= 5): ");
+	System.out.println(c_2A_plus_C_geq_5.toString());
 
-	Congruence cg_3A_eq_5 = new Congruence(le_3A, le_5, coeff_0);
+	Congruence cg_2A_eq_5 = new Congruence(le_2A, le_5, coeff_0);
 	Congruence cg_C_eq_5 = new Congruence(le_C, le_5, coeff_0);
-	congruence1 = cg_3A_eq_5;
-	System.out.print("Printing a congruence (3A == 5): ");
-        System.out.println(cg_3A_eq_5.toString());
+	congruence1 = cg_2A_eq_5;
+	System.out.print("Printing a congruence (2A == 5): ");
+        System.out.println(cg_2A_eq_5.toString());
 
 	// Constraint_System declarations.
 	constraints1 = new Constraint_System();
@@ -84,13 +84,13 @@
 	System.out.println(constraints1.toString());
 
 	constraints2 = new Constraint_System();
-	constraints2.add(c_3A_plus_C_eq_3A);
-	constraints2.add(c_3A_eq_5);
+	constraints2.add(c_2A_plus_C_eq_2A);
+	constraints2.add(c_2A_eq_5);
 
 	congruences1 = new Congruence_System();
-	congruences1.add(cg_3A_eq_5);
+	congruences1.add(cg_2A_eq_5);
 	congruences1.add(cg_C_eq_5);
-	congruences1.add(cg_3A_eq_5);
+	congruences1.add(cg_2A_eq_5);
 	System.out.println("Printing a congruence system: ");
 	System.out.println(congruences1.toString());
 
