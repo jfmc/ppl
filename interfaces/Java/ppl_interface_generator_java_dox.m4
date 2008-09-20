@@ -26,11 +26,12 @@ dnl site: http://www.cs.unipr.it/ppl/ .
 
 dnl Include files defining macros that generate the non-fixed part.
 m4_include(`ppl_interface_generator_java_dox_code.m4')
+
+dnl Define the classes to be documented.
+m4_define(`m4_interface_classes_names', `Polyhedron@Grid@Octagonal_Shape_mpz_class@BD_Shape_double@Float_Box@@Pointset_Powerset_C_Polyhedron@Direct_Product_C_Polyhedron_Grid')
+m4_define(`m4_cplusplus_classes_names', `Polyhedron@Grid@Octagonal_Shape<mpz_class>@BD_Shape<double>@Float_Box@Pointset_Powerset<C_Polyhedron>@Direct_Product<C_Polyhedron,Grid>')
+
 m4_include(`ppl_interface_generator_java_procedure_generators.m4')
-
-
-m4_pushdef(`m4_interface_classes_names', `Polyhedron@Grid@Octagonal_Shape_mpz_class@BD_Shape_double@Float_Box@@Pointset_Powerset_C_Polyhedron@Direct_Product_C_Polyhedron_Grid')
-m4_pushdef(`m4_cplusplus_classes_names', `Polyhedron@Grid@Octagonal_Shape<mpz_class>@BD_Shape<double>@Float_Box@Pointset_Powerset<C_Polyhedron>@Direct_Product<C_Polyhedron,Grid>')
 
 m4_divert`'dnl
 m4_include(`ppl_java_common_dox')

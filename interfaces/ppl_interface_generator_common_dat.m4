@@ -27,7 +27,8 @@ dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
 dnl Classes to be implemented and C++ versions of these classes.
-m4_include(ppl_interface_instantiations.m4)
+dnl If generating the documentation, the instantiations are fixed and defined locally.
+m4_ifndef(`m4_interface_classes_names', m4_include(ppl_interface_instantiations.m4))
 
 dnl =====================================================================
 dnl ===== The first set of macros here initialise the class names   =====
