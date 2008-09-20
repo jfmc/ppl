@@ -797,7 +797,7 @@ then
   JAVAPREFIX="${JAVA_HOME}/bin"
 fi
 
-# Java.
+# Checks for Java.
 if test x${java_interface_enabled} = xyes
 then
   # Check for Java programs. Order here is important: check first
@@ -812,7 +812,7 @@ fi
 # the Java interface is enabled.
 AM_CONDITIONAL(BUILD_JAVA_INTERFACE, test "x$JAVA" != xno &&  test "x$ac_cv_javac_supports_enums" != xno && test "x$JAR" != xno && test "x$JAVAH" != xno && test x${java_interface_enabled} = xyes)
 
-# OCaml.
+# Checks for OCaml.
 if test x${ocaml_interface_enabled} = xyes
 then
   AC_CHECK_PROG(OCAMLC, ocamlc, ocamlc)
@@ -820,7 +820,7 @@ then
   if test x"$OCAMLC" = xocamlc
   then
      ocamlc_root=`ocamlc -where`
-     # Checking for OCaml GMP.
+     # Checks for OCaml GMP.
      AC_MSG_CHECKING(for OCaml-GMP module gmp.cma)
      if test -f ${ocamlc_root}/gmp/gmp.cma;
      then
@@ -834,14 +834,14 @@ then
 fi
 AM_CONDITIONAL(BUILD_OCAML_INTERFACE, test x$OCAMLC = xocamlc && test x$ocamlgmp = xyes)
 
-# Ciao Prolog.
+# Checks for Ciao Prolog.
 if test x${ciao_prolog_interface_enabled} = xyes
 then
   AC_CHECK_CIAO_PROLOG
 fi
 AM_CONDITIONAL(BUILD_CIAO_PROLOG_INTERFACE, test x$have_ciao_prolog = xyes)
 
-# GNU Prolog.
+# Checks for GNU Prolog.
 if test x${gnu_prolog_interface_enabled} = xyes
 then
   AC_CHECK_PROG(GNU_PROLOG, gprolog, gprolog)
@@ -854,28 +854,28 @@ then
 fi
 AM_CONDITIONAL(BUILD_GNU_PROLOG_INTERFACE, test x$GNU_PROLOG = xgprolog)
 
-# SICStus.
+# Checks for SICStus.
 if test x${sicstus_prolog_interface_enabled} = xyes
 then
   AC_CHECK_SICSTUS_PROLOG
 fi
 AM_CONDITIONAL(BUILD_SICSTUS_PROLOG_INTERFACE, test x$have_sicstus_prolog = xyes)
 
-# SWI-Prolog.
+# Checks for SWI-Prolog.
 if test x${swi_prolog_interface_enabled} = xyes
 then
   AC_CHECK_SWI_PROLOG
 fi
 AM_CONDITIONAL(BUILD_SWI_PROLOG_INTERFACE, test x$have_swi_prolog = xyes)
 
-# XSB.
+# Checks for XSB.
 if test x${xsb_prolog_interface_enabled} = xyes
 then
   AC_CHECK_XSB_PROLOG
 fi
 AM_CONDITIONAL(BUILD_XSB_PROLOG_INTERFACE, test x$have_xsb_prolog = xyes)
 
-# YAP.
+# Checks for YAP.
 if test x${yap_prolog_interface_enabled} = xyes
 then
   AC_CHECK_PROG(YAP_PROLOG, yap, yap)
