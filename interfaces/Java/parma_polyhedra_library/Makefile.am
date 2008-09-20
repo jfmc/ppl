@@ -150,8 +150,48 @@ endif BUILD_JAVA_INTERFACE
 
 CLEANFILES = \
 $(required_instantiations_java_sources) \
+$(required_instantiations_java_classes) \
 $(required_instantiations_java_cxx_headers_sources) \
 $(fixed_java_cxx_headers_sources) \
 java_classes.stamp \
 java_cxx_headers.stamp \
-source_generation.stamp
+source_generation.stamp \
+By_Reference.class \
+Coefficient.class \
+Congruence.class \
+Complexity_Class.class \
+Congruence_System.class \
+Constraint.class \
+Constraint_System.class \
+Constraint_System.class \
+Degenerate_Element.class \
+Domain_Error_Exception.class \
+Generator.class \
+Generator_System.class \
+Generator_Type.class \
+Grid_Generator.class \
+Grid_Generator_System.class \
+Grid_Generator_Type.class \
+Invalid_Argument_Exception.class \
+Length_Error_Exception.class \
+Linear_Expression.class \
+Linear_Expression_Coefficient.class \
+Linear_Expression_Difference.class \
+Linear_Expression_Sum.class \
+Linear_Expression_Times.class \
+Linear_Expression_Unary_Minus.class \
+Linear_Expression_Variable.class \
+Logic_Error_Exception.class \
+MIP_Problem.class \
+MIP_Problem_Status.class \
+Optimization_Mode.class \
+Overflow_Error_Exception.class \
+PPL_Object.class \
+Parma_Polyhedra_Library.class \
+Pair.class \
+Partial_Function.class \
+Poly_Con_Relation.class \
+Poly_Gen_Relation.class \
+Relation_Symbol.class \
+Variable.class \
+Variables_Set.class
