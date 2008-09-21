@@ -673,7 +673,8 @@ SED_LATEX_OPTION = -f @srcdir@/interfaces-latex.sed
 
 SED_C_OPTION = \
   -e 's/<PPL_SED_LANGUAGE_NAME>/C/' \
-  -e 's/<PPL_SED_INTERFACE_NAME>/c-interface/'
+  -e 's/<PPL_SED_INTERFACE_NAME>/c-interface/' \
+  -e 's/<PPL_SED_USEPACKAGE_OCAMLDOC>//'
 
 # CHECKME: check the correct input values for Doxygen.
 SED_C_INPUT_USER = \
@@ -751,7 +752,8 @@ $(DEVREF_C_INTERFACE_STUFF) $(DEVREF_HTML_DIR)
 
 SED_PROLOG_OPTION = \
   -e 's/<PPL_SED_LANGUAGE_NAME>/Prolog/' \
-  -e 's/<PPL_SED_INTERFACE_NAME>/prolog-interface/'
+  -e 's/<PPL_SED_INTERFACE_NAME>/prolog-interface/' \
+  -e 's/<PPL_SED_USEPACKAGE_OCAMLDOC>//'
 
 # CHECKME: check the correct input values for Doxygen.
 SED_PROLOG_INPUT_USER = \
@@ -825,7 +827,8 @@ $(DEVREF_PROLOG_INTERFACE_STUFF) $(DEVREF_HTML_DIR)
 
 SED_OCAML_OPTION = \
   -e 's/<PPL_SED_LANGUAGE_NAME>/OCaml/' \
-  -e 's/<PPL_SED_INTERFACE_NAME>/ocaml-interface/'
+  -e 's/<PPL_SED_INTERFACE_NAME>/ocaml-interface/' \
+  -e 's/<PPL_SED_USEPACKAGE_OCAMLDOC>/\\usepackage{ocamldoc}/'
 
 # CHECKME: check the correct input values for Doxygen.
 SED_OCAML_INPUT_USER = \
@@ -903,7 +906,8 @@ $(DEVREF_OCAML_INTERFACE_STUFF) $(DEVREF_HTML_DIR)
 
 SED_JAVA_OPTION = \
   -e 's/<PPL_SED_LANGUAGE_NAME>/Java/' \
-  -e 's/<PPL_SED_INTERFACE_NAME>/java-interface/'
+  -e 's/<PPL_SED_INTERFACE_NAME>/java-interface/' \
+  -e 's/<PPL_SED_USEPACKAGE_OCAMLDOC>//'
 
 # CHECKME: check the correct input values for Doxygen.
 # Add .java files from Java/parma_ppolyehdra_library ?
@@ -982,7 +986,8 @@ if BUILD_C_INTERFACE
 
 SED_CONFIGURED_C_OPTION = \
   -e 's/<PPL_SED_LANGUAGE_NAME>/Configured C/' \
-  -e 's/<PPL_SED_INTERFACE_NAME>/configured-c-interface/'
+  -e 's/<PPL_SED_INTERFACE_NAME>/configured-c-interface/' \
+  -e 's/<PPL_SED_USEPACKAGE_OCAMLDOC>//'
 
 # CHECKME: check the correct input values for Doxygen.
 SED_CONFIGURED_C_INPUT_USER = \
@@ -1059,7 +1064,8 @@ if BUILD_SOME_PROLOG_INTERFACES
 
 SED_CONFIGURED_PROLOG_OPTION = \
   -e 's/<PPL_SED_LANGUAGE_NAME>/Configured Prolog/' \
-  -e 's/<PPL_SED_INTERFACE_NAME>/configured-prolog-interface/'
+  -e 's/<PPL_SED_INTERFACE_NAME>/configured-prolog-interface/' \
+  -e 's/<PPL_SED_USEPACKAGE_OCAMLDOC>//'
 
 SED_CONFIGURED_PROLOG_INPUT_USER = \
 $(SED_PROLOG_INPUT_USER)
@@ -1134,7 +1140,8 @@ if BUILD_OCAML_INTERFACE
 
 SED_CONFIGURED_OCAML_OPTION = \
   -e 's/<PPL_SED_LANGUAGE_NAME>/Configured OCaml/' \
-  -e 's/<PPL_SED_INTERFACE_NAME>/configured-ocaml-interface/'
+  -e 's/<PPL_SED_INTERFACE_NAME>/configured-ocaml-interface/' \
+  -e 's/<PPL_SED_USEPACKAGE_OCAMLDOC>/\\usepackage{ocamldoc}/'
 
 # CHECKME: check the correct input values for Doxygen.
 SED_CONFIGURED_OCAML_INPUT_USER = \
@@ -1225,7 +1232,8 @@ if BUILD_JAVA_INTERFACE
 
 SED_CONFIGURED_JAVA_OPTION = \
   -e 's/<PPL_SED_LANGUAGE_NAME>/Configured Java/' \
-  -e 's/<PPL_SED_INTERFACE_NAME>/configured-java-interface/'
+  -e 's/<PPL_SED_INTERFACE_NAME>/configured-java-interface/' \
+  -e 's/<PPL_SED_USEPACKAGE_OCAMLDOC>//'
 
 # CHECKME: check the correct input values for Doxygen.
 SED_CONFIGURED_JAVA_INPUT_USER = \
