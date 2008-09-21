@@ -142,6 +142,7 @@ test05() {
 
   bool ok = check_result(dst, src, "1.91e-6", "1.35e-6", "9.66e-7");
 
+  print_constraints(src, "*** src ***");
   print_constraints(dst, "*** dst ***");
 
   return ok;
