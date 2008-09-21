@@ -1335,10 +1335,18 @@ user.doxyconf-latex \
 user.tex
 
 GENERATED_LATEX_HEADER_FILES = \
+devref-configured-c-interface.tex \
+devref-configured-java-interface.tex \
+devref-configured-ocaml-interface.tex \
+devref-configured-prolog-interface.tex \
 devref-c-interface.tex \
 devref-java-interface.tex \
 devref-ocaml-interface.tex \
 devref-prolog-interface.tex \
+user-configured-c-interface.tex \
+user-configured-java-interface.tex \
+user-configured-ocaml-interface.tex \
+user-configured-prolog-interface.tex \
 user-c-interface.tex \
 user-java-interface.tex \
 user-ocaml-interface.tex \
