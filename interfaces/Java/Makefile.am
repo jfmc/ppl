@@ -34,9 +34,6 @@ Java_interface.dox
 
 if BUILD_JAVA_INTERFACE
 
-BUILT_SOURCES = \
-Java_interface.dox
-
 interface_generator_dependencies = \
 $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../ppl_interface_generator_common.m4 \
