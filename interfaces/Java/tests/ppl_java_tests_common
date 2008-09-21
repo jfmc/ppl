@@ -45,7 +45,7 @@
 	Linear_Expression le_0 = new Linear_Expression_Coefficient(coeff_0);
 	Linear_Expression le_5 = new Linear_Expression_Coefficient(coeff_5);
 	le_A = new Linear_Expression_Variable(A);
-	Linear_Expression le_2A = le_A.times(coeff_3);
+	Linear_Expression le_2A = le_A.times(coeff_2);
 	Linear_Expression le_C = new Linear_Expression_Variable(C);
 	Linear_Expression le_2A_plus_C = le_2A.sum(le_C);
 	Linear_Expression le_30A_plus_10C = le_2A_plus_C.times(coeff_10);
