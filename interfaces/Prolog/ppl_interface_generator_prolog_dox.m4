@@ -24,6 +24,8 @@ dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
+m4_define(`m4_documentation_generation', `')
+
 dnl Define the classes to be documented.
 m4_define(`m4_interface_classes_names', `Polyhedron@Grid@Octagonal_Shape_mpz_class@BD_Shape_double@Float_Box@@Pointset_Powerset_C_Polyhedron@Direct_Product_C_Polyhedron_Grid')
 m4_define(`m4_cplusplus_classes_names', `Polyhedron@Grid@Octagonal_Shape<mpz_class>@BD_Shape<double>@Float_Box@Pointset_Powerset<C_Polyhedron>@Direct_Product<C_Polyhedron,Grid>')
