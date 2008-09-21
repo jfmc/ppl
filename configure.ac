@@ -902,7 +902,7 @@ AM_CONDITIONAL(BUILD_SOME_PROLOG_INTERFACES, test x$SOME_PROLOG = xyes)
 
 # Define the list of interfaces that are enabled by default.
 # Different instantiations are separated by a '@' character.
-di="Polyhedron @ Grid"
+di="        Polyhedron @ Grid"
 di="${di} @ Octagonal_Shape<double>"
 di="${di} @ Octagonal_Shape<mpz_class> @ Octagonal_Shape<mpq_class>"
 di="${di} @ BD_Shape<double>"
@@ -932,7 +932,7 @@ xno | xnone)
     enableval=${default_instantiations}
   elif test x"${enableval}" = xall
   then
-    ai="${ai} @ Int8_Box @ Int16_Box @ Int32_Box @ Int64_Box"
+    ai="        Int8_Box @ Int16_Box @ Int32_Box @ Int64_Box"
     ai="${ai} @ Uint8_Box @ Uint16_Box @ Uint32_Box @ Uint64_Box"
     ai="${ai} @ Float_Box @ Double_Box@ Long_Double_Box"
     ai="${ai} @ Z_Box @ Rational_Box"
