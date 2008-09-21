@@ -144,7 +144,7 @@ bool test01() {
     if (std::numeric_limits<Coefficient>::is_integer
         && std::numeric_limits<Coefficient>::is_bounded
         && std::numeric_limits<Coefficient>::radix == 2
-        && std::numeric_limits<unsigned char>::digits == 7) {
+        && std::numeric_limits<Coefficient>::digits == 7) {
       // Overflow is OK with 8-bit coefficients.
       nout << "arithmetic overflow (" << e.what() << "),"
         " possible with 8-bit coefficients" << endl;
