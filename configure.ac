@@ -1250,22 +1250,8 @@ AC_CONFIG_FILES(Makefile
                 doc/devref.doxyconf-latex
                 doc/user.doxyconf-html
                 doc/devref.doxyconf-html
-                doc/user-c-interface.doxyconf-latex
-                doc/devref-c-interface.doxyconf-latex
-                doc/user-c-interface.doxyconf-html
-                doc/devref-c-interface.doxyconf-html
-                doc/user-prolog-interface.doxyconf-latex
-                doc/devref-prolog-interface.doxyconf-latex
-                doc/user-prolog-interface.doxyconf-html
-                doc/devref-prolog-interface.doxyconf-html
-                doc/user-ocaml-interface.doxyconf-html
-                doc/user-ocaml-interface.doxyconf-latex
-                doc/devref-ocaml-interface.doxyconf-html
-                doc/devref-ocaml-interface.doxyconf-latex
-                doc/user-java-interface.doxyconf-html
-                doc/user-java-interface.doxyconf-latex
-                doc/devref-java-interface.doxyconf-html
-                doc/devref-java-interface.doxyconf-latex
+                doc/user-foreign-language-interface.doxyconf
+                doc/devref-foreign-language-interface.doxyconf
                 interfaces/Makefile
                 interfaces/C/Makefile
                 interfaces/C/ppl_c_version.h

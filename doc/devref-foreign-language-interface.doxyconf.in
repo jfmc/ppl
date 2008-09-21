@@ -4,7 +4,7 @@
 # Project related configuration options
 #---------------------------------------------------------------------------
 DOXYFILE_ENCODING      = UTF-8
-PROJECT_NAME           = "PPL C Language Interface "
+PROJECT_NAME           = "PPL <PPL_SED_LANGUAGE_NAME> Language Interface"
 PROJECT_NUMBER         = @VERSION@
 OUTPUT_DIRECTORY       = .
 CREATE_SUBDIRS         = NO
@@ -24,7 +24,7 @@ MULTILINE_CPP_IS_BRIEF = NO
 INHERIT_DOCS           = YES
 SEPARATE_MEMBER_PAGES  = NO
 TAB_SIZE               = 8
-ALIASES                = "extref{2}=\ref \1 \"\2\""
+ALIASES                = <PPL_SED_ALIASES>
 OPTIMIZE_OUTPUT_FOR_C  = NO
 OPTIMIZE_OUTPUT_JAVA   = NO
 OPTIMIZE_FOR_FORTRAN   = NO
@@ -82,11 +82,7 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = ../interfaces/C/ppl_c_version.h \
-                         ../interfaces/C/ppl_c.h \
-                         @srcdir@/../interfaces/C/C_interface.dox \
-                         @srcdir@/gpl.dox \
-                         @srcdir@/fdl.dox
+INPUT                  = <PPL_SED_INPUT>
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = 
 RECURSIVE              = NO
@@ -120,8 +116,8 @@ IGNORE_PREFIX          =
 #---------------------------------------------------------------------------
 # configuration options related to the HTML output
 #---------------------------------------------------------------------------
-GENERATE_HTML          = YES
-HTML_OUTPUT            = ppl-devref-c-interface-@VERSION@-html
+GENERATE_HTML          = <PPL_SED_GENERATE_HTML>
+HTML_OUTPUT            = ppl-devref-<PPL_SED_INTERFACE_NAME>-@VERSION@-html
 HTML_FILE_EXTENSION    = .html
 HTML_HEADER            = 
 HTML_FOOTER            = 
@@ -149,14 +145,14 @@ FORMULA_FONTSIZE       = 10
 #---------------------------------------------------------------------------
 # configuration options related to the LaTeX output
 #---------------------------------------------------------------------------
-GENERATE_LATEX         = NO
-LATEX_OUTPUT           = devref-c-interface.latex-dir
+GENERATE_LATEX         = <PPL_SED_GENERATE_LATEX>
+LATEX_OUTPUT           = devref-<PPL_SED_INTERFACE_NAME>.latex-dir
 LATEX_CMD_NAME         = latex
 MAKEINDEX_CMD_NAME     = makeindex
 COMPACT_LATEX          = YES
 PAPER_TYPE             = a4wide
 EXTRA_PACKAGES         = ppl
-LATEX_HEADER           = @srcdir@/devref-c-interface.tex
+LATEX_HEADER           = @srcdir@/devref-<PPL_SED_INTERFACE_NAME>.tex
 PDF_HYPERLINKS         = YES
 USE_PDFLATEX           = YES
 LATEX_BATCHMODE        = YES

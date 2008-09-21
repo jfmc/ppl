@@ -30513,7 +30513,7 @@ SHREXT=$shrext_cmds
 
 
 
-ac_config_files="$ac_config_files Makefile ppl.lsm debian/Makefile debian/libppl.copyright debian/libppl-pwl.copyright fedora/Makefile src/Makefile src/version.hh src/ppl-config.cc tests/Makefile tests/BD_Shape/Makefile tests/Box/Makefile tests/Grid/Makefile tests/MIP_Problem/Makefile tests/Octagonal_Shape/Makefile tests/Partially_Reduced_Product/Makefile tests/Polyhedron/Makefile tests/Powerset/Makefile utils/Makefile m4/Makefile demos/Makefile demos/ppl_lcdd/Makefile demos/ppl_lcdd/examples/Makefile demos/ppl_lpsol/Makefile demos/ppl_lpsol/examples/Makefile doc/Makefile doc/user.doxyconf-latex doc/devref.doxyconf-latex doc/user.doxyconf-html doc/devref.doxyconf-html doc/user-c-interface.doxyconf-latex doc/devref-c-interface.doxyconf-latex doc/user-c-interface.doxyconf-html doc/devref-c-interface.doxyconf-html doc/user-prolog-interface.doxyconf-latex doc/devref-prolog-interface.doxyconf-latex doc/user-prolog-interface.doxyconf-html doc/devref-prolog-interface.doxyconf-html doc/user-ocaml-interface.doxyconf-html doc/user-ocaml-interface.doxyconf-latex doc/devref-ocaml-interface.doxyconf-html doc/devref-ocaml-interface.doxyconf-latex doc/user-java-interface.doxyconf-html doc/user-java-interface.doxyconf-latex doc/devref-java-interface.doxyconf-html doc/devref-java-interface.doxyconf-latex interfaces/Makefile interfaces/C/Makefile interfaces/C/ppl_c_version.h interfaces/Java/Makefile interfaces/Java/jni/Makefile interfaces/Java/tests/Makefile interfaces/Java/parma_polyhedra_library/Makefile interfaces/OCaml/Makefile interfaces/OCaml/tests/Makefile interfaces/Prolog/Makefile interfaces/Prolog/Ciao/Makefile interfaces/Prolog/GNU/Makefile interfaces/Prolog/SICStus/Makefile interfaces/Prolog/SWI/Makefile interfaces/Prolog/XSB/Makefile interfaces/Prolog/YAP/Makefile interfaces/Prolog/tests/Makefile"
+ac_config_files="$ac_config_files Makefile ppl.lsm debian/Makefile debian/libppl.copyright debian/libppl-pwl.copyright fedora/Makefile src/Makefile src/version.hh src/ppl-config.cc tests/Makefile tests/BD_Shape/Makefile tests/Box/Makefile tests/Grid/Makefile tests/MIP_Problem/Makefile tests/Octagonal_Shape/Makefile tests/Partially_Reduced_Product/Makefile tests/Polyhedron/Makefile tests/Powerset/Makefile utils/Makefile m4/Makefile demos/Makefile demos/ppl_lcdd/Makefile demos/ppl_lcdd/examples/Makefile demos/ppl_lpsol/Makefile demos/ppl_lpsol/examples/Makefile doc/Makefile doc/user.doxyconf-latex doc/devref.doxyconf-latex doc/user.doxyconf-html doc/devref.doxyconf-html doc/user-foreign-language-interface.doxyconf doc/devref-foreign-language-interface.doxyconf interfaces/Makefile interfaces/C/Makefile interfaces/C/ppl_c_version.h interfaces/Java/Makefile interfaces/Java/jni/Makefile interfaces/Java/tests/Makefile interfaces/Java/parma_polyhedra_library/Makefile interfaces/OCaml/Makefile interfaces/OCaml/tests/Makefile interfaces/Prolog/Makefile interfaces/Prolog/Ciao/Makefile interfaces/Prolog/GNU/Makefile interfaces/Prolog/SICStus/Makefile interfaces/Prolog/SWI/Makefile interfaces/Prolog/XSB/Makefile interfaces/Prolog/YAP/Makefile interfaces/Prolog/tests/Makefile"
 
 #               tests/Ask_Tell/Makefile
 cat >confcache <<\_ACEOF
@@ -31788,22 +31788,8 @@ do
     "doc/devref.doxyconf-latex") CONFIG_FILES="$CONFIG_FILES doc/devref.doxyconf-latex" ;;
     "doc/user.doxyconf-html") CONFIG_FILES="$CONFIG_FILES doc/user.doxyconf-html" ;;
     "doc/devref.doxyconf-html") CONFIG_FILES="$CONFIG_FILES doc/devref.doxyconf-html" ;;
-    "doc/user-c-interface.doxyconf-latex") CONFIG_FILES="$CONFIG_FILES doc/user-c-interface.doxyconf-latex" ;;
-    "doc/devref-c-interface.doxyconf-latex") CONFIG_FILES="$CONFIG_FILES doc/devref-c-interface.doxyconf-latex" ;;
-    "doc/user-c-interface.doxyconf-html") CONFIG_FILES="$CONFIG_FILES doc/user-c-interface.doxyconf-html" ;;
-    "doc/devref-c-interface.doxyconf-html") CONFIG_FILES="$CONFIG_FILES doc/devref-c-interface.doxyconf-html" ;;
-    "doc/user-prolog-interface.doxyconf-latex") CONFIG_FILES="$CONFIG_FILES doc/user-prolog-interface.doxyconf-latex" ;;
-    "doc/devref-prolog-interface.doxyconf-latex") CONFIG_FILES="$CONFIG_FILES doc/devref-prolog-interface.doxyconf-latex" ;;
-    "doc/user-prolog-interface.doxyconf-html") CONFIG_FILES="$CONFIG_FILES doc/user-prolog-interface.doxyconf-html" ;;
-    "doc/devref-prolog-interface.doxyconf-html") CONFIG_FILES="$CONFIG_FILES doc/devref-prolog-interface.doxyconf-html" ;;
-    "doc/user-ocaml-interface.doxyconf-html") CONFIG_FILES="$CONFIG_FILES doc/user-ocaml-interface.doxyconf-html" ;;
-    "doc/user-ocaml-interface.doxyconf-latex") CONFIG_FILES="$CONFIG_FILES doc/user-ocaml-interface.doxyconf-latex" ;;
-    "doc/devref-ocaml-interface.doxyconf-html") CONFIG_FILES="$CONFIG_FILES doc/devref-ocaml-interface.doxyconf-html" ;;
-    "doc/devref-ocaml-interface.doxyconf-latex") CONFIG_FILES="$CONFIG_FILES doc/devref-ocaml-interface.doxyconf-latex" ;;
-    "doc/user-java-interface.doxyconf-html") CONFIG_FILES="$CONFIG_FILES doc/user-java-interface.doxyconf-html" ;;
-    "doc/user-java-interface.doxyconf-latex") CONFIG_FILES="$CONFIG_FILES doc/user-java-interface.doxyconf-latex" ;;
-    "doc/devref-java-interface.doxyconf-html") CONFIG_FILES="$CONFIG_FILES doc/devref-java-interface.doxyconf-html" ;;
-    "doc/devref-java-interface.doxyconf-latex") CONFIG_FILES="$CONFIG_FILES doc/devref-java-interface.doxyconf-latex" ;;
+    "doc/user-foreign-language-interface.doxyconf") CONFIG_FILES="$CONFIG_FILES doc/user-foreign-language-interface.doxyconf" ;;
+    "doc/devref-foreign-language-interface.doxyconf") CONFIG_FILES="$CONFIG_FILES doc/devref-foreign-language-interface.doxyconf" ;;
     "interfaces/Makefile") CONFIG_FILES="$CONFIG_FILES interfaces/Makefile" ;;
     "interfaces/C/Makefile") CONFIG_FILES="$CONFIG_FILES interfaces/C/Makefile" ;;
     "interfaces/C/ppl_c_version.h") CONFIG_FILES="$CONFIG_FILES interfaces/C/ppl_c_version.h" ;;
