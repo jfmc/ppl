@@ -68,7 +68,7 @@ DECLARE_CONVERSIONS(Grid_Generator, Grid_Generator)
 DECLARE_CONVERSIONS(Grid_Generator_System, Grid_Generator_System)
 
 typedef Grid_Generator_System::const_iterator
-  Grid_Generator_System_const_iterator;
+Grid_Generator_System_const_iterator;
 DECLARE_CONVERSIONS(Grid_Generator_System_const_iterator,
                     Grid_Generator_System_const_iterator)
 
