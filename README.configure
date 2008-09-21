@@ -258,8 +258,13 @@ around with some of the configuration files, or if you have problems
 you cannot explain otherwise, use `autoreconf -f'.
 
 In case you do not have a recent enough version of Autoconf installed,
-you can simply do a `cp configure.repo configure' followed by `autoreconf'.
-You still need Automake, of course.
+you can simply do the following (for which you still need Automake, of
+course):
+
+  $ cd ppl
+  $ cp configure.repo configure
+  $ cp Watchdog/configure.repo Watchdog/configure
+  $ autoreconf
 
 
 --------
