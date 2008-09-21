@@ -346,31 +346,81 @@ endif BUILD_C_INTERFACE
 # Configuration Dependent Prolog Language Interface Manuals
 if BUILD_SOME_PROLOG_INTERFACES
 
+HTML_CONFIGURED_PROLOG_INTERFACE_MANUALS = \
+ppl-user-configured-prolog-interface-@VERSION@-html.tar.gz \
+ppl-devref-configured-prolog-interface-@VERSION@-html.tar.gz
+
+PDF_CONFIGURED_PROLOG_INTERFACE_MANUALS = \
+ppl-user-configured-prolog-interface-@VERSION@.pdf \
+ppl-devref-configured-prolog-interface-@VERSION@.pdf
+
+PS_CONFIGURED_PROLOG_INTERFACE_MANUALS = \
+ppl-user-configured-prolog-interface-@VERSION@.ps.gz \
+ppl-devref-configured-prolog-interface-@VERSION@.ps.gz
+
+CONFIGURED_PROLOG_INTERFACE_HTML_DIRS = \
+ppl-user-configured-prolog-interface-@VERSION@-html \
+ppl-devref-configured-prolog-interface-@VERSION@-html
+
 USER_CONFIGURED_PROLOG_INTERFACE_STUFF = \
 $(USER_PROLOG_INTERFACE_STUFF)
 
 DEVREF_CONFIGURED_PROLOG_INTERFACE_STUFF = \
-$(DEVREF_PROLOG_INTERFACE_STUFF) = \
+$(DEVREF_PROLOG_INTERFACE_STUFF) \
 $(top_builddir)/interfaces/Prolog/ppl_prolog_domains.hh \
 $(top_builddir)/interfaces/Prolog/ppl_prolog_domains.cc
 
 endif BUILD_SOME_PROLOG_INTERFACES
 
+
 # Configuration Dependent OCaml Language Interface Manuals.
 if BUILD_OCAML_INTERFACE
 
+HTML_CONFIGURED_OCAML_INTERFACE_MANUALS = \
+ppl-user-configured-ocaml-interface-@VERSION@-html.tar.gz \
+ppl-devref-configured-ocaml-interface-@VERSION@-html.tar.gz
+
+PDF_CONFIGURED_OCAML_INTERFACE_MANUALS = \
+ppl-user-configured-ocaml-interface-@VERSION@.pdf \
+ppl-devref-configured-ocaml-interface-@VERSION@.pdf
+
+PS_CONFIGURED_OCAML_INTERFACE_MANUALS = \
+ppl-user-configured-ocaml-interface-@VERSION@.ps.gz \
+ppl-devref-configured-ocaml-interface-@VERSION@.ps.gz
+
+CONFIGURED_OCAML_INTERFACE_HTML_DIRS = \
+ppl-user-configured-ocaml-interface-@VERSION@-html \
+ppl-devref-configured-ocaml-interface-@VERSION@-html
+
+# FIXME add generated files
 USER_CONFIGURED_OCAML_INTERFACE_STUFF = \
 $(USER_OCAML_INTERFACE_STUFF) \
 $(top_builddir)/interfaces/OCaml/ppl_ocaml.mli
 
 DEVREF_CONFIGURED_OCAML_INTERFACE_STUFF = \
 $(DEVREF_OCAML_INTERFACE_STUFF) \
-$(top_builddir)/interfaces/OCaml/ppl_ocaml.cc
+$(top_builddir)/interfaces/OCaml/ppl_ocaml.mli
 
 endif BUILD_OCAML_INTERFACE
 
 # Configuration Dependent Java Language Interface Manuals.
 if BUILD_JAVA_INTERFACE
+
+HTML_CONFIGURED_JAVA_INTERFACE_MANUALS = \
+ppl-user-configured-java-interface-@VERSION@-html.tar.gz \
+ppl-devref-configured-java-interface-@VERSION@-html.tar.gz
+
+PDF_CONFIGURED_JAVA_INTERFACE_MANUALS = \
+ppl-user-configured-java-interface-@VERSION@.pdf \
+ppl-devref-configured-java-interface-@VERSION@.pdf
+
+PS_CONFIGURED_JAVA_INTERFACE_MANUALS = \
+ppl-user-configured-java-interface-@VERSION@.ps.gz \
+ppl-devref-configured-java-interface-@VERSION@.ps.gz
+
+CONFIGURED_JAVA_INTERFACE_HTML_DIRS = \
+ppl-user-configured-java-interface-@VERSION@-html \
+ppl-devref-configured-java-interface-@VERSION@-html
 
 USER_CONFIGURED_JAVA_INTERFACE_STUFF = \
 $(USER_JAVA_INTERFACE_STUFF)
@@ -398,10 +448,7 @@ $(PS_CORE_MANUALS) \
 $(PS_C_INTERFACE_MANUALS) \
 $(PS_PROLOG_INTERFACE_MANUALS) \
 $(PS_OCAML_INTERFACE_MANUALS) \
-$(PS_JAVA_INTERFACE_MANUALS)
-
-# FIXME: to be merged with MANUALS when working.
-CONFIGURED_MANUALS = \
+$(PS_JAVA_INTERFACE_MANUALS) \
 $(HTML_CONFIGURED_C_INTERFACE_MANUALS) \
 $(HTML_CONFIGURED_PROLOG_INTERFACE_MANUALS) \
 $(HTML_CONFIGURED_OCAML_INTERFACE_MANUALS) \
@@ -420,10 +467,7 @@ $(CORE_HTML_DIRS) \
 $(C_INTERFACE_HTML_DIRS) \
 $(PROLOG_INTERFACE_HTML_DIRS) \
 $(OCAML_INTERFACE_HTML_DIRS) \
-$(JAVA_INTERFACE_HTML_DIRS)
-
-# FIXME: to be merged with HTML_DIRS when working.
-CONFIGURED_DIRS = \
+$(JAVA_INTERFACE_HTML_DIRS) \
 $(CONFIGURED_C_INTERFACE_HTML_DIRS) \
 $(CONFIGURED_PROLOG_INTERFACE_HTML_DIRS) \
 $(CONFIGURED_OCAML_INTERFACE_HTML_DIRS) \
@@ -584,10 +628,7 @@ devref-prolog-interface.latex-dir \
 user-ocaml-interface.latex-dir \
 devref-ocaml-interface.latex-dir \
 user-java-interface.latex-dir \
-devref-java-interface.latex-dir
-
-# FIXME: merge with LATEX_DIR when working.
-CONFIGURED_LATEX_DIRS = \
+devref-java-interface.latex-dir \
 user-configured-c-interface.latex-dir \
 devref-configured-c-interface.latex-dir \
 user-configured-prolog-interface.latex-dir \
@@ -1015,7 +1056,77 @@ endif BUILD_C_INTERFACE
 
 # Configuration-Dependent Prolog Language Interface Targets
 if BUILD_SOME_PROLOG_INTERFACES
-### FIXME: TO BE WRITTEN.
+
+SED_CONFIGURED_PROLOG_OPTION = \
+  -e 's/<PPL_SED_LANGUAGE_NAME>/Configured Prolog/' \
+  -e 's/<PPL_SED_INTERFACE_NAME>/configured-prolog-interface/'
+
+SED_CONFIGURED_PROLOG_INPUT_USER = \
+$(SED_PROLOG_INPUT_USER)
+# FIXME: add appropriate generated files.
+
+SED_CONFIGURED_PROLOG_INPUT_DEVREF = \
+$(SED_PROLOG_INPUT_DEVREF)
+# FIXME: add appropriate generated files.
+
+user-configured-prolog-interface.latex-dir: \
+user-foreign-language-interface.doxyconf \
+$(USER_CONFIGURED_PROLOG_INTERFACE_STUFF)
+	rm -rf $@
+	$(SED) $(SED_CONFIGURED_PROLOG_OPTION) \
+	    @srcdir@/user-foreign-language-interface.tex \
+	    > user-configured-prolog-interface.tex
+	$(SED) $(SED_CONFIGURED_PROLOG_OPTION) $(SED_LATEX_OPTION) \
+	  -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_PROLOG_INPUT_USER)"'|' \
+	  $<  > Doxyfile.user-configured-prolog-interface-latex
+	$(TEX_ENV) $(DOXYGEN) Doxyfile.user-configured-prolog-interface-latex
+
+devref-configured-prolog-interface.latex-dir: \
+devref-foreign-language-interface.doxyconf \
+$(DEVREF_CONFIGURED_PROLOG_INTERFACE_STUFF)
+	rm -rf $@
+	$(SED) $(SED_CONFIGURED_PROLOG_OPTION) \
+	    @srcdir@/devref-foreign-language-interface.tex \
+	    > devref-configured-prolog-interface.tex
+	$(SED) $(SED_CONFIGURED_PROLOG_OPTION) $(SED_LATEX_OPTION) \
+	  -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_PROLOG_INPUT_DEVREF)"'|' \
+	  $<  > Doxyfile.devref-configured-prolog-interface-latex
+	$(TEX_ENV) $(DOXYGEN) Doxyfile.devref-configured-prolog-interface-latex
+
+ppl-user-configured-prolog-interface-@VERSION@.pdf: \
+user-configured-prolog-interface.latex-dir
+	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
+
+ppl-devref-configured-prolog-interface-@VERSION@.pdf: \
+devref-configured-prolog-interface.latex-dir
+	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
+
+ppl-user-configured-prolog-interface-@VERSION@-html: \
+user-foreign-language-interface.doxyconf \
+$(USER_CONFIGURED_PROLOG_INTERFACE_STUFF) $(USER_HTML_DIR)
+	rm -rf $@
+	$(SED) $(SED_CONFIGURED_PROLOG_OPTION) \
+	    @srcdir@/user-foreign-language-interface.tex \
+	    > user-configured-prolog-interface.tex
+	$(SED) $(SED_CONFIGURED_PROLOG_OPTION) $(SED_HTML_OPTION) \
+	  -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_PROLOG_INPUT_USER)"'|' \
+	  $<  > Doxyfile.user-configured-prolog-interface-html
+	$(TEX_ENV) $(DOXYGEN) Doxyfile.user-configured-prolog-interface-html
+	(cd $@; $(INSTALLDOX) -l $(USER_HTML_DIR).tag@../$(USER_HTML_DIR))
+
+ppl-devref-configured-prolog-interface-@VERSION@-html: \
+devref-foreign-language-interface.doxyconf \
+$(DEVREF_CONFIGURED_PROLOG_INTERFACE_STUFF) $(DEVREF_HTML_DIR)
+	rm -rf $@
+	$(SED) $(SED_CONFIGURED_PROLOG_OPTION) \
+	    @srcdir@/devref-foreign-language-interface.tex \
+	    > devref-configured-prolog-interface.tex
+	$(SED) $(SED_CONFIGURED_PROLOG_OPTION) $(SED_HTML_OPTION) \
+	  -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_PROLOG_INPUT_DEVREF)"'|' \
+	  $<  > Doxyfile.devref-configured-prolog-interface-html
+	$(TEX_ENV) $(DOXYGEN) Doxyfile.devref-configured-prolog-interface-html
+	(cd $@; $(INSTALLDOX) -l $(DEVREF_HTML_DIR).tag@../$(DEVREF_HTML_DIR))
+
 endif BUILD_SOME_PROLOG_INTERFACES
 
 # Configuration-Dependent OCaml Language Interface Targets
@@ -1068,11 +1179,11 @@ $(DEVREF_CONFIGURED_OCAML_INTERFACE_STUFF)
 			../../interfaces/OCaml/ppl_ocaml.mli)
 
 ppl-user-configured-ocaml-interface-@VERSION@.pdf: \
-user-ocaml-interface.latex-dir
+user-configured-ocaml-interface.latex-dir
 	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
 
 ppl-devref-configured-ocaml-interface-@VERSION@.pdf: \
-devref-ocaml-interface.latex-dir
+devref-configured-ocaml-interface.latex-dir
 	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
 
 ppl-user-configured-ocaml-interface-@VERSION@-html: \
@@ -1111,7 +1222,77 @@ endif BUILD_OCAML_INTERFACE
 
 # Configuration-Dependent Java Language Interface Targets
 if BUILD_JAVA_INTERFACE
-### FIXME: TO BE WRITTEN.
+
+SED_CONFIGURED_JAVA_OPTION = \
+  -e 's/<PPL_SED_LANGUAGE_NAME>/Configured Java/' \
+  -e 's/<PPL_SED_INTERFACE_NAME>/configured-java-interface/'
+
+# CHECKME: check the correct input values for Doxygen.
+SED_CONFIGURED_JAVA_INPUT_USER = \
+$(SED_JAVA_INPUT_USER)
+
+SED_CONFIGURED_JAVA_INPUT_DEVREF = \
+$(SED_JAVA_INPUT_DEVREF)
+# FIXME add generated files
+
+user-configured-java-interface.latex-dir: \
+user-foreign-language-interface.doxyconf \
+$(USER_CONFIGURED_JAVA_INTERFACE_STUFF)
+	rm -rf $@
+	$(SED) $(SED_CONFIGURED_JAVA_OPTION) \
+	    @srcdir@/user-foreign-language-interface.tex \
+	    > user-configured-java-interface.tex
+	$(SED) $(SED_CONFIGURED_JAVA_OPTION) $(SED_LATEX_OPTION) \
+	    -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_JAVA_INPUT_USER)"'|' \
+	    $<  > Doxyfile.user-configured-java-interface-latex
+	$(TEX_ENV) $(DOXYGEN) Doxyfile.user-configured-java-interface-latex
+
+devref-configured-java-interface.latex-dir: \
+devref-foreign-language-interface.doxyconf \
+$(DEVREF_CONFIGURED_JAVA_INTERFACE_STUFF)
+	rm -rf $@
+	$(SED) $(SED_CONFIGURED_JAVA_OPTION) \
+	    @srcdir@/devref-foreign-language-interface.tex \
+	    > devref-configured-java-interface.tex
+	$(SED) $(SED_CONFIGURED_JAVA_OPTION) $(SED_LATEX_OPTION) \
+	    -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_JAVA_INPUT_DEVREF)"'|' \
+	    $<  > Doxyfile.devref-configured-java-interface-latex
+	$(TEX_ENV) $(DOXYGEN) Doxyfile.devref-configured-java-interface-latex
+
+ppl-user-configured-java-interface-@VERSION@.pdf: \
+user-configured-java-interface.latex-dir
+	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
+
+ppl-devref-configured-java-interface-@VERSION@.pdf: \
+devref-configured-java-interface.latex-dir
+	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
+
+ppl-user-configured-java-interface-@VERSION@-html: \
+user-foreign-language-interface.doxyconf \
+$(USER_CONFIGURED_JAVA_INTERFACE_STUFF) $(USER_HTML_DIR)
+	rm -rf $@
+	$(SED) $(SED_CONFIGURED_JAVA_OPTION) \
+	    @srcdir@/user-foreign-language-interface.tex \
+	    > user-configured-java-interface.tex
+	$(SED) $(SED_CONFIGURED_JAVA_OPTION) $(SED_HTML_OPTION) \
+	    -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_JAVA_INPUT_USER)"'|' \
+	    $<  > Doxyfile.user-configured-java-interface-html
+	$(TEX_ENV) $(DOXYGEN) Doxyfile.user-configured-java-interface-html
+	(cd $@; $(INSTALLDOX) -l $(USER_HTML_DIR).tag@../$(USER_HTML_DIR))
+
+ppl-devref-configured-java-interface-@VERSION@-html: \
+devref-foreign-language-interface.doxyconf \
+$(DEVREF_CONFIGURED_JAVA_INTERFACE_STUFF) $(DEVREF_HTML_DIR)
+	rm -rf $@
+	$(SED) $(SED_CONFIGURED_JAVA_OPTION) \
+	    @srcdir@/devref-foreign-language-interface.tex \
+	    > devref-configured-java-interface.tex
+	$(SED) $(SED_CONFIGURED_JAVA_OPTION) $(SED_HTML_OPTION) \
+	    -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_JAVA_INPUT_DEVREF)"'|' \
+	    $<  > Doxyfile.devref-configured-java-interface-html
+	$(TEX_ENV) $(DOXYGEN) Doxyfile.devref-configured-java-interface-html
+	(cd $@; $(INSTALLDOX) -l $(DEVREF_HTML_DIR).tag@../$(DEVREF_HTML_DIR))
+
 endif BUILD_JAVA_INTERFACE
 
 
