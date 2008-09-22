@@ -95,7 +95,7 @@ JNIEXPORT jobject JNICALL Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_1It
 (JNIEnv* env, jobject j_it) {
  @TOPOLOGY@@CPP_CLASS@::iterator* @LTOPOLOGY@@LCLASS@_itr_ptr
  = reinterpret_cast<@TOPOLOGY@@CPP_CLASS@::iterator*>(get_ptr(env, j_it));
-jclass j_class = env->FindClass("parma_polyhedra_library/@CLASSTOPOLOGY@@CPP_DISJUNCT@");
+jclass j_class = env->FindClass("parma_polyhedra_library/@CLASSTOPOLOGY@@DISJUNCT@");
 jmethodID j_ctr_id = env->GetMethodID(j_class, "<init>", "()V");
 jobject j_obj = env->NewObject(j_class, j_ctr_id);
 set_ptr(env, j_obj,  &((*@LTOPOLOGY@@LCLASS@_itr_ptr)->element()), true);
@@ -1135,7 +1135,7 @@ JNIEXPORT jobject JNICALL Java_parma_1polyhedra_1library_@1CLASS@_@1PARTITION@
  jmethodID j_ctr_id_pair = env->GetMethodID(j_pair_class, "<init>", "()V");
  jobject j_pair_obj = env->NewObject(j_pair_class, j_ctr_id_pair);
 
- jclass j_class_r1 = env->FindClass("parma_polyhedra_library/@CLASSTOPOLOGY@@CPP_DISJUNCT@");
+ jclass j_class_r1 = env->FindClass("parma_polyhedra_library/@CLASSTOPOLOGY@@DISJUNCT@");
  jmethodID j_ctr_id_r1 = env->GetMethodID(j_class_r1, "<init>", "()V");
  jobject j_obj_r1 = env->NewObject(j_class_r1, j_ctr_id_r1);
  set_ptr(env, j_obj_r1, new @CLASSTOPOLOGY@@CPP_DISJUNCT@(r.first));
