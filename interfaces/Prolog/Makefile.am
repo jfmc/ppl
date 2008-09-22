@@ -58,7 +58,8 @@ Prolog_interface.dox
 if BUILD_SOME_PROLOG_INTERFACES
 
 BUILT_SOURCES = \
-ppl_prolog_domains.hh
+ppl_prolog_domains.hh \
+ppl_prolog_domains.cc.stamp
 
 interface_generator_dependencies = \
 ../ppl_interface_generator_common.m4 \
