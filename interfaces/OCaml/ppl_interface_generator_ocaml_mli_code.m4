@@ -32,10 +32,7 @@ m4_define(`ppl_@CLASS@_delete_iterator_code', `')
 dnl There is no code at present for these procedures in the OCaml interface.
 dnl Remove the macro if its definition is added.
 dnl
-m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity_code', `')
 m4_define(`ppl_@CLASS@_ascii_dump_code', `')
-m4_define(`ppl_@CLASS@_widening_assign_with_tokens_code', `')
-m4_define(`ppl_@CLASS@_widening_assign_code', `')
 m4_define(`ppl_@CLASS@_@PARTITION@_code', `')
 m4_define(`ppl_@CLASS@_approximate_partition_code', `')
 `')
@@ -304,6 +301,20 @@ val ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens:
 
 ')
 
+m4_define(`ppl_@CLASS@_widening_assign_code',
+`dnl
+val ppl_@CLASS@_widening_assign:
+  @LCLASS@ -> @LCLASS@ -> unit
+
+')
+
+m4_define(`ppl_@CLASS@_widening_assign_with_tokens_code',
+`dnl
+val ppl_@CLASS@_widening_assign_with_tokens:
+  @LCLASS@ -> @LCLASS@ -> int -> int
+
+')
+
 m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens_code',
 `dnl
 val ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens:
@@ -360,6 +371,13 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_code',
 `dnl
 val ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@:
   @LALT_FRIEND@ -> @LCLASS@
+
+')
+
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity_code',
+`dnl
+val ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity:
+  @LALT_FRIEND@ -> complexity_class -> @LCLASS@
 
 ')
 

@@ -52,6 +52,9 @@ void check_int_is_unsigned(int i);
 Degenerate_Element
 build_ppl_Degenerate_Element(value de);
 
+Complexity_Class
+build_ppl_Complexity_Class(value cc);
+
 Relation_Symbol
 build_ppl_relsym(value caml_relsym);
 

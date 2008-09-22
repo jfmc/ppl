@@ -81,6 +81,10 @@ type congruence_system = linear_congruence list
 type relation_symbol = Less_Than_RS | Less_Or_Equal_RS | Equal_RS
                        | Greater_Than_RS | Greater_Or_Equal_RS
 
+type complexity_class = Polynomial_Complexity
+                        | Simplex_Complexity
+                        | Any_Complexity
+
 type optimization_mode = Minimization | Maximization
 
 type mip_problem_status = Unfeasible_Mip_Problem | Unbounded_Mip_Problem

@@ -34,10 +34,7 @@ m4_define(`ppl_@CLASS@_delete_iterator_code', `')
 dnl There is no code at present for these procedures in the OCaml interface.
 dnl Remove the macro if its definition is added.
 dnl
-m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity_code', `')
 m4_define(`ppl_@CLASS@_ascii_dump_code', `')
-m4_define(`ppl_@CLASS@_widening_assign_with_tokens_code', `')
-m4_define(`ppl_@CLASS@_widening_assign_code', `')
 m4_define(`ppl_@CLASS@_@PARTITION@_code', `')
 m4_define(`ppl_@CLASS@_approximate_partition_code', `')
 
@@ -666,6 +663,41 @@ CATCH_ALL
 
 ')
 
+  m4_define(`ppl_@CLASS@_widening_assign_code',
+`dnl
+extern "C"
+void
+ppl_@CLASS@_widening_assign(value ph1, value ph2) try {
+  CAMLparam2(ph1, ph2);
+  @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
+  @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
+  pph1.widening_assign(pph2);
+  CAMLreturn0;
+}
+CATCH_ALL
+
+')
+
+
+  m4_define(`ppl_@CLASS@_widening_assign_with_tokens_code',
+`dnl
+extern "C"
+CAMLprim value
+ppl_@CLASS@_widening_assign_with_tokens(value ph1, value ph2,
+					value integer) try {
+  CAMLparam3(ph1, ph2, integer);
+  @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
+  @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
+  int cpp_int = Val_int(integer);
+  check_int_is_unsigned(cpp_int);
+  unsigned int unsigned_value = cpp_int;
+  pph1.widening_assign(pph2, &unsigned_value);
+  CAMLreturn(Int_val(unsigned_value));
+}
+CATCH_ALL
+
+')
+
   m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens_code',
 `dnl
 extern "C"
@@ -804,6 +836,20 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@(value ph) try {
   CAMLparam1(ph);
   @CPPX_FRIEND@& pph = *(reinterpret_cast<@CPPX_FRIEND@*>( p_@ALT_FRIEND@_val(ph)));
   CAMLreturn(val_p_@CLASS@(*(reinterpret_cast<@CPP_CLASS@*>(new @TOPOLOGY@@CPP_CLASS@(pph)))));
+}
+CATCH_ALL
+
+')
+
+  m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity_code',
+`dnl
+extern "C"
+CAMLprim value
+ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity(value ph, value caml_cc) try {
+  CAMLparam1(ph);
+  @CPPX_FRIEND@& pph = *(reinterpret_cast<@CPPX_FRIEND@*>( p_@ALT_FRIEND@_val(ph)));
+  Complexity_Class ppl_cc = build_ppl_Complexity_Class(caml_cc);
+  CAMLreturn(val_p_@CLASS@(*(reinterpret_cast<@CPP_CLASS@*>(new @TOPOLOGY@@CPP_CLASS@(pph, ppl_cc)))));
 }
 CATCH_ALL
 

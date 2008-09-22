@@ -226,6 +226,24 @@ build_ppl_Degenerate_Element(value de) {
   }
 }
 
+Complexity_Class
+build_ppl_Complexity_Class(value cc) {
+  switch (Int_val(cc)) {
+  case 0: {
+    return POLYNOMIAL_COMPLEXITY;
+  }
+  case 1: {
+    return SIMPLEX_COMPLEXITY;
+  }
+  case 2: {
+    return ANY_COMPLEXITY;
+  }
+ default:
+  // We should not be here!
+  throw std::runtime_error("PPL OCaml interface internal error");
+  }
+}
+
 Variables_Set
 build_ppl_Variables_Set(value caml_vset) {
   Variables_Set ppl_vset;

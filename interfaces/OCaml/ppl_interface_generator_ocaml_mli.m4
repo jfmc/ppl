@@ -42,6 +42,12 @@ type degenerate_element =
     Universe (** The universe element, i.e., the whole vector space. *)
   | Empty (** The empty element, i.e., the empty set. *)
 
+(** Kinds of complexity abstract elements. *)
+type complexity_class =
+    Polynomial_Complexity (** Worst-case polynomial complexity. *)
+  | Simplex_Complexity (** Worst-case exponential complexity but typically polynomial behavior. *)
+  | Any_Complexity (** Any complexity. *)
+
 (** A linear expression. *)
 type linear_expression =
     Variable of int

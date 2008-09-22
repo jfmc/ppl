@@ -32,10 +32,7 @@ m4_define(`ppl_@CLASS@_delete_iterator_code', `')
 dnl There is no code at present for these procedures in the OCaml interface.
 dnl Remove the macro if its definition is added.
 dnl
-m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity_code', `')
 m4_define(`ppl_@CLASS@_ascii_dump_code', `')
-m4_define(`ppl_@CLASS@_widening_assign_with_tokens_code', `')
-m4_define(`ppl_@CLASS@_widening_assign_code', `')
 m4_define(`ppl_@CLASS@_@PARTITION@_code', `')
 m4_define(`ppl_@CLASS@_approximate_partition_code', `')
 
@@ -339,6 +336,22 @@ external ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens:
 
 ')
 
+m4_define(`ppl_@CLASS@_widening_assign_code',
+`dnl
+external ppl_@CLASS@_widening_assign:
+  @LCLASS@ -> @LCLASS@ -> unit
+  = "ppl_@CLASS@_widening_assign"
+
+')
+
+m4_define(`ppl_@CLASS@_widening_assign_with_tokens_code',
+`dnl
+external ppl_@CLASS@_widening_assign_with_tokens:
+  @LCLASS@ -> @LCLASS@ -> int -> int
+  = "ppl_@CLASS@_widening_assign_with_tokens"
+
+')
+
 m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_code',
 `dnl
 external ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign:
@@ -405,8 +418,15 @@ external ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@:
 
 ')
 
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity_code',
+`dnl
+external ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity:
+  @LALT_FRIEND@ -> complexity_class -> @LCLASS@
+  = "ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@"
 
- m4_define(`ppl_@CLASS@_@UB_EXACT@_code',
+')
+
+m4_define(`ppl_@CLASS@_@UB_EXACT@_code',
  `dnl
  external ppl_@CLASS@_@UB_EXACT@:
    @LCLASS@ -> @LCLASS@ -> bool
@@ -414,8 +434,7 @@ external ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@:
 
  ')
 
-
- m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens_code',
+m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens_code',
  `dnl
  external ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens:
    @LCLASS@ -> @LCLASS@ -> int -> int
@@ -424,7 +443,7 @@ external ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@:
  ')
 
 
- m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_code',
+m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_code',
  `dnl
  external ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign:
    @LCLASS@ -> @LCLASS@ -> unit
@@ -454,7 +473,6 @@ external ppl_@CLASS@_get_disjunct:
    @LCLASS@_iterator  -> @LDISJUNCT@
    = "ppl_@CLASS@_get_disjunct"
 
-
 ')
 
 m4_define(`ppl_@CLASS@_add_disjunct_code',
@@ -462,7 +480,6 @@ m4_define(`ppl_@CLASS@_add_disjunct_code',
 external ppl_@CLASS@_add_disjunct:
    @LCLASS@  -> @LDISJUNCT@ -> unit
    = "ppl_@CLASS@_add_disjunct"
-
 
 ')
 
@@ -472,7 +489,6 @@ m4_define(`ppl_@CLASS@_drop_disjunct_code',
    @LCLASS@  ->  @LCLASS@_iterator -> unit
    = "ppl_@CLASS@_drop_disjunct"
 
-
 ')
 
 m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
@@ -480,7 +496,6 @@ m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
  external ppl_@CLASS@_@INCDEC@_iterator:
    @LCLASS@_iterator -> unit
    = "ppl_@CLASS@_@INCDEC@_iterator"
-
 
 ')
 
@@ -493,14 +508,6 @@ external ppl_@CLASS@_iterator_equals_iterator:
   = "ppl_@CLASS@_iterator_equals_iterator"
 
 ')
-
-# m4_define(`ppl_@CLASS@_get_disjuncts_code',
-# `dnl
-# external ppl_@CLASS@_get_disjuncts:
-  # @LCLASS@ -> @LCLASS@ -> bool
-    # = "ppl_@CLASS@_@UB_EXACT@"
-
-# ')
 
 m4_define(`ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code',
 `dnl

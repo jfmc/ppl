@@ -67,16 +67,29 @@ let out = if (ppl_@ALT_FRIEND@_OK ps & ppl_@CLASS@_OK ps1)
 print_newline();;
 ')
 
-m4_define(`__ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity_code',
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity_code',
 `
 print_string
   "testing ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity: " ;;
+print_newline();;
 let ps
   = ppl_new_@FRIEND@_from_space_dimension 3 Universe;;
-let ps1
-  = ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity ps ;;
-let out = if (ppl_@ALT_FRIEND@_OK ps & ppl_@CLASS@_OK ps1)
-  then "success" else "failed"
+let ps_pc
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity ps Polynomial_Complexity ;;
+let out = if (ppl_@ALT_FRIEND@_OK ps & ppl_@CLASS@_OK ps_pc)
+  then "with Polynomial_Complexity - success" else "failed"
+    in (print_string out);;
+print_newline();;
+let ps_sc
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity ps Simplex_Complexity ;;
+let out = if (ppl_@ALT_FRIEND@_OK ps & ppl_@CLASS@_OK ps_sc)
+  then "with Simplex_Complexity - success" else "failed"
+    in (print_string out);;
+print_newline();;
+let ps_ac
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity ps Any_Complexity ;;
+let out = if (ppl_@ALT_FRIEND@_OK ps & ppl_@CLASS@_OK ps_ac)
+  then "with Any_Complexity - success" else "failed"
     in (print_string out);;
 print_newline();;
 ')
@@ -622,6 +635,38 @@ let copy03
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@03);;
 let tokens
   = ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens copy01 copy03 5;;
+let out = if (ppl_@CLASS@_OK copy01)
+  then "success" else "failed"
+    in (print_string out);;
+print_newline();;
+print_string "tokens after widening = ";;
+print_int tokens;;
+print_newline();;
+')
+
+m4_define(`ppl_@CLASS@_widening_assign_code',
+`
+print_string "testing ppl_@CLASS@_widening_assign: ";;
+let copy01
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
+let copy03
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@03);;
+ppl_@CLASS@_widening_assign copy01 copy03 ;;
+let out = if (ppl_@CLASS@_OK copy01)
+  then "success" else "failed"
+    in (print_string out);;
+print_newline();;
+')
+
+m4_define(`ppl_@CLASS@_widening_assign_with_tokens_code',
+`
+print_string "testing ppl_@CLASS@_widening_assign_with_tokens_code: ";;
+let copy01
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
+let copy03
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@03);;
+let tokens
+  = ppl_@CLASS@_widening_assign_with_tokens copy01 copy03 5;;
 let out = if (ppl_@CLASS@_OK copy01)
   then "success" else "failed"
     in (print_string out);;
