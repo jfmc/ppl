@@ -1327,6 +1327,8 @@ devref.doxyconf-latex \
 devref.tex \
 fdl.tex \
 gpl.tex \
+interfaces-html.sed \
+interfaces-latex.sed \
 ppl.sty \
 user-foreign-language-interface.doxyconf \
 user-foreign-language-interface.tex \
