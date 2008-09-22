@@ -92,6 +92,7 @@ ppl_prolog_domains.cc: $(interface_generator_dependencies)
 endif BUILD_SOME_PROLOG_INTERFACES
 
 CLEANFILES = \
-ppl_prolog_*.hh \
-ppl_prolog_*.cc \
+@required_instantiations_prolog_cxx_headers@ \
+@required_instantiations_prolog_cxx_sources@ \
+ppl_prolog_domains.hh \
 Prolog_interface.dox
