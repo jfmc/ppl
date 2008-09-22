@@ -28,7 +28,11 @@ ppl_interface_generator_prolog_hh_files.m4 \
 ppl_interface_generator_prolog_hh_code.m4 \
 ppl_interface_generator_prolog_cc_files.m4 \
 ppl_interface_generator_prolog_cc_code.m4 \
-ppl_interface_generator_prolog_systems.m4
+ppl_interface_generator_prolog_systems.m4 \
+ppl_interface_generator_prolog_dox.m4 \
+ppl_interface_generator_prolog_dox_code.m4 \
+ppl_prolog_sysdep_dox \
+ppl_prolog_sysindep_dox
 
 EXTRA_DIST = \
 $(interface_generator_files) \
