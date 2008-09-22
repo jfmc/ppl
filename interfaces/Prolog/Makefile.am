@@ -87,6 +87,7 @@ ppl_prolog_domains.cc.stamp: $(interface_generator_dependencies)
 	$(top_srcdir)/utils/cm_cleaner.sh < ppl_prolog_cc_blob
 	$(top_srcdir)/utils/cm_splitter.sh < ppl_prolog_cc_blob
 	rm -f ppl_prolog_cc_blob
+	echo timestamp >$@
 
 endif BUILD_SOME_PROLOG_INTERFACES
 
