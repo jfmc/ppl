@@ -44,7 +44,7 @@ m4_define(`m4_current_interface', `m4_interface_class$1')`'dnl
 m4_include(`ppl_interface_generator_copyright')`'dnl
 */
 
-`#'include "ppl_java_common.hh"
+`#'include "ppl_java_common.defs.hh"
 `#'include "parma_polyhedra_library_`'m4_current_interface`'.h"
 m4_ifelse(m4_current_interface, Polyhedron,
 `#'include "parma_polyhedra_library_C_Polyhedron.h"

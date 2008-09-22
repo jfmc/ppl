@@ -21,7 +21,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "parma_polyhedra_library_Parma_Polyhedra_Library.h"
-#include "ppl_java_common.hh"
+#include "ppl_java_common.defs.hh"
 #include "parma_polyhedra_library_MIP_Problem.h"
 #include "parma_polyhedra_library_Linear_Expression.h"
 #include "parma_polyhedra_library_Constraint.h"
