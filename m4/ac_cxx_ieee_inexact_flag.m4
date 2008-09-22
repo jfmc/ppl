@@ -29,10 +29,36 @@ AC_LANG_PUSH(C++)
 
 AC_MSG_CHECKING([whether the IEEE inexact flag is supported in C++])
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
-#ifdef HAVE_FENV_H
-#include <fenv.h>
-#endif
+
 #include <cstdlib>
+
+#if defined(__i386__) && (defined(__GNUC__) || defined(__INTEL_COMPILER))
+
+int
+main() {
+  exit(0);
+}
+
+#elif defined(PPL_HAVE_IEEEFP_H)					\
+  && (defined(__sparc)							\
+      || defined(sparc)							\
+      || defined(__sparc__))
+
+int
+main() {
+  exit(0);
+}
+
+#elif !defined(HAVE_FENV_H)
+
+int
+main() {
+  exit(1);
+}
+
+#else
+
+#include <fenv.h>
 
 struct A {
   double dividend;
@@ -72,6 +98,9 @@ int main() {
   }
   exit(0);
 }
+
+#endif
+
 ]])],
   AC_MSG_RESULT(yes)
   ac_cxx_supports_ieee_inexact_flag=yes,
