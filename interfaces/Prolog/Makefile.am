@@ -44,9 +44,9 @@ ppl_prolog_common.cc
 if BUILD_SOME_PROLOG_INTERFACES
 
 BUILT_SOURCES = \
+Prolog_interface.dox \
 ppl_prolog_domains.hh \
 ppl_prolog_domains.cc
-
 
 interface_generator_dependencies = \
 ../ppl_interface_generator_common.m4 \
