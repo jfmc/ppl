@@ -20,10 +20,6 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-
-
-if BUILD_JAVA_INTERFACE
-
 interface_generator_files = \
 ppl_interface_generator_java_classes_cc_files.m4 \
 ppl_interface_generator_java_classes_cc_code.m4
@@ -36,6 +32,12 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../../ppl_interface_generator_common_procedure_generators.m4 \
 ../ppl_interface_generator_java_procedure_generators.m4 \
 $(interface_generator_files)
+
+EXTRA_DIST = \
+$(interface_generator_files)
+
+
+if BUILD_JAVA_INTERFACE
 
 AM_CPPFLAGS = \
 -I$(top_srcdir)/interfaces \
@@ -152,11 +154,8 @@ ppl_java_implementation_domains.cc.stamp: $(interface_generator_dependencies)
 	rm -f ppl_java_cc_blob
 	echo timestamp >$@
 
-EXTRA_DIST = \
-$(interface_generator_files)
+endif BUILD_JAVA_INTERFACE
 
 CLEANFILES = \
 @required_instantiations_java_cxx_sources@ \
 ppl_java_implementation_domains.cc.stamp
-
-endif BUILD_JAVA_INTERFACE
