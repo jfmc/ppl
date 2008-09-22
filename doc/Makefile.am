@@ -304,13 +304,12 @@ devref-foreign-language-interface.tex \
 ppl.sty \
 $(JAVA_INTERFACE_JAVA_FILES) \
 ../interfaces/Java/jni/ppl_java_common.cc \
-../interfaces/Java/jni/ppl_java_common.hh \
+../interfaces/Java/jni/ppl_java_common.defs.hh \
 ../interfaces/Java/jni/ppl_java_globals.cc
 
 ##### Configuration Dependent Foreign Language Manuals #####
 
 # FIXME: add the automatically-generated files.
-# FIXME: use separate directories or reuse the existing ones?
 # FIXME: generate just HTML or all formats?
 
 # Configuration Dependent C Language Interface Manuals.
@@ -368,7 +367,7 @@ $(USER_PROLOG_INTERFACE_STUFF)
 DEVREF_CONFIGURED_PROLOG_INTERFACE_STUFF = \
 $(DEVREF_PROLOG_INTERFACE_STUFF) \
 $(top_builddir)/interfaces/Prolog/ppl_prolog_domains.hh \
-$(top_builddir)/interfaces/Prolog/ppl_prolog_domains.cc
+$(top_builddir)/interfaces/Prolog/ppl_prolog_domains.cc.stamp
 
 endif BUILD_SOME_PROLOG_INTERFACES
 
