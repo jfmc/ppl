@@ -383,11 +383,11 @@ System.out.println(@LTOPOLOGY@@LCLASS@1.ascii_dump());
 
 m4_define(`ppl_@CLASS@_@PARTITION@_code',
 `dnl
-@CLASSTOPOLOGY@@CPP_DISJUNCT@ @LCLASSTOPOLOGY@@LCPP_DISJUNCT@1
-    = new @CLASSTOPOLOGY@@CPP_DISJUNCT@(constraints1);
+@CLASSTOPOLOGY@@DISJUNCT@ @LCLASSTOPOLOGY@@DISJUNCT@1
+    = new @CLASSTOPOLOGY@@DISJUNCT@(constraints1);
 Pair p
-    = @CLASS@.@PARTITION@(@LCLASSTOPOLOGY@@LCPP_DISJUNCT@1,
-                          @LCLASSTOPOLOGY@@LCPP_DISJUNCT@1);
+    = @CLASS@.@PARTITION@(@LCLASSTOPOLOGY@@DISJUNCT@1,
+                          @LCLASSTOPOLOGY@@DISJUNCT@1);
 System.out.println("Printing Pair from @PARTITION@");
 System.out.println(p.getFirst());
 System.out.println(p.getSecond());
@@ -396,11 +396,11 @@ System.out.println(p.getSecond());
 
 m4_define(`ppl_@CLASS@_approximate_partition_code',
 `dnl
-@CLASSTOPOLOGY@@CPP_DISJUNCT@ @LCLASSTOPOLOGY@@LCPP_DISJUNCT@1
-    = new @CLASSTOPOLOGY@@CPP_DISJUNCT@(@LCONSTRAINER@s1);
+@CLASSTOPOLOGY@@DISJUNCT@ @LCLASSTOPOLOGY@@LDISJUNCT@1
+    = new @CLASSTOPOLOGY@@DISJUNCT@(@LCONSTRAINER@s1);
 Pair p
-    = @CLASS@.approximate_partition(@LCLASSTOPOLOGY@@LCPP_DISJUNCT@1,
-                          @LCLASSTOPOLOGY@@LCPP_DISJUNCT@1, bool_by_ref1);
+    = @CLASS@.approximate_partition(@LCLASSTOPOLOGY@@LDISJUNCT@1,
+                          @LCLASSTOPOLOGY@@LDISJUNCT@1, bool_by_ref1);
 System.out.println("Printing Pair from approximate_partition");
 System.out.println(p.getFirst());
 System.out.println(p.getSecond());
