@@ -1,44 +1,40 @@
 dnl  -*- java -*-
 m4_divert(-1)
 
-dnl This m4 file contains the code for generating files <CLASS_NAME>.java
+This m4 file contains the code for generating files <CLASS_NAME>.java
 
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
-dnl
-dnl This file is part of the Parma Polyhedra Library (PPL).
-dnl
-dnl The PPL is free software; you can redistribute it and/or modify it
-dnl under the terms of the GNU General Public License as published by the
-dnl Free Software Foundation; either version 3 of the License, or (at your
-dnl option) any later version.
-dnl
-dnl The PPL is distributed in the hope that it will be useful, but WITHOUT
-dnl ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-dnl FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-dnl for more details.
-dnl
-dnl You should have received a copy of the GNU General Public License
-dnl along with this program; if not, write to the Free Software Foundation,
-dnl Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
-dnl
-dnl For the most up-to-date information see the Parma Polyhedra Library
-dnl site: http://www.cs.unipr.it/ppl/ .
+Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
-dnl No code is needed for these procedure schemas in the Java interface
-dnl as the tokens argument for widening and extrapolation is optional.
-dnl
+This file is part of the Parma Polyhedra Library (PPL).
+
+The PPL is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.
+
+The PPL is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
+
+For the most up-to-date information see the Parma Polyhedra Library
+site: http://www.cs.unipr.it/ppl/ .
+
+FIXME: Find a way to avoid having these dummy macros.
+No code is needed for these procedure schemas in the Java interface
+as the tokens argument for widening and extrapolation is optional.
+
 m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_code', `')
 m4_define(`ppl_@CLASS@_widening_assign_with_tokens_code', `')
 m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens_code', `')
 m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens_code', `')
 
-dnl FIXME: There is no code at present for the following procedures in
-dnl the Java interface.
-dnl Remove the macro if its definition is added.
-dnl
-m4_define(`ppl_@CLASS@_approximate_partition', `')
-m4_define(`ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code', `')
-m4_define(`ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign_code', `')
+Define here as empty any known schematic method macros for which
+the definition is not yet implemented.
 
 m4_define(`m4_class_build_cpp_object1_code',
 `dnl
@@ -419,6 +415,23 @@ m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_code',
 
 ')
 
+m4_define(`ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign_code',
+`dnl
+%<--%<--%<-- @CLASS@.java
+    public native
+	void BGP99_@DISJUNCT_WIDEN@_extrapolation_assign(@CLASS@ y,
+						 Integer d);
+
+')
+
+m4_define(`ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code',
+`dnl
+%<--%<--%<-- @CLASS@.java
+    public native void
+    BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign(@CLASS@ y);
+
+')
+
 m4_define(`ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
@@ -544,5 +557,16 @@ m4_define(`ppl_@CLASS@_@PARTITION@_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
 
-  public static native Pair <@CLASSTOPOLOGY@@CPP_DISJUNCT@@COMMA@ @CLASS@> @PARTITION@(@CLASSTOPOLOGY@@DISJUNCT@ p, @CLASSTOPOLOGY@@DISJUNCT@ q);
+  public static native Pair <@CLASSTOPOLOGY@@CPP_DISJUNCT@@COMMA@ @CLASS@>
+      @PARTITION@(@CLASSTOPOLOGY@@DISJUNCT@ p, @CLASSTOPOLOGY@@DISJUNCT@ q);
+')
+
+m4_define(`ppl_@CLASS@_approximate_partition_code',
+`dnl
+%<--%<--%<-- @CLASS@.java
+
+  public static native Pair <@CLASSTOPOLOGY@@CPP_DISJUNCT@@COMMA@ @CLASS@>
+      approximate_partition(@CLASSTOPOLOGY@@DISJUNCT@ p,
+                            @CLASSTOPOLOGY@@DISJUNCT@ q,
+                            By_Reference<Boolean> finite);
 ')

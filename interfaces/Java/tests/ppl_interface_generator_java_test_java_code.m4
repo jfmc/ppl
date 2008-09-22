@@ -40,10 +40,14 @@ m4_define(`m4_new_class_element_code',
     = new @TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@1);
 @TOPOLOGY@@CLASS@ @LTOPOLOGY@@LCLASS@3
     = new @TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@1);
-@LTOPOLOGY@@LCLASS@3.free();
 @TOPOLOGY@@CLASS@ @LTOPOLOGY@@LCLASS@4
     = new @TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@1);
-@LTOPOLOGY@@LCLASS@4 = null;
+@TOPOLOGY@@CLASS@ @LTOPOLOGY@@LCLASS@5
+    = new @TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@1);
+@LTOPOLOGY@@LCLASS@5.free();
+@TOPOLOGY@@CLASS@ @LTOPOLOGY@@LCLASS@6
+    = new @TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@1);
+@LTOPOLOGY@@LCLASS@6 = null;
 System.gc();
 
 ')
@@ -268,13 +272,13 @@ m4_define(`ppl_@CLASS@_@SIMPLIFY@_code',`
 
 ')
 
-m4_define(`ppl_@CLASS@_1unconstrain_space_dimension_code',`
-@LTOPOLOGY@@LCLASS@1.1unconstrain_space_dimension(var_C);
+m4_define(`ppl_@CLASS@_unconstrain_space_dimension_code',`
+@LTOPOLOGY@@LCLASS@3.unconstrain_space_dimension(var_C);
 
 ')
 
-m4_define(`__ppl_@CLASS@_1unconstrain_space_dimensions_code',`
-@LTOPOLOGY@@LCLASS@1.1unconstrain_space_dimensions(var_set_A);
+m4_define(`ppl_@CLASS@_unconstrain_space_dimensions_code',`
+@LTOPOLOGY@@LCLASS@4.unconstrain_space_dimensions(var_set_A);
 
 ')
 
@@ -343,11 +347,20 @@ m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_string_code',
+m4_define(`ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign_code',
 `dnl
-System.out.println(@LTOPOLOGY@@LCLASS@1.toString());
+@LTOPOLOGY@@LCLASS@1.BGP99_@DISJUNCT_WIDEN@_extrapolation_assign(
+  @LTOPOLOGY@@LCLASS@1,
+  2);
 
-');
+')
+
+m4_define(`ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code',
+`dnl
+@LTOPOLOGY@@LCLASS@2.BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign(
+  @LTOPOLOGY@@LCLASS@2);
+
+')
 
 m4_define(`ppl_@CLASS@_string_code',
 `dnl
@@ -357,8 +370,8 @@ System.out.println(@LTOPOLOGY@@LCLASS@1.toString());
 
 m4_define(`ppl_@CLASS@_@MEMBYTES@_code',
 `dnl
-System.out.print("@UMEMBYTES@ of @LTOPOLOGY@@LCLASS@1: ");
-System.out.println(@LTOPOLOGY@@LCLASS@1.@MEMBYTES@());
+System.out.println("@UMEMBYTES@ of @LTOPOLOGY@@LCLASS@1: ");
+System.out.print(@LTOPOLOGY@@LCLASS@1.@MEMBYTES@());
 
 ');
 
@@ -378,6 +391,20 @@ Pair p
 System.out.println("Printing Pair from @PARTITION@");
 System.out.println(p.getFirst());
 System.out.println(p.getSecond());
+
+');
+
+m4_define(`ppl_@CLASS@_approximate_partition_code',
+`dnl
+@CLASSTOPOLOGY@@CPP_DISJUNCT@ @LCLASSTOPOLOGY@@LCPP_DISJUNCT@1
+    = new @CLASSTOPOLOGY@@CPP_DISJUNCT@(@LCONSTRAINER@s1);
+Pair p
+    = @CLASS@.approximate_partition(@LCLASSTOPOLOGY@@LCPP_DISJUNCT@1,
+                          @LCLASSTOPOLOGY@@LCPP_DISJUNCT@1, bool_by_ref1);
+System.out.println("Printing Pair from approximate_partition");
+System.out.println(p.getFirst());
+System.out.println(p.getSecond());
+System.out.println(bool_by_ref1);
 
 ');
 

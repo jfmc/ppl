@@ -1,44 +1,40 @@
 dnl  -*- C++ -*-
 m4_divert(-1)
 
-dnl This m4 file contains the code for generating parma_polyhedra_library_classes.cc
+This m4 file contains the code for generating ppl_java_<CLASS_NAME>.cc
 
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
-dnl
-dnl This file is part of the Parma Polyhedra Library (PPL).
-dnl
-dnl The PPL is free software; you can redistribute it and/or modify it
-dnl under the terms of the GNU General Public License as published by the
-dnl Free Software Foundation; either version 3 of the License, or (at your
-dnl option) any later version.
-dnl
-dnl The PPL is distributed in the hope that it will be useful, but WITHOUT
-dnl ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-dnl FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-dnl for more details.
-dnl
-dnl You should have received a copy of the GNU General Public License
-dnl along with this program; if not, write to the Free Software Foundation,
-dnl Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
-dnl
-dnl For the most up-to-date information see the Parma Polyhedra Library
-dnl site: http://www.cs.unipr.it/ppl/ .
+Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
-dnl No code is needed for these procedure schemas in the Java interface
-dnl as the tokens argument for widening and extrapolation is optional.
-dnl
+This file is part of the Parma Polyhedra Library (PPL).
+
+The PPL is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.
+
+The PPL is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
+
+For the most up-to-date information see the Parma Polyhedra Library
+site: http://www.cs.unipr.it/ppl/ .
+
+FIXME: Find a way to avoid having these dummy macros.
+No code is needed for these procedure schemas in the Java interface
+as the tokens argument for widening and extrapolation is optional.
+
 m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_code', `')
 m4_define(`ppl_@CLASS@_widening_assign_with_tokens_code', `')
 m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens_code', `')
 m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens_code', `')
 
-dnl FIXME: There is no code at present for the following procedures in
-dnl the Java interface.
-dnl Remove the macro if its definition is added.
-dnl
-m4_define(`ppl_@CLASS@_approximate_partition', `')
-m4_define(`ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code', `')
-m4_define(`ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign_code', `')
+Define here as empty any known schematic method macros for which
+the definition is not yet implemented.
 
 m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
 `dnl
@@ -372,7 +368,7 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_@1SIMPLIFY@
 
 m4_define(`ppl_@CLASS@_unconstrain_space_dimension_code',
 `dnl
-JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_1unconstrain_space_dimension
+JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_unconstrain_1space_1dimension
 (JNIEnv* env, jobject j_this_@LCLASS@, jobject j_var) {
   try {
   @CPP_CLASS@* this_@LCLASS@
@@ -387,7 +383,7 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_1unconstrain_spac
 
 m4_define(`ppl_@CLASS@_unconstrain_space_dimensions_code',
 `dnl
-JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_1unconstrain_space_dimensions
+JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_unconstrain_1space_1dimensions
 (JNIEnv* env, jobject j_this_@LCLASS@, jobject j_v_set) {
   try {
   @CPP_CLASS@* this_@LCLASS@
@@ -929,6 +925,47 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_@1LIMITEDBOUNDED@
 
 ')
 
+m4_define(`ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign_code',
+`dnl
+JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_BGP99_1@1DISJUNCT_WIDEN@_1extrapolation_1assign
+  (JNIEnv* env , jobject j_this_@LCLASS@ , jobject j_@LCLASS@, jobject j_disjuncts) {
+  try {
+    @CPP_CLASS@* this_@LCLASS@
+ = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this_@LCLASS@));
+    @CPP_CLASS@* @LCLASS@
+ = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_@LCLASS@));
+   unsigned int disjuncts =
+        jtype_to_unsigned<unsigned int>(j_integer_to_j_int(env, j_disjuncts));
+   this_@LCLASS@->BGP99_extrapolation_assign
+     (*@LCLASS@,
+      widen_fun_ref(&@CLASSTOPOLOGY@@CPP_DISJUNCT@::@DISJUNCT_WIDEN@_widening_assign),
+      disjuncts);
+  }
+  CATCH_ALL;
+}
+
+')
+
+m4_define(`ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code',
+`dnl
+JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_BHZ03_1@1ALT_DISJUNCT_WIDEN@_1@1DISJUNCT_WIDEN@_1widening_1assign
+(JNIEnv* env , jobject j_this_@LCLASS@ , jobject j_@LCLASS@) {
+  try {
+    @CPP_CLASS@* this_@LCLASS@
+      = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this_@LCLASS@));
+    @CPP_CLASS@* @LCLASS@
+      = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_@LCLASS@));
+    this_@LCLASS@->BHZ03_widening_assign<@ALT_DISJUNCT_WIDEN@_Certificate>
+      (*@LCLASS@,
+       widen_fun_ref(
+         &@CLASSTOPOLOGY@@CPP_DISJUNCT@::@DISJUNCT_WIDEN@_widening_assign));
+  }
+  CATCH_ALL;
+}
+
+')
+
+
 m4_define(`ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@_code',
 `dnl
 JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_add_1space_1dimensions_1@1EMBEDPROJECT@
@@ -1117,3 +1154,46 @@ JNIEXPORT jobject JNICALL Java_parma_1polyhedra_1library_@1CLASS@_@1PARTITION@
 
 ')
 
+m4_define(`ppl_@CLASS@_approximate_partition_code',
+`dnl
+JNIEXPORT jobject JNICALL Java_parma_1polyhedra_1library_@1CLASS@_approximate_1partition
+(JNIEnv* env, jclass pps_class, jobject j_p_@LCLASS@, jobject j_q_@LCLASS@,
+ jobject j_ref_finite_bool) {
+  try {
+    // Suppress warnings concerning `ppl_class' not used.
+    pps_class = 0;
+    @CLASSTOPOLOGY@@CPP_DISJUNCT@* ph
+      = reinterpret_cast<@CLASSTOPOLOGY@@CPP_DISJUNCT@*>
+          (get_ptr(env, j_p_@LCLASS@));
+    @CLASSTOPOLOGY@@CPP_DISJUNCT@* qh
+      = reinterpret_cast<@CLASSTOPOLOGY@@CPP_DISJUNCT@*>
+          (get_ptr(env, j_q_@LCLASS@));
+    bool b_finite_val;
+    std::pair<@CLASSTOPOLOGY@@CPP_DISJUNCT@@COMMA@
+      Pointset_Powerset<@SUPERCLASS@> > r
+        = approximate_partition(*ph, *qh, b_finite_val);
+    jclass j_pair_class = env->FindClass("parma_polyhedra_library/Pair");
+    jmethodID j_ctr_id_pair = env->GetMethodID(j_pair_class, "<init>", "()V");
+    jobject j_pair_obj = env->NewObject(j_pair_class, j_ctr_id_pair);
+
+    jclass j_class_r1
+      = env->FindClass("parma_polyhedra_library/@CLASSTOPOLOGY@@CPP_DISJUNCT@");
+    jmethodID j_ctr_id_r1 = env->GetMethodID(j_class_r1, "<init>", "()V");
+    jobject j_obj_r1 = env->NewObject(j_class_r1, j_ctr_id_r1);
+    set_ptr(env, j_obj_r1, new @CLASSTOPOLOGY@@CPP_DISJUNCT@(r.first));
+
+    jclass j_class_r2 = env->FindClass("parma_polyhedra_library/@CLASS@");
+    jmethodID j_ctr_id_r2 = env->GetMethodID(j_class_r2, "<init>", "()V");
+    jobject j_obj_r2 = env->NewObject(j_class_r2, j_ctr_id_r2);
+    set_ptr(env, j_obj_r2, new Pointset_Powerset<@SUPERCLASS@>(r.second));
+    set_pair_element(env, j_pair_obj, 0, j_obj_r1);
+    set_pair_element(env, j_pair_obj, 1, j_obj_r2);
+    jobject j_finite_bool = bool_to_j_boolean(env, b_finite_val);
+    set_by_reference(env, j_ref_finite_bool, j_finite_bool);
+    return j_pair_obj;
+  }
+  CATCH_ALL;
+  return 0;
+}
+
+')
