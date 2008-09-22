@@ -29,10 +29,7 @@ ppl_interface_generator_java_dox_code.m4 \
 ppl_java_common_dox
 
 EXTRA_DIST = \
-$(interface_generator_files) \
-Java_interface.dox
-
-if BUILD_JAVA_INTERFACE
+$(interface_generator_files)
 
 interface_generator_dependencies = \
 ../ppl_interface_generator_common.m4 \
@@ -43,16 +40,21 @@ ppl_interface_generator_java_procedure_generators.m4 \
 ppl_interface_generator_java_dox.m4 \
 ppl_interface_generator_java_dox_code.m4
 
+Java_interface.dox: $(interface_generator_dependencies) Makefile
+	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
+           $(srcdir)/ppl_interface_generator_java_dox.m4 \
+                > Java_interface.dox
+
+dist_noinst_DATA = \
+Java_interface.dox
+
+if BUILD_JAVA_INTERFACE
+
 jardir = $(pkglibdir)
 jar_DATA = ppl_java.jar
 
 ppl_java.jar: parma_polyhedra_library/java_classes.stamp
 	$(JAR) cf ppl_java.jar parma_polyhedra_library/*.class
-
-Java_interface.dox: $(interface_generator_dependencies) Makefile
-	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
-           $(srcdir)/ppl_interface_generator_java_dox.m4 \
-                > Java_interface.dox
 
 endif BUILD_JAVA_INTERFACE
 
