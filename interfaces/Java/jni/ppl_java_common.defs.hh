@@ -1,4 +1,4 @@
-/* PPL Java interface common routines declaration.
+/* Domain-independent part of the Java interface: declarations.
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -20,8 +20,11 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+#ifndef PPL_ppl_java_common_defs_hh
+#define PPL_ppl_java_common_defs_hh 1
+
+#include "ppl.hh"
 #include <jni.h>
-#include <ppl.hh>
 #include "interfaced_boxes.hh"
 #include "marked_pointers.hh"
 
@@ -92,18 +95,7 @@ handle_exception(JNIEnv* env);
 */
 template <typename U, typename V>
 U
-jtype_to_unsigned(const V& value) {
-  if (value < 0)
-    throw std::invalid_argument("not an unsigned integer.");
-
-  if (sizeof(U) < sizeof(V)) {
-    if (value
-        > static_cast<V>(std::numeric_limits<U>::max()))
-      throw std::invalid_argument("unsigned integer out of range.");
-  }
-
-  return value;
-}
+jtype_to_unsigned(const V& value);
 
  // Converts a C++ bool to a Java boolean.
 jobject
@@ -277,13 +269,14 @@ void set_by_reference(JNIEnv* env, jobject& by_ref_to_be_set,
 jobject get_by_reference(JNIEnv* env, const jobject& by_ref_integer);
 
 
-// Utility to set a value a parma_polyhedra_library Pair. the argument `arg' has two
-// possible values: 0 to set `first', 1 to `second'.
+// Utility to set a value a parma_polyhedra_library Pair. the argument
+// `arg' has two possible values: 0 to set `first', 1 to `second'.
 void set_pair_element(JNIEnv* env, jobject& pair_to_be_set, int arg,
 		      const jobject& obj_to_insert);
 
-// Utility to get a value from a parma_polyhedra_library Pair. the argument `arg' has two
-// possible values: 0 to set `first', 1 to `second'.
+// Utility to get a value from a parma_polyhedra_library Pair. the
+// argument `arg' has two possible values: 0 to set `first', 1 to
+// `second'.
 jobject get_pair_element(JNIEnv* env, int arg, const jobject& pair);
 
 jboolean is_null(JNIEnv* env, jobject obj);
@@ -291,161 +284,39 @@ jboolean is_null(JNIEnv* env, jobject obj);
 
 
 
-// FIXME: this section is in the header file to allow g++ to build
-//        templatic code
-
 // Set the pointer of the underlying C++ object in the Java object
 template <typename T>
 void
 set_ptr(JNIEnv* env, const jobject& ppl_object,
-	const T* address, bool to_be_marked = false) {
-  jclass ppl_object_class = env->GetObjectClass(ppl_object);
-  jfieldID pointer_field = env->GetFieldID(ppl_object_class, "ptr","J");
-  env->SetLongField(ppl_object, pointer_field,
-		    (long long) (to_be_marked ? mark(address) : address));
-}
+	const T* address, bool to_be_marked = false);
 
 // Builds the Java linear expression starting from a congruence,
 // a constraint or a generator.
 template <typename R>
 jobject
-get_linear_expression(JNIEnv* env, const R& r) {
-  jclass j_le_coeff_class
-    = env->FindClass("parma_polyhedra_library/Linear_Expression_Coefficient");
-  jclass j_le_class
-    = env->FindClass("parma_polyhedra_library/Linear_Expression");
-  jclass j_le_variable_class
-    = env->FindClass("parma_polyhedra_library/Linear_Expression_Variable");
-  jclass j_variable_class
-    = env->FindClass("parma_polyhedra_library/Variable");
-  TEMP_INTEGER(coefficient);
-  dimension_type varid = 0;
-  dimension_type space_dimension = r.space_dimension();
-  jobject j_le_term;
-  jmethodID j_variable_ctr_id
-    = env->GetMethodID(j_variable_class,
-		       "<init>",
-		       "(I)V");
-  jmethodID j_le_variable_ctr_id
-    = env->GetMethodID(j_le_variable_class,
-		       "<init>",
-		       "(Lparma_polyhedra_library/Variable;)V");
+get_linear_expression(JNIEnv* env, const R& r);
 
-  jmethodID j_le_times_id
-    = env->GetMethodID(j_le_class,
-		       "times",
-		       "(Lparma_polyhedra_library/Coefficient;)Lparma_polyhedra_library/Linear_Expression;");
-
-  while (varid < space_dimension
- 	 && (coefficient = r.coefficient(Variable(varid))) == 0)
-    ++varid;
-  if (varid >= space_dimension) {
-    jobject j_coefficient_zero = build_java_coeff(env, Coefficient(0));
-    jmethodID j_le_coeff_ctr_id
-      = env->GetMethodID(j_le_coeff_class, "<init>",
-			 "(Lparma_polyhedra_library/Coefficient;)V");
-    return env->NewObject(j_le_coeff_class, j_le_coeff_ctr_id,
-			  j_coefficient_zero);
-  }
-  else {
-    jobject j_coefficient = build_java_coeff(env, coefficient);
-    jobject j_variable = env->NewObject(j_variable_class, j_variable_ctr_id,
-					varid);
-    jobject j_le_variable = env->NewObject(j_le_variable_class,
-					   j_le_variable_ctr_id,
-					   j_variable);
-    j_le_term =  env->CallObjectMethod(j_le_variable,
-				       j_le_times_id, j_coefficient);
-    while (true) {
-      ++varid;
-      while (varid < space_dimension
-	     && (coefficient = r.coefficient(Variable(varid))) == 0)
-	++varid;
-      if (varid >= space_dimension)
-	break;
-      else {
- 	j_coefficient = build_java_coeff(env, coefficient);
- 	j_variable = env->NewObject(j_variable_class,
-				    j_variable_ctr_id,
-				    varid);
-  	j_le_variable = env->NewObject(j_le_variable_class,
-				       j_le_variable_ctr_id,
-				       j_variable);
- 	jobject j_le_term2 = env->CallObjectMethod(j_le_variable,
-						   j_le_times_id,
-						   j_coefficient);
-  	jmethodID j_le_sum_id
-  	  = env->GetMethodID(j_le_class,
-  			     "sum",
-  			     "(Lparma_polyhedra_library/Linear_Expression;)"
-			     "Lparma_polyhedra_library/Linear_Expression;");
- 	j_le_term = env->CallObjectMethod(j_le_term, j_le_sum_id, j_le_term2);
-      }
-    }
-  }
-  return j_le_term;
-}
-
-
-class PFunc {
-private:
-  jobject j_p_func;
-  JNIEnv* env;
+// FIXME: documentation is missing.
+class Partial_Function {
 public:
+  // FIXME: documentation is missing.
+  Partial_Function(jobject j_p_func, JNIEnv* env);
 
-  PFunc(jobject j_p_func, JNIEnv* env):
-  j_p_func(j_p_func),
-  env(env){
-  }
+  // FIXME: documentation is missing.
+  bool has_empty_codomain() const;
 
-  bool has_empty_codomain() const {
-    jclass j_partial_function_class
-       = env->FindClass("parma_polyhedra_library/Partial_Function");
-     jmethodID j_has_empty_codomain_id
-       = env->GetMethodID(j_partial_function_class,
- 			 "has_empty_codomain",
- 			 "()Z");
-     return env->CallBooleanMethod(j_p_func, j_has_empty_codomain_id);
-  }
+  // FIXME: documentation is missing.
+  dimension_type max_in_codomain() const;
 
-  dimension_type max_in_codomain() const {
-     jclass j_partial_function_class
-       = env->FindClass("parma_polyhedra_library/Partial_Function");
-     jmethodID j_max_in_codomain_id
-       = env->GetMethodID(j_partial_function_class,
- 			 "max_in_codomain",
- 			 "()J");
-     jlong value = env->CallLongMethod(j_p_func, j_max_in_codomain_id);
-     return jtype_to_unsigned<dimension_type>(value);
-  }
+  // FIXME: documentation is missing.
+  bool maps(dimension_type i, dimension_type& j) const;
 
-  bool maps(dimension_type i, dimension_type& j) const {
-    jclass j_partial_function_class
-       = env->FindClass("parma_polyhedra_library/Partial_Function");
-    jclass j_by_reference_class
-      = env->FindClass("parma_polyhedra_library/By_Reference");
-    jmethodID j_by_reference_ctr_id
-      = env->GetMethodID(j_by_reference_class,
-			 "<init>",
-			 "(Ljava/lang/Object;)V");
-    jobject coeff = j_long_to_j_long_class(env, 0);
-    jobject new_by_ref = env->NewObject(j_by_reference_class,
-  					j_by_reference_ctr_id,
-  					coeff);
-    jmethodID j_maps_id
-      = env->GetMethodID(j_partial_function_class,
-			 "maps",
-			 "(Ljava/lang/Long;Lparma_polyhedra_library/By_Reference;)Z");
-    if(env->CallBooleanMethod(j_p_func, j_maps_id,
-			      j_long_to_j_long_class(env, i),
-			      new_by_ref)) {
-      jobject long_value = get_by_reference(env, new_by_ref);
-      j = jtype_to_unsigned<dimension_type>(j_long_class_to_j_long(env,
-								   long_value));
-      return true;
-    }
-    return false;
-  }
+private:
+  // FIXME: documentation is missing.
+  jobject j_p_func;
+
+  // FIXME: documentation is missing.
+  JNIEnv* env;
 };
 
 } // namespace Java
@@ -453,3 +324,8 @@ public:
 } // namespace Interfaces
 
 } // namespace Parma_Polyhedra_Library
+
+
+#include "ppl_java_common.inlines.hh"
+
+#endif // !defined(PPL_ppl_prolog_common_defs_hh)

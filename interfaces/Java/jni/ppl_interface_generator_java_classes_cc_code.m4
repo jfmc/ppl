@@ -1012,8 +1012,8 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_map_1space_1dimen
 (JNIEnv* env , jobject j_this_@LCLASS@, jobject j_p_func) {
   try {
   @CPP_CLASS@* this_@LCLASS@
- = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this_@LCLASS@));
-  PFunc ppl_pfunc = PFunc(j_p_func, env);
+    = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this_@LCLASS@));
+  Partial_Function ppl_pfunc(j_p_func, env);
   this_@LCLASS@->map_space_dimensions(ppl_pfunc);
   }
   CATCH_ALL;

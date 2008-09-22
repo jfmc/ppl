@@ -56,7 +56,8 @@ libppl_java_la_LDFLAGS = "-shrext .jnilib"
 endif HOST_OS_DARWIN
 
 libppl_java_la_SOURCES = \
-ppl_java_common.hh \
+ppl_java_common.defs.hh \
+ppl_java_common.inlines.hh \
 ppl_java_common.cc \
 ppl_java_globals.cc
 

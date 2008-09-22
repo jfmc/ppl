@@ -20,7 +20,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include "ppl_java_common.hh"
+#include "ppl_java_common.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -30,36 +30,42 @@ namespace Java {
 
 void
 handle_exception(JNIEnv* env, const std::overflow_error& e) {
-  jclass newExcCls = env->FindClass("parma_polyhedra_library/Overflow_Error_Exception");
+  jclass newExcCls
+    = env->FindClass("parma_polyhedra_library/Overflow_Error_Exception");
   env->ThrowNew(newExcCls, e.what());
 }
 void
 handle_exception(JNIEnv* env, const std::invalid_argument& e) {
-  jclass newExcCls = env->FindClass("parma_polyhedra_library/Invalid_Argument_Exception");
+  jclass newExcCls
+    = env->FindClass("parma_polyhedra_library/Invalid_Argument_Exception");
   env->ThrowNew(newExcCls, e.what());
 }
 
 void
 handle_exception(JNIEnv* env, const std::logic_error& e) {
-  jclass newExcCls = env->FindClass("parma_polyhedra_library/Logic_Error_Exception");
+  jclass newExcCls
+    = env->FindClass("parma_polyhedra_library/Logic_Error_Exception");
   env->ThrowNew(newExcCls, e.what());
 }
 
 void
 handle_exception(JNIEnv* env, const std::length_error& e) {
-  jclass newExcCls = env->FindClass("parma_polyhedra_library/Length_Error_Exception");
+  jclass newExcCls
+    = env->FindClass("parma_polyhedra_library/Length_Error_Exception");
   env->ThrowNew(newExcCls, e.what());
 }
 
 void
 handle_exception(JNIEnv* env, const std::domain_error& e) {
-  jclass newExcCls = env->FindClass("parma_polyhedra_library/Domain_Error_Exception");
+  jclass newExcCls
+    = env->FindClass("parma_polyhedra_library/Domain_Error_Exception");
   env->ThrowNew(newExcCls, e.what());
 }
 
 void
 handle_exception(JNIEnv* env, const std::bad_alloc&) {
-  jclass newExcCls = env->FindClass("java/lang/RuntimeException");
+  jclass newExcCls
+    = env->FindClass("java/lang/RuntimeException");
   env->ThrowNew(newExcCls, "Out of memory");
 }
 
@@ -284,50 +290,43 @@ build_java_variable(JNIEnv* env, const Variable& var) {
 
 Relation_Symbol
 build_ppl_relsym(JNIEnv* env, const jobject& j_relsym) {
-  jclass rel_sym_class = env->FindClass("parma_polyhedra_library/Relation_Symbol");
+  jclass rel_sym_class
+    = env->FindClass("parma_polyhedra_library/Relation_Symbol");
   jmethodID rel_sym_ordinal_id = env->GetMethodID(rel_sym_class, "ordinal",
 						  "()I");
   jint rel_sym = env->CallIntMethod(j_relsym, rel_sym_ordinal_id);
   switch (rel_sym) {
-  case 0: {
+  case 0:
     return LESS_THAN;
-  }
-  case 1: {
+  case 1:
     return LESS_OR_EQUAL;
-  }
- case 2: {
-   return EQUAL;
- }
-  case 3: {
+  case 2:
+    return EQUAL;
+  case 3:
     return GREATER_OR_EQUAL;
-  }
-  case 4: {
+  case 4:
     return GREATER_THAN;
-  }
   default:
-    ;
+    // We should not be here!
+    throw std::runtime_error("PPL Java interface internal error");
   }
-  // We should not be here!
-  throw std::runtime_error("PPL Java interface internal error");
 }
 
 Optimization_Mode
 build_ppl_optimization_mode(JNIEnv* env, const jobject& j_opt_mode) {
-  jclass opt_mode_class = env->FindClass("parma_polyhedra_library/Optimization_Mode");
+  jclass opt_mode_class
+    = env->FindClass("parma_polyhedra_library/Optimization_Mode");
   jmethodID opt_mode_ordinal_id = env->GetMethodID(opt_mode_class, "ordinal",
 						  "()I");
   jint opt_mode = env->CallIntMethod(j_opt_mode, opt_mode_ordinal_id);
   switch (opt_mode) {
-  case 0: {
+  case 0:
     return MINIMIZATION;
-  }
-  case 1: {
+  case 1:
     return MAXIMIZATION;
-  }
   default:
-    ;
+    throw std::runtime_error("PPL Java interface internal error");
   }
-  throw std::runtime_error("PPL Java interface internal error");
 }
 
 jobject
