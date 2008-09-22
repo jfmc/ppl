@@ -58,8 +58,7 @@ Prolog_interface.dox
 if BUILD_SOME_PROLOG_INTERFACES
 
 BUILT_SOURCES = \
-ppl_prolog_domains.hh \
-ppl_prolog_domains.cc
+ppl_prolog_domains.hh
 
 interface_generator_dependencies = \
 ../ppl_interface_generator_common.m4 \
@@ -81,7 +80,7 @@ ppl_prolog_domains.hh: $(interface_generator_dependencies)
 	$(top_srcdir)/utils/cm_splitter.sh < ppl_prolog_hh_blob
 	rm -f ppl_prolog_hh_blob
 
-ppl_prolog_domains.cc: $(interface_generator_dependencies)
+ppl_prolog_domains.cc.stamp: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_prolog_cc_files.m4 \
                 > ppl_prolog_cc_blob
@@ -94,5 +93,6 @@ endif BUILD_SOME_PROLOG_INTERFACES
 CLEANFILES = \
 @required_instantiations_prolog_cxx_headers@ \
 @required_instantiations_prolog_cxx_sources@ \
+ppl_prolog_domains.cc.stamp \
 ppl_prolog_domains.hh \
 Prolog_interface.dox

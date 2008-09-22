@@ -750,6 +750,9 @@ m4_define(`m4_Grid_point_replacement', `grid_point')
 dnl  The constrainer objects used to describe a class.
 m4_define(`m4_constrainer_replacement', `constraint')
 m4_define(`m4_Grid_constrainer_replacement', `congruence')
+m4_define(`m4_Pointset_Powerset_constrainer_replacement',
+  `m4_class_pattern_replacement(m4_class_body_counter$1,
+                                constrainer, `')')
 
 dnl ---------------------------------------------------------------------
 dnl pattern == cpp_disjunct or disjunct

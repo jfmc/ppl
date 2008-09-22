@@ -44,7 +44,7 @@ m4_define(`m4_default_code', `m4_dumpdef($1`'_code)')
 dnl m4_pre_extra_class_code(Class_Counter)
 dnl Prefix extra code for each class.
 m4_define(`m4_pre_extra_class_code', `dnl
-m4_define(`m4_current_interface', m4_interface_class`'$1)`'dnl
+m4_define(`m4_current_interface', m4_interface_class`'$1)
 %<--%<--%<-- ppl_prolog_domains.hh
 `#'include "ppl_prolog_`'m4_current_interface.hh"
 %<--%<--%<-- ppl_prolog_`'m4_current_interface.hh
