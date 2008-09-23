@@ -438,7 +438,8 @@ test13() {
   return false;
 }
 
-// 
+// Difference of 2 closed half spaces, where the second is
+// strictly contained in the first.
 bool
 test14() {
   Variable A(0);
