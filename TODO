@@ -71,6 +71,8 @@ Enhancements for PPL 0.11 or later versions
     or we are otherwise 100% sure that the changed argument and the
     argument that is read afterward are not aliases (in the latter
     case an assert(&to != &z) shall be added.
+- DO_TEST_F should not cause the output "failed tests" to appear,
+  but "tests unexpectedly succeeded".
 - Improve the handling of the --enable-instantiations configure
   option so that "closure by subdomain" is automatically implemented
   (e.g., if Pointset_Powerset(X) is specified, X should be automatically
