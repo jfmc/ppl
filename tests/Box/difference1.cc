@@ -43,7 +43,7 @@ test01() {
   box2.add_constraint(B <= 2);
 
   print_constraints(box1, "*** box1 ***");
-  print_constraints(box2, "*** ph2 ***");
+  print_constraints(box2, "*** box2 ***");
 
   box1.difference_assign(box2);
 
@@ -51,7 +51,7 @@ test01() {
 
   bool ok = check_result(box1, known_result);
 
-  print_constraints(box1, "*** after box1.difference_assign(ph2) ***");
+  print_constraints(box1, "*** after box1.difference_assign(box2) ***");
 
   return ok;
 }
@@ -460,7 +460,7 @@ test14() {
 
   bool ok = check_result(box1, known_box);
 
-  print_constraints(box1, "*** box1.difference_assign(box2) ***");
+  print_constraints(box1, "*** after box1.difference_assign(box2) ***");
   print_constraints(known_box, "*** known_box ***");
 
   return ok;
