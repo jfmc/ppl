@@ -1017,6 +1017,7 @@ bool valid = ${instantiation}::valid_instantiation();
   required_instantiations_prolog_cxx_objects=`echo "${required_instantiations_prolog_source_names}" | sed -e 's/@/.lo /g' -e 's/$/.lo/g' | sed -e 's/\([[^. ]]*\)\.lo/ppl_prolog_\1.lo/g'`
   required_instantiations_prolog_cxx_sources=`echo "${required_instantiations_prolog_cxx_objects}" | sed -e 's/\([[^. ]]*\)\.lo/\1.cc/g'`
   required_instantiations_prolog_cxx_headers=`echo "${required_instantiations_prolog_cxx_sources}" | sed -e 's/\.cc/.hh/g'`
+  required_instantiations_prolog_generated_test_sources=`echo "${required_instantiations_prolog_source_names}" | sed -e 's/@/.pl /g' -e 's/$/.pl/g' | sed -e 's/\([[^. ]]*\)\.pl/ppl_prolog_generated_test_\1.pl/g'`
 
   required_instantiations_java_source_names=`echo "${required_instantiations_canonical_names}" | sed -e 's/^Polyhedron/Polyhedron@C_Polyhedron@NNC_Polyhedron/g' -e 's/@Polyhedron/@Polyhedron@C_Polyhedron@NNC_Polyhedron/g' -e 's/@Pointset_Powerset_Polyhedron/@Pointset_Powerset_C_Polyhedron@Pointset_Powerset_NNC_Polyhedron/g' -e 's/^Pointset_Powerset_Polyhedron/Pointset_Powerset_C_Polyhedron@Pointset_Powerset_NNC_Polyhedron/g' | sed -e 's/Pointset_Powerset_[[a-zA-Z0-9_]]*/&@&_Iterator/g'`
   required_instantiations_java_sources=`echo "${required_instantiations_java_source_names}" | sed -e 's/@/.java /g' -e 's/$/.java/g'`
@@ -1208,6 +1209,7 @@ AC_SUBST(required_instantiations_c_cxx_objects)
 AC_SUBST(required_instantiations_prolog_cxx_headers)
 AC_SUBST(required_instantiations_prolog_cxx_sources)
 AC_SUBST(required_instantiations_prolog_cxx_objects)
+AC_SUBST(required_instantiations_prolog_generated_test_sources)
 AC_SUBST(required_instantiations_java_sources)
 AC_SUBST(required_instantiations_java_classes)
 AC_SUBST(required_instantiations_java_cxx_headers)
