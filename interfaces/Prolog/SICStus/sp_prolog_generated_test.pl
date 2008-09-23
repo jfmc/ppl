@@ -1,4 +1,4 @@
-/* Main program for the PPL/SWI-Prolog predicate checker.
+/* Main program for the PPL/SICStus-Prolog generated tests.
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -20,19 +20,29 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-:-  ensure_loaded('ppl_predicate_check_main.pl').
+prolog_system('SICStus').
 
-prolog_system('SWI').
+:- ensure_loaded('ppl_sicstus.pl').
+
+version_dependent_declarations :-
+	prolog_flag(version, V),
+	atom_codes(V, VList),
+	VList = [_S, _I, _C, _S, _t, _u, _s, _, N|_],
+	(N is "4" ->
+	    true
+	;
+	    set_prolog_flag(language, iso),
+	    use_module(library(lists), [append/3, member/2])
+	).
 
 main :-
-    current_output(Old_Stream),
-    open(obtained_pchk, write, Stream),
-    set_output(Stream),
-    (check_all ->
-	write('OK')
-    ;
-	write('FAILURE')
-    ),
-    nl,
-    close(Stream),
-    set_output(Old_Stream).
+	version_dependent_declarations,
+        ensure_loaded('ppl_prolog_generated_test_main.pl'),
+	set_prolog_flag(fileerrors, off),
+	(check_all ->
+	    write('OK')
+	;
+	    write('FAILURE')
+	),
+	nl,
+	halt.

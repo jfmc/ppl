@@ -1,4 +1,4 @@
-% Extra test code for the Prolog interfaces.
+% Extra test code for the generated tests for the Prolog interfaces.
 % Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 %
 % This file is part of the Parma Polyhedra Library (PPL).

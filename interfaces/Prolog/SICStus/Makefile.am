@@ -28,7 +28,7 @@ $(SICSTUS_CFLI_FILES) \
 ppl_sicstus.pl \
 sp_clpq.pl \
 sp_pl_check.pl \
-sp_predicate_check.pl
+sp_prolog_generated_test.pl
 
 if BUILD_SICSTUS_PROLOG_INTERFACE
 
@@ -293,19 +293,19 @@ clpq2_test: ppl_sicstus ppl_sicstus.pl sp_clpq.pl ../tests/clpq2.pl ../tests/scr
 	      <$(srcdir)/../tests/script_clpq2 >obtained_clpq2
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
 
-predicate_check_test: ppl_sicstus ppl_sicstus.pl sp_predicate_check.pl ../tests/ppl_predicate_check_main.pl $(EXPECTED_PCHK)
+ppl_prolog_generated_test: ppl_sicstus ppl_sicstus.pl sp_prolog_generated_test.pl ../tests/ppl_prolog_generated_test_main.pl $(EXPECTED_PCHK)
 	if [ $(srcdir) != `pwd` ]; then \
-	  cp -f $(srcdir)/../tests/ppl_predicate_check_common.pl . ; \
+	  cp -f $(srcdir)/../tests/ppl_prolog_generated_test_common.pl . ; \
 	fi
-	cp -f ../tests/ppl_predicate_check_main.pl . ; \
+	cp -f ../tests/ppl_prolog_generated_test_main.pl . ; \
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		$(WATCHDOG_DLOPEN) \
-		./ppl_sicstus -l $(srcdir)/sp_predicate_check.pl \
+		./ppl_sicstus -l $(srcdir)/sp_prolog_generated_test.pl \
         --goal "main."  \
 			>obtained_pchk
-	rm -f ppl_predicate_check_main.pl; \
-	rm -f ppl_predicate_check_common.pl; \
+	rm -f ppl_prolog_generated_test_main.pl; \
+	rm -f ppl_prolog_generated_test_common.pl; \
 	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
 
 endif BUILD_SICSTUS_PROLOG_INTERFACE

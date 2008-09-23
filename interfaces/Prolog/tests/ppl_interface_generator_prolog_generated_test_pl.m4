@@ -1,8 +1,9 @@
 m4_define(`dnl', `m4_dnl')`'dnl
 m4_divert(-1)
 
-dnl This m4 file generates the test files ppl_predicate_check_<CLASS_NAME>.pl
-dnl using the code in ppl_interface_generator_predicate_check_code.m4.
+dnl This m4 file generates the test files
+dnl ppl_prolog_generated_test_<CLASS_NAME>.pl using the code in
+dnl ppl_interface_generator_prolog_generated_test_pl_code.m4.
 
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
@@ -26,7 +27,7 @@ dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
 m4_divert`'dnl
-%<--%<--%<-- ppl_predicate_check_main.pl
+%<--%<--%<-- ppl_prolog_generated_test_main.pl
 /* Prolog code for checking all predicates.  -*- C++ -*-
 m4_include(`ppl_interface_generator_copyright')`'dnl
 */
@@ -37,7 +38,7 @@ dnl Common files are included here
 dnl ==================================================================
 
 m4_include(`ppl_interface_generator_prolog_procedure_generators.m4')
-m4_include(`ppl_interface_generator_predicate_check_code.m4')
+m4_include(`ppl_interface_generator_prolog_generated_test_pl_code.m4')
 
 dnl ==================================================================
 dnl Useful macros needed to generate the test code.
@@ -77,7 +78,7 @@ dnl -----------------------------------------------------------------
 dnl
 m4_pushdef(`m4_one_class_code',
 `m4_define(`m4_current_interface', m4_interface_class`'$1)`'dnl
-:- include(QUOTE../tests/ppl_predicate_check_`'m4_current_interface`'.plQUOTE).
+:- include(QUOTE../tests/ppl_prolog_generated_test_`'m4_current_interface`'.plQUOTE).
 m4_undefine(`m4_current_interface')`'dnl
 ')
 dnl
@@ -86,7 +87,7 @@ dnl Main call to generate code for the include statements.
 dnl -----------------------------------------------------------------
 dnl
 m4_divert`'dnl
-%<--%<--%<-- ppl_predicate_check_main.pl
+%<--%<--%<-- ppl_prolog_generated_test_main.pl
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                   %
@@ -94,7 +95,7 @@ m4_divert`'dnl
 %                                                                   %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-:- include('ppl_predicate_check_common.pl').
+:- include('ppl_prolog_generated_test_common.pl').
 :- dynamic(all_class_dependent_predicates/1).
 :- discontiguous(all_class_dependent_predicates/1).
 m4_patsubst(m4_all_code`'m4_changequote(`[*[', `]*]')[*[]*],
@@ -158,7 +159,7 @@ dnl
 m4_pushdef(`m4_pre_extra_class_code', `dnl
 m4_define(`m4_current_interface', m4_interface_class`'$1)`'dnl
 
-%<--%<--%<-- ppl_predicate_check_`'m4_current_interface.pl
+%<--%<--%<-- ppl_prolog_generated_test_`'m4_current_interface.pl
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                   %
 %                       Main call for tests                         %
@@ -197,7 +198,7 @@ m4_ifdef(`$1_code',
 ')`'dnl
 m4_pushdef(`m4_pre_extra_class_code', `dnl
 m4_define(`m4_current_interface', m4_interface_class`'$1)
-%<--%<--%<-- ppl_predicate_check_`'m4_current_interface.pl
+%<--%<--%<-- ppl_prolog_generated_test_`'m4_current_interface.pl
 m4_undefine(`m4_current_interface')`'dnl
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                   %
@@ -222,7 +223,7 @@ dnl ==================================================================
 dnl -----------------------------------------------------------------
 dnl Extra definitions
 dnl -----------------------------------------------------------------
-m4_include(`ppl_interface_generator_predicate_check_code.m4')
+m4_include(`ppl_interface_generator_prolog_generated_test_pl_code.m4')
 
 m4_define(`m4_arg_sequence',
   `m4_ifelse(`$1', 0, ,
@@ -264,7 +265,7 @@ m4_ifelse($#, 0, ,
 m4_define(`m4_pre_extra_class_code', `dnl
 m4_define(`m4_current_interface', m4_interface_class`'$1)`'dnl
 
-%<--%<--%<-- ppl_predicate_check_`'m4_current_interface.pl
+%<--%<--%<-- ppl_prolog_generated_test_`'m4_current_interface.pl
 m4_undefine(`m4_current_interface')`'dnl
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                   %
@@ -322,7 +323,7 @@ dnl -----------------------------------------------------------------
 
 m4_pushdef(`m4_pre_extra_class_code', `dnl
 m4_define(`m4_current_interface', m4_interface_class`'$1)
-%<--%<--%<-- ppl_predicate_check_`'m4_current_interface.pl
+%<--%<--%<-- ppl_prolog_generated_test_`'m4_current_interface.pl
 m4_undefine(`m4_current_interface')`'dnl
 m4_define(`m4_start1', 0)`'dnl
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

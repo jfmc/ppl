@@ -2,7 +2,7 @@ m4_define(`dnl', `m4_dnl')`'dnl
 m4_divert(-1)
 
 dnl This m4 file defines macros needed for generating
-dnl the Ciao dependent code for xsb_predicate_check.pl.
+dnl the XSB dependent code for xsb_prolog_generated_test.pl.
 
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
@@ -37,13 +37,13 @@ m4_include(`ppl_interface_generator_copyright')
 :- import xpp_include_dir/1 from parse.
 :- assert(xpp_include_dir('.')).
 
-#include "ppl_predicate_check_main.pl"
-#include "ppl_predicate_check_common.pl"
+#include "ppl_prolog_generated_test_main.pl"
+#include "ppl_prolog_generated_common.pl"
 m4_divert(-1)
 
 m4_pushdef(`m4_one_class_code', `dnl
 m4_replace_all_patterns_in_string($1,
-                                  `#includeSPACE"../tests/ppl_predicate_check_@CLASS@.pl"
+                                  `#includeSPACE"../tests/ppl_prolog_generated_test_@CLASS@.pl"
 ',
                                   m4_pattern_list)`'dnl
 ')`'dnl

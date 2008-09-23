@@ -30,7 +30,7 @@ $(XSB_CFLI_FILES) \
 xsb_clpq.P \
 xsb_clpq2.P \
 xsb_pl_check.P \
-ppl_interface_generator_xsb_predicate_check_P.m4
+ppl_interface_generator_xsb_prolog_generated_test_P.m4
 
 if BUILD_XSB_PROLOG_INTERFACE
 
@@ -51,7 +51,7 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../../ppl_interface_generator_common_procedure_generators.m4 \
 ../ppl_interface_generator_prolog_procedure_generators.m4 \
 ../ppl_interface_generator_prolog_systems.m4 \
-ppl_interface_generator_xsb_predicate_check_P.m4
+ppl_interface_generator_xsb_prolog_generated_test_P.m4
 
 ppl_xsb.H: $(interface_generator_dependencies) ppl_interface_generator_xsb_H.m4
 	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
@@ -65,9 +65,9 @@ ppl_xsb.cc: $(interface_generator_dependencies) ppl_interface_generator_xsb_cc.m
 	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_xsb_cc.m4 > $@
 
-xsb_predicate_check.P: $(interface_generator_dependencies) ppl_interface_generator_xsb_predicate_check_P.m4
+xsb_prolog_generated_test.P: $(interface_generator_dependencies) ppl_interface_generator_xsb_prolog_generated_test_P.m4
 	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
-           $(srcdir)/ppl_interface_generator_xsb_predicate_check_P.m4 > $@
+           $(srcdir)/ppl_interface_generator_xsb_prolog_generated_test_P.m4 > $@
 
 AM_CPPFLAGS = \
 -I$(top_srcdir)/interfaces \
@@ -274,17 +274,17 @@ pl_check_test: libppl_xsb.la ppl_xsb.xwam xsb_pl_check.P ../tests/pl_check.pl
 	fi
 	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
 
-predicate_check_test: libppl_xsb.la ppl_xsb.xwam xsb_predicate_check.P ../tests/ppl_predicate_check_main.pl
-	cp -f $(srcdir)/../tests/ppl_predicate_check_common.pl . ; \
-	cp -f ../tests/ppl_predicate_check_main.pl .
-	rm -f xsb_predicate_check.xwam
+ppl_prolog_generated_test: libppl_xsb.la ppl_xsb.xwam xsb_prolog_generated_test.P ../tests/ppl_prolog_generated_test_main.pl
+	cp -f $(srcdir)/../tests/ppl_prolog_generated_test_common.pl . ; \
+	cp -f ../tests/ppl_prolog_generated_test_main.pl .
+	rm -f xsb_prolog_generated_test.xwam
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		$(WATCHDOG_DLOPEN) \
-		xsb xsb_predicate_check \
+		xsb xsb_prolog_generated_test \
 			>obtained_pchk
-	rm -f ppl_predicate_check_main.pl
-	rm -f xsb_predicate_check.P; \
+	rm -f ppl_prolog_generated_test_main.pl
+	rm -f xsb_prolog_generated_test.P; \
 	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
 
 endif BUILD_XSB_PROLOG_INTERFACE

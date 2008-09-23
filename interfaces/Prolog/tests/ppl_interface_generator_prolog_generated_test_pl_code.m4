@@ -1,8 +1,9 @@
 m4_divert(-1)
 
 dnl This m4 file contains the code for generating the test files
-dnl ppl_predicate_check_<CLASS_NAME>.pl, which test
-dnl the generated Prolog interface predicates.
+dnl ppl_prolog_generated_test_<CLASS_NAME>.pl, which test
+dnl the generated Prolog interface predicates
+dnl and the main file ppl_prolog_generated_test_main.pl.
 
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl

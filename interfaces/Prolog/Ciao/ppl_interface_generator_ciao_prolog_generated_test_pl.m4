@@ -2,7 +2,7 @@ m4_define(`dnl', `m4_dnl')`'dnl
 m4_divert(-1)
 
 dnl This m4 file defines macros needed for generating
-dnl the Ciao dependent code for ciao_predicate_check.pl.
+dnl the Ciao dependent code for ciao_prolog_generated_test.pl.
 
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
@@ -43,7 +43,7 @@ m4_divert(1)
 
 :- set_prolog_flag(multi_arity_warnings, off).
 
-:-  `include'('ppl_predicate_check_main.pl').
+:-  `include'('ppl_prolog_generated_test_main.pl').
 
 prolog_system('Ciao').
 

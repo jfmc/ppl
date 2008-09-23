@@ -28,7 +28,7 @@ $(CIAO_CFLI_FILES) \
 ciao_clpq.pl \
 ciao_clpq2.pl \
 ciao_pl_check.pl \
-ppl_interface_generator_ciao_predicate_check_pl.m4
+ppl_interface_generator_ciao_prolog_generated_test_pl.m4
 
 if BUILD_CIAO_PROLOG_INTERFACE
 
@@ -61,7 +61,7 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../ppl_interface_generator_prolog_procedure_generators.m4 \
 ../ppl_interface_generator_prolog_systems.m4 \
 ppl_interface_generator_ciao_pl.m4 \
-ppl_interface_generator_ciao_predicate_check_pl.m4
+ppl_interface_generator_ciao_prolog_generated_test_pl.m4
 
 pkglib_LTLIBRARIES = libppl_ciao.la
 
@@ -165,9 +165,9 @@ ppl_ciao.pl: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_ciao_pl.m4 > $@
 
-ciao_predicate_check.pl: $(interface_generator_dependencies)
+ciao_prolog_generated_test.pl: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
-           $(srcdir)/ppl_interface_generator_ciao_predicate_check_pl.m4 > $@
+           $(srcdir)/ppl_interface_generator_ciao_prolog_generated_test_pl.m4 > $@
 
 ppl_ciao.po: ppl_ciao.pl
 	ciaoc -c ppl_ciao.pl
@@ -212,11 +212,11 @@ ciao_clpq2: .libs/libppl_ciao.so ppl_ciao.po ciao_clpq.pl ../tests/clpq2.pl | ci
 	rm -f clpq2.pl
 
 
-ciao_predicate_check: .libs/libppl_ciao.so ppl_ciao.po ciao_predicate_check.pl ../tests/ppl_predicate_check_main.pl | ciao_pl_check
-	cp -f $(srcdir)/../tests/ppl_predicate_check_common.pl .; \
-	cp -f ../tests/ppl_predicate_check_main.pl .
-	ciaoc -o $@ ciao_predicate_check.pl
-	rm -f ppl_predicate_check_main.pl
+ciao_prolog_generated_test: .libs/libppl_ciao.so ppl_ciao.po ciao_prolog_generated_test.pl ../tests/ppl_prolog_generated_test_main.pl | ciao_pl_check
+	cp -f $(srcdir)/../tests/ppl_prolog_generated_test_common.pl .; \
+	cp -f ../tests/ppl_prolog_generated_test_main.pl .
+	ciaoc -o $@ ciao_prolog_generated_test.pl
+	rm -f ppl_prolog_generated_test_main.pl
 
 CLPQ_TESTS_NONSTRICT = \
 ack.clpq \
@@ -283,12 +283,12 @@ clpq2_test: ciao_clpq2$(EXEEXT) .libs/libppl_ciao.so ../tests/script_clpq2 $(EXP
 			<$(srcdir)/../tests/script_clpq2 >obtained_clpq2
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
 
-predicate_check_test: ciao_predicate_check$(EXEEXT) .libs/libppl_ciao.so $(EXPECTED_PCHK)
+ppl_prolog_generated_test: ciao_prolog_generated_test$(EXEEXT) .libs/libppl_ciao.so $(EXPECTED_PCHK)
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		$(WATCHDOG_DLOPEN) \
 		-dlopen libppl_ciao.la \
-		./ciao_predicate_check \
+		./ciao_prolog_generated_test \
 			 >obtained_pchk
 	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
 
@@ -300,6 +300,6 @@ ppl_ciao.pl
 
 MOSTLYCLEANFILES = \
 *.itf *.po *.c *.so \
-ciao_clpq ciao_clpq2 ciao_pl_check ciao_predicate_check \
+ciao_clpq ciao_clpq2 ciao_pl_check ciao_prolog_generated_test \
 obtained_clpq obtained_clpq2 obtained_pchk \
 $(CLPQ_TESTS)
