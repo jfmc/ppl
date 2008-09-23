@@ -60,6 +60,15 @@ main() {
 
 #include <fenv.h>
 
+#if !defined(FE_INEXACT)
+
+int
+main() {
+  exit(1);
+}
+
+#else // defined(FE_INEXACT)
+
 struct A {
   double dividend;
   double divisor;
@@ -98,6 +107,8 @@ int main() {
   }
   exit(0);
 }
+
+#endif // defined(FE_INEXACT)
 
 #endif
 
