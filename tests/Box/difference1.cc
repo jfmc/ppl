@@ -438,6 +438,32 @@ test13() {
   return false;
 }
 
+// 
+bool
+test14() {
+  Variable A(0);
+  Variable B(1);
+
+  TBox box1(3);
+  box1.refine_with_constraint(A >= 0);
+  TBox box2(3);
+  box2.refine_with_constraint(A >= 3);
+
+  box1.difference_assign(box2);
+
+  Rational_Box known_box(3);
+  known_box.refine_with_constraint(A >= 0);
+  known_box.refine_with_constraint(A < 3);
+
+  bool ok = check_result(box1, known_box);
+
+  print_constraints(box1, "*** box1 constraints ***");
+  print_constraints(box2, "*** box2 constraints ***");
+  print_constraints(known_box, "*** known_box constraints ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -454,4 +480,5 @@ BEGIN_MAIN
   DO_TEST(test11);
   DO_TEST(test12);
   DO_TEST(test13);
+  DO_TEST_F(test14);
 END_MAIN
