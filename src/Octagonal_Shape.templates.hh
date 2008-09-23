@@ -643,13 +643,16 @@ Octagonal_Shape<T>::minimized_congruences() const {
       {
         const N& c_i_li = matrix[i][lead_i];
 #ifndef NDEBUG
-        const N& c_ii_lii = matrix[i+1][lead_i+1];
+        const N& c_ii_lii = matrix[i+1][coherent_index(lead_i)];
         assert(is_additive_inverse(c_ii_lii, c_i_li));
 #endif
         const Variable x(lead_i/2);
         const Variable y(i/2);
         numer_denom(c_i_li, num, den);
-        cgs.insert(den*x - den*y == num);
+        if (lead_i % 2 == 0)
+          cgs.insert(den*x - den*y == num);
+        else
+          cgs.insert(den*x + den*y + num == 0);
       }
       continue;
     }
