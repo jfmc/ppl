@@ -1498,33 +1498,43 @@ Box<ITV>::difference_assign(const Box& y) {
   if (x.is_empty() || y.is_empty())
     return;
 
-  // If `x' is zero-dimensional, then at this point both `x' and `y'
-  // are the universe box, so that their difference is empty.
-  if (space_dim == 0) {
-    x.set_empty();
-    return;
-  }
-
-  dimension_type index_non_contained = space_dim;
-  dimension_type number_non_contained = 0;
-  for (dimension_type i = space_dim; i-- > 0; )
-    if (!y.seq[i].contains(x.seq[i])) {
-      if (++number_non_contained == 1)
-	index_non_contained = i;
-      else
-	break;
-    }
-
-  switch (number_non_contained) {
+  switch (space_dim) {
   case 0:
-    // `y' covers `x': the difference is empty.
+    // If `x' is zero-dimensional, then at this point both `x' and `y'
+    // are the universe box, so that their difference is empty.
     x.set_empty();
     break;
+
   case 1:
-    x.seq[index_non_contained].difference_assign(y.seq[index_non_contained]);
+    x.seq[0].difference_assign(y.seq[0]);
     break;
+
   default:
-    // Nothing to do: the difference is `x'.
+    {
+      dimension_type index_non_contained = space_dim;
+      dimension_type number_non_contained = 0;
+      for (dimension_type i = space_dim; i-- > 0; )
+        if (!y.seq[i].contains(x.seq[i])) {
+          if (++number_non_contained == 1)
+            index_non_contained = i;
+          else
+            break;
+        }
+
+      switch (number_non_contained) {
+      case 0:
+        // `y' covers `x': the difference is empty.
+        x.set_empty();
+        break;
+      case 1:
+        x.seq[index_non_contained]
+          .difference_assign(y.seq[index_non_contained]);
+        break;
+      default:
+        // Nothing to do: the difference is `x'.
+        break;
+      }
+    }
     break;
   }
   assert(OK());
