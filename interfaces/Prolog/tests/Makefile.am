@@ -50,7 +50,7 @@ expected_clpq_int8_a expected_clpq2_int8_a expected_pchk_int8_a \
 expected_clpq_int16_a expected_clpq2_int16_a expected_pchk_int16_a \
 expected_clpq_int32_a expected_clpq2_int32_a expected_pchk_int32_a \
 expected_clpq_int64_a expected_clpq2_int64_a expected_pchk_int64_a \
-ppl_predicate_check_common.pl \
+ppl_prolog_generated_test_common.pl \
 ppl_interface_generator_prolog_generated_test_pl.m4 \
 ppl_interface_generator_prolog_generated_test_pl_code.m4
 
