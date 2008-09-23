@@ -284,17 +284,20 @@ ppl_prolog_generated_test: libppl_xsb.la ppl_xsb.xwam xsb_prolog_generated_test.
 		xsb xsb_prolog_generated_test \
 			>obtained_pchk
 	rm -f ppl_prolog_generated_test_main.pl
+	rm -f ppl_prolog_generated_test_common.pl
 	rm -f xsb_prolog_generated_test.P; \
 	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
 
 endif BUILD_XSB_PROLOG_INTERFACE
 
-DISTCLEANFILES = \
+CLEANFILES = \
 ppl_xsb.H \
 ppl_xsb.hh \
 ppl_xsb.cc
 
 MOSTLYCLEANFILES = \
+@required_instantiations_prolog_cxx_objects@ \
 ppl_xsb.xwam ppl_xsb.so \
-xsb_clpq.xwam xsb_clpq2.xwam xsb_pl_check.xwam \
+xsb_efli.lo xsb_efli.o \
+xsb_clpq.xwam xsb_clpq2.xwam xsb_pl_check.xwam xsb_prolog_generated_test.xwam \
 $(CLPQ_TESTS) obtained_clpq obtained_clpq2 obtained_pchk

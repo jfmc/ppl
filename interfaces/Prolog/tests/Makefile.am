@@ -86,4 +86,5 @@ ppl_prolog_generated_test.stamp: $(interface_generator_dependencies)
 endif BUILD_SOME_PROLOG_INTERFACES
 
 CLEANFILES = \
-ppl_prolog_generated_test.stamp
+ppl_prolog_generated_test.stamp \
+ppl_prolog_generated_test_main.pl

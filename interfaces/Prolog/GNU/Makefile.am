@@ -268,10 +268,11 @@ clpq2_test: gp_clpq2 ../tests/script_clpq2 $(EXPECTED_CLPQ2)
 
 endif BUILD_GNU_PROLOG_INTERFACE
 
-DISTCLEANFILES = \
+CLEANFILES = \
 ppl_gprolog.pl
 
 MOSTLYCLEANFILES = \
+@required_instantiations_prolog_cxx_objects@ \
 gp_clpq gp_clpq2 \
 obtained_clpq obtained_clpq2 obtained_pchk \
 $(CLPQ_TESTS) \

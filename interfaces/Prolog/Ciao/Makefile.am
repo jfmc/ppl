@@ -295,10 +295,11 @@ ppl_prolog_generated_test: ciao_prolog_generated_test$(EXEEXT) .libs/libppl_ciao
 endif ENABLE_SHARED
 endif BUILD_CIAO_PROLOG_INTERFACE
 
-DISTCLEANFILES = \
+CLEANFILES = \
 ppl_ciao.pl
 
 MOSTLYCLEANFILES = \
+@required_instantiations_prolog_cxx_objects@ \
 *.itf *.po *.c *.so \
 ciao_clpq ciao_clpq2 ciao_pl_check ciao_prolog_generated_test \
 obtained_clpq obtained_clpq2 obtained_pchk \

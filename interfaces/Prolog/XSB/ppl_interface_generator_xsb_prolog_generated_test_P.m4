@@ -38,7 +38,7 @@ m4_include(`ppl_interface_generator_copyright')
 :- assert(xpp_include_dir('.')).
 
 #include "ppl_prolog_generated_test_main.pl"
-#include "ppl_prolog_generated_common.pl"
+#include "ppl_prolog_generated_test_common.pl"
 m4_divert(-1)
 
 m4_pushdef(`m4_one_class_code', `dnl

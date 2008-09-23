@@ -310,10 +310,11 @@ ppl_prolog_generated_test: ppl_sicstus ppl_sicstus.pl sp_prolog_generated_test.p
 
 endif BUILD_SICSTUS_PROLOG_INTERFACE
 
-DISTCLEANFILES = \
+CLEANFILES = \
 ppl_sicstus_sd.cc
 
 MOSTLYCLEANFILES = \
+@required_instantiations_prolog_cxx_objects@ \
 ppl_sicstus.s.o ppl_sicstus.so \
 $(CLPQ_TESTS) \
 obtained_clpq obtained_clpq2 obtained_pchk

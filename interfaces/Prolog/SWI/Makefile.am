@@ -296,10 +296,11 @@ ppl_prolog_generated_test: swi_prolog_generated_test.pl ../tests/ppl_prolog_gene
 
 endif BUILD_SWI_PROLOG_INTERFACE
 
-DISTCLEANFILES = \
+CLEANFILES = \
 ppl_swiprolog.cc
 
 MOSTLYCLEANFILES = \
+@required_instantiations_prolog_cxx_objects@ \
 pl_clpq pl_clpq2 \
 obtained_clpq obtained_clpq2 obtained_pchk \
 $(CLPQ_TESTS) \
