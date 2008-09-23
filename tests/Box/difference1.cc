@@ -449,6 +449,9 @@ test14() {
   TBox box2(3);
   box2.refine_with_constraint(A >= 3);
 
+  print_constraints(box1, "*** box1 ***");
+  print_constraints(box2, "*** box2 ***");
+
   box1.difference_assign(box2);
 
   Rational_Box known_box(3);
@@ -457,9 +460,8 @@ test14() {
 
   bool ok = check_result(box1, known_box);
 
-  print_constraints(box1, "*** box1 constraints ***");
-  print_constraints(box2, "*** box2 constraints ***");
-  print_constraints(known_box, "*** known_box constraints ***");
+  print_constraints(box1, "*** box1.difference_assign(box2) ***");
+  print_constraints(known_box, "*** known_box ***");
 
   return ok;
 }
