@@ -34,7 +34,6 @@ m4_define(`ppl_@CLASS@_delete_iterator_code', `')
 dnl There is no code at present for these procedures in the OCaml interface.
 dnl Remove the macro if its definition is added.
 dnl
-m4_define(`ppl_@CLASS@_ascii_dump_code', `')
 m4_define(`ppl_@CLASS@_@PARTITION@_code', `')
 m4_define(`ppl_@CLASS@_approximate_partition_code', `')
 
@@ -1108,4 +1107,18 @@ ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign(value ph1,
 }
 CATCH_ALL
 
+')
+
+
+m4_define(`ppl_@CLASS@_ascii_dump_code', `
+extern "C"
+CAMLprim value
+ppl_@CLASS@_ascii_dump(value ph1) try {
+  CAMLparam1(ph1);
+  @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
+  std::ostringstream s;
+  pph1.ascii_dump(s);
+  CAMLreturn(caml_copy_string(s.str().c_str()));
+}
+CATCH_ALL
 ')

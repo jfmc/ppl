@@ -845,3 +845,10 @@ let out = if (ppl_@CLASS@_OK copy01)
     in (print_string out);;
 print_newline();;
 ')
+
+m4_define(`ppl_@CLASS@_ascii_dump_code',
+`
+print_string "testing ppl_@CLASS@_ascii_dump: " ;;
+print_string (ppl_@CLASS@_ascii_dump @LTOPOLOGY@@LCLASS@01);;
+print_newline();;
+')

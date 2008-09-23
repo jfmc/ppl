@@ -32,7 +32,6 @@ m4_define(`ppl_@CLASS@_delete_iterator_code', `')
 dnl There is no code at present for these procedures in the OCaml interface.
 dnl Remove the macro if its definition is added.
 dnl
-m4_define(`ppl_@CLASS@_ascii_dump_code', `')
 m4_define(`ppl_@CLASS@_@PARTITION@_code', `')
 m4_define(`ppl_@CLASS@_approximate_partition_code', `')
 
@@ -524,3 +523,12 @@ external ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign:
   = "ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign"
 
 ')
+
+m4_define(`ppl_@CLASS@_ascii_dump_code', `
+external ppl_@CLASS@_ascii_dump:
+  @LCLASS@ -> string = "ppl_@CLASS@_ascii_dump"
+
+' )
+
+
+m4_define(`ppl_@CLASS@_approximate_partition_code', `')
