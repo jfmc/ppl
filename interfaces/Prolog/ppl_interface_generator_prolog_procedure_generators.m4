@@ -78,4 +78,8 @@ ppl_MIP_Problem_evaluate_objective_function/4,
 ppl_MIP_Problem_OK/1`'dnl
 ')
 
-m4_define(`m4_procedure_list', `m4_common_procedure_list')
+m4_define(`m4_procedure_list', `m4_echo_unquoted(`m4_common_procedure_list',
+ppl_@CLASS@_@BINMINOP@/2 +polyhedron,
+ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize/2 +polyhedron,
+ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize/2 +polyhedron)
+')
