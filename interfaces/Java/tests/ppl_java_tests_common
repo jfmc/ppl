@@ -15,6 +15,7 @@
     Constraint_System constraints1;
     Constraint_System constraints2;
     Congruence_System congruences1;
+    Congruence_System congruences2;
     Generator_System generators1;
     Grid_Generator_System grid_generators1;
 
@@ -72,6 +73,7 @@
 
 	Congruence cg_2A_eq_5 = new Congruence(le_2A, le_5, coeff_0);
 	Congruence cg_C_eq_5 = new Congruence(le_C, le_5, coeff_0);
+	Congruence cg_C_int = new Congruence(le_C, le_0, coeff_1);
 	congruence1 = cg_2A_eq_5;
 	System.out.print("Printing a congruence (2A == 5): ");
         System.out.println(cg_2A_eq_5.toString());
@@ -90,9 +92,11 @@
 	congruences1 = new Congruence_System();
 	congruences1.add(cg_2A_eq_5);
 	congruences1.add(cg_C_eq_5);
-	congruences1.add(cg_2A_eq_5);
 	System.out.println("Printing a congruence system: ");
 	System.out.println(congruences1.toString());
+
+	congruences2 = new Congruence_System();
+	congruences2.add(cg_C_int);
 
 	// Generator declarations.
 	Generator g1 = Generator.point(le_30A_plus_10C, coeff_1);

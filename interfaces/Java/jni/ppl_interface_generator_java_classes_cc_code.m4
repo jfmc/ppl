@@ -304,7 +304,7 @@ JNIEXPORT jobject JNICALL Java_parma_1polyhedra_1library_@1CLASS@_@1GET_REPRESEN
 
 m4_define(`ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_code',
 `dnl
-JNIEXPORT jobject JNICALL Java_parma_1polyhedra_1library_@1CLASS@_minimized_1@GET_REPRESENT@s
+JNIEXPORT jobject JNICALL Java_parma_1polyhedra_1library_@1CLASS@_minimized_1@1GET_REPRESENT@s
 (JNIEnv* env, jobject j_this_@LCLASS@) {
   try {
   @CPP_CLASS@* this_@LCLASS@

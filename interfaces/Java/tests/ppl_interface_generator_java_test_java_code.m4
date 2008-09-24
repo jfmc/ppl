@@ -34,8 +34,6 @@ m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_to
 
 Define here as empty any known schematic method macros for which
 the definition is not yet implemented.
-m4_define(`ppl_@CLASS@_swap_code', `')
-m4_define(`ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_code', `')
 m4_define(`ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_code', `')
 m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_code', `')
 m4_define(`ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@_code', `')
@@ -154,6 +152,21 @@ if (new_from_@BUILD_REPRESENT@s1.OK())
 
 ')
 
+m4_define(`ppl_@CLASS@_swap_code',
+`dnl
+{
+System.out.print("Testing ppl_@CLASS@_swap: ");
+@TOPOLOGY@@CLASS@ de1
+    = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
+@TOPOLOGY@@CLASS@ de2
+    = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s2);
+de1.swap(de2);
+if (de1.OK() && de2.OK())
+   System.out.println("Success");
+}
+
+')
+
 m4_define(`ppl_@CLASS@_bounds_from_@ABOVEBELOW@_code',
 `dnl
 {
@@ -255,13 +268,30 @@ if (@LTOPOLOGY@@LCLASS@1.OK())
 
 ')
 
+m4_define(`ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_code',
+`dnl
+{
+  System.out.print("Testing ppl_@CLASS@_get_minimized_@GET_REPRESENT@s: ");
+  @UGET_REPRESENT@_System gr = @LTOPOLOGY@@LCLASS@1.minimized_@GET_REPRESENT@s();
+  if (@LTOPOLOGY@@LCLASS@1.OK())
+    System.out.println("Success");
+  else
+    System.out.println("Failure");
+}
+
+')
+
 m4_define(`ppl_@CLASS@_@COMPARISON@_@CLASS@_code',
 `dnl
 {
 System.out.print("Testing ppl_@CLASS@_@COMPARISON@_@CLASS@: ");
+@TOPOLOGY@@CLASS@ comparison1
+    = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
+@TOPOLOGY@@CLASS@ comparison2
+    = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s2);
 boolean @LTOPOLOGY@@LCLASS@1_@COMPARISON@
-  = @LTOPOLOGY@@LCLASS@2.@COMPARISON@(@LTOPOLOGY@@LCLASS@1);
-if (@LTOPOLOGY@@LCLASS@1.OK())
+  = comparison2.@COMPARISON@(comparison1);
+if (comparison1.OK() && comparison2.OK())
    System.out.println("Success");
 }
 
@@ -620,9 +650,13 @@ m4_define(`ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assi
 `dnl
 {
 System.out.print("Testing ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign: ");
-@LTOPOLOGY@@LCLASS@2.BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign(
-  @LTOPOLOGY@@LCLASS@2);
-if (@LTOPOLOGY@@LCLASS@1.OK())
+@TOPOLOGY@@CLASS@ de1
+    = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
+@TOPOLOGY@@CLASS@ de2
+    = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
+de1.BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign(
+  de2);
+if (de1.OK())
    System.out.println("Success");
 }
 
