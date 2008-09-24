@@ -34,7 +34,6 @@ m4_define(`ppl_@CLASS@_delete_iterator_code', `')
 dnl There is no code at present for these procedures in the OCaml interface.
 dnl Remove the macro if its definition is added.
 dnl
-m4_define(`ppl_@CLASS@_@PARTITION@_code', `')
 m4_define(`ppl_@CLASS@_approximate_partition_code', `')
 
   m4_define(`m4_custom_operations_class_code',
@@ -793,7 +792,7 @@ CAMLprim value
 ppl_@CLASS@_OK(value ph) try {
   CAMLparam1(ph);
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
-  CAMLreturn(Bool_val(pph.OK()));
+  CAMLreturn(Val_bool(pph.OK()));
 }
 CATCH_ALL
 
@@ -925,7 +924,7 @@ ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens(
   check_int_is_unsigned(cpp_int);
   unsigned int unsigned_value = cpp_int;
   pph1.@EXTRAPOLATION@_extrapolation_assign(pph2, &unsigned_value);
-  CAMLreturn(Int_val(unsigned_value));
+  CAMLreturn(Val_int(unsigned_value));
 }
 CATCH_ALL
 
@@ -1121,4 +1120,23 @@ ppl_@CLASS@_ascii_dump(value ph1) try {
   CAMLreturn(caml_copy_string(s.str().c_str()));
 }
 CATCH_ALL
+')
+
+m4_define(`ppl_@CLASS@_@PARTITION@_code', `
+extern "C"
+CAMLprim value
+ppl_@CLASS@_@PARTITION@(value ph1, value ph2) try {
+    CAMLparam2(ph1, ph2);
+    @CLASSTOPOLOGY@@CPP_DISJUNCT@& pph1 = reinterpret_cast<@CLASSTOPOLOGY@@CPP_DISJUNCT@&>(*p_@CPP_DISJUNCT@_val(ph1));
+   @CLASSTOPOLOGY@@CPP_DISJUNCT@& pph2 = reinterpret_cast<@CLASSTOPOLOGY@@CPP_DISJUNCT@&>(*p_@CPP_DISJUNCT@_val(ph2));
+    std::pair<@CLASSTOPOLOGY@@CPP_DISJUNCT@@COMMA@ Pointset_Powerset<@SUPERCLASS@> > r =
+       @PARTITION@(pph1, pph2);
+    value caml_return_value = caml_alloc(2,0);
+    Field(caml_return_value, 0) = val_p_@DISJUNCT@(*new @CLASSTOPOLOGY@@CPP_DISJUNCT@(r.first));
+    Field(caml_return_value, 1) = val_p_Pointset_Powerset_@SUPERCLASS@(*new Pointset_Powerset<@SUPERCLASS@>(r.second));
+    CAMLreturn(caml_return_value);
+}
+CATCH_ALL
+
+
 ')
