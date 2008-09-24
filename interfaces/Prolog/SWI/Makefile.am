@@ -29,7 +29,7 @@ ppl_swiprolog.pl \
 pl_clpq.cc \
 pl_clpq.pl \
 swi_pl_check.pl \
-swi_predicate_check.pl \
+swi_prolog_generated_test.pl \
 README.swiprolog
 
 if BUILD_SWI_PROLOG_INTERFACE
