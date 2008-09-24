@@ -105,7 +105,7 @@ the TeX buffer whose capacity has been exceeded, e.g.:
   ! TeX capacity exceeded, sorry [save size=5000].
 
 You than need to edit the file that defines the buffer sizes
-(texmf.cfg on teTeX, 20sizes.cnf on TeX Live) increasing the value of
+(texmf.cnf on teTeX, 20sizes.cnf on TeX Live) increasing the value of
 the corresponding buffer.  Continuing our example, we can double
 save_size by editing texmf.cfg so that the relevant line becomes
 
