@@ -31,8 +31,6 @@ m4_define(`ppl_@CLASS@_delete_iterator_code', `')
 
 dnl There is no code at present for these procedures in the OCaml interface.
 dnl Remove the macro if its definition is added.
-dnl
-m4_define(`ppl_@CLASS@_approximate_partition_code', `')
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 `dnl
@@ -529,8 +527,28 @@ external ppl_@CLASS@_ascii_dump:
 
 ' )
 
-m4_define(`ppl_@CLASS@_@PARTITION@_code', `
+m4_define(`ppl_@CLASS@_@PARTITION@_code',
+`dnl
 external ppl_@CLASS@_@PARTITION@:
- @LDISJUNCT@ -> @LDISJUNCT@ -> @LDISJUNCT@ * pointset_powerset_@LSUPERCLASS@ = "ppl_@CLASS@_@PARTITION@"
+ @LDISJUNCT@ -> @LDISJUNCT@ -> @LDISJUNCT@ * pointset_powerset_@LSUPERCLASS@
+ = "ppl_@CLASS@_@PARTITION@"
+
+')
+
+m4_define(`ppl_@CLASS@_approximate_partition_code',
+`dnl
+external ppl_@CLASS@_approximate_partition:
+ @LDISJUNCT@ -> @LDISJUNCT@ ->
+   @LDISJUNCT@ * pointset_powerset_@LSUPERCLASS@ * bool
+ = "ppl_@CLASS@_approximate_partition"
+
+')
+
+m4_define(`ppl_@CLASS@_@MAXMIN@_code',
+`dnl
+external ppl_@CLASS@_@MAXMIN@:
+  @LCLASS@ -> linear_expression
+  -> bool * Z.t * Z.t * bool
+  = "ppl_@CLASS@_@MAXMIN@"
 
 ')

@@ -962,7 +962,9 @@ dnl is defined without any pattern.
 dnl ---------------------------------------------------------------------
 
 m4_define(`m4_partition_replacement', `NONE')
-m4_define(`m4_Pointset_Powerset_partition_replacement',`linear_partition')
+m4_define(`m4_Pointset_Powerset_partition_replacement',
+          `m4_ifelse(m4_get_class_counter(Pointset_Powerset<NNC_Polyhedron>),
+                     `', `NONE', `linear_partition')')
 
 dnl ---------------------------------------------------------------------
 dnl pattern == has_property

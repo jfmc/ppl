@@ -33,8 +33,6 @@ m4_define(`ppl_@CLASS@_delete_iterator_code', `')
 
 dnl There is no code at present for these procedures in the OCaml interface.
 dnl Remove the macro if its definition is added.
-dnl
-m4_define(`ppl_@CLASS@_approximate_partition_code', `')
 
   m4_define(`m4_custom_operations_class_code',
 `dnl
@@ -1134,6 +1132,26 @@ ppl_@CLASS@_@PARTITION@(value ph1, value ph2) try {
     value caml_return_value = caml_alloc(2,0);
     Field(caml_return_value, 0) = val_p_@DISJUNCT@(*new @CLASSTOPOLOGY@@CPP_DISJUNCT@(r.first));
     Field(caml_return_value, 1) = val_p_Pointset_Powerset_@SUPERCLASS@(*new Pointset_Powerset<@SUPERCLASS@>(r.second));
+    CAMLreturn(caml_return_value);
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_@CLASS@_approximate_partition_code', `
+extern "C"
+CAMLprim value
+ppl_@CLASS@_approximate_partition(value ph1, value ph2) try {
+    CAMLparam2(ph1, ph2);
+    @CLASSTOPOLOGY@@CPP_DISJUNCT@& pph1 = reinterpret_cast<@CLASSTOPOLOGY@@CPP_DISJUNCT@&>(*p_@CPP_DISJUNCT@_val(ph1));
+   @CLASSTOPOLOGY@@CPP_DISJUNCT@& pph2 = reinterpret_cast<@CLASSTOPOLOGY@@CPP_DISJUNCT@&>(*p_@CPP_DISJUNCT@_val(ph2));
+   bool is_finite = false;
+    std::pair<@CLASSTOPOLOGY@@CPP_DISJUNCT@@COMMA@ Pointset_Powerset<@SUPERCLASS@> > r =
+       approximate_partition(pph1, pph2, is_finite);
+    value caml_return_value = caml_alloc(3,0);
+    Field(caml_return_value, 0) = val_p_@DISJUNCT@(*new @CLASSTOPOLOGY@@CPP_DISJUNCT@(r.first));
+    Field(caml_return_value, 1) = val_p_Pointset_Powerset_@SUPERCLASS@(*new Pointset_Powerset<@SUPERCLASS@>(r.second));
+    Field(caml_return_value, 2) = Val_bool(is_finite);
     CAMLreturn(caml_return_value);
 }
 CATCH_ALL
