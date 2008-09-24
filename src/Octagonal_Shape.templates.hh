@@ -2779,7 +2779,7 @@ Octagonal_Shape<T>::CC76_extrapolation_assign(const Octagonal_Shape& y,
           assign_r(elem, *k, ROUND_UP);
       }
       else
-assign_r(        elem, PLUS_INFINITY, ROUND_NOT_NEEDED);
+        assign_r(elem, PLUS_INFINITY, ROUND_NOT_NEEDED);
     }
   }
 
@@ -4062,7 +4062,7 @@ Octagonal_Shape<T>::affine_image(const Variable var,
             N& m_cv_v = (*m_iter)[n_var];
             ++m_iter;
             // NOTE: delay update of m_v_cv and m_cv_v.
-            for ( ;m_iter != m_end; ++m_iter) {
+            for ( ; m_iter != m_end; ++m_iter) {
               Row_Reference m_i = *m_iter;
               N& m_i_v = m_i[n_var];
               add_assign_r(m_i_v, m_i_v, d, ROUND_UP);
@@ -4098,7 +4098,7 @@ Octagonal_Shape<T>::affine_image(const Variable var,
             DIRTY_TEMP(N, minus_d);
             div_round_up(minus_d, b, minus_den);
             ++m_iter;
-            for ( ;m_iter != m_end; ++m_iter) {
+            for ( ; m_iter != m_end; ++m_iter) {
               Row_Reference m_i = *m_iter;
               N& m_i_v = m_i[n_var];
               add_assign_r(m_i_v, m_i_v, d, ROUND_UP);
@@ -4610,7 +4610,7 @@ Octagonal_Shape<T>
               N& m_cv_v = m_cv[n_var];
               ++m_iter;
               // NOTE: delay update of m_v_cv and m_cv_v.
-              for ( ;m_iter != m_end; ++m_iter) {
+              for ( ; m_iter != m_end; ++m_iter) {
                 Row_Reference m_i = *m_iter;
                 N& m_i_v = m_i[n_var];
                 add_assign_r(m_i_v, m_i_v, d, ROUND_UP);
@@ -4678,7 +4678,7 @@ Octagonal_Shape<T>
               N& m_cv_v = m_cv[n_var];
               ++m_iter;
               // NOTE: delay update of m_v_cv and m_cv_v.
-              for ( ;m_iter != m_end; ++m_iter) {
+              for ( ; m_iter != m_end; ++m_iter) {
                 Row_Reference m_i = *m_iter;
                 assign_r(m_i[n_var], PLUS_INFINITY, ROUND_NOT_NEEDED);
                 add_assign_r(m_i[n_var+1], m_i[n_var+1], d, ROUND_UP);
