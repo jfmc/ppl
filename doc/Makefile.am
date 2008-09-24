@@ -49,31 +49,17 @@ $(PS_LICENSES)
 
 ##### Library Core Manuals (C++ Interface) #####
 
-HTML_CORE_MANUALS = \
-ppl-user-@VERSION@-html.tar.gz \
-ppl-devref-@VERSION@-html.tar.gz
+USER_CORE_HTML_MANUAL = ppl-user-@VERSION@-html.tar.gz
+DEVREF_CORE_HTML_MANUAL = ppl-devref-@VERSION@-html.tar.gz
 
-PDF_CORE_MANUALS = \
-ppl-user-@VERSION@.pdf \
-ppl-devref-@VERSION@.pdf
+USER_CORE_PDF_MANUAL = ppl-user-@VERSION@.pdf
+DEVREF_CORE_PDF_MANUAL = ppl-devref-@VERSION@.pdf
 
-PS_CORE_MANUALS = \
-ppl-user-@VERSION@.ps.gz \
-ppl-devref-@VERSION@.ps.gz
+USER_CORE_PS_MANUAL = ppl-user-@VERSION@.ps.gz
+DEVREF_CORE_PS_MANUAL = ppl-devref-@VERSION@.ps.gz
 
 USER_HTML_DIR = ppl-user-@VERSION@-html
 DEVREF_HTML_DIR = ppl-devref-@VERSION@-html
-
-CORE_HTML_DIRS = $(USER_HTML_DIR) $(DEVREF_HTML_DIR)
-
-DIST_CORE_HTML_DOCS = \
-ppl-user-@VERSION@-html.tar.gz
-
-DIST_CORE_PDF_DOCS = \
-ppl-user-@VERSION@.pdf
-
-DIST_CORE_PS_DOCS = \
-ppl-user-@VERSION@.ps.gz
 
 DOX_LICENCE_FILES = \
 gpl.dox \
@@ -99,30 +85,25 @@ $(PPL_SOURCE_FILES)
 
 # C Language Interface Manuals
 
-HTML_C_INTERFACE_MANUALS = \
-ppl-user-c-interface-@VERSION@-html.tar.gz \
+USER_C_INTERFACE_HTML_MANUAL = \
+ppl-user-c-interface-@VERSION@-html.tar.gz
+DEVREF_C_INTERFACE_HTML_MANUAL = \
 ppl-devref-c-interface-@VERSION@-html.tar.gz
 
-PDF_C_INTERFACE_MANUALS = \
-ppl-user-c-interface-@VERSION@.pdf \
+USER_C_INTERFACE_PDF_MANUAL = \
+ppl-user-c-interface-@VERSION@.pdf
+DEVREF_C_INTERFACE_PDF_MANUAL = \
 ppl-devref-c-interface-@VERSION@.pdf
 
-PS_C_INTERFACE_MANUALS = \
-ppl-user-c-interface-@VERSION@.ps.gz \
+USER_C_INTERFACE_PS_MANUAL = \
+ppl-user-c-interface-@VERSION@.ps.gz
+DEVREF_C_INTERFACE_PS_MANUAL = \
 ppl-devref-c-interface-@VERSION@.ps.gz
 
-C_INTERFACE_HTML_DIRS = \
-ppl-user-c-interface-@VERSION@-html \
+USER_C_INTERFACE_HTML_DIR = \
+ppl-user-c-interface-@VERSION@-html
+DEVREF_C_INTERFACE_HTML_DIR = \
 ppl-devref-c-interface-@VERSION@-html
-
-DIST_C_INTERFACE_HTML_DOCS = \
-ppl-user-c-interface-@VERSION@-html.tar.gz
-
-DIST_C_INTERFACE_PDF_DOCS = \
-ppl-user-c-interface-@VERSION@.pdf
-
-DIST_C_INTERFACE_PS_DOCS = \
-ppl-user-c-interface-@VERSION@.ps.gz
 
 USER_C_INTERFACE_STUFF = \
 $(DOX_LICENCE_FILES) \
@@ -142,30 +123,25 @@ $(top_builddir)/interfaces/C/ppl_c_version.h \
 
 # Prolog Language Interface Manuals
 
-HTML_PROLOG_INTERFACE_MANUALS = \
-ppl-user-prolog-interface-@VERSION@-html.tar.gz \
+USER_PROLOG_INTERFACE_HTML_MANUAL = \
+ppl-user-prolog-interface-@VERSION@-html.tar.gz
+DEVREF_PROLOG_INTERFACE_HTML_MANUAL = \
 ppl-devref-prolog-interface-@VERSION@-html.tar.gz
 
-PDF_PROLOG_INTERFACE_MANUALS = \
-ppl-user-prolog-interface-@VERSION@.pdf \
+USER_PROLOG_INTERFACE_PDF_MANUAL = \
+ppl-user-prolog-interface-@VERSION@.pdf
+DEVREF_PROLOG_INTERFACE_PDF_MANUAL = \
 ppl-devref-prolog-interface-@VERSION@.pdf
 
-PS_PROLOG_INTERFACE_MANUALS = \
-ppl-user-prolog-interface-@VERSION@.ps.gz \
+USER_PROLOG_INTERFACE_PS_MANUAL = \
+ppl-user-prolog-interface-@VERSION@.ps.gz
+DEVREF_PROLOG_INTERFACE_PS_MANUAL = \
 ppl-devref-prolog-interface-@VERSION@.ps.gz
 
-PROLOG_INTERFACE_HTML_DIRS = \
-ppl-user-prolog-interface-@VERSION@-html \
+USER_PROLOG_INTERFACE_HTML_DIR = \
+ppl-user-prolog-interface-@VERSION@-html
+DEVREF_PROLOG_INTERFACE_HTML_DIR = \
 ppl-devref-prolog-interface-@VERSION@-html
-
-DIST_PROLOG_INTERFACE_HTML_DOCS = \
-ppl-user-prolog-interface-@VERSION@-html.tar.gz
-
-DIST_PROLOG_INTERFACE_PDF_DOCS = \
-ppl-user-prolog-interface-@VERSION@.pdf
-
-DIST_PROLOG_INTERFACE_PS_DOCS = \
-ppl-user-prolog-interface-@VERSION@.ps.gz
 
 USER_PROLOG_INTERFACE_STUFF = \
 $(DOX_LICENCE_FILES) \
@@ -184,30 +160,25 @@ $(top_builddir)/interfaces/Prolog/Prolog_interface.dox \
 
 # OCaml Language Interface Manuals
 
-HTML_OCAML_INTERFACE_MANUALS = \
-ppl-user-ocaml-interface-@VERSION@-html.tar.gz \
+USER_OCAML_INTERFACE_HTML_MANUAL = \
+ppl-user-ocaml-interface-@VERSION@-html.tar.gz
+DEVREF_OCAML_INTERFACE_HTML_MANUAL = \
 ppl-devref-ocaml-interface-@VERSION@-html.tar.gz
 
-PDF_OCAML_INTERFACE_MANUALS = \
-ppl-user-ocaml-interface-@VERSION@.pdf \
+USER_OCAML_INTERFACE_PDF_MANUAL = \
+ppl-user-ocaml-interface-@VERSION@.pdf
+DEVREF_OCAML_INTERFACE_PDF_MANUAL = \
 ppl-devref-ocaml-interface-@VERSION@.pdf
 
-PS_OCAML_INTERFACE_MANUALS = \
-ppl-user-ocaml-interface-@VERSION@.ps.gz \
+USER_OCAML_INTERFACE_PS_MANUAL = \
+ppl-user-ocaml-interface-@VERSION@.ps.gz
+DEVREF_OCAML_INTERFACE_PS_MANUAL = \
 ppl-devref-ocaml-interface-@VERSION@.ps.gz
 
-OCAML_INTERFACE_HTML_DIRS = \
-ppl-user-ocaml-interface-@VERSION@-html \
+USER_OCAML_INTERFACE_HTML_DIR = \
+ppl-user-ocaml-interface-@VERSION@-html
+DEVREF_OCAML_INTERFACE_HTML_DIR = \
 ppl-devref-ocaml-interface-@VERSION@-html
-
-DIST_OCAML_INTERFACE_HTML_DOCS = \
-ppl-user-ocaml-interface-@VERSION@-html.tar.gz
-
-DIST_OCAML_INTERFACE_PDF_DOCS = \
-ppl-user-ocaml-interface-@VERSION@.pdf
-
-DIST_OCAML_INTERFACE_PS_DOCS = \
-ppl-user-ocaml-interface-@VERSION@.ps.gz
 
 USER_OCAML_INTERFACE_STUFF = \
 $(DOX_LICENCE_FILES) \
@@ -228,30 +199,25 @@ ppl.sty \
 
 # Java Language Interface Manuals
 
-HTML_JAVA_INTERFACE_MANUALS = \
-ppl-user-java-interface-@VERSION@-html.tar.gz \
+USER_JAVA_INTERFACE_HTML_MANUAL = \
+ppl-user-java-interface-@VERSION@-html.tar.gz
+DEVREF_JAVA_INTERFACE_HTML_MANUAL = \
 ppl-devref-java-interface-@VERSION@-html.tar.gz
 
-PDF_JAVA_INTERFACE_MANUALS = \
-ppl-user-java-interface-@VERSION@.pdf \
+USER_JAVA_INTERFACE_PDF_MANUAL = \
+ppl-user-java-interface-@VERSION@.pdf
+DEVREF_JAVA_INTERFACE_PDF_MANUAL = \
 ppl-devref-java-interface-@VERSION@.pdf
 
-PS_JAVA_INTERFACE_MANUALS = \
-ppl-user-java-interface-@VERSION@.ps.gz \
+USER_JAVA_INTERFACE_PS_MANUAL = \
+ppl-user-java-interface-@VERSION@.ps.gz
+DEVREF_JAVA_INTERFACE_PS_MANUAL = \
 ppl-devref-java-interface-@VERSION@.ps.gz
 
-JAVA_INTERFACE_HTML_DIRS = \
-ppl-user-java-interface-@VERSION@-html \
+USER_JAVA_INTERFACE_HTML_DIR = \
+ppl-user-java-interface-@VERSION@-html
+DEVREF_JAVA_INTERFACE_HTML_DIR = \
 ppl-devref-java-interface-@VERSION@-html
-
-DIST_JAVA_INTERFACE_HTML_DOCS = \
-ppl-user-java-interface-@VERSION@-html.tar.gz
-
-DIST_JAVA_INTERFACE_PDF_DOCS = \
-ppl-user-java-interface-@VERSION@.pdf
-
-DIST_JAVA_INTERFACE_PS_DOCS = \
-ppl-user-java-interface-@VERSION@.ps.gz
 
 JAVA_INTERFACE_JAVA_FILES = \
 @top_builddir@/interfaces/Java/Java_interface.dox \
@@ -316,20 +282,24 @@ $(JAVA_INTERFACE_JAVA_FILES) \
 # Configuration Dependent C Language Interface Manuals.
 if BUILD_C_INTERFACE
 
-HTML_CONFIGURED_C_INTERFACE_MANUALS = \
-ppl-user-configured-c-interface-@VERSION@-html.tar.gz \
+USER_CONFIGURED_C_INTERFACE_HTML_MANUAL = \
+ppl-user-configured-c-interface-@VERSION@-html.tar.gz
+DEVREF_CONFIGURED_C_INTERFACE_HTML_MANUAL = \
 ppl-devref-configured-c-interface-@VERSION@-html.tar.gz
 
-PDF_CONFIGURED_C_INTERFACE_MANUALS = \
-ppl-user-configured-c-interface-@VERSION@.pdf \
+USER_CONFIGURED_C_INTERFACE_PDF_MANUAL = \
+ppl-user-configured-c-interface-@VERSION@.pdf
+DEVREF_CONFIGURED_C_INTERFACE_PDF_MANUAL = \
 ppl-devref-configured-c-interface-@VERSION@.pdf
 
-PS_CONFIGURED_C_INTERFACE_MANUALS = \
-ppl-user-configured-c-interface-@VERSION@.ps.gz \
+USER_CONFIGURED_C_INTERFACE_PS_MANUAL = \
+ppl-user-configured-c-interface-@VERSION@.ps.gz
+DEVREF_CONFIGURED_C_INTERFACE_PS_MANUAL = \
 ppl-devref-configured-c-interface-@VERSION@.ps.gz
 
-CONFIGURED_C_INTERFACE_HTML_DIRS = \
-ppl-user-configured-c-interface-@VERSION@-html \
+USER_CONFIGURED_C_INTERFACE_HTML_DIR = \
+ppl-user-configured-c-interface-@VERSION@-html
+DEVREF_CONFIGURED_C_INTERFACE_HTML_DIR = \
 ppl-devref-configured-c-interface-@VERSION@-html
 
 USER_CONFIGURED_C_INTERFACE_STUFF = \
@@ -346,20 +316,24 @@ endif BUILD_C_INTERFACE
 # Configuration Dependent Prolog Language Interface Manuals
 if BUILD_SOME_PROLOG_INTERFACES
 
-HTML_CONFIGURED_PROLOG_INTERFACE_MANUALS = \
-ppl-user-configured-prolog-interface-@VERSION@-html.tar.gz \
+USER_CONFIGURED_PROLOG_INTERFACE_HTML_MANUAL = \
+ppl-user-configured-prolog-interface-@VERSION@-html.tar.gz
+DEVREF_CONFIGURED_PROLOG_INTERFACE_HTML_MANUAL = \
 ppl-devref-configured-prolog-interface-@VERSION@-html.tar.gz
 
-PDF_CONFIGURED_PROLOG_INTERFACE_MANUALS = \
-ppl-user-configured-prolog-interface-@VERSION@.pdf \
+USER_CONFIGURED_PROLOG_INTERFACE_PDF_MANUAL = \
+ppl-user-configured-prolog-interface-@VERSION@.pdf
+DEVREF_CONFIGURED_PROLOG_INTERFACE_PDF_MANUAL = \
 ppl-devref-configured-prolog-interface-@VERSION@.pdf
 
-PS_CONFIGURED_PROLOG_INTERFACE_MANUALS = \
-ppl-user-configured-prolog-interface-@VERSION@.ps.gz \
+USER_CONFIGURED_PROLOG_INTERFACE_PS_MANUAL = \
+ppl-user-configured-prolog-interface-@VERSION@.ps.gz
+DEVREF_CONFIGURED_PROLOG_INTERFACE_PS_MANUAL = \
 ppl-devref-configured-prolog-interface-@VERSION@.ps.gz
 
-CONFIGURED_PROLOG_INTERFACE_HTML_DIRS = \
-ppl-user-configured-prolog-interface-@VERSION@-html \
+USER_CONFIGURED_PROLOG_INTERFACE_HTML_DIR = \
+ppl-user-configured-prolog-interface-@VERSION@-html
+DEVREF_CONFIGURED_PROLOG_INTERFACE_HTML_DIR = \
 ppl-devref-configured-prolog-interface-@VERSION@-html
 
 USER_CONFIGURED_PROLOG_INTERFACE_STUFF = \
@@ -376,20 +350,24 @@ endif BUILD_SOME_PROLOG_INTERFACES
 # Configuration Dependent OCaml Language Interface Manuals.
 if BUILD_OCAML_INTERFACE
 
-HTML_CONFIGURED_OCAML_INTERFACE_MANUALS = \
-ppl-user-configured-ocaml-interface-@VERSION@-html.tar.gz \
+USER_CONFIGURED_OCAML_INTERFACE_HTML_MANUAL = \
+ppl-user-configured-ocaml-interface-@VERSION@-html.tar.gz
+DEVREF_CONFIGURED_OCAML_INTERFACE_HTML_MANUAL = \
 ppl-devref-configured-ocaml-interface-@VERSION@-html.tar.gz
 
-PDF_CONFIGURED_OCAML_INTERFACE_MANUALS = \
-ppl-user-configured-ocaml-interface-@VERSION@.pdf \
+USER_CONFIGURED_OCAML_INTERFACE_PDF_MANUAL = \
+ppl-user-configured-ocaml-interface-@VERSION@.pdf
+DEVREF_CONFIGURED_OCAML_INTERFACE_PDF_MANUAL = \
 ppl-devref-configured-ocaml-interface-@VERSION@.pdf
 
-PS_CONFIGURED_OCAML_INTERFACE_MANUALS = \
-ppl-user-configured-ocaml-interface-@VERSION@.ps.gz \
+USER_CONFIGURED_OCAML_INTERFACE_PS_MANUAL = \
+ppl-user-configured-ocaml-interface-@VERSION@.ps.gz
+DEVREF_CONFIGURED_OCAML_INTERFACE_PS_MANUAL = \
 ppl-devref-configured-ocaml-interface-@VERSION@.ps.gz
 
-CONFIGURED_OCAML_INTERFACE_HTML_DIRS = \
-ppl-user-configured-ocaml-interface-@VERSION@-html \
+USER_CONFIGURED_OCAML_INTERFACE_HTML_DIR = \
+ppl-user-configured-ocaml-interface-@VERSION@-html
+DEVREF_CONFIGURED_OCAML_INTERFACE_HTML_DIR = \
 ppl-devref-configured-ocaml-interface-@VERSION@-html
 
 # FIXME add generated files
@@ -406,20 +384,24 @@ endif BUILD_OCAML_INTERFACE
 # Configuration Dependent Java Language Interface Manuals.
 if BUILD_JAVA_INTERFACE
 
-HTML_CONFIGURED_JAVA_INTERFACE_MANUALS = \
-ppl-user-configured-java-interface-@VERSION@-html.tar.gz \
+USER_CONFIGURED_JAVA_INTERFACE_HTML_MANUAL = \
+ppl-user-configured-java-interface-@VERSION@-html.tar.gz
+DEVREF_CONFIGURED_JAVA_INTERFACE_HTML_MANUAL = \
 ppl-devref-configured-java-interface-@VERSION@-html.tar.gz
 
-PDF_CONFIGURED_JAVA_INTERFACE_MANUALS = \
-ppl-user-configured-java-interface-@VERSION@.pdf \
+USER_CONFIGURED_JAVA_INTERFACE_PDF_MANUAL = \
+ppl-user-configured-java-interface-@VERSION@.pdf
+DEVREF_CONFIGURED_JAVA_INTERFACE_PDF_MANUAL = \
 ppl-devref-configured-java-interface-@VERSION@.pdf
 
-PS_CONFIGURED_JAVA_INTERFACE_MANUALS = \
-ppl-user-configured-java-interface-@VERSION@.ps.gz \
+USER_CONFIGURED_JAVA_INTERFACE_PS_MANUAL = \
+ppl-user-configured-java-interface-@VERSION@.ps.gz
+DEVREF_CONFIGURED_JAVA_INTERFACE_PS_MANUAL = \
 ppl-devref-configured-java-interface-@VERSION@.ps.gz
 
-CONFIGURED_JAVA_INTERFACE_HTML_DIRS = \
-ppl-user-configured-java-interface-@VERSION@-html \
+USER_CONFIGURED_JAVA_INTERFACE_HTML_DIR = \
+ppl-user-configured-java-interface-@VERSION@-html
+DEVREF_CONFIGURED_JAVA_INTERFACE_HTML_DIR = \
 ppl-devref-configured-java-interface-@VERSION@-html
 
 USER_CONFIGURED_JAVA_INTERFACE_STUFF = \
@@ -432,74 +414,60 @@ endif BUILD_JAVA_INTERFACE
 
 ###################################################################
 
+# Grouping of dirs.
 
-MANUALS = \
-$(HTML_CORE_MANUALS) \
-$(HTML_C_INTERFACE_MANUALS) \
-$(HTML_PROLOG_INTERFACE_MANUALS) \
-$(HTML_OCAML_INTERFACE_MANUALS) \
-$(HTML_JAVA_INTERFACE_MANUALS) \
-$(PDF_CORE_MANUALS) \
-$(PDF_C_INTERFACE_MANUALS) \
-$(PDF_PROLOG_INTERFACE_MANUALS) \
-$(PDF_OCAML_INTERFACE_MANUALS) \
-$(PDF_JAVA_INTERFACE_MANUALS) \
-$(PS_CORE_MANUALS) \
-$(PS_C_INTERFACE_MANUALS) \
-$(PS_PROLOG_INTERFACE_MANUALS) \
-$(PS_OCAML_INTERFACE_MANUALS) \
-$(PS_JAVA_INTERFACE_MANUALS) \
-$(HTML_CONFIGURED_C_INTERFACE_MANUALS) \
-$(HTML_CONFIGURED_PROLOG_INTERFACE_MANUALS) \
-$(HTML_CONFIGURED_OCAML_INTERFACE_MANUALS) \
-$(HTML_CONFIGURED_JAVA_INTERFACE_MANUALS) \
-$(PDF_CONFIGURED_C_INTERFACE_MANUALS) \
-$(PDF_CONFIGURED_PROLOG_INTERFACE_MANUALS) \
-$(PDF_CONFIGURED_OCAML_INTERFACE_MANUALS) \
-$(PDF_CONFIGURED_JAVA_INTERFACE_MANUALS) \
-$(PS_CONFIGURED_C_INTERFACE_MANUALS) \
-$(PS_CONFIGURED_PROLOG_INTERFACE_MANUALS) \
-$(PS_CONFIGURED_OCAML_INTERFACE_MANUALS) \
-$(PS_CONFIGURED_JAVA_INTERFACE_MANUALS)
+USER_HTML_DIRS = \
+$(USER_CORE_HTML_DIR) \
+$(USER_C_INTERFACE_HTML_DIR) \
+$(USER_PROLOG_INTERFACE_HTML_DIR) \
+$(USER_OCAML_INTERFACE_HTML_DIR) \
+$(USER_JAVA_INTERFACE_HTML_DIR) \
+$(USER_CONFIGURED_C_INTERFACE_HTML_DIR) \
+$(USER_CONFIGURED_PROLOG_INTERFACE_HTML_DIR) \
+$(USER_CONFIGURED_OCAML_INTERFACE_HTML_DIR) \
+$(USER_CONFIGURED_JAVA_INTERFACE_HTML_DIR)
 
-HTML_DIRS = \
-$(CORE_HTML_DIRS) \
-$(C_INTERFACE_HTML_DIRS) \
-$(PROLOG_INTERFACE_HTML_DIRS) \
-$(OCAML_INTERFACE_HTML_DIRS) \
-$(JAVA_INTERFACE_HTML_DIRS) \
-$(CONFIGURED_C_INTERFACE_HTML_DIRS) \
-$(CONFIGURED_PROLOG_INTERFACE_HTML_DIRS) \
-$(CONFIGURED_OCAML_INTERFACE_HTML_DIRS) \
-$(CONFIGURED_JAVA_INTERFACE_HTML_DIRS)
+DEVREF_HTML_DIRS = \
+$(DEVREF_CORE_HTML_DIR) \
+$(DEVREF_C_INTERFACE_HTML_DIR) \
+$(DEVREF_PROLOG_INTERFACE_HTML_DIR) \
+$(DEVREF_OCAML_INTERFACE_HTML_DIR) \
+$(DEVREF_JAVA_INTERFACE_HTML_DIR) \
+$(DEVREF_CONFIGURED_C_INTERFACE_HTML_DIR) \
+$(DEVREF_CONFIGURED_PROLOG_INTERFACE_HTML_DIR) \
+$(DEVREF_CONFIGURED_OCAML_INTERFACE_HTML_DIR) \
+$(DEVREF_CONFIGURED_JAVA_INTERFACE_HTML_DIR)
+
+HTML_DIRS = $(USER_HTML_DIRS) $(DEVREF_HTML_DIRS)
+
+##### Distributed documentation #####
 
 DIST_HTML_DOCS = \
-$(DIST_CORE_HTML_DOCS) \
-$(DIST_C_INTERFACE_HTML_DOCS) \
-$(DIST_PROLOG_INTERFACE_HTML_DOCS) \
-$(DIST_OCAML_INTERFACE_HTML_DOCS) \
-$(DIST_JAVA_INTERFACE_HTML_DOCS)
+$(USER_CORE_HTML_MANUAL) \
+$(USER_C_INTERFACE_HTML_MANUAL) \
+$(USER_PROLOG_INTERFACE_HTML_MANUAL) \
+$(USER_OCAML_INTERFACE_HTML_MANUAL) \
+$(USER_JAVA_INTERFACE_HTML_MANUAL)
 
 DIST_PDF_DOCS = \
 $(PDF_LICENSES) \
-$(DIST_CORE_PDF_DOCS) \
-$(DIST_C_INTERFACE_PDF_DOCS) \
-$(DIST_PROLOG_INTERFACE_PDF_DOCS) \
-$(DIST_OCAML_INTERFACE_PDF_DOCS) \
-$(DIST_JAVA_INTERFACE_PDF_DOCS)
+$(USER_CORE_PDF_MANUAL) \
+$(USER_C_INTERFACE_PDF_MANUAL) \
+$(USER_PROLOG_INTERFACE_PDF_MANUAL) \
+$(USER_OCAML_INTERFACE_PDF_MANUAL) \
+$(USER_JAVA_INTERFACE_PDF_MANUAL)
 
 DIST_PS_DOCS = \
 $(PS_LICENSES) \
-$(DIST_CORE_PS_DOCS) \
-$(DIST_C_INTERFACE_PS_DOCS) \
-$(DIST_PROLOG_INTERFACE_PS_DOCS) \
-$(DIST_OCAML_INTERFACE_PS_DOCS) \
-$(DIST_JAVA_INTERFACE_PS_DOCS)
+$(USER_CORE_PS_MANUAL) \
+$(USER_C_INTERFACE_PS_MANUAL) \
+$(USER_PROLOG_INTERFACE_PS_MANUAL) \
+$(USER_OCAML_INTERFACE_PS_MANUAL) \
+$(USER_JAVA_INTERFACE_PS_MANUAL)
 
 DIST_TXT_DOCS = \
 $(TXT_LICENSES)
 
-# We distribute some preprocessed user's documentation.
 DIST_DOCS = \
 $(DIST_HTML_DOCS) \
 $(DIST_PDF_DOCS) \
@@ -510,7 +478,7 @@ ALL_TARGETS = \
 $(HTML_DIRS) \
 $(PDF_LICENSES) \
 $(PS_LICENSES) \
-$(MANUALS)
+$(ALL_MANUALS)
 
 dist_man_MANS = \
 libppl.3 \
@@ -523,9 +491,102 @@ ppl_lpsol.1
 # Do nothing by default.
 all:
 
-user: ppl-user-@VERSION@.pdf
+user-html: \
+$(USER_CORE_HTML_MANUAL) \
+$(USER_C_INTERFACE_HTML_MANUAL) \
+$(USER_PROLOG_INTERFACE_HTML_MANUAL) \
+$(USER_OCAML_INTERFACE_HTML_MANUAL) \
+$(USER_JAVA_INTERFACE_HTML_MANUAL)
 
-world: $(ALL_TARGETS)
+user-pdf: \
+$(USER_CORE_PDF_MANUAL) \
+$(USER_C_INTERFACE_PDF_MANUAL) \
+$(USER_PROLOG_INTERFACE_PDF_MANUAL) \
+$(USER_OCAML_INTERFACE_PDF_MANUAL) \
+$(USER_JAVA_INTERFACE_PDF_MANUAL)
+
+user-ps: \
+$(USER_CORE_PS_MANUAL) \
+$(USER_C_INTERFACE_PS_MANUAL) \
+$(USER_PROLOG_INTERFACE_PS_MANUAL) \
+$(USER_OCAML_INTERFACE_PS_MANUAL) \
+$(USER_JAVA_INTERFACE_PS_MANUAL)
+
+user: user-html user-pdf user-ps
+
+devref-html: \
+$(DEVREF_CORE_HTML_MANUAL) \
+$(DEVREF_C_INTERFACE_HTML_MANUAL) \
+$(DEVREF_PROLOG_INTERFACE_HTML_MANUAL) \
+$(DEVREF_OCAML_INTERFACE_HTML_MANUAL) \
+$(DEVREF_JAVA_INTERFACE_HTML_MANUAL)
+
+devref-pdf: \
+$(DEVREF_CORE_PDF_MANUAL) \
+$(DEVREF_C_INTERFACE_PDF_MANUAL) \
+$(DEVREF_PROLOG_INTERFACE_PDF_MANUAL) \
+$(DEVREF_OCAML_INTERFACE_PDF_MANUAL) \
+$(DEVREF_JAVA_INTERFACE_PDF_MANUAL)
+
+devref-ps: \
+$(DEVREF_CORE_PS_MANUAL) \
+$(DEVREF_C_INTERFACE_PS_MANUAL) \
+$(DEVREF_PROLOG_INTERFACE_PS_MANUAL) \
+$(DEVREF_OCAML_INTERFACE_PS_MANUAL) \
+$(DEVREF_JAVA_INTERFACE_PS_MANUAL)
+
+devref: devref-html devref-pdf devref-ps
+
+user-configured-html: \
+$(USER_CONFIGURED_C_INTERFACE_HTML_MANUAL) \
+$(USER_CONFIGURED_PROLOG_INTERFACE_HTML_MANUAL) \
+$(USER_CONFIGURED_OCAML_INTERFACE_HTML_MANUAL) \
+$(USER_CONFIGURED_JAVA_INTERFACE_HTML_MANUAL)
+
+user-configured-pdf: \
+$(USER_CONFIGURED_C_INTERFACE_PDF_MANUAL) \
+$(USER_CONFIGURED_PROLOG_INTERFACE_PDF_MANUAL) \
+$(USER_CONFIGURED_OCAML_INTERFACE_PDF_MANUAL) \
+$(USER_CONFIGURED_JAVA_INTERFACE_PDF_MANUAL)
+
+user-configured-ps: \
+$(USER_CONFIGURED_C_INTERFACE_PS_MANUAL) \
+$(USER_CONFIGURED_PROLOG_INTERFACE_PS_MANUAL) \
+$(USER_CONFIGURED_OCAML_INTERFACE_PS_MANUAL) \
+$(USER_CONFIGURED_JAVA_INTERFACE_PS_MANUAL)
+
+user-configured: \
+user-configured-html \
+user-configured-pdf \
+user-configured-ps
+
+devref-configured-html: \
+$(DEVREF_CONFIGURED_C_INTERFACE_HTML_MANUAL) \
+$(DEVREF_CONFIGURED_PROLOG_INTERFACE_HTML_MANUAL) \
+$(DEVREF_CONFIGURED_OCAML_INTERFACE_HTML_MANUAL) \
+$(DEVREF_CONFIGURED_JAVA_INTERFACE_HTML_MANUAL)
+
+devref-configured-pdf: \
+$(DEVREF_CONFIGURED_C_INTERFACE_PDF_MANUAL) \
+$(DEVREF_CONFIGURED_PROLOG_INTERFACE_PDF_MANUAL) \
+$(DEVREF_CONFIGURED_OCAML_INTERFACE_PDF_MANUAL) \
+$(DEVREF_CONFIGURED_JAVA_INTERFACE_PDF_MANUAL)
+
+devref-configured-ps: \
+$(DEVREF_CONFIGURED_C_INTERFACE_PS_MANUAL) \
+$(DEVREF_CONFIGURED_PROLOG_INTERFACE_PS_MANUAL) \
+$(DEVREF_CONFIGURED_OCAML_INTERFACE_PS_MANUAL) \
+$(DEVREF_CONFIGURED_JAVA_INTERFACE_PS_MANUAL)
+
+devref-configured: \
+devref-configured-html \
+devref-configured-pdf \
+devref-configured-ps
+
+user-all: user user-configured
+devref-all: devref devref-configured
+
+world: user-all devref-all
 
 install-data-local: \
 install-html \
