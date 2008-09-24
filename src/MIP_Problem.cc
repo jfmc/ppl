@@ -863,10 +863,14 @@ PPL::MIP_Problem::process_pending_constraints() {
 #define STEEPEST_EDGE_FP_TYPE double
 #define STEEPEST_EDGE_SQRT sqrt
 #define STEEPEST_EDGE_FABS fabs
-#else
+#elif PPL_SUPPORTED_FLOAT
 #define STEEPEST_EDGE_FP_TYPE float
 #define STEEPEST_EDGE_SQRT sqrtf
 #define STEEPEST_EDGE_FABS fabsf
+#elif PPL_SUPPORTED_LONG_DOUBLE
+#define STEEPEST_EDGE_FP_TYPE long double
+#define STEEPEST_EDGE_SQRT sqrtl
+#define STEEPEST_EDGE_FABS fabsl
 #endif
 
 PPL::dimension_type
