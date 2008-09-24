@@ -305,6 +305,7 @@ ppl.sty \
 $(JAVA_INTERFACE_JAVA_FILES) \
 ../interfaces/Java/jni/ppl_java_common.cc \
 ../interfaces/Java/jni/ppl_java_common.defs.hh \
+../interfaces/Java/jni/ppl_java_common.inlines.hh \
 ../interfaces/Java/jni/ppl_java_globals.cc
 
 ##### Configuration Dependent Foreign Language Manuals #####
@@ -917,7 +918,8 @@ SED_JAVA_INPUT_USER = \
 SED_JAVA_INPUT_DEVREF = \
 ../interfaces/Java/Java_interface.dox \
 @srcdir@/../interfaces/Java/jni/ppl_java_common.cc \
-@srcdir@/../interfaces/Java/jni/ppl_java_common.hh \
+@srcdir@/../interfaces/Java/jni/ppl_java_common.defs.hh \
+@srcdir@/../interfaces/Java/jni/ppl_java_common.inlines.hh \
 @srcdir@/../interfaces/Java/jni/ppl_java_globals.cc \
 @srcdir@/gpl.dox @srcdir@/fdl.dox
 
