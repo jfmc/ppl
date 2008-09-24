@@ -178,26 +178,26 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_build_
 {
   @CPPX_FRIEND@* @LFRIEND@_ptr
   = reinterpret_cast<@CPPX_FRIEND@*>(get_ptr(env, j_@LFRIEND@));
-  jclass complexity
+  jclass complexity_class
     = env->FindClass("parma_polyhedra_library/Complexity_Class");
   jmethodID complexity_ordinal_id
-    = env->GetMethodID(complexity, "ordinal", "()I");
+    = env->GetMethodID(complexity_class, "ordinal", "()I");
   jint j_complexity_int
     = env->CallIntMethod(j_complexity, complexity_ordinal_id);
-  @TOPOLOGY@@CPP_CLASS@* c_ptr;
+  @TOPOLOGY@@CPP_CLASS@* this_@LTOPOLOGY@_@LCLASS@_ptr;
   switch (j_complexity_int) {
   case 0:
-    c_ptr = new @TOPOLOGY@@CPP_CLASS@(*@LFRIEND@_ptr, POLYNOMIAL_COMPLEXITY);
+    this_@LTOPOLOGY@_@LCLASS@_ptr = new @TOPOLOGY@@CPP_CLASS@(*@LFRIEND@_ptr, POLYNOMIAL_COMPLEXITY);
     break;
   case 1:
-    c_ptr = new @TOPOLOGY@@CPP_CLASS@(*@LFRIEND@_ptr, SIMPLEX_COMPLEXITY);
+    this_@LTOPOLOGY@_@LCLASS@_ptr = new @TOPOLOGY@@CPP_CLASS@(*@LFRIEND@_ptr, SIMPLEX_COMPLEXITY);
     break;
   case 2:
-    c_ptr = new @TOPOLOGY@@CPP_CLASS@(*@LFRIEND@_ptr, ANY_COMPLEXITY);
+    this_@LTOPOLOGY@_@LCLASS@_ptr = new @TOPOLOGY@@CPP_CLASS@(*@LFRIEND@_ptr, ANY_COMPLEXITY);
     break;
   default:
     throw std::runtime_error("PPL Java interface internal error");
-  set_ptr(env, j_this_@LTOPOLOGY@@LCLASS@, c_ptr);
+  set_ptr(env, j_this_@LTOPOLOGY@@LCLASS@, this_@LTOPOLOGY@_@LCLASS@_ptr);
   }
 }
 
@@ -205,7 +205,7 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_build_
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_code',
 `dnl
-JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_build_1cpp_1object__Lparma_1polyhedra_1library_@UBUILD_REPRESENT@_1System_2
+JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_build_1cpp_1object__Lparma_1polyhedra_1library_@1UBUILD_REPRESENT@_1System_2
 (JNIEnv* env, jobject j_@LTOPOLOGY@@LCLASS@, jobject j_iterable) {
   @UBUILD_REPRESENT@_System cs = build_ppl_@BUILD_REPRESENT@_system(env, j_iterable);
 

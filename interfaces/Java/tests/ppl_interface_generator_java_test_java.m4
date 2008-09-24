@@ -68,6 +68,10 @@ m4_divert(2)`'dnl
 }
 m4_divert(-1)
 
+dnl Ensure any schematic procedure macro that is not defined
+dnl in the code file outputs a warning message.
+m4_define(`m4_default_code', `m4_dumpdef($1`'_code)')
+
 dnl ==================================================================
 dnl Declare test for each domain
 dnl ==================================================================
@@ -100,9 +104,6 @@ m4_replace_all_patterns_in_string($1,
   m4_pattern_list)`'dnl
 m4_replace_all_patterns_in_string($1,
   m4_new_class_element_code,
-  m4_pattern_list)`'dnl
-m4_replace_all_patterns_in_string($1,
-  m4_more_new_class_element_code,
   m4_pattern_list)`'dnl
 ')
 m4_pushdef(`m4_post_extra_class_code', `dnl
