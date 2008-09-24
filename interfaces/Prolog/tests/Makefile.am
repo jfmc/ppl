@@ -61,7 +61,7 @@ $(required_instantiations_predicate_check_sources)
 
 if BUILD_SOME_PROLOG_INTERFACES
 
-check-local: ppl_prolog_test.stamp
+check-local: ppl_prolog_generated_test.stamp
 
 interface_generator_dependencies = \
 $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
