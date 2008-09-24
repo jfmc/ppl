@@ -24,6 +24,8 @@
     By_Reference<Integer> int_by_ref1;
     By_Reference<Integer> zero_by_ref1;
 
+    Test_Partial_Function partial_function;
+
     // Common initialization.
     public void initialize() {
 	// Coefficient declaration.
@@ -139,4 +141,9 @@
 
         int_by_ref1 = new By_Reference<Integer>(1);
         zero_by_ref1 = new By_Reference<Integer>(0);
+
+        partial_function = new Test_Partial_Function();
+	partial_function.insert(0, 2);
+	partial_function.insert(2, 0);
+	partial_function.insert(1, 1);
 }

@@ -197,8 +197,8 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_build_
     break;
   default:
     throw std::runtime_error("PPL Java interface internal error");
-  set_ptr(env, j_this_@LTOPOLOGY@@LCLASS@, this_@LTOPOLOGY@_@LCLASS@_ptr);
   }
+  set_ptr(env, j_this_@LTOPOLOGY@@LCLASS@, this_@LTOPOLOGY@_@LCLASS@_ptr);
 }
 
 ')
