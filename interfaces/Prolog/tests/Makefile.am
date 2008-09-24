@@ -54,11 +54,6 @@ ppl_prolog_generated_test_common.pl \
 ppl_interface_generator_prolog_generated_test_pl.m4 \
 ppl_interface_generator_prolog_generated_test_pl_code.m4
 
-
-all_predicate_check_sources = \
-$(fixed_predicate_check_sources) \
-$(required_instantiations_predicate_check_sources)
-
 if BUILD_SOME_PROLOG_INTERFACES
 
 check-local: ppl_prolog_generated_test.stamp
