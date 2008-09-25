@@ -49,7 +49,6 @@ static {
 	coeff_0 = new Coefficient("0");
         Coefficient coeff_1 = new Coefficient(1);
         Coefficient coeff_2 = new Coefficient(2);
-        Coefficient coeff_3 = new Coefficient(3);
         Coefficient coeff_4 = new Coefficient(4);
 	coeff_5 = new Coefficient("5");
         Coefficient coeff_10 = new Coefficient("10");
@@ -68,7 +67,7 @@ static {
 	Linear_Expression le_2A = le_A.times(coeff_2);
 	Linear_Expression le_C = new Linear_Expression_Variable(C);
 	Linear_Expression le_2A_plus_C = le_2A.sum(le_C);
-	Linear_Expression le_30A_plus_10C = le_2A_plus_C.times(coeff_10);
+	Linear_Expression le_40A_plus_10C = le_2A_plus_C.times(coeff_10);
 
 	System.out.print("Printing a linear expression (2A + C): ");
         System.out.println(le_2A_plus_C.toString());
@@ -118,39 +117,34 @@ static {
 	congruences2.add(cg_C_int);
 
 	// Generator declarations.
-	Generator g1 = Generator.point(le_30A_plus_10C, coeff_1);
+	Generator g1 = Generator.point(le_40A_plus_10C, coeff_1);
 	generator1 = g1;
-	Generator g2 = Generator.point(le_30A_plus_10C, coeff_2);
-        Generator g3 = Generator.point(le_30A_plus_10C, coeff_3);
+	Generator g2 = Generator.point(le_40A_plus_10C, coeff_2);
 	Generator g4 = Generator.point(le_A, coeff_4);
-	System.out.println("Printing a generator (p(30A + 10C)):");
+	System.out.println("Printing a generator (p(40A + 10C)):");
 	System.out.println(g1.toString());
 
         // Generator_System declaration.
         generators1 = new Generator_System();
         generators1.add(g1);
         generators1.add(g2);
-        generators1.add(g3);
         generators1.add(g4);
 	System.out.println("Printing a generator system: ");
 	System.out.println(generators1.toString());
 
 	// Grid_Generator declarations.
 	Grid_Generator gg1
-          = Grid_Generator.grid_point(le_30A_plus_10C, coeff_1);
+          = Grid_Generator.grid_point(le_40A_plus_10C, coeff_1);
 	grid_generator1 = gg1;
 	Grid_Generator gg2
-          = Grid_Generator.grid_point(le_30A_plus_10C, coeff_2);
-        Grid_Generator gg3
-          = Grid_Generator.grid_point(le_30A_plus_10C, coeff_3);
-	Grid_Generator gg4
+          = Grid_Generator.grid_point(le_40A_plus_10C, coeff_2);
+ 	Grid_Generator gg4
           = Grid_Generator.grid_point(le_A, coeff_4);
 
 	// Grid_Generator_System declaration.
 	grid_generators1 = new Grid_Generator_System();
 	grid_generators1.add(gg1);
 	grid_generators1.add(gg2);
-	grid_generators1.add(gg3);
 	grid_generators1.add(gg4);
 
         bool_by_ref1 = new By_Reference<Boolean>(true);

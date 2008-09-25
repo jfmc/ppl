@@ -1177,7 +1177,7 @@ JNIEXPORT jobject JNICALL Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_lin
     set_ptr(env, j_obj_r1, new @TOPOLOGY@@CPP_CLASS@(r.first));
 
     jclass j_class_r2
-      = env->FindClass("parma_polyhedra_library/Pointset_Powerset<NNC_Polyhedron>");
+      = env->FindClass("parma_polyhedra_library/Pointset_Powerset_NNC_Polyhedron");
     jmethodID j_ctr_id_r2 = env->GetMethodID(j_class_r2, "<init>", "()V");
     jobject j_obj_r2 = env->NewObject(j_class_r2, j_ctr_id_r2);
     set_ptr(env, j_obj_r2, new Pointset_Powerset<NNC_Polyhedron>(r.second));
