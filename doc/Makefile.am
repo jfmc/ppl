@@ -914,8 +914,6 @@ $(USER_OCAML_INTERFACE_STUFF)
 	  -e 's|<PPL_SED_INPUT>|'"$(SED_OCAML_INPUT_USER)"'|' \
 	  $<  > Doxyfile.user-ocaml-interface-latex
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.user-ocaml-interface-latex
-	(cd $@; ocamldoc -I +gmp \
-			-latex -noheader -notrailer -notoc -o ocamldoc.tex)
 
 devref-ocaml-interface.latex-dir: \
 devref-foreign-language-interface.doxyconf \
@@ -928,8 +926,6 @@ $(DEVREF_OCAML_INTERFACE_STUFF)
 	  -e 's|<PPL_SED_INPUT>|'"$(SED_OCAML_INPUT_DEVREF)"'|' \
 	  $<  > Doxyfile.devref-ocaml-interface-latex
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.devref-ocaml-interface-latex
-	(cd $@; ocamldoc -I +gmp \
-			-latex -noheader -notrailer -notoc -o ocamldoc.tex)
 
 ppl-user-ocaml-interface-@VERSION@.pdf: user-ocaml-interface.latex-dir
 	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
