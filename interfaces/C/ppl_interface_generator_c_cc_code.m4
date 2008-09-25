@@ -33,12 +33,8 @@ m4_define(`ppl_@CLASS@_ascii_dump_code', `')
 
 dnl There is no code at present for these procedures in the C interface.
 dnl Remove the macro if its definition is added.
-m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity_code', `')
 m4_define(`ppl_@CLASS@_@PARTITION@_code', `')
 m4_define(`ppl_@CLASS@_approximate_partition_code', `')
-m4_define(`ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code', `')
-m4_define(`ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign_code', `')
-m4_define(`ppl_@CLASS@_BGP99_@DISJUNCT_EXTRAPOLATION@_extrapolation_assign_code', `')
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 `int
@@ -61,6 +57,31 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@
   const @CPPX_FRIEND@& phh
     = *static_cast<const @CPPX_FRIEND@*>(to_const(ph));
   *pph = to_nonconst(new @TOPOLOGY@@CPP_CLASS@(phh));
+  return 0;
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity_code',
+`int
+ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity
+(ppl_@CLASS@_t* pph,
+ ppl_const_@ALT_FRIEND@_t ph,
+ int complexity) try {
+  const @CPPX_FRIEND@& phh
+    = *static_cast<const @CPPX_FRIEND@*>(to_const(ph));
+  switch (complexity) {
+  case 0:
+    *pph = to_nonconst(new @TOPOLOGY@@CPP_CLASS@(phh, POLYNOMIAL_COMPLEXITY));
+    break;
+  case 1:
+    *pph = to_nonconst(new @TOPOLOGY@@CPP_CLASS@(phh, SIMPLEX_COMPLEXITY));
+    break;
+  case 2:
+    *pph = to_nonconst(new @TOPOLOGY@@CPP_CLASS@(phh, ANY_COMPLEXITY));
+    break;
+  }
   return 0;
 }
 CATCH_ALL
@@ -729,6 +750,41 @@ ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign
   const @CPP_CLASS@& yy = *to_const(y);
   xx.@EXTRAPOLATION@_narrowing_assign(yy);
   return 0;
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code',
+`int
+ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign
+(ppl_@CLASS@_t x,
+ ppl_const_@CLASS@_t y) try {
+  @CPP_CLASS@& xx = *to_nonconst(x);
+  const @CPP_CLASS@& yy = *to_const(y);
+  xx.@EXTRAPOLATION@_extrapolation_assign(yy, tp);
+  xx.BHZ03_widening_assign<@ALT_DISJUNCT_WIDEN@_Certificate>(yy,
+       widen_fun_ref(
+         &@CLASSTOPOLOGY@@CPP_DISJUNCT@::@DISJUNCT_WIDEN@_widening_assign));
+  return 0;
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign_code',
+`int
+ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign
+(ppl_@CLASS@_t x,
+ ppl_const_@CLASS@_t y,
+ int disjuncts) try {
+   @CPP_CLASS@& xx = *to_nonconst(x);
+   const @CPP_CLASS@& yy = *to_const(y);
+   xx.BGP99_extrapolation_assign(yy,
+       widen_fun_ref(&@CLASSTOPOLOGY@@CPP_DISJUNCT@::
+           @DISJUNCT_WIDEN@_widening_assign),
+       disjuncts);
+   return 0;
 }
 CATCH_ALL
 

@@ -33,12 +33,8 @@ m4_define(`ppl_@CLASS@_ascii_dump_code', `')
 dnl There is no code at present for these procedures in the C interface.
 dnl Remove the macro if its definition is added.
 dnl
-m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity_code', `')
 m4_define(`ppl_@CLASS@_@PARTITION@_code', `')
 m4_define(`ppl_@CLASS@_approximate_partition_code', `')
-m4_define(`ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code', `')
-m4_define(`ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign_code', `')
-m4_define(`ppl_@CLASS@_BGP99_@DISJUNCT_EXTRAPOLATION@_extrapolation_assign_code', `')
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 `int
@@ -51,6 +47,13 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_code',
 `int
 ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@
 PPL_PROTO((ppl_@CLASS@_t* pph, ppl_const_@ALT_FRIEND@_t ph));
+
+')
+
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity_code',
+`int
+ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity
+PPL_PROTO((ppl_@CLASS@_t* pph, ppl_const_@ALT_FRIEND@_t ph, int complexity));
 
 ')
 
@@ -422,6 +425,23 @@ m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_code',
 ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign
 PPL_PROTO((ppl_@CLASS@_t x,
            ppl_const_@CLASS@_t y));
+
+')
+
+m4_define(`ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code',
+`int
+ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign
+PPL_PROTO((ppl_@CLASS@_t x,
+           ppl_const_@CLASS@_t y));
+
+')
+
+m4_define(`ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign_code',
+`int
+ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign
+PPL_PROTO((ppl_@CLASS@_t x,
+           ppl_const_@CLASS@_t y,
+           int disjuncts));
 
 ')
 
