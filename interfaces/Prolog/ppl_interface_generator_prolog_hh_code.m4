@@ -26,7 +26,14 @@ dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
-m4_define(`ppl_@CLASS@_linear_partition_code',`')
+m4_define(`ppl_@CLASS@_linear_partition_code',
+`extern "C" Prolog_foreign_return_type
+ppl_@CLASS@_linear_partition(Prolog_term_ref t_ph,
+			     Prolog_term_ref t_qh,
+			     Prolog_term_ref t_inters,
+			     Prolog_term_ref t_pset);
+
+')
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 `extern "C" Prolog_foreign_return_type
