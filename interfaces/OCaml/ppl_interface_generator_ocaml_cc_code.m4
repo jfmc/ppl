@@ -33,6 +33,7 @@ m4_define(`ppl_@CLASS@_delete_iterator_code', `')
 
 dnl There is no code at present for these procedures in the OCaml interface.
 dnl Remove the macro if its definition is added.
+m4_define(`ppl_@CLASS@_linear_partition_code',`')
 
   m4_define(`m4_custom_operations_class_code',
 `dnl

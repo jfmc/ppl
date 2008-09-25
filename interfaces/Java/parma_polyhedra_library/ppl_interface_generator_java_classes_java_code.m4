@@ -551,7 +551,7 @@ m4_define(`ppl_@CLASS@_ascii_dump_code',
 %<--%<--%<-- @CLASS@.java
   public native String ascii_dump();
 
-')dd
+')
 
 m4_define(`ppl_@CLASS@_@PARTITION@_code',
 `dnl
@@ -561,6 +561,15 @@ m4_define(`ppl_@CLASS@_@PARTITION@_code',
       @PARTITION@(@CLASSTOPOLOGY@@DISJUNCT@ p, @CLASSTOPOLOGY@@DISJUNCT@ q);
 ')
 
+m4_define(`ppl_@CLASS@_linear_partition_code',
+`dnl
+%<--%<--%<-- @TOPOLOGY@@CLASS@.java
+
+  public static native
+    Pair <@TOPOLOGY@@CLASS@@COMMA@ Pointset_Powerset_NNC_Polyhedron >
+      linear_partition(@TOPOLOGY@@CLASS@ p, @TOPOLOGY@@CLASS@ q);
+')
+
 m4_define(`ppl_@CLASS@_approximate_partition_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
@@ -568,5 +577,15 @@ m4_define(`ppl_@CLASS@_approximate_partition_code',
   public static native Pair <@CLASSTOPOLOGY@@DISJUNCT@@COMMA@ @CLASS@>
       approximate_partition(@CLASSTOPOLOGY@@DISJUNCT@ p,
                             @CLASSTOPOLOGY@@DISJUNCT@ q,
+                            By_Reference<Boolean> finite);
+')
+
+m4_define(`ppl_@CLASS@_approximate_partition_new_code',
+`dnl
+%<--%<--%<-- @CLASS@.java
+
+  public static native Pair <@CLASS@@COMMA@ Pointset_Powerset<Grid> >
+      approximate_partition(@CLASS@ p,
+                            @CLASS@ q,
                             By_Reference<Boolean> finite);
 ')

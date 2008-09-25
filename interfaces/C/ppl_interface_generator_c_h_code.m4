@@ -36,6 +36,17 @@ dnl
 m4_define(`ppl_@CLASS@_@PARTITION@_code', `')
 m4_define(`ppl_@CLASS@_approximate_partition_code', `')
 
+m4_define(`ppl_@CLASS@_linear_partition_code',
+`dnl
+int
+ppl_@TOPOLOGY@@CLASS@_linear_partition
+PPL_PROTO((ppl_const_@CLASS@_t x,
+           ppl_const_@CLASS@_t y,
+           ppl_@CLASS@_t* p_inters,
+           ppl_Pointset_Powerset_NNC_Polyhedron_t* p_rest));
+
+')
+
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 `int
 ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension

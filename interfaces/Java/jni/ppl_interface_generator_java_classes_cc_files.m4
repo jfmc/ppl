@@ -50,7 +50,6 @@ m4_ifelse(m4_current_interface, Polyhedron,
 `#'include "parma_polyhedra_library_C_Polyhedron.h"
 `#'include "parma_polyhedra_library_NNC_Polyhedron.h"
 )`'dnl
-m4_undefine(`m4_current_interface')
 using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::Interfaces::Java;
 

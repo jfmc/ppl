@@ -31,7 +31,6 @@ m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_code', `')
 m4_define(`ppl_@CLASS@_widening_assign_with_tokens_code', `')
 m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens_code', `')
 m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens_code', `')
-
 FIXME: This is the pattern used for finalize() which is protected.
 m4_define(`ppl_delete_@CLASS@_code', `')
 
@@ -844,7 +843,30 @@ m4_define(`ppl_@CLASS@_@PARTITION@_code',
     System.out.println(p.getSecond());
 }
 
-');
+')
+
+FIXME: Code causes Java exception.
+m4_define(`ppl_@CLASS@_linear_partition_code', `')
+m4_define(`____ppl_@CLASS@_linear_partition_code',
+    `dnl
+{
+    System.out.print("Testing linear_partition: ");
+    @TOPOLOGY@@CLASS@ gd1
+        = new @TOPOLOGY@@CLASS@(constraints1);
+    @TOPOLOGY@@CLASS@ gd2
+        = new @TOPOLOGY@@CLASS@(constraints1);
+    Pair p = @TOPOLOGY@@CLASS@.linear_partition(gd1, gd2);
+    if (gd1.OK())
+        System.out.println("Success");
+    else
+        System.out.println("Failure");
+    System.out.print("Printing Pair from linear_partition: ");
+    System.out.print(p.getFirst());
+    System.out.print(", ");
+    System.out.println(p.getSecond());
+}
+
+')
 
 m4_define(`ppl_@CLASS@_approximate_partition_code',
     `dnl

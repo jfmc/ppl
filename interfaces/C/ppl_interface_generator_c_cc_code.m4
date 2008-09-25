@@ -1084,3 +1084,50 @@ ppl_@CLASS@_const_iterator_dereference
 CATCH_ALL
 
 ')
+
+m4_define(`ppl_@CLASS@_linear_partition_code',
+`dnl
+int
+ppl_@TOPOLOGY@@CLASS@_linear_partition
+(ppl_const_@CLASS@_t x,
+ ppl_const_@CLASS@_t y,
+ ppl_@CLASS@_t* p_inters,
+ ppl_Pointset_Powerset_NNC_Polyhedron_t* p_rest) try {
+    const @TOPOLOGY@@CPP_CLASS@& xx
+      = static_cast<const @TOPOLOGY@@CPP_CLASS@&>(*to_const(x));
+    const @TOPOLOGY@@CPP_CLASS@& yy
+      = static_cast<const @TOPOLOGY@@CPP_CLASS@&>(*to_const(y));
+    std::pair<@TOPOLOGY@@CPP_CLASS@@COMMA@ Pointset_Powerset<NNC_Polyhedron> >
+      r = linear_partition(xx, yy);
+    *p_inters = to_nonconst(&r.first);
+    *p_rest = to_nonconst(&r.second);
+  return 0;
+}
+CATCH_ALL
+
+')
+
+m4_define(`_ppl_@CLASS@_approximate_partition_code',
+`dnl
+int
+ppl_@TOPOLOGY@@CLASS@_approximate_partition
+(ppl_const_@CLASS@_t x,
+ ppl_const_@CLASS@_t y,
+ ppl_@CLASS@_t* p_inters,
+ ppl_Pointset_Powerset_NNC_Polyhedron_t* p_rest,
+ int* p_finite) try {
+    const @TOPOLOGY@@CPP_CLASS@& xx
+      = static_cast<const @TOPOLOGY@@CPP_CLASS@&>(*to_const(x));
+    const @TOPOLOGY@@CPP_CLASS@& yy
+      = static_cast<const @TOPOLOGY@@CPP_CLASS@&>(*to_const(y));
+    bool finite;
+    std::pair<@TOPOLOGY@@CPP_CLASS@@COMMA@ Pointset_Powerset<NNC_Polyhedron> >
+      r = approximate_partition(xx, yy, finite);
+    *p_inters = to_nonconst(&r.first);
+    *p_rest = to_nonconst(&r.second);
+    *p_finite = finite ? 1 : 0;
+  return 0;
+}
+CATCH_ALL
+
+')
