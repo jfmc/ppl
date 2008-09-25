@@ -20,14 +20,13 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-/*! \defgroup Polyhedron Convex Polyhedra
+/*! \interface ppl_Polyhedron_tag
   \brief
-  Types and functions for the domains of (topologically closed and
-  not necessarily closed) convex polyhedra.
+  Types and functions for the domains of C and NNC convex polyhedra.
 
   The types and functions for convex polyhedra provide a single interface
-  for accessing both topologically closed (C) and not necessarily closed (NNC)
-  convex polyhedra.
+  for accessing both topologically closed (C) and not necessarily closed
+  (NNC) convex polyhedra.
   The distinction between C and NNC polyhedra need only be explicitly
   stated when <em>creating</em> or <em>assigning</em> a polyhedron object,
   by means of one of the functions <code>ppl_new_*</code> and
@@ -38,25 +37,17 @@ site: http://www.cs.unipr.it/ppl/ . */
   functions require their arguments to be topologically and/or
   space-dimension compatible.
 */
-/*@{*/
 
-
-/*! \name Opaque Pointers for Polyhedra */
-/*@{*/
-
-/*! \brief Opaque pointer. */
+/*! \brief Opaque pointer \ingroup Datatypes */
 typedef struct ppl_Polyhedron_tag* ppl_Polyhedron_t;
 
-/*! \brief Opaque pointer to const object. */
-typedef struct ppl_Polyhedron_tag const* ppl_const_Polyhedron_tag;
-
-/*@}*/ /* \name Opaque Pointers Related to Polyhedra */
-
+/*! \brief Opaque pointer to const object \ingroup Datatypes */
+typedef struct ppl_Polyhedron_tag const* ppl_const_Polyhedron_t;
 
 /*! \name Constructors and Assignment for C_Polyhedron */
 /*@{*/
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Builds a C polyhedron of dimension \p d and writes an handle to it
   at address \p pph. If \p empty is different from zero, the newly created
   polyhedron will be empty; otherwise, it will be a universe polyhedron.
@@ -65,7 +56,7 @@ int
 ppl_new_C_Polyhedron_from_space_dimension
 (ppl_Polyhedron_t* pph, ppl_dimension_type d, int empty);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Builds a C polyhedron that is a copy of \p ph; writes a handle
   for the newly created polyhedron at address \p pph.
 */
@@ -73,7 +64,7 @@ int
 ppl_new_C_Polyhedron_from_C_Polyhedron
 (ppl_Polyhedron_t* pph, ppl_const_Polyhedron_t ph);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Builds a new C polyhedron from the system of constraints
   \p cs and writes a handle for the newly created polyhedron at
   address \p pph.
@@ -84,7 +75,7 @@ int
 ppl_new_C_Polyhedron_from_Constraint_System
 (ppl_Polyhedron_t* pph, ppl_const_Constraint_System_t cs);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Builds a new C polyhedron recycling the system of constraints
   \p cs and writes a handle for the newly created polyhedron at
   address \p pph.
@@ -99,7 +90,7 @@ int
 ppl_new_C_Polyhedron_recycle_Constraint_System
 (ppl_Polyhedron_t* pph, ppl_Constraint_System_t cs);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Builds a new C polyhedron from the system of congruences \p cs
   and writes a handle for the newly created polyhedron at address \p pph.
 
@@ -109,7 +100,7 @@ int
 ppl_new_C_Polyhedron_from_Congruence_System
 (ppl_Polyhedron_t* pph, ppl_const_Congruence_System_t cs);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Builds a new C polyhedron recycling the system of congruences
   \p cs and writes a handle for the newly created polyhedron at
   address \p pph.
@@ -124,7 +115,7 @@ int
 ppl_new_C_Polyhedron_recycle_Congruence_System
 (ppl_Polyhedron_t* pph, ppl_Congruence_System_t cs);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Assigns a copy of the C polyhedron \p src to the C polyhedron \p dst.
 */
 int
@@ -136,7 +127,7 @@ ppl_assign_C_Polyhedron_from_C_Polyhedron
 /*! \name Constructors and Assignment for NNC_Polyhedron */
 /*@{*/
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Builds an NNC polyhedron of dimension \p d and writes an handle to it
   at address \p pph. If \p empty is different from zero, the newly created
   polyhedron will be empty; otherwise, it will be a universe polyhedron.
@@ -145,7 +136,7 @@ int
 ppl_new_NNC_Polyhedron_from_space_dimension
 (ppl_Polyhedron_t* pph, ppl_dimension_type d, int empty);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Builds an NNC polyhedron that is a copy of \p ph; writes a handle
   for the newly created polyhedron at address \p pph.
 */
@@ -153,7 +144,7 @@ int
 ppl_new_NNC_Polyhedron_from_NNC_Polyhedron
 (ppl_Polyhedron_t* pph, ppl_const_Polyhedron_t ph);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Builds a new NNC polyhedron from the system of constraints
   \p cs and writes a handle for the newly created polyhedron at
   address \p pph.
@@ -164,7 +155,7 @@ int
 ppl_new_NNC_Polyhedron_from_Constraint_System
 (ppl_Polyhedron_t* pph, ppl_const_Constraint_System_t cs);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Builds a new NNC polyhedron recycling the system of constraints
   \p cs and writes a handle for the newly created polyhedron at
   address \p pph.
@@ -179,7 +170,7 @@ int
 ppl_new_NNC_Polyhedron_recycle_Constraint_System
 (ppl_Polyhedron_t* pph, ppl_Constraint_System_t cs);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Builds a new NNC polyhedron from the system of congruences
   \p cs and writes a handle for the newly created polyhedron at
   address \p pph.
@@ -190,7 +181,7 @@ int
 ppl_new_NNC_Polyhedron_from_Congruence_System
 PPL_PROTO((ppl_Polyhedron_t* pph, ppl_const_Congruence_System_t cs));
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Builds a new NNC polyhedron recycling the system of congruences
   \p cs and writes a handle for the newly created polyhedron at
   address \p pph.
@@ -205,7 +196,7 @@ int
 ppl_new_NNC_Polyhedron_recycle_Congruence_System
 PPL_PROTO((ppl_Polyhedron_t* pph, ppl_Congruence_System_t cs));
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Assigns a copy of the NNC polyhedron \p src to the NNC
   polyhedron \p dst.
 */
@@ -215,10 +206,19 @@ ppl_assign_NNC_Polyhedron_from_NNC_Polyhedron
 
 /*@}*/ /* Constructors and Assignment for NNC Polyhedron */
 
-/*! \name Constructors Behaving as Conversion Operators */
+/*! \name Constructors Behaving as Conversion Operators
+  Besides the conversions listed here below, the library also
+  provides conversion operators that build a semantic geometric
+  description starting from \b any other semantic geometric
+  description (e.g., ppl_new_Grid_from_C_Polyhedron,
+  ppl_new_C_Polyhedron_from_BD_Shape_mpq_class, etc.).
+  Clearly, the conversion operators are only available if both
+  the source and the target semantic geometric descriptions have
+  been enabled when configuring the library.
+*/
 /*@{*/
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Builds a C polyhedron that is a copy of the topological closure
   of the NNC polyhedron \p ph; writes a handle for the newly created
   polyhedron at address \p pph.
@@ -227,7 +227,7 @@ int
 ppl_new_C_Polyhedron_from_NNC_Polyhedron(ppl_Polyhedron_t* pph,
 					 ppl_const_Polyhedron_t ph);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Builds an NNC polyhedron that is a copy of the C polyhedron \p ph;
   writes a handle for the newly created polyhedron at address \p pph.
 */
@@ -240,7 +240,7 @@ ppl_new_NNC_Polyhedron_from_C_Polyhedron(ppl_Polyhedron_t* pph,
 /*! \name Destructor for (C or NNC) Polyhedra */
 /*@{*/
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Invalidates the handle \p ph: this makes sure the corresponding
   resources will eventually be released.
 */
@@ -252,14 +252,14 @@ ppl_delete_Polyhedron(ppl_const_Polyhedron_t ph);
 /*! \name Functions that Do Not Modify the Polyhedron */
 /*@{*/
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Writes to \p m the dimension of the vector space enclosing \p ph.
 */
 int
 ppl_Polyhedron_space_dimension
 (ppl_const_Polyhedron_t ph, ppl_dimension_type* m);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Writes to \p m the affine dimension of \p ph (not to be confused with the
   dimension of its enclosing vector space) or 0, if \p ph is empty.
 */
@@ -267,7 +267,7 @@ int
 ppl_Polyhedron_affine_dimension
 (ppl_const_Polyhedron_t ph, ppl_dimension_type* m);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Checks the relation between the polyhedron \p ph and the constraint \p c.
 
   If successful, returns a non-negative integer that is
@@ -282,7 +282,7 @@ int
 ppl_Polyhedron_relation_with_Constraint
 (ppl_const_Polyhedron_t ph, ppl_const_Constraint_t c);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Checks the relation between the polyhedron \p ph and the generator \p g.
 
   If successful, returns a non-negative integer that is
@@ -298,7 +298,7 @@ int
 ppl_Polyhedron_relation_with_Congruence
 (ppl_const_Polyhedron_t ph, ppl_const_Congruence_t c);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Writes a const handle to the constraint system defining the
   polyhedron \p ph at address \p pcs.
 */
@@ -306,7 +306,7 @@ int
 ppl_Polyhedron_get_constraints
 (ppl_const_Polyhedron_t ph, ppl_const_Constraint_System_t* pcs);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Writes at address \p pcs a const handle to a system of congruences
   approximating the polyhedron \p ph.
 */
@@ -314,7 +314,7 @@ int
 ppl_Polyhedron_get_congruences
 (ppl_const_Polyhedron_t ph, ppl_const_Congruence_System_t* pcs);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Writes a const handle to the minimized constraint system defining the
   polyhedron \p ph at address \p pcs.
 */
@@ -322,7 +322,7 @@ int
 ppl_Polyhedron_get_minimized_constraints
 (ppl_const_Polyhedron_t ph, ppl_const_Constraint_System_t* pcs);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Writes at address \p pcs a const handle to a system of minimized
   congruences approximating the polyhedron \p ph.
 */
@@ -330,49 +330,49 @@ int
 ppl_Polyhedron_get_minimized_congruences
 (ppl_const_Polyhedron_t ph, ppl_const_Congruence_System_t* pcs);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Returns a positive integer if \p ph is empty; returns 0 if \p ph is
   not empty.
 */
 int
 ppl_Polyhedron_is_empty(ppl_const_Polyhedron_t ph);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Returns a positive integer if \p ph is a universe polyhedron;
   returns 0 if it is not.
 */
 int
 ppl_Polyhedron_is_universe(ppl_const_Polyhedron_t ph);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Returns a positive integer if \p ph is bounded; returns 0 if \p ph is
   unbounded.
 */
 int
 ppl_Polyhedron_is_bounded(ppl_const_Polyhedron_t ph);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Returns a positive integer if \p ph contains at least one integer
   point; returns 0 otherwise.
 */
 int
 ppl_Polyhedron_contains_integer_point(ppl_const_Polyhedron_t ph);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Returns a positive integer if \p ph is topologically closed;
   returns 0 if \p ph is not topologically closed.
 */
 int
 ppl_Polyhedron_is_topologically_closed(ppl_const_Polyhedron_t ph);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Returns a positive integer if \p ph is a discrete set;
   returns 0 if \p ph is not a discrete set.
 */
 int
 ppl_Polyhedron_is_discrete(ppl_const_Polyhedron_t ph);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Returns a positive integer if \p ph constrains \p var;
   returns 0 if \p ph does not constrain \p var.
 */
@@ -380,7 +380,7 @@ int
 ppl_Polyhedron_constrains
 (ppl_Polyhedron_t ph, ppl_dimension_type var);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Returns a positive integer if \p le is bounded from above in \p ph;
   returns 0 otherwise.
 */
@@ -388,7 +388,7 @@ int
 ppl_Polyhedron_bounds_from_above
 (ppl_const_Polyhedron_t ph, ppl_const_Linear_Expression_t le);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Returns a positive integer if \p le is bounded from below in \p ph;
   returns 0 otherwise.
 */
@@ -396,7 +396,7 @@ int
 ppl_Polyhedron_bounds_from_below
 (ppl_const_Polyhedron_t ph, ppl_const_Linear_Expression_t le);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Returns a positive integer if \p ph is not empty
   and \p le is bounded from above in \p ph, in which case
   the supremum value and a point where \p le reaches it are computed.
@@ -434,7 +434,7 @@ ppl_Polyhedron_maximize
  int* pmaximum,
  ppl_Generator_t point);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Returns a positive integer if  \p ph is not empty
   and \p le is bounded from below in \p ph, in which case
   the infimum value and a point where \p le reaches it are computed.
@@ -472,7 +472,7 @@ ppl_Polyhedron_minimize
  int* pminimum,
  ppl_Generator_t point);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Returns a positive integer if \p x contains or is equal to \p y;
   returns 0 if it does not.
 */
@@ -480,7 +480,7 @@ int
 ppl_Polyhedron_contains_Polyhedron
 (ppl_const_Polyhedron_t x, ppl_const_Polyhedron_t y);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Returns a positive integer if \p x strictly contains \p y; returns 0
   if it does not.
 */
@@ -488,7 +488,7 @@ int
 ppl_Polyhedron_strictly_contains_Polyhedron
 (ppl_const_Polyhedron_t x, ppl_const_Polyhedron_t y);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Returns a positive integer if \p x and \p y are disjoint; returns 0
   if they are not.
 */
@@ -496,7 +496,7 @@ int
 ppl_Polyhedron_is_disjoint_from_Polyhedron
 (ppl_const_Polyhedron_t x, ppl_const_Polyhedron_t y);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Returns a positive integer if \p x and \p y are the same polyhedron;
   returns 0 if they are different.
 
@@ -507,7 +507,7 @@ int
 ppl_Polyhedron_equals_Polyhedron
 (ppl_const_Polyhedron_t x, ppl_const_Polyhedron_t y);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Returns a positive integer if \p ph is well formed, i.e., if it
   satisfies all its implementation invariants; returns 0 and perhaps
   makes some noise if \p ph is broken.  Useful for debugging purposes.
@@ -521,21 +521,21 @@ ppl_Polyhedron_OK(ppl_const_Polyhedron_t ph);
 /*! \name Space Dimension Preserving Functions that May Modify the Polyhedron */
 /*@{*/
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Adds a copy of the constraint \p c to the system of constraints of \p ph.
 */
 int
 ppl_Polyhedron_add_constraint
 (ppl_Polyhedron_t ph, ppl_const_Constraint_t c);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Adds a copy of the congruence \p c to polyhedron of \p ph.
 */
 int
 ppl_Polyhedron_add_congruence
 (ppl_Polyhedron_t ph, ppl_const_Congruence_t c);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Adds a copy of the system of constraints \p cs to the system of
   constraints of \p ph.
 */
@@ -543,14 +543,14 @@ int
 ppl_Polyhedron_add_constraints
 (ppl_Polyhedron_t ph, ppl_const_Constraint_System_t cs);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Adds a copy of the system of congruences \p cs to the polyhedron \p ph.
 */
 int
 ppl_Polyhedron_add_congruences
 (ppl_Polyhedron_t ph, ppl_const_Congruence_System_t cs);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Adds the system of constraints \p cs to the system of constraints of
   \p ph.
 
@@ -562,7 +562,7 @@ int
 ppl_Polyhedron_add_recycled_constraints
 (ppl_Polyhedron_t ph, ppl_Constraint_System_t cs);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Adds the system of congruences \p cs to the polyhedron \p ph.
 
   \warning
@@ -573,42 +573,42 @@ int
 ppl_Polyhedron_add_recycled_congruences
 (ppl_Polyhedron_t ph, ppl_Congruence_System_t cs);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Refines \p ph using constraint \p c.
 */
 int
 ppl_Polyhedron_refine_with_constraint
 (ppl_Polyhedron_t ph, ppl_const_Constraint_t c);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Refines \p ph using congruence \p c.
 */
 int
 ppl_Polyhedron_refine_with_congruence
 (ppl_Polyhedron_t ph, ppl_const_Congruence_t c);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Refines \p ph using the constraints in \p cs.
 */
 int
 ppl_Polyhedron_refine_with_constraints
 (ppl_Polyhedron_t ph, ppl_const_Constraint_System_t cs);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Refines \p ph using the congruences in \p cs.
 */
 int
 ppl_Polyhedron_refine_with_congruences
 (ppl_Polyhedron_t ph, ppl_const_Congruence_System_t cs);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Intersects \p x with polyhedron \p y and assigns the result to \p x.
 */
 int
 ppl_Polyhedron_intersection_assign
 (ppl_Polyhedron_t x, ppl_const_Polyhedron_t y);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Assigns to \p x an upper bound of \p x and \p y.
 
   For the domain of polyhedra, this is the same as
@@ -618,14 +618,14 @@ int
 ppl_Polyhedron_upper_bound_assign
 (ppl_Polyhedron_t x, ppl_const_Polyhedron_t y);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Same as ppl_Polyhedron_poly_difference_assign(x, y).
 */
 int
 ppl_Polyhedron_difference_assign
 (ppl_Polyhedron_t x, ppl_const_Polyhedron_t y);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Assigns to \p x the
   \extref{Meet_Preserving_Simplification, meet-preserving simplification}
   of \p x with respect to context \p y. Returns a positive integer if
@@ -636,7 +636,7 @@ int
 ppl_Polyhedron_simplify_using_context_assign
 (ppl_Polyhedron_t x, ppl_const_Polyhedron_t y);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Assigns to \p x the \extref{Time_Elapse_Operator, time-elapse} between
   the polyhedra \p x and \p y.
 */
@@ -644,13 +644,13 @@ int
 ppl_Polyhedron_time_elapse_assign
 (ppl_Polyhedron_t x, ppl_const_Polyhedron_t y);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Assigns to \p ph its topological closure.
 */
 int
 ppl_Polyhedron_topological_closure_assign(ppl_Polyhedron_t ph);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Modifies \p ph by \extref{Cylindrification, unconstraining}
   the space dimension \p var.
 */
@@ -658,7 +658,7 @@ int
 ppl_Polyhedron_unconstrain_space_dimension
 (ppl_Polyhedron_t ph, ppl_dimension_type var);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Modifies \p ph by \extref{Cylindrification, unconstraining}
   the space dimensions that are specified in the first \p n positions
   of the array \p ds.
@@ -668,7 +668,7 @@ int
 ppl_Polyhedron_unconstrain_space_dimensions
 (ppl_Polyhedron_t ph, ppl_dimension_type ds[], size_t n);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Transforms the polyhedron \p ph, assigning an affine expression
   to the specified variable.
 
@@ -691,7 +691,7 @@ ppl_Polyhedron_affine_image
  ppl_const_Linear_Expression_t le,
  ppl_const_Coefficient_t d);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Transforms the polyhedron \p ph, substituting an affine expression
   to the specified variable.
 
@@ -714,7 +714,7 @@ ppl_Polyhedron_affine_preimage
  ppl_const_Linear_Expression_t le,
  ppl_const_Coefficient_t d);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Assigns to \p ph the image of \p ph with respect to the
   \extref{Generalized_Affine_Relations, generalized affine transfer relation}
   \f$\frac{\mathrm{lb}}{\mathrm{d}}
@@ -744,7 +744,7 @@ ppl_Polyhedron_bounded_affine_image
  ppl_const_Linear_Expression_t ub,
  ppl_const_Coefficient_t d);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Assigns to \p ph the preimage of \p ph with respect to the
   \extref{Generalized_Affine_Relations, generalized affine transfer relation}
   \f$\frac{\mathrm{lb}}{\mathrm{d}}
@@ -774,7 +774,7 @@ ppl_Polyhedron_bounded_affine_preimage
  ppl_const_Linear_Expression_t ub,
  ppl_const_Coefficient_t d);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Assigns to \p ph the image of \p ph with respect to the
   \extref{Generalized_Affine_Relations, generalized affine transfer relation}
   \f$\mathrm{var}' \relsym \frac{\mathrm{le}}{\mathrm{d}}\f$,
@@ -804,7 +804,7 @@ ppl_Polyhedron_generalized_affine_image
  ppl_const_Linear_Expression_t le,
  ppl_const_Coefficient_t d);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Assigns to \p ph the preimage of \p ph with respect to the
   \extref{Generalized_Affine_Relations, generalized affine transfer relation}
   \f$\mathrm{var}' \relsym \frac{\mathrm{le}}{\mathrm{d}}\f$,
@@ -834,7 +834,7 @@ ppl_Polyhedron_generalized_affine_preimage
  ppl_const_Linear_Expression_t le,
  ppl_const_Coefficient_t d);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Assigns to \p ph the image of \p ph with respect to the
   \extref{Generalized_Affine_Relations, generalized affine transfer relation}
   \f$\mathrm{lhs}' \relsym \mathrm{rhs}\f$, where
@@ -859,7 +859,7 @@ ppl_Polyhedron_generalized_affine_image_lhs_rhs
  enum ppl_enum_Constraint_Type relsym,
  ppl_const_Linear_Expression_t rhs);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Assigns to \p ph the preimage of \p ph with respect to the
   \extref{Generalized_Affine_Relations, generalized affine transfer relation}
   \f$\mathrm{lhs}' \relsym \mathrm{rhs}\f$, where
@@ -884,7 +884,7 @@ ppl_Polyhedron_generalized_affine_preimage_lhs_rhs
  enum ppl_enum_Constraint_Type relsym,
  ppl_const_Linear_Expression_t rhs);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   If the polyhedron \p y is contained in (or equal to) the polyhedron
   \p x, assigns to \p x the \extref{BHRZ03_widening, BHRZ03-widening} of
   \p x and \p y.  If \p tp is not the null pointer, the
@@ -895,7 +895,7 @@ int
 ppl_Polyhedron_BHRZ03_widening_assign_with_tokens
 (ppl_Polyhedron_t x, ppl_const_Polyhedron_t y, unsigned* tp);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   If the polyhedron \p y is contained in (or equal to) the polyhedron
   \p x, assigns to \p x the \extref{H79_widening, H79-widening} of \p x
   and \p y.  If \p tp is not the null pointer, the
@@ -906,7 +906,7 @@ int
 ppl_Polyhedron_H79_widening_assign_with_tokens
 (ppl_Polyhedron_t x, ppl_const_Polyhedron_t y, unsigned* tp);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   If the polyhedron \p y is contained in (or equal to) the polyhedron
   \p x, assigns to \p x the \extref{BHRZ03_widening, BHRZ03-widening} of
   \p x and \p y.
@@ -915,7 +915,7 @@ int
 ppl_Polyhedron_BHRZ03_widening_assign
 (ppl_Polyhedron_t x, ppl_const_Polyhedron_t y);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   If the polyhedron \p y is contained in (or equal to) the polyhedron
   \p x, assigns to \p x the \extref{H79_widening, H79-widening} of \p x
   and \p y.
@@ -924,7 +924,7 @@ int
 ppl_Polyhedron_H79_widening_assign
 (ppl_Polyhedron_t x, ppl_const_Polyhedron_t y);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   If the polyhedron \p y is contained in (or equal to) the polyhedron
   \p x, assigns to \p x the \extref{BHRZ03_widening, BHRZ03-widening} of
   \p x and \p y intersected with the constraints in \p cs that are
@@ -939,7 +939,7 @@ ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens
  ppl_const_Constraint_System_t cs,
  unsigned* tp);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   If the polyhedron \p y is contained in (or equal to) the polyhedron
   \p x, assigns to \p x the \extref{H79_widening, H79-widening} of \p x
   and \p y intersected with the constraints in \p cs that are
@@ -954,7 +954,7 @@ ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens
  ppl_const_Constraint_System_t cs,
  unsigned* tp);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   If the polyhedron \p y is contained in (or equal to) the polyhedron
   \p x, assigns to \p x the \extref{BHRZ03_widening, BHRZ03-widening} of
   \p x and \p y intersected with the constraints in \p cs that are
@@ -966,7 +966,7 @@ ppl_Polyhedron_limited_BHRZ03_extrapolation_assign
  ppl_const_Polyhedron_t y,
  ppl_const_Constraint_System_t cs);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   If the polyhedron \p y is contained in (or equal to) the polyhedron
   \p x, assigns to \p x the \extref{H79_widening, H79-widening} of \p x
   and \p y intersected with the constraints in \p cs that are
@@ -978,7 +978,7 @@ ppl_Polyhedron_limited_H79_extrapolation_assign
  ppl_const_Polyhedron_t y,
  ppl_const_Constraint_System_t cs);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   If the polyhedron \p y is contained in (or equal to) the polyhedron
   \p x, assigns to \p x the \extref{BHRZ03_widening, BHRZ03-widening} of
   \p x and \p y intersected with the constraints in \p cs that are
@@ -996,7 +996,7 @@ ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens
  ppl_const_Constraint_System_t cs,
  unsigned* tp);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   If the polyhedron \p y is contained in (or equal to) the polyhedron
   \p x, assigns to \p x the \extref{H79_widening, H79-widening} of \p x
   and \p y intersected with the constraints in \p cs that are
@@ -1014,7 +1014,7 @@ ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens
  ppl_const_Constraint_System_t cs,
  unsigned* tp);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   If the polyhedron \p y is contained in (or equal to) the polyhedron
   \p x, assigns to \p x the \extref{BHRZ03_widening, BHRZ03-widening} of
   \p x and \p y intersected with the constraints in \p cs that are
@@ -1028,7 +1028,7 @@ ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign
  ppl_const_Polyhedron_t y,
  ppl_const_Constraint_System_t cs);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   If the polyhedron \p y is contained in (or equal to) the polyhedron
   \p x, assigns to \p x the \extref{H79_widening, H79-widening} of \p x
   and \p y intersected with the constraints in \p cs that are
@@ -1049,7 +1049,7 @@ ppl_Polyhedron_bounded_H79_extrapolation_assign
 /*! \name Functions that May Modify the Dimension of the Vector Space */
 /*@{*/
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Seeing a polyhedron as a set of tuples (its points), assigns
   to \p x all the tuples that can be obtained by concatenating,
   in the order given, a tuple of \p x with a tuple of \p y.
@@ -1058,7 +1058,7 @@ int
 ppl_Polyhedron_concatenate_assign
 (ppl_Polyhedron_t x, ppl_const_Polyhedron_t y);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Adds \p d new dimensions to the space enclosing the polyhedron \p ph
   and to \p ph itself.
 */
@@ -1066,14 +1066,14 @@ int
 ppl_Polyhedron_add_space_dimensions_and_embed
 (ppl_Polyhedron_t ph, ppl_dimension_type d);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Adds \p d new dimensions to the space enclosing the polyhedron \p ph.
 */
 int
 ppl_Polyhedron_add_space_dimensions_and_project
 (ppl_Polyhedron_t ph, ppl_dimension_type d);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Removes from the vector space enclosing \p ph the space dimensions that
   are specified in first \p n positions of the array \p ds.  The presence
   of duplicates in \p ds is a waste but an innocuous one.
@@ -1082,7 +1082,7 @@ int
 ppl_Polyhedron_remove_space_dimensions
 (ppl_Polyhedron_t ph, ppl_dimension_type ds[], size_t n);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Removes the higher dimensions from the vector space enclosing \p ph
   so that, upon successful return, the new space dimension is \p d.
 */
@@ -1090,7 +1090,7 @@ int
 ppl_Polyhedron_remove_higher_space_dimensions
 (ppl_Polyhedron_t ph, ppl_dimension_type d);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Remaps the dimensions of the vector space according to a
   \extref{Mapping_the_Dimensions_of_the_Vector_Space, partial function}.
   This function is specified by means of the \p maps array,
@@ -1111,7 +1111,7 @@ int
 ppl_Polyhedron_map_space_dimensions
 (ppl_Polyhedron_t ph, ppl_dimension_type maps[], size_t n);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   \extref{expand_space_dimension, Expands} the \f$d\f$-th dimension of
   the vector space enclosing \p ph to \p m new space dimensions.
 */
@@ -1119,7 +1119,7 @@ int
 ppl_Polyhedron_expand_space_dimension
 (ppl_Polyhedron_t ph, ppl_dimension_type d, ppl_dimension_type m);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Modifies \p ph by \extref{fold_space_dimensions, folding} the
   space dimensions contained in the first \p n positions of the array \p ds
   into dimension \p d.  The presence of duplicates in \p ds is a waste
@@ -1134,28 +1134,43 @@ ppl_Polyhedron_fold_space_dimensions
 
 /*@}*/ /* Functions that May Modify the Dimension of the Vector Space */
 
-/*! \name Output Functions */
+/*! \name Input/Output Functions */
 /*@{*/
 
-/*! \brief Prints \p x to \c stdout. */
+/*! \relates ppl_Polyhedron_tag
+  \brief Prints \p x to \c stdout.
+*/
 int
 ppl_io_print_Polyhedron(ppl_const_Polyhedron_t x);
 
-/*! \brief Prints \p x to the given output \p stream. */
+/*! \relates ppl_Polyhedron_tag
+  \brief Prints \p x to the given output \p stream.
+*/
 int
 ppl_io_fprint_Polyhedron(FILE* stream, ppl_const_Polyhedron_t x);
 
-/*! \brief Dumps an ascii representation of \p x on \p stream. */
+/*! \relates ppl_Polyhedron_tag
+  \brief Dumps an ascii representation of \p x on \p stream.
+*/
 int
 ppl_Polyhedron_ascii_dump(ppl_const_Polyhedron_t x, FILE* stream);
 
-/*@}*/ /* Output Functions */
+/*! \relates ppl_Polyhedron_tag
+  \brief Loads an ascii representation of \p x from \p stream.
+*/
+int
+ppl_Polyhedron_ascii_load(ppl_Polyhedron_t x, FILE* stream);
+
+/*@}*/ /* Input-Output Functions */
 
 
-/*! \name Ad Hoc Functions for (C or NNC) Polyhedra */
+/*! \name Ad Hoc Functions for (C or NNC) Polyhedra
+  The functions listed here below, being specific of the polyhedron domains,
+  do not have a correspondence in other semantic geometric descriptions.
+*/
 /*@{*/
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Builds a new C polyhedron from the system of generators
   \p gs and writes a handle for the newly created polyhedron at
   address \p pph.
@@ -1166,7 +1181,7 @@ int
 ppl_new_C_Polyhedron_from_Generator_System
 (ppl_Polyhedron_t* pph, ppl_const_Generator_System_t gs);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Builds a new C polyhedron recycling the system of generators
   \p gs and writes a handle for the newly created polyhedron at
   address \p pph.
@@ -1181,7 +1196,7 @@ int
 ppl_new_C_Polyhedron_recycle_Generator_System
 (ppl_Polyhedron_t* pph, ppl_Generator_System_t gs);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Builds a new NNC polyhedron from the system of generators
   \p gs and writes a handle for the newly created polyhedron at
   address \p pph.
@@ -1192,7 +1207,7 @@ int
 ppl_new_NNC_Polyhedron_from_Generator_System
 (ppl_Polyhedron_t* pph, ppl_const_Generator_System_t gs);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Builds a new NNC polyhedron recycling the system of generators
   \p gs and writes a handle for the newly created polyhedron at
   address \p pph.
@@ -1207,7 +1222,7 @@ int
 ppl_new_NNC_Polyhedron_recycle_Generator_System
 (ppl_Polyhedron_t* pph, ppl_Generator_System_t gs);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Writes a const handle to the generator system defining the
   polyhedron \p ph at address \p pgs.
 */
@@ -1215,7 +1230,7 @@ int
 ppl_Polyhedron_get_generators
 (ppl_const_Polyhedron_t ph, ppl_const_Generator_System_t* pgs);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Writes a const handle to the minimized generator system defining the
   polyhedron \p ph at address \p pgs.
 */
@@ -1223,14 +1238,14 @@ int
 ppl_Polyhedron_get_minimized_generators
 (ppl_const_Polyhedron_t ph, ppl_const_Generator_System_t* pgs);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Adds a copy of the generator \p g to the system of generators of \p ph.
 */
 int
 ppl_Polyhedron_add_generator
 (ppl_Polyhedron_t ph, ppl_const_Generator_t g);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Adds a copy of the system of generators \p gs to the system of
   generators of \p ph.
 */
@@ -1238,7 +1253,7 @@ int
 ppl_Polyhedron_add_generators
 (ppl_Polyhedron_t ph, ppl_const_Generator_System_t gs);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Adds the system of generators \p gs to the system of generators of
   \p ph.
 
@@ -1250,14 +1265,14 @@ int
 ppl_Polyhedron_add_recycled_generators
 (ppl_Polyhedron_t ph, ppl_Generator_System_t gs);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Assigns to \p x the poly-hull of \p x and \p y.
 */
 int
 ppl_Polyhedron_poly_hull_assign
 (ppl_Polyhedron_t x, ppl_const_Polyhedron_t y);
 
-/*! \brief
+/*! \relates ppl_Polyhedron_tag \brief
   Assigns to \p x the \extref{Convex_Polyhedral_Difference, poly-difference}
   of \p x and \p y.
 */
@@ -1267,5 +1282,3 @@ ppl_Polyhedron_poly_difference_assign
 
 /*@}*/ /* Ad Hoc Functions for (C or NNC) Polyhedra */
 
-
-/*@}*/ /* \defgroup Polyhedron */

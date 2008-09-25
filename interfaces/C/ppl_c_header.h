@@ -149,7 +149,112 @@ Programming Kit): this is used to read linear programs in MPS format.
 extern "C" {
 #endif
 
-/*! \defgroup Error Error Handling */
+/*! \defgroup Init Library Initialization and Finalization
+  Functions for initialization/finalization of the library,
+  as well as setting/resetting of floating-point rounding mode.
+*/
+/*@{*/
+
+/*! \brief
+  Initializes the Parma Polyhedra Library.
+  This function must be called before any other function.
+
+  \return
+  <CODE>PPL_ERROR_INVALID_ARGUMENT</CODE> if the library
+  was already initialized.
+*/
+int
+ppl_initialize PPL_PROTO((void));
+
+/*! \brief
+  Finalizes the Parma Polyhedra Library.
+  This function must be called after any other function.
+
+  \return
+  <CODE>PPL_ERROR_INVALID_ARGUMENT</CODE> if the library
+  was already finalized.
+*/
+int
+ppl_finalize PPL_PROTO((void));
+
+/*! \brief
+  Sets the FPU rounding mode so that the PPL abstractions based on
+  floating point numbers work correctly.
+
+  This is performed automatically at initialization-time.  Calling
+  this function is needed only if restore_pre_PPL_rounding() has been
+  previously called.
+*/
+int
+ppl_set_rounding_for_PPL PPL_PROTO((void));
+
+/*! \brief
+  Sets the FPU rounding mode as it was before initialization of the PPL.
+
+  After calling this function it is absolutely necessary to call
+  set_rounding_for_PPL() before using any PPL abstractions based on
+  floating point numbers.
+  This is performed automatically at finalization-time.
+*/
+int
+ppl_restore_pre_PPL_rounding PPL_PROTO((void));
+
+/*@}*/ /* Init */
+
+/*! \defgroup Version Version Checking
+  Symbolic constants and functions related to library version checking.
+*/
+/*@{*/
+
+#include "ppl_c_version.h"
+
+/*! \brief
+  Returns the major number of the PPL version.
+*/
+int
+ppl_version_major PPL_PROTO((void));
+
+/*! \brief
+  Returns the minor number of the PPL version.
+*/
+int
+ppl_version_minor PPL_PROTO((void));
+
+/*! \brief
+  Returns the revision number of the PPL version.
+*/
+int
+ppl_version_revision PPL_PROTO((void));
+
+/*! \brief
+  Returns the beta number of the PPL version.
+*/
+int
+ppl_version_beta PPL_PROTO((void));
+
+/*! \brief
+  Writes to \c *p a pointer to a character string containing the
+  PPL version.
+*/
+int
+ppl_version PPL_PROTO((const char** p));
+
+/*! \brief
+  Writes to \c *p a pointer to a character string containing the PPL banner.
+
+  The banner provides information about the PPL version, the licensing,
+  the lack of any warranty whatsoever, the C++ compiler used to build
+  the library, where to report bugs and where to look for further
+  information.
+*/
+int
+ppl_banner PPL_PROTO((const char** p));
+
+/*@}*/ /* Version Checking */
+
+/*! \defgroup Error Error Handling
+  Symbolic constants and functions related to error reporting/handling.
+*/
 /*@{*/
 
 /*! \brief
@@ -207,56 +312,22 @@ ppl_set_error_handler PPL_PROTO((void (*h)(enum ppl_enum_error_code code,
 
 /*@}*/ /* Error */
 
-/*! \defgroup Version Version Checking */
-/*@{*/
+/*! \defgroup Datatypes Library Datatypes
+  \brief
+  Typedefs for the library datatypes and related symbolic constants.
 
-#include "ppl_c_version.h"
+  The datatypes provided by the library should be manipulated
+  by means of the corresponding opaque pointer types and
+  the functions working on them.
 
-/*! \brief
-  Returns the major number of the PPL version.
+  \note
+  To simplify the detection of common programming mistakes,
+  we provide both pointer-to-const and pointer-to-nonconst
+  opaque pointers, with implicit conversions mapping each
+  pointer-to-nonconst to the corresponding pointer-to-const when needed.
+  The user of the C interface is therefore recommended to adopt
+  the pointer-to-const type whenever read-only access is meant.
 */
-int
-ppl_version_major PPL_PROTO((void));
-
-/*! \brief
-  Returns the minor number of the PPL version.
-*/
-int
-ppl_version_minor PPL_PROTO((void));
-
-/*! \brief
-  Returns the revision number of the PPL version.
-*/
-int
-ppl_version_revision PPL_PROTO((void));
-
-/*! \brief
-  Returns the beta number of the PPL version.
-*/
-int
-ppl_version_beta PPL_PROTO((void));
-
-/*! \brief
-  Writes to \c *p a pointer to a character string containing the
-  PPL version.
-*/
-int
-ppl_version PPL_PROTO((const char** p));
-
-/*! \brief
-  Writes to \c *p a pointer to a character string containing the PPL banner.
-
-  The banner provides information about the PPL version, the licensing,
-  the lack of any warranty whatsoever, the C++ compiler used to build
-  the library, where to report bugs and where to look for further
-  information.
-*/
-int
-ppl_banner PPL_PROTO((const char** p));
-
-/*@}*/ /* Version Checking */
-
-/*! \defgroup Dimension Space Dimension */
 /*@{*/
 
 /*! \brief
@@ -275,99 +346,6 @@ ppl_max_space_dimension PPL_PROTO((ppl_dimension_type* m));
 */
 int
 ppl_not_a_dimension PPL_PROTO((ppl_dimension_type* m));
-
-/*@}*/ /* Dimension */
-
-/*! \defgroup Init Library Initialization and Finalization */
-/*@{*/
-
-/*! \brief
-  Initializes the Parma Polyhedra Library.
-  This function must be called before any other function.
-
-  \return
-  <CODE>PPL_ERROR_INVALID_ARGUMENT</CODE> if the library
-  was already initialized.
-*/
-int
-ppl_initialize PPL_PROTO((void));
-
-/*! \brief
-  Finalizes the Parma Polyhedra Library.
-  This function must be called after any other function.
-
-  \return
-  <CODE>PPL_ERROR_INVALID_ARGUMENT</CODE> if the library
-  was already finalized.
-*/
-int
-ppl_finalize PPL_PROTO((void));
-
-/*! \brief
-  Sets the FPU rounding mode so that the PPL abstractions based on
-  floating point numbers work correctly.
-
-  This is performed automatically at initialization-time.  Calling
-  this function is needed only if restore_pre_PPL_rounding() has been
-  previously called.
-*/
-int
-ppl_set_rounding_for_PPL PPL_PROTO((void));
-
-/*! \brief
-  Sets the FPU rounding mode as it was before initialization of the PPL.
-
-  After calling this function it is absolutely necessary to call
-  set_rounding_for_PPL() before using any PPL abstractions based on
-  floating point numbers.
-  This is performed automatically at finalization-time.
-*/
-int
-ppl_restore_pre_PPL_rounding PPL_PROTO((void));
-
-/*@}*/ /* Init */
-
-#undef PPL_TYPE_DECLARATION
-
-#define PPL_TYPE_DECLARATION(Type)                                    \
-/*! \brief Opaque pointer. */                                         \
-typedef struct ppl_##Type##_tag* ppl_##Type##_t;                      \
-/*! \brief Opaque pointer to const object. */                         \
-typedef struct ppl_##Type##_tag const* ppl_const_##Type##_t
-
-PPL_TYPE_DECLARATION(Coefficient);
-
-PPL_TYPE_DECLARATION(Linear_Expression);
-
-PPL_TYPE_DECLARATION(Constraint);
-
-PPL_TYPE_DECLARATION(Constraint_System);
-
-PPL_TYPE_DECLARATION(Constraint_System_const_iterator);
-
-PPL_TYPE_DECLARATION(Generator);
-
-PPL_TYPE_DECLARATION(Generator_System);
-
-PPL_TYPE_DECLARATION(Generator_System_const_iterator);
-
-PPL_TYPE_DECLARATION(Congruence);
-
-PPL_TYPE_DECLARATION(Congruence_System);
-
-PPL_TYPE_DECLARATION(Congruence_System_const_iterator);
-
-PPL_TYPE_DECLARATION(Grid_Generator);
-
-PPL_TYPE_DECLARATION(Grid_Generator_System);
-
-PPL_TYPE_DECLARATION(Grid_Generator_System_const_iterator);
-
-PPL_TYPE_DECLARATION(MIP_Problem);
-
-
-/*! \defgroup IO Simple I/O Functions */
-/*@{*/
 
 /*! \brief Pretty-prints \p var to <CODE>stdout</CODE>. */
 int
@@ -402,47 +380,202 @@ ppl_io_set_variable_output_function(ppl_io_variable_output_function_type* p);
 int
 ppl_io_get_variable_output_function(ppl_io_variable_output_function_type** pp);
 
+/*@}*/ /* Datatypes */
+
+#undef PPL_TYPE_DECLARATION
+
+#define PPL_TYPE_DECLARATION(Type)                                    \
+/*! \brief Opaque pointer \ingroup Datatypes */                       \
+typedef struct ppl_##Type##_tag* ppl_##Type##_t;                      \
+/*! \brief Opaque pointer to const object \ingroup Datatypes */       \
+typedef struct ppl_##Type##_tag const* ppl_const_##Type##_t;
+
+/*! \interface ppl_Coefficient_tag
+  \brief
+  Types and functions for coefficients.
+
+  The types and functions for coefficients provide an interface
+  towards \ref Parma_Polyhedra_Library::Coefficient.
+  Depending on configuration, the PPL coefficients may be implemented
+  by the unbounded precision integers provided by GMP (default),
+  or by bounded precision integers (with checks for overflows).
+*/
+PPL_TYPE_DECLARATION(Coefficient)
+
+/*! \interface ppl_Linear_Expression_tag
+  \brief
+  Types and functions for linear expressions.
+
+  The types and functions for linear expression provide an interface
+  towards \ref Parma_Polyhedra_Library::Linear_Expression.
+*/
+PPL_TYPE_DECLARATION(Linear_Expression)
+
+/*! \interface ppl_Constraint_tag
+  \brief
+  Types and functions for constraints.
+
+  The types and functions for constraints provide an interface
+  towards \ref Parma_Polyhedra_Library::Constraint.
+*/
+PPL_TYPE_DECLARATION(Constraint)
+
+/*! \interface ppl_Constraint_System_tag
+  \brief
+  Types and functions for constraint systems.
+
+  The types and functions for constraint systems provide an interface
+  towards \ref Parma_Polyhedra_Library::Constraint_System.
+*/
+PPL_TYPE_DECLARATION(Constraint_System)
+
+/*! \interface ppl_Constraint_System_const_iterator_tag
+  \brief
+  Types and functions for iterating on constraint systems.
+
+  The types and functions for constraint systems iterators provide
+  read-only access to the elements of a constraint system by interfacing
+  \ref Parma_Polyhedra_Library::Constraint_System::const_iterator.
+*/
+PPL_TYPE_DECLARATION(Constraint_System_const_iterator)
+
+/*! \interface ppl_Generator_tag
+  \brief
+  Types and functions for generators.
+
+  The types and functions for generators provide an interface
+  towards \ref Parma_Polyhedra_Library::Generator.
+*/
+PPL_TYPE_DECLARATION(Generator)
+
+/*! \interface ppl_Generator_System_tag
+  \brief
+  Types and functions for generator systems.
+
+  The types and functions for generator systems provide an interface
+  towards \ref Parma_Polyhedra_Library::Generator_System.
+*/
+PPL_TYPE_DECLARATION(Generator_System)
+
+/*! \interface ppl_Generator_System_const_iterator_tag
+  \brief
+  Types and functions for iterating on generator systems.
+
+  The types and functions for generator systems iterators provide
+  read-only access to the elements of a generator system by interfacing
+  \ref Parma_Polyhedra_Library::Generator_System::const_iterator.
+*/
+PPL_TYPE_DECLARATION(Generator_System_const_iterator)
+
+/*! \interface ppl_Congruence_tag
+  \brief
+  Types and functions for congruences.
+
+  The types and functions for congruences provide an interface
+  towards \ref Parma_Polyhedra_Library::Congruence.
+*/
+PPL_TYPE_DECLARATION(Congruence)
+
+/*! \interface ppl_Congruence_System_tag
+  \brief
+  Types and functions for congruence systems.
+
+  The types and functions for congruence systems provide an interface
+  towards \ref Parma_Polyhedra_Library::Congruence_System.
+*/
+PPL_TYPE_DECLARATION(Congruence_System)
+
+/*! \interface ppl_Congruence_System_const_iterator_tag
+  \brief
+  Types and functions for iterating on congruence systems.
+
+  The types and functions for congruence systems iterators provide
+  read-only access to the elements of a congruence system by interfacing
+  \ref Parma_Polyhedra_Library::Congruence_System::const_iterator.
+*/
+PPL_TYPE_DECLARATION(Congruence_System_const_iterator)
+
+/*! \interface ppl_Grid_Generator_tag
+  \brief
+  Types and functions for grid generators.
+
+  The types and functions for grid generators provide an interface
+  towards \ref Parma_Polyhedra_Library::Grid_Generator.
+*/
+PPL_TYPE_DECLARATION(Grid_Generator)
+
+/*! \interface ppl_Grid_Generator_System_tag
+  \brief
+  Types and functions for grid generator systems.
+
+  The types and functions for grid generator systems provide an interface
+  towards \ref Parma_Polyhedra_Library::Grid_Generator_System.
+*/
+PPL_TYPE_DECLARATION(Grid_Generator_System)
+
+/*! \interface ppl_Grid_Generator_System_const_iterator_tag
+  \brief
+  Types and functions for iterating on grid generator systems.
+
+  The types and functions for grid generator systems iterators provide
+  read-only access to the elements of a grid generator system by interfacing
+  \ref Parma_Polyhedra_Library::Grid_Generator_System::const_iterator.
+*/
+PPL_TYPE_DECLARATION(Grid_Generator_System_const_iterator)
+
+/*! \interface ppl_MIP_Problem_tag
+  \brief
+  Types and functions for MIP problems.
+
+  The types and functions for MIP problems provide an interface
+  towards the \ref Parma_Polyhedra_Library::MIP_Problem
+  "Mixed Integer (Linear) Programming solver".
+*/
+PPL_TYPE_DECLARATION(MIP_Problem)
+
+
 #undef PPL_DECLARE_PRINT_FUNCTIONS
 #undef PPL_DECLARE_ASCII_DUMP_LOAD_FUNCTIONS
 #undef PPL_DECLARE_OUTPUT_FUNCTIONS
 
 #define PPL_DECLARE_PRINT_FUNCTIONS(Type)                             \
-/*! \brief Prints \p x to <CODE>stdout</CODE>. */                     \
+/*! \relates ppl_##Type##_tag \brief Prints \p x to \c stdout. */     \
 int                                                                   \
 ppl_io_print_##Type PPL_PROTO((ppl_const_##Type##_t x));              \
                                                                       \
-/*! \brief Prints \p x to the given output \p stream. */              \
+/*! \relates ppl_##Type##_tag \brief Prints \p x to the given output \p stream. */ \
 int                                                                   \
 ppl_io_fprint_##Type PPL_PROTO((FILE* stream, ppl_const_##Type##_t x));
 
 #define PPL_DECLARE_ASCII_DUMP_LOAD_FUNCTIONS(Type)                   \
-/*! \brief Dumps an ascii representation of \p x on \p stream. */     \
+/*! \relates ppl_##Type##_tag \brief Dumps an ascii representation of \p x on \p stream. */ \
 int                                                                   \
 ppl_##Type##_ascii_dump PPL_PROTO((ppl_const_##Type##_t x,            \
                                        FILE* stream));                \
-/*! \brief Loads an ascii representation of \p x from \p stream. */   \
+/*! \relates ppl_##Type##_tag \brief Loads an ascii representation of \p x from \p stream. */ \
 int                                                                   \
 ppl_##Type##_ascii_load PPL_PROTO((ppl_##Type##_t x,                  \
                                        FILE* stream));
 
 #define PPL_DECLARE_OUTPUT_FUNCTIONS(Type)    \
+/*! \name I/O Functions */                    \
+/*@{*/                                        \
 PPL_DECLARE_PRINT_FUNCTIONS(Type)             \
-PPL_DECLARE_ASCII_DUMP_LOAD_FUNCTIONS(Type)
+PPL_DECLARE_ASCII_DUMP_LOAD_FUNCTIONS(Type)   \
+/*@}*/ /* I/O Functions */
 
-/*@}*/ /* Simple I/O Functions */
 
-
-/*! \defgroup Coefficient Coefficients */
+/*! \name Constructors, Assignment and Destructor */
 /*@{*/
 
-/*! \brief
+/*! \relates ppl_Coefficient_tag \brief
   Creates a new coefficient with value 0 and writes a handle for the
   newly created coefficient at address \p pc.
 */
 int
 ppl_new_Coefficient PPL_PROTO((ppl_Coefficient_t* pc));
 
-/*! \brief
+/*! \relates ppl_Coefficient_tag \brief
   Creates a new coefficient with the value given by the GMP integer
   \p z and writes a handle for the newly created coefficient
   at address \p pc.
@@ -450,7 +583,7 @@ ppl_new_Coefficient PPL_PROTO((ppl_Coefficient_t* pc));
 int
 ppl_new_Coefficient_from_mpz_t PPL_PROTO((ppl_Coefficient_t* pc, mpz_t z));
 
-/*! \brief
+/*! \relates ppl_Coefficient_tag \brief
   Builds a coefficient that is a copy of \p c; writes a handle
   for the newly created coefficient at address \p pc.
 */
@@ -458,33 +591,38 @@ int
 ppl_new_Coefficient_from_Coefficient PPL_PROTO((ppl_Coefficient_t* pc,
 						ppl_const_Coefficient_t c));
 
-/*! \brief
+/*! \relates ppl_Coefficient_tag \brief
   Assign to \p dst the value given by the GMP integer \p z.
 */
 int
 ppl_assign_Coefficient_from_mpz_t PPL_PROTO((ppl_Coefficient_t dst, mpz_t z));
 
-/*! \brief
+/*! \relates ppl_Coefficient_tag \brief
   Assigns a copy of the coefficient \p src to \p dst.
 */
 int
 ppl_assign_Coefficient_from_Coefficient
 PPL_PROTO((ppl_Coefficient_t dst, ppl_const_Coefficient_t src));
 
-/*! \brief
+/*! \relates ppl_Coefficient_tag \brief
   Invalidates the handle \p c: this makes sure the corresponding
   resources will eventually be released.
 */
 int
 ppl_delete_Coefficient PPL_PROTO((ppl_const_Coefficient_t c));
 
-/*! \brief
+/*@}*/ /* \name Constructors, Assignment and Destructor */
+
+/*! \name Read-Only Accessor Functions */
+/*@{*/
+
+/*! \relates ppl_Coefficient_tag \brief
   Sets the value of the GMP integer \p z to the value of \p c.
 */
 int
 ppl_Coefficient_to_mpz_t PPL_PROTO((ppl_const_Coefficient_t c, mpz_t z));
 
-/*! \brief
+/*! \relates ppl_Coefficient_tag \brief
   Returns a positive integer if \p c is well formed, i.e., if it
   satisfies all its implementation invariants; returns 0 and perhaps
   makes some noise if \p c is broken.  Useful for debugging purposes.
@@ -492,37 +630,40 @@ ppl_Coefficient_to_mpz_t PPL_PROTO((ppl_const_Coefficient_t c, mpz_t z));
 int
 ppl_Coefficient_OK PPL_PROTO((ppl_const_Coefficient_t c));
 
-/*! \brief
+/*! \relates ppl_Coefficient_tag \brief
   Returns a positive integer if coefficients are bounded; returns 0
   otherwise.
 */
 int
 ppl_Coefficient_is_bounded PPL_PROTO((void));
 
-/*! \brief
+/*! \relates ppl_Coefficient_tag \brief
   Returns a positive integer if coefficients are bounded, in which case
   \p min is set to their minimum value; returns 0 otherwise.
 */
 int
 ppl_Coefficient_min PPL_PROTO((mpz_t min));
 
-/*! \brief
+/*! \relates ppl_Coefficient_tag \brief
   Returns a positive integer if coefficients are bounded, in which case
   \p max is set to their maximum value; returns 0 otherwise.
 */
 int
 ppl_Coefficient_max PPL_PROTO((mpz_t max));
 
+/*@}*/ /* \name Read-Only Accessor Functions */
+
 /* No ascii dump for Coefficient */
+/*! \name I/O Functions */
+/*@{*/
 PPL_DECLARE_PRINT_FUNCTIONS(Coefficient)
+/*@}*/ /* I/O Functions */
 
-/*@}*/ /* Coefficients */
 
-
-/*! \defgroup Linear_Expression Linear Expressions */
+/*! \name Constructors, Assignment and Destructor */
 /*@{*/
 
-/*! \brief
+/*! \relates ppl_Linear_Expression_tag \brief
   Creates a new linear expression corresponding to the constant 0 in a
   zero-dimensional space; writes a handle for the new linear
   expression at address \p ple.
@@ -530,7 +671,7 @@ PPL_DECLARE_PRINT_FUNCTIONS(Coefficient)
 int
 ppl_new_Linear_Expression PPL_PROTO((ppl_Linear_Expression_t* ple));
 
-/*! \brief
+/*! \relates ppl_Linear_Expression_tag \brief
   Creates a new linear expression corresponding to the constant 0 in a
   <TT>d</TT>-dimensional space; writes a handle for the new linear
   expression at address \p ple.
@@ -539,7 +680,7 @@ int
 ppl_new_Linear_Expression_with_dimension
 PPL_PROTO((ppl_Linear_Expression_t* ple, ppl_dimension_type d));
 
-/*! \brief
+/*! \relates ppl_Linear_Expression_tag \brief
   Builds a linear expression that is a copy of \p le; writes a handle
   for the newly created linear expression at address \p ple.
 */
@@ -547,7 +688,7 @@ int
 ppl_new_Linear_Expression_from_Linear_Expression
 PPL_PROTO((ppl_Linear_Expression_t* ple, ppl_const_Linear_Expression_t le));
 
-/*! \brief
+/*! \relates ppl_Linear_Expression_tag \brief
   Builds a linear expression corresponding to constraint \p c;
   writes a handle for the newly created linear expression at address \p ple.
 */
@@ -555,7 +696,7 @@ int
 ppl_new_Linear_Expression_from_Constraint
 PPL_PROTO((ppl_Linear_Expression_t* ple, ppl_const_Constraint_t c));
 
-/*! \brief
+/*! \relates ppl_Linear_Expression_tag \brief
   Builds a linear expression corresponding to generator \p g;
   writes a handle for the newly created linear expression at address \p ple.
 */
@@ -563,7 +704,7 @@ int
 ppl_new_Linear_Expression_from_Generator
 PPL_PROTO((ppl_Linear_Expression_t* ple, ppl_const_Generator_t g));
 
-/*! \brief
+/*! \relates ppl_Linear_Expression_tag \brief
   Builds a linear expression corresponding to congruence \p c;
   writes a handle for the newly created linear expression at address \p ple.
 */
@@ -571,7 +712,7 @@ int
 ppl_new_Linear_Expression_from_Congruence
 PPL_PROTO((ppl_Linear_Expression_t* ple, ppl_const_Congruence_t c));
 
-/*! \brief
+/*! \relates ppl_Linear_Expression_tag \brief
   Builds a linear expression corresponding to grid generator \p g;
   writes a handle for the newly created linear expression at address \p ple.
 */
@@ -579,21 +720,62 @@ int
 ppl_new_Linear_Expression_from_Grid_Generator
 PPL_PROTO((ppl_Linear_Expression_t* ple, ppl_const_Grid_Generator_t g));
 
-/*! \brief
-  Invalidates the handle \p le: this makes sure the corresponding
-  resources will eventually be released.
-*/
-int
-ppl_delete_Linear_Expression PPL_PROTO((ppl_const_Linear_Expression_t le));
-
-/*! \brief
+/*! \relates ppl_Linear_Expression_tag \brief
   Assigns a copy of the linear expression \p src to \p dst.
 */
 int
 ppl_assign_Linear_Expression_from_Linear_Expression
 PPL_PROTO((ppl_Linear_Expression_t dst, ppl_const_Linear_Expression_t src));
 
-/*! \brief
+/*! \relates ppl_Linear_Expression_tag \brief
+  Invalidates the handle \p le: this makes sure the corresponding
+  resources will eventually be released.
+*/
+int
+ppl_delete_Linear_Expression PPL_PROTO((ppl_const_Linear_Expression_t le));
+
+/*@}*/ /* \name Constructors, Assignment and Destructor */
+
+/*! \name Functions that Do Not Modify the Linear Expression */
+/*@{*/
+
+/*! \relates ppl_Linear_Expression_tag \brief
+  Writes to \p m the space dimension of \p le.
+*/
+int
+ppl_Linear_Expression_space_dimension
+PPL_PROTO((ppl_const_Linear_Expression_t le, ppl_dimension_type* m));
+
+/*! \relates ppl_Linear_Expression_tag \brief
+  Copies into \p n the coefficient of variable \p var in
+  the linear expression \p le.
+*/
+int
+ppl_Linear_Expression_coefficient PPL_PROTO((ppl_const_Linear_Expression_t le,
+					     ppl_dimension_type var,
+					     ppl_Coefficient_t n));
+
+/*! \relates ppl_Linear_Expression_tag \brief
+  Copies into \p n the inhomogeneous term of linear expression \p le.
+*/
+int
+ppl_Linear_Expression_inhomogeneous_term
+PPL_PROTO((ppl_const_Linear_Expression_t le, ppl_Coefficient_t n));
+
+/*! \relates ppl_Linear_Expression_tag \brief
+  Returns a positive integer if \p le is well formed, i.e., if it
+  satisfies all its implementation invariants; returns 0 and perhaps
+  makes some noise if \p le is broken.  Useful for debugging purposes.
+*/
+int
+ppl_Linear_Expression_OK PPL_PROTO((ppl_const_Linear_Expression_t le));
+
+/*@}*/ /* Functions that Do Not Modify the Linear Expression */
+
+/*! \name Functions that May Modify the Linear Expression */
+/*@{*/
+
+/*! \relates ppl_Linear_Expression_tag \brief
   Adds \p n to the coefficient of variable \p var in the linear
   expression \p le.  The space dimension is set to be the maximum
   between \p var + 1 and the old space dimension.
@@ -604,71 +786,39 @@ PPL_PROTO((ppl_Linear_Expression_t le,
 	   ppl_dimension_type var,
 	   ppl_const_Coefficient_t n));
 
-/*! \brief
+/*! \relates ppl_Linear_Expression_tag \brief
   Adds \p n to the inhomogeneous term of the linear expression \p le.
 */
 int
 ppl_Linear_Expression_add_to_inhomogeneous
 PPL_PROTO((ppl_Linear_Expression_t le, ppl_const_Coefficient_t n));
 
-/*! \brief
+/*! \relates ppl_Linear_Expression_tag \brief
   Adds the linear expression \p src to \p dst.
 */
 int
 ppl_add_Linear_Expression_to_Linear_Expression
 PPL_PROTO((ppl_Linear_Expression_t dst, ppl_const_Linear_Expression_t src));
 
-/*! \brief
+/*! \relates ppl_Linear_Expression_tag \brief
   Subtracts the linear expression \p src from \p dst.
 */
 int
 ppl_subtract_Linear_Expression_from_Linear_Expression
 PPL_PROTO((ppl_Linear_Expression_t dst, ppl_const_Linear_Expression_t src));
 
-/*! \brief
+/*! \relates ppl_Linear_Expression_tag \brief
   Multiply the linear expression \p dst by \p n.
 */
 int
 ppl_multiply_Linear_Expression_by_Coefficient
 PPL_PROTO((ppl_Linear_Expression_t le, ppl_const_Coefficient_t n));
 
-/*! \brief
-  Writes to \p m the space dimension of \p le.
-*/
-int
-ppl_Linear_Expression_space_dimension
-PPL_PROTO((ppl_const_Linear_Expression_t le, ppl_dimension_type* m));
-
-/*! \brief
-  Copies into \p n the coefficient of variable \p var in
-  the linear expression \p le.
-*/
-int
-ppl_Linear_Expression_coefficient PPL_PROTO((ppl_const_Linear_Expression_t le,
-					     ppl_dimension_type var,
-					     ppl_Coefficient_t n));
-
-/*! \brief
-  Copies into \p n the inhomogeneous term of linear expression \p le.
-*/
-int
-ppl_Linear_Expression_inhomogeneous_term
-PPL_PROTO((ppl_const_Linear_Expression_t le, ppl_Coefficient_t n));
-
-/*! \brief
-  Returns a positive integer if \p le is well formed, i.e., if it
-  satisfies all its implementation invariants; returns 0 and perhaps
-  makes some noise if \p le is broken.  Useful for debugging purposes.
-*/
-int
-ppl_Linear_Expression_OK PPL_PROTO((ppl_const_Linear_Expression_t le));
+/*@}*/ /* \name Functions that May Modify the Linear Expression */
 
 PPL_DECLARE_OUTPUT_FUNCTIONS(Linear_Expression)
 
-/*@}*/ /* Linear Expressions */
-
-
-/*! \brief
+/*! \brief \ingroup Datatypes
   Describes the relations represented by a constraint.
 */
 enum ppl_enum_Constraint_Type {
@@ -684,11 +834,10 @@ enum ppl_enum_Constraint_Type {
   PPL_CONSTRAINT_TYPE_GREATER_THAN
 };
 
-
-/*! \defgroup Constraint Constraints */
+/*! \name Constructors, Assignment and Destructor */
 /*@{*/
 
-/*! \brief
+/*! \relates ppl_Constraint_tag \brief
   Creates the new constraint `\p le \p rel 0' and writes a handle for
   it at address \p pc.  The space dimension of the new constraint is
   equal to the space dimension of \p le.
@@ -698,14 +847,14 @@ ppl_new_Constraint PPL_PROTO((ppl_Constraint_t* pc,
 			      ppl_const_Linear_Expression_t le,
 			      enum ppl_enum_Constraint_Type rel));
 
-/*! \brief
+/*! \relates ppl_Constraint_tag \brief
   Creates the unsatisfiable (zero-dimension space) constraint \f$0 = 1\f$
   and writes a handle for it at address \p pc.
 */
 int
 ppl_new_Constraint_zero_dim_false PPL_PROTO((ppl_Constraint_t* pc));
 
-/*! \brief
+/*! \relates ppl_Constraint_tag \brief
   Creates the true (zero-dimension space) constraint \f$0 \leq 1\f$,
   also known as <EM>positivity constraint</EM>.
   A handle for the newly created constraint is written at address \p pc.
@@ -713,7 +862,7 @@ ppl_new_Constraint_zero_dim_false PPL_PROTO((ppl_Constraint_t* pc));
 int
 ppl_new_Constraint_zero_dim_positivity PPL_PROTO((ppl_Constraint_t* pc));
 
-/*! \brief
+/*! \relates ppl_Constraint_tag \brief
   Builds a constraint that is a copy of \p c; writes a handle
   for the newly created constraint at address \p pc.
 */
@@ -721,34 +870,39 @@ int
 ppl_new_Constraint_from_Constraint PPL_PROTO((ppl_Constraint_t* pc,
 					      ppl_const_Constraint_t c));
 
-/*! \brief
-  Invalidates the handle \p c: this makes sure the corresponding
-  resources will eventually be released.
-*/
-int
-ppl_delete_Constraint PPL_PROTO((ppl_const_Constraint_t c));
-
-/*! \brief
+/*! \relates ppl_Constraint_tag \brief
   Assigns a copy of the constraint \p src to \p dst.
 */
 int
 ppl_assign_Constraint_from_Constraint PPL_PROTO((ppl_Constraint_t dst,
 						 ppl_const_Constraint_t src));
 
-/*! \brief
+/*! \relates ppl_Constraint_tag \brief
+  Invalidates the handle \p c: this makes sure the corresponding
+  resources will eventually be released.
+*/
+int
+ppl_delete_Constraint PPL_PROTO((ppl_const_Constraint_t c));
+
+/*@}*/ /* \name Constructors, Assignment and Destructor */
+
+/*! \name Functions that Do Not Modify the Constraint */
+/*@{*/
+
+/*! \relates ppl_Constraint_tag \brief
   Writes to \p m the space dimension of \p c.
 */
 int
 ppl_Constraint_space_dimension PPL_PROTO((ppl_const_Constraint_t c,
 					  ppl_dimension_type* m));
 
-/*! \brief
+/*! \relates ppl_Constraint_tag \brief
   Returns the type of constraint \p c.
 */
 int
 ppl_Constraint_type PPL_PROTO((ppl_const_Constraint_t c));
 
-/*! \brief
+/*! \relates ppl_Constraint_tag \brief
   Copies into \p n the coefficient of variable \p var in
   constraint \p c.
 */
@@ -757,14 +911,14 @@ ppl_Constraint_coefficient PPL_PROTO((ppl_const_Constraint_t c,
 				      ppl_dimension_type var,
 				      ppl_Coefficient_t n));
 
-/*! \brief
+/*! \relates ppl_Constraint_tag \brief
   Copies into \p n the inhomogeneous term of constraint \p c.
 */
 int
 ppl_Constraint_inhomogeneous_term PPL_PROTO((ppl_const_Constraint_t c,
 					     ppl_Coefficient_t n));
 
-/*! \brief
+/*! \relates ppl_Constraint_tag \brief
   Returns a positive integer if \p c is well formed, i.e., if it
   satisfies all its implementation invariants; returns 0 and perhaps
   makes some noise if \p c is broken.  Useful for debugging purposes.
@@ -772,22 +926,22 @@ ppl_Constraint_inhomogeneous_term PPL_PROTO((ppl_const_Constraint_t c,
 int
 ppl_Constraint_OK PPL_PROTO((ppl_const_Constraint_t c));
 
+/*@}*/ /* \name Functions that Do Not Modify the Constraint */
+
 PPL_DECLARE_OUTPUT_FUNCTIONS(Constraint)
 
-/*@}*/ /* Constraints */
 
-
-/*! \defgroup Constraint_System Constraint Systems */
+/*! \name Constructors, Assignment and Destructor */
 /*@{*/
 
-/*! \brief
+/*! \relates ppl_Constraint_System_tag \brief
   Builds an empty system of constraints and writes a handle to it at
   address \p pcs.
 */
 int
 ppl_new_Constraint_System PPL_PROTO((ppl_Constraint_System_t* pcs));
 
-/*! \brief
+/*! \relates ppl_Constraint_System_tag \brief
   Builds a zero-dimensional, unsatisfiable constraint system and
   writes a handle to it at address \p pcs.
 */
@@ -795,7 +949,7 @@ int
 ppl_new_Constraint_System_zero_dim_empty
 PPL_PROTO((ppl_Constraint_System_t* pcs));
 
-/*! \brief
+/*! \relates ppl_Constraint_System_tag \brief
   Builds the singleton constraint system containing only a copy of
   constraint \p c; writes a handle for the newly created system at
   address \p pcs.
@@ -804,7 +958,7 @@ int
 ppl_new_Constraint_System_from_Constraint
 PPL_PROTO((ppl_Constraint_System_t* pcs, ppl_const_Constraint_t c));
 
-/*! \brief
+/*! \relates ppl_Constraint_System_tag \brief
   Builds a constraint system that is a copy of \p cs; writes a handle
   for the newly created system at address \p pcs.
 */
@@ -812,28 +966,33 @@ int
 ppl_new_Constraint_System_from_Constraint_System
 PPL_PROTO((ppl_Constraint_System_t* pcs, ppl_const_Constraint_System_t cs));
 
-/*! \brief
-  Invalidates the handle \p cs: this makes sure the corresponding
-  resources will eventually be released.
-*/
-int
-ppl_delete_Constraint_System PPL_PROTO((ppl_const_Constraint_System_t cs));
-
-/*! \brief
+/*! \relates ppl_Constraint_System_tag \brief
   Assigns a copy of the constraint system \p src to \p dst.
 */
 int
 ppl_assign_Constraint_System_from_Constraint_System
 PPL_PROTO((ppl_Constraint_System_t dst, ppl_const_Constraint_System_t src));
 
-/*! \brief
+/*! \relates ppl_Constraint_System_tag \brief
+  Invalidates the handle \p cs: this makes sure the corresponding
+  resources will eventually be released.
+*/
+int
+ppl_delete_Constraint_System PPL_PROTO((ppl_const_Constraint_System_t cs));
+
+/*@}*/ /* \name Constructors, Assignment and Destructor */
+
+/*! \name Functions that Do Not Modify the Constraint System */
+/*@{*/
+
+/*! \relates ppl_Constraint_System_tag \brief
   Writes to \p m the dimension of the vector space enclosing \p cs.
 */
 int
 ppl_Constraint_System_space_dimension
 PPL_PROTO((ppl_const_Constraint_System_t cs, ppl_dimension_type* m));
 
-/*! \brief
+/*! \relates ppl_Constraint_System_tag \brief
   Returns a positive integer if \p cs contains no (non-trivial) constraint;
   returns 0 otherwise.
 */
@@ -841,7 +1000,7 @@ int
 ppl_Constraint_System_empty
 PPL_PROTO((ppl_const_Constraint_System_t cs));
 
-/*! \brief
+/*! \relates ppl_Constraint_System_tag \brief
   Returns a positive integer if \p cs contains any (non-trivial) strict
   inequality; returns 0 otherwise.
 */
@@ -849,66 +1008,7 @@ int
 ppl_Constraint_System_has_strict_inequalities
 PPL_PROTO((ppl_const_Constraint_System_t cs));
 
-/*! \brief
-  Removes all the constraints from the constraint system \p cs
-  and sets its space dimension to 0.
-*/
-int
-ppl_Constraint_System_clear PPL_PROTO((ppl_Constraint_System_t cs));
-
-/*! \brief
-  Inserts a copy of the constraint \p c into \p cs; the space
-  dimension is increased, if necessary.
-*/
-int
-ppl_Constraint_System_insert_Constraint PPL_PROTO((ppl_Constraint_System_t cs,
-						   ppl_const_Constraint_t c));
-
-/*! \brief
-  Returns a positive integer if \p cs is well formed, i.e., if it
-  satisfies all its implementation invariants; returns 0 and perhaps
-  makes some noise if \p cs is broken.  Useful for debugging purposes.
-*/
-int
-ppl_Constraint_System_OK PPL_PROTO((ppl_const_Constraint_System_t cs));
-
-PPL_DECLARE_OUTPUT_FUNCTIONS(Constraint_System)
-
-
-/*! \brief
-  Builds a new `const iterator' and writes a handle to it at address
-  \p pcit.
-*/
-int
-ppl_new_Constraint_System_const_iterator
-PPL_PROTO((ppl_Constraint_System_const_iterator_t* pcit));
-
-/*! \brief
-  Builds a const iterator that is a copy of \p cit; writes an
-  handle for the newly created const iterator at address \p pcit.
-*/
-int
-ppl_new_Constraint_System_const_iterator_from_Constraint_System_const_iterator
-PPL_PROTO((ppl_Constraint_System_const_iterator_t* pcit,
-	   ppl_const_Constraint_System_const_iterator_t cit));
-
-/*! \brief
-  Invalidates the handle \p cit: this makes sure the corresponding
-  resources will eventually be released.
-*/
-int
-ppl_delete_Constraint_System_const_iterator
-PPL_PROTO((ppl_const_Constraint_System_const_iterator_t cit));
-
-/*! \brief
-  Assigns a copy of the const iterator \p src to \p dst.
-*/
-int
-ppl_assign_Constraint_System_const_iterator_from_Constraint_System_const_iterator
-PPL_PROTO((ppl_Constraint_System_const_iterator_t dst,
-	   ppl_const_Constraint_System_const_iterator_t src));
-
-/*! \brief
+/*! \relates ppl_Constraint_System_tag \brief
   Assigns to \p cit a const iterator "pointing" to the beginning of
   the constraint system \p cs.
 */
@@ -917,7 +1017,7 @@ ppl_Constraint_System_begin
 PPL_PROTO((ppl_const_Constraint_System_t cs,
 	   ppl_Constraint_System_const_iterator_t cit));
 
-/*! \brief
+/*! \relates ppl_Constraint_System_tag \brief
   Assigns to \p cit a const iterator "pointing" past the end of the
   constraint system \p cs.
 */
@@ -926,7 +1026,81 @@ ppl_Constraint_System_end
 PPL_PROTO((ppl_const_Constraint_System_t cs,
 	   ppl_Constraint_System_const_iterator_t cit));
 
-/*! \brief
+/*! \relates ppl_Constraint_System_tag \brief
+  Returns a positive integer if \p cs is well formed, i.e., if it
+  satisfies all its implementation invariants; returns 0 and perhaps
+  makes some noise if \p cs is broken.  Useful for debugging purposes.
+*/
+int
+ppl_Constraint_System_OK PPL_PROTO((ppl_const_Constraint_System_t cs));
+
+/*@}*/ /* Functions that Do Not Modify the Constraint System */
+
+/*! \name Functions that May Modify the Constraint System */
+/*@{*/
+
+/*! \relates ppl_Constraint_System_tag \brief
+  Removes all the constraints from the constraint system \p cs
+  and sets its space dimension to 0.
+*/
+int
+ppl_Constraint_System_clear PPL_PROTO((ppl_Constraint_System_t cs));
+
+/*! \relates ppl_Constraint_System_tag \brief
+  Inserts a copy of the constraint \p c into \p cs; the space
+  dimension is increased, if necessary.
+*/
+int
+ppl_Constraint_System_insert_Constraint PPL_PROTO((ppl_Constraint_System_t cs,
+						   ppl_const_Constraint_t c));
+
+/*@}*/ /* \name Functions that May Modify the Constraint System */
+
+PPL_DECLARE_OUTPUT_FUNCTIONS(Constraint_System)
+
+
+/*! \name Constructors, Assignment and Destructor */
+/*@{*/
+
+/*! \relates ppl_Constraint_System_const_iterator_tag \brief
+  Builds a new `const iterator' and writes a handle to it at address
+  \p pcit.
+*/
+int
+ppl_new_Constraint_System_const_iterator
+PPL_PROTO((ppl_Constraint_System_const_iterator_t* pcit));
+
+/*! \relates ppl_Constraint_System_const_iterator_tag \brief
+  Builds a const iterator that is a copy of \p cit; writes an
+  handle for the newly created const iterator at address \p pcit.
+*/
+int
+ppl_new_Constraint_System_const_iterator_from_Constraint_System_const_iterator
+PPL_PROTO((ppl_Constraint_System_const_iterator_t* pcit,
+	   ppl_const_Constraint_System_const_iterator_t cit));
+
+/*! \relates ppl_Constraint_System_const_iterator_tag \brief
+  Assigns a copy of the const iterator \p src to \p dst.
+*/
+int
+ppl_assign_Constraint_System_const_iterator_from_Constraint_System_const_iterator
+PPL_PROTO((ppl_Constraint_System_const_iterator_t dst,
+	   ppl_const_Constraint_System_const_iterator_t src));
+
+/*! \relates ppl_Constraint_System_const_iterator_tag \brief
+  Invalidates the handle \p cit: this makes sure the corresponding
+  resources will eventually be released.
+*/
+int
+ppl_delete_Constraint_System_const_iterator
+PPL_PROTO((ppl_const_Constraint_System_const_iterator_t cit));
+
+/*@}*/ /* \name Constructors, Assignment and Destructor */
+
+/*! \name Dereferencing, Incrementing and Equality Testing */
+/*@{*/
+
+/*! \relates ppl_Constraint_System_const_iterator_tag \brief
   Dereference \p cit writing a const handle to the resulting
   constraint at address \p pc.
 */
@@ -935,14 +1109,14 @@ ppl_Constraint_System_const_iterator_dereference
 PPL_PROTO((ppl_const_Constraint_System_const_iterator_t cit,
 	   ppl_const_Constraint_t* pc));
 
-/*! \brief
+/*! \relates ppl_Constraint_System_const_iterator_tag \brief
   Increment \p cit so that it "points" to the next constraint.
 */
 int
 ppl_Constraint_System_const_iterator_increment
 PPL_PROTO((ppl_Constraint_System_const_iterator_t cit));
 
-/*! \brief
+/*! \relates ppl_Constraint_System_const_iterator_tag \brief
   Returns a positive integer if the iterators corresponding to \p x and
   \p y are equal; returns 0 if they are different.
 */
@@ -951,10 +1125,10 @@ ppl_Constraint_System_const_iterator_equal_test
 PPL_PROTO((ppl_const_Constraint_System_const_iterator_t x,
 	   ppl_const_Constraint_System_const_iterator_t y));
 
-/*@}*/ /* Constraint Systems */
+/*@}*/ /* \name Dereferencing, Incrementing and Equality Testing */
 
 
-/*! \brief
+/*! \brief \ingroup Datatypes
   Describes the different kinds of generators.
 */
 enum ppl_enum_Generator_Type {
@@ -968,10 +1142,10 @@ enum ppl_enum_Generator_Type {
   PPL_GENERATOR_TYPE_CLOSURE_POINT
 };
 
-/*! \defgroup Generator Generators */
+/*! \name Constructors, Assignment and Destructor */
 /*@{*/
 
-/*! \brief
+/*! \relates ppl_Generator_tag \brief
   Creates a new generator of direction \p le and type \p t.  If the
   generator to be created is a point or a closure point, the divisor
   \p d is applied to \p le.  For other types of generators \p d is
@@ -985,7 +1159,7 @@ ppl_new_Generator PPL_PROTO((ppl_Generator_t* pg,
 			     enum ppl_enum_Generator_Type t,
 			     ppl_const_Coefficient_t d));
 
-/*! \brief
+/*! \relates ppl_Generator_tag \brief
   Creates the point that is the origin of the zero-dimensional space
   \f$\Rset^0\f$.  Writes a handle for the new generator at address
   \p pg.
@@ -993,7 +1167,7 @@ ppl_new_Generator PPL_PROTO((ppl_Generator_t* pg,
 int
 ppl_new_Generator_zero_dim_point PPL_PROTO((ppl_Generator_t* pg));
 
-/*! \brief
+/*! \relates ppl_Generator_tag \brief
   Creates, as a closure point, the point that is the origin of the
   zero-dimensional space \f$\Rset^0\f$.  Writes a handle for the new
   generator at address \p pg.
@@ -1001,7 +1175,7 @@ ppl_new_Generator_zero_dim_point PPL_PROTO((ppl_Generator_t* pg));
 int
 ppl_new_Generator_zero_dim_closure_point PPL_PROTO((ppl_Generator_t* pg));
 
-/*! \brief
+/*! \relates ppl_Generator_tag \brief
   Builds a generator that is a copy of \p g; writes a handle
   for the newly created generator at address \p pg.
 */
@@ -1009,34 +1183,39 @@ int
 ppl_new_Generator_from_Generator PPL_PROTO((ppl_Generator_t* pg,
 					    ppl_const_Generator_t g));
 
-/*! \brief
-  Invalidates the handle \p g: this makes sure the corresponding
-  resources will eventually be released.
-*/
-int
-ppl_delete_Generator PPL_PROTO((ppl_const_Generator_t g));
-
-/*! \brief
+/*! \relates ppl_Generator_tag \brief
   Assigns a copy of the generator \p src to \p dst.
 */
 int
 ppl_assign_Generator_from_Generator PPL_PROTO((ppl_Generator_t dst,
 					       ppl_const_Generator_t src));
 
-/*! \brief
+/*! \relates ppl_Generator_tag \brief
+  Invalidates the handle \p g: this makes sure the corresponding
+  resources will eventually be released.
+*/
+int
+ppl_delete_Generator PPL_PROTO((ppl_const_Generator_t g));
+
+/*@}*/ /* \name Constructors, Assignment and Destructor */
+
+/*! \name Functions that Do Not Modify the Generator */
+/*@{*/
+
+/*! \relates ppl_Generator_tag \brief
   Writes to \p m the space dimension of \p g.
 */
 int
 ppl_Generator_space_dimension PPL_PROTO((ppl_const_Generator_t g,
 					 ppl_dimension_type* m));
 
-/*! \brief
+/*! \relates ppl_Generator_tag \brief
   Returns the type of generator \p g.
 */
 int
 ppl_Generator_type PPL_PROTO((ppl_const_Generator_t g));
 
-/*! \brief
+/*! \relates ppl_Generator_tag \brief
   Copies into \p n the coefficient of variable \p var in generator \p g.
 */
 int
@@ -1044,14 +1223,14 @@ ppl_Generator_coefficient PPL_PROTO((ppl_const_Generator_t g,
 				     ppl_dimension_type var,
 				     ppl_Coefficient_t n));
 
-/*! \brief
+/*! \relates ppl_Generator_tag \brief
   If \p g is a point or a closure point assigns its divisor to \p n.
 */
 int
 ppl_Generator_divisor PPL_PROTO((ppl_const_Generator_t g,
 				 ppl_Coefficient_t n));
 
-/*! \brief
+/*! \relates ppl_Generator_tag \brief
   Returns a positive integer if \p g is well formed, i.e., if it
   satisfies all its implementation invariants; returns 0 and perhaps
   makes some noise if \p g is broken.  Useful for debugging purposes.
@@ -1059,15 +1238,15 @@ ppl_Generator_divisor PPL_PROTO((ppl_const_Generator_t g,
 int
 ppl_Generator_OK PPL_PROTO((ppl_const_Generator_t g));
 
+/*@}*/ /* \name Functions that Do Not Modify the Generator */
+
 PPL_DECLARE_OUTPUT_FUNCTIONS(Generator)
 
-/*@}*/ /* Generators */
 
-
-/*! \defgroup Generator_System Generator Systems */
+/*! \name Constructors, Assignment and Destructor */
 /*@{*/
 
-/*! \brief
+/*! \relates ppl_Generator_System_tag \brief
   Builds an empty system of generators and writes a handle to it at
   address \p pgs.
 */
@@ -1083,7 +1262,7 @@ int
 ppl_new_Generator_System_zero_dim_univ
 PPL_PROTO((ppl_Generator_System_t* pgs));
 
-/*! \brief
+/*! \relates ppl_Generator_System_tag \brief
   Builds the singleton generator system containing only a copy of
   generator \p g; writes a handle for the newly created system at
   address \p pgs.
@@ -1092,7 +1271,7 @@ int
 ppl_new_Generator_System_from_Generator PPL_PROTO((ppl_Generator_System_t* pgs,
 						   ppl_const_Generator_t g));
 
-/*! \brief
+/*! \relates ppl_Generator_System_tag \brief
   Builds a generator system that is a copy of \p gs; writes a handle
   for the newly created system at address \p pgs.
 */
@@ -1100,28 +1279,33 @@ int
 ppl_new_Generator_System_from_Generator_System
 PPL_PROTO((ppl_Generator_System_t* pgs, ppl_const_Generator_System_t gs));
 
-/*! \brief
-  Invalidates the handle \p gs: this makes sure the corresponding
-  resources will eventually be released.
-*/
-int
-ppl_delete_Generator_System PPL_PROTO((ppl_const_Generator_System_t gs));
-
-/*! \brief
+/*! \relates ppl_Generator_System_tag \brief
   Assigns a copy of the generator system \p src to \p dst.
 */
 int
 ppl_assign_Generator_System_from_Generator_System
 PPL_PROTO((ppl_Generator_System_t dst, ppl_const_Generator_System_t src));
 
-/*! \brief
+/*! \relates ppl_Generator_System_tag \brief
+  Invalidates the handle \p gs: this makes sure the corresponding
+  resources will eventually be released.
+*/
+int
+ppl_delete_Generator_System PPL_PROTO((ppl_const_Generator_System_t gs));
+
+/*@}*/ /* \name Constructors, Assignment and Destructor */
+
+/*! \name Functions that Do Not Modify the Generator System */
+/*@{*/
+
+/*! \relates ppl_Generator_System_tag \brief
   Writes to \p m the dimension of the vector space enclosing \p gs.
 */
 int
 ppl_Generator_System_space_dimension
 PPL_PROTO((ppl_const_Generator_System_t gs, ppl_dimension_type* m));
 
-/*! \brief
+/*! \relates ppl_Generator_System_tag \brief
   Returns a positive integer if \p gs contains no generators;
   returns 0 otherwise.
 */
@@ -1129,66 +1313,7 @@ int
 ppl_Generator_System_empty
 PPL_PROTO((ppl_const_Generator_System_t gs));
 
-/*! \brief
-  Removes all the generators from the generator system \p gs
-  and sets its space dimension to 0.
-*/
-int
-ppl_Generator_System_clear PPL_PROTO((ppl_Generator_System_t gs));
-
-/*! \brief
-  Inserts a copy of the generator \p g into \p gs; the space
-  dimension is increased, if necessary.
-*/
-int
-ppl_Generator_System_insert_Generator PPL_PROTO((ppl_Generator_System_t gs,
-						 ppl_const_Generator_t g));
-
-/*! \brief
-  Returns a positive integer if \p gs is well formed, i.e., if it
-  satisfies all its implementation invariants; returns 0 and perhaps
-  makes some noise if \p gs is broken.  Useful for debugging purposes.
-*/
-int
-ppl_Generator_System_OK PPL_PROTO((ppl_const_Generator_System_t gs));
-
-PPL_DECLARE_OUTPUT_FUNCTIONS(Generator_System)
-
-
-/*! \brief
-  Builds a new `const iterator' and writes a handle to it at address
-  \p pgit.
-*/
-int
-ppl_new_Generator_System_const_iterator
-PPL_PROTO((ppl_Generator_System_const_iterator_t* pgit));
-
-/*! \brief
-  Builds a const iterator that is a copy of \p git; writes an
-  handle for the newly created const iterator at address \p pgit.
-*/
-int
-ppl_new_Generator_System_const_iterator_from_Generator_System_const_iterator
-PPL_PROTO((ppl_Generator_System_const_iterator_t* pgit,
-	   ppl_const_Generator_System_const_iterator_t git));
-
-/*! \brief
-  Invalidates the handle \p git: this makes sure the corresponding
-  resources will eventually be released.
-*/
-int
-ppl_delete_Generator_System_const_iterator
-PPL_PROTO((ppl_const_Generator_System_const_iterator_t git));
-
-/*! \brief
-  Assigns a copy of the const iterator \p src to \p dst.
-*/
-int
-ppl_assign_Generator_System_const_iterator_from_Generator_System_const_iterator
-PPL_PROTO((ppl_Generator_System_const_iterator_t dst,
-	   ppl_const_Generator_System_const_iterator_t src));
-
-/*! \brief
+/*! \relates ppl_Generator_System_tag \brief
   Assigns to \p git a const iterator "pointing" to the beginning of
   the generator system \p gs.
 */
@@ -1197,7 +1322,7 @@ ppl_Generator_System_begin
 PPL_PROTO((ppl_const_Generator_System_t gs,
 	   ppl_Generator_System_const_iterator_t git));
 
-/*! \brief
+/*! \relates ppl_Generator_System_tag \brief
   Assigns to \p git a const iterator "pointing" past the end of the
   generator system \p gs.
 */
@@ -1206,7 +1331,81 @@ ppl_Generator_System_end
 PPL_PROTO((ppl_const_Generator_System_t gs,
 	   ppl_Generator_System_const_iterator_t git));
 
-/*! \brief
+/*! \relates ppl_Generator_System_tag \brief
+  Returns a positive integer if \p gs is well formed, i.e., if it
+  satisfies all its implementation invariants; returns 0 and perhaps
+  makes some noise if \p gs is broken.  Useful for debugging purposes.
+*/
+int
+ppl_Generator_System_OK PPL_PROTO((ppl_const_Generator_System_t gs));
+
+/*@}*/ /* Functions that Do Not Modify the Generator System */
+
+/*! \name Functions that May Modify the Generator System */
+/*@{*/
+
+/*! \relates ppl_Generator_System_tag \brief
+  Removes all the generators from the generator system \p gs
+  and sets its space dimension to 0.
+*/
+int
+ppl_Generator_System_clear PPL_PROTO((ppl_Generator_System_t gs));
+
+/*! \relates ppl_Generator_System_tag \brief
+  Inserts a copy of the generator \p g into \p gs; the space
+  dimension is increased, if necessary.
+*/
+int
+ppl_Generator_System_insert_Generator PPL_PROTO((ppl_Generator_System_t gs,
+						 ppl_const_Generator_t g));
+
+/*@}*/ /* \name Functions that May Modify the Generator System */
+
+PPL_DECLARE_OUTPUT_FUNCTIONS(Generator_System)
+
+
+/*! \name Constructors, Assignment and Destructor */
+/*@{*/
+
+/*! \relates ppl_Generator_System_const_iterator_tag \brief
+  Builds a new `const iterator' and writes a handle to it at address
+  \p pgit.
+*/
+int
+ppl_new_Generator_System_const_iterator
+PPL_PROTO((ppl_Generator_System_const_iterator_t* pgit));
+
+/*! \relates ppl_Generator_System_const_iterator_tag \brief
+  Builds a const iterator that is a copy of \p git; writes an
+  handle for the newly created const iterator at address \p pgit.
+*/
+int
+ppl_new_Generator_System_const_iterator_from_Generator_System_const_iterator
+PPL_PROTO((ppl_Generator_System_const_iterator_t* pgit,
+	   ppl_const_Generator_System_const_iterator_t git));
+
+/*! \relates ppl_Generator_System_const_iterator_tag \brief
+  Assigns a copy of the const iterator \p src to \p dst.
+*/
+int
+ppl_assign_Generator_System_const_iterator_from_Generator_System_const_iterator
+PPL_PROTO((ppl_Generator_System_const_iterator_t dst,
+	   ppl_const_Generator_System_const_iterator_t src));
+
+/*! \relates ppl_Generator_System_const_iterator_tag \brief
+  Invalidates the handle \p git: this makes sure the corresponding
+  resources will eventually be released.
+*/
+int
+ppl_delete_Generator_System_const_iterator
+PPL_PROTO((ppl_const_Generator_System_const_iterator_t git));
+
+/*@}*/ /* \name Constructors, Assignment and Destructor */
+
+/*! \name Dereferencing, Incrementing and Equality Testing */
+/*@{*/
+
+/*! \relates ppl_Generator_System_const_iterator_tag \brief
   Dereference \p git writing a const handle to the resulting
   generator at address \p pg.
 */
@@ -1215,14 +1414,14 @@ ppl_Generator_System_const_iterator_dereference
 PPL_PROTO((ppl_const_Generator_System_const_iterator_t git,
 	   ppl_const_Generator_t* pg));
 
-/*! \brief
+/*! \relates ppl_Generator_System_const_iterator_tag \brief
   Increment \p git so that it "points" to the next generator.
 */
 int
 ppl_Generator_System_const_iterator_increment
 PPL_PROTO((ppl_Generator_System_const_iterator_t git));
 
-/*! \brief
+/*! \relates ppl_Generator_System_const_iterator_tag \brief
   Returns a positive integer if the iterators corresponding to \p x and
   \p y are equal; returns 0 if they are different.
 */
@@ -1231,12 +1430,13 @@ ppl_Generator_System_const_iterator_equal_test
 PPL_PROTO((ppl_const_Generator_System_const_iterator_t x,
 	   ppl_const_Generator_System_const_iterator_t y));
 
-/*@}*/ /* Generator Systems */
+/*@}*/ /* \name Dereferencing, Incrementing and Equality Testing */
 
-/*! \defgroup Congruence Congruences */
+
+/*! \name Constructors, Assignment and Destructor */
 /*@{*/
 
-/*! \brief
+/*! \relates ppl_Congruence_tag \brief
   Creates the new congruence \f$le = 0 \pmod{m}\f$ and writes a handle for
   it at address \p pc.  The space dimension of the new congruence is
   equal to the space dimension of \p le.
@@ -1246,14 +1446,14 @@ ppl_new_Congruence PPL_PROTO((ppl_Congruence_t* pc,
 			      ppl_const_Linear_Expression_t le,
 			      ppl_const_Coefficient_t m));
 
-/*! \brief
+/*! \relates ppl_Congruence_tag \brief
   Creates the unsatisfiable (zero-dimension space) congruence
   \f$0 = 1 \pmod{0}\f$ and writes a handle for it at address \p pc.
 */
 int
 ppl_new_Congruence_zero_dim_false PPL_PROTO((ppl_Congruence_t* pc));
 
-/*! \brief
+/*! \relates ppl_Congruence_tag \brief
   Creates the true (zero-dimension space) congruence \f$0 = 1 \pmod{1}\f$,
   also known as <EM>integrality congruence</EM>.
   A handle for the newly created congruence is written at address \p pc.
@@ -1261,7 +1461,7 @@ ppl_new_Congruence_zero_dim_false PPL_PROTO((ppl_Congruence_t* pc));
 int
 ppl_new_Congruence_zero_dim_integrality PPL_PROTO((ppl_Congruence_t* pc));
 
-/*! \brief
+/*! \relates ppl_Congruence_tag \brief
   Builds a congruence that is a copy of \p c; writes a handle
   for the newly created congruence at address \p pc.
 */
@@ -1269,28 +1469,33 @@ int
 ppl_new_Congruence_from_Congruence PPL_PROTO((ppl_Congruence_t* pc,
 					      ppl_const_Congruence_t c));
 
-/*! \brief
-  Invalidates the handle \p c: this makes sure the corresponding
-  resources will eventually be released.
-*/
-int
-ppl_delete_Congruence PPL_PROTO((ppl_const_Congruence_t c));
-
-/*! \brief
+/*! \relates ppl_Congruence_tag \brief
   Assigns a copy of the congruence \p src to \p dst.
 */
 int
 ppl_assign_Congruence_from_Congruence PPL_PROTO((ppl_Congruence_t dst,
 						 ppl_const_Congruence_t src));
 
-/*! \brief
+/*! \relates ppl_Congruence_tag \brief
+  Invalidates the handle \p c: this makes sure the corresponding
+  resources will eventually be released.
+*/
+int
+ppl_delete_Congruence PPL_PROTO((ppl_const_Congruence_t c));
+
+/*@}*/ /* \name Constructors, Assignment and Destructor */
+
+/*! \name Functions that Do Not Modify the Congruence */
+/*@{*/
+
+/*! \relates ppl_Congruence_tag \brief
   Writes to \p m the space dimension of \p c.
 */
 int
 ppl_Congruence_space_dimension PPL_PROTO((ppl_const_Congruence_t c,
 					  ppl_dimension_type* m));
 
-/*! \brief
+/*! \relates ppl_Congruence_tag \brief
   Copies into \p n the coefficient of variable \p var in
   congruence \p c.
 */
@@ -1299,21 +1504,21 @@ ppl_Congruence_coefficient PPL_PROTO((ppl_const_Congruence_t c,
 				      ppl_dimension_type var,
 				      ppl_Coefficient_t n));
 
-/*! \brief
+/*! \relates ppl_Congruence_tag \brief
   Copies into \p n the inhomogeneous term of congruence \p c.
 */
 int
 ppl_Congruence_inhomogeneous_term PPL_PROTO((ppl_const_Congruence_t c,
 					     ppl_Coefficient_t n));
 
-/*! \brief
+/*! \relates ppl_Congruence_tag \brief
   Copies into \p m the modulus of congruence \p c.
 */
 int
 ppl_Congruence_modulus PPL_PROTO((ppl_const_Congruence_t c,
 				  ppl_Coefficient_t m));
 
-/*! \brief
+/*! \relates ppl_Congruence_tag \brief
   Returns a positive integer if \p c is well formed, i.e., if it
   satisfies all its implementation invariants; returns 0 and perhaps
   makes some noise if \p c is broken.  Useful for debugging purposes.
@@ -1321,22 +1526,22 @@ ppl_Congruence_modulus PPL_PROTO((ppl_const_Congruence_t c,
 int
 ppl_Congruence_OK PPL_PROTO((ppl_const_Congruence_t c));
 
+/*@}*/ /* \name Functions that Do Not Modify the Congruence */
+
 PPL_DECLARE_OUTPUT_FUNCTIONS(Congruence)
 
-/*@}*/ /* Congruences */
 
-
-/*! \defgroup Congruence_System Congruence Systems */
+/*! \name Constructors, Assignment and Destructor */
 /*@{*/
 
-/*! \brief
+/*! \relates ppl_Congruence_System_tag \brief
   Builds an empty system of congruences and writes a handle to it at
   address \p pcs.
 */
 int
 ppl_new_Congruence_System PPL_PROTO((ppl_Congruence_System_t* pcs));
 
-/*! \brief
+/*! \relates ppl_Congruence_System_tag \brief
   Builds a zero-dimensional, unsatisfiable congruence system and
   writes a handle to it at address \p pcs.
 */
@@ -1344,7 +1549,7 @@ int
 ppl_new_Congruence_System_zero_dim_empty
 PPL_PROTO((ppl_Congruence_System_t* pcs));
 
-/*! \brief
+/*! \relates ppl_Congruence_System_tag \brief
   Builds the singleton congruence system containing only a copy of
   congruence \p c; writes a handle for the newly created system at
   address \p pcs.
@@ -1353,7 +1558,7 @@ int
 ppl_new_Congruence_System_from_Congruence
 PPL_PROTO((ppl_Congruence_System_t* pcs, ppl_const_Congruence_t c));
 
-/*! \brief
+/*! \relates ppl_Congruence_System_tag \brief
   Builds a congruence system that is a copy of \p cs; writes a handle
   for the newly created system at address \p pcs.
 */
@@ -1361,28 +1566,33 @@ int
 ppl_new_Congruence_System_from_Congruence_System
 PPL_PROTO((ppl_Congruence_System_t* pcs, ppl_const_Congruence_System_t cs));
 
-/*! \brief
-  Invalidates the handle \p cs: this makes sure the corresponding
-  resources will eventually be released.
-*/
-int
-ppl_delete_Congruence_System PPL_PROTO((ppl_const_Congruence_System_t cs));
-
-/*! \brief
+/*! \relates ppl_Congruence_System_tag \brief
   Assigns a copy of the congruence system \p src to \p dst.
 */
 int
 ppl_assign_Congruence_System_from_Congruence_System
 PPL_PROTO((ppl_Congruence_System_t dst, ppl_const_Congruence_System_t src));
 
-/*! \brief
+/*! \relates ppl_Congruence_System_tag \brief
+  Invalidates the handle \p cs: this makes sure the corresponding
+  resources will eventually be released.
+*/
+int
+ppl_delete_Congruence_System PPL_PROTO((ppl_const_Congruence_System_t cs));
+
+/*@}*/ /* \name Constructors, Assignment and Destructor */
+
+/*! \name Functions that Do Not Modify the Congruence System */
+/*@{*/
+
+/*! \relates ppl_Congruence_System_tag \brief
   Writes to \p m the dimension of the vector space enclosing \p cs.
 */
 int
 ppl_Congruence_System_space_dimension
 PPL_PROTO((ppl_const_Congruence_System_t cs, ppl_dimension_type* m));
 
-/*! \brief
+/*! \relates ppl_Congruence_System_tag \brief
   Returns a positive integer if \p cs contains no (non-trivial) congruence;
   returns 0 otherwise.
 */
@@ -1390,66 +1600,7 @@ int
 ppl_Congruence_System_empty
 PPL_PROTO((ppl_const_Congruence_System_t cs));
 
-/*! \brief
-  Removes all the congruences from the congruence system \p cs
-  and sets its space dimension to 0.
-*/
-int
-ppl_Congruence_System_clear PPL_PROTO((ppl_Congruence_System_t cs));
-
-/*! \brief
-  Inserts a copy of the congruence \p c into \p cs; the space
-  dimension is increased, if necessary.
-*/
-int
-ppl_Congruence_System_insert_Congruence PPL_PROTO((ppl_Congruence_System_t cs,
-						   ppl_const_Congruence_t c));
-
-/*! \brief
-  Returns a positive integer if \p cs is well formed, i.e., if it
-  satisfies all its implementation invariants; returns 0 and perhaps
-  makes some noise if \p cs is broken.  Useful for debugging purposes.
-*/
-int
-ppl_Congruence_System_OK PPL_PROTO((ppl_const_Congruence_System_t cs));
-
-PPL_DECLARE_OUTPUT_FUNCTIONS(Congruence_System)
-
-
-/*! \brief
-  Builds a new `const iterator' and writes a handle to it at address
-  \p pcit.
-*/
-int
-ppl_new_Congruence_System_const_iterator
-PPL_PROTO((ppl_Congruence_System_const_iterator_t* pcit));
-
-/*! \brief
-  Builds a const iterator that is a copy of \p cit; writes an
-  handle for the newly created const iterator at address \p pcit.
-*/
-int
-ppl_new_Congruence_System_const_iterator_from_Congruence_System_const_iterator
-PPL_PROTO((ppl_Congruence_System_const_iterator_t* pcit,
-	   ppl_const_Congruence_System_const_iterator_t cit));
-
-/*! \brief
-  Invalidates the handle \p cit: this makes sure the corresponding
-  resources will eventually be released.
-*/
-int
-ppl_delete_Congruence_System_const_iterator
-PPL_PROTO((ppl_const_Congruence_System_const_iterator_t cit));
-
-/*! \brief
-  Assigns a copy of the const iterator \p src to \p dst.
-*/
-int
-ppl_assign_Congruence_System_const_iterator_from_Congruence_System_const_iterator
-PPL_PROTO((ppl_Congruence_System_const_iterator_t dst,
-	   ppl_const_Congruence_System_const_iterator_t src));
-
-/*! \brief
+/*! \relates ppl_Congruence_System_tag \brief
   Assigns to \p cit a const iterator "pointing" to the beginning of
   the congruence system \p cs.
 */
@@ -1458,7 +1609,7 @@ ppl_Congruence_System_begin
 PPL_PROTO((ppl_const_Congruence_System_t cs,
 	   ppl_Congruence_System_const_iterator_t cit));
 
-/*! \brief
+/*! \relates ppl_Congruence_System_tag \brief
   Assigns to \p cit a const iterator "pointing" past the end of the
   congruence system \p cs.
 */
@@ -1467,7 +1618,81 @@ ppl_Congruence_System_end
 PPL_PROTO((ppl_const_Congruence_System_t cs,
 	   ppl_Congruence_System_const_iterator_t cit));
 
-/*! \brief
+/*! \relates ppl_Congruence_System_tag \brief
+  Returns a positive integer if \p cs is well formed, i.e., if it
+  satisfies all its implementation invariants; returns 0 and perhaps
+  makes some noise if \p cs is broken.  Useful for debugging purposes.
+*/
+int
+ppl_Congruence_System_OK PPL_PROTO((ppl_const_Congruence_System_t cs));
+
+/*@}*/ /* Functions that Do Not Modify the Congruence System */
+
+/*! \name Functions that May Modify the Congruence System */
+/*@{*/
+
+/*! \relates ppl_Congruence_System_tag \brief
+  Removes all the congruences from the congruence system \p cs
+  and sets its space dimension to 0.
+*/
+int
+ppl_Congruence_System_clear PPL_PROTO((ppl_Congruence_System_t cs));
+
+/*! \relates ppl_Congruence_System_tag \brief
+  Inserts a copy of the congruence \p c into \p cs; the space
+  dimension is increased, if necessary.
+*/
+int
+ppl_Congruence_System_insert_Congruence PPL_PROTO((ppl_Congruence_System_t cs,
+						   ppl_const_Congruence_t c));
+
+/*@}*/ /* \name Functions that May Modify the Congruence System */
+
+PPL_DECLARE_OUTPUT_FUNCTIONS(Congruence_System)
+
+
+/*! \name Constructors, Assignment and Destructor */
+/*@{*/
+
+/*! \relates ppl_Congruence_System_const_iterator_tag \brief
+  Builds a new `const iterator' and writes a handle to it at address
+  \p pcit.
+*/
+int
+ppl_new_Congruence_System_const_iterator
+PPL_PROTO((ppl_Congruence_System_const_iterator_t* pcit));
+
+/*! \relates ppl_Congruence_System_const_iterator_tag \brief
+  Builds a const iterator that is a copy of \p cit; writes an
+  handle for the newly created const iterator at address \p pcit.
+*/
+int
+ppl_new_Congruence_System_const_iterator_from_Congruence_System_const_iterator
+PPL_PROTO((ppl_Congruence_System_const_iterator_t* pcit,
+	   ppl_const_Congruence_System_const_iterator_t cit));
+
+/*! \relates ppl_Congruence_System_const_iterator_tag \brief
+  Assigns a copy of the const iterator \p src to \p dst.
+*/
+int
+ppl_assign_Congruence_System_const_iterator_from_Congruence_System_const_iterator
+PPL_PROTO((ppl_Congruence_System_const_iterator_t dst,
+	   ppl_const_Congruence_System_const_iterator_t src));
+
+/*! \relates ppl_Congruence_System_const_iterator_tag \brief
+  Invalidates the handle \p cit: this makes sure the corresponding
+  resources will eventually be released.
+*/
+int
+ppl_delete_Congruence_System_const_iterator
+PPL_PROTO((ppl_const_Congruence_System_const_iterator_t cit));
+
+/*@}*/ /* \name Constructors, Assignment and Destructor */
+
+/*! \name Dereferencing, Incrementing and Equality Testing */
+/*@{*/
+
+/*! \relates ppl_Congruence_System_const_iterator_tag \brief
   Dereference \p cit writing a const handle to the resulting
   congruence at address \p pc.
 */
@@ -1476,14 +1701,14 @@ ppl_Congruence_System_const_iterator_dereference
 PPL_PROTO((ppl_const_Congruence_System_const_iterator_t cit,
 	   ppl_const_Congruence_t* pc));
 
-/*! \brief
+/*! \relates ppl_Congruence_System_const_iterator_tag \brief
   Increment \p cit so that it "points" to the next congruence.
 */
 int
 ppl_Congruence_System_const_iterator_increment
 PPL_PROTO((ppl_Congruence_System_const_iterator_t cit));
 
-/*! \brief
+/*! \relates ppl_Congruence_System_const_iterator_tag \brief
   Returns a positive integer if the iterators corresponding to \p x and
   \p y are equal; returns 0 if they are different.
 */
@@ -1492,10 +1717,10 @@ ppl_Congruence_System_const_iterator_equal_test
 PPL_PROTO((ppl_const_Congruence_System_const_iterator_t x,
 	   ppl_const_Congruence_System_const_iterator_t y));
 
-/*@}*/ /* Congruence Systems */
+/*@}*/ /* \name Dereferencing, Incrementing and Equality Testing */
 
 
-/*! \brief
+/*! \brief \ingroup Datatypes
   Describes the different kinds of grid generators.
 */
 enum ppl_enum_Grid_Generator_Type {
@@ -1507,10 +1732,10 @@ enum ppl_enum_Grid_Generator_Type {
   PPL_GRID_GENERATOR_TYPE_POINT
 };
 
-/*! \defgroup Grid_Generator Grid_Generators */
+/*! \name Constructors, Assignment and Destructor */
 /*@{*/
 
-/*! \brief
+/*! \relates ppl_Grid_Generator_tag \brief
   Creates a new grid generator of direction \p le and type \p t.  If the
   grid generator to be created is a point or a parameter, the divisor
   \p d is applied to \p le.  If it is a line, \p d is simply disregarded.
@@ -1524,7 +1749,7 @@ ppl_new_Grid_Generator PPL_PROTO((ppl_Grid_Generator_t* pg,
 				  enum ppl_enum_Grid_Generator_Type t,
 				  ppl_const_Coefficient_t d));
 
-/*! \brief
+/*! \relates ppl_Grid_Generator_tag \brief
   Creates the point that is the origin of the zero-dimensional space
   \f$\Rset^0\f$.  Writes a handle for the new grid generator at address
   \p pg.
@@ -1532,7 +1757,7 @@ ppl_new_Grid_Generator PPL_PROTO((ppl_Grid_Generator_t* pg,
 int
 ppl_new_Grid_Generator_zero_dim_point PPL_PROTO((ppl_Grid_Generator_t* pg));
 
-/*! \brief
+/*! \relates ppl_Grid_Generator_tag \brief
   Builds a grid generator that is a copy of \p g; writes a handle
   for the newly created grid generator at address \p pg.
 */
@@ -1540,14 +1765,7 @@ int
 ppl_new_Grid_Generator_from_Grid_Generator
 PPL_PROTO((ppl_Grid_Generator_t* pg, ppl_const_Grid_Generator_t g));
 
-/*! \brief
-  Invalidates the handle \p g: this makes sure the corresponding
-  resources will eventually be released.
-*/
-int
-ppl_delete_Grid_Generator PPL_PROTO((ppl_const_Grid_Generator_t g));
-
-/*! \brief
+/*! \relates ppl_Grid_Generator_tag \brief
   Assigns a copy of the grid generator \p src to \p dst.
 */
 int
@@ -1555,20 +1773,32 @@ ppl_assign_Grid_Generator_from_Grid_Generator
 PPL_PROTO((ppl_Grid_Generator_t dst,
 	   ppl_const_Grid_Generator_t src));
 
-/*! \brief
+/*! \relates ppl_Grid_Generator_tag \brief
+  Invalidates the handle \p g: this makes sure the corresponding
+  resources will eventually be released.
+*/
+int
+ppl_delete_Grid_Generator PPL_PROTO((ppl_const_Grid_Generator_t g));
+
+/*@}*/ /* \name Constructors, Assignment and Destructor */
+
+/*! \name Functions that Do Not Modify the Grid Generator */
+/*@{*/
+
+/*! \relates ppl_Grid_Generator_tag \brief
   Writes to \p m the space dimension of \p g.
 */
 int
 ppl_Grid_Generator_space_dimension PPL_PROTO((ppl_const_Grid_Generator_t g,
 					      ppl_dimension_type* m));
 
-/*! \brief
+/*! \relates ppl_Grid_Generator_tag \brief
   Returns the type of grid generator \p g.
 */
 int
 ppl_Grid_Generator_type PPL_PROTO((ppl_const_Grid_Generator_t g));
 
-/*! \brief
+/*! \relates ppl_Grid_Generator_tag \brief
   Copies into \p n the coefficient of variable \p var in
   grid generator \p g.
 */
@@ -1577,14 +1807,14 @@ ppl_Grid_Generator_coefficient PPL_PROTO((ppl_const_Grid_Generator_t g,
 					  ppl_dimension_type var,
 					  ppl_Coefficient_t n));
 
-/*! \brief
+/*! \relates ppl_Grid_Generator_tag \brief
   If \p g is a point or a parameter assigns its divisor to \p n.
 */
 int
 ppl_Grid_Generator_divisor PPL_PROTO((ppl_const_Grid_Generator_t g,
 				      ppl_Coefficient_t n));
 
-/*! \brief
+/*! \relates ppl_Grid_Generator_tag \brief
   Returns a positive integer if \p g is well formed, i.e., if it
   satisfies all its implementation invariants; returns 0 and perhaps
   makes some noise if \p g is broken.  Useful for debugging purposes.
@@ -1592,15 +1822,15 @@ ppl_Grid_Generator_divisor PPL_PROTO((ppl_const_Grid_Generator_t g,
 int
 ppl_Grid_Generator_OK PPL_PROTO((ppl_const_Grid_Generator_t g));
 
+/*@}*/ /* \name Functions that Do Not Modify the Generator */
+
 PPL_DECLARE_OUTPUT_FUNCTIONS(Grid_Generator)
 
-/*@}*/ /* Grid_Generators */
 
-
-/*! \defgroup Grid_Generator_System Grid_Generator Systems */
+/*! \name Constructors, Assignment and Destructor */
 /*@{*/
 
-/*! \brief
+/*! \relates ppl_Grid_Generator_System_tag \brief
   Builds an empty system of grid generators and writes a handle to it at
   address \p pgs.
 */
@@ -1616,7 +1846,7 @@ int
 ppl_new_Grid_Generator_System_zero_dim_univ
 PPL_PROTO((ppl_Grid_Generator_System_t* pgs));
 
-/*! \brief
+/*! \relates ppl_Grid_Generator_System_tag \brief
   Builds the singleton grid generator system containing only a copy of
   generator \p g; writes a handle for the newly created system at
   address \p pgs.
@@ -1626,7 +1856,7 @@ ppl_new_Grid_Generator_System_from_Grid_Generator
 PPL_PROTO((ppl_Grid_Generator_System_t* pgs,
 	   ppl_const_Grid_Generator_t g));
 
-/*! \brief
+/*! \relates ppl_Grid_Generator_System_tag \brief
   Builds a grid generator system that is a copy of \p gs; writes a handle
   for the newly created system at address \p pgs.
 */
@@ -1635,15 +1865,7 @@ ppl_new_Grid_Generator_System_from_Grid_Generator_System
 PPL_PROTO((ppl_Grid_Generator_System_t* pgs,
 	   ppl_const_Grid_Generator_System_t gs));
 
-/*! \brief
-  Invalidates the handle \p gs: this makes sure the corresponding
-  resources will eventually be released.
-*/
-int
-ppl_delete_Grid_Generator_System
-PPL_PROTO((ppl_const_Grid_Generator_System_t gs));
-
-/*! \brief
+/*! \relates ppl_Grid_Generator_System_tag \brief
   Assigns a copy of the grid generator system \p src to \p dst.
 */
 int
@@ -1651,14 +1873,27 @@ ppl_assign_Grid_Generator_System_from_Grid_Generator_System
 PPL_PROTO((ppl_Grid_Generator_System_t dst,
 	   ppl_const_Grid_Generator_System_t src));
 
-/*! \brief
+/*! \relates ppl_Grid_Generator_System_tag \brief
+  Invalidates the handle \p gs: this makes sure the corresponding
+  resources will eventually be released.
+*/
+int
+ppl_delete_Grid_Generator_System
+PPL_PROTO((ppl_const_Grid_Generator_System_t gs));
+
+/*@}*/ /* \name Constructors, Assignment and Destructor */
+
+/*! \name Functions that Do Not Modify the Grid Generator System */
+/*@{*/
+
+/*! \relates ppl_Grid_Generator_System_tag \brief
   Writes to \p m the dimension of the vector space enclosing \p gs.
 */
 int
 ppl_Grid_Generator_System_space_dimension
 PPL_PROTO((ppl_const_Grid_Generator_System_t gs, ppl_dimension_type* m));
 
-/*! \brief
+/*! \relates ppl_Grid_Generator_System_tag \brief
   Returns a positive integer if \p gs contains no generator;
   returns 0 otherwise.
 */
@@ -1666,67 +1901,7 @@ int
 ppl_Grid_Generator_System_empty
 PPL_PROTO((ppl_const_Grid_Generator_System_t gs));
 
-/*! \brief
-  Removes all the generators from the grid generator system \p gs
-  and sets its space dimension to 0.
-*/
-int
-ppl_Grid_Generator_System_clear PPL_PROTO((ppl_Grid_Generator_System_t gs));
-
-/*! \brief
-  Inserts a copy of the grid generator \p g into \p gs; the space
-  dimension is increased, if necessary.
-*/
-int
-ppl_Grid_Generator_System_insert_Grid_Generator
-PPL_PROTO((ppl_Grid_Generator_System_t gs,
-	   ppl_const_Grid_Generator_t g));
-
-/*! \brief
-  Returns a positive integer if \p gs is well formed, i.e., if it
-  satisfies all its implementation invariants; returns 0 and perhaps
-  makes some noise if \p gs is broken.  Useful for debugging purposes.
-*/
-int
-ppl_Grid_Generator_System_OK PPL_PROTO((ppl_const_Grid_Generator_System_t gs));
-
-PPL_DECLARE_OUTPUT_FUNCTIONS(Grid_Generator_System)
-
-
-/*! \brief
-  Builds a new `const iterator' and writes a handle to it at address
-  \p pgit.
-*/
-int
-ppl_new_Grid_Generator_System_const_iterator
-PPL_PROTO((ppl_Grid_Generator_System_const_iterator_t* pgit));
-
-/*! \brief
-  Builds a const iterator that is a copy of \p git; writes an
-  handle for the newly created const iterator at address \p pgit.
-*/
-int
-ppl_new_Grid_Generator_System_const_iterator_from_Grid_Generator_System_const_iterator
-PPL_PROTO((ppl_Grid_Generator_System_const_iterator_t* pgit,
-	   ppl_const_Grid_Generator_System_const_iterator_t git));
-
-/*! \brief
-  Invalidates the handle \p git: this makes sure the corresponding
-  resources will eventually be released.
-*/
-int
-ppl_delete_Grid_Generator_System_const_iterator
-PPL_PROTO((ppl_const_Grid_Generator_System_const_iterator_t git));
-
-/*! \brief
-  Assigns a copy of the const iterator \p src to \p dst.
-*/
-int
-ppl_assign_Grid_Generator_System_const_iterator_from_Grid_Generator_System_const_iterator
-PPL_PROTO((ppl_Grid_Generator_System_const_iterator_t dst,
-	   ppl_const_Grid_Generator_System_const_iterator_t src));
-
-/*! \brief
+/*! \relates ppl_Grid_Generator_System_tag \brief
   Assigns to \p git a const iterator "pointing" to the beginning of
   the grid generator system \p gs.
 */
@@ -1735,7 +1910,7 @@ ppl_Grid_Generator_System_begin
 PPL_PROTO((ppl_const_Grid_Generator_System_t gs,
 	   ppl_Grid_Generator_System_const_iterator_t git));
 
-/*! \brief
+/*! \relates ppl_Grid_Generator_System_tag \brief
   Assigns to \p git a const iterator "pointing" past the end of the
   grid generator system \p gs.
 */
@@ -1744,7 +1919,82 @@ ppl_Grid_Generator_System_end
 PPL_PROTO((ppl_const_Grid_Generator_System_t gs,
 	   ppl_Grid_Generator_System_const_iterator_t git));
 
-/*! \brief
+/*! \relates ppl_Grid_Generator_System_tag \brief
+  Returns a positive integer if \p gs is well formed, i.e., if it
+  satisfies all its implementation invariants; returns 0 and perhaps
+  makes some noise if \p gs is broken.  Useful for debugging purposes.
+*/
+int
+ppl_Grid_Generator_System_OK PPL_PROTO((ppl_const_Grid_Generator_System_t gs));
+
+/*@}*/ /* Functions that Do Not Modify the Grid Generator System */
+
+/*! \name Functions that May Modify the Grid Generator System */
+/*@{*/
+
+/*! \relates ppl_Grid_Generator_System_tag \brief
+  Removes all the generators from the grid generator system \p gs
+  and sets its space dimension to 0.
+*/
+int
+ppl_Grid_Generator_System_clear PPL_PROTO((ppl_Grid_Generator_System_t gs));
+
+/*! \relates ppl_Grid_Generator_System_tag \brief
+  Inserts a copy of the grid generator \p g into \p gs; the space
+  dimension is increased, if necessary.
+*/
+int
+ppl_Grid_Generator_System_insert_Grid_Generator
+PPL_PROTO((ppl_Grid_Generator_System_t gs,
+	   ppl_const_Grid_Generator_t g));
+
+/*@}*/ /* \name Functions that May Modify the Grid Generator System */
+
+PPL_DECLARE_OUTPUT_FUNCTIONS(Grid_Generator_System)
+
+
+/*! \name Constructors, Assignment and Destructor */
+/*@{*/
+
+/*! \relates ppl_Grid_Generator_System_const_iterator_tag \brief
+  Builds a new `const iterator' and writes a handle to it at address
+  \p pgit.
+*/
+int
+ppl_new_Grid_Generator_System_const_iterator
+PPL_PROTO((ppl_Grid_Generator_System_const_iterator_t* pgit));
+
+/*! \relates ppl_Grid_Generator_System_const_iterator_tag \brief
+  Builds a const iterator that is a copy of \p git; writes an
+  handle for the newly created const iterator at address \p pgit.
+*/
+int
+ppl_new_Grid_Generator_System_const_iterator_from_Grid_Generator_System_const_iterator
+PPL_PROTO((ppl_Grid_Generator_System_const_iterator_t* pgit,
+	   ppl_const_Grid_Generator_System_const_iterator_t git));
+
+/*! \relates ppl_Grid_Generator_System_const_iterator_tag \brief
+  Assigns a copy of the const iterator \p src to \p dst.
+*/
+int
+ppl_assign_Grid_Generator_System_const_iterator_from_Grid_Generator_System_const_iterator
+PPL_PROTO((ppl_Grid_Generator_System_const_iterator_t dst,
+	   ppl_const_Grid_Generator_System_const_iterator_t src));
+
+/*! \relates ppl_Grid_Generator_System_const_iterator_tag \brief
+  Invalidates the handle \p git: this makes sure the corresponding
+  resources will eventually be released.
+*/
+int
+ppl_delete_Grid_Generator_System_const_iterator
+PPL_PROTO((ppl_const_Grid_Generator_System_const_iterator_t git));
+
+/*@}*/ /* \name Constructors, Assignment and Destructor */
+
+/*! \name Dereferencing, Incrementing and Equality Testing */
+/*@{*/
+
+/*! \relates ppl_Grid_Generator_System_const_iterator_tag \brief
   Dereference \p git writing a const handle to the resulting
   grid generator at address \p pg.
 */
@@ -1753,14 +2003,14 @@ ppl_Grid_Generator_System_const_iterator_dereference
 PPL_PROTO((ppl_const_Grid_Generator_System_const_iterator_t git,
 	   ppl_const_Grid_Generator_t* pg));
 
-/*! \brief
+/*! \relates ppl_Grid_Generator_System_const_iterator_tag \brief
   Increment \p git so that it "points" to the next grid generator.
 */
 int
 ppl_Grid_Generator_System_const_iterator_increment
 PPL_PROTO((ppl_Grid_Generator_System_const_iterator_t git));
 
-/*! \brief
+/*! \relates ppl_Grid_Generator_System_const_iterator_tag \brief
   Returns a positive integer if the iterators corresponding to \p x and
   \p y are equal; returns 0 if they are different.
 */
@@ -1769,105 +2019,110 @@ ppl_Grid_Generator_System_const_iterator_equal_test
 PPL_PROTO((ppl_const_Grid_Generator_System_const_iterator_t x,
 	   ppl_const_Grid_Generator_System_const_iterator_t y));
 
-/*@}*/ /* Grid_Generator Systems */
+/*@}*/ /* \name Dereferencing, Incrementing and Equality Testing */
 
 
-/*! \brief
+/*! \brief \ingroup Datatypes
   Code of the worst-case polynomial complexity class.
 */
 extern unsigned int PPL_COMPLEXITY_CLASS_POLYNOMIAL;
 
-/*! \brief
+/*! \brief \ingroup Datatypes
   Code of the worst-case exponential but typically polynomial
   complexity class.
 */
 extern unsigned int PPL_COMPLEXITY_CLASS_SIMPLEX;
 
-/*! \brief
+/*! \brief \ingroup Datatypes
   Code of the universal complexity class.
 */
 extern unsigned int PPL_COMPLEXITY_CLASS_ANY;
 
-/*! \brief
-  Code of the "unfeasible MIP problem" status.
-*/
-extern int PPL_MIP_PROBLEM_STATUS_UNFEASIBLE;
-
-/*! \brief
-  Code of the "unbounded MIP problem" status.
-*/
-extern int PPL_MIP_PROBLEM_STATUS_UNBOUNDED;
-
-/*! \brief
-  Code of the "optimized MIP problem" status.
-*/
-extern int PPL_MIP_PROBLEM_STATUS_OPTIMIZED;
-
-/*! \brief
-  Code for the MIP problem's "pricing" control parameter name.
-*/
-extern int PPL_MIP_PROBLEM_CONTROL_PARAMETER_NAME_PRICING;
-
-/*! \brief
-  Code of MIP problem's "textbook" pricing method.
-*/
-extern int PPL_MIP_PROBLEM_CONTROL_PARAMETER_PRICING_TEXTBOOK;
-
-/*! \brief
-  Code of MIP problem's "exact steepest-edge" pricing method.
-*/
-extern int PPL_MIP_PROBLEM_CONTROL_PARAMETER_PRICING_STEEPEST_EDGE_EXACT;
-
-/*! \brief
-  Code of MIP problem's "float steepest-edge" pricing method.
-*/
-extern int PPL_MIP_PROBLEM_CONTROL_PARAMETER_PRICING_STEEPEST_EDGE_FLOAT;
-
-/*! \brief
-  Code of the "maximization" optimization mode.
-*/
-extern int PPL_OPTIMIZATION_MODE_MAXIMIZATION;
-
-/*! \brief
-  Code of the "minimization" optimization mode.
-*/
-extern int PPL_OPTIMIZATION_MODE_MINIMIZATION;
-
-/*! \brief
+/*! \brief \ingroup Datatypes
   Individual bit saying that the polyhedron and the set of points
   satisfying the constraint are disjoint.
 */
 extern unsigned int PPL_POLY_CON_RELATION_IS_DISJOINT;
 
-/*! \brief
+/*! \brief \ingroup Datatypes
   Individual bit saying that the polyhedron intersects the set of
   points satisfying the constraint, but it is not included in it.
 */
 extern unsigned int PPL_POLY_CON_RELATION_STRICTLY_INTERSECTS;
 
-/*! \brief
+/*! \brief \ingroup Datatypes
   Individual bit saying that the polyhedron is included in the set of
   points satisfying the constraint.
 */
 extern unsigned int PPL_POLY_CON_RELATION_IS_INCLUDED;
 
-/*! \brief
+/*! \brief \ingroup Datatypes
   Individual bit saying that the polyhedron is included in the set of
   points saturating the constraint.
 */
 extern unsigned int PPL_POLY_CON_RELATION_SATURATES;
 
-/*! \brief
+/*! \brief \ingroup Datatypes
   Individual bit saying that adding the generator would not change the
   polyhedron.
 */
 extern unsigned int PPL_POLY_GEN_RELATION_SUBSUMES;
 
 
-/*! \defgroup MIP_Problem MIP Problems */
+/*! \name Symbolic Constants */
 /*@{*/
 
-/*! \brief
+/*! \relates ppl_MIP_Problem_tag \brief
+  Code of the "maximization" optimization mode.
+*/
+extern int PPL_OPTIMIZATION_MODE_MAXIMIZATION;
+
+/*! \relates ppl_MIP_Problem_tag \brief
+  Code of the "minimization" optimization mode.
+*/
+extern int PPL_OPTIMIZATION_MODE_MINIMIZATION;
+
+/*! \relates ppl_MIP_Problem_tag \brief
+  Code of the "unfeasible MIP problem" status.
+*/
+extern int PPL_MIP_PROBLEM_STATUS_UNFEASIBLE;
+
+/*! \relates ppl_MIP_Problem_tag \brief
+  Code of the "unbounded MIP problem" status.
+*/
+extern int PPL_MIP_PROBLEM_STATUS_UNBOUNDED;
+
+/*! \relates ppl_MIP_Problem_tag \brief
+  Code of the "optimized MIP problem" status.
+*/
+extern int PPL_MIP_PROBLEM_STATUS_OPTIMIZED;
+
+/*! \relates ppl_MIP_Problem_tag \brief
+  Code for the MIP problem's "pricing" control parameter name.
+*/
+extern int PPL_MIP_PROBLEM_CONTROL_PARAMETER_NAME_PRICING;
+
+/*! \relates ppl_MIP_Problem_tag \brief
+  Code of MIP problem's "textbook" pricing method.
+*/
+extern int PPL_MIP_PROBLEM_CONTROL_PARAMETER_PRICING_TEXTBOOK;
+
+/*! \relates ppl_MIP_Problem_tag \brief
+  Code of MIP problem's "exact steepest-edge" pricing method.
+*/
+extern int PPL_MIP_PROBLEM_CONTROL_PARAMETER_PRICING_STEEPEST_EDGE_EXACT;
+
+/*! \relates ppl_MIP_Problem_tag \brief
+  Code of MIP problem's "float steepest-edge" pricing method.
+*/
+extern int PPL_MIP_PROBLEM_CONTROL_PARAMETER_PRICING_STEEPEST_EDGE_FLOAT;
+
+/*@}*/ /* \name Symbolic Constants */
+
+/*! \name Constructors, Assignment and Destructor */
+/*@{*/
+
+/*! \relates ppl_MIP_Problem_tag \brief
   Builds a trivial MIP problem of dimension \p d and writes an
   handle to it at address \p pmip.
 */
@@ -1875,7 +2130,7 @@ int
 ppl_new_MIP_Problem_from_space_dimension PPL_PROTO((ppl_MIP_Problem_t* pmip,
 						    ppl_dimension_type d));
 
-/*! \brief
+/*! \relates ppl_MIP_Problem_tag \brief
   Builds an MIP problem of space dimension \p d having feasible region \p cs,
   objective function \p le and optimization mode \p m; writes a handle to
   it at address \p pmip.
@@ -1887,7 +2142,7 @@ ppl_new_MIP_Problem PPL_PROTO((ppl_MIP_Problem_t* pmip,
 			       ppl_const_Linear_Expression_t le,
 			       int m));
 
-/*! \brief
+/*! \relates ppl_MIP_Problem_tag \brief
   Builds an MIP problem that is a copy of \p mip; writes a handle
   for the newly created system at address \p pmip.
 */
@@ -1895,35 +2150,40 @@ int
 ppl_new_MIP_Problem_from_MIP_Problem
 PPL_PROTO((ppl_MIP_Problem_t* pmip, ppl_const_MIP_Problem_t mip));
 
-/*! \brief
-  Invalidates the handle \p mip: this makes sure the corresponding
-  resources will eventually be released.
-*/
-int
-ppl_delete_MIP_Problem PPL_PROTO((ppl_const_MIP_Problem_t mip));
-
-/*! \brief
+/*! \relates ppl_MIP_Problem_tag \brief
   Assigns a copy of the MIP problem \p src to \p dst.
 */
 int
 ppl_assign_MIP_Problem_from_MIP_Problem
 PPL_PROTO((ppl_MIP_Problem_t dst, ppl_const_MIP_Problem_t src));
 
-/*! \brief
+/*! \relates ppl_MIP_Problem_tag \brief
+  Invalidates the handle \p mip: this makes sure the corresponding
+  resources will eventually be released.
+*/
+int
+ppl_delete_MIP_Problem PPL_PROTO((ppl_const_MIP_Problem_t mip));
+
+/*@}*/ /* Constructors, Assignment and Destructor for MIP_Problem */
+
+/*! \name Functions that Do Not Modify the MIP_Problem */
+/*@{*/
+
+/*! \relates ppl_MIP_Problem_tag \brief
   Writes to \p m the dimension of the vector space enclosing \p mip.
 */
 int
 ppl_MIP_Problem_space_dimension
 PPL_PROTO((ppl_const_MIP_Problem_t mip, ppl_dimension_type* m));
 
-/*! \brief
+/*! \relates ppl_MIP_Problem_tag \brief
   Writes to \p m the number of integer space dimensions of \p mip.
 */
 int
 ppl_MIP_Problem_number_of_integer_space_dimensions
 PPL_PROTO((ppl_const_MIP_Problem_t mip, ppl_dimension_type* m));
 
-/*! \brief
+/*! \relates ppl_MIP_Problem_tag \brief
   Writes in the first positions of the array \p ds all the integer space
   dimensions of problem \p mip. If the array is not big enough to hold
   all of the integer space dimensions, the behavior is undefined.
@@ -1932,7 +2192,7 @@ int
 ppl_MIP_Problem_integer_space_dimensions
 PPL_PROTO((ppl_const_MIP_Problem_t mip, ppl_dimension_type ds[]));
 
-/*! \brief
+/*! \relates ppl_MIP_Problem_tag \brief
   Writes to \p m the number of constraints defining
   the feasible region of \p mip.
 */
@@ -1940,7 +2200,7 @@ int
 ppl_MIP_Problem_number_of_constraints PPL_PROTO((ppl_const_MIP_Problem_t mip,
 						 ppl_dimension_type* m));
 
-/*! \brief
+/*! \relates ppl_MIP_Problem_tag \brief
   Writes at address \p pc a const handle to the \p i-th constraint
   defining the feasible region of the MIP problem \p mip
 */
@@ -1949,7 +2209,7 @@ ppl_MIP_Problem_constraint_at_index PPL_PROTO((ppl_const_MIP_Problem_t mip,
 					       ppl_dimension_type i,
 					       ppl_const_Constraint_t* pc));
 
-/*! \brief
+/*! \relates ppl_MIP_Problem_tag \brief
   Writes a const handle to the linear expression defining the
   objective function of the MIP problem \p mip at address \p ple.
 */
@@ -1957,19 +2217,32 @@ int
 ppl_MIP_Problem_objective_function
 PPL_PROTO((ppl_const_MIP_Problem_t mip, ppl_const_Linear_Expression_t* ple));
 
-/*! \brief
+/*! \relates ppl_MIP_Problem_tag \brief
   Returns the optimization mode of the MIP problem \p mip.
 */
 int
 ppl_MIP_Problem_optimization_mode PPL_PROTO((ppl_const_MIP_Problem_t mip));
 
-/*! \brief
+/*! \relates ppl_MIP_Problem_tag \brief
+  Returns a positive integer if \p mip is well formed, i.e., if it
+  satisfies all its implementation invariants; returns 0 and perhaps
+  makes some noise if \p mip is broken.  Useful for debugging purposes.
+*/
+int
+ppl_MIP_Problem_OK PPL_PROTO((ppl_const_MIP_Problem_t mip));
+
+/*@}*/ /* \name Functions that Do Not Modify the MIP_Problem */
+
+/*! \name Functions that May Modify the MIP_Problem */
+/*@{*/
+
+/*! \relates ppl_MIP_Problem_tag \brief
   Resets the MIP problem to be a trivial problem of space dimension 0.
 */
 int
 ppl_MIP_Problem_clear PPL_PROTO((ppl_MIP_Problem_t mip));
 
-/*! \brief
+/*! \relates ppl_MIP_Problem_tag \brief
   Adds \p d new dimensions to the space enclosing the MIP problem \p mip
   and to \p mip itself.
 */
@@ -1977,7 +2250,7 @@ int
 ppl_MIP_Problem_add_space_dimensions_and_embed
 PPL_PROTO((ppl_MIP_Problem_t mip, ppl_dimension_type d));
 
-/*! \brief
+/*! \relates ppl_MIP_Problem_tag \brief
   Sets the space dimensions that are specified in first \p n positions
   of the array \p ds to be integer dimensions of problem \p mip.
   The presence of duplicates in \p ds is a waste but an innocuous one.
@@ -1986,7 +2259,7 @@ int
 ppl_MIP_Problem_add_to_integer_space_dimensions
 PPL_PROTO((ppl_MIP_Problem_t mip, ppl_dimension_type ds[], size_t n));
 
-/*! \brief
+/*! \relates ppl_MIP_Problem_tag \brief
   Modifies the feasible region of the MIP problem \p mip by adding a copy
   of the constraint \p c.
 */
@@ -1994,7 +2267,7 @@ int
 ppl_MIP_Problem_add_constraint PPL_PROTO((ppl_MIP_Problem_t mip,
 					  ppl_const_Constraint_t c));
 
-/*! \brief
+/*! \relates ppl_MIP_Problem_tag \brief
   Modifies the feasible region of the MIP problem \p mip by adding a copy
   of the constraints in \p cs.
 */
@@ -2002,27 +2275,32 @@ int
 ppl_MIP_Problem_add_constraints PPL_PROTO((ppl_MIP_Problem_t mip,
 					   ppl_const_Constraint_System_t cs));
 
-/*! \brief
+/*! \relates ppl_MIP_Problem_tag \brief
   Sets the objective function of the MIP problem \p mip to a copy of \p le.
 */
 int
 ppl_MIP_Problem_set_objective_function
 PPL_PROTO((ppl_MIP_Problem_t mip, ppl_const_Linear_Expression_t le));
 
-/*! \brief
+/*! \relates ppl_MIP_Problem_tag \brief
   Sets the optimization mode of the MIP problem \p mip to \p mode.
 */
 int
 ppl_MIP_Problem_set_optimization_mode PPL_PROTO((ppl_MIP_Problem_t mip,
 						 int mode));
 
-/*! \brief
+/*@}*/ /* \name Functions that May Modify the MIP_Problem */
+
+/*! \name Computing the Solution of the MIP_Problem */
+/*@{*/
+
+/*! \relates ppl_MIP_Problem_tag \brief
   Returns a positive integer if \p mip is satisfiable; returns 0 otherwise.
 */
 int
 ppl_MIP_Problem_is_satisfiable PPL_PROTO((ppl_const_MIP_Problem_t mip));
 
-/*! \brief
+/*! \relates ppl_MIP_Problem_tag \brief
   Solves the MIP problem \p mip, returning an exit status.
 
   \return
@@ -2037,7 +2315,7 @@ ppl_MIP_Problem_is_satisfiable PPL_PROTO((ppl_const_MIP_Problem_t mip));
 int
 ppl_MIP_Problem_solve PPL_PROTO((ppl_const_MIP_Problem_t mip));
 
-/*! \brief
+/*! \relates ppl_MIP_Problem_tag \brief
   Evaluates the objective function of \p mip on point \p g.
 
   \param mip
@@ -2057,7 +2335,7 @@ ppl_MIP_Problem_evaluate_objective_function
 PPL_PROTO((ppl_const_MIP_Problem_t mip, ppl_const_Generator_t g,
 	   ppl_Coefficient_t num, ppl_Coefficient_t den));
 
-/*! \brief
+/*! \relates ppl_MIP_Problem_tag \brief
   Writes a const handle to a feasible point for the MIP problem \p mip
   at address \p pg.
 */
@@ -2065,7 +2343,7 @@ int
 ppl_MIP_Problem_feasible_point PPL_PROTO((ppl_const_MIP_Problem_t mip,
 					  ppl_const_Generator_t* pg));
 
-/*! \brief
+/*! \relates ppl_MIP_Problem_tag \brief
   Writes a const handle to an optimizing point for the MIP problem \p mip
   at address \p pg.
 */
@@ -2073,7 +2351,7 @@ int
 ppl_MIP_Problem_optimizing_point PPL_PROTO((ppl_const_MIP_Problem_t mip,
 					    ppl_const_Generator_t* pg));
 
-/*! \brief
+/*! \relates ppl_MIP_Problem_tag \brief
   Returns the optimal value for \p mip.
 
   \param mip
@@ -2090,31 +2368,28 @@ ppl_MIP_Problem_optimal_value
 PPL_PROTO((ppl_const_MIP_Problem_t mip,
 	   ppl_Coefficient_t num, ppl_Coefficient_t den));
 
-/*! \brief
+/*@}*/ /* \name Computing the Solution of the MIP_Problem */
+
+/*! \name Querying/Setting Control Parameters */
+/*@{*/
+
+/*! \relates ppl_MIP_Problem_tag \brief
   Returns the value of control parameter \p name in problem \p mip.
 */
 int
 ppl_MIP_Problem_get_control_parameter
 PPL_PROTO((ppl_const_MIP_Problem_t mip, int name));
 
-/*! \brief
+/*! \relates ppl_MIP_Problem_tag \brief
   Sets control parameter \p value in problem \p mip.
 */
 int
 ppl_MIP_Problem_set_control_parameter
 PPL_PROTO((ppl_MIP_Problem_t mip, int value));
 
-/*! \brief
-  Returns a positive integer if \p mip is well formed, i.e., if it
-  satisfies all its implementation invariants; returns 0 and perhaps
-  makes some noise if \p mip is broken.  Useful for debugging purposes.
-*/
-int
-ppl_MIP_Problem_OK PPL_PROTO((ppl_const_MIP_Problem_t mip));
+/*@}*/ /* \name Querying/Setting Control Parameters */
 
 PPL_DECLARE_OUTPUT_FUNCTIONS(MIP_Problem)
-
-/*@}*/ /* MIP Problems */
 
 #include "ppl_c_domains.h"
 
@@ -2127,7 +2402,5 @@ PPL_DECLARE_OUTPUT_FUNCTIONS(MIP_Problem)
 #undef PPL_DECLARE_ASCII_DUMP_FUNCTIONS
 #undef PPL_DECLARE_OUTPUT_FUNCTIONS
 #undef PPL_PROTO
-
-/*@}*/ /* \defgroup PPL_C_interface */
 
 #endif /* !defined(PPL_ppl_c_h) */
