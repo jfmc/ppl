@@ -394,8 +394,8 @@ typedef struct ppl_##Type##_tag const* ppl_const_##Type##_t;
   \brief
   Types and functions for coefficients.
 
-  The types and functions for coefficients provide an interface
-  towards \ref Parma_Polyhedra_Library::Coefficient.
+  The types and functions for coefficients provide an interface towards
+  \extref{Parma_Polyhedra_Library::Coefficient, Coefficient}.
   Depending on configuration, the PPL coefficients may be implemented
   by the unbounded precision integers provided by GMP (default),
   or by bounded precision integers (with checks for overflows).
@@ -406,8 +406,8 @@ PPL_TYPE_DECLARATION(Coefficient)
   \brief
   Types and functions for linear expressions.
 
-  The types and functions for linear expression provide an interface
-  towards \ref Parma_Polyhedra_Library::Linear_Expression.
+  The types and functions for linear expression provide an interface towards
+  \extref{Parma_Polyhedra_Library::Linear_Expression, Linear_Expression}.
 */
 PPL_TYPE_DECLARATION(Linear_Expression)
 
@@ -415,8 +415,8 @@ PPL_TYPE_DECLARATION(Linear_Expression)
   \brief
   Types and functions for constraints.
 
-  The types and functions for constraints provide an interface
-  towards \ref Parma_Polyhedra_Library::Constraint.
+  The types and functions for constraints provide an interface towards
+  \extref{Parma_Polyhedra_Library::Constraint, Constraint}.
 */
 PPL_TYPE_DECLARATION(Constraint)
 
@@ -425,7 +425,8 @@ PPL_TYPE_DECLARATION(Constraint)
   Types and functions for constraint systems.
 
   The types and functions for constraint systems provide an interface
-  towards \ref Parma_Polyhedra_Library::Constraint_System.
+  towards
+  \extref{Parma_Polyhedra_Library::Constraint_System, Constraint_System}.
 */
 PPL_TYPE_DECLARATION(Constraint_System)
 
@@ -435,7 +436,8 @@ PPL_TYPE_DECLARATION(Constraint_System)
 
   The types and functions for constraint systems iterators provide
   read-only access to the elements of a constraint system by interfacing
-  \ref Parma_Polyhedra_Library::Constraint_System::const_iterator.
+  \extref{Parma_Polyhedra_Library::Constraint_System::const_iterator,
+  Constraint_System::const_iterator}.
 */
 PPL_TYPE_DECLARATION(Constraint_System_const_iterator)
 
@@ -444,7 +446,7 @@ PPL_TYPE_DECLARATION(Constraint_System_const_iterator)
   Types and functions for generators.
 
   The types and functions for generators provide an interface
-  towards \ref Parma_Polyhedra_Library::Generator.
+  towards \extref{Parma_Polyhedra_Library::Generator, Generator}.
 */
 PPL_TYPE_DECLARATION(Generator)
 
@@ -453,7 +455,8 @@ PPL_TYPE_DECLARATION(Generator)
   Types and functions for generator systems.
 
   The types and functions for generator systems provide an interface
-  towards \ref Parma_Polyhedra_Library::Generator_System.
+  towards
+  \extref{Parma_Polyhedra_Library::Generator_System, Generator_System}.
 */
 PPL_TYPE_DECLARATION(Generator_System)
 
@@ -463,7 +466,8 @@ PPL_TYPE_DECLARATION(Generator_System)
 
   The types and functions for generator systems iterators provide
   read-only access to the elements of a generator system by interfacing
-  \ref Parma_Polyhedra_Library::Generator_System::const_iterator.
+  \extref{Parma_Polyhedra_Library::Generator_System::const_iterator,
+  Generator_System::const_iterator}.
 */
 PPL_TYPE_DECLARATION(Generator_System_const_iterator)
 
@@ -472,7 +476,7 @@ PPL_TYPE_DECLARATION(Generator_System_const_iterator)
   Types and functions for congruences.
 
   The types and functions for congruences provide an interface
-  towards \ref Parma_Polyhedra_Library::Congruence.
+  towards \extref{Parma_Polyhedra_Library::Congruence, Congruence}.
 */
 PPL_TYPE_DECLARATION(Congruence)
 
@@ -481,7 +485,8 @@ PPL_TYPE_DECLARATION(Congruence)
   Types and functions for congruence systems.
 
   The types and functions for congruence systems provide an interface
-  towards \ref Parma_Polyhedra_Library::Congruence_System.
+  towards
+  \extref{Parma_Polyhedra_Library::Congruence_System, Congruence_System}.
 */
 PPL_TYPE_DECLARATION(Congruence_System)
 
@@ -491,7 +496,8 @@ PPL_TYPE_DECLARATION(Congruence_System)
 
   The types and functions for congruence systems iterators provide
   read-only access to the elements of a congruence system by interfacing
-  \ref Parma_Polyhedra_Library::Congruence_System::const_iterator.
+  \extref{Parma_Polyhedra_Library::Congruence_System::const_iterator,
+  Congruence_System::const_iterator}.
 */
 PPL_TYPE_DECLARATION(Congruence_System_const_iterator)
 
@@ -500,7 +506,7 @@ PPL_TYPE_DECLARATION(Congruence_System_const_iterator)
   Types and functions for grid generators.
 
   The types and functions for grid generators provide an interface
-  towards \ref Parma_Polyhedra_Library::Grid_Generator.
+  towards \extref{Parma_Polyhedra_Library::Grid_Generator, Grid_Generator}.
 */
 PPL_TYPE_DECLARATION(Grid_Generator)
 
@@ -509,7 +515,9 @@ PPL_TYPE_DECLARATION(Grid_Generator)
   Types and functions for grid generator systems.
 
   The types and functions for grid generator systems provide an interface
-  towards \ref Parma_Polyhedra_Library::Grid_Generator_System.
+  towards
+  \extref{Parma_Polyhedra_Library::Grid_Generator_System,
+  Grid_Generator_System}.
 */
 PPL_TYPE_DECLARATION(Grid_Generator_System)
 
@@ -519,7 +527,8 @@ PPL_TYPE_DECLARATION(Grid_Generator_System)
 
   The types and functions for grid generator systems iterators provide
   read-only access to the elements of a grid generator system by interfacing
-  \ref Parma_Polyhedra_Library::Grid_Generator_System::const_iterator.
+  \extref{Parma_Polyhedra_Library::Grid_Generator_System::const_iterator,
+  Grid_Generator_System::const_iterator}.
 */
 PPL_TYPE_DECLARATION(Grid_Generator_System_const_iterator)
 
@@ -528,8 +537,7 @@ PPL_TYPE_DECLARATION(Grid_Generator_System_const_iterator)
   Types and functions for MIP problems.
 
   The types and functions for MIP problems provide an interface
-  towards the \ref Parma_Polyhedra_Library::MIP_Problem
-  "Mixed Integer (Linear) Programming solver".
+  towards \extref{Parma_Polyhedra_Library::MIP_Problem, MIP_Problem}.
 */
 PPL_TYPE_DECLARATION(MIP_Problem)
 
