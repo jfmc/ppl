@@ -47,9 +47,7 @@ dnl in the code file outputs a warning message.
 m4_define(`m4_default_code', `m4_dumpdef($1`'_code)')
 dnl m4_pre_all_classes_code
 m4_define(`m4_pre_extra_class_code', `
-/*! \name Functions Related to m4_interface_class$1 */
-/*@{*/
-
+/* Functions Related to m4_interface_class$1 */
 ')
 
 dnl m4_post_extra_class_code(Class, CPP_Class, Class_Kind)
@@ -57,7 +55,7 @@ dnl Postfix extra code for each class.
 m4_define(`m4_post_extra_class_code', `dnl
 PPL_DECLARE_OUTPUT_FUNCTIONS(m4_interface_class$1)
 
-/*@}*/ /* Functions Related to m4_interface_class$1 */
+/* End of Functions Related to m4_interface_class$1 */
 ')
 
 m4_divert`'dnl
