@@ -467,6 +467,31 @@ test14() {
   return ok;
 }
 
+// Both universe.
+bool
+test15() {
+  Variable A(0);
+
+  TBox box1(1);
+  box1.refine_with_constraint(A == A);
+  print_constraints(box1, "*** box1 ***");
+
+  TBox box2(1);
+  box2.refine_with_constraint(A == A);
+
+  print_constraints(box1, "*** box1 ***");
+
+  box1.difference_assign(box2);
+
+  Rational_Box known_result(1, EMPTY);
+
+  bool ok = check_result(box1, known_result);
+
+  print_constraints(box1, "*** after box1.difference_assign(box2) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -484,4 +509,5 @@ BEGIN_MAIN
   DO_TEST(test12);
   DO_TEST(test13);
   DO_TEST(test14);
+  // DO_TEST(test15);
 END_MAIN
