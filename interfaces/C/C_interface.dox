@@ -426,13 +426,25 @@ ppl_Polyhedron_bounds_from_below
   will be left untouched.
 */
 int
-ppl_Polyhedron_maximize
+ppl_Polyhedron_maximize_with_point
 (ppl_const_Polyhedron_t ph,
  ppl_const_Linear_Expression_t le,
  ppl_Coefficient_t sup_n,
  ppl_Coefficient_t sup_d,
  int* pmaximum,
  ppl_Generator_t point);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  The same as ppl_Polyhedron_maximize_with_point, but without the
+  output argument for the location where the supremum value is reached.
+*/
+int
+ppl_Polyhedron_maximize
+(ppl_const_Polyhedron_t ph,
+ ppl_const_Linear_Expression_t le,
+ ppl_Coefficient_t sup_n,
+ ppl_Coefficient_t sup_d,
+ int* pmaximum);
 
 /*! \relates ppl_Polyhedron_tag \brief
   Returns a positive integer if  \p ph is not empty
@@ -464,13 +476,25 @@ ppl_Polyhedron_maximize
   will be left untouched.
 */
 int
-ppl_Polyhedron_minimize
+ppl_Polyhedron_minimize_with_point
 (ppl_const_Polyhedron_t ph,
  ppl_const_Linear_Expression_t le,
  ppl_Coefficient_t inf_n,
  ppl_Coefficient_t inf_d,
  int* pminimum,
  ppl_Generator_t point);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  The same as ppl_Polyhedron_minimize_with_point, but without the
+  output argument for the location where the infimum value is reached.
+*/
+int
+ppl_Polyhedron_minimize_with_point
+(ppl_const_Polyhedron_t ph,
+ ppl_const_Linear_Expression_t le,
+ ppl_Coefficient_t inf_n,
+ ppl_Coefficient_t inf_d,
+ int* pminimum);
 
 /*! \relates ppl_Polyhedron_tag \brief
   Returns a positive integer if \p x contains or is equal to \p y;
@@ -514,6 +538,22 @@ ppl_Polyhedron_equals_Polyhedron
 */
 int
 ppl_Polyhedron_OK(ppl_const_Polyhedron_t ph);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Writes to \p sz a lower bound to the size in bytes of the memory
+  managed by \p ph.
+*/
+int
+ppl_Polyhedron_external_memory_in_bytes
+(ppl_const_Polyhedron_t ph, size_t* sz);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Writes to \p sz a lower bound to the size in bytes of the memory
+  managed by \p ph.
+*/
+int
+ppl_Polyhedron_total_memory_in_bytes
+(ppl_const_Polyhedron_t ph, size_t* sz);
 
 /*@}*/ /* Functions that Do Not Modify the Polyhedron */
 
@@ -1282,3 +1322,283 @@ ppl_Polyhedron_poly_difference_assign
 
 /*@}*/ /* Ad Hoc Functions for (C or NNC) Polyhedra */
 
+/*! \interface ppl_Pointset_Powerset_C_Polyhedron_tag
+  \brief
+  Types and functions for the Pointset_Powerset domain
+  (of C_Polyhedron objects).
+
+  The powerset domains can be instantiated by taking as a base domain
+  any fixed semantic geometric description
+  (C and NNC polyhedra, BD and octagonal shapes, boxes and grids).
+  An element of the powerset domain represents a disjunctive collection
+  of base objects, all having the same space dimension.
+
+  Besides the functions that are available in all semantic geometric
+  descriptions (whose documentation is not repeated here),
+  the powerset domain also provides several ad hoc functions.
+  In particular, the iterator types allow for the examination and
+  manipulation of the collection of disjuncts.
+*/
+
+/*! \brief Opaque pointer \ingroup Datatypes */
+typedef struct ppl_Pointset_Powerset_C_Polyhedron_tag*
+        ppl_Pointset_Powerset_C_Polyhedron_t;
+
+/*! \brief Opaque pointer to const object \ingroup Datatypes */
+typedef struct ppl_Pointset_Powerset_C_Polyhedron_tag const*
+        ppl_const_Pointset_Powerset_C_Polyhedron_t;
+
+/*! \interface ppl_Pointset_Powerset_C_Polyhedron_iterator_tag
+  \brief
+  Types and functions for iterating on a Pointset_Powerset object.
+*/
+
+/*! \brief Iterator for powerset objects \ingroup Datatypes */
+typedef ppl_Pointset_Powerset_C_Polyhedron_iterator_tag
+        ppl_Pointset_Powerset_C_Polyhedron_iterator_t;
+
+/*! \interface ppl_Pointset_Powerset_C_Polyhedron_const_iterator_tag
+  \brief
+  Types and functions for iterating on a const Pointset_Powerset object.
+*/
+
+/*! \brief Iterator for const powerset objects \ingroup Datatypes */
+typedef ppl_Pointset_Powerset_C_Polyhedron_const_iterator_tag
+        ppl_Pointset_Powerset_C_Polyhedron_const_iterator_t;
+
+/*! \name Construction, Initialization and Destruction */
+/*@{*/
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_iterator_tag \brief
+  Builds a new `iterator' and writes a handle to it
+  at address \p pit.
+*/
+int
+ppl_new_Pointset_Powerset_C_Polyhedron_iterator
+(ppl_Pointset_Powerset_C_Polyhedron_iterator_t* pit);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_const_iterator_tag \brief
+  Builds a new `const iterator' and writes a handle to it
+  at address \p pit.
+*/
+int
+ppl_new_Pointset_Powerset_C_Polyhedron_const_iterator
+(ppl_Pointset_Powerset_C_Polyhedron_const_iterator_t* pit);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_iterator_tag \brief
+  Assigns to \p psit an iterator "pointing" to the beginning of
+  the sequence of disjuncts of \p ps.
+*/
+int
+ppl_Pointset_Powerset_C_Polyhedron_iterator_begin
+(ppl_Pointset_Powerset_C_Polyhedron_t ps,
+ ppl_Pointset_Powerset_C_Polyhedron_iterator_t psit);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_const_iterator_tag \brief
+  Assigns to \p psit a const iterator "pointing" to the beginning of
+  the sequence of disjuncts of \p ps.
+*/
+int
+ppl_Pointset_Powerset_C_Polyhedron_const_iterator_begin
+(ppl_const_Pointset_Powerset_C_Polyhedron_t ps,
+ ppl_Pointset_Powerset_C_Polyhedron_const_iterator_t psit);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_iterator_tag \brief
+  Assigns to \p psit an iterator "pointing" past the end of
+  the sequence of disjuncts of \p ps.
+*/
+int
+ppl_Pointset_Powerset_C_Polyhedron_iterator_end
+(ppl_Pointset_Powerset_C_Polyhedron_t ps,
+ ppl_Pointset_Powerset_C_Polyhedron_iterator_t psit);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_const_iterator_tag \brief
+  Assigns to \p psit a const iterator "pointing" past the end of
+  the sequence of disjuncts of \p ps.
+*/
+int
+ppl_Pointset_Powerset_C_Polyhedron_const_iterator_end
+(ppl_const_Pointset_Powerset_C_Polyhedron_t ps,
+ ppl_Pointset_Powerset_C_Polyhedron_const_iterator_t psit);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_iterator_tag \brief
+  Invalidates the handle \p it: this makes sure the corresponding
+  resources will eventually be released.
+*/
+int
+ppl_delete_Pointset_Powerset_C_Polyhedron_iterator
+(ppl_const_Pointset_Powerset_C_Polyhedron_iterator_t it);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_const_iterator_tag \brief
+  Invalidates the handle \p it: this makes sure the corresponding
+  resources will eventually be released.
+*/
+int
+ppl_delete_Pointset_Powerset_C_Polyhedron_const_iterator
+(ppl_const_Pointset_Powerset_C_Polyhedron_const_iterator_t it);
+
+/*@}*/ /* \name Construction, Initialization and Destruction */
+
+/*! \name Dereferencing, Increment, Decrement and Equality Testing */
+/*@{*/
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_iterator_tag \brief
+  Dereferences \p it writing a const handle to the resulting disjunct
+  at address \p d.
+
+  \note
+  Even though \p it is an non-const iterator, dereferencing it results
+  in a handle to a \b const disjunct. This is because mutable iterators
+  are meant to allow for the modification of the sequence of disjuncts
+  (e.g., by dropping elements), while preventing direct modifications
+  of the disjuncts they point to.
+
+  \warning
+  On exit, the disjunct \p d is still owned by the powerset object:
+  any function call on the owning powerset object may invalidate it.
+  Moreover, \p d should \b not be deleted directly: its resources will
+  be released when deleting the owning powerset.
+*/
+int
+ppl_Pointset_Powerset_C_Polyhedron_iterator_dereference
+(ppl_const_Pointset_Powerset_C_Polyhedron_iterator_t it,
+ ppl_const_Polyhedron_t* d);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_const_iterator_tag \brief
+  Dereferences \p it writing a const handle to the resulting disjunct
+  at address \p d.
+
+  \warning
+  On exit, the disjunct \p d is still owned by the powerset object:
+  any function call on the owning powerset object may invalidate it.
+  Moreover, \p d should \b not be deleted directly: its resources will
+  be released when deleting the owning powerset.
+*/
+int
+ppl_Pointset_Powerset_C_Polyhedron_const_iterator_dereference
+(ppl_const_Pointset_Powerset_C_Polyhedron_const_iterator_t it,
+ ppl_const_Polyhedron_t* d);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_iterator_tag \brief
+  Increments \p it so that it "points" to the next disjunct.
+*/
+int
+ppl_Pointset_Powerset_C_Polyhedron_iterator_increment
+(ppl_Pointset_Powerset_C_Polyhedron_iterator_t it);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_const_iterator_tag \brief
+  Increments \p it so that it "points" to the next disjunct.
+*/
+int
+ppl_Pointset_Powerset_C_Polyhedron_const_iterator_increment
+(ppl_Pointset_Powerset_C_Polyhedron_const_iterator_t it);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_iterator_tag \brief
+  Decrements \p it so that it "points" to the previous disjunct.
+*/
+int
+ppl_Pointset_Powerset_C_Polyhedron_iterator_decrement
+(ppl_Pointset_Powerset_C_Polyhedron_iterator_t it);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_const_iterator_tag \brief
+  Decrements \p it so that it "points" to the previous disjunct.
+*/
+int
+ppl_Pointset_Powerset_C_Polyhedron_const_iterator_decrement
+(ppl_Pointset_Powerset_C_Polyhedron_const_iterator_t it);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_iterator_tag \brief
+  Returns a positive integer if the iterators corresponding to \p x and
+  \p y are equal; returns 0 if they are different.
+*/
+int
+ppl_Pointset_Powerset_C_Polyhedron_iterator_equal_test
+(ppl_const_Pointset_Powerset_C_Polyhedron_iterator_t x,
+ ppl_const_Pointset_Powerset_C_Polyhedron_iterator_t y);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_const_iterator_tag \brief
+  Returns a positive integer if the iterators corresponding to \p x and
+  \p y are equal; returns 0 if they are different.
+*/
+int
+ppl_Pointset_Powerset_C_Polyhedron_const_iterator_equal_test
+(ppl_const_Pointset_Powerset_C_Polyhedron_const_iterator_t x,
+ ppl_const_Pointset_Powerset_C_Polyhedron_const_iterator_t y);
+
+/*@}*/ /* \name Dereferencing, Increment, Decrement and Equality Testing */
+
+
+/*! \name Ad Hoc Functions for Pointset_Powerset domains */
+/*@{*/
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_tag \brief
+  Drops from the sequence of disjuncts in \p ps all the
+  non-maximal elements so that \p ps is non-redundant.
+*/
+int
+ppl_Pointset_Powerset_C_Polyhedron_omega_reduce
+(ppl_const_Pointset_Powerset_C_Polyhedron_t ps);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_tag \brief
+  Writes to \p sz the number of disjuncts in \p ps.
+
+  \note
+  If present, Omega-redundant elements will be counted too.
+*/
+int
+ppl_Pointset_Powerset_C_Polyhedron_size
+(ppl_const_Pointset_Powerset_C_Polyhedron_t ps, size_t* sz);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_tag \brief
+  Returns a positive integer if powerset \p x geometrically covers
+  powerset \p y; returns 0 otherwise.
+*/
+int
+ppl_Pointset_Powerset_C_Polyhedron_geometrically_covers_Pointset_Powerset_C_Polyhedron
+(ppl_const_Pointset_Powerset_C_Polyhedron_t x,
+ ppl_const_Pointset_Powerset_C_Polyhedron_t y);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_tag \brief
+  Returns a positive integer if powerset \p x is geometrically
+  equal to powerset \p y; returns 0 otherwise.
+*/
+int
+ppl_Pointset_Powerset_C_Polyhedron_geometrically_equals_Pointset_Powerset_C_Polyhedron
+(ppl_const_Pointset_Powerset_C_Polyhedron_t x,
+ ppl_const_Pointset_Powerset_C_Polyhedron_t y);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_tag \brief
+  Adds to \p ps a copy of disjunct \p d.
+*/
+int
+ppl_Pointset_Powerset_C_Polyhedron_add_disjunct
+(ppl_Pointset_Powerset_C_Polyhedron_t ps, ppl_const_Polyhedron_t d);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_tag \brief
+  Drops from \p ps the disjunct pointed to by \p cit,
+  assigning to \p it an iterator to the disjunct following \p cit.
+*/
+int
+ppl_Pointset_Powerset_C_Polyhedron_drop_disjunct
+(ppl_Pointset_Powerset_C_Polyhedron_t ps,
+ ppl_const_Pointset_Powerset_C_Polyhedron_iterator_t cit,
+ ppl_Pointset_Powerset_C_Polyhedron_iterator_t it);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_tag \brief
+  Drops from \p ps all the disjuncts from \p first to \p last (excluded).
+*/
+int
+ppl_Pointset_Powerset_C_Polyhedron_drop_disjuncts
+(ppl_Pointset_Powerset_C_Polyhedron_t ps,
+ ppl_const_Pointset_Powerset_C_Polyhedron_iterator_t first,
+ ppl_const_Pointset_Powerset_C_Polyhedron_iterator_t last);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_tag \brief
+  Modifies \p ps by (recursively) merging together the pairs of
+  disjuncts whose upper-bound is the same as their set-theoretical union.
+*/
+int
+ppl_Pointset_Powerset_C_Polyhedron_pairwise_reduce
+(ppl_Pointset_Powerset_C_Polyhedron_t ps);
+
+/*@}*/ /* \name Ad Hoc Functions for Pointset_Powerset domains */
