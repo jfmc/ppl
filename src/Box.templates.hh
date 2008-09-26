@@ -1507,6 +1507,8 @@ Box<ITV>::difference_assign(const Box& y) {
 
   case 1:
     x.seq[0].difference_assign(y.seq[0]);
+    if (x.seq[0].is_empty())
+      x.set_empty();
     break;
 
   default:
@@ -1529,6 +1531,8 @@ Box<ITV>::difference_assign(const Box& y) {
       case 1:
         x.seq[index_non_contained]
           .difference_assign(y.seq[index_non_contained]);
+        if (x.seq[index_non_contained].is_empty())
+          x.set_empty();
         break;
       default:
         // Nothing to do: the difference is `x'.
