@@ -509,5 +509,5 @@ BEGIN_MAIN
   DO_TEST(test12);
   DO_TEST(test13);
   DO_TEST(test14);
-  // DO_TEST(test15);
+  DO_TEST(test15);
 END_MAIN
