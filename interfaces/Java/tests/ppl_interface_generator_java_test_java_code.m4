@@ -825,6 +825,7 @@ m4_define(`ppl_@CLASS@_ascii_dump_code',
 
 m4_define(`ppl_@CLASS@_linear_partition_code',
     `dnl
+@SUPERPOWER_EXISTS@`'dnl
 {
     System.out.print("Testing linear_partition: ");
     @TOPOLOGY@@CLASS@ gd1
@@ -846,6 +847,7 @@ m4_define(`ppl_@CLASS@_linear_partition_code',
 
 m4_define(`ppl_@CLASS@_approximate_partition_code',
     `dnl
+@SUPERPOWER_EXISTS@`'dnl
 {
     System.out.print("Testing @CLASS@_approximate_partition: ");
     @CLASS@ gd1

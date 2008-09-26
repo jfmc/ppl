@@ -547,9 +547,9 @@ ppl_@CLASS@_get_disjunct_2_test2(PPS, It, It_end, Space_Dim) :-
 
 ')
 
-m4_define(`ppl_@CLASS@_linear_partition_code',
-`
-ppl_@CLASS@_linear_partition_4_test :-
+m4_define(`ppl_@CLASS@_linear_@PARTITION@_code',
+`dnl
+ppl_@CLASS@_linear_@PARTITION@_4_test :-
   (
    choose_2_tests(TEST_DATA1, TEST_DATA2, Space_Dim),
    (
@@ -563,9 +563,9 @@ ppl_@CLASS@_linear_partition_4_test :-
 
 ')
 
-m4_define(`ppl_@CLASS@_approximate_partition_code',
-`
-ppl_@CLASS@_approximate_partition_4_test :-
+m4_define(`ppl_@CLASS@_approximate_@PARTITION@_code',
+`dnl
+ppl_@CLASS@_approximate_@PARTITION@_4_test :-
   (
    choose_2_tests(TEST_DATA1, TEST_DATA2, Space_Dim),
    (

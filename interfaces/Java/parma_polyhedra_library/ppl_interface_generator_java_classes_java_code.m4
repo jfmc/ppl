@@ -555,6 +555,7 @@ m4_define(`ppl_@CLASS@_ascii_dump_code',
 
 m4_define(`ppl_@CLASS@_linear_partition_code',
 `dnl
+@SUPERPOWER_EXISTS@`'dnl
 %<--%<--%<-- @TOPOLOGY@@CLASS@.java
 
   public static native
@@ -564,6 +565,7 @@ m4_define(`ppl_@CLASS@_linear_partition_code',
 
 m4_define(`ppl_@CLASS@_approximate_partition_code',
 `dnl
+@SUPERPOWER_EXISTS@`'dnl
 %<--%<--%<-- @CLASS@.java
 
   public static native Pair <@CLASS@@COMMA@ Pointset_Powerset<Grid> >

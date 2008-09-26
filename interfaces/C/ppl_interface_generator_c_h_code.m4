@@ -34,10 +34,11 @@ dnl There is no code at present for these procedures in the C interface.
 dnl Remove the macro if its definition is added.
 dnl
 
-m4_define(`ppl_@CLASS@_linear_partition_code',
-`/*! \relates ppl_@CLASS@_tag */
+m4_define(`ppl_@CLASS@_linear_@PARTITION@_code',
+`dnl
+/*! \relates ppl_@CLASS@_tag */
 int
-ppl_@CLASS@_linear_partition
+ppl_@CLASS@_linear_@PARTITION@
 PPL_PROTO((ppl_const_@CLASS@_t x,
            ppl_const_@CLASS@_t y,
            ppl_@CLASS@_t* p_inters,
@@ -45,10 +46,11 @@ PPL_PROTO((ppl_const_@CLASS@_t x,
 
 ')
 
-m4_define(`ppl_@CLASS@_approximate_partition_code',
-`/*! \relates ppl_@CLASS@_tag */
+m4_define(`ppl_@CLASS@_approximate_@PARTITION@_code',
+`dnl
+/*! \relates ppl_@CLASS@_tag */
 int
-ppl_@CLASS@_approximate_partition
+ppl_@CLASS@_approximate_@PARTITION@
 PPL_PROTO((ppl_const_@CLASS@_t x,
            ppl_const_@CLASS@_t y,
            ppl_@CLASS@_t* p_inters,
@@ -58,7 +60,8 @@ PPL_PROTO((ppl_const_@CLASS@_t x,
 ')
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
-`/*! \relates ppl_@CLASS@_tag */
+`dnl
+/*! \relates ppl_@CLASS@_tag */
 int
 ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension
 PPL_PROTO((ppl_@CLASS@_t* pph, ppl_dimension_type d, int empty));
@@ -66,7 +69,8 @@ PPL_PROTO((ppl_@CLASS@_t* pph, ppl_dimension_type d, int empty));
 ')
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_code',
-`/*! \relates ppl_@CLASS@_tag */
+`dnl
+/*! \relates ppl_@CLASS@_tag */
 int
 ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@
 PPL_PROTO((ppl_@CLASS@_t* pph, ppl_const_@ALT_FRIEND@_t ph));
@@ -74,7 +78,8 @@ PPL_PROTO((ppl_@CLASS@_t* pph, ppl_const_@ALT_FRIEND@_t ph));
 ')
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity_code',
-`/*! \relates ppl_@CLASS@_tag */
+`dnl
+/*! \relates ppl_@CLASS@_tag */
 int
 ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity
 PPL_PROTO((ppl_@CLASS@_t* pph, ppl_const_@ALT_FRIEND@_t ph, int complexity));
@@ -90,7 +95,8 @@ PPL_PROTO((ppl_@CLASS@_t* pph, ppl_const_@UBUILD_REPRESENT@_System_t cs));
 ')
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_recycle_@BUILD_REPRESENT@s_code',
-`/*! \relates ppl_@CLASS@_tag */
+`dnl
+/*! \relates ppl_@CLASS@_tag */
 int
 ppl_new_@TOPOLOGY@@CLASS@_recycle_@UBUILD_REPRESENT@_System
 PPL_PROTO((ppl_@CLASS@_t* pph, ppl_@UBUILD_REPRESENT@_System_t cs));

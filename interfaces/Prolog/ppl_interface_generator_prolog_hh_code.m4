@@ -26,9 +26,10 @@ dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
-m4_define(`ppl_@CLASS@_linear_partition_code',
-`extern "C" Prolog_foreign_return_type
-ppl_@CLASS@_linear_partition(Prolog_term_ref t_ph,
+m4_define(`ppl_@CLASS@_linear_@PARTITION@_code',
+`dnl
+extern "C" Prolog_foreign_return_type
+ppl_@CLASS@_linear_@PARTITION@(Prolog_term_ref t_ph,
 			     Prolog_term_ref t_qh,
 			     Prolog_term_ref t_inters,
 			     Prolog_term_ref t_pset);
@@ -139,10 +140,10 @@ m4_define(`ppl_@CLASS@_add_disjunct_code',
   ppl_@CLASS@_add_disjunct(Prolog_term_ref t_ph, Prolog_term_ref t_d);
 ')
 
-m4_define(`ppl_@CLASS@_approximate_partition_code',
+m4_define(`ppl_@CLASS@_approximate_@PARTITION@_code',
   `dnl
   extern "C" Prolog_foreign_return_type
-  ppl_@CLASS@_approximate_partition(Prolog_term_ref t_ph,
+  ppl_@CLASS@_approximate_@PARTITION@(Prolog_term_ref t_ph,
 				    Prolog_term_ref t_qh,
 				    Prolog_term_ref t_finite,
 				    Prolog_term_ref t_inters,

@@ -853,9 +853,9 @@ print_string (ppl_@CLASS@_ascii_dump @LTOPOLOGY@@LCLASS@01);;
 print_newline();;
 ')
 
-m4_define(`ppl_@CLASS@_linear_partition_code',
+m4_define(`ppl_@CLASS@_linear_@PARTITION@_code',
 `
-print_string "testing ppl_@CLASS@_linear_partition: " ;;
+print_string "testing ppl_@CLASS@_linear_@PARTITION@: " ;;
 let copy01
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
 let copy02
@@ -869,9 +869,9 @@ let out
 print_newline();;
 ')
 
-m4_define(`ppl_@CLASS@_approximate_partition_code',
+m4_define(`ppl_@CLASS@_approximate_@PARTITION@_code',
 `
-print_string "testing ppl_@CLASS@_linear_partition: " ;;
+print_string "testing ppl_@CLASS@_linear_@PARTITION@: " ;;
 let copy01
   = ppl_new_@CLASS@_from_@CLASS@(@LCLASS@01);;
 let copy02

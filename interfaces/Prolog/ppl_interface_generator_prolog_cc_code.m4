@@ -26,74 +26,6 @@ dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
-m4_define(`ppl_@CLASS@_linear_partition_code',
-`extern "C" Prolog_foreign_return_type
-ppl_@CLASS@_linear_partition(Prolog_term_ref t_ph,
-                             Prolog_term_ref t_qh,
-                             Prolog_term_ref t_inters,
-                             Prolog_term_ref t_pset) {
-  try {
-    static const char* where = "ppl_@CLASS@_linear_partition/4";
-    @CPP_CLASS@* rfh;
-    Pointset_Powerset<NNC_Polyhedron>* rsh;
-`m4_ifelse(m4_current_interface, `Polyhedron',
-  `m4_linear_partition_for_polyhedron_domains',
-           `m4_linear_partition_for_non_polyhedron_domains')'
-    Prolog_term_ref t_r_first = Prolog_new_term_ref();
-    Prolog_term_ref t_r_second = Prolog_new_term_ref();
-    Prolog_put_address(t_r_first, rfh);
-    Prolog_put_address(t_r_second, rsh);
-    if (Prolog_unify(t_inters, t_r_first)
-        && Prolog_unify(t_pset, t_r_second)) {
-      return PROLOG_SUCCESS;
-    }
-  }
-  CATCH_ALL;
-}
-
-')
-
-m4_define(`m4_linear_partition_for_polyhedron_domains',
-`    const Polyhedron* xph = term_to_handle<Polyhedron>(t_ph, where);
-    if (Interfaces::is_necessarily_closed_for_interfaces(*xph)) {
-      const C_Polyhedron* ph = term_to_handle<C_Polyhedron>(t_ph, where);
-      const C_Polyhedron* qh = term_to_handle<C_Polyhedron>(t_qh, where);
-      PPL_CHECK(ph);
-      PPL_CHECK(qh);
-      std::pair<C_Polyhedron@COMMA@ Pointset_Powerset<NNC_Polyhedron> >
-        r = linear_partition(*ph, *qh);
-      rfh = new C_Polyhedron(0, EMPTY);
-      rsh = new Pointset_Powerset<NNC_Polyhedron>(0, EMPTY);
-      rfh->swap(r.first);
-      rsh->swap(r.second);
-    }
-    else {
-      const NNC_Polyhedron* ph = term_to_handle<NNC_Polyhedron>(t_ph, where);
-      const NNC_Polyhedron* qh = term_to_handle<NNC_Polyhedron>(t_qh, where);
-      PPL_CHECK(ph);
-      PPL_CHECK(qh);
-      std::pair<NNC_Polyhedron@COMMA@ Pointset_Powerset<NNC_Polyhedron> >
-        r = linear_partition(*ph, *qh);
-      rfh = new NNC_Polyhedron(0, EMPTY);
-      rsh = new Pointset_Powerset<NNC_Polyhedron>(0, EMPTY);
-      rfh->swap(r.first);
-      rsh->swap(r.second);
-    }
-')
-
-m4_define(`m4_linear_partition_for_non_polyhedron_domains',
-`  const @CPP_CLASS@* ph = term_to_handle<@CPP_CLASS@ >(t_ph, where);
-  const @CPP_CLASS@* qh = term_to_handle<@CPP_CLASS@ >(t_qh, where);
-  PPL_CHECK(ph);
-  PPL_CHECK(qh);
-  std::pair<@CPP_CLASS@@COMMA@ Pointset_Powerset<NNC_Polyhedron> >
-    r = linear_partition(*ph, *qh);
-  rfh = new @CPP_CLASS@(0, EMPTY);
-  rsh = new Pointset_Powerset<NNC_Polyhedron>(0, EMPTY);
-  rfh->swap(r.first);
-  rsh->swap(r.second);
-')
-
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 `extern "C" Prolog_foreign_return_type
 ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Prolog_term_ref t_nd,
@@ -473,10 +405,79 @@ m4_define(`ppl_@CLASS@_add_disjunct_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_approximate_partition_code',
+m4_define(`ppl_@CLASS@_linear_@PARTITION@_code',
+`dnl
+extern "C" Prolog_foreign_return_type
+ppl_@CLASS@_linear_@PARTITION@(Prolog_term_ref t_ph,
+                             Prolog_term_ref t_qh,
+                             Prolog_term_ref t_inters,
+                             Prolog_term_ref t_pset) {
+  try {
+    static const char* where = "ppl_@CLASS@_linear_partition/4";
+    @CPP_CLASS@* rfh;
+    Pointset_Powerset<NNC_Polyhedron>* rsh;
+`m4_ifelse(m4_current_interface, `Polyhedron',
+  `m4_linear_partition_for_polyhedron_domains',
+           `m4_linear_partition_for_non_polyhedron_domains')'
+    Prolog_term_ref t_r_first = Prolog_new_term_ref();
+    Prolog_term_ref t_r_second = Prolog_new_term_ref();
+    Prolog_put_address(t_r_first, rfh);
+    Prolog_put_address(t_r_second, rsh);
+    if (Prolog_unify(t_inters, t_r_first)
+        && Prolog_unify(t_pset, t_r_second)) {
+      return PROLOG_SUCCESS;
+    }
+  }
+  CATCH_ALL;
+}
+
+')
+
+m4_define(`m4_linear_partition_for_polyhedron_domains',
+`    const Polyhedron* xph = term_to_handle<Polyhedron>(t_ph, where);
+    if (Interfaces::is_necessarily_closed_for_interfaces(*xph)) {
+      const C_Polyhedron* ph = term_to_handle<C_Polyhedron>(t_ph, where);
+      const C_Polyhedron* qh = term_to_handle<C_Polyhedron>(t_qh, where);
+      PPL_CHECK(ph);
+      PPL_CHECK(qh);
+      std::pair<C_Polyhedron@COMMA@ Pointset_Powerset<NNC_Polyhedron> >
+        r = linear_partition(*ph, *qh);
+      rfh = new C_Polyhedron(0, EMPTY);
+      rsh = new Pointset_Powerset<NNC_Polyhedron>(0, EMPTY);
+      rfh->swap(r.first);
+      rsh->swap(r.second);
+    }
+    else {
+      const NNC_Polyhedron* ph = term_to_handle<NNC_Polyhedron>(t_ph, where);
+      const NNC_Polyhedron* qh = term_to_handle<NNC_Polyhedron>(t_qh, where);
+      PPL_CHECK(ph);
+      PPL_CHECK(qh);
+      std::pair<NNC_Polyhedron@COMMA@ Pointset_Powerset<NNC_Polyhedron> >
+        r = linear_partition(*ph, *qh);
+      rfh = new NNC_Polyhedron(0, EMPTY);
+      rsh = new Pointset_Powerset<NNC_Polyhedron>(0, EMPTY);
+      rfh->swap(r.first);
+      rsh->swap(r.second);
+    }
+')
+
+m4_define(`m4_linear_partition_for_non_polyhedron_domains',
+`  const @CPP_CLASS@* ph = term_to_handle<@CPP_CLASS@ >(t_ph, where);
+  const @CPP_CLASS@* qh = term_to_handle<@CPP_CLASS@ >(t_qh, where);
+  PPL_CHECK(ph);
+  PPL_CHECK(qh);
+  std::pair<@CPP_CLASS@@COMMA@ Pointset_Powerset<NNC_Polyhedron> >
+    r = linear_partition(*ph, *qh);
+  rfh = new @CPP_CLASS@(0, EMPTY);
+  rsh = new Pointset_Powerset<NNC_Polyhedron>(0, EMPTY);
+  rfh->swap(r.first);
+  rsh->swap(r.second);
+')
+
+m4_define(`ppl_@CLASS@_approximate_@PARTITION@_code',
   `dnl
   extern "C" Prolog_foreign_return_type
-  ppl_@CLASS@_approximate_partition(Prolog_term_ref t_ph,
+  ppl_@CLASS@_approximate_@PARTITION@(Prolog_term_ref t_ph,
                                     Prolog_term_ref t_qh,
                                     Prolog_term_ref t_finite,
                                     Prolog_term_ref t_inters,

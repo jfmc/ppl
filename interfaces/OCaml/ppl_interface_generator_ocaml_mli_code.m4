@@ -472,17 +472,17 @@ val ppl_@CLASS@_ascii_dump:
 
 ')
 
-m4_define(`ppl_@CLASS@_linear_partition_code',
+m4_define(`ppl_@CLASS@_linear_@PARTITION@_code',
 `dnl
-val ppl_@CLASS@_linear_partition:
+val ppl_@CLASS@_linear_@PARTITION@:
  @LCLASS@ -> @LCLASS@ -> @LCLASS@ * pointset_powerset_nnc_polyhedron
 
 ')
 
-m4_define(`ppl_@CLASS@_approximate_partition_code',
+m4_define(`ppl_@CLASS@_approximate_@PARTITION@_code',
 `dnl
-val ppl_@CLASS@_approximate_partition:
+val ppl_@CLASS@_approximate_@PARTITION@:
  @LCLASS@ -> @LCLASS@ ->
-   @LCLASS@ * pointset_powerset_Grid * bool
+   @LCLASS@ * pointset_powerset_grid * bool
 
 ')

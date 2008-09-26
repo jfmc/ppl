@@ -350,12 +350,12 @@ m4_define(`ppl_@CLASS@_ascii_dump_code',
 <CODE>  public native String ascii_dump()</CODE><BR>
 ')
 
-m4_define(`ppl_@CLASS@_linear_partition_code',
+m4_define(`ppl_@CLASS@_linear_@PARTITION@_code',
 `dnl
-<CODE>  public static native Pair <@TOPOLOGY@@CLASS@@COMMA@ Pointset_Powerset<NNC_Polyhedron> linear_partition(@CLASS@ p, @CLASS@ q)</CODE><BR>
+<CODE>  public static native Pair <@TOPOLOGY@@CLASS@@COMMA@ Pointset_Powerset<NNC_Polyhedron> linear_@PARTITION@(@CLASS@ p, @CLASS@ q)</CODE><BR>
 ')
 
-m4_define(`ppl_@CLASS@_approximate_partition_code',
+m4_define(`ppl_@CLASS@_approximate_@PARTITION@_code',
 `dnl
-<CODE>  public static native Pair <@@CLASS@@COMMA@ Pointset_Powerset<Grid> approximate_partition(@CLASS@ p, @CLASS@ q, By_Reference<Boolean> @MAXMIN@)</CODE><BR>
+<CODE>  public static native Pair <@@CLASS@@COMMA@ Pointset_Powerset<Grid> approximate_@PARTITION@(@CLASS@ p, @CLASS@ q, By_Reference<Boolean> is_finite)</CODE><BR>
 ')

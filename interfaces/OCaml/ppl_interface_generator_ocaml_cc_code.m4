@@ -1120,10 +1120,10 @@ ppl_@CLASS@_ascii_dump(value ph1) try {
 CATCH_ALL
 ')
 
-m4_define(`ppl_@CLASS@_linear_partition_code', `
+m4_define(`ppl_@CLASS@_linear_@PARTITION@_code', `
 extern "C"
 CAMLprim value
-ppl_@CLASS@_linear_partition(value ph1, value ph2) try {
+ppl_@CLASS@_linear_@PARTITION@(value ph1, value ph2) try {
     CAMLparam2(ph1, ph2);
 `m4_ifelse(m4_current_interface, `Polyhedron',
   `m4_linear_partition_for_polyhedron_domains',
@@ -1187,10 +1187,10 @@ m4_define(`m4_linear_partition_for_non_polyhedron_domains',
 
 ')
 
-m4_define(`ppl_@CLASS@_approximate_partition_code', `
+m4_define(`ppl_@CLASS@_approximate_@PARTITION@_code', `
 extern "C"
 CAMLprim value
-ppl_@CLASS@_approximate_partition(value ph1, value ph2) try {
+ppl_@CLASS@_approximate_@PARTITION@(value ph1, value ph2) try {
     CAMLparam2(ph1, ph2);
     @CPP_CLASS@& pph1
       = reinterpret_cast<@CPP_CLASS@&>(*p_@CPP_CLASS@_val(ph1));

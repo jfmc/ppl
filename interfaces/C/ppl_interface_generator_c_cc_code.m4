@@ -1083,10 +1083,10 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_linear_partition_code',
+m4_define(`ppl_@CLASS@_linear_@PARTITION@_code',
 `dnl
 int
-ppl_@CLASS@_linear_partition
+ppl_@CLASS@_linear_@PARTITION@
 (ppl_const_@CLASS@_t x,
  ppl_const_@CLASS@_t y,
  ppl_@CLASS@_t* p_inters,
@@ -1139,10 +1139,10 @@ m4_define(`m4_linear_partition_for_non_polyhedron_domains',
 
 ')
 
-m4_define(`_ppl_@CLASS@_approximate_partition_code',
+m4_define(`ppl_@CLASS@_approximate_@PARTITION@_code',
 `dnl
 int
-ppl_@CLASS@_approximate_partition
+ppl_@CLASS@_approximate_@PARTITION@
 (ppl_const_@CLASS@_t x,
  ppl_const_@CLASS@_t y,
  ppl_@CLASS@_t* p_inters,

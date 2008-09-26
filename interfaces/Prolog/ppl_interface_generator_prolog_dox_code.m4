@@ -310,14 +310,14 @@ m4_define(`ppl_@CLASS@_add_disjunct_code',
 <CODE>ppl_@CLASS@_add_disjunct(+Handle_1, +Handle_2)</CODE><BR>
 ')
 
-m4_define(`ppl_@CLASS@_linear_partition_code',
+m4_define(`ppl_@CLASS@_linear_@PARTITION@_code',
  `dnl
-<CODE>ppl_@CLASS@_linear_partition(+Handle_1, +Handle_2, -Handle_3, -Handle_4)</CODE><BR>
+<CODE>ppl_@CLASS@_linear_@PARTITION@(+Handle_1, +Handle_2, -Handle_3, -Handle_4)</CODE><BR>
 ')
 
-m4_define(`ppl_@CLASS@_approximate_partition',
+m4_define(`ppl_@CLASS@_approximate_@PARTITION@',
  `dnl
-<CODE>ppl_@CLASS@_approximate_partition(+Handle_1, +Handle_2, ?Boolean, -Handle_3, -Handle_4)</CODE><BR>
+<CODE>ppl_@CLASS@_approximate_@PARTITION@(+Handle_1, +Handle_2, ?Boolean, -Handle_3, -Handle_4)</CODE><BR>
 ')
 
 m4_define(`ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code',
