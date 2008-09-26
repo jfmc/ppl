@@ -489,15 +489,14 @@ cppdef_class,
 friend,
 intopology,
 topology,
+classtopology,
 cpp_disjunct,
 disjunct,
-classtopology,
 build_represent,
 get_represent,
 refine_represent,
 relation_represent,
 add_represent,
-partition,
 superclass,
 recycle,
 dimension,
@@ -988,7 +987,7 @@ dnl ---------------------------------------------------------------------
 
 m4_define(`m4_simplify_replacement', `topological_closure_assign')
 m4_define(`m4_Pointset_Powerset_simplify_replacement', `dnl
-pairwise_reduce,
+pairwise_reduce, omega_reduce,
 m4_define(`m4_1st_sequence',
   `m4_simplify_replacement')`'dnl
 m4_define(`m4_2nd_sequence',
