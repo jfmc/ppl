@@ -22,7 +22,7 @@
 
 interface_generator_files = \
 ppl_interface_generator_c_procedure_generators.m4 \
-ppl_interface_generator_c_h.m4 \
+ppl_interface_generator_c_h_files.m4 \
 ppl_interface_generator_c_h_code.m4 \
 ppl_interface_generator_c_cc_files.m4 \
 ppl_interface_generator_c_hh_files.m4 \
@@ -88,8 +88,6 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../ppl_interface_generator_common.m4 \
 ../ppl_interface_generator_common_dat.m4 \
 ../ppl_interface_generator_copyright \
-ppl_interface_generator_c_cc_files.m4 \
-ppl_interface_generator_c_hh_files.m4 \
 ../ppl_interface_generator_common_procedure_generators.m4 \
 $(interface_generator_files)
 
