@@ -1036,7 +1036,7 @@ CATCH_ALL
 
 
 // FIXME: what is this?
-#if 0
+#if 0 // Unused exception throwers (subsumed by macro catch_all?)
 void
 ppl_error_out_of_memory() {
   caml_raise_out_of_memory();
@@ -1071,4 +1071,4 @@ void
 ppl_error_unexpected_error() {
   caml_raise_constant(*caml_named_value("unexpected_error"));
 }
-#endif
+#endif // Unused exception throwers (subsumed by macro catch_all?)

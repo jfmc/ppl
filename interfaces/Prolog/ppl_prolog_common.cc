@@ -610,7 +610,7 @@ variable_term(dimension_type varid) {
   return t;
 }
 
-#if 0
+#if 0 // get_unsigned_int definition (currently not used).
 unsigned int
 get_unsigned_int(long n) {
   if (n >= 0 && static_cast<unsigned long>(n) <= UINT_MAX)
@@ -621,7 +621,7 @@ get_unsigned_int(long n) {
     throw not_unsigned_integer(n_term, "get_unsigned_int");
   }
 }
-#endif
+#endif // get_unsigned_int definition (currently not used).
 
 Prolog_atom
 term_to_universe_or_empty(Prolog_term_ref t, const char* where) {

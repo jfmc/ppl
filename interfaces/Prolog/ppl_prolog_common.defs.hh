@@ -141,7 +141,7 @@ Poly_Tracker::check(const void* pp) const {
   }
 }
 
-void
+inline void
 Poly_Tracker::remove(const void* pp) {
   if (s.erase(pp) != 1) {
     std::cerr
@@ -313,7 +313,7 @@ public:
   }
 };
 
-#if 0
+#if 0 // Functions already declared in ppl_prolog_sysdep.hh
 int
 Prolog_get_Coefficient(Prolog_term_ref t, Coefficient& n);
 
@@ -322,11 +322,7 @@ Prolog_unify_Coefficient(Prolog_term_ref t, const Coefficient& n);
 
 int
 Prolog_put_Coefficient(Prolog_term_ref t, const Coefficient& n);
-#endif
-
-#if 0
-Prolog_atom out_of_memory_exception_atom;
-#endif
+#endif // Functions already declared in ppl_prolog_sysdep.hh
 
 // For Prolog lists.
 extern Prolog_atom a_nil;
@@ -379,22 +375,6 @@ extern Prolog_atom a_c;
 // Denotes the empty set such as the empty interval or polyhedron.
 extern Prolog_atom a_empty;
 
-#if 0
-// Denotes the universe polyhedron.
-Prolog_atom a_universe;
-
-// Denotes the maximization mode for optimization problems.
-Prolog_atom a_max;
-
-// Denotes the minimization mode for optimization problems.
-Prolog_atom a_min;
-
-// Denote possible outcomes of MIP problems solution attempts.
-Prolog_atom a_unfeasible;
-Prolog_atom a_unbounded;
-Prolog_atom a_optimized;
-#endif
-
 // Denotes an open interval boundary.
 extern Prolog_atom a_o;
 
@@ -410,29 +390,44 @@ extern Prolog_atom a_polynomial;
 extern Prolog_atom a_simplex;
 extern Prolog_atom a_any;
 
-#if 0
-// Default timeout exception atom.
-Prolog_atom a_time_out;
-
-// "Out of memory" exception atom.
-Prolog_atom a_out_of_memory;
-#endif
-
 // Boolean constants.
 extern Prolog_atom a_true;
 extern Prolog_atom a_false;
 
-#if 0
-// To build exception terms.
-Prolog_atom a_ppl_invalid_argument;
-Prolog_atom a_ppl_overflow_error;
-Prolog_atom a_ppl_domain_error;
-Prolog_atom a_ppl_length_error;
-Prolog_atom a_ppl_representation_error;
-Prolog_atom a_expected;
-Prolog_atom a_found;
-Prolog_atom a_where;
-#endif
+
+#if 0 // Declarations of atoms that are only used in ppl_prolog_common.cc
+
+// Denotes a universe degenerate kind.
+extern Prolog_atom a_universe;
+
+// Denote maximization/minimization modes for optimization problems.
+extern Prolog_atom a_max;
+extern Prolog_atom a_min;
+
+// Denote possible outcomes of MIP problems solution attempts.
+extern Prolog_atom a_unfeasible;
+extern Prolog_atom a_unbounded;
+extern Prolog_atom a_optimized;
+
+// Default timeout exception atom.
+extern Prolog_atom a_time_out;
+
+// "Out of memory" exception atom.
+extern Prolog_atom a_out_of_memory;
+extern Prolog_atom out_of_memory_exception_atom;
+
+// Other atoms for exceptional terms.
+extern Prolog_atom a_ppl_invalid_argument;
+extern Prolog_atom a_ppl_overflow_error;
+extern Prolog_atom a_ppl_domain_error;
+extern Prolog_atom a_ppl_length_error;
+extern Prolog_atom a_ppl_representation_error;
+extern Prolog_atom a_expected;
+extern Prolog_atom a_found;
+extern Prolog_atom a_where;
+
+#endif // Declarations of atoms that are only used in ppl_prolog_common.cc
+
 
 struct Prolog_Interface_Atom {
   Prolog_atom* p_atom;
@@ -440,15 +435,6 @@ struct Prolog_Interface_Atom {
 };
 
 extern const Prolog_Interface_Atom prolog_interface_atoms[];
-
-#if 0
-Prolog_term_ref
-Prolog_atom_term_from_string(const char* s) {
-  Prolog_term_ref t = Prolog_new_term_ref();
-  Prolog_put_atom(t, Prolog_atom_from_string(s));
-  return t;
-}
-#endif
 
 void
 handle_exception(const Prolog_unsigned_out_of_range& e);
@@ -579,27 +565,9 @@ handle_exception(const timeout_exception&);
   } \
   return PROLOG_FAILURE
 
-#if 0
-Prolog_term_ref
-variable_term(dimension_type varid) {
-  Prolog_term_ref v = Prolog_new_term_ref();
-  Prolog_put_ulong(v, varid);
-  Prolog_term_ref t = Prolog_new_term_ref();
-  Prolog_construct_compound(t, a_dollar_VAR, v);
-  return t;
-}
 
-unsigned int
-get_unsigned_int(long n) {
-  if (n >= 0 && static_cast<unsigned long>(n) <= UINT_MAX)
-    return n;
-  else {
-    Prolog_term_ref n_term = Prolog_new_term_ref();
-    Prolog_put_long(n_term, n);
-    throw not_unsigned_integer(n_term, "get_unsigned_int");
-  }
-}
-#endif
+Prolog_term_ref
+variable_term(dimension_type varid);
 
 template <typename U>
 U
