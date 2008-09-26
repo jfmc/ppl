@@ -65,6 +65,17 @@ ppl_new_C_Polyhedron_from_C_Polyhedron
 (ppl_Polyhedron_t* pph, ppl_const_Polyhedron_t ph);
 
 /*! \relates ppl_Polyhedron_tag \brief
+  Builds a C polyhedron that is a copy of \p ph;
+  writes a handle for the newly created polyhedron at address \p pph.
+
+  \note
+  The complexity argument is ignored.
+*/
+int
+ppl_new_C_Polyhedron_from_C_Polyhedron_with_complexity
+(ppl_Polyhedron_t* pph, ppl_const_Polyhedron_t ph, int complexity);
+
+/*! \relates ppl_Polyhedron_tag \brief
   Builds a new C polyhedron from the system of constraints
   \p cs and writes a handle for the newly created polyhedron at
   address \p pph.
@@ -145,6 +156,17 @@ ppl_new_NNC_Polyhedron_from_NNC_Polyhedron
 (ppl_Polyhedron_t* pph, ppl_const_Polyhedron_t ph);
 
 /*! \relates ppl_Polyhedron_tag \brief
+  Builds an NNC polyhedron that is a copy of \p ph;
+  writes a handle for the newly created polyhedron at address \p pph.
+
+  \note
+  The complexity argument is ignored.
+*/
+int
+ppl_new_NNC_Polyhedron_from_NNC_Polyhedron_with_complexity
+(ppl_Polyhedron_t* pph, ppl_const_Polyhedron_t ph, int complexity);
+
+/*! \relates ppl_Polyhedron_tag \brief
   Builds a new NNC polyhedron from the system of constraints
   \p cs and writes a handle for the newly created polyhedron at
   address \p pph.
@@ -215,6 +237,8 @@ ppl_assign_NNC_Polyhedron_from_NNC_Polyhedron
   Clearly, the conversion operators are only available if both
   the source and the target semantic geometric descriptions have
   been enabled when configuring the library.
+  The conversions also taking as argument a complexity class
+  sometimes provide non-trivial precision/efficiency trade-offs.
 */
 /*@{*/
 
@@ -228,12 +252,42 @@ ppl_new_C_Polyhedron_from_NNC_Polyhedron(ppl_Polyhedron_t* pph,
 					 ppl_const_Polyhedron_t ph);
 
 /*! \relates ppl_Polyhedron_tag \brief
+  Builds a C polyhedron that approximates NNC_Polyhedron \p ph,
+  using an algorithm whose complexity does not exceed \p complexity;
+  writes a handle for the newly created polyhedron at address \p pph.
+
+  \note
+  The complexity argument, who can take values
+  \c PPL_COMPLEXITY_CLASS_POLYNOMIAL, \c PPL_COMPLEXITY_CLASS_SIMPLEX
+  and \c PPL_COMPLEXITY_CLASS_ANY, is ignored since the exact constructor
+  has polynomial complexity.
+*/
+int
+ppl_new_C_Polyhedron_from_NNC_Polyhedron_with_complexity
+(ppl_Polyhedron_t* pph, ppl_const_Polyhedron_t ph, int complexity);
+
+/*! \relates ppl_Polyhedron_tag \brief
   Builds an NNC polyhedron that is a copy of the C polyhedron \p ph;
   writes a handle for the newly created polyhedron at address \p pph.
 */
 int
 ppl_new_NNC_Polyhedron_from_C_Polyhedron(ppl_Polyhedron_t* pph,
 					 ppl_const_Polyhedron_t ph);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Builds an NNC polyhedron that approximates C_Polyhedron \p ph,
+  using an algorithm whose complexity does not exceed \p complexity;
+  writes a handle for the newly created polyhedron at address \p pph.
+
+  \note
+  The complexity argument, who can take values
+  \c PPL_COMPLEXITY_CLASS_POLYNOMIAL, \c PPL_COMPLEXITY_CLASS_SIMPLEX
+  and \c PPL_COMPLEXITY_CLASS_ANY, is ignored since the exact constructor
+  has polynomial complexity.
+*/
+int
+ppl_new_NNC_Polyhedron_from_C_Polyhedron_with_complexity
+(ppl_Polyhedron_t* pph, ppl_const_Polyhedron_t ph, int complexity);
 
 /*@}*/ /* Constructors Behaving as Conversion Operators */
 
