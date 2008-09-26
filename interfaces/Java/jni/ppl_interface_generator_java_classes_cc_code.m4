@@ -1123,14 +1123,23 @@ m4_define(`ppl_@CLASS@_linear_partition_code',
 JNIEXPORT jobject JNICALL Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_linear_1partition
 (JNIEnv* env, jclass ppl_class, jobject j_p, jobject j_q) {
   try {
-     // Suppress warnings concerning "ppl_class" not used.
-     ppl_class = 0;
-     @TOPOLOGY@@CPP_CLASS@* ph
-       = reinterpret_cast<@TOPOLOGY@@CPP_CLASS@*>(get_ptr(env, j_p));
-     @TOPOLOGY@@CPP_CLASS@* qh
-       = reinterpret_cast<@TOPOLOGY@@CPP_CLASS@*>(get_ptr(env, j_q));
-     std::pair<@TOPOLOGY@@CPP_CLASS@@COMMA@ Pointset_Powerset<NNC_Polyhedron> > r =
-       linear_partition(*ph, *qh);
+    // Suppress warnings concerning "ppl_class" not used.
+    ppl_class = 0;
+    @TOPOLOGY@@CPP_CLASS@* ph
+      = reinterpret_cast<@TOPOLOGY@@CPP_CLASS@*>(get_ptr(env, j_p));
+    @TOPOLOGY@@CPP_CLASS@* qh
+      = reinterpret_cast<@TOPOLOGY@@CPP_CLASS@*>(get_ptr(env, j_q));
+    std::pair<@TOPOLOGY@@CPP_CLASS@@COMMA@
+              Pointset_Powerset<NNC_Polyhedron> >
+      r = linear_partition(*ph, *qh);
+
+    @TOPOLOGY@@CPP_CLASS@* r1
+      = new @TOPOLOGY@@CPP_CLASS@(0, EMPTY);
+    Pointset_Powerset<NNC_Polyhedron>*
+      r2 = new Pointset_Powerset<NNC_Polyhedron>(0, EMPTY);
+    r1->swap(r.first);
+    r2->swap(r.second);
+
     jclass j_pair_class = env->FindClass("parma_polyhedra_library/Pair");
     jmethodID j_ctr_id_pair = env->GetMethodID(j_pair_class, "<init>", "()V");
     jobject j_pair_obj = env->NewObject(j_pair_class, j_ctr_id_pair);
@@ -1138,13 +1147,13 @@ JNIEXPORT jobject JNICALL Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_lin
     jclass j_class_r1 = env->FindClass("parma_polyhedra_library/@TOPOLOGY@@CLASS@");
     jmethodID j_ctr_id_r1 = env->GetMethodID(j_class_r1, "<init>", "()V");
     jobject j_obj_r1 = env->NewObject(j_class_r1, j_ctr_id_r1);
-    set_ptr(env, j_obj_r1, new @TOPOLOGY@@CPP_CLASS@(r.first));
+    set_ptr(env, j_obj_r1, r1);
 
     jclass j_class_r2
       = env->FindClass("parma_polyhedra_library/Pointset_Powerset_NNC_Polyhedron");
     jmethodID j_ctr_id_r2 = env->GetMethodID(j_class_r2, "<init>", "()V");
     jobject j_obj_r2 = env->NewObject(j_class_r2, j_ctr_id_r2);
-    set_ptr(env, j_obj_r2, new Pointset_Powerset<NNC_Polyhedron>(r.second));
+    set_ptr(env, j_obj_r2, r2);
     set_pair_element(env, j_pair_obj, 0, j_obj_r1);
     set_pair_element(env, j_pair_obj, 1, j_obj_r2);
     return j_pair_obj;
@@ -1170,8 +1179,14 @@ JNIEXPORT jobject JNICALL Java_parma_1polyhedra_1library_@1CLASS@_approximate_1p
       = reinterpret_cast<@CPP_CLASS@*>
           (get_ptr(env, j_q_@LCLASS@));
     bool b_finite_val;
-    std::pair<@CPP_CLASS@@COMMA@ Pointset_Powerset<Grid> > r
-        = approximate_partition(*ph, *qh, b_finite_val);
+    std::pair<@CPP_CLASS@@COMMA@ Pointset_Powerset<Grid> >
+      r = approximate_partition(*ph, *qh, b_finite_val);
+
+    @CPP_CLASS@* r1 = new @CPP_CLASS@(0, EMPTY);
+    Pointset_Powerset<Grid>* r2 = new Pointset_Powerset<Grid>(0, EMPTY);
+    r1->swap(r.first);
+    r2->swap(r.second);
+
     jclass j_pair_class = env->FindClass("parma_polyhedra_library/Pair");
     jmethodID j_ctr_id_pair = env->GetMethodID(j_pair_class, "<init>", "()V");
     jobject j_pair_obj = env->NewObject(j_pair_class, j_ctr_id_pair);
@@ -1180,13 +1195,13 @@ JNIEXPORT jobject JNICALL Java_parma_1polyhedra_1library_@1CLASS@_approximate_1p
       = env->FindClass("parma_polyhedra_library/@CLASS@");
     jmethodID j_ctr_id_r1 = env->GetMethodID(j_class_r1, "<init>", "()V");
     jobject j_obj_r1 = env->NewObject(j_class_r1, j_ctr_id_r1);
-    set_ptr(env, j_obj_r1, new @CPP_CLASS@(r.first));
+    set_ptr(env, j_obj_r1, r1);
 
     jclass j_class_r2
       = env->FindClass("parma_polyhedra_library/Pointset_Powerset_Grid");
     jmethodID j_ctr_id_r2 = env->GetMethodID(j_class_r2, "<init>", "()V");
     jobject j_obj_r2 = env->NewObject(j_class_r2, j_ctr_id_r2);
-    set_ptr(env, j_obj_r2, new Pointset_Powerset<Grid>(r.second));
+    set_ptr(env, j_obj_r2, r2);
     set_pair_element(env, j_pair_obj, 0, j_obj_r1);
     set_pair_element(env, j_pair_obj, 1, j_obj_r2);
     jobject j_finite_bool = bool_to_j_boolean(env, b_finite_val);
