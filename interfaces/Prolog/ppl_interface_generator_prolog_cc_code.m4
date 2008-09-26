@@ -473,47 +473,6 @@ m4_define(`ppl_@CLASS@_add_disjunct_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_@PARTITION@_code',
-  `dnl
-  extern "C" Prolog_foreign_return_type
-  ppl_@CLASS@_@PARTITION@(Prolog_term_ref t_ph,
-                          Prolog_term_ref t_qh,
-                          Prolog_term_ref t_inters,
-                          Prolog_term_ref t_pset) {
-  static const char* where = "ppl_@CLASS@_@PARTITION@/4";
-  try {
-    const @CLASSTOPOLOGY@@CPP_DISJUNCT@* ph =
-      term_to_handle<@CLASSTOPOLOGY@@CPP_DISJUNCT@ >(t_ph, where);
-    PPL_CHECK(ph);
-    const @CLASSTOPOLOGY@@CPP_DISJUNCT@* qh =
-      term_to_handle<@CLASSTOPOLOGY@@CPP_DISJUNCT@ >(t_qh, where);
-    PPL_CHECK(qh);
-
-    Prolog_term_ref t_r_first = Prolog_new_term_ref();
-    Prolog_term_ref t_r_second = Prolog_new_term_ref();
-    std::pair<@CLASSTOPOLOGY@@CPP_DISJUNCT@@COMMA@ Pointset_Powerset<@SUPERCLASS@> > r =
-      @PARTITION@(*ph, *qh);
-
-    @CLASSTOPOLOGY@@CPP_DISJUNCT@* rfh = new @CLASSTOPOLOGY@@CPP_DISJUNCT@(EMPTY);
-    rfh->swap(r.first);
-
-    Pointset_Powerset<@SUPERCLASS@>* rsh =
-      new Pointset_Powerset<@SUPERCLASS@>(EMPTY);
-    rsh->swap(r.second);
-
-    Prolog_put_address(t_r_first, rfh);
-    Prolog_put_address(t_r_second, rsh);
-
-    if (Prolog_unify(t_inters, t_r_first)
-        && Prolog_unify(t_pset, t_r_second)) {
-      return PROLOG_SUCCESS;
-    }
-  }
-  CATCH_ALL;
-}
-
-')
-
 m4_define(`ppl_@CLASS@_approximate_partition_code',
   `dnl
   extern "C" Prolog_foreign_return_type
@@ -524,22 +483,22 @@ m4_define(`ppl_@CLASS@_approximate_partition_code',
                                     Prolog_term_ref t_pset) {
   static const char* where = "ppl_@CLASS@_approximate_partition/5";
   try {
-    const @CLASSTOPOLOGY@@CPP_DISJUNCT@* ph =
-      term_to_handle<@CLASSTOPOLOGY@@CPP_DISJUNCT@ >(t_ph, where);
+    const @CLASS@* ph =
+      term_to_handle<@CLASS@ >(t_ph, where);
     PPL_CHECK(ph);
-    const @CLASSTOPOLOGY@@CPP_DISJUNCT@* qh =
-      term_to_handle<@CLASSTOPOLOGY@@CPP_DISJUNCT@ >(t_qh, where);
+    const @CLASS@* qh =
+      term_to_handle<@CLASS@ >(t_qh, where);
     PPL_CHECK(qh);
     bool finite;
 
-    std::pair<@CLASSTOPOLOGY@@CPP_DISJUNCT@@COMMA@ Pointset_Powerset<@SUPERCLASS@> > r =
+    std::pair<@CLASS@@COMMA@ Pointset_Powerset<Grid> > r =
       approximate_partition(*ph, *qh, finite);
 
-    @CLASSTOPOLOGY@@CPP_DISJUNCT@* rfh = new @CLASSTOPOLOGY@@CPP_DISJUNCT@(EMPTY);
+    @CLASS@* rfh = new @CLASS@(EMPTY);
     rfh->swap(r.first);
 
-    Pointset_Powerset<@SUPERCLASS@>* rsh =
-      new Pointset_Powerset<@SUPERCLASS@>(EMPTY);
+    Pointset_Powerset<Grid>* rsh =
+      new Pointset_Powerset<Grid>(EMPTY);
     rsh->swap(r.second);
 
     Prolog_term_ref t_b = Prolog_new_term_ref();

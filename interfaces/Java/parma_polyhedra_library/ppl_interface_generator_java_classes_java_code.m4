@@ -553,14 +553,6 @@ m4_define(`ppl_@CLASS@_ascii_dump_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_@PARTITION@_code',
-`dnl
-%<--%<--%<-- @CLASS@.java
-
-  public static native Pair <@CLASSTOPOLOGY@@DISJUNCT@@COMMA@ @CLASS@>
-      @PARTITION@(@CLASSTOPOLOGY@@DISJUNCT@ p, @CLASSTOPOLOGY@@DISJUNCT@ q);
-')
-
 m4_define(`ppl_@CLASS@_linear_partition_code',
 `dnl
 %<--%<--%<-- @TOPOLOGY@@CLASS@.java
@@ -571,16 +563,6 @@ m4_define(`ppl_@CLASS@_linear_partition_code',
 ')
 
 m4_define(`ppl_@CLASS@_approximate_partition_code',
-`dnl
-%<--%<--%<-- @CLASS@.java
-
-  public static native Pair <@CLASSTOPOLOGY@@DISJUNCT@@COMMA@ @CLASS@>
-      approximate_partition(@CLASSTOPOLOGY@@DISJUNCT@ p,
-                            @CLASSTOPOLOGY@@DISJUNCT@ q,
-                            By_Reference<Boolean> finite);
-')
-
-m4_define(`ppl_@CLASS@_approximate_partition_new_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
 

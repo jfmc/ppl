@@ -1118,42 +1118,6 @@ JNIEXPORT jstring JNICALL Java_parma_1polyhedra_1library_@1CLASS@_ascii_1dump
 }
 ')
 
-m4_define(`ppl_@CLASS@_@PARTITION@_code',
-`dnl
-JNIEXPORT jobject JNICALL Java_parma_1polyhedra_1library_@1CLASS@_@1PARTITION@
-(JNIEnv* env, jclass pps_class, jobject j_p_@LCLASS@, jobject j_q_@LCLASS@) {
-  try {
-   // Suppress warnings concerning "ppl_class" not used.
-   pps_class = 0;
-   @CLASSTOPOLOGY@@CPP_DISJUNCT@* ph
- = reinterpret_cast<@CLASSTOPOLOGY@@CPP_DISJUNCT@*>(get_ptr(env, j_p_@LCLASS@));
-   @CLASSTOPOLOGY@@CPP_DISJUNCT@* qh
- = reinterpret_cast<@CLASSTOPOLOGY@@CPP_DISJUNCT@*>(get_ptr(env, j_q_@LCLASS@));
-   std::pair<@CLASSTOPOLOGY@@CPP_DISJUNCT@@COMMA@ Pointset_Powerset<@SUPERCLASS@> > r =
-       @PARTITION@(*ph, *qh);
- jclass j_pair_class = env->FindClass("parma_polyhedra_library/Pair");
- jmethodID j_ctr_id_pair = env->GetMethodID(j_pair_class, "<init>", "()V");
- jobject j_pair_obj = env->NewObject(j_pair_class, j_ctr_id_pair);
-
- jclass j_class_r1 = env->FindClass("parma_polyhedra_library/@CLASSTOPOLOGY@@DISJUNCT@");
- jmethodID j_ctr_id_r1 = env->GetMethodID(j_class_r1, "<init>", "()V");
- jobject j_obj_r1 = env->NewObject(j_class_r1, j_ctr_id_r1);
- set_ptr(env, j_obj_r1, new @CLASSTOPOLOGY@@CPP_DISJUNCT@(r.first));
-
- jclass j_class_r2 = env->FindClass("parma_polyhedra_library/@CLASS@");
- jmethodID j_ctr_id_r2 = env->GetMethodID(j_class_r2, "<init>", "()V");
- jobject j_obj_r2 = env->NewObject(j_class_r2, j_ctr_id_r2);
- set_ptr(env, j_obj_r2, new Pointset_Powerset<@SUPERCLASS@>(r.second));
- set_pair_element(env, j_pair_obj, 0, j_obj_r1);
- set_pair_element(env, j_pair_obj, 1, j_obj_r2);
- return j_pair_obj;
-  }
-  CATCH_ALL;
-  return 0;
-}
-
-')
-
 m4_define(`ppl_@CLASS@_linear_partition_code',
 `dnl
 JNIEXPORT jobject JNICALL Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_linear_1partition
@@ -1171,7 +1135,7 @@ JNIEXPORT jobject JNICALL Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_lin
     jmethodID j_ctr_id_pair = env->GetMethodID(j_pair_class, "<init>", "()V");
     jobject j_pair_obj = env->NewObject(j_pair_class, j_ctr_id_pair);
 
-    jclass j_class_r1 = env->FindClass("parma_polyhedra_library/@TOPOLOGY@@CPP_CLASS@");
+    jclass j_class_r1 = env->FindClass("parma_polyhedra_library/@TOPOLOGY@@CLASS@");
     jmethodID j_ctr_id_r1 = env->GetMethodID(j_class_r1, "<init>", "()V");
     jobject j_obj_r1 = env->NewObject(j_class_r1, j_ctr_id_r1);
     set_ptr(env, j_obj_r1, new @TOPOLOGY@@CPP_CLASS@(r.first));
@@ -1194,50 +1158,6 @@ JNIEXPORT jobject JNICALL Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_lin
 m4_define(`ppl_@CLASS@_approximate_partition_code',
 `dnl
 JNIEXPORT jobject JNICALL Java_parma_1polyhedra_1library_@1CLASS@_approximate_1partition
-(JNIEnv* env, jclass pps_class, jobject j_p_@LCLASS@, jobject j_q_@LCLASS@,
- jobject j_ref_finite_bool) {
-  try {
-    // Suppress warnings concerning "ppl_class" not used.
-    pps_class = 0;
-    @CLASSTOPOLOGY@@CPP_DISJUNCT@* ph
-      = reinterpret_cast<@CLASSTOPOLOGY@@CPP_DISJUNCT@*>
-          (get_ptr(env, j_p_@LCLASS@));
-    @CLASSTOPOLOGY@@CPP_DISJUNCT@* qh
-      = reinterpret_cast<@CLASSTOPOLOGY@@CPP_DISJUNCT@*>
-          (get_ptr(env, j_q_@LCLASS@));
-    bool b_finite_val;
-    std::pair<@CLASSTOPOLOGY@@CPP_DISJUNCT@@COMMA@
-      Pointset_Powerset<@SUPERCLASS@> > r
-        = approximate_partition(*ph, *qh, b_finite_val);
-    jclass j_pair_class = env->FindClass("parma_polyhedra_library/Pair");
-    jmethodID j_ctr_id_pair = env->GetMethodID(j_pair_class, "<init>", "()V");
-    jobject j_pair_obj = env->NewObject(j_pair_class, j_ctr_id_pair);
-
-    jclass j_class_r1
-      = env->FindClass("parma_polyhedra_library/@CLASSTOPOLOGY@@CPP_DISJUNCT@");
-    jmethodID j_ctr_id_r1 = env->GetMethodID(j_class_r1, "<init>", "()V");
-    jobject j_obj_r1 = env->NewObject(j_class_r1, j_ctr_id_r1);
-    set_ptr(env, j_obj_r1, new @CLASSTOPOLOGY@@CPP_DISJUNCT@(r.first));
-
-    jclass j_class_r2 = env->FindClass("parma_polyhedra_library/@CLASS@");
-    jmethodID j_ctr_id_r2 = env->GetMethodID(j_class_r2, "<init>", "()V");
-    jobject j_obj_r2 = env->NewObject(j_class_r2, j_ctr_id_r2);
-    set_ptr(env, j_obj_r2, new Pointset_Powerset<@SUPERCLASS@>(r.second));
-    set_pair_element(env, j_pair_obj, 0, j_obj_r1);
-    set_pair_element(env, j_pair_obj, 1, j_obj_r2);
-    jobject j_finite_bool = bool_to_j_boolean(env, b_finite_val);
-    set_by_reference(env, j_ref_finite_bool, j_finite_bool);
-    return j_pair_obj;
-  }
-  CATCH_ALL;
-  return 0;
-}
-
-')
-
-m4_define(`ppl_@CLASS@_approximate_partition_new_code',
-`dnl
-JNIEXPORT jobject JNICALL Java_parma_1polyhedra_1library_@1CLASS@_approximate_1partition
 (JNIEnv* env, jclass ppl_class, jobject j_p_@LCLASS@, jobject j_q_@LCLASS@,
  jobject j_ref_finite_bool) {
   try {
@@ -1257,12 +1177,13 @@ JNIEXPORT jobject JNICALL Java_parma_1polyhedra_1library_@1CLASS@_approximate_1p
     jobject j_pair_obj = env->NewObject(j_pair_class, j_ctr_id_pair);
 
     jclass j_class_r1
-      = env->FindClass("parma_polyhedra_library/@CPP_CLASS@");
+      = env->FindClass("parma_polyhedra_library/@CLASS@");
     jmethodID j_ctr_id_r1 = env->GetMethodID(j_class_r1, "<init>", "()V");
     jobject j_obj_r1 = env->NewObject(j_class_r1, j_ctr_id_r1);
     set_ptr(env, j_obj_r1, new @CPP_CLASS@(r.first));
 
-    jclass j_class_r2 = env->FindClass("parma_polyhedra_library/@CLASS@");
+    jclass j_class_r2
+      = env->FindClass("parma_polyhedra_library/Pointset_Powerset_Grid");
     jmethodID j_ctr_id_r2 = env->GetMethodID(j_class_r2, "<init>", "()V");
     jobject j_obj_r2 = env->NewObject(j_class_r2, j_ctr_id_r2);
     set_ptr(env, j_obj_r2, new Pointset_Powerset<Grid>(r.second));

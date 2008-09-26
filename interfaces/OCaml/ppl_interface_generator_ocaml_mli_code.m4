@@ -31,7 +31,6 @@ m4_define(`ppl_@CLASS@_delete_iterator_code', `')
 
 dnl There is no code at present for these procedures in the OCaml interface.
 dnl Remove the macro if its definition is added.
-m4_define(`ppl_@CLASS@_linear_partition_code',`')
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 `dnl
@@ -473,17 +472,17 @@ val ppl_@CLASS@_ascii_dump:
 
 ')
 
-m4_define(`ppl_@CLASS@_@PARTITION@_code',
+m4_define(`ppl_@CLASS@_linear_partition_code',
 `dnl
-val ppl_@CLASS@_@PARTITION@:
-   @LDISJUNCT@ -> @LDISJUNCT@ -> @LDISJUNCT@ * pointset_powerset_@LSUPERCLASS@
+val ppl_@CLASS@_linear_partition:
+ @LCLASS@ -> @LCLASS@ -> @LCLASS@ * pointset_powerset_nnc_polyhedron
 
 ')
 
 m4_define(`ppl_@CLASS@_approximate_partition_code',
 `dnl
 val ppl_@CLASS@_approximate_partition:
- @LDISJUNCT@ -> @LDISJUNCT@ ->
-   @LDISJUNCT@ * pointset_powerset_@LSUPERCLASS@ * bool
+ @LCLASS@ -> @LCLASS@ ->
+   @LCLASS@ * pointset_powerset_Grid * bool
 
 ')

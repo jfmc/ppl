@@ -115,14 +115,14 @@ m4_define(`ppl_@CLASS@_@MAXMIN@_code',
 `dnl
 <CODE>    public native boolean @MAXMIN@(Linear_Expression expr,
 				   Coefficient sup_n, Coefficient sup_d,
-				   By_Reference<Boolean> maximum)</CODE><BR>
+				   By_Reference<Boolean> @MAXMIN@)</CODE><BR>
 ')
 
 m4_define(`ppl_@CLASS@_@MAXMIN@_with_point_code',
 `dnl
 <CODE>    public native boolean @MAXMIN@(Linear_Expression expr,
 				   Coefficient sup_n, Coefficient sup_d,
-				   By_Reference<Boolean> maximum,
+				   By_Reference<Boolean> @MAXMIN@,
 				   Generator point)</CODE><BR>
 ')
 
@@ -350,7 +350,12 @@ m4_define(`ppl_@CLASS@_ascii_dump_code',
 <CODE>  public native String ascii_dump()</CODE><BR>
 ')
 
-m4_define(`ppl_@CLASS@_@PARTITION@_code',
+m4_define(`ppl_@CLASS@_linear_partition_code',
 `dnl
-<CODE>  public static native Pair <@CLASSTOPOLOGY@@CPP_DISJUNCT@@COMMA@ @CLASS@> @PARTITION@(@CLASSTOPOLOGY@@DISJUNCT@ p, @CLASSTOPOLOGY@@DISJUNCT@ q)</CODE><BR>
+<CODE>  public static native Pair <@TOPOLOGY@@CLASS@@COMMA@ Pointset_Powerset<NNC_Polyhedron> linear_partition(@CLASS@ p, @CLASS@ q)</CODE><BR>
+')
+
+m4_define(`ppl_@CLASS@_approximate_partition_code',
+`dnl
+<CODE>  public static native Pair <@@CLASS@@COMMA@ Pointset_Powerset<Grid> approximate_partition(@CLASS@ p, @CLASS@ q, By_Reference<Boolean> @MAXMIN@)</CODE><BR>
 ')

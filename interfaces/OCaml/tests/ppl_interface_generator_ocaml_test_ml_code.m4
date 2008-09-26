@@ -852,3 +852,35 @@ print_string "testing ppl_@CLASS@_ascii_dump: " ;;
 print_string (ppl_@CLASS@_ascii_dump @LTOPOLOGY@@LCLASS@01);;
 print_newline();;
 ')
+
+m4_define(`ppl_@CLASS@_linear_partition_code',
+`
+print_string "testing ppl_@CLASS@_linear_partition: " ;;
+let copy01
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
+let copy02
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
+let (intsn, ptt)
+  =  ppl_@CLASS@_linear_partition copy01 copy02;;
+let out
+  = if (ppl_@CLASS@_OK copy01 & ppl_@CLASS@_OK copy02)
+  then "success" else "failed"
+    in (print_string out);;
+print_newline();;
+')
+
+m4_define(`ppl_@CLASS@_approximate_partition_code',
+`
+print_string "testing ppl_@CLASS@_linear_partition: " ;;
+let copy01
+  = ppl_new_@CLASS@_from_@CLASS@(@LCLASS@01);;
+let copy02
+  = ppl_new_@CLASS@_from_@CLASS@(@LCLASS@01);;
+let (intsn, ptt, is_finite)
+  =  ppl_@CLASS@_approximate_partition copy01 copy02;;
+let out
+  = if (ppl_@CLASS@_OK copy01 & ppl_@CLASS@_OK copy02)
+  then "success" else "failed"
+    in (print_string out);;
+print_newline();;
+')

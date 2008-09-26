@@ -547,16 +547,32 @@ ppl_@CLASS@_get_disjunct_2_test2(PPS, It, It_end, Space_Dim) :-
 
 ')
 
-m4_define(`ppl_@CLASS@_@PARTITION@_code',
+m4_define(`ppl_@CLASS@_linear_partition_code',
 `
-ppl_@CLASS@_@PARTITION@_4_test :-
+ppl_@CLASS@_linear_partition_4_test :-
   (
    choose_2_tests(TEST_DATA1, TEST_DATA2, Space_Dim),
    (
-     ppl_@CLASSTOPOLOGY@@DISJUNCT@_build_test_object(TEST_DATA1, PS1, Space_Dim),
-     ppl_@CLASSTOPOLOGY@@DISJUNCT@_build_test_object(TEST_DATA2, PS2, Space_Dim),
-     ppl_@CLASS@_@PARTITION@(PS1, PS2, PS3, _PPS),
-     ppl_@DISJUNCT@_OK(PS3)
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1, Space_Dim),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2, Space_Dim),
+     ppl_@CLASS@_linear_partition(PS1, PS2, PS3, _PPS),
+     ppl_@CLASS@_OK(PS3)
+   ->
+     fail ; (class_@CLASS@ == class_BD_Shape_int8_t -> fail ; true))
+  ).
+
+')
+
+m4_define(`ppl_@CLASS@_approximate_partition_code', `')
+`
+ppl_@CLASS@_approximate_partition_4_test :-
+  (
+   choose_2_tests(TEST_DATA1, TEST_DATA2, Space_Dim),
+   (
+     ppl_@CLASS@_build_test_object(TEST_DATA1, PS1, Space_Dim),
+     ppl_@CLASS@_build_test_object(TEST_DATA2, PS2, Space_Dim),
+     ppl_@CLASS@_approximate_partition(PS1, PS2, PS3, _PPS, Is_finite),
+     ppl_@CLASS@_OK(PS3)
    ->
      fail ; (class_@CLASS@ == class_BD_Shape_int8_t -> fail ; true))
   ).

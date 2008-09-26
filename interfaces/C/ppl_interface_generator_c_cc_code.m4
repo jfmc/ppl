@@ -33,8 +33,6 @@ m4_define(`ppl_@CLASS@_ascii_dump_code', `')
 
 dnl There is no code at present for these procedures in the C interface.
 dnl Remove the macro if its definition is added.
-m4_define(`ppl_@CLASS@_@PARTITION@_code', `')
-m4_define(`ppl_@CLASS@_approximate_partition_code', `')
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 `int
@@ -1088,40 +1086,74 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_linear_partition_code',
 `dnl
 int
-ppl_@TOPOLOGY@@CLASS@_linear_partition
+ppl_@CLASS@_linear_partition
 (ppl_const_@CLASS@_t x,
  ppl_const_@CLASS@_t y,
  ppl_@CLASS@_t* p_inters,
  ppl_Pointset_Powerset_NNC_Polyhedron_t* p_rest) try {
-    const @TOPOLOGY@@CPP_CLASS@& xx
-      = static_cast<const @TOPOLOGY@@CPP_CLASS@&>(*to_const(x));
-    const @TOPOLOGY@@CPP_CLASS@& yy
-      = static_cast<const @TOPOLOGY@@CPP_CLASS@&>(*to_const(y));
-    std::pair<@TOPOLOGY@@CPP_CLASS@@COMMA@ Pointset_Powerset<NNC_Polyhedron> >
+`m4_ifelse(m4_current_interface, `Polyhedron',
+  `m4_linear_partition_for_polyhedron_domains',
+          `m4_linear_partition_for_non_polyhedron_domains')'
+}
+CATCH_ALL
+
+')
+
+m4_define(`m4_linear_partition_for_polyhedron_domains',
+`dnl
+ if (Interfaces::is_necessarily_closed_for_interfaces(*to_const(x))) {
+    const C_@CPP_CLASS@& xx
+      = static_cast<const C_@CPP_CLASS@&>(*to_const(x));
+    const C_@CPP_CLASS@& yy
+      = static_cast<const C_@CPP_CLASS@&>(*to_const(y));
+    std::pair<C_@CPP_CLASS@@COMMA@ Pointset_Powerset<NNC_Polyhedron> >
+      r = linear_partition(xx, yy);
+    *p_inters = to_nonconst(&r.first);
+    *p_rest = to_nonconst(&r.second);
+ }
+ else {
+    const C_@CPP_CLASS@& xx
+      = static_cast<const C_@CPP_CLASS@&>(*to_const(x));
+    const C_@CPP_CLASS@& yy
+      = static_cast<const C_@CPP_CLASS@&>(*to_const(y));
+    std::pair<C_@CPP_CLASS@@COMMA@ Pointset_Powerset<NNC_Polyhedron> >
+      r = linear_partition(xx, yy);
+    *p_inters = to_nonconst(&r.first);
+    *p_rest = to_nonconst(&r.second);
+}
+  return 0;
+
+')
+
+m4_define(`m4_linear_partition_for_non_polyhedron_domains',
+`dnl
+    const @CPP_CLASS@& xx
+      = static_cast<const @CPP_CLASS@&>(*to_const(x));
+    const @CPP_CLASS@& yy
+      = static_cast<const @CPP_CLASS@&>(*to_const(y));
+    std::pair<@CPP_CLASS@@COMMA@ Pointset_Powerset<NNC_Polyhedron> >
       r = linear_partition(xx, yy);
     *p_inters = to_nonconst(&r.first);
     *p_rest = to_nonconst(&r.second);
   return 0;
-}
-CATCH_ALL
 
 ')
 
 m4_define(`_ppl_@CLASS@_approximate_partition_code',
 `dnl
 int
-ppl_@TOPOLOGY@@CLASS@_approximate_partition
+ppl_@CLASS@_approximate_partition
 (ppl_const_@CLASS@_t x,
  ppl_const_@CLASS@_t y,
  ppl_@CLASS@_t* p_inters,
- ppl_Pointset_Powerset_NNC_Polyhedron_t* p_rest,
+ ppl_Pointset_Powerset_Grid_t* p_rest,
  int* p_finite) try {
-    const @TOPOLOGY@@CPP_CLASS@& xx
-      = static_cast<const @TOPOLOGY@@CPP_CLASS@&>(*to_const(x));
-    const @TOPOLOGY@@CPP_CLASS@& yy
-      = static_cast<const @TOPOLOGY@@CPP_CLASS@&>(*to_const(y));
+    const @CPP_CLASS@& xx
+      = static_cast<const @CPP_CLASS@&>(*to_const(x));
+    const @CPP_CLASS@& yy
+      = static_cast<const @CPP_CLASS@&>(*to_const(y));
     bool finite;
-    std::pair<@TOPOLOGY@@CPP_CLASS@@COMMA@ Pointset_Powerset<NNC_Polyhedron> >
+    std::pair<@CPP_CLASS@@COMMA@ Pointset_Powerset<Grid> >
       r = approximate_partition(xx, yy, finite);
     *p_inters = to_nonconst(&r.first);
     *p_rest = to_nonconst(&r.second);

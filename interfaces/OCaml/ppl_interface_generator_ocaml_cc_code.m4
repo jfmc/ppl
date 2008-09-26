@@ -33,7 +33,6 @@ m4_define(`ppl_@CLASS@_delete_iterator_code', `')
 
 dnl There is no code at present for these procedures in the OCaml interface.
 dnl Remove the macro if its definition is added.
-m4_define(`ppl_@CLASS@_linear_partition_code',`')
 
   m4_define(`m4_custom_operations_class_code',
 `dnl
@@ -1121,21 +1120,70 @@ ppl_@CLASS@_ascii_dump(value ph1) try {
 CATCH_ALL
 ')
 
-m4_define(`ppl_@CLASS@_@PARTITION@_code', `
+m4_define(`ppl_@CLASS@_linear_partition_code', `
 extern "C"
 CAMLprim value
-ppl_@CLASS@_@PARTITION@(value ph1, value ph2) try {
+ppl_@CLASS@_linear_partition(value ph1, value ph2) try {
     CAMLparam2(ph1, ph2);
-    @CLASSTOPOLOGY@@CPP_DISJUNCT@& pph1 = reinterpret_cast<@CLASSTOPOLOGY@@CPP_DISJUNCT@&>(*p_@CPP_DISJUNCT@_val(ph1));
-   @CLASSTOPOLOGY@@CPP_DISJUNCT@& pph2 = reinterpret_cast<@CLASSTOPOLOGY@@CPP_DISJUNCT@&>(*p_@CPP_DISJUNCT@_val(ph2));
-    std::pair<@CLASSTOPOLOGY@@CPP_DISJUNCT@@COMMA@ Pointset_Powerset<@SUPERCLASS@> > r =
-       @PARTITION@(pph1, pph2);
-    value caml_return_value = caml_alloc(2,0);
-    Field(caml_return_value, 0) = val_p_@DISJUNCT@(*new @CLASSTOPOLOGY@@CPP_DISJUNCT@(r.first));
-    Field(caml_return_value, 1) = val_p_Pointset_Powerset_@SUPERCLASS@(*new Pointset_Powerset<@SUPERCLASS@>(r.second));
-    CAMLreturn(caml_return_value);
+`m4_ifelse(m4_current_interface, `Polyhedron',
+  `m4_linear_partition_for_polyhedron_domains',
+           `m4_linear_partition_for_non_polyhedron_domains')'
 }
 CATCH_ALL
+
+')
+
+m4_define(`m4_linear_partition_for_polyhedron_domains',
+`dnl
+   if (Interfaces::is_necessarily_closed_for_interfaces(
+      *p_Polyhedron_val(ph1))) {
+      C_Polyhedron& pph1
+        = reinterpret_cast<C_Polyhedron&>(*p_Polyhedron_val(ph1));
+      C_Polyhedron& pph2
+        = reinterpret_cast<C_Polyhedron&>(*p_Polyhedron_val(ph2));
+      std::pair<C_Polyhedron@COMMA@ Pointset_Powerset<NNC_Polyhedron> >
+        r = linear_partition(pph1, pph2);
+      value caml_return_value = caml_alloc(2,0);
+      Field(caml_return_value, 0)
+        = val_p_Polyhedron(*new C_Polyhedron(r.first));
+      Field(caml_return_value, 1)
+        = val_p_Pointset_Powerset_NNC_Polyhedron(
+            *new Pointset_Powerset<NNC_Polyhedron>(r.second));
+      CAMLreturn(caml_return_value);
+    }
+    else {
+      NNC_Polyhedron& pph1
+        = reinterpret_cast<NNC_Polyhedron&>(*p_Polyhedron_val(ph1));
+      NNC_Polyhedron& pph2
+        = reinterpret_cast<NNC_Polyhedron&>(*p_Polyhedron_val(ph2));
+      std::pair<NNC_Polyhedron@COMMA@ Pointset_Powerset<NNC_Polyhedron> > r =
+        linear_partition(pph1, pph2);
+      value caml_return_value = caml_alloc(2,0);
+      Field(caml_return_value, 0)
+        = val_p_Polyhedron(*new NNC_Polyhedron(r.first));
+      Field(caml_return_value, 1)
+        = val_p_Pointset_Powerset_NNC_Polyhedron(
+          *new Pointset_Powerset<NNC_Polyhedron>(r.second));
+      CAMLreturn(caml_return_value);
+    }
+
+')
+
+m4_define(`m4_linear_partition_for_non_polyhedron_domains',
+`dnl
+    @CPP_CLASS@& pph1
+      = reinterpret_cast<@CPP_CLASS@&>(*p_@CLASS@_val(ph1));
+    @CPP_CLASS@& pph2
+      = reinterpret_cast<@CPP_CLASS@&>(*p_@CLASS@_val(ph2));
+    std::pair<@CPP_CLASS@@COMMA@ Pointset_Powerset<NNC_Polyhedron> >
+      r = linear_partition(pph1, pph2);
+    value caml_return_value = caml_alloc(2,0);
+    Field(caml_return_value, 0)
+      = val_p_@CLASS@(*new @CPP_CLASS@(r.first));
+    Field(caml_return_value, 1)
+      = val_p_Pointset_Powerset_NNC_Polyhedron(
+          *new Pointset_Powerset<NNC_Polyhedron>(r.second));
+    CAMLreturn(caml_return_value);
 
 ')
 
@@ -1144,14 +1192,17 @@ extern "C"
 CAMLprim value
 ppl_@CLASS@_approximate_partition(value ph1, value ph2) try {
     CAMLparam2(ph1, ph2);
-    @CLASSTOPOLOGY@@CPP_DISJUNCT@& pph1 = reinterpret_cast<@CLASSTOPOLOGY@@CPP_DISJUNCT@&>(*p_@CPP_DISJUNCT@_val(ph1));
-   @CLASSTOPOLOGY@@CPP_DISJUNCT@& pph2 = reinterpret_cast<@CLASSTOPOLOGY@@CPP_DISJUNCT@&>(*p_@CPP_DISJUNCT@_val(ph2));
+    @CPP_CLASS@& pph1
+      = reinterpret_cast<@CPP_CLASS@&>(*p_@CPP_CLASS@_val(ph1));
+   @CPP_CLASS@& pph2
+      = reinterpret_cast<@CPP_CLASS@&>(*p_@CPP_CLASS@_val(ph2));
    bool is_finite = false;
-    std::pair<@CLASSTOPOLOGY@@CPP_DISJUNCT@@COMMA@ Pointset_Powerset<@SUPERCLASS@> > r =
-       approximate_partition(pph1, pph2, is_finite);
+    std::pair<@CPP_CLASS@@COMMA@ Pointset_Powerset<Grid> >
+      r = approximate_partition(pph1, pph2, is_finite);
     value caml_return_value = caml_alloc(3,0);
-    Field(caml_return_value, 0) = val_p_@DISJUNCT@(*new @CLASSTOPOLOGY@@CPP_DISJUNCT@(r.first));
-    Field(caml_return_value, 1) = val_p_Pointset_Powerset_@SUPERCLASS@(*new Pointset_Powerset<@SUPERCLASS@>(r.second));
+    Field(caml_return_value, 0) = val_p_@CLASS@(*new @CPP_CLASS@(r.first));
+    Field(caml_return_value, 1)
+      = val_p_Pointset_Powerset_Grid(*new Pointset_Powerset<Grid>(r.second));
     Field(caml_return_value, 2) = Val_bool(is_finite);
     CAMLreturn(caml_return_value);
 }

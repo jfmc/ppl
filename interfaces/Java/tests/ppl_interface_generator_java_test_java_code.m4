@@ -823,31 +823,7 @@ m4_define(`ppl_@CLASS@_ascii_dump_code',
 
 ');
 
-m4_define(`ppl_@CLASS@_@PARTITION@_code',
-    `dnl
-{
-    System.out.print("Testing @PARTITION@: ");
-    @CLASSTOPOLOGY@@DISJUNCT@ gd1
-        = new @CLASSTOPOLOGY@@DISJUNCT@(constraints1);
-    @CLASSTOPOLOGY@@DISJUNCT@ gd2
-        = new @CLASSTOPOLOGY@@DISJUNCT@(constraints1);
-    Pair p
-        = @CLASS@.@PARTITION@(gd1, gd2);
-    if (gd1.OK())
-        System.out.println("Success");
-    else
-        System.out.println("Failure");
-    System.out.print("Printing Pair from @PARTITION@: ");
-    System.out.print(p.getFirst());
-    System.out.print(", ");
-    System.out.println(p.getSecond());
-}
-
-')
-
-FIXME: Code causes Java exception.
-m4_define(`ppl_@CLASS@_linear_partition_code', `')
-m4_define(`____ppl_@CLASS@_linear_partition_code',
+m4_define(`ppl_@CLASS@_linear_partition_code',
     `dnl
 {
     System.out.print("Testing linear_partition: ");
@@ -872,10 +848,10 @@ m4_define(`ppl_@CLASS@_approximate_partition_code',
     `dnl
 {
     System.out.print("Testing @CLASS@_approximate_partition: ");
-    @CLASSTOPOLOGY@@DISJUNCT@ gd1
-        = new @CLASSTOPOLOGY@@DISJUNCT@(constraints1);
-    @CLASSTOPOLOGY@@DISJUNCT@ gd2
-        = new @CLASSTOPOLOGY@@DISJUNCT@(constraints1);
+    @CLASS@ gd1
+        = new @CLASS@(constraints1);
+    @CLASS@ gd2
+        = new @CLASS@(constraints1);
     Pair p
         = @CLASS@.approximate_partition(gd1, gd2, bool_by_ref1);
     if (gd1.OK())
