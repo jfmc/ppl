@@ -563,7 +563,7 @@ ppl_@CLASS@_linear_partition_4_test :-
 
 ')
 
-m4_define(`ppl_@CLASS@_approximate_partition_code', `')
+m4_define(`ppl_@CLASS@_approximate_partition_code',
 `
 ppl_@CLASS@_approximate_partition_4_test :-
   (
