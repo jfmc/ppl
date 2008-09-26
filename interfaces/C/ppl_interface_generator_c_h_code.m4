@@ -35,7 +35,7 @@ dnl Remove the macro if its definition is added.
 dnl
 
 m4_define(`ppl_@CLASS@_linear_partition_code',
-`dnl
+`/*! \relates ppl_@CLASS@_tag */
 int
 ppl_@CLASS@_linear_partition
 PPL_PROTO((ppl_const_@CLASS@_t x,
@@ -46,7 +46,7 @@ PPL_PROTO((ppl_const_@CLASS@_t x,
 ')
 
 m4_define(`ppl_@CLASS@_approximate_partition_code',
-`dnl
+`/*! \relates ppl_@CLASS@_tag */
 int
 ppl_@CLASS@_approximate_partition
 PPL_PROTO((ppl_const_@CLASS@_t x,
@@ -58,62 +58,71 @@ PPL_PROTO((ppl_const_@CLASS@_t x,
 ')
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension
 PPL_PROTO((ppl_@CLASS@_t* pph, ppl_dimension_type d, int empty));
 
 ')
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@
 PPL_PROTO((ppl_@CLASS@_t* pph, ppl_const_@ALT_FRIEND@_t ph));
 
 ')
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity
 PPL_PROTO((ppl_@CLASS@_t* pph, ppl_const_@ALT_FRIEND@_t ph, int complexity));
 
 ')
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_new_@TOPOLOGY@@CLASS@_from_@UBUILD_REPRESENT@_System
 PPL_PROTO((ppl_@CLASS@_t* pph, ppl_const_@UBUILD_REPRESENT@_System_t cs));
 
 ')
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_recycle_@BUILD_REPRESENT@s_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_new_@TOPOLOGY@@CLASS@_recycle_@UBUILD_REPRESENT@_System
 PPL_PROTO((ppl_@CLASS@_t* pph, ppl_@UBUILD_REPRESENT@_System_t cs));
 
 ')
 
 m4_define(`ppl_delete_@CLASS@_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_delete_@CLASS@ PPL_PROTO((ppl_const_@CLASS@_t ph));
 
 ')
 
 m4_define(`ppl_assign_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_assign_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@
 PPL_PROTO((ppl_@CLASS@_t dst, ppl_const_@CLASS@_t src));
 
 ')
 
 m4_define(`ppl_@CLASS@_@DIMENSION@_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_@DIMENSION@
 PPL_PROTO((ppl_const_@CLASS@_t ph, ppl_dimension_type* m));
 
 ')
 
 m4_define(`ppl_@CLASS@_get_@GET_REPRESENT@s_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_get_@GET_REPRESENT@s
 PPL_PROTO((ppl_const_@CLASS@_t ph,
            ppl_const_@UGET_REPRESENT@_System_t* pcs));
@@ -121,7 +130,8 @@ PPL_PROTO((ppl_const_@CLASS@_t ph,
 ')
 
 m4_define(`ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_get_minimized_@GET_REPRESENT@s
 PPL_PROTO((ppl_const_@CLASS@_t ph,
            ppl_const_@UGET_REPRESENT@_System_t* pcs));
@@ -129,7 +139,8 @@ PPL_PROTO((ppl_const_@CLASS@_t ph,
 ')
 
 m4_define(`ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_relation_with_@URELATION_REPRESENT@
 PPL_PROTO((ppl_const_@CLASS@_t ph,
            ppl_const_@URELATION_REPRESENT@_t c));
@@ -137,13 +148,15 @@ PPL_PROTO((ppl_const_@CLASS@_t ph,
 ')
 
 m4_define(`ppl_@CLASS@_@HAS_PROPERTY@_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_@HAS_PROPERTY@ PPL_PROTO((ppl_const_@CLASS@_t ph));
 
 ')
 
 m4_define(`ppl_@CLASS@_bounds_from_@ABOVEBELOW@_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_bounds_from_@ABOVEBELOW@
 PPL_PROTO((ppl_const_@CLASS@_t ph,
            ppl_const_Linear_Expression_t le));
@@ -151,7 +164,8 @@ PPL_PROTO((ppl_const_@CLASS@_t ph,
 ')
 
 m4_define(`ppl_@CLASS@_@MAXMIN@_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_@MAXMIN@
 PPL_PROTO((ppl_const_@CLASS@_t ph,
            ppl_const_Linear_Expression_t le,
@@ -162,7 +176,8 @@ PPL_PROTO((ppl_const_@CLASS@_t ph,
 ')
 
 m4_define(`ppl_@CLASS@_@MAXMIN@_with_point_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_@MAXMIN@_with_point
 PPL_PROTO((ppl_const_@CLASS@_t ph,
            ppl_const_Linear_Expression_t le,
@@ -174,7 +189,8 @@ PPL_PROTO((ppl_const_@CLASS@_t ph,
 ')
 
 m4_define(`ppl_@CLASS@_@COMPARISON@_@CLASS@_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_@COMPARISON@_@CLASS@
 PPL_PROTO((ppl_const_@CLASS@_t x,
            ppl_const_@CLASS@_t y));
@@ -182,7 +198,8 @@ PPL_PROTO((ppl_const_@CLASS@_t x,
 ')
 
 m4_define(`ppl_@CLASS@_equals_@CLASS@_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_equals_@CLASS@
 PPL_PROTO((ppl_const_@CLASS@_t x,
            ppl_const_@CLASS@_t y));
@@ -190,19 +207,22 @@ PPL_PROTO((ppl_const_@CLASS@_t x,
 ')
 
 m4_define(`ppl_@CLASS@_OK_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_OK PPL_PROTO((ppl_const_@CLASS@_t ph));
 
 ')
 
 m4_define(`ppl_@CLASS@_@SIMPLIFY@_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_@SIMPLIFY@ PPL_PROTO((ppl_@CLASS@_t ph));
 
 ')
 
 m4_define(`ppl_@CLASS@_constrains_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_constrains
 PPL_PROTO((ppl_@CLASS@_t ph,
            ppl_dimension_type var));
@@ -210,7 +230,8 @@ PPL_PROTO((ppl_@CLASS@_t ph,
 ')
 
 m4_define(`ppl_@CLASS@_unconstrain_space_dimension_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_unconstrain_space_dimension
 PPL_PROTO((ppl_@CLASS@_t ph,
            ppl_dimension_type var));
@@ -218,7 +239,8 @@ PPL_PROTO((ppl_@CLASS@_t ph,
 ')
 
 m4_define(`ppl_@CLASS@_unconstrain_space_dimensions_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_unconstrain_space_dimensions
 PPL_PROTO((ppl_@CLASS@_t ph,
            ppl_dimension_type ds[],
@@ -227,7 +249,8 @@ PPL_PROTO((ppl_@CLASS@_t ph,
 ')
 
 m4_define(`ppl_@CLASS@_@BINOP@_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_@BINOP@
 PPL_PROTO((ppl_@CLASS@_t x,
            ppl_const_@CLASS@_t y));
@@ -235,7 +258,8 @@ PPL_PROTO((ppl_@CLASS@_t x,
 ')
 
 m4_define(`ppl_@CLASS@_@BINMINOP@_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_@BINMINOP@
 PPL_PROTO((ppl_@CLASS@_t x,
            ppl_const_@CLASS@_t y));
@@ -243,7 +267,8 @@ PPL_PROTO((ppl_@CLASS@_t x,
 ')
 
 m4_define(`ppl_@CLASS@_@UB_EXACT@_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_@UB_EXACT@
 PPL_PROTO((ppl_@CLASS@_t x,
            ppl_const_@CLASS@_t y));
@@ -251,7 +276,8 @@ PPL_PROTO((ppl_@CLASS@_t x,
 ')
 
 m4_define(`ppl_@CLASS@_simplify_using_context_assign_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_simplify_using_context_assign
 PPL_PROTO((ppl_@CLASS@_t x,
            ppl_const_@CLASS@_t y));
@@ -259,7 +285,8 @@ PPL_PROTO((ppl_@CLASS@_t x,
 ')
 
 m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_add_@ADD_REPRESENT@
 PPL_PROTO((ppl_@CLASS@_t ph,
            ppl_const_@UADD_REPRESENT@_t c));
@@ -267,7 +294,8 @@ PPL_PROTO((ppl_@CLASS@_t ph,
 ')
 
 m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_refine_with_@REFINE_REPRESENT@
 PPL_PROTO((ppl_@CLASS@_t ph,
            ppl_const_@UREFINE_REPRESENT@_t c));
@@ -275,7 +303,8 @@ PPL_PROTO((ppl_@CLASS@_t ph,
 ')
 
 m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize
 PPL_PROTO((ppl_@CLASS@_t ph,
            ppl_const_@UADD_REPRESENT@_t c));
@@ -283,7 +312,8 @@ PPL_PROTO((ppl_@CLASS@_t ph,
 ')
 
 m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_add_@ADD_REPRESENT@s
 PPL_PROTO((ppl_@CLASS@_t ph,
            ppl_const_@UADD_REPRESENT@_System_t cs));
@@ -291,7 +321,8 @@ PPL_PROTO((ppl_@CLASS@_t ph,
 ')
 
 m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s
 PPL_PROTO((ppl_@CLASS@_t ph,
            ppl_const_@UREFINE_REPRESENT@_System_t cs));
@@ -299,7 +330,8 @@ PPL_PROTO((ppl_@CLASS@_t ph,
 ')
 
 m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize
 PPL_PROTO((ppl_@CLASS@_t ph,
            ppl_const_@UADD_REPRESENT@_System_t cs));
@@ -307,7 +339,8 @@ PPL_PROTO((ppl_@CLASS@_t ph,
 ')
 
 m4_define(`ppl_@CLASS@_add_recycled_@ADD_REPRESENT@s_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_add_recycled_@ADD_REPRESENT@s
 PPL_PROTO((ppl_@CLASS@_t ph,
            ppl_@UADD_REPRESENT@_System_t cs));
@@ -315,7 +348,8 @@ PPL_PROTO((ppl_@CLASS@_t ph,
 ')
 
 m4_define(`ppl_@CLASS@_@AFFIMAGE@_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_@AFFIMAGE@
 PPL_PROTO((ppl_@CLASS@_t ph,
            ppl_dimension_type var,
@@ -325,7 +359,8 @@ PPL_PROTO((ppl_@CLASS@_t ph,
 ')
 
 m4_define(`ppl_@CLASS@_bounded_@AFFIMAGE@_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_bounded_@AFFIMAGE@
 PPL_PROTO((ppl_@CLASS@_t ph,
            ppl_dimension_type var,
@@ -336,7 +371,8 @@ PPL_PROTO((ppl_@CLASS@_t ph,
 ')
 
 m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_generalized_@AFFIMAGE@
 PPL_PROTO((ppl_@CLASS@_t ph,
            ppl_dimension_type var,
@@ -347,7 +383,8 @@ PPL_PROTO((ppl_@CLASS@_t ph,
 ')
 
 m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs
 PPL_PROTO((ppl_@CLASS@_t ph,
            ppl_const_Linear_Expression_t lhs,
@@ -357,7 +394,8 @@ PPL_PROTO((ppl_@CLASS@_t ph,
 ')
 
 m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruence_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruence
 PPL_PROTO((ppl_@CLASS@_t ph,
            ppl_dimension_type var,
@@ -369,7 +407,8 @@ PPL_PROTO((ppl_@CLASS@_t ph,
 ')
 
 m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence
 PPL_PROTO((ppl_@CLASS@_t ph,
            ppl_const_Linear_Expression_t lhs,
@@ -380,7 +419,8 @@ PPL_PROTO((ppl_@CLASS@_t ph,
 ')
 
 m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens
 PPL_PROTO((ppl_@CLASS@_t x,
            ppl_const_@CLASS@_t y,
@@ -389,7 +429,8 @@ PPL_PROTO((ppl_@CLASS@_t x,
 ')
 
 m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_@WIDEN@_widening_assign
 PPL_PROTO((ppl_@CLASS@_t x,
            ppl_const_@CLASS@_t y));
@@ -397,7 +438,8 @@ PPL_PROTO((ppl_@CLASS@_t x,
 ')
 
 m4_define(`ppl_@CLASS@_widening_assign_with_tokens_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_widening_assign_with_tokens
 PPL_PROTO((ppl_@CLASS@_t x,
            ppl_const_@CLASS@_t y,
@@ -406,7 +448,8 @@ PPL_PROTO((ppl_@CLASS@_t x,
 ')
 
 m4_define(`ppl_@CLASS@_widening_assign_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_widening_assign
 PPL_PROTO((ppl_@CLASS@_t x,
            ppl_const_@CLASS@_t y));
@@ -414,7 +457,8 @@ PPL_PROTO((ppl_@CLASS@_t x,
 ')
 
 m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens
 PPL_PROTO((ppl_@CLASS@_t x,
            ppl_const_@CLASS@_t y,
@@ -424,7 +468,8 @@ PPL_PROTO((ppl_@CLASS@_t x,
 ')
 
 m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign
 PPL_PROTO((ppl_@CLASS@_t x,
            ppl_const_@CLASS@_t y,
@@ -433,7 +478,8 @@ PPL_PROTO((ppl_@CLASS@_t x,
 ')
 
 m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens
 PPL_PROTO((ppl_@CLASS@_t x,
            ppl_const_@CLASS@_t y,
@@ -442,7 +488,8 @@ PPL_PROTO((ppl_@CLASS@_t x,
 ')
 
 m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign
 PPL_PROTO((ppl_@CLASS@_t x,
            ppl_const_@CLASS@_t y));
@@ -450,7 +497,8 @@ PPL_PROTO((ppl_@CLASS@_t x,
 ')
 
 m4_define(`ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign
 PPL_PROTO((ppl_@CLASS@_t x,
            ppl_const_@CLASS@_t y));
@@ -458,7 +506,8 @@ PPL_PROTO((ppl_@CLASS@_t x,
 ')
 
 m4_define(`ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign
 PPL_PROTO((ppl_@CLASS@_t x,
            ppl_const_@CLASS@_t y,
@@ -467,7 +516,8 @@ PPL_PROTO((ppl_@CLASS@_t x,
 ')
 
 m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign
 PPL_PROTO((ppl_@CLASS@_t x,
            ppl_const_@CLASS@_t y));
@@ -475,7 +525,8 @@ PPL_PROTO((ppl_@CLASS@_t x,
 ')
 
 m4_define(`ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@
 PPL_PROTO((ppl_@CLASS@_t ph,
            ppl_dimension_type d));
@@ -483,7 +534,8 @@ PPL_PROTO((ppl_@CLASS@_t ph,
 ')
 
 m4_define(`ppl_@CLASS@_remove_space_dimensions_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_remove_space_dimensions
 PPL_PROTO((ppl_@CLASS@_t ph,
            ppl_dimension_type ds[],
@@ -492,7 +544,8 @@ PPL_PROTO((ppl_@CLASS@_t ph,
 ')
 
 m4_define(`ppl_@CLASS@_remove_higher_space_dimensions_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_remove_higher_space_dimensions
 PPL_PROTO((ppl_@CLASS@_t ph,
            ppl_dimension_type d));
@@ -500,7 +553,8 @@ PPL_PROTO((ppl_@CLASS@_t ph,
 ')
 
 m4_define(`ppl_@CLASS@_map_space_dimensions_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_map_space_dimensions
 PPL_PROTO((ppl_@CLASS@_t ph,
            ppl_dimension_type maps[],
@@ -509,7 +563,8 @@ PPL_PROTO((ppl_@CLASS@_t ph,
 ')
 
 m4_define(`ppl_@CLASS@_expand_space_dimension_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_expand_space_dimension
 PPL_PROTO((ppl_@CLASS@_t ph,
            ppl_dimension_type d,
@@ -518,7 +573,8 @@ PPL_PROTO((ppl_@CLASS@_t ph,
 ')
 
 m4_define(`ppl_@CLASS@_fold_space_dimensions_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_fold_space_dimensions
 PPL_PROTO((ppl_@CLASS@_t ph,
            ppl_dimension_type ds[],
@@ -528,7 +584,8 @@ PPL_PROTO((ppl_@CLASS@_t ph,
 ')
 
 m4_define(`ppl_@CLASS@_@MEMBYTES@_code',
-`int
+`/*! \relates ppl_@CLASS@_tag */
+int
 ppl_@CLASS@_@MEMBYTES@
 PPL_PROTO((ppl_const_@CLASS@_t ps,
            size_t* sz));
@@ -537,13 +594,18 @@ PPL_PROTO((ppl_const_@CLASS@_t ps,
 
 m4_define(`ppl_new_@CLASS@_iterator_code',
 `dnl
+/*! \interface ppl_@CLASS@_iterator_tag */
+/*! \interface ppl_@CLASS@_const_iterator_tag */
+
 PPL_TYPE_DECLARATION(@CLASS@_iterator);
 PPL_TYPE_DECLARATION(@CLASS@_const_iterator);
 
+/*! \relates ppl_@CLASS@_iterator_tag */
 int
 ppl_new_@CLASS@_iterator
 PPL_PROTO((ppl_@CLASS@_iterator_t* pit));
 
+/*! \relates ppl_@CLASS@_const_iterator_tag */
 int
 ppl_new_@CLASS@_const_iterator
 PPL_PROTO((ppl_@CLASS@_const_iterator_t* pit));
@@ -551,12 +613,13 @@ PPL_PROTO((ppl_@CLASS@_const_iterator_t* pit));
 ')
 
 m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
-`dnl
+`/*! \relates ppl_@CLASS@_iterator_tag */
 int
 ppl_@CLASS@_iterator_equal_test
 PPL_PROTO((ppl_const_@CLASS@_iterator_t x,
            ppl_const_@CLASS@_iterator_t y));
 
+/*! \relates ppl_@CLASS@_const_iterator_tag */
 int
 ppl_@CLASS@_const_iterator_equal_test
 PPL_PROTO((ppl_const_@CLASS@_const_iterator_t x,
@@ -565,12 +628,13 @@ PPL_PROTO((ppl_const_@CLASS@_const_iterator_t x,
 ')
 
 m4_define(`ppl_@CLASS@_@BEGINEND@_iterator_code',
-`dnl
+`/*! \relates ppl_@CLASS@_iterator_tag */
 int
 ppl_@CLASS@_iterator_@BEGINEND@
 PPL_PROTO((ppl_@CLASS@_t ps,
            ppl_@CLASS@_iterator_t psit));
 
+/*! \relates ppl_@CLASS@_const_iterator_tag */
 int
 ppl_@CLASS@_const_iterator_@BEGINEND@
 PPL_PROTO((ppl_const_@CLASS@_t ps,
@@ -579,11 +643,12 @@ PPL_PROTO((ppl_const_@CLASS@_t ps,
 ')
 
 m4_define(`ppl_@CLASS@_delete_iterator_code',
-`dnl
+`/*! \relates ppl_@CLASS@_iterator_tag */
 int
 ppl_delete_@CLASS@_iterator
 PPL_PROTO((ppl_const_@CLASS@_iterator_t psit));
 
+/*! \relates ppl_@CLASS@_const_iterator_tag */
 int
 ppl_delete_@CLASS@_const_iterator
 PPL_PROTO((ppl_const_@CLASS@_const_iterator_t psit));
@@ -591,11 +656,12 @@ PPL_PROTO((ppl_const_@CLASS@_const_iterator_t psit));
 ')
 
 m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
-`dnl
+`/*! \relates ppl_@CLASS@_iterator_tag */
 int
 ppl_@CLASS@_iterator_@INCDEC@
 PPL_PROTO((ppl_@CLASS@_iterator_t psit));
 
+/*! \relates ppl_@CLASS@_const_iterator_tag */
 int
 ppl_@CLASS@_const_iterator_@INCDEC@
 PPL_PROTO((ppl_@CLASS@_const_iterator_t psit));
@@ -603,13 +669,14 @@ PPL_PROTO((ppl_@CLASS@_const_iterator_t psit));
 ')
 
 m4_define(`ppl_@CLASS@_drop_disjunct_code',
-`dnl
+`/*! \relates ppl_@CLASS@_tag */
 int
 ppl_@CLASS@_drop_disjunct
 PPL_PROTO((ppl_@CLASS@_t ps,
  ppl_const_@CLASS@_iterator_t cit,
  ppl_@CLASS@_iterator_t it));
 
+/*! \relates ppl_@CLASS@_tag */
 int
 ppl_@CLASS@_drop_disjuncts
 PPL_PROTO((ppl_@CLASS@_t ps,
@@ -619,7 +686,7 @@ PPL_PROTO((ppl_@CLASS@_t ps,
 ')
 
 m4_define(`ppl_@CLASS@_add_disjunct_code',
-`dnl
+`/*! \relates ppl_@CLASS@_tag */
 int
 ppl_@CLASS@_add_disjunct
 PPL_PROTO((ppl_@CLASS@_t ps,
@@ -628,12 +695,13 @@ PPL_PROTO((ppl_@CLASS@_t ps,
 ')
 
 m4_define(`ppl_@CLASS@_get_disjunct_code',
-`dnl
+`/*! \relates ppl_@CLASS@_iterator_tag */
 int
 ppl_@CLASS@_iterator_dereference
 PPL_PROTO((ppl_const_@CLASS@_iterator_t ps,
            ppl_const_@DISJUNCT@_t* d));
 
+/*! \relates ppl_@CLASS@_const_iterator_tag */
 int
 ppl_@CLASS@_const_iterator_dereference
 PPL_PROTO((ppl_const_@CLASS@_const_iterator_t ps,
