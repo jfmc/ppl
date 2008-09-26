@@ -1031,8 +1031,7 @@ PPL::MIP_Problem::linear_combine(Row& x,
     if (i != k) {
       Coefficient& x_i = x[i];
       x_i *= normalized_y_k;
-#if 1
-      // FIXME: the test seems to speed up the GMP computation.
+#if 1 // CHECKME: the test seems to speed up the GMP computation.
       const Coefficient& y_i = y[i];
       if (y_i != 0)
 	sub_mul_assign(x_i, y_i, normalized_x_k);

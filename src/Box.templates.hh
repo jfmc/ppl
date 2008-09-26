@@ -1925,7 +1925,7 @@ Box<ITV>::refine_no_check(const Congruence_System& cgs) {
   assert(OK());
 }
 
-#if 1
+#if 1 // Alternative implementations for propagate_constraint_no_check.
 namespace {
 
 inline bool
@@ -2259,7 +2259,7 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
   }
 }
 
-#else
+#else // Alternative implementations for propagate_constraint_no_check.
 
 template <typename ITV>
 void
@@ -2315,7 +2315,7 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
   assert(OK());
 }
 
-#endif
+#endif // Alternative implementations for propagate_constraint_no_check.
 
 template <typename ITV>
 void

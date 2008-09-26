@@ -128,15 +128,10 @@ template <typename U>
 inline
 OR_Matrix<T>::any_row_iterator<U>
 ::any_row_iterator(const dimension_type n_rows)
-#if 0
-  : e(n_rows)
-#else
   : value(),
     e(n_rows),
-    // This zeroing will just silence an annoying compiler warning.
-    i(0)
-#endif
-{
+    // CHECKME: zeroing just to silence an annoying compiler warning.
+    i(0) {
 }
 
 template <typename T>

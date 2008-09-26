@@ -1492,28 +1492,6 @@ Octagonal_Shape<T>::relation_with(const Constraint& c) const {
   return Poly_Con_Relation::strictly_intersects();
 }
 
-#if 0
-template <typename T>
-Poly_Con_Relation
-Octagonal_Shape<T>::relation_with(const Constraint& c) const {
-  using namespace IO_Operators;
-  C_Polyhedron ph(constraints());
-  Poly_Con_Relation p_ret = ph.relation_with(c);
-  Poly_Con_Relation o_ret = this->real_relation_with(c);
-  if (p_ret != o_ret) {
-    std::cout << "Relation of" <<std::endl
-              << *this << std::endl
-              << "a.k.a." << std::endl
-              << ph << std::endl
-              << "with" << std::endl
-              << c << std::endl
-              << "gives " << o_ret << " with Octagonal_Shape" << std::endl
-              << "and " << p_ret << " with C_Polyhedron" << std::endl;
-  }
-  return o_ret;
-}
-#endif
-
 template <typename T>
 Poly_Gen_Relation
 Octagonal_Shape<T>::relation_with(const Generator& g) const {

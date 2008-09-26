@@ -968,7 +968,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       goto bomb;
     }
 
-#if 0
+#if 0 // To be activated when Status keeps strong minimization flags.
     //=================================================
     // TODO: this test is wrong in the general case.
     // However, such an invariant does hold for a
