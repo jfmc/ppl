@@ -121,8 +121,9 @@ ppl_@CLASS@_@INCDEC@_iterator/1 +pointset_powerset,
 ppl_@CLASS@_get_disjunct/2 +pointset_powerset,
 ppl_@CLASS@_drop_disjunct/2 +pointset_powerset,
 ppl_@CLASS@_add_disjunct/2 *nofail +pointset_powerset,
-ppl_@CLASS@_linear_@PARTITION@/4 +simple -grid,
-ppl_@CLASS@_approximate_@PARTITION@/5  +grid,
+dnl EZ: temporarily commented out (breaking build).
+dnl ppl_@CLASS@_linear_@PARTITION@/4 +simple -grid,
+dnl ppl_@CLASS@_approximate_@PARTITION@/5  +grid,
 ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign/2 +pointset_powerset \box,
 ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign/3 +pointset_powerset \box,
 dnl
