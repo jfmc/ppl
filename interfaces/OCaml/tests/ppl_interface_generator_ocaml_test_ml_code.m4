@@ -295,40 +295,12 @@ let out = if (ppl_@CLASS@_OK copy01)
 print_newline();;
 ')
 
-m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code',
-`
-print_string
-  "testing ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize: " ;;
-let copy01
-  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
-let b = ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize
-  copy01 @ADD_REPRESENT@1;;
-let out = if (ppl_@CLASS@_OK copy01)
-  then "success" else "failed"
-    in (print_string out);;
-print_newline();;
-')
-
 m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_code',
 `
 print_string "testing ppl_@CLASS@_add_@ADD_REPRESENT@s: " ;;
 let copy01
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
 ppl_@CLASS@_add_@ADD_REPRESENT@s copy01 @ADD_REPRESENT@s1;;
-let out = if (ppl_@CLASS@_OK copy01)
-  then "success" else "failed"
-    in (print_string out);;
-print_newline();;
-')
-
-m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize_code',
-`
-print_string
-  "testing ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize: " ;;
-let copy01
-  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
-let b = ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize
-  copy01 @ADD_REPRESENT@s1;;
 let out = if (ppl_@CLASS@_OK copy01)
   then "success" else "failed"
     in (print_string out);;
@@ -371,21 +343,6 @@ let copy01
 let copy02
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
 ppl_@CLASS@_@BINOP@ copy01 copy02;;
-let out
-  = if (ppl_@CLASS@_OK copy01 & ppl_@CLASS@_OK copy02)
-  then "success" else "failed"
-    in (print_string out);;
-print_newline();;
-')
-
-m4_define(`ppl_@CLASS@_@BINMINOP@_code',
-`
-print_string "testing ppl_@CLASS@_@BINMINOP@: " ;;
-let copy01
-  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
-let copy02
-  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
-let b = ppl_@CLASS@_@BINMINOP@ copy01 copy02;;
 let out
   = if (ppl_@CLASS@_OK copy01 & ppl_@CLASS@_OK copy02)
   then "success" else "failed"

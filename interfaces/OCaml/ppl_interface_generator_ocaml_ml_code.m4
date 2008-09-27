@@ -95,26 +95,11 @@ external ppl_@CLASS@_add_@ADD_REPRESENT@:
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code',
-`dnl
-external ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize:
-  @LCLASS@ -> linear_@ADD_REPRESENT@ -> unit
-  = "ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize"
-')
-
 m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_code',
 `dnl
 external ppl_@CLASS@_add_@ADD_REPRESENT@s:
   @LCLASS@ -> @ADD_REPRESENT@_system -> unit
   = "ppl_@CLASS@_add_@ADD_REPRESENT@s"
-
-')
-
-m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize_code',
-`dnl
-external ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize:
-  @LCLASS@ -> @ADD_REPRESENT@_system -> unit
-  = "ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize"
 
 ')
 
@@ -156,14 +141,6 @@ m4_define(`ppl_@CLASS@_@BINOP@_code',
 external ppl_@CLASS@_@BINOP@:
   @LCLASS@ -> @LCLASS@ -> unit
   = "ppl_@CLASS@_@BINOP@"
-
-')
-
-m4_define(`ppl_@CLASS@_@BINMINOP@_code',
-`dnl
-external ppl_@CLASS@_@BINMINOP@:
-  @LCLASS@ -> @LCLASS@ -> bool
-  = "ppl_@CLASS@_@BINMINOP@"
 
 ')
 

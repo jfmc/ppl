@@ -573,22 +573,6 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_refine_1with_1@1R
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code',
-`dnl
-JNIEXPORT jboolean JNICALL Java_parma_1polyhedra_1library_@1CLASS@_add_1@1ADD_REPRESENT@_1and_1minimize
-(JNIEnv* env, jobject j_this_@LCLASS@, jobject j_@ADD_REPRESENT@) {
-  try {
-    @CPP_CLASS@* this_@LCLASS@
- = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this_@LCLASS@));
-    @UADD_REPRESENT@ c = build_ppl_@ADD_REPRESENT@(env, j_@ADD_REPRESENT@);
-    return this_@LCLASS@->add_@ADD_REPRESENT@_and_minimize(c);
-  }
-  CATCH_ALL;
-  return false;
-}
-
-')
-
 m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_code',
 `dnl
 JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_add_1@1ADD_REPRESENT@s
@@ -619,22 +603,6 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_refine_1with_1@1R
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize_code',
-`dnl
-JNIEXPORT jboolean JNICALL Java_parma_1polyhedra_1library_@1CLASS@_add_1@1ADD_REPRESENT@s_1and_1minimize
-(JNIEnv* env, jobject j_this_@LCLASS@, jobject j_@ADD_REPRESENT@s) {
-  try {
-  @CPP_CLASS@* this_@LCLASS@
- = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this_@LCLASS@));
-  @UADD_REPRESENT@_System cs = build_ppl_@ADD_REPRESENT@_system(env, j_@ADD_REPRESENT@s);
-  return this_@LCLASS@->add_@ADD_REPRESENT@s_and_minimize(cs);
-  }
-  CATCH_ALL;
-  return false;
-}
-
-')
-
 m4_define(`ppl_@CLASS@_@BINOP@_code',
 `dnl
 JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_@1BINOP@
@@ -647,23 +615,6 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_@1BINOP@
   this_@LCLASS@->@BINOP@(*@LCLASS@);
   }
   CATCH_ALL;
-}
-
-')
-
-m4_define(`ppl_@CLASS@_@BINMINOP@_code',
-`dnl
-JNIEXPORT jboolean JNICALL Java_parma_1polyhedra_1library_@1CLASS@_@1BINMINOP@
-(JNIEnv* env, jobject j_this_@LCLASS@, jobject j_@LCLASS@) {
-  try {
-  @CPP_CLASS@* this_@LCLASS@
- = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this_@LCLASS@));
-  @CPP_CLASS@* @LCLASS@
- = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_@LCLASS@));
-  return this_@LCLASS@->@BINMINOP@(*@LCLASS@);
-  }
-  CATCH_ALL;
-  return false;
 }
 
 ')

@@ -263,13 +263,6 @@ m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code',
-`dnl
-%<--%<--%<-- @CLASS@.java
-    public native boolean add_@ADD_REPRESENT@_and_minimize(@UADD_REPRESENT@ c);
-
-')
-
 m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
@@ -284,24 +277,10 @@ m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize_code',
-`dnl
-%<--%<--%<-- @CLASS@.java
-    public native boolean add_@ADD_REPRESENT@s_and_minimize(@UADD_REPRESENT@_System c);
-
-')
-
 m4_define(`ppl_@CLASS@_@BINOP@_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
     public native void @BINOP@(@CLASS@ p);
-
-')
-
-m4_define(`ppl_@CLASS@_@BINMINOP@_code',
-`dnl
-%<--%<--%<-- @CLASS@.java
-    public native boolean @BINMINOP@(@CLASS@ p);
 
 ')
 

@@ -88,22 +88,9 @@ val ppl_@CLASS@_add_@ADD_REPRESENT@:
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code',
-`dnl
-val ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize:
-  @LCLASS@ -> linear_@ADD_REPRESENT@ -> unit
-')
-
 m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_code',
 `dnl
 val ppl_@CLASS@_add_@ADD_REPRESENT@s:
-  @LCLASS@ -> @ADD_REPRESENT@_system -> unit
-
-')
-
-m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize_code',
-`dnl
-val ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize:
   @LCLASS@ -> @ADD_REPRESENT@_system -> unit
 
 ')
@@ -141,13 +128,6 @@ m4_define(`ppl_@CLASS@_@BINOP@_code',
 `dnl
 val ppl_@CLASS@_@BINOP@:
    @LCLASS@ -> @LCLASS@ -> unit
-
-')
-
-m4_define(`ppl_@CLASS@_@BINMINOP@_code',
-`dnl
-val ppl_@CLASS@_@BINMINOP@:
-  @LCLASS@ -> @LCLASS@ -> bool
 
 ')
 

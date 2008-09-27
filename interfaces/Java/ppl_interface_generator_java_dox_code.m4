@@ -157,11 +157,6 @@ m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@_code',
 <CODE>    public native void refine_with_@REFINE_REPRESENT@(@UREFINE_REPRESENT@ c)</CODE><BR>
 ')
 
-m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code',
-`dnl
-<CODE>    public native boolean add_@ADD_REPRESENT@_and_minimize(@UADD_REPRESENT@ c)</CODE><BR>
-')
-
 m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_code',
 `dnl
 <CODE>    public native void add_@ADD_REPRESENT@s(@UADD_REPRESENT@_System c)</CODE><BR>
@@ -177,19 +172,9 @@ m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s_code',
 <CODE>    public native void refine_with_@REFINE_REPRESENT@s(@UREFINE_REPRESENT@_System c)</CODE><BR>
 ')
 
-m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize_code',
-`dnl
-<CODE>    public native boolean add_@ADD_REPRESENT@s_and_minimize(@UADD_REPRESENT@_System c)</CODE><BR>
-')
-
 m4_define(`ppl_@CLASS@_@BINOP@_code',
 `dnl
 <CODE>    public native void @BINOP@(@CLASS@ p)</CODE><BR>
-')
-
-m4_define(`ppl_@CLASS@_@BINMINOP@_code',
-`dnl
-<CODE>    public native boolean @BINMINOP@(@CLASS@ p)</CODE><BR>
 ')
 
 m4_define(`ppl_@CLASS@_simplify_using_context_assign_code',

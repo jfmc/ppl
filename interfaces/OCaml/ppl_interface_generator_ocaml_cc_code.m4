@@ -175,20 +175,6 @@ CATCH_ALL
 
 ')
 
-  m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code',
-`dnl
-extern "C"
-CAMLprim value
-ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize(value ph, value c) try {
-  CAMLparam2(ph, c);
-  @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
-  @UADD_REPRESENT@ pc = build_ppl_@UADD_REPRESENT@(c);
-  CAMLreturn(Val_bool(pph.add_@ADD_REPRESENT@_and_minimize(pc)));
-}
-CATCH_ALL
-
-')
-
   m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_code',
 `dnl
 extern "C"
@@ -199,20 +185,6 @@ ppl_@CLASS@_add_@ADD_REPRESENT@s(value ph, value cs) try {
   @UADD_REPRESENT@_System pcs = build_ppl_@UADD_REPRESENT@_System(cs);
   pph.add_@ADD_REPRESENT@s(pcs);
   CAMLreturn0;
-}
-CATCH_ALL
-
-')
-
-  m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize_code',
-`dnl
-extern "C"
-CAMLprim value
-ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize(value ph, value cs) try {
-  CAMLparam2(ph, cs);
-  @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
-  @UADD_REPRESENT@_System pcs = build_ppl_@UADD_REPRESENT@_System(cs);
-  CAMLreturn(Val_bool(pph.add_@ADD_REPRESENT@s_and_minimize(pcs)));
 }
 CATCH_ALL
 
@@ -286,20 +258,6 @@ ppl_@CLASS@_@BINOP@(value ph1, value ph2) try {
   @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
   pph1.@BINOP@(pph2);
   CAMLreturn0;
-}
-CATCH_ALL
-
-')
-
-  m4_define(`ppl_@CLASS@_@BINMINOP@_code',
-`dnl
-extern "C"
-CAMLprim value
-ppl_@CLASS@_@BINMINOP@(value ph1, value ph2) try {
-  CAMLparam2(ph1, ph2);
-  @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
-  @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
-  CAMLreturn(Val_bool(pph1.@BINMINOP@(pph2)));
 }
 CATCH_ALL
 
