@@ -753,14 +753,14 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code',
-`int
+  m4_define(`ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code',
+`dnl
+int
 ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign
 (ppl_@CLASS@_t x,
  ppl_const_@CLASS@_t y) try {
   @CPP_CLASS@& xx = *to_nonconst(x);
   const @CPP_CLASS@& yy = *to_const(y);
-  xx.@EXTRAPOLATION@_extrapolation_assign(yy, tp);
   xx.BHZ03_widening_assign<@ALT_DISJUNCT_WIDEN@_Certificate>(yy,
        widen_fun_ref(
          &@CLASSTOPOLOGY@@CPP_DISJUNCT@::@DISJUNCT_WIDEN@_widening_assign));
@@ -785,6 +785,7 @@ ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign
    return 0;
 }
 CATCH_ALL
+
 
 ')
 
