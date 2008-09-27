@@ -22,7 +22,7 @@
 
 interface_generator_files = \
 ppl_interface_generator_c_procedure_generators.m4 \
-ppl_interface_generator_c_h_files.m4 \
+ppl_interface_generator_c_h.m4 \
 ppl_interface_generator_c_h_code.m4 \
 ppl_interface_generator_c_cc_files.m4 \
 ppl_interface_generator_c_hh_files.m4 \
