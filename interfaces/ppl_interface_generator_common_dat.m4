@@ -332,6 +332,19 @@ m4_ifelse(m4_remove_topology($1),
 ')`'dnl
 ')
 
+dnl m4_get_interface_name_counter(String)
+dnl
+dnl String        - an interface class name.
+dnl
+dnl This finds the class counter from the interface name.
+m4_define(`m4_get_interface_name_counter', `dnl
+m4_forloop(m4_ind, 1, m4_num_classes, `dnl
+m4_ifelse(m4_remove_topology($1),
+  m4_echo_unquoted(m4_interface_class`'m4_ind),
+  m4_ind)`'dnl
+')`'dnl
+')
+
 dnl m4_parse_body_for_powerset(Class_Counter, Macro_Specifier)
 dnl
 dnl Class_Counter - is the index to Class;
@@ -501,6 +514,7 @@ superclass,
 recycle,
 dimension,
 generator,
+partition,
 point,
 constrainer,
 has_property,
@@ -952,18 +966,20 @@ m4_define(`m4_Pointset_Powerset_superclass_replacement',
 
 dnl ---------------------------------------------------------------------
 dnl pattern == partition
-dnl The "partition" which is currently only available for the Polyhedron
-dnl and Grid Pointset_Powerset classes.
-dnl FIXME: However because of differences between the
-dnl linear and approximate partitions, we have to have these
-dnl separate. Thus approximate_partition for Grids
-dnl is defined without any pattern.
+dnl The "partition" is replaced by "NONE" if the powerset is not
+dnl in the list of instantiations; in which case
+dnl no code is generated, otherwise it is replaced by partition.
+dnl This is used for the linear_partition and approximate_partition only.
 dnl ---------------------------------------------------------------------
 
-m4_define(`m4_partition_replacement', `NONE')
-m4_define(`m4_Pointset_Powerset_partition_replacement',
-          `m4_ifelse(m4_get_class_counter(Pointset_Powerset<NNC_Polyhedron>),
-                     `', `NONE', `linear_partition')')
+m4_define(`m4_partition_replacement',
+  `m4_ifelse(m4_get_interface_name_counter(`Pointset_Powerset_NNC_Polyhedron'),
+             `', NONE, ``partition'')')
+m4_define(`m4_Grid_partition_replacement',
+  `m4_ifelse(m4_get_interface_name_counter(`Pointset_Powerset_Grid'),
+             `', NONE, ``partition'')')
+m4_define(`m4_Pointset_Powerset_partition_replacement', `NONE')
+m4_define(`m4_Product_partition_replacement', `NONE')
 
 dnl ---------------------------------------------------------------------
 dnl pattern == has_property
