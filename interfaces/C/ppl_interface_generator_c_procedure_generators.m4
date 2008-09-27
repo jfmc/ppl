@@ -44,6 +44,7 @@ ppl_new_@TOPOLOGY@@CLASS@_recycle_@BUILD_REPRESENT@s +simple,
 ppl_assign_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@ +simple,
 ppl_@CLASS@_add_recycled_@ADD_REPRESENT@s +simple,
 ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize/2 +polyhedron,
-ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize/2 +polyhedron
+ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize/2 +polyhedron,
+ppl_@CLASS@_@BINMINOP@/2 +polyhedron,
 )
 ')
