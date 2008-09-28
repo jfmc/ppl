@@ -1347,6 +1347,7 @@ test06() {
   cs.insert(-A - 3*B >= -18);
   cs.insert(-A + B >= -4);
   cs.insert(A >= 0);
+  cs.insert(A <= 3);
   cs.insert(B >= 0);
 
   MIP_Problem mip = MIP_Problem(cs.space_dimension(), cs, cost, MAXIMIZATION);
@@ -1364,7 +1365,7 @@ test06() {
 
   nout << "Optimizing point = ";
   print_generator(pg);
-  Generator pg_kr = point(6*A + 2*B);
+  Generator pg_kr = point(3*A + 5*B);
   if (pg != pg_kr)
     return false;
 
@@ -1681,9 +1682,7 @@ test10() {
   return true;
 }
 
-}
-
-// namespace
+} // namespace
 
 BEGIN_MAIN
   DO_TEST_F64(test01);
