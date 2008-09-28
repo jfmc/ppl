@@ -181,16 +181,26 @@ bool test04() {
 } // namespace
 
 BEGIN_MAIN
+
+#if PPL_SUPPORTED_FLOAT
   DO_TEST(test01<float>);
-  DO_TEST(test01<double>);
-  DO_TEST(test01<long double>);
   DO_TEST(test02<float>);
-  DO_TEST(test02<double>);
-  DO_TEST(test02<long double>);
   DO_TEST(test03<float>);
-  DO_TEST(test03<double>);
-  DO_TEST(test03<long double>);
   DO_TEST(test04<float>);
+#endif // PPL_SUPPORTED_FLOAT
+
+#if PPL_SUPPORTED_DOUBLE
+  DO_TEST(test01<double>);
+  DO_TEST(test02<double>);
+  DO_TEST(test03<double>);
   DO_TEST(test04<double>);
+#endif // PPL_SUPPORTED_DOUBLE
+
+#if PPL_SUPPORTED_LONG_DOUBLE
+  DO_TEST(test01<long double>);
+  DO_TEST(test02<long double>);
+  DO_TEST(test03<long double>);
   DO_TEST(test04<long double>);
+#endif // PPL_SUPPORTED_LONG_DOUBLE
+
 END_MAIN
