@@ -544,33 +544,58 @@ PPL_TYPE_DECLARATION(MIP_Problem)
 
 #undef PPL_DECLARE_PRINT_FUNCTIONS
 #undef PPL_DECLARE_ASCII_DUMP_LOAD_FUNCTIONS
-#undef PPL_DECLARE_OUTPUT_FUNCTIONS
+#undef PPL_DECLARE_IO_FUNCTIONS
+#undef PPL_DECLARE_AND_DOCUMENT_PRINT_FUNCTIONS
+#undef PPL_DECLARE_AND_DOCUMENT_ASCII_DUMP_LOAD_FUNCTIONS
+#undef PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS
 
-#define PPL_DECLARE_PRINT_FUNCTIONS(Type)                             \
-/*! \relates ppl_##Type##_tag \brief Prints \p x to \c stdout. */     \
-int                                                                   \
-ppl_io_print_##Type PPL_PROTO((ppl_const_##Type##_t x));              \
-                                                                      \
-/*! \relates ppl_##Type##_tag \brief Prints \p x to the given output \p stream. */ \
-int                                                                   \
+#define PPL_DECLARE_PRINT_FUNCTIONS(Type)                               \
+/*! \relates ppl_##Type##_tag */                                        \
+int                                                                     \
+ppl_io_print_##Type PPL_PROTO((ppl_const_##Type##_t x));                \
+/*! \relates ppl_##Type##_tag */                                        \
+int                                                                     \
 ppl_io_fprint_##Type PPL_PROTO((FILE* stream, ppl_const_##Type##_t x));
 
-#define PPL_DECLARE_ASCII_DUMP_LOAD_FUNCTIONS(Type)                   \
-/*! \relates ppl_##Type##_tag \brief Dumps an ascii representation of \p x on \p stream. */ \
-int                                                                   \
-ppl_##Type##_ascii_dump PPL_PROTO((ppl_const_##Type##_t x,            \
-                                       FILE* stream));                \
-/*! \relates ppl_##Type##_tag \brief Loads an ascii representation of \p x from \p stream. */ \
-int                                                                   \
-ppl_##Type##_ascii_load PPL_PROTO((ppl_##Type##_t x,                  \
-                                       FILE* stream));
+#define PPL_DECLARE_ASCII_DUMP_LOAD_FUNCTIONS(Type) \
+/*! \relates ppl_##Type##_tag */                    \
+int                                                 \
+ppl_##Type##_ascii_dump                             \
+PPL_PROTO((ppl_const_##Type##_t x, FILE* stream));  \
+/*! \relates ppl_##Type##_tag */                    \
+int                                                 \
+ppl_##Type##_ascii_load                             \
+PPL_PROTO((ppl_##Type##_t x, FILE* stream));
 
-#define PPL_DECLARE_OUTPUT_FUNCTIONS(Type)    \
-/*! \name I/O Functions */                    \
-/*@{*/                                        \
-PPL_DECLARE_PRINT_FUNCTIONS(Type)             \
-PPL_DECLARE_ASCII_DUMP_LOAD_FUNCTIONS(Type)   \
-/*@}*/ /* I/O Functions */
+#define PPL_DECLARE_IO_FUNCTIONS(Type)      \
+PPL_DECLARE_PRINT_FUNCTIONS(Type)           \
+PPL_DECLARE_ASCII_DUMP_LOAD_FUNCTIONS(Type)
+
+#define PPL_DECLARE_AND_DOCUMENT_PRINT_FUNCTIONS(Type)                  \
+/*! \relates ppl_##Type##_tag \brief Prints \p x to \c stdout. */       \
+int                                                                     \
+ppl_io_print_##Type PPL_PROTO((ppl_const_##Type##_t x));                \
+/*! \relates ppl_##Type##_tag \brief Prints \p x to the given output \p stream. */ \
+int                                                                     \
+ppl_io_fprint_##Type PPL_PROTO((FILE* stream, ppl_const_##Type##_t x));
+
+
+#define PPL_DECLARE_AND_DOCUMENT_ASCII_DUMP_LOAD_FUNCTIONS(Type) \
+/*! \relates ppl_##Type##_tag \brief Dumps an ascii representation of \p x on \p stream. */ \
+int                                                              \
+ppl_##Type##_ascii_dump                                          \
+PPL_PROTO((ppl_const_##Type##_t x, FILE* stream));               \
+/*! \relates ppl_##Type##_tag \brief Loads an ascii representation of \p x from \p stream. */ \
+int                                                              \
+ppl_##Type##_ascii_load                                          \
+PPL_PROTO((ppl_##Type##_t x, FILE* stream));
+
+#define PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(Type)      \
+/*! \name Input/Output Functions */                      \
+/*@{*/                                                   \
+PPL_DECLARE_AND_DOCUMENT_PRINT_FUNCTIONS(Type)           \
+PPL_DECLARE_AND_DOCUMENT_ASCII_DUMP_LOAD_FUNCTIONS(Type) \
+/*@}*/ /* Input/Output Functions */
 
 
 /*! \name Constructors, Assignment and Destructor */
@@ -664,7 +689,7 @@ ppl_Coefficient_max PPL_PROTO((mpz_t max));
 /* No ascii dump for Coefficient */
 /*! \name I/O Functions */
 /*@{*/
-PPL_DECLARE_PRINT_FUNCTIONS(Coefficient)
+PPL_DECLARE_AND_DOCUMENT_PRINT_FUNCTIONS(Coefficient)
 /*@}*/ /* I/O Functions */
 
 
@@ -824,7 +849,7 @@ PPL_PROTO((ppl_Linear_Expression_t le, ppl_const_Coefficient_t n));
 
 /*@}*/ /* \name Functions that May Modify the Linear Expression */
 
-PPL_DECLARE_OUTPUT_FUNCTIONS(Linear_Expression)
+PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(Linear_Expression)
 
 /*! \brief \ingroup Datatypes
   Describes the relations represented by a constraint.
@@ -936,7 +961,7 @@ ppl_Constraint_OK PPL_PROTO((ppl_const_Constraint_t c));
 
 /*@}*/ /* \name Functions that Do Not Modify the Constraint */
 
-PPL_DECLARE_OUTPUT_FUNCTIONS(Constraint)
+PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(Constraint)
 
 
 /*! \name Constructors, Assignment and Destructor */
@@ -1064,7 +1089,7 @@ ppl_Constraint_System_insert_Constraint PPL_PROTO((ppl_Constraint_System_t cs,
 
 /*@}*/ /* \name Functions that May Modify the Constraint System */
 
-PPL_DECLARE_OUTPUT_FUNCTIONS(Constraint_System)
+PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(Constraint_System)
 
 
 /*! \name Constructors, Assignment and Destructor */
@@ -1248,7 +1273,7 @@ ppl_Generator_OK PPL_PROTO((ppl_const_Generator_t g));
 
 /*@}*/ /* \name Functions that Do Not Modify the Generator */
 
-PPL_DECLARE_OUTPUT_FUNCTIONS(Generator)
+PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(Generator)
 
 
 /*! \name Constructors, Assignment and Destructor */
@@ -1369,7 +1394,7 @@ ppl_Generator_System_insert_Generator PPL_PROTO((ppl_Generator_System_t gs,
 
 /*@}*/ /* \name Functions that May Modify the Generator System */
 
-PPL_DECLARE_OUTPUT_FUNCTIONS(Generator_System)
+PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(Generator_System)
 
 
 /*! \name Constructors, Assignment and Destructor */
@@ -1536,7 +1561,7 @@ ppl_Congruence_OK PPL_PROTO((ppl_const_Congruence_t c));
 
 /*@}*/ /* \name Functions that Do Not Modify the Congruence */
 
-PPL_DECLARE_OUTPUT_FUNCTIONS(Congruence)
+PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(Congruence)
 
 
 /*! \name Constructors, Assignment and Destructor */
@@ -1656,7 +1681,7 @@ ppl_Congruence_System_insert_Congruence PPL_PROTO((ppl_Congruence_System_t cs,
 
 /*@}*/ /* \name Functions that May Modify the Congruence System */
 
-PPL_DECLARE_OUTPUT_FUNCTIONS(Congruence_System)
+PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(Congruence_System)
 
 
 /*! \name Constructors, Assignment and Destructor */
@@ -1832,7 +1857,7 @@ ppl_Grid_Generator_OK PPL_PROTO((ppl_const_Grid_Generator_t g));
 
 /*@}*/ /* \name Functions that Do Not Modify the Generator */
 
-PPL_DECLARE_OUTPUT_FUNCTIONS(Grid_Generator)
+PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(Grid_Generator)
 
 
 /*! \name Constructors, Assignment and Destructor */
@@ -1958,7 +1983,7 @@ PPL_PROTO((ppl_Grid_Generator_System_t gs,
 
 /*@}*/ /* \name Functions that May Modify the Grid Generator System */
 
-PPL_DECLARE_OUTPUT_FUNCTIONS(Grid_Generator_System)
+PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(Grid_Generator_System)
 
 
 /*! \name Constructors, Assignment and Destructor */
@@ -2397,7 +2422,7 @@ PPL_PROTO((ppl_MIP_Problem_t mip, int value));
 
 /*@}*/ /* \name Querying/Setting Control Parameters */
 
-PPL_DECLARE_OUTPUT_FUNCTIONS(MIP_Problem)
+PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(MIP_Problem)
 
 #include "ppl_c_domains.h"
 
@@ -2406,9 +2431,12 @@ PPL_DECLARE_OUTPUT_FUNCTIONS(MIP_Problem)
 #endif
 
 #undef PPL_TYPE_DECLARATION
-#undef PPL_DECLARE_PRINT_FUNCTIONS
-#undef PPL_DECLARE_ASCII_DUMP_FUNCTIONS
-#undef PPL_DECLARE_OUTPUT_FUNCTIONS
 #undef PPL_PROTO
+#undef PPL_DECLARE_PRINT_FUNCTIONS
+#undef PPL_DECLARE_ASCII_DUMP_LOAD_FUNCTIONS
+#undef PPL_DECLARE_IO_FUNCTIONS
+#undef PPL_DECLARE_AND_DOCUMENT_PRINT_FUNCTIONS
+#undef PPL_DECLARE_AND_DOCUMENT_ASCII_DUMP_LOAD_FUNCTIONS
+#undef PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS
 
 #endif /* !defined(PPL_ppl_c_h) */

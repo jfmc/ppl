@@ -1378,14 +1378,13 @@ ppl_Polyhedron_poly_difference_assign
 
 /*! \interface ppl_Pointset_Powerset_C_Polyhedron_tag
   \brief
-  Types and functions for the Pointset_Powerset domain
-  (of C_Polyhedron objects).
+  Types and functions for the Pointset_Powerset of C_Polyhedron objects.
 
   The powerset domains can be instantiated by taking as a base domain
   any fixed semantic geometric description
   (C and NNC polyhedra, BD and octagonal shapes, boxes and grids).
   An element of the powerset domain represents a disjunctive collection
-  of base objects, all having the same space dimension.
+  of base objects (its disjuncts), all having the same space dimension.
 
   Besides the functions that are available in all semantic geometric
   descriptions (whose documentation is not repeated here),
@@ -1404,7 +1403,8 @@ typedef struct ppl_Pointset_Powerset_C_Polyhedron_tag const*
 
 /*! \interface ppl_Pointset_Powerset_C_Polyhedron_iterator_tag
   \brief
-  Types and functions for iterating on a Pointset_Powerset object.
+  Types and functions for iterating on the disjuncts of a
+  ppl_Pointset_Powerset_C_Polyhedron_tag.
 */
 
 /*! \brief Iterator for powerset objects \ingroup Datatypes */
@@ -1413,7 +1413,8 @@ typedef ppl_Pointset_Powerset_C_Polyhedron_iterator_tag
 
 /*! \interface ppl_Pointset_Powerset_C_Polyhedron_const_iterator_tag
   \brief
-  Types and functions for iterating on a const Pointset_Powerset object.
+  Types and functions for iterating on the disjuncts of a
+  const ppl_Pointset_Powerset_C_Polyhedron_tag.
 */
 
 /*! \brief Iterator for const powerset objects \ingroup Datatypes */

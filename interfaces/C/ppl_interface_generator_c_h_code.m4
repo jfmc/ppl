@@ -600,8 +600,14 @@ PPL_PROTO((ppl_const_@CLASS@_t ps,
 
 m4_define(`ppl_new_@CLASS@_iterator_code',
 `dnl
-/*! \interface ppl_@CLASS@_iterator_tag */
-/*! \interface ppl_@CLASS@_const_iterator_tag */
+/*! \interface ppl_@CLASS@_iterator_tag
+  \brief Types and functions for iterating on the disjuncts of a
+  ppl_@CLASS@_tag.
+*/
+/*! \interface ppl_@CLASS@_const_iterator_tag
+  \brief Types and functions for iterating on the disjuncts of a
+  const ppl_@CLASS@_tag.
+*/
 
 PPL_TYPE_DECLARATION(@CLASS@_iterator);
 PPL_TYPE_DECLARATION(@CLASS@_const_iterator);
