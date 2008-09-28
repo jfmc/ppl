@@ -105,21 +105,20 @@ ppl-user-c-interface-@VERSION@-html
 DEVREF_C_INTERFACE_HTML_DIR = \
 ppl-devref-c-interface-@VERSION@-html
 
-USER_C_INTERFACE_STUFF = \
+COMMON_C_INTERFACE_STUFF = \
 $(DOX_LICENCE_FILES) \
 ppl.sty \
-user-foreign-language-interface.tex \
 $(top_builddir)/interfaces/C/ppl_c_version.h \
 ../interfaces/C/ppl_c_header.h \
 ../interfaces/C/C_interface.dox
 
+USER_C_INTERFACE_STUFF = \
+$(COMMON_C_INTERFACE_STUFF) \
+user-foreign-language-interface.tex
+
 DEVREF_C_INTERFACE_STUFF = \
-$(DOX_LICENCE_FILES) \
-ppl.sty \
+$(COMMON_C_INTERFACE_STUFF) \
 devref-foreign-language-interface.tex \
-$(top_builddir)/interfaces/C/ppl_c_version.h \
-../interfaces/C/ppl_c_header.h \
-../interfaces/C/C_interface.dox \
 ../interfaces/C/ppl_c_implementation_common.defs.hh \
 ../interfaces/C/ppl_c_implementation_common.inlines.hh \
 ../interfaces/C/ppl_c_implementation_common.cc
