@@ -93,13 +93,6 @@ Checked_Number<T, Policy>::Checked_Number(const Checked_Number<T, Policy>& y) {
 }
 
 template <typename T, typename Policy>
-template <typename From>
-inline
-Checked_Number<T, Policy>::Checked_Number(const From& x)
-  : Checked_Number<T, Policy>(x, Policy::ROUND_DEFAULT_CONSTRUCTOR) {
-}
-
-template <typename T, typename Policy>
 template <typename From, typename From_Policy>
 inline
 Checked_Number<T, Policy>
@@ -114,11 +107,34 @@ Checked_Number<T, Policy>
 			);
 }
 
+template <typename T, typename Policy>
+template <typename From, typename From_Policy>
+inline
+Checked_Number<T, Policy>
+::Checked_Number(const Checked_Number<From, From_Policy>& y) {
+  // TODO: avoid default construction of value member.
+  Rounding_Dir dir = Policy::ROUND_DEFAULT_CONSTRUCTOR;
+  Policy::handle_result(check_result(Checked::assign_ext<Policy, From_Policy>
+				     (v,
+				      y.raw_value(),
+				      rounding_dir(dir)),
+				     dir));
+}
+
 // TODO: avoid default construction of value member.
 #define DEF_CTOR(type) \
 template <typename T, typename Policy> \
 inline \
 Checked_Number<T, Policy>::Checked_Number(const type x, Rounding_Dir dir) { \
+  Policy::handle_result							\
+    (check_result(Checked::assign_ext<Policy, Checked_Number_Transparent_Policy<type> >	\
+		  (v, x, rounding_dir(dir)),				\
+		  dir));						\
+}									\
+template <typename T, typename Policy>					\
+inline									\
+Checked_Number<T, Policy>::Checked_Number(const type x) {		\
+  Rounding_Dir dir = Policy::ROUND_DEFAULT_CONSTRUCTOR;			\
   Policy::handle_result							\
     (check_result(Checked::assign_ext<Policy, Checked_Number_Transparent_Policy<type> >	\
 		  (v, x, rounding_dir(dir)),				\
@@ -159,9 +175,31 @@ Checked_Number<T, Policy>::Checked_Number(const char* x, Rounding_Dir dir) {
 }
 
 template <typename T, typename Policy>
+inline
+Checked_Number<T, Policy>::Checked_Number(const char* x) {
+  std::istringstream s(x);
+  Rounding_Dir dir = Policy::ROUND_DEFAULT_CONSTRUCTOR;
+  Policy::handle_result(check_result(Checked::input<Policy>(v,
+							    s,
+							    rounding_dir(dir)),
+				     dir));
+}
+
+template <typename T, typename Policy>
 template <typename From>
 inline
 Checked_Number<T, Policy>::Checked_Number(const From&, Rounding_Dir dir, typename Enable_If<Is_Special<From>::value, bool>::type) {
+  Policy::handle_result(check_result(Checked::assign_special<Policy>(v,
+							    From::code,
+							    rounding_dir(dir)),
+				     dir));
+}
+
+template <typename T, typename Policy>
+template <typename From>
+inline
+Checked_Number<T, Policy>::Checked_Number(const From&, typename Enable_If<Is_Special<From>::value, bool>::type) {
+  Rounding_Dir dir = Policy::ROUND_DEFAULT_CONSTRUCTOR;
   Policy::handle_result(check_result(Checked::assign_special<Policy>(v,
 							    From::code,
 							    rounding_dir(dir)),

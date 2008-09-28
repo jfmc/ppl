@@ -75,8 +75,6 @@ struct Extended_Number_Policy {
   // const_bool_nodef(convertible, false);
   const_bool_nodef(fpu_check_inexact, true);
   const_bool_nodef(check_nan_result, true);
-  static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR_INF = ROUND_NOT_NEEDED;
-  static const Rounding_Dir ROUND_DEFAULT_ASSIGN_INF = ROUND_NOT_NEEDED;
   // Do not uncomment the following.
   // The compile time error is the expected behavior.
   // static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR = ROUND_UP;
@@ -106,8 +104,6 @@ struct WRD_Extended_Number_Policy {
   // const_bool_nodef(convertible, false);
   const_bool_nodef(fpu_check_inexact, true);
   const_bool_nodef(check_nan_result, false);
-  static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR_INF = ROUND_NOT_NEEDED;
-  static const Rounding_Dir ROUND_DEFAULT_ASSIGN_INF = ROUND_NOT_NEEDED;
   // Do not uncomment the following.
   // The compile time error is the expected behavior.
   // static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR = ROUND_UP;
@@ -287,13 +283,66 @@ public:
   //! Direct initialization from a C string and rounding mode.
   Checked_Number(const char* y, Rounding_Dir dir);
 
-  //! Direct initialization from special.
+  //! Direct initialization from special and rounding mode.
   template <typename From>
   Checked_Number(const From&, Rounding_Dir dir, typename Enable_If<Is_Special<From>::value, bool>::type ignored = false);
 
-  //! Direct initialization with default rounding mode.
+  //! Direct initialization from a Checked_Number, default rounding mode.
+  template <typename From, typename From_Policy>
+  explicit Checked_Number(const Checked_Number<From, From_Policy>& y);
+
+  //! Direct initialization from a signed char, default rounding mode.
+  Checked_Number(signed char y);
+
+  //! Direct initialization from a signed short, default rounding mode.
+  Checked_Number(signed short y);
+
+  //! Direct initialization from a signed int, default rounding mode.
+  Checked_Number(signed int y);
+
+  //! Direct initialization from a signed long, default rounding mode.
+  Checked_Number(signed long y);
+
+  //! Direct initialization from a signed long long, default rounding mode.
+  Checked_Number(signed long long y);
+
+  //! Direct initialization from an unsigned char, default rounding mode.
+  Checked_Number(unsigned char y);
+
+  //! Direct initialization from an unsigned short, default rounding mode.
+  Checked_Number(unsigned short y);
+
+  //! Direct initialization from an unsigned int, default rounding mode.
+  Checked_Number(unsigned int y);
+
+  //! Direct initialization from an unsigned long, default rounding mode.
+  Checked_Number(unsigned long y);
+
+  //! Direct initialization from an unsigned long long, default rounding mode.
+  Checked_Number(unsigned long long y);
+
+  //! Direct initialization from a float, default rounding mode.
+  Checked_Number(float y);
+
+  //! Direct initialization from a double, default rounding mode.
+  Checked_Number(double y);
+
+  //! Direct initialization from a long double, default rounding mode.
+  Checked_Number(long double y);
+
+  //! Direct initialization from a rational, default rounding mode.
+  Checked_Number(const mpq_class& y);
+
+  //! Direct initialization from an unbounded integer, default rounding mode.
+  Checked_Number(const mpz_class& y);
+
+  //! Direct initialization from a C string, default rounding mode.
+  Checked_Number(const char* y);
+
+  //! Direct initialization from special, default rounding mode
   template <typename From>
-  explicit Checked_Number(const From& y);
+  Checked_Number(const From&, typename Enable_If<Is_Special<From>::value, bool>::type ignored = false);
+
 
   //@} // Constructors
 
