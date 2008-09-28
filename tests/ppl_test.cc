@@ -134,9 +134,13 @@ check_distance(const Checked_Number<mpq_class, Extended_Number_Policy>& d,
     max_d((max_d_s ? max_d_s : "0"), ROUND_NOT_NEEDED);
   assert(max_d >= 0);
   if (d > max_d) {
-    nout << "Excessive " << d_name << " distance "
-         << raw_value(d).get_d()
-	 << " (rounded towards zero): should be at most " << max_d << "."
+    nout << "Excessive " << d_name << " distance ";
+    // CHECKME: is there a cleaner way?
+    if (is_plus_infinity(d))
+      nout << "+inf";
+    else
+      nout << raw_value(d).get_d();
+    nout << " (rounded towards zero): should be at most " << max_d << "."
 	 << std::endl;
     return false;
   }
