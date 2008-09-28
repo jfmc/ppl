@@ -20,15 +20,17 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <ppl-config.h>
+#include "ppl.hh"
 #include "Partial_Function.defs.hh"
 #include <stdexcept>
 #include <iostream>
 
-namespace PPL = Parma_Polyhedra_Library;
+namespace Parma_Polyhedra_Library {
+
+namespace Test {
 
 void
-PPL::Partial_Function::insert(dim_t x, dim_t y) {
+Partial_Function::insert(dim_t x, dim_t y) {
  std::pair<Map::iterator, bool> stat = map.insert(Map::value_type(x, y));
  if (!stat.second)
    throw std::runtime_error("Partial_Function::insert(x, y) called"
@@ -37,8 +39,8 @@ PPL::Partial_Function::insert(dim_t x, dim_t y) {
    max = y;
 }
 
-PPL::Partial_Function::dim_t
-PPL::Partial_Function::max_in_codomain() const {
+Partial_Function::dim_t
+Partial_Function::max_in_codomain() const {
   if (has_empty_codomain())
     throw std::runtime_error("Partial_Function::max_in_codomain() called"
 			     " when has_empty_codomain()");
@@ -46,7 +48,7 @@ PPL::Partial_Function::max_in_codomain() const {
 }
 
 bool
-PPL::Partial_Function::maps(dim_t x, dim_t& y) const {
+Partial_Function::maps(dim_t x, dim_t& y) const {
   if (has_empty_codomain())
     throw std::runtime_error("Partial_Function::maps() called"
 			     " when has_empty_codomain()");
@@ -60,8 +62,8 @@ PPL::Partial_Function::maps(dim_t x, dim_t& y) const {
 }
 
 void
-PPL::Partial_Function::print(std::ostream& s) const {
-  using namespace IO_Operators;
+Partial_Function::print(std::ostream& s) const {
+  using namespace Parma_Polyhedra_Library::IO_Operators;
 
   if (has_empty_codomain())
     s << "empty" << std::endl;
@@ -72,3 +74,7 @@ PPL::Partial_Function::print(std::ostream& s) const {
 	<< Variable((*i).second)
 	<< std::endl;
 }
+
+} // namespace Test
+
+} // namespace Parma_Polyhedra_Library

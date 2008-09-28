@@ -14,8 +14,12 @@ PURPOSE. */
 
 namespace Parma_Polyhedra_Library {
 
+namespace Test {
+
 class Partial_Function;
 
-}
+} // namespace Test
+
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Partial_Function_types_hh)
