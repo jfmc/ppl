@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <csignal>
 #include <iostream>
 #include <exception>
+#include <limits>
 #ifdef PPL_HAVE_FENV_H
 #include <fenv.h>
 #endif
@@ -135,12 +136,13 @@ check_distance(const Checked_Number<mpq_class, Extended_Number_Policy>& d,
   assert(max_d >= 0);
   if (d > max_d) {
     nout << "Excessive " << d_name << " distance ";
-    // CHECKME: is there a cleaner way?
     if (is_plus_infinity(d))
       nout << "+inf";
+    else if (d > std::numeric_limits<double>::max())
+      nout << ">" << std::numeric_limits<double>::max();
     else
-      nout << raw_value(d).get_d();
-    nout << " (rounded towards zero): should be at most " << max_d << "."
+      nout << raw_value(d).get_d() << " (rounded towards zero)";
+    nout << ": should be at most " << max_d << "."
 	 << std::endl;
     return false;
   }
