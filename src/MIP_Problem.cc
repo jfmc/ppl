@@ -23,6 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <ppl-config.h>
 #include "MIP_Problem.defs.hh"
 #include "globals.defs.hh"
+#include "Checked_Number.defs.hh"
 #include "Row.defs.hh"
 #include "Linear_Expression.defs.hh"
 #include "Constraint.defs.hh"
@@ -854,33 +855,30 @@ PPL::MIP_Problem::process_pending_constraints() {
   return true;
 }
 
+namespace {
 
-// This is the only place in the library where we use doubles for
-// internal purposes.  However, we may have PPL_SUPPORTED_DOUBLE
-// defined to 0 if we were unable to detect the binary format
-// used by doubles.
-#if PPL_SUPPORTED_DOUBLE
-#define STEEPEST_EDGE_FP_TYPE double
-#define STEEPEST_EDGE_SQRT sqrt
-#define STEEPEST_EDGE_FABS fabs
-#elif PPL_SUPPORTED_FLOAT
-#define STEEPEST_EDGE_FP_TYPE float
-#define STEEPEST_EDGE_SQRT sqrtf
-#define STEEPEST_EDGE_FABS fabsf
-#elif PPL_SUPPORTED_LONG_DOUBLE
-#define STEEPEST_EDGE_FP_TYPE long double
-#define STEEPEST_EDGE_SQRT sqrtl
-#define STEEPEST_EDGE_FABS fabsl
-#endif
+inline void
+assign(double& d, const mpz_class& c) {
+  d = c.get_d();
+}
+
+template <typename T, typename Policy>
+inline void
+assign(double& d,
+       const Parma_Polyhedra_Library::Checked_Number<T, Policy>& c) {
+  d = raw_value(c);
+}
+
+} // namespace
 
 PPL::dimension_type
 PPL::MIP_Problem::steepest_edge_float_entering_index() const {
   DIRTY_TEMP0(mpq_class, real_coeff);
   const dimension_type tableau_num_rows = tableau.num_rows();
   assert(tableau_num_rows == base.size());
-  STEEPEST_EDGE_FP_TYPE challenger_num = 0.0;
-  STEEPEST_EDGE_FP_TYPE challenger_den = 0.0;
-  STEEPEST_EDGE_FP_TYPE current_value = 0.0;
+  double challenger_num = 0.0;
+  double challenger_den = 0.0;
+  double current_value = 0.0;
   dimension_type entering_index = 0;
   const int cost_sign = sgn(working_cost[working_cost.size() - 1]);
   for (dimension_type j = tableau.num_columns() - 1; j-- > 1; ) {
@@ -888,8 +886,8 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
     if (sgn(cost_j) == cost_sign) {
       // We cannot compute the (exact) square root of abs(\Delta x_j).
       // The workaround is to compute the square of `cost[j]'.
-      assign_r(challenger_num, cost_j, ROUND_IGNORE);
-      challenger_num = STEEPEST_EDGE_FABS(challenger_num);
+      assign(challenger_num, cost_j);
+      challenger_num = fabs(challenger_num);
       // Due to our integer implementation, the `1' term in the denominator
       // of the original formula has to be replaced by `squared_lcm_basis'.
       challenger_den = 1.0;
@@ -901,13 +899,12 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
 	  assign_r(real_coeff.get_num(), tableau_ij, ROUND_NOT_NEEDED);
 	  assign_r(real_coeff.get_den(), tableau_i[base[i]], ROUND_NOT_NEEDED);
 	  real_coeff.canonicalize();
-	  STEEPEST_EDGE_FP_TYPE float_tableau_value;
-	  assign_r(float_tableau_value, real_coeff, ROUND_IGNORE);
+	  double float_tableau_value;
+	  assign(float_tableau_value, real_coeff);
 	  challenger_den += float_tableau_value * float_tableau_value;
 	}
       }
-      STEEPEST_EDGE_FP_TYPE challenger_value
-        = challenger_num / STEEPEST_EDGE_SQRT(challenger_den);
+      double challenger_value = sqrt(challenger_den);
       // Initialize `current_value' during the first iteration.
       // Otherwise update if the challenger wins.
       if (entering_index == 0 || challenger_value > current_value) {
@@ -918,10 +915,6 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
   }
   return entering_index;
 }
-
-#undef STEEPEST_EDGE_FP_TYPE
-#undef STEEPEST_EDGE_SQRT
-#undef STEEPEST_EDGE_FABS
 
 PPL::dimension_type
 PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
