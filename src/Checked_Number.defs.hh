@@ -385,25 +385,70 @@ public:
   template <typename From>
   Checked_Number& operator=(const From& y);
 
-  template <typename From>
   //! Add and assign operator.
-  Checked_Number& operator+=(const From& y);
+  template <typename From_Policy>
+  Checked_Number& operator+=(const Checked_Number<T, From_Policy>& y);
+
+  //! Add and assign operator.
+  Checked_Number& operator+=(const T& y);
+
+  //! Add and assign operator.
+  template <typename From>
+  typename Enable_If<Is_Native_Or_Checked<From>::value,
+		     Checked_Number<T, Policy>&>::type
+  operator+=(const From& y);
+
+  //! Subtract and assign operator.
+  template <typename From_Policy>
+  Checked_Number& operator-=(const Checked_Number<T, From_Policy>& y);
+
+  //! Subtract and assign operator.
+  Checked_Number& operator-=(const T& y);
 
   //! Subtract and assign operator.
   template <typename From>
-  Checked_Number& operator-=(const From& y);
+  typename Enable_If<Is_Native_Or_Checked<From>::value,
+		     Checked_Number<T, Policy>&>::type
+  operator-=(const From& y);
+
+  //! Multiply and assign operator.
+  template <typename From_Policy>
+  Checked_Number& operator*=(const Checked_Number<T, From_Policy>& y);
+
+  //! Multiply and assign operator.
+  Checked_Number& operator*=(const T& y);
 
   //! Multiply and assign operator.
   template <typename From>
-  Checked_Number& operator*=(const From& y);
+  typename Enable_If<Is_Native_Or_Checked<From>::value,
+		     Checked_Number<T, Policy>&>::type
+  operator*=(const From& y);
+
+  //! Divide and assign operator.
+  template <typename From_Policy>
+  Checked_Number& operator/=(const Checked_Number<T, From_Policy>& y);
+
+  //! Divide and assign operator.
+  Checked_Number& operator/=(const T& y);
 
   //! Divide and assign operator.
   template <typename From>
-  Checked_Number& operator/=(const From& y);
+  typename Enable_If<Is_Native_Or_Checked<From>::value,
+		     Checked_Number<T, Policy>&>::type
+  operator/=(const From& y);
+
+  //! Compute remainder and assign operator.
+  template <typename From_Policy>
+  Checked_Number& operator%=(const Checked_Number<T, From_Policy>& y);
+
+  //! Compute remainder and assign operator.
+  Checked_Number& operator%=(const T& y);
 
   //! Compute remainder and assign operator.
   template <typename From>
-  Checked_Number& operator%=(const From& y);
+  typename Enable_If<Is_Native_Or_Checked<From>::value,
+		     Checked_Number<T, Policy>& >::type
+  operator%=(const From& y);
 
   //@} // Assignment Operators
 

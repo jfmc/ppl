@@ -87,7 +87,7 @@ Checked_Number<T, Policy>::Checked_Number()
 
 template <typename T, typename Policy>
 inline
-Checked_Number<T, Policy>::Checked_Number(const Checked_Number<T, Policy>& y) {
+Checked_Number<T, Policy>::Checked_Number(const Checked_Number& y) {
   // TODO: avoid default construction of value member.
   Checked::copy<Policy, Policy>(v, y.raw_value());
 }
@@ -503,10 +503,27 @@ Checked_Number<T, Policy>::operator=(const From& y) {
 
 #define DEF_BINARY_OP_ASSIGN(f, fun) \
 template <typename T, typename Policy> \
-template <typename From> \
+template <typename From_Policy> \
 inline Checked_Number<T, Policy>& \
-Checked_Number<T, Policy>::f(const From& y) { \
+Checked_Number<T, Policy>::f(const Checked_Number<T, From_Policy>& y) { \
   Policy::handle_result(fun(*this, *this, y, \
+			    Policy::ROUND_DEFAULT_OPERATOR)); \
+  return *this; \
+} \
+template <typename T, typename Policy> \
+inline Checked_Number<T, Policy>& \
+Checked_Number<T, Policy>::f(const T& y) { \
+  Policy::handle_result(fun(*this, *this, y, \
+			    Policy::ROUND_DEFAULT_OPERATOR)); \
+  return *this; \
+} \
+template <typename T, typename Policy> \
+template <typename From> \
+inline typename Enable_If<Is_Native_Or_Checked<From>::value, \
+                          Checked_Number<T, Policy>& >::type \
+Checked_Number<T, Policy>::f(const From& y) { \
+  Checked_Number<T, Policy> cy(y); \
+  Policy::handle_result(fun(*this, *this, cy, \
 			    Policy::ROUND_DEFAULT_OPERATOR)); \
   return *this; \
 }
