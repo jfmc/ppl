@@ -205,7 +205,10 @@ PREDEFINED             = PPL_PROTO(protos):=protos
 EXPAND_AS_DEFINED      = PPL_TYPE_DECLARATION \
                          PPL_DECLARE_PRINT_FUNCTIONS \
                          PPL_DECLARE_ASCII_DUMP_LOAD_FUNCTIONS \
-                         PPL_DECLARE_OUTPUT_FUNCTIONS
+                         PPL_DECLARE_IO_FUNCTIONS \
+                         PPL_DECLARE_AND_DOCUMENT_PRINT_FUNCTIONS \
+                         PPL_DECLARE_AND_DOCUMENT_ASCII_DUMP_LOAD_FUNCTIONS \
+                         PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS
 SKIP_FUNCTION_MACROS   = YES
 #---------------------------------------------------------------------------
 # Configuration::additions related to external references   
