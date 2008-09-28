@@ -87,9 +87,16 @@ Checked_Number<T, Policy>::Checked_Number()
 
 template <typename T, typename Policy>
 inline
-Checked_Number<T, Policy>::Checked_Number(const Checked_Number& y) {
+Checked_Number<T, Policy>::Checked_Number(const Checked_Number<T, Policy>& y) {
   // TODO: avoid default construction of value member.
   Checked::copy<Policy, Policy>(v, y.raw_value());
+}
+
+template <typename T, typename Policy>
+template <typename From>
+inline
+Checked_Number<T, Policy>::Checked_Number(const From& x)
+  : Checked_Number<T, Policy>(x, Policy::ROUND_DEFAULT_CONSTRUCTOR) {
 }
 
 template <typename T, typename Policy>
@@ -107,34 +114,11 @@ Checked_Number<T, Policy>
 			);
 }
 
-template <typename T, typename Policy>
-template <typename From, typename From_Policy>
-inline
-Checked_Number<T, Policy>
-::Checked_Number(const Checked_Number<From, From_Policy>& y) {
-  // TODO: avoid default construction of value member.
-  Rounding_Dir dir = Policy::ROUND_DEFAULT_CONSTRUCTOR;
-  Policy::handle_result(check_result(Checked::assign_ext<Policy, From_Policy>
-				     (v,
-				      y.raw_value(),
-				      rounding_dir(dir)),
-				     dir));
-}
-
 // TODO: avoid default construction of value member.
 #define DEF_CTOR(type) \
 template <typename T, typename Policy> \
 inline \
 Checked_Number<T, Policy>::Checked_Number(const type x, Rounding_Dir dir) { \
-  Policy::handle_result							\
-    (check_result(Checked::assign_ext<Policy, Checked_Number_Transparent_Policy<type> >	\
-		  (v, x, rounding_dir(dir)),				\
-		  dir));						\
-}									\
-template <typename T, typename Policy>					\
-inline									\
-Checked_Number<T, Policy>::Checked_Number(const type x) {		\
-  Rounding_Dir dir = Policy::ROUND_DEFAULT_CONSTRUCTOR;			\
   Policy::handle_result							\
     (check_result(Checked::assign_ext<Policy, Checked_Number_Transparent_Policy<type> >	\
 		  (v, x, rounding_dir(dir)),				\
@@ -175,14 +159,33 @@ Checked_Number<T, Policy>::Checked_Number(const char* x, Rounding_Dir dir) {
 }
 
 template <typename T, typename Policy>
+template <typename From>
 inline
-Checked_Number<T, Policy>::Checked_Number(const char* x) {
-  std::istringstream s(x);
-  Rounding_Dir dir = Policy::ROUND_DEFAULT_CONSTRUCTOR;
-  Policy::handle_result(check_result(Checked::input<Policy>(v,
-							    s,
+Checked_Number<T, Policy>::Checked_Number(const From&, Rounding_Dir dir, typename Enable_If<Is_Special<From>::value, bool>::type) {
+  Policy::handle_result(check_result(Checked::assign_special<Policy>(v,
+							    From::code,
 							    rounding_dir(dir)),
 				     dir));
+}
+
+template <typename To, typename From>
+inline typename Enable_If<Is_Native_Or_Checked<To>::value && Is_Special<From>::value, Result>::type
+assign_r(To& to, const From&, Rounding_Dir dir) {
+  return check_result(Checked::assign_special<typename Native_Checked_To_Wrapper<To>
+		      ::Policy>(Native_Checked_To_Wrapper<To>::raw_value(to),
+				From::code,
+				rounding_dir(dir)),
+		      dir);
+}
+
+template <typename To, typename From>
+inline typename Enable_If<Is_Native_Or_Checked<To>::value && Is_Special<From>::value, Result>::type
+construct(To& to, const From&, Rounding_Dir dir) {
+  return check_result(Checked::construct_special<typename Native_Checked_To_Wrapper<To>
+		      ::Policy>(Native_Checked_To_Wrapper<To>::raw_value(to),
+				From::code,
+				rounding_dir(dir)),
+		      dir);
 }
 
 template <typename T>
@@ -453,14 +456,6 @@ Checked_Number<T, Policy>::operator=(const Checked_Number<T, Policy>& y) {
   return *this;
 }
 template <typename T, typename Policy>
-template <typename From, typename From_Policy>
-inline Checked_Number<T, Policy>&
-Checked_Number<T, Policy>
-::operator=(const Checked_Number<From, From_Policy>& y) {
-  Policy::handle_result(assign_r(*this, y, Policy::ROUND_DEFAULT_OPERATOR));
-  return *this;
-}
-template <typename T, typename Policy>
 template <typename From>
 inline Checked_Number<T, Policy>&
 Checked_Number<T, Policy>::operator=(const From& y) {
@@ -470,27 +465,10 @@ Checked_Number<T, Policy>::operator=(const From& y) {
 
 #define DEF_BINARY_OP_ASSIGN(f, fun) \
 template <typename T, typename Policy> \
-template <typename From_Policy> \
-inline Checked_Number<T, Policy>& \
-Checked_Number<T, Policy>::f(const Checked_Number<T, From_Policy>& y) { \
-  Policy::handle_result(fun(*this, *this, y, \
-			    Policy::ROUND_DEFAULT_OPERATOR)); \
-  return *this; \
-} \
-template <typename T, typename Policy> \
-inline Checked_Number<T, Policy>& \
-Checked_Number<T, Policy>::f(const T& y) { \
-  Policy::handle_result(fun(*this, *this, y, \
-			    Policy::ROUND_DEFAULT_OPERATOR)); \
-  return *this; \
-} \
-template <typename T, typename Policy> \
 template <typename From> \
-inline typename Enable_If<Is_Native_Or_Checked<From>::value, \
-                          Checked_Number<T, Policy>& >::type \
+inline Checked_Number<T, Policy>& \
 Checked_Number<T, Policy>::f(const From& y) { \
-  Checked_Number<T, Policy> cy(y); \
-  Policy::handle_result(fun(*this, *this, cy, \
+  Policy::handle_result(fun(*this, *this, y, \
 			    Policy::ROUND_DEFAULT_OPERATOR)); \
   return *this; \
 }

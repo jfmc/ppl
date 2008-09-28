@@ -294,35 +294,50 @@ SPECIALIZE_IS_INT(is_int_int, unsigned long long)
 
 template <typename Policy, typename Type>
 inline Result
-set_special_int(Type& v, Result r) {
+assign_special_int(Type& v, Result r, Rounding_Dir dir) {
   Result t = classify(r);
-  if (Policy::has_nan && t == VC_NAN)
-    v = Extended_Int<Policy, Type>::not_a_number;
-  else if (Policy::has_infinity) {
-    switch (t) {
-    case VC_MINUS_INFINITY:
+  switch (t) {
+  case VC_NAN:
+    if (Policy::has_nan)
+      v = Extended_Int<Policy, Type>::not_a_number;
+    break;
+  case VC_MINUS_INFINITY:
+    if (Policy::has_infinity) {
       v = Extended_Int<Policy, Type>::minus_infinity;
       return V_EQ;
-    case VC_PLUS_INFINITY:
+    }
+    if (round_up(dir)) {
+      v = Extended_Int<Policy, Type>::min;
+      return V_LT;
+    }
+    break;
+  case VC_PLUS_INFINITY:
+    if (Policy::has_infinity) {
       v = Extended_Int<Policy, Type>::plus_infinity;
       return V_EQ;
-    default:
-      break;
     }
+    if (round_down(dir)) {
+      v = Extended_Int<Policy, Type>::max;
+      return V_GT;
+    }
+    break;
+  default:
+    assert(0);
+    break;
   }
   return r;
 }
 
-SPECIALIZE_SET_SPECIAL(set_special_int, signed char)
-SPECIALIZE_SET_SPECIAL(set_special_int, signed short)
-SPECIALIZE_SET_SPECIAL(set_special_int, signed int)
-SPECIALIZE_SET_SPECIAL(set_special_int, signed long)
-SPECIALIZE_SET_SPECIAL(set_special_int, signed long long)
-SPECIALIZE_SET_SPECIAL(set_special_int, unsigned char)
-SPECIALIZE_SET_SPECIAL(set_special_int, unsigned short)
-SPECIALIZE_SET_SPECIAL(set_special_int, unsigned int)
-SPECIALIZE_SET_SPECIAL(set_special_int, unsigned long)
-SPECIALIZE_SET_SPECIAL(set_special_int, unsigned long long)
+SPECIALIZE_ASSIGN_SPECIAL(assign_special_int, signed char)
+SPECIALIZE_ASSIGN_SPECIAL(assign_special_int, signed short)
+SPECIALIZE_ASSIGN_SPECIAL(assign_special_int, signed int)
+SPECIALIZE_ASSIGN_SPECIAL(assign_special_int, signed long)
+SPECIALIZE_ASSIGN_SPECIAL(assign_special_int, signed long long)
+SPECIALIZE_ASSIGN_SPECIAL(assign_special_int, unsigned char)
+SPECIALIZE_ASSIGN_SPECIAL(assign_special_int, unsigned short)
+SPECIALIZE_ASSIGN_SPECIAL(assign_special_int, unsigned int)
+SPECIALIZE_ASSIGN_SPECIAL(assign_special_int, unsigned long)
+SPECIALIZE_ASSIGN_SPECIAL(assign_special_int, unsigned long long)
 
 template <typename To_Policy, typename From_Policy, typename To, typename From>
 inline Result
@@ -465,29 +480,11 @@ template <typename To_Policy, typename From_Policy, typename To, typename From>
 inline Result
 assign_int_float(To& to, const From from, Rounding_Dir dir) {
   if (is_nan<From_Policy>(from))
-    return set_special<To_Policy>(to, VC_NAN);
-  else if (is_minf<From_Policy>(from)) {
-    if (To_Policy::has_infinity) {
-      to = Extended_Int<To_Policy, To>::minus_infinity;
-      return V_EQ;
-    }
-    if (round_up(dir)) {
-      to = Extended_Int<To_Policy, To>::min;
-      return V_LT;
-    }
-    return VC_MINUS_INFINITY;
-  }
-  else if (is_pinf<From_Policy>(from)) {
-    if (To_Policy::has_infinity) {
-      to = Extended_Int<To_Policy, To>::plus_infinity;
-      return V_EQ;
-    }
-    if (round_down(dir)) {
-      to = Extended_Int<To_Policy, To>::max;
-      return V_GT;
-    }
-    return VC_PLUS_INFINITY;
-  }
+    return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
+  else if (is_minf<From_Policy>(from))
+    return assign_special<To_Policy>(to, VC_MINUS_INFINITY, dir);
+  else if (is_pinf<From_Policy>(from))
+    return assign_special<To_Policy>(to, VC_PLUS_INFINITY, dir);
   if (CHECK_P(To_Policy::check_overflow, (from < Extended_Int<To_Policy, To>::min)))
     return set_neg_overflow_int<To_Policy>(to, dir);
   if (CHECK_P(To_Policy::check_overflow, (from > Extended_Int<To_Policy, To>::max)))
@@ -1007,7 +1004,7 @@ template <typename To_Policy, typename From1_Policy, typename From2_Policy, type
 inline Result
 div_signed_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (CHECK_P(To_Policy::check_div_zero, y == 0))
-    return set_special<To_Policy>(to, V_DIV_ZERO);
+    return assign_special<To_Policy>(to, V_DIV_ZERO, ROUND_IGNORE);
   if (To_Policy::check_overflow && y == -1)
     return neg_signed_int<To_Policy, From1_Policy>(to, x, dir);
   to = x / y;
@@ -1026,7 +1023,7 @@ template <typename To_Policy, typename From1_Policy, typename From2_Policy, type
 inline Result
 div_unsigned_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (CHECK_P(To_Policy::check_div_zero, y == 0))
-    return set_special<To_Policy>(to, V_DIV_ZERO);
+    return assign_special<To_Policy>(to, V_DIV_ZERO, ROUND_IGNORE);
   to = x / y;
   if (round_ignore(dir))
     return V_GE;
@@ -1040,7 +1037,7 @@ template <typename To_Policy, typename From1_Policy, typename From2_Policy, type
 inline Result
 idiv_signed_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (CHECK_P(To_Policy::check_div_zero, y == 0))
-    return set_special<To_Policy>(to, V_DIV_ZERO);
+    return assign_special<To_Policy>(to, V_DIV_ZERO, ROUND_IGNORE);
   if (To_Policy::check_overflow && y == -1)
     return neg_signed_int<To_Policy, From1_Policy>(to, x, dir);
   to = x / y;
@@ -1051,7 +1048,7 @@ template <typename To_Policy, typename From1_Policy, typename From2_Policy, type
 inline Result
 idiv_unsigned_int(Type& to, const Type x, const Type y, Rounding_Dir) {
   if (CHECK_P(To_Policy::check_div_zero, y == 0))
-    return set_special<To_Policy>(to, V_DIV_ZERO);
+    return assign_special<To_Policy>(to, V_DIV_ZERO, ROUND_IGNORE);
   to = x / y;
   return V_EQ;
 }
@@ -1060,7 +1057,7 @@ template <typename To_Policy, typename From1_Policy, typename From2_Policy, type
 inline Result
 rem_signed_int(Type& to, const Type x, const Type y, Rounding_Dir) {
   if (CHECK_P(To_Policy::check_div_zero, y == 0))
-    return set_special<To_Policy>(to, V_MOD_ZERO);
+    return assign_special<To_Policy>(to, V_MOD_ZERO, ROUND_IGNORE);
   to = x % y;
   return V_EQ;
 }
@@ -1069,7 +1066,7 @@ template <typename To_Policy, typename From1_Policy, typename From2_Policy, type
 inline Result
 rem_unsigned_int(Type& to, const Type x, const Type y, Rounding_Dir) {
   if (CHECK_P(To_Policy::check_div_zero, y == 0))
-    return set_special<To_Policy>(to, V_MOD_ZERO);
+    return assign_special<To_Policy>(to, V_MOD_ZERO, ROUND_IGNORE);
   to = x % y;
   return V_EQ;
 }
@@ -1239,7 +1236,7 @@ template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
 sqrt_signed_int(Type& to, const Type from, Rounding_Dir dir) {
   if (CHECK_P(To_Policy::check_sqrt_neg, from < 0))
-    return set_special<To_Policy>(to, V_SQRT_NEG);
+    return assign_special<To_Policy>(to, V_SQRT_NEG, ROUND_IGNORE);
   return sqrt_unsigned_int<To_Policy, From_Policy>(to, from, dir);
 }
 
@@ -1255,14 +1252,14 @@ add_mul_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
       to = z;
       return r;
     }
-    return set_special<To_Policy>(to, V_UNKNOWN_NEG_OVERFLOW);
+    return assign_special<To_Policy>(to, V_UNKNOWN_NEG_OVERFLOW, ROUND_IGNORE);
   case V_POS_OVERFLOW:
   case V_GT:
     if (to >= 0) {
       to = z;
       return r;
     }
-    return set_special<To_Policy>(to, V_UNKNOWN_POS_OVERFLOW);
+    return assign_special<To_Policy>(to, V_UNKNOWN_POS_OVERFLOW, ROUND_IGNORE);
   default:
     return add<To_Policy, To_Policy, To_Policy>(to, to, z, dir);
   }

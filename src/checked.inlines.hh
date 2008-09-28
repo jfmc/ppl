@@ -205,6 +205,14 @@ struct FUNCTION_CLASS(construct) {
   }
 };
 
+template <typename To_Policy, typename To>
+struct FUNCTION_CLASS(construct_special) {
+  static inline Result function(To& to, Result r, Rounding_Dir dir) {
+    new (&to) To();
+    return assign_special<To_Policy>(to, r, dir);
+  }
+};
+
 template <typename To_Policy, typename From_Policy, typename To, typename From>
 inline Result
 assign_exact(To& to, const From& from, Rounding_Dir) {
@@ -578,13 +586,12 @@ inline Result
 input_generic(Type& to, std::istream& is, Rounding_Dir dir) {
   DIRTY_TEMP0(mpq_class, q);
   Result r = input_mpq(q, is);
-  if (r == VC_MINUS_INFINITY)
-    return assign<Policy, Special_Float_Policy>(to, MINUS_INFINITY, dir);
-  if (r == VC_PLUS_INFINITY)
-    return assign<Policy, Special_Float_Policy>(to, PLUS_INFINITY, dir);
+  if (is_special(r))
+    return assign_special<Policy>(to, r, dir);
   if (r == V_EQ)
     return assign<Policy, void>(to, q, dir);
-  return set_special<Policy>(to, r);
+  assert(0);
+  return VC_NAN;
 }
 
 } // namespace Checked

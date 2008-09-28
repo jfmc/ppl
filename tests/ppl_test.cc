@@ -135,10 +135,13 @@ PPL::check_distance(const Checked_Number<mpq_class, Extended_Number_Policy>& d,
     max_d((max_d_s ? max_d_s : "0"), ROUND_NOT_NEEDED);
   assert(max_d >= 0);
   if (d > max_d) {
+#if 0
+    // FIXME: avoid the conversion involving float.
     Checked_Number<float, Extended_Number_Policy> dd(d, ROUND_UP);
     nout << "Excessive " << d_name << " distance " << dd
 	 << ": should be at most " << max_d << "."
 	 << std::endl;
+#endif
     return false;
   }
   else

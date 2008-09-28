@@ -287,57 +287,13 @@ public:
   //! Direct initialization from a C string and rounding mode.
   Checked_Number(const char* y, Rounding_Dir dir);
 
-  //! Direct initialization from a Checked_Number, default rounding mode.
-  template <typename From, typename From_Policy>
-  explicit Checked_Number(const Checked_Number<From, From_Policy>& y);
+  //! Direct initialization from special.
+  template <typename From>
+  Checked_Number(const From&, Rounding_Dir dir, typename Enable_If<Is_Special<From>::value, bool>::type ignored = false);
 
-  //! Direct initialization from a signed char, default rounding mode.
-  Checked_Number(signed char y);
-
-  //! Direct initialization from a signed short, default rounding mode.
-  Checked_Number(signed short y);
-
-  //! Direct initialization from a signed int, default rounding mode.
-  Checked_Number(signed int y);
-
-  //! Direct initialization from a signed long, default rounding mode.
-  Checked_Number(signed long y);
-
-  //! Direct initialization from a signed long long, default rounding mode.
-  Checked_Number(signed long long y);
-
-  //! Direct initialization from an unsigned char, default rounding mode.
-  Checked_Number(unsigned char y);
-
-  //! Direct initialization from an unsigned short, default rounding mode.
-  Checked_Number(unsigned short y);
-
-  //! Direct initialization from an unsigned int, default rounding mode.
-  Checked_Number(unsigned int y);
-
-  //! Direct initialization from an unsigned long, default rounding mode.
-  Checked_Number(unsigned long y);
-
-  //! Direct initialization from an unsigned long long, default rounding mode.
-  Checked_Number(unsigned long long y);
-
-  //! Direct initialization from a float, default rounding mode.
-  Checked_Number(float y);
-
-  //! Direct initialization from a double, default rounding mode.
-  Checked_Number(double y);
-
-  //! Direct initialization from a long double, default rounding mode.
-  Checked_Number(long double y);
-
-  //! Direct initialization from a rational, default rounding mode.
-  Checked_Number(const mpq_class& y);
-
-  //! Direct initialization from an unbounded integer, default rounding mode.
-  Checked_Number(const mpz_class& y);
-
-  //! Direct initialization from a C string, default rounding mode.
-  Checked_Number(const char* y);
+  //! Direct initialization with default rounding mode.
+  template <typename From>
+  explicit Checked_Number(const From& y);
 
   //@} // Constructors
 
@@ -377,77 +333,28 @@ public:
   Checked_Number& operator=(const Checked_Number& y);
 
   //! Assignment operator.
-  template <typename From, typename From_Policy>
-  Checked_Number& operator=(const Checked_Number<From, From_Policy>& y);
-
-  //! Assignment operator.
   template <typename From>
   Checked_Number& operator=(const From& y);
 
-  //! Add and assign operator.
-  template <typename From_Policy>
-  Checked_Number& operator+=(const Checked_Number<T, From_Policy>& y);
-
-  //! Add and assign operator.
-  Checked_Number& operator+=(const T& y);
-
-  //! Add and assign operator.
   template <typename From>
-  typename Enable_If<Is_Native_Or_Checked<From>::value,
-		     Checked_Number<T, Policy>&>::type
-  operator+=(const From& y);
-
-  //! Subtract and assign operator.
-  template <typename From_Policy>
-  Checked_Number& operator-=(const Checked_Number<T, From_Policy>& y);
-
-  //! Subtract and assign operator.
-  Checked_Number& operator-=(const T& y);
+  //! Add and assign operator.
+  Checked_Number& operator+=(const From& y);
 
   //! Subtract and assign operator.
   template <typename From>
-  typename Enable_If<Is_Native_Or_Checked<From>::value,
-		     Checked_Number<T, Policy>&>::type
-  operator-=(const From& y);
-
-  //! Multiply and assign operator.
-  template <typename From_Policy>
-  Checked_Number& operator*=(const Checked_Number<T, From_Policy>& y);
-
-  //! Multiply and assign operator.
-  Checked_Number& operator*=(const T& y);
+  Checked_Number& operator-=(const From& y);
 
   //! Multiply and assign operator.
   template <typename From>
-  typename Enable_If<Is_Native_Or_Checked<From>::value,
-		     Checked_Number<T, Policy>&>::type
-  operator*=(const From& y);
-
-  //! Divide and assign operator.
-  template <typename From_Policy>
-  Checked_Number& operator/=(const Checked_Number<T, From_Policy>& y);
-
-  //! Divide and assign operator.
-  Checked_Number& operator/=(const T& y);
+  Checked_Number& operator*=(const From& y);
 
   //! Divide and assign operator.
   template <typename From>
-  typename Enable_If<Is_Native_Or_Checked<From>::value,
-		     Checked_Number<T, Policy>&>::type
-  operator/=(const From& y);
-
-  //! Compute remainder and assign operator.
-  template <typename From_Policy>
-  Checked_Number& operator%=(const Checked_Number<T, From_Policy>& y);
-
-  //! Compute remainder and assign operator.
-  Checked_Number& operator%=(const T& y);
+  Checked_Number& operator/=(const From& y);
 
   //! Compute remainder and assign operator.
   template <typename From>
-  typename Enable_If<Is_Native_Or_Checked<From>::value,
-		     Checked_Number<T, Policy>& >::type
-  operator%=(const From& y);
+  Checked_Number& operator%=(const From& y);
 
   //@} // Assignment Operators
 
@@ -504,6 +411,16 @@ is_infinity(const T& x);
 template <typename T>
 typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type
 is_integer(const T& x);
+
+/*! \relates Checked_Number */
+template <typename To, typename From>
+typename Enable_If<Is_Native_Or_Checked<To>::value && Is_Special<From>::value, Result>::type
+construct(To& to, const From& x, Rounding_Dir dir);
+
+/*! \relates Checked_Number */
+template <typename To, typename From>
+typename Enable_If<Is_Native_Or_Checked<To>::value && Is_Special<From>::value, Result>::type
+assign_r(To& to, const From& x, Rounding_Dir dir);
 
 /*! \relates Checked_Number */
 template <typename To>

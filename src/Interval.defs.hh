@@ -362,127 +362,129 @@ public:
   }
 
   template <typename T>
-  I_Result lower_set_uninit(const T& x, bool open = false) {
+  Result lower_set_uninit(const T& x, bool open = false) {
     info().clear_boundary_properties(LOWER);
     Result rl = Boundary_NS::assign(LOWER, lower(), info(), LOWER, x, f_info(x, open));
     lower_load();
-    return combine(rl, V_EQ);
+    return rl;
   }
 
-  I_Result lower_set_uninit(const Unbounded&) {
+  Result lower_set_uninit(const Unbounded&) {
     info().clear_boundary_properties(LOWER);
     Result rl = set_unbounded(LOWER, lower(), info());
     lower_load();
-    return combine(rl, V_EQ);
+    return rl;
   }
 
   template <typename T>
-  I_Result lower_set(const T& x, bool open = false) {
+  Result lower_set(const T& x, bool open = false) {
     assert(OK());
     info().clear_boundary_properties(LOWER);
     Result rl = Boundary_NS::assign(LOWER, lower(), info(), LOWER, x, f_info(x, open));
     invalidate_cardinality_cache();
     assert(OK());
-    return combine(rl, V_EQ);
+    return rl;
   }
 
-  I_Result lower_set(const Unbounded&) {
+  Result lower_set(const Unbounded&) {
     assert(OK());
     info().clear_boundary_properties(LOWER);
     Result rl = set_unbounded(LOWER, lower(), info());
     invalidate_cardinality_cache();
     assert(OK());
-    return combine(rl, V_EQ);
+    return rl;
   }
 
   template <typename T>
-  I_Result lower_narrow(const T& x, bool open = false) {
+  Result lower_narrow(const T& x, bool open = false) {
     assert(OK());
     if (ge(LOWER, lower(), info(), LOWER, x, f_info(x, open)))
-      return combine(V_EQ, V_EQ);
+      return V_EQ;
     return lower_set(x, open);
   }
 
   template <typename T>
-  I_Result lower_widen(const T& x, bool open = false) {
+  Result lower_widen(const T& x, bool open = false) {
     assert(OK());
     if (le(LOWER, lower(), info(), LOWER, x, f_info(x, open)))
-      return combine(V_EQ, V_EQ);
+      return V_EQ;
     return lower_set(x, open);
   }
 
-  I_Result lower_widen(const Unbounded&) {
+  Result lower_widen(const Unbounded&) {
     assert(OK());
     if (lower_is_unbounded())
-      return combine(V_EQ, V_EQ);
+      return V_EQ;
     info().clear_boundary_properties(LOWER);
     Result rl = set_unbounded(LOWER, lower(), info());
     invalidate_cardinality_cache();
     assert(OK());
-    return combine(rl, V_EQ);
+    return V_EQ;
   }
 
   template <typename T>
-  I_Result upper_set_uninit(const T& x, bool open = false) {
+  Result upper_set_uninit(const T& x, bool open = false) {
     info().clear_boundary_properties(UPPER);
     Result rl = Boundary_NS::assign(UPPER, upper(), info(), UPPER, x, f_info(x, open));
     upper_load();
-    return combine(rl, V_EQ);
+    return rl;
   }
-  I_Result upper_set_uninit(const Unbounded&) {
+  Result upper_set_uninit(const Unbounded&) {
     info().clear_boundary_properties(UPPER);
     Result rl = set_unbounded(UPPER, upper(), info());
     upper_load();
-    return combine(rl, V_EQ);
+    return rl;
   }
 
   template <typename T>
-  I_Result upper_set(const T& x, bool open = false) {
+  Result upper_set(const T& x, bool open = false) {
     assert(OK());
     info().clear_boundary_properties(UPPER);
     Result rl = Boundary_NS::assign(UPPER, upper(), info(), UPPER, x, f_info(x, open));
     invalidate_cardinality_cache();
     assert(OK());
-    return combine(rl, V_EQ);
+    return rl;
   }
 
-  I_Result upper_set(const Unbounded&) {
+  Result upper_set(const Unbounded&) {
     assert(OK());
     info().clear_boundary_properties(UPPER);
     Result rl = set_unbounded(UPPER, upper(), info());
     invalidate_cardinality_cache();
     assert(OK());
-    return combine(rl, V_EQ);
+    return rl;
   }
 
   template <typename T>
-  I_Result upper_narrow(const T& x, bool open = false) {
+  Result upper_narrow(const T& x, bool open = false) {
     assert(OK());
     if (le(UPPER, upper(), info(), UPPER, x, f_info(x, open)))
-      return combine(V_EQ, V_EQ);
+      return V_EQ;
     return upper_set(x, open);
   }
 
   template <typename T>
-  I_Result upper_widen(const T& x, bool open = false) {
+  Result upper_widen(const T& x, bool open = false) {
     assert(OK());
     if (ge(UPPER, upper(), info(), UPPER, x, f_info(x, open)))
-      return combine(V_EQ, V_EQ);
+      return V_EQ;
     return upper_set(x, open);
   }
 
-  I_Result upper_widen(const Unbounded&) {
+  Result upper_widen(const Unbounded&) {
     assert(OK());
     if (upper_is_unbounded())
-      return combine(V_EQ, V_EQ);
+      return V_EQ;
     info().clear_boundary_properties(UPPER);
     Result rl = set_unbounded(UPPER, upper(), info());
     invalidate_cardinality_cache();
     assert(OK());
-    return combine(rl, V_EQ);
+    return rl;
   }
 
   I_Result assign(Degenerate_Element e) {
+    I_Result r;
+    Result rl, ru;
     info().clear();
     switch (e) {
     case EMPTY:
@@ -490,20 +492,48 @@ public:
       info().set_interval_property(CARDINALITY_0);
       lower_set_uninit(1);
       upper_set_uninit(0);
+      r = I_EMPTY;
       break;
     case UNIVERSE:
       info().set_interval_property(CARDINALITY_0, true);
       info().set_interval_property(CARDINALITY_1, true);
-      lower_set_uninit(UNBOUNDED);
-      upper_set_uninit(UNBOUNDED);
+      rl = lower_set_uninit(UNBOUNDED);
+      ru = upper_set_uninit(UNBOUNDED);
+      r = combine(rl, ru);
       break;
     default:
       assert(0);
+      r = I_EMPTY;
       break;
     }
     complete_init();
     assert(OK());
-    return I_EMPTY;
+    return r;
+  }
+
+  template <typename From>
+  typename Enable_If<Is_Special<From>::value, I_Result>::type assign(const From&) {
+    info().clear();
+    info().set_interval_property(CARDINALITY_0, true);
+    info().set_interval_property(CARDINALITY_1, true);
+    Result rl, ru;
+    switch (From::code) {
+    case VC_MINUS_INFINITY:
+      rl = Boundary_NS::set_minus_infinity(LOWER, lower(), info());
+      ru = Boundary_NS::set_minus_infinity(UPPER, upper(), info());
+      break;
+    case VC_PLUS_INFINITY:
+      rl = Boundary_NS::set_plus_infinity(LOWER, lower(), info());
+      ru = Boundary_NS::set_plus_infinity(UPPER, upper(), info());
+      break;
+    default:
+      assert(0);
+      rl = VC_NAN;
+      ru = VC_NAN;
+    }
+    complete_init_internal();
+    assert(OK());
+    return combine(rl, ru);
   }
 
   I_Result set_infinities() {

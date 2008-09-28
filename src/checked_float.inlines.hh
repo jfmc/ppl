@@ -203,7 +203,7 @@ is_int_float(const T v) {
 
 template <typename Policy, typename T>
 inline Result
-set_special_float(T& v, Result r) {
+assign_special_float(T& v, Result r, Rounding_Dir) {
   switch (classify(r)) {
   case VC_MINUS_INFINITY:
     v = -HUGE_VAL;
@@ -213,11 +213,11 @@ set_special_float(T& v, Result r) {
     break;
   case VC_NAN:
     v = NAN;
-    break;
+    return r;
   default:
     break;
   }
-  return r;
+  return V_EQ;
 }
 
 template <typename T>
@@ -324,7 +324,7 @@ template <typename To_Policy, typename From_Policy, typename To, typename From>
 inline Result
 assign_float_float_exact(To& to, const From from, Rounding_Dir) {
   if (To_Policy::check_nan_result && is_nan<From_Policy>(from))
-    return set_special<To_Policy>(to, VC_NAN);
+    return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
   to = from;
   return V_EQ;
 }
@@ -333,7 +333,7 @@ template <typename To_Policy, typename From_Policy, typename To, typename From>
 inline Result
 assign_float_float_inexact(To& to, const From from, Rounding_Dir dir) {
   if (To_Policy::check_nan_result && is_nan<From_Policy>(from))
-    return set_special<To_Policy>(to, VC_NAN);
+    return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
   prepare_inexact<To_Policy>(dir);
   if (fpu_direct_rounding(dir))
     to = from;
@@ -362,7 +362,7 @@ template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
 floor_float(Type& to, const Type from, Rounding_Dir) {
   if (To_Policy::check_nan_result && is_nan<From_Policy>(from))
-    return set_special<To_Policy>(to, VC_NAN);
+    return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
   if (fpu_direct_rounding(ROUND_DOWN))
     to = rint(from);
   else if (fpu_inverse_rounding(ROUND_DOWN))
@@ -381,7 +381,7 @@ template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
 ceil_float(Type& to, const Type from, Rounding_Dir) {
   if (To_Policy::check_nan_result && is_nan<From_Policy>(from))
-    return set_special<To_Policy>(to, VC_NAN);
+    return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
   if (fpu_direct_rounding(ROUND_UP))
     to = rint(from);
   else if (fpu_inverse_rounding(ROUND_UP))
@@ -400,7 +400,7 @@ template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
 trunc_float(Type& to, const Type from, Rounding_Dir dir) {
   if (To_Policy::check_nan_result && is_nan<From_Policy>(from))
-    return set_special<To_Policy>(to, VC_NAN);
+    return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
   if (from >= 0)
     return floor<To_Policy, From_Policy>(to, from, dir);
   else
@@ -411,7 +411,7 @@ template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
 neg_float(Type& to, const Type from, Rounding_Dir) {
   if (To_Policy::check_nan_result && is_nan<From_Policy>(from))
-    return set_special<To_Policy>(to, VC_NAN);
+    return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
   to = -from;
   return V_EQ;
 }
@@ -422,7 +422,7 @@ inline Result
 add_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (To_Policy::check_inf_add_inf
       && is_inf_float<From1_Policy>(x) && x == -y)
-    return set_special<To_Policy>(to, V_INF_ADD_INF);
+    return assign_special<To_Policy>(to, V_INF_ADD_INF, ROUND_IGNORE);
   prepare_inexact<To_Policy>(dir);
   if (fpu_direct_rounding(dir))
     to = x + y;
@@ -447,7 +447,7 @@ inline Result
 sub_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (To_Policy::check_inf_sub_inf
       && is_inf_float<From1_Policy>(x) && x == y)
-    return set_special<To_Policy>(to, V_INF_SUB_INF);
+    return assign_special<To_Policy>(to, V_INF_SUB_INF, ROUND_IGNORE);
   prepare_inexact<To_Policy>(dir);
   if (fpu_direct_rounding(dir))
     to = x - y;
@@ -473,7 +473,7 @@ mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (To_Policy::check_inf_mul_zero
       && ((x == 0 && is_inf_float<From2_Policy>(y)) ||
 	  (y == 0 && is_inf_float<From1_Policy>(x))))
-    return set_special<To_Policy>(to, V_INF_MUL_ZERO);
+    return assign_special<To_Policy>(to, V_INF_MUL_ZERO, ROUND_IGNORE);
   prepare_inexact<To_Policy>(dir);
   if (fpu_direct_rounding(dir))
     to = x * y;
@@ -498,9 +498,9 @@ inline Result
 div_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (To_Policy::check_inf_div_inf
       && is_inf_float<From1_Policy>(x) && is_inf_float<From2_Policy>(y))
-    return set_special<To_Policy>(to, V_INF_DIV_INF);
+    return assign_special<To_Policy>(to, V_INF_DIV_INF, ROUND_IGNORE);
   if (To_Policy::check_div_zero && y == 0)
-    return set_special<To_Policy>(to, V_DIV_ZERO);
+    return assign_special<To_Policy>(to, V_DIV_ZERO, ROUND_IGNORE);
   prepare_inexact<To_Policy>(dir);
   if (fpu_direct_rounding(dir))
     to = x / y;
@@ -544,9 +544,9 @@ template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 inline Result
 rem_float(Type& to, const Type x, const Type y, Rounding_Dir) {
   if (To_Policy::check_inf_mod && is_inf_float<From1_Policy>(x))
-    return set_special<To_Policy>(to, V_INF_MOD);
+    return assign_special<To_Policy>(to, V_INF_MOD, ROUND_IGNORE);
   if (To_Policy::check_div_zero && y == 0)
-    return set_special<To_Policy>(to, V_MOD_ZERO);
+    return assign_special<To_Policy>(to, V_MOD_ZERO, ROUND_IGNORE);
   to = std::fmod(x, y);
   if (To_Policy::check_nan_result && is_nan<To_Policy>(to))
     return VC_NAN;
@@ -562,7 +562,7 @@ template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
 mul2exp_float(Type& to, const Type x, int exp, Rounding_Dir dir) {
   if (To_Policy::check_nan_result && is_nan<From_Policy>(x))
-    return set_special<To_Policy>(to, VC_NAN);
+    return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
   if (exp < 0)
     return div2exp<To_Policy, From_Policy>(to, x, -exp, dir);
   assert(static_cast<unsigned int>(exp) < sizeof(unsigned long long) * 8);
@@ -573,7 +573,7 @@ template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
 div2exp_float(Type& to, const Type x, int exp, Rounding_Dir dir) {
   if (To_Policy::check_nan_result && is_nan<From_Policy>(x))
-    return set_special<To_Policy>(to, VC_NAN);
+    return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
   if (exp < 0)
     return mul2exp<To_Policy, From_Policy>(to, x, -exp, dir);
   assert(static_cast<unsigned int>(exp) < sizeof(unsigned long long) * 8);
@@ -584,7 +584,7 @@ template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
 abs_float(Type& to, const Type from, Rounding_Dir) {
   if (To_Policy::check_nan_result && is_nan<From_Policy>(from))
-    return set_special<To_Policy>(to, VC_NAN);
+    return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
   to = std::abs(from);
   return V_EQ;
 }
@@ -593,9 +593,9 @@ template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
 sqrt_float(Type& to, const Type from, Rounding_Dir dir) {
   if (To_Policy::check_nan_result && is_nan<From_Policy>(from))
-    return set_special<To_Policy>(to, VC_NAN);
+    return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
   if (To_Policy::check_sqrt_neg && from < 0)
-    return set_special<To_Policy>(to, V_SQRT_NEG);
+    return assign_special<To_Policy>(to, V_SQRT_NEG, ROUND_IGNORE);
   prepare_inexact<To_Policy>(dir);
   if (fpu_direct_rounding(dir))
     to = std::sqrt(from);
@@ -803,7 +803,7 @@ add_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (To_Policy::check_inf_mul_zero
       && ((x == 0 && is_inf_float<From2_Policy>(y)) ||
 	  (y == 0 && is_inf_float<From1_Policy>(x))))
-    return set_special<To_Policy>(to, V_INF_MUL_ZERO);
+    return assign_special<To_Policy>(to, V_INF_MUL_ZERO, ROUND_IGNORE);
   // FIXME: missing check_inf_add_inf
   prepare_inexact<To_Policy>(dir);
   if (fpu_direct_rounding(dir))
@@ -829,7 +829,7 @@ sub_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (To_Policy::check_inf_mul_zero
       && ((x == 0 && is_inf_float<From2_Policy>(y)) ||
 	  (y == 0 && is_inf_float<From1_Policy>(x))))
-    return set_special<To_Policy>(to, V_INF_MUL_ZERO);
+    return assign_special<To_Policy>(to, V_INF_MUL_ZERO, ROUND_IGNORE);
   // FIXME: missing check_inf_add_inf
   prepare_inexact<To_Policy>(dir);
   if (fpu_direct_rounding(dir))
@@ -903,7 +903,7 @@ SPECIALIZE_CLASSIFY(classify_float, float)
 SPECIALIZE_IS_NAN(is_nan_float, float)
 SPECIALIZE_IS_MINF(is_minf_float, float)
 SPECIALIZE_IS_PINF(is_pinf_float, float)
-SPECIALIZE_SET_SPECIAL(set_special_float, float)
+SPECIALIZE_ASSIGN_SPECIAL(assign_special_float, float)
 SPECIALIZE_ASSIGN(assign_float_int, float, signed char)
 SPECIALIZE_ASSIGN(assign_float_int, float, signed short)
 SPECIALIZE_ASSIGN(assign_float_int, float, signed int)
@@ -947,7 +947,7 @@ SPECIALIZE_CLASSIFY(classify_float, double)
 SPECIALIZE_IS_NAN(is_nan_float, double)
 SPECIALIZE_IS_MINF(is_minf_float, double)
 SPECIALIZE_IS_PINF(is_pinf_float, double)
-SPECIALIZE_SET_SPECIAL(set_special_float, double)
+SPECIALIZE_ASSIGN_SPECIAL(assign_special_float, double)
 SPECIALIZE_ASSIGN(assign_float_int, double, signed char)
 SPECIALIZE_ASSIGN(assign_float_int, double, signed short)
 SPECIALIZE_ASSIGN(assign_float_int, double, signed int)
@@ -991,7 +991,7 @@ SPECIALIZE_CLASSIFY(classify_float, long double)
 SPECIALIZE_IS_NAN(is_nan_float, long double)
 SPECIALIZE_IS_MINF(is_minf_float, long double)
 SPECIALIZE_IS_PINF(is_pinf_float, long double)
-SPECIALIZE_SET_SPECIAL(set_special_float, long double)
+SPECIALIZE_ASSIGN_SPECIAL(assign_special_float, long double)
 SPECIALIZE_ASSIGN(assign_float_int, long double, signed char)
 SPECIALIZE_ASSIGN(assign_float_int, long double, signed short)
 SPECIALIZE_ASSIGN(assign_float_int, long double, signed int)
