@@ -23,7 +23,7 @@
 # Process this file with autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library],[0.10pre30],[ppl-devel@cs.unipr.it],[ppl])
+AC_INIT([the Parma Polyhedra Library],[0.10pre31],[ppl-devel@cs.unipr.it],[ppl])
 
 # Minimum Autoconf version required.
 AC_PREREQ(2.60)
@@ -903,14 +903,16 @@ AM_CONDITIONAL(BUILD_SOME_PROLOG_INTERFACES, test x$SOME_PROLOG = xyes)
 # Define the list of interfaces that are enabled by default.
 # Different instantiations are separated by a '@' character.
 di="        Polyhedron @ Grid"
-di="${di} @ Octagonal_Shape<double>"
-di="${di} @ Octagonal_Shape<mpz_class> @ Octagonal_Shape<mpq_class>"
-di="${di} @ BD_Shape<double>"
+di="${di} @ Rational_Box"
 di="${di} @ BD_Shape<mpz_class> @ BD_Shape<mpq_class>"
-di="${di} @ Double_Box @ Rational_Box"
+di="${di} @ Octagonal_Shape<mpz_class> @ Octagonal_Shape<mpq_class>"
 di="${di} @ Constraints_Product<C_Polyhedron, Grid>"
 di="${di} @ Pointset_Powerset<C_Polyhedron>"
 di="${di} @ Pointset_Powerset<NNC_Polyhedron>"
+if test $ac_supported_double = 1
+then
+  di="${di} @ Double_Box @ BD_Shape<double> @ Octagonal_Shape<double>"
+fi
 default_instantiations="${di}"
 
 enableval=not_specified
@@ -934,41 +936,29 @@ xno | xnone)
   then
     ai="        Int8_Box @ Int16_Box @ Int32_Box @ Int64_Box"
     ai="${ai} @ Uint8_Box @ Uint16_Box @ Uint32_Box @ Uint64_Box"
-    ai="${ai} @ Float_Box @ Double_Box@ Long_Double_Box"
     ai="${ai} @ Z_Box @ Rational_Box"
     ai="${ai} @ BD_Shape<int8_t> @ BD_Shape<int16_t>"
     ai="${ai} @ BD_Shape<int32_t> @ BD_Shape<int64_t>"
-    ai="${ai} @ BD_Shape<float> @ BD_Shape<double> @ BD_Shape<long double>"
     ai="${ai} @ BD_Shape<mpz_class> @ BD_Shape<mpq_class>"
     ai="${ai} @ Octagonal_Shape<int8_t> @ Octagonal_Shape<int16_t>"
     ai="${ai} @ Octagonal_Shape<int32_t> @ Octagonal_Shape<int64_t>"
-    ai="${ai} @ Octagonal_Shape<float> @ Octagonal_Shape<double>"
-    ai="${ai} @ Octagonal_Shape<long double>"
     ai="${ai} @ Octagonal_Shape<mpz_class> @ Octagonal_Shape<mpq_class>"
     ai="${ai} @ Polyhedron @ Grid"
     ai="${ai} @ Pointset_Powerset<Int8_Box> @ Pointset_Powerset<Int16_Box>"
     ai="${ai} @ Pointset_Powerset<Int32_Box> @ Pointset_Powerset<Int64_Box>"
     ai="${ai} @ Pointset_Powerset<Uint8_Box> @ Pointset_Powerset<Uint16_Box>"
     ai="${ai} @ Pointset_Powerset<Uint32_Box> @ Pointset_Powerset<Uint64_Box>"
-    ai="${ai} @ Pointset_Powerset<Float_Box>@ Pointset_Powerset<Double_Box>"
-    ai="${ai} @ Pointset_Powerset<Long_Double_Box>"
     ai="${ai} @ Pointset_Powerset<Rational_Box> @ Pointset_Powerset<Z_Box>"
     ai="${ai} @ Pointset_Powerset<BD_Shape<int8_t> >"
     ai="${ai} @ Pointset_Powerset<BD_Shape<int16_t> >"
     ai="${ai} @ Pointset_Powerset<BD_Shape<int32_t> >"
     ai="${ai} @ Pointset_Powerset<BD_Shape<int64_t> >"
-    ai="${ai} @ Pointset_Powerset<BD_Shape<float> >"
-    ai="${ai} @ Pointset_Powerset<BD_Shape<double> >"
-    ai="${ai} @ Pointset_Powerset<BD_Shape<long double> >"
     ai="${ai} @ Pointset_Powerset<BD_Shape<mpq_class> >"
     ai="${ai} @ Pointset_Powerset<BD_Shape<mpz_class> >"
     ai="${ai} @ Pointset_Powerset<Octagonal_Shape<int8_t> >"
     ai="${ai} @ Pointset_Powerset<Octagonal_Shape<int16_t> >"
     ai="${ai} @ Pointset_Powerset<Octagonal_Shape<int32_t> >"
     ai="${ai} @ Pointset_Powerset<Octagonal_Shape<int64_t> >"
-    ai="${ai} @ Pointset_Powerset<Octagonal_Shape<float> >"
-    ai="${ai} @ Pointset_Powerset<Octagonal_Shape<double> >"
-    ai="${ai} @ Pointset_Powerset<Octagonal_Shape<long double> >"
     ai="${ai} @ Pointset_Powerset<Octagonal_Shape<mpq_class> >"
     ai="${ai} @ Pointset_Powerset<Octagonal_Shape<mpz_class> >"
     ai="${ai} @ Pointset_Powerset<C_Polyhedron>"
@@ -978,6 +968,30 @@ xno | xnone)
     ai="${ai} @ Constraints_Product<NNC_Polyhedron, Grid>"
     ai="${ai} @ Constraints_Product<Grid, C_Polyhedron>"
     ai="${ai} @ Constraints_Product<Grid, NNC_Polyhedron>"
+    if test $ac_supported_float = 1
+    then
+      ai="${ai} @ Float_Box @ BD_Shape<float>"
+      ai="${ai} @ Octagonal_Shape<float>"
+      ai="${ai} @ Pointset_Powerset<Float_Box>"
+      ai="${ai} @ Pointset_Powerset<BD_Shape<float> >"
+      ai="${ai} @ Pointset_Powerset<Octagonal_Shape<float> >"
+    fi
+    if test $ac_supported_double = 1
+    then
+      ai="${ai} @ Double_Box @ BD_Shape<double>"
+      ai="${ai} @ Octagonal_Shape<double>"
+      ai="${ai} @ Pointset_Powerset<Double_Box>"
+      ai="${ai} @ Pointset_Powerset<BD_Shape<double> >"
+      ai="${ai} @ Pointset_Powerset<Octagonal_Shape<double> >"
+    fi
+    if test $ac_supported_long_double = 1
+    then
+      ai="${ai} @ Long_Double_Box @ BD_Shape<long double>"
+      ai="${ai} @ Octagonal_Shape<long double>"
+      ai="${ai} @ Pointset_Powerset<Long_Double_Box>"
+      ai="${ai} @ Pointset_Powerset<BD_Shape<long double> >"
+      ai="${ai} @ Pointset_Powerset<Octagonal_Shape<long double> >"
+    fi
     enableval=${ai}
   fi
   # Avoid extra blanks.
