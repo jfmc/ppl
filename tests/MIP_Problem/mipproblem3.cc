@@ -145,6 +145,7 @@ test05() {
   // Feasible region.
   Constraint_System cs;
   cs.insert(A >= 0);
+  cs.insert(A <= 3);
   cs.insert(B >= 0);
   cs.insert(-A - B >= -8);
   cs.insert(-A - 3*B >= -18);
@@ -167,7 +168,7 @@ test05() {
   using namespace Parma_Polyhedra_Library::IO_Operators;
   nout << pg << endl;
 
-  return pg == point(6*A + 2*B);
+  return pg == point(3*A + 5*B);
 }
 
 bool
@@ -756,7 +757,7 @@ test08() {
   Coefficient num_kr = -5;
   Coefficient den_kr = 1;
 
-  return pg == point(-2*A - B - C - D)
+  return pg == point(-A - 2*B - C - D)
     && num == num_kr && den == den_kr;
 }
 
