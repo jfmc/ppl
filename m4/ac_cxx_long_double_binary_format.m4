@@ -106,6 +106,17 @@ AC_RUN_IFELSE([AC_LANG_SOURCE([[
 
 #if SIZEOF_LONG_DOUBLE == 16
 
+#if defined(__sparc__) && defined(__arch64__) \
+    && (__GNUC__ < 4 || (__GNUC__ == 4 && __GNUC_MINOR__ < 4))
+
+// Work around http://gcc.gnu.org/bugzilla/show_bug.cgi?id=37661
+int
+main() {
+  exit(1);
+}
+
+#else // !defined(__sparc__) || !defined(__arch64__) ...
+
 long double
 convert(uint64_t msp, uint64_t lsp) {
   union {
@@ -137,6 +148,8 @@ main() {
   else
     exit(1);
 }
+
+#endif // !defined(__sparc__) || !defined(__arch64__) ...
 
 #else // SIZEOF_LONG_DOUBLE != 16
 
