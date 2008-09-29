@@ -94,7 +94,10 @@ test03() {
   nout << "oct.contains_integer_point() == "
        << (contains ? "true" : "false") << endl;
 
-  return !contains;
+  // NOTE: results depends on whether or not the rational constraints
+  // on y have been approximated as integral constraints.
+  typedef TOctagonal_Shape::coefficient_type_base T;
+  return (std::numeric_limits<T>::is_integer ? contains : !contains);
 }
 
 bool
