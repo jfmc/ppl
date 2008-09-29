@@ -39,12 +39,12 @@ wrap_to_buffer(char *buf,
     int last_space = -1;
     int split_pos = -1;
     int i;
-    for (i = 0; i < linelen; ++i) {
+    for (i = 0; i <= linelen; ++i) {
       if (src[i] == '\0' || src[i] == '\n') {
 	split_pos = i;
 	break;
       }
-      if (src[i] == ',')
+      if (src[i] == ',' && i < linelen)
 	last_comma = i;
       if (isspace(src[i]) && (i == 0 || !isspace(src[i-1])))
 	last_space = i;
