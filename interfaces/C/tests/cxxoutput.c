@@ -21,6 +21,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_c.h"
+#include "ppl_test.h"
 #include "print_to_buffer.h"
 #include <stdio.h>
 
@@ -49,10 +50,12 @@ main() {
     ppl_delete_Linear_Expression(le);
   }
   p = print_ppl_Constraint_System_t_to_buffer(cs, 4, 64, 64);
-  if (p == 0)
-    printf("print_ppl_Constraint_System_t_to_buffer() returned NULL!\n");
-  else
-    printf("    %s\n", p);
+  if (check_noisy()) {
+    if (p == 0)
+      printf("print_ppl_Constraint_System_t_to_buffer() returned NULL!\n");
+    else
+      printf("    %s\n", p);
+  }
   ppl_delete_Constraint_System(cs);
   return 0;
 }

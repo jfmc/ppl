@@ -46,6 +46,9 @@ cxxoutput_SOURCES = cxxoutput.c print_to_buffer.h print_to_buffer.cc
 
 watchdog1_SRCS = watchdog1.cc
 
+noinst_HEADERS = \
+ppl_test.h \
+
 if BUILD_WATCHDOG_LIBRARY
 WATCHDOG_TESTS =
 # watchdog1
