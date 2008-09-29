@@ -20,6 +20,8 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
+SUBDIRS = . tests
+
 interface_generator_files = \
 ppl_interface_generator_c_procedure_generators.m4 \
 ppl_interface_generator_c_h.m4 \
