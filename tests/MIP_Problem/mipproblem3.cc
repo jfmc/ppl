@@ -894,6 +894,6 @@ BEGIN_MAIN
   DO_TEST_F8(test06);
   DO_TEST(test07);
   DO_TEST_F64(test08);
-  DO_TEST_F32(test09);
+  DO_TEST_F64(test09);
   DO_TEST_F64(test10);
 END_MAIN
