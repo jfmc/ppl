@@ -16,11 +16,11 @@ Enhancements for PPL 0.10
 
 - Provide PPL-specific documentation on the use of `make check'.
 
-- Modify all methods add_constraint(s)/congruence(s) to reflect what
-  is said in definitions.dox wrt the throwing of exceptions; modify
-  all of the tests accordingly (when in doubt, a user application
-  has to use the refine_with methods); also pay attention to
-  constructors taking a syntactic description as argument.
+- Double checked the documentation of add_constraint(s)/congruence(s).
+  NOTA BENE: we should be careful when promising that add_constraint()
+  will preserve the exact semantics of the added constraint.  Think about
+  adding a rational BD constraint to an integer or floating-point based
+  BD shape.
 
 - Add a short section to the user documentation explaining how to
   compile and link (at least under Un*x) an application using the PPL
