@@ -30745,7 +30745,7 @@ SHREXT=$shrext_cmds
 
 
 
-ac_config_files="$ac_config_files Makefile ppl.lsm debian/Makefile debian/libppl.copyright debian/libppl-pwl.copyright fedora/Makefile src/Makefile src/version.hh src/ppl-config.cc tests/Makefile tests/BD_Shape/Makefile tests/Box/Makefile tests/Grid/Makefile tests/MIP_Problem/Makefile tests/Octagonal_Shape/Makefile tests/Partially_Reduced_Product/Makefile tests/Polyhedron/Makefile tests/Powerset/Makefile utils/Makefile m4/Makefile demos/Makefile demos/ppl_lcdd/Makefile demos/ppl_lcdd/examples/Makefile demos/ppl_lpsol/Makefile demos/ppl_lpsol/examples/Makefile doc/Makefile doc/user.doxyconf-latex doc/devref.doxyconf-latex doc/user.doxyconf-html doc/devref.doxyconf-html doc/user-foreign-language-interface.doxyconf doc/devref-foreign-language-interface.doxyconf interfaces/Makefile interfaces/C/Makefile interfaces/C/ppl_c_version.h interfaces/Java/Makefile interfaces/Java/jni/Makefile interfaces/Java/tests/Makefile interfaces/Java/parma_polyhedra_library/Makefile interfaces/OCaml/Makefile interfaces/OCaml/tests/Makefile interfaces/Prolog/Makefile interfaces/Prolog/Ciao/Makefile interfaces/Prolog/GNU/Makefile interfaces/Prolog/SICStus/Makefile interfaces/Prolog/SWI/Makefile interfaces/Prolog/XSB/Makefile interfaces/Prolog/YAP/Makefile interfaces/Prolog/tests/Makefile"
+ac_config_files="$ac_config_files Makefile ppl.lsm debian/Makefile debian/libppl.copyright debian/libppl-pwl.copyright fedora/Makefile src/Makefile src/version.hh src/ppl-config.cc tests/Makefile tests/BD_Shape/Makefile tests/Box/Makefile tests/Grid/Makefile tests/MIP_Problem/Makefile tests/Octagonal_Shape/Makefile tests/Partially_Reduced_Product/Makefile tests/Polyhedron/Makefile tests/Powerset/Makefile utils/Makefile m4/Makefile demos/Makefile demos/ppl_lcdd/Makefile demos/ppl_lcdd/examples/Makefile demos/ppl_lpsol/Makefile demos/ppl_lpsol/examples/Makefile doc/Makefile doc/user.doxyconf-latex doc/devref.doxyconf-latex doc/user.doxyconf-html doc/devref.doxyconf-html doc/user-foreign-language-interface.doxyconf doc/devref-foreign-language-interface.doxyconf interfaces/Makefile interfaces/C/Makefile interfaces/C/ppl_c_version.h interfaces/C/tests/Makefile interfaces/Java/Makefile interfaces/Java/jni/Makefile interfaces/Java/tests/Makefile interfaces/Java/parma_polyhedra_library/Makefile interfaces/OCaml/Makefile interfaces/OCaml/tests/Makefile interfaces/Prolog/Makefile interfaces/Prolog/Ciao/Makefile interfaces/Prolog/GNU/Makefile interfaces/Prolog/SICStus/Makefile interfaces/Prolog/SWI/Makefile interfaces/Prolog/XSB/Makefile interfaces/Prolog/YAP/Makefile interfaces/Prolog/tests/Makefile"
 
 #               tests/Ask_Tell/Makefile
 cat >confcache <<\_ACEOF
@@ -32025,6 +32025,7 @@ do
     "interfaces/Makefile") CONFIG_FILES="$CONFIG_FILES interfaces/Makefile" ;;
     "interfaces/C/Makefile") CONFIG_FILES="$CONFIG_FILES interfaces/C/Makefile" ;;
     "interfaces/C/ppl_c_version.h") CONFIG_FILES="$CONFIG_FILES interfaces/C/ppl_c_version.h" ;;
+    "interfaces/C/tests/Makefile") CONFIG_FILES="$CONFIG_FILES interfaces/C/tests/Makefile" ;;
     "interfaces/Java/Makefile") CONFIG_FILES="$CONFIG_FILES interfaces/Java/Makefile" ;;
     "interfaces/Java/jni/Makefile") CONFIG_FILES="$CONFIG_FILES interfaces/Java/jni/Makefile" ;;
     "interfaces/Java/tests/Makefile") CONFIG_FILES="$CONFIG_FILES interfaces/Java/tests/Makefile" ;;

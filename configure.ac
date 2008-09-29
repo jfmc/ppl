@@ -1275,6 +1275,7 @@ AC_CONFIG_FILES(Makefile
                 interfaces/Makefile
                 interfaces/C/Makefile
                 interfaces/C/ppl_c_version.h
+                interfaces/C/tests/Makefile
                	interfaces/Java/Makefile
 		interfaces/Java/jni/Makefile
 		interfaces/Java/tests/Makefile
