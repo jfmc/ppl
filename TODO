@@ -29,13 +29,6 @@ Enhancements for PPL 0.10
   programs in the demos directory (they constitute additional examples
   of use of the C and C++ interfaces) and in the directories under tests
   (these are currently covered by a README file).
-- Define functions rem() and remp() to compute the remainder of division
-  in the general case, for rem(), and in the case where the second
-  argument is known to be positive, for remp().  In the implementation
-  of rem(), if CXX_HAS_REMAINDER_BUG is nonzero, a suitable workaround
-  should be implemented to circumvent the INT_MIN % -1 bug.
-  rem() and remp() should be used (with a strong preference to the second,
-  of course) wherever we now use operator%().
 - Update the examples in README.configure.
 - Check all the Makefile.am's to make sure CLEANFILES, MOSTLYCLEANFILES
   and DISTCLEANFILES are used in a sensible way.
@@ -53,6 +46,13 @@ Enhancements for PPL 0.10
 Enhancements for PPL 0.11 or later versions
 ===========================================
 
+- Define functions rem() and remp() to compute the remainder of division
+  in the general case, for rem(), and in the case where the second
+  argument is known to be positive, for remp().  In the implementation
+  of rem(), if CXX_HAS_REMAINDER_BUG is nonzero, a suitable workaround
+  should be implemented to circumvent the INT_MIN % -1 bug.
+  rem() and remp() should be used (with a strong preference to the second,
+  of course) wherever we now use operator%().
 - Suppose we want to sum three numbers, and suppose we do it by
 
     add(T& to, const T& x, const T& y, const T& z) {
