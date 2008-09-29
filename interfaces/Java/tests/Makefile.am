@@ -44,6 +44,7 @@ Test_Partial_Function.java \
 Test_Executor.java \
 C_Polyhedron_test1.java \
 NNC_Polyhedron_test1.java \
+MIP_Problem_test1.java \
 ppl_interface_generator_java_test_java_code.m4 \
 ppl_interface_generator_java_test_java.m4 \
 ppl_java_tests_common
@@ -55,7 +56,8 @@ ppl_java_generated_tests.java \
 Test_Partial_Function.java \
 Test_Executor.java \
 C_Polyhedron_test1.java \
-NNC_Polyhedron_test1.java
+NNC_Polyhedron_test1.java \
+MIP_Problem_test1.java
 
 CLASSPATH = ../ppl_java.jar:.
 JAVACFLAGS = -classpath $(CLASSPATH)
@@ -70,6 +72,9 @@ check-local: ppl_java_generated_tests.java
 	$(LIBTOOL) --mode=execute \
              -dlopen ../../../src/libppl.la \
 	$(JAVA) -classpath .:../ppl_java.jar -Djava.library.path=../jni/.libs NNC_Polyhedron_test1
+	$(LIBTOOL) --mode=execute \
+             -dlopen ../../../src/libppl.la \
+	$(JAVA) -classpath .:../ppl_java.jar -Djava.library.path=../jni/.libs MIP_Problem_test1
 
 ppl_java_generated_tests.java: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I../.. \

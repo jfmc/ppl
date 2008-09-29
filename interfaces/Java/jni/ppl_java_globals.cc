@@ -392,8 +392,6 @@ Java_parma_1polyhedra_1library_MIP_1Problem_optimal_1value
   try {
     TEMP_INTEGER(coeff_num);
     TEMP_INTEGER(coeff_den);
-    coeff_num = build_ppl_coeff(env, j_coeff_num);
-    coeff_den = build_ppl_coeff(env, j_coeff_den);
 
     MIP_Problem* mip
       = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
@@ -451,7 +449,7 @@ Java_parma_1polyhedra_1library_MIP_1Problem_toString
   std::ostringstream s;
   MIP_Problem* mip
     = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
-  s << mip;
+  s << *mip;
   std::string str = s.str();
   return env->NewStringUTF(str.c_str());
 }

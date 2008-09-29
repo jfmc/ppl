@@ -330,6 +330,37 @@ build_ppl_optimization_mode(JNIEnv* env, const jobject& j_opt_mode) {
 }
 
 jobject
+build_java_mip_status(JNIEnv* env, const MIP_Problem_Status& mip_status) {
+  jclass j_mip_problem_status_class
+    = env->FindClass("parma_polyhedra_library/MIP_Problem_Status");
+  jfieldID mp_status_unfeasible_get_id
+    = env->GetStaticFieldID(j_mip_problem_status_class,
+			    "UNFEASIBLE_MIP_PROBLEM",
+			    "Lparma_polyhedra_library/MIP_Problem_Status;");
+  jfieldID mp_status_unbounded_get_id
+    = env->GetStaticFieldID(j_mip_problem_status_class,
+			    "UNBOUNDED_MIP_PROBLEM",
+			    "Lparma_polyhedra_library/MIP_Problem_Status;");
+  jfieldID mp_status_optimized_get_id
+    = env->GetStaticFieldID(j_mip_problem_status_class,
+			    "OPTIMIZED_MIP_PROBLEM",
+			    "Lparma_polyhedra_library/MIP_Problem_Status;");
+  switch (mip_status) {
+  case UNFEASIBLE_MIP_PROBLEM:
+    return env->GetStaticObjectField(j_mip_problem_status_class,
+				     mp_status_unfeasible_get_id);
+  case UNBOUNDED_MIP_PROBLEM:
+    return env->GetStaticObjectField(j_mip_problem_status_class,
+				     mp_status_unbounded_get_id);
+  case OPTIMIZED_MIP_PROBLEM:
+    return env->GetStaticObjectField(j_mip_problem_status_class,
+				     mp_status_optimized_get_id);
+  default:
+    throw std::runtime_error("PPL Java interface internal error");
+  }
+}
+
+jobject
 build_java_optimization_mode(JNIEnv* env, const Optimization_Mode& opt_mode) {
   jclass j_optimization_mode_class
     = env->FindClass("parma_polyhedra_library/Optimization_Mode");
