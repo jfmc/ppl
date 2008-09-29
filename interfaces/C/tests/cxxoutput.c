@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "print_to_buffer.h"
 #include <stdio.h>
 
-#define DIMENSION 10
+#define DIMENSION 50
 
 int
 main() {
@@ -48,8 +48,11 @@ main() {
     ppl_delete_Constraint(c);
     ppl_delete_Linear_Expression(le);
   }
-  p = print_ppl_Constraint_System_t_to_buffer(cs, 4, 4, 24);
-  printf("%s\n", p);
+  p = print_ppl_Constraint_System_t_to_buffer(cs, 4, 24, 24);
+  if (p == 0)
+    printf("print_ppl_Constraint_System_t_to_buffer() returned NULL!\n");
+  else
+    printf("    %s\n", p);
   ppl_delete_Constraint_System(cs);
   return 0;
 }
