@@ -43,14 +43,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 # include <unistd.h>
 #endif
 
-// If GMP does not support exceptions the test is pointless.
-// Cygwin has an almost dummy definition of setrlimit().
+// If GMP does not support exceptions, or if we are unable to limit
+// the memory available to processes using setrlimit(), the test is
+// pointless.
 // For some reason, this test does not work on Alpha machines.
-#if !PPL_GMP_SUPPORTS_EXCEPTIONS					\
-  || defined(__CYGWIN__)					\
-  || defined(__alpha)						\
-  || !(PPL_HAVE_DECL_RLIMIT_DATA || PPL_HAVE_DECL_RLIMIT_RSS	\
-       || PPL_HAVE_DECL_RLIMIT_VMEM || PPL_HAVE_DECL_RLIMIT_AS)
+#if !PPL_GMP_SUPPORTS_EXCEPTIONS || !PPL_CXX_SUPPORTS_LIMITING_MEMORY    \
+  || defined(__alpha)
 
 int
 main() TRY {
