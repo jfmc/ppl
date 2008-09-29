@@ -1073,7 +1073,7 @@ JNIEXPORT jstring JNICALL Java_parma_1polyhedra_1library_@1CLASS@_ascii_1dump
 
 m4_define(`ppl_@CLASS@_linear_@PARTITION@_code',
 `dnl
-JNIEXPORT jobject JNICALL Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_linear_1partition
+JNIEXPORT jobject JNICALL Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_linear_1@PARTITION@
 (JNIEnv* env, jclass ppl_class, jobject j_p, jobject j_q) {
   try {
     // Suppress warnings concerning "ppl_class" not used.
@@ -1119,7 +1119,7 @@ JNIEXPORT jobject JNICALL Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_lin
 
 m4_define(`ppl_@CLASS@_approximate_@PARTITION@_code',
 `dnl
-JNIEXPORT jobject JNICALL Java_parma_1polyhedra_1library_@1CLASS@_approximate_1partition
+JNIEXPORT jobject JNICALL Java_parma_1polyhedra_1library_@1CLASS@_approximate_1@PARTITION@
 (JNIEnv* env, jclass ppl_class, jobject j_p_@LCLASS@, jobject j_q_@LCLASS@,
  jobject j_ref_finite_bool) {
   try {

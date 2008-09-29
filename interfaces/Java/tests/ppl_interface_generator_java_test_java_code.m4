@@ -823,11 +823,10 @@ m4_define(`ppl_@CLASS@_ascii_dump_code',
 
 ');
 
-m4_define(`ppl_@CLASS@_linear_partition_code',
+m4_define(`ppl_@CLASS@_linear_@PARTITION@_code',
     `dnl
-@SUPERPOWER_EXISTS@`'dnl
 {
-    System.out.print("Testing linear_partition: ");
+    System.out.print("Testing linear_@PARTITION@: ");
     @TOPOLOGY@@CLASS@ gd1
         = new @TOPOLOGY@@CLASS@(constraints1);
     @TOPOLOGY@@CLASS@ gd2

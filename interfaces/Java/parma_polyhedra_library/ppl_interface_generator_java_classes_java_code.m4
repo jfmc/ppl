@@ -532,9 +532,8 @@ m4_define(`ppl_@CLASS@_ascii_dump_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_linear_partition_code',
+m4_define(`ppl_@CLASS@_linear_@PARTITION@_code',
 `dnl
-@SUPERPOWER_EXISTS@`'dnl
 %<--%<--%<-- @TOPOLOGY@@CLASS@.java
 
   public static native
@@ -542,12 +541,11 @@ m4_define(`ppl_@CLASS@_linear_partition_code',
       linear_partition(@TOPOLOGY@@CLASS@ p, @TOPOLOGY@@CLASS@ q);
 ')
 
-m4_define(`ppl_@CLASS@_approximate_partition_code',
+m4_define(`ppl_@CLASS@_approximate_@PARTITION@_code',
 `dnl
-@SUPERPOWER_EXISTS@`'dnl
 %<--%<--%<-- @CLASS@.java
 
-  public static native Pair <@CLASS@@COMMA@ Pointset_Powerset<Grid> >
+  public static native Pair <@CLASS@@COMMA@ Pointset_Powerset_Grid >
       approximate_partition(@CLASS@ p,
                             @CLASS@ q,
                             By_Reference<Boolean> finite);
