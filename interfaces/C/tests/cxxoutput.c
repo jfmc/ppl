@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "print_to_buffer.h"
 #include <stdio.h>
 
-#define DIMENSION 50
+#define DIMENSION 30
 
 int
 main() {

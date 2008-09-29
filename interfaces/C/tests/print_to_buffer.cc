@@ -110,7 +110,8 @@ print_to_buffer(const T& o,
   using namespace Parma_Polyhedra_Library::IO_Operators;
   std::ostringstream s;
   s << o;
-  const char* c_str = s.str().c_str();
+  std::string str = s.str();
+  const char* c_str = str.c_str();
   size_t buf_size = wrap_to_buffer(0, 0, c_str,
                                    indent_depth,
                                    preferred_first_line_length,
