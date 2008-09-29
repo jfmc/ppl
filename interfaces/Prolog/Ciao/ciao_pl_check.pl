@@ -148,7 +148,9 @@ site: http://www.cs.unipr.it/ppl/ . */
         ppl_MIP_Problem_optimizing_point/2,
         ppl_MIP_Problem_optimal_value/3,
         ppl_MIP_Problem_evaluate_objective_function/4,
-        ppl_MIP_Problem_OK/1
+        ppl_MIP_Problem_OK/1,
+        ppl_MIP_Problem_get_control_parameter/3,
+        ppl_MIP_Problem_set_control_parameter/2
 ]).
 
 :- set_prolog_flag(multi_arity_warnings, off).

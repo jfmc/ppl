@@ -126,6 +126,14 @@ external ppl_MIP_Problem_set_optimization_mode:
   mip_problem -> optimization_mode -> unit
       = "ppl_MIP_Problem_set_optimization_mode"
 
+external ppl_MIP_Problem_set_control_parameter:
+  mip_problem -> control_parameter_value -> unit
+      = "ppl_MIP_Problem_set_control_parameter"
+
+external ppl_MIP_Problem_get_control_parameter:
+  mip_problem -> control_parameter_name -> control_parameter_value
+      = "ppl_MIP_Problem_get_control_parameter"
+
 external ppl_MIP_Problem_swap:
   mip_problem -> mip_problem -> unit
       = "ppl_MIP_Problem_swap"

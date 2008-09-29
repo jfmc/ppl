@@ -89,3 +89,9 @@ type optimization_mode = Minimization | Maximization
 
 type mip_problem_status = Unfeasible_Mip_Problem | Unbounded_Mip_Problem
                         | Optimized_Mip_Problem
+
+type control_parameter_name = Pricing
+
+type control_parameter_value = Pricing_Steepest_Edge_Float
+                               | Pricing_Steepest_Edge_Exact
+                               | Pricing_Textbook

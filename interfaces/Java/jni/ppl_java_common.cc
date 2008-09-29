@@ -353,33 +353,85 @@ build_java_optimization_mode(JNIEnv* env, const Optimization_Mode& opt_mode) {
   }
 }
 
-jobject
-build_java_mip_status(JNIEnv* env, const MIP_Problem_Status& mip_status) {
-  jclass j_mip_status_class
-    = env->FindClass("parma_polyhedra_library/MIP_Problem_Status");
-  jfieldID mip_status_unfeasible_get_id
-    = env->GetStaticFieldID(j_mip_status_class,
-			    "UNFEASIBLE_MIP_PROBLEM",
-			    "Lparma_polyhedra_library/MIP_Problem_Status;");
-  jfieldID mip_status_unbounded_get_id
-    = env->GetStaticFieldID(j_mip_status_class,
-			    "UNBOUNDED_MIP_PROBLEM",
-			    "Lparma_polyhedra_library/MIP_Problem_Status;");
-  jfieldID mip_status_optimized_get_id
-    = env->GetStaticFieldID(j_mip_status_class,
-			    "OPTIMIZED_MIP_PROBLEM",
-			    "Lparma_polyhedra_library/MIP_Problem_Status;");
+MIP_Problem::Control_Parameter_Name
+build_ppl_control_parameter_name(JNIEnv* env, const jobject& j_cp_name) {
+  jclass cp_name_class
+    = env->FindClass("parma_polyhedra_library/Control_Parameter_Name");
+  jmethodID cp_name_ordinal_id = env->GetMethodID(cp_name_class, "ordinal",
+						  "()I");
+  jint cp_name = env->CallIntMethod(j_cp_name, cp_name_ordinal_id);
+  switch (cp_name) {
+  case 0:
+    return MIP_Problem::PRICING;
+  default:
+    throw std::runtime_error("PPL Java interface internal error");
+  }
+}
 
-  switch (mip_status) {
-  case UNFEASIBLE_MIP_PROBLEM:
-    return env->GetStaticObjectField(j_mip_status_class,
-				     mip_status_unfeasible_get_id);
-  case UNBOUNDED_MIP_PROBLEM:
-    return  env->GetStaticObjectField(j_mip_status_class,
-				      mip_status_unbounded_get_id);
-  case OPTIMIZED_MIP_PROBLEM:
-    return  env->GetStaticObjectField(j_mip_status_class,
-				      mip_status_optimized_get_id);
+jobject
+build_java_control_parameter_name(JNIEnv* env,
+                                  const MIP_Problem::Control_Parameter_Name& cp_name) {
+  jclass j_cp_name_class
+    = env->FindClass("parma_polyhedra_library/Control_Parameter_Name");
+  jfieldID cp_name_pricing_get_id
+    = env->GetStaticFieldID(j_cp_name_class,
+			    "PRICING",
+			    "Lparma_polyhedra_library/Control_Parameter_Name;");
+  switch (cp_name) {
+  case MIP_Problem::PRICING:
+    return env->GetStaticObjectField(j_cp_name_class,
+				     cp_name_pricing_get_id);
+  default:
+    throw std::runtime_error("PPL Java interface internal error");
+  }
+}
+
+MIP_Problem::Control_Parameter_Value
+build_ppl_control_parameter_value(JNIEnv* env, const jobject& j_cp_value) {
+  jclass cp_value_class
+    = env->FindClass("parma_polyhedra_library/Control_Parameter_Value");
+  jmethodID cp_value_ordinal_id = env->GetMethodID(cp_value_class, "ordinal",
+						  "()I");
+  jint cp_value = env->CallIntMethod(j_cp_value, cp_value_ordinal_id);
+  switch (cp_value) {
+  case 0:
+    return MIP_Problem::PRICING_STEEPEST_EDGE_FLOAT;
+  case 1:
+    return MIP_Problem::PRICING_STEEPEST_EDGE_EXACT;
+  case 2:
+    return MIP_Problem::PRICING_TEXTBOOK;
+  default:
+    throw std::runtime_error("PPL Java interface internal error");
+  }
+}
+
+jobject
+  build_java_control_parameter_value(JNIEnv* env,
+                                     const MIP_Problem::Control_Parameter_Value& cp_value) {
+  jclass j_cp_value_class
+    = env->FindClass("parma_polyhedra_library/Control_Parameter_Value");
+  jfieldID cp_value_float_get_id
+    = env->GetStaticFieldID(j_cp_value_class,
+			    "PRICING_STEEPEST_EDGE_FLOAT",
+			    "Lparma_polyhedra_library/Control_Parameter_Value;");
+  jfieldID cp_value_exact_get_id
+    = env->GetStaticFieldID(j_cp_value_class,
+			    "PRICING_STEEPEST_EDGE_EXACT",
+			    "Lparma_polyhedra_library/Control_Parameter_Value;");
+  jfieldID cp_value_textbook_get_id
+    = env->GetStaticFieldID(j_cp_value_class,
+			    "PRICING_TEXTBOOK",
+			    "Lparma_polyhedra_library/Control_Parameter_Value;");
+  switch (cp_value) {
+  case MIP_Problem::PRICING_STEEPEST_EDGE_FLOAT:
+    return env->GetStaticObjectField(j_cp_value_class,
+				     cp_value_float_get_id);
+  case MIP_Problem::PRICING_STEEPEST_EDGE_EXACT:
+    return env->GetStaticObjectField(j_cp_value_class,
+				     cp_value_exact_get_id);
+  case MIP_Problem::PRICING_TEXTBOOK:
+    return env->GetStaticObjectField(j_cp_value_class,
+				     cp_value_textbook_get_id);
   default:
     throw std::runtime_error("PPL Java interface internal error");
   }

@@ -67,6 +67,8 @@ $(srcdir)/Congruence_System.java \
 $(srcdir)/Constraint.java \
 $(srcdir)/Constraint_System.java \
 $(srcdir)/Constraint_System.java \
+$(srcdir)/Control_Parameter_Name.java \
+$(srcdir)/Control_Parameter_Value.java \
 $(srcdir)/Degenerate_Element.java \
 $(srcdir)/Domain_Error_Exception.java \
 $(srcdir)/Generator.java \
@@ -164,6 +166,8 @@ Congruence_System.class \
 Constraint.class \
 Constraint_System.class \
 Constraint_System.class \
+Control_Parameter_Name.class \
+Control_Parameter_Value.class \
 Degenerate_Element.class \
 Domain_Error_Exception.class \
 Generator.class \

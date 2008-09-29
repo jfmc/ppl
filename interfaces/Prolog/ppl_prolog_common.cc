@@ -114,6 +114,12 @@ Prolog_atom a_polynomial;
 Prolog_atom a_simplex;
 Prolog_atom a_any;
 
+// Denote control_parameters.
+Prolog_atom a_pricing;
+Prolog_atom a_pricing_steepest_edge_float;
+Prolog_atom a_pricing_steepest_edge_exact;
+Prolog_atom a_pricing_textbook;
+
 // Default timeout exception atom.
 Prolog_atom a_time_out;
 
@@ -191,6 +197,13 @@ const Prolog_Interface_Atom prolog_interface_atoms[] = {
   { &a_polynomial,               "polynomial" },
   { &a_simplex,                  "simplex" },
   { &a_any,                      "any" },
+
+  { &a_pricing,                  "pricing" },
+  { &a_pricing_steepest_edge_float,
+                                 "pricing_steepest_edge_float" },
+  { &a_pricing_steepest_edge_exact,
+                                 "pricing_steepest_edge_exact" },
+  { &a_pricing_textbook,          "pricing_textbook" },
 
   { &a_time_out,                 "time_out" },
   { &a_out_of_memory,            "out_of_memory" },
@@ -385,6 +398,51 @@ handle_exception(const not_a_complexity_class& e) {
 }
 
 void
+  handle_exception(const not_a_control_parameter_name& e) {
+  Prolog_term_ref found = Prolog_new_term_ref();
+  Prolog_construct_compound(found, a_found, e.term());
+
+  Prolog_term_ref expected = Prolog_new_term_ref();
+  Prolog_put_atom(expected, a_nil);
+  Prolog_construct_cons(expected,
+			Prolog_atom_term_from_string("pricing"), expected);
+
+  Prolog_term_ref where = Prolog_new_term_ref();
+  Prolog_construct_compound(where, a_where,
+			    Prolog_atom_term_from_string(e.where()));
+  Prolog_term_ref exception_term = Prolog_new_term_ref();
+  Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
+			    found, expected, where);
+  Prolog_raise_exception(exception_term);
+}
+
+void
+  handle_exception(const not_a_control_parameter_value& e) {
+  Prolog_term_ref found = Prolog_new_term_ref();
+  Prolog_construct_compound(found, a_found, e.term());
+
+  Prolog_term_ref expected = Prolog_new_term_ref();
+  Prolog_put_atom(expected, a_nil);
+  Prolog_construct_cons(expected,
+			Prolog_atom_term_from_string("pricing_steepest_edge_float"),
+                        expected);
+  Prolog_construct_cons(expected,
+			Prolog_atom_term_from_string("pricing_steepest_edge_exact"),
+                        expected);
+  Prolog_construct_cons(expected,
+			Prolog_atom_term_from_string("pricing_textbook"),
+                        expected);
+
+  Prolog_term_ref where = Prolog_new_term_ref();
+  Prolog_construct_compound(where, a_where,
+			    Prolog_atom_term_from_string(e.where()));
+  Prolog_term_ref exception_term = Prolog_new_term_ref();
+  Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
+			    found, expected, where);
+  Prolog_raise_exception(exception_term);
+}
+
+void
 handle_exception(const not_universe_or_empty& e) {
   Prolog_term_ref found = Prolog_new_term_ref();
   Prolog_construct_compound(found, a_found, e.term());
@@ -564,6 +622,12 @@ handle_exception(const timeout_exception&) {
     handle_exception(e); \
   } \
   catch (const not_a_complexity_class& e) { \
+    handle_exception(e); \
+  } \
+  catch (const not_a_control_parameter_name& e) { \
+    handle_exception(e); \
+  } \
+  catch (const not_a_control_parameter_value& e) { \
     handle_exception(e); \
   } \
   catch (const not_universe_or_empty& e) { \
@@ -1158,6 +1222,30 @@ term_to_optimization_mode(Prolog_term_ref t, const char* where) {
       return name;
   }
   throw not_an_optimization_mode(t, where);
+}
+
+Prolog_atom
+term_to_control_parameter_name(Prolog_term_ref t, const char* where) {
+  if (Prolog_is_atom(t)) {
+    Prolog_atom name;
+    if (Prolog_get_atom_name(t, &name)
+	&& (name == a_pricing))
+      return name;
+  }
+  throw not_a_control_parameter_name(t, where);
+}
+
+Prolog_atom
+term_to_control_parameter_value(Prolog_term_ref t, const char* where) {
+  if (Prolog_is_atom(t)) {
+    Prolog_atom name;
+    if (Prolog_get_atom_name(t, &name)
+	&& (name == a_pricing_steepest_edge_float
+            || name == a_pricing_steepest_edge_exact
+            || name == a_pricing_textbook))
+      return name;
+  }
+  throw not_a_control_parameter_value(t, where);
 }
 
 bool Prolog_interface_initialized = false;
@@ -1886,6 +1974,63 @@ ppl_MIP_Problem_set_optimization_mode(Prolog_term_ref t_mip,
     Optimization_Mode mode = (opt == a_max) ? MAXIMIZATION : MINIMIZATION;
     mip->set_optimization_mode(mode);
     return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_MIP_Problem_set_control_parameter(Prolog_term_ref t_mip,
+				      Prolog_term_ref t_cp_value) {
+  static const char* where = "ppl_MIP_Problem_set_control_parameter/2";
+  try {
+    MIP_Problem* mip = term_to_handle<MIP_Problem>(t_mip, where);
+    PPL_CHECK(mip);
+
+    Prolog_atom cp_value = term_to_control_parameter_value(t_cp_value, where);
+    if (cp_value == a_pricing_steepest_edge_float)
+      mip->set_control_parameter(MIP_Problem::PRICING_STEEPEST_EDGE_FLOAT);
+    else if (cp_value == a_pricing_steepest_edge_exact)
+      mip->set_control_parameter(MIP_Problem::PRICING_STEEPEST_EDGE_EXACT);
+    else if (cp_value == a_pricing_textbook)
+      mip->set_control_parameter(MIP_Problem::PRICING_TEXTBOOK);
+    else
+      throw unknown_interface_error("ppl_MIP_Problem_get_control_parameter()");
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_MIP_Problem_get_control_parameter(Prolog_term_ref t_mip,
+                                      Prolog_term_ref t_cp_name,
+                                      Prolog_term_ref t_cp_value) {
+  static const char* where = "ppl_MIP_Problem_get_control_parameter/3";
+  try {
+    MIP_Problem* mip = term_to_handle<MIP_Problem>(t_mip, where);
+    PPL_CHECK(mip);
+    Prolog_atom cp_name = term_to_control_parameter_name(t_cp_name, where);
+    MIP_Problem::Control_Parameter_Value ppl_cp_value;
+    if (cp_name == a_pricing)
+      ppl_cp_value = mip->get_control_parameter(MIP_Problem::PRICING);
+    else
+      throw unknown_interface_error("ppl_MIP_Problem_get_control_parameter()");
+
+    Prolog_term_ref t = Prolog_new_term_ref();
+    Prolog_atom a;
+    switch (ppl_cp_value) {
+    case MIP_Problem::PRICING_STEEPEST_EDGE_FLOAT:
+      a = a_pricing_steepest_edge_float;
+      break;
+    case MIP_Problem::PRICING_STEEPEST_EDGE_EXACT:
+      a = a_pricing_steepest_edge_exact;
+      break;
+    case MIP_Problem::PRICING_TEXTBOOK:
+      a = a_pricing_textbook;
+      break;
+    }
+    Prolog_put_atom(t, a);
+    if (Prolog_unify(t_cp_value, t))
+      return PROLOG_SUCCESS;
   }
   CATCH_ALL;
 }

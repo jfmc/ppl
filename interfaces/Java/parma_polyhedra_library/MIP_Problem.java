@@ -197,6 +197,16 @@ public class MIP_Problem extends PPL_Object {
     */
     public native MIP_Problem_Status solve();
 
+    /*! \brief
+      Returns the value of control parameter \p name.
+    */
+    public native Control_Parameter_Value
+      get_control_parameter(Control_Parameter_Name name);
+
+    /*! \brief
+     Sets control parameter \p value.
+    */
+     public native void set_control_parameter(Control_Parameter_Value value);
 
     /*! \brief
       Sets \p num and \p den so that \f$\frac{num}{den}\f$ is the result

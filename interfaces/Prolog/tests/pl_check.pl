@@ -2134,8 +2134,10 @@ mip_problem :-
   mip_from_mip,
   mip_swap,
   mip_get,
+  mip_control_parameters,
   mip_clear,
   mip_satisfiable,
+  mip_add,
   mip_set,
   mip_solve,
   mip_eval.
@@ -2225,6 +2227,28 @@ mip_get :-
   ppl_delete_MIP_Problem(MIP1),
   ppl_delete_MIP_Problem(MIP).
 
+mip_control_parameters :-
+  make_vars(1, [A]),
+
+  ppl_new_MIP_Problem(3, [], A + 3, min, MIP0),
+  clean_ppl_new_MIP_Problem_from_MIP_Problem(MIP0, MIP1),
+  ppl_MIP_Problem_get_control_parameter(MIP0, pricing, Cp_value0),
+  ppl_MIP_Problem_set_control_parameter(MIP1, Cp_value0),
+  ppl_MIP_Problem_get_control_parameter(MIP1, pricing, Cp_value1),
+  Cp_value0 == Cp_value1,
+  ppl_MIP_Problem_set_control_parameter(MIP0, pricing_steepest_edge_float),
+  ppl_MIP_Problem_get_control_parameter(MIP0, pricing, Cp_value2),
+  Cp_value2 == pricing_steepest_edge_float,
+  ppl_MIP_Problem_set_control_parameter(MIP0, pricing_steepest_edge_exact),
+  ppl_MIP_Problem_get_control_parameter(MIP0, pricing, Cp_value3),
+  Cp_value3 == pricing_steepest_edge_exact,
+  ppl_MIP_Problem_set_control_parameter(MIP0, pricing_textbook),
+  ppl_MIP_Problem_get_control_parameter(MIP0, pricing, Cp_value4),
+  Cp_value4 == pricing_textbook,
+  !,
+  ppl_delete_MIP_Problem(MIP0),
+  ppl_delete_MIP_Problem(MIP1).
+
 mip_clear :-
   make_vars(3, [A, B, C]),
   clean_ppl_new_MIP_Problem(3, [A >= -1, B >= 5, C >= 0, C =< 3], C, min, MIP),
@@ -2262,9 +2286,12 @@ mip_add :-
   clean_ppl_new_MIP_Problem(
     3, [A >= 0, A =< 3, A + B + C >= 9, B >= 5, C =< 5], 2*B-C, max, MIP1),
   ppl_MIP_Problem_solve(MIP, Status),
-  ppl_MIP_Problem_solve(MIP1, Status),
+  Status == optimized,
+  ppl_MIP_Problem_solve(MIP1, Status1),
+  Status1 == unbounded,
   ppl_MIP_Problem_optimal_value(MIP, N, D),
-  ppl_MIP_Problem_optimal_value(MIP1, N, D),
+  N == 0,
+  D == 1,
   ppl_MIP_Problem_constraints(MIP, CS),
   clean_ppl_new_Polyhedron_from_constraints(c, CS, PH),
   ppl_MIP_Problem_constraints(MIP1, Expect_CS),
@@ -2884,10 +2911,12 @@ out(mip, MIP):-
     ppl_MIP_Problem_constraints(MIP, CS),
     ppl_MIP_Problem_objective_function(MIP, Obj),
     ppl_MIP_Problem_optimization_mode(MIP, Opt),
+    ppl_MIP_Problem_get_control_parameter(MIP, pricing, Cp_value),
     nl,
     write(' constraint system is: '), write(CS), nl,
     write(' objective function is: '), write(Obj), nl,
     write(' optimization mode is: '), write(Opt),
+    write(' control_parameter_value is: '), write(Cp_value),
     nl
   ).
 

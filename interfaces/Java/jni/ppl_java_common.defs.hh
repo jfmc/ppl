@@ -152,6 +152,24 @@ build_ppl_optimization_mode(JNIEnv* env, const jobject& j_opt_mode);
 jobject
 build_java_optimization_mode(JNIEnv* env, const Optimization_Mode& opt_mode);
 
+// Converts a Java control parameter name to a PPL control parameter name.
+Parma_Polyhedra_Library::MIP_Problem::Control_Parameter_Name
+build_ppl_control_parameter_name(JNIEnv* env, const jobject& j_cp_name);
+
+// Converts a PPL control parameter name to a Java control parameter name.
+jobject
+build_java_control_parameter_name(JNIEnv* env,
+                                  const MIP_Problem::Control_Parameter_Name& cp_name);
+
+// Converts a Java control parameter value to a PPL control parameter value.
+Parma_Polyhedra_Library::MIP_Problem::Control_Parameter_Value
+build_ppl_control_parameter_value(JNIEnv* env, const jobject& j_cp_value);
+
+// Converts a PPL control parameter value to a Java control parameter value.
+jobject
+build_java_control_parameter_value(JNIEnv* env,
+                                  const MIP_Problem::Control_Parameter_Value& cp_value);
+
 jobject
 build_java_mip_status(JNIEnv* env, const MIP_Problem_Status& mip_status);
 

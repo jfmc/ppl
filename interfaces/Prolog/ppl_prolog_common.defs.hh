@@ -257,6 +257,20 @@ public:
   }
 };
 
+class not_a_control_parameter_name : public internal_exception {
+public:
+  not_a_control_parameter_name(Prolog_term_ref term, const char* where)
+    : internal_exception(term, where) {
+  }
+};
+
+class not_a_control_parameter_value : public internal_exception {
+public:
+  not_a_control_parameter_value(Prolog_term_ref term, const char* where)
+    : internal_exception(term, where) {
+  }
+};
+
 class not_universe_or_empty : public internal_exception {
 public:
   not_universe_or_empty(Prolog_term_ref term, const char* where)
@@ -404,6 +418,12 @@ extern Prolog_atom a_universe;
 extern Prolog_atom a_max;
 extern Prolog_atom a_min;
 
+// Denote control_parameters for MIP_Problems.
+extern Prolog_atom a_pricing;
+extern Prolog_atom a_pricing_steepest_edge_float;
+extern Prolog_atom a_pricing_steepest_edge_exact;
+extern Prolog_atom a_pricing_textbook;
+
 // Denote possible outcomes of MIP problems solution attempts.
 extern Prolog_atom a_unfeasible;
 extern Prolog_atom a_unbounded;
@@ -459,6 +479,12 @@ handle_exception(const not_an_optimization_mode& e);
 
 void
 handle_exception(const not_a_complexity_class& e);
+
+void
+handle_exception(const not_a_control_parameter_name& e);
+
+void
+handle_exception(const not_a_control_parameter_value& e);
 
 void
 handle_exception(const not_universe_or_empty& e);
@@ -528,6 +554,12 @@ handle_exception(const timeout_exception&);
     handle_exception(e); \
   } \
   catch (const not_a_complexity_class& e) { \
+    handle_exception(e); \
+  } \
+  catch (const not_a_control_parameter_name& e) { \
+    handle_exception(e); \
+  } \
+  catch (const not_a_control_parameter_value& e) { \
     handle_exception(e); \
   } \
   catch (const not_universe_or_empty& e) { \
@@ -683,6 +715,12 @@ term_to_Coefficient(Prolog_term_ref t, const char* where);
 Prolog_atom
 term_to_optimization_mode(Prolog_term_ref t, const char* where);
 
+Prolog_atom
+term_to_control_parameter_name(Prolog_term_ref t, const char* where);
+
+Prolog_atom
+term_to_control_parameter_value(Prolog_term_ref t, const char* where);
+
 void
 check_nil_terminating(Prolog_term_ref t, const char* where);
 
@@ -787,6 +825,11 @@ ppl_MIP_Problem_optimization_mode(Prolog_term_ref t_mip,
 				  Prolog_term_ref t_opt);
 
 extern "C" Prolog_foreign_return_type
+ppl_MIP_Problem_get_control_parameter(Prolog_term_ref t_mip,
+                                      Prolog_term_ref t_cp_name,
+                                      Prolog_term_ref t_cp_value);
+
+extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_clear(Prolog_term_ref t_mip);
 
 extern "C" Prolog_foreign_return_type
@@ -811,6 +854,10 @@ ppl_MIP_Problem_set_objective_function(Prolog_term_ref t_mip,
 extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_set_optimization_mode(Prolog_term_ref t_mip,
 				      Prolog_term_ref t_opt);
+
+extern "C" Prolog_foreign_return_type
+ppl_MIP_Problem_set_control_parameter(Prolog_term_ref t_mip,
+                                      Prolog_term_ref t_cp_value);
 
 extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_is_satisfiable(Prolog_term_ref t_mip);

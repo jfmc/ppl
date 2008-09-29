@@ -189,10 +189,17 @@ print_newline();;
 print_linear_expression objective_func;;
 let i = ppl_MIP_Problem_space_dimension mip1;;
 print_newline();;
-print_int i;;
 let i = ppl_MIP_Problem_constraints mip1;;
 print_newline();;
 List.iter print_constraint i;;
+let i = ppl_MIP_Problem_get_control_parameter mip1 Pricing;;
+print_newline();;
+ppl_MIP_Problem_set_control_parameter mip1 Pricing_Textbook;;
+let i = ppl_MIP_Problem_get_control_parameter mip1 Pricing;;
+let out = if (i == Pricing_Textbook)
+  then "Control Parameter test succeeded"
+  else "Control Parameter test failed"
+    in (print_string out);;
 
 print_newline();;
 print_string ("space dimensions: ");;

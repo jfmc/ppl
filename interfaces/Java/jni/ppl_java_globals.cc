@@ -175,6 +175,38 @@ Java_parma_1polyhedra_1library_MIP_1Problem_optimization_1mode
 }
 
 JNIEXPORT jobject JNICALL
+Java_parma_1polyhedra_1library_MIP_1Problem_get_1control_1parameter
+(JNIEnv* env , jobject j_this_mip_problem,
+               jobject j_cpn) {
+  try {
+    MIP_Problem* mip
+      = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
+    MIP_Problem::Control_Parameter_Name cpn
+      = build_ppl_control_parameter_name(env, j_cpn);
+    return
+      build_java_control_parameter_value(env,
+                                         mip->get_control_parameter(cpn));
+  }
+  CATCH_ALL;
+  jobject null = 0;
+  return null;
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_MIP_1Problem_set_1control_1parameter
+(JNIEnv* env , jobject j_this_mip_problem,
+               jobject j_cpv) {
+  try {
+    MIP_Problem* mip
+      = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
+    MIP_Problem::Control_Parameter_Value cpv
+      = build_ppl_control_parameter_value(env, j_cpv);
+    mip->set_control_parameter(cpv);
+  }
+  CATCH_ALL;
+}
+
+JNIEXPORT jobject JNICALL
 Java_parma_1polyhedra_1library_MIP_1Problem_constraints
 (JNIEnv* env , jobject j_this_mip_problem) {
   try {

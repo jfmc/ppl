@@ -244,6 +244,32 @@ build_ppl_Complexity_Class(value cc) {
   }
 }
 
+ MIP_Problem::Control_Parameter_Name
+build_ppl_control_parameter_name(value caml_cp_name) {
+  switch (Int_val(caml_cp_name)) {
+  case 0:
+    return  MIP_Problem::PRICING;
+  default:
+    // We should not be here!
+    throw std::runtime_error("PPL OCaml interface internal error");
+  }
+}
+
+ MIP_Problem::Control_Parameter_Value
+build_ppl_control_parameter_value(value caml_cp_value) {
+  switch (Int_val(caml_cp_value)) {
+  case 0:
+    return MIP_Problem::PRICING_STEEPEST_EDGE_FLOAT;
+  case 1:
+    return MIP_Problem::PRICING_STEEPEST_EDGE_EXACT;
+  case 2:
+    return MIP_Problem::PRICING_TEXTBOOK;
+  default:
+    // We should not be here!
+    throw std::runtime_error("PPL OCaml interface internal error");
+  }
+}
+
 Variables_Set
 build_ppl_Variables_Set(value caml_vset) {
   Variables_Set ppl_vset;
@@ -846,6 +872,44 @@ ppl_MIP_Problem_optimization_mode(value caml_mip) try {
     CAMLreturn(Val_int(0));
   case MAXIMIZATION:
     CAMLreturn(Val_int(1));
+  default:
+    ;
+  }
+  // We should not be here!
+  throw std::runtime_error("PPL OCaml interface internal error");
+ }
+CATCH_ALL
+
+extern "C"
+void
+ppl_MIP_Problem_set_control_parameter(value caml_mip,
+                                      value caml_cp_value) try {
+  CAMLparam2(caml_mip, caml_cp_value);
+  MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
+  MIP_Problem::Control_Parameter_Value ppl_cp_value
+    = build_ppl_control_parameter_value(caml_cp_value);
+  ppl_mip.set_control_parameter(ppl_cp_value);
+  CAMLreturn0;
+ }
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_MIP_Problem_get_control_parameter(value caml_mip,
+                                      value caml_cp_name) try {
+  CAMLparam2(caml_mip, caml_cp_name);
+  MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
+  MIP_Problem::Control_Parameter_Name ppl_cp_name
+    = build_ppl_control_parameter_name(caml_cp_name);
+  MIP_Problem::Control_Parameter_Value ppl_cp_value
+    = ppl_mip.get_control_parameter(ppl_cp_name);
+  switch (ppl_cp_value) {
+  case MIP_Problem::PRICING_STEEPEST_EDGE_FLOAT:
+    CAMLreturn(Val_int(0));
+  case MIP_Problem::PRICING_STEEPEST_EDGE_EXACT:
+    CAMLreturn(Val_int(1));
+  case MIP_Problem::PRICING_TEXTBOOK:
+    CAMLreturn(Val_int(2));
   default:
     ;
   }

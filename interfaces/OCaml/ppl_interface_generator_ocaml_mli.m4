@@ -112,6 +112,12 @@ type optimization_mode = Minimization | Maximization
 type mip_problem_status = Unfeasible_Mip_Problem | Unbounded_Mip_Problem
                         | Optimized_Mip_Problem
 
+type control_parameter_name = Pricing
+
+type control_parameter_value = Pricing_Steepest_Edge_Float
+                               | Pricing_Steepest_Edge_Exact
+                               | Pricing_Textbook
+
 val ppl_version_major:
   unit -> int
 
@@ -198,6 +204,12 @@ val ppl_MIP_Problem_clear:
 
 val ppl_MIP_Problem_set_optimization_mode:
   mip_problem -> optimization_mode -> unit
+
+val ppl_MIP_Problem_set_control_parameter:
+  mip_problem -> control_parameter_value -> unit
+
+val ppl_MIP_Problem_get_control_parameter:
+  mip_problem -> control_parameter_name -> control_parameter_value
 
 val ppl_MIP_Problem_swap:
   mip_problem -> mip_problem -> unit
