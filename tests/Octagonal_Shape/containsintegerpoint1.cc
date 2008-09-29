@@ -84,7 +84,7 @@ test03() {
   cs.insert(3*y <= 2);
   cs.insert(3*y >= 1);
 
-  Octagonal_Shape<float> oct(3);
+  TOctagonal_Shape oct(3);
   oct.add_constraints(cs);
 
   print_constraints(oct, "*** oct ***");
@@ -161,7 +161,7 @@ test06() {
   cs.insert(3*y <= 2);
   cs.insert(3*y >= 1);
 
-  Octagonal_Shape<float> oct(3);
+  TOctagonal_Shape oct(3);
   oct.add_constraints(cs);
 
   print_constraints(oct, "*** oct ***");

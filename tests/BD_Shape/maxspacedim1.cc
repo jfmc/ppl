@@ -36,12 +36,18 @@ test01() {
        << endl
        << BD_Shape<long long>::max_space_dimension() << " (long long)"
        << endl
+#if PPL_SUPPORTED_FLOAT
        << BD_Shape<float>::max_space_dimension() << " (float)"
        << endl
+#endif
+#if PPL_SUPPORTED_DOUBLE
        << BD_Shape<double>::max_space_dimension() << " (double)"
        << endl
+#endif
+#if PPL_SUPPORTED_LONG_DOUBLE
        << BD_Shape<long double>::max_space_dimension() << " (long double)"
        << endl
+#endif
        << BD_Shape<mpz_class>::max_space_dimension() << " (mpz_class)"
        << endl
        << BD_Shape<mpq_class>::max_space_dimension() << " (mpq_class)"
@@ -63,13 +69,17 @@ test01() {
       < BD_Shape<long long>::max_space_dimension())
     return false;
 
+#if PPL_SUPPORTED_FLOAT && PPL_SUPPORTED_DOUBLE
   if (BD_Shape<float>::max_space_dimension()
       < BD_Shape<double>::max_space_dimension())
     return false;
+#endif
 
+#if PPL_SUPPORTED_DOUBLE && PPL_SUPPORTED_LONG_DOUBLE
   if (BD_Shape<double>::max_space_dimension()
       < BD_Shape<long double>::max_space_dimension())
     return false;
+#endif
 
   if (2*BD_Shape<mpz_class>::max_space_dimension()
       < BD_Shape<mpq_class>::max_space_dimension())

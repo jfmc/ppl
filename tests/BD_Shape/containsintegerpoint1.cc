@@ -86,7 +86,7 @@ test03() {
   cs.insert(3*y <= 2);
   cs.insert(3*y >= 1);
 
-  BD_Shape<float> bds(3);
+  TBD_Shape bds(3);
   bds.add_constraints(cs);
 
   print_constraints(bds, "*** bds ***");

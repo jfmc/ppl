@@ -259,7 +259,7 @@ test10() {
   Variable B(1);
   Variable C(2);
 
-  Octagonal_Shape<float> oc(3);
+  TOctagonal_Shape oc(3);
   oc.add_constraint(A <= -1);
 
   print_constraints(oc, "*** oc ***");
