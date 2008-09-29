@@ -181,6 +181,7 @@ catch (...) {						     \
   }                                                                     \
   CATCH_ALL
 
+#if 0
 #define DEFINE_ASCII_LOAD_FUNCTIONS(Type)                               \
   int                                                                   \
   ppl_##Type##_ascii_load(ppl_##Type##_t x, FILE* stream) try {         \
@@ -191,6 +192,9 @@ catch (...) {						     \
     return 0;                                                           \
   }                                                                     \
   CATCH_ALL
+#else
+#define DEFINE_ASCII_LOAD_FUNCTIONS(Type)
+#endif
 
 #define DEFINE_ASCII_DUMP_LOAD_FUNCTIONS(Type)  \
   DEFINE_ASCII_DUMP_FUNCTIONS(Type)             \
