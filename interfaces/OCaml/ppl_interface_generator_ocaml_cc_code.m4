@@ -1073,7 +1073,8 @@ ppl_@CLASS@_ascii_dump(value ph1) try {
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
   std::ostringstream s;
   pph1.ascii_dump(s);
-  CAMLreturn(caml_copy_string(s.str().c_str()));
+  std::string str = s.str();
+  CAMLreturn(caml_copy_string(str.c_str()));
 }
 CATCH_ALL
 ')

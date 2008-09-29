@@ -70,8 +70,9 @@ Prolog_put_Coefficient(Prolog_term_ref& t, const Coefficient& n) {
   else {
     std::ostringstream s;
     s << n;
+    std::string str = s.str();
     // TODO: remove the const_cast when the Ciao people fix ciao_prolog.h.
-    t = ciao_put_number_chars(const_cast<char*>(s.str().c_str()));
+    t = ciao_put_number_chars(const_cast<char*>(str.c_str()));
   }
   return 1;
 }

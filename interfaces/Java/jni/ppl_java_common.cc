@@ -463,7 +463,8 @@ build_java_coeff(JNIEnv* env, const Coefficient& ppl_coeff) {
   jmethodID j_coefficient_ctr_id = env->GetMethodID(j_coefficient_class,
 						    "<init>",
 						    "(Ljava/lang/String;)V");
-  jstring coeff_string = env->NewStringUTF(s.str().c_str());
+  std::string str = s.str();
+  jstring coeff_string = env->NewStringUTF(str.c_str());
   return env->NewObject(j_coefficient_class, j_coefficient_ctr_id,
 			coeff_string);
 }

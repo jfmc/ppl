@@ -140,7 +140,8 @@ PPL::Congruence::throw_dimension_incompatible(const char* method,
   std::ostringstream s;
   s << "this->space_dimension() == " << space_dimension() << ", "
     << v_name << ".space_dimension() == " << v.space_dimension() << ".";
-  throw_invalid_argument(method, s.str().c_str());
+  std::string str = s.str();
+  throw_invalid_argument(method, str.c_str());
 }
 
 /*! \relates Parma_Polyhedra_Library::Congruence */

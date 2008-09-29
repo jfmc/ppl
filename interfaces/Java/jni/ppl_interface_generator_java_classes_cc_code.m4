@@ -1019,7 +1019,8 @@ JNIEXPORT jstring JNICALL Java_parma_1polyhedra_1library_@1CLASS@_toString
  = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this_@LCLASS@));
   std::ostringstream s;
   s << *this_@LCLASS@;
-  return env->NewStringUTF(s.str().c_str());
+  std::string str = s.str();
+  return env->NewStringUTF(str.c_str());
   }
   CATCH_ALL;
   return 0;
@@ -1062,7 +1063,8 @@ JNIEXPORT jstring JNICALL Java_parma_1polyhedra_1library_@1CLASS@_ascii_1dump
  = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this_@LCLASS@));
   std::ostringstream s;
   this_@LCLASS@->ascii_dump(s);
-  return env->NewStringUTF(s.str().c_str());
+  std::string str = s.str();
+  return env->NewStringUTF(str.c_str());
   }
   CATCH_ALL;
   return 0;

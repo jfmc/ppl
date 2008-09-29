@@ -522,8 +522,9 @@ handle_exception(const PPL_integer_out_of_range& e) {
   Prolog_term_ref exception_term = Prolog_new_term_ref();
   std::ostringstream s;
   s << e.value();
+  std::string str = s.str();
   Prolog_construct_compound(exception_term, a_ppl_representation_error,
-			    Prolog_atom_term_from_string(s.str().c_str()),
+			    Prolog_atom_term_from_string(str.c_str()),
 			    where);
   Prolog_raise_exception(exception_term);
 }

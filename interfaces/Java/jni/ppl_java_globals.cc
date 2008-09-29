@@ -452,7 +452,8 @@ Java_parma_1polyhedra_1library_MIP_1Problem_toString
   MIP_Problem* mip
     = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
   s << mip;
-  return env->NewStringUTF(s.str().c_str());
+  std::string str = s.str();
+  return env->NewStringUTF(str.c_str());
 }
 
 JNIEXPORT jstring JNICALL
@@ -462,7 +463,8 @@ Java_parma_1polyhedra_1library_Linear_1Expression_toString
   std::ostringstream s;
   Linear_Expression ppl_le = build_linear_expression(env, le);
   s << ppl_le;
-  return env->NewStringUTF(s.str().c_str());
+  std::string str = s.str();
+  return env->NewStringUTF(str.c_str());
 }
 
 JNIEXPORT jstring JNICALL
@@ -472,7 +474,8 @@ Java_parma_1polyhedra_1library_Generator_toString
   std::ostringstream s;
   Generator ppl_g = build_ppl_generator(env, g);
   s << ppl_g;
-  return env->NewStringUTF(s.str().c_str());
+  std::string str = s.str();
+  return env->NewStringUTF(str.c_str());
 }
 
 JNIEXPORT jstring JNICALL
@@ -482,7 +485,8 @@ Java_parma_1polyhedra_1library_Constraint_toString
   std::ostringstream s;
   Constraint ppl_c = build_ppl_constraint(env, c);
   s << ppl_c;
-  return env->NewStringUTF(s.str().c_str());
+  std::string str = s.str();
+  return env->NewStringUTF(str.c_str());
 }
 
 JNIEXPORT jstring JNICALL
@@ -492,7 +496,8 @@ Java_parma_1polyhedra_1library_Grid_1Generator_toString
   std::ostringstream s;
   Grid_Generator ppl_g = build_ppl_grid_generator(env, g);
   s << ppl_g;
-  return env->NewStringUTF(s.str().c_str());
+  std::string str = s.str();
+  return env->NewStringUTF(str.c_str());
 }
 
 JNIEXPORT jstring JNICALL
@@ -502,7 +507,8 @@ Java_parma_1polyhedra_1library_Congruence_toString
   std::ostringstream s;
   Congruence ppl_g = build_ppl_congruence(env, g);
   s << ppl_g;
-  return env->NewStringUTF(s.str().c_str());
+  std::string str = s.str();
+  return env->NewStringUTF(str.c_str());
 }
 
 JNIEXPORT jstring JNICALL
@@ -512,7 +518,8 @@ Java_parma_1polyhedra_1library_Grid_1Generator_1System_toString
   std::ostringstream s;
   Grid_Generator_System ppl_ggs = build_ppl_grid_generator_system(env, ggs);
   s << ppl_ggs;
-  return env->NewStringUTF(s.str().c_str());
+  std::string str = s.str();
+  return env->NewStringUTF(str.c_str());
 }
 
 JNIEXPORT jstring JNICALL
@@ -522,7 +529,8 @@ Java_parma_1polyhedra_1library_Generator_1System_toString
   std::ostringstream s;
   Generator_System ppl_gs = build_ppl_generator_system(env, gs);
   s << ppl_gs;
-  return env->NewStringUTF(s.str().c_str());
+  std::string str = s.str();
+  return env->NewStringUTF(str.c_str());
 }
 
 JNIEXPORT jstring JNICALL
@@ -532,7 +540,8 @@ Java_parma_1polyhedra_1library_Constraint_1System_toString
   std::ostringstream s;
   Constraint_System ppl_cs = build_ppl_constraint_system(env, cs);
   s << ppl_cs;
-  return env->NewStringUTF(s.str().c_str());
+  std::string str = s.str();
+  return env->NewStringUTF(str.c_str());
 }
 
 JNIEXPORT jstring JNICALL
@@ -542,7 +551,8 @@ Java_parma_1polyhedra_1library_Congruence_1System_toString
   std::ostringstream s;
   Congruence_System ppl_cgs = build_ppl_congruence_system(env, cgs);
   s << ppl_cgs;
-  return env->NewStringUTF(s.str().c_str());
+  std::string str = s.str();
+  return env->NewStringUTF(str.c_str());
 }
 
 JNIEXPORT jlong JNICALL

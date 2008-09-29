@@ -153,7 +153,8 @@ catch (...) {						     \
     using namespace IO_Operators;                                       \
     std::ostringstream s;                                               \
     s << *to_const(x);                                                  \
-    if (puts(s.str().c_str()) < 0)                                      \
+    std::string str = s.str();                                          \
+    if (puts(str.c_str()) < 0)                                          \
       return PPL_STDIO_ERROR;                                           \
     return 0;                                                           \
   }                                                                     \
@@ -164,7 +165,8 @@ catch (...) {						     \
     using namespace IO_Operators;                                       \
     std::ostringstream s;                                               \
     s << *to_const(x);                                                  \
-    if (fputs(s.str().c_str(), stream) < 0)                             \
+    std::string str = s.str();                                          \
+    if (fputs(str.c_str(), stream) < 0)                                 \
       return PPL_STDIO_ERROR;                                           \
     return 0;                                                           \
   }                                                                     \
@@ -175,7 +177,8 @@ catch (...) {						     \
   ppl_##Type##_ascii_dump(ppl_const_##Type##_t x, FILE* stream) try {   \
     std::ostringstream s;                                               \
     to_const(x)->ascii_dump(s);                                         \
-    if (fputs(s.str().c_str(), stream) < 0)                             \
+    std::string str = s.str();                                          \
+    if (fputs(str.c_str(), stream) < 0)                                 \
       return PPL_STDIO_ERROR;                                           \
     return 0;                                                           \
   }                                                                     \

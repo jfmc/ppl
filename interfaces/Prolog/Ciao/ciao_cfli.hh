@@ -71,7 +71,9 @@ Prolog_put_ulong(Prolog_term_ref& t, unsigned long ul) {
   else {
     std::ostringstream s;
     s << ul;
-    t = ciao_put_number_chars(const_cast<char*>(s.str().c_str()));
+    std::string str = s.str();
+    // TODO: remove the const_cast when the Ciao people fix ciao_prolog.h.
+    t = ciao_put_number_chars(const_cast<char*>(str.c_str()));
   }
   return 1;
 }

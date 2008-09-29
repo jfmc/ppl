@@ -79,10 +79,11 @@ Prolog_put_Coefficient(Prolog_term_ref t, const Coefficient& n) {
   else {
     std::ostringstream s;
     s << n;
+    std::string str = s.str();
 #if SICSTUS_MAJOR_VERSION == 3
-    return SP_put_number_chars(t, s.str().c_str());
+    return SP_put_number_chars(t, str.c_str());
 #else
-    return SP_put_number_codes(t, s.str().c_str());
+    return SP_put_number_codes(t, str.c_str());
 #endif
   }
 }
