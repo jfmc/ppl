@@ -1137,6 +1137,10 @@ AC_CHECK_DECLS([getrusage],
 # Checks for typedefs, structures, and compiler characteristics.
 AC_CHECK_TYPES([timeval])
 
+# Check whether the IEEE inexact flag is supported and available to
+# C++ programs.
+AC_CXX_SUPPORTS_LIMITING_MEMORY
+
 # Checks for library functions.
 # Nothing for the time being.
 

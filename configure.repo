@@ -11815,6 +11815,17 @@ cat >>conftest.$ac_ext <<_ACEOF
 
 #if SIZEOF_LONG_DOUBLE == 16
 
+#if defined(__sparc__) && defined(__arch64__) \
+    && (__GNUC__ < 4 || (__GNUC__ == 4 && __GNUC_MINOR__ < 4))
+
+// Work around http://gcc.gnu.org/bugzilla/show_bug.cgi?id=37661
+int
+main() {
+  exit(1);
+}
+
+#else // !defined(__sparc__) || !defined(__arch64__) ...
+
 long double
 convert(uint64_t msp, uint64_t lsp) {
   union {
@@ -11846,6 +11857,8 @@ main() {
   else
     exit(1);
 }
+
+#endif // !defined(__sparc__) || !defined(__arch64__) ...
 
 #else // SIZEOF_LONG_DOUBLE != 16
 
@@ -16484,7 +16497,7 @@ else
 JAVA_TEST=Test.java
 CLASS_TEST=Test.class
 cat << \EOF > $JAVA_TEST
-/* #line 16487 "configure" */
+/* #line 16500 "configure" */
 public class Test {
 public enum Relation_Symbol {
     /*! Less than. */
@@ -16675,7 +16688,7 @@ EOF
 if uudecode$EXEEXT Test.uue; then
         ac_cv_prog_uudecode_base64=yes
 else
-        echo "configure: 16678: uudecode had trouble decoding base 64 file 'Test.uue'" >&5
+        echo "configure: 16691: uudecode had trouble decoding base 64 file 'Test.uue'" >&5
         echo "configure: failed file was:" >&5
         cat Test.uue >&5
         ac_cv_prog_uudecode_base64=no
@@ -16794,7 +16807,7 @@ else
 JAVA_TEST=Test.java
 CLASS_TEST=Test.class
 cat << \EOF > $JAVA_TEST
-/* #line 16797 "configure" */
+/* #line 16810 "configure" */
 public class Test {
 public enum Relation_Symbol {
     /*! Less than. */
@@ -16843,7 +16856,7 @@ JAVA_TEST=Test.java
 CLASS_TEST=Test.class
 TEST=Test
 cat << \EOF > $JAVA_TEST
-/* [#]line 16846 "configure" */
+/* [#]line 16859 "configure" */
 public class Test {
 public static void main (String args[]) {
         System.exit (0);
@@ -19323,13 +19336,13 @@ if test "${lt_cv_nm_interface+set}" = set; then
 else
   lt_cv_nm_interface="BSD nm"
   echo "int some_variable = 0;" > conftest.$ac_ext
-  (eval echo "\"\$as_me:19326: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:19339: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:19329: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
+  (eval echo "\"\$as_me:19342: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
   (eval "$NM \"conftest.$ac_objext\"" 2>conftest.err > conftest.out)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:19332: output\"" >&5)
+  (eval echo "\"\$as_me:19345: output\"" >&5)
   cat conftest.out >&5
   if $GREP 'External.*some_variable' conftest.out > /dev/null; then
     lt_cv_nm_interface="MS dumpbin"
@@ -20534,7 +20547,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 20537 "configure"' > conftest.$ac_ext
+  echo '#line 20550 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -22620,11 +22633,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:22623: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:22636: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:22627: \$? = $ac_status" >&5
+   echo "$as_me:22640: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -22959,11 +22972,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:22962: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:22975: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:22966: \$? = $ac_status" >&5
+   echo "$as_me:22979: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -23064,11 +23077,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:23067: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:23080: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:23071: \$? = $ac_status" >&5
+   echo "$as_me:23084: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -23119,11 +23132,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:23122: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:23135: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:23126: \$? = $ac_status" >&5
+   echo "$as_me:23139: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -25919,7 +25932,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 25922 "configure"
+#line 25935 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -26015,7 +26028,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 26018 "configure"
+#line 26031 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -28035,11 +28048,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:28038: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:28051: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:28042: \$? = $ac_status" >&5
+   echo "$as_me:28055: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -28134,11 +28147,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:28137: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:28150: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:28141: \$? = $ac_status" >&5
+   echo "$as_me:28154: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -28186,11 +28199,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:28189: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:28202: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:28193: \$? = $ac_status" >&5
+   echo "$as_me:28206: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -30436,6 +30449,164 @@ _ACEOF
 
 
 fi
+
+
+# Check whether the IEEE inexact flag is supported and available to
+# C++ programs.
+
+ac_save_CPPFLAGS="$CPPFLAGS"
+ac_save_LIBS="$LIBS"
+ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+
+{ $as_echo "$as_me:$LINENO: checking whether we can limit memory in C++ using setrlimit()" >&5
+$as_echo_n "checking whether we can limit memory in C++ using setrlimit()... " >&6; }
+if test "$cross_compiling" = yes; then
+  { $as_echo "$as_me:$LINENO: result: no" >&5
+$as_echo "no" >&6; }
+  ac_cxx_supports_limiting_memory=no
+else
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+#include <new>
+#include <cstring>
+#include <cerrno>
+#include <cstdlib>
+
+#ifdef HAVE_SYS_TYPES_H
+# include <sys/types.h>
+#endif
+
+#ifdef HAVE_SYS_TIME_H
+# include <sys/time.h>
+#endif
+
+#ifdef HAVE_SYS_RESOURCE_H
+// This should be included after <time.h> and <sys/time.h> so as to make
+// sure we have the definitions for, e.g., ru_utime.
+# include <sys/resource.h>
+#endif
+
+#ifdef HAVE_UNISTD_H
+# include <unistd.h>
+#endif
+
+#define LIMIT(WHAT) \
+  do {									\
+    if (getrlimit(WHAT, &t) != 0) 					\
+      exit(1);								\
+    t.rlim_cur = bytes;							\
+    if (setrlimit(WHAT, &t) != 0)					\
+      exit(1);								\
+  } while (0)
+
+void
+limit_memory(unsigned long bytes) {
+  struct rlimit t;
+#if HAVE_DECL_RLIMIT_DATA
+  // Limit heap size.
+  LIMIT(RLIMIT_DATA);
+#endif
+#if HAVE_DECL_RLIMIT_RSS
+  // Limit resident set size.
+  LIMIT(RLIMIT_RSS);
+#endif
+#if HAVE_DECL_RLIMIT_VMEM
+  // Limit mapped memory (brk + mmap).
+  LIMIT(RLIMIT_VMEM);
+#endif
+#if HAVE_DECL_RLIMIT_AS
+  // Limit virtual memory.
+  LIMIT(RLIMIT_AS);
+#endif
+}
+
+int
+main() try {
+  limit_memory(10000);
+  (void) new char[20000];
+  exit(1);
+ }
+ catch (std::bad_alloc) {
+   exit(0);
+ }
+ catch (...) {
+   exit(1);
+ }
+
+
+_ACEOF
+rm -f conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && { ac_try='./conftest$ac_exeext'
+  { (case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_try") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  { $as_echo "$as_me:$LINENO: result: yes" >&5
+$as_echo "yes" >&6; }
+  ac_cxx_supports_limiting_memory=yes
+else
+  $as_echo "$as_me: program exited with status $ac_status" >&5
+$as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+( exit $ac_status )
+{ $as_echo "$as_me:$LINENO: result: no" >&5
+$as_echo "no" >&6; }
+  ac_cxx_supports_limiting_memory=no
+fi
+rm -rf conftest.dSYM
+rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
+fi
+
+
+
+if test x"$ac_cxx_supports_limiting_memory" = xyes
+then
+  value=1
+else
+  value=0
+fi
+
+cat >>confdefs.h <<_ACEOF
+#define CXX_SUPPORTS_LIMITING_MEMORY $value
+_ACEOF
+
+
+ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+CPPFLAGS="$ac_save_CPPFLAGS"
+LIBS="$ac_save_LIBS"
 
 
 # Checks for library functions.
