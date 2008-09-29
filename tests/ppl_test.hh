@@ -34,6 +34,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <iostream>
 #include <algorithm>
 #include <typeinfo>
+#include <cstdlib>
 
 #define TRY try
 
