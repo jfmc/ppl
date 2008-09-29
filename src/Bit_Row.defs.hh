@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Bit_Row.types.hh"
 #include "globals.types.hh"
 #include <iosfwd>
-#include <gmp.h>
+#include <gmpxx.h>
 #include <vector>
 
 namespace Parma_Polyhedra_Library {

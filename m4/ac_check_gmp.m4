@@ -68,7 +68,7 @@ have_gmp=${ac_cv_have_gmp}
 if test x"$ac_cv_have_gmp" = xyes
 then
 
-AC_CHECK_SIZEOF(mp_limb_t, , [#include <gmp.h>])
+AC_CHECK_SIZEOF(mp_limb_t, , [#include <gmpxx.h>])
 
 AC_MSG_CHECKING([whether GMP has been compiled with support for exceptions])
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
