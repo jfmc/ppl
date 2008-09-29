@@ -338,20 +338,6 @@ add_edges(BD_Shape<T>& bds, const Edge* edges, unsigned n) {
   }
 }
 
-#define DISTANCE(To, Temp)                             \
-  do { \
-    Checked_Number<To, Extended_Number_Policy> distance; \
-    rectilinear_distance_assign<Temp>(distance, qbds1, qbds2, ROUND_UP); \
-    nout << "Rectilinear distance<" #To ", " #Temp "> = " << distance \
-         << endl; \
-    euclidean_distance_assign<Temp>(distance, qbds1, qbds2, ROUND_UP); \
-    nout << "Euclidean distance<" #To ", " #Temp "> = " << distance \
-         << endl; \
-    l_infinity_distance_assign<Temp>(distance, qbds1, qbds2, ROUND_UP); \
-    nout << "L-infinity distance<" #To ", " #Temp "> = " << distance \
-         << endl; \
-  } while (0)
-
 bool
 test01() {
   BD_Shape<mpq_class> qbds1(126);
@@ -364,12 +350,6 @@ test01() {
   if (!qbds2.contains(qbds1))
     return false;
 
-  // FIXME!!!
-#if 1
-  DISTANCE(double, float);
-  DISTANCE(double, mpq_class);
-  DISTANCE(int, double);
-#endif
   return true;
 }
 
@@ -378,17 +358,17 @@ test02() {
   // This test shows that the Floyd-Warshall algorithm does not compute
   // the shortest path closure when using a floating point datatype.
   // In particular, here it is shown that FW is not idempotent.
-  typedef BD_Shape<float> BDS;
-  typedef BDS::coefficient_type Float;
+  typedef TBD_Shape BDS;
+  typedef BDS::coefficient_type Coeff;
 
-  Float f_1, f_2, f_3, f_1_2, f_1_3;
-  assign_r(f_1, (float) 1.0, ROUND_UP);
-  assign_r(f_2, (float) 2.0, ROUND_DOWN);
-  assign_r(f_3, (float) 3.0, ROUND_DOWN);
+  Coeff f_1, f_2, f_3, f_1_2, f_1_3;
+  assign_r(f_1, 1, ROUND_UP);
+  assign_r(f_2, 2, ROUND_DOWN);
+  assign_r(f_3, 3, ROUND_DOWN);
   div_assign_r(f_1_2, f_1, f_2, ROUND_UP);
   div_assign_r(f_1_3, f_1, f_3, ROUND_UP);
 
-  nout << "*** Floating point up approx ***\n";
+  nout << "*** Possible up-approximation ***\n";
   nout << "1/2 = " << f_1_2 << "\n";
   nout << "1/3 = " << f_1_3 << "\n";
 
@@ -436,7 +416,9 @@ test02() {
 
   print_constraints(bds2.constraints(), "*** AFTER SECOND Floyd-Warshall ***");
 
-  bool ok = bds1.contains(bds2) && !bds2.contains(bds1);
+  bool ok = bds1.contains(bds2)
+    && ((std::numeric_limits<Coeff>::is_exact && bds2.contains(bds1))
+        || !bds2.contains(bds1));
 
   return ok;
 }
@@ -447,22 +429,22 @@ test03() {
   // the shortest path closure when using a floating point datatype.
   // In particular, here it is shown that even two applications of FW
   // are not enough to obtain idempotency.
-  typedef BD_Shape<float> BDS;
-  typedef BDS::coefficient_type Float;
+  typedef TBD_Shape BDS;
+  typedef BDS::coefficient_type Coeff;
 
-  Float f_1, f_2, f_3, f_5, f_7;
-  Float f_1_2, f_1_3, f_1_5, f_1_7;
-  assign_r(f_1, (float) 1.0, ROUND_UP);
-  assign_r(f_2, (float) 2.0, ROUND_DOWN);
-  assign_r(f_3, (float) 3.0, ROUND_DOWN);
-  assign_r(f_5, (float) 5.0, ROUND_DOWN);
-  assign_r(f_7, (float) 7.0, ROUND_DOWN);
+  Coeff f_1, f_2, f_3, f_5, f_7;
+  Coeff f_1_2, f_1_3, f_1_5, f_1_7;
+  assign_r(f_1, 1, ROUND_UP);
+  assign_r(f_2, 2, ROUND_DOWN);
+  assign_r(f_3, 3, ROUND_DOWN);
+  assign_r(f_5, 5, ROUND_DOWN);
+  assign_r(f_7, 7, ROUND_DOWN);
   div_assign_r(f_1_2, f_1, f_2, ROUND_UP);
   div_assign_r(f_1_3, f_1, f_3, ROUND_UP);
   div_assign_r(f_1_5, f_1, f_5, ROUND_UP);
   div_assign_r(f_1_7, f_1, f_7, ROUND_UP);
 
-  nout << "*** Floating point up approx ***\n";
+  nout << "*** Possible up-approximation ***\n";
   nout << "1/2 = " << f_1_2 << "\n";
   nout << "1/3 = " << f_1_3 << "\n";
   nout << "1/5 = " << f_1_5 << "\n";
@@ -542,8 +524,17 @@ test03() {
   print_constraints(bds2.constraints(), "*** AFTER THIRD Floyd-Warshall ***");
   nout << "\n";
 
-  bool ok = bds1.contains(bds2) && bds2.contains(bds3)
-    && !bds2.contains(bds1) && !bds3.contains(bds2);
+  bool ok = true;
+
+  ok = ok
+    && bds1.contains(bds2)
+    && ((std::numeric_limits<Coeff>::is_exact && bds2.contains(bds1))
+        || !bds2.contains(bds1));
+
+  ok = ok
+    && bds2.contains(bds3)
+    && ((std::numeric_limits<Coeff>::is_exact && bds3.contains(bds2))
+        || !bds3.contains(bds2));
 
   return ok;
 }
