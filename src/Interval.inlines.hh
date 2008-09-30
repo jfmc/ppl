@@ -1137,8 +1137,9 @@ operator/(const Interval<B, Info>& x, const Interval<B, Info>& y) {
 }
 
 template <typename Boundary, typename Info>
-inline std::ostream&
-operator<<(std::ostream& os, const Interval<Boundary, Info>& x) {
+template <typename OStream>
+inline OStream&
+operator<<(OStream& os, const Interval<Boundary, Info>& x) {
   // assert(x.OK());
   if (check_empty_arg(x))
     return os << "[]";
@@ -1162,8 +1163,9 @@ operator<<(std::ostream& os, const Interval<Boundary, Info>& x) {
 }
 
 template <typename Boundary, typename Info>
+template <typename OStream>
 inline void
-Interval<Boundary, Info>::ascii_dump(std::ostream& s) const {
+Interval<Boundary, Info>::ascii_dump(OStream& s) const {
   using Parma_Polyhedra_Library::ascii_dump;
   s << "info ";
   info().ascii_dump(s);
@@ -1175,8 +1177,9 @@ Interval<Boundary, Info>::ascii_dump(std::ostream& s) const {
 }
 
 template <typename Boundary, typename Info>
+template <typename IStream>
 inline bool
-Interval<Boundary, Info>::ascii_load(std::istream& s) {
+Interval<Boundary, Info>::ascii_load(IStream& s) {
   using Parma_Polyhedra_Library::ascii_load;
   std::string str;
   if (!(s >> str) || str != "info")

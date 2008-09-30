@@ -657,22 +657,6 @@ Partially_Reduced_Product<D1, D2, R>::set_reduced_flag() const {
   const_cast<Partially_Reduced_Product&>(*this).reduced = true;
 }
 
-// FIXME: Improve this name.
-PPL_OUTPUT_3_PARAM_TEMPLATE_DEFINITIONS(D1, D2, R, Partially_Reduced_Product)
-
-template <typename D1, typename D2, typename R>
-inline void
-Partially_Reduced_Product<D1, D2, R>::ascii_dump(std::ostream& s) const {
-  const char yes = '+';
-  const char no = '-';
-  s << "Partially_Reduced_Product\n";
-  s << (reduced ? yes : no) << "reduced\n";
-  s << "Domain 1:\n";
-  d1.ascii_dump(s);
-  s << "Domain 2:\n";
-  d2.ascii_dump(s);
-}
-
 template <typename D1, typename D2, typename R>
 inline int32_t
 Partially_Reduced_Product<D1, D2, R>::hash_code() const {
@@ -695,16 +679,6 @@ inline bool
 operator!=(const Partially_Reduced_Product<D1, D2, R>& x,
 	   const Partially_Reduced_Product<D1, D2, R>& y) {
   return !(x == y);
-}
-
-/*! \relates Parma_Polyhedra_Library::Partially_Reduced_Product */
-template <typename D1, typename D2, typename R>
-inline std::ostream&
-IO_Operators::operator<<(std::ostream& s, const Partially_Reduced_Product<D1, D2, R>& pd) {
-  return s << "Domain 1:\n"
-	   << pd.d1
-	   << "Domain 2:\n"
-	   << pd.d2;
 }
 
 } // namespace Parma_Polyhedra_Library

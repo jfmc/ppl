@@ -247,8 +247,9 @@ namespace IO_Operators {
 
 /*! \relates Parma_Polyhedra_Library::Powerset */
 template <typename D>
-std::ostream&
-operator<<(std::ostream& s, const Powerset<D>& x) {
+template <typename OStream>
+OStream&
+operator<<(OStream& s, const Powerset<D>& x) {
   if (x.is_bottom())
     s << "false";
   else if (x.is_top())

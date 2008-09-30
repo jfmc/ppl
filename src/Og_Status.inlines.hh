@@ -164,8 +164,9 @@ const char sep = ' ';
   When successful, \p positive is set to <CODE>true</CODE> if the flag
   is on; it is set to <CODE>false</CODE> otherwise.
 */
+template <typename IStream>
 inline bool
-get_field(std::istream& s, const std::string& keyword, bool& positive) {
+get_field(IStream& s, const std::string& keyword, bool& positive) {
   std::string str;
   if (!(s >> str)
       || (str[0] != yes && str[0] != no)
@@ -180,8 +181,9 @@ get_field(std::istream& s, const std::string& keyword, bool& positive) {
 } // namespace Implementation
 
 template <typename T>
+template <typename OStream>
 inline void
-Octagonal_Shape<T>::Status::ascii_dump(std::ostream& s) const {
+Octagonal_Shape<T>::Status::ascii_dump(OStream& s) const {
   using namespace Implementation::Octagonal_Shapes;
   s << (test_zero_dim_univ() ? yes : no) << zero_dim_univ
     << sep
@@ -193,8 +195,9 @@ Octagonal_Shape<T>::Status::ascii_dump(std::ostream& s) const {
 }
 
 template <typename T>
+template <typename IStream>
 inline bool
-Octagonal_Shape<T>::Status::ascii_load(std::istream& s) {
+Octagonal_Shape<T>::Status::ascii_load(IStream& s) {
   using namespace Implementation::Octagonal_Shapes;
   bool positive;
 

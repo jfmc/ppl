@@ -417,9 +417,27 @@ Partially_Reduced_Product<D1, D2, R>::OK() const {
   return d1.OK() && d2.OK();
 }
 
+// FIXME: Improve this name.
+PPL_OUTPUT_3_PARAM_TEMPLATE_DEFINITIONS(D1, D2, R, Partially_Reduced_Product)
+
 template <typename D1, typename D2, typename R>
+template <typename OStream>
+inline void
+Partially_Reduced_Product<D1, D2, R>::ascii_dump(OStream& s) const {
+  const char yes = '+';
+  const char no = '-';
+  s << "Partially_Reduced_Product\n";
+  s << (reduced ? yes : no) << "reduced\n";
+  s << "Domain 1:\n";
+  d1.ascii_dump(s);
+  s << "Domain 2:\n";
+  d2.ascii_dump(s);
+}
+
+template <typename D1, typename D2, typename R>
+template <typename IStream>
 bool
-Partially_Reduced_Product<D1, D2, R>::ascii_load(std::istream& s) {
+Partially_Reduced_Product<D1, D2, R>::ascii_load(IStream& s) {
   const char yes = '+';
   const char no = '-';
   std::string str;
@@ -465,6 +483,21 @@ template <typename D1, typename D2>
 inline
 Smash_Reduction<D1, D2>::~Smash_Reduction() {
 }
+
+namespace IO_Operators {
+
+/*! \relates Parma_Polyhedra_Library::Partially_Reduced_Product */
+template <typename D1, typename D2, typename R>
+template <typename OStream>
+inline OStream&
+operator<<(OStream& s, const Partially_Reduced_Product<D1, D2, R>& pd) {
+  return s << "Domain 1:\n"
+	   << pd.d1
+	   << "Domain 2:\n"
+	   << pd.d2;
+}
+
+} // namespace IO_Operators
 
 } // namespace Parma_Polyhedra_Library
 

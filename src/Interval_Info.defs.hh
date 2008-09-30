@@ -132,8 +132,7 @@ public:
   //! Swaps \p *this with \p y.
   void swap(Interval_Info_Null& y);
 
-  void ascii_dump(std::ostream& s) const;
-  bool ascii_load(std::istream& s);
+  PPL_OUTPUT_DECLARATIONS
 };
 
 template <typename Policy>
@@ -152,8 +151,7 @@ public:
     }
   }
 
-  void ascii_dump(std::ostream& s) const;
-  bool ascii_load(std::istream& s);
+  PPL_OUTPUT_DECLARATIONS
 
 private:
   bool open;
@@ -286,8 +284,7 @@ public:
   //! Swaps \p *this with \p y.
   void swap(Interval_Info_Bitset& y);
 
-  void ascii_dump(std::ostream& s) const;
-  bool ascii_load(std::istream& s);
+  PPL_OUTPUT_DECLARATIONS
 
 protected:
   T bitset;

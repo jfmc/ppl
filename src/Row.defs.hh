@@ -116,7 +116,8 @@ public:
       otherwise.  The ASCII representation is as output by
       \ref Parma_Polyhedra_Library::Row::Flags::ascii_dump.
     */
-    bool ascii_load(std::istream& s);
+    template <typename IStream>
+    bool ascii_load(IStream& s);
 
   protected:
     //! A native integral type holding the bits that encode the flags.
@@ -297,10 +298,11 @@ public:
 
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
-    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    ascii_dump(OStream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
-  bool ascii_load(std::istream& s);
+  template <typename IStream>
+  bool ascii_load(IStream& s);
 
   /*! \brief
     Returns a lower bound to the total size in bytes of the memory

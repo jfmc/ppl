@@ -68,13 +68,15 @@ public:
   //! \brief
   //! Writes to \p s an ASCII representation of the internal
   //! representation of \p *this.
-  void ascii_dump(std::ostream& s) const;
+  template <typename OStream>
+  void ascii_dump(OStream& s) const;
 
   //! \brief
   //! Loads from \p s an ASCII representation (as produced by
-  //! ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+  //! ascii_dump(OStream&) const) and sets \p *this accordingly.
   //! Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
-  bool ascii_load(std::istream& s);
+  template <typename IStream>
+  bool ascii_load(IStream& s);
 
 private:
   //! Status is implemented by means of a finite bitset.

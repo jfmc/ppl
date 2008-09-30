@@ -75,8 +75,9 @@ Interval<Boundary, Info>::CC76_widening_assign(const From& y,
 }
 
 template <typename Boundary, typename Info>
-inline std::istream&
-operator>>(std::istream& is, Interval<Boundary, Info>& x) {
+template <typename IStream>
+inline IStream&
+operator>>(IStream& is, Interval<Boundary, Info>& x) {
   // Eat leading white space.
   int c;
   do {

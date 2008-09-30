@@ -33,25 +33,29 @@ Interval_Info_Null<Policy>::swap(Interval_Info_Null<Policy>&) {
 }
 
 template <typename Policy>
+template <typename OStream>
 inline void
-Interval_Info_Null<Policy>::ascii_dump(std::ostream& s) const {
+Interval_Info_Null<Policy>::ascii_dump(OStream& s) const {
 }
 
 template <typename Policy>
+template <typename IStream>
 inline bool
-Interval_Info_Null<Policy>::ascii_load(std::istream& s) {
+Interval_Info_Null<Policy>::ascii_load(IStream& s) {
   return true;
 }
 
 template <typename Policy>
+template <typename OStream>
 inline void
-Interval_Info_Null_Open<Policy>::ascii_dump(std::ostream& s) const {
+Interval_Info_Null_Open<Policy>::ascii_dump(OStream& s) const {
   s << (open ? "open" : "closed");
 }
 
 template <typename Policy>
+template <typename IStream>
 inline bool
-Interval_Info_Null_Open<Policy>::ascii_load(std::istream& s) {
+Interval_Info_Null_Open<Policy>::ascii_load(IStream& s) {
   std::string str;
   if (!(s >> str))
     return false;
@@ -73,16 +77,18 @@ Interval_Info_Bitset<T, Policy>::swap(Interval_Info_Bitset<T, Policy>& y) {
 }
 
 template <typename T, typename Policy>
+template <typename OStream>
 inline void
-Interval_Info_Bitset<T, Policy>::ascii_dump(std::ostream& s) const {
+Interval_Info_Bitset<T, Policy>::ascii_dump(OStream& s) const {
   std::ios_base::fmtflags old = s.flags();
   s << std::hex << bitset;
   s.flags(old);
 }
 
 template <typename T, typename Policy>
+template <typename IStream>
 inline bool
-Interval_Info_Bitset<T, Policy>::ascii_load(std::istream& s) {
+Interval_Info_Bitset<T, Policy>::ascii_load(IStream& s) {
   std::ios_base::fmtflags old = s.flags();
   if (s >> std::hex >> bitset) {
     s.flags(old);

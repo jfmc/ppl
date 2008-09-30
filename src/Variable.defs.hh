@@ -26,7 +26,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Variable.types.hh"
 #include "Init.types.hh"
 #include "globals.types.hh"
-#include <iosfwd>
 #include <set>
 
 namespace Parma_Polyhedra_Library {
@@ -35,8 +34,9 @@ namespace IO_Operators {
 
 //! Output operator.
 /*! \relates Parma_Polyhedra_Library::Variable */
-std::ostream&
-operator<<(std::ostream& s, const Variable& v);
+template <typename OStream>
+OStream&
+operator<<(OStream& s, const Variable& v);
 
 } // namespace IO_Operators
 
@@ -132,8 +132,9 @@ private:
   // The initialization class needs to set the default output function.
   friend class Init;
 
-  friend std::ostream&
-  Parma_Polyhedra_Library::IO_Operators::operator<<(std::ostream& s,
+  template <typename OStream>
+  friend OStream&
+  Parma_Polyhedra_Library::IO_Operators::operator<<(OStream& s,
 						    const Variable& v);
 
   //! Pointer to the current output function.

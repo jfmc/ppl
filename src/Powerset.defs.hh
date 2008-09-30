@@ -48,8 +48,9 @@ namespace IO_Operators {
 //! Output operator.
 /*! \relates Parma_Polyhedra_Library::Powerset */
 template <typename D>
-std::ostream&
-operator<<(std::ostream& s, const Powerset<D>& x);
+template <typename OStream>
+OStream&
+operator<<(OStream& s, const Powerset<D>& x);
 
 } // namespace IO_Operators
 
@@ -126,7 +127,8 @@ drop_subsumed(Powerset<D>& ps, const D& d) {
 
   The following operators on the template class D must be defined.
   \code
-    operator<<(std::ostream& s, const D& x)
+    template <typename OStream>
+    operator<<(OStream& s, const D& x)
   \endcode
   Writes a textual representation of the instance of D on
   <CODE>s</CODE>.

@@ -250,8 +250,9 @@ Pointset_Ask_Tell<PS>::map_space_dimensions(const Partial_Function& pfunc) {
 }
 
 template <typename PS>
+template <typename OStream>
 void
-Pointset_Ask_Tell<PS>::ascii_dump(std::ostream& s) const {
+Pointset_Ask_Tell<PS>::ascii_dump(OStream& s) const {
   const Pointset_Ask_Tell& x = *this;
   s << "size " << x.size()
     << "\nspace_dim " << x.space_dim
@@ -263,8 +264,9 @@ Pointset_Ask_Tell<PS>::ascii_dump(std::ostream& s) const {
 PPL_OUTPUT_TEMPLATE_DEFINITIONS(PS, Pointset_Ask_Tell<PS>)
 
 template <typename PS>
+template <typename IStream>
 bool
-Pointset_Ask_Tell<PS>::ascii_load(std::istream& s) {
+Pointset_Ask_Tell<PS>::ascii_load(IStream& s) {
   Pointset_Ask_Tell& x = *this;
   std::string str;
 

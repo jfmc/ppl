@@ -178,10 +178,11 @@ public:
 
     /*! \brief
       Loads from \p s an ASCII representation (as produced by
-      ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+      ascii_dump(OStream&) const) and sets \p *this accordingly.
       Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
     */
-    bool ascii_load(std::istream& s);
+    template <typename IStream>
+    bool ascii_load(IStream& s);
 
   private:
     //! Builds the type from a bit-mask.
@@ -369,10 +370,11 @@ public:
 
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
-    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    ascii_dump(OStream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
-  bool ascii_load(std::istream& s);
+  template <typename IStream>
+  bool ascii_load(IStream& s);
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;

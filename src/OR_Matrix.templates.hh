@@ -59,9 +59,10 @@ OR_Matrix<T>::OK() const {
   return true;
 }
 
+template <typename OStream>
 template <typename T>
 void
-OR_Matrix<T>::ascii_dump(std::ostream& s) const {
+OR_Matrix<T>::ascii_dump(OStream& s) const {
   const OR_Matrix<T>& x = *this;
   const char separator = ' ';
   dimension_type space = x.space_dimension();
@@ -80,9 +81,10 @@ OR_Matrix<T>::ascii_dump(std::ostream& s) const {
 
 PPL_OUTPUT_TEMPLATE_DEFINITIONS(T, OR_Matrix<T>)
 
+template <typename IStream>
 template <typename T>
 bool
-OR_Matrix<T>::ascii_load(std::istream& s) {
+OR_Matrix<T>::ascii_load(IStream& s) {
   dimension_type space;
   if (!(s >> space))
     return false;
@@ -106,8 +108,9 @@ OR_Matrix<T>::ascii_load(std::istream& s) {
 /*! \relates Parma_Polyhedra_Library::OR_Matrix */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
-std::ostream&
-IO_Operators::operator<<(std::ostream& s, const OR_Matrix<T>& m) {
+template <typename OStream>
+OStream&
+IO_Operators::operator<<(OStream& s, const OR_Matrix<T>& m) {
   for (typename OR_Matrix<T>::const_row_iterator m_iter = m.row_begin(),
 	 m_end = m.row_end(); m_iter != m_end; ++m_iter) {
     typename OR_Matrix<T>::const_row_reference_type r_m = *m_iter;

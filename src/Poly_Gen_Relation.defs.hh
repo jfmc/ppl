@@ -57,7 +57,8 @@ namespace IO_Operators {
 
 //! Output operator.
 /*! \relates Parma_Polyhedra_Library::Poly_Gen_Relation */
-std::ostream& operator<<(std::ostream& s, const Poly_Gen_Relation& r);
+template <typename OStream>
+OStream& operator<<(OStream& s, const Poly_Gen_Relation& r);
 
 } // namespace IO_Operators
 
@@ -104,9 +105,10 @@ private:
   friend Poly_Gen_Relation
   operator-(const Poly_Gen_Relation& x, const Poly_Gen_Relation& y);
 
-  friend std::ostream&
+  template <typename OStream>
+  friend OStream&
   Parma_Polyhedra_Library::
-  IO_Operators::operator<<(std::ostream& s, const Poly_Gen_Relation& r);
+  IO_Operators::operator<<(OStream& s, const Poly_Gen_Relation& r);
 
 public:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS

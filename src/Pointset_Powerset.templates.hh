@@ -1432,8 +1432,9 @@ Pointset_Powerset<PS>::BHZ03_widening_assign(const Pointset_Powerset& y,
 }
 
 template <typename PS>
+template <typename OStream>
 void
-Pointset_Powerset<PS>::ascii_dump(std::ostream& s) const {
+Pointset_Powerset<PS>::ascii_dump(OStream& s) const {
   const Pointset_Powerset& x = *this;
   s << "size " << x.size()
     << "\nspace_dim " << x.space_dim
@@ -1444,9 +1445,10 @@ Pointset_Powerset<PS>::ascii_dump(std::ostream& s) const {
 
 PPL_OUTPUT_TEMPLATE_DEFINITIONS(PS, Pointset_Powerset<PS>)
 
-  template <typename PS>
+template <typename PS>
+template <typename IStream>
 bool
-Pointset_Powerset<PS>::ascii_load(std::istream& s) {
+Pointset_Powerset<PS>::ascii_load(IStream& s) {
   Pointset_Powerset& x = *this;
   std::string str;
 

@@ -5998,9 +5998,10 @@ Octagonal_Shape<T>::fold_space_dimensions(const Variables_Set& to_be_folded,
 }
 
 /*! \relates Parma_Polyhedra_Library::Octagonal_Shape */
+template <typename OStream>
 template <typename T>
-std::ostream&
-IO_Operators::operator<<(std::ostream& s, const Octagonal_Shape<T>& x) {
+OStream&
+IO_Operators::operator<<(OStream& s, const Octagonal_Shape<T>& x) {
   // Handle special cases first.
   if (x.marked_empty()) {
     s << "false";
@@ -6169,9 +6170,10 @@ IO_Operators::operator<<(std::ostream& s, const Octagonal_Shape<T>& x) {
   return s;
 }
 
+template <typename OStream>
 template <typename T>
 void
-Octagonal_Shape<T>::ascii_dump(std::ostream& s) const {
+Octagonal_Shape<T>::ascii_dump(OStream& s) const {
   s << "space_dim "
     << space_dim
     << "\n";
@@ -6182,9 +6184,10 @@ Octagonal_Shape<T>::ascii_dump(std::ostream& s) const {
 
 PPL_OUTPUT_TEMPLATE_DEFINITIONS(T, Octagonal_Shape<T>)
 
+template <typename IStream>
 template <typename T>
 bool
-Octagonal_Shape<T>::ascii_load(std::istream& s) {
+Octagonal_Shape<T>::ascii_load(IStream& s) {
   std::string str;
 
   if (!(s >> str) || str != "space_dim")

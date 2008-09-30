@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Poly_Con_Relation.types.hh"
 #include "globals.defs.hh"
-#include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
 
@@ -57,7 +56,8 @@ namespace IO_Operators {
 
 //! Output operator.
 /*! \relates Parma_Polyhedra_Library::Poly_Con_Relation */
-std::ostream& operator<<(std::ostream& s, const Poly_Con_Relation& r);
+template <typename OStream>
+OStream& operator<<(OStream& s, const Poly_Con_Relation& r);
 
 } // namespace IO_Operators
 
@@ -110,9 +110,10 @@ private:
   friend Poly_Con_Relation
   operator-(const Poly_Con_Relation& x, const Poly_Con_Relation& y);
 
-  friend std::ostream&
+  template <typename OStream>
+  friend OStream&
   Parma_Polyhedra_Library::
-  IO_Operators::operator<<(std::ostream& s, const Poly_Con_Relation& r);
+  IO_Operators::operator<<(OStream& s, const Poly_Con_Relation& r);
 
 public:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS

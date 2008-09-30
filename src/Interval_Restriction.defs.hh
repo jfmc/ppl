@@ -119,8 +119,9 @@ div_restriction(Interval_Restriction_None_Base&, const T1&, const T2&) {
   return true;
 }
 
+template <typename OStream>
 inline void
-output_restriction(std::ostream&, const Interval_Restriction_None_Base&) {
+output_restriction(OStream&, const Interval_Restriction_None_Base&) {
 }
 
 template <typename Base>
@@ -302,8 +303,10 @@ div_restriction(Interval_Restriction_Integer<Base>& to, const From1&, const From
 }
 
 template <typename Base>
+template <typename OStream>
 inline void
-output_restriction(std::ostream& s, const Interval_Restriction_Integer<Base>& x) {
+output_restriction(OStream& s,
+                   const Interval_Restriction_Integer<Base>& x) {
   if (x.get_integer())
     s << "i";
 }
@@ -854,8 +857,10 @@ div_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to, const From1& x
 }
 
 template <typename T, typename Base>
+template <typename OStream>
 inline void
-output_restriction(std::ostream& s, const Interval_Restriction_Integer_Modulo<T, Base>& x) {
+output_restriction(OStream& s,
+                   const Interval_Restriction_Integer_Modulo<T, Base>& x) {
   if (x.divisor == 1)
     s << "i";
   else if (x.divisor != 0)
