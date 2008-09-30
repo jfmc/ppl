@@ -133,6 +133,9 @@ public:
   void swap(Interval_Info_Null& y);
 
   PPL_OUTPUT_DECLARATIONS
+
+  template <typename IStream>
+  bool ascii_load(IStream& s);
 };
 
 template <typename Policy>
@@ -152,6 +155,9 @@ public:
   }
 
   PPL_OUTPUT_DECLARATIONS
+
+  template <typename IStream>
+  bool ascii_load(IStream& s);
 
 private:
   bool open;
@@ -285,6 +291,9 @@ public:
   void swap(Interval_Info_Bitset& y);
 
   PPL_OUTPUT_DECLARATIONS
+
+  template <typename IStream>
+  bool ascii_load(IStream& s);
 
 protected:
   T bitset;

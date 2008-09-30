@@ -302,8 +302,7 @@ DB_Matrix<T>::OK() const {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates Parma_Polyhedra_Library::DB_Matrix */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-template <typename T>
-template <typename OStream>
+template <typename T, typename OStream>
 OStream&
 IO_Operators::operator<<(OStream& s, const DB_Matrix<T>& c) {
   const dimension_type n = c.num_rows();

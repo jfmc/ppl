@@ -29,8 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-template <typename T>
-template <typename OStream>
+template <typename T, typename OStream>
 typename Enable_If<Is_Native_Or_Checked<T>::value, void>::type
 ascii_dump(OStream& s, const T& t) {
   if (std::numeric_limits<T>::is_exact)
@@ -52,8 +51,7 @@ ascii_dump(OStream& s, const T& t) {
   }
 }
 
-template <typename T>
-template <typename IStream>
+template <typename T, typename IStream>
 typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type
 ascii_load(IStream& s, T& t) {
   if (std::numeric_limits<T>::is_exact)

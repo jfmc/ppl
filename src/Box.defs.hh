@@ -67,8 +67,7 @@ namespace IO_Operators {
 
 //! Output operator.
 /*! \relates Parma_Polyhedra_Library::Box */
-template <typename ITV>
-template <typename OStream>
+template <typename ITV, typename OStream>
 OStream& operator<<(OStream& s, const Box<ITV>& box);
 
 } // namespace IO_Operators
@@ -1515,9 +1514,10 @@ private:
   friend bool
   operator==<ITV>(const Box<ITV>& x, const Box<ITV>& y);
 
+  template <typename OStream>
   friend OStream&
   Parma_Polyhedra_Library
-  ::IO_Operators::operator<<<>(OStream& s, const Box<ITV>& box);
+  ::IO_Operators::operator<<(OStream& s, const Box<ITV>& box);
 
   template <typename Specialization, typename Temp, typename To, typename I>
   friend bool Parma_Polyhedra_Library::l_m_distance_assign

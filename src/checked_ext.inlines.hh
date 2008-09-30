@@ -810,8 +810,7 @@ ne_ext(const Type1& x, const Type2& y) {
   return !eq_ext<Policy1, Policy2>(x, y);
 }
 
-template <typename Policy, typename Type>
-template <typename OStream>
+template <typename Policy, typename Type, typename OStream>
 inline Result
 output_ext(OStream& os, const Type& x,
 	   const Numeric_Format& format, Rounding_Dir dir) {
@@ -833,8 +832,7 @@ output_ext(OStream& os, const Type& x,
   return output<Policy>(os, x, format, dir);
 }
 
-template <typename To_Policy, typename To>
-template <typename IStream>
+template <typename To_Policy, typename To, typename IStream>
 inline Result
 input_ext(To& to, IStream& is, Rounding_Dir dir) {
   return input<To_Policy>(to, is, dir);

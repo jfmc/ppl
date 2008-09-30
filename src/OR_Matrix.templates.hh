@@ -107,8 +107,7 @@ OR_Matrix<T>::ascii_load(IStream& s) {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates Parma_Polyhedra_Library::OR_Matrix */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-template <typename T>
-template <typename OStream>
+template <typename T, typename OStream>
 OStream&
 IO_Operators::operator<<(OStream& s, const OR_Matrix<T>& m) {
   for (typename OR_Matrix<T>::const_row_iterator m_iter = m.row_begin(),

@@ -4920,8 +4920,7 @@ BD_Shape<T>::fold_space_dimensions(const Variables_Set& to_be_folded,
 }
 
 /*! \relates Parma_Polyhedra_Library::BD_Shape */
-template <typename T>
-template <typename OStream>
+template <typename T, typename OStream>
 OStream&
 IO_Operators::operator<<(OStream& s, const BD_Shape<T>& c) {
   typedef typename BD_Shape<T>::coefficient_type N;

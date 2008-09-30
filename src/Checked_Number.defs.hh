@@ -883,8 +883,7 @@ cmp(const From1& x, const From2& y);
 //@{
 
 /*! \relates Checked_Number */
-template <typename T>
-template <typename OStream>
+template <typename T, typename OStream>
 typename Enable_If<Is_Native_Or_Checked<T>::value, Result>::type
 output(OStream& os,
        const T& x,
@@ -893,14 +892,12 @@ output(OStream& os,
 
 //! Output operator.
 /*! \relates Checked_Number */
-template <typename T, typename Policy>
-template <typename OStream>
+template <typename T, typename Policy, typename OStream>
 OStream&
 operator<<(OStream& os, const Checked_Number<T, Policy>& x);
 
 //! Ascii dump for native or checked.
-template <typename T>
-template <typename OStream>
+template <typename T, typename OStream>
 typename Enable_If<Is_Native_Or_Checked<T>::value, void>::type
 ascii_dump(OStream& s, const T& t);
 
@@ -1025,21 +1022,18 @@ digits  : DIGIT						;
 							;
 \endcode
 */
-template <typename T>
-template <typename IStream>
+template <typename T, typename IStream>
 typename Enable_If<Is_Native_Or_Checked<T>::value, Result>::type
 input(T& x, IStream& is, Rounding_Dir dir);
 
 //! Input operator.
 /*! \relates Checked_Number */
-template <typename T, typename Policy>
-template <typename IStream>
+template <typename T, typename Policy, typename IStream>
 IStream&
 operator>>(IStream& is, Checked_Number<T, Policy>& x);
 
 //! Ascii load for native or checked.
-template <typename T>
-template <typename OStream>
+template <typename T, typename OStream>
 typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type
 ascii_load(OStream& s, T& t);
 

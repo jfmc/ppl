@@ -39,8 +39,7 @@ namespace IO_Operators {
 //! Output operator.
 /*! \relates Parma_Polyhedra_Library::DB_Matrix */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-template <typename T>
-template <typename OStream>
+template <typename T, typename OStream>
 OStream&
 operator<<(OStream& s, const DB_Matrix<T>& c);
 

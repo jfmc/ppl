@@ -58,8 +58,7 @@ namespace IO_Operators {
   a system of constraints defining \p oct is written otherwise,
   all constraints separated by ", ".
 */
-template <typename T>
-template <typename OStream>
+template <typename T, typename OStream>
 OStream&
 operator<<(OStream& s, const Octagonal_Shape<T>& oct);
 
@@ -1948,7 +1947,7 @@ private:
   template <typename OStream>
   friend OStream&
   Parma_Polyhedra_Library::IO_Operators
-  ::operator<<<>(OStream& s, const Octagonal_Shape<T>& c);
+  ::operator<<(OStream& s, const Octagonal_Shape<T>& c);
 
   //! \name Exception Throwers
   //@{

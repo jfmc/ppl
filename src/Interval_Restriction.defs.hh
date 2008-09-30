@@ -302,8 +302,7 @@ div_restriction(Interval_Restriction_Integer<Base>& to, const From1&, const From
   return true;
 }
 
-template <typename Base>
-template <typename OStream>
+template <typename Base, typename OStream>
 inline void
 output_restriction(OStream& s,
                    const Interval_Restriction_Integer<Base>& x) {
@@ -856,8 +855,7 @@ div_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to, const From1& x
   return set_unrestricted(to);
 }
 
-template <typename T, typename Base>
-template <typename OStream>
+template <typename T, typename Base, typename OStream>
 inline void
 output_restriction(OStream& s,
                    const Interval_Restriction_Integer_Modulo<T, Base>& x) {
