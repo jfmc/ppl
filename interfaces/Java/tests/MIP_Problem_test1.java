@@ -1,4 +1,4 @@
-/* Test C_Polyhedron Java test class of the Parma Polyhedra Library Java
+/* Test MIP_Problem Java test class of the Parma Polyhedra Library Java
    interface.
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
