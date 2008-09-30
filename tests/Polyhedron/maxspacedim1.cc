@@ -30,12 +30,18 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #if PPL_SUPPORTED_FLOAT
 #define test01_DO_WRD_FLOAT(WRD) test01_DO_CLASS(WRD<float>)
+#else
+#define test01_DO_WRD_FLOAT(WRD)
 #endif
 #if PPL_SUPPORTED_DOUBLE
 #define test01_DO_WRD_DOUBLE(WRD) test01_DO_CLASS(WRD<double>)
+#else
+#define test01_DO_WRD_DOUBLE(WRD)
 #endif
 #if PPL_SUPPORTED_LONG_DOUBLE
 #define test01_DO_WRD_LONG_DOUBLE(WRD) test01_DO_CLASS(WRD<long double>)
+#else
+#define test01_DO_WRD_LONG_DOUBLE(WRD)
 #endif
 
 #define test01_DO_WRD(WRD)			\
@@ -58,14 +64,20 @@ site: http://www.cs.unipr.it/ppl/ . */
 #if PPL_SUPPORTED_FLOAT
 #define test01_DO_CONSTR_WRD_FLOAT(CONSTR, WRD) \
   test01_DO_CONSTR_CLASS(CONSTR, WRD<float>)
+#else
+#define test01_DO_CONSTR_WRD_FLOAT(CONSTR, WRD)
 #endif
 #if PPL_SUPPORTED_DOUBLE
 #define test01_DO_CONSTR_WRD_DOUBLE(CONSTR, WRD)        \
   test01_DO_CONSTR_CLASS(CONSTR, WRD<double>)
+#else
+#define test01_DO_CONSTR_WRD_DOUBLE(CONSTR, WRD)
 #endif
 #if PPL_SUPPORTED_LONG_DOUBLE
 #define test01_DO_CONSTR_WRD_LONG_DOUBLE(CONSTR, WRD)   \
   test01_DO_CONSTR_CLASS(CONSTR, WRD<long double>)
+#else
+#define test01_DO_CONSTR_WRD_LONG_DOUBLE(CONSTR, WRD)
 #endif
 
 #define test01_DO_CONSTR_WRD(CONSTR, WRD)			\
