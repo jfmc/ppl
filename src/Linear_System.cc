@@ -109,8 +109,9 @@ PPL::Linear_System::set_rows_topology() {
       x[i].set_not_necessarily_closed();
 }
 
+template <typename OStream>
 void
-PPL::Linear_System::ascii_dump(std::ostream& s) const {
+PPL::Linear_System::ascii_dump(OStream& s) const {
   // Prints the topology, the number of rows, the number of columns
   // and the sorted flag.  The specialized methods provided by
   // Constraint_System and Generator_System take care of properly
@@ -133,8 +134,9 @@ PPL::Linear_System::ascii_dump(std::ostream& s) const {
 
 PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Linear_System)
 
+template <typename IStream>
 bool
-PPL::Linear_System::ascii_load(std::istream& s) {
+PPL::Linear_System::ascii_load(IStream& s) {
   std::string str;
   if (!(s >> str) || str != "topology")
     return false;

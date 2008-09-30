@@ -283,8 +283,9 @@ PPL::Matrix::resize_no_copy(const dimension_type new_n_rows,
   }
 }
 
+template <typename OStream>
 void
-PPL::Matrix::ascii_dump(std::ostream& s) const {
+PPL::Matrix::ascii_dump(OStream& s) const {
   const Matrix& x = *this;
   dimension_type x_num_rows = x.num_rows();
   dimension_type x_num_columns = x.num_columns();
@@ -295,8 +296,9 @@ PPL::Matrix::ascii_dump(std::ostream& s) const {
 
 PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Matrix)
 
+template <typename IStream>
 bool
-PPL::Matrix::ascii_load(std::istream& s) {
+PPL::Matrix::ascii_load(IStream& s) {
   Matrix& x = *this;
   std::string str;
   dimension_type x_num_rows;
