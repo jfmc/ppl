@@ -59,8 +59,8 @@ OR_Matrix<T>::OK() const {
   return true;
 }
 
-template <typename OStream>
 template <typename T>
+template <typename OStream>
 void
 OR_Matrix<T>::ascii_dump(OStream& s) const {
   const OR_Matrix<T>& x = *this;
@@ -81,8 +81,8 @@ OR_Matrix<T>::ascii_dump(OStream& s) const {
 
 PPL_OUTPUT_TEMPLATE_DEFINITIONS(T, OR_Matrix<T>)
 
-template <typename IStream>
 template <typename T>
+template <typename IStream>
 bool
 OR_Matrix<T>::ascii_load(IStream& s) {
   dimension_type space;
