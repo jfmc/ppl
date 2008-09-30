@@ -416,11 +416,24 @@ test02() {
 
   print_constraints(bds2.constraints(), "*** AFTER SECOND Floyd-Warshall ***");
 
-  bool ok = bds1.contains(bds2)
-    && ((std::numeric_limits<Coeff>::is_exact && bds2.contains(bds1))
-        || !bds2.contains(bds1));
+  bool coefficients_exact = std::numeric_limits<Coeff>::is_exact;
+  int coefficients_digits = std::numeric_limits<Coeff>::digits;
 
-  return ok;
+  nout << " coefficients_exact = " <<  coefficients_exact << endl;
+  nout << "coefficients_digits = " << coefficients_digits << endl;
+
+  bool imprecise_coefficients
+    = !coefficients_exact && (coefficients_digits == 24
+                              || coefficients_digits == 64);
+  bool bds1_contains_bds2 = bds1.contains(bds2);
+  bool bds2_contains_bds1 = bds2.contains(bds1);
+
+  nout << " bds1_contains_bds2 = " <<  bds1_contains_bds2 << endl;
+  nout << " bds2_contains_bds1 = " <<  bds2_contains_bds1 << endl;
+
+  return bds1_contains_bds2
+    && ((bds2_contains_bds1 && !imprecise_coefficients)
+        || (!bds2_contains_bds1 && imprecise_coefficients));
 }
 
 bool
@@ -524,19 +537,44 @@ test03() {
   print_constraints(bds2.constraints(), "*** AFTER THIRD Floyd-Warshall ***");
   nout << "\n";
 
-  bool ok = true;
 
-  ok = ok
-    && bds1.contains(bds2)
-    && ((std::numeric_limits<Coeff>::is_exact && bds2.contains(bds1))
-        || !bds2.contains(bds1));
+  bool coefficients_exact = std::numeric_limits<Coeff>::is_exact;
+  int coefficients_digits = std::numeric_limits<Coeff>::digits;
 
-  ok = ok
-    && bds2.contains(bds3)
-    && ((std::numeric_limits<Coeff>::is_exact && bds3.contains(bds2))
-        || !bds3.contains(bds2));
+  nout << " coefficients_exact = " <<  coefficients_exact << endl;
+  nout << "coefficients_digits = " << coefficients_digits << endl;
 
-  return ok;
+  bool imprecise_coefficients_12
+    = !coefficients_exact;
+  // && (coefficients_digits == 24
+  //                          || coefficients_digits == 64);
+
+  bool bds1_contains_bds2 = bds1.contains(bds2);
+  bool bds2_contains_bds1 = bds2.contains(bds1);
+
+  nout << " bds1_contains_bds2 = " <<  bds1_contains_bds2 << endl;
+  nout << " bds2_contains_bds1 = " <<  bds2_contains_bds1 << endl;
+
+  if (!(bds1_contains_bds2
+        && ((bds2_contains_bds1 && !imprecise_coefficients_12)
+            || (!bds2_contains_bds1 && imprecise_coefficients_12))))
+    return false;
+
+  bool imprecise_coefficients_23
+    = !coefficients_exact && coefficients_digits <= 24;
+
+  bool bds2_contains_bds3 = bds2.contains(bds3);
+  bool bds3_contains_bds2 = bds3.contains(bds2);
+
+  nout << " bds2_contains_bds3 = " <<  bds2_contains_bds3 << endl;
+  nout << " bds3_contains_bds2 = " <<  bds3_contains_bds2 << endl;
+
+  if (!(bds2_contains_bds3
+        && ((bds3_contains_bds2 && !imprecise_coefficients_23)
+            || (!bds3_contains_bds2 && imprecise_coefficients_23))))
+    return false;
+
+  return true;
 }
 
 } // namespace
