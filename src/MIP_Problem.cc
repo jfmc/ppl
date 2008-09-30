@@ -1906,6 +1906,21 @@ PPL::MIP_Problem::ascii_dump(std::ostream& s) const {
   s << "\nopt_mode "
     << (opt_mode == MAXIMIZATION ? "MAXIMIZATION" : "MINIMIZATION") << "\n";
 
+  s << "\ninitialized: " << (initialized ? "YES" : "NO") << "\n";
+  s << "\npricing: ";
+  switch (pricing) {
+  case PRICING_STEEPEST_EDGE_FLOAT:
+    s << "PRICING_STEEPEST_EDGE_FLOAT";
+    break;
+  case PRICING_STEEPEST_EDGE_EXACT:
+    s << "PRICING_STEEPEST_EDGE_EXACT";
+    break;
+  case PRICING_TEXTBOOK:
+    s << "PRICING_TEXTBOOK";
+    break;
+  }
+  s << "\n";
+
   s << "\nstatus: ";
   switch (status) {
   case UNSATISFIABLE:
@@ -2009,6 +2024,30 @@ if (!(s >> internal_space_dim))
       return false;
     set_optimization_mode(MINIMIZATION);
   }
+
+  if (!(s >> str) || str != "initialized:")
+    return false;
+  if (!(s >> str))
+    return false;
+  if (str == "YES")
+    initialized = true;
+  else if (str == "NO")
+    initialized = false;
+  else
+    return false;
+
+  if (!(s >> str) || str != "pricing:")
+    return false;
+  if (!(s >> str))
+    return false;
+  if (str == "PRICING_STEEPEST_EDGE_FLOAT")
+    pricing = PRICING_STEEPEST_EDGE_FLOAT;
+  else if (str == "PRICING_STEEPEST_EDGE_EXACT")
+    pricing = PRICING_STEEPEST_EDGE_EXACT;
+  else if (str == "PRICING_TEXTBOOK")
+    pricing = PRICING_TEXTBOOK;
+  else
+    return false;
 
   if (!(s >> str) || str != "status:")
     return false;
