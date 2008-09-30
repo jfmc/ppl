@@ -24,4 +24,55 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "stdiobuf.defs.hh"
 
-namespace PPL = Parma_Polyhedra_Library;
+namespace Parma_Polyhedra_Library {
+
+stdiobuf::int_type
+stdiobuf::uflow() {
+  ungetc_buf = getc(fp);
+  return ungetc_buf;
+}
+
+stdiobuf::int_type
+stdiobuf::underflow() {
+  int_type c = getc(fp);
+  return ungetc(c, fp);
+}
+
+std::streamsize
+stdiobuf::xsgetn(char_type* s, std::streamsize n) {
+  std::streamsize r = fread(s, 1, n, fp);
+  if (s > 0)
+    ungetc_buf = traits_type::to_int_type(s[r - 1]);
+  else
+    ungetc_buf = traits_type::eof();
+  return r;
+}
+
+stdiobuf::int_type
+stdiobuf::pbackfail(int_type c) {
+  const int_type eof = traits_type::eof();
+  int_type u = traits_type::eq_int_type(c, eof) ? ungetc_buf : c;
+  ungetc_buf = eof;
+  return traits_type::eq_int_type(u, eof) ? eof : ungetc(u, fp);
+}
+
+std::streamsize
+stdiobuf::xsputn(const char_type* s, std::streamsize n) {
+  return fwrite(s, 1, n, fp);
+}
+
+stdiobuf::int_type
+stdiobuf::overflow(int_type c) {
+  const int_type eof = traits_type::eof();
+  if (traits_type::eq_int_type(c, eof))
+    return fflush(fp) ? eof : traits_type::not_eof(c);
+  else
+    return putc(c, fp);
+}
+
+int
+stdiobuf::sync() {
+  return fflush(fp);
+}
+
+} // namespace Parma_Polyhedra_Library

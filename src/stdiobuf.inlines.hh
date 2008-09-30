@@ -25,6 +25,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+inline
+stdiobuf::stdiobuf(FILE* file)
+  : fp(file), ungetc_buf(traits_type::eof()) {
+}
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_stdiobuf_inlines_hh)
