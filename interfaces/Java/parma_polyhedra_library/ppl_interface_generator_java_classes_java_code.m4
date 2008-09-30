@@ -538,7 +538,7 @@ m4_define(`ppl_@CLASS@_linear_@PARTITION@_code',
 
   public static native
     Pair <@TOPOLOGY@@CLASS@@COMMA@ Pointset_Powerset_NNC_Polyhedron >
-      linear_partition(@TOPOLOGY@@CLASS@ p, @TOPOLOGY@@CLASS@ q);
+      linear_@PARTITION@(@TOPOLOGY@@CLASS@ p, @TOPOLOGY@@CLASS@ q);
 ')
 
 m4_define(`ppl_@CLASS@_approximate_@PARTITION@_code',
@@ -546,7 +546,7 @@ m4_define(`ppl_@CLASS@_approximate_@PARTITION@_code',
 %<--%<--%<-- @CLASS@.java
 
   public static native Pair <@CLASS@@COMMA@ Pointset_Powerset_Grid >
-      approximate_partition(@CLASS@ p,
+      approximate_@PARTITION@(@CLASS@ p,
                             @CLASS@ q,
                             By_Reference<Boolean> finite);
 ')
