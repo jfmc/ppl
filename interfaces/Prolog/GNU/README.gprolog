@@ -1,22 +1,23 @@
 The GNU Prolog interface to the PPL is available both as a ``PPL
 enhanced'' GNU Prolog interpreter and as a library that can be linked
-to GNU Prolog programs.  Only GNU Prolog version 1.2.19 and later
-versions are supported.
+to GNU Prolog programs.  Only GNU Prolog version 1.3.0 is currently
+supported.
 
 So that it can be used with the GNU Prolog PPL interface (and, for
 that matter, with any foreign code), the GNU Prolog installation must
 be configured with the `--disable-regs' option.
 
-Configuring the PPL for building the GNU Prolog interface
+
+Configuring the PPL for Building the GNU Prolog Interface
 ---------------------------------------------------------
 
-To build and install the GNU Prolog interface,
-you will need to set the environment variable CPPFLAGS
-with the path to the GNU Prolog include directory.
-Thus you need to configure the PPL with a command like
+To build and install the GNU Prolog interface, you will need to set
+the environment variable CPPFLAGS with the path to the GNU Prolog
+include directory: this is the directory containing the file
+`gprolog.h'.  Thus you need to configure the PPL with a command like
 
-   CPPFLAGS=-I/path/to/gprolog/include /path/to/ppl-x.y/configure \
-     --interfaces = "gnu-prolog"
+  CPPFLAGS=-I/path/to/gprolog/include /path/to/ppl-x.y/configure \
+     --interfaces = "gnu-prolog ..." ...
 
 
 The `ppl_gprolog' Executable
