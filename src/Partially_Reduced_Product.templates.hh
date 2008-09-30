@@ -487,8 +487,7 @@ Smash_Reduction<D1, D2>::~Smash_Reduction() {
 namespace IO_Operators {
 
 /*! \relates Parma_Polyhedra_Library::Partially_Reduced_Product */
-template <typename D1, typename D2, typename R>
-template <typename OStream>
+template <typename D1, typename D2, typename R, typename OStream>
 inline OStream&
 operator<<(OStream& s, const Partially_Reduced_Product<D1, D2, R>& pd) {
   return s << "Domain 1:\n"

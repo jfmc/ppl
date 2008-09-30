@@ -47,8 +47,7 @@ namespace IO_Operators {
 
 //! Output operator.
 /*! \relates Parma_Polyhedra_Library::Powerset */
-template <typename D>
-template <typename OStream>
+template <typename D, typename OStream>
 OStream&
 operator<<(OStream& s, const Powerset<D>& x);
 

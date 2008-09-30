@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Init.types.hh"
 #include "globals.types.hh"
 #include <set>
+#include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
 
@@ -145,5 +146,6 @@ private:
 };
 
 #include "Variable.inlines.hh"
+#include "Variable.templates.hh"
 
 #endif // !defined(PPL_Variable_defs_hh)

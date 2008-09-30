@@ -54,8 +54,7 @@ namespace IO_Operators {
 
 //! Output operator.
 /*! \relates Parma_Polyhedra_Library::Determinate */
-template <typename PS>
-template <typename OStream>
+template <typename PS, typename OStream>
 OStream&
 operator<<(OStream&, const Determinate<PS>&);
 

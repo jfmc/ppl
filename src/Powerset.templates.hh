@@ -246,8 +246,7 @@ Powerset<D>::least_upper_bound_assign(const Powerset& y) {
 namespace IO_Operators {
 
 /*! \relates Parma_Polyhedra_Library::Powerset */
-template <typename D>
-template <typename OStream>
+template <typename D, typename OStream>
 OStream&
 operator<<(OStream& s, const Powerset<D>& x) {
   if (x.is_bottom())

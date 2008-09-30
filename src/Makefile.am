@@ -207,6 +207,7 @@ Rational_Interval.hh \
 Rational_Box.hh \
 Variable.defs.hh \
 Variable.inlines.hh \
+Variable.templates.hh \
 Variables_Set.defs.hh \
 Variables_Set.inlines.hh \
 Init.defs.hh \

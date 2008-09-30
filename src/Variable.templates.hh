@@ -1,4 +1,4 @@
-/* Variable class implementation (non-inline functions).
+/* Variable class implementation: non-inline template functions.
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -20,24 +20,26 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <ppl-config.h>
-#include "Variable.defs.hh"
-#include <iostream>
+#ifndef PPL_Variable_templates_hh
+#define PPL_Variable_templates_hh 1
 
-namespace PPL = Parma_Polyhedra_Library;
+#include "globals.defs.hh"
+#include <stdexcept>
 
-PPL::Variable::output_function_type*
-PPL::Variable::current_output_function = 0;
+namespace Parma_Polyhedra_Library {
 
-bool
-PPL::Variable::OK() const {
-  return id() < max_space_dimension();
+namespace IO_Operators {
+
+/*! \relates Parma_Polyhedra_Library::Variable */
+template <typename OStream>
+OStream&
+operator<<(OStream& s, const Variable& v) {
+  (*Variable::current_output_function)(s, v);
+  return s;
 }
 
-void
-PPL::Variable::default_output_function(std::ostream& s, const Variable& v) {
-  dimension_type varid = v.id();
-  s << static_cast<char>('A' + varid % 26);
-  if (dimension_type i = varid / 26)
-    s << i;
-}
+} // namespace IO_Operators
+
+} // namespace Parma_Polyhedra_Library
+
+#endif // !defined(PPL_Variable_templates_hh)

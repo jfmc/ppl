@@ -240,8 +240,7 @@ Determinate<PS>::OK() const {
 namespace IO_Operators {
 
 /*! \relates Parma_Polyhedra_Library::Determinate */
-template <typename PS>
-template <typename OStream>
+template <typename PS, typename OStream>
 inline OStream&
 operator<<(OStream& s, const Determinate<PS>& x) {
   s << x.element();
