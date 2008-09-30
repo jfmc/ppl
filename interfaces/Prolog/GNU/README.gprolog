@@ -7,6 +7,17 @@ So that it can be used with the GNU Prolog PPL interface (and, for
 that matter, with any foreign code), the GNU Prolog installation must
 be configured with the `--disable-regs' option.
 
+Configuring the PPL for building the GNU Prolog interface
+---------------------------------------------------------
+
+To build and install the GNU Prolog interface,
+you will need to set the environment variable CPPFLAGS
+with the path to the GNU Prolog include directory.
+Thus you need to configure the PPL with a command like
+
+   CPPFLAGS=-I/path/to/gprolog/include /path/to/ppl-x.y/configure \
+     --interfaces = "gnu-prolog"
+
 
 The `ppl_gprolog' Executable
 ----------------------------
