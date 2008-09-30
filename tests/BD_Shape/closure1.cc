@@ -368,7 +368,7 @@ test02() {
   div_assign_r(f_1_2, f_1, f_2, ROUND_UP);
   div_assign_r(f_1_3, f_1, f_3, ROUND_UP);
 
-  nout << "*** Possible up-approximation ***\n";
+  nout << "*** Possible up-approximations ***\n";
   nout << "1/2 = " << f_1_2 << "\n";
   nout << "1/3 = " << f_1_3 << "\n";
 
@@ -444,7 +444,7 @@ test03() {
   div_assign_r(f_1_5, f_1, f_5, ROUND_UP);
   div_assign_r(f_1_7, f_1, f_7, ROUND_UP);
 
-  nout << "*** Possible up-approximation ***\n";
+  nout << "*** Possible up-approximations ***\n";
   nout << "1/2 = " << f_1_2 << "\n";
   nout << "1/3 = " << f_1_3 << "\n";
   nout << "1/5 = " << f_1_5 << "\n";
