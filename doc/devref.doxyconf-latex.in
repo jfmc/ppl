@@ -123,6 +123,10 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/distances.types.hh \
                          @srcdir@/../src/distances.defs.hh \
                          @srcdir@/../src/distances.inlines.hh \
+                         @srcdir@/../src/stdiobuf.types.hh \
+                         @srcdir@/../src/stdiobuf.defs.hh \
+                         @srcdir@/../src/stdiobuf.inlines.hh \
+                         @srcdir@/../src/stdiobuf.cc \
                          @srcdir@/../src/Topology.hh \
                          @srcdir@/../src/Row.types.hh \
                          @srcdir@/../src/Row.defs.hh \
