@@ -27,12 +27,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ppl.hh"
 #include "ppl_c.h"
 #include <stdexcept>
-#include <limits>
-#include <sstream>
-#include <ext/stdio_sync_filebuf.h>
-#include <cstdio>
-#include <cerrno>
-#include <climits>
 
 namespace Parma_Polyhedra_Library {
 
@@ -151,22 +145,22 @@ catch (...) {						     \
   int                                                                   \
   ppl_io_print_##Type(ppl_const_##Type##_t x) try {                     \
     using namespace IO_Operators;                                       \
-    std::ostringstream s;                                               \
-    s << *to_const(x);                                                  \
-    std::string str = s.str();                                          \
-    if (puts(str.c_str()) < 0)                                          \
+    stdiobuf sb(stdout);                                                \
+    std::ostream os(&sb);                                               \
+    os << *to_const(x);                                                 \
+    if (!os)                                                            \
       return PPL_STDIO_ERROR;                                           \
     return 0;                                                           \
   }                                                                     \
   CATCH_ALL                                                             \
                                                                         \
   int                                                                   \
-  ppl_io_fprint_##Type(FILE* stream, ppl_const_##Type##_t x) try {      \
+  ppl_io_fprint_##Type(FILE* file, ppl_const_##Type##_t x) try {        \
     using namespace IO_Operators;                                       \
-    std::ostringstream s;                                               \
-    s << *to_const(x);                                                  \
-    std::string str = s.str();                                          \
-    if (fputs(str.c_str(), stream) < 0)                                 \
+    stdiobuf sb(file);                                                  \
+    std::ostream os(&sb);                                               \
+    os << *to_const(x);                                                 \
+    if (!os)                                                            \
       return PPL_STDIO_ERROR;                                           \
     return 0;                                                           \
   }                                                                     \
@@ -174,11 +168,11 @@ catch (...) {						     \
 
 #define DEFINE_ASCII_DUMP_FUNCTIONS(Type)                               \
   int                                                                   \
-  ppl_##Type##_ascii_dump(ppl_const_##Type##_t x, FILE* stream) try {   \
-    std::ostringstream s;                                               \
-    to_const(x)->ascii_dump(s);                                         \
-    std::string str = s.str();                                          \
-    if (fputs(str.c_str(), stream) < 0)                                 \
+  ppl_##Type##_ascii_dump(ppl_const_##Type##_t x, FILE* file) try {     \
+    stdiobuf sb(file);                                                  \
+    std::ostream os(&sb);                                               \
+    to_const(x)->ascii_dump(os);                                        \
+    if (!os)                                                            \
       return PPL_STDIO_ERROR;                                           \
     return 0;                                                           \
   }                                                                     \
@@ -187,8 +181,8 @@ catch (...) {						     \
 #define DEFINE_ASCII_LOAD_FUNCTIONS(Type)                               \
   int                                                                   \
   ppl_##Type##_ascii_load(ppl_##Type##_t x, FILE* file) try {           \
-    stdiobuf isb(file);                                                 \
-    std::istream is(&isb);                                              \
+    stdiobuf sb(file);                                                  \
+    std::istream is(&sb);                                               \
     if (!to_nonconst(x)->ascii_load(is))                                \
       return PPL_STDIO_ERROR;                                           \
     return 0;                                                           \
