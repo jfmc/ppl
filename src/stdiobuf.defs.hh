@@ -34,25 +34,74 @@ public:
   stdiobuf(FILE* file);
 
 protected:
-  virtual int_type uflow();
+  /*! \brief
+    Gets a character in case of underflow.
 
+    \remarks
+    Specified by ISO/IEC 14882:1998: 27.5.2.4.3.
+  */
   virtual int_type underflow();
 
+  /*! \brief
+    In case of underflow, gets a character and advances the next pointer.
+
+    \remarks
+    Specified by ISO/IEC 14882:1998: 27.5.2.4.3.
+  */
+  virtual int_type uflow();
+
+  /*! \brief
+    Gets a sequence of characters.
+
+    \remarks
+    Specified by ISO/IEC 14882:1998: 27.5.2.4.3.
+  */
   virtual std::streamsize xsgetn(char_type* s, std::streamsize n);
 
+  /*! \brief
+    Puts character back in case of backup underflow.
+
+    \remarks
+    Specified by ISO/IEC 14882:1998: 27.5.2.4.4.
+  */
   virtual int_type pbackfail(int_type c = traits_type::eof());
 
+  /*! \brief
+    Writes a sequence of characters.
+
+    \remarks
+    Specified by ISO/IEC 14882:1998: 27.5.2.4.5.
+  */
   virtual std::streamsize xsputn(const char_type* s, std::streamsize n);
 
+  /*! \brief
+    Writes a character in case of overflow.
+
+    Specified by ISO/IEC 14882:1998: 27.5.2.4.5.
+  */
   virtual int_type overflow(int_type c);
 
+  /*! \brief
+    Synchronizes the stream buffer.
+
+    Specified by ISO/IEC 14882:1998: 27.5.2.4.2.
+  */
   virtual int sync();
 
 private:
+  //! Character type of the streambuf.
   typedef char char_type;
+
+  //! Traits type of the streambuf.
   typedef std::char_traits<char_type> traits_type;
+
+  //! Integer type of the streambuf.
   typedef traits_type::int_type int_type;
+
+  //! The encapsulated stdio file.
   FILE* fp;
+
+  //! Buffer for the last character read.
   int_type ungetc_buf;
 };
 
