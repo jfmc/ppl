@@ -46,7 +46,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 // If GMP does not support exceptions, or if we are unable to limit
 // the memory available to processes using setrlimit(), the test is
 // pointless.
-#if !PPL_GMP_SUPPORTS_EXCEPTIONS || !PPL_CXX_SUPPORTS_LIMITING_MEMORY
+//
+// On the Itanium the test fails because of the bug reported in
+// http://www.cs.unipr.it/pipermail/ppl-devel/2008-September/012943.html
+#if !PPL_GMP_SUPPORTS_EXCEPTIONS || !PPL_CXX_SUPPORTS_LIMITING_MEMORY \
+  || defined(__ia64)
 
 int
 main() TRY {
