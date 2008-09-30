@@ -184,20 +184,16 @@ catch (...) {						     \
   }                                                                     \
   CATCH_ALL
 
-#if 0
 #define DEFINE_ASCII_LOAD_FUNCTIONS(Type)                               \
   int                                                                   \
-  ppl_##Type##_ascii_load(ppl_##Type##_t x, FILE* stream) try {         \
-    __gnu_cxx::stdio_sync_filebuf<char> fb(stream);                     \
-    std::istream ifs(&fb);                                              \
-    if (!to_nonconst(x)->ascii_load(ifs))                               \
+  ppl_##Type##_ascii_load(ppl_##Type##_t x, FILE* file) try {           \
+    stdiobuf isb(file);                                                 \
+    std::istream is(&isb);                                              \
+    if (!to_nonconst(x)->ascii_load(is))                                \
       return PPL_STDIO_ERROR;                                           \
     return 0;                                                           \
   }                                                                     \
   CATCH_ALL
-#else
-#define DEFINE_ASCII_LOAD_FUNCTIONS(Type)
-#endif
 
 #define DEFINE_ASCII_DUMP_LOAD_FUNCTIONS(Type)  \
   DEFINE_ASCII_DUMP_FUNCTIONS(Type)             \
