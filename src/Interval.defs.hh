@@ -53,7 +53,7 @@ enum Ternary { T_YES, T_NO, T_MAYBE };
 
 inline I_Result
 combine(Result l, Result u) {
-  return static_cast<I_Result>(l | (u << 6));
+  return static_cast<I_Result>(l | ((int)u << 6));
 }
 
 inline Result
