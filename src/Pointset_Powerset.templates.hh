@@ -717,16 +717,44 @@ bool
 Pointset_Powerset<PS>
 ::simplify_using_context_assign(const Pointset_Powerset& y) {
   Pointset_Powerset& x = *this;
-  for (Sequence_iterator si = x.sequence.begin(),
-         s_end = x.sequence.end(); si != s_end; ) {
-    // TODO: check whether it would be useful (i.e., more efficient)
-    // to eagerly test whether *si is omega-redundant due to any of
-    // the elements preceding it (which have been already enlarged).
-    if (y.intersection_preserving_enlarge_element(si->element()))
-      ++si;
-    else
-      // Intersection with `*si' is empty: drop the disjunct.
-      si = x.sequence.erase(si);
+
+  // Omega reduction is required.
+  // TODO: check whether it would be more efficient to Omega-reduce x
+  // during the simplification process: when examining *si, we check
+  // if it has been made redundant by any of the elements preceding it
+  // (which have been already simplified).
+  x.omega_reduce();
+  if (x.is_empty())
+    return false;
+  y.omega_reduce();
+  if (y.is_empty()) {
+    x = y;
+    return false;
+  }
+
+  if (y.size() == 1) {
+    // More efficient, special handling of the singleton context case.
+    const PS& y_i = y.sequence.begin()->element();
+    for (Sequence_iterator si = x.sequence.begin(),
+           s_end = x.sequence.end(); si != s_end; ) {
+      PS& x_i = si->element();
+      if (x_i.simplify_using_context_assign(y_i))
+        ++si;
+      else
+        // Intersection is empty: drop the disjunct.
+        si = x.sequence.erase(si);
+    }
+  }
+  else {
+    // The context is not a singleton.
+    for (Sequence_iterator si = x.sequence.begin(),
+           s_end = x.sequence.end(); si != s_end; ) {
+      if (y.intersection_preserving_enlarge_element(si->element()))
+        ++si;
+      else
+        // Intersection with `*si' is empty: drop the disjunct.
+        si = x.sequence.erase(si);
+    }
   }
   x.reduced = false;
   assert(x.OK());
