@@ -183,8 +183,9 @@ PPL::Generator::finalize() {
 }
 
 /*! \relates Parma_Polyhedra_Library::Generator */
-std::ostream&
-PPL::IO_Operators::operator<<(std::ostream& s, const Generator& g) {
+template <typename OStream>
+OStream&
+PPL::IO_Operators::operator<<(OStream& s, const Generator& g) {
   bool needed_divisor = false;
   bool extra_parentheses = false;
   const dimension_type num_variables = g.space_dimension();
@@ -250,8 +251,9 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Generator& g) {
 }
 
 /*! \relates Parma_Polyhedra_Library::Generator */
-std::ostream&
-PPL::IO_Operators::operator<<(std::ostream& s, const Generator::Type& t) {
+template <typename OStream>
+OStream&
+PPL::IO_Operators::operator<<(OStream& s, const Generator::Type& t) {
   const char* n = 0;
   switch (t) {
   case Generator::LINE:

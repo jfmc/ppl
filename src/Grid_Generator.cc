@@ -128,8 +128,9 @@ PPL::Grid_Generator::coefficient_swap(Grid_Generator& y) {
     std::swap(operator[](j), y[j]);
 }
 
+template <typename OStream>
 void
-PPL::Grid_Generator::ascii_dump(std::ostream& s) const {
+PPL::Grid_Generator::ascii_dump(OStream& s) const {
   const Grid_Generator& x = *this;
   const dimension_type x_size = x.size();
   s << "size " << x_size << " ";
@@ -151,8 +152,9 @@ PPL::Grid_Generator::ascii_dump(std::ostream& s) const {
 
 PPL_OUTPUT_DEFINITIONS(Grid_Generator)
 
+template <typename IStream>
 bool
-PPL::Grid_Generator::ascii_load(std::istream& s) {
+PPL::Grid_Generator::ascii_load(IStream& s) {
   std::string str;
   if (!(s >> str) || str != "size")
     return false;
@@ -279,8 +281,9 @@ PPL::Grid_Generator::finalize() {
 }
 
 /*! \relates Parma_Polyhedra_Library::Grid_Generator */
-std::ostream&
-PPL::IO_Operators::operator<<(std::ostream& s, const Grid_Generator& g) {
+template <typename OStream>
+OStream&
+PPL::IO_Operators::operator<<(OStream& s, const Grid_Generator& g) {
   bool need_divisor = false;
   bool extra_parentheses = false;
   const dimension_type num_variables = g.space_dimension();
@@ -345,8 +348,9 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Grid_Generator& g) {
 }
 
 /*! \relates Parma_Polyhedra_Library::Grid_Generator */
-std::ostream&
-PPL::IO_Operators::operator<<(std::ostream& s,
+template <typename OStream>
+OStream&
+PPL::IO_Operators::operator<<(OStream& s,
 			      const Grid_Generator::Type& t) {
   const char* n = 0;
   switch (t) {

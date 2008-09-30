@@ -27,7 +27,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Checked_Number.defs.hh"
 #include "distances.defs.hh"
 #include <cassert>
-#include <iostream>
 
 namespace Parma_Polyhedra_Library {
 

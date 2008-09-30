@@ -44,7 +44,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Grid.types.hh"
 #include "Partially_Reduced_Product.types.hh"
 #include <vector>
-#include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
 
@@ -69,7 +68,8 @@ namespace IO_Operators {
 //! Output operator.
 /*! \relates Parma_Polyhedra_Library::Box */
 template <typename ITV>
-std::ostream& operator<<(std::ostream& s, const Box<ITV>& box);
+template <typename OStream>
+OStream& operator<<(OStream& s, const Box<ITV>& box);
 
 } // namespace IO_Operators
 
@@ -1501,11 +1501,12 @@ public:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
-    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    ascii_dump(OStream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-  bool ascii_load(std::istream& s);
+  template <typename IStream>
+  bool ascii_load(IStream& s);
 
 private:
   template <typename Other_ITV>
@@ -1514,9 +1515,9 @@ private:
   friend bool
   operator==<ITV>(const Box<ITV>& x, const Box<ITV>& y);
 
-  friend std::ostream&
+  friend OStream&
   Parma_Polyhedra_Library
-  ::IO_Operators::operator<<<>(std::ostream& s, const Box<ITV>& box);
+  ::IO_Operators::operator<<<>(OStream& s, const Box<ITV>& box);
 
   template <typename Specialization, typename Temp, typename To, typename I>
   friend bool Parma_Polyhedra_Library::l_m_distance_assign

@@ -31,7 +31,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint_System.defs.hh"
 #include "Polyhedron.types.hh"
 #include "Congruence.types.hh"
-#include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
 
@@ -551,11 +550,13 @@ namespace IO_Operators {
 
 //! Output operator.
 /*! \relates Parma_Polyhedra_Library::Constraint */
-std::ostream& operator<<(std::ostream& s, const Constraint& c);
+template <typename OStream>
+OStream& operator<<(OStream& s, const Constraint& c);
 
 //! Output operator.
 /*! \relates Parma_Polyhedra_Library::Constraint */
-std::ostream& operator<<(std::ostream& s, const Constraint::Type& t);
+template <typename OStream>
+OStream& operator<<(OStream& s, const Constraint::Type& t);
 
 } // namespace IO_Operators
 

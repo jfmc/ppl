@@ -811,8 +811,9 @@ ne_ext(const Type1& x, const Type2& y) {
 }
 
 template <typename Policy, typename Type>
+template <typename OStream>
 inline Result
-output_ext(std::ostream& os, const Type& x,
+output_ext(OStream& os, const Type& x,
 	   const Numeric_Format& format, Rounding_Dir dir) {
   if (!ext_to_handle<Policy>(x))
     goto native;
@@ -833,8 +834,9 @@ output_ext(std::ostream& os, const Type& x,
 }
 
 template <typename To_Policy, typename To>
+template <typename IStream>
 inline Result
-input_ext(To& to, std::istream& is, Rounding_Dir dir) {
+input_ext(To& to, IStream& is, Rounding_Dir dir) {
   return input<To_Policy>(to, is, dir);
 }
 

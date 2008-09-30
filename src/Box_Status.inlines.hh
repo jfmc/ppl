@@ -168,8 +168,9 @@ const char sep = ' ';
   When successful, \p positive is set to <CODE>true</CODE> if the flag
   is on; it is set to <CODE>false</CODE> otherwise.
 */
+template <typename IStream>
 inline bool
-get_field(std::istream& s, const std::string& keyword, bool& positive) {
+get_field(IStream& s, const std::string& keyword, bool& positive) {
   std::string str;
   if (!(s >> str)
       || (str[0] != yes && str[0] != no)
@@ -184,8 +185,9 @@ get_field(std::istream& s, const std::string& keyword, bool& positive) {
 } // namespace Implementation
 
 template <typename ITV>
+template <typename OStream>
 void
-Box<ITV>::Status::ascii_dump(std::ostream& s) const {
+Box<ITV>::Status::ascii_dump(OStream& s) const {
   using namespace Implementation::Boxes;
   s << (test_empty_up_to_date() ? yes : no) << empty_up_to_date << sep
     << (test_empty() ? yes : no) << empty << sep
@@ -195,8 +197,9 @@ Box<ITV>::Status::ascii_dump(std::ostream& s) const {
 PPL_OUTPUT_TEMPLATE_DEFINITIONS_ASCII_ONLY(ITV, Box<ITV>::Status)
 
 template <typename ITV>
+template <typename IStream>
 bool
-Box<ITV>::Status::ascii_load(std::istream& s) {
+Box<ITV>::Status::ascii_load(IStream& s) {
   using namespace Implementation::Boxes;
   bool positive;
 

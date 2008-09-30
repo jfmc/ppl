@@ -138,8 +138,9 @@ PPL::Bit_Matrix::resize(dimension_type new_n_rows,
   assert(OK());
 }
 
+template <typename OStream>
 void
-PPL::Bit_Matrix::ascii_dump(std::ostream& s) const {
+PPL::Bit_Matrix::ascii_dump(OStream& s) const {
   const Bit_Matrix& x = *this;
   const char separator = ' ';
   s << num_rows() << separator << 'x' << separator
@@ -153,8 +154,9 @@ PPL::Bit_Matrix::ascii_dump(std::ostream& s) const {
 
 PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Bit_Matrix)
 
+template <typename IStream>
 bool
-PPL::Bit_Matrix::ascii_load(std::istream& s) {
+PPL::Bit_Matrix::ascii_load(IStream& s) {
   Bit_Matrix& x = *this;
   dimension_type nrows;
   dimension_type ncols;

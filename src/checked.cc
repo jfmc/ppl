@@ -88,8 +88,9 @@ sum_sign(bool& a_neg, unsigned long& a_mod,
   denominator part of a number from \p is into \p num, returning the
   appropriate Result value.
 */
+template <typename IStream>
 Result
-parse_number_part(std::istream& is, number_struct& num) {
+parse_number_part(IStream& is, number_struct& num) {
   enum { BASE, INTEGER, FRACTIONAL, EXPONENT } state = BASE;
   unsigned long max_exp_div;
   int max_exp_rem;
@@ -273,8 +274,9 @@ parse_number_part(std::istream& is, number_struct& num) {
    and \p den, the denominator; the appropriate Result value is
    returned.
 */
+template <typename IStream>
 Result
-parse_number(std::istream& is, number_struct& num, number_struct& den) {
+parse_number(IStream& is, number_struct& num, number_struct& den) {
   // Read the numerator.
   Result r = parse_number_part(is, num);
   if (r != V_EQ)
@@ -304,8 +306,9 @@ parse_number(std::istream& is, number_struct& num, number_struct& den) {
 }
 
 
+template <typename IStream>
 Result
-input_mpq(mpq_class& to, std::istream& is) {
+input_mpq(mpq_class& to, IStream& is) {
   number_struct num_struct;
   number_struct den_struct;
   Result r = parse_number(is, num_struct, den_struct);

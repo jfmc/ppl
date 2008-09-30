@@ -829,8 +829,9 @@ PPL::Generator_System
   x.strong_normalize();
 }
 
+template <typename OStream>
 void
-PPL::Generator_System::ascii_dump(std::ostream& s) const {
+PPL::Generator_System::ascii_dump(OStream& s) const {
   const Generator_System& x = *this;
   const dimension_type x_num_rows = x.num_rows();
   const dimension_type x_num_columns = x.num_columns();
@@ -867,8 +868,9 @@ PPL::Generator_System::ascii_dump(std::ostream& s) const {
 
 PPL_OUTPUT_DEFINITIONS(Generator_System)
 
+template <typename IStream>
 bool
-PPL::Generator_System::ascii_load(std::istream& s) {
+PPL::Generator_System::ascii_load(IStream& s) {
   std::string str;
   if (!(s >> str) || str != "topology")
     return false;
@@ -1036,8 +1038,9 @@ PPL::Generator_System::OK() const {
 }
 
 /*! \relates Parma_Polyhedra_Library::Generator_System */
-std::ostream&
-PPL::IO_Operators::operator<<(std::ostream& s, const Generator_System& gs) {
+template <typename OStream>
+OStream&
+PPL::IO_Operators::operator<<(OStream& s, const Generator_System& gs) {
   Generator_System::const_iterator i = gs.begin();
   const Generator_System::const_iterator gs_end = gs.end();
   if (i == gs_end)

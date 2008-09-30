@@ -36,7 +36,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Grid_Generator_System.types.hh"
 #include "Checked_Number.defs.hh"
 #include "distances.defs.hh"
-#include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
 
@@ -46,7 +45,8 @@ namespace IO_Operators {
 
 //! Output operator.
 /*! \relates Parma_Polyhedra_Library::Generator */
-std::ostream& operator<<(std::ostream& s, const Generator& g);
+template <typename OStream>
+OStream& operator<<(OStream& s, const Generator& g);
 
 } // namespace IO_Operators
 
@@ -382,11 +382,12 @@ public:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
-    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    ascii_dump(OStream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
 #endif
-  bool ascii_load(std::istream& s);
+  template <typename IStream>
+  bool ascii_load(IStream& s);
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
@@ -444,8 +445,9 @@ private:
   Parma_Polyhedra_Library
   ::Linear_Expression::Linear_Expression(const Generator& g);
 
-  friend std::ostream&
-  Parma_Polyhedra_Library::IO_Operators::operator<<(std::ostream& s,
+  template <typename OStream>
+  friend OStream&
+  Parma_Polyhedra_Library::IO_Operators::operator<<(OStream& s,
 						    const Generator& g);
 
   //! Copy-constructor with given space dimension.
@@ -714,7 +716,8 @@ namespace IO_Operators {
 
 //! Output operator.
 /*! \relates Parma_Polyhedra_Library::Generator */
-std::ostream& operator<<(std::ostream& s, const Generator::Type& t);
+template <typename OStream>
+OStream& operator<<(OStream& s, const Generator::Type& t);
 
 } // namespace IO_Operators
 

@@ -33,7 +33,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_Expression.types.hh"
 #include "Linear_Row.types.hh"
 #include "Congruence_System.defs.hh"
-#include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
 
@@ -42,14 +41,16 @@ namespace IO_Operators {
 //! Output operators.
 
 /*! \relates Parma_Polyhedra_Library::Congruence */
-std::ostream&
-operator<<(std::ostream& s, const Congruence& c);
+template <typename OStream>
+OStream&
+operator<<(OStream& s, const Congruence& c);
 
 // Put this in the namespace here to declare it a friend later.
 
 /*! \relates Parma_Polyhedra_Library::Congruence_System */
-std::ostream&
-operator<<(std::ostream& s, const Congruence_System& cgs);
+template <typename OStream>
+OStream&
+operator<<(OStream& s, const Congruence_System& cgs);
 
 
 } // namespace IO_Operators
@@ -343,7 +344,8 @@ public:
     representation of \p *this.
   */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-  bool ascii_load(std::istream& s);
+  template <typename IStream>
+  bool ascii_load(IStream& s);
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
@@ -457,9 +459,10 @@ private:
   friend bool
   operator!=(const Congruence& x, const Congruence& y);
 
-  friend std::ostream&
+  template <typename OStream>
+  friend OStream&
   Parma_Polyhedra_Library::IO_Operators
-  ::operator<<(std::ostream& s,
+  ::operator<<(OStream& s,
 	       const Congruence_System& cgs);
 
   friend class Parma_Polyhedra_Library::Scalar_Products;

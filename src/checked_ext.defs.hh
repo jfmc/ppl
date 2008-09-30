@@ -91,11 +91,13 @@ template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 Result lcm_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir);
 
 template <typename Policy, typename Type>
-Result output_ext(std::ostream& os, const Type& x,
+template <typename OStream>
+Result output_ext(OStream& os, const Type& x,
 		  const Numeric_Format& format, Rounding_Dir dir);
 
 template <typename Policy, typename Type>
-Result input_ext(Type& x, std::istream& is, Rounding_Dir dir);
+template <typename IStream>
+Result input_ext(Type& x, IStream& is, Rounding_Dir dir);
 
 } // namespace Checked
 

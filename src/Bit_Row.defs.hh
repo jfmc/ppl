@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Bit_Row.types.hh"
 #include "globals.types.hh"
-#include <iosfwd>
 #include <gmpxx.h>
 #include <vector>
 

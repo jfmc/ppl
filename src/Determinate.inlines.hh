@@ -241,8 +241,9 @@ namespace IO_Operators {
 
 /*! \relates Parma_Polyhedra_Library::Determinate */
 template <typename PS>
-inline std::ostream&
-operator<<(std::ostream& s, const Determinate<PS>& x) {
+template <typename OStream>
+inline OStream&
+operator<<(OStream& s, const Determinate<PS>& x) {
   s << x.element();
   return s;
 }

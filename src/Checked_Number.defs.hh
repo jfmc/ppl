@@ -27,7 +27,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "checked.defs.hh"
 #include "meta_programming.hh"
 #include "Slow_Copy.hh"
-#include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
 
@@ -885,8 +884,9 @@ cmp(const From1& x, const From2& y);
 
 /*! \relates Checked_Number */
 template <typename T>
+template <typename OStream>
 typename Enable_If<Is_Native_Or_Checked<T>::value, Result>::type
-output(std::ostream& os,
+output(OStream& os,
        const T& x,
        const Numeric_Format& fmt,
        Rounding_Dir dir);
@@ -894,13 +894,15 @@ output(std::ostream& os,
 //! Output operator.
 /*! \relates Checked_Number */
 template <typename T, typename Policy>
-std::ostream&
-operator<<(std::ostream& os, const Checked_Number<T, Policy>& x);
+template <typename OStream>
+OStream&
+operator<<(OStream& os, const Checked_Number<T, Policy>& x);
 
 //! Ascii dump for native or checked.
 template <typename T>
+template <typename OStream>
 typename Enable_If<Is_Native_Or_Checked<T>::value, void>::type
-ascii_dump(std::ostream& s, const T& t);
+ascii_dump(OStream& s, const T& t);
 
 //! Input function.
 /*!
@@ -1024,19 +1026,22 @@ digits  : DIGIT						;
 \endcode
 */
 template <typename T>
+template <typename IStream>
 typename Enable_If<Is_Native_Or_Checked<T>::value, Result>::type
-input(T& x, std::istream& is, Rounding_Dir dir);
+input(T& x, IStream& is, Rounding_Dir dir);
 
 //! Input operator.
 /*! \relates Checked_Number */
 template <typename T, typename Policy>
-std::istream&
-operator>>(std::istream& is, Checked_Number<T, Policy>& x);
+template <typename IStream>
+IStream&
+operator>>(IStream& is, Checked_Number<T, Policy>& x);
 
 //! Ascii load for native or checked.
 template <typename T>
+template <typename OStream>
 typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type
-ascii_load(std::ostream& s, T& t);
+ascii_load(OStream& s, T& t);
 
 //@} // Input-Output Operators
 

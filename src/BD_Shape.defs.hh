@@ -45,7 +45,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Checked_Number.defs.hh"
 #include "Bit_Matrix.defs.hh"
 #include <cstddef>
-#include <iosfwd>
 #include <vector>
 
 namespace Parma_Polyhedra_Library {
@@ -61,8 +60,9 @@ namespace IO_Operators {
   all constraints separated by ", ".
 */
 template <typename T>
-std::ostream&
-operator<<(std::ostream& s, const BD_Shape<T>& bds);
+template <typename OStream>
+OStream&
+operator<<(OStream& s, const BD_Shape<T>& bds);
 
 } // namespace IO_Operators
 
@@ -1764,11 +1764,12 @@ public:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
-    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    ascii_dump(OStream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-  bool ascii_load(std::istream& s);
+  template <typename IStream>
+  bool ascii_load(IStream& s);
 
   //! Returns the total size in bytes of the memory occupied by \p *this.
   memory_size_type total_memory_in_bytes() const;
@@ -2080,9 +2081,10 @@ private:
   */
   void compute_leaders(std::vector<dimension_type>& leaders) const;
 
-  friend std::ostream&
+  template <typename OStream>
+  friend OStream&
   Parma_Polyhedra_Library::IO_Operators
-  ::operator<<<>(std::ostream& s, const BD_Shape<T>& c);
+  ::operator<<<>(OStream& s, const BD_Shape<T>& c);
 
   //! \name Exception Throwers
   //@{

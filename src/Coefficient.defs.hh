@@ -24,7 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Coefficient_defs_hh 1
 
 #include "Coefficient.types.hh"
-#include <iosfwd>
 
 #if defined(PPL_CHECKED_INTEGERS) || defined(PPL_NATIVE_INTEGERS)
 #include "Checked_Number.defs.hh"

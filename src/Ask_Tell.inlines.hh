@@ -26,9 +26,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <algorithm>
 #include <cassert>
 
-// Temporary!!!
-#include <iostream>
-
 namespace Parma_Polyhedra_Library {
 
 template <typename D>

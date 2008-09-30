@@ -205,8 +205,9 @@ DB_Matrix<T>::resize_no_copy(const dimension_type new_n_rows) {
 }
 
 template <typename T>
+template <typename OStream>
 void
-DB_Matrix<T>::ascii_dump(std::ostream& s) const {
+DB_Matrix<T>::ascii_dump(OStream& s) const {
   const DB_Matrix<T>& x = *this;
   const char separator = ' ';
   const dimension_type nrows = x.num_rows();
@@ -223,8 +224,9 @@ DB_Matrix<T>::ascii_dump(std::ostream& s) const {
 PPL_OUTPUT_TEMPLATE_DEFINITIONS(T, DB_Matrix<T>)
 
 template <typename T>
+template <typename IStream>
 bool
-DB_Matrix<T>::ascii_load(std::istream& s) {
+DB_Matrix<T>::ascii_load(IStream& s) {
   dimension_type nrows;
    if (!(s >> nrows))
     return false;
@@ -301,8 +303,9 @@ DB_Matrix<T>::OK() const {
 /*! \relates Parma_Polyhedra_Library::DB_Matrix */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
-std::ostream&
-IO_Operators::operator<<(std::ostream& s, const DB_Matrix<T>& c) {
+template <typename OStream>
+OStream&
+IO_Operators::operator<<(OStream& s, const DB_Matrix<T>& c) {
   const dimension_type n = c.num_rows();
   for (dimension_type i = 0; i < n; ++i) {
     for (dimension_type j = 0; j < n; ++j)

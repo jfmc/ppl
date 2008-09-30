@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Ask_Tell.types.hh"
 #include "iterator_to_const.defs.hh"
-#include <iosfwd>
 #include <list>
 
 namespace Parma_Polyhedra_Library {
@@ -47,8 +46,9 @@ namespace IO_Operators {
 //! Output operator.
 /*! \relates Parma_Polyhedra_Library::Ask_Tell */
 template <typename D>
-std::ostream&
-operator<<(std::ostream&, const Ask_Tell<D>&);
+template <typename OStream>
+OStream&
+operator<<(OStream&, const Ask_Tell<D>&);
 
 } // namespace IO_Operators
 

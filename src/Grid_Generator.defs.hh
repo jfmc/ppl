@@ -31,7 +31,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 // FIXME: this inclusion must be removed along with the friend declaration
 //        befriending class Box.
 #include "Box.types.hh"
-#include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
 
@@ -41,7 +40,8 @@ namespace IO_Operators {
 
 //! Output operator.
 /*! \relates Parma_Polyhedra_Library::Grid_Generator */
-std::ostream& operator<<(std::ostream& s, const Grid_Generator& g);
+template <typename OStream>
+OStream& operator<<(OStream& s, const Grid_Generator& g);
 
 } // namespace IO_Operators
 
@@ -377,11 +377,12 @@ public:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
-    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    ascii_dump(OStream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-  bool ascii_load(std::istream& s);
+  template <typename IStream>
+  bool ascii_load(IStream& s);
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
@@ -472,8 +473,9 @@ private:
   void
   throw_invalid_argument(const char* method, const char* reason) const;
 
-  friend std::ostream&
-  IO_Operators::operator<<(std::ostream& s, const Grid_Generator& g);
+  template <typename OStream>
+  friend OStream&
+  IO_Operators::operator<<(OStream& s, const Grid_Generator& g);
   // FIXME: The following friend declaration is for operator[] and
   //        divisor() access in Grid::conversion, Grid::simplify,
   //        Grid::relation_with(c) and Grid::Grid(box, *).
@@ -537,7 +539,8 @@ namespace IO_Operators {
 
 //! Output operator.
 /*! \relates Parma_Polyhedra_Library::Grid_Generator */
-std::ostream& operator<<(std::ostream& s, const Grid_Generator::Type& t);
+template <typename OStream>
+OStream& operator<<(OStream& s, const Grid_Generator::Type& t);
 
 } // namespace IO_Operators
 

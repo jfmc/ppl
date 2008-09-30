@@ -145,8 +145,9 @@ PPL::Congruence::throw_dimension_incompatible(const char* method,
 }
 
 /*! \relates Parma_Polyhedra_Library::Congruence */
-std::ostream&
-PPL::IO_Operators::operator<<(std::ostream& s, const Congruence& c) {
+template <typename OStream>
+OStream&
+PPL::IO_Operators::operator<<(OStream& s, const Congruence& c) {
   const dimension_type num_variables = c.space_dimension();
   TEMP_INTEGER(cv);
   bool first = true;
@@ -203,8 +204,9 @@ PPL::Congruence::is_inconsistent() const {
   return true;
 }
 
+template <typename OStream>
 void
-PPL::Congruence::ascii_dump(std::ostream& s) const {
+PPL::Congruence::ascii_dump(OStream& s) const {
   const Row& x = *this;
   const dimension_type x_size = x.size();
   s << "size " << x_size << " ";
@@ -218,8 +220,9 @@ PPL::Congruence::ascii_dump(std::ostream& s) const {
 
 PPL_OUTPUT_DEFINITIONS(Congruence)
 
+template <typename IStream>
 bool
-PPL::Congruence::ascii_load(std::istream& s) {
+PPL::Congruence::ascii_load(IStream& s) {
   std::string str;
   if (!(s >> str) || str != "size")
     return false;

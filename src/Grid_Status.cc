@@ -50,8 +50,9 @@ const char* gensys_pending = "GP";
   When successful, \p positive is set to <CODE>true</CODE> if the flag
   is on; it is set to <CODE>false</CODE> otherwise.
 */
+template <typename IStream>
 bool
-get_field(std::istream& s, const char* keyword, bool& positive) {
+get_field(IStream& s, const char* keyword, bool& positive) {
   std::string str;
   if (!(s >> str)
       || (str[0] != '+' && str[0] != '-')
@@ -63,8 +64,9 @@ get_field(std::istream& s, const char* keyword, bool& positive) {
 
 } // namespace
 
+template <typename OStream>
 void
-PPL::Grid::Status::ascii_dump(std::ostream& s) const {
+PPL::Grid::Status::ascii_dump(OStream& s) const {
   s << (test_zero_dim_univ() ? '+' : '-') << zero_dim_univ << ' '
     << (test_empty() ? '+' : '-') << empty << ' '
     << ' '
@@ -84,8 +86,9 @@ PPL::Grid::Status::ascii_dump(std::ostream& s) const {
 
 PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Grid::Status)
 
+template <typename IStream>
 bool
-PPL::Grid::Status::ascii_load(std::istream& s) {
+PPL::Grid::Status::ascii_load(IStream& s) {
   bool positive;
 
   if (!get_field(s, zero_dim_univ, positive))

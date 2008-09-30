@@ -36,8 +36,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <cassert>
 #include <vector>
 #include <deque>
-#include <iostream>
-#include <sstream>
 #include <stdexcept>
 #include <algorithm>
 
@@ -4923,8 +4921,9 @@ BD_Shape<T>::fold_space_dimensions(const Variables_Set& to_be_folded,
 
 /*! \relates Parma_Polyhedra_Library::BD_Shape */
 template <typename T>
-std::ostream&
-IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
+template <typename OStream>
+OStream&
+IO_Operators::operator<<(OStream& s, const BD_Shape<T>& c) {
   typedef typename BD_Shape<T>::coefficient_type N;
   if (c.is_universe())
     s << "true";
@@ -5032,8 +5031,9 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
 }
 
 template <typename T>
+template <typename OStream>
 void
-BD_Shape<T>::ascii_dump(std::ostream& s) const {
+BD_Shape<T>::ascii_dump(OStream& s) const {
   status.ascii_dump(s);
   s << "\n";
   dbm.ascii_dump(s);
@@ -5044,8 +5044,9 @@ BD_Shape<T>::ascii_dump(std::ostream& s) const {
 PPL_OUTPUT_TEMPLATE_DEFINITIONS(T, BD_Shape<T>)
 
 template <typename T>
+template <typename IStream>
 bool
-BD_Shape<T>::ascii_load(std::istream& s) {
+BD_Shape<T>::ascii_load(IStream& s) {
   if (!status.ascii_load(s))
     return false;
   if (!dbm.ascii_load(s))

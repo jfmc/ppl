@@ -194,13 +194,15 @@ operator!=(const Generator& x, const Generator& y) {
   return !x.is_equivalent_to(y);
 }
 
+template <typename OStream>
 inline void
-Generator::ascii_dump(std::ostream& s) const {
+Generator::ascii_dump(OStream& s) const {
   Linear_Row::ascii_dump(s);
 }
 
+template <typename IStream>
 inline bool
-Generator::ascii_load(std::istream& s) {
+Generator::ascii_load(IStream& s) {
   return Linear_Row::ascii_load(s);
 }
 

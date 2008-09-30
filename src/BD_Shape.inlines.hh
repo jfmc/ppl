@@ -33,7 +33,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Temp.defs.hh"
 #include <cassert>
 #include <vector>
-#include <iostream>
 #include <algorithm>
 
 namespace Parma_Polyhedra_Library {

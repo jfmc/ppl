@@ -30,7 +30,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Grid_Generator.types.hh"
 #include "Matrix.defs.hh"
 #include "Grid_Certificate.types.hh"
-#include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
 
@@ -42,8 +41,9 @@ namespace IO_Operators {
   Writes <CODE>true</CODE> if \p cgs is empty.  Otherwise, writes on
   \p s the congruences of \p cgs, all in one row and separated by ", ".
 */
-std::ostream&
-operator<<(std::ostream& s, const Congruence_System& cgs);
+template <typename OStream>
+OStream&
+operator<<(OStream& s, const Congruence_System& cgs);
 
 } // namespace IO_Operators
 
@@ -318,11 +318,12 @@ public:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
-    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    ascii_dump(OStream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-  bool ascii_load(std::istream& s);
+  template <typename IStream>
+  bool ascii_load(IStream& s);
 
   //! Returns the total size in bytes of the memory occupied by \p *this.
   memory_size_type total_memory_in_bytes() const;

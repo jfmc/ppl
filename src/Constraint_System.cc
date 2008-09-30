@@ -464,8 +464,9 @@ PPL::Constraint_System
   x.strong_normalize();
 }
 
+template <typename OStream>
 void
-PPL::Constraint_System::ascii_dump(std::ostream& s) const {
+PPL::Constraint_System::ascii_dump(OStream& s) const {
   const Constraint_System& x = *this;
   const dimension_type x_num_rows = x.num_rows();
   const dimension_type x_num_columns = x.num_columns();
@@ -499,8 +500,9 @@ PPL::Constraint_System::ascii_dump(std::ostream& s) const {
 
 PPL_OUTPUT_DEFINITIONS(Constraint_System)
 
+template <typename IStream>
 bool
-PPL::Constraint_System::ascii_load(std::istream& s) {
+PPL::Constraint_System::ascii_load(IStream& s) {
   std::string str;
   if (!(s >> str) || str != "topology")
     return false;
@@ -605,8 +607,9 @@ PPL::Constraint_System::OK() const {
 }
 
 /*! \relates Parma_Polyhedra_Library::Constraint_System */
-std::ostream&
-PPL::IO_Operators::operator<<(std::ostream& s, const Constraint_System& cs) {
+template <typename OStream>
+OStream&
+PPL::IO_Operators::operator<<(OStream& s, const Constraint_System& cs) {
   Constraint_System::const_iterator i = cs.begin();
   const Constraint_System::const_iterator cs_end = cs.end();
   if (i == cs_end)

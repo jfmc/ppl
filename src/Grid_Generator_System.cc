@@ -203,16 +203,18 @@ PPL::Grid_Generator_System
 
 PPL_OUTPUT_DEFINITIONS(Grid_Generator_System)
 
+template <typename OStream>
 void
-PPL::Grid_Generator_System::ascii_dump(std::ostream& s) const {
+PPL::Grid_Generator_System::ascii_dump(OStream& s) const {
   const dimension_type num_rows = this->num_rows();
   s << num_rows << " x " << num_columns() << '\n';
   for (dimension_type i = 0; i < num_rows; ++i)
     operator[](i).ascii_dump(s);
 }
 
+template <typename IStream>
 bool
-PPL::Grid_Generator_System::ascii_load(std::istream& s) {
+PPL::Grid_Generator_System::ascii_load(IStream& s) {
   dimension_type num_rows;
   dimension_type num_columns;
   if (!(s >> num_rows))
@@ -290,8 +292,9 @@ PPL::Grid_Generator_System::OK() const {
 }
 
 /*! \relates Parma_Polyhedra_Library::Grid_Generator_System */
-std::ostream&
-PPL::IO_Operators::operator<<(std::ostream& s,
+template <typename OStream>
+OStream&
+PPL::IO_Operators::operator<<(OStream& s,
 			      const Grid_Generator_System& gs) {
   Grid_Generator_System::const_iterator i = gs.begin();
   const Grid_Generator_System::const_iterator gs_end = gs.end();

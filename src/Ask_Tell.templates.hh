@@ -23,8 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Ask_Tell_templates_hh
 #define PPL_Ask_Tell_templates_hh 1
 
-#include <iostream>
-
 namespace Parma_Polyhedra_Library {
 
 template <typename D>
@@ -235,8 +233,9 @@ Ask_Tell<D>::OK() const {
 namespace IO_Operators {
 
 template <typename D>
-std::ostream&
-operator<<(std::ostream& s, const Ask_Tell<D>& x) {
+template <typename OStream>
+OStream&
+operator<<(OStream& s, const Ask_Tell<D>& x) {
   if (x.is_top())
     s << "true";
   else if (x.is_bottom())

@@ -260,8 +260,9 @@ PPL::Constraint::finalize() {
 }
 
 /*! \relates Parma_Polyhedra_Library::Constraint */
-std::ostream&
-PPL::IO_Operators::operator<<(std::ostream& s, const Constraint& c) {
+template <typename OStream>
+OStream&
+PPL::IO_Operators::operator<<(OStream& s, const Constraint& c) {
   const dimension_type num_variables = c.space_dimension();
   TEMP_INTEGER(cv);
   bool first = true;
@@ -304,8 +305,9 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Constraint& c) {
 }
 
 /*! \relates Parma_Polyhedra_Library::Constraint */
-std::ostream&
-PPL::IO_Operators::operator<<(std::ostream& s, const Constraint::Type& t) {
+template <typename OStream>
+OStream&
+PPL::IO_Operators::operator<<(OStream& s, const Constraint::Type& t) {
   const char* n = 0;
   switch (t) {
   case Constraint::EQUALITY:

@@ -36,7 +36,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Octagonal_Shape.defs.hh"
 #include "MIP_Problem.defs.hh"
 #include "Rational_Interval.hh"
-#include <iostream>
 
 namespace Parma_Polyhedra_Library {
 
@@ -3437,8 +3436,9 @@ Box<ITV>::external_memory_in_bytes() const {
 
 /*! \relates Parma_Polyhedra_Library::Box */
 template <typename ITV>
-std::ostream&
-IO_Operators::operator<<(std::ostream& s, const Box<ITV>& box) {
+template <typename OStream>
+OStream&
+IO_Operators::operator<<(OStream& s, const Box<ITV>& box) {
   if (box.is_empty())
     s << "false";
   else if (box.is_universe())
@@ -3457,8 +3457,9 @@ IO_Operators::operator<<(std::ostream& s, const Box<ITV>& box) {
 }
 
 template <typename ITV>
+template <typename OStream>
 void
-Box<ITV>::ascii_dump(std::ostream& s) const {
+Box<ITV>::ascii_dump(OStream& s) const {
   const char separator = ' ';
   status.ascii_dump(s);
   const dimension_type space_dim = space_dimension();
@@ -3471,8 +3472,9 @@ Box<ITV>::ascii_dump(std::ostream& s) const {
 PPL_OUTPUT_TEMPLATE_DEFINITIONS(ITV, Box<ITV>)
 
 template <typename ITV>
+template <typename IStream>
 bool
-Box<ITV>::ascii_load(std::istream& s) {
+Box<ITV>::ascii_load(IStream& s) {
   if (!status.ascii_load(s))
     return false;
 

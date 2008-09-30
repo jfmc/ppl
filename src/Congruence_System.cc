@@ -387,8 +387,9 @@ affine_preimage(dimension_type v,
     }
 }
 
+template <typename OStream>
 void
-PPL::Congruence_System::ascii_dump(std::ostream& s) const {
+PPL::Congruence_System::ascii_dump(OStream& s) const {
   const Congruence_System& x = *this;
   dimension_type x_num_rows = x.num_rows();
   dimension_type x_num_columns = x.num_columns();
@@ -401,8 +402,9 @@ PPL::Congruence_System::ascii_dump(std::ostream& s) const {
 
 PPL_OUTPUT_DEFINITIONS(Congruence_System)
 
+template <typename IStream>
 bool
-PPL::Congruence_System::ascii_load(std::istream& s) {
+PPL::Congruence_System::ascii_load(IStream& s) {
   std::string str;
   dimension_type num_rows;
   dimension_type num_columns;
@@ -469,8 +471,9 @@ PPL::Congruence_System::OK() const {
 }
 
 /*! \relates Parma_Polyhedra_Library::Congruence_System */
-std::ostream&
-PPL::IO_Operators::operator<<(std::ostream& s, const Congruence_System& cgs) {
+template <typename OStream>
+OStream&
+PPL::IO_Operators::operator<<(OStream& s, const Congruence_System& cgs) {
   Congruence_System::const_iterator i = cgs.begin();
   const Congruence_System::const_iterator cgs_end = cgs.end();
   if (i == cgs_end)

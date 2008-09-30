@@ -2464,8 +2464,9 @@ PPL::Grid::is_disjoint_from(const Grid& y) const {
   return z.is_empty();
 }
 
+template <typename OStream>
 void
-PPL::Grid::ascii_dump(std::ostream& s) const {
+PPL::Grid::ascii_dump(OStream& s) const {
   using std::endl;
 
   s << "space_dim "
@@ -2494,8 +2495,9 @@ PPL::Grid::ascii_dump(std::ostream& s) const {
 
 PPL_OUTPUT_DEFINITIONS(Grid)
 
+template <typename IStream>
 bool
-PPL::Grid::ascii_load(std::istream& s) {
+PPL::Grid::ascii_load(IStream& s) {
   std::string str;
 
   if (!(s >> str) || str != "space_dim")
@@ -2570,8 +2572,9 @@ PPL::Grid::external_memory_in_bytes() const {
 }
 
 /*! \relates Parma_Polyhedra_Library::Grid */
-std::ostream&
-PPL::IO_Operators::operator<<(std::ostream& s, const Grid& gr) {
+template <typename OStream>
+OStream&
+PPL::IO_Operators::operator<<(OStream& s, const Grid& gr) {
   if (gr.is_empty())
     s << "false";
   else if (gr.is_universe())

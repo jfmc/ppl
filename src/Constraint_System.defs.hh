@@ -31,7 +31,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint.types.hh"
 #include "Congruence_System.types.hh"
 #include <iterator>
-#include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
 
@@ -43,7 +42,8 @@ namespace IO_Operators {
   Writes <CODE>true</CODE> if \p cs is empty.  Otherwise, writes on
   \p s the constraints of \p cs, all in one row and separated by ", ".
 */
-std::ostream& operator<<(std::ostream& s, const Constraint_System& cs);
+template <typename OStream>
+OStream& operator<<(OStream& s, const Constraint_System& cs);
 
 } // namespace IO_Operators
 
@@ -281,11 +281,12 @@ public:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
-    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    ascii_dump(OStream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-  bool ascii_load(std::istream& s);
+  template <typename IStream>
+  bool ascii_load(IStream& s);
 
   //! Returns the total size in bytes of the memory occupied by \p *this.
   memory_size_type total_memory_in_bytes() const;

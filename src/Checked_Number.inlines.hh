@@ -745,8 +745,9 @@ cmp(const From1& x, const From2& y) {
 
 /*! \relates Checked_Number */
 template <typename T>
+template <typename OStream>
 typename Enable_If<Is_Native_Or_Checked<T>::value, Result>::type
-output(std::ostream& os, const T& x,
+output(OStream& os, const T& x,
        const Numeric_Format& fmt, Rounding_Dir dir) {
   return check_result(Checked::output_ext<typename Native_Checked_From_Wrapper<T>::Policy>
 		      (os,
@@ -758,16 +759,18 @@ output(std::ostream& os, const T& x,
 
 /*! \relates Checked_Number */
 template <typename T, typename Policy>
-inline std::ostream&
-operator<<(std::ostream& os, const Checked_Number<T, Policy>& x) {
+template <typename OStream>
+inline OStream&
+operator<<(OStream& os, const Checked_Number<T, Policy>& x) {
   Policy::handle_result(output(os, x, Numeric_Format(), ROUND_IGNORE));
   return os;
 }
 
 /*! \relates Checked_Number */
 template <typename T>
+template <typename IStream>
 typename Enable_If<Is_Native_Or_Checked<T>::value, Result>::type
-input(T& x, std::istream& is, Rounding_Dir dir) {
+input(T& x, IStream& is, Rounding_Dir dir) {
   return check_result(Checked::input_ext<typename Native_Checked_To_Wrapper<T>::Policy>
 		      (Native_Checked_To_Wrapper<T>::raw_value(x),
 		       is,
@@ -777,7 +780,8 @@ input(T& x, std::istream& is, Rounding_Dir dir) {
 
 /*! \relates Checked_Number */
 template <typename T, typename Policy>
-inline std::istream& operator>>(std::istream& is,
+template <typename IStream>
+inline IStream& operator>>(IStream& is,
 				Checked_Number<T, Policy>& x) {
   Result r = input(x, is, Policy::ROUND_DEFAULT_INPUT);
   if (r == V_CVT_STR_UNK)

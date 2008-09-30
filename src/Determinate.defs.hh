@@ -28,7 +28,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Congruence_System.types.hh"
 #include "Variable.defs.hh"
 #include "globals.types.hh"
-#include <iosfwd>
 #include <cassert>
 
 namespace Parma_Polyhedra_Library {
@@ -56,8 +55,9 @@ namespace IO_Operators {
 //! Output operator.
 /*! \relates Parma_Polyhedra_Library::Determinate */
 template <typename PS>
-std::ostream&
-operator<<(std::ostream&, const Determinate<PS>&);
+template <typename OStream>
+OStream&
+operator<<(OStream&, const Determinate<PS>&);
 
 } // namespace IO_Operators
 

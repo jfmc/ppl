@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <cassert>
 #include <algorithm>
-#include <iostream>
 #include "checked.defs.hh"
 
 namespace Parma_Polyhedra_Library {

@@ -30,8 +30,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <typename T>
+template <typename OStream>
 typename Enable_If<Is_Native_Or_Checked<T>::value, void>::type
-ascii_dump(std::ostream& s, const T& t) {
+ascii_dump(OStream& s, const T& t) {
   if (std::numeric_limits<T>::is_exact)
     // An exact datatype: pretty printer is accurate.
     s << t;
@@ -52,8 +53,9 @@ ascii_dump(std::ostream& s, const T& t) {
 }
 
 template <typename T>
+template <typename IStream>
 typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type
-ascii_load(std::istream& s, T& t) {
+ascii_load(IStream& s, T& t) {
   if (std::numeric_limits<T>::is_exact)
     // An exact datatype: input from pretty printed version is accurate.
     return (s >> t);
