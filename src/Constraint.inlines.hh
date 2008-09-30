@@ -348,13 +348,15 @@ Constraint::epsilon_leq_one() {
   return *epsilon_leq_one_p;
 }
 
+template <typename OStream>
 inline void
-Constraint::ascii_dump(std::ostream& s) const {
+Constraint::ascii_dump(OStream& s) const {
   Linear_Row::ascii_dump(s);
 }
 
+template <typename IStream>
 inline bool
-Constraint::ascii_load(std::istream& s) {
+Constraint::ascii_load(IStream& s) {
   return Linear_Row::ascii_load(s);
 }
 

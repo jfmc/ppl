@@ -158,13 +158,15 @@ struct Recycle_Input {
   /*! \brief Writes to \c std::cerr an ASCII representation of \p *this. */ \
   void ascii_dump() const;						\
   /*! \brief Writes to \p s an ASCII representation of \p *this. */	\
-  void ascii_dump(std::ostream& s) const;				\
+  template <typename OStream>                                           \
+  void ascii_dump(OStream& s) const;                                    \
   /*! \brief Prints \p *this to \c std::cerr using \c operator<<. */	\
   void print() const;
 #else
 #define PPL_OUTPUT_DECLARATIONS					\
   void ascii_dump() const;					\
-  void ascii_dump(std::ostream& s) const;			\
+  template <typename OStream>                                   \
+  void ascii_dump(OStream& s) const;                            \
   void print() const;
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 

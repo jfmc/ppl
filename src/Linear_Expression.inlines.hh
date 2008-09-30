@@ -212,13 +212,15 @@ Linear_Expression::swap(Linear_Expression& y) {
   Linear_Row::swap(y);
 }
 
+template <typename OStream>
 inline void
-Linear_Expression::ascii_dump(std::ostream& s) const {
+Linear_Expression::ascii_dump(OStream& s) const {
   Linear_Row::ascii_dump(s);
 }
 
+template <typename IStream>
 inline bool
-Linear_Expression::ascii_load(std::istream& s) {
+Linear_Expression::ascii_load(IStream& s) {
   return Linear_Row::ascii_load(s);
 }
 

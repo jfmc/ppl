@@ -170,7 +170,8 @@ namespace IO_Operators {
 
 //! Output operator.
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
-std::ostream& operator<<(std::ostream& s, const Linear_Expression& e);
+template <typename OStream>
+OStream& operator<<(OStream& s, const Linear_Expression& e);
 
 } // namespace IO_Operators
 
@@ -339,11 +340,12 @@ public:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
-    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    ascii_dump(OStream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
 #endif
-  bool ascii_load(std::istream& s);
+  template <typename IStream>
+  bool ascii_load(IStream& s);
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
@@ -445,11 +447,13 @@ private:
   friend Linear_Expression&
   operator*=(Linear_Expression& e, Coefficient_traits::const_reference n);
 
-  friend std::ostream&
+  template <typename OStream>
+  friend OStream&
   Parma_Polyhedra_Library::IO_Operators
-  ::operator<<(std::ostream& s, const Linear_Expression& e);
+  ::operator<<(OStream& s, const Linear_Expression& e);
 };
 
 #include "Linear_Expression.inlines.hh"
+#include "Linear_Expression.templates.hh"
 
 #endif // !defined(PPL_Linear_Expression_defs_hh)

@@ -231,6 +231,7 @@ Grid_Generator_System.defs.hh \
 Congruence_System.defs.hh \
 Linear_Expression.defs.hh \
 Linear_Expression.inlines.hh \
+Linear_Expression.templates.hh \
 Constraint.defs.hh \
 Constraint.inlines.hh \
 Constraint_System.inlines.hh \
