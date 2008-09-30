@@ -304,8 +304,10 @@ ppl_prolog_generated_test: ppl_sicstus ppl_sicstus.pl sp_prolog_generated_test.p
 		./ppl_sicstus -l $(srcdir)/sp_prolog_generated_test.pl \
         --goal "main."  \
 			>obtained_pchk
+	if [ $(srcdir) != `pwd` ]; then \
+	  rm -f ppl_prolog_generated_test_common.pl; \
+        fi
 	rm -f ppl_prolog_generated_test_main.pl; \
-	rm -f ppl_prolog_generated_test_common.pl; \
 	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
 
 endif BUILD_SICSTUS_PROLOG_INTERFACE

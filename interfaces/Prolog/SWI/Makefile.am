@@ -282,7 +282,9 @@ clpq2_test: pl_clpq2 ../tests/script_clpq2 $(EXPECTED_CLPQ2)
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
 
 ppl_prolog_generated_test: swi_prolog_generated_test.pl ../tests/ppl_prolog_generated_test_main.pl $(EXPECTED_PCHK)
-	cp -f $(srcdir)/../tests/ppl_prolog_generated_test_common.pl . ; \
+	if [ $(srcdir) != `pwd` ]; then \
+	  cp -f $(srcdir)/../tests/ppl_prolog_generated_test_common.pl . ; \
+	fi
 	cp -f ../tests/ppl_prolog_generated_test_main.pl . ; \
         echo "ensure_loaded('$(srcdir)/swi_prolog_generated_test'). main." > script_pchk
 	$(LIBTOOL) --mode=execute \
@@ -290,8 +292,10 @@ ppl_prolog_generated_test: swi_prolog_generated_test.pl ../tests/ppl_prolog_gene
 		$(WATCHDOG_DLOPEN) \
 		-dlopen libppl_swiprolog.la \
                 ./ppl_pl < script_pchk
+	if [ $(srcdir) != `pwd` ]; then \
+	  rm -f ppl_prolog_generated_test_common.pl; \
+        fi
 	rm -f ppl_prolog_generated_test_main.pl; \
-	rm -f ppl_prolog_generated_test_common.pl; \
 	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
 
 endif BUILD_SWI_PROLOG_INTERFACE
