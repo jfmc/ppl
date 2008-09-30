@@ -1886,8 +1886,9 @@ PPL::MIP_Problem::OK() const {
    return true;
 }
 
+template <typename OStream>
 void
-PPL::MIP_Problem::ascii_dump(std::ostream& s) const {
+PPL::MIP_Problem::ascii_dump(OStream& s) const {
   using namespace IO_Operators;
   s << "\nexternal_space_dim: " << external_space_dim << " \n";
   s << "\ninternal_space_dim: " << internal_space_dim << " \n";
@@ -1951,8 +1952,9 @@ PPL::MIP_Problem::ascii_dump(std::ostream& s) const {
 
 PPL_OUTPUT_DEFINITIONS(MIP_Problem)
 
+template <typename IStream>
 bool
-PPL::MIP_Problem::ascii_load(std::istream& s) {
+PPL::MIP_Problem::ascii_load(IStream& s) {
   std::string str;
 if (!(s >> str) || str != "external_space_dim:")
     return false;
@@ -2116,8 +2118,9 @@ if (!(s >> internal_space_dim))
 }
 
 /*! \relates Parma_Polyhedra_Library::MIP_Problem */
-std::ostream&
-PPL::IO_Operators::operator<<(std::ostream& s, const MIP_Problem& lp) {
+template <typename OStream>
+OStream&
+PPL::IO_Operators::operator<<(OStream& s, const MIP_Problem& lp) {
   s << "Constraints:";
   for (MIP_Problem::const_iterator i = lp.constraints_begin(),
 	 i_end = lp.constraints_end(); i != i_end; ++i)

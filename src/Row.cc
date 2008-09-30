@@ -131,8 +131,9 @@ PPL::Row::normalize() {
   }
 }
 
+template <typename OStream>
 void
-PPL::Row::Flags::ascii_dump(std::ostream& s) const {
+PPL::Row::Flags::ascii_dump(OStream& s) const {
   s << "0x";
   std::istream::fmtflags f = s.setf(std::istream::hex);
   std::streamsize sz = s.width(2*sizeof(Flags::base_type));
@@ -145,8 +146,9 @@ PPL::Row::Flags::ascii_dump(std::ostream& s) const {
 
 PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Row::Flags)
 
+template <typename IStream>
 bool
-PPL::Row::Flags::ascii_load(std::istream& s) {
+PPL::Row::Flags::ascii_load(IStream& s) {
   std::string str;
   std::streamsize sz = s.width(2);
   if (!(s >> str) || (str.compare("0x") != 0))
@@ -158,8 +160,9 @@ PPL::Row::Flags::ascii_load(std::istream& s) {
   return r;
 }
 
+template <typename OStream>
 void
-PPL::Row::ascii_dump(std::ostream& s) const {
+PPL::Row::ascii_dump(OStream& s) const {
   const Row& x = *this;
   const dimension_type x_size = x.size();
   s << "size " << x_size << " ";
@@ -172,8 +175,9 @@ PPL::Row::ascii_dump(std::ostream& s) const {
 
 PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Row)
 
+template <typename IStream>
 bool
-PPL::Row::ascii_load(std::istream& s) {
+PPL::Row::ascii_load(IStream& s) {
   std::string str;
   if (!(s >> str) || str != "size")
     return false;

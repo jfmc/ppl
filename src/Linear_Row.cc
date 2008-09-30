@@ -141,8 +141,9 @@ const char* bit_names[] = {rpi_valid, is_rpi, nnc_valid, is_nnc};
 
 } // namespace
 
+template <typename OStream>
 void
-PPL::Linear_Row::Flags::ascii_dump(std::ostream& s) const {
+PPL::Linear_Row::Flags::ascii_dump(OStream& s) const {
   s << (test_bits(1 << Flags::rpi_validity_bit) ? '+' : '-')
     << rpi_valid << ' '
     << (test_bits(1 << Flags::rpi_bit) ? '+' : '-')
@@ -156,8 +157,9 @@ PPL::Linear_Row::Flags::ascii_dump(std::ostream& s) const {
 
 PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Linear_Row::Flags)
 
+template <typename IStream>
 bool
-PPL::Linear_Row::Flags::ascii_load(std::istream& s) {
+PPL::Linear_Row::Flags::ascii_load(IStream& s) {
   std::string str;
   // Assume that the bits are used in sequence.
   reset_bits(std::numeric_limits<base_type>::max());
@@ -176,8 +178,9 @@ PPL::Linear_Row::Flags::ascii_load(std::istream& s) {
   return true;
 }
 
+template <typename OStream>
 void
-PPL::Linear_Row::ascii_dump(std::ostream& s) const {
+PPL::Linear_Row::ascii_dump(OStream& s) const {
   const Row& x = *this;
   const dimension_type x_size = x.size();
   s << "size " << x_size << " ";
@@ -190,8 +193,9 @@ PPL::Linear_Row::ascii_dump(std::ostream& s) const {
 
 PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Linear_Row)
 
+template <typename IStream>
 bool
-PPL::Linear_Row::ascii_load(std::istream& s) {
+PPL::Linear_Row::ascii_load(IStream& s) {
   std::string str;
   if (!(s >> str) || str != "size")
     return false;

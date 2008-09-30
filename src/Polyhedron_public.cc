@@ -3813,8 +3813,9 @@ PPL::Polyhedron::is_disjoint_from(const Polyhedron& y) const {
   return z.is_empty();
 }
 
+template <typename OStream>
 void
-PPL::Polyhedron::ascii_dump(std::ostream& s) const {
+PPL::Polyhedron::ascii_dump(OStream& s) const {
   s << "space_dim " << space_dim << "\n";
   status.ascii_dump(s);
   s << "\ncon_sys ("
@@ -3836,8 +3837,9 @@ PPL::Polyhedron::ascii_dump(std::ostream& s) const {
 
 PPL_OUTPUT_DEFINITIONS(Polyhedron)
 
+template <typename IStream>
 bool
-PPL::Polyhedron::ascii_load(std::istream& s) {
+PPL::Polyhedron::ascii_load(IStream& s) {
   std::string str;
 
   if (!(s >> str) || str != "space_dim")
@@ -3894,8 +3896,9 @@ PPL::Polyhedron::external_memory_in_bytes() const {
 }
 
 /*! \relates Parma_Polyhedra_Library::Polyhedron */
-std::ostream&
-PPL::IO_Operators::operator<<(std::ostream& s, const Polyhedron& ph) {
+template <typename OStream>
+OStream&
+PPL::IO_Operators::operator<<(OStream& s, const Polyhedron& ph) {
   if (ph.is_empty())
     s << "false";
   else

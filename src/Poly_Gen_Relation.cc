@@ -30,8 +30,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
+template <typename OStream>
 void
-PPL::Poly_Gen_Relation::ascii_dump(std::ostream& s) const {
+PPL::Poly_Gen_Relation::ascii_dump(OStream& s) const {
   flags_t f = flags;
   if (f == NOTHING) {
     s << "NOTHING";
@@ -53,8 +54,9 @@ PPL::Poly_Gen_Relation::ascii_dump(std::ostream& s) const {
 PPL_OUTPUT_DEFINITIONS(Poly_Gen_Relation)
 
 /*! \relates Parma_Polyhedra_Library::Poly_Gen_Relation */
-std::ostream&
-PPL::IO_Operators::operator<<(std::ostream& s, const Poly_Gen_Relation& r) {
+template <typename OStream>
+OStream&
+PPL::IO_Operators::operator<<(OStream& s, const Poly_Gen_Relation& r) {
   r.ascii_dump(s);
   return s;
 }
