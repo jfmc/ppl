@@ -609,6 +609,9 @@ public:
 
   PPL_OUTPUT_DECLARATIONS
 
+  template <typename IStream>
+  bool ascii_load(IStream& s);
+
   bool OK() const {
 #ifdef PPL_ABI_BREAKING_EXTRA_DEBUG
     if (!completed) {

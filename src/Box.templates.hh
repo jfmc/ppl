@@ -3435,8 +3435,7 @@ Box<ITV>::external_memory_in_bytes() const {
 }
 
 /*! \relates Parma_Polyhedra_Library::Box */
-template <typename ITV>
-template <typename OStream>
+template <typename ITV, typename OStream>
 OStream&
 IO_Operators::operator<<(OStream& s, const Box<ITV>& box) {
   if (box.is_empty())

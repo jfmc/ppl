@@ -1136,8 +1136,7 @@ operator/(const Interval<B, Info>& x, const Interval<B, Info>& y) {
   return z;
 }
 
-template <typename Boundary, typename Info>
-template <typename OStream>
+template <typename Boundary, typename Info, typename OStream>
 inline OStream&
 operator<<(OStream& os, const Interval<Boundary, Info>& x) {
   // assert(x.OK());
