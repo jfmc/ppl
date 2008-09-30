@@ -27,6 +27,7 @@ TESTS_ENVIRONMENT = $(CHECKER)
 
 AM_CPPFLAGS = \
 -I$(top_builddir)/interfaces/C \
+-I$(top_builddir)/src \
 @extra_includes@ \
 @debug_flag@
 
