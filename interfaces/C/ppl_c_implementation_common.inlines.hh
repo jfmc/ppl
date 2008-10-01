@@ -29,6 +29,9 @@ namespace Interfaces {
 
 namespace C {
 
+// FIXME: this same function is used also in the OCaml interface.
+// It should be placed in some common header file in the interfaces
+// directory.
 //! Reinterpret an mpz_t as mpz_class.
 inline mpz_class&
 reinterpret_mpz_class(mpz_t n) {

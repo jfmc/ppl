@@ -121,10 +121,11 @@ build_ppl_Variable(value caml_var) {
   return Variable(ppl_var_index);
 }
 
-// FIXME: This should be placed in a more convenient place inside
-// the library.
+// FIXME: this same function is used also in the C interface.
+// It should be placed in some common header file in the interfaces
+// directory.
 //! Reinterpret an mpz_t as mpz_class.
-mpz_class&
+inline mpz_class&
 reinterpret_mpz_class(mpz_t n) {
   return reinterpret_cast<mpz_class&>(*n);
 }
