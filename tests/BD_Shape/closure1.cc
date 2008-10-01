@@ -438,143 +438,156 @@ test02() {
 
 bool
 test03() {
-  // This test shows that the Floyd-Warshall algorithm does not compute
-  // the shortest path closure when using a floating point datatype.
-  // In particular, here it is shown that even two applications of FW
-  // are not enough to obtain idempotency.
-  typedef TBD_Shape BDS;
-  typedef BDS::coefficient_type Coeff;
 
-  Coeff f_1, f_2, f_3, f_5, f_7;
-  Coeff f_1_2, f_1_3, f_1_5, f_1_7;
-  assign_r(f_1, 1, ROUND_UP);
-  assign_r(f_2, 2, ROUND_DOWN);
-  assign_r(f_3, 3, ROUND_DOWN);
-  assign_r(f_5, 5, ROUND_DOWN);
-  assign_r(f_7, 7, ROUND_DOWN);
-  div_assign_r(f_1_2, f_1, f_2, ROUND_UP);
-  div_assign_r(f_1_3, f_1, f_3, ROUND_UP);
-  div_assign_r(f_1_5, f_1, f_5, ROUND_UP);
-  div_assign_r(f_1_7, f_1, f_7, ROUND_UP);
+  // Detect and systematically ignore overflows (which can only be
+  // due to configurations using bounded integer coefficients).
+  try {
 
-  nout << "*** Possible up-approximations ***\n";
-  nout << "1/2 = " << f_1_2 << "\n";
-  nout << "1/3 = " << f_1_3 << "\n";
-  nout << "1/5 = " << f_1_5 << "\n";
-  nout << "1/7 = " << f_1_7 << "\n";
+    // This test shows that the Floyd-Warshall algorithm does not compute
+    // the shortest path closure when using a floating point datatype.
+    // In particular, here it is shown that even two applications of FW
+    // are not enough to obtain idempotency.
+    typedef TBD_Shape BDS;
+    typedef BDS::coefficient_type Coeff;
 
-  mpq_class q_1_2, q_1_3, q_1_5, q_1_7;
-  assign_r(q_1_2, f_1_2, ROUND_NOT_NEEDED);
-  assign_r(q_1_3, f_1_3, ROUND_NOT_NEEDED);
-  assign_r(q_1_5, f_1_5, ROUND_NOT_NEEDED);
-  assign_r(q_1_7, f_1_7, ROUND_NOT_NEEDED);
+    Coeff f_1, f_2, f_3, f_5, f_7;
+    Coeff f_1_2, f_1_3, f_1_5, f_1_7;
+    assign_r(f_1, 1, ROUND_UP);
+    assign_r(f_2, 2, ROUND_DOWN);
+    assign_r(f_3, 3, ROUND_DOWN);
+    assign_r(f_5, 5, ROUND_DOWN);
+    assign_r(f_7, 7, ROUND_DOWN);
+    div_assign_r(f_1_2, f_1, f_2, ROUND_UP);
+    div_assign_r(f_1_3, f_1, f_3, ROUND_UP);
+    div_assign_r(f_1_5, f_1, f_5, ROUND_UP);
+    div_assign_r(f_1_7, f_1, f_7, ROUND_UP);
 
-  nout << "\n*** Corresponding mpq_class values ***\n";
-  nout << "1/2 = " << q_1_2 << "\n";
-  nout << "1/3 = " << q_1_3 << "\n";
-  nout << "1/5 = " << q_1_5 << "\n";
-  nout << "1/7 = " << q_1_7 << "\n\n";
+    nout << "*** Possible up-approximations ***\n";
+    nout << "1/2 = " << f_1_2 << "\n";
+    nout << "1/3 = " << f_1_3 << "\n";
+    nout << "1/5 = " << f_1_5 << "\n";
+    nout << "1/7 = " << f_1_7 << "\n";
 
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-  Variable D(3);
-  Variable E(4);
-  Variable F(5);
-  Variable G(6);
-  Variable H(7);
-  Variable I(8);
-  Variable J(9);
+    mpq_class q_1_2, q_1_3, q_1_5, q_1_7;
+    assign_r(q_1_2, f_1_2, ROUND_NOT_NEEDED);
+    assign_r(q_1_3, f_1_3, ROUND_NOT_NEEDED);
+    assign_r(q_1_5, f_1_5, ROUND_NOT_NEEDED);
+    assign_r(q_1_7, f_1_7, ROUND_NOT_NEEDED);
 
-  Constraint_System cs;
-  Coefficient numer, denom;
+    nout << "\n*** Corresponding mpq_class values ***\n";
+    nout << "1/2 = " << q_1_2 << "\n";
+    nout << "1/3 = " << q_1_3 << "\n";
+    nout << "1/5 = " << q_1_5 << "\n";
+    nout << "1/7 = " << q_1_7 << "\n\n";
 
-  numer = q_1_3.get_num();
-  denom = q_1_3.get_den();
-  cs.insert(denom*B - denom*A <= -numer);
-  cs.insert(denom*C - denom*B <= numer);
-  cs.insert(denom*G - denom*F <= -numer);
-  cs.insert(denom*H - denom*G <= numer);
+    Variable A(0);
+    Variable B(1);
+    Variable C(2);
+    Variable D(3);
+    Variable E(4);
+    Variable F(5);
+    Variable G(6);
+    Variable H(7);
+    Variable I(8);
+    Variable J(9);
 
-  numer = q_1_2.get_num();
-  denom = q_1_2.get_den();
-  cs.insert(denom*D - denom*C <= numer);
+    Constraint_System cs;
+    Coefficient numer, denom;
 
-  numer = q_1_5.get_num();
-  denom = q_1_5.get_den();
-  cs.insert(denom*J - denom*I <= numer);
-  cs.insert(denom*E - denom*D <= numer);
-  cs.insert(denom*I - denom*H <= numer);
+    numer = q_1_3.get_num();
+    denom = q_1_3.get_den();
+    cs.insert(denom*B - denom*A <= -numer);
+    cs.insert(denom*C - denom*B <= numer);
+    cs.insert(denom*G - denom*F <= -numer);
+    cs.insert(denom*H - denom*G <= numer);
 
-  numer = q_1_7.get_num();
-  denom = q_1_7.get_den();
-  cs.insert(denom*F - denom*E <= -numer);
+    numer = q_1_2.get_num();
+    denom = q_1_2.get_den();
+    cs.insert(denom*D - denom*C <= numer);
 
-  BDS bds1(10);
-  bds1.add_constraints(cs);
-  print_constraints(bds1.constraints(), "*** BEFORE FIRST Floyd-Warshall ***");
-  nout << "\n";
+    numer = q_1_5.get_num();
+    denom = q_1_5.get_den();
+    cs.insert(denom*J - denom*I <= numer);
+    cs.insert(denom*E - denom*D <= numer);
+    cs.insert(denom*I - denom*H <= numer);
 
-  // Force application of Floyd-Warshall.
-  bds1.is_empty();
+    numer = q_1_7.get_num();
+    denom = q_1_7.get_den();
+    cs.insert(denom*F - denom*E <= -numer);
 
-  print_constraints(bds1.constraints(), "*** AFTER FIRST Floyd-Warshall ***");
-  nout << "\n";
+    BDS bds1(10);
+    bds1.add_constraints(cs);
+    print_constraints(bds1.constraints(),
+                      "*** BEFORE FIRST Floyd-Warshall ***");
+    nout << "\n";
 
-  // Copy constraints (so that the BDS is marked as not closed)
-  // and then force again application of Floyd-Warshall.
-  BDS bds2(bds1.constraints());
-  bds2.is_empty();
+    // Force application of Floyd-Warshall.
+    bds1.is_empty();
 
-  print_constraints(bds2.constraints(), "*** AFTER SECOND Floyd-Warshall ***");
-  nout << "\n";
+    print_constraints(bds1.constraints(),
+                      "*** AFTER FIRST Floyd-Warshall ***");
+    nout << "\n";
 
-  // Copy constraints (so that the BDS is marked as not closed)
-  // and then force once again application of Floyd-Warshall.
-  BDS bds3(bds2.constraints());
-  bds3.is_empty();
+    // Copy constraints (so that the BDS is marked as not closed)
+    // and then force again application of Floyd-Warshall.
+    BDS bds2(bds1.constraints());
+    bds2.is_empty();
 
-  print_constraints(bds2.constraints(), "*** AFTER THIRD Floyd-Warshall ***");
-  nout << "\n";
+    print_constraints(bds2.constraints(),
+                      "*** AFTER SECOND Floyd-Warshall ***");
+    nout << "\n";
+
+    // Copy constraints (so that the BDS is marked as not closed)
+    // and then force once again application of Floyd-Warshall.
+    BDS bds3(bds2.constraints());
+    bds3.is_empty();
+
+    print_constraints(bds2.constraints(),
+                      "*** AFTER THIRD Floyd-Warshall ***");
+    nout << "\n";
 
 
-  bool coefficients_exact = std::numeric_limits<Coeff>::is_exact;
-  int coefficients_digits = std::numeric_limits<Coeff>::digits;
+    bool coefficients_exact = std::numeric_limits<Coeff>::is_exact;
+    int coefficients_digits = std::numeric_limits<Coeff>::digits;
 
-  nout << " coefficients_exact = " <<  coefficients_exact << endl;
-  nout << "coefficients_digits = " << coefficients_digits << endl;
+    nout << " coefficients_exact = " <<  coefficients_exact << endl;
+    nout << "coefficients_digits = " << coefficients_digits << endl;
 
-  bool imprecise_coefficients_12
-    = !coefficients_exact;
-  // && (coefficients_digits == 24
-  //                          || coefficients_digits == 64);
+    bool imprecise_coefficients_12
+      = !coefficients_exact;
+    // && (coefficients_digits == 24
+    //                          || coefficients_digits == 64);
 
-  bool bds1_contains_bds2 = bds1.contains(bds2);
-  bool bds2_contains_bds1 = bds2.contains(bds1);
+    bool bds1_contains_bds2 = bds1.contains(bds2);
+    bool bds2_contains_bds1 = bds2.contains(bds1);
 
-  nout << " bds1_contains_bds2 = " <<  bds1_contains_bds2 << endl;
-  nout << " bds2_contains_bds1 = " <<  bds2_contains_bds1 << endl;
+    nout << " bds1_contains_bds2 = " <<  bds1_contains_bds2 << endl;
+    nout << " bds2_contains_bds1 = " <<  bds2_contains_bds1 << endl;
 
-  if (!(bds1_contains_bds2
-        && ((bds2_contains_bds1 && !imprecise_coefficients_12)
-            || (!bds2_contains_bds1 && imprecise_coefficients_12))))
-    return false;
+    bool ok = (bds1_contains_bds2
+               && ((bds2_contains_bds1 && !imprecise_coefficients_12)
+                   || (!bds2_contains_bds1 && imprecise_coefficients_12)));
 
-  bool imprecise_coefficients_23
-    = !coefficients_exact && coefficients_digits <= 24;
+    bool imprecise_coefficients_23
+      = !coefficients_exact && coefficients_digits <= 24;
 
-  bool bds2_contains_bds3 = bds2.contains(bds3);
-  bool bds3_contains_bds2 = bds3.contains(bds2);
+    bool bds2_contains_bds3 = bds2.contains(bds3);
+    bool bds3_contains_bds2 = bds3.contains(bds2);
 
-  nout << " bds2_contains_bds3 = " <<  bds2_contains_bds3 << endl;
-  nout << " bds3_contains_bds2 = " <<  bds3_contains_bds2 << endl;
+    nout << " bds2_contains_bds3 = " <<  bds2_contains_bds3 << endl;
+    nout << " bds3_contains_bds2 = " <<  bds3_contains_bds2 << endl;
 
-  if (!(bds2_contains_bds3
-        && ((bds3_contains_bds2 && !imprecise_coefficients_23)
-            || (!bds3_contains_bds2 && imprecise_coefficients_23))))
-    return false;
+    ok &= (bds2_contains_bds3
+           && ((bds3_contains_bds2 && !imprecise_coefficients_23)
+               || (!bds3_contains_bds2 && imprecise_coefficients_23)));
+    return ok;
 
-  return true;
+  }
+  catch (const std::overflow_error& e) {
+    // Systematically ignore overflows.
+    nout << "Ignoring arithmetic overflow: " << e.what() << endl;
+    return true;
+  }
 }
 
 } // namespace
@@ -582,5 +595,5 @@ test03() {
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST_MAY_OVERFLOW_IF_INEXACT(test02, TBD_Shape);
-  DO_TEST_F8_MAY_OVERFLOW_IF_INEXACT(test03, TBD_Shape);
+  DO_TEST(test03);
 END_MAIN
