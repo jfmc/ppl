@@ -283,14 +283,14 @@ clpq2_test: ciao_clpq2$(EXEEXT) .libs/libppl_ciao.so ../tests/script_clpq2 $(EXP
 			<$(srcdir)/../tests/script_clpq2 >obtained_clpq2
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
 
-ppl_prolog_generated_test: ciao_prolog_generated_test$(EXEEXT) .libs/libppl_ciao.so $(EXPECTED_PCHK)
+ppl_prolog_generated_test: ciao_prolog_generated_test$(EXEEXT) .libs/libppl_ciao.so ../tests/expected_pgt
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		$(WATCHDOG_DLOPEN) \
 		-dlopen libppl_ciao.la \
 		./ciao_prolog_generated_test \
-			 >obtained_pchk
-	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
+			 >obtained_pgt
+	diff -u --ignore-all-space $(srcdir)/../tests/expected_pgt obtained_pgt
 
 endif ENABLE_SHARED
 endif BUILD_CIAO_PROLOG_INTERFACE
@@ -302,5 +302,5 @@ MOSTLYCLEANFILES = \
 @required_instantiations_prolog_cxx_objects@ \
 *.itf *.po *.c *.so \
 ciao_clpq ciao_clpq2 ciao_pl_check ciao_prolog_generated_test \
-obtained_clpq obtained_clpq2 obtained_pchk \
+obtained_clpq obtained_clpq2 obtained_pchk obtained_pgt \
 $(CLPQ_TESTS)
