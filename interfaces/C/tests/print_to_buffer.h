@@ -4,7 +4,10 @@
 /*
   Returns a buffer allocated with malloc() containing a printable
   representation of the PPL object referenced by `p', where each
-  newline is followed by `n' blank spaces.
+  newline is followed by `indent_depth' blank spaces and the preferred
+  maximum length of the first and the following lines are given by
+  `preferred_first_line_length' and `preferred_line_length',
+  respectively.
 */
 #define DECLARE_PRINT_TO_BUFFER(Type)                                   \
 char* print_ppl_##Type##_t_to_buffer(ppl_##Type##_t p,                  \
