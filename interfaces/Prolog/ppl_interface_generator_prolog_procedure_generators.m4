@@ -46,8 +46,8 @@ ppl_Coefficient_max/1,
 ppl_Coefficient_min/1,
 ppl_initialize/0 *nofail,
 ppl_finalize/0 *nofail,
-ppl_set_rounding_for_PPL/0 *nofail;
-ppl_restore_pre_PPL_rounding/0 *nofail;
+ppl_set_rounding_for_PPL/0 *nofail,
+ppl_restore_pre_PPL_rounding/0 *nofail,
 ppl_set_timeout_exception_atom/1 *nofail,
 ppl_timeout_exception_atom/1,
 ppl_set_timeout/1 *nofail,
