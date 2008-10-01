@@ -33,6 +33,7 @@ m4_divert`'dnl
 /* C interface code: inclusion of all the domain-dependent declarations.
 m4_include(`ppl_interface_generator_copyright')dnl
 */
+
 m4_divert(-1)
 
 m4_define(`m4_declaration_code', `dnl
@@ -50,6 +51,7 @@ m4_define(`m4_current_interface', m4_interface_class`'$1)`'dnl
 /* C m4_current_interface interface code: declarations.
 m4_include(`ppl_interface_generator_copyright')`'dnl
 */
+
 namespace Parma_Polyhedra_Library {
 
 namespace Interfaces {

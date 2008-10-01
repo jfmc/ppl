@@ -38,6 +38,10 @@ dnl -----------------------------------------------------------------
 dnl Output conversion declarations for all the classes.
 dnl -----------------------------------------------------------------
 m4_divert`'dnl
+/*C interface code: header file.
+m4_include(`ppl_interface_generator_copyright')dnl
+*/
+
 m4_all_code`'dnl
 m4_divert(-1)
 m4_popdef(`m4_one_class_code')
@@ -62,9 +66,6 @@ PPL_DECLARE_IO_FUNCTIONS(m4_interface_class$1)
 ')
 
 m4_divert`'dnl
-/*C interface code: header file.
-m4_include(`ppl_interface_generator_copyright')`'dnl
-*/
 m4_all_code`'dnl
 dnl
 dnl End of file generation.
