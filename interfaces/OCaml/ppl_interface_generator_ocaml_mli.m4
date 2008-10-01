@@ -33,7 +33,6 @@ m4_divert`'dnl
 (* OCaml interface code.
 m4_include(`ppl_interface_generator_copyright')`'dnl
 *)
-(** OCaml interface code. *)
 
 open Gmp
 
