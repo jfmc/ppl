@@ -251,7 +251,6 @@ build_java_generator(JNIEnv* env, const Generator& cg);
 jobject
 build_java_constraint_system(JNIEnv* env, const Constraint_System& cs);
 
-// FIXME: implement me
 //! Builds a C++ Grid_Generator from a Java Grid_Generator.
 jobject
 build_java_grid_generator_system(JNIEnv* env,
