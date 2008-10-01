@@ -201,7 +201,7 @@ build_cxx_constraint(JNIEnv* env, const jobject& j_constraint);
 
 //! Builds a C++ Linear_Expression from a Java Linear_Expression.
 Parma_Polyhedra_Library::Linear_Expression
-build_linear_expression(JNIEnv* env, const jobject& j_le);
+build_cxx_linear_expression(JNIEnv* env, const jobject& j_le);
 
 //! Builds a C++ Congruence from a Java Congruence.
 Parma_Polyhedra_Library::Congruence

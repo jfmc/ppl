@@ -153,8 +153,8 @@ build_cxx_congruence(JNIEnv* env, const jobject& j_congruence) {
  			"Lparma_polyhedra_library/Linear_Expression;");
     jobject j_lhs = env->GetObjectField(j_congruence, lhs_field_id);
     jobject j_rhs = env->GetObjectField(j_congruence, rhs_field_id);
-    Linear_Expression lhs = build_linear_expression(env, j_lhs);
-    Linear_Expression rhs = build_linear_expression(env, j_rhs);
+    Linear_Expression lhs = build_cxx_linear_expression(env, j_lhs);
+    Linear_Expression rhs = build_cxx_linear_expression(env, j_rhs);
     return (lhs %= rhs) / ppl_modulus;
 }
 
@@ -517,8 +517,8 @@ build_cxx_constraint(JNIEnv* env, const jobject& j_constraint) {
                       "Lparma_polyhedra_library/Linear_Expression;");
   jobject lhs_value = env->GetObjectField(j_constraint, lhs_field_id);
   jobject rhs_value = env->GetObjectField(j_constraint, rhs_field_id);
-  Linear_Expression first_le = build_linear_expression(env, lhs_value);
-  Linear_Expression second_le = build_linear_expression(env, rhs_value);
+  Linear_Expression first_le = build_cxx_linear_expression(env, lhs_value);
+  Linear_Expression second_le = build_cxx_linear_expression(env, rhs_value);
   jfieldID kind_field_id
     = env->GetFieldID(constraint_class, "kind",
                       "Lparma_polyhedra_library/Relation_Symbol;");
@@ -548,7 +548,7 @@ build_cxx_constraint(JNIEnv* env, const jobject& j_constraint) {
 }
 
 Linear_Expression
-build_linear_expression(JNIEnv* env, const jobject& j_le) {
+build_cxx_linear_expression(JNIEnv* env, const jobject& j_le) {
   jclass le_sum_class
     = env->FindClass("parma_polyhedra_library/Linear_Expression_Sum");
   jclass le_difference_class
@@ -599,8 +599,8 @@ build_linear_expression(JNIEnv* env, const jobject& j_le) {
                         "Lparma_polyhedra_library/Linear_Expression;");
     jobject l_value = env->GetObjectField(j_le, l_field_id);
     jobject r_value = env->GetObjectField(j_le, r_field_id);
-    return (build_linear_expression(env, l_value)
-	    + build_linear_expression(env, r_value));
+    return (build_cxx_linear_expression(env, l_value)
+	    + build_cxx_linear_expression(env, r_value));
   }
   // Difference
   if (env->IsAssignableFrom(current_class, le_difference_class)) {
@@ -612,8 +612,8 @@ build_linear_expression(JNIEnv* env, const jobject& j_le) {
                         "Lparma_polyhedra_library/Linear_Expression;");
     jobject l_value = env->GetObjectField(j_le, l_field_id);
     jobject r_value = env->GetObjectField(j_le, r_field_id);
-    return (build_linear_expression(env, l_value)
-	    - build_linear_expression(env, r_value));
+    return (build_cxx_linear_expression(env, l_value)
+	    - build_cxx_linear_expression(env, r_value));
   }
   // Times
   if (env->IsAssignableFrom(le_times_class, current_class)) {
@@ -631,7 +631,7 @@ build_linear_expression(JNIEnv* env, const jobject& j_le) {
                         "Lparma_polyhedra_library/Coefficient;");
     jobject ppl_coeff = env->GetObjectField(le_coeff_value, coeff_field_id);
     return (build_cxx_coeff(env, ppl_coeff)
-	    * build_linear_expression(env, le_value));
+	    * build_cxx_linear_expression(env, le_value));
   }
   // Unary_Minus
   if (env->IsAssignableFrom(current_class, le_unary_minus_class)) {
@@ -639,7 +639,7 @@ build_linear_expression(JNIEnv* env, const jobject& j_le) {
       = env->GetFieldID(current_class, "arg",
                         "Lparma_polyhedra_library/Linear_Expression;");
     jobject le_value = env->GetObjectField(j_le, le_field_id);
-    return (-build_linear_expression(env, le_value));
+    return (-build_cxx_linear_expression(env, le_value));
   }
   // We should not be here!
   throw std::runtime_error("PPL Java interface internal error");
@@ -672,14 +672,14 @@ build_cxx_generator(JNIEnv* env, const jobject& j_generator) {
 						   generator_type_ordinal_id);
   switch (generator_type_ordinal) {
   case 0:
-    return line(build_linear_expression(env, j_le));
+    return line(build_cxx_linear_expression(env, j_le));
   case 1:
-    return ray(build_linear_expression(env, j_le));
+    return ray(build_cxx_linear_expression(env, j_le));
   case 2:
-    return point(build_linear_expression(env, j_le),
+    return point(build_cxx_linear_expression(env, j_le),
 		 build_cxx_coeff(env, j_coeff));
   case 3:
-    return closure_point(build_linear_expression(env, j_le),
+    return closure_point(build_cxx_linear_expression(env, j_le),
 			 build_cxx_coeff(env, j_coeff));
   default:
     ;
@@ -723,12 +723,12 @@ build_cxx_grid_generator(JNIEnv* env, const jobject& j_grid_generator) {
 			 grid_generator_type_ordinal_id);
   switch (grid_generator_type_ordinal) {
   case 0:
-    return grid_line(build_linear_expression(env, j_le));
+    return grid_line(build_cxx_linear_expression(env, j_le));
   case 1:
-    return parameter(build_linear_expression(env, j_le),
+    return parameter(build_cxx_linear_expression(env, j_le),
 		     build_cxx_coeff(env, j_coeff));
   case 2:
-    return grid_point(build_linear_expression(env, j_le),
+    return grid_point(build_cxx_linear_expression(env, j_le),
 		      build_cxx_coeff(env, j_coeff));
   default:
     ;

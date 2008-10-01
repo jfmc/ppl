@@ -296,7 +296,7 @@ Java_parma_1polyhedra_1library_MIP_1Problem_set_1objective_1function
   try {
     MIP_Problem* mip
       = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
-    Linear_Expression le = build_linear_expression(env, j_le);
+    Linear_Expression le = build_cxx_linear_expression(env, j_le);
     mip->set_objective_function(le);
   }
   CATCH_ALL;
@@ -434,7 +434,7 @@ Java_parma_1polyhedra_1library_MIP_1Problem_build_1cpp_1object__JLparma_1polyhed
   try {
     dimension_type ppl_dim = jtype_to_unsigned<dimension_type>(j_dim);
     Constraint_System cs = build_cxx_constraint_system(env, j_cs);
-    Linear_Expression le = build_linear_expression(env, j_le);
+    Linear_Expression le = build_cxx_linear_expression(env, j_le);
     Optimization_Mode opt_mode =  build_cxx_optimization_mode(env, j_opt_mode);
     MIP_Problem* mip_ptr = new MIP_Problem(ppl_dim, cs, le, opt_mode);
     set_ptr(env, j_this_mip_problem, mip_ptr);
@@ -459,7 +459,7 @@ Java_parma_1polyhedra_1library_Linear_1Expression_toString
 (JNIEnv* env, jobject le) {
   using namespace Parma_Polyhedra_Library::IO_Operators;
   std::ostringstream s;
-  Linear_Expression ppl_le = build_linear_expression(env, le);
+  Linear_Expression ppl_le = build_cxx_linear_expression(env, le);
   s << ppl_le;
   std::string str = s.str();
   return env->NewStringUTF(str.c_str());
