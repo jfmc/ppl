@@ -268,9 +268,6 @@ clpq2_test: gp_clpq2 ../tests/script_clpq2 $(EXPECTED_CLPQ2)
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
 
 ppl_prolog_generated_test: gnu_prolog_generated_test.pl  ../tests/ppl_prolog_generated_test_main.pl ../tests/expected_pgt
-	if [ $(srcdir) != `pwd` ]; then \
-	  cp -f $(srcdir)/../tests/ppl_prolog_generated_test_common.pl . ; \
-	fi
 	echo "['../tests/ppl_prolog_generated_test_main.pl', '$(srcdir)/gnu_prolog_generated_test.pl']." \
 		>script_pgt
 	echo "main." >>script_pgt
@@ -279,9 +276,6 @@ ppl_prolog_generated_test: gnu_prolog_generated_test.pl  ../tests/ppl_prolog_gen
 		$(WATCHDOG_DLOPEN) \
 		-dlopen libppl_gprolog.la \
 		./ppl_gprolog <script_pgt
-	if [ $(srcdir) != `pwd` ]; then \
-	  rm -f ppl_prolog_generated_test_common.pl; \
-        fi
 	diff -u --ignore-all-space $(srcdir)/../tests/expected_pgt obtained_pgt
 
 endif BUILD_GNU_PROLOG_INTERFACE
