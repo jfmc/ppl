@@ -97,7 +97,7 @@ template <typename U, typename V>
 U
 jtype_to_unsigned(const V& value);
 
- // Converts a C++ bool to a Java boolean.
+//! Converts a C++ bool to a Java boolean.
 jobject
 bool_to_j_boolean(JNIEnv* env,
  		  const bool bool_value);
@@ -114,161 +114,160 @@ j_long_class_to_j_long(JNIEnv* env, const jobject& j_long);
 jobject
 j_long_to_j_long_class(JNIEnv* env, const jlong& jlong_value);
 
-// Returns a <CODE>true</CODE> if and only if the Java object
-// is a reference to a C++ object, <CODE>false</CODE> otherwise.
+/*! \brief
+  Returns <CODE>true</CODE> if and only if the Java object is a
+  reference to a C++ object.
+*/
 bool
 is_java_marked(JNIEnv* env, const jobject& ppl_object);
 
 
-// Converts a PPL Poly_Gen_Relation to a Java Poly_Gen_Relation.
+//! Converts a C++ Poly_Gen_Relation to a Java Poly_Gen_Relation.
 jobject
 build_java_poly_gen_relation(JNIEnv* env,
 			     Poly_Gen_Relation& pcr);
 
-// Converts a PPL Poly_Con_Relation to a Java Poly_Con_Relation.
+//! Converts a C++ Poly_Con_Relation to a Java Poly_Con_Relation.
 jobject
 build_java_poly_con_relation(JNIEnv* env,
-			    Poly_Con_Relation& pgr);
+                             Poly_Con_Relation& pgr);
 
-// Converts a Java variables set to a PPL variables set.
+//! Converts a Java Variables_Set to a C++ Variables_Set.
 Parma_Polyhedra_Library::Variables_Set
-build_ppl_variables_set(JNIEnv* env,
+build_cxx_variables_set(JNIEnv* env,
 			const jobject& variables_set);
 
-// Converts a Java variables set to a PPL variables set.
+//! Converts a Java Variables_Set to a C++ Variables_Set.
 jobject
 build_java_variables_set(JNIEnv* env,
 			 const Variables_Set& variables_set);
 
-// Converts a Java relation symbol to a PPL relation_symbol.
+//! Converts a Java Relation_Symbol to a C++ Relation_Symbol.
 Parma_Polyhedra_Library::Relation_Symbol
-build_ppl_relsym(JNIEnv* env, const jobject& j_relsym);
+build_cxx_relsym(JNIEnv* env, const jobject& j_relsym);
 
-// Converts a Java optimization mode to a PPL optimization mode.
+//! Converts a Java Optimization_Mode mode to a C++ Optimization_Mode.
 Parma_Polyhedra_Library::Optimization_Mode
-build_ppl_optimization_mode(JNIEnv* env, const jobject& j_opt_mode);
+build_cxx_optimization_mode(JNIEnv* env, const jobject& j_opt_mode);
 
-// Converts a PPL optimization mode to a Java optimization mode.
+//! Converts a C++ Optimization_Mode mode to a Java Optimization_Mode.
 jobject
 build_java_optimization_mode(JNIEnv* env, const Optimization_Mode& opt_mode);
 
-// Converts a Java control parameter name to a PPL control parameter name.
+//! Converts a Java Control_Parameter_Name to a C++ Control_Parameter_Name.
 Parma_Polyhedra_Library::MIP_Problem::Control_Parameter_Name
-build_ppl_control_parameter_name(JNIEnv* env, const jobject& j_cp_name);
+build_cxx_control_parameter_name(JNIEnv* env, const jobject& j_cp_name);
 
-// Converts a PPL control parameter name to a Java control parameter name.
+//! Converts a C++ Control_Parameter_Name to a Java Control_Parameter_Name.
 jobject
 build_java_control_parameter_name(JNIEnv* env,
-                                  const MIP_Problem::Control_Parameter_Name& cp_name);
+                                  const MIP_Problem::Control_Parameter_Name&
+                                  cp_name);
 
-// Converts a Java control parameter value to a PPL control parameter value.
+//! Converts a Java Control_Parameter_Value to a C++ Control_Parameter_Value.
 Parma_Polyhedra_Library::MIP_Problem::Control_Parameter_Value
-build_ppl_control_parameter_value(JNIEnv* env, const jobject& j_cp_value);
+build_cxx_control_parameter_value(JNIEnv* env, const jobject& j_cp_value);
 
-// Converts a PPL control parameter value to a Java control parameter value.
+//! Converts a C++ Control_Parameter_Value to a Java Control_Parameter_Value.
 jobject
 build_java_control_parameter_value(JNIEnv* env,
                                   const MIP_Problem::Control_Parameter_Value& cp_value);
 
+//! Converts a C++ MIP_Problem_Status to a Java MIP_Problem_Status.
 jobject
 build_java_mip_status(JNIEnv* env, const MIP_Problem_Status& mip_status);
 
-// Converts a Java variable to a PPL variable.
+//! Converts a Java Variable to a C++ Variable.
 Parma_Polyhedra_Library::Variable
-build_ppl_variable(JNIEnv* env, const jobject& j_var);
+build_cxx_variable(JNIEnv* env, const jobject& j_var);
 
 
-// Converts a Java variable to a PPL variable.
+//! Converts a Java Variable to a C++ Variable.
 jobject
 build_java_variable(JNIEnv* env, const Variable& var);
 
-// Converts a Java coefficient to a PPL coefficient.
+//! Converts a Java Coefficient to a C++ Coefficient.
 Parma_Polyhedra_Library::Coefficient
-build_ppl_coeff(JNIEnv* env, const jobject& j_coeff);
+build_cxx_coeff(JNIEnv* env, const jobject& j_coeff);
 
-// Converts a PPL coefficient to a Java coefficient.
+//! Converts a C++ Coefficient to a Java Coefficient.
 jobject
 build_java_coeff(JNIEnv* env,
 		     const Parma_Polyhedra_Library::Coefficient& ppl_coeff);
 
-// Builds a PPL constraint from a Java constraint.
+//! Builds a C++ Constraint from a Java Constraint.
 Parma_Polyhedra_Library::Constraint
-build_ppl_constraint(JNIEnv* env, const jobject& j_constraint);
+build_cxx_constraint(JNIEnv* env, const jobject& j_constraint);
 
-// Builds a PPL linear expression from a Java linear expression.
+//! Builds a C++ Linear_Expression from a Java Linear_Expression.
 Parma_Polyhedra_Library::Linear_Expression
 build_linear_expression(JNIEnv* env, const jobject& j_le);
 
-// Builds a PPL congruence from a Java congruence.
+//! Builds a C++ Congruence from a Java Congruence.
 Parma_Polyhedra_Library::Congruence
-build_ppl_congruence(JNIEnv* env, const jobject& j_cg);
+build_cxx_congruence(JNIEnv* env, const jobject& j_cg);
 
-// Builds a PPL generator from a Java generator.
+//! Builds a C++ Generator from a Java Generator.
 Parma_Polyhedra_Library::Generator
-build_ppl_generator(JNIEnv* env, const jobject& j_g);
+build_cxx_generator(JNIEnv* env, const jobject& j_g);
 
-// Builds a PPL grid generator from a Java grid generator.
+//! Builds a C++ Grid_Generator from a Java Grid_Generator.
 Parma_Polyhedra_Library::Grid_Generator
-build_ppl_grid_generator(JNIEnv* env, const jobject& j_g);
+build_cxx_grid_generator(JNIEnv* env, const jobject& j_g);
 
-// Builds a Java grid generator from a PPL grid generator.
+//! Builds a Java Grid_Generator from a C++ Grid_Generator.
 jobject
 build_java_grid_generator(JNIEnv* env, const Grid_Generator& grid_g);
 
-// Get a pointer to the underlying C++ object from a Java object.
-void*
-get_ptr(JNIEnv* env, const jobject& ppl_object);
-
-
-// Builds a PPL grid generator system from a Java grid generator system.
+//! Builds a C++ Grid_Generator_System from a Java Grid_Generator_System.
 Parma_Polyhedra_Library::Grid_Generator_System
-build_ppl_grid_generator_system(JNIEnv* env, const jobject& j_g);
+build_cxx_grid_generator_system(JNIEnv* env, const jobject& j_g);
 
-
-// Builds a PPL constraint system from a Java constraint system.
+//! Builds a C++ Constraint_System from a Java Constraint_System.
 Parma_Polyhedra_Library::Constraint_System
-build_ppl_constraint_system(JNIEnv* env, const jobject& j_iterable);
+build_cxx_constraint_system(JNIEnv* env, const jobject& j_iterable);
 
-// Builds a PPL generator system from a Java generator system.
+//! Builds a C++ Generator_System from a Java Generator_System.
 Parma_Polyhedra_Library::Generator_System
-build_ppl_generator_system(JNIEnv* env, const jobject& j_iterable);
+build_cxx_generator_system(JNIEnv* env, const jobject& j_iterable);
 
-// Builds a PPL congruence system from a Java congruence system.
+//! Builds a C++ Congruence_System from a Java %Congruence_System.
 Parma_Polyhedra_Library::Congruence_System
-build_ppl_congruence_system(JNIEnv* env, const jobject& j_iterable);
+build_cxx_congruence_system(JNIEnv* env, const jobject& j_iterable);
 
-// Builds a Java constraint from a PPL constraint.
+//! Builds a Java Constraint from a C++ Constraint.
 jobject
 build_java_constraint(JNIEnv* env, const Constraint& c);
 
-// Builds a Java congruence from a PPL congruence.
+//! Builds a Java Congruence from a C++ Congruence.
 jobject
 build_java_congruence(JNIEnv* env, const Congruence& cg);
 
-// Builds a Java generator from a PPL generator.
+//! Builds a Java Generator from a C++ Generator.
 jobject
 build_java_generator(JNIEnv* env, const Generator& cg);
 
-// Builds a Java constraint system from a PPL constraint system.
+//! Builds a Java Constraint_System from a C++ Constraint_System.
 jobject
 build_java_constraint_system(JNIEnv* env, const Constraint_System& cs);
 
 // FIXME: implement me
-// Builds a PPL grid generator from a Java grid generator.
+//! Builds a C++ Grid_Generator from a Java Grid_Generator.
 jobject
 build_java_grid_generator_system(JNIEnv* env,
 				  const Grid_Generator_System& grid_g_system);
 
-// Builds a Java generator system from a PPL generator system.
+//! Builds a Java Generator_System from a C++ Generator_System.
 jobject
 build_java_generator_system(JNIEnv* env, const Generator_System& gs);
 
-// Builds a Java congruence system from a PPL congruence system.
+//! Builds a Java Congruence_System from a C++ Congruence_System.
 jobject
 build_java_congruence_system(JNIEnv* env, const Congruence_System& cgs);
 
-// Utility routine to take the inhomogeneous term from a constraint or a
-// congruence.
+// FIXME: what?
+//! Utility routine to take the inhomogeneous term from a constraint or a
+//! congruence.
 jobject
 get_le_inhomogeneous_term(JNIEnv* env, const Coefficient& c);
 
@@ -287,29 +286,30 @@ void set_by_reference(JNIEnv* env, jobject& by_ref_to_be_set,
 jobject get_by_reference(JNIEnv* env, const jobject& by_ref_integer);
 
 
-// Utility to set a value a parma_polyhedra_library Pair. the argument
-// `arg' has two possible values: 0 to set `first', 1 to `second'.
+//! Utility to set a value a parma_polyhedra_library Pair. the argument
+//! `arg' has two possible values: 0 to set `first', 1 to `second'.
 void set_pair_element(JNIEnv* env, jobject& pair_to_be_set, int arg,
 		      const jobject& obj_to_insert);
 
-// Utility to get a value from a parma_polyhedra_library Pair. the
-// argument `arg' has two possible values: 0 to set `first', 1 to
-// `second'.
+//! Utility to get a value from a parma_polyhedra_library Pair. the
+//! argument `arg' has two possible values: 0 to set `first', 1 to
+//! `second'.
 jobject get_pair_element(JNIEnv* env, int arg, const jobject& pair);
 
 jboolean is_null(JNIEnv* env, jobject obj);
 
+//! Returns a pointer to the underlying C++ object from a Java object.
+void*
+get_ptr(JNIEnv* env, const jobject& ppl_object);
 
-
-
-// Set the pointer of the underlying C++ object in the Java object
+//! Set the pointer of the underlying C++ object in the Java object.
 template <typename T>
 void
 set_ptr(JNIEnv* env, const jobject& ppl_object,
 	const T* address, bool to_be_marked = false);
 
-// Builds the Java linear expression starting from a congruence,
-// a constraint or a generator.
+//! Builds the Java linear expression starting from a congruence,
+//! a constraint or a generator.
 template <typename R>
 jobject
 get_linear_expression(JNIEnv* env, const R& r);

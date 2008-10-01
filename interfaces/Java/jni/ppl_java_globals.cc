@@ -182,7 +182,7 @@ Java_parma_1polyhedra_1library_MIP_1Problem_get_1control_1parameter
     MIP_Problem* mip
       = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
     MIP_Problem::Control_Parameter_Name cpn
-      = build_ppl_control_parameter_name(env, j_cpn);
+      = build_cxx_control_parameter_name(env, j_cpn);
     return
       build_java_control_parameter_value(env,
                                          mip->get_control_parameter(cpn));
@@ -200,7 +200,7 @@ Java_parma_1polyhedra_1library_MIP_1Problem_set_1control_1parameter
     MIP_Problem* mip
       = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
     MIP_Problem::Control_Parameter_Value cpv
-      = build_ppl_control_parameter_value(env, j_cpv);
+      = build_cxx_control_parameter_value(env, j_cpv);
     mip->set_control_parameter(cpv);
   }
   CATCH_ALL;
@@ -260,7 +260,7 @@ Java_parma_1polyhedra_1library_MIP_1Problem_add_1to_1integer_1space_1dimensions
   try {
     MIP_Problem* mip
       = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
-    Variables_Set v_set = build_ppl_variables_set(env, j_vset);
+    Variables_Set v_set = build_cxx_variables_set(env, j_vset);
     mip->add_to_integer_space_dimensions(v_set);
   }
   CATCH_ALL;
@@ -272,7 +272,7 @@ Java_parma_1polyhedra_1library_MIP_1Problem_add_1constraint
   try {
     MIP_Problem* mip
       = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
-    Constraint c = build_ppl_constraint(env, j_c);
+    Constraint c = build_cxx_constraint(env, j_c);
     mip->add_constraint(c);
   }
   CATCH_ALL;
@@ -284,7 +284,7 @@ Java_parma_1polyhedra_1library_MIP_1Problem_add_1constraints
   try {
     MIP_Problem* mip
       = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
-    Constraint_System cs = build_ppl_constraint_system(env, j_cs);
+    Constraint_System cs = build_cxx_constraint_system(env, j_cs);
     mip->add_constraints(cs);
   }
   CATCH_ALL;
@@ -308,7 +308,7 @@ Java_parma_1polyhedra_1library_MIP_1Problem_set_1optimization_1mode
   try {
     MIP_Problem* mip
       = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
-    Optimization_Mode opt_mode = build_ppl_optimization_mode(env, j_opt_mode);
+    Optimization_Mode opt_mode = build_cxx_optimization_mode(env, j_opt_mode);
     mip->set_optimization_mode(opt_mode);
   }
   CATCH_ALL;
@@ -345,11 +345,11 @@ Java_parma_1polyhedra_1library_MIP_1Problem_evaluate_1objective_1function
   try {
     MIP_Problem* mip
       = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
-    Generator g = build_ppl_generator(env, j_gen);
+    Generator g = build_cxx_generator(env, j_gen);
     TEMP_INTEGER(num);
     TEMP_INTEGER(den);
-    num = build_ppl_coeff(env, j_coeff_num);
-    den = build_ppl_coeff(env, j_coeff_den);
+    num = build_cxx_coeff(env, j_coeff_num);
+    den = build_cxx_coeff(env, j_coeff_den);
     mip->evaluate_objective_function(g, num, den);
     set_coefficient(env, j_coeff_num, build_java_coeff(env, num));
     set_coefficient(env, j_coeff_den, build_java_coeff(env, den));
@@ -433,9 +433,9 @@ Java_parma_1polyhedra_1library_MIP_1Problem_build_1cpp_1object__JLparma_1polyhed
  jobject j_le, jobject j_opt_mode) {
   try {
     dimension_type ppl_dim = jtype_to_unsigned<dimension_type>(j_dim);
-    Constraint_System cs = build_ppl_constraint_system(env, j_cs);
+    Constraint_System cs = build_cxx_constraint_system(env, j_cs);
     Linear_Expression le = build_linear_expression(env, j_le);
-    Optimization_Mode opt_mode =  build_ppl_optimization_mode(env, j_opt_mode);
+    Optimization_Mode opt_mode =  build_cxx_optimization_mode(env, j_opt_mode);
     MIP_Problem* mip_ptr = new MIP_Problem(ppl_dim, cs, le, opt_mode);
     set_ptr(env, j_this_mip_problem, mip_ptr);
   }
@@ -470,7 +470,7 @@ Java_parma_1polyhedra_1library_Generator_toString
 (JNIEnv* env, jobject g) {
   using namespace Parma_Polyhedra_Library::IO_Operators;
   std::ostringstream s;
-  Generator ppl_g = build_ppl_generator(env, g);
+  Generator ppl_g = build_cxx_generator(env, g);
   s << ppl_g;
   std::string str = s.str();
   return env->NewStringUTF(str.c_str());
@@ -481,7 +481,7 @@ Java_parma_1polyhedra_1library_Constraint_toString
 (JNIEnv* env, jobject c) {
   using namespace Parma_Polyhedra_Library::IO_Operators;
   std::ostringstream s;
-  Constraint ppl_c = build_ppl_constraint(env, c);
+  Constraint ppl_c = build_cxx_constraint(env, c);
   s << ppl_c;
   std::string str = s.str();
   return env->NewStringUTF(str.c_str());
@@ -492,7 +492,7 @@ Java_parma_1polyhedra_1library_Grid_1Generator_toString
 (JNIEnv* env, jobject g) {
   using namespace Parma_Polyhedra_Library::IO_Operators;
   std::ostringstream s;
-  Grid_Generator ppl_g = build_ppl_grid_generator(env, g);
+  Grid_Generator ppl_g = build_cxx_grid_generator(env, g);
   s << ppl_g;
   std::string str = s.str();
   return env->NewStringUTF(str.c_str());
@@ -503,7 +503,7 @@ Java_parma_1polyhedra_1library_Congruence_toString
 (JNIEnv* env, jobject g) {
   using namespace Parma_Polyhedra_Library::IO_Operators;
   std::ostringstream s;
-  Congruence ppl_g = build_ppl_congruence(env, g);
+  Congruence ppl_g = build_cxx_congruence(env, g);
   s << ppl_g;
   std::string str = s.str();
   return env->NewStringUTF(str.c_str());
@@ -514,7 +514,7 @@ Java_parma_1polyhedra_1library_Grid_1Generator_1System_toString
 (JNIEnv* env, jobject ggs) {
   using namespace Parma_Polyhedra_Library::IO_Operators;
   std::ostringstream s;
-  Grid_Generator_System ppl_ggs = build_ppl_grid_generator_system(env, ggs);
+  Grid_Generator_System ppl_ggs = build_cxx_grid_generator_system(env, ggs);
   s << ppl_ggs;
   std::string str = s.str();
   return env->NewStringUTF(str.c_str());
@@ -525,7 +525,7 @@ Java_parma_1polyhedra_1library_Generator_1System_toString
 (JNIEnv* env, jobject gs) {
   using namespace Parma_Polyhedra_Library::IO_Operators;
   std::ostringstream s;
-  Generator_System ppl_gs = build_ppl_generator_system(env, gs);
+  Generator_System ppl_gs = build_cxx_generator_system(env, gs);
   s << ppl_gs;
   std::string str = s.str();
   return env->NewStringUTF(str.c_str());
@@ -536,7 +536,7 @@ Java_parma_1polyhedra_1library_Constraint_1System_toString
 (JNIEnv* env, jobject cs) {
   using namespace Parma_Polyhedra_Library::IO_Operators;
   std::ostringstream s;
-  Constraint_System ppl_cs = build_ppl_constraint_system(env, cs);
+  Constraint_System ppl_cs = build_cxx_constraint_system(env, cs);
   s << ppl_cs;
   std::string str = s.str();
   return env->NewStringUTF(str.c_str());
@@ -547,7 +547,7 @@ Java_parma_1polyhedra_1library_Congruence_1System_toString
 (JNIEnv* env, jobject cgs) {
   using namespace Parma_Polyhedra_Library::IO_Operators;
   std::ostringstream s;
-  Congruence_System ppl_cgs = build_ppl_congruence_system(env, cgs);
+  Congruence_System ppl_cgs = build_cxx_congruence_system(env, cgs);
   s << ppl_cgs;
   std::string str = s.str();
   return env->NewStringUTF(str.c_str());

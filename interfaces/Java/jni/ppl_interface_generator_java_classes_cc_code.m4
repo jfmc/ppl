@@ -207,7 +207,7 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_code',
 `dnl
 JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_build_1cpp_1object__Lparma_1polyhedra_1library_@1UBUILD_REPRESENT@_1System_2
 (JNIEnv* env, jobject j_@LTOPOLOGY@@LCLASS@, jobject j_iterable) {
-  @UBUILD_REPRESENT@_System cs = build_ppl_@BUILD_REPRESENT@_system(env, j_iterable);
+  @UBUILD_REPRESENT@_System cs = build_cxx_@BUILD_REPRESENT@_system(env, j_iterable);
 
   @TOPOLOGY@@CPP_CLASS@* c_ptr = new @TOPOLOGY@@CPP_CLASS@(cs@RECYCLE@);
   set_ptr(env, j_@LTOPOLOGY@@LCLASS@, c_ptr);
@@ -326,7 +326,7 @@ JNIEXPORT jobject JNICALL Java_parma_1polyhedra_1library_@1CLASS@_relation_1with
   try {
   @CPP_CLASS@* this_@LCLASS@
  = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this_@LCLASS@));
-  @URELATION_REPRESENT@ c = build_ppl_@RELATION_REPRESENT@(env, j_@RELATION_REPRESENT@);
+  @URELATION_REPRESENT@ c = build_cxx_@RELATION_REPRESENT@(env, j_@RELATION_REPRESENT@);
   Poly_@UALT_RELATION_REPRESENT@_Relation pcr = this_@LCLASS@->relation_with(c);
   return build_java_poly_@ALT_RELATION_REPRESENT@_relation(env, pcr);
   }
@@ -373,7 +373,7 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_unconstrain_1spac
   try {
   @CPP_CLASS@* this_@LCLASS@
  = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this_@LCLASS@));
-  Variable v = build_ppl_variable(env, j_var);
+  Variable v = build_cxx_variable(env, j_var);
   this_@LCLASS@->unconstrain(v);
   }
   CATCH_ALL;
@@ -388,7 +388,7 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_unconstrain_1spac
   try {
   @CPP_CLASS@* this_@LCLASS@
  = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this_@LCLASS@));
-  Variables_Set v_set = build_ppl_variables_set(env, j_v_set);
+  Variables_Set v_set = build_cxx_variables_set(env, j_v_set);
   this_@LCLASS@->unconstrain(v_set);
   }
   CATCH_ALL;
@@ -422,8 +422,8 @@ JNIEXPORT jboolean JNICALL Java_parma_1polyhedra_1library_@1CLASS@_@1MAXMIN@__Lp
  = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this_@LCLASS@));
   TEMP_INTEGER(coeff_num);
   TEMP_INTEGER(coeff_den);
-  coeff_num = build_ppl_coeff(env, j_coeff_num);
-  coeff_den = build_ppl_coeff(env, j_coeff_den);
+  coeff_num = build_cxx_coeff(env, j_coeff_num);
+  coeff_den = build_cxx_coeff(env, j_coeff_den);
   Linear_Expression le = build_linear_expression(env, j_le);
   bool b_value;
   if(this_@LCLASS@->@MAXMIN@(le, coeff_num, coeff_den, b_value)) {
@@ -454,8 +454,8 @@ JNIEXPORT jboolean JNICALL Java_parma_1polyhedra_1library_@1CLASS@_@1MAXMIN@__Lp
  = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this_@LCLASS@));
   TEMP_INTEGER(coeff_num);
   TEMP_INTEGER(coeff_den);
-  coeff_num = build_ppl_coeff(env, j_coeff_num);
-  coeff_den = build_ppl_coeff(env, j_coeff_den);
+  coeff_num = build_cxx_coeff(env, j_coeff_num);
+  coeff_den = build_cxx_coeff(env, j_coeff_den);
   Linear_Expression le = build_linear_expression(env, j_le);
   bool b_value;
   Generator g = point();
@@ -550,7 +550,7 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_add_1@1ADD_REPRES
   try {
     @CPP_CLASS@* this_@LCLASS@
  = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this_@LCLASS@));
-    @UADD_REPRESENT@ c = build_ppl_@ADD_REPRESENT@(env, j_@ADD_REPRESENT@);
+    @UADD_REPRESENT@ c = build_cxx_@ADD_REPRESENT@(env, j_@ADD_REPRESENT@);
     this_@LCLASS@->add_@ADD_REPRESENT@(c);
   }
   CATCH_ALL;
@@ -565,7 +565,7 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_refine_1with_1@1R
   try {
     @CPP_CLASS@* this_@LCLASS@
  = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this_@LCLASS@));
-    @UREFINE_REPRESENT@ c = build_ppl_@REFINE_REPRESENT@(env, j_@REFINE_REPRESENT@);
+    @UREFINE_REPRESENT@ c = build_cxx_@REFINE_REPRESENT@(env, j_@REFINE_REPRESENT@);
     this_@LCLASS@->refine_with_@REFINE_REPRESENT@(c);
   }
   CATCH_ALL;
@@ -580,7 +580,7 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_add_1@1ADD_REPRES
   try {
   @CPP_CLASS@* this_@LCLASS@
  = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this_@LCLASS@));
-  @UADD_REPRESENT@_System cs = build_ppl_@ADD_REPRESENT@_system(env, j_@ADD_REPRESENT@s);
+  @UADD_REPRESENT@_System cs = build_cxx_@ADD_REPRESENT@_system(env, j_@ADD_REPRESENT@s);
   this_@LCLASS@->add_@ADD_REPRESENT@s(cs);
   }
   CATCH_ALL;
@@ -595,7 +595,7 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_refine_1with_1@1R
   try {
   @CPP_CLASS@* this_@LCLASS@
  = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this_@LCLASS@));
-  @UREFINE_REPRESENT@_System cs = build_ppl_@REFINE_REPRESENT@_system(env, j_@REFINE_REPRESENT@s);
+  @UREFINE_REPRESENT@_System cs = build_cxx_@REFINE_REPRESENT@_system(env, j_@REFINE_REPRESENT@s);
   this_@LCLASS@->refine_with_@REFINE_REPRESENT@s(cs);
   }
   CATCH_ALL;
@@ -644,10 +644,10 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_@1AFFIMAGE@
   try {
   @CPP_CLASS@* this_@LCLASS@
  = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this_@LCLASS@));
-  Variable v = build_ppl_variable(env, j_var);
+  Variable v = build_cxx_variable(env, j_var);
   Linear_Expression le = build_linear_expression(env, j_le);
   TEMP_INTEGER(c);
-  c = build_ppl_coeff(env, j_coeff);
+  c = build_cxx_coeff(env, j_coeff);
   this_@LCLASS@->@AFFIMAGE@(v, le, c);
   }
   CATCH_ALL;
@@ -665,7 +665,7 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_generalized_1@1AF
  = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this_@LCLASS@));
  Linear_Expression lhs = build_linear_expression(env, j_le_lhs);
  Linear_Expression rhs = build_linear_expression(env, j_le_rhs);
- Relation_Symbol relsym = build_ppl_relsym(env, j_relsym);
+ Relation_Symbol relsym = build_cxx_relsym(env, j_relsym);
  this_@LCLASS@->generalized_@AFFIMAGE@(lhs, relsym, rhs);
   }
   CATCH_ALL;
@@ -681,11 +681,11 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_generalized_1@1AF
   try {
  @CPP_CLASS@* this_@LCLASS@
  = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this_@LCLASS@));
- Variable v = build_ppl_variable(env, j_variable);
- Relation_Symbol relsym = build_ppl_relsym(env, j_relsym);
+ Variable v = build_cxx_variable(env, j_variable);
+ Relation_Symbol relsym = build_cxx_relsym(env, j_relsym);
  Linear_Expression le = build_linear_expression(env, j_le);
  TEMP_INTEGER(c);
- c = build_ppl_coeff(env, j_coeff);
+ c = build_cxx_coeff(env, j_coeff);
  this_@LCLASS@->generalized_@AFFIMAGE@(v, relsym, le, c);
   }
   CATCH_ALL;
@@ -703,9 +703,9 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_generalized_1@1AF
  = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this_@LCLASS@));
  Linear_Expression lhs = build_linear_expression(env, j_le_lhs);
  Linear_Expression rhs = build_linear_expression(env, j_le_rhs);
- Relation_Symbol relsym = build_ppl_relsym(env, j_relsym);
+ Relation_Symbol relsym = build_cxx_relsym(env, j_relsym);
  TEMP_INTEGER(modulus);
- modulus = build_ppl_coeff(env, j_modulus);
+ modulus = build_cxx_coeff(env, j_modulus);
  this_@LCLASS@->generalized_@AFFIMAGE@(lhs, relsym, rhs, modulus);
   }
   CATCH_ALL;
@@ -721,13 +721,13 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@CLASS@_generalized_1@1AFF
   try {
  @CPP_CLASS@* this_@LCLASS@
  = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this_@LCLASS@));
- Variable v = build_ppl_variable(env, j_variable);
- Relation_Symbol relsym = build_ppl_relsym(env, j_relsym);
+ Variable v = build_cxx_variable(env, j_variable);
+ Relation_Symbol relsym = build_cxx_relsym(env, j_relsym);
  Linear_Expression le = build_linear_expression(env, j_le);
  TEMP_INTEGER(c);
  TEMP_INTEGER(modulus);
- c = build_ppl_coeff(env, j_coeff);
- modulus = build_ppl_coeff(env, j_modulus);
+ c = build_cxx_coeff(env, j_coeff);
+ modulus = build_cxx_coeff(env, j_modulus);
  this_@LCLASS@->generalized_@AFFIMAGE@(v, relsym, le, c, modulus);
   }
   CATCH_ALL;
@@ -742,11 +742,11 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_bounded_1@1AFFIMA
   try {
   @CPP_CLASS@* this_@LCLASS@
  = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this_@LCLASS@));
-  Variable v = build_ppl_variable(env, j_variable);
+  Variable v = build_cxx_variable(env, j_variable);
   Linear_Expression lhs = build_linear_expression(env, j_le_lhs);
   Linear_Expression rhs = build_linear_expression(env, j_le_rhs);
   TEMP_INTEGER(c);
-  c = build_ppl_coeff(env, j_coeff);
+  c = build_cxx_coeff(env, j_coeff);
   this_@LCLASS@->bounded_@AFFIMAGE@(v, lhs, rhs, c);
   }
   CATCH_ALL;
@@ -858,7 +858,7 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_@1LIMITEDBOUNDED@
  = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this_@LCLASS@));
     @CPP_CLASS@* @LCLASS@
  = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_@LCLASS@));
-    @UCONSTRAINER@_System cs = build_ppl_@CONSTRAINER@_system(env, j_cs);
+    @UCONSTRAINER@_System cs = build_cxx_@CONSTRAINER@_system(env, j_cs);
     if (is_null(env, j_by_ref_int))
       this_@LCLASS@->@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(*@LCLASS@, cs);
     else {
@@ -939,7 +939,7 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_remove_1space_1di
   try {
   @CPP_CLASS@* this_@LCLASS@
  = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this_@LCLASS@));
-  Variables_Set v_set = build_ppl_variables_set(env, j_v_set);
+  Variables_Set v_set = build_cxx_variables_set(env, j_v_set);
   this_@LCLASS@->remove_space_dimensions(v_set);
   }
   CATCH_ALL;
@@ -970,7 +970,7 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_expand_1space_1di
     dimension_type ppl_dim = jtype_to_unsigned<dimension_type>(dim);
     @CPP_CLASS@* this_@LCLASS@
  = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this_@LCLASS@));
-    Variable v = build_ppl_variable(env, j_variable);
+    Variable v = build_cxx_variable(env, j_variable);
     this_@LCLASS@->expand_space_dimension(v, ppl_dim);
   }
   CATCH_ALL;
@@ -983,10 +983,10 @@ m4_define(`ppl_@CLASS@_fold_space_dimensions_code',
 JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_fold_1space_1dimensions
 (JNIEnv* env, jobject j_this_@LCLASS@, jobject j_v_set, jobject j_var) {
   try {
-  Variables_Set v_set = build_ppl_variables_set(env, j_v_set);
+  Variables_Set v_set = build_cxx_variables_set(env, j_v_set);
   @CPP_CLASS@* this_@LCLASS@
  = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this_@LCLASS@));
-  Variable v = build_ppl_variable(env, j_var);
+  Variable v = build_cxx_variable(env, j_var);
   this_@LCLASS@->fold_space_dimensions(v_set, v);
   }
   CATCH_ALL;
@@ -1044,7 +1044,7 @@ JNIEXPORT jboolean JNICALL Java_parma_1polyhedra_1library_@1CLASS@_constrains
   try {
     @CPP_CLASS@* this_@LCLASS@
  = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this_@LCLASS@));
-    Variable v = build_ppl_variable(env, j_var);
+    Variable v = build_cxx_variable(env, j_var);
     return this_@LCLASS@->constrains(v);
   }
   CATCH_ALL;
