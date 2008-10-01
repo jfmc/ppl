@@ -1,4 +1,5 @@
 m4_define(`dnl', `m4_dnl')`'dnl
+m4_divert(-1)
 
 dnl This m4 file generates the file ppl_xsb.H.
 
@@ -27,7 +28,7 @@ m4_include(`ppl_interface_generator_prolog_systems.m4')
 
 m4_divert`'dnl
 /* XSB Prolog interface: declarations.  -*- Prolog -*-
-m4_include(`ppl_interface_generator_copyright')
+m4_include(`ppl_interface_generator_copyright')dnl
 */
 
 :- export
