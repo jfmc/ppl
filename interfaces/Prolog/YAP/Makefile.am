@@ -29,6 +29,7 @@ ppl_yap.pl \
 yap_clpq.pl \
 yap_clpq2.pl \
 yap_pl_check.pl \
+yap_prolog_generated_test.pl \
 README.yap
 
 if BUILD_YAP_PROLOG_INTERFACE
@@ -243,6 +244,28 @@ clpq2_test: yap_clpq2.pl ppl_yap.pl ../tests/clpq2.pl ../tests/script_clpq2 $(EX
 			<script_clpq2 >obtained_clpq2
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
 
+ppl_prolog_generated_test: yap_prolog_generated_test.pl ppl_yap.pl  ../tests/expected_pgt
+	if [ $(srcdir) != `pwd` ]; then \
+	  cp -f $(srcdir)/../tests/ppl_prolog_generated_test_common.pl . ; \
+          cp -f $(srcdir)/yap_prolog_generated_test.pl . ; \
+          cp -f $(srcdir)/ppl_yap.pl . ; \
+	fi
+	cp -f ../tests/ppl_prolog_generated_test_main.pl . ; \
+	echo "main." >script_pgt
+	$(LIBTOOL) --mode=execute \
+		-dlopen ../../../src/libppl.la \
+		$(WATCHDOG_DLOPEN) \
+		-dlopen ppl_yap.la \
+		yap -l yap_prolog_generated_test.pl \
+			<script_pgt >obtained_pgt
+	if [ $(srcdir) != `pwd` ]; then \
+	  rm -f ppl_prolog_generated_test_common.pl; \
+	  rm -f yap_prolog_generated_test.pl; \
+	  rm -f ppl_yap.pl; \
+        fi
+	rm -f ppl_prolog_generated_test_main.pl; \
+	diff -u --ignore-all-space $(srcdir)/../tests/expected_pgt obtained_pgt
+
 endif ENABLE_SHARED
 endif BUILD_YAP_PROLOG_INTERFACE
 
@@ -251,6 +274,6 @@ ppl_yap.cc
 
 MOSTLYCLEANFILES = \
 @required_instantiations_prolog_cxx_objects@ \
-script_clpq script_clpq2 script_pchk \
-obtained_clpq obtained_clpq2 obtained_pchk \
+script_clpq script_clpq2 script_pchk script_pgt \
+obtained_clpq obtained_clpq2 obtained_pchk obtained_pgt \
 $(CLPQ_TESTS)

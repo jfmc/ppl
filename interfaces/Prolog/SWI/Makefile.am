@@ -281,22 +281,22 @@ clpq2_test: pl_clpq2 ../tests/script_clpq2 $(EXPECTED_CLPQ2)
 		./pl_clpq2 <$(srcdir)/../tests/script_clpq2 >obtained_clpq2
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
 
-ppl_prolog_generated_test: swi_prolog_generated_test.pl ../tests/ppl_prolog_generated_test_main.pl $(EXPECTED_PCHK)
+ppl_prolog_generated_test: swi_prolog_generated_test.pl ../tests/ppl_prolog_generated_test_main.pl ../tests/ppl_prolog_generated_test_common.pl ../tests/expected_pgt
 	if [ $(srcdir) != `pwd` ]; then \
 	  cp -f $(srcdir)/../tests/ppl_prolog_generated_test_common.pl . ; \
 	fi
 	cp -f ../tests/ppl_prolog_generated_test_main.pl . ; \
-        echo "ensure_loaded('$(srcdir)/swi_prolog_generated_test'). main." > script_pchk
+        echo "ensure_loaded('$(srcdir)/swi_prolog_generated_test'). main." > script_pgt
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		$(WATCHDOG_DLOPEN) \
 		-dlopen libppl_swiprolog.la \
-                ./ppl_pl < script_pchk
+                ./ppl_pl < script_pgt
 	if [ $(srcdir) != `pwd` ]; then \
 	  rm -f ppl_prolog_generated_test_common.pl; \
         fi
 	rm -f ppl_prolog_generated_test_main.pl; \
-	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
+	diff -u --ignore-all-space $(srcdir)/../tests/expected_pgt obtained_pgt
 
 endif BUILD_SWI_PROLOG_INTERFACE
 
@@ -306,6 +306,6 @@ ppl_swiprolog.cc
 MOSTLYCLEANFILES = \
 @required_instantiations_prolog_cxx_objects@ \
 pl_clpq pl_clpq2 \
-obtained_clpq obtained_clpq2 obtained_pchk \
+obtained_clpq obtained_clpq2 obtained_pchk obtained_pgt \
 $(CLPQ_TESTS) \
-script_pchk
+script_pchk script_pgt

@@ -274,7 +274,7 @@ pl_check_test: libppl_xsb.la ppl_xsb.xwam xsb_pl_check.P ../tests/pl_check.pl
 	fi
 	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
 
-ppl_prolog_generated_test: libppl_xsb.la ppl_xsb.xwam xsb_prolog_generated_test.P ../tests/ppl_prolog_generated_test_main.pl
+ppl_prolog_generated_test: libppl_xsb.la ppl_xsb.xwam xsb_prolog_generated_test.P ../tests/ppl_prolog_generated_test_main.pl ../tests/expected_pgt
 	if [ $(srcdir) != `pwd` ]; then \
 	  cp -f $(srcdir)/../tests/ppl_prolog_generated_test_common.pl . ; \
 	fi
@@ -284,13 +284,13 @@ ppl_prolog_generated_test: libppl_xsb.la ppl_xsb.xwam xsb_prolog_generated_test.
 		-dlopen ../../../src/libppl.la \
 		$(WATCHDOG_DLOPEN) \
 		xsb xsb_prolog_generated_test \
-			>obtained_pchk
+			>obtained_pgt
 	if [ $(srcdir) != `pwd` ]; then \
-          rm -f ppl_prolog_generated_test_common.pl \
-        fi
-	rm -f ppl_prolog_generated_test_main.pl
-	rm -f xsb_prolog_generated_test.P; \
-	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
+	  rm -f ppl_prolog_generated_test_common.pl ; \
+	fi
+	rm -f ppl_prolog_generated_test_main.pl ; \
+	diff -u --ignore-all-space $(srcdir)/../tests/expected_pgt obtained_pgt
+
 
 endif BUILD_XSB_PROLOG_INTERFACE
 
@@ -304,4 +304,4 @@ MOSTLYCLEANFILES = \
 ppl_xsb.xwam ppl_xsb.so \
 xsb_efli.lo xsb_efli.o \
 xsb_clpq.xwam xsb_clpq2.xwam xsb_pl_check.xwam xsb_prolog_generated_test.xwam \
-$(CLPQ_TESTS) obtained_clpq obtained_clpq2 obtained_pchk
+$(CLPQ_TESTS) obtained_clpq obtained_clpq2 obtained_pchk obtained_pgt

@@ -1,4 +1,4 @@
-/* Main program for the PPL/SWI-Prolog generated tests.
+/* Prolog main program for the PPL/YAP-Prolog predicate checker.
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -20,19 +20,15 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-:-  ensure_loaded('ppl_prolog_generated_test_main.pl').
+:- ensure_loaded('ppl_yap.pl').
+:- ensure_loaded('ppl_prolog_generated_test_main.pl').
 
-prolog_system('SWI').
+prolog_system('YAP').
 
 main :-
-    current_output(Old_Stream),
-    open(obtained_pgt, write, Stream),
-    set_output(Stream),
     (check_all ->
 	write('OK')
     ;
 	write('FAILURE')
     ),
-    nl,
-    close(Stream),
-    set_output(Old_Stream).
+    nl.

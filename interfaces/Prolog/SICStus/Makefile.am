@@ -293,7 +293,7 @@ clpq2_test: ppl_sicstus ppl_sicstus.pl sp_clpq.pl ../tests/clpq2.pl ../tests/scr
 	      <$(srcdir)/../tests/script_clpq2 >obtained_clpq2
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
 
-ppl_prolog_generated_test: ppl_sicstus ppl_sicstus.pl sp_prolog_generated_test.pl ../tests/ppl_prolog_generated_test_main.pl $(EXPECTED_PCHK)
+ppl_prolog_generated_test: ppl_sicstus ppl_sicstus.pl sp_prolog_generated_test.pl ../tests/ppl_prolog_generated_test_main.pl ../tests/expected_pgt
 	if [ $(srcdir) != `pwd` ]; then \
 	  cp -f $(srcdir)/../tests/ppl_prolog_generated_test_common.pl . ; \
 	fi
@@ -303,12 +303,12 @@ ppl_prolog_generated_test: ppl_sicstus ppl_sicstus.pl sp_prolog_generated_test.p
 		$(WATCHDOG_DLOPEN) \
 		./ppl_sicstus -l $(srcdir)/sp_prolog_generated_test.pl \
         --goal "main."  \
-			>obtained_pchk
+			>obtained_pgt
 	if [ $(srcdir) != `pwd` ]; then \
 	  rm -f ppl_prolog_generated_test_common.pl; \
         fi
 	rm -f ppl_prolog_generated_test_main.pl; \
-	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
+	diff -u --ignore-all-space $(srcdir)/../tests/expected_pgt obtained_pgt
 
 endif BUILD_SICSTUS_PROLOG_INTERFACE
 
@@ -319,4 +319,4 @@ MOSTLYCLEANFILES = \
 @required_instantiations_prolog_cxx_objects@ \
 ppl_sicstus.s.o ppl_sicstus.so \
 $(CLPQ_TESTS) \
-obtained_clpq obtained_clpq2 obtained_pchk
+obtained_clpq obtained_clpq2 obtained_pchk obtained_pgt

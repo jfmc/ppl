@@ -27,6 +27,7 @@ ppl_interface_generator_gprolog_pl.m4 \
 $(GPROLOG_CFLI_FILES) \
 gp_clpq.pl \
 gnu_pl_check.pl \
+gnu_prolog_generated_test.pl \
 README.gprolog
 
 if BUILD_GNU_PROLOG_INTERFACE
@@ -238,7 +239,7 @@ check-local: pl_check_test clpq_test clpq2_test
 pl_check_test: gnu_pl_check.pl ../tests/pl_check.pl $(EXPECTED_PCHK)
 	echo "['$(srcdir)/../tests/pl_check.pl', '$(srcdir)/gnu_pl_check.pl']." \
 		>script_pchk
-	echo "main." >>script_pchk
+	echo "main." >script_pchk
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		$(WATCHDOG_DLOPEN) \
@@ -246,7 +247,7 @@ pl_check_test: gnu_pl_check.pl ../tests/pl_check.pl $(EXPECTED_PCHK)
 		./ppl_gprolog <script_pchk
 	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
 
-clpq_test: gp_clpq ../tests/script_clpq $(EXPECTED_CLPQ) 
+clpq_test: gp_clpq ../tests/script_clpq $(EXPECTED_CLPQ)
 	LANG=C; \
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
 	$(LIBTOOL) --mode=execute \
@@ -266,6 +267,17 @@ clpq2_test: gp_clpq2 ../tests/script_clpq2 $(EXPECTED_CLPQ2)
 		./gp_clpq2 <$(SCRIPT_CLPQ2) >obtained_clpq2
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
 
+ppl_prolog_generated_test: gnu_prolog_generated_test.pl  ../tests/ppl_prolog_generated_test_main.pl ../tests/expected_pgt
+	echo "['$(srcdir)/../tests/ppl_prolog_generated_test_main.pl', '$(srcdir)/gnu_prolog_generated_test.pl']." \
+		>script_pgt
+	echo "main." >script_pgt
+	$(LIBTOOL) --mode=execute \
+		-dlopen ../../../src/libppl.la \
+		$(WATCHDOG_DLOPEN) \
+		-dlopen libppl_gprolog.la \
+		./ppl_gprolog <script_pgt
+	diff -u --ignore-all-space $(srcdir)/../tests/expected_pgt obtained_pgt
+
 endif BUILD_GNU_PROLOG_INTERFACE
 
 CLEANFILES = \
@@ -274,6 +286,6 @@ ppl_gprolog.pl
 MOSTLYCLEANFILES = \
 @required_instantiations_prolog_cxx_objects@ \
 gp_clpq gp_clpq2 \
-obtained_clpq obtained_clpq2 obtained_pchk \
+obtained_clpq obtained_clpq2 obtained_pchk obtained_pgt \
 $(CLPQ_TESTS) \
-script_pchk
+script_pchk script_pgt

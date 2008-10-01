@@ -1234,11 +1234,11 @@ m4_define(`ppl_@CLASS@_@AFFIMAGE@_code',
      ppl_@CLASS@_@AFFIMAGE@(PS, Var, Var - 5, 1),
      (@AFFIMAGE@ == affine_image
      ->
-       ppl_@CLASS@_@AFFIMAGE@(PS, Var, 3*Var, 1),
-       ppl_@CLASS@_@AFFIMAGE@(PS, Var, Var, 3)
+       ppl_@CLASS@_@AFFIMAGE@(PS, Var, 2*Var, 1),
+       ppl_@CLASS@_@AFFIMAGE@(PS, Var, Var, 2)
      ;
-       ppl_@CLASS@_@AFFIMAGE@(PS, Var, Var, 3),
-       ppl_@CLASS@_@AFFIMAGE@(PS, Var, 3*Var, 1)
+       ppl_@CLASS@_@AFFIMAGE@(PS, Var, Var, 2),
+       ppl_@CLASS@_@AFFIMAGE@(PS, Var, 2*Var, 1)
      ),
 dnl  FIXME: This fails with Uint??_Box domains for many of the tests
 dnl      (predicate_exists(ppl_@CLASS@_equals_@CLASS@)
@@ -1267,11 +1267,11 @@ ppl_@CLASS@_bounded_@AFFIMAGE@_5_test :-
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS_Copy, Space_Dim),
      make_vars(Space_Dim, [Var| _Var_List]),
-     ppl_@CLASS@_bounded_@AFFIMAGE@(PS, Var, Var, 2*Var, 3),
-     ppl_@CLASS@_bounded_@AFFIMAGE@(PS, Var, 3*Var, 3*Var, 1),
+     ppl_@CLASS@_bounded_@AFFIMAGE@(PS, Var, Var, 2*Var, 4),
+     ppl_@CLASS@_bounded_@AFFIMAGE@(PS, Var, 4*Var, 4*Var, 1),
      ppl_@CLASS@_OK(PS),
-     ppl_@CLASS@_bounded_@AFFIMAGE@(PS_Copy, Var, 3*Var, 3*Var, 1),
-     ppl_@CLASS@_bounded_@AFFIMAGE@(PS_Copy, Var, Var, 2*Var, 3),
+     ppl_@CLASS@_bounded_@AFFIMAGE@(PS_Copy, Var, 4*Var, 4*Var, 1),
+     ppl_@CLASS@_bounded_@AFFIMAGE@(PS_Copy, Var, Var, 2*Var, 2),
      ppl_@CLASS@_OK(PS),
      ppl_@CLASS@_OK(PS_Copy),
      ppl_delete_@CLASS@(PS_Copy),
@@ -1298,11 +1298,11 @@ ppl_@CLASS@_generalized_@AFFIMAGE@_5_test :-
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS_Copy, Space_Dim),
      make_vars(Space_Dim, [Var| _Var_List]),
-     ppl_@CLASS@_generalized_@AFFIMAGE@(PS, Var, Op, 2*Var, 3),
+     ppl_@CLASS@_generalized_@AFFIMAGE@(PS, Var, Op, 2*Var, 2),
      ppl_@CLASS@_generalized_@AFFIMAGE@(PS, Var, Op, Var + 2, 1),
      ppl_@CLASS@_OK(PS),
      ppl_@CLASS@_generalized_@AFFIMAGE@(PS_Copy, Var, Op, Var + 2, 1),
-     ppl_@CLASS@_generalized_@AFFIMAGE@(PS_Copy, Var, Op, 2*Var, 3),
+     ppl_@CLASS@_generalized_@AFFIMAGE@(PS_Copy, Var, Op, 2*Var, 2),
      (predicate_exists(ppl_@CLASS@_equals_@CLASS@)
      ->
        ppl_@CLASS@_equals_@CLASS@(PS, PS_Copy)
