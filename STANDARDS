@@ -491,6 +491,24 @@ o  If any of the tests is known to fail due to an overflow when the
 
           _F8A, _F8, _F16A, _F16, _F32A, _F32, _F64A, _F64.
 
+o  If any of the tests _may_ fail due to an overflow (when the library
+   is configured to use some of the bounded-precision checked integers)
+   when a templatic shape domain is instantiated using inexact
+   coefficients (e.g., the typedef TBD_Shape stands for BD_Shape<float>),
+   then the corresponding test function should be called as follows
+
+          DO_TEST_MAY_OVERFLOW_IF_INEXACT(test07, TBD_Shape);
+
+o  If a definite overflow (i.e., independent from exactness) is expected
+   for some of the coefficient sizes, then the two macro names above
+   can be combined, e.g., as follows
+
+          DO_TEST_F16_MAY_OVERFLOW_IF_INEXACT(test07, TBD_Shape);
+
+   meaning that the overflow is expected for 16 (or fewer) bits
+   configurations, while it may occur for configurations using more bits
+   if the shape domain is instantiated usng inexact coefficients.
+
 o  Normally, test code should produce no output at all (independently from
    whether the test succeeded or failed). Output is only meant to help
    during debugging. In order to support for the coding of conditional
