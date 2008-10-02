@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-// affine_image
+// Test affine_image().
 bool
 test01() {
   Variable x(0);
@@ -67,7 +67,7 @@ test01() {
   return ok && ok1;
 }
 
-// affine_preimage
+// Test affine_preimage().
 bool
 test02() {
   Variable x(0);
@@ -110,7 +110,9 @@ test02() {
   return ok && ok1;
 }
 
-// generalized_affine_image/3
+// Test generalized_affine_image(const Linear_Expression&,
+//                               Relation_Symbol relsym,
+//                               const Linear_Expression&).
 bool
 test03() {
   Variable x(0);
@@ -153,7 +155,9 @@ test03() {
   return ok && ok1;
 }
 
-// generalized_affine_preimage
+// Test generalized_affine_preimage(const Linear_Expression&,
+//                                  Relation_Symbol relsym,
+//                                  const Linear_Expression&).
 bool
 test04() {
   Variable x(0);
@@ -196,7 +200,10 @@ test04() {
   return ok && ok1;
 }
 
-// generalized_affine_image/3
+// Test generalized_affine_image(Variable,
+//                               Relation_Symbol relsym,
+//                               const Linear_Expression&,
+//                               Coefficient_traits::const_reference).
 bool
 test05() {
   Variable x(0);
@@ -239,7 +246,10 @@ test05() {
   return ok && ok1;
 }
 
-// generalized_affine_preimage
+// Test generalized_affine_image(Variable,
+//                               Relation_Symbol relsym,
+//                               const Linear_Expression&,
+//                               Coefficient_traits::const_reference).
 bool
 test06() {
   Variable x(0);
@@ -282,7 +292,10 @@ test06() {
   return ok && ok1;
 }
 
-// generalized_affine_image/3
+// Test bounded_affine_image(Variable,
+//                           Relation_Symbol relsym,
+//                           const Linear_Expression&,
+//                           Coefficient_traits::const_reference).
 bool
 test07() {
   Variable x(0);
@@ -325,7 +338,10 @@ test07() {
   return ok && ok1;
 }
 
-// generalized_affine_preimage
+// Test bounded_affine_preimage(Variable,
+//                              Relation_Symbol relsym,
+//                              const Linear_Expression&,
+//                              Coefficient_traits::const_reference).
 bool
 test08() {
   Variable x(0);
@@ -368,7 +384,7 @@ test08() {
   return ok && ok1;
 }
 
-// affine_dimension for powersets of C polyhedra
+// Test affine_dimension() for powersets of C polyhedra.
 bool
 test09() {
   Variable x(0);
@@ -393,7 +409,6 @@ test09() {
   c_ps.add_disjunct(ph1);
 
   dimension_type d = c_ps.affine_dimension();
-
 
   bool ok = (d == 3);
 
@@ -422,7 +437,7 @@ test09() {
   return ok && ok1;
 }
 
-// affine_dimension for powersets of NNC polyhedrs
+// Test affine_dimension() for powersets of NNC polyhedra.
 bool
 test10() {
   Variable x(0);
@@ -447,7 +462,6 @@ test10() {
   c_ps.add_disjunct(ph1);
 
   dimension_type d = c_ps.affine_dimension();
-
 
   bool ok = (d == 3);
 
@@ -489,16 +503,4 @@ BEGIN_MAIN
   DO_TEST(test08);
   DO_TEST(test09);
   DO_TEST(test10);
-#if 0
-  DO_TEST(test11);
-  DO_TEST(test12);
-  DO_TEST(test13);
-  DO_TEST(test14);
-  DO_TEST(test15);
-  DO_TEST(test16);
-  DO_TEST(test17);
-  DO_TEST(test18);
-  DO_TEST(test19);
-  DO_TEST(test20);
-#endif
 END_MAIN
