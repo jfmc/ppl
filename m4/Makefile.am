@@ -22,10 +22,13 @@
 
 # M4 macro files to be used by the client applications with Autoconf.
 m4datadir = $(datadir)/aclocal
-m4data_DATA = ppl.m4 ppl_c.m4
+m4data_DATA = \
+ppl.m4 \
+ppl_c.m4
 
 # M4 macro files for internal use.
 m4macros = \
+ac_check_ciao.m4 \
 ac_check_classpath.m4 \
 ac_check_fpu_control.m4 \
 ac_check_gmp.m4 \
@@ -33,19 +36,30 @@ ac_check_sicstus_prolog.m4 \
 ac_check_swi_prolog.m4 \
 ac_check_xsb_prolog.m4 \
 ac_cxx_attribute_weak.m4 \
-ac_cxx_proper_long_double.m4 \
 ac_cxx_double_binary_format.m4 \
+ac_cxx_double_exact_output.m4 \
 ac_cxx_flexible_arrays.m4 \
 ac_cxx_float_binary_format.m4 \
+ac_cxx_float_exact_output.m4 \
+ac_cxx_ieee_inexact_flag.m4 \
+ac_cxx_limit_memory.m4 \
 ac_cxx_long_double_binary_format.m4 \
+ac_cxx_long_double_exact_output.m4 \
+ac_cxx_proper_long_double.m4 \
 ac_cxx_remainder_bug.m4 \
 ac_prog_jar.m4 \
 ac_prog_java.m4 \
 ac_prog_javac.m4 \
 ac_prog_javah.m4 \
+ac_text_md5sum.m4 \
 ax_prefix_config_h.m4 \
 lib-ld.m4 \
 lib-link.m4 \
-lib-prefix.m4
+lib-prefix.m4 \
+libtool.m4 \
+ltoptions.m4 \
+ltsugar.m4 \
+ltversion.m4 \
+lt~obsolete.m4
 
 EXTRA_DIST = $(m4macros) $(m4data_DATA)
