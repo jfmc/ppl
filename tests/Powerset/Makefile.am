@@ -24,7 +24,7 @@
 if VALGRIND_TESTS_ENABLED
 
 CHECKER = \
-valgrind --tool=memcheck -q --trace-children=yes --leak-check=yes \
+$(VALGRIND) --tool=memcheck -q --trace-children=yes --leak-check=yes \
 --num-callers=100 --leak-resolution=high \
 --suppressions=$(top_srcdir)/tests/valgrind_suppressions
 
