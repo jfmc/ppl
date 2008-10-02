@@ -24,10 +24,9 @@ package parma_polyhedra_library;
 
 //! Possible optimization modes.
 /*! \ingroup PPL_Java_interface */
-
 public enum Optimization_Mode {
-    /*! Minimization is requested. */
+    //! Minimization is requested.
     MINIMIZATION,
-    /*! Maximization is requested. */
-    MAXIMIZATION;
+    //! Maximization is requested.
+    MAXIMIZATION
 }

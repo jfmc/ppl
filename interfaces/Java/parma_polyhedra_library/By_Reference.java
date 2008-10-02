@@ -22,28 +22,27 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 package parma_polyhedra_library;
 
-//! Allows to pass nonmutable and mutable objects by reference to functions.
-/*! \ingroup PPL_Java_interface
- */
+//! An utility class implementing mutable and non-mutable call-by-reference.
+/*! \ingroup PPL_Java_interface */
 public class By_Reference<T> {
-    // Stores the object.
+    //! Stores the object.
     T obj;
 
-    // Builds an object encapsulating \p object_value.
+    //! Builds an object encapsulating \p object_value.
     public By_Reference(T object_value) {
 	obj = object_value;
     }
 
-    // Set an object to value \p object_value.
+    //! Set an object to value \p object_value.
     public void set(T y) {
 	obj = y;
     }
 
-    // Returns the value held by \p this.
+    //! Returns the value held by \p this.
     public T get() {
 	return obj;
     }
-    
+
     // FIXME: this must be moved in another place.
     static boolean is_null(java.lang.Object obj) {
         if (obj == null)

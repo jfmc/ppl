@@ -28,14 +28,10 @@ import javax.management.RuntimeErrorException;
 //! A line, ray, point or closure point.
 /*! \ingroup PPL_Java_interface
   An object of the class Generator is one of the following:
-
-  - a line
-
-  - a ray
-
-  - a point
-
-  - a closure point
+  - a line;
+  - a ray;
+  - a point;
+  - a closure point.
 */
 public class Generator {
     //! The denominator used if the generator is a point or a clousure point.
@@ -64,8 +60,9 @@ public class Generator {
     public static Generator closure_point(Linear_Expression e,
 					   Coefficient c) {
         if (c.getBigInteger().equals(java.math.BigInteger.ZERO)) {
-            Error cause = new Error("parma_polyhedra_library.Generatpr::Generator(le, c): \n"
-				    + "the divisor can not be a zero.");
+            Error cause = new Error("parma_polyhedra_library.Generator::"
+                                    + "Generator(le, c):\n"
+				    + "the divisor can not be zero.");
             throw new RuntimeErrorException(cause);
         }
 
@@ -91,8 +88,9 @@ public class Generator {
     */
     public static Generator point(Linear_Expression le, Coefficient d) {
         if (d.getBigInteger().equals(java.math.BigInteger.ZERO)) {
-	    Error cause = new Error("parma_polyhedra_library.Generatpr::Generator(le, d): \n"
-				    + "the divisor can not be a zero.");
+	    Error cause = new Error("parma_polyhedra_library.Generator::"
+                                    + "Generator(le, d):\n"
+				    + "the divisor can not be zero.");
             throw new RuntimeErrorException(cause);
         }
 
@@ -120,16 +118,16 @@ public class Generator {
         if (this.gt == Generator_Type.POINT
 	    || this.gt == Generator_Type.CLOSURE_POINT)
 	    return den;
-	Error cause = new Error("parma_polyhedra_library.Generator::divisor: \n"
-				+ "this is neither a point nor a"
-				+ " closure point");
+	Error cause = new Error("parma_polyhedra_library.Generator::divisor:\n"
+				+ "this is neither a point"
+				+ " nor a closure point.");
 	throw new RuntimeErrorException(cause);
     }
 
-    //! Allows to copy the fields from \p g to \p this. For internal use.
+    //! Allows to copy the fields from \p g to \p this.
     private void set(Generator g) {
-     this.le = g.le;
-     this.gt = g.gt;
+        this.le = g.le;
+        this.gt = g.gt;
     }
 
     //! Returns a string representation of \p this.

@@ -23,8 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 package parma_polyhedra_library;
 
 //! The negation of a linear expression.
-/*! \ingroup PPL_Java_interface
- */
+/*! \ingroup PPL_Java_interface */
 public class Linear_Expression_Unary_Minus
     extends Linear_Expression {
 
@@ -40,10 +39,11 @@ public class Linear_Expression_Unary_Minus
     public Linear_Expression argument() {
 	return arg;
     }
-    
+
+    //! Builds a copy of this.
     public Linear_Expression_Unary_Minus clone() {
-     return new Linear_Expression_Unary_Minus(arg.clone());   
+        return new Linear_Expression_Unary_Minus(arg.clone());
     }
-    
+
 }
 

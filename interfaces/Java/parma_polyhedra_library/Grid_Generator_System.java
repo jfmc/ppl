@@ -28,11 +28,12 @@ package parma_polyhedra_library;
     An object of the class Grid_Generator_System is a system of grid
     generators, i.e., a multiset of objects of the class Grid_Generator.
 */
-
 public class Grid_Generator_System extends java.util.Vector<Grid_Generator> {
+
+    //! Default constructor: builds an empty system of grid generators.
     public Grid_Generator_System() {
     }
 
-  //! Returns a representation of \p this
-  public native String toString();
+    //! Returns a representation of \p this
+    public native String toString();
 }

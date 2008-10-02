@@ -22,8 +22,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 package parma_polyhedra_library;
 
+//! Exceptions caused by domain errors.
+/*! \ingroup PPL_Java_interface */
 public class Domain_Error_Exception extends RuntimeException {
-
+    //! Constructor.
     public Domain_Error_Exception(String s) {
         super(s);
     }

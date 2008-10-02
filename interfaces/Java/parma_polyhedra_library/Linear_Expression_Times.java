@@ -23,8 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 package parma_polyhedra_library;
 
 //! The product of a linear expression and a coefficient.
-/*! \ingroup PPL_Java_interface
- */
+/*! \ingroup PPL_Java_interface */
 public class Linear_Expression_Times
     extends Linear_Expression {
 
@@ -52,7 +51,6 @@ public class Linear_Expression_Times
 
     //! Builds a copy of this.
     public Linear_Expression_Times clone() {
-
 	return new Linear_Expression_Times(rhs.clone(),
 					   new Coefficient(lhs.argument()));
     }

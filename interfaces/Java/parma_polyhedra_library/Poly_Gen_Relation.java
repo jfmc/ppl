@@ -33,7 +33,7 @@ public class Poly_Gen_Relation {
     public static final int SUBSUMES = 1;
 
     //! Holds the value of the possible relations.
-    public int mask_value;
+    private int mask_value;
 
     //! Constructs from a integer value.
     public Poly_Gen_Relation(int val) {

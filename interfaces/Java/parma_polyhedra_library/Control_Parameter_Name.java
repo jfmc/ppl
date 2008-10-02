@@ -26,5 +26,5 @@ package parma_polyhedra_library;
 /*! \ingroup PPL_Java_interface */
 public enum Control_Parameter_Name {
     //! The pricing rule.
-    PRICING;
+    PRICING
 }

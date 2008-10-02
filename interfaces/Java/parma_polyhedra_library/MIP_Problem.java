@@ -52,6 +52,9 @@ package parma_polyhedra_library;
 */
 public class MIP_Problem extends PPL_Object {
 
+    /*! \name Constructors */
+    /*@{*/
+
     //! Builds a trivial MIP problem.
     /*!
       A trivial MIP problem requires to maximize the objective function
@@ -64,7 +67,7 @@ public class MIP_Problem extends PPL_Object {
       \exception std::length_error
       Thrown if \p dim exceeds <CODE>max_space_dimension()</CODE>.
     */
-    public  MIP_Problem(long dim) {
+    public MIP_Problem(long dim) {
 	build_cpp_object(dim);
     }
 
@@ -93,11 +96,15 @@ public class MIP_Problem extends PPL_Object {
       or if the space dimension of the constraint system (resp., the
       objective function) is strictly greater than \p dim.
     */
-    public  MIP_Problem(long dim, Constraint_System cs, Linear_Expression obj,
-			Optimization_Mode mode) {
+    public MIP_Problem(long dim, Constraint_System cs, Linear_Expression obj,
+                       Optimization_Mode mode) {
 	build_cpp_object(dim, cs, obj, mode);
     }
 
+    /*@}*/ /* Constructors */
+
+    /*! \name Functions that Do Not Modify the MIP_Problem */
+    /*@{*/
 
     //! Returns the maximum space dimension an MIP_Problem can handle.
     public native long max_space_dimension();
@@ -111,14 +118,31 @@ public class MIP_Problem extends PPL_Object {
     */
     public native Variables_Set integer_space_dimensions();
 
+    //! Returns the constraints .
+    public native Constraint_System constraints();
+
     //! Returns the objective function.
     public native Linear_Expression objective_function();
 
     //! Returns the optimization mode.
     public native Optimization_Mode optimization_mode();
 
-    //! Returns the constraints .
-    public native Constraint_System constraints();
+    //! Returns a string representation of \p this.
+    public native String toString();
+
+    /*! \brief
+      Returns the total size in bytes of the memory occupied by the
+      underlying C++ object.
+    */
+    public native long total_memory_in_bytes();
+
+    //! Checks if all the invariants are satisfied.
+    public native boolean OK();
+
+    /*@}*/ /* \name Functions that Do Not Modify the MIP_Problem */
+
+    /*! \name Functions that May Modify the MIP_Problem */
+    /*@{*/
 
     //! Resets \p this to be equal to the trivial MIP problem.
     /*!
@@ -182,6 +206,11 @@ public class MIP_Problem extends PPL_Object {
     //! Sets the optimization mode to \p mode.
     public native void set_optimization_mode(Optimization_Mode mode);
 
+    /*@}*/ /* \name Functions that May Modify the MIP_Problem */
+
+    /*! \name Computing the Solution of the MIP_Problem */
+    /*@{*/
+
     //! Checks satisfiability of \p *this.
     /*!
       \return
@@ -196,17 +225,6 @@ public class MIP_Problem extends PPL_Object {
       attempt (unfeasible, unbounded or optimized problem).
     */
     public native MIP_Problem_Status solve();
-
-    /*! \brief
-      Returns the value of control parameter \p name.
-    */
-    public native Control_Parameter_Value
-      get_control_parameter(Control_Parameter_Name name);
-
-    /*! \brief
-     Sets control parameter \p value.
-    */
-     public native void set_control_parameter(Control_Parameter_Value value);
 
     /*! \brief
       Sets \p num and \p den so that \f$\frac{num}{den}\f$ is the result
@@ -254,17 +272,23 @@ public class MIP_Problem extends PPL_Object {
     */
     public native void optimal_value(Coefficient num, Coefficient den);
 
-   /*! \brief
-     Returns the total size in bytes of the memory occupied by the
-     underlying C++ object.
-   */
-    public native long total_memory_in_bytes();
+    /*@}*/ /* \name Computing the Solution of the MIP_Problem */
 
-    //! Returns a string representation of \p this.
-    public native String toString();
+    /*! \name Querying/Setting Control Parameters */
+    /*@{*/
 
-    //! Checks if all the invariants are satisfied.
-    public native boolean OK();
+    /*! \brief
+      Returns the value of control parameter \p name.
+    */
+    public native Control_Parameter_Value
+      get_control_parameter(Control_Parameter_Name name);
+
+    /*! \brief
+      Sets control parameter \p value.
+    */
+    public native void set_control_parameter(Control_Parameter_Value value);
+
+    /*@}*/ /* \name Querying/Setting Control Parameters */
 
     //! Builds the underlying C++ object.
     private native void build_cpp_object(long dim);

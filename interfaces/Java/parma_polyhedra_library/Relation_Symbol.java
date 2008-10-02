@@ -22,18 +22,17 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 package parma_polyhedra_library;
 
-/*! \ingroup PPL_Java_interface
 //! Relation symbols.
-*/
+/*! \ingroup PPL_Java_interface */
 public enum Relation_Symbol {
-    /*! Less than. */
+    //! Less than.
     LESS_THAN,
-    /*! Less than or equal to. */
+    //! Less than or equal to.
     LESS_OR_EQUAL,
-    /*! Equal to. */
+    //! Equal to.
     EQUAL,
-    /*! Greater than or equal to. */
+    //! Greater than or equal to.
     GREATER_OR_EQUAL,
-    /*! Greater than. */
-    GREATER_THAN,
+    //! Greater than.
+    GREATER_THAN
 }

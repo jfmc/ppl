@@ -21,11 +21,11 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 package parma_polyhedra_library;
-//! A Pair of values of type K and V.
-/*! \ingroup PPL_Java_interface
-  An object of this class holds a pair of values of type K and V.
-*/
 
+//! A pair of values of type K and V.
+/*! \ingroup PPL_Java_interface
+  An object of this class holds an ordered pair of values of type K and V.
+*/
 public class Pair<K, V>  {
 
     //! Stores an object of type K.
@@ -34,12 +34,12 @@ public class Pair<K, V>  {
     //! Stores an object of type V.
     private V second;
 
-    // Returns the object of type K.
+    //! Returns the object of type K.
     public K getFirst() {
 	return first;
     }
 
-    // Returns the object of type V.
+    //! Returns the object of type V.
     public V getSecond() {
 	return second;
     }

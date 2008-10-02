@@ -22,16 +22,15 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 package parma_polyhedra_library;
 
-/*! \ingroup PPL_Java_interface
 //! The generator type.
-*/
+/*! \ingroup PPL_Java_interface */
 public enum Generator_Type {
-    /*! The generator is a line. */
+    //! The generator is a line.
     LINE,
-    /*! The generator is a ray. */
+    //! The generator is a ray.
     RAY,
-    /*! The generator is a point. */
+    //! The generator is a point.
     POINT,
-    /*! The generator is a closure point. */
-    CLOSURE_POINT;
+    //! The generator is a closure point.
+    CLOSURE_POINT
 }

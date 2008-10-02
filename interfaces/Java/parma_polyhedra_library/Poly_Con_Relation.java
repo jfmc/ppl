@@ -36,7 +36,7 @@ public class Poly_Con_Relation {
     public static final int SATURATES = 8;
 
     //! Holds the value of the possible relations.
-    public int mask_value;
+    private int mask_value;
 
     //! Constructs from a integer value.
     public Poly_Con_Relation(int val) {

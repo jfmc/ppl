@@ -22,9 +22,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 package parma_polyhedra_library;
 
-
+//! Exceptions due to errors in low-level routines.
+/*! \ingroup PPL_Java_interface
+  These exceptions may be generated, for instance, by the inability
+  of querying/controlling the FPU behavior with respect to rounding modes.
+*/
 public class Logic_Error_Exception extends RuntimeException {
 
+    //! Constructor.
     public Logic_Error_Exception(String s) {
         super(s);
     }

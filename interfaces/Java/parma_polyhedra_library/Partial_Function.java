@@ -22,10 +22,38 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 package parma_polyhedra_library;
 
+//! A partial function on space dimension indices.
+/*! \ingroup PPL_Java_interface
+  In order to specify how space dimensions should be mapped by methods
+  named \c map_space_dimensions, the user should implement this
+  interface.
+
+  \note
+  An example of implementation can be found in the PPL test file
+  <CODE>interfaces/Java/tests/Test_Partial_Function.java</CODE>.
+*/
 public interface Partial_Function {
+    /*! \brief
+      Returns \c true if and only if the partial function has
+      an empty codomain (i.e., it is always undefined).
+
+      This method will always be called before the other methods
+      of the interface. Moreover, if \c true is returned, then
+      none of the other interface methods will be called.
+    */
     boolean has_empty_codomain();
 
+    /*! \brief
+      Returns the maximum value that belongs to the codomain
+      of the partial function.
+    */
     long max_in_codomain();
 
+    /*! \brief
+      Sets \p j to the value (if any) of the partial function on index \p i.
+
+      The function returns \c true if and only if the partial function
+      is defined on domain value \p i.
+    */
     boolean maps(Long i, By_Reference<Long> j);
 }

@@ -30,5 +30,5 @@ public enum Control_Parameter_Value {
     //! Steepest edge pricing method, using Coefficient.
     PRICING_STEEPEST_EDGE_EXACT,
     //! Textbook pricing method.
-    PRICING_TEXTBOOK;
+    PRICING_TEXTBOOK
 }

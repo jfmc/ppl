@@ -23,8 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 package parma_polyhedra_library;
 
 //! A linear expression built from a variable.
-/*! \ingroup PPL_Java_interface
- */
+/*! \ingroup PPL_Java_interface */
 public class Linear_Expression_Variable
 extends Linear_Expression {
 

@@ -21,6 +21,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 package parma_polyhedra_library;
+
 //! A linear expression.
 /*! \ingroup PPL_Java_interface
   An object of the class Linear_Expression represents a linear expression
@@ -28,7 +29,6 @@ package parma_polyhedra_library;
   Linear_Expression_Coefficient, Linear_Expression_Sum,
   Linear_Expression_Difference, Linear_Expression_Unary_Minus.
 */
-
 public abstract class Linear_Expression implements Cloneable {
 
     //! Returns the sum of \p this and \p y.
@@ -40,6 +40,7 @@ public abstract class Linear_Expression implements Cloneable {
     public Linear_Expression subtract(Linear_Expression y) {
 	return new Linear_Expression_Difference(this, y);
     }
+
     //! Returns the product of \p this times \p c.
     public Linear_Expression times(Coefficient c) {
 	return new Linear_Expression_Times(this, c);
@@ -49,6 +50,7 @@ public abstract class Linear_Expression implements Cloneable {
     public Linear_Expression unary_minus() {
 	return new Linear_Expression_Unary_Minus(this);
     }
+
     //! Returns a copy of the linear expression.
     public abstract Linear_Expression clone();
 

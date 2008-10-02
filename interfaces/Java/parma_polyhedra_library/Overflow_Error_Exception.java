@@ -22,8 +22,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 package parma_polyhedra_library;
 
+//! Exceptions due to overflow errors.
+/*! \ingroup PPL_Java_interface
+  These exceptions can be obtained when the library has been configured
+  to use integer coefficients having bounded size.
+*/
 public class Overflow_Error_Exception extends RuntimeException {
-
+    //! Constructor.
     public Overflow_Error_Exception(String s) {
         super(s);
     }

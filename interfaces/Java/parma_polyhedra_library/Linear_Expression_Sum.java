@@ -23,11 +23,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 package parma_polyhedra_library;
 
 //! The sum of two linear expressions.
-/*! \ingroup PPL_Java_interface
- */
+/*! \ingroup PPL_Java_interface */
 public class Linear_Expression_Sum
-    extends Linear_Expression
-{
+    extends Linear_Expression {
 
     //! The value of the left hand side of \p this.
     protected Linear_Expression lhs;

@@ -27,13 +27,10 @@ package parma_polyhedra_library;
 //! A grid line, parameter or grid point.
 /*! \ingroup PPL_Java_interface
   An object of the class Grid_Generator is one of the following:
-
-  - a grid_line
-
-  - a parameter
-
-  - a grid_point
-  */
+  - a grid_line;
+  - a parameter;
+  - a grid_point.
+*/
 
 public class Grid_Generator {
 
@@ -48,6 +45,7 @@ public class Grid_Generator {
 
     //! The grid generator type.
     private Grid_Generator_Type gt;
+
     private Grid_Generator(Linear_Expression e, Coefficient c,
 			   Grid_Generator_Type generator_type) {
 	le = e.clone();

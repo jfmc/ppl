@@ -23,8 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 package parma_polyhedra_library;
 
 //! A linear expression built from a coefficient.
-/*! \ingroup PPL_Java_interface
- */
+/*! \ingroup PPL_Java_interface */
 public class Linear_Expression_Coefficient
     extends Linear_Expression {
 

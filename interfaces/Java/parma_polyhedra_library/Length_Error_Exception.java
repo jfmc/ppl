@@ -22,8 +22,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 package parma_polyhedra_library;
 
+//! Exceptions caused by too big length/size values.
+/*! \ingroup PPL_Java_interface */
 public class Length_Error_Exception extends RuntimeException {
-
+    //! Constructor.
     public Length_Error_Exception(String s) {
         super(s);
     }

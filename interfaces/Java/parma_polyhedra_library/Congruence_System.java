@@ -28,9 +28,10 @@ package parma_polyhedra_library;
     i.e., a multiset of objects of the class Congruence.
 */
 public class Congruence_System extends java.util.Vector<Congruence> {
+    //! Default constructor: builds an empty system of congruences.
     public Congruence_System() {
     }
-    
+
     //! Returns a string representation of \p this
     public native String toString();
 }

@@ -23,7 +23,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 package parma_polyhedra_library;
 
+//! Exceptions caused by invalid arguments.
+/*! \ingroup PPL_Java_interface */
 public class Invalid_Argument_Exception extends RuntimeException {
+    //! Constructor.
     public Invalid_Argument_Exception(String s) {
         super(s);
     }

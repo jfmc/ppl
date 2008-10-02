@@ -25,9 +25,9 @@ package parma_polyhedra_library;
 //! A linear equality or inequality.
 /*! \ingroup PPL_Java_interface
   An object of the class Constraint is either:
-  - an equality
-  - a non-strict inequality
-  - a strict inequality
+  - a linear equality;
+  - a non-strict linear inequality;
+  - a strict linear inequality.
 */
 public class Constraint {
 

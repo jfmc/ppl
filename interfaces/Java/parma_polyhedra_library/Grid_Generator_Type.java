@@ -22,14 +22,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 package parma_polyhedra_library;
 
-/*! \ingroup PPL_Java_interface
 //! The grid generator type.
-*/
+/*! \ingroup PPL_Java_interface */
 public enum Grid_Generator_Type {
-    /*! The generator is a line. */
+    //! The generator is a line.
     LINE,
-    /*! The generator is a parameter. */
+    //! The generator is a parameter.
     PARAMETER,
-    /*! The generator is a point. */
-    POINT;
+    //! The generator is a point.
+    POINT
 }

@@ -23,6 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 package parma_polyhedra_library;
 
 //! Smart pointer to a PPL, C++ object.
+/*! \ingroup PPL_Java_interface */
 public class PPL_Object {
 
     //! Stores the value of the C++ pointer.

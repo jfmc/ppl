@@ -33,6 +33,6 @@ public class Constraint_System extends java.util.Vector<Constraint> {
     public Constraint_System() {
     }
 
-   //! Returns a string representation of \p this
+    //! Returns a string representation of \p this
     public native String toString();
 }
