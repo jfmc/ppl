@@ -1658,7 +1658,7 @@ m4_define(`ppl_@CLASS@_map_space_dimensions_code',
     @CPP_CLASS@* ph = term_to_handle<@CPP_CLASS@ >(t_ph, where);
     dimension_type space_dim = ph->space_dimension();
     PPL_CHECK(ph);
-    PFunc pfunc;
+    Partial_Function pfunc;
     Prolog_term_ref t_pair = Prolog_new_term_ref();
     while (Prolog_is_cons(t_pfunc)) {
       Prolog_get_cons(t_pfunc, t_pair, t_pfunc);

@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <stdexcept>
 #include <sstream>
 #include <climits>
+#include <typeinfo>
 
 namespace Parma_Polyhedra_Library {
 
@@ -32,7 +33,7 @@ namespace Interfaces {
 
 namespace Prolog {
 
-#if PROLOG_TRACK_ALLOCATION
+#if PROLOG_TRACK_ALLOCATION || NOISY_PROLOG_TRACK_ALLOCATION
 
 Allocation_Tracker::Allocation_Tracker() {
 }
@@ -46,49 +47,10 @@ Allocation_Tracker::~Allocation_Tracker() {
       << std::endl;
 }
 
-void
-Allocation_Tracker::insert(const void* pp) {
-  std::pair<Set::iterator, bool> stat = s.insert(pp);
-  if (!stat.second) {
-    std::cerr
-      << "Interfaces::Prolog::Allocation_Tracker:"
-      " two objects at the same address at the same time?!"
-      << std::endl;
-    abort();
-  }
-}
-
-void
-Allocation_Tracker::weak_insert(const void* pp) {
-  weak_s.insert(pp);
-}
-
-void
-Allocation_Tracker::check(const void* pp) const {
-  if (s.find(pp) == s.end()
-      && weak_s.find(pp) == weak_s.end()) {
-    std::cerr
-      << "Interfaces::Prolog::Allocation_Tracker:"
-      " attempt to access a nonexistent object."
-      << std::endl;
-    abort();
-  }
-}
-
-void
-Allocation_Tracker::remove(const void* pp) {
-  if (s.erase(pp) != 1) {
-    std::cerr
-      << "Interfaces::Prolog::Allocation_Tracker:"
-      " attempt to deallocate a nonexistent polyhedron."
-      << std::endl;
-    abort();
-  }
-}
-
 Allocation_Tracker allocation_tracker;
 
-#endif // PROLOG_TRACK_ALLOCATION
+#endif // PROLOG_TRACK_ALLOCATION || NOISY_PROLOG_TRACK_ALLOCATION
+
 
 
 // For the out-of-memory exception.

@@ -39,6 +39,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PROLOG_TRACK_ALLOCATION
 #define PROLOG_TRACK_ALLOCATION 0
 #endif
+#ifndef NOISY_PROLOG_TRACK_ALLOCATION
+#define NOISY_PROLOG_TRACK_ALLOCATION 0
+#endif
 
 namespace Parma_Polyhedra_Library {
 
@@ -46,7 +49,7 @@ namespace Interfaces {
 
 namespace Prolog {
 
-#if PROLOG_TRACK_ALLOCATION
+#if PROLOG_TRACK_ALLOCATION || NOISY_PROLOG_TRACK_ALLOCATION
 
 class Allocation_Tracker {
 public:
@@ -57,22 +60,26 @@ public:
     Register an object whose deletion is under the Prolog programmer
     responsibility.
   */
-  void insert(const void* pp);
+  template <typename T>
+  void insert(const T* p);
 
   /*! \brief
     Register an object whose deletion is under the PPL library
     responsibility.
   */
-  void weak_insert(const void* pp);
+  template <typename T>
+  void weak_insert(const T* p);
 
   //! Check whether the object was correctly registered.
-  void check(const void* pp) const;
+  template <typename T>
+  void check(const T* p) const;
 
   /*! \brief
     Unregister an object whose deletion is under the Prolog programmer
     responsibility.
   */
-  void remove(const void* pp);
+  template <typename T>
+  void remove(const T* p);
 
   /*! \brief
     Destroy the allocation tracker: an error message will be output
@@ -115,14 +122,14 @@ extern Allocation_Tracker allocation_tracker;
   Parma_Polyhedra_Library::Interfaces::Prolog   \
   ::allocation_tracker.check(x)
 
-#else
+#else // !PROLOG_TRACK_ALLOCATION && !NOISY_PROLOG_TRACK_ALLOCATION
 
 #define PPL_REGISTER(x)
 #define PPL_WEAK_REGISTER(x)
 #define PPL_UNREGISTER(x)
 #define PPL_CHECK(x)
 
-#endif
+#endif // !PROLOG_TRACK_ALLOCATION && !NOISY_PROLOG_TRACK_ALLOCATION
 
 class internal_exception {
 private:
@@ -788,13 +795,13 @@ using namespace Parma_Polyhedra_Library::Interfaces::Prolog;
 extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_OK(Prolog_term_ref t_mip);
 
-class PFunc {
+class Partial_Function {
 private:
   std::set<dimension_type> codomain;
   std::vector<dimension_type> vec;
 
 public:
-  PFunc() {
+  Partial_Function() {
   }
 
   bool has_empty_codomain() const {
@@ -803,7 +810,7 @@ public:
 
   dimension_type max_in_codomain() const {
     if (codomain.empty())
-      throw unknown_interface_error("PFunc::max_in_codomain()");
+      throw unknown_interface_error("Partial_Function::max_in_codomain()");
     return *codomain.rbegin();
   }
 
