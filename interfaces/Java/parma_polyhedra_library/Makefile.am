@@ -61,11 +61,10 @@ parma_polyhedra_library_Parma_Polyhedra_Library.h
 fixed_java_sources = \
 $(srcdir)/By_Reference.java \
 $(srcdir)/Coefficient.java \
-$(srcdir)/Congruence.java \
 $(srcdir)/Complexity_Class.java \
+$(srcdir)/Congruence.java \
 $(srcdir)/Congruence_System.java \
 $(srcdir)/Constraint.java \
-$(srcdir)/Constraint_System.java \
 $(srcdir)/Constraint_System.java \
 $(srcdir)/Control_Parameter_Name.java \
 $(srcdir)/Control_Parameter_Value.java \
@@ -91,25 +90,25 @@ $(srcdir)/MIP_Problem.java \
 $(srcdir)/MIP_Problem_Status.java \
 $(srcdir)/Optimization_Mode.java \
 $(srcdir)/Overflow_Error_Exception.java \
-$(srcdir)/PPL_Object.java \
-$(srcdir)/Parma_Polyhedra_Library.java \
 $(srcdir)/Pair.java \
+$(srcdir)/Parma_Polyhedra_Library.java \
 $(srcdir)/Partial_Function.java \
 $(srcdir)/Poly_Con_Relation.java \
 $(srcdir)/Poly_Gen_Relation.java \
+$(srcdir)/PPL_Object.java \
 $(srcdir)/Relation_Symbol.java \
 $(srcdir)/Variable.java \
 $(srcdir)/Variables_Set.java
 
+# NOTE: do _NOT_ add Fake_Class_for_Doxygen.java to this list.
 all_java_sources = \
 $(fixed_java_sources) \
 $(required_instantiations_java_sources)
 
 EXTRA_DIST = \
 $(interface_generator_files) \
-$(fixed_java_sources)
-
-if BUILD_JAVA_INTERFACE
+$(fixed_java_sources) \
+Fake_Class_for_Doxygen.java
 
 interface_generator_dependencies = \
 $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
@@ -147,8 +146,6 @@ source_generation.stamp: $(interface_generator_dependencies)
 	echo timestamp >$@
 
 $(required_instantiations_java_sources): source_generation.stamp
-
-endif BUILD_JAVA_INTERFACE
 
 CLEANFILES = \
 $(required_instantiations_java_sources) \

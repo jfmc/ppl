@@ -24,8 +24,6 @@ interface_generator_files = \
 ppl_interface_generator_ocaml_test_ml.m4 \
 ppl_interface_generator_ocaml_test_ml_code.m4
 
-if BUILD_OCAML_INTERFACE
-
 interface_generator_dependencies = \
 $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../../ppl_interface_generator_common.m4 \
@@ -98,8 +96,6 @@ ppl_ocaml_generated_test$(EXEEXT): ppl_ocaml_generated_test.cmo
 		ppl_ocaml.cma gmp.cma \
 		-cclib $(BUILT_PPL) \
 		$(OCAMLC_LINK_FLAGS) $<
-
-endif BUILD_OCAML_INTERFACE
 
 CLEANFILES = \
 test1.cmi \

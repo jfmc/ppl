@@ -20,7 +20,29 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-SUBDIRS = . C Java OCaml Prolog
+if BUILD_C_INTERFACE
+C_SUBDIR = C
+endif BUILD_C_INTERFACE
+
+if BUILD_JAVA_INTERFACE
+JAVA_SUBDIR = Java
+endif BUILD_JAVA_INTERFACE
+
+if BUILD_OCAML_INTERFACE
+OCAML_SUBDIR = OCaml
+endif BUILD_OCAML_INTERFACE
+
+if BUILD_SOME_PROLOG_INTERFACES
+PROLOG_SUBDIR = Prolog
+else
+# FIXME: we temporarily keep entering the Prolog subdir, even if
+# no Prolog interface is enabled; this is just to allow m4 for
+# building file Prolog_interface.dox; as soon as this generated file
+# will be replaced by a fixed file, we will remove the line below.
+PROLOG_SUBDIR = Prolog
+endif !BUILD_SOME_PROLOG_INTERFACES
+
+SUBDIRS = . $(C_SUBDIR) $(JAVA_SUBDIR) $(OCAML_SUBDIR) $(PROLOG_SUBDIR)
 
 REQUIRED_INSTANTIATIONS = \
 @required_instantiations@

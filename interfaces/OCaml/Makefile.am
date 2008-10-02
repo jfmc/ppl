@@ -42,9 +42,6 @@ $(interface_generator_files) \
 $(ml_source_files) \
 OCaml_interface.dox
 
-
-if BUILD_OCAML_INTERFACE
-
 ocamldir = $(pkglibdir)
 
 ocaml_DATA = \
@@ -224,8 +221,6 @@ ppl_ocaml_domains.hh: $(interface_generator_dependencies)
 	$(top_srcdir)/utils/cm_cleaner.sh < ppl_ocaml_hh_blob
 	$(top_srcdir)/utils/cm_splitter.sh < ppl_ocaml_hh_blob
 	rm -f ppl_ocaml_hh_blob
-
-endif BUILD_OCAML_INTERFACE
 
 MOSTLYCLEANFILES = \
 @required_instantiations_ocaml_cxx_objects@

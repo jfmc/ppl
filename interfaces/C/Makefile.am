@@ -35,8 +35,6 @@ $(interface_generator_files) \
 ppl_c_header.h \
 C_interface.dox
 
-if BUILD_C_INTERFACE
-
 # Libtool -version-info for libppl_c.la.
 #
 #  1. Start with version information of `0:0:0' for each Libtool library.
@@ -225,8 +223,6 @@ nodist_include_HEADERS = ppl_c.h
 nodist_noinst_HEADERS = \
 ppl_c_domains.h \
 ppl_c_version.h
-
-endif BUILD_C_INTERFACE
 
 MOSTLYCLEANFILES = \
 @required_instantiations_c_cxx_objects@

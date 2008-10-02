@@ -37,8 +37,6 @@ EXTRA_DIST = \
 $(interface_generator_files)
 
 
-if BUILD_JAVA_INTERFACE
-
 AM_CPPFLAGS = \
 -I$(top_srcdir)/interfaces \
 -I$(top_builddir)/src \
@@ -153,8 +151,6 @@ ppl_java_implementation_domains.cc.stamp: $(interface_generator_dependencies)
 	$(top_srcdir)/utils/cm_splitter.sh < ppl_java_cc_blob
 	rm -f ppl_java_cc_blob
 	echo timestamp >$@
-
-endif BUILD_JAVA_INTERFACE
 
 CLEANFILES = \
 @required_instantiations_java_cxx_sources@ \
