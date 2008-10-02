@@ -275,7 +275,7 @@ run_one(grid_handle_exceptions) :-
 
 % Note that throughout the tests, all "new_Grid_from_...(...,P)" calls
 % are made in such a way that, if the test fails, P is deleted.
-% This is done by using special "clean_new_Grid_from_...(...,P)"
+% This is done by using special "clean_ppl_new_Grid_from_...(...,P)"
 % forms of the predicates that are defined later.
 %
 % As we also delete P on success of the test, to prevent trying to

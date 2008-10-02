@@ -2634,7 +2634,7 @@ exception_prolog(9, [A, _, _]) :-
    clean_ppl_new_Polyhedron_from_generators(c,
                [point(A)], P),
    must_catch(
-     clean_new_ppl_Polyhedron_from_Polyhedron_with_complexity(a, c, P,
+     clean_ppl_new_Polyhedron_from_Polyhedron_with_complexity(a, c, P,
                                                               c, _P_copy)),
    !,
    ppl_delete_Polyhedron(P).
