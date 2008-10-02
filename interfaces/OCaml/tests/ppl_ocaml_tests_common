@@ -1,4 +1,4 @@
-(* FIXME: to be written.
+(* Common part of the OCaml generated tests.  -*- Tuareg -*-
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -56,7 +56,7 @@ let rec print_linear_expression = function
       print_string ")";
 ;;
 
-let rec print_constraint = function
+let print_constraint = function
     Less_Than (le1, le2) ->
       print_linear_expression le1;
       print_string " < ";
@@ -84,22 +84,22 @@ let rec print_constraint = function
       print_string ", ";
 ;;
 
-let rec print_generator = function
+let print_generator = function
     Ray (le1) ->
       print_string "Ray: ";
       print_linear_expression le1;
       print_string ", ";
   |  Line (le1) ->
-      print_string "Line: ";
-      print_linear_expression le1;
-      print_string ", ";
+       print_string "Line: ";
+       print_linear_expression le1;
+       print_string ", ";
   | Point (le1, c) ->
       print_string "Point: ";
       print_linear_expression le1;
       print_string " den: ";
       print_int(Z.to_int c);
       print_string ", ";
-| Closure_Point (le1, c) ->
+  | Closure_Point (le1, c) ->
       print_string "Closure_Point: ";
       print_linear_expression le1;
       print_string " den: ";
@@ -107,7 +107,7 @@ let rec print_generator = function
       print_string ", ";;
 
 let print_congruence = function x,y,z ->
-   print_linear_expression x;
+  print_linear_expression x;
   print_string " %= ";
   print_linear_expression y;
   print_string " mod ";
@@ -115,7 +115,7 @@ let print_congruence = function x,y,z ->
   print_string ", ";;
 
 
-let rec print_grid_generator = function
+let print_grid_generator = function
   |  Grid_Line (le1) ->
       print_string "Line: ";
       print_linear_expression le1;
