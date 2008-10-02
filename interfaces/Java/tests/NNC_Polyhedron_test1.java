@@ -61,7 +61,7 @@ static {
 					 le_7));
 	ph1.add_constraint(new Constraint(le_X, Relation_Symbol.LESS_THAN,
 					  le_5Z));
-	System.out.println(ph1.constraints().toString());
+	PPL_Test.println_if_noisy(ph1.constraints().toString());
 	return new Boolean(true);
     }
 

@@ -26,7 +26,6 @@ import java.util.Iterator;
 import java.util.Vector;
 import parma_polyhedra_library.*;
 
-
 public class C_Polyhedron_test1 {
 static {
     try {

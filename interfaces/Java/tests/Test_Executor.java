@@ -34,6 +34,7 @@ public class Test_Executor {
     \p return <CODE>true</CODE>, otherwise returns <CODE>false</CODE>
   */
     public static boolean executeTests(Class c) {
+        PPL_Test.initialize();
 	Boolean single_test_result_ok;
 	Boolean global_test_result_ok = new Boolean(true);
 	System.out.println("Checking " + c.getName());

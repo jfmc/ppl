@@ -45,6 +45,10 @@ static {
 
     // Common initialization.
     public void initialize() {
+
+        // Initialize output variables.
+        PPL_Test.initialize();
+
 	// Coefficient declaration.
 	coeff_0 = new Coefficient("0");
         Coefficient coeff_1 = new Coefficient(1);
@@ -69,8 +73,8 @@ static {
 	Linear_Expression le_2A_plus_C = le_2A.sum(le_C);
 	Linear_Expression le_40A_plus_10C = le_2A_plus_C.times(coeff_10);
 
-	System.out.print("Printing a linear expression (2A + C): ");
-        System.out.println(le_2A_plus_C.toString());
+	PPL_Test.print_if_noisy("Printing a linear expression (2A + C): ");
+        PPL_Test.println_if_noisy(le_2A_plus_C.toString());
 
 	// Constraint declarations.
 	Constraint c_5_geq_0
@@ -86,22 +90,22 @@ static {
           = new Constraint(le_2A_plus_C,
 		           Relation_Symbol.GREATER_OR_EQUAL,
 			   le_5);
-	System.out.print("Printing a constraint (2A + C >= 5): ");
-	System.out.println(c_2A_plus_C_geq_5.toString());
+	PPL_Test.print_if_noisy("Printing a constraint (2A + C >= 5): ");
+	PPL_Test.println_if_noisy(c_2A_plus_C_geq_5.toString());
 
 	Congruence cg_2A_eq_5 = new Congruence(le_2A, le_5, coeff_0);
 	Congruence cg_C_eq_5 = new Congruence(le_C, le_5, coeff_0);
 	Congruence cg_C_int = new Congruence(le_C, le_0, coeff_1);
 	congruence1 = cg_2A_eq_5;
-	System.out.print("Printing a congruence (2A == 5): ");
-        System.out.println(cg_2A_eq_5.toString());
+	PPL_Test.print_if_noisy("Printing a congruence (2A == 5): ");
+        PPL_Test.println_if_noisy(cg_2A_eq_5.toString());
 
 	// Constraint_System declarations.
 	constraints1 = new Constraint_System();
 	constraints1.add(c_5_geq_0);
 	constraints1.add(c_C_eq_5);
-	System.out.print("Printing a constraint system (C == 5):");
-	System.out.println(constraints1.toString());
+	PPL_Test.print_if_noisy("Printing a constraint system (C == 5):");
+	PPL_Test.println_if_noisy(constraints1.toString());
 
 	constraints2 = new Constraint_System();
 	constraints2.add(c_2A_plus_C_eq_2A);
@@ -110,8 +114,8 @@ static {
 	congruences1 = new Congruence_System();
 	congruences1.add(cg_2A_eq_5);
 	congruences1.add(cg_C_eq_5);
-	System.out.println("Printing a congruence system: ");
-	System.out.println(congruences1.toString());
+	PPL_Test.print_if_noisy("Printing a congruence system: ");
+	PPL_Test.println_if_noisy(congruences1.toString());
 
 	congruences2 = new Congruence_System();
 	congruences2.add(cg_C_int);
@@ -121,16 +125,16 @@ static {
 	generator1 = g1;
 	Generator g2 = Generator.point(le_40A_plus_10C, coeff_2);
 	Generator g4 = Generator.point(le_A, coeff_4);
-	System.out.println("Printing a generator (p(40A + 10C)):");
-	System.out.println(g1.toString());
+	PPL_Test.print_if_noisy("Printing a generator (p(40A + 10C)):");
+	PPL_Test.println_if_noisy(g1.toString());
 
         // Generator_System declaration.
         generators1 = new Generator_System();
         generators1.add(g1);
         generators1.add(g2);
         generators1.add(g4);
-	System.out.println("Printing a generator system: ");
-	System.out.println(generators1.toString());
+	PPL_Test.print_if_noisy("Printing a generator system: ");
+	PPL_Test.println_if_noisy(generators1.toString());
 
 	// Grid_Generator declarations.
 	Grid_Generator gg1

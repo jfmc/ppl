@@ -45,6 +45,8 @@ m4_include(`ppl_java_tests_common')
 
     public static void main(String[] args) {
 	ppl_java_generated_tests test1 = new ppl_java_generated_tests();
+        // Initialize output variables.
+        PPL_Test.initialize();
 	test1.initialize();
 
 dnl ==================================================================

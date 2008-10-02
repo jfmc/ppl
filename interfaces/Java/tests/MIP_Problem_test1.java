@@ -233,13 +233,13 @@ static {
         expected_ov_ph.add_constraint(c_a_geq_1);
         ok = (ov_ph.equals(expected_ov_ph));
 
-        System.out.println("Testing toString(): ");
-        System.out.println(mip1.toString());
-        System.out.println();
+        PPL_Test.println_if_noisy("Testing toString(): ");
+        PPL_Test.println_if_noisy(mip1.toString());
+        PPL_Test.println_if_noisy();
 
-        System.out.print("Testing max_space_dimension(): ");
+        PPL_Test.print_if_noisy("Testing max_space_dimension(): ");
         long max_space_dim = mip1.max_space_dimension();
-        System.out.println(max_space_dim);
+        PPL_Test.println_if_noisy(max_space_dim);
 
         Control_Parameter_Value cp_value
           = mip1.get_control_parameter(Control_Parameter_Name.PRICING);

@@ -53,7 +53,7 @@ m4_define(`m4_run_class_test_code',
     m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 `dnl
 {
-    System.out.print("Testing @TOPOLOGY@@CLASS@_from_space_dimension: ");
+    PPL_Test.print_if_noisy("Testing @TOPOLOGY@@CLASS@_from_space_dimension: ");
     @TOPOLOGY@@CLASS@ new_0_universe
         = new @TOPOLOGY@@CLASS@(0, Degenerate_Element.UNIVERSE);
     @TOPOLOGY@@CLASS@ new_6_universe
@@ -64,9 +64,9 @@ m4_define(`m4_run_class_test_code',
         = new @TOPOLOGY@@CLASS@(6, Degenerate_Element.EMPTY);
     if (new_0_universe.OK() && new_6_universe.OK()
        && new_0_empty.OK() && new_6_empty.OK())
-       System.out.println("Success");
+       PPL_Test.println_if_noisy("Success");
     else
-      System.out.println("Failure");
+      PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -74,13 +74,13 @@ m4_define(`m4_run_class_test_code',
     m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_code',
 `dnl
 {
-    System.out.print("Testing @TOPOLOGY@@CLASS@ from @FRIEND@: ");
+    PPL_Test.print_if_noisy("Testing @TOPOLOGY@@CLASS@ from @FRIEND@: ");
     @FRIEND@ friend_gd = new @FRIEND@(@CONSTRAINER@s1);
     @TOPOLOGY@@CLASS@ new_gd = new @TOPOLOGY@@CLASS@(friend_gd);
     if (new_gd.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -89,7 +89,7 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity_code',
     `dnl
 {
     if (("@FRIEND@" != "@TOPOLOGY@@CLASS@")) {
-        System.out.print("Testing @TOPOLOGY@@CLASS@ from @FRIEND@ with complexity: ");
+        PPL_Test.print_if_noisy("Testing @TOPOLOGY@@CLASS@ from @FRIEND@ with complexity: ");
         @FRIEND@ friend_gd
             = new @FRIEND@(@CONSTRAINER@s1);
         @TOPOLOGY@@CLASS@ new_gd_pc
@@ -99,9 +99,9 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity_code',
         @TOPOLOGY@@CLASS@ new_gd_ac
             = new @TOPOLOGY@@CLASS@(friend_gd, Complexity_Class.ANY_COMPLEXITY);
         if (new_gd_ac.OK())
-            System.out.println("Success");
+            PPL_Test.println_if_noisy("Success");
         else
-            System.out.println("Failure");
+            PPL_Test.println_if_noisy("Failure");
     }
 }
 
@@ -110,12 +110,12 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity_code',
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_code',
     `dnl
 {
-    System.out.print("Testing @TOPOLOGY@@CLASS@ from @BUILD_REPRESENT@s: ");
+    PPL_Test.print_if_noisy("Testing @TOPOLOGY@@CLASS@ from @BUILD_REPRESENT@s: ");
     @TOPOLOGY@@CLASS@ new_gd1 = new @TOPOLOGY@@CLASS@(@BUILD_REPRESENT@s1);
     if (new_gd1.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -123,14 +123,14 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_code',
 m4_define(`ppl_@CLASS@_swap_code',
     `dnl
 {
-    System.out.print("Testing swap: ");
+    PPL_Test.print_if_noisy("Testing swap: ");
     @TOPOLOGY@@CLASS@ gd1 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     @TOPOLOGY@@CLASS@ gd2 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s2);
     gd1.swap(gd2);
     if (gd1.OK() && gd2.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
     gd1.free();
     gd1.free();
 }
@@ -140,14 +140,14 @@ m4_define(`ppl_@CLASS@_swap_code',
 m4_define(`ppl_@CLASS@_bounds_from_@ABOVEBELOW@_code',
     `dnl
 {
-    System.out.print("Testing bounds_from_@ABOVEBELOW@: ");
+    PPL_Test.print_if_noisy("Testing bounds_from_@ABOVEBELOW@: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     boolean bounds_from_@ABOVEBELOW@
         = gd.bounds_from_@ABOVEBELOW@(le_A);
     if (gd.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
     gd.free();
 }
 
@@ -156,13 +156,13 @@ m4_define(`ppl_@CLASS@_bounds_from_@ABOVEBELOW@_code',
 m4_define(`ppl_@CLASS@_hashcode_code',
     `dnl
 {
-    System.out.print("Testing hashcode: ");
+    PPL_Test.print_if_noisy("Testing hashcode: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
-    System.out.print("The hashcode is: " + gd.hashCode());
+    PPL_Test.print_if_noisy("The hashcode is: " + gd.hashCode());
     if (gd.OK())
-        System.out.println(", Success");
+        PPL_Test.println_if_noisy(", Success");
     else
-        System.out.println(", Failure");
+        PPL_Test.println_if_noisy(", Failure");
     gd.free();
 }
 
@@ -171,16 +171,16 @@ m4_define(`ppl_@CLASS@_hashcode_code',
 m4_define(`ppl_@CLASS@_@HAS_PROPERTY@_code',
     `dnl
 {
-    System.out.print("Testing @HAS_PROPERTY@: ");
+    PPL_Test.print_if_noisy("Testing @HAS_PROPERTY@: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     if (gd.@HAS_PROPERTY@())
-        System.out.println("@HAS_PROPERTY@ is true for gd.");
+        PPL_Test.println_if_noisy("@HAS_PROPERTY@ is true for gd.");
     else
-        System.out.println("@HAS_PROPERTY@ is false for gd.");
+        PPL_Test.println_if_noisy("@HAS_PROPERTY@ is false for gd.");
     if (gd.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -188,14 +188,14 @@ m4_define(`ppl_@CLASS@_@HAS_PROPERTY@_code',
 m4_define(`ppl_@CLASS@_@DIMENSION@_code',
     `dnl
 {
-    System.out.print("Testing @DIMENSION@: ");
+    PPL_Test.print_if_noisy("Testing @DIMENSION@: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
-    System.out.print("@DIMENSION@ of gd = ");
-    System.out.println(gd.@DIMENSION@());
+    PPL_Test.print_if_noisy("@DIMENSION@ of gd = ");
+    PPL_Test.println_if_noisy(gd.@DIMENSION@());
     if (gd.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -203,14 +203,14 @@ m4_define(`ppl_@CLASS@_@DIMENSION@_code',
 m4_define(`ppl_@CLASS@_@BINOP@_code',
     `dnl
 {
-    System.out.print("Testing @BINOP@: ");
+    PPL_Test.print_if_noisy("Testing @BINOP@: ");
     @TOPOLOGY@@CLASS@ gd1 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     @TOPOLOGY@@CLASS@ gd2 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s2);
     gd1.@BINOP@(gd2);
     if (gd1.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -218,14 +218,14 @@ m4_define(`ppl_@CLASS@_@BINOP@_code',
 m4_define(`ppl_@CLASS@_simplify_using_context_assign_code',
     `dnl
 {
-    System.out.print("Testing simplify_using_context_assign: ");
+    PPL_Test.print_if_noisy("Testing simplify_using_context_assign: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     boolean gd_simplify_using_context_assign
         = gd.simplify_using_context_assign(gd);
     if (gd.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -233,13 +233,13 @@ m4_define(`ppl_@CLASS@_simplify_using_context_assign_code',
 m4_define(`ppl_@CLASS@_get_@GET_REPRESENT@s_code',
     `dnl
 {
-    System.out.print("Testing get_@GET_REPRESENT@s: ");
+    PPL_Test.print_if_noisy("Testing get_@GET_REPRESENT@s: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     @UGET_REPRESENT@_System gd_@GET_REPRESENT@ = gd.@GET_REPRESENT@s();
     if (gd.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -247,13 +247,13 @@ m4_define(`ppl_@CLASS@_get_@GET_REPRESENT@s_code',
 m4_define(`ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_code',
     `dnl
 {
-    System.out.print("Testing get_minimized_@GET_REPRESENT@s: ");
+    PPL_Test.print_if_noisy("Testing get_minimized_@GET_REPRESENT@s: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     @UGET_REPRESENT@_System gr = gd.minimized_@GET_REPRESENT@s();
     if (gd.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -261,14 +261,14 @@ m4_define(`ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_code',
 m4_define(`ppl_@CLASS@_@COMPARISON@_@CLASS@_code',
     `dnl
 {
-    System.out.print("Testing @COMPARISON@: ");
+    PPL_Test.print_if_noisy("Testing @COMPARISON@: ");
     @TOPOLOGY@@CLASS@ gd1 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     @TOPOLOGY@@CLASS@ gd2 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s2);
     boolean gd1_@COMPARISON@ = gd2.@COMPARISON@(gd1);
     if (gd1.OK() && gd2.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -276,14 +276,14 @@ m4_define(`ppl_@CLASS@_@COMPARISON@_@CLASS@_code',
 m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign_code',
     `dnl
 {
-    System.out.print("Testing @EXTRAPOLATION@_narrowing_assign: ");
+    PPL_Test.print_if_noisy("Testing @EXTRAPOLATION@_narrowing_assign: ");
     @TOPOLOGY@@CLASS@ gd1 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     @TOPOLOGY@@CLASS@ gd2 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s2);
     gd1.@EXTRAPOLATION@_narrowing_assign(gd2);
     if (gd1.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -291,14 +291,14 @@ m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign_code',
 m4_define(`ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_code',
     `dnl
 {
-    System.out.print("Testing relation_with_@RELATION_REPRESENT@: ");
+    PPL_Test.print_if_noisy("Testing relation_with_@RELATION_REPRESENT@: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     Poly_@UALT_RELATION_REPRESENT@_Relation
         poly_relation = gd.relation_with(@RELATION_REPRESENT@1);
     if (gd.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -306,13 +306,13 @@ m4_define(`ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_code',
 m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_code',
     `dnl
 {
-    System.out.print("Testing add_@ADD_REPRESENT@: ");
+    PPL_Test.print_if_noisy("Testing add_@ADD_REPRESENT@: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd.add_@ADD_REPRESENT@(@ADD_REPRESENT@1);
     if (gd.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -320,13 +320,13 @@ m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_code',
 m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@_code',
     `dnl
 {
-    System.out.print("Testing refine_with_@REFINE_REPRESENT@: ");
+    PPL_Test.print_if_noisy("Testing refine_with_@REFINE_REPRESENT@: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd.refine_with_@REFINE_REPRESENT@(@REFINE_REPRESENT@1);
     if (gd.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -334,13 +334,13 @@ m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@_code',
  m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_code',
     `dnl
 {
-    System.out.print("Testing add_@ADD_REPRESENT@s: ");
+    PPL_Test.print_if_noisy("Testing add_@ADD_REPRESENT@s: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd.add_@ADD_REPRESENT@s(@ADD_REPRESENT@s1);
     if (gd.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -348,13 +348,13 @@ m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@_code',
  m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s_code',
     `dnl
 {
-    System.out.print("Testing refine_with_@REFINE_REPRESENT@s: ");
+    PPL_Test.print_if_noisy("Testing refine_with_@REFINE_REPRESENT@s: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd.refine_with_@REFINE_REPRESENT@s(@REFINE_REPRESENT@s1);
     if (gd.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -362,14 +362,14 @@ m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@_code',
  m4_define(`ppl_@CLASS@_@UB_EXACT@_code',
     `dnl
 {
-    System.out.print("Testing @UB_EXACT@: ");
+    PPL_Test.print_if_noisy("Testing @UB_EXACT@: ");
     @TOPOLOGY@@CLASS@ gd1 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     @TOPOLOGY@@CLASS@ gd2 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     boolean is_exact = gd1.@UB_EXACT@(gd2);
     if (gd1.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -377,13 +377,13 @@ m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@_code',
 m4_define(`ppl_@CLASS@_@AFFIMAGE@_code',
     `dnl
 {
-    System.out.print("Testing @AFFIMAGE@: ");
+    PPL_Test.print_if_noisy("Testing @AFFIMAGE@: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd.@AFFIMAGE@(var_C, le_A, coeff_5);
     if (gd.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -391,13 +391,13 @@ m4_define(`ppl_@CLASS@_@AFFIMAGE@_code',
 m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_code',
     `dnl
 {
-    System.out.print("Testing generalized_@AFFIMAGE@: ");
+    PPL_Test.print_if_noisy("Testing generalized_@AFFIMAGE@: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd.generalized_@AFFIMAGE@(var_C, Relation_Symbol.EQUAL, le_A, coeff_5);
     if (gd.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -405,13 +405,13 @@ m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_code',
 m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_code',
     `dnl
 {
-    System.out.print("Testing generalized_@AFFIMAGE@_lhs_rhs: ");
+    PPL_Test.print_if_noisy("Testing generalized_@AFFIMAGE@_lhs_rhs: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd.generalized_@AFFIMAGE@(le_A, Relation_Symbol.EQUAL, le_A);
     if (gd.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -419,14 +419,14 @@ m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_code',
 m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruence_code',
     `dnl
 {
-    System.out.print("Testing generalized_@AFFIMAGE@_with_congruence: ");
+    PPL_Test.print_if_noisy("Testing generalized_@AFFIMAGE@_with_congruence: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd.generalized_@AFFIMAGE@_with_congruence(var_C, Relation_Symbol.EQUAL,
                                               le_A, coeff_5, coeff_5);
     if (gd.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -434,15 +434,15 @@ m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruence_code',
 m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence_code',
     `dnl
 {
-    System.out.print("Testing generalized_@AFFIMAGE@_lhs_rhs_with_congruence: ");
+    PPL_Test.print_if_noisy("Testing generalized_@AFFIMAGE@_lhs_rhs_with_congruence: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd.generalized_@AFFIMAGE@_lhs_rhs_with_congruence(le_A,
                                                       Relation_Symbol.EQUAL,
                                                       le_A, coeff_5);
     if (gd.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -450,15 +450,15 @@ m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence_code',
 m4_define(`ppl_@CLASS@_equals_@CLASS@_code',
     `dnl
 {
-    System.out.print("Testing equals: ");
+    PPL_Test.print_if_noisy("Testing equals: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     boolean equals = gd.equals(gd);
     if (!gd.equals(new Object()))
-        System.out.println("A generic object is not equal to gd");
+        PPL_Test.println_if_noisy("A generic object is not equal to gd");
     if (equals && gd.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -466,13 +466,13 @@ m4_define(`ppl_@CLASS@_equals_@CLASS@_code',
 m4_define(`ppl_@CLASS@_OK_code',
     `dnl
 {
-    System.out.print("Testing OK: ");
+    PPL_Test.print_if_noisy("Testing OK: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     boolean ok = gd.OK();
     if (gd.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -480,13 +480,13 @@ m4_define(`ppl_@CLASS@_OK_code',
 m4_define(`ppl_@CLASS@_bounded_@AFFIMAGE@_code',
     `dnl
 {
-    System.out.print("Testing bounded_@AFFIMAGE@: ");
+    PPL_Test.print_if_noisy("Testing bounded_@AFFIMAGE@: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd.bounded_@AFFIMAGE@(var_C, le_A, le_A, coeff_5);
     if (gd.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -494,13 +494,13 @@ m4_define(`ppl_@CLASS@_bounded_@AFFIMAGE@_code',
 m4_define(`ppl_@CLASS@_@SIMPLIFY@_code',
     `dnl
 {
-    System.out.print("Testing @SIMPLIFY@: ");
+    PPL_Test.print_if_noisy("Testing @SIMPLIFY@: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd.@SIMPLIFY@();
     if (gd.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -508,13 +508,13 @@ m4_define(`ppl_@CLASS@_@SIMPLIFY@_code',
 m4_define(`ppl_@CLASS@_unconstrain_space_dimension_code',
     `dnl
 {
-    System.out.print("Testing unconstrain_space_dimension: ");
+    PPL_Test.print_if_noisy("Testing unconstrain_space_dimension: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd.unconstrain_space_dimension(var_C);
     if (gd.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -522,13 +522,13 @@ m4_define(`ppl_@CLASS@_unconstrain_space_dimension_code',
 m4_define(`ppl_@CLASS@_unconstrain_space_dimensions_code',
     `dnl
 {
-    System.out.print("Testing unconstrain_space_dimensions: ");
+    PPL_Test.print_if_noisy("Testing unconstrain_space_dimensions: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd.unconstrain_space_dimensions(var_set_A);
     if (gd.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -536,13 +536,13 @@ m4_define(`ppl_@CLASS@_unconstrain_space_dimensions_code',
 m4_define(`ppl_@CLASS@_constrains_code',
     `dnl
 {
-    System.out.print("Testing constrains: ");
+    PPL_Test.print_if_noisy("Testing constrains: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     boolean constrains = gd.constrains(var_C);
     if (gd.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -550,12 +550,12 @@ m4_define(`ppl_@CLASS@_constrains_code',
 m4_define(`ppl_@CLASS@_@MAXMIN@_code',
     `dnl
 {
-    System.out.print("Testing @MAXMIN@: ");
+    PPL_Test.print_if_noisy("Testing @MAXMIN@: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     boolean @MAXMIN@
         = gd.@MAXMIN@(le_A, coeff_0, coeff_5, bool_by_ref1);
     if (gd.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
 }
 
 ')
@@ -563,14 +563,14 @@ m4_define(`ppl_@CLASS@_@MAXMIN@_code',
 m4_define(`ppl_@CLASS@_@MAXMIN@_with_point_code',
     `dnl
 {
-    System.out.print("Testing @MAXMIN@_with_point: ");
+    PPL_Test.print_if_noisy("Testing @MAXMIN@_with_point: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     boolean @MAXMIN@_with_point
         = gd.@MAXMIN@(le_A, coeff_0, coeff_5, bool_by_ref2, generator1);
     if (gd.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ');
@@ -578,13 +578,13 @@ m4_define(`ppl_@CLASS@_@MAXMIN@_with_point_code',
 m4_define(`ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@_code',
     `dnl
 {
-    System.out.print("Testing add_space_dimensions_@EMBEDPROJECT@: ");
+    PPL_Test.print_if_noisy("Testing add_space_dimensions_@EMBEDPROJECT@: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd.add_space_dimensions_@EMBEDPROJECT@(2);
     if (gd.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -592,13 +592,13 @@ m4_define(`ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@_code',
 m4_define(`ppl_@CLASS@_remove_higher_space_dimensions_code',
     `dnl
 {
-    System.out.print("Testing remove_higher_space_dimensions: ");
+    PPL_Test.print_if_noisy("Testing remove_higher_space_dimensions: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd.remove_higher_space_dimensions(2);
     if (gd.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -606,13 +606,13 @@ m4_define(`ppl_@CLASS@_remove_higher_space_dimensions_code',
 m4_define(`ppl_@CLASS@_remove_space_dimensions_code',
     `dnl
 {
-    System.out.print("Testing remove_space_dimensions: ");
+    PPL_Test.print_if_noisy("Testing remove_space_dimensions: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd.remove_space_dimensions(var_set_A);
     if (gd.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -620,13 +620,13 @@ m4_define(`ppl_@CLASS@_remove_space_dimensions_code',
 m4_define(`ppl_@CLASS@_expand_space_dimension_code',
     `dnl
 {
-    System.out.print("Testing expand_space_dimension: ");
+    PPL_Test.print_if_noisy("Testing expand_space_dimension: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd.expand_space_dimension(var_C, 1);
     if (gd.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -634,13 +634,13 @@ m4_define(`ppl_@CLASS@_expand_space_dimension_code',
 m4_define(`ppl_@CLASS@_fold_space_dimensions_code',
     `dnl
 {
-    System.out.print("Testing fold_space_dimensions: ");
+    PPL_Test.print_if_noisy("Testing fold_space_dimensions: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd.fold_space_dimensions(var_set_A, var_C);
     if (gd.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -648,13 +648,13 @@ m4_define(`ppl_@CLASS@_fold_space_dimensions_code',
 m4_define(`ppl_@CLASS@_map_space_dimensions_code',
     `dnl
 {
-    System.out.print("Testing map_space_dimensions: ");
+    PPL_Test.print_if_noisy("Testing map_space_dimensions: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd.map_space_dimensions(partial_function);
     if (gd.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -662,14 +662,14 @@ m4_define(`ppl_@CLASS@_map_space_dimensions_code',
 m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_code',
     `dnl
 {
-    System.out.print("Testing @WIDEN@_widening_assign: ");
+    PPL_Test.print_if_noisy("Testing @WIDEN@_widening_assign: ");
     @TOPOLOGY@@CLASS@ gd1 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     @TOPOLOGY@@CLASS@ gd2 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd1.@WIDEN@_widening_assign(gd2);
     if (gd1.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -677,14 +677,14 @@ m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_code',
 m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_code',
     `dnl
 {
-    System.out.print("Testing : ppl_@CLASS@_@WIDEN@_widening_assign");
+    PPL_Test.print_if_noisy("Testing : ppl_@CLASS@_@WIDEN@_widening_assign");
     @TOPOLOGY@@CLASS@ gd1 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     @TOPOLOGY@@CLASS@ gd2 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd1.@WIDEN@_widening_assign(gd2, int_by_ref1);
     if (gd1.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -692,15 +692,15 @@ m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_code',
 m4_define(`ppl_@CLASS@_widening_assign_code',
     `dnl
 {
-    System.out.print("Testing widening_assign: ");
+    PPL_Test.print_if_noisy("Testing widening_assign: ");
     @TOPOLOGY@@CLASS@ gd1 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     @TOPOLOGY@@CLASS@ gd2 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd1.widening_assign(gd2,
                         int_by_ref1);
     if (gd1.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -708,14 +708,14 @@ m4_define(`ppl_@CLASS@_widening_assign_code',
 m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_code',
     `dnl
 {
-    System.out.print("Testing @EXTRAPOLATION@_extrapolation_assign: ");
+    PPL_Test.print_if_noisy("Testing @EXTRAPOLATION@_extrapolation_assign: ");
     @TOPOLOGY@@CLASS@ gd1 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     @TOPOLOGY@@CLASS@ gd2 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd1.@EXTRAPOLATION@_extrapolation_assign(gd2, int_by_ref1);
     if (gd1.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -723,14 +723,14 @@ m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_code',
 m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign_code',
     `dnl
 {
-    System.out.print("Testing @EXTRAPOLATION@_narrowing_assign: ");
+    PPL_Test.print_if_noisy("Testing @EXTRAPOLATION@_narrowing_assign: ");
     @TOPOLOGY@@CLASS@ gd1 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     @TOPOLOGY@@CLASS@ gd2 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd1.@EXTRAPOLATION@_narrowing_assign(gd2);
     if (gd1.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -738,15 +738,15 @@ m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign_code',
 m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_code',
     `dnl
 {
-    System.out.print("Testing @LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign: ");
+    PPL_Test.print_if_noisy("Testing @LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign: ");
     @TOPOLOGY@@CLASS@ gd1 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     @TOPOLOGY@@CLASS@ gd2 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd1.@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(gd2, @CONSTRAINER@s1,
                                                           zero_by_ref1);
     if (gd1.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -754,14 +754,14 @@ m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_code',
 m4_define(`ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign_code',
     `dnl
 {
-    System.out.print("Testing BGP99_@DISJUNCT_WIDEN@_extrapolation_assign: ");
+    PPL_Test.print_if_noisy("Testing BGP99_@DISJUNCT_WIDEN@_extrapolation_assign: ");
     @TOPOLOGY@@CLASS@ gd1 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     @TOPOLOGY@@CLASS@ gd2 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd1.BGP99_@DISJUNCT_WIDEN@_extrapolation_assign(gd2, 2);
     if (gd1.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -769,14 +769,14 @@ m4_define(`ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign_code',
 m4_define(`ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code',
     `dnl
 {
-    System.out.print("Testing BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign: ");
+    PPL_Test.print_if_noisy("Testing BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign: ");
     @TOPOLOGY@@CLASS@ gd1 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     @TOPOLOGY@@CLASS@ gd2 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     gd1.BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign(gd2);
     if (gd1.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -784,27 +784,27 @@ m4_define(`ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assi
 m4_define(`ppl_@CLASS@_string_code',
     `dnl
 {
-    System.out.print("Testing toString(): ");
+    PPL_Test.print_if_noisy("Testing toString(): ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
-    System.out.println(gd.toString());
+    PPL_Test.println_if_noisy(gd.toString());
     if (gd.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 ');
 
 m4_define(`ppl_@CLASS@_@MEMBYTES@_code',
     `dnl
 {
-    System.out.print("Testing @MEMBYTES@(): ");
+    PPL_Test.print_if_noisy("Testing @MEMBYTES@(): ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
-    System.out.println("@UMEMBYTES@ of gd: ");
-    System.out.println(gd.@MEMBYTES@());
+    PPL_Test.println_if_noisy("@UMEMBYTES@ of gd: ");
+    PPL_Test.println_if_noisy(gd.@MEMBYTES@());
     if (gd.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ');
@@ -812,13 +812,13 @@ m4_define(`ppl_@CLASS@_@MEMBYTES@_code',
 m4_define(`ppl_@CLASS@_ascii_dump_code',
     `dnl
 {
-    System.out.print("Testing ascii_dump(): ");
+    PPL_Test.print_if_noisy("Testing ascii_dump(): ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
-    System.out.println(gd.ascii_dump());
+    PPL_Test.println_if_noisy(gd.ascii_dump());
     if (gd.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ');
@@ -826,20 +826,20 @@ m4_define(`ppl_@CLASS@_ascii_dump_code',
 m4_define(`ppl_@CLASS@_linear_@PARTITION@_code',
     `dnl
 {
-    System.out.print("Testing linear_@PARTITION@: ");
+    PPL_Test.print_if_noisy("Testing linear_@PARTITION@: ");
     @TOPOLOGY@@CLASS@ gd1
         = new @TOPOLOGY@@CLASS@(constraints1);
     @TOPOLOGY@@CLASS@ gd2
         = new @TOPOLOGY@@CLASS@(constraints1);
     Pair p = @TOPOLOGY@@CLASS@.linear_partition(gd1, gd2);
     if (gd1.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
-    System.out.print("Printing Pair from linear_partition: ");
-    System.out.print(p.getFirst());
-    System.out.print(", ");
-    System.out.println(p.getSecond());
+        PPL_Test.println_if_noisy("Failure");
+    PPL_Test.print_if_noisy("Printing Pair from linear_partition: ");
+    PPL_Test.print_if_noisy((p.getFirst()).toString());
+    PPL_Test.print_if_noisy(", ");
+    PPL_Test.println_if_noisy((p.getSecond()).toString());
 }
 
 ')
@@ -848,7 +848,7 @@ m4_define(`ppl_@CLASS@_approximate_partition_code',
     `dnl
 @SUPERPOWER_EXISTS@`'dnl
 {
-    System.out.print("Testing @CLASS@_approximate_partition: ");
+    PPL_Test.print_if_noisy("Testing @CLASS@_approximate_partition: ");
     @CLASS@ gd1
         = new @CLASS@(constraints1);
     @CLASS@ gd2
@@ -856,16 +856,16 @@ m4_define(`ppl_@CLASS@_approximate_partition_code',
     Pair p
         = @CLASS@.approximate_partition(gd1, gd2, bool_by_ref1);
     if (gd1.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
-    System.out.print("Printing Pair from approximate_partition: ");
-    System.out.print(p.getFirst());
-    System.out.print(", ");
-    System.out.print(p.getSecond());
-    System.out.print(", ");
-    System.out.println(bool_by_ref1);
-    System.out.println();
+        PPL_Test.println_if_noisy("Failure");
+    PPL_Test.print_if_noisy("Printing Pair from approximate_partition: ");
+    PPL_Test.print_if_noisy((p.getFirst()).toString());
+    PPL_Test.print_if_noisy(", ");
+    PPL_Test.print_if_noisy((p.getSecond()).toString());
+    PPL_Test.print_if_noisy(", ");
+    PPL_Test.println_if_noisy(bool_by_ref1);
+    PPL_Test.println_if_noisy();
 }
 
 ');
@@ -873,13 +873,13 @@ m4_define(`ppl_@CLASS@_approximate_partition_code',
 m4_define(`ppl_@CLASS@_@BEGINEND@_iterator_code',
     `dnl
 {
-    System.out.print("Testing @BEGINEND@_iterator: ");
+    PPL_Test.print_if_noisy("Testing @BEGINEND@_iterator: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     @TOPOLOGY@@CLASS@_Iterator it_gd = gd.@BEGINEND@_iterator();
     if (gd.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -887,7 +887,7 @@ m4_define(`ppl_@CLASS@_@BEGINEND@_iterator_code',
 m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
     `dnl
 {
-    System.out.print("Testing @INCDEC@_iterator: ");
+    PPL_Test.print_if_noisy("Testing @INCDEC@_iterator: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     if ("@INCDEC@" == "increment") {
       @TOPOLOGY@@CLASS@_Iterator it_gd = gd.begin_iterator();
@@ -898,9 +898,9 @@ m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
       it_gd.@ALT_INCDEC@();
     }
     if (gd.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -908,14 +908,14 @@ m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
 m4_define(`ppl_@CLASS@_get_disjunct_code',
     `dnl
 {
-    System.out.print("Testing get_disjunct: ");
+    PPL_Test.print_if_noisy("Testing get_disjunct: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     @TOPOLOGY@@CLASS@_Iterator it_gd = gd.begin_iterator();
     @TOPOLOGY@@DISJUNCT@ gd_disjunct = it_gd.get_disjunct();
     if (gd.OK() && gd_disjunct.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -923,14 +923,14 @@ m4_define(`ppl_@CLASS@_get_disjunct_code',
 m4_define(`ppl_@CLASS@_drop_disjunct_code',
     `dnl
 {
-    System.out.print("Testing drop_disjunct: ");
+    PPL_Test.print_if_noisy("Testing drop_disjunct: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     @TOPOLOGY@@CLASS@_Iterator it_gd = gd.begin_iterator();
     gd.drop_disjunct(it_gd);
     if (gd.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -938,15 +938,15 @@ m4_define(`ppl_@CLASS@_drop_disjunct_code',
 m4_define(`ppl_@CLASS@_add_disjunct_code',
     `dnl
 {
-    System.out.print("Testing add_disjunct: ");
+    PPL_Test.print_if_noisy("Testing add_disjunct: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     @CLASSTOPOLOGY@@DISJUNCT@ gd_disjunct
         = new @CLASSTOPOLOGY@@DISJUNCT@(@CONSTRAINER@s1);
     gd.add_disjunct(gd_disjunct);
     if (gd.OK())
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ');
@@ -954,15 +954,15 @@ m4_define(`ppl_@CLASS@_add_disjunct_code',
 m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
     `dnl
 {
-    System.out.print("Testing delete_iterator: ");
+    PPL_Test.print_if_noisy("Testing delete_iterator: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     @TOPOLOGY@@CLASS@_Iterator it_gd1 = gd.begin_iterator();
     @TOPOLOGY@@CLASS@_Iterator it_gd2 = gd.begin_iterator();
     boolean equals = it_gd1.equals(it_gd2);
     if (gd.OK() && equals)
-        System.out.println("Success");
+        PPL_Test.println_if_noisy("Success");
     else
-        System.out.println("Failure");
+        PPL_Test.println_if_noisy("Failure");
 }
 
 ')
@@ -970,13 +970,13 @@ m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
 m4_define(`ppl_free_@CLASS@_code',
     `dnl
 {
-    System.out.print("Testing free: ");
+    PPL_Test.print_if_noisy("Testing free: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     @TOPOLOGY@@CLASS@ gd1 = new @TOPOLOGY@@CLASS@(gd);
     gd1.free();
     @TOPOLOGY@@CLASS@ gd2 = new @TOPOLOGY@@CLASS@(gd);
     gd2 = null;
-    System.out.println("Success");
+    PPL_Test.println_if_noisy("Success");
 }
 
 ')

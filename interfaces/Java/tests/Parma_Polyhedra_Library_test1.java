@@ -42,25 +42,25 @@ static {
     // This code tests the Parma_Polyhedra_Library methods.
     public static Boolean test01() {
 
-    System.out.print("Version Major: ");
-    System.out.println(Parma_Polyhedra_Library.version_major());
-    System.out.print("Version Minor: ");
-    System.out.println(Parma_Polyhedra_Library.version_minor());
-    System.out.print("Version Revision: ");
-    System.out.println(Parma_Polyhedra_Library.version_revision());
-    System.out.print("Version Beta: ");
-    System.out.println(Parma_Polyhedra_Library.version_beta());
-    System.out.print("Version: ");
-    System.out.println(Parma_Polyhedra_Library.version());
-    System.out.print("Banner: ");
-    System.out.println(Parma_Polyhedra_Library.banner());
+    PPL_Test.print_if_noisy("Version Major: ");
+    PPL_Test.println_if_noisy(Parma_Polyhedra_Library.version_major());
+    PPL_Test.print_if_noisy("Version Minor: ");
+    PPL_Test.println_if_noisy(Parma_Polyhedra_Library.version_minor());
+    PPL_Test.print_if_noisy("Version Revision: ");
+    PPL_Test.println_if_noisy(Parma_Polyhedra_Library.version_revision());
+    PPL_Test.print_if_noisy("Version Beta: ");
+    PPL_Test.println_if_noisy(Parma_Polyhedra_Library.version_beta());
+    PPL_Test.print_if_noisy("Version: ");
+    PPL_Test.println_if_noisy(Parma_Polyhedra_Library.version());
+    PPL_Test.print_if_vnoisy("Banner: ");
+    PPL_Test.println_if_vnoisy(Parma_Polyhedra_Library.banner());
     Parma_Polyhedra_Library.set_rounding_for_PPL();
     Parma_Polyhedra_Library.restore_pre_PPL_rounding();
 
     return true;
     }
 
- 
+
     public static void main(String[] args) {
 	boolean test_result_ok =
 	    Test_Executor.executeTests(Parma_Polyhedra_Library_test1.class);

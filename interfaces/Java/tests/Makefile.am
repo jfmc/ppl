@@ -46,6 +46,7 @@ C_Polyhedron_test1.java \
 NNC_Polyhedron_test1.java \
 MIP_Problem_test1.java \
 Parma_Polyhedra_Library_test1.java \
+PPL_Test.java \
 ppl_interface_generator_java_test_java_code.m4 \
 ppl_interface_generator_java_test_java.m4 \
 ppl_java_tests_common
@@ -59,7 +60,8 @@ Test_Executor.java \
 C_Polyhedron_test1.java \
 NNC_Polyhedron_test1.java \
 MIP_Problem_test1.java \
-Parma_Polyhedra_Library_test1.java
+Parma_Polyhedra_Library_test1.java \
+PPL_Test.java
 
 CLASSPATH = ../ppl_java.jar:.
 JAVACFLAGS = -classpath $(CLASSPATH)
