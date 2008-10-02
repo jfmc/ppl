@@ -37,6 +37,8 @@ CATCH
 
 namespace {
 
+bool before_main;
+
 unsigned long mallocated = 0;
 unsigned long reallocated = 0;
 unsigned long freed = 0;
@@ -72,14 +74,16 @@ cxx_malloc(size_t size) {
     throw std::bad_alloc();
   }
   void* p = ::operator new(size);
-  vnout << "allocated " << size << " @ " << p << endl;
+  if (!before_main)
+    vnout << "allocated " << size << " @ " << p << endl;
   ++mallocated;
   return p;
 }
 
 extern "C" void
 cxx_free(void* p, size_t) {
-  vnout << "freed " << p << endl;
+  if (!before_main)
+    vnout << "freed " << p << endl;
   ::operator delete(p);
   ++freed;
 }
@@ -95,22 +99,25 @@ cxx_realloc(void* p, size_t old_size, size_t new_size) {
   }
 
   if (new_size <= old_size) {
-  vnout << "reallocated " << old_size << " @ " << p
-	<< " down to " << new_size << " @ " << p
-	<< endl;
+    if (!before_main)
+      vnout << "reallocated " << old_size << " @ " << p
+            << " down to " << new_size << " @ " << p
+            << endl;
     return p;
   }
   else {
     if (reallocated >= realloc_threshold) {
-      nout << "std::bad_alloc thrown from cxx_realloc()" << endl;
+      if (!before_main)
+        nout << "std::bad_alloc thrown from cxx_realloc()" << endl;
       throw std::bad_alloc();
     }
     void* new_p = ::operator new(new_size);
     memcpy(new_p, p, old_size);
     ::operator delete(p);
-    vnout << "reallocated " << old_size << " @ " << p
-	  << " up to " << new_size << " @ " << new_p
-	  << endl;
+    if (!before_main)
+      vnout << "reallocated " << old_size << " @ " << p
+            << " up to " << new_size << " @ " << new_p
+            << endl;
     ++reallocated;
     return new_p;
   }
@@ -203,9 +210,18 @@ test3() {
   catch (const std::overflow_error&) {		\
   }
 
+extern "C" void
+set_GMP_memory_allocation_functions() {
+  before_main = true;
+  // Allow the static coefficients of the library to be allocated
+  // without any limit.
+  reset_allocators(ULONG_MAX, ULONG_MAX);
+  mp_set_memory_functions(cxx_malloc, cxx_realloc, cxx_free);
+}
+
 int
 main() TRY {
-  mp_set_memory_functions(cxx_malloc, cxx_realloc, cxx_free);
+  before_main = false;
 
   set_handlers();
 
