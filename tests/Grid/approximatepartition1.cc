@@ -47,11 +47,6 @@ test01() {
   nout << "  === p inters q === " << endl << "  " << result.first << endl;
   nout << "  ===    rest    === " << endl << "  " << result.second << endl;
 
-#if 0
-  if (!aux_test03(p, q, result))
-    return false;
-#endif
-
   if (!finite_partition)
     return false;
 
@@ -60,10 +55,6 @@ test01() {
   nout << "*** p partition ***" << endl;
   nout << "  === q inters p === " << endl << "  " << result.first << endl;
   nout << "  ===    rest    === " << endl << "  " << result.second << endl;
-
-#if 0
-  return aux_test03(q, p, result);
-#endif
 
   return finite_partition;
 }

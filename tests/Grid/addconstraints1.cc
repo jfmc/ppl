@@ -258,8 +258,7 @@ test09() {
   return ok;
 }
 
-#if 0
-// add_recycled_congruences(cs) -- space dimension exception
+// add_recycled_constraints(cs) -- space dimension exception
 bool
 test10() {
   Variable A(0);
@@ -271,7 +270,7 @@ test10() {
   Grid gr(1);
 
   try {
-    gr.add_recycled_congruences(cs);
+    gr.add_recycled_constraints(cs);
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
@@ -282,103 +281,9 @@ test10() {
   return false;
 }
 
-// add_congruences(cs) -- space dimension exception
+// add_constraints(cs) -- space dimension exception
 bool
 test11() {
-  Variable A(0);
-  Variable B(1);
-
-  Constraint_System cs;
-  cs.insert(B == 0);
-
-  Grid gr(1);
-
-  try {
-    gr.add_congruences(cs);
-  }
-  catch (const std::invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
-    return true;
-  }
-  catch (...) {
-  }
-  return false;
-}
-
-// add_recycled_congruences_and_minimize(cs) -- space dimension
-// exception
-bool
-test12() {
-  Variable A(0);
-  Variable B(1);
-
-  Constraint_System cs;
-  cs.insert(B == 0);
-
-  Grid gr(1);
-
-  try {
-    gr.add_recycled_congruences_and_minimize(cs);
-  }
-  catch (const std::invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
-    return true;
-  }
-  catch (...) {
-  }
-  return false;
-}
-
-// add_congruences_and_minimize(cs) -- space dimension exception
-bool
-test13() {
-  Variable A(0);
-  Variable B(1);
-
-  Constraint_System cs;
-  cs.insert(B == 0);
-
-  Grid gr(1);
-
-  try {
-    gr.add_congruences_and_minimize(cs);
-  }
-  catch (const std::invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
-    return true;
-  }
-  catch (...) {
-  }
-  return false;
-}
-#endif
-
-// add_constraints(cs) -- space dimension exception
-bool
-test14() {
-  Variable A(0);
-  Variable B(1);
-
-  Constraint_System cs;
-  cs.insert(A + B == 0);
-
-  Grid gr(1);
-
-  try {
-    gr.add_constraints(cs);
-  }
-  catch (const std::invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
-    return true;
-  }
-  catch (...) {
-  }
-  return false;
-}
-
-// add_constraints(cs) -- space dimension exception
-bool
-test15() {
   Variable A(0);
   Variable B(1);
 
@@ -401,7 +306,7 @@ test15() {
 
 // add_recycled_constraints(cs) -- space dimension exception
 bool
-test16() {
+test12() {
   Variable A(0);
   Variable B(1);
 
@@ -425,7 +330,7 @@ test16() {
 // add_recycled_constraints_and_minimize(cs) -- space dimension
 // exception
 bool
-test17() {
+test13() {
   Variable A(0);
   Variable B(1);
 
@@ -448,7 +353,7 @@ test17() {
 
 // add_constraints_and_minimize(cs) -- space dimension exception
 bool
-test18() {
+test14() {
   Variable A(0);
   Variable B(1);
 
@@ -471,7 +376,7 @@ test18() {
 
 // Construct a congruence system from a constraint system
 bool
-test19() {
+test15() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -502,10 +407,9 @@ test19() {
   return ok;
 }
 
-#if 0
 // add_constraints(cs) -- non-equality constraint in constraint system.
 bool
-test20() {
+test16() {
   Variable A(0);
   Variable B(1);
 
@@ -526,7 +430,6 @@ test20() {
   }
   return false;
 }
-#endif
 
 } // namespace
 
@@ -540,19 +443,11 @@ BEGIN_MAIN
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
-#if 0
   DO_TEST(test10);
   DO_TEST(test11);
   DO_TEST(test12);
   DO_TEST(test13);
-#endif
   DO_TEST(test14);
   DO_TEST(test15);
   DO_TEST(test16);
-  DO_TEST(test17);
-  DO_TEST(test18);
-  DO_TEST(test19);
-#if 0
-  DO_TEST(test20);
-#endif
 END_MAIN

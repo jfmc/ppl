@@ -50,6 +50,7 @@ addspacedims1 \
 affinedim1 \
 affineimage1 affineimage2 \
 affinepreimage1 affinepreimage2 \
+approximatepartition1 \
 asciidumpload1 asciidumpload2 asciidumpload3 asciidumpload4 asciidumpload5 \
 asciidumpload6 \
 bhz03widening1 \
@@ -137,6 +138,8 @@ affineimage2_SOURCES = affineimage2.cc
 
 affinepreimage1_SOURCES = affinepreimage1.cc
 affinepreimage2_SOURCES = affinepreimage2.cc
+
+approximatepartition1_SOURCES = approximatepartition1.cc
 
 asciidumpload1_SOURCES = asciidumpload1.cc
 asciidumpload2_SOURCES = asciidumpload2.cc
