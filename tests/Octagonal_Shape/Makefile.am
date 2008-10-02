@@ -20,10 +20,20 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-CHECKER =
-#CHECKER = valgrind --tool=memcheck -q --trace-children=yes --leak-check=yes --num-callers=100 --leak-resolution=high --suppressions=$(top_srcdir)/tests/valgrind_suppressions
+if VALGRIND_TESTS_ENABLED
 
-TESTS_ENVIRONMENT = CHECKER="$(CHECKER)"
+CHECKER = \
+valgrind --tool=memcheck -q --trace-children=yes --leak-check=yes \
+--num-callers=100 --leak-resolution=high \
+--suppressions=$(top_srcdir)/tests/valgrind_suppressions
+
+else !VALGRIND_TESTS_ENABLED
+
+CHECKER =
+
+endif !VALGRIND_TESTS_ENABLED
+
+TESTS_ENVIRONMENT = $(CHECKER)
 
 AM_CPPFLAGS = \
 $(TEST_CPPFLAGS) \

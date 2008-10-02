@@ -1050,6 +1050,32 @@ bool valid = ${instantiation}::valid_instantiation();
   ;;
 esac
 
+enableval=no
+AC_MSG_CHECKING([whether tests should be run under Valgrind])
+AC_ARG_ENABLE(valgrind-tests,
+  AC_HELP_STRING([--enable-valgrind-tests],
+    [run library tests under Valgrind]))
+case "${enableval}" in
+yes)
+  AC_CHECK_PROG(VALGRIND, valgrind, valgrind)
+  if test x"$VALGRIND" = xvalgrind
+  then
+    AC_MSG_RESULT(yes)
+    enable_valgrind_tests=yes
+  else
+    AC_MSG_ERROR([bad value ${enableval} for --enable-valgrind-tests, cannot find Valgrind])
+  fi
+  ;;
+no)
+  AC_MSG_RESULT(no)
+  enable_valgrind_tests=no
+  ;;
+*)
+  AC_MSG_ERROR([bad value ${enableval} for --enable-valgrind-tests, needs yes or no])
+  ;;
+esac
+AM_CONDITIONAL(VALGRIND_TESTS_ENABLED, test x"$enable_valgrind_tests" = xyes)
+
 enableval=thorough
 AC_MSG_CHECKING([whether `make check' does a thorough or quick check])
 AC_ARG_ENABLE(check,
