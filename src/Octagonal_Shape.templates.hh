@@ -1235,7 +1235,7 @@ Octagonal_Shape<T>::relation_with(const Congruence& cg) const {
   TEMP_INTEGER(lower);
   assign_r(lower_num, min_num, ROUND_NOT_NEEDED);
   assign_r(lower_den, min_den, ROUND_NOT_NEEDED);
-  v -= cg.inhomogeneous_term();
+  neg_assign(v, cg.inhomogeneous_term());
   lower = lower_num / lower_den;
   v += ((lower / mod) * mod);
   if (v * lower_den < lower_num)
