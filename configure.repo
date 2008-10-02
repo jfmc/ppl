@@ -11347,6 +11347,28 @@ CPPFLAGS="$ac_save_CPPFLAGS"
 LIBS="$ac_save_LIBS"
 
 
+# Unique codes for the floating point binary formats.
+
+cat >>confdefs.h <<\_ACEOF
+#define FLOAT_IEEE754_SINGLE 1
+_ACEOF
+
+
+cat >>confdefs.h <<\_ACEOF
+#define FLOAT_IEEE754_DOUBLE 2
+_ACEOF
+
+
+cat >>confdefs.h <<\_ACEOF
+#define FLOAT_IEEE754_QUAD 3
+_ACEOF
+
+
+cat >>confdefs.h <<\_ACEOF
+#define FLOAT_INTEL_DOUBLE_EXTENDED 4
+_ACEOF
+
+
 # Detect the binary format used by C++ floats.
 
 ac_save_CPPFLAGS="$CPPFLAGS"
@@ -11452,7 +11474,7 @@ $as_echo "$ac_try_echo") >&5
   (exit $ac_status); }; }; then
 
 cat >>confdefs.h <<\_ACEOF
-#define CXX_FLOAT_BINARY_FORMAT float_ieee754_single
+#define CXX_FLOAT_BINARY_FORMAT FLOAT_IEEE754_SINGLE
 _ACEOF
 
   ac_cxx_float_binary_format="IEEE754 Single Precision"
@@ -11612,7 +11634,7 @@ $as_echo "$ac_try_echo") >&5
   (exit $ac_status); }; }; then
 
 cat >>confdefs.h <<\_ACEOF
-#define CXX_DOUBLE_BINARY_FORMAT float_ieee754_double
+#define CXX_DOUBLE_BINARY_FORMAT FLOAT_IEEE754_DOUBLE
 _ACEOF
 
   ac_cxx_double_binary_format="IEEE754 Double Precision"
@@ -11772,7 +11794,7 @@ $as_echo "$ac_try_echo") >&5
   (exit $ac_status); }; }; then
 
 cat >>confdefs.h <<\_ACEOF
-#define CXX_LONG_DOUBLE_BINARY_FORMAT float_intel_double_extended
+#define CXX_LONG_DOUBLE_BINARY_FORMAT FLOAT_INTEL_DOUBLE_EXTENDED
 _ACEOF
 
   ac_cxx_long_double_binary_format="Intel Double-Extended"
@@ -11899,7 +11921,7 @@ $as_echo "$ac_try_echo") >&5
   (exit $ac_status); }; }; then
 
 cat >>confdefs.h <<\_ACEOF
-#define CXX_LONG_DOUBLE_BINARY_FORMAT float_ieee754_quad
+#define CXX_LONG_DOUBLE_BINARY_FORMAT FLOAT_IEEE754_QUAD
 _ACEOF
 
   ac_cxx_long_double_binary_format="IEEE754 Quad Precision"
@@ -12014,7 +12036,7 @@ $as_echo "$ac_try_echo") >&5
   (exit $ac_status); }; }; then
 
 cat >>confdefs.h <<\_ACEOF
-#define CXX_LONG_DOUBLE_BINARY_FORMAT float_intel_double_extended
+#define CXX_LONG_DOUBLE_BINARY_FORMAT FLOAT_INTEL_DOUBLE_EXTENDED
 _ACEOF
 
   ac_cxx_long_double_binary_format="Intel Double-Extended"
@@ -12129,7 +12151,7 @@ $as_echo "$ac_try_echo") >&5
   (exit $ac_status); }; }; then
 
 cat >>confdefs.h <<\_ACEOF
-#define CXX_LONG_DOUBLE_BINARY_FORMAT float_ieee754_double
+#define CXX_LONG_DOUBLE_BINARY_FORMAT FLOAT_IEEE754_DOUBLE
 _ACEOF
 
   ac_cxx_long_double_binary_format="IEEE754 Double Precision"
@@ -12166,6 +12188,603 @@ fi
 
 cat >>confdefs.h <<_ACEOF
 #define SUPPORTED_LONG_DOUBLE $ac_supported_long_double
+_ACEOF
+
+
+ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+CPPFLAGS="$ac_save_CPPFLAGS"
+LIBS="$ac_save_LIBS"
+
+
+# Checks whether the C++ run-time systems provides exact output for
+# floats.
+
+ac_save_CPPFLAGS="$CPPFLAGS"
+ac_save_LIBS="$LIBS"
+ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+
+{ $as_echo "$as_me:$LINENO: checking the binary format of C++ floats" >&5
+$as_echo_n "checking the binary format of C++ floats... " >&6; }
+ac_cxx_float_exact_output=unknown
+
+if test "$cross_compiling" = yes; then
+  { { $as_echo "$as_me:$LINENO: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+{ { $as_echo "$as_me:$LINENO: error: cannot run test program while cross compiling
+See \`config.log' for more details." >&5
+$as_echo "$as_me: error: cannot run test program while cross compiling
+See \`config.log' for more details." >&2;}
+   { (exit 1); exit 1; }; }; }
+else
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+#include <limits>
+#ifdef HAVE_STDINT_H
+#ifndef __STDC_LIMIT_MACROS
+#define __STDC_LIMIT_MACROS 1
+#endif
+#include <stdint.h>
+#endif
+#ifdef HAVE_INTTYPES_H
+#include <inttypes.h>
+#endif
+#include <cstdlib>
+#include <sstream>
+#include <iostream>
+
+bool
+check(float value, const char* text) {
+  std::ostringstream ss;
+  ss.precision(10000);
+  ss << value;
+  std::cout << ss.str() << " ?==? " << text << std::endl;
+  return ss.str() == text;
+}
+
+#if SIZEOF_FLOAT == 4
+
+float
+convert(uint32_t x) {
+  union {
+    float value;
+    uint32_t word;
+  } u;
+
+  u.word = x;
+  return u.value;
+}
+
+#if CXX_FLOAT_BINARY_FORMAT == FLOAT_IEEE754_SINGLE
+
+int
+main() {
+  if (check(convert(0xaaacccaaU),
+            "-3.069535185924732179074680971098132431507110595703125e-13")
+      && check(convert(0xcccaaaccU),
+               "-106255968")
+      && check(convert(0x00000001U),
+               "1.40129846432481707092372958328991613128026194187651577175706828388979108268586060148663818836212158203125e-45")
+      && check(convert(0x80000001U),
+               "-1.40129846432481707092372958328991613128026194187651577175706828388979108268586060148663818836212158203125e-45"))
+    exit(0);
+  else
+    exit(1);
+}
+
+#else // CXX_FLOAT_BINARY_FORMAT != FLOAT_IEEE754_SINGLE
+
+int
+main() {
+  exit(1);
+}
+
+#endif // CXX_FLOAT_BINARY_FORMAT != FLOAT_IEEE754_SINGLE
+
+#else // SIZEOF_FLOAT != 4
+
+int
+main() {
+  exit(1);
+}
+
+#endif // SIZEOF_FLOAT != 4
+
+_ACEOF
+rm -f conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && { ac_try='./conftest$ac_exeext'
+  { (case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_try") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  { $as_echo "$as_me:$LINENO: result: yes" >&5
+$as_echo "yes" >&6; }
+  ac_cxx_float_exact_output=1
+else
+  $as_echo "$as_me: program exited with status $ac_status" >&5
+$as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+( exit $ac_status )
+{ $as_echo "$as_me:$LINENO: result: no" >&5
+$as_echo "no" >&6; }
+  ac_cxx_float_exact_output=0
+fi
+rm -rf conftest.dSYM
+rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
+fi
+
+
+
+
+cat >>confdefs.h <<\_ACEOF
+#define CXX_FLOAT_EXACT_OUTPUT $ac_cxx_float_output
+_ACEOF
+
+
+ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+CPPFLAGS="$ac_save_CPPFLAGS"
+LIBS="$ac_save_LIBS"
+
+
+# Checks whether the C++ run-time systems provides exact output for
+# doubles.
+
+
+ac_save_CPPFLAGS="$CPPFLAGS"
+ac_save_LIBS="$LIBS"
+ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+
+{ $as_echo "$as_me:$LINENO: checking whether C++ provide exact output for doubles" >&5
+$as_echo_n "checking whether C++ provide exact output for doubles... " >&6; }
+ac_cxx_double_exact_output=unknown
+
+if test "$cross_compiling" = yes; then
+  { { $as_echo "$as_me:$LINENO: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+{ { $as_echo "$as_me:$LINENO: error: cannot run test program while cross compiling
+See \`config.log' for more details." >&5
+$as_echo "$as_me: error: cannot run test program while cross compiling
+See \`config.log' for more details." >&2;}
+   { (exit 1); exit 1; }; }; }
+else
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+#include <limits>
+#ifdef HAVE_STDINT_H
+#ifndef __STDC_LIMIT_MACROS
+#define __STDC_LIMIT_MACROS 1
+#endif
+#include <stdint.h>
+#endif
+#ifdef HAVE_INTTYPES_H
+#include <inttypes.h>
+#endif
+#include <cstdlib>
+#include <sstream>
+#include <iostream>
+
+bool
+check(double value, const char* text) {
+  std::ostringstream ss;
+  ss.precision(10000);
+  ss << value;
+  std::cout << ss.str() << " ?==? " << text << std::endl;
+  return ss.str() == text;
+}
+
+#if SIZEOF_DOUBLE == 8
+
+double
+convert(uint32_t msp, uint32_t lsp) {
+  union {
+    double value;
+    struct {
+#ifdef WORDS_BIGENDIAN
+      uint32_t msp;
+      uint32_t lsp;
+#else
+      uint32_t lsp;
+      uint32_t msp;
+#endif
+    } parts;
+  } u;
+
+  u.parts.msp = msp;
+  u.parts.lsp = lsp;
+  return u.value;
+}
+
+#if CXX_DOUBLE_BINARY_FORMAT == FLOAT_IEEE754_DOUBLE
+
+int
+main() {
+  if (check(convert(0xaaacccaaUL, 0xacccaaacUL),
+            "-4.018242396032647e-103")
+      && check(convert(0xcccaaaccUL, 0xcaaacccaUL),
+               "-85705035845709846787631445265530356117787053916987832397725696"))
+    exit(0);
+  else
+    exit(1);
+}
+
+#else // CXX_DOUBLE_EXACT_OUTPUT != FLOAT_IEEE754_DOUBLE
+
+int
+main() {
+  exit(1);
+}
+
+#endif // CXX_DOUBLE_EXACT_OUTPUT != FLOAT_IEEE754_DOUBLE
+
+#else // SIZEOF_DOUBLE != 8
+
+int
+main() {
+  exit(1);
+}
+
+#endif // SIZEOF_DOUBLE != 8
+
+_ACEOF
+rm -f conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && { ac_try='./conftest$ac_exeext'
+  { (case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_try") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  { $as_echo "$as_me:$LINENO: result: yes" >&5
+$as_echo "yes" >&6; }
+  ac_cxx_double_exact_output=1
+else
+  $as_echo "$as_me: program exited with status $ac_status" >&5
+$as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+( exit $ac_status )
+{ $as_echo "$as_me:$LINENO: result: no" >&5
+$as_echo "no" >&6; }
+  ac_cxx_double_exact_output=0
+fi
+rm -rf conftest.dSYM
+rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
+fi
+
+
+
+
+cat >>confdefs.h <<\_ACEOF
+#define CXX_DOUBLE_EXACT_OUTPUT $ac_cxx_double_output
+_ACEOF
+
+
+ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+CPPFLAGS="$ac_save_CPPFLAGS"
+LIBS="$ac_save_LIBS"
+
+
+# Checks whether the C++ run-time systems provides exact output for
+# long doubles.
+
+
+
+ac_save_CPPFLAGS="$CPPFLAGS"
+ac_save_LIBS="$LIBS"
+ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+
+{ $as_echo "$as_me:$LINENO: checking whether C++ provide exact output for long doubles" >&5
+$as_echo_n "checking whether C++ provide exact output for long doubles... " >&6; }
+ac_cxx_long_double_exact_output=unknown
+
+if test "$cross_compiling" = yes; then
+  { { $as_echo "$as_me:$LINENO: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+{ { $as_echo "$as_me:$LINENO: error: cannot run test program while cross compiling
+See \`config.log' for more details." >&5
+$as_echo "$as_me: error: cannot run test program while cross compiling
+See \`config.log' for more details." >&2;}
+   { (exit 1); exit 1; }; }; }
+else
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+#include <limits>
+#ifdef HAVE_STDINT_H
+#ifndef __STDC_LIMIT_MACROS
+#define __STDC_LIMIT_MACROS 1
+#endif
+#include <stdint.h>
+#endif
+#ifdef HAVE_INTTYPES_H
+#include <inttypes.h>
+#endif
+#include <cstdlib>
+#include <sstream>
+#include <iostream>
+
+bool
+check(long double value, const char* text) {
+  std::ostringstream ss;
+  ss.precision(10000);
+  ss << value;
+  std::cout << ss.str() << " ?==? " << text << std::endl;
+  return ss.str() == text;
+}
+
+#if SIZEOF_LONG_DOUBLE == 12
+
+long double
+convert(uint32_t msp, uint64_t lsp) {
+  union {
+    long double value;
+    struct {
+#ifdef WORDS_BIGENDIAN
+      uint32_t msp;
+      uint64_t lsp;
+#else
+      uint64_t lsp;
+      uint32_t msp;
+#endif
+    } parts;
+  } u;
+
+  u.parts.msp = msp;
+  u.parts.lsp = lsp;
+  return u.value;
+}
+
+#if CXX_LONG_DOUBLE_BINARY_FORMAT == FLOAT_INTEL_DOUBLE_EXTENDED
+
+int
+main() {
+  if (check(convert(0xaaacccaaUL, 0xacccaaacccaaacccULL),
+            "-23475151196235330448360987288488448023604990597437922665537894499317141030270831473500040521309097782521743811281100731620612303910141158923283064807755815684643856544564541670181998003713114595098650350075763370916908460284838902787487703020001649220669684278577319085319204471093693972621987808779314674903648668236688723332999785552894845325917244897920804830290985291535343986477508649100409893486651507134071296739623686984014433965803259868867855465109457220731656260670349710137932272802677796915669809481885196101414678015638835049035133835457854893845093496950772367562664955830097293678125205138879788670490610650322134182370990336443894886171520732434535881085387893610114822547025980969387956199048733969351859470324032549906964255557877860343871346618951696178837035563054101786829980983909935265617095747543882856776297861197958453847978446679149969948882161264279705948735019353220550905117946051015070744207453853343171175921378515361160726195198161165083475968")
+      && check(convert(0xcccaaaccUL, 0xcaaacccaaacccaaaULL),
+               "-3.234349908433673569788362433758236701401379200386310478070230491201716094576208088733092209352711081763530973139439402754721006217889031902309566905344106766697050593355851405189694125966100801537593811320493850579152938679705465870788684523518541806158791408378718596936132854683425581754205242594614192465876640102628432246897674583649745467641139234207139584810101868772915312454075582265240687184279243861217351667059920878236164506473261797703393981510799228030778152399657445848839855361831637014754038570644257393307922665529947406582062857348101442206039278033447012163028384634753160589791458287895963629514043345016273218385584012204321293761500625038828699451659598873739820939586314044735551522599884065690704853850058509917597610804664086074437219778400030370474948166770867639885264893441594112815147445129222900623635467542926999246959939000796968650036727515644358583656635086409945418378371210848857160579105176395869221692977516017583375976424496977231821652434877830409470264872174e-1634")
+    exit(0);
+  else
+    exit(1);
+}
+
+#else // CXX_LONG_DOUBLE_BINARY_FORMAT != FLOAT_INTEL_DOUBLE_EXTENDED
+
+int
+main() {
+  exit(1);
+}
+
+#endif // CXX_LONG_DOUBLE_BINARY_FORMAT != FLOAT_INTEL_DOUBLE_EXTENDED
+
+#elif SIZEOF_LONG_DOUBLE == 16
+
+long double
+convert(uint64_t msp, uint64_t lsp) {
+  union {
+    long double value;
+    struct {
+#ifdef WORDS_BIGENDIAN
+      uint64_t msp;
+      uint64_t lsp;
+#else
+      uint64_t lsp;
+      uint64_t msp;
+#endif
+    } parts;
+  } u;
+
+  u.parts.msp = msp;
+  u.parts.lsp = lsp;
+  return u.value;
+}
+
+#if CXX_LONG_DOUBLE_BINARY_FORMAT == FLOAT_IEEE754_QUAD
+
+int
+main() {
+  if (check(convert(0xaaacccaaacccaaacULL, 0xccaaacccaaacccaaULL),
+            "-8.5585565388510043474134185399390263e-1644")
+      &&  check(convert(0xcccaaacccaaacccaULL, 0xaacccaaacccaaaccULL),
+                "-1.245145811075115522107964569349668e+986"))
+    exit(0);
+  else
+    exit(1);
+}
+
+#elif CXX_LONG_DOUBLE_BINARY_FORMAT == FLOAT_INTEL_DOUBLE_EXTENDED
+
+int
+main() {
+  if (check(convert(0xaaacccaaacccaaacULL, 0xccaaacccaaacccaaULL),
+            "-7.6048540943660203383375998875878002021755137452856942966991187375790618225432711954682137529456970686263412309600617913197560145993931792374946076061175594550915924955313391528566777352996816141138550473090399783817652516896553304678788796532976847530386107750759127004897950996937530751872097675156395937218234460013748219954603465088115161828048215763754331575034447236689765045674584188927116128770082933362914567237187017530082528540058002631800274192146485961758366625476271676375489358478966148719270989233284454992652229565352739884432045036085427546783826745250197623257802129011015273728848161395367551745780868250488191368846207890422268873532651627591649389757751752362072212699309947970918940313250863861141479770240104635553035870698789854752554391365757900620463269938427975381635241159694500569550818398323639621243086116154792038064941523448921284117826015673798399008555604372098051095571652170081985843614541956756469168604624857938653843172027861680499952062356914208628014745759010068414302636374017506453133466034362025545080555878082849488386388633197121003201192243150535143329731394874806398663589117246866205872431804204733617792317769570293754056793574570217834482046448788177551912250351735294891953434051815332631157674735614138641122106756749236824504094008852401427746414294902929999820878756040223246586814590339767277305131757114819123212897500810087015748205562614251410818122967399030151040544000563841334553718469935435435467196184665715776274355094471974036803615388313095637066824428688301387559074204015990782977635088047810891072724763113879034313256582868462323549141603475107584159170279311985555035822254439699354641467841523895459190280971487264907972306090449968125859834702627544039374770757804202780369083049631377117943503836158566134919890165392965694050010089785271180956974707841066789578714463804030217977213138932711313311673101336981407798868338574571646697479192174043005729926344062133712267722538847635563454980776602355539986984320762864338177037919835721981686778834558429264194379257521818498431326991615024245632036376472844033831041082865649867453234086495085785897620758602105639344460383483879837994732204331335249564434458633345708439547881275060781028856140511029543559841701048277393119691261302356763314623124427357421753631218361407626116820986377721964654181839884670481278855478057996766639496909094607181503284084821580817995489740980323820218685313435967428474842973086612053963343516426226771094376179468881265734324847319127862733279299033951360912038720313525324094079916937921290391173035983474894312808532257620563284126400481460163180987618432784215807933623038747129658746767737999870125917269554155887740155308886259497202672935871853706835670467770080598813171256855182510726902033818328368569915805303784312301890212694874227119220544172084552511408717615136830401766455214293141216171050374325461714383991698910564587610624980490526840861990674615172112493813749497898151186927777122955666180439323595468816129418014664347852590958362752922841159054568358354108159485566264221008508127941168192513144760720303715640604755054290633421601734103622748053919536319416025380484868142967373186019970714662893713233834399238357795019603619284595839414945178963942707310299674873908104634979966232181071013259653467885733418936194081202149071958107062125873498848807502257018093517304220495114497635240876547262237411350327960679115197531609627900227913193653254580253539005743563270152329126178570329413401577715075363838562221558204219798925982825556469998988615897432425107152113543617151738802778259560442930074253918797315241708532198010528564246933829811859278710445896556638416265987381678070434371355795025956293319362293063591248665429733880825207421011852020394068840244110140622151494488609575671090387230241296949998536132398625008053543954239573998167556201366323875845409929752349853515625e-1644")
+      && check(convert(0xcccaaacccaaacccaULL, 0xaacccaaacccaaaccULL),
+               "-99658331877181425640389193712445288804009112642407197633229907048864350192381814628233384153539524368748305269642704450459572458913058829202094408933558533552137589226430537671503754737153845553845646099179512540696038707395491223325946106007770844660381340028079827237033670900446083793353682761885084154898636897779677124010119288945740273072415898996441722571487815052387317025675191665761918119006431828756780493604546658949166486641354783002536071366287780290680620995991797712341457334946893188786269086688063732222194404683551757689083590842400866213237312413463207537587813396338061744078437770542720749055069473347142994267706326342325536219464867910547533482061181116137767384001927599515332824741827726661184966512254203502805790565338206862173475388342339711722457620964017690492860707751327158273522191943184085888284707357024653025991470473697475045491586713324994056478341556198451786713470909185879382607340766256394396819602885198511409676789226542867632933493115191296"))
+    exit(0);
+  else
+    exit(1);
+}
+
+#else // CXX_LONG_DOUBLE_BINARY_FORMAT != FLOAT_INTEL_DOUBLE_EXTENDED
+
+int
+main() {
+  exit(1);
+}
+
+#endif // CXX_LONG_DOUBLE_BINARY_FORMAT != FLOAT_INTEL_DOUBLE_EXTENDED
+
+#elif SIZEOF_LONG_DOUBLE == 8
+
+double
+convert(uint32_t msp, uint32_t lsp) {
+  union {
+    long double value;
+    struct {
+#ifdef WORDS_BIGENDIAN
+      uint32_t msp;
+      uint32_t lsp;
+#else
+      uint32_t lsp;
+      uint32_t msp;
+#endif
+    } parts;
+  } u;
+
+  u.parts.msp = msp;
+  u.parts.lsp = lsp;
+  return u.value;
+}
+
+#if CXX_LONG_DOUBLE_BINARY_FORMAT == FLOAT_IEEE754_DOUBLE
+
+int
+main() {
+  if (check(convert(0xaaacccaaUL, 0xacccaaacUL),
+            "-4.018242396032647e-103")
+      && check(convert(0xcccaaaccUL, 0xcaaacccaUL),
+               "-85705035845709846787631445265530356117787053916987832397725696"))
+    exit(0);
+  else
+    exit(1);
+}
+
+#else // CXX_LONG_DOUBLE_BINARY_FORMAT != FLOAT_IEEE754_DOUBLE
+
+int
+main() {
+  exit(1);
+}
+
+#endif // CXX_LONG_DOUBLE_BINARY_FORMAT != FLOAT_IEEE754_DOUBLE
+
+#else // SIZEOF_LONG_DOUBLE != 8
+
+int
+main() {
+  exit(1);
+}
+
+#endif // SIZEOF_LONG_DOUBLE != 8
+
+_ACEOF
+rm -f conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && { ac_try='./conftest$ac_exeext'
+  { (case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_try") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  { $as_echo "$as_me:$LINENO: result: yes" >&5
+$as_echo "yes" >&6; }
+  ac_cxx_long_double_exact_output=1
+else
+  $as_echo "$as_me: program exited with status $ac_status" >&5
+$as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+( exit $ac_status )
+{ $as_echo "$as_me:$LINENO: result: no" >&5
+$as_echo "no" >&6; }
+  ac_cxx_long_double_exact_output=0
+fi
+rm -rf conftest.dSYM
+rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
+fi
+
+
+
+
+cat >>confdefs.h <<\_ACEOF
+#define CXX_LONG_DOUBLE_EXACT_OUTPUT $ac_cxx_long_double_output
 _ACEOF
 
 
@@ -16502,7 +17121,7 @@ else
 JAVA_TEST=Test.java
 CLASS_TEST=Test.class
 cat << \EOF > $JAVA_TEST
-/* #line 16505 "configure" */
+/* #line 17124 "configure" */
 public class Test {
 public enum Relation_Symbol {
     /*! Less than. */
@@ -16693,7 +17312,7 @@ EOF
 if uudecode$EXEEXT Test.uue; then
         ac_cv_prog_uudecode_base64=yes
 else
-        echo "configure: 16696: uudecode had trouble decoding base 64 file 'Test.uue'" >&5
+        echo "configure: 17315: uudecode had trouble decoding base 64 file 'Test.uue'" >&5
         echo "configure: failed file was:" >&5
         cat Test.uue >&5
         ac_cv_prog_uudecode_base64=no
@@ -16812,7 +17431,7 @@ else
 JAVA_TEST=Test.java
 CLASS_TEST=Test.class
 cat << \EOF > $JAVA_TEST
-/* #line 16815 "configure" */
+/* #line 17434 "configure" */
 public class Test {
 public enum Relation_Symbol {
     /*! Less than. */
@@ -16861,7 +17480,7 @@ JAVA_TEST=Test.java
 CLASS_TEST=Test.class
 TEST=Test
 cat << \EOF > $JAVA_TEST
-/* [#]line 16864 "configure" */
+/* [#]line 17483 "configure" */
 public class Test {
 public static void main (String args[]) {
         System.exit (0);
@@ -19419,13 +20038,13 @@ if test "${lt_cv_nm_interface+set}" = set; then
 else
   lt_cv_nm_interface="BSD nm"
   echo "int some_variable = 0;" > conftest.$ac_ext
-  (eval echo "\"\$as_me:19422: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:20041: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:19425: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
+  (eval echo "\"\$as_me:20044: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
   (eval "$NM \"conftest.$ac_objext\"" 2>conftest.err > conftest.out)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:19428: output\"" >&5)
+  (eval echo "\"\$as_me:20047: output\"" >&5)
   cat conftest.out >&5
   if $GREP 'External.*some_variable' conftest.out > /dev/null; then
     lt_cv_nm_interface="MS dumpbin"
@@ -20630,7 +21249,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 20633 "configure"' > conftest.$ac_ext
+  echo '#line 21252 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -22716,11 +23335,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:22719: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:23338: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:22723: \$? = $ac_status" >&5
+   echo "$as_me:23342: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -23055,11 +23674,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:23058: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:23677: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:23062: \$? = $ac_status" >&5
+   echo "$as_me:23681: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -23160,11 +23779,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:23163: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:23782: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:23167: \$? = $ac_status" >&5
+   echo "$as_me:23786: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -23215,11 +23834,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:23218: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:23837: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:23222: \$? = $ac_status" >&5
+   echo "$as_me:23841: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -26015,7 +26634,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 26018 "configure"
+#line 26637 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -26111,7 +26730,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 26114 "configure"
+#line 26733 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -28131,11 +28750,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:28134: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:28753: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:28138: \$? = $ac_status" >&5
+   echo "$as_me:28757: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -28230,11 +28849,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:28233: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:28852: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:28237: \$? = $ac_status" >&5
+   echo "$as_me:28856: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -28282,11 +28901,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:28285: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:28904: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:28289: \$? = $ac_status" >&5
+   echo "$as_me:28908: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized

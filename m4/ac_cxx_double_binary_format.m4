@@ -85,8 +85,8 @@ main() {
 
 #endif // SIZEOF_DOUBLE != 8
 ]])],
-  AC_DEFINE(CXX_DOUBLE_BINARY_FORMAT, float_ieee754_double,
-    [The binary format of C++ doubles, if supported; undefined otherwise.])
+  AC_DEFINE(CXX_DOUBLE_BINARY_FORMAT, FLOAT_IEEE754_DOUBLE,
+    [The unique code of the binary format of C++ doubles, if supported; undefined otherwise.])
   ac_cxx_double_binary_format="IEEE754 Double Precision")
 
 AC_MSG_RESULT($ac_cxx_double_binary_format)

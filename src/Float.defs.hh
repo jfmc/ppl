@@ -190,7 +190,17 @@ class Float : public False { };
 template <>
 class Float<float> : public True {
 public:
-  typedef PPL_CXX_FLOAT_BINARY_FORMAT Binary;
+#if CXX_FLOAT_BINARY_FORMAT == FLOAT_IEEE754_SINGLE
+  typedef float_ieee754_single Binary;
+#elif CXX_FLOAT_BINARY_FORMAT == FLOAT_IEEE754_DOUBLE
+  typedef float_ieee754_double Binary;
+#elif CXX_FLOAT_BINARY_FORMAT == FLOAT_IEEE754_QUAD
+  typedef float_ieee754_quad Binary;
+#elif CXX_FLOAT_BINARY_FORMAT == FLOAT_INTEL_DOUBLE_EXTENDED
+  typedef float_intel_double_extended Binary;
+#else
+#error "invalid value for CXX_FLOAT_BINARY_FORMAT"
+#endif
   union {
     float number;
     Binary binary;
@@ -205,7 +215,17 @@ public:
 template <>
 class Float<double> : public True {
 public:
-  typedef PPL_CXX_DOUBLE_BINARY_FORMAT Binary;
+#if CXX_DOUBLE_BINARY_FORMAT == FLOAT_IEEE754_SINGLE
+  typedef float_ieee754_single Binary;
+#elif CXX_DOUBLE_BINARY_FORMAT == FLOAT_IEEE754_DOUBLE
+  typedef float_ieee754_double Binary;
+#elif CXX_DOUBLE_BINARY_FORMAT == FLOAT_IEEE754_QUAD
+  typedef float_ieee754_quad Binary;
+#elif CXX_DOUBLE_BINARY_FORMAT == FLOAT_INTEL_DOUBLE_EXTENDED
+  typedef float_intel_double_extended Binary;
+#else
+#error "invalid value for CXX_DOUBLE_BINARY_FORMAT"
+#endif
   union {
     double number;
     Binary binary;
@@ -220,7 +240,17 @@ public:
 template <>
 class Float<long double> : public True {
 public:
-  typedef PPL_CXX_LONG_DOUBLE_BINARY_FORMAT Binary;
+#if CXX_LONG_DOUBLE_BINARY_FORMAT == FLOAT_IEEE754_SINGLE
+  typedef float_ieee754_single Binary;
+#elif CXX_LONG_DOUBLE_BINARY_FORMAT == FLOAT_IEEE754_DOUBLE
+  typedef float_ieee754_double Binary;
+#elif CXX_LONG_DOUBLE_BINARY_FORMAT == FLOAT_IEEE754_QUAD
+  typedef float_ieee754_quad Binary;
+#elif CXX_LONG_DOUBLE_BINARY_FORMAT == FLOAT_INTEL_DOUBLE_EXTENDED
+  typedef float_intel_double_extended Binary;
+#else
+#error "invalid value for CXX_LONG_DOUBLE_BINARY_FORMAT"
+#endif
   union {
     long double number;
     Binary binary;

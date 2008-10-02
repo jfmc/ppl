@@ -597,6 +597,16 @@ AC_CHECK_FPU_CONTROL
 # Check whether the C++ compiler provides proper long doubles.
 AC_CXX_PROVIDES_PROPER_LONG_DOUBLE
 
+# Unique codes for the floating point binary formats.
+AC_DEFINE(FLOAT_IEEE754_SINGLE, 1,
+  [Unique (nonzero) code for the IEEE 754 Single Precision floating point format.])
+AC_DEFINE(FLOAT_IEEE754_DOUBLE, 2,
+  [Unique (nonzero) code for the IEEE 754 Double Precision floating point format.])
+AC_DEFINE(FLOAT_IEEE754_QUAD, 3,
+  [Unique (nonzero) code for the IEEE 754 Quad Precision floating point format.])
+AC_DEFINE(FLOAT_INTEL_DOUBLE_EXTENDED, 4,
+  [Unique (nonzero) code for the Intel Double-Extended floating point format.])
+
 # Detect the binary format used by C++ floats.
 AC_CXX_FLOAT_BINARY_FORMAT
 
@@ -605,6 +615,18 @@ AC_CXX_DOUBLE_BINARY_FORMAT
 
 # Detect the binary format used by C++ long doubles.
 AC_CXX_LONG_DOUBLE_BINARY_FORMAT
+
+# Checks whether the C++ run-time systems provides exact output for
+# floats.
+AC_CXX_FLOAT_EXACT_OUTPUT
+
+# Checks whether the C++ run-time systems provides exact output for
+# doubles.
+AC_CXX_DOUBLE_EXACT_OUTPUT
+
+# Checks whether the C++ run-time systems provides exact output for
+# long doubles.
+AC_CXX_LONG_DOUBLE_EXACT_OUTPUT
 
 # Check whether the C++ compiler supports flexible arrays.
 AC_CXX_SUPPORTS_FLEXIBLE_ARRAYS
