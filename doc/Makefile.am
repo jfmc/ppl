@@ -222,13 +222,16 @@ DEVREF_JAVA_INTERFACE_HTML_DIR = \
 ppl-devref-java-interface-@VERSION@-html
 
 JAVA_INTERFACE_JAVA_FILES = \
-@top_builddir@/interfaces/Java/Java_interface.dox \
+../interfaces/Java/parma_polyhedra_library/Fake_Class_for_Doxygen.java \
 ../interfaces/Java/parma_polyhedra_library/By_Reference.java \
 ../interfaces/Java/parma_polyhedra_library/Coefficient.java \
+../interfaces/Java/parma_polyhedra_library/Complexity_Class.java \
 ../interfaces/Java/parma_polyhedra_library/Congruence.java \
 ../interfaces/Java/parma_polyhedra_library/Congruence_System.java \
 ../interfaces/Java/parma_polyhedra_library/Constraint.java \
 ../interfaces/Java/parma_polyhedra_library/Constraint_System.java \
+../interfaces/Java/parma_polyhedra_library/Control_Parameter_Name.java \
+../interfaces/Java/parma_polyhedra_library/Control_Parameter_Value.java \
 ../interfaces/Java/parma_polyhedra_library/Degenerate_Element.java \
 ../interfaces/Java/parma_polyhedra_library/Domain_Error_Exception.java \
 ../interfaces/Java/parma_polyhedra_library/Generator.java \
@@ -251,6 +254,7 @@ JAVA_INTERFACE_JAVA_FILES = \
 ../interfaces/Java/parma_polyhedra_library/MIP_Problem_Status.java \
 ../interfaces/Java/parma_polyhedra_library/Optimization_Mode.java \
 ../interfaces/Java/parma_polyhedra_library/Overflow_Error_Exception.java \
+../interfaces/Java/parma_polyhedra_library/Pair.java \
 ../interfaces/Java/parma_polyhedra_library/Parma_Polyhedra_Library.java \
 ../interfaces/Java/parma_polyhedra_library/Partial_Function.java \
 ../interfaces/Java/parma_polyhedra_library/Poly_Con_Relation.java \
@@ -279,7 +283,6 @@ $(JAVA_INTERFACE_JAVA_FILES) \
 ##### Configuration Dependent Foreign Language Manuals #####
 
 # FIXME: add the automatically-generated files.
-# FIXME: generate just HTML or all formats?
 
 # Configuration Dependent C Language Interface Manuals.
 if BUILD_C_INTERFACE
@@ -1045,13 +1048,15 @@ SED_JAVA_OPTION = \
   -e 's/<PPL_SED_USEPACKAGE_OCAMLDOC>//'
 
 # CHECKME: check the correct input values for Doxygen.
-# Add .java files from Java/parma_ppolyehdra_library ?
+# Note that here we are including a whole directory.
 SED_JAVA_INPUT_USER = \
-../interfaces/Java/Java_interface.dox \
+@srcdir@/../interfaces/Java/parma_polyhedra_library \
 @srcdir@/gpl.dox @srcdir@/fdl.dox
 
+# CHECKME: check the correct input values for Doxygen.
+# Note that here we are including a whole directory.
 SED_JAVA_INPUT_DEVREF = \
-../interfaces/Java/Java_interface.dox \
+@srcdir@/../interfaces/Java/parma_polyhedra_library \
 @srcdir@/../interfaces/Java/jni/ppl_java_common.cc \
 @srcdir@/../interfaces/Java/jni/ppl_java_common.defs.hh \
 @srcdir@/../interfaces/Java/jni/ppl_java_common.inlines.hh \
