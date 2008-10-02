@@ -39,7 +39,6 @@ clpq.pl script_clpq \
 clpq2.pl script_clpq2 script_clpq2_int8 \
 $(CLPQ_TESTS) \
 pl_check.pl \
-pl_grid_check.pl \
 expected_clpq_mpz expected_clpq2_mpz expected_pchk_mpz \
 expected_clpq_int8 expected_clpq2_int8 expected_pchk_int8 \
 expected_clpq_int16 expected_clpq2_int16 expected_pchk_int16 \
