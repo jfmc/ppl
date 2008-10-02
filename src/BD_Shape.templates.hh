@@ -1646,9 +1646,22 @@ BD_Shape<T>::shortest_path_closure_assign() const {
         for (dimension_type j = num_dimensions + 1; j-- > 0; ) {
           const N& x_dbm_k_j = x_dbm_k[j];
           if (!is_plus_infinity(x_dbm_k_j)) {
+#if 1 // TEMPORARY FOR DEBUGGING.
+            N old_value = x.dbm[i][j];
+#endif
             // Rounding upward for correctness.
             add_assign_r(sum, x_dbm_i_k, x_dbm_k_j, ROUND_UP);
             min_assign(x_dbm_i[j], sum);
+#if 1 // TEMPORARY FOR DEBUGGING
+            if (old_value < x.dbm[i][j]) {
+              std::cerr << "WHAT?  new_value > old_value !!!! \n";
+              std::cerr << "old_value (dbm[i][j]) = " << old_value << "\n";
+              std::cerr << "dbm[i][k] = " << x_dbm_i_k << "\n";
+              std::cerr << "dbm[k][j] = " << x_dbm_k_j << "\n";
+              std::cerr << "sum = " << sum << "\n";
+              std::cerr << "new_value (dbm[i][j]) = " << x.dbm[i][j] << "\n";
+            }
+#endif
           }
         }
     }
