@@ -32,9 +32,6 @@ m4_include(`ppl_interface_generator_ocaml_procedure_generators.m4')
 m4_include(`ppl_interface_generator_ocaml_test_ml_code.m4')
 dnl
 dnl This file generates ppl_ocaml_test.ml.
-m4_divert`'
-m4_include(`ppl_ocaml_tests_common')
-m4_divert(-1)
 
 dnl ==================================================================
 dnl Print name of domain being tested
@@ -57,6 +54,7 @@ dnl Test all methods
 dnl ==================================================================
 
 m4_divert`'dnl
+m4_include(`ppl_ocaml_tests_common')
 m4_all_code`'dnl
 
 print_newline();;
