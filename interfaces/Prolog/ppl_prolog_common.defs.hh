@@ -276,17 +276,6 @@ public:
   }
 };
 
-#if 0 // Functions already declared in ppl_prolog_sysdep.hh
-int
-Prolog_get_Coefficient(Prolog_term_ref t, Coefficient& n);
-
-int
-Prolog_unify_Coefficient(Prolog_term_ref t, const Coefficient& n);
-
-int
-Prolog_put_Coefficient(Prolog_term_ref t, const Coefficient& n);
-#endif // Functions already declared in ppl_prolog_sysdep.hh
-
 // For Prolog lists.
 extern Prolog_atom a_nil;
 
@@ -356,46 +345,6 @@ extern Prolog_atom a_any;
 // Boolean constants.
 extern Prolog_atom a_true;
 extern Prolog_atom a_false;
-
-
-#if 0 // Declarations of atoms that are only used in ppl_prolog_common.cc
-
-// Denotes a universe degenerate kind.
-extern Prolog_atom a_universe;
-
-// Denote maximization/minimization modes for optimization problems.
-extern Prolog_atom a_max;
-extern Prolog_atom a_min;
-
-// Denote control_parameters for MIP_Problems.
-extern Prolog_atom a_pricing;
-extern Prolog_atom a_pricing_steepest_edge_float;
-extern Prolog_atom a_pricing_steepest_edge_exact;
-extern Prolog_atom a_pricing_textbook;
-
-// Denote possible outcomes of MIP problems solution attempts.
-extern Prolog_atom a_unfeasible;
-extern Prolog_atom a_unbounded;
-extern Prolog_atom a_optimized;
-
-// Default timeout exception atom.
-extern Prolog_atom a_time_out;
-
-// "Out of memory" exception atom.
-extern Prolog_atom a_out_of_memory;
-extern Prolog_atom out_of_memory_exception_atom;
-
-// Other atoms for exceptional terms.
-extern Prolog_atom a_ppl_invalid_argument;
-extern Prolog_atom a_ppl_overflow_error;
-extern Prolog_atom a_ppl_domain_error;
-extern Prolog_atom a_ppl_length_error;
-extern Prolog_atom a_ppl_representation_error;
-extern Prolog_atom a_expected;
-extern Prolog_atom a_found;
-extern Prolog_atom a_where;
-
-#endif // Declarations of atoms that are only used in ppl_prolog_common.cc
 
 
 struct Prolog_Interface_Atom {
