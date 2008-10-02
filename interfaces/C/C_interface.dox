@@ -978,165 +978,6 @@ ppl_Polyhedron_generalized_affine_preimage_lhs_rhs
  enum ppl_enum_Constraint_Type relsym,
  ppl_const_Linear_Expression_t rhs);
 
-/*! \relates ppl_Polyhedron_tag \brief
-  If the polyhedron \p y is contained in (or equal to) the polyhedron
-  \p x, assigns to \p x the \extref{BHRZ03_widening, BHRZ03-widening} of
-  \p x and \p y.  If \p tp is not the null pointer, the
-  \extref{Widening_with_Tokens, widening with tokens} delay technique
-  is applied with <CODE>*tp</CODE> available tokens.
-*/
-int
-ppl_Polyhedron_BHRZ03_widening_assign_with_tokens
-(ppl_Polyhedron_t x, ppl_const_Polyhedron_t y, unsigned* tp);
-
-/*! \relates ppl_Polyhedron_tag \brief
-  If the polyhedron \p y is contained in (or equal to) the polyhedron
-  \p x, assigns to \p x the \extref{H79_widening, H79-widening} of \p x
-  and \p y.  If \p tp is not the null pointer, the
-  \extref{Widening_with_Tokens, widening with tokens} delay technique is
-  applied with <CODE>*tp</CODE> available tokens.
-*/
-int
-ppl_Polyhedron_H79_widening_assign_with_tokens
-(ppl_Polyhedron_t x, ppl_const_Polyhedron_t y, unsigned* tp);
-
-/*! \relates ppl_Polyhedron_tag \brief
-  If the polyhedron \p y is contained in (or equal to) the polyhedron
-  \p x, assigns to \p x the \extref{BHRZ03_widening, BHRZ03-widening} of
-  \p x and \p y.
-*/
-int
-ppl_Polyhedron_BHRZ03_widening_assign
-(ppl_Polyhedron_t x, ppl_const_Polyhedron_t y);
-
-/*! \relates ppl_Polyhedron_tag \brief
-  If the polyhedron \p y is contained in (or equal to) the polyhedron
-  \p x, assigns to \p x the \extref{H79_widening, H79-widening} of \p x
-  and \p y.
-*/
-int
-ppl_Polyhedron_H79_widening_assign
-(ppl_Polyhedron_t x, ppl_const_Polyhedron_t y);
-
-/*! \relates ppl_Polyhedron_tag \brief
-  If the polyhedron \p y is contained in (or equal to) the polyhedron
-  \p x, assigns to \p x the \extref{BHRZ03_widening, BHRZ03-widening} of
-  \p x and \p y intersected with the constraints in \p cs that are
-  satisfied by all the points of \p x.  If \p tp is not the null pointer,
-  the \extref{Widening_with_Tokens, widening with tokens} delay technique
-  is applied with <CODE>*tp</CODE> available tokens.
-*/
-int
-ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens
-(ppl_Polyhedron_t x,
- ppl_const_Polyhedron_t y,
- ppl_const_Constraint_System_t cs,
- unsigned* tp);
-
-/*! \relates ppl_Polyhedron_tag \brief
-  If the polyhedron \p y is contained in (or equal to) the polyhedron
-  \p x, assigns to \p x the \extref{H79_widening, H79-widening} of \p x
-  and \p y intersected with the constraints in \p cs that are
-  satisfied by all the points of \p x. If \p tp is not the null
-  pointer, the \extref{Widening_with_Tokens, widening with tokens} delay
-  technique is applied with <CODE>*tp</CODE> available tokens.
-*/
-int
-ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens
-(ppl_Polyhedron_t x,
- ppl_const_Polyhedron_t y,
- ppl_const_Constraint_System_t cs,
- unsigned* tp);
-
-/*! \relates ppl_Polyhedron_tag \brief
-  If the polyhedron \p y is contained in (or equal to) the polyhedron
-  \p x, assigns to \p x the \extref{BHRZ03_widening, BHRZ03-widening} of
-  \p x and \p y intersected with the constraints in \p cs that are
-  satisfied by all the points of \p x.
-*/
-int
-ppl_Polyhedron_limited_BHRZ03_extrapolation_assign
-(ppl_Polyhedron_t x,
- ppl_const_Polyhedron_t y,
- ppl_const_Constraint_System_t cs);
-
-/*! \relates ppl_Polyhedron_tag \brief
-  If the polyhedron \p y is contained in (or equal to) the polyhedron
-  \p x, assigns to \p x the \extref{H79_widening, H79-widening} of \p x
-  and \p y intersected with the constraints in \p cs that are
-  satisfied by all the points of \p x.
-*/
-int
-ppl_Polyhedron_limited_H79_extrapolation_assign
-(ppl_Polyhedron_t x,
- ppl_const_Polyhedron_t y,
- ppl_const_Constraint_System_t cs);
-
-/*! \relates ppl_Polyhedron_tag \brief
-  If the polyhedron \p y is contained in (or equal to) the polyhedron
-  \p x, assigns to \p x the \extref{BHRZ03_widening, BHRZ03-widening} of
-  \p x and \p y intersected with the constraints in \p cs that are
-  satisfied by all the points of \p x, further intersected with all
-  the constraints of the form \f$\pm v \leq r\f$ and \f$\pm v < r\f$,
-  with \f$r \in \Qset\f$, that are satisfied by all the points of \p
-  x. If \p tp is not the null pointer,
-  the \extref{Widening_with_Tokens, widening with tokens} delay technique
-  is applied with <CODE>*tp</CODE> available tokens.
-*/
-int
-ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens
-(ppl_Polyhedron_t x,
- ppl_const_Polyhedron_t y,
- ppl_const_Constraint_System_t cs,
- unsigned* tp);
-
-/*! \relates ppl_Polyhedron_tag \brief
-  If the polyhedron \p y is contained in (or equal to) the polyhedron
-  \p x, assigns to \p x the \extref{H79_widening, H79-widening} of \p x
-  and \p y intersected with the constraints in \p cs that are
-  satisfied by all the points of \p x, further intersected with all
-  the constraints of the form \f$\pm v \leq r\f$ and \f$\pm v < r\f$,
-  with \f$r \in \Qset\f$, that are satisfied by all the points of \p x.
-  If \p tp is not the null pointer,
-  the \extref{Widening_with_Tokens, widening with tokens} delay technique
-  is applied with <CODE>*tp</CODE> available tokens.
-*/
-int
-ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens
-(ppl_Polyhedron_t x,
- ppl_const_Polyhedron_t y,
- ppl_const_Constraint_System_t cs,
- unsigned* tp);
-
-/*! \relates ppl_Polyhedron_tag \brief
-  If the polyhedron \p y is contained in (or equal to) the polyhedron
-  \p x, assigns to \p x the \extref{BHRZ03_widening, BHRZ03-widening} of
-  \p x and \p y intersected with the constraints in \p cs that are
-  satisfied by all the points of \p x, further intersected with all
-  the constraints of the form \f$\pm v \leq r\f$ and \f$\pm v < r\f$,
-  with \f$r \in \Qset\f$, that are satisfied by all the points of \p x.
-*/
-int
-ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign
-(ppl_Polyhedron_t x,
- ppl_const_Polyhedron_t y,
- ppl_const_Constraint_System_t cs);
-
-/*! \relates ppl_Polyhedron_tag \brief
-  If the polyhedron \p y is contained in (or equal to) the polyhedron
-  \p x, assigns to \p x the \extref{H79_widening, H79-widening} of \p x
-  and \p y intersected with the constraints in \p cs that are
-  satisfied by all the points of \p x, further intersected with all
-  the constraints of the form \f$\pm v \leq r\f$ and \f$\pm v < r\f$,
-  with \f$r \in \Qset\f$, that are satisfied by all the points of \p
-  x.
-*/
-int
-ppl_Polyhedron_bounded_H79_extrapolation_assign
-(ppl_Polyhedron_t x,
- ppl_const_Polyhedron_t y,
- ppl_const_Constraint_System_t cs);
-
 /*@}*/ /* Space Dimension Preserving Functions that May Modify [...] */
 
 
@@ -1373,6 +1214,164 @@ ppl_Polyhedron_poly_hull_assign
 int
 ppl_Polyhedron_poly_difference_assign
 (ppl_Polyhedron_t x, ppl_const_Polyhedron_t y);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  If the polyhedron \p y is contained in (or equal to) the polyhedron
+  \p x, assigns to \p x the \extref{BHRZ03_widening, BHRZ03-widening} of
+  \p x and \p y.  If \p tp is not the null pointer, the
+  \extref{Widening_with_Tokens, widening with tokens} delay technique
+  is applied with <CODE>*tp</CODE> available tokens.
+*/
+int
+ppl_Polyhedron_BHRZ03_widening_assign_with_tokens
+(ppl_Polyhedron_t x, ppl_const_Polyhedron_t y, unsigned* tp);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  If the polyhedron \p y is contained in (or equal to) the polyhedron
+  \p x, assigns to \p x the \extref{H79_widening, H79-widening} of \p x
+  and \p y.  If \p tp is not the null pointer, the
+  \extref{Widening_with_Tokens, widening with tokens} delay technique is
+  applied with <CODE>*tp</CODE> available tokens.
+*/
+int
+ppl_Polyhedron_H79_widening_assign_with_tokens
+(ppl_Polyhedron_t x, ppl_const_Polyhedron_t y, unsigned* tp);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  If the polyhedron \p y is contained in (or equal to) the polyhedron
+  \p x, assigns to \p x the \extref{BHRZ03_widening, BHRZ03-widening} of
+  \p x and \p y.
+*/
+int
+ppl_Polyhedron_BHRZ03_widening_assign
+(ppl_Polyhedron_t x, ppl_const_Polyhedron_t y);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  If the polyhedron \p y is contained in (or equal to) the polyhedron
+  \p x, assigns to \p x the \extref{H79_widening, H79-widening} of \p x
+  and \p y.
+*/
+int
+ppl_Polyhedron_H79_widening_assign
+(ppl_Polyhedron_t x, ppl_const_Polyhedron_t y);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  If the polyhedron \p y is contained in (or equal to) the polyhedron
+  \p x, assigns to \p x the \extref{BHRZ03_widening, BHRZ03-widening} of
+  \p x and \p y intersected with the constraints in \p cs that are
+  satisfied by all the points of \p x.  If \p tp is not the null pointer,
+  the \extref{Widening_with_Tokens, widening with tokens} delay technique
+  is applied with <CODE>*tp</CODE> available tokens.
+*/
+int
+ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens
+(ppl_Polyhedron_t x,
+ ppl_const_Polyhedron_t y,
+ ppl_const_Constraint_System_t cs,
+ unsigned* tp);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  If the polyhedron \p y is contained in (or equal to) the polyhedron
+  \p x, assigns to \p x the \extref{H79_widening, H79-widening} of \p x
+  and \p y intersected with the constraints in \p cs that are
+  satisfied by all the points of \p x. If \p tp is not the null
+  pointer, the \extref{Widening_with_Tokens, widening with tokens} delay
+  technique is applied with <CODE>*tp</CODE> available tokens.
+*/
+int
+ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens
+(ppl_Polyhedron_t x,
+ ppl_const_Polyhedron_t y,
+ ppl_const_Constraint_System_t cs,
+ unsigned* tp);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  If the polyhedron \p y is contained in (or equal to) the polyhedron
+  \p x, assigns to \p x the \extref{BHRZ03_widening, BHRZ03-widening} of
+  \p x and \p y intersected with the constraints in \p cs that are
+  satisfied by all the points of \p x.
+*/
+int
+ppl_Polyhedron_limited_BHRZ03_extrapolation_assign
+(ppl_Polyhedron_t x,
+ ppl_const_Polyhedron_t y,
+ ppl_const_Constraint_System_t cs);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  If the polyhedron \p y is contained in (or equal to) the polyhedron
+  \p x, assigns to \p x the \extref{H79_widening, H79-widening} of \p x
+  and \p y intersected with the constraints in \p cs that are
+  satisfied by all the points of \p x.
+*/
+int
+ppl_Polyhedron_limited_H79_extrapolation_assign
+(ppl_Polyhedron_t x,
+ ppl_const_Polyhedron_t y,
+ ppl_const_Constraint_System_t cs);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  If the polyhedron \p y is contained in (or equal to) the polyhedron
+  \p x, assigns to \p x the \extref{BHRZ03_widening, BHRZ03-widening} of
+  \p x and \p y intersected with the constraints in \p cs that are
+  satisfied by all the points of \p x, further intersected with all
+  the constraints of the form \f$\pm v \leq r\f$ and \f$\pm v < r\f$,
+  with \f$r \in \Qset\f$, that are satisfied by all the points of \p
+  x. If \p tp is not the null pointer,
+  the \extref{Widening_with_Tokens, widening with tokens} delay technique
+  is applied with <CODE>*tp</CODE> available tokens.
+*/
+int
+ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens
+(ppl_Polyhedron_t x,
+ ppl_const_Polyhedron_t y,
+ ppl_const_Constraint_System_t cs,
+ unsigned* tp);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  If the polyhedron \p y is contained in (or equal to) the polyhedron
+  \p x, assigns to \p x the \extref{H79_widening, H79-widening} of \p x
+  and \p y intersected with the constraints in \p cs that are
+  satisfied by all the points of \p x, further intersected with all
+  the constraints of the form \f$\pm v \leq r\f$ and \f$\pm v < r\f$,
+  with \f$r \in \Qset\f$, that are satisfied by all the points of \p x.
+  If \p tp is not the null pointer,
+  the \extref{Widening_with_Tokens, widening with tokens} delay technique
+  is applied with <CODE>*tp</CODE> available tokens.
+*/
+int
+ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens
+(ppl_Polyhedron_t x,
+ ppl_const_Polyhedron_t y,
+ ppl_const_Constraint_System_t cs,
+ unsigned* tp);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  If the polyhedron \p y is contained in (or equal to) the polyhedron
+  \p x, assigns to \p x the \extref{BHRZ03_widening, BHRZ03-widening} of
+  \p x and \p y intersected with the constraints in \p cs that are
+  satisfied by all the points of \p x, further intersected with all
+  the constraints of the form \f$\pm v \leq r\f$ and \f$\pm v < r\f$,
+  with \f$r \in \Qset\f$, that are satisfied by all the points of \p x.
+*/
+int
+ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign
+(ppl_Polyhedron_t x,
+ ppl_const_Polyhedron_t y,
+ ppl_const_Constraint_System_t cs);
+
+/*! \relates ppl_Polyhedron_tag \brief
+  If the polyhedron \p y is contained in (or equal to) the polyhedron
+  \p x, assigns to \p x the \extref{H79_widening, H79-widening} of \p x
+  and \p y intersected with the constraints in \p cs that are
+  satisfied by all the points of \p x, further intersected with all
+  the constraints of the form \f$\pm v \leq r\f$ and \f$\pm v < r\f$,
+  with \f$r \in \Qset\f$, that are satisfied by all the points of \p x.
+*/
+int
+ppl_Polyhedron_bounded_H79_extrapolation_assign
+(ppl_Polyhedron_t x,
+ ppl_const_Polyhedron_t y,
+ ppl_const_Constraint_System_t cs);
 
 /*@}*/ /* Ad Hoc Functions for (C or NNC) Polyhedra */
 
