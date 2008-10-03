@@ -36,14 +36,15 @@ m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_to
 Define here as empty any known schematic method macros for which
 the definition is not yet implemented.
 
-m4_define(`ppl_copy_@CLASS@_iterator_code',
+m4_define(`ppl_new_@CLASS@_iterator_from_iterator_code',
 `dnl
-JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_1Iterator_build_1cpp_1object
-(JNIEnv* env, jobject  j_this, jobject j_y)
-{
+#include "parma_polyhedra_library_@CLASS@_Iterator.h"
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_@1CLASS@_1Iterator_build_1cpp_1object
+(JNIEnv* env, jobject j_this, jobject j_y) {
   @CPP_CLASS@::iterator* y_ptr
-    = reinterpret_cast<@CPP_CLASS@::iterator*>
-    (get_ptr(env, j_y));
+    = reinterpret_cast<@CPP_CLASS@::iterator*>(get_ptr(env, j_y));
   @CPP_CLASS@::iterator* this_ptr
     = new @CPP_CLASS@::iterator(*y_ptr);
   set_ptr(env, j_this, this_ptr);
@@ -53,8 +54,8 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_1Iterator_build_1
 
 m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
 `dnl
-#include "parma_polyhedra_library_@CLASS@_Iterator.h"
-JNIEXPORT jboolean JNICALL Java_parma_1polyhedra_1library_@1CLASS@_1Iterator_equals
+JNIEXPORT jboolean JNICALL
+Java_parma_1polyhedra_1library_@1CLASS@_1Iterator_equals
 (JNIEnv* env, jobject j_this_it, jobject j_it) {
  @CPP_CLASS@::iterator* @LCLASS@_this_itr_ptr
  = reinterpret_cast<@CPP_CLASS@::iterator*>(get_ptr(env, j_this_it));
@@ -79,13 +80,28 @@ return j_it;
 }
 ')
 
-m4_define(`ppl_@CLASS@_delete_iterator_code',
+m4_define(`ppl_delete_@CLASS@_iterator_code',
 `dnl
-JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_delete_1iterator
-(JNIEnv* env) {
-jclass j_it_class = env->FindClass("parma_polyhedra_library/@CLASS@_Iterator");
- if (!is_java_marked(env, j_it_class))
-  delete j_it_class;
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_@1CLASS@_1Iterator_free
+(JNIEnv* env, jobject j_this) {
+  if (!is_java_marked(env, j_this)) {
+    @CPP_CLASS@::iterator* this_ptr
+      = reinterpret_cast<@CPP_CLASS@::iterator*>(get_ptr(env, j_this));
+    delete this_ptr;
+    void* null_ptr = 0;
+    set_ptr(env, j_this, null_ptr);
+  }
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_@1CLASS@_1Iterator_finalize
+(JNIEnv* env, jobject j_this) {
+  if (!is_java_marked(env, j_this)) {
+    @CPP_CLASS@::iterator* this_ptr
+      = reinterpret_cast<@CPP_CLASS@::iterator*>(get_ptr(env, j_this));
+    delete this_ptr;
+  }
 }
 
 ')

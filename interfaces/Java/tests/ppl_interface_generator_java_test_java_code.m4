@@ -36,7 +36,7 @@ m4_define(`ppl_delete_@CLASS@_code', `')
 
 Define here as empty any known schematic method macros for which
 the definition is not yet implemented.
-m4_define(`ppl_@CLASS@_delete_iterator_code', `')
+m4_define(`ppl_delete_@CLASS@_iterator_code', `')
 
 m4_define(`m4_run_class_code',
 `dnl
@@ -920,10 +920,10 @@ m4_define(`ppl_@CLASS@_get_disjunct_code',
 
 ')
 
-m4_define(`ppl_copy_@CLASS@_iterator_code',
+m4_define(`ppl_new_@CLASS@_iterator_from_iterator_code',
     `dnl
 {
-    PPL_Test.print_if_noisy("Testing copy_iterator: ");
+    PPL_Test.print_if_noisy("Testing new_iterator_from_iterator: ");
     @CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     @CLASS@_Iterator it_gd = gd.begin_iterator();
     @CLASS@_Iterator it_gd_copy = new @CLASS@_Iterator(it_gd);
@@ -984,7 +984,7 @@ m4_define(`ppl_@CLASS@_add_disjunct_code',
 m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
     `dnl
 {
-    PPL_Test.print_if_noisy("Testing delete_iterator: ");
+    PPL_Test.print_if_noisy("Testing iterator_equals_iterator: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     @TOPOLOGY@@CLASS@_Iterator it_gd1 = gd.begin_iterator();
     @TOPOLOGY@@CLASS@_Iterator it_gd2 = gd.begin_iterator();

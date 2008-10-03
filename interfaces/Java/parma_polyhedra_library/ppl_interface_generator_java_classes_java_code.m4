@@ -462,14 +462,16 @@ m4_define(`ppl_@CLASS@_string_code',
 
 ')
 
-m4_define(`ppl_copy_@CLASS@_iterator_code',
+m4_define(`ppl_new_@CLASS@_iterator_from_iterator_code',
 `dnl
- public @CLASS@_Iterator(@CLASS@_Iterator y) {
+%<--%<--%<-- @CLASS@_Iterator.java
+    public @CLASS@_Iterator(@CLASS@_Iterator y) {
         build_cpp_object(y);
     }
 
     private native void
         build_cpp_object(@CLASS@_Iterator y);
+
 ')
 
 m4_define(`ppl_@CLASS@_@BEGINEND@_iterator_code',
@@ -479,10 +481,12 @@ m4_define(`ppl_@CLASS@_@BEGINEND@_iterator_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_delete_iterator_code',
+m4_define(`ppl_delete_@CLASS@_iterator_code',
 `dnl
-%<--%<--%<-- @CLASS@.java
-    public native void delete_iterator();
+%<--%<--%<-- @CLASS@_Iterator.java
+    public native void free();
+
+    protected native void finalize();
 
 ')
 
