@@ -85,7 +85,7 @@ main() {
 
 #endif // SIZEOF_LONG_DOUBLE != 12
 ]])],
-  AC_DEFINE(CXX_LONG_DOUBLE_BINARY_FORMAT, FLOAT_INTEL_DOUBLE_EXTENDED,
+  AC_DEFINE(CXX_LONG_DOUBLE_BINARY_FORMAT, PPL_FLOAT_INTEL_DOUBLE_EXTENDED,
   [The unique code of the binary format of C++ long doubles, if supported; undefined otherwise.])
   ac_cxx_long_double_binary_format="Intel Double-Extended")
 
@@ -160,7 +160,7 @@ main() {
 
 #endif // SIZEOF_LONG_DOUBLE != 16
 ]])],
-  AC_DEFINE(CXX_LONG_DOUBLE_BINARY_FORMAT, FLOAT_IEEE754_QUAD,
+  AC_DEFINE(CXX_LONG_DOUBLE_BINARY_FORMAT, PPL_FLOAT_IEEE754_QUAD,
   [The unique code of the binary format of C++ long doubles, if supported; undefined otherwise.])
   ac_cxx_long_double_binary_format="IEEE754 Quad Precision")
 fi
@@ -223,7 +223,7 @@ main() {
 
 #endif // SIZEOF_LONG_DOUBLE != 16
 ]])],
-  AC_DEFINE(CXX_LONG_DOUBLE_BINARY_FORMAT, FLOAT_INTEL_DOUBLE_EXTENDED,
+  AC_DEFINE(CXX_LONG_DOUBLE_BINARY_FORMAT, PPL_FLOAT_INTEL_DOUBLE_EXTENDED,
     [The unique code of the binary format of C++ long doubles, if supported; undefined otherwise.])
   ac_cxx_long_double_binary_format="Intel Double-Extended")
 fi
@@ -286,7 +286,7 @@ main() {
 
 #endif // SIZEOF_LONG_DOUBLE != 8
 ]])],
-  AC_DEFINE(CXX_LONG_DOUBLE_BINARY_FORMAT, FLOAT_IEEE754_DOUBLE,
+  AC_DEFINE(CXX_LONG_DOUBLE_BINARY_FORMAT, PPL_FLOAT_IEEE754_DOUBLE,
     [The unique code of the binary format of C++ long doubles, if supported; undefined otherwise.])
   ac_cxx_long_double_binary_format="IEEE754 Double Precision")
 fi

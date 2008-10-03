@@ -79,7 +79,7 @@ main() {
 
 #endif // SIZEOF_FLOAT != 4
 ]])],
-  AC_DEFINE(CXX_FLOAT_BINARY_FORMAT, FLOAT_IEEE754_SINGLE,
+  AC_DEFINE(CXX_FLOAT_BINARY_FORMAT, PPL_FLOAT_IEEE754_SINGLE,
     [The binary format of C++ floats, if supported; undefined otherwise.])
   ac_cxx_float_binary_format="IEEE754 Single Precision")
 

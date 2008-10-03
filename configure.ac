@@ -83,6 +83,24 @@ AX_PREFIX_CONFIG_H
 ISODATE=`date +%Y-%m-%d`
 AC_SUBST(ISODATE)
 
+AH_TOP([
+/* Unique (nonzero) code for the IEEE 754 Single Precision
+   floating point format.  */
+# define PPL_FLOAT_IEEE754_SINGLE 1
+
+/* Unique (nonzero) code for the IEEE 754 Double Precision
+   floating point format.  */
+# define PPL_FLOAT_IEEE754_DOUBLE 2
+
+/* Unique (nonzero) code for the IEEE 754 Quad Precision
+   floating point format.  */
+# define PPL_FLOAT_IEEE754_QUAD 3
+
+/* Unique (nonzero) code for the Intel Double-Extended
+   floating point format.  */
+# define PPL_FLOAT_INTEL_DOUBLE_EXTENDED 4
+])
+
 AH_BOTTOM([
 #ifdef PPL_NDEBUG
 # define NDEBUG PPL_NDEBUG
@@ -598,16 +616,6 @@ AC_CHECK_FPU_CONTROL
 
 # Check whether the C++ compiler provides proper long doubles.
 AC_CXX_PROVIDES_PROPER_LONG_DOUBLE
-
-# Unique codes for the floating point binary formats.
-AC_DEFINE(FLOAT_IEEE754_SINGLE, 1,
-  [Unique (nonzero) code for the IEEE 754 Single Precision floating point format.])
-AC_DEFINE(FLOAT_IEEE754_DOUBLE, 2,
-  [Unique (nonzero) code for the IEEE 754 Double Precision floating point format.])
-AC_DEFINE(FLOAT_IEEE754_QUAD, 3,
-  [Unique (nonzero) code for the IEEE 754 Quad Precision floating point format.])
-AC_DEFINE(FLOAT_INTEL_DOUBLE_EXTENDED, 4,
-  [Unique (nonzero) code for the Intel Double-Extended floating point format.])
 
 # Detect the binary format used by C++ floats.
 AC_CXX_FLOAT_BINARY_FORMAT

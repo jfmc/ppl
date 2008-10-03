@@ -45,6 +45,22 @@ AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <sstream>
 #include <iostream>
 
+/* Unique (nonzero) code for the IEEE 754 Single Precision
+   floating point format.  */
+# define PPL_FLOAT_IEEE754_SINGLE 1
+
+/* Unique (nonzero) code for the IEEE 754 Double Precision
+   floating point format.  */
+# define PPL_FLOAT_IEEE754_DOUBLE 2
+
+/* Unique (nonzero) code for the IEEE 754 Quad Precision
+   floating point format.  */
+# define PPL_FLOAT_IEEE754_QUAD 3
+
+/* Unique (nonzero) code for the Intel Double-Extended
+   floating point format.  */
+# define PPL_FLOAT_INTEL_DOUBLE_EXTENDED 4
+
 bool
 check(double value, const char* text) {
   std::ostringstream ss;
@@ -76,7 +92,7 @@ convert(uint32_t msp, uint32_t lsp) {
   return u.value;
 }
 
-#if CXX_DOUBLE_BINARY_FORMAT == FLOAT_IEEE754_DOUBLE
+#if CXX_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_DOUBLE
 
 int
 main() {

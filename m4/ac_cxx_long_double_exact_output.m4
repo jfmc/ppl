@@ -46,6 +46,22 @@ AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <sstream>
 #include <iostream>
 
+/* Unique (nonzero) code for the IEEE 754 Single Precision
+   floating point format.  */
+# define PPL_FLOAT_IEEE754_SINGLE 1
+
+/* Unique (nonzero) code for the IEEE 754 Double Precision
+   floating point format.  */
+# define PPL_FLOAT_IEEE754_DOUBLE 2
+
+/* Unique (nonzero) code for the IEEE 754 Quad Precision
+   floating point format.  */
+# define PPL_FLOAT_IEEE754_QUAD 3
+
+/* Unique (nonzero) code for the Intel Double-Extended
+   floating point format.  */
+# define PPL_FLOAT_INTEL_DOUBLE_EXTENDED 4
+
 bool
 check(long double value, const char* text) {
   std::ostringstream ss;
@@ -77,7 +93,7 @@ convert(uint32_t msp, uint64_t lsp) {
   return u.value;
 }
 
-#if CXX_LONG_DOUBLE_BINARY_FORMAT == FLOAT_INTEL_DOUBLE_EXTENDED
+#if CXX_LONG_DOUBLE_BINARY_FORMAT == PPL_FLOAT_INTEL_DOUBLE_EXTENDED
 
 int
 main() {
@@ -126,7 +142,7 @@ convert(uint64_t msp, uint64_t lsp) {
   return u.value;
 }
 
-#if CXX_LONG_DOUBLE_BINARY_FORMAT == FLOAT_IEEE754_QUAD
+#if CXX_LONG_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_QUAD
 
 int
 main() {
@@ -144,7 +160,7 @@ main() {
     exit(1);
 }
 
-#elif CXX_LONG_DOUBLE_BINARY_FORMAT == FLOAT_INTEL_DOUBLE_EXTENDED
+#elif CXX_LONG_DOUBLE_BINARY_FORMAT == PPL_FLOAT_INTEL_DOUBLE_EXTENDED
 
 int
 main() {
@@ -192,7 +208,7 @@ convert(uint32_t msp, uint32_t lsp) {
   return u.value;
 }
 
-#if CXX_LONG_DOUBLE_BINARY_FORMAT == FLOAT_IEEE754_DOUBLE
+#if CXX_LONG_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_DOUBLE
 
 int
 main() {
