@@ -106,7 +106,7 @@ main() {
   AC_MSG_RESULT(no)
   ac_cxx_float_exact_output=0)
 
-AC_DEFINE(CXX_FLOAT_EXACT_OUTPUT, $ac_cxx_float_output,
+AC_DEFINE(CXX_FLOAT_EXACT_OUTPUT, $ac_cxx_float_exact_output,
   [Not zero if C++ supports exact output for floats.])
 
 AC_LANG_POP(C++)
