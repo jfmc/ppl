@@ -1,4 +1,5 @@
-/* Header file for C test programs.
+/* Implementation of utility functions used in test programs
+   of the C interface.
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -20,11 +21,11 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_ppl_test_h
-#define PPL_ppl_test_h 1
-
 #include "ppl-config.h"
-#include <stdlib.h>
+#include "ppl_c_test.h"
+#include <cstdlib>
+
+namespace {
 
 static int
 check_noisy_variable(const char* environment_variable) {
@@ -43,14 +44,15 @@ check_noisy_variable(const char* environment_variable) {
 #endif
 }
 
-static int
+} // namespace
+
+int
 check_noisy() {
   return check_noisy_variable("PPL_NOISY_TESTS");
 }
 
-static int
+int
 check_very_noisy() {
   return check_noisy_variable("PPL_VERY_NOISY_TESTS");
 }
 
-#endif // !defined(PPL_ppl_test_h)
