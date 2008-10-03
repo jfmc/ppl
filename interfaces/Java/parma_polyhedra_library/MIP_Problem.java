@@ -52,7 +52,7 @@ package parma_polyhedra_library;
 */
 public class MIP_Problem extends PPL_Object {
 
-    /*! \name Constructors */
+    /*! \name Constructors and Destructor */
     /*@{*/
 
     //! Builds a trivial MIP problem.
@@ -101,7 +101,21 @@ public class MIP_Problem extends PPL_Object {
 	build_cpp_object(dim, cs, obj, mode);
     }
 
-    /*@}*/ /* Constructors */
+    //! Builds a copy of \p y.
+    public MIP_Problem(MIP_Problem y) {
+	build_cpp_object(y);
+    }
+
+    /*! \brief
+      Releases all resources managed by \p this,
+      also resetting it to a null reference.
+    */
+    public native void free();
+
+    //! Releases all resources managed by \p this.
+    protected native void finalize();
+
+    /*@}*/ /* Constructors and Destructor */
 
     /*! \name Functions that Do Not Modify the MIP_Problem */
     /*@{*/
@@ -298,4 +312,7 @@ public class MIP_Problem extends PPL_Object {
 					 Constraint_System cs,
 					 Linear_Expression obj,
 					 Optimization_Mode mode);
+
+    //! Builds the underlying C++ object.
+    private native void build_cpp_object(MIP_Problem y);
 }

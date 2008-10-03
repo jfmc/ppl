@@ -442,6 +442,34 @@ Java_parma_1polyhedra_1library_MIP_1Problem_build_1cpp_1object__JLparma_1polyhed
   CATCH_ALL;
 }
 
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_MIP_1Problem_build_1cpp_1object__Lparma_1polyhedra_1library_MIP_1Problem_2
+(JNIEnv* env, jobject  j_this, jobject j_y)
+{
+  MIP_Problem* y_ptr = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_y));
+  MIP_Problem* this_ptr = new MIP_Problem(*y_ptr);
+  set_ptr(env, j_this, this_ptr);
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_MIP_1Problem_free
+(JNIEnv* env, jobject j_this) {
+  MIP_Problem* mip  = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this));
+  if (!is_java_marked(env, j_this)) {
+    delete mip;
+    void* null_ptr = 0;
+    set_ptr(env, j_this, null_ptr);
+  }
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_MIP_1Problem_finalize
+(JNIEnv* env, jobject j_this) {
+  MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this));
+  if (!is_java_marked(env, j_this))
+    delete mip;
+}
+
 JNIEXPORT jstring JNICALL
 Java_parma_1polyhedra_1library_MIP_1Problem_toString
 (JNIEnv* env, jobject j_this_mip_problem) {
