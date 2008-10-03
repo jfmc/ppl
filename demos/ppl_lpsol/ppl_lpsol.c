@@ -1193,7 +1193,6 @@ main(int argc, char* argv[]) {
   extern void _glp_lib_print_hook(int (*func)(void *info, char *buf),
 				  void *info);
 #endif
-  _glp_lib_print_hook(glpk_message_interceptor, 0);
   program_name = argv[0];
   if (ppl_initialize() < 0)
     fatal("cannot initialize the Parma Polyhedra Library");
