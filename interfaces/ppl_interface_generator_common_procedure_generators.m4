@@ -112,14 +112,15 @@ dnl
 dnl NOTE: The next few schemas provide procedures specifically for
 dnl       the pointset_powerset domains.
 dnl
-ppl_@CLASS@_iterator_equals_iterator/2 +pointset_powerset,
+ppl_new_@CLASS@_iterator_from_iterator/2 +pointset_powerset,
 ppl_@CLASS@_@BEGINEND@_iterator/2 +pointset_powerset,
-ppl_@CLASS@_delete_iterator/1 +pointset_powerset,
+ppl_@CLASS@_iterator_equals_iterator/2 +pointset_powerset,
 ppl_@CLASS@_@INCDEC@_iterator/1 +pointset_powerset,
 ppl_@CLASS@_get_disjunct/2 +pointset_powerset,
+ppl_delete_@CLASS@_iterator/1 +pointset_powerset,
+ppl_@CLASS@_add_disjunct/2 *nofail +pointset_powerset,
 ppl_@CLASS@_drop_disjunct/2 +pointset_powerset,
 ppl_@CLASS@_drop_disjuncts/3 +pointset_powerset,
-ppl_@CLASS@_add_disjunct/2 *nofail +pointset_powerset,
 ppl_@CLASS@_linear_@PARTITION@/4 +simple -grid,
 ppl_@CLASS@_approximate_@PARTITION@/5  +grid,
 ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign/2 +pointset_powerset \box,
