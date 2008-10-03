@@ -27,7 +27,7 @@ dnl site: http://www.cs.unipr.it/ppl/ .
 dnl No code is needed for these procedure schemas in the OCaml interface.
 dnl
 m4_define(`ppl_delete_@CLASS@_code', `')
-m4_define(`ppl_@CLASS@_delete_iterator_code', `')
+m4_define(`ppl_delete_@CLASS@_iterator_code', `')
 
 dnl There is no code at present for these procedures in the OCaml interface.
 dnl Remove the macro if its definition is added.
@@ -472,6 +472,16 @@ m4_define(`ppl_@CLASS@_drop_disjuncts_code',
 
 ')
 
+m4_define(`ppl_new_@CLASS@_iterator_from_iterator_code',
+`
+type @LCLASS@_iterator
+
+external ppl_new_@CLASS@_iterator_from_iterator:
+  @LCLASS@_iterator -> @LCLASS@_iterator
+  = "ppl_new_@CLASS@_iterator_from_iterator"
+
+')
+
 m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
  `
  external ppl_@CLASS@_@INCDEC@_iterator:
@@ -482,8 +492,6 @@ m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
 
 m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
  `
-type @LCLASS@_iterator
-
 external ppl_@CLASS@_iterator_equals_iterator:
   @LCLASS@_iterator ->  @LCLASS@_iterator -> bool
   = "ppl_@CLASS@_iterator_equals_iterator"

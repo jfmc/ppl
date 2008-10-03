@@ -27,7 +27,7 @@ dnl site: http://www.cs.unipr.it/ppl/ .
 dnl No code is needed for these procedure schemas in the OCaml interface.
 dnl
 m4_define(`ppl_delete_@CLASS@_code', `')
-m4_define(`ppl_@CLASS@_delete_iterator_code', `')
+m4_define(`ppl_delete_@CLASS@_iterator_code', `')
 
 Define here as empty any known schematic method macros for which
 the definition is not yet implemented.
@@ -421,9 +421,17 @@ val ppl_@CLASS@_drop_disjuncts:
 
 ')
 
-m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
+m4_define(`ppl_new_@CLASS@_iterator_from_iterator_code',
  `dnl
 type @LCLASS@_iterator
+
+val ppl_new_@CLASS@_iterator_from_iterator:
+  @LCLASS@_iterator ->  @LCLASS@_iterator
+
+')
+
+m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
+ `dnl
 
 val ppl_@CLASS@_iterator_equals_iterator:
   @LCLASS@_iterator ->  @LCLASS@_iterator -> bool

@@ -624,6 +624,21 @@ PPL_PROTO((ppl_@CLASS@_const_iterator_t* pit));
 
 ')
 
+m4_define(`ppl_new_@CLASS@_iterator_from_iterator_code',
+`/*! \relates ppl_@CLASS@_iterator_tag */
+int
+ppl_new_@CLASS@_iterator_from_iterator
+PPL_PROTO((ppl_@CLASS@_iterator_t* px,
+           ppl_const_@CLASS@_iterator_t y));
+
+/*! \relates ppl_@CLASS@_const_iterator_tag */
+int
+ppl_new_@CLASS@_const_iterator_from_const_iterator
+PPL_PROTO((ppl_@CLASS@_const_iterator_t* px,
+           ppl_const_@CLASS@_const_iterator_t y));
+
+')
+
 m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
 `/*! \relates ppl_@CLASS@_iterator_tag */
 int
@@ -654,7 +669,7 @@ PPL_PROTO((ppl_const_@CLASS@_t ps,
 
 ')
 
-m4_define(`ppl_@CLASS@_delete_iterator_code',
+m4_define(`ppl_delete_@CLASS@_iterator_code',
 `/*! \relates ppl_@CLASS@_iterator_tag */
 int
 ppl_delete_@CLASS@_iterator

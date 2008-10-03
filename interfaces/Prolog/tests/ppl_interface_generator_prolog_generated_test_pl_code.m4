@@ -402,7 +402,7 @@ ppl_@CLASS@_@BEGINEND@_iterator_2_test :-
      clean_ppl_new_@TOPOLOGY@@CLASS@_from_@CONSTRAINER@s(RS, PPS),
      ppl_@CLASS@_@BEGINEND@_iterator(PPS, It_x),
      ppl_@CLASS@_OK(PPS),
-     ppl_@CLASS@_delete_iterator(It_x),
+     ppl_delete_@CLASS@_iterator(It_x),
      ppl_delete_@CLASS@(PPS)
    ->
      fail ; true)
@@ -422,8 +422,8 @@ ppl_@CLASS@_iterator_equals_iterator_2_test :-
      ppl_@CLASS@_begin_iterator(PPS, It_begin),
      ppl_@CLASS@_iterator_equals_iterator(It, It_begin),
      ppl_@CLASS@_OK(PPS),
-     ppl_@CLASS@_delete_iterator(It),
-     ppl_@CLASS@_delete_iterator(It_begin),
+     ppl_delete_@CLASS@_iterator(It),
+     ppl_delete_@CLASS@_iterator(It_begin),
      ppl_delete_@CLASS@(PPS)
    ->
      fail ; true)
@@ -457,10 +457,10 @@ ppl_@CLASS@_@INCDEC@_iterator_1_test :-
      ),
      ppl_@CLASS@_iterator_equals_iterator(Ite, It_end),
      ppl_@CLASS@_OK(PPS),
-     ppl_@CLASS@_delete_iterator(Itb),
-     ppl_@CLASS@_delete_iterator(It_begin),
-     ppl_@CLASS@_delete_iterator(Ite),
-     ppl_@CLASS@_delete_iterator(It_end),
+     ppl_delete_@CLASS@_iterator(Itb),
+     ppl_delete_@CLASS@_iterator(It_begin),
+     ppl_delete_@CLASS@_iterator(Ite),
+     ppl_delete_@CLASS@_iterator(It_end),
      ppl_delete_@CLASS@(PPS)
    ->
      fail ; true)
@@ -491,7 +491,7 @@ ppl_@CLASS@_drop_disjunct_2_test :-
      S2 is S1 - 1,
      ppl_@CLASS@_size(PPS, S2),
      ppl_@CLASS@_OK(PPS),
-     ppl_@CLASS@_delete_iterator(It),
+     ppl_delete_@CLASS@_iterator(It),
      ppl_delete_@CLASS@(PPS),
      ppl_delete_@DISJUNCT@(PS)
    ->
@@ -512,8 +512,8 @@ ppl_@CLASS@_get_disjunct_2_test :-
      ppl_@CLASS@_end_iterator(PPS, It_end),
      ppl_@CLASS@_get_disjunct_2_test2(PPS, It, It_end, Space_Dim),
      ppl_@CLASS@_OK(PPS),
-     ppl_@CLASS@_delete_iterator(It),
-     ppl_@CLASS@_delete_iterator(It_end),
+     ppl_delete_@CLASS@_iterator(It),
+     ppl_delete_@CLASS@_iterator(It_end),
      ppl_delete_@CLASS@(PPS)
    ->
      fail ; true)

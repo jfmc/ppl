@@ -29,7 +29,7 @@ dnl site: http://www.cs.unipr.it/ppl/ .
 dnl No code is needed for these procedure schemas in the OCaml interface.
 dnl
 m4_define(`ppl_delete_@CLASS@_code', `')
-m4_define(`ppl_@CLASS@_delete_iterator_code', `')
+m4_define(`ppl_delete_@CLASS@_iterator_code', `')
 
 dnl There is no code at present for these procedures in the OCaml interface.
 dnl Remove the macro if its definition is added.
@@ -982,23 +982,8 @@ CAMLreturn0;
 
  ')
 
-  m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
-`dnl
- extern "C"
-void
- ppl_@CLASS@_@INCDEC@_iterator(value caml_itr) try {
-   CAMLparam1(caml_itr);
-   @CPP_CLASS@::iterator& itr = *p_@CLASS@_iterator_val(caml_itr);
-    @CPPX_INCDEC@itr;
-   CAMLreturn0;
- }
- CATCH_ALL
-
- ')
-
-  m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
-`dnl
-//! Give access to the embedded @CLASS@* in \p v.
+m4_define(`ppl_new_@CLASS@_iterator_from_iterator_code',
+`//! Give access to the embedded @CLASS@* in \p v.
 inline @CPP_CLASS@::iterator*&
 p_@CLASS@_iterator_val(value v) {
   return *reinterpret_cast<@CPP_CLASS@::iterator**>(Data_custom_val(v));
@@ -1026,7 +1011,35 @@ val_p_@CLASS@_iterator(const @CPP_CLASS@::iterator& ph) {
   return(v);
 }
 
+extern "C"
+CAMLprim value
+ppl_new_@CLASS@_iterator_from_iterator(value y) try {
+  CAMLparam1(y);
+  @CPP_CLASS@::iterator& yy
+    = *(reinterpret_cast<@CPP_CLASS@::iterator*>( p_@CLASS@_iterator_val(y)));
+  CAMLreturn(val_p_@CLASS@_iterator(*(reinterpret_cast<@CPP_CLASS@::iterator*>(new @CPP_CLASS@::iterator(yy)))));
+}
+CATCH_ALL
+
+')
+
+  m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
+`dnl
  extern "C"
+void
+ ppl_@CLASS@_@INCDEC@_iterator(value caml_itr) try {
+   CAMLparam1(caml_itr);
+   @CPP_CLASS@::iterator& itr = *p_@CLASS@_iterator_val(caml_itr);
+    @CPPX_INCDEC@itr;
+   CAMLreturn0;
+ }
+ CATCH_ALL
+
+ ')
+
+m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
+`dnl
+extern "C"
 CAMLprim value
  ppl_@CLASS@_iterator_equals_iterator(value caml_itr1, value caml_itr2) try {
    CAMLparam2(caml_itr1, caml_itr2);

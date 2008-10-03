@@ -96,6 +96,13 @@ m4_define(`ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_code',
 
 ')
 
+m4_define(`ppl_new_@CLASS@_iterator_from_iterator_code',
+`extern "C" Prolog_foreign_return_type
+ppl_new_@CLASS@_iterator_from_iterator(Prolog_term_ref t_source,
+				       Prolog_term_ref t_it);
+
+')
+
 m4_define(`ppl_@CLASS@_@BEGINEND@_iterator_code',
   `extern "C" Prolog_foreign_return_type
   ppl_@CLASS@_@BEGINEND@_iterator(Prolog_term_ref t_pps,
@@ -103,9 +110,9 @@ m4_define(`ppl_@CLASS@_@BEGINEND@_iterator_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_delete_iterator_code',
+m4_define(`ppl_delete_@CLASS@_iterator_code',
   `extern "C" Prolog_foreign_return_type
-  ppl_@CLASS@_delete_iterator(Prolog_term_ref t_it);
+  ppl_delete_@CLASS@_iterator(Prolog_term_ref t_it);
 ')
 
 m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',

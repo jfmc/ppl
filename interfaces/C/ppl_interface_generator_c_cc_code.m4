@@ -922,6 +922,32 @@ CATCH_ALL
 
 ')
 
+m4_define(`ppl_new_@CLASS@_iterator_from_iterator_code',
+`dnl
+
+int
+ppl_new_@CLASS@_iterator_from_iterator
+(ppl_@CLASS@_iterator_t* px, ppl_const_@CLASS@_iterator_t y) try {
+  const @CLASS@_iterator& yy
+    = *static_cast<const @CLASS@_iterator*>(to_const(y));
+  *px = to_nonconst(new @CLASS@_iterator(yy));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_@CLASS@_const_iterator_from_const_iterator
+(ppl_@CLASS@_const_iterator_t* px,
+ ppl_const_@CLASS@_const_iterator_t y) try {
+  const @CLASS@_const_iterator& yy
+    = *static_cast<const @CLASS@_const_iterator*>(to_const(y));
+  *px = to_nonconst(new @CLASS@_const_iterator(yy));
+  return 0;
+}
+CATCH_ALL
+
+')
+
 m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
 `dnl
 int
@@ -966,7 +992,7 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_delete_iterator_code',
+m4_define(`ppl_delete_@CLASS@_iterator_code',
 `dnl
 int
 ppl_delete_@CLASS@_iterator

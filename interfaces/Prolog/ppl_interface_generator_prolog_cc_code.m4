@@ -284,10 +284,36 @@ m4_define(`ppl_@CLASS@_@BEGINEND@_iterator_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_delete_iterator_code',
+m4_define(`ppl_new_@CLASS@_iterator_from_iterator_code',
+`extern "C" Prolog_foreign_return_type
+ppl_new_@CLASS@_iterator_from_iterator(Prolog_term_ref t_source,
+                                       Prolog_term_ref t_it) {
+  static const char* where = "ppl_new_@CLASS@_iterator_from_iterator/2";
+  try {
+    const @CPP_CLASS@::iterator* source
+      = term_to_handle<const @CPP_CLASS@::iterator>(t_source, where);
+    PPL_CHECK(source);
+
+    @CPP_CLASS@::iterator* it = new @CPP_CLASS@::iterator(*source);
+    Prolog_term_ref t_i = Prolog_new_term_ref();
+    Prolog_put_address(t_i, it);
+
+    if (Prolog_unify(t_it, t_i)) {
+      PPL_REGISTER(it);
+      return PROLOG_SUCCESS;
+    }
+    else
+      delete it;
+  }
+  CATCH_ALL;
+}
+
+')
+
+m4_define(`ppl_delete_@CLASS@_iterator_code',
   `extern "C" Prolog_foreign_return_type
-  ppl_@CLASS@_delete_iterator(Prolog_term_ref t_it) {
-  static const char* where = "ppl_@CLASS@_delete_iterator/1";
+  ppl_delete_@CLASS@_iterator(Prolog_term_ref t_it) {
+  static const char* where = "ppl_delete_@CLASS@_iterator/1";
   try {
     const @CPP_CLASS@::iterator* it
       = term_to_handle<@CPP_CLASS@::iterator >(t_it, where);

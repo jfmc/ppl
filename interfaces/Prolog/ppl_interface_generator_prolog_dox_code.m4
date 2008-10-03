@@ -285,9 +285,9 @@ m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
 <CODE>ppl_@CLASS@_@BEGINEND@_iterator(+Handle, ?Iterator)</CODE><BR>
 ')
 
-m4_define(`ppl_@CLASS@_delete_iterator_code',
+m4_define(`ppl_delete_@CLASS@_iterator_code',
  `dnl
-<CODE>ppl_@CLASS@_iterator_@INCDEC@(+Iterator)</CODE><BR>
+<CODE>ppl_delete_@CLASS@_iterator(+Iterator)</CODE><BR>
 ')
 
 m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
