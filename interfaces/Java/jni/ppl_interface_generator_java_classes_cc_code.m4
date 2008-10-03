@@ -36,16 +36,31 @@ m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_to
 Define here as empty any known schematic method macros for which
 the definition is not yet implemented.
 
+m4_define(`ppl_copy_@CLASS@_iterator_code',
+`dnl
+JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_1Iterator_build_1cpp_1object
+(JNIEnv* env, jobject  j_this, jobject j_y)
+{
+  @CPP_CLASS@::iterator* y_ptr
+    = reinterpret_cast<@CPP_CLASS@::iterator*>
+    (get_ptr(env, j_y));
+  @CPP_CLASS@::iterator* this_ptr
+    = new @CPP_CLASS@::iterator(*y_ptr);
+  set_ptr(env, j_this, this_ptr);
+}
+
+')
+
 m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
 `dnl
 #include "parma_polyhedra_library_@CLASS@_Iterator.h"
-JNIEXPORT jboolean JNICALL Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_1Iterator_equals
+JNIEXPORT jboolean JNICALL Java_parma_1polyhedra_1library_@1CLASS@_1Iterator_equals
 (JNIEnv* env, jobject j_this_it, jobject j_it) {
- @TOPOLOGY@@CPP_CLASS@::iterator* @LTOPOLOGY@@LCLASS@_this_itr_ptr
- = reinterpret_cast<@TOPOLOGY@@CPP_CLASS@::iterator*>(get_ptr(env, j_this_it));
- @TOPOLOGY@@CPP_CLASS@::iterator* @LTOPOLOGY@@LCLASS@_itr_ptr
- = reinterpret_cast<@TOPOLOGY@@CPP_CLASS@::iterator*>(get_ptr(env, j_it));
-return *@LTOPOLOGY@@LCLASS@_itr_ptr == *@LTOPOLOGY@@LCLASS@_this_itr_ptr;
+ @CPP_CLASS@::iterator* @LCLASS@_this_itr_ptr
+ = reinterpret_cast<@CPP_CLASS@::iterator*>(get_ptr(env, j_this_it));
+ @CPP_CLASS@::iterator* @LCLASS@_itr_ptr
+ = reinterpret_cast<@CPP_CLASS@::iterator*>(get_ptr(env, j_it));
+return *@LCLASS@_itr_ptr == *@LCLASS@_this_itr_ptr;
 }
 ')
 
@@ -113,10 +128,7 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_drop_1
  = reinterpret_cast<@TOPOLOGY@@CPP_CLASS@*>(get_ptr(env, j_pps));
 @LTOPOLOGY@@LCLASS@_ptr->drop_disjunct(*@LTOPOLOGY@@LCLASS@_itr_ptr);
 }
-')
 
-m4_define(`ppl_@CLASS@_drop_disjuncts_code',
-`dnl
 JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_drop_1disjuncts
 (JNIEnv* env, jobject j_pps, jobject j_first, jobject j_last) {
  @TOPOLOGY@@CPP_CLASS@::iterator* first_ptr
@@ -125,7 +137,7 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_drop_1
  = reinterpret_cast<@TOPOLOGY@@CPP_CLASS@::iterator*>(get_ptr(env, j_last));
  @TOPOLOGY@@CPP_CLASS@* ps_ptr
  = reinterpret_cast<@TOPOLOGY@@CPP_CLASS@*>(get_ptr(env, j_pps));
-  ps_ptr->drop_disjuncts(first_ptr, last_ptr);
+  ps_ptr->drop_disjuncts(*first_ptr, *last_ptr);
 }
 ')
 

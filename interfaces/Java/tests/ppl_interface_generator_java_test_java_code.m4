@@ -920,6 +920,22 @@ m4_define(`ppl_@CLASS@_get_disjunct_code',
 
 ')
 
+m4_define(`ppl_copy_@CLASS@_iterator_code',
+    `dnl
+{
+    PPL_Test.print_if_noisy("Testing copy_iterator: ");
+    @CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
+    @CLASS@_Iterator it_gd = gd.begin_iterator();
+    @CLASS@_Iterator it_gd_copy = new @CLASS@_Iterator(it_gd);
+    @TOPOLOGY@@DISJUNCT@ gd_disjunct = it_gd_copy.get_disjunct();
+    if (gd.OK() && gd_disjunct.OK())
+        PPL_Test.println_if_noisy("Success");
+    else
+        PPL_Test.println_if_noisy("Failure");
+}
+
+')
+
 m4_define(`ppl_@CLASS@_drop_disjunct_code',
     `dnl
 {
@@ -927,6 +943,20 @@ m4_define(`ppl_@CLASS@_drop_disjunct_code',
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     @TOPOLOGY@@CLASS@_Iterator it_gd = gd.begin_iterator();
     gd.drop_disjunct(it_gd);
+    if (gd.OK())
+        PPL_Test.println_if_noisy("Success");
+    else
+        PPL_Test.println_if_noisy("Failure");
+}
+
+{
+    PPL_Test.print_if_noisy("Testing drop_disjuncts: ");
+    @CLASS@ gd = new @CLASS@(@CONSTRAINER@s1);
+    @CLASS@ gd2 = new @CLASS@(@CONSTRAINER@s2);
+    gd.upper_bound_assign(gd2);
+    @CLASS@_Iterator it_gd = gd.begin_iterator();
+    @CLASS@_Iterator it_gd_end = gd.end_iterator();
+    gd.drop_disjuncts(it_gd, it_gd_end);
     if (gd.OK())
         PPL_Test.println_if_noisy("Success");
     else

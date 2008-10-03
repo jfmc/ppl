@@ -462,6 +462,16 @@ m4_define(`ppl_@CLASS@_string_code',
 
 ')
 
+m4_define(`ppl_copy_@CLASS@_iterator_code',
+`dnl
+ public @CLASS@_Iterator(@CLASS@_Iterator y) {
+        build_cpp_object(y);
+    }
+
+    private native void
+        build_cpp_object(@CLASS@_Iterator y);
+')
+
 m4_define(`ppl_@CLASS@_@BEGINEND@_iterator_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
@@ -487,6 +497,9 @@ m4_define(`ppl_@CLASS@_drop_disjunct_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
   public native void drop_disjunct(@CLASS@_Iterator itr);
+
+  public native void drop_disjuncts(@CLASS@_Iterator itr1,
+                                    @CLASS@_Iterator itr2);
 
 ')
 
