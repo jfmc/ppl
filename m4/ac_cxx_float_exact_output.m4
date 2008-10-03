@@ -22,6 +22,7 @@ dnl site: http://www.cs.unipr.it/ppl/ .
 
 AC_DEFUN([AC_CXX_FLOAT_EXACT_OUTPUT],
 [
+dnl AC_REQUIRE([AC_CXX_FLOAT_BINARY_FORMAT])
 ac_save_CPPFLAGS="$CPPFLAGS"
 ac_save_LIBS="$LIBS"
 AC_LANG_PUSH(C++)

@@ -106,14 +106,12 @@ AH_BOTTOM([
 # define NDEBUG PPL_NDEBUG
 #endif
 
-/*
-  In order for the definition of `int64_t' to be seen by Comeau C/C++,
-  we must make sure <stdint.h> is included before <sys/types.hh> is
-  (even indirectly) included.
+/* In order for the definition of `int64_t' to be seen by Comeau C/C++,
+   we must make sure <stdint.h> is included before <sys/types.hh> is
+   (even indirectly) included.  Moreover we need to define
+   __STDC_LIMIT_MACROS before the first inclusion of <stdint.h>
+   in order to have the macros defined also in C++.  */
 
-  Moreover we need to define __STDC_LIMIT_MACROS before the first
-  inclusion of <stdint.h> in order to have the macros defined also in C++.
-*/
 #ifdef PPL_HAVE_STDINT_H
 # ifndef __STDC_LIMIT_MACROS
 #  define __STDC_LIMIT_MACROS 1
@@ -626,17 +624,17 @@ AC_CXX_DOUBLE_BINARY_FORMAT
 # Detect the binary format used by C++ long doubles.
 AC_CXX_LONG_DOUBLE_BINARY_FORMAT
 
-# Checks whether the C++ run-time systems provides exact output for
+# Check whether the C++ run-time systems provides exact output for
 # floats.
-AC_CXX_FLOAT_EXACT_OUTPUT
+#AC_CXX_FLOAT_EXACT_OUTPUT
 
-# Checks whether the C++ run-time systems provides exact output for
+# Check whether the C++ run-time systems provides exact output for
 # doubles.
-AC_CXX_DOUBLE_EXACT_OUTPUT
+#AC_CXX_DOUBLE_EXACT_OUTPUT
 
-# Checks whether the C++ run-time systems provides exact output for
+# Check whether the C++ run-time systems provides exact output for
 # long doubles.
-AC_CXX_LONG_DOUBLE_EXACT_OUTPUT
+#AC_CXX_LONG_DOUBLE_EXACT_OUTPUT
 
 # Check whether the C++ compiler supports flexible arrays.
 AC_CXX_SUPPORTS_FLEXIBLE_ARRAYS

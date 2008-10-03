@@ -309,7 +309,9 @@ fi
 
 AC_MSG_RESULT($ac_cxx_long_double_binary_format)
 
-if test x"$ac_cxx_long_double_binary_format" = x"unknown"
+AC_CXX_LONG_DOUBLE_EXACT_OUTPUT
+
+if test x"$ac_cxx_long_double_binary_format" = x"unknown" || test $ac_cxx_long_double_exact_output = 0
 then
   ac_supported_long_double=0
 else
