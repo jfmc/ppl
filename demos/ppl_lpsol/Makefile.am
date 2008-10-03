@@ -38,7 +38,16 @@ expected_int64_a
 if BUILD_C_INTERFACE
 if HAVE_GLPK
 
-AM_CPPFLAGS = -I$(top_builddir)/interfaces/C @extra_includes@
+AM_CPPFLAGS = \
+-I$(top_builddir)/interfaces/C \
+@extra_includes@
+
+if GCC
+
+# We cannot use -std=c89 because of the definition of sigaction in <signal.h>.
+AM_CFLAGS = -pedantic -std=gnu89 -Werror
+
+endif GCC
 
 bin_PROGRAMS = ppl_lpsol
 
