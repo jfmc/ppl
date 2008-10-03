@@ -39,10 +39,10 @@ dnl ==================================================================
 
 m4_pushdef(`m4_pre_extra_class_code', `dnl
 m4_define(`m4_current_interface', m4_interface_class`'$1)`'dnl
-print_newline();;
-print_newline();;
-print_string "m4_current_interface";;
-print_newline();;
+print_string_if_noisy "\n";;
+print_string_if_noisy "\n";;
+print_string_if_noisy "m4_current_interface";;
+print_string_if_noisy "\n";;
 m4_undefine(`m4_current_interface')`'dnl
 m4_replace_all_patterns_in_string($1,
   m4_add_init_class_code($1),
@@ -57,6 +57,6 @@ m4_divert`'dnl
 m4_include(`ppl_ocaml_tests_common')
 m4_all_code`'dnl
 
-print_newline();;
+print_string_if_noisy "\n";;
 at_exit Gc.full_major;;
-print_string "Bye!\n"
+print_string_if_noisy "Bye!\n"
