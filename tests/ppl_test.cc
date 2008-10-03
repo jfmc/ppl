@@ -138,7 +138,7 @@ check_distance(const Checked_Number<mpq_class, Extended_Number_Policy>& d,
     nout << "Excessive " << d_name << " distance ";
     if (is_plus_infinity(d))
       nout << "+inf";
-    else if (d > std::numeric_limits<double>::max())
+    else if (raw_value(d) > std::numeric_limits<double>::max())
       nout << ">" << std::numeric_limits<double>::max();
     else
       nout << raw_value(d).get_d() << " (rounded towards zero)";
