@@ -58,6 +58,7 @@ parma_polyhedra_library_Linear_Expression.h \
 parma_polyhedra_library_MIP_Problem.h \
 parma_polyhedra_library_Parma_Polyhedra_Library.h
 
+# NOTE: do _NOT_ add Fake_Class_for_Doxygen.java to this list.
 fixed_java_sources = \
 $(srcdir)/By_Reference.java \
 $(srcdir)/Coefficient.java \
@@ -105,10 +106,11 @@ all_java_sources = \
 $(fixed_java_sources) \
 $(required_instantiations_java_sources)
 
+# NOTE: Fake_Class_for_Doxygen.java should be added here.
 EXTRA_DIST = \
 $(interface_generator_files) \
 $(fixed_java_sources) \
-Fake_Class_for_Doxygen.java
+$(srcdir)/Fake_Class_for_Doxygen.java
 
 interface_generator_dependencies = \
 $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
