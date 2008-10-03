@@ -31,9 +31,21 @@ AM_CPPFLAGS = \
 @extra_includes@ \
 @debug_flag@
 
+if GCC
+
+AM_CFLAGS = -pedantic -std=c89 -Werror
+
+endif GCC
+
+check_LIBRARIES = libppl_c_tests.a
+
+libppl_c_tests_a_SOURCES = \
+ppl_c_test.cc
+
 LDADD = \
 $(top_builddir)/src/libppl.la \
 $(top_builddir)/interfaces/C/libppl_c.la \
+libppl_c_tests.a \
 @extra_libraries@
 
 NORMAL_TESTS = \
@@ -48,7 +60,7 @@ cxxoutput_SOURCES = cxxoutput.c print_to_buffer.h print_to_buffer.cc
 #watchdog1_SRCS = watchdog1.cc
 
 noinst_HEADERS = \
-ppl_test.h
+ppl_c_test.h
 
 if BUILD_WATCHDOG_LIBRARY
 WATCHDOG_TESTS =
