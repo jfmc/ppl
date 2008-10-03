@@ -112,7 +112,7 @@ main() {
   AC_MSG_RESULT(no)
   ac_cxx_double_exact_output=0)
 
-AC_DEFINE(CXX_DOUBLE_EXACT_OUTPUT, $ac_cxx_double_exact_output,
+AC_DEFINE_UNQUOTED(CXX_DOUBLE_EXACT_OUTPUT, $ac_cxx_double_exact_output,
   [Not zero if C++ supports exact output for doubles.])
 
 AC_LANG_POP(C++)
