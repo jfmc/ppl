@@ -131,6 +131,8 @@ save_CFLAGS="$CFLAGS"
 AC_PROG_CC
 CFLAGS="$save_CFLAGS"
 
+AM_CONDITIONAL(GCC, test x"$GCC" = xyes)
+
 # The Intel C compiler masquerades as gcc, but we want to know.
 if test x"$GCC" = xyes
 then
