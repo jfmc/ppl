@@ -42,7 +42,7 @@ AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #endif
 #include <cstdlib>
 #include <sstream>
-#include <iostream>
+//#include <iostream>
 
 /* Unique (nonzero) code for the IEEE 754 Single Precision
    floating point format.  */
@@ -65,7 +65,7 @@ check(float value, const char* text) {
   std::ostringstream ss;
   ss.precision(10000);
   ss << value;
-  std::cout << ss.str() << " ?==? " << text << std::endl;
+  //std::cout << ss.str() << " ?==? " << text << std::endl;
   return ss.str() == text;
 }
 
