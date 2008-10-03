@@ -733,9 +733,7 @@ available_interfaces="cxx c ciao_prolog gnu_prolog sicstus_prolog swi_prolog xsb
 # This is the list of interfaces that are enabled by default.
 #default_interfaces="cxx c swi_prolog"
 #default_interfaces=${available_interfaces}
-# EZ: temporarily commented out to take away java.
-#default_interfaces="cxx c sicstus_prolog swi_prolog xsb_prolog ocaml java"
-default_interfaces="cxx c sicstus_prolog swi_prolog xsb_prolog ocaml"
+default_interfaces="cxx c sicstus_prolog swi_prolog xsb_prolog ocaml java"
 #default_interfaces="cxx c gnu_prolog sicstus_prolog swi_prolog xsb_prolog yap_prolog ocaml java"
 
 enableval=not_specified
