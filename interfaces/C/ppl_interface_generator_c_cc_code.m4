@@ -1027,6 +1027,10 @@ ppl_@CLASS@_drop_disjunct
 }
 CATCH_ALL
 
+')
+
+m4_define(`ppl_@CLASS@_drop_disjuncts_code',
+`dnl
 int
 ppl_@CLASS@_drop_disjuncts
 (ppl_@CLASS@_t ps,

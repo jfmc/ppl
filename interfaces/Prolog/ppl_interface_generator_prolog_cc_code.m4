@@ -386,6 +386,34 @@ m4_define(`ppl_@CLASS@_drop_disjunct_code',
 
 ')
 
+m4_define(`ppl_@CLASS@_drop_disjuncts_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_@CLASS@_drop_disjuncts(Prolog_term_ref t_pps,
+                             Prolog_term_ref t_it1,
+                             Prolog_term_ref t_it2) {
+  static const char* where = "ppl_@CLASS@_drop_disjuncts/3";
+  try {
+    @CPP_CLASS@* pps = term_to_handle<@CPP_CLASS@ >(t_pps, where);
+    PPL_CHECK(pps);
+
+    @CPP_CLASS@::iterator* it1
+      = term_to_handle<@CPP_CLASS@::iterator >(t_it1, where);
+    PPL_CHECK(it1);
+    @CPP_CLASS@::iterator* it2
+      = term_to_handle<@CPP_CLASS@::iterator >(t_it2, where);
+    PPL_CHECK(it2);
+
+    @CPP_CLASS@::iterator& i1 = *it1;
+    @CPP_CLASS@::iterator& i2 = *it2;
+    pps->drop_disjuncts(i1, i2);
+
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+')
+
 m4_define(`ppl_@CLASS@_add_disjunct_code',
   `extern "C" Prolog_foreign_return_type
   ppl_@CLASS@_add_disjunct(Prolog_term_ref t_ph, Prolog_term_ref t_d) {

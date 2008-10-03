@@ -498,6 +498,10 @@ m4_define(`ppl_@CLASS@_drop_disjunct_code',
 %<--%<--%<-- @CLASS@.java
   public native void drop_disjunct(@CLASS@_Iterator itr);
 
+')
+
+m4_define(`ppl_@CLASS@_drop_disjuncts_code',
+`dnl
   public native void drop_disjuncts(@CLASS@_Iterator itr1,
                                     @CLASS@_Iterator itr2);
 

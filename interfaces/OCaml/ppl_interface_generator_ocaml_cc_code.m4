@@ -964,6 +964,24 @@ CAMLreturn0;
 
  ')
 
+  m4_define(`ppl_@CLASS@_drop_disjuncts_code',
+`dnl
+ extern "C"
+void
+ ppl_@CLASS@_drop_disjuncts(value t_pps,
+                           value caml_item1_to_drop,
+                           value caml_item2_to_drop) try {
+   CAMLparam3(t_pps, caml_item1_to_drop, caml_item2_to_drop);
+   @CPP_CLASS@& pps = *p_@CLASS@_val(t_pps);
+   @CPP_CLASS@::iterator& itr1 = *p_@CLASS@_iterator_val(caml_item1_to_drop);
+   @CPP_CLASS@::iterator& itr2 = *p_@CLASS@_iterator_val(caml_item2_to_drop);
+ pps.drop_disjuncts(itr1, itr2);
+CAMLreturn0;
+ }
+ CATCH_ALL
+
+ ')
+
   m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
 `dnl
  extern "C"

@@ -29,8 +29,8 @@ dnl
 m4_define(`ppl_delete_@CLASS@_code', `')
 m4_define(`ppl_@CLASS@_delete_iterator_code', `')
 
-dnl There is no code at present for these procedures in the OCaml interface.
-dnl Remove the macro if its definition is added.
+Define here as empty any known schematic method macros for which
+the definition is not yet implemented.
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 `dnl
@@ -329,9 +329,10 @@ val ppl_@CLASS@_OK:
 ')
 
 m4_define(`ppl_@CLASS@_@MEMBYTES@_code',
- `
+ `dnl
 val ppl_@CLASS@_@MEMBYTES@:
   @LCLASS@  -> int
+
 ')
 
 
@@ -400,7 +401,7 @@ val ppl_@CLASS@_get_disjunct:
 ')
 
 m4_define(`ppl_@CLASS@_add_disjunct_code',
- `
+ `dnl
 val ppl_@CLASS@_add_disjunct:
   @LCLASS@  ->  @LDISJUNCT@ -> unit
 
@@ -410,6 +411,13 @@ m4_define(`ppl_@CLASS@_drop_disjunct_code',
  `dnl
 val ppl_@CLASS@_drop_disjunct:
   @LCLASS@  ->  @LCLASS@_iterator -> unit
+
+')
+
+m4_define(`ppl_@CLASS@_drop_disjuncts_code',
+ `dnl
+val ppl_@CLASS@_drop_disjuncts:
+  @LCLASS@  ->  @LCLASS@_iterator -> @LCLASS@_iterator -> unit
 
 ')
 

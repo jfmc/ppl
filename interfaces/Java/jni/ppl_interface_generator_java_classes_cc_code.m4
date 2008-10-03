@@ -128,7 +128,10 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_drop_1
  = reinterpret_cast<@TOPOLOGY@@CPP_CLASS@*>(get_ptr(env, j_pps));
 @LTOPOLOGY@@LCLASS@_ptr->drop_disjunct(*@LTOPOLOGY@@LCLASS@_itr_ptr);
 }
+')
 
+m4_define(`ppl_@CLASS@_drop_disjuncts_code',
+`dnl
 JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_drop_1disjuncts
 (JNIEnv* env, jobject j_pps, jobject j_first, jobject j_last) {
  @TOPOLOGY@@CPP_CLASS@::iterator* first_ptr

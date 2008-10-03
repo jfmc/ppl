@@ -807,6 +807,20 @@ let out = if (ppl_@CLASS@_OK copy01)
 print_string_if_noisy "\n";;
 ')
 
+m4_define(`ppl_@CLASS@_drop_disjuncts_code',
+`
+print_string_if_noisy "testing ppl_@CLASS@_drop_disjuncts: " ;;
+let copy01
+  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
+let it1 = ppl_@CLASS@_begin_iterator copy01;;
+let it2 = ppl_@CLASS@_begin_iterator copy01;;
+ppl_@CLASS@_drop_disjuncts copy01 it1 it2;;
+let out = if (ppl_@CLASS@_OK copy01)
+  then "success" else "failed"
+    in (print_string_if_noisy out);;
+print_string_if_noisy "\n";;
+')
+
 m4_define(`ppl_@CLASS@_ascii_dump_code',
 `
 print_string_if_noisy "testing ppl_@CLASS@_ascii_dump: " ;;

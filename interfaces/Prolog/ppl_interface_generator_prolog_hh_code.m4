@@ -135,6 +135,14 @@ m4_define(`ppl_@CLASS@_drop_disjunct_code',
 
 ')
 
+m4_define(`ppl_@CLASS@_drop_disjuncts_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_@CLASS@_drop_disjuncts(Prolog_term_ref t_pps,
+			     Prolog_term_ref t_it1,
+			     Prolog_term_ref t_it2);
+
+')
+
 m4_define(`ppl_@CLASS@_add_disjunct_code',
   `extern "C" Prolog_foreign_return_type
   ppl_@CLASS@_add_disjunct(Prolog_term_ref t_ph, Prolog_term_ref t_d);

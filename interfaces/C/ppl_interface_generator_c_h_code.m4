@@ -688,7 +688,10 @@ PPL_PROTO((ppl_@CLASS@_t ps,
  ppl_const_@CLASS@_iterator_t cit,
  ppl_@CLASS@_iterator_t it));
 
-/*! \relates ppl_@CLASS@_tag */
+')
+
+m4_define(`ppl_@CLASS@_drop_disjuncts_code',
+`/*! \relates ppl_@CLASS@_tag */
 int
 ppl_@CLASS@_drop_disjuncts
 PPL_PROTO((ppl_@CLASS@_t ps,

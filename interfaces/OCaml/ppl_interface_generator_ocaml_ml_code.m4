@@ -464,6 +464,14 @@ m4_define(`ppl_@CLASS@_drop_disjunct_code',
 
 ')
 
+m4_define(`ppl_@CLASS@_drop_disjuncts_code',
+ `
+ external ppl_@CLASS@_drop_disjuncts:
+   @LCLASS@  ->  @LCLASS@_iterator -> @LCLASS@_iterator -> unit
+   = "ppl_@CLASS@_drop_disjuncts"
+
+')
+
 m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
  `
  external ppl_@CLASS@_@INCDEC@_iterator:
