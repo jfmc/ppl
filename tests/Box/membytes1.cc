@@ -54,6 +54,8 @@ test01() {
   return true;
 }
 
+#if PPL_SUPPORTED_DOUBLE
+
 bool test02() {
   Variable x(0);
   Variable y(1);
@@ -103,9 +105,13 @@ bool test02() {
   return true;
 }
 
+#endif // PPL_SUPPORTED_DOUBLE
+
 } // namespace
 
 BEGIN_MAIN
   DO_TEST(test01);
+#if PPL_SUPPORTED_DOUBLE
   DO_TEST(test02);
+#endif
 END_MAIN
