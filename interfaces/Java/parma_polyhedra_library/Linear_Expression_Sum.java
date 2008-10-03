@@ -49,7 +49,7 @@ public class Linear_Expression_Sum
 	return rhs;
     }
 
-     //! Builds a copy of this.
+    //! Builds a copy of this.
     public Linear_Expression_Sum clone() {
 	return new Linear_Expression_Sum(lhs.clone(), rhs.clone());
     }
