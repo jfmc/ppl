@@ -97,27 +97,30 @@ static struct option long_options[] = {
 };
 #endif
 
-static const char* usage_string
-= "Usage: %s [OPTION]... [FILE]...\n\n"
+static const char* usage_string0 =
+"Usage: %s [OPTION]... [FILE]...\n\n"
 "  -c, --check[=THRESHOLD] checks the obtained results;  optima are checked\n"
 "                          with a tolerance of THRESHOLD (default %.10g)\n"
 "  -i, --incremental       solves the problem incrementally\n"
 "  -m, --min               minimizes the objective function\n"
 "  -M, --max               maximizes the objective function (default)\n"
 "  -n, --no-optimization   checks for satisfiability only\n"
-"  -r, --no-mip            consider integer variables as real variables\n"
+"  -r, --no-mip            consider integer variables as real variables\n";
+static const char* usage_string1 =
 "  -CSECS, --max-cpu=SECS  limits CPU usage to SECS seconds\n"
 "  -RMB, --max-memory=MB   limits memory usage to MB megabytes\n"
 "  -h, --help              prints this help text to stdout\n"
 "  -oPATH, --output=PATH   appends output to PATH\n"
-"  -e, --enumerate         use the (expensive!) enumeration method\n"
+"  -e, --enumerate         use the (expensive!) enumeration method\n";
+static const char* usage_string2 =
 "  -pM, --pricing=M        use pricing method M for simplex (assumes -s);\n"
 "                          M is an int from 0 to 2, default 0:\n"
 "                          0 --> steepest-edge using floating point\n"
 "                          1 --> steepest-edge using exact arithmetic\n"
 "                          2 --> textbook\n"
 "  -s, --simplex           use the simplex method\n"
-"  -t, --timings           prints timings to stderr\n"
+"  -t, --timings           prints timings to stderr\n";
+static const char* usage_string3 =
 "  -v, --verbosity=LEVEL   sets verbosity level (from 0 to 4, default 3):\n"
 "                          0 --> quiet: no output except for errors and\n"
 "                                explicitly required notifications\n"
@@ -264,7 +267,10 @@ process_options(int argc, char* argv[]) {
 
     case '?':
     case 'h':
-      fprintf(stdout, usage_string, argv[0], default_check_threshold);
+      fprintf(stdout, usage_string0, argv[0], default_check_threshold);
+      fprintf(stdout, usage_string1);
+      fprintf(stdout, usage_string2);
+      fprintf(stdout, usage_string3);
       my_exit(0);
       break;
 
@@ -920,7 +926,7 @@ solve(char* file_name) {
     start_clock();
 
   if (verbosity == 0) {
-    // FIXME: find a way to suppress output from lpx_read_mps.
+    /* FIXME: find a way to suppress output from lpx_read_mps. */
   }
 
   glpk_lp = lpx_read_mps(file_name);
@@ -1183,14 +1189,19 @@ glpk_message_interceptor(void* info, char* msg) {
 
 int
 main(int argc, char* argv[]) {
+#if defined(PPL_GLPK_HAS__GLP_LIB_PRINT_HOOK)
+  extern void _glp_lib_print_hook(int (*func)(void *info, char *buf),
+				  void *info);
+#endif
+  _glp_lib_print_hook(glpk_message_interceptor, 0);
   program_name = argv[0];
   if (ppl_initialize() < 0)
     fatal("cannot initialize the Parma Polyhedra Library");
 
-  // The PPL solver does not use floating point numbers, except
-  // perhaps for the steepest edge heuristics.  In contrast, GLPK does
-  // use them, so it is best to restore the rounding mode as it was
-  // prior to the PPL initialization.
+  /* The PPL solver does not use floating point numbers, except
+     perhaps for the steepest edge heuristics.  In contrast, GLPK does
+     use them, so it is best to restore the rounding mode as it was
+     prior to the PPL initialization.  */
   if (ppl_restore_pre_PPL_rounding() < 0)
     fatal("cannot restore the rounding mode");
 
@@ -1210,8 +1221,6 @@ main(int argc, char* argv[]) {
 #elif defined(PPL_GLPK_HAS_GLP_TERM_HOOK)
   glp_term_hook(glpk_message_interceptor, 0);
 #elif defined(PPL_GLPK_HAS__GLP_LIB_PRINT_HOOK)
-  extern void _glp_lib_print_hook(int (*func)(void *info, char *buf),
-				  void *info);
   _glp_lib_print_hook(glpk_message_interceptor, 0);
 #elif defined(PPL_GLPK_HAS_LIB_SET_PRINT_HOOK)
   lib_set_print_hook(0, glpk_message_interceptor);
