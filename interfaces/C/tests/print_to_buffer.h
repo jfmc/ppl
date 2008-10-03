@@ -19,31 +19,31 @@ char* print_ppl_##Type##_t_to_buffer(ppl_##Type##_t p,                  \
 extern "C" {
 #endif
 
-DECLARE_PRINT_TO_BUFFER(Coefficient);
+DECLARE_PRINT_TO_BUFFER(Coefficient)
 
-DECLARE_PRINT_TO_BUFFER(Linear_Expression);
+DECLARE_PRINT_TO_BUFFER(Linear_Expression)
 
-DECLARE_PRINT_TO_BUFFER(Constraint);
+DECLARE_PRINT_TO_BUFFER(Constraint)
 
-DECLARE_PRINT_TO_BUFFER(Constraint_System);
+DECLARE_PRINT_TO_BUFFER(Constraint_System)
 
-DECLARE_PRINT_TO_BUFFER(Constraint_System_const_iterator);
+DECLARE_PRINT_TO_BUFFER(Constraint_System_const_iterator)
 
-DECLARE_PRINT_TO_BUFFER(Generator);
+DECLARE_PRINT_TO_BUFFER(Generator)
 
-DECLARE_PRINT_TO_BUFFER(Generator_System);
+DECLARE_PRINT_TO_BUFFER(Generator_System)
 
-DECLARE_PRINT_TO_BUFFER(Generator_System_const_iterator);
+DECLARE_PRINT_TO_BUFFER(Generator_System_const_iterator)
 
-DECLARE_PRINT_TO_BUFFER(Congruence);
+DECLARE_PRINT_TO_BUFFER(Congruence)
 
-DECLARE_PRINT_TO_BUFFER(Congruence_System);
+DECLARE_PRINT_TO_BUFFER(Congruence_System)
 
-DECLARE_PRINT_TO_BUFFER(Grid_Generator);
+DECLARE_PRINT_TO_BUFFER(Grid_Generator)
 
-DECLARE_PRINT_TO_BUFFER(Grid_Generator_System);
+DECLARE_PRINT_TO_BUFFER(Grid_Generator_System)
 
-DECLARE_PRINT_TO_BUFFER(MIP_Problem);
+DECLARE_PRINT_TO_BUFFER(MIP_Problem)
 
 #ifdef __cplusplus
 } /* extern "C" */
