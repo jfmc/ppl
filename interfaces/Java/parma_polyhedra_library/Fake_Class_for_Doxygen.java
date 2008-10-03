@@ -1045,3 +1045,186 @@ public class Polyhedron extends PPL_Object {
     //@} // Ad Hoc Functions for (C or NNC) Polyhedra
 
 } // class Polyhedron
+
+
+//! The Java class for topologically closed convex polyhedra.
+/*! \ingroup PPL_Java_interface */
+public class C_Polyhedron extends Polyhedron {
+
+    public C_Polyhedron(long num_dimensions,
+			Degenerate_Element kind);
+
+    public C_Polyhedron(C_Polyhedron y);
+
+    public C_Polyhedron(NNC_Polyhedron y);
+
+    public C_Polyhedron(C_Polyhedron y, Complexity_Class complexity);
+
+    public C_Polyhedron(NNC_Polyhedron y, Complexity_Class complexity);
+
+    public C_Polyhedron(Constraint_System cs);
+
+    public C_Polyhedron(Congruence_System cs);
+
+    public C_Polyhedron(Generator_System cs);
+
+    public native boolean upper_bound_assign_if_exact(C_Polyhedron y);
+
+    public native boolean poly_hull_assign_if_exact(C_Polyhedron y);
+
+    public static native
+        Pair <C_Polyhedron, Pointset_Powerset_NNC_Polyhedron>
+        linear_partition(C_Polyhedron p, C_Polyhedron q);
+
+    public native void free();
+
+    protected native void finalize();
+
+} // class C_Polyhedron
+
+//! The Java class for NNC convex polyhedra.
+/*! \ingroup PPL_Java_interface */
+public class NNC_Polyhedron extends Polyhedron {
+
+    public NNC_Polyhedron(long num_dimensions,
+                          Degenerate_Element kind);
+
+    public NNC_Polyhedron(NNC_Polyhedron y);
+
+    public NNC_Polyhedron(C_Polyhedron y);
+
+    public NNC_Polyhedron(NNC_Polyhedron y, Complexity_Class complexity);
+
+    public NNC_Polyhedron(C_Polyhedron y, Complexity_Class complexity);
+
+    public NNC_Polyhedron(Constraint_System cs);
+
+    public NNC_Polyhedron(Congruence_System cs);
+
+    public NNC_Polyhedron(Generator_System cs);
+
+    public native boolean upper_bound_assign_if_exact(NNC_Polyhedron y);
+
+    public native boolean poly_hull_assign_if_exact(NNC_Polyhedron y);
+
+    public static native
+        Pair <NNC_Polyhedron, Pointset_Powerset_NNC_Polyhedron>
+        linear_partition(NNC_Polyhedron p, NNC_Polyhedron q);
+
+    public native void free();
+
+    protected native void finalize();
+
+} // class NNC_Polyhedron
+
+
+//! A powerset of C_Polyhedron objects.
+/*! \ingroup PPL_Java_interface
+  The powerset domains can be instantiated by taking as a base domain
+  any fixed semantic geometric description
+  (C and NNC polyhedra, BD and octagonal shapes, boxes and grids).
+  An element of the powerset domain represents a disjunctive collection
+  of base objects (its disjuncts), all having the same space dimension.
+
+  Besides the methods that are available in all semantic geometric
+  descriptions (whose documentation is not repeated here),
+  the powerset domain also provides several ad hoc methods.
+  In particular, the iterator types allow for the examination and
+  manipulation of the collection of disjuncts.
+*/
+public class Pointset_Powerset_C_Polyhedron extends PPL_Object {
+
+    /*! \name Ad Hoc Functions for Pointset_Powerset domains */
+    /*@{*/
+
+    /*! \brief
+      Drops from the sequence of disjuncts in \p this all the non-maximal
+      elements, so that a non-redundant powerset if obtained.
+    */
+    public native void omega_reduce();
+
+    //! Returns the number of disjuncts.
+    /*!
+      If present, Omega-redundant elements will be counted too.
+    */
+    public native long size();
+
+    //! Returns \c true if and only if \p this geometrically covers \p y.
+    public native boolean
+        geometrically_covers(Pointset_Powerset_C_Polyhedron y);
+
+    //! Returns \c true if and only if \p this is geometrically equal to \p y.
+    public native boolean
+        geometrically_equals(Pointset_Powerset_C_Polyhedron y);
+
+    /*! \brief
+      Returns an iterator referring to the beginning of the sequence
+      of disjuncts of \p this.
+    */
+    public native Pointset_Powerset_C_Polyhedron_Iterator begin_iterator();
+
+    /*! \brief
+      Returns an iterator referring to past the end of the sequence
+      of disjuncts of \p this.
+    */
+    public native Pointset_Powerset_C_Polyhedron_Iterator end_iterator();
+
+    //! Adds to \p this a copy of disjunct \p d.
+    public native void add_disjunct(C_Polyhedron d);
+
+    // FIXME: this method needs correction, as it returns nothing.
+    /*! \brief
+      Drops from \p this the disjunct referred by \p iter; returns an
+      iterator referring to the disjunct following the dropped one.
+    */
+    public native void
+        drop_disjunct(Pointset_Powerset_C_Polyhedron_Iterator iter);
+
+
+    /*! \brief
+      Drops from \p this all the disjuncts from \p first to \p last
+      (excluded).
+    */
+    public native void
+        drop_disjuncts(Pointset_Powerset_C_Polyhedron_Iterator first,
+                       Pointset_Powerset_C_Polyhedron_Iterator last);
+
+
+    /*! \brief
+      Modifies \p this by (recursively) merging together the pairs of
+      disjuncts whose upper-bound is the same as their set-theoretical union.
+    */
+    public native void pairwise_reduce();
+
+    /*@}*/ /* \name Ad Hoc Functions for Pointset_Powerset domains */
+
+} // class Pointset_Powerset_C_Polyhedron
+
+
+//! An iterator class for the disjuncts of a Pointset_Powerset_C_Polyhedron.
+/*! \ingroup PPL_Java_interface */
+public class Pointset_Powerset_C_Polyhedron_Iterator extends PPL_Object {
+
+    //! Returns \c true if and only if \p this and \p itr are equal.
+    public native boolean equals(Pointset_Powerset_C_Polyhedron_Iterator itr);
+
+    //! Modifies \p this so that it refers to the next disjunct.
+    public native void next();
+
+    //! Modifies \p this so that it refers to the previous disjunct.
+    public native void prev();
+
+    //! Returns the disjunct referenced by \p this.
+    /*!
+      \warning
+      On exit, the C_Polyhedron disjunct is still owned by the powerset
+      object: any function call on the owning powerset object may
+      invalidate it. Moreover, the disjunct is meant to be immutable
+      and should not be modified in any way (its resources will
+      be released when deleting the owning powerset). If really needed,
+      the disjunct may be cloned into a new object, which will be under
+      control of the user.
+    */
+    public native C_Polyhedron get_disjunct();
+
+} // class Pointset_Powerset_C_Polyhedron_Iterator
