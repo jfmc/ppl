@@ -26,7 +26,14 @@ package parma_polyhedra_library;
 public class Fake_Class_For_Doxygen {}
 
 //! The Java base class for (C and NNC) convex polyhedra.
-/*! \ingroup PPL_Java_interface */
+/*! \ingroup PPL_Java_interface
+  The base class Polyhedron provides declarations for most of
+  the methods common to classes C_Polyhedron and NNC_Polyhedron.
+  Note that the user should always use the derived classes.
+  Moreover, C and NNC polyhedra can not be freely interchanged:
+  as specified in the main manual, most library functions require
+  their arguments to be topologically compatible.
+*/
 public class Polyhedron extends PPL_Object {
 
     //! \name Member Functions that Do Not Modify the Polyhedron
@@ -1047,75 +1054,119 @@ public class Polyhedron extends PPL_Object {
 } // class Polyhedron
 
 
-//! The Java class for topologically closed convex polyhedra.
+//! A topologically closed convex polyhedron.
 /*! \ingroup PPL_Java_interface */
 public class C_Polyhedron extends Polyhedron {
 
-    public C_Polyhedron(long num_dimensions,
-			Degenerate_Element kind);
+    //! \name Standard Constructors and Destructor
+    //@{
 
+    //! Builds a new C polyhedron of dimension \p d.
+    /*!
+      If \p kind is \c EMPTY, the newly created polyhedron will be empty;
+      otherwise, it will be a universe polyhedron.
+    */
+    public C_Polyhedron(long d, Degenerate_Element kind);
+
+    //! Builds a new C polyhedron that is copy of \p y.
     public C_Polyhedron(C_Polyhedron y);
 
-    public C_Polyhedron(NNC_Polyhedron y);
-
+    //! Builds a new C polyhedron that is a copy of \p ph.
+    /*!
+      The complexity argument is ignored.
+    */
     public C_Polyhedron(C_Polyhedron y, Complexity_Class complexity);
 
-    public C_Polyhedron(NNC_Polyhedron y, Complexity_Class complexity);
-
+    //! Builds a new C polyhedron from the system of constraints \p cs.
+    /*!
+      The new polyhedron will inherit the space dimension of \p cs.
+    */
     public C_Polyhedron(Constraint_System cs);
 
-    public C_Polyhedron(Congruence_System cs);
+    //! Builds a new C polyhedron from the system of congruences \p cgs.
+    /*!
+      The new polyhedron will inherit the space dimension of \p cgs.
+    */
+    public C_Polyhedron(Congruence_System cgs);
 
-    public C_Polyhedron(Generator_System cs);
-
-    public native boolean upper_bound_assign_if_exact(C_Polyhedron y);
-
-    public native boolean poly_hull_assign_if_exact(C_Polyhedron y);
-
-    public static native
-        Pair <C_Polyhedron, Pointset_Powerset_NNC_Polyhedron>
-        linear_partition(C_Polyhedron p, C_Polyhedron q);
-
+    /*! \brief
+      Releases all resources managed by \p this,
+      also resetting it to a null reference.
+    */
     public native void free();
 
+    //@} // Standard Constructors and Destructor
+
+    /*! \name Constructors Behaving as Conversion Operators
+      Besides the conversions listed here below, the library also
+      provides conversion operators that build a semantic geometric
+      description starting from \b any other semantic geometric
+      description (e.g., <code>Grid(C_Polyhedron y)</code>,
+      <code>C_Polyhedron(BD_Shape_mpq_class y)</code>, etc.).
+      Clearly, the conversion operators are only available if both
+      the source and the target semantic geometric descriptions have
+      been enabled when configuring the library.
+      The conversions also taking as argument a complexity class
+      sometimes provide non-trivial precision/efficiency trade-offs.
+    */
+    //@{
+
+    /*! \brief
+      Builds a C polyhedron that is a copy of the topological closure
+      of the NNC polyhedron \p y.
+    */
+    public C_Polyhedron(NNC_Polyhedron y);
+
+    /*! \brief
+      Builds a C polyhedron that is a copy of the topological closure
+      of the NNC polyhedron \p y.
+
+      The complexity argument is ignored, since the exact constructor
+      has polynomial complexity.
+    */
+    public C_Polyhedron(NNC_Polyhedron y, Complexity_Class complexity);
+
+    //! Builds a new C polyhedron from the system of generators \p gs.
+    /*!
+      The new polyhedron will inherit the space dimension of \p gs.
+    */
+    public C_Polyhedron(Generator_System gs);
+
+    //@} // Constructors Behaving as Conversion Operators
+
+    //! \name Other Methods.
+    //@{
+
+    /*! \brief
+      If the upper bound of \p this and \p y is exact it is assigned
+      to \p this and \c true is returned; otherwise \c false is returned.
+
+      \exception Invalid_Argument_Exception
+      Thrown if \p this and \p y are dimension-incompatible.
+    */
+    public native boolean upper_bound_assign_if_exact(C_Polyhedron y);
+
+    //@} // Other Methods.
+
+    //! Partitions \p q with respect to \p p.
+    /*!
+      Let \p p and \p q be two polyhedra.
+      The function returns a pair object \p r such that
+      - <CODE>r.first</CODE> is the intersection of \p p and \p q;
+      - <CODE>r.second</CODE> has the property that all its elements are
+      pairwise disjoint and disjoint from \p p;
+      - the set-theoretical union of <CODE>r.first</CODE> with all the
+      elements of <CODE>r.second</CODE> gives \p q (i.e., <CODE>r</CODE>
+      is the representation of a partition of \p q).
+    */
+    public static native
+        Pair<C_Polyhedron, Pointset_Powerset_NNC_Polyhedron>
+        linear_partition(C_Polyhedron p, C_Polyhedron q);
+
+    //! Releases all resources managed by \p this.
     protected native void finalize();
 
 } // class C_Polyhedron
-
-//! The Java class for NNC convex polyhedra.
-/*! \ingroup PPL_Java_interface */
-public class NNC_Polyhedron extends Polyhedron {
-
-    public NNC_Polyhedron(long num_dimensions,
-                          Degenerate_Element kind);
-
-    public NNC_Polyhedron(NNC_Polyhedron y);
-
-    public NNC_Polyhedron(C_Polyhedron y);
-
-    public NNC_Polyhedron(NNC_Polyhedron y, Complexity_Class complexity);
-
-    public NNC_Polyhedron(C_Polyhedron y, Complexity_Class complexity);
-
-    public NNC_Polyhedron(Constraint_System cs);
-
-    public NNC_Polyhedron(Congruence_System cs);
-
-    public NNC_Polyhedron(Generator_System cs);
-
-    public native boolean upper_bound_assign_if_exact(NNC_Polyhedron y);
-
-    public native boolean poly_hull_assign_if_exact(NNC_Polyhedron y);
-
-    public static native
-        Pair <NNC_Polyhedron, Pointset_Powerset_NNC_Polyhedron>
-        linear_partition(NNC_Polyhedron p, NNC_Polyhedron q);
-
-    public native void free();
-
-    protected native void finalize();
-
-} // class NNC_Polyhedron
 
 
 //! A powerset of C_Polyhedron objects.
@@ -1205,6 +1256,10 @@ public class Pointset_Powerset_C_Polyhedron extends PPL_Object {
 /*! \ingroup PPL_Java_interface */
 public class Pointset_Powerset_C_Polyhedron_Iterator extends PPL_Object {
 
+    //! Builds a copy of iterator \p y.
+    public Pointset_Powerset_C_Polyhedron_Iterator
+        (Pointset_Powerset_C_Polyhedron_Iterator y);
+
     //! Returns \c true if and only if \p this and \p itr are equal.
     public native boolean equals(Pointset_Powerset_C_Polyhedron_Iterator itr);
 
@@ -1226,5 +1281,11 @@ public class Pointset_Powerset_C_Polyhedron_Iterator extends PPL_Object {
       control of the user.
     */
     public native C_Polyhedron get_disjunct();
+
+    //! Releases resources and resets \p this to a null reference.
+    public native void free();
+
+    //! Releases the resources managed by \p this.
+    protected native void finalize();
 
 } // class Pointset_Powerset_C_Polyhedron_Iterator
