@@ -31,7 +31,7 @@ m4_include(`ppl_interface_generator_c_procedure_generators.m4')
 
 dnl m4_one_class_code(Class)
 m4_pushdef(`m4_one_class_code', `dnl
-PPL_TYPE_DECLARATION(m4_interface_class$1);
+PPL_TYPE_DECLARATION(m4_interface_class$1)
 ')
 
 dnl -----------------------------------------------------------------

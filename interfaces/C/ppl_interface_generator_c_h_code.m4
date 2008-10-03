@@ -609,8 +609,8 @@ m4_define(`ppl_new_@CLASS@_iterator_code',
   const ppl_@CLASS@_tag.
 */
 
-PPL_TYPE_DECLARATION(@CLASS@_iterator);
-PPL_TYPE_DECLARATION(@CLASS@_const_iterator);
+PPL_TYPE_DECLARATION(@CLASS@_iterator)
+PPL_TYPE_DECLARATION(@CLASS@_const_iterator)
 
 /*! \relates ppl_@CLASS@_iterator_tag */
 int
