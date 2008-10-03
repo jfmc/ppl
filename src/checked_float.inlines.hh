@@ -865,7 +865,7 @@ output_float(std::ostream& os, const Type from, const Numeric_Format&,
     int old_precision = os.precision(10000);
     // FIXME: here correctness depends on the behavior of the standard
     // output operator which, in turn, may depend on the behavior
-    // of printf().  The C99 standard, 7.19.6#13, does not give
+    // of printf().  The C99 standard, 7.19.16.1#13, does not give
     // enough guarantees.  We could not find something similar
     // in the C++ standard, so there is a concrete danger here.
     os << from;
