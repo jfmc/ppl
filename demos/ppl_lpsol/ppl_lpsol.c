@@ -1178,13 +1178,15 @@ set_GMP_memory_allocation_functions(void) {
 }
 #endif
 
-#if defined(NDEBUG) && !defined(PPL_GLPK_HAS_GLP_TERM_OUT)
+#if defined(NDEBUG) && (defined(PPL_GLPK_HAS_GLP_TERM_HOOK) || defined(PPL_GLPK_HAS__GLP_LIB_PRINT_HOOK) || defined(PPL_GLPK_HAS_LIB_SET_PRINT_HOOK))
+
 static int
 glpk_message_interceptor(void* info, char* msg) {
   (void) info;
   (void) msg;
   return 1;
 }
+
 #endif
 
 int
@@ -1214,7 +1216,7 @@ main(int argc, char* argv[]) {
   if (ppl_io_set_variable_output_function(variable_output_function) < 0)
     fatal("cannot install the custom variable output function");
 
-#ifdef NDEBUG
+#if defined(NDEBUG)
 #if defined(PPL_GLPK_HAS_GLP_TERM_OUT)
   glp_term_out(GLP_OFF);
 #elif defined(PPL_GLPK_HAS_GLP_TERM_HOOK)
