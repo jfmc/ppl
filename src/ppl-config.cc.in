@@ -198,6 +198,8 @@ fatal(const char* format, ...) {
   exit(1);
 }
 
+// Currently unused, but we may want to use it in the future.
+/*
 void
 warning(const char* format, ...) {
   va_list ap;
@@ -207,6 +209,7 @@ warning(const char* format, ...) {
   fprintf(stderr, "\n");
   va_end(ap);
 }
+*/
 
 void internal_error() {
   fatal("internal error: please submit a bug report to ppl-devel@cs.unipr.it");
