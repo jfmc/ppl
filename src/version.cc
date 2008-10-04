@@ -37,16 +37,16 @@ const char banner_string[] =
 "There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A\n"
 "PARTICULAR PURPOSE.\n"
 "\n"
-#if defined(__GNUC__)
-"Compiled by the GNU C++ compiler version "__VERSION__".\n"
+#if defined(__COMO__)
+#define str(s) # s
+#define xstr(s) str(s)
+"Compiled by the Comeau C++ compiler version "xstr(__COMO_VERSION__)".\n"
 #elif defined(__INTEL_COMPILER)
 #define str(s) # s
 #define xstr(s) str(s)
 "Compiled by the Intel C++ compiler version "xstr(__INTEL_COMPILER)".\n"
-#elif defined(__COMO__)
-#define str(s) # s
-#define xstr(s) str(s)
-"Compiled by the Comeau C++ compiler version "xstr(__COMO_VERSION__)".\n"
+#elif defined(__GNUC__)
+"Compiled by the GNU C++ compiler version "__VERSION__".\n"
 #else
 "Compiled by an unknown compiler.\n"
 #endif
