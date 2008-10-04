@@ -27,9 +27,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 extern "C" {
 #endif
 
-int check_noisy();
+int check_noisy(void);
 
-int check_very_noisy();
+int check_very_noisy(void);
 
 #ifdef __cplusplus
 } /* extern "C" */
