@@ -129,9 +129,9 @@ inline
 OR_Matrix<T>::any_row_iterator<U>
 ::any_row_iterator(const dimension_type n_rows)
   : value(),
-    e(n_rows),
-    // CHECKME: zeroing just to silence an annoying compiler warning.
-    i(0) {
+    e(n_rows)
+    // Field `i' is intentionally not initialized here.
+{
 }
 
 template <typename T>
