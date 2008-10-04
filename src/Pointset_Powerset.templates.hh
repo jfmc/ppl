@@ -666,10 +666,10 @@ bool
 Pointset_Powerset<PS>::is_disjoint_from(const Pointset_Powerset& y) const {
   const Pointset_Powerset& x = *this;
   for (Sequence_const_iterator si = x.sequence.begin(),
-         s_end = x.sequence.end(); si != s_end; ++si) {
+         xs_end = x.sequence.end(); si != xs_end; ++si) {
     const PS& pi = si->element();
     for (Sequence_const_iterator sj = y.sequence.begin(),
-           s_end = y.sequence.end(); sj != s_end; ++sj) {
+           ys_end = y.sequence.end(); sj != ys_end; ++sj) {
       const PS& pj = sj->element();
       if (!pi.is_disjoint_from(pj))
         return false;
@@ -766,12 +766,12 @@ bool
 Pointset_Powerset<PS>::contains(const Pointset_Powerset& y) const {
   const Pointset_Powerset& x = *this;
   for (Sequence_const_iterator si = y.sequence.begin(),
-         s_end = y.sequence.end(); si != s_end; ++si) {
+         ys_end = y.sequence.end(); si != ys_end; ++si) {
     const PS& pi = si->element();
     bool pi_is_contained = false;
     for (Sequence_const_iterator sj = x.sequence.begin(),
-           s_end = x.sequence.end();
-         (sj != s_end && !pi_is_contained); ++sj) {
+           xs_end = x.sequence.end();
+         (sj != xs_end && !pi_is_contained); ++sj) {
       const PS& pj = sj->element();
       if (pj.contains(pi))
         pi_is_contained = true;
@@ -791,12 +791,12 @@ Pointset_Powerset<PS>::strictly_contains(const Pointset_Powerset& y) const {
   const Pointset_Powerset& x = *this;
   x.omega_reduce();
   for (Sequence_const_iterator si = y.sequence.begin(),
-         s_end = y.sequence.end(); si != s_end; ++si) {
+         ys_end = y.sequence.end(); si != ys_end; ++si) {
     const PS& pi = si->element();
     bool pi_is_strictly_contained = false;
     for (Sequence_const_iterator sj = x.sequence.begin(),
-           s_end = x.sequence.end();
-         (sj != s_end && !pi_is_strictly_contained); ++sj) {
+           xs_end = x.sequence.end();
+         (sj != xs_end && !pi_is_strictly_contained); ++sj) {
       const PS& pj = sj->element();
       if (pj.strictly_contains(pi))
         pi_is_strictly_contained = true;
