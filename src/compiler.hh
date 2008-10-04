@@ -51,6 +51,27 @@ inline void avoid_cse(const T& x) {
 #endif
 }
 
+#ifndef PPL_SUPPRESS_UNINIT_WARNINGS
+#define PPL_SUPPRESS_UNINIT_WARNINGS 1
+#endif
+
+#ifndef PPL_SUPPRESS_UNINITIALIZED_WARNINGS
+#define PPL_SUPPRESS_UNINITIALIZED_WARNINGS 1
+#endif
+
+#if PPL_SUPPRESS_UNINITIALIZED_WARNINGS
+template <typename T>
+struct Suppress_Uninitialized_Warnings_Type {
+  typedef T synonym;
+};
+
+#define PPL_UNINITIALIZED(type, name)                                   \
+  type name = Suppress_Uninitialized_Warnings_Type<type>::synonym ()
+#else
+#define PPL_UNINITIALIZED(type, name)           \
+  type name
+#endif
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_compiler_hh)
