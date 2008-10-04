@@ -48,7 +48,7 @@ void
 ppl_Prolog_sysdep_deinit() {
 }
 
-inline int
+int
 Prolog_get_Coefficient(Prolog_term_ref t, Coefficient& n) {
   assert(Prolog_is_integer(t));
   if (ciao_fits_in_int(t))
@@ -62,7 +62,7 @@ Prolog_get_Coefficient(Prolog_term_ref t, Coefficient& n) {
   return 1;
 }
 
-inline int
+int
 Prolog_put_Coefficient(Prolog_term_ref& t, const Coefficient& n) {
   int i;
   if (assign_r(i, n, ROUND_NOT_NEEDED) == V_EQ)
@@ -77,7 +77,7 @@ Prolog_put_Coefficient(Prolog_term_ref& t, const Coefficient& n) {
   return 1;
 }
 
-inline int
+int
 Prolog_unify_Coefficient(Prolog_term_ref t, const Coefficient& n) {
   Prolog_term_ref u = Prolog_new_term_ref();
   Prolog_put_Coefficient(u, n);
