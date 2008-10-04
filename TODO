@@ -29,7 +29,6 @@ Enhancements for PPL 0.10
   programs in the demos directory (they constitute additional examples
   of use of the C and C++ interfaces) and in the directories under tests
   (these are currently covered by a README file).
-- Update the examples in README.configure.
 - Check all the Makefile.am's to make sure CLEANFILES, MOSTLYCLEANFILES
   and DISTCLEANFILES are used in a sensible way.
 - Ensure the tests in tests/MIP_Problem/* cover every line of
