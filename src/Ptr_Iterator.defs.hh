@@ -160,7 +160,7 @@ private:
   Parma_Polyhedra_Library::Implementation::
   operator-(const Ptr_Iterator<Q>& x, const Ptr_Iterator<R>& y);
 
-#ifndef __INTEL_COMPILER
+#if !defined(__INTEL_COMPILER)
   friend Ptr_Iterator<P>
   Parma_Polyhedra_Library::Implementation::
   operator+<>(typename Ptr_Iterator<P>::difference_type m,
