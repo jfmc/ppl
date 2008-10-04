@@ -402,7 +402,7 @@ public:
   //! Names of MIP problems' control parameters.
   enum Control_Parameter_Name {
     //! The pricing rule.
-    PRICING,
+    PRICING
   };
 
   //! Possible values for MIP problem's control parameters.
@@ -412,7 +412,7 @@ public:
     //! Steepest edge pricing method, using Coefficient.
     PRICING_STEEPEST_EDGE_EXACT,
     //! Textbook pricing method.
-    PRICING_TEXTBOOK,
+    PRICING_TEXTBOOK
   };
 
   //! Returns the value of the control parameter \p name.
