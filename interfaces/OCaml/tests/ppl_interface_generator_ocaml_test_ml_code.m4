@@ -726,9 +726,9 @@ m4_define(`ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assi
 `
 print_string_if_noisy "testing ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign: ";;
 let copy01
-  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
+  = ppl_new_@CLASS@_from_@CLASS@(@LTOPOLOGY@@LCLASS@01);;
 let copy03
-  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@03);;
+  = ppl_new_@CLASS@_from_@CLASS@(@LCLASS@03);;
 ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign copy01 copy03 ;;
 let out = if (ppl_@CLASS@_OK copy01)
   then "success" else "failed"
@@ -740,9 +740,9 @@ m4_define(`ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign_code',
 `
 print_string_if_noisy "testing ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign: ";;
 let copy01
-  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
+  = ppl_new_@CLASS@_from_@CLASS@(@LCLASS@01);;
 let copy03
-  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@03);;
+  = ppl_new_@CLASS@_from_@CLASS@(@LCLASS@03);;
 ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign copy01 copy03 2;;
 let out = if (ppl_@CLASS@_OK copy01)
   then "success" else "failed"
@@ -753,7 +753,7 @@ print_string_if_noisy "\n";;
 m4_define(`ppl_@CLASS@_@BEGINEND@_iterator_code',
 `
 print_string_if_noisy "testing ppl_@BEGINEND@_iterator: " ;;
-let it = ppl_@CLASS@_@BEGINEND@_iterator @LTOPOLOGY@@LCLASS@01;;
+let it = ppl_@CLASS@_@BEGINEND@_iterator @LCLASS@01;;
 let out = if (ppl_@CLASS@_OK copy01)
   then "success" else "failed"
     in (print_string_if_noisy out);;
@@ -763,10 +763,22 @@ print_string_if_noisy "\n";;
 m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
 `
 print_string_if_noisy "testing ppl_@CLASS@_iterator_equals_iterator: " ;;
-let it = ppl_@CLASS@_begin_iterator @LTOPOLOGY@@LCLASS@01;;
-let it_begin = ppl_@CLASS@_begin_iterator @LTOPOLOGY@@LCLASS@01;;
+let it = ppl_@CLASS@_begin_iterator @LCLASS@01;;
+let it_begin = ppl_@CLASS@_begin_iterator @LCLASS@01;;
 let b = ppl_@CLASS@_iterator_equals_iterator it it_begin;;
-let out = if (ppl_@CLASS@_OK @LTOPOLOGY@@LCLASS@01)
+let out = if (ppl_@CLASS@_OK @LCLASS@01)
+  then "success" else "failed"
+    in (print_string_if_noisy out);;
+print_string_if_noisy "\n";;
+')
+
+m4_define(`ppl_new_@CLASS@_iterator_from_iterator_code',
+`
+print_string_if_noisy "testing ppl_new_@CLASS@_iterator_from_iterator: " ;;
+let it_begin = ppl_@CLASS@_begin_iterator @LCLASS@01;;
+let it_copy = ppl_new_@CLASS@_iterator_from_iterator it_begin;;
+let b = ppl_@CLASS@_iterator_equals_iterator it_copy it_begin;;
+let out = if (ppl_@CLASS@_OK @LCLASS@01)
   then "success" else "failed"
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
@@ -775,9 +787,9 @@ print_string_if_noisy "\n";;
 m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
 `
 print_string_if_noisy "testing ppl_@CLASS@_@INCDEC@_iterator: " ;;
-let it = ppl_@CLASS@_begin_iterator @LTOPOLOGY@@LCLASS@01;;
+let it = ppl_@CLASS@_begin_iterator @LCLASS@01;;
 ppl_@CLASS@_@INCDEC@_iterator it;;
-let out = if (ppl_@CLASS@_OK @LTOPOLOGY@@LCLASS@01)
+let out = if (ppl_@CLASS@_OK @LCLASS@01)
   then "success" else "failed"
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
@@ -786,9 +798,9 @@ print_string_if_noisy "\n";;
 m4_define(`ppl_@CLASS@_get_disjunct_code',
 `
 print_string_if_noisy "testing ppl_@CLASS@_get_disjunct: " ;;
-let it = ppl_@CLASS@_begin_iterator @LTOPOLOGY@@LCLASS@01;;
+let it = ppl_@CLASS@_begin_iterator @LCLASS@01;;
 let d = ppl_@CLASS@_get_disjunct it;;
-let out = if (ppl_@CLASS@_OK @LTOPOLOGY@@LCLASS@01)
+let out = if (ppl_@CLASS@_OK @LCLASS@01)
   then "success" else "failed"
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
@@ -798,7 +810,7 @@ m4_define(`ppl_@CLASS@_drop_disjunct_code',
 `
 print_string_if_noisy "testing ppl_@CLASS@_drop_disjunct: " ;;
 let copy01
-  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
+  = ppl_new_@CLASS@_from_@CLASS@(@LCLASS@01);;
 let it = ppl_@CLASS@_begin_iterator copy01;;
 ppl_@CLASS@_drop_disjunct copy01 it;;
 let out = if (ppl_@CLASS@_OK copy01)
@@ -811,7 +823,7 @@ m4_define(`ppl_@CLASS@_drop_disjuncts_code',
 `
 print_string_if_noisy "testing ppl_@CLASS@_drop_disjuncts: " ;;
 let copy01
-  = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
+  = ppl_new_@CLASS@_from_@CLASS@(@LCLASS@01);;
 let it1 = ppl_@CLASS@_begin_iterator copy01;;
 let it2 = ppl_@CLASS@_begin_iterator copy01;;
 ppl_@CLASS@_drop_disjuncts copy01 it1 it2;;
