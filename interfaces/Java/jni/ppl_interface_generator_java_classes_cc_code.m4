@@ -348,8 +348,6 @@ Java_parma_1polyhedra_1library_@1CLASS@_@1DIMENSION@
 
 ')
 
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-
 m4_define(`ppl_@CLASS@_get_@GET_REPRESENT@s_code',
 `dnl
 JNIEXPORT jobject JNICALL
