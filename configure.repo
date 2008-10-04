@@ -14990,23 +14990,68 @@ fi
 
 
 
-                  acl_libdirstem=lib
-  searchpath=`(LC_ALL=C $CC -print-search-dirs) 2>/dev/null | sed -n -e 's,^libraries: ,,p' | sed -e 's,^=,,'`
-  if test -n "$searchpath"; then
-    acl_save_IFS="${IFS= 	}"; IFS=":"
-    for searchdir in $searchpath; do
-      if test -d "$searchdir"; then
-        case "$searchdir" in
-          */lib64/ | */lib64 ) acl_libdirstem=lib64 ;;
-          *) searchdir=`cd "$searchdir" && pwd`
-             case "$searchdir" in
-               */lib64 ) acl_libdirstem=lib64 ;;
-             esac ;;
+
+  acl_libdirstem=lib
+  acl_libdirstem2=
+  case "$host_os" in
+    solaris*)
+                                    { $as_echo "$as_me:$LINENO: checking for 64-bit host" >&5
+$as_echo_n "checking for 64-bit host... " >&6; }
+if test "${gl_cv_solaris_64bit+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+#ifdef _LP64
+sixtyfour bits
+#endif
+
+_ACEOF
+if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+  $EGREP "sixtyfour bits" >/dev/null 2>&1; then
+  gl_cv_solaris_64bit=yes
+else
+  gl_cv_solaris_64bit=no
+fi
+rm -f conftest*
+
+
+fi
+{ $as_echo "$as_me:$LINENO: result: $gl_cv_solaris_64bit" >&5
+$as_echo "$gl_cv_solaris_64bit" >&6; }
+      if test $gl_cv_solaris_64bit = yes; then
+        acl_libdirstem=lib/64
+        case "$host_cpu" in
+          sparc*)        acl_libdirstem2=lib/sparcv9 ;;
+          i*86 | x86_64) acl_libdirstem2=lib/amd64 ;;
         esac
       fi
-    done
-    IFS="$acl_save_IFS"
-  fi
+      ;;
+    *)
+      searchpath=`(LC_ALL=C $CC -print-search-dirs) 2>/dev/null | sed -n -e 's,^libraries: ,,p' | sed -e 's,^=,,'`
+      if test -n "$searchpath"; then
+        acl_save_IFS="${IFS= 	}"; IFS=":"
+        for searchdir in $searchpath; do
+          if test -d "$searchdir"; then
+            case "$searchdir" in
+              */lib64/ | */lib64 ) acl_libdirstem=lib64 ;;
+              *) searchdir=`cd "$searchdir" && pwd`
+                 case "$searchdir" in
+                   */lib64 ) acl_libdirstem=lib64 ;;
+                 esac ;;
+            esac
+          fi
+        done
+        IFS="$acl_save_IFS"
+      fi
+      ;;
+  esac
+  test -n "$acl_libdirstem2" || acl_libdirstem2="$acl_libdirstem"
 
 
 if test -n "$with_libgmpxx_prefix" && test -z "$with_libgmp_prefix"; then
@@ -15027,6 +15072,9 @@ $as_echo_n "checking how to link with libgmp... " >&6; }
 if test "${ac_cv_libgmp_libs+set}" = set; then
   $as_echo_n "(cached) " >&6
 else
+
+
+
 
 
 
@@ -15068,6 +15116,10 @@ if test "${with_libgmp_prefix+set}" = set; then
       else
         additional_includedir="$withval/include"
         additional_libdir="$withval/$acl_libdirstem"
+        if test "$acl_libdirstem2" != "$acl_libdirstem" \
+           && ! test -d "$withval/$acl_libdirstem"; then
+          additional_libdir="$withval/$acl_libdirstem2"
+        fi
       fi
     fi
 
@@ -15219,7 +15271,9 @@ fi
           if test "X$found_dir" != "X"; then
                         LTLIBGMP="${LTLIBGMP}${LTLIBGMP:+ }-L$found_dir -l$name"
             if test "X$found_so" != "X"; then
-                                                        if test "$enable_rpath" = no || test "X$found_dir" = "X/usr/$acl_libdirstem"; then
+                                                        if test "$enable_rpath" = no \
+                 || test "X$found_dir" = "X/usr/$acl_libdirstem" \
+                 || test "X$found_dir" = "X/usr/$acl_libdirstem2"; then
                                 LIBGMP="${LIBGMP}${LIBGMP:+ }$found_so"
               else
                                                                                 haveit=
@@ -15289,6 +15343,11 @@ fi
                 LIBGMP_PREFIX="$basedir"
                 additional_includedir="$basedir/include"
                 ;;
+              */$acl_libdirstem2 | */$acl_libdirstem2/)
+                basedir=`echo "X$found_dir" | sed -e 's,^X,,' -e "s,/$acl_libdirstem2/"'*$,,'`
+                LIBGMP_PREFIX="$basedir"
+                additional_includedir="$basedir/include"
+                ;;
             esac
             if test "X$additional_includedir" != "X"; then
                                                                                                                 if test "X$additional_includedir" != "X/usr/include"; then
@@ -15335,9 +15394,11 @@ fi
                 case "$dep" in
                   -L*)
                     additional_libdir=`echo "X$dep" | sed -e 's/^X-L//'`
-                                                                                                                                                                if test "X$additional_libdir" != "X/usr/$acl_libdirstem"; then
+                                                                                                                                                                if test "X$additional_libdir" != "X/usr/$acl_libdirstem" \
+                       && test "X$additional_libdir" != "X/usr/$acl_libdirstem2"; then
                       haveit=
-                      if test "X$additional_libdir" = "X/usr/local/$acl_libdirstem"; then
+                      if test "X$additional_libdir" = "X/usr/local/$acl_libdirstem" \
+                         || test "X$additional_libdir" = "X/usr/local/$acl_libdirstem2"; then
                         if test -n "$GCC"; then
                           case $host_os in
                             linux* | gnu* | k*bsd*-gnu) haveit=yes;;
@@ -15463,6 +15524,11 @@ fi
     done
   fi
 
+
+
+
+
+
     ac_cv_libgmp_libs="$LIBGMP"
     ac_cv_libgmp_ltlibs="$LTLIBGMP"
     ac_cv_libgmp_cppflags="$INCGMP"
@@ -15521,6 +15587,9 @@ else
 
 
 
+
+
+
     use_additional=yes
 
   acl_save_prefix="$prefix"
@@ -15557,6 +15626,10 @@ if test "${with_libgmpxx_prefix+set}" = set; then
       else
         additional_includedir="$withval/include"
         additional_libdir="$withval/$acl_libdirstem"
+        if test "$acl_libdirstem2" != "$acl_libdirstem" \
+           && ! test -d "$withval/$acl_libdirstem"; then
+          additional_libdir="$withval/$acl_libdirstem2"
+        fi
       fi
     fi
 
@@ -15708,7 +15781,9 @@ fi
           if test "X$found_dir" != "X"; then
                         LTLIBGMPXX="${LTLIBGMPXX}${LTLIBGMPXX:+ }-L$found_dir -l$name"
             if test "X$found_so" != "X"; then
-                                                        if test "$enable_rpath" = no || test "X$found_dir" = "X/usr/$acl_libdirstem"; then
+                                                        if test "$enable_rpath" = no \
+                 || test "X$found_dir" = "X/usr/$acl_libdirstem" \
+                 || test "X$found_dir" = "X/usr/$acl_libdirstem2"; then
                                 LIBGMPXX="${LIBGMPXX}${LIBGMPXX:+ }$found_so"
               else
                                                                                 haveit=
@@ -15778,6 +15853,11 @@ fi
                 LIBGMPXX_PREFIX="$basedir"
                 additional_includedir="$basedir/include"
                 ;;
+              */$acl_libdirstem2 | */$acl_libdirstem2/)
+                basedir=`echo "X$found_dir" | sed -e 's,^X,,' -e "s,/$acl_libdirstem2/"'*$,,'`
+                LIBGMPXX_PREFIX="$basedir"
+                additional_includedir="$basedir/include"
+                ;;
             esac
             if test "X$additional_includedir" != "X"; then
                                                                                                                 if test "X$additional_includedir" != "X/usr/include"; then
@@ -15824,9 +15904,11 @@ fi
                 case "$dep" in
                   -L*)
                     additional_libdir=`echo "X$dep" | sed -e 's/^X-L//'`
-                                                                                                                                                                if test "X$additional_libdir" != "X/usr/$acl_libdirstem"; then
+                                                                                                                                                                if test "X$additional_libdir" != "X/usr/$acl_libdirstem" \
+                       && test "X$additional_libdir" != "X/usr/$acl_libdirstem2"; then
                       haveit=
-                      if test "X$additional_libdir" = "X/usr/local/$acl_libdirstem"; then
+                      if test "X$additional_libdir" = "X/usr/local/$acl_libdirstem" \
+                         || test "X$additional_libdir" = "X/usr/local/$acl_libdirstem2"; then
                         if test -n "$GCC"; then
                           case $host_os in
                             linux* | gnu* | k*bsd*-gnu) haveit=yes;;
@@ -15951,6 +16033,11 @@ fi
       LTLIBGMPXX="${LTLIBGMPXX}${LTLIBGMPXX:+ }-R$found_dir"
     done
   fi
+
+
+
+
+
 
     ac_cv_libgmpxx_libs="$LIBGMPXX"
     ac_cv_libgmpxx_ltlibs="$LTLIBGMPXX"
@@ -17205,7 +17292,7 @@ else
 JAVA_TEST=Test.java
 CLASS_TEST=Test.class
 cat << \EOF > $JAVA_TEST
-/* #line 17208 "configure" */
+/* #line 17295 "configure" */
 public class Test {
 public enum Relation_Symbol {
     /*! Less than. */
@@ -17396,7 +17483,7 @@ EOF
 if uudecode$EXEEXT Test.uue; then
         ac_cv_prog_uudecode_base64=yes
 else
-        echo "configure: 17399: uudecode had trouble decoding base 64 file 'Test.uue'" >&5
+        echo "configure: 17486: uudecode had trouble decoding base 64 file 'Test.uue'" >&5
         echo "configure: failed file was:" >&5
         cat Test.uue >&5
         ac_cv_prog_uudecode_base64=no
@@ -17515,7 +17602,7 @@ else
 JAVA_TEST=Test.java
 CLASS_TEST=Test.class
 cat << \EOF > $JAVA_TEST
-/* #line 17518 "configure" */
+/* #line 17605 "configure" */
 public class Test {
 public enum Relation_Symbol {
     /*! Less than. */
@@ -17564,7 +17651,7 @@ JAVA_TEST=Test.java
 CLASS_TEST=Test.class
 TEST=Test
 cat << \EOF > $JAVA_TEST
-/* [#]line 17567 "configure" */
+/* [#]line 17654 "configure" */
 public class Test {
 public static void main (String args[]) {
         System.exit (0);
@@ -20122,13 +20209,13 @@ if test "${lt_cv_nm_interface+set}" = set; then
 else
   lt_cv_nm_interface="BSD nm"
   echo "int some_variable = 0;" > conftest.$ac_ext
-  (eval echo "\"\$as_me:20125: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:20212: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:20128: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
+  (eval echo "\"\$as_me:20215: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
   (eval "$NM \"conftest.$ac_objext\"" 2>conftest.err > conftest.out)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:20131: output\"" >&5)
+  (eval echo "\"\$as_me:20218: output\"" >&5)
   cat conftest.out >&5
   if $GREP 'External.*some_variable' conftest.out > /dev/null; then
     lt_cv_nm_interface="MS dumpbin"
@@ -21333,7 +21420,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 21336 "configure"' > conftest.$ac_ext
+  echo '#line 21423 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -23419,11 +23506,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:23422: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:23509: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:23426: \$? = $ac_status" >&5
+   echo "$as_me:23513: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -23758,11 +23845,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:23761: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:23848: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:23765: \$? = $ac_status" >&5
+   echo "$as_me:23852: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -23863,11 +23950,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:23866: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:23953: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:23870: \$? = $ac_status" >&5
+   echo "$as_me:23957: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -23918,11 +24005,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:23921: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:24008: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:23925: \$? = $ac_status" >&5
+   echo "$as_me:24012: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -26718,7 +26805,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 26721 "configure"
+#line 26808 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -26814,7 +26901,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 26817 "configure"
+#line 26904 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -28834,11 +28921,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:28837: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:28924: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:28841: \$? = $ac_status" >&5
+   echo "$as_me:28928: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -28933,11 +29020,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:28936: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:29023: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:28940: \$? = $ac_status" >&5
+   echo "$as_me:29027: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -28985,11 +29072,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:28988: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:29075: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:28992: \$? = $ac_status" >&5
+   echo "$as_me:29079: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -33530,12 +33617,12 @@ else
   { $as_echo "$as_me:$LINENO: creating $ac_prefix_conf_OUT - prefix $ac_prefix_conf_UPP for $ac_prefix_conf_INP defines" >&5
 $as_echo "$as_me: creating $ac_prefix_conf_OUT - prefix $ac_prefix_conf_UPP for $ac_prefix_conf_INP defines" >&6;}
   if test -f $ac_prefix_conf_INP ; then
-    echo "s/^#undef  *\\([ABCDEFGHIJKLMNOPQRSTUVWXYZ_]\\)/#undef $ac_prefix_conf_UPP""_\\1/" > conftest.prefix
-    echo "s/^#undef  *\\([abcdefghijklmnopqrstuvwxyz]\\)/#undef $ac_prefix_conf_LOW""_\\1/" >> conftest.prefix
-    echo "s/^#define  *\\([ABCDEFGHIJKLMNOPQRSTUVWXYZ_][abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_]*\\)\\(.*\\)/#ifndef $ac_prefix_conf_UPP""_\\1 \\" >> conftest.prefix
+    echo "s/#undef  *\\([ABCDEFGHIJKLMNOPQRSTUVWXYZ_]\\)/#undef $ac_prefix_conf_UPP""_\\1/" > conftest.prefix
+    echo "s/#undef  *\\([abcdefghijklmnopqrstuvwxyz]\\)/#undef $ac_prefix_conf_LOW""_\\1/" >> conftest.prefix
+    echo "s/#define  *\\([ABCDEFGHIJKLMNOPQRSTUVWXYZ_][abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_]*\\)\\(.*\\)/#ifndef $ac_prefix_conf_UPP""_\\1 \\" >> conftest.prefix
     echo "#define $ac_prefix_conf_UPP""_\\1 \\2 \\" >> conftest.prefix
     echo "#endif/" >>conftest.prefix
-    echo "s/^#define  *\\([abcdefghijklmnopqrstuvwxyz][abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_]*\\)\\(.*\\)/#ifndef $ac_prefix_conf_LOW""_\\1 \\" >> conftest.prefix
+    echo "s/#define  *\\([abcdefghijklmnopqrstuvwxyz][abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_]*\\)\\(.*\\)/#ifndef $ac_prefix_conf_LOW""_\\1 \\" >> conftest.prefix
     echo "#define $ac_prefix_conf_LOW""_\\1 \\2 \\" >> conftest.prefix
     echo "#endif/" >> conftest.prefix
     # now executing _script on _DEF input to create _OUT output file
