@@ -1206,7 +1206,7 @@ if test x"$GCC" = xyes
 then
   if test x"$ICC" = xyes
   then
-    CFLAGS="$CFLAGS -w2 -wd161,177,193,279,383,444,981,1098,1188,1418"
+    CFLAGS="$CFLAGS -w2 -wd161,177,193,279,383,444,981,1098,1188,1418,1419,1572"
   else
     CFLAGS="$CFLAGS -W -Wall"
   fi
@@ -1215,7 +1215,7 @@ if test x"$GXX" = xyes
 then
   if test x"$ICPC" = xyes
   then
-    CXXFLAGS="$CXXFLAGS -w2 -wd161,177,193,279,383,444,981,1098,1188,1418"
+    CXXFLAGS="$CXXFLAGS -w2 -wd161,177,193,279,383,444,981,1098,1188,1418,1419,1572"
   else
     CXXFLAGS="$CXXFLAGS -W -Wall"
   fi
