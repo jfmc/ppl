@@ -593,12 +593,10 @@ PPL::Polyhedron::max_min(const Linear_Expression& expr,
   bool first_candidate = true;
 
   // To store the position of the current candidate extremum.
-  // Initialized only to avoid a compiler warning.
-  dimension_type ext_position = 0;
+  PPL_UNINITIALIZED(dimension_type, ext_position);
 
   // Whether the current candidate extremum is included or not.
-  // Initialized only to avoid a compiler warning.
-  bool ext_included = false;
+  PPL_UNINITIALIZED(bool, ext_included);
 
   TEMP_INTEGER(sp);
   for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {

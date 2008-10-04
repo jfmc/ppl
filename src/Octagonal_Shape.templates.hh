@@ -3561,8 +3561,7 @@ Octagonal_Shape<T>::refine(const Variable var,
 
     DIRTY_TEMP(N, sum);
     // Index of variable that is unbounded in `this'.
-    // (The initialization is just to quiet a compiler warning.)
-    dimension_type pinf_index = 0;
+    PPL_UNINITIALIZED(dimension_type, pinf_index);
     // Number of unbounded variables found.
     dimension_type pinf_count = 0;
 
@@ -3571,8 +3570,7 @@ Octagonal_Shape<T>::refine(const Variable var,
       {
         DIRTY_TEMP(N, neg_sum);
         // Index of variable that is unbounded in `this'.
-        // (The initialization is just to quiet a compiler warning.)
-        dimension_type neg_pinf_index = 0;
+        PPL_UNINITIALIZED(dimension_type, neg_pinf_index);
         // Number of unbounded variables found.
         dimension_type neg_pinf_count = 0;
 
@@ -4156,9 +4154,8 @@ Octagonal_Shape<T>::affine_image(const Variable var,
   DIRTY_TEMP(N, pos_sum);
   DIRTY_TEMP(N, neg_sum);
   // Indices of the variables that are unbounded in `this->matrix'.
-  // (The initializations are just to quiet a compiler warning.)
-  dimension_type pos_pinf_index = 0;
-  dimension_type neg_pinf_index = 0;
+  PPL_UNINITIALIZED(dimension_type, pos_pinf_index);
+  PPL_UNINITIALIZED(dimension_type, neg_pinf_index);
   // Number of unbounded variables found.
   dimension_type pos_pinf_count = 0;
   dimension_type neg_pinf_count = 0;
@@ -4742,8 +4739,7 @@ Octagonal_Shape<T>
 
   DIRTY_TEMP(N, sum);
   // Index of variable that is unbounded in `this->matrix'.
-  // (The initialization is just to quiet a compiler warning.)
-  dimension_type pinf_index = 0;
+  PPL_UNINITIALIZED(dimension_type, pinf_index);
   // Number of unbounded variables found.
   dimension_type pinf_count = 0;
 
@@ -5303,8 +5299,7 @@ Octagonal_Shape<T>::bounded_affine_image(const Variable var,
 
   DIRTY_TEMP(N, neg_sum);
   // Indices of the variables that are unbounded in `this->matrix'.
-  // (The initializations are just to quiet a compiler warning.)
-  dimension_type neg_pinf_index = 0;
+  PPL_UNINITIALIZED(dimension_type, neg_pinf_index);
   // Number of unbounded variables found.
   dimension_type neg_pinf_count = 0;
 
