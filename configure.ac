@@ -892,7 +892,9 @@ fi
 AM_CONDITIONAL(BUILD_SICSTUS_PROLOG_INTERFACE, test x$have_sicstus_prolog = xyes)
 
 # Checks for SWI-Prolog.
-if test x${swi_prolog_interface_enabled} = xyes
+# Under Cygwin, SWI-Prolog does not work with foreign code:
+# see http://www.cs.unipr.it/pipermail/ppl-devel/2006-January/007838.html
+if test x${swi_prolog_interface_enabled} = xyes && test x"${host_os}" != xcygwin
 then
   AC_CHECK_SWI_PROLOG
 fi
