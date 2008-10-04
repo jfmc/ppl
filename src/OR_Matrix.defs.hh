@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ .  */
 #define PPL_OR_Matrix_defs_hh 1
 
 #include "globals.defs.hh"
-#include "Ptr_Iterator.defs.hh"
 #include "OR_Matrix.types.hh"
 #include "DB_Row.defs.hh"
 #include "Checked_Number.defs.hh"
