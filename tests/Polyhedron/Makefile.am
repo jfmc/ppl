@@ -107,7 +107,7 @@ max_min1 \
 maxspacedim1 \
 mc91 \
 membytes1 \
-memory1 memory2 \
+memory2 \
 minconstraints1 minconstraints2 \
 mingenerators1 mingenerators2 \
 nncminimize1 nncminimize2 \
@@ -342,7 +342,6 @@ mc91_SOURCES = mc91.cc
 
 membytes1_SOURCES = membytes1.cc
 
-memory1_SOURCES = memory1.cc
 memory2_SOURCES = memory2.cc
 
 minconstraints1_SOURCES = minconstraints1.cc
@@ -617,7 +616,21 @@ nnc_universe1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_writepolyhedron1_SOURCES = writepolyhedron1.cc
 nnc_writepolyhedron1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
+#
+# Sources for the special tests.
+#
+
+memory1_SRCS = memory1.cc
+
 watchdog1_SRCS = watchdog1.cc
+
+if !VALGRIND_TESTS_ENABLED
+VALGRIND_BRITTLE_TESTS = memory1
+
+memory1_SOURCES = $(memory1_SRCS)
+
+endif !VALGRIND_TESTS_ENABLED
+
 
 if BUILD_WATCHDOG_LIBRARY
 WATCHDOG_TESTS = watchdog1
@@ -631,7 +644,11 @@ watchdog1_LDADD = $(LDADD) $(top_builddir)/Watchdog/src/libpwl.la
 
 endif BUILD_WATCHDOG_LIBRARY
 
-TESTS = $(ORIGINAL_TESTS) $(DERIVED_TESTS) $(WATCHDOG_TESTS)
+TESTS = \
+$(ORIGINAL_TESTS) \
+$(DERIVED_TESTS) \
+$(VALGRIND_BRITTLE_TESTS) \
+$(WATCHDOG_TESTS)
 
 XFAIL_TESTS =
 
