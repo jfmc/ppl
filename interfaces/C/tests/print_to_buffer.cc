@@ -127,24 +127,24 @@ print_to_buffer(const T& o,
 
 } // namespace
 
-DEFINE_PRINT_TO_BUFFER(Coefficient);
+DEFINE_PRINT_TO_BUFFER(Coefficient)
 
-DEFINE_PRINT_TO_BUFFER(Linear_Expression);
+DEFINE_PRINT_TO_BUFFER(Linear_Expression)
 
-DEFINE_PRINT_TO_BUFFER(Constraint);
+DEFINE_PRINT_TO_BUFFER(Constraint)
 
-DEFINE_PRINT_TO_BUFFER(Constraint_System);
+DEFINE_PRINT_TO_BUFFER(Constraint_System)
 
-DEFINE_PRINT_TO_BUFFER(Generator);
+DEFINE_PRINT_TO_BUFFER(Generator)
 
-DEFINE_PRINT_TO_BUFFER(Generator_System);
+DEFINE_PRINT_TO_BUFFER(Generator_System)
 
-DEFINE_PRINT_TO_BUFFER(Congruence);
+DEFINE_PRINT_TO_BUFFER(Congruence)
 
-DEFINE_PRINT_TO_BUFFER(Congruence_System);
+DEFINE_PRINT_TO_BUFFER(Congruence_System)
 
-DEFINE_PRINT_TO_BUFFER(Grid_Generator);
+DEFINE_PRINT_TO_BUFFER(Grid_Generator)
 
-DEFINE_PRINT_TO_BUFFER(Grid_Generator_System);
+DEFINE_PRINT_TO_BUFFER(Grid_Generator_System)
 
-DEFINE_PRINT_TO_BUFFER(MIP_Problem);
+DEFINE_PRINT_TO_BUFFER(MIP_Problem)
