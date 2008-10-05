@@ -1277,7 +1277,7 @@ public class Pointset_Powerset_C_Polyhedron_Iterator extends PPL_Object {
       invalidate it. Moreover, the disjunct is meant to be immutable
       and should not be modified in any way (its resources will
       be released when deleting the owning powerset). If really needed,
-      the disjunct may be cloned into a new object, which will be under
+      the disjunct may be copied into a new object, which will be under
       control of the user.
     */
     public native C_Polyhedron get_disjunct();
