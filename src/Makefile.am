@@ -57,7 +57,10 @@ LIBPPL_LT_CURRENT =  7
 LIBPPL_LT_REVISION = 0
 LIBPPL_LT_AGE =      0
 
-AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)/src @extra_includes@
+AM_CPPFLAGS = \
+-I$(top_builddir) \
+-I$(top_srcdir)/src \
+@extra_includes@
 
 lib_LTLIBRARIES = libppl.la
 
