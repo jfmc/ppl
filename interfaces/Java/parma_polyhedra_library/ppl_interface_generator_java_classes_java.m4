@@ -32,10 +32,12 @@ m4_include(`ppl_interface_generator_java_procedure_generators.m4')
 dnl Ensure any schematic procedure macro that is not defined
 dnl in the code file outputs a warning message.
 m4_define(`m4_default_code', `m4_dumpdef($1`'_code)')
+
 dnl m4_pre_extra_class_code(Class, CPP_Class, Class_Kind)
 dnl Prefix extra code for each class.
 m4_define(`m4_pre_extra_class_code', `dnl
 m4_define(`m4_this_class', `m4_interface_class$1')`'dnl
+m4_define(`m4_this_cplusplus_class', `Parma_Polyhedra_Library::`'m4_cplusplus_class$1')`'dnl
 m4_define(`m4_this_class_kind', `m4_class_kind$1')`'dnl
 m4_divert
 %<--%<--%<-- m4_this_class`'.java
@@ -45,36 +47,52 @@ m4_include(`ppl_interface_generator_copyright')`'dnl
 
 package parma_polyhedra_library;
 
+/*! \brief
+  Java class interfacing C++ m4_this_cplusplus_class
+  \ingroup PPL_java_interface
+*/
 public class m4_this_class extends PPL_Object {`'dnl
 m4_ifelse(m4_this_class, Polyhedron,
   `
-%<--%<--%<-- C_`'m4_this_class`'.java
-/* PPL Java interface: m4_this_class definition.
+%<--%<--%<-- C_Polyhedron.java
+/* PPL Java interface: C_Polyhedron definition.
 m4_include(`ppl_interface_generator_copyright')`'dnl
 */
 
 package parma_polyhedra_library;
 
-public class C_`'m4_this_class extends Polyhedron {
+/*! \brief
+  Java class interfacing C++ Parma_Polyhedra_Library::C_Polyhedron
+  \ingroup PPL_java_interface
+*/
+public class C_Polyhedron extends Polyhedron {
 
-%<--%<--%<-- NNC_`'m4_this_class`'.java
-/* PPL Java interface: m4_this_class definition.
+%<--%<--%<-- NNC_Polyhedron.java
+/* PPL Java interface: NNC_Polyhedron definition.
 m4_include(`ppl_interface_generator_copyright')`'dnl
 */
 
 package parma_polyhedra_library;
 
-public class NNC_`'m4_this_class extends Polyhedron {
+/*! \brief
+  Java class interfacing C++ Parma_Polyhedra_Library::NNC_Polyhedron
+  \ingroup PPL_java_interface
+*/
+public class NNC_Polyhedron extends Polyhedron {
 ',
 m4_this_class_kind, Pointset_Powerset,
 `
 %<--%<--%<-- m4_this_class`'_Iterator.java
-/* PPL Java interface: m4_this_class definition.
+/* PPL Java interface: m4_this_class`'_Iterator definition.
 m4_include(`ppl_interface_generator_copyright')`'dnl
 */
 
 package parma_polyhedra_library;
 
+/*! \brief
+  Java class interfacing C++ m4_this_cplusplus_class`'::iterator
+  \ingroup PPL_java_interface
+*/
 public class m4_this_class`'_Iterator extends PPL_Object {
 
   private m4_this_class`'_Iterator() {};
@@ -82,11 +100,9 @@ public class m4_this_class`'_Iterator extends PPL_Object {
   private native void build_ppl_object(m4_this_class obj);
 ')`'dnl
 m4_undefine(`m4_this_class')`'dnl
+m4_undefine(`m4_this_cplusplus_class')`'dnl
 m4_undefine(`m4_this_class_kind')
 ')
-
-%<--%<--%<-- m4_interface_class$1`'.java
-public class m4_cplusplus_class$1 extends PPL_Object {
 
 m4_divert(-1)
 
@@ -109,10 +125,10 @@ m4_define(`m4_this_class_kind', `m4_class_kind$1')
 m4_ifelse(m4_this_class, Polyhedron,
   `
 
-%<--%<--%<-- C_`'m4_this_class`'.java
+%<--%<--%<-- C_Polyhedron.java
 }
 
-%<--%<--%<-- NNC_`'m4_this_class`'.java
+%<--%<--%<-- NNC_Polyhedron.java
 }
 ',
 m4_this_class_kind, Pointset_Powerset,
