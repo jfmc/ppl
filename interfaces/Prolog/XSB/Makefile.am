@@ -32,8 +32,6 @@ xsb_clpq2.P \
 xsb_pl_check.P \
 ppl_interface_generator_xsb_prolog_generated_test_P.m4
 
-if BUILD_XSB_PROLOG_INTERFACE
-
 if BUILD_WATCHDOG_LIBRARY
 
 WATCHDOG_LIBRARY = $(top_builddir)/Watchdog/src/libpwl.la
@@ -291,8 +289,6 @@ ppl_prolog_generated_test: libppl_xsb.la ppl_xsb.xwam xsb_prolog_generated_test.
 	rm -f ppl_prolog_generated_test_main.pl ; \
 	diff -u --ignore-all-space $(srcdir)/../tests/expected_pgt obtained_pgt
 
-
-endif BUILD_XSB_PROLOG_INTERFACE
 
 CLEANFILES = \
 ppl_xsb.H \

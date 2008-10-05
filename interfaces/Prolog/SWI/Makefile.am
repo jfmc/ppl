@@ -32,8 +32,6 @@ swi_pl_check.pl \
 swi_prolog_generated_test.pl \
 README.swiprolog
 
-if BUILD_SWI_PROLOG_INTERFACE
-
 if BUILD_WATCHDOG_LIBRARY
 
 WATCHDOG_LIBRARY = $(top_builddir)/Watchdog/src/libpwl.la
@@ -297,8 +295,6 @@ ppl_prolog_generated_test: swi_prolog_generated_test.pl ../tests/ppl_prolog_gene
         fi
 	rm -f ppl_prolog_generated_test_main.pl; \
 	diff -u --ignore-all-space $(srcdir)/../tests/expected_pgt obtained_pgt
-
-endif BUILD_SWI_PROLOG_INTERFACE
 
 CLEANFILES = \
 ppl_swiprolog.cc

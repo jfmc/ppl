@@ -30,8 +30,6 @@ sp_clpq.pl \
 sp_pl_check.pl \
 sp_prolog_generated_test.pl
 
-if BUILD_SICSTUS_PROLOG_INTERFACE
-
 if BUILD_WATCHDOG_LIBRARY
 
 WATCHDOG_LIBRARY = $(top_builddir)/Watchdog/src/libpwl.la
@@ -309,8 +307,6 @@ ppl_prolog_generated_test: ppl_sicstus ppl_sicstus.pl sp_prolog_generated_test.p
         fi
 	rm -f ppl_prolog_generated_test_main.pl; \
 	diff -u --ignore-all-space $(srcdir)/../tests/expected_pgt obtained_pgt
-
-endif BUILD_SICSTUS_PROLOG_INTERFACE
 
 CLEANFILES = \
 ppl_sicstus_sd.cc

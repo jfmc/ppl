@@ -30,8 +30,6 @@ gnu_pl_check.pl \
 gnu_prolog_generated_test.pl \
 README.gprolog
 
-if BUILD_GNU_PROLOG_INTERFACE
-
 if BUILD_WATCHDOG_LIBRARY
 
 WATCHDOG_LIBRARY = $(top_builddir)/Watchdog/src/libpwl.la
@@ -277,8 +275,6 @@ ppl_prolog_generated_test: gnu_prolog_generated_test.pl  ../tests/ppl_prolog_gen
 		-dlopen libppl_gprolog.la \
 		./ppl_gprolog <script_pgt
 	diff -u --ignore-all-space $(srcdir)/../tests/expected_pgt obtained_pgt
-
-endif BUILD_GNU_PROLOG_INTERFACE
 
 CLEANFILES = \
 ppl_gprolog.pl

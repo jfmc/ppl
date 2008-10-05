@@ -20,7 +20,38 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-SUBDIRS = . tests Ciao GNU SICStus SWI XSB YAP
+if BUILD_CIAO_PROLOG_INTERFACE
+CIAO_PROLOG_SUBDIR = Ciao
+endif BUILD_CIAO_PROLOG_INTERFACE
+
+if BUILD_GNU_PROLOG_INTERFACE
+GNU_PROLOG_SUBDIR = GNU
+endif BUILD_GNU_PROLOG_INTERFACE
+
+if BUILD_SICSTUS_PROLOG_INTERFACE
+SICSTUS_PROLOG_SUBDIR = SICStus
+endif BUILD_SICSTUS_PROLOG_INTERFACE
+
+if BUILD_SWI_PROLOG_INTERFACE
+SWI_PROLOG_SUBDIR = SWI
+endif BUILD_SWI_PROLOG_INTERFACE
+
+if BUILD_XSB_PROLOG_INTERFACE
+XSB_PROLOG_SUBDIR = XSB
+endif BUILD_XSB_PROLOG_INTERFACE
+
+if BUILD_YAP_PROLOG_INTERFACE
+YAP_PROLOG_SUBDIR = YAP
+endif BUILD_YAP_PROLOG_INTERFACE
+
+SUBDIRS = \
+. tests \
+$(CIAO_PROLOG_SUBDIR) \
+$(GNU_PROLOG_SUBDIR) \
+$(SICSTUS_PROLOG_SUBDIR) \
+$(SWI_PROLOG_SUBDIR) \
+$(XSB_PROLOG_SUBDIR) \
+$(YAP_PROLOG_SUBDIR)
 
 interface_generator_files = \
 ppl_interface_generator_prolog_procedure_generators.m4 \
@@ -28,7 +59,9 @@ ppl_interface_generator_prolog_hh_files.m4 \
 ppl_interface_generator_prolog_hh_code.m4 \
 ppl_interface_generator_prolog_cc_files.m4 \
 ppl_interface_generator_prolog_cc_code.m4 \
-ppl_interface_generator_prolog_systems.m4 \
+ppl_interface_generator_prolog_systems.m4
+
+interface_generator_dox_files = \
 ppl_interface_generator_prolog_dox.m4 \
 ppl_interface_generator_prolog_dox_code.m4 \
 ppl_prolog_sysdep_dox \
@@ -38,7 +71,9 @@ EXTRA_DIST = \
 $(interface_generator_files) \
 ppl_prolog_common.defs.hh \
 ppl_prolog_common.inlines.hh \
-ppl_prolog_common.cc
+ppl_prolog_common.cc \
+$(interface_generator_dox_files) \
+Prolog_interface.dox
 
 interface_generator_dox_dependencies = \
 ../ppl_interface_generator_common.m4 \
@@ -51,15 +86,11 @@ ppl_interface_generator_prolog_dox_code.m4 \
 ppl_prolog_sysdep_dox \
 ppl_prolog_sysindep_dox
 
-Prolog_interface.dox: $(interface_generator_dox_dependencies) Makefile
+Prolog_configured_interface.dox: \
+$(interface_generator_dox_dependencies) Makefile
 	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_prolog_dox.m4 \
-                > Prolog_interface.dox
-
-dist_noinst_DATA = \
-Prolog_interface.dox
-
-if BUILD_SOME_PROLOG_INTERFACES
+                > Prolog_configured_interface.dox
 
 BUILT_SOURCES = \
 ppl_prolog_domains.hh \
@@ -94,11 +125,9 @@ ppl_prolog_domains.cc.stamp: $(interface_generator_dependencies)
 	rm -f ppl_prolog_cc_blob
 	echo timestamp >$@
 
-endif BUILD_SOME_PROLOG_INTERFACES
-
 CLEANFILES = \
 @required_instantiations_prolog_cxx_headers@ \
 @required_instantiations_prolog_cxx_sources@ \
 ppl_prolog_domains.cc.stamp \
 ppl_prolog_domains.hh \
-Prolog_interface.dox
+Prolog_configured_interface.dox

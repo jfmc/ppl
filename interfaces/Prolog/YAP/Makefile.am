@@ -32,8 +32,6 @@ yap_pl_check.pl \
 yap_prolog_generated_test.pl \
 README.yap
 
-if BUILD_YAP_PROLOG_INTERFACE
-
 if BUILD_WATCHDOG_LIBRARY
 
 WATCHDOG_LIBRARY = $(top_builddir)/Watchdog/src/libpwl.la
@@ -267,7 +265,6 @@ ppl_prolog_generated_test: yap_prolog_generated_test.pl ppl_yap.pl  ../tests/exp
 	diff -u --ignore-all-space $(srcdir)/../tests/expected_pgt obtained_pgt
 
 endif ENABLE_SHARED
-endif BUILD_YAP_PROLOG_INTERFACE
 
 CLEANFILES = \
 ppl_yap.cc

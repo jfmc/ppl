@@ -53,8 +53,6 @@ ppl_prolog_generated_test_common.pl \
 ppl_interface_generator_prolog_generated_test_pl.m4 \
 ppl_interface_generator_prolog_generated_test_pl_code.m4
 
-if BUILD_SOME_PROLOG_INTERFACES
-
 check-local: ppl_prolog_generated_test.stamp
 
 interface_generator_dependencies = \
@@ -77,8 +75,6 @@ ppl_prolog_generated_test.stamp: $(interface_generator_dependencies)
 	$(top_srcdir)/utils/cm_splitter.sh < ppl_prolog_generated_test_blob
 	rm -f ppl_prolog_generated_test_blob
 	echo timestamp >$@
-
-endif BUILD_SOME_PROLOG_INTERFACES
 
 CLEANFILES = \
 @required_instantiations_prolog_generated_test_sources@ \
