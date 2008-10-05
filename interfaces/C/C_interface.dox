@@ -1406,9 +1406,13 @@ typedef struct ppl_Pointset_Powerset_C_Polyhedron_tag const*
   ppl_Pointset_Powerset_C_Polyhedron_tag.
 */
 
-/*! \brief Iterator for powerset objects \ingroup Datatypes */
-typedef ppl_Pointset_Powerset_C_Polyhedron_iterator_tag
+/*! \brief Opaque pointer \ingroup Datatypes */
+typedef struct ppl_Pointset_Powerset_C_Polyhedron_iterator_tag*
         ppl_Pointset_Powerset_C_Polyhedron_iterator_t;
+
+/*! \brief Opaque pointer to const object \ingroup Datatypes */
+typedef struct ppl_Pointset_Powerset_C_Polyhedron_iterator_tag const*
+        ppl_const_Pointset_Powerset_C_Polyhedron_iterator_t;
 
 /*! \interface ppl_Pointset_Powerset_C_Polyhedron_const_iterator_tag
   \brief
@@ -1416,9 +1420,13 @@ typedef ppl_Pointset_Powerset_C_Polyhedron_iterator_tag
   const ppl_Pointset_Powerset_C_Polyhedron_tag.
 */
 
-/*! \brief Iterator for const powerset objects \ingroup Datatypes */
-typedef ppl_Pointset_Powerset_C_Polyhedron_const_iterator_tag
+/*! \brief Opaque pointer \ingroup Datatypes */
+typedef struct ppl_Pointset_Powerset_C_Polyhedron_const_iterator_tag*
         ppl_Pointset_Powerset_C_Polyhedron_const_iterator_t;
+
+/*! \brief Opaque pointer to const object \ingroup Datatypes */
+typedef struct ppl_Pointset_Powerset_C_Polyhedron_const_iterator_tag const*
+        ppl_const_Pointset_Powerset_C_Polyhedron_const_iterator_t;
 
 /*! \name Construction, Initialization and Destruction */
 /*@{*/
@@ -1431,6 +1439,14 @@ int
 ppl_new_Pointset_Powerset_C_Polyhedron_iterator
 (ppl_Pointset_Powerset_C_Polyhedron_iterator_t* pit);
 
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_iterator_tag \brief
+  Builds a copy of \p y and writes a handle to it at address \p pit.
+*/
+int
+ppl_new_Pointset_Powerset_C_Polyhedron_iterator_from_iterator
+(ppl_Pointset_Powerset_C_Polyhedron_iterator_t* pit,
+ ppl_const_Pointset_Powerset_C_Polyhedron_iterator_t y);
+
 /*! \relates ppl_Pointset_Powerset_C_Polyhedron_const_iterator_tag \brief
   Builds a new `const iterator' and writes a handle to it
   at address \p pit.
@@ -1438,6 +1454,14 @@ ppl_new_Pointset_Powerset_C_Polyhedron_iterator
 int
 ppl_new_Pointset_Powerset_C_Polyhedron_const_iterator
 (ppl_Pointset_Powerset_C_Polyhedron_const_iterator_t* pit);
+
+/*! \relates ppl_Pointset_Powerset_C_Polyhedron_const_iterator_tag \brief
+  Builds a copy of \p y and writes a handle to it at address \p pit.
+*/
+int
+ppl_new_Pointset_Powerset_C_Polyhedron_const_iterator_from_const_iterator
+(ppl_Pointset_Powerset_C_Polyhedron_const_iterator_t* pit,
+ ppl_const_Pointset_Powerset_C_Polyhedron_const_iterator_t y);
 
 /*! \relates ppl_Pointset_Powerset_C_Polyhedron_iterator_tag \brief
   Assigns to \p psit an iterator "pointing" to the beginning of
