@@ -1399,6 +1399,11 @@ $(SED_JAVA_INPUT_DEVREF) \
 ../interfaces/Java/parma_polyhedra_library
 # FIXME add generated files
 
+# NOTE: as an exception to the common policy,
+# for the user-configured-java case we override the setting
+# for Doxygen configuration variables HIDE_UNDOC_MEMBERS (set to NO)
+# and EXCLUDE (set to Fake_Class_for_Doxygen.java)
+
 user-configured-java-interface.latex-dir: \
 user-foreign-language-interface.doxyconf \
 Makefile $(USER_CONFIGURED_JAVA_INTERFACE_STUFF)
@@ -1409,6 +1414,10 @@ Makefile $(USER_CONFIGURED_JAVA_INTERFACE_STUFF)
 	$(SED) $(SED_CONFIGURED_JAVA_OPTION) $(SED_LATEX_OPTION) \
 	    -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_JAVA_INPUT_USER)"'|' \
 	    $<  > Doxyfile.user-configured-java-interface-latex
+	echo "HIDE_UNDOC_MEMBERS = NO" \
+	    >> Doxyfile.user-configured-java-interface-latex
+	echo "EXCLUDE_PATTERNS = */Fake_Class_for_Doxygen*" \
+	    >> Doxyfile.user-configured-java-interface-latex
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.user-configured-java-interface-latex
 
 devref-configured-java-interface.latex-dir: \
@@ -1421,6 +1430,8 @@ Makefile $(DEVREF_CONFIGURED_JAVA_INTERFACE_STUFF)
 	$(SED) $(SED_CONFIGURED_JAVA_OPTION) $(SED_LATEX_OPTION) \
 	    -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_JAVA_INPUT_DEVREF)"'|' \
 	    $<  > Doxyfile.devref-configured-java-interface-latex
+	echo "EXCLUDE_PATTERNS = */Fake_Class_for_Doxygen*" \
+	    >> Doxyfile.devref-configured-java-interface-latex
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.devref-configured-java-interface-latex
 
 ppl-user-configured-java-interface-@VERSION@.pdf: \
@@ -1441,6 +1452,10 @@ $(USER_CONFIGURED_JAVA_INTERFACE_STUFF) $(USER_CORE_HTML_DIR)
 	$(SED) $(SED_CONFIGURED_JAVA_OPTION) $(SED_HTML_OPTION) \
 	    -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_JAVA_INPUT_USER)"'|' \
 	    $<  > Doxyfile.user-configured-java-interface-html
+	echo "HIDE_UNDOC_MEMBERS = NO" \
+	    >> Doxyfile.user-configured-java-interface-html
+	echo "EXCLUDE_PATTERNS = */Fake_Class_for_Doxygen*" \
+	    >> Doxyfile.user-configured-java-interface-html
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.user-configured-java-interface-html
 	(cd $@; $(INSTALLDOX) \
 		-l $(USER_CORE_HTML_DIR).tag@../$(USER_CORE_HTML_DIR))
@@ -1455,6 +1470,8 @@ $(DEVREF_CONFIGURED_JAVA_INTERFACE_STUFF) $(DEVREF_CORE_HTML_DIR)
 	$(SED) $(SED_CONFIGURED_JAVA_OPTION) $(SED_HTML_OPTION) \
 	    -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_JAVA_INPUT_DEVREF)"'|' \
 	    $<  > Doxyfile.devref-configured-java-interface-html
+	echo "EXCLUDE_PATTERNS = */Fake_Class_for_Doxygen*" \
+	    >> Doxyfile.devref-configured-java-interface-html
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.devref-configured-java-interface-html
 	(cd $@; $(INSTALLDOX) \
 		-l $(DEVREF_CORE_HTML_DIR).tag@../$(DEVREF_CORE_HTML_DIR))
