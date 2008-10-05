@@ -237,6 +237,32 @@ AC_ARG_WITH(cxxflags,
 [  --with-cxxflags=xxx     add XXX to the options for the C++ compiler],
 CXXFLAGS="$CXXFLAGS $with_cxxflags")
 
+enableval=no
+AC_MSG_CHECKING([whether tests should be run under Valgrind])
+AC_ARG_ENABLE(valgrind-tests,
+  AC_HELP_STRING([--enable-valgrind-tests],
+    [run library tests under Valgrind]))
+case "${enableval}" in
+yes)
+  AC_CHECK_PROG(VALGRIND, valgrind, valgrind)
+  if test x"$VALGRIND" = xvalgrind
+  then
+    AC_MSG_RESULT(yes)
+    enable_valgrind_tests=yes
+  else
+    AC_MSG_ERROR([bad value ${enableval} for --enable-valgrind-tests, cannot find Valgrind])
+  fi
+  ;;
+no)
+  AC_MSG_RESULT(no)
+  enable_valgrind_tests=no
+  ;;
+*)
+  AC_MSG_ERROR([bad value ${enableval} for --enable-valgrind-tests, needs yes or no])
+  ;;
+esac
+AM_CONDITIONAL(VALGRIND_TESTS_ENABLED, test x"$enable_valgrind_tests" = xyes)
+
 enableval=yes
 AC_MSG_CHECKING([whether to build the Parma Watchdog Library])
 AC_ARG_ENABLE(watchdog,
@@ -259,7 +285,9 @@ if test x"$build_watchdog_library" = xyes
 then
   # Checks for header files.
   AC_HEADER_TIME
-  AC_CHECK_HEADERS([sys/time.h])
+  AC_CHECK_HEADERS([fenv.h sys/time.h])
+  # Checks for the availability of C library functions in C++.
+  AC_CHECK_DECLS([getenv], , , [#include <cstdlib>])
 
   # Checks for library fuctions.
   # The following invocations of AC_LANG_PUSH(C) and AC_LANG_POP(C)
@@ -323,5 +351,6 @@ AC_CONFIG_FILES(Makefile
                 doc/devref.doxyconf-latex
                 doc/user.doxyconf-html
                 doc/devref.doxyconf-html
+                tests/Makefile
                 utils/Makefile)
 AC_OUTPUT

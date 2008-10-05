@@ -819,6 +819,9 @@ CXXFLAGS
 CXX
 BUILD_WATCHDOG_LIBRARY_FALSE
 BUILD_WATCHDOG_LIBRARY_TRUE
+VALGRIND_TESTS_ENABLED_FALSE
+VALGRIND_TESTS_ENABLED_TRUE
+VALGRIND
 HAVE_PERL_FALSE
 HAVE_PERL_TRUE
 PERL
@@ -921,6 +924,7 @@ enable_optimization
 enable_arch
 with_cflags
 with_cxxflags
+enable_valgrind_tests
 enable_watchdog
 enable_shared
 enable_static
@@ -1579,6 +1583,7 @@ Optional Features:
   --enable-assertions     check run-time assertions
   --enable-optimization   enable compiler optimizations
   --enable-arch=arch      optimize for architecture arch
+  --enable-valgrind-tests run library tests under Valgrind
   --enable-watchdog       build also the Parma Watchdog Library
   --enable-shared[=PKGS]  build shared libraries [default=yes]
   --enable-static[=PKGS]  build static libraries [default=yes]
@@ -4167,6 +4172,84 @@ if test "${with_cxxflags+set}" = set; then
 fi
 
 
+enableval=no
+{ $as_echo "$as_me:$LINENO: checking whether tests should be run under Valgrind" >&5
+$as_echo_n "checking whether tests should be run under Valgrind... " >&6; }
+# Check whether --enable-valgrind-tests was given.
+if test "${enable_valgrind_tests+set}" = set; then
+  enableval=$enable_valgrind_tests;
+fi
+
+case "${enableval}" in
+yes)
+  # Extract the first word of "valgrind", so it can be a program name with args.
+set dummy valgrind; ac_word=$2
+{ $as_echo "$as_me:$LINENO: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if test "${ac_cv_prog_VALGRIND+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  if test -n "$VALGRIND"; then
+  ac_cv_prog_VALGRIND="$VALGRIND" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_prog_VALGRIND="valgrind"
+    $as_echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+IFS=$as_save_IFS
+
+fi
+fi
+VALGRIND=$ac_cv_prog_VALGRIND
+if test -n "$VALGRIND"; then
+  { $as_echo "$as_me:$LINENO: result: $VALGRIND" >&5
+$as_echo "$VALGRIND" >&6; }
+else
+  { $as_echo "$as_me:$LINENO: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+  if test x"$VALGRIND" = xvalgrind
+  then
+    { $as_echo "$as_me:$LINENO: result: yes" >&5
+$as_echo "yes" >&6; }
+    enable_valgrind_tests=yes
+  else
+    { { $as_echo "$as_me:$LINENO: error: bad value ${enableval} for --enable-valgrind-tests, cannot find Valgrind" >&5
+$as_echo "$as_me: error: bad value ${enableval} for --enable-valgrind-tests, cannot find Valgrind" >&2;}
+   { (exit 1); exit 1; }; }
+  fi
+  ;;
+no)
+  { $as_echo "$as_me:$LINENO: result: no" >&5
+$as_echo "no" >&6; }
+  enable_valgrind_tests=no
+  ;;
+*)
+  { { $as_echo "$as_me:$LINENO: error: bad value ${enableval} for --enable-valgrind-tests, needs yes or no" >&5
+$as_echo "$as_me: error: bad value ${enableval} for --enable-valgrind-tests, needs yes or no" >&2;}
+   { (exit 1); exit 1; }; }
+  ;;
+esac
+ if test x"$enable_valgrind_tests" = xyes; then
+  VALGRIND_TESTS_ENABLED_TRUE=
+  VALGRIND_TESTS_ENABLED_FALSE='#'
+else
+  VALGRIND_TESTS_ENABLED_TRUE='#'
+  VALGRIND_TESTS_ENABLED_FALSE=
+fi
+
+
 enableval=yes
 { $as_echo "$as_me:$LINENO: checking whether to build the Parma Watchdog Library" >&5
 $as_echo_n "checking whether to build the Parma Watchdog Library... " >&6; }
@@ -5365,7 +5448,8 @@ done
 
 
 
-for ac_header in sys/time.h
+
+for ac_header in fenv.h sys/time.h
 do
 as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
 if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
@@ -5514,6 +5598,77 @@ _ACEOF
 fi
 
 done
+
+  # Checks for the availability of C library functions in C++.
+  { $as_echo "$as_me:$LINENO: checking whether getenv is declared" >&5
+$as_echo_n "checking whether getenv is declared... " >&6; }
+if test "${ac_cv_have_decl_getenv+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <cstdlib>
+
+int
+main ()
+{
+#ifndef getenv
+  (void) getenv;
+#endif
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_cxx_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  ac_cv_have_decl_getenv=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_have_decl_getenv=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_have_decl_getenv" >&5
+$as_echo "$ac_cv_have_decl_getenv" >&6; }
+if test "x$ac_cv_have_decl_getenv" = x""yes; then
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE_DECL_GETENV 1
+_ACEOF
+
+
+else
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_DECL_GETENV 0
+_ACEOF
+
+
+fi
+
 
 
   # Checks for library fuctions.
@@ -7834,13 +7989,13 @@ if test "${lt_cv_nm_interface+set}" = set; then
 else
   lt_cv_nm_interface="BSD nm"
   echo "int some_variable = 0;" > conftest.$ac_ext
-  (eval echo "\"\$as_me:7837: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:7992: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:7840: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
+  (eval echo "\"\$as_me:7995: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
   (eval "$NM \"conftest.$ac_objext\"" 2>conftest.err > conftest.out)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:7843: output\"" >&5)
+  (eval echo "\"\$as_me:7998: output\"" >&5)
   cat conftest.out >&5
   if $GREP 'External.*some_variable' conftest.out > /dev/null; then
     lt_cv_nm_interface="MS dumpbin"
@@ -9045,7 +9200,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 9048 "configure"' > conftest.$ac_ext
+  echo '#line 9203 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -11131,11 +11286,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:11134: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:11289: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:11138: \$? = $ac_status" >&5
+   echo "$as_me:11293: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -11470,11 +11625,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:11473: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:11628: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:11477: \$? = $ac_status" >&5
+   echo "$as_me:11632: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -11575,11 +11730,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:11578: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:11733: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:11582: \$? = $ac_status" >&5
+   echo "$as_me:11737: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -11630,11 +11785,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:11633: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:11788: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:11637: \$? = $ac_status" >&5
+   echo "$as_me:11792: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -14430,7 +14585,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 14433 "configure"
+#line 14588 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -14526,7 +14681,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 14529 "configure"
+#line 14684 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -16546,11 +16701,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16549: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16704: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:16553: \$? = $ac_status" >&5
+   echo "$as_me:16708: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -16645,11 +16800,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16648: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16803: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:16652: \$? = $ac_status" >&5
+   echo "$as_me:16807: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -16697,11 +16852,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16700: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16855: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:16704: \$? = $ac_status" >&5
+   echo "$as_me:16859: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -17713,7 +17868,7 @@ fi
 
 
 
-ac_config_files="$ac_config_files Makefile src/Makefile m4/Makefile doc/Makefile doc/user.doxyconf-latex doc/devref.doxyconf-latex doc/user.doxyconf-html doc/devref.doxyconf-html utils/Makefile"
+ac_config_files="$ac_config_files Makefile src/Makefile m4/Makefile doc/Makefile doc/user.doxyconf-latex doc/devref.doxyconf-latex doc/user.doxyconf-html doc/devref.doxyconf-html tests/Makefile utils/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -17830,6 +17985,13 @@ if test -z "${HAVE_PERL_TRUE}" && test -z "${HAVE_PERL_FALSE}"; then
   { { $as_echo "$as_me:$LINENO: error: conditional \"HAVE_PERL\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
 $as_echo "$as_me: error: conditional \"HAVE_PERL\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${VALGRIND_TESTS_ENABLED_TRUE}" && test -z "${VALGRIND_TESTS_ENABLED_FALSE}"; then
+  { { $as_echo "$as_me:$LINENO: error: conditional \"VALGRIND_TESTS_ENABLED\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+$as_echo "$as_me: error: conditional \"VALGRIND_TESTS_ENABLED\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -18747,6 +18909,7 @@ do
     "doc/devref.doxyconf-latex") CONFIG_FILES="$CONFIG_FILES doc/devref.doxyconf-latex" ;;
     "doc/user.doxyconf-html") CONFIG_FILES="$CONFIG_FILES doc/user.doxyconf-html" ;;
     "doc/devref.doxyconf-html") CONFIG_FILES="$CONFIG_FILES doc/devref.doxyconf-html" ;;
+    "tests/Makefile") CONFIG_FILES="$CONFIG_FILES tests/Makefile" ;;
     "utils/Makefile") CONFIG_FILES="$CONFIG_FILES utils/Makefile" ;;
 
   *) { { $as_echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
@@ -19360,21 +19523,22 @@ $as_echo "$as_me: error: could not create -" >&2;}
    { (exit 1); exit 1; }; }
   fi
 # Compute "$ac_file"'s index in $config_headers.
+_am_arg="$ac_file"
 _am_stamp_count=1
 for _am_header in $config_headers :; do
   case $_am_header in
-    "$ac_file" | "$ac_file":* )
+    $_am_arg | $_am_arg:* )
       break ;;
     * )
       _am_stamp_count=`expr $_am_stamp_count + 1` ;;
   esac
 done
-echo "timestamp for "$ac_file"" >`$as_dirname -- "$ac_file" ||
-$as_expr X"$ac_file" : 'X\(.*[^/]\)//*[^/][^/]*/*$' \| \
-	 X"$ac_file" : 'X\(//\)[^/]' \| \
-	 X"$ac_file" : 'X\(//\)$' \| \
-	 X"$ac_file" : 'X\(/\)' \| . 2>/dev/null ||
-$as_echo X"$ac_file" |
+echo "timestamp for $_am_arg" >`$as_dirname -- "$_am_arg" ||
+$as_expr X"$_am_arg" : 'X\(.*[^/]\)//*[^/][^/]*/*$' \| \
+	 X"$_am_arg" : 'X\(//\)[^/]' \| \
+	 X"$_am_arg" : 'X\(//\)$' \| \
+	 X"$_am_arg" : 'X\(/\)' \| . 2>/dev/null ||
+$as_echo X"$_am_arg" |
     sed '/^X\(.*[^/]\)\/\/*[^/][^/]*\/*$/{
 	    s//\1/
 	    q
@@ -19437,12 +19601,12 @@ else
   { $as_echo "$as_me:$LINENO: creating $ac_prefix_conf_OUT - prefix $ac_prefix_conf_UPP for $ac_prefix_conf_INP defines" >&5
 $as_echo "$as_me: creating $ac_prefix_conf_OUT - prefix $ac_prefix_conf_UPP for $ac_prefix_conf_INP defines" >&6;}
   if test -f $ac_prefix_conf_INP ; then
-    echo "s/^#undef  *\\([ABCDEFGHIJKLMNOPQRSTUVWXYZ_]\\)/#undef $ac_prefix_conf_UPP""_\\1/" > conftest.prefix
-    echo "s/^#undef  *\\([abcdefghijklmnopqrstuvwxyz]\\)/#undef $ac_prefix_conf_LOW""_\\1/" >> conftest.prefix
-    echo "s/^#define  *\\([ABCDEFGHIJKLMNOPQRSTUVWXYZ_][abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_]*\\)\\(.*\\)/#ifndef $ac_prefix_conf_UPP""_\\1 \\" >> conftest.prefix
+    echo "s/#undef  *\\([ABCDEFGHIJKLMNOPQRSTUVWXYZ_]\\)/#undef $ac_prefix_conf_UPP""_\\1/" > conftest.prefix
+    echo "s/#undef  *\\([abcdefghijklmnopqrstuvwxyz]\\)/#undef $ac_prefix_conf_LOW""_\\1/" >> conftest.prefix
+    echo "s/#define  *\\([ABCDEFGHIJKLMNOPQRSTUVWXYZ_][abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_]*\\)\\(.*\\)/#ifndef $ac_prefix_conf_UPP""_\\1 \\" >> conftest.prefix
     echo "#define $ac_prefix_conf_UPP""_\\1 \\2 \\" >> conftest.prefix
     echo "#endif/" >>conftest.prefix
-    echo "s/^#define  *\\([abcdefghijklmnopqrstuvwxyz][abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_]*\\)\\(.*\\)/#ifndef $ac_prefix_conf_LOW""_\\1 \\" >> conftest.prefix
+    echo "s/#define  *\\([abcdefghijklmnopqrstuvwxyz][abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_]*\\)\\(.*\\)/#ifndef $ac_prefix_conf_LOW""_\\1 \\" >> conftest.prefix
     echo "#define $ac_prefix_conf_LOW""_\\1 \\2 \\" >> conftest.prefix
     echo "#endif/" >> conftest.prefix
     # now executing _script on _DEF input to create _OUT output file
@@ -19545,7 +19709,7 @@ fi
   # each Makefile.in and add a new line on top of each file to say so.
   # Grep'ing the whole file is not good either: AIX grep has a line
   # limit of 2048, but all sed's we know have understand at least 4000.
-  if sed 10q "$mf" | grep '^#.*generated by automake' > /dev/null 2>&1; then
+  if sed -n 's,^#.*generated by automake.*,X,p' "$mf" | grep X >/dev/null 2>&1; then
     dirpart=`$as_dirname -- "$mf" ||
 $as_expr X"$mf" : 'X\(.*[^/]\)//*[^/][^/]*/*$' \| \
 	 X"$mf" : 'X\(//\)[^/]' \| \
