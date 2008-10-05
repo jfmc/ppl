@@ -149,13 +149,13 @@ USER_PROLOG_INTERFACE_STUFF = \
 $(DOX_LICENCE_FILES) \
 user-foreign-language-interface.tex \
 ppl.sty \
-$(top_builddir)/interfaces/Prolog/Prolog_interface.dox
+../interfaces/Prolog/Prolog_interface.dox
 
 DEVREF_PROLOG_INTERFACE_STUFF = \
 $(DOX_LICENCE_FILES) \
 devref-foreign-language-interface.tex \
 ppl.sty \
-$(top_builddir)/interfaces/Prolog/Prolog_interface.dox \
+../interfaces/Prolog/Prolog_interface.dox \
 ../interfaces/Prolog/ppl_prolog_common.defs.hh \
 ../interfaces/Prolog/ppl_prolog_common.inlines.hh \
 ../interfaces/Prolog/ppl_prolog_common.cc
@@ -891,11 +891,11 @@ SED_PROLOG_OPTION = \
 
 # CHECKME: check the correct input values for Doxygen.
 SED_PROLOG_INPUT_USER = \
-../interfaces/Prolog/Prolog_interface.dox \
+@srcdir@/../interfaces/Prolog/Prolog_interface.dox \
 @srcdir@/gpl.dox @srcdir@/fdl.dox
 
 SED_PROLOG_INPUT_DEVREF = \
-../interfaces/Prolog/Prolog_interface.dox \
+@srcdir@/../interfaces/Prolog/Prolog_interface.dox \
 @srcdir@/../interfaces/Prolog/ppl_prolog_common.defs.hh \
 @srcdir@/../interfaces/Prolog/ppl_prolog_common.inlines.hh \
 @srcdir@/../interfaces/Prolog/ppl_prolog_common.cc \
@@ -1391,10 +1391,12 @@ SED_CONFIGURED_JAVA_OPTION = \
 
 # CHECKME: check the correct input values for Doxygen.
 SED_CONFIGURED_JAVA_INPUT_USER = \
-$(SED_JAVA_INPUT_USER)
+$(SED_JAVA_INPUT_USER) \
+../interfaces/Java/parma_polyhedra_library
 
 SED_CONFIGURED_JAVA_INPUT_DEVREF = \
-$(SED_JAVA_INPUT_DEVREF)
+$(SED_JAVA_INPUT_DEVREF) \
+../interfaces/Java/parma_polyhedra_library
 # FIXME add generated files
 
 user-configured-java-interface.latex-dir: \
