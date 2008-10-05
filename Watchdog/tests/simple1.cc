@@ -38,13 +38,17 @@ test01() {
     bool ok;
     {
       Watchdog w(hundredth_secs, do_interrupt);
+      nout << ((float) hundredth_secs)/100.0 << " seconds watchdog" << endl;
 
+      nout << "starting iteration... " << std::flush;
       for (unsigned long i = 0; i < 1000000000; ++i) {
         if (interrupt) {
+          nout << "interrupted" << endl;
           ok = true;
           goto done;
         }
       }
+      nout << "not interrupted" << endl;
       ok = false;
     done:
       ;
