@@ -17012,7 +17012,14 @@ fi
 extra_includes="${extra_includes}${extra_includes:+ }${gmp_includes_option}"
 extra_libraries="${extra_libraries}${extra_libraries:+ }${gmp_library_option}"
 
-enableval=yes
+# Under Cygwin, the PWL does not work.  It is not yet clear whether
+# Cygwin provides the services required in order to make it work.
+if test x"${host_os}" = xcygwin
+then
+  enableval=no
+else
+  enableval=yes
+fi
 { $as_echo "$as_me:$LINENO: checking whether to build the Parma Watchdog Library" >&5
 $as_echo_n "checking whether to build the Parma Watchdog Library... " >&6; }
 # Check whether --enable-watchdog was given.
@@ -17292,7 +17299,7 @@ else
 JAVA_TEST=Test.java
 CLASS_TEST=Test.class
 cat << \EOF > $JAVA_TEST
-/* #line 17295 "configure" */
+/* #line 17302 "configure" */
 public class Test {
 public enum Relation_Symbol {
     /*! Less than. */
@@ -17483,7 +17490,7 @@ EOF
 if uudecode$EXEEXT Test.uue; then
         ac_cv_prog_uudecode_base64=yes
 else
-        echo "configure: 17486: uudecode had trouble decoding base 64 file 'Test.uue'" >&5
+        echo "configure: 17493: uudecode had trouble decoding base 64 file 'Test.uue'" >&5
         echo "configure: failed file was:" >&5
         cat Test.uue >&5
         ac_cv_prog_uudecode_base64=no
@@ -17602,7 +17609,7 @@ else
 JAVA_TEST=Test.java
 CLASS_TEST=Test.class
 cat << \EOF > $JAVA_TEST
-/* #line 17605 "configure" */
+/* #line 17612 "configure" */
 public class Test {
 public enum Relation_Symbol {
     /*! Less than. */
@@ -17651,7 +17658,7 @@ JAVA_TEST=Test.java
 CLASS_TEST=Test.class
 TEST=Test
 cat << \EOF > $JAVA_TEST
-/* [#]line 17654 "configure" */
+/* [#]line 17661 "configure" */
 public class Test {
 public static void main (String args[]) {
         System.exit (0);
@@ -18102,8 +18109,8 @@ then
 main(_) :-
     ciaolibdir(Lib_Dir),
     get_os(Os),
-    /*get_arch(Arch),*/
-    format("~p/include/", [Lib_Dir/*, Os, Arch*/]).
+    get_arch(Arch),
+    format("~p/include/~p~p", [Lib_Dir, Os, Arch]).
 _CIAO_PRINT_INCLUDE_DIR_EOF
   ciao_prolog_include_dir=`$ciao_prolog $tmp/print_include_dir.pl`
   rm -rf $tmp
@@ -20211,13 +20218,13 @@ if test "${lt_cv_nm_interface+set}" = set; then
 else
   lt_cv_nm_interface="BSD nm"
   echo "int some_variable = 0;" > conftest.$ac_ext
-  (eval echo "\"\$as_me:20214: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:20221: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:20217: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
+  (eval echo "\"\$as_me:20224: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
   (eval "$NM \"conftest.$ac_objext\"" 2>conftest.err > conftest.out)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:20220: output\"" >&5)
+  (eval echo "\"\$as_me:20227: output\"" >&5)
   cat conftest.out >&5
   if $GREP 'External.*some_variable' conftest.out > /dev/null; then
     lt_cv_nm_interface="MS dumpbin"
@@ -21422,7 +21429,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 21425 "configure"' > conftest.$ac_ext
+  echo '#line 21432 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -23508,11 +23515,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:23511: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:23518: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:23515: \$? = $ac_status" >&5
+   echo "$as_me:23522: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -23847,11 +23854,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:23850: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:23857: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:23854: \$? = $ac_status" >&5
+   echo "$as_me:23861: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -23952,11 +23959,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:23955: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:23962: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:23959: \$? = $ac_status" >&5
+   echo "$as_me:23966: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -24007,11 +24014,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:24010: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:24017: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:24014: \$? = $ac_status" >&5
+   echo "$as_me:24021: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -26807,7 +26814,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 26810 "configure"
+#line 26817 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -26903,7 +26910,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 26906 "configure"
+#line 26913 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -28923,11 +28930,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:28926: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:28933: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:28930: \$? = $ac_status" >&5
+   echo "$as_me:28937: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -29022,11 +29029,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:29025: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:29032: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:29029: \$? = $ac_status" >&5
+   echo "$as_me:29036: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -29074,11 +29081,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:29077: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:29084: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:29081: \$? = $ac_status" >&5
+   echo "$as_me:29088: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
