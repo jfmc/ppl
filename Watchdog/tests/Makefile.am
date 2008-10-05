@@ -50,7 +50,7 @@ $(builddir)/../src/libpwl.la \
 libpwl_tests.a
 
 noinst_HEADERS = \
-pwl_test.hh \
+pwl_test.hh
 
 EXTRA_DIST = valgrind_suppressions
 
