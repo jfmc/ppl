@@ -58,8 +58,6 @@ EXTRA_DIST = \
 $(SOURCE_FILES) \
 pwl_header.hh
 
-if BUILD_WATCHDOG_LIBRARY
-
 # Libtool -version-info for libpwl.la.
 #
 #  1. Start with version information of `0:0:0' for each Libtool library.
@@ -139,7 +137,5 @@ $(nodist_noinst_HEADERS)
 # pwl.hh.dist, which is distributed, is a copy of pwl.hh.
 dist-hook:
 	mv -f $(distdir)/pwl.hh $(distdir)/pwl.hh.dist
-
-endif BUILD_WATCHDOG_LIBRARY
 
 MOSTLYCLEANFILES = $(BUILT_SOURCES)

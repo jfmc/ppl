@@ -23,7 +23,11 @@
 # Tell aclocal where to find `.m4' files.
 ACLOCAL_AMFLAGS = -I m4
 
+if BUILD_WATCHDOG_LIBRARY
+
 SUBDIRS = m4 utils src tests doc
+
+endif BUILD_WATCHDOG_LIBRARY
 
 dist_noinst_SCRIPTS = \
 configure

@@ -263,7 +263,14 @@ no)
 esac
 AM_CONDITIONAL(VALGRIND_TESTS_ENABLED, test x"$enable_valgrind_tests" = xyes)
 
-enableval=yes
+# Under Cygwin, the PWL does not work.  It is not yet clear whether
+# Cygwin provides the services required in order to make it work.
+if test x"${host_os}" = xcygwin
+then
+  enableval=no
+else
+  enableval=yes
+fi
 AC_MSG_CHECKING([whether to build the Parma Watchdog Library])
 AC_ARG_ENABLE(watchdog,
 [  --enable-watchdog       build also the Parma Watchdog Library])
