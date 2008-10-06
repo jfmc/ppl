@@ -218,8 +218,7 @@ SKIP_FUNCTION_MACROS   = YES
 #---------------------------------------------------------------------------
 # Configuration::additions related to external references   
 #---------------------------------------------------------------------------
-TAGFILES               = <PPL_SED_COMMENT_AWAY_TAGFILES> \
-                         ppl-user-@VERSION@-html.tag=../ppl-user-@VERSION@-html.tag
+TAGFILES               = <PPL_SED_TAGFILES>
 GENERATE_TAGFILE       = 
 ALLEXTERNALS           = NO
 EXTERNAL_GROUPS        = YES
