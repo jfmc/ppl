@@ -698,19 +698,19 @@ The specification can be:
    3-dimensional vector space
    \f$\Rset^3\f$ with \c X bound to a valid handle for accessing it.</EM>
 
-<P><CODE>ppl_new_C_Polyhedron_from_constraints(+Constraints, -Handle)</CODE><BR>
+<P><CODE>ppl_new_C_Polyhedron_from_constraints(+Constraint_System, -Handle)</CODE><BR>
   <EM>Builds a new C polyhedron \p P from
-  \c Constraints.
+  \c Constraint_System.
   \c Handle is unified with the handle for \p P.</EM>
 
-<P><CODE>ppl_new_C_Polyhedron_from_congruences(+Congruences, -Handle)</CODE><BR>
+<P><CODE>ppl_new_C_Polyhedron_from_congruences(+Congruence_System, -Handle)</CODE><BR>
   <EM>Builds a new C polyhedron \p P from
-  \c Congruences.
+  \c Congruence_System.
   \c Handle is unified with the handle for \p P.</EM>
 
-<P><CODE>ppl_new_C_Polyhedron_from_generators(+Generators, -Handle)</CODE><BR>
+<P><CODE>ppl_new_C_Polyhedron_from_generators(+Generator_System, -Handle)</CODE><BR>
   <EM>Builds a new C polyhedron \p P from
-  \c Generators.
+  \c Generator_System.
   \c Handle is unified with the handle for \p P.</EM>
 
 
@@ -744,12 +744,14 @@ The specification can be:
 
 <P><CODE>ppl_new_C polyhedron_from_C_Polyhedron_with_complexity(+Handle, +Complexity, -Handle)</CODE><BR>
   <EM>Builds a new C polyhedron \p P_1 from
-  \c a C polyhedron referenced by handle \c Handle_1.
+  \c a C polyhedron referenced by handle \c Handle_1
+  using an algorithm whose complexity does not exceed \c Complexity;
   \c Handle_2 is unified with the handle for \p P_1.</EM>
 
 <P><CODE>ppl_new_C polyhedron_from_NNC_Polyhedron_with_complexity(+Handle, +Complexity, -Handle)</CODE><BR>
   <EM>Builds a new C polyhedron \p P_1 from
-  \c an NNC polyhedron referenced by handle \c Handle_1.
+  \c an NNC polyhedron referenced by handle \c Handle_1
+  using an algorithm whose complexity does not exceed \c Complexity;
   \c Handle_2 is unified with the handle for \p P_1.</EM>
 
 
@@ -834,11 +836,11 @@ unifying some of their arguments with the results.
 
 <P><CODE>ppl_Polyhedron_space_dimension(+Handle, ?Dimension_Type)</CODE><BR>
    <EM>Unifies \c Dimension_Type with the dimension of the vector space enclosing
-   of the polyhedron referenced by \c Handle.</EM>
+   the polyhedron referenced by \c Handle.</EM>
 
 <P><CODE>ppl_Polyhedron_affine_dimension(+Handle, ?Dimension_Type)</CODE><BR>
    <EM>Unifies \c Dimension_Type with the affine dimension of
-   of the polyhedron referenced by \c Handle.</EM>
+   the polyhedron referenced by \c Handle.</EM>
 
 <P><CODE>ppl_Polyhedron_relation_with_constraint(+Handle, +Constraint, ?Relation_List)</CODE><BR>
   <EM>Unifies \c Relation_List with the list of relations the
@@ -1064,11 +1066,11 @@ and
 
 <P><CODE>ppl_Polyhedron_affine_image(+Handle, +PPL_Var, +Lin_Expr, +Coeff)</CODE><BR>
    <EM>Transforms the polyhedron referenced by \c Handle
-   assigning the affine expression for \c Lin_Expr/\c Coeff \r to \c PPL_Var.</EM>
+   assigning the affine expression for \c Lin_Expr/\c Coeff to \c PPL_Var.</EM>
 
 <P><CODE>ppl_Polyhedron_affine_preimage(+Handle, +PPL_Var, +Lin_Expr, +Coeff)</CODE><BR>
    <EM>Transforms the polyhedron referenced by \c Handle
-   substituting the affine expression for \c Lin_Expr/\c Coeff \r to \c PPL_Var.</EM>
+   substituting the affine expression for \c Lin_Expr/\c Coeff to \c PPL_Var.</EM>
 
 <P><CODE>ppl_Polyhedron_bounded_affine_image(+Handle, +PPL_Var, +Lin_Expr_1, +Lin_Expr_2, +Coeff)</CODE><BR>
   <EM>Assigns to polyhedron \p P referenced by \c Handle
@@ -1183,8 +1185,8 @@ and a linear partitioning operator described below.
   in the Polyhedron domain. The predicate unifies handle
   \c Handle_3 to a reference to the intersection of
   \p P_1 and \p P_2 and \c Handle_4 to a reference to
-  a pointset powerset of nnc polyhedra \p PS;
-  where \p PS is the linear partition of \p P_1 with respect to \p P_2.
+  a pointset powerset of nnc polyhedra \p P_4;
+  where \p P_4 is the linear partition of \p P_1 with respect to \p P_2.
   This predicate is only provided if the
   class \c Pointset_Powerset_NNC_Polyhedron
   has been enabled when configuring the library.</EM>
