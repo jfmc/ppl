@@ -698,23 +698,23 @@ The specification can be:
    3-dimensional vector space
    \f$\Rset^3\f$ with \c X bound to a valid handle for accessing it.</EM>
 
-<P><CODE>ppl_new_C_Polyhedron_from_constraints(+Constraint, -Handle)</CODE><BR>
+<P><CODE>ppl_new_C_Polyhedron_from_constraints(+Constraints, -Handle)</CODE><BR>
   <EM>Builds a new C polyhedron \p P from
-  the system of constraints \c Constraint.
+  \c Constraints.
   \c Handle is unified with the handle for \p P.</EM>
 
-<P><CODE>ppl_new_C_Polyhedron_from_congruences(+Congruence, -Handle)</CODE><BR>
+<P><CODE>ppl_new_C_Polyhedron_from_congruences(+Congruences, -Handle)</CODE><BR>
   <EM>Builds a new C polyhedron \p P from
-  the system of constraints \c Congruence.
+  \c Congruences.
   \c Handle is unified with the handle for \p P.</EM>
 
-<P><CODE>ppl_new_C_Polyhedron_from_generators(+Generator, -Handle)</CODE><BR>
+<P><CODE>ppl_new_C_Polyhedron_from_generators(+Generators, -Handle)</CODE><BR>
   <EM>Builds a new C polyhedron \p P from
-  the system of constraints \c Generator.
+  \c Generators.
   \c Handle is unified with the handle for \p P.</EM>
 
 
-<H3>Predicates that build new C Polyhedra by copying or converting from
+<H3>Predicates that build new C polyhedra by copying or converting from
   other semantic geometric descriptions</H3>
   Besides the constructors listed above, the library also
   provides:
