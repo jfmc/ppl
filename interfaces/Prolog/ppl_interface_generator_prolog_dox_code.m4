@@ -66,9 +66,9 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_build_doc', `dnl
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_build_doc',
 `dnl
-<P><CODE>ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s(+@UBUILD_REPRESENT@, -Handle)</CODE><BR>
+<P><CODE>ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s(+@UBUILD_REPRESENT@_System, -Handle)</CODE><BR>
   <EM>Builds a new @ALT_TOPOLOGY@@LCLASS@ \p P from
-  the system of constraints \c @UBUILD_REPRESENT@.
+  \c @UBUILD_REPRESENT@_System.
   \c Handle is unified with the handle for \p P.</EM>
 ')
 
@@ -86,7 +86,8 @@ m4_pushdef(`m4_friend_replacement', `C_Polyhedron, NNC_Polyhedron')
 m4_pushdef(`m4_friend_alt_replacement', `a C polyhedron, an NNC polyhedron')
 <P><CODE>ppl_new_@ALT_TOPOLOGY@@LCLASS@_from_@FRIEND@_with_complexity(+Handle, +Complexity, -Handle)</CODE><BR>
   <EM>Builds a new @ALT_TOPOLOGY@@LCLASS@ \p P_1 from
-  \c @ALT_FRIEND@ referenced by handle \c Handle_1.
+  \c @ALT_FRIEND@ referenced by handle \c Handle_1
+  using an algorithm whose complexity does not exceed \c Complexity;
   \c Handle_2 is unified with the handle for \p P_1.</EM>
 ')
 
@@ -181,7 +182,7 @@ m4_define(`ppl_@CLASS@_@DIMENSION@_constpoly_doc',
 `dnl
 <P><CODE>ppl_@CLASS@_@DIMENSION@(+Handle, ?Dimension_Type)</CODE><BR>
    <EM>Unifies \c Dimension_Type with the @ALT_DIMENSION@
-   of the @LCLASS@ referenced by \c Handle.</EM>
+   the @LCLASS@ referenced by \c Handle.</EM>
 ')
 
 m4_define(`ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_constpoly_doc',
@@ -316,8 +317,8 @@ m4_define(`ppl_@CLASS@_linear_@PARTITION@_binop_doc',
   in the @CLASS@ domain. The predicate unifies handle
   \c Handle_3 to a reference to the intersection of
   \p P_1 and \p P_2 and \c Handle_4 to a reference to
-  a pointset powerset of nnc polyhedra \p PS;
-  where \p PS is the linear partition of \p P_1 with respect to \p P_2.
+  a pointset powerset of nnc polyhedra \p P_4;
+  where \p P_4 is the linear partition of \p P_1 with respect to \p P_2.
   This predicate is only provided if the
   class \c Pointset_Powerset_NNC_Polyhedron
   has been enabled when configuring the library.</EM>
@@ -442,7 +443,7 @@ m4_define(`ppl_@CLASS@_@AFFIMAGE@_trans_doc',
 `dnl
 <P><CODE>ppl_@CLASS@_@AFFIMAGE@(+Handle, +PPL_Var, +Lin_Expr, +Coeff)</CODE><BR>
    <EM>Transforms the polyhedron referenced by \c Handle
-   @CPPX_AFFIMAGE@ expression for \c Lin_Expr/\c Coeff \r to \c PPL_Var.</EM>
+   @CPPX_AFFIMAGE@ expression for \c Lin_Expr/\c Coeff to \c PPL_Var.</EM>
 ')
 
 m4_define(`ppl_@CLASS@_bounded_@AFFIMAGE@_trans_doc',

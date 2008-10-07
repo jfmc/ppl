@@ -92,12 +92,6 @@ $(interface_generator_dox_dependencies) Makefile
            $(srcdir)/ppl_interface_generator_prolog_dox.m4 \
                 > Prolog_configured_interface.dox
 
-Prolog_interface.dox: \
-$(interface_generator_dox_dependencies) Makefile
-	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
-           $(srcdir)/ppl_interface_generator_prolog_dox.m4 \
-                > Prolog_interface.dox
-
 BUILT_SOURCES = \
 ppl_prolog_domains.hh \
 ppl_prolog_domains.cc.stamp

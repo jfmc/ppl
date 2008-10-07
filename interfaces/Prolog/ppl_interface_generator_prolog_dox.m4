@@ -81,7 +81,7 @@ m4_pushdef(`m4_extension',
   `m4_ifdef(`$1_convert_doc', `m4_indir(`$1_convert_doc')', `')
 ')
 m4_divert`'dnl
-<H3>Predicates that build new C Polyhedra by copying or converting from
+<H3>Predicates that build new C polyhedra by copying or converting from
   other semantic geometric descriptions</H3>
   Besides the constructors listed above, the library also
   provides:
