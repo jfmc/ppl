@@ -500,11 +500,11 @@ defining mixed integer (linear) programming problems.
    with <CODE>Dimension_Type</CODE>.</EM>
 
 <P><CODE>
-  ppl_MIP_Problem_integer_space_dimensions(+Handle, -Vars_List)
+  ppl_MIP_Problem_integer_space_dimensions(+Handle, ?Vars_List)
 </CODE><BR>
 
    <EM>Unifies <CODE>Vars_List</CODE> with a list of variables representing
-   representing the integer space dimensions of the MIP Problem
+   the integer space dimensions of the MIP Problem
    referenced by <CODE>Handle</CODE>.</EM>
 
 <P><CODE>
@@ -517,7 +517,7 @@ defining mixed integer (linear) programming problems.
    referenced by <CODE>Handle</CODE>.</EM>
 
 <P><CODE>
-  ppl_MIP_Problem_objective_function(+Handle, -Lin_Expr)
+  ppl_MIP_Problem_objective_function(+Handle, ?Lin_Expr)
 </CODE><BR>
 
    <EM>Unifies <CODE>Lin_Expr</CODE> with the objective function
