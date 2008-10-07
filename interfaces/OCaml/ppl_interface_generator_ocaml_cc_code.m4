@@ -930,7 +930,9 @@ void
 ppl_@CLASS@_add_disjunct(value t_pps, value caml_item_to_add) try {
   CAMLparam2(t_pps, caml_item_to_add);
   @CPP_CLASS@& pps = *p_@CLASS@_val(t_pps);
-  @CLASSTOPOLOGY@@CPP_DISJUNCT@& item = *(reinterpret_cast<@CLASSTOPOLOGY@@DISJUNCT@*> (p_@DISJUNCT@_val(caml_item_to_add)));
+  @CLASSTOPOLOGY@@CPP_DISJUNCT@& item
+    = *(reinterpret_cast<@CLASSTOPOLOGY@@CPP_DISJUNCT@*>
+          (p_@DISJUNCT@_val(caml_item_to_add)));
   pps.add_disjunct(item);
   CAMLreturn0;
 }
