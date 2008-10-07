@@ -843,7 +843,7 @@ The library only supports rational polyhedra.
 The restriction to rational numbers applies not only to polyhedra,
 but also to the other numeric arguments that may be required
 by the operators considered, such as the coefficients defining
-(rational) affine transformations and (rational) bounding boxes.
+(rational) affine transformations.
 
 
 \section Operations_on_Convex_Polyhedra Operations on Convex Polyhedra
@@ -1456,8 +1456,8 @@ The polyhedron \f$\cP\f$ <EM>subsumes</EM> the generator \f$g\f$ if
 adding \f$g\f$ to any generator system representing \f$\cP\f$
 does not change \f$\cP\f$.
 
-\anchor bounding_boxes
-\subsection Intervals_Boxes_and_Bounding_Boxes Intervals, Boxes and Bounding Boxes
+\anchor intervals
+\subsection Intervals_and_Boxes Intervals and Boxes
 
 An <EM>interval</EM> in \f$\Rset\f$ is a pair of <EM>bounds</EM>,
 called <EM>lower</EM> and <EM>upper</EM>.
@@ -1494,14 +1494,6 @@ If every bound in the intervals
 defining a box \f$\cB\f$ is either closed and bounded
 or open and unbounded, then
 \f$\cB\f$ represents a closed polyhedron.
-
-The <EM>bounding box</EM> of an NNC polyhedron \f$\cP\f$ is
-the smallest \f$n\f$-dimensional box
-containing \f$\cP\f$.
-
-The library provides operations for computing the bounding box
-of an NNC polyhedron and conversely, for obtaining the NNC polyhedron
-representing a given bounding box.
 
 \subsection Widening_Operators Widening Operators
 
@@ -1597,7 +1589,7 @@ the upward iteration sequence.
 The <EM>bounded</EM> extrapolation operators further enhance each one
 of the limited extrapolation operators described above, by ensuring
 that their results cannot be worse than the smallest
-\ref bounding_boxes "bounding box" enclosing the two argument polyhedra.
+\ref intervals "boxes" enclosing the two argument polyhedra.
 
 
 \section Weakly_Relational_Shapes Weakly-Relational Shapes
@@ -2255,45 +2247,6 @@ representing \f$\cL\f$ does not change \f$\cL\f$.
 A grid \f$\cL\f$ <EM>subsumes</EM> a (polyhedron) ray or line
 \f$g\f$ if adding the corresponding grid line to any grid generator system
 representing \f$\cL\f$ does not change \f$\cL\f$.
-
-
-\subsection Rectilinear_Grids Rectilinear Grids and Covering Boxes
-
-Consider again the  \ref bounding_boxes "boxes" used for convex polyhedra.
-An \f$n\f$-dimensional <EM>rational box</EM> is a box
-\f$\cB\f$ in \f$\Qset^n\f$;
-that is, where the bounded bounds in the intervals are each in \f$\Qset\f$.
-We will say that an interval is <EM>bounded</EM> if both its bounds
-are bounded.
-
-Each bounded interval in \f$\cB\f$ determines a congruence \f$\cg\f$
-in \f$\Qset^n\f$.
-Letting \f$\vect{e}_i = (0, \ldots, 1, \ldots, 0)^\transpose\f$
-be the vector in \f$\Rset^n\f$ with 1 in the \f$i\f$'th position
-and zeroes in every other position;
-if both the bounds of the interval
-are closed, then the congruence \f$\cg\f$ is defined as
-\f$\bigl(\langle \vect{e}_i, \vect{x}  \rangle \equiv_f b\bigr)\f$,
-where \f$b\f$ is the value of the lower bound and
-\f$f\f$ is the (non-negative) difference between the lower and upper bounds.
-If one of the bounds is open,
-then \f$\cg\f$ is the congruence
-\f$\bigl(\langle \vect{0}, \vect{x}  \rangle \equiv_0 1\bigr)\f$
-representing the inconsistent equality \f$(0 = 1)\f$.
-
-Let \f$\cC\f$ be the set of congruences defined by
-the bounded intervals in a rational box \f$\cB\f$;
-then we say that \f$B\f$ <EM>represents</EM> the rational grid
-\f$\cL = \gcon(\cC)\f$.
-Any grid \f$\cL \in \Gset_n\f$ that can be represented by
-a box is said to be <EM>rectilinear</EM>.
-
-A <EM>covering box</EM> of a grid \f$\cL\f$ is a rational box
-representing the smallest rectilinear grid that contains \f$\cL\f$.
-
-As for convex polyhedra, the library will provide
-operations for computing the rectilinear grid corresponding to a given box
-and, also, a covering box for any given grid.
 
 \subsection Grid_Widening Widening Operators
 

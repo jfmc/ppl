@@ -320,7 +320,7 @@ public:
 
     \param cs
     A system of constraints: constraints that are not
-    \ref bounding_boxes "interval constraints"
+    \ref intervals "interval constraints"
     are ignored (even though they may have contributed
     to the space dimension).
   */
@@ -332,7 +332,7 @@ public:
 
     \param cs
     A system of constraints: constraints that are not
-    \ref bounding_boxes "interval constraints"
+    \ref intervals "interval constraints"
     are ignored (even though they may have contributed
     to the space dimension).
 
@@ -1153,7 +1153,7 @@ public:
     \ref CC76_extrapolation "CC76-widening" between \p *this and \p y.
 
     \param y
-    A bounding box that <EM>must</EM> be contained in \p *this.
+    A box that <EM>must</EM> be contained in \p *this.
 
     \param tp
     An optional pointer to an unsigned variable storing the number of
@@ -1170,7 +1170,7 @@ public:
     \ref CC76_extrapolation "CC76-widening" between \p *this and \p y.
 
     \param y
-    A bounding box that <EM>must</EM> be contained in \p *this.
+    A box that <EM>must</EM> be contained in \p *this.
 
     \param first
     An iterator that points to the first stop-point.
@@ -1994,7 +1994,7 @@ interval_relation(const ITV& i,
 /*! \relates Box
   \return
   <CODE>true</CODE> if the constraint \p c is an
-  \ref bounding_boxes "interval constraint";
+  \ref intervals "interval constraint";
   <CODE>false</CODE> otherwise.
 
   \param c
