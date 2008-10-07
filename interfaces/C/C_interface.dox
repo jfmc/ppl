@@ -257,7 +257,7 @@ ppl_new_C_Polyhedron_from_NNC_Polyhedron(ppl_Polyhedron_t* pph,
   writes a handle for the newly created polyhedron at address \p pph.
 
   \note
-  The complexity argument, who can take values
+  The complexity argument, which can take values
   \c PPL_COMPLEXITY_CLASS_POLYNOMIAL, \c PPL_COMPLEXITY_CLASS_SIMPLEX
   and \c PPL_COMPLEXITY_CLASS_ANY, is ignored since the exact constructor
   has polynomial complexity.
@@ -280,7 +280,7 @@ ppl_new_NNC_Polyhedron_from_C_Polyhedron(ppl_Polyhedron_t* pph,
   writes a handle for the newly created polyhedron at address \p pph.
 
   \note
-  The complexity argument, who can take values
+  The complexity argument, which can take values
   \c PPL_COMPLEXITY_CLASS_POLYNOMIAL, \c PPL_COMPLEXITY_CLASS_SIMPLEX
   and \c PPL_COMPLEXITY_CLASS_ANY, is ignored since the exact constructor
   has polynomial complexity.
