@@ -984,7 +984,7 @@ between these forms.
                   +Constraint_System)</CODE><BR>
    <EM>Updates the polyhedron referenced by \c Handle to
    one obtained by adding to its constraint system the constraints in
-   \c Constraint_System.</EM>
+   \c Constraint_System.
    For a C polyhedron, \c Constraints must be a list of
    equalities and non-strict inequalities.</EM>
 
@@ -993,7 +993,7 @@ between these forms.
                   +Congruence_System)</CODE><BR>
    <EM>Updates the polyhedron referenced by \c Handle to
    one obtained by adding to its congruence system the congruences in
-   \c Congruence_System.</EM>
+   \c Congruence_System.
    For a C polyhedron, \c Congruences must be a list of
    equalities.</EM>
 
@@ -1002,7 +1002,7 @@ between these forms.
                   +Generator_System)</CODE><BR>
    <EM>Updates the polyhedron referenced by \c Handle to
    one obtained by adding to its generator system the generators in
-   \c Generator_System.</EM>
+   \c Generator_System.
    For a C polyhedron, \c Generators must be a list of
    lines, rays and points.</EM>
 
@@ -1064,11 +1064,11 @@ and
 
 <P><CODE>ppl_Polyhedron_affine_image(+Handle, +PPL_Var, +Lin_Expr, +Coeff)</CODE><BR>
    <EM>Transforms the polyhedron referenced by \c Handle
-   assigning the affine expression for \c Lin_Expr/\c Coeff\r to \c PPL_Var.</EM>
+   assigning the affine expression for \c Lin_Expr/\c Coeff \r to \c PPL_Var.</EM>
 
 <P><CODE>ppl_Polyhedron_affine_preimage(+Handle, +PPL_Var, +Lin_Expr, +Coeff)</CODE><BR>
    <EM>Transforms the polyhedron referenced by \c Handle
-   substituting the affine expression for \c Lin_Expr/\c Coeff\r to \c PPL_Var.</EM>
+   substituting the affine expression for \c Lin_Expr/\c Coeff \r to \c PPL_Var.</EM>
 
 <P><CODE>ppl_Polyhedron_bounded_affine_image(+Handle, +PPL_Var, +Lin_Expr_1, +Lin_Expr_2, +Coeff)</CODE><BR>
   <EM>Assigns to polyhedron \p P referenced by \c Handle
@@ -1200,8 +1200,8 @@ main \extref{preamble, PPL user manual} in Sections
 \extref{Extrapolation_Operators, "Extrapolation Operators"}.
 Note that for all these widening and extrapolation predicates
 to behave as specified
-the @LCLASS@ referred to by the second argument has to be
-contained in (or equal to) the @LCLASS@ referred to by the first argument.
+the polyhedron referred to by the second argument has to be
+contained in (or equal to) the polyhedron referred to by the first argument.
 
 <P><CODE>ppl_Polyhedron_BHRZ03_widening_assign_with_tokens(+Handle_1, +Handle_2, +C_unsigned_1, ?C_unsigned_2)</CODE><BR>
    <EM>Assigns to the polyhedron \p P_1 referenced by \c Handle_1
@@ -1471,7 +1471,7 @@ and
   assigns to \p it an iterator to the next disjunct.</EM>
 
 <P><CODE>ppl_Pointset_Powerset_C_Polyhedron_drop_disjuncts(+Handle, +Iterator_1, +Iterator_2)</CODE><BR>
-  <EM>If \p it_1\r and \p it_2 are the iterators referred to by \c Iterator_1
+  <EM>If \p it_1 and \p it_2 are the iterators referred to by \c Iterator_1
   and \c Iterator_2, respectively,
   drops from the pointset powerset referenced by \c Handle
    all the disjuncts from \p it_1 to \p it_2 (excluded).</EM>
