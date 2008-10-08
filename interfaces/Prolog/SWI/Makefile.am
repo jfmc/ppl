@@ -213,20 +213,16 @@ ppl_pl$(EXEEXT): libppl_swiprolog.la ppl_pl.o
 	plld -pl $(SWI_PROLOG) -cc $(CC) -c++ $(CXX) -ld $(CXX) \
 		-ld-options`echo '' $(AM_CXXFLAGS) $(CXXFLAGS) | tr " " "/"` \
 		-o $@ -L.libs -lppl_swiprolog ppl_pl.o \
-		-L$(top_builddir)/src/.libs -lppl \
-		$(WATCHDOG_LINK_OPTIONS) \
-		@extra_libraries@ \
-		$(EXTRA_LINK_OPTIONS)
+		-L$(top_builddir)/src/.libs \
+		-lppl $(WATCHDOG_LINK_OPTIONS) @extra_libraries@ $(EXTRA_LINK_OPTIONS)
 
 pl_clpq$(EXEEXT): libppl_swiprolog.la pl_clpq.o pl_clpq.pl ../tests/clpq.pl
 	plld -pl $(SWI_PROLOG) -cc $(CC) -c++ $(CXX) -ld $(CXX) \
 		-ld-options`echo '' $(AM_CXXFLAGS) $(CXXFLAGS) | tr " " "/"` \
 		-o $@ -L.libs -lppl_swiprolog pl_clpq.o \
                 $(srcdir)/pl_clpq.pl $(srcdir)/../tests/clpq.pl \
-		-L$(top_builddir)/src/.libs -lppl \
-		$(WATCHDOG_LINK_OPTIONS) \
-		@extra_libraries@ \
-		$(EXTRA_LINK_OPTIONS)
+		-L$(top_builddir)/src/.libs \
+		-lppl $(WATCHDOG_LINK_OPTIONS) @extra_libraries@ $(EXTRA_LINK_OPTIONS)
 
 
 pl_clpq2$(EXEEXT): libppl_swiprolog.la pl_clpq.o pl_clpq.pl ../tests/clpq2.pl
@@ -234,10 +230,8 @@ pl_clpq2$(EXEEXT): libppl_swiprolog.la pl_clpq.o pl_clpq.pl ../tests/clpq2.pl
 		-ld-options`echo '' $(AM_CXXFLAGS) $(CXXFLAGS) | tr " " "/"` \
 		-o $@ -L.libs -lppl_swiprolog pl_clpq.o \
                 $(srcdir)/pl_clpq.pl $(srcdir)/../tests/clpq2.pl \
-		-L$(top_builddir)/src/.libs -lppl \
-		$(WATCHDOG_LINK_OPTIONS) \
-		@extra_libraries@ \
-		$(EXTRA_LINK_OPTIONS)
+		-L$(top_builddir)/src/.libs \
+		-lppl $(WATCHDOG_LINK_OPTIONS) @extra_libraries@ $(EXTRA_LINK_OPTIONS)
 
 COEFFICIENT_MNEMONIC = @coefficient_mnemonic@
 
