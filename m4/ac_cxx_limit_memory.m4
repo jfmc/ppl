@@ -29,11 +29,7 @@ AC_LANG_PUSH(C++)
 
 AC_MSG_CHECKING([whether we can limit memory in C++ using setrlimit()])
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
-
-#include <new>
-#include <cstring>
-#include <cerrno>
-#include <cstdlib>
+#include <stdexcept>
 
 #ifdef HAVE_SYS_TYPES_H
 # include <sys/types.h>
@@ -56,13 +52,13 @@ AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #define LIMIT(WHAT) \
   do {									\
     if (getrlimit(WHAT, &t) != 0) 					\
-      exit(1);								\
+      return false;                                                     \
     t.rlim_cur = bytes;							\
     if (setrlimit(WHAT, &t) != 0)					\
-      exit(1);								\
+      return false;                                                     \
   } while (0)
 
-void
+bool
 limit_memory(unsigned long bytes) {
   struct rlimit t;
 #if HAVE_DECL_RLIMIT_DATA
@@ -81,21 +77,22 @@ limit_memory(unsigned long bytes) {
   // Limit virtual memory.
   LIMIT(RLIMIT_AS);
 #endif
+  return true;
 }
 
 int
 main() try {
-  limit_memory(10000);
+  if (!limit_memory(10000))
+    return 1;
   (void) new char[20000];
-  exit(1);
+  return 1;
  }
  catch (std::bad_alloc) {
-   exit(0);
+   return 0;
  }
  catch (...) {
-   exit(1);
+   return 1;
  }
-
 ]])],
   AC_MSG_RESULT(yes)
   ac_cxx_supports_limiting_memory=yes,

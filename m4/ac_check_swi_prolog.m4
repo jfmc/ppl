@@ -55,7 +55,6 @@ then
                   AC_MSG_CHECKING([for SWI-Prolog version 5.6.0 or later])
                   AC_COMPILE_IFELSE(
 [#include <SWI-Prolog.h>
-#include <cstdlib>
 
 int
 main() {
@@ -64,7 +63,7 @@ main() {
 #endif
 
   ;
-  exit(0);
+  return 0;
 }],
                     AC_MSG_RESULT(yes),
                     swi_prolog=""

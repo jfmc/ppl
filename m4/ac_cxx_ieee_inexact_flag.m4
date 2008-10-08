@@ -29,14 +29,11 @@ AC_LANG_PUSH(C++)
 
 AC_MSG_CHECKING([whether the IEEE inexact flag is supported in C++])
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
-
-#include <cstdlib>
-
 #if defined(__i386__) && (defined(__GNUC__) || defined(__INTEL_COMPILER))
 
 int
 main() {
-  exit(0);
+  return 0;
 }
 
 #elif defined(PPL_HAVE_IEEEFP_H)					\
@@ -46,14 +43,14 @@ main() {
 
 int
 main() {
-  exit(0);
+  return 0;
 }
 
 #elif !defined(HAVE_FENV_H)
 
 int
 main() {
-  exit(1);
+  return 1;
 }
 
 #else
@@ -64,7 +61,7 @@ main() {
 
 int
 main() {
-  exit(1);
+  return 1;
 }
 
 #else // defined(FE_INEXACT)
@@ -86,7 +83,7 @@ int main() {
       feclearexcept(FE_INEXACT);
       x = x / y;
       if ((fetestexcept(FE_INEXACT) != 0) != a[i].inexact)
-        exit(1);
+        return 1;
     }
     {
       volatile double x = a[i].dividend;
@@ -94,7 +91,7 @@ int main() {
       feclearexcept(FE_INEXACT);
       x = x / y;
       if ((fetestexcept(FE_INEXACT) != 0) != a[i].inexact)
-        exit(1);
+        return 1;
     }
     {
       volatile long double x = a[i].dividend;
@@ -102,10 +99,10 @@ int main() {
       feclearexcept(FE_INEXACT);
       x = x / y;
       if ((fetestexcept(FE_INEXACT) != 0) != a[i].inexact)
-        exit(1);
+        return 1;
     }
   }
-  exit(0);
+  return 0;
 }
 
 #endif // defined(FE_INEXACT)

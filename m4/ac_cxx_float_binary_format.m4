@@ -39,7 +39,6 @@ AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #ifdef HAVE_INTTYPES_H
 #include <inttypes.h>
 #endif
-#include <cstdlib>
 
 #if SIZEOF_FLOAT == 4
 
@@ -65,16 +64,16 @@ main() {
           == 1.40129846432481707092372958328991613128026194187651577175706828388979108268586060148663818836212158203125e-45
           && convert(0x80000001U)
           == -1.40129846432481707092372958328991613128026194187651577175706828388979108268586060148663818836212158203125e-45))
-    exit(0);
+    return 0;
   else
-    exit(1);
+    return 1;
 }
 
 #else // SIZEOF_FLOAT != 4
 
 int
 main() {
-  exit(1);
+  return 1;
 }
 
 #endif // SIZEOF_FLOAT != 4

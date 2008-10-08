@@ -30,7 +30,6 @@ AC_LANG_PUSH(C++)
 AC_MSG_CHECKING([if the compiler has the remainder bug])
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <climits>
-#include <cstdlib>
 
 int minus_one(int n) {
   return (n+1)*(n-1)-n*n;
@@ -43,9 +42,9 @@ int p(int x, int y) {
 
 int main(int argc, char** argv) {
   if (p(INT_MIN, minus_one(argc)) != 0)
-    exit(1);
+    return 1;
   else
-    exit(0);
+    return 0;
 }
 ]])],
   AC_MSG_RESULT(no)

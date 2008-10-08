@@ -41,9 +41,7 @@ AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #ifdef HAVE_INTTYPES_H
 #include <inttypes.h>
 #endif
-#include <cstdlib>
 #include <sstream>
-//#include <iostream>
 
 /* Unique (nonzero) code for the IEEE 754 Single Precision
    floating point format.  */
@@ -66,7 +64,6 @@ check(float value, const char* text) {
   std::ostringstream ss;
   ss.precision(10000);
   ss << value;
-  //std::cout << ss.str() << " ?==? " << text << std::endl;
   return ss.str() == text;
 }
 
@@ -95,16 +92,16 @@ main() {
                "1.40129846432481707092372958328991613128026194187651577175706828388979108268586060148663818836212158203125e-45")
       && check(convert(0x80000001U),
                "-1.40129846432481707092372958328991613128026194187651577175706828388979108268586060148663818836212158203125e-45"))
-    exit(0);
+    return 0;
   else
-    exit(1);
+    return 1;
 }
 
 #else // CXX_FLOAT_BINARY_FORMAT != FLOAT_IEEE754_SINGLE
 
 int
 main() {
-  exit(1);
+  return 1;
 }
 
 #endif // CXX_FLOAT_BINARY_FORMAT != FLOAT_IEEE754_SINGLE
@@ -113,7 +110,7 @@ main() {
 
 int
 main() {
-  exit(1);
+  return 1;
 }
 
 #endif // SIZEOF_FLOAT != 4

@@ -57,11 +57,10 @@ _CIAO_PRINT_INCLUDE_DIR_EOF
                   AC_MSG_CHECKING([for Ciao Prolog version x.y.z or later])
                   AC_COMPILE_IFELSE(
 [#include <ciao_prolog.h>
-#include <cstdlib>
 
 int
 main() {
-  exit(0);
+  return 0;
 }],
                     AC_MSG_RESULT(yes),
                     ciao_prolog=""
