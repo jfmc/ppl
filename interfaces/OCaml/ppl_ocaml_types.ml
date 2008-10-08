@@ -77,7 +77,8 @@ type grid_generator_system = linear_grid_generator list
 
 type congruence_system = linear_congruence list
 
-(* Declared temporarily in this way to avoid name clashes. *)
+(* Note: the "_RS" suffix is to avoid name clashes with the declaration
+   of linear_constraint. *)
 type relation_symbol = Less_Than_RS | Less_Or_Equal_RS | Equal_RS
                        | Greater_Than_RS | Greater_Or_Equal_RS
 
