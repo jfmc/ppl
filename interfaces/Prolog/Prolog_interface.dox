@@ -670,8 +670,8 @@ Here we provide a short description for each of the predicates
 available for the domain of C polyhedra.
 Note that predicates for other domains will follow a similar pattern.
 
-<H2>Constructor, copy, conversion and destructor predicates</H2>
 
+<H2>Constructor, copy, conversion and destructor predicates</H2>
 
 <H3>Constructor predicates for C polyhedra</H3>
 The constructor predicates build a C polyhedron from a specification
@@ -684,6 +684,7 @@ The specification can be:
   For example, a C polyhedron can be built from a list of
   non-strict inequality or equality constraints or a list of equality
   congruences or a list of generators that contains no closure points.
+
 <P><CODE>ppl_new_C_Polyhedron_from_space_dimension(+Dimension_Type, +Universe_or_Empty, -Handle)</CODE><BR>
    <EM>Builds a C polyhedron \f$\cP\f$
    with \c Dimension_Type dimensions; it is empty
@@ -732,6 +733,7 @@ The specification can be:
   in the conversion;
   this complexity argument is ignored when the
   the friend and the element being built are in the same class.
+
 <P><CODE>ppl_new_C_Polyhedron_from_C_Polyhedron(+Handle_1, -Handle_2)</CODE><BR>
   <EM>Builds a new C polyhedron \p P_1 from
   \c a C polyhedron referenced by handle \c Handle_1.
@@ -757,12 +759,14 @@ The specification can be:
 
 <H3>Destructor predicate</H3>
 Below is the destructor predicate for the Polyhedron domain.
+
 <P><CODE>ppl_delete_Polyhedron(+Handle)</CODE><BR>
   <EM>Invalidates the handle  referenced by \c Handle:
   this makes sure the corresponding resources will eventually be released.</EM>
 
 
 <H2>Predicates that do not change the polyhedron</H2>
+
 <H3>Test Predicates</H3>
 These predicates test the polyhedron for different properties
 and succeed or fail depending on the outcome.
@@ -946,12 +950,21 @@ bytes occupied by the polyhedron referenced by \c Handle.</EM>
 bytes occupied by the polyhedron referenced by \c Handle.</EM>
 
 
+<H3>Ascii dump predicate</H3>
+This output predicate is useful for debugging.
+
+<P><CODE>ppl_Polyhedron_ascii_dump(+Handle)</CODE><BR>
+  <EM>Dumps an ascii representation of the PPL internal state for
+  the polyhedron referenced by \c Handle on the standard output.</EM>
+
+
 <H2>Space-dimension preserving predicates that may change the polyhedron</H2>
 These predicates may modify the polyhedron referred to
 by the handle in first argument;
 the (dimension of the) vector space in which it is embedded is unchanged.
+
 <H3>Predicates that may change the polyhedron by adding
-to the polyhedron's constraint or generator descriptions</H3>
+to its constraint or generator descriptions</H3>
 Note that there are two forms of these predicates
 differentiated in the names by the
 words "add" or "refine with";
@@ -1050,6 +1063,7 @@ for details of the latter see Sections
 \extref{Images_and_Preimages_of_Affine_Transfer_Relations, "Images and Preimages of Affine Transfer Relations"}
 and
 \extref{Generalized_Affine_Relations, "Generalized Affine Relations"}.
+
 <P><CODE>ppl_Polyhedron_topological_closure_assign(+Handle)</CODE><BR>
   <EM>Assigns to the polyhedron referenced by \c Handle
   its topological closure.</EM>
@@ -1121,7 +1135,7 @@ and
    represented by \c Relation_Symbol.</EM>
 
 
-<H2>Predicates whose results depend on more than one polyhedron</H2>
+<H3>Predicates whose results depend on more than one polyhedron</H3>
 These predicates include the binary operators which will assign to the
 polyhedron referred to by the first argument
 its combination with the polyhedron referred to by the second argument
@@ -1268,7 +1282,7 @@ contained in (or equal to) the polyhedron referred to by the first argument.
    the BHRZ03-widening of \p P_1 with the polyhedron
    referenced by \c Handle_2 intersected with the constraints in
    \c Constraint_System that are
-   satisfied by all the points of \p P_1, further intersected with the smallest box containing p P_1..
+   satisfied by all the points of \p P_1, further intersected with the smallest box containing \p P_1.
    The widening with tokens delay
    technique is applied with \c C_unsigned_1 tokens;
    \c C_unsigned_2 is unified with the number of tokens
@@ -1279,7 +1293,7 @@ contained in (or equal to) the polyhedron referred to by the first argument.
    the H79-widening of \p P_1 with the polyhedron
    referenced by \c Handle_2 intersected with the constraints in
    \c Constraint_System that are
-   satisfied by all the points of \p P_1, further intersected with the smallest box containing p P_1..
+   satisfied by all the points of \p P_1, further intersected with the smallest box containing \p P_1.
    The widening with tokens delay
    technique is applied with \c C_unsigned_1 tokens;
    \c C_unsigned_2 is unified with the number of tokens
@@ -1304,32 +1318,44 @@ contained in (or equal to) the polyhedron referred to by the first argument.
    the BHRZ03-widening of \p P_1 with the polyhedron
    referenced by \c Handle_2 intersected with the constraints in
    \c Constraint_System that are
-   satisfied by all the points of \p P_1, further intersected with the smallest box containing p P_1..</EM>
+   satisfied by all the points of \p P_1, further intersected with the smallest box containing \p P_1.</EM>
 
 <P><CODE>ppl_Polyhedron_bounded_H79_extrapolation_assign(+Handle_1, +Handle_2, +Constraint_System)</CODE><BR>
    <EM>Assigns to the polyhedron \p P_1 referenced by \c Handle_1
    the H79-widening of \p P_1 with the polyhedron
    referenced by \c Handle_2 intersected with the constraints in
    \c Constraint_System that are
-   satisfied by all the points of \p P_1, further intersected with the smallest box containing p P_1..</EM>
+   satisfied by all the points of \p P_1, further intersected with the smallest box containing \p P_1.</EM>
 
 
-<H2>Predicates that may modify the vector space of the polyhedron</H2>
+
+<H2>Predicates that may modify the vector space</H2>
+These predicates enable the modification of the vector space
+of the polyhedron referred to in the first argument.
+
+<H3>Predicate for concatenation</H3>
+For more information on this operation, see Section
+\extref{Concatenating_Polyhedra, "Concatenating Polyhedra"},
+of the main \extref{preamble, PPL user manual}.
+
+<P><CODE>ppl_Polyhedron_concatenate_assign(+Handle_1, +Handle_2)</CODE><BR>
+   <EM>Assigns to the polyhedron \p P referenced by \c Handle_1
+   the concatenation of \p P and the polyhedron referenced by \c Handle_2.</EM>
+
+
+<H3>Predicates for mapping dimensions or changing the vector space</H3>
+These predicates enable the modification of the vector space
+of the polyhedron referred to in the first argument.
 These predicates enable the modification of the vector space
 of the polyhedron referred to in the first argument.
 Detailed descriptions of these can be found in the
 main \extref{preamble, PPL user manual} in Sections
-\extref{Concatenating_Polyhedra, "Concatenating Polyhedra"},
 \extref{Adding_New_Dimensions_to_the_Vector_Space, "Adding New Dimensions to the Vector Space"},
 \extref{Removing_Dimensions_from_the_Vector_Space, "Removing Dimensions from the Vector Space"},
 \extref{Mapping_the_Dimensions_of_the_Vector_Space, "Mapping the Dimensions of the Vector Space"},
 \extref{expand_space_dimension, "Expanding One Dimension of the Vector Space to Multiple Dimensions"}
 and
 \extref{Folding_Multiple_Dimensions_of_the_Vector_Space_into_One_Dimension, "Folding Multiple Dimensions of the Vector Space into One Dimension"}.
-
-<P><CODE>ppl_Polyhedron_concatenate_assign(+Handle_1, +Handle_2)</CODE><BR>
-   <EM>Assigns to the polyhedron \p P referenced by \c Handle_1
-   the concatenation of \p P and the polyhedron referenced by \c Handle_2.</EM>
 
 <P><CODE>ppl_Polyhedron_add_space_dimensions_and_embed(+Handle, +Dimension_Type)</CODE><BR>
   <EM>Adds \c Dimension_Type new dimensions to the space enclosing
@@ -1376,35 +1402,32 @@ and
   function.</EM>
 
 
-<H2>Ascii dump predicate</H2>
-
-<P><CODE>ppl_Polyhedron_ascii_dump(+Handle)</CODE><BR>
-  <EM>Dumps an ascii representation of the PPL internal state for
-  polyhedron referenced by \c Handle on the standard output.
-  Useful for debugging.</EM>
-
-
 \anchor other_domains
 <H1>Ad hoc Predicates for Other Domains</H1>
-<H2>Extra Predicates Specifically for the Pointset_Powerset Domains</H2>
+<H2>Extra Predicates Specifically for the Pointset Powerset Domains</H2>
   The powerset domains can be instantiated by taking as a base domain
   any fixed semantic geometric description
   (C and NNC polyhedra, BD and octagonal shapes, boxes and grids).
   An element of the powerset domain represents a disjunctive collection
   of base objects (its disjuncts), all having the same space dimension.
+  For more information on this construct,
+  see Section \extref{The_Powerset_Domain "The Powerset Domain"}
+  in the main \extref{preamble, PPL user manual}.
 
   Besides the predicates that are available in all semantic geometric
   descriptions (whose documentation is not repeated here),
-  the powerset domain also provides several ad hoc functions.
-  In particular, the iterator types allow for the examination and
-  manipulation of the collection of disjuncts.
+  the powerset domain also provides several ad hoc predicates.
+  These are specified below, instantiated for the
+  PPL domain Pointset_Powerset_C_Polyhedron.
+  Note that predicates for other pointset powerset domains
+  will follow similar patterns.
 
-  Below is a specification of extra predicates provided for the
-  Pointset_Powerset<C_Polyhedron> domain.
-  Note that predicates for other Pointset_Powerset domains
-  will follow a similar pattern.
+  <H3>Predicates for pointset powerset iterators.</H3>
+Iterators allow the user to examine and change individual elements
+(called here disjuncts) of a pointset powerset.
+The following predicates support useful operations
+on these iterators via the usual handles.
 
-  <H2>Predicates for pointset powerset iterators.</H2>
 <P><CODE>ppl_new_Pointset_Powerset_C_Polyhedron_iterator_from_iterator_pps_iter_doc(+Iterator_1, -Iterator_2)</CODE><BR>
   <EM>Builds a new iterator \p it from the iterator referenced by
   \c Iterator_1. <CODE>Iterator_2</CODE> is unified with the handle
@@ -1442,7 +1465,13 @@ and
   this makes sure the corresponding resources
   will eventually be released.</EM>
 
-  <H2>Other Ad Hoc Predicates for the Pointset Powerset.</H2>
+  <H3>Other Ad Hoc Predicates for the pointset powerset domains.</H3>
+Collected here are all the other predicates that are specific to
+the pointset powerset domain of C polyhdera;
+these provide operations for simplifying the powerset
+geometric comparisons,
+adding and removing disjuncts
+and widening and extrapolation.
 
 <P><CODE>ppl_Pointset_Powerset_C_Polyhedron_pairwise_reduce(+Handle)</CODE><BR>
    <EM>Assigns the result of pairwise reduction on
@@ -1455,16 +1484,22 @@ and
 <P><CODE>ppl_Pointset_Powerset_C_Polyhedron_geometrically_covers_Pointset_Powerset_C_Polyhedron(+Handle_1, +Handle_2)</CODE><BR>
    <EM>Succeeds if and only if the pointset powerset referenced by
    \c Handle_2 geometrically covers
-   the pointset powerset referenced by \c Handle_1.</EM>
+   the pointset powerset referenced by \c Handle_1;
+   see Section \extref{Geometric_Comparisons, "Geometric Comparisons"}
+  in the main \extref{preamble, PPL user manual}.</EM>
 
 <P><CODE>ppl_Pointset_Powerset_C_Polyhedron_geometrically_equals_Pointset_Powerset_C_Polyhedron(+Handle_1, +Handle_2)</CODE><BR>
    <EM>Succeeds if and only if the pointset powerset referenced by
    \c Handle_2 geometrically equals
-   the pointset powerset referenced by \c Handle_1.</EM>
+   the pointset powerset referenced by \c Handle_1;
+   see Section \extref{Geometric_Comparisons, "Geometric Comparisons"}
+  in the main \extref{preamble, PPL user manual}.</EM>
 
 <P><CODE>ppl_Pointset_Powerset_C_Polyhedron_add_disjunct(+Handle_1, +Handle_2)</CODE><BR>
   <EM>Adds to the pointset powerset referenced by \c Handle_1 a disjunct
-  referred to by \c Handle_2.</EM>
+  referred to by \c Handle_2;
+  see Section \extref{Adding_a_Disjunct, "Adding a Disjunct"}
+  in the main \extref{preamble, PPL user manual}.</EM>
 
 <P><CODE>ppl_Pointset_Powerset_C_Polyhedron_drop_disjunct(+Handle, +Iterator)</CODE><BR>
   <EM>If \p it is the iterator referred to by \c Iterator,
@@ -1484,6 +1519,8 @@ and
     between \p P_1 and the pointset powerset referenced by
    \c Handle_2, using the BHRZ03-widening
     certified by the convergence certificate for BHRZ03.</EM>
+   see Section \extref{Certificate_Based_Widenings, "Certificate-Based Widenings"}
+  in the main \extref{preamble, PPL user manual}.</EM>
 
 <P><CODE>ppl_Pointset_Powerset_C_Polyhedron_BHZ03_H79_H79_widening_assign(+Handle_1, +Handle_2)</CODE><BR>
    <EM>Assigns to the pointset powerset \p P_1 referenced by
@@ -1491,6 +1528,8 @@ and
     between \p P_1 and the pointset powerset referenced by
    \c Handle_2, using the H79-widening
     certified by the convergence certificate for H79.</EM>
+   see Section \extref{Certificate_Based_Widenings, "Certificate-Based Widenings"}
+  in the main \extref{preamble, PPL user manual}.</EM>
 
 <P><CODE>ppl_Pointset_Powerset_C_Polyhedron_BGP99_BHRZ03_extrapolation_assign(+Handle_1, +Handle_2, C_unsigned)</CODE><BR>
     <EM>Assigns to the pointset powerset \p P_1 referenced by
@@ -1499,6 +1538,8 @@ and
     between \p P_1 and the pointset powerset referenced by
    \c Handle_2, using the BHRZ03-widening
     and the cardinality threshold \c C_unsigned.</EM>
+  see Section \extref{Powerset_Extrapolation_Operators, "Powerset Extrapolation Operators"}
+  in the main \extref{preamble, PPL user manual}.</EM>
 
 <P><CODE>ppl_Pointset_Powerset_C_Polyhedron_BGP99_H79_extrapolation_assign(+Handle_1, +Handle_2, C_unsigned)</CODE><BR>
     <EM>Assigns to the pointset powerset \p P_1 referenced by
@@ -1507,6 +1548,9 @@ and
     between \p P_1 and the pointset powerset referenced by
    \c Handle_2, using the H79-widening
     and the cardinality threshold \c C_unsigned.</EM>
+  see Section \extref{Powerset_Extrapolation_Operators, "Powerset Extrapolation Operators"}
+  in the main \extref{preamble, PPL user manual}.</EM>
+
 
 
 
@@ -1720,7 +1764,6 @@ Notice that, for dynamic linking to work, you should have configured
 the library with the <CODE>--enable-shared</CODE> option.
 
 */ /* \mainpage */
-
 
 
 
