@@ -55,7 +55,7 @@ set_ptr(JNIEnv* env, const jobject& ppl_object,
 
 template <typename R>
 jobject
-get_linear_expression(JNIEnv* env, const R& r) {
+build_linear_expression(JNIEnv* env, const R& r) {
   jclass j_le_coeff_class
     = env->FindClass("parma_polyhedra_library/Linear_Expression_Coefficient");
   jclass j_le_class
@@ -175,10 +175,9 @@ Partial_Function::maps(dimension_type i, dimension_type& j) const {
   jobject new_by_ref = env->NewObject(j_by_reference_class,
                                       j_by_reference_ctr_id,
                                       coeff);
-  jmethodID j_maps_id
-    = env->GetMethodID(j_partial_function_class,
-                       "maps",
-                       "(Ljava/lang/Long;Lparma_polyhedra_library/By_Reference;)Z");
+  jmethodID j_maps_id = env->GetMethodID(j_partial_function_class,
+                                         "maps",
+                                         "(Ljava/lang/Long;Lparma_polyhedra_library/By_Reference;)Z");
   if (env->CallBooleanMethod(j_p_func, j_maps_id,
                              j_long_to_j_long_class(env, i),
                              new_by_ref)) {

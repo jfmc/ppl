@@ -153,7 +153,7 @@ Java_parma_1polyhedra_1library_MIP_1Problem_objective_1function
     jobject j_le_coeff = env->NewObject(j_le_coeff_class, j_le_coeff_ctr_id,
 					j_coeff_inhomogeneous_term);
 
-    jobject j_le = get_linear_expression(env, mip->objective_function());
+    jobject j_le = build_linear_expression(env, mip->objective_function());
     return env->CallObjectMethod(j_le, j_le_sum_id, j_le_coeff);
   }
   CATCH_ALL;
@@ -177,7 +177,7 @@ Java_parma_1polyhedra_1library_MIP_1Problem_optimization_1mode
 JNIEXPORT jobject JNICALL
 Java_parma_1polyhedra_1library_MIP_1Problem_get_1control_1parameter
 (JNIEnv* env , jobject j_this_mip_problem,
-               jobject j_cpn) {
+ jobject j_cpn) {
   try {
     MIP_Problem* mip
       = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
@@ -195,7 +195,7 @@ Java_parma_1polyhedra_1library_MIP_1Problem_get_1control_1parameter
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_MIP_1Problem_set_1control_1parameter
 (JNIEnv* env , jobject j_this_mip_problem,
-               jobject j_cpv) {
+ jobject j_cpv) {
   try {
     MIP_Problem* mip
       = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));

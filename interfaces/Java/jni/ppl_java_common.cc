@@ -102,7 +102,7 @@ build_java_poly_gen_relation(JNIEnv* env,
 
 jobject
 build_java_poly_con_relation(JNIEnv* env,
-			    Poly_Con_Relation& r) {
+                             Poly_Con_Relation& r) {
   jclass j_poly_con_relation_class
     = env->FindClass("parma_polyhedra_library/Poly_Con_Relation");
   jmethodID j_poly_con_relation_ctr_id
@@ -132,7 +132,7 @@ build_java_poly_con_relation(JNIEnv* env,
 }
 
 
-Parma_Polyhedra_Library::Congruence
+Congruence
 build_cxx_congruence(JNIEnv* env, const jobject& j_congruence) {
   jclass congruence_class
     = env->FindClass("parma_polyhedra_library/Congruence");
@@ -144,41 +144,39 @@ build_cxx_congruence(JNIEnv* env, const jobject& j_congruence) {
   TEMP_INTEGER(ppl_modulus);
   ppl_modulus = build_cxx_coeff(env, j_modulus);
   jfieldID lhs_field_id
-      = env->GetFieldID(congruence_class,
- 			"lhs",
- 			"Lparma_polyhedra_library/Linear_Expression;");
-    jfieldID rhs_field_id
-      = env->GetFieldID(congruence_class,
- 			"rhs",
- 			"Lparma_polyhedra_library/Linear_Expression;");
-    jobject j_lhs = env->GetObjectField(j_congruence, lhs_field_id);
-    jobject j_rhs = env->GetObjectField(j_congruence, rhs_field_id);
-    Linear_Expression lhs = build_cxx_linear_expression(env, j_lhs);
-    Linear_Expression rhs = build_cxx_linear_expression(env, j_rhs);
-    return (lhs %= rhs) / ppl_modulus;
+    = env->GetFieldID(congruence_class,
+                      "lhs",
+                      "Lparma_polyhedra_library/Linear_Expression;");
+  jfieldID rhs_field_id
+    = env->GetFieldID(congruence_class,
+                      "rhs",
+                      "Lparma_polyhedra_library/Linear_Expression;");
+  jobject j_lhs = env->GetObjectField(j_congruence, lhs_field_id);
+  jobject j_rhs = env->GetObjectField(j_congruence, rhs_field_id);
+  Linear_Expression lhs = build_cxx_linear_expression(env, j_lhs);
+  Linear_Expression rhs = build_cxx_linear_expression(env, j_rhs);
+  return (lhs %= rhs) / ppl_modulus;
 }
 
-// Converts a C++ bool to a Java boolean.
 jobject
-bool_to_j_boolean(JNIEnv* env,
-		  const bool bool_value) {
- jclass boolean_java_class = env->FindClass("java/lang/Boolean");
- jmethodID getboolean_method_id
-   = env->GetStaticMethodID(boolean_java_class,
-			    "valueOf",
-			    "(Z)Ljava/lang/Boolean;");
- return env->CallStaticObjectMethod(boolean_java_class,
- 				    getboolean_method_id,
- 				    bool_value);
+bool_to_j_boolean(JNIEnv* env, const bool value) {
+  jclass boolean_java_class = env->FindClass("java/lang/Boolean");
+  jmethodID getboolean_method_id
+    = env->GetStaticMethodID(boolean_java_class,
+                             "valueOf",
+                             "(Z)Ljava/lang/Boolean;");
+  return env->CallStaticObjectMethod(boolean_java_class,
+                                     getboolean_method_id,
+                                     value);
 }
 
 jobject
 j_long_to_j_long_class(JNIEnv* env, const jlong& jlong_value) {
   jclass long_java_class = env->FindClass("java/lang/Long");
-  jmethodID get_long_method_id =
-    env->GetStaticMethodID(long_java_class,
-			   "valueOf",
-			   "(J)Ljava/lang/Long;");
+  jmethodID get_long_method_id
+    = env->GetStaticMethodID(long_java_class,
+                             "valueOf",
+                             "(J)Ljava/lang/Long;");
   return env->CallStaticObjectMethod(long_java_class,
  				     get_long_method_id,
  				     jlong_value);
@@ -200,17 +198,17 @@ j_int_to_j_integer(JNIEnv* env,  const jint&  jint_value) {
     = env->GetStaticMethodID(integer_java_class,
 			     "valueOf",
 			     "(I)Ljava/lang/Integer;");
- return env->CallStaticObjectMethod(integer_java_class,
- 				    get_integer_method_id,
- 				    jint_value);
+  return env->CallStaticObjectMethod(integer_java_class,
+                                     get_integer_method_id,
+                                     jint_value);
 }
 
 jint
 j_integer_to_j_int(JNIEnv* env,  const jobject& j_integer) {
- jclass integer_java_class = env->FindClass("java/lang/Integer");
- jmethodID get_int_method_id = env->GetMethodID(integer_java_class,
-						"intValue", "()I");
- return env->CallIntMethod(j_integer, get_int_method_id);
+  jclass integer_java_class = env->FindClass("java/lang/Integer");
+  jmethodID get_int_method_id = env->GetMethodID(integer_java_class,
+                                                 "intValue", "()I");
+  return env->CallIntMethod(j_integer, get_int_method_id);
 }
 
 // bool
@@ -274,8 +272,8 @@ Variable
 build_cxx_variable(JNIEnv* env, const jobject& j_var) {
   jclass j_variable_class = env->FindClass("parma_polyhedra_library/Variable");
   jfieldID varid_field_id = env->GetFieldID(j_variable_class,
-					  "varid",
-					  "I");
+                                            "varid",
+                                            "I");
   // Retrieve the value.
   return Variable(env->GetIntField(j_var, varid_field_id));
 }
@@ -318,7 +316,7 @@ build_cxx_optimization_mode(JNIEnv* env, const jobject& j_opt_mode) {
   jclass opt_mode_class
     = env->FindClass("parma_polyhedra_library/Optimization_Mode");
   jmethodID opt_mode_ordinal_id = env->GetMethodID(opt_mode_class, "ordinal",
-						  "()I");
+                                                   "()I");
   jint opt_mode = env->CallIntMethod(j_opt_mode, opt_mode_ordinal_id);
   switch (opt_mode) {
   case 0:
@@ -424,7 +422,7 @@ build_cxx_control_parameter_value(JNIEnv* env, const jobject& j_cp_value) {
   jclass cp_value_class
     = env->FindClass("parma_polyhedra_library/Control_Parameter_Value");
   jmethodID cp_value_ordinal_id = env->GetMethodID(cp_value_class, "ordinal",
-						  "()I");
+                                                   "()I");
   jint cp_value = env->CallIntMethod(j_cp_value, cp_value_ordinal_id);
   switch (cp_value) {
   case 0:
@@ -439,8 +437,8 @@ build_cxx_control_parameter_value(JNIEnv* env, const jobject& j_cp_value) {
 }
 
 jobject
-  build_java_control_parameter_value(JNIEnv* env,
-                                     const MIP_Problem::Control_Parameter_Value& cp_value) {
+build_java_control_parameter_value
+(JNIEnv* env, const MIP_Problem::Control_Parameter_Value& cp_value) {
   jclass j_cp_value_class
     = env->FindClass("parma_polyhedra_library/Control_Parameter_Value");
   jfieldID cp_value_float_get_id
@@ -487,7 +485,6 @@ build_cxx_coeff(JNIEnv* env, const jobject& j_coeff) {
   return ppl_coeff;
 }
 
-// Converts a PPL coefficient to a Java coefficient.
 jobject
 build_java_coeff(JNIEnv* env, const Coefficient& ppl_coeff) {
   std::ostringstream s;
@@ -534,8 +531,8 @@ build_cxx_constraint(JNIEnv* env, const jobject& j_constraint) {
   case 2:
     return Constraint(first_le == second_le);
   case 3:
-  if (rel_sym == 3)
-    return Constraint(first_le >= second_le);
+    if (rel_sym == 3)
+      return Constraint(first_le >= second_le);
   case 4:
     return Constraint(first_le > second_le);
   default:
@@ -574,7 +571,6 @@ build_cxx_linear_expression(JNIEnv* env, const jobject& j_le) {
     jfieldID varid_field_id = env->GetFieldID(j_variable_class,
 					      "varid",
 					      "I");
-
     // Retrieve the value.
     jint varid = env->GetIntField(var, varid_field_id);
     return Linear_Expression(Variable(varid));
@@ -775,7 +771,7 @@ build_cxx_grid_generator_system(JNIEnv* env, const jobject& j_iterable) {
 
   while (has_next_value) {
     jobject j_grid_generator = env->CallObjectMethod(j_iterator,
-						 next_method_id);
+                                                     next_method_id);
     ggs.insert(build_cxx_grid_generator(env, j_grid_generator));
     has_next_value = env->CallBooleanMethod(j_iterator,
 					    has_next_method_id);
@@ -808,7 +804,7 @@ build_cxx_constraint_system(JNIEnv* env, const jobject& j_iterable) {
     has_next_value = env->CallBooleanMethod(j_iterator,
 					    has_next_method_id);
   }
- return cs;
+  return cs;
 }
 
 Generator_System
@@ -868,7 +864,8 @@ build_cxx_congruence_system(JNIEnv* env, const jobject& j_iterable) {
 }
 
 jobject
-get_le_inhomogeneous_term(JNIEnv* env, const Coefficient& c) {
+build_java_linear_expression_coefficient(JNIEnv* env,
+                                         const Coefficient& c) {
   jclass j_le_coeff_class
     = env->FindClass("parma_polyhedra_library/Linear_Expression_Coefficient");
   jobject j_coeff =  build_java_coeff(env, c);
@@ -880,8 +877,8 @@ get_le_inhomogeneous_term(JNIEnv* env, const Coefficient& c) {
 			j_coeff);
 }
 
-void set_generator(JNIEnv* env, jobject& to_be_set,
-		   const jobject& gen) {
+void
+set_generator(JNIEnv* env, jobject& to_be_set, const jobject& gen) {
   jclass j_generator_class
     = env->FindClass("parma_polyhedra_library/Generator");
   jmethodID j_coeff_set_id
@@ -891,7 +888,7 @@ void set_generator(JNIEnv* env, jobject& to_be_set,
 }
 
 void set_grid_generator(JNIEnv* env, jobject& to_be_set,
-			 const jobject& gen) {
+                        const jobject& gen) {
   jclass j_generator_class
     = env->FindClass("parma_polyhedra_library/Grid_Generator");
   jmethodID j_coeff_set_id
@@ -900,8 +897,9 @@ void set_grid_generator(JNIEnv* env, jobject& to_be_set,
   env->CallVoidMethod(to_be_set, j_coeff_set_id, gen);
 }
 
-void set_coefficient(JNIEnv* env, jobject& to_be_set,
-		     const jobject& c) {
+void
+set_coefficient(JNIEnv* env, jobject& to_be_set,
+                const jobject& c) {
   jclass j_coeff_class
     = env->FindClass("parma_polyhedra_library/Coefficient");
   jmethodID j_coeff_set_id
@@ -910,8 +908,9 @@ void set_coefficient(JNIEnv* env, jobject& to_be_set,
   env->CallVoidMethod(to_be_set, j_coeff_set_id, c);
 }
 
-void set_by_reference(JNIEnv* env, jobject& by_ref_to_be_set,
-		      const jobject& to_insert) {
+void
+set_by_reference(JNIEnv* env, jobject& by_ref_to_be_set,
+                 const jobject& to_insert) {
   jclass by_reference_class
     = env->FindClass("parma_polyhedra_library/By_Reference");
   jfieldID obj_field_id = env->GetFieldID(by_reference_class,
@@ -920,66 +919,70 @@ void set_by_reference(JNIEnv* env, jobject& by_ref_to_be_set,
   env->SetObjectField(by_ref_to_be_set, obj_field_id, to_insert);
 }
 
-jobject get_by_reference(JNIEnv* env, const jobject& by_ref_integer) {
+jobject
+get_by_reference(JNIEnv* env, const jobject& by_reference) {
   jclass by_reference_class
     = env->FindClass("parma_polyhedra_library/By_Reference");
   jfieldID obj_field_id = env->GetFieldID(by_reference_class,
 					  "obj",
 					  "Ljava/lang/Object;");
-  return env->GetObjectField(by_ref_integer, obj_field_id);
+  return env->GetObjectField(by_reference, obj_field_id);
 }
 
-void set_pair_element(JNIEnv* env, jobject& pair_to_be_set,
-		      int arg,  const jobject& to_insert) {
+void
+set_pair_element(JNIEnv* env, jobject& pair_to_be_set,
+                 int arg,  const jobject& to_insert) {
   jclass pair_class = env->FindClass("parma_polyhedra_library/Pair");
   switch (arg) {
-  case 0: {
-    jfieldID obj_field_id = env->GetFieldID(pair_class,
-					    "first",
-					    "Ljava/lang/Object;");
-    env->SetObjectField(pair_to_be_set, obj_field_id, to_insert);
-    return;
-  }
-  case 1: {
-    jfieldID obj_field_id = env->GetFieldID(pair_class,
-					    "second",
-					    "Ljava/lang/Object;");
-    env->SetObjectField(pair_to_be_set, obj_field_id, to_insert);
-    return;
-  }
+  case 0:
+    {
+      jfieldID obj_field_id = env->GetFieldID(pair_class,
+                                              "first",
+                                              "Ljava/lang/Object;");
+      env->SetObjectField(pair_to_be_set, obj_field_id, to_insert);
+      return;
+    }
+  case 1:
+    {
+      jfieldID obj_field_id = env->GetFieldID(pair_class,
+                                              "second",
+                                              "Ljava/lang/Object;");
+      env->SetObjectField(pair_to_be_set, obj_field_id, to_insert);
+      return;
+    }
   default:
     throw std::runtime_error("PPL Java interface internal error: pair value"
 			     " not allowed");
   }
-  throw std::runtime_error("PPL Java interface internal error");
 }
 
 
-jobject get_pair_element(JNIEnv* env, int arg, const jobject& j_pair) {
+jobject
+get_pair_element(JNIEnv* env, int arg, const jobject& j_pair) {
   jclass pair_class = env->FindClass("parma_polyhedra_library/Pair");
   switch (arg) {
-  case 0: {
-    jfieldID obj_field_id = env->GetFieldID(pair_class,
-					    "first",
-					    "Ljava/lang/Object;");
-    return env->GetObjectField(j_pair, obj_field_id);
-  }
-  case 1: {
-    jfieldID obj_field_id = env->GetFieldID(pair_class,
-					    "second",
-					    "Ljava/lang/Object;");
-    return env->GetObjectField(j_pair, obj_field_id);
-  }
+  case 0:
+    {
+      jfieldID obj_field_id = env->GetFieldID(pair_class,
+                                              "first",
+                                              "Ljava/lang/Object;");
+      return env->GetObjectField(j_pair, obj_field_id);
+    }
+  case 1:
+    {
+      jfieldID obj_field_id = env->GetFieldID(pair_class,
+                                              "second",
+                                              "Ljava/lang/Object;");
+      return env->GetObjectField(j_pair, obj_field_id);
+    }
   default:
     throw std::runtime_error("PPL Java interface internal error: pair value"
 			     " not allowed");
- }
- throw std::runtime_error("PPL Java interface internal error");
+  }
 }
 
-
-
-jboolean is_null(JNIEnv* env, jobject obj) {
+jboolean
+is_null(JNIEnv* env, jobject obj) {
   jclass by_reference_class
     = env->FindClass("parma_polyhedra_library/By_Reference");
   jmethodID j_reference_is_null_id
@@ -1006,35 +1009,36 @@ build_java_constraint(JNIEnv* env, const Constraint& c) {
     = env->GetStaticFieldID(j_rel_sym_class,
 			    "EQUAL",
 			    "Lparma_polyhedra_library/Relation_Symbol;");
-   jfieldID rel_sym_gt_get_id
-     = env->GetStaticFieldID(j_rel_sym_class,
+  jfieldID rel_sym_gt_get_id
+    = env->GetStaticFieldID(j_rel_sym_class,
  			    "GREATER_THAN",
  			    "Lparma_polyhedra_library/Relation_Symbol;");
-   jfieldID rel_sym_gtoeq_get_id
-     = env->GetStaticFieldID(j_rel_sym_class,
+  jfieldID rel_sym_gtoeq_get_id
+    = env->GetStaticFieldID(j_rel_sym_class,
  			    "GREATER_OR_EQUAL",
  			    "Lparma_polyhedra_library/Relation_Symbol;");
-   jobject lhs = get_linear_expression(env, c);
-   jobject rhs = get_le_inhomogeneous_term(env, -c.inhomogeneous_term());
-   jobject relation;
-   switch (c.type()) {
-   case Constraint::EQUALITY:
-     relation = env->GetStaticObjectField(j_rel_sym_class,
-					  rel_sym_eq_get_id);
-     break;
-   case Constraint::NONSTRICT_INEQUALITY:
-     relation = env->GetStaticObjectField(j_rel_sym_class,
-					  rel_sym_gtoeq_get_id);
-     break;
+  jobject lhs = build_linear_expression(env, c);
+  jobject rhs
+    = build_java_linear_expression_coefficient(env, -c.inhomogeneous_term());
+  jobject relation;
+  switch (c.type()) {
+  case Constraint::EQUALITY:
+    relation = env->GetStaticObjectField(j_rel_sym_class,
+                                         rel_sym_eq_get_id);
+    break;
+  case Constraint::NONSTRICT_INEQUALITY:
+    relation = env->GetStaticObjectField(j_rel_sym_class,
+                                         rel_sym_gtoeq_get_id);
+    break;
   case Constraint::STRICT_INEQUALITY:
     relation = env->GetStaticObjectField(j_rel_sym_class,
 					 rel_sym_gt_get_id);
     break;
-   default:
-     throw std::runtime_error("PPL Java interface internal error");
-   }
-   return env->NewObject(j_constraint_class,j_constraint_ctr_id,
-			 lhs, relation, rhs);
+  default:
+    throw std::runtime_error("PPL Java interface internal error");
+  }
+  return env->NewObject(j_constraint_class,j_constraint_ctr_id,
+                        lhs, relation, rhs);
 }
 
 jobject
@@ -1049,12 +1053,12 @@ build_java_congruence(JNIEnv* env, const Congruence& cg) {
 		       "Lparma_polyhedra_library/Coefficient;)V");
 
   jobject j_modulus = build_java_coeff(env, cg.modulus());
-  jobject lhs = get_linear_expression(env, cg);
-  jobject rhs = get_le_inhomogeneous_term(env, -cg.inhomogeneous_term());
+  jobject lhs = build_linear_expression(env, cg);
+  jobject rhs
+    = build_java_linear_expression_coefficient(env, -cg.inhomogeneous_term());
   return env->NewObject(j_congruence_class, j_congruence_ctr_id,
 			lhs, rhs,
 			j_modulus);
-
 }
 
 jobject
@@ -1083,7 +1087,7 @@ build_java_generator(JNIEnv* env, const Generator& g) {
                              "(Lparma_polyhedra_library/Linear_Expression;"
                              "Lparma_polyhedra_library/Coefficient;)"
                              "Lparma_polyhedra_library/Generator;");
-  jobject j_g_le = get_linear_expression(env, g);
+  jobject j_g_le = build_linear_expression(env, g);
   jobject jcoeff = build_java_coeff(env, Coefficient(1));
   switch (g.type()) {
   case Generator::LINE:
@@ -1095,7 +1099,7 @@ build_java_generator(JNIEnv* env, const Generator& g) {
   case Generator::POINT:
     {
       const Coefficient& divisor = g.divisor();
-      j_g_le = get_linear_expression(env, g);
+      j_g_le = build_linear_expression(env, g);
       jcoeff = build_java_coeff(env, divisor);
       return env->CallStaticObjectMethod(j_generator_class,
 					 point_ctr_id, j_g_le, jcoeff);
@@ -1103,7 +1107,7 @@ build_java_generator(JNIEnv* env, const Generator& g) {
   case Generator::CLOSURE_POINT:
     {
       const Coefficient& divisor = g.divisor();
-      j_g_le = get_linear_expression(env, g);
+      j_g_le = build_linear_expression(env, g);
       jcoeff = build_java_coeff(env, divisor);
       return env->CallStaticObjectMethod(j_generator_class,
 					 closure_point_ctr_id, j_g_le, jcoeff);
@@ -1134,7 +1138,7 @@ build_java_grid_generator(JNIEnv* env, const Grid_Generator& g) {
                              "(Lparma_polyhedra_library/Linear_Expression;"
                              "Lparma_polyhedra_library/Coefficient;)"
                              "Lparma_polyhedra_library/Grid_Generator;");
-  jobject j_g_le = get_linear_expression(env, g);
+  jobject j_g_le = build_linear_expression(env, g);
   jobject jcoeff = build_java_coeff(env, Coefficient(1));
   switch (g.type()) {
   case Grid_Generator::LINE:
@@ -1143,7 +1147,7 @@ build_java_grid_generator(JNIEnv* env, const Grid_Generator& g) {
   case Grid_Generator::PARAMETER:
     {
       const Coefficient& divisor = g.divisor();
-      j_g_le = get_linear_expression(env, g);
+      j_g_le = build_linear_expression(env, g);
       jcoeff = build_java_coeff(env, divisor);
       return env->CallStaticObjectMethod(j_grid_generator_class,
 					 parameter_ctr_id, j_g_le, jcoeff);
@@ -1151,7 +1155,7 @@ build_java_grid_generator(JNIEnv* env, const Grid_Generator& g) {
   case Grid_Generator::POINT:
     {
       const Coefficient& divisor = g.divisor();
-      j_g_le = get_linear_expression(env, g);
+      j_g_le = build_linear_expression(env, g);
       jcoeff = build_java_coeff(env, divisor);
       return env->CallStaticObjectMethod(j_grid_generator_class,
 					 point_ctr_id, j_g_le, jcoeff);
