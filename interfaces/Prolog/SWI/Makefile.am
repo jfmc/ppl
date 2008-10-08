@@ -20,6 +20,19 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
+if VALGRIND_TESTS_ENABLED
+
+CHECKER = \
+$(VALGRIND) --tool=memcheck -q --trace-children=yes --leak-check=yes \
+--num-callers=100 --leak-resolution=high \
+--suppressions=$(top_srcdir)/tests/valgrind_suppressions
+
+else !VALGRIND_TESTS_ENABLED
+
+CHECKER =
+
+endif !VALGRIND_TESTS_ENABLED
+
 SWI_CFLI_FILES = swi_cfli.hh
 
 EXTRA_DIST = \
@@ -253,7 +266,7 @@ pl_check_test: swi_pl_check.pl ../tests/pl_check.pl $(EXPECTED_PCHK)
 		-dlopen ../../../src/libppl.la \
 		$(WATCHDOG_DLOPEN) \
 		-dlopen libppl_swiprolog.la \
-                ./ppl_pl < script_pchk
+                $(CHECKER) ./ppl_pl < script_pchk
 	if [ $(srcdir) != `pwd` ]; then \
 	  rm -f pl_check.pl; \
 	fi
@@ -266,7 +279,7 @@ clpq_test: pl_clpq ../tests/script_clpq $(EXPECTED_CLPQ)
 		-dlopen ../../../src/libppl.la \
 		$(WATCHDOG_DLOPEN) \
 		-dlopen libppl_swiprolog.la \
-		./pl_clpq <$(srcdir)/../tests/script_clpq >obtained_clpq
+		$(CHECKER) ./pl_clpq <$(srcdir)/../tests/script_clpq >obtained_clpq
 	diff -u --ignore-all-space $(EXPECTED_CLPQ) obtained_clpq
 
 clpq2_test: pl_clpq2 ../tests/script_clpq2 $(EXPECTED_CLPQ2)
@@ -276,7 +289,7 @@ clpq2_test: pl_clpq2 ../tests/script_clpq2 $(EXPECTED_CLPQ2)
 		-dlopen ../../../src/libppl.la \
 		$(WATCHDOG_DLOPEN) \
 		-dlopen libppl_swiprolog.la \
-		./pl_clpq2 <$(srcdir)/../tests/script_clpq2 >obtained_clpq2
+		$(CHECKER) ./pl_clpq2 <$(srcdir)/../tests/script_clpq2 >obtained_clpq2
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
 
 ppl_prolog_generated_test: swi_prolog_generated_test.pl ../tests/ppl_prolog_generated_test_main.pl ../tests/ppl_prolog_generated_test_common.pl ../tests/expected_pgt
@@ -289,7 +302,7 @@ ppl_prolog_generated_test: swi_prolog_generated_test.pl ../tests/ppl_prolog_gene
 		-dlopen ../../../src/libppl.la \
 		$(WATCHDOG_DLOPEN) \
 		-dlopen libppl_swiprolog.la \
-                ./ppl_pl < script_pgt
+                $(CHECKER) ./ppl_pl <script_pgt
 	if [ $(srcdir) != `pwd` ]; then \
 	  rm -f ppl_prolog_generated_test_common.pl; \
         fi
