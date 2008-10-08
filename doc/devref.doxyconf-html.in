@@ -162,6 +162,10 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Variable.defs.hh \
                          @srcdir@/../src/Variable.inlines.hh \
                          @srcdir@/../src/Variable.cc \
+                         @srcdir@/../src/Variables_Set.types.hh \
+                         @srcdir@/../src/Variables_Set.defs.hh \
+                         @srcdir@/../src/Variables_Set.inlines.hh \
+                         @srcdir@/../src/Variables_Set.cc \
                          @srcdir@/../src/Linear_Expression.types.hh \
                          @srcdir@/../src/Linear_Expression.defs.hh \
                          @srcdir@/../src/Linear_Expression.inlines.hh \
