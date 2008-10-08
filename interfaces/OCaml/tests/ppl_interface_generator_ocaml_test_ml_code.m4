@@ -526,6 +526,7 @@ print_string_if_noisy "testing ppl_@CLASS@_constrains: ";;
 let copy01
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@LTOPOLOGY@@LCLASS@01);;
 ppl_@CLASS@_constrains copy01 1;;
+let dimensions_to_map = [(0,1);(1,2);(2,0);];;
 ppl_@CLASS@_map_space_dimensions copy01 dimensions_to_map;;
 let out = if (ppl_@CLASS@_OK copy01)
   then "success" else "failed"

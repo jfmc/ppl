@@ -30,92 +30,9 @@ m4_include(`ppl_interface_generator_ocaml_mli_code.m4')
 m4_include(`ppl_interface_generator_ocaml_procedure_generators.m4')
 
 m4_divert`'dnl
-(* OCaml interface code.
-m4_include(`ppl_interface_generator_copyright')`'dnl
-*)
 
-open Gmp
-
-(** Kinds of degenerate abstract elements. *)
-type degenerate_element =
-    Universe (** The universe element, i.e., the whole vector space. *)
-  | Empty (** The empty element, i.e., the empty set. *)
-
-(** Kinds of complexity abstract elements. *)
-type complexity_class =
-    Polynomial_Complexity (** Worst-case polynomial complexity. *)
-  | Simplex_Complexity (** Worst-case exponential complexity but typically polynomial behavior. *)
-  | Any_Complexity (** Any complexity. *)
-
-(** A linear expression. *)
-type linear_expression =
-    Variable of int
-  | Coefficient of Z.t
-  | Unary_Plus of linear_expression
-  | Unary_Minus of linear_expression
-  | Plus of linear_expression * linear_expression
-  | Minus of linear_expression * linear_expression
-  | Times of Z.t * linear_expression
-
-(** A linear equality or inequality. *)
-type linear_constraint =
-    Less_Than of linear_expression * linear_expression
-  | Less_Or_Equal of linear_expression * linear_expression
-  | Equal of linear_expression * linear_expression
-  | Greater_Than of linear_expression * linear_expression
-  | Greater_Or_Equal of linear_expression * linear_expression
-
-(** A line, ray, point or closure point. *)
-type linear_generator =
-    Line of linear_expression
-  | Ray of linear_expression
-  | Point of linear_expression * Z.t
-  | Closure_Point of linear_expression * Z.t
-
-(** A grid line, parameter or grid point. *)
-type linear_grid_generator =
-    Grid_Line of linear_expression
-  | Grid_Parameter of linear_expression * Z.t
-  | Grid_Point of linear_expression * Z.t
-
-type poly_gen_relation =
-    Subsumes
-
-type poly_con_relation =
-    Is_Disjoint
-  | Strictly_Intersects
-  | Is_Included
-  | Saturates
-
-type relation_with_congruence =
-    Is_Disjoint
-  | Strictly_Intersects
-  | Is_Included
-
-type linear_congruence = linear_expression * linear_expression * Z.t
-
-type constraint_system = linear_constraint list
-
-type generator_system = linear_generator list
-
-type grid_generator_system = linear_grid_generator list
-
-type congruence_system = linear_congruence list
-
-(* Declared temporarily in this way to avoid name clashes. *)
-type relation_symbol = Less_Than_RS | Less_Or_Equal_RS | Equal_RS
-                       | Greater_Than_RS | Greater_Or_Equal_RS
-
-type optimization_mode = Minimization | Maximization
-
-type mip_problem_status = Unfeasible_Mip_Problem | Unbounded_Mip_Problem
-                        | Optimized_Mip_Problem
-
-type control_parameter_name = Pricing
-
-type control_parameter_value = Pricing_Steepest_Edge_Float
-                               | Pricing_Steepest_Edge_Exact
-                               | Pricing_Textbook
+m4_patsubst(m4_include(ppl_ocaml_types.ml),
+            `type declarations', `module interface')
 
 val ppl_version_major:
   unit -> int
@@ -212,10 +129,7 @@ val ppl_MIP_Problem_get_control_parameter:
 
 val ppl_MIP_Problem_swap:
   mip_problem -> mip_problem -> unit
-
-dnl m4_pre_all_classes_code
-dnl
-m4_define(`m4_pre_all_classes_code', `')
+m4_divert(-1)
 m4_pushdef(`m4_one_class_code', `dnl
 m4_replace_all_patterns_in_string($1,
                                   `type @LCLASS@
@@ -230,13 +144,18 @@ dnl -----------------------------------------------------------------
 dnl Ensure any schematic procedure macro that is not defined
 dnl in the code file outputs a warning message.
 m4_define(`m4_default_code', `m4_dumpdef($1`'_code)')
-m4_divert`'dnl
+m4_divert
 m4_all_code`'dnl
-m4_popdef(`m4_one_class_code')`'dnl
+m4_divert(-1)
+m4_popdef(`m4_one_class_code')
 dnl
 dnl -----------------------------------------------------------------
 dnl Generate the main class-dependent code.
 dnl -----------------------------------------------------------------
+dnl m4_pre_all_classes_code
+dnl
+m4_divert
+m4_define(`m4_pre_all_classes_code', `')
 m4_all_code`'dnl
 dnl
 dnl End of file generation.
