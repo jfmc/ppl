@@ -39,6 +39,9 @@ clpq.pl script_clpq \
 clpq2.pl script_clpq2 script_clpq2_int8 \
 $(CLPQ_TESTS) \
 pl_check.pl \
+ppl_prolog_generated_test_common.pl \
+ppl_interface_generator_prolog_generated_test_pl.m4 \
+ppl_interface_generator_prolog_generated_test_pl_code.m4 \
 expected_clpq_mpz expected_clpq2_mpz expected_pchk_mpz \
 expected_clpq_int8 expected_clpq2_int8 expected_pchk_int8 \
 expected_clpq_int16 expected_clpq2_int16 expected_pchk_int16 \
@@ -49,9 +52,7 @@ expected_clpq_int8_a expected_clpq2_int8_a expected_pchk_int8_a \
 expected_clpq_int16_a expected_clpq2_int16_a expected_pchk_int16_a \
 expected_clpq_int32_a expected_clpq2_int32_a expected_pchk_int32_a \
 expected_clpq_int64_a expected_clpq2_int64_a expected_pchk_int64_a \
-ppl_prolog_generated_test_common.pl expected_pgt \
-ppl_interface_generator_prolog_generated_test_pl.m4 \
-ppl_interface_generator_prolog_generated_test_pl_code.m4
+expected_pgt
 
 check-local: ppl_prolog_generated_test.stamp
 
