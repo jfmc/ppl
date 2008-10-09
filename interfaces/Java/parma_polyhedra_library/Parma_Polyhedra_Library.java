@@ -20,6 +20,13 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+/*!
+  \defgroup PPL_Java_interface Java Language Interface
+  \brief
+  The Parma Polyhedra Library comes equipped with an interface for the
+  Java language.
+*/
+
 /*! \mainpage
   The Parma Polyhedra Library comes equipped with an interface for the
   Java language.

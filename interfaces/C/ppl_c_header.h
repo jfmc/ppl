@@ -23,6 +23,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_ppl_c_h
 #define PPL_ppl_c_h 1
 
+/*!
+  \defgroup PPL_C_interface C Language Interface
+  \brief
+  The Parma Polyhedra Library comes equipped with an interface
+  for the C language.
+*/
+
 /*! \mainpage
 
 All the declarations needed for using the PPL's C interface
