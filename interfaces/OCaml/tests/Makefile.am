@@ -20,6 +20,23 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
+if VALGRIND_TESTS_ENABLED
+
+CHECKER = \
+$(VALGRIND) --tool=memcheck -q --trace-children=yes --leak-check=yes \
+--num-callers=100 --leak-resolution=high \
+--suppressions=$(srcdir)/valgrind_suppressions
+
+else !VALGRIND_TESTS_ENABLED
+
+CHECKER =
+
+endif !VALGRIND_TESTS_ENABLED
+
+TESTS_ENVIRONMENT = \
+	$(LIBTOOL) --mode=execute \
+		 -dlopen ../../../src/libppl.la $(WATCHDOG_DLOPEN) $(CHECKER)
+
 interface_generator_files = \
 ppl_interface_generator_ocaml_test_ml.m4 \
 ppl_interface_generator_ocaml_test_ml_code.m4
@@ -65,10 +82,6 @@ OCAMLC_LINK_FLAGS = \
 
 .ml.cmo:
 	$(OCAMLC_ENV) ocamlc -o $@ -g -c $(OCAMLC_COMPILE_FLAGS) $<
-
-TESTS_ENVIRONMENT = \
-	$(LIBTOOL) --mode=execute \
-		 -dlopen ../../../src/libppl.la $(WATCHDOG_DLOPEN)
 
 TESTS = \
 test1 \
