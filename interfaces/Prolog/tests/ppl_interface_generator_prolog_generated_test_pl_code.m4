@@ -534,16 +534,21 @@ ppl_@CLASS@_drop_disjuncts_3_test :-
    ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@, @CONSTRAINER@s, RS),
    ppl_build_test_data(TEST_DATA1, t_@TOPOLOGY@, @CONSTRAINER@s, RS1),
    (
-     clean_ppl_new_@TOPOLOGY@@CLASS@_from_@CONSTRAINER@s(RS, PPS),
+     clean_ppl_new_@CLASS@_from_@CONSTRAINER@s(RS, PPS),
      clean_ppl_new_@CLASSTOPOLOGY@@DISJUNCT@_from_@CONSTRAINER@s(RS1, PS),
      ppl_@CLASS@_add_disjunct(PPS, PS),
      ppl_@CLASS@_size(PPS, S),
-     S > 1,
      ppl_@CLASS@_begin_iterator(PPS, It_begin),
      ppl_new_@CLASS@_iterator_from_iterator(It_begin, It1),
-     ppl_@CLASS@_increment_iterator(It1),
-     ppl_@CLASS@_drop_disjunct(PPS, It_begin, It1),
-     S1 is S - 2,
+     (S > 1
+     ->
+         ppl_@CLASS@_increment_iterator(It1),
+         S1 is S - 1
+     ;
+         S1 = S
+     ),
+     ppl_@CLASS@_drop_disjuncts(PPS, It_begin, It1),
+     S1 is S - 1,
      ppl_@CLASS@_size(PPS, S1),
      ppl_@CLASS@_OK(PPS),
      ppl_delete_@CLASS@_iterator(It_begin),
@@ -627,7 +632,7 @@ ppl_@CLASS@_approximate_@PARTITION@_4_test :-
    (
      ppl_@CLASS@_build_test_object(TEST_DATA1, PS1, Space_Dim),
      ppl_@CLASS@_build_test_object(TEST_DATA2, PS2, Space_Dim),
-     ppl_@CLASS@_approximate_partition(PS1, PS2, PS3, _PPS, Is_finite),
+     ppl_@CLASS@_approximate_partition(PS1, PS2, PS3, _PPS, _Is_finite),
      ppl_@CLASS@_OK(PS3)
    ->
      fail ; (class_@CLASS@ == class_BD_Shape_int8_t -> fail ; true))
