@@ -42,6 +42,8 @@ ppl_interface_generator_ocaml_test_ml_code.m4 \
 ppl_interface_generator_ocaml_test_ml.m4 \
 ppl_ocaml_tests_common
 
+OCAMLC_ENV = OCAMLRUNPARAM='l=1M'
+
 OCAMLC_COMPILE_FLAGS = \
 -I +gmp -I $(srcdir) -I .. \
 -ccopt -g
@@ -62,7 +64,7 @@ OCAMLC_LINK_FLAGS = \
 `echo " $(extra_libraries) " | $(SED) -e "s/ -R[^ ]*//g" -e "s/ -/ -cclib -/g"`
 
 .ml.cmo:
-	ocamlc -o $@ -g -c $(OCAMLC_COMPILE_FLAGS) $<
+	$(OCAMLC_ENV) ocamlc -o $@ -g -c $(OCAMLC_COMPILE_FLAGS) $<
 
 TESTS_ENVIRONMENT = \
 	$(LIBTOOL) --mode=execute \
@@ -77,7 +79,8 @@ check_PROGRAMS = $(TESTS)
 test1_SOURCES = test1.ml
 
 test1$(EXEEXT): test1.cmo
-	ocamlc -o $@ -cc g++ -g -custom $(OCAMLC_COMPILE_FLAGS) \
+	$(OCAMLC_ENV) ocamlc -o $@ \
+		-cc g++ -g -custom $(OCAMLC_COMPILE_FLAGS) \
 		ppl_ocaml.cma gmp.cma \
 		-cclib $(BUILT_PPL) \
 		$(OCAMLC_LINK_FLAGS) $<
@@ -92,7 +95,8 @@ ppl_ocaml_generated_test.ml: $(interface_generator_dependencies)
 			> $@
 
 ppl_ocaml_generated_test$(EXEEXT): ppl_ocaml_generated_test.cmo
-	ocamlc -o $@ -cc g++ -g -custom $(OCAMLC_COMPILE_FLAGS) \
+	$(OCAMLC_ENV) ocamlc -o $@ \
+		-cc g++ -g -custom $(OCAMLC_COMPILE_FLAGS) \
 		ppl_ocaml.cma gmp.cma \
 		-cclib $(BUILT_PPL) \
 		$(OCAMLC_LINK_FLAGS) $<

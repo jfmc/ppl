@@ -142,6 +142,8 @@ libppl_ocaml_a_LIBADD = \
 libppl_ocaml_a_DEPENDENCIES = \
 @required_instantiations_ocaml_cxx_objects@
 
+OCAMLC_ENV = OCAMLRUNPARAM='l=1M'
+
 OCAMLC_COMPILE_FLAGS = \
 -I +gmp -I $(srcdir) -I .. \
 -ccopt -g
@@ -166,19 +168,19 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 $(interface_generator_files)
 
 ppl_ocaml.cma: ppl_ocaml_types.cmo ppl_ocaml_globals.cmo ppl_ocaml.cmo
-	ocamlc -o $@ -a -custom \
+	$(OCAMLC_ENV) ocamlc -o $@ -a -custom \
 		ppl_ocaml_types.cmo ppl_ocaml_globals.cmo ppl_ocaml.cmo \
 		$(OCAMLC_COMPILE_FLAGS) -cclib -lppl_ocaml \
 		$(OCAMLC_LINK_FLAGS)
 
 ppl_ocaml.cmo: ppl_ocaml.ml ppl_ocaml.cmi ppl_ocaml_types.cmi
-	ocamlc -o $@ -g -c $(OCAMLC_COMPILE_FLAGS) ppl_ocaml.ml
+	$(OCAMLC_ENV) ocamlc -o $@ -g -c $(OCAMLC_COMPILE_FLAGS) ppl_ocaml.ml
 
 ppl_ocaml.cmi: ppl_ocaml.mli
-	ocamlc -o $@ -g -c $(OCAMLC_COMPILE_FLAGS) $<
+	$(OCAMLC_ENV) ocamlc -o $@ -g -c $(OCAMLC_COMPILE_FLAGS) $<
 
 ppl_ocaml_globals.cmo: ppl_ocaml_globals.ml ppl_ocaml_types.cmi
-	ocamlc -o $@ -g -c $(OCAMLC_COMPILE_FLAGS) \
+	$(OCAMLC_ENV) ocamlc -o $@ -g -c $(OCAMLC_COMPILE_FLAGS) \
 		$(srcdir)/ppl_ocaml_globals.ml
 
 ppl_ocaml_globals.cmi: ppl_ocaml_globals.cmo
@@ -188,7 +190,7 @@ ppl_ocaml_globals.cmi: ppl_ocaml_globals.cmo
 	fi
 
 ppl_ocaml_types.cmo: ppl_ocaml_types.ml
-	ocamlc -o $@ -g -c $(OCAMLC_COMPILE_FLAGS) \
+	$(OCAMLC_ENV) ocamlc -o $@ -g -c $(OCAMLC_COMPILE_FLAGS) \
 		$(srcdir)/ppl_ocaml_types.ml
 
 ppl_ocaml_types.cmi: ppl_ocaml_types.cmo
