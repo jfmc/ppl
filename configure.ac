@@ -818,11 +818,11 @@ darwin*)
     JAVA_HOME="/Library/Java/Home"
   fi
   ;;
-# On Fedora Core systems the JDK is usually in /usr/java/default .
+# On Fedora 9 systems the JDK is usually in /usr/lib/jvm/java .
 linux*)
   if test "x$JAVA_HOME" = x
   then
-    JAVA_HOME="/usr/java/default"
+    JAVA_HOME="/usr/lib/jvm/java"
   fi
   ;;
 *)
