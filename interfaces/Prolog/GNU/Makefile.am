@@ -232,7 +232,7 @@ EXPECTED_PCHK = $(srcdir)/../tests/expected_pchk_$(COEFFICIENT_MNEMONIC)
 
 endif !ASSERTIONS_ENABLED
 
-check-local: pl_check_test clpq_test clpq2_test
+check-local: pl_check_test clpq_test clpq2_test ppl_prolog_generated_test
 
 pl_check_test: gnu_pl_check.pl ../tests/pl_check.pl $(EXPECTED_PCHK)
 	echo "['$(srcdir)/../tests/pl_check.pl', '$(srcdir)/gnu_pl_check.pl']." \
@@ -266,7 +266,12 @@ clpq2_test: gp_clpq2 ../tests/script_clpq2 $(EXPECTED_CLPQ2)
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
 
 ppl_prolog_generated_test: gnu_prolog_generated_test.pl  ../tests/ppl_prolog_generated_test_main.pl ../tests/expected_pgt
-	echo "['../tests/ppl_prolog_generated_test_main.pl', '$(srcdir)/gnu_prolog_generated_test.pl']." \
+	if [ $(srcdir) != `pwd` ]; then \
+	  cp -f $(srcdir)/../tests/ppl_prolog_generated_test_common.pl . ; \
+          cp -f $(srcdir)/gnu_prolog_generated_test.pl . ; \
+	fi
+	cp -f ../tests/ppl_prolog_generated_test_main.pl . ; \
+	echo "['ppl_prolog_generated_test_main.pl', 'gnu_prolog_generated_test.pl']." \
 		>script_pgt
 	echo "main." >>script_pgt
 	$(LIBTOOL) --mode=execute \
@@ -274,6 +279,11 @@ ppl_prolog_generated_test: gnu_prolog_generated_test.pl  ../tests/ppl_prolog_gen
 		$(WATCHDOG_DLOPEN) \
 		-dlopen libppl_gprolog.la \
 		./ppl_gprolog <script_pgt
+	if [ $(srcdir) != `pwd` ]; then \
+	  rm -f ppl_prolog_generated_test_common.pl; \
+	  rm -f gnu_prolog_generated_test.pl; \
+        fi
+	rm -f ppl_prolog_generated_test_main.pl; \
 	diff -u --ignore-all-space $(srcdir)/../tests/expected_pgt obtained_pgt
 
 CLEANFILES = \
