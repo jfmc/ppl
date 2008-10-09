@@ -21,6 +21,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 :-  ensure_loaded('ppl_prolog_generated_test_main.pl').
+:-  use_module(library(lists), [member/2, append/2]).
 
 prolog_system('SWI').
 
