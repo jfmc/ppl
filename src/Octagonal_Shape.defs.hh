@@ -304,7 +304,7 @@ dimension_type coherent_index(dimension_type i);
 } // namespace Parma_Polyhedra_Library
 
 //! An octagonal shape.
-/*!
+/*! \ingroup PPL_CXX_interface
   The class template Octagonal_Shape<T> allows for the efficient
   representation of a restricted kind of <EM>topologically closed</EM>
   convex polyhedra called <EM>octagonal shapes</EM> (OSs, for short).
