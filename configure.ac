@@ -1307,10 +1307,6 @@ AC_SUBST(ocamlc_root)
 
 AC_CONFIG_FILES(Makefile
                 ppl.lsm
-                debian/Makefile
-                debian/libppl.copyright
-                debian/libppl-pwl.copyright
-		fedora/Makefile
                 src/Makefile
                 src/version.hh
                 src/ppl-config.cc
