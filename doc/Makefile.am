@@ -186,7 +186,8 @@ USER_OCAML_INTERFACE_STUFF = \
 $(DOX_LICENCE_FILES) \
 user-foreign-language-interface.tex \
 ppl.sty \
-../interfaces/OCaml/OCaml_interface.dox
+../interfaces/OCaml/OCaml_interface.dox \
+../interfaces/OCaml/ppl_ocaml_globals.mli
 
 DEVREF_OCAML_INTERFACE_STUFF = \
 $(DOX_LICENCE_FILES) \
@@ -196,8 +197,7 @@ ppl.sty \
 ../interfaces/OCaml/ppl_ocaml_common.defs.hh \
 ../interfaces/OCaml/ppl_ocaml_common.inlines.hh \
 ../interfaces/OCaml/ppl_ocaml_common.cc \
-../interfaces/OCaml/ppl_ocaml_globals.ml \
-../interfaces/OCaml/ppl_ocaml_types.ml
+../interfaces/OCaml/ppl_ocaml_globals.mli
 
 # Java Language Interface Manuals
 
@@ -992,6 +992,13 @@ SED_OCAML_INPUT_DEVREF = \
 @srcdir@/../interfaces/OCaml/ppl_ocaml_common.inlines.hh \
 @srcdir@/gpl.dox @srcdir@/fdl.dox
 
+OCAMLDOC_HTML_OPTIONS = \
+-I +gmp -I $(top_builddir)/interfaces/OCaml -html -d ocamldoc
+
+OCAMLDOC_LATEX_OPTIONS = \
+-I +gmp -I $(top_builddir)/interfaces/OCaml \
+-latex -noheader -notrailer -notoc -o ocamldoc.tex
+
 user-ocaml-interface.latex-dir: \
 user-foreign-language-interface.doxyconf \
 Makefile $(USER_OCAML_INTERFACE_STUFF)
@@ -1003,8 +1010,9 @@ Makefile $(USER_OCAML_INTERFACE_STUFF)
 	  -e 's|<PPL_SED_INPUT>|'"$(SED_OCAML_INPUT_USER)"'|' \
 	  $<  > Doxyfile.user-ocaml-interface-latex
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.user-ocaml-interface-latex
-	(cd $@; ocamldoc -I +gmp \
-		-latex -noheader -notrailer -notoc -o ocamldoc.tex)
+	(cd $@; mkdir ocamldoc; \
+		ocamldoc $(OCAMLDOC_LATEX_OPTIONS) \
+		@srcdir@/../interfaces/OCaml/ppl_ocaml_globals.mli)
 
 devref-ocaml-interface.latex-dir: \
 devref-foreign-language-interface.doxyconf \
@@ -1017,8 +1025,9 @@ Makefile $(DEVREF_OCAML_INTERFACE_STUFF)
 	  -e 's|<PPL_SED_INPUT>|'"$(SED_OCAML_INPUT_DEVREF)"'|' \
 	  $<  > Doxyfile.devref-ocaml-interface-latex
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.devref-ocaml-interface-latex
-	(cd $@; ocamldoc -I +gmp \
-		-latex -noheader -notrailer -notoc -o ocamldoc.tex)
+	(cd $@; mkdir ocamldoc; \
+		ocamldoc $(OCAMLDOC_LATEX_OPTIONS) \
+		@srcdir@/../interfaces/OCaml/ppl_ocaml_globals.mli)
 
 ppl-user-ocaml-interface-@VERSION@.pdf: user-ocaml-interface.latex-dir
 	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
@@ -1039,6 +1048,9 @@ $(USER_OCAML_INTERFACE_STUFF) $(USER_CORE_HTML_DIR)
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.user-ocaml-interface-html
 	(cd $@; $(INSTALLDOX) \
 		-l $(USER_CORE_HTML_DIR).tag@../$(USER_CORE_HTML_DIR))
+	(cd $@; mkdir ocamldoc; \
+		ocamldoc $(OCAMLDOC_HTML_OPTIONS) \
+		@srcdir@/../interfaces/OCaml/ppl_ocaml_globals.mli)
 
 ppl-devref-ocaml-interface-@VERSION@-html: \
 devref-foreign-language-interface.doxyconf \
@@ -1053,6 +1065,9 @@ $(DEVREF_OCAML_INTERFACE_STUFF) $(DEVREF_CORE_HTML_DIR)
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.devref-ocaml-interface-html
 	(cd $@; $(INSTALLDOX) \
 		-l $(DEVREF_CORE_HTML_DIR).tag@../$(DEVREF_CORE_HTML_DIR))
+	(cd $@; mkdir ocamldoc; \
+		ocamldoc $(OCAMLDOC_HTML_OPTIONS) \
+		@srcdir@/../interfaces/OCaml/ppl_ocaml_globals.mli)
 
 # Java Language Interface Targets
 
@@ -1332,8 +1347,8 @@ Makefile $(USER_CONFIGURED_OCAML_INTERFACE_STUFF)
 	  -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_OCAML_INPUT_USER)"'|' \
 	  $<  > Doxyfile.user-configured-ocaml-interface-latex
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.user-configured-ocaml-interface-latex
-	(cd $@; ocamldoc -I +gmp \
-		-latex -noheader -notrailer -notoc -o ocamldoc.tex \
+	(cd $@; mkdir ocamldoc; \
+		ocamldoc $(OCAMLDOC_LATEX_OPTIONS) \
 		../../interfaces/OCaml/ppl_ocaml.mli)
 
 devref-configured-ocaml-interface.latex-dir: \
@@ -1347,8 +1362,8 @@ Makefile $(DEVREF_CONFIGURED_OCAML_INTERFACE_STUFF)
 	  -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_OCAML_INPUT_DEVREF)"'|' \
 	  $<  > Doxyfile.devref-configured-ocaml-interface-latex
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.devref-configured-ocaml-interface-latex
-	(cd $@; ocamldoc -I +gmp \
-		-latex -noheader -notrailer -notoc -o ocamldoc.tex \
+	(cd $@; mkdir ocamldoc; \
+		ocamldoc $(OCAMLDOC_LATEX_OPTIONS) \
 		../../interfaces/OCaml/ppl_ocaml.mli)
 
 ppl-user-configured-ocaml-interface-@VERSION@.pdf: \
@@ -1367,14 +1382,14 @@ $(USER_CONFIGURED_OCAML_INTERFACE_STUFF) $(USER_CORE_HTML_DIR)
 	    @srcdir@/user-foreign-language-interface.tex \
 	    > user-configured-ocaml-interface.tex
 	$(SED) $(SED_CONFIGURED_OCAML_OPTION) $(SED_USER_HTML_OPTION) \
-	    -e 's|<PPL_SED_INPUT>|'"$(SED_OCAML_CONFIGURED_INPUT_USER)"'|' \
+	    -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_OCAML_INPUT_USER)"'|' \
 	    $<  > Doxyfile.user-configured-ocaml-interface-html
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.user-configured-ocaml-interface-html
-	mkdir $@/ocamldoc
-	ocamldoc -I +gmp \
-		-html -d $@/ocamldoc ../interfaces/OCaml/ppl_ocaml.mli
 	(cd $@; $(INSTALLDOX) \
 		-l $(USER_CORE_HTML_DIR).tag@../$(USER_CORE_HTML_DIR))
+	(cd $@; mkdir ocamldoc; \
+		ocamldoc $(OCAMLDOC_HTML_OPTIONS) \
+		../../interfaces/OCaml/ppl_ocaml.mli)
 
 ppl-devref-configured-ocaml-interface-@VERSION@-html: \
 devref-foreign-language-interface.doxyconf \
@@ -1384,14 +1399,14 @@ $(DEVREF_CONFIGURED_OCAML_INTERFACE_STUFF) $(DEVREF_CORE_HTML_DIR)
 	    @srcdir@/devref-foreign-language-interface.tex \
 	    > devref-configured-ocaml-interface.tex
 	$(SED) $(SED_CONFIGURED_OCAML_OPTION) $(SED_DEVREF_HTML_OPTION) \
-	  -e 's|<PPL_SED_INPUT>|'"$(SED_OCAML_CONFIGURED_INPUT_DEVREF)"'|' \
+	  -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_OCAML_INPUT_DEVREF)"'|' \
 	  $<  > Doxyfile.devref-configured-ocaml-interface-html
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.devref-configured-ocaml-interface-html
-	mkdir $@/ocamldoc
-	ocamldoc -I +gmp \
-		-html -d $@/ocamldoc ../interfaces/OCaml/ppl_ocaml.mli
 	(cd $@; $(INSTALLDOX) \
 		-l $(DEVREF_CORE_HTML_DIR).tag@../$(DEVREF_CORE_HTML_DIR))
+	(cd $@; mkdir ocamldoc; \
+		ocamldoc $(OCAMLDOC_HTML_OPTIONS) \
+		../../interfaces/OCaml/ppl_ocaml.mli)
 
 endif BUILD_OCAML_INTERFACE
 
