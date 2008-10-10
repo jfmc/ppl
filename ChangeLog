@@ -1,3 +1,2649 @@
+2008-10-10 Friday 21:25  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/OCaml/: Makefile.am (1.57),
+	  ppl_interface_generator_ocaml_ml.m4 (1.19),
+	  ppl_interface_generator_ocaml_mli.m4 (1.23), ppl_ocaml_globals.ml
+	  (1.14), ppl_ocaml_globals.mli (1.1), ppl_ocaml_types.ml (1.16):
+	  The file ppl_ocaml_types.ml is now merged to
+	  ppl_ocaml_globals.ml.  Added the corresponding .mli file (instead
+	  of generating it using m4; m4 now includes it).
+
+2008-10-10 Friday 21:23  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Makefile.am (1.49), configure.ac (1.393), configure.repo (1.27),
+	  debian/Makefile.am (1.6), fedora/Makefile.am (1.4): The `fedora'
+	  and `debian' directories are no longer distributed.
+
+2008-10-10 Friday 21:06  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/OCaml/OCaml_interface.dox (1.6): The link for OCaml
+	  generated documentation is now set to the index page.
+
+2008-10-10 Friday 16:10  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.392), configure.repo (1.26): Version number
+	  bumped.
+
+2008-10-10 Friday 15:04  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/Prolog_interface.dox (1.172): Typo fixed.
+
+2008-10-10 Friday 11:56  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/Prolog_interface.dox (1.171): Typos fixed.	The
+	  introduction to the manual revised.  Structure/contents list for
+	  the main section improved and moved to earlier in the document.
+	  Links are now there to all the sections and subsections.  Issues
+	  relating to compilation and installation have been moved, where
+	  necessary, to that section.  Note about the stack size for GNU
+	  Prolog added.
+
+2008-10-09 Thursday 21:11  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* configure.ac (1.391), configure.repo (1.25): n Fedora 9 systems,
+	  the default path to (OpenJDK) java is /usr/lib/jvm/java.
+
+2008-10-09 Thursday 19:44  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/SWI/swi_prolog_generated_test.pl (1.4):
+	  Previous change reverted: library(lists) may not be installed.
+
+2008-10-09 Thursday 19:39  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/OCaml/tests/Makefile.am (1.19): Optionally run the
+	  tests under Valgrind.
+
+2008-10-09 Thursday 15:14  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/namespaces.hh (1.16): Foreign language interface namespaces
+	  do not belong to the C++ interface group.
+
+2008-10-09 Thursday 15:13  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/: C/ppl_c_header.h (1.8),
+	  Java/parma_polyhedra_library/Parma_Polyhedra_Library.java (1.4),
+	  OCaml/OCaml_interface.dox (1.5), Prolog/Prolog_interface.dox
+	  (1.170): Added missing \defgroup Doxygen command for the foreign
+	  language interfaces.
+
+2008-10-09 Thursday 14:46  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/SWI/swi_prolog_generated_test.pl (1.3): Include
+	  the directive :-  use_module(library(lists), [member/2,
+	  append/2]).
+
+2008-10-09 Thursday 14:36  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Octagonal_Shape.defs.hh (1.59): Class Octagonal_Shape is in
+	  the C++ interface documentation group.
+
+2008-10-09 Thursday 14:32  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/OCaml/: Makefile.am (1.56), tests/Makefile.am (1.18):
+	  When compiling using ocamlc, set the stack limit to 1 MB.
+
+2008-10-09 Thursday 14:19  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/GNU/Makefile.am (1.84): Test
+	  ppl_prolog_generated_test added to check-local.
+
+2008-10-09 Thursday 11:13  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/GNU/Makefile.am (1.83): Include
+	  ppl_prolog_generated_test in check-local
+
+2008-10-09 Thursday 08:43  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/YAP/Makefile.am (1.70): Include
+	  ppl_prolog_generated_test in check-local.
+
+2008-10-09 Thursday 08:36  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/tests/Makefile.am (1.34): Keep the expected
+	  files together in EXTRA_DIST.
+
+2008-10-09 Thursday 08:18  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/tests/Makefile.am (1.33): Distribute
+	  expected_pgt
+
+2008-10-09 Thursday 07:55  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	*
+	  interfaces/Prolog/tests/ppl_interface_generator_prolog_generated_test_pl_code.m4
+	  (1.8): add_disjuncts test corrected.
+
+2008-10-08 Wednesday 21:47  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/: SWI/Makefile.am (1.102), XSB/Makefile.am
+	  (1.79):  ppl_prolog_generated_test now included in check-local
+
+2008-10-08 Wednesday 21:47  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/: ac_check_ciao.m4 (1.4), ac_check_fpu_control.m4 (1.8),
+	  ac_check_gmp.m4 (1.29), ac_check_swi_prolog.m4 (1.17),
+	  ac_cxx_double_binary_format.m4 (1.16),
+	  ac_cxx_double_exact_output.m4 (1.9), ac_cxx_flexible_arrays.m4
+	  (1.16), ac_cxx_float_binary_format.m4 (1.13),
+	  ac_cxx_float_exact_output.m4 (1.7), ac_cxx_ieee_inexact_flag.m4
+	  (1.5), ac_cxx_limit_memory.m4 (1.2),
+	  ac_cxx_long_double_binary_format.m4 (1.20),
+	  ac_cxx_long_double_exact_output.m4 (1.14),
+	  ac_cxx_proper_long_double.m4 (1.5), ac_cxx_remainder_bug.m4
+	  (1.6), ppl.m4 (1.11), ppl_c.m4 (1.4): Contrary to what was
+	  recommended in
+	  http://www.cs.unipr.it/pipermail/ppl-devel/2008-September/012736.html,
+	  returning from main is non-portable only to the most ancient C
+	  compilers.  On the other hand, finding a suitable declaration for
+	  exit() is more problematic.  (Thanks to Ralf Wildenhues for
+	  pointing out that.)
+
+2008-10-08 Wednesday 21:47  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/SICStus/Makefile.am (1.100):
+	  ppl_prolog_generated_test now included in check-local
+
+2008-10-08 Wednesday 21:40  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/Java/jni/: ppl_java_common.cc (1.51),
+	  ppl_java_common.defs.hh (1.6), ppl_java_common.inlines.hh (1.3),
+	  ppl_java_globals.cc (1.25): Added missing / fixed existing
+	  documentation; also renamed a few functions.
+
+2008-10-08 Wednesday 19:23  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/: devref.doxyconf-html.in (1.93), devref.doxyconf-latex.in
+	  (1.32): Added files Variables_Set.* to the list of input files
+	  for devref manuals.
+
+2008-10-08 Wednesday 19:20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/SWI/Makefile.am (1.101): In a long command,
+	  make sure no backslash is followed by something that could expand
+	  to the null string.
+
+2008-10-08 Wednesday 17:05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/OCaml/ppl_ocaml_types.ml (1.15): Comment improved.
+
+2008-10-08 Wednesday 16:59  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/Prolog_interface.dox (1.169): A number of small
+	  improvements and typos fixed.
+
+2008-10-08 Wednesday 08:47  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/OCaml/: ppl_interface_generator_ocaml_mli.m4 (1.22),
+	  tests/ppl_interface_generator_ocaml_test_ml_code.m4 (1.19):
+	  Include the type declarations from ppl_ocaml_types.ml in the
+	  generated ppl_ocaml.mli.
+
+	  Fixed a bug in the generated tests file.
+
+2008-10-08 Wednesday 08:13  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/SWI/Makefile.am (1.100): Conditionally run
+	  tests under Valgrind.
+
+2008-10-07 Tuesday 22:01  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.390), configure.repo (1.24): Version number
+	  bumped.
+
+2008-10-07 Tuesday 21:51  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/OR_Matrix.defs.hh (1.17): Two FIXMEs added.
+
+2008-10-07 Tuesday 17:07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/: lib-link.m4 (1.5), lib-prefix.m4 (1.6): Temporarily reverted
+	  to the versions distributed with Gettext 0.14.6 (the new versions
+	  from gnulib do not work for us... we are probably misusing them).
+
+2008-10-07 Tuesday 16:31  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/: ppl_interface_generator_prolog_dox.m4 (1.7),
+	  ppl_interface_generator_prolog_dox_code.m4 (1.8),
+	  ppl_prolog_sysindep_dox (1.3): Revert unintended changes.
+
+2008-10-07 Tuesday 16:06  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/: Makefile.am (1.67),
+	  ppl_interface_generator_prolog_dox.m4 (1.6),
+	  ppl_interface_generator_prolog_dox_code.m4 (1.7): Uninteded
+	  change reverted.
+
+2008-10-07 Tuesday 16:03  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/Prolog_interface.dox (1.168): More small
+	  improvements and bugs fixed.
+
+2008-10-07 Tuesday 15:48  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/Prolog_interface.dox (1.167): Small improvement
+	  and a typo fixed.
+
+2008-10-07 Tuesday 15:35  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.219), src/Box.defs.hh (1.64): Avoid
+	  explicit mention of bounding boxes.  Change references to the
+	  section on intervals and boxes to "intervals".  All mention of
+	  covering boxes removed.
+
+2008-10-07 Tuesday 15:31  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/C/C_interface.dox (1.15): Change "who" to "which.
+
+2008-10-07 Tuesday 15:28  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/: Makefile.am (1.66), Prolog_interface.dox
+	  (1.166), ppl_interface_generator_prolog_dox.m4 (1.5),
+	  ppl_interface_generator_prolog_dox_code.m4 (1.6),
+	  ppl_prolog_sysindep_dox (1.2): typo fixed.
+
+2008-10-07 Tuesday 15:03  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/Prolog_interface.dox (1.165): Corrected a few
+	  bugs.
+
+2008-10-07 Tuesday 12:52  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/OCaml/ppl_interface_generator_ocaml_cc_code.m4 (1.58):
+	  Corrected error in template for add_disjunct.
+
+2008-10-07 Tuesday 11:56  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/OCaml/ppl_interface_generator_ocaml_cc_code.m4 (1.57):
+	  Corrected an error in the template code for get_disjunct; avoid
+	  useless copies in the template code for linear/approximate
+	  partitions.  Try to be more consistent with template indentation
+	  and spacing.
+
+2008-10-07 Tuesday 11:20  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/Prolog_interface.dox (1.164): A new _draft_
+	  version of the configure independent documentation for Prolog.
+
+2008-10-07 Tuesday 06:09  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.389), configure.repo (1.23): Version number
+	  bumped.
+
+2008-10-07 Tuesday 06:09  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* demos/ppl_lpsol/ppl_lpsol.c (1.83): Fixed the guard controlling
+	  the definition of glpk_message_interceptor().
+
+2008-10-06 Monday 23:48  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/: Makefile.am (1.85),
+	  devref-foreign-language-interface.doxyconf.in (1.5),
+	  interfaces-html.sed (1.3), interfaces-latex.sed (1.3),
+	  user-foreign-language-interface.doxyconf.in (1.5): Avoid warnings
+	  related to tag files when building latex manuals.
+
+2008-10-06 Monday 21:34  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/: Makefile.am (1.36), configure.ac (1.52),
+	  configure.repo (1.4), src/Makefile.am (1.16): Fixed the machinery
+	  used to conditionalize the build of the PWL.	The PWL is
+	  currently disabled under Cygwin because of the bug reported in
+	  http://www.cs.unipr.it/pipermail/ppl-devel/2008-October/013156.html.
+
+2008-10-06 Monday 15:26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/: configure.ac (1.51), configure.repo (1.3), Makefile.am
+	  (1.35), README (1.18), m4/Makefile.am (1.4),
+	  src/Doubly_Linked_Object.defs.hh (1.6),
+	  src/Doubly_Linked_Object.inlines.hh (1.6), src/EList.defs.hh
+	  (1.8), src/EList.inlines.hh (1.6), src/EList_Iterator.defs.hh
+	  (1.6), src/EList_Iterator.inlines.hh (1.6), src/Handler.defs.hh
+	  (1.7), src/Handler.inlines.hh (1.6), src/Makefile.am (1.15),
+	  src/Pending_Element.cc (1.7), src/Pending_Element.defs.hh (1.7),
+	  src/Pending_Element.inlines.hh (1.6), src/Pending_List.cc (1.7),
+	  src/Pending_List.defs.hh (1.7), src/Pending_List.inlines.hh
+	  (1.6), src/Time.cc (1.7), src/Time.defs.hh (1.7),
+	  src/Time.inlines.hh (1.6), src/Watchdog.cc (1.9),
+	  src/Watchdog.defs.hh (1.9), src/Watchdog.inlines.hh (1.6),
+	  src/pwl_header.hh (1.7), tests/Makefile.am (1.4),
+	  tests/pwl_test.cc (1.2), tests/pwl_test.hh (1.2),
+	  tests/simple1.cc (1.3), utils/Makefile.am (1.12): Copyright
+	  notices made consistent.
+
+2008-10-05 Sunday 22:20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/doc/devref.doxyconf-latex.in (1.4),
+	  Watchdog/doc/user.doxyconf-html.in (1.5),
+	  Watchdog/doc/user.doxyconf-latex.in (1.5),
+	  doc/devref.doxyconf-html.in (1.92), doc/devref.doxyconf-latex.in
+	  (1.31), doc/user-foreign-language-interface.doxyconf.in (1.4),
+	  doc/user.doxyconf-html.in (1.44), doc/user.doxyconf-latex.in
+	  (1.15): Updated for Doxygen 1.5.7.1.
+
+2008-10-05 Sunday 22:10  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/tests/Makefile.am (1.3): Spurious backslash removed.
+
+2008-10-05 Sunday 22:05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/tests/: Makefile.am (1.2), valgrind_suppressions (1.1):
+	  Distribute also pwl_test.hh and valgrind_suppressions.
+
+2008-10-05 Sunday 22:03  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/doc/devref.doxyconf-html.in (1.4),
+	  doc/devref-foreign-language-interface.doxyconf.in (1.4): Updated
+	  for Doxygen 1.5.7.1.
+
+2008-10-05 Sunday 22:02  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.388), configure.repo (1.22): Disable the PWL
+	  under Cygwin.  It is not yet clear whether Cygwin provides the
+	  services required in order to make it work.
+
+2008-10-05 Sunday 19:30  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	*
+	  interfaces/Java/parma_polyhedra_library/ppl_interface_generator_java_classes_java.m4
+	  (1.5): A few improvement to the pre/post class code: we now add a
+	  brief Doxygen comment with a link to the corresponding C++ class.
+	  The links work fine (in the HTML manuals, exploiting the tag
+	  file) as long as the C++ class names do not correspond to
+	  template instances.
+
+2008-10-05 Sunday 19:24  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/Makefile.am (1.84): Added more ad-hoc Doxygen commands for
+	  the configured-java manuals: we need to exclude the fixed
+	  documentation in Fake_Class_for_Doxygen.java (since otherwise
+	  Doxygen gets confused by the repeated class definitions);
+	  moreover, for the user manuals, we list undocumented members too.
+
+2008-10-05 Sunday 18:11  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	*
+	  interfaces/Java/parma_polyhedra_library/Fake_Class_for_Doxygen.java
+	  (1.4): Small correction.
+
+2008-10-05 Sunday 18:10  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/Java/parma_polyhedra_library/PPL_Object.java (1.5):
+	  Class PPL_Object should only concern developers.
+
+2008-10-05 Sunday 12:28  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/C/C_interface.dox (1.14): Corrected/improved
+	  documentation for powerset iterators.
+
+2008-10-05 Sunday 10:33  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/tests/simple1.cc (1.2): Added some debug output.
+
+2008-10-05 Sunday 10:11  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/: Makefile.am (1.36), Prolog/Makefile.am (1.65),
+	  Prolog/Ciao/Makefile.am (1.84), Prolog/GNU/Makefile.am (1.82),
+	  Prolog/SICStus/Makefile.am (1.99), Prolog/SWI/Makefile.am (1.99),
+	  Prolog/XSB/Makefile.am (1.78), Prolog/YAP/Makefile.am (1.69),
+	  Prolog/tests/Makefile.am (1.32): No longer generating
+	  documentation file Prolog_interface.dox; rather, we now generate
+	  Prolog_configured_interface.dox.  Completed the simplification of
+	  conditional interface building: now the generation of Prolog
+	  interfaces too is based on the conditional definition of variable
+	  SUBDIRS.
+
+2008-10-05 Sunday 10:08  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/Makefile.am (1.83): The Java devref manual is now also based
+	  on generated Java source files to be found in
+	  builddir/interfaces/Java/parma_polyhedra_library.  The Prolog
+	  user manaul now depends on the fixed Prolog_interface.dox file.
+
+2008-10-05 Sunday 10:05  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/Prolog/Prolog_interface.dox (1.163): Added fixed
+	  version for Prolog_interface.dox: this will no longer be
+	  generated by m4 scripts.
+
+2008-10-05 Sunday 09:23  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/: Makefile.am (1.34), configure.ac (1.50),
+	  configure.repo (1.2), tests/.cvsignore (1.1), tests/Makefile.am
+	  (1.1), tests/pwl_test.cc (1.1), tests/pwl_test.hh (1.1),
+	  tests/simple1.cc (1.1): Make some simple tests also with the
+	  Parma Watchdog Library.
+
+2008-10-05 Sunday 09:22  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Makefile.am (1.188): Readability improvement.
+
+2008-10-04 Saturday 22:47  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.387), configure.repo (1.21): Under Cygwin,
+	  SWI-Prolog does not work with foreign code.  We thus disable that
+	  interface on that architecture.
+
+2008-10-04 Saturday 21:56  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/Ciao/ciao_efli.cc (1.6): Removed spurious
+	  `inline' qualifiers.
+
+2008-10-04 Saturday 21:55  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/ac_check_ciao.m4 (1.3): Adapted to the SVN HEAD version of
+	  Ciao.
+
+2008-10-04 Saturday 19:54  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Polyhedron/Makefile.am (1.130): The program memory1 cannot
+	  be used to test with Valgrind since it intentionally causes
+	  out-of-memory conditions.
+
+2008-10-04 Saturday 19:15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README.configure (1.30), TODO (1.267): One item dealt with.
+
+2008-10-04 Saturday 18:03  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.repo (1.20), Watchdog/m4/ax_prefix_config_h.m4 (1.2),
+	  m4/ax_prefix_config_h.m4 (1.3), m4/lib-link.m4 (1.4),
+	  m4/lib-prefix.m4 (1.5): Updated.
+
+2008-10-04 Saturday 17:33  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* config.guess (1.43), config.sub (1.40), Watchdog/config.guess
+	  (1.27), Watchdog/config.sub (1.25): Updated.
+
+2008-10-04 Saturday 17:25  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/OR_Matrix.inlines.hh (1.12): Removed one of the
+	  initializations added in
+	  http://www.cs.unipr.it/pipermail/ppl-devel/2006-June/009164.html
+
+2008-10-04 Saturday 17:09  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: BD_Shape.templates.hh (1.122), Octagonal_Shape.templates.hh
+	  (1.92), Polyhedron_nonpublic.cc (1.86), checked.cc (1.25): Use
+	  PPL_UNINITIALIZED instead of explicit initializations and
+	  free-style comments.
+
+2008-10-04 Saturday 16:40  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/compiler.hh (1.15): New macro PPL_UNINITIALIZED allows a
+	  better markup and handling of those variables that are declared
+	  uninitialized on purpose.
+
+2008-10-04 Saturday 15:58  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/version.cc (1.13): Checks for compilers reordered.
+
+2008-10-04 Saturday 14:25  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/OR_Matrix.defs.hh (1.16): Useless inclusion removed.
+
+2008-10-04 Saturday 14:25  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Ptr_Iterator.defs.hh (1.14): A friend declarations was
+	  (wrongly) included only conditionally: fixed.
+
+2008-10-04 Saturday 10:42  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/:
+	  OCaml/tests/ppl_interface_generator_ocaml_test_ml_code.m4 (1.18),
+	  Prolog/tests/ppl_interface_generator_prolog_generated_test_pl_code.m4
+	  (1.7): Added simple tests for the copy iterator procedures in the
+	  interfaces.
+
+2008-10-04 Saturday 10:13  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	*
+	  interfaces/Java/jni/ppl_interface_generator_java_classes_cc_code.m4
+	  (1.29): Removed spurious marker.
+
+2008-10-04 Saturday 10:10  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	*
+	  interfaces/Java/jni/ppl_interface_generator_java_classes_cc_code.m4
+	  (1.28): In the templates for native implementations, try to
+	  follow a consistent indentation and line breaking style;
+	  moreover, prefer standard (and shorter) variable names, rather
+	  than variables names cluttered by (useless) m4-generated type
+	  information (this change produces 10-25% smaller cc files).
+
+2008-10-04 Saturday 09:00  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Ptr_Iterator.defs.hh (1.13): Changed `#ifdef' into `#if
+	  defined'.
+
+2008-10-04 Saturday 08:59  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/ppl-config.cc.in (1.24): Temporarily unused function
+	  commented out.
+
+2008-10-04 Saturday 08:34  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	*
+	  interfaces/Java/jni/ppl_interface_generator_java_classes_cc_code.m4
+	  (1.27): Implemented a better way of ignoring the jclass argument
+	  in the native implementation of static methods, yet avoiding
+	  compiler warnings.
+
+2008-10-04 Saturday 07:36  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.386), configure.repo (1.19): Disable more
+	  warnings when using the Intel C/C++ compiler.
+
+2008-10-04 Saturday 03:12  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/tests/ppl_c_test.h (1.2): Old-style declarations
+	  avoided.
+
+2008-10-04 Saturday 03:12  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/tests/print_to_buffer.cc (1.4): Spurious semicolons
+	  removed.
+
+2008-10-04 Saturday 03:05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Pointset_Powerset.templates.hh (1.42): Variable shadowing
+	  avoided.
+
+2008-10-04 Saturday 03:02  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Java/jni/ppl_java_common.inlines.hh (1.2): Avoided
+	  redefinition of default argument.
+
+2008-10-04 Saturday 02:39  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/MIP_Problem.defs.hh (1.39): Trailing commas removed.
+
+2008-10-04 Saturday 02:19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/checked.cc (1.24): Avoid a couple of compiler warnings.
+
+2008-10-04 Saturday 01:45  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/Prolog/: ppl_interface_generator_prolog_cc_code.m4
+	  (1.17), ppl_interface_generator_prolog_dox_code.m4 (1.5),
+	  ppl_interface_generator_prolog_hh_code.m4 (1.14),
+	  tests/ppl_interface_generator_prolog_generated_test_pl_code.m4
+	  (1.6): Implemented schema ppl_new_@CLASS@_iterator_from_iterator.
+
+2008-10-04 Saturday 01:43  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/Java/: ppl_interface_generator_java_dox.m4 (1.4),
+	  ppl_interface_generator_java_dox_code.m4 (1.5),
+	  ppl_java_common_dox (1.6),
+	  jni/ppl_interface_generator_java_classes_cc_code.m4 (1.26),
+	  parma_polyhedra_library/ppl_interface_generator_java_classes_java_code.m4
+	  (1.15), tests/ppl_interface_generator_java_test_java_code.m4
+	  (1.50): Implemented schema
+	  ppl_new_@CLASS@_iterator_from_iterator.  Got rid of no longer
+	  used m4 files for the generation of documentation.
+
+2008-10-04 Saturday 01:41  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/: C/ppl_interface_generator_c_cc_code.m4 (1.54),
+	  C/ppl_interface_generator_c_h_code.m4 (1.47),
+	  OCaml/ppl_interface_generator_ocaml_cc_code.m4 (1.56),
+	  OCaml/ppl_interface_generator_ocaml_ml_code.m4 (1.50),
+	  OCaml/ppl_interface_generator_ocaml_mli_code.m4 (1.41):
+	  Implemented schema ppl_new_@CLASS@_iterator_from_iterator.
+
+2008-10-04 Saturday 01:40  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/ppl_interface_generator_common_procedure_generators.m4
+	  (1.41): Added schema ppl_new_@CLASS@_iterator_from_iterator/2;
+	  renamed the schema for deleting iterators so as to follow common
+	  pattern.
+
+2008-10-04 Saturday 00:06  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* demos/ppl_lpsol/ppl_lpsol.c (1.82): Make sure
+	  glpk_message_interceptor() is defined only when necessary.
+
+2008-10-03 Friday 23:47  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.385), configure.repo (1.18),
+	  interfaces/Prolog/GNU/gprolog_cfli.hh (1.10): Fixed the GNU
+	  Prolog interface.
+
+2008-10-03 Friday 23:13  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/:
+	  ppl_interface_generator_common_procedure_generators.m4 (1.40),
+	  C/ppl_interface_generator_c_cc_code.m4 (1.53),
+	  C/ppl_interface_generator_c_h_code.m4 (1.46),
+	  Java/ppl_interface_generator_java_procedure_generators.m4 (1.10),
+	  Java/jni/ppl_interface_generator_java_classes_cc_code.m4 (1.25),
+	  Java/parma_polyhedra_library/ppl_interface_generator_java_classes_java_code.m4
+	  (1.14), OCaml/ppl_interface_generator_ocaml_cc_code.m4 (1.55),
+	  OCaml/ppl_interface_generator_ocaml_ml_code.m4 (1.49),
+	  OCaml/ppl_interface_generator_ocaml_mli_code.m4 (1.40),
+	  OCaml/tests/ppl_interface_generator_ocaml_test_ml_code.m4 (1.17),
+	  Prolog/ppl_interface_generator_prolog_cc_code.m4 (1.16),
+	  Prolog/ppl_interface_generator_prolog_hh_code.m4 (1.13):
+	  Procedure *drop_disjuncts has been added to all the interfaces.
+
+2008-10-03 Friday 23:05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Box/membytes1.cc (1.8): Disable test02() in case doubles
+	  are not supported.
+
+2008-10-03 Friday 22:48  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/ppl_test.cc (1.18): Use raw_value() so that a comparison is
+	  always defined, even if doubles are not supported.
+
+2008-10-03 Friday 22:20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/BD_Shape.templates.hh (1.121): Debugging code removed.
+
+2008-10-03 Friday 22:14  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.384), configure.repo (1.17),
+	  m4/ac_cxx_double_binary_format.m4 (1.15),
+	  m4/ac_cxx_double_exact_output.m4 (1.8),
+	  m4/ac_cxx_float_binary_format.m4 (1.12),
+	  m4/ac_cxx_float_exact_output.m4 (1.6),
+	  m4/ac_cxx_long_double_binary_format.m4 (1.19),
+	  m4/ac_cxx_long_double_exact_output.m4 (1.13): We currently miss a
+	  "Plan B" for the case where exact output is not available.  So,
+	  in these cases, we declare the corresponding floating point type
+	  as unsupported.
+
+2008-10-03 Friday 22:13  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/checked_float.inlines.hh (1.91): Reference to the C99
+	  standard fixed.
+
+2008-10-03 Friday 20:45  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* configure.ac (1.383), configure.repo (1.16): Restored java in the
+	  set of interfaces enabled by default.
+
+2008-10-03 Friday 18:13  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/OCaml/tests/: ppl_interface_generator_ocaml_test_ml.m4
+	  (1.3), ppl_interface_generator_ocaml_test_ml_code.m4 (1.16),
+	  ppl_ocaml_tests_common (1.6), test1.ml (1.15): The tests are now
+	  quiet unless the PPL_NOISY_TESTS or PPL_VERY_NOISY_TESTS
+	  environment variable is defined.
+
+2008-10-03 Friday 18:10  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Java/:
+	  jni/ppl_interface_generator_java_classes_cc_code.m4 (1.24),
+	  parma_polyhedra_library/ppl_interface_generator_java_classes_java_code.m4
+	  (1.13), tests/ppl_interface_generator_java_test_java_code.m4
+	  (1.49): Ensure the code for drop_disjuncts is generated.  Code
+	  corrected and test added.  Draft code for a copy constructor for
+	  the iterators, but code from this is not generated yet.
+
+2008-10-03 Friday 17:54  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/ac_cxx_long_double_exact_output.m4 (1.12): Expected text
+	  fixed.
+
+2008-10-03 Friday 17:52  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/ac_cxx_long_double_binary_format.m4 (1.18): Floating point
+	  literal fixed.
+
+2008-10-03 Friday 17:20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.382), configure.repo (1.15),
+	  m4/ac_cxx_double_exact_output.m4 (1.7),
+	  m4/ac_cxx_float_exact_output.m4 (1.5),
+	  m4/ac_cxx_long_double_binary_format.m4 (1.17),
+	  m4/ac_cxx_long_double_exact_output.m4 (1.11): Test also with long
+	  double denormalized numbers.
+
+2008-10-03 Friday 16:45  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/Java/parma_polyhedra_library/Makefile.am (1.11): Added
+	  a couple of notes to recall that Fake_Class_for_Doxygen.java is
+	  only meant to be used when producing the documentation.
+
+2008-10-03 Friday 16:43  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	*
+	  interfaces/Java/parma_polyhedra_library/Fake_Class_for_Doxygen.java
+	  (1.3): More documentation improvements.
+
+2008-10-03 Friday 16:42  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/ac_cxx_long_double_binary_format.m4 (1.16): Added missing 'L'
+	  suffix to floating point literal.
+
+2008-10-03 Friday 16:38  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/: ac_cxx_long_double_binary_format.m4 (1.15),
+	  ac_cxx_long_double_exact_output.m4 (1.10): Literals corrected.
+
+2008-10-03 Friday 16:29  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/ac_cxx_long_double_exact_output.m4 (1.9): Expected text
+	  updated.
+
+2008-10-03 Friday 16:10  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/ac_cxx_long_double_binary_format.m4 (1.14): Floating point
+	  literal fixed.
+
+2008-10-03 Friday 15:23  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.381), configure.repo (1.14),
+	  m4/ac_cxx_double_binary_format.m4 (1.14),
+	  m4/ac_cxx_double_exact_output.m4 (1.6),
+	  m4/ac_cxx_float_binary_format.m4 (1.11),
+	  m4/ac_cxx_float_exact_output.m4 (1.4),
+	  m4/ac_cxx_long_double_binary_format.m4 (1.13),
+	  m4/ac_cxx_long_double_exact_output.m4 (1.8), src/Float.defs.hh
+	  (1.32): Fixed several macro names.
+
+2008-10-03 Friday 15:05  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/Java/: jni/ppl_java_globals.cc (1.24),
+	  parma_polyhedra_library/MIP_Problem.java (1.5): Added copy
+	  constructor, destructor and finalization to MIP_Problem.
+
+2008-10-03 Friday 14:15  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	*
+	  interfaces/Java/jni/ppl_interface_generator_java_classes_cc_code.m4
+	  (1.23): Added code template for method drop_disjuncts.
+
+2008-10-03 Friday 14:12  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	*
+	  interfaces/Java/parma_polyhedra_library/Fake_Class_for_Doxygen.java
+	  (1.2): Added further methods that should be documented in the
+	  configuration-independent manuals for the Java interface.
+
+2008-10-03 Friday 14:01  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/ac_cxx_long_double_exact_output.m4 (1.7): Preparation to test
+	  also with long double denormalized numbers.
+
+2008-10-03 Friday 12:50  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/: ac_cxx_double_binary_format.m4 (1.13),
+	  ac_cxx_double_exact_output.m4 (1.5): Test also with double
+	  denormalized numbers.
+
+2008-10-03 Friday 12:31  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* demos/ppl_lpsol/ppl_lpsol.c (1.81): Fixed copy-and-paste mistake.
+
+2008-10-03 Friday 12:21  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	*
+	  interfaces/Java/parma_polyhedra_library/Linear_Expression_Sum.java
+	  (1.4): Fixed indentation.
+
+2008-10-03 Friday 12:12  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/: ac_cxx_double_binary_format.m4 (1.12),
+	  ac_cxx_long_double_binary_format.m4 (1.12): Floating point
+	  literals fixed.
+
+2008-10-03 Friday 11:30  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Makefile.am (1.273): Spurious `-lppl' removed from LDADD.
+
+2008-10-03 Friday 11:29  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/tests/Makefile.am (1.6): We now use the convenience
+	  library libppl_c_tests.a.  When GCC is used, we compile C files
+	  with -pedantic -std=c89 -Werror: this way it will be harder to
+	  inadvertently pollute ppl_c.h with non-standard stuff.
+
+2008-10-03 Friday 11:27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/tests/cxxoutput.c (1.6): Include "ppl_c_test.h"
+	  instead of "ppl_test.h".
+
+2008-10-03 Friday 11:26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/tests/: ppl_c_test.cc (1.1), ppl_c_test.h (1.1),
+	  ppl_test.h (1.2): Header file renamed and reimplemented.
+
+2008-10-03 Friday 11:25  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/tests/print_to_buffer.h (1.3): Spurious semicolons
+	  removed.
+
+2008-10-03 Friday 10:56  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* demos/ppl_lpsol/Makefile.am (1.48): If we use GCC, compile with
+	  -pedantic -std=gnu89 -Werror.
+
+2008-10-03 Friday 10:55  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* demos/ppl_lpsol/ppl_lpsol.c (1.80): Conform to ISO C90 plus GNU
+	  extensions (because of the declaration of sigaction in
+	  <signal.h>).
+
+2008-10-03 Friday 10:53  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.380), configure.repo (1.13): New AM_CONDITIONAL
+	  GCC allows to write conditionals in Makefile.am that depend on
+	  whether we are using GCC or another compiler.
+
+2008-10-03 Friday 09:56  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* configure.ac (1.379), configure.repo (1.12): Temporarily remove
+	  java from the list of default interfaces.
+
+2008-10-03 Friday 09:20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/: ac_cxx_double_exact_output.m4 (1.4),
+	  ac_cxx_float_exact_output.m4 (1.3),
+	  ac_cxx_long_double_exact_output.m4 (1.6): Use AC_DEFINE_UNQUOTED
+	  instead of AC_DEFINE.
+
+2008-10-03 Friday 09:03  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/: ppl_interface_generator_c_h.m4 (1.26),
+	  ppl_interface_generator_c_h_code.m4 (1.45): Avoid generating
+	  spurious semicolons.
+
+2008-10-03 Friday 08:59  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* utils/build_header.in (1.7): Generate C-style comments instead of
+	  C++-style ones.
+
+2008-10-03 Friday 08:41  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/: ac_cxx_double_exact_output.m4 (1.3),
+	  ac_cxx_float_exact_output.m4 (1.2),
+	  ac_cxx_long_double_exact_output.m4 (1.5): Typos fixed.
+
+2008-10-02 Thursday 23:22  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/Makefile.am (1.30): Updated.
+
+2008-10-02 Thursday 23:06  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/ac_cxx_long_double_exact_output.m4 (1.4): Expected value
+	  fixed.
+
+2008-10-02 Thursday 22:58  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/ac_cxx_long_double_exact_output.m4 (1.3): Expected texts
+	  corrected.
+
+2008-10-02 Thursday 22:31  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/ac_cxx_long_double_exact_output.m4 (1.2): Missing parenthesis
+	  added.
+
+2008-10-02 Thursday 22:20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/ac_cxx_double_exact_output.m4 (1.2): Expected text fixed.
+
+2008-10-02 Thursday 22:17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.378), configure.repo (1.11),
+	  m4/ac_cxx_double_binary_format.m4 (1.11),
+	  m4/ac_cxx_float_binary_format.m4 (1.10),
+	  m4/ac_cxx_long_double_binary_format.m4 (1.11), src/Float.defs.hh
+	  (1.31): Detect whether the C++ run-time system supports the exact
+	  output of floating point types.
+
+2008-10-02 Thursday 22:06  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/: ac_cxx_double_exact_output.m4 (1.1),
+	  ac_cxx_float_exact_output.m4 (1.1),
+	  ac_cxx_long_double_exact_output.m4 (1.1): New functions to test
+	  whether C++ provides exact output for the floating point types.
+
+2008-10-02 Thursday 21:20  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/: Makefile.am (1.35), C/Makefile.am (1.62),
+	  Java/Makefile.am (1.24), Java/jni/Makefile.am (1.28),
+	  Java/parma_polyhedra_library/Makefile.am (1.10),
+	  Java/tests/Makefile.am (1.26), OCaml/Makefile.am (1.55),
+	  OCaml/tests/Makefile.am (1.17): Simplified the handling of
+	  conditionally built foreign language interfaces by defining the
+	  SUBDIRS variable conditionally.  Change is implemented for the C,
+	  OCaml and Java interfaces; will be implemented in Prolog as soon
+	  as Prolog_interface.dox will become a fixed source file (rather
+	  than being generated on the fly by m4).
+
+2008-10-02 Thursday 21:11  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/C/C_interface.dox (1.13): Widenings moved to the
+	  sections listing ad hoc polyhedron functions.
+
+2008-10-02 Thursday 21:03  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Powerset/simplifyusingcontext1.cc (1.7): Previous commit
+	  was wrong: tests 5 and 9 will overflow on 8 bit coefficients,
+	  *if* assertions are turned on.
+
+2008-10-02 Thursday 18:58  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/Makefile.am (1.82): The generation of the Java interface
+	  manuals is now based (among others) on the fixed file
+	  Fake_Class_for_Doxygen.java; we no longer use the genrated file
+	  Java_interface.dox.
+
+2008-10-02 Thursday 18:39  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	*
+	  interfaces/Java/parma_polyhedra_library/Fake_Class_for_Doxygen.java
+	  (1.1): Put under CVS control. This will substitute
+	  Java_interface.dox (currently still generated by m4).
+
+2008-10-02 Thursday 18:14  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/Java/parma_polyhedra_library/: By_Reference.java
+	  (1.3), Coefficient.java (1.3), Congruence_System.java (1.3),
+	  Constraint.java (1.3), Constraint_System.java (1.3),
+	  Control_Parameter_Name.java (1.2), Control_Parameter_Value.java
+	  (1.2), Degenerate_Element.java (1.3), Domain_Error_Exception.java
+	  (1.3), Generator.java (1.3), Generator_Type.java (1.3),
+	  Grid_Generator.java (1.3), Grid_Generator_System.java (1.3),
+	  Grid_Generator_Type.java (1.3), Invalid_Argument_Exception.java
+	  (1.3), Length_Error_Exception.java (1.3), Linear_Expression.java
+	  (1.3), Linear_Expression_Coefficient.java (1.3),
+	  Linear_Expression_Difference.java (1.3),
+	  Linear_Expression_Sum.java (1.3), Linear_Expression_Times.java
+	  (1.3), Linear_Expression_Unary_Minus.java (1.3),
+	  Linear_Expression_Variable.java (1.3), Logic_Error_Exception.java
+	  (1.3), MIP_Problem.java (1.4), Optimization_Mode.java (1.3),
+	  Overflow_Error_Exception.java (1.3), PPL_Object.java (1.4),
+	  Pair.java (1.3), Parma_Polyhedra_Library.java (1.3),
+	  Partial_Function.java (1.3), Poly_Con_Relation.java (1.3),
+	  Poly_Gen_Relation.java (1.3), Relation_Symbol.java (1.3): Several
+	  improvements to the Doxygen documentation.
+
+2008-10-02 Thursday 18:09  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Polyhedron/memory2.cc (1.17): Fixed a bug whereby (besides
+	  not being Valgrind-clean) we were violating the API of GMP.
+
+2008-10-02 Thursday 18:06  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/OCaml/tests/ppl_interface_generator_ocaml_test_ml.m4
+	  (1.2): Formatting improved.
+
+2008-10-02 Thursday 16:59  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/BD_Shape.templates.hh (1.120): Temporarily added debugging
+	  code to the closure method.
+
+2008-10-02 Thursday 16:07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/: ppl_interface_generator_prolog_cc_code.m4
+	  (1.15), ppl_prolog_common.cc (1.11), ppl_prolog_common.defs.hh
+	  (1.10), ppl_prolog_common.inlines.hh (1.2): New macro
+	  NOISY_PROLOG_TRACK_ALLOCATION allows to conditionally track
+	  allocation (as PROLOG_TRACK_ALLOCATION), but printing allocation
+	  and deallocation messages on std::cerr (differently from
+	  PROLOG_TRACK_ALLOCATION).
+
+	  Class PFunc renamed Partial_Function.
+
+2008-10-02 Thursday 14:56  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/: Ask_Tell/Makefile.am (1.7), BD_Shape/Makefile.am (1.80),
+	  Box/Makefile.am (1.74), Grid/Makefile.am (1.73),
+	  MIP_Problem/Makefile.am (1.12), Octagonal_Shape/Makefile.am
+	  (1.34), Partially_Reduced_Product/Makefile.am (1.6),
+	  Polyhedron/Makefile.am (1.129), Powerset/Makefile.am (1.6): Use
+	  `$(VALGRIND)' instead of `valgrind' directly.
+
+2008-10-02 Thursday 11:46  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.377), configure.repo (1.10), tests/Makefile.am
+	  (1.272), tests/valgrind_suppressions (1.6),
+	  tests/Ask_Tell/Makefile.am (1.6), tests/BD_Shape/Makefile.am
+	  (1.79), tests/Box/Makefile.am (1.73), tests/Grid/Makefile.am
+	  (1.72), tests/MIP_Problem/Makefile.am (1.11),
+	  tests/Octagonal_Shape/Makefile.am (1.33),
+	  tests/Partially_Reduced_Product/Makefile.am (1.5),
+	  tests/Polyhedron/Makefile.am (1.128), tests/Powerset/Makefile.am
+	  (1.5): New configure option --enable-valgrind-tests causes (some)
+	  library tests to be run under Valgrind.
+
+2008-10-02 Thursday 11:42  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Java/tests/: C_Polyhedron_test1.java (1.17),
+	  MIP_Problem_test1.java (1.3), Makefile.am (1.25),
+	  NNC_Polyhedron_test1.java (1.4), PPL_Test.java (1.1),
+	  Parma_Polyhedra_Library_test1.java (1.2), Test_Executor.java
+	  (1.3), ppl_interface_generator_java_test_java.m4 (1.20),
+	  ppl_interface_generator_java_test_java_code.m4 (1.48),
+	  ppl_java_tests_common (1.17): Each test only outputs the results
+	  of the subtests if the environment variable PPL_NOISY_TESTS or
+	  PPL_VERY_NOISY_TESTS is defined.
+
+2008-10-02 Thursday 10:18  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/tests/: Makefile.am (1.31), pl_grid_check.pl
+	  (1.12): Removed pl_grid_check,pl as it is not being used or
+	  maintained.
+
+2008-10-02 Thursday 10:02  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/Grid/: Makefile.am (1.71), addconstraints1.cc (1.20),
+	  addgenerators1.cc (1.18), approximatepartition1.cc (1.5),
+	  generator1.cc (1.22), partition1.cc (1.8), removespacedims2.cc
+	  (1.17): Removed useless commented out tests that were mainly
+	  testing methods that were private.  Removed also some other
+	  commented out code in tests.	Tests renumbered to be consecutive.
+
+2008-10-02 Thursday 09:38  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/tests/pl_check.pl (1.60): Removed tests for
+	  exceptions for non-existent predicates.  Modified the exception
+	  testing so as to check for the kind of exception that is thrown.
+
+2008-10-02 Thursday 09:14  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/OCaml/tests/ppl_ocaml_tests_common (1.5): Several
+	  improvements.
+
+2008-10-02 Thursday 08:42  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Powerset/pointsetpowerset2.cc (1.2): Comments fixed.
+	  Commented-out code removed.
+
+2008-10-02 Thursday 08:28  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/ppl_prolog_common.cc (1.10): More commented-out
+	  code removed.
+
+2008-10-02 Thursday 08:26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/ppl_prolog_common.defs.hh (1.9): Commented-out
+	  code removed.
+
+2008-10-02 Thursday 07:59  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/: ppl_prolog_common.cc (1.9),
+	  ppl_prolog_common.defs.hh (1.8): PROLOG_TRACK_ALLOCATION revived.
+
+2008-10-02 Thursday 07:49  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/tests/: pl_check.pl (1.59), pl_grid_check.pl
+	  (1.11): Typos fixed.
+
+2008-10-02 Thursday 06:05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: BD_Shape.templates.hh (1.119), Octagonal_Shape.templates.hh
+	  (1.91): Fixed two instances where a TEMP_INTEGER was used
+	  uninitialized.
+
+2008-10-01 Wednesday 22:27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Java/jni/ppl_java_common.defs.hh (1.5): Obsolete FIXME
+	  removed.
+
+2008-10-01 Wednesday 22:25  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Java/jni/:
+	  ppl_interface_generator_java_classes_cc_code.m4 (1.22),
+	  ppl_java_common.cc (1.50), ppl_java_common.defs.hh (1.4),
+	  ppl_java_globals.cc (1.23): Renamed build_linear_expression() as
+	  build_cxx_linear_expression().
+
+2008-10-01 Wednesday 21:45  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/BD_Shape/closure1.cc (1.30): Modified test03 so as to
+	  systematically ignore overflow errors; after this change, the
+	  test is meant to always succeed.
+
+2008-10-01 Wednesday 21:42  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Java/jni/:
+	  ppl_interface_generator_java_classes_cc_code.m4 (1.21),
+	  ppl_java_common.cc (1.49), ppl_java_common.defs.hh (1.3),
+	  ppl_java_globals.cc (1.22): Begun fixing names and comments.
+
+2008-10-01 Wednesday 21:27  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Powerset/simplifyusingcontext1.cc (1.6): Due to the recent
+	  change to simplify_using_context implementation, tests 05 and 09
+	  no longer overflow when using 8 bit coefficients.
+
+2008-10-01 Wednesday 20:38  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/OCaml/: ppl_ocaml_globals.ml (1.13),
+	  ppl_ocaml_types.ml (1.14): Two FIXMEs resolved.
+
+2008-10-01 Wednesday 20:33  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/OCaml/ppl_ocaml_common.cc (1.6): Unused exception
+	  throwers removed.
+
+2008-10-01 Wednesday 20:31  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/: C/ppl_c_implementation_common.inlines.hh (1.4),
+	  OCaml/ppl_ocaml_common.cc (1.5): Be consistent concerning
+	  reinterpret_mpz_class().
+
+2008-10-01 Wednesday 15:44  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/Ciao/Makefile.am (1.83): Revised the diff
+	  command for the generated test to use the relevant files.
+
+2008-10-01 Wednesday 15:31  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/XSB/ppl_interface_generator_xsb_H.m4 (1.10):
+	  Improved formatting of the generated file ppl_xsb.H
+
+2008-10-01 Wednesday 15:06  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/OCaml/: ppl_interface_generator_ocaml_ml.m4 (1.18),
+	  ppl_interface_generator_ocaml_mli.m4 (1.21): Formatting
+	  improvements to the generated files.
+
+2008-10-01 Wednesday 14:58  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/:
+	  ppl_interface_generator_prolog_procedure_generators.m4 (1.6),
+	  Ciao/ppl_interface_generator_ciao_pl.m4 (1.9): Fixed some
+	  formatting bugs.
+
+2008-10-01 Wednesday 14:28  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/C/: ppl_interface_generator_c_h.m4 (1.25),
+	  ppl_interface_generator_c_hh_files.m4 (1.9): Formatting of
+	  generated files improved.
+
+2008-10-01 Wednesday 13:50  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/Ciao/ciao_pl_check.pl (1.30): Added some
+	  missing predicates to the list.
+
+2008-10-01 Wednesday 12:50  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* STANDARDS (1.40): Added explanations for test macros
+	  DO_TEST_MAY_OVERFLOW_IF_INEXACT and
+	  DO_TEST_F<XXX>_MAY_OVERFLOW_IF_INEXACT.
+
+2008-10-01 Wednesday 12:29  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/GNU/Makefile.am (1.81): Removed unwanted
+	  copying/removing of files in code for executing the generated
+	  tests.
+
+2008-10-01 Wednesday 12:02  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/tests/print_to_buffer.h (1.2): Documentation
+	  updated.
+
+2008-10-01 Wednesday 11:34  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/GNU/Makefile.am (1.80): Further revisions - to
+	  the code for the generated tests.
+
+2008-10-01 Wednesday 11:14  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/: GNU/Makefile.am (1.79),
+	  GNU/gnu_prolog_generated_test.pl (1.1), SICStus/Makefile.am
+	  (1.98), SWI/Makefile.am (1.98), SWI/swi_prolog_generated_test.pl
+	  (1.2), XSB/Makefile.am (1.77), YAP/Makefile.am (1.68),
+	  YAP/yap_prolog_generated_test.pl (1.1), tests/expected_pgt (1.1),
+	  tests/ppl_interface_generator_prolog_generated_test_pl_code.m4
+	  (1.5): Revised the code for running the generated tests.  The
+	  expected result (OK) is in expected_pgt.  Some coefficients in
+	  the generated tests have been simplified to avoid unintended
+	  overflows.
+
+2008-10-01 Wednesday 10:51  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/BD_Shape/closure1.cc (1.29): test02 will not overflow if
+	  using exact BD instances; test03 will overflow on 8bit
+	  configurations when using exact BD instances.
+
+2008-09-30 Tuesday 21:25  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Pointset_Powerset.templates.hh (1.41): Minor improvements to
+	  the simplify_using_context method: we now handle ad hoc the
+	  frequent case when the context is a singleton powerset.
+
+2008-09-30 Tuesday 20:50  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/BD_Shape/closure1.cc (1.28): test02() and test03() may
+	  overflow also with 32 bits, if inexact coefficients are used.
+
+2008-09-30 Tuesday 20:38  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/stdiobuf.defs.hh (1.3): Documented.
+
+2008-09-30 Tuesday 19:44  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/: devref.doxyconf-html.in (1.91), devref.doxyconf-latex.in
+	  (1.30): Added stdiobuf* files to Doxygen INPUT variable for
+	  devref documentation.
+
+2008-09-30 Tuesday 18:42  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO (1.266): Typo fixed.
+
+2008-09-30 Tuesday 18:40  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/ppl_c_implementation_common.defs.hh (1.7): Use the
+	  new system for all the I/O functions of the C interface.
+
+2008-09-30 Tuesday 18:38  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/MIP_Problem.cc (1.73): In the ascii dump/load methods, do
+	  also deal with private fields `initialized' and `pricing'.
+
+2008-09-30 Tuesday 18:17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: stdiobuf.cc (1.2), stdiobuf.defs.hh (1.2),
+	  stdiobuf.inlines.hh (1.2): Interface separated from
+	  implementation.
+
+2008-09-30 Tuesday 18:06  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/ppl_c_implementation_common.defs.hh (1.6),
+	  src/Makefile.am (1.187), src/stdiobuf.cc (1.1),
+	  src/stdiobuf.defs.hh (1.1), src/stdiobuf.inlines.hh (1.1),
+	  src/stdiobuf.types.hh (1.1): New standard solution for the
+	  ppl_*_ascii_load() functions in the C interface.  (The stdiobuf
+	  class has been implemented by Abramo Bagnara.)
+
+2008-09-30 Tuesday 17:20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/GNU/README.gprolog (1.4): Revised the section
+	  on configuring the PPL for building the GNU Prolog interface.
+
+2008-09-30 Tuesday 17:00  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/BD_Shape/closure1.cc (1.27): Invoke test02() and test03()
+	  with DO_TEST_F16_MAY_OVERFLOW_IF_INEXACT.
+
+2008-09-30 Tuesday 13:35  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Determinate.defs.hh, Determinate.inlines.hh, Makefile.am,
+	  Partially_Reduced_Product.defs.hh,
+	  Partially_Reduced_Product.templates.hh, Powerset.defs.hh,
+	  Powerset.templates.hh, Variable.cc, Variable.defs.hh,
+	  Variable.templates.hh
+	  (generalized_streams.[2,2,2,2,2,2,2,1,2,1]): Templatization
+	  continued.
+
+2008-09-30 Tuesday 12:56  Abramo Bagnara
+
+	* src/: Linear_Row.cc, MIP_Problem.cc, Ph_Status.cc,
+	  Poly_Con_Relation.cc, Poly_Gen_Relation.cc, Polyhedron_public.cc,
+	  Row.cc, Variables_Set.cc (generalized_streams.[1,1,1,1,1,1,1,1]):
+	  Missing templatization of the I/O functions and methods.
+
+2008-09-30 Tuesday 12:48  Abramo Bagnara
+
+	* src/: Linear_System.cc, Matrix.cc (generalized_streams.[1,1]):
+	  Missing templatization of the I/O functions and methods.
+
+2008-09-30 Tuesday 12:43  Abramo Bagnara
+
+	* src/Interval.defs.hh (generalized_streams.3): Added explicit
+	  cast.
+
+2008-09-30 Tuesday 12:37  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/: SICStus/Makefile.am (1.97), SWI/Makefile.am
+	  (1.97), XSB/Makefile.am (1.76): the copying and removing of
+	  interfaces/Prolog/tests/ppl_predicate_check_common.pl is made
+	  conditional on whether or not the build is in the source
+	  directory.
+
+2008-09-30 Tuesday 12:36  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Box.templates.hh, Interval.defs.hh, Interval.inlines.hh,
+	  Interval.templates.hh (generalized_streams.[2,2,2,2]): Fixed more
+	  template parameter lists.
+
+2008-09-30 Tuesday 12:35  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: BD_Shape.defs.hh, BD_Shape.templates.hh, Box.defs.hh,
+	  Checked_Number.defs.hh, Checked_Number.inlines.hh,
+	  Checked_Number.templates.hh, DB_Matrix.defs.hh,
+	  DB_Matrix.templates.hh, Interval_Info.defs.hh,
+	  Interval_Restriction.defs.hh, OR_Matrix.defs.hh,
+	  OR_Matrix.templates.hh, Octagonal_Shape.defs.hh,
+	  Octagonal_Shape.templates.hh, checked_ext.inlines.hh
+	  (generalized_streams.[2,2,2,2,2,2,2,2,2,2,2,3,2,2,2]): Fixed
+	  several template parameter lists.
+
+2008-09-30 Tuesday 12:13  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/OR_Matrix.templates.hh (generalized_streams.2): Template
+	  parameters lists reordered.
+
+2008-09-30 Tuesday 12:12  Abramo Bagnara
+
+	* src/: Any_Pointset.defs.hh, Ask_Tell.defs.hh,
+	  Ask_Tell.inlines.hh, Ask_Tell.templates.hh, BDS_Status.idefs.hh,
+	  BDS_Status.inlines.hh, BD_Shape.defs.hh, BD_Shape.inlines.hh,
+	  BD_Shape.templates.hh, Bit_Matrix.cc, Bit_Matrix.defs.hh,
+	  Bit_Row.defs.hh, Box.defs.hh, Box.templates.hh,
+	  Box_Status.idefs.hh, Box_Status.inlines.hh,
+	  Checked_Number.defs.hh, Checked_Number.inlines.hh,
+	  Checked_Number.templates.hh, Coefficient.defs.hh, Congruence.cc,
+	  Congruence.defs.hh, Congruence_System.cc,
+	  Congruence_System.defs.hh, Constraint.cc, Constraint.defs.hh,
+	  Constraint_System.cc, Constraint_System.defs.hh,
+	  DB_Matrix.defs.hh, DB_Matrix.inlines.hh, DB_Matrix.templates.hh,
+	  DB_Row.inlines.hh, Determinate.defs.hh, Determinate.inlines.hh,
+	  Generator.cc, Generator.defs.hh, Generator.inlines.hh,
+	  Generator_System.cc, Generator_System.defs.hh, Grid.defs.hh,
+	  Grid_Generator.cc, Grid_Generator.defs.hh,
+	  Grid_Generator_System.cc, Grid_Generator_System.defs.hh,
+	  Grid_Status.cc, Grid_Status.idefs.hh, Grid_public.cc, checked.cc,
+	  checked_ext.defs.hh, checked_ext.inlines.hh
+	  (generalized_streams.[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]):
+	  More templatization of the I/O functions and methods.
+
+2008-09-30 Tuesday 12:03  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Constraint.defs.hh, Interval.defs.hh, Interval.inlines.hh,
+	  Interval.templates.hh, Interval_Info.defs.hh,
+	  Interval_Info.inlines.hh, Interval_Restriction.defs.hh,
+	  Linear_Row.defs.hh, Linear_System.defs.hh, MIP_Problem.defs.hh,
+	  Matrix.defs.hh, OR_Matrix.defs.hh, OR_Matrix.templates.hh,
+	  Octagonal_Shape.defs.hh, Octagonal_Shape.templates.hh,
+	  Og_Status.idefs.hh, Og_Status.inlines.hh,
+	  Partially_Reduced_Product.defs.hh,
+	  Partially_Reduced_Product.inlines.hh,
+	  Partially_Reduced_Product.templates.hh, Ph_Status.idefs.hh,
+	  Pointset_Ask_Tell.defs.hh, Pointset_Ask_Tell.templates.hh,
+	  Pointset_Powerset.defs.hh, Pointset_Powerset.templates.hh,
+	  Poly_Con_Relation.defs.hh, Poly_Gen_Relation.defs.hh,
+	  Polyhedron.defs.hh, Powerset.defs.hh, Powerset.templates.hh,
+	  Row.defs.hh, Variable.defs.hh, Variables_Set.defs.hh
+	  (generalized_streams.[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]):
+	  More templatization of the I/O functions and methods.
+
+2008-09-30 Tuesday 11:09  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Constraint.inlines.hh, Linear_Expression.cc,
+	  Linear_Expression.defs.hh, Linear_Expression.inlines.hh,
+	  Linear_Expression.templates.hh, Makefile.am, globals.defs.hh
+	  (generalized_streams.[1,1,1,1,1,1,1]): Templatization of input
+	  and output methods started.
+
+2008-09-30 Tuesday 11:08  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Java/tests/: Makefile.am (1.24),
+	  Parma_Polyhedra_Library_test1.java (1.1): Added tests for the
+	  Parma Polyhedra Library methods.
+
+2008-09-30 Tuesday 11:03  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/GNU/README.gprolog (1.3): Added a (draft) note
+	  on configuring for the GNU Prolog interface.
+
+2008-09-30 Tuesday 09:56  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Polyhedron/memory1.cc (1.17): On the Itanium, this test
+	  fails because of the bug reported in //
+	  http://www.cs.unipr.it/pipermail/ppl-devel/2008-September/012943.html
+
+2008-09-30 Tuesday 09:41  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/BD_Shape/closure1.cc (1.26): Expected results for test02()
+	  and test03() fixed.
+
+2008-09-30 Tuesday 08:25  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/:
+	  ppl_interface_generator_common_procedure_generators.m4 (1.39),
+	  Java/parma_polyhedra_library/ppl_interface_generator_java_classes_java_code.m4
+	  (1.12): Re-enable the approximate_partition method.
+
+	  Correct the m4 generating code for linear_partition and
+	  approximate_partition so that the method is only generated when
+	  the appropriate powerset domain is in the instantiations..
+
+2008-09-30 Tuesday 08:14  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Java/tests/MIP_Problem_test1.java (1.2): Comment
+	  corrected.
+
+2008-09-30 Tuesday 08:07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/BD_Shape/closure1.cc (1.25): Comments improved.
+
+2008-09-30 Tuesday 07:57  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Polyhedron/maxspacedim1.cc (1.19): Missing #else's added.
+
+2008-09-30 Tuesday 07:48  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/tests/Makefile.am (1.5): Fixed AM_CPPFLAGS.
+
+2008-09-30 Tuesday 00:49  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/ppl_interface_generator_common_procedure_generators.m4
+	  (1.38): Commented out line
+	  ppl_@CLASS@_approximate_@PARTITION@/5  +grid, It was breaking the
+	  buid in the Java interface, since it requires that
+	  Pointset_Powerset_Grid is enabled too.
+
+2008-09-29 Monday 23:50  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/BD_Shape/containsintegerpoint1.cc (1.7): Corrected expected
+	  result.
+
+2008-09-29 Monday 23:47  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Octagonal_Shape/containsintegerpoint1.cc (1.8): Corrected
+	  knwon result for test03.
+
+2008-09-29 Monday 22:51  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/tests/Makefile.am (1.4): Unused definition commented
+	  out.
+
+2008-09-29 Monday 22:49  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/tests/Makefile.am (1.3): Trailing backslash removed.
+
+2008-09-29 Monday 22:42  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/tests/: Makefile.am (1.2), cxxoutput.c (1.5),
+	  ppl_test.h (1.1): Adde ppl_test.h, now only providing some
+	  facilities to control the noisiness of tests.
+
+2008-09-29 Monday 22:39  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/ppl_test.hh (1.78): Include <cstdlib> for getenv().
+
+2008-09-29 Monday 22:26  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Java/:
+	  jni/ppl_interface_generator_java_classes_cc_code.m4 (1.20),
+	  parma_polyhedra_library/ppl_interface_generator_java_classes_java_code.m4
+	  (1.11), tests/ppl_interface_generator_java_test_java_code.m4
+	  (1.47): Updated the partition method headers and tests so that
+	  the schema procedure name and code use the new pattern to match
+	  that in the procedure schema list.
+
+2008-09-29 Monday 22:10  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Java/: jni/ppl_java_common.cc (1.48),
+	  jni/ppl_java_globals.cc (1.21), tests/MIP_Problem_test1.java
+	  (1.1), tests/Makefile.am (1.23): Added tests for the MIP_Problem
+	  class and methods.
+
+	  Corrected some bugs in the same class.
+
+2008-09-29 Monday 22:04  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/ppl_c_implementation_common.defs.hh (1.5),
+	  interfaces/Java/jni/ppl_interface_generator_java_classes_cc_code.m4
+	  (1.19), interfaces/Java/jni/ppl_java_common.cc (1.47),
+	  interfaces/Java/jni/ppl_java_globals.cc (1.20),
+	  interfaces/OCaml/ppl_interface_generator_ocaml_cc_code.m4 (1.54),
+	  interfaces/Prolog/ppl_prolog_common.cc (1.8),
+	  interfaces/Prolog/Ciao/ciao_cfli.hh (1.7),
+	  interfaces/Prolog/Ciao/ciao_efli.cc (1.5),
+	  interfaces/Prolog/SICStus/sicstus_efli.cc (1.4),
+	  src/Congruence.cc (1.21): The construct s.str().c_str(), where
+	  `s' is an std::ostringstream, is extremely dangerous.  In fact,
+	  the compiler can (and does!) destruct the temporary std::string
+	  object returned by str() as soon as c_str() returns, which
+	  results into a dangling pointer.  This construct is now avoided.
+
+2008-09-29 Monday 21:28  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/Makefile.am (1.61): Activated the `tests'
+	  subdirectory.
+
+2008-09-29 Monday 21:28  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/tests/cxxoutput.c (1.4): DIMENSION and line lengths
+	  increased.
+
+2008-09-29 Monday 21:22  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/ac_check_gmp.m4 (1.28), src/Bit_Row.defs.hh (1.11): In order
+	  to use GMP from C++, always include <gmpxx.h>, not <gmp.h>.
+
+2008-09-29 Monday 21:03  Abramo Bagnara
+
+	* interfaces/C/tests/: cxxoutput.c (1.3), print_to_buffer.cc (1.3):
+	  Fixed c_str() use.
+
+2008-09-29 Monday 19:19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/ppl_c_implementation_common.defs.hh (1.4):
+	  Temporarily inhibited DEFINE_ASCII_DUMP_LOAD_FUNCTIONS.
+
+2008-09-29 Monday 18:55  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/tests/cxxoutput.c (1.2): Test with a higher
+	  dimension.  Handle the case where malloc() returns 0.
+
+2008-09-29 Monday 18:30  Abramo Bagnara
+
+	* interfaces/C/tests/print_to_buffer.cc (1.2): Fixed corner case.
+
+2008-09-29 Monday 17:58  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.376), configure.repo (1.9),
+	  interfaces/C/tests/Makefile.am (1.1),
+	  interfaces/C/tests/cxxoutput.c (1.1),
+	  interfaces/C/tests/print_to_buffer.cc (1.1),
+	  interfaces/C/tests/print_to_buffer.h (1.1): Drafted a new test
+	  for the C interface, showing how to print a nice debugging output
+	  onto a malloc-allocated buffer.  (The wrap_to_buffer() routine in
+	  print_to_buffer.cc has been written by Abramo Bagnara.)
+
+2008-09-29 Monday 17:06  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/tests/Makefile.am (1.30): Do create
+	  ppl_prolog_generated_test.stamp.
+
+2008-09-29 Monday 16:25  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/tests/.cvsignore (1.1): Put under CVS control.
+
+2008-09-29 Monday 16:22  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO (1.265): Item revised.
+
+2008-09-29 Monday 15:59  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO (1.264): Pushed an item to PPL 0.11 or later version.
+
+2008-09-29 Monday 15:52  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Polyhedron/memory1.cc (1.16): The Alpha is no longer
+	  special, as far as this test is concerned.
+
+2008-09-29 Monday 14:20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Polyhedron/memory1.cc (1.15): Use
+	  PPL_CXX_SUPPORTS_LIMITING_MEMORY.
+
+2008-09-29 Monday 13:53  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.375), configure.repo (1.8): Use
+	  AC_CXX_SUPPORTS_LIMITING_MEMORY.
+
+2008-09-29 Monday 13:52  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/ac_cxx_limit_memory.m4 (1.1): New function to check whether it
+	  is possible to limit the memory available to processes using
+	  setrlimit().
+
+2008-09-29 Monday 11:49  Abramo Bagnara
+
+	* src/checked_mpz.inlines.hh (1.57): Fixed typo.
+
+2008-09-29 Monday 09:38  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Polyhedron/maxspacedim1.cc (1.18): Avoid testing with non
+	  supported floating point types.
+
+2008-09-29 Monday 09:15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/: BD_Shape/affinepreimage1.cc (1.25),
+	  BD_Shape/containsintegerpoint1.cc (1.6), BD_Shape/maxspacedim1.cc
+	  (1.6), Octagonal_Shape/affinepreimage1.cc (1.8),
+	  Octagonal_Shape/containsintegerpoint1.cc (1.7),
+	  Octagonal_Shape/maxspacedim1.cc (1.6): Avoid using non supported
+	  floating point types.
+
+2008-09-29 Monday 09:14  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/BD_Shape/closure1.cc (1.24): Generalized so as to avoid
+	  using non supported floating point types.
+
+2008-09-29 Monday 09:11  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/: ppl_interface_generator_common.m4 (1.33),
+	  Java/jni/ppl_java_common.cc (1.46),
+	  Java/jni/ppl_java_common.defs.hh (1.2),
+	  Java/jni/ppl_java_globals.cc (1.19),
+	  Java/parma_polyhedra_library/Control_Parameter_Name.java (1.1),
+	  Java/parma_polyhedra_library/Control_Parameter_Value.java (1.1),
+	  Java/parma_polyhedra_library/MIP_Problem.java (1.3),
+	  Java/parma_polyhedra_library/Makefile.am (1.9),
+	  OCaml/ppl_interface_generator_ocaml_mli.m4 (1.20),
+	  OCaml/ppl_ocaml_common.cc (1.4), OCaml/ppl_ocaml_globals.ml
+	  (1.12), OCaml/ppl_ocaml_types.ml (1.13), OCaml/tests/test1.ml
+	  (1.14),
+	  Prolog/ppl_interface_generator_prolog_procedure_generators.m4
+	  (1.5), Prolog/ppl_prolog_common.cc (1.7),
+	  Prolog/ppl_prolog_common.defs.hh (1.7),
+	  Prolog/Ciao/ciao_pl_check.pl (1.29), Prolog/XSB/xsb_pl_check.P
+	  (1.35), Prolog/tests/pl_check.pl (1.58): The new methods for
+	  MIP_Problem for the control_parameters now added to the Java,
+	  OCaml and Prolog interfaces.
+
+	  Tests for these methods for the OCaml and Prolog interfaces
+	  added.
+
+	  Added a new macro to ppl_interface_generator_common.m4 that finds
+	  the difference of two sequences - as yet unused.
+
+2008-09-29 Monday 09:01  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	*
+	  interfaces/Java/jni/ppl_interface_generator_java_classes_cc_code.m4
+	  (1.18): Corrected schema names for the partition methods and
+	  fixed a bug in the code for approximate_partition.
+
+2008-09-29 Monday 08:36  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/MIP_Problem/mipproblem3.cc (1.7): Test 09 overflows with 64
+	  bit integers too.
+
+2008-09-28 Sunday 18:19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/ppl_test.cc (1.17): Improved check_distance().
+
+2008-09-28 Sunday 17:37  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/MIP_Problem/mipproblem3.cc (1.6): Modified known results of
+	  tests 05 and 08; for test 05, modified feasible region so as to
+	  have a unique optimal solution.
+
+2008-09-28 Sunday 17:23  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/MIP_Problem/mipproblem1.cc (1.13): Minor modification to
+	  the feasible region for test06 so as to have a unique optimal
+	  solution.
+
+2008-09-28 Sunday 17:01  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/ppl_test.cc (1.16): Avoid a division-by-zero error when
+	  printing +inf in check_distance.
+
+2008-09-28 Sunday 16:32  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/MIP_Problem.cc (1.72): The MIP solver no longer depends on
+	  the set of floating point types that are fully supported by the
+	  PPL.
+
+2008-09-28 Sunday 15:04  Abramo Bagnara
+
+	* src/: Checked_Number.defs.hh (1.101), Checked_Number.inlines.hh
+	  (1.83): Reverted operator/assign specializations removal.
+
+2008-09-28 Sunday 14:53  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/ac_cxx_long_double_binary_format.m4 (1.10): Work around
+	  http://gcc.gnu.org/bugzilla/show_bug.cgi?id=37661.
+
+2008-09-28 Sunday 13:59  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.374), configure.repo (1.7): Avoid unsupported
+	  instantiations.
+
+2008-09-28 Sunday 12:22  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/user-foreign-language-interface.doxyconf.in (1.3): Corrected
+	  value for configuration variable EXPAND_AS_DEFINED.
+
+2008-09-28 Sunday 12:19  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/Makefile.am (1.81): Corrected dependencies for the C
+	  documentation.
+
+2008-09-28 Sunday 12:18  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/C/: C_interface.dox (1.12), ppl_c_header.h (1.7),
+	  ppl_interface_generator_c_h.m4 (1.24),
+	  ppl_interface_generator_c_h_code.m4 (1.44): Added brief
+	  descriptions for the generated interfaces when building the
+	  configuration-dependent documentation.  Reorganized the
+	  preprocessor macros for IO operators (they now come in two
+	  version, with and without brief documentation).
+
+2008-09-28 Sunday 12:02  Abramo Bagnara
+
+	* src/: Checked_Number.defs.hh (1.100), Checked_Number.inlines.hh
+	  (1.82): Reverted illegal code simplification.
+
+2008-09-28 Sunday 11:54  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Box/interval1.cc (1.10): Test only with the supported
+	  floating point types.
+
+2008-09-28 Sunday 11:31  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/: FCAIBVP.cc (1.7), FCAIBVP.defs.hh (1.7),
+	  FCAIBVP.inlines.hh (1.7), FCAIBVP.types.hh (1.4), Makefile.am
+	  (1.271), Partial_Function.cc (1.8), Partial_Function.defs.hh
+	  (1.6), Partial_Function.inlines.hh (1.5),
+	  Partial_Function.types.hh (1.4), ppl_test.cc (1.15), ppl_test.hh
+	  (1.77), print.cc (1.30), print.hh (1.47): Test stuff reorganized.
+
+2008-09-28 Sunday 10:56  Abramo Bagnara
+
+	* src/Checked_Number.defs.hh (1.99), src/Checked_Number.inlines.hh
+	  (1.81), src/Interval.defs.hh (1.58), src/checked.defs.hh (1.46),
+	  src/checked.inlines.hh (1.44), src/checked_ext.inlines.hh (1.42),
+	  src/checked_float.inlines.hh (1.90), src/checked_int.inlines.hh
+	  (1.68), src/checked_mpq.inlines.hh (1.47),
+	  src/checked_mpz.inlines.hh (1.56), tests/ppl_test.cc (1.14):
+	  Abstracted special values to avoid use of native floating point
+	  types when they are unuseable.
+
+2008-09-27 Saturday 21:26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* instchk.hh (1.18): Reject instantiations using unsupported
+	  floating point types.
+
+2008-09-27 Saturday 20:10  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/C/ppl_interface_generator_c_procedure_generators.m4
+	  (1.13): In the C interface, also enabled the @BINMINOP@ methods
+	  (deprecated, but still here for backward compatibility with 0.9).
+
+2008-09-27 Saturday 19:41  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/: Java/ppl_interface_generator_java_dox_code.m4 (1.4),
+	  Java/jni/ppl_interface_generator_java_classes_cc_code.m4 (1.17),
+	  Java/parma_polyhedra_library/ppl_interface_generator_java_classes_java_code.m4
+	  (1.10), OCaml/ppl_interface_generator_ocaml_cc_code.m4 (1.53),
+	  OCaml/ppl_interface_generator_ocaml_ml_code.m4 (1.48),
+	  OCaml/ppl_interface_generator_ocaml_mli_code.m4 (1.39),
+	  OCaml/tests/ppl_interface_generator_ocaml_test_ml_code.m4 (1.15):
+	  For the Java and OCaml interfaces, get rid of useless templates
+	  for the add_@REPRESENT@(s)_and_minimize and the @BINMINOP@
+	  operators (these are deprecated and only kept for the C
+	  interface).
+
+2008-09-27 Saturday 19:36  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/C/ppl_interface_generator_c_procedure_generators.m4
+	  (1.12): Re-enable the add_..._and_minimize methods for the C
+	  interface.
+
+2008-09-27 Saturday 13:01  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/C/ppl_interface_generator_c_cc_code.m4 (1.52): Bug
+	  whereby the code for the BHZ03 widening for the powerset domains
+	  was not being generated for the C interface fixed.
+
+2008-09-27 Saturday 12:25  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/ppl_interface_generator_common_procedure_generators.m4
+	  (1.37): Reenable the partition methods for the interfaces.
+
+2008-09-27 Saturday 12:24  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/Makefile.am (1.80): More corrections for the clean targets.
+
+2008-09-27 Saturday 10:40  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/Makefile.am (1.79): Corrected typo whereby the core user and
+	  devref html docs were not cleaned up.
+
+2008-09-27 Saturday 09:54  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/ppl_interface_generator_common_dat.m4 (1.90): Changes
+	  that should have been included in previous commit.
+
+2008-09-27 Saturday 09:39  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/ppl_interface_generator_common_procedure_generators.m4
+	  (1.36): Disabled the generation of
+	  [linear,approximated]_partition code, as it was breaking the
+	  build.
+
+2008-09-27 Saturday 08:58  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/C/Makefile.am (1.60): Reverted previous change, as it
+	  breaks the build.
+
+2008-09-27 Saturday 00:17  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/:
+	  ppl_interface_generator_common_procedure_generators.m4 (1.35),
+	  C/ppl_interface_generator_c_cc_code.m4 (1.51),
+	  C/ppl_interface_generator_c_h_code.m4 (1.43),
+	  Java/ppl_interface_generator_java_dox_code.m4 (1.3),
+	  Java/jni/ppl_interface_generator_java_classes_cc_code.m4 (1.16),
+	  Java/parma_polyhedra_library/ppl_interface_generator_java_classes_java_code.m4
+	  (1.9), Java/tests/ppl_interface_generator_java_test_java_code.m4
+	  (1.46), OCaml/ppl_interface_generator_ocaml_cc_code.m4 (1.52),
+	  OCaml/ppl_interface_generator_ocaml_ml_code.m4 (1.47),
+	  OCaml/ppl_interface_generator_ocaml_mli_code.m4 (1.38),
+	  OCaml/tests/ppl_interface_generator_ocaml_test_ml_code.m4 (1.14),
+	  Prolog/ppl_interface_generator_prolog_cc_code.m4 (1.14),
+	  Prolog/ppl_interface_generator_prolog_dox_code.m4 (1.4),
+	  Prolog/ppl_interface_generator_prolog_hh_code.m4 (1.12),
+	  Prolog/tests/ppl_interface_generator_prolog_generated_test_pl_code.m4
+	  (1.4): Fixed a problem in the code generation for
+	  linear_partition and approximate_partition.
+
+	  This problem occurred in the Prolog interfaces when the list of
+	  instantiations did not include Pointset_Powerset<NNC_Polyhedron>
+	  and/or Pointset_Powerset<Grid>.
+
+	  Note that each of the Prolog systems generates
+	  headers/declarations for every instance of every active schema in
+	  the procedure list.  Therefore if the code is not required
+	  because the set of instantiations does not include
+	  Pointset_Powerset<NNC_Polyhedron> (resp.,
+	  Pointset_Powerset<Grid>) we have also to ensure that the
+	  header/declaration is not generated.
+
+2008-09-26 Friday 23:54  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/C/Makefile.am (1.59): Corrected a file name and
+	  removed unnecessary repetitions.
+
+2008-09-26 Friday 18:12  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/C/ppl_interface_generator_c_h_code.m4 (1.42): Added
+	  \relates Doxygen commands to the function declaration templates.
+
+2008-09-26 Friday 18:10  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/C/ppl_interface_generator_c_h.m4 (1.23): Use m4 macro
+	  m4_pre_extra_class_code to introduce the name of the interface in
+	  the Doxygen configuration-dependent manuals.
+
+2008-09-26 Friday 15:52  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/C/C_interface.dox (1.11): Documented conversion
+	  constructors taking a complexity class as argument.
+
+2008-09-26 Friday 15:21  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/: OCaml/ppl_ocaml_common.cc (1.3),
+	  Prolog/ppl_prolog_common.cc (1.6),
+	  Prolog/ppl_prolog_common.defs.hh (1.6): Added minimal explanation
+	  for functions and variables that are commented out via (trivial)
+	  preprocessing conditionals. Similar stuff grouped together, so as
+	  to also minimize the number of conditionals.
+
+2008-09-26 Friday 13:50  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Box.templates.hh (1.131), MIP_Problem.cc (1.71),
+	  OR_Matrix.inlines.hh (1.11), Octagonal_Shape.templates.hh (1.90),
+	  Polyhedron_public.cc (1.143): Added a few missing comments to
+	  preprocessing conditionals.  Removed a few lines of (old, ad-hoc,
+	  debugging related, no longer working) code that was already
+	  filtered away by a preprocessing conditional.
+
+2008-09-26 Friday 12:03  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	*
+	  interfaces/Prolog/tests/ppl_interface_generator_prolog_generated_test_pl_code.m4
+	  (1.3): Commented test, uncommented.
+
+2008-09-26 Friday 11:39  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/ppl_interface_generator_common_dat.m4 (1.89): Enable
+	  omega_reduce() in all the interfaces for the powerset domains.
+
+2008-09-26 Friday 11:21  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	*
+	  interfaces/Java/jni/ppl_interface_generator_java_classes_cc_code.m4
+	  (1.15): When translating a C++ std::pair object into a Java Pair
+	  object, avoid useless copies of the pair elements (use swaps
+	  instead).
+
+2008-09-26 Friday 11:13  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Box/difference1.cc (1.8): Enabled test15 (that was
+	  witnessing a bug, now corrected).
+
+2008-09-26 Friday 11:12  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Box.templates.hh (1.130): Corrected a bug (spotted by Pat) on
+	  the difference_assign method.
+
+2008-09-26 Friday 11:04  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/Box/difference1.cc (1.7): Added commented test that shows
+	  an assertion failure.
+
+2008-09-26 Friday 10:42  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/C/C_interface.dox (1.10): Added hand-crafted
+	  documentation for the ad-hoc types and functions provided by
+	  Pointset_Powerset.
+
+2008-09-26 Friday 10:19  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/:
+	  ppl_interface_generator_common_procedure_generators.m4 (1.34),
+	  C/ppl_interface_generator_c_cc_code.m4 (1.50),
+	  C/ppl_interface_generator_c_h_code.m4 (1.41),
+	  C/ppl_interface_generator_c_procedure_generators.m4 (1.11),
+	  Java/ppl_interface_generator_java_dox_code.m4 (1.2),
+	  Java/jni/ppl_interface_generator_java_classes_cc_code.m4 (1.14),
+	  Java/parma_polyhedra_library/ppl_interface_generator_java_classes_java_code.m4
+	  (1.8), Java/tests/ppl_interface_generator_java_test_java_code.m4
+	  (1.45), OCaml/ppl_interface_generator_ocaml_cc_code.m4 (1.51),
+	  OCaml/ppl_interface_generator_ocaml_ml_code.m4 (1.46),
+	  OCaml/ppl_interface_generator_ocaml_mli_code.m4 (1.37),
+	  OCaml/ppl_interface_generator_ocaml_procedure_generators.m4
+	  (1.6), OCaml/tests/ppl_interface_generator_ocaml_test_ml_code.m4
+	  (1.13), Prolog/ppl_interface_generator_prolog_cc_code.m4 (1.13),
+	  Prolog/ppl_interface_generator_prolog_dox_code.m4 (1.3),
+	  Prolog/ppl_interface_generator_prolog_hh_code.m4 (1.11),
+	  Prolog/tests/ppl_interface_generator_prolog_generated_test_pl_code.m4
+	  (1.2): Completed the code and main changes needed for
+	  linear_partition and approximate_partition in all the interfaces.
+
+	  Now the methods' classes are always simple and the partition is
+	  always in the Pointset_Powerset<NNC_Polyhedron> (if the domain is
+	  not Grid) or Pointset_Powerset<Grid> for the grid domain.
+
+	  Simple tests for these new methods added for the different
+	  interfaces.
+
+2008-09-26 Friday 00:07  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/ppl_interface_generator_common_procedure_generators.m4
+	  (1.33): Disable linear_partition methods again until the Prolog
+	  tests have been adapted.
+
+2008-09-25 Thursday 23:21  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/:
+	  ppl_interface_generator_common_procedure_generators.m4 (1.32),
+	  Java/jni/ppl_interface_generator_java_classes_cc_code.m4 (1.13),
+	  Java/tests/ppl_java_tests_common (1.16): Allow for changes to
+	  linear_partition in Java.  Simplified the coefficients in the
+	  tests so as to avoid an unintended overflow exception.
+
+2008-09-25 Thursday 23:07  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/Prolog/ppl_interface_generator_prolog_cc_code.m4
+	  (1.12): Implemented ppl_@CLASS@_linear_partition/4,
+	  distinguishing the polyhedron and the non-polyhedron cases.
+
+2008-09-25 Thursday 23:06  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/Prolog/ppl_interface_generator_prolog_hh_code.m4
+	  (1.10): Added declaration for ppl_@CLASS@_linear_partition/4.
+
+2008-09-25 Thursday 19:43  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/ppl_interface_generator_common_procedure_generators.m4
+	  (1.31): The method schema just added for linear_partiton,
+	  commented out as this broke the build of the prolog interface.
+
+2008-09-25 Thursday 18:51  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/:
+	  ppl_interface_generator_common_procedure_generators.m4 (1.30),
+	  C/ppl_interface_generator_c_cc_code.m4 (1.49),
+	  C/ppl_interface_generator_c_h_code.m4 (1.40),
+	  Java/jni/ppl_interface_generator_java_classes_cc_code.m4 (1.12),
+	  Java/jni/ppl_interface_generator_java_classes_cc_files.m4 (1.7),
+	  Java/parma_polyhedra_library/ppl_interface_generator_java_classes_java_code.m4
+	  (1.7), Java/tests/ppl_interface_generator_java_test_java_code.m4
+	  (1.44), OCaml/ppl_interface_generator_ocaml_cc_code.m4 (1.50),
+	  OCaml/ppl_interface_generator_ocaml_ml_code.m4 (1.45),
+	  OCaml/ppl_interface_generator_ocaml_mli_code.m4 (1.36),
+	  Prolog/ppl_interface_generator_prolog_cc_code.m4 (1.11),
+	  Prolog/ppl_interface_generator_prolog_hh_code.m4 (1.9): Started
+	  changes for linear_partition in the interfaces so that its class
+	  is that of its arguments and the 1st argument of the returned
+	  pair.  The schema for this is called ppl_@CLASS@_linear_partition
+	  to avoid confusion with the old schema ppl_@CLASS@_@PARTITION@.
+
+2008-09-25 Thursday 18:29  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/C/ppl_c_header.h (1.6): Use alias \extref instead of
+	  \ref when referring to external documentation (i.e., the core
+	  manuals) so that tag files will work for HTML and no error is
+	  obtained in LaTeX.
+
+2008-09-25 Thursday 18:27  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/C/ppl_interface_generator_c_h.m4 (1.22): Disabled
+	  Doxygen grouping in the generated code.
+
+2008-09-25 Thursday 18:09  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/Makefile.am (1.78): Added a few missing dependencies.
+	  Restored a few calls to ocamldoc, so as to produce ocamldoc.sty
+	  (to be re-checked).
+
+2008-09-25 Thursday 12:21  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/C/: ppl_interface_generator_c_cc_code.m4 (1.48),
+	  ppl_interface_generator_c_h_code.m4 (1.39): Added more methods to
+	  the C interface code.
+
+2008-09-25 Thursday 12:04  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/C/: C_interface.dox (1.9), ppl_c_header.h (1.5),
+	  ppl_c_version.h.in (1.9): Exploit the \interface Doxygen command
+	  in combination with \relates so as to group related types and
+	  functions in the C interface documentation.  Striclty speaking,
+	  an (opaque) C structure tag is not an interface ...  but for our
+	  purposes it behaves as if it was.
+
+2008-09-25 Thursday 10:59  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Java/tests/: ppl_interface_generator_java_test_java.m4
+	  (1.19), ppl_interface_generator_java_test_java_code.m4 (1.43),
+	  ppl_java_tests_common (1.15): Test generation improved,
+	  simplified and comments added.  Code for generating tests
+	  improved and each test is independent from the others.  For the
+	  generated code, all but one method is now tested.  Note that much
+	  of the fixed code such as for the MIP domain is not  yet tested.
+
+2008-09-25 Thursday 10:12  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/Makefile.am (1.77): The ocamldoc tool should be only invoked
+	  when building the configuration-dependent documentation.
+
+2008-09-25 Thursday 00:37  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/:
+	  ppl_interface_generator_common_procedure_generators.m4 (1.29),
+	  Prolog/ppl_interface_generator_prolog_procedure_generators.m4
+	  (1.4): Restore the "and_minimize" predicates disabled in the
+	  previous commit for the Prolog interfaces as otherwise the tests
+	  in pl_check.pl.  clpq.pl and clpq2.pl will not compile.
+
+2008-09-25 Thursday 00:08  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/: ppl_interface_generator_common_dat.m4 (1.88),
+	  ppl_interface_generator_common_procedure_generators.m4 (1.28),
+	  OCaml/ppl_interface_generator_ocaml_cc_code.m4 (1.49),
+	  OCaml/ppl_interface_generator_ocaml_ml_code.m4 (1.44),
+	  OCaml/ppl_interface_generator_ocaml_mli_code.m4 (1.35): Disable
+	  all the "and_minimize" methods in all the interfaces.
+
+	  Ensure that linear_partition method is only used if the
+	  Pointset_Powerset<NNC_Polyhedron> is one of the instantiations.
+
+	  Add the OCaml code for "approximate_partition" in the Grid
+	  domain.
+
+	  Note that tests for both linear_partition and
+	  approximate_partition still to be added.
+
+2008-09-24 Wednesday 22:25  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/Makefile.am (1.76): Expanded and reorganized the set of
+	  documentation targets. We now support targets whose name
+	  specifies for whom to produce (user/devref) and the desired
+	  format (html, pdf, ps). For instance, we have targets such as
+	  `user-html', `user-pdf', `devref-ps', etc.  Targets `user' and
+	  `devref' produce all three formats.  Adding the word `configured'
+	  (e.g., user-configured-html or devref-configured) allows for
+	  building configuration dependent docs for the foreign language
+	  intefaces; targets user-all and devref-all produce both the
+	  configuration dependent and the configuration-independent
+	  manuals.  Target `world' produces all kind of manuals (as
+	  before).
+
+2008-09-24 Wednesday 21:26  Andrea Cimino
+
+	* interfaces/OCaml/: ppl_interface_generator_ocaml_cc_code.m4
+	  (1.48), ppl_interface_generator_ocaml_ml_code.m4 (1.43),
+	  ppl_interface_generator_ocaml_mli_code.m4 (1.34): Fixed the
+	  return value in ppl_@CLASS@_OK and
+	  ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign.  Added code for
+	  ppl_@CLASS@_@PARTITION@ but has still to be tested.
+
+2008-09-24 Wednesday 18:45  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Octagonal_Shape.templates.hh (1.89): Spacing fixed.
+
+2008-09-24 Wednesday 18:41  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/README.doc (1.18): Typo fixed.
+
+2008-09-24 Wednesday 17:31  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Java/:
+	  ppl_interface_generator_java_procedure_generators.m4 (1.9),
+	  jni/ppl_interface_generator_java_classes_cc_code.m4 (1.11),
+	  tests/ppl_interface_generator_java_test_java_code.m4 (1.42),
+	  tests/ppl_java_tests_common (1.14): Schematic tests in m4 will
+	  generate tests for all Java interface methods.  A couple of bugs
+	  in the code generator file
+	  jni/ppl_interface_generator_java_classes_cc_code.m4 fixed.
+
+2008-09-24 Wednesday 13:08  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Java/:
+	  jni/ppl_interface_generator_java_classes_cc_code.m4 (1.10),
+	  tests/ppl_interface_generator_java_test_java_code.m4 (1.41),
+	  tests/ppl_java_tests_common (1.13): Fixed a bug in the Java
+	  interface cpde for the get_minimized methods.  Added tests for
+	  swap and get_minimized.  Added the congruences2 variable to the
+	  common code.
+
+2008-09-24 Wednesday 12:21  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Java/:
+	  jni/ppl_interface_generator_java_classes_cc_code.m4 (1.9),
+	  tests/ppl_interface_generator_java_test_java.m4 (1.18),
+	  tests/ppl_interface_generator_java_test_java_code.m4 (1.40):
+	  Corrected a bug when building from a grid_generator_system.
+
+	  Each method test has its own block, allowing for local variables.
+	   Each method test outputs a message and after checking the main
+	  domain element using OK(), outputs "success" if OK() succeeds.
+
+	  Added a few tests for constructing a domain element.
+
+	  Any procedure schemas not defined at all will now cause a warning
+	  message on standard output. Hence dummy definitions have been
+	  added for the procedure schemas that have no tests.
+
+2008-09-24 Wednesday 11:20  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/tests/Makefile.am (1.29): Removed an unused
+	  definition.
+
+2008-09-24 Wednesday 09:00  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/Prolog/SWI/Makefile.am (1.96): Corrected typo in name
+	  of distributed file.
+
+2008-09-24 Wednesday 08:59  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Float.inlines.hh (1.35): Use the PPL_SUPPORTED_* macros in
+	  order to check whether particular floating point types are
+	  supported.
+
+2008-09-24 Wednesday 08:58  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/MIP_Problem.cc (1.70): Temporarily, if doubles are
+	  unavailable use floats, if floats are unavailable use long
+	  doubles.
+
+2008-09-24 Wednesday 08:46  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/Makefile.am (1.75): Added missing dependency and corrected
+	  doxygen input file for Java devref.
+
+2008-09-24 Wednesday 08:21  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/Prolog/tests/Makefile.am (1.28): Corrected typo in
+	  dependency name.
+
+2008-09-23 Tuesday 22:12  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/tests/Makefile.am (1.27): Generated tests are
+	  now removed by makeclean.
+
+2008-09-23 Tuesday 21:53  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO (1.263): Added one item for PPL 0.11.
+
+2008-09-23 Tuesday 21:48  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/Box/difference1.cc (1.6): Completed a comment for test14.
+
+2008-09-23 Tuesday 21:20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/ac_cxx_float_binary_format.m4 (1.9): Test strengthened to
+	  check also a couple of denormal values.
+
+2008-09-23 Tuesday 20:52  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.373), configure.repo (1.6): New Autoconf variable
+	  `required_instantiations_prolog_generated_test_sources'.
+
+2008-09-23 Tuesday 20:49  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Box/difference1.cc (1.5): Print statements improved.
+
+2008-09-23 Tuesday 20:31  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/ac_cxx_ieee_inexact_flag.m4 (1.4): Cater for the case where
+	  the FE_INEXACT macro is undefined.  This should fix the bug
+	  described in
+	  http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=499746.
+
+2008-09-23 Tuesday 20:29  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Box.templates.hh (1.129): Box<ITV>::difference_assign(const
+	  Box&) slightly optimized.
+
+2008-09-23 Tuesday 19:36  Abramo Bagnara
+
+	* tests/Box/difference1.cc (1.4): test14 does not fail now.
+
+2008-09-23 Tuesday 19:34  Abramo Bagnara
+
+	* src/Interval.inlines.hh (1.42): Added missing clear.
+
+2008-09-23 Tuesday 19:08  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Box/difference1.cc (1.3): Print statements of test14()
+	  revised.
+
+2008-09-23 Tuesday 18:51  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/tests/Makefile.am (1.26): Corrected the name of
+	  a test file.
+
+2008-09-23 Tuesday 18:26  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/: Ciao/Makefile.am (1.82), GNU/Makefile.am
+	  (1.78), SICStus/Makefile.am (1.96), SWI/Makefile.am (1.95),
+	  XSB/Makefile.am (1.75),
+	  XSB/ppl_interface_generator_xsb_prolog_generated_test_P.m4 (1.2),
+	  YAP/Makefile.am (1.67), tests/Makefile.am (1.25): Try to follow
+	  the standards for the makefiles.  Fixed a bug in
+	  XSB/ppl_interface_generator_xsb_prolog_generated_test_P.m4
+
+2008-09-23 Tuesday 17:06  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/: Ciao/Makefile.am (1.81),
+	  Ciao/ppl_interface_generator_ciao_predicate_check_pl.m4 (1.10),
+	  Ciao/ppl_interface_generator_ciao_prolog_generated_test_pl.m4
+	  (1.1), SICStus/Makefile.am (1.95), SICStus/sp_predicate_check.pl
+	  (1.10), SICStus/sp_prolog_generated_test.pl (1.1),
+	  SWI/Makefile.am (1.94), SWI/swi_predicate_check.pl (1.8),
+	  SWI/swi_prolog_generated_test.pl (1.1), XSB/Makefile.am (1.74),
+	  XSB/ppl_interface_generator_xsb_predicate_check_P.m4 (1.11),
+	  XSB/ppl_interface_generator_xsb_prolog_generated_test_P.m4 (1.1),
+	  tests/Makefile.am (1.24),
+	  tests/ppl_interface_generator_predicate_check_code.m4 (1.83),
+	  tests/ppl_interface_generator_predicate_check_pl.m4 (1.37),
+	  tests/ppl_interface_generator_prolog_generated_test_pl.m4 (1.1),
+	  tests/ppl_interface_generator_prolog_generated_test_pl_code.m4
+	  (1.1), tests/ppl_predicate_check_common.pl (1.13),
+	  tests/ppl_prolog_generated_test_common.pl (1.1): Renamed the
+	  predicate_check generated test files to have the form
+	  ppl_prolog_generated_test_<...>.xx The generating files and
+	  common files renamed similarly.
+
+2008-09-23 Tuesday 16:45  Andrea Cimino
+
+	* interfaces/OCaml/: ppl_interface_generator_ocaml_cc_code.m4
+	  (1.47), ppl_interface_generator_ocaml_ml_code.m4 (1.42),
+	  ppl_interface_generator_ocaml_mli_code.m4 (1.33),
+	  tests/ppl_interface_generator_ocaml_test_ml_code.m4 (1.12):
+	  'ascii_dump' added to OCaml interface.
+
+2008-09-23 Tuesday 12:08  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/Partially_Reduced_Product/: directproduct1.cc (1.4),
+	  directproduct2.cc (1.3), directproduct3.cc (1.4): Cleaned several
+	  tests.
+
+2008-09-23 Tuesday 12:02  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/Box/difference1.cc (1.2): New test14 shows a bug in
+	  difference_assign()
+
+2008-09-23 Tuesday 10:06  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Octagonal_Shape.templates.hh (1.88): Corrected bug in
+	  minimized_congruences, spotted by test09 in congruences1.cc.
+
+2008-09-23 Tuesday 10:04  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Octagonal_Shape/congruences1.cc (1.6): New test shows a bug
+	  in minimized_congruences (spotted by Pat).
+
+2008-09-23 Tuesday 08:23  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/: devref-foreign-language-interface.doxyconf.in (1.3),
+	  interfaces-html.sed (1.2), interfaces-latex.sed (1.2),
+	  user-foreign-language-interface.doxyconf.in (1.2): Avoid a
+	  Doxygen error for inexistent tagfile when building the LaTeX
+	  docs.
+
+2008-09-22 Monday 21:13  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/Prolog/Makefile.am (1.64): Distribute all files needed
+	  for the generation of Prolog_interface.dox.
+
+2008-09-22 Monday 20:29  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/Makefile.am (1.74): Corrected a couple of typos.
+
+2008-09-22 Monday 20:09  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/Java/tests/Makefile.am (1.22): Call libtool when
+	  compiling NNC_Polyhedron_test1.
+
+2008-09-22 Monday 20:06  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/Java/jni/Makefile.am (1.27): CLEANFILES moved out of
+	  conditional.
+
+2008-09-22 Monday 20:02  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/Java/Makefile.am (1.23): Target Java_interface.dox
+	  placed out of #if BUILD_JAVA_INTERFACE conditional and listed in
+	  dist_noinst_DATA.
+
+2008-09-22 Monday 19:36  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/Makefile.am (1.63): BUILT_SOURCES must contain
+	  ppl_prolog_domains.cc.stamp.
+
+2008-09-22 Monday 18:00  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/Makefile.am (1.62): Actually build
+	  ppl_prolog_domains.cc.stamp.
+
+2008-09-22 Monday 17:02  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/: ppl_interface_generator_common_dat.m4 (1.87),
+	  Prolog/Makefile.am (1.61),
+	  Prolog/ppl_interface_generator_prolog_cc_files.m4 (1.10),
+	  Prolog/ppl_interface_generator_prolog_hh_files.m4 (1.9): The file
+	  ppl_prolog_domains.cc is not needed.	Ensure that in the
+	  generated tests a powerset of grids is built by default from
+	  congruences and not constraints.  This fixes a bug when testing
+	  ppl_predicate_check_test for the Pointset_Powerset_Grid domain.
+
+2008-09-22 Monday 16:40  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/ac_cxx_ieee_inexact_flag.m4 (1.3): Made consistent with our
+	  code for controlling the FPUs.
+
+2008-09-22 Monday 16:07  Andrea Cimino
+
+	*
+	  interfaces/Java/jni/ppl_interface_generator_java_classes_cc_code.m4
+	  (1.8): Apply the previous fix also in the jni directory.  Now the
+	  `make check' should pass.
+
+2008-09-22 Monday 14:50  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.372), configure.repo (1.5),
+	  interfaces/Prolog/Makefile.am (1.60): Avoid wildcard characters
+	  in *CLEANFILES variables.
+
+2008-09-22 Monday 14:41  Andrea Cimino
+
+	* interfaces/Java/:
+	  parma_polyhedra_library/ppl_interface_generator_java_classes_java_code.m4
+	  (1.6), tests/ppl_interface_generator_java_test_java_code.m4
+	  (1.39): Use DISJUNCT instead of CPP_DISJUNCT where appropriate.
+	  Now the Java interface compiles with	--enable-instantiations=all
+
+2008-09-22 Monday 14:26  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/Makefile.am (1.59): Revised the organisation of
+	  the Makefile so that Prolog_interfaces.dox is built outside the
+	  #if BUILD_* conditional.  Removed Prolog_interfaces.dox from the
+	  BUILT_SOURCES and included them with dist_noinst_DATA.  Use
+	  CLEANFILES instead of DISTCLEANFILES for all files built with
+	  make all.
+
+2008-09-22 Monday 13:13  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/OCaml/: ppl_interface_generator_ocaml_cc_code.m4
+	  (1.46), ppl_interface_generator_ocaml_ml_code.m4 (1.41),
+	  ppl_interface_generator_ocaml_mli.m4 (1.19),
+	  ppl_interface_generator_ocaml_mli_code.m4 (1.32),
+	  ppl_ocaml_common.cc (1.2), ppl_ocaml_common.defs.hh (1.2),
+	  ppl_ocaml_types.ml (1.12),
+	  tests/ppl_interface_generator_ocaml_test_ml_code.m4 (1.11): Added
+	  functions:
+	  ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity,
+	  ppl_@CLASS@_widening_assign,
+	  ppl_@CLASS@_widening_assign_with_tokens.
+
+	  Added the Complexity_Class type.
+
+	  Added tests to test these.  Also added tests to test the
+	  unconstrain(s) methods.
+
+2008-09-22 Monday 12:02  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Java/:
+	  jni/ppl_interface_generator_java_classes_cc_code.m4 (1.7),
+	  parma_polyhedra_library/ppl_interface_generator_java_classes_java_code.m4
+	  (1.5), tests/ppl_interface_generator_java_test_java_code.m4
+	  (1.38): Added/enabled methods:
+
+	  unconstrain_space_dimension_code,
+	  unconstrain_space_dimensions_code,
+	  BGP99_@DISJUNCT_WIDEN@_extrapolation_assign,
+	  BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign,
+	  approximate_partition.
+
+	  and the relevant tests.
+
+2008-09-22 Monday 11:37  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/Makefile.am (1.73): ALso distribute interfaces-html.sed and
+	  interfaces-latex.sed.
+
+2008-09-22 Monday 09:45  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/Makefile.am (1.58): Restore
+	  Prolog_interface.dox as a built source to ensure the file is
+	  generated before building the documentation.
+
+2008-09-22 Monday 08:28  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Java/jni/:
+	  ppl_interface_generator_java_classes_cc_files.m4 (1.6),
+	  ppl_java_globals.cc (1.18): Include "ppl_java_common.defs.hh"
+
+2008-09-22 Monday 08:17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Java/jni/: Makefile.am (1.26),
+	  ppl_interface_generator_java_classes_cc_code.m4 (1.6),
+	  ppl_java_common.cc (1.45), ppl_java_common.defs.hh (1.1),
+	  ppl_java_common.hh (1.41), ppl_java_common.inlines.hh (1.1):
+	  Splitted ppl_java_common.hh.	Made several improvements (but many
+	  FIXMEs remain).
+
+2008-09-21 Sunday 23:07  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/Makefile.am (1.57): Missing separator added.
+
+2008-09-21 Sunday 23:02  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/: Makefile.am (1.56),
+	  ppl_interface_generator_prolog_dox.m4 (1.4): Changed so that
+	  there are no unnecessary dependencies on the
+	  ppl_interface_instantiations when generating the documentation.
+
+2008-09-21 Sunday 22:59  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/ppl_interface_generator_common_dat.m4 (1.86): Revised
+	  so as to allow for the documentation not to include
+	  ppl_interface_instantiations.m4.
+
+2008-09-21 Sunday 22:46  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Java/: Makefile.am (1.22),
+	  ppl_interface_generator_java_dox.m4 (1.3): Avoid unnecessary
+	  dependency on the generated ppl_interface_instantiations.m4
+
+2008-09-21 Sunday 22:09  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.371), configure.repo (1.4): Fixed the
+	  implementation of `--enable-instantiations=all'.
+
+2008-09-21 Sunday 21:56  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README.configure (1.29): Improved the explanation on how to use
+	  the `configure.repo' files.
+
+2008-09-21 Sunday 21:17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Java/Makefile.am (1.21): Java_interface.dox should not
+	  belong to BUILT_SOURCES.
+
+2008-09-21 Sunday 17:42  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/Makefile.am (1.72): Also clean LaTeX header files for
+	  configurated interfaces.
+
+2008-09-21 Sunday 17:35  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/: Makefile.am (1.71), devref-foreign-language-interface.tex
+	  (1.2), user-foreign-language-interface.tex (1.2): Added missing
+	  replacement targets for sed in the devref LaTeX header file.
+	  Added a new replacement for \usepackage{ocamldoc}.
+
+2008-09-21 Sunday 17:12  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/Makefile.am (1.70): Further targets added to build
+	  configuration-dependent foreign language interface docs.
+
+2008-09-21 Sunday 15:42  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Box/frombox1.cc (1.7): Print also the constraints of `src'
+	  in test05().
+
+2008-09-21 Sunday 15:41  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/devref-foreign-language-interface.doxyconf.in (1.2): The
+	  latex header file is in the build dir, not in the source dir.
+
+2008-09-21 Sunday 14:54  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* configure.ac (1.370), configure.repo (1.3), doc/Makefile.am
+	  (1.69), doc/devref-c-interface.doxyconf-html.in (1.8),
+	  doc/devref-c-interface.doxyconf-latex.in (1.8),
+	  doc/devref-c-interface.tex (1.6),
+	  doc/devref-foreign-language-interface.doxyconf.in (1.1),
+	  doc/devref-foreign-language-interface.tex (1.1),
+	  doc/devref-java-interface.doxyconf-html.in (1.5),
+	  doc/devref-java-interface.doxyconf-latex.in (1.5),
+	  doc/devref-java-interface.tex (1.3),
+	  doc/devref-ocaml-interface.doxyconf-html.in (1.4),
+	  doc/devref-ocaml-interface.doxyconf-latex.in (1.4),
+	  doc/devref-ocaml-interface.tex (1.2),
+	  doc/devref-prolog-interface.doxyconf-html.in (1.10),
+	  doc/devref-prolog-interface.doxyconf-latex.in (1.10),
+	  doc/devref-prolog-interface.tex (1.2), doc/interfaces-html.sed
+	  (1.1), doc/interfaces-latex.sed (1.1),
+	  doc/user-c-interface.doxyconf-html.in (1.9),
+	  doc/user-c-interface.doxyconf-latex.in (1.9),
+	  doc/user-c-interface.tex (1.6),
+	  doc/user-foreign-language-interface.doxyconf.in (1.1),
+	  doc/user-foreign-language-interface.tex (1.1),
+	  doc/user-java-interface.doxyconf-html.in (1.5),
+	  doc/user-java-interface.doxyconf-latex.in (1.5),
+	  doc/user-java-interface.tex (1.3),
+	  doc/user-ocaml-interface.doxyconf-html.in (1.3),
+	  doc/user-ocaml-interface.doxyconf-latex.in (1.3),
+	  doc/user-ocaml-interface.tex (1.2),
+	  doc/user-prolog-interface.doxyconf-html.in (1.9),
+	  doc/user-prolog-interface.doxyconf-latex.in (1.10),
+	  doc/user-prolog-interface.tex (1.6): The doxygen configuration
+	  files and LaTeX headers for the foreign language interface
+	  manuals are now automatically generated from 4 template files and
+	  2 sed script files (plus Makefile.am machinery).  The overall
+	  infrastructure can be extended so as to generate both
+	  configuration independent and configuration dependent manuals.
+
+2008-09-21 Sunday 12:23  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Java/tests/ppl_java_tests_common (1.12): Change a
+	  coefficient from 3 to 2 to avoid an unintended overflow.
+
+2008-09-21 Sunday 07:27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/ppl_c_implementation_common.inlines.hh (1.3):
+	  Indentation fixed.
+
+2008-09-21 Sunday 07:22  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/MIP_Problem/mipproblem2.cc (1.12): Fixed.
+
+2008-09-20 Saturday 23:43  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Java/tests/ppl_java_tests_common (1.11): Coefficients
+	  simplified to avoid unintended overflow errors.
+
+2008-09-20 Saturday 21:55  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/ppl_interface_generator_common_dat.m4 (1.85): Comment
+	  corrected.
+
+2008-09-20 Saturday 21:50  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README.configure (1.28): Added a new section on "Using the CVS
+	  Sources".  In particular, explained how it is possible to
+	  dispense with the use of Autoconf exploiting the presence of
+	  `configure.repo' in the repository (suggestion by Basile
+	  Starynkevitch).
+
+2008-09-20 Saturday 21:27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.369), configure.repo (1.2): Missing double quote
+	  added.
+
+2008-09-20 Saturday 20:55  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/: ppl_interface_generator_common_dat.m4 (1.84),
+	  Java/ppl_interface_generator_java_dox.m4 (1.2),
+	  Prolog/ppl_interface_generator_prolog_dox.m4 (1.3): Ensure that
+	  the documentation generators do not include the
+	  ppl_interface_instantiations.m4 file.
+
+2008-09-20 Saturday 20:54  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.368), configure.repo (1.1), Watchdog/configure.ac
+	  (1.49), Watchdog/configure.repo (1.1): Capitalization fixed.
+
+2008-09-20 Saturday 20:43  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/NEWS (1.11): Set a tentative release date.
+
+2008-09-20 Saturday 20:39  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.235): Set a tentative release date.
+
+2008-09-20 Saturday 20:36  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/configure.ac (1.48): We do not need the `win32-dll'
+	  Libtool option.
+
+2008-09-20 Saturday 20:34  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.367): Long lines avoided.
+
+2008-09-20 Saturday 20:27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.366): Computation of the set of all
+	  instantiations made independent from the default instantiations.
+
+2008-09-20 Saturday 20:15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.365): Useless work avoided.
+
+2008-09-20 Saturday 20:11  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README (1.53): Updated.
+
+2008-09-20 Saturday 20:07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.364): Version number bumped.
+
+2008-09-20 Saturday 20:06  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/configure.ac (1.47): Punctuation improved.  Require
+	  Autoconf 2.60 or later.
+
+2008-09-20 Saturday 20:03  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.363): Comments improved.
+
+2008-09-20 Saturday 20:00  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.362): Punctuation fixed.
+
+2008-09-20 Saturday 19:57  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog (1.30), Watchdog/ChangeLog (1.19): Updated.
+
 2008-09-20 Saturday 19:06  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* m4/: ac_check_ciao.m4 (1.2), ac_check_fpu_control.m4 (1.7),
