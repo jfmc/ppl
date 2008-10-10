@@ -376,9 +376,10 @@ bool test01() {
   print_constraints(tbox, "*** tbox.propagate_edges() ***");
 
   // FIXME
-  (void) check_result(tbox, qbox2, " 18.36", "1.52", "0.25");
+  // (void) check_result(tbox, qbox2, " 18.36", "1.52", "0.25");
+  bool ok = check_result(tbox, qbox2, " 18.36", "1.52", "0.25");
 
-  return true;
+  return ok;
 }
 
 BEGIN_MAIN
