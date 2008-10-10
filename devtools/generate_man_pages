@@ -1,0 +1,5 @@
+#!/bin/sh
+# See http://www.gnu.org/software/help2man/ for the help2man utility.
+help2man --name="obtain information about an installation of the Parma Polyhedra Library" -N --include=../doc/ppl-config_extra_man_text ppl-config >../doc/ppl-config.1
+help2man --name="a PPL-based linear programming problem solver" -N --include=../doc/ppl_lpsol_extra_man_text ppl_lpsol >../doc/ppl_lpsol.1
+help2man --name="a PPL-based program for vertex/facet enumeration of convex polyhedra" -N --include=../doc/ppl_lcdd_extra_man_text ppl_lcdd >../doc/ppl_lcdd.1
