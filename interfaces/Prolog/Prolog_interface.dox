@@ -753,13 +753,13 @@ The specification can be:
   \c an NNC polyhedron referenced by handle \c Handle_1.
   \c Handle_2 is unified with the handle for \p P_1.</EM>
 
-<P><CODE>ppl_new_C polyhedron_from_C_Polyhedron_with_complexity(+Handle, +Complexity, -Handle)</CODE><BR>
+<P><CODE>ppl_new_C_Polyhedron_from_C_Polyhedron_with_complexity(+Handle, +Complexity, -Handle)</CODE><BR>
   <EM>Builds a new C polyhedron \p P_1 from
   \c a C polyhedron referenced by handle \c Handle_1
   using an algorithm whose complexity does not exceed \c Complexity;
   \c Handle_2 is unified with the handle for \p P_1.</EM>
 
-<P><CODE>ppl_new_C polyhedron_from_NNC_Polyhedron_with_complexity(+Handle, +Complexity, -Handle)</CODE><BR>
+<P><CODE>ppl_new_C_Polyhedron_from_NNC_Polyhedron_with_complexity(+Handle, +Complexity, -Handle)</CODE><BR>
   <EM>Builds a new C polyhedron \p P_1 from
   \c an NNC polyhedron referenced by handle \c Handle_1
   using an algorithm whose complexity does not exceed \c Complexity;
@@ -1569,6 +1569,7 @@ and widening and extrapolation.
     and the cardinality threshold \c C_unsigned.</EM>
   see Section \extref{Powerset_Extrapolation_Operators, "Powerset Extrapolation Operators"}
   in the main \extref{preamble, PPL user manual}.</EM>
+
 
 
 
