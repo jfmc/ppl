@@ -33,21 +33,37 @@ The Parma Polyhedra Library comes equipped with a Prolog interface.
 Despite the lack of standardization of Prolog's foreign language interfaces,
 the PPL Prolog interface supports several Prolog systems and, to the
 extent this is possible, provides a uniform view of the library from
-each such systems.
+each such system.
 
 The system-independent features of the library are described in
 Section \ref PI_SI_Features "System-Independent Features".
 Section \ref PI_Compilation "Compilation and Installation"
-explains how the various incarnations of the Prolog interface
-are compiled and installed.
+explains how the Prolog interface is compiled and installed.
 Section \ref PI_SD_Features "System-Dependent Features"
 illustrates the system-dependent features of the interface
 for all the supported systems.
 
+The structure of this section is as follows:
+- \ref PI_SI_Features "System-Independent Features"
+    - \ref Prolog_Interface_Overview "Overview"
+    - \ref Predicate_Specifications "Predicate Specifications"
+    - \ref predicate_descriptions "Predicate Descriptions"
+        - \ref di_predicates "Domain Independent Predicates"
+        - \ref mip_predicates "MIP Predicates"
+        - \ref Polyhedron_predicates "Predicates for C Polyhedra"
+        - \ref other_domains "Ad hoc Predicates for Other Domains"
+- \ref PI_Compilation "Compilation and Installation"
+- \ref PI_SD_Features "System-Dependent Features"
+    - \ref GNU_Prolog "GNU Prolog"
+    - \ref CIAO_Prolog "CIAO Prolog"
+    - \ref SICStus_Prolog "SICStus Prolog"
+    - \ref SWI_Prolog "SWI Prolog"
+    - \ref XSB_Prolog "XSB"
+    - \ref YAP_Prolog "YAP"
+
 In the sequel, <CODE>prefix</CODE> is the prefix under which
 you have installed the library (typically <CODE>/usr</CODE>
 or <CODE>/usr/local</CODE>).
-
 
 \anchor PI_SI_Features
 <H1>System-Independent Features</H1>
@@ -59,14 +75,6 @@ A general introduction to the numerical abstractions,
 their representation in the PPL and the operations provided
 by the PPL is given in the main \extref{preamble, PPL user manual}.
 Here we just describe those aspects that are specific to the Prolog interface.
-<H4>Contents:</H4>
-- \ref Prolog_Interface_Overview "Overview";
-- \ref Predicate_Specifications "Predicate Specifications";
-- \ref predicate_descriptions "Predicate Descriptions"
-    - \ref di_predicates "Domain Independent Predicates",
-    - \ref mip_predicates "MIP Predicates",
-    - \ref Polyhedron_predicates "Predicates for C Polyhedra";
-    - \ref other_domains "Ad hoc Predicates for Other Domains";
 
 \anchor Prolog_Interface_Overview
 <H2>Overview</H2>
@@ -103,12 +111,6 @@ on the use of the interface.
 - In the following, any of the above numerical
   abstract domains  is called a PPL <EM>domain</EM>
   and any element of a PPL domain is called a <EM>PPL object</EM>.
-- The Prolog interface files are all installed in the directory
-  <CODE>prefix/lib/ppl</CODE>.  Since this includes shared and
-  dynamically loaded libraries, you must make your dynamic
-  linker/loader aware of this fact.  If you use a GNU/Linux system,
-  try the commands <CODE>man ld.so</CODE> and <CODE>man ldconfig</CODE>
-  for more information.
 - The Prolog interface to the PPL is initialized and finalized by the
   predicates <CODE>ppl_initialize/0</CODE> and <CODE>ppl_finalize/0</CODE>.
   Thus the only interface predicates callable after
@@ -672,11 +674,10 @@ defining mixed integer (linear) programming problems.
 <BR>
 
 \anchor Polyhedron_predicates
-<H1>Predicates for C Polyhedra</H1>
+<H1>Predicates for the C Polyhedron Domain</H1>
 Here we provide a short description for each of the predicates
 available for the domain of C polyhedra.
 Note that predicates for other domains will follow a similar pattern.
-
 
 <H2>Constructor, copy, conversion and destructor predicates</H2>
 
@@ -722,6 +723,7 @@ The specification can be:
   \c Handle is unified with the handle for \p P.</EM>
 
 
+
 <H3>Predicates that build new C polyhedra by copying or converting from
   other semantic geometric descriptions</H3>
   Besides the constructors listed above, the library also
@@ -764,12 +766,14 @@ The specification can be:
   \c Handle_2 is unified with the handle for \p P_1.</EM>
 
 
+
 <H3>Destructor predicate</H3>
 Below is the destructor predicate for the Polyhedron domain.
 
 <P><CODE>ppl_delete_Polyhedron(+Handle)</CODE><BR>
   <EM>Invalidates the handle  referenced by \c Handle:
   this makes sure the corresponding resources will eventually be released.</EM>
+
 
 
 <H2>Predicates that do not change the polyhedron</H2>
@@ -839,6 +843,7 @@ and succeed or fail depending on the outcome.
 <P><CODE>ppl_Polyhedron_constrains(+Handle, +PPL_Var)</CODE><BR>
   <EM>Succeeds if and only if the polyhedron referenced by
    \c Handle constrains the dimension \c PPL_Var.</EM>
+
 
 
 <H3>Predicates that return information about the polyhedron</H3>
@@ -957,12 +962,14 @@ bytes occupied by the polyhedron referenced by \c Handle.</EM>
 bytes occupied by the polyhedron referenced by \c Handle.</EM>
 
 
+
 <H3>Ascii dump predicate</H3>
 This output predicate is useful for debugging.
 
 <P><CODE>ppl_Polyhedron_ascii_dump(+Handle)</CODE><BR>
   <EM>Dumps an ascii representation of the PPL internal state for
   the polyhedron referenced by \c Handle on the standard output.</EM>
+
 
 
 <H2>Space-dimension preserving predicates that may change the polyhedron</H2>
@@ -1057,6 +1064,7 @@ between these forms.
    the congruences in \c Congruence_System.</EM>
 
 
+
 <H3>Predicates that transform a polyhedron</H3>
 These predicates enable transformations
 such as taking the topological closure (which for the domain of
@@ -1142,6 +1150,7 @@ and
    represented by \c Relation_Symbol.</EM>
 
 
+
 <H3>Predicates whose results depend on more than one polyhedron</H3>
 These predicates include the binary operators which will assign to the
 polyhedron referred to by the first argument
@@ -1211,6 +1220,7 @@ and a linear partitioning operator described below.
   This predicate is only provided if the
   class \c Pointset_Powerset_NNC_Polyhedron
   has been enabled when configuring the library.</EM>
+
 
 
 <H3>Predicates for widening and extrapolation</H3>
@@ -1350,6 +1360,7 @@ of the main \extref{preamble, PPL user manual}.
    the concatenation of \p P and the polyhedron referenced by \c Handle_2.</EM>
 
 
+
 <H3>Predicates for mapping dimensions or changing the vector space</H3>
 These predicates enable the modification of the vector space
 of the polyhedron referred to in the first argument.
@@ -1409,9 +1420,9 @@ and
   function.</EM>
 
 
+
 \anchor other_domains
-<H1>Ad hoc Predicates for Other Domains</H1>
-<H2>Extra Predicates Specifically for the Pointset Powerset Domains</H2>
+<H1>Ad hoc Predicates for Other Domains</H1><H2>Extra Predicates Specifically for the Pointset Powerset Domains</H2>
   The powerset domains can be instantiated by taking as a base domain
   any fixed semantic geometric description
   (C and NNC polyhedra, BD and octagonal shapes, boxes and grids).
@@ -1435,7 +1446,7 @@ Iterators allow the user to examine and change individual elements
 The following predicates support useful operations
 on these iterators via the usual handles.
 
-<P><CODE>ppl_new_Pointset_Powerset_C_Polyhedron_iterator_from_iterator_pps_iter_doc(+Iterator_1, -Iterator_2)</CODE><BR>
+<P><CODE>ppl_new_Pointset_Powerset_C_Polyhedron_iterator_from_iterator(+Iterator_1, -Iterator_2)</CODE><BR>
   <EM>Builds a new iterator \p it from the iterator referenced by
   \c Iterator_1. <CODE>Iterator_2</CODE> is unified with the handle
   for \p it.</EM>
@@ -1471,6 +1482,7 @@ on these iterators via the usual handles.
   <EM>Invalidates the handle referenced by <CODE>Iterator</CODE>:
   this makes sure the corresponding resources
   will eventually be released.</EM>
+
 
   <H3>Other Ad Hoc Predicates for the pointset powerset domains.</H3>
 Collected here are all the other predicates that are specific to
@@ -1561,6 +1573,7 @@ and widening and extrapolation.
 
 
 
+
 \anchor PI_Compilation
 <H1>Compilation and Installation</H1>
 
@@ -1568,6 +1581,13 @@ When the Parma Polyhedra Library is configured, it tests for the existence
 of each supported Prolog system.  If a supported Prolog system is
 correctly installed in a standard location, things are arranged
 so that the corresponding interface is built and installed.
+
+The Prolog interface files are all installed in the directory
+<CODE>prefix/lib/ppl</CODE>.  Since this includes shared and
+dynamically loaded libraries, you must make your dynamic
+linker/loader aware of this fact.  If you use a GNU/Linux system,
+try the commands <CODE>man ld.so</CODE> and <CODE>man ldconfig</CODE>
+for more information.
 
 As an option, the Prolog interface can track the creation and disposal
 of polyhedra.  In fact, differently from native Prolog data, PPL polyhedra
@@ -1583,6 +1603,7 @@ Your configure command would then look like
 \anchor PI_SD_Features
 <H1>System-Dependent Features</H1>
 
+\anchor CIAO_Prolog
 <H2>CIAO Prolog</H2>
 
 The Ciao Prolog interface to the PPL is available
@@ -1624,6 +1645,7 @@ ciaoc -o myprog prefix/lib/ppl/ppl_ciao.pl ciao_pl_check.pl \
   -L '-Lprefix/lib/ppl -lppl_ciao -Lprefix/lib -lppl -lgmpxx -lgmp -lstdc++'
 \endcode
 
+\anchor GNU_Prolog
 <H2>GNU Prolog</H2>
 
 The GNU Prolog interface to the PPL is available both as a
@@ -1671,7 +1693,23 @@ gplc -o myprog prefix/lib/ppl/ppl_gprolog.pl source1.pl source2.pl \
   -L '-Lprefix/lib/ppl -lppl_gprolog -Lprefix/lib -lppl -lgmpxx -lgmp -lstdc++'
 \endcode
 
+GNU Prolog uses several stacks to execute a Prolog program each with a
+pre-defined default size.  If the size of a stack is too small for the
+application an overflow will occur.  To change the default size of a
+stack, the user has to set the value of the relevant environment
+variable; in particular, to execute some of the tests, we found it
+necessary to increase the size of GLOBALSZ.
+Thus, for the above example, the compilation command would be
+\code
+GLOBALSZ=32768 gplc -o myprog prefix/lib/ppl/ppl_gprolog.pl source1.pl source2.pl \
+  -L '-Lprefix/lib/ppl -lppl_gprolog -Lprefix/lib -lppl -lgmpxx -lgmp -lstdc++'
+\endcode
+More information on
+adjusting the size of the stacks can be found in Section 3.3 in the
+<A HREF="http://www.gprolog.org/manual/gprolog.html">GNU Prolog
+Manual</A>
 
+\anchor SICStus_Prolog
 <H2>SICStus Prolog</H2>
 
 The SICStus Prolog interface to the PPL is available
@@ -1697,6 +1735,7 @@ Notice that, for dynamic linking to work, you should have configured
 the library with the <CODE>--enable-shared</CODE> option.
 
 
+\anchor SWI_Prolog
 <H2>SWI-Prolog</H2>
 
 The SWI-Prolog interface to the PPL is available
@@ -1735,6 +1774,7 @@ Notice that, for dynamic linking to work, you should have configured
 the library with the <CODE>--enable-shared</CODE> option.
 
 
+\anchor XSB_Prolog
 <H2>XSB</H2>
 
 The XSB Prolog interface to the PPL is available
@@ -1752,6 +1792,7 @@ and
 in your current directory or in one of the XSB library directories.
 
 
+\anchor YAP_Prolog
 <H2>YAP</H2>
 
 The YAP Prolog interface to the PPL is available
@@ -1771,7 +1812,5 @@ Notice that, for dynamic linking to work, you should have configured
 the library with the <CODE>--enable-shared</CODE> option.
 
 */ /* \mainpage */
-
-
 
 
