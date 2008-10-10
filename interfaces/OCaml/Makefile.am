@@ -34,8 +34,8 @@ ppl_interface_generator_ocaml_mli.m4 \
 ppl_interface_generator_ocaml_mli_code.m4
 
 ml_source_files = \
-ppl_ocaml_globals.ml \
-ppl_ocaml_types.ml
+ppl_ocaml_globals.mli \
+ppl_ocaml_globals.ml
 
 EXTRA_DIST = \
 $(interface_generator_files) \
@@ -49,8 +49,7 @@ libppl_ocaml.a \
 ppl_ocaml.cma \
 ppl_ocaml.cmi \
 ppl_ocaml.mli \
-ppl_ocaml_globals.cmi \
-ppl_ocaml_types.cmi
+ppl_ocaml_globals.cmi
 
 BUILT_SOURCES = \
 ppl_ocaml_domains.hh \
@@ -167,37 +166,24 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../ppl_interface_generator_copyright \
 $(interface_generator_files)
 
-ppl_ocaml.cma: ppl_ocaml_types.cmo ppl_ocaml_globals.cmo ppl_ocaml.cmo
+ppl_ocaml.cma: ppl_ocaml_globals.cmo ppl_ocaml.cmo
 	$(OCAMLC_ENV) ocamlc -o $@ -a -custom \
-		ppl_ocaml_types.cmo ppl_ocaml_globals.cmo ppl_ocaml.cmo \
+		ppl_ocaml_globals.cmo ppl_ocaml.cmo \
 		$(OCAMLC_COMPILE_FLAGS) -cclib -lppl_ocaml \
 		$(OCAMLC_LINK_FLAGS)
 
-ppl_ocaml.cmo: ppl_ocaml.ml ppl_ocaml.cmi ppl_ocaml_types.cmi
+ppl_ocaml.cmo: ppl_ocaml.ml ppl_ocaml.cmi ppl_ocaml_globals.cmi
 	$(OCAMLC_ENV) ocamlc -o $@ -g -c $(OCAMLC_COMPILE_FLAGS) ppl_ocaml.ml
 
 ppl_ocaml.cmi: ppl_ocaml.mli
 	$(OCAMLC_ENV) ocamlc -o $@ -g -c $(OCAMLC_COMPILE_FLAGS) $<
 
-ppl_ocaml_globals.cmo: ppl_ocaml_globals.ml ppl_ocaml_types.cmi
+ppl_ocaml_globals.cmo: ppl_ocaml_globals.ml ppl_ocaml_globals.cmi
 	$(OCAMLC_ENV) ocamlc -o $@ -g -c $(OCAMLC_COMPILE_FLAGS) \
 		$(srcdir)/ppl_ocaml_globals.ml
 
-ppl_ocaml_globals.cmi: ppl_ocaml_globals.cmo
-	@if test -f $@; then :; else \
-		rm -f ppl_ocaml_globals.cmo; \
-		$(MAKE) $(AM_MAKEFLAGS) ppl_ocaml_globals.cmo; \
-	fi
-
-ppl_ocaml_types.cmo: ppl_ocaml_types.ml
-	$(OCAMLC_ENV) ocamlc -o $@ -g -c $(OCAMLC_COMPILE_FLAGS) \
-		$(srcdir)/ppl_ocaml_types.ml
-
-ppl_ocaml_types.cmi: ppl_ocaml_types.cmo
-	@if test -f $@; then :; else \
-		rm -f ppl_ocaml_types.cmo; \
-		$(MAKE) $(AM_MAKEFLAGS) ppl_ocaml_types.cmo; \
-	fi
+ppl_ocaml_globals.cmi: ppl_ocaml_globals.mli
+	$(OCAMLC_ENV) ocamlc -o $@ -g -c $(OCAMLC_COMPILE_FLAGS) $<
 
 ppl_ocaml.ml: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
@@ -238,6 +224,4 @@ ppl_ocaml.ml \
 ppl_ocaml.mli \
 ppl_ocaml_globals.cmi \
 ppl_ocaml_globals.cmo \
-ppl_ocaml_types.cmi \
-ppl_ocaml_types.cmo \
 ppl_ocaml_domains_cc_files.stamp

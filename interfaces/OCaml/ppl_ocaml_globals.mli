@@ -1,4 +1,4 @@
-(* OCaml interface: type declarations.
+(* OCaml interface: module inteface.
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -96,3 +96,100 @@ type control_parameter_name = Pricing
 type control_parameter_value = Pricing_Steepest_Edge_Float
                                | Pricing_Steepest_Edge_Exact
                                | Pricing_Textbook
+
+
+val ppl_version_major:
+  unit -> int
+
+val ppl_version_minor:
+  unit -> int
+
+val ppl_version_revision:
+  unit -> int
+
+val ppl_version_beta:
+  unit -> int
+
+val ppl_version:
+  unit -> string
+
+val ppl_banner:
+  unit -> string
+
+val ppl_set_rounding_for_PPL:
+unit -> unit
+
+val ppl_restore_pre_PPL_rounding:
+unit -> unit
+
+type mip_problem
+
+val ppl_new_MIP_Problem_from_space_dimension:
+int -> mip_problem
+
+val ppl_new_MIP_Problem:
+      int -> constraint_system -> linear_expression
+	-> optimization_mode -> mip_problem
+
+val ppl_MIP_Problem_space_dimension:
+  mip_problem -> int
+
+val ppl_MIP_Problem_constraints:
+  mip_problem -> constraint_system
+
+val ppl_MIP_Problem_add_space_dimensions_and_embed:
+  mip_problem -> int -> unit
+
+val ppl_MIP_Problem_add_to_integer_space_dimensions:
+  mip_problem -> int list -> unit
+
+val ppl_MIP_Problem_add_constraint:
+  mip_problem -> linear_constraint -> unit
+
+val ppl_MIP_Problem_add_constraints:
+  mip_problem -> constraint_system -> unit
+
+val ppl_MIP_Problem_set_objective_function:
+  mip_problem -> linear_expression -> unit
+
+val ppl_MIP_Problem_is_satisfiable:
+  mip_problem -> bool
+
+val ppl_MIP_Problem_solve:
+  mip_problem -> mip_problem_status
+
+val ppl_MIP_Problem_optimization_mode:
+  mip_problem -> optimization_mode
+
+val ppl_MIP_Problem_feasible_point:
+  mip_problem -> linear_generator
+
+val ppl_MIP_Problem_optimizing_point:
+  mip_problem -> linear_generator
+
+val ppl_MIP_Problem_objective_function:
+  mip_problem -> linear_expression
+
+val ppl_MIP_Problem_optimal_value:
+  mip_problem -> Z.t * Z.t
+
+val ppl_MIP_Problem_evaluate_objective_function:
+  mip_problem -> linear_generator  -> Z.t * Z.t
+
+val ppl_MIP_Problem_OK:
+  mip_problem -> bool
+
+val ppl_MIP_Problem_clear:
+  mip_problem -> unit
+
+val ppl_MIP_Problem_set_optimization_mode:
+  mip_problem -> optimization_mode -> unit
+
+val ppl_MIP_Problem_set_control_parameter:
+  mip_problem -> control_parameter_value -> unit
+
+val ppl_MIP_Problem_get_control_parameter:
+  mip_problem -> control_parameter_name -> control_parameter_value
+
+val ppl_MIP_Problem_swap:
+  mip_problem -> mip_problem -> unit

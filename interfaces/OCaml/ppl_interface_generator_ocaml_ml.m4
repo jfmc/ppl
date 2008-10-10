@@ -34,9 +34,8 @@ m4_divert`'dnl
 m4_include(`ppl_interface_generator_copyright')`'dnl
 *)
 
-include Ppl_ocaml_globals
-include Ppl_ocaml_types
 open Gmp
+include Ppl_ocaml_globals
 
 exception Error of string
 let _ = Callback.register_exception "PPL_arithmetic_overflow" (Error "any string")
