@@ -798,8 +798,8 @@ $(DEVREF_CORE_HTML_DIR): devref.doxyconf-html Makefile $(DEVREF_CORE_STUFF)
 
 ##### Configuration Independent Foreign Language Interface Targets #####
 
-SED_HTML_OPTION = -f @srcdir@/interfaces-html.sed
-SED_LATEX_OPTION = -f @srcdir@/interfaces-latex.sed
+SED_HTML_OPTION = -f $(srcdir)/interfaces-html.sed
+SED_LATEX_OPTION = -f $(srcdir)/interfaces-latex.sed
 
 SED_USER_HTML_OPTION = $(SED_HTML_OPTION) \
 -e 's|<PPL_SED_TAGFILES>|ppl-user-@VERSION@-html.tag=../ppl-user-@VERSION@-html.tag|'
@@ -825,25 +825,25 @@ SED_C_OPTION = \
 # CHECKME: check the correct input values for Doxygen.
 SED_C_INPUT_USER = \
 ../interfaces/C/ppl_c_version.h \
-@srcdir@/../interfaces/C/ppl_c_header.h \
-@srcdir@/../interfaces/C/C_interface.dox \
-@srcdir@/gpl.dox @srcdir@/fdl.dox
+$(srcdir)/../interfaces/C/ppl_c_header.h \
+$(srcdir)/../interfaces/C/C_interface.dox \
+$(srcdir)/gpl.dox $(srcdir)/fdl.dox
 
 SED_C_INPUT_DEVREF = \
 ../interfaces/C/ppl_c_version.h \
-@srcdir@/../interfaces/C/ppl_c_header.h \
-@srcdir@/../interfaces/C/C_interface.dox \
-@srcdir@/../interfaces/C/ppl_c_implementation_common.cc \
-@srcdir@/../interfaces/C/ppl_c_implementation_common.defs.hh \
-@srcdir@/../interfaces/C/ppl_c_implementation_common.inlines.hh \
-@srcdir@/gpl.dox @srcdir@/fdl.dox
+$(srcdir)/../interfaces/C/ppl_c_header.h \
+$(srcdir)/../interfaces/C/C_interface.dox \
+$(srcdir)/../interfaces/C/ppl_c_implementation_common.cc \
+$(srcdir)/../interfaces/C/ppl_c_implementation_common.defs.hh \
+$(srcdir)/../interfaces/C/ppl_c_implementation_common.inlines.hh \
+$(srcdir)/gpl.dox $(srcdir)/fdl.dox
 
 user-c-interface.latex-dir: \
 user-foreign-language-interface.doxyconf \
 Makefile $(USER_C_INTERFACE_STUFF)
 	rm -rf $@
 	$(SED) $(SED_C_OPTION) \
-	    @srcdir@/user-foreign-language-interface.tex \
+	    $(srcdir)/user-foreign-language-interface.tex \
 	    > user-c-interface.tex
 	$(SED) $(SED_C_OPTION) $(SED_USER_LATEX_OPTION) \
 	    -e 's|<PPL_SED_INPUT>|'"$(SED_C_INPUT_USER)"'|' \
@@ -855,7 +855,7 @@ devref-foreign-language-interface.doxyconf \
 Makefile $(DEVREF_C_INTERFACE_STUFF)
 	rm -rf $@
 	$(SED) $(SED_C_OPTION) \
-	    @srcdir@/devref-foreign-language-interface.tex \
+	    $(srcdir)/devref-foreign-language-interface.tex \
 	    > devref-c-interface.tex
 	$(SED) $(SED_C_OPTION) $(SED_DEVREF_LATEX_OPTION) \
 	    -e 's|<PPL_SED_INPUT>|'"$(SED_C_INPUT_DEVREF)"'|' \
@@ -873,7 +873,7 @@ user-foreign-language-interface.doxyconf \
 $(USER_C_INTERFACE_STUFF) $(USER_CORE_HTML_DIR)
 	rm -rf $@
 	$(SED) $(SED_C_OPTION) \
-	    @srcdir@/user-foreign-language-interface.tex \
+	    $(srcdir)/user-foreign-language-interface.tex \
 	    > user-c-interface.tex
 	$(SED) $(SED_C_OPTION) $(SED_USER_HTML_OPTION) \
 	    -e 's|<PPL_SED_INPUT>|'"$(SED_C_INPUT_USER)"'|' \
@@ -887,7 +887,7 @@ devref-foreign-language-interface.doxyconf \
 $(DEVREF_C_INTERFACE_STUFF) $(DEVREF_CORE_HTML_DIR)
 	rm -rf $@
 	$(SED) $(SED_C_OPTION) \
-	    @srcdir@/devref-foreign-language-interface.tex \
+	    $(srcdir)/devref-foreign-language-interface.tex \
 	    > devref-c-interface.tex
 	$(SED) $(SED_C_OPTION) $(SED_DEVREF_HTML_OPTION) \
 	    -e 's|<PPL_SED_INPUT>|'"$(SED_C_INPUT_DEVREF)"'|' \
@@ -905,22 +905,22 @@ SED_PROLOG_OPTION = \
 
 # CHECKME: check the correct input values for Doxygen.
 SED_PROLOG_INPUT_USER = \
-@srcdir@/../interfaces/Prolog/Prolog_interface.dox \
-@srcdir@/gpl.dox @srcdir@/fdl.dox
+$(srcdir)/../interfaces/Prolog/Prolog_interface.dox \
+$(srcdir)/gpl.dox $(srcdir)/fdl.dox
 
 SED_PROLOG_INPUT_DEVREF = \
-@srcdir@/../interfaces/Prolog/Prolog_interface.dox \
-@srcdir@/../interfaces/Prolog/ppl_prolog_common.defs.hh \
-@srcdir@/../interfaces/Prolog/ppl_prolog_common.inlines.hh \
-@srcdir@/../interfaces/Prolog/ppl_prolog_common.cc \
-@srcdir@/gpl.dox @srcdir@/fdl.dox
+$(srcdir)/../interfaces/Prolog/Prolog_interface.dox \
+$(srcdir)/../interfaces/Prolog/ppl_prolog_common.defs.hh \
+$(srcdir)/../interfaces/Prolog/ppl_prolog_common.inlines.hh \
+$(srcdir)/../interfaces/Prolog/ppl_prolog_common.cc \
+$(srcdir)/gpl.dox $(srcdir)/fdl.dox
 
 user-prolog-interface.latex-dir: \
 user-foreign-language-interface.doxyconf \
 Makefile $(USER_PROLOG_INTERFACE_STUFF)
 	rm -rf $@
 	$(SED) $(SED_PROLOG_OPTION) \
-	    @srcdir@/user-foreign-language-interface.tex \
+	    $(srcdir)/user-foreign-language-interface.tex \
 	    > user-prolog-interface.tex
 	$(SED) $(SED_PROLOG_OPTION) $(SED_USER_LATEX_OPTION) \
 	  -e 's|<PPL_SED_INPUT>|'"$(SED_PROLOG_INPUT_USER)"'|' \
@@ -932,7 +932,7 @@ devref-foreign-language-interface.doxyconf \
 Makefile $(DEVREF_PROLOG_INTERFACE_STUFF)
 	rm -rf $@
 	$(SED) $(SED_PROLOG_OPTION) \
-	    @srcdir@/devref-foreign-language-interface.tex \
+	    $(srcdir)/devref-foreign-language-interface.tex \
 	    > devref-prolog-interface.tex
 	$(SED) $(SED_PROLOG_OPTION) $(SED_DEVREF_LATEX_OPTION) \
 	  -e 's|<PPL_SED_INPUT>|'"$(SED_PROLOG_INPUT_DEVREF)"'|' \
@@ -950,7 +950,7 @@ user-foreign-language-interface.doxyconf \
 $(USER_PROLOG_INTERFACE_STUFF) $(USER_CORE_HTML_DIR)
 	rm -rf $@
 	$(SED) $(SED_PROLOG_OPTION) \
-	    @srcdir@/user-foreign-language-interface.tex \
+	    $(srcdir)/user-foreign-language-interface.tex \
 	    > user-prolog-interface.tex
 	$(SED) $(SED_PROLOG_OPTION) $(SED_USER_HTML_OPTION) \
 	  -e 's|<PPL_SED_INPUT>|'"$(SED_PROLOG_INPUT_USER)"'|' \
@@ -964,7 +964,7 @@ devref-foreign-language-interface.doxyconf \
 $(DEVREF_PROLOG_INTERFACE_STUFF) $(DEVREF_CORE_HTML_DIR)
 	rm -rf $@
 	$(SED) $(SED_PROLOG_OPTION) \
-	    @srcdir@/devref-foreign-language-interface.tex \
+	    $(srcdir)/devref-foreign-language-interface.tex \
 	    > devref-prolog-interface.tex
 	$(SED) $(SED_PROLOG_OPTION) $(SED_DEVREF_HTML_OPTION) \
 	  -e 's|<PPL_SED_INPUT>|'"$(SED_PROLOG_INPUT_DEVREF)"'|' \
@@ -982,15 +982,15 @@ SED_OCAML_OPTION = \
 
 # CHECKME: check the correct input values for Doxygen.
 SED_OCAML_INPUT_USER = \
-@srcdir@/../interfaces/OCaml/OCaml_interface.dox \
-@srcdir@/gpl.dox @srcdir@/fdl.dox
+$(srcdir)/../interfaces/OCaml/OCaml_interface.dox \
+$(srcdir)/gpl.dox $(srcdir)/fdl.dox
 
 SED_OCAML_INPUT_DEVREF = \
-@srcdir@/../interfaces/OCaml/OCaml_interface.dox \
-@srcdir@/../interfaces/OCaml/ppl_ocaml_common.cc \
-@srcdir@/../interfaces/OCaml/ppl_ocaml_common.defs.hh \
-@srcdir@/../interfaces/OCaml/ppl_ocaml_common.inlines.hh \
-@srcdir@/gpl.dox @srcdir@/fdl.dox
+$(srcdir)/../interfaces/OCaml/OCaml_interface.dox \
+$(srcdir)/../interfaces/OCaml/ppl_ocaml_common.cc \
+$(srcdir)/../interfaces/OCaml/ppl_ocaml_common.defs.hh \
+$(srcdir)/../interfaces/OCaml/ppl_ocaml_common.inlines.hh \
+$(srcdir)/gpl.dox $(srcdir)/fdl.dox
 
 OCAMLDOC_HTML_OPTIONS = \
 -I +gmp -I $(top_builddir)/interfaces/OCaml -html
@@ -1004,28 +1004,28 @@ user-foreign-language-interface.doxyconf \
 Makefile $(USER_OCAML_INTERFACE_STUFF)
 	rm -rf $@
 	$(SED) $(SED_OCAML_OPTION) \
-	    @srcdir@/user-foreign-language-interface.tex \
+	    $(srcdir)/user-foreign-language-interface.tex \
 	    > user-ocaml-interface.tex
 	$(SED) $(SED_OCAML_OPTION) $(SED_USER_LATEX_OPTION) \
 	  -e 's|<PPL_SED_INPUT>|'"$(SED_OCAML_INPUT_USER)"'|' \
 	  $<  > Doxyfile.user-ocaml-interface-latex
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.user-ocaml-interface-latex
 	ocamldoc $(OCAMLDOC_LATEX_OPTIONS) -o $@/ocamldoc.tex \
-		@srcdir@/../interfaces/OCaml/ppl_ocaml_globals.mli
+		$(srcdir)/../interfaces/OCaml/ppl_ocaml_globals.mli
 
 devref-ocaml-interface.latex-dir: \
 devref-foreign-language-interface.doxyconf \
 Makefile $(DEVREF_OCAML_INTERFACE_STUFF)
 	rm -rf $@
 	$(SED) $(SED_OCAML_OPTION) \
-	    @srcdir@/devref-foreign-language-interface.tex \
+	    $(srcdir)/devref-foreign-language-interface.tex \
 	    > devref-ocaml-interface.tex
 	$(SED) $(SED_OCAML_OPTION) $(SED_DEVREF_LATEX_OPTION) \
 	  -e 's|<PPL_SED_INPUT>|'"$(SED_OCAML_INPUT_DEVREF)"'|' \
 	  $<  > Doxyfile.devref-ocaml-interface-latex
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.devref-ocaml-interface-latex
 	ocamldoc $(OCAMLDOC_LATEX_OPTIONS) -o $@/ocamldoc.tex \
-		@srcdir@/../interfaces/OCaml/ppl_ocaml_globals.mli
+		$(srcdir)/../interfaces/OCaml/ppl_ocaml_globals.mli
 
 ppl-user-ocaml-interface-@VERSION@.pdf: user-ocaml-interface.latex-dir
 	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
@@ -1038,7 +1038,7 @@ user-foreign-language-interface.doxyconf \
 $(USER_OCAML_INTERFACE_STUFF) $(USER_CORE_HTML_DIR)
 	rm -rf $@
 	$(SED) $(SED_OCAML_OPTION) \
-	    @srcdir@/user-foreign-language-interface.tex \
+	    $(srcdir)/user-foreign-language-interface.tex \
 	    > user-ocaml-interface.tex
 	$(SED) $(SED_OCAML_OPTION) $(SED_USER_HTML_OPTION) \
 	    -e 's|<PPL_SED_INPUT>|'"$(SED_OCAML_INPUT_USER)"'|' \
@@ -1048,14 +1048,14 @@ $(USER_OCAML_INTERFACE_STUFF) $(USER_CORE_HTML_DIR)
 		-l $(USER_CORE_HTML_DIR).tag@../$(USER_CORE_HTML_DIR))
 	mkdir $@/ocamldoc
 	ocamldoc $(OCAMLDOC_HTML_OPTIONS) -d $@/ocamldoc \
-		@srcdir@/../interfaces/OCaml/ppl_ocaml_globals.mli
+		$(srcdir)/../interfaces/OCaml/ppl_ocaml_globals.mli
 
 ppl-devref-ocaml-interface-@VERSION@-html: \
 devref-foreign-language-interface.doxyconf \
 $(DEVREF_OCAML_INTERFACE_STUFF) $(DEVREF_CORE_HTML_DIR)
 	rm -rf $@
 	$(SED) $(SED_OCAML_OPTION) \
-	    @srcdir@/devref-foreign-language-interface.tex \
+	    $(srcdir)/devref-foreign-language-interface.tex \
 	    > devref-ocaml-interface.tex
 	$(SED) $(SED_OCAML_OPTION) $(SED_DEVREF_HTML_OPTION) \
 	  -e 's|<PPL_SED_INPUT>|'"$(SED_OCAML_INPUT_DEVREF)"'|' \
@@ -1065,7 +1065,7 @@ $(DEVREF_OCAML_INTERFACE_STUFF) $(DEVREF_CORE_HTML_DIR)
 		-l $(DEVREF_CORE_HTML_DIR).tag@../$(DEVREF_CORE_HTML_DIR))
 	mkdir $@/ocamldoc
 	ocamldoc $(OCAMLDOC_HTML_OPTIONS) -d $@/ocamldoc \
-		@srcdir@/../interfaces/OCaml/ppl_ocaml_globals.mli
+		$(srcdir)/../interfaces/OCaml/ppl_ocaml_globals.mli
 
 # Java Language Interface Targets
 
@@ -1077,25 +1077,25 @@ SED_JAVA_OPTION = \
 # CHECKME: check the correct input values for Doxygen.
 # Note that here we are including a whole directory.
 SED_JAVA_INPUT_USER = \
-@srcdir@/../interfaces/Java/parma_polyhedra_library \
-@srcdir@/gpl.dox @srcdir@/fdl.dox
+$(srcdir)/../interfaces/Java/parma_polyhedra_library \
+$(srcdir)/gpl.dox $(srcdir)/fdl.dox
 
 # CHECKME: check the correct input values for Doxygen.
 # Note that here we are including a whole directory.
 SED_JAVA_INPUT_DEVREF = \
-@srcdir@/../interfaces/Java/parma_polyhedra_library \
-@srcdir@/../interfaces/Java/jni/ppl_java_common.cc \
-@srcdir@/../interfaces/Java/jni/ppl_java_common.defs.hh \
-@srcdir@/../interfaces/Java/jni/ppl_java_common.inlines.hh \
-@srcdir@/../interfaces/Java/jni/ppl_java_globals.cc \
-@srcdir@/gpl.dox @srcdir@/fdl.dox
+$(srcdir)/../interfaces/Java/parma_polyhedra_library \
+$(srcdir)/../interfaces/Java/jni/ppl_java_common.cc \
+$(srcdir)/../interfaces/Java/jni/ppl_java_common.defs.hh \
+$(srcdir)/../interfaces/Java/jni/ppl_java_common.inlines.hh \
+$(srcdir)/../interfaces/Java/jni/ppl_java_globals.cc \
+$(srcdir)/gpl.dox $(srcdir)/fdl.dox
 
 user-java-interface.latex-dir: \
 user-foreign-language-interface.doxyconf \
 Makefile $(USER_JAVA_INTERFACE_STUFF)
 	rm -rf $@
 	$(SED) $(SED_JAVA_OPTION) \
-	    @srcdir@/user-foreign-language-interface.tex \
+	    $(srcdir)/user-foreign-language-interface.tex \
 	    > user-java-interface.tex
 	$(SED) $(SED_JAVA_OPTION) $(SED_USER_LATEX_OPTION) \
 	  -e 's|<PPL_SED_INPUT>|'"$(SED_JAVA_INPUT_USER)"'|' \
@@ -1107,7 +1107,7 @@ devref-foreign-language-interface.doxyconf \
 Makefile $(DEVREF_JAVA_INTERFACE_STUFF)
 	rm -rf $@
 	$(SED) $(SED_JAVA_OPTION) \
-	    @srcdir@/devref-foreign-language-interface.tex \
+	    $(srcdir)/devref-foreign-language-interface.tex \
 	    > devref-java-interface.tex
 	$(SED) $(SED_JAVA_OPTION) $(SED_DEVREF_LATEX_OPTION) \
 	  -e 's|<PPL_SED_INPUT>|'"$(SED_JAVA_INPUT_DEVREF)"'|' \
@@ -1125,7 +1125,7 @@ user-foreign-language-interface.doxyconf \
 $(USER_JAVA_INTERFACE_STUFF) $(USER_CORE_HTML_DIR)
 	rm -rf $@
 	$(SED) $(SED_JAVA_OPTION) \
-	    @srcdir@/user-foreign-language-interface.tex \
+	    $(srcdir)/user-foreign-language-interface.tex \
 	    > user-java-interface.tex
 	$(SED) $(SED_JAVA_OPTION) $(SED_USER_HTML_OPTION) \
 	  -e 's|<PPL_SED_INPUT>|'"$(SED_JAVA_INPUT_USER)"'|' \
@@ -1139,7 +1139,7 @@ devref-foreign-language-interface.doxyconf \
 $(DEVREF_JAVA_INTERFACE_STUFF) $(DEVREF_CORE_HTML_DIR)
 	rm -rf $@
 	$(SED) $(SED_JAVA_OPTION) \
-	    @srcdir@/devref-foreign-language-interface.tex \
+	    $(srcdir)/devref-foreign-language-interface.tex \
 	    > devref-java-interface.tex
 	$(SED) $(SED_JAVA_OPTION) $(SED_DEVREF_HTML_OPTION) \
 	  -e 's|<PPL_SED_INPUT>|'"$(SED_JAVA_INPUT_DEVREF)"'|' \
@@ -1161,17 +1161,17 @@ SED_CONFIGURED_C_OPTION = \
 
 # CHECKME: check the correct input values for Doxygen.
 SED_CONFIGURED_C_INPUT_USER = \
-@srcdir@/../interfaces/C/C_interface.dox \
+$(srcdir)/../interfaces/C/C_interface.dox \
 ../interfaces/C/ppl_c.h \
-@srcdir@/gpl.dox @srcdir@/fdl.dox
+$(srcdir)/gpl.dox $(srcdir)/fdl.dox
 
 SED_CONFIGURED_C_INPUT_DEVREF = \
-@srcdir@/../interfaces/C/C_interface.dox \
+$(srcdir)/../interfaces/C/C_interface.dox \
 ../interfaces/C/ppl_c.h \
-@srcdir@/../interfaces/C/ppl_c_implementation_common.cc \
-@srcdir@/../interfaces/C/ppl_c_implementation_common.defs.hh \
-@srcdir@/../interfaces/C/ppl_c_implementation_common.inlines.hh \
-@srcdir@/gpl.dox @srcdir@/fdl.dox
+$(srcdir)/../interfaces/C/ppl_c_implementation_common.cc \
+$(srcdir)/../interfaces/C/ppl_c_implementation_common.defs.hh \
+$(srcdir)/../interfaces/C/ppl_c_implementation_common.inlines.hh \
+$(srcdir)/gpl.dox $(srcdir)/fdl.dox
 # FIXME add generated files
 
 user-configured-c-interface.latex-dir: \
@@ -1179,7 +1179,7 @@ user-foreign-language-interface.doxyconf \
 Makefile $(USER_CONFIGURED_C_INTERFACE_STUFF)
 	rm -rf $@
 	$(SED) $(SED_CONFIGURED_C_OPTION) \
-	    @srcdir@/user-foreign-language-interface.tex \
+	    $(srcdir)/user-foreign-language-interface.tex \
 	    > user-configured-c-interface.tex
 	$(SED) $(SED_CONFIGURED_C_OPTION) $(SED_USER_LATEX_OPTION) \
 	    -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_C_INPUT_USER)"'|' \
@@ -1191,7 +1191,7 @@ devref-foreign-language-interface.doxyconf \
 Makefile $(DEVREF_CONFIGURED_C_INTERFACE_STUFF)
 	rm -rf $@
 	$(SED) $(SED_CONFIGURED_C_OPTION) \
-	    @srcdir@/devref-foreign-language-interface.tex \
+	    $(srcdir)/devref-foreign-language-interface.tex \
 	    > devref-configured-c-interface.tex
 	$(SED) $(SED_CONFIGURED_C_OPTION) $(SED_DEVREF_LATEX_OPTION) \
 	    -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_C_INPUT_DEVREF)"'|' \
@@ -1211,7 +1211,7 @@ user-foreign-language-interface.doxyconf \
 $(USER_CONFIGURED_C_INTERFACE_STUFF) $(USER_CORE_HTML_DIR)
 	rm -rf $@
 	$(SED) $(SED_CONFIGURED_C_OPTION) \
-	    @srcdir@/user-foreign-language-interface.tex \
+	    $(srcdir)/user-foreign-language-interface.tex \
 	    > user-configured-c-interface.tex
 	$(SED) $(SED_CONFIGURED_C_OPTION) $(SED_USER_HTML_OPTION) \
 	    -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_C_INPUT_USER)"'|' \
@@ -1225,7 +1225,7 @@ devref-foreign-language-interface.doxyconf \
 $(DEVREF_CONFIGURED_C_INTERFACE_STUFF) $(DEVREF_CORE_HTML_DIR)
 	rm -rf $@
 	$(SED) $(SED_CONFIGURED_C_OPTION) \
-	    @srcdir@/devref-foreign-language-interface.tex \
+	    $(srcdir)/devref-foreign-language-interface.tex \
 	    > devref-configured-c-interface.tex
 	$(SED) $(SED_CONFIGURED_C_OPTION) $(SED_DEVREF_HTML_OPTION) \
 	    -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_C_INPUT_DEVREF)"'|' \
@@ -1257,7 +1257,7 @@ user-foreign-language-interface.doxyconf \
 Makefile $(USER_CONFIGURED_PROLOG_INTERFACE_STUFF)
 	rm -rf $@
 	$(SED) $(SED_CONFIGURED_PROLOG_OPTION) \
-	    @srcdir@/user-foreign-language-interface.tex \
+	    $(srcdir)/user-foreign-language-interface.tex \
 	    > user-configured-prolog-interface.tex
 	$(SED) $(SED_CONFIGURED_PROLOG_OPTION) $(SED_USER_LATEX_OPTION) \
 	  -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_PROLOG_INPUT_USER)"'|' \
@@ -1269,7 +1269,7 @@ devref-foreign-language-interface.doxyconf \
 Makefile $(DEVREF_CONFIGURED_PROLOG_INTERFACE_STUFF)
 	rm -rf $@
 	$(SED) $(SED_CONFIGURED_PROLOG_OPTION) \
-	    @srcdir@/devref-foreign-language-interface.tex \
+	    $(srcdir)/devref-foreign-language-interface.tex \
 	    > devref-configured-prolog-interface.tex
 	$(SED) $(SED_CONFIGURED_PROLOG_OPTION) $(SED_DEVREF_LATEX_OPTION) \
 	  -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_PROLOG_INPUT_DEVREF)"'|' \
@@ -1289,7 +1289,7 @@ user-foreign-language-interface.doxyconf \
 $(USER_CONFIGURED_PROLOG_INTERFACE_STUFF) $(USER_CORE_HTML_DIR)
 	rm -rf $@
 	$(SED) $(SED_CONFIGURED_PROLOG_OPTION) \
-	    @srcdir@/user-foreign-language-interface.tex \
+	    $(srcdir)/user-foreign-language-interface.tex \
 	    > user-configured-prolog-interface.tex
 	$(SED) $(SED_CONFIGURED_PROLOG_OPTION) $(SED_USER_HTML_OPTION) \
 	  -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_PROLOG_INPUT_USER)"'|' \
@@ -1303,7 +1303,7 @@ devref-foreign-language-interface.doxyconf \
 $(DEVREF_CONFIGURED_PROLOG_INTERFACE_STUFF) $(DEVREF_CORE_HTML_DIR)
 	rm -rf $@
 	$(SED) $(SED_CONFIGURED_PROLOG_OPTION) \
-	    @srcdir@/devref-foreign-language-interface.tex \
+	    $(srcdir)/devref-foreign-language-interface.tex \
 	    > devref-configured-prolog-interface.tex
 	$(SED) $(SED_CONFIGURED_PROLOG_OPTION) $(SED_DEVREF_HTML_OPTION) \
 	  -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_PROLOG_INPUT_DEVREF)"'|' \
@@ -1324,22 +1324,22 @@ SED_CONFIGURED_OCAML_OPTION = \
 
 # CHECKME: check the correct input values for Doxygen.
 SED_CONFIGURED_OCAML_INPUT_USER = \
-@srcdir@/../interfaces/OCaml/OCaml_interface.dox \
-@srcdir@/gpl.dox @srcdir@/fdl.dox
+$(srcdir)/../interfaces/OCaml/OCaml_interface.dox \
+$(srcdir)/gpl.dox $(srcdir)/fdl.dox
 
 SED_CONFIGURED_OCAML_INPUT_DEVREF = \
-@srcdir@/../interfaces/OCaml/OCaml_interface.dox \
-@srcdir@/../interfaces/OCaml/ppl_ocaml_common.cc \
-@srcdir@/../interfaces/OCaml/ppl_ocaml_common.defs.hh \
-@srcdir@/../interfaces/OCaml/ppl_ocaml_common.inlines.hh \
-@srcdir@/gpl.dox @srcdir@/fdl.dox
+$(srcdir)/../interfaces/OCaml/OCaml_interface.dox \
+$(srcdir)/../interfaces/OCaml/ppl_ocaml_common.cc \
+$(srcdir)/../interfaces/OCaml/ppl_ocaml_common.defs.hh \
+$(srcdir)/../interfaces/OCaml/ppl_ocaml_common.inlines.hh \
+$(srcdir)/gpl.dox $(srcdir)/fdl.dox
 
 user-configured-ocaml-interface.latex-dir: \
 user-foreign-language-interface.doxyconf \
 Makefile $(USER_CONFIGURED_OCAML_INTERFACE_STUFF)
 	rm -rf $@
 	$(SED) $(SED_CONFIGURED_OCAML_OPTION) \
-	    @srcdir@/user-foreign-language-interface.tex \
+	    $(srcdir)/user-foreign-language-interface.tex \
 	    > user-configured-ocaml-interface.tex
 	$(SED) $(SED_CONFIGURED_OCAML_OPTION) $(SED_USER_LATEX_OPTION) \
 	  -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_OCAML_INPUT_USER)"'|' \
@@ -1353,7 +1353,7 @@ devref-foreign-language-interface.doxyconf \
 Makefile $(DEVREF_CONFIGURED_OCAML_INTERFACE_STUFF)
 	rm -rf $@
 	$(SED) $(SED_CONFIGURED_OCAML_OPTION) \
-	    @srcdir@/devref-foreign-language-interface.tex \
+	    $(srcdir)/devref-foreign-language-interface.tex \
 	    > devref-configured-ocaml-interface.tex
 	$(SED) $(SED_CONFIGURED_OCAML_OPTION) $(SED_DEVREF_LATEX_OPTION) \
 	  -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_OCAML_INPUT_DEVREF)"'|' \
@@ -1375,7 +1375,7 @@ user-foreign-language-interface.doxyconf \
 $(USER_CONFIGURED_OCAML_INTERFACE_STUFF) $(USER_CORE_HTML_DIR)
 	rm -rf $@
 	$(SED) $(SED_CONFIGURED_OCAML_OPTION) \
-	    @srcdir@/user-foreign-language-interface.tex \
+	    $(srcdir)/user-foreign-language-interface.tex \
 	    > user-configured-ocaml-interface.tex
 	$(SED) $(SED_CONFIGURED_OCAML_OPTION) $(SED_USER_HTML_OPTION) \
 	    -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_OCAML_INPUT_USER)"'|' \
@@ -1392,7 +1392,7 @@ devref-foreign-language-interface.doxyconf \
 $(DEVREF_CONFIGURED_OCAML_INTERFACE_STUFF) $(DEVREF_CORE_HTML_DIR)
 	rm -rf $@
 	$(SED) $(SED_CONFIGURED_OCAML_OPTION) \
-	    @srcdir@/devref-foreign-language-interface.tex \
+	    $(srcdir)/devref-foreign-language-interface.tex \
 	    > devref-configured-ocaml-interface.tex
 	$(SED) $(SED_CONFIGURED_OCAML_OPTION) $(SED_DEVREF_HTML_OPTION) \
 	  -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_OCAML_INPUT_DEVREF)"'|' \
@@ -1434,7 +1434,7 @@ user-foreign-language-interface.doxyconf \
 Makefile $(USER_CONFIGURED_JAVA_INTERFACE_STUFF)
 	rm -rf $@
 	$(SED) $(SED_CONFIGURED_JAVA_OPTION) \
-	    @srcdir@/user-foreign-language-interface.tex \
+	    $(srcdir)/user-foreign-language-interface.tex \
 	    > user-configured-java-interface.tex
 	$(SED) $(SED_CONFIGURED_JAVA_OPTION) $(SED_USER_LATEX_OPTION) \
 	    -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_JAVA_INPUT_USER)"'|' \
@@ -1450,7 +1450,7 @@ devref-foreign-language-interface.doxyconf \
 Makefile $(DEVREF_CONFIGURED_JAVA_INTERFACE_STUFF)
 	rm -rf $@
 	$(SED) $(SED_CONFIGURED_JAVA_OPTION) \
-	    @srcdir@/devref-foreign-language-interface.tex \
+	    $(srcdir)/devref-foreign-language-interface.tex \
 	    > devref-configured-java-interface.tex
 	$(SED) $(SED_CONFIGURED_JAVA_OPTION) $(SED_DEVREF_LATEX_OPTION) \
 	    -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_JAVA_INPUT_DEVREF)"'|' \
@@ -1472,7 +1472,7 @@ user-foreign-language-interface.doxyconf \
 $(USER_CONFIGURED_JAVA_INTERFACE_STUFF) $(USER_CORE_HTML_DIR)
 	rm -rf $@
 	$(SED) $(SED_CONFIGURED_JAVA_OPTION) \
-	    @srcdir@/user-foreign-language-interface.tex \
+	    $(srcdir)/user-foreign-language-interface.tex \
 	    > user-configured-java-interface.tex
 	$(SED) $(SED_CONFIGURED_JAVA_OPTION) $(SED_USER_HTML_OPTION) \
 	    -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_JAVA_INPUT_USER)"'|' \
@@ -1490,7 +1490,7 @@ devref-foreign-language-interface.doxyconf \
 $(DEVREF_CONFIGURED_JAVA_INTERFACE_STUFF) $(DEVREF_CORE_HTML_DIR)
 	rm -rf $@
 	$(SED) $(SED_CONFIGURED_JAVA_OPTION) \
-	    @srcdir@/devref-foreign-language-interface.tex \
+	    $(srcdir)/devref-foreign-language-interface.tex \
 	    > devref-configured-java-interface.tex
 	$(SED) $(SED_CONFIGURED_JAVA_OPTION) $(SED_DEVREF_HTML_OPTION) \
 	    -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_JAVA_INPUT_DEVREF)"'|' \
