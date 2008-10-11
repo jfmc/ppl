@@ -1021,7 +1021,7 @@ of \f$\cP\f$.  More formally,
                                      \itc k \neq i \implies u_k = v_k = w_k
       }.
 \f]
-This operation has been proposed in \ref GDMDRS04 "[GDMDRS04]".
+This operation has been proposed in \ref GDDetal04 "[GDDetal04]".
 
 
 \anchor fold_space_dimensions
@@ -1070,7 +1070,7 @@ and, finally, for \f$ k = 0 \f$, \f$ \ldots \f$, \f$ n-1 \f$,
 \f]
 (\f$\card S\f$ denotes the cardinality of the finite set \f$S\f$).
 
-This operation has been proposed in \ref GDMDRS04 "[GDMDRS04]".
+This operation has been proposed in \ref GDDetal04 "[GDDetal04]".
 
 
 \anchor affine_relation
@@ -1672,7 +1672,8 @@ bounded differences or octagonal constraints.
 \anchor BHMZ05_widening
 For the domains of BDSs and OSs, the library provides a variant of
 the widening operator for convex polyhedra defined in \ref CH78 "[CH78]".
-The implementation follows the specification in \ref BHMZ05 "[BHMZ05]",
+The implementation follows the specification
+in \ref BHMZ05a "[BHMZ05a,BHMZ05b]",
 resulting in an operator which is well-defined on the corresponding domain
 (i.e., it does not depend on the internal representation of BDSs or OSs),
 while still ensuring convergence in a finite number of steps.
@@ -1689,7 +1690,7 @@ extrapolation operator.
 
 In this section we introduce rational grids
 as provided by the library.
-See also \ref BDHMZ05 "[BDHMZ05]" for a detailed description of this domain.
+See also \ref BDHetal05 "[BDHetal05]" for a detailed description of this domain.
 
 The library supports two representations for the grids domain;
 <EM>congruence systems</EM> and <EM>grid generator systems</EM>.
@@ -1815,7 +1816,7 @@ If \f$L, Q, P\f$ are each finite subsets of \f$\Qset^n\f$ and
 where the symbol '\f$+\f$' denotes the Minkowski's sum,
 then \f$\cL \in \Gset_n\f$ is a rational grid
 (see Section 4.4 in \ref Sch99 "[Sch99]" and
-also Proposition 8 in \ref BDHMZ05 "[BDHMZ05]").
+also Proposition 8 in \ref BDHetal05 "[BDHetal05]").
 The 3-tuple \f$(L, Q, P)\f$
 is said to be a <EM>grid generator system</EM> for \f$\cL\f$
 and we write \f$\cL = \ggen(L, Q, P)\f$.
@@ -2252,7 +2253,7 @@ representing \f$\cL\f$ does not change \f$\cL\f$.
 
 The library provides <EM>grid widening</EM> operators for the domain of grids.
 The congruence widening and generator widening
-follow the specifications provided in \ref BDHMZ05 "[BDHMZ05]".
+follow the specifications provided in \ref BDHetal05 "[BDHetal05]".
 The third widening uses either
 the congruence or the generator widening, the exact rule governing this choice
 at the time of the call is left to the implementation.
