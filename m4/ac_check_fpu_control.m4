@@ -29,10 +29,29 @@ AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
 int
 main() {
 #if i386
+
+  /* Fine. */
+
 #elif defined(HAVE_FENV_H)
-#elif sparc && defined( HAVE_IEEEFP_H)
-#else
+
+# include <fenv.h>
+
+# if !defined(FE_UPWARD) || !defined(FE_DOWNWARD)
   choke me
+# endif
+
+#elif sparc && defined(HAVE_IEEEFP_H)
+
+# include <ieeefp.h>
+
+# if !defined(FE_UPWARD) || !defined(FE_DOWNWARD)
+  choke me
+# endif
+
+#else
+
+  choke me
+
 #endif
 
   ;
