@@ -699,14 +699,7 @@ fi
 extra_includes="${extra_includes}${extra_includes:+ }${gmp_includes_option}"
 extra_libraries="${extra_libraries}${extra_libraries:+ }${gmp_library_option}"
 
-# Under Cygwin, the PWL does not work.  It is not yet clear whether
-# Cygwin provides the services required in order to make it work.
-if test x"${host_os}" = xcygwin
-then
-  enableval=no
-else
-  enableval=yes
-fi
+enableval=yes
 AC_MSG_CHECKING([whether to build the Parma Watchdog Library])
 AC_ARG_ENABLE(watchdog,
   AC_HELP_STRING([--enable-watchdog],
