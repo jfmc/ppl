@@ -42,11 +42,7 @@ main() {
 
 #elif sparc && defined(HAVE_IEEEFP_H)
 
-# include <ieeefp.h>
-
-# if !defined(FE_UPWARD) || !defined(FE_DOWNWARD)
-  choke me
-# endif
+  /* Fine. */
 
 #else
 
