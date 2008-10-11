@@ -62,6 +62,7 @@ round_fpu_check_inexact(Rounding_Dir dir) {
   return dir & ROUND_FPU_CHECK_INEXACT;
 }
 
+#if PPL_CAN_CONTROL_FPU
 inline fpu_rounding_direction_type
 round_fpu_dir(Rounding_Dir dir) {
   switch (round_dir(dir)) {
@@ -74,6 +75,7 @@ round_fpu_dir(Rounding_Dir dir) {
     return static_cast<fpu_rounding_direction_type>(FPU_UPWARD);
   }
 }
+#endif
 
 /*! \relates Parma_Polyhedra_Library::Rounding_Dir */
 inline Rounding_Dir
