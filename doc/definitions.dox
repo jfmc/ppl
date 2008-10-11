@@ -2685,209 +2685,438 @@ defined in the C interface of the library.
 
 <DL>
 
-<DT> [Bag98] </DT>
+<DT>[Anc91]</DT>
+<DD>
+\anchor Anc91
+C.&nbsp;Ancourt.
+ <em>G&eacute;n&eacute;ration automatique de codes de transfert pour
+  multiprocesseurs &agrave; m&eacute;moires locales</em>.
+ PhD thesis, Universit&eacute; de Paris VI, Paris, France, March 1991.
+
+</DD>
+
+
+<DT>[Bag97]</DT>
+<DD>
+\anchor Bag97
+R.&nbsp;Bagnara.
+ <em>Data-Flow Analysis for Constraint Logic-Based Languages</em>.
+ PhD thesis, Dipartimento di Informatica, Universit&agrave; di Pisa, Pisa,
+  Italy, March 1997.
+ Printed as Report TD-1/97.
+
+</DD>
+
+
+<DT>[Bag98]</DT>
 <DD>
 \anchor Bag98
 R.&nbsp;Bagnara.
-  A hierarchy of constraint systems for data-flow analysis of
+ A hierarchy of constraint systems for data-flow analysis of
   constraint logic-based languages.
-  <i>Science of Computer Programming</i>, 30(1-2):119-155, 1998.
+ <em>Science of Computer Programming</em>, 30(1-2):119-155, 1998.
+
 
 </DD>
 
 
-<DT> [BGP99] </DT>
+<DT>[BDHetal05]</DT>
+<DD>
+\anchor BDHetal05
+R.&nbsp;Bagnara, K.&nbsp;Dobson, P.&nbsp;M. Hill, M.&nbsp;Mundell, and E.&nbsp;Zaffanella.
+ A linear domain for analyzing the distribution of numerical values.
+ Report 2005.06, School of Computing, University of Leeds, UK, 2005.
+ Available at
+  <a href="http://www.comp.leeds.ac.uk/research/pubs/reports.shtml">http://www.comp.leeds.ac.uk/research/pubs/reports.shtml</a>.
+
+
+</DD>
+
+
+<DT>[BDHetal06]</DT>
+<DD>
+\anchor BDHetal06
+R.&nbsp;Bagnara, K.&nbsp;Dobson, P.&nbsp;M. Hill, M.&nbsp;Mundell, and E.&nbsp;Zaffanella.
+ A practical tool for analyzing the distribution of numerical values,
+  2006.
+ Available at
+  <a href="http://www.comp.leeds.ac.uk/hill/Papers/papers.html">http://www.comp.leeds.ac.uk/hill/Papers/papers.html</a>.
+
+</DD>
+
+
+<DT>[BDHetal07]</DT>
+<DD>
+\anchor BDHetal07
+R.&nbsp;Bagnara, K.&nbsp;Dobson, P.&nbsp;M. Hill, M.&nbsp;Mundell, and E.&nbsp;Zaffanella.
+ Grids: A domain for analyzing the distribution of numerical values.
+ In G.&nbsp;Puebla, editor, <em>Logic-based Program Synthesis and
+  Transformation, 16th International Symposium</em>, volume 4407 of <em>Lecture
+  Notes in Computer Science</em>, pages 219-235, Venice, Italy, 2007.
+  Springer-Verlag, Berlin.
+
+
+</DD>
+
+
+<DT>[BGP99]</DT>
 <DD>
 \anchor BGP99
 T.&nbsp;Bultan, R.&nbsp;Gerber, and W.&nbsp;Pugh.
-  Model-checking concurrent systems with unbounded integer variables:
+ Model-checking concurrent systems with unbounded integer variables:
   Symbolic representations, approximations, and experimental results.
-  <i>ACM Transactions on Programming Languages and Systems</i>,
+ <em>ACM Transactions on Programming Languages and Systems</em>,
   21(4):747-789, 1999.
 
-</DD>
-
-
-<DT> [BDHMZ05] </DT>
-<DD>
-\anchor BDHMZ05
-R.&nbsp;Bagnara, K.&nbsp;Dobson, P.&nbsp;M. Hill, M.&nbsp;Mundell, and E.&nbsp;Zaffanella.
-  A Linear Domain for Analyzing the Distribution of Numerical Values.
-  Technical report 2005.06, School of Computing, University of Leeds, UK, 2005.
-  Available at
-  <A HREF="http://www.comp.leeds.ac.uk/research/pubs/reports.shtml">http://www.comp.leeds.ac.uk/research/pubs/reports.shtml</A>.
 
 </DD>
 
-<DT> [BHMZ05] </DT>
+
+<DT>[BHMZ04]</DT>
 <DD>
-\anchor BHMZ05
+\anchor BHMZ04
 R.&nbsp;Bagnara, P.&nbsp;M. Hill, E.&nbsp;Mazzi, and E.&nbsp;Zaffanella.
-  Widening Operators for Weakly-Relational Numeric Abstractions.
-  In C.&nbsp;Hankin and I.&nbsp;Siveroni, editors, <i>Static Analysis:
-  Proceedings of the 12th International Symposium</i>, volume 3672 of
-  <i>Lecture Notes in Computer Science</i>, pages 3-18, London, UK, 2005.
-  Springer-Verlag, Berlin.
+ Widening operators for weakly-relational numeric abstractions.
+ Report <tt>arXiv:cs.PL/0412043</tt>, 2004.
+ Extended abstract. Contribution to the <em>International workshop
+  on &ldquo;Numerical &amp; Symbolic Abstract Domains&rdquo;</em> (NSAD'05, Paris, January 21,
+  2005). Available at <a href="http://arxiv.org/">http://arxiv.org/</a> and
+  <a href="http://www.cs.unipr.it/ppl/">http://www.cs.unipr.it/ppl/</a>.
+
 
 </DD>
 
 
-<DT> [BHRZ03a] </DT>
+<DT>[BHMZ05a]</DT>
 <DD>
-\anchor BHRZ03a
-R.&nbsp;Bagnara, P.&nbsp;M. Hill, E.&nbsp;Ricci, and E.&nbsp;Zaffanella.
-  Precise widening operators for convex polyhedra.
-  In R.&nbsp;Cousot, editor, <i>Static Analysis: Proceedings of the 10th
-  International Symposium</i>, volume 2694 of <i>Lecture Notes in Computer
-  Science</i>, pages 337-354, San Diego, California, USA, 2003. Springer-Verlag,
+\anchor BHMZ05a
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, E.&nbsp;Mazzi, and E.&nbsp;Zaffanella.
+ Widening operators for weakly-relational numeric abstractions.
+ Quaderno 399, Dipartimento di Matematica, Universit&agrave; di Parma,
+  Italy, 2005.
+ Available at <a href="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</a>.
+
+
+</DD>
+
+
+<DT>[BHMZ05b]</DT>
+<DD>
+\anchor BHMZ05b
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, E.&nbsp;Mazzi, and E.&nbsp;Zaffanella.
+ Widening operators for weakly-relational numeric abstractions.
+ In C.&nbsp;Hankin and I.&nbsp;Siveroni, editors, <em>Static Analysis:
+  Proceedings of the 12th International Symposium</em>, volume 3672 of <em>Lecture
+  Notes in Computer Science</em>, pages 3-18, London, UK, 2005. Springer-Verlag,
   Berlin.
 
 </DD>
 
 
-<DT> [BHRZ03b] </DT>
+<DT>[BHRZ03a]</DT>
+<DD>
+\anchor BHRZ03a
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, E.&nbsp;Ricci, and E.&nbsp;Zaffanella.
+ Precise widening operators for convex polyhedra.
+ In R.&nbsp;Cousot, editor, <em>Static Analysis: Proceedings of the 10th
+  International Symposium</em>, volume 2694 of <em>Lecture Notes in Computer
+  Science</em>, pages 337-354, San Diego, California, USA, 2003. Springer-Verlag,
+  Berlin.
+
+
+</DD>
+
+
+<DT>[BHRZ03b]</DT>
 <DD>
 \anchor BHRZ03b
 R.&nbsp;Bagnara, P.&nbsp;M. Hill, E.&nbsp;Ricci, and E.&nbsp;Zaffanella.
-  Precise widening operators for convex polyhedra.
-  Quaderno 312, Dipartimento di Matematica, Università di Parma,
+ Precise widening operators for convex polyhedra.
+ Quaderno 312, Dipartimento di Matematica, Universit&agrave; di Parma,
   Italy, 2003.
-  Available at <A HREF="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</A>.
+ Available at <a href="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</a>.
 
 </DD>
 
 
-<DT> [BHZ02a] </DT>
+<DT>[BHRZ05]</DT>
+<DD>
+\anchor BHRZ05
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, E.&nbsp;Ricci, and E.&nbsp;Zaffanella.
+ Precise widening operators for convex polyhedra.
+ <em>Science of Computer Programming</em>, 58(1-2):28-56, 2005.
+
+
+</DD>
+
+
+<DT>[BHZ02a]</DT>
 <DD>
 \anchor BHZ02a
 R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
-  A new encoding and implementation of not necessarily closed convex
+ A new encoding and implementation of not necessarily closed convex
   polyhedra.
-  Quaderno 305, Dipartimento di Matematica, Università di Parma,
+ Quaderno 305, Dipartimento di Matematica, Universit&agrave; di Parma,
   Italy, 2002.
-  Available at <A HREF="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</A>.
+ Available at <a href="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</a>.
 
 </DD>
 
 
-<DT> [BHZ02b] </DT>
+<DT>[BHZ02b]</DT>
 <DD>
 \anchor BHZ02b
 R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
-  A new encoding of not necessarily closed convex polyhedra.
-  In M.&nbsp;Carro, C.&nbsp;Vacheret, and K.-K. Lau, editors, <i>Proceedings of
+ A new encoding of not necessarily closed convex polyhedra.
+ In M.&nbsp;Carro, C.&nbsp;Vacheret, and K.-K. Lau, editors, <em>Proceedings of
   the 1st CoLogNet Workshop on Component-based Software Development and
-  Implementation Technology for Computational Logic Systems</i>, pages 147-153,
+  Implementation Technology for Computational Logic Systems</em>, pages 147-153,
   Madrid, Spain, 2002.
-  Published as TR Number CLIP4/02.0, Universidad Politécnica de
-  Madrid, Facultad de Informática.
+ Published as TR Number CLIP4/02.0, Universidad Polit&eacute;cnica de
+  Madrid, Facultad de Inform&aacute;tica.
+
 
 </DD>
 
 
-<DT> [BHZ03a] </DT>
+<DT>[BHZ03a]</DT>
 <DD>
 \anchor BHZ03a
 R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
-  A new encoding and implementation of not necessarily closed convex
+ A new encoding and implementation of not necessarily closed convex
   polyhedra.
-  In M.&nbsp;Leuschel, S.&nbsp;Gruner, and S.&nbsp;Lo Presti, editors, <i>
+ In M.&nbsp;Leuschel, S.&nbsp;Gruner, and S.&nbsp;Lo Presti, editors, <em>
   Proceedings of the 3rd Workshop on Automated Verification of Critical
-  Systems</i>, pages 161-176, Southampton, UK, 2003.
-  Published as TR Number DSSE-TR-2003-2, University of Southampton.
+  Systems</em>, pages 161-176, Southampton, UK, 2003.
+ Published as TR Number DSSE-TR-2003-2, University of Southampton.
+
 
 </DD>
 
 
-<DT> [BHZ03b] </DT>
+<DT>[BHZ03b]</DT>
 <DD>
 \anchor BHZ03b
 R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
-  Widening operators for powerset domains.
-  In B.&nbsp;Steffen and G.&nbsp;Levi, editors, <i>Proceedings of the Fifth
-  International Conference on Verification, Model Checking and Abstract
-  Interpretation (VMCAI 2004)</i>, volume 2937 of <i>Lecture Notes in Computer
-  Science</i>, pages 135-148, Venice, Italy, 2003. Springer-Verlag, Berlin.
+ Widening operators for powerset domains.
+ In B.&nbsp;Steffen and G.&nbsp;Levi, editors, <em>Verification, Model Checking
+  and Abstract Interpretation: Proceedings of the 5th International Conference
+  (VMCAI 2004)</em>, volume 2937 of <em>Lecture Notes in Computer Science</em>, pages
+  135-148, Venice, Italy, 2003. Springer-Verlag, Berlin.
+
 
 </DD>
 
 
-<DT> [BHZ04] </DT>
+<DT>[BHZ04]</DT>
 <DD>
 \anchor BHZ04
 R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
-  Widening operators for powerset domains.
-  Quaderno 349, Dipartimento di Matematica, Università di Parma,
+ Widening operators for powerset domains.
+ Quaderno 349, Dipartimento di Matematica, Universit&agrave; di Parma,
   Italy, 2004.
-  Available at <A HREF="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</A>.
+ Available at <a href="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</a>.
 
 </DD>
 
 
-<DT> [BJT99] </DT>
+<DT>[BHZ05]</DT>
+<DD>
+\anchor BHZ05
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
+ Not necessarily closed convex polyhedra and the double description
+  method.
+ <em>Formal Aspects of Computing</em>, 17(2):222-257, 2005.
+
+</DD>
+
+
+<DT>[BHZ06a]</DT>
+<DD>
+\anchor BHZ06a
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
+ The Parma Polyhedra Library: Toward a complete set of numerical
+  abstractions for the analysis and verification of hardware and software
+  systems.
+ Quaderno 457, Dipartimento di Matematica, Universit&agrave; di Parma,
+  Italy, 2006.
+ Available at <a href="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</a>. Also
+  published as <tt>arXiv:cs.MS/0612085</tt>, available from
+  <a href="http://arxiv.org/">http://arxiv.org/</a>.
+
+
+</DD>
+
+
+<DT>[BHZ06b]</DT>
+<DD>
+\anchor BHZ06b
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
+ Widening operators for powerset domains.
+ <em>Software Tools for Technology Transfer</em>, 8(4/5):449-466, 2006.
+ In the printed version of this article, all the figures have been
+  improperly printed (rendering them useless). See
+  \ref BHZ07c "[BHZ07c]".
+
+
+</DD>
+
+
+<DT>[BHZ07a]</DT>
+<DD>
+\anchor BHZ07a
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
+ Applications of polyhedral computations to the analysis and
+  verification of hardware and software systems.
+ Quaderno 458, Dipartimento di Matematica, Universit&agrave; di Parma,
+  Italy, 2007.
+ Available at <a href="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</a>. Also
+  published as <tt>arXiv:cs.CG/0701122</tt>, available from
+  <a href="http://arxiv.org/">http://arxiv.org/</a>.
+
+
+</DD>
+
+
+<DT>[BHZ07b]</DT>
+<DD>
+\anchor BHZ07b
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
+ An improved tight closure algorithm for integer octagonal
+  constraints.
+ Quaderno 467, Dipartimento di Matematica, Universit&agrave; di Parma,
+  Italy, 2007.
+ Available at <a href="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</a>. Also
+  published as <tt>arXiv:0705.4618v2 [cs.DS]</tt>, available from
+  <a href="http://arxiv.org/">http://arxiv.org/</a>.
+
+
+</DD>
+
+
+<DT>[BHZ07c]</DT>
+<DD>
+\anchor BHZ07c
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
+ Widening operators for powerset domains.
+ <em>Software Tools for Technology Transfer</em>, 9(3/4):413-414, 2007.
+ Erratum to \ref BHZ06b "[BHZ06b]" containing all the figures properly
+  printed.
+
+</DD>
+
+
+<DT>[BHZ08a]</DT>
+<DD>
+\anchor BHZ08a
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
+ An improved tight closure algorithm for integer octagonal
+  constraints.
+ In F.&nbsp;Logozzo, D.&nbsp;Peled, and L.&nbsp;Zuck, editors, <em>Verification,
+  Model Checking and Abstract Interpretation: Proceedings of the 9th
+  International Conference (VMCAI 2008)</em>, volume 4905 of <em>Lecture Notes in
+  Computer Science</em>, pages 8-21, San Francisco, USA, 2008. Springer-Verlag,
+  Berlin.
+
+
+</DD>
+
+
+<DT>[BHZ08b]</DT>
+<DD>
+\anchor BHZ08b
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
+ The Parma Polyhedra Library: Toward a complete set of numerical
+  abstractions for the analysis and verification of hardware and software
+  systems.
+ <em>Science of Computer Programming</em>, 72(1-2):3-21, 2008.
+
+
+</DD>
+
+
+<DT>[BJT99]</DT>
 <DD>
 \anchor BJT99
 F.&nbsp;Besson, T.&nbsp;P. Jensen, and J.-P. Talpin.
-  Polyhedral analysis for synchronous languages.
-  In A.&nbsp;Cortesi and G.&nbsp;Filé, editors, <i>Static Analysis:
-  Proceedings of the 6th International Symposium</i>, volume 1694 of <i>Lecture
-  Notes in Computer Science</i>, pages 51-68, Venice, Italy, 1999.
+ Polyhedral analysis for synchronous languages.
+ In A.&nbsp;Cortesi and G.&nbsp;Fil&eacute;, editors, <em>Static Analysis:
+  Proceedings of the 6th International Symposium</em>, volume 1694 of <em>Lecture
+  Notes in Computer Science</em>, pages 51-68, Venice, Italy, 1999.
   Springer-Verlag, Berlin.
 
 </DD>
 
 
-<DT> [BRZH02a] </DT>
+<DT>[BK89]</DT>
+<DD>
+\anchor BK89
+V.&nbsp;Balasundaram and K.&nbsp;Kennedy.
+ A technique for summarizing data access and its use in parallelism
+  enhancing transformations.
+ In B.&nbsp;Knobe, editor, <em>Proceedings of the ACM SIGPLAN'89
+  Conference on Programming Language Design and Implementation (PLDI)</em>, volume
+  24(7) of <em>ACM SIGPLAN Notices</em>, pages 41-53, Portland, Oregon, USA,
+  1989. ACM Press.
+
+</DD>
+
+
+<DT>[BRZH02a]</DT>
 <DD>
 \anchor BRZH02a
 R.&nbsp;Bagnara, E.&nbsp;Ricci, E.&nbsp;Zaffanella, and P.&nbsp;M. Hill.
-  Possibly not closed convex polyhedra and the Parma Polyhedra
+ Possibly not closed convex polyhedra and the Parma Polyhedra
   Library.
-  In M.&nbsp;V. Hermenegildo and G.&nbsp;Puebla, editors, <i>Static Analysis:
-  Proceedings of the 9th International Symposium</i>, volume 2477 of <i>Lecture
-  Notes in Computer Science</i>, pages 213-229, Madrid, Spain, 2002.
+ In M.&nbsp;V. Hermenegildo and G.&nbsp;Puebla, editors, <em>Static Analysis:
+  Proceedings of the 9th International Symposium</em>, volume 2477 of <em>Lecture
+  Notes in Computer Science</em>, pages 213-229, Madrid, Spain, 2002.
   Springer-Verlag, Berlin.
+
 
 </DD>
 
 
-<DT> [BRZH02b] </DT>
+<DT>[BRZH02b]</DT>
 <DD>
 \anchor BRZH02b
 R.&nbsp;Bagnara, E.&nbsp;Ricci, E.&nbsp;Zaffanella, and P.&nbsp;M. Hill.
-  Possibly not closed convex polyhedra and the Parma Polyhedra
+ Possibly not closed convex polyhedra and the Parma Polyhedra
   Library.
-  Quaderno 286, Dipartimento di Matematica, Università di Parma,
+ Quaderno 286, Dipartimento di Matematica, Universit&agrave; di Parma,
   Italy, 2002.
-  See also \ref BRZH02c "[BRZH02c]". Available at
-  <A HREF="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</A>.
+ See also \ref BRZH02c "[BRZH02c]". Available at
+  <a href="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</a>.
 
 </DD>
 
 
-<DT> [BRZH02c] </DT>
+<DT>[BRZH02c]</DT>
 <DD>
 \anchor BRZH02c
 R.&nbsp;Bagnara, E.&nbsp;Ricci, E.&nbsp;Zaffanella, and P.&nbsp;M. Hill.
-  Errata for technical report ``Quaderno 286''.
-  Available at <A HREF="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</A>,
+ Errata for technical report &ldquo;Quaderno 286&rdquo;.
+ Available at <a href="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</a>,
   2002.
-  See \ref BRZH02b "[BRZH02b]".
+ See \ref BRZH02b "[BRZH02b]".
 
 </DD>
 
 
-<DT> [CC76] </DT>
+<DT>[CC76]</DT>
 <DD>
 \anchor CC76
 P.&nbsp;Cousot and R.&nbsp;Cousot.
-  Static Determination of Dynamic Properties of Programs.
-  In B.&nbsp;Robinet, editor, <i>Proceedings of the 2nd International
-  Symposium on Programming</i>, pages 106-130, Paris, France, 1976.
+ Static determination of dynamic properties of programs.
+ In B.&nbsp;Robinet, editor, <em>Proceedings of the Second International
+  Symposium on Programming</em>, pages 106-130, Paris, France, 1976. Dunod, Paris,
+  France.
+
 
 </DD>
 
-<DT> [CC79] </DT>
+
+<DT>[CC79]</DT>
 <DD>
 \anchor CC79
 P.&nbsp;Cousot and R.&nbsp;Cousot.
@@ -2895,204 +3124,259 @@ P.&nbsp;Cousot and R.&nbsp;Cousot.
  In <em>Proceedings of the Sixth Annual ACM Symposium on Principles
   of Programming Languages</em>, pages 269-282, New York, 1979. ACM Press.
 
+
 </DD>
 
 
-<DT> [CC92] </DT>
+<DT>[CC92]</DT>
 <DD>
 \anchor CC92
 P.&nbsp;Cousot and R.&nbsp;Cousot.
-  Comparing the Galois connection and widening/narrowing approaches
+ Comparing the Galois connection and widening/narrowing approaches
   to abstract interpretation.
-  In M.&nbsp;Bruynooghe and M.&nbsp;Wirsing, editors, <i>Proceedings of the 4th
+ In M.&nbsp;Bruynooghe and M.&nbsp;Wirsing, editors, <em>Proceedings of the 4th
   International Symposium on Programming Language Implementation and Logic
-  Programming</i>, volume 631 of <i>Lecture Notes in Computer Science</i>, pages
+  Programming</em>, volume 631 of <em>Lecture Notes in Computer Science</em>, pages
   269-295, Leuven, Belgium, 1992. Springer-Verlag, Berlin.
+
 
 </DD>
 
 
-<DT> [CH78] </DT>
+<DT>[CH78]</DT>
 <DD>
 \anchor CH78
 P.&nbsp;Cousot and N.&nbsp;Halbwachs.
-  Automatic discovery of linear restraints among variables of a
+ Automatic discovery of linear restraints among variables of a
   program.
-  In <i>Conference Record of the Fifth Annual ACM Symposium on
-  Principles of Programming Languages</i>, pages 84-96, Tucson, Arizona, 1978.
+ In <em>Conference Record of the Fifth Annual ACM Symposium on
+  Principles of Programming Languages</em>, pages 84-96, Tucson, Arizona, 1978.
   ACM Press.
+
 
 </DD>
 
 
-<DT> [Che64] </DT>
+<DT>[Che64]</DT>
 <DD>
 \anchor Che64
 N.&nbsp;V. Chernikova.
-  Algorithm for finding a general formula for the non-negative
+ Algorithm for finding a general formula for the non-negative
   solutions of system of linear equations.
-  <i>U.S.S.R. Computational Mathematics and Mathematical Physics</i>,
+ <em>U.S.S.R. Computational Mathematics and Mathematical Physics</em>,
   4(4):151-158, 1964.
 
 </DD>
 
 
-<DT> [Che65] </DT>
+<DT>[Che65]</DT>
 <DD>
 \anchor Che65
 N.&nbsp;V. Chernikova.
-  Algorithm for finding a general formula for the non-negative
+ Algorithm for finding a general formula for the non-negative
   solutions of system of linear inequalities.
-  <i>U.S.S.R. Computational Mathematics and Mathematical Physics</i>,
+ <em>U.S.S.R. Computational Mathematics and Mathematical Physics</em>,
   5(2):228-233, 1965.
 
 </DD>
 
 
-<DT> [Che68] </DT>
+<DT>[Che68]</DT>
 <DD>
 \anchor Che68
 N.&nbsp;V. Chernikova.
-  Algorithm for discovering the set of all solutions of a linear
+ Algorithm for discovering the set of all solutions of a linear
   programming problem.
-  <i>U.S.S.R. Computational Mathematics and Mathematical Physics</i>,
+ <em>U.S.S.R. Computational Mathematics and Mathematical Physics</em>,
   8(6):282-293, 1968.
 
 </DD>
 
 
-<DT> [Dan63] </DT>
+<DT>[Dan63]</DT>
 <DD>
 \anchor Dan63
 G.&nbsp;B. Dantzig.
-  <i>Linear Programming and Extensions</i>.
-  Princeton University Press, Princeton, NJ, 1963.
+ <em>Linear Programming and Extensions</em>.
+ Princeton University Press, Princeton, NJ, 1963.
 
 </DD>
 
 
-<DT> [FP96] </DT>
+<DT>[FP96]</DT>
 <DD>
 \anchor FP96
 K.&nbsp;Fukuda and A.&nbsp;Prodon.
-  Double description method revisited.
-  In M.&nbsp;Deza, R.&nbsp;Euler, and Y.&nbsp;Manoussakis, editors, <i>Combinatorics
+ Double description method revisited.
+ In M.&nbsp;Deza, R.&nbsp;Euler, and Y.&nbsp;Manoussakis, editors, <em>Combinatorics
   and Computer Science, 8th Franco-Japanese and 4th Franco-Chinese Conference,
-  Brest, France, July 3-5, 1995, Selected Papers</i>, volume 1120 of <i>Lecture
-  Notes in Computer Science</i>, pages 91-111. Springer-Verlag, Berlin, 1996.
+  Brest, France, July 3-5, 1995, Selected Papers</em>, volume 1120 of <em>Lecture
+  Notes in Computer Science</em>, pages 91-111. Springer-Verlag, Berlin, 1996.
+
 
 </DD>
 
 
-<DT> [Fuk98] </DT>
+<DT>[Fuk98]</DT>
 <DD>
 \anchor Fuk98
 K.&nbsp;Fukuda.
-  Polyhedral computation FAQ.
-  Swiss Federal Institute of Technology, Lausanne and Zurich,
+ Polyhedral computation FAQ.
+ Swiss Federal Institute of Technology, Lausanne and Zurich,
   Switzerland, available at
-  <A HREF="http://www.ifor.math.ethz.ch/~fukuda/fukuda.html">http://www.ifor.math.ethz.ch/~fukuda/fukuda.html</A>, 1998.
+  <a href="http://www.ifor.math.ethz.ch/~fukuda/polyfaq/polyfaq.html">http://www.ifor.math.ethz.ch/~fukuda/polyfaq/polyfaq.html</a>, 1998.
 
 </DD>
 
 
-<DT> [GDD<sup>+</sup>04] </DT>
+<DT>[GDDetal04]</DT>
 <DD>
-\anchor GDMDRS04
-D.&nbsp;Gopan, F.&nbsp;DiMaio, N.&nbsp;Dor, T.&nbsp;Reps, and M.&nbsp;Sagiv.
-  Numeric domains with summarized dimensions.
-  In K.&nbsp;Jensen and A.&nbsp;Podelski, editors, <i>Tools and Algorithms for
+\anchor GDDetal04
+D.&nbsp;Gopan, F.&nbsp;DiMaio, N.&nbsp;Dor, T.&nbsp;W. Reps, and M.&nbsp;Sagiv.
+ Numeric domains with summarized dimensions.
+ In K.&nbsp;Jensen and A.&nbsp;Podelski, editors, <em>Tools and Algorithms for
   the Construction and Analysis of Systems, 10th International Conference,
-  TACAS 2004</i>, volume 2988 of <i>Lecture Notes in Computer Science</i>, pages
-  512-529. Springer-Verlag, Berlin, 2004.
+  TACAS 2004</em>, volume 2988 of <em>Lecture Notes in Computer Science</em>, pages
+  512-529, Barcelona, Spain, 2004. Springer-Verlag, Berlin.
 
 </DD>
 
 
-<DT> [GJ00] </DT>
+<DT>[GJ00]</DT>
 <DD>
 \anchor GJ00
 E.&nbsp;Gawrilow and M.&nbsp;Joswig.
-  <tt>polymake</tt>: a framework for analyzing convex polytopes.
-  In G.&nbsp;Kalai and G.&nbsp;M. Ziegler, editors, <i>Polytopes -
-  Combinatorics and Computation</i>, pages 43-74. Birkhäuser, 2000.
+ <tt>polymake</tt>: A framework for analyzing convex polytopes.
+ In G.&nbsp;Kalai and G.&nbsp;M. Ziegler, editors, <em>Polytopes -
+  Combinatorics and Computation</em>, pages 43-74. Birkh&auml;user, 2000.
 
 </DD>
 
 
-<DT> [GJ01] </DT>
+<DT>[GJ01]</DT>
 <DD>
 \anchor GJ01
 E.&nbsp;Gawrilow and M.&nbsp;Joswig.
-  <tt>polymake</tt>: an approach to modular software design in
+ <tt>polymake</tt>: An approach to modular software design in
   computational geometry.
-  In <i>Proceedings of the 17th Annual Symposium on Computational
-  Geometry</i>, pages 222-231, Medford, MA, USA, 2001. ACM.
+ In <em>Proceedings of the 17th Annual Symposium on Computational
+  Geometry</em>, pages 222-231, Medford, MA, USA, 2001. ACM.
 
 </DD>
 
 
-<DT> [Hal79] </DT>
+<DT>[GR77]</DT>
+<DD>
+\anchor GR77
+D.&nbsp;Goldfarb and J.&nbsp;K. Reid.
+ A practical steepest-edge simplex algorithm.
+ <em>Mathematical Proramming</em>, 12(1):361-371, 1977.
+
+</DD>
+
+
+<DT>[Gra91]</DT>
+<DD>
+\anchor Gra91
+P.&nbsp;Granger.
+ Static analysis of linear congruence equalities among variables of a
+  program.
+ In S.&nbsp;Abramsky and T.&nbsp;S.&nbsp;E. Maibaum, editors, <em>TAPSOFT'91:
+  Proceedings of the International Joint Conference on Theory and Practice of
+  Software Development, Volume 1: Colloquium on Trees in Algebra and
+  Programming (CAAP'91)</em>, volume 493 of <em>Lecture Notes in Computer
+  Science</em>, pages 169-192, Brighton, UK, 1991. Springer-Verlag, Berlin.
+
+</DD>
+
+
+<DT>[Gra97]</DT>
+<DD>
+\anchor Gra97
+P.&nbsp;Granger.
+ Static analyses of congruence properties on rational numbers
+  (extended abstract).
+ In P.&nbsp;Van Hentenryck, editor, <em>Static Analysis: Proceedings of
+  the 4th International Symposium</em>, volume 1302 of <em>Lecture Notes in
+  Computer Science</em>, pages 278-292, Paris, France, 1997. Springer-Verlag,
+  Berlin.
+
+</DD>
+
+
+<DT>[Hal79]</DT>
 <DD>
 \anchor Hal79
 N.&nbsp;Halbwachs.
-  <i>Détermination Automatique de Relations Linéaires
-  Vérifiées par les Variables d'un Programme</i>.
-  Thèse de 3ème cycle d'informatique,
-  Université scientifique et médicale de Grenoble, Grenoble, France, March
+ <em>D&eacute;termination Automatique de Relations Lin&eacute;aires
+  V&eacute;rifi&eacute;es par les Variables d'un Programme</em>.
+ Th&egrave;se de 3&egrave;me cycle d'informatique,
+  Universit&eacute; scientifique et m&eacute;dicale de Grenoble, Grenoble, France, March
   1979.
 
 </DD>
 
 
-<DT> [Hal93] </DT>
+<DT>[Hal93]</DT>
 <DD>
 \anchor Hal93
 N.&nbsp;Halbwachs.
-  Delay analysis in synchronous programs.
-  In C.&nbsp;Courcoubetis, editor, <i>Computer Aided Verification:
-  Proceedings of the 5th International Conference</i>, volume 697 of <i>Lecture
-  Notes in Computer Science</i>, pages 333-346, Elounda, Greece, 1993.
+ Delay analysis in synchronous programs.
+ In C.&nbsp;Courcoubetis, editor, <em>Computer Aided Verification:
+  Proceedings of the 5th International Conference</em>, volume 697 of <em>Lecture
+  Notes in Computer Science</em>, pages 333-346, Elounda, Greece, 1993.
   Springer-Verlag, Berlin.
 
 </DD>
 
 
-<DT> [HH95] </DT>
+<DT>[HH95]</DT>
 <DD>
 \anchor HH95
 T.&nbsp;A. Henzinger and P.-H. Ho.
-  A note on abstract interpretation strategies for hybrid automata.
-  In P.&nbsp;J. Antsaklis, W.&nbsp;Kohn, A.&nbsp;Nerode, and S.&nbsp;Sastry, editors, <i>
-  Hybrid Systems II</i>, volume 999 of <i>Lecture Notes in Computer Science</i>,
+ A note on abstract interpretation strategies for hybrid automata.
+ In P.&nbsp;J. Antsaklis, W.&nbsp;Kohn, A.&nbsp;Nerode, and S.&nbsp;Sastry, editors, <em>
+  Hybrid Systems II</em>, volume 999 of <em>Lecture Notes in Computer Science</em>,
   pages 252-264. Springer-Verlag, Berlin, 1995.
+
 
 </DD>
 
 
-<DT> [HKP95] </DT>
+<DT>[HHL90]</DT>
+<DD>
+\anchor HHL90
+L.&nbsp;Huelsbergen, D.&nbsp;Hahn, and J.&nbsp;Larus.
+ Exact dependence analysis using data access descriptors.
+ Technical Report 945, Department of Computer Science, University of
+  Wisconsin, Madison, 1990.
+
+</DD>
+
+
+<DT>[HKP95]</DT>
 <DD>
 \anchor HKP95
 N.&nbsp;Halbwachs, A.&nbsp;Kerbrat, and Y.-E. Proy.
-  <i>POLyhedra INtegrated Environment</i>.
-  Verimag, France, version 1.0 of POLINE edition, September 1995.
-  Documentation taken from source code.
+ <em>POLyhedra INtegrated Environment</em>.
+ Verimag, France, version 1.0 of POLINE edition, September 1995.
+ Documentation taken from source code.
 
 </DD>
 
 
-<DT> [HLW94] </DT>
+<DT>[HLW94]</DT>
 <DD>
 \anchor HLW94
 V.&nbsp;Van Dongen H.&nbsp;Le Verge and D.&nbsp;K. Wilde.
-  Loop nest synthesis using the polyhedral library.
-  <em>Publication interne</em> 830, IRISA, Campus de Beaulieu, Rennes,
+ Loop nest synthesis using the polyhedral library.
+ <em>Publication interne</em> 830, IRISA, Campus de Beaulieu, Rennes,
   France, 1994.
 
 </DD>
 
 
-<DT> [HMT71] </DT>
+<DT>[HMT71]</DT>
 <DD>
 \anchor HMT71
 L.&nbsp;Henkin, J.&nbsp;D. Monk, and A.&nbsp;Tarski.
@@ -3102,219 +3386,472 @@ L.&nbsp;Henkin, J.&nbsp;D. Monk, and A.&nbsp;Tarski.
 </DD>
 
 
-<DT> [HPR94] </DT>
+<DT>[HPR94]</DT>
 <DD>
 \anchor HPR94
 N.&nbsp;Halbwachs, Y.-E. Proy, and P.&nbsp;Raymond.
-  Verification of linear hybrid systems by means of convex
+ Verification of linear hybrid systems by means of convex
   approximations.
-  In B.&nbsp;Le Charlier, editor, <i>Static Analysis: Proceedings of the
-  1st International Symposium</i>, volume 864 of <i>Lecture Notes in Computer
-  Science</i>, pages 223-237, Namur, Belgium, 1994. Springer-Verlag, Berlin.
+ In B.&nbsp;Le Charlier, editor, <em>Static Analysis: Proceedings of the
+  1st International Symposium</em>, volume 864 of <em>Lecture Notes in Computer
+  Science</em>, pages 223-237, Namur, Belgium, 1994. Springer-Verlag, Berlin.
+
 
 </DD>
 
 
-<DT> [HPR97] </DT>
+<DT>[HPR97]</DT>
 <DD>
 \anchor HPR97
 N.&nbsp;Halbwachs, Y.-E. Proy, and P.&nbsp;Roumanoff.
-  Verification of real-time systems using linear relation analysis.
-  <i>Formal Methods in System Design</i>, 11(2):157-185, 1997.
+ Verification of real-time systems using linear relation analysis.
+ <em>Formal Methods in System Design</em>, 11(2):157-185, 1997.
 
 </DD>
 
 
-<DT> [HPWT01] </DT>
+<DT>[HPWT01]</DT>
 <DD>
 \anchor HPWT01
 T.&nbsp;A. Henzinger, J.&nbsp;Preussig, and H.&nbsp;Wong-Toi.
-  Some lessons from the hytech experience.
-  In <i>Proceedings of the 40th Annual Conference on Decision and
-  Control</i>, pages 2887-2892. IEEE Computer Society Press, 2001.
+ Some lessons from the hytech experience.
+ In <em>Proceedings of the 40th Annual Conference on Decision and
+  Control</em>, pages 2887-2892. IEEE Computer Society Press, 2001.
+
 
 </DD>
 
 
-<DT> [Jea02] </DT>
+<DT>[Jea02]</DT>
 <DD>
 \anchor Jea02
 B.&nbsp;Jeannet.
-  <i>Convex Polyhedra Library</i>, release 1.1.3c edition, March 2002.
-  Documentation of the ``New Polka'' library available at
-  <A HREF="http://www.irisa.fr/prive/Bertrand.Jeannet/newpolka.html">http://www.irisa.fr/prive/Bertrand.Jeannet/newpolka.html</A>.
+ <em>Convex Polyhedra Library</em>, release 1.1.3c edition, March 2002.
+ Documentation of the &ldquo;New Polka&rdquo; library available at
+  <a href="http://www.irisa.fr/prive/Bertrand.Jeannet/newpolka.html">http://www.irisa.fr/prive/Bertrand.Jeannet/newpolka.html</a>.
 
 </DD>
 
 
-<DT> [Kuh56] </DT>
+<DT>[JMSY94]</DT>
+<DD>
+\anchor JMSY94
+J.&nbsp;Jaffar, M.&nbsp;J. Maher, P.&nbsp;J. Stuckey, and R.&nbsp;H.&nbsp;C. Yap.
+ Beyond finite domains.
+ In A.&nbsp;Borning, editor, <em>Principles and Practice of Constraint
+  Programming: Proceedings of the Second International Workshop</em>, volume 874 of
+  <em>Lecture Notes in Computer Science</em>, pages 86-94, Rosario, Orcas Island,
+  Washington, USA, 1994. Springer-Verlag, Berlin.
+
+</DD>
+
+
+<DT>[KBBetal06]</DT>
+<DD>
+\anchor KBBetal06
+L.&nbsp;Khachiyan, E.&nbsp;Boros, K.&nbsp;Borys, K.&nbsp;Elbassioni, and V.&nbsp;Gurvich.
+ Generating all vertices of a polyhedron is hard.
+ <em>Discrete and Computational Geometry</em>, 2006.
+ Invited contribution. To appear.
+
+</DD>
+
+
+<DT>[Kuh56]</DT>
 <DD>
 \anchor Kuh56
 H.&nbsp;W. Kuhn.
-  Solvability and consistency for linear equations and inequalities.
-  <i>American Mathematical Monthly</i>, 63:217-232, 1956.
+ Solvability and consistency for linear equations and inequalities.
+ <em>American Mathematical Monthly</em>, 63:217-232, 1956.
 
 </DD>
 
 
-<DT> [Le 92] </DT>
+<DT>[Le 92]</DT>
 <DD>
-\anchor Le92
+\anchor Le 92
 H.&nbsp;Le Verge.
-  A note on Chernikova's algorithm.
-  <em>Publication interne</em> 635, IRISA, Campus de Beaulieu, Rennes,
+ A note on Chernikova's algorithm.
+ <em>Publication interne</em> 635, IRISA, Campus de Beaulieu, Rennes,
   France, 1992.
 
+
 </DD>
 
 
-<DT> [Loe99] </DT>
+<DT>[Loe99]</DT>
 <DD>
 \anchor Loe99
 V.&nbsp;Loechner.
-  <i>PolyLib</i>: A library for manipulating parameterized polyhedra.
-  Available at <A HREF="http://icps.u-strasbg.fr/~loechner/polylib/">http://icps.u-strasbg.fr/~loechner/polylib/</A>, March
+ <i>PolyLib</i>: A library for manipulating parameterized polyhedra.
+ Available at <a href="http://icps.u-strasbg.fr/~loechner/polylib/">http://icps.u-strasbg.fr/~loechner/polylib/</a>, March
   1999.
-  Declares itself to be a continuation of \ref Wil93 "[Wil93]".
+ Declares itself to be a continuation of \ref Wil93 "[Wil93]".
 
 </DD>
 
 
-<DT> [LW97] </DT>
+<DT>[LW97]</DT>
 <DD>
 \anchor LW97
 V.&nbsp;Loechner and D.&nbsp;K. Wilde.
-  Parameterized polyhedra and their vertices.
-  <i>International Journal of Parallel Programming</i>, 25(6):525-549,
+ Parameterized polyhedra and their vertices.
+ <em>International Journal of Parallel Programming</em>, 25(6):525-549,
   1997.
 
 </DD>
 
 
-<DT> [Mas92] </DT>
+<DT>[Mas92]</DT>
 <DD>
 \anchor Mas92
 F.&nbsp;Masdupuy.
-  Array operations abstraction using semantic analysis of trapezoid
+ Array operations abstraction using semantic analysis of trapezoid
   congruences.
-  In <i>Proceedings of the 6th ACM International Conference on
-  Supercomputing</i>, pages 226-235, Washington, DC, USA, 1992. ACM Press.
+ In <em>Proceedings of the 6th ACM International Conference on
+  Supercomputing</em>, pages 226-235, Washington, DC, USA, 1992. ACM Press.
 
 </DD>
 
 
-<DT> [Mas93] </DT>
+<DT>[Mas93]</DT>
 <DD>
 \anchor Mas93
 F.&nbsp;Masdupuy.
-  <i>Array Indices Relational Semantic Analysis Using Rational Cosets
-  and Trapezoids</i>.
-  Thèse d'informatique, École Polytechnique, Palaiseau, France,
+ <em>Array Indices Relational Semantic Analysis Using Rational Cosets
+  and Trapezoids</em>.
+ Th&egrave;se d'informatique, &Eacute;cole Polytechnique, Palaiseau, France,
   December 1993.
 
 </DD>
 
 
-<DT> [MRTT53] </DT>
+<DT>[Min01a]</DT>
+<DD>
+\anchor Min01a
+A.&nbsp;Min&eacute;.
+ A new numerical abstract domain based on difference-bound matrices.
+ In O.&nbsp;Danvy and A.&nbsp;Filinski, editors, <em>Proceedings of the 2nd
+  Symposium on Programs as Data Objects (PADO 2001)</em>, volume 2053 of <em>
+  Lecture Notes in Computer Science</em>, pages 155-172, Aarhus, Denmark, 2001.
+  Springer-Verlag, Berlin.
+
+</DD>
+
+
+<DT>[Min01b]</DT>
+<DD>
+\anchor Min01b
+A.&nbsp;Min&eacute;.
+ The octagon abstract domain.
+ In <em>Proceedings of the Eighth Working Conference on Reverse
+  Engineering (WCRE'01)</em>, pages 310-319, Stuttgart, Germany, 2001. IEEE
+  Computer Society Press.
+
+</DD>
+
+
+<DT>[Min02]</DT>
+<DD>
+\anchor Min02
+A.&nbsp;Min&eacute;.
+ A few graph-based relational numerical abstract domains.
+ In M.&nbsp;V. Hermenegildo and G.&nbsp;Puebla, editors, <em>Static Analysis:
+  Proceedings of the 9th International Symposium</em>, volume 2477 of <em>Lecture
+  Notes in Computer Science</em>, pages 117-132, Madrid, Spain, 2002.
+  Springer-Verlag, Berlin.
+
+</DD>
+
+
+<DT>[Min04]</DT>
+<DD>
+\anchor Min04
+A.&nbsp;Min&eacute;.
+ Relational abstract domains for the detection of floating-point
+  run-time errors.
+ In D.&nbsp;Schmidt, editor, <em>Programming Languages and Systems:
+  Proceedings of the 13th European Symposium on Programming</em>, volume 2986 of
+  <em>Lecture Notes in Computer Science</em>, pages 3-17, Barcelona, Spain, 2004.
+  Springer-Verlag, Berlin.
+
+</DD>
+
+
+<DT>[Min05]</DT>
+<DD>
+\anchor Min05
+A.&nbsp;Min&eacute;.
+ <em>Weakly Relational Numerical Abstract Domains</em>.
+ PhD thesis, &Eacute;cole Polytechnique, Paris, France, March 2005.
+
+</DD>
+
+
+<DT>[MRTT53]</DT>
 <DD>
 \anchor MRTT53
 T.&nbsp;S. Motzkin, H.&nbsp;Raiffa, G.&nbsp;L. Thompson, and R.&nbsp;M. Thrall.
-  The double description method.
-  In H.&nbsp;W. Kuhn and A.&nbsp;W. Tucker, editors, <i>Contributions to the
-  Theory of Games - Volume II</i>, number&nbsp;28 in Annals of Mathematics Studies,
+ The double description method.
+ In H.&nbsp;W. Kuhn and A.&nbsp;W. Tucker, editors, <em>Contributions to the
+  Theory of Games - Volume II</em>, number&nbsp;28 in Annals of Mathematics Studies,
   pages 51-73. Princeton University Press, Princeton, New Jersey, 1953.
 
 </DD>
 
 
-<DT> [NR00] </DT>
+<DT>[NF01]</DT>
+<DD>
+\anchor NF01
+T.&nbsp;Nakanishi and A.&nbsp;Fukuda.
+ Modulo interval arithmetic and its application to program analysis.
+ <em>Transactions of Information Processing Society of Japan</em>,
+  42(4):829-837, 2001.
+
+</DD>
+
+
+<DT>[NJPF99]</DT>
+<DD>
+\anchor NJPF99
+T.&nbsp;Nakanishi, K.&nbsp;Joe, C.&nbsp;D. Polychronopoulos, and A.&nbsp;Fukuda.
+ The modulo interval: A simple and practical representation for
+  program analysis.
+ In <em>Proceedings of the 1999 International Conference on Parallel
+  Architectures and Compilation Techniques</em>, pages 91-96, Newport Beach,
+  California, USA, 1999. IEEE Computer Society.
+
+</DD>
+
+
+<DT>[NO77]</DT>
+<DD>
+\anchor NO77
+G.&nbsp;Nelson and D.&nbsp;C. Oppen.
+ Fast decision algorithms based on Union and Find.
+ In <em>Proceedings of the 18th Annual Symposium on Foundations of
+  Computer Science (FOCS'77)</em>, pages 114-119, Providence, RI, USA, 1977. IEEE
+  Computer Society Press.
+ The journal version of this paper is \ref NO80 "[NO80]".
+
+</DD>
+
+
+<DT>[NO80]</DT>
+<DD>
+\anchor NO80
+G.&nbsp;Nelson and D.&nbsp;C. Oppen.
+ Fast decision procedures based on congruence closure.
+ <em>Journal of the ACM</em>, 27(2):356-364, 1980.
+ An earlier version of this paper is \ref NO77 "[NO77]".
+
+</DD>
+
+
+<DT>[NR00]</DT>
 <DD>
 \anchor NR00
 S.&nbsp;P.&nbsp;K. Nookala and T.&nbsp;Risset.
-  A library for Z-polyhedral operations.
-  <em>Publication interne</em> 1330, IRISA, Campus de Beaulieu, Rennes,
+ A library for Z-polyhedral operations.
+ <em>Publication interne</em> 1330, IRISA, Campus de Beaulieu, Rennes,
   France, 2000.
 
 </DD>
 
 
-<DT> [NW88] </DT>
+<DT>[NW88]</DT>
 <DD>
 \anchor NW88
 G.&nbsp;L. Nemhauser and L.&nbsp;A. Wolsey.
-  <i>Integer and Combinatorial Optimization</i>.
-  Wiley Interscience Series in Discrete Mathematics and Optimization.
+ <em>Integer and Combinatorial Optimization</em>.
+ Wiley Interscience Series in Discrete Mathematics and Optimization.
   John Wiley &amp; Sons, 1988.
 
 </DD>
 
 
-<DT> [Sch99] </DT>
+<DT>[Pra77]</DT>
+<DD>
+\anchor Pra77
+V.&nbsp;R. Pratt.
+ Two easy theories whose combination is hard.
+ Memo sent to Nelson and Oppen concerning a preprint of their paper
+  \ref NO77 "[NO77]", September 1977.
+
+</DD>
+
+
+<DT>[PS98]</DT>
+<DD>
+\anchor PS98
+C.&nbsp;H. Papadimitriou and K.&nbsp;Steiglitz.
+ <em>Combinatorial Optimization: Algorithms and Complexity</em>.
+ Dover Publications, second edition, 1998.
+
+</DD>
+
+
+<DT>[QRR96]</DT>
+<DD>
+\anchor QRR96
+P.&nbsp;Quinton, S.&nbsp;Rajopadhye, and T.&nbsp;Risset.
+ On manipulating Z-polyhedra.
+ Technical Report 1016, IRISA, Campus Universitaire de Bealieu,
+  Rennes, France, July 1996.
+
+</DD>
+
+
+<DT>[QRR97]</DT>
+<DD>
+\anchor QRR97
+P.&nbsp;Quinton, S.&nbsp;Rajopadhye, and T.&nbsp;Risset.
+ On manipulating Z-polyhedra using a canonic representation.
+ <em>Parallel Processing Letters</em>, 7(2):181-194, 1997.
+
+</DD>
+
+
+<DT>[RBL06]</DT>
+<DD>
+\anchor RBL06
+T.&nbsp;W. Reps, G.&nbsp;Balakrishnan, and J.&nbsp;Lim.
+ Intermediate-representation recovery from low-level code.
+ In J.&nbsp;Hatcliff and F.&nbsp;Tip, editors, <em>Proceedings of the 2006 ACM
+  SIGPLAN Workshop on Partial Evaluation and Semantics-based Program
+  Manipulation</em>, pages 100-111, Charleston, South Carolina, USA, 2006. ACM
+  Press.
+
+</DD>
+
+
+<DT>[Ric02]</DT>
+<DD>
+\anchor Ric02
+E.&nbsp;Ricci.
+ Rappresentazione e manipolazione di poliedri convessi per l'analisi e
+  la verifica di programmi.
+ Laurea dissertation, University of Parma, Parma, Italy, July 2002.
+ In Italian.
+
+
+</DD>
+
+
+<DT>[Sch99]</DT>
 <DD>
 \anchor Sch99
 A.&nbsp;Schrijver.
-  <i>Theory of Linear and Integer Programming</i>.
-  Wiley Interscience Series in Discrete Mathematics and Optimization.
+ <em>Theory of Linear and Integer Programming</em>.
+ Wiley Interscience Series in Discrete Mathematics and Optimization.
   John Wiley &amp; Sons, 1999.
 
 </DD>
 
 
-<DT> [Sri93] </DT>
+<DT>[Sho81]</DT>
+<DD>
+\anchor Sho81
+R.&nbsp;E. Shostak.
+ Deciding linear inequalities by computing loop residues.
+ <em>Journal of the ACM</em>, 28(4):769-779, 1981.
+
+</DD>
+
+
+<DT>[SK07]</DT>
+<DD>
+\anchor SK07
+A.&nbsp;Simon and A.&nbsp;King.
+ Taming the wrapping of integer arithmetic.
+ In H.&nbsp;Riis Nielson and G.&nbsp;Fil&eacute;, editors, <em>Static Analysis:
+  Proceedings of the 14th International Symposium</em>, volume 4634 of <em>Lecture
+  Notes in Computer Science</em>, pages 121-136, Kongens Lyngby, Denmark, 2007.
+  Springer-Verlag, Berlin.
+
+</DD>
+
+
+<DT>[Sri93]</DT>
 <DD>
 \anchor Sri93
 D.&nbsp;Srivastava.
-  Subsumption and indexing in constraint query languages with linear
+ Subsumption and indexing in constraint query languages with linear
   arithmetic constraints.
-  <i>Annals of Mathematics and Artificial Intelligence</i>,
+ <em>Annals of Mathematics and Artificial Intelligence</em>,
   8(3-4):315-343, 1993.
+
 
 </DD>
 
 
-<DT> [SW70] </DT>
+<DT>[SS07]</DT>
+<DD>
+\anchor SS07
+R.&nbsp;Sen and Y.&nbsp;N. Srikant.
+ Executable analysis using abstract interpretation with circular
+  linear progressions.
+ In <em>Proceedings of the 5th IEEE/ACM International Conference on
+  Formal Methods and Models for Co-Design (MEMOCODE 2007)</em>, pages 39-48, Nice,
+  France, 2007. IEEE Computer Society Press.
+
+</DD>
+
+
+<DT>[SW70]</DT>
 <DD>
 \anchor SW70
 J.&nbsp;Stoer and C.&nbsp;Witzgall.
-  <i>Convexity and Optimization in Finite Dimensions I</i>.
-  Springer-Verlag, Berlin, 1970.
+ <em>Convexity and Optimization in Finite Dimensions I</em>.
+ Springer-Verlag, Berlin, 1970.
 
 </DD>
 
 
-<DT> [Wey35] </DT>
+<DT>[War03]</DT>
+<DD>
+\anchor War03
+H.&nbsp;S. Warren, Jr.
+ <em>Hacker's Delight</em>.
+ Addison-Wesley Longman Publishing Co., Inc., Boston, MA, USA, 2003.
+
+</DD>
+
+
+<DT>[Wey35]</DT>
 <DD>
 \anchor Wey35
 H.&nbsp;Weyl.
-  Elementare theorie der konvexen polyeder.
-  <i>Commentarii Mathematici Helvetici</i>, 7:290-306, 1935.
-  English translation in \ref Wey50 "[Wey50]".
+ Elementare theorie der konvexen polyeder.
+ <em>Commentarii Mathematici Helvetici</em>, 7:290-306, 1935.
+ English translation in \ref Wey50 "[Wey50]".
 
 </DD>
 
 
-<DT> [Wey50] </DT>
+<DT>[Wey50]</DT>
 <DD>
 \anchor Wey50
 H.&nbsp;Weyl.
-  The elementary theory of convex polyhedra.
-  In H.&nbsp;W. Kuhn, editor, <i>Contributions to the Theory of Games -
-  Volume I</i>, number&nbsp;24 in Annals of Mathematics Studies, pages 3-18. Princeton
+ The elementary theory of convex polyhedra.
+ In H.&nbsp;W. Kuhn, editor, <em>Contributions to the Theory of Games -
+  Volume I</em>, number&nbsp;24 in Annals of Mathematics Studies, pages 3-18. Princeton
   University Press, Princeton, New Jersey, 1950.
-  Translated from \ref Wey35 "[Wey35]" by H. W. Kuhn.
+ Translated from \ref Wey35 "[Wey35]" by H. W. Kuhn.
 
 </DD>
 
 
-<DT> [Wil93] </DT>
+<DT>[Wil93]</DT>
 <DD>
 \anchor Wil93
 D.&nbsp;K. Wilde.
-  A library for doing polyhedral operations.
-  Master's thesis, Oregon State University, Corvallis, Oregon,
+ A library for doing polyhedral operations.
+ Master's thesis, Oregon State University, Corvallis, Oregon,
   December 1993.
-  Also published as IRISA <em>Publication interne</em> 785, Rennes,
+ Also published as IRISA <em>Publication interne</em> 785, Rennes,
   France, 1993.
+
 
 </DD>
 </DL>
