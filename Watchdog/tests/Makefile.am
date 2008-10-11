@@ -36,8 +36,8 @@ endif !VALGRIND_TESTS_ENABLED
 TESTS_ENVIRONMENT = $(CHECKER)
 
 AM_CPPFLAGS = \
--I$(builddir)/.. \
--I$(builddir)/../src \
+-I.. \
+-I../src \
 @debug_flag@
 
 check_LIBRARIES = libpwl_tests.a
@@ -46,7 +46,7 @@ libpwl_tests_a_SOURCES = \
 pwl_test.cc
 
 LDADD = \
-$(builddir)/../src/libpwl.la \
+../src/libpwl.la \
 libpwl_tests.a
 
 noinst_HEADERS = \
