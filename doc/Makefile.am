@@ -1346,7 +1346,7 @@ Makefile $(USER_CONFIGURED_OCAML_INTERFACE_STUFF)
 	  $<  > Doxyfile.user-configured-ocaml-interface-latex
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.user-configured-ocaml-interface-latex
 	ocamldoc $(OCAMLDOC_LATEX_OPTIONS) -o $@/ocamldoc.tex \
-		../../interfaces/OCaml/ppl_ocaml.mli
+		../interfaces/OCaml/ppl_ocaml.mli
 
 devref-configured-ocaml-interface.latex-dir: \
 devref-foreign-language-interface.doxyconf \
@@ -1360,7 +1360,7 @@ Makefile $(DEVREF_CONFIGURED_OCAML_INTERFACE_STUFF)
 	  $<  > Doxyfile.devref-configured-ocaml-interface-latex
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.devref-configured-ocaml-interface-latex
 	ocamldoc $(OCAMLDOC_LATEX_OPTIONS) -o $@/ocamldoc.tex \
-		../../interfaces/OCaml/ppl_ocaml.mli
+		../interfaces/OCaml/ppl_ocaml.mli
 
 ppl-user-configured-ocaml-interface-@VERSION@.pdf: \
 user-configured-ocaml-interface.latex-dir
