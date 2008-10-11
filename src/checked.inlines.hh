@@ -530,12 +530,16 @@ lt(const T1& x, const T2& y) {
 }
 
 template <typename T1, typename T2>
-inline typename Enable_If<(!Safe_Conversion<T1, T2>::value
-			   && !Safe_Conversion<T2, T1>::value
-			   && (!C_Integer<T1>::value || !C_Integer<T2>::value)), bool>::type
+inline typename
+Enable_If<(!Safe_Conversion<T1, T2>::value
+           && !Safe_Conversion<T2, T1>::value
+           && (!C_Integer<T1>::value || !C_Integer<T2>::value)), bool>::type
 le(const T1& x, const T2& y) {
   DIRTY_TEMP(T1, tmp);
-  Result r = assign_r(tmp, y, static_cast<Rounding_Dir>(ROUND_UP | ROUND_FPU_CHECK_INEXACT));
+  Result r
+    = assign_r(tmp,
+               y,
+               static_cast<Rounding_Dir>(ROUND_UP | ROUND_FPU_CHECK_INEXACT));
   switch (r) {
   case V_POS_OVERFLOW:
   case VC_PLUS_INFINITY:

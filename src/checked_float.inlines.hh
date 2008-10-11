@@ -340,7 +340,8 @@ assign_float_float_inexact(To& to, const From from, Rounding_Dir dir) {
   else if (fpu_inverse_rounding(dir))
     to = -static_cast<To>(-from);
   else {
-    fpu_rounding_control_word_type old = fpu_save_rounding_direction(round_fpu_dir(dir));
+    fpu_rounding_control_word_type old
+      = fpu_save_rounding_direction(round_fpu_dir(dir));
     avoid_cse(from);
     to = from;
     avoid_cse(to);
@@ -368,7 +369,8 @@ floor_float(Type& to, const Type from, Rounding_Dir) {
   else if (fpu_inverse_rounding(ROUND_DOWN))
     to = -limit_precision(rint(-from));
   else {
-    fpu_rounding_control_word_type old = fpu_save_rounding_direction(round_fpu_dir(ROUND_DOWN));
+    fpu_rounding_control_word_type old
+      = fpu_save_rounding_direction(round_fpu_dir(ROUND_DOWN));
     avoid_cse(from);
     to = rint(from);
     avoid_cse(to);
@@ -387,7 +389,8 @@ ceil_float(Type& to, const Type from, Rounding_Dir) {
   else if (fpu_inverse_rounding(ROUND_UP))
     to = -limit_precision(rint(-from));
   else {
-    fpu_rounding_control_word_type old = fpu_save_rounding_direction(round_fpu_dir(ROUND_UP));
+    fpu_rounding_control_word_type old
+      = fpu_save_rounding_direction(round_fpu_dir(ROUND_UP));
     avoid_cse(from);
     to = rint(from);
     avoid_cse(to);
@@ -429,7 +432,8 @@ add_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   else if (fpu_inverse_rounding(dir))
     to = -limit_precision(-x - y);
   else {
-    fpu_rounding_control_word_type old = fpu_save_rounding_direction(round_fpu_dir(dir));
+    fpu_rounding_control_word_type old
+      = fpu_save_rounding_direction(round_fpu_dir(dir));
     avoid_cse(x);
     avoid_cse(y);
     to = x + y;
@@ -454,7 +458,8 @@ sub_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   else if (fpu_inverse_rounding(dir))
     to = -limit_precision(y - x);
   else {
-    fpu_rounding_control_word_type old = fpu_save_rounding_direction(round_fpu_dir(dir));
+    fpu_rounding_control_word_type old
+      = fpu_save_rounding_direction(round_fpu_dir(dir));
     avoid_cse(x);
     avoid_cse(y);
     to = x - y;
@@ -480,7 +485,8 @@ mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   else if (fpu_inverse_rounding(dir))
     to = -limit_precision(x * -y);
   else {
-    fpu_rounding_control_word_type old = fpu_save_rounding_direction(round_fpu_dir(dir));
+    fpu_rounding_control_word_type old
+      = fpu_save_rounding_direction(round_fpu_dir(dir));
     avoid_cse(x);
     avoid_cse(y);
     to = x * y;
@@ -507,7 +513,8 @@ div_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   else if (fpu_inverse_rounding(dir))
     to = -limit_precision(x / -y);
   else {
-    fpu_rounding_control_word_type old = fpu_save_rounding_direction(round_fpu_dir(dir));
+    fpu_rounding_control_word_type old
+      = fpu_save_rounding_direction(round_fpu_dir(dir));
     avoid_cse(x);
     avoid_cse(y);
     to = x / y;
@@ -600,7 +607,8 @@ sqrt_float(Type& to, const Type from, Rounding_Dir dir) {
   if (fpu_direct_rounding(dir))
     to = std::sqrt(from);
   else {
-    fpu_rounding_control_word_type old = fpu_save_rounding_direction(round_fpu_dir(dir));
+    fpu_rounding_control_word_type old
+      = fpu_save_rounding_direction(round_fpu_dir(dir));
     avoid_cse(from);
     to = std::sqrt(from);
     avoid_cse(to);
@@ -634,7 +642,8 @@ assign_float_int_inexact(To& to, const From from, Rounding_Dir dir) {
   if (fpu_direct_rounding(dir))
     to = from;
   else {
-    fpu_rounding_control_word_type old = fpu_save_rounding_direction(round_fpu_dir(dir));
+    fpu_rounding_control_word_type old
+      = fpu_save_rounding_direction(round_fpu_dir(dir));
     avoid_cse(from);
     to = from;
     avoid_cse(to);
@@ -811,7 +820,8 @@ add_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   else if (fpu_inverse_rounding(dir))
     to = -limit_precision(fma(-x, y, -to));
   else {
-    fpu_rounding_control_word_type old = fpu_save_rounding_direction(round_fpu_dir(dir));
+    fpu_rounding_control_word_type old
+      = fpu_save_rounding_direction(round_fpu_dir(dir));
     avoid_cse(x);
     avoid_cse(y);
     to = fma(x, y, to);
@@ -837,7 +847,8 @@ sub_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   else if (fpu_inverse_rounding(dir))
     to = -limit_precision(fma(x, y, -to));
   else {
-    fpu_rounding_control_word_type old = fpu_save_rounding_direction(round_fpu_dir(dir));
+    fpu_rounding_control_word_type old
+      = fpu_save_rounding_direction(round_fpu_dir(dir));
     avoid_cse(x);
     avoid_cse(y);
     to = fma(x, -y, to);
