@@ -313,6 +313,16 @@ Edge hawaii[] = {
   { 119, 91, 7911 },
 };
 
+Edge hawaii1[] = {
+  { 1, 0, 600 },
+  { 2, 1, 2872 },
+};
+
+Edge hawaii2[] = {
+  { 0, 1, 600 },
+  { 1, 2, 2872 },
+};
+
 const mpq_class&
 perturbate(unsigned long a) {
   static mpq_class q;
@@ -375,12 +385,67 @@ bool test01() {
 
   print_constraints(tbox, "*** tbox.propagate_edges() ***");
 
-  // FIXME
-  (void) check_result(tbox, qbox2, " 18.36", "1.52", "0.25");
+  bool ok = check_result(tbox, qbox2, " 18.36", "1.52", "0.25");
 
-  return true;
+  return ok;
+}
+
+bool test02() {
+  Rational_Box qbox1(3);
+
+  qbox1.add_constraint(Variable(0) <= 0);
+
+  Rational_Box qbox2(qbox1);
+
+  print_constraints(qbox1, "*** qbox1, qbox2 ***");
+
+  propagate_edges(qbox2, hawaii1, sizeof(hawaii1)/sizeof(Edge));
+  C_Polyhedron ph(qbox2);
+  print_constraints(ph, "*** ph ***");
+
+  print_constraints(qbox2, "*** qbox2.propagate_edges() ***");
+
+  TBox tbox(qbox1);
+
+  print_constraints(tbox, "*** tbox ***");
+
+  propagate_edges(tbox, hawaii1, sizeof(hawaii1)/sizeof(Edge));
+
+  print_constraints(tbox, "*** tbox.propagate_edges() ***");
+
+  bool ok = check_result(tbox, qbox2, " 18.36", "1.52", "0.25");
+
+  return ok;
+}
+
+bool test03() {
+  Rational_Box qbox1(3);
+
+  qbox1.add_constraint(Variable(0) >= 0);
+
+  Rational_Box qbox2(qbox1);
+
+  print_constraints(qbox1, "*** qbox1, qbox2 ***");
+
+  propagate_edges(qbox2, hawaii2, sizeof(hawaii2)/sizeof(Edge));
+
+  print_constraints(qbox2, "*** qbox2.propagate_edges() ***");
+
+  TBox tbox(qbox1);
+
+  print_constraints(tbox, "*** tbox ***");
+
+  propagate_edges(tbox, hawaii2, sizeof(hawaii2)/sizeof(Edge));
+
+  print_constraints(tbox, "*** tbox.propagate_edges() ***");
+
+  bool ok = check_result(tbox, qbox2, " 18.36", "1.52", "0.25");
+
+  return ok;
 }
 
 BEGIN_MAIN
   DO_TEST_F16(test01);
+  DO_TEST_F16(test02);
+  DO_TEST_F16(test03);
 END_MAIN
