@@ -128,17 +128,17 @@ fpu_inverse_rounding(Rounding_Dir dir) {
 // Wrong result: we should have obtained c = 0.1.
 
 inline void
-limit_precision(float& v) {
+limit_precision(const float& v) {
   cc_flush(v);
 }
 
 inline void
-limit_precision(double& v) {
+limit_precision(const double& v) {
   cc_flush(v);
 }
 
 inline void
-limit_precision(long double&) {
+limit_precision(const long double&) {
 }
 
 template <typename Policy, typename T>
