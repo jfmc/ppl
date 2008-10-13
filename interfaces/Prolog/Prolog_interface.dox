@@ -981,7 +981,7 @@ to its constraint or generator descriptions</H3>
 Note that there are two forms of these predicates
 differentiated in the names by the
 words "add" or "refine with";
-see Section \extref{Generic_Operations_on_Semantic_Geometric_Descriptors, Generic Operations on Semantic Geometric Descriptors} in the
+see Section \extref{Generic_Operations_on_Semantic_Geometric_Descriptors, <EM>Generic Operations on Semantic Geometric Descriptors</EM>} in the
 main \extref{preamble, PPL user manual}
 for the differences in the semantics and therefore, the expected behavior,
 between these forms.
@@ -1070,12 +1070,12 @@ C polyhedron is the identity transformation),
 unconstraining a specified dimension
 as explained in the
 main \extref{preamble, PPL user manual} in Section
-\extref{Cylindrification, Cylindrification Operator}
+\extref{Cylindrification, <EM>Cylindrification Operator</EM>}
 and several different image and preimage affine transfer relations;
 for details of the latter see Sections
-\extref{Images_and_Preimages_of_Affine_Transfer_Relations, Images and Preimages of Affine Transfer Relations}
+\extref{Images_and_Preimages_of_Affine_Transfer_Relations, <EM>Images and Preimages of Affine Transfer Relations</EM>}
 and
-\extref{Generalized_Affine_Relations, Generalized Affine Relations}.
+\extref{Generalized_Affine_Relations, <EM>Generalized Affine Relations</EM>}.
 
 <P><CODE>ppl_Polyhedron_topological_closure_assign(+Handle)</CODE><BR>
   <EM>Assigns to the polyhedron referenced by \c Handle
@@ -1154,9 +1154,9 @@ polyhedron referred to by the first argument
 its combination with the polyhedron referred to by the second argument
 as described in the
 main \extref{preamble, PPL user manual} in Sections
-\extref{Intersection_and_Convex_Polyhedral_Hull, Intersection and Convex Polyhedral Hull}
+\extref{Intersection_and_Convex_Polyhedral_Hull, <EM>Intersection and Convex Polyhedral Hull</EM>}
 and
-\extref{Convex_Polyhedral_Difference, Convex Polyhedral Difference};
+\extref{Convex_Polyhedral_Difference, <EM>Convex Polyhedral Difference</EM>};
 and a linear partitioning operator described below.
 
 <P><CODE>ppl_Polyhedron_intersection_assign(+Handle_1, +Handle_2)</CODE><BR>
@@ -1224,9 +1224,9 @@ In addition to the above binary operators, there are also a number
 of widening, extrapolation and narrowing operators
 as described in the
 main \extref{preamble, PPL user manual} in Sections
-\extref{Widening_Operators, Widening Operators},
-\extref{Widening_with_Tokens, Widening with Tokens} and
-\extref{Extrapolation_Operators, Extrapolation Operators}.
+\extref{Widening_Operators, <EM>Widening Operators</EM>},
+\extref{Widening_with_Tokens, <EM>Widening with Tokens</EM>} and
+\extref{Extrapolation_Operators, <EM>Extrapolation Operators</EM>}.
 Note that for all these widening and extrapolation predicates
 to behave as specified
 the polyhedron referred to by the second argument has to be
@@ -1346,7 +1346,7 @@ of the polyhedron referred to in the first argument.
 
 <H3>Predicate for concatenation</H3>
 For more information on this operation, see Section
-\extref{Concatenating_Polyhedra, Concatenating Polyhedra},
+\extref{Concatenating_Polyhedra, <EM>Concatenating Polyhedra</EM>},
 of the main \extref{preamble, PPL user manual}.
 
 <P><CODE>ppl_Polyhedron_concatenate_assign(+Handle_1, +Handle_2)</CODE><BR>
@@ -1361,12 +1361,12 @@ These predicates enable the modification of the vector space
 of the polyhedron referred to in the first argument.
 Detailed descriptions of these can be found in the
 main \extref{preamble, PPL user manual} in Sections
-\extref{Adding_New_Dimensions_to_the_Vector_Space, Adding New Dimensions to the Vector Space},
-\extref{Removing_Dimensions_from_the_Vector_Space, Removing Dimensions from the Vector Space},
-\extref{Mapping_the_Dimensions_of_the_Vector_Space, Mapping the Dimensions of the Vector Space},
-\extref{expand_space_dimension, Expanding One Dimension of the Vector Space to Multiple Dimensions}
+\extref{Adding_New_Dimensions_to_the_Vector_Space, <EM>Adding New Dimensions to the Vector Space</EM>},
+\extref{Removing_Dimensions_from_the_Vector_Space, <EM>Removing Dimensions from the Vector Space</EM>},
+\extref{Mapping_the_Dimensions_of_the_Vector_Space, <EM>Mapping the Dimensions of the Vector Space</EM>},
+\extref{expand_space_dimension, <EM>Expanding One Dimension of the Vector Space to Multiple Dimensions</EM>}
 and
-\extref{Folding_Multiple_Dimensions_of_the_Vector_Space_into_One_Dimension, Folding Multiple Dimensions of the Vector Space into One Dimension}.
+\extref{Folding_Multiple_Dimensions_of_the_Vector_Space_into_One_Dimension, <EM>Folding Multiple Dimensions of the Vector Space into One Dimension</EM>}.
 
 <P><CODE>ppl_Polyhedron_add_space_dimensions_and_embed(+Handle, +Dimension_Type)</CODE><BR>
   <EM>Adds \c Dimension_Type new dimensions to the space enclosing
@@ -1391,14 +1391,14 @@ and
   \c Dimension_Type.</EM>
 
 <P><CODE>ppl_Polyhedron_expand_space_dimension(+Handle, +PPL_Var, +Dimension_Type)</CODE><BR>
-  <EM>\extref{expand_space_dimension, Expands} the \c  PPL_Var-th
+  <EM>Expands the \c  PPL_Var-th
   dimension of the vector space enclosing
   the polyhedron referenced by \c Handle to
   \c Dimension_Type new space dimensions.</EM>
 
 <P><CODE>ppl_Polyhedron_fold_space_dimensions(+Handle, +List_of_PPL_Vars, +PPL_Var)</CODE><BR>
   <EM>Modifies the polyhedron referenced by \c Handle
-  by \extref{fold_space_dimensions, folding} the
+  by folding the
   space dimensions contained in \c List_of_PPL_Vars
   into dimension \c PPL_Var.
   The presence of duplicates in \c List_of_PPL_Vars is a waste
@@ -1406,7 +1406,7 @@ and
 
 <P><CODE>ppl_Polyhedron_map_space_dimensions(+Handle, +P_Func)</CODE><BR>
   <EM>Remaps the dimensions of the vector space according to a
-  \extref{Mapping_the_Dimensions_of_the_Vector_Space, partial function}.
+  partial function.
   This function is specified by means of the \c P_Func,
   which has \p n entries.
   The result is undefined if \c P_Func does not encode a partial
@@ -1421,7 +1421,7 @@ and
   An element of the powerset domain represents a disjunctive collection
   of base objects (its disjuncts), all having the same space dimension.
   For more information on this construct,
-  see Section \extref{The_Powerset_Domain, The Powerset Domain}
+  see Section \extref{The_Powerset_Domain, <EM>The Powerset Domain</EM>}
   in the main \extref{preamble, PPL user manual}.
 
   Besides the predicates that are available in all semantic geometric
@@ -1479,7 +1479,16 @@ on these iterators via the usual handles.
 Collected here are predicates that are specific to
 the pointset powerset domain of C polyhdera;
 these provide operations for
-adding and removing disjuncts.
+simplifying the powerset,
+geometric comparisons,
+adding and removing disjuncts
+and widening and extrapolation.
+Detailed descriptions of these can be found in the
+main \extref{preamble, PPL user manual} in Sections
+\extref{Geometric_Comparisons, <EM>Geometric Comparisons</EM>},
+\extref{Adding_a_Disjunct, <EM>Adding a Disjunct</EM>},
+\extref{Certificate_Based_Widenings, <EM>Certificate-Based Widenings</EM>},
+\extref{Powerset_Extrapolation_Operators, <EM>Powerset Extrapolation Operators</EM>}.
 
 <P><CODE>ppl_Pointset_Powerset_C_Polyhedron_pairwise_reduce(+Handle)</CODE><BR>
    <EM>Assigns the result of pairwise reduction on
@@ -1505,9 +1514,7 @@ adding and removing disjuncts.
 
 <P><CODE>ppl_Pointset_Powerset_C_Polyhedron_add_disjunct(+Handle_1, +Handle_2)</CODE><BR>
   <EM>Adds to the pointset powerset referenced by \c Handle_1 a disjunct
-  referred to by \c Handle_2;
-  see Section \extref{Adding_a_Disjunct, Adding a Disjunct}
-  in the main \extref{preamble, PPL user manual}.</EM>
+  referred to by \c Handle_2.</EM>
 
 <P><CODE>ppl_Pointset_Powerset_C_Polyhedron_drop_disjunct(+Handle, +Iterator)</CODE><BR>
   <EM>If \p it is the iterator referred to by \c Iterator,
@@ -1527,18 +1534,14 @@ adding and removing disjuncts.
    \c Handle_1 the \extref{pps_certificate_widening, BHZ03-widening}
     between \p P_1 and the pointset powerset referenced by
    \c Handle_2, using the BHRZ03-widening
-    certified by the convergence certificate for BHRZ03.
-   see Section \extref{Certificate_Based_Widenings, Certificate-Based Widenings}
-  in the main \extref{preamble, PPL user manual}.</EM>
+    certified by the convergence certificate for BHRZ03.</EM>
 
 <P><CODE>ppl_Pointset_Powerset_C_Polyhedron_BHZ03_H79_H79_widening_assign(+Handle_1, +Handle_2)</CODE><BR>
    <EM>Assigns to the pointset powerset \p P_1 referenced by
    \c Handle_1 the \extref{pps_certificate_widening, BHZ03-widening}
     between \p P_1 and the pointset powerset referenced by
    \c Handle_2, using the H79-widening
-    certified by the convergence certificate for H79.
-   see Section \extref{Certificate_Based_Widenings, Certificate-Based Widenings}
-  in the main \extref{preamble, PPL user manual}.</EM>
+    certified by the convergence certificate for H79.</EM>
 
 <P><CODE>ppl_Pointset_Powerset_C_Polyhedron_BGP99_BHRZ03_extrapolation_assign(+Handle_1, +Handle_2, C_unsigned)</CODE><BR>
     <EM>Assigns to the pointset powerset \p P_1 referenced by
@@ -1546,9 +1549,7 @@ adding and removing disjuncts.
     \extref{pps_bgp99_extrapolation, BGP99 extrapolation operator}
     between \p P_1 and the pointset powerset referenced by
    \c Handle_2, using the BHRZ03-widening
-    and the cardinality threshold \c C_unsigned.
-  see Section \extref{Powerset_Extrapolation_Operators, Powerset Extrapolation Operators}
-  in the main \extref{preamble, PPL user manual}.</EM>
+    and the cardinality threshold \c C_unsigned.</EM>
 
 <P><CODE>ppl_Pointset_Powerset_C_Polyhedron_BGP99_H79_extrapolation_assign(+Handle_1, +Handle_2, C_unsigned)</CODE><BR>
     <EM>Assigns to the pointset powerset \p P_1 referenced by
@@ -1556,9 +1557,7 @@ adding and removing disjuncts.
     \extref{pps_bgp99_extrapolation, BGP99 extrapolation operator}
     between \p P_1 and the pointset powerset referenced by
    \c Handle_2, using the H79-widening
-    and the cardinality threshold \c C_unsigned.
-  see Section \extref{Powerset_Extrapolation_Operators, Powerset Extrapolation Operators}
-  in the main \extref{preamble, PPL user manual}.</EM>
+    and the cardinality threshold \c C_unsigned.</EM>
 
 
 
