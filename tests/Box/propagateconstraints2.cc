@@ -385,7 +385,7 @@ bool test01() {
 
   print_constraints(tbox, "*** tbox.propagate_edges() ***");
 
-  bool ok = check_result(tbox, qbox2, "3.28", "2.83", "2.79");
+  bool ok = check_result(tbox, qbox2, "18.36", "2.83", "2.79");
 
   return ok;
 }
