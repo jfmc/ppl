@@ -2171,7 +2171,7 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
 	    goto maybe_refine_upper_2;
 	  if (x_i.upper_is_open())
 	    open = T_YES;
-	  r = sub_mul_assign_r(t_bound, t_a, t_x, ROUND_UP);
+	  r = sub_mul_assign_r(t_bound, t_a, t_x, ROUND_DOWN);
 	  if (propagate_constraint_check_result(r, open))
 	    goto maybe_refine_upper_2;
 	}
