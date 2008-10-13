@@ -385,10 +385,9 @@ bool test01() {
 
   print_constraints(tbox, "*** tbox.propagate_edges() ***");
 
-  // FIXME:
-  (void) check_result(tbox, qbox2);
+  bool ok = check_result(tbox, qbox2, "3.28", "2.83", "2.79");
 
-  return true;
+  return ok;
 }
 
 bool test02() {
@@ -412,10 +411,9 @@ bool test02() {
 
   print_constraints(tbox, "*** tbox.propagate_edges() ***");
 
-  // FIXME:
-  (void) check_result(tbox, qbox2);
+  bool ok = check_result(tbox, qbox2, "3.28", "2.83", "2.79");
 
-  return true;
+  return ok;
 }
 
 bool test03() {
@@ -439,10 +437,9 @@ bool test03() {
 
   print_constraints(tbox, "*** tbox.propagate_edges() ***");
 
-  // FIXME:
-  (void) check_result(tbox, qbox2);
+  bool ok = check_result(tbox, qbox2, "3.28", "2.83", "2.78");
 
-  return true;
+  return ok;
 }
 
 BEGIN_MAIN
