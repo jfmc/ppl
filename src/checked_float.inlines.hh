@@ -641,6 +641,8 @@ assign_float_int_inexact(To& to, const From from, Rounding_Dir dir) {
   prepare_inexact<To_Policy>(dir);
   if (fpu_direct_rounding(dir))
     to = from;
+  else if (fpu_inverse_rounding(dir))
+    to = -limit_precision(-from);
   else {
     fpu_rounding_control_word_type old
       = fpu_save_rounding_direction(round_fpu_dir(dir));
