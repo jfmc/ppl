@@ -1,4 +1,4 @@
-/* Documentation for the Prolog interfaces.
+/* Configuration Independent Documentation for Prolog.
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -697,7 +697,7 @@ For example,
   congruences or a list of generators that contains no closure points.
 
 <P><CODE>ppl_new_C_Polyhedron_from_space_dimension(+Dimension_Type, +Universe_or_Empty, -Handle)</CODE><BR>
-   <EM>Builds a C polyhedron \f$\cP\f$
+   <EM>Builds a new C polyhedron \f$\cP\f$
    with \c Dimension_Type dimensions; it is empty
    or the universe depending on whether \c Atom
    is \c empty or \c universe, respectively.
@@ -724,7 +724,6 @@ For example,
   <EM>Builds a new C polyhedron \p P from
   \c Generator_System.
   \c Handle is unified with the handle for \p P.</EM>
-
 
 
 <H3>Predicates that build new C polyhedra
@@ -770,14 +769,12 @@ For example,
   \c Handle_2 is unified with the handle for \p P_1.</EM>
 
 
-
 <H3>Destructor predicate</H3>
 Below is the destructor predicate for the Polyhedron domain.
 
 <P><CODE>ppl_delete_Polyhedron(+Handle)</CODE><BR>
   <EM>Invalidates the handle  referenced by \c Handle:
   this makes sure the corresponding resources will eventually be released.</EM>
-
 
 
 <H2>Predicates that do not change the polyhedron</H2>
@@ -847,7 +844,6 @@ and succeed or fail depending on the outcome.
 <P><CODE>ppl_Polyhedron_constrains(+Handle, +PPL_Var)</CODE><BR>
   <EM>Succeeds if and only if the polyhedron referenced by
    \c Handle constrains the dimension \c PPL_Var.</EM>
-
 
 
 <H3>Predicates that return information about the polyhedron</H3>
@@ -967,14 +963,12 @@ bytes occupied by the polyhedron referenced by \c Handle.</EM>
 bytes occupied by the polyhedron referenced by \c Handle.</EM>
 
 
-
 <H3>Ascii dump predicate</H3>
 This output predicate is useful for debugging.
 
 <P><CODE>ppl_Polyhedron_ascii_dump(+Handle)</CODE><BR>
   <EM>Dumps an ascii representation of the PPL internal state for
   the polyhedron referenced by \c Handle on the standard output.</EM>
-
 
 
 <H2>Space-dimension preserving predicates that may change the polyhedron</H2>
@@ -1069,7 +1063,6 @@ between these forms.
    the congruences in \c Congruence_System.</EM>
 
 
-
 <H3>Predicates that transform a polyhedron</H3>
 These predicates enable transformations
 such as taking the topological closure (which for the domain of
@@ -1155,7 +1148,6 @@ and
    represented by \c Relation_Symbol.</EM>
 
 
-
 <H3>Predicates whose results depend on more than one polyhedron</H3>
 These predicates include the binary operators which will assign to the
 polyhedron referred to by the first argument
@@ -1227,7 +1219,6 @@ and a linear partitioning operator described below.
   has been enabled when configuring the library.</EM>
 
 
-
 <H3>Predicates for widening and extrapolation</H3>
 In addition to the above binary operators, there are also a number
 of widening, extrapolation and narrowing operators
@@ -1270,12 +1261,11 @@ contained in (or equal to) the polyhedron referred to by the first argument.
    referenced by \c Handle_2.</EM>
 
 <P><CODE>ppl_Polyhedron_widening_assign_with_tokens(+Handle_1, +Handle_2, +C_unsigned_1, ?C_unsigned_2)</CODE><BR>
-<EM>Same as the predicate</EM>
-<CODE>ppl_Polyhedron_H79_widening_assign_with_tokens/4</CODE>
-
+<EM>Same as the predicate
+<CODE>ppl_Polyhedron_H79_widening_assign_with_tokens</CODE>/4</EM>
 <P><CODE>ppl_Polyhedron_widening_assign(+Handle_1, +Handle_2)</CODE><BR>
-<EM>Same as the predicate</EM>
-<CODE>ppl_Polyhedron_H79_widening_assign</CODE>/2
+<EM>Same as the predicate
+<CODE>ppl_Polyhedron_H79_widening_assign</CODE>/2</EM>
 
 <P><CODE>ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens(+Handle_1, +Handle_2, +Constraint_System, +C_unsigned_1, ?C_unsigned_2)</CODE><BR>
    <EM>Assigns to the polyhedron \p P_1 referenced by \c Handle_1
@@ -1350,7 +1340,6 @@ contained in (or equal to) the polyhedron referred to by the first argument.
    satisfied by all the points of \p P_1, further intersected with the smallest box containing \p P_1.</EM>
 
 
-
 <H2>Predicates that may modify the vector space</H2>
 These predicates enable the modification of the vector space
 of the polyhedron referred to in the first argument.
@@ -1363,7 +1352,6 @@ of the main \extref{preamble, PPL user manual}.
 <P><CODE>ppl_Polyhedron_concatenate_assign(+Handle_1, +Handle_2)</CODE><BR>
    <EM>Assigns to the polyhedron \p P referenced by \c Handle_1
    the concatenation of \p P and the polyhedron referenced by \c Handle_2.</EM>
-
 
 
 <H3>Predicates for mapping dimensions or changing the vector space</H3>
@@ -1423,7 +1411,6 @@ and
   which has \p n entries.
   The result is undefined if \c P_Func does not encode a partial
   function.</EM>
-
 
 
 \anchor other_domains
@@ -1488,14 +1475,11 @@ on these iterators via the usual handles.
   this makes sure the corresponding resources
   will eventually be released.</EM>
 
-
   <H3>Other Ad Hoc Predicates for the pointset powerset domains.</H3>
-Collected here are all the other predicates that are specific to
+Collected here are predicates that are specific to
 the pointset powerset domain of C polyhdera;
-these provide operations for simplifying the powerset
-geometric comparisons,
-adding and removing disjuncts
-and widening and extrapolation.
+these provide operations for
+adding and removing disjuncts.
 
 <P><CODE>ppl_Pointset_Powerset_C_Polyhedron_pairwise_reduce(+Handle)</CODE><BR>
    <EM>Assigns the result of pairwise reduction on
@@ -1537,12 +1521,13 @@ and widening and extrapolation.
   drops from the pointset powerset referenced by \c Handle
    all the disjuncts from \p it_1 to \p it_2 (excluded).</EM>
 
+
 <P><CODE>ppl_Pointset_Powerset_C_Polyhedron_BHZ03_BHRZ03_BHRZ03_widening_assign(+Handle_1, +Handle_2)</CODE><BR>
    <EM>Assigns to the pointset powerset \p P_1 referenced by
    \c Handle_1 the \extref{pps_certificate_widening, BHZ03-widening}
     between \p P_1 and the pointset powerset referenced by
    \c Handle_2, using the BHRZ03-widening
-    certified by the convergence certificate for BHRZ03.</EM>
+    certified by the convergence certificate for BHRZ03.
    see Section \extref{Certificate_Based_Widenings, Certificate-Based Widenings}
   in the main \extref{preamble, PPL user manual}.</EM>
 
@@ -1551,7 +1536,7 @@ and widening and extrapolation.
    \c Handle_1 the \extref{pps_certificate_widening, BHZ03-widening}
     between \p P_1 and the pointset powerset referenced by
    \c Handle_2, using the H79-widening
-    certified by the convergence certificate for H79.</EM>
+    certified by the convergence certificate for H79.
    see Section \extref{Certificate_Based_Widenings, Certificate-Based Widenings}
   in the main \extref{preamble, PPL user manual}.</EM>
 
@@ -1561,7 +1546,7 @@ and widening and extrapolation.
     \extref{pps_bgp99_extrapolation, BGP99 extrapolation operator}
     between \p P_1 and the pointset powerset referenced by
    \c Handle_2, using the BHRZ03-widening
-    and the cardinality threshold \c C_unsigned.</EM>
+    and the cardinality threshold \c C_unsigned.
   see Section \extref{Powerset_Extrapolation_Operators, Powerset Extrapolation Operators}
   in the main \extref{preamble, PPL user manual}.</EM>
 
@@ -1571,10 +1556,9 @@ and widening and extrapolation.
     \extref{pps_bgp99_extrapolation, BGP99 extrapolation operator}
     between \p P_1 and the pointset powerset referenced by
    \c Handle_2, using the H79-widening
-    and the cardinality threshold \c C_unsigned.</EM>
+    and the cardinality threshold \c C_unsigned.
   see Section \extref{Powerset_Extrapolation_Operators, Powerset Extrapolation Operators}
   in the main \extref{preamble, PPL user manual}.</EM>
-
 
 
 
