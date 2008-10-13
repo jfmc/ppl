@@ -38,11 +38,12 @@ used(const T&) {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief
-  No-op function that prevents the compiler to subject the argument to CSE.
+  No-op function that force the compiler to store the argument and
+  to reread it from memory if needed (thus preventing CSE).
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
-inline void avoid_cse(const T& x) {
+inline void cc_flush(const T& x) {
 #if defined(__GNUC__) || defined(__INTEL_COMPILER)
   __asm__ __volatile__ ("" : "+m" (const_cast<T&>(x)));
 #else

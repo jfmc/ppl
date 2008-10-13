@@ -127,23 +127,18 @@ fpu_inverse_rounding(Rounding_Dir dir) {
 //
 // Wrong result: we should have obtained c = 0.1.
 
-inline float
-limit_precision(float v) {
-  float x = v;
-  avoid_cse(x);
-  return x;
+inline void
+limit_precision(float& v) {
+  cc_flush(v);
 }
 
-inline double
-limit_precision(double v) {
-  double x = v;
-  avoid_cse(x);
-  return x;
+inline void
+limit_precision(double& v) {
+  cc_flush(v);
 }
 
-inline long double
-limit_precision(long double v) {
-  return v;
+inline void
+limit_precision(long double&) {
 }
 
 template <typename Policy, typename T>
@@ -337,14 +332,18 @@ assign_float_float_inexact(To& to, const From from, Rounding_Dir dir) {
   prepare_inexact<To_Policy>(dir);
   if (fpu_direct_rounding(dir))
     to = from;
-  else if (fpu_inverse_rounding(dir))
-    to = -limit_precision(-from);
+  else if (fpu_inverse_rounding(dir)) {
+    From tmp = -from;
+    to = tmp;
+    limit_precision(to);
+    to = -to;
+  }
   else {
     fpu_rounding_control_word_type old
       = fpu_save_rounding_direction(round_fpu_dir(dir));
-    avoid_cse(from);
+    limit_precision(from);
     to = from;
-    avoid_cse(to);
+    limit_precision(to);
     fpu_restore_rounding_direction(old);
   }
   return result_relation<To_Policy>(dir);
@@ -366,14 +365,17 @@ floor_float(Type& to, const Type from, Rounding_Dir) {
     return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
   if (fpu_direct_rounding(ROUND_DOWN))
     to = rint(from);
-  else if (fpu_inverse_rounding(ROUND_DOWN))
-    to = -limit_precision(rint(-from));
+  else if (fpu_inverse_rounding(ROUND_DOWN)) {
+    to = rint(-from);
+    limit_precision(to);
+    to = -to;
+  }
   else {
     fpu_rounding_control_word_type old
       = fpu_save_rounding_direction(round_fpu_dir(ROUND_DOWN));
-    avoid_cse(from);
+    limit_precision(from);
     to = rint(from);
-    avoid_cse(to);
+    limit_precision(to);
     fpu_restore_rounding_direction(old);
   }
   return V_EQ;
@@ -386,14 +388,17 @@ ceil_float(Type& to, const Type from, Rounding_Dir) {
     return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
   if (fpu_direct_rounding(ROUND_UP))
     to = rint(from);
-  else if (fpu_inverse_rounding(ROUND_UP))
-    to = -limit_precision(rint(-from));
+  else if (fpu_inverse_rounding(ROUND_UP)) {
+    to = rint(-from);
+    limit_precision(to);
+    to = -to;
+  }
   else {
     fpu_rounding_control_word_type old
       = fpu_save_rounding_direction(round_fpu_dir(ROUND_UP));
-    avoid_cse(from);
+    limit_precision(from);
     to = rint(from);
-    avoid_cse(to);
+    limit_precision(to);
     fpu_restore_rounding_direction(old);
   }
   return V_EQ;
@@ -429,15 +434,18 @@ add_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   prepare_inexact<To_Policy>(dir);
   if (fpu_direct_rounding(dir))
     to = x + y;
-  else if (fpu_inverse_rounding(dir))
-    to = -limit_precision(-x - y);
+  else if (fpu_inverse_rounding(dir)) {
+    to = -x - y;
+    limit_precision(to);
+    to = -to;
+  }
   else {
     fpu_rounding_control_word_type old
       = fpu_save_rounding_direction(round_fpu_dir(dir));
-    avoid_cse(x);
-    avoid_cse(y);
+    limit_precision(x);
+    limit_precision(y);
     to = x + y;
-    avoid_cse(to);
+    limit_precision(to);
     fpu_restore_rounding_direction(old);
   }
   if (To_Policy::check_nan_result && is_nan<To_Policy>(to))
@@ -455,15 +463,18 @@ sub_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   prepare_inexact<To_Policy>(dir);
   if (fpu_direct_rounding(dir))
     to = x - y;
-  else if (fpu_inverse_rounding(dir))
-    to = -limit_precision(y - x);
+  else if (fpu_inverse_rounding(dir)) {
+    to = y - x;
+    limit_precision(to);
+    to = -to;
+  }
   else {
     fpu_rounding_control_word_type old
       = fpu_save_rounding_direction(round_fpu_dir(dir));
-    avoid_cse(x);
-    avoid_cse(y);
+    limit_precision(x);
+    limit_precision(y);
     to = x - y;
-    avoid_cse(to);
+    limit_precision(to);
     fpu_restore_rounding_direction(old);
   }
   if (To_Policy::check_nan_result && is_nan<To_Policy>(to))
@@ -482,15 +493,18 @@ mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   prepare_inexact<To_Policy>(dir);
   if (fpu_direct_rounding(dir))
     to = x * y;
-  else if (fpu_inverse_rounding(dir))
-    to = -limit_precision(x * -y);
+  else if (fpu_inverse_rounding(dir)) {
+    to = x * -y;
+    limit_precision(to);
+    to = -to;
+  }
   else {
     fpu_rounding_control_word_type old
       = fpu_save_rounding_direction(round_fpu_dir(dir));
-    avoid_cse(x);
-    avoid_cse(y);
+    limit_precision(x);
+    limit_precision(y);
     to = x * y;
-    avoid_cse(to);
+    limit_precision(to);
     fpu_restore_rounding_direction(old);
   }
   if (To_Policy::check_nan_result && is_nan<To_Policy>(to))
@@ -510,15 +524,18 @@ div_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   prepare_inexact<To_Policy>(dir);
   if (fpu_direct_rounding(dir))
     to = x / y;
-  else if (fpu_inverse_rounding(dir))
-    to = -limit_precision(x / -y);
+  else if (fpu_inverse_rounding(dir)) {
+    to = x / -y;
+    limit_precision(to);
+    to = -to;
+  }
   else {
     fpu_rounding_control_word_type old
       = fpu_save_rounding_direction(round_fpu_dir(dir));
-    avoid_cse(x);
-    avoid_cse(y);
+    limit_precision(x);
+    limit_precision(y);
     to = x / y;
-    avoid_cse(to);
+    limit_precision(to);
     fpu_restore_rounding_direction(old);
   }
   if (To_Policy::check_nan_result && is_nan<To_Policy>(to))
@@ -609,9 +626,9 @@ sqrt_float(Type& to, const Type from, Rounding_Dir dir) {
   else {
     fpu_rounding_control_word_type old
       = fpu_save_rounding_direction(round_fpu_dir(dir));
-    avoid_cse(from);
+    limit_precision(from);
     to = std::sqrt(from);
-    avoid_cse(to);
+    limit_precision(to);
     fpu_restore_rounding_direction(old);
   }
   return result_relation<To_Policy>(dir);
@@ -644,9 +661,8 @@ assign_float_int_inexact(To& to, const From from, Rounding_Dir dir) {
   else {
     fpu_rounding_control_word_type old
       = fpu_save_rounding_direction(round_fpu_dir(dir));
-    avoid_cse(from);
     to = from;
-    avoid_cse(to);
+    limit_precision(to);
     fpu_restore_rounding_direction(old);
   }
   return result_relation<To_Policy>(dir);
@@ -817,15 +833,19 @@ add_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   prepare_inexact<To_Policy>(dir);
   if (fpu_direct_rounding(dir))
     to = fma(x, y, to);
-  else if (fpu_inverse_rounding(dir))
-    to = -limit_precision(fma(-x, y, -to));
+  else if (fpu_inverse_rounding(dir)) {
+    to = fma(-x, y, -to);
+    limit_precision(to);
+    to = -to;
+  }
   else {
     fpu_rounding_control_word_type old
       = fpu_save_rounding_direction(round_fpu_dir(dir));
-    avoid_cse(x);
-    avoid_cse(y);
+    limit_precision(x);
+    limit_precision(y);
+    limit_precision(to);
     to = fma(x, y, to);
-    avoid_cse(to);
+    limit_precision(to);
     fpu_restore_rounding_direction(old);
   }
   if (To_Policy::check_nan_result && is_nan<To_Policy>(to))
@@ -844,15 +864,19 @@ sub_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   prepare_inexact<To_Policy>(dir);
   if (fpu_direct_rounding(dir))
     to = fma(x, -y, to);
-  else if (fpu_inverse_rounding(dir))
-    to = -limit_precision(fma(x, y, -to));
+  else if (fpu_inverse_rounding(dir)) {
+    to = fma(x, y, -to);
+    limit_precision(to);
+    to = -to;
+  }
   else {
     fpu_rounding_control_word_type old
       = fpu_save_rounding_direction(round_fpu_dir(dir));
-    avoid_cse(x);
-    avoid_cse(y);
+    limit_precision(x);
+    limit_precision(y);
+    limit_precision(to);
     to = fma(x, -y, to);
-    avoid_cse(to);
+    limit_precision(to);
     fpu_restore_rounding_direction(old);
   }
   if (To_Policy::check_nan_result && is_nan<To_Policy>(to))
