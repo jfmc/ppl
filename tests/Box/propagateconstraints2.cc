@@ -446,6 +446,6 @@ bool test03() {
 
 BEGIN_MAIN
   DO_TEST_F16(test01);
-  DO_TEST_F16(test02);
-  DO_TEST_F16(test03);
+  DO_TEST(test02);
+  DO_TEST(test03);
 END_MAIN
