@@ -385,8 +385,8 @@ bool test01() {
 
   print_constraints(tbox, "*** tbox.propagate_edges() ***");
 
-  bool ok = check_result(tbox, qbox2, " 18.36", "1.52", "0.25");
-
+  bool ok = check_result(tbox, qbox2);
+ 
   return ok;
 }
 
@@ -400,8 +400,6 @@ bool test02() {
   print_constraints(qbox1, "*** qbox1, qbox2 ***");
 
   propagate_edges(qbox2, hawaii1, sizeof(hawaii1)/sizeof(Edge));
-  C_Polyhedron ph(qbox2);
-  print_constraints(ph, "*** ph ***");
 
   print_constraints(qbox2, "*** qbox2.propagate_edges() ***");
 
@@ -413,7 +411,7 @@ bool test02() {
 
   print_constraints(tbox, "*** tbox.propagate_edges() ***");
 
-  bool ok = check_result(tbox, qbox2, " 18.36", "1.52", "0.25");
+  bool ok = check_result(tbox, qbox2);
 
   return ok;
 }
@@ -439,7 +437,7 @@ bool test03() {
 
   print_constraints(tbox, "*** tbox.propagate_edges() ***");
 
-  bool ok = check_result(tbox, qbox2, " 18.36", "1.52", "0.25");
+  bool ok = check_result(tbox, qbox2);
 
   return ok;
 }
