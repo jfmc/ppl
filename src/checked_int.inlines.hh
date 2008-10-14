@@ -485,16 +485,17 @@ assign_int_float(To& to, const From from, Rounding_Dir dir) {
     return assign_special<To_Policy>(to, VC_MINUS_INFINITY, dir);
   else if (is_pinf<From_Policy>(from))
     return assign_special<To_Policy>(to, VC_PLUS_INFINITY, dir);
-  if (CHECK_P(To_Policy::check_overflow, (from < Extended_Int<To_Policy, To>::min)))
+  if (CHECK_P(To_Policy::check_overflow, lt(from, Extended_Int<To_Policy, To>::min)))
     return set_neg_overflow_int<To_Policy>(to, dir);
-  if (CHECK_P(To_Policy::check_overflow, (from > Extended_Int<To_Policy, To>::max)))
+  if (CHECK_P(To_Policy::check_overflow, !le(from, Extended_Int<To_Policy, To>::max)))
     return set_pos_overflow_int<To_Policy>(to, dir);
-  to = static_cast<To>(from);
+  From i_from = rint(from);
+  to = static_cast<To>(i_from);
   if (round_ignore(dir))
     return V_LGE;
-  if (from < to)
+  if (from < i_from)
     return round_lt_int<To_Policy>(to, dir);
-  else if (from > to)
+  else if (from > i_from)
     return round_gt_int<To_Policy>(to, dir);
   else
     return V_EQ;
