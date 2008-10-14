@@ -91,7 +91,7 @@ check_PROGRAMS = $(TESTS)
 
 test1_SOURCES = test1.ml
 
-test1$(EXEEXT): test1.cmo
+test1$(EXEEXT): test1.cmo ../ppl_ocaml.cma
 	$(OCAMLC_ENV) ocamlc -o $@ \
 		-cc g++ -g -custom $(OCAMLC_COMPILE_FLAGS) \
 		ppl_ocaml.cma gmp.cma \
@@ -107,7 +107,8 @@ ppl_ocaml_generated_test.ml: $(interface_generator_dependencies)
 		$(srcdir)/ppl_interface_generator_ocaml_test_ml.m4 \
 			> $@
 
-ppl_ocaml_generated_test$(EXEEXT): ppl_ocaml_generated_test.cmo
+ppl_ocaml_generated_test$(EXEEXT): \
+ppl_ocaml_generated_test.cmo ../ppl_ocaml.cma
 	$(OCAMLC_ENV) ocamlc -o $@ \
 		-cc g++ -g -custom $(OCAMLC_COMPILE_FLAGS) \
 		ppl_ocaml.cma gmp.cma \
