@@ -166,7 +166,7 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../ppl_interface_generator_copyright \
 $(interface_generator_files)
 
-ppl_ocaml.cma: ppl_ocaml_globals.cmo ppl_ocaml.cmo
+ppl_ocaml.cma: ppl_ocaml_globals.cmo ppl_ocaml.cmo libppl_ocaml.a
 	$(OCAMLC_ENV) ocamlc -o $@ -a -custom \
 		ppl_ocaml_globals.cmo ppl_ocaml.cmo \
 		$(OCAMLC_COMPILE_FLAGS) -cclib -lppl_ocaml \
