@@ -252,19 +252,10 @@ and both the domains "C_Polyhedron" and "NNC_Polyhedron" will be generated.
 ------------------------
 
 If you use the CVS sources, then you need recent versions of Autoconf
-and Automake installed.  After a `cvs checkout' or `cvs update'
+Automake and Libtool installed.  After a `cvs checkout' or `cvs update'
 you should run the `autoreconf' command.  In case you have fiddled
 around with some of the configuration files, or if you have problems
 you cannot explain otherwise, use `autoreconf -f'.
-
-In case you do not have a recent enough version of Autoconf installed,
-you can simply do the following (for which you still need Automake, of
-course):
-
-  $ cd ppl
-  $ cp configure.repo configure
-  $ cp Watchdog/configure.repo Watchdog/configure
-  $ autoreconf
 
 
 --------
