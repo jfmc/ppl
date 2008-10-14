@@ -31,8 +31,6 @@ Enhancements for PPL 0.10
   (these are currently covered by a README file).
 - Check all the Makefile.am's to make sure CLEANFILES, MOSTLYCLEANFILES
   and DISTCLEANFILES are used in a sensible way.
-- Ensure the tests in tests/MIP_Problem/* cover every line of
-  code in MIP_Problem.*.
 - `make check' in ppl_lpsol must run also the incremental version
   of the simplex solver.
 - MIP_Problem: ensure ascii_load() and operator<< are correct.
@@ -45,6 +43,8 @@ Enhancements for PPL 0.10
 Enhancements for PPL 0.11 or later versions
 ===========================================
 
+- Ensure the tests in tests/MIP_Problem/* cover every line of
+  code in MIP_Problem.*.
 - Define functions rem() and remp() to compute the remainder of division
   in the general case, for rem(), and in the case where the second
   argument is known to be positive, for remp().  In the implementation
