@@ -505,7 +505,9 @@ inline typename Enable_If<(!Safe_Conversion<T1, T2>::value
 			   && (!C_Integer<T1>::value || !C_Integer<T2>::value)), bool>::type
 eq(const T1& x, const T2& y) {
   DIRTY_TEMP(T1, tmp);
-  Result r = assign_r(tmp, y, ROUND_CHECK);
+  Result r = assign_r(tmp, y, static_cast<Rounding_Dir>(ROUND_DIRECT | ROUND_FPU_CHECK_INEXACT));
+  // FIXME: Can we do any better?
+  assert(r != V_LE && r != V_GE && r != V_LGE);
   return r == V_EQ && x == tmp;
 }
 
@@ -548,6 +550,11 @@ le(const T1& x, const T2& y) {
     return x <= tmp;
   case V_LT:
     return x < tmp;
+  case V_LE:
+  case V_GE:
+  case V_LGE:
+    // FIXME: Can we do any better?
+    assert(0);
   default:
     return false;
   }
