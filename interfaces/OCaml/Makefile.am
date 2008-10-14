@@ -144,8 +144,7 @@ libppl_ocaml_a_DEPENDENCIES = \
 OCAMLC_ENV = OCAMLRUNPARAM='l=1M'
 
 OCAMLC_COMPILE_FLAGS = \
--I +gmp -I $(srcdir) -I .. \
--ccopt -g
+-I +gmp -I .. -ccopt -g
 
 OCAMLC_LINK_FLAGS = \
 `echo " $(extra_libraries) " | $(SED) -e "s/ -R[^ ]*//g" -e "s/ -/ -cclib -/g"`

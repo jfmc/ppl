@@ -62,8 +62,7 @@ ppl_ocaml_tests_common
 OCAMLC_ENV = OCAMLRUNPARAM='l=1M'
 
 OCAMLC_COMPILE_FLAGS = \
--I +gmp -I $(srcdir) -I .. \
--ccopt -g
+-I +gmp -I .. -ccopt -g
 
 if ENABLE_SHARED
 
