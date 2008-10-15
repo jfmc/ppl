@@ -25,7 +25,7 @@ AC_DEFUN([AC_CHECK_FPU_CONTROL],
 AC_LANG_PUSH(C)
 AC_CHECK_HEADERS([fenv.h ieeefp.h])
 AC_MSG_CHECKING([for the possibility to control the FPU])
-AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+AC_RUN_IFELSE([AC_LANG_SOURCE([[
 int
 main() {
 #if i386
@@ -38,6 +38,9 @@ main() {
 
 # if !defined(FE_UPWARD) || !defined(FE_DOWNWARD)
   choke me
+# else
+  if (fesetround(FE_DOWNWARD) != 0 || fesetround(FE_UPWARD) != 0)
+    return 1;
 # endif
 
 #elif sparc && defined(HAVE_IEEEFP_H)
