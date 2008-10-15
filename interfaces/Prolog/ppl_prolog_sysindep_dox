@@ -1,47 +1,3 @@
-m4_define(`dnl', `m4_dnl')`'dnl
-/* Documentation for the Prolog interfaces.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
-
-This file is part of the Parma Polyhedra Library (PPL).
-
-The PPL is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
-
-The PPL is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software Foundation,
-Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
-
-For the most up-to-date information see the Parma Polyhedra Library
-site: http://www.cs.unipr.it/ppl/ . */
-
-/*! \mainpage Prolog Language Interface
-
-The Parma Polyhedra Library comes equipped with a Prolog interface.
-Despite the lack of standardization of Prolog's foreign language interfaces,
-the PPL Prolog interface supports several Prolog systems and, to the
-extent this is possible, provides a uniform view of the library from
-each such systems.
-
-The system-independent features of the library are described in
-Section \ref PI_SI_Features "System-Independent Features".
-Section \ref PI_Compilation "Compilation and Installation"
-explains how the various incarnations of the Prolog interface
-are compiled and installed.
-Section \ref PI_SD_Features "System-Dependent Features"
-illustrates the system-dependent features of the interface
-for all the supported systems.
-
-In the sequel, <CODE>prefix</CODE> is the prefix under which
-you have installed the library (typically <CODE>/usr</CODE>
-or <CODE>/usr/local</CODE>).
-
 
 \anchor PI_SI_Features
 <H1>System-Independent Features</H1>
@@ -53,14 +9,6 @@ A general introduction to the numerical abstractions,
 their representation in the PPL and the operations provided
 by the PPL is given in the main \extref{preamble, PPL user manual}.
 Here we just describe those aspects that are specific to the Prolog interface.
-<H4>Contents:</H4>
-- \ref Prolog_Interface_Overview "Overview";
-- \ref Predicate_Specifications "Predicate Specifications";
-- \ref predicate_descriptions "Predicate Descriptions"
-    - \ref di_predicates "Domain Independent Predicates",
-    - \ref mip_predicates "MIP Predicates",
-    - \ref Polyhedron_predicates "Predicates for C Polyhedra";
-    - \ref other_domains "Ad hoc Predicates for Other Domains";
 
 \anchor Prolog_Interface_Overview
 <H2>Overview</H2>
@@ -97,12 +45,6 @@ on the use of the interface.
 - In the following, any of the above numerical
   abstract domains  is called a PPL <EM>domain</EM>
   and any element of a PPL domain is called a <EM>PPL object</EM>.
-- The Prolog interface files are all installed in the directory
-  <CODE>prefix/lib/ppl</CODE>.  Since this includes shared and
-  dynamically loaded libraries, you must make your dynamic
-  linker/loader aware of this fact.  If you use a GNU/Linux system,
-  try the commands <CODE>man ld.so</CODE> and <CODE>man ldconfig</CODE>
-  for more information.
 - The Prolog interface to the PPL is initialized and finalized by the
   predicates <CODE>ppl_initialize/0</CODE> and <CODE>ppl_finalize/0</CODE>.
   Thus the only interface predicates callable after

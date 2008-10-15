@@ -36,24 +36,28 @@ dnl -----------------------------------------------------------------
 dnl The constructor predicates.
 dnl -----------------------------------------------------------------
 m4_define(`m4_subcategory_build', `dnl
-<H3>Constructor predicates for C polyhedra</H3>
-The constructor predicates build a C polyhedron from a specification
+<H3>Constructor predicates for m4_current_topology m4_current_ppl_objects</H3>
+The constructor predicates build a
+m4_current_topology m4_current_ppl_one_object from a specification
 and binds the given variable to a handle for future referencing.
 The specification can be:
 - the number of space dimensions and an atom indicating if it
   is to be the universe or empty element.
 - a representation for the particular class of semantic geometric
   descriptors to which the element being built belongs.
-  For example`,' a C polyhedron can be built from a list of
+m4_ifelse(m4_current_ppl_domain, Polyhedron,
+  `For example`,'
+  a C Polyhedron can be built from a list of
   non-strict inequality or equality constraints or a list of equality
-  congruences or a list of generators that contains no closure points.
+  congruences or a list of generators that contains no closure points.')
 ')
 
 dnl -----------------------------------------------------------------
 dnl The copy and conversion constructor predicates.
 dnl -----------------------------------------------------------------
 m4_define(`m4_subcategory_convert', `dnl
-<H3>Predicates that build new C polyhedra by copying or converting from
+<H3>Predicates that build new m4_current_topology m4_current_ppl_objects
+  by copying or converting from
   other semantic geometric descriptions</H3>
   Besides the constructors listed above, the library also
   provides:
@@ -62,8 +66,9 @@ m4_define(`m4_subcategory_convert', `dnl
 - conversion operators that build a new semantic geometric
   description starting from a \b friend;
   that is`,' a semantic geometric description in different class
-  (e.g., ppl_new_Grid_from_C_Polyhedron,
-  ppl_new_C_Polyhedron_from_BD_Shape_mpq_class, etc.).<BR>
+m4_ifelse(m4_current_ppl_domain, Polyhedron, `dnl
+  (e.g.`,' ppl_new_Grid_from_C_Polyhedron`,'
+  ppl_new_C_Polyhedron_from_BD_Shape_mpq_class`,' etc.)').<BR>
 
   The copy and conversion predicates have two versions,
   one with arity 2 for the source and target handles and one
@@ -78,14 +83,14 @@ dnl The destructor predicate
 dnl -----------------------------------------------------------------
 m4_define(`m4_subcategory_destruct', `dnl
 <H3>Destructor predicate</H3>
-Below is the destructor predicate for the Polyhedron domain.
+Below is the destructor predicate for the m4_current_ppl_domain domain.
 ')
 
 dnl -----------------------------------------------------------------
 dnl *** Predicates that do not modify the polyhedron. ***
 dnl -----------------------------------------------------------------
 m4_define(`m4_category_const', `dnl
-<H2>Predicates that do not change the polyhedron</H2>
+<H2>Predicates that do not change the m4_current_ppl_one_object</H2>
 ')
 
 dnl -----------------------------------------------------------------
@@ -93,7 +98,7 @@ dnl Predicates that test a property
 dnl -----------------------------------------------------------------
 m4_define(`m4_subcategory_testpoly', `dnl
 <H3>Test Predicates</H3>
-These predicates test the polyhedron for different properties
+These predicates test the m4_current_ppl_one_object for different properties
 and succeed or fail depending on the outcome.
 ')
 
@@ -101,8 +106,9 @@ dnl -----------------------------------------------------------------
 dnl Predicates that get information about the polyhedron.
 dnl -----------------------------------------------------------------
 m4_define(`m4_subcategory_constpoly', `dnl
-<H3>Predicates that return information about the polyhedron</H3>
-These predicates will obtain more detailed information about the polyhedron
+<H3>Predicates that return information about the m4_current_ppl_one_object</H3>
+These predicates will obtain more detailed information about the
+m4_current_ppl_one_object
 unifying some of their arguments with the results.
 ')
 
@@ -119,8 +125,8 @@ dnl *** Space dimension preserving predicates that may modify the ***
 dnl *** polyhedron.                                               ***
 dnl -----------------------------------------------------------------
 m4_define(`m4_category_nonconst', `dnl
-<H2>Space-dimension preserving predicates that may change the polyhedron</H2>
-These predicates may modify the polyhedron referred to
+<H2>Space-dimension preserving predicates that may change the m4_current_ppl_one_object</H2>
+These predicates may modify the m4_current_ppl_one_object referred to
 by the handle in first argument;
 the (dimension of the) vector space in which it is embedded is unchanged.
 ')
@@ -130,12 +136,12 @@ dnl Predicates that may change the polyhedron by adding
 dnl to the polyhedron's constraint or generator descriptions.
 dnl -----------------------------------------------------------------
 m4_define(`m4_subcategory_addto', `dnl
-<H3>Predicates that may change the polyhedron by adding
+<H3>Predicates that may change the m4_current_ppl_one_object by adding
 to its constraint or generator descriptions</H3>
 Note that there are two forms of these predicates
 differentiated in the names by the
 words "add" or "refine with";
-see Section \extref{Generic_Operations_on_Semantic_Geometric_Descriptors, "Generic Operations on Semantic Geometric Descriptors"} in the
+see Section \extref{Generic_Operations_on_Semantic_Geometric_Descriptors, Generic Operations on Semantic Geometric Descriptors} in the
 main \extref{preamble, PPL user manual}
 for the differences in the semantics and therefore, the expected behavior,
 between these forms.
@@ -145,34 +151,33 @@ dnl -----------------------------------------------------------------
 dnl Predicates that transform a polyhedron.
 dnl -----------------------------------------------------------------
 m4_define(`m4_subcategory_trans', `dnl
-<H3>Predicates that transform a polyhedron</H3>
+<H3>Predicates that transform the m4_current_ppl_one_object</H3>
 These predicates enable transformations
 such as taking the topological closure (which for the domain of
-C polyhedron is the identity transformation),
+m4_current_topology m4_current_ppl_one_object is the identity transformation),
 unconstraining a specified dimension
 as explained in the
 main \extref{preamble, PPL user manual} in Section
-\extref{Cylindrification, "Cylindrification Operator"}
+\extref{Cylindrification, Cylindrification Operator}
 and several different image and preimage affine transfer relations;
 for details of the latter see Sections
-\extref{Images_and_Preimages_of_Affine_Transfer_Relations, "Images and Preimages of Affine Transfer Relations"}
+\extref{Images_and_Preimages_of_Affine_Transfer_Relations, Images and Preimages of Affine Transfer Relations}
 and
-\extref{Generalized_Affine_Relations, "Generalized Affine Relations"}.
-')
+\extref{Generalized_Affine_Relations, Generalized Affine Relations}')
 
 dnl -----------------------------------------------------------------
 dnl Predicates that act as binary operators.
 dnl -----------------------------------------------------------------
 m4_define(`m4_subcategory_binop', `dnl
-<H3>Predicates whose results depend on more than one polyhedron</H3>
+<H3>Predicates whose results depend on more than one m4_current_ppl_one_object</H3>
 These predicates include the binary operators which will assign to the
-polyhedron referred to by the first argument
-its combination with the polyhedron referred to by the second argument
+m4_current_ppl_one_object referred to by the first argument
+its combination with the m4_current_ppl_one_object referred to by the second argument
 as described in the
 main \extref{preamble, PPL user manual} in Sections
-\extref{Intersection_and_Convex_Polyhedral_Hull, "Intersection and Convex Polyhedral Hull"}
+\extref{Intersection_and_Convex_Polyhedral_Hull, Intersection and Convex Polyhedral Hull}
 and
-\extref{Convex_Polyhedral_Difference, "Convex Polyhedral Difference"};
+\extref{Convex_Polyhedral_Difference, Convex Polyhedral Difference};
 and a linear partitioning operator described below.
 ')
 
@@ -185,13 +190,13 @@ In addition to the above binary operators, there are also a number
 of widening, extrapolation and narrowing operators
 as described in the
 main \extref{preamble, PPL user manual} in Sections
-\extref{Widening_Operators, "Widening Operators"},
-\extref{Widening_with_Tokens, "Widening with Tokens"} and
-\extref{Extrapolation_Operators, "Extrapolation Operators"}.
+\extref{Widening_Operators, Widening Operators},
+\extref{Widening_with_Tokens, Widening with Tokens} and
+\extref{Extrapolation_Operators, Extrapolation Operators}.
 Note that for all these widening and extrapolation predicates
 to behave as specified
-the polyhedron referred to by the second argument has to be
-contained in (or equal to) the polyhedron referred to by the first argument.
+the m4_current_ppl_one_object referred to by the second argument has to be
+contained in (or equal to) the m4_current_ppl_one_object referred to by the first argument.
 ')
 
 dnl -----------------------------------------------------------------
@@ -200,7 +205,7 @@ dnl -----------------------------------------------------------------
 m4_define(`m4_category_varspace', `dnl
 <H2>Predicates that may modify the vector space</H2>
 These predicates enable the modification of the vector space
-of the polyhedron referred to in the first argument.
+of the m4_current_ppl_one_object referred to in the first argument.
 ')
 
 dnl -----------------------------------------------------------------
@@ -209,7 +214,7 @@ dnl -----------------------------------------------------------------
 m4_define(`m4_subcategory_concat', `dnl
 <H3>Predicate for concatenation</H3>
 For more information on this operation, see Section
-\extref{Concatenating_Polyhedra, "Concatenating Polyhedra"},
+\extref{Concatenating_Polyhedra, Concatenating Polyhedra},
 of the main \extref{preamble, PPL user manual}.
 ')
 
@@ -219,17 +224,17 @@ dnl -----------------------------------------------------------------
 m4_define(`m4_subcategory_spacemod', `dnl
 <H3>Predicates for mapping dimensions or changing the vector space</H3>
 These predicates enable the modification of the vector space
-of the polyhedron referred to in the first argument.
+of the m4_current_ppl_one_object referred to in the first argument.
 These predicates enable the modification of the vector space
-of the polyhedron referred to in the first argument.
+of the m4_current_ppl_one_object referred to in the first argument.
 Detailed descriptions of these can be found in the
 main \extref{preamble, PPL user manual} in Sections
-\extref{Adding_New_Dimensions_to_the_Vector_Space, "Adding New Dimensions to the Vector Space"},
-\extref{Removing_Dimensions_from_the_Vector_Space, "Removing Dimensions from the Vector Space"},
-\extref{Mapping_the_Dimensions_of_the_Vector_Space, "Mapping the Dimensions of the Vector Space"},
-\extref{expand_space_dimension, "Expanding One Dimension of the Vector Space to Multiple Dimensions"}
+\extref{Adding_New_Dimensions_to_the_Vector_Space, Adding New Dimensions to the Vector Space},
+\extref{Removing_Dimensions_from_the_Vector_Space, Removing Dimensions from the Vector Space},
+\extref{Mapping_the_Dimensions_of_the_Vector_Space, Mapping the Dimensions of the Vector Space},
+\extref{expand_space_dimension, Expanding One Dimension of the Vector Space to Multiple Dimensions}
 and
-\extref{Folding_Multiple_Dimensions_of_the_Vector_Space_into_One_Dimension, "Folding Multiple Dimensions of the Vector Space into One Dimension"}.
+\extref{Folding_Multiple_Dimensions_of_the_Vector_Space_into_One_Dimension, Folding Multiple Dimensions of the Vector Space into One Dimension}.
 ')
 
 dnl -----------------------------------------------------------------
@@ -243,7 +248,7 @@ m4_define(`m4_category_pps', `dnl
   An element of the powerset domain represents a disjunctive collection
   of base objects (its disjuncts), all having the same space dimension.
   For more information on this construct,
-  see Section \extref{The_Powerset_Domain "The Powerset Domain"}
+  see Section \extref{The_Powerset_Domain, The Powerset Domain}
   in the main \extref{preamble, PPL user manual}.
 
   Besides the predicates that are available in all semantic geometric
@@ -271,20 +276,34 @@ dnl Other ad hoc predicates for the pointset_powerset domains.
 dnl -----------------------------------------------------------------
 m4_define(`m4_subcategory_pps_other', `dnl
   <H3>Other Ad Hoc Predicates for the pointset powerset domains.</H3>
-Collected here are all the other predicates that are specific to
-the pointset powerset domain of C polyhdera;
-these provide operations for simplifying the powerset
+Collected here are predicates that are specific to
+pointset powersets of C polyhedra;
+these provide operations for
+m4_ifdef(`m4_configuration_independent',
+`simplifying the powerset,
 geometric comparisons,
 adding and removing disjuncts
 and widening and extrapolation.
+Detailed descriptions of these can be found in the
+main \extref{preamble, PPL user manual} in Sections
+\extref{Geometric_Comparisons, Geometric Comparisons},
+\extref{Adding_a_Disjunct, Adding a Disjunct},
+\extref{Certificate_Based_Widenings, Certificate-Based Widenings},
+\extref{Powerset_Extrapolation_Operators, Powerset Extrapolation Operators}.
+',
+`adding and removing disjuncts.
+Detailed descriptions can be found in the
+main \extref{preamble, PPL user manual} in Section
+\extref{Adding_a_Disjunct, Adding a Disjunct}.
+')`'dnl
 ')
 
-m4_define(`m4_Polyhedron_topology_replacement', `C_')
-m4_define(`m4_Polyhedron_topology_alt_replacement', `C ')
+m4_pushdef(`m4_topology_alt_replacement', `')`'dnl
+m4_pushdef(`m4_Polyhedron_topology_alt_replacement', `C , NNC ')`'dnl
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_build_doc', `dnl
 <P><CODE>ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(+Dimension_Type, +Universe_or_Empty, -Handle)</CODE><BR>
-   <EM>Builds a @ALT_TOPOLOGY@@LCLASS@ \f$\cP\f$
+   <EM>Builds a new @ALT_TOPOLOGY@`'m4_current_ppl_one_object \f$\cP\f$
    with \c Dimension_Type dimensions; it is empty
    or the universe depending on whether \c Atom
    is \c empty or \c universe@COMMA@ respectively.
@@ -293,7 +312,7 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_build_doc', `dnl
 \code
    ?- ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(3@COMMA@ universe@COMMA@ X).
 \endcode
-   creates the @ALT_TOPOLOGY@@LCLASS@ defining the
+   creates the @ALT_TOPOLOGY@@ALT_CLASS@ defining the
    3-dimensional vector space
    \f$\Rset^3\f$ with \c X bound to a valid handle for accessing it.</EM>
 ')
@@ -301,24 +320,24 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_build_doc', `dnl
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_build_doc',
 `dnl
 <P><CODE>ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s(+@UBUILD_REPRESENT@_System, -Handle)</CODE><BR>
-  <EM>Builds a new @ALT_TOPOLOGY@@LCLASS@ \p P from
+  <EM>Builds a new @ALT_TOPOLOGY@@ALT_CLASS@ \p P from
   \c @UBUILD_REPRESENT@_System.
   \c Handle is unified with the handle for \p P.</EM>
 ')
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_convert_doc', `dnl
-m4_pushdef(`m4_friend_replacement', `C_Polyhedron, NNC_Polyhedron')
-m4_pushdef(`m4_friend_alt_replacement', `a C polyhedron, an NNC polyhedron')
+m4_pushdef(`m4_Polyhedron_friend_replacement', `C_Polyhedron, NNC_Polyhedron')
+m4_pushdef(`m4_Polyhedron_friend_alt_replacement', `a C polyhedron, an NNC polyhedron')
 <P><CODE>ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@(+Handle_1, -Handle_2)</CODE><BR>
-  <EM>Builds a new @ALT_TOPOLOGY@@LCLASS@ \p P_1 from
+  <EM>Builds a new @ALT_TOPOLOGY@@ALT_CLASS@ \p P_1 from
   \c @ALT_FRIEND@ referenced by handle \c Handle_1.
   \c Handle_2 is unified with the handle for \p P_1.</EM>
 ')
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity_convert_doc', `dnl
-m4_pushdef(`m4_friend_replacement', `C_Polyhedron, NNC_Polyhedron')
-m4_pushdef(`m4_friend_alt_replacement', `a C polyhedron, an NNC polyhedron')
-<P><CODE>ppl_new_@ALT_TOPOLOGY@@LCLASS@_from_@FRIEND@_with_complexity(+Handle, +Complexity, -Handle)</CODE><BR>
+m4_pushdef(`m4_Polyhedron_friend_replacement', `C_Polyhedron, NNC_Polyhedron')
+m4_pushdef(`m4_Polyhedron_friend_alt_replacement', `a C polyhedron, an NNC polyhedron')
+<P><CODE>ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity(+Handle, +Complexity, -Handle)</CODE><BR>
   <EM>Builds a new @ALT_TOPOLOGY@@LCLASS@ \p P_1 from
   \c @ALT_FRIEND@ referenced by handle \c Handle_1
   using an algorithm whose complexity does not exceed \c Complexity;
@@ -445,8 +464,11 @@ m4_define(`ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_constpoly_doc',
 
 m4_define(`ppl_@CLASS@_get_@GET_REPRESENT@s_constpoly_doc',
 `dnl
+m4_pushdef(`m4_get_represent_alt_replacement', `satisfied by, satisfied by')
 m4_pushdef(`m4_Polyhedron_get_represent_alt_replacement',
-         `satisfied by, for, satisfied by')
+         `satisfied by, satisfied by, for')
+m4_pushdef(`m4_Grid_get_represent_alt_replacement',
+         `satisfied by, satisfied by, for')
 <P><CODE>ppl_@CLASS@_get_@GET_REPRESENT@s(+Handle, ?@UGET_REPRESENT@_System)</CODE><BR>
    <EM>Unifies \c @UGET_REPRESENT@_System with
    the @GET_REPRESENT@s (in the form of a list) in the @GET_REPRESENT@ system
@@ -580,12 +602,15 @@ m4_define(`ppl_@CLASS@_approximate_@PARTITION@_binop_doc',
   in the @CLASS@ domain. The predicate unifies handle
   \c Handle_3 to a reference to the intersection of
   \p P_1 and \p P_2 and \c Handle_4 to a reference to
-  a pointset powerset of grids \p P_4 where:
-  - if there is a finite linear partition of \p P_1 wrt \p P_2
+  a pointset powerset of grids \p P_4 where:<BR>
+  if there is a finite linear partition of \p P_1 wrt \p P_2
    \c Boolean is unified with the atom \c true and
-   \p P_4 is the linear partition.
-  - otherwise \c Boolean is unified with the atom \c false
-    and \p P_4 is set to the singleton set that contains \p P_2.</EM>
+   \p P_4 is the linear partition;<BR>
+  otherwise \c Boolean is unified with the atom \c false
+    and \p P_4 is set to the singleton set that contains \p P_2.<BR>
+  This predicate is only provided if the
+  class \c Pointset_Powerset_Grid
+  has been enabled when configuring the library.</EM>
 ')
 
 m4_define(`ppl_@CLASS@_simplify_using_context_assign_binop_doc',
@@ -601,15 +626,19 @@ m4_define(`ppl_@CLASS@_simplify_using_context_assign_binop_doc',
 m4_define(`ppl_@CLASS@_widening_assign_with_tokens_widen_doc',
 `dnl
 <P><CODE>ppl_@CLASS@_widening_assign_with_tokens(+Handle_1, +Handle_2, +C_unsigned_1, ?C_unsigned_2)</CODE><BR>
-<EM>Same as the predicate</EM>
-<CODE>ppl_@CLASS@_H79_widening_assign_with_tokens/4</CODE>
+<EM>Same as the predicate
+m4_ifelse(`'dnl
+m4_current_ppl_domain, Polyhedron, <CODE>ppl_@CLASS@_H79_widening_assign_with_tokens</CODE>/4,
+m4_current_ppl_domain, Grid, <CODE>ppl_@CLASS@_congruence_widening_assign_with_tokens</CODE>/4)</EM>`'dnl
 ')
 
 m4_define(`ppl_@CLASS@_widening_assign_widen_doc',
 `dnl
 <P><CODE>ppl_@CLASS@_widening_assign(+Handle_1, +Handle_2)</CODE><BR>
-<EM>Same as the predicate</EM>
-<CODE>ppl_@CLASS@_H79_widening_assign</CODE>/2
+<EM>Same as the predicate
+m4_ifelse(`'dnl
+m4_current_ppl_domain, Polyhedron, <CODE>ppl_@CLASS@_H79_widening_assign</CODE>/2,
+m4_current_ppl_domain, Grid, <CODE>ppl_@CLASS@_congruence_widening_assign</CODE>/2)</EM>
 ')
 
 m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_widen_doc',
@@ -634,8 +663,8 @@ m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_widen_doc',
 
 m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens_widen_doc',
 `dnl
-m4_pushdef(`m4_Polyhedron_limitedbounded_alt_replacement', `,
-  & further intersected with the smallest box containing |p P_1')
+m4_pushdef(`m4_limitedbounded_alt_replacement', `,
+  @COMMA@ further intersected with the smallest box containing \\p P_1')
 <P><CODE>ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens(+Handle_1, +Handle_2, +Constraint_System, +C_unsigned_1, ?C_unsigned_2)</CODE><BR>
    <EM>Assigns to the @LCLASS@ \p P_1 referenced by \c Handle_1
    the @WIDENEXPN@-widening of \p P_1 with the @LCLASS@
@@ -650,8 +679,8 @@ m4_pushdef(`m4_Polyhedron_limitedbounded_alt_replacement', `,
 
 m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_widen_doc',
 `dnl
-m4_pushdef(`m4_Polyhedron_limitedbounded_alt_replacement', `,
-  & further intersected with the smallest box containing |p P_1')
+m4_pushdef(`m4_limitedbounded_alt_replacement', `,
+  @COMMA@ further intersected with the smallest box containing \\p P_1')
 <P><CODE>ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(+Handle_1, +Handle_2, +Constraint_System)</CODE><BR>
    <EM>Assigns to the @LCLASS@ \p P_1 referenced by \c Handle_1
    the @WIDENEXPN@-widening of \p P_1 with the @LCLASS@
@@ -736,7 +765,7 @@ m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruence_trans_doc',
   <EM>Assigns to @LCLASS@ \p P referenced by \c Handle
   the generalized @ALT_AFFIMAGE@ with respect to the
   generalized affine transfer relation
-   \c Lin_Expr_1 \p \equiv_f \c Lin_Expr_2/\c Coeff_1@COMMA@
+   \c Lin_Expr_1 \f$\equiv_f\f$ \c Lin_Expr_2/\c Coeff_1@COMMA@
    where \c Coeff_2 is bound to the modulus \p f.</EM>
 ')
 
@@ -746,7 +775,7 @@ m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence_trans_doc'
   <EM>Assigns to @LCLASS@ \p P referenced by \c Handle
   the generalized @ALT_AFFIMAGE@ with respect to the
   generalized affine transfer relation
-   \c Lin_Expr_1  \p \equiv_f \c Lin_Expr_2.
+   \c Lin_Expr_1  \f$\equiv_f\f$ \c Lin_Expr_2.
    where \c Coeff is bound to the modulus \p f.</EM>
 ')
 
@@ -809,7 +838,7 @@ m4_define(`ppl_@CLASS@_remove_higher_space_dimensions_spacemod_doc',
 m4_define(`ppl_@CLASS@_expand_space_dimension_spacemod_doc',
 `dnl
 <P><CODE>ppl_@CLASS@_expand_space_dimension(+Handle, +PPL_Var, +Dimension_Type)</CODE><BR>
-  <EM>\extref{expand_space_dimension@COMMA@ Expands} the \c  PPL_Var-th
+  <EM>Expands the \c  PPL_Var-th
   dimension of the vector space enclosing
   the @LCLASS@ referenced by \c Handle to
   \c Dimension_Type new space dimensions.</EM>
@@ -819,7 +848,7 @@ m4_define(`ppl_@CLASS@_fold_space_dimensions_spacemod_doc',
 `dnl
 <P><CODE>ppl_@CLASS@_fold_space_dimensions(+Handle, +List_of_PPL_Vars, +PPL_Var)</CODE><BR>
   <EM>Modifies the @LCLASS@ referenced by \c Handle
-  by \extref{fold_space_dimensions@COMMA@ folding} the
+  by folding the
   space dimensions contained in \c List_of_PPL_Vars
   into dimension \c PPL_Var.
   The presence of duplicates in \c List_of_PPL_Vars is a waste
@@ -830,7 +859,7 @@ m4_define(`ppl_@CLASS@_map_space_dimensions_spacemod_doc',
 `dnl
 <P><CODE>ppl_@CLASS@_map_space_dimensions(+Handle, +P_Func)</CODE><BR>
   <EM>Remaps the dimensions of the vector space according to a
-  \extref{Mapping_the_Dimensions_of_the_Vector_Space@COMMA@ partial function}.
+  partial function.
   This function is specified by means of the \c P_Func@COMMA@
   which has \p n entries.
   The result is undefined if \c P_Func does not encode a partial
@@ -839,7 +868,7 @@ m4_define(`ppl_@CLASS@_map_space_dimensions_spacemod_doc',
 
 m4_define(`ppl_new_@CLASS@_iterator_from_iterator_pps_iter_doc',
 `dnl
-<P><CODE>ppl_new_@CLASS@_iterator_from_iterator_pps_iter_doc(+Iterator_1, -Iterator_2)</CODE><BR>
+<P><CODE>ppl_new_@CLASS@_iterator_from_iterator(+Iterator_1, -Iterator_2)</CODE><BR>
   <EM>Builds a new iterator \p it from the iterator referenced by
   \c Iterator_1. <CODE>Iterator_2</CODE> is unified with the handle
   for \p it.</EM>
@@ -920,12 +949,10 @@ m4_define(`ppl_@CLASS@_add_disjunct_pps_other_doc',
  `dnl
 <P><CODE>ppl_@CLASS@_add_disjunct(+Handle_1, +Handle_2)</CODE><BR>
   <EM>Adds to the pointset powerset referenced by \c Handle_1 a disjunct
-  referred to by \c Handle_2;
-  see Section \extref{Adding_a_Disjunct@COMMA@ "Adding a Disjunct"}
-  in the main \extref{preamble@COMMA@ PPL user manual}.</EM>
+  referred to by \c Handle_2.</EM>
 ')
 
-m4_define(`ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_pps_other_doc',
+m4_define(`ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_widen_doc',
  `dnl
 <P><CODE>ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign(+Handle_1, +Handle_2)</CODE><BR>
    <EM>Assigns to the pointset powerset \p P_1 referenced by
@@ -933,11 +960,9 @@ m4_define(`ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assi
     between \p P_1 and the pointset powerset referenced by
    \c Handle_2@COMMA@ using the @DISJUNCT_WIDEN@-widening
     certified by the convergence certificate for @ALT_DISJUNCT_WIDEN@.</EM>
-   see Section \extref{Certificate_Based_Widenings@COMMA@ "Certificate-Based Widenings"}
-  in the main \extref{preamble@COMMA@ PPL user manual}.</EM>
 ')
 
-m4_define(`ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign_pps_other_doc',
+m4_define(`ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign_widen_doc',
  `dnl
 <P><CODE>ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign(+Handle_1, +Handle_2, C_unsigned)</CODE><BR>
     <EM>Assigns to the pointset powerset \p P_1 referenced by
@@ -946,10 +971,9 @@ m4_define(`ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign_pps_other_doc
     between \p P_1 and the pointset powerset referenced by
    \c Handle_2@COMMA@ using the @DISJUNCT_WIDEN@-widening
     and the cardinality threshold \c C_unsigned.</EM>
-  see Section \extref{Powerset_Extrapolation_Operators@COMMA@ "Powerset Extrapolation Operators"}
-  in the main \extref{preamble@COMMA@ PPL user manual}.</EM>
 ')
 
+m4_ifdef(`m4_configuration_independent', `dnl
 m4_define(`ppl_@CLASS@_@COMPARISON@_@CLASS@_pps_other_doc',
 `dnl
 m4_pushdef(`m4_Pointset_Powerset_comparison_replacement',
@@ -960,6 +984,7 @@ m4_pushdef(`m4_Pointset_Powerset_comparison_alt_replacement',
    <EM>Succeeds if and only if the pointset powerset referenced by
    \c Handle_2 @ALT_COMPARISON@
    the pointset powerset referenced by \c Handle_1;
-   see Section \extref{Geometric_Comparisons@COMMA@ "Geometric Comparisons"}
+   see Section \extref{Geometric_Comparisons@COMMA@ Geometric Comparisons}
   in the main \extref{preamble@COMMA@ PPL user manual}.</EM>
+')
 ')

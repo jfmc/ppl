@@ -7,6 +7,13 @@ of each supported Prolog system.  If a supported Prolog system is
 correctly installed in a standard location, things are arranged
 so that the corresponding interface is built and installed.
 
+The Prolog interface files are all installed in the directory
+<CODE>prefix/lib/ppl</CODE>.  Since this includes shared and
+dynamically loaded libraries, you must make your dynamic
+linker/loader aware of this fact.  If you use a GNU/Linux system,
+try the commands <CODE>man ld.so</CODE> and <CODE>man ldconfig</CODE>
+for more information.
+
 As an option, the Prolog interface can track the creation and disposal
 of polyhedra.  In fact, differently from native Prolog data, PPL polyhedra
 must be explicitly disposed and forgetting to do so is a very common mistake.
@@ -21,6 +28,7 @@ Your configure command would then look like
 \anchor PI_SD_Features
 <H1>System-Dependent Features</H1>
 
+\anchor CIAO_Prolog
 <H2>CIAO Prolog</H2>
 
 The Ciao Prolog interface to the PPL is available
@@ -62,6 +70,7 @@ ciaoc -o myprog prefix/lib/ppl/ppl_ciao.pl ciao_pl_check.pl \
   -L '-Lprefix/lib/ppl -lppl_ciao -Lprefix/lib -lppl -lgmpxx -lgmp -lstdc++'
 \endcode
 
+\anchor GNU_Prolog
 <H2>GNU Prolog</H2>
 
 The GNU Prolog interface to the PPL is available both as a
@@ -113,12 +122,19 @@ GNU Prolog uses several stacks to execute a Prolog program each with a
 pre-defined default size.  If the size of a stack is too small for the
 application an overflow will occur.  To change the default size of a
 stack, the user has to set the value of the relevant environment
-variable; for example, to execute some of the tests, we found it
-necessary to set the size of GLOBALSZ to 32768.  More information on
+variable; in particular, to execute some of the tests, we found it
+necessary to increase the size of GLOBALSZ.
+Thus, for the above example, the compilation command would be
+\code
+GLOBALSZ=32768 gplc -o myprog prefix/lib/ppl/ppl_gprolog.pl source1.pl source2.pl \
+  -L '-Lprefix/lib/ppl -lppl_gprolog -Lprefix/lib -lppl -lgmpxx -lgmp -lstdc++'
+\endcode
+More information on
 adjusting the size of the stacks can be found in Section 3.3 in the
 <A HREF="http://www.gprolog.org/manual/gprolog.html">GNU Prolog
 Manual</A>
 
+\anchor SICStus_Prolog
 <H2>SICStus Prolog</H2>
 
 The SICStus Prolog interface to the PPL is available
@@ -144,6 +160,7 @@ Notice that, for dynamic linking to work, you should have configured
 the library with the <CODE>--enable-shared</CODE> option.
 
 
+\anchor SWI_Prolog
 <H2>SWI-Prolog</H2>
 
 The SWI-Prolog interface to the PPL is available
@@ -182,6 +199,7 @@ Notice that, for dynamic linking to work, you should have configured
 the library with the <CODE>--enable-shared</CODE> option.
 
 
+\anchor XSB_Prolog
 <H2>XSB</H2>
 
 The XSB Prolog interface to the PPL is available
@@ -199,6 +217,7 @@ and
 in your current directory or in one of the XSB library directories.
 
 
+\anchor YAP_Prolog
 <H2>YAP</H2>
 
 The YAP Prolog interface to the PPL is available
