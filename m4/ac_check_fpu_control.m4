@@ -22,6 +22,8 @@ dnl site: http://www.cs.unipr.it/ppl/ .
 
 AC_DEFUN([AC_CHECK_FPU_CONTROL],
 [
+ac_save_LIBS="$LIBS"
+LIBS="$LIBS -lm"
 AC_LANG_PUSH(C)
 AC_CHECK_HEADERS([fenv.h ieeefp.h])
 AC_MSG_CHECKING([for the possibility to control the FPU])
@@ -61,9 +63,10 @@ main() {
   ac_cv_can_control_fpu=1,
   AC_MSG_RESULT(no)
   ac_cv_can_control_fpu=0
-),
+)
 AM_CONDITIONAL(CAN_CONTROL_FPU, test $ac_cv_can_control_fpu = 1)
 AC_DEFINE_UNQUOTED(CAN_CONTROL_FPU, $ac_cv_can_control_fpu,
     [Not zero if the FPU can be controlled.])
 AC_LANG_POP(C)
+LIBS="$ac_save_LIBS"
 ])
