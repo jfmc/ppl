@@ -485,10 +485,20 @@ assign_int_float(To& to, const From from, Rounding_Dir dir) {
     return assign_special<To_Policy>(to, VC_MINUS_INFINITY, dir);
   else if (is_pinf<From_Policy>(from))
     return assign_special<To_Policy>(to, VC_PLUS_INFINITY, dir);
+#if 0
+  // FIXME: this is correct but it is inefficient and breaks the build
+  // for the missing definition of static const members (a problem present
+  // also in other areas of the PPL).
   if (CHECK_P(To_Policy::check_overflow, lt(from, Extended_Int<To_Policy, To>::min)))
     return set_neg_overflow_int<To_Policy>(to, dir);
   if (CHECK_P(To_Policy::check_overflow, !le(from, Extended_Int<To_Policy, To>::max)))
     return set_pos_overflow_int<To_Policy>(to, dir);
+#else
+  if (CHECK_P(To_Policy::check_overflow, (from < Extended_Int<To_Policy, To>::min)))
+    return set_neg_overflow_int<To_Policy>(to, dir);
+  if (CHECK_P(To_Policy::check_overflow, (from > Extended_Int<To_Policy, To>::max)))
+    return set_pos_overflow_int<To_Policy>(to, dir);
+#endif
   From i_from = rint(from);
   to = static_cast<To>(i_from);
   if (round_ignore(dir))
