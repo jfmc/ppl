@@ -43,9 +43,9 @@ inline void
 fpu_initialize_control_functions() {
   fpu_rounding_control_word_type old
     = static_cast<fpu_rounding_control_word_type>(fegetround());
-  if (fesetround(FPU_DOWNWARD) != 1
-      || fesetround(FPU_UPWARD) != 1
-      || fesetround(old) != 1)
+  if (fesetround(FPU_DOWNWARD) != 0
+      || fesetround(FPU_UPWARD) != 0
+      || fesetround(old) != 0)
     throw std::logic_error("PPL configuration error:"
 			   " PPL_CAN_CONTROL_FPU evaluates to true,"
 			   " but fesetround() returns nonzero.");
