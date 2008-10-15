@@ -2098,7 +2098,7 @@ time_out(T) :-
   ppl_set_timeout(8),
   compute_timeout_hypercube(T, 1, Dim, CS),
   !,
-  N1 is 4,
+  N1 is 2,
   ppl_reset_timeout,
   ppl_set_timeout_exception_atom(pl_time_out),
   ppl_set_timeout(N1),
@@ -2117,7 +2117,7 @@ time_out(T) :-
   ppl_Polyhedron_OK(P),
   !,
   ppl_delete_Polyhedron(P),
-  N2 is 20,
+  N2 is 40,
   ppl_reset_timeout,
   ppl_set_timeout_exception_atom(pl_time_out),
   ppl_set_timeout(N2),
@@ -2133,7 +2133,6 @@ time_out(T) :-
       display_message(['while testing time_out, polyhedron with topology',
                  T, 'no timeout after', N2, ms])
   ),
-  %% FIXME!
   ppl_Polyhedron_OK(Q),
   !,
   ppl_delete_Polyhedron(Q).
