@@ -22,6 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #ifdef PPL_HAVE_FENV_H
 #include <fenv.h>
+#include <stdexcept>
 
 #ifdef FE_TONEAREST
 #define FPU_TONEAREST FE_TONEAREST
@@ -40,6 +41,14 @@ namespace Parma_Polyhedra_Library {
 
 inline void
 fpu_initialize_control_functions() {
+  fpu_rounding_control_word_type old
+    = static_cast<fpu_rounding_control_word_type>(fegetround());
+  if (fesetround(FPU_DOWNWARD) != 1
+      || fesetround(FPU_UPWARD) != 1
+      || fesetround(old) != 1)
+    throw std::logic_error("PPL configuration error:"
+			   " PPL_CAN_CONTROL_FPU evaluates to true,"
+			   " but fesetround() returns nonzero.");
 }
 
 inline fpu_rounding_direction_type
