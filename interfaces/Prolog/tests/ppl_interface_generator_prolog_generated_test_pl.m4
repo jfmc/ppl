@@ -238,35 +238,13 @@ m4_define(`m4_find_arity',
   `m4_regexp($1, `ppl_[^ /]+\(.*\)', `m4_get_arity(\1)')`'dnl
 ')
 
-m4_define(`m4_make_clean_defs', `dnl
-clean_$1`'m4_ifelse(`$2', 0, , `(`'m4_arg_sequence($2))') :-
-  ($1`'m4_ifelse(`$2', 0, , `(`'m4_arg_sequence($2))'),
-  ppl_cleanup_@CLASS@(Arg`'$2)).
-')
-
-m4_define(`m4_replace_patterns_in_clean_defs', `dnl
-m4_replace_all_patterns_in_string($1,
-                                  m4_make_clean_defs(m4_find_name($2),
-                                                     m4_find_arity($2)),
-                                  m4_pattern_list)
-')
-
-m4_define(`m4_extras', `dnl
-m4_ifelse($#, 0, ,
-          $#, 1, ,
-          $#, 2,
-          `m4_ifelse(m4_index($2, new), -1, ,
-                     m4_replace_patterns_in_clean_defs($1, $2))',
-          `m4_ifelse(m4_index($2, new), -1, ,
-                     m4_replace_patterns_in_clean_defs($1, $2))'dnl
-`m4_extras($1, m4_shift(m4_shift($@)))')`'dnl
-')
 
 m4_define(`m4_pre_extra_class_code', `dnl
-m4_define(`m4_current_interface', m4_interface_class`'$1)`'dnl
+m4_pushdef(`m4_current_interface', m4_interface_class`'$1)`'dnl
+m4_pushdef(`m4_current_group', m4_class_group`'$1)`'dnl
 
 %<--%<--%<-- ppl_prolog_generated_test_`'m4_current_interface.pl
-m4_undefine(`m4_current_interface')`'dnl
+m4_popdef(`m4_current_interface')`'dnl
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                   %
 %               class dependent predicate tests                     %
@@ -290,10 +268,7 @@ m4_replace_all_patterns_in_string($1,
 m4_replace_all_patterns_in_string($1,
   m4_add_out_extra_class_code($1),
   m4_pattern_list)`'dnl
-m4_extras($1, m4_procedure_list)
 ')
-
-m4_pushdef(`m4_default_code', `')
 
 m4_pushdef(`m4_extension', `dnl
 m4_ifdef(`$1_code',
@@ -336,7 +311,7 @@ all_class_dependent_predicates(
   [
   ')
 
-m4_define(`m4_post_extra_class_code', `
+m4_pushdef(`m4_post_extra_class_code', `
   ]
 ).
 ')
@@ -353,6 +328,34 @@ dnl Main calls to macro m4_all_code to generate code
 dnl -----------------------------------------------------------------
 m4_divert`'dnl
 m4_patsubst(m4_all_code, COMMA, `,')`'dnl
+m4_divert(-1)
+m4_popdef(`m4_extension')
+m4_popdef(`m4_pre_extra_class_code')
+m4_popdef(`m4_post_extra_class_code')
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                   %
+%               build using cleanup code                            %
+%                                                                   %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+m4_pushdef(`m4_pre_extra_class_code', `dnl
+m4_pushdef(`m4_current_interface', m4_interface_class`'$1)`'dnl
+
+%<--%<--%<-- ppl_prolog_generated_test_`'m4_current_interface.pl
+')
+m4_pushdef(`m4_post_extra_class_code', `')
+m4_pushdef(`m4_extension', `
+m4_ifelse(m4_index($1, new), `-1', ,
+   clean_$1`'m4_ifelse($2, 0, , `(`'m4_arg_sequence($2))') :-
+   ($1`'m4_ifelse($2, 0, , `(`'m4_arg_sequence($2))'),
+   ppl_cleanup_`'m4_current_interface`'(Arg`'$2)).
+
+)`'dnl
+')
+
+m4_divert`'dnl
+m4_all_code
 m4_divert(-1)
 m4_popdef(`m4_extension')
 m4_popdef(`m4_pre_extra_class_code')

@@ -2056,76 +2056,87 @@ minimize_with_point(T, CS, LE, N, D, Min, Point) :-
 %
 
 time_out :-
+  %% FIXME!
+  prolog_system('Ciao'), !.
+time_out :-
   time_out(c), time_out(nnc).
 
+% Avoid use of add_and_minimize predicate as that is deprecated.
+add_constraints_and_get_minimized_constraints(P, CS) :-
+    ppl_Polyhedron_add_constraints(P, CS),
+    ppl_Polyhedron_get_minimized_constraints(P, _).
+
+% Find the constraints for a hypercube for a given dimension.
+build_hypercube_constraints(0, [], []).
+build_hypercube_constraints(Dim, [V|Vars], [V >= 1, V =< 2|CS]) :-
+    Dim1 is Dim - 1,
+    build_hypercube_constraints(Dim1, Vars, CS).
+
+% Find the dimension and constraints for
+% a hypercube that causes a timeout exception.
+compute_timeout_hypercube(T, Dim_in, Dim_out, CS_out) :-
+    Dim_in =< 100,
+    clean_ppl_new_Polyhedron_from_space_dimension(T, Dim_in, universe, P),
+    make_vars(Dim_in, Vars),
+    build_hypercube_constraints(Dim_in, Vars, CS),
+    ppl_timeout_exception_atom(Time_Out_Atom),
+    catch(add_constraints_and_get_minimized_constraints(P, CS),
+           Time_Out_Atom, Catch_Exception = ok),
+    (Catch_Exception == ok ->
+        Dim_out = Dim_in,
+        CS_out = CS
+    ;
+        Dim1 is Dim_in+1,
+        ppl_delete_Polyhedron(P),
+        compute_timeout_hypercube(T, Dim1, Dim_out, CS_out)
+    ).
+
 time_out(T) :-
-  make_vars(6, [A, B, C, D, E, F]),
-  CS = [8*A - 7*B + 4*D - E - 8*F >= -3,
-        6*A + 8*B + 4*C - 6*D + 6*E + 6*F >= 5,
-        6*A + 7*B - 6*C + 3*D + 3*E + 5*F >= 4,
-        6*A + C + 8*D - 2*E - 3*F >= -6,
-        4*A - 3*B + 3*D - 3*E + 4*F >= 0,
-        3*A - 3*B - 7*C - 4*D - 7*E + 8*F >= 8,
-        -2*A + 5*B + C + 2*D - 2*E + 6*F >= -7,
-        -4*A + 7*B - 7*C + 2*D - 2*E - 7*F >= 1,
-        -5*A + 7*B + 5*C + 6*D - 5*E - 2*F >= -7,
-        -5*A + 6*B - 6*C - 2*D + 4*E - 2*F >= -5,
-        -5*A + 5*B + 8*C + D + E - 6*F >= -6],
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 6, universe, Q),
   ppl_set_timeout_exception_atom(pl_time_out),
   \+  ppl_timeout_exception_atom(pl_x),
   ppl_timeout_exception_atom(pl_time_out),
-  N1 = 1,
+  ppl_set_timeout(8),
+  compute_timeout_hypercube(T, 1, Dim, CS),
+  !,
+  N1 is 4,
+  ppl_reset_timeout,
+  ppl_set_timeout_exception_atom(pl_time_out),
   ppl_set_timeout(N1),
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 6, universe, P),
-  time_watch(T, ppl_Polyhedron_add_constraints_and_minimize(P, CS),
-             (ppl_Polyhedron_add_constraints_and_minimize(Q, CS)),
-              (true, (display_message(
-                 ['while testing the time_out, polyhedron with topology',
-                                             T, 'timeout after', N1,ms])))),
-  ppl_Polyhedron_equals_Polyhedron(P, Q),
+  ppl_timeout_exception_atom(Time_Out_Atom),
+  clean_ppl_new_Polyhedron_from_space_dimension(T, Dim, universe, P),
+  catch(add_constraints_and_get_minimized_constraints(P, CS),
+           Time_Out_Atom, Catch_Exception = ok),
+  (Catch_Exception == ok ->
+      display_message(['while testing time_out, polyhedron with topology',
+                 T, 'timeout after', N1, ms])
+  ;
+      display_message(['while testing time_out, polyhedron with topology',
+                 T, 'no timeout after', N1, ms]),
+      fail
+  ),
+  ppl_Polyhedron_OK(P),
   !,
   ppl_delete_Polyhedron(P),
-  ppl_delete_Polyhedron(Q),
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 6, universe, Q1),
-  N2 = 10,
+  N2 is 20,
+  ppl_reset_timeout,
+  ppl_set_timeout_exception_atom(pl_time_out),
   ppl_set_timeout(N2),
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 6, universe, P1),
-  time_watch(T, ppl_Polyhedron_add_constraints_and_minimize(P1, CS),
-             (ppl_Polyhedron_add_constraints_and_minimize(Q1, CS)),
-              (true, display_message(
-                 ['polyhedron with topology',T,'timeout after',N2,ms]))),
-  ppl_Polyhedron_equals_Polyhedron(P1, Q1),
-  ppl_set_timeout_exception_atom(time_out),
+  ppl_timeout_exception_atom(Time_Out_Atom1),
+  clean_ppl_new_Polyhedron_from_space_dimension(T, Dim, universe, Q),
+  catch(add_constraints_and_get_minimized_constraints(Q, CS),
+           Time_Out_Atom1, Catch_Exception = not_ok),
+  (Catch_Exception == not_ok ->
+      display_message(['while testing time_out, polyhedron with topology',
+                 T, 'timeout after', N2, ms]),
+      fail
+  ;
+      display_message(['while testing time_out, polyhedron with topology',
+                 T, 'no timeout after', N2, ms])
+  ),
+  %% FIXME!
+  %%  ppl_Polyhedron_OK(Q),
   !,
-  ppl_delete_Polyhedron(P1),
-  ppl_delete_Polyhedron(Q1).
-
-% time_watch(+Topology, +Goal, +No_Time_Out, +Time_Out)
-% time_watch/4 makes a copy of Goal with a copy of the polyhedron
-% and executes it with the currrent timeout exception settings.
-% If the call exceeds the time allowed, it catches the exception
-% and performs the Time_Out goal.
-% If the call does not exceed the time allowed,
-% then the timeout exception time is reset and
-% then Goal is executed and then the No_Time_Out is executed.
-
-time_watch(Topology, Goal, No_Time_Out, Time_Out) :-
-   !,
-   Goal =.. [PPLFunct, Poly|Args],
-   clean_ppl_new_Polyhedron_from_Polyhedron(Topology, Poly,
-                                            Topology, Polyhedron_Copy),
-   Goal_Copy =.. [PPLFunct, Polyhedron_Copy|Args],
-   ppl_timeout_exception_atom(Time_Out_Atom),
-     (catch(Goal_Copy, Time_Out_Atom, fail) ->
-       (ppl_reset_timeout,
-        ppl_Polyhedron_swap(Poly, Polyhedron_Copy),
-        call(No_Time_Out))
-     ;
-       call(Time_Out)
-   ),
-   !,
-   ppl_delete_Polyhedron(Polyhedron_Copy).
+  ppl_delete_Polyhedron(Q).
 
 %%%%%%%%%%%%%%%%% MIP_Problem tests %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
