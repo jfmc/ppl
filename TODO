@@ -8,10 +8,6 @@ Enhancements for PPL 0.10
 - Document --enable-interfaces and --enable-instantiations in the
   README.configure file.
 
-- Fix the handling of interfaces/Prolog/tests/ppl_predicate_check_common.pl
-  (it is sometimes copied unconditionally, sometimes conditionally,
-  sometimes is removed, sometimes not, ...).
-
 - Write interfaces/OCaml/README.ocaml.
 
 - Provide PPL-specific documentation on the use of `make check'.
