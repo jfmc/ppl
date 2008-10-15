@@ -49,7 +49,6 @@ ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension/3 +all,
 ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@/2 +all,
 ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity/3 +all,
 ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s/2 +all,
-ppl_@CLASS@_@UB_EXACT@/2 +all,
 ppl_@CLASS@_swap/2 *nofail +all,
 ppl_@CLASS@_@DIMENSION@/2 +all,
 ppl_@CLASS@_relation_with_@RELATION_REPRESENT@/3 +all,
@@ -73,7 +72,11 @@ ppl_@CLASS@_add_@ADD_REPRESENT@s/2 *nofail +all,
 ppl_@CLASS@_refine_with_@REFINE_REPRESENT@/2 *nofail +all,
 ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s/2 *nofail +all,
 ppl_@CLASS@_@BINOP@/2 *nofail +all,
+ppl_@CLASS@_@UB_EXACT@/2 +all,
 ppl_@CLASS@_simplify_using_context_assign/3 +simple_pps,
+ppl_@CLASS@_constrains/2 +simple,
+ppl_@CLASS@_unconstrain_space_dimension/2 +simple,
+ppl_@CLASS@_unconstrain_space_dimensions/2 +simple,
 ppl_@CLASS@_@AFFIMAGE@/4 *nofail +all,
 ppl_@CLASS@_bounded_@AFFIMAGE@/5 *nofail +all,
 ppl_@CLASS@_generalized_@AFFIMAGE@/5 +all,
@@ -86,23 +89,20 @@ ppl_@CLASS@_remove_higher_space_dimensions/2 *nofail +all,
 ppl_@CLASS@_expand_space_dimension/3 *nofail +all,
 ppl_@CLASS@_fold_space_dimensions/3  +all,
 ppl_@CLASS@_map_space_dimensions/2 +all,
-ppl_@CLASS@_constrains/2 +simple,
-ppl_@CLASS@_unconstrain_space_dimension/2 +simple,
-ppl_@CLASS@_unconstrain_space_dimensions/2 +simple,
 ppl_@CLASS@_ascii_dump/1 +all,
 ppl_@CLASS@_@MEMBYTES@/2 +all,
-dnl
-dnl FIXME: We do not have a default widening for the
-dnl        pointset_powerset domain.
-dnl
-ppl_@CLASS@_widening_assign_with_tokens/4 +simple +product,
-ppl_@CLASS@_widening_assign/2 *nofail +simple +product,
 dnl
 dnl NOTE: The next few schemas provide special widenings and
 dnl       extrapolations that depend on the domains.
 dnl
 ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens/4 +simple,
 ppl_@CLASS@_@WIDEN@_widening_assign/2 *nofail +simple,
+dnl
+dnl FIXME: We do not have a default widening for the
+dnl        pointset_powerset domain.
+dnl
+ppl_@CLASS@_widening_assign_with_tokens/4 +simple +product,
+ppl_@CLASS@_widening_assign/2 *nofail +simple +product,
 ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens/5 +simple,
 ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign/3 *nofail +simple,
 ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens/4 +wr_shape,
