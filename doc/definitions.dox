@@ -2494,7 +2494,7 @@ disjuncts in the result set, we have
 \f$c \uplus d \neq c \union d\f$.
 
 \anchor pps_bgp99_extrapolation
-\subsection Powerset_Extrapolation_Operators Extrapolation Operators
+\subsection Powerset_Extrapolation_Operators Powerset Extrapolation Operators
 
 The library implements a generalization of the extrapolation operator
 for powerset domains proposed in \ref BGP99 "[BGP99]".
