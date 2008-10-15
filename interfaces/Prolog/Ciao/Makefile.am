@@ -170,9 +170,10 @@ ciao_prolog_generated_test.pl: $(interface_generator_dependencies)
 ppl_ciao.po: ppl_ciao.pl
 	ciaoc -c ppl_ciao.pl
 
-# All the invocations of `ciaoc' to build `ciao_pl_check', `ciao_clpq'
-# and `ciao_clpq2' will try to build identical glue files (e.g.,
-# `ppl_ciao_LINUXi86.so').  On parallel builds, this may cause errors.
+# All the invocations of `ciaoc' to build `ciao_pl_check', `ciao_clpq',
+# `ciao_clpq2' and 'ciao_prolog_generated_test' will try to build
+# identical glue files (e.g., `ppl_ciao_LINUXi86.so').
+# On parallel builds, this may cause errors.
 # This is why we make `ciao_clpq' and `ciao_clpq2' depend on `ciao_pl_check':
 # building the latter will build the glue files once and for all;  after
 # that, `ciao_clpq' and `ciao_clpq2' can be built in parallel.
@@ -211,9 +212,14 @@ ciao_clpq2: .libs/libppl_ciao.so ppl_ciao.po ciao_clpq.pl ../tests/clpq2.pl | ci
 
 
 ciao_prolog_generated_test: .libs/libppl_ciao.so ppl_ciao.po ciao_prolog_generated_test.pl ../tests/ppl_prolog_generated_test_main.pl | ciao_pl_check
-	cp -f $(srcdir)/../tests/ppl_prolog_generated_test_common.pl .; \
+	if [ $(srcdir) != `pwd` ]; then \
+          cp -f $(srcdir)/../tests/ppl_prolog_generated_test_common.pl .; \
+	fi
 	cp -f ../tests/ppl_prolog_generated_test_main.pl .
 	ciaoc -o $@ ciao_prolog_generated_test.pl
+	if [ $(srcdir) != `pwd` ]; then \
+          rm -f ppl_prolog_generated_test_common.pl; \
+	fi
 	rm -f ppl_prolog_generated_test_main.pl
 
 CLPQ_TESTS_NONSTRICT = \
@@ -246,7 +252,7 @@ EXPECTED_PCHK = $(srcdir)/../tests/expected_pchk_$(COEFFICIENT_MNEMONIC)
 
 endif !ASSERTIONS_ENABLED
 
-check-local: pl_check_test clpq_test clpq2_test
+check-local: pl_check_test clpq_test clpq2_test ppl_prolog_generated_test
 
 pl_check_test: ciao_pl_check$(EXEEXT) .libs/libppl_ciao.so $(EXPECTED_PCHK)
 	$(LIBTOOL) --mode=execute \
