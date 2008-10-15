@@ -2134,7 +2134,7 @@ time_out(T) :-
                  T, 'no timeout after', N2, ms])
   ),
   %% FIXME!
-  %%  ppl_Polyhedron_OK(Q),
+  ppl_Polyhedron_OK(Q),
   !,
   ppl_delete_Polyhedron(Q).
 
