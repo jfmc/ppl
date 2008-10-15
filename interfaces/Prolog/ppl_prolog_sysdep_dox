@@ -109,6 +109,15 @@ gplc -o myprog prefix/lib/ppl/ppl_gprolog.pl source1.pl source2.pl \
   -L '-Lprefix/lib/ppl -lppl_gprolog -Lprefix/lib -lppl -lgmpxx -lgmp -lstdc++'
 \endcode
 
+GNU Prolog uses several stacks to execute a Prolog program each with a
+pre-defined default size.  If the size of a stack is too small for the
+application an overflow will occur.  To change the default size of a
+stack, the user has to set the value of the relevant environment
+variable; for example, to execute some of the tests, we found it
+necessary to set the size of GLOBALSZ to 32768.  More information on
+adjusting the size of the stacks can be found in Section 3.3 in the
+<A HREF="http://www.gprolog.org/manual/gprolog.html">GNU Prolog
+Manual</A>
 
 <H2>SICStus Prolog</H2>
 
