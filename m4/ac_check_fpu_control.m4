@@ -39,10 +39,19 @@ main() {
 # include <fenv.h>
 
 # if !defined(FE_UPWARD) || !defined(FE_DOWNWARD)
+
   choke me
-# else
+
+# elif defined(__arm__) \
+  && (!defined(PPL_ARM_CAN_CONTROL_FPU) || !PPL_ARM_CAN_CONTROL_FPU)
+
+  choke me
+
+#else
+
   if (fesetround(FE_DOWNWARD) != 0 || fesetround(FE_UPWARD) != 0)
     return 1;
+
 # endif
 
 #elif sparc && defined(HAVE_IEEEFP_H)
