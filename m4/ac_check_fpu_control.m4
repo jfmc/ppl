@@ -24,15 +24,16 @@ AC_DEFUN([AC_CHECK_FPU_CONTROL],
 [
 ac_save_LIBS="$LIBS"
 LIBS="$LIBS -lm"
-AC_LANG_PUSH(C)
+AC_LANG_PUSH(C++)
 AC_CHECK_HEADERS([fenv.h ieeefp.h])
 AC_MSG_CHECKING([for the possibility to control the FPU])
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
-int
-main() {
 #if i386
 
-  /* Fine. */
+int
+main() {
+  return 0;
+}
 
 #elif defined(HAVE_FENV_H)
 
@@ -49,24 +50,66 @@ main() {
 
 #else
 
-  if (fesetround(FE_DOWNWARD) != 0 || fesetround(FE_UPWARD) != 0)
-    return 1;
+     float  nf1 =  -3, pf1 = 3,  f2 =  5;
+     double nd1 =  -7, pd1 = 7,  d2 = 11;
+long double nl1 = -13, pl1 = 13, l2 = 17;
+
+      float nf[2], pf[2];
+     double nd[2], pd[2];
+long double nl[2], pl[2];
+
+int
+check() {
+  int r = 0;
+  if (nf[0] == nf[1] || pf[0] == pf[1] || -nf[0] != pf[1] || -nf[1] != pf[0])
+    r |= 1;
+  if (nd[0] == nd[1] || pd[0] == pd[1] || -nd[0] != pd[1] || -nd[1] != pd[0])
+    r |= 2;
+  if (nl[0] == nl[1] || pl[0] == pl[1] || -nl[0] != pl[1] || -nl[1] != pl[0])
+    r |= 4;
+  return r;
+}
+
+int (*fun)() = check;
+
+int main() {
+  if (fesetround(FE_DOWNWARD) != 0)
+    return 255;
+
+  nf[0] = nf1 / f2;
+  nd[0] = nd1 / d2;
+  nl[0] = nl1 / l2;
+  pf[0] = pf1 / f2;
+  pd[0] = pd1 / d2;
+  pl[0] = pl1 / l2;
+
+  if (fesetround(FE_UPWARD) != 0)
+    return 255;
+
+  nf[1] = nf1 / f2;
+  nd[1] = nd1 / d2;
+  nl[1] = nl1 / l2;
+  pf[1] = pf1 / f2;
+  pd[1] = pd1 / d2;
+  pl[1] = pl1 / l2;
+
+  return (*fun)();
+}
 
 # endif
 
 #elif sparc && defined(HAVE_IEEEFP_H)
 
-  /* Fine. */
+int
+main() {
+  return 0;
+}
 
 #else
 
   choke me
 
 #endif
-
-  ;
-  return 0;
-}
 ]])],
   AC_MSG_RESULT(yes)
   ac_cv_can_control_fpu=1,
@@ -76,6 +119,6 @@ main() {
 AM_CONDITIONAL(CAN_CONTROL_FPU, test $ac_cv_can_control_fpu = 1)
 AC_DEFINE_UNQUOTED(CAN_CONTROL_FPU, $ac_cv_can_control_fpu,
     [Not zero if the FPU can be controlled.])
-AC_LANG_POP(C)
+AC_LANG_POP(C++)
 LIBS="$ac_save_LIBS"
 ])
