@@ -626,19 +626,23 @@ m4_define(`ppl_@CLASS@_simplify_using_context_assign_binop_doc',
 m4_define(`ppl_@CLASS@_widening_assign_with_tokens_widen_doc',
 `dnl
 <P><CODE>ppl_@CLASS@_widening_assign_with_tokens(+Handle_1, +Handle_2, +C_unsigned_1, ?C_unsigned_2)</CODE><BR>
-<EM>Same as the predicate
+<EM>Same as predicate `'dnl
 m4_ifelse(`'dnl
 m4_current_ppl_domain, Polyhedron, <CODE>ppl_@CLASS@_H79_widening_assign_with_tokens</CODE>/4,
-m4_current_ppl_domain, Grid, <CODE>ppl_@CLASS@_congruence_widening_assign_with_tokens</CODE>/4)</EM>`'dnl
+m4_current_ppl_domain, Grid, <CODE>ppl_@CLASS@_congruence_widening_assign_with_tokens</CODE>/4,
+m4_current_ppl_group, box, <CODE>ppl_@CLASS@_CC76_widening_assign_with_tokens</CODE>/4,
+m4_current_ppl_group, wr_shape, <CODE>ppl_@CLASS@_H79_widening_assign_with_tokens</CODE>/4)</EM>
 ')
 
 m4_define(`ppl_@CLASS@_widening_assign_widen_doc',
 `dnl
 <P><CODE>ppl_@CLASS@_widening_assign(+Handle_1, +Handle_2)</CODE><BR>
-<EM>Same as the predicate
+<EM>Same as predicate `'dnl
 m4_ifelse(`'dnl
-m4_current_ppl_domain, Polyhedron, <CODE>ppl_@CLASS@_H79_widening_assign</CODE>/2,
-m4_current_ppl_domain, Grid, <CODE>ppl_@CLASS@_congruence_widening_assign</CODE>/2)</EM>
+m4_current_ppl_domain, Polyhedron, <CODE>ppl_@CLASS@_H79_widening_assign</CODE>/4,
+m4_current_ppl_domain, Grid, <CODE>ppl_@CLASS@_congruence_widening_assign</CODE>/4,
+m4_current_ppl_group, box, <CODE>ppl_@CLASS@_CC76_widening_assign</CODE>/4,
+m4_current_ppl_group, wr_shape, <CODE>ppl_@CLASS@_H79_widening_assign</CODE>/4)</EM>
 ')
 
 m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_widen_doc',

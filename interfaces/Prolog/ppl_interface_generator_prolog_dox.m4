@@ -303,8 +303,15 @@ dnl
 dnl Class_Counter   - The index for the current class;
 dnl This iterates through the classes to generate the documentation.
 m4_define(`m4_all_classes_doc', `dnl
-m4_ifdef(m4_interface_class`'$1,
-   `m4_define(`m4_current_ppl_domain', m4_interface_class`'$1)`'dnl
+dnl
+dnl Check for class counter in range. If so, generate the documentation
+dnl for the current class. If not finish.
+dnl
+m4_ifdef(m4_interface_class`'$1, `dnl
+dnl
+dnl First some temporary definitions.
+dnl
+m4_define(`m4_current_ppl_domain', m4_interface_class`'$1)`'dnl
 m4_pushdef(`m4_class_alt_replacement', `dnl
 m4_PPL_domain2text(m4_current_ppl_domain)')
 m4_pushdef(`m4_current_topology', `')`'dnl
@@ -322,16 +329,25 @@ m4_ifelse(m4_current_ppl_group, box,
    pointset powersets of m4_plural(m4_PPL_domain2text(m4_disjunct_topology m4_current_ppl_disjunct_kind)),
   m4_plural(m4_PPL_domain2text(m4_current_ppl_kind)))')`'dnl
 m4_pre_extra_simple_class_code($1)`'dnl
+dnl
+dnl Generate documentation for current class.
+dnl
 m4_all_simple_categories($1)`'dnl
 m4_ifelse(m4_current_ppl_group,
   pointset_powerset, `m4_adhoc_pps_categories($1)')`'dnl
-m4_all_classes_doc(m4_incr($1))')`'dnl
+dnl
+dnl Remove temporary definition.
+dnl
 m4_popdef(`m4_current_ppl_objects')`'dnl
 m4_popdef(`m4_current_topology')`'dnl
 m4_popdef(`m4_current_ppl_group')`'dnl
 m4_popdef(`m4_current_ppl_kind')`'dnl
 m4_popdef(`m4_current_ppl_disjunct_kind')`'dnl
 m4_popdef(`m4_disjunct_topology')`'dnl
+dnl
+dnl Increment class counter and repeat.
+dnl
+m4_all_classes_doc(m4_incr($1))')`'dnl
 ')
 
 dnl -----------------------------------------------------------------
