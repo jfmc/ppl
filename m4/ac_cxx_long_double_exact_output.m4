@@ -28,7 +28,7 @@ ac_save_CPPFLAGS="$CPPFLAGS"
 ac_save_LIBS="$LIBS"
 AC_LANG_PUSH(C++)
 
-AC_MSG_CHECKING([whether C++ provide exact output for long doubles])
+AC_MSG_CHECKING([whether C++ provides exact output for long doubles])
 ac_cxx_long_double_exact_output=unknown
 
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
