@@ -86,9 +86,11 @@ run_all([]).
 
 run_fail(Group) :-
    group_predicates(Group, Predicates),
+   prolog_system(System),
    error_message(['Error occurred while performing test', Group,
-                  'which checks predicates:', also, Predicates]),
-   error_message(['Prolog interface checks failed.']),
+                  'which checks predicates:', Predicates]),
+   error_message(['Prolog interface checks failed on', System,
+                  'Prolog.']),
    ppl_finalize,
    fail.
 
@@ -104,8 +106,11 @@ run_exception(Group, Exception) :-
 	;
 	    Kind = 'Exception'
 	),
+        prolog_system(System),
  	display_message([Kind, 'occurred while performing test ', Group,
-			 'which checks predicates ', nl, Predicates]),
+                        'which checks predicates ', nl, Predicates]),
+        display_message(['Prolog interface checks failed on', System,
+                  'Prolog.']),
 	print_exception_term(Exception),
 	% Do fail for all but overflow exceptions.
 	Exception = ppl_overflow_error(_).
@@ -2123,7 +2128,7 @@ time_out(T) :-
   ppl_set_timeout(N2),
   ppl_timeout_exception_atom(Time_Out_Atom1),
   clean_ppl_new_Polyhedron_from_space_dimension(T, Dim, universe, Q),
-  catch(add_constraints_and_get_minimized_constraints(Q, CS),
+  catch(ppl_Polyhedron_is_universe(Q),
            Time_Out_Atom1, Catch_Exception = not_ok),
   (Catch_Exception == not_ok ->
       display_message(['while testing time_out, polyhedron with topology',
