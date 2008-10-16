@@ -473,6 +473,55 @@ AM_CONDITIONAL(USE_PRECOMPILED_HEADERS, test x"$enableval" = xyes)
 CFLAGS="$COMP_FLAGS $OPT_FLAGS $CFLAGS"
 CXXFLAGS="$COMP_FLAGS $OPT_FLAGS $CXXFLAGS"
 
+# System-dependent adjustments.
+cygwin=no
+darwin=no
+solaris=no
+x86_64=no
+no_undefined=no
+
+case "${host_cpu}" in
+alpha*)
+  if test x"$GCC" = xyes
+  then
+    CFLAGS="$CFLAGS -mfp-rounding-mode=d -mieee-with-inexact"
+    CXXFLAGS="$CXXFLAGS -mfp-rounding-mode=d -mieee-with-inexact"
+  else
+    CFLAGS="$CFLAGS -fprm d -ieee_with_inexact"
+    CXXFLAGS="$CXXFLAGS -fprm d -ieee_with_inexact"
+  fi
+  ;;
+x86_64*)
+  x86_64=yes
+  ;;
+*)
+  ;;
+esac
+
+case "${host_os}" in
+cygwin)
+  cygwin=yes
+  no_undefined=yes
+  ;;
+darwin*)
+  darwin=yes
+  ;;
+solaris*)
+  solaris=yes
+  ;;
+*)
+  ;;
+esac
+
+AM_CONDITIONAL(HOST_OS_CYGWIN, test x$cygwin = xyes)
+AM_CONDITIONAL(HOST_OS_DARWIN, test x$darwin = xyes)
+AM_CONDITIONAL(HOST_OS_SOLARIS, test x$solaris = xyes)
+
+AM_CONDITIONAL(HOST_CPU_X86_64, test x$x86_64 = xyes)
+
+AM_CONDITIONAL(NO_UNDEFINED, test x$no_undefined = xyes)
+
+
 enableval=mpz
 AC_MSG_CHECKING([the type of integral values to use as coefficients])
 AC_ARG_ENABLE(coefficients,
@@ -1222,54 +1271,6 @@ then
     CXXFLAGS="$CXXFLAGS -W -Wall"
   fi
 fi
-
-# System-dependent adjustments.
-cygwin=no
-darwin=no
-solaris=no
-x86_64=no
-no_undefined=no
-
-case "${host_cpu}" in
-alpha*)
-  if test x"$GCC" = xyes
-  then
-    CFLAGS="$CFLAGS -mfp-rounding-mode=d -mieee-with-inexact"
-    CXXFLAGS="$CXXFLAGS -mfp-rounding-mode=d -mieee-with-inexact"
-  else
-    CFLAGS="$CFLAGS -fprm d -ieee_with_inexact"
-    CXXFLAGS="$CXXFLAGS -fprm d -ieee_with_inexact"
-  fi
-  ;;
-x86_64*)
-  x86_64=yes
-  ;;
-*)
-  ;;
-esac
-
-case "${host_os}" in
-cygwin)
-  cygwin=yes
-  no_undefined=yes
-  ;;
-darwin*)
-  darwin=yes
-  ;;
-solaris*)
-  solaris=yes
-  ;;
-*)
-  ;;
-esac
-
-AM_CONDITIONAL(HOST_OS_CYGWIN, test x$cygwin = xyes)
-AM_CONDITIONAL(HOST_OS_DARWIN, test x$darwin = xyes)
-AM_CONDITIONAL(HOST_OS_SOLARIS, test x$solaris = xyes)
-
-AM_CONDITIONAL(HOST_CPU_X86_64, test x$x86_64 = xyes)
-
-AM_CONDITIONAL(NO_UNDEFINED, test x$no_undefined = xyes)
 
 AC_SUBST(LIBEXT, [$libext])
 AC_SUBST(SHREXT, [$shrext_cmds])
