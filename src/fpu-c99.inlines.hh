@@ -41,8 +41,7 @@ namespace Parma_Polyhedra_Library {
 
 inline void
 fpu_initialize_control_functions() {
-  fpu_rounding_control_word_type old
-    = static_cast<fpu_rounding_control_word_type>(fegetround());
+  int old = fegetround();
   if (fesetround(FPU_DOWNWARD) != 0
       || fesetround(FPU_UPWARD) != 0
       || fesetround(old) != 0)
