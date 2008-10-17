@@ -842,6 +842,9 @@ xall)
 esac
 
 # Set an Automake conditional to build or not to build the C interface.
+AM_CONDITIONAL(BUILD_CXX_INTERFACE, test x${cxx_interface_enabled} = xyes && test x"$PERL" != xno)
+
+# Set an Automake conditional to build or not to build the C interface.
 AM_CONDITIONAL(BUILD_C_INTERFACE, test x${c_interface_enabled} = xyes && test x"$PERL" != xno)
 
 # Checks for systems for which the interface is enabled.

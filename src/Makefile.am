@@ -407,7 +407,15 @@ libppl_la_LDFLAGS = \
 $(NO_UNDEFINED_FLAG) \
 -version-info $(LIBPPL_LT_CURRENT):$(LIBPPL_LT_REVISION):$(LIBPPL_LT_AGE)
 
+if BUILD_CXX_INTERFACE
+
 include_HEADERS = ppl.hh
+
+else !BUILD_CXX_INTERFACE
+
+noinst_HEADERS = ppl.hh
+
+endif !BUILD_CXX_INTERFACE
 
 nodist_noinst_HEADERS = ppl_include_files.hh
 
