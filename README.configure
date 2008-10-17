@@ -255,9 +255,9 @@ have:
   README.swiprolog,
   README.yap.
 
-
-  --with-java=dir         use dir as Java SDK root directory
-
+For the Java interface, the `--with-java=DIR' configure option allows
+to select the Java SDK root directory.  We have tested the Java interface
+with the Java SE Development Kit 6 and OpenJDK 1.6.
 
 The C++ interface provides access to all the numerical abstractions
 provided by the PPL.  The majority of these (we are talking about
@@ -296,9 +296,10 @@ i.e., with a command of the form
 
   .../configure --enable-instantiations
 
-Note that the `Polyhedron' instantiations must be specified without
-any topology `C_' or `NNC_' as they are added automatically and both
-the domains `C_Polyhedron' and `NNC_Polyhedron' will be generated.
+Note that the stand-alone `Polyhedron' instantiation must be specified
+without any topology `C_' or `NNC_' as they are added automatically
+and both the domains `C_Polyhedron' and `NNC_Polyhedron' will be
+generated.
 
 
 6. Configuring for Optimized Performance
