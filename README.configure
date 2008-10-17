@@ -12,8 +12,10 @@ Contents
 2. Using the Right Version of GMP
 3. Using the Right C and C++ Compilers
 4. Enabling the Use of Alternative Coefficient Types
-5. Configuring the Foreign Language Interfaces
-6. Using the CVS Sources
+5. Configuring the Language Interfaces
+6. Configuring for Optimized Performance
+7. Configuring for Debugging
+8. Using the CVS Sources
 
 
 1. The Standard Thing (configure, make, make install)
@@ -62,20 +64,20 @@ In order to use this version of the PPL you must make sure that:
 (4) that your C and C++ compilers and your linker will find _that_
     version of GMP and not others that may be present in your system.
 
-Since the binary distributions of GMP most likely contain a version
-that was compiled with the C++ interface disabled, or compiled with
-a C++ compiler implementing a different ABI than the compiler you
-will use to compile the PPL, the only reliable solution to points
-(1), (2) and (3) above is to visit GMP's home page at
+Some binary distributions of GMP may contain a version that was compiled
+with the C++ interface disabled, or compiled with a C++ compiler
+implementing a different ABI than the compiler you will use to compile
+the PPL.  In these (increasingly rare) cases the only reliable way to
+ensure points (1), (2) and (3) above is to visit GMP's home page at
 
-  http://www.swox.com/gmp/
+  http://gmplib.org/
 
 and download the last available version.  Then decide where to install
 it and call this place in your file system <GMP prefix>.  Then, unless
 you have special needs, you can invoke the GMP's configure script with
 the options
 
-  --prefix=/usr/local --enable-cxx
+  --prefix=<GMP prefix> --enable-cxx
 
 If the C++ compiler you will use to compile the PPL is not the default
 on your system then, in order to satisfy point (3) above, you should
@@ -99,11 +101,13 @@ among others, the option
 
   --with-libgmpxx-prefix=<GMP prefix>
 
-If you use shared libraries, consult the documentation of your
-dynamic linker/loader (`man ld.so' will do on most Un*x-like systems)
-to see how to make sure that GMP's shared library will be found at
-runtime (setting the environment variable `LD_LIBRARY_PATH' to
-"<GMPprefix>/lib:$LD_LIBRARY_PATH" is the most commonly used solution).
+If you use shared libraries, consult the documentation of your dynamic
+linker/loader (`man ld.so' will do on most Un*x-like systems) to see
+how to make sure that GMP's shared library will be found at runtime
+(setting the environment variable `LD_LIBRARY_PATH' to
+"<GMPprefix>/lib:$LD_LIBRARY_PATH" or
+"<GMPprefix>/lib64:$LD_LIBRARY_PATH" is the most commonly used
+solution).
 
 
 3. Using the Right C and C++ Compilers
@@ -132,7 +136,7 @@ It should be noted that no version of GCC prior to 4.0.3 is known to
 reliably compile PPL 0.10.
 
 Here is an example of configuration that uses the Intel C/C++ compiler
-version 10.1x.  Assuming you have configured GMP with a command like
+version 10.1.x.  Assuming you have configured GMP with a command like
 
   CC=icc CXX=icpc /path/to/gmp-4.2.4/configure --enable-cxx \
     --prefix=/opt/intel/cce/10.1.018
@@ -184,11 +188,11 @@ the configure option
 
 where TYPE is one of
 
-  mpz               use GMP unbounded integers (default)
-  checked-int8      use  8-bit checked integers
-  checked-int16     use 16-bit checked integers
-  checked-int32     use 32-bit checked integers
-  checked-int64     use 64-bit checked integers
+  mpz,              use GMP unbounded integers (default);
+  checked-int8,     use  8-bit checked integers;
+  checked-int16,    use 16-bit checked integers;
+  checked-int32,    use 32-bit checked integers;
+  checked-int64,    use 64-bit checked integers.
 
 When using checked integers it is also wise to increase the
 optimization level, since their efficiency largely depends on
@@ -203,18 +207,53 @@ to plain, unchecked native integers and you really know what you
 are doing, you may be interested in knowing that these additional
 choices for TYPE are available:
 
-  native-int8      use  8-bit *unchecked* integers
-  native-int16     use 16-bit *unchecked* integers
-  native-int32     use 32-bit *unchecked* integers
-  native-int64     use 64-bit *unchecked* integers
+  native-int8,     use  8-bit *unchecked* integers;
+  native-int16,    use 16-bit *unchecked* integers;
+  native-int32,    use 32-bit *unchecked* integers;
+  native-int64,    use 64-bit *unchecked* integers.
 
 
-5. Configuring the Foreign Language Interfaces
-----------------------------------------------
+5. Configuring the Language Interfaces
+--------------------------------------
+
+The PPL comes equipped with interfaces for several programming
+languages.  Some of these interfaces are enabled by default,
+meaning that, if the configuration script finds support for
+a certain programming language, these interfaces are compiled
+(with `make') and installed (with `make install').
+The set of enabled interface can be customized with the
+`--enable-interfaces=INTERFACES' option.  The INTERFACE argument
+can be
+
+  none,            no language interface is enabled;
+  all,             all language interfaces are enabled;
+    
+or any space-separated list of interface specifiers chosen among
+
+  cxx,             the C++ interface;
+  c,               the C interface;
+  java,            the Java interface;
+  ocaml,           the OCaml interface;
+  ciao_prolog,     the Ciao Prolog interface;
+  gnu_prolog,      the GNU Prolog interface;
+  sicstus_prolog,  the SICStus Prolog interface;
+  swi_prolog,      the SWI-Prolog interface;
+  xsb_prolog,      the XSB interface;
+  yap_prolog,      the YAP interface.
 
 The instantiations for the domains for interfaces other than the main
 C++ interface can be customized via the `instantiations' option for
-the PPL `configure' shell script.
+the PPL `configure' shell script.  Some interfaces depend on language
+implementations that are somewhat problematic, either because they tend
+to be installed in rather unpredictable places, or because some published
+versions have bugs that prevent the PPL interface to run correctly.
+In these cases, information is given in a README.* file.  Presently we
+have:
+
+  README.ocaml,
+  README.gprolog,
+  README.swiprolog,
+  README.yap.
 
 To enable the use of various kinds of instantiations, you can use
 the configure option
@@ -247,8 +286,31 @@ Note that the domain "Polyhedron" must be specified
 without any topology "C_" and "NNC_" as they are added automatically
 and both the domains "C_Polyhedron" and "NNC_Polyhedron" will be generated.
 
+  --with-java=dir         use dir as Java SDK root directory
 
-6. Using the CVS Sources
+
+6. Configuring for Optimized Performance
+----------------------------------------
+
+  --enable-optimization   enable compiler optimizations
+  --enable-arch[=ARCH]    optimize for architecture ARCH
+  --enable-fpmath         select floating point arithmetics
+
+7. Configuring for Debugging
+----------------------------
+
+  --enable-debugging      compile with debugging information
+  --enable-profiling      compile for profiling
+  --enable-coverage       compile for test coverage
+
+  --enable-assertions     check run-time assertions
+  --enable-more-assertions
+                          break the ABI to check even more run-time assertions
+
+  --enable-valgrind-tests run library tests under Valgrind
+
+
+8. Using the CVS Sources
 ------------------------
 
 If you use the CVS sources, then you need recent versions of Autoconf
