@@ -981,7 +981,7 @@ then
 fi
 AM_CONDITIONAL(BUILD_SOME_PROLOG_INTERFACES, test x$SOME_PROLOG = xyes)
 
-# Define the list of interfaces that are enabled by default.
+# Define the list of instantiations that are enabled by default.
 # Different instantiations are separated by a '@' character.
 di="        Polyhedron @ Grid"
 di="${di} @ Rational_Box"
@@ -996,6 +996,68 @@ then
 fi
 default_instantiations="${di}"
 
+# Define the list of all instantiations.
+# Different instantiations are separated by a '@' character.
+ai="        Int8_Box @ Int16_Box @ Int32_Box @ Int64_Box"
+ai="${ai} @ Uint8_Box @ Uint16_Box @ Uint32_Box @ Uint64_Box"
+ai="${ai} @ Z_Box @ Rational_Box"
+ai="${ai} @ BD_Shape<int8_t> @ BD_Shape<int16_t>"
+ai="${ai} @ BD_Shape<int32_t> @ BD_Shape<int64_t>"
+ai="${ai} @ BD_Shape<mpz_class> @ BD_Shape<mpq_class>"
+ai="${ai} @ Octagonal_Shape<int8_t> @ Octagonal_Shape<int16_t>"
+ai="${ai} @ Octagonal_Shape<int32_t> @ Octagonal_Shape<int64_t>"
+ai="${ai} @ Octagonal_Shape<mpz_class> @ Octagonal_Shape<mpq_class>"
+ai="${ai} @ Polyhedron @ Grid"
+ai="${ai} @ Pointset_Powerset<Int8_Box> @ Pointset_Powerset<Int16_Box>"
+ai="${ai} @ Pointset_Powerset<Int32_Box> @ Pointset_Powerset<Int64_Box>"
+ai="${ai} @ Pointset_Powerset<Uint8_Box> @ Pointset_Powerset<Uint16_Box>"
+ai="${ai} @ Pointset_Powerset<Uint32_Box> @ Pointset_Powerset<Uint64_Box>"
+ai="${ai} @ Pointset_Powerset<Rational_Box> @ Pointset_Powerset<Z_Box>"
+ai="${ai} @ Pointset_Powerset<BD_Shape<int8_t> >"
+ai="${ai} @ Pointset_Powerset<BD_Shape<int16_t> >"
+ai="${ai} @ Pointset_Powerset<BD_Shape<int32_t> >"
+ai="${ai} @ Pointset_Powerset<BD_Shape<int64_t> >"
+ai="${ai} @ Pointset_Powerset<BD_Shape<mpq_class> >"
+ai="${ai} @ Pointset_Powerset<BD_Shape<mpz_class> >"
+ai="${ai} @ Pointset_Powerset<Octagonal_Shape<int8_t> >"
+ai="${ai} @ Pointset_Powerset<Octagonal_Shape<int16_t> >"
+ai="${ai} @ Pointset_Powerset<Octagonal_Shape<int32_t> >"
+ai="${ai} @ Pointset_Powerset<Octagonal_Shape<int64_t> >"
+ai="${ai} @ Pointset_Powerset<Octagonal_Shape<mpq_class> >"
+ai="${ai} @ Pointset_Powerset<Octagonal_Shape<mpz_class> >"
+ai="${ai} @ Pointset_Powerset<C_Polyhedron>"
+ai="${ai} @ Pointset_Powerset<NNC_Polyhedron>"
+ai="${ai} @ Pointset_Powerset<Grid>"
+ai="${ai} @ Constraints_Product<C_Polyhedron, Grid>"
+ai="${ai} @ Constraints_Product<NNC_Polyhedron, Grid>"
+ai="${ai} @ Constraints_Product<Grid, C_Polyhedron>"
+ai="${ai} @ Constraints_Product<Grid, NNC_Polyhedron>"
+if test $ac_supported_float = 1
+then
+  ai="${ai} @ Float_Box @ BD_Shape<float>"
+  ai="${ai} @ Octagonal_Shape<float>"
+  ai="${ai} @ Pointset_Powerset<Float_Box>"
+  ai="${ai} @ Pointset_Powerset<BD_Shape<float> >"
+  ai="${ai} @ Pointset_Powerset<Octagonal_Shape<float> >"
+fi
+if test $ac_supported_double = 1
+then
+  ai="${ai} @ Double_Box @ BD_Shape<double>"
+  ai="${ai} @ Octagonal_Shape<double>"
+  ai="${ai} @ Pointset_Powerset<Double_Box>"
+  ai="${ai} @ Pointset_Powerset<BD_Shape<double> >"
+  ai="${ai} @ Pointset_Powerset<Octagonal_Shape<double> >"
+fi
+if test $ac_supported_long_double = 1
+then
+  ai="${ai} @ Long_Double_Box @ BD_Shape<long double>"
+  ai="${ai} @ Octagonal_Shape<long double>"
+  ai="${ai} @ Pointset_Powerset<Long_Double_Box>"
+  ai="${ai} @ Pointset_Powerset<BD_Shape<long double> >"
+  ai="${ai} @ Pointset_Powerset<Octagonal_Shape<long double> >"
+fi
+available_instantiations=${ai}
+
 enableval=not_specified
 AC_MSG_CHECKING([which instantiations are enabled])
 AC_ARG_ENABLE(instantiations,
@@ -1003,7 +1065,12 @@ AC_ARG_ENABLE(instantiations,
     [enable instantiations for the non-C++ interfaces]))
 case x"${enableval}" in
 xyes | x)
-  AC_MSG_ERROR([--enable-instantiations needs at least one argument])
+  ai_one_per_line=`echo "${available_instantiations}" | sed -e 's/ *@ */\n/g' -e 's/ *\([[A-Z]]\)/\1/g'`
+  AC_MSG_ERROR([
+--enable-instantiations needs at least one argument chosen among none,
+all, and an @-separated list of instantiation specifiers included
+in the following list:
+${ai_one_per_line}])
   ;;
 xno | xnone)
   enableval=
@@ -1015,65 +1082,7 @@ xno | xnone)
     enableval=${default_instantiations}
   elif test x"${enableval}" = xall
   then
-    ai="        Int8_Box @ Int16_Box @ Int32_Box @ Int64_Box"
-    ai="${ai} @ Uint8_Box @ Uint16_Box @ Uint32_Box @ Uint64_Box"
-    ai="${ai} @ Z_Box @ Rational_Box"
-    ai="${ai} @ BD_Shape<int8_t> @ BD_Shape<int16_t>"
-    ai="${ai} @ BD_Shape<int32_t> @ BD_Shape<int64_t>"
-    ai="${ai} @ BD_Shape<mpz_class> @ BD_Shape<mpq_class>"
-    ai="${ai} @ Octagonal_Shape<int8_t> @ Octagonal_Shape<int16_t>"
-    ai="${ai} @ Octagonal_Shape<int32_t> @ Octagonal_Shape<int64_t>"
-    ai="${ai} @ Octagonal_Shape<mpz_class> @ Octagonal_Shape<mpq_class>"
-    ai="${ai} @ Polyhedron @ Grid"
-    ai="${ai} @ Pointset_Powerset<Int8_Box> @ Pointset_Powerset<Int16_Box>"
-    ai="${ai} @ Pointset_Powerset<Int32_Box> @ Pointset_Powerset<Int64_Box>"
-    ai="${ai} @ Pointset_Powerset<Uint8_Box> @ Pointset_Powerset<Uint16_Box>"
-    ai="${ai} @ Pointset_Powerset<Uint32_Box> @ Pointset_Powerset<Uint64_Box>"
-    ai="${ai} @ Pointset_Powerset<Rational_Box> @ Pointset_Powerset<Z_Box>"
-    ai="${ai} @ Pointset_Powerset<BD_Shape<int8_t> >"
-    ai="${ai} @ Pointset_Powerset<BD_Shape<int16_t> >"
-    ai="${ai} @ Pointset_Powerset<BD_Shape<int32_t> >"
-    ai="${ai} @ Pointset_Powerset<BD_Shape<int64_t> >"
-    ai="${ai} @ Pointset_Powerset<BD_Shape<mpq_class> >"
-    ai="${ai} @ Pointset_Powerset<BD_Shape<mpz_class> >"
-    ai="${ai} @ Pointset_Powerset<Octagonal_Shape<int8_t> >"
-    ai="${ai} @ Pointset_Powerset<Octagonal_Shape<int16_t> >"
-    ai="${ai} @ Pointset_Powerset<Octagonal_Shape<int32_t> >"
-    ai="${ai} @ Pointset_Powerset<Octagonal_Shape<int64_t> >"
-    ai="${ai} @ Pointset_Powerset<Octagonal_Shape<mpq_class> >"
-    ai="${ai} @ Pointset_Powerset<Octagonal_Shape<mpz_class> >"
-    ai="${ai} @ Pointset_Powerset<C_Polyhedron>"
-    ai="${ai} @ Pointset_Powerset<NNC_Polyhedron>"
-    ai="${ai} @ Pointset_Powerset<Grid>"
-    ai="${ai} @ Constraints_Product<C_Polyhedron, Grid>"
-    ai="${ai} @ Constraints_Product<NNC_Polyhedron, Grid>"
-    ai="${ai} @ Constraints_Product<Grid, C_Polyhedron>"
-    ai="${ai} @ Constraints_Product<Grid, NNC_Polyhedron>"
-    if test $ac_supported_float = 1
-    then
-      ai="${ai} @ Float_Box @ BD_Shape<float>"
-      ai="${ai} @ Octagonal_Shape<float>"
-      ai="${ai} @ Pointset_Powerset<Float_Box>"
-      ai="${ai} @ Pointset_Powerset<BD_Shape<float> >"
-      ai="${ai} @ Pointset_Powerset<Octagonal_Shape<float> >"
-    fi
-    if test $ac_supported_double = 1
-    then
-      ai="${ai} @ Double_Box @ BD_Shape<double>"
-      ai="${ai} @ Octagonal_Shape<double>"
-      ai="${ai} @ Pointset_Powerset<Double_Box>"
-      ai="${ai} @ Pointset_Powerset<BD_Shape<double> >"
-      ai="${ai} @ Pointset_Powerset<Octagonal_Shape<double> >"
-    fi
-    if test $ac_supported_long_double = 1
-    then
-      ai="${ai} @ Long_Double_Box @ BD_Shape<long double>"
-      ai="${ai} @ Octagonal_Shape<long double>"
-      ai="${ai} @ Pointset_Powerset<Long_Double_Box>"
-      ai="${ai} @ Pointset_Powerset<BD_Shape<long double> >"
-      ai="${ai} @ Pointset_Powerset<Octagonal_Shape<long double> >"
-    fi
-    enableval=${ai}
+    enableval=${available_instantiations}
   fi
   # Avoid extra blanks.
   required_instantiations=`echo "${enableval}" | sed -e 's/[[	 ]][[	 ]]*/ /g' -e 's/[[ ]]*\([[@<>,]]\)[[ ]]*/\1/g' -e 's/>>/> >/g' -e 's/^[[ ]]//g' -e 's/[[ ]]$//g'`
