@@ -195,13 +195,11 @@ where TYPE is one of
   checked-int64,    use 64-bit checked integers.
 
 When using checked integers it is also wise to increase the
-optimization level, since their efficiency largely depends on
-the compiler and on the optimization options used.  Adding
+optimization level, since their efficiency largely depends on the
+compiler and on the optimization options used.  See below for how
+to do that (in later releases we may try to make the choice of the
+optimization options automatic).
 
-  --enable-optimization=speed
-
-to the command line is thus recommended (in later releases we will
-try to make the choice of the optimization options automatic).
 If you want to test the overhead of checked integers with respect
 to plain, unchecked native integers and you really know what you
 are doing, you may be interested in knowing that these additional
@@ -305,9 +303,34 @@ generated.
 6. Configuring for Optimized Performance
 ----------------------------------------
 
+By default, the PPL is compiled with all the optimizations provided
+by the compiler that do not involve a space-speed tradeoff (a.k.a.
+-O2 optimization).  The same optimization level can be obtained by
+using the `--enable-optimization' or `--enable-optimization=standard'
+configure options.
+
+You can try to squeeze more speed from your compiler by using the
+`--enable-optimization=speed' compiler option (a.k.a. -O3
+optimization): this is recommended if you use the checked integers
+coefficients, even though it does not come with an 100% guarantee of
+extra performance.  With the `--enable-optimization=sspeed'
+optimization even more optimization is requested, possibly at the cost
+of making debugging impossible on some machines.  The
+`--enable-optimization=size' configure option instructs the compiler
+to optimize for size and for speed, but only for speed improvements do
+not increase code size.
+
   --enable-optimization   enable compiler optimizations
   --enable-arch[=ARCH]    optimize for architecture ARCH
   --enable-fpmath         select floating point arithmetics
+
+On the other hand, there are configure options to request lesser
+degrees of optimization for the sake of debugging.  These are,
+in decreasing order of optimization, `--enable-optimization=mild'
+(a.k.a. -O1 optimization), `--enable-optimization=no' or, equivalently
+`--disable-optimization', and `--enable-optimization=zero'
+(a.k.a. -O0 optimization).
+
 
 7. Configuring for Debugging
 ----------------------------
