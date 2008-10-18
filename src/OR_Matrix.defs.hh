@@ -169,18 +169,18 @@ private:
 
 #endif // PPL_OR_MATRIX_EXTRA_DEBUG
 
-    // FIXME: the Comeau and Intel C++ compiler complain about the
-    // following teo friend declarations (because of a mismatch in
-    // template nesting depth).  They would seem to want
-    //
-    //   template <typename V> template<typename W>
-    //   friend class OR_Matrix<V>::Pseudo_Row;
-    //   template <typename V> template<typename W>
-    //   friend class OR_Matrix<V>::any_row_iterator;
-    //
-    // but this is not enough for GCC.
+    // FIXME: the EDG-based compilers (such as Comeau and Intel)
+    // are here in wild disagreement with GCC: what is a legal friend
+    // declaration for one, is illegal for the others.
+#ifdef __EDG__
+    template <typename V> template<typename W>
+    friend class OR_Matrix<V>::Pseudo_Row;
+    template <typename V> template<typename W>
+    friend class OR_Matrix<V>::any_row_iterator;
+#else
     template <typename V> friend class Pseudo_Row;
     template <typename V> friend class any_row_iterator;
+#endif
 
     friend class OR_Matrix;
   }; // class Pseudo_Row
@@ -306,15 +306,15 @@ private:
     //! Internal index: <CODE>i = (e+1)*(e+1)/2</CODE>.
     dimension_type i;
 
-    // FIXME: the Comeau and Intel C++ compiler complain about the following
-    // friend declaration (because of a mismatch in template nesting depth).
-    // They would seem to want
-    //
-    //   template <typename V> template<typename W>
-    //   friend class OR_Matrix<V>::any_row_iterator;
-    //
-    // but this is not enough for GCC.
+    // FIXME: the EDG-based compilers (such as Comeau and Intel)
+    // are here in wild disagreement with GCC: what is a legal friend
+    // declaration for one, is illegal for the others.
+#ifdef __EDG__
     template <typename V> friend class any_row_iterator;
+#else
+    template <typename V> template<typename W>
+    friend class OR_Matrix<V>::any_row_iterator;
+#endif
   }; // class any_row_iterator
 
 public:
