@@ -93,7 +93,7 @@ test1_SOURCES = test1.ml
 
 test1$(EXEEXT): test1.cmo ../ppl_ocaml.cma
 	$(OCAMLC_ENV) ocamlc -o $@ \
-		-cc g++ -g -custom $(OCAMLC_COMPILE_FLAGS) \
+		-cc "$(CXX)" -g -custom $(OCAMLC_COMPILE_FLAGS) \
 		-cclib $(BUILT_PPL) $(OCAMLC_LINK_FLAGS) \
 		ppl_ocaml.cma $<
 
@@ -109,7 +109,7 @@ ppl_ocaml_generated_test.ml: $(interface_generator_dependencies)
 ppl_ocaml_generated_test$(EXEEXT): \
 ppl_ocaml_generated_test.cmo ../ppl_ocaml.cma
 	$(OCAMLC_ENV) ocamlc -o $@ \
-		-cc g++ -g -custom $(OCAMLC_COMPILE_FLAGS) \
+		-cc "$(CXX)" -g -custom $(OCAMLC_COMPILE_FLAGS) \
 		-cclib $(BUILT_PPL) $(OCAMLC_LINK_FLAGS) \
 		ppl_ocaml.cma $<
 
