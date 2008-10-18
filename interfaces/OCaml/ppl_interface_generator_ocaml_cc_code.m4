@@ -358,7 +358,6 @@ ppl_@CLASS@_map_space_dimensions(value ph, value caml_mapped_dims) try {
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
   Partial_Function pfunc;
   while (caml_mapped_dims != Val_int(0)) {
-    Int_val(Field(Field(caml_mapped_dims, 0),0));
     int domain_value = Int_val(Field(Field(caml_mapped_dims, 0),0));
     int codomain_value = Int_val(Field(Field(caml_mapped_dims, 0),1));
     pfunc.insert(domain_value,
