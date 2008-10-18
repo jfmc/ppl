@@ -5183,7 +5183,6 @@ Octagonal_Shape<T>::bounded_affine_image(const Variable var,
   typedef typename OR_Matrix<N>::const_row_reference_type Row_reference;
 
   const Row_Iterator m_begin = matrix.row_begin();
-  const Row_Iterator m_end = matrix.row_end();
   const dimension_type n_var = 2*var_id;
   const Coefficient& b = lb_expr.inhomogeneous_term();
   TEMP_INTEGER(minus_den);
