@@ -28,7 +28,8 @@ $(CIAO_CFLI_FILES) \
 ciao_clpq.pl \
 ciao_clpq2.pl \
 ciao_pl_check.pl \
-ppl_interface_generator_ciao_prolog_generated_test_pl.m4
+ppl_interface_generator_ciao_prolog_generated_test_pl.m4 \
+README.ciao
 
 if BUILD_WATCHDOG_LIBRARY
 
