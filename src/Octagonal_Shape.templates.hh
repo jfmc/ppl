@@ -768,8 +768,6 @@ Octagonal_Shape<T>::is_disjoint_from(const Octagonal_Shape& y) const {
   const Row_Iterator m_end = matrix.row_end();
 
   const Row_Iterator y_begin = y.matrix.row_begin();
-  // FIXME: remove the following, useless definition.
-  //const Row_Iterator y_end = y.matrix.row_end();
 
   DIRTY_TEMP(N, neg_y_ci_cj);
   for (Row_Iterator i_iter = m_begin; i_iter != m_end; ++i_iter) {
@@ -777,8 +775,6 @@ Octagonal_Shape<T>::is_disjoint_from(const Octagonal_Shape& y) const {
     const dimension_type ci = coherent_index(i);
     const dimension_type rs_i = i_iter.row_size();
     Row_Reference m_i = *i_iter;
-    // FIXME: remove the following, useless definition.
-    //Row_Reference m_ci = (i%2) ? *(i_iter-1) : *(i_iter+1);
     for (dimension_type j = 0; j < n_rows; ++j) {
       const dimension_type cj = coherent_index(j);
       Row_Reference m_cj = *(m_begin + cj);
@@ -2048,8 +2044,6 @@ Octagonal_Shape<T>
     const dimension_type ci = coherent_index(i);
     const dimension_type rs_i = i_iter.row_size();
     Row_Reference x_i = *i_iter;
-    // FIXME: remove the following, useless definition.
-    //Row_Reference x_ci = (i%2) ? *(i_iter-1) : *(i_iter+1);
     const N& x_i_v = (v < rs_i) ? x_i[v] : x_cv[ci];
     // TODO: see if it is possible to optimize this inner loop
     // by splitting it into several parts, so as to avoid
@@ -2600,8 +2594,6 @@ Octagonal_Shape<T>::map_space_dimensions(const Partial_Function& pfunc) {
   typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
 
   Row_Iterator m_begin = x.row_begin();
-  // FIXME: remove the following, useless definition.
-  //Row_Iterator m_end = x.row_end();
 
   for (Row_Iterator i_iter = matrix.row_begin(), i_end = matrix.row_end();
        i_iter != i_end; i_iter += 2) {
@@ -3989,9 +3981,6 @@ Octagonal_Shape<T>::affine_image(const Variable var,
   typedef typename OR_Matrix<N>::const_row_iterator Row_iterator;
   typedef typename OR_Matrix<N>::const_row_reference_type Row_reference;
 
-  // FIXME: move the following definitions where they are useful.
-  const Row_Iterator m_begin = matrix.row_begin();
-  const Row_Iterator m_end = matrix.row_end();
   const dimension_type n_var = 2*var_id;
   const Coefficient& b = expr.inhomogeneous_term();
   TEMP_INTEGER(minus_den);
@@ -4037,6 +4026,8 @@ Octagonal_Shape<T>::affine_image(const Variable var,
             div_round_up(d, b, denominator);
             DIRTY_TEMP(N, minus_d);
             div_round_up(minus_d, b, minus_den);
+            const Row_Iterator m_begin = matrix.row_begin();
+            const Row_Iterator m_end = matrix.row_end();
             Row_Iterator m_iter = m_begin + n_var;
             N& m_v_cv = (*m_iter)[n_var+1];
             ++m_iter;
@@ -4058,12 +4049,12 @@ Octagonal_Shape<T>::affine_image(const Variable var,
            }
           reset_strongly_closed();
         }
-
         else {
           // Here `w_coeff == -denominator'.
           // Remove the binary constraints on `var'.
           forget_binary_octagonal_constraints(var_id);
-           Row_Iterator m_iter = m_begin + n_var;
+          const Row_Iterator m_begin = matrix.row_begin();
+          Row_Iterator m_iter = m_begin + n_var;
           N& m_v_cv = (*m_iter)[n_var+1];
           ++m_iter;
           N& m_cv_v = (*m_iter)[n_var];
@@ -4079,7 +4070,8 @@ Octagonal_Shape<T>::affine_image(const Variable var,
             DIRTY_TEMP(N, minus_d);
             div_round_up(minus_d, b, minus_den);
             ++m_iter;
-            for ( ; m_iter != m_end; ++m_iter) {
+            for (const Row_Iterator m_end
+                   = matrix.row_end(); m_iter != m_end; ++m_iter) {
               Row_Reference m_i = *m_iter;
               N& m_i_v = m_i[n_var];
               add_assign_r(m_i_v, m_i_v, d, ROUND_UP);
@@ -4094,7 +4086,6 @@ Octagonal_Shape<T>::affine_image(const Variable var,
           incremental_strong_closure_assign(var);
          }
       }
-
       else {
         // Here `w != var', so that `expr' is of the form
         // +/-denominator * w + b.
@@ -4176,8 +4167,9 @@ Octagonal_Shape<T>::affine_image(const Variable var,
   TEMP_INTEGER(minus_sc_i);
   // Note: indices above `w' can be disregarded, as they all have
   // a zero coefficient in `sc_expr'.
-  for (Row_iterator m_iter = m_begin, m_iter_end = m_iter + (2*w_id) + 2;
-       m_iter != m_iter_end; ) {
+  const Row_Iterator m_begin = matrix.row_begin();
+  for (Row_iterator m_iter = m_begin,
+         m_iter_end = m_iter + (2*w_id) + 2; m_iter != m_iter_end; ) {
     const dimension_type n_i = m_iter.index();
     const dimension_type id = n_i/2;
     Row_reference m_i = *m_iter;
@@ -5895,8 +5887,6 @@ Octagonal_Shape<T>::expand_space_dimension(Variable var, dimension_type m) {
     }
     for (dimension_type j = n_var+2; j < old_num_rows; ++j) {
       Row_Iterator j_iter = m_begin + j;
-      // FIXME: remove the following, useless definition.
-      //Row_Reference m_j = *j_iter;
       Row_Reference m_cj = (j%2) ? *(j_iter-1) : *(j_iter+1);
       m_i[j] = m_cj[n_var+1];
       m_ci[j] = m_cj[n_var];
@@ -5939,8 +5929,6 @@ Octagonal_Shape<T>::fold_space_dimensions(const Variables_Set& to_be_folded,
   typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
 
   const Row_Iterator m_begin = matrix.row_begin();
-  // FIXME: remove the following, useless definition.
-  //const Row_Iterator m_end = matrix.row_end();
 
   strong_closure_assign();
   const dimension_type n_rows = matrix.num_rows();
