@@ -34,6 +34,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <typeinfo>
 #include <cstdlib>
 
+#ifndef NOISY
+#define NOISY 0
+#endif
+
+#ifndef VERY_NOISY
+#define VERY_NOISY 0
+#endif
+
 #define TRY try
 
 #define CATCH \
@@ -136,7 +144,11 @@ namespace Parma_Watchdog_Library {
 namespace Test {
 
 static bool
-check_noisy(const char* environment_variable) {
+check_noisy(const char*
+#if PWL_HAVE_DECL_GETENV || NOISY || VERY_NOISY
+            environment_variable
+#endif
+            ) {
 #if PWL_HAVE_DECL_GETENV
   return getenv(environment_variable) != 0;
 #else
@@ -179,14 +191,6 @@ static noisy_ostream<char> vnout(std::cout, "PWL_VERY_NOISY_TESTS");
 
 void
 set_handlers();
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
-#ifndef VERY_NOISY
-#define VERY_NOISY 0
-#endif
 
 } // namespace Test
 

@@ -36,6 +36,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <typeinfo>
 #include <cstdlib>
 
+#ifndef NOISY
+#define NOISY 0
+#endif
+
+#ifndef VERY_NOISY
+#define VERY_NOISY 0
+#endif
+
 #define TRY try
 
 #define CATCH \
@@ -430,7 +438,11 @@ namespace Parma_Polyhedra_Library {
 namespace Test {
 
 static bool
-check_noisy(const char* environment_variable) {
+check_noisy(const char*
+#if PPL_HAVE_DECL_GETENV || NOISY || VERY_NOISY
+            environment_variable
+#endif
+) {
 #if PPL_HAVE_DECL_GETENV
   return getenv(environment_variable) != 0;
 #else
@@ -1017,14 +1029,6 @@ inline bool
 operator!=(const FCAIBVP& x, const FCAIBVP& y) {
   return !(x == y);
 }
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
-#ifndef VERY_NOISY
-#define VERY_NOISY 0
-#endif
 
 void
 print_constraint(const Constraint& c,
