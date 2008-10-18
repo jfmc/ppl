@@ -564,7 +564,10 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			    const Box<ITV>& x,
 			    const Box<ITV>& y,
 			    const Rounding_Dir dir) {
-  return rectilinear_distance_assign<To, To, ITV>(r, x, y, dir);
+  // FIXME: the following qualification is only to work around a bug
+  // in the Intel C/C++ compiler version 10.1.x.
+  return Parma_Polyhedra_Library
+    ::rectilinear_distance_assign<To, To, ITV>(r, x, y, dir);
 }
 
 /*! \relates Box */
@@ -602,7 +605,10 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			  const Box<ITV>& x,
 			  const Box<ITV>& y,
 			  const Rounding_Dir dir) {
-  return euclidean_distance_assign<To, To, ITV>(r, x, y, dir);
+  // FIXME: the following qualification is only to work around a bug
+  // in the Intel C/C++ compiler version 10.1.x.
+  return Parma_Polyhedra_Library
+    ::euclidean_distance_assign<To, To, ITV>(r, x, y, dir);
 }
 
 /*! \relates Box */
@@ -640,7 +646,10 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			   const Box<ITV>& x,
 			   const Box<ITV>& y,
 			   const Rounding_Dir dir) {
-  return l_infinity_distance_assign<To, To, ITV>(r, x, y, dir);
+  // FIXME: the following qualification is only to work around a bug
+  // in the Intel C/C++ compiler version 10.1.x.
+  return Parma_Polyhedra_Library
+    ::l_infinity_distance_assign<To, To, ITV>(r, x, y, dir);
 }
 
 } // namespace Parma_Polyhedra_Library
