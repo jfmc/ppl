@@ -293,7 +293,8 @@ ppl_prolog_generated_test: libppl_xsb.la ppl_xsb.xwam xsb_prolog_generated_test.
 CLEANFILES = \
 ppl_xsb.H \
 ppl_xsb.hh \
-ppl_xsb.cc
+ppl_xsb.cc \
+xsb_prolog_generated_test.P
 
 MOSTLYCLEANFILES = \
 @required_instantiations_prolog_cxx_objects@ \
