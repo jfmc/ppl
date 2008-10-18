@@ -310,10 +310,10 @@ private:
     // are here in wild disagreement with GCC: what is a legal friend
     // declaration for one, is illegal for the others.
 #ifdef __EDG__
-    template <typename V> friend class any_row_iterator;
-#else
     template <typename V> template<typename W>
     friend class OR_Matrix<V>::any_row_iterator;
+#else
+    template <typename V> friend class any_row_iterator;
 #endif
   }; // class any_row_iterator
 
