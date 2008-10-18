@@ -768,7 +768,8 @@ Octagonal_Shape<T>::is_disjoint_from(const Octagonal_Shape& y) const {
   const Row_Iterator m_end = matrix.row_end();
 
   const Row_Iterator y_begin = y.matrix.row_begin();
-  const Row_Iterator y_end = y.matrix.row_end();
+  // FIXME: remove the following, useless definition.
+  //const Row_Iterator y_end = y.matrix.row_end();
 
   DIRTY_TEMP(N, neg_y_ci_cj);
   for (Row_Iterator i_iter = m_begin; i_iter != m_end; ++i_iter) {
@@ -776,7 +777,8 @@ Octagonal_Shape<T>::is_disjoint_from(const Octagonal_Shape& y) const {
     const dimension_type ci = coherent_index(i);
     const dimension_type rs_i = i_iter.row_size();
     Row_Reference m_i = *i_iter;
-    Row_Reference m_ci = (i%2) ? *(i_iter-1) : *(i_iter+1);
+    // FIXME: remove the following, useless definition.
+    //Row_Reference m_ci = (i%2) ? *(i_iter-1) : *(i_iter+1);
     for (dimension_type j = 0; j < n_rows; ++j) {
       const dimension_type cj = coherent_index(j);
       Row_Reference m_cj = *(m_begin + cj);
@@ -2046,7 +2048,8 @@ Octagonal_Shape<T>
     const dimension_type ci = coherent_index(i);
     const dimension_type rs_i = i_iter.row_size();
     Row_Reference x_i = *i_iter;
-    Row_Reference x_ci = (i%2) ? *(i_iter-1) : *(i_iter+1);
+    // FIXME: remove the following, useless definition.
+    //Row_Reference x_ci = (i%2) ? *(i_iter-1) : *(i_iter+1);
     const N& x_i_v = (v < rs_i) ? x_i[v] : x_cv[ci];
     // TODO: see if it is possible to optimize this inner loop
     // by splitting it into several parts, so as to avoid
@@ -2597,7 +2600,8 @@ Octagonal_Shape<T>::map_space_dimensions(const Partial_Function& pfunc) {
   typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
 
   Row_Iterator m_begin = x.row_begin();
-  Row_Iterator m_end = x.row_end();
+  // FIXME: remove the following, useless definition.
+  //Row_Iterator m_end = x.row_end();
 
   for (Row_Iterator i_iter = matrix.row_begin(), i_end = matrix.row_end();
        i_iter != i_end; i_iter += 2) {
@@ -3985,6 +3989,7 @@ Octagonal_Shape<T>::affine_image(const Variable var,
   typedef typename OR_Matrix<N>::const_row_iterator Row_iterator;
   typedef typename OR_Matrix<N>::const_row_reference_type Row_reference;
 
+  // FIXME: move the following definitions where they are useful.
   const Row_Iterator m_begin = matrix.row_begin();
   const Row_Iterator m_end = matrix.row_end();
   const dimension_type n_var = 2*var_id;
@@ -5890,7 +5895,8 @@ Octagonal_Shape<T>::expand_space_dimension(Variable var, dimension_type m) {
     }
     for (dimension_type j = n_var+2; j < old_num_rows; ++j) {
       Row_Iterator j_iter = m_begin + j;
-      Row_Reference m_j = *j_iter;
+      // FIXME: remove the following, useless definition.
+      //Row_Reference m_j = *j_iter;
       Row_Reference m_cj = (j%2) ? *(j_iter-1) : *(j_iter+1);
       m_i[j] = m_cj[n_var+1];
       m_ci[j] = m_cj[n_var];
@@ -5933,7 +5939,8 @@ Octagonal_Shape<T>::fold_space_dimensions(const Variables_Set& to_be_folded,
   typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
 
   const Row_Iterator m_begin = matrix.row_begin();
-  const Row_Iterator m_end = matrix.row_end();
+  // FIXME: remove the following, useless definition.
+  //const Row_Iterator m_end = matrix.row_end();
 
   strong_closure_assign();
   const dimension_type n_rows = matrix.num_rows();
