@@ -77,6 +77,7 @@ $(top_builddir)/src/.libs/libppl.$(LIBEXT)
 endif !ENABLE_SHARED
 
 OCAMLC_LINK_FLAGS = \
+-cclib -lmlgmp -cclib -lmpfr \
 `echo " $(extra_libraries) " | $(SED) -e "s/ -R[^ ]*//g" -e "s/ -/ -cclib -/g"`
 
 .ml.cmo:
@@ -93,9 +94,8 @@ test1_SOURCES = test1.ml
 test1$(EXEEXT): test1.cmo ../ppl_ocaml.cma
 	$(OCAMLC_ENV) ocamlc -o $@ \
 		-cc g++ -g -custom $(OCAMLC_COMPILE_FLAGS) \
-		ppl_ocaml.cma gmp.cma \
-		-cclib $(BUILT_PPL) \
-		$(OCAMLC_LINK_FLAGS) $<
+		-cclib $(BUILT_PPL) $(OCAMLC_LINK_FLAGS) \
+		ppl_ocaml.cma $<
 
 
 nodist_ppl_ocaml_generated_test_SOURCES = ppl_ocaml_generated_test.ml
@@ -110,9 +110,8 @@ ppl_ocaml_generated_test$(EXEEXT): \
 ppl_ocaml_generated_test.cmo ../ppl_ocaml.cma
 	$(OCAMLC_ENV) ocamlc -o $@ \
 		-cc g++ -g -custom $(OCAMLC_COMPILE_FLAGS) \
-		ppl_ocaml.cma gmp.cma \
-		-cclib $(BUILT_PPL) \
-		$(OCAMLC_LINK_FLAGS) $<
+		-cclib $(BUILT_PPL) $(OCAMLC_LINK_FLAGS) \
+		ppl_ocaml.cma $<
 
 CLEANFILES = \
 test1.cmi \
