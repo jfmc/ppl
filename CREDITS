@@ -168,6 +168,14 @@ The following people have given important help to the project:
                         several issues concerning the proper use of
                         the Autotools.
 
+We are also grateful to:
+
+- The GCC Compile Farm Project managed by FSF France provided access
+  to a number of machines that allowed us to test and improve the
+  portability of the library.  Special thanks go to Laurent Guerby
+  for his kind assistance.
+
+
 This work has been partly supported by the following projects and
 organizations:
 
