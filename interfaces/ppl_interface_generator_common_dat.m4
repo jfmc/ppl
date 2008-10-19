@@ -28,7 +28,8 @@ dnl site: http://www.cs.unipr.it/ppl/ .
 
 dnl Classes to be implemented and C++ versions of these classes.
 dnl If generating the documentation, the instantiations are fixed and defined locally.
-m4_ifdef(`m4_documentation_generation', `', `m4_include(ppl_interface_instantiations.m4)')
+m4_ifdef(`m4_configuration_independent', `',
+  `m4_include(ppl_interface_instantiations.m4)')
 
 dnl =====================================================================
 dnl ===== The first set of macros here initialise the class names   =====
@@ -927,11 +928,11 @@ dnl The different kinds of objects that can be obtained from a
 dnl class description.
 dnl ---------------------------------------------------------------------
 
-m4_define(`m4_get_represent_replacement', `constraint')
+m4_define(`m4_get_represent_replacement', `constraint, congruence')
 m4_define(`m4_Polyhedron_get_represent_replacement',
-         `constraint, generator, congruence')
+         `constraint, congruence, generator')
 m4_define(`m4_Grid_get_represent_replacement',
-         `congruence, grid_generator')
+         `constraint, congruence, grid_generator')
 
 dnl ---------------------------------------------------------------------
 dnl pattern == recycle_represent
