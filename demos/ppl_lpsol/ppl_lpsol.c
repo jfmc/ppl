@@ -1217,7 +1217,7 @@ main(int argc, char* argv[]) {
     fatal("cannot install the custom variable output function");
 
 #if defined(NDEBUG)
-#if defined(PPL_GLPK_HAS_GLP_TERM_OUT)
+#if defined(PPL_GLPK_HAS_GLP_TERM_OUT) && defined(GLP_OFF)
   glp_term_out(GLP_OFF);
 #elif defined(PPL_GLPK_HAS_GLP_TERM_HOOK)
   glp_term_hook(glpk_message_interceptor, 0);
