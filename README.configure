@@ -329,7 +329,8 @@ degrees of optimization for the sake of debugging.  These are,
 in decreasing order of optimization, `--enable-optimization=mild'
 (a.k.a. -O1 optimization), `--enable-optimization=no' or, equivalently
 `--disable-optimization', and `--enable-optimization=zero'
-(a.k.a. -O0 optimization).
+(a.k.a. -O0 optimization).  See below for more information on the
+configure option that are useful for debugging purposes.
 
 
 7. Configuring for Debugging
