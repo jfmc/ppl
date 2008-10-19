@@ -1179,10 +1179,10 @@ set_GMP_memory_allocation_functions(void) {
 #endif
 
 #if defined(NDEBUG) && \
-  !(defined(PPL_GLPK_HAS_GLP_TERM_OUT) && defined(GLP_OFF) \
+  !(defined(PPL_GLPK_HAS_GLP_TERM_OUT) && defined(GLP_OFF))     \
   && (defined(PPL_GLPK_HAS_GLP_TERM_HOOK) \
       || defined(PPL_GLPK_HAS__GLP_LIB_PRINT_HOOK) \
-      || defined(PPL_GLPK_HAS_LIB_SET_PRINT_HOOK) )
+      || defined(PPL_GLPK_HAS_LIB_SET_PRINT_HOOK))
 
 static int
 glpk_message_interceptor(void* info, char* msg) {
