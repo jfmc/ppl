@@ -103,7 +103,7 @@ among others, the option
 
 If you use shared libraries, consult the documentation of your dynamic
 linker/loader (`man ld.so' will do on most Un*x-like systems) to see
-how to make sure that GMP's shared library will be found at runtime
+how to make sure that GMP's shared library will be found at run-time
 (setting the environment variable `LD_LIBRARY_PATH' to
 "<GMPprefix>/lib:$LD_LIBRARY_PATH" or
 "<GMPprefix>/lib64:$LD_LIBRARY_PATH" is the most commonly used
@@ -225,7 +225,7 @@ can be
 
   none,            no language interface is enabled;
   all,             all language interfaces are enabled;
-    
+
 or any space-separated list of interface specifiers chosen among
 
   cxx,             the C++ interface;
@@ -336,15 +336,39 @@ configure option that are useful for debugging purposes.
 7. Configuring for Debugging
 ----------------------------
 
-  --enable-debugging      compile with debugging information
-  --enable-profiling      compile for profiling
-  --enable-coverage       compile for test coverage
+By default, the PPL is configured with debugging information enabled.
+In case you are absolutely, definitely, positively sure that you will
+not need to engage in debugging session and wish to save some little
+disk space and compilation time/memory you can configure with the
+`--disable-debugging' option.
 
-  --enable-assertions     check run-time assertions
-  --enable-more-assertions
-                          break the ABI to check even more run-time assertions
+When the results you obtain with the PPL surprise you and make you think
+there might be a bug somewhere, it is a good idea to build a version
+of the library using the `--enable-assertions' configure option.  This
+causes many run-time assertions to be checked and often result in the
+easier identification of bugs in your application or the library itself.
+Even more run-time assertions can be enabled with the
+`--enable-more-assertions': this causes some PPL objects to carry
+additional data fields for the purpose of making extra checks possible.
+Of course, this breaks the ABI of the library, so you should recompile
+the part of your application that depends on the PPL.
 
-  --enable-valgrind-tests run library tests under Valgrind
+If you are disappointed by performance of the library and would like
+to check where computation time is spent, you can use the
+`--enable-profiling' option to generate a version that writes profile
+information suitable for the `gprof' analysis program.
+
+The `--enable-valgrind-tests' causes most of the tests run by `make check'
+under Valgrind's Memcheck tool.  This will show you if the library has
+memory leaks.  At release time, we guarantee that Memcheck does not
+reveal any memory leak for tests using the C++ and the C interfaces.
+We are not able to make a similar guarantee for other interfaces because
+the corresponding language implementations (e.g., OCaml and SWI-Prolog)
+purposedly do not deallocate all memory on exit.
+
+In order to asses the coverage of the PPL test suite, the
+`--enable-coverage' configure option is provided.  This causes instrumented
+code to be used in conjunction with the `gcov' coverage testing tool.
 
 
 8. Using the CVS Sources
