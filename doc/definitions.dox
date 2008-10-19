@@ -140,11 +140,15 @@ depend on one or more syntactic GDs, we first describe the syntactic GDs.
 A <EM>syntactic geometric descriptor</EM> is for defining, modifying
 and inspecting a semantic GD.  There are three kinds of
 <EM>syntactic GDs</EM>: <EM>basic GDs</EM>, <EM>constraint GDs</EM> and
-<EM>generator GDs</EM>. Some of these are <EM>generic</EM> and some
-<EM>specific</EM>; a generic syntactic GD is characterized by having a
-fixed meaning independent of its use while a specific syntactic GD
-has a meaning that is dependent on the semantic GD with which it is
-used.
+<EM>generator GDs</EM>.
+Some of these are <EM>generic</EM> and some <EM>specific</EM>.
+A generic syntactic GD can be used (in the appropriate context)
+with any semantic GD; clearly, different semantic GDs will usually
+provide different levels of support for the different subclasses
+of generic GDs. In contrast, the use of a specific GD may be
+restricted to apply to a given subset of the semantic GDs
+(i.e., some semantic GDs provide no support at all for them).
+
 
 \subsubsection Basic_Geometric_Descriptors Basic Geometric Descriptors
 
@@ -163,18 +167,64 @@ well as support many generic operations on the semantic GDs.
 
 \subsubsection Constraint_Geometric_Descriptors Constraint Geometric Descriptors
 
-The PPL currently supports the following classes of constraint GDs:
+The PPL currently supports the following classes of \e generic constraint GDs:
   - linear constraint;
-  - linear constraint system;
-  - linear congruence;
-  - linear congruence system.
+  - linear congruence.
 
-All these classes are generic syntactic GDs.
-However, a semantic GD may only capture the precise
-meaning of a subset of the constraint GDs and any semantic
-GD operation that cannot capture the semantics of the constraint GD
-precisely will either indicate its unsuitability or apply an upward
-approximation semantics.
+Each linear constraint can be further classified to belong to one or more
+of the following syntactic subclasses:
+  - inconsistent constraints (e.g., \f$0 \geq 2\f$);
+  - tautological constraints (e.g., \f$0 \leq 2\f$);
+  - interval constraints (e.g., \f$x \leq 2\f$);
+  - bounded-difference constraints (e.g., \f$x - y \leq 2\f$);
+  - octagonal constraints (e.g., \f$x + y \leq 2\f$);
+  - linear equality constraints (e.g., \f$x = 2\f$);
+  - non-strict linear inequality constraints (e.g., \f$x - 3y \leq 2\f$);
+  - strict linear inequality constraints (e.g., \f$x - 3y < 2\f$).
+
+Note that the subclasses are not disjoint.
+
+Similarly, each linear congruence can be classified to belong
+to one or more of the following syntactic subclasses:
+  - inconsistent congruences (e.g., \f$0 \equiv_2 1\f$);
+  - tautological congruences (e.g., \f$0 \equiv_2 2\f$);
+  - linear equality, i.e., non-proper congruences
+    (e.g., \f$x + 3y \equiv_0 0\f$);
+  - proper congruences (e.g., \f$x + 3y \equiv_5 0\f$).
+
+The library also supports systems, i.e., finite collections, of either
+linear constraints or linear congruences (but see the note below).
+
+Each semantic GD provides \e optimal support for some of the subclasses
+of generic syntactic GDs listed above: here, the word "optimal" means that
+the considered semantic GD computes the <em>best upward approximation</em>
+of the exact meaning of the linear constraint or congruence.
+When a semantic GD operation is applied to a syntactic GD that is not
+optimally supported, it will either indicate its unsuitability
+(e.g., by throwing an exception) or it will apply an upward approximation
+semantics (possibly not the best one).
+
+For instance, the semantic GD of topologically closed convex polyhedra
+provides optimal support for non-strict linear inequality and equality
+constraints, but it does not provide optimal support for strict inequalities.
+Some of its operations (e.g., \c add_constraint and \c add_congruence)
+will throw an exception if supplied with a non-trivial strict inequality
+constraint or a proper congruence; some other operations
+(e.g., \c refine_with_constraint or \c refine_with_congruence)
+will compute an over-approximation.
+
+Similarly, the semantic GD of rational boxes (i.e., multi-dimensional
+intervals) having integral values as interval boundaries provides optimal
+support for all interval constraints: even tough the interval constraint
+\f$2x \leq 5\f$ cannot be represented exactly, it will be optimally
+approximated by the constraint \f$x \leq 3\f$.
+
+\note
+When providing an upward approximation for a constraint or congruence,
+we consider it in isolation: in particular, the approximation of each
+element of a system of GDs is independent from the other elements;
+also, the approximation is independent from the current value of
+the semantic GD.
 
 
 \subsubsection Generator_Geometric_Descriptors Generator Geometric Descriptors
@@ -215,9 +265,9 @@ descriptors since they are also used in <EM>generic</EM> PPL operations.
   <LI>
     <CODE>OK()</CODE>
 
-    checks that the semantic GD has a valid internal
-    representation. An optional Boolean argument allows a check
-    for emptiness.
+    checks that the semantic GD has a valid internal representation.
+    (Some GDs provide this method with an optional Boolean argument
+    that, when true, requires to also check for non-emptiness.)
   </LI>
   <LI>
     <CODE>space_dimension()</CODE>, <CODE>affine_dimension()</CODE>
@@ -288,10 +338,13 @@ descriptors since they are also used in <EM>generic</EM> PPL operations.
   These constructors obey an <EM>upward approximation semantics</EM>,
   meaning that the constructed semantic GD is guaranteed to contain
   all the points of the source semantic GD, but possibly more.
-  Some of <B>SHOULD WE REPLACE SOME OF WITH ALL HERE?</B> these constructors
-  provide a complexity parameter with which the application can control
-  the complexity/precision trade-off for the construction operation.
-  TO BE COMPLETED
+  Some of these constructors provide a complexity parameter with which
+  the application can control the complexity/precision trade-off
+  for the construction operation: by using the complexity parameter,
+  it is possible to keep the construction operation in the polynomial
+  or the simplex worst-case complexity class, possibly incurring into
+  a further upward approximation if the precise constructor is based
+  on an algorithm having exponential complexity.
 </LI>
 <LI>
   Constructors of a semantic GD from a constraint GD;
@@ -309,23 +362,15 @@ descriptors since they are also used in <EM>generic</EM> PPL operations.
     <CODE>add_congruence()</CODE>, <CODE>add_congruences()</CODE>,
     <CODE>add_recycled_congruences()</CODE>.
 
-    If the argument constraint GD can be completely incorporated into
-    the semantic GD, this is what is done.  Otherwise an "invalid argument"
-    exception is thrown to signal that the operation could not be performed.
-    For example: the <CODE>C_Polyhedron</CODE> class can incorporate any
-    non-strict linear constraint or equality congruence, but cannot
-    incorporate a strict constraint or a proper congruence.
-    A <CODE>BD_Shape\<T\></CODE> class can incorporate bounded-difference
-    non-strict constraints, but not more complex linear constraints.
-    An invariant of these methods is that, if they successfully add a
-    constraint GD, then an enquiry for the same constraint GD with a
-    "relation with" method is guaranteed to yield a "definitely implied"
-    result.
+    These methods assume that the given semantic GD provides optimal
+    support for the argument syntactic GD: if that is not the case,
+    an invalid argument exception is thrown.
 
     For <CODE>add_recycled_constraints()</CODE> and
     <CODE>add_recycled_congruences()</CODE>,
-    the only assumption that can be made after return (successful or
-    exceptional) on the constraint GD is that it can be safely destroyed.
+    the only assumption that can be made on the constraint GD
+    after return (successful or exceptional) is that
+    it can be safely destroyed.
   </LI>
   <LI>
     <CODE>refine_with_constraint()</CODE>,
@@ -333,9 +378,10 @@ descriptors since they are also used in <EM>generic</EM> PPL operations.
     <CODE>refine_with_congruence()</CODE>,
     <CODE>refine_with_congruences()</CODE>
 
-    If the argument constraint GD can be completely incorporated into
-    the semantic GD, this is what is done.  Otherwise the constraint
-    GD is used only to a limited extent to refine the semantic GD;
+    If the argument constraint GD is optimally supported by the
+    semantic GD, the the methods behave the same as the corresponding
+    \c add_* methods listed above.  Otherwise the constraint GD
+    is used only to a limited extent to refine the semantic GD;
     possibly not at all.  Notice that, while repeating an add operation
     is pointless, this is not true for the refine operations.
     For example, in those cases where
