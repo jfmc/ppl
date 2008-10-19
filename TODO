@@ -22,14 +22,22 @@ Enhancements for PPL 0.10
   (these are currently covered by a README file).
 - Check all the Makefile.am's to make sure CLEANFILES, MOSTLYCLEANFILES
   and DISTCLEANFILES are used in a sensible way.
-- `make check' in ppl_lpsol must run also the incremental version
-  of the simplex solver.
 - MIP_Problem: ensure ascii_load() and operator<< are correct.
 - Complete the manual pages for ppl-config, ppl_lpsol and ppl_lcdd.
 - Write a manual page for ppl (3).
 - Clearly explain, in the documentation, how (not) to use
   set_GMP_memory_allocation_functions().  More generally, explain how
   to have memory-guarded computations.
+
+
+Enhancements for PPL 0.10.1 or later versions
+=============================================
+
+- Enhance the support for systems not providing support for the IEEE
+  inexact flag.
+- `make check' in ppl_lpsol must run also the incremental version
+  of the simplex solver.
+
 
 Enhancements for PPL 0.11 or later versions
 ===========================================
