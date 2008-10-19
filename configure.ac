@@ -317,7 +317,7 @@ arch=no
 enableval=standard
 AC_MSG_CHECKING([whether to enable optimizations])
 AC_ARG_ENABLE(optimization,
-  AC_HELP_STRING([--enable-optimization],
+  AC_HELP_STRING([--enable-optimization@<:@=LEVEL@:>@],
     [enable compiler optimizations]))
 case "${enableval}" in
 sspeed)
@@ -387,7 +387,7 @@ fpmath_may_use_387=yes
 fpmath_may_use_sse=yes
 AC_MSG_CHECKING([whether to select specific floating point arithmetics])
 AC_ARG_ENABLE(fpmath,
-  AC_HELP_STRING([--enable-fpmath],
+  AC_HELP_STRING([--enable-fpmath=INSTRUCTION_SET],
     [select floating point arithmetics]))
 case "${enableval}" in
 sse)
@@ -526,7 +526,7 @@ AM_CONDITIONAL(NO_UNDEFINED, test x$no_undefined = xyes)
 enableval=mpz
 AC_MSG_CHECKING([the type of integral values to use as coefficients])
 AC_ARG_ENABLE(coefficients,
-  AC_HELP_STRING([--enable-coefficients],
+  AC_HELP_STRING([--enable-coefficients=TYPE],
     [select the type of the coefficients]))
 case "${enableval}" in
 native-int8)
@@ -787,7 +787,7 @@ default_interfaces="cxx c ciao_prolog gnu_prolog sicstus_prolog swi_prolog xsb_p
 enableval=not_specified
 AC_MSG_CHECKING([which interfaces are enabled])
 AC_ARG_ENABLE(interfaces,
-  AC_HELP_STRING([--enable-interfaces],
+  AC_HELP_STRING([--enable-interfaces=INTERFACES],
     [enable some or all the library interfaces]))
 case x"${enableval}" in
 xyes | x)
@@ -852,8 +852,8 @@ AM_CONDITIONAL(BUILD_C_INTERFACE, test x${c_interface_enabled} = xyes && test x"
 
 # Set the optional Java SDK directory.
 AC_ARG_WITH(java,
-	AC_HELP_STRING([--with-java=dir],
-       [use dir as Java SDK root directory]),
+	AC_HELP_STRING([--with-java=DIR],
+       [use the Java SDK installed in DIR]),
        [JAVA_HOME=$with_java])
 
 case "${host_os}" in
@@ -1088,7 +1088,7 @@ available_instantiations=${ai}
 enableval=not_specified
 AC_MSG_CHECKING([which instantiations are enabled])
 AC_ARG_ENABLE(instantiations,
-  AC_HELP_STRING([--enable-instantiations],
+  AC_HELP_STRING([--enable-instantiations=INSTANTIATIONS],
     [enable instantiations for the non-C++ interfaces]))
 case x"${enableval}" in
 xyes | x)
@@ -1196,7 +1196,7 @@ AM_CONDITIONAL(VALGRIND_TESTS_ENABLED, test x"$enable_valgrind_tests" = xyes)
 enableval=thorough
 AC_MSG_CHECKING([whether `make check' does a thorough or quick check])
 AC_ARG_ENABLE(check,
-  AC_HELP_STRING([--enable-check],
+  AC_HELP_STRING([--enable-check=KIND],
     [select thorough or quick `make check']))
 case "${enableval}" in
 thorough)
