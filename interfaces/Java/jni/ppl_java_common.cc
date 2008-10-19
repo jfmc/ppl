@@ -738,17 +738,21 @@ build_cxx_grid_generator(JNIEnv* env, const jobject& j_grid_generator) {
 void*
 get_ptr(JNIEnv* env, const jobject& ppl_object) {
   jclass ppl_object_class = env->GetObjectClass(ppl_object);
-  jfieldID pointer_field = env->GetFieldID(ppl_object_class, "ptr","J");
-  return unmark(reinterpret_cast<void*>(env->GetLongField(ppl_object,
-							  pointer_field)));
+  jfieldID pointer_field = env->GetFieldID(ppl_object_class, "ptr", "J");
+  jlong pointer_value = env->GetLongField(ppl_object, pointer_field);
+  void* ptr = reinterpret_cast<void*>(pointer_value);
+  assert(reinterpret_cast<jlong>(ptr) == pointer_value);
+  return unmark(ptr);
 }
 
 bool
 is_java_marked(JNIEnv* env, const jobject& ppl_object) {
   jclass ppl_object_class = env->GetObjectClass(ppl_object);
-  jfieldID pointer_field = env->GetFieldID(ppl_object_class, "ptr","J");
-  return marked(reinterpret_cast<void*>(env->GetLongField(ppl_object,
-							  pointer_field)));
+  jfieldID pointer_field = env->GetFieldID(ppl_object_class, "ptr", "J");
+  jlong pointer_value = env->GetLongField(ppl_object, pointer_field);
+  const void* ptr = reinterpret_cast<const void*>(pointer_value);
+  assert(reinterpret_cast<jlong>(ptr) == pointer_value);
+  return marked(ptr);
 }
 
 Grid_Generator_System

@@ -23,6 +23,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_ppl_java_common_inlines_hh
 #define PPL_ppl_java_common_inlines_hh 1
 
+#include <cassert>
+
 namespace Parma_Polyhedra_Library {
 
 namespace Interfaces {
@@ -49,8 +51,10 @@ set_ptr(JNIEnv* env, const jobject& ppl_object,
 	const T* address, bool to_be_marked) {
   jclass ppl_object_class = env->GetObjectClass(ppl_object);
   jfieldID pointer_field = env->GetFieldID(ppl_object_class, "ptr","J");
-  env->SetLongField(ppl_object, pointer_field,
-		    (long long) (to_be_marked ? mark(address) : address));
+  const T* ptr = (to_be_marked ? mark(address) : address);
+  jlong pointer_value = reinterpret_cast<jlong>(ptr);
+  assert(reinterpret_cast<const T*>(pointer_value) == ptr);
+  env->SetLongField(ppl_object, pointer_field, pointer_value);
 }
 
 template <typename R>
