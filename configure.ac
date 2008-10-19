@@ -889,11 +889,34 @@ then
   AC_PROG_JAVA
   AC_PROG_JAR
   AC_PROG_JAVAH
+
+  ac_save_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="$CPPFLAGS $JNIFLAGS"
+  AC_LANG_PUSH(C++)
+  AC_MSG_CHECKING([whether jlong can contain data pointers])
+  AC_RUN_IFELSE([AC_LANG_SOURCE([[#include <jni.h>
+
+    int
+    main() {
+      if (sizeof(jlong) >= sizeof(void*))
+        return 0;
+      else
+        return 1;
+    }
+  ]])],
+  ac_jlong_can_contain_pointers=yes
+  AC_MSG_RESULT(yes),
+  ac_jlong_can_contain_pointers=no
+  AC_MSG_RESULT(no),
+  ac_jlong_can_contain_pointers=no
+  AC_MSG_RESULT(no))
+  AC_LANG_POP(C++)
+  CPPFLAGS="$ac_save_CPPFLAGS"
 fi
 
 # All the Java programs are required to build the Java interface and if
 # the Java interface is enabled.
-AM_CONDITIONAL(BUILD_JAVA_INTERFACE, test "x$JAVA" != xno &&  test "x$ac_cv_javac_supports_enums" != xno && test "x$JAR" != xno && test "x$JAVAH" != xno && test x${java_interface_enabled} = xyes)
+AM_CONDITIONAL(BUILD_JAVA_INTERFACE, test "x$JAVA" != xno &&  test "x$ac_cv_javac_supports_enums" != xno && test "x$JAR" != xno && test "x$JAVAH" != xno && test x${java_interface_enabled} = xyes && test x${ac_jlong_can_contain_pointers} = xyes)
 
 # Checks for OCaml.
 if test x${ocaml_interface_enabled} = xyes
