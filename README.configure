@@ -320,9 +320,17 @@ of making debugging impossible on some machines.  The
 to optimize for size and for speed, but only for speed improvements do
 not increase code size.
 
-  --enable-optimization   enable compiler optimizations
-  --enable-arch[=ARCH]    optimize for architecture ARCH
-  --enable-fpmath         select floating point arithmetics
+Further optimization can be requested at the expense of portability
+of the generated code.  This can be achieved by means of the
+`--enable-arch[=ARCH]' configure option.  If the ARCH argument is omitted
+the configure script attempts to detect the architecture of the system.
+Allowed values for ARCH can be found in the documentation of the `-march'
+option of the used C/C++ compiler.
+
+For floating point computations, the `--enable-fpmath=INSTRUCTION_SET'
+allows to select, on the IA32 and x86_64, the floating point instruction
+set.  The allowed values for INSTRUCTION_SET are `sse', `sse2', `387,
+`sse+387', and `sse2+387'.
 
 On the other hand, there are configure options to request lesser
 degrees of optimization for the sake of debugging.  These are,

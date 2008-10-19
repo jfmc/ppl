@@ -5,9 +5,6 @@ Enhancements for PPL 0.10
 - Improve the documentation of bounded_BHRZ03_extrapolation_assign().
   Presently it does not describe what the method really does.
 
-- Document --enable-interfaces and --enable-instantiations in the
-  README.configure file.
-
 - Write interfaces/OCaml/README.ocaml.
 
 - Provide PPL-specific documentation on the use of `make check'.
