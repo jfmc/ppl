@@ -168,13 +168,17 @@ The following people have given important help to the project:
                         several issues concerning the proper use of
                         the Autotools.
 
-We are also grateful to:
+We are also grateful for the following contributions:
 
 - The GCC Compile Farm Project [19] managed by FSF France provided access
   to a number of machines that allowed us to test and improve the
   portability of the library.  Special thanks go to Laurent Guerby
   for his kind assistance.
 
+- The test cluster hosted by ESIEE [20] allowed us to complete the porting
+  of the PPL to the IA64 and PA-RISC architectures.  Many thanks to
+  Thibaut Varène [21] and the PA-RISC Linux community [22] for their kind
+  assistance.
 
 This work has been partly supported by the following projects and
 organizations:
@@ -183,26 +187,26 @@ organizations:
      ``Pure and Applied Mathematics'';
 
   2. MURST project ``Automatic Program Certification by Abstract
-     Interpretation'' [20];
+     Interpretation'' [23];
 
   3. MURST project ``Abstract Interpretation, Type Systems and
      Control-Flow Analysis''.
 
   4. MURST project ``Automatic Aggregate- and Number-Reasoning for
      Computing: from Decision Algorithms to Constraint Programming
-     with Multisets, Sets, and Maps'' [21].
+     with Multisets, Sets, and Maps'' [24].
 
   5. MURST project ``Constraint Based Verification of Reactive
-     Systems'' [22].
+     Systems'' [25].
 
   6. MURST project ``AIDA - Abstract Interpretation: Design and
-     Applications'' [23].
+     Applications'' [26].
 
   7. Royal Society Joint project 2004/R1-EU (UK-Italy)
      ``Automatic Detection of Unstable Numerical Computations''.
 
   8. EPSRC (UK) project EP/C520726/1
-     ``Numerical Domains for Software Analysis'' [24].
+     ``Numerical Domains for Software Analysis'' [27].
 
 --------
 
@@ -225,8 +229,11 @@ organizations:
 [17] http://www.cs.unipr.it/China/
 [18] http://wissrech.ins.uni-bonn.de/people/wildenhues.html
 [19] http://gcc.gnu.org/wiki/CompileFarm
-[20] http://theory.sci.univr.it/p40/
-[21] http://www.cs.unipr.it/Projects/COFIN01
-[22] http://www.disi.unige.it/person/DelzannoG/cover/
-[23] http://www.cs.unipr.it/Projects/AIDA/
-[24] http://www.comp.leeds.ac.uk/hill/linda/
+[20] http://www.esiee.fr/
+[21] http://www.parisc-linux.org/~varenet/
+[22] http://www.parisc-linux.org/
+[23] http://theory.sci.univr.it/p40/
+[24] http://www.cs.unipr.it/Projects/COFIN01
+[25] http://www.disi.unige.it/person/DelzannoG/cover/
+[26] http://www.cs.unipr.it/Projects/AIDA/
+[27] http://www.comp.leeds.ac.uk/hill/linda/
