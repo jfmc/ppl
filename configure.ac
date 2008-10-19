@@ -1232,22 +1232,46 @@ if test x$have_glpk = xyes
 then
   ac_save_LIBS="$LIBS"
   LIBS="$LIBS -lglpk"
-  AC_CHECK_FUNC(lib_set_print_hook,
+  AC_CHECK_DECL(lib_set_print_hook,
                 AC_DEFINE(GLPK_HAS_LIB_SET_PRINT_HOOK,
                           1,
-                          [Defined if GLPK provides lib_set_print_hook().]))
+                          [Defined if GLPK provides lib_set_print_hook().]),
+                ,
+                [
+#if defined(HAVE_GLPK_GLPK_H)
+#include <glpk/glpk.h>
+#elif defined(HAVE_GLPK_H)
+#include <glpk.h>
+#endif
+                ])
   AC_CHECK_FUNC(_glp_lib_print_hook,
                 AC_DEFINE(GLPK_HAS__GLP_LIB_PRINT_HOOK,
                           1,
                           [Defined if GLPK provides _glp_lib_print_hook().]))
-  AC_CHECK_FUNC(glp_term_out,
+  AC_CHECK_DECL(glp_term_out,
                 AC_DEFINE(GLPK_HAS_GLP_TERM_OUT,
                           1,
-                          [Defined if GLPK provides glp_term_out().]))
-  AC_CHECK_FUNC(glp_term_hook,
+                          [Defined if GLPK provides glp_term_out().]),
+                ,
+                [
+#if defined(HAVE_GLPK_GLPK_H)
+#include <glpk/glpk.h>
+#elif defined(HAVE_GLPK_H)
+#include <glpk.h>
+#endif
+                ])
+  AC_CHECK_DECL(glp_term_hook,
                 AC_DEFINE(GLPK_HAS_GLP_TERM_HOOK,
                           1,
-                          [Defined if GLPK provides glp_term_hook().]))
+                          [Defined if GLPK provides glp_term_hook().]),
+                ,
+                [
+#if defined(HAVE_GLPK_GLPK_H)
+#include <glpk/glpk.h>
+#elif defined(HAVE_GLPK_H)
+#include <glpk.h>
+#endif
+                ])
   LIBS="$ac_save_LIBS"
 fi
 AC_LANG_POP(C)
