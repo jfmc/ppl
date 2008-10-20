@@ -253,7 +253,7 @@ EXPECTED_PCHK = $(srcdir)/../tests/expected_pchk_$(COEFFICIENT_MNEMONIC)
 
 endif !ASSERTIONS_ENABLED
 
-check-local: pl_check_test clpq_test clpq2_test ppl_prolog_generated_test
+check-local: ppl_prolog_generated_test
 
 pl_check_test: ciao_pl_check$(EXEEXT) .libs/libppl_ciao.so $(EXPECTED_PCHK)
 	$(LIBTOOL) --mode=execute \
