@@ -1152,6 +1152,7 @@ m4_define(`ppl_@CLASS@_@UB_EXACT@_code',
   }
   CATCH_ALL;
 }
+
 ')
 
 m4_define(`m4_ub_exact_for_polyhedron_domains',
@@ -1168,7 +1169,7 @@ m4_define(`m4_ub_exact_for_polyhedron_domains',
      const NNC_Polyhedron* rhs = term_to_handle<NNC_Polyhedron >(t_rhs, where);
      PPL_CHECK(lhs);
      PPL_CHECK(rhs);
-     return lhs->@UB_EXACT@(*rhs);
+     return lhs->@UB_EXACT@(*rhs) ? PROLOG_SUCCESS : PROLOG_FAILURE;
    }
 ')
 
@@ -1177,7 +1178,7 @@ m4_define(`m4_ub_exact_for_non_polyhedron_domains',
     const @CPP_CLASS@* rhs = term_to_handle<@CPP_CLASS@ >(t_rhs, where);
     PPL_CHECK(lhs);
     PPL_CHECK(rhs);
-    return lhs->@UB_EXACT@(*rhs);
+    return lhs->@UB_EXACT@(*rhs) ? PROLOG_SUCCESS : PROLOG_FAILURE;
 ')
 
 m4_define(`ppl_@CLASS@_@AFFIMAGE@_code',
