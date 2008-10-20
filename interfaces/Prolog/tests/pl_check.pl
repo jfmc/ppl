@@ -2062,6 +2062,7 @@ minimize_with_point(T, CS, LE, N, D, Min, Point) :-
 
 time_out :-
   %% FIXME!
+  %% Ciao does not throw a timeout exception.
   prolog_system('Ciao'), !.
 time_out :-
   time_out(c), time_out(nnc).
@@ -2811,15 +2812,15 @@ exception_cplusplus1(N, V) :-
    N1 is N - 1,
    exception_cplusplus1(N1, V).
 
-exception_cplusplus(1, [A,B,C]) :-
+exception_cplusplus(1, [A, B, C]) :-
   must_catch(ppl_new_C_Polyhedron_from_generators([point(A + B + C, 0)], _),
-             ppl_invalid_argument).
+             cpp_error).
 
-exception_cplusplus(2, [A,B,_]) :-
+exception_cplusplus(2, [A, B, _]) :-
   clean_ppl_new_Polyhedron_from_generators(c,
                [point(A + B), ray(A), ray(B)], P),
   must_catch(ppl_Polyhedron_affine_image(P, A, A + B + 1, 0),
-             ppl_invalid_argument),
+             cpp_error),
   !,
   ppl_delete_Polyhedron(P).
 
@@ -2828,28 +2829,28 @@ exception_cplusplus(3, [A, B, _]) :-
   clean_ppl_new_Polyhedron_from_generators(c,
                [point(A + B)], P2),
   must_catch(ppl_Polyhedron_poly_hull_assign_and_minimize(P1, P2),
-             ppl_invalid_argument),
+             cpp_error),
   !,
   ppl_delete_Polyhedron(P1),
   ppl_delete_Polyhedron(P2).
 
-exception_cplusplus(4, [A,B,C]) :-
+exception_cplusplus(4, [A, B, C]) :-
    must_catch(ppl_new_C_Polyhedron_from_generators([line(A + B + C)], _),
-             ppl_invalid_argument).
+             cpp_error).
 
 exception_cplusplus(5, [A,B,C]) :-
   clean_ppl_new_Polyhedron_from_generators(c, [point(B + 2*C)], P),
-  ppl_Polyhedron_remove_space_dimensions(P,[C]),
-  must_catch(ppl_Polyhedron_remove_space_dimensions(P,[A,C]),
-             ppl_invalid_argument),
+  ppl_Polyhedron_remove_space_dimensions(P, [C]),
+  must_catch(ppl_Polyhedron_remove_space_dimensions(P, [A, C]),
+             cpp_error),
   !,
   ppl_delete_Polyhedron(P).
 
-exception_cplusplus(6, [A,B,_]) :-
+exception_cplusplus(6, [A, B, _]) :-
   clean_ppl_new_Polyhedron_from_constraints(c,
                [A >= 1], P),
   must_catch(ppl_Polyhedron_affine_image(P, B, A + 1, 1),
-             ppl_invalid_argument),
+             cpp_error),
   !,
   ppl_delete_Polyhedron(P).
 
@@ -2857,15 +2858,15 @@ exception_cplusplus(7, [A, B, C]) :-
   clean_ppl_new_Polyhedron_from_constraints(c,
                [A >= 1, B>= 1], P),
   must_catch(ppl_Polyhedron_affine_image(P, B, A + C + 1, 1),
-             ppl_invalid_argument),
+             cpp_error),
   !,
   ppl_delete_Polyhedron(P).
 
-exception_cplusplus(8, [A,B,_]) :-
+exception_cplusplus(8, [A, B, _]) :-
   clean_ppl_new_Polyhedron_from_constraints(c,
                [A >= B], P),
   must_catch(ppl_Polyhedron_affine_preimage(P, A, A + B + 1, 0),
-             ppl_invalid_argument),
+             cpp_error),
   !,
   ppl_delete_Polyhedron(P).
 
@@ -2873,7 +2874,7 @@ exception_cplusplus(9, [A, B, C]) :-
   clean_ppl_new_Polyhedron_from_generators(c,
                [point(0), ray(A + B), ray(A)], P),
   must_catch(ppl_Polyhedron_affine_preimage(P, C, A + 1, 1),
-             ppl_invalid_argument),
+             cpp_error),
   !,
   ppl_delete_Polyhedron(P).
 
@@ -2882,22 +2883,32 @@ exception_cplusplus(10, [A, B, C]) :-
   clean_ppl_new_Polyhedron_from_generators(c,
                [point(0), point(A), line(A + B)], P),
   must_catch(ppl_Polyhedron_affine_preimage(P, B, A + C, 1),
-             ppl_invalid_argument),
+             cpp_error),
   !,
   ppl_delete_Polyhedron(P).
 
 % must_catch(+Call) calls Call using catch and checks exception.
-% If exception it succeeds and fails if there is no exception caught.
+% If expected exception is caught, it succeeds and fails if not.
 
-must_catch(Call, ET) :-
-   ( ( catch(Call, M0, check_exception(M0) ), M0 =.. [ET|[]] )
-   -> fail ; true).
-
-% check_exception(+Exception) checks and prints the exception message;
-% and then fails.
-
-check_exception(Exception):-
-         format_exception_message(Exception), fail.
+must_catch(Call, cpp_error) :-
+   !,
+   catch( Call, Message, format_exception_message( cpp_error( Message) ) ),
+   ( ( \+ var(Message), name(Message, [80,80,76,58,58|_] ) ) ->
+       true
+   ;
+       fail
+   ).
+must_catch(Call, Expected) :-
+   catch(Call, Message, format_exception_message(Message) ),
+   (\+ var(Message), Message = ppl_overflow_error(_) ->
+       true
+   ;
+       ( \+ var(Message), Message =.. [Expected|_] ->
+           true
+       ;
+           fail
+       )
+   ).
 
 %%%%%%%%%%%% predicate for making list of ppl variables %%%%%%
 
@@ -3132,7 +3143,7 @@ format_exception_message(
              ppl_invalid_argument( found(F), expected(E), where(W))
                         ) :-
   !,
-  display_message(['PPL Prolog Interface Exception: ', nl, '   ',
+  display_message(['PPL Prolog Interface Exception:', nl, '   ',
                    F, 'is an invalid argument for', W, nl, '   ',
                   F, 'should be', E, '.']).
 
@@ -3140,13 +3151,27 @@ format_exception_message(
              ppl_representation_error(I, where(W))
                         ) :-
   !,
-  display_message(['PPL Prolog Interface Exception: ', nl, '   ',
+  display_message(['PPL Prolog Interface Exception:', nl, '   ',
                    'This Prolog system has bounded integers', nl, '   ',
                    I, 'is not in the allowed range of integers', nl, '   ',
                    'in call to', W, '.']).
 
+format_exception_message(out_of_memory) :-
+  !,
+  display_message(['PPL Prolog Interface Exception: ', nl, '   ',
+                   'out of memory']).
+
+format_exception_message(ppl_overflow_error(Type)) :-
+  !,
+  display_message(['PPL Prolog Interface Exception: ', nl, '   ',
+                   'ppl_overflow_error: ', Type]).
+
+format_exception_message(cpp_error(Error)) :-
+  !,
+  display_message(['PPL C++ Interface Exception:', nl, '   ', Error]).
+
 format_exception_message(Error) :-
-  display_message([Error]).
+  display_message(['Unknown exception: ', Error]), fail.
 
 %%%%%%%%%%%% predicates for output messages %%%%%%%%%%%%%%%%%%
 
