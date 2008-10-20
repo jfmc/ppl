@@ -2037,6 +2037,8 @@ ppl_MIP_Problem_get_control_parameter(Prolog_term_ref t_mip,
     case MIP_Problem::PRICING_TEXTBOOK:
       a = a_pricing_textbook;
       break;
+    default:
+      throw unknown_interface_error("ppl_MIP_Problem_get_control_parameter()");
     }
     Prolog_put_atom(t, a);
     if (Prolog_unify(t_cp_value, t))
