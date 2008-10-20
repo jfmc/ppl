@@ -142,7 +142,7 @@ Note that there are two forms of these predicates
 differentiated in the names by the
 words "add" or "refine with";
 see Section \extref{Generic_Operations_on_Semantic_Geometric_Descriptors, Generic Operations on Semantic Geometric Descriptors} in the
-main \extref{preamble, PPL user manual}
+main \extref{preamble, PPL User Manual}
 for the differences in the semantics and therefore, the expected behavior,
 between these forms.
 ')
@@ -157,7 +157,7 @@ such as taking the topological closure (which for the domain of
 m4_current_topology m4_current_ppl_one_object is the identity transformation),
 unconstraining a specified dimension
 as explained in the
-main \extref{preamble, PPL user manual} in Section
+main \extref{preamble, PPL User Manual} in Section
 \extref{Cylindrification, Cylindrification Operator}
 and several different image and preimage affine transfer relations;
 for details of the latter see Sections
@@ -174,7 +174,7 @@ These predicates include the binary operators which will assign to the
 m4_current_ppl_one_object referred to by the first argument
 its combination with the m4_current_ppl_one_object referred to by the second argument
 as described in the
-main \extref{preamble, PPL user manual} in Sections
+main \extref{preamble, PPL User Manual} in Sections
 \extref{Intersection_and_Convex_Polyhedral_Hull, Intersection and Convex Polyhedral Hull}
 and
 \extref{Convex_Polyhedral_Difference, Convex Polyhedral Difference};
@@ -189,7 +189,7 @@ m4_define(`m4_subcategory_widen', `dnl
 In addition to the above binary operators, there are also a number
 of widening, extrapolation and narrowing operators
 as described in the
-main \extref{preamble, PPL user manual} in Sections
+main \extref{preamble, PPL User Manual} in Sections
 \extref{Widening_Operators, Widening Operators},
 \extref{Widening_with_Tokens, Widening with Tokens} and
 \extref{Extrapolation_Operators, Extrapolation Operators}.
@@ -215,7 +215,7 @@ m4_define(`m4_subcategory_concat', `dnl
 <H3>Predicate for concatenation</H3>
 For more information on this operation, see Section
 \extref{Concatenating_Polyhedra, Concatenating Polyhedra},
-of the main \extref{preamble, PPL user manual}.
+of the main \extref{preamble, PPL User Manual}.
 ')
 
 dnl -----------------------------------------------------------------
@@ -228,7 +228,7 @@ of the m4_current_ppl_one_object referred to in the first argument.
 These predicates enable the modification of the vector space
 of the m4_current_ppl_one_object referred to in the first argument.
 Detailed descriptions of these can be found in the
-main \extref{preamble, PPL user manual} in Sections
+main \extref{preamble, PPL User Manual} in Sections
 \extref{Adding_New_Dimensions_to_the_Vector_Space, Adding New Dimensions to the Vector Space},
 \extref{Removing_Dimensions_from_the_Vector_Space, Removing Dimensions from the Vector Space},
 \extref{Mapping_the_Dimensions_of_the_Vector_Space, Mapping the Dimensions of the Vector Space},
@@ -249,7 +249,7 @@ m4_define(`m4_category_pps', `dnl
   of base objects (its disjuncts), all having the same space dimension.
   For more information on this construct,
   see Section \extref{The_Powerset_Domain, The Powerset Domain}
-  in the main \extref{preamble, PPL user manual}.
+  in the main \extref{preamble, PPL User Manual}.
 
   Besides the predicates that are available in all semantic geometric
   descriptions (whose documentation is not repeated here),
@@ -285,7 +285,7 @@ geometric comparisons,
 adding and removing disjuncts
 and widening and extrapolation.
 Detailed descriptions of these can be found in the
-main \extref{preamble, PPL user manual} in Sections
+main \extref{preamble, PPL User Manual} in Sections
 \extref{Geometric_Comparisons, Geometric Comparisons},
 \extref{Adding_a_Disjunct, Adding a Disjunct},
 \extref{Certificate_Based_Widenings, Certificate-Based Widenings},
@@ -293,7 +293,7 @@ main \extref{preamble, PPL user manual} in Sections
 ',
 `adding and removing disjuncts.
 Detailed descriptions can be found in the
-main \extref{preamble, PPL user manual} in Section
+main \extref{preamble, PPL User Manual} in Section
 \extref{Adding_a_Disjunct, Adding a Disjunct}.
 ')`'dnl
 ')
@@ -639,10 +639,10 @@ m4_define(`ppl_@CLASS@_widening_assign_widen_doc',
 <P><CODE>ppl_@CLASS@_widening_assign(+Handle_1, +Handle_2)</CODE><BR>
 <EM>Same as predicate `'dnl
 m4_ifelse(`'dnl
-m4_current_ppl_domain, Polyhedron, <CODE>ppl_@CLASS@_H79_widening_assign</CODE>/4,
-m4_current_ppl_domain, Grid, <CODE>ppl_@CLASS@_congruence_widening_assign</CODE>/4,
-m4_current_ppl_group, box, <CODE>ppl_@CLASS@_CC76_widening_assign</CODE>/4,
-m4_current_ppl_group, wr_shape, <CODE>ppl_@CLASS@_H79_widening_assign</CODE>/4)</EM>
+m4_current_ppl_domain, Polyhedron, <CODE>ppl_@CLASS@_H79_widening_assign</CODE>/2,
+m4_current_ppl_domain, Grid, <CODE>ppl_@CLASS@_congruence_widening_assign</CODE>/2,
+m4_current_ppl_group, box, <CODE>ppl_@CLASS@_CC76_widening_assign</CODE>/2,
+m4_current_ppl_group, wr_shape, <CODE>ppl_@CLASS@_H79_widening_assign</CODE>/2)</EM>
 ')
 
 m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_widen_doc',
@@ -989,6 +989,6 @@ m4_pushdef(`m4_Pointset_Powerset_comparison_alt_replacement',
    \c Handle_2 @ALT_COMPARISON@
    the pointset powerset referenced by \c Handle_1;
    see Section \extref{Geometric_Comparisons@COMMA@ Geometric Comparisons}
-  in the main \extref{preamble@COMMA@ PPL user manual}.</EM>
+  in the main \extref{preamble@COMMA@ PPL User Manual}.</EM>
 ')
 ')
