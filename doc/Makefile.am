@@ -1245,11 +1245,15 @@ SED_CONFIGURED_PROLOG_OPTION = \
   -e 's/<PPL_SED_USEPACKAGE_OCAMLDOC>//'
 
 SED_CONFIGURED_PROLOG_INPUT_USER = \
-$(SED_PROLOG_INPUT_USER)
-# FIXME: add appropriate generated files.
+../interfaces/Prolog/Prolog_configured_interface.dox \
+$(srcdir)/gpl.dox $(srcdir)/fdl.dox
 
 SED_CONFIGURED_PROLOG_INPUT_DEVREF = \
-$(SED_PROLOG_INPUT_DEVREF)
+../interfaces/Prolog/Prolog_configured_interface.dox \
+$(srcdir)/../interfaces/Prolog/ppl_prolog_common.defs.hh \
+$(srcdir)/../interfaces/Prolog/ppl_prolog_common.inlines.hh \
+$(srcdir)/../interfaces/Prolog/ppl_prolog_common.cc \
+$(srcdir)/gpl.dox $(srcdir)/fdl.dox
 # FIXME: add appropriate generated files.
 
 user-configured-prolog-interface.latex-dir: \
