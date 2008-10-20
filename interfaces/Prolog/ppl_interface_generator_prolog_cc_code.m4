@@ -1162,7 +1162,7 @@ m4_define(`m4_ub_exact_for_polyhedron_domains',
      const C_Polyhedron* rhs = term_to_handle<C_Polyhedron >(t_rhs, where);
      PPL_CHECK(lhs);
      PPL_CHECK(rhs);
-     return lhs->@UB_EXACT@(*rhs);
+     return lhs->@UB_EXACT@(*rhs) ? PROLOG_SUCCESS : PROLOG_FAILURE;
    }
    else {
      NNC_Polyhedron* lhs = term_to_handle<NNC_Polyhedron >(t_lhs, where);
