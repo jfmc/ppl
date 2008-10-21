@@ -45,14 +45,39 @@ AC_LANG_PUSH(C++)
 AC_MSG_CHECKING([for the GMP library version 4.1.3 or above])
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <gmpxx.h>
+#include <string>
+#include <sstream>
+#include <iostream>
 
 #if __GNU_MP_VERSION < 4 || (__GNU_MP_VERSION == 4 && __GNU_MP_VERSION_MINOR < 1) || (__GNU_MP_VERSION == 4 && __GNU_MP_VERSION_MINOR == 1 && __GNU_MP_VERSION_PATCHLEVEL < 3)
 #error "GMP version 4.1.3 or higher is required"
 #endif
 
-int main() {
-  mpz_class n("3141592653589793238462643383279502884");
-  return 0;
+int
+main() {
+  std::string header_version;
+  {
+    std::ostringstream s(header_version);
+    s << __GNU_MP_VERSION << "." << __GNU_MP_VERSION_MINOR;
+    if (__GNU_MP_VERSION_PATCHLEVEL != 0)
+      s << "." << __GNU_MP_VERSION_PATCHLEVEL;
+    header_version = s.str();
+  }
+
+  std::string library_version = gmp_version;
+
+  if (header_version != library_version) {
+    std::cerr
+      << "GMP header version (gmp.h) and library version (ligmp.*) mismatch:"
+      << std::endl
+      << "header gives " << header_version << ";" << std::endl
+      << "library gives " << library_version << "." << std::endl;
+    return 1;
+  }
+  else {
+    mpz_class n("3141592653589793238462643383279502884");
+    return 0;
+  }
 }
 ]])],
   AC_MSG_RESULT(yes)
