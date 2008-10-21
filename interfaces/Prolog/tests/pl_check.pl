@@ -2074,7 +2074,7 @@ add_constraints_and_get_minimized_constraints(P, CS) :-
 
 % Find the constraints for a hypercube for a given dimension.
 build_hypercube_constraints(0, [], []).
-build_hypercube_constraints(Dim, [V|Vars], [V >= 1, V =< 2|CS]) :-
+build_hypercube_constraints(Dim, [V|Vars], [V >= 0, V =< 1|CS]) :-
     Dim1 is Dim - 1,
     build_hypercube_constraints(Dim1, Vars, CS).
 
@@ -2101,7 +2101,7 @@ time_out(T) :-
   ppl_set_timeout_exception_atom(pl_time_out),
   \+  ppl_timeout_exception_atom(pl_x),
   ppl_timeout_exception_atom(pl_time_out),
-  ppl_set_timeout(4),
+  ppl_set_timeout(10),
   compute_timeout_hypercube(T, 1, Dim, CS),
   !,
   N1 is 1,
@@ -2748,7 +2748,7 @@ exception_sys_prolog(1, [A,B,_]) :-
           clean_ppl_new_Polyhedron_from_constraints(c,
                [Max_Int * A - B =< 0, 3 >= A], P),
           must_catch(ppl_Polyhedron_get_generators(P, _GS),
-                ppl_overflow_error),
+                ppl_sys_prolog_error),
           !,
           ppl_delete_Polyhedron(P)
         ),
@@ -2762,7 +2762,7 @@ exception_sys_prolog(1, [A,B,_]) :-
           clean_ppl_new_Polyhedron_from_constraints(c,
                [Min_Int * A - B =< 0, 2 >= A], P),
           must_catch(ppl_Polyhedron_get_generators(P, _GS),
-                ppl_overflow_error),
+                ppl_sys_prolog_error),
           !,
           ppl_delete_Polyhedron(P)
         ),
@@ -2777,7 +2777,7 @@ exception_sys_prolog(3, [A,B,_]) :-
                [point(Max_Int * A + B)], P),
           ppl_Polyhedron_affine_image(P, A, A + 1, 1),
           must_catch(ppl_Polyhedron_get_generators(P, _GS),
-                ppl_overflow_error),
+                ppl_sys_prolog_error),
           !,
           ppl_delete_Polyhedron(P)
         ),
@@ -2785,20 +2785,20 @@ exception_sys_prolog(3, [A,B,_]) :-
         check_exception_term(ppl_overflow_error(Cause))
        ).
 
-exception_sys_prolog(4, [A,B,_]) :-
-  pl_check_prolog_flag(min_integer, Min_Int),
-  catch((
+exception_sys_prolog(4, [A,_,_]) :-
+   pl_check_prolog_flag(min_integer, Min_Int),
+   catch((
           clean_ppl_new_Polyhedron_from_generators(c,
-               [point(Min_Int * A + B)], P),
+                                                   [point(Min_Int*A)], P),
           ppl_Polyhedron_affine_image(P, A, A - 1, 1),
           must_catch(ppl_Polyhedron_get_generators(P, _GS),
-                ppl_overflow_error),
+                     ppl_sys_prolog_error),
           !,
           ppl_delete_Polyhedron(P)
-        ),
-        ppl_overflow_error(Cause),
-        check_exception_term(ppl_overflow_error(Cause))
-       ).
+         ),
+         ppl_overflow_error(Cause),
+         check_exception_term(ppl_overflow_error(Cause))
+        ).
 
 % exception_cplusplus(+N, +V) checks exceptions thrown by the C++
 % interface for the PPL.
@@ -2892,8 +2892,17 @@ exception_cplusplus(10, [A, B, C]) :-
 
 must_catch(Call, cpp_error) :-
    !,
-   catch( Call, Message, format_exception_message( cpp_error( Message) ) ),
+   catch( Call, Message, format_exception_message( cpp_error(Message) ) ),
    ( ( \+ var(Message), name(Message, [80,80,76,58,58|_] ) ) ->
+       true
+   ;
+       fail
+   ).
+must_catch(Call, ppl_sys_prolog_error) :-
+   !,
+   catch( Call, Message, format_exception_message(Message) ),
+   ( ( \+ var(Message),
+         (Message =.. [ppl_representation_error|_] )) ->
        true
    ;
        fail
