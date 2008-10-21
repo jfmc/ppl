@@ -37,6 +37,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <gprolog.h>
 #endif
 
+#if defined(__GPROLOG_VERSION__) && __GPROLOG_VERSION__ >= 10301
+#define PPL_GPROLOG_H_IS_CLEAN
+#endif
+
+#ifndef PPL_GPROLOG_H_IS_CLEAN
 // <gprolog.h> pollutes the namespace: try to clean up
 // (see http://www.cs.unipr.it/pipermail/ppl-devel/2004-April/004270.html).
 #ifdef B
@@ -60,16 +65,24 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifdef STAMP
 #undef STAMP
 #endif
+#endif
 
 #include <cassert>
 #include <cstdlib>
 
 typedef PlTerm Prolog_term_ref;
 typedef int Prolog_atom;
+#ifndef PPL_GPROLOG_H_IS_CLEAN
 typedef Bool Prolog_foreign_return_type;
 
 const Prolog_foreign_return_type PROLOG_SUCCESS = TRUE;
 const Prolog_foreign_return_type PROLOG_FAILURE = FALSE;
+#else
+typedef PlBool Prolog_foreign_return_type;
+
+const Prolog_foreign_return_type PROLOG_SUCCESS = PL_TRUE;
+const Prolog_foreign_return_type PROLOG_FAILURE = PL_FALSE;
+#endif
 
 namespace {
 
@@ -437,7 +450,11 @@ Prolog_get_cons(Prolog_term_ref c, Prolog_term_ref& h, Prolog_term_ref& t) {
 */
 inline int
 Prolog_unify(Prolog_term_ref t, Prolog_term_ref u) {
+#ifndef PPL_GPROLOG_H_IS_CLEAN
   return Unify(t, u) != FALSE;
+#else
+  return Pl_Unif(t, u) != PL_FALSE;
+#endif
 }
 
 #endif // !defined(PCFLI_gprolog_cfli_hh)
