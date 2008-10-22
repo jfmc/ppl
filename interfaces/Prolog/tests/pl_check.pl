@@ -2568,14 +2568,24 @@ exception_prolog1(N, V) :-
    exception_prolog1(N1, V).
 
 %% TEST: Prolog_unsigned_out_of_range
+%% This test accepts any one of three exceptions:
+%% ppl_invalid_argument: a 32 bit system is expected to throw this Prolog
+%%                       exception;
+%% out_of_memory:        with unbounded integers and a 64 bit system the number
+%%                       1 << 34 does not throw an exception on the Prolog
+%%                       side, but the large number of dimensions
+%%                       throws a bad_alloc exception in C++;
+%% ppl_overflow_error:   with bounded integers, when the number is too large,
+%%                       an overflow exception is thrown with a 64 bit system.
+%%
 exception_prolog(1, _) :-
     pl_check_prolog_flag(bounded, Y),
    (Y == true ->
      true
     ;
-     (I = 21474836470,
+     (I is 1 << 34,
      must_catch(ppl_new_C_Polyhedron_from_generators([point('$VAR'(I))], _),
-                out_of_memory)
+                prolog_exception_error)
       )
    ).
 
@@ -2890,6 +2900,18 @@ exception_cplusplus(10, [A, B, C]) :-
 % must_catch(+Call) calls Call using catch and checks exception.
 % If expected exception is caught, it succeeds and fails if not.
 
+must_catch(Call, prolog_exception_error) :-
+   !,
+   catch( Call, Message, format_exception_message( Message ) ),
+   ( \+var(Message) ->
+       ((Message =.. [ppl_invalid_argument|_] ; Message = out_of_memory) ->
+           true
+       ;
+           check_exception_term(Message)
+       )
+   ;
+       fail
+   ).
 must_catch(Call, cpp_error) :-
    !,
    catch( Call, Message, format_exception_message( cpp_error(Message) ) ),
