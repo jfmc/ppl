@@ -1695,6 +1695,47 @@
               and demonstrate our approach on examples."
 }
 
+@TechReport{Soffia08TR,
+  Author = "S. Soffia",
+  Title = "Definition and Implementation of a Points-To Analysis
+           for C-like Languages",
+  Institution = "Dipartimento di Matematica, Universit\`a di Parma, Italy",
+  Number = "{\tt arXiv:cs.PL/0810.0753}",
+  Year = 2008,
+  Note = "Available from \url{http://arxiv.org/}",
+  Abstract = "The points-to problem is the problem of determining the
+              possible run-time targets of pointer variables and is
+              usually considered part of the more general aliasing
+              problem, which consists in establishing whether and when
+              different expressions can refer to the same memory address.
+              Aliasing information is essential to every tool that needs
+              to reason about the semantics of programs.  However, due to
+              well-known undecidability results, for all interesting
+              languages that admit aliasing, the exact solution of
+              nontrivial aliasing problems is not generally computable.
+              This work focuses on approximated solutions to this problem
+              by presenting a store-based, flow-sensitive points-to
+              analysis, for applications in the field of automated software
+              verification.  In contrast to software testing procedures,
+              which heuristically check the program against a finite set
+              of executions, the methods considered in this work are static
+              analyses, where the computed results are valid for all the
+              possible executions of the analyzed program.  We present a
+              simplified programming language and its execution model;
+              then an approximated execution model is developed using the
+              ideas of abstract interpretation theory.  Finally, the
+              soundness of the approximation is formally proved.  The aim
+              of developing a realistic points-to analysis is pursued by
+              presenting some extensions to the initial simplified model
+              and discussing the correctness of their formulation.
+              This work contains original contributions to the issue of
+              points-to analysis, as it provides a formulation of a filter
+              operation on the points-to abstract domain and a formal proof
+              of the soundness of the defined abstract operations:
+              these, as far as we now, are lacking from the previous
+              literature."
+}
+
 @Inproceedings{Starynkevitch07,
   Author = "B. Starynkevitch",
   Title = "Multi-Stage Construction of a Global Static Analyzer",
