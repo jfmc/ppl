@@ -2567,16 +2567,16 @@ exception_prolog1(N, V) :-
    N1 is N - 1,
    exception_prolog1(N1, V).
 
-%% TEST: Prolog_unsigned_out_of_range
+%% TEST: Prolog_unsigned_out_of_range.
 %% This test accepts any one of three exceptions:
-%% ppl_invalid_argument: a 32 bit system is expected to throw this Prolog
-%%                       exception;
-%% out_of_memory:        with unbounded integers and a 64 bit system the number
-%%                       1 << 34 does not throw an exception on the Prolog
-%%                       side, but the large number of dimensions
-%%                       throws a bad_alloc exception in C++;
+%% ppl_invalid_argument: with a 32 bit system, the number 1 << 34 is expected
+%%                       to throw this Prolog exception;
+%% out_of_memory:        with a 64 bit system, the number 1 << 34 does not
+%%                       throw an exception on the Prolog side, but, with
+%%                       unbounded integers, the large number of dimensions
+%%                       will throw a bad_alloc exception in C++;
 %% ppl_overflow_error:   with bounded integers, when the number is too large,
-%%                       an overflow exception is thrown with a 64 bit system.
+%%                       an overflow exception may be thrown.
 %%
 exception_prolog(1, _) :-
     pl_check_prolog_flag(bounded, Y),
