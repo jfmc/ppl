@@ -68,16 +68,25 @@ main() {
 
   if (header_version != library_version) {
     std::cerr
-      << "GMP header version (gmp.h) and library version (ligmp.*) mismatch:"
-      << std::endl
-      << "header gives " << header_version << ";" << std::endl
+      << "GMP header (gmp.h) and library (ligmp.*) version mismatch:\n"
+      << "header gives " << header_version << ";\n"
       << "library gives " << library_version << "." << std::endl;
     return 1;
   }
-  else {
-    mpz_class n("3141592653589793238462643383279502884");
-    return 0;
+
+  if (__GMP_BITS_PER_MP_LIMB != mp_bits_per_limb) {
+    std::cerr
+      << "GMP header (gmp.h) and library (ligmp.*) bits-per-limb mismatch:\n"
+      << "header gives " << __GMP_BITS_PER_MP_LIMB << ";\n"
+      << "library gives " << mp_bits_per_limb << ".\n"
+      << "This probably means you are on a bi-arch system and\n"
+      << "you are compiling with the wrong header or linking with\n"
+      << "the wrong library." << std::endl;
+    return 1;
   }
+
+  mpz_class n("3141592653589793238462643383279502884");
+  return 0;
 }
 ]])],
   AC_MSG_RESULT(yes)
