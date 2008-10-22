@@ -45,6 +45,7 @@ AC_LANG_PUSH(C++)
 AC_MSG_CHECKING([for the GMP library version 4.1.3 or above])
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <gmpxx.h>
+#include <climits>
 #include <string>
 #include <sstream>
 #include <iostream>
@@ -74,7 +75,8 @@ main() {
     return 1;
   }
 
-  if (__GMP_BITS_PER_MP_LIMB != mp_bits_per_limb) {
+  if (sizeof(mp_limb_t)*CHAR_BIT != GMP_LIMB_BITS
+      || GMP_LIMB_BITS != mp_bits_per_limb) {
     std::cerr
       << "GMP header (gmp.h) and library (ligmp.*) bits-per-limb mismatch:\n"
       << "header gives " << __GMP_BITS_PER_MP_LIMB << ";\n"
