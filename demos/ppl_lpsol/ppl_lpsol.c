@@ -97,43 +97,38 @@ static struct option long_options[] = {
 };
 #endif
 
-static const char* usage_string0 =
-"Usage: %s [OPTION]... [FILE]...\n\n"
-"  -c, --check[=THRESHOLD] checks the obtained results;  optima are checked\n"
-"                          with a tolerance of THRESHOLD (default %.10g)\n"
-"  -i, --incremental       solves the problem incrementally\n"
-"  -m, --min               minimizes the objective function\n"
-"  -M, --max               maximizes the objective function (default)\n"
-"  -n, --no-optimization   checks for satisfiability only\n"
-"  -r, --no-mip            consider integer variables as real variables\n";
-static const char* usage_string1 =
-"  -CSECS, --max-cpu=SECS  limits CPU usage to SECS seconds\n"
-"  -RMB, --max-memory=MB   limits memory usage to MB megabytes\n"
-"  -h, --help              prints this help text to stdout\n"
-"  -oPATH, --output=PATH   appends output to PATH\n"
-"  -e, --enumerate         use the (expensive!) enumeration method\n";
-static const char* usage_string2 =
-"  -pM, --pricing=M        use pricing method M for simplex (assumes -s);\n"
-"                          M is an int from 0 to 2, default 0:\n"
-"                          0 --> steepest-edge using floating point\n"
-"                          1 --> steepest-edge using exact arithmetic\n"
-"                          2 --> textbook\n"
-"  -s, --simplex           use the simplex method\n"
-"  -t, --timings           prints timings to stderr\n";
-static const char* usage_string3 =
-"  -v, --verbosity=LEVEL   sets verbosity level (from 0 to 4, default 3):\n"
-"                          0 --> quiet: no output except for errors and\n"
-"                                explicitly required notifications\n"
-"                          1 --> solver state only\n"
-"                          2 --> state + optimal value\n"
-"                          3 --> state + optimal value + optimum location\n"
-"                          4 --> lots of output\n"
-"  -V, --version           prints version information to stdout\n"
-#ifndef PPL_HAVE_GETOPT_H
-"\n"
-"NOTE: this version does not support long options.\n"
-#endif
-;
+#define USAGE_STRING0                                                   \
+  "Usage: %s [OPTION]... [FILE]...\n\n"                                 \
+  "  -c, --check[=THRESHOLD] checks the obtained results;  optima are checked\n" \
+  "                          with a tolerance of THRESHOLD (default %.10g)\n" \
+  "  -i, --incremental       solves the problem incrementally\n"        \
+  "  -m, --min               minimizes the objective function\n"        \
+  "  -M, --max               maximizes the objective function (default)\n" \
+  "  -n, --no-optimization   checks for satisfiability only\n"
+#define USAGE_STRING1                                                   \
+  "  -r, --no-mip            consider integer variables as real variables\n" \
+  "  -CSECS, --max-cpu=SECS  limits CPU usage to SECS seconds\n"        \
+  "  -RMB, --max-memory=MB   limits memory usage to MB megabytes\n"     \
+  "  -h, --help              prints this help text to stdout\n"         \
+  "  -oPATH, --output=PATH   appends output to PATH\n"                  \
+  "  -e, --enumerate         use the (expensive!) enumeration method\n"
+#define USAGE_STRING2                                                   \
+  "  -pM, --pricing=M        use pricing method M for simplex (assumes -s);\n" \
+  "                          M is an int from 0 to 2, default 0:\n"     \
+  "                          0 --> steepest-edge using floating point\n" \
+  "                          1 --> steepest-edge using exact arithmetic\n" \
+  "                          2 --> textbook\n"                          \
+  "  -s, --simplex           use the simplex method\n"                  \
+  "  -t, --timings           prints timings to stderr\n"
+#define USAGE_STRING3                                                   \
+  "  -v, --verbosity=LEVEL   sets verbosity level (from 0 to 4, default 3):\n" \
+  "                          0 --> quiet: no output except for errors and\n" \
+  "                                explicitly required notifications\n" \
+  "                          1 --> solver state only\n"                 \
+  "                          2 --> state + optimal value\n"             \
+  "                          3 --> state + optimal value + optimum location\n" \
+  "                          4 --> lots of output\n"                    \
+  "  -V, --version           prints version information to stdout\n"
 
 #define OPTION_LETTERS "bc::eimnMC:R:ho:p:rstVv:"
 
@@ -267,10 +262,13 @@ process_options(int argc, char* argv[]) {
 
     case '?':
     case 'h':
-      fprintf(stdout, usage_string0, argv[0], default_check_threshold);
-      fprintf(stdout, usage_string1);
-      fprintf(stdout, usage_string2);
-      fprintf(stdout, usage_string3);
+      fprintf(stdout, USAGE_STRING0, argv[0], default_check_threshold);
+      fputs(USAGE_STRING1, stdout);
+      fputs(USAGE_STRING2, stdout);
+      fputs(USAGE_STRING3, stdout);
+#ifndef PPL_HAVE_GETOPT_H
+      fputs("\nNOTE: this version does not support long options.\n");
+#endif
       my_exit(0);
       break;
 
@@ -367,7 +365,7 @@ process_options(int argc, char* argv[]) {
     if (verbosity >= 4)
       fprintf(stderr,
 	      "Parma Polyhedra Library version:\n%s\n\n"
-	      "Parma Polyhedra Library banner:\n%s",
+	      "Parma Polyhedra Library banner:\n%s\n",
 	      get_ppl_version(),
 	      get_ppl_banner());
     else
