@@ -175,10 +175,10 @@ We are also grateful for the following contributions:
   portability of the library.  Special thanks go to Laurent Guerby
   for his kind assistance.
 
-- The test cluster hosted by ESIEE [20] allowed us to complete the porting
-  of the PPL to the IA64 and PA-RISC architectures.  Many thanks to
-  Thibaut Varène [21] and the PA-RISC Linux community [22] for their kind
-  assistance.
+- The test cluster provided by Hewlett Packard and  hosted by ESIEE [20]
+  allowed us to complete the porting of the PPL to the IA64 and PA-RISC
+  architectures.  Many thanks to Thibaut Varène [21] and the PA-RISC
+  Linux community [22] for their kind assistance.
 
 This work has been partly supported by the following projects and
 organizations:
