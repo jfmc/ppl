@@ -65,37 +65,17 @@ The main features of the library are the following:
 - it is rather efficient: and we hope to make it even more so;
 - it is thoroughly documented:
   perhaps not literate programming but close enough;
-- it has interfaces to other programming languages: including C and a number of
-  Prolog systems;
+- it has interfaces to other programming languages: including C, Java, OCaml
+  and a number of Prolog systems;
 - it is free software: distributed under the terms of the
   GNU General Public License.
 
-In addition to the basic domains, we also provide generic support for
-constructing new domains from pre-existing domains.
-The following domains and domain constructors are provided by the PPL:
-- the domain of topologically closed, rational convex polyhedra;
-- the domain of rational convex polyhedra that are not necessarily closed;
-- the domain of topologically closed, rational bounded difference shapes;
-- the powerset construction;
-- the powerset construction, instantiated for convex polyhedra.
-
-In the following sections we describe these domains and domain
-constructors together with their representations and operations
-that are available to the PPL user.
+In the following section we describe all the domains available to the PPL user.
+More detailed descriptions of these domains andthe operations provided
+will be found in subsequent sections.
 
 In the final section of this chapter (Section \ref use_of_library),
 we provide some additional advice on the use of the library.
-
-\section Kinds_of_Geometric_Descriptors Kinds of Geometric Descriptors
-
-The PPL supports several kinds of <EM>geometric descriptor</EM> (GD
-for short).  The top-level components provided by the PPL are called
-<EM>semantic GDs</EM> and denote a subset of \f$ \Rset^n \f$, while
-the lower-level components, which are called <EM>syntactic GDs</EM>,
-provide a means for describing a semantic GD and its properties in
-terms that are completely independent from the semantic GD's internal
-representation.
-
 
 \subsection Semantic_Geometric_Descriptors Semantic Geometric Descriptors
 
@@ -215,7 +195,7 @@ will compute an over-approximation.
 
 Similarly, the semantic GD of rational boxes (i.e., multi-dimensional
 intervals) having integral values as interval boundaries provides optimal
-support for all interval constraints: even tough the interval constraint
+support for all interval constraints: even though the interval constraint
 \f$2x \leq 5\f$ cannot be represented exactly, it will be optimally
 approximated by the constraint \f$x \leq 3\f$.
 
@@ -1502,45 +1482,6 @@ The polyhedron \f$\cP\f$ <EM>subsumes</EM> the generator \f$g\f$ if
 adding \f$g\f$ to any generator system representing \f$\cP\f$
 does not change \f$\cP\f$.
 
-\anchor intervals
-\subsection Intervals_and_Boxes Intervals and Boxes
-
-An <EM>interval</EM> in \f$\Rset\f$ is a pair of <EM>bounds</EM>,
-called <EM>lower</EM> and <EM>upper</EM>.
-Each bound can be either (1) <EM>closed and bounded</EM>,
-(2) <EM>open and bounded</EM>, or
-(3) <EM>open and unbounded</EM>.
-If the bound is <EM>bounded</EM>, then it has a value in \f$\Rset\f$.
-An \f$n\f$-dimensional <EM>box</EM> \f$\cB\f$ in \f$\Rset^n\f$
-is a sequence of \f$n\f$ intervals in \f$\Rset\f$.
-
-The polyhedron \f$\cP\f$ <EM>represents a box \f$\cB\f$</EM> in \f$\Rset^n\f$
-if \f$\cP\f$
-is described by a constraint system in \f$\Rset^n\f$ that
-consists of one constraint for each bounded bound (lower and upper)
-in an interval in \f$\cB\f$:
-Letting \f$\vect{e}_i = (0, \ldots, 1, \ldots, 0)^\transpose\f$
-be the vector in \f$\Rset^n\f$ with 1 in the \f$i\f$'th position
-and zeroes in every other position;
-if the lower bound of the \f$i\f$'th interval in \f$\cB\f$
-is bounded, the corresponding constraint is defined as
-\f$\langle \vect{e}_i, \vect{x} \rangle \relsym b\f$,
-where \f$b\f$ is the value of the bound and
-\f$\mathord{\relsym}\f$ is \f$\mathord{\geq}\f$ if it is a closed bound and
-\f$\mathord{>}\f$ if it is an open bound.
-Similarly,
-if the upper bound of the \f$i\f$'th interval in \f$\cB\f$ is bounded,
-the corresponding constraint is defined as
-\f$\langle\vect{e}_i,\vect{x}\rangle \relsym b\f$,
-where \f$b\f$ is the value of the bound and
-\f$\mathord{\relsym}\f$ is \f$\mathord{\leq}\f$ if it is a closed bound and
-\f$\mathord{<}\f$ if it is an open bound.
-
-If every bound in the intervals
-defining a box \f$\cB\f$ is either closed and bounded
-or open and unbounded, then
-\f$\cB\f$ represents a closed polyhedron.
-
 \subsection Widening_Operators Widening Operators
 
 The library provides two widening operators for the domain of polyhedra.
@@ -1620,6 +1561,7 @@ Besides the two widening operators, the library also implements several
 their use along an upper iteration sequence does not ensure convergence
 in a finite number of steps.
 
+\anchor limited_extrapolation
 In particular, for each of the two widenings there is a corresponding
 <EM>limited</EM> extrapolation operator, which can be used to implement
 the <EM>widening ``up to''</EM> technique as described in
@@ -1632,11 +1574,76 @@ can occur in this additional parameter. For instance, in \ref HPR97 "[HPR97]"
 this set is fixed once and for all before starting the computation of
 the upward iteration sequence.
 
+\anchor bounded_extrapolation
 The <EM>bounded</EM> extrapolation operators further enhance each one
-of the limited extrapolation operators described above, by ensuring
-that their results cannot be worse than the smallest
-\ref intervals "boxes" enclosing the two argument polyhedra.
+of the limited extrapolation operators described above by
+intersecting the result of the limited extrapolation operation
+with the box obtained as a result of applying the
+\ref CC76_interval_widening "CC76-widening"
+to the smallest \ref Intervals_and_Boxes "boxes"
+enclosing the two argument polyhedra.
 
+\section Intervals_and_Boxes Intervals and Boxes
+
+The PPL provides support for computations on non-relational domains,
+called boxes, and also the interval domains used for their representation.
+
+\anchor intervals
+An <EM>interval</EM> in \f$\Rset\f$ is a pair of <EM>bounds</EM>,
+called <EM>lower</EM> and <EM>upper</EM>.
+Each bound can be either (1) <EM>closed and bounded</EM>,
+(2) <EM>open and bounded</EM>, or
+(3) <EM>open and unbounded</EM>.
+If the bound is <EM>bounded</EM>, then it has a value in \f$\Rset\f$.
+For each vector \f$\vect{a} \in \Rset^n\f$ and scalar \f$b \in \Rset\f$,
+and for each relation symbol \f$\mathord{\relsym} \in \{ =, \geq, >\}\f$,
+the constraint \f$\langle \vect{a}, \vect{x} \rangle \relsym b\f$
+is said to be a <EM>interval constraint</EM> if there exist an index
+\f$i \in \{ 0, \ldots, n-1 \}\f$ such that, for all
+\f$k \in \{ 0, \ldots, i-1, i+1, \ldots, n-1 \}\f$, \f$a_k = 0\f$.
+Thus each interval constraint that is not a tautology or
+inconsistent has the form
+\f$x = r\f$, \f$x \leq r\f$, \f$x \geq r\f$,
+\f$x < r\f$ or \f$x > r\f$, with \f$r \in \Rset\f$.
+
+Letting  \f$\cB\f$ be a sequence of
+\f$n\f$ intervals and \f$\vect{e}_i = (0, \ldots, 1, \ldots, 0)^\transpose\f$
+be the vector in \f$\Rset^n\f$ with 1 in the \f$i\f$'th position
+and zeroes in every other position;
+if the lower bound of the \f$i\f$'th interval in \f$\cB\f$
+is bounded, the corresponding interval constraint is defined as
+\f$\langle \vect{e}_i, \vect{x} \rangle \relsym b\f$,
+where \f$b\f$ is the value of the bound and
+\f$\mathord{\relsym}\f$ is \f$\mathord{\geq}\f$ if it is a closed bound and
+\f$\mathord{>}\f$ if it is an open bound.
+Similarly,
+if the upper bound of the \f$i\f$'th interval in \f$\cB\f$ is bounded,
+the corresponding interval constraint is defined as
+\f$\langle\vect{e}_i,\vect{x}\rangle \relsym b\f$,
+where \f$b\f$ is the value of the bound and
+\f$\mathord{\relsym}\f$ is \f$\mathord{\leq}\f$ if it is a closed bound and
+\f$\mathord{<}\f$ if it is an open bound.
+
+A convex polyhedron \f$\cP \in \CPset_n\f$ is said to be a
+<EM>box</EM> if and only if
+either \f$\cP\f$ is the set of solutions to a finite set
+of interval constraints or \f$n = 0\f$ and \f$\cP = \emptyset\f$.
+Therefore any \f$n\f$-dimensional <EM>box</EM> \f$\cP\f$ in \f$\Rset^n\f$
+where \f$n > 0\f$ can be represented by a sequence of \f$n\f$ intervals
+\f$\cB\f$ in \f$\Rset\f$ and  \f$\cP\f$ is a closed polyhedron
+if every bound in the intervals in \f$\cB\f$
+is either closed and bounded or open and unbounded.
+
+\anchor CC76_interval_widening
+\subsection Widening_and_Extrapolation_Operators_on_Boxes Widening and Extrapolation Operators on Boxes
+
+The library provides a widening operator for boxes.
+Given two sequences of intervals defining two \f$n\f$-dimensional boxes, the
+<EM>CC76-widening</EM> applies, for each corresponding interval and bound, the
+interval constraint widening defined in \ref CC76 "[CC76]".
+For extra precision, this incorporates the widening with thresholds
+as defined in \ref BCCFMMMR02 "[BCCFMMMR02]" with
+\f$\{-2, -1, 0, 1, 2\}\f$ as the set of default threshold values.
 
 \section Weakly_Relational_Shapes Weakly-Relational Shapes
 
@@ -3149,6 +3156,23 @@ R.&nbsp;Bagnara, E.&nbsp;Ricci, E.&nbsp;Zaffanella, and P.&nbsp;M. Hill.
 
 </DD>
 
+
+<DT>[BRZH02c]</DT>
+<DD>
+\anchor BCCFMMMR02
+B.&nbsp;Blanchet, P.&nbsp;Cousot, R.&nbsp;Cousot, J.&nbsp;Feret,
+  L.&nbsp;Mauborgne, A.&nbsp;Min&eacute;, D.&nbsp;Monniaux
+  and X.&nbsp;Rival.
+ Design and Implementation of a Special-Purpose Static Program
+  Analyzer for Safety-Critical Real-Time Embedded Software.
+  In T.&nbsp;&nbsp;Mogensen, D.&nbsp;A.&nbsp;Schmidt
+     and I.&nbsp;Hal&nbsp;Sudborough, editors,
+  <em>The Essence of Computation, Complexity, Analysis,
+   Transformation.  Essays Dedicated to Neil D. Jones [on
+   occasion of his 60th birthday]</em>, volume 2566 of <em>Lecture
+  Notes in Computer Science</em>, pages 85-108, 2002.
+
+</DD>
 
 <DT>[CC76]</DT>
 <DD>

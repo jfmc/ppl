@@ -1668,9 +1668,10 @@ public:
   void BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp = 0);
 
   /*! \brief
-    Improves the result of the \ref BHRZ03_widening "BHRZ03-widening"
-    computation by also enforcing those constraints in \p cs that are
-    satisfied by all the points of \p *this.
+    Assigns to \p *this the result of computing the
+    \ref limited_extrapolation "limited extrapolation"
+    between \p *this and \p y using the \ref BHRZ03_widening
+    "BHRZ03-widening" operator.
 
     \param y
     A polyhedron that <EM>must</EM> be contained in \p *this;
@@ -1692,11 +1693,10 @@ public:
 					   unsigned* tp = 0);
 
   /*! \brief
-    Improves the result of the \ref BHRZ03_widening "BHRZ03-widening"
-    computation by also enforcing those constraints in \p cs that are
-    satisfied by all the points of \p *this, plus all the constraints
-    of the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$, with
-    \f$r \in \Qset\f$, that are satisfied by all the points of \p *this.
+    Assigns to \p *this the result of computing the
+    \ref bounded_extrapolation "bounded extrapolation"
+    between \p *this and \p y using the \ref BHRZ03_widening
+    "BHRZ03-widening" operator.
 
     \param y
     A polyhedron that <EM>must</EM> be contained in \p *this;
@@ -1719,7 +1719,7 @@ public:
 
   /*! \brief
     Assigns to \p *this the result of computing the
-    \ref H79_widening "H79-widening" between \p *this and \p y.
+    \ref H79_widening "H79_widening" between \p *this and \p y.
 
     \param y
     A polyhedron that <EM>must</EM> be contained in \p *this;
@@ -1739,9 +1739,10 @@ public:
   void widening_assign(const Polyhedron& y, unsigned* tp = 0);
 
   /*! \brief
-    Improves the result of the \ref H79_widening "H79-widening"
-    computation by also enforcing those constraints in \p cs that are
-    satisfied by all the points of \p *this.
+    Assigns to \p *this the result of computing the
+    \ref limited_extrapolation "limited extrapolation"
+    between \p *this and \p y using the \ref H79_widening
+    "H79-widening" operator.
 
     \param y
     A polyhedron that <EM>must</EM> be contained in \p *this;
@@ -1763,11 +1764,10 @@ public:
 					unsigned* tp = 0);
 
   /*! \brief
-    Improves the result of the \ref H79_widening "H79-widening"
-    computation by also enforcing those constraints in \p cs that are
-    satisfied by all the points of \p *this, plus all the constraints
-    of the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$, with
-    \f$r \in \Qset\f$, that are satisfied by all the points of \p *this.
+    Assigns to \p *this the result of computing the
+    \ref bounded_extrapolation "bounded extrapolation"
+    between \p *this and \p y using the \ref H79_widening
+    "H79-widening" operator.
 
     \param y
     A polyhedron that <EM>must</EM> be contained in \p *this;
