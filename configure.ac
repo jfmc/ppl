@@ -775,6 +775,44 @@ fi
 # Enabled or not, the Watchdog subdirectory must be configured.
 AC_CONFIG_SUBDIRS(Watchdog)
 
+enableval=yes
+AC_MSG_CHECKING([whether to build the ppl_lcdd program])
+AC_ARG_ENABLE(ppl_lcdd,
+  AC_HELP_STRING([--enable-ppl_lcdd],
+    [build the ppl_lcdd program]))
+case "${enableval}" in
+yes)
+  AC_MSG_RESULT(yes)
+  ;;
+no)
+  AC_MSG_RESULT(no)
+  ;;
+*)
+  AC_MSG_ERROR([bad value ${enableval} for --enable-ppl_lcdd, needs yes or no])
+  ;;
+esac
+build_ppl_lcdd=$enableval
+AM_CONDITIONAL(BUILD_PPL_LCDD, test x"$build_ppl_lcdd" = xyes)
+
+enableval=yes
+AC_MSG_CHECKING([whether to build the ppl_lpsol program])
+AC_ARG_ENABLE(ppl_lpsol,
+  AC_HELP_STRING([--enable-ppl_lpsol],
+    [build the ppl_lpsol program]))
+case "${enableval}" in
+yes)
+  AC_MSG_RESULT(yes)
+  ;;
+no)
+  AC_MSG_RESULT(no)
+  ;;
+*)
+  AC_MSG_ERROR([bad value ${enableval} for --enable-ppl_lpsol, needs yes or no])
+  ;;
+esac
+build_ppl_lpsol=$enableval
+AM_CONDITIONAL(BUILD_PPL_LPSOL, test x"$build_ppl_lpsol" = xyes)
+
 # This is the list of available interfaces: lowercase and blank-separated.
 available_interfaces="cxx c ciao_prolog gnu_prolog sicstus_prolog swi_prolog xsb_prolog yap_prolog ocaml java"
 

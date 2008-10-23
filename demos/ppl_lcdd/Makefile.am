@@ -35,6 +35,9 @@ $(top_builddir)/src/libppl.la \
 $(top_builddir)/utils/libppl_utils.a \
 @extra_libraries@
 
+dist_man_MANS = \
+ppl_lcdd.1
+
 polka_lcdd.o: $(srcdir)/ppl_lcdd.cc $(top_builddir)/utils/libppl_utils.a
 	$(CXXCOMPILE) -c -o $@ -DUSE_POLKA $(srcdir)/ppl_lcdd.cc
 

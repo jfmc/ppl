@@ -61,6 +61,9 @@ ppl_lpsol_LDADD = \
 $(top_builddir)/interfaces/C/libppl_c.la \
 @extra_libraries@
 
+dist_man_MANS = \
+ppl_lpsol.1
+
 COEFFICIENT_MNEMONIC = @coefficient_mnemonic@
 
 if ASSERTIONS_ENABLED
