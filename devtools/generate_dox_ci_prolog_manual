@@ -1,6 +1,6 @@
 #!/bin/sh
-m4 --prefix-builtin -I../interfaces -I../interfaces/Prolog \
+m4 --prefix-builtin -I../../interfaces -I../../interfaces/Prolog \
         --define=m4_configuration_independent \
-        ../interfaces/Prolog/ppl_interface_generator_prolog_dox.m4 \
+        ../../interfaces/Prolog/ppl_interface_generator_prolog_dox.m4 \
                 > Prolog_interface_blob
 mv -f Prolog_interface_blob Prolog_interface.dox
