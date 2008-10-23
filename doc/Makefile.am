@@ -682,6 +682,13 @@ install-html:
 	  dir=`basename $$ball .tar.gz`; \
 	  $(mkinstalldirs) $(DESTDIR)$(htmldir)/$$dir; \
 	  gunzip -c `if test -f $$ball; then echo .; else echo $(srcdir); fi`/$$ball | tar xf - ; \
+	  if test -d $$dir/ocamldoc; then \
+	    $(mkinstalldirs) $(DESTDIR)$(htmldir)/$$dir/ocamldoc; \
+	    for file in $$dir/ocamldoc/*; do \
+	      $(INSTALL_DATA) $$file \
+	        $(DESTDIR)$(htmldir)/$$dir/ocamldoc/`basename $$file`; \
+	    done; \
+	  fi; \
 	  for file in $$dir/*; do \
 	    $(INSTALL_DATA) $$file $(DESTDIR)$(htmldir)/$$dir/`basename $$file`; \
 	  done; \
