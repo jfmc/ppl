@@ -73,7 +73,7 @@ USER_CORE_STUFF = \
 $(DOX_FILES) \
 user.tex \
 ppl.sty \
-$(top_builddir)/src/ppl.hh
+../src/ppl_header.hh ../src/ppl_include_files.hh
 
 DEVREF_CORE_STUFF = \
 $(DOX_FILES) \
@@ -108,7 +108,8 @@ ppl-devref-c-interface-@VERSION@-html
 COMMON_C_INTERFACE_STUFF = \
 $(DOX_LICENCE_FILES) \
 ppl.sty \
-$(top_builddir)/interfaces/C/ppl_c_version.h \
+../configure.ac \
+../interfaces/C/ppl_c_version.h.in \
 ../interfaces/C/ppl_c_header.h \
 ../interfaces/C/C_interface.dox
 
@@ -449,68 +450,6 @@ $(DEVREF_CONFIGURED_JAVA_INTERFACE_HTML_DIR)
 
 HTML_DIRS = $(USER_HTML_DIRS) $(DEVREF_HTML_DIRS)
 
-
-ALL_USER_MANUALS = \
-$(USER_CORE_HTML_MANUAL) \
-$(USER_C_INTERFACE_HTML_MANUAL) \
-$(USER_PROLOG_INTERFACE_HTML_MANUAL) \
-$(USER_OCAML_INTERFACE_HTML_MANUAL) \
-$(USER_JAVA_INTERFACE_HTML_MANUAL) \
-$(USER_CORE_PDF_MANUAL) \
-$(USER_C_INTERFACE_PDF_MANUAL) \
-$(USER_PROLOG_INTERFACE_PDF_MANUAL) \
-$(USER_OCAML_INTERFACE_PDF_MANUAL) \
-$(USER_JAVA_INTERFACE_PDF_MANUAL) \
-$(USER_CORE_PS_MANUAL) \
-$(USER_C_INTERFACE_PS_MANUAL) \
-$(USER_PROLOG_INTERFACE_PS_MANUAL) \
-$(USER_OCAML_INTERFACE_PS_MANUAL) \
-$(USER_JAVA_INTERFACE_PS_MANUAL) \
-$(USER_CONFIGURED_C_INTERFACE_HTML_MANUAL) \
-$(USER_CONFIGURED_PROLOG_INTERFACE_HTML_MANUAL) \
-$(USER_CONFIGURED_OCAML_INTERFACE_HTML_MANUAL) \
-$(USER_CONFIGURED_JAVA_INTERFACE_HTML_MANUAL) \
-$(USER_CONFIGURED_C_INTERFACE_PDF_MANUAL) \
-$(USER_CONFIGURED_PROLOG_INTERFACE_PDF_MANUAL) \
-$(USER_CONFIGURED_OCAML_INTERFACE_PDF_MANUAL) \
-$(USER_CONFIGURED_JAVA_INTERFACE_PDF_MANUAL) \
-$(USER_CONFIGURED_C_INTERFACE_PS_MANUAL) \
-$(USER_CONFIGURED_PROLOG_INTERFACE_PS_MANUAL) \
-$(USER_CONFIGURED_OCAML_INTERFACE_PS_MANUAL) \
-$(USER_CONFIGURED_JAVA_INTERFACE_PS_MANUAL)
-
-
-ALL_DEVREF_MANUALS = \
-$(DEVREF_CORE_HTML_MANUAL) \
-$(DEVREF_C_INTERFACE_HTML_MANUAL) \
-$(DEVREF_PROLOG_INTERFACE_HTML_MANUAL) \
-$(DEVREF_OCAML_INTERFACE_HTML_MANUAL) \
-$(DEVREF_JAVA_INTERFACE_HTML_MANUAL) \
-$(DEVREF_CORE_PDF_MANUAL) \
-$(DEVREF_C_INTERFACE_PDF_MANUAL) \
-$(DEVREF_PROLOG_INTERFACE_PDF_MANUAL) \
-$(DEVREF_OCAML_INTERFACE_PDF_MANUAL) \
-$(DEVREF_JAVA_INTERFACE_PDF_MANUAL) \
-$(DEVREF_CORE_PS_MANUAL) \
-$(DEVREF_C_INTERFACE_PS_MANUAL) \
-$(DEVREF_PROLOG_INTERFACE_PS_MANUAL) \
-$(DEVREF_OCAML_INTERFACE_PS_MANUAL) \
-$(DEVREF_JAVA_INTERFACE_PS_MANUAL) \
-$(DEVREF_CONFIGURED_C_INTERFACE_HTML_MANUAL) \
-$(DEVREF_CONFIGURED_PROLOG_INTERFACE_HTML_MANUAL) \
-$(DEVREF_CONFIGURED_OCAML_INTERFACE_HTML_MANUAL) \
-$(DEVREF_CONFIGURED_JAVA_INTERFACE_HTML_MANUAL) \
-$(DEVREF_CONFIGURED_C_INTERFACE_PDF_MANUAL) \
-$(DEVREF_CONFIGURED_PROLOG_INTERFACE_PDF_MANUAL) \
-$(DEVREF_CONFIGURED_OCAML_INTERFACE_PDF_MANUAL) \
-$(DEVREF_CONFIGURED_JAVA_INTERFACE_PDF_MANUAL) \
-$(DEVREF_CONFIGURED_C_INTERFACE_PS_MANUAL) \
-$(DEVREF_CONFIGURED_PROLOG_INTERFACE_PS_MANUAL) \
-$(DEVREF_CONFIGURED_OCAML_INTERFACE_PS_MANUAL) \
-$(DEVREF_CONFIGURED_JAVA_INTERFACE_PS_MANUAL)
-
-ALL_MANUALS = $(ALL_USER_MANUALS) $(ALL_DEVREF_MANUALS)
-
 ##### Distributed documentation #####
 
 DIST_HTML_DOCS = \
@@ -545,11 +484,46 @@ $(DIST_PDF_DOCS) \
 $(DIST_PS_DOCS) \
 $(DIST_TXT_DOCS)
 
-ALL_TARGETS = \
-$(HTML_DIRS) \
-$(PDF_LICENSES) \
-$(PS_LICENSES) \
-$(ALL_MANUALS)
+NONDIST_MANUALS = \
+$(USER_CONFIGURED_C_INTERFACE_HTML_MANUAL) \
+$(USER_CONFIGURED_PROLOG_INTERFACE_HTML_MANUAL) \
+$(USER_CONFIGURED_OCAML_INTERFACE_HTML_MANUAL) \
+$(USER_CONFIGURED_JAVA_INTERFACE_HTML_MANUAL) \
+$(USER_CONFIGURED_C_INTERFACE_PDF_MANUAL) \
+$(USER_CONFIGURED_PROLOG_INTERFACE_PDF_MANUAL) \
+$(USER_CONFIGURED_OCAML_INTERFACE_PDF_MANUAL) \
+$(USER_CONFIGURED_JAVA_INTERFACE_PDF_MANUAL) \
+$(USER_CONFIGURED_C_INTERFACE_PS_MANUAL) \
+$(USER_CONFIGURED_PROLOG_INTERFACE_PS_MANUAL) \
+$(USER_CONFIGURED_OCAML_INTERFACE_PS_MANUAL) \
+$(USER_CONFIGURED_JAVA_INTERFACE_PS_MANUAL) \
+$(DEVREF_CORE_HTML_MANUAL) \
+$(DEVREF_C_INTERFACE_HTML_MANUAL) \
+$(DEVREF_PROLOG_INTERFACE_HTML_MANUAL) \
+$(DEVREF_OCAML_INTERFACE_HTML_MANUAL) \
+$(DEVREF_JAVA_INTERFACE_HTML_MANUAL) \
+$(DEVREF_CORE_PDF_MANUAL) \
+$(DEVREF_C_INTERFACE_PDF_MANUAL) \
+$(DEVREF_PROLOG_INTERFACE_PDF_MANUAL) \
+$(DEVREF_OCAML_INTERFACE_PDF_MANUAL) \
+$(DEVREF_JAVA_INTERFACE_PDF_MANUAL) \
+$(DEVREF_CORE_PS_MANUAL) \
+$(DEVREF_C_INTERFACE_PS_MANUAL) \
+$(DEVREF_PROLOG_INTERFACE_PS_MANUAL) \
+$(DEVREF_OCAML_INTERFACE_PS_MANUAL) \
+$(DEVREF_JAVA_INTERFACE_PS_MANUAL) \
+$(DEVREF_CONFIGURED_C_INTERFACE_HTML_MANUAL) \
+$(DEVREF_CONFIGURED_PROLOG_INTERFACE_HTML_MANUAL) \
+$(DEVREF_CONFIGURED_OCAML_INTERFACE_HTML_MANUAL) \
+$(DEVREF_CONFIGURED_JAVA_INTERFACE_HTML_MANUAL) \
+$(DEVREF_CONFIGURED_C_INTERFACE_PDF_MANUAL) \
+$(DEVREF_CONFIGURED_PROLOG_INTERFACE_PDF_MANUAL) \
+$(DEVREF_CONFIGURED_OCAML_INTERFACE_PDF_MANUAL) \
+$(DEVREF_CONFIGURED_JAVA_INTERFACE_PDF_MANUAL) \
+$(DEVREF_CONFIGURED_C_INTERFACE_PS_MANUAL) \
+$(DEVREF_CONFIGURED_PROLOG_INTERFACE_PS_MANUAL) \
+$(DEVREF_CONFIGURED_OCAML_INTERFACE_PS_MANUAL) \
+$(DEVREF_CONFIGURED_JAVA_INTERFACE_PS_MANUAL)
 
 dist_man_MANS = \
 libppl.3 \
@@ -779,11 +753,11 @@ TEX_ENV = TEXINPUTS=$(abs_srcdir):$(TEXINPUTS)
 
 .SECONDARY: $(LATEX_DIRS)
 
-user.latex-dir: user.doxyconf-latex Makefile $(USER_CORE_STUFF)
+user.latex-dir: user.doxyconf-latex $(USER_CORE_STUFF)
 	rm -rf $@
 	$(TEX_ENV) $(DOXYGEN) $<
 
-devref.latex-dir: devref.doxyconf-latex Makefile $(DEVREF_CORE_STUFF)
+devref.latex-dir: devref.doxyconf-latex $(DEVREF_CORE_STUFF)
 	rm -rf $@
 	$(TEX_ENV) $(DOXYGEN) $<
 
@@ -793,13 +767,15 @@ ppl-user-@VERSION@.pdf: user.latex-dir
 ppl-devref-@VERSION@.pdf: devref.latex-dir
 	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
 
-$(USER_CORE_HTML_DIR): user.doxyconf-html Makefile $(USER_CORE_STUFF)
+$(USER_CORE_HTML_DIR): user.doxyconf-html $(USER_CORE_STUFF)
 	rm -rf $@
 	$(TEX_ENV) $(DOXYGEN) $<
 
-$(DEVREF_CORE_HTML_DIR): devref.doxyconf-html Makefile $(DEVREF_CORE_STUFF)
+$(DEVREF_CORE_HTML_DIR): devref.doxyconf-html $(DEVREF_CORE_STUFF)
 	rm -rf $@
 	$(TEX_ENV) $(DOXYGEN) $<
+
+############################################################################
 
 ##### Configuration Independent Foreign Language Interface Targets #####
 
@@ -845,7 +821,7 @@ $(srcdir)/gpl.dox $(srcdir)/fdl.dox
 
 user-c-interface.latex-dir: \
 user-foreign-language-interface.doxyconf \
-Makefile $(USER_C_INTERFACE_STUFF)
+$(USER_C_INTERFACE_STUFF)
 	rm -rf $@
 	$(SED) $(SED_C_OPTION) \
 	    $(srcdir)/user-foreign-language-interface.tex \
@@ -857,7 +833,7 @@ Makefile $(USER_C_INTERFACE_STUFF)
 
 devref-c-interface.latex-dir: \
 devref-foreign-language-interface.doxyconf \
-Makefile $(DEVREF_C_INTERFACE_STUFF)
+$(DEVREF_C_INTERFACE_STUFF)
 	rm -rf $@
 	$(SED) $(SED_C_OPTION) \
 	    $(srcdir)/devref-foreign-language-interface.tex \
@@ -922,7 +898,7 @@ $(srcdir)/gpl.dox $(srcdir)/fdl.dox
 
 user-prolog-interface.latex-dir: \
 user-foreign-language-interface.doxyconf \
-Makefile $(USER_PROLOG_INTERFACE_STUFF)
+$(USER_PROLOG_INTERFACE_STUFF)
 	rm -rf $@
 	$(SED) $(SED_PROLOG_OPTION) \
 	    $(srcdir)/user-foreign-language-interface.tex \
@@ -934,7 +910,7 @@ Makefile $(USER_PROLOG_INTERFACE_STUFF)
 
 devref-prolog-interface.latex-dir: \
 devref-foreign-language-interface.doxyconf \
-Makefile $(DEVREF_PROLOG_INTERFACE_STUFF)
+$(DEVREF_PROLOG_INTERFACE_STUFF)
 	rm -rf $@
 	$(SED) $(SED_PROLOG_OPTION) \
 	    $(srcdir)/devref-foreign-language-interface.tex \
@@ -1006,7 +982,7 @@ OCAMLDOC_LATEX_OPTIONS = \
 
 user-ocaml-interface.latex-dir: \
 user-foreign-language-interface.doxyconf \
-Makefile $(USER_OCAML_INTERFACE_STUFF)
+$(USER_OCAML_INTERFACE_STUFF)
 	rm -rf $@
 	$(SED) $(SED_OCAML_OPTION) \
 	    $(srcdir)/user-foreign-language-interface.tex \
@@ -1020,7 +996,7 @@ Makefile $(USER_OCAML_INTERFACE_STUFF)
 
 devref-ocaml-interface.latex-dir: \
 devref-foreign-language-interface.doxyconf \
-Makefile $(DEVREF_OCAML_INTERFACE_STUFF)
+$(DEVREF_OCAML_INTERFACE_STUFF)
 	rm -rf $@
 	$(SED) $(SED_OCAML_OPTION) \
 	    $(srcdir)/devref-foreign-language-interface.tex \
@@ -1097,7 +1073,7 @@ $(srcdir)/gpl.dox $(srcdir)/fdl.dox
 
 user-java-interface.latex-dir: \
 user-foreign-language-interface.doxyconf \
-Makefile $(USER_JAVA_INTERFACE_STUFF)
+$(USER_JAVA_INTERFACE_STUFF)
 	rm -rf $@
 	$(SED) $(SED_JAVA_OPTION) \
 	    $(srcdir)/user-foreign-language-interface.tex \
@@ -1109,7 +1085,7 @@ Makefile $(USER_JAVA_INTERFACE_STUFF)
 
 devref-java-interface.latex-dir: \
 devref-foreign-language-interface.doxyconf \
-Makefile $(DEVREF_JAVA_INTERFACE_STUFF)
+$(DEVREF_JAVA_INTERFACE_STUFF)
 	rm -rf $@
 	$(SED) $(SED_JAVA_OPTION) \
 	    $(srcdir)/devref-foreign-language-interface.tex \
@@ -1153,6 +1129,7 @@ $(DEVREF_JAVA_INTERFACE_STUFF) $(DEVREF_CORE_HTML_DIR)
 	(cd $@; $(INSTALLDOX) \
 		-l $(DEVREF_CORE_HTML_DIR).tag@../$(DEVREF_CORE_HTML_DIR))
 
+############################################################################
 
 ##### Configuration Dependent Foreign Language Interface Targets #####
 
@@ -1181,7 +1158,7 @@ $(srcdir)/gpl.dox $(srcdir)/fdl.dox
 
 user-configured-c-interface.latex-dir: \
 user-foreign-language-interface.doxyconf \
-Makefile $(USER_CONFIGURED_C_INTERFACE_STUFF)
+$(USER_CONFIGURED_C_INTERFACE_STUFF)
 	rm -rf $@
 	$(SED) $(SED_CONFIGURED_C_OPTION) \
 	    $(srcdir)/user-foreign-language-interface.tex \
@@ -1193,7 +1170,7 @@ Makefile $(USER_CONFIGURED_C_INTERFACE_STUFF)
 
 devref-configured-c-interface.latex-dir: \
 devref-foreign-language-interface.doxyconf \
-Makefile $(DEVREF_CONFIGURED_C_INTERFACE_STUFF)
+$(DEVREF_CONFIGURED_C_INTERFACE_STUFF)
 	rm -rf $@
 	$(SED) $(SED_CONFIGURED_C_OPTION) \
 	    $(srcdir)/devref-foreign-language-interface.tex \
@@ -1263,7 +1240,7 @@ $(srcdir)/gpl.dox $(srcdir)/fdl.dox
 
 user-configured-prolog-interface.latex-dir: \
 user-foreign-language-interface.doxyconf \
-Makefile $(USER_CONFIGURED_PROLOG_INTERFACE_STUFF)
+$(USER_CONFIGURED_PROLOG_INTERFACE_STUFF)
 	rm -rf $@
 	$(SED) $(SED_CONFIGURED_PROLOG_OPTION) \
 	    $(srcdir)/user-foreign-language-interface.tex \
@@ -1275,7 +1252,7 @@ Makefile $(USER_CONFIGURED_PROLOG_INTERFACE_STUFF)
 
 devref-configured-prolog-interface.latex-dir: \
 devref-foreign-language-interface.doxyconf \
-Makefile $(DEVREF_CONFIGURED_PROLOG_INTERFACE_STUFF)
+$(DEVREF_CONFIGURED_PROLOG_INTERFACE_STUFF)
 	rm -rf $@
 	$(SED) $(SED_CONFIGURED_PROLOG_OPTION) \
 	    $(srcdir)/devref-foreign-language-interface.tex \
@@ -1345,7 +1322,7 @@ $(srcdir)/gpl.dox $(srcdir)/fdl.dox
 
 user-configured-ocaml-interface.latex-dir: \
 user-foreign-language-interface.doxyconf \
-Makefile $(USER_CONFIGURED_OCAML_INTERFACE_STUFF)
+$(USER_CONFIGURED_OCAML_INTERFACE_STUFF)
 	rm -rf $@
 	$(SED) $(SED_CONFIGURED_OCAML_OPTION) \
 	    $(srcdir)/user-foreign-language-interface.tex \
@@ -1359,7 +1336,7 @@ Makefile $(USER_CONFIGURED_OCAML_INTERFACE_STUFF)
 
 devref-configured-ocaml-interface.latex-dir: \
 devref-foreign-language-interface.doxyconf \
-Makefile $(DEVREF_CONFIGURED_OCAML_INTERFACE_STUFF)
+$(DEVREF_CONFIGURED_OCAML_INTERFACE_STUFF)
 	rm -rf $@
 	$(SED) $(SED_CONFIGURED_OCAML_OPTION) \
 	    $(srcdir)/devref-foreign-language-interface.tex \
@@ -1440,7 +1417,7 @@ $(SED_JAVA_INPUT_DEVREF) \
 
 user-configured-java-interface.latex-dir: \
 user-foreign-language-interface.doxyconf \
-Makefile $(USER_CONFIGURED_JAVA_INTERFACE_STUFF)
+$(USER_CONFIGURED_JAVA_INTERFACE_STUFF)
 	rm -rf $@
 	$(SED) $(SED_CONFIGURED_JAVA_OPTION) \
 	    $(srcdir)/user-foreign-language-interface.tex \
@@ -1456,7 +1433,7 @@ Makefile $(USER_CONFIGURED_JAVA_INTERFACE_STUFF)
 
 devref-configured-java-interface.latex-dir: \
 devref-foreign-language-interface.doxyconf \
-Makefile $(DEVREF_CONFIGURED_JAVA_INTERFACE_STUFF)
+$(DEVREF_CONFIGURED_JAVA_INTERFACE_STUFF)
 	rm -rf $@
 	$(SED) $(SED_CONFIGURED_JAVA_OPTION) \
 	    $(srcdir)/devref-foreign-language-interface.tex \
@@ -1512,6 +1489,37 @@ $(DEVREF_CONFIGURED_JAVA_INTERFACE_STUFF) $(DEVREF_CORE_HTML_DIR)
 
 endif BUILD_JAVA_INTERFACE
 
+############################################################################
+
+# Ad-hoc rules for distributed HTML manuals.
+# These follow the guidelines of Section 27.5 of the Automake manual
+# (distributed files should never depend upon non-distributed built files).
+
+$(USER_CORE_HTML_MANUAL): user.doxyconf-html $(USER_CORE_STUFF)
+	$(MAKE) $(AM_MAKEFLAGS) $(USER_CORE_HTML_DIR)
+	tar c $(USER_CORE_HTML_DIR) | gzip --best --force > $@
+
+$(USER_C_INTERFACE_HTML_MANUAL): user.doxyconf-html $(USER_CORE_STUFF) \
+user-foreign-language-interface.doxyconf $(USER_C_INTERFACE_STUFF)
+	$(MAKE) $(AM_MAKEFLAGS) $(USER_C_INTERFACE_HTML_DIR)
+	tar c $(USER_C_INTERFACE_HTML_DIR) | gzip --best --force > $@
+
+$(USER_PROLOG_INTERFACE_HTML_MANUAL): user.doxyconf-html $(USER_CORE_STUFF) \
+user-foreign-language-interface.doxyconf $(USER_PROLOG_INTERFACE_STUFF)
+	$(MAKE) $(AM_MAKEFLAGS) $(USER_PROLOG_INTERFACE_HTML_DIR)
+	tar c $(USER_PROLOG_INTERFACE_HTML_DIR) | gzip --best --force > $@
+
+$(USER_OCAML_INTERFACE_HTML_MANUAL): user.doxyconf-html $(USER_CORE_STUFF) \
+user-foreign-language-interface.doxyconf $(USER_OCAML_INTERFACE_STUFF)
+	$(MAKE) $(AM_MAKEFLAGS) $(USER_OCAML_INTERFACE_HTML_DIR)
+	tar c $(USER_OCAML_INTERFACE_HTML_DIR) | gzip --best --force > $@
+
+$(USER_JAVA_INTERFACE_HTML_MANUAL): user.doxyconf-html $(USER_CORE_STUFF) \
+user-foreign-language-interface.doxyconf $(USER_JAVA_INTERFACE_STUFF)
+	$(MAKE) $(AM_MAKEFLAGS) $(USER_JAVA_INTERFACE_HTML_DIR)
+	tar c $(USER_JAVA_INTERFACE_HTML_DIR) | gzip --best --force > $@
+
+############################################################################
 
 %.tar: %
 	tar cf $@ $<
@@ -1564,12 +1572,9 @@ user-ocaml-interface.tex \
 user-prolog-interface.tex
 
 mostlyclean-local:
-	rm -rf $(ALL_TARGETS) $(LATEX_DIRS) $(HTML_DIRS) *.aux *.log
+	rm -rf $(HTML_DIRS) $(LATEX_DIRS) $(NONDIST_MANUALS) *.aux *.log
 	rm -rf $(GENERATED_LATEX_HEADER_FILES) Doxyfile.*
 
 CLEANFILES = \
-$(DIST_HTML_DOCS) \
-$(DIST_PDF_DOCS) \
-$(DIST_PS_DOCS) \
 $(USER_CORE_HTML_DIR).tag \
 $(DEVREF_CORE_HTML_DIR).tag
