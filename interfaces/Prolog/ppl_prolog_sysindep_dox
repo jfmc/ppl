@@ -25,8 +25,8 @@ on the use of the interface.
      - weakly relational, which consist of BD_Shape_N and
        Octagonal_Shape_N
        where N is one of the numeric types
-       short, signed_char, int, long, long_long,
-       mpz_class, mpq_class;<BR>
+       int8, int16, int32, int64, mpz_class, mpq_class,
+       float, double, long_double;<BR>
      - boxes which consist of
        Int8_Box, Int16_Box,
        Int32_Box, Int64_Box,
