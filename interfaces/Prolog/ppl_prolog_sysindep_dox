@@ -53,7 +53,7 @@ on the use of the interface.
   after which the interface's services are usable again.
   Some Prolog systems allow the specification of initialization
   and deinitialization functions in their foreign language interfaces.
-  The corresponding incarnations of the PPL-Prolog interface
+  The corresponding incarnations of the Prolog interface
   have been written so that <CODE>ppl_initialize/0</CODE> and/or
   <CODE>ppl_finalize/0</CODE> are called automatically.
   Section \ref PI_SD_Features "System-Dependent Features" will detail
@@ -90,12 +90,13 @@ on the use of the interface.
   consider a Prolog program and a variable that is bound to
   a Herbrand term.
   When the variable dies (goes out of scope) or is uninstantiated
-  (on backtracking) the term it is bound to is amenable to garbage collection.
+  (on backtracking), the term it is bound to is amenable to garbage collection.
   But this only applies for the standard domain of the language:
   Herbrand terms.
-  In Prolog+PPL, when a variable bound to a handle for a PPL Polyhedron dies
+  In Prolog+PPL, when, for example,
+  a variable bound to a handle for a Polyhedron dies
   or is uninstantiated,
-  the handle can be garbage-collected, but the polyhedra to which
+  the handle can be garbage-collected, but the polyhedron to which
   the handle refers will not be released.
   Once a handle has been used as an argument in
   <CODE>ppl_delete_Polyhedron/1</CODE>,
@@ -174,11 +175,10 @@ The specification uses the following grammar rules:
             | - Lin_Expr		unary minus
             | Lin_Expr + Lin_Expr	addition
             | Lin_Expr - Lin_Expr	subtraction
-            | Coeff * Lin_Expr	multiplication
-            | Lin_Expr * Coeff	multiplication
+            | Coeff * Lin_Expr	        multiplication
+            | Lin_Expr * Coeff	        multiplication
 
- Relation_Symbol
-	     --> =			equals
+ Relation_Symbol --> =			equals
             | =< 			less than or equal
             | >=			greater than or equal
             | < 			strictly less than
@@ -191,8 +191,18 @@ The specification uses the following grammar rules:
              --> []
             | [Constraint | Constraint_System]
 
+ Modulus     --> Coeff | - Coeff
+
+ Congruence  --> Lin_Expr =:= Lin_Expr  congruence with modulo 1
+            | (Lin_Expr =:= Lin_Expr) / Modulus
+                                        congruence with modulo Modulus
+
+ Congruence_System			list of congruences
+             --> []
+            | [Congruence | Congruence_System]
+
  Generator_Denominator --> Coeff	must be non-zero
-	    | Coeff | - Coeff
+	    | - Coeff
 
  Generator   --> point(Lin_Expr)	point
             | point(Lin_Expr, Generator_Denominator)
@@ -207,59 +217,49 @@ The specification uses the following grammar rules:
              --> []
 	    | [Generator | Generator_System]
 
+ Grid_Generator
+             --> grid_point(Lin_Expr)	grid point
+            | grid_point(Lin_Expr, Generator_Denominator)
+					grid point
+            | parameter(Lin_Expr)	parameter
+            | parameter(Lin_Expr, Generator_Denominator)
+                                        parameter
+            | grid_line(Lin_Expr)       grid line
+
+ Grid_Generator_System			list of grid generators
+             --> []
+	    | [Grid_Generator | Grid_Generator_System]
+
  Atom        --> Prolog atom
 
- Universe_or_Empty			polyhedron
-             --> universe
-            | empty
+ Universe_or_Empty			PPL object
+             --> universe | empty
 
- Poly_Relation				polyhedron relation:
-             --> is_disjoint		with a constraint
-	    | strictly_intersects	with a constraint
-	    | is_included		with a constraint
-	    | saturates			with a constraint
-            | subsumes			with a generator
+ Poly_Relation --> is_disjoint          with a constraint or congruence
+	    | strictly_intersects	with a constraint or congruence
+	    | is_included		with a constraint or congruence
+	    | saturates			with a constraint or congruence
+            | subsumes			with a (grid) generator
 
- Relation_List			list of polyhedron relations
-	     --> []
+ Relation_List --> []
 	    | [Poly_Relation | Relation_List]
 
  Complexity  --> polynomial | simplex | any
-
- Rational_Numerator
-	     --> Coeff | - Coeff
-
- Rational_Denominator
-	     --> Coeff	        	must be non-zero
-
- Rational    --> Rational_Numerator	rational number
-	    | Rational_Numerator/Rational_Denominator
-
- Bound       --> c(Rational)		closed rational limit
-            | o(Rational)		open rational limit
-            | o(pinf)			unbounded in the positive direction
-            | o(minf)			unbounded in the negative direction
-
- Interval    --> i(Bound, Bound)	rational interval
-
- Box         --> []			list of intervals
-            | [Interval | Box]
 
  Vars_Pair   --> PPLVar - PPLVar        map relation
 
  P_Func      --> []    			list of map relations
             | [Vars_Pair | P_Func].
 
- Optimization_Mode
-             --> max | min
+ Optimization_Mode --> max | min
 
- MIP_Problem_Status
-             --> unfeasible | unbounded | optimized
+ MIP_Problem_Status --> unfeasible
+            | unbounded
+            | optimized
 
- Control_Parameter_Name
-             --> pricing
+ Control_Parameter_Name --> pricing     for MIP problems
 
- Control_Parameter_Value
+ Control_Parameter_Value                for MIP problems
              --> pricing_steepest_edge_float
             | pricing_steepest_edge_exact
             | pricing_rextbook
@@ -374,8 +374,8 @@ that are included with all instantiations of the Prolog interfaces.
    <EM>Sets the FPU rounding mode so that the PPL abstractions based on
   floating point numbers work correctly.
   This is performed automatically at initialization-time.  Calling
-  this function is needed only if restore_pre_PPL_rounding() has been
-  previously called.</EM>
+  this function is needed only if restore_pre_PPL_rounding() has
+  previously been called.</EM>
 
 
 <P><CODE> ppl_restore_rounding_for_PPL </CODE><BR>
