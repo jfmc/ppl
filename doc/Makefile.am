@@ -347,10 +347,19 @@ DEVREF_CONFIGURED_PROLOG_INTERFACE_HTML_DIR = \
 ppl-devref-configured-prolog-interface-@VERSION@-html
 
 USER_CONFIGURED_PROLOG_INTERFACE_STUFF = \
-$(USER_PROLOG_INTERFACE_STUFF)
+$(DOX_LICENCE_FILES) \
+user-foreign-language-interface.tex \
+ppl.sty \
+$(top_builddir)/interfaces/Prolog/Prolog_configured_interface.dox
 
 DEVREF_CONFIGURED_PROLOG_INTERFACE_STUFF = \
-$(DEVREF_PROLOG_INTERFACE_STUFF) \
+$(DOX_LICENCE_FILES) \
+devref-foreign-language-interface.tex \
+ppl.sty \
+$(top_builddir)/interfaces/Prolog/Prolog_configured_interface.dox \
+../interfaces/Prolog/ppl_prolog_common.defs.hh \
+../interfaces/Prolog/ppl_prolog_common.inlines.hh \
+../interfaces/Prolog/ppl_prolog_common.cc \
 $(top_builddir)/interfaces/Prolog/ppl_prolog_domains.hh \
 $(top_builddir)/interfaces/Prolog/ppl_prolog_domains.cc.stamp
 
