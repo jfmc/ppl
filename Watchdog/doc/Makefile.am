@@ -276,3 +276,7 @@ README.doc
 
 mostlyclean-local:
 	rm -rf $(HTML_DIRS) $(LATEX_DIRS) $(NONDIST_MANUALS) *.aux *.log
+
+CLEANFILES = \
+$(USER_CORE_HTML_DIR).tag \
+$(DEVREF_CORE_HTML_DIR).tag
