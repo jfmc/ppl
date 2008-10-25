@@ -263,7 +263,7 @@ have been first formulated by François Pinard) are:
 
   - If `make' built the file, and it is commonly something that one would
     want to rebuild (such as an object file), then list the file in
-    MOSTLYCLEAN.
+    MOSTLYCLEANFILES.
   - Otherwise, if `make' built the file, then list it in CLEANFILES.
   - Otherwise, if `configure' built the file, then list it in DISTCLEANFILES.
 
