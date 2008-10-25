@@ -1,4 +1,4 @@
-.TH libppl "3" "September 2008" "PPL 0.10" "libppl overview"
+.TH libppl "3" "November 2008" "PPL 0.10" "libppl overview"
 .SH NAME
 libppl \- the C++ interface of the Parma Polyhedra Library
 .SH SYNOPSIS
@@ -13,7 +13,7 @@ Note that the PPL has interfaces also for C, Java, OCaml and a number
 of Prolog systems: look elsewhere for documentation on those.
 Note also that the present document does not describe the library
 functionality, its classes or its methods and functions: see
-.BR "The Parma Polyhedra Library User's Manual"
+.IR "The Parma Polyhedra Library User's Manual (version 0.10)"
 for this kind of information.
 
 .SH "INCLUDING THE HEADER FILE"
@@ -24,7 +24,7 @@ The C++ interface of the PPL has only one header file, named
 .sp
 Of course, you must make sure you installed the PPL in a place where
 it can find it, either by itself or with the help of a suitable
-.B -I dir
+.B -Idir
 command line option (see the file \fIINSTALL\fP for information
 on how to configure the library so that it is installed in the
 place of your choice).
@@ -35,39 +35,69 @@ project will cause the automatic initialization and finalization
 of the library.
 However, there are situations in which automatic initialization
 and finalization is not desirable (e.g., if the application fiddles
-with GMP's memory allocation functions).  In those cases,
+with the GMP's memory allocation functions).  In those cases,
 .B every
 inclusion of \fIppl.hh\fP must take the form
 .sp
 .nf
 .B #define PPL_NO_AUTOMATIC_INITIALIZATION
 .B #include <ppl.hh>
-.ni
+.fi
 .sp
-When automatic initialization and finalization you must absolutely
-call the functions
+When automatic initialization and finalization is disabled you must
+.B absolutely
+call the function
 .sp
 .B void Parma_Polyhedra_Library::initialize()
 .sp
-before using the library, and
+before using the library.
+It is also a good norm to call the function
 .sp
 .B void Parma_Polyhedra_Library::finalize()
 .sp
-when you are done with it.
+when you are done with the library.
 
 .SH "LINKING WITH THE LIBRARY"
-To be written.
+Linking with the C++ interface of the Parma Polyhedra Library is best done
+using the C++ compiler itself: usually, specifying the
+.B -lppl
+command line option is enough.
+Things are more complex if you installed the PPL into some nonstandard
+place.  In this case you will have to use the
+.B -Idir
+option and, if you use a shared version of the library,
+possible take further steps: see the documentation of your system
+for more information on this subject
+(the
+.IR "Program Library HOWTO"
+is especially valuable for GNU/Linux users).
+
+To be continued.
+
+.SH "SEE ALSO"
+.BR ppl-config(1)
+.sp
+Roberto Bagnara, Patricia M. Hill, and Enea Zaffanella.
+.IR "The Parma Polyhedra Library User's Manual (version 0.10)",
+available (in several formats) at
+\fBhttp://www.cs.unipr.it/ppl/\fR .
+.sp
+David A. Wheeler.
+.IR "Program Library HOWTO",
+available (in several formats) at
+\fBhttp://www.dwheeler.com/program-library/\fR .
 
 .SH AVAILABILITY
 The latest version of the Parma Polyhedra Library and all the documentation
-is available at
+is available at \fBhttp://www.cs.unipr.it/ppl/\fR .
 
-    \fBhttp://www.cs.unipr.it/ppl/\fR
 .SH AUTHOR
 See the file \fBCREDITS\fR in the source distribution or use the command
 \fBppl\-config \-\-credits\fR for a list of contributors.
+
 .SH "REPORTING BUGS"
 Report bugs to <ppl\-devel@cs.unipr.it>.
+
 .SH COPYRIGHT
 Copyright (C) 2001\-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 .br
