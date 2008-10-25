@@ -96,6 +96,8 @@ BUILT_SOURCES = \
 ppl_prolog_domains.hh \
 ppl_prolog_domains.cc.stamp
 
+nodist_noinst_DATA = Prolog_configured_interface.dox
+
 interface_generator_dependencies = \
 ../ppl_interface_generator_common.m4 \
 ../ppl_interface_generator_common_dat.m4 \
