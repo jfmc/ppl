@@ -55,3 +55,6 @@ SUBDIRS = utils src Watchdog tests interfaces demos doc m4
 DISTCLEANFILES = \
 @PACKAGE@-config.h \
 _configs.sed
+
+distcleancheck_listfiles = \
+	find -type f -exec sh -c 'test -f $(srcdir)/{} || echo {}' ';'
