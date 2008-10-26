@@ -1,6 +1,8 @@
-dnl This file is part of the Parma Polyhedra Library (PPL)
-dnl used by ppl_interfaces_generator_ocaml_hh_files.m4
+dnl Used by ppl_interfaces_generator_ocaml_hh_files.m4
 dnl for generating the access code for the OCaml interface.
+dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl
+dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
 dnl The PPL is free software; you can redistribute it and/or modify it
 dnl under the terms of the GNU General Public License as published by the
