@@ -130,32 +130,36 @@ The following people have given important help to the project:
                         Mac OS X machine to work on portability to
                         that platform.
 
-  Bruno Haible          [8] (ILOG) made it possible (by writing the
+  Martin Guy            [8] gave us access to his ARM machine: without
+                        this possibility, porting the PPL to the ARM's
+                        ABIs would have taken ages.
+
+  Bruno Haible          [9] (ILOG) made it possible (by writing the
                         AC_LIB_LINKFLAGS macro and explaining how
                         to use it) to allow the use of versions of the
                         GMP library installed into nonstandard places.
 
-  Bertrand Jeannet      [9] (IRISA) wrote the New Polka library [10]
+  Bertrand Jeannet      [10] (IRISA) wrote the New Polka library [11]
                         and made it available.
 
   Herve' Le Verge       (r.i.p.) wrote and published an implementation
-                        [11] of the Chernikova's algorithm [12] that
+                        [12] of the Chernikova's algorithm [13] that
                         has set the stage for subsequent
                         implementation work, including our own.
 
-  Francesco Logozzo     [13] (formerly at Ecole Polytechnique) helped us
+  Francesco Logozzo     [14] (formerly at Ecole Polytechnique) helped us
                         straighten out some portability issues on Cygwin.
 
-  Costantino Medori     [14] (University of Parma) helped us on the
+  Costantino Medori     [15] (University of Parma) helped us on the
                         mathematical aspects of the development.
 
-  Fred Mesnard          [15] (University of La Reunion), the main author
-                        of cTI [16], has worked with us at one of the
+  Fred Mesnard          [16] (University of La Reunion), the main author
+                        of cTI [17], has worked with us at one of the
                         first applications of the PPL: the "cTI"
                         data-flow analyzer, which performs a linear
                         size relation analysis using a domain of
                         convex polyhedra.  The China data-flow
-                        analyzer [17] uses the Parma Polyhedra Library
+                        analyzer [18] uses the Parma Polyhedra Library
                         to perform the same analysis.  We have been
                         running China against an old version of cTI
                         that did not use the PPL, using them to
@@ -164,21 +168,21 @@ The following people have given important help to the project:
                         this gave us excellent opportunities for our
                         initial testing and debugging work.
 
-  Ralf Wildenhues       [18] (University of Bonn) helped us with
+  Ralf Wildenhues       [19] (University of Bonn) helped us with
                         several issues concerning the proper use of
                         the Autotools.
 
 We are also grateful for the following contributions:
 
-- The GCC Compile Farm Project [19] managed by FSF France provided access
+- The GCC Compile Farm Project [20] managed by FSF France provided access
   to a number of machines that allowed us to test and improve the
   portability of the library.  Special thanks go to Laurent Guerby
   for his kind assistance.
 
-- The test cluster provided by Hewlett Packard and  hosted by ESIEE [20]
+- The test cluster provided by Hewlett Packard and  hosted by ESIEE [21]
   allowed us to complete the porting of the PPL to the IA64 and PA-RISC
-  architectures.  Many thanks to Thibaut Varène [21] and the PA-RISC
-  Linux community [22] for their kind assistance.
+  architectures.  Many thanks to Thibaut Varène [22] and the PA-RISC
+  Linux community [23] for their kind assistance.
 
 This work has been partly supported by the following projects and
 organizations:
@@ -187,26 +191,26 @@ organizations:
      ``Pure and Applied Mathematics'';
 
   2. MURST project ``Automatic Program Certification by Abstract
-     Interpretation'' [23];
+     Interpretation'' [24];
 
   3. MURST project ``Abstract Interpretation, Type Systems and
      Control-Flow Analysis''.
 
   4. MURST project ``Automatic Aggregate- and Number-Reasoning for
      Computing: from Decision Algorithms to Constraint Programming
-     with Multisets, Sets, and Maps'' [24].
+     with Multisets, Sets, and Maps'' [25].
 
   5. MURST project ``Constraint Based Verification of Reactive
-     Systems'' [25].
+     Systems'' [26].
 
   6. MURST project ``AIDA - Abstract Interpretation: Design and
-     Applications'' [26].
+     Applications'' [27].
 
   7. Royal Society Joint project 2004/R1-EU (UK-Italy)
      ``Automatic Detection of Unstable Numerical Computations''.
 
   8. EPSRC (UK) project EP/C520726/1
-     ``Numerical Domains for Software Analysis'' [27].
+     ``Numerical Domains for Software Analysis'' [28].
 
 --------
 
@@ -217,23 +221,24 @@ organizations:
  [5] http://www.math.unipr.it/~zaccagni/
  [6] http://www.mundell.ukfsn.org/
  [7] http://www.dimi.uniud.it/~comini/
- [8] http://www.haible.de/bruno/
- [9] http://www.irisa.fr/prive/Bertrand.Jeannet/
-[10] http://www.irisa.fr/prive/Bertrand.Jeannet/newpolka.html
-[11] http://www.cs.unipr.it/ppl/Documentation/chernikova.c
-[12] http://www.cs.unipr.it/ppl/Documentation/bibliography#LeVerge92
-[13] http://www.enseignement.polytechnique.fr/profs/informatique/Francesco.Logozzo/
-[14] http://www.math.unipr.it/~medori/
-[15] http://www.univ-reunion.fr/~fred/
-[16] http://www.cs.unipr.it/cTI/
-[17] http://www.cs.unipr.it/China/
-[18] http://wissrech.ins.uni-bonn.de/people/wildenhues.html
-[19] http://gcc.gnu.org/wiki/CompileFarm
-[20] http://www.esiee.fr/
-[21] http://www.parisc-linux.org/~varenet/
-[22] http://www.parisc-linux.org/
-[23] http://theory.sci.univr.it/p40/
-[24] http://www.cs.unipr.it/Projects/COFIN01
-[25] http://www.disi.unige.it/person/DelzannoG/cover/
-[26] http://www.cs.unipr.it/Projects/AIDA/
-[27] http://www.comp.leeds.ac.uk/hill/linda/
+ [8] http://martinwguy.co.uk/
+ [9] http://www.haible.de/bruno/
+[10] http://www.irisa.fr/prive/Bertrand.Jeannet/
+[11] http://www.irisa.fr/prive/Bertrand.Jeannet/newpolka.html
+[12] http://www.cs.unipr.it/ppl/Documentation/chernikova.c
+[13] http://www.cs.unipr.it/ppl/Documentation/bibliography#LeVerge92
+[14] http://www.enseignement.polytechnique.fr/profs/informatique/Francesco.Logozzo/
+[15] http://www.math.unipr.it/~medori/
+[16] http://www.univ-reunion.fr/~fred/
+[17] http://www.cs.unipr.it/cTI/
+[18] http://www.cs.unipr.it/China/
+[19] http://wissrech.ins.uni-bonn.de/people/wildenhues.html
+[20] http://gcc.gnu.org/wiki/CompileFarm
+[21] http://www.esiee.fr/
+[22] http://www.parisc-linux.org/~varenet/
+[23] http://www.parisc-linux.org/
+[24] http://theory.sci.univr.it/p40/
+[25] http://www.cs.unipr.it/Projects/COFIN01
+[26] http://www.disi.unige.it/person/DelzannoG/cover/
+[27] http://www.cs.unipr.it/Projects/AIDA/
+[28] http://www.comp.leeds.ac.uk/hill/linda/
