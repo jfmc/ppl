@@ -61,10 +61,15 @@ when you are done with the library.
 Linking with the C++ interface of the Parma Polyhedra Library is best done
 using the C++ compiler itself: usually, specifying the
 .B -lppl
-command line option is enough.
+command line option is enough.  In fact, if you use a shared version
+of the library, this automatically records the dependency from the GMP
+library, something that the linker ought to deal with gracefully.
+Otherwise you will have to add
+.B -lgmpxx -lgmp
+to the command line.
 Things are more complex if you installed the PPL into some nonstandard
 place.  In this case you will have to use the
-.B -Idir
+.B -Ldir
 option and, if you use a shared version of the library,
 possible take further steps: see the documentation of your system
 for more information on this subject
@@ -72,7 +77,16 @@ for more information on this subject
 .IR "Program Library HOWTO"
 is especially valuable for GNU/Linux users).
 
-To be continued.
+.SH "IMPLEMENTING MEMORY-GUARDED COMPUTATIONS"
+One of the interesting features of the Parma Polyhedra Library is the
+possibility to implement memory-guarded computations.  The idea is that
+you can limit the amount of virtual memory available to the process,
+launch a PPL computation, and be ready to catch an
+.B std::bad_alloc
+exception.  Since the library is exception-safe, you can take the
+appropriate corrective measures (e.g., simplify the polyhedra and/or select
+less precise though less complex algorithms), and restart the computation.
+
 
 .SH "SEE ALSO"
 .BR ppl-config(1)
