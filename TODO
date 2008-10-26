@@ -2,13 +2,6 @@
 Enhancements for PPL 0.10
 =========================
 
-- Double check the documentation of add_constraint(s)/congruence(s).
-  NOTA BENE: we should be careful when promising that add_constraint()
-  will preserve the exact semantics of the added constraint.  Think about
-  adding a rational BD constraint to an integer or floating-point based
-  BD shape.
-
-- MIP_Problem: ensure ascii_load() and operator<< are correct.
 
 Enhancements for PPL 0.10.1 or later versions
 =============================================
