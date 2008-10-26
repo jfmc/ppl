@@ -65,15 +65,17 @@ public:
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
-  //! \brief
-  //! Writes to \p s an ASCII representation of the internal
-  //! representation of \p *this.
+  /*! \brief
+    Writes to \p s an ASCII representation of the internal
+    representation of \p *this.
+  */
   void ascii_dump(std::ostream& s) const;
 
-  //! \brief
-  //! Loads from \p s an ASCII representation (as produced by
-  //! ascii_dump(std::ostream&) const) and sets \p *this accordingly.
-  //! Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+  */
   bool ascii_load(std::istream& s);
 
 private:

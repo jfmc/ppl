@@ -153,7 +153,6 @@ struct Recycle_Input {
 // Turn the expansion of s into a string: PPL_XSTR(x) => "x expanded".
 #define PPL_XSTR(s) PPL_STR(s)
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 #define PPL_OUTPUT_DECLARATIONS						\
   /*! \brief Writes to \c std::cerr an ASCII representation of \p *this. */ \
   void ascii_dump() const;						\
@@ -161,12 +160,6 @@ struct Recycle_Input {
   void ascii_dump(std::ostream& s) const;				\
   /*! \brief Prints \p *this to \c std::cerr using \c operator<<. */	\
   void print() const;
-#else
-#define PPL_OUTPUT_DECLARATIONS					\
-  void ascii_dump() const;					\
-  void ascii_dump(std::ostream& s) const;			\
-  void print() const;
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
 #define PPL_OUTPUT_DEFINITIONS(class_name)			\
   void								\
