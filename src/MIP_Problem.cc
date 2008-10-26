@@ -232,13 +232,13 @@ PPL::MIP_Problem::is_satisfiable() const {
       // find a feasible point.
       x.i_variables.clear();
       x.is_lp_satisfiable();
-         if (is_mip_satisfiable(x, p, this_variables_set)) {
+      if (is_mip_satisfiable(x, p, this_variables_set)) {
 	x.last_generator = p;
 	x.status = SATISFIABLE;
 	// Restore i_variables;
     	x.i_variables = this_variables_set;
 	return true;
-	 }
+      }
       else {
 	x.status = UNSATISFIABLE;
 	// Restore i_variables;
@@ -1969,19 +1969,19 @@ PPL_OUTPUT_DEFINITIONS(MIP_Problem)
 bool
 PPL::MIP_Problem::ascii_load(std::istream& s) {
   std::string str;
-if (!(s >> str) || str != "external_space_dim:")
+  if (!(s >> str) || str != "external_space_dim:")
     return false;
 
-if (!(s >> external_space_dim))
+  if (!(s >> external_space_dim))
     return false;
 
-if (!(s >> str) || str != "internal_space_dim:")
+  if (!(s >> str) || str != "internal_space_dim:")
     return false;
 
-if (!(s >> internal_space_dim))
+  if (!(s >> internal_space_dim))
     return false;
 
- if (!(s >> str) || str != "input_cs(")
+  if (!(s >> str) || str != "input_cs(")
     return false;
 
   dimension_type input_cs_size;
