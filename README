@@ -64,7 +64,7 @@ For any additional questions you might have, please do not hesitate to
 write to ppl-devel@cs.unipr.it.
 
 Here is the contents of the PPL 0.10 source distribution
-(41 directories, 1426 files):
+(41 directories, 1404 files):
 
 ppl-0.10
 |-- BUGS
@@ -116,9 +116,9 @@ ppl-0.10
 |   |   |-- gpl.ps.gz
 |   |   |-- gpl.tex
 |   |   |-- gpl.txt
-|   |   |-- pwl-user-0.6-html.tar.gz
-|   |   |-- pwl-user-0.6.pdf
-|   |   |-- pwl-user-0.6.ps.gz
+|   |   |-- pwl-user-0.5-html.tar.gz
+|   |   |-- pwl-user-0.5.pdf
+|   |   |-- pwl-user-0.5.ps.gz
 |   |   |-- pwl.sty
 |   |   |-- user.doxyconf-html
 |   |   |-- user.doxyconf-html.in
@@ -171,6 +171,13 @@ ppl-0.10
 |   |   |-- Watchdog.types.hh
 |   |   |-- pwl.hh.dist
 |   |   `-- pwl_header.hh
+|   |-- tests
+|   |   |-- Makefile.am
+|   |   |-- Makefile.in
+|   |   |-- pwl_test.cc
+|   |   |-- pwl_test.hh
+|   |   |-- simple1.cc
+|   |   `-- valgrind_suppressions
 |   `-- utils
 |       |-- Makefile.am
 |       |-- Makefile.in
@@ -183,31 +190,6 @@ ppl-0.10
 |-- config.sub
 |-- configure
 |-- configure.ac
-|-- debian
-|   |-- Makefile.am
-|   |-- Makefile.in
-|   |-- README
-|   |-- changelog
-|   |-- compat
-|   |-- control
-|   |-- libppl-c.dirs
-|   |-- libppl-c.install
-|   |-- libppl-c.links
-|   |-- libppl-dev.dirs
-|   |-- libppl-dev.doc-base
-|   |-- libppl-dev.doc-base.user
-|   |-- libppl-dev.docs
-|   |-- libppl-dev.install
-|   |-- libppl-dev.links
-|   |-- libppl-pwl.copyright.in
-|   |-- libppl-pwl.dirs
-|   |-- libppl-pwl.docs
-|   |-- libppl-pwl.install
-|   |-- libppl.copyright.in
-|   |-- libppl.dirs
-|   |-- libppl.docs
-|   |-- libppl.install
-|   `-- rules
 |-- demos
 |   |-- Makefile.am
 |   |-- Makefile.in
@@ -336,6 +318,7 @@ ppl-0.10
 |   |   |-- expected_int8_a
 |   |   |-- expected_mpz
 |   |   |-- expected_mpz_a
+|   |   |-- ppl_lcdd.1
 |   |   `-- ppl_lcdd.cc
 |   `-- ppl_lpsol
 |       |-- Makefile.am
@@ -383,6 +366,7 @@ ppl-0.10
 |       |-- expected_int8_a
 |       |-- expected_mpz
 |       |-- expected_mpz_a
+|       |-- ppl_lpsol.1
 |       `-- ppl_lpsol.c
 |-- depcomp
 |-- doc
@@ -390,24 +374,9 @@ ppl-0.10
 |   |-- Makefile.in
 |   |-- README.doc
 |   |-- definitions.dox
-|   |-- devref-c-interface.doxyconf-html
-|   |-- devref-c-interface.doxyconf-html.in
-|   |-- devref-c-interface.doxyconf-latex
-|   |-- devref-c-interface.doxyconf-latex.in
-|   |-- devref-c-interface.tex
-|   |-- devref-java-interface.doxyconf-html.in
-|   |-- devref-java-interface.doxyconf-latex
-|   |-- devref-java-interface.doxyconf-latex.in
-|   |-- devref-java-interface.tex
-|   |-- devref-ocaml-interface.doxyconf-html.in
-|   |-- devref-ocaml-interface.doxyconf-latex
-|   |-- devref-ocaml-interface.doxyconf-latex.in
-|   |-- devref-ocaml-interface.tex
-|   |-- devref-prolog-interface.doxyconf-html
-|   |-- devref-prolog-interface.doxyconf-html.in
-|   |-- devref-prolog-interface.doxyconf-latex
-|   |-- devref-prolog-interface.doxyconf-latex.in
-|   |-- devref-prolog-interface.tex
+|   |-- devref-foreign-language-interface.doxyconf
+|   |-- devref-foreign-language-interface.doxyconf.in
+|   |-- devref-foreign-language-interface.tex
 |   |-- devref.doxyconf-html
 |   |-- devref.doxyconf-html.in
 |   |-- devref.doxyconf-latex
@@ -423,44 +392,35 @@ ppl-0.10
 |   |-- gpl.ps.gz
 |   |-- gpl.tex
 |   |-- gpl.txt
+|   |-- interfaces-html.sed
+|   |-- interfaces-latex.sed
 |   |-- libppl.3
+|   |-- libppl_c.3
 |   |-- ppl-config.1
-|   |-- ppl-user-0.10pre29-html.tar.gz
-|   |-- ppl-user-0.10pre29.pdf
-|   |-- ppl-user-0.10pre29.ps.gz
+|   |-- ppl-user-0.10pre36-html.tar.gz
+|   |-- ppl-user-0.10pre36.pdf
+|   |-- ppl-user-0.10pre36.ps.gz
+|   |-- ppl-user-c-interface-0.10pre36-html.tar.gz
+|   |-- ppl-user-c-interface-0.10pre36.pdf
+|   |-- ppl-user-c-interface-0.10pre36.ps.gz
+|   |-- ppl-user-java-interface-0.10pre36-html.tar.gz
+|   |-- ppl-user-java-interface-0.10pre36.pdf
+|   |-- ppl-user-java-interface-0.10pre36.ps.gz
+|   |-- ppl-user-ocaml-interface-0.10pre36-html.tar.gz
+|   |-- ppl-user-ocaml-interface-0.10pre36.pdf
+|   |-- ppl-user-ocaml-interface-0.10pre36.ps.gz
+|   |-- ppl-user-prolog-interface-0.10pre36-html.tar.gz
+|   |-- ppl-user-prolog-interface-0.10pre36.pdf
+|   |-- ppl-user-prolog-interface-0.10pre36.ps.gz
 |   |-- ppl.sty
-|   |-- ppl_lcdd.1
-|   |-- ppl_lpsol.1
-|   |-- user-c-interface.doxyconf-html
-|   |-- user-c-interface.doxyconf-html.in
-|   |-- user-c-interface.doxyconf-latex
-|   |-- user-c-interface.doxyconf-latex.in
-|   |-- user-c-interface.tex
-|   |-- user-java-interface.doxyconf-html.in
-|   |-- user-java-interface.doxyconf-latex
-|   |-- user-java-interface.doxyconf-latex.in
-|   |-- user-java-interface.tex
-|   |-- user-ocaml-interface.doxyconf-html.in
-|   |-- user-ocaml-interface.doxyconf-latex
-|   |-- user-ocaml-interface.doxyconf-latex.in
-|   |-- user-ocaml-interface.tex
-|   |-- user-prolog-interface.doxyconf-html
-|   |-- user-prolog-interface.doxyconf-html.in
-|   |-- user-prolog-interface.doxyconf-latex
-|   |-- user-prolog-interface.doxyconf-latex.in
-|   |-- user-prolog-interface.tex
+|   |-- user-foreign-language-interface.doxyconf
+|   |-- user-foreign-language-interface.doxyconf.in
+|   |-- user-foreign-language-interface.tex
 |   |-- user.doxyconf-html
 |   |-- user.doxyconf-html.in
 |   |-- user.doxyconf-latex
 |   |-- user.doxyconf-latex.in
 |   `-- user.tex
-|-- fedora
-|   |-- Makefile.am
-|   |-- Makefile.in
-|   |-- ppl.hh
-|   |-- ppl.spec
-|   |-- ppl_c.h
-|   `-- pwl.hh
 |-- install-sh
 |-- instchk.hh
 |-- interfaces
@@ -478,9 +438,16 @@ ppl-0.10
 |   |   |-- ppl_interface_generator_c_h.m4
 |   |   |-- ppl_interface_generator_c_h_code.m4
 |   |   |-- ppl_interface_generator_c_hh_files.m4
-|   |   `-- ppl_interface_generator_c_procedure_generators.m4
+|   |   |-- ppl_interface_generator_c_procedure_generators.m4
+|   |   `-- tests
+|   |       |-- Makefile.am
+|   |       |-- Makefile.in
+|   |       |-- cxxoutput.c
+|   |       |-- ppl_c_test.cc
+|   |       |-- ppl_c_test.h
+|   |       |-- print_to_buffer.cc
+|   |       `-- print_to_buffer.h
 |   |-- Java
-|   |   |-- Java_interface.dox
 |   |   |-- Makefile.am
 |   |   |-- Makefile.in
 |   |   |-- jni
@@ -489,7 +456,8 @@ ppl-0.10
 |   |   |   |-- ppl_interface_generator_java_classes_cc_code.m4
 |   |   |   |-- ppl_interface_generator_java_classes_cc_files.m4
 |   |   |   |-- ppl_java_common.cc
-|   |   |   |-- ppl_java_common.hh
+|   |   |   |-- ppl_java_common.defs.hh
+|   |   |   |-- ppl_java_common.inlines.hh
 |   |   |   `-- ppl_java_globals.cc
 |   |   |-- parma_polyhedra_library
 |   |   |   |-- By_Reference.java
@@ -499,8 +467,11 @@ ppl-0.10
 |   |   |   |-- Congruence_System.java
 |   |   |   |-- Constraint.java
 |   |   |   |-- Constraint_System.java
+|   |   |   |-- Control_Parameter_Name.java
+|   |   |   |-- Control_Parameter_Value.java
 |   |   |   |-- Degenerate_Element.java
 |   |   |   |-- Domain_Error_Exception.java
+|   |   |   |-- Fake_Class_for_Doxygen.java
 |   |   |   |-- Generator.java
 |   |   |   |-- Generator_System.java
 |   |   |   |-- Generator_Type.java
@@ -534,15 +505,15 @@ ppl-0.10
 |   |   |   |-- Variables_Set.java
 |   |   |   |-- ppl_interface_generator_java_classes_java.m4
 |   |   |   `-- ppl_interface_generator_java_classes_java_code.m4
-|   |   |-- ppl_interface_generator_java_dox.m4
-|   |   |-- ppl_interface_generator_java_dox_code.m4
 |   |   |-- ppl_interface_generator_java_procedure_generators.m4
-|   |   |-- ppl_java_common_dox
 |   |   `-- tests
 |   |       |-- C_Polyhedron_test1.java
+|   |       |-- MIP_Problem_test1.java
 |   |       |-- Makefile.am
 |   |       |-- Makefile.in
 |   |       |-- NNC_Polyhedron_test1.java
+|   |       |-- PPL_Test.java
+|   |       |-- Parma_Polyhedra_Library_test1.java
 |   |       |-- Test_Executor.java
 |   |       |-- Test_Partial_Function.java
 |   |       |-- ppl_interface_generator_java_test_java.m4
@@ -567,7 +538,7 @@ ppl-0.10
 |   |   |-- ppl_ocaml_common.defs.hh
 |   |   |-- ppl_ocaml_common.inlines.hh
 |   |   |-- ppl_ocaml_globals.ml
-|   |   |-- ppl_ocaml_types.ml
+|   |   |-- ppl_ocaml_globals.mli
 |   |   `-- tests
 |   |       |-- Makefile.am
 |   |       |-- Makefile.in
@@ -579,6 +550,7 @@ ppl-0.10
 |   |   |-- Ciao
 |   |   |   |-- Makefile.am
 |   |   |   |-- Makefile.in
+|   |   |   |-- README.ciao
 |   |   |   |-- ciao_cfli.hh
 |   |   |   |-- ciao_clpq.pl
 |   |   |   |-- ciao_clpq2.pl
@@ -586,13 +558,14 @@ ppl-0.10
 |   |   |   |-- ciao_efli.hh
 |   |   |   |-- ciao_pl_check.pl
 |   |   |   |-- ppl_interface_generator_ciao_pl.m4
-|   |   |   |-- ppl_interface_generator_ciao_predicate_check_pl.m4
+|   |   |   |-- ppl_interface_generator_ciao_prolog_generated_test_pl.m4
 |   |   |   `-- ppl_prolog_sysdep.hh
 |   |   |-- GNU
 |   |   |   |-- Makefile.am
 |   |   |   |-- Makefile.in
 |   |   |   |-- README.gprolog
 |   |   |   |-- gnu_pl_check.pl
+|   |   |   |-- gnu_prolog_generated_test.pl
 |   |   |   |-- gp_clpq.pl
 |   |   |   |-- gprolog_cfli.hh
 |   |   |   |-- gprolog_efli.cc
@@ -615,7 +588,7 @@ ppl-0.10
 |   |   |   |-- sicstus_efli.hh
 |   |   |   |-- sp_clpq.pl
 |   |   |   |-- sp_pl_check.pl
-|   |   |   `-- sp_predicate_check.pl
+|   |   |   `-- sp_prolog_generated_test.pl
 |   |   |-- SWI
 |   |   |   |-- Makefile.am
 |   |   |   |-- Makefile.in
@@ -630,14 +603,14 @@ ppl-0.10
 |   |   |   |-- swi_efli.cc
 |   |   |   |-- swi_efli.hh
 |   |   |   |-- swi_pl_check.pl
-|   |   |   `-- swi_predicate_check.pl
+|   |   |   `-- swi_prolog_generated_test.pl
 |   |   |-- XSB
 |   |   |   |-- Makefile.am
 |   |   |   |-- Makefile.in
 |   |   |   |-- ppl_interface_generator_xsb_H.m4
 |   |   |   |-- ppl_interface_generator_xsb_cc.m4
 |   |   |   |-- ppl_interface_generator_xsb_hh.m4
-|   |   |   |-- ppl_interface_generator_xsb_predicate_check_P.m4
+|   |   |   |-- ppl_interface_generator_xsb_prolog_generated_test_P.m4
 |   |   |   |-- ppl_prolog_sysdep.hh
 |   |   |   |-- xsb_cfli.hh
 |   |   |   |-- xsb_clpq.P
@@ -657,7 +630,8 @@ ppl-0.10
 |   |   |   |-- yap_clpq2.pl
 |   |   |   |-- yap_efli.cc
 |   |   |   |-- yap_efli.hh
-|   |   |   `-- yap_pl_check.pl
+|   |   |   |-- yap_pl_check.pl
+|   |   |   `-- yap_prolog_generated_test.pl
 |   |   |-- ppl_interface_generator_prolog_cc_code.m4
 |   |   |-- ppl_interface_generator_prolog_cc_files.m4
 |   |   |-- ppl_interface_generator_prolog_dox.m4
@@ -708,13 +682,13 @@ ppl-0.10
 |   |       |-- expected_pchk_int8_a
 |   |       |-- expected_pchk_mpz
 |   |       |-- expected_pchk_mpz_a
+|   |       |-- expected_pgt
 |   |       |-- fib.clpq
 |   |       |-- mc91.clpq
 |   |       |-- pl_check.pl
-|   |       |-- pl_grid_check.pl
-|   |       |-- ppl_interface_generator_predicate_check_code.m4
-|   |       |-- ppl_interface_generator_predicate_check_pl.m4
-|   |       |-- ppl_predicate_check_common.pl
+|   |       |-- ppl_interface_generator_prolog_generated_test_pl.m4
+|   |       |-- ppl_interface_generator_prolog_generated_test_pl_code.m4
+|   |       |-- ppl_prolog_generated_test_common.pl
 |   |       |-- schedule.clpq
 |   |       |-- script_clpq
 |   |       |-- script_clpq2
@@ -741,10 +715,14 @@ ppl-0.10
 |   |-- ac_check_xsb_prolog.m4
 |   |-- ac_cxx_attribute_weak.m4
 |   |-- ac_cxx_double_binary_format.m4
+|   |-- ac_cxx_double_exact_output.m4
 |   |-- ac_cxx_flexible_arrays.m4
 |   |-- ac_cxx_float_binary_format.m4
+|   |-- ac_cxx_float_exact_output.m4
 |   |-- ac_cxx_ieee_inexact_flag.m4
+|   |-- ac_cxx_limit_memory.m4
 |   |-- ac_cxx_long_double_binary_format.m4
+|   |-- ac_cxx_long_double_exact_output.m4
 |   |-- ac_cxx_proper_long_double.m4
 |   |-- ac_cxx_remainder_bug.m4
 |   |-- ac_prog_jar.m4
@@ -1044,6 +1022,10 @@ ppl-0.10
 |   |-- ppl.hh.dist
 |   |-- ppl_header.hh
 |   |-- simplify.cc
+|   |-- stdiobuf.cc
+|   |-- stdiobuf.defs.hh
+|   |-- stdiobuf.inlines.hh
+|   |-- stdiobuf.types.hh
 |   |-- swapping_sort.icc
 |   |-- version.cc
 |   `-- version.hh.in
@@ -1186,10 +1168,6 @@ ppl-0.10
 |   |   |-- universe1.cc
 |   |   |-- upperbound1.cc
 |   |   `-- writebox1.cc
-|   |-- FCAIBVP.cc
-|   |-- FCAIBVP.defs.hh
-|   |-- FCAIBVP.inlines.hh
-|   |-- FCAIBVP.types.hh
 |   |-- Grid
 |   |   |-- Makefile.am
 |   |   |-- Makefile.in
@@ -1205,6 +1183,7 @@ ppl-0.10
 |   |   |-- affineimage2.cc
 |   |   |-- affinepreimage1.cc
 |   |   |-- affinepreimage2.cc
+|   |   |-- approximatepartition1.cc
 |   |   |-- asciidumpload1.cc
 |   |   |-- asciidumpload2.cc
 |   |   |-- asciidumpload3.cc
@@ -1384,7 +1363,6 @@ ppl-0.10
 |   |-- Polyhedron
 |   |   |-- Makefile.am
 |   |   |-- Makefile.in
-|   |   |-- README
 |   |   |-- addcongruence1.cc
 |   |   |-- addcongruences1.cc
 |   |   |-- addconstraint1.cc
@@ -1516,6 +1494,7 @@ ppl-0.10
 |   |   |-- powerset1.cc
 |   |   |-- product1.cc
 |   |   `-- simplifyusingcontext1.cc
+|   |-- README
 |   |-- Random_Number_Generator.defs.hh
 |   |-- Random_Number_Generator.inlines.hh
 |   |-- Random_Number_Generator.types.hh
@@ -1523,8 +1502,7 @@ ppl-0.10
 |   |-- files.hh
 |   |-- ppl_test.cc
 |   |-- ppl_test.hh
-|   |-- print.cc
-|   `-- print.hh
+|   `-- valgrind_suppressions
 `-- utils
     |-- Makefile.am
     |-- Makefile.in
