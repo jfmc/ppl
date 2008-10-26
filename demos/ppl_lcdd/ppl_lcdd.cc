@@ -141,7 +141,11 @@ struct option long_options[] = {
 #endif
 
 static const char* usage_string
-= "Usage: %s [OPTION]... [FILE]...\n\n"
+= "Usage: %s [OPTION]... [FILE]...\n"
+"Reads an H-representation (resp., a V-representation) of a polyhedron\n"
+"and generates a V-representation (resp., an H-representation) of\n"
+"the same polyhedron.\n\n"
+"Options:\n"
 "  -CSECS, --max-cpu=SECS  limits CPU usage to SECS seconds\n"
 "  -RMB, --max-memory=MB   limits memory usage to MB megabytes\n"
 "  -h, --help              prints this help text to stdout\n"

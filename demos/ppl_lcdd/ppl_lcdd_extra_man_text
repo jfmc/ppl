@@ -1,3 +1,8 @@
+/same polyhedron/
+See the
+.IR "cddlib Reference Manual"
+for information on the file formats.
+
 [AUTHOR]
 See the file \fBCREDITS\fR in the source distribution or use the command
 \fBppl\-config \-\-credits\fR for a list of contributors.
@@ -15,4 +20,11 @@ The latest version of the Parma Polyhedra Library and all the documentation
 is available at \fBhttp://www.cs.unipr.it/ppl/\fR .
 
 [SEE ALSO]
-ppl-config(1)
+.BR ppl-config(1)
+.sp
+Komei Fukuda.
+.IR "cddlib Reference Manual",
+available (in several formats) at
+\fBhttp://www.ifor.math.ethz.ch/~fukuda/cdd_home/index.html\fR .
+
+
