@@ -2,8 +2,6 @@
 Enhancements for PPL 0.10
 =========================
 
-- Provide PPL-specific documentation on the use of `make check'.
-
 - Double check the documentation of add_constraint(s)/congruence(s).
   NOTA BENE: we should be careful when promising that add_constraint()
   will preserve the exact semantics of the added constraint.  Think about
@@ -26,6 +24,8 @@ Enhancements for PPL 0.10.1 or later versions
   inexact flag.
 - `make check' in ppl_lpsol must run also the incremental version
   of the simplex solver.
+- Complete the implementation of the --enable-check configure option.
+  Explain it in README.configure.
 
 
 Enhancements for PPL 0.11 or later versions
