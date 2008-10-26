@@ -19,13 +19,21 @@ o  The new class Octagonal_Shape provides an implementation of the domain
    Patricia Hill, Elena Mazzi and Enea Zaffanella in their SAS 2005 paper.
 
 o  The class LP_Problem has been renamed MIP_Problem and now supports
-   the solution of Mixed Integer (Linear) Programming problems. Also
-   added support for the incremental solution of MIP problems: it is now
+   the solution of Mixed Integer (Linear) Programming problems.
+
+   Support added for the incremental solution of MIP problems: it is now
    possible to add new space dimensions or new constraints to the
    feasible region, as well as change the objective function and the
    optimization mode, while still exploiting some of the computational
-   work done before these changes. See the documentation of class
-   MIP_Problem for a detailed description of the public interface.
+   work done before these changes.
+
+   Support for changing control parameters for the pricing method
+   allows a choice between the steepest edge pricing method using floating
+   points (default), steepest edge pricing method using coefficient,
+   and textbook pricing method.
+
+   See the documentation of class MIP_Problem for a detailed description
+   of the public interface.
 
 o  Class BD_Shape and Grid no longer provide methods such as bds_hull_*,
    join_*, bds_difference_* and grid_difference*. The uniformly named
@@ -68,6 +76,15 @@ o  In the Congruence class, for consistency with the Constraint class,
 o  All identifiers containing the strings `less_than_or_equal' or
    `greater_than_or_equal', any case, have been renamed so as to contain
    `less_or_equal' or `greater_or_equal', respectively.
+
+o  All PPL semantic objects now provide the methods
+
+   total_memory_in_bytes() const
+   external_memory_in_bytes() const
+
+   returning the total size in bytes of the memory occupied by the
+   PPL object and the size in bytes of the memory managed by the PPL
+   object.
 
 o  Users of the C++ interface of the library can now decide to disable
    the automatic initialization mechanism of the PPL.  To do so, the
@@ -115,6 +132,8 @@ o  Partially_Reduced_Product ...
 
 o  shrink_bounding_box has gone ...
 
+o  For Grids, build from covering_box and get_covering_box have gome...
+
 o  All PPL semantic objects can be constructed from other PPL semantic
    objects. All these constructors have an optional complexity argument
    with default value allowing algorithms with any complexity to be used.
@@ -127,6 +146,8 @@ o  As all PPL semantic objects can now be constructed from boxes,
      template <typename Box> Grid(const Box&, From_Bounding_Box)
 
    have been removed.
+
+o  The templatic domain Partially_Reduced_Product has been added...
 
 o  The `ppl.hh' header file no longer defines macros not prefixed
    by "PPL_".
@@ -165,6 +186,7 @@ o  In the interfaces, the interface procedures for
    ppl_Grid_generalized_preimage_with_congruence/6
    so as to allow for /4 and /5, resp., versions
 
+o  Documentation...
 
 Bugfixes
 ========
