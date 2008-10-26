@@ -17,12 +17,12 @@ Enhancements for PPL 0.10
   programs in the demos directory (they constitute additional examples
   of use of the C and C++ interfaces) and in the directories under tests
   (these are currently covered by a README file).
+
 - MIP_Problem: ensure ascii_load() and operator<< are correct.
+
 - Complete the manual pages for ppl-config, ppl_lpsol and ppl_lcdd.
-- Write a manual page for ppl (3).
-- Clearly explain, in the documentation, how (not) to use
-  set_GMP_memory_allocation_functions().  More generally, explain how
-  to have memory-guarded computations.
+
+- Write a manual page for libppl_c (3).
 
 
 Enhancements for PPL 0.10.1 or later versions
