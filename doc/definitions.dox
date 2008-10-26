@@ -329,9 +329,9 @@ descriptors since they are also used in <EM>generic</EM> PPL operations.
 <LI>
   Constructors of a semantic GD from a constraint GD;
   either a linear constraint system or a linear congruence system.
-  If the semantic GD cannot capture the precise meaning of the constraint GD
-  then it indicates its unsuitability by throwing an "invalid argument"
-  exception to signal that the operation could not be performed.
+  These constructors assume that the given semantic GD provides optimal
+  support for the argument syntactic GD: if that is not the case,
+  an invalid argument exception is thrown.
 </LI>
 <LI>
   Other interaction between the semantic GDs and constraint GDs
