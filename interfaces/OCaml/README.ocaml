@@ -1,14 +1,14 @@
 
 The Objective Caml interface of the Parma Polyhedra Library requires
 OCaml version 3.09 or higher and the MLGMP wrapper to the GMP library
-(http://caml.inria.fr/cgi-bin/hump.en.cgi?contrib=278).
-Note that MLGMP, by default, the MPFR library (http://www.mpfr.org/)
-in addition to GMP.
+(http://caml.inria.fr/cgi-bin/hump.en.cgi?contrib=278).  Note that
+MLGMP, by default, requires the MPFR library (http://www.mpfr.org/) in
+addition to GMP.
 
 In order to install MLGMP you should make sure that GMP_INCLUDES and
-GMP_LIBDIR are correctly set (these variables occur at the beginning
-of Makefile in the MLGMP's root directory).  A `make' followed by
-`make install' (using GNU Make) should now be enough.
+GMP_LIBDIR are correctly set (these variables are defined at the
+beginning of Makefile in the MLGMP's root directory).  A `make'
+followed by `make install' (using GNU Make) should now be enough.
 
 The Objective Caml interface provides the module Ppl_ocaml.
 The implementation of the module relies on a library of interface
