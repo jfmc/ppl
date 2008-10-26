@@ -10,10 +10,6 @@ Enhancements for PPL 0.10
 
 - MIP_Problem: ensure ascii_load() and operator<< are correct.
 
-- Complete the manual pages for ppl-config.
-
-
-
 Enhancements for PPL 0.10.1 or later versions
 =============================================
 
