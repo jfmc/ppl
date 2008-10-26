@@ -10,14 +10,6 @@ Enhancements for PPL 0.10
   adding a rational BD constraint to an integer or floating-point based
   BD shape.
 
-- Add a short section to the user documentation explaining how to
-  compile and link (at least under Un*x) an application using the PPL
-  through the C and C++ interface (this information is already provided
-  for the Prolog interfaces).  This section should also mention the
-  programs in the demos directory (they constitute additional examples
-  of use of the C and C++ interfaces) and in the directories under tests
-  (these are currently covered by a README file).
-
 - MIP_Problem: ensure ascii_load() and operator<< are correct.
 
 - Complete the manual pages for ppl-config, ppl_lpsol and ppl_lcdd.

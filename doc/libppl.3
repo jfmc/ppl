@@ -1,4 +1,5 @@
 .TH libppl "3" "November 2008" "PPL 0.10" "libppl overview"
+
 .SH NAME
 libppl \- the C++ interface of the Parma Polyhedra Library
 .SH SYNOPSIS
@@ -6,6 +7,7 @@ libppl \- the C++ interface of the Parma Polyhedra Library
 .sp
 c++ file.cc
 .B -lppl
+
 .SH DESCRIPTION
 This is a short overview on how to use the Parma Polyhedra Library (PPL)
 in your C++ programs on Unix-like operating systems.
@@ -56,6 +58,18 @@ It is also a good norm to call the function
 .B void Parma_Polyhedra_Library::finalize()
 .sp
 when you are done with the library.
+
+.SH "USING THE LIBRARY"
+Keeping in mind that there is no substitute for a careful reading of
+.IR "The Parma Polyhedra Library User's Manual (version 0.10)",
+you can find many examples of use in the directories
+.B tests
+(see the
+.B README
+file in that directory)
+and
+.B demos/ppl_lcdd
+of the source distribution.
 
 .SH "LINKING WITH THE LIBRARY"
 Linking with the C++ interface of the Parma Polyhedra Library is best done
@@ -169,7 +183,7 @@ available (in several formats) at
 The latest version of the Parma Polyhedra Library and all the documentation
 is available at \fBhttp://www.cs.unipr.it/ppl/\fR .
 
-.SH AUTHOR
+.SH AUTHORS
 See the file \fBCREDITS\fR in the source distribution or use the command
 \fBppl\-config \-\-credits\fR for a list of contributors.
 
