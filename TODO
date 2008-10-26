@@ -14,12 +14,14 @@ Enhancements for PPL 0.10
 
 - Complete the manual pages for ppl-config, ppl_lpsol and ppl_lcdd.
 
-- Write a manual page for libppl_c (3).
 
 
 Enhancements for PPL 0.10.1 or later versions
 =============================================
 
+- In libppl.3 and in the test programs, use malloc(), realloc() and
+  free() instead of operator new() and operator delete() to implement
+  the replacement GMP allocation functions.
 - Enhance the support for systems not providing support for the IEEE
   inexact flag.
 - `make check' in ppl_lpsol must run also the incremental version

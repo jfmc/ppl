@@ -536,6 +536,7 @@ $(DEVREF_CONFIGURED_JAVA_INTERFACE_PS_MANUAL)
 
 dist_man_MANS = \
 libppl.3 \
+libppl_c.3 \
 ppl-config.1
 
 ##### Build Targets #####
