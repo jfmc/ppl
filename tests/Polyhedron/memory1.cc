@@ -20,6 +20,9 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+// Note: we cannot know, at this stage whether
+// PPL_CXX_SUPPORTS_ATTRIBUTE_WEAK evaluates to true.
+#define PPL_NO_AUTOMATIC_INITIALIZATION
 #include "ppl_test.hh"
 #include <new>
 #include <cstring>
@@ -152,9 +155,22 @@ cxx_free(void* p, size_t) {
 
 #define INIT_MEMORY 3*1024*1024
 
+#if PPL_CXX_SUPPORTS_ATTRIBUTE_WEAK
+extern "C" void
+set_GMP_memory_allocation_functions(void) {
+  mp_set_memory_functions(cxx_malloc, cxx_realloc, cxx_free);
+}
+#endif // PPL_CXX_SUPPORTS_ATTRIBUTE_WEAK
+
 int
 main() TRY {
+#if !PPL_CXX_SUPPORTS_ATTRIBUTE_WEAK
   mp_set_memory_functions(cxx_malloc, cxx_realloc, cxx_free);
+#endif // !PPL_CXX_SUPPORTS_ATTRIBUTE_WEAK
+
+  // Note: we have included <ppl.hh> under the definition of
+  // PPL_NO_AUTOMATIC_INITIALIZATION.
+  Parma_Polyhedra_Library::initialize();
 
   set_handlers();
 
@@ -187,6 +203,10 @@ main() TRY {
 
   nout << "Estimated memory for dimension " << dimension
        << ": " << (lower_bound+upper_bound)/2 << " bytes" << endl;
+
+  // Note: we have included <ppl.hh> under the definition of
+  // PPL_NO_AUTOMATIC_INITIALIZATION.
+  Parma_Polyhedra_Library::finalize();
 
   return 0;
 }
