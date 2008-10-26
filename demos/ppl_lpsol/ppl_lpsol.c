@@ -98,14 +98,17 @@ static struct option long_options[] = {
 #endif
 
 #define USAGE_STRING0                                                   \
-  "Usage: %s [OPTION]... [FILE]\n\n"                                    \
+  "Usage: %s [OPTION]... [FILE]\n"                                      \
+  "Reads a file in MPS format and attempts solution using the optimization\n" \
+  "algorithms provided by the PPL.\n\n"                                 \
+  "Options:\n"                                                          \
   "  -c, --check[=THRESHOLD] checks the obtained results;  optima are checked\n" \
   "                          with a tolerance of THRESHOLD (default %.10g)\n" \
   "  -i, --incremental       solves the problem incrementally\n"        \
   "  -m, --min               minimizes the objective function\n"        \
-  "  -M, --max               maximizes the objective function (default)\n" \
-  "  -n, --no-optimization   checks for satisfiability only\n"
+  "  -M, --max               maximizes the objective function (default)\n"
 #define USAGE_STRING1                                                   \
+  "  -n, --no-optimization   checks for satisfiability only\n"          \
   "  -r, --no-mip            consider integer variables as real variables\n" \
   "  -CSECS, --max-cpu=SECS  limits CPU usage to SECS seconds\n"        \
   "  -RMB, --max-memory=MB   limits memory usage to MB megabytes\n"     \

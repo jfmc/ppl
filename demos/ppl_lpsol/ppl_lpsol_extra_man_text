@@ -1,6 +1,5 @@
-[DESCRIPTION]
-Reads a file in MPS format and attempts solution using the PPL optimization
-algorithms provided by the PPL.  See the
+/algorithms provided by the PPL/
+See the
 .IR "GNU Linear Programming Kit: Reference Manual (Version 4.31)"
 for information on the MPS format.
 
