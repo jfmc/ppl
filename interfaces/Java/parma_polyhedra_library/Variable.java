@@ -60,9 +60,9 @@ public class Variable implements Comparable<Variable> {
 
   /*! \brief
     Returns a negative number if \p this comes first than \p v,
-    a zero if \p this equals \p v, a positive number if 
+    a zero if \p this equals \p v, a positive number if
    if \p this comes first than \p v.
-   */         
+   */
     public int compareTo(Variable v) {
         return varid - v.varid;
         }

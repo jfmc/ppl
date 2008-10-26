@@ -185,9 +185,9 @@ test07() {
   oct.add_constraint(B <= 7);
 
   print_constraints(oct, "*** oct ***");
- 
+
   dimension_type affine_dim = oct.affine_dimension();
- 
+
   nout << endl
        << "The affine dimension of a system of `oct' is:"
        << endl
