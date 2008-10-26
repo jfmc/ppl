@@ -210,17 +210,17 @@ ppl_ocaml_domains.hh: $(interface_generator_dependencies)
 	rm -f ppl_ocaml_hh_blob
 
 MOSTLYCLEANFILES = \
-@required_instantiations_ocaml_cxx_objects@
+@required_instantiations_ocaml_cxx_objects@ \
+ppl_ocaml.cma \
+ppl_ocaml.cmi \
+ppl_ocaml.cmo \
+ppl_ocaml_globals.cmi \
+ppl_ocaml_globals.cmo
 
 CLEANFILES = \
 @required_instantiations_ocaml_cxx_sources@ \
 @required_instantiations_ocaml_cxx_headers@ \
 ppl_ocaml_domains.hh \
-ppl_ocaml.cma \
-ppl_ocaml.cmi \
-ppl_ocaml.cmo \
 ppl_ocaml.ml \
 ppl_ocaml.mli \
-ppl_ocaml_globals.cmi \
-ppl_ocaml_globals.cmo \
 ppl_ocaml_domains_cc_files.stamp

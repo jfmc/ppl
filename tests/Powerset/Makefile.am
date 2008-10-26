@@ -76,5 +76,3 @@ pointsetpowerset6_SOURCES = pointsetpowerset6.cc
 product1_SOURCES = product1.cc
 
 check_PROGRAMS = $(TESTS)
-
-MOSTLYCLEANFILES =

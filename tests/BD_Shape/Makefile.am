@@ -282,5 +282,4 @@ writebdshape1_SOURCES = writebdshape1.cc
 MOSTLYCLEANFILES = \
 ascii_dump_load1.dat
 
-DISTCLEANFILES = \
-run_tests.stamp
+CLEANFILES = run_tests.stamp

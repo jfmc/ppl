@@ -489,4 +489,4 @@ dist-hook:
 	mv -f $(distdir)/COPYING.cc $(distdir)/COPYING.cc.dist
 	mv -f $(distdir)/CREDITS.cc $(distdir)/CREDITS.cc.dist
 
-MOSTLYCLEANFILES = $(BUILT_SOURCES)
+CLEANFILES = $(BUILT_SOURCES)

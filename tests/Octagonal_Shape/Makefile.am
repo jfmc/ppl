@@ -283,5 +283,5 @@ writeoctagon1_SOURCES = writeoctagon1.cc
 MOSTLYCLEANFILES = \
 ascii_dump_load1.dat
 
-DISTCLEANFILES = \
+CLEANFILES = \
 run_tests.stamp

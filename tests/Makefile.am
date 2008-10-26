@@ -57,5 +57,3 @@ Random_Number_Generator.inlines.hh \
 Random_Number_Generator.types.hh
 
 EXTRA_DIST = valgrind_suppressions
-
-MOSTLYCLEANFILES =
