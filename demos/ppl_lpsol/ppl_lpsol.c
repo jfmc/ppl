@@ -98,7 +98,7 @@ static struct option long_options[] = {
 #endif
 
 #define USAGE_STRING0                                                   \
-  "Usage: %s [OPTION]... [FILE]...\n\n"                                 \
+  "Usage: %s [OPTION]... [FILE]\n\n"                                    \
   "  -c, --check[=THRESHOLD] checks the obtained results;  optima are checked\n" \
   "                          with a tolerance of THRESHOLD (default %.10g)\n" \
   "  -i, --incremental       solves the problem incrementally\n"        \

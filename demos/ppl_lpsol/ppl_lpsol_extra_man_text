@@ -1,3 +1,9 @@
+[DESCRIPTION]
+Reads a file in MPS format and attempts solution using the PPL optimization
+algorithms provided by the PPL.  See the
+.IR "GNU Linear Programming Kit: Reference Manual (Version 4.31)"
+for information on the MPS format.
+
 [AUTHOR]
 See the file \fBCREDITS\fR in the source distribution or use the command
 \fBppl\-config \-\-credits\fR for a list of contributors.
@@ -15,4 +21,8 @@ The latest version of the Parma Polyhedra Library and all the documentation
 is available at \fBhttp://www.cs.unipr.it/ppl/\fR .
 
 [SEE ALSO]
-ppl-config(1)
+.BR ppl-config(1)
+.sp
+Andrew Makhorin.
+.IR "GNU Linear Programming Kit: Reference Manual (Version 4.31)".
+
