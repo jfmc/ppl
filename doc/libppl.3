@@ -86,7 +86,71 @@ launch a PPL computation, and be ready to catch an
 exception.  Since the library is exception-safe, you can take the
 appropriate corrective measures (e.g., simplify the polyhedra and/or select
 less precise though less complex algorithms), and restart the computation.
+In order to do that, you should define alternative memory allocation functions
+for GMP that throw
+.B std::bad_alloc
+upon memory exhaustion.
+For instance:
+.sp
+.nf
+extern "C" void*
+cxx_malloc(size_t size) {
+  return ::operator new(size);
+}
 
+extern "C" void*
+cxx_realloc(void* p, size_t old_size, size_t new_size) {
+  if (new_size <= old_size)
+    return p;
+  else {
+    void* new_p = ::operator new(new_size);
+    memcpy(new_p, p, old_size);
+    ::operator delete(p);
+    return new_p;
+  }
+}
+
+extern "C" void
+cxx_free(void* p, size_t) {
+  ::operator delete(p);
+}
+.fi
+.sp
+Then you must install these functions and this can be done in two different
+ways:
+.IP (1)
+If your C++ compiler supports
+.B __attribute__ ((weak))
+and you do not have any other special needs, then you could simply link
+a C function
+.B set_GMP_memory_allocation_functions(void)
+such as
+.sp
+.nf
+extern "C" void
+set_GMP_memory_allocation_functions(void) {
+  mp_set_memory_functions(cxx_malloc, cxx_realloc, cxx_free);
+}
+.fi
+.sp
+This is all what you have to do, whether you use or not the automatic
+initialization feature of the library (see above): in any case
+the initialization procedure will automatically call
+.B set_GMP_memory_allocation_functions(void).
+.IP (2)
+If your C++ compiler does not support
+.B __attribute__ ((weak))
+then you cannot use the automatic initialization feature of the library
+(see above) and should write a main program of the form
+.sp
+.nf
+int main() {
+  // The ordering of the following function calls is important.
+  mp_set_memory_functions(cxx_malloc, cxx_realloc, cxx_free);
+  Parma_Polyhedra_Library::initialize();
+  ...
+.fi
+.sp
 
 .SH "SEE ALSO"
 .BR ppl-config(1)
