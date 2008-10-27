@@ -170,12 +170,28 @@ o  methods
    constraints and congruences, respectively, are provided for all the
    PPL semantic objects.
 
-o  constrains(Variable var) ... TO BE COMPLETED
+o  The following methods are now provided for the PPL semantic objects:
 
-o  unconstrain(Variable var)
-   unconstrain(const Variables_Set& to_be_unconstrained) ... TO BE COMPLETED
+     bool constrains(Variable) const
 
-o  contains_integer_point() ... TO BE COMPLETED
+   checks if a dimension is constrained by a PPL semantic object;
+
+     bool contains_integer_point() const
+
+   checks if a PPL semantic object contains an integer point;
+
+     void unconstrain(Variable)
+     void unconstrain(const Variables_Set&)
+
+   each of these assigns, to a PPL semantic object, the cylindrification
+   of the object with respect to one (resp., a set) of its dimensions,
+   as defined by L. Henkin, J. D. Monk, and A. Tarski in Cylindric Algebras:
+   Part I (published by North-Holland in 1971).
+
+   Note that the constrains() and unconstrain() methods are not provided
+   for the Pointset Powerset or the Partially_Reduced_Product classes
+   and has_integer_point() is not provided for the Partially_Reduced_Product
+   classes.
 
 o  All PPL semantic objects can be constructed from other PPL semantic
    objects. All these constructors have an optional complexity argument
