@@ -252,12 +252,14 @@ o  Foreign language interfaces.
     C++, C, Java, OCaml, Ciao Prolog, GNU Prolog, SICStus Prolog,
     SWI Prolog, XSB Prolog and YAP Prolog.
 
-  - All the PPL semantics objects in the C++ interface are supported
-    by all the foreign language interfaces.
+  - Most of the PPL semantic objects provided by the C++ interface
+    are also supported by all the foreign language interfaces. A few
+    domains (in particular, many of the possible Box instantiations)
+    are only available via the C++ interface.
 
-  - Also, all the public methods for these objects are now provided
-    as methods/functions/predicates in the foreign language interfaces
-    with a uniform naming policy.
+  - Almost all the public methods for the PPL semantic objects are
+    provided as methods/functions/predicates in the foreign language
+    interfaces with a uniform naming policy.
 
   - In the C interface it is no longer an error to call ppl_initialize()
     or ppl_finalize() multiple times (this matches the behavior of the
