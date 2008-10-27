@@ -175,7 +175,7 @@ o  Users of the C++ interface of the library can now decide to disable
    should also be called (to release a small amount of memory) when
    done with the library.
 
-o  methods
+o  Methods
 
     static bool can_recycle_constraint_systems()
     static bool can_recycle_congruence_systems()
@@ -297,7 +297,7 @@ o  The documentation for the library has been deeply reorganized and
    manuals for each one of the available foreign language interfaces
    (namely, C, Java, OCaml, and Prolog). It is also possible to produce
    "configuration dependent" variants of the foreign language interface
-   manuals, where the contents of the manual takes into account the value
+   manuals, where the contents of the manual take into account the value
    of configuration option `--enable-instantiations'.
    All the manuals are provided in HTML, PDF and PostScript formats.
 
