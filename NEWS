@@ -60,8 +60,20 @@ o  The PPL semantic object Polyhedra_Powerset has been replaced by
 
 o  Partially_Reduced_Product ... TO BE COMPLETED
 
-o  The method relation_with(Congruence) has been added to the Polyhedron
-   class for compatibility with the Grid class methods. TO BE REVISED
+o  Refine_with methods ... TO BE COMPLETED
+
+o  Methods using the Congruence and Congruence_System classes
+   such as
+
+     congruences()
+     minimized_congruences()
+     add_congruence(Congruence cg)
+     add_congruences(Congruence_System cgs)
+     add_recycled_congruences(Congruence_System cgs)
+     relation_with(Congruence)
+
+   that were just provided for the Grid domain are now provided for
+   all the PPL semantic objects.
 
 o  Class BD_Shape and Grid no longer provide methods such as bds_hull_*,
    join_*, bds_difference_* and grid_difference*. The uniformly named
@@ -70,13 +82,9 @@ o  Class BD_Shape and Grid no longer provide methods such as bds_hull_*,
    and Octagonal_Shape, as well as Pointset_Powerset and polyhedra.
    For (C and NNC) polyhedra, the poly_hull_* and poly_difference_assign
    methods have been kept for backward compatibility (users should
-   anyway prefer adopting the uniformly named variants).
+   anyway prefer adopting the uniformly named variants). TO BE REVISED
 
-o  In the Octagonal_Shape, BD_Shape and Box domains:
-   add_congruences_and_minimize(Congruence_System cgs)
-   add_recycled_congruences(Congruence_System cgs)
-   add_recycled_congruences_and_minimize(Congruence_System& cgs)
-   widening_assign ... NEEDS REVISING
+o  Default widening_assign method now provided ... TO BE COMPLETED
 
 o  All PPL semantic objects now provide the method
 
