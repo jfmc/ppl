@@ -261,7 +261,7 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 
 //! A not necessarily closed, iso-oriented hyperrectangle.
 /*! \ingroup PPL_CXX_interface
-  A Box object represents the Cartesian product of \f$n\f$
+  A Box object represents the smash product of \f$n\f$
   not necessarily closed and possibly unbounded intervals
   represented by objects of class \p ITV,
   where \f$n\f$ is the space dimension of the box.
