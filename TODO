@@ -16,6 +16,9 @@ Enhancements for PPL 0.10.1 or later versions
 - Intervals are best instantiated with checked numbers with
   particular policies: review all the interfaced boxes,
   augment the testsuite, and update the documentation.
+- Review and revise the m4 code for the interfaces, looking for
+  cleaner and maybe more flexible methods and more efficient code.
+- Check the configuration dependent documentation for Prolog,
 
 
 Enhancements for PPL 0.11 or later versions
