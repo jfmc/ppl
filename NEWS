@@ -13,6 +13,23 @@ New and Changed Features
 o  The Parma Polyhedra Library is now released under the terms of the
    version 3 (or later) of the GNU General Public License.
 
+o  The new class Octagonal_Shape provides an implementation of the domain
+   of octagonal shapes (including optimized algorithms and a provably
+   correct widening and optimized algorithms) as proposed by Roberto Bagnara,
+   Patricia Hill, Elena Mazzi and Enea Zaffanella in their SAS 2005 paper.
+
+o  In the Octagonal_Shape domain:
+   add_recycled_constraints(Congruence_System cgs)
+   add_recycled_constraints_and_minimize(Congruence_System& cgs)
+   constructor from Box ... ??? IS THIS ITEM WANTED?
+
+o  A new abstraction called Box has been added.  Geometrically
+   speaking, a Box represents a not necessarily closed, iso-oriented
+   hyperrectangle.  This can also be seen as the smash product of `n'
+   not necessarily closed and possibly unbounded intervals, where `n'
+   is the space dimension of the box.  The Box template class is
+   parametric with respect to the class intervals.
+
 o  The class LP_Problem has been renamed MIP_Problem and now supports
    the solution of Mixed Integer (Linear) Programming problems.
 
@@ -29,18 +46,6 @@ o  The class LP_Problem has been renamed MIP_Problem and now supports
 
    See the documentation of class MIP_Problem for a detailed description
    of the public interface.
-
-o  The new class Octagonal_Shape provides an implementation of the domain
-   of octagonal shapes (including optimized algorithms and a provably
-   correct widening and optimized algorithms) as proposed by Roberto Bagnara,
-   Patricia Hill, Elena Mazzi and Enea Zaffanella in their SAS 2005 paper.
-
-o  In the Octagonal_Shape domain:
-   add_recycled_constraints(Congruence_System cgs)
-   add_recycled_constraints_and_minimize(Congruence_System& cgs)
-   constructor from Box ... ??? IS THIS ITEM WANTED?
-
-o  A new abstraction called Box has been added that... TO BE COMPLETED
 
 o  The PPL semantic object Polyhedra_Powerset has been replaced by
    the templatic object Pointset_Powerset<...> that can take any (simple)
