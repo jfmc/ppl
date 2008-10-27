@@ -30,7 +30,7 @@ o  A new abstraction called Box has been added.  Geometrically
    is the space dimension of the box.  The Box template class is
    parametric with respect to the class intervals.
 
-o A generic implementation of intervals has been added.  The template
+o  A generic implementation of intervals has been added.  The template
    class Interval is parametric on the type used to represent the
    interval boundaries (all native integer and floating point types
    are supported as well as unbounded integers and rational numbers
@@ -114,7 +114,12 @@ o  Class BD_Shape and Grid no longer provide methods such as bds_hull_*,
    methods have been kept for backward compatibility (users should
    anyway prefer adopting the uniformly named variants). TO BE REVISED
 
-o  Default widening_assign method now provided ... TO BE COMPLETED
+o  Default widening operators of the form:
+
+     void widening_assign(const ABSTRACTION&, unsigned*)
+
+   are now provided for all abstractions except for the Pointset_Powerset
+   abstractions.
 
 o  All PPL semantic objects now provide the method
 
