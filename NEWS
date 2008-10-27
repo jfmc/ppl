@@ -13,11 +13,6 @@ New and Changed Features
 o  The Parma Polyhedra Library is now released under the terms of the
    version 3 (or later) of the GNU General Public License.
 
-o  The new class Octagonal_Shape provides an implementation of the domain
-   of octagonal shapes (including optimized algorithms and a provably
-   correct widening and optimized algorithms) as proposed by Roberto Bagnara,
-   Patricia Hill, Elena Mazzi and Enea Zaffanella in their SAS 2005 paper.
-
 o  The class LP_Problem has been renamed MIP_Problem and now supports
    the solution of Mixed Integer (Linear) Programming problems.
 
@@ -35,6 +30,27 @@ o  The class LP_Problem has been renamed MIP_Problem and now supports
    See the documentation of class MIP_Problem for a detailed description
    of the public interface.
 
+o  The new class Octagonal_Shape provides an implementation of the domain
+   of octagonal shapes (including optimized algorithms and a provably
+   correct widening and optimized algorithms) as proposed by Roberto Bagnara,
+   Patricia Hill, Elena Mazzi and Enea Zaffanella in their SAS 2005 paper.
+
+o  In the Octagonal_Shape domain:
+   add_recycled_constraints(Congruence_System cgs)
+   add_recycled_constraints_and_minimize(Congruence_System& cgs)
+   constructor from Box ... ??? IS THIS ITEM WANTED?
+
+o  A new abstraction called Box has been added that... TO BE COMPLETED
+
+o  The class Polyhedra_Powerset has been renamed Pointset_Powerset,
+   since it can be applied to non-polyhedral abstractions, such as
+   the one offered by the Grid class. TO BE REVISED
+
+o  Partially_Reduced_Product ... TO BE COMPLETED
+
+o  The method relation_with(Congruence) has been added to the Polyhedron
+   class for compatibility with the Grid class methods. TO BE REVISED
+
 o  Class BD_Shape and Grid no longer provide methods such as bds_hull_*,
    join_*, bds_difference_* and grid_difference*. The uniformly named
    methods upper_bound_* and difference_assign should be used instead;
@@ -44,19 +60,18 @@ o  Class BD_Shape and Grid no longer provide methods such as bds_hull_*,
    methods have been kept for backward compatibility (users should
    anyway prefer adopting the uniformly named variants).
 
+o  In the Octagonal_Shape, BD_Shape and Box domains:
+   add_congruences_and_minimize(Congruence_System cgs)
+   add_recycled_congruences(Congruence_System cgs)
+   add_recycled_congruences_and_minimize(Congruence_System& cgs)
+   widening_assign ... NEEDS REVISING
+
 o  All PPL semantic objects now provide the method
 
      int32_t hash_code() const
 
    returning a 32-bit hash code for *this.  If x and y are such that
    x == y evaluates to true, so does x.hash_code() == y.hash_code().
-
-o  The method relation_with(Congruence) has been added to the Polyhedron
-   class for compatibility with the Grid class methods.
-
-o  The class Polyhedra_Powerset has been renamed Pointset_Powerset,
-   since it can be applied to non-polyhedral abstractions, such as
-   the one offered by the Grid class.
 
 o  The new methods
 
@@ -101,34 +116,20 @@ o  Users of the C++ interface of the library can now decide to disable
    should also be called (to release a small amount of memory) when
    done with the library.
 
-o  In the Octagonal_Shape, BD_Shape and Box domains:
-   add_congruences_and_minimize(Congruence_System cgs)
-   add_recycled_congruences(Congruence_System cgs)
-   add_recycled_congruences_and_minimize(Congruence_System& cgs)
-   widening_assign ...
-
-o  In the Octagonal_Shape domain:
-   add_recycled_constraints(Congruence_System cgs)
-   add_recycled_constraints_and_minimize(Congruence_System& cgs)
-   constructor from Box ...
-
-o  A new abstraction called Box has been added that ...
-
 o  can_recycle_constraint_systems()
-   can_recycle_congruence_systems() ...
+   can_recycle_congruence_systems() ... TO BE COMPLETED
 
-o  constrains(Variable var) ...
+o  constrains(Variable var) ... TO BE COMPLETED
 
 o  unconstrain(Variable var)
-   unconstrain(const Variables_Set& to_be_unconstrained) ...
+   unconstrain(const Variables_Set& to_be_unconstrained) ... TO BE COMPLETED
 
-o  contains_integer_point() ...
+o  contains_integer_point() ... TO BE COMPLETED
 
-o  Partially_Reduced_Product ...
+o  shrink_bounding_box has gone ... TO BE COMPLETED
 
-o  shrink_bounding_box has gone ...
-
-o  For Grids, build from covering_box and get_covering_box have gone...
+o  For Grids, build from covering_box and get_covering_box have
+   gone... TO BE COMPLETED
 
 o  All PPL semantic objects can be constructed from other PPL semantic
    objects. All these constructors have an optional complexity argument
@@ -142,8 +143,6 @@ o  As all PPL semantic objects can now be constructed from boxes,
      template <typename Box> Grid(const Box&, From_Bounding_Box)
 
    have been removed.
-
-o  The templatic domain Partially_Reduced_Product has been added...
 
 o  The `ppl.hh' header file no longer defines macros not prefixed
    by "PPL_".
@@ -200,9 +199,9 @@ o  Foreign language interfaces.
 
    respectively, so as to allow for /4 and /5, resp., versions.
 
-o  Documentation...
+o  Documentation... TO BE COMPLETED
 
-o  Changes to the configure eg --enable-interfaces...
+o  Changes to the configure eg --enable-interfaces... TO BE COMPLETED
 
 Bugfixes
 ========
