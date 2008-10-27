@@ -186,7 +186,11 @@ o  In the interfaces, the interface procedures for
    ppl_Grid_generalized_preimage_with_congruence/6
    so as to allow for /4 and /5, resp., versions
 
+o  New interfaces for OCaml and Java...
+
 o  Documentation...
+
+o  Changes to the configure eg --enable-interfaces...
 
 Bugfixes
 ========
