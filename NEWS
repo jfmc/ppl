@@ -23,7 +23,7 @@ o  A new abstraction called Box has been added.  Geometrically
    hyperrectangle.  This can also be seen as the smash product of `n'
    not necessarily closed and possibly unbounded intervals, where `n'
    is the space dimension of the box.  The Box template class is
-   parametric with respect to the class intervals.
+   parametric with respect to a class of intervals.
 
 o  A generic implementation of intervals has been added.  The template
    class Interval is parametric on the type used to represent the
