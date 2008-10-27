@@ -177,37 +177,37 @@ o  Users of the C++ interface of the library can now decide to disable
    should also be called (to release a small amount of memory) when
    done with the library.
 
-o  Methods
+o  For all the PPL semantic objects there are new methods:
 
     static bool can_recycle_constraint_systems() and
     static bool can_recycle_congruence_systems()
 
-   indicating whether or not a PPL semantic object is able to recycle
-   constraints and congruences, respectively, are provided for all the
-   PPL semantic objects.
+   that indicate whether or not a PPL semantic object is able to recycle
+   constraints and congruences, respectively.
 
-o  The following methods are now provided for the PPL semantic objects:
-
-     bool constrains(Variable) const
-
-   checks if a dimension is constrained by a PPL semantic object;
+o  For all PPL semantic objects there is a new method:
 
      bool contains_integer_point() const
 
-   checks if a PPL semantic object contains an integer point;
+   which checks if a PPL semantic object contains an integer point;
+   Note that this is not currently provided for the Partially_Reduced_Product
+   classes.
+
+o  For all PPL semantic objects there is a new method:
+
+     bool constrains(Variable) const
+
+   which checks if a dimension is constrained by a PPL semantic object;
+
+o  For all PPL semantic objects there are new methods:
 
      void unconstrain(Variable)
      void unconstrain(const Variables_Set&)
 
-   each of these assigns, to a PPL semantic object, the cylindrification
+   which assign, to a PPL semantic object, the cylindrification
    of the object with respect to one (resp., a set) of its dimensions,
    as defined by L. Henkin, J. D. Monk, and A. Tarski in Cylindric Algebras:
    Part I (published by North-Holland in 1971).
-
-   Note that the constrains() and unconstrain() methods are not provided
-   for the Pointset Powerset or the Partially_Reduced_Product classes
-   and has_integer_point() is not provided for the Partially_Reduced_Product
-   classes.
 
 o  All PPL semantic objects can be constructed from other PPL semantic
    objects. All these constructors have an optional complexity argument
