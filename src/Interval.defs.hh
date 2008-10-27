@@ -87,7 +87,7 @@ struct Is_Interval : public Is_Same_Or_Derived<Interval_Base, T> {};
 //! A generic, not necessarily closed, possibly restricted interval.
 /*! \ingroup PPL_CXX_interface
   The class template type parameter \p Boundary represents the type
-  of the interval boundaries, and can be chosen, among other possibilities
+  of the interval boundaries, and can be chosen, among other possibilities,
   within one of the following number families:
 
   - a bounded precision native integer type (that is,
