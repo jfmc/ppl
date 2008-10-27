@@ -176,10 +176,13 @@ o  As all PPL semantic objects can now be constructed from boxes,
 
 o  shrink_bounding_box has gone ... TO BE COMPLETED
 
-o  For Grids, the constructor
+o  For Grids, the PPL no longer supports covering boxes; hence the constructor
 
      template <typename Box> Grid(const Box&, From_Covering_Box)
-     template <typename Box> Grid(const Box& box, From_Covering_Box dummy)
+
+   and also the method
+
+     template <typename Box> void get_covering_box(Box&) const
 
    have been removed.
 
