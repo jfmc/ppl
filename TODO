@@ -11,6 +11,8 @@ Enhancements for PPL 0.10.1 or later versions
   of the simplex solver.
 - Complete the implementation of the --enable-check configure option.
   Explain it in README.configure.
+- Explain the `--enable-ppl_lcdd' and `--enable-ppl_lpsol' in
+  README.configure.
 
 
 Enhancements for PPL 0.11 or later versions
