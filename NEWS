@@ -15,13 +15,8 @@ o  The Parma Polyhedra Library is now released under the terms of the
 
 o  The new class Octagonal_Shape provides an implementation of the domain
    of octagonal shapes (including optimized algorithms and a provably
-   correct widening and optimized algorithms) as proposed by Roberto Bagnara,
-   Patricia Hill, Elena Mazzi and Enea Zaffanella in their SAS 2005 paper.
-
-o  In the Octagonal_Shape domain:
-   add_recycled_constraints(Congruence_System cgs)
-   add_recycled_constraints_and_minimize(Congruence_System& cgs)
-   constructor from Box ... ??? IS THIS ITEM WANTED?
+   correct widening) as proposed by Roberto Bagnara, Patricia Hill,
+   Elena Mazzi and Enea Zaffanella in their SAS 2005 paper.
 
 o  A new abstraction called Box has been added.  Geometrically
    speaking, a Box represents a not necessarily closed, iso-oriented
@@ -271,7 +266,7 @@ o  Foreign language interfaces.
 
    respectively, so as to allow for /4 and /5, resp., versions.
 
-o  Documentation... TO BE COMPLETED
+o  The documentation for the libraries has been greatly reorganized... TO BE COMPLETED
 
 o  Several options have been added to the configuration script.  These
    allow to control the generated language interfaces, the floating
@@ -913,29 +908,29 @@ o  The documentation for users, in PostScript, PDF and HTML formats,
 o  The variable `abandon_exponential_computations' has been renamed
    `abandon_expensive_computations'.
 
+o  The use of methods having a name ending in `_and_minimize'
+   (e.g., add_constraints_and_minimize, poly_hull_assign_and_minimize, ...)
+   is now deprecated (see the core library documentation for an explanation);
+   their complete removal is planned for version 0.11.
+
 o  The methods
 
-     void Polyhedron::add_constraints(ConSys& cs),
-     void Polyhedron::add_generators(GenSys& gs),
-     bool Polyhedron::add_constraints_and_minimize(ConSys& cs), and
-     bool Polyhedron::add_generators_and_minimize(GenSys& gs)
+     void Polyhedron::add_constraints(ConSys& cs) and
+     void Polyhedron::add_generators(GenSys& gs)
 
    have been renamed
 
-     void Polyhedron::add_recycled_constraints(ConSys& cs),
-     void Polyhedron::add_recycled_generators(GenSys& gs),
-     bool Polyhedron::add_recycled_constraints_and_minimize(ConSys& cs), and
-     bool Polyhedron::add_recycled_generators_and_minimize(GenSys& gs),
+     void Polyhedron::add_recycled_constraints(ConSys& cs) and
+     void Polyhedron::add_recycled_generators(GenSys& gs)
 
    respectively.  At the same time, the methods
 
-     void Polyhedron::add_constraints(const ConSys& cs),
-     void Polyhedron::add_generators(const GenSys& gs),
-     bool Polyhedron::add_constraints_and_minimize(const ConSys& cs), and
-     bool Polyhedron::add_generators_and_minimize(const GenSys& gs)
+     void Polyhedron::add_constraints(const ConSys& cs) and
+     void Polyhedron::add_generators(const GenSys& gs)
 
-   have been added.  Corresponding changes have been made to the C and
-   Prolog interfaces.
+   have been added. Corresponding changes have been made to the
+   deprecated `and_minimized' variants of the methods above,
+   as well as to the C and Prolog interfaces.
 
 o  New methods Polyhedron::maximize() and Polyhedron::minimize()
    for maximizing and minimizing a linear expression subject to the
