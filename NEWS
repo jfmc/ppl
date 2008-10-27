@@ -259,41 +259,39 @@ o  Foreign language interfaces.
 
   - Almost all the public methods for the PPL semantic objects are
     provided as methods/functions/predicates in the foreign language
-    interfaces with a uniform naming policy.
+    interfaces with a uniform naming policy. In particular:
+
+    * in the C interface, the methods named
+
+        ppl_Polyhedron_{constraints,generators,congruences}
+        ppl_Polyhedron_minimized_{constraints,generators,congruences}
+
+      have been renamed
+
+        ppl_Polyhedron_get_{constraints,generators,congruences}
+        ppl_Polyhedron_get_minimized_{constraints,generators,congruences},
+
+      respectively;
+
+    * in the Prolog interfaces, the predicates
+
+        ppl_Grid_generalized_image_lhs_rhs/5 and
+        ppl_Grid_generalized_preimage_lhs_rhs/5
+        ppl_Grid_generalized_image/6 and
+        ppl_Grid_generalized_preimage/6
+
+      have been renamed as
+
+        ppl_Grid_generalized_image_lhs_rhs_with_congruence/5
+        ppl_Grid_generalized_preimage_lhs_rhs_with_congruence/5
+        ppl_Grid_generalized_image_with_congruence/6
+        ppl_Grid_generalized_preimage_with_congruence/6
+
+      respectively, so as to allow for /4 and /5, resp., versions.
 
   - In the C interface it is no longer an error to call ppl_initialize()
     or ppl_finalize() multiple times (this matches the behavior of the
     other foreign language interfaces).
-
-  - The C interface now supports all the PPL semantic objects.
-    Some methods have been renamed for uniformity with all the foreign
-    language interfaces. In particular, the methods named
-
-      ppl_Polyhedron_{constraints,generators,congruences}
-      ppl_Polyhedron_minimized_{constraints,generators,congruences}
-
-    have been renamed
-
-      ppl_Polyhedron_get_{constraints,generators,congruences}
-      ppl_Polyhedron_get_minimized_{constraints,generators,congruences},
-
-    respectively.
-
-   - In the Prolog interface, the interface procedures for
-
-     ppl_Grid_generalized_image_lhs_rhs/5 and
-     ppl_Grid_generalized_preimage_lhs_rhs/5
-     ppl_Grid_generalized_image/6 and
-     ppl_Grid_generalized_preimage/6
-
-    have been renamed as
-
-     ppl_Grid_generalized_image_lhs_rhs_with_congruence/5
-     ppl_Grid_generalized_preimage_lhs_rhs_with_congruence/5
-     ppl_Grid_generalized_image_with_congruence/6
-     ppl_Grid_generalized_preimage_with_congruence/6
-
-   respectively, so as to allow for /4 and /5, resp., versions.
 
 o  The documentation for the library has been deeply reorganized and
    split into several documents: besides the user and developer manuals
