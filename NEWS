@@ -111,12 +111,13 @@ o  Methods using the Congruence and Congruence_System classes
    that were just provided for the Grid domain are now provided for
    all the PPL semantic objects.
 
-o  Class BD_Shape and Grid no longer provide methods such as bds_hull_*,
-   join_*, bds_difference_* and grid_difference*. The uniformly named
-   methods upper_bound_* and difference_assign should be used instead.
-   For (C and NNC) polyhedra, the poly_hull_* and poly_difference_assign
-   methods have been kept for backward compatibility (users should
-   anyway prefer adopting the uniformly named variants).
+o  Class BD_Shape and Grid no longer provide methods such as
+   bds_hull_*, join_*, bds_difference_* and grid_difference_*. The
+   uniformly named methods upper_bound_* and difference_assign should
+   be used instead.  For (C and NNC) polyhedra, the poly_hull_* and
+   poly_difference_assign methods have been kept for backward
+   compatibility (users should anyway prefer adopting the uniformly
+   named variants).
 
 o  Default widening operators of the form:
 
@@ -134,9 +135,9 @@ o  All PPL semantic objects now provide the method
 
 o  The new methods
 
-     bool Constraint_System::empty() const
-     bool Generator_System::empty() const
-     bool Congruence_System::empty() const
+     bool Constraint_System::empty() const,
+     bool Generator_System::empty() const,
+     bool Congruence_System::empty() const, and
      bool Grid_Generator_System::empty() const
 
    return true if and only if the system in question is empty (i.e.,
@@ -153,18 +154,19 @@ o  All identifiers containing the strings `less_than_or_equal' or
 
 o  All PPL semantic objects now provide the methods
 
-   total_memory_in_bytes() const
-   external_memory_in_bytes() const
+     memory_size_type total_memory_in_bytes() const
+     memory_size_type external_memory_in_bytes() const
 
-   returning the total size in bytes of the memory occupied by the
-   PPL object and the size in bytes of the memory managed by the PPL
-   object.
+   returning, respectively, the total size in bytes of the memory
+   occupied by the PPL object and the size in bytes of the memory
+   managed by the PPL object.
 
 o  Users of the C++ interface of the library can now decide to disable
    the automatic initialization mechanism of the PPL.  To do so, the
-   preprocessor symbol PPL_NO_AUTOMATIC_INITIALIZATION should be defined
-   before including the `ppl.hh' header file.  When automatic initialization
-   is disabled it is imperative to explicitly call the new function
+   preprocessor symbol PPL_NO_AUTOMATIC_INITIALIZATION should be
+   defined before including the <ppl.hh> header file.  When automatic
+   initialization is disabled it is imperative to explicitly call the
+   new function
 
      void Parma_Polyhedra_Library::initialize()
 
@@ -177,7 +179,7 @@ o  Users of the C++ interface of the library can now decide to disable
 
 o  Methods
 
-    static bool can_recycle_constraint_systems()
+    static bool can_recycle_constraint_systems() and
     static bool can_recycle_congruence_systems()
 
    indicating whether or not a PPL semantic object is able to recycle
