@@ -273,7 +273,12 @@ o  Foreign language interfaces.
 
 o  Documentation... TO BE COMPLETED
 
-o  Changes to the configure eg --enable-interfaces... TO BE COMPLETED
+o  Several options have been added to the configuration script.  These
+   allow to control the generated language interfaces, the floating
+   point instruction set to be used, the use of Valgrind during `make
+   check', the exclusion of some PPL-based programs from the build.
+   The README.configure file has been updated consequently.
+
 
 Bugfixes
 ========
