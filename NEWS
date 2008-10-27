@@ -42,9 +42,21 @@ o  In the Octagonal_Shape domain:
 
 o  A new abstraction called Box has been added that... TO BE COMPLETED
 
-o  The class Polyhedra_Powerset has been renamed Pointset_Powerset,
-   since it can be applied to non-polyhedral abstractions, such as
-   the one offered by the Grid class. TO BE REVISED
+o  The PPL semantic object Polyhedra_Powerset has been replaced by
+   the templatic object Pointset_Powerset<...> that can take any (simple)
+   PPL semantic object for the domain of its disjuncts. In addition to the
+   methods common to all the PPL semantic objects, methods specific to this
+   domain include:
+
+     add_disjunct()
+     pairwise_reduce()
+     omega_reduce()
+     geometrically_covers()
+     geometrically_equals()
+     simplify_using_context_assign()
+
+   See the documentation of the Pointset_Powerset class for a
+   detailed description of this domain and its methods.
 
 o  Partially_Reduced_Product ... TO BE COMPLETED
 
