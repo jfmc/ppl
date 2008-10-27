@@ -13,6 +13,9 @@ Enhancements for PPL 0.10.1 or later versions
   Explain it in README.configure.
 - Explain the `--enable-ppl_lcdd' and `--enable-ppl_lpsol' in
   README.configure.
+- Intervals are best instantiated with checked numbers with
+  particular policies: review all the interfaced boxes,
+  augment the testsuite, and update the documentation.
 
 
 Enhancements for PPL 0.11 or later versions
