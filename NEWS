@@ -30,6 +30,21 @@ o  A new abstraction called Box has been added.  Geometrically
    is the space dimension of the box.  The Box template class is
    parametric with respect to the class intervals.
 
+o A generic implementation of intervals has been added.  The template
+   class Interval is parametric on the type used to represent the
+   interval boundaries (all native integer and floating point types
+   are supported as well as unbounded integers and rational numbers
+   provided by GMP).  Another class template type parameter allows to
+   control a number of other features of the class (such as the
+   ability to represent: open as well as closed boundaries, empty
+   intervals in addition to nonempty ones, intervals of extended
+   number families that contain positive and negative infinities,
+   plain intervals of real numbers and intervals of integer numbers).
+   The Interval class still needs a lot of work and both its
+   implementation and its interface are likely to change significantly:
+   it is released now because it is needed for the Box class and as a
+   kind of technology preview.
+
 o  The class LP_Problem has been renamed MIP_Problem and now supports
    the solution of Mixed Integer (Linear) Programming problems.
 
@@ -63,8 +78,8 @@ o  The PPL semantic object Polyhedra_Powerset has been replaced by
    See the documentation of the Pointset_Powerset class for a
    detailed description of this domain and its methods.
 
-o  A new abstration called Partially_Reduced_Product (PRP) has been added
-   A PRP is a pair of two PPL semantic objects that is parameteric on
+o  A new abstraction called Partially_Reduced_Product (PRP) has been added
+   A PRP is a pair of two PPL semantic objects that is parametric on
    a reduction operator.  The PRP template class is
    parametric on the component domains and on the reduction operator.
    The PRP currently provides three reduction operators and hence,
