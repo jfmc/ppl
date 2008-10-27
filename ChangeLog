@@ -1,3 +1,1242 @@
+2008-10-27 Monday 18:02  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* TODO (1.286): Adde 2 items for 0.10.1 and later.
+
+2008-10-27 Monday 17:47  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO (1.285): Added one item for PPL 0.10.1.
+
+2008-10-27 Monday 16:41  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* NEWS (1.265): Avoid repetitive comments for the
+	  Partially_Reduced_Product domains.
+
+2008-10-27 Monday 16:33  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/libppl.3 (1.8): Small nels improvement.
+
+2008-10-27 Monday 15:25  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/ppl_interface_generator_common_procedure_generators.m4
+	  (1.43): Changed the constrains/2, unconstrain/2 and
+	  unconstrains/2 from simple to all.
+
+2008-10-27 Monday 15:16  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* NEWS (1.264): Three subitems on the foreign language interfaces,
+	  all related to uniform naming, placed together and reorganized to
+	  avoid repetitions.
+
+2008-10-27 Monday 15:10  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* NEWS (1.263): A couple of improvements on items regarding foreign
+	  langauge interfaces.
+
+2008-10-27 Monday 14:16  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* NEWS (1.262): Revised the items wrt add_integer_point(),
+	  constrains() and unconstrain().
+
+2008-10-27 Monday 14:05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.261): Some consistency improvements.
+
+2008-10-27 Monday 13:54  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.260): Several corrections and improvements.
+
+2008-10-27 Monday 13:24  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* NEWS (1.259): Corrected a couple of typos.
+
+2008-10-27 Monday 13:22  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* NEWS (1.258): Revised the item on bds_hull etc.
+
+2008-10-27 Monday 13:21  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* README.configure (1.40): Small nels improvements and similar.
+
+2008-10-27 Monday 13:18  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* NEWS (1.257): Improved item about refine_with_* methods.
+
+2008-10-27 Monday 12:22  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* NEWS (1.256): The wronly placed item on deprecated methods moved
+	  to a better place.  Completed the item on the changes to the
+	  documentation manuals.
+
+2008-10-27 Monday 12:14  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.255): Added an item on the new man pages libppl(3) and
+	  libppl_c(3).
+
+2008-10-27 Monday 12:00  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* NEWS (1.254): Dealt with items on constrains, unconstrain and
+	  has_integer_point.
+
+2008-10-27 Monday 11:56  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.253): Revised the item concerning LP_Problem/MIP_Problem.
+
+2008-10-27 Monday 11:55  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* NEWS (1.252): Added an item mentioning the deprecation of
+	  _and_minimize methods.  Modified another item regarding the
+	  recycling methods.
+
+2008-10-27 Monday 11:36  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.251): Added an item concerning the enhancements made to
+	  the configuration script.
+
+2008-10-27 Monday 11:28  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* NEWS (1.250): Completed item concerning the default widening
+	  operator.
+
+2008-10-27 Monday 10:50  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.249): Finished the item concerning the Interval template
+	  class.
+
+2008-10-27 Monday 10:38  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Interval.defs.hh (1.60): Missing comma added.
+
+2008-10-27 Monday 10:29  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Interval.defs.hh (1.59): Drafted the detailed information for
+	  the Interval class.
+
+2008-10-27 Monday 10:26  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* NEWS (1.248): Completed item on can_recycle... methods.
+
+2008-10-27 Monday 10:12  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* NEWS (1.247): Merged the items on constructing from and shrinking
+	  bounding boxes and completed this item.
+
+2008-10-27 Monday 10:06  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* NEWS (1.246): Corrected (again) the item on covering boxes being
+	  removed.
+
+2008-10-27 Monday 09:55  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* NEWS (1.245): Corrected changes to item on covering boxes.
+
+2008-10-27 Monday 09:52  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* NEWS (1.244): Completed an item on the Product domains.
+
+2008-10-27 Monday 09:07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.243): News item for class Box completed.  News item for
+	  class Octagonal_Shape moved up.
+
+2008-10-27 Monday 08:49  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/Pointset_Powerset.defs.hh (1.55): Spelling fixed.
+
+2008-10-27 Monday 08:48  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* NEWS (1.242): News item that referred to the Polyhedron domain
+	  and congruences now replaced by a more genral item on congruence
+	  related methods.
+
+2008-10-27 Monday 08:46  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Box.defs.hh (1.65): A Box is a smash product, not a Cartesian
+	  product.
+
+2008-10-27 Monday 08:33  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* NEWS (1.241): Completed an item on the pointset powerset domain.
+
+2008-10-27 Monday 08:13  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* NEWS (1.240): Reordered items and started indicating where more
+	  work is needed.
+
+2008-10-27 Monday 07:55  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* NEWS (1.239): Written a section on changes to the foreign
+	  language interfaces.
+
+2008-10-27 Monday 07:30  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO (1.284): Added one item for 0.10.1.
+
+2008-10-27 Monday 07:14  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* NEWS (1.238): Two more reminders of news that needs adding: -
+	  OCaml and Java interfaces; - changes to the configure options.
+
+2008-10-27 Monday 06:30  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/tests/print_to_buffer.h (1.5): Comment fixed.
+
+2008-10-26 Sunday 21:50  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Java/parma_polyhedra_library/Variable.java (1.3),
+	  tests/Octagonal_Shape/affinedimension1.cc (1.6),
+	  tests/Octagonal_Shape/discrete1.cc (1.5): Trailing blanks
+	  removed.
+
+2008-10-26 Sunday 21:47  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* NEWS (1.237): Made a start on updating this file: - update the
+	  paragraph on the MIP problem to include MIP control parameters; -
+	  added a bullet on total and external memory in bytes; - reminder
+	  to add something about the removal of covering_box support; -
+	  reminder to add a note about the partially reduced product; -
+	  reminder to add something about changes to the documentation.
+
+2008-10-26 Sunday 21:43  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Java/tests/ppl_java_tests_common (1.18): Copyright
+	  notice added.  Indentation fixed.
+
+2008-10-26 Sunday 21:37  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/OCaml/README.ocaml (1.6): Improved.
+
+2008-10-26 Sunday 21:36  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/OCaml/ppl_interface_generator_ocaml_hh_code.m4 (1.4):
+	  Copyright notice fixed.
+
+2008-10-26 Sunday 21:33  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/tests/: print_to_buffer.cc (1.5), print_to_buffer.h
+	  (1.4): Added copyright notices and multiple inclusion guards.
+
+2008-10-26 Sunday 21:23  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README (1.54): Updated.
+
+2008-10-26 Sunday 20:51  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.236), Watchdog/NEWS (1.12): The target release date is
+	  November 4, 2008.
+
+2008-10-26 Sunday 20:36  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/: README (1.19), ChangeLog (1.21): Updated.
+
+2008-10-26 Sunday 19:35  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/: configure.ac (1.55), src/Makefile.am (1.18): Version
+	  number corrected.
+
+2008-10-26 Sunday 19:28  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* TODO (1.283): Removed section of enhancements for PPL 0.10.
+
+2008-10-26 Sunday 19:26  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* TODO (1.282): Removed (last?) two items for PPL 0.10.
+
+2008-10-26 Sunday 19:22  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/definitions.dox (1.225): Minor improvement.
+
+2008-10-26 Sunday 19:20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* CREDITS (1.28): Acknowledge the help received from Martin Guy.
+
+2008-10-26 Sunday 19:19  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Any_Pointset.defs.hh (1.20), BD_Shape.defs.hh (1.133),
+	  Congruence.defs.hh (1.26), Congruence_System.defs.hh (1.27),
+	  Constraint.defs.hh (1.131), Constraint_System.defs.hh (1.41),
+	  Generator.defs.hh (1.127), Generator_System.defs.hh (1.29),
+	  Grid.defs.hh (1.84), Grid_Generator.defs.hh (1.34),
+	  Grid_Generator_System.defs.hh (1.30), Linear_Expression.defs.hh
+	  (1.40), MIP_Problem.defs.hh (1.40), Octagonal_Shape.defs.hh
+	  (1.60), Og_Status.idefs.hh (1.11),
+	  Partially_Reduced_Product.defs.hh (1.34),
+	  Pointset_Ask_Tell.defs.hh (1.18), Pointset_Powerset.defs.hh
+	  (1.54), Polyhedron.defs.hh (1.357), Variables_Set.defs.hh (1.9),
+	  globals.defs.hh (1.56): Let the documentation for the
+	  ascii_dump/load methods also appear in the user manuals, since
+	  they may be useful for debugging purposes.  In the user docs for
+	  Polyhedron and Grid, avoid listing exception throwers.
+
+2008-10-26 Sunday 18:42  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO (1.281), doc/ppl-config.1 (1.11),
+	  doc/ppl-config_extra_man_text (1.5), src/ppl-config.cc.in (1.25):
+	  Improved the man page of ppl-config.
+
+2008-10-26 Sunday 18:29  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO (1.280), demos/ppl_lcdd/ppl_lcdd.1 (1.4),
+	  demos/ppl_lcdd/ppl_lcdd.cc (1.62),
+	  demos/ppl_lcdd/ppl_lcdd_extra_man_text (1.3): Improved the man
+	  page of ppl_lcdd.
+
+2008-10-26 Sunday 18:14  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/MIP_Problem.cc (1.74): Indentation fixed.
+
+2008-10-26 Sunday 16:09  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* demos/ppl_lpsol/: ppl_lpsol.1 (1.5), ppl_lpsol.c (1.89),
+	  ppl_lpsol_extra_man_text (1.4): Documentation improved.
+
+2008-10-26 Sunday 15:20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO (1.279), demos/ppl_lpsol/ppl_lpsol.1 (1.4),
+	  demos/ppl_lpsol/ppl_lpsol.c (1.88),
+	  demos/ppl_lpsol/ppl_lpsol_extra_man_text (1.3),
+	  devtools/generate_man_pages (1.3): Completed the man page of
+	  ppl_lpsol.  Other minor improvements.
+
+2008-10-26 Sunday 14:56  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/: libppl.3 (1.7), libppl_c.3 (1.2): The standard section name
+	  is AUTHOR, not AUTHORS.
+
+2008-10-26 Sunday 14:50  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* demos/ppl_lcdd/ppl_lcdd.1 (1.3),
+	  demos/ppl_lcdd/ppl_lcdd_extra_man_text (1.2),
+	  demos/ppl_lpsol/ppl_lpsol.1 (1.3),
+	  demos/ppl_lpsol/ppl_lpsol_extra_man_text (1.2), doc/ppl-config.1
+	  (1.10), doc/ppl-config_extra_man_text (1.4): Small improvements.
+
+2008-10-26 Sunday 14:44  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO (1.278): One item moved.
+
+2008-10-26 Sunday 14:43  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO (1.277), doc/Makefile.am (1.95), doc/libppl.3 (1.6): Another
+	  item dealt with.
+
+2008-10-26 Sunday 14:42  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/libppl_c.3 (1.1): Short overview on how to use the Parma
+	  Polyhedra Library (PPL) in C programs.
+
+2008-10-26 Sunday 14:08  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO (1.276), doc/libppl.3 (1.5): One item dealt whith.
+
+2008-10-26 Sunday 12:25  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/: README (1.4), Polyhedron/README (1.9): Moved.
+
+2008-10-26 Sunday 11:41  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO (1.275): Two items removed; one revised.
+
+2008-10-26 Sunday 11:40  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/libppl.3 (1.4): Completed.
+
+2008-10-26 Sunday 10:07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Polyhedron/memory1.cc (1.18): Make sure the GMP allocation
+	  functions are set prior to the allocation of any GMP object.
+
+2008-10-26 Sunday 09:19  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* TODO (1.274), Watchdog/src/Makefile.am (1.17),
+	  interfaces/OCaml/Makefile.am (1.60), src/Makefile.am (1.190),
+	  tests/Makefile.am (1.274), tests/BD_Shape/Makefile.am (1.81),
+	  tests/Box/Makefile.am (1.75), tests/Octagonal_Shape/Makefile.am
+	  (1.35), tests/Powerset/Makefile.am (1.7): Ensure the clean and
+	  mostlyclean comply with the 'STANDARDS' file and are used
+	  sensibly.
+
+	  Removed - Check all the Makefile.am's to make sure CLEANFILES,
+	  MOSTLYCLEANFILES   and DISTCLEANFILES are used in a sensible way.
+	   from the TODO list for 0.10
+
+2008-10-26 Sunday 08:51  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/libppl.3 (1.3): Some corrections.  Started a new section on
+	  implementing memory-guarded computations.
+
+2008-10-25 Saturday 22:45  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* Makefile.am (1.50): Added alternative definition for variable
+	  distcleancheck_listfiles, so that it is not an error if a
+	  distributed file is left in the build tree after a `make
+	  distclean' (see Section 14.4 of the Automake manual).
+
+2008-10-25 Saturday 22:42  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* Watchdog/doc/Makefile.am (1.7): Do clean .tag files generated by
+	  Doxygen.
+
+2008-10-25 Saturday 21:39  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/libppl.3 (1.2): Some progress toward completion of this man
+	  page.
+
+2008-10-25 Saturday 16:09  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/Makefile.am (1.94): The configuration dependent Prolog
+	  manuals should depend on (generated)
+	  Prolog_configured_interface.dox, rather than (fixed)
+	  Prolog_interface.dox.
+
+2008-10-25 Saturday 16:06  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/Prolog/Makefile.am (1.68): When Prolog is enabled, do
+	  make Prolog_configured_interface.dox.
+
+2008-10-25 Saturday 16:05  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* STANDARDS (1.41): Typo corrected.
+
+2008-10-24 Friday 22:14  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* Watchdog/doc/Makefile.am (1.6), doc/Makefile.am (1.93): Avoid
+	  cleaning distributed built files.  Try to follow the rule stated
+	  in Section 27.5 of the Automake manual: distributed files should
+	  never depend upon non-distributed built files.
+
+2008-10-24 Friday 16:41  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/: Prolog_interface.dox (1.179),
+	  ppl_prolog_sysindep_dox (1.7): Revised the grammar rules to bring
+	  them up-to-date to include rules for congruences and grid
+	  generators, also removed rules for intervals and boxes etc. which
+	  are now not wanted.
+
+2008-10-24 Friday 15:38  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/: Prolog_interface.dox (1.178),
+	  ppl_prolog_sysindep_dox (1.6): Corrected the list of weakly
+	  relational domains available to the Prolog interface.
+
+2008-10-23 Thursday 19:17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* demos/Makefile.am (1.14): Fixed copy-and-paste mistake.
+
+2008-10-23 Thursday 17:43  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* CREDITS (1.27): Acknowledge the contribution of Hewlett Packard
+	  as provider of the test cluster hosted by ESIEE.
+
+2008-10-23 Thursday 16:09  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/: devref-foreign-language-interface.tex (1.3), devref.tex
+	  (1.27), user-foreign-language-interface.tex (1.3), user.tex
+	  (1.28): Added acknowledgements to EPSRC - two projects, one for
+	  the grid domain and the current project.
+
+2008-10-23 Thursday 15:03  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* TODO (1.273), doc/definitions.dox (1.224), src/Polyhedron.defs.hh
+	  (1.356): Improved the documentation for boxes, intervals and the
+	  bounded extrapolations.
+
+	  Replace the brief descriptions of the bounded extrapolations in
+	  Polyhedron.defs.hh by shorter descriptions that ju st refer to
+	  the relevant paragraphs in definitions.dox.
+
+	  Removed the out-of-date paragraph about the domains in section
+	  1.1 of the main user's manual.
+
+	  Removed a todo item.
+
+2008-10-23 Thursday 14:55  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* devtools/generate_dox_ci_prolog_manual (1.2): Paths changed so
+	  that it can be used from the interfaces/Prolog directory.
+
+2008-10-23 Thursday 12:40  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/Makefile.am (1.92): When installing the OCaml user
+	  documentation, do also install the ocamldoc subdir and its
+	  contents.
+
+2008-10-23 Thursday 10:54  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* demos/ppl_lcdd/ppl_lcdd.1 (1.2), demos/ppl_lpsol/ppl_lpsol.1
+	  (1.2), doc/ppl-config.1 (1.9): Updated.
+
+2008-10-23 Thursday 10:47  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.404), demos/Makefile.am (1.13),
+	  demos/ppl_lcdd/Makefile.am (1.30), demos/ppl_lcdd/ppl_lcdd.1
+	  (1.1), demos/ppl_lcdd/ppl_lcdd_extra_man_text (1.1),
+	  demos/ppl_lpsol/Makefile.am (1.49), demos/ppl_lpsol/ppl_lpsol.1
+	  (1.1), demos/ppl_lpsol/ppl_lpsol_extra_man_text (1.1),
+	  devtools/generate_man_pages (1.2), doc/Makefile.am (1.91),
+	  doc/ppl_lcdd.1 (1.7), doc/ppl_lcdd_extra_man_text (1.4),
+	  doc/ppl_lpsol.1 (1.7), doc/ppl_lpsol_extra_man_text (1.4): The
+	  `ppl_lcdd' and `ppl_lpsol' programs have been made optional (but
+	  enabled by default) and subject to the `--enable-ppl_lcdd' and
+	  `--enable-ppl_lpsol' configure options, respectively.
+
+2008-10-23 Thursday 07:57  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* demos/ppl_lpsol/ppl_lpsol.c (1.87): Made sure the program con be
+	  compiled with -Wformat-security (and, for that matter, also
+	  -Wformat-nonliteral).
+
+2008-10-22 Wednesday 13:43  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/ac_check_gmp.m4 (1.32): Test further strengthened.
+
+2008-10-22 Wednesday 12:27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/ac_check_gmp.m4 (1.31): Test strengthened to guard against
+	  what can easily happen on a bi-arch system.
+
+2008-10-22 Wednesday 10:21  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/tests/pl_check.pl (1.69): Comment improved.
+
+2008-10-22 Wednesday 09:06  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/tests/pl_check.pl (1.68): Revised one of the
+	  exception tests to allow for all possible exceptions that can
+	  occur, depending on the machine and configuration.
+
+2008-10-21 Tuesday 14:49  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/ac_check_gmp.m4 (1.30): Make sure the version of GMP as define
+	  by the GMP's header file matches the version reported by
+	  gmp_version().
+
+2008-10-21 Tuesday 14:05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/GNU/Makefile.am (1.85): GNU Prolog 1.3.1 needs
+	  a higher value for GLOBALSZ.
+
+2008-10-21 Tuesday 14:04  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/GNU/gprolog_cfli.hh (1.11): Minimal changes to
+	  support GNU Prolog 1.3.1 (to be released soon).
+
+2008-10-21 Tuesday 12:46  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/tests/pl_check.pl (1.67): Corrected special
+	  exception tests for Prolog systems (eg GNU Prolog) with bounded
+	  integers.
+
+2008-10-20 Monday 23:40  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/Makefile.am (1.90): The configured Prolog manuals depend on
+	  generated file Prolog_configured_interface.dox.
+
+2008-10-20 Monday 22:58  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/tests/pl_check.pl (1.66): Revised the timeout
+	  test to ensure it is more consistent in its behavior for all
+	  configurations and Prolog systems.
+
+2008-10-20 Monday 19:05  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/: Prolog_interface.dox (1.177),
+	  ppl_interface_generator_prolog_dox_code.m4 (1.12): Small
+	  correction and improvement to formatting.
+
+2008-10-20 Monday 17:33  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/Ciao/Makefile.am (1.87): Disabled the pl_check,
+	  clpq and clpq2 tests as they can throw overflow exception errors
+	  for certain configurations - and Ciao does not recognise these as
+	  overflow errors.
+
+2008-10-20 Monday 17:00  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/ppl_interface_generator_prolog_cc_code.m4
+	  (1.19): Completed changes in last commit.
+
+2008-10-20 Monday 16:51  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/ppl_interface_generator_prolog_cc_code.m4
+	  (1.18): Revised code for the ..._if_exact predicates.
+
+2008-10-20 Monday 16:36  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/ppl_prolog_common.cc (1.12): Added a missing
+	  default switch case.
+
+2008-10-20 Monday 14:14  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/tests/pl_check.pl (1.65): Corrected and
+	  improved the testing of the exceptions thrown by the C++
+	  interface.
+
+2008-10-20 Monday 08:35  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* devtools/.cvsignore (1.1): Put under CVS control.
+
+2008-10-20 Monday 08:34  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* devtools/generate_dox_ci_prolog_manual (1.1): Script to generate
+	  the Doxygen source for the configuration-independent Prolog
+	  interface manual.
+
+2008-10-19 Sunday 22:37  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.403): Version number bumped.
+
+2008-10-19 Sunday 21:46  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO (1.272): Added a list of things to do for PPL 0.10.1.
+
+2008-10-19 Sunday 21:28  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO (1.271), interfaces/OCaml/README.ocaml (1.5): README.ocaml
+	  revised.
+
+2008-10-19 Sunday 21:28  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README.configure (1.39): Added a couple of blank spaces.
+
+2008-10-19 Sunday 21:15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README.configure (1.38), TODO (1.270): README.configure is now
+	  complete.
+
+2008-10-19 Sunday 21:14  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.402): Usage summary improved.
+
+2008-10-19 Sunday 17:50  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README.configure (1.37): Written the section on "Configuring for
+	  Debugging".
+
+2008-10-19 Sunday 16:20  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/definitions.dox (1.223): Some improvements in the
+	  specification of syntactic GDs:   1) the generic ones are those
+	  that are supported (maybe minimally) by      all semantic GDs;
+	  the specific ones are not supported at all by      some semantic
+	  GDs;	 2) listed subclasses of generic GDs (constraints and
+	  congruences):      explained that each semantic GD "optimally
+	  supports" some of these      subclasses; for optimally supported
+	  subclasses, no exception is thrown	  and a best approximation
+	  semantics is obtained; for the non-optimally	    supported ones,
+	  exceptions or coarse approximations may be obtained.	  3) noted
+	  that the best approximation property applies to single
+	  constraints	    or congruences, not to their systems.
+
+	  Other changes:   - not all OK methods support the optional
+	  Boolean argument;   - improved explanation of conversion
+	  operators with a computational     complexity argument.
+
+2008-10-19 Sunday 16:05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README.configure (1.36): Added a forward reference.
+
+2008-10-19 Sunday 15:59  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* CREDITS (1.26): Express gratitude to ESIEE, Thibaut Varène, and
+	  the PA-RISC Linux community.
+
+2008-10-19 Sunday 15:39  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* CREDITS (1.25): One link added.
+
+2008-10-19 Sunday 15:32  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* CREDITS (1.24): Express gratitude to the GCC Compile Farm
+	  Project, FSF France, and Laurent Guerby.
+
+2008-10-19 Sunday 14:57  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.401): The header files of GLPK cannot be trusted:
+	  do check for the presence of declarations.
+
+2008-10-19 Sunday 14:31  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* demos/ppl_lpsol/ppl_lpsol.c (1.86): Previous commit completed.
+
+2008-10-19 Sunday 14:30  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* demos/ppl_lpsol/ppl_lpsol.c (1.85): Fixed the guard controlling
+	  the definition of glpk_message_interceptor().
+
+2008-10-19 Sunday 14:26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* demos/ppl_lpsol/ppl_lpsol.c (1.84): Make sure GLP_OFF is defined
+	  before using it.
+
+2008-10-19 Sunday 14:15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/tests/pwl_test.cc (1.3), tests/ppl_test.cc (1.19): Do
+	  not rely on the definition of optional macros of <fenv.h>.
+
+2008-10-19 Sunday 10:42  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.400): Enable the Java interface only if jlong can
+	  contain data pointers.
+
+2008-10-19 Sunday 09:32  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Java/jni/: ppl_java_common.cc (1.52),
+	  ppl_java_common.inlines.hh (1.4): Improved the conversions
+	  between pointers and jlongs.
+
+2008-10-19 Sunday 09:29  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/ppl_interface_generator_common_dat.m4 (1.91): The
+	  get_represent pattern updated for all the domains to include both
+	  constraints and congruences.
+
+2008-10-19 Sunday 08:54  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/marked_pointers.hh (1.2): Bitmask made portable.
+
+2008-10-18 Saturday 22:53  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/Ciao/: Makefile.am (1.86), README.ciao (1.1):
+	  New file to explain which versions of Ciao Prolog are supported.
+
+2008-10-18 Saturday 22:39  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/README.interfaces (1.2): Obsolete file removed.
+
+2008-10-18 Saturday 22:35  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/OCaml/tests/Makefile.am (1.23): Use `"$(CXX)"' instead
+	  of `g++'.
+
+2008-10-18 Saturday 21:57  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/tests/pwl_test.hh (1.3), tests/ppl_test.hh (1.79):
+	  Define the NOISY and VERY_NOISY macros before they are used.
+	  Unused parameter warning avoided.
+
+2008-10-18 Saturday 21:55  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/tests/Makefile.am (1.6): Must link with -lm for
+	  fetestexcept().
+
+2008-10-18 Saturday 21:04  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/OR_Matrix.defs.hh (1.19): Previous commit had the
+	  defined(__EDG__) and !defined(__EDG__) cases reversed: fixed now.
+
+2008-10-18 Saturday 20:56  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.399): Blank line added for readability.
+
+2008-10-18 Saturday 20:56  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/configure.ac (1.54): Improved and reorganized.
+
+2008-10-18 Saturday 20:55  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/OR_Matrix.defs.hh (1.18): Use a couple of different friend
+	  declarations when the compiler is EDG-based.
+
+2008-10-18 Saturday 18:27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Octagonal_Shape.templates.hh (1.95): Removed another useless
+	  variable definition.
+
+2008-10-18 Saturday 18:19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Octagonal_Shape.templates.hh (1.94): Several FIXMEs resolved
+	  and removed.
+
+2008-10-18 Saturday 17:28  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Octagonal_Shape.templates.hh (1.93): Several useless variable
+	  definitions commented out.
+
+2008-10-18 Saturday 13:57  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/OCaml/ppl_interface_generator_ocaml_cc_code.m4 (1.59):
+	  Statement with no effect removed.
+
+2008-10-18 Saturday 13:17  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/OCaml/README.ocaml (1.4): Updated and improved.
+
+2008-10-18 Saturday 12:32  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README.configure (1.35): Added material to the section on
+	  "Configuring for Optimized Performance".
+
+2008-10-18 Saturday 11:39  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/XSB/Makefile.am (1.80): List
+	  xsb_prolog_generated_test.P in CLEANFILES.
+
+2008-10-18 Saturday 11:01  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/OCaml/tests/Makefile.am (1.22): Do not mention gmp.cma
+	  when (ocaml-)linking; rather, directly pass options -lmlgmp and
+	  -lmpfr to the underlying linker using -cclib.  This seems to
+	  solve an issue in some x86 systems (e.g., igor on tinderbox)
+	  whereby -dlopen was not working as expected, in that it links the
+	  installed ppl instead of the one in the build tree.
+
+2008-10-18 Saturday 10:08  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Box.inlines.hh (1.39): Work around a bug in the Intel C/C++
+	  compiler version 10.1.x.
+
+2008-10-17 Friday 22:43  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README.configure (1.34): Explained the use of the
+	  `--with-java=DIR' configure option.
+
+2008-10-17 Friday 20:17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README.configure (1.33): Explained the use of the
+	  `--enable-instantiations' configure option.
+
+2008-10-17 Friday 16:56  Abramo Bagnara
+
+	* src/checked.inlines.hh (1.47): Added comment for future
+	  improvement.
+
+2008-10-17 Friday 16:45  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README.configure (1.32): Started a rewrite of the section on
+	  "Configuring the Language Interfaces".  Added new sections on
+	  "Configuring for Optimized Performance" and "Configuring for
+	  Debugging".
+
+2008-10-17 Friday 15:17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.398), src/Makefile.am (1.189): If the C++
+	  interface is not enabled, do not install <ppl.hh>.
+
+2008-10-17 Friday 14:51  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.397): Configuring with the option
+	  `--enable-instantiations' (i.e., without specifying any
+	  instantiation) now prints a list of available instantiations.
+
+2008-10-17 Friday 11:43  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/tests/: expected_pchk_int16_a (1.9),
+	  expected_pchk_int8_a (1.9): As in previous commit - some
+	  overflows that were expected do not occur now.
+
+2008-10-17 Friday 11:40  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/tests/: expected_pchk_int16 (1.9),
+	  expected_pchk_int32 (1.8), expected_pchk_int32_a (1.8),
+	  expected_pchk_int64_a (1.7), expected_pchk_int8 (1.9): Several
+	  overflows no longer occur.
+
+2008-10-16 Thursday 18:37  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.396): Reordered so that the system-dependent
+	  adjustments are done before the run-time tests.
+
+2008-10-16 Thursday 15:40  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/ac_check_fpu_control.m4 (1.15): Test strengthened to check
+	  whether fesetround() actually does something.
+
+2008-10-16 Thursday 14:10  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/fpu-c99.inlines.hh (1.21): Little improvement to
+	  fpu_initialize_control_functions().
+
+2008-10-16 Thursday 12:07  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/: ppl_interface_generator_prolog_dox.m4 (1.10),
+	  ppl_interface_generator_prolog_dox_code.m4 (1.11): Error in the
+	  configured dox file wrt the widening of weakly relational shapes
+	  fixed.
+
+2008-10-16 Thursday 08:20  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/tests/pl_check.pl (1.64): Test for no timeout
+	  made simpler to try and ensure results are as predicted.  Added
+	  the Prolog system being tested in the error message.
+
+2008-10-16 Thursday 08:06  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/: ac_cxx_double_exact_output.m4 (1.10),
+	  ac_cxx_float_exact_output.m4 (1.8),
+	  ac_cxx_long_double_exact_output.m4 (1.15): Typos fixed.
+
+2008-10-15 Wednesday 22:16  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/: ppl_interface_generator_prolog_dox.m4 (1.9),
+	  ppl_interface_generator_prolog_dox_code.m4 (1.10),
+	  ppl_prolog_sysdep_dox (1.3), ppl_prolog_sysindep_dox (1.5): As in
+	  previous commit message - but with updated files.
+
+2008-10-15 Wednesday 21:44  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/: ppl_interface_generator_prolog_dox.m4 (1.8),
+	  ppl_interface_generator_prolog_dox_code.m4 (1.9),
+	  ppl_prolog_sysdep_dox (1.2), ppl_prolog_sysindep_dox (1.4): These
+	  files have been rewritten so as to generate
+	  Prolog_configured_interface.dox (with the command "make
+	  Prolog_configured_interface.dox" in the interfaces/Prolog
+	  directory) and the configured documentation for the Prolog
+	  interface.  With an appropriate script the same files will
+	  generate the Prolog_interface.dox and hence the fixed
+	  documentation for Prolog.
+
+2008-10-15 Wednesday 21:36  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/ppl_interface_generator_common_procedure_generators.m4
+	  (1.42): Predicate schema's reordered to maintain groups of
+	  predicates with similar semantics/behaviour.
+
+2008-10-15 Wednesday 21:25  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/tests/pl_check.pl (1.63): Decrease the timeout
+	  expected for a timeout exception and increase the timeout when an
+	  exception is not predicted.  Unwanted comment removed.
+
+2008-10-15 Wednesday 20:14  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README.arm (1.1), m4/ac_check_fpu_control.m4 (1.14): Adopted a
+	  compromise solution for the ARM: this allows to easily build
+	  binary distributions, yet allowing those building from sources to
+	  be in full control.
+
+2008-10-15 Wednesday 19:58  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/fpu-c99.inlines.hh (1.20): Fixed silly bug in
+	  fpu_initialize_control_functions().
+
+2008-10-15 Wednesday 18:59  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/: definitions.dox (1.222), interfaces-latex.sed (1.4): The
+	  Section names in the ps and pdf files for extrenal references are
+	  in italics using <EM> and </EM> commands.
+
+	  In definitions.dox, the section name for extrapolation operators
+	  for the powerset now	named Powerset Extrapolation Operators
+
+2008-10-15 Wednesday 18:59  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/fpu-c99.inlines.hh (1.19): At initialization time, check
+	  whether fesetround() works as expected: if not, throw an
+	  std::logic_error exception.
+
+2008-10-15 Wednesday 18:56  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/Prolog_interface.dox (1.176): Small
+	  improvements.
+
+2008-10-15 Wednesday 18:39  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/ac_check_fpu_control.m4 (1.13): Link with -lm.
+
+2008-10-15 Wednesday 18:31  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/ac_check_fpu_control.m4 (1.12): Test strengthened to check the
+	  return value of fesetround().
+
+2008-10-15 Wednesday 13:16  Abramo Bagnara
+
+	* src/checked_int.inlines.hh (1.70): Repaired build reverting
+	  temporarily correctness fix.
+
+2008-10-15 Wednesday 11:07  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/tests/pl_check.pl (1.62): Fixme removed and
+	  commented code uncommented.
+
+2008-10-15 Wednesday 10:54  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* TODO (1.269): Item removed.
+
+2008-10-15 Wednesday 10:48  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/Ciao/: Makefile.am (1.85),
+	  ppl_interface_generator_ciao_prolog_generated_test_pl.m4 (1.2):
+	  Revised to enable the generated tests.
+
+2008-10-15 Wednesday 10:44  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/tests/: pl_check.pl (1.61),
+	  ppl_interface_generator_prolog_generated_test_pl.m4 (1.2),
+	  ppl_interface_generator_prolog_generated_test_pl_code.m4 (1.9):
+	  The code for testing the timeout predicates revised; it avoids
+	  use of the deprecated predicates and is more robust with respect
+	  to changes in computation times.
+
+	  The generated test code also much improved and several bugs
+	  fixed.
+
+2008-10-14 Tuesday 23:47  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README.configure (1.31): Old stuff removed.
+
+2008-10-14 Tuesday 23:44  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO (1.268): One item postponed.
+
+2008-10-14 Tuesday 15:25  Abramo Bagnara
+
+	* src/checked_int.inlines.hh (1.69): Comparison are now done taking
+	  for granted C99 conformance.
+
+2008-10-14 Tuesday 15:24  Abramo Bagnara
+
+	* src/checked.inlines.hh (1.46): Added missing assertions.
+
+2008-10-14 Tuesday 15:20  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/OCaml/: Makefile.am (1.59), tests/Makefile.am (1.21):
+	  Remove useless -I option from ocamlc commands.
+
+2008-10-14 Tuesday 11:36  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/OCaml/tests/Makefile.am (1.20): Let the executable
+	  tests also depend on ppl_ocaml.cma.
+
+2008-10-14 Tuesday 11:33  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/OCaml/Makefile.am (1.58): Let ppl_ocaml.cma also
+	  depend on libppl_ocaml.a
+
+2008-10-13 Monday 18:57  Abramo Bagnara
+
+	* src/checked_float.inlines.hh (1.97): Added const.
+
+2008-10-13 Monday 16:59  Abramo Bagnara
+
+	* src/: checked_float.inlines.hh (1.96), compiler.hh (1.16):
+	  Optimized and fixed correctness.
+
+2008-10-13 Monday 15:23  Abramo Bagnara
+
+	* src/checked_float.inlines.hh (1.95): Fixed conversion.
+
+2008-10-13 Monday 15:14  Abramo Bagnara
+
+	* src/checked_float.inlines.hh (1.94): Reverted previous change.
+
+2008-10-13 Monday 15:04  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/Prolog_interface.dox (1.175): All external
+	  references are emphasized using italics.
+
+2008-10-13 Monday 14:39  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Polyhedron/randphull1.cc (1.16): Temporary workaround for
+	  those machines (such as the ARM, possibly others) where we cannot
+	  control the FPU.
+
+2008-10-13 Monday 14:18  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/Box/propagateconstraints2.cc (1.12): Adjusted the euclidean
+	  distance for test01.
+
+2008-10-13 Monday 13:12  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/Prolog_interface.dox (1.174): Removed unwanted
+	  </EM> in the widening of powersets documentation.
+
+2008-10-13 Monday 12:45  Abramo Bagnara
+
+	* src/checked_float.inlines.hh (1.93): Added missing optimization.
+
+2008-10-13 Monday 11:29  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/Box/propagateconstraints2.cc (1.11): Restore tests with
+	  distances in the check_result() reset.
+
+2008-10-13 Monday 11:08  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/Box/propagateconstraints2.cc (1.10): Disable tests while
+	  problems causing failures are investigated.
+
+2008-10-13 Monday 09:07  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/Box/propagateconstraints2.cc (1.9): check_result for all
+	  tests does not need parameters.
+
+2008-10-13 Monday 08:27  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/Box/propagateconstraints2.cc (1.8): Tests 02 and 03 succeed
+	  for all integer types.
+
+2008-10-13 Monday 08:11  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/Box/propagateconstraints2.cc (1.7): Restore test01 to
+	  testing the outcome of the test.  Added two further simple
+	  versions of this test; test02 showed the same bug indicated by
+	  test01 while with the reversed bounds the symmetrically
+	  equivalent test03 did not fail.
+
+2008-10-13 Monday 08:04  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/Box.templates.hh (1.132): Fixed a bug in
+	  propagate_constraint_no_check().
+
+2008-10-12 Sunday 20:48  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/ac_check_fpu_control.m4 (1.11): Do this test using the C
+	  language (the file installed in
+	  $prefix/include/c++/VERSION/fenv.h by recent versions of GCC
+	  causes problems).
+
+2008-10-12 Sunday 20:39  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.395): The Ciao Prolog interface is not enabled by
+	  default.
+
+2008-10-12 Sunday 10:48  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/Prolog_interface.dox (1.173): All \extref in
+	  the format \extref{<Ref>, <Name of section>}.
+
+2008-10-11 Saturday 22:07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/configure.ac (1.53): The PWL is now enabled by default
+	  also on Cygwin.
+
+2008-10-11 Saturday 21:57  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/ac_check_fpu_control.m4 (1.10): Fixed a copy-and-paste
+	  mistake.
+
+2008-10-11 Saturday 20:55  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* devtools/generate_dox_biblio.sed (1.3): Changed so as to generate
+	  anchors based on the BibTeX keys, not on the labels obtained with
+	  bibtex2html (which depend on the bibliography style).
+
+2008-10-11 Saturday 20:53  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: checked.inlines.hh (1.45), checked_float.inlines.hh (1.92):
+	  Long source lines avoided.
+
+2008-10-11 Saturday 20:53  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/fpu-none.inlines.hh (1.10): Fixed one bug and a few warnings.
+
+2008-10-11 Saturday 20:52  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Rounding_Dir.inlines.hh (1.9): Do not define round_fpu_dir()
+	  if !PPL_CAN_CONTROL_FPU.
+
+2008-10-11 Saturday 20:49  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/fpu.defs.hh (1.21): Use PPL_CAN_CONTROL_FPU to simplify the
+	  logic here.
+
+2008-10-11 Saturday 20:47  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/: ac_cxx_double_binary_format.m4 (1.17),
+	  ac_cxx_float_binary_format.m4 (1.14),
+	  ac_cxx_long_double_binary_format.m4 (1.21): If we cannot control
+	  the FPU, all floating point types are unsupported.
+
+2008-10-11 Saturday 18:51  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/Makefile.am (1.89): Corrected a couple of file paths for
+	  configured-ocaml LaTeX manuals.
+
+2008-10-11 Saturday 18:40  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/definitions.dox (1.221): Corrected a few bibliographic
+	  references.
+
+2008-10-11 Saturday 15:06  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/ac_check_fpu_control.m4 (1.9): Cater for systems that have
+	  <fenv.h> or <ieeefp.h> but fail to define FE_UPWARD or
+	  FE_DOWNWARD.
+
+2008-10-11 Saturday 14:48  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/definitions.dox (1.220): Bibliography updated.
+
+2008-10-11 Saturday 14:48  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* devtools/generate_dox_biblio.sed (1.2): Fixed.
+
+2008-10-11 Saturday 13:48  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* devtools/generate_dox_biblio (1.1),
+	  devtools/generate_dox_biblio.sed (1.1), doc/bib2dox (1.4),
+	  doc/bib2html1.sed (1.2), doc/bib2html2.sed (1.4): New version of
+	  the tool to generate the Doxygen version of a bibliography in
+	  BibTeX format.  (New version of the sed script written by Abramo
+	  Bagnara).
+
+2008-10-11 Saturday 11:26  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/Makefile.am (1.88): Prefer $(srcdir) to @srcdir@.
+
+2008-10-11 Saturday 10:56  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.repo (1.29), Watchdog/configure.repo (1.5): The
+	  configure.repo files do not solve the problem they were meant to
+	  solve.
+
+2008-10-11 Saturday 10:42  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/tests/Makefile.am (1.5): Avoid using $(builddir).
+
+2008-10-11 Saturday 10:21  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/: ppl-config.1 (1.8), ppl_lcdd.1 (1.6), ppl_lpsol.1 (1.6):
+	  Regenerated.
+
+2008-10-11 Saturday 10:07  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/Makefile.am (1.87): Avoid annoying changes of directories
+	  when building the OCaml docs.
+
+2008-10-11 Saturday 09:37  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/Box/propagateconstraints2.cc (1.6): Previous change done to
+	  identify bug, reverted.
+
+2008-10-11 Saturday 09:20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.394), configure.repo (1.28): The PWL is now
+	  enabled by default also on Cygwin.
+
+2008-10-10 Friday 22:43  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/Box/propagateconstraints2.cc (1.5): Restore a proper test
+	  result.
+
+2008-10-10 Friday 22:25  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/prog2man (1.2): This functionality is now provided by
+	  `generate_man_pages' in the `devtools' directory.
+
+2008-10-10 Friday 22:22  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* devtools/generate_man_pages (1.1): Small script to generate the
+	  manpages in the `doc' directory.
+
+2008-10-10 Friday 21:41  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* devtools/bump_copyright_years (1.1): A small script to update the
+	  copyright years.
+
+2008-10-10 Friday 21:31  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* devtools/: cvs2cl.pl (1.1), update_ChangeLog (1.1): Machinery to
+	  automatically update the ChangeLog files.
+
+2008-10-10 Friday 21:28  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog (1.31), Watchdog/ChangeLog (1.20): Updated.
+
+2008-10-10 Friday 21:28  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/Makefile.am (1.86): Modified to match recent changes in the
+	  OCaml interface files.
+
 2008-10-10 Friday 21:25  Enea Zaffanella <zaffanella@cs.unipr.it>
 
 	* interfaces/OCaml/: Makefile.am (1.57),

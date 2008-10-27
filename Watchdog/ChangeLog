@@ -1,6 +1,10 @@
+2008-10-26 Sunday 20:51  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.12): The target release date is November 4, 2008.
+
 2008-10-26 Sunday 20:36  Roberto Bagnara <bagnara@cs.unipr.it>
 
-	* README (1.19): Updated.
+	* README (1.19), ChangeLog (1.21): Updated.
 
 2008-10-26 Sunday 19:35  Roberto Bagnara <bagnara@cs.unipr.it>
 
