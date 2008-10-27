@@ -110,7 +110,7 @@ public:
 
   /*! \brief
     Creates a Pointset_Powerset from a product
-    This will be craeted as a single disjunct of type PS that
+    This will be created as a single disjunct of type PS that
     approximates the product.
   */
    template <typename QH1, typename QH2, typename R>
