@@ -85,7 +85,18 @@ o  The use of methods having a name ending in `_and_minimize'
    is now deprecated (see the core library documentation for an explanation);
    their complete removal is planned for version 0.11.
 
-o  Refine_with methods ... TO BE COMPLETED
+o  All the semantic domains provide new methods
+
+     void refine_with_constraint(const Constraint& c),
+     void refine_with_congruence(const Congruence& c),
+     void refine_with_constraints(const Constraint_System& cs), and
+     void refine_with_congruences(const Congruence_System& cs).
+
+   These methods are similar to the corresponding `add_' methods.
+   The difference is in the reaction policy when the argument
+   constraint/congruence is not optimally supported by the semantic
+   domain: while the `add_' methods will throw an exception, the
+   `refine_with_' methods will apply an upward approximation semantics.
 
 o  Methods using the Congruence and Congruence_System classes
    such as
