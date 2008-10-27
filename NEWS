@@ -80,6 +80,11 @@ o  A new abstraction called Partially_Reduced_Product (PRP) has been added
    - a Constraints_Product where the reduction operator refines each
      component with the constraints satisfied by the other component.
 
+o  The use of methods having a name ending in `_and_minimize'
+   (e.g., add_constraints_and_minimize, poly_hull_assign_and_minimize, ...)
+   is now deprecated (see the core library documentation for an explanation);
+   their complete removal is planned for version 0.11.
+
 o  Refine_with methods ... TO BE COMPLETED
 
 o  Methods using the Congruence and Congruence_System classes
@@ -277,7 +282,15 @@ o  Foreign language interfaces.
 
    respectively, so as to allow for /4 and /5, resp., versions.
 
-o  The documentation for the libraries has been greatly reorganized... TO BE COMPLETED
+o  The documentation for the library has been deeply reorganized and
+   split into several documents: besides the user and developer manuals
+   for the core (C++) library, we now provide separate user and developer
+   manuals for each one of the available foreign language interfaces
+   (namely, C, Java, OCaml, and Prolog). It is also possible to produce
+   "configuration dependent" variants of the foreign language interface
+   manuals, where the contents of the manual takes into account the value
+   of configuration option `--enable-instantiations'.
+   All the manuals are provided in HTML, PDF and PostScript formats.
 
 o  New man pages libppl(3) and libppl_c(3) have been added.  These
    give short overviews on how to use the PPL in C++ and C programs,
@@ -923,29 +936,29 @@ o  The documentation for users, in PostScript, PDF and HTML formats,
 o  The variable `abandon_exponential_computations' has been renamed
    `abandon_expensive_computations'.
 
-o  The use of methods having a name ending in `_and_minimize'
-   (e.g., add_constraints_and_minimize, poly_hull_assign_and_minimize, ...)
-   is now deprecated (see the core library documentation for an explanation);
-   their complete removal is planned for version 0.11.
-
 o  The methods
 
-     void Polyhedron::add_constraints(ConSys& cs) and
-     void Polyhedron::add_generators(GenSys& gs)
+     void Polyhedron::add_constraints(ConSys& cs),
+     void Polyhedron::add_generators(GenSys& gs),
+     bool Polyhedron::add_constraints_and_minimize(ConSys& cs), and
+     bool Polyhedron::add_generators_and_minimize(GenSys& gs)
 
    have been renamed
 
-     void Polyhedron::add_recycled_constraints(ConSys& cs) and
-     void Polyhedron::add_recycled_generators(GenSys& gs)
+     void Polyhedron::add_recycled_constraints(ConSys& cs),
+     void Polyhedron::add_recycled_generators(GenSys& gs),
+     bool Polyhedron::add_recycled_constraints_and_minimize(ConSys& cs), and
+     bool Polyhedron::add_recycled_generators_and_minimize(GenSys& gs),
 
    respectively.  At the same time, the methods
 
-     void Polyhedron::add_constraints(const ConSys& cs) and
-     void Polyhedron::add_generators(const GenSys& gs)
+     void Polyhedron::add_constraints(const ConSys& cs),
+     void Polyhedron::add_generators(const GenSys& gs),
+     bool Polyhedron::add_constraints_and_minimize(const ConSys& cs), and
+     bool Polyhedron::add_generators_and_minimize(const GenSys& gs)
 
-   have been added. Corresponding changes have been made to the
-   deprecated `and_minimized' variants of the methods above,
-   as well as to the C and Prolog interfaces.
+   have been added.  Corresponding changes have been made to the C and
+   Prolog interfaces.
 
 o  New methods Polyhedron::maximize() and Polyhedron::minimize()
    for maximizing and minimizing a linear expression subject to the
