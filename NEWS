@@ -172,9 +172,13 @@ o  As all PPL semantic objects can now be constructed from boxes,
      template <typename Box> NNC_Polyhedron(const Box&, From_Bounding_Box),
      template <typename Box> Grid(const Box&, From_Bounding_Box)
 
-   have been removed.
+   have been removed. Similarly, as boxes can be constructed from other
+   PPL semantic objects, the method
 
-o  shrink_bounding_box has gone ... TO BE COMPLETED
+     template <typename Box>
+       void shrink_bounding_box(Box&, Complexity_Class) const
+
+   has been removed from all the classes.
 
 o  For Grids, the PPL no longer supports covering boxes; hence the constructor
 
