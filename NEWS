@@ -38,7 +38,7 @@ o  The class LP_Problem has been renamed MIP_Problem and now supports
 o  Class BD_Shape and Grid no longer provide methods such as bds_hull_*,
    join_*, bds_difference_* and grid_difference*. The uniformly named
    methods upper_bound_* and difference_assign should be used instead;
-   the uniformaly named methods are also provided by new classes Box
+   the uniformly named methods are also provided by new classes Box
    and Octagonal_Shape, as well as Pointset_Powerset and polyhedra.
    For (C and NNC) polyhedra, the poly_hull_* and poly_difference_assign
    methods have been kept for backward compatibility (users should
@@ -101,10 +101,6 @@ o  Users of the C++ interface of the library can now decide to disable
    should also be called (to release a small amount of memory) when
    done with the library.
 
-o  In the C interface it is no longer an error to call ppl_initialize()
-   or ppl_finalize() multiple times (this matches the behavior of the
-   other interfaces).
-
 o  In the Octagonal_Shape, BD_Shape and Box domains:
    add_congruences_and_minimize(Congruence_System cgs)
    add_recycled_congruences(Congruence_System cgs)
@@ -132,7 +128,7 @@ o  Partially_Reduced_Product ...
 
 o  shrink_bounding_box has gone ...
 
-o  For Grids, build from covering_box and get_covering_box have gome...
+o  For Grids, build from covering_box and get_covering_box have gone...
 
 o  All PPL semantic objects can be constructed from other PPL semantic
    objects. All these constructors have an optional complexity argument
@@ -154,39 +150,55 @@ o  The `ppl.hh' header file no longer defines macros not prefixed
 
 o  Added constructors so that objects of classes C_Polyhedron,
    NNC_Polyhedron, Grid, Box, BD_Shape and Octagonal_Shape are always
-   constructible from one another.
+   constructable from one another.
 
-o  In the interfaces, the methods/functions/predicates named
+o  Foreign language interfaces.
 
-     ppl_ABSTRACTION_{constraints,generators,congruences}
+  - Support for foreign language interfaces have been expanded to
+    include OCaml and Java. Thus the PPL now supports interfaces:
+    C++, C, Java, OCaml, Ciao Prolog, GNU Prolog, SICStus Prolog,
+    SWI Prolog, XSB Prolog and YAP Prolog.
 
-   and
+  - All the PPL semantics objects in the C++ interface are supported
+    by all the foreign language interfaces.
 
-     ppl_ABSTRACTION_minimized_{constraints,generators,congruences}
+  - Also, all the public methods for these objects are now provided
+    as methods/functions/predicates in the foreign language interfaces
+    with a uniform naming policy.
 
-   have been renamed
+  - In the C interface it is no longer an error to call ppl_initialize()
+    or ppl_finalize() multiple times (this matches the behavior of the
+    other foreign language interfaces).
 
-     ppl_ABSTRACTION_get_{constraints,generators,congruences}
+  - The C interface now supports all the PPL semantic objects.
+    Some methods have been renamed for uniformity with all the foreign
+    language interfaces. In particular, the methods named
 
-   and
+      ppl_Polyhedron_{constraints,generators,congruences}
+      ppl_Polyhedron_minimized_{constraints,generators,congruences}
 
-     ppl_ABSTRACTION_get_minimized_{constraints,generators,congruences},
+    have been renamed
 
-  respectively.
+      ppl_Polyhedron_get_{constraints,generators,congruences}
+      ppl_Polyhedron_get_minimized_{constraints,generators,congruences},
 
-o  In the interfaces, the interface procedures for
-   ppl_Grid_generalized_image_lhs_rhs/5 and
-   ppl_Grid_generalized_preimage_lhs_rhs/5
-   ppl_Grid_generalized_image/6 and
-   ppl_Grid_generalized_preimage/6
-   have been renamed as
-   ppl_Grid_generalized_image_lhs_rhs_with_congruence/5
-   ppl_Grid_generalized_preimage_lhs_rhs_with_congruence/5
-   ppl_Grid_generalized_image_with_congruence/6
-   ppl_Grid_generalized_preimage_with_congruence/6
-   so as to allow for /4 and /5, resp., versions
+    respectively.
 
-o  New interfaces for OCaml and Java...
+   - In the Prolog interface, the interface procedures for
+
+     ppl_Grid_generalized_image_lhs_rhs/5 and
+     ppl_Grid_generalized_preimage_lhs_rhs/5
+     ppl_Grid_generalized_image/6 and
+     ppl_Grid_generalized_preimage/6
+
+    have been renamed as
+
+     ppl_Grid_generalized_image_lhs_rhs_with_congruence/5
+     ppl_Grid_generalized_preimage_lhs_rhs_with_congruence/5
+     ppl_Grid_generalized_image_with_congruence/6
+     ppl_Grid_generalized_preimage_with_congruence/6
+
+   respectively, so as to allow for /4 and /5, resp., versions.
 
 o  Documentation...
 
