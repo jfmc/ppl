@@ -63,7 +63,17 @@ o  The PPL semantic object Polyhedra_Powerset has been replaced by
    See the documentation of the Pointset_Powerset class for a
    detailed description of this domain and its methods.
 
-o  Partially_Reduced_Product ... TO BE COMPLETED
+o  A new abstration called Partially_Reduced_Product (PRP) has been added
+   A PRP is a pair of two PPL semantic objects that is parameteric on
+   a reduction operator.  The PRP template class is
+   parametric on the component domains and on the reduction operator.
+   The PRP currently provides three reduction operators and hence,
+   three different kinds of products:
+   - a Direct_Product where the reduction operator is the identity;
+   - a Smash_Product where the reduction operator shares emptiness
+      information between the components; and
+   - a Constraints_Product where the reduction operator refines each
+     component with the constraints satisfied by the other component.
 
 o  Refine_with methods ... TO BE COMPLETED
 
@@ -151,11 +161,6 @@ o  unconstrain(Variable var)
 
 o  contains_integer_point() ... TO BE COMPLETED
 
-o  shrink_bounding_box has gone ... TO BE COMPLETED
-
-o  For Grids, build from covering_box and get_covering_box have
-   gone... TO BE COMPLETED
-
 o  All PPL semantic objects can be constructed from other PPL semantic
    objects. All these constructors have an optional complexity argument
    with default value allowing algorithms with any complexity to be used.
@@ -168,6 +173,16 @@ o  As all PPL semantic objects can now be constructed from boxes,
      template <typename Box> Grid(const Box&, From_Bounding_Box)
 
    have been removed.
+
+o  shrink_bounding_box has gone ... TO BE COMPLETED
+
+o  For Grids, the constructor
+
+     template <typename Box> Grid(const Box&, From_Covering_Box)
+     template <typename Box> Grid(const Box& box, From_Covering_Box dummy)
+   have been removed.
+o  For Grids, build from covering_box and get_covering_box have
+   gone... TO BE COMPLETED
 
 o  The `ppl.hh' header file no longer defines macros not prefixed
    by "PPL_".
