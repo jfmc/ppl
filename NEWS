@@ -151,8 +151,14 @@ o  Users of the C++ interface of the library can now decide to disable
    should also be called (to release a small amount of memory) when
    done with the library.
 
-o  can_recycle_constraint_systems()
-   can_recycle_congruence_systems() ... TO BE COMPLETED
+o  methods
+
+    static bool can_recycle_constraint_systems()
+    static bool can_recycle_congruence_systems()
+
+   indicating whether or not a PPL semantic object is able to recycle
+   constraints and congruences, respectively, are provided for all the
+   PPL semantic objects.
 
 o  constrains(Variable var) ... TO BE COMPLETED
 
