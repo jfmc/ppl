@@ -86,7 +86,28 @@ struct Is_Interval : public Is_Same_Or_Derived<Interval_Base, T> {};
 
 //! A generic, not necessarily closed, possibly restricted interval.
 /*! \ingroup PPL_CXX_interface
-  FIXME: to be written.
+  The class template type parameter \p Boundary represents the type
+  of the interval boundaries, and can be chosen, among other possibilities
+  within one of the following number families:
+
+  - a bounded precision native integer type (that is,
+    from <CODE>signed char</CODE> to <CODE>long long</CODE>
+    and from <CODE>int8_t</CODE> to <CODE>int64_t</CODE>);
+  - a bounded precision floating point type (<CODE>float</CODE>,
+    <CODE>double</CODE> or <CODE>long double</CODE>);
+  - an unbounded integer or rational type, as provided by the C++ interface
+    of GMP (<CODE>mpz_class</CODE> or <CODE>mpq_class</CODE>).
+
+  The class template type parameter \p Info allows to control a number
+  of features of the class, among which:
+
+  - the ability to support open as well as closed boundaries;
+  - the ability to represent empty intervals in addition to nonempty ones;
+  - the ability to represent intervals of extended number families
+    that contain positive and negative infinities;
+  - the ability to support (independently from the type of the boundaries)
+    plain intervals of real numbers and intervals subject to generic
+    <EM>restrictions</EM> (e.g., intervals of integer numbers).
 */
 template <typename Boundary, typename Info>
 class Interval : public Interval_Base, private Info {
