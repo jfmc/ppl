@@ -52,45 +52,45 @@ o  The class LP_Problem has been renamed MIP_Problem and now supports
    either implemented with floating point numbers (default) or with
    integer coefficients, and the textbook pricing method.
 
-o  The PPL semantic object Polyhedra_Powerset has been replaced by
-   the templatic object Pointset_Powerset<...> that can take any (simple)
-   PPL semantic object for the domain of its disjuncts. In addition to the
-   methods common to all the PPL semantic objects, methods specific to this
-   domain include:
+o  The PPL semantic object Polyhedra_Powerset has been replaced by the
+   templatic object template <typename PS> Pointset_Powerset that can
+   take any (simple) PPL semantic object for the domain of its
+   disjuncts. In addition to the methods common to all the PPL
+   semantic objects, methods specific to this domain include:
 
-     add_disjunct()
-     pairwise_reduce()
-     omega_reduce()
-     geometrically_covers()
-     geometrically_equals()
-     simplify_using_context_assign()
+     add_disjunct(const PS&),
+     void pairwise_reduce(),
+     void omega_reduce() const,
+     bool geometrically_covers(const Pointset_Powerset&) const,
+     bool geometrically_equals(const Pointset_Powerset&) const, and
+     bool simplify_using_context_assign(const Pointset_Powerset&).
 
-   See the documentation of the Pointset_Powerset class for a
-   detailed description of this domain and its methods.
-
-o  A new abstraction called Partially_Reduced_Product (PRP) has been added
-   A PRP is a pair of two PPL semantic objects that is parametric on
-   a reduction operator.  The PRP template class is
+o  A new abstraction called Partially_Reduced_Product (PRP) has been
+   added A PRP is a pair of two PPL semantic objects that is
+   parametric on a reduction operator.  The PRP template class is
    parametric on the component domains and on the reduction operator.
    The PRP currently provides three reduction operators and hence,
    three different kinds of products:
+
    - a Direct_Product where the reduction operator is the identity;
+
    - a Smash_Product where the reduction operator shares emptiness
       information between the components; and
+
    - a Constraints_Product where the reduction operator refines each
      component with the constraints satisfied by the other component.
 
-o  The use of methods having a name ending in `_and_minimize'
-   (e.g., add_constraints_and_minimize, poly_hull_assign_and_minimize, ...)
-   is now deprecated (see the core library documentation for an explanation);
-   their complete removal is planned for version 0.11.
+o  The use of methods having a name ending in `_and_minimize' (e.g.,
+   add_constraints_and_minimize, poly_hull_assign_and_minimize, ...)
+   is now deprecated (see the core library documentation for an
+   explanation); their complete removal is planned for version 0.11.
 
 o  All the semantic domains provide new methods
 
-     void refine_with_constraint(const Constraint& c),
-     void refine_with_congruence(const Congruence& c),
-     void refine_with_constraints(const Constraint_System& cs), and
-     void refine_with_congruences(const Congruence_System& cs).
+     void refine_with_constraint(const Constraint&),
+     void refine_with_congruence(const Congruence&),
+     void refine_with_constraints(const Constraint_System&), and
+     void refine_with_congruences(const Congruence_System&).
 
    These methods are similar to the corresponding `add_' methods.
    The difference is in the reaction policy when the argument
@@ -101,12 +101,12 @@ o  All the semantic domains provide new methods
 o  Methods using the Congruence and Congruence_System classes
    such as
 
-     congruences()
-     minimized_congruences()
-     add_congruence(Congruence cg)
-     add_congruences(Congruence_System cgs)
-     add_recycled_congruences(Congruence_System cgs)
-     relation_with(Congruence)
+     Congruence_System congruences() const,
+     Congruence_System minimized_congruences() const,
+     void add_congruence(const Congruence&),
+     void add_congruences(const Congruence_System&),
+     void add_recycled_congruences(const Congruence_System&), and
+     Poly_Con_Relation relation_with(const Congruence&).
 
    that were just provided for the Grid domain are now provided for
    all the PPL semantic objects.
