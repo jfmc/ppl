@@ -75,4 +75,4 @@ DECLARE_PRINT_TO_BUFFER(MIP_Problem)
 
 #undef DECLARE_PRINT_TO_BUFFER
 
-#endif // !defined(PPL_print_to_buffer_h)
+#endif /* !defined(PPL_print_to_buffer_h) */
