@@ -180,9 +180,8 @@ o  For Grids, the constructor
 
      template <typename Box> Grid(const Box&, From_Covering_Box)
      template <typename Box> Grid(const Box& box, From_Covering_Box dummy)
+
    have been removed.
-o  For Grids, build from covering_box and get_covering_box have
-   gone... TO BE COMPLETED
 
 o  The `ppl.hh' header file no longer defines macros not prefixed
    by "PPL_".
