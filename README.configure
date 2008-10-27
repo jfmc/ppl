@@ -39,12 +39,11 @@ After successful completion of these steps the PPL is completely
 installed on the system and can be used as expected.
 
 On the other hand, the PPL `configure' shell script provides many
-options to adjust the build and installation process for customizing
-the PPL installation.  The `INSTALL' file gives a detailed description
-of the non PPL-specific aspects of the configuration, compilation and
-installation process and describes the basic options of the
-`configure' script.  For a compact summary of all the available
-configuration options, run the command
+options to customize the build and installation process.  The
+`INSTALL' file gives a detailed description of the non PPL-specific
+aspects of the configuration, compilation and installation process and
+describes the basic options of the `configure' script.  For a compact
+summary of all the available configuration options, run the command
 
   $ ./configure --help
 
@@ -130,12 +129,12 @@ flags allows you to use special compilation options ---such as
 may be adequate for your particular application.
 
 Let us take the occasion to stress, once again, the fact that you
-_must_ use the same C++ compiler to compile the C++ interface of GMP,
-the PPL and your application, if you use the C++ interface of the PPL.
+must use exactly the same C++ compiler to compile the C++ interface of GMP,
+the PPL and your application, if it uses the C++ interface of the PPL.
 It should be noted that no version of GCC prior to 4.0.3 is known to
 reliably compile PPL 0.10.
 
-Here is an example of configuration that uses the Intel C/C++ compiler
+Here is an example of a configuration that uses the Intel C/C++ compiler
 version 10.1.x.  Assuming you have configured GMP with a command like
 
   CC=icc CXX=icpc /path/to/gmp-4.2.4/configure --enable-cxx \
@@ -151,8 +150,8 @@ you can configure the PPL with a command like
 Notice that the `CPPFLAGS=-D_GCC_LIMITS_H_' environment variable
 assignment is required in order to overcome a bug in the Intel C/C++
 compiler version 10.1.x.  Notice also that the `--with-cxxflags' option
-is absolutely non-essential here and is only included to show how
-extra compiler options can be passed to the configure script.
+is not essential here and is only included to show how extra
+compiler options can be passed to the configure script.
 
 As another example, here is how you can compile the PPL with
 Comeau C/C++ 4.3.10.1.  First configure GMP with a command like
@@ -201,8 +200,8 @@ to do that (in later releases we may try to make the choice of the
 optimization options automatic).
 
 If you want to test the overhead of checked integers with respect
-to plain, unchecked native integers and you really know what you
-are doing, you may be interested in knowing that these additional
+to plain, unchecked native integers and you are really sure of what
+you are doing, you may be interested to know that these additional
 choices for TYPE are available:
 
   native-int8,     use  8-bit *unchecked* integers;
@@ -219,9 +218,11 @@ languages.  Some of these interfaces are enabled by default,
 meaning that, if the configuration script finds support for
 a certain programming language, these interfaces are compiled
 (with `make') and installed (with `make install').
-The set of enabled interface can be customized with the
-`--enable-interfaces=INTERFACES' option.  The INTERFACE argument
-can be
+The set of enabled interface can be customized with the configure option
+
+  --enable-interfaces=INTERFACES
+
+The INTERFACES argument can be
 
   none,            no language interface is enabled;
   all,             all language interfaces are enabled;
@@ -241,12 +242,12 @@ or any space-separated list of interface specifiers chosen among
 
 The instantiations for the domains for interfaces other than the main
 C++ interface can be customized via the `instantiations' option for
-the PPL `configure' shell script.  Some interfaces depend on language
-implementations that are somewhat problematic, either because they tend
-to be installed in rather unpredictable places, or because some published
-versions have bugs that prevent the PPL interface to run correctly.
-In these cases, information is given in a README.* file.  Presently we
-have:
+the PPL `configure' shell script which is described below. Some
+interfaces depend on language implementations that are somewhat
+problematic, either because they tend to be installed in rather
+unpredictable places, or because some published versions have bugs
+that prevent the PPL interface to run correctly.  In these cases,
+information is given in a README.* file.  Presently we have:
 
   README.ocaml,
   README.gprolog,
@@ -288,11 +289,13 @@ numbers conforming to the IEEE 754 standard,
   Octagonal_Shape<double>.
 
 To enable a different set of instantiations, the configure option
-`--enable-instantiations=INSTANTIATIONS'.  The list of of possibilities
-for the `INSTANTIATIONS' argument can be obtained by omitting the argument,
-i.e., with a command of the form
 
-  .../configure --enable-instantiations
+  --enable-instantiations=INSTANTIATIONS
+
+The list of of possibilities for the `INSTANTIATIONS' argument can be
+obtained by omitting the argument, i.e., with the configure option
+
+  --enable-instantiations
 
 Note that the stand-alone `Polyhedron' instantiation must be specified
 without any topology `C_' or `NNC_' as they are added automatically
@@ -306,8 +309,11 @@ generated.
 By default, the PPL is compiled with all the optimizations provided
 by the compiler that do not involve a space-speed tradeoff (a.k.a.
 -O2 optimization).  The same optimization level can be obtained by
-using the `--enable-optimization' or `--enable-optimization=standard'
-configure options.
+using the configure options
+
+  --enable-optimization
+or
+  --enable-optimization=standard
 
 You can try to squeeze more speed from your compiler by using the
 `--enable-optimization=speed' compiler option (a.k.a. -O3
@@ -321,14 +327,20 @@ to optimize for size and for speed, but only for speed improvements do
 not increase code size.
 
 Further optimization can be requested at the expense of portability
-of the generated code.  This can be achieved by means of the
-`--enable-arch[=ARCH]' configure option.  If the ARCH argument is omitted
-the configure script attempts to detect the architecture of the system.
-Allowed values for ARCH can be found in the documentation of the `-march'
-option of the used C/C++ compiler.
+of the generated code.  This can be achieved by means of the configure option
 
-For floating point computations, the `--enable-fpmath=INSTRUCTION_SET'
-allows to select, on the IA32 and x86_64, the floating point instruction
+  --enable-arch[=ARCH]
+
+If the ARCH argument is omitted the configure script attempts to
+detect the architecture of the system.  Allowed values for ARCH can be
+found in the documentation of the `-march' option of the used C/C++
+compiler.
+
+For floating point computations, the option
+
+  --enable-fpmath=INSTRUCTION_SET
+
+allows for selecting, on the IA32 and x86_64, the floating point instruction
 set.  The allowed values for INSTRUCTION_SET are `sse', `sse2', `387,
 `sse+387', and `sse2+387'.
 
@@ -362,7 +374,7 @@ Of course, this breaks the ABI of the library, so you should recompile
 the part of your application that depends on the PPL.
 
 If you are disappointed by performance of the library and would like
-to check where computation time is spent, you can use the
+to check where the computation time is being spent, you can use the
 `--enable-profiling' option to generate a version that writes profile
 information suitable for the `gprof' analysis program.
 
