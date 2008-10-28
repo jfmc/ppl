@@ -38,7 +38,8 @@ Current contributors:
 
   Katy Dobson           [4] (University of Leeds) is working on the
                         formalization and definition of algorithms
-                        for rational grids.
+                        for rational grids and products of grids
+                        and polyhedra.
 
   Alessandro Zaccagnini [5] (University of Parma) has helped with
                         the efficient implementation of GCD and LCM
@@ -194,23 +195,29 @@ organizations:
      Interpretation'' [24];
 
   3. MURST project ``Abstract Interpretation, Type Systems and
-     Control-Flow Analysis''.
+     Control-Flow Analysis'';
 
   4. MURST project ``Automatic Aggregate- and Number-Reasoning for
      Computing: from Decision Algorithms to Constraint Programming
-     with Multisets, Sets, and Maps'' [25].
+     with Multisets, Sets, and Maps'' [25];
 
   5. MURST project ``Constraint Based Verification of Reactive
-     Systems'' [26].
+     Systems'' [26];
 
   6. MURST project ``AIDA - Abstract Interpretation: Design and
-     Applications'' [27].
+     Applications'' [27];
 
   7. Royal Society Joint project 2004/R1-EU (UK-Italy)
-     ``Automatic Detection of Unstable Numerical Computations''.
+     ``Automatic Detection of Unstable Numerical Computations'';
 
   8. EPSRC (UK) project EP/C520726/1
-     ``Numerical Domains for Software Analysis'' [28].
+     ``Numerical Domains for Software Analysis'' [28];
+
+  9. Royal Society International Outgoing Short Visit 2007/R4
+    ``Finding and Verifying the Absence of Bugs in Imperative Programs'' [29];
+
+  10. EPSRC (UK) project EP/G025177/1
+    ``Geometric Abstractions for Scalable Program Analyzers'' [29].
 
 --------
 
@@ -241,4 +248,5 @@ organizations:
 [25] http://www.cs.unipr.it/Projects/COFIN01
 [26] http://www.disi.unige.it/person/DelzannoG/cover/
 [27] http://www.cs.unipr.it/Projects/AIDA/
-[28] http://www.comp.leeds.ac.uk/hill/linda/
+[28] http://www.comp.leeds.ac.uk/hill/chiara/WWW/linda.html
+[29] http://www.comp.leeds.ac.uk/hill/chiara/WWW/projects.html
