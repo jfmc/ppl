@@ -176,6 +176,17 @@ o  Users of the C++ interface of the library can now decide to disable
    should also be called (to release a small amount of memory) when
    done with the library.
 
+o   New C++ functions
+
+      void restore_pre_PPL_rounding() and
+      void set_rounding_for_PPL()
+
+    allow to set the FPU rounding mode as it was before initialization
+    of the PPL, and to set it (again) so that the PPL abstractions based
+    on floating point numbers work correctly, respectively.
+    Similar functions/predicates are available in all the other
+    language interfaces.
+
 o  For all the PPL semantic objects there are new methods:
 
     static bool can_recycle_constraint_systems() and

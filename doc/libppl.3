@@ -166,6 +166,28 @@ int main() {
 .fi
 .sp
 
+.SH "USING NATIVE FLOATING POINT NUMBERS"
+At initialization time, the Parma Polyhedra Library sets the FPU rounding
+mode in a way that allows its floating-point-based computations to be
+conservative (i.e., possibly approximated but correct) and reasonably
+efficient.  In case your application itself uses native floating point
+numbers and relies on a particular rounding mode (if you are in doubt,
+assume that it does rely on round-to-nearest to be in effect), you should
+use the function
+.sp
+.B void Parma_Polyhedra_Library::restore_pre_PPL_rounding()
+.sp
+after the PPL initialization and before using native floating point numbers
+in the application.
+If your application does no use any floating-point-based PPL abstraction,
+no further measure should be taken.
+Otherwise, it is imperative to call the function
+.sp
+.B void Parma_Polyhedra_Library::set_rounding_for_PPL()
+.sp
+before invoking any PPL interface related to such abstractions.
+
+
 .SH "SEE ALSO"
 .BR ppl-config(1)
 .sp
