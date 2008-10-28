@@ -157,7 +157,7 @@ cxx_free(void* p, size_t) {
 
 #if PPL_CXX_SUPPORTS_ATTRIBUTE_WEAK
 extern "C" void
-set_GMP_memory_allocation_functions(void) {
+ppl_set_GMP_memory_allocation_functions(void) {
   mp_set_memory_functions(cxx_malloc, cxx_realloc, cxx_free);
 }
 #endif // PPL_CXX_SUPPORTS_ATTRIBUTE_WEAK

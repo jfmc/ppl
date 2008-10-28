@@ -137,12 +137,12 @@ If your C++ compiler supports
 .B __attribute__ ((weak))
 and you do not have any other special needs, then you can simply link
 to your application a C function
-.B set_GMP_memory_allocation_functions(void)
+.B ppl_set_GMP_memory_allocation_functions(void)
 such as
 .sp
 .nf
 extern "C" void
-set_GMP_memory_allocation_functions(void) {
+ppl_set_GMP_memory_allocation_functions(void) {
   mp_set_memory_functions(cxx_malloc, cxx_realloc, cxx_free);
 }
 .fi
@@ -150,7 +150,7 @@ set_GMP_memory_allocation_functions(void) {
 This is all that you have to do, whether or not you use the automatic
 initialization feature of the library (see above): in any case
 the initialization procedure will automatically call
-.B set_GMP_memory_allocation_functions(void).
+.B ppl_set_GMP_memory_allocation_functions(void).
 .IP (2)
 If your C++ compiler does not support
 .B __attribute__ ((weak))

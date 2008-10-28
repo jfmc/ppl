@@ -1175,7 +1175,7 @@ error_handler(enum ppl_enum_error_code code,
 
 #if !PPL_CXX_SUPPORTS_ATTRIBUTE_WEAK
 void
-set_GMP_memory_allocation_functions(void) {
+ppl_set_GMP_memory_allocation_functions(void) {
 }
 #endif
 

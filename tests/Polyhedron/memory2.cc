@@ -211,7 +211,7 @@ test3() {
   }
 
 extern "C" void
-set_GMP_memory_allocation_functions() {
+ppl_set_GMP_memory_allocation_functions() {
   before_main = true;
   // Allow the static coefficients of the library to be allocated
   // without any limit.

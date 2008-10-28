@@ -46,7 +46,7 @@ typedef PPL::C_Polyhedron POLYHEDRON_TYPE;
 
 #if !PPL_CXX_SUPPORTS_ATTRIBUTE_WEAK
 extern "C" void
-set_GMP_memory_allocation_functions(void) {
+ppl_set_GMP_memory_allocation_functions(void) {
 }
 #endif
 
