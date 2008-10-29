@@ -108,7 +108,7 @@ test02() {
   print_constraints(bds2, "*** bds2 ***");
   print_constraints(cs, "*** cs ***");
 
-  bds1.bds_hull_assign(bds2);
+  bds1.upper_bound_assign(bds2);
 
   bds1.limited_CC76_extrapolation_assign(bds2, cs);
 
@@ -283,7 +283,7 @@ test05() {
     m_i_next = aux_test05(++i, a, b, c);
     TBD_Shape::coefficient_type_base* no_stop_points = 0;
     m_i_next.CC76_extrapolation_assign(m_i, no_stop_points, no_stop_points);
-    m_i_next.bds_hull_assign(m_i);
+    m_i_next.upper_bound_assign(m_i);
     // Force closure.
     (void) (m_i_next == m_i_next);
     if (m_i == m_i_next) {

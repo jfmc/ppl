@@ -27,7 +27,7 @@ namespace Parma_Polyhedra_Library {
 
 #include <stdint.h>
 
-#define PPL_MARKED_POINTERS_MASK 0x00000001L
+#define PPL_MARKED_POINTERS_MASK ((uintptr_t) 1)
 
 /*! \brief
   Returns the marked pointer corresponding to \p p.

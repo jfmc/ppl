@@ -46,12 +46,12 @@ unsigned int PPL::Init::count = 0;
 PPL::fpu_rounding_direction_type PPL::Init::old_rounding_direction;
 
 extern "C" void
-set_GMP_memory_allocation_functions(void)
+ppl_set_GMP_memory_allocation_functions(void)
 #if PPL_CXX_SUPPORTS_ATTRIBUTE_WEAK
   __attribute__((weak));
 
 void
-set_GMP_memory_allocation_functions(void) {
+ppl_set_GMP_memory_allocation_functions(void) {
 }
 #else
   ;
@@ -61,7 +61,7 @@ PPL::Init::Init() {
   // Only when the first Init object is constructed...
   if (count++ == 0) {
     // ... the GMP memory allocation functions are set, ...
-    set_GMP_memory_allocation_functions();
+    ppl_set_GMP_memory_allocation_functions();
     // ... the default output function for Variable objects is set, ...
     Variable::set_output_function(Variable::default_output_function);
     // ... the Coefficient constants are initialized, ...

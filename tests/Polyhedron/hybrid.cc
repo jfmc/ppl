@@ -67,7 +67,7 @@ test01() {
     // add invariant constraint for l0
     ph_tmp.add_constraint(w < 10);
     // join with the Init(l0)
-    ph0.poly_hull_assign(ph_tmp);
+    ph0.upper_bound_assign(ph_tmp);
     // time elaspe for l0
     ph0.time_elapse_assign(ph_tea01);
     // add invariant constraint for l0
@@ -209,16 +209,16 @@ test02() {
     ph_tmp.add_constraint(x1 >= b);
     ph_tmp.add_constraint(k >= 0);
     ph_tmp.add_constraint(k <= 2);
-    ph0.poly_hull_assign(ph_tmp);
+    ph0.upper_bound_assign(ph_tmp);
     ph_tmp = ph4;
     ph_tmp.affine_image(k, Linear_Expression(0));
     ph_tmp.add_constraint(k >= 0);
     ph_tmp.add_constraint(k <= 2);
-    ph0.poly_hull_assign(ph_tmp);
+    ph0.upper_bound_assign(ph_tmp);
     ph_tmp = ph5;
     ph_tmp.add_constraint(k >= 0);
     ph_tmp.add_constraint(k <= 2);
-    ph0.poly_hull_assign(ph_tmp);
+    ph0.upper_bound_assign(ph_tmp);
     ph0.time_elapse_assign(ph_tea);
     ph0.add_constraint(k >= 0);
     ph0.add_constraint(k <= 2);
@@ -334,7 +334,8 @@ test02() {
       return ok;
     }
 
-    ph0.poly_hull_assign_and_minimize(ph0_prev);
+    ph0.upper_bound_assign(ph0_prev);
+    (void) ph0.is_empty();
     // ph0.H79_widening_assign(ph0_prev);
 
     ph0_prev = ph0;
@@ -391,20 +392,20 @@ test03() {
   while (true) {
 
     // location Idle
-    ph_idle.poly_hull_assign(ph_idle_Init);
+    ph_idle.upper_bound_assign(ph_idle_Init);
     ph_tmp = ph_t1;
     ph_tmp.add_constraint(x1 == 4);
     ph_tmp.add_constraint(k1 <= 1);
     ph_tmp.affine_image(k1, k1 - 1);
     ph_tmp.affine_image(x1, Linear_Expression(0));
-    ph_idle.poly_hull_assign(ph_tmp);
+    ph_idle.upper_bound_assign(ph_tmp);
     ph_tmp = ph_t2;
     ph_tmp.add_constraint(x2 == 8);
     ph_tmp.add_constraint(k2 <= 1);
     ph_tmp.add_constraint(k1 == 0);
     ph_tmp.affine_image(k2, k2 - 1);
     ph_tmp.affine_image(x2, Linear_Expression(0));
-    ph_idle.poly_hull_assign(ph_tmp);
+    ph_idle.upper_bound_assign(ph_tmp);
 
     // location Task1
     ph_tmp = ph_idle;
@@ -412,20 +413,20 @@ test03() {
     ph_tmp.affine_image(c1, Linear_Expression(0));
     ph_tmp.affine_image(k1, Linear_Expression(1));
     ph_tmp.add_constraint(x1 <= 4);
-    ph_t1.poly_hull_assign(ph_tmp);
+    ph_t1.upper_bound_assign(ph_tmp);
     ph_tmp = ph_t1;
     ph_tmp.add_constraint(c1 >= 10);
     ph_tmp.affine_image(c1, Linear_Expression(0));
     ph_tmp.affine_image(k1, k1 + 1);
     ph_tmp.add_constraint(x1 <= 4);
-    ph_t1.poly_hull_assign(ph_tmp);
+    ph_t1.upper_bound_assign(ph_tmp);
     ph_tmp = ph_t1;
     ph_tmp.add_constraint(x1 == 4);
     ph_tmp.add_constraint(k1 >= 2);
     ph_tmp.affine_image(x1, Linear_Expression(0));
     ph_tmp.affine_image(k1, k1 - 1);
     ph_tmp.add_constraint(x1 <= 4);
-    ph_t1.poly_hull_assign(ph_tmp);
+    ph_t1.upper_bound_assign(ph_tmp);
     ph_tmp = ph_t2;
     ph_tmp.add_constraint(x1 == 8);
     ph_tmp.add_constraint(k2 <= 1);
@@ -433,7 +434,7 @@ test03() {
     ph_tmp.affine_image(x2, Linear_Expression(0));
     ph_tmp.affine_image(k2, k2 - 1);
     ph_tmp.add_constraint(x1 <= 4);
-    ph_t1.poly_hull_assign(ph_tmp);
+    ph_t1.upper_bound_assign(ph_tmp);
     ph_t1.time_elapse_assign(ph_tea1);
     ph_t1.add_constraint(x1 <= 4);
 
@@ -443,32 +444,32 @@ test03() {
     ph_tmp.affine_image(c2, Linear_Expression(0));
     ph_tmp.affine_image(k2, Linear_Expression(1));
     ph_tmp.add_constraint(x2 <= 8);
-    ph_t2.poly_hull_assign(ph_tmp);
+    ph_t2.upper_bound_assign(ph_tmp);
     ph_tmp = ph_t2;
     ph_tmp.add_constraint(c2 >= 20);
     ph_tmp.affine_image(c2, Linear_Expression(0));
     ph_tmp.affine_image(k2, k2 + 1);
     ph_tmp.add_constraint(x2 <= 8);
-    ph_t2.poly_hull_assign(ph_tmp);
+    ph_t2.upper_bound_assign(ph_tmp);
     ph_tmp = ph_t2;
     ph_tmp.add_constraint(c1 >= 10);
     ph_tmp.affine_image(c1, Linear_Expression(0));
     ph_tmp.affine_image(k1, k1 + 1);
     ph_tmp.add_constraint(x2 <= 8);
-    ph_t2.poly_hull_assign(ph_tmp);
+    ph_t2.upper_bound_assign(ph_tmp);
     ph_tmp = ph_t2;
     ph_tmp.add_constraint(x2 == 8);
     ph_tmp.add_constraint(k2 >= 2);
     ph_tmp.affine_image(x2, Linear_Expression(0));
     ph_tmp.affine_image(k2, k2 - 1);
     ph_tmp.add_constraint(x2 <= 8);
-    ph_t2.poly_hull_assign(ph_tmp);
+    ph_t2.upper_bound_assign(ph_tmp);
     ph_tmp = ph_t1;
     ph_tmp.add_constraint(c2 >= 20);
     ph_tmp.affine_image(c2, Linear_Expression(0));
     ph_tmp.affine_image(k2, Linear_Expression(1));
     ph_tmp.add_constraint(x2 <= 8);
-    ph_t2.poly_hull_assign(ph_tmp);
+    ph_t2.upper_bound_assign(ph_tmp);
     ph_t2.time_elapse_assign(ph_tea2);
     ph_t2.add_constraint(x2 <= 8);
 
@@ -557,15 +558,16 @@ affine_image(
   ps = ps_result;
 }
 
-  // Compute the poly_hull of the powerset.
+// Compute the upper_bound of the powerset.
 void
-powerset_poly_hull(
-	    Pointset_Powerset<NNC_Polyhedron>& ps, NNC_Polyhedron& ph) {
+powerset_upper_bound(Pointset_Powerset<NNC_Polyhedron>& ps,
+                     NNC_Polyhedron& ph) {
   Pointset_Powerset<NNC_Polyhedron> ps_result(ps.space_dimension(), EMPTY);
   for (Pointset_Powerset<NNC_Polyhedron>::iterator i = ps.begin(),
                                    ps_end = ps.end(); i != ps_end; ++i) {
     NNC_Polyhedron phi = i->element();
-    ph.poly_hull_assign_and_minimize(phi);
+    ph.upper_bound_assign(phi);
+    (void) ph.is_empty();
   }
 }
 
@@ -691,8 +693,8 @@ test04() {
     ph_tmp.add_constraint(x1 <= 4);
     ph_t1.upper_bound_assign(ph_tmp);
     time_elapse(ph_t1, ph_tea1);
-    ph_t1.add_constraint_and_minimize(x1 <= 4);
-
+    ph_t1.add_constraint(x1 <= 4);
+    (void) ph_t1.is_empty();
 
     //ph_t2
     ph_tmp = ph_idle;
@@ -792,7 +794,7 @@ test04() {
       print_constraints(ph_t2, "*** ph_t2 final ***");
 
       // We project away the variables c1 and C2
-      // only compare the poly_hulls of the powerset with the
+      // only compare the upper_bounds of the powerset with the
       // expected result.
 
       Variables_Set vs;
@@ -800,7 +802,7 @@ test04() {
       vs.insert(c2);
 
       NNC_Polyhedron ph_idle_hull(6, EMPTY);
-      powerset_poly_hull(ph_idle, ph_idle_hull);
+      powerset_upper_bound(ph_idle, ph_idle_hull);
 
       ph_idle_hull.remove_space_dimensions(vs);
 
@@ -814,7 +816,7 @@ test04() {
       print_constraints(ph_idle_hull, "*** ph_idle_hull final projected ***");
 
       NNC_Polyhedron ph_t1_hull(6, EMPTY);
-      powerset_poly_hull(ph_t1, ph_t1_hull);
+      powerset_upper_bound(ph_t1, ph_t1_hull);
       ph_t1_hull.remove_space_dimensions(vs);
 
       NNC_Polyhedron known_result_t1(4);
@@ -828,7 +830,7 @@ test04() {
       print_constraints(ph_t1_hull, "*** ph_t1_hull final projected ***");
 
       NNC_Polyhedron ph_t2_hull(6, EMPTY);
-      powerset_poly_hull(ph_t2, ph_t2_hull);
+      powerset_upper_bound(ph_t2, ph_t2_hull);
       ph_t2_hull.remove_space_dimensions(vs);
 
       NNC_Polyhedron known_result_t2(4);
@@ -864,5 +866,5 @@ BEGIN_MAIN
   DO_TEST_F8(test01);
   DO_TEST_F8(test02);
   DO_TEST(test03);
-  DO_TEST_F8A(test04);
+  DO_TEST(test04);
 END_MAIN

@@ -86,9 +86,9 @@ test03() {
   C_Polyhedron ph2(gs);
   try {
     // This is an incorrect use of function
-    // C_Polyhedron::poly_hull_assign(p): it is illegal to use
+    // C_Polyhedron::upper_bound_assign(p): it is illegal to use
     // it with two polyhedra of different dimensions.
-    ph1.poly_hull_assign_and_minimize(ph2);
+    ph1.upper_bound_assign(ph2);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
@@ -468,9 +468,9 @@ test18() {
 
   try {
     // This is an invalid use of the function
-    // C_Polyhedron::poly_hull_assign(ph2): it is illegal to apply
+    // C_Polyhedron::upper_bound_assign(ph2): it is illegal to apply
     // this function to two polyhedra with different dimensions.
-    ph1.poly_hull_assign(ph2);
+    ph1.upper_bound_assign(ph2);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
@@ -769,9 +769,9 @@ test30() {
 
   try {
     // This is an incorrect use of function
-    // C_Polyhedron::poly_difference_assign(ph2): it is impossible to apply
+    // C_Polyhedron::difference_assign(ph2): it is impossible to apply
     // this function to two polyhedra of different dimensions.
-    ph1.poly_difference_assign(ph2);
+    ph1.difference_assign(ph2);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;

@@ -1,4 +1,4 @@
-# Doxyfile 1.5.6-20080819
+# Doxyfile 1.5.7.1
 
 #---------------------------------------------------------------------------
 # Project related configuration options
@@ -53,6 +53,7 @@ HIDE_IN_BODY_DOCS      = YES
 INTERNAL_DOCS          = NO
 CASE_SENSE_NAMES       = YES
 HIDE_SCOPE_NAMES       = NO
+SHOW_INCLUDE_FILES     = YES
 INLINE_INFO            = YES
 SORT_MEMBER_DOCS       = NO
 SORT_BRIEF_DOCS        = NO
@@ -64,6 +65,7 @@ GENERATE_BUGLIST       = YES
 GENERATE_DEPRECATEDLIST= YES
 ENABLED_SECTIONS       = 
 MAX_INITIALIZER_LINES  = 5
+SHOW_USED_FILES        = YES
 SHOW_DIRECTORIES       = NO
 SHOW_FILES             = YES
 SHOW_NAMESPACES        = YES
@@ -113,6 +115,7 @@ VERBATIM_HEADERS       = NO
 #---------------------------------------------------------------------------
 # configuration options related to the alphabetical class index
 #---------------------------------------------------------------------------
+ALPHABETICAL_INDEX     = NO
 COLS_IN_ALPHA_INDEX    = 5
 IGNORE_PREFIX          = 
 #---------------------------------------------------------------------------
@@ -125,20 +128,22 @@ HTML_HEADER            =
 HTML_FOOTER            = 
 HTML_STYLESHEET        = 
 HTML_ALIGN_MEMBERS     = YES
-GENERATE_HTMLHELP      = NO
+HTML_DYNAMIC_SECTIONS  = NO
 GENERATE_DOCSET        = NO
 DOCSET_FEEDNAME        = "Doxygen generated docs"
 DOCSET_BUNDLE_ID       = org.doxygen.Project
-HTML_DYNAMIC_SECTIONS  = NO
+GENERATE_HTMLHELP      = NO
 CHM_FILE               = 
 HHC_LOCATION           = 
-QTHELP_FILE            = 
-QTHELP_CONFIG          = 
-DOXYGEN2QTHELP_LOC     = 
 GENERATE_CHI           = NO
 CHM_INDEX_ENCODING     = 
 BINARY_TOC             = NO
 TOC_EXPAND             = NO
+GENERATE_QHP           = NO
+QCH_FILE               = 
+QHP_NAMESPACE          = org.doxygen.Project
+QHP_VIRTUAL_FOLDER     = doc
+QHG_LOCATION           = 
 DISABLE_INDEX          = NO
 ENUM_VALUES_PER_LINE   = 4
 GENERATE_TREEVIEW      = YES
@@ -222,9 +227,15 @@ MSCGEN_PATH            =
 HIDE_UNDOC_RELATIONS   = YES
 HAVE_DOT               = YES
 DOT_FONTNAME           = FreeSans
+DOT_FONTSIZE           = 10
 DOT_FONTPATH           = 
+CLASS_GRAPH            = YES
+COLLABORATION_GRAPH    = YES
+GROUP_GRAPHS           = YES
 UML_LOOK               = NO
 TEMPLATE_RELATIONS     = NO
+INCLUDE_GRAPH          = YES
+INCLUDED_BY_GRAPH      = YES
 CALL_GRAPH             = NO
 CALLER_GRAPH           = NO
 GRAPHICAL_HIERARCHY    = NO

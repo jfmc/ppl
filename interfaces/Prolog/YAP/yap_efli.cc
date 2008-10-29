@@ -24,7 +24,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-namespace Prolog_Interfaces {
+namespace Interfaces {
+
+namespace Prolog {
+
+namespace YAP {
 
 Prolog_atom a_throw;
 
@@ -81,6 +85,10 @@ Prolog_unify_Coefficient(Prolog_term_ref t, const Coefficient& n) {
   return Prolog_put_Coefficient(u, n) && YAP_Unify(t, u);
 }
 
-} // namespace Prolog_Interfaces
+} // namespace YAP
+
+} // namespace Prolog
+
+} // namespace Interfaces
 
 } // namespace Parma_Polyhedra_Library

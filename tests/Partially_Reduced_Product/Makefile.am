@@ -21,8 +21,18 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
+if VALGRIND_TESTS_ENABLED
+
+CHECKER = \
+$(VALGRIND) --tool=memcheck -q --trace-children=yes --leak-check=yes \
+--num-callers=100 --leak-resolution=high \
+--suppressions=$(top_srcdir)/tests/valgrind_suppressions
+
+else !VALGRIND_TESTS_ENABLED
+
 CHECKER =
-#CHECKER = valgrind --tool=memcheck -q --trace-children=yes --leak-check=yes --num-callers=100 --leak-resolution=high --suppressions=$(top_srcdir)/tests/valgrind_suppressions
+
+endif !VALGRIND_TESTS_ENABLED
 
 TESTS_ENVIRONMENT = $(CHECKER)
 
@@ -68,4 +78,5 @@ partiallyreducedproduct4_SOURCES = partiallyreducedproduct4.cc
 
 check_PROGRAMS = $(TESTS)
 
-MOSTLYCLEANFILES =
+MOSTLYCLEANFILES = \
+ascii_dump_load1.dat

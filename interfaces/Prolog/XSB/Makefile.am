@@ -30,9 +30,7 @@ $(XSB_CFLI_FILES) \
 xsb_clpq.P \
 xsb_clpq2.P \
 xsb_pl_check.P \
-ppl_interface_generator_xsb_predicate_check_P.m4
-
-if BUILD_XSB_PROLOG_INTERFACE
+ppl_interface_generator_xsb_prolog_generated_test_P.m4
 
 if BUILD_WATCHDOG_LIBRARY
 
@@ -51,7 +49,7 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../../ppl_interface_generator_common_procedure_generators.m4 \
 ../ppl_interface_generator_prolog_procedure_generators.m4 \
 ../ppl_interface_generator_prolog_systems.m4 \
-ppl_interface_generator_xsb_predicate_check_P.m4
+ppl_interface_generator_xsb_prolog_generated_test_P.m4
 
 ppl_xsb.H: $(interface_generator_dependencies) ppl_interface_generator_xsb_H.m4
 	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
@@ -65,9 +63,9 @@ ppl_xsb.cc: $(interface_generator_dependencies) ppl_interface_generator_xsb_cc.m
 	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_xsb_cc.m4 > $@
 
-xsb_predicate_check.P: $(interface_generator_dependencies) ppl_interface_generator_xsb_predicate_check_P.m4
+xsb_prolog_generated_test.P: $(interface_generator_dependencies) ppl_interface_generator_xsb_prolog_generated_test_P.m4
 	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
-           $(srcdir)/ppl_interface_generator_xsb_predicate_check_P.m4 > $@
+           $(srcdir)/ppl_interface_generator_xsb_prolog_generated_test_P.m4 > $@
 
 AM_CPPFLAGS = \
 -I$(top_srcdir)/interfaces \
@@ -93,19 +91,77 @@ BUILT_SOURCES = \
 ppl_xsb.hh
 
 nodist_EXTRA_libppl_xsb_la_SOURCES = \
+../ppl_prolog_Int8_Box.cc \
+../ppl_prolog_Int16_Box.cc \
+../ppl_prolog_Int32_Box.cc \
+../ppl_prolog_Int64_Box.cc \
+../ppl_prolog_Uint8_Box.cc \
+../ppl_prolog_Uint16_Box.cc \
+../ppl_prolog_Uint32_Box.cc \
+../ppl_prolog_Uint64_Box.cc \
+../ppl_prolog_Float_Box.cc \
+../ppl_prolog_Double_Box.cc \
+../ppl_prolog_Long_Double_Box.cc \
+../ppl_prolog_Rational_Box.cc \
+../ppl_prolog_Z_Box.cc \
+../ppl_prolog_BD_Shape_int8_t.cc \
+../ppl_prolog_BD_Shape_int16_t.cc \
+../ppl_prolog_BD_Shape_int32_t.cc \
+../ppl_prolog_BD_Shape_int64_t.cc \
+../ppl_prolog_BD_Shape_float.cc \
 ../ppl_prolog_BD_Shape_double.cc \
+../ppl_prolog_BD_Shape_long_double.cc \
 ../ppl_prolog_BD_Shape_mpq_class.cc \
 ../ppl_prolog_BD_Shape_mpz_class.cc \
-../ppl_prolog_Constraints_Product_C_Polyhedron_Grid.cc \
-../ppl_prolog_Double_Box.cc \
-../ppl_prolog_Grid.cc \
+../ppl_prolog_Octagonal_Shape_int8_t.cc \
+../ppl_prolog_Octagonal_Shape_int16_t.cc \
+../ppl_prolog_Octagonal_Shape_int32_t.cc \
+../ppl_prolog_Octagonal_Shape_int64_t.cc \
+../ppl_prolog_Octagonal_Shape_float.cc \
 ../ppl_prolog_Octagonal_Shape_double.cc \
+../ppl_prolog_Octagonal_Shape_long_double.cc \
 ../ppl_prolog_Octagonal_Shape_mpq_class.cc \
 ../ppl_prolog_Octagonal_Shape_mpz_class.cc \
+../ppl_prolog_Polyhedron.cc \
+../ppl_prolog_Grid.cc \
+../ppl_prolog_Pointset_Powerset_Int8_Box.cc \
+../ppl_prolog_Pointset_Powerset_Int16_Box.cc \
+../ppl_prolog_Pointset_Powerset_Int32_Box.cc \
+../ppl_prolog_Pointset_Powerset_Int64_Box.cc \
+../ppl_prolog_Pointset_Powerset_Uint8_Box.cc \
+../ppl_prolog_Pointset_Powerset_Uint16_Box.cc \
+../ppl_prolog_Pointset_Powerset_Uint32_Box.cc \
+../ppl_prolog_Pointset_Powerset_Uint64_Box.cc \
+../ppl_prolog_Pointset_Powerset_Float_Box.cc \
+../ppl_prolog_Pointset_Powerset_Double_Box.cc \
+../ppl_prolog_Pointset_Powerset_Long_Double_Box.cc \
+../ppl_prolog_Pointset_Powerset_Rational_Box.cc \
+../ppl_prolog_Pointset_Powerset_Z_Box.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_int8_t.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_int16_t.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_int32_t.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_int64_t.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_float.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_double.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_long_double.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_mpq_class.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_mpz_class.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_int8_t.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_int16_t.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_int32_t.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_int64_t.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_float.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_double.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_long_double.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_mpq_class.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_mpz_class.cc \
 ../ppl_prolog_Pointset_Powerset_C_Polyhedron.cc \
 ../ppl_prolog_Pointset_Powerset_NNC_Polyhedron.cc \
-../ppl_prolog_Polyhedron.cc \
-../ppl_prolog_Rational_Box.cc
+../ppl_prolog_Pointset_Powerset_Grid.cc \
+../ppl_prolog_Constraints_Product_C_Polyhedron_Grid.cc \
+../ppl_prolog_Constraints_Product_NNC_Polyhedron_Grid.cc \
+../ppl_prolog_Constraints_Product_Grid_C_Polyhedron.cc \
+../ppl_prolog_Constraints_Product_Grid_NNC_Polyhedron.cc
 
 libppl_xsb_la_LIBADD = \
 @required_instantiations_prolog_cxx_objects@ \
@@ -165,7 +221,7 @@ EXPECTED_PCHK = $(srcdir)/../tests/expected_pchk_$(COEFFICIENT_MNEMONIC)
 
 endif !ASSERTIONS_ENABLED
 
-check-local: libppl_xsb.la xsb_clpq.P ../tests/clpq.pl ../tests/script_clpq xsb_clpq2.P ../tests/clpq2.pl ../tests/script_clpq2 pl_check_test
+check-local: libppl_xsb.la xsb_clpq.P ../tests/clpq.pl ../tests/script_clpq xsb_clpq2.P ../tests/clpq2.pl ../tests/script_clpq2 pl_check_test ppl_prolog_generated_test
 	LANG=C; \
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
 	if [ $(abs_srcdir) != `pwd` ]; then \
@@ -216,27 +272,33 @@ pl_check_test: libppl_xsb.la ppl_xsb.xwam xsb_pl_check.P ../tests/pl_check.pl
 	fi
 	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
 
-predicate_check_test: libppl_xsb.la ppl_xsb.xwam xsb_predicate_check.P ../tests/ppl_predicate_check_main.pl
-	cp -f $(srcdir)/../tests/ppl_predicate_check_common.pl . ; \
-	cp -f ../tests/ppl_predicate_check_main.pl .
-	rm -f xsb_predicate_check.xwam
+ppl_prolog_generated_test: libppl_xsb.la ppl_xsb.xwam xsb_prolog_generated_test.P ../tests/ppl_prolog_generated_test_main.pl ../tests/expected_pgt
+	if [ $(srcdir) != `pwd` ]; then \
+	  cp -f $(srcdir)/../tests/ppl_prolog_generated_test_common.pl . ; \
+	fi
+	cp -f ../tests/ppl_prolog_generated_test_main.pl .
+	rm -f xsb_prolog_generated_test.xwam
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		$(WATCHDOG_DLOPEN) \
-		xsb xsb_predicate_check \
-			>obtained_pchk
-	rm -f ppl_predicate_check_main.pl
-	rm -f xsb_predicate_check.P; \
-	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
+		xsb xsb_prolog_generated_test \
+			>obtained_pgt
+	if [ $(srcdir) != `pwd` ]; then \
+	  rm -f ppl_prolog_generated_test_common.pl ; \
+	fi
+	rm -f ppl_prolog_generated_test_main.pl ; \
+	diff -u --ignore-all-space $(srcdir)/../tests/expected_pgt obtained_pgt
 
-endif BUILD_XSB_PROLOG_INTERFACE
 
-DISTCLEANFILES = \
+CLEANFILES = \
 ppl_xsb.H \
 ppl_xsb.hh \
-ppl_xsb.cc
+ppl_xsb.cc \
+xsb_prolog_generated_test.P
 
 MOSTLYCLEANFILES = \
+@required_instantiations_prolog_cxx_objects@ \
 ppl_xsb.xwam ppl_xsb.so \
-xsb_clpq.xwam xsb_clpq2.xwam xsb_pl_check.xwam \
-$(CLPQ_TESTS) obtained_clpq obtained_clpq2 obtained_pchk
+xsb_efli.lo xsb_efli.o \
+xsb_clpq.xwam xsb_clpq2.xwam xsb_pl_check.xwam xsb_prolog_generated_test.xwam \
+$(CLPQ_TESTS) obtained_clpq obtained_clpq2 obtained_pchk obtained_pgt

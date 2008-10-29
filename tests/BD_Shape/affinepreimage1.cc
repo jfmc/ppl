@@ -414,7 +414,7 @@ bool
 test16() {
   Variable A(0);
 
-  BD_Shape<float> bds(1);
+  TBD_Shape bds(1);
   bds.add_constraint(A <= -1);
 
   print_constraints(bds, "*** bds ***");

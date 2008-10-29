@@ -24,35 +24,27 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-#if 0
-// add_congruences_and_minimize(cs)
+// add_constraints(1 == 0) to an empty 0-dimensional grid
 bool
 test01() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
 
-  Grid gr(3);
+  Grid gr(0, EMPTY);
 
   print_congruences(gr, "*** gr ***");
 
   Constraint_System cs;
-  cs.insert(B == 0);
-  cs.insert(A >= 0);
-  cs.insert(C > 0);
+  cs.insert(Linear_Expression(1) == 0);
 
-  gr.add_congruences_and_minimize(cs);
+  gr.add_constraints(cs);
 
-  Grid known_gr(3);
-  known_gr.add_congruence((B == 0) / 0);
+  Grid known_gr(0, EMPTY);
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr, "*** gr.add_congruences_and_minimize(cs) ***");
+  print_congruences(gr, "*** gr.add_constraints(cs) ***");
 
   return ok;
 }
-#endif
 
 // add_constraints
 bool
@@ -104,8 +96,7 @@ test03() {
   return ok;
 }
 
-#if 0
-// add_congruences(cs)
+// add_constraints with inconsistency
 bool
 test04() {
   Variable A(0);
@@ -114,19 +105,16 @@ test04() {
   Variable D(3);
 
   Constraint_System cs;
-  cs.insert(B < 0);
-  cs.insert(B > 0);
   cs.insert(A == 0);
-  cs.insert(C > 0);
 
   Grid gr(3);
 
   print_congruences(gr, "*** gr ***");
 
-  gr.add_congruences(cs);
+  gr.add_constraints(cs);
 
   Grid known_gr(3);
-  known_gr.add_congruence(A == 0);
+  known_gr.add_congruence((A %= 0) / 0);
 
   bool ok = (gr == known_gr);
 
@@ -135,7 +123,7 @@ test04() {
   return ok;
 }
 
-// add_recycled_congruences(cs)
+// add_constraints with inconsistency
 bool
 test05() {
   Variable A(0);
@@ -143,19 +131,15 @@ test05() {
   Variable C(2);
 
   Constraint_System cs;
-  cs.insert(2*B == 3);
-  cs.insert(A == 0);
-  cs.insert(C > 0);
+  cs.insert(Linear_Expression(1) >= 3);
 
   Grid gr(3);
 
   print_congruences(gr, "*** gr ***");
 
-  gr.add_recycled_congruences(cs);
+  gr.add_constraints(cs);
 
-  Grid known_gr(3);
-  known_gr.add_congruence(A == 0);
-  known_gr.add_congruence(2*B == 3);
+  Grid known_gr(3, EMPTY);
 
   bool ok = (gr == known_gr);
 
@@ -164,7 +148,7 @@ test05() {
   return ok;
 }
 
-// add_recycled_congruences_and_minimize(cs)
+// refine_with_constraints
 bool
 test06() {
   Variable A(0);
@@ -172,30 +156,25 @@ test06() {
   Variable C(2);
 
   Constraint_System cs;
-  cs.insert(2*B >= 3);
-  cs.insert(2*A == 7);
-  cs.insert(C > 0);
+  cs.insert(B >= 3);
+  cs.insert(0*B >= 7);
 
   Grid gr(3);
 
   print_congruences(gr, "*** gr ***");
 
-  gr.add_recycled_congruences_and_minimize(cs);
+  gr.refine_with_constraints(cs);
 
-  Grid known_gr(3);
-  known_gr.add_congruence(2*A == 7);
+  Grid known_gr(3, EMPTY);
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-		    "*** gr.add_recycled_congruences_and_minimize(cs) ***");
+  print_congruences(gr, "*** gr.refine_with_constraints(cs) ***");
 
   return ok;
 }
-#endif
 
 // add_constraints_and_minimize(cs)
-
 bool
 test07() {
   Variable A(0);
@@ -279,8 +258,7 @@ test09() {
   return ok;
 }
 
-#if 0
-// add_recycled_congruences(cs) -- space dimension exception
+// add_recycled_constraints(cs) -- space dimension exception
 bool
 test10() {
   Variable A(0);
@@ -292,7 +270,7 @@ test10() {
   Grid gr(1);
 
   try {
-    gr.add_recycled_congruences(cs);
+    gr.add_recycled_constraints(cs);
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
@@ -303,103 +281,9 @@ test10() {
   return false;
 }
 
-// add_congruences(cs) -- space dimension exception
+// add_constraints(cs) -- space dimension exception
 bool
 test11() {
-  Variable A(0);
-  Variable B(1);
-
-  Constraint_System cs;
-  cs.insert(B == 0);
-
-  Grid gr(1);
-
-  try {
-    gr.add_congruences(cs);
-  }
-  catch (const std::invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
-    return true;
-  }
-  catch (...) {
-  }
-  return false;
-}
-
-// add_recycled_congruences_and_minimize(cs) -- space dimension
-// exception
-bool
-test12() {
-  Variable A(0);
-  Variable B(1);
-
-  Constraint_System cs;
-  cs.insert(B == 0);
-
-  Grid gr(1);
-
-  try {
-    gr.add_recycled_congruences_and_minimize(cs);
-  }
-  catch (const std::invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
-    return true;
-  }
-  catch (...) {
-  }
-  return false;
-}
-
-// add_congruences_and_minimize(cs) -- space dimension exception
-bool
-test13() {
-  Variable A(0);
-  Variable B(1);
-
-  Constraint_System cs;
-  cs.insert(B == 0);
-
-  Grid gr(1);
-
-  try {
-    gr.add_congruences_and_minimize(cs);
-  }
-  catch (const std::invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
-    return true;
-  }
-  catch (...) {
-  }
-  return false;
-}
-#endif
-
-// add_constraints(cs) -- space dimension exception
-bool
-test14() {
-  Variable A(0);
-  Variable B(1);
-
-  Constraint_System cs;
-  cs.insert(A + B == 0);
-
-  Grid gr(1);
-
-  try {
-    gr.add_constraints(cs);
-  }
-  catch (const std::invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
-    return true;
-  }
-  catch (...) {
-  }
-  return false;
-}
-
-// add_constraints(cs) -- space dimension exception
-bool
-test15() {
   Variable A(0);
   Variable B(1);
 
@@ -422,7 +306,7 @@ test15() {
 
 // add_recycled_constraints(cs) -- space dimension exception
 bool
-test16() {
+test12() {
   Variable A(0);
   Variable B(1);
 
@@ -446,7 +330,7 @@ test16() {
 // add_recycled_constraints_and_minimize(cs) -- space dimension
 // exception
 bool
-test17() {
+test13() {
   Variable A(0);
   Variable B(1);
 
@@ -469,7 +353,7 @@ test17() {
 
 // add_constraints_and_minimize(cs) -- space dimension exception
 bool
-test18() {
+test14() {
   Variable A(0);
   Variable B(1);
 
@@ -492,7 +376,7 @@ test18() {
 
 // Construct a congruence system from a constraint system
 bool
-test19() {
+test15() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -523,10 +407,9 @@ test19() {
   return ok;
 }
 
-#if 0
 // add_constraints(cs) -- non-equality constraint in constraint system.
 bool
-test20() {
+test16() {
   Variable A(0);
   Variable B(1);
 
@@ -547,37 +430,24 @@ test20() {
   }
   return false;
 }
-#endif
 
 } // namespace
 
 BEGIN_MAIN
-#if 0
   DO_TEST(test01);
-#endif
   DO_TEST(test02);
   DO_TEST(test03);
-#if 0
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
-#endif
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
-#if 0
   DO_TEST(test10);
   DO_TEST(test11);
   DO_TEST(test12);
   DO_TEST(test13);
-#endif
   DO_TEST(test14);
   DO_TEST(test15);
   DO_TEST(test16);
-  DO_TEST(test17);
-  DO_TEST(test18);
-  DO_TEST(test19);
-#if 0
-  DO_TEST(test20);
-#endif
 END_MAIN

@@ -436,7 +436,7 @@ PPL::Grid::expand_space_dimension(Variable var, dimension_type m) {
 				      / cg.modulus());
     }
   }
-  add_congruences(new_congruences);
+  add_recycled_congruences(new_congruences);
   assert(OK());
 }
 
@@ -475,7 +475,7 @@ PPL::Grid::fold_space_dimensions(const Variables_Set& to_be_folded,
            tbf_end = to_be_folded.end(); i != tbf_end; ++i) {
       Grid copy = *this;
       copy.affine_image(var, Linear_Expression(Variable(*i)));
-      join_assign(copy);
+      upper_bound_assign(copy);
     }
   }
   remove_space_dimensions(to_be_folded);

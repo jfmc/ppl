@@ -75,7 +75,6 @@ test02() {
   return ok;
 }
 
-// add_constraint_and_minimize(cs)
 bool
 test03() {
   Variable A(0);
@@ -86,11 +85,11 @@ test03() {
   Grid gr(4);
   print_congruences(gr, "*** gr ***");
 
-  gr.add_constraint_and_minimize(2*A == C);
-  print_congruences(gr, "*** gr.add_constraint_and_minimize(2*A == C) ***");
-  gr.add_constraint_and_minimize(D == 0);
-  print_congruences(gr, "*** gr.add_constraint_and_minimize(D == 0) ***");
-  gr.add_constraint_and_minimize(B > 2);
+  gr.add_constraint(2*A == C);
+  print_congruences(gr, "*** gr.add_constraint(2*A == C) ***");
+  gr.add_constraint(D == 0);
+  print_congruences(gr, "*** gr.add_constraint(D == 0) ***");
+  gr.refine_with_constraint(B > 2);
 
   Grid known_gr(4);
   known_gr.add_congruence((2*A %= C) / 0);
@@ -98,7 +97,7 @@ test03() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr, "*** gr.add_constraint_and_minimize(B > 2) ***");
+  print_congruences(gr, "*** gr.refine_with_constraint(B > 2) ***");
 
   return ok;
 }
@@ -124,74 +123,69 @@ test04() {
   return ok;
 }
 
-#if 0
-// add_congruence(c), where grid stays the same
+// add_constraint - an inequality constraint.
 bool
 test05() {
-  Variable D(3);
+  Variable B(1);
 
-  Grid gr(4);
-  print_congruences(gr, "*** gr ***");
+  Grid gr(1);
 
-  Grid known_gr = gr;
-
-  gr.add_congruence(D > 4);
-
-  bool ok = (gr == known_gr);
-
-  print_congruences(gr, "*** gr.add_congruence(D > 4) ***");
-
-  return ok;
+  try {
+    gr.add_constraint(B >= 0);
+  }
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
 }
-#endif
 
-// add_congruence_and_minimize(c), add equality.
+
+// add_constraint - inconsistent equality
+// (so that no exception should be thrown).
 bool
 test06() {
+
   Variable A(0);
   Variable B(1);
-  Variable C(2);
 
-  Grid gr(3);
-
+  Grid gr(2);
   print_congruences(gr, "*** gr ***");
 
-  gr.add_congruence_and_minimize((C %= 4*A) / 0);
+  gr.add_constraint(0*A >= 3);
+  print_congruences(gr, "*** gr.add_constraint(A == 3) ***");
 
-  Grid known_gr(3);
-  known_gr.add_congruence((C %= 4*A) / 0);
-
+  Grid known_gr(2, EMPTY);
   bool ok = (gr == known_gr);
 
-  print_congruences(gr, "*** add_congruence_and_minimize(C == 4*A) ***");
+  print_congruences(gr, "*** gr.add_constraint(B >= 0) ***");
 
   return ok;
 }
 
-#if 0
-// add_congruence_and_minimize(c), where grid stays the same.
+// add_constraint - inconsistent equality
+// (so that no exception should be thrown).
 bool
 test07() {
+
   Variable A(0);
   Variable B(1);
-  Variable C(2);
 
-  Grid gr(3);
-  gr.add_congruence((B == 0) / 0);
-
-  Grid known_gr = gr;
-
+  Grid gr(2);
   print_congruences(gr, "*** gr ***");
 
-  gr.add_congruence_and_minimize(C > 4*A);
+  gr.add_constraint(Linear_Expression(1) <= 0);
+  print_congruences(gr, "*** gr.add_constraint(A == 3) ***");
 
+  Grid known_gr(2, EMPTY);
   bool ok = (gr == known_gr);
 
-  print_congruences(gr, "*** gr.add_congruence_and_minimize(C > 4*A) ***");
+  print_congruences(gr, "*** gr.add_constraint(B >= 0) ***");
 
   return ok;
 }
-#endif
 
 // add_constraint -- space dimension exception
 bool
@@ -250,6 +244,25 @@ test10() {
   return false;
 }
 
+// add_constraints(1 == 0) to an empty 0-dimensional grid
+bool
+test11() {
+
+  Grid gr(0, EMPTY);
+
+  print_congruences(gr, "*** gr ***");
+
+  gr.add_constraint(Linear_Expression(1) == 0);
+
+  Grid known_gr(0, EMPTY);
+
+  bool ok = (gr == known_gr);
+
+  print_congruences(gr, "*** gr.add_constraints(cs) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -257,14 +270,11 @@ BEGIN_MAIN
   DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
-#if 0
   DO_TEST(test05);
-#endif
   DO_TEST(test06);
-#if 0
   DO_TEST(test07);
-#endif
   DO_TEST(test08);
   DO_TEST(test09);
   DO_TEST(test10);
+  DO_TEST(test11);
 END_MAIN

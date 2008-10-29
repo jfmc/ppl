@@ -24,8 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.Vector;
-import ppl_java.*;
-
+import parma_polyhedra_library.*;
 
 public class C_Polyhedron_test1 {
 static {

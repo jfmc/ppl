@@ -86,7 +86,7 @@ test03() {
   cs.insert(3*y <= 2);
   cs.insert(3*y >= 1);
 
-  BD_Shape<float> bds(3);
+  TBD_Shape bds(3);
   bds.add_constraints(cs);
 
   print_constraints(bds, "*** bds ***");
@@ -96,7 +96,10 @@ test03() {
   nout << "bds.contains_integer_point() == "
        << (contains ? "true" : "false") << endl;
 
-  return !contains;
+  // NOTE: results depends on whether or not the rational constraints
+  // on y have been approximated as integral constraints.
+  typedef TBD_Shape::coefficient_type_base T;
+  return (std::numeric_limits<T>::is_integer ? contains : !contains);
 }
 
 bool

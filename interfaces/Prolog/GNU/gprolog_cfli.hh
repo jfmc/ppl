@@ -37,6 +37,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <gprolog.h>
 #endif
 
+#if defined(__GPROLOG_VERSION__) && __GPROLOG_VERSION__ >= 10301
+#define PPL_GPROLOG_H_IS_CLEAN
+#endif
+
+#ifndef PPL_GPROLOG_H_IS_CLEAN
 // <gprolog.h> pollutes the namespace: try to clean up
 // (see http://www.cs.unipr.it/pipermail/ppl-devel/2004-April/004270.html).
 #ifdef B
@@ -60,15 +65,24 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifdef STAMP
 #undef STAMP
 #endif
+#endif
 
 #include <cassert>
+#include <cstdlib>
 
 typedef PlTerm Prolog_term_ref;
 typedef int Prolog_atom;
+#ifndef PPL_GPROLOG_H_IS_CLEAN
 typedef Bool Prolog_foreign_return_type;
 
 const Prolog_foreign_return_type PROLOG_SUCCESS = TRUE;
 const Prolog_foreign_return_type PROLOG_FAILURE = FALSE;
+#else
+typedef PlBool Prolog_foreign_return_type;
+
+const Prolog_foreign_return_type PROLOG_SUCCESS = PL_TRUE;
+const Prolog_foreign_return_type PROLOG_FAILURE = PL_FALSE;
+#endif
 
 namespace {
 
@@ -242,12 +256,22 @@ Prolog_construct_cons(Prolog_term_ref& c,
 inline int
 Prolog_put_address(Prolog_term_ref& t, void* p) {
   union {
-    unsigned long l;
-    unsigned short s[2];
+    void* l;
+    unsigned short s[sizeof(void*)/sizeof(unsigned short)];
   } u;
-  u.l = reinterpret_cast<unsigned long>(p);
-  return Prolog_construct_compound(t, a_dollar_address(),
-				   Mk_Positive(u.s[0]), Mk_Positive(u.s[1]));
+  u.l = reinterpret_cast<void*>(p);
+  if (sizeof(unsigned short)*2 == sizeof(void*))
+    return Prolog_construct_compound(t, a_dollar_address(),
+                                     Mk_Positive(u.s[0]),
+                                     Mk_Positive(u.s[1]));
+  else if (sizeof(unsigned short)*4 == sizeof(void*))
+    return Prolog_construct_compound(t, a_dollar_address(),
+                                     Mk_Positive(u.s[0]),
+                                     Mk_Positive(u.s[1]),
+                                     Mk_Positive(u.s[2]),
+                                     Mk_Positive(u.s[3]));
+  else
+    abort();
 }
 
 /*!
@@ -326,9 +350,10 @@ Prolog_is_address(Prolog_term_ref t) {
   Prolog_atom name;
   int arity;
   Prolog_term_ref* a = Rd_Compound_Check(t, &name, &arity);
-  if (name != a_dollar_address() || arity != 2)
+  if (name != a_dollar_address()
+      || sizeof(unsigned short)*arity != sizeof(void*))
     return 0;
-  for (int i = 0; i <= 1; ++i) {
+  for (unsigned i = 0; i < sizeof(void*)/sizeof(unsigned short); ++i) {
     if (!Prolog_is_integer(a[i]))
       return 0;
     long l;
@@ -352,11 +377,17 @@ Prolog_get_address(Prolog_term_ref t, void** vpp) {
   static int dummy_arity;
   Prolog_term_ref* a = Rd_Compound_Check(t, &dummy_name, &dummy_arity);
   union {
-    unsigned long l;
-    unsigned short s[2];
+    void* l;
+    unsigned short s[sizeof(void*)/sizeof(unsigned short)];
   } u;
+  assert(dummy_arity >= 2);
   u.s[0] = Rd_Integer_Check(a[0]);
   u.s[1] = Rd_Integer_Check(a[1]);
+  if (sizeof(unsigned short)*4 == sizeof(void*)) {
+    assert(dummy_arity == 4);
+    u.s[2] = Rd_Integer_Check(a[2]);
+    u.s[3] = Rd_Integer_Check(a[3]);
+  }
   *vpp = reinterpret_cast<void*>(u.l);
   return 1;
 }
@@ -419,7 +450,11 @@ Prolog_get_cons(Prolog_term_ref c, Prolog_term_ref& h, Prolog_term_ref& t) {
 */
 inline int
 Prolog_unify(Prolog_term_ref t, Prolog_term_ref u) {
+#ifndef PPL_GPROLOG_H_IS_CLEAN
   return Unify(t, u) != FALSE;
+#else
+  return Pl_Unif(t, u) != PL_FALSE;
+#endif
 }
 
 #endif // !defined(PCFLI_gprolog_cfli_hh)

@@ -91,8 +91,8 @@ sum_sign(bool& a_neg, unsigned long& a_mod,
 Result
 parse_number_part(std::istream& is, number_struct& num) {
   enum { BASE, INTEGER, FRACTIONAL, EXPONENT } state = BASE;
-  unsigned long max_exp_div;
-  int max_exp_rem;
+  PPL_UNINITIALIZED(unsigned long, max_exp_div);
+  PPL_UNINITIALIZED(int, max_exp_rem);
   bool empty_exponent = true;
   bool empty_mantissa = true;
   long exponent_offset = 0;

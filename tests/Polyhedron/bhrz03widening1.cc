@@ -357,7 +357,7 @@ test09() {
     print_generators(p_i.generators(), "*** New stuff ***");
 
     C_Polyhedron q_i = q_i_minus_1;
-    q_i.poly_hull_assign(p_i);
+    q_i.upper_bound_assign(p_i);
     print_generators(q_i.generators(),
 		     "*** Poly-hull of previous with new ***");
 

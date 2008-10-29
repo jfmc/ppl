@@ -32,23 +32,40 @@ const char version_string[] = PPL_PACKAGE_VERSION;
 const char banner_string[] =
 "This is "PPL_PACKAGE_NAME" (PPL) version "PPL_PACKAGE_VERSION".\n"
 "Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>.\n"
+"\n"
 "The PPL is free software; see the source for copying conditions.\n"
 "There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A\n"
 "PARTICULAR PURPOSE.\n"
-#if defined(__GNUC__)
-"Compiled by the GNU C++ compiler version "__VERSION__".\n"
+"\n"
+#if defined(__COMO__)
+#define str(s) # s
+#define xstr(s) str(s)
+"Compiled by the Comeau C++ compiler version "xstr(__COMO_VERSION__)".\n"
 #elif defined(__INTEL_COMPILER)
 #define str(s) # s
 #define xstr(s) str(s)
 "Compiled by the Intel C++ compiler version "xstr(__INTEL_COMPILER)".\n"
-#elif defined(__COMO__)
-#define str(s) # s
-#define xstr(s) str(s)
-"Compiled by the Comeau C++ compiler version "xstr(__COMO_VERSION__)".\n"
+#elif defined(__GNUC__)
+"Compiled by the GNU C++ compiler version "__VERSION__".\n"
+#else
+"Compiled by an unknown compiler.\n"
 #endif
-"Report bugs to "PPL_PACKAGE_BUGREPORT".\n"
-"For the most up-to-date information see the Parma Polyhedra Library\n"
-"site: http://www.cs.unipr.it/ppl/ .\n";
+"\n"
+"Report bugs to "PPL_PACKAGE_BUGREPORT"."
+"  For the most up-to-date information\n"
+"see the Parma Polyhedra Library site: http://www.cs.unipr.it/ppl/ .\n"
+"\n"
+"Contributors:\n"
+"Roberto Bagnara, Patricia M. Hill, Enea Zaffanella, Elisa Ricci,\n"
+"Abramo Bagnara, Andrea Cimino, Katy Dobson, Elena Mazzi,\n"
+"Andrea Pescetti, Barbara Quartieri, Alessandro Zaccagnini,\n"
+"Irene Bacchi, Danilo Bonardi, Sara Bonini, Giordano Fracasso,\n"
+"Maximiliano Marchesi, David Merchat, Matthew Mundell, Angela Stazzone,\n"
+"Fabio Trabucchi, Claudio Trento, Tatiana Zolo.\n"
+"\n"
+"Special thanks:\n"
+"Lucia Alessandrini, Marco Comini, Bruno Haible, Bertrand Jeannet\n"
+"Herve' Le Verge, Francesco Logozzo, Costantino Medori, Fred Mesnard.";
 
 } // namespace
 

@@ -20,46 +20,22 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-SUBDIRS = ppl_java jni . tests
-
-interface_generator_files = \
-ppl_interface_generator_java_procedure_generators.m4 \
-ppl_interface_generator_java_dox.m4 \
-ppl_interface_generator_java_dox_code.m4 \
-ppl_java_common_dox
+SUBDIRS = parma_polyhedra_library jni . tests
 
 EXTRA_DIST = \
-$(interface_generator_files) \
-Java_interface.dox
-
-if BUILD_JAVA_INTERFACE
-
-BUILT_SOURCES = \
-Java_interface.dox
+ppl_interface_generator_java_procedure_generators.m4
 
 interface_generator_dependencies = \
-$(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../ppl_interface_generator_common.m4 \
 ../ppl_interface_generator_common_dat.m4 \
 ../ppl_interface_generator_copyright \
 ../ppl_interface_generator_common_procedure_generators.m4 \
-ppl_interface_generator_java_procedure_generators.m4 \
-ppl_interface_generator_java_dox.m4 \
-ppl_interface_generator_java_dox_code.m4
+ppl_interface_generator_java_procedure_generators.m4
 
 jardir = $(pkglibdir)
 jar_DATA = ppl_java.jar
 
-ppl_java.jar: ppl_java/java_classes.stamp
-	$(JAR) cf ppl_java.jar ppl_java/*.class
+ppl_java.jar: parma_polyhedra_library/java_classes.stamp
+	$(JAR) cf ppl_java.jar parma_polyhedra_library/*.class
 
-Java_interface.dox: $(interface_generator_dependencies) Makefile
-	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
-           $(srcdir)/ppl_interface_generator_java_dox.m4 \
-                > Java_interface.dox
-
-endif BUILD_JAVA_INTERFACE
-
-CLEANFILES = \
-ppl_java.jar \
-Java_interface.dox
+CLEANFILES = ppl_java.jar

@@ -25,6 +25,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+namespace Test {
+
 inline
 Partial_Function::Partial_Function()
   : max(0) {
@@ -34,6 +36,8 @@ inline bool
 Partial_Function::has_empty_codomain() const {
   return map.empty();
 }
+
+} // namespace Test
 
 } // namespace Parma_Polyhedra_Library
 

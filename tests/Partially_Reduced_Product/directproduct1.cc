@@ -204,7 +204,7 @@ test07() {
   Variable A(0);
   Variable B(1);
 
-  Rational_Box box(2);
+  TBox box(2);
   box.refine_with_constraint(3*B >= 2);
   box.refine_with_constraint(A >= 2);
   box.refine_with_constraint(A <= 2);
@@ -223,36 +223,9 @@ test07() {
   return ok && dp.OK();
 }
 
-// FIXME: Waiting for covering box methods, details in
-//        Direct_Product.defs.hh.
-#if 0
-// Product(covering_box)
-bool
-test08() {
-  Variable B(1);
-
-  Rational_Box box(2);
-  box.refine_with_constraint(A == 0);
-  box.refine_with_constraint(3*B >= 2);
-  box.refine_with_constraint(3*B <= 3);
-
-  Product dp(box, From_Covering_Box());
-
-  Product known_dp(2);
-  known_dp.refine_with_congruence(3*B %= 0);
-
-  bool ok = (dp == known_dp);
-
-  print_congruences(dp, "*** dp congruences ***");
-  print_constraints(dp, "*** dp constraints ***");
-
-  return ok && dp.OK();
-}
-#endif
-
 // operator=
 bool
-test09() {
+test08() {
   Variable A(0);
   Variable B(1);
 
@@ -276,13 +249,12 @@ test09() {
 
 // Copy constructor.
 bool
-test10() {
+test09() {
   Variable A(0);
-  Variable B(2);
+  Variable C(2);
 
-  Constraint_System cs(A - B == 0);
-
-  Product dp1(cs);
+  Product dp1(3);
+  dp1.refine_with_constraint(A - C == 0);
 
   Product dp2(dp1);
 
@@ -298,7 +270,7 @@ test10() {
 
 // congruences()
 bool
-test11() {
+test10() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -325,7 +297,7 @@ test11() {
 
 // minimized_congruences()
 bool
-test12() {
+test11() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -353,18 +325,14 @@ test12() {
 
 // constraints()
 bool
-test13() {
+test12() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
 
   Product dp(3);
   dp.refine_with_congruence((B + C %= 3) / 0);
-#if NNC_Poly_Class
   dp.refine_with_constraint(A > 9);
-#else
-  dp.refine_with_constraint(A >= 9);
-#endif
   dp.refine_with_constraint(A <= 11);
 
   Poly ph(dp.space_dimension());
@@ -373,11 +341,7 @@ test13() {
   Poly known_ph(dp.space_dimension());
   known_ph.refine_with_constraint(B + C == 3);
   known_ph.refine_with_constraint(A <= 11);
-#if NNC_Poly_Class
   known_ph.refine_with_constraint(A > 9);
-#else
-  known_ph.refine_with_constraint(A >= 9);
-#endif
 
   bool ok = (ph == known_ph);
 
@@ -391,18 +355,14 @@ test13() {
 
 // minimized_constraints()
 bool
-test14() {
+test13() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
 
   Product dp(3);
   dp.refine_with_congruence((B + C %= 3) / 0);
-#if NNC_Poly_Class
   dp.refine_with_constraint(A > 9);
-#else
-  dp.refine_with_constraint(A >= 9);
-#endif
   dp.refine_with_constraint(A <= 11);
 
   Poly ph(dp.space_dimension());
@@ -410,11 +370,7 @@ test14() {
 
   Poly known_ph(dp.space_dimension());
   known_ph.refine_with_constraint(B + C == 3);
-#if NNC_Poly_Class
   known_ph.refine_with_constraint(A > 9);
-#else
-  known_ph.refine_with_constraint(A >= 9);
-#endif
   known_ph.refine_with_constraint(A <= 11);
 
   bool ok = (ph == known_ph);
@@ -427,7 +383,7 @@ test14() {
 
 // Product(c_polyhedron).
 bool
-test15() {
+test14() {
   Variable A(0);
 
   const Constraint_System cs(A == 0);
@@ -451,25 +407,17 @@ test15() {
 
 // Product(nnc_polyhedron).
 bool
-test16() {
+test15() {
   Variable A(0);
 
-#if NNC_Poly_Class
   const Constraint_System cs(A > 0);
-#else
-  const Constraint_System cs(A >= 0);
-#endif
 
   NNC_Polyhedron ph(cs);
 
   Product dp1(ph);
 
   Product dp2(1);
-#if NNC_Poly_Class
   dp2.refine_with_constraint(A > 0);
-#else
-  dp2.refine_with_constraint(A >= 0);
-#endif
 
   bool ok = (dp1 == dp2);
 
@@ -483,7 +431,7 @@ test16() {
 
 // Product(grid).
 bool
-test17() {
+test16() {
   Variable A(0);
 
   const Congruence_System cgs(A %= 0);
@@ -507,7 +455,7 @@ test17() {
 
 // Product(box).
 bool
-test18() {
+test17() {
   Variable A(0);
 
   const Constraint_System cs(A > 0);
@@ -531,7 +479,7 @@ test18() {
 
 // Product(bds).
 bool
-test19() {
+test18() {
   Variable A(0);
   Variable B(1);
 
@@ -558,7 +506,7 @@ test19() {
 
 // Product(os).
 bool
-test20() {
+test19() {
   Variable A(0);
   Variable B(1);
 
@@ -593,7 +541,7 @@ BEGIN_MAIN
   DO_TEST(test05);
   DO_TEST(test06);
   DO_TEST(test07);
-//  DO_TEST(test08);
+  DO_TEST(test08);
   DO_TEST(test09);
   DO_TEST(test10);
   DO_TEST(test11);
@@ -604,5 +552,4 @@ BEGIN_MAIN
   DO_TEST(test16);
   DO_TEST(test17);
   DO_TEST(test19);
-  DO_TEST(test20);
 END_MAIN

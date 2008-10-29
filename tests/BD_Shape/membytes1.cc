@@ -207,7 +207,7 @@ bool test02() {
   Pointset_Powerset<TBD_Shape> pqbds(qbds);
 
   Pointset_Powerset<TBD_Shape> prbds = pqbds;
-  prbds.poly_difference_assign(pbds);
+  prbds.difference_assign(pbds);
 
   const memory_size_type pbd_total_size = pbds.total_memory_in_bytes();
   const memory_size_type pbd_external_size = pbds.external_memory_in_bytes();

@@ -144,7 +144,10 @@ struct option long_options[] = {
 #endif
 
 static const char* usage_string
-= "Usage: %s [OPTION]...\n\n"
+= "Usage: %s [OPTION]...\n"
+"Displays information, in various formats, about an installation\n"
+"of the Parma Polyhedra Library.\n\n"
+"Options:\n"
 "  -h, --help               prints this help text to stdout\n"
 "  -FFMT, --format=FMT      sets the output format to FMT\n"
 "                           (one of `plain', `makefile', `sh' or `csh')\n"
@@ -198,6 +201,8 @@ fatal(const char* format, ...) {
   exit(1);
 }
 
+// Currently unused, but we may want to use it in the future.
+/*
 void
 warning(const char* format, ...) {
   va_list ap;
@@ -207,6 +212,7 @@ warning(const char* format, ...) {
   fprintf(stderr, "\n");
   va_end(ap);
 }
+*/
 
 void internal_error() {
   fatal("internal error: please submit a bug report to ppl-devel@cs.unipr.it");

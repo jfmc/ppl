@@ -46,8 +46,8 @@ ppl_Coefficient_max/1,
 ppl_Coefficient_min/1,
 ppl_initialize/0 *nofail,
 ppl_finalize/0 *nofail,
-ppl_set_rounding_for_PPL/0 *nofail;
-ppl_restore_pre_PPL_rounding/0 *nofail;
+ppl_set_rounding_for_PPL/0 *nofail,
+ppl_restore_pre_PPL_rounding/0 *nofail,
 ppl_set_timeout_exception_atom/1 *nofail,
 ppl_timeout_exception_atom/1,
 ppl_set_timeout/1 *nofail,
@@ -69,6 +69,8 @@ ppl_MIP_Problem_add_constraint/2,
 ppl_MIP_Problem_add_constraints/2,
 ppl_MIP_Problem_set_objective_function/2,
 ppl_MIP_Problem_set_optimization_mode/2,
+ppl_MIP_Problem_set_control_parameter/2 *nofail,
+ppl_MIP_Problem_get_control_parameter/3,
 ppl_MIP_Problem_is_satisfiable/1,
 ppl_MIP_Problem_solve/2,
 ppl_MIP_Problem_feasible_point/2,
@@ -78,4 +80,8 @@ ppl_MIP_Problem_evaluate_objective_function/4,
 ppl_MIP_Problem_OK/1`'dnl
 ')
 
-m4_define(`m4_procedure_list', `m4_common_procedure_list')
+m4_define(`m4_procedure_list', `m4_echo_unquoted(`m4_common_procedure_list',
+ppl_@CLASS@_@BINMINOP@/2 +polyhedron,
+ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize/2 +polyhedron,
+ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize/2 +polyhedron)
+')

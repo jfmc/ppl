@@ -197,63 +197,9 @@ test04() {
   return ok1 && ok2 && ok3;
 }
 
-// FIXME: Waiting for covering box methods, details in
-//        Direct_Product.defs.hh.
-#if 0
-// get_covering_box(box), via grid.
-bool
-test05() {
-  Variable A(0);
-  Variable B(1);
-
-  Rational_Box box(1);
-
-  Product dp(1);
-  dp.refine_with_congruence((A %= 0) / 3);
-
-  dp.get_covering_box(box);
-
-  Rational_Box known_box(1);
-  known_box.refine_with_constraint(A >= 0);
-  known_box.refine_with_constraint(A <= 3);
-
-  bool ok = (box == known_box);
-
-  Rational_Box box1(1);
-
-  Product dp1(2);
-  dp1.refine_with_constraint(B < 3);
-  dp1.refine_with_constraint(B > 0);
-
-  dp1.get_covering_box(box1);
-
-  Rational_Box known_box1(1);
-  known_box1.refine_with_constraint(B == 0 /* FIX */);
-
-  bool ok1 = (box1 == known_box1);
-
-  Rational_Box box2(2);
-
-  Product dp2(2);
-  dp2.refine_with_constraint(B <= 0);
-  dp2.refine_with_constraint(B >= 0);
-  dp2.refine_with_congruence(A - B %= 0);
-
-  dp2.get_covering_box(box2);
-
-  Rational_Box known_box2(2);
-  known_box2.refine_with_constraint(A >= 0);
-  known_box2.refine_with_constraint(A <= 1);
-
-  bool ok2 = !(box2 == known_box2);
-
-  return ok && ok1 && ok2;
-}
-#endif
-
 // intersection_assign()
 bool
-test06() {
+test05() {
   Variable A(0);
   Variable B(1);
 
@@ -311,7 +257,7 @@ test06() {
 
 // upper_bound_assign(dp2)
 bool
-test07() {
+test06() {
   Variable A(0);
   Variable B(1);
 
@@ -341,7 +287,7 @@ test07() {
 
 // upper_bound_assign_if_exact()
 bool
-test08() {
+test07() {
   Variable A(0);
   Variable B(1);
 
@@ -350,8 +296,7 @@ test08() {
 
   Product dp2(3);
   dp2.refine_with_constraint(B == 0);
-  dp2.refine_with_constraint(A == 12);
-  dp2.refine_with_constraint(A == 16);
+  dp2.refine_with_constraint(A == 8);
 
   dp1.upper_bound_assign_if_exact(dp2);
 
@@ -370,11 +315,11 @@ test08() {
 
 // difference_assign()
 bool
-test09() {
+test08() {
   Variable A(0);
   Variable B(1);
 
-  Product dp1(3);
+  Product dp1(3, UNIVERSE);
   dp1.refine_with_constraint(A >= 0);
   dp1.refine_with_congruence((A - B %= 0) / 2);
 
@@ -383,24 +328,16 @@ test09() {
   dp2.refine_with_congruence((A - B %= 0) / 4);
 
   dp1.difference_assign(dp2);
-
   Product known_dp(3);
   known_dp.refine_with_constraint(A >= 0);
-#if NNC_Poly_Class
   known_dp.refine_with_constraint(A < 3);
-#else
-#if !Box_Class
-// FIXME Box class returns the box unchanged.
-  known_dp.refine_with_constraint(A <= 3);
-#endif
-#endif
   known_dp.refine_with_congruence((A - B %= 2) / 4);
 
   bool ok = (dp1 == known_dp);
 
-  print_congruences(dp1, "*** dp1 ***");
+  print_congruences(dp1, "*** dp1 congruences ***");
   print_constraints(dp1, "*** dp1 constraints ***");
-  print_congruences(dp2,  "*** dp2 ***");
+  print_congruences(dp2,  "*** dp2 congruences ***");
   print_constraints(dp2, "*** dp2 constraints ***");
 
   return ok;
@@ -408,7 +345,7 @@ test09() {
 
 // add_space_dimensions_and_embed()
 bool
-test10() {
+test09() {
   Variable A(0);
   Variable B(1);
 
@@ -432,7 +369,7 @@ test10() {
 
 // add_space_dimensions_and_project()
 bool
-test11() {
+test10() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -458,7 +395,7 @@ test11() {
 
 // concatenate_assign()
 bool
-test12() {
+test11() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -492,7 +429,7 @@ test12() {
 
 // remove_space_dimensions()
 bool
-test13() {
+test12() {
   Variable A(0);
   Variable C(2);
   Variable D(3);
@@ -522,7 +459,7 @@ test13() {
 
 // remove_higher_space_dimensions()
 bool
-test14() {
+test13() {
   Variable A(0);
   Variable C(2);
   Variable D(3);
@@ -548,7 +485,7 @@ test14() {
 
 // map_space_dimensions()
 bool
-test15() {
+test14() {
   Variable A(0);
   Variable B(1);
 
@@ -576,7 +513,7 @@ test15() {
 
 // expand_space_dimension()
 bool
-  test16() {
+  test15() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -604,7 +541,7 @@ bool
 
 // fold_space_dimensions()
 bool
-test17() {
+test16() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -638,7 +575,7 @@ test17() {
 
 // time_elapse_assign(y)
 bool
-test18() {
+test17() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -679,31 +616,25 @@ test18() {
 
 // topological_closure_assign
 bool
-test19() {
+test18() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
 
   Product dp(3);
   dp.refine_with_constraint(B >= 0);
-  dp.refine_with_constraint(3*A + C == 0);
+  dp.refine_with_constraint(4*A + C == 0);
   dp.refine_with_constraint(2*A - B == 0);
-  dp.refine_with_congruence(3*A %= 0);
-#if NNC_Poly_Class
+  dp.refine_with_congruence(4*A %= 0);
   dp.refine_with_constraint(A > 0);
-#else
-  dp.refine_with_constraint(A >= 0);
-#endif
 
-#if !Box_Class
   dp.topological_closure_assign();
-#endif
 
   Product known_dp(3);
   known_dp.refine_with_constraint(B >= 0);
-  known_dp.refine_with_constraint(3*A + C == 0);
+  known_dp.refine_with_constraint(4*A + C == 0);
   known_dp.refine_with_constraint(2*A - B == 0);
-  known_dp.refine_with_congruence(3*A %= 0);
+  known_dp.refine_with_congruence(4*A %= 0);
   known_dp.refine_with_constraint(A >= 0);
 
   bool ok = (dp.is_topologically_closed() && dp == known_dp);
@@ -716,7 +647,7 @@ test19() {
 
 // widening_assign
 bool
-test20() {
+test19() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -769,9 +700,7 @@ BEGIN_MAIN
   DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
-#if 0
   DO_TEST(test05);
-#endif
   DO_TEST(test06);
 #if C_Poly_Class
   DO_TEST_F8A(test07);
@@ -787,8 +716,7 @@ BEGIN_MAIN
   DO_TEST(test14);
   DO_TEST(test15);
   DO_TEST(test16);
-  DO_TEST(test17);
-  DO_TEST_F8(test18);
-//  DO_TEST(test19);
-  DO_TEST(test20);
+  DO_TEST_F8(test17);
+  DO_TEST(test18);
+  DO_TEST(test19);
 END_MAIN

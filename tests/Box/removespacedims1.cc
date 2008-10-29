@@ -250,7 +250,7 @@ test09() {
 
   Constraint_System cs;
   cs.insert(x <= 3);
-  cs.insert(y - z <= 2);
+  cs.insert(y - 0*z <= 2);
   TBox box(cs);
 
   Variables_Set to_be_removed;
@@ -285,12 +285,9 @@ test10() {
   Variable x5(4);
 
   Constraint_System cs;
-  cs.insert(x1 - x2 <= 1);
-  cs.insert(x2 - x3 <= 3);
-  cs.insert(x3 - x1 <= 0);
   cs.insert(x2 >= 6);
   cs.insert(x4 >= 4);
-  cs.insert(x5 - x3 == 3);
+  cs.insert(x5 == 3);
   TBox box(cs);
 
   print_constraints(box, "*** box ***");
@@ -299,9 +296,6 @@ test10() {
   box.remove_higher_space_dimensions(3);
 
   Rational_Box known_result(3);
-  known_result.add_constraint(x1 - x2 <=1);
-  known_result.add_constraint(x2 - x3 <= 3);
-  known_result.add_constraint(x3 - x1 <= 0);
   known_result.add_constraint(x2 >= 6);
 
   bool ok = check_result(box, known_result);
@@ -320,12 +314,9 @@ test11() {
   Variable x5(4);
 
   Constraint_System cs;
-  cs.insert(x1 - x2 <= 1);
-  cs.insert(x2 - x3 <= 3);
-  cs.insert(x3 - x1 <= 0);
   cs.insert(x2 >= 6);
   cs.insert(x4 >= 4);
-  cs.insert(x5 - x3 == 3);
+  cs.insert(x5 == 3);
   TBox box(cs);
 
   print_constraints(box, "*** box ***");
@@ -338,9 +329,6 @@ test11() {
   box.remove_space_dimensions(to_be_removed);
 
   Rational_Box known_result(3);
-  known_result.add_constraint(x1 - x2 <=1);
-  known_result.add_constraint(x2 - x3 <= 3);
-  known_result.add_constraint(x3 - x1 <= 0);
   known_result.add_constraint(x2 >= 6);
 
   bool ok = check_result(box, known_result);

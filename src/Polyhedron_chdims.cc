@@ -595,7 +595,7 @@ PPL::Polyhedron::expand_space_dimension(Variable var, dimension_type m) {
 				: (e > 0)));
     }
   }
-  add_constraints(new_constraints);
+  add_recycled_constraints(new_constraints);
   assert(OK());
 }
 

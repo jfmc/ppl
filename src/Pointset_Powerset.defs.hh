@@ -44,7 +44,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <list>
 #include <map>
 
-//! The powerset construction instantiated on PPL polyhedra.
+//! The powerset construction instantiated on PPL pointset domains.
 /*! \ingroup PPL_CXX_interface */
 /*!
   \warning
@@ -110,7 +110,7 @@ public:
 
   /*! \brief
     Creates a Pointset_Powerset from a product
-    This will be craeted as a single disjunct of type PS that
+    This will be created as a single disjunct of type PS that
     approximates the product.
   */
    template <typename QH1, typename QH2, typename R>
@@ -771,10 +771,6 @@ public:
   */
   bool intersection_assign_and_minimize(const Pointset_Powerset& y);
 
-  //! Assigns to \p *this the difference of \p *this and \p y.
-  // FIXME: document the intended semantics.
-  void poly_difference_assign(const Pointset_Powerset& y);
-
   /*! \brief
     Assigns to \p *this an (a smallest)
     over-approximation as a powerset of the disjunct domain of the
@@ -1244,13 +1240,11 @@ public:
 
   PPL_OUTPUT_DECLARATIONS
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
     ascii_dump(std::ostream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   bool ascii_load(std::istream& s);
 
 private:
@@ -1413,12 +1407,12 @@ Pointset_Powerset<C_Polyhedron>
 template <>
 void
 Pointset_Powerset<NNC_Polyhedron>
-::poly_difference_assign(const Pointset_Powerset& y);
+::difference_assign(const Pointset_Powerset& y);
 
 template <>
 void
 Pointset_Powerset<Grid>
-::poly_difference_assign(const Pointset_Powerset& y);
+::difference_assign(const Pointset_Powerset& y);
 
 template <>
 bool

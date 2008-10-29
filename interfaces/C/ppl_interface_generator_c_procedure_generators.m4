@@ -37,22 +37,14 @@ dnl Note that the code for the schema "<name>_code" must be defined
 dnl in the ppl_interface_generator_*_code.m4 file.
 dnl The <name> must be exactly as written here.
 
-m4_define(`m4_procedure_list', `m4_echo_unquoted(`m4_common_procedure_list',
+m4_define(`m4_procedure_list',
+  `m4_echo_unquoted(ppl_new_@CLASS@_iterator +pointset_powerset,
+`m4_common_procedure_list',
 ppl_new_@TOPOLOGY@@CLASS@_recycle_@BUILD_REPRESENT@s +simple,
 ppl_assign_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@ +simple,
-ppl_@CLASS@_add_recycled_@ADD_REPRESENT@ +simple,
 ppl_@CLASS@_add_recycled_@ADD_REPRESENT@s +simple,
+ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize/2 +polyhedron,
+ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize/2 +polyhedron,
+ppl_@CLASS@_@BINMINOP@/2 +polyhedron,
 )
 ')
-
-dnl IMPLEMENTATION CODE MISSING FOR:
-dnl ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@/2 +polyhedron,
-dnl ppl_@CLASS@_get_bounding_box/3 +simple,
-dnl ppl_@CLASS@_get_covering_box/2 +grid,
-dnl ppl_@CLASS@_ascii_dump/1 +simple_pps,
-dnl ppl_@CLASS@_get_disjunct/2 +pointset_powerset,
-dnl ppl_@CLASS@_@PARTITION@/4 +pointset_powerset \grid,
-dnl ppl_@CLASS@_approximate_partition/5 +pointset_powerset \shape,
-dnl ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign/2 +pointset_powerset,
-dnl ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign/3 +pointset_powerset,
-dnl ppl_@CLASS@_BGP99_@DISJUNCT_EXTRAPOLATION@_extrapolation_assign/3 -pointset_powe

@@ -304,7 +304,7 @@ dimension_type coherent_index(dimension_type i);
 } // namespace Parma_Polyhedra_Library
 
 //! An octagonal shape.
-/*!
+/*! \ingroup PPL_CXX_interface
   The class template Octagonal_Shape<T> allows for the efficient
   representation of a restricted kind of <EM>topologically closed</EM>
   convex polyhedra called <EM>octagonal shapes</EM> (OSs, for short).
@@ -515,7 +515,7 @@ public:
     The built OS is the most precise OS that includes the box.
 
     \param box
-    The bounding box representing the BDS to be built.
+    The box representing the BDS to be built.
 
     \param complexity
     This argument is ignored as the algorithm used has
@@ -548,13 +548,13 @@ public:
   explicit Octagonal_Shape(const Grid& grid,
                            Complexity_Class complexity = ANY_COMPLEXITY);
 
-  //! Builds an OS from a bd shape.
+  //! Builds an OS from a BD shape.
   /*!
-    The OS inherits the space dimension of the bd shape.
-    The built OS is the most precise OS that includes the bd shape.
+    The OS inherits the space dimension of the BD shape.
+    The built OS is the most precise OS that includes the BD shape.
 
     \param bd
-    The bd shape used to build the OS.
+    The BD shape used to build the OS.
 
     \param complexity
     This argument is ignored as the algorithm used has
@@ -1017,34 +1017,25 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void oct_hull_assign(const Octagonal_Shape& y);
-
-  //! Same as oct_hull_assign.
   void upper_bound_assign(const Octagonal_Shape& y);
 
   /*! \brief
-    If the oct-hull of \p *this and \p y is exact, it is assigned
+    If the upper bound of \p *this and \p y is exact, it is assigned
     to \p *this and <CODE>true</CODE> is returned,
     otherwise <CODE>false</CODE> is returned.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  bool oct_hull_assign_if_exact(const Octagonal_Shape& y);
-
-  //! Same as oct_hull_assign_if_exact.
   bool upper_bound_assign_if_exact(const Octagonal_Shape& y);
 
   /*! \brief
-    Assigns to \p *this the smallest octagon containing the set difference
-    of \p *this and \p y.
+    Assigns to \p *this the smallest octagon containing
+    the set difference of \p *this and \p y.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void oct_difference_assign(const Octagonal_Shape& y);
-
-  //! Same as oct_difference_assign.
   void difference_assign(const Octagonal_Shape& y);
 
   /*! \brief
@@ -1579,13 +1570,11 @@ public:
 
   PPL_OUTPUT_DECLARATIONS
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
     ascii_dump(std::ostream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   bool ascii_load(std::istream& s);
 
   //! Returns the total size in bytes of the memory occupied by \p *this.
@@ -1677,6 +1666,32 @@ private:
 
   N& matrix_at(dimension_type i, dimension_type j);
   const N& matrix_at(dimension_type i, dimension_type j) const;
+
+  /*! \brief
+    Uses the constraint \p c to refine \p *this.
+
+    \param c
+    The constraint to be added. Non-octagonal constraints are ignored.
+
+    \warning
+    If \p c and \p *this are dimension-incompatible,
+    the behavior is undefined.
+  */
+  void refine_no_check(const Constraint& c);
+
+  /*! \brief
+    Uses the congruence \p cg to refine \p *this.
+
+    \param cg
+    The congruence to be added.
+    Nontrivial proper congruences are ignored.
+    Non-octagonal equalities are ignored.
+
+    \warning
+    If \p cg and \p *this are dimension-incompatible,
+    the behavior is undefined.
+  */
+  void refine_no_check(const Congruence& cg);
 
   //! Adds the constraint <CODE>matrix[i][j] <= k</CODE>.
   void add_octagonal_constraint(dimension_type i,

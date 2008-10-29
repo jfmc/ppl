@@ -239,7 +239,7 @@ Interval<Boundary, Info>::strictly_contains(const T& y) const {
     return !check_empty_arg(*this);
   if (check_empty_arg(*this))
     return false;
-  if (!contains_restriction(y))
+  if (!contains_restriction(info(), f_info(y)))
       return false;
   else if (!eq_restriction(*this, y))
     return le(LOWER, lower(), info(), LOWER, f_lower(y), f_info(y))
@@ -409,6 +409,7 @@ inline typename Enable_If<Is_Singleton<From>::value
                           || Is_Interval<From>::value, I_Result>::type
 Interval<To_Boundary, To_Info>::difference_assign(const From& x) {
   assert(f_OK(x));
+  // FIXME: restrictions
   if (lt(UPPER, upper(), info(), LOWER, f_lower(x), f_info(x)) ||
       gt(LOWER, lower(), info(), UPPER, f_upper(x), f_info(x)))
     return combine(V_EQ, V_EQ);
@@ -418,11 +419,18 @@ Interval<To_Boundary, To_Info>::difference_assign(const From& x) {
   if (nl) {
     if (nu)
       return assign(EMPTY);
-    else
+    else {
+      invalidate_cardinality_cache();
+      info().clear_boundary_properties(LOWER);
       rl = complement(LOWER, lower(), info(), UPPER, f_upper(x), f_info(x));
+    }
   }
-  else if (nu)
+  else if (nu) {
+    invalidate_cardinality_cache();
+    info().clear_boundary_properties(UPPER);
     ru = complement(UPPER, upper(), info(), LOWER, f_lower(x), f_info(x));
+  }
+  assert(OK());
   return combine(rl, ru);
 }
 
@@ -436,6 +444,9 @@ Interval<To_Boundary, To_Info>::difference_assign(const From1& x,
                                                   const From2& y) {
   assert(f_OK(x));
   assert(f_OK(y));
+  DIRTY_TEMP(To_Info, to_info);
+  to_info.clear();
+  // FIXME: restrictions
   if (lt(UPPER, f_upper(x), f_info(x), LOWER, f_lower(y), f_info(y)) ||
       gt(LOWER, f_lower(x), f_info(x), UPPER, f_upper(y), f_info(y)))
     return assign(x);
@@ -454,6 +465,9 @@ Interval<To_Boundary, To_Info>::difference_assign(const From1& x,
     ru = complement(UPPER, upper(), info(), LOWER, f_lower(y), f_info(y));
     rl = Boundary_NS::assign(LOWER, lower(), info(), LOWER, f_lower(x), f_info(x));
   }
+  assign_or_swap(info(), to_info);
+  complete_init_internal();
+  assert(OK());
   return combine(rl, ru);
 }
 

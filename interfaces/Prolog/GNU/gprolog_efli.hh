@@ -28,7 +28,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-namespace Prolog_Interfaces {
+namespace Interfaces {
+
+namespace Prolog {
+
+namespace GNU {
 
 /*!
   True if and only if the Prolog engine supports unbounded integers.
@@ -73,7 +77,11 @@ Prolog_put_Coefficient(Prolog_term_ref& t, const Coefficient& n);
 int
 Prolog_unify_Coefficient(Prolog_term_ref t, const Coefficient& n);
 
-} // namespace Prolog_Interfaces
+} // namespace GNU
+
+} // namespace Prolog
+
+} // namespace Interfaces
 
 } // namespace Parma_Polyhedra_Library
 

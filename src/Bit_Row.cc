@@ -65,7 +65,13 @@ unsigned int
 PPL::Bit_Row::last_one(mp_limb_t w) {
   unsigned int r = 0;
 #if PPL_SIZEOF_MP_LIMB_T == 8
-  if (w & 0xffffffff00000000) {
+  if (w &
+#if PPL_SIZEOF_LONG == 8
+      0xffffffff00000000
+#else
+      0xffffffff00000000LL
+#endif
+      ) {
     w >>= 32;
     r += 32;
   }

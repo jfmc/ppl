@@ -30,6 +30,8 @@ txtdir = $(docdir)
 DOXYGEN = doxygen
 INSTALLDOX = ./installdox -q
 
+# Licenses.
+
 PDF_LICENSES = \
 gpl.pdf \
 fdl.pdf
@@ -42,38 +44,21 @@ TXT_LICENSES = \
 gpl.txt \
 fdl.txt
 
-LICENSES = \
-$(PDF_LICENSES) \
-$(TXT_LICENSES) \
-$(PS_LICENSES)
-
 # Library Core Manuals (C++ interface)
 
-HTML_CORE_MANUALS = \
-pwl-user-@VERSION@-html.tar.gz \
-pwl-devref-@VERSION@-html.tar.gz
+USER_CORE_HTML_MANUAL = pwl-user-@VERSION@-html.tar.gz
+DEVREF_CORE_HTML_MANUAL = pwl-devref-@VERSION@-html.tar.gz
 
-PDF_CORE_MANUALS = \
-pwl-user-@VERSION@.pdf \
-pwl-devref-@VERSION@.pdf
+USER_CORE_PDF_MANUAL = pwl-user-@VERSION@.pdf
+DEVREF_CORE_PDF_MANUAL = pwl-devref-@VERSION@.pdf
 
-PS_CORE_MANUALS = \
-pwl-user-@VERSION@.ps.gz \
-pwl-devref-@VERSION@.ps.gz
+USER_CORE_PS_MANUAL = pwl-user-@VERSION@.ps.gz
+DEVREF_CORE_PS_MANUAL = pwl-devref-@VERSION@.ps.gz
 
-USER_HTML_DIR = pwl-user-@VERSION@-html
-DEVREF_HTML_DIR = pwl-devref-@VERSION@-html
+USER_CORE_HTML_DIR = pwl-user-@VERSION@-html
+DEVREF_CORE_HTML_DIR = pwl-devref-@VERSION@-html
 
-CORE_HTML_DIRS = $(USER_HTML_DIR) $(DEVREF_HTML_DIR)
-
-DIST_CORE_HTML_DOCS = \
-pwl-user-@VERSION@-html.tar.gz
-
-DIST_CORE_PDF_DOCS = \
-pwl-user-@VERSION@.pdf
-
-DIST_CORE_PS_DOCS = \
-pwl-user-@VERSION@.ps.gz
+HTML_DIRS = $(USER_CORE_HTML_DIR) $(DEVREF_CORE_HTML_DIR)
 
 DOX_FILES = \
 gpl.dox \
@@ -83,7 +68,7 @@ USER_CORE_STUFF = \
 $(DOX_FILES) \
 user.tex \
 pwl.sty \
-$(top_builddir)/src/pwl.hh
+../src/pwl_header.hh ../src/pwl_include_files.hh
 
 DEVREF_CORE_STUFF = \
 $(DOX_FILES) \
@@ -91,48 +76,54 @@ devref.tex \
 pwl.sty \
 $(PWL_SOURCE_FILES)
 
+##### Distributed documentation #####
 
-MANUALS = \
-$(HTML_CORE_MANUALS) \
-$(PDF_CORE_MANUALS) \
-$(PS_CORE_MANUALS)
-
-HTML_DIRS = \
-$(CORE_HTML_DIRS)
-
-DIST_HTML_DOCS = \
-$(DIST_CORE_HTML_DOCS)
+DIST_HTML_DOCS = $(USER_CORE_HTML_MANUAL)
 
 DIST_PDF_DOCS = \
 $(PDF_LICENSES) \
-$(DIST_CORE_PDF_DOCS)
+$(USER_CORE_PDF_MANUAL)
 
 DIST_PS_DOCS = \
 $(PS_LICENSES) \
-$(DIST_CORE_PS_DOCS)
+$(USER_CORE_PS_MANUAL)
 
 DIST_TXT_DOCS = \
 $(TXT_LICENSES)
 
-# We distribute some preprocessed user's documentation.
 DIST_DOCS = \
 $(DIST_HTML_DOCS) \
 $(DIST_PDF_DOCS) \
 $(DIST_PS_DOCS) \
 $(DIST_TXT_DOCS)
 
-ALL_TARGETS = \
-$(HTML_DIRS) \
-$(PDF_LICENSES) \
-$(PS_LICENSES) \
-$(MANUALS)
+NONDIST_MANUALS = \
+$(DEVREF_CORE_HTML_MANUAL) \
+$(DEVREF_CORE_PDF_MANUAL) \
+$(DEVREF_CORE_PS_MANUAL)
+
+##### Build Targets #####
 
 # Do nothing by default.
 all:
 
-user: pwl-user-@VERSION@.pdf
+user-html: $(USER_CORE_HTML_MANUAL)
 
-world: $(ALL_TARGETS)
+user-pdf: $(USER_CORE_PDF_MANUAL)
+
+user-ps: $(USER_CORE_PS_MANUAL)
+
+user: user-html user-pdf user-ps
+
+devref-html: $(DEVREF_CORE_HTML_MANUAL)
+
+devref-pdf: $(DEVREF_CORE_PDF_MANUAL)
+
+devref-ps: $(DEVREF_CORE_PS_MANUAL)
+
+devref: devref-html devref-pdf devref-ps
+
+world: user devref
 
 install-data-local: \
 install-html \
@@ -227,11 +218,7 @@ PWL_SOURCE_FILES = $(wildcard $(srcdir)/../src/*.hh $(srcdir)/../src/*.cc)
 
 LATEX_DIRS = \
 user.latex-dir \
-devref.latex-dir \
-user-c-interface.latex-dir \
-devref-c-interface.latex-dir \
-user-prolog-interface.latex-dir \
-devref-prolog-interface.latex-dir
+devref.latex-dir
 
 TEX_ENV = TEXINPUTS=$(abs_srcdir):$(TEXINPUTS)
 
@@ -251,14 +238,15 @@ pwl-user-@VERSION@.pdf: user.latex-dir
 pwl-devref-@VERSION@.pdf: devref.latex-dir
 	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
 
-$(USER_HTML_DIR): user.doxyconf-html $(USER_CORE_STUFF)
+$(USER_CORE_HTML_DIR): user.doxyconf-html $(USER_CORE_STUFF)
 	rm -rf $@
 	$(TEX_ENV) $(DOXYGEN) $<
 
-$(DEVREF_HTML_DIR): devref.doxyconf-html $(DEVREF_CORE_STUFF)
+$(DEVREF_CORE_HTML_DIR): devref.doxyconf-html $(DEVREF_CORE_STUFF)
 	rm -rf $@
 	$(TEX_ENV) $(DOXYGEN) $<
 
+############################################################################
 
 %.tar: %
 	tar cf $@ $<
@@ -287,11 +275,8 @@ pwl.sty \
 README.doc
 
 mostlyclean-local:
-	rm -rf $(ALL_TARGETS) $(LATEX_DIRS) $(HTML_DIRS) *.aux *.log
+	rm -rf $(HTML_DIRS) $(LATEX_DIRS) $(NONDIST_MANUALS) *.aux *.log
 
 CLEANFILES = \
-$(DIST_HTML_DOCS) \
-$(DIST_PDF_DOCS) \
-$(DIST_PS_DOCS) \
-$(USER_HTML_DIR).tag \
-$(DEVREF_HTML_DIR).tag
+$(USER_CORE_HTML_DIR).tag \
+$(DEVREF_CORE_HTML_DIR).tag

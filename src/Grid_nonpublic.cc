@@ -124,7 +124,7 @@ PPL::Grid::construct(Congruence_System& cgs) {
     if (cgs.num_columns() > 1)
       // See if an inconsistent congruence has been passed.
       for (dimension_type i = cgs.num_rows(); i-- > 0; )
-	if (cgs[i].is_trivial_false()) {
+	if (cgs[i].is_inconsistent()) {
 	  // Inconsistent congruence found: the grid is empty.
 	  status.set_empty();
 	  // Insert the zero dim false congruence system into `con_sys'.
@@ -549,6 +549,67 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
     for (row = num_rows; row-- > 0; )
       sys[row].scale_to_divisor(divisor);
   }
+}
+
+void
+PPL::Grid::add_congruence_no_check(const Congruence& cg) {
+  assert(!marked_empty());
+  assert(space_dim >= cg.space_dimension());
+
+  // Dealing with a zero-dimensional space grid first.
+  if (space_dim == 0) {
+    if (cg.is_inconsistent())
+      set_empty();
+    return;
+  }
+
+  if (!congruences_are_up_to_date())
+    update_congruences();
+
+  con_sys.insert(cg);
+
+  clear_congruences_minimized();
+  set_congruences_up_to_date();
+  clear_generators_up_to_date();
+
+  // Note: the congruence system may have become unsatisfiable, thus
+  // we do not check for satisfiability.
+  assert(OK());
+}
+
+void
+PPL::Grid::add_constraint_no_check(const Constraint& c) {
+  assert(!marked_empty());
+  assert(space_dim >= c.space_dimension());
+
+  if (c.is_inequality()) {
+    // Only trivial inequalities can be handled.
+    if (c.is_inconsistent()) {
+      set_empty();
+      return;
+    }
+    if (c.is_tautological())
+      return;
+    // Non-trivial inequality constraints are not allowed.
+    throw_invalid_constraint("add_constraint(c)", "c");
+  }
+
+  assert(c.is_equality());
+  Congruence cg(c);
+  add_congruence_no_check(cg);
+}
+
+void
+PPL::Grid::refine_no_check(const Constraint& c) {
+  assert(!marked_empty());
+  assert(space_dim >= c.space_dimension());
+
+  if (c.is_equality()) {
+    Congruence cg(c);
+    add_congruence_no_check(cg);
+  }
+  else if (c.is_inconsistent())
+    set_empty();
 }
 
 void

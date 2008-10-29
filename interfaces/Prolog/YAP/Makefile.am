@@ -29,9 +29,8 @@ ppl_yap.pl \
 yap_clpq.pl \
 yap_clpq2.pl \
 yap_pl_check.pl \
+yap_prolog_generated_test.pl \
 README.yap
-
-if BUILD_YAP_PROLOG_INTERFACE
 
 if BUILD_WATCHDOG_LIBRARY
 
@@ -84,19 +83,77 @@ ppl_yap.cc \
 ../ppl_prolog_common.cc
 
 nodist_EXTRA_ppl_yap_la_SOURCES = \
+../ppl_prolog_Int8_Box.cc \
+../ppl_prolog_Int16_Box.cc \
+../ppl_prolog_Int32_Box.cc \
+../ppl_prolog_Int64_Box.cc \
+../ppl_prolog_Uint8_Box.cc \
+../ppl_prolog_Uint16_Box.cc \
+../ppl_prolog_Uint32_Box.cc \
+../ppl_prolog_Uint64_Box.cc \
+../ppl_prolog_Float_Box.cc \
+../ppl_prolog_Double_Box.cc \
+../ppl_prolog_Long_Double_Box.cc \
+../ppl_prolog_Rational_Box.cc \
+../ppl_prolog_Z_Box.cc \
+../ppl_prolog_BD_Shape_int8_t.cc \
+../ppl_prolog_BD_Shape_int16_t.cc \
+../ppl_prolog_BD_Shape_int32_t.cc \
+../ppl_prolog_BD_Shape_int64_t.cc \
+../ppl_prolog_BD_Shape_float.cc \
 ../ppl_prolog_BD_Shape_double.cc \
+../ppl_prolog_BD_Shape_long_double.cc \
 ../ppl_prolog_BD_Shape_mpq_class.cc \
 ../ppl_prolog_BD_Shape_mpz_class.cc \
-../ppl_prolog_Constraints_Product_C_Polyhedron_Grid.cc \
-../ppl_prolog_Double_Box.cc \
-../ppl_prolog_Grid.cc \
+../ppl_prolog_Octagonal_Shape_int8_t.cc \
+../ppl_prolog_Octagonal_Shape_int16_t.cc \
+../ppl_prolog_Octagonal_Shape_int32_t.cc \
+../ppl_prolog_Octagonal_Shape_int64_t.cc \
+../ppl_prolog_Octagonal_Shape_float.cc \
 ../ppl_prolog_Octagonal_Shape_double.cc \
+../ppl_prolog_Octagonal_Shape_long_double.cc \
 ../ppl_prolog_Octagonal_Shape_mpq_class.cc \
 ../ppl_prolog_Octagonal_Shape_mpz_class.cc \
+../ppl_prolog_Polyhedron.cc \
+../ppl_prolog_Grid.cc \
+../ppl_prolog_Pointset_Powerset_Int8_Box.cc \
+../ppl_prolog_Pointset_Powerset_Int16_Box.cc \
+../ppl_prolog_Pointset_Powerset_Int32_Box.cc \
+../ppl_prolog_Pointset_Powerset_Int64_Box.cc \
+../ppl_prolog_Pointset_Powerset_Uint8_Box.cc \
+../ppl_prolog_Pointset_Powerset_Uint16_Box.cc \
+../ppl_prolog_Pointset_Powerset_Uint32_Box.cc \
+../ppl_prolog_Pointset_Powerset_Uint64_Box.cc \
+../ppl_prolog_Pointset_Powerset_Float_Box.cc \
+../ppl_prolog_Pointset_Powerset_Double_Box.cc \
+../ppl_prolog_Pointset_Powerset_Long_Double_Box.cc \
+../ppl_prolog_Pointset_Powerset_Rational_Box.cc \
+../ppl_prolog_Pointset_Powerset_Z_Box.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_int8_t.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_int16_t.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_int32_t.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_int64_t.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_float.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_double.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_long_double.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_mpq_class.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_mpz_class.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_int8_t.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_int16_t.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_int32_t.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_int64_t.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_float.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_double.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_long_double.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_mpq_class.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_mpz_class.cc \
 ../ppl_prolog_Pointset_Powerset_C_Polyhedron.cc \
 ../ppl_prolog_Pointset_Powerset_NNC_Polyhedron.cc \
-../ppl_prolog_Polyhedron.cc \
-../ppl_prolog_Rational_Box.cc
+../ppl_prolog_Pointset_Powerset_Grid.cc \
+../ppl_prolog_Constraints_Product_C_Polyhedron_Grid.cc \
+../ppl_prolog_Constraints_Product_NNC_Polyhedron_Grid.cc \
+../ppl_prolog_Constraints_Product_Grid_C_Polyhedron.cc \
+../ppl_prolog_Constraints_Product_Grid_NNC_Polyhedron.cc
 
 ppl_yap_la_LIBADD = \
 @required_instantiations_prolog_cxx_objects@ \
@@ -147,7 +204,7 @@ EXPECTED_PCHK = $(srcdir)/../tests/expected_pchk_$(COEFFICIENT_MNEMONIC)
 
 endif !ASSERTIONS_ENABLED
 
-check-local: pl_check_test clpq_test clpq2_test
+check-local: pl_check_test clpq_test clpq2_test ppl_prolog_generated_test
 
 pl_check_test: yap_pl_check.pl ppl_yap.pl ../tests/pl_check.pl $(EXPECTED_PCHK)
 	echo "main." >script_pchk
@@ -185,13 +242,35 @@ clpq2_test: yap_clpq2.pl ppl_yap.pl ../tests/clpq2.pl ../tests/script_clpq2 $(EX
 			<script_clpq2 >obtained_clpq2
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
 
-endif ENABLE_SHARED
-endif BUILD_YAP_PROLOG_INTERFACE
+ppl_prolog_generated_test: yap_prolog_generated_test.pl ppl_yap.pl  ../tests/expected_pgt
+	if [ $(srcdir) != `pwd` ]; then \
+	  cp -f $(srcdir)/../tests/ppl_prolog_generated_test_common.pl . ; \
+          cp -f $(srcdir)/yap_prolog_generated_test.pl . ; \
+          cp -f $(srcdir)/ppl_yap.pl . ; \
+	fi
+	cp -f ../tests/ppl_prolog_generated_test_main.pl . ; \
+	echo "main." >script_pgt
+	$(LIBTOOL) --mode=execute \
+		-dlopen ../../../src/libppl.la \
+		$(WATCHDOG_DLOPEN) \
+		-dlopen ppl_yap.la \
+		yap -l yap_prolog_generated_test.pl \
+			<script_pgt >obtained_pgt
+	if [ $(srcdir) != `pwd` ]; then \
+	  rm -f ppl_prolog_generated_test_common.pl; \
+	  rm -f yap_prolog_generated_test.pl; \
+	  rm -f ppl_yap.pl; \
+        fi
+	rm -f ppl_prolog_generated_test_main.pl; \
+	diff -u --ignore-all-space $(srcdir)/../tests/expected_pgt obtained_pgt
 
-DISTCLEANFILES = \
+endif ENABLE_SHARED
+
+CLEANFILES = \
 ppl_yap.cc
 
 MOSTLYCLEANFILES = \
-script_clpq script_clpq2 script_pchk \
-obtained_clpq obtained_clpq2 obtained_pchk \
+@required_instantiations_prolog_cxx_objects@ \
+script_clpq script_clpq2 script_pchk script_pgt \
+obtained_clpq obtained_clpq2 obtained_pchk obtained_pgt \
 $(CLPQ_TESTS)

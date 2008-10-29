@@ -221,7 +221,7 @@ test06() {
          << m_i << endl;
 
     m_i_next = aux_test06(++i, a, b, c);
-    m_i_next.bds_hull_assign(m_i);
+    m_i_next.upper_bound_assign(m_i);
     m_i_next.BHMZ05_widening_assign(m_i);
     // Force closure.
     (void) (m_i_next == m_i_next);

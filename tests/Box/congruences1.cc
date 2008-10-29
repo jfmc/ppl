@@ -1,4 +1,4 @@
-/* Test Box::Box(const Generator_System&).
+/* Test Box::Box(const Congruence_System&).
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -22,14 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-#include "files.hh"
-#include <string>
-#include <fstream>
-
-using std::string;
-using std::fstream;
-using std::ios_base;
-
 namespace {
 
 // Universe Box constructed from empty congruences
@@ -47,7 +39,7 @@ test01() {
   return ok;
 }
 
-// Box constructed from non-empty congruences and add_congruences()
+// Box constructed from empty congruences and add_congruences()
 bool
 test02() {
   Variable A(0);
@@ -56,9 +48,7 @@ test02() {
   Variable D(3);
 
   Congruence_System cgs;
-  cgs.insert(A + B %= 0);
-  cgs.insert((1*A + 2*B + 3*C + 4*D %= 0) / 0);
-  cgs.insert((2*A + 3*B + 4*C + 5*D %= 1) / 0);
+  cgs.insert(0*D %= 0);
   TBox box(cgs);
 
   Rational_Box known_result(4);
@@ -79,15 +69,12 @@ test03() {
   Variable C(2);
 
   Congruence_System cgs;
-  cgs.insert((A %= 7) / 0);
-  cgs.insert(B %= 3);
-  cgs.insert(B %= 0);
-  cgs.insert(C %= 7);
+  cgs.insert((C %= 7) / 0);
 
   TBox box(cgs);
 
   Rational_Box known_result(3);
-  known_result.add_constraint(A == 7);
+  known_result.add_constraint(C == 7);
 
   bool ok = check_result(box, known_result);
 
@@ -96,7 +83,7 @@ test03() {
   return ok;
 }
 
-// CHECKME: is this a duplicate of test03 ?
+// add_recycled_congruences()
 bool
 test04() {
   Variable A(0);
@@ -105,62 +92,6 @@ test04() {
 
   Congruence_System cgs;
   cgs.insert((A %= 7) / 0);
-  cgs.insert(B %= 3);
-  cgs.insert(B %= 0);
-  cgs.insert(C %= 7);
-
-  TBox box(3);
-  box.add_congruences(cgs);
-  bool ok = !box.is_empty();
-
-  Rational_Box known_result(3);
-  known_result.add_constraint(A == 7);
-
-  ok = ok && check_result(box, known_result);
-
-  print_constraints(box, "*** box ***");
-
-  return ok;
-}
-
-// add_recycled_congruences()
-bool
-test05() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-  Variable D(3);
-
-  Congruence_System cgs;
-  cgs.insert(A + B %= 0);
-  cgs.insert((1*A + 2*B + 3*C + 4*D %= 0) / 0);
-  cgs.insert((2*A + 3*B + 4*C + 5*D %= 1) / 0);
-  TBox box(4);
-  box.add_recycled_congruences(cgs);
-
-  Rational_Box known_result(4);
-  known_result.add_constraint(1*A + 2*B + 3*C + 4*D == 0);
-  known_result.add_constraint(2*A + 3*B + 4*C + 5*D == 1);
-
-  bool ok = check_result(box, known_result);
-
-  print_constraints(box, "*** box ***");
-
-  return ok;
-}
-
-// add_recycled_congruences()
-bool
-test06() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
-  Congruence_System cgs;
-  cgs.insert((A %= 7) / 0);
-  cgs.insert(B %= 3);
-  cgs.insert(B %= 0);
-  cgs.insert(C %= 7);
 
   TBox box(3);
   box.add_recycled_congruences(cgs);
@@ -178,16 +109,13 @@ test06() {
 
 // Box constructed from non-empty congruences; congruences().
 bool
-test07() {
+test05() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
 
   Congruence_System cgs;
-  cgs.insert((A %= 7) / 0);
-  cgs.insert(B %= 3);
-  cgs.insert(B %= 0);
-  cgs.insert(C %= 7);
+  cgs.insert((A + 0*C %= 7) / 0);
 
   TBox box(cgs);
 
@@ -206,7 +134,7 @@ test07() {
 
 // Box constructed from non-empty congruences.
 bool
-test08() {
+test06() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -214,12 +142,12 @@ test08() {
   Congruence_System cgs;
   cgs.insert((A %= 7) / 0);
   cgs.insert((B %= 3) / 0);
-  // This inconsistent equality is ignored when congruences
-  // are added to the box.
+  // This inconsistent equality is ignored when refining.
   cgs.insert((A + B %= 0) / 0);
   cgs.insert(C %= 7);
 
-  TBox box(cgs);
+  TBox box(cgs.space_dimension(), UNIVERSE);
+  box.refine_with_congruences(cgs);
 
   Rational_Box known_result(3);
   known_result.add_constraint(A == 7);
@@ -234,7 +162,7 @@ test08() {
 
 // add_congruences() for inconsistent equality congruences
 bool
-test09() {
+test07() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -243,7 +171,6 @@ test09() {
   cgs.insert((A %= 7) / 0);
   cgs.insert((B %= 3) / 0);
   cgs.insert((A %= 0) / 0);
-  cgs.insert(C %= 7);
 
   TBox box(3);
   box.add_congruences(cgs);
@@ -260,57 +187,7 @@ test09() {
 
 // add_congruence()
 bool
-test10() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-  Variable D(3);
-
-  TBox box(4);
-  box.add_congruence((1*A + 2*B + 3*C + 4*D %= 0) / 0);
-  box.add_congruence((2*A + 3*B + 4*C + 5*D %= 1) / 0);
-
-  Rational_Box known_result(4);
-
-  bool ok = check_result(box, known_result);
-
-  print_constraints(box, "*** box ***");
-
-  return ok;
-}
-
-// CHECKME: is this a duplicate test?
-bool
-test11() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
-  TBox box(3);
-  box.add_congruence((A %= 7) / 0);
-  bool ok = !box.is_empty();
-  box.add_congruence((A %= 2) / 3);
-  ok = ok && !box.is_empty();
-  // Inconsistency in the two non-relational additions should
-  // not be detected.
-  box.add_congruence((A + B %= 2) / 0);
-  ok = ok && !box.is_empty();
-  box.add_congruence((A + B %= 3) / 0);
-  ok = ok && !box.is_empty();
-
-  Rational_Box known_result(3);
-  known_result.add_constraint(A == 7);
-
-  ok = ok && check_result(box, known_result);
-
-  print_constraints(box, "*** box ***");
-
-  return ok;
-}
-
-// add_congruence()
-bool
-test12() {
+test08() {
   Variable A(0);
 
   TBox box(1);
@@ -329,52 +206,23 @@ test12() {
   return ok;
 }
 
-
-// Non-empty box; congruences().
-bool
-test13() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
-  Congruence_System cgs;
-  cgs.insert((A %= 7) / 0);
-  cgs.insert(B %= 3);
-  cgs.insert(B %= 0);
-  cgs.insert(C %= 7);
-
-  TBox box(cgs);
-
-  TBox box1(box.congruences());
-
-  Rational_Box known_result(3);
-  known_result.add_constraint(A == 7);
-
-  bool ok = check_result(box1, known_result);
-
-  print_constraints(box1, "*** box1(box.congruences()) ***");
-
-  return ok;
-}
-
 // Non-empty Box; minimized_congruences().
 bool
-test14() {
+test09() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
 
   Congruence_System cgs;
   cgs.insert((A %= 7) / 0);
-  cgs.insert((B %= 3) / 0);
-  cgs.insert((C %= 3) / 5);
+  cgs.insert((C %= 3) / 0);
 
   TBox box(cgs);
   TBox box1(box.minimized_congruences());
 
   Rational_Box known_result(3);
   known_result.add_constraint(A == 7);
-  known_result.add_constraint(B == 3);
+  known_result.add_constraint(C == 3);
 
   bool ok = check_result(box1, known_result);
 
@@ -385,7 +233,7 @@ test14() {
 
 // Empty Box; minimized_congruences().
 bool
-test15() {
+test10() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -394,7 +242,6 @@ test15() {
   cgs.insert((A %= 7) / 0);
   cgs.insert((B %= 3) / 0);
   cgs.insert((A %= 0) / 0);
-  cgs.insert(C %= 7);
 
   TBox box(3);
   box.add_congruences(cgs);
@@ -412,7 +259,7 @@ test15() {
 
 // Zero dimension universe; congruences()
 bool
-test16() {
+test11() {
   TBox box(0);
   TBox box1(box.congruences());
 
@@ -427,7 +274,7 @@ test16() {
 
 // Zero dimension empty; congruences()
 bool
-test17() {
+test12() {
   TBox box(0, EMPTY);
   TBox box1(box.congruences());
 
@@ -441,7 +288,7 @@ test17() {
 }
 
 bool
-test18() {
+test13() {
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -449,14 +296,14 @@ test18() {
   TBox box1(2);
 
   try {
+    box1.add_congruence((x %= 0) / 0);
     // This is an invalid use of method
     // Box::add_congruence: it is illegal
     // to add a congruence with bigger dimension.
-    box1.add_congruence(x %= 0);
     box1.add_congruence(y - x + z %= 0);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << endl;
+    nout << "std::invalid_argument: " << e.what() << endl;
     return true;
   }
   catch (...) {
@@ -465,7 +312,7 @@ test18() {
 }
 
 bool
-test19() {
+test14() {
   Variable x(0);
   Variable y(1);
 
@@ -481,7 +328,7 @@ test19() {
     box.add_congruences(cgs);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << endl;
+    nout << "std::invalid_argument: " << e.what() << endl;
     return true;
   }
   catch (...) {
@@ -490,7 +337,7 @@ test19() {
 }
 
 bool
-test20() {
+test15() {
   Variable y(1);
 
   TBox box(1);
@@ -503,7 +350,7 @@ test20() {
     box.add_congruence((y %= 0) / 0);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << endl;
+    nout << "std::invalid_argument: " << e.what() << endl;
     return true;
   }
   catch (...) {
@@ -529,9 +376,4 @@ BEGIN_MAIN
   DO_TEST(test13);
   DO_TEST(test14);
   DO_TEST(test15);
-  DO_TEST(test16);
-  DO_TEST(test17);
-  DO_TEST(test18);
-  DO_TEST(test19);
-  DO_TEST(test20);
 END_MAIN

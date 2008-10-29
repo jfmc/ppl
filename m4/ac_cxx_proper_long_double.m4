@@ -34,10 +34,11 @@ AC_RUN_IFELSE([AC_LANG_SOURCE([[
 long double f = 0.0;
 
 int main() {
-  return ((LDBL_MAX <= DBL_MAX) && (DBL_EPSILON <= LDBL_EPSILON)
-	  && (LDBL_MAX_EXP <= DBL_MAX_EXP) && (LDBL_MANT_DIG <= DBL_MANT_DIG))
-    ? 1
-    : 0;
+  if ((LDBL_MAX <= DBL_MAX) && (DBL_EPSILON <= LDBL_EPSILON)
+      && (LDBL_MAX_EXP <= DBL_MAX_EXP) && (LDBL_MANT_DIG <= DBL_MANT_DIG))
+    return 1;
+  else
+    return 0;
 }
 ]])],
   AC_MSG_RESULT(yes)

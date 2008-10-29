@@ -125,10 +125,10 @@ test04() {
   ph.add_constraint(x >= 2);
   ph.add_constraint(z >= 1);
   ph.add_constraint(x + z <= 2);
-  C_Polyhedron ph1(4);
-  ph1.add_constraint(x >= 2);
-  ph1.add_constraint(z >= 1);
-  ph1.add_constraint(x + z <= 2);
+
+  // NOTE: taking a copy of ph so that ph1 is not affected by
+  // the construction of pps (which minimizes ph and detects emptiness).
+  C_Polyhedron ph1(ph);
 
   // With the default complexity, the built powerset is empty.
   Pointset_Powerset<TBox> pps(ph);
@@ -142,9 +142,12 @@ test04() {
 
   bool ok = (pps == known_pps && pps1 == known_pps1);
 
-  Pointset_Powerset<TBox>::const_iterator i1 = pps1.begin();
-  TBox boxi1 = i1->element();
-  print_constraints(boxi1, "*** boxi1 ***");
+  if (ok) {
+    // Here it is safe to dereference pps1.begin().
+    Pointset_Powerset<TBox>::const_iterator i1 = pps1.begin();
+    TBox boxi1 = i1->element();
+    print_constraints(boxi1, "*** boxi1 ***");
+  }
 
   return ok && pps.OK() && pps1.OK();
 }

@@ -1,7 +1,7 @@
 m4_define(`dnl', `m4_dnl')`'dnl
 m4_divert(-1)
 
-dnl This m4 file is used to generate ppl_prlog_domains.hh
+dnl This m4 file is used to generate ppl_prolog_domains.hh
 dnl and files ppl_prolog_DOMAIN.hh, for each interface domain DOMAIN
 dnl in ppl_interface instantiations.m4 using the code in
 dnl ppl_interface_generator_prolog_hh_code.m4.
@@ -38,10 +38,13 @@ m4_include(`ppl_interface_generator_copyright')dnl
 */
 m4_divert(-1)
 
+dnl Ensure any schematic procedure macro that is not defined
+dnl in the code file outputs a warning message.
+m4_define(`m4_default_code', `m4_dumpdef($1`'_code)')
 dnl m4_pre_extra_class_code(Class_Counter)
 dnl Prefix extra code for each class.
 m4_define(`m4_pre_extra_class_code', `dnl
-m4_define(`m4_current_interface', m4_interface_class`'$1)`'dnl
+m4_define(`m4_current_interface', m4_interface_class`'$1)
 %<--%<--%<-- ppl_prolog_domains.hh
 `#'include "ppl_prolog_`'m4_current_interface.hh"
 %<--%<--%<-- ppl_prolog_`'m4_current_interface.hh

@@ -158,7 +158,6 @@ test06() {
   return ok;
 }
 
-#if !Box_Class
 // is_topologically_closed() where the NNC Polyhedron is topologically
 // open.
 bool
@@ -166,16 +165,13 @@ test07() {
   Variable A(0);
 
   Product dp(3);
-#if NNC_Poly_Class
   dp.refine_with_constraint(A < 3);
-#else
-  dp.refine_with_constraint(A <= 3);
-#endif
   dp.refine_with_congruence((A %= 0) / 3);
 
-#if NNC_Poly_Class
+#if NNC_Poly_Class || Box_Class
   bool ok = !dp.is_topologically_closed();
 #else
+  dp.refine_with_constraint(A <= 3);
   bool ok = dp.is_topologically_closed();
 #endif
 
@@ -211,12 +207,12 @@ test09() {
 
   Product dp(3);
   dp.refine_with_congruence((A %= 0) / 4);
-#if NNC_Poly_Class
   dp.refine_with_constraint(A < 3);
 
+#if NNC_Poly_Class
   bool ok = !dp.is_topologically_closed();
 #else
-  dp.refine_with_constraint(A <= 3);
+  dp.refine_with_constraint(A <= 2);
 
   bool ok = dp.is_topologically_closed();
 #endif
@@ -226,7 +222,6 @@ test09() {
 
   return ok;
 }
-#endif
 
 // is_disjoint_from(dp), due to the Polyhedra.
 bool
@@ -235,15 +230,9 @@ test10() {
 
   Product dp1(12);
   Product dp2(12);
-#if NNC_Poly_Class
-  dp1.refine_with_constraint(B < 3);
+  dp1.refine_with_constraint(B < 2);
   dp2.refine_with_constraint(B > 3);
   bool ok = dp1.is_disjoint_from(dp2);
-#else
-  dp1.refine_with_constraint(B <= 3);
-  dp2.refine_with_constraint(B >= 4);
-  bool ok = dp1.is_disjoint_from(dp2);
-#endif
 
   print_congruences(dp1, "*** dp1 congruences ***");
   print_constraints(dp1, "*** dp1 constraints ***");
@@ -283,17 +272,10 @@ test12() {
   dp1.refine_with_congruence((A %= 0) / 7);
   Product dp2(3);
   dp2.refine_with_congruence((A %= 1) / 7);
-#if NNC_Poly_Class
   dp1.refine_with_constraint(A < 3);
   dp2.refine_with_constraint(A > 3);
 
   bool ok = dp1.is_disjoint_from(dp2);
-#else
-  dp1.refine_with_constraint(A <= 2);
-  dp2.refine_with_constraint(A >= 4);
-
-  bool ok = dp1.is_disjoint_from(dp2);
-#endif
 
   print_congruences(dp1, "*** dp1 congruences ***");
   print_constraints(dp1, "*** dp1 constraints ***");
@@ -312,17 +294,10 @@ test13() {
   dp1.refine_with_congruence((A %= 1) / 7);
   Product dp2(3);
   dp2.refine_with_congruence((A %= 1) / 14);
-#if NNC_Poly_Class
   dp1.refine_with_constraint(A < 6);
   dp2.refine_with_constraint(A > 3);
 
   bool ok = !dp1.is_disjoint_from(dp2);
-#else
-  dp1.refine_with_constraint(A <= 6);
-  dp2.refine_with_constraint(A >= 3);
-
-  bool ok = !dp1.is_disjoint_from(dp2);
-#endif
 
   print_congruences(dp1, "*** dp1 congruences ***");
   print_constraints(dp1, "*** dp1 constraints ***");
@@ -439,17 +414,10 @@ test18() {
 
   Product dp(2);
   dp.refine_with_congruence((A %= 1) / 3);
-#if NNC_Poly_Class
   dp.refine_with_constraint(A > 1);
   dp.refine_with_constraint(A < 4);
   dp.refine_with_constraint(B > 1);
   dp.refine_with_constraint(B < 4);
-#else
-  dp.refine_with_constraint(A >= 1);
-  dp.refine_with_constraint(A <= 4);
-  dp.refine_with_constraint(B >= 1);
-  dp.refine_with_constraint(B <= 4);
-#endif
 
   bool ok = dp.is_bounded();
 
@@ -487,11 +455,9 @@ BEGIN_MAIN
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
-#if !Box_Class
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
-#endif
   DO_TEST(test10);
   DO_TEST(test11);
   DO_TEST(test12);

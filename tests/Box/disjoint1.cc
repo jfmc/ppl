@@ -56,7 +56,6 @@ test02() {
 
   TBox box2(3);
   box2.add_constraint(A <= 3);
-  box2.add_constraint(B - A <= -1);
   box2.add_constraint(B >= -5);
 
   bool disjoint = box1.is_disjoint_from(box2);
@@ -102,7 +101,6 @@ test04() {
   Variable y(1);
 
   TBox box1(2);
-  box1.add_constraint(x >= y);
 
   TBox box2(3);
 
@@ -130,7 +128,6 @@ test05() {
   TBox box1(2, EMPTY);
 
   TBox box2(2);
-  box2.add_constraint(A - B <= 5);
 
   bool disjoint = box1.is_disjoint_from(box2);
 

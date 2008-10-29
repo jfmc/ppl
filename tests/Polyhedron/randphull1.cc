@@ -135,8 +135,16 @@ random_polytope(C_Polyhedron& ph,
     point_on_the_unit_n_sphere(dimension, theta, coordinate);
 
     Linear_Expression le;
-    for (unsigned i = dimension; i-- > 0; )
+    for (unsigned i = dimension; i-- > 0; ) {
+#if 0
       le += Variable(i)*Coefficient(coordinate[i]*1000000.0);
+#else
+      // FIXME: this is a temporary workaround for machines
+      // where we cannot control the FPU.
+      mpz_class z = coordinate[i]*1000000.0;
+      le += Variable(i)*Coefficient(z);
+#endif
+    }
     ph.add_generator(point(le));
   }
 

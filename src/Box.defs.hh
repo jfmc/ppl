@@ -261,7 +261,7 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 
 //! A not necessarily closed, iso-oriented hyperrectangle.
 /*! \ingroup PPL_CXX_interface
-  A Box object represents the Cartesian product of \f$n\f$
+  A Box object represents the smash product of \f$n\f$
   not necessarily closed and possibly unbounded intervals
   represented by objects of class \p ITV,
   where \f$n\f$ is the space dimension of the box.
@@ -320,7 +320,7 @@ public:
 
     \param cs
     A system of constraints: constraints that are not
-    \ref bounding_boxes "interval constraints"
+    \ref intervals "interval constraints"
     are ignored (even though they may have contributed
     to the space dimension).
   */
@@ -332,7 +332,7 @@ public:
 
     \param cs
     A system of constraints: constraints that are not
-    \ref bounding_boxes "interval constraints"
+    \ref intervals "interval constraints"
     are ignored (even though they may have contributed
     to the space dimension).
 
@@ -826,6 +826,28 @@ public:
   void refine_with_congruences(const Congruence_System& cgs);
 
   /*! \brief
+    Use the constraint \p c for constraint propagation on \p *this.
+
+    \param c
+    The constraint to be used for constraint propagation.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p c are dimension-incompatible.
+  */
+  void propagate_constraint(const Constraint& c);
+
+  /*! \brief
+    Use the constraints in \p cs for constraint propagagion on \p *this.
+
+    \param  cs
+     The constraints to be used for constraint propagation.
+
+     \exception std::invalid_argument
+     Thrown if \p *this and \p cs are dimension-incompatible.
+  */
+  void propagate_constraints(const Constraint_System& cs);
+
+  /*! \brief
     Computes the \ref Cylindrification "cylindrification" of \p *this with
     respect to space dimension \p var, assigning the result to \p *this.
 
@@ -859,28 +881,22 @@ public:
   void intersection_assign(const Box& y);
 
   /*! \brief
-    Assigns to \p *this the smallest box containing the convex union
+    Assigns to \p *this the smallest box containing the union
     of \p *this and \p y.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void box_hull_assign(const Box& y);
-
-  //! Same as box_hull_assign.
   void upper_bound_assign(const Box& y);
 
   /*! \brief
-    If the box-hull of \p *this and \p y is exact, it is assigned
+    If the upper bound of \p *this and \p y is exact, it is assigned
     to \p *this and <CODE>true</CODE> is returned,
     otherwise <CODE>false</CODE> is returned.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  bool box_hull_assign_if_exact(const Box& y);
-
-  //! Same as box_hull_assign_if_exact.
   bool upper_bound_assign_if_exact(const Box& y);
 
   /*! \brief
@@ -889,9 +905,6 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void box_difference_assign(const Box& y);
-
-  //! Same as box_difference_assign.
   void difference_assign(const Box& y);
 
   /*! \brief
@@ -1140,7 +1153,7 @@ public:
     \ref CC76_extrapolation "CC76-widening" between \p *this and \p y.
 
     \param y
-    A bounding box that <EM>must</EM> be contained in \p *this.
+    A box that <EM>must</EM> be contained in \p *this.
 
     \param tp
     An optional pointer to an unsigned variable storing the number of
@@ -1157,7 +1170,7 @@ public:
     \ref CC76_extrapolation "CC76-widening" between \p *this and \p y.
 
     \param y
-    A bounding box that <EM>must</EM> be contained in \p *this.
+    A box that <EM>must</EM> be contained in \p *this.
 
     \param first
     An iterator that points to the first stop-point.
@@ -1565,79 +1578,98 @@ private:
   const ITV& operator[](dimension_type k) const;
 
   /*! \brief
-    Use the constraint \p c to refine \p *this.
-    FIXME: this is not true.
+    WRITE ME.
+  */
+  void
+  add_interval_constraint_no_check(dimension_type var_id,
+                                   Constraint::Type type,
+                                   Coefficient_traits::const_reference num,
+                                   Coefficient_traits::const_reference den);
 
-    \param c
-    The constraint to be added. If it is not an interval constraint, it
-    will be simply ignored.  If it is dimension-incompatible with \p *this,
-    the behavior is undefined.
+  /*! \brief
+    WRITE ME.
   */
   void add_constraint_no_check(const Constraint& c);
 
   /*! \brief
-    Use the constraints in \p cs to refine \p *this.
-    FIXME: this is not true.
-
-    \param  cs
-    The constraints to be added. Constraints that are not interval
-    constraints will be simply ignored.  If it is
-    dimension-incompatible with \p *this, the behavior is undefined.
+    WRITE ME.
   */
   void add_constraints_no_check(const Constraint_System& cs);
 
   /*! \brief
-    Use the congruence \p cg to refine \p *this.
-    FIXME: this is not true.
-
-    \param cg
-    The congruence to be added. If it is not a non-relational equality
-    congruence, it will be ignored.  If it is dimension-incompatible
-    with \p *this, the behavior is undefined.
+    WRITE ME.
   */
   void add_congruence_no_check(const Congruence& cg);
 
   /*! \brief
-    Use the congruences in \p cgs to refine \p *this.
-    FIXME: this is not true.
-
-    \param cgs
-    The congruences to be added. Congruences that are not non-relational
-    equality congruences will be ignored.  If it is
-    dimension-incompatible with \p *this, the behavior is undefined.
+    WRITE ME.
   */
   void add_congruences_no_check(const Congruence_System& cgs);
 
   /*! \brief
-    Use the congruence \p cg to refine \p *this.
-    FIXME: this is not true.
+    Uses the constraint \p c to refine \p *this.
+
+    \param c
+    The constraint to be added.
+    Non-interval constraints are ignored.
+
+    \warning
+    If \p c and \p *this are dimension-incompatible,
+    the behavior is undefined.
+  */
+  void refine_no_check(const Constraint& c);
+
+  /*! \brief
+    Uses the constraints in \p cs to refine \p *this.
+
+    \param cs
+    The constraints to be added.
+    Non-interval constraints are ignored.
+
+    \warning
+    If \p cs and \p *this are dimension-incompatible,
+    the behavior is undefined.
+  */
+  void refine_no_check(const Constraint_System& cs);
+
+  /*! \brief
+    Uses the congruence \p cg to refine \p *this.
 
     \param cg
-    The congruence to be added. If it is not a non-relational equality
-    congruence, it will be ignored.  If it is dimension-incompatible
-    with \p *this, the behavior is undefined.
+    The congruence to be added.
+    Nontrivial proper congruences are ignored.
+
+    \warning
+    If \p cg and \p *this are dimension-incompatible,
+    the behavior is undefined.
   */
   void refine_no_check(const Congruence& cg);
 
   /*! \brief
-    Use the congruences in \p cgs to refine \p *this.
-    FIXME: this is not true.
+    Uses the congruences in \p cgs to refine \p *this.
 
     \param cgs
-    The congruences to be added. Congruences that are not non-relational
-    equality congruences will be ignored.  If it is
-    dimension-incompatible with \p *this, the behavior is undefined.
+    The congruences to be added.
+    Nontrivial proper congruences are ignored.
+
+    \warning
+    If \p cgs and \p *this are dimension-incompatible,
+    the behavior is undefined.
   */
   void refine_no_check(const Congruence_System& cgs);
 
   /*! \brief
-    Use the constraint \p c to refine \p *this.
+    Propagates the constraint \p c to refine \p *this.
 
     \param c
-    The constraint to be added. If it is dimension-incompatible with
-    \p *this, the behavior is undefined.
+    The constraint to be propagated.
 
-    FIXME: mention the possibility of non-termination.
+    \warning
+    If \p c and \p *this are dimension-incompatible,
+    the behavior is undefined.
+
+    \warning
+    This method may lead to non-termination.
 
     \if Include_Implementation_Details
 
@@ -1786,18 +1818,22 @@ private:
     \f$i \in N \setdiff \{ k \}\f$, or if the computation is inexact.
     \endif
   */
-  void refine_no_check(const Constraint& c);
+  void propagate_constraint_no_check(const Constraint& c);
 
   /*! \brief
-    Use the constraints in \p cs to refine \p *this.
+    Propagates the constraints in \p cs to refine \p *this.
 
     \param  cs
-    The constraints to be added. If it is dimension-incompatible with
-    \p *this, the behavior is undefined.
+    The constraints to be propagated.
 
-    FIXME: mention the possibility of non-termination.
+    \warning
+    If \p cs and \p *this are dimension-incompatible,
+    the behavior is undefined.
+
+    \warning
+    This method may lead to non-termination.
   */
-  void refine_no_check(const Constraint_System& cs);
+  void propagate_constraints_no_check(const Constraint_System& cs);
 
   //! Checks if and how \p expr is bounded in \p *this.
   /*!
@@ -1958,7 +1994,7 @@ interval_relation(const ITV& i,
 /*! \relates Box
   \return
   <CODE>true</CODE> if the constraint \p c is an
-  \ref bounding_boxes "interval constraint";
+  \ref intervals "interval constraint";
   <CODE>false</CODE> otherwise.
 
   \param c

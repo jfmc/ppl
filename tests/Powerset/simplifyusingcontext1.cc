@@ -141,9 +141,9 @@ test03() {
 
   bool ok = (ps1 == known_result);
 
-  for (Pointset_Powerset<C_Polyhedron>::const_iterator i = ps1.begin(),
-         iend = ps1.end(); i != iend; ++i)
-    print_constraints(i->element());
+  for (Pointset_Powerset<C_Polyhedron>::const_iterator it = ps1.begin(),
+         ps1_end = ps1.end(); it != ps1_end; ++it)
+    print_constraints(it->element());
 
   return ok;
 }
@@ -195,9 +195,9 @@ test04() {
 
   bool ok = (ps1 == known_result);
 
-  for (Pointset_Powerset<C_Polyhedron>::const_iterator i = ps1.begin(),
-         iend = ps1.end(); i != iend; ++i)
-    print_constraints(i->element());
+  for (Pointset_Powerset<C_Polyhedron>::const_iterator it = ps1.begin(),
+         ps1_end = ps1.end(); it != ps1_end; ++it)
+    print_constraints(it->element());
 
   return ok;
 }
@@ -257,9 +257,9 @@ test05() {
 
   bool ok = (ps1 == known_result);
 
-  for (Pointset_Powerset<C_Polyhedron>::const_iterator i = ps1.begin(),
-         iend = ps1.end(); i != iend; ++i)
-    print_constraints(i->element());
+  for (Pointset_Powerset<C_Polyhedron>::const_iterator it = ps1.begin(),
+         ps1_end = ps1.end(); it != ps1_end; ++it)
+    print_constraints(it->element());
 
   return ok;
 }
@@ -299,9 +299,9 @@ test06() {
 
   bool ok = (ps1 == known_result);
 
-  for (Pointset_Powerset<C_Polyhedron>::const_iterator i = ps1.begin(),
-         iend = ps1.end(); i != iend; ++i)
-    print_constraints(i->element());
+  for (Pointset_Powerset<C_Polyhedron>::const_iterator it = ps1.begin(),
+         ps1_end = ps1.end(); it != ps1_end; ++it)
+    print_constraints(it->element());
 
   return ok;
 }
@@ -331,9 +331,9 @@ test07() {
 
   bool ok = (ps1 == known_result);
 
-  for (Pointset_Powerset<C_Polyhedron>::const_iterator i = ps1.begin(),
-         iend = ps1.end(); i != iend; ++i)
-    print_constraints(i->element());
+  for (Pointset_Powerset<C_Polyhedron>::const_iterator it = ps1.begin(),
+         ps1_end = ps1.end(); it != ps1_end; ++it)
+    print_constraints(it->element());
 
   return ok;
 }
@@ -378,6 +378,71 @@ test08() {
   return ok;
 }
 
+bool
+test09() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2, EMPTY);
+  Pointset_Powerset<C_Polyhedron> ps1(2, EMPTY);
+  Pointset_Powerset<C_Polyhedron> ps2(2, EMPTY);
+
+  // Populate ps1 with a single square.
+  ph = C_Polyhedron(2, UNIVERSE);
+  ph.add_constraint(A >= 10);
+  ph.add_constraint(A <= 40);
+  ph.add_constraint(B >= 10);
+  ph.add_constraint(B <= 40);
+
+  ps1.add_disjunct(ph);
+
+  nout << "Pointset_Powerset to be simplified:\n";
+  for (Pointset_Powerset<C_Polyhedron>::const_iterator i = ps1.begin(),
+         iend = ps1.end(); i != iend; ++i) {
+    print_constraints(i->element());
+    nout << "\n";
+  }
+
+  // Populate ps2 with four squares intersecting the single square above.
+  ph = C_Polyhedron(2, UNIVERSE);
+  ph.add_constraint(A >= 0);
+  ph.add_constraint(A <= 20);
+  ph.add_constraint(B >= 0);
+  ph.add_constraint(B <= 20);
+
+  ps2.add_disjunct(ph);
+
+  ph.affine_image(B, B + 30);
+  ps2.add_disjunct(ph);
+
+  ph.affine_image(A, A + 30);
+  ps2.add_disjunct(ph);
+
+  ph.affine_image(B, B - 30);
+  ps2.add_disjunct(ph);
+
+  nout << "\nPointset_Powerset to be used as context:\n";
+  for (Pointset_Powerset<C_Polyhedron>::const_iterator i = ps2.begin(),
+         iend = ps2.end(); i != iend; ++i) {
+    print_constraints(i->element());
+    nout << "\n";
+  }
+
+  Pointset_Powerset<C_Polyhedron> known_result(ps1);
+
+  ps1.simplify_using_context_assign(ps2);
+
+  bool ok = (ps1 == known_result);
+
+  for (Pointset_Powerset<C_Polyhedron>::const_iterator i = ps1.begin(),
+         iend = ps1.end(); i != iend; ++i) {
+    print_constraints(i->element());
+    nout << "\n";
+  }
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -385,8 +450,9 @@ BEGIN_MAIN
   DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
-  DO_TEST_F8(test05);
+  DO_TEST_F8A(test05);
   DO_TEST(test06);
   DO_TEST(test07);
   DO_TEST(test08);
+  DO_TEST_F8A(test09);
 END_MAIN

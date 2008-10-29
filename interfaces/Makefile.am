@@ -20,7 +20,23 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-SUBDIRS = . C Java OCaml Prolog
+if BUILD_C_INTERFACE
+C_SUBDIR = C
+endif BUILD_C_INTERFACE
+
+if BUILD_JAVA_INTERFACE
+JAVA_SUBDIR = Java
+endif BUILD_JAVA_INTERFACE
+
+if BUILD_OCAML_INTERFACE
+OCAML_SUBDIR = OCaml
+endif BUILD_OCAML_INTERFACE
+
+if BUILD_SOME_PROLOG_INTERFACES
+PROLOG_SUBDIR = Prolog
+endif BUILD_SOME_PROLOG_INTERFACES
+
+SUBDIRS = . $(C_SUBDIR) $(JAVA_SUBDIR) $(OCAML_SUBDIR) $(PROLOG_SUBDIR)
 
 REQUIRED_INSTANTIATIONS = \
 @required_instantiations@
@@ -30,7 +46,7 @@ REQUIRED_INSTANTIATIONS_CANONICAL_NAMES = \
 
 BUILT_SOURCES = ppl_interface_instantiations.m4
 
-ppl_interface_instantiations.m4:
+ppl_interface_instantiations.m4: Makefile
 	echo "m4_define(\`m4_interface_classes_names', \`$(REQUIRED_INSTANTIATIONS_CANONICAL_NAMES)')" > $@
 	echo "m4_define(\`m4_cplusplus_classes_names', \`$(REQUIRED_INSTANTIATIONS)')" >> $@
 
@@ -44,5 +60,5 @@ ppl_interface_generator_common_dat.m4 \
 ppl_interface_generator_common_procedure_generators.m4 \
 ppl_interface_generator_copyright
 
-DISTCLEANFILES = \
+CLEANFILES = \
 ppl_interface_instantiations.m4

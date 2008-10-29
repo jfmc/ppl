@@ -215,6 +215,27 @@ test06() {
   return ok;
 }
 
+bool
+test07() {
+  Variable A(0);
+
+  C_Polyhedron ph(1);
+  ph.add_constraint(A >= 1);
+  ph.add_constraint(A <= 0);
+
+  print_constraints(ph, "*** ph ***");
+
+  ph.bounded_affine_image(A, A, 2*A, 3);
+
+  C_Polyhedron kr1(1, EMPTY);
+
+  bool ok = (ph == kr1);
+
+  print_generators(ph, "*** ph.bounded_affine_image(A, A, 2*A, 3) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -224,4 +245,5 @@ BEGIN_MAIN
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
+  DO_TEST(test07);
 END_MAIN

@@ -143,14 +143,6 @@ test05() {
   Octagonal_Shape<mpq_class> known_result(1);
   known_result.add_constraint(x <= 4);
 
-#if 0
-  cout << "oc1" << endl;
-  oc1.ascii_dump(cout);
-
-  cout << "result" << endl;
-  known_result.ascii_dump(cout);
-#endif
-
   bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "*** oc1.map_space_dimensions(function) ***");

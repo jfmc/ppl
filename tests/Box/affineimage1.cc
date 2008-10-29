@@ -55,7 +55,6 @@ test02() {
 
   TBox box(3);
   box.add_constraint(A <= 2);
-  box.add_constraint(A - B <= 3);
   box.add_constraint(B <= 2);
 
   print_constraints(box, "*** box ***");
@@ -64,7 +63,6 @@ test02() {
 
   Rational_Box known_result(3);
   known_result.add_constraint(B <= 2);
-  known_result.add_constraint(A - B <= 7);
   known_result.add_constraint(A <= 6);
 
   bool ok = check_result(box, known_result);
@@ -81,7 +79,6 @@ test03() {
 
   TBox box(3);
   box.add_constraint(A <= 2);
-  box.add_constraint(A - B <= 3);
   box.add_constraint(B <= 2);
 
   print_constraints(box, "*** box ***");
@@ -106,7 +103,6 @@ test04() {
 
   TBox box(3);
   box.add_constraint(A <= 2);
-  box.add_constraint(A - B <= 3);
   box.add_constraint(B <= 2);
 
   print_constraints(box, "*** box ***");
@@ -129,7 +125,6 @@ test05() {
 
   TBox box(3);
   box.add_constraint(A <= 2);
-  box.add_constraint(A - B <= 3);
   box.add_constraint(B <= 2);
 
   print_constraints(box, "*** box ***");
@@ -139,7 +134,6 @@ test05() {
   Rational_Box known_result(3);
   known_result.add_constraint(A <= 1);
   known_result.add_constraint(B <= 2);
-  known_result.add_constraint(A - B <= 2);
 
   bool ok = check_result(box, known_result);
 
@@ -275,7 +269,6 @@ test10() {
   known_result.add_constraint(B >= 1);
   known_result.add_constraint(C <= 0);
   known_result.add_constraint(D == 3);
-  known_result.add_constraint(3*B - 3*A <= 5);
 
   bool ok = check_result(box, known_result, "7.95e-8", "7.95e-8", "7.95e-8");
 
@@ -314,7 +307,6 @@ test12() {
   Variable B(1);
 
   TBox box(2);
-  box.add_constraint(A - B >= 0);
   box.add_constraint(A >= 0);
   box.add_constraint(A <= 2);
 
@@ -393,7 +385,6 @@ test15() {
   Variable B(1);
 
   TBox box(2);
-  box.add_constraint(A - B >= 0);
   box.add_constraint(A >= 0);
   box.add_constraint(A <= 2);
 

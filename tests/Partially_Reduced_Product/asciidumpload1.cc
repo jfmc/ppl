@@ -38,7 +38,7 @@ namespace {
 // Universe.
 bool
 test01() {
-  const char* my_file = "ascii_dump_load7.dat";
+  const char* my_file = "ascii_dump_load1.dat";
 
   No_Reduction_Product dp1(3);
 
@@ -60,7 +60,7 @@ test01() {
 // Congruence.
 bool
 test02() {
-  const char* my_file = "ascii_dump_load7.dat";
+  const char* my_file = "ascii_dump_load1.dat";
   Variable A(0);
 
   No_Reduction_Product dp1(3);
@@ -84,7 +84,7 @@ test02() {
 // Constraint.
 bool
 test03() {
-  const char* my_file = "ascii_dump_load7.dat";
+  const char* my_file = "ascii_dump_load1.dat";
   Variable A(0);
 
   No_Reduction_Product dp1(3);
@@ -108,7 +108,7 @@ test03() {
 // Congruence and constraint.
 bool
 test04() {
-  const char* my_file = "ascii_dump_load7.dat";
+  const char* my_file = "ascii_dump_load1.dat";
   Variable A(0);
   Variable B(1);
 
@@ -134,7 +134,7 @@ test04() {
 // Many dimensions.
 bool
 test05() {
-  const char* my_file = "ascii_dump_load7.dat";
+  const char* my_file = "ascii_dump_load1.dat";
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -162,7 +162,7 @@ test05() {
 // Empty.
 bool
 test06() {
-  const char* my_file = "ascii_dump_load7.dat";
+  const char* my_file = "ascii_dump_load1.dat";
 
   No_Reduction_Product dp1(7, EMPTY);
 
@@ -184,7 +184,7 @@ test06() {
 // Zero-dimension empty.
 bool
 test07() {
-  const char* my_file = "ascii_dump_load7.dat";
+  const char* my_file = "ascii_dump_load1.dat";
 
   No_Reduction_Product dp1(0, EMPTY);
 
@@ -206,7 +206,7 @@ test07() {
 // Zero-dimension universe.
 bool
 test08() {
-  const char* my_file = "ascii_dump_load7.dat";
+  const char* my_file = "ascii_dump_load1.dat";
 
   No_Reduction_Product dp1(0);
 

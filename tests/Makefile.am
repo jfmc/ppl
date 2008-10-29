@@ -39,19 +39,16 @@ check_LIBRARIES = libppl_tests.a
 libppl_tests_a_SOURCES = \
 files.hh \
 files.cc \
-print.hh \
-print.cc \
 ppl_test.cc \
-FCAIBVP.cc \
 Partial_Function.cc
 
-LDADD = $(top_builddir)/src/libppl.la libppl_tests.a -lppl @extra_libraries@
+LDADD = \
+$(top_builddir)/src/libppl.la \
+libppl_tests.a \
+@extra_libraries@
 
 noinst_HEADERS = \
 ppl_test.hh \
-FCAIBVP.defs.hh \
-FCAIBVP.inlines.hh \
-FCAIBVP.types.hh \
 Partial_Function.defs.hh \
 Partial_Function.inlines.hh \
 Partial_Function.types.hh \
@@ -59,4 +56,4 @@ Random_Number_Generator.defs.hh \
 Random_Number_Generator.inlines.hh \
 Random_Number_Generator.types.hh
 
-MOSTLYCLEANFILES =
+EXTRA_DIST = valgrind_suppressions

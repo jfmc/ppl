@@ -24,7 +24,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-namespace Prolog_Interfaces {
+namespace Interfaces {
+
+namespace Prolog {
+
+namespace SICStus {
 
 bool Prolog_has_unbounded_integers;
 
@@ -75,10 +79,11 @@ Prolog_put_Coefficient(Prolog_term_ref t, const Coefficient& n) {
   else {
     std::ostringstream s;
     s << n;
+    std::string str = s.str();
 #if SICSTUS_MAJOR_VERSION == 3
-    return SP_put_number_chars(t, s.str().c_str());
+    return SP_put_number_chars(t, str.c_str());
 #else
-    return SP_put_number_codes(t, s.str().c_str());
+    return SP_put_number_codes(t, str.c_str());
 #endif
   }
 }
@@ -92,6 +97,10 @@ Prolog_unify_Coefficient(Prolog_term_ref t, const Coefficient& n) {
     return SP_FAILURE;
 }
 
-} // namespace Prolog_Interfaces
+} // namespace SICStus
+
+} // namespace Prolog
+
+} // namespace Interfaces
 
 } // namespace Parma_Polyhedra_Library

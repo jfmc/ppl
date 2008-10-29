@@ -75,8 +75,6 @@ struct Extended_Number_Policy {
   // const_bool_nodef(convertible, false);
   const_bool_nodef(fpu_check_inexact, true);
   const_bool_nodef(check_nan_result, true);
-  static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR_INF = ROUND_NOT_NEEDED;
-  static const Rounding_Dir ROUND_DEFAULT_ASSIGN_INF = ROUND_NOT_NEEDED;
   // Do not uncomment the following.
   // The compile time error is the expected behavior.
   // static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR = ROUND_UP;
@@ -106,8 +104,6 @@ struct WRD_Extended_Number_Policy {
   // const_bool_nodef(convertible, false);
   const_bool_nodef(fpu_check_inexact, true);
   const_bool_nodef(check_nan_result, false);
-  static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR_INF = ROUND_NOT_NEEDED;
-  static const Rounding_Dir ROUND_DEFAULT_ASSIGN_INF = ROUND_NOT_NEEDED;
   // Do not uncomment the following.
   // The compile time error is the expected behavior.
   // static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR = ROUND_UP;
@@ -287,6 +283,10 @@ public:
   //! Direct initialization from a C string and rounding mode.
   Checked_Number(const char* y, Rounding_Dir dir);
 
+  //! Direct initialization from special and rounding mode.
+  template <typename From>
+  Checked_Number(const From&, Rounding_Dir dir, typename Enable_If<Is_Special<From>::value, bool>::type ignored = false);
+
   //! Direct initialization from a Checked_Number, default rounding mode.
   template <typename From, typename From_Policy>
   explicit Checked_Number(const Checked_Number<From, From_Policy>& y);
@@ -339,6 +339,11 @@ public:
   //! Direct initialization from a C string, default rounding mode.
   Checked_Number(const char* y);
 
+  //! Direct initialization from special, default rounding mode
+  template <typename From>
+  Checked_Number(const From&, typename Enable_If<Is_Special<From>::value, bool>::type ignored = false);
+
+
   //@} // Constructors
 
   //! \name Accessors and Conversions
@@ -375,10 +380,6 @@ public:
 
   //! Assignment operator.
   Checked_Number& operator=(const Checked_Number& y);
-
-  //! Assignment operator.
-  template <typename From, typename From_Policy>
-  Checked_Number& operator=(const Checked_Number<From, From_Policy>& y);
 
   //! Assignment operator.
   template <typename From>
@@ -504,6 +505,16 @@ is_infinity(const T& x);
 template <typename T>
 typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type
 is_integer(const T& x);
+
+/*! \relates Checked_Number */
+template <typename To, typename From>
+typename Enable_If<Is_Native_Or_Checked<To>::value && Is_Special<From>::value, Result>::type
+construct(To& to, const From& x, Rounding_Dir dir);
+
+/*! \relates Checked_Number */
+template <typename To, typename From>
+typename Enable_If<Is_Native_Or_Checked<To>::value && Is_Special<From>::value, Result>::type
+assign_r(To& to, const From& x, Rounding_Dir dir);
 
 /*! \relates Checked_Number */
 template <typename To>

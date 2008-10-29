@@ -404,7 +404,7 @@ test16() {
 
   return ok && ok1 && ok2;
 }
-// box_hull_assign().
+// upper_bound_assign().
 bool
 test17() {
   Variable x(0);
@@ -439,7 +439,7 @@ test17() {
   print_constraints(box1, "*** box1 ***");
   print_constraints(pps_boxi1, "*** pps_boxi1 ***");
 
-  pps_boxi.box_hull_assign(pps_boxi1);
+  pps_boxi.upper_bound_assign(pps_boxi1);
   print_constraints(pps_boxi, "*** pps_boxi ***");
 
   return ok && ok1;
@@ -511,7 +511,6 @@ test20() {
   print_constraints(ps, "*** ps ***");
 
   ps.affine_image(z, y+2*x+1, 2);
-  ps.add_constraint(z == y);
 
   print_constraints(ps, "*** ps ***");
 

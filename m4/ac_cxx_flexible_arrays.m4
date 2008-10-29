@@ -30,7 +30,6 @@ AC_MSG_CHECKING([whether the C++ compiler supports flexible arrays])
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <new>
 #include <cstddef>
-#include <cstdlib>
 
 class A {
 private:
@@ -70,7 +69,7 @@ int
 main() {
   B* p = new (100) B(100);
   delete p;
-  exit(0);
+  return 0;
 }
 ]])],
   AC_MSG_RESULT(yes)

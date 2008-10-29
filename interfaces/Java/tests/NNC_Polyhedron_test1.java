@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.Vector;
-import ppl_java.*;
+import parma_polyhedra_library.*;
 
 
 public class NNC_Polyhedron_test1 {
@@ -61,7 +61,7 @@ static {
 					 le_7));
 	ph1.add_constraint(new Constraint(le_X, Relation_Symbol.LESS_THAN,
 					  le_5Z));
-	System.out.println(ph1.constraints().toString());
+	PPL_Test.println_if_noisy(ph1.constraints().toString());
 	return new Boolean(true);
     }
 

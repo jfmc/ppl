@@ -56,7 +56,7 @@ sub filter($$$$) {
 	}
 	if ($level > 0) {
 	    if ($print_from) {
-		print "// Automatically generated from PPL source file $file line $.\n";
+		print "/* Automatically generated from PPL source file $file line $.. */\n";
 		$print_from = 0;
 	    }
 	    next if ($line =~ '^\s*#ifndef\s+PPL_[A-Za-z0-9_]+_hh\s*$');

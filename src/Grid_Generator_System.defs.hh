@@ -353,7 +353,6 @@ public:
 
   PPL_OUTPUT_DECLARATIONS
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
     ascii_dump(std::ostream&) const) and sets \p *this accordingly.
@@ -363,7 +362,6 @@ public:
     read from \p s, then initializes the coordinates of each generator
     and its type reading the contents from \p s.
   */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   bool ascii_load(std::istream& s);
 
   //! Returns the total size in bytes of the memory occupied by \p *this.

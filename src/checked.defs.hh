@@ -261,8 +261,6 @@ struct FUNCTION_CLASS(name) <Policy1, Policy2, Policy3, type1, type2, type3> { \
   SPECIALIZE_FUN1_0_0(sgn, func, Result, const, From)
 #define SPECIALIZE_CMP(func, Type1, Type2) \
   SPECIALIZE_FUN2_0_0(cmp, func, Result, const, Type1, const, Type2)
-#define SPECIALIZE_SET_SPECIAL(func, Type) \
-  SPECIALIZE_FUN1_0_1(set_special, func, Result, nonconst, Type, Result)
 #define SPECIALIZE_CLASSIFY(func, Type) \
   SPECIALIZE_FUN1_0_3(classify, func, Result, const, Type, bool, bool, bool)
 #define SPECIALIZE_IS_NAN(func, Type) \
@@ -273,6 +271,10 @@ struct FUNCTION_CLASS(name) <Policy1, Policy2, Policy3, type1, type2, type3> { \
   SPECIALIZE_FUN1_0_0(is_pinf, func, bool, const, Type)
 #define SPECIALIZE_IS_INT(func, Type) \
   SPECIALIZE_FUN1_0_0(is_int, func, bool, const, Type)
+#define SPECIALIZE_ASSIGN_SPECIAL(func, Type) \
+  SPECIALIZE_FUN1_0_2(assign_special, func, Result, nonconst, Type, Result, Rounding_Dir)
+#define SPECIALIZE_CONSTRUCT_SPECIAL(func, Type) \
+  SPECIALIZE_FUN1_0_2(construct_special, func, Result, nonconst, Type, Result, Rounding_Dir)
 #define SPECIALIZE_CONSTRUCT(func, To, From) \
   SPECIALIZE_FUN2_0_1(construct, func, Result, nonconst, To, const, From, Rounding_Dir)
 #define SPECIALIZE_ASSIGN(func, To, From) \
@@ -325,12 +327,13 @@ struct FUNCTION_CLASS(name) <Policy1, Policy2, Policy3, type1, type2, type3> { \
 DECLARE_FUN2_0_0(copy,        void, nonconst, Type1, const, Type2)
 DECLARE_FUN1_0_0(sgn,         Result, const, From)
 DECLARE_FUN2_0_0(cmp,         Result, const, Type1, const, Type2)
-DECLARE_FUN1_0_1(set_special, Result, nonconst, Type, Result)
 DECLARE_FUN1_0_3(classify,    Result, const, Type, bool, bool, bool)
 DECLARE_FUN1_0_0(is_nan,      bool, const, Type)
 DECLARE_FUN1_0_0(is_minf,     bool, const, Type)
 DECLARE_FUN1_0_0(is_pinf,     bool, const, Type)
 DECLARE_FUN1_0_0(is_int,      bool, const, Type)
+DECLARE_FUN1_0_2(assign_special, Result, nonconst, Type, Result, Rounding_Dir)
+DECLARE_FUN1_0_2(construct_special, Result, nonconst, Type, Result, Rounding_Dir)
 DECLARE_FUN2_0_1(construct,   Result, nonconst, To, const, From, Rounding_Dir)
 DECLARE_FUN2_0_1(assign,      Result, nonconst, To, const, From, Rounding_Dir)
 DECLARE_FUN2_0_1(floor,       Result, nonconst, To, const, From, Rounding_Dir)
@@ -362,9 +365,32 @@ Result input_mpq(mpq_class& to, std::istream& is);
 
 } // namespace Checked
 
-#define MINUS_INFINITY float(-HUGE_VAL)
-#define PLUS_INFINITY float(HUGE_VAL)
-#define NOT_A_NUMBER float(NAN)
+struct Minus_Infinity {
+  static const Result code = VC_MINUS_INFINITY;
+};
+struct Plus_Infinity {
+  static const Result code = VC_PLUS_INFINITY;
+};
+struct Not_A_Number {
+  static const Result code = VC_NAN;
+};
+
+template <typename T>
+struct Is_Special : public False { };
+
+template <>
+struct Is_Special<Minus_Infinity> : public True {};
+
+template <>
+struct Is_Special<Plus_Infinity> : public True {};
+
+template <>
+struct Is_Special<Not_A_Number> : public True {};
+
+
+#define MINUS_INFINITY Minus_Infinity()
+#define PLUS_INFINITY Plus_Infinity()
+#define NOT_A_NUMBER Not_A_Number()
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \ingroup PPL_CXX_interface */
@@ -416,8 +442,6 @@ struct Checked_Number_Transparent_Policy {
   static const Rounding_Dir ROUND_DEFAULT_OUTPUT = ROUND_NATIVE;
   static void handle_result(Result r);
 };
-
-typedef Checked_Number_Transparent_Policy<float> Special_Float_Policy;
 
 } // namespace Parma_Polyhedra_Library
 

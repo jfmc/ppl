@@ -17,13 +17,17 @@
 # along with this program; if not, write to the Free Software Foundation,
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 #
-# For the most up-to-date information see the CS@Parma software
-# site: http://www.cs.unipr.it/Software/ . */
+# For the most up-to-date information see the Parma Polyhedra Library
+# site: http://www.cs.unipr.it/ppl/ . */
 
 # Tell aclocal where to find `.m4' files.
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = m4 utils src doc
+if BUILD_WATCHDOG_LIBRARY
+
+SUBDIRS = m4 utils src tests doc
+
+endif BUILD_WATCHDOG_LIBRARY
 
 dist_noinst_SCRIPTS = \
 configure

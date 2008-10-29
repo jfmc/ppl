@@ -37,13 +37,10 @@ test01() {
   Variable x9(8);
 
   TBox box1(6);
-  box1.add_constraint(x2 - x3 <= 0);
   box1.add_constraint(x3 <= 2);
-  box1.add_constraint(x6 - x5 <= 2);
   box1.add_constraint(x5 <= 3);
 
   TBox box2(3);
-  box2.add_constraint(x2 - x3 <= 2);
   box2.add_constraint(x3 <= 7);
 
   print_constraints(box1, "*** box1 ***");
@@ -52,11 +49,8 @@ test01() {
   box1.concatenate_assign(box2);
 
   Rational_Box known_result(9);
-  known_result.add_constraint(x2 - x3 <= 0);
   known_result.add_constraint(x3 <= 2);
-  known_result.add_constraint(x6 - x5 <= 2);
   known_result.add_constraint(x5 <= 3);
-  known_result.add_constraint(x8 - x9 <= 2);
   known_result.add_constraint(x9 <= 7);
 
   bool ok = check_result(box1, known_result);
@@ -73,7 +67,6 @@ test02() {
 
   TBox box1(2);
   box1.add_constraint(x <= 3);
-  box1.add_constraint(x - y <= 4);
 
   TBox box2(0, EMPTY);
 
@@ -102,7 +95,7 @@ test03() {
   cs.insert(3*x - 3*y <= 5);
 
   TBox box1(2);
-  box1.add_constraints(cs);
+  box1.refine_with_constraints(cs);
 
   TBox box2(0);
 
@@ -114,7 +107,6 @@ test03() {
   Rational_Box known_result(2);
   known_result.add_constraint(x <= 0);
   known_result.add_constraint(y == 3);
-  known_result.add_constraint(x - y <= 2);
 
   bool ok = check_result(box1, known_result);
 
@@ -141,8 +133,6 @@ test04() {
   box2.add_constraint(A <= 1);
   box2.add_constraint(B >= 0);
   box2.add_constraint(B <= 2);
-  box2.add_constraint(A - B <= 0);
-  box2.add_constraint(B - A <= 1);
 
   print_constraints(box1, "*** box1 ***");
   print_constraints(box2, "*** box2 ***");
@@ -157,8 +147,6 @@ test04() {
   known_result.add_constraint(D <= 1);
   known_result.add_constraint(E >= 0);
   known_result.add_constraint(E <= 2);
-  known_result.add_constraint(D - E <= 0);
-  known_result.add_constraint(E - D <= 1);
 
   bool ok = check_result(box1, known_result);
 
@@ -174,7 +162,6 @@ test05() {
 
   TBox box1(2);
   box1.add_constraint(x <= 3);
-  box1.add_constraint(x - y <= 4);
 
   TBox box2(0, EMPTY);
 

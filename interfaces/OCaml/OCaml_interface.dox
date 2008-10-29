@@ -20,6 +20,13 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+/*!
+  \defgroup PPL_OCaml_interface OCaml Language Interface
+  \brief
+  The Parma Polyhedra Library comes equipped with an interface for the
+  OCaml language.
+*/
+
 /*! \mainpage OCaml Language Interface
 
 The Parma Polyhedra Library comes equipped with an interface for the
@@ -915,7 +922,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
 
 For a list of the PPL functions available to the generated domains
 for the OCaml interface, see the
-<A HREF="ocamldoc/Ppl_ocaml.html">OCamldoc-generated documentation</a>.
+<A HREF="ocamldoc/index.html">OCamldoc-generated documentation</a>.
 \endhtmlonly
 
 \anchor OI_Compilation

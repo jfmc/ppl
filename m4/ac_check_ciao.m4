@@ -42,8 +42,8 @@ then
 main(_) :-
     ciaolibdir(Lib_Dir),
     get_os(Os),
-    /*get_arch(Arch),*/
-    format("~p/include/", [[Lib_Dir/*, Os, Arch*/]]).
+    get_arch(Arch),
+    format("~p/include/~p~p", [[Lib_Dir, Os, Arch]]).
 _CIAO_PRINT_INCLUDE_DIR_EOF
   ciao_prolog_include_dir=`$ciao_prolog $tmp/print_include_dir.pl`
   rm -rf $tmp
@@ -60,11 +60,6 @@ _CIAO_PRINT_INCLUDE_DIR_EOF
 
 int
 main() {
-#if 0
-  choke me
-#endif
-
-  ;
   return 0;
 }],
                     AC_MSG_RESULT(yes),

@@ -363,7 +363,7 @@ PPL::Polyhedron::limited_H79_extrapolation_assign(const Polyhedron& y,
       new_cs.insert(c);
   }
   x.H79_widening_assign(y, tp);
-  x.add_constraints(new_cs);
+  x.add_recycled_constraints(new_cs);
   assert(OK());
 }
 
@@ -375,9 +375,8 @@ PPL::Polyhedron::bounded_H79_extrapolation_assign(const Polyhedron& y,
   Rational_Box y_box(y, ANY_COMPLEXITY);
   x_box.CC76_widening_assign(y_box);
   limited_H79_extrapolation_assign(y, cs, tp);
-  // TODO: see if some copies can be avoided.
-  // add_recycled_constraints(x_box.constraints());
-  add_constraints(x_box.constraints());
+  Constraint_System x_box_cs = x_box.constraints();
+  add_recycled_constraints(x_box_cs);
 }
 
 bool
@@ -838,7 +837,7 @@ PPL::Polyhedron
       new_cs.insert(c);
   }
   x.BHRZ03_widening_assign(y, tp);
-  x.add_constraints(new_cs);
+  x.add_recycled_constraints(new_cs);
   assert(OK());
 }
 
@@ -851,7 +850,6 @@ PPL::Polyhedron
   Rational_Box y_box(y, ANY_COMPLEXITY);
   x_box.CC76_widening_assign(y_box);
   limited_BHRZ03_extrapolation_assign(y, cs, tp);
-  // TODO: see if some copies can be avoided.
-  // add_recycled_constraints(x_box.constraints());
-  add_constraints(x_box.constraints());
+  Constraint_System x_box_cs = x_box.constraints();
+  add_recycled_constraints(x_box_cs);
 }

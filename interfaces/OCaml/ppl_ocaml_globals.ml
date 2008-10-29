@@ -1,4 +1,4 @@
-(* FIXME: to be written.
+(* OCaml interface: domain-independent functions.
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -20,8 +20,83 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . *)
 
-open Ppl_ocaml_types
 open Gmp
+
+type degenerate_element =
+    Universe
+  | Empty
+
+type linear_expression =
+    Variable of int
+  | Coefficient of Z.t
+  | Unary_Plus of linear_expression
+  | Unary_Minus of linear_expression
+  | Plus of linear_expression * linear_expression
+  | Minus of linear_expression * linear_expression
+  | Times of Z.t * linear_expression
+
+type linear_constraint =
+    Less_Than of linear_expression * linear_expression
+  | Less_Or_Equal of linear_expression * linear_expression
+  | Equal of linear_expression * linear_expression
+  | Greater_Than of linear_expression * linear_expression
+  | Greater_Or_Equal of linear_expression * linear_expression
+
+type linear_generator =
+    Line of linear_expression
+  | Ray of linear_expression
+  | Point of linear_expression * Z.t
+  | Closure_Point of linear_expression * Z.t
+
+type linear_grid_generator =
+    Grid_Line of linear_expression
+  | Grid_Parameter of linear_expression * Z.t
+  | Grid_Point of linear_expression * Z.t
+
+type poly_gen_relation =
+    Subsumes
+
+type poly_con_relation =
+    Is_Disjoint
+  | Strictly_Intersects
+  | Is_Included
+  | Saturates
+
+type relation_with_congruence =
+    Is_Disjoint
+  | Strictly_Intersects
+  | Is_Included
+
+type linear_congruence = linear_expression * linear_expression * Z.t
+
+type constraint_system = linear_constraint list
+
+type generator_system = linear_generator list
+
+type grid_generator_system = linear_grid_generator list
+
+type congruence_system = linear_congruence list
+
+(* Note: the "_RS" suffix is to avoid name clashes with the declaration
+   of linear_constraint. *)
+type relation_symbol = Less_Than_RS | Less_Or_Equal_RS | Equal_RS
+                       | Greater_Than_RS | Greater_Or_Equal_RS
+
+type complexity_class = Polynomial_Complexity
+                        | Simplex_Complexity
+                        | Any_Complexity
+
+type optimization_mode = Minimization | Maximization
+
+type mip_problem_status = Unfeasible_Mip_Problem | Unbounded_Mip_Problem
+                        | Optimized_Mip_Problem
+
+type control_parameter_name = Pricing
+
+type control_parameter_value = Pricing_Steepest_Edge_Float
+                               | Pricing_Steepest_Edge_Exact
+                               | Pricing_Textbook
+
 type mip_problem
 
 external ppl_version_major:
@@ -125,6 +200,14 @@ external ppl_MIP_Problem_clear:
 external ppl_MIP_Problem_set_optimization_mode:
   mip_problem -> optimization_mode -> unit
       = "ppl_MIP_Problem_set_optimization_mode"
+
+external ppl_MIP_Problem_set_control_parameter:
+  mip_problem -> control_parameter_value -> unit
+      = "ppl_MIP_Problem_set_control_parameter"
+
+external ppl_MIP_Problem_get_control_parameter:
+  mip_problem -> control_parameter_name -> control_parameter_value
+      = "ppl_MIP_Problem_get_control_parameter"
 
 external ppl_MIP_Problem_swap:
   mip_problem -> mip_problem -> unit

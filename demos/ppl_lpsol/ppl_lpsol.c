@@ -87,6 +87,7 @@ static struct option long_options[] = {
   {"max-cpu",         required_argument, 0, 'C'},
   {"max-memory",      required_argument, 0, 'R'},
   {"output",          required_argument, 0, 'o'},
+  {"pricing",         required_argument, 0, 'p'},
   {"enumerate",       no_argument,       0, 'e'},
   {"simplex",         no_argument,       0, 's'},
   {"timings",         no_argument,       0, 't'},
@@ -96,37 +97,43 @@ static struct option long_options[] = {
 };
 #endif
 
-static const char* usage_string
-= "Usage: %s [OPTION]... [FILE]...\n\n"
-"  -c, --check[=THRESHOLD] checks the obtained results;  optima are checked\n"
-"                          with a tolerance of THRESHOLD (default %.10g)\n"
-"  -i, --incremental       solves the problem incrementally\n"
-"  -m, --min               minimizes the objective function\n"
-"  -M, --max               maximizes the objective function (default)\n"
-"  -n, --no-optimization   checks for satisfiability only\n"
-"  -r, --no-mip            consider integer variables as real variables\n"
-"  -CSECS, --max-cpu=SECS  limits CPU usage to SECS seconds\n"
-"  -RMB, --max-memory=MB   limits memory usage to MB megabytes\n"
-"  -h, --help              prints this help text to stdout\n"
-"  -oPATH, --output=PATH   appends output to PATH\n"
-"  -e, --enumerate         use the (expensive!) enumeration method\n"
-"  -s, --simplex           use the simplex method\n"
-"  -t, --timings           prints timings to stderr\n"
-"  -v, --verbosity=LEVEL   sets verbosity level (from 0 to 4, default 3):\n"
-"                          0 --> quiet: no output except for errors and\n"
-"                                explicitly required notifications\n"
-"                          1 --> solver state only\n"
-"                          2 --> state + optimal value\n"
-"                          3 --> state + optimal value + optimum location\n"
-"                          4 --> lots of output\n"
-"  -V, --version           prints version information to stdout\n"
-#ifndef PPL_HAVE_GETOPT_H
-"\n"
-"NOTE: this version does not support long options.\n"
-#endif
-;
+#define USAGE_STRING0                                                   \
+  "Usage: %s [OPTION]... [FILE]\n"                                      \
+  "Reads a file in MPS format and attempts solution using the optimization\n" \
+  "algorithms provided by the PPL.\n\n"                                 \
+  "Options:\n"                                                          \
+  "  -c, --check[=THRESHOLD] checks the obtained results;  optima are checked\n" \
+  "                          with a tolerance of THRESHOLD (default %.10g)\n" \
+  "  -i, --incremental       solves the problem incrementally\n"        \
+  "  -m, --min               minimizes the objective function\n"        \
+  "  -M, --max               maximizes the objective function (default)\n"
+#define USAGE_STRING1                                                   \
+  "  -n, --no-optimization   checks for satisfiability only\n"          \
+  "  -r, --no-mip            consider integer variables as real variables\n" \
+  "  -CSECS, --max-cpu=SECS  limits CPU usage to SECS seconds\n"        \
+  "  -RMB, --max-memory=MB   limits memory usage to MB megabytes\n"     \
+  "  -h, --help              prints this help text to stdout\n"         \
+  "  -oPATH, --output=PATH   appends output to PATH\n"                  \
+  "  -e, --enumerate         use the (expensive!) enumeration method\n"
+#define USAGE_STRING2                                                   \
+  "  -pM, --pricing=M        use pricing method M for simplex (assumes -s);\n" \
+  "                          M is an int from 0 to 2, default 0:\n"     \
+  "                          0 --> steepest-edge using floating point\n" \
+  "                          1 --> steepest-edge using exact arithmetic\n" \
+  "                          2 --> textbook\n"                          \
+  "  -s, --simplex           use the simplex method\n"                  \
+  "  -t, --timings           prints timings to stderr\n"
+#define USAGE_STRING3                                                   \
+  "  -v, --verbosity=LEVEL   sets verbosity level (from 0 to 4, default 3):\n" \
+  "                          0 --> quiet: no output except for errors and\n" \
+  "                                explicitly required notifications\n" \
+  "                          1 --> solver state only\n"                 \
+  "                          2 --> state + optimal value\n"             \
+  "                          3 --> state + optimal value + optimum location\n" \
+  "                          4 --> lots of output\n"                    \
+  "  -V, --version           prints version information to stdout\n"
 
-#define OPTION_LETTERS "bc::eimnMC:R:ho:rstVv:"
+#define OPTION_LETTERS "bc::eimnMC:R:ho:p:rstVv:"
 
 static const char* program_name = 0;
 
@@ -136,6 +143,7 @@ static const char* output_argument = 0;
 FILE* output_file = NULL;
 static int check_results = 0;
 static int use_simplex = 0;
+static int pricing_method = 0;
 static int print_timings = 0;
 static int verbosity = 3;
 static int maximize = 1;
@@ -257,7 +265,13 @@ process_options(int argc, char* argv[]) {
 
     case '?':
     case 'h':
-      fprintf(stdout, usage_string, argv[0], default_check_threshold);
+      fprintf(stdout, USAGE_STRING0, argv[0], default_check_threshold);
+      fputs(USAGE_STRING1, stdout);
+      fputs(USAGE_STRING2, stdout);
+      fputs(USAGE_STRING3, stdout);
+#ifndef PPL_HAVE_GETOPT_H
+      fputs("\nNOTE: this version does not support long options.\n");
+#endif
       my_exit(0);
       break;
 
@@ -279,6 +293,14 @@ process_options(int argc, char* argv[]) {
 
     case 'o':
       output_argument = optarg;
+      break;
+
+    case 'p':
+      l = strtol(optarg, &endptr, 10);
+      if (*endptr || l < 0 || l > 2)
+	fatal("0 or 1 or 2 must follow `-p'");
+      else
+	pricing_method = l;
       break;
 
     case 'e':
@@ -346,7 +368,7 @@ process_options(int argc, char* argv[]) {
     if (verbosity >= 4)
       fprintf(stderr,
 	      "Parma Polyhedra Library version:\n%s\n\n"
-	      "Parma Polyhedra Library banner:\n%s",
+	      "Parma Polyhedra Library banner:\n%s\n",
 	      get_ppl_version(),
 	      get_ppl_banner());
     else
@@ -736,10 +758,10 @@ solve_with_generators(ppl_Constraint_System_t ppl_cs,
   }
 
   ok = maximize
-    ? ppl_Polyhedron_maximize(ppl_ph, ppl_objective_le,
+    ? ppl_Polyhedron_maximize_with_point(ppl_ph, ppl_objective_le,
 			      optimum_n, optimum_d, &included,
 			      point)
-    : ppl_Polyhedron_minimize(ppl_ph, ppl_objective_le,
+    : ppl_Polyhedron_minimize_with_point(ppl_ph, ppl_objective_le,
 			      optimum_n, optimum_d, &included,
 			      point);
 
@@ -768,6 +790,7 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
 		   ppl_Coefficient_t optimum_d,
 		   ppl_Generator_t point) {
   ppl_MIP_Problem_t ppl_mip;
+  int pricing = 0;
   int status = 0;
   int satisfiable = 0;
   ppl_dimension_type space_dim;
@@ -782,6 +805,20 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
 
   ppl_Constraint_System_space_dimension(cs, &space_dim);
   ppl_new_MIP_Problem_from_space_dimension(&ppl_mip, space_dim);
+  switch (pricing_method) {
+  case 0:
+    pricing = PPL_MIP_PROBLEM_CONTROL_PARAMETER_PRICING_STEEPEST_EDGE_FLOAT;
+    break;
+  case 1:
+    pricing = PPL_MIP_PROBLEM_CONTROL_PARAMETER_PRICING_STEEPEST_EDGE_EXACT;
+    break;
+  case 2:
+    pricing = PPL_MIP_PROBLEM_CONTROL_PARAMETER_PRICING_TEXTBOOK;
+    break;
+  default:
+    fatal("ppl_lpsol internal error");
+  }
+  ppl_MIP_Problem_set_control_parameter(ppl_mip, pricing);
   ppl_MIP_Problem_set_objective_function(ppl_mip, objective);
   ppl_MIP_Problem_set_optimization_mode(ppl_mip, mode);
   if (!no_mip)
@@ -890,7 +927,7 @@ solve(char* file_name) {
     start_clock();
 
   if (verbosity == 0) {
-    // FIXME: find a way to suppress output from lpx_read_mps.
+    /* FIXME: find a way to suppress output from lpx_read_mps. */
   }
 
   glpk_lp = lpx_read_mps(file_name);
@@ -1138,29 +1175,39 @@ error_handler(enum ppl_enum_error_code code,
 
 #if !PPL_CXX_SUPPORTS_ATTRIBUTE_WEAK
 void
-set_GMP_memory_allocation_functions(void) {
+ppl_set_GMP_memory_allocation_functions(void) {
 }
 #endif
 
-#if defined(NDEBUG) && !defined(PPL_GLPK_HAS_GLP_TERM_OUT)
+#if defined(NDEBUG) && \
+  !(defined(PPL_GLPK_HAS_GLP_TERM_OUT) && defined(GLP_OFF))     \
+  && (defined(PPL_GLPK_HAS_GLP_TERM_HOOK) \
+      || defined(PPL_GLPK_HAS__GLP_LIB_PRINT_HOOK) \
+      || defined(PPL_GLPK_HAS_LIB_SET_PRINT_HOOK))
+
 static int
 glpk_message_interceptor(void* info, char* msg) {
   (void) info;
   (void) msg;
   return 1;
 }
+
 #endif
 
 int
 main(int argc, char* argv[]) {
+#if defined(PPL_GLPK_HAS__GLP_LIB_PRINT_HOOK)
+  extern void _glp_lib_print_hook(int (*func)(void *info, char *buf),
+				  void *info);
+#endif
   program_name = argv[0];
   if (ppl_initialize() < 0)
     fatal("cannot initialize the Parma Polyhedra Library");
 
-  // The PPL solver does not use floating point numbers, except
-  // perhaps for the steepest edge heuristics.  In contrast, GLPK does
-  // use them, so it is best to restore the rounding mode as it was
-  // prior to the PPL initialization.
+  /* The PPL solver does not use floating point numbers, except
+     perhaps for the steepest edge heuristics.  In contrast, GLPK does
+     use them, so it is best to restore the rounding mode as it was
+     prior to the PPL initialization.  */
   if (ppl_restore_pre_PPL_rounding() < 0)
     fatal("cannot restore the rounding mode");
 
@@ -1174,14 +1221,12 @@ main(int argc, char* argv[]) {
   if (ppl_io_set_variable_output_function(variable_output_function) < 0)
     fatal("cannot install the custom variable output function");
 
-#ifdef NDEBUG
-#if defined(PPL_GLPK_HAS_GLP_TERM_OUT)
+#if defined(NDEBUG)
+#if defined(PPL_GLPK_HAS_GLP_TERM_OUT) && defined(GLP_OFF)
   glp_term_out(GLP_OFF);
 #elif defined(PPL_GLPK_HAS_GLP_TERM_HOOK)
   glp_term_hook(glpk_message_interceptor, 0);
 #elif defined(PPL_GLPK_HAS__GLP_LIB_PRINT_HOOK)
-  extern void _glp_lib_print_hook(int (*func)(void *info, char *buf),
-				  void *info);
   _glp_lib_print_hook(glpk_message_interceptor, 0);
 #elif defined(PPL_GLPK_HAS_LIB_SET_PRINT_HOOK)
   lib_set_print_hook(0, glpk_message_interceptor);

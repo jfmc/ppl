@@ -227,30 +227,16 @@ Box<ITV>::strictly_contains(const Box& y) const {
 }
 
 template <typename ITV>
-inline void
-Box<ITV>::upper_bound_assign(const Box& y) {
-  Box& x = *this;
-  x.box_hull_assign(y);
-}
-
-template <typename ITV>
 inline bool
-Box<ITV>::box_hull_assign_if_exact(const Box&) {
+Box<ITV>::upper_bound_assign_if_exact(const Box&) {
   // TODO: this must be properly implemented.
   return false;
 }
 
 template <typename ITV>
-inline bool
-Box<ITV>::upper_bound_assign_if_exact(const Box& y) {
-  Box& x = *this;
-  return x.box_hull_assign_if_exact(y);
-}
-
-template <typename ITV>
 inline void
 Box<ITV>::expand_space_dimension(const Variable var,
-				      const dimension_type m) {
+                                 const dimension_type m) {
   const dimension_type space_dim = space_dimension();
   // `var' should be one of the dimensions of the vector space.
   if (var.space_dimension() > space_dim)
@@ -278,7 +264,7 @@ operator!=(const Box<ITV>& x, const Box<ITV>& y) {
 template <typename ITV>
 inline bool
 Box<ITV>::get_lower_bound(const dimension_type k, bool& closed,
-			       Coefficient& n, Coefficient& d) const {
+                          Coefficient& n, Coefficient& d) const {
   assert(k < seq.size());
   const ITV& seq_k = seq[k];
 
@@ -298,7 +284,7 @@ Box<ITV>::get_lower_bound(const dimension_type k, bool& closed,
 template <typename ITV>
 inline bool
 Box<ITV>::get_upper_bound(const dimension_type k, bool& closed,
-			       Coefficient& n, Coefficient& d) const {
+                          Coefficient& n, Coefficient& d) const {
   assert(k < seq.size());
   const ITV& seq_k = seq[k];
 
@@ -317,22 +303,11 @@ Box<ITV>::get_upper_bound(const dimension_type k, bool& closed,
 
 template <typename ITV>
 inline void
-Box<ITV>::difference_assign(const Box& y) {
-  Box& x = *this;
-  x.box_difference_assign(y);
-}
-
-template <typename ITV>
-inline void
 Box<ITV>::add_constraint(const Constraint& c) {
   const dimension_type c_space_dim = c.space_dimension();
   // Dimension-compatibility check.
   if (c_space_dim > space_dimension())
     throw_dimension_incompatible("add_constraint(c)", c);
-
-  // If the box is already empty, there is nothing left to do.
-  if (marked_empty())
-    return;
 
   add_constraint_no_check(c);
 }
@@ -360,10 +335,6 @@ Box<ITV>::add_congruence(const Congruence& cg) {
   // Dimension-compatibility check.
   if (cg_space_dim > space_dimension())
     throw_dimension_incompatible("add_congruence(cg)", cg);
-
-  // If the box is already empty, there is nothing left to do.
-  if (marked_empty())
-    return;
 
   add_congruence_no_check(cg);
 }
@@ -405,6 +376,49 @@ inline Congruence_System
 Box<ITV>::minimized_congruences() const {
   // Only equalities can be congruences and these are already minimized.
   return congruences();
+}
+
+template <typename ITV>
+inline void
+Box<ITV>
+::add_interval_constraint_no_check(const dimension_type var_id,
+                                   const Constraint::Type type,
+                                   Coefficient_traits::const_reference num,
+                                   Coefficient_traits::const_reference den) {
+  assert(!marked_empty());
+  assert(var_id < space_dimension());
+  assert(den != 0);
+
+  // The interval constraint is of the form
+  // `Variable(var_id) + num / den rel 0', where
+  // `rel' is either the relation `==', `>=', or `>'.
+  // For the purpose of refining the interval, this is
+  // (morally) turned into `Variable(var_id) rel -num/den'.
+  DIRTY_TEMP0(mpq_class, q);
+  assign_r(q.get_num(), num, ROUND_NOT_NEEDED);
+  assign_r(q.get_den(), den, ROUND_NOT_NEEDED);
+  q.canonicalize();
+  // Turn `num/den' into `-num/den'.
+  q = -q;
+
+  ITV& seq_v = seq[var_id];
+  switch (type) {
+  case Constraint::EQUALITY:
+    seq_v.refine_existential(EQUAL, q);
+    break;
+  case Constraint::NONSTRICT_INEQUALITY:
+    seq_v.refine_existential((den > 0) ? GREATER_OR_EQUAL : LESS_OR_EQUAL, q);
+    // FIXME: this assertion fails due to a bug in refine.
+    assert(seq_v.OK());
+    break;
+  case Constraint::STRICT_INEQUALITY:
+    seq_v.refine_existential((den > 0) ? GREATER_THAN : LESS_THAN, q);
+    break;
+  }
+  // FIXME: do check the value returned by `refine_existential' and
+  // set `empty' and `empty_up_to_date' as appropriate.
+  reset_empty_up_to_date();
+  assert(OK());
 }
 
 template <typename ITV>
@@ -467,6 +481,35 @@ Box<ITV>::refine_with_congruences(const Congruence_System& cgs) {
 
 template <typename ITV>
 inline void
+Box<ITV>::propagate_constraint(const Constraint& c) {
+  const dimension_type c_space_dim = c.space_dimension();
+  // Dimension-compatibility check.
+  if (c_space_dim > space_dimension())
+    throw_dimension_incompatible("propagate_constraint(c)", c);
+
+  // If the box is already empty, there is nothing left to do.
+  if (marked_empty())
+    return;
+
+  propagate_constraint_no_check(c);
+}
+
+template <typename ITV>
+inline void
+Box<ITV>::propagate_constraints(const Constraint_System& cs) {
+  // Dimension-compatibility check.
+  if (cs.space_dimension() > space_dimension())
+    throw_dimension_incompatible("propagate_constraints(cs)", cs);
+
+  // If the box is already empty, there is nothing left to do.
+  if (marked_empty())
+    return;
+
+  propagate_constraints_no_check(cs);
+}
+
+template <typename ITV>
+inline void
 Box<ITV>::unconstrain(const Variable var) {
   const dimension_type dim = var.id();
   // Dimension-compatibility check.
@@ -521,7 +564,10 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			    const Box<ITV>& x,
 			    const Box<ITV>& y,
 			    const Rounding_Dir dir) {
-  return rectilinear_distance_assign<To, To, ITV>(r, x, y, dir);
+  // FIXME: the following qualification is only to work around a bug
+  // in the Intel C/C++ compiler version 10.1.x.
+  return Parma_Polyhedra_Library
+    ::rectilinear_distance_assign<To, To, ITV>(r, x, y, dir);
 }
 
 /*! \relates Box */
@@ -559,7 +605,10 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			  const Box<ITV>& x,
 			  const Box<ITV>& y,
 			  const Rounding_Dir dir) {
-  return euclidean_distance_assign<To, To, ITV>(r, x, y, dir);
+  // FIXME: the following qualification is only to work around a bug
+  // in the Intel C/C++ compiler version 10.1.x.
+  return Parma_Polyhedra_Library
+    ::euclidean_distance_assign<To, To, ITV>(r, x, y, dir);
 }
 
 /*! \relates Box */
@@ -597,7 +646,10 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			   const Box<ITV>& x,
 			   const Box<ITV>& y,
 			   const Rounding_Dir dir) {
-  return l_infinity_distance_assign<To, To, ITV>(r, x, y, dir);
+  // FIXME: the following qualification is only to work around a bug
+  // in the Intel C/C++ compiler version 10.1.x.
+  return Parma_Polyhedra_Library
+    ::l_infinity_distance_assign<To, To, ITV>(r, x, y, dir);
 }
 
 } // namespace Parma_Polyhedra_Library

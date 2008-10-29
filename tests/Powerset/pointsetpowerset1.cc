@@ -394,7 +394,7 @@ test17() {
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(phi1, "*** phi1 ***");
 
-  phi.poly_hull_assign(phi1);
+  phi.upper_bound_assign(phi1);
   print_constraints(phi, "*** phi ***");
 
   return ok && ok1;
@@ -452,7 +452,7 @@ test20() {
   c_ps2.add_constraints(cs);
 
   using namespace IO_Operators;
-  c_ps1.poly_difference_assign(c_ps2);
+  c_ps1.difference_assign(c_ps2);
 
   nout << c_ps1 << endl;
 

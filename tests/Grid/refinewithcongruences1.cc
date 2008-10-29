@@ -125,6 +125,78 @@ test04() {
   return false;
 }
 
+// refine_with_constraint()
+bool
+test05() {
+
+  Variable A(0);
+  Variable B(1);
+
+  Congruence_System cgs;
+  cgs.insert((B %= 1) / 2);
+
+  Grid gr(cgs);
+
+  print_congruences(gr, "*** gr ***");
+
+  gr.refine_with_congruence((B %= 2) / 0);
+
+  Grid known_gr(2, EMPTY);
+
+  bool ok = (gr == known_gr);
+
+  print_congruences(gr, "*** gr.refine_with_constraint() ***");
+
+  return ok;
+}
+
+// refine_with_constraints()
+bool
+test06() {
+
+  Variable A(0);
+  Variable B(1);
+
+  Congruence_System cgs;
+  cgs.insert((0*A %= 3) / 0);
+
+  Grid gr(2);
+
+  print_congruences(gr, "*** gr ***");
+
+  gr.refine_with_congruences(cgs);
+
+  Grid known_gr(2, EMPTY);
+
+  bool ok = (gr == known_gr);
+
+  print_congruences(gr, "*** gr.refine_with_congruences(cs) ***");
+
+  return ok;
+}
+
+// refine_with_constraints()
+bool
+test07() {
+
+  Variable A(0);
+  Variable B(1);
+
+  Grid gr(2);
+
+  print_congruences(gr, "*** gr ***");
+
+  gr.refine_with_congruence((Linear_Expression(1) %= 0) / 0);
+
+  Grid known_gr(2, EMPTY);
+
+  bool ok = (gr == known_gr);
+
+  print_congruences(gr, "*** gr.refine_with_constraints(cs) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -132,4 +204,7 @@ BEGIN_MAIN
   DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
 END_MAIN

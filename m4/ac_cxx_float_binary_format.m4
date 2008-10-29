@@ -55,12 +55,18 @@ convert(uint32_t x) {
 
 int
 main() {
-  return std::numeric_limits<float>::is_iec559
-    && (convert(0xaaacccaaUL)
-	== -3.069535185924732179074680971098132431507110595703125e-13
-    &&  convert(0xcccaaaccUL)
-	== -106255968)
-  ? 0 : 1;
+  if (std::numeric_limits<float>::is_iec559
+      && (   convert(0xaaacccaaU)
+          == -3.069535185924732179074680971098132431507110595703125e-13
+          && convert(0xcccaaaccU)
+          == -106255968
+          && convert(0x00000001U)
+          == 1.40129846432481707092372958328991613128026194187651577175706828388979108268586060148663818836212158203125e-45
+          && convert(0x80000001U)
+          == -1.40129846432481707092372958328991613128026194187651577175706828388979108268586060148663818836212158203125e-45))
+    return 0;
+  else
+    return 1;
 }
 
 #else // SIZEOF_FLOAT != 4
@@ -72,13 +78,15 @@ main() {
 
 #endif // SIZEOF_FLOAT != 4
 ]])],
-  AC_DEFINE(CXX_FLOAT_BINARY_FORMAT, float_ieee754_single,
+  AC_DEFINE(CXX_FLOAT_BINARY_FORMAT, PPL_FLOAT_IEEE754_SINGLE,
     [The binary format of C++ floats, if supported; undefined otherwise.])
   ac_cxx_float_binary_format="IEEE754 Single Precision")
 
 AC_MSG_RESULT($ac_cxx_float_binary_format)
 
-if test x"$ac_cxx_float_binary_format" = x"unknown"
+AC_CXX_FLOAT_EXACT_OUTPUT
+
+if test x"$ac_cxx_float_binary_format" = x"unknown" || test $ac_cxx_float_exact_output = 0 || test $ac_cv_can_control_fpu = 0
 then
   ac_supported_float=0
 else

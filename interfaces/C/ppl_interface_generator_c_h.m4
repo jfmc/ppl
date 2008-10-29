@@ -1,7 +1,7 @@
 m4_define(`dnl', `m4_dnl')`'dnl
 m4_divert(-1)
 
-dnl This m4 file generates the file ppl_c_h
+dnl This m4 file generates the file ppl_c_domains.h
 dnl using the code in ppl_interface_generator_c_h_code.m4.
 
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
@@ -29,51 +29,43 @@ dnl Include files defining macros that generate the non-fixed part.
 m4_include(`ppl_interface_generator_c_h_code.m4')
 m4_include(`ppl_interface_generator_c_procedure_generators.m4')
 
-dnl m4_pre_extra_class_code(Class, CPP_Class, Class_Kind)
-dnl Prefix extra code for each class.
-m4_define(`m4_pre_extra_class_code', `dnl
+dnl m4_one_class_code(Class)
+m4_pushdef(`m4_one_class_code', `dnl
+PPL_TYPE_DECLARATION(m4_interface_class$1)
+')
 
-PPL_TYPE_DECLARATION(m4_interface_class$1);
+dnl -----------------------------------------------------------------
+dnl Output conversion declarations for all the classes.
+dnl -----------------------------------------------------------------
+m4_divert`'dnl
+/*C interface code: header file.
+m4_include(`ppl_interface_generator_copyright')dnl
+*/
 
-/*! \name Functions Related to m4_interface_class$1 */
-/*@{*/
+m4_all_code`'dnl
+m4_divert(-1)
+m4_popdef(`m4_one_class_code')
+
+dnl Ensure any schematic procedure macro that is not defined
+dnl in the code file outputs a warning message.
+m4_define(`m4_default_code', `m4_dumpdef($1`'_code)')
+dnl m4_pre_all_classes_code
+m4_define(`m4_pre_extra_class_code', `
+/*! \interface ppl_`'m4_interface_class$1`'_tag
+  \brief Types and functions for ppl_`'m4_interface_class$1`'_tag
+*/
 
 ')
 
 dnl m4_post_extra_class_code(Class, CPP_Class, Class_Kind)
 dnl Postfix extra code for each class.
 m4_define(`m4_post_extra_class_code', `dnl
-PPL_DECLARE_OUTPUT_FUNCTIONS(m4_interface_class$1)
+PPL_DECLARE_IO_FUNCTIONS(m4_interface_class$1)
 
-/*@}*/ /* Functions Related to m4_interface_class$1 */
+/* End of Functions Related to ppl_`'m4_interface_class$1`'_tag */
 ')
 
 m4_divert`'dnl
-dnl
-dnl Output the fixed preamble.
-dnl As the preamble has quotes, first change the quote characters.
-m4_changequote(`@<<@',`@>>@')@<<@@>>@dnl
-m4_include(@<<@ppl_interface_generator_c_h_preamble@>>@)@<<@@>>@dnl
-dnl Change the quote characters back to the standard.
-m4_changequote`'dnl
-dnl
-dnl Generate the non-fixed part of the file.
 m4_all_code`'dnl
-dnl
-dnl Generate the fixed postamble.
-
-#ifdef __cplusplus
-} /* extern "C" */
-#endif
-
-#undef PPL_TYPE_DECLARATION
-#undef PPL_DECLARE_PRINT_FUNCTIONS
-#undef PPL_DECLARE_ASCII_DUMP_FUNCTIONS
-#undef PPL_DECLARE_OUTPUT_FUNCTIONS
-#undef PPL_PROTO
-
-/*@}*/ /* \defgroup PPL_C_interface */
-
-#endif /* !defined(PPL_ppl_c_h) */
 dnl
 dnl End of file generation.

@@ -30,20 +30,20 @@ fpu_initialize_control_functions() {
 			 " cannot control the FPU");
 }
 
-inline int
+inline fpu_rounding_direction_type
 fpu_get_rounding_direction() {
   throw std::logic_error("PPL::fpu_get_rounding_direction():"
 			 " cannot control the FPU");
 }
 
 inline void
-fpu_set_rounding_direction(int dir) {
+fpu_set_rounding_direction(int) {
   throw std::logic_error("PPL::fpu_set_rounding_direction():"
 			 " cannot control the FPU");
 }
 
 inline int
-fpu_save_rounding_direction(int dir) {
+fpu_save_rounding_direction(int) {
   throw std::logic_error("PPL::fpu_save_rounding_direction():"
 			 " cannot control the FPU");
 }
@@ -55,7 +55,7 @@ fpu_reset_inexact() {
 }
 
 inline void
-fpu_restore_rounding_direction(int dir) {
+fpu_restore_rounding_direction(int) {
   throw std::logic_error("PPL::fpu_restore_rounding_direction():"
 			 " cannot control the FPU");
 }

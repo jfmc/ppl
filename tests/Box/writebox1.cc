@@ -29,17 +29,15 @@ test01() {
   Variable x(0);
   Variable y(1);
 
-  TBox bd1(3);
-  TBox bd2(3);
+  TBox box1(3);
+  TBox box2(3);
 
-  bd1.add_constraint(x <= 3);
-  bd1.add_constraint(x - y <= 4);
+  box1.add_constraint(x <= 3);
 
-  bd2.add_constraint(x - y <= 5);
-  bd2.add_constraint(-y <= -2);
+  box2.add_constraint(-y <= -2);
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(box1, "*** box1 ***");
+  print_constraints(box2, "*** box2 ***");
 
   // FIXME!!!
   return true;
@@ -50,20 +48,19 @@ test02() {
   Variable x(0);
   Variable y(1);
 
-  TBox bd1(0, EMPTY);
-  TBox bd2(3);
-  TBox bd3(3);
+  TBox box1(0, EMPTY);
+  TBox box2(3);
+  TBox box3(3);
 
-  bd2.add_constraint(x - y <= 5);
-  bd2.add_constraint(-y <= -2);
+  box2.add_constraint(-y <= -2);
 
-  bd3.add_constraint(x <= 0);
-  bd3.add_constraint(-x <= -1);
-  bd3.add_constraint(y <= 3);
+  box3.add_constraint(x <= 0);
+  box3.add_constraint(-x <= -1);
+  box3.add_constraint(y <= 3);
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
-  print_constraints(bd3, "*** bd3 ***");
+  print_constraints(box1, "*** box1 ***");
+  print_constraints(box2, "*** box2 ***");
+  print_constraints(box3, "*** box3 ***");
 
   // FIXME!!!
   return true;

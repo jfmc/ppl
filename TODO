@@ -1,31 +1,31 @@
 
-Enhancements for PPL 0.10
-=========================
+Enhancements for PPL 0.10.1 or later versions
+=============================================
 
-- Document --enable-interfaces and --enable-instantiations in the
-  README.configure file.
+- In libppl.3 and in the test programs, use malloc(), realloc() and
+  free() instead of operator new() and operator delete() to implement
+  the replacement GMP allocation functions.
+- Enhance the support for systems not providing support for the IEEE
+  inexact flag.
+- `make check' in ppl_lpsol must run also the incremental version
+  of the simplex solver.
+- Complete the implementation of the --enable-check configure option.
+  Explain it in README.configure.
+- Explain the `--enable-ppl_lcdd' and `--enable-ppl_lpsol' in
+  README.configure.
+- Intervals are best instantiated with checked numbers with
+  particular policies: review all the interfaced boxes,
+  augment the testsuite, and update the documentation.
+- Review and revise the m4 code for the interfaces, looking for
+  cleaner and maybe more flexible methods and more efficient code.
+- Check the configuration dependent documentation for Prolog,
 
-- Fix the handling of interfaces/Prolog/tests/ppl_predicate_check_common.pl
-  (it is sometimes copied unconditionally, sometimes conditionally,
-  sometimes is removed, sometimes not, ...).
 
-- Write interfaces/OCaml/README.ocaml.
+Enhancements for PPL 0.11 or later versions
+===========================================
 
-- Provide PPL-specific documentation on the use of `make check'.
-
-- Modify all methods add_constraint(s)/congruence(s) to reflect what
-  is said in definitions.dox wrt the throwing of exceptions; modify
-  all of the tests accordingly (when in doubt, a user application
-  has to use the refine_with methods); also pay attention to
-  constructors taking a syntactic description as argument.
-
-- Add a short section to the user documentation explaining how to
-  compile and link (at least under Un*x) an application using the PPL
-  through the C and C++ interface (this information is already provided
-  for the Prolog interfaces).  This section should also mention the
-  programs in the demos directory (they constitute additional examples
-  of use of the C and C++ interfaces) and in the directories under tests
-  (these are currently covered by a README file).
+- Ensure the tests in tests/MIP_Problem/* cover every line of
+  code in MIP_Problem.*.
 - Define functions rem() and remp() to compute the remainder of division
   in the general case, for rem(), and in the case where the second
   argument is known to be positive, for remp().  In the implementation
@@ -33,23 +33,6 @@ Enhancements for PPL 0.10
   should be implemented to circumvent the INT_MIN % -1 bug.
   rem() and remp() should be used (with a strong preference to the second,
   of course) wherever we now use operator%().
-- Update the examples in README.configure.
-- Check all the Makefile.am's to make sure CLEANFILES, MOSTLYCLEANFILES
-  and DISTCLEANFILES are used in a sensible way.
-- Ensure the tests in tests/MIP_Problem/* cover every line of
-  code in MIP_Problem.*.
-- `make check' in ppl_lpsol must run also the incremental version
-  of the simplex solver.
-- MIP_Problem: ensure ascii_load() and operator<< are correct.
-- Complete the manual pages for ppl-config, ppl_lpsol and ppl_lcdd.
-- Write a manual page for ppl (3).
-- Clearly explain, in the documentation, how (not) to use
-  set_GMP_memory_allocation_functions().  More generally, explain how
-  to have memory-guarded computations.
-
-Enhancements for PPL 0.11 or later versions
-===========================================
-
 - Suppose we want to sum three numbers, and suppose we do it by
 
     add(T& to, const T& x, const T& y, const T& z) {
@@ -68,6 +51,8 @@ Enhancements for PPL 0.11 or later versions
     or we are otherwise 100% sure that the changed argument and the
     argument that is read afterward are not aliases (in the latter
     case an assert(&to != &z) shall be added.
+- DO_TEST_F should not cause the output "failed tests" to appear,
+  but "tests unexpectedly succeeded".
 - Improve the handling of the --enable-instantiations configure
   option so that "closure by subdomain" is automatically implemented
   (e.g., if Pointset_Powerset(X) is specified, X should be automatically
@@ -120,7 +105,7 @@ Enhancements for PPL 0.11 or later versions
   tidy the tests directories for these domains and ensure the code
   with all likely instantiations is fully tested;
   add the same functionaity to the C, Java, OCaml and Prolog interfaces.
-
+- Any_Pointset domain: check the interface for lacking or useless methods.
 
 Efficiency Issues
 =================

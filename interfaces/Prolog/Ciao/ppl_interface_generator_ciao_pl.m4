@@ -28,7 +28,7 @@ m4_include(`ppl_interface_generator_prolog_systems.m4')
 
 m4_divert`'dnl
 /* Ciao Prolog interface: Ciao Prolog part.
-m4_include(`ppl_interface_generator_copyright')
+m4_include(`ppl_interface_generator_copyright')dnl
 */
 
 :- module(ppl_ciao,

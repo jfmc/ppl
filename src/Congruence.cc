@@ -140,7 +140,8 @@ PPL::Congruence::throw_dimension_incompatible(const char* method,
   std::ostringstream s;
   s << "this->space_dimension() == " << space_dimension() << ", "
     << v_name << ".space_dimension() == " << v.space_dimension() << ".";
-  throw_invalid_argument(method, s.str().c_str());
+  std::string str = s.str();
+  throw_invalid_argument(method, str.c_str());
 }
 
 /*! \relates Parma_Polyhedra_Library::Congruence */
@@ -178,7 +179,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Congruence& c) {
 }
 
 bool
-PPL::Congruence::is_trivial_true() const {
+PPL::Congruence::is_tautological() const {
   if ((is_equality() && inhomogeneous_term() == 0)
       || (is_proper_congruence()
 	  && (inhomogeneous_term() % modulus() == 0))) {
@@ -191,7 +192,7 @@ PPL::Congruence::is_trivial_true() const {
 }
 
 bool
-PPL::Congruence::is_trivial_false() const {
+PPL::Congruence::is_inconsistent() const {
   if (inhomogeneous_term() == 0
       || (is_proper_congruence()
 	  && ((inhomogeneous_term() % modulus()) == 0)))

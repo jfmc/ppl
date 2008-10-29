@@ -26,6 +26,16 @@ dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
+m4_define(`ppl_@CLASS@_linear_@PARTITION@_code',
+`dnl
+extern "C" Prolog_foreign_return_type
+ppl_@CLASS@_linear_@PARTITION@(Prolog_term_ref t_ph,
+			     Prolog_term_ref t_qh,
+			     Prolog_term_ref t_inters,
+			     Prolog_term_ref t_pset);
+
+')
+
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 `extern "C" Prolog_foreign_return_type
 ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Prolog_term_ref t_nd,
@@ -54,18 +64,6 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_code',
   `extern "C" Prolog_foreign_return_type
   ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s(Prolog_term_ref t_clist,
 						    Prolog_term_ref t_ph);
-')
-
-m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@_code',
-  `extern "C" Prolog_foreign_return_type
-  ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(Prolog_term_ref t_bb,
-				       Prolog_term_ref t_ph);
-')
-
-m4_define(`new_bounding_box_code', `')
-
-m4_define(`new_covering_box_code', `, From_Covering_Box()`'');
-
 ')
 
   m4_define(`ppl_@CLASS@_swap_code',
@@ -98,6 +96,13 @@ m4_define(`ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_code',
 
 ')
 
+m4_define(`ppl_new_@CLASS@_iterator_from_iterator_code',
+`extern "C" Prolog_foreign_return_type
+ppl_new_@CLASS@_iterator_from_iterator(Prolog_term_ref t_source,
+				       Prolog_term_ref t_it);
+
+')
+
 m4_define(`ppl_@CLASS@_@BEGINEND@_iterator_code',
   `extern "C" Prolog_foreign_return_type
   ppl_@CLASS@_@BEGINEND@_iterator(Prolog_term_ref t_pps,
@@ -105,9 +110,9 @@ m4_define(`ppl_@CLASS@_@BEGINEND@_iterator_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_delete_iterator_code',
+m4_define(`ppl_delete_@CLASS@_iterator_code',
   `extern "C" Prolog_foreign_return_type
-  ppl_@CLASS@_delete_iterator(Prolog_term_ref t_it);
+  ppl_delete_@CLASS@_iterator(Prolog_term_ref t_it);
 ')
 
 m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
@@ -137,25 +142,23 @@ m4_define(`ppl_@CLASS@_drop_disjunct_code',
 
 ')
 
+m4_define(`ppl_@CLASS@_drop_disjuncts_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_@CLASS@_drop_disjuncts(Prolog_term_ref t_pps,
+			     Prolog_term_ref t_it1,
+			     Prolog_term_ref t_it2);
+
+')
+
 m4_define(`ppl_@CLASS@_add_disjunct_code',
   `extern "C" Prolog_foreign_return_type
   ppl_@CLASS@_add_disjunct(Prolog_term_ref t_ph, Prolog_term_ref t_d);
 ')
 
-m4_define(`ppl_@CLASS@_@PARTITION@_code',
+m4_define(`ppl_@CLASS@_approximate_@PARTITION@_code',
   `dnl
   extern "C" Prolog_foreign_return_type
-  ppl_@CLASS@_@PARTITION@(Prolog_term_ref t_ph,
-			  Prolog_term_ref t_qh,
-			  Prolog_term_ref t_inters,
-			  Prolog_term_ref t_pset);
-
-')
-
-m4_define(`ppl_@CLASS@_approximate_partition_code',
-  `dnl
-  extern "C" Prolog_foreign_return_type
-  ppl_@CLASS@_approximate_partition(Prolog_term_ref t_ph,
+  ppl_@CLASS@_approximate_@PARTITION@(Prolog_term_ref t_ph,
 				    Prolog_term_ref t_qh,
 				    Prolog_term_ref t_finite,
 				    Prolog_term_ref t_inters,
@@ -168,20 +171,6 @@ m4_define(`ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_code',
   ppl_@CLASS@_relation_with_@RELATION_REPRESENT@(Prolog_term_ref t_ph,
 						 Prolog_term_ref t_c,
 						 Prolog_term_ref t_r);
-
-')
-
-m4_define(`ppl_@CLASS@_get_covering_box_code',
-  `extern "C" Prolog_foreign_return_type
-  ppl_@CLASS@_get_covering_box(Prolog_term_ref t_ph, Prolog_term_ref t_bb);
-
-')
-
-m4_define(`ppl_@CLASS@_get_bounding_box_code',
-  `extern "C" Prolog_foreign_return_type
-  ppl_@CLASS@_get_bounding_box(Prolog_term_ref t_ph,
-			       Prolog_term_ref t_cc,
-			       Prolog_term_ref t_bb);
 
 ')
 
@@ -324,9 +313,9 @@ m4_define(`ppl_@CLASS@_simplify_using_context_assign_code',
 
 ')
 
-m4_define(`ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@_code',
+m4_define(`ppl_@CLASS@_@UB_EXACT@_code',
   `extern "C" Prolog_foreign_return_type
-  ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@
+  ppl_@CLASS@_@UB_EXACT@
   (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs);
 
 ')

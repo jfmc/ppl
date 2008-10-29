@@ -1,9 +1,9 @@
 dnl  -*- C++ -*-
 m4_divert(-1)
 
-dnl This m4 file contains the program code for generating the
-dnl files ppl_prolog_DOMAIN.cc for each interface domain DOMAIN
-dnl in ppl_interface instantiations.m4.
+This m4 file contains the program code for generating the
+files ppl_prolog_DOMAIN.cc for each interface domain DOMAIN
+in ppl_interface instantiations.m4.
 
 dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
@@ -164,91 +164,6 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_code',
 
 ')
 
-m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@_code',
-  `extern "C" Prolog_foreign_return_type
-  ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(Prolog_term_ref t_bb,
-                                       Prolog_term_ref t_ph) {
-  static const char* where = "ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@/2";
-  try {
-    // Compute the space dimension.
-    Prolog_term_ref t_l = Prolog_new_term_ref();
-    Prolog_term_ref t_interval = Prolog_new_term_ref();
-    Prolog_put_term(t_l, t_bb);
-    dimension_type dimension;
-    for (dimension = 0; Prolog_is_cons(t_l); ++dimension)
-      Prolog_get_cons(t_l, t_interval, t_l);
-
-    // Check the list is properly terminated.
-    check_nil_terminating(t_l, where);
-
-    Rational_Box box(dimension);
-    // Set box to reflect its Prolog representation.
-    for (dimension_type i = 0; i < dimension; ++i) {
-      Prolog_get_cons(t_bb, t_interval, t_bb);
-      // An interval is either the atom empty or of the form
-      // i(Lower_Bound, Upper_Bound).
-      if (Prolog_is_atom(t_interval)) {
-        Prolog_atom name;
-        if (Prolog_get_atom_name(t_interval, &name) && name == a_empty) {
-          box.set_empty();
-          continue;
-        }
-        else
-          return PROLOG_FAILURE;
-      }
-
-      if (!Prolog_is_compound(t_interval))
-        return PROLOG_FAILURE;
-
-      Prolog_atom functor;
-      int arity;
-      Prolog_get_compound_name_arity(t_interval, &functor, &arity);
-      if (arity != 2 || functor != a_i)
-        return PROLOG_FAILURE;
-
-      bool finite;
-      bool closed;
-      TEMP_INTEGER(n);
-      TEMP_INTEGER(d);
-      Prolog_term_ref t_bound = Prolog_new_term_ref();
-
-      // Get and raise the lower bound.
-      Prolog_get_arg(1, t_interval, t_bound);
-      if (!term_to_boundary(t_bound, LOWER_BOUNDARY, finite, closed, n, d))
-        return PROLOG_FAILURE;
-      if (finite)
-        box.add_constraint(d*Variable(i) >= n);
-
-      // Get and lower the upper bound.
-      Prolog_get_arg(2, t_interval, t_bound);
-      if (!term_to_boundary(t_bound, UPPER_BOUNDARY, finite, closed, n, d))
-        return PROLOG_FAILURE;
-      if (finite)
-        box.add_constraint(d*Variable(i) <= n);
-    }
-
-    @TOPOLOGY@@CPP_CLASS@* ph;
-    ph = new @TOPOLOGY@@CPP_CLASS@(box new_@BOX@_code );
-    Prolog_term_ref tmp = Prolog_new_term_ref();
-    Prolog_put_address(tmp, ph);
-    if (Prolog_unify(t_ph, tmp)) {
-      PPL_REGISTER(ph);
-      return PROLOG_SUCCESS;
-    }
-    else
-      delete ph;
-  }
-  CATCH_ALL;
-}
-
-')
-
-m4_define(`new_bounding_box_code', `')
-
-m4_define(`new_covering_box_code', `, From_Covering_Box()`'');
-
-')
-
   m4_define(`ppl_@CLASS@_swap_code',
   `extern "C" Prolog_foreign_return_type
   ppl_@CLASS@_swap(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
@@ -369,10 +284,36 @@ m4_define(`ppl_@CLASS@_@BEGINEND@_iterator_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_delete_iterator_code',
+m4_define(`ppl_new_@CLASS@_iterator_from_iterator_code',
+`extern "C" Prolog_foreign_return_type
+ppl_new_@CLASS@_iterator_from_iterator(Prolog_term_ref t_source,
+                                       Prolog_term_ref t_it) {
+  static const char* where = "ppl_new_@CLASS@_iterator_from_iterator/2";
+  try {
+    const @CPP_CLASS@::iterator* source
+      = term_to_handle<const @CPP_CLASS@::iterator>(t_source, where);
+    PPL_CHECK(source);
+
+    @CPP_CLASS@::iterator* it = new @CPP_CLASS@::iterator(*source);
+    Prolog_term_ref t_i = Prolog_new_term_ref();
+    Prolog_put_address(t_i, it);
+
+    if (Prolog_unify(t_it, t_i)) {
+      PPL_REGISTER(it);
+      return PROLOG_SUCCESS;
+    }
+    else
+      delete it;
+  }
+  CATCH_ALL;
+}
+
+')
+
+m4_define(`ppl_delete_@CLASS@_iterator_code',
   `extern "C" Prolog_foreign_return_type
-  ppl_@CLASS@_delete_iterator(Prolog_term_ref t_it) {
-  static const char* where = "ppl_@CLASS@_delete_iterator/1";
+  ppl_delete_@CLASS@_iterator(Prolog_term_ref t_it) {
+  static const char* where = "ppl_delete_@CLASS@_iterator/1";
   try {
     const @CPP_CLASS@::iterator* it
       = term_to_handle<@CPP_CLASS@::iterator >(t_it, where);
@@ -471,6 +412,34 @@ m4_define(`ppl_@CLASS@_drop_disjunct_code',
 
 ')
 
+m4_define(`ppl_@CLASS@_drop_disjuncts_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_@CLASS@_drop_disjuncts(Prolog_term_ref t_pps,
+                             Prolog_term_ref t_it1,
+                             Prolog_term_ref t_it2) {
+  static const char* where = "ppl_@CLASS@_drop_disjuncts/3";
+  try {
+    @CPP_CLASS@* pps = term_to_handle<@CPP_CLASS@ >(t_pps, where);
+    PPL_CHECK(pps);
+
+    @CPP_CLASS@::iterator* it1
+      = term_to_handle<@CPP_CLASS@::iterator >(t_it1, where);
+    PPL_CHECK(it1);
+    @CPP_CLASS@::iterator* it2
+      = term_to_handle<@CPP_CLASS@::iterator >(t_it2, where);
+    PPL_CHECK(it2);
+
+    @CPP_CLASS@::iterator& i1 = *it1;
+    @CPP_CLASS@::iterator& i2 = *it2;
+    pps->drop_disjuncts(i1, i2);
+
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+')
+
 m4_define(`ppl_@CLASS@_add_disjunct_code',
   `extern "C" Prolog_foreign_return_type
   ppl_@CLASS@_add_disjunct(Prolog_term_ref t_ph, Prolog_term_ref t_d) {
@@ -490,37 +459,24 @@ m4_define(`ppl_@CLASS@_add_disjunct_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_@PARTITION@_code',
-  `dnl
-  extern "C" Prolog_foreign_return_type
-  ppl_@CLASS@_@PARTITION@(Prolog_term_ref t_ph,
-                          Prolog_term_ref t_qh,
-                          Prolog_term_ref t_inters,
-                          Prolog_term_ref t_pset) {
-  static const char* where = "ppl_@CLASS@_@PARTITION@/4";
+m4_define(`ppl_@CLASS@_linear_@PARTITION@_code',
+`dnl
+extern "C" Prolog_foreign_return_type
+ppl_@CLASS@_linear_@PARTITION@(Prolog_term_ref t_ph,
+                             Prolog_term_ref t_qh,
+                             Prolog_term_ref t_inters,
+                             Prolog_term_ref t_pset) {
   try {
-    const @CLASSTOPOLOGY@@CPP_DISJUNCT@* ph =
-      term_to_handle<@CLASSTOPOLOGY@@CPP_DISJUNCT@ >(t_ph, where);
-    PPL_CHECK(ph);
-    const @CLASSTOPOLOGY@@CPP_DISJUNCT@* qh =
-      term_to_handle<@CLASSTOPOLOGY@@CPP_DISJUNCT@ >(t_qh, where);
-    PPL_CHECK(qh);
-
+    static const char* where = "ppl_@CLASS@_linear_partition/4";
+    @CPP_CLASS@* rfh;
+    Pointset_Powerset<NNC_Polyhedron>* rsh;
+`m4_ifelse(m4_current_interface, `Polyhedron',
+  `m4_linear_partition_for_polyhedron_domains',
+           `m4_linear_partition_for_non_polyhedron_domains')'
     Prolog_term_ref t_r_first = Prolog_new_term_ref();
     Prolog_term_ref t_r_second = Prolog_new_term_ref();
-    std::pair<@CLASSTOPOLOGY@@CPP_DISJUNCT@@COMMA@ Pointset_Powerset<@SUPERCLASS@> > r =
-      @PARTITION@(*ph, *qh);
-
-    @CLASSTOPOLOGY@@CPP_DISJUNCT@* rfh = new @CLASSTOPOLOGY@@CPP_DISJUNCT@(EMPTY);
-    rfh->swap(r.first);
-
-    Pointset_Powerset<@SUPERCLASS@>* rsh =
-      new Pointset_Powerset<@SUPERCLASS@>(EMPTY);
-    rsh->swap(r.second);
-
     Prolog_put_address(t_r_first, rfh);
     Prolog_put_address(t_r_second, rsh);
-
     if (Prolog_unify(t_inters, t_r_first)
         && Prolog_unify(t_pset, t_r_second)) {
       return PROLOG_SUCCESS;
@@ -531,32 +487,73 @@ m4_define(`ppl_@CLASS@_@PARTITION@_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_approximate_partition_code',
+m4_define(`m4_linear_partition_for_polyhedron_domains',
+`    const Polyhedron* xph = term_to_handle<Polyhedron>(t_ph, where);
+    if (Interfaces::is_necessarily_closed_for_interfaces(*xph)) {
+      const C_Polyhedron* ph = term_to_handle<C_Polyhedron>(t_ph, where);
+      const C_Polyhedron* qh = term_to_handle<C_Polyhedron>(t_qh, where);
+      PPL_CHECK(ph);
+      PPL_CHECK(qh);
+      std::pair<C_Polyhedron@COMMA@ Pointset_Powerset<NNC_Polyhedron> >
+        r = linear_partition(*ph, *qh);
+      rfh = new C_Polyhedron(0, EMPTY);
+      rsh = new Pointset_Powerset<NNC_Polyhedron>(0, EMPTY);
+      rfh->swap(r.first);
+      rsh->swap(r.second);
+    }
+    else {
+      const NNC_Polyhedron* ph = term_to_handle<NNC_Polyhedron>(t_ph, where);
+      const NNC_Polyhedron* qh = term_to_handle<NNC_Polyhedron>(t_qh, where);
+      PPL_CHECK(ph);
+      PPL_CHECK(qh);
+      std::pair<NNC_Polyhedron@COMMA@ Pointset_Powerset<NNC_Polyhedron> >
+        r = linear_partition(*ph, *qh);
+      rfh = new NNC_Polyhedron(0, EMPTY);
+      rsh = new Pointset_Powerset<NNC_Polyhedron>(0, EMPTY);
+      rfh->swap(r.first);
+      rsh->swap(r.second);
+    }
+')
+
+m4_define(`m4_linear_partition_for_non_polyhedron_domains',
+`  const @CPP_CLASS@* ph = term_to_handle<@CPP_CLASS@ >(t_ph, where);
+  const @CPP_CLASS@* qh = term_to_handle<@CPP_CLASS@ >(t_qh, where);
+  PPL_CHECK(ph);
+  PPL_CHECK(qh);
+  std::pair<@CPP_CLASS@@COMMA@ Pointset_Powerset<NNC_Polyhedron> >
+    r = linear_partition(*ph, *qh);
+  rfh = new @CPP_CLASS@(0, EMPTY);
+  rsh = new Pointset_Powerset<NNC_Polyhedron>(0, EMPTY);
+  rfh->swap(r.first);
+  rsh->swap(r.second);
+')
+
+m4_define(`ppl_@CLASS@_approximate_@PARTITION@_code',
   `dnl
   extern "C" Prolog_foreign_return_type
-  ppl_@CLASS@_approximate_partition(Prolog_term_ref t_ph,
+  ppl_@CLASS@_approximate_@PARTITION@(Prolog_term_ref t_ph,
                                     Prolog_term_ref t_qh,
                                     Prolog_term_ref t_finite,
                                     Prolog_term_ref t_inters,
                                     Prolog_term_ref t_pset) {
   static const char* where = "ppl_@CLASS@_approximate_partition/5";
   try {
-    const @CLASSTOPOLOGY@@CPP_DISJUNCT@* ph =
-      term_to_handle<@CLASSTOPOLOGY@@CPP_DISJUNCT@ >(t_ph, where);
+    const @CLASS@* ph =
+      term_to_handle<@CLASS@ >(t_ph, where);
     PPL_CHECK(ph);
-    const @CLASSTOPOLOGY@@CPP_DISJUNCT@* qh =
-      term_to_handle<@CLASSTOPOLOGY@@CPP_DISJUNCT@ >(t_qh, where);
+    const @CLASS@* qh =
+      term_to_handle<@CLASS@ >(t_qh, where);
     PPL_CHECK(qh);
     bool finite;
 
-    std::pair<@CLASSTOPOLOGY@@CPP_DISJUNCT@@COMMA@ Pointset_Powerset<@SUPERCLASS@> > r =
+    std::pair<@CLASS@@COMMA@ Pointset_Powerset<Grid> > r =
       approximate_partition(*ph, *qh, finite);
 
-    @CLASSTOPOLOGY@@CPP_DISJUNCT@* rfh = new @CLASSTOPOLOGY@@CPP_DISJUNCT@(EMPTY);
+    @CLASS@* rfh = new @CLASS@(EMPTY);
     rfh->swap(r.first);
 
-    Pointset_Powerset<@SUPERCLASS@>* rsh =
-      new Pointset_Powerset<@SUPERCLASS@>(EMPTY);
+    Pointset_Powerset<Grid>* rsh =
+      new Pointset_Powerset<Grid>(EMPTY);
     rsh->swap(r.second);
 
     Prolog_term_ref t_b = Prolog_new_term_ref();
@@ -693,71 +690,6 @@ while (r != Poly_Gen_Relation::nothing()) {
     r = r - Poly_Gen_Relation::subsumes();
   }
  }
-')
-
-m4_define(`ppl_@CLASS@_get_covering_box_code',
-  `extern "C" Prolog_foreign_return_type
-  ppl_@CLASS@_get_covering_box(Prolog_term_ref t_ph, Prolog_term_ref t_bb) {
-  static const char* where = "ppl_@CLASS@_get_covering_box/2";
-  try {
-    @CLASS@* ph = term_to_handle<@CPP_CLASS@ >(t_ph, where);
-    PPL_CHECK(ph);
-
-    dimension_type dimension = ph->space_dimension();
-    Rational_Box box(dimension);
-    ph->get_covering_box(box);
-    Prolog_term_ref tail = Prolog_new_term_ref();
-    Prolog_put_atom(tail, a_nil);
-    for (dimension_type i = dimension; i-- > 0; )
-      Prolog_construct_cons(tail,
-                            interval_term(box.get_interval(Variable(i))),
-                            tail);
-    if (Prolog_unify(t_bb, tail))
-      return PROLOG_SUCCESS;
-  }
-  CATCH_ALL;
-}
-
-')
-
-m4_define(`ppl_@CLASS@_get_bounding_box_code',
-  `extern "C" Prolog_foreign_return_type
-  ppl_@CLASS@_get_bounding_box(Prolog_term_ref t_ph,
-                               Prolog_term_ref t_cc,
-                               Prolog_term_ref t_bb) {
-  static const char* where = "ppl_@CLASS@_get_bounding_box/3";
-  try {
-    @CPP_CLASS@* ph = term_to_handle<@CPP_CLASS@ >(t_ph, where);
-    PPL_CHECK(ph);
-
-    Prolog_atom p_cc = term_to_complexity_class(t_cc, where);
-    Complexity_Class cc;
-    if (p_cc == a_polynomial)
-      cc = POLYNOMIAL_COMPLEXITY;
-    else if (p_cc == a_simplex)
-      cc = SIMPLEX_COMPLEXITY;
-    else
-      cc = ANY_COMPLEXITY;
-
-    Rational_Box box(*ph, cc);
-    Prolog_term_ref tail = Prolog_new_term_ref();
-    Prolog_put_atom(tail, a_nil);
-    if (box.is_empty()) {
-      Prolog_term_ref t_empty = Prolog_new_term_ref();
-      Prolog_put_atom(t_empty, a_empty);
-      Prolog_construct_cons(tail, t_empty, tail);
-    }
-    else
-      for (dimension_type i = ph->space_dimension(); i-- > 0; )
-        Prolog_construct_cons(tail,
-                              interval_term(box.get_interval(Variable(i))),
-                              tail);
-    if (Prolog_unify(t_bb, tail))
-      return PROLOG_SUCCESS;
-  }
-  CATCH_ALL;
-}
-
 ')
 
 m4_define(`ppl_@CLASS@_@HAS_PROPERTY@_code',
@@ -1103,7 +1035,9 @@ m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize_code',
 m4_define(`bop_assign_code',
 `namespace Parma_Polyhedra_Library {
 
-namespace Prolog_Interfaces {
+namespace Interfaces {
+
+namespace Prolog {
 
 Prolog_foreign_return_type
 bop_assign(Prolog_term_ref t_lhs,
@@ -1138,11 +1072,13 @@ bop_assign_and_minimize(Prolog_term_ref t_lhs,
   CATCH_ALL;
 }
 
-} // namespace Prolog_Interfaces
+} // namespace Prolog
+
+} // namespace Interfaces
 
 } // namespace Parma_Polyhedra_Library
 
-using namespace Parma_Polyhedra_Library::Prolog_Interfaces;
+using namespace Parma_Polyhedra_Library::Interfaces::Prolog;
 
 ')
 
@@ -1151,7 +1087,15 @@ m4_define(`ppl_@CLASS@_@BINOP@_code',
   ppl_@CLASS@_@BINOP@
   (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
   static const char* where = "ppl_@CLASS@_@BINOP@";
-  return bop_assign(t_lhs, t_rhs, &@CPP_CLASS@::@BINOP@, where);
+  try {
+    @CPP_CLASS@* lhs = term_to_handle<@CPP_CLASS@ >(t_lhs, where);
+    const @CPP_CLASS@* rhs = term_to_handle<@CPP_CLASS@ >(t_rhs, where);
+    PPL_CHECK(lhs);
+    PPL_CHECK(rhs);
+    lhs->@BINOP@(*rhs);
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
 }
 
 ')
@@ -1161,8 +1105,15 @@ m4_define(`ppl_@CLASS@_@BINMINOP@_code',
   ppl_@CLASS@_@BINMINOP@
   (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
   static const char* where = "ppl_@CLASS@_@BINMINOP@";
-  return bop_assign_and_minimize(t_lhs, t_rhs,
-                                 &@CPP_CLASS@::@BINMINOP@, where);
+  try {
+    @CPP_CLASS@* lhs = term_to_handle<@CPP_CLASS@ >(t_lhs, where);
+    const @CPP_CLASS@* rhs = term_to_handle<@CPP_CLASS@ >(t_rhs, where);
+    PPL_CHECK(lhs);
+    PPL_CHECK(rhs);
+    if (lhs->@BINMINOP@(*rhs))
+      return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
 }
 
 ')
@@ -1189,18 +1140,45 @@ m4_define(`ppl_@CLASS@_simplify_using_context_assign_code',
 
 ')
 
-m4_define(`ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@_code',
+m4_define(`ppl_@CLASS@_@UB_EXACT@_code',
   `extern "C" Prolog_foreign_return_type
-  ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@
+  ppl_@CLASS@_@UB_EXACT@
   (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
-  static const char* where = "ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@";
-  @TOPOLOGY@@CPP_CLASS@* lhs = term_to_handle<@TOPOLOGY@@CPP_CLASS@ >(t_lhs, where);
-  const @TOPOLOGY@@CPP_CLASS@* rhs = term_to_handle<@TOPOLOGY@@CPP_CLASS@ >(t_rhs, where);
-  PPL_CHECK(lhs);
-  PPL_CHECK(rhs);
-  return lhs->@UB_EXACT@(*rhs);
+  static const char* where = "ppl_@CLASS@_@UB_EXACT@";
+  try {
+`m4_ifelse(m4_current_interface, `Polyhedron',
+  `m4_ub_exact_for_polyhedron_domains',
+           `m4_ub_exact_for_non_polyhedron_domains')'
+  }
+  CATCH_ALL;
 }
 
+')
+
+m4_define(`m4_ub_exact_for_polyhedron_domains',
+`   const Polyhedron* xlhs = term_to_handle<Polyhedron >(t_lhs, where);
+ if (Interfaces::is_necessarily_closed_for_interfaces(*xlhs)) {
+     C_Polyhedron* lhs = term_to_handle<C_Polyhedron >(t_lhs, where);
+     const C_Polyhedron* rhs = term_to_handle<C_Polyhedron >(t_rhs, where);
+     PPL_CHECK(lhs);
+     PPL_CHECK(rhs);
+     return lhs->@UB_EXACT@(*rhs) ? PROLOG_SUCCESS : PROLOG_FAILURE;
+   }
+   else {
+     NNC_Polyhedron* lhs = term_to_handle<NNC_Polyhedron >(t_lhs, where);
+     const NNC_Polyhedron* rhs = term_to_handle<NNC_Polyhedron >(t_rhs, where);
+     PPL_CHECK(lhs);
+     PPL_CHECK(rhs);
+     return lhs->@UB_EXACT@(*rhs) ? PROLOG_SUCCESS : PROLOG_FAILURE;
+   }
+')
+
+m4_define(`m4_ub_exact_for_non_polyhedron_domains',
+`   @CPP_CLASS@* lhs = term_to_handle<@CPP_CLASS@ >(t_lhs, where);
+    const @CPP_CLASS@* rhs = term_to_handle<@CPP_CLASS@ >(t_rhs, where);
+    PPL_CHECK(lhs);
+    PPL_CHECK(rhs);
+    return lhs->@UB_EXACT@(*rhs) ? PROLOG_SUCCESS : PROLOG_FAILURE;
 ')
 
 m4_define(`ppl_@CLASS@_@AFFIMAGE@_code',
@@ -1735,7 +1713,7 @@ m4_define(`ppl_@CLASS@_map_space_dimensions_code',
     @CPP_CLASS@* ph = term_to_handle<@CPP_CLASS@ >(t_ph, where);
     dimension_type space_dim = ph->space_dimension();
     PPL_CHECK(ph);
-    PFunc pfunc;
+    Partial_Function pfunc;
     Prolog_term_ref t_pair = Prolog_new_term_ref();
     while (Prolog_is_cons(t_pfunc)) {
       Prolog_get_cons(t_pfunc, t_pair, t_pfunc);

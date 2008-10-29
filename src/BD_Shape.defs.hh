@@ -1136,13 +1136,13 @@ public:
   bool intersection_assign_and_minimize(const BD_Shape& y);
 
   /*! \brief
-    Assigns to \p *this the smallest BDS containing the convex union
+    Assigns to \p *this the smallest BDS containing the union
     of \p *this and \p y.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void bds_hull_assign(const BD_Shape& y);
+  void upper_bound_assign(const BD_Shape& y);
 
   /*! \brief
     Assigns to \p *this the smallest BDS containing the convex union
@@ -1157,35 +1157,25 @@ public:
     \deprecated
     See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
-  bool bds_hull_assign_and_minimize(const BD_Shape& y);
-
-  //! Same as bds_hull_assign.
-  void upper_bound_assign(const BD_Shape& y);
+  bool upper_bound_assign_and_minimize(const BD_Shape& y);
 
   /*! \brief
-    If the bds-hull of \p *this and \p y is exact, it is assigned
+    If the upper bound of \p *this and \p y is exact, it is assigned
     to \p *this and <CODE>true</CODE> is returned,
     otherwise <CODE>false</CODE> is returned.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  bool bds_hull_assign_if_exact(const BD_Shape& y);
-
-  //! Same as bds_hull_assign_if_exact.
   bool upper_bound_assign_if_exact(const BD_Shape& y);
 
   /*! \brief
-    Assigns to \p *this
-    the \ref Convex_Polyhedral_Difference "poly-difference"
-    of \p *this and \p y.
+    Assigns to \p *this the smallest BD shape containing
+    the set difference of \p *this and \p y.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void bds_difference_assign(const BD_Shape& y);
-
-  //! Same as bds_difference_assign.
   void difference_assign(const BD_Shape& y);
 
   /*! \brief
@@ -1771,13 +1761,11 @@ public:
 
   PPL_OUTPUT_DECLARATIONS
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
     ascii_dump(std::ostream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   bool ascii_load(std::istream& s);
 
   //! Returns the total size in bytes of the memory occupied by \p *this.
@@ -1978,6 +1966,32 @@ private:
                bool maximize,
                Coefficient& ext_n, Coefficient& ext_d, bool& included) const;
 
+  /*! \brief
+    Uses the constraint \p c to refine \p *this.
+
+    \param c
+    The constraint to be added. Non BD constraints are ignored.
+
+    \warning
+    If \p c and \p *this are dimension-incompatible,
+    the behavior is undefined.
+  */
+  void refine_no_check(const Constraint& c);
+
+  /*! \brief
+    Uses the congruence \p cg to refine \p *this.
+
+    \param cg
+    The congruence to be added.
+    Nontrivial proper congruences are ignored.
+    Non BD equalities are ignored.
+
+    \warning
+    If \p cg and \p *this are dimension-incompatible,
+    the behavior is undefined.
+  */
+  void refine_no_check(const Congruence& cg);
+
   //! Adds the constraint <CODE>dbm[i][j] \<= k</CODE>.
   void add_dbm_constraint(dimension_type i, dimension_type j, const N& k);
 
@@ -2088,8 +2102,6 @@ private:
   void throw_dimension_incompatible(const char* method,
                                     const char* name_row,
                                     const Linear_Expression& y) const;
-
-  static void throw_invalid_argument(const char* method, const char* reason);
 
   static void throw_expression_too_complex(const char* method,
                                            const Linear_Expression& e);

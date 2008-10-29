@@ -30,6 +30,82 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+inline bool
+Grid::marked_empty() const {
+  return status.test_empty();
+}
+
+inline bool
+Grid::congruences_are_up_to_date() const {
+  return status.test_c_up_to_date();
+}
+
+inline bool
+Grid::generators_are_up_to_date() const {
+  return status.test_g_up_to_date();
+}
+
+inline bool
+Grid::congruences_are_minimized() const {
+  return status.test_c_minimized();
+}
+
+inline bool
+Grid::generators_are_minimized() const {
+  return status.test_g_minimized();
+}
+
+inline void
+Grid::set_generators_up_to_date() {
+  status.set_g_up_to_date();
+}
+
+inline void
+Grid::set_congruences_up_to_date() {
+  status.set_c_up_to_date();
+}
+
+inline void
+Grid::set_congruences_minimized() {
+  set_congruences_up_to_date();
+  status.set_c_minimized();
+}
+
+inline void
+Grid::set_generators_minimized() {
+  set_generators_up_to_date();
+  status.set_g_minimized();
+}
+
+inline void
+Grid::clear_empty() {
+  status.reset_empty();
+}
+
+inline void
+Grid::clear_congruences_minimized() {
+  status.reset_c_minimized();
+}
+
+inline void
+Grid::clear_generators_minimized() {
+  status.reset_g_minimized();
+}
+
+inline void
+Grid::clear_congruences_up_to_date() {
+  clear_congruences_minimized();
+  status.reset_c_up_to_date();
+  // Can get rid of con_sys here.
+}
+
+inline void
+Grid::clear_generators_up_to_date() {
+  clear_generators_minimized();
+  status.reset_g_up_to_date();
+  // Can get rid of gen_sys here.
+}
+
 inline dimension_type
 Grid::max_space_dimension() {
   // One dimension is reserved to have a value of type dimension_type
@@ -39,11 +115,6 @@ Grid::max_space_dimension() {
 			   Grid_Generator_System::max_space_dimension()
 			   )
 		  );
-}
-
-inline void
-Grid::set_congruences_up_to_date() {
-  status.set_c_up_to_date();
 }
 
 inline
@@ -170,32 +241,41 @@ Grid::minimized_constraints() const {
 }
 
 inline void
-Grid::upper_bound_assign(const Grid& y) {
-  join_assign(y);
-}
-
-inline void
-Grid::upper_bound_assign_and_minimize(const Grid& y) {
-  join_assign_and_minimize(y);
-}
-
-inline bool
-Grid::upper_bound_assign_if_exact(const Grid& y) {
-  return join_assign_if_exact(y);
-}
-
-inline void
-Grid::difference_assign(const Grid& y) {
-  grid_difference_assign(y);
-}
-
-inline void
 Grid::swap(Grid& y) {
   std::swap(con_sys, y.con_sys);
   std::swap(gen_sys, y.gen_sys);
   std::swap(status, y.status);
   std::swap(space_dim, y.space_dim);
   std::swap(dim_kinds, y.dim_kinds);
+}
+
+inline void
+Grid::add_congruence(const Congruence& cg) {
+  // Dimension-compatibility check.
+  if (space_dim < cg.space_dimension())
+    throw_dimension_incompatible("add_congruence(cg)", "cg", cg);
+
+  if (!marked_empty())
+    add_congruence_no_check(cg);
+}
+
+inline void
+Grid::add_congruences(const Congruence_System& cgs) {
+  // TODO: this is just an executable specification.
+  // Space dimension compatibility check.
+  if (space_dim < cgs.space_dimension())
+    throw_dimension_incompatible("add_congruences(cgs)", "cgs", cgs);
+
+  if (!marked_empty()) {
+    Congruence_System cgs_copy = cgs;
+    add_recycled_congruences(cgs_copy);
+  }
+}
+
+inline bool
+Grid::add_congruences_and_minimize(const Congruence_System& cgs) {
+  Congruence_System cgs_copy = cgs;
+  return add_recycled_congruences_and_minimize(cgs_copy);
 }
 
 inline void
@@ -213,92 +293,42 @@ Grid::can_recycle_constraint_systems() {
   return true;
 }
 
-
 inline bool
 Grid::can_recycle_congruence_systems() {
   return true;
 }
 
-} // namespace Parma_Polyhedra_Library
-
-/*! \relates Parma_Polyhedra_Library::Grid */
 inline void
-std::swap(Parma_Polyhedra_Library::Grid& x,
-	  Parma_Polyhedra_Library::Grid& y) {
-  x.swap(y);
-}
-
-namespace Parma_Polyhedra_Library {
-
-inline bool
-Grid::marked_empty() const {
-  return status.test_empty();
+Grid::add_constraint(const Constraint& c) {
+  // Space dimension compatibility check.
+  if (space_dim < c.space_dimension())
+    throw_dimension_incompatible("add_constraint(c)", "c", c);
+  if (!marked_empty())
+    add_constraint_no_check(c);
 }
 
 inline bool
-Grid::congruences_are_up_to_date() const {
-  return status.test_c_up_to_date();
+Grid::add_constraint_and_minimize(const Constraint& c) {
+  add_constraint(c);
+  return minimize();
 }
 
 inline bool
-Grid::generators_are_up_to_date() const {
-  return status.test_g_up_to_date();
+Grid::add_constraints_and_minimize(const Constraint_System& cs) {
+  add_constraints(cs);
+  return minimize();
+}
+
+inline void
+Grid::add_recycled_constraints(Constraint_System& cs) {
+  // TODO: really recycle the constraints.
+  add_constraints(cs);
 }
 
 inline bool
-Grid::congruences_are_minimized() const {
-  return status.test_c_minimized();
-}
-
-inline bool
-Grid::generators_are_minimized() const {
-  return status.test_g_minimized();
-}
-
-inline void
-Grid::set_generators_up_to_date() {
-  status.set_g_up_to_date();
-}
-
-inline void
-Grid::set_congruences_minimized() {
-  set_congruences_up_to_date();
-  status.set_c_minimized();
-}
-
-inline void
-Grid::set_generators_minimized() {
-  set_generators_up_to_date();
-  status.set_g_minimized();
-}
-
-inline void
-Grid::clear_empty() {
-  status.reset_empty();
-}
-
-inline void
-Grid::clear_congruences_minimized() {
-  status.reset_c_minimized();
-}
-
-inline void
-Grid::clear_generators_minimized() {
-  status.reset_g_minimized();
-}
-
-inline void
-Grid::clear_congruences_up_to_date() {
-  clear_congruences_minimized();
-  status.reset_c_up_to_date();
-  // Can get rid of con_sys here.
-}
-
-inline void
-Grid::clear_generators_up_to_date() {
-  clear_generators_minimized();
-  status.reset_g_up_to_date();
-  // Can get rid of gen_sys here.
+Grid::add_recycled_constraints_and_minimize(Constraint_System& cs) {
+  add_constraints(cs);
+  return minimize();
 }
 
 inline bool
@@ -362,5 +392,16 @@ Grid::topological_closure_assign() {
 }
 
 } // namespace Parma_Polyhedra_Library
+
+namespace std {
+
+/*! \relates Parma_Polyhedra_Library::Grid */
+inline void
+swap(Parma_Polyhedra_Library::Grid& x,
+     Parma_Polyhedra_Library::Grid& y) {
+  x.swap(y);
+}
+
+} // namespace std
 
 #endif // !defined(PPL_Grid_inlines_hh)

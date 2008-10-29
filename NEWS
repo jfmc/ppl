@@ -4,7 +4,7 @@ Parma Polyhedra Library NEWS -- history of user-visible changes
 
 
 --------------------------------------------------------------------------
-NEWS for version 0.10  (release date to be decided)
+NEWS for version 0.10  (released on November 4, 2008)
 --------------------------------------------------------------------------
 
 New and Changed Features
@@ -15,17 +15,115 @@ o  The Parma Polyhedra Library is now released under the terms of the
 
 o  The new class Octagonal_Shape provides an implementation of the domain
    of octagonal shapes (including optimized algorithms and a provably
-   correct widening and optimized algorithms) as proposed by Roberto Bagnara,
-   Patricia Hill, Elena Mazzi and Enea Zaffanella in their SAS 2005 paper.
+   correct widening) as proposed by Roberto Bagnara, Patricia Hill,
+   Elena Mazzi and Enea Zaffanella in their SAS 2005 paper.
+
+o  A new abstraction called Box has been added.  Geometrically
+   speaking, a Box represents a not necessarily closed, iso-oriented
+   hyperrectangle.  This can also be seen as the smash product of `n'
+   not necessarily closed and possibly unbounded intervals, where `n'
+   is the space dimension of the box.  The Box template class is
+   parametric with respect to a class of intervals.
+
+o  A generic implementation of intervals has been added.  The template
+   class Interval is parametric on the type used to represent the
+   interval boundaries (all native integer and floating point types
+   are supported as well as unbounded integers and rational numbers
+   provided by GMP).  Another class template type parameter allows to
+   control a number of other features of the class (such as the
+   ability to represent: open as well as closed boundaries, empty
+   intervals in addition to nonempty ones, intervals of extended
+   number families that contain positive and negative infinities,
+   plain intervals of real numbers and intervals of integer numbers).
+   The Interval class still needs a lot of work and both its
+   implementation and its interface are likely to change significantly:
+   it is released now because it is needed for the Box class and as a
+   kind of technology preview.
 
 o  The class LP_Problem has been renamed MIP_Problem and now supports
-   the solution of Mixed Integer (Linear) Programming problems. Also
-   added support for the incremental solution of MIP problems: it is now
-   possible to add new space dimensions or new constraints to the
-   feasible region, as well as change the objective function and the
-   optimization mode, while still exploiting some of the computational
-   work done before these changes. See the documentation of class
-   MIP_Problem for a detailed description of the public interface.
+   the solution of Mixed Integer (Linear) Programming problems.
+   Support has been added for the incremental solution of MIP
+   problems: it is now possible to add new space dimensions or new
+   constraints to the feasible region, as well as change the objective
+   function and the optimization mode, while still exploiting some of
+   the computational work done before these changes.  Support has also
+   been added to change control parameters for the pricing method.
+   This allows a choice between the steepest edge pricing method,
+   either implemented with floating point numbers (default) or with
+   integer coefficients, and the textbook pricing method.
+
+o  The PPL semantic object Polyhedra_Powerset has been replaced by the
+   templatic object template <typename PS> Pointset_Powerset that can
+   take any (simple) PPL semantic object for the domain of its
+   disjuncts. In addition to the methods common to all the PPL
+   semantic objects, methods specific to this domain include:
+
+     add_disjunct(const PS&),
+     void pairwise_reduce(),
+     void omega_reduce() const,
+     bool geometrically_covers(const Pointset_Powerset&) const,
+     bool geometrically_equals(const Pointset_Powerset&) const, and
+     bool simplify_using_context_assign(const Pointset_Powerset&).
+
+o  A new abstraction called Partially_Reduced_Product (PRP) has been
+   added A PRP is a pair of two PPL semantic objects that is
+   parametric on the component domains and on a reduction operator.
+   The PPL currently provides three reduction operators and hence,
+   three different kinds of products:
+
+   - a Direct_Product where the reduction operator is the identity;
+
+   - a Smash_Product where the reduction operator shares emptiness
+      information between the components; and
+
+   - a Constraints_Product where the reduction operator refines each
+     component with the constraints satisfied by the other component.
+
+o  The use of methods having a name ending in `_and_minimize' (e.g.,
+   add_constraints_and_minimize, poly_hull_assign_and_minimize, ...)
+   is now deprecated (see the core library documentation for an
+   explanation); their complete removal is planned for version 0.11.
+
+o  All the semantic domains provide new methods
+
+     void refine_with_constraint(const Constraint&),
+     void refine_with_congruence(const Congruence&),
+     void refine_with_constraints(const Constraint_System&), and
+     void refine_with_congruences(const Congruence_System&).
+
+   These methods are similar to the corresponding `add_' methods.
+   The difference is in the reaction policy when the argument
+   constraint/congruence is not optimally supported by the semantic
+   domain: while the `add_' methods will throw an exception, the
+   `refine_with_' methods will apply an upward approximation semantics.
+
+o  Methods using the Congruence and Congruence_System classes
+   such as
+
+     Congruence_System congruences() const,
+     Congruence_System minimized_congruences() const,
+     void add_congruence(const Congruence&),
+     void add_congruences(const Congruence_System&),
+     void add_recycled_congruences(const Congruence_System&), and
+     Poly_Con_Relation relation_with(const Congruence&).
+
+   that were just provided for the Grid domain are now provided for
+   all the PPL semantic objects.
+
+o  Class BD_Shape and Grid no longer provide methods such as
+   bds_hull_*, join_*, bds_difference_* and grid_difference_*. The
+   uniformly named methods upper_bound_* and difference_assign should
+   be used instead.  For (C and NNC) polyhedra, the poly_hull_* and
+   poly_difference_assign methods have been kept for backward
+   compatibility (users should anyway prefer adopting the uniformly
+   named variants).
+
+o  Default widening operators of the form:
+
+     void widening_assign(const ABSTRACTION&, unsigned*)
+
+   are now provided for all abstractions except for the Pointset_Powerset
+   abstractions.
 
 o  All PPL semantic objects now provide the method
 
@@ -34,33 +132,40 @@ o  All PPL semantic objects now provide the method
    returning a 32-bit hash code for *this.  If x and y are such that
    x == y evaluates to true, so does x.hash_code() == y.hash_code().
 
-o  The method relations_with(Congruence) has been added to the Polyhedron
-   class for compatibility with the Grid class methods.
-
-o  The class Polyhedra_Powerset has been renamed Pointset_Powerset,
-   since it can be applied to non-polyhedral abstractions, such as
-   the one offered by the Grid class.
-
 o  The new methods
 
-     bool Constraint_System::empty() const
-     bool Generator_System::empty() const
-     bool Congruence_System::empty() const
+     bool Constraint_System::empty() const,
+     bool Generator_System::empty() const,
+     bool Congruence_System::empty() const, and
      bool Grid_Generator_System::empty() const
 
    return true if and only if the system in question is empty (i.e.,
    it has no constraints, generators, congruences or grid-generators,
    respectively).
 
+o  In the Congruence class, for consistency with the Constraint class,
+   the methods is_trivial_true() and is_trivial_false() have been renamed
+   as is_tautological() and is_inconsistent(), respectively.
+
 o  All identifiers containing the strings `less_than_or_equal' or
    `greater_than_or_equal', any case, have been renamed so as to contain
    `less_or_equal' or `greater_or_equal', respectively.
 
+o  All PPL semantic objects now provide the methods
+
+     memory_size_type total_memory_in_bytes() const
+     memory_size_type external_memory_in_bytes() const
+
+   returning, respectively, the total size in bytes of the memory
+   occupied by the PPL object and the size in bytes of the memory
+   managed by the PPL object.
+
 o  Users of the C++ interface of the library can now decide to disable
    the automatic initialization mechanism of the PPL.  To do so, the
-   preprocessor symbol PPL_NO_AUTOMATIC_INITIALIZATION should be defined
-   before including the `ppl.hh' header file.  When automatic initialization
-   is disabled it is imperative to explicitly call the new function
+   preprocessor symbol PPL_NO_AUTOMATIC_INITIALIZATION should be
+   defined before including the <ppl.hh> header file.  When automatic
+   initialization is disabled it is imperative to explicitly call the
+   new function
 
      void Parma_Polyhedra_Library::initialize()
 
@@ -71,36 +176,48 @@ o  Users of the C++ interface of the library can now decide to disable
    should also be called (to release a small amount of memory) when
    done with the library.
 
-o  In the C interface it is no longer an error to call ppl_initialize()
-   or ppl_finalize() multiple times (this matches the behavior of the
-   other interfaces).
+o   New C++ functions
 
-o  In the Octagonal_Shape, BD_Shape and Box domains:
-   add_congruences_and_minimize(Congruence_System cgs)
-   add_recycled_congruences(Congruence_System cgs)
-   add_recycled_congruences_and_minimize(Congruence_System& cgs)
-   widening_assign ...
+      void restore_pre_PPL_rounding() and
+      void set_rounding_for_PPL()
 
-o  In the Octagonal_Shape domain:
-   add_recycled_constraints(Congruence_System cgs)
-   add_recycled_constraints_and_minimize(Congruence_System& cgs)
-   constructor from Box ...
+    allow to set the FPU rounding mode as it was before initialization
+    of the PPL, and to set it (again) so that the PPL abstractions based
+    on floating point numbers work correctly, respectively.
+    Similar functions/predicates are available in all the other
+    language interfaces.
 
-o  A new abstraction called Box has been added that ...
+o  For all the PPL semantic objects there are new methods:
 
-o  can_recycle_constraint_systems()
-   can_recycle_congruence_systems() ...
+    static bool can_recycle_constraint_systems() and
+    static bool can_recycle_congruence_systems()
 
-o  constrains(Variable var) ...
+   that indicate whether or not a PPL semantic object is able to recycle
+   constraints and congruences, respectively.
 
-o  unconstrain(Variable var)
-   unconstrain(const Variables_Set& to_be_unconstrained) ...
+o  For all PPL semantic objects there is a new method:
 
-o  contains_integer_point() ...
+     bool contains_integer_point() const
 
-o  Partially_Reduced_Product ...
+   which checks if a PPL semantic object contains an integer point;
+   Note that this is not currently provided for the Partially_Reduced_Product
+   classes.
 
-o  shrink_bounding_box has gone ...
+o  For all PPL semantic objects there is a new method:
+
+     bool constrains(Variable) const
+
+   which checks if a dimension is constrained by a PPL semantic object;
+
+o  For all PPL semantic objects there are new methods:
+
+     void unconstrain(Variable)
+     void unconstrain(const Variables_Set&)
+
+   which assign, to a PPL semantic object, the cylindrification
+   of the object with respect to one (resp., a set) of its dimensions,
+   as defined by L. Henkin, J. D. Monk, and A. Tarski in Cylindric Algebras:
+   Part I (published by North-Holland in 1971).
 
 o  All PPL semantic objects can be constructed from other PPL semantic
    objects. All these constructors have an optional complexity argument
@@ -113,6 +230,22 @@ o  As all PPL semantic objects can now be constructed from boxes,
      template <typename Box> NNC_Polyhedron(const Box&, From_Bounding_Box),
      template <typename Box> Grid(const Box&, From_Bounding_Box)
 
+   have been removed. Similarly, as boxes can be constructed from other
+   PPL semantic objects, the method
+
+     template <typename Box>
+       void shrink_bounding_box(Box&, Complexity_Class) const
+
+   has been removed from all the classes.
+
+o  For Grids, the PPL no longer supports covering boxes; hence the constructor
+
+     template <typename Box> Grid(const Box&, From_Covering_Box)
+
+   and also the method
+
+     template <typename Box> void get_covering_box(Box&) const
+
    have been removed.
 
 o  The `ppl.hh' header file no longer defines macros not prefixed
@@ -120,37 +253,75 @@ o  The `ppl.hh' header file no longer defines macros not prefixed
 
 o  Added constructors so that objects of classes C_Polyhedron,
    NNC_Polyhedron, Grid, Box, BD_Shape and Octagonal_Shape are always
-   constructible from one another.
+   constructable from one another.
 
-o  In the interfaces, the methods/functions/predicates named
+o  Foreign language interfaces.
 
-     ppl_ABSTRACTION_{constraints,generators,congruences}
+  - Support for foreign language interfaces have been expanded to
+    include OCaml and Java. Thus the PPL now supports interfaces:
+    C++, C, Java, OCaml, Ciao Prolog, GNU Prolog, SICStus Prolog,
+    SWI Prolog, XSB Prolog and YAP Prolog.
 
-   and
+  - Most of the PPL semantic objects provided by the C++ interface
+    are also supported by all the foreign language interfaces. A few
+    domains (in particular, many of the possible Box instantiations)
+    are only available via the C++ interface.
 
-     ppl_ABSTRACTION_minimized_{constraints,generators,congruences}
+  - Almost all the public methods for the PPL semantic objects are
+    provided as methods/functions/predicates in the foreign language
+    interfaces with a uniform naming policy. In particular:
 
-   have been renamed
+    * in the C interface, the methods named
 
-     ppl_ABSTRACTION_get_{constraints,generators,congruences}
+        ppl_Polyhedron_{constraints,generators,congruences}
+        ppl_Polyhedron_minimized_{constraints,generators,congruences}
 
-   and
+      have been renamed
 
-     ppl_ABSTRACTION_get_minimized_{constraints,generators,congruences},
+        ppl_Polyhedron_get_{constraints,generators,congruences}
+        ppl_Polyhedron_get_minimized_{constraints,generators,congruences},
 
-  respectively.
+      respectively;
 
-o  In the interfaces, the interface procedures for
-   ppl_Grid_generalized_image_lhs_rhs/5 and
-   ppl_Grid_generalized_preimage_lhs_rhs/5
-   ppl_Grid_generalized_image/6 and
-   ppl_Grid_generalized_preimage/6
-   have been renamed as
-   ppl_Grid_generalized_image_lhs_rhs_with_congruence/5
-   ppl_Grid_generalized_preimage_lhs_rhs_with_congruence/5
-   ppl_Grid_generalized_image_with_congruence/6
-   ppl_Grid_generalized_preimage_with_congruence/6
-   so as to allow for /4 and /5, resp., versions
+    * in the Prolog interfaces, the predicates
+
+        ppl_Grid_generalized_image_lhs_rhs/5 and
+        ppl_Grid_generalized_preimage_lhs_rhs/5
+        ppl_Grid_generalized_image/6 and
+        ppl_Grid_generalized_preimage/6
+
+      have been renamed as
+
+        ppl_Grid_generalized_image_lhs_rhs_with_congruence/5
+        ppl_Grid_generalized_preimage_lhs_rhs_with_congruence/5
+        ppl_Grid_generalized_image_with_congruence/6
+        ppl_Grid_generalized_preimage_with_congruence/6
+
+      respectively, so as to allow for /4 and /5, resp., versions.
+
+  - In the C interface it is no longer an error to call ppl_initialize()
+    or ppl_finalize() multiple times (this matches the behavior of the
+    other foreign language interfaces).
+
+o  The documentation for the library has been deeply reorganized and
+   split into several documents: besides the user and developer manuals
+   for the core (C++) library, we now provide separate user and developer
+   manuals for each one of the available foreign language interfaces
+   (namely, C, Java, OCaml, and Prolog). It is also possible to produce
+   "configuration dependent" variants of the foreign language interface
+   manuals, where the contents of the manual take into account the value
+   of configuration option `--enable-instantiations'.
+   All the manuals are provided in HTML, PDF and PostScript formats.
+
+o  New man pages libppl(3) and libppl_c(3) have been added.  These
+   give short overviews on how to use the PPL in C++ and C programs,
+   respectively, on Unix-like operating systems.
+
+o  Several options have been added to the configuration script.  These
+   allow to control the generated language interfaces, the floating
+   point instruction set to be used, the use of Valgrind during `make
+   check', the exclusion of some PPL-based programs from the build.
+   The README.configure file has been updated consequently.
 
 
 Bugfixes

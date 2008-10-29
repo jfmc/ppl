@@ -17,8 +17,8 @@
 # along with this program; if not, write to the Free Software Foundation,
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 #
-# For the most up-to-date information see the CS@Parma software
-# site: http://www.cs.unipr.it/Software/ . */
+# For the most up-to-date information see the Parma Polyhedra Library
+# site: http://www.cs.unipr.it/ppl/ . */
 
 # M4 macro files to be used by the client applications with Autoconf.
 m4datadir = $(datadir)/aclocal

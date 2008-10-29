@@ -286,7 +286,7 @@ PPL::Polyhedron::relation_with(const Congruence& cg) const {
       && Poly_Con_Relation::is_disjoint();
 
   if (space_dim == 0) {
-    if (cg.is_trivial_false())
+    if (cg.is_inconsistent())
       return Poly_Con_Relation::is_disjoint();
     else
       return Poly_Con_Relation::saturates()
@@ -968,7 +968,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       goto bomb;
     }
 
-#if 0
+#if 0 // To be activated when Status keeps strong minimization flags.
     //=================================================
     // TODO: this test is wrong in the general case.
     // However, such an invariant does hold for a
@@ -1236,14 +1236,25 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 void
 PPL::Polyhedron::add_constraint(const Constraint& c) {
   // Topology-compatibility check.
-  if (c.is_strict_inequality() && is_necessarily_closed())
+  if (c.is_strict_inequality() && is_necessarily_closed()) {
+    // Trivially true/false strict inequalities are legal.
+    if (c.is_tautological())
+      return;
+    if (c.is_inconsistent()) {
+      set_empty();
+      return;
+    }
+    // Here c is a non-trivial strict inequality.
     throw_topology_incompatible("add_constraint(c)", "c", c);
+  }
+
   // Dimension-compatibility check:
   // the dimension of `c' can not be greater than space_dim.
   if (space_dim < c.space_dimension())
     throw_dimension_incompatible("add_constraint(c)", "c", c);
 
-  refine_no_check(c);
+  if (!marked_empty())
+    refine_no_check(c);
 }
 
 void
@@ -1255,9 +1266,9 @@ PPL::Polyhedron::add_congruence(const Congruence& cg) {
 
   // Handle the case of proper congruences first.
   if (cg.is_proper_congruence()) {
-    if (cg.is_trivial_true())
+    if (cg.is_tautological())
       return;
-    if (cg.is_trivial_false()) {
+    if (cg.is_inconsistent()) {
       set_empty();
       return;
     }
@@ -1271,7 +1282,7 @@ PPL::Polyhedron::add_congruence(const Congruence& cg) {
   if (marked_empty())
     return;
   if (space_dim == 0) {
-    if (cg.is_trivial_false())
+    if (cg.is_inconsistent())
       set_empty();
     return;
   }
@@ -1281,7 +1292,7 @@ PPL::Polyhedron::add_congruence(const Congruence& cg) {
   Constraint c(le, Constraint::EQUALITY, NECESSARILY_CLOSED);
   // Enforce normalization.
   c.strong_normalize();
-  add_constraint(c);
+  refine_no_check(c);
 }
 
 bool
@@ -1435,8 +1446,21 @@ PPL::Polyhedron::add_generator_and_minimize(const Generator& g) {
 void
 PPL::Polyhedron::add_recycled_constraints(Constraint_System& cs) {
   // Topology compatibility check.
-  if (is_necessarily_closed() && cs.has_strict_inequalities())
-    throw_topology_incompatible("add_constraints(cs)", "cs", cs);
+  if (is_necessarily_closed() && cs.has_strict_inequalities()) {
+    // We check if _all_ strict inequalities in cs are trivially false.
+    // (The iterators already filter away trivially true constraints.)
+    for (Constraint_System::const_iterator i = cs.begin(),
+           i_end = cs.end(); i != i_end; ++i) {
+      if (i->is_strict_inequality()
+          && !i->is_inconsistent())
+        throw_topology_incompatible("add_recycled_constraints(cs)",
+                                    "cs", cs);
+    }
+    // If we reach this point, all strict inequalities were inconsistent.
+    set_empty();
+    return;
+  }
+
   // Dimension-compatibility check:
   // the dimension of `cs' can not be greater than space_dim.
   const dimension_type cs_space_dim = cs.space_dimension();
@@ -1521,73 +1545,12 @@ PPL::Polyhedron::add_constraints(const Constraint_System& cs) {
 
 bool
 PPL::Polyhedron::add_recycled_constraints_and_minimize(Constraint_System& cs) {
-  // Topology-compatibility check.
-  if (is_necessarily_closed() && cs.has_strict_inequalities())
-    throw_topology_incompatible("add_recycled_constraints_and_minimize(cs)",
-				"cs", cs);
-  // Dimension-compatibility check:
-  // the dimension of `cs' can not be greater than space_dim.
-  const dimension_type cs_space_dim = cs.space_dimension();
-  if (space_dim < cs_space_dim)
-    throw_dimension_incompatible("add_recycled_constraints_and_minimize(cs)",
-				 "cs", cs);
-
-  // Adding no constraints: just minimize.
-  if (cs.has_no_rows())
-    return minimize();
-
-  // Dealing with zero-dimensional space polyhedra first.
-  if (space_dim == 0) {
-    // In a 0-dimensional space the constraints are
-    // tautologies (e.g., 0 == 0 or 1 >= 0 or 1 > 0) or
-    // inconsistent (e.g., 1 == 0 or -1 >= 0 or 0 > 0).
-    // In a system of constraints `begin()' and `end()' are equal
-    // if and only if the system only contains tautologies.
-    if (cs.begin() == cs.end())
-      return true;
-    // There is a constraint, it must be inconsistent,
-    // the polyhedron is empty.
-    status.set_empty();
-    return false;
-  }
-
-  // The polyhedron must be minimized and have sorted constraints.
-  // `minimize()' will process any pending constraints or generators.
-  if (!minimize())
-    // We have just discovered that `x' is empty.
-    return false;
-  // Fully sort the system of constraints for `x'.
-  obtain_sorted_constraints_with_sat_c();
-
-  // Fully sort the system of constraints to be added
-  // (before adjusting dimensions in order to save time).
-  if (cs.num_pending_rows() > 0) {
-    cs.unset_pending_rows();
-    cs.sort_rows();
-  }
-  else if (!cs.is_sorted())
-    cs.sort_rows();
-  // Adjust `cs' to the right topology and space dimension.
-  // NOTE: we already checked for topology compatibility.
-  cs.adjust_topology_and_space_dimension(topology(), space_dim);
-
-  const bool empty = add_and_minimize(true, con_sys, gen_sys, sat_c, cs);
-
-  if (empty)
-    set_empty();
-  else {
-    // `sat_c' is up-to-date, while `sat_g' is no longer up-to-date.
-    set_sat_c_up_to_date();
-    clear_sat_g_up_to_date();
-  }
-  assert(OK());
-
-  return !empty;
+  add_recycled_constraints(cs);
+  return minimize();
 }
 
 bool
 PPL::Polyhedron::add_constraints_and_minimize(const Constraint_System& cs) {
-  // TODO: this is just an executable specification.
   Constraint_System cs_copy = cs;
   return add_recycled_constraints_and_minimize(cs_copy);
 }
@@ -1775,8 +1738,7 @@ PPL::Polyhedron::add_generators_and_minimize(const Generator_System& gs) {
 
 void
 PPL::Polyhedron::add_congruences(const Congruence_System& cgs) {
-  // Dimension-compatibility check:
-  // the dimension of `cgs' can not be greater than space_dim.
+  // Dimension-compatibility check.
   if (space_dim < cgs.space_dimension())
     throw_dimension_incompatible("add_congruences(cgs)", "cgs", cgs);
 
@@ -1796,11 +1758,11 @@ PPL::Polyhedron::add_congruences(const Congruence_System& cgs) {
     }
     else {
       assert(cg.is_proper_congruence());
-      if (cg.is_trivial_false()) {
+      if (cg.is_inconsistent()) {
         set_empty();
         return;
       }
-      if (!cg.is_trivial_true())
+      if (!cg.is_tautological())
         throw_invalid_argument("add_congruences(cgs)",
                                "cgs has a non-trivial, proper congruence");
     }
@@ -1812,29 +1774,27 @@ PPL::Polyhedron::add_congruences(const Congruence_System& cgs) {
 
 void
 PPL::Polyhedron::refine_with_constraint(const Constraint& c) {
-  // Dimension-compatibility check:
-  // the dimension of `c' can not be greater than space_dim.
+  // Dimension-compatibility check.
   if (space_dim < c.space_dimension())
-    throw_dimension_incompatible("add_constraint(c)", "c", c);
-
-  refine_no_check(c);
+    throw_dimension_incompatible("refine_with_constraint(c)", "c", c);
+  // If the polyhedron is known to be empty, do nothing.
+  if (!marked_empty())
+    refine_no_check(c);
 }
 
 void
 PPL::Polyhedron::refine_with_congruence(const Congruence& cg) {
-  // Dimension-compatibility check:
-  // the dimension of `cg' can not be greater than space_dim.
+  // Dimension-compatibility check.
   if (space_dim < cg.space_dimension())
-    throw_dimension_incompatible("add_congruence(cg)", "cg", cg);
+    throw_dimension_incompatible("refine_with_congruence(cg)", "cg", cg);
 
-  // Adding a new congruence to an empty polyhedron results in an
-  // empty polyhedron.
+  // If the polyhedron is known to be empty, do nothing.
   if (marked_empty())
     return;
 
   // Dealing with a zero-dimensional space polyhedron first.
   if (space_dim == 0) {
-    if (!cg.is_trivial_true())
+    if (!cg.is_tautological())
       set_empty();
     return;
   }
@@ -1844,17 +1804,15 @@ PPL::Polyhedron::refine_with_congruence(const Congruence& cg) {
     Constraint c(le, Constraint::EQUALITY, NECESSARILY_CLOSED);
     // Enforce normalization.
     c.strong_normalize();
-    add_constraint(c);
+    refine_no_check(c);
   }
 }
-
 
 void
 PPL::Polyhedron::refine_with_constraints(const Constraint_System& cs) {
   // TODO: this is just an executable specification.
 
-  // Dimension-compatibility check:
-  // the dimension of `cs' can not be greater than space_dim.
+  // Dimension-compatibility check.
   const dimension_type cs_space_dim = cs.space_dimension();
   if (space_dim < cs_space_dim)
     throw_dimension_incompatible("refine_with_constraints(cs)a",
@@ -1932,15 +1890,14 @@ PPL::Polyhedron::refine_with_constraints(const Constraint_System& cs) {
 
 void
 PPL::Polyhedron::refine_with_congruences(const Congruence_System& cgs) {
-  // Dimension-compatibility check:
-  // the dimension of `cgs' can not be greater than space_dim.
+  // Dimension-compatibility check.
   if (space_dim < cgs.space_dimension())
-    throw_dimension_incompatible("add_congruences(cgs)", "cgs", cgs);
+    throw_dimension_incompatible("refine_with_congruences(cgs)", "cgs", cgs);
 
   Constraint_System cs;
   bool inserted = false;
   for (Congruence_System::const_iterator i = cgs.begin(),
-         cgs_end = cgs.end(); i != cgs_end; ++i)
+         cgs_end = cgs.end(); i != cgs_end; ++i) {
     if (i->is_equality()) {
       Linear_Expression le(*i);
       Constraint c(le, Constraint::EQUALITY, NECESSARILY_CLOSED);
@@ -1950,74 +1907,15 @@ PPL::Polyhedron::refine_with_congruences(const Congruence_System& cgs) {
       cs.insert(c);
       inserted = true;
     }
+    else if (i->is_inconsistent()) {
+      set_empty();
+      return;
+    }
+  }
   // Only add cgs if congruences were inserted into cgs, as the
   // dimension of cs must be at most that of the polyhedron.
   if (inserted)
     add_recycled_constraints(cs);
-}
-
-void
-PPL::Polyhedron::refine_no_check(const Constraint& c) {
-  // Dimension-compatibility check:
-  // the dimension of `c' can not be greater than space_dim.
-  assert(space_dim >= c.space_dimension());
-
-  // Adding a new constraint to an empty polyhedron
-  // results in an empty polyhedron.
-  if (marked_empty())
-    return;
-
-  // Dealing with a zero-dimensional space polyhedron first.
-  if (space_dim == 0) {
-    if (!c.is_tautological())
-      set_empty();
-    return;
-  }
-
-  // The constraints (possibly with pending rows) are required.
-  if (has_pending_generators())
-    process_pending_generators();
-  else if (!constraints_are_up_to_date())
-    update_constraints();
-
-  const bool adding_pending = can_have_something_pending();
-
-  if (c.is_necessarily_closed() || !is_necessarily_closed())
-    // Since `con_sys' is not empty, the topology and space dimension
-    // of the inserted constraint are automatically adjusted.
-    if (adding_pending)
-      con_sys.insert_pending(c);
-    else
-      con_sys.insert(c);
-  else {
-    // Here we know that the system of constraints has at least a row.
-    // However, by barely invoking `con_sys.insert(c)' we would
-    // cause a change in the topology of `con_sys', which is wrong.
-    // Thus, we insert a "topology corrected" copy of `c'.
-    Linear_Expression nc_expr = Linear_Expression(c);
-    if (c.is_equality())
-      if (adding_pending)
-        con_sys.insert_pending(nc_expr == 0);
-      else
-        con_sys.insert(nc_expr == 0);
-    else
-      if (adding_pending)
-        con_sys.insert_pending(nc_expr >= 0);
-      else
-        con_sys.insert(nc_expr >= 0);
-  }
-
-  if (adding_pending)
-    set_constraints_pending();
-  else {
-    // Constraints are not minimized and generators are not up-to-date.
-    clear_constraints_minimized();
-    clear_generators_up_to_date();
-  }
-
-  // Note: the constraint system may have become unsatisfiable, thus
-  // we do not check for satisfiability.
-  assert(OK());
 }
 
 void
@@ -2357,13 +2255,13 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
         Linear_Expression le(y_con_sys_i);
         switch (y_con_sys_i.type()) {
         case Constraint::EQUALITY:
-          ph.add_constraint(le == 1);
+          ph.refine_no_check(le == 1);
           break;
         case Constraint::NONSTRICT_INEQUALITY:
-          ph.add_constraint(le <= -1);
+          ph.refine_no_check(le <= -1);
           break;
         case Constraint::STRICT_INEQUALITY:
-          ph.add_constraint(le == 0);
+          ph.refine_no_check(le == 0);
           break;
         }
         swap(ph);
@@ -2658,7 +2556,7 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
   }
 
   Polyhedron result_ph(x.topology(), x.space_dim, UNIVERSE);
-  result_ph.add_constraints(result_cs);
+  result_ph.add_recycled_constraints(result_cs);
   x.swap(result_ph);
   assert(x.OK());
   return true;
@@ -2854,12 +2752,12 @@ PPL::Polyhedron::poly_difference_assign(const Polyhedron& y) {
     switch (c.type()) {
     case Constraint::NONSTRICT_INEQUALITY:
       if (is_necessarily_closed())
-	z.add_constraint(e <= 0);
+	z.refine_no_check(e <= 0);
       else
-	z.add_constraint(e < 0);
+	z.refine_no_check(e < 0);
       break;
     case Constraint::STRICT_INEQUALITY:
-      z.add_constraint(e <= 0);
+      z.refine_no_check(e <= 0);
       break;
     case Constraint::EQUALITY:
       if (is_necessarily_closed())
@@ -2868,9 +2766,9 @@ PPL::Polyhedron::poly_difference_assign(const Polyhedron& y) {
 	return;
       else {
 	Polyhedron w = x;
-	w.add_constraint(e < 0);
+	w.refine_no_check(e < 0);
 	new_polyhedron.poly_hull_assign(w);
-	z.add_constraint(e > 0);
+	z.refine_no_check(e > 0);
       }
       break;
     }
@@ -3076,9 +2974,9 @@ bounded_affine_image(const Variable var,
 			     ub_expr,
 			     denominator);
     if (denominator > 0)
-      add_constraint(lb_expr <= denominator*var);
+      refine_no_check(lb_expr <= denominator*var);
     else
-      add_constraint(denominator*var <= lb_expr);
+      refine_no_check(denominator*var <= lb_expr);
   }
   else if (ub_expr.coefficient(var) == 0) {
     // Here `var' only occurs in `lb_expr'.
@@ -3087,9 +2985,9 @@ bounded_affine_image(const Variable var,
 			     lb_expr,
 			     denominator);
     if (denominator > 0)
-      add_constraint(denominator*var <= ub_expr);
+      refine_no_check(denominator*var <= ub_expr);
     else
-      add_constraint(ub_expr <= denominator*var);
+      refine_no_check(ub_expr <= denominator*var);
   }
   else {
     // Here `var' occurs in both `lb_expr' and `ub_expr'.
@@ -3097,14 +2995,15 @@ bounded_affine_image(const Variable var,
     const Variable new_var = Variable(space_dim);
     add_space_dimensions_and_embed(1);
     // Constrain the new dimension to be equal to `ub_expr'.
-    add_constraint(denominator*new_var == ub_expr);
+    refine_no_check(denominator*new_var == ub_expr);
     // Apply the affine lower bound.
     generalized_affine_image(var,
 			     GREATER_OR_EQUAL,
 			     lb_expr,
 			     denominator);
-    // Now apply the affine upper bound, as recorded in `new_var'.
-    add_constraint(new_var >= var);
+    if (!marked_empty())
+      // Now apply the affine upper bound, as recorded in `new_var'.
+      refine_no_check(new_var >= var);
     // Remove the temporarily added dimension.
     remove_higher_space_dimensions(space_dim-1);
   }
@@ -3145,12 +3044,12 @@ bounded_affine_preimage(const Variable var,
   // Check whether `var' occurs in neither `lb_expr' nor `ub_expr'.
   if (lb_expr.coefficient(var) == 0 && ub_expr.coefficient(var) == 0) {
     if (denominator > 0) {
-      add_constraint(lb_expr <= denominator*var);
-      add_constraint(denominator*var <= ub_expr);
+      refine_no_check(lb_expr <= denominator*var);
+      refine_no_check(denominator*var <= ub_expr);
     }
     else {
-      add_constraint(ub_expr <= denominator*var);
-      add_constraint(denominator*var <= lb_expr);
+      refine_no_check(ub_expr <= denominator*var);
+      refine_no_check(denominator*var <= lb_expr);
     }
     unconstrain(var);
   }
@@ -3171,12 +3070,12 @@ bounded_affine_preimage(const Variable var,
     // Constrain the new dimension as dictated by `lb_expr' and `ub_expr'.
     // (we force minimization because we will need the generators).
     if (denominator > 0) {
-      add_constraint(lb_expr <= denominator*new_var);
-      add_constraint(denominator*new_var <= ub_expr);
+      refine_no_check(lb_expr <= denominator*new_var);
+      refine_no_check(denominator*new_var <= ub_expr);
     }
     else {
-      add_constraint(ub_expr <= denominator*new_var);
-      add_constraint(denominator*new_var <= lb_expr);
+      refine_no_check(ub_expr <= denominator*new_var);
+      refine_no_check(denominator*new_var <= lb_expr);
     }
     // Remove the temporarily added dimension.
     remove_higher_space_dimensions(space_dim-1);
@@ -3360,16 +3259,16 @@ generalized_affine_preimage(const Variable var,
     = (denominator > 0) ? relsym : reversed_relsym;
   switch (corrected_relsym) {
   case LESS_THAN:
-    add_constraint(denominator*var < expr);
+    refine_no_check(denominator*var < expr);
     break;
   case LESS_OR_EQUAL:
-    add_constraint(denominator*var <= expr);
+    refine_no_check(denominator*var <= expr);
     break;
   case GREATER_OR_EQUAL:
-    add_constraint(denominator*var >= expr);
+    refine_no_check(denominator*var >= expr);
     break;
   case GREATER_THAN:
-    add_constraint(denominator*var > expr);
+    refine_no_check(denominator*var > expr);
     break;
   default:
     // The EQUAL and NOT_EQUAL cases have been already dealt with.
@@ -3421,19 +3320,19 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
   if (lhs_space_dim == 0) {
     switch (relsym) {
     case LESS_THAN:
-      add_constraint(lhs < rhs);
+      refine_no_check(lhs < rhs);
       break;
     case LESS_OR_EQUAL:
-      add_constraint(lhs <= rhs);
+      refine_no_check(lhs <= rhs);
       break;
     case EQUAL:
-      add_constraint(lhs == rhs);
+      refine_no_check(lhs == rhs);
       break;
     case GREATER_OR_EQUAL:
-      add_constraint(lhs >= rhs);
+      refine_no_check(lhs >= rhs);
       break;
     case GREATER_THAN:
-      add_constraint(lhs > rhs);
+      refine_no_check(lhs > rhs);
       break;
     case NOT_EQUAL:
       // The NOT_EQUAL case has been already dealt with.
@@ -3463,7 +3362,7 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
 
     // Constrain the new dimension to be equal to the right hand side.
     // (check for emptiness because we will add lines).
-    add_constraint(new_var == rhs);
+    refine_no_check(new_var == rhs);
     if (!is_empty()) {
       // Existentially quantify the variables in the left hand side.
       add_recycled_generators(new_lines);
@@ -3473,19 +3372,19 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
       // (we force minimization because we will need the generators).
       switch (relsym) {
       case LESS_THAN:
-	add_constraint(lhs < new_var);
+	refine_no_check(lhs < new_var);
 	break;
       case LESS_OR_EQUAL:
-	add_constraint(lhs <= new_var);
+	refine_no_check(lhs <= new_var);
 	break;
       case EQUAL:
-	add_constraint(lhs == new_var);
+	refine_no_check(lhs == new_var);
 	break;
       case GREATER_OR_EQUAL:
-	add_constraint(lhs >= new_var);
+	refine_no_check(lhs >= new_var);
 	break;
       case GREATER_THAN:
-	add_constraint(lhs > new_var);
+	refine_no_check(lhs > new_var);
 	break;
       case NOT_EQUAL:
 	// The NOT_EQUAL case has been already dealt with.
@@ -3511,19 +3410,19 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
     // the right hand side expression as dictated by `relsym'.
     switch (relsym) {
     case LESS_THAN:
-      add_constraint(lhs < rhs);
+      refine_no_check(lhs < rhs);
       break;
     case LESS_OR_EQUAL:
-      add_constraint(lhs <= rhs);
+      refine_no_check(lhs <= rhs);
       break;
     case EQUAL:
-      add_constraint(lhs == rhs);
+      refine_no_check(lhs == rhs);
       break;
     case GREATER_OR_EQUAL:
-      add_constraint(lhs >= rhs);
+      refine_no_check(lhs >= rhs);
       break;
     case GREATER_THAN:
-      add_constraint(lhs > rhs);
+      refine_no_check(lhs > rhs);
       break;
     case NOT_EQUAL:
       // The NOT_EQUAL case has been already dealt with.
@@ -3599,7 +3498,7 @@ PPL::Polyhedron::generalized_affine_preimage(const Linear_Expression& lhs,
 
     // Constrain the new dimension to be equal to `lhs'
     // (also check for emptiness because we have to add lines).
-    add_constraint(new_var == lhs);
+    refine_no_check(new_var == lhs);
     if (!is_empty()) {
       // Existentially quantify the variables in the left hand side.
       add_recycled_generators(new_lines);
@@ -3608,19 +3507,19 @@ PPL::Polyhedron::generalized_affine_preimage(const Linear_Expression& lhs,
       // the right hand side as dictated by `relsym'.
       switch (relsym) {
       case LESS_THAN:
-	add_constraint(new_var < rhs);
+	refine_no_check(new_var < rhs);
 	break;
       case LESS_OR_EQUAL:
-	add_constraint(new_var <= rhs);
+	refine_no_check(new_var <= rhs);
 	break;
       case EQUAL:
-	add_constraint(new_var == rhs);
+	refine_no_check(new_var == rhs);
 	break;
       case GREATER_OR_EQUAL:
-	add_constraint(new_var >= rhs);
+	refine_no_check(new_var >= rhs);
 	break;
       case GREATER_THAN:
-	add_constraint(new_var > rhs);
+	refine_no_check(new_var > rhs);
 	break;
       case NOT_EQUAL:
 	// The NOT_EQUAL case has been already dealt with.
@@ -3638,19 +3537,19 @@ PPL::Polyhedron::generalized_affine_preimage(const Linear_Expression& lhs,
     // the right hand side expression as dictated by `relsym'.
     switch (relsym) {
     case LESS_THAN:
-      add_constraint(lhs < rhs);
+      refine_no_check(lhs < rhs);
       break;
     case LESS_OR_EQUAL:
-      add_constraint(lhs <= rhs);
+      refine_no_check(lhs <= rhs);
       break;
     case EQUAL:
-      add_constraint(lhs == rhs);
+      refine_no_check(lhs == rhs);
       break;
     case GREATER_OR_EQUAL:
-      add_constraint(lhs >= rhs);
+      refine_no_check(lhs >= rhs);
       break;
     case GREATER_THAN:
-      add_constraint(lhs > rhs);
+      refine_no_check(lhs > rhs);
       break;
     case NOT_EQUAL:
       // The NOT_EQUAL case has been already dealt with.

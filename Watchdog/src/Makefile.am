@@ -17,8 +17,8 @@
 # along with this program; if not, write to the Free Software Foundation,
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 #
-# For the most up-to-date information see the CS@Parma software
-# site: http://www.cs.unipr.it/Software/ . */
+# For the most up-to-date information see the Parma Polyhedra Library
+# site: http://www.cs.unipr.it/ppl/ . */
 
 # The ordering of the following list *matters*!
 INCLUDE_FILES = \
@@ -58,8 +58,6 @@ EXTRA_DIST = \
 $(SOURCE_FILES) \
 pwl_header.hh
 
-if BUILD_WATCHDOG_LIBRARY
-
 # Libtool -version-info for libpwl.la.
 #
 #  1. Start with version information of `0:0:0' for each Libtool library.
@@ -86,8 +84,9 @@ if BUILD_WATCHDOG_LIBRARY
 #	    0.2			0.5		    1:0:0
 #	    0.3			0.6		    2:0:0
 #	    0.4			0.7		    3:0:0
-#	    0.5			0.8		    3:0:0
-#	    0.6			0.10		    4:0:0
+#	    0.4			0.8		    3:0:0
+#	    0.4			0.9		    3:0:0
+#	    0.5			0.10		    4:0:0
 
 LIBPWL_LT_CURRENT =  4
 LIBPWL_LT_REVISION = 0
@@ -140,6 +139,4 @@ $(nodist_noinst_HEADERS)
 dist-hook:
 	mv -f $(distdir)/pwl.hh $(distdir)/pwl.hh.dist
 
-endif BUILD_WATCHDOG_LIBRARY
-
-MOSTLYCLEANFILES = $(BUILT_SOURCES)
+CLEANFILES = $(BUILT_SOURCES)

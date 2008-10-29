@@ -57,7 +57,10 @@ LIBPPL_LT_CURRENT =  7
 LIBPPL_LT_REVISION = 0
 LIBPPL_LT_AGE =      0
 
-AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)/src @extra_includes@
+AM_CPPFLAGS = \
+-I$(top_builddir) \
+-I$(top_srcdir)/src \
+@extra_includes@
 
 lib_LTLIBRARIES = libppl.la
 
@@ -115,6 +118,7 @@ Coefficient_traits_template.hh \
 Checked_Number.types.hh \
 $(COEFFICIENT_TYPES_INCLUDE_FILES) \
 Coefficient.types.hh \
+stdiobuf.types.hh \
 globals.types.hh \
 iterator_to_const.types.hh \
 distances.types.hh \
@@ -184,6 +188,8 @@ checked_numeric_limits.hh \
 $(COEFFICIENT_DEFS_INCLUDE_FILES) \
 Coefficient.defs.hh \
 Coefficient.inlines.hh \
+stdiobuf.defs.hh \
+stdiobuf.inlines.hh \
 globals.defs.hh \
 globals.inlines.hh \
 math_utilities.defs.hh \
@@ -307,11 +313,11 @@ Partially_Reduced_Product.types.hh \
 Partially_Reduced_Product.defs.hh \
 Partially_Reduced_Product.inlines.hh \
 Partially_Reduced_Product.templates.hh \
-Any_Pointset.types.hh \
-Any_Pointset.defs.hh \
-Any_Pointset.inlines.hh \
 max_space_dimension.hh \
 algorithms.hh
+#Any_Pointset.types.hh \
+#Any_Pointset.defs.hh \
+#Any_Pointset.inlines.hh \
 #Ask_Tell.types.hh \
 #Ask_Tell.defs.hh \
 #Ask_Tell.inlines.hh \
@@ -380,6 +386,7 @@ minimize.cc \
 simplify.cc \
 Grid_conversion.cc \
 Grid_simplify.cc \
+stdiobuf.cc \
 globals.cc \
 mp_std_bits.cc \
 version.cc \
@@ -400,7 +407,15 @@ libppl_la_LDFLAGS = \
 $(NO_UNDEFINED_FLAG) \
 -version-info $(LIBPPL_LT_CURRENT):$(LIBPPL_LT_REVISION):$(LIBPPL_LT_AGE)
 
+if BUILD_CXX_INTERFACE
+
 include_HEADERS = ppl.hh
+
+else !BUILD_CXX_INTERFACE
+
+noinst_HEADERS = ppl.hh
+
+endif !BUILD_CXX_INTERFACE
 
 nodist_noinst_HEADERS = ppl_include_files.hh
 
@@ -415,7 +430,7 @@ EXTRA_DIST = ppl_header.hh ppl-config.cc.in version.hh.in
 
 if HAVE_PERL
 
-ppl.hh:	$(top_builddir)/config.h $(top_builddir)/src/version.hh ppl_header.hh ppl_include_files.hh $(INCLUDE_FILES) $(NESTED_INCLUDE_FILES) Makefile $(top_builddir)/utils/build_header
+ppl.hh:	$(top_builddir)/ppl-config.h $(top_builddir)/src/version.hh ppl_header.hh ppl_include_files.hh $(INCLUDE_FILES) $(NESTED_INCLUDE_FILES) Makefile $(top_builddir)/utils/build_header
 	$(top_builddir)/utils/build_header \
 		-I $(top_builddir) -I $(top_builddir)/src \
 		$(top_srcdir)/src/ppl_header.hh >$@
@@ -474,4 +489,4 @@ dist-hook:
 	mv -f $(distdir)/COPYING.cc $(distdir)/COPYING.cc.dist
 	mv -f $(distdir)/CREDITS.cc $(distdir)/CREDITS.cc.dist
 
-MOSTLYCLEANFILES = $(BUILT_SOURCES)
+CLEANFILES = $(BUILT_SOURCES)

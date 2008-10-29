@@ -216,7 +216,7 @@ PPL::Grid::limited_congruence_extrapolation_assign(const Grid& y,
 	new_cgs.insert(cg);
     }
     x.congruence_widening_assign(y, tp);
-    x.add_congruences(new_cgs);
+    x.add_recycled_congruences(new_cgs);
   }
   else
     // There are tokens, so widening will leave the grid the same.
@@ -418,7 +418,7 @@ PPL::Grid::limited_generator_extrapolation_assign(const Grid& y,
 	new_cgs.insert(cg);
     }
     x.generator_widening_assign(y, tp);
-    x.add_congruences(new_cgs);
+    x.add_recycled_congruences(new_cgs);
   }
   else
     // There are tokens, so widening will leave the grid the same.
@@ -524,7 +524,7 @@ PPL::Grid::limited_extrapolation_assign(const Grid& y,
 	new_cgs.insert(cg);
     }
     x.widening_assign(y, tp);
-    x.add_congruences(new_cgs);
+    x.add_recycled_congruences(new_cgs);
   }
   else
     // There are tokens, so widening will leave the grid the same.

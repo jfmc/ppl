@@ -1,10 +1,10 @@
 
-This is the release 0.6 of the Parma Watchdog Library:
+This is the release 0.5 of the Parma Watchdog Library:
 a C++ library for software timeouts.
 
 To be continued...
 
-See http://www.cs.unipr.it/Software/ for more information on the PWL.
+See http://www.cs.unipr.it/ppl/ for more information on the PWL.
 See the file COPYING for licensing information.
 See the file INSTALL for build and installation instructions.
 See the file NEWS for recent project news.
@@ -12,10 +12,10 @@ See the file BUGS for known bugs and how to report new ones.
 See the file CREDITS for a list of people and organizations that
 contributed to the PWL.
 
-Here is the contents of the PWL 0.6 source distribution
-(2 directories, 56 files):
+Here is the contents of the PWL 0.5 source distribution
+(5 directories, 97 files):
 
-Watchdog
+pwl-0.5
 |-- BUGS
 |-- COPYING
 |-- CREDITS
@@ -33,8 +33,45 @@ Watchdog
 |-- configure
 |-- configure.ac
 |-- depcomp
+|-- doc
+|   |-- Makefile.am
+|   |-- Makefile.in
+|   |-- README.doc
+|   |-- devref.doxyconf-html
+|   |-- devref.doxyconf-html.in
+|   |-- devref.doxyconf-latex
+|   |-- devref.doxyconf-latex.in
+|   |-- devref.tex
+|   |-- fdl.dox
+|   |-- fdl.pdf
+|   |-- fdl.ps.gz
+|   |-- fdl.tex
+|   |-- fdl.txt
+|   |-- gpl.dox
+|   |-- gpl.pdf
+|   |-- gpl.ps.gz
+|   |-- gpl.tex
+|   |-- gpl.txt
+|   |-- pwl-user-0.5-html.tar.gz
+|   |-- pwl-user-0.5.pdf
+|   |-- pwl-user-0.5.ps.gz
+|   |-- pwl.sty
+|   |-- user.doxyconf-html
+|   |-- user.doxyconf-html.in
+|   |-- user.doxyconf-latex
+|   |-- user.doxyconf-latex.in
+|   `-- user.tex
 |-- install-sh
 |-- ltmain.sh
+|-- m4
+|   |-- Makefile.am
+|   |-- Makefile.in
+|   |-- ax_prefix_config_h.m4
+|   |-- libtool.m4
+|   |-- ltoptions.m4
+|   |-- ltsugar.m4
+|   |-- ltversion.m4
+|   `-- lt~obsolete.m4
 |-- missing
 |-- mkinstalldirs
 |-- src
@@ -70,6 +107,13 @@ Watchdog
 |   |-- Watchdog.types.hh
 |   |-- pwl.hh.dist
 |   `-- pwl_header.hh
+|-- tests
+|   |-- Makefile.am
+|   |-- Makefile.in
+|   |-- pwl_test.cc
+|   |-- pwl_test.hh
+|   |-- simple1.cc
+|   `-- valgrind_suppressions
 `-- utils
     |-- Makefile.am
     |-- Makefile.in

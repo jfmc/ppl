@@ -118,17 +118,6 @@ Polyhedron::can_recycle_congruence_systems() {
   return false;
 }
 
-} // namespace Parma_Polyhedra_Library
-
-/*! \relates Parma_Polyhedra_Library::Polyhedron */
-inline void
-std::swap(Parma_Polyhedra_Library::Polyhedron& x,
-	  Parma_Polyhedra_Library::Polyhedron& y) {
-  x.swap(y);
-}
-
-namespace Parma_Polyhedra_Library {
-
 inline bool
 Polyhedron::marked_empty() const {
   return status.test_empty();
@@ -400,17 +389,6 @@ Polyhedron::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
   return add_congruences_and_minimize(cgs);
 }
 
-inline void
-Polyhedron::add_grid_generator(const Grid_Generator& g) const {
-  used(g);
-}
-
-inline bool
-Polyhedron::add_grid_generator_and_minimize(const Grid_Generator& g) const {
-  used(g);
-  return !is_empty();
-}
-
 /*! \relates Polyhedron */
 inline bool
 operator!=(const Polyhedron& x, const Polyhedron& y) {
@@ -423,6 +401,26 @@ Polyhedron::strictly_contains(const Polyhedron& y) const {
   return x.contains(y) && !y.contains(x);
 }
 
+namespace Interfaces {
+
+inline bool
+is_necessarily_closed_for_interfaces(const Polyhedron& ph) {
+  return ph.is_necessarily_closed();
+}
+
+} // namespace Interfaces
+
 } // namespace Parma_Polyhedra_Library
+
+namespace std {
+
+/*! \relates Parma_Polyhedra_Library::Polyhedron */
+inline void
+swap(Parma_Polyhedra_Library::Polyhedron& x,
+     Parma_Polyhedra_Library::Polyhedron& y) {
+  x.swap(y);
+}
+
+} // namespace std
 
 #endif // !defined(PPL_Polyhedron_inlines_hh)

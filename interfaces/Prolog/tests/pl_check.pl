@@ -86,9 +86,11 @@ run_all([]).
 
 run_fail(Group) :-
    group_predicates(Group, Predicates),
+   prolog_system(System),
    error_message(['Error occurred while performing test', Group,
-                  'which checks predicates:', also, Predicates]),
-   error_message(['Prolog interface checks failed.']),
+                  'which checks predicates:', Predicates]),
+   error_message(['Prolog interface checks failed on', System,
+                  'Prolog.']),
    ppl_finalize,
    fail.
 
@@ -104,8 +106,11 @@ run_exception(Group, Exception) :-
 	;
 	    Kind = 'Exception'
 	),
+        prolog_system(System),
  	display_message([Kind, 'occurred while performing test ', Group,
-			 'which checks predicates ', nl, Predicates]),
+                        'which checks predicates ', nl, Predicates]),
+        display_message(['Prolog interface checks failed on', System,
+                  'Prolog.']),
 	print_exception_term(Exception),
 	% Do fail for all but overflow exceptions.
 	Exception = ppl_overflow_error(_).
@@ -152,8 +157,7 @@ run_one(new_polyhedron_from_polyhedron) :-
 
 run_one(new_polyhedron_from_representations) :-
   new_polyhedron_from_cons,
-  new_polyhedron_from_gens,
-  new_polyhedron_from_bounding_box.
+  new_polyhedron_from_gens.
 
 run_one(swap_polyhedra) :-
   swap.
@@ -243,9 +247,6 @@ run_one(compare_polyhedra) :-
    disjoint_from,
    equals,
    ok.
-
-run_one(polyhedron_boxes) :-
-   get_bounding_box.
 
 run_one(catch_time) :-
    time_out.
@@ -433,49 +434,6 @@ new_polyhedron_from_gens(T, GS) :-
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(Pa).
 
-% Tests ppl_new_C_Polyhedron_from_bounding_box/2 and
-%       ppl_new_NNC_Polyhedron_from_bounding_box/2.
-new_polyhedron_from_bounding_box :-
-  new_polyhedron_from_bounding_box(c, [i(c(1/2), o(pinf)), i(o(minf), c(-1/2))]),
-  new_polyhedron_from_bounding_box(c, [empty]),
-  new_polyhedron_from_bounding_box(nnc,[i(o(0/2), o(pinf)), i(o(minf), o(1))]),
-  Max = -4,
-  new_polyhedron_from_bounding_box(c, [i(c(Max), c(1)), i(c(-1), c(1))]),
-  new_polyhedron_from_bounding_box(nnc, [i(c(Max), c(1)), i(c(-1), c(1))]).
-
-new_polyhedron_from_bounding_box(T, Box) :-
-  clean_ppl_new_Polyhedron_from_bounding_box(T, Box, P),
-  ppl_Polyhedron_get_bounding_box(P, any, Box1),
-  clean_ppl_new_Polyhedron_from_bounding_box(T, Box1, P1),
-  ppl_Polyhedron_equals_Polyhedron(P, P1),
-  \+ clean_ppl_new_Polyhedron_from_bounding_box(T, Box, 0),
-  \+ clean_ppl_new_Polyhedron_from_bounding_box(T,
-             [i(x, c(1/2)), i(c(0), o(pinf))], _),
-  \+ clean_ppl_new_Polyhedron_from_bounding_box(T,
-             [i(x(minf), c(1/2)), i(c(0), o(pinf))], _),
-  \+ clean_ppl_new_Polyhedron_from_bounding_box(T,
-             [i(o(minf), c(1/2)), i(c(0), c(pinf))], _),
-  \+ clean_ppl_new_Polyhedron_from_bounding_box(T,
-             [i(c(minf), c(1/2)), i(c(0), o(pinf))], _),
-  \+ clean_ppl_new_Polyhedron_from_bounding_box(T,
-             [i(o(minf), c(inf)), i(c(0), o(pinf))], _),
-  \+ clean_ppl_new_Polyhedron_from_bounding_box(T,
-             [i(c(minf), c(1+2)), i(c(0), o(pinf))], _),
-  \+ clean_ppl_new_Polyhedron_from_bounding_box(T,
-             [i(c(minf), c(n/2)), i(c(0), o(pinf))], _),
-  \+ clean_ppl_new_Polyhedron_from_bounding_box(T,
-             [i(c(minf), c(2/d)), i(c(0), o(pinf))], _),
-  \+ clean_ppl_new_Polyhedron_from_bounding_box(T,
-             [i(c(minf), c(2/1)), i(c(n), o(pinf))], _),
-  \+ clean_ppl_new_Polyhedron_from_bounding_box(T,
-             [i(e), i(c(n), o(pinf))], _),
-  \+ clean_ppl_new_Polyhedron_from_bounding_box(T,
-             [i(c(minf), c(2/1), c(1)), i(c(n), o(pinf))], _),
-  \+ clean_ppl_new_Polyhedron_from_bounding_box(T,
-             [x(c(minf), c(2/1)), i(c(n), o(pinf))], _),
-  !,
-  ppl_delete_Polyhedron(P),
-  ppl_delete_Polyhedron(P1).
 
 %%%%%%%%%%%%%%%%% Swap Polyhedra %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -1983,48 +1941,6 @@ ok(T) :-
 
 %%%%%%%%%%%%%%%%%%%%%%%%% Polyhedron Bounding Values %%%%%%%%%%%%%%%%%%%%%%%
 
-% Tests ppl_Polyhedron_get_bounding_box/3.
-
-get_bounding_box:-
-  make_vars(2, [A, B]),
-  get_bounding_box(c, [B >= 0, 4*A =< 2],
-                     [i(o(minf), c(1/2)), i(c(0), o(pinf))]),
-  get_bounding_box(c, [], [i(o(minf), o(pinf)), i(o(minf), o(pinf))]),
-  get_bounding_box(c, [1=0], [empty]),
-  get_bounding_box(c, [A =< 4, B =< 4, 3*A + B >= 2],
-                     [i(c(-2/3), c(4)), i(c(-10), c(4))]),
-  get_bounding_box(nnc, [B > 0, 4*A =< 2],
-                     [i(o(minf), c(1/2)), i(o(0), o(pinf))]),
-  get_bounding_box(nnc,[A > 1, B > 1, A < 1, B < 1], [empty]),
-  get_bounding_box(nnc, [A =< 4, B =< 4, 3*A + B > 2],
-                     [i(o(-2/3), c(4)), i(o(-10), c(4))]).
-
-get_bounding_box(T, CS, Box) :-
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 2, universe, P),
-  ppl_Polyhedron_add_constraints(P, CS),
-  \+ppl_Polyhedron_get_bounding_box(P, any, box),
-  ppl_Polyhedron_get_bounding_box(P, any, Box),
-  ppl_Polyhedron_get_bounding_box(P, polynomial, Box1),
-  ppl_Polyhedron_get_bounding_box(P, simplex, Box2),
-  clean_ppl_new_Polyhedron_from_bounding_box(T, Box, P1),
-  clean_ppl_new_Polyhedron_from_bounding_box(T, Box1, P2),
-  clean_ppl_new_Polyhedron_from_bounding_box(T, Box2, P3),
-  (Box \== [empty]
-  ->
-    ppl_Polyhedron_contains_Polyhedron(P1, P),
-    ppl_Polyhedron_contains_Polyhedron(P2, P1),
-    ppl_Polyhedron_contains_Polyhedron(P3, P1)
-   ;
-    ppl_Polyhedron_is_empty(P1),
-    ppl_Polyhedron_is_empty(P2),
-    ppl_Polyhedron_is_empty(P3)
-  ),
-  !,
-  ppl_delete_Polyhedron(P),
-  ppl_delete_Polyhedron(P1),
-  ppl_delete_Polyhedron(P2),
-  ppl_delete_Polyhedron(P3).
-
 % Tests ppl_Polyhedron_bounds_from_above/2.
 bounds_from_above :-
   make_vars(2, [A, B]),
@@ -2145,76 +2061,87 @@ minimize_with_point(T, CS, LE, N, D, Min, Point) :-
 %
 
 time_out :-
+  %% FIXME!
+  %% Ciao does not throw a timeout exception.
+  prolog_system('Ciao'), !.
+time_out :-
   time_out(c), time_out(nnc).
 
+% Avoid use of add_and_minimize predicate as that is deprecated.
+add_constraints_and_get_minimized_constraints(P, CS) :-
+    ppl_Polyhedron_add_constraints(P, CS),
+    ppl_Polyhedron_get_minimized_constraints(P, _).
+
+% Find the constraints for a hypercube for a given dimension.
+build_hypercube_constraints(0, [], []).
+build_hypercube_constraints(Dim, [V|Vars], [V >= 0, V =< 1|CS]) :-
+    Dim1 is Dim - 1,
+    build_hypercube_constraints(Dim1, Vars, CS).
+
+% Find the dimension and constraints for
+% a hypercube that causes a timeout exception.
+compute_timeout_hypercube(T, Dim_in, Dim_out, CS_out) :-
+    Dim_in =< 100,
+    clean_ppl_new_Polyhedron_from_space_dimension(T, Dim_in, universe, P),
+    make_vars(Dim_in, Vars),
+    build_hypercube_constraints(Dim_in, Vars, CS),
+    ppl_timeout_exception_atom(Time_Out_Atom),
+    catch(add_constraints_and_get_minimized_constraints(P, CS),
+           Time_Out_Atom, Catch_Exception = ok),
+    (Catch_Exception == ok ->
+        Dim_out = Dim_in,
+        CS_out = CS
+    ;
+        Dim1 is Dim_in+1,
+        ppl_delete_Polyhedron(P),
+        compute_timeout_hypercube(T, Dim1, Dim_out, CS_out)
+    ).
+
 time_out(T) :-
-  make_vars(6, [A, B, C, D, E, F]),
-  CS = [8*A - 7*B + 4*D - E - 8*F >= -3,
-        6*A + 8*B + 4*C - 6*D + 6*E + 6*F >= 5,
-        6*A + 7*B - 6*C + 3*D + 3*E + 5*F >= 4,
-        6*A + C + 8*D - 2*E - 3*F >= -6,
-        4*A - 3*B + 3*D - 3*E + 4*F >= 0,
-        3*A - 3*B - 7*C - 4*D - 7*E + 8*F >= 8,
-        -2*A + 5*B + C + 2*D - 2*E + 6*F >= -7,
-        -4*A + 7*B - 7*C + 2*D - 2*E - 7*F >= 1,
-        -5*A + 7*B + 5*C + 6*D - 5*E - 2*F >= -7,
-        -5*A + 6*B - 6*C - 2*D + 4*E - 2*F >= -5,
-        -5*A + 5*B + 8*C + D + E - 6*F >= -6],
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 6, universe, Q),
   ppl_set_timeout_exception_atom(pl_time_out),
   \+  ppl_timeout_exception_atom(pl_x),
   ppl_timeout_exception_atom(pl_time_out),
-  N1 = 1,
+  ppl_set_timeout(10),
+  compute_timeout_hypercube(T, 1, Dim, CS),
+  !,
+  N1 is 1,
+  ppl_reset_timeout,
+  ppl_set_timeout_exception_atom(pl_time_out),
   ppl_set_timeout(N1),
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 6, universe, P),
-  time_watch(T, ppl_Polyhedron_add_constraints_and_minimize(P, CS),
-             (ppl_Polyhedron_add_constraints_and_minimize(Q, CS)),
-              (true, (display_message(
-                 ['while testing the time_out, polyhedron with topology',
-                                             T, 'timeout after', N1,ms])))),
-  ppl_Polyhedron_equals_Polyhedron(P, Q),
+  ppl_timeout_exception_atom(Time_Out_Atom),
+  clean_ppl_new_Polyhedron_from_space_dimension(T, Dim, universe, P),
+  catch(add_constraints_and_get_minimized_constraints(P, CS),
+           Time_Out_Atom, Catch_Exception = ok),
+  (Catch_Exception == ok ->
+      display_message(['while testing time_out, polyhedron with topology',
+                 T, 'timeout after', N1, ms])
+  ;
+      display_message(['while testing time_out, polyhedron with topology',
+                 T, 'no timeout after', N1, ms]),
+      fail
+  ),
+  ppl_Polyhedron_OK(P),
   !,
   ppl_delete_Polyhedron(P),
-  ppl_delete_Polyhedron(Q),
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 6, universe, Q1),
-  N2 = 10,
+  N2 is 40,
+  ppl_reset_timeout,
+  ppl_set_timeout_exception_atom(pl_time_out),
   ppl_set_timeout(N2),
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 6, universe, P1),
-  time_watch(T, ppl_Polyhedron_add_constraints_and_minimize(P1, CS),
-             (ppl_Polyhedron_add_constraints_and_minimize(Q1, CS)),
-              (true, display_message(
-                 ['polyhedron with topology',T,'timeout after',N2,ms]))),
-  ppl_Polyhedron_equals_Polyhedron(P1, Q1),
-  ppl_set_timeout_exception_atom(time_out),
+  ppl_timeout_exception_atom(Time_Out_Atom1),
+  clean_ppl_new_Polyhedron_from_space_dimension(T, Dim, universe, Q),
+  catch(ppl_Polyhedron_is_universe(Q),
+           Time_Out_Atom1, Catch_Exception = not_ok),
+  (Catch_Exception == not_ok ->
+      display_message(['while testing time_out, polyhedron with topology',
+                 T, 'timeout after', N2, ms]),
+      fail
+  ;
+      display_message(['while testing time_out, polyhedron with topology',
+                 T, 'no timeout after', N2, ms])
+  ),
+  ppl_Polyhedron_OK(Q),
   !,
-  ppl_delete_Polyhedron(P1),
-  ppl_delete_Polyhedron(Q1).
-
-% time_watch(+Topology, +Goal, +No_Time_Out, +Time_Out)
-% time_watch/4 makes a copy of Goal with a copy of the polyhedron
-% and executes it with the currrent timeout exception settings.
-% If the call exceeds the time allowed, it catches the exception
-% and performs the Time_Out goal.
-% If the call does not exceed the time allowed,
-% then the timeout exception time is reset and
-% then Goal is executed and then the No_Time_Out is executed.
-
-time_watch(Topology, Goal, No_Time_Out, Time_Out) :-
-   !,
-   Goal =.. [PPLFunct, Poly|Args],
-   clean_ppl_new_Polyhedron_from_Polyhedron(Topology, Poly,
-                                            Topology, Polyhedron_Copy),
-   Goal_Copy =.. [PPLFunct, Polyhedron_Copy|Args],
-   ppl_timeout_exception_atom(Time_Out_Atom),
-     (catch(Goal_Copy, Time_Out_Atom, fail) ->
-       (ppl_reset_timeout,
-        ppl_Polyhedron_swap(Poly, Polyhedron_Copy),
-        call(No_Time_Out))
-     ;
-       call(Time_Out)
-   ),
-   !,
-   ppl_delete_Polyhedron(Polyhedron_Copy).
+  ppl_delete_Polyhedron(Q).
 
 %%%%%%%%%%%%%%%%% MIP_Problem tests %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -2223,8 +2150,10 @@ mip_problem :-
   mip_from_mip,
   mip_swap,
   mip_get,
+  mip_control_parameters,
   mip_clear,
   mip_satisfiable,
+  mip_add,
   mip_set,
   mip_solve,
   mip_eval.
@@ -2314,6 +2243,28 @@ mip_get :-
   ppl_delete_MIP_Problem(MIP1),
   ppl_delete_MIP_Problem(MIP).
 
+mip_control_parameters :-
+  make_vars(1, [A]),
+
+  ppl_new_MIP_Problem(3, [], A + 3, min, MIP0),
+  clean_ppl_new_MIP_Problem_from_MIP_Problem(MIP0, MIP1),
+  ppl_MIP_Problem_get_control_parameter(MIP0, pricing, Cp_value0),
+  ppl_MIP_Problem_set_control_parameter(MIP1, Cp_value0),
+  ppl_MIP_Problem_get_control_parameter(MIP1, pricing, Cp_value1),
+  Cp_value0 == Cp_value1,
+  ppl_MIP_Problem_set_control_parameter(MIP0, pricing_steepest_edge_float),
+  ppl_MIP_Problem_get_control_parameter(MIP0, pricing, Cp_value2),
+  Cp_value2 == pricing_steepest_edge_float,
+  ppl_MIP_Problem_set_control_parameter(MIP0, pricing_steepest_edge_exact),
+  ppl_MIP_Problem_get_control_parameter(MIP0, pricing, Cp_value3),
+  Cp_value3 == pricing_steepest_edge_exact,
+  ppl_MIP_Problem_set_control_parameter(MIP0, pricing_textbook),
+  ppl_MIP_Problem_get_control_parameter(MIP0, pricing, Cp_value4),
+  Cp_value4 == pricing_textbook,
+  !,
+  ppl_delete_MIP_Problem(MIP0),
+  ppl_delete_MIP_Problem(MIP1).
+
 mip_clear :-
   make_vars(3, [A, B, C]),
   clean_ppl_new_MIP_Problem(3, [A >= -1, B >= 5, C >= 0, C =< 3], C, min, MIP),
@@ -2351,9 +2302,12 @@ mip_add :-
   clean_ppl_new_MIP_Problem(
     3, [A >= 0, A =< 3, A + B + C >= 9, B >= 5, C =< 5], 2*B-C, max, MIP1),
   ppl_MIP_Problem_solve(MIP, Status),
-  ppl_MIP_Problem_solve(MIP1, Status),
+  Status == optimized,
+  ppl_MIP_Problem_solve(MIP1, Status1),
+  Status1 == unbounded,
   ppl_MIP_Problem_optimal_value(MIP, N, D),
-  ppl_MIP_Problem_optimal_value(MIP1, N, D),
+  N == 0,
+  D == 1,
   ppl_MIP_Problem_constraints(MIP, CS),
   clean_ppl_new_Polyhedron_from_constraints(c, CS, PH),
   ppl_MIP_Problem_constraints(MIP1, Expect_CS),
@@ -2613,27 +2567,42 @@ exception_prolog1(N, V) :-
    N1 is N - 1,
    exception_prolog1(N1, V).
 
-%% TEST: Prolog_unsigned_out_of_range
+%% TEST: Prolog_unsigned_out_of_range.
+%% This test accepts any one of three exceptions:
+%% ppl_invalid_argument: with a 32 bit system, the number 1 << 34 is expected
+%%                       to throw this Prolog exception;
+%% out_of_memory:        with a 64 bit system, the number 1 << 34 does not
+%%                       throw an exception on the Prolog side, but, with
+%%                       unbounded integers, the large number of dimensions
+%%                       will throw a bad_alloc exception in C++;
+%% ppl_overflow_error:   with bounded integers, when the number is too large,
+%%                       an overflow exception may be thrown.
+%%
 exception_prolog(1, _) :-
     pl_check_prolog_flag(bounded, Y),
    (Y == true ->
      true
     ;
-     (I = 21474836470,
-     must_catch(ppl_new_C_Polyhedron_from_generators([point('$VAR'(I))], _))
+     (I is 1 << 34,
+     must_catch(ppl_new_C_Polyhedron_from_generators([point('$VAR'(I))], _),
+                prolog_exception_error)
       )
    ).
 
 %% TEST: not_unsigned_integer
 exception_prolog(2, _) :-
-  must_catch(ppl_new_C_Polyhedron_from_space_dimension(n, universe, _)),
-  must_catch(ppl_new_C_Polyhedron_from_space_dimension(-1, universe,  _)),
-  must_catch(ppl_new_C_Polyhedron_from_generators([point('$VAR'(n))], _)),
-  must_catch(ppl_new_C_Polyhedron_from_generators([point('$VAR'(-1))], _)).
+  must_catch(ppl_new_C_Polyhedron_from_space_dimension(n, universe, _),
+             ppl_invalid_argument),
+  must_catch(ppl_new_C_Polyhedron_from_space_dimension(-1, universe,  _),
+             ppl_invalid_argument),
+  must_catch(ppl_new_C_Polyhedron_from_generators([point('$VAR'(n))], _),
+             ppl_invalid_argument),
+  must_catch(ppl_new_C_Polyhedron_from_generators([point('$VAR'(-1))], _),
+             ppl_invalid_argument).
 
 %% TEST: not_unsigned_integer
 exception_prolog(3, _) :-
-  must_catch(ppl_set_timeout(-1)).
+  must_catch(ppl_set_timeout(-1), ppl_invalid_argument).
 
 
 %% TEST: not_unsigned_integer
@@ -2641,41 +2610,43 @@ exception_prolog(4, _) :-
   clean_ppl_new_Polyhedron_from_space_dimension(c, 3, universe, P),
   clean_ppl_new_Polyhedron_from_space_dimension(c, 3, universe, Q),
   must_catch(ppl_Polyhedron_BHRZ03_widening_assign_with_tokens(
-             Q, P, -1, _)),
+             Q, P, -1, _), ppl_invalid_argument),
   must_catch(ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens(
-             Q, P, [], -1, _)),
+             Q, P, [], -1, _), ppl_invalid_argument),
   must_catch(ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens(
-             Q, P, [], -1, _)),
+             Q, P, [], -1, _), ppl_invalid_argument),
   must_catch(ppl_Polyhedron_H79_widening_assign_with_tokens(
-             Q, P, -1, _)),
+             Q, P, -1, _), ppl_invalid_argument),
   must_catch(ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens(
-             Q, P, [], -1, _)),
+             Q, P, [], -1, _), ppl_invalid_argument),
   must_catch(ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens(
-             Q, P, [], -1, _)),
+             Q, P, [], -1, _), ppl_invalid_argument),
   !,
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(Q).
 
 %% TEST: non_linear
 exception_prolog(5, [A,B,C]) :-
-  must_catch(ppl_new_C_Polyhedron_from_generators([point(B + A*C)], _)),
+  must_catch(ppl_new_C_Polyhedron_from_generators([point(B + A*C)], _),
+             ppl_invalid_argument),
   must_catch(ppl_new_C_Polyhedron_from_generators(
-                     [point(C), ray(B + C, 1)], _)),
+                     [point(C), ray(B + C, 1)], _), ppl_invalid_argument),
   must_catch(ppl_new_C_Polyhedron_from_generators(
-                     [point], _)),
+                     [point], _), ppl_invalid_argument),
   must_catch(ppl_new_C_Polyhedron_from_generators(
-                     [point(_D)], _)),
+                     [point(_D)], _), ppl_invalid_argument),
   must_catch(ppl_new_C_Polyhedron_from_constraints(
-                     [_E >= 3], _)),
+                     [_E >= 3], _), ppl_invalid_argument),
   must_catch(ppl_new_C_Polyhedron_from_constraints(
-                     [A*B = 0], _)),
+                     [A*B = 0], _), ppl_invalid_argument),
   must_catch(ppl_new_C_Polyhedron_from_constraints(
-                     [A], _)).
+                     [A], _), ppl_invalid_argument).
 
 %% TEST: not_a_variable
 exception_prolog(6, [A,_,_]) :-
   clean_ppl_new_Polyhedron_from_space_dimension(c, 3, universe, P),
-  must_catch(ppl_Polyhedron_remove_space_dimensions(P, [A,1])),
+  must_catch(ppl_Polyhedron_remove_space_dimensions(P, [A,1]),
+             ppl_invalid_argument),
   !,
   ppl_delete_Polyhedron(P).
 
@@ -2683,84 +2654,90 @@ exception_prolog(6, [A,_,_]) :-
 exception_prolog(7, [A,B,_]) :-
   clean_ppl_new_Polyhedron_from_generators(c,
                [point(A + B), ray(A), ray(B)], P),
-  must_catch(ppl_Polyhedron_affine_image(P, A, A + B + 1, i)),
+  must_catch(ppl_Polyhedron_affine_image(P, A, A + B + 1, i),
+             ppl_invalid_argument),
   !,
   ppl_delete_Polyhedron(P).
 
 %% TEST: not_a_polyhedron_handle
 exception_prolog(8, _) :-
-  must_catch(ppl_Polyhedron_space_dimension(_, _N)).
+  must_catch(ppl_Polyhedron_space_dimension(_, _N), ppl_invalid_argument).
 
 %% TEST: not_a_complexity_class
 exception_prolog(9, [A, _, _]) :-
    clean_ppl_new_Polyhedron_from_generators(c,
                [point(A)], P),
-   must_catch(ppl_Polyhedron_get_bounding_box(P, a, _Box)),
+   must_catch(
+     clean_ppl_new_Polyhedron_from_Polyhedron_with_complexity(a, c, P,
+                                                              c, _P_copy),
+              ppl_invalid_argument),
    !,
    ppl_delete_Polyhedron(P).
 
 %% TEST: not_universe_or_empty
 exception_prolog(10, _) :-
-  must_catch(ppl_new_C_Polyhedron_from_space_dimension(3, xxx, _)).
+  must_catch(ppl_new_C_Polyhedron_from_space_dimension(3, xxx, _),
+             ppl_invalid_argument).
 
 %% TEST: not_relation
 exception_prolog(11, [A, B, _]) :-
   clean_ppl_new_Polyhedron_from_generators(c,
                [point(A)], P),
-  must_catch(ppl_Polyhedron_generalized_affine_image(P, A, x, A + 1, 1)),
+  must_catch(ppl_Polyhedron_generalized_affine_image(P, A, x, A + 1, 1),
+             ppl_invalid_argument),
   must_catch(
-     ppl_Polyhedron_generalized_affine_image_lhs_rhs(P, B - 1, x, A + 1)),
+     ppl_Polyhedron_generalized_affine_image_lhs_rhs(P, B - 1, x, A + 1),
+             ppl_invalid_argument),
   must_catch(
-     ppl_Polyhedron_generalized_affine_image_lhs_rhs(P, B - 1, x + y, A + 1)),
+     ppl_Polyhedron_generalized_affine_image_lhs_rhs(P, B - 1, x + y, A + 1),
+             ppl_invalid_argument),
    !,
    ppl_delete_Polyhedron(P).
 
 %% TEST: not_a_nil_terminated_list
 exception_prolog(12, [A, B, C]) :-
   must_catch(ppl_new_C_Polyhedron_from_generators(
-     [point(A + B + C, 1) | not_a_list], _)),
+     [point(A + B + C, 1) | not_a_list], _), ppl_invalid_argument),
   must_catch(ppl_new_C_Polyhedron_from_constraints(
-     [A = 0, B >= C | not_a_list], _)),
-  must_catch(ppl_new_C_Polyhedron_from_bounding_box(0, 0)),
-  must_catch(ppl_new_NNC_Polyhedron_from_bounding_box(
-             [i(c(minf), c(2/1)), i(c(n), o(pinf)) | d], _)),
-  must_catch(ppl_new_C_Polyhedron_from_bounding_box(
-             [i(c(minf), c(2/1)), i(c(n), o(pinf)) | _], _)),
+     [A = 0, B >= C | not_a_list], _), ppl_invalid_argument),
   clean_ppl_new_Polyhedron_from_space_dimension(nnc, 3, universe, P),
-  must_catch(ppl_Polyhedron_add_constraints(P, _)),
-  must_catch(ppl_Polyhedron_add_constraints(P, not_a_list)),
-  must_catch(ppl_Polyhedron_add_constraints_and_minimize(P, not_a_list)),
-  must_catch(ppl_Polyhedron_add_generators(P, not_a_list)),
-  must_catch(ppl_Polyhedron_add_generators(P, _)),
-  must_catch(ppl_Polyhedron_add_generators_and_minimize(P, _)),
+  must_catch(ppl_Polyhedron_add_constraints(P, _), ppl_invalid_argument),
+  must_catch(ppl_Polyhedron_add_constraints(P, not_a_list),
+             ppl_invalid_argument),
+  must_catch(ppl_Polyhedron_add_generators(P, not_a_list),
+             ppl_invalid_argument),
+  must_catch(ppl_Polyhedron_add_generators(P, _), ppl_invalid_argument),
   clean_ppl_new_Polyhedron_from_space_dimension(c, 3, empty, Q),
-  must_catch(ppl_Polyhedron_map_space_dimensions(Q, not_a_list)),
-  must_catch(ppl_Polyhedron_fold_space_dimensions(Q, not_a_list, B)),
-  must_catch(ppl_Polyhedron_remove_space_dimensions(Q, not_a_list)),
+  must_catch(ppl_Polyhedron_map_space_dimensions(Q, not_a_list),
+             ppl_invalid_argument),
+  must_catch(ppl_Polyhedron_fold_space_dimensions(Q, not_a_list, B),
+             ppl_invalid_argument),
+  must_catch(ppl_Polyhedron_remove_space_dimensions(Q, not_a_list),
+             ppl_invalid_argument),
   must_catch(ppl_Polyhedron_limited_H79_extrapolation_assign(
-             Q, P, not_a_list)),
+             Q, P, not_a_list), ppl_invalid_argument),
   must_catch(ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens(
-             Q, P, not_a_list, 1, _)),
+             Q, P, not_a_list, 1, _), ppl_invalid_argument),
   must_catch(ppl_Polyhedron_bounded_H79_extrapolation_assign(
-             Q, P, not_a_list)),
+             Q, P, not_a_list), ppl_invalid_argument),
   must_catch(ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens(
-             Q, P, not_a_list, 1, _)),
+             Q, P, not_a_list, 1, _), ppl_invalid_argument),
   must_catch(ppl_Polyhedron_limited_BHRZ03_extrapolation_assign(
-             Q, P, not_a_list)),
+             Q, P, not_a_list), ppl_invalid_argument),
   must_catch(ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens(
-             Q, P, not_a_list, 1, _)),
+             Q, P, not_a_list, 1, _), ppl_invalid_argument),
   must_catch(ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign(
-             Q, P, not_a_list)),
+             Q, P, not_a_list), ppl_invalid_argument),
   must_catch(ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens(
-             Q, P, not_a_list, 1, _)),
+             Q, P, not_a_list, 1, _), ppl_invalid_argument),
   !,
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(Q).
 
 %% TEST: not_an_mip_problem_handle
 exception_prolog(13, _) :-
-  must_catch(ppl_MIP_Problem_space_dimension(_, _N)),
-  must_catch(ppl_MIP_Problem_constraints(p, [])).
+  must_catch(ppl_MIP_Problem_space_dimension(_, _N), ppl_invalid_argument),
+  must_catch(ppl_MIP_Problem_constraints(p, []), ppl_invalid_argument).
 
 % exception_sys_prolog(+N, +V) checks exceptions thrown by Prolog interfaces
 % that are dependent on a specific Prolog system.
@@ -2780,7 +2757,8 @@ exception_sys_prolog(1, [A,B,_]) :-
   catch((
           clean_ppl_new_Polyhedron_from_constraints(c,
                [Max_Int * A - B =< 0, 3 >= A], P),
-          must_catch(ppl_Polyhedron_get_generators(P, _GS)),
+          must_catch(ppl_Polyhedron_get_generators(P, _GS),
+                ppl_sys_prolog_error),
           !,
           ppl_delete_Polyhedron(P)
         ),
@@ -2793,7 +2771,8 @@ exception_sys_prolog(1, [A,B,_]) :-
   catch((
           clean_ppl_new_Polyhedron_from_constraints(c,
                [Min_Int * A - B =< 0, 2 >= A], P),
-          must_catch(ppl_Polyhedron_get_generators(P, _GS)),
+          must_catch(ppl_Polyhedron_get_generators(P, _GS),
+                ppl_sys_prolog_error),
           !,
           ppl_delete_Polyhedron(P)
         ),
@@ -2807,7 +2786,8 @@ exception_sys_prolog(3, [A,B,_]) :-
           clean_ppl_new_Polyhedron_from_generators(c,
                [point(Max_Int * A + B)], P),
           ppl_Polyhedron_affine_image(P, A, A + 1, 1),
-          must_catch(ppl_Polyhedron_get_generators(P, _GS)),
+          must_catch(ppl_Polyhedron_get_generators(P, _GS),
+                ppl_sys_prolog_error),
           !,
           ppl_delete_Polyhedron(P)
         ),
@@ -2815,19 +2795,20 @@ exception_sys_prolog(3, [A,B,_]) :-
         check_exception_term(ppl_overflow_error(Cause))
        ).
 
-exception_sys_prolog(4, [A,B,_]) :-
-  pl_check_prolog_flag(min_integer, Min_Int),
-  catch((
+exception_sys_prolog(4, [A,_,_]) :-
+   pl_check_prolog_flag(min_integer, Min_Int),
+   catch((
           clean_ppl_new_Polyhedron_from_generators(c,
-               [point(Min_Int * A + B)], P),
+                                                   [point(Min_Int*A)], P),
           ppl_Polyhedron_affine_image(P, A, A - 1, 1),
-          must_catch(ppl_Polyhedron_get_generators(P, _GS)),
+          must_catch(ppl_Polyhedron_get_generators(P, _GS),
+                     ppl_sys_prolog_error),
           !,
           ppl_delete_Polyhedron(P)
-        ),
-        ppl_overflow_error(Cause),
-        check_exception_term(ppl_overflow_error(Cause))
-       ).
+         ),
+         ppl_overflow_error(Cause),
+         check_exception_term(ppl_overflow_error(Cause))
+        ).
 
 % exception_cplusplus(+N, +V) checks exceptions thrown by the C++
 % interface for the PPL.
@@ -2841,13 +2822,15 @@ exception_cplusplus1(N, V) :-
    N1 is N - 1,
    exception_cplusplus1(N1, V).
 
-exception_cplusplus(1, [A,B,C]) :-
-  must_catch(ppl_new_C_Polyhedron_from_generators([point(A + B + C, 0)], _)).
+exception_cplusplus(1, [A, B, C]) :-
+  must_catch(ppl_new_C_Polyhedron_from_generators([point(A + B + C, 0)], _),
+             cpp_error).
 
-exception_cplusplus(2, [A,B,_]) :-
+exception_cplusplus(2, [A, B, _]) :-
   clean_ppl_new_Polyhedron_from_generators(c,
                [point(A + B), ray(A), ray(B)], P),
-  must_catch(ppl_Polyhedron_affine_image(P, A, A + B + 1, 0)),
+  must_catch(ppl_Polyhedron_affine_image(P, A, A + B + 1, 0),
+             cpp_error),
   !,
   ppl_delete_Polyhedron(P).
 
@@ -2855,46 +2838,53 @@ exception_cplusplus(3, [A, B, _]) :-
   clean_ppl_new_Polyhedron_from_space_dimension(c, 0, universe, P1),
   clean_ppl_new_Polyhedron_from_generators(c,
                [point(A + B)], P2),
-  must_catch(ppl_Polyhedron_poly_hull_assign_and_minimize(P1, P2)),
+  must_catch(ppl_Polyhedron_poly_hull_assign_and_minimize(P1, P2),
+             cpp_error),
   !,
   ppl_delete_Polyhedron(P1),
   ppl_delete_Polyhedron(P2).
 
-exception_cplusplus(4, [A,B,C]) :-
-   must_catch(ppl_new_C_Polyhedron_from_generators([line(A + B + C)], _)).
+exception_cplusplus(4, [A, B, C]) :-
+   must_catch(ppl_new_C_Polyhedron_from_generators([line(A + B + C)], _),
+             cpp_error).
 
 exception_cplusplus(5, [A,B,C]) :-
   clean_ppl_new_Polyhedron_from_generators(c, [point(B + 2*C)], P),
-  ppl_Polyhedron_remove_space_dimensions(P,[C]),
-  must_catch(ppl_Polyhedron_remove_space_dimensions(P,[A,C])),
+  ppl_Polyhedron_remove_space_dimensions(P, [C]),
+  must_catch(ppl_Polyhedron_remove_space_dimensions(P, [A, C]),
+             cpp_error),
   !,
   ppl_delete_Polyhedron(P).
 
-exception_cplusplus(6, [A,B,_]) :-
+exception_cplusplus(6, [A, B, _]) :-
   clean_ppl_new_Polyhedron_from_constraints(c,
                [A >= 1], P),
-  must_catch(ppl_Polyhedron_affine_image(P, B, A + 1, 1)),
+  must_catch(ppl_Polyhedron_affine_image(P, B, A + 1, 1),
+             cpp_error),
   !,
   ppl_delete_Polyhedron(P).
 
 exception_cplusplus(7, [A, B, C]) :-
   clean_ppl_new_Polyhedron_from_constraints(c,
                [A >= 1, B>= 1], P),
-  must_catch(ppl_Polyhedron_affine_image(P, B, A + C + 1, 1)),
+  must_catch(ppl_Polyhedron_affine_image(P, B, A + C + 1, 1),
+             cpp_error),
   !,
   ppl_delete_Polyhedron(P).
 
-exception_cplusplus(8, [A,B,_]) :-
+exception_cplusplus(8, [A, B, _]) :-
   clean_ppl_new_Polyhedron_from_constraints(c,
                [A >= B], P),
-  must_catch(ppl_Polyhedron_affine_preimage(P, A, A + B + 1, 0)),
+  must_catch(ppl_Polyhedron_affine_preimage(P, A, A + B + 1, 0),
+             cpp_error),
   !,
   ppl_delete_Polyhedron(P).
 
 exception_cplusplus(9, [A, B, C]) :-
   clean_ppl_new_Polyhedron_from_generators(c,
                [point(0), ray(A + B), ray(A)], P),
-  must_catch(ppl_Polyhedron_affine_preimage(P, C, A + 1, 1)),
+  must_catch(ppl_Polyhedron_affine_preimage(P, C, A + 1, 1),
+             cpp_error),
   !,
   ppl_delete_Polyhedron(P).
 
@@ -2902,21 +2892,54 @@ exception_cplusplus(9, [A, B, C]) :-
 exception_cplusplus(10, [A, B, C]) :-
   clean_ppl_new_Polyhedron_from_generators(c,
                [point(0), point(A), line(A + B)], P),
-  must_catch(ppl_Polyhedron_affine_preimage(P, B, A + C, 1)),
+  must_catch(ppl_Polyhedron_affine_preimage(P, B, A + C, 1),
+             cpp_error),
   !,
   ppl_delete_Polyhedron(P).
 
 % must_catch(+Call) calls Call using catch and checks exception.
-% If exception it succeeds and fails if there is no exception caught.
+% If expected exception is caught, it succeeds and fails if not.
 
-must_catch(Call) :-
-   ( catch(Call, M0, check_exception(M0) ) -> fail ; true).
-
-% check_exception(+Exception) checks and prints the exception message;
-% and then fails.
-
-check_exception(Exception):-
-         format_exception_message(Exception), fail.
+must_catch(Call, prolog_exception_error) :-
+   !,
+   catch( Call, Message, format_exception_message( Message ) ),
+   ( \+var(Message) ->
+       ((Message =.. [ppl_invalid_argument|_] ; Message = out_of_memory) ->
+           true
+       ;
+           check_exception_term(Message)
+       )
+   ;
+       fail
+   ).
+must_catch(Call, cpp_error) :-
+   !,
+   catch( Call, Message, format_exception_message( cpp_error(Message) ) ),
+   ( ( \+ var(Message), name(Message, [80,80,76,58,58|_] ) ) ->
+       true
+   ;
+       fail
+   ).
+must_catch(Call, ppl_sys_prolog_error) :-
+   !,
+   catch( Call, Message, format_exception_message(Message) ),
+   ( ( \+ var(Message),
+         (Message =.. [ppl_representation_error|_] )) ->
+       true
+   ;
+       fail
+   ).
+must_catch(Call, Expected) :-
+   catch(Call, Message, format_exception_message(Message) ),
+   (\+ var(Message), Message = ppl_overflow_error(_) ->
+       true
+   ;
+       ( \+ var(Message), Message =.. [Expected|_] ->
+           true
+       ;
+           fail
+       )
+   ).
 
 %%%%%%%%%%%% predicate for making list of ppl variables %%%%%%
 
@@ -2971,10 +2994,12 @@ out(mip, MIP):-
     ppl_MIP_Problem_constraints(MIP, CS),
     ppl_MIP_Problem_objective_function(MIP, Obj),
     ppl_MIP_Problem_optimization_mode(MIP, Opt),
+    ppl_MIP_Problem_get_control_parameter(MIP, pricing, Cp_value),
     nl,
     write(' constraint system is: '), write(CS), nl,
     write(' objective function is: '), write(Obj), nl,
     write(' optimization mode is: '), write(Opt),
+    write(' control_parameter_value is: '), write(Cp_value),
     nl
   ).
 
@@ -3046,11 +3071,19 @@ clean_ppl_new_Polyhedron_from_Polyhedron(TQ, Q, TP, P) :-
   ),
   cleanup_ppl_Polyhedron(P).
 
-clean_ppl_new_Polyhedron_from_bounding_box(T, Box, P) :-
-  (T = c ->
-    ppl_new_C_Polyhedron_from_bounding_box(Box, P)
-  ;
-    ppl_new_NNC_Polyhedron_from_bounding_box(Box, P)
+clean_ppl_new_Polyhedron_from_Polyhedron_with_complexity(C, TQ, Q, TP, P) :-
+  ((TP == c, TQ == c) ->
+    ppl_new_C_Polyhedron_from_C_Polyhedron_with_complexity(C, Q, P)
+   ;
+    ((TP == c, TQ == nnc) ->
+      ppl_new_C_Polyhedron_from_NNC_Polyhedron_with_complexity(C, Q, P)
+    ;
+      ((TP == nnc, TQ == c) ->
+        ppl_new_NNC_Polyhedron_from_C_Polyhedron_with_complexity(C, Q, P)
+      ;
+        ppl_new_NNC_Polyhedron_from_NNC_Polyhedron_with_complexity(C, Q, P)
+      )
+    )
   ),
   cleanup_ppl_Polyhedron(P).
 
@@ -3141,7 +3174,7 @@ format_exception_message(
              ppl_invalid_argument( found(F), expected(E), where(W))
                         ) :-
   !,
-  display_message(['PPL Prolog Interface Exception: ', nl, '   ',
+  display_message(['PPL Prolog Interface Exception:', nl, '   ',
                    F, 'is an invalid argument for', W, nl, '   ',
                   F, 'should be', E, '.']).
 
@@ -3149,13 +3182,27 @@ format_exception_message(
              ppl_representation_error(I, where(W))
                         ) :-
   !,
-  display_message(['PPL Prolog Interface Exception: ', nl, '   ',
+  display_message(['PPL Prolog Interface Exception:', nl, '   ',
                    'This Prolog system has bounded integers', nl, '   ',
                    I, 'is not in the allowed range of integers', nl, '   ',
                    'in call to', W, '.']).
 
+format_exception_message(out_of_memory) :-
+  !,
+  display_message(['PPL Prolog Interface Exception: ', nl, '   ',
+                   'out of memory']).
+
+format_exception_message(ppl_overflow_error(Type)) :-
+  !,
+  display_message(['PPL Prolog Interface Exception: ', nl, '   ',
+                   'ppl_overflow_error: ', Type]).
+
+format_exception_message(cpp_error(Error)) :-
+  !,
+  display_message(['PPL C++ Interface Exception:', nl, '   ', Error]).
+
 format_exception_message(Error) :-
-  display_message([Error]).
+  display_message(['Unknown exception: ', Error]), fail.
 
 %%%%%%%%%%%% predicates for output messages %%%%%%%%%%%%%%%%%%
 
@@ -3204,7 +3251,6 @@ list_groups( [
    compare_polyhedra,
    mip_problem,
    transform_polyhedron,
-   polyhedron_boxes,
    add_to_system,
    catch_time,
    handle_exceptions
@@ -3254,9 +3300,7 @@ group_predicates(new_polyhedron_from_representations,
   [ppl_new_C_Polyhedron_from_constraints/2,
    ppl_new_NNC_Polyhedron_from_constraints/2,
    ppl_new_C_Polyhedron_from_generators/2,
-   ppl_new_NNC_Polyhedron_from_generators/2,
-   ppl_new_C_Polyhedron_from_bounding_box/2,
-   ppl_new_NNC_Polyhedron_from_bounding_box/2
+   ppl_new_NNC_Polyhedron_from_generators/2
   ]).
 
 group_predicates(swap_polyhedra,
@@ -3361,9 +3405,6 @@ group_predicates(compare_polyhedra,
    ppl_Polyhedron_is_disjoint_from_Polyhedron/2,
    ppl_Polyhedron_equals_Polyhedron/2
   ]).
-
-group_predicates(polyhedron_boxes,
-  [ppl_Polyhedron_get_bounding_box/3]).
 
 group_predicates(catch_time,
   [ppl_set_timeout_exception_atom/1,

@@ -205,6 +205,14 @@ struct FUNCTION_CLASS(construct) {
   }
 };
 
+template <typename To_Policy, typename To>
+struct FUNCTION_CLASS(construct_special) {
+  static inline Result function(To& to, Result r, Rounding_Dir dir) {
+    new (&to) To();
+    return assign_special<To_Policy>(to, r, dir);
+  }
+};
+
 template <typename To_Policy, typename From_Policy, typename To, typename From>
 inline Result
 assign_exact(To& to, const From& from, Rounding_Dir) {
@@ -497,7 +505,13 @@ inline typename Enable_If<(!Safe_Conversion<T1, T2>::value
 			   && (!C_Integer<T1>::value || !C_Integer<T2>::value)), bool>::type
 eq(const T1& x, const T2& y) {
   DIRTY_TEMP(T1, tmp);
-  Result r = assign_r(tmp, y, ROUND_CHECK);
+  Result r = assign_r(tmp, y, static_cast<Rounding_Dir>(ROUND_DIRECT | ROUND_FPU_CHECK_INEXACT));
+  // FIXME: Can we do any better?
+  // We can do this also without fpu inexact check using
+  // a conversion back and forth and then testing equality.
+  // We should code this in checked_float.inlines.hh, probably
+  // it's faster also if fpu supports inexact check.
+  assert(r != V_LE && r != V_GE && r != V_LGE);
   return r == V_EQ && x == tmp;
 }
 
@@ -522,12 +536,16 @@ lt(const T1& x, const T2& y) {
 }
 
 template <typename T1, typename T2>
-inline typename Enable_If<(!Safe_Conversion<T1, T2>::value
-			   && !Safe_Conversion<T2, T1>::value
-			   && (!C_Integer<T1>::value || !C_Integer<T2>::value)), bool>::type
+inline typename
+Enable_If<(!Safe_Conversion<T1, T2>::value
+           && !Safe_Conversion<T2, T1>::value
+           && (!C_Integer<T1>::value || !C_Integer<T2>::value)), bool>::type
 le(const T1& x, const T2& y) {
   DIRTY_TEMP(T1, tmp);
-  Result r = assign_r(tmp, y, static_cast<Rounding_Dir>(ROUND_UP | ROUND_FPU_CHECK_INEXACT));
+  Result r
+    = assign_r(tmp,
+               y,
+               static_cast<Rounding_Dir>(ROUND_UP | ROUND_FPU_CHECK_INEXACT));
   switch (r) {
   case V_POS_OVERFLOW:
   case VC_PLUS_INFINITY:
@@ -536,6 +554,12 @@ le(const T1& x, const T2& y) {
     return x <= tmp;
   case V_LT:
     return x < tmp;
+  case V_LE:
+  case V_GE:
+  case V_LGE:
+    // FIXME: Can we do any better?
+    // See comment above.
+    assert(0);
   default:
     return false;
   }
@@ -578,13 +602,12 @@ inline Result
 input_generic(Type& to, std::istream& is, Rounding_Dir dir) {
   DIRTY_TEMP0(mpq_class, q);
   Result r = input_mpq(q, is);
-  if (r == VC_MINUS_INFINITY)
-    return assign<Policy, Special_Float_Policy>(to, MINUS_INFINITY, dir);
-  if (r == VC_PLUS_INFINITY)
-    return assign<Policy, Special_Float_Policy>(to, PLUS_INFINITY, dir);
+  if (is_special(r))
+    return assign_special<Policy>(to, r, dir);
   if (r == V_EQ)
     return assign<Policy, void>(to, q, dir);
-  return set_special<Policy>(to, r);
+  assert(0);
+  return VC_NAN;
 }
 
 } // namespace Checked

@@ -155,7 +155,7 @@ main() {
   if (!min_ppl_version_ok) {
     cout << "illegal version string '$min_ppl_version'"
          << endl;
-    exit(1);
+    return 1;
   }
 
   if (strcmp("$ppl_config_version", PPL::version()) != 0) {
@@ -176,13 +176,13 @@ main() {
             " and remove the file config.cache"
             "\n*** before re-running configure."
          << endl;
-      exit(1);
+      return 1;
   }
   else if (strcmp(PPL_VERSION, PPL::version()) != 0) {
     cout << "\n*** PPL header file (version " PPL_VERSION ") does not match"
          << "\n*** library (version " << PPL::version() << ")"
          << endl;
-      exit(1);
+      return 1;
   }
   else if (PPL_VERSION_MAJOR < min_ppl_major
            || (PPL_VERSION_MAJOR == min_ppl_major
@@ -213,7 +213,7 @@ main() {
               " variable or edit /etc/ld.so.conf"
               "\n*** so that the correct libraries are found at run-time.)"
            << endl;
-      exit(1);
+      return 1;
   }
   return 0;
 }

@@ -39,7 +39,9 @@ clpq.pl script_clpq \
 clpq2.pl script_clpq2 script_clpq2_int8 \
 $(CLPQ_TESTS) \
 pl_check.pl \
-pl_grid_check.pl \
+ppl_prolog_generated_test_common.pl \
+ppl_interface_generator_prolog_generated_test_pl.m4 \
+ppl_interface_generator_prolog_generated_test_pl_code.m4 \
 expected_clpq_mpz expected_clpq2_mpz expected_pchk_mpz \
 expected_clpq_int8 expected_clpq2_int8 expected_pchk_int8 \
 expected_clpq_int16 expected_clpq2_int16 expected_pchk_int16 \
@@ -50,18 +52,9 @@ expected_clpq_int8_a expected_clpq2_int8_a expected_pchk_int8_a \
 expected_clpq_int16_a expected_clpq2_int16_a expected_pchk_int16_a \
 expected_clpq_int32_a expected_clpq2_int32_a expected_pchk_int32_a \
 expected_clpq_int64_a expected_clpq2_int64_a expected_pchk_int64_a \
-ppl_predicate_check_common.pl \
-ppl_interface_generator_predicate_check_pl.m4 \
-ppl_interface_generator_predicate_check_code.m4
+expected_pgt
 
-
-all_predicate_check_sources = \
-$(fixed_predicate_check_sources) \
-$(required_instantiations_predicate_check_sources)
-
-if BUILD_SOME_PROLOG_INTERFACES
-
-check-local: ppl_predicate_check_main.pl
+check-local: ppl_prolog_generated_test.stamp
 
 interface_generator_dependencies = \
 $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
@@ -71,23 +64,20 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../../ppl_interface_generator_common_procedure_generators.m4 \
 ../ppl_interface_generator_prolog_systems.m4 \
 ../ppl_interface_generator_prolog_procedure_generators.m4 \
-ppl_interface_generator_predicate_check_pl.m4 \
-ppl_interface_generator_predicate_check_code.m4
+ppl_interface_generator_prolog_generated_test_pl.m4 \
+ppl_interface_generator_prolog_generated_test_pl_code.m4
 
-ppl_predicate_check_main.pl: $(interface_generator_dependencies)
+ppl_prolog_generated_test.stamp: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I../.. \
 		-I$(srcdir) -I$(srcdir)/.. -I$(srcdir)/../.. \
-		$(srcdir)/ppl_interface_generator_predicate_check_pl.m4 \
-			> predicate_check_all
-	$(top_srcdir)/utils/cm_cleaner.sh < predicate_check_all
-	$(top_srcdir)/utils/cm_splitter.sh < predicate_check_all
-	rm -f predicate_check_all
+		$(srcdir)/ppl_interface_generator_prolog_generated_test_pl.m4 \
+			> ppl_prolog_generated_test_blob
+	$(top_srcdir)/utils/cm_cleaner.sh < ppl_prolog_generated_test_blob
+	$(top_srcdir)/utils/cm_splitter.sh < ppl_prolog_generated_test_blob
+	rm -f ppl_prolog_generated_test_blob
+	echo timestamp >$@
 
-endif BUILD_SOME_PROLOG_INTERFACES
-
-# FIXME: why both in CLEANFILES and DISTCLEANFILES?
 CLEANFILES = \
-ppl_predicate_check_main.pl
-
-DISTCLEANFILES = \
-ppl_predicate_check_main.pl
+@required_instantiations_prolog_generated_test_sources@ \
+ppl_prolog_generated_test.stamp \
+ppl_prolog_generated_test_main.pl

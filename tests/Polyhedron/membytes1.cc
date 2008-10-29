@@ -258,7 +258,7 @@ bool test02() {
   Pointset_Powerset<C_Polyhedron> pqh(qh);
 
   Pointset_Powerset<C_Polyhedron> prh = pqh;
-  prh.poly_difference_assign(pph);
+  prh.difference_assign(pph);
 
   const memory_size_type pph_total_size = pph.total_memory_in_bytes();
   const memory_size_type pph_external_size = pph.external_memory_in_bytes();

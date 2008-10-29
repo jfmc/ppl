@@ -184,6 +184,58 @@ m4_ifelse(m4_add_one_first, 1,
   $1`'m4_undefine(`m4_add_one_first'), @COMMA@$1)`'dnl
 ')
 
+
+dnl ----------------------------------------------------------------------
+dnl m4_seq_difference and helper macros
+dnl
+dnl This finds the difference of two sequences.
+dnl ----------------------------------------------------------------------
+dnl
+dnl m4_seq_difference
+dnl
+dnl This macro with its helper macros below,
+dnl finds the difference of two sequences that must be previously defined
+dnl as `m4_1st_sequence', `m4_2nd_sequence'. The order of the
+dnl intersected sequence is that of m4_1st_sequence.
+dnl
+dnl For example, if m4_1st_sequence is defined to be `a, b, c, d' and
+dnl m4_2nd_sequence is defined to be `d, e, a, f',
+dnl this macro is defined to be `b, c'.
+m4_define(`m4_seq_difference', `dnl
+m4_patsubst(m4_seq_difference_aux(m4_1st_sequence),
+            `^@COMMA@', `')`'dnl
+')
+m4_define(`m4_seq_differencexx', `dnl
+m4_patsubst(m4_patsubst(m4_seq_difference_aux(m4_1st_sequence),
+            `^@COMMA@', `'),
+            @COMMA@, `, ')`'dnl
+')
+
+dnl m4_seq_difference_aux(...)
+dnl
+dnl The arguments are the first sequence to be intersected.
+dnl It calls either the helper macro for 3 sequences or the helper
+dnl macro for 2 sequences (depending on the number of sequences).
+dnl It calls itself recursively with the tail of the sequence.
+m4_define(`m4_seq_difference_aux', `dnl
+m4_ifelse($#, 0, , $#, 1,
+  m4_2_seq_difference_aux($1, m4_2nd_sequence),
+  `m4_2_seq_difference_aux($1, m4_2nd_sequence)`'dnl
+m4_seq_difference_aux(m4_shift($@))')`'dnl
+')
+
+dnl m4_2_seq_difference_aux(String, ...)
+dnl
+dnl This is defined to be `String' if `String' does not occur
+dnl in the 2nd or in a later argument position.
+dnl It calls itself recursively with the tail of the sequence.
+m4_define(`m4_2_seq_difference_aux', `dnl
+m4_ifelse($#, 0, , $#, 1, `m4_add_one($1)', $#, 2,
+  `m4_ifelse($1, $2, , `m4_add_one($1)')',
+  `m4_ifelse($1, $2, ,
+`m4_2_seq_difference_aux($1, m4_shift(m4_shift($@)))')')`'dnl
+')
+
 dnl =====================================================================
 dnl ====== The following are application dependent macros: their meaning
 dnl ====== is influenced by the overall interface generator architecture.
@@ -442,7 +494,7 @@ dnl Class_Counter   - The current class counter;
 dnl Procedure_Spec  - A schematic procedure name with flags still attached;
 dnl +_or_-          - + or -;
 dnl Group           - A group name.
-dnl This checks if or Class_Kind is in the list of class kinds defined
+dnl This checks if Class_Kind is in the list of class kinds defined
 dnl by Group (in ppl_interface_generator_common_dat.m4);
 dnl if it is, it checks if +Group or -Group
 dnl (depending if +_or_- is + or -) is included in the Procedure_Spec;

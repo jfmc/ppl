@@ -17,16 +17,16 @@
 # along with this program; if not, write to the Free Software Foundation,
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 #
-# For the most up-to-date information see the CS@Parma software
-# site: http://www.cs.unipr.it/Software/ . */
+# For the most up-to-date information see the Parma Polyhedra Library
+# site: http://www.cs.unipr.it/ppl/ . */
 
 # Process this file with autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Watchdog Library],[0.6],[bagnara@cs.unipr.it],[pwl])
+AC_INIT([the Parma Watchdog Library],[0.5],[bagnara@cs.unipr.it],[pwl])
 
-# Minimum autoconf version required.
-AC_PREREQ(2.59)
+# Minimum Autoconf version required.
+AC_PREREQ(2.60)
 
 # Make sure the sources are there.
 AC_CONFIG_SRCDIR(src/Watchdog.cc)
@@ -57,31 +57,79 @@ AH_BOTTOM([
 #endif
 ])
 
-# C compiler
+# C compiler.
 
 AC_ARG_WITH(cc,
-[  --with-cc=xxx           use XXX as the C compiler],
-CC=$with_cc)
+  AC_HELP_STRING([--with-cc=XXX],
+    [use XXX as the C compiler]),
+  CC=$with_cc)
 
-AC_LANG(C)
-
-# Checks for typedefs, structures, and compiler characteristics.
-AC_C_CONST
-
-# C++ compiler
+# C++ compiler.
 
 AC_ARG_WITH(cxx,
-[  --with-cxx=xxx          use XXX as the C++ compiler],
-CXX=$with_cxx)
+  AC_HELP_STRING([--with-cxx=XXX],
+    [use XXX as the C++ compiler]),
+  CXX=$with_cxx)
 
-AC_LANG(C++)
+# Checks for programs.
 
-# Check for Perl.
-AC_PATH_PROG([PERL], perl, no)
-AC_SUBST([PERL])
-AM_CONDITIONAL(HAVE_PERL, test x"$PERL" != xno)
+# Note that AC_PROG_CC must precede the first use of $GCC abd AC_PROG_CXX
+# must precede the first use of $GXX.  Note also that we do not allow
+# AC_PROG_CC and AC_PROG_CXX to affect CFLAGS and CXXFLAGS.
+save_CFLAGS="$CFLAGS"
+AC_PROG_CC
+CFLAGS="$save_CFLAGS"
 
-# Compilation flags
+AM_CONDITIONAL(GCC, test x"$GCC" = xyes)
+
+# The Intel C compiler masquerades as gcc, but we want to know.
+if test x"$GCC" = xyes
+then
+  AC_MSG_CHECKING([whether we are actually using the Intel C compiler])
+  AC_LANG_PUSH(C)
+  AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+#ifndef __INTEL_COMPILER
+choke me
+#endif
+]])],
+  AC_MSG_RESULT(yes)
+  ICC=yes,
+  AC_MSG_RESULT(no)
+  ICC=no,
+  AC_MSG_RESULT(no)
+  ICC=no)
+  AC_LANG_POP(C)
+fi
+
+save_CXXFLAGS="$CXXFLAGS"
+AC_PROG_CXX
+CXXFLAGS="$save_CXXFLAGS"
+
+# The Intel C++ compiler masquerades as g++, but we want to know.
+if test x"$GXX" = xyes
+then
+  AC_MSG_CHECKING([whether we are actually using the Intel C++ compiler])
+  AC_LANG_PUSH(C++)
+  AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+#ifndef __INTEL_COMPILER
+choke me
+#endif
+]])],
+  AC_MSG_RESULT(yes)
+  ICPC=yes,
+  AC_MSG_RESULT(no)
+  ICPC=no,
+  AC_MSG_RESULT(no)
+  ICPC=no)
+  AC_LANG_POP(C++)
+fi
+
+AC_PROG_SED
+AC_PROG_CXXCPP
+AC_PROG_MAKE_SET
+AC_PROG_INSTALL
+
+# Compilation flags.
 
 COMP_FLAGS=""
 OPT_FLAGS=""
@@ -227,7 +275,20 @@ esac
 CFLAGS="$COMP_FLAGS $OPT_FLAGS $CFLAGS"
 CXXFLAGS="$COMP_FLAGS $OPT_FLAGS $CXXFLAGS"
 
-# Allow additions to C and C++ compilation flags
+# System-dependent adjustments.
+no_undefined=no
+
+case "${host_os}" in
+cygwin)
+  no_undefined=yes
+  ;;
+*)
+  ;;
+esac
+AM_CONDITIONAL(NO_UNDEFINED, test x$no_undefined = xyes)
+
+
+# Allow additions to C and C++ compilation flags.
 
 AC_ARG_WITH(cflags,
 [  --with-cflags=xxx       add XXX to the options for the C compiler],
@@ -236,6 +297,41 @@ CFLAGS="$CFLAGS $with_cflags")
 AC_ARG_WITH(cxxflags,
 [  --with-cxxflags=xxx     add XXX to the options for the C++ compiler],
 CXXFLAGS="$CXXFLAGS $with_cxxflags")
+
+# Check for Perl.
+AC_PATH_PROG([PERL], perl, no)
+AC_SUBST([PERL])
+AM_CONDITIONAL(HAVE_PERL, test x"$PERL" != xno)
+
+# Checks for C typedefs, structures, and compiler characteristics.
+AC_LANG(C)
+AC_C_CONST
+
+enableval=no
+AC_MSG_CHECKING([whether tests should be run under Valgrind])
+AC_ARG_ENABLE(valgrind-tests,
+  AC_HELP_STRING([--enable-valgrind-tests],
+    [run library tests under Valgrind]))
+case "${enableval}" in
+yes)
+  AC_CHECK_PROG(VALGRIND, valgrind, valgrind)
+  if test x"$VALGRIND" = xvalgrind
+  then
+    AC_MSG_RESULT(yes)
+    enable_valgrind_tests=yes
+  else
+    AC_MSG_ERROR([bad value ${enableval} for --enable-valgrind-tests, cannot find Valgrind])
+  fi
+  ;;
+no)
+  AC_MSG_RESULT(no)
+  enable_valgrind_tests=no
+  ;;
+*)
+  AC_MSG_ERROR([bad value ${enableval} for --enable-valgrind-tests, needs yes or no])
+  ;;
+esac
+AM_CONDITIONAL(VALGRIND_TESTS_ENABLED, test x"$enable_valgrind_tests" = xyes)
 
 enableval=yes
 AC_MSG_CHECKING([whether to build the Parma Watchdog Library])
@@ -259,7 +355,9 @@ if test x"$build_watchdog_library" = xyes
 then
   # Checks for header files.
   AC_HEADER_TIME
-  AC_CHECK_HEADERS([sys/time.h])
+  AC_CHECK_HEADERS([fenv.h sys/time.h])
+  # Checks for the availability of C library functions in C++.
+  AC_CHECK_DECLS([getenv], , , [#include <cstdlib>])
 
   # Checks for library fuctions.
   # The following invocations of AC_LANG_PUSH(C) and AC_LANG_POP(C)
@@ -273,45 +371,29 @@ then
   AC_LANG_POP(C)
 fi
 
-# Checks for programs.
-# Note that AC_PROG_CC must precede the first use of $GCC abd AC_PROG_CXX
-# must precede the first use of $GXX.  Note also that we do not allow
-# AC_PROG_CC and AC_PROG_CXX to affect CFLAGS and CXXFLAGS.
-save_CFLAGS="$CFLAGS"
-AC_PROG_CC
-CFLAGS="$save_CFLAGS"
-save_CXXFLAGS="$CXXFLAGS"
-AC_PROG_CXX
-CXXFLAGS="$save_CXXFLAGS"
-AC_PROG_SED
-AC_PROG_CXXCPP
-AC_PROG_MAKE_SET
-AC_PROG_INSTALL
-
 # Libtool.
-LT_INIT([dlopen,win32-dll])
+LT_INIT([dlopen])
 
-# If we are using GCC we want to compile with warnings enabled.
+# If we are using GCC or the Intel C/C++ compiler we want to compile
+# with lots of warnings enabled.
 if test x"$GCC" = xyes
 then
-  CFLAGS="$CFLAGS -W -Wall"
+  if test x"$ICC" = xyes
+  then
+    CFLAGS="$CFLAGS -w2 -wd161,177,193,279,383,444,981,1098,1188,1418,1419,1572"
+  else
+    CFLAGS="$CFLAGS -W -Wall"
+  fi
 fi
 if test x"$GXX" = xyes
 then
-  CXXFLAGS="$CXXFLAGS -W -Wall"
+  if test x"$ICPC" = xyes
+  then
+    CXXFLAGS="$CXXFLAGS -w2 -wd161,177,193,279,383,444,981,1098,1188,1418,1419,1572"
+  else
+    CXXFLAGS="$CXXFLAGS -W -Wall"
+  fi
 fi
-
-# System-dependent adjustments.
-no_undefined=no
-
-case "${host_os}" in
-cygwin)
-  no_undefined=yes
-  ;;
-*)
-  ;;
-esac
-AM_CONDITIONAL(NO_UNDEFINED, test x$no_undefined = xyes)
 
 AC_SUBST(debug_flag)
 
@@ -323,5 +405,6 @@ AC_CONFIG_FILES(Makefile
                 doc/devref.doxyconf-latex
                 doc/user.doxyconf-html
                 doc/devref.doxyconf-html
+                tests/Makefile
                 utils/Makefile)
 AC_OUTPUT

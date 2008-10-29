@@ -129,7 +129,7 @@ test05() {
 
   ph.refine_with_congruences(cgs);
 
-  C_Polyhedron known_result(0);
+  C_Polyhedron known_result(0, EMPTY);
 
   bool ok = (known_result == ph);
 

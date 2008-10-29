@@ -73,6 +73,8 @@ fpu_check_inexact();
 
 } // namespace Parma_Polyhedra_Library
 
+#if PPL_CAN_CONTROL_FPU
+
 #if defined(__i386__) && (defined(__GNUC__) || defined(__INTEL_COMPILER))
 #include "fpu-ia32.inlines.hh"
 #elif defined(PPL_HAVE_IEEEFP_H)					\
@@ -83,7 +85,13 @@ fpu_check_inexact();
 #elif defined(PPL_HAVE_FENV_H)
 #include "fpu-c99.inlines.hh"
 #else
-#include "fpu-none.inlines.hh"
+#error "PPL_CAN_CONTROL_FPU evaluates to true, but why?"
 #endif
+
+#else // !PPL_CAN_CONTROL_FPU
+
+#include "fpu-none.inlines.hh"
+
+#endif // !PPL_CAN_CONTROL_FPU
 
 #endif // !defined(PPL_fpu_defs_hh)

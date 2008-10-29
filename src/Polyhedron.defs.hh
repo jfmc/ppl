@@ -88,6 +88,18 @@ bool operator==(const Polyhedron& x, const Polyhedron& y);
 */
 bool operator!=(const Polyhedron& x, const Polyhedron& y);
 
+namespace Interfaces {
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \brief
+  Returns \c true if and only if
+  <code>ph.topology() == NECESSARILY_CLOSED</code>.
+*/
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+bool is_necessarily_closed_for_interfaces(const Polyhedron& ph);
+
+} // namespace Interfaces
+
 } // namespace Parma_Polyhedra_Library
 
 
@@ -852,16 +864,6 @@ public:
   */
   bool add_generator_and_minimize(const Generator& g);
 
-  //! Domain compatibility method.
-  void add_grid_generator(const Grid_Generator& g) const;
-
-  //! Returns <CODE>true</CODE> if \p *this is empty else <CODE>false</CODE>.
-  /*!
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool add_grid_generator_and_minimize(const Grid_Generator& g) const;
-
   /*! \brief
     Adds a copy of congruence \p cg to \p *this,
     if \p cg can be exactly represented by a polyhedron.
@@ -869,7 +871,7 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and congruence \p cg are dimension-incompatible,
     of if \p cg is a proper congruence which is neither a tautology,
-    nor a contradiction
+    nor a contradiction.
   */
   void add_congruence(const Congruence& cg);
 
@@ -884,7 +886,7 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and congruence \p cg are dimension-incompatible,
     of if \p cg is a proper congruence which is neither a tautology,
-    nor a contradiction
+    nor a contradiction.
 
     \deprecated
     See \ref A_Note_on_the_Implementation_of_the_Operators.
@@ -1057,7 +1059,7 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p cgs are dimension-incompatible,
     of if there exists in \p cgs a proper congruence which is
-    neither a tautology, nor a contradiction
+    neither a tautology, nor a contradiction.
   */
   void add_congruences(const Congruence_System& cgs);
 
@@ -1706,9 +1708,10 @@ public:
   void BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp = 0);
 
   /*! \brief
-    Improves the result of the \ref BHRZ03_widening "BHRZ03-widening"
-    computation by also enforcing those constraints in \p cs that are
-    satisfied by all the points of \p *this.
+    Assigns to \p *this the result of computing the
+    \ref limited_extrapolation "limited extrapolation"
+    between \p *this and \p y using the \ref BHRZ03_widening
+    "BHRZ03-widening" operator.
 
     \param y
     A polyhedron that <EM>must</EM> be contained in \p *this;
@@ -1730,11 +1733,10 @@ public:
 					   unsigned* tp = 0);
 
   /*! \brief
-    Improves the result of the \ref BHRZ03_widening "BHRZ03-widening"
-    computation by also enforcing those constraints in \p cs that are
-    satisfied by all the points of \p *this, plus all the constraints
-    of the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$, with
-    \f$r \in \Qset\f$, that are satisfied by all the points of \p *this.
+    Assigns to \p *this the result of computing the
+    \ref bounded_extrapolation "bounded extrapolation"
+    between \p *this and \p y using the \ref BHRZ03_widening
+    "BHRZ03-widening" operator.
 
     \param y
     A polyhedron that <EM>must</EM> be contained in \p *this;
@@ -1757,7 +1759,7 @@ public:
 
   /*! \brief
     Assigns to \p *this the result of computing the
-    \ref H79_widening "H79-widening" between \p *this and \p y.
+    \ref H79_widening "H79_widening" between \p *this and \p y.
 
     \param y
     A polyhedron that <EM>must</EM> be contained in \p *this;
@@ -1777,9 +1779,10 @@ public:
   void widening_assign(const Polyhedron& y, unsigned* tp = 0);
 
   /*! \brief
-    Improves the result of the \ref H79_widening "H79-widening"
-    computation by also enforcing those constraints in \p cs that are
-    satisfied by all the points of \p *this.
+    Assigns to \p *this the result of computing the
+    \ref limited_extrapolation "limited extrapolation"
+    between \p *this and \p y using the \ref H79_widening
+    "H79-widening" operator.
 
     \param y
     A polyhedron that <EM>must</EM> be contained in \p *this;
@@ -1801,11 +1804,10 @@ public:
 					unsigned* tp = 0);
 
   /*! \brief
-    Improves the result of the \ref H79_widening "H79-widening"
-    computation by also enforcing those constraints in \p cs that are
-    satisfied by all the points of \p *this, plus all the constraints
-    of the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$, with
-    \f$r \in \Qset\f$, that are satisfied by all the points of \p *this.
+    Assigns to \p *this the result of computing the
+    \ref bounded_extrapolation "bounded extrapolation"
+    between \p *this and \p y using the \ref H79_widening
+    "H79-widening" operator.
 
     \param y
     A polyhedron that <EM>must</EM> be contained in \p *this;
@@ -2032,13 +2034,11 @@ public:
 
   PPL_OUTPUT_DECLARATIONS
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
     ascii_dump(std::ostream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   bool ascii_load(std::istream& s);
 
   //! Returns the total size in bytes of the memory occupied by \p *this.
@@ -2088,6 +2088,10 @@ private:
     is necessarily closed.
   */
   bool is_necessarily_closed() const;
+
+  friend bool
+  Parma_Polyhedra_Library::Interfaces
+  ::is_necessarily_closed_for_interfaces(const Polyhedron&);
 
   /*! \brief
     Uses a copy of constraint \p c to refine the system of constraints
@@ -2640,8 +2644,10 @@ private:
   friend class Parma_Polyhedra_Library::H79_Certificate;
 
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! \name Exception Throwers
   //@{
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 protected:
   void throw_runtime_error(const char* method) const;
   void throw_invalid_argument(const char* method, const char* reason) const;
@@ -2705,7 +2711,9 @@ protected:
 			       const char* g_name) const;
   void throw_invalid_generators(const char* method,
 				const char* gs_name) const;
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //@} // Exception Throwers
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
 };
 

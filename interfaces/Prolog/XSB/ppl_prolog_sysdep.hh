@@ -22,3 +22,5 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "xsb_efli.hh"
 #include "ppl_xsb.hh"
+
+using namespace Parma_Polyhedra_Library::Interfaces::Prolog::XSB;

@@ -45,12 +45,48 @@ AC_LANG_PUSH(C++)
 AC_MSG_CHECKING([for the GMP library version 4.1.3 or above])
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <gmpxx.h>
+#include <climits>
+#include <string>
+#include <sstream>
+#include <iostream>
 
 #if __GNU_MP_VERSION < 4 || (__GNU_MP_VERSION == 4 && __GNU_MP_VERSION_MINOR < 1) || (__GNU_MP_VERSION == 4 && __GNU_MP_VERSION_MINOR == 1 && __GNU_MP_VERSION_PATCHLEVEL < 3)
 #error "GMP version 4.1.3 or higher is required"
 #endif
 
-int main() {
+int
+main() {
+  std::string header_version;
+  {
+    std::ostringstream s(header_version);
+    s << __GNU_MP_VERSION << "." << __GNU_MP_VERSION_MINOR;
+    if (__GNU_MP_VERSION_PATCHLEVEL != 0)
+      s << "." << __GNU_MP_VERSION_PATCHLEVEL;
+    header_version = s.str();
+  }
+
+  std::string library_version = gmp_version;
+
+  if (header_version != library_version) {
+    std::cerr
+      << "GMP header (gmp.h) and library (ligmp.*) version mismatch:\n"
+      << "header gives " << header_version << ";\n"
+      << "library gives " << library_version << "." << std::endl;
+    return 1;
+  }
+
+  if (sizeof(mp_limb_t)*CHAR_BIT != GMP_LIMB_BITS
+      || GMP_LIMB_BITS != mp_bits_per_limb) {
+    std::cerr
+      << "GMP header (gmp.h) and library (ligmp.*) bits-per-limb mismatch:\n"
+      << "header gives " << __GMP_BITS_PER_MP_LIMB << ";\n"
+      << "library gives " << mp_bits_per_limb << ".\n"
+      << "This probably means you are on a bi-arch system and\n"
+      << "you are compiling with the wrong header or linking with\n"
+      << "the wrong library." << std::endl;
+    return 1;
+  }
+
   mpz_class n("3141592653589793238462643383279502884");
   return 0;
 }
@@ -67,7 +103,7 @@ have_gmp=${ac_cv_have_gmp}
 if test x"$ac_cv_have_gmp" = xyes
 then
 
-AC_CHECK_SIZEOF(mp_limb_t, , [#include <gmp.h>])
+AC_CHECK_SIZEOF(mp_limb_t, , [#include <gmpxx.h>])
 
 AC_MSG_CHECKING([whether GMP has been compiled with support for exceptions])
 AC_RUN_IFELSE([AC_LANG_SOURCE([[

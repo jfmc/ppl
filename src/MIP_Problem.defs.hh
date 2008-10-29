@@ -167,11 +167,11 @@ public:
     objective function or of the integer variables) is strictly
     greater than \p dim.
   */
-template <typename In>
-MIP_Problem(dimension_type dim,
-	    In first, In last,
-	    const Linear_Expression& obj = Linear_Expression::zero(),
-	    Optimization_Mode mode = MAXIMIZATION);
+  template <typename In>
+  MIP_Problem(dimension_type dim,
+              In first, In last,
+              const Linear_Expression& obj = Linear_Expression::zero(),
+              Optimization_Mode mode = MAXIMIZATION);
 
   /*! \brief
     Builds an MIP problem having space dimension \p dim from the constraint
@@ -381,13 +381,11 @@ public:
 
   PPL_OUTPUT_DECLARATIONS
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
     ascii_dump(std::ostream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   bool ascii_load(std::istream& s);
 
   //! Returns the total size in bytes of the memory occupied by \p *this.
@@ -398,6 +396,29 @@ public:
 
   //! Swaps \p *this with \p y.
   void swap(MIP_Problem& y);
+
+  //! Names of MIP problems' control parameters.
+  enum Control_Parameter_Name {
+    //! The pricing rule.
+    PRICING
+  };
+
+  //! Possible values for MIP problem's control parameters.
+  enum Control_Parameter_Value {
+    //! Steepest edge pricing method, using floating points (default).
+    PRICING_STEEPEST_EDGE_FLOAT,
+    //! Steepest edge pricing method, using Coefficient.
+    PRICING_STEEPEST_EDGE_EXACT,
+    //! Textbook pricing method.
+    PRICING_TEXTBOOK
+  };
+
+  //! Returns the value of the control parameter \p name.
+  Control_Parameter_Value
+  get_control_parameter(Control_Parameter_Name name) const;
+
+  //! Sets control parameter \p value.
+  void set_control_parameter(Control_Parameter_Value value);
 
 private:
   //! The dimension of the vector space.
@@ -448,6 +469,13 @@ private:
 
   //! The internal state of the MIP problem.
   Status status;
+
+  // TODO: merge `status', `initialized', `pricing' and (maybe) `opt_mode'
+  // into a single bitset status word, so as to save space and allow
+  // for other control parameters.
+
+  //! The pricing method in use.
+  Control_Parameter_Value pricing;
 
   /*! \brief
     A Boolean encoding whether or not internal data structures have
@@ -504,8 +532,8 @@ private:
     <CODE>OPTIMIZED_MIP_PROBLEM></CODE> if the problem is neither trivially
     unfeasible nor trivially unbounded (the tableau was computed successfully).
   */
-  MIP_Problem_Status compute_tableau(std::vector<dimension_type>&
-				    worked_out_row);
+  MIP_Problem_Status
+  compute_tableau(std::vector<dimension_type>& worked_out_row);
 
   /*! \brief
     Parses the pending constraints to gather information on
@@ -549,20 +577,10 @@ private:
 			 std::deque<bool>& nonnegative_variable,
 			 std::vector<dimension_type>& unfeasible_tableau_rows,
 			 std::deque<bool>& satisfied_ineqs);
-  /*! \brief
-    Checks for optimality and, if it does not hold, computes the column
-    index of the variable entering the base of the MIP problem.
-    Implemented with anti-cycling rule.
-
-    \return
-    The column index of the variable that enters the base. If no such
-    variable exists, optimality was achieved and <CODE>0</CODE> is returned.
-  */
-  dimension_type textbook_entering_index() const;
 
   /*! \brief
     Computes the row index of the variable exiting the base
-    of the MIP problem. Implemented with anti-cycling rules.
+    of the MIP problem. Implemented with anti-cycling rule.
 
     \return
     The row index of the variable exiting the base.
@@ -603,12 +621,24 @@ private:
 	     dimension_type exiting_base_index);
 
   /*! \brief
-    Checks for optimality and, if it does not hold, computes the column
-    index of the variable entering the base of the MIP problem.
+    Computes the column index of the variable entering the base,
+    using the textbook algorithm with anti-cycling rule.
 
     \return
-    The column index of the variable that enters the base. If no such
-    variable exists, optimality was achieved and <CODE>0</CODE> is returned.
+    The column index of the variable that enters the base.
+    If no such variable exists, optimality was achieved
+    and <CODE>0</CODE> is returned.
+  */
+  dimension_type textbook_entering_index() const;
+
+  /*! \brief
+    Computes the column index of the variable entering the base,
+    using an exact steepest-edge algorithm with anti-cycling rule.
+
+    \return
+    The column index of the variable that enters the base.
+    If no such variable exists, optimality was achieved
+    and <CODE>0</CODE> is returned.
 
     To compute the entering_index, the steepest edge algorithm chooses
     the index `j' such that \f$\frac{d_{j}}{\|\Delta x^{j} \|}\f$ is the
@@ -619,21 +649,48 @@ private:
             1+\sum_{i=1}^{m} \alpha_{ij}^2
           \right)^{\frac{1}{2}}.
     \f]
-    Recall that, due to the Integer implementation of the algorithm, our
-    tableau doesn't contain the ``real'' \f$\alpha\f$ values, but these
+    Recall that, due to the exact integer implementation of the algorithm,
+    our tableau doesn't contain the ``real'' \f$\alpha\f$ values, but these
     can be computed dividing the value of the coefficient by the value of
-    the variable in base. Obviously the result may not be an Integer, so
-    we will proceed in another way: the following code will compute the
-    lcm of all the variables in base to get the good ``weight'' of each
-    Coefficient of the tableau.
+    the variable in base. Obviously the result may not be an integer, so
+    we will proceed in another way: we compute the lcm of all the variables
+    in base to get the good ``weight'' of each Coefficient of the tableau.
   */
-  dimension_type steepest_edge_entering_index() const;
+  dimension_type steepest_edge_exact_entering_index() const;
+
+  /*! \brief
+    Same as steepest_edge_exact_entering_index,
+    but using floating points.
+
+    \note
+    Due to rounding errors, the index of the variable entering the base
+    of the MIP problem is not predictable across different architectures.
+    Hence, the overall simplex computation may differ in the path taken
+    to reach the optimum. Anyway, the exact final result will be computed
+    for the MIP_Problem.
+  */
+  dimension_type steepest_edge_float_entering_index() const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and if only the algorithm successfully
     computed a feasible solution.
+
+    \note
+    Uses an exact pricing method (either textbook or exact steepest edge),
+    so that the result is deterministic across different architectures.
   */
-  bool compute_simplex();
+  bool compute_simplex_using_exact_pricing();
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and if only the algorithm successfully
+    computed a feasible solution.
+
+    \note
+    Uses a floating point implementation of the steepest edge pricing
+    method, so that the result is correct, but not deterministic across
+    different architectures.
+  */
+  bool compute_simplex_using_steepest_edge_float();
 
   /*! \brief
     Drop unnecessary artificial variables from the tableau and get ready

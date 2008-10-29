@@ -38,15 +38,9 @@ dnl Note that the code for the schema "<name>_code" must be defined
 dnl in the ppl_interface_generator_*_code.m4 file.
 dnl The <name> must be exactly as written here.
 
-m4_define(`m4_procedure_list', `m4_echo_unquoted(`m4_common_procedure_list',
+m4_define(`m4_procedure_list',
+`m4_echo_unquoted(`m4_common_procedure_list',
 ppl_free_@CLASS@/1 +all,
 ppl_@CLASS@_hashcode/2 +all -box,
 ppl_@CLASS@_string/1 +all)dnl
 ')
-
-dnl TODO
-dnl Some methods are not yet implemented for the Java interface:
-dnl ppl_@CLASS@_approximate_partition/5 +pointset_powerset \shape,
-dnl ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign/2
-dnl ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign/3
-dnl ppl_@CLASS@_BGP99_@DISJUNCT_EXTRAPOLATION@_extrapolation_assign/3

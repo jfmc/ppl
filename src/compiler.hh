@@ -38,11 +38,12 @@ used(const T&) {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief
-  No-op function that prevents the compiler to subject the argument to CSE.
+  No-op function that force the compiler to store the argument and
+  to reread it from memory if needed (thus preventing CSE).
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
-inline void avoid_cse(const T& x) {
+inline void cc_flush(const T& x) {
 #if defined(__GNUC__) || defined(__INTEL_COMPILER)
   __asm__ __volatile__ ("" : "+m" (const_cast<T&>(x)));
 #else
@@ -50,6 +51,27 @@ inline void avoid_cse(const T& x) {
   used(x);
 #endif
 }
+
+#ifndef PPL_SUPPRESS_UNINIT_WARNINGS
+#define PPL_SUPPRESS_UNINIT_WARNINGS 1
+#endif
+
+#ifndef PPL_SUPPRESS_UNINITIALIZED_WARNINGS
+#define PPL_SUPPRESS_UNINITIALIZED_WARNINGS 1
+#endif
+
+#if PPL_SUPPRESS_UNINITIALIZED_WARNINGS
+template <typename T>
+struct Suppress_Uninitialized_Warnings_Type {
+  typedef T synonym;
+};
+
+#define PPL_UNINITIALIZED(type, name)                                   \
+  type name = Suppress_Uninitialized_Warnings_Type<type>::synonym ()
+#else
+#define PPL_UNINITIALIZED(type, name)           \
+  type name
+#endif
 
 } // namespace Parma_Polyhedra_Library
 

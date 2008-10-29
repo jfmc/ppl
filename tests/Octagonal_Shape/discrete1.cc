@@ -137,7 +137,7 @@ test07() {
   oct.add_constraint(B <= 7);
 
   print_constraints(oct, "*** oct ***");
- 
+
   bool ok = oct.is_discrete();
 
   return !ok;

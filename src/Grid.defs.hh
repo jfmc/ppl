@@ -1111,10 +1111,8 @@ public:
   */
   bool add_recycled_congruences_and_minimize(Congruence_System& cgs);
 
-  //! Adds constraint \p c to \p *this.
+  //! If the constraint \p c is an equality, it is added to \p *this.
   /*!
-    The addition can only affect \p *this if \p c is an equality.
-
     \param c
     The constraint.
 
@@ -1124,9 +1122,9 @@ public:
   */
   void add_constraint(const Constraint& c);
 
-  //! Adds constraint \p c to \p *this, reducing the result.
-  /*!
-    The addition can only affect \p *this if \p c is an equality.
+  /*! \brief
+    If the constraint \p c is an equality, it is added
+    to \p *this, reducing the result.
 
     \param c
     The constraint.
@@ -1142,8 +1140,10 @@ public:
   */
   bool add_constraint_and_minimize(const Constraint& c);
 
-  //! Adds copies of the equality constraints in \p cs to \p *this.
-  /*!
+  /*! \brief
+    If all constraints in \p cs are equality constraints,
+    then copies are added to \p *this.
+
     \param cs
     The constraints to be added.
 
@@ -1154,8 +1154,8 @@ public:
   void add_constraints(const Constraint_System& cs);
 
   /*! \brief
-    Adds copies of the equality constraints in \p cs to \p *this,
-    reducing the result.
+    If all the constraints in \p cs are equality constraints,
+    then copies are added to \p *this, reducing the result.
 
     \param cs
     The constraints to be added.
@@ -1171,8 +1171,10 @@ public:
   */
   bool add_constraints_and_minimize(const Constraint_System& cs);
 
-  //! Adds the equality constraints in \p cs to \p *this.
-  /*!
+  /*! \brief
+    If all the constraints in \p cs are equality constraints,
+    then they are added to \p *this.
+
     \param cs
     The constraint system to be added to \p *this.  The equalities in
     \p cs may be recycled.
@@ -1188,8 +1190,8 @@ public:
   void add_recycled_constraints(Constraint_System& cs);
 
   /*! \brief
-    Adds the equality constraints in \p cs to \p *this, reducing the
-    result.
+    If all the constraints in \p cs are equality constraints,
+    then they are added to \p *this, reducing the result.
 
     \param cs
     The constraint system to be added to \p *this.  The equalities in
@@ -1377,16 +1379,16 @@ public:
   bool intersection_assign_and_minimize(const Grid& y);
 
   /*! \brief
-    Assigns to \p *this the join of \p *this and \p y.
+    Assigns to \p *this the least upper bound of \p *this and \p y.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void join_assign(const Grid& y);
+  void upper_bound_assign(const Grid& y);
 
   /*! \brief
-    Assigns to \p *this the join of \p *this and \p y, reducing the
-    result.
+    Assigns to \p *this the least upper bound of \p *this and \p y,
+    reducing the result.
 
     \return
     <CODE>false</CODE> if and only if the result is empty.
@@ -1397,29 +1399,16 @@ public:
     \deprecated
     See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
-  bool join_assign_and_minimize(const Grid& y);
-
-  //! Same as join_assign(y).
-  void upper_bound_assign(const Grid& y);
-
-  //! Same as join_assign_and_minimize(y).
-  /*!
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  void upper_bound_assign_and_minimize(const Grid& y);
+  bool upper_bound_assign_and_minimize(const Grid& y);
 
   /*! \brief
-    If the join of \p *this and \p y is exact it is assigned to \p
+    If the upper bound of \p *this and \p y is exact it is assigned to \p
     *this and <CODE>true</CODE> is returned, otherwise
     <CODE>false</CODE> is returned.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  bool join_assign_if_exact(const Grid& y);
-
-  //! Same as join_assign_if_exact(y).
   bool upper_bound_assign_if_exact(const Grid& y);
 
   /*! \brief
@@ -1432,9 +1421,6 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void grid_difference_assign(const Grid& y);
-
-  //! Same as grid_difference_assign(y).
   void difference_assign(const Grid& y);
 
   /*! \brief
@@ -2132,13 +2118,11 @@ public:
 
   PPL_OUTPUT_DECLARATIONS
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
     ascii_dump(std::ostream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   bool ascii_load(std::istream& s);
 
   //! Returns the total size in bytes of the memory occupied by \p *this.
@@ -2401,6 +2385,43 @@ private:
 	       Coefficient& ext_n, Coefficient& ext_d, bool& included,
 	       Generator* point = NULL) const;
 
+  /*! \brief
+    Adds the congruence \p cg to \p *this.
+
+    \warning
+    If \p cg and \p *this are dimension-incompatible,
+    the behavior is undefined.
+  */
+  void add_congruence_no_check(const Congruence& cg);
+
+  /*! \brief
+    Uses the constraint \p c to refine \p *this.
+
+    \param c
+    The constraint to be added.
+
+    \exception std::invalid_argument
+    Thrown if c is a non-trivial inequality constraint.
+
+    \warning
+    If \p c and \p *this are dimension-incompatible,
+    the behavior is undefined.
+  */
+  void add_constraint_no_check(const Constraint& c);
+
+  /*! \brief
+    Uses the constraint \p c to refine \p *this.
+
+    \param c
+    The constraint to be added.
+    Non-trivial inequalities are ignored.
+
+    \warning
+    If \p c and \p *this are dimension-incompatible,
+    the behavior is undefined.
+  */
+  void refine_no_check(const Constraint& c);
+
   //! \name Widening- and Extrapolation-Related Functions
   //@{
 
@@ -2410,7 +2431,7 @@ private:
 
   //! Copies widened generators from \p y to \p widened_ggs.
   void select_wider_generators(const Grid& y,
-				Grid_Generator_System& widened_ggs) const;
+                               Grid_Generator_System& widened_ggs) const;
 
   //@} // Widening- and Extrapolation-Related Functions
 
@@ -2663,8 +2684,10 @@ private:
 
   //@} // Minimization-Related Static Member Functions
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! \name Exception Throwers
   //@{
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 protected:
   void throw_runtime_error(const char* method) const;
   void throw_invalid_argument(const char* method, const char* reason) const;
@@ -2718,7 +2741,9 @@ protected:
 			       const char* g_name) const;
   void throw_invalid_generators(const char* method,
 				const char* gs_name) const;
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //@} // Exception Throwers
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
 };
 

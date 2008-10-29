@@ -246,7 +246,7 @@ PPL::Congruence_System::has_linear_equalities() const {
 void
 PPL::Congruence_System::const_iterator::skip_forward() {
   const Matrix::const_iterator csp_end = csp->end();
-  while (i != csp_end && (*this)->is_trivial_true())
+  while (i != csp_end && (*this)->is_tautological())
     ++i;
 }
 

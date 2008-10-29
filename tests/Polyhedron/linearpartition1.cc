@@ -51,7 +51,7 @@ aux_test01(const C_Polyhedron& p,
       if (!a.is_disjoint_from(b))
 	return false;
     }
-    the_union.poly_hull_assign(a);
+    the_union.upper_bound_assign(a);
   }
   // The union of all the elements in `partition' must be exactly `q'.
   return the_union == nnc_q;
@@ -124,7 +124,7 @@ aux_test02(const C_Polyhedron& p,
       if (!a.is_disjoint_from(b))
 	return false;
     }
-    the_union.poly_hull_assign(a);
+    the_union.upper_bound_assign(a);
   }
   // The union of all the elements in `partition' must be exactly `q'.
   return the_union == nnc_q;
@@ -197,7 +197,7 @@ aux_test03(const C_Polyhedron& p,
       if (!a.is_disjoint_from(b))
 	return false;
     }
-    the_union.poly_hull_assign(a);
+    the_union.upper_bound_assign(a);
   }
   // The union of all the elements in `partition' must be exactly `q'.
   return the_union == nnc_q;

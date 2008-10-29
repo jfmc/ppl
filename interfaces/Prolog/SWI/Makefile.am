@@ -20,6 +20,19 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
+if VALGRIND_TESTS_ENABLED
+
+CHECKER = \
+$(VALGRIND) --tool=memcheck -q --trace-children=yes --leak-check=yes \
+--num-callers=100 --leak-resolution=high \
+--suppressions=$(top_srcdir)/tests/valgrind_suppressions
+
+else !VALGRIND_TESTS_ENABLED
+
+CHECKER =
+
+endif !VALGRIND_TESTS_ENABLED
+
 SWI_CFLI_FILES = swi_cfli.hh
 
 EXTRA_DIST = \
@@ -29,10 +42,8 @@ ppl_swiprolog.pl \
 pl_clpq.cc \
 pl_clpq.pl \
 swi_pl_check.pl \
-swi_predicate_check.pl \
+swi_prolog_generated_test.pl \
 README.swiprolog
-
-if BUILD_SWI_PROLOG_INTERFACE
 
 if BUILD_WATCHDOG_LIBRARY
 
@@ -78,19 +89,77 @@ ppl_swiprolog.cc \
 ../ppl_prolog_common.cc
 
 nodist_EXTRA_libppl_swiprolog_la_SOURCES = \
+../ppl_prolog_Int8_Box.cc \
+../ppl_prolog_Int16_Box.cc \
+../ppl_prolog_Int32_Box.cc \
+../ppl_prolog_Int64_Box.cc \
+../ppl_prolog_Uint8_Box.cc \
+../ppl_prolog_Uint16_Box.cc \
+../ppl_prolog_Uint32_Box.cc \
+../ppl_prolog_Uint64_Box.cc \
+../ppl_prolog_Float_Box.cc \
+../ppl_prolog_Double_Box.cc \
+../ppl_prolog_Long_Double_Box.cc \
+../ppl_prolog_Rational_Box.cc \
+../ppl_prolog_Z_Box.cc \
+../ppl_prolog_BD_Shape_int8_t.cc \
+../ppl_prolog_BD_Shape_int16_t.cc \
+../ppl_prolog_BD_Shape_int32_t.cc \
+../ppl_prolog_BD_Shape_int64_t.cc \
+../ppl_prolog_BD_Shape_float.cc \
 ../ppl_prolog_BD_Shape_double.cc \
+../ppl_prolog_BD_Shape_long_double.cc \
 ../ppl_prolog_BD_Shape_mpq_class.cc \
 ../ppl_prolog_BD_Shape_mpz_class.cc \
-../ppl_prolog_Constraints_Product_C_Polyhedron_Grid.cc \
-../ppl_prolog_Double_Box.cc \
-../ppl_prolog_Grid.cc \
+../ppl_prolog_Octagonal_Shape_int8_t.cc \
+../ppl_prolog_Octagonal_Shape_int16_t.cc \
+../ppl_prolog_Octagonal_Shape_int32_t.cc \
+../ppl_prolog_Octagonal_Shape_int64_t.cc \
+../ppl_prolog_Octagonal_Shape_float.cc \
 ../ppl_prolog_Octagonal_Shape_double.cc \
+../ppl_prolog_Octagonal_Shape_long_double.cc \
 ../ppl_prolog_Octagonal_Shape_mpq_class.cc \
 ../ppl_prolog_Octagonal_Shape_mpz_class.cc \
+../ppl_prolog_Polyhedron.cc \
+../ppl_prolog_Grid.cc \
+../ppl_prolog_Pointset_Powerset_Int8_Box.cc \
+../ppl_prolog_Pointset_Powerset_Int16_Box.cc \
+../ppl_prolog_Pointset_Powerset_Int32_Box.cc \
+../ppl_prolog_Pointset_Powerset_Int64_Box.cc \
+../ppl_prolog_Pointset_Powerset_Uint8_Box.cc \
+../ppl_prolog_Pointset_Powerset_Uint16_Box.cc \
+../ppl_prolog_Pointset_Powerset_Uint32_Box.cc \
+../ppl_prolog_Pointset_Powerset_Uint64_Box.cc \
+../ppl_prolog_Pointset_Powerset_Float_Box.cc \
+../ppl_prolog_Pointset_Powerset_Double_Box.cc \
+../ppl_prolog_Pointset_Powerset_Long_Double_Box.cc \
+../ppl_prolog_Pointset_Powerset_Rational_Box.cc \
+../ppl_prolog_Pointset_Powerset_Z_Box.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_int8_t.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_int16_t.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_int32_t.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_int64_t.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_float.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_double.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_long_double.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_mpq_class.cc \
+../ppl_prolog_Pointset_Powerset_BD_Shape_mpz_class.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_int8_t.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_int16_t.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_int32_t.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_int64_t.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_float.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_double.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_long_double.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_mpq_class.cc \
+../ppl_prolog_Pointset_Powerset_Octagonal_Shape_mpz_class.cc \
 ../ppl_prolog_Pointset_Powerset_C_Polyhedron.cc \
 ../ppl_prolog_Pointset_Powerset_NNC_Polyhedron.cc \
-../ppl_prolog_Polyhedron.cc \
-../ppl_prolog_Rational_Box.cc
+../ppl_prolog_Pointset_Powerset_Grid.cc \
+../ppl_prolog_Constraints_Product_C_Polyhedron_Grid.cc \
+../ppl_prolog_Constraints_Product_NNC_Polyhedron_Grid.cc \
+../ppl_prolog_Constraints_Product_Grid_C_Polyhedron.cc \
+../ppl_prolog_Constraints_Product_Grid_NNC_Polyhedron.cc
 
 libppl_swiprolog_la_LIBADD = \
 @required_instantiations_prolog_cxx_objects@ \
@@ -144,20 +213,16 @@ ppl_pl$(EXEEXT): libppl_swiprolog.la ppl_pl.o
 	plld -pl $(SWI_PROLOG) -cc $(CC) -c++ $(CXX) -ld $(CXX) \
 		-ld-options`echo '' $(AM_CXXFLAGS) $(CXXFLAGS) | tr " " "/"` \
 		-o $@ -L.libs -lppl_swiprolog ppl_pl.o \
-		-L$(top_builddir)/src/.libs -lppl \
-		$(WATCHDOG_LINK_OPTIONS) \
-		@extra_libraries@ \
-		$(EXTRA_LINK_OPTIONS)
+		-L$(top_builddir)/src/.libs \
+		-lppl $(WATCHDOG_LINK_OPTIONS) @extra_libraries@ $(EXTRA_LINK_OPTIONS)
 
 pl_clpq$(EXEEXT): libppl_swiprolog.la pl_clpq.o pl_clpq.pl ../tests/clpq.pl
 	plld -pl $(SWI_PROLOG) -cc $(CC) -c++ $(CXX) -ld $(CXX) \
 		-ld-options`echo '' $(AM_CXXFLAGS) $(CXXFLAGS) | tr " " "/"` \
 		-o $@ -L.libs -lppl_swiprolog pl_clpq.o \
                 $(srcdir)/pl_clpq.pl $(srcdir)/../tests/clpq.pl \
-		-L$(top_builddir)/src/.libs -lppl \
-		$(WATCHDOG_LINK_OPTIONS) \
-		@extra_libraries@ \
-		$(EXTRA_LINK_OPTIONS)
+		-L$(top_builddir)/src/.libs \
+		-lppl $(WATCHDOG_LINK_OPTIONS) @extra_libraries@ $(EXTRA_LINK_OPTIONS)
 
 
 pl_clpq2$(EXEEXT): libppl_swiprolog.la pl_clpq.o pl_clpq.pl ../tests/clpq2.pl
@@ -165,10 +230,8 @@ pl_clpq2$(EXEEXT): libppl_swiprolog.la pl_clpq.o pl_clpq.pl ../tests/clpq2.pl
 		-ld-options`echo '' $(AM_CXXFLAGS) $(CXXFLAGS) | tr " " "/"` \
 		-o $@ -L.libs -lppl_swiprolog pl_clpq.o \
                 $(srcdir)/pl_clpq.pl $(srcdir)/../tests/clpq2.pl \
-		-L$(top_builddir)/src/.libs -lppl \
-		$(WATCHDOG_LINK_OPTIONS) \
-		@extra_libraries@ \
-		$(EXTRA_LINK_OPTIONS)
+		-L$(top_builddir)/src/.libs \
+		-lppl $(WATCHDOG_LINK_OPTIONS) @extra_libraries@ $(EXTRA_LINK_OPTIONS)
 
 COEFFICIENT_MNEMONIC = @coefficient_mnemonic@
 
@@ -186,7 +249,7 @@ EXPECTED_PCHK = $(srcdir)/../tests/expected_pchk_$(COEFFICIENT_MNEMONIC)
 
 endif !ASSERTIONS_ENABLED
 
-check-local: pl_check_test clpq_test clpq2_test
+check-local: pl_check_test clpq_test clpq2_test ppl_prolog_generated_test
 
 pl_check_test: swi_pl_check.pl ../tests/pl_check.pl $(EXPECTED_PCHK)
 	if [ $(srcdir) != `pwd` ]; then \
@@ -197,7 +260,7 @@ pl_check_test: swi_pl_check.pl ../tests/pl_check.pl $(EXPECTED_PCHK)
 		-dlopen ../../../src/libppl.la \
 		$(WATCHDOG_DLOPEN) \
 		-dlopen libppl_swiprolog.la \
-                ./ppl_pl < script_pchk
+                $(CHECKER) ./ppl_pl < script_pchk
 	if [ $(srcdir) != `pwd` ]; then \
 	  rm -f pl_check.pl; \
 	fi
@@ -210,7 +273,7 @@ clpq_test: pl_clpq ../tests/script_clpq $(EXPECTED_CLPQ)
 		-dlopen ../../../src/libppl.la \
 		$(WATCHDOG_DLOPEN) \
 		-dlopen libppl_swiprolog.la \
-		./pl_clpq <$(srcdir)/../tests/script_clpq >obtained_clpq
+		$(CHECKER) ./pl_clpq <$(srcdir)/../tests/script_clpq >obtained_clpq
 	diff -u --ignore-all-space $(EXPECTED_CLPQ) obtained_clpq
 
 clpq2_test: pl_clpq2 ../tests/script_clpq2 $(EXPECTED_CLPQ2)
@@ -220,28 +283,32 @@ clpq2_test: pl_clpq2 ../tests/script_clpq2 $(EXPECTED_CLPQ2)
 		-dlopen ../../../src/libppl.la \
 		$(WATCHDOG_DLOPEN) \
 		-dlopen libppl_swiprolog.la \
-		./pl_clpq2 <$(srcdir)/../tests/script_clpq2 >obtained_clpq2
+		$(CHECKER) ./pl_clpq2 <$(srcdir)/../tests/script_clpq2 >obtained_clpq2
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
 
-predicate_check_test: swi_predicate_check.pl ../tests/ppl_predicate_check_main.pl $(EXPECTED_PCHK)
-	cp -f $(srcdir)/../tests/ppl_predicate_check_common.pl . ; \
-	cp -f ../tests/ppl_predicate_check_main.pl . ; \
-        echo "ensure_loaded('$(srcdir)/swi_predicate_check'). main." > script_pchk
+ppl_prolog_generated_test: swi_prolog_generated_test.pl ../tests/ppl_prolog_generated_test_main.pl ../tests/ppl_prolog_generated_test_common.pl ../tests/expected_pgt
+	if [ $(srcdir) != `pwd` ]; then \
+	  cp -f $(srcdir)/../tests/ppl_prolog_generated_test_common.pl . ; \
+	fi
+	cp -f ../tests/ppl_prolog_generated_test_main.pl . ; \
+        echo "ensure_loaded('$(srcdir)/swi_prolog_generated_test'). main." > script_pgt
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		$(WATCHDOG_DLOPEN) \
-                ./ppl_pl < script_pchk
-	rm -f ppl_predicate_check_main.pl; \
-	rm -f ppl_predicate_check_common.pl; \
-	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
+		-dlopen libppl_swiprolog.la \
+                $(CHECKER) ./ppl_pl <script_pgt
+	if [ $(srcdir) != `pwd` ]; then \
+	  rm -f ppl_prolog_generated_test_common.pl; \
+        fi
+	rm -f ppl_prolog_generated_test_main.pl; \
+	diff -u --ignore-all-space $(srcdir)/../tests/expected_pgt obtained_pgt
 
-endif BUILD_SWI_PROLOG_INTERFACE
-
-DISTCLEANFILES = \
+CLEANFILES = \
 ppl_swiprolog.cc
 
 MOSTLYCLEANFILES = \
+@required_instantiations_prolog_cxx_objects@ \
 pl_clpq pl_clpq2 \
-obtained_clpq obtained_clpq2 obtained_pchk \
+obtained_clpq obtained_clpq2 obtained_pchk obtained_pgt \
 $(CLPQ_TESTS) \
-script_pchk
+script_pchk script_pgt

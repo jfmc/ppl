@@ -285,19 +285,12 @@ Pointset_Powerset<PS>::hash_code() const {
 template <typename PS>
 inline void
 Pointset_Powerset<PS>
-::poly_difference_assign(const Pointset_Powerset& y) {
+::difference_assign(const Pointset_Powerset& y) {
   // This code is only used when PS is an abstraction of NNC_Polyhedron.
   Pointset_Powerset<NNC_Polyhedron> nnc_this(*this);
   Pointset_Powerset<NNC_Polyhedron> nnc_y(y);
-  nnc_this.poly_difference_assign(nnc_y);
+  nnc_this.difference_assign(nnc_y);
   *this = nnc_this;
-}
-
-template <typename PS>
-inline void
-Pointset_Powerset<PS>
-::difference_assign(const Pointset_Powerset& y) {
-  poly_difference_assign(y);
 }
 
 /*! \relates Pointset_Powerset */

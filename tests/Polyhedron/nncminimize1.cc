@@ -286,7 +286,8 @@ test05() {
 
   NNC_Polyhedron ph2(cs);
 
-  ph1.poly_hull_assign_and_minimize(ph2);
+  ph1.upper_bound_assign(ph2);
+  (void) ph1.is_empty();
 
   nout << "(Weakly) minimized poly hull" << endl;
   print_constraints(ph1.constraints(), "*** ph1 constraints ***");

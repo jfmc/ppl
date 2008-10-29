@@ -39,46 +39,54 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PROLOG_TRACK_ALLOCATION
 #define PROLOG_TRACK_ALLOCATION 0
 #endif
+#ifndef NOISY_PROLOG_TRACK_ALLOCATION
+#define NOISY_PROLOG_TRACK_ALLOCATION 0
+#endif
 
 namespace Parma_Polyhedra_Library {
 
-namespace Prolog_Interfaces {
+namespace Interfaces {
 
-#if PROLOG_TRACK_ALLOCATION
+namespace Prolog {
 
+#if PROLOG_TRACK_ALLOCATION || NOISY_PROLOG_TRACK_ALLOCATION
 
-class Poly_Tracker {
+class Allocation_Tracker {
 public:
   //! Construct an allocation tracker with no registered objects.
-  Poly_Tracker();
+  Allocation_Tracker();
 
   /*! \brief
     Register an object whose deletion is under the Prolog programmer
     responsibility.
   */
-  void insert(const void* pp);
+  template <typename T>
+  void insert(const T* p);
 
   /*! \brief
     Register an object whose deletion is under the PPL library
     responsibility.
   */
-  void weak_insert(const void* pp);
+  template <typename T>
+  void weak_insert(const T* p);
 
   //! Check whether the object was correctly registered.
-  void check(const void* pp) const;
+  template <typename T>
+  void check(const T* p) const;
 
   /*! \brief
     Unregister an object whose deletion is under the Prolog programmer
     responsibility.
   */
-  void remove(const void* pp);
+  template <typename T>
+  void remove(const T* p);
 
   /*! \brief
     Destroy the allocation tracker: an error message will be output
     if there still are registered objects whose deletion was under
     the Prolog programmer responsibility.
   */
-  ~Poly_Tracker();
+  ~Allocation_Tracker();
 
 private:
   //! The type for recording a set of pointers to PPL library objects.
@@ -99,79 +107,29 @@ private:
   Set weak_s;
 };
 
-inline
-Poly_Tracker::Poly_Tracker() {
-}
+extern Allocation_Tracker allocation_tracker;
 
-inline
-Poly_Tracker::~Poly_Tracker() {
-  Set::size_type n = s.size();
-  if (n > 0)
-    std::cerr
-      << "Poly_Tracker: " << n << " polyhedra leaked!"
-      << std::endl;
-}
+#define PPL_REGISTER(x)                       \
+  Parma_Polyhedra_Library::Interfaces::Prolog \
+  ::allocation_tracker.insert(x)
+#define PPL_WEAK_REGISTER(x)                    \
+  Parma_Polyhedra_Library::Interfaces::Prolog   \
+  ::allocation_tracker.weak_insert(x)
+#define PPL_UNREGISTER(x)                       \
+  Parma_Polyhedra_Library::Interfaces::Prolog   \
+  ::allocation_tracker.remove(x)
+#define PPL_CHECK(x)                            \
+  Parma_Polyhedra_Library::Interfaces::Prolog   \
+  ::allocation_tracker.check(x)
 
-inline void
-Poly_Tracker::insert(const void* pp) {
-  std::pair<Set::iterator, bool> stat = s.insert(pp);
-  if (!stat.second) {
-    std::cerr
-      << "Poly_Tracker: two polyhedra at the same address at the same time?!"
-      << std::endl;
-    abort();
-  }
-}
-
-inline void
-Poly_Tracker::weak_insert(const void* pp) {
-  weak_s.insert(pp);
-}
-
-inline void
-Poly_Tracker::check(const void* pp) const {
-  if (s.find(pp) == s.end()
-      && weak_s.find(pp) == weak_s.end()) {
-    std::cerr
-      << "Poly_Tracker: attempt to access a nonexistent polyhedron."
-      << std::endl;
-    abort();
-  }
-}
-
-void
-Poly_Tracker::remove(const void* pp) {
-  if (s.erase(pp) != 1) {
-    std::cerr
-      << "Poly_Tracker: attempt to deallocate a nonexistent polyhedron."
-      << std::endl;
-    abort();
-  }
-}
-
-namespace {
-
-inline Poly_Tracker&
-poly_tracker() {
-  static Poly_Tracker pt;
-  return pt;
-}
-
-} // namespace
-
-#define PPL_REGISTER(x) Parma_Polyhedra_Library::poly_tracker().insert(x)
-#define PPL_WEAK_REGISTER(x) Parma_Polyhedra_Library::poly_tracker().weak_insert(x)
-#define PPL_UNREGISTER(x) Parma_Polyhedra_Library::poly_tracker().remove(x)
-#define PPL_CHECK(x) Parma_Polyhedra_Library::poly_tracker().check(x)
-
-#else
+#else // !PROLOG_TRACK_ALLOCATION && !NOISY_PROLOG_TRACK_ALLOCATION
 
 #define PPL_REGISTER(x)
 #define PPL_WEAK_REGISTER(x)
 #define PPL_UNREGISTER(x)
 #define PPL_CHECK(x)
 
-#endif
+#endif // !PROLOG_TRACK_ALLOCATION && !NOISY_PROLOG_TRACK_ALLOCATION
 
 class internal_exception {
 private:
@@ -255,6 +213,20 @@ public:
   }
 };
 
+class not_a_control_parameter_name : public internal_exception {
+public:
+  not_a_control_parameter_name(Prolog_term_ref term, const char* where)
+    : internal_exception(term, where) {
+  }
+};
+
+class not_a_control_parameter_value : public internal_exception {
+public:
+  not_a_control_parameter_value(Prolog_term_ref term, const char* where)
+    : internal_exception(term, where) {
+  }
+};
+
 class not_universe_or_empty : public internal_exception {
 public:
   not_universe_or_empty(Prolog_term_ref term, const char* where)
@@ -311,21 +283,6 @@ public:
   }
 };
 
-#if 0
-int
-Prolog_get_Coefficient(Prolog_term_ref t, Coefficient& n);
-
-int
-Prolog_unify_Coefficient(Prolog_term_ref t, const Coefficient& n);
-
-int
-Prolog_put_Coefficient(Prolog_term_ref t, const Coefficient& n);
-#endif
-
-#if 0
-Prolog_atom out_of_memory_exception_atom;
-#endif
-
 // For Prolog lists.
 extern Prolog_atom a_nil;
 
@@ -377,22 +334,6 @@ extern Prolog_atom a_c;
 // Denotes the empty set such as the empty interval or polyhedron.
 extern Prolog_atom a_empty;
 
-#if 0
-// Denotes the universe polyhedron.
-Prolog_atom a_universe;
-
-// Denotes the maximization mode for optimization problems.
-Prolog_atom a_max;
-
-// Denotes the minimization mode for optimization problems.
-Prolog_atom a_min;
-
-// Denote possible outcomes of MIP problems solution attempts.
-Prolog_atom a_unfeasible;
-Prolog_atom a_unbounded;
-Prolog_atom a_optimized;
-#endif
-
 // Denotes an open interval boundary.
 extern Prolog_atom a_o;
 
@@ -408,29 +349,10 @@ extern Prolog_atom a_polynomial;
 extern Prolog_atom a_simplex;
 extern Prolog_atom a_any;
 
-#if 0
-// Default timeout exception atom.
-Prolog_atom a_time_out;
-
-// "Out of memory" exception atom.
-Prolog_atom a_out_of_memory;
-#endif
-
 // Boolean constants.
 extern Prolog_atom a_true;
 extern Prolog_atom a_false;
 
-#if 0
-// To build exception terms.
-Prolog_atom a_ppl_invalid_argument;
-Prolog_atom a_ppl_overflow_error;
-Prolog_atom a_ppl_domain_error;
-Prolog_atom a_ppl_length_error;
-Prolog_atom a_ppl_representation_error;
-Prolog_atom a_expected;
-Prolog_atom a_found;
-Prolog_atom a_where;
-#endif
 
 struct Prolog_Interface_Atom {
   Prolog_atom* p_atom;
@@ -438,15 +360,6 @@ struct Prolog_Interface_Atom {
 };
 
 extern const Prolog_Interface_Atom prolog_interface_atoms[];
-
-#if 0
-Prolog_term_ref
-Prolog_atom_term_from_string(const char* s) {
-  Prolog_term_ref t = Prolog_new_term_ref();
-  Prolog_put_atom(t, Prolog_atom_from_string(s));
-  return t;
-}
-#endif
 
 void
 handle_exception(const Prolog_unsigned_out_of_range& e);
@@ -471,6 +384,12 @@ handle_exception(const not_an_optimization_mode& e);
 
 void
 handle_exception(const not_a_complexity_class& e);
+
+void
+handle_exception(const not_a_control_parameter_name& e);
+
+void
+handle_exception(const not_a_control_parameter_value& e);
 
 void
 handle_exception(const not_universe_or_empty& e);
@@ -542,6 +461,12 @@ handle_exception(const timeout_exception&);
   catch (const not_a_complexity_class& e) { \
     handle_exception(e); \
   } \
+  catch (const not_a_control_parameter_name& e) { \
+    handle_exception(e); \
+  } \
+  catch (const not_a_control_parameter_value& e) { \
+    handle_exception(e); \
+  } \
   catch (const not_universe_or_empty& e) { \
     handle_exception(e); \
   } \
@@ -577,33 +502,15 @@ handle_exception(const timeout_exception&);
   } \
   return PROLOG_FAILURE
 
-#if 0
-Prolog_term_ref
-variable_term(dimension_type varid) {
-  Prolog_term_ref v = Prolog_new_term_ref();
-  Prolog_put_ulong(v, varid);
-  Prolog_term_ref t = Prolog_new_term_ref();
-  Prolog_construct_compound(t, a_dollar_VAR, v);
-  return t;
-}
 
-unsigned int
-get_unsigned_int(long n) {
-  if (n >= 0 && static_cast<unsigned long>(n) <= UINT_MAX)
-    return n;
-  else {
-    Prolog_term_ref n_term = Prolog_new_term_ref();
-    Prolog_put_long(n_term, n);
-    throw not_unsigned_integer(n_term, "get_unsigned_int");
-  }
-}
-#endif
+Prolog_term_ref
+variable_term(dimension_type varid);
 
 template <typename U>
 U
 term_to_unsigned(Prolog_term_ref t, const char* where) {
   using namespace Parma_Polyhedra_Library;
-  using namespace Parma_Polyhedra_Library::Prolog_Interfaces;
+  using namespace Parma_Polyhedra_Library::Interfaces::Prolog;
   if (!Prolog_is_integer(t))
     throw not_unsigned_integer(t, where);
 
@@ -713,10 +620,18 @@ term_to_Coefficient(Prolog_term_ref t, const char* where);
 Prolog_atom
 term_to_optimization_mode(Prolog_term_ref t, const char* where);
 
+Prolog_atom
+term_to_control_parameter_name(Prolog_term_ref t, const char* where);
+
+Prolog_atom
+term_to_control_parameter_value(Prolog_term_ref t, const char* where);
+
 void
 check_nil_terminating(Prolog_term_ref t, const char* where);
 
-} // namespace Prolog_Interfaces
+} // namespace Prolog
+
+} // namespace Interfaces
 
 } // namespace Parma_Polyhedra_Library
 
@@ -815,6 +730,11 @@ ppl_MIP_Problem_optimization_mode(Prolog_term_ref t_mip,
 				  Prolog_term_ref t_opt);
 
 extern "C" Prolog_foreign_return_type
+ppl_MIP_Problem_get_control_parameter(Prolog_term_ref t_mip,
+                                      Prolog_term_ref t_cp_name,
+                                      Prolog_term_ref t_cp_value);
+
+extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_clear(Prolog_term_ref t_mip);
 
 extern "C" Prolog_foreign_return_type
@@ -839,6 +759,10 @@ ppl_MIP_Problem_set_objective_function(Prolog_term_ref t_mip,
 extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_set_optimization_mode(Prolog_term_ref t_mip,
 				      Prolog_term_ref t_opt);
+
+extern "C" Prolog_foreign_return_type
+ppl_MIP_Problem_set_control_parameter(Prolog_term_ref t_mip,
+                                      Prolog_term_ref t_cp_value);
 
 extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_is_satisfiable(Prolog_term_ref t_mip);
@@ -866,18 +790,18 @@ ppl_MIP_Problem_evaluate_objective_function(Prolog_term_ref t_mip,
 					    Prolog_term_ref t_d);
 
 using namespace Parma_Polyhedra_Library;
-using namespace Parma_Polyhedra_Library::Prolog_Interfaces;
+using namespace Parma_Polyhedra_Library::Interfaces::Prolog;
 
 extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_OK(Prolog_term_ref t_mip);
 
-class PFunc {
+class Partial_Function {
 private:
   std::set<dimension_type> codomain;
   std::vector<dimension_type> vec;
 
 public:
-  PFunc() {
+  Partial_Function() {
   }
 
   bool has_empty_codomain() const {
@@ -886,7 +810,7 @@ public:
 
   dimension_type max_in_codomain() const {
     if (codomain.empty())
-      throw unknown_interface_error("PFunc::max_in_codomain()");
+      throw unknown_interface_error("Partial_Function::max_in_codomain()");
     return *codomain.rbegin();
   }
 

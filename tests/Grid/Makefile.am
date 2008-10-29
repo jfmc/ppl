@@ -21,8 +21,18 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
+if VALGRIND_TESTS_ENABLED
+
+CHECKER = \
+$(VALGRIND) --tool=memcheck -q --trace-children=yes --leak-check=yes \
+--num-callers=100 --leak-resolution=high \
+--suppressions=$(top_srcdir)/tests/valgrind_suppressions
+
+else !VALGRIND_TESTS_ENABLED
+
 CHECKER =
-#CHECKER = valgrind --tool=memcheck -q --trace-children=yes --leak-check=yes --num-callers=100 --leak-resolution=high --suppressions=$(top_srcdir)/tests/valgrind_suppressions
+
+endif !VALGRIND_TESTS_ENABLED
 
 TESTS_ENVIRONMENT = $(CHECKER)
 
@@ -50,6 +60,7 @@ addspacedims1 \
 affinedim1 \
 affineimage1 affineimage2 \
 affinepreimage1 affinepreimage2 \
+approximatepartition1 \
 asciidumpload1 asciidumpload2 asciidumpload3 asciidumpload4 asciidumpload5 \
 asciidumpload6 \
 bhz03widening1 \
@@ -86,7 +97,6 @@ griddifference1 \
 intersection1 \
 isempty1 \
 isuniverse1 \
-join1 join2 \
 limitedextrapolation1 limitedextrapolation2 limitedextrapolation3 \
 mapspacedims1 \
 maxmin1 \
@@ -107,6 +117,7 @@ timeelapse1 \
 topclosed1 \
 topclosure1 \
 unconstrain1 \
+upperbound1 upperbound2 \
 widening1 widening2  widening3\
 writecongruencesystem
 
@@ -137,6 +148,8 @@ affineimage2_SOURCES = affineimage2.cc
 
 affinepreimage1_SOURCES = affinepreimage1.cc
 affinepreimage2_SOURCES = affinepreimage2.cc
+
+approximatepartition1_SOURCES = approximatepartition1.cc
 
 asciidumpload1_SOURCES = asciidumpload1.cc
 asciidumpload2_SOURCES = asciidumpload2.cc
@@ -218,9 +231,6 @@ isempty1_SOURCES = isempty1.cc
 
 isuniverse1_SOURCES = isuniverse1.cc
 
-join1_SOURCES = join1.cc
-join2_SOURCES = join2.cc
-
 limitedextrapolation1_SOURCES = limitedextrapolation1.cc
 limitedextrapolation2_SOURCES = limitedextrapolation2.cc
 limitedextrapolation3_SOURCES = limitedextrapolation3.cc
@@ -264,6 +274,9 @@ topclosed1_SOURCES = topclosed1.cc
 topclosure1_SOURCES = topclosure1.cc
 
 unconstrain1_SOURCES = unconstrain1.cc
+
+upperbound1_SOURCES = upperbound1.cc
+upperbound2_SOURCES = upperbound2.cc
 
 widening1_SOURCES = widening1.cc
 widening2_SOURCES = widening2.cc

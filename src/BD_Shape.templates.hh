@@ -122,9 +122,8 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
 
   if (!point_seen)
     // The generator system is not empty, but contains no points.
-    throw_invalid_argument("PPL::BD_Shape<T>::BD_Shape(gs)",
-                           "the non-empty generator system gs "
-                           "contains no points.");
+    throw_generic("BD_Shape(gs)",
+                  "the non-empty generator system gs contains no points.");
 
   // Going through all the lines and rays.
   for (Generator_System::const_iterator gs_i = gs_begin;
@@ -376,10 +375,18 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
   // Dimension-compatibility check.
   if (c_space_dim > space_dimension())
     throw_dimension_incompatible("add_constraint(c)", c);
-  // Strict inequalities are not allowed.
-  if (c.is_strict_inequality())
-    throw_invalid_argument("add_constraint(c)",
-                           "strict inequalities are not allowed");
+
+  // Get rid of strict inequalities.
+  if (c.is_strict_inequality()) {
+    if (c.is_inconsistent()) {
+      set_empty();
+      return;
+    }
+    if (c.is_tautological())
+      return;
+    // Nontrivial strict inequalities are not allowed.
+    throw_generic("add_constraint(c)", "strict inequalities are not allowed");
+  }
 
   dimension_type num_vars = 0;
   dimension_type i = 0;
@@ -387,14 +394,14 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
   TEMP_INTEGER(coeff);
   // Constraints that are not bounded differences are not allowed.
   if (!extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff))
-    throw_invalid_argument("add_constraint(c)",
-			   "c is not a bounded difference constraint");
+    throw_generic("add_constraint(c)",
+                  "c is not a bounded difference constraint");
 
+  const Coefficient& inhomo = c.inhomogeneous_term();
   if (num_vars == 0) {
-    // Dealing with a trivial constraint.
-    if (c.is_equality() && c.inhomogeneous_term() != 0)
-      set_empty();
-    if (c.inhomogeneous_term() < 0)
+    // Dealing with a trivial constraint (not a strict inequality).
+    if (inhomo < 0
+        || (inhomo != 0 && c.is_equality()))
       set_empty();
     return;
   }
@@ -410,7 +417,7 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
   bool changed = false;
   // Compute the bound for `x', rounding towards plus infinity.
   DIRTY_TEMP(N, d);
-  div_round_up(d, c.inhomogeneous_term(), coeff);
+  div_round_up(d, inhomo, coeff);
   if (x > d) {
     x = d;
     changed = true;
@@ -419,7 +426,7 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
   if (c.is_equality()) {
     // Also compute the bound for `y', rounding towards plus infinity.
     TEMP_INTEGER(minus_c_term);
-    neg_assign(minus_c_term, c.inhomogeneous_term());
+    neg_assign(minus_c_term, inhomo);
     div_round_up(d, minus_c_term, coeff);
     if (y > d) {
       y = d;
@@ -445,15 +452,15 @@ BD_Shape<T>::add_congruence(const Congruence& cg) {
 
   // Handle the case of proper congruences first.
   if (cg.is_proper_congruence()) {
-    if (cg.is_trivial_true())
+    if (cg.is_tautological())
       return;
-    if (cg.is_trivial_false()) {
+    if (cg.is_inconsistent()) {
       set_empty();
       return;
     }
     // Non-trivial and proper congruences are not allowed.
-    throw_invalid_argument("add_congruence(cg)",
-			   "cg is a non-trivial, proper congruence");
+    throw_generic("add_congruence(cg)",
+                  "cg is a non-trivial, proper congruence");
   }
 
   assert(cg.is_equality());
@@ -463,11 +470,10 @@ BD_Shape<T>::add_congruence(const Congruence& cg) {
 
 template <typename T>
 void
-BD_Shape<T>::refine_with_constraint(const Constraint& c) {
+BD_Shape<T>::refine_no_check(const Constraint& c) {
+  assert(!marked_empty());
   const dimension_type c_space_dim = c.space_dimension();
-  // Dimension-compatibility check.
-  if (c_space_dim > space_dimension())
-    throw_dimension_incompatible("refine_with_constraint(c)", c);
+  assert(c_space_dim <= space_dimension());
 
   dimension_type num_vars = 0;
   dimension_type i = 0;
@@ -477,11 +483,12 @@ BD_Shape<T>::refine_with_constraint(const Constraint& c) {
   if (!extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff))
     return;
 
+  const Coefficient& inhomo = c.inhomogeneous_term();
   if (num_vars == 0) {
-    // Dealing with a trivial constraint.
-    if (c.is_equality() && c.inhomogeneous_term() != 0)
-      set_empty();
-    if (c.inhomogeneous_term() < 0)
+    // Dealing with a trivial constraint (might be a strict inequality).
+    if (inhomo < 0
+        || (c.is_equality() && inhomo != 0)
+        || (c.is_strict_inequality() && inhomo == 0))
       set_empty();
     return;
   }
@@ -497,7 +504,7 @@ BD_Shape<T>::refine_with_constraint(const Constraint& c) {
   bool changed = false;
   // Compute the bound for `x', rounding towards plus infinity.
   DIRTY_TEMP(N, d);
-  div_round_up(d, c.inhomogeneous_term(), coeff);
+  div_round_up(d, inhomo, coeff);
   if (x > d) {
     x = d;
     changed = true;
@@ -506,7 +513,7 @@ BD_Shape<T>::refine_with_constraint(const Constraint& c) {
   if (c.is_equality()) {
     // Also compute the bound for `y', rounding towards plus infinity.
     TEMP_INTEGER(minus_c_term);
-    neg_assign(minus_c_term, c.inhomogeneous_term());
+    neg_assign(minus_c_term, inhomo);
     div_round_up(d, minus_c_term, coeff);
     if (y > d) {
       y = d;
@@ -518,22 +525,6 @@ BD_Shape<T>::refine_with_constraint(const Constraint& c) {
   // closure or reduction of the bounded difference shape.
   if (changed && marked_shortest_path_closed())
     reset_shortest_path_closed();
-  assert(OK());
-}
-
-template <typename T>
-void
-BD_Shape<T>::refine_with_congruence(const Congruence& cg) {
-  const dimension_type cg_space_dim = cg.space_dimension();
-  if (cg.is_equality()) {
-    Linear_Expression expr;
-    for (dimension_type i = cg_space_dim; i-- > 0; ) {
-      const Variable v(i);
-      expr += cg.coefficient(v) * v;
-    }
-    expr += cg.inhomogeneous_term();
-    refine_with_constraint(expr == 0);
-  }
   assert(OK());
 }
 
@@ -1240,7 +1231,7 @@ BD_Shape<T>::relation_with(const Congruence& cg) const {
       && Poly_Con_Relation::is_disjoint();
 
   if (space_dim == 0) {
-    if (cg.is_trivial_false())
+    if (cg.is_inconsistent())
       return Poly_Con_Relation::is_disjoint();
     else if (cg.inhomogeneous_term() % cg.modulus() == 0)
       return Poly_Con_Relation::saturates()
@@ -1266,7 +1257,7 @@ BD_Shape<T>::relation_with(const Congruence& cg) const {
   TEMP_INTEGER(lower);
   assign_r(lower_num, min_num, ROUND_NOT_NEEDED);
   assign_r(lower_den, min_den, ROUND_NOT_NEEDED);
-  v -= cg.inhomogeneous_term();
+  neg_assign(v, cg.inhomogeneous_term());
   lower = lower_num / lower_den;
   v += ((lower / mod) * mod);
   if (v * lower_den < lower_num)
@@ -1782,12 +1773,12 @@ BD_Shape<T>::shortest_path_reduction_assign() const {
 
 template <typename T>
 void
-BD_Shape<T>::bds_hull_assign(const BD_Shape& y) {
+BD_Shape<T>::upper_bound_assign(const BD_Shape& y) {
   const dimension_type space_dim = space_dimension();
 
   // Dimension-compatibility check.
   if (space_dim != y.space_dimension())
-    throw_dimension_incompatible("bds_hull_assign(y)", y);
+    throw_dimension_incompatible("upper_bound_assign(y)", y);
 
   // The poly-hull of a polyhedron `bd' with an empty polyhedron is `bd'.
   y.shortest_path_closure_assign();
@@ -1821,12 +1812,12 @@ BD_Shape<T>::bds_hull_assign(const BD_Shape& y) {
 
 template <typename T>
 void
-BD_Shape<T>::bds_difference_assign(const BD_Shape& y) {
+BD_Shape<T>::difference_assign(const BD_Shape& y) {
   const dimension_type space_dim = space_dimension();
 
   // Dimension-compatibility check.
   if (space_dim != y.space_dimension())
-    throw_dimension_incompatible("bds_difference_assign(y)", y);
+    throw_dimension_incompatible("difference_assign(y)", y);
 
   BD_Shape new_bd_shape(space_dim, EMPTY);
 
@@ -1877,12 +1868,12 @@ BD_Shape<T>::bds_difference_assign(const BD_Shape& y) {
     const Linear_Expression e = Linear_Expression(c);
     z.add_constraint(e <= 0);
     if (!z.is_empty())
-      new_bd_shape.bds_hull_assign(z);
+      new_bd_shape.upper_bound_assign(z);
     if (c.is_equality()) {
       z = x;
       z.add_constraint(e >= 0);
       if (!z.is_empty())
-        new_bd_shape.bds_hull_assign(z);
+        new_bd_shape.upper_bound_assign(z);
     }
   }
   *this = new_bd_shape;
@@ -2321,13 +2312,13 @@ BD_Shape<T>::limited_CC76_extrapolation_assign(const BD_Shape& y,
   // of bounded differences.
   const dimension_type cs_space_dim = cs.space_dimension();
   if (space_dim < cs_space_dim)
-    throw_invalid_argument("limited_CC76_extrapolation_assign(y, cs)",
-                           "cs is space_dimension incompatible");
+    throw_generic("limited_CC76_extrapolation_assign(y, cs)",
+                  "cs is space_dimension incompatible");
 
   // Strict inequalities not allowed.
   if (cs.has_strict_inequalities())
-    throw_invalid_argument("limited_CC76_extrapolation_assign(y, cs)",
-                           "cs has strict inequalities");
+    throw_generic("limited_CC76_extrapolation_assign(y, cs)",
+                  "cs has strict inequalities");
 
   // The limited CC76-extrapolation between two systems of bounded
   // differences in a zero-dimensional space is a system of bounded
@@ -2441,13 +2432,13 @@ BD_Shape<T>::limited_BHMZ05_extrapolation_assign(const BD_Shape& y,
   // of bounded differences.
   const dimension_type cs_space_dim = cs.space_dimension();
   if (space_dim < cs_space_dim)
-    throw_invalid_argument("limited_BHMZ05_extrapolation_assign(y, cs)",
-                           "cs is space-dimension incompatible");
+    throw_generic("limited_BHMZ05_extrapolation_assign(y, cs)",
+                  "cs is space-dimension incompatible");
 
   // Strict inequalities are not allowed.
   if (cs.has_strict_inequalities())
-    throw_invalid_argument("limited_BHMZ05_extrapolation_assign(y, cs)",
-                           "cs has strict inequalities");
+    throw_generic("limited_BHMZ05_extrapolation_assign(y, cs)",
+                  "cs has strict inequalities");
 
   // The limited BHMZ05-extrapolation between two systems of bounded
   // differences in a zero-dimensional space is a system of bounded
@@ -2848,8 +2839,7 @@ BD_Shape<T>::refine(const Variable var,
 
   DIRTY_TEMP(N, sum);
   // Indices of the variables that are unbounded in `this->dbm'.
-  // (The initializations are just to quiet a compiler warning.)
-  dimension_type pinf_index = 0;
+  PPL_UNINITIALIZED(dimension_type, pinf_index);
   // Number of unbounded variables found.
   dimension_type pinf_count = 0;
 
@@ -2863,8 +2853,7 @@ BD_Shape<T>::refine(const Variable var,
     {
       DIRTY_TEMP(N, neg_sum);
       // Indices of the variables that are unbounded in `this->dbm'.
-      // (The initializations are just to quiet a compiler warning.)
-      dimension_type neg_pinf_index = 0;
+      PPL_UNINITIALIZED(dimension_type, neg_pinf_index);
       // Number of unbounded variables found.
       dimension_type neg_pinf_count = 0;
 
@@ -3300,9 +3289,8 @@ BD_Shape<T>::affine_image(const Variable var,
   DIRTY_TEMP(N, pos_sum);
   DIRTY_TEMP(N, neg_sum);
   // Indices of the variables that are unbounded in `this->dbm'.
-  // (The initializations are just to quiet a compiler warning.)
-  dimension_type pos_pinf_index = 0;
-  dimension_type neg_pinf_index = 0;
+  PPL_UNINITIALIZED(dimension_type, pos_pinf_index);
+  PPL_UNINITIALIZED(dimension_type, neg_pinf_index);
   // Number of unbounded variables found.
   dimension_type pos_pinf_count = 0;
   dimension_type neg_pinf_count = 0;
@@ -3701,8 +3689,7 @@ BD_Shape<T>
 
   DIRTY_TEMP(N, pos_sum);
   // Index of the variable that are unbounded in `this->dbm'.
-  // (The initializations are just to quiet a compiler warning.)
-  dimension_type pos_pinf_index = 0;
+  PPL_UNINITIALIZED(dimension_type, pos_pinf_index);
   // Number of unbounded variables found.
   dimension_type pos_pinf_count = 0;
 
@@ -4108,8 +4095,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 
   DIRTY_TEMP(N, sum);
   // Index of variable that is unbounded in `this->dbm'.
-  // (The initialization is just to quiet a compiler warning.)
-  dimension_type pinf_index = 0;
+  PPL_UNINITIALIZED(dimension_type, pinf_index);
   // Number of unbounded variables found.
   dimension_type pinf_count = 0;
 
@@ -4287,8 +4273,8 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
   // The relation symbol cannot be a disequality.
   if (relsym == NOT_EQUAL)
     throw_generic("generalized_affine_image(e1, r, e2)",
-                    "r is the disequality relation symbol and "
-                    "*this is a BD_Shape");
+                  "r is the disequality relation symbol and "
+                  "*this is a BD_Shape");
 
   // The image of an empty BDS is empty.
   shortest_path_closure_assign();
@@ -4321,13 +4307,13 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
     // approximations for this constraint?
     switch (relsym) {
     case LESS_OR_EQUAL:
-      refine_with_constraint(lhs <= rhs);
+      refine_no_check(lhs <= rhs);
       break;
     case EQUAL:
-      refine_with_constraint(lhs == rhs);
+      refine_no_check(lhs == rhs);
       break;
     case GREATER_OR_EQUAL:
-      refine_with_constraint(lhs >= rhs);
+      refine_no_check(lhs >= rhs);
       break;
     default:
       // We already dealt with the other cases.
@@ -4374,13 +4360,13 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       // it will be simply ignored. Should we compute approximations for it?
       switch (relsym) {
       case LESS_OR_EQUAL:
-        refine_with_constraint(lhs <= rhs);
+        refine_no_check(lhs <= rhs);
         break;
       case EQUAL:
-        refine_with_constraint(lhs == rhs);
+        refine_no_check(lhs == rhs);
         break;
       case GREATER_OR_EQUAL:
-        refine_with_constraint(lhs >= rhs);
+        refine_no_check(lhs >= rhs);
         break;
       default:
         // We already dealt with the other cases.
@@ -4404,7 +4390,7 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       const Variable new_var = Variable(space_dim);
       add_space_dimensions_and_embed(1);
       // Constrain the new dimension to be equal to `rhs'.
-      // NOTE: calling affine_image() instead of refine_with_constraint()
+      // NOTE: calling affine_image() instead of refine_no_check()
       // ensures some approximation is tried even when the constraint
       // is not a bounded difference.
       affine_image(new_var, rhs);
@@ -4418,17 +4404,17 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       // the left hand side as dictated by `relsym'.
       // TODO: each one of the following constraints is definitely NOT
       // a bounded differences (since it has 3 variables at least).
-      // Thus, the method refine_with_constraint() will simply ignore it.
+      // Thus, the method refine_no_check() will simply ignore it.
       // Should we compute approximations for this constraint?
       switch (relsym) {
       case LESS_OR_EQUAL:
-        refine_with_constraint(lhs <= new_var);
+        refine_no_check(lhs <= new_var);
         break;
       case EQUAL:
-        refine_with_constraint(lhs == new_var);
+        refine_no_check(lhs == new_var);
         break;
       case GREATER_OR_EQUAL:
-        refine_with_constraint(lhs >= new_var);
+        refine_no_check(lhs >= new_var);
         break;
       default:
         // We already dealt with the other cases.
@@ -4472,13 +4458,13 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
   // The relation symbol cannot be a strict relation symbol.
   if (relsym == LESS_THAN || relsym == GREATER_THAN)
     throw_generic("generalized_affine_preimage(v, r, e, d)",
-                    "r is a strict relation symbol and "
-                    "*this is a BD_Shape");
+                  "r is a strict relation symbol and "
+                  "*this is a BD_Shape");
   // The relation symbol cannot be a disequality.
   if (relsym == NOT_EQUAL)
     throw_generic("generalized_affine_preimage(v, r, e, d)",
-                    "r is the disequality relation symbol and "
-                    "*this is a BD_Shape");
+                  "r is the disequality relation symbol and "
+                  "*this is a BD_Shape");
 
   if (relsym == EQUAL) {
     // The relation symbol is "==":
@@ -4550,8 +4536,8 @@ BD_Shape<T>::generalized_affine_preimage(const Linear_Expression& lhs,
   // The relation symbol cannot be a disequality.
   if (relsym == NOT_EQUAL)
     throw_generic("generalized_affine_preimage(e1, r, e2)",
-                    "r is the disequality relation symbol and "
-                    "*this is a BD_Shape");
+                  "r is the disequality relation symbol and "
+                  "*this is a BD_Shape");
 
   // The preimage of an empty BDS is empty.
   shortest_path_closure_assign();
@@ -4618,13 +4604,13 @@ BD_Shape<T>::generalized_affine_preimage(const Linear_Expression& lhs,
       // it will be simply ignored. Should we compute approximations for it?
       switch (relsym) {
       case LESS_OR_EQUAL:
-        refine_with_constraint(lhs <= rhs);
+        refine_no_check(lhs <= rhs);
         break;
       case EQUAL:
-        refine_with_constraint(lhs == rhs);
+        refine_no_check(lhs == rhs);
         break;
       case GREATER_OR_EQUAL:
-        refine_with_constraint(lhs >= rhs);
+        refine_no_check(lhs >= rhs);
         break;
       default:
         // We already dealt with the other cases.
@@ -4645,7 +4631,7 @@ BD_Shape<T>::generalized_affine_preimage(const Linear_Expression& lhs,
       const Variable new_var = Variable(bds_space_dim);
       add_space_dimensions_and_embed(1);
       // Constrain the new dimension to be equal to `lhs'.
-      // NOTE: calling affine_image() instead of refine_with_constraint()
+      // NOTE: calling affine_image() instead of refine_no_check()
       // ensures some approximation is tried even when the constraint
       // is not a bounded difference.
       affine_image(new_var, lhs);
@@ -4660,17 +4646,17 @@ BD_Shape<T>::generalized_affine_preimage(const Linear_Expression& lhs,
       // Note: if `rhs == a_rhs*v + b_rhs' where `a_rhs' is in {0, 1},
       // then one of the following constraints will be added,
       // since it is a bounded difference. Else the method
-      // refine_with_constraint() will ignore it, because the
+      // refine_no_check() will ignore it, because the
       // constraint is NOT a bounded difference.
       switch (relsym) {
       case LESS_OR_EQUAL:
-        refine_with_constraint(new_var <= rhs);
+        refine_no_check(new_var <= rhs);
         break;
       case EQUAL:
-        refine_with_constraint(new_var == rhs);
+        refine_no_check(new_var == rhs);
         break;
       case GREATER_OR_EQUAL:
-        refine_with_constraint(new_var >= rhs);
+        refine_no_check(new_var >= rhs);
         break;
       default:
         // We already dealt with the other cases.
@@ -5219,15 +5205,6 @@ BD_Shape<T>::throw_dimension_incompatible(const char* method,
 
 template <typename T>
 void
-BD_Shape<T>::throw_invalid_argument(const char* method, const char* reason) {
-  std::ostringstream s;
-  s << "PPL::BD_Shape::" << method << ":" << std::endl
-    << reason << ".";
-  throw std::invalid_argument(s.str());
-}
-
-template <typename T>
-void
 BD_Shape<T>::throw_expression_too_complex(const char* method,
                                           const Linear_Expression& e) {
   using namespace IO_Operators;
@@ -5256,7 +5233,7 @@ void
 BD_Shape<T>::throw_generic(const char* method, const char* reason) {
   std::ostringstream s;
   s << "PPL::BD_Shape::" << method << ":" << std::endl
-    << reason;
+    << reason << ".";
   throw std::invalid_argument(s.str());
 }
 

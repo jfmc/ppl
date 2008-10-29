@@ -98,9 +98,10 @@ fix_point(C_Polyhedron& start, C_Polyhedron& induct, C_Polyhedron& finish,
 
     print_constraints(current, "*** after remove_space_dimensions ***");
 
-    current.poly_hull_assign_and_minimize(previous);
+    current.upper_bound_assign(previous);
+    (void) current.is_empty();
 
-    print_constraints(current, "*** after poly_hull_assign_and_minimize ***");
+    print_constraints(current, "*** after upper_bound_assign ***");
 
     current.H79_widening_assign(previous);
 

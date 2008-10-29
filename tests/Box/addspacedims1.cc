@@ -122,7 +122,6 @@ test05() {
 
   TBox box(3);
   box.add_constraint(A == 1);
-  box.add_constraint(C - B >= 9);
 
   Rational_Box known_result(box);
 

@@ -579,33 +579,6 @@ test19() {
   return ok;
 }
 
-bool
-test20() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
-  TBox box(3);
-  box.add_constraint(A <= 1);
-  box.add_constraint(B <= 1);
-
-  print_constraints(box, "*** box ***");
-
-  box.generalized_affine_image(Linear_Expression(3),
-                              GREATER_OR_EQUAL,
-                              Linear_Expression(4));
-
-  Rational_Box known_result(3, EMPTY);
-
-  bool ok = check_result(box, known_result);
-
-  print_constraints(box,
-                    "*** box.generalized_affine_image(3, "
-                    "GREATER_OR_EQUAL, 4) ***");
-
-  return ok;
-}
-
 } // namespace
 
 BEGIN_MAIN
@@ -628,5 +601,4 @@ BEGIN_MAIN
   DO_TEST(test17);
   DO_TEST(test18);
   DO_TEST(test19);
-  DO_TEST(test20);
 END_MAIN

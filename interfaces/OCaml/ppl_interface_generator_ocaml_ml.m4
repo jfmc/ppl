@@ -30,13 +30,12 @@ m4_include(`ppl_interface_generator_ocaml_ml_code.m4')
 m4_include(`ppl_interface_generator_ocaml_procedure_generators.m4')
 
 m4_divert`'dnl
-(** OCaml interface code.
-m4_include(`ppl_interface_generator_copyright')
+(* OCaml interface code.
+m4_include(`ppl_interface_generator_copyright')`'dnl
 *)
 
-include Ppl_ocaml_globals
-include Ppl_ocaml_types
 open Gmp
+include Ppl_ocaml_globals
 
 exception Error of string
 let _ = Callback.register_exception "PPL_arithmetic_overflow" (Error "any string")
@@ -49,7 +48,7 @@ let _ = Callback.register_exception "PPL_unexpected_error" (Error "any string")
 m4_divert(-1)
 m4_pushdef(`m4_one_class_code', `dnl
 m4_replace_all_patterns_in_string($1,
-                                  `type @LTOPOLOGY@@LCLASS@
+                                  `type @LCLASS@
 ',
                                   m4_pattern_list)`'dnl
 ')
@@ -65,6 +64,9 @@ m4_popdef(`m4_one_class_code')
 dnl -----------------------------------------------------------------
 dnl Generate the main class-dependent code.
 dnl -----------------------------------------------------------------
+dnl Ensure any schematic procedure macro that is not defined
+dnl in the code file outputs a warning message.
+m4_define(`m4_default_code', `m4_dumpdef($1`'_code)')
 m4_divert`'dnl
 m4_all_code
 dnl

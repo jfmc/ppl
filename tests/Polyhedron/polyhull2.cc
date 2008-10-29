@@ -1,4 +1,4 @@
-/* Test Polyhedron::poly_hull_assign_and_minimize().
+/* Test Polyhedron::upper_bound_assign().
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -42,11 +42,11 @@ test01() {
   print_constraints(p1, "*** p1 ***");
   print_constraints(p2, "*** p2 ***");
 
-  p1.poly_hull_assign_and_minimize(p2);
+  p1.upper_bound_assign(p2);
 
   bool ok = p1.is_empty();
 
-  print_constraints(p1, "*** p1.poly_hull_assign_and_minimize(p2) ***");
+  print_constraints(p1, "*** p1.upper_bound_assign(p2) ***");
 
   return ok;
 }
