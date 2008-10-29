@@ -105,7 +105,7 @@ Past contributors:
   Fabio Trabucchi       (University of Parma) worked on a development
                         branch where he added serializers for all the
                         objects of the PPL.  Support for serialization
-                        based on Fabio's work, will be available in a
+                        based on Fabio's work will be available in a
                         future release of the library.
 
   Claudio Trento        (former student of the University of Pisa) worked
