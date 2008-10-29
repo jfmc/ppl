@@ -675,12 +675,11 @@ defining mixed integer (linear) programming problems.
 
 \anchor Polyhedron_predicates
 <H1>Predicates for the C Polyhedron Domain</H1>
-Here we provide a short description for each of the predicates
-available for the domain of C polyhedra.
+  Here we provide a short description for each of the predicates
+  available for the domain of C polyhedra.
 Note that predicates for other domains will follow a similar pattern.
 
 <H2>Constructor, copy, conversion and destructor predicates</H2>
-
 <H3>Constructor predicates for C polyhedra</H3>
 The constructor predicates build a
 C polyhedron from a specification
@@ -747,23 +746,23 @@ For example,
 
 <P><CODE>ppl_new_C_Polyhedron_from_C_Polyhedron(+Handle_1, -Handle_2)</CODE><BR>
   <EM>Builds a new C polyhedron \p P_1 from
-  \c a C polyhedron referenced by handle \c Handle_1.
+   the c polyhedron referenced by handle \c Handle_1.
   \c Handle_2 is unified with the handle for \p P_1.</EM>
 
 <P><CODE>ppl_new_C_Polyhedron_from_NNC_Polyhedron(+Handle_1, -Handle_2)</CODE><BR>
   <EM>Builds a new C polyhedron \p P_1 from
-  \c an NNC polyhedron referenced by handle \c Handle_1.
+   the nnc polyhedron referenced by handle \c Handle_1.
   \c Handle_2 is unified with the handle for \p P_1.</EM>
 
 <P><CODE>ppl_new_C_Polyhedron_from_C_Polyhedron_with_complexity(+Handle, +Complexity, -Handle)</CODE><BR>
   <EM>Builds a new C polyhedron \p P_1 from
-  \c a C polyhedron referenced by handle \c Handle_1
+   the c polyhedron referenced by handle \c Handle_1
   using an algorithm whose complexity does not exceed \c Complexity;
   \c Handle_2 is unified with the handle for \p P_1.</EM>
 
 <P><CODE>ppl_new_C_Polyhedron_from_NNC_Polyhedron_with_complexity(+Handle, +Complexity, -Handle)</CODE><BR>
   <EM>Builds a new C polyhedron \p P_1 from
-  \c an NNC polyhedron referenced by handle \c Handle_1
+   the nnc polyhedron referenced by handle \c Handle_1
   using an algorithm whose complexity does not exceed \c Complexity;
   \c Handle_2 is unified with the handle for \p P_1.</EM>
 
@@ -777,7 +776,6 @@ Below is the destructor predicate for the Polyhedron domain.
 
 
 <H2>Predicates that do not change the polyhedron</H2>
-
 <H3>Test Predicates</H3>
 These predicates test the polyhedron for different properties
 and succeed or fail depending on the outcome.
@@ -970,11 +968,11 @@ This output predicate is useful for debugging.
   the polyhedron referenced by \c Handle on the standard output.</EM>
 
 
-<H2>Space-dimension preserving predicates that may change the polyhedron</H2>
+<H2>Space-dimension preserving predicates that may change
+    the polyhedron</H2>
 These predicates may modify the polyhedron referred to
 by the handle in first argument;
 the (dimension of the) vector space in which it is embedded is unchanged.
-
 <H3>Predicates that may change the polyhedron by adding
 to its constraint or generator descriptions</H3>
 Note that there are two forms of these predicates
@@ -1340,7 +1338,6 @@ contained in (or equal to) the polyhedron referred to by the first argument.
 <H2>Predicates that may modify the vector space</H2>
 These predicates enable the modification of the vector space
 of the polyhedron referred to in the first argument.
-
 <H3>Predicate for concatenation</H3>
 For more information on this operation, see Section
 \extref{Concatenating_Polyhedra, Concatenating Polyhedra},
@@ -1411,7 +1408,8 @@ and
 
 
 \anchor other_domains
-<H1>Ad hoc Predicates for Other Domains</H1><H2>Extra Predicates Specifically for the Pointset Powerset Domains</H2>
+<H1>Ad hoc Predicates for Other Domains</H1>
+<H2>Extra Predicates Specifically for the Pointset Powerset Domains</H2>
   The powerset domains can be instantiated by taking as a base domain
   any fixed semantic geometric description
   (C and NNC polyhedra, BD and octagonal shapes, boxes and grids).
@@ -1429,11 +1427,14 @@ and
   Note that predicates for other pointset powerset domains
   will follow similar patterns.
 
-  <H3>Predicates for pointset powerset iterators.</H3>
+  <H3>Predicates for pointset powerset iterators and disjuncts.</H3>
 Iterators allow the user to examine and change individual elements
 (called here disjuncts) of a pointset powerset.
+Detailed descriptions for adding and removing disjuncts can be found in the
+main \extref{preamble, PPL User Manual} in Section
+\extref{Adding_a_Disjunct, Adding a Disjunct}.
 The following predicates support useful operations
-on these iterators via the usual handles.
+on these iterators and disjuncts via the usual handles.
 
 <P><CODE>ppl_new_Pointset_Powerset_C_Polyhedron_iterator_from_iterator(+Iterator_1, -Iterator_2)</CODE><BR>
   <EM>Builds a new iterator \p it from the iterator referenced by
@@ -1472,18 +1473,32 @@ on these iterators via the usual handles.
   this makes sure the corresponding resources
   will eventually be released.</EM>
 
+<P><CODE>ppl_Pointset_Powerset_C_Polyhedron_add_disjunct(+Handle_1, +Handle_2)</CODE><BR>
+  <EM>Adds to the pointset powerset referenced by \c Handle_1 a disjunct
+  referred to by \c Handle_2.</EM>
+
+<P><CODE>ppl_Pointset_Powerset_C_Polyhedron_drop_disjunct(+Handle, +Iterator)</CODE><BR>
+  <EM>If \p it is the iterator referred to by \c Iterator,
+  drops from the pointset powerset referenced by \c Handle
+  the disjunct pointed to by \p it and
+  assigns to \p it an iterator to the next disjunct.</EM>
+
+<P><CODE>ppl_Pointset_Powerset_C_Polyhedron_drop_disjuncts(+Handle, +Iterator_1, +Iterator_2)</CODE><BR>
+  <EM>If \p it_1 and \p it_2 are the iterators referred to by \c Iterator_1
+  and \c Iterator_2, respectively,
+  drops from the pointset powerset referenced by \c Handle
+   all the disjuncts from \p it_1 to \p it_2 (excluded).</EM>
+
   <H3>Other Ad Hoc Predicates for the pointset powerset domains.</H3>
-Collected here are predicates that are specific to
+Collected here are some other predicates that are specific to
 pointset powersets of C polyhedra;
 these provide operations for
 simplifying the powerset,
-geometric comparisons,
-adding and removing disjuncts
+geometric comparisons
 and widening and extrapolation.
 Detailed descriptions of these can be found in the
 main \extref{preamble, PPL User Manual} in Sections
 \extref{Geometric_Comparisons, Geometric Comparisons},
-\extref{Adding_a_Disjunct, Adding a Disjunct},
 \extref{Certificate_Based_Widenings, Certificate-Based Widenings},
 \extref{Powerset_Extrapolation_Operators, Powerset Extrapolation Operators}.
 
@@ -1508,22 +1523,6 @@ main \extref{preamble, PPL User Manual} in Sections
    the pointset powerset referenced by \c Handle_1;
    see Section \extref{Geometric_Comparisons, Geometric Comparisons}
   in the main \extref{preamble, PPL User Manual}.</EM>
-
-<P><CODE>ppl_Pointset_Powerset_C_Polyhedron_add_disjunct(+Handle_1, +Handle_2)</CODE><BR>
-  <EM>Adds to the pointset powerset referenced by \c Handle_1 a disjunct
-  referred to by \c Handle_2.</EM>
-
-<P><CODE>ppl_Pointset_Powerset_C_Polyhedron_drop_disjunct(+Handle, +Iterator)</CODE><BR>
-  <EM>If \p it is the iterator referred to by \c Iterator,
-  drops from the pointset powerset referenced by \c Handle
-  the disjunct pointed to by \p it and
-  assigns to \p it an iterator to the next disjunct.</EM>
-
-<P><CODE>ppl_Pointset_Powerset_C_Polyhedron_drop_disjuncts(+Handle, +Iterator_1, +Iterator_2)</CODE><BR>
-  <EM>If \p it_1 and \p it_2 are the iterators referred to by \c Iterator_1
-  and \c Iterator_2, respectively,
-  drops from the pointset powerset referenced by \c Handle
-   all the disjuncts from \p it_1 to \p it_2 (excluded).</EM>
 
 
 <P><CODE>ppl_Pointset_Powerset_C_Polyhedron_BHZ03_BHRZ03_BHRZ03_widening_assign(+Handle_1, +Handle_2)</CODE><BR>
