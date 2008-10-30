@@ -19,7 +19,7 @@ Source3:	pwl.hh
 Requires(post): /sbin/ldconfig
 Requires(postun): /sbin/ldconfig
 BuildRequires:	gmp-devel >= 4.1.3
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root
+BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 #Prefix:	/usr
 
 %description
