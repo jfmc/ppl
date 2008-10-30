@@ -1,8 +1,8 @@
 %define opt %(test -x %{_bindir}/ocamlopt && echo 1 || echo 0)
 
 Name:		ppl
-Version:	0.10pre14
-Release:	3%{?dist}
+Version:	0.10pre37
+Release:	26%{?dist}
 
 Summary:	The Parma Polyhedra Library: a library of numerical abstractions
 Group:		Development/Libraries
@@ -12,11 +12,12 @@ Source0:	ftp://ftp.cs.unipr.it/pub/ppl/releases/%{version}/%{name}-%{version}.ta
 Source1:	ppl.hh
 Source2:	ppl_c.h
 Source3:	pwl.hh
-#Patch0:		ppl-0.10-docfiles.patch
-#Patch1:		ppl-0.10-configure.patch
-#Patch2:		ppl-0.10-makefiles.patch
+#Patch0:	none
+#Patch1:	none
 #Icon:
 #Requires:
+Requires(post): /sbin/ldconfig
+Requires(postun): /sbin/ldconfig
 BuildRequires:	gmp-devel >= 4.1.3
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root
 #Prefix:	/usr
@@ -32,7 +33,7 @@ Library comes with several user friendly interfaces, is fully dynamic
 anything), written in accordance to all the applicable standards,
 exception-safe, rather efficient, thoroughly documented, and free
 software.  This package provides all what is necessary to run
-applications using the PPL through its C and C++ interfaces.
+applications using the PPL through its C++ interface.
 
 %package devel
 Summary:	Development tools for the Parma Polyhedra Library C and C++ interfaces
@@ -56,7 +57,7 @@ Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 BuildRequires:	glpk-devel >= 4.13
 %description utils
-This package contains the (mixed integer) linear programming solver ppl_lpsol
+This package contains the mixed integer linear programming solver ppl_lpsol
 and the program ppl_lcdd for vertex/facet enumeration of convex polyhedra.
 
 %ifnarch ppc64
@@ -85,8 +86,8 @@ of the Parma Polyhedra Library.
 %package swiprolog
 Summary:	The SWI-Prolog interface of the Parma Polyhedra Library
 Group:		Development/Libraries
-BuildRequires:	pl >= 5.6.0
-Requires:	%{name} = %{version}-%{release}, %{name}-pwl = %{version}-%{release}, pl >= 5.6.0
+BuildRequires:	pl-devel >= 5.6.57-2
+Requires:	%{name} = %{version}-%{release}, %{name}-pwl = %{version}-%{release}, pl >= 5.6.57-2
 %description swiprolog
 This package adds SWI-Prolog support to the Parma Polyhedra Library.
 Install this package if you want to use the library in SWI-Prolog programs.
@@ -94,7 +95,7 @@ Install this package if you want to use the library in SWI-Prolog programs.
 %package swiprolog-static
 Summary:	The static archive for the SWI-Prolog interface of the Parma Polyhedra Library
 Group:		Development/Libraries
-BuildRequires:	pl >= 5.6.0
+BuildRequires:	pl-devel >= 5.6.57-2, pl-static >= 5.6.57-2
 Requires:	%{name}-swiprolog = %{version}-%{release}
 %description swiprolog-static
 This package contains the static archive for the SWI-Prolog interface
@@ -148,6 +149,8 @@ Install this package if you want to program with the PPL.
 %package pwl
 Summary:	The Parma Watchdog Library: a C++ library for watchdog timers
 Group:		Development/Libraries
+Requires(post): /sbin/ldconfig
+Requires(postun): /sbin/ldconfig
 %description pwl
 The Parma Watchdog Library (PWL) provides support for multiple,
 concurrent watchdog timers on systems providing setitimer(2).  This
@@ -175,7 +178,6 @@ This package contains the static archive for the Parma Watchdog Library.
 %setup -q
 #%patch0 -p1
 #%patch1 -p1
-#%patch2 -p1
 
 %build
 CPPFLAGS="-I%{_includedir}/glpk"
@@ -336,16 +338,48 @@ install -m644 %{SOURCE3} %{buildroot}/%{_includedir}/pwl.hh
 rm -rf %{buildroot}
 
 %changelog
-* Wed Jan 09 2008 Roberto Bagnara <bagnara@cs.unipr.it> 0.10-3
+* Thu Oct 30 2008 Roberto Bagnara <bagnara@cs.unipr.it> 0.10-1
+- Updated and extended for PPL 0.10.
+
+* Tue Sep 30 2008 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-25
+- The `swiprolog' package now requires pl >= 5.6.57-2.
+
+* Mon Sep 8 2008 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-24
+- Changed ppl-0.9-swiprolog.patch so as to invoke `plld' with
+  the `-v' option.
+
+* Mon Sep 8 2008 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-23
+- Fixed ppl-0.9-swiprolog.patch.
+
+* Mon Sep 8 2008 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-22
+- Implemented a workaround to cope with the new location of SWI-Prolog.h.
+
+* Mon Sep 8 2008 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-21
+- Fixed the SWI-Prolog interface dependencies.
+
+* Mon May 19 2008 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-20
+- Added Requires /sbin/ldconfig.
+
+* Wed Feb 13 2008 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-19
+- Include a patch to supply a missing inclusions of <cstdlib>.
+
+* Wed Jan 09 2008 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-18
 - Avoid multiarch conflicts when installed for multiple architectures.
 
-* Sat Sep 29 2007 Roberto Bagnara <bagnara@cs.unipr.it> 0.10-2
-- The value of the `License' tag is now `GPLv3+'.
+* Sun Dec 23 2007 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-17
+- The SWI-Prolog `pl' package is temporarily not available on the ppc64
+  architecture: temporarily disabled `ppl-swiprolog' and
+  `ppl-swiprolog-static' on that architecture.
+
+* Sat Sep 29 2007 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-16
+- The value of the `License' tag is now `GPLv2+'.
 - `ppl-swiprolog' dependency on `readline-devel' removed (again).
 
-* Thu Aug 30 2007 Roberto Bagnara <bagnara@cs.unipr.it> 0.10-1
-- Started working on the PPL 0.10 spec file.
-- New packages `ppl-ocaml' and `ppl-ocaml-devel' contain the OCaml interface.
+* Mon Sep 24 2007 Jesse Keating <jkeating@redhat.com> 0.9-15
+- Rebuild for new libgmpxx.
+
+* Tue Aug 28 2007 Fedora Release Engineering <rel-eng at fedoraproject dot org> 0.9-14
+- Rebuild for selinux ppc32 issue.
 
 * Fri Jul 06 2007 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-13
 - Bug 246815 had been fixed: YAP support enabled again.
