@@ -33,7 +33,7 @@ Library comes with several user friendly interfaces, is fully dynamic
 anything), written in accordance to all the applicable standards,
 exception-safe, rather efficient, thoroughly documented, and free
 software.  This package provides all what is necessary to run
-applications using the PPL through its C++ interface.
+applications using the PPL through its C and C++ interfaces.
 
 %package devel
 Summary:	Development tools for the Parma Polyhedra Library C and C++ interfaces
@@ -258,6 +258,7 @@ install -m644 %{SOURCE3} %{buildroot}/%{_includedir}/pwl.hh
 %{_bindir}/ppl-config
 %{_mandir}/man1/ppl-config.1.gz
 %{_datadir}/aclocal/ppl.m4
+%{_datadir}/aclocal/ppl_c.m4
 
 %files static
 %defattr(-,root,root,-)
