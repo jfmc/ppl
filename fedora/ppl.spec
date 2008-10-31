@@ -185,6 +185,15 @@ Requires:       %{name}-pwl-devel = %{version}-%{release}
 %description pwl-static
 This package contains the static archive for the Parma Watchdog Library.
 
+%package pwl-docs
+Summary:        Documentation for the Parma Watchdog Library
+Group:          Documentation
+Requires:       %{name}-pwl = %{version}-%{release}
+%description pwl-docs
+This package contains all the documentations required by programmers
+using the Parma Watchdog Library (PWL).
+Install this package if you want to program with the PWL.
+
 
 %prep
 %setup -q
@@ -257,6 +266,8 @@ install -m644 %{SOURCE3} %{buildroot}/%{_includedir}/pwl.hh
 %{_libdir}/libppl_c.so
 %{_bindir}/ppl-config
 %{_mandir}/man1/ppl-config.1.gz
+%{_mandir}/man3/libppl.3.gz
+%{_mandir}/man3/libppl_c.3.gz
 %{_datadir}/aclocal/ppl.m4
 %{_datadir}/aclocal/ppl_c.m4
 
@@ -329,12 +340,12 @@ install -m644 %{SOURCE3} %{buildroot}/%{_includedir}/pwl.hh
 %files docs
 %defattr(-,root,root,-)
 %doc %{_datadir}/doc/%{name}/README.doc
+%doc %{_datadir}/doc/%{name}/fdl.*
 %doc %{_datadir}/doc/%{name}/ppl-user-%{version}-html/
 %doc %{_datadir}/doc/%{name}/ppl-user-c-interface-%{version}-html/
 %doc %{_datadir}/doc/%{name}/ppl-user-java-interface-%{version}-html/
 %doc %{_datadir}/doc/%{name}/ppl-user-ocaml-interface-%{version}-html/
 %doc %{_datadir}/doc/%{name}/ppl-user-prolog-interface-%{version}-html/
-%doc %{_datadir}/doc/%{name}/fdl.*
 %doc %{_datadir}/doc/%{name}/ppl-user-%{version}.pdf
 %doc %{_datadir}/doc/%{name}/ppl-user-c-interface-%{version}.pdf
 %doc %{_datadir}/doc/%{name}/ppl-user-java-interface-%{version}.pdf
@@ -344,11 +355,17 @@ install -m644 %{SOURCE3} %{buildroot}/%{_includedir}/pwl.hh
 %doc %{_datadir}/doc/%{name}/ppl-user-c-interface-%{version}.ps.gz
 %doc %{_datadir}/doc/%{name}/ppl-user-java-interface-%{version}.ps.gz
 %doc %{_datadir}/doc/%{name}/ppl-user-ocaml-interface-%{version}.ps.gz
-%doc %{_datadir}/doc/%{name}/ppl-user-prolog-interface-%{version}.ps.gzq
+%doc %{_datadir}/doc/%{name}/ppl-user-prolog-interface-%{version}.ps.gz
 
 %files pwl
 %defattr(-,root,root,-)
-%doc Watchdog/BUGS Watchdog/COPYING Watchdog/CREDITS Watchdog/ChangeLog Watchdog/NEWS Watchdog/README
+%doc %{_datadir}/doc/pwl/BUGS
+%doc %{_datadir}/doc/pwl/COPYING
+%doc %{_datadir}/doc/pwl/CREDITS
+%doc %{_datadir}/doc/pwl/ChangeLog
+%doc %{_datadir}/doc/pwl/NEWS
+%doc %{_datadir}/doc/pwl/README
+%doc %{_datadir}/doc/pwl/gpl.*
 %{_libdir}/libpwl.so.*
 
 %files pwl-devel
@@ -360,6 +377,14 @@ install -m644 %{SOURCE3} %{buildroot}/%{_includedir}/pwl.hh
 %files pwl-static
 %defattr(-,root,root,-)
 %{_libdir}/libpwl.a
+
+%files pwl-docs
+%defattr(-,root,root,-)
+%doc %{_datadir}/doc/pwl/README.doc
+%doc %{_datadir}/doc/pwl/fdl.*
+%doc %{_datadir}/doc/pwl/pwl-user-0.5-html/
+%doc %{_datadir}/doc/pwl/pwl-user-0.5.pdf
+%doc %{_datadir}/doc/pwl/pwl-user-0.5.ps.gz
 
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
