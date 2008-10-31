@@ -249,6 +249,7 @@ unpredictable places, or because some published versions have bugs
 that prevent the PPL interface to run correctly.  In these cases,
 information is given in a README.* file.  Presently we have:
 
+  README.java,
   README.ocaml,
   README.gprolog,
   README.swiprolog,
