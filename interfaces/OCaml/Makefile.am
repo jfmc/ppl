@@ -40,7 +40,8 @@ ppl_ocaml_globals.ml
 EXTRA_DIST = \
 $(interface_generator_files) \
 $(ml_source_files) \
-OCaml_interface.dox
+OCaml_interface.dox \
+README.ocaml
 
 ocamldir = $(pkglibdir)
 
