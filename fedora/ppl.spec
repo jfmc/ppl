@@ -200,6 +200,8 @@ CPPFLAGS="$CPPFLAGS -I%{_includedir}/Yap"
 %configure --enable-shared --disable-rpath --enable-instantiations=Polyhedron CPPFLAGS="$CPPFLAGS"
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
+sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' Watchdog/libtool
+sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' Watchdog/libtool
 make %{?_smp_mflags}
 
 %install
