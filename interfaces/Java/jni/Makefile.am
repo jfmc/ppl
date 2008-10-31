@@ -64,6 +64,9 @@ libppl_java_la_LDFLAGS = \
 
 endif !HOST_OS_DARWIN
 
+libppl_java_la_LIBTOOLFLAGS= \
+--tag=disable-static
+
 libppl_java_la_SOURCES = \
 ppl_java_common.defs.hh \
 ppl_java_common.inlines.hh \
