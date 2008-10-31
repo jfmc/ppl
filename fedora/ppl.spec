@@ -2,7 +2,7 @@
 
 Name:           ppl
 Version:        0.10
-Release:        26%{?dist}
+Release:        1%{?dist}
 
 Summary:        The Parma Polyhedra Library: a library of numerical abstractions
 Group:          Development/Libraries
