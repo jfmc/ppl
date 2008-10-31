@@ -323,7 +323,7 @@ install -m644 %{SOURCE3} %{buildroot}/%{_includedir}/pwl.hh
 %files java
 %defattr(-,root,root,-)
 %doc interfaces/Java/README.java
-%{_libdir}/%{name}/libppl_java.so*
+%{_libdir}/%{name}/libppl_java.so
 %{_libdir}/%{name}/ppl_java.jar
 
 %files docs
