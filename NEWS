@@ -65,6 +65,14 @@ o  The PPL semantic object Polyhedra_Powerset has been replaced by the
      bool geometrically_equals(const Pointset_Powerset&) const, and
      bool simplify_using_context_assign(const Pointset_Powerset&).
 
+o  For the Grid class, as it is not always possible to obtain a
+   Pointset_Powerset<Grid> object that is a finite linear partition of
+   the difference of two grids, we have added the method:
+     std::pair<Grid, Pointset_Powerset<Grid> >
+       approximate_partition(const Grid&, const Grid&, bool&)
+   where the third argument is set to false if there is no
+   finite linear partition.
+
 o  A new abstraction called Partially_Reduced_Product (PRP) has been
    added A PRP is a pair of two PPL semantic objects that is
    parametric on the component domains and on a reduction operator.
@@ -96,6 +104,14 @@ o  All the semantic domains provide new methods
    constraint/congruence is not optimally supported by the semantic
    domain: while the `add_' methods will throw an exception, the
    `refine_with_' methods will apply an upward approximation semantics.
+
+o  Several methods
+
+     bool is_topologically_closed() const
+     void topological_closure_assign()
+
+   that were provided for just some of the PPL classes are now
+   uniformly available for all classes.
 
 o  Methods using the Congruence and Congruence_System classes
    such as
