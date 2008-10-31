@@ -47,7 +47,7 @@ AM_CPPFLAGS = \
 BUILT_SOURCES = \
 ppl_java_implementation_domains.cc.stamp
 
-lib_LTLIBRARIES = libppl_java.la
+pkglib_LTLIBRARIES = libppl_java.la
 
 if HOST_OS_DARWIN
 
