@@ -123,7 +123,7 @@ of the Parma Polyhedra Library.
 Summary:	The OCaml interface of the Parma Polyhedra Library
 Group:		Development/Libraries
 BuildRequires:	ocaml >= 3.09
-Requires:	%{name} = %{version}-%{release}, %{name}-pwl = %{version}-%{release}
+Requires:	%{name} = %{version}-%{release}
 %description ocaml
 This package adds Objective Caml (OCaml) support to the Parma
 Polyhedra Library.  Install this package if you want to use the
@@ -136,6 +136,18 @@ Requires:	%{name}-ocaml = %{version}-%{release}
 %description ocaml-devel
 This package contains libraries and signature files for developing
 applications using the OCaml interface of the Parma Polyhedra Library.
+
+%package java
+Summary:	The Java interface of the Parma Polyhedra Library
+Group:		Development/Libraries
+BuildRequires:  java-devel >= 1:1.6.0
+BuildRequires:  jpackage-utils
+Requires:       java-devel >= 1:1.6.0
+Requires:       jpackage-utils
+Requires:	%{name} = %{version}-%{release}
+%description java
+This package adds Java support to the Parma Polyhedra Library.
+Install this package if you want to use the library in Java programs.
 
 %package docs
 Summary:	Documentation for the Parma Polyhedra Library
@@ -185,7 +197,7 @@ CPPFLAGS="-I%{_includedir}/glpk"
 CPPFLAGS="$CPPFLAGS -I%{_libdir}/gprolog-`gprolog --version 2>&1 | head -1 | sed -e "s/.* \([^ ]*\)$/\1/g"`/include"
 %endif
 CPPFLAGS="$CPPFLAGS -I%{_includedir}/Yap"
-%configure --enable-shared --disable-rpath CPPFLAGS="$CPPFLAGS"
+%configure --enable-shared --disable-rpath --enable-instantiations=Polyhedron CPPFLAGS="$CPPFLAGS"
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 make %{?_smp_mflags}
