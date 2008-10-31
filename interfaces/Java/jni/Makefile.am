@@ -51,9 +51,18 @@ pkglib_LTLIBRARIES = libppl_java.la
 
 if HOST_OS_DARWIN
 
-libppl_java_la_LDFLAGS = "-shrext .jnilib"
+libppl_java_la_LDFLAGS = \
+-module \
+-avoid-version \
+"-shrext .jnilib"
 
-endif HOST_OS_DARWIN
+else !HOST_OS_DARWIN
+
+libppl_java_la_LDFLAGS = \
+-module \
+-avoid-version
+
+endif !HOST_OS_DARWIN
 
 libppl_java_la_SOURCES = \
 ppl_java_common.defs.hh \
