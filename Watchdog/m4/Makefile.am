@@ -26,6 +26,13 @@ m4data_DATA =
 
 # M4 macro files for internal use.
 m4macros = \
-ax_prefix_config_h.m4
+ax_prefix_config_h.m4 \
+lib-ld.m4 \
+lib-link.m4 \
+libtool.m4 \
+ltoptions.m4 \
+ltsugar.m4 \
+ltversion.m4 \
+lt~obsolete.m4
 
 EXTRA_DIST = $(m4macros) $(m4data_DATA)
