@@ -23,7 +23,8 @@
 SUBDIRS = parma_polyhedra_library jni . tests
 
 EXTRA_DIST = \
-ppl_interface_generator_java_procedure_generators.m4
+ppl_interface_generator_java_procedure_generators.m4 \
+README.java
 
 interface_generator_dependencies = \
 ../ppl_interface_generator_common.m4 \
