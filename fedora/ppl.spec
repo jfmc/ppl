@@ -330,9 +330,21 @@ install -m644 %{SOURCE3} %{buildroot}/%{_includedir}/pwl.hh
 %defattr(-,root,root,-)
 %doc %{_datadir}/doc/%{name}/README.doc
 %doc %{_datadir}/doc/%{name}/ppl-user-%{version}-html/
+%doc %{_datadir}/doc/%{name}/ppl-user-c-interface-%{version}-html/
+%doc %{_datadir}/doc/%{name}/ppl-user-java-interface-%{version}-html/
+%doc %{_datadir}/doc/%{name}/ppl-user-ocaml-interface-%{version}-html/
+%doc %{_datadir}/doc/%{name}/ppl-user-prolog-interface-%{version}-html/
 %doc %{_datadir}/doc/%{name}/fdl.*
 %doc %{_datadir}/doc/%{name}/ppl-user-%{version}.pdf
+%doc %{_datadir}/doc/%{name}/ppl-user-c-interface-%{version}.pdf
+%doc %{_datadir}/doc/%{name}/ppl-user-java-interface-%{version}.pdf
+%doc %{_datadir}/doc/%{name}/ppl-user-ocaml-interface-%{version}.pdf
+%doc %{_datadir}/doc/%{name}/ppl-user-prolog-interface-%{version}.pdf
 %doc %{_datadir}/doc/%{name}/ppl-user-%{version}.ps.gz
+%doc %{_datadir}/doc/%{name}/ppl-user-c-interface-%{version}.ps.gz
+%doc %{_datadir}/doc/%{name}/ppl-user-java-interface-%{version}.ps.gz
+%doc %{_datadir}/doc/%{name}/ppl-user-ocaml-interface-%{version}.ps.gz
+%doc %{_datadir}/doc/%{name}/ppl-user-prolog-interface-%{version}.ps.gzq
 
 %files pwl
 %defattr(-,root,root,-)
