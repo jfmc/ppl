@@ -313,6 +313,12 @@ install -m644 %{SOURCE3} %{buildroot}/%{_includedir}/pwl.hh
 %{_libdir}/%{name}/ppl_ocaml_globals.cmi
 %{_libdir}/%{name}/ppl_ocaml_types.cmi
 
+%files java
+%defattr(-,root,root,-)
+%doc interfaces/Java/README.java
+libppl_java.so*
+ppl_java.jar
+
 %files ocaml-devel
 %defattr(-,root,root,-)
 %{_libdir}/%{name}/libppl_ocaml.a
