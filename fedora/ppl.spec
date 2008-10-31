@@ -341,7 +341,7 @@ ppl_java.jar
 
 %files pwl-devel
 %defattr(-,root,root,-)
-%doc Watchdog/README.doc
+%doc Watchdog/doc/README.doc
 %{_includedir}/pwl*.hh
 %{_libdir}/libpwl.so
 
