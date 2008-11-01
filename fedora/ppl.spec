@@ -1,4 +1,4 @@
-%define opt %(test -x %{_bindir}/ocamlopt && echo 1 || echo 0)
+#%define opt %(test -x %{_bindir}/ocamlopt && echo 1 || echo 0)
 
 Name:           ppl
 Version:        0.10
@@ -110,23 +110,23 @@ Requires:       %{name} = %{version}-%{release}, %{name}-pwl = %{version}-%{rele
 This package adds YAP Prolog support to the Parma Polyhedra Library (PPL).
 Install this package if you want to use the library in YAP Prolog programs.
 
-%package ocaml
-Summary:        The OCaml interface of the Parma Polyhedra Library
-Group:          Development/Libraries
-BuildRequires:  ocaml >= 3.09
-Requires:       %{name} = %{version}-%{release}
-%description ocaml
-This package adds Objective Caml (OCaml) support to the Parma
-Polyhedra Library.  Install this package if you want to use the
-library in OCaml programs.
+#%package ocaml
+#Summary:        The OCaml interface of the Parma Polyhedra Library
+#Group:          Development/Libraries
+#BuildRequires:  ocaml >= 3.09
+#Requires:       %{name} = %{version}-%{release}
+#%description ocaml
+#This package adds Objective Caml (OCaml) support to the Parma
+#Polyhedra Library.  Install this package if you want to use the
+#library in OCaml programs.
 
-%package ocaml-devel
-Summary:        The OCaml interface of the Parma Polyhedra Library
-Group:          Development/Libraries
-Requires:       %{name}-ocaml = %{version}-%{release}
-%description ocaml-devel
-This package contains libraries and signature files for developing
-applications using the OCaml interface of the Parma Polyhedra Library.
+#%package ocaml-devel
+#Summary:        The OCaml interface of the Parma Polyhedra Library
+#Group:          Development/Libraries
+#Requires:       %{name}-ocaml = %{version}-%{release}
+#%description ocaml-devel
+#This package contains libraries and signature files for developing
+#applications using the OCaml interface of the Parma Polyhedra Library.
 
 %package java
 Summary:        The Java interface of the Parma Polyhedra Library
@@ -207,7 +207,7 @@ CPPFLAGS="-I%{_includedir}/glpk"
 CPPFLAGS="$CPPFLAGS -I%{_libdir}/gprolog-`gprolog --version 2>&1 | head -1 | sed -e "s/.* \([^ ]*\)$/\1/g"`/include"
 %endif
 CPPFLAGS="$CPPFLAGS -I%{_includedir}/Yap"
-%configure --enable-shared --disable-rpath --enable-interfaces="c++ c gnu_prolog swi_prolog yap_prolog ocaml java" --enable-instantiations=Polyhedron CPPFLAGS="$CPPFLAGS"
+%configure --enable-shared --disable-rpath --enable-interfaces="c++ c gnu_prolog swi_prolog yap_prolog java" --enable-instantiations=Polyhedron CPPFLAGS="$CPPFLAGS"
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' Watchdog/libtool
@@ -322,17 +322,17 @@ mv \
 %{_libdir}/%{name}/ppl_yap.pl
 %{_libdir}/%{name}/ppl_yap.so
 
-%files ocaml
-%defattr(-,root,root,-)
-%doc interfaces/OCaml/README.ocaml
-%{_libdir}/%{name}/ppl_ocaml.cma
-%{_libdir}/%{name}/ppl_ocaml.cmi
-%{_libdir}/%{name}/ppl_ocaml_globals.cmi
+#%files ocaml
+#%defattr(-,root,root,-)
+#%doc interfaces/OCaml/README.ocaml
+#%{_libdir}/%{name}/ppl_ocaml.cma
+#%{_libdir}/%{name}/ppl_ocaml.cmi
+#%{_libdir}/%{name}/ppl_ocaml_globals.cmi
 
-%files ocaml-devel
-%defattr(-,root,root,-)
-%{_libdir}/%{name}/libppl_ocaml.a
-%{_libdir}/%{name}/ppl_ocaml.mli
+#%files ocaml-devel
+#%defattr(-,root,root,-)
+#%{_libdir}/%{name}/libppl_ocaml.a
+#%{_libdir}/%{name}/ppl_ocaml.mli
 
 %files java
 %defattr(-,root,root,-)
@@ -350,17 +350,17 @@ mv \
 %doc %{_datadir}/doc/%{name}/fdl.*
 %doc %{_datadir}/doc/%{name}/ppl-user-%{version}-html/
 %doc %{_datadir}/doc/%{name}/ppl-user-c-interface-%{version}-html/
-%doc %{_datadir}/doc/%{name}/ppl-user-ocaml-interface-%{version}-html/
+#%doc %{_datadir}/doc/%{name}/ppl-user-ocaml-interface-%{version}-html/
 %doc %{_datadir}/doc/%{name}/ppl-user-prolog-interface-%{version}-html/
 %doc %{_datadir}/doc/%{name}/ppl-user-%{version}.pdf
 %doc %{_datadir}/doc/%{name}/ppl-user-c-interface-%{version}.pdf
 %doc %{_datadir}/doc/%{name}/ppl-user-java-interface-%{version}.pdf
-%doc %{_datadir}/doc/%{name}/ppl-user-ocaml-interface-%{version}.pdf
+#%doc %{_datadir}/doc/%{name}/ppl-user-ocaml-interface-%{version}.pdf
 %doc %{_datadir}/doc/%{name}/ppl-user-prolog-interface-%{version}.pdf
 %doc %{_datadir}/doc/%{name}/ppl-user-%{version}.ps.gz
 %doc %{_datadir}/doc/%{name}/ppl-user-c-interface-%{version}.ps.gz
 %doc %{_datadir}/doc/%{name}/ppl-user-java-interface-%{version}.ps.gz
-%doc %{_datadir}/doc/%{name}/ppl-user-ocaml-interface-%{version}.ps.gz
+#%doc %{_datadir}/doc/%{name}/ppl-user-ocaml-interface-%{version}.ps.gz
 %doc %{_datadir}/doc/%{name}/ppl-user-prolog-interface-%{version}.ps.gz
 
 %files pwl
