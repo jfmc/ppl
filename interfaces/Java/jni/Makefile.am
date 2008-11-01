@@ -49,6 +49,9 @@ ppl_java_implementation_domains.cc.stamp
 
 pkglib_LTLIBRARIES = libppl_java.la
 
+# There is no point in generating the static version.
+AM_LIBTOOLFLAGS = --tag=disable-static
+
 if HOST_OS_DARWIN
 
 libppl_java_la_LDFLAGS = \
@@ -63,9 +66,6 @@ libppl_java_la_LDFLAGS = \
 -avoid-version
 
 endif !HOST_OS_DARWIN
-
-libppl_java_la_LIBTOOLFLAGS= \
---tag=disable-static
 
 libppl_java_la_SOURCES = \
 ppl_java_common.defs.hh \
