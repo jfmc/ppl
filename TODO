@@ -2,6 +2,11 @@
 Enhancements for PPL 0.10.1 or later versions
 =============================================
 
+- Improve the OCaml interface by supporting dynamic loading and
+  native compilation.
+- In libppl.3 and in the test programs, use malloc(), realloc() and
+  free() instead of operator new() and operator delete() to implement
+  the replacement GMP allocation functions.
 - In libppl.3 and in the test programs, use malloc(), realloc() and
   free() instead of operator new() and operator delete() to implement
   the replacement GMP allocation functions.
