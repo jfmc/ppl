@@ -174,6 +174,12 @@ nodist_EXTRA_libppl_sicstus_la_SOURCES = \
 ../ppl_prolog_Constraints_Product_Grid_C_Polyhedron.cc \
 ../ppl_prolog_Constraints_Product_Grid_NNC_Polyhedron.cc
 
+if NO_UNDEFINED
+
+NO_UNDEFINED_FLAG = -no-undefined
+
+endif NO_UNDEFINED
+
 libppl_sicstus_la_LIBADD = \
 @required_instantiations_prolog_cxx_objects@ \
 $(top_builddir)/src/libppl.la \
@@ -184,6 +190,7 @@ libppl_sicstus_la_DEPENDENCIES = \
 @required_instantiations_prolog_cxx_objects@
 
 libppl_sicstus_la_LDFLAGS = \
+$(NO_UNDEFINED_FLAG) \
 -module \
 -avoid-version
 
