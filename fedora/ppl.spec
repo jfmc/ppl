@@ -40,9 +40,9 @@ Summary:        Development tools for the Parma Polyhedra Library C and C++ inte
 Group:          Development/Libraries
 Requires:       %{name} = %{version}-%{release}, gmp-devel >= 4.1.3
 %description devel
-The header files, Autoconf macro, documentation, and ppl-config tool
-developing applications using the Parma Polyhedra Library through its
-C and C++ interfaces.
+The header files, Autoconf macro and minimal documentation for
+developing applications using the Parma Polyhedra Library through
+its C and C++ interfaces.
 
 %package static
 Summary:        Static archives for the Parma Polyhedra Library C and C++ interfaces
@@ -256,23 +256,23 @@ mv \
 %doc %{_datadir}/doc/%{name}/ChangeLog
 %doc %{_datadir}/doc/%{name}/NEWS
 %doc %{_datadir}/doc/%{name}/README
+%doc %{_datadir}/doc/%{name}/README.configure
 %doc %{_datadir}/doc/%{name}/TODO
 %doc %{_datadir}/doc/%{name}/gpl.*
 %{_libdir}/libppl.so.*
 %{_libdir}/libppl_c.so.*
+%{_bindir}/ppl-config
+%{_mandir}/man1/ppl-config.1.gz
 
 %dir %{_libdir}/%{name}
 %dir %{_datadir}/doc/%{name}
 
 %files devel
 %defattr(-,root,root,-)
-%doc %{_datadir}/doc/%{name}/README.configure
 %{_includedir}/ppl*.hh
 %{_includedir}/ppl_c*.h
 %{_libdir}/libppl.so
 %{_libdir}/libppl_c.so
-%{_bindir}/ppl-config
-%{_mandir}/man1/ppl-config.1.gz
 %{_mandir}/man3/libppl.3.gz
 %{_mandir}/man3/libppl_c.3.gz
 %{_datadir}/aclocal/ppl.m4
