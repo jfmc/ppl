@@ -52,9 +52,16 @@ pkglib_LTLIBRARIES = libppl_java.la
 # There is no point in generating the static version.
 AM_LIBTOOLFLAGS = --tag=disable-static
 
+if NO_UNDEFINED
+
+NO_UNDEFINED_FLAG = -no-undefined
+
+endif NO_UNDEFINED
+
 if HOST_OS_DARWIN
 
 libppl_java_la_LDFLAGS = \
+$(NO_UNDEFINED_FLAG) \
 -module \
 -avoid-version \
 "-shrext .jnilib"
@@ -62,6 +69,7 @@ libppl_java_la_LDFLAGS = \
 else !HOST_OS_DARWIN
 
 libppl_java_la_LDFLAGS = \
+$(NO_UNDEFINED_FLAG) \
 -module \
 -avoid-version
 
