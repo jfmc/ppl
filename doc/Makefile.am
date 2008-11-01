@@ -641,6 +641,66 @@ devref-all: devref devref-configured
 
 world: user-all devref-all
 
+# Installation: all the distributed *core* docs, as well as
+# the distributed docs for all the *enabled* foreign language interfaces.
+
+if BUILD_C_INTERFACE
+
+INSTALL_C_INTERFACE_HTML_DOCS = $(USER_C_INTERFACE_HTML_MANUAL)
+INSTALL_C_INTERFACE_PDF_DOCS = $(USER_C_INTERFACE_PDF_MANUAL)
+INSTALL_C_INTERFACE_PS_DOCS = $(USER_C_INTERFACE_PS_MANUAL)
+
+endif BUILD_C_INTERFACE
+
+if BUILD_JAVA_INTERFACE
+
+INSTALL_JAVA_INTERFACE_HTML_DOCS = $(USER_JAVA_INTERFACE_HTML_MANUAL)
+INSTALL_JAVA_INTERFACE_PDF_DOCS = $(USER_JAVA_INTERFACE_PDF_MANUAL)
+INSTALL_JAVA_INTERFACE_PS_DOCS = $(USER_JAVA_INTERFACE_PS_MANUAL)
+
+endif BUILD_JAVA_INTERFACE
+
+if BUILD_OCAML_INTERFACE
+
+INSTALL_OCAML_INTERFACE_HTML_DOCS = $(USER_OCAML_INTERFACE_HTML_MANUAL)
+INSTALL_OCAML_INTERFACE_PDF_DOCS = $(USER_OCAML_INTERFACE_PDF_MANUAL)
+INSTALL_OCAML_INTERFACE_PS_DOCS = $(USER_OCAML_INTERFACE_PS_MANUAL)
+
+endif BUILD_OCAML_INTERFACE
+
+if BUILD_SOME_PROLOG_INTERFACES
+
+INSTALL_PROLOG_INTERFACE_HTML_DOCS = $(USER_PROLOG_INTERFACE_HTML_MANUAL)
+INSTALL_PROLOG_INTERFACE_PDF_DOCS = $(USER_PROLOG_INTERFACE_PDF_MANUAL)
+INSTALL_PROLOG_INTERFACE_PS_DOCS = $(USER_PROLOG_INTERFACE_PS_MANUAL)
+
+endif BUILD_SOME_PROLOG_INTERFACES
+
+
+INSTALL_HTML_DOCS = \
+$(USER_CORE_HTML_MANUAL) \
+$(INSTALL_C_INTERFACE_HTML_DOCS) \
+$(INSTALL_JAVA_INTERFACE_HTML_DOCS) \
+$(INSTALL_OCAML_INTERFACE_HTML_DOCS) \
+$(INSTALL_PROLOG_INTERFACE_HTML_DOCS)
+
+INSTALL_PDF_DOCS = \
+$(PDF_LICENSES) \
+$(USER_CORE_PDF_MANUAL) \
+$(INSTALL_C_INTERFACE_PDF_DOCS) \
+$(INSTALL_JAVA_INTERFACE_PDF_DOCS) \
+$(INSTALL_OCAML_INTERFACE_PDF_DOCS) \
+$(INSTALL_PROLOG_INTERFACE_PDF_DOCS)
+
+INSTALL_PS_DOCS = \
+$(PS_LICENSES) \
+$(USER_CORE_PS_MANUAL) \
+$(INSTALL_C_INTERFACE_PS_DOCS) \
+$(INSTALL_JAVA_INTERFACE_PS_DOCS) \
+$(INSTALL_OCAML_INTERFACE_PS_DOCS) \
+$(INSTALL_PROLOG_INTERFACE_PS_DOCS)
+
+
 install-data-local: \
 install-html \
 install-pdf \
@@ -661,7 +721,7 @@ uninstall-txt
 
 # Installation and uninstallation of HTML documentation.
 install-html:
-	for ball in $(DIST_HTML_DOCS); do \
+	for ball in $(INSTALL_HTML_DOCS); do \
 	  test -f $$ball || test -f $(srcdir)/$$ball || $(MAKE) $$ball; \
 	  dir=`basename $$ball .tar.gz`; \
 	  $(mkinstalldirs) $(DESTDIR)$(htmldir)/$$dir; \
@@ -679,13 +739,13 @@ install-html:
 	done
 
 installdirs-html:
-	for ball in $(DIST_HTML_DOCS); do \
+	for ball in $(INSTALL_HTML_DOCS); do \
 	  dir=`basename $$ball .tar.gz`; \
 	  $(mkinstalldirs) $(DESTDIR)$(htmldir)/$$dir; \
 	done
 
 uninstall-html:
-	for ball in $(DIST_HTML_DOCS); do \
+	for ball in $(INSTALL_HTML_DOCS); do \
 	  dir=`basename $$ball .tar.gz`; \
 	  rm -rf $(DESTDIR)$(htmldir)/$$dir; \
 	done
@@ -693,7 +753,7 @@ uninstall-html:
 # Installation and uninstallation of PDF documentation.
 install-pdf:
 	$(mkinstalldirs) $(DESTDIR)$(pdfdir)
-	for file in $(DIST_PDF_DOCS); do \
+	for file in $(INSTALL_PDF_DOCS); do \
 	  test -f $$file || test -f $(srcdir)/$$file || $(MAKE) $$file; \
 	  $(INSTALL_DATA) `if test -f $$file; then echo .; else echo $(srcdir); fi`/$$file $(DESTDIR)$(pdfdir)/$$file; \
 	done
@@ -702,12 +762,14 @@ installdirs-pdf:
 	$(mkinstalldirs) $(DESTDIR)$(pdfdir)
 
 uninstall-pdf:
-	rm -f $(DESTDIR)$(pdfdir)/*.pdf
+	for file in $(INSTALL_PDF_DOCS); do \
+	  rm -f $(DESTDIR)$(pdfdir)/$$file; \
+	done
 
 # Installation and uninstallation of PostScript documentation.
 install-ps:
 	$(mkinstalldirs) $(DESTDIR)$(psdir)
-	for file in $(DIST_PS_DOCS); do \
+	for file in $(INSTALL_PS_DOCS); do \
 	  test -f $$file || test -f $(srcdir)/$$file || $(MAKE) $$file; \
 	  $(INSTALL_DATA) `if test -f $$file; then echo .; else echo $(srcdir); fi`/$$file $(DESTDIR)$(psdir)/$$file; \
 	done
@@ -716,7 +778,9 @@ installdirs-ps:
 	$(mkinstalldirs) $(DESTDIR)$(psdir)
 
 uninstall-ps:
-	rm -f $(DESTDIR)$(psdir)/*.ps.gz
+	for file in $(INSTALL_PS_DOCS); do \
+	  rm -f $(DESTDIR)$(psdir)/$$file; \
+	done
 
 # Installation and uninstallation of pure text documentation.
 install-txt:
