@@ -241,6 +241,14 @@ install -m644 %{SOURCE2} %{buildroot}/%{_includedir}/ppl_c.h
 mv %{buildroot}/%{_includedir}/pwl.hh %{buildroot}/%{_includedir}/pwl-${normalized_arch}.hh
 install -m644 %{SOURCE3} %{buildroot}/%{_includedir}/pwl.hh
 
+# Remove the empty *.map files produced by Doxygen.
+find %{buildroot}/%{_datadir}/doc/%{name}/ppl-user-%{version}-html -name \*.map -size 0 -delete
+find %{buildroot}/%{_datadir}/doc/%{name}/ppl-user-c-interface-%{version}-html -name \*.map -size 0 -delete
+find %{buildroot}/%{_datadir}/doc/%{name}/ppl-user-java-interface-%{version}-html -name \*.map -size 0 -delete
+find %{buildroot}/%{_datadir}/doc/%{name}/ppl-user-prolog-interface-%{version}-html -name \*.map -size 0 -delete
+find %{buildroot}/%{_datadir}/doc/pwl/pwl-user-0.5-html -name \*.map -size 0 -delete
+
+
 %files
 %defattr(-,root,root,-)
 %doc %{_datadir}/doc/%{name}/BUGS
