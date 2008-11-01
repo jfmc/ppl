@@ -110,15 +110,6 @@ Requires:       %{name} = %{version}-%{release}, %{name}-pwl = %{version}-%{rele
 This package adds YAP Prolog support to the Parma Polyhedra Library (PPL).
 Install this package if you want to use the library in YAP Prolog programs.
 
-%package yap-static
-Summary:        The static archive for the YAP Prolog interface of the Parma Polyhedra Library
-Group:          Development/Libraries
-BuildRequires:  yap-devel >= 5.1.1
-Requires:       %{name}-yap = %{version}-%{release}
-%description yap-static
-This package contains the static archive for the YAP Prolog interface
-of the Parma Polyhedra Library.
-
 %package ocaml
 Summary:        The OCaml interface of the Parma Polyhedra Library
 Group:          Development/Libraries
@@ -330,10 +321,6 @@ mv \
 %doc interfaces/Prolog/YAP/README.yap
 %{_libdir}/%{name}/ppl_yap.pl
 %{_libdir}/%{name}/ppl_yap.so
-
-%files yap-static
-%defattr(-,root,root,-)
-%{_libdir}/%{name}/ppl_yap.a
 
 %files ocaml
 %defattr(-,root,root,-)
