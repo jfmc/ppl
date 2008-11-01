@@ -94,7 +94,7 @@ public:
   //! Default constructor.
   Smash_Reduction();
 
-  /*! brief
+  /*! \brief
     The smash reduction operator for propagating emptiness between the
     domain elements \p d1 and \p d2.
 
@@ -128,7 +128,7 @@ public:
   //! Default constructor.
   Constraints_Reduction();
 
-  /*! brief
+  /*! \brief
     The constraints reduction operator for sharing constraints between the
     domains.
 
@@ -156,7 +156,7 @@ public:
   ~Constraints_Reduction();
 };
 
-/*! brief
+/*! \brief
   This class provides the reduction method for the Direct_Product domain.
 
   \ingroup PPL_CXX_interface
@@ -295,7 +295,7 @@ public:
 template <typename D1, typename D2, typename R>
 class Parma_Polyhedra_Library::Partially_Reduced_Product {
 public:
-  /*! brief
+  /*! \brief
     Returns the maximum space dimension this product
     can handle.
   */
