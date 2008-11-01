@@ -13,7 +13,7 @@ See the file CREDITS for a list of people and organizations that
 contributed to the PWL.
 
 Here is the contents of the PWL 0.5 source distribution
-(5 directories, 97 files):
+(5 directories, 100 files):
 
 pwl-0.5
 |-- BUGS
@@ -29,6 +29,7 @@ pwl-0.5
 |-- compile
 |-- config.guess
 |-- config.h.in
+|-- config.rpath
 |-- config.sub
 |-- configure
 |-- configure.ac
@@ -67,6 +68,8 @@ pwl-0.5
 |   |-- Makefile.am
 |   |-- Makefile.in
 |   |-- ax_prefix_config_h.m4
+|   |-- lib-ld.m4
+|   |-- lib-link.m4
 |   |-- libtool.m4
 |   |-- ltoptions.m4
 |   |-- ltsugar.m4
@@ -118,6 +121,7 @@ pwl-0.5
     |-- Makefile.am
     |-- Makefile.in
     `-- build_header.in
+
 
 --------
 
