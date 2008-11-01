@@ -149,6 +149,16 @@ Requires:       %{name} = %{version}-%{release}
 This package adds Java support to the Parma Polyhedra Library.
 Install this package if you want to use the library in Java programs.
 
+%package java-javadoc
+Summary:        Javadocs for %{name}-java
+Group:          Documentation
+Requires:       %{name}-java = %{version}-%{release}
+Requires:       jpackage-utils
+%description java-javadoc
+This package contains the API documentation for Java interface
+of the Parma Polyhedra Library.
+
+
 %package docs
 Summary:        Documentation for the Parma Polyhedra Library
 Group:          Documentation
@@ -248,6 +258,11 @@ find %{buildroot}/%{_datadir}/doc/%{name}/ppl-user-java-interface-%{version}-htm
 find %{buildroot}/%{_datadir}/doc/%{name}/ppl-user-prolog-interface-%{version}-html -name \*.map -size 0 -delete
 find %{buildroot}/%{_datadir}/doc/pwl/pwl-user-0.5-html -name \*.map -size 0 -delete
 
+# Install the Javadocs for ppl-java.
+mkdir -p %{buildroot}%{_javadocdir}
+mv \
+%{buildroot}/%{_datadir}/doc/%{name}/ppl-user-java-interface-%{version}-html \
+%{buildroot}%{_javadocdir}/%{name}-java
 
 %files
 %defattr(-,root,root,-)
@@ -345,13 +360,16 @@ find %{buildroot}/%{_datadir}/doc/pwl/pwl-user-0.5-html -name \*.map -size 0 -de
 %{_libdir}/%{name}/libppl_java.so
 %{_libdir}/%{name}/ppl_java.jar
 
+%files java-javadoc
+%defattr(-,root,root,-)
+%{_javadocdir}/%{name}-java
+
 %files docs
 %defattr(-,root,root,-)
 %doc %{_datadir}/doc/%{name}/README.doc
 %doc %{_datadir}/doc/%{name}/fdl.*
 %doc %{_datadir}/doc/%{name}/ppl-user-%{version}-html/
 %doc %{_datadir}/doc/%{name}/ppl-user-c-interface-%{version}-html/
-%doc %{_datadir}/doc/%{name}/ppl-user-java-interface-%{version}-html/
 %doc %{_datadir}/doc/%{name}/ppl-user-ocaml-interface-%{version}-html/
 %doc %{_datadir}/doc/%{name}/ppl-user-prolog-interface-%{version}-html/
 %doc %{_datadir}/doc/%{name}/ppl-user-%{version}.pdf
