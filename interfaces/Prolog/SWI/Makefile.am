@@ -214,9 +214,9 @@ EXTRA_LINK_OPTIONS = $(SWI_PROLOG_LD_OPTIONS)
 
 endif HOST_OS_CYGWIN
 
-# Note: since `libppl_swiprolog' will be installed is a pkglib, we prefer
-# statically linking it into `ppl_pl'.  Otherwise `ppl_pl' would not work
-# unless the user instructs the dynamic linker to look into the pkglib
+# Note: since `libppl_swiprolog' is a pkglib, we prefer statically
+# linking it into `ppl_pl'.  Otherwise `ppl_pl' would not work unless
+# the user instructs the dynamic linker to look into the pkglib
 # directory.
 if ENABLE_STATIC
 
