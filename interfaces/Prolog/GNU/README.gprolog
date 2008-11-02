@@ -43,5 +43,5 @@ constituted by, say, `source1.pl' and `source2.pl' and you want to
 create the executable `myprog', your compilation command may look like
 
     gplc -o myprog <prefix>/lib/ppl/ppl_gprolog.pl source1.pl source2.pl \
-      -L '-L<prefix>/lib/ppl -lppl_gprolog -L<prefix>/lib \
-      -lppl -lgmpxx -lgmp -lstdc++'
+      -L '-Wl,-rpath=<prefix>/lib/ppl -L<prefix>/lib/ppl -lppl_gprolog \
+      -L<prefix>/lib/ -lppl -lgmpxx -lgmp -lstdc++'
