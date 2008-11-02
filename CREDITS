@@ -3,43 +3,47 @@ Authors
 =======
 
 The Parma Polyhedra Library and its documentation is being designed,
-written, debugged and improved by the following people:
+extended, written, debugged, maintained and improved by the following
+people:
 
 
-Current core development team:
-------------------------------
+Core Development Team:
+----------------------
 
   Roberto Bagnara       [1] (University of Parma)
   Patricia M. Hill      [2] (University of Leeds)
   Enea Zaffanella       [3] (University of Parma)
 
 
-Former members of the core development team:
+Former Members of the Core Development Team:
 --------------------------------------------
 
-  Elisa Ricci           (former student of the University of Parma) has
-                        been a major contributor to the development of
-                        the PPL, up until December 2002.
+  Elisa Ricci           (former student of the University of Parma,
+                        one of the four students with which the PPL
+                        project started) has been a major contributor
+                        to the development of the PPL, up until
+                        December 2002.
 
 
-Current contributors:
+Current Contributors:
 ---------------------
 
   Abramo Bagnara        (Opera Unica) rewrote and generalized the
                         support for checked coefficients.  He also
                         wrote the support for extended numbers and is
                         currently writing a new implementation of
-                        intervals.  He also helps on other design and
-                        implementation issues.
+                        intervals.  He also helps on several other
+                        design and implementation issues.
 
-  Andrea Cimino         (University of Parma) wrote most of the mixed
-                        integer programming solver, and also most of
-                        the Java and OCaml interfaces.
+  Andrea Cimino         (former student of the University of Parma)
+                        wrote most of the mixed integer programming
+                        solver, and also most of the Java and OCaml
+                        interfaces.
 
   Katy Dobson           [4] (University of Leeds) is working on the
-                        formalization and definition of algorithms
-                        for rational grids and products of grids
-                        and polyhedra.
+                        formalization and definition of algorithms for
+                        rational grids and products of grids and
+                        polyhedra.
 
   Alessandro Zaccagnini [5] (University of Parma) has helped with
                         the efficient implementation of GCD and LCM
@@ -49,21 +53,21 @@ Current contributors:
                         mathematical advice.
 
 
-Past contributors:
+Past Contributors:
 ------------------
 
   Irene Bacchi          (former student of the University of Parma) worked
                         on a development branch where she implemented
-                        several variants of algorithms, checking whether
-                        or not the set-union of two polyhedra is the same
-                        as their poly-hull.
+                        several variants of algorithms, checking
+                        whether or not the set-union of two polyhedra
+                        is the same as their poly-hull.
 
   Danilo Bonardi        (former student of the University of Parma) worked
-                        on a development branch where he experimented with
-                        the use of metaprogramming techniques based on
-                        "expression templates".  The objective of this
-                        work was to check the effectiveness of these
-                        techniques for moving computations from
+                        on a development branch where he experimented
+                        with the use of metaprogramming techniques
+                        based on expression templates.  The objective
+                        of this work was to check the effectiveness of
+                        these techniques for moving computations from
                         run-time to compile-time.
 
   Sara Bonini           (former student of the University of Parma) is
@@ -118,10 +122,13 @@ Past contributors:
                         project started.
 
 
+
 Thanks!
 =======
 
-The following people have given important help to the project:
+
+People:
+-------
 
   Lucia Alessandrini    (University of Parma) provided 4 hour-long
                         lectures on convex polyhedra for the Italian
@@ -129,9 +136,32 @@ The following people have given important help to the project:
                         and/or refresh the notions needed for
                         developing the PPL library.
 
-  Marco Comini          [7] (University of Udine) allowed us to use his
+
+  Frederic Besson       [*] provided useful comments and observations on
+                        the ideas (about an extrapolation operator for
+                        convex polyhedra) sketched in a paper he
+                        coauthored in 1999.
+
+  Tevfik Bultan         [*] suggested to us to add support for generalized
+                        affine transfer functions.  Discussions with
+                        Tevfik have been quite useful.
+
+  Manuel Carro
+  Jose Morales          [*, *] members of the CLIP Group [*], helped us
+                        to produce a Ciao Prolog [*] interface for the
+                        library.  The decisive (and memorable) debugging
+                        session took place in Parma in the afternoon of
+                        March 10th, 2003, with the participation of
+                        Jose Manuel Gomez.
+
+  Marco Comini          [7] (University of Udine) allows us to use his
                         Mac OS X machine to work on portability to
                         that platform.
+
+  Denis Gopan           [*] helped us extending the library with the
+                        `expand_space_dimension' and
+                        `fold_space_dimensions' operations of the
+                        library.
 
   Martin Guy            [8] gave us access to his ARM machine: without
                         this possibility, porting the PPL to the ARM's
@@ -143,9 +173,11 @@ The following people have given important help to the project:
                         GMP library installed into nonstandard places.
 
   Bertrand Jeannet      [10] (IRISA) wrote the New Polka library [11]
-                        and made it available.
+                        and made it available.  We had several
+                        interesting exchanges with Bertrand concerning
+                        various aspects of polyhedra manipulation.
 
-  Herve' Le Verge        (r.i.p.) wrote and published an implementation
+  Herve Le Verge        (r.i.p.) wrote and published an implementation
                         [12] of the Chernikova's algorithm [13] that
                         has set the stage for subsequent
                         implementation work, including our own.
@@ -153,7 +185,7 @@ The following people have given important help to the project:
   Francesco Logozzo     [14] (formerly at Ecole Polytechnique) helped us
                         straighten out some portability issues on Cygwin.
 
-  Costantino Medori     [15] (University of Parma) helped us on the
+  Costantino Medori     [15] (University of Parma) helped us on some
                         mathematical aspects of the development.
 
   Fred Mesnard          [16] (University of La Reunion), the main author
@@ -188,7 +220,7 @@ We are also grateful for the following contributions:
 
 - The test cluster provided by Hewlett Packard and  hosted by ESIEE [22]
   allowed us to complete the porting of the PPL to the IA64 and PA-RISC
-  architectures.  Many thanks to Thibaut Vare`ne [23] and the PA-RISC
+  architectures.  Many thanks to Thibaut Varene [23] and the PA-RISC
   Linux community [24] for their kind assistance.
 
 This work has been partly supported by the following projects and
@@ -240,7 +272,7 @@ organizations:
 [11] http://www.irisa.fr/prive/Bertrand.Jeannet/newpolka.html
 [12] http://www.cs.unipr.it/ppl/Documentation/chernikova.c
 [13] http://www.cs.unipr.it/ppl/Documentation/bibliography#LeVerge92
-[14] http://www.enseignement.polytechnique.fr/profs/informatique/Francesco.Logozzo/
+[14] http://research.microsoft.com/~logozzo/
 [15] http://www.math.unipr.it/~medori/
 [16] http://www.univ-reunion.fr/~fred/
 [17] http://www.cs.unipr.it/cTI/
