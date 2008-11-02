@@ -167,18 +167,23 @@ ppl_gprolog.pl: $(interface_generator_dependencies)
 pkglib_DATA = ppl_gprolog.pl
 
 bin_PROGRAMS = ppl_gprolog
+
 ppl_gprolog_SOURCES =
 
 
-if ENABLE_SHARED
-
-LIBPPL_GPROLOG = .libs/libppl_gprolog.so
-
-else !ENABLE_SHARED
+# Note: since `libppl_gprolog' is a pkglib, we prefer statically
+# linking it into `ppl_pl'.  Otherwise `ppl_pl' would not work unless
+# the user instructs the dynamic linker to look into the pkglib
+# directory.
+if ENABLE_STATIC
 
 LIBPPL_GPROLOG = .libs/libppl_gprolog.a
 
-endif !ENABLE_SHARED
+else !ENABLE_STATIC
+
+LIBPPL_GPROLOG = .libs/libppl_gprolog.so
+
+endif !ENABLE_STATIC
 
 ppl_gprolog$(EXEEXT): libppl_gprolog.la ppl_gprolog.pl
 	gplc --c-compiler $(CXX) -o $@ \
