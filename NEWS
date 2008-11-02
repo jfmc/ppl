@@ -288,8 +288,8 @@ o  Users of the C++ interface of the library can now decide to disable
 Changes to the foreign language interfaces
 ------------------------------------------
 
-o  Support for foreign language interfaces have been expanded to
-   include OCaml and Java. Thus the PPL now supports interfaces:
+o  Support for language interfaces has been expanded to include
+   OCaml and Java.  Thus the PPL now supports interfaces to
    C++, C, Java, OCaml, Ciao Prolog, GNU Prolog, SICStus Prolog,
    SWI Prolog, XSB Prolog and YAP Prolog.
 
@@ -376,6 +376,7 @@ o  Fixed a bug in Linear_System::insert(const Linear_Row&) whereby a
    wrong result could have been obtained when inserting a not necessarily
    closed constraint/generator in an empty system having a higher space
    dimension.
+
 
 --------------------------------------------------------------------------
 NEWS for version 0.9  (released on March 12, 2006)
