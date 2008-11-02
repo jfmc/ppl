@@ -124,7 +124,7 @@ Grid::Grid(const Box& box, From_Covering_Box)
   // the empty test below, as an open bound might mean an empty box.
   for (dimension_type k = space_dim; k-- > 0; ) {
     bool closed = false;
-    // FIXME: Perhaps introduce box::is_bounded_and_closed.
+    // FIXME: Perhaps introduce Box::is_bounded_and_closed.
     if (box.get_lower_bound(k, closed, l_n, l_d) && !closed)
       throw_invalid_argument("Grid(box, from_covering_box)", "box");
     if (box.get_upper_bound(k, closed, l_n, l_d) && !closed)
