@@ -24,6 +24,7 @@ Enhancements for PPL 0.10.1 or later versions
 - Review and revise the m4 code for the interfaces, looking for
   cleaner and maybe more flexible methods and more efficient code.
 - Check the configuration dependent documentation for Prolog,
+- Make `ppl_lpsol --help' and `ppl_lcdd --help' consistent.
 
 
 Enhancements for PPL 0.11 or later versions
