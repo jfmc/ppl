@@ -44,4 +44,4 @@ create the executable `myprog', your compilation command may look like
 
     gplc -o myprog <prefix>/lib/ppl/ppl_gprolog.pl source1.pl source2.pl \
       -L '-Wl,-rpath=<prefix>/lib/ppl -L<prefix>/lib/ppl -lppl_gprolog \
-      -L<prefix>/lib/ -lppl -lgmpxx -lgmp -lstdc++'
+          -L<prefix>/lib -lppl -lgmpxx -lgmp -lstdc++'
