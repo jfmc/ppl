@@ -1423,8 +1423,8 @@ AC_CONFIG_FILES(Makefile
                 doc/devref.doxyconf-latex
                 doc/user.doxyconf-html
                 doc/devref.doxyconf-html
-                doc/user-foreign-language-interface.doxyconf
-                doc/devref-foreign-language-interface.doxyconf
+                doc/user-language-interface.doxyconf
+                doc/devref-language-interface.doxyconf
                 interfaces/Makefile
                 interfaces/C/Makefile
                 interfaces/C/ppl_c_version.h

@@ -377,9 +377,9 @@ ppl-0.10
 |   |-- Makefile.in
 |   |-- README.doc
 |   |-- definitions.dox
-|   |-- devref-foreign-language-interface.doxyconf
-|   |-- devref-foreign-language-interface.doxyconf.in
-|   |-- devref-foreign-language-interface.tex
+|   |-- devref-language-interface.doxyconf
+|   |-- devref-language-interface.doxyconf.in
+|   |-- devref-language-interface.tex
 |   |-- devref.doxyconf-html
 |   |-- devref.doxyconf-html.in
 |   |-- devref.doxyconf-latex
@@ -416,9 +416,9 @@ ppl-0.10
 |   |-- ppl-user-prolog-interface-0.10.pdf
 |   |-- ppl-user-prolog-interface-0.10.ps.gz
 |   |-- ppl.sty
-|   |-- user-foreign-language-interface.doxyconf
-|   |-- user-foreign-language-interface.doxyconf.in
-|   |-- user-foreign-language-interface.tex
+|   |-- user-language-interface.doxyconf
+|   |-- user-language-interface.doxyconf.in
+|   |-- user-language-interface.tex
 |   |-- user.doxyconf-html
 |   |-- user.doxyconf-html.in
 |   |-- user.doxyconf-latex
