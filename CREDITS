@@ -288,36 +288,35 @@ We are grateful for the following contributions:
 Some of our research work has been partly supported by the following
 projects and organizations:
 
-  1. University of Parma's FIL scientific research project (ex 60%)
-     ``Pure and Applied Mathematics'';
+- University of Parma's FIL scientific research project (ex 60%)
+  ``Pure and Applied Mathematics'';
 
-  2. MURST project ``Automatic Program Certification by Abstract
-     Interpretation'' [50];
+- MURST project ``Automatic Program Certification by Abstract
+  Interpretation'' [50];
 
-  3. MURST project ``Abstract Interpretation, Type Systems and
-     Control-Flow Analysis'';
+- MURST project ``Abstract Interpretation, Type Systems and Control-Flow
+  Analysis'';
 
-  4. MURST project ``Automatic Aggregate- and Number-Reasoning for
-     Computing: from Decision Algorithms to Constraint Programming
-     with Multisets, Sets, and Maps'' [51];
+- MURST project ``Automatic Aggregate- and Number-Reasoning for Computing:
+  from Decision Algorithms to Constraint Programming with Multisets, Sets,
+  and Maps'' [51];
 
-  5. MURST project ``Constraint Based Verification of Reactive
-     Systems'' [52];
+- MURST project ``Constraint Based Verification of Reactive Systems'' [52];
 
-  6. MURST project ``AIDA - Abstract Interpretation: Design and
-     Applications'' [53];
+- MURST project ``AIDA - Abstract Interpretation: Design and
+  Applications'' [53];
 
-  7. Royal Society Joint project 2004/R1-EU (UK-Italy)
-     ``Automatic Detection of Unstable Numerical Computations'';
+- Royal Society Joint project 2004/R1-EU (UK-Italy)
+  ``Automatic Detection of Unstable Numerical Computations'';
 
-  8. EPSRC (UK) project EP/C520726/1
-     ``Numerical Domains for Software Analysis'' [54];
+- EPSRC (UK) project EP/C520726/1
+  ``Numerical Domains for Software Analysis'' [54];
 
-  9. Royal Society International Outgoing Short Visit 2007/R4
-    ``Finding and Verifying the Absence of Bugs in Imperative Programs'' [55];
+- Royal Society International Outgoing Short Visit 2007/R4
+  ``Finding and Verifying the Absence of Bugs in Imperative Programs'' [55];
 
-  10. EPSRC (UK) project EP/G025177/1
-    ``Geometric Abstractions for Scalable Program Analyzers'' [55].
+- EPSRC (UK) project EP/G025177/1
+  ``Geometric Abstractions for Scalable Program Analyzers'' [55].
 
 --------
 
