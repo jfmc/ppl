@@ -330,21 +330,30 @@ dimension_type coherent_index(dimension_type i);
       (i.e., \c mpz_class or \c mpq_class).
 
   The user interface for OSs is meant to be as similar as possible to
-  the one developed for the polyhedron class C_Polyhedron.  At the
-  interface level, octagonal constraints are specified using objects of
-  type Constraint: such a constraint is an octagonal constraint if it is
-  of the form
+  the one developed for the polyhedron class C_Polyhedron.
+
+  The OS domain <EM>optimally supports</EM>:
+    - tautological and inconsistent constraints and congruences;
+    - octagonal constraints;
+    - non-proper congruences (i.e., equalities) that are expressible
+      as octagonal constraints.
+
+  Depending on the method, using a constraint or congruence that is not
+  optimally supported by the domain will either raise an exception or
+  result in a (possibly non-optimal) upward approximation.
+
+  A constraint is octagonal if it has the form
     \f[
       \pm a_i x_i \pm a_j x_j \relsym b
     \f]
   where \f$\mathord{\relsym} \in \{ \leq, =, \geq \}\f$ and
   \f$a_i\f$, \f$a_j\f$, \f$b\f$ are integer coefficients such that
   \f$a_i = 0\f$, or \f$a_j = 0\f$, or \f$a_i = a_j\f$.
-  The user is warned that the above Constraint object will be mapped
-  into a <EM>correct</EM> approximation that, depending on the expressive
-  power of the chosen template argument \p T, may loose some precision.
-  In particular, constraint objects that do not encode an octagonal
-  constraint will be simply (and safely) ignored.
+  The user is warned that the above octagonal Constraint object
+  will be mapped into a \e correct and \e optimal approximation that,
+  depending on the expressive power of the chosen template argument \p T,
+  may loose some precision.
+  Also note that strict constraints are not octagonal.
 
   For instance, a Constraint object encoding \f$3x + 3y \leq 1\f$ will be
   approximated by:
@@ -356,13 +365,13 @@ dimension_type coherent_index(dimension_type i);
       if \p T is a floating point type (having no exact representation
       for \f$\frac{1}{3}\f$).
 
-  On the other hand, a Constraint object encoding \f$3x - y \leq 1\f$
-  will be safely ignored in all of the above cases.
+  On the other hand, depending from the context, a Constraint object
+  encoding \f$3x - y \leq 1\f$ will be either upward approximated
+  (e.g., by safely ignoring it) or it will cause an exception.
 
   In the following examples it is assumed that the type argument \p T
   is one of the possible instances listed above and that variables
-  <CODE>x</CODE>, <CODE>y</CODE> and <CODE>z</CODE> are defined
-  (where they are used) as follows:
+  \c x, \c y and \c z are defined (where they are used) as follows:
   \code
     Variable x(0);
     Variable y(1);
@@ -382,10 +391,8 @@ dimension_type coherent_index(dimension_type i);
     cs.insert(z <= 3);
     Octagonal_Shape<T> oct(cs);
   \endcode
-  Since only those constraints having the syntactic form of an
-  <EM>octagonal constraint</EM> are considered, the following code
-  will build the same OS as above (i.e., the constraints 7, 8, and 9
-  are ignored):
+  In contrast, the following code will raise an exception,
+  since constraints 7, 8, and 9 are not octagonal:
   \code
     Constraint_System cs;
     cs.insert(x >= 0);
@@ -844,12 +851,11 @@ public:
     defining \p *this.
 
     \param c
-    The constraint to be added. If it is not an octagonal constraint, it
-    will be simply ignored.
+    The constraint to be added.
 
     \exception std::invalid_argument
     Thrown if \p *this and constraint \p c are dimension-incompatible,
-    or \p c is a strict inequality.
+    or \p c is not optimally supported by the OS domain.
   */
   void add_constraint(const Constraint& c);
 
@@ -858,26 +864,27 @@ public:
     defining \p *this.
 
     \param  cs
-    The constraints that will be added. Constraints that are not octagonal
-    constraints will be simply ignored.
+    The constraints that will be added.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible,
-    or if \p cs contains a strict inequality.
+    or \p cs contains a constraint which is not optimally supported
+    by the OS domain.
   */
   void add_constraints(const Constraint_System& cs);
 
   /*! \brief
     Adds the constraints in \p cs to the system of constraints
-    of \p *this (without minimizing the result).
+    of \p *this.
 
     \param cs
     The constraint system to be added to \p *this.  The constraints in
     \p cs may be recycled.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p cs are topology-incompatible or
-    dimension-incompatible.
+    Thrown if \p *this and \p cs are dimension-incompatible,
+    or \p cs contains a constraint which is not optimally supported
+    by the OS domain.
 
     \warning
     The only assumption that can be made on \p cs upon successful or
@@ -886,39 +893,39 @@ public:
   void add_recycled_constraints(Constraint_System& cs);
 
   /*! \brief
-    Adds a copy of congruence \p cg to the system of congruences of \p
-    *this (without minimizing the result).
+    Adds a copy of congruence \p cg to the system of congruences of \p *this.
 
     \exception std::invalid_argument
-    Thrown if \p *this and congruence \p cg are dimension-incompatible.
+    Thrown if \p *this and congruence \p cg are dimension-incompatible,
+    or \p cg is not optimally supported by the OS domain.
   */
   void add_congruence(const Congruence& cg);
 
   /*! \brief
-    Adds to \p *this constraints equivalent to the congruences in \p
-    cgs (without minimizing the result).
+    Adds to \p *this constraints equivalent to the congruences in \p cgs.
 
     \param cgs
     Contains the congruences that will be added to the system of
     constraints of \p *this.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p cgs are topology-incompatible or
-    dimension-incompatible.
+    Thrown if \p *this and \p cgs are dimension-incompatible,
+    or \p cgs contains a congruence which is not optimally supported
+    by the OS domain.
   */
   void add_congruences(const Congruence_System& cgs);
 
-  // FIXME
   /*! \brief
-    Adds the congruences in \p cs to the system of congruences
-    of \p *this (without minimizing the result).
+    Adds to \p *this constraints equivalent to the congruences in \p cgs.
 
     \param cgs
     The congruence system to be added to \p *this.  The congruences in
     \p cgs may be recycled.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p cs are dimension-incompatible.
+    Thrown if \p *this and \p cgs are dimension-incompatible,
+    or \p cgs contains a congruence which is not optimally supported
+    by the OS domain.
 
     \warning
     The only assumption that can be made on \p cgs upon successful or

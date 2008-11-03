@@ -840,7 +840,7 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this and constraint \p c are dimension-incompatible,
-    or if \p c is not optimally supported by the BD shape domain.
+    or \p c is not optimally supported by the BD shape domain.
   */
   void add_constraint(const Constraint& c);
 
@@ -857,7 +857,7 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this and constraint \p c are dimension-incompatible,
-    or if \p c is not optimally supported by the BD shape domain.
+    or \p c is not optimally supported by the BD shape domain.
 
     \deprecated
     See \ref A_Note_on_the_Implementation_of_the_Operators.
@@ -865,15 +865,14 @@ public:
   bool add_constraint_and_minimize(const Constraint& c);
 
   /*! \brief
-    Adds a copy of congruence \p cg to the system of congruences of \p
-    *this (without minimizing the result).
+    Adds a copy of congruence \p cg to the system of congruences of \p *this.
 
     \param cg
     The congruence to be added.
 
     \exception std::invalid_argument
     Thrown if \p *this and congruence \p cg are dimension-incompatible,
-    or if \p cg is not optimally supported by the BD shape domain.
+    or \p cg is not optimally supported by the BD shape domain.
   */
   void add_congruence(const Congruence& cg);
 
@@ -889,7 +888,7 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this and congruence \p cg are dimension-incompatible,
-    or if \p cg is not optimally supported by the BD shape domain.
+    or \p cg is not optimally supported by the BD shape domain.
 
     \deprecated
     See \ref A_Note_on_the_Implementation_of_the_Operators.
@@ -906,14 +905,14 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible,
-    or if \p cs contains a constraint which is not optimally supported
+    or \p cs contains a constraint which is not optimally supported
     by the BD shape domain.
   */
   void add_constraints(const Constraint_System& cs);
 
   /*! \brief
     Adds the constraints in \p cs to the system of constraints
-    of \p *this (without minimizing the result).
+    of \p *this.
 
     \param cs
     The constraint system to be added to \p *this.  The constraints in
@@ -921,7 +920,7 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible,
-    or if \p cs contains a constraint which is not optimally supported
+    or \p cs contains a constraint which is not optimally supported
     by the BD shape domain.
 
     \warning
@@ -942,7 +941,7 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible,
-    or if \p cs contains a constraint which is not optimally supported
+    or \p cs contains a constraint which is not optimally supported
     by the BD shape domain.
 
     \deprecated
@@ -963,7 +962,7 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible,
-    or if \p cs contains a constraint which is not optimally supported
+    or \p cs contains a constraint which is not optimally supported
     by the BD shape domain.
 
     \warning
@@ -984,7 +983,7 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cgs are dimension-incompatible,
-    or if \p cgs contains a congruence which is not optimally supported
+    or \p cgs contains a congruence which is not optimally supported
     by the BD shape domain.
   */
   void add_congruences(const Congruence_System& cgs);
@@ -1008,7 +1007,7 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cgs are dimension-incompatible,
-    or if \p cgs contains a congruence which is not optimally supported
+    or \p cgs contains a congruence which is not optimally supported
     by the BD shape domain.
 
     \warning
