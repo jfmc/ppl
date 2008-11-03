@@ -199,7 +199,7 @@ need to know the machine type.
 use the option `--target=TYPE' to select the type of system they will
 produce code for.
 
-   If you want to _use_ a cross compiler that generates code for a
+   If you want to _use_ a cross compiler, that generates code for a
 platform different from the build platform, you should specify the
 "host" platform (i.e., that on which the generated programs will
 eventually be run) with `--host=TYPE'.
@@ -286,6 +286,6 @@ operates.
      Run the configure checks, but stop before creating any output
      files.
 
-`configure' also accepts some other, not often used, options.  Run
+`configure' also accepts some other, not widely useful, options.  Run
 `configure --help' for more details.
 
