@@ -893,7 +893,10 @@ public:
   void add_recycled_constraints(Constraint_System& cs);
 
   /*! \brief
-    Adds a copy of congruence \p cg to the system of congruences of \p *this.
+    Adds to \p *this a constraint equivalent to the congruence \p cg.
+
+    \param cg
+    The congruence to be added.
 
     \exception std::invalid_argument
     Thrown if \p *this and congruence \p cg are dimension-incompatible,
@@ -905,8 +908,7 @@ public:
     Adds to \p *this constraints equivalent to the congruences in \p cgs.
 
     \param cgs
-    Contains the congruences that will be added to the system of
-    constraints of \p *this.
+    The congruences to be added.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cgs are dimension-incompatible,

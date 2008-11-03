@@ -265,6 +265,24 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   not necessarily closed and possibly unbounded intervals
   represented by objects of class \p ITV,
   where \f$n\f$ is the space dimension of the box.
+
+  An <EM>interval constraint</EM> (resp., <EM>interval congruence</EM>)
+  is a syntactic constraint (resp., congruence) that only mentions
+  a single space dimension.
+
+  The Box domain <EM>optimally supports</EM>:
+    - tautological and inconsistent constraints and congruences;
+    - the interval constraints that are optimally supported by
+      the template argument class \c ITV;
+    - the interval congruences that are optimally supported by
+      the template argument class \c ITV.
+
+  Depending on the method, using a constraint or congruence that is not
+  optimally supported by the domain will either raise an exception or
+  result in a (possibly non-optimal) upward approximation.
+
+  The user interface for the Box domain is meant to be as similar
+  as possible to the one developed for the polyhedron class C_Polyhedron.
 */
 template <typename ITV>
 class Parma_Polyhedra_Library::Box {
@@ -695,42 +713,43 @@ public:
   //@{
 
   /*! \brief
-    Use the constraint \p c to refine \p *this.
-    FIXME: this is not true.
+    Adds a copy of constraint \p c to the system of constraints
+    defining \p *this.
 
     \param c
-    The constraint to be added. If it is not an interval constraint, it
-    will be simply ignored.
+    The constraint to be added.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p c are dimension-incompatible.
+    Thrown if \p *this and constraint \p c are dimension-incompatible,
+    or \p c is not optimally supported by the Box domain.
   */
   void add_constraint(const Constraint& c);
 
   /*! \brief
-     Use the constraints in \p cs to refine \p *this.
-     FIXME: this is not true.
+    Adds the constraints in \p cs to the system of constraints
+    defining \p *this.
 
-     \param  cs
-     The constraints to be added. Constraints that are not interval
-     constraints will be simply ignored.
+    \param  cs
+    The constraints to be added.
 
-     \exception std::invalid_argument
-     Thrown if \p *this and \p cs are dimension-incompatible.
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are dimension-incompatible,
+    or \p cs contains a constraint which is not optimally supported
+    by the box domain.
   */
   void add_constraints(const Constraint_System& cs);
 
   /*! \brief
-    Use the constraints in \p cs to refine \p *this.
-    FIXME: this is not true.
+    Adds the constraints in \p cs to the system of constraints
+    defining \p *this.
 
     \param  cs
-    The constraints to be added. Constraints that are not interval
-    constraints will be simply ignored.  The constraints in
-    \p cs may be recycled.
+    The constraints to be added. They may be recycled.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p cs are dimension-incompatible.
+    Thrown if \p *this and \p cs are dimension-incompatible,
+    or \p cs contains a constraint which is not optimally supported
+    by the box domain.
 
     \warning
     The only assumption that can be made on \p cs upon successful or
@@ -739,41 +758,41 @@ public:
   void add_recycled_constraints(Constraint_System& cs);
 
   /*! \brief
-    Use the congruence \p cg to refine \p *this.
+    Adds to \p *this a constraint equivalent to the congruence \p cg.
 
     \param cg
-    The congruence to be used. If it is not a non-relational
-    equality, the box is not changed.
+    The congruence to be added.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p cg are dimension-incompatible.
+    Thrown if \p *this and congruence \p cg are dimension-incompatible,
+    or \p cg is not optimally supported by the box domain.
   */
   void add_congruence(const Congruence& cg);
 
   /*! \brief
-    Use the congruences in \p cgs to refine \p *this.
+    Adds to \p *this constraints equivalent to the congruences in \p cgs.
 
-    \param  cgs
-    The congruences to be used. Congruences that are
-    not non-relational equalities are not added although their
-    space dimension is checked for compatibility.
+    \param cgs
+    The congruences to be added.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p cgs are dimension-incompatible.
+    Thrown if \p *this and \p cgs are dimension-incompatible,
+    or \p cgs contains a congruence which is not optimally supported
+    by the box domain.
   */
   void add_congruences(const Congruence_System& cgs);
 
   /*! \brief
-    Use the congruences in \p cgs to refine \p *this.
+    Adds to \p *this constraints equivalent to the congruences in \p cgs.
 
     \param cgs
-    The congruences to be used. Congruences that are
-    not non-relational equalities are not added although their
-    space dimension is checked for compatibility. The congruences in
+    The congruence system to be added to \p *this.  The congruences in
     \p cgs may be recycled.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p cgs are dimension-incompatible.
+    Thrown if \p *this and \p cgs are dimension-incompatible,
+    or \p cgs contains a congruence which is not optimally supported
+    by the box domain.
 
     \warning
     The only assumption that can be made on \p cgs upon successful or
