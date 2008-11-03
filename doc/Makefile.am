@@ -283,8 +283,6 @@ $(JAVA_INTERFACE_JAVA_FILES) \
 
 ##### Configuration Dependent Foreign Language Manuals #####
 
-# FIXME: add the automatically-generated files.
-
 # Configuration Dependent C Language Interface Manuals.
 if BUILD_C_INTERFACE
 
@@ -389,7 +387,6 @@ ppl-user-configured-ocaml-interface-@VERSION@-html
 DEVREF_CONFIGURED_OCAML_INTERFACE_HTML_DIR = \
 ppl-devref-configured-ocaml-interface-@VERSION@-html
 
-# FIXME add generated files
 USER_CONFIGURED_OCAML_INTERFACE_STUFF = \
 $(USER_OCAML_INTERFACE_STUFF) \
 $(top_builddir)/interfaces/OCaml/ppl_ocaml.mli
@@ -1215,7 +1212,6 @@ SED_CONFIGURED_C_OPTION = \
   -e 's/<PPL_SED_INTERFACE_NAME>/configured-c-interface/' \
   -e 's/<PPL_SED_USEPACKAGE_OCAMLDOC>//'
 
-# CHECKME: check the correct input values for Doxygen.
 SED_CONFIGURED_C_INPUT_USER = \
 $(srcdir)/../interfaces/C/C_interface.dox \
 ../interfaces/C/ppl_c.h \
