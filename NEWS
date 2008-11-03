@@ -265,6 +265,7 @@ Other changes for the C++ interface
 o  All identifiers containing the strings `less_than_or_equal' or
    `greater_than_or_equal', any case, have been renamed so as to contain
    `less_or_equal' or `greater_or_equal', respectively.
+   A similar change also applies to the C interface (see below).
 
 o  The `ppl.hh' header file no longer defines macros not prefixed
    by "PPL_".
@@ -329,6 +330,11 @@ o  Almost all the public methods for the PPL semantic objects are
        ppl_Grid_generalized_preimage_with_congruence/6
 
      respectively, so as to allow for /4 and /5, resp., versions.
+
+o  As already reported for the C++ interface, in the C interface,
+   all identifiers containing the strings `less_than_or_equal' or
+   `greater_than_or_equal', any case, have been renamed so as to contain
+   `less_or_equal' or `greater_or_equal', respectively.
 
 o  In the C interface it is no longer an error to call ppl_initialize()
    or ppl_finalize() multiple times (this matches the behavior of the
