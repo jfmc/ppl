@@ -148,7 +148,7 @@ People:
   Tevfik Bultan         [9] (University of California, Santa Barbara)
                         suggested us to add support for generalized
                         affine transfer functions.  Discussions with
-                        Tevfik have been quite useful.
+                        Tevfik have been very useful.
 
   Manuel Carro
   Jose Morales          [9, 10] members of the CLIP Group [12], helped us
@@ -169,7 +169,7 @@ People:
                         simplification facilities in the PPL.
 
   Denis Gopan           [17] (University of Wisconsin-Madison) helped us
-                        extending the library with the "expand space
+                        extend the library with the "expand space
                         dimension" and "fold space dimensions"
                         operations of the library.
 
@@ -180,7 +180,7 @@ People:
   Bruno Haible          [19] (ILOG) made it possible (by writing the
                         AC_LIB_LINKFLAGS macro and explaining how
                         to use it) to allow the use of versions of the
-                        GMP library installed into nonstandard places.
+                        GMP library installed in nonstandard places.
 
   Bertrand Jeannet      [20] (IRISA) wrote the New Polka library [21]
                         and made it available.  We had several
@@ -199,7 +199,7 @@ People:
                         mathematical aspects of the development.
 
   Fred Mesnard          [26] (University of La Reunion), the main author
-                        of cTI [27], has worked with us at one of the
+                        of cTI [27], has worked with us on one of the
                         first applications of the PPL: the "cTI"
                         data-flow analyzer, which performs a linear
                         size relation analysis using a domain of
@@ -207,8 +207,8 @@ People:
                         analyzer [28] uses the Parma Polyhedra Library
                         to perform the same analysis.  We have been
                         running China against an old version of cTI
-                        that did not use the PPL, using them to
-                        analyze the same Prolog programs.  Since that
+                        that did not use the PPL, using it to
+                        analyze the same Prolog programs.  Since these
                         systems did not share a single line of code,
                         this gave us excellent opportunities for our
                         initial testing and debugging work.
@@ -225,7 +225,7 @@ People:
                         addition of new functionality such as the
                         "simplify using context" operation.
 
-  Thomas Reps           [32] (University of Wisconsin-Madison) on several
+  Thomas Reps           [32] (University of Wisconsin-Madison), on several
                         occasions we have had interesting discussions
                         with him both on the PPL and on the more
                         general topics of static analysis and
