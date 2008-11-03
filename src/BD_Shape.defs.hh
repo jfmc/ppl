@@ -318,21 +318,30 @@ void compute_leader_indices(const std::vector<dimension_type>& predecessor,
       (i.e., \c mpz_class or \c mpq_class).
 
   The user interface for BDSs is meant to be as similar as possible to
-  the one developed for the polyhedron class C_Polyhedron.  At the
-  interface level, bounded differences are specified using objects of
-  type Constraint: such a constraint is a bounded difference if it is
-  of the form
+  the one developed for the polyhedron class C_Polyhedron.
+
+  The domain of BD shapes <EM>optimally supports</EM>:
+    - tautological and inconsistent constraints and congruences;
+    - bounded difference constraints;
+    - non-proper congruences (i.e., equalities) that are expressible
+      as bounded-difference constraints.
+
+  Depending on the method, using a constraint or congruence that is not
+  optimally supported by the domain will either raise an exception or
+  result in a (possibly non-optimal) upward approximation.
+
+  A constraint is a bounded difference if it has the form
     \f[
       a_i x_i - a_j x_j \relsym b
     \f]
   where \f$\mathord{\relsym} \in \{ \leq, =, \geq \}\f$ and
   \f$a_i\f$, \f$a_j\f$, \f$b\f$ are integer coefficients such that
   \f$a_i = 0\f$, or \f$a_j = 0\f$, or \f$a_i = a_j\f$.
-  The user is warned that the above Constraint object will be mapped
-  into a <EM>correct</EM> approximation that, depending on the expressive
-  power of the chosen template argument \p T, may loose some precision.
-  In particular, constraint objects that do not encode a bounded difference
-  will be simply (and safely) ignored.
+  The user is warned that the above bounded difference Constraint object
+  will be mapped into a \e correct and \e optimal approximation that,
+  depending on the expressive power of the chosen template argument \p T,
+  may loose some precision. Also note that strict constraints are not
+  bounded differences.
 
   For instance, a Constraint object encoding \f$3x - 3y \leq 1\f$ will be
   approximated by:
@@ -344,8 +353,9 @@ void compute_leader_indices(const std::vector<dimension_type>& predecessor,
       if \p T is a floating point type (having no exact representation
       for \f$\frac{1}{3}\f$).
 
-  On the other hand, a Constraint object encoding \f$3x - y \leq 1\f$
-  will be safely ignored in all of the above cases.
+  On the other hand, depending from the context, a Constraint object
+  encoding \f$3x - y \leq 1\f$ will be either upward approximated
+  (e.g., by safely ignoring it) or it will cause an exception.
 
   In the following examples it is assumed that the type argument \p T
   is one of the possible instances listed above and that variables
@@ -371,9 +381,8 @@ void compute_leader_indices(const std::vector<dimension_type>& predecessor,
     BD_Shape<T> bd(cs);
   \endcode
   Since only those constraints having the syntactic form of a
-  <EM>bounded difference</EM> are considered, the following code
-  will build the same BDS as above (i.e., the constraints 7, 8, and 9
-  are ignored):
+  <EM>bounded difference</EM> are optimally supported, the following code
+  will throw an exception (caused by constraints 7, 8 and 9):
   \code
     Constraint_System cs;
     cs.insert(x >= 0);
@@ -460,7 +469,8 @@ public:
     to the space dimension).
 
     \exception std::invalid_argument
-    Thrown if the system of constraints \p cs contains strict inequalities.
+    Thrown if \p cs contains a constraint which is not optimally supported
+    by the BD shape domain.
   */
   explicit BD_Shape(const Constraint_System& cs);
 
@@ -830,7 +840,7 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this and constraint \p c are dimension-incompatible,
-    or if \p c is a strict inequality.
+    or if \p c is not optimally supported by the BD shape domain.
   */
   void add_constraint(const Constraint& c);
 
@@ -847,7 +857,7 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this and constraint \p c are dimension-incompatible,
-    or if \p c is a strict inequality.
+    or if \p c is not optimally supported by the BD shape domain.
 
     \deprecated
     See \ref A_Note_on_the_Implementation_of_the_Operators.
@@ -859,11 +869,11 @@ public:
     *this (without minimizing the result).
 
     \param cg
-    The congruence to be added. If it is not a bounded difference, it
-    will be simply ignored.
+    The congruence to be added.
 
     \exception std::invalid_argument
-    Thrown if \p *this and congruence \p cg are dimension-incompatible.
+    Thrown if \p *this and congruence \p cg are dimension-incompatible,
+    or if \p cg is not optimally supported by the BD shape domain.
   */
   void add_congruence(const Congruence& cg);
 
@@ -872,15 +882,14 @@ public:
     of \p *this, minimizing the result
 
     \param cg
-    The congruence to be added. If it is not a bounded difference, it
-    will be simply ignored.
+    The congruence to be added.
 
     \return
     <CODE>false</CODE> if and only if the result is empty.
 
     \exception std::invalid_argument
-    Thrown if \p *this and congruence \p c are topology-incompatible
-    or dimension-incompatible.
+    Thrown if \p *this and congruence \p cg are dimension-incompatible,
+    or if \p cg is not optimally supported by the BD shape domain.
 
     \deprecated
     See \ref A_Note_on_the_Implementation_of_the_Operators.
@@ -897,7 +906,8 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible,
-    or if \p cs contains a strict inequality.
+    or if \p cs contains a constraint which is not optimally supported
+    by the BD shape domain.
   */
   void add_constraints(const Constraint_System& cs);
 
@@ -910,8 +920,9 @@ public:
     \p cs may be recycled.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p cs are topology-incompatible or
-    dimension-incompatible.
+    Thrown if \p *this and \p cs are dimension-incompatible,
+    or if \p cs contains a constraint which is not optimally supported
+    by the BD shape domain.
 
     \warning
     The only assumption that can be made on \p cs upon successful or
@@ -927,12 +938,12 @@ public:
     <CODE>false</CODE> if and only if the result is empty.
 
     \param  cs
-    The constraints that will be added. Constraints that are not bounded
-    differences will be simply ignored.
+    The constraints that will be added.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible,
-    or if \p cs contains a strict inequality.
+    or if \p cs contains a constraint which is not optimally supported
+    by the BD shape domain.
 
     \deprecated
     See \ref A_Note_on_the_Implementation_of_the_Operators.
@@ -951,8 +962,9 @@ public:
     \p cs may be recycled.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p cs are topology-incompatible or
-    dimension-incompatible.
+    Thrown if \p *this and \p cs are dimension-incompatible,
+    or if \p cs contains a constraint which is not optimally supported
+    by the BD shape domain.
 
     \warning
     The only assumption that can be made on \p cs upon successful or
@@ -964,74 +976,51 @@ public:
   bool add_recycled_constraints_and_minimize(Constraint_System& cs);
 
   /*! \brief
-    Adds to \p *this constraints equivalent to the congruences in \p
-    cgs (without minimizing the result).
+    Adds to \p *this constraints equivalent to the congruences in \p cgs.
 
     \param cgs
     Contains the congruences that will be added to the system of
     constraints of \p *this.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p cgs are topology-incompatible or
-    dimension-incompatible.
+    Thrown if \p *this and \p cgs are dimension-incompatible,
+    or if \p cgs contains a congruence which is not optimally supported
+    by the BD shape domain.
   */
   void add_congruences(const Congruence_System& cgs);
 
   /*! \brief
-    Adds a copy of the congruences in \p cs to the system
-    of congruences of \p *this, minimizing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param cs
-    Contains the congruences that will be added to the system of
-    congruences of \p *this.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cs are dimension-incompatible.
+    Behaves as add_congruences(const Congruence_System&),
+    but minimizes the resulting BD shape, returning \c false
+    if and only if the result is empty.
 
     \deprecated
     See \ref A_Note_on_the_Implementation_of_the_Operators.
   */
-  bool add_congruences_and_minimize(const Congruence_System& cs);
+  bool add_congruences_and_minimize(const Congruence_System& cgs);
 
-  // FIXME
   /*! \brief
-    Adds the congruences in \p cs to the system of congruences
-    of \p *this (without minimizing the result).
+    Adds to \p *this constraints equivalent to the congruences in \p cgs.
 
     \param cgs
-    The congruence system to be added to \p *this.  The congruences in
-    \p cgs may be recycled.
+    Contains the congruences that will be added to the system of
+    constraints of \p *this. Its elements may be recycled.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p cs are dimension-incompatible.
+    Thrown if \p *this and \p cgs are dimension-incompatible,
+    or if \p cgs contains a congruence which is not optimally supported
+    by the BD shape domain.
 
     \warning
-    The only assumption that can be made on \p cs upon successful or
+    The only assumption that can be made on \p cgs upon successful or
     exceptional return is that it can be safely destroyed.
   */
   void add_recycled_congruences(Congruence_System& cgs);
 
-  // FIXME
   /*! \brief
-    Adds the congruences in \p cs to the system of congruences
-    of \p *this, minimizing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param cgs
-    The congruence system to be added to \p *this.  The congruences in
-    \p cgs may be recycled.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cs are dimension-incompatible.
-
-    \warning
-    The only assumption that can be made on \p cs upon successful or
-    exceptional return is that it can be safely destroyed.
+    Behaves as \c add_recycled_congruences, but minimizes the
+    resulting BD shape, returning \c false if and only if
+    the result is empty.
 
     \deprecated
     See \ref A_Note_on_the_Implementation_of_the_Operators.
