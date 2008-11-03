@@ -68,9 +68,9 @@ const char banner_string[] =
 "Lucia Alessandrini, Frederic Besson, Tevfik Bultan, Manuel Carro,\n"
 "Marco Comini, Goran Frehse, Denis Gopan, Martin Guy, Bruno Haible,\n"
 "Bertrand Jeannet, Herve Le Verge, Francesco Logozzo, Costantino Medori,\n"
-"Fred Mesnard, Ken Mixter, Sebastian Pop, Thomas Reps, Mooly Sagiv,\n"
-"Sriram Sankaranarayanan, Axel Simon, Fausto Spoto, Basile Starynkevitch,\n"
-"Pedro Vasconcelos, Ralf Wildenhues.";
+"Fred Mesnard, Ken Mixter, Jose Morales, Sebastian Pop, Thomas Reps,\n"
+"Mooly Sagiv, Sriram Sankaranarayanan, Axel Simon, Fausto Spoto,\n"
+"Basile Starynkevitch, Pedro Vasconcelos, Ralf Wildenhues.";
 
 } // namespace
 
