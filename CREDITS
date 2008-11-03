@@ -95,6 +95,10 @@ Past Contributors:
                         with the generation of the library's documentation
                         using Doxygen.
 
+  Matthew Mundell       [7] (formerly at the University of Leeds) worked
+                        on the implementation of rational grids.  He has
+                        also helped on other implementation issues.
+
   Andrea Pescetti       (University of Parma) was one of the four students
                         with which the PPL project started.  Later, he
                         helped a little with the library's documentation.
@@ -102,10 +106,6 @@ Past Contributors:
   Barbara Quartieri     (former student of the University of Parma) worked
                         on our implementation of bounded differences and
                         octagons.
-
-  Matthew Mundell       [7] (formerly at the University of Leeds) worked
-                        on the implementation of rational grids.  He has
-                        also helped on other implementation issues.
 
   Angela Stazzone       (former student of the University of Parma)
                         worked on the library's documentation.
