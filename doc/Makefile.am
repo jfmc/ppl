@@ -316,7 +316,6 @@ $(top_builddir)/interfaces/C/ppl_c.h \
 ../interfaces/C/ppl_c_implementation_common.defs.hh \
 ../interfaces/C/ppl_c_implementation_common.inlines.hh \
 ../interfaces/C/ppl_c_implementation_common.cc
-#FIXME: add generated files
 
 endif BUILD_C_INTERFACE
 
@@ -874,7 +873,6 @@ SED_C_OPTION = \
   -e 's/<PPL_SED_INTERFACE_NAME>/c-interface/' \
   -e 's/<PPL_SED_USEPACKAGE_OCAMLDOC>//'
 
-# CHECKME: check the correct input values for Doxygen.
 SED_C_INPUT_USER = \
 ../interfaces/C/ppl_c_version.h \
 $(srcdir)/../interfaces/C/ppl_c_header.h \
@@ -955,7 +953,6 @@ SED_PROLOG_OPTION = \
   -e 's/<PPL_SED_INTERFACE_NAME>/prolog-interface/' \
   -e 's/<PPL_SED_USEPACKAGE_OCAMLDOC>//'
 
-# CHECKME: check the correct input values for Doxygen.
 SED_PROLOG_INPUT_USER = \
 $(srcdir)/../interfaces/Prolog/Prolog_interface.dox \
 $(srcdir)/gpl.dox $(srcdir)/fdl.dox
@@ -1032,7 +1029,6 @@ SED_OCAML_OPTION = \
   -e 's/<PPL_SED_INTERFACE_NAME>/ocaml-interface/' \
   -e 's/<PPL_SED_USEPACKAGE_OCAMLDOC>/\\usepackage{ocamldoc}/'
 
-# CHECKME: check the correct input values for Doxygen.
 SED_OCAML_INPUT_USER = \
 $(srcdir)/../interfaces/OCaml/OCaml_interface.dox \
 $(srcdir)/gpl.dox $(srcdir)/fdl.dox
@@ -1126,14 +1122,10 @@ SED_JAVA_OPTION = \
   -e 's/<PPL_SED_INTERFACE_NAME>/java-interface/' \
   -e 's/<PPL_SED_USEPACKAGE_OCAMLDOC>//'
 
-# CHECKME: check the correct input values for Doxygen.
-# Note that here we are including a whole directory.
 SED_JAVA_INPUT_USER = \
 $(srcdir)/../interfaces/Java/parma_polyhedra_library \
 $(srcdir)/gpl.dox $(srcdir)/fdl.dox
 
-# CHECKME: check the correct input values for Doxygen.
-# Note that here we are including a whole directory.
 SED_JAVA_INPUT_DEVREF = \
 $(srcdir)/../interfaces/Java/parma_polyhedra_library \
 $(srcdir)/../interfaces/Java/jni/ppl_java_common.cc \
@@ -1378,7 +1370,6 @@ SED_CONFIGURED_OCAML_OPTION = \
   -e 's/<PPL_SED_INTERFACE_NAME>/configured-ocaml-interface/' \
   -e 's/<PPL_SED_USEPACKAGE_OCAMLDOC>/\\usepackage{ocamldoc}/'
 
-# CHECKME: check the correct input values for Doxygen.
 SED_CONFIGURED_OCAML_INPUT_USER = \
 $(srcdir)/../interfaces/OCaml/OCaml_interface.dox \
 $(srcdir)/gpl.dox $(srcdir)/fdl.dox
@@ -1439,9 +1430,9 @@ $(USER_CONFIGURED_OCAML_INTERFACE_STUFF) $(USER_CORE_HTML_DIR)
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.user-configured-ocaml-interface-html
 	(cd $@; $(INSTALLDOX) \
 		-l $(USER_CORE_HTML_DIR).tag@../$(USER_CORE_HTML_DIR))
-	(cd $@; mkdir ocamldoc; \
-		ocamldoc $(OCAMLDOC_HTML_OPTIONS) \
-		../../interfaces/OCaml/ppl_ocaml.mli)
+	mkdir $@/ocamldoc
+	ocamldoc $(OCAMLDOC_HTML_OPTIONS) -d $@/ocamldoc \
+		../interfaces/OCaml/ppl_ocaml.mli
 
 ppl-devref-configured-ocaml-interface-@VERSION@-html: \
 devref-foreign-language-interface.doxyconf \
@@ -1456,9 +1447,9 @@ $(DEVREF_CONFIGURED_OCAML_INTERFACE_STUFF) $(DEVREF_CORE_HTML_DIR)
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.devref-configured-ocaml-interface-html
 	(cd $@; $(INSTALLDOX) \
 		-l $(DEVREF_CORE_HTML_DIR).tag@../$(DEVREF_CORE_HTML_DIR))
-	(cd $@; mkdir ocamldoc; \
-		ocamldoc $(OCAMLDOC_HTML_OPTIONS) \
-		../../interfaces/OCaml/ppl_ocaml.mli)
+	mkdir $@/ocamldoc
+	ocamldoc $(OCAMLDOC_HTML_OPTIONS) -d $@/ocamldoc \
+		../interfaces/OCaml/ppl_ocaml.mli
 
 endif BUILD_OCAML_INTERFACE
 
@@ -1470,7 +1461,6 @@ SED_CONFIGURED_JAVA_OPTION = \
   -e 's/<PPL_SED_INTERFACE_NAME>/configured-java-interface/' \
   -e 's/<PPL_SED_USEPACKAGE_OCAMLDOC>//'
 
-# CHECKME: check the correct input values for Doxygen.
 SED_CONFIGURED_JAVA_INPUT_USER = \
 $(SED_JAVA_INPUT_USER) \
 ../interfaces/Java/parma_polyhedra_library
