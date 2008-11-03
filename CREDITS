@@ -159,8 +159,8 @@ People:
                         that platform.
 
   Denis Gopan           [*] helped us extending the library with the
-                        `expand_space_dimension' and
-                        `fold_space_dimensions' operations of the
+                        "expand space dimension" and
+                        "fold space dimensions" operations of the
                         library.
 
   Martin Guy            [8] gave us access to his ARM machine: without
@@ -202,6 +202,32 @@ People:
                         systems did not share a single line of code,
                         this gave us excellent opportunities for our
                         initial testing and debugging work.
+
+  Sebastian Pop         (AMD).  During his work on interfacing CLooG [*]
+                        with the PPL, Sebastian provided valuable feedback,
+                        particularly on the C interface to the PPL.
+                        He also suggested the addition of new functionality
+                        such as the <EM>simplify using context</EM>
+                        operation.
+
+  Thomas Reps           [*] (University of Wisconsin-Madison) on several
+                        occasions we have had interesting discussions
+                        with him both on the PPL and on the more
+                        general topics of static analysis and
+                        numerical abstractions.
+
+  Mooly Sagiv           [*] (Tel-Aviv University) stimulated the development
+                        of the PPL by providing, in particular,
+                        interesting challenges related to precision
+                        and scalability.
+
+  Fausto Spoto          [*] (University of Verona) did useful beta testing
+                        for the Java interface.  He also suggested the
+                        addition of the <EM>hash code</EM> operations.
+
+  Basile Starynkevitch  [*] (CEA LIST/DTSI/SOL). Basile is the author
+                        of MELT [*] and suggested several improvements
+                        to the PPL.
 
   Ralf Wildenhues       [19] (University of Bonn) helped us with
                         several issues concerning the proper use of
