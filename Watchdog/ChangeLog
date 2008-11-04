@@ -1,3 +1,26 @@
+2008-11-03 Monday 09:51  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* INSTALL (1.10): Previous commit reverted.
+
+2008-11-03 Monday 08:56  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* INSTALL (1.9): Same changes as in previous commit for the
+	  top-level ppl INSTALL file.
+
+2008-11-01 Saturday 15:59  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README (1.20): Updated.
+
+2008-11-01 Saturday 12:54  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/: user.doxyconf-html.in (1.6), user.doxyconf-latex.in (1.6):
+	  Do not produce the collaboration graph in the user docs, as this
+	  graph contains implementation info.
+
+2008-10-31 Friday 19:44  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog (1.23): Updated.
+
 2008-10-31 Friday 15:58  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* config.rpath (1.1), configure.ac (1.56), m4/Makefile.am (1.5),
