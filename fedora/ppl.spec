@@ -2,7 +2,7 @@
 
 Name:           ppl
 Version:        0.10
-Release:        2%{?dist}
+Release:        3%{?dist}
 
 Summary:        The Parma Polyhedra Library: a library of numerical abstractions
 Group:          Development/Libraries
@@ -133,7 +133,7 @@ Summary:        The Java interface of the Parma Polyhedra Library
 Group:          Development/Libraries
 BuildRequires:  java-devel >= 1:1.6.0
 BuildRequires:  jpackage-utils
-Requires:       java-devel >= 1:1.6.0
+Requires:       java >= 1:1.6.0
 Requires:       jpackage-utils
 Requires:       %{name} = %{version}-%{release}
 %description java
@@ -401,6 +401,9 @@ mv \
 rm -rf %{buildroot}
 
 %changelog
+* Thu Nov 4 2008 Roberto Bagnara <bagnara@cs.unipr.it> 0.10-3
+- Fixed the requirements of the `ppl-java' package.
+
 * Thu Nov 4 2008 Roberto Bagnara <bagnara@cs.unipr.it> 0.10-2
 - Added m4 >= 1.4.8 to build requirements.
 
