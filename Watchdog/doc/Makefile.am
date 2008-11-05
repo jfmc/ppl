@@ -263,10 +263,6 @@ $(DEVREF_CORE_HTML_DIR): devref.doxyconf-html $(DEVREF_CORE_STUFF)
 EXTRA_DIST= \
 $(DIST_DOCS) \
 $(DOX_FILES) \
-user.doxyconf-latex \
-devref.doxyconf-latex \
-user.doxyconf-html \
-devref.doxyconf-html \
 user.tex \
 devref.tex \
 gpl.tex \

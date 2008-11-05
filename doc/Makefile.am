@@ -1597,20 +1597,14 @@ EXTRA_DIST= \
 $(DIST_DOCS) \
 $(DOX_FILES) \
 README.doc \
-devref-language-interface.doxyconf \
 devref-language-interface.tex \
-devref.doxyconf-html \
-devref.doxyconf-latex \
 devref.tex \
 fdl.tex \
 gpl.tex \
 interfaces-html.sed \
 interfaces-latex.sed \
 ppl.sty \
-user-language-interface.doxyconf \
 user-language-interface.tex \
-user.doxyconf-html \
-user.doxyconf-latex \
 user.tex
 
 GENERATED_LATEX_HEADER_FILES = \
