@@ -1,2 +1,2 @@
 #!/bin/sh
-LANG=C grep "[^	 -~]" "$@"
+LANG=C grep -n "[^	 -~]" "$@"
