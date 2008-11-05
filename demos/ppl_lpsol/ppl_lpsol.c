@@ -132,6 +132,17 @@ static struct option long_options[] = {
   "                          3 --> state + optimal value + optimum location\n" \
   "                          4 --> lots of output\n"                    \
   "  -V, --version           prints version information to stdout\n"
+#ifndef PPL_HAVE_GETOPT_H
+#define USAGE_STRING4                                                   \
+  "\n"                                                                  \
+  "NOTE: this version does not support long options.\n"                 \
+  "\n"                                                                  \
+  "Report bugs to <ppl-devel@cs.unipr.it>.\n"
+#else
+#define USAGE_STRING4                                                   \
+  "\n"                                                                  \
+  "Report bugs to <ppl-devel@cs.unipr.it>.\n"
+#endif
 
 #define OPTION_LETTERS "bc::eimnMC:R:ho:p:rstVv:"
 
@@ -269,9 +280,7 @@ process_options(int argc, char* argv[]) {
       fputs(USAGE_STRING1, stdout);
       fputs(USAGE_STRING2, stdout);
       fputs(USAGE_STRING3, stdout);
-#ifndef PPL_HAVE_GETOPT_H
-      fputs("\nNOTE: this version does not support long options.\n");
-#endif
+      fputs(USAGE_STRING4, stdout);
       my_exit(0);
       break;
 

@@ -7,9 +7,6 @@ Enhancements for PPL 0.10.1 or later versions
 - In libppl.3 and in the test programs, use malloc(), realloc() and
   free() instead of operator new() and operator delete() to implement
   the replacement GMP allocation functions.
-- In libppl.3 and in the test programs, use malloc(), realloc() and
-  free() instead of operator new() and operator delete() to implement
-  the replacement GMP allocation functions.
 - Enhance the support for systems not providing support for the IEEE
   inexact flag.
 - `make check' in ppl_lpsol must run also the incremental version
@@ -24,7 +21,6 @@ Enhancements for PPL 0.10.1 or later versions
 - Review and revise the m4 code for the interfaces, looking for
   cleaner and maybe more flexible methods and more efficient code.
 - Check the configuration dependent documentation for Prolog,
-- Make `ppl_lpsol --help' and `ppl_lcdd --help' consistent.
 
 
 Enhancements for PPL 0.11 or later versions
