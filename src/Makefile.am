@@ -65,11 +65,14 @@ AM_CPPFLAGS = \
 lib_LTLIBRARIES = libppl.la
 
 bin_PROGRAMS = ppl-config
+
 ppl_config_SOURCES = \
-ppl-config.cc \
 BUGS.cc \
 COPYING.cc \
 CREDITS.cc
+
+nodist_ppl_config_SOURCES = \
+ppl-config.cc
 
 ppl_config_LDADD = \
 libppl.la
