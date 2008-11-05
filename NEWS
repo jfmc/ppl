@@ -1388,10 +1388,10 @@ o  The methods Polyhedron::widening_assign() and
    of the widenings introduced in
 
      N. Halbwachs.
-     Détermination Automatique de Relations Linéaires
-     Vérifiées par les Variables d'un Programme.
-     Thèse de 3ème cicle d'informatique,
-     Université scientifique et médicale de Grenoble,
+     Determination Automatique de Relations Lineaires
+     Verifiees par les Variables d'un Programme.
+     These de 3eme cicle d'informatique,
+     Universite scientifique et medicale de Grenoble,
      Grenoble, France, March 1979.
 
    and described in
