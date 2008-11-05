@@ -285,3 +285,6 @@ ascii_dump_load1.dat
 
 CLEANFILES = \
 run_tests.stamp
+
+DISTCLEANFILES = \
+dirty_marker
