@@ -66,7 +66,7 @@ OR_Matrix<T>::Pseudo_Row<U>::Pseudo_Row()
   , size_(0)
 #endif
 {
-  // FIXME: is zeroing necessary/wanted?
+  // FIXME(0.10.1): is zeroing necessary/wanted?
 }
 
 template <typename T>
@@ -246,7 +246,7 @@ OR_Matrix<T>::any_row_iterator<U>::operator+=(difference_type m) {
   i += increment;
   value.first += increment;
 #if PPL_OR_MATRIX_EXTRA_DEBUG
-  // FIXME!!!
+  // FIXME(0.10.1)!!!
   value.size_ = OR_Matrix::row_size(e);
 #endif
   return *this;

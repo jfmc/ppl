@@ -1625,7 +1625,7 @@ Octagonal_Shape<T>::relation_with(const Generator& g) const {
       const Coefficient& g_coeff_y = (y.space_dimension() > g_space_dim)
         ? Coefficient(0) : g.coefficient(y);
 
-      // FIXME! Find better names.
+      // FIXME(0.10.1)! Find better names.
       const bool is_binary_equality = is_additive_inverse(m_ii_jj, m_i_j);
       const bool is_a_binary_equality = is_additive_inverse(m_i_jj, m_ii_j);
       if (is_binary_equality) {
@@ -2429,7 +2429,7 @@ template <typename T>
 bool
 Octagonal_Shape<T>
 ::simplify_using_context_assign(const Octagonal_Shape& y) {
-  // FIXME: provide a real implementation.
+  // FIXME(0.10.1): provide a real implementation.
   used(y);
   return true;
 }

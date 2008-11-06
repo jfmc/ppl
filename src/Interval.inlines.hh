@@ -139,13 +139,13 @@ f_is_empty_lazy(const T& x) {
 
 inline bool
 is_integer(const char*) {
-  // FIXME:
+  // FIXME(0.10.1)
   return false;
 }
 
 inline bool
 is_not_a_number(const char*) {
-  // FIXME:
+  // FIXME(0.10.1)
   return false;
 }
 

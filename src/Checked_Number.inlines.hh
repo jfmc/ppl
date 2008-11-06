@@ -45,7 +45,7 @@ inline Result
 check_result(Result r, Rounding_Dir dir) {
   if (dir == ROUND_NOT_NEEDED && !is_special(r)) {
 #ifdef DEBUG_ROUND_NOT_NEEDED
-    // FIXME: this is wrong. If an overflow happens the Result may be
+    // FIXME(0.10.1): this is wrong. If an overflow happens the Result may be
     // V_LT or V_GT. What's the better way to cope with that?
     assert(r == V_EQ);
 #else

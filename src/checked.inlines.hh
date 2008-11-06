@@ -506,7 +506,7 @@ inline typename Enable_If<(!Safe_Conversion<T1, T2>::value
 eq(const T1& x, const T2& y) {
   DIRTY_TEMP(T1, tmp);
   Result r = assign_r(tmp, y, static_cast<Rounding_Dir>(ROUND_DIRECT | ROUND_FPU_CHECK_INEXACT));
-  // FIXME: Can we do any better?
+  // FIXME(0.10.1): Can we do any better?
   // We can do this also without fpu inexact check using
   // a conversion back and forth and then testing equality.
   // We should code this in checked_float.inlines.hh, probably
@@ -557,7 +557,7 @@ le(const T1& x, const T2& y) {
   case V_LE:
   case V_GE:
   case V_LGE:
-    // FIXME: Can we do any better?
+    // FIXME(0.10.1): Can we do any better?
     // See comment above.
     assert(0);
   default:

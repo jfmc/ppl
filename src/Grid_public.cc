@@ -1672,7 +1672,7 @@ PPL::Grid::difference_assign(const Grid& y) {
 
 bool
 PPL::Grid::simplify_using_context_assign(const Grid& y) {
-  // FIXME: provide a real implementation.
+  // FIXME(0.10.1): provide a real implementation.
   used(y);
   return true;
 }

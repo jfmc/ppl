@@ -2,6 +2,7 @@
 Enhancements for PPL 0.10.1 or later versions
 =============================================
 
+- Fix all the FIXME(0.10.1).
 - Improve the OCaml interface by supporting dynamic loading and
   native compilation.
 - Enhance the support for systems not providing support for the IEEE

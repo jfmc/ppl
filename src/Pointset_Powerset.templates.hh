@@ -65,7 +65,7 @@ Pointset_Powerset<NNC_Polyhedron>
 	 y_end = y.end(); i != y_end; ++i)
     x.sequence.push_back(Determinate<NNC_Polyhedron>
 			 (NNC_Polyhedron(i->element(), complexity)));
-  // FIXME: the following is a bug!
+  // FIXME(0.10.1): the following is a bug!
   x.reduced = y.reduced;
   assert(x.OK());
 }
@@ -1179,7 +1179,7 @@ Pointset_Powerset<PS>::pairwise_reduce() {
 	const PS& pj = sj->element();
 	if (pi.upper_bound_assign_if_exact(pj)) {
 	  marked[si_index] = marked[sj_index] = true;
-	  // FIXME: check whether the preservation of reduction was
+	  // FIXME(0.10.1): check whether the preservation of reduction was
 	  // actually meant here.
 	  new_x.add_non_bottom_disjunct_preserve_reduction(pi);
 	  ++deleted;
@@ -1235,7 +1235,7 @@ BGP99_heuristics_assign(const Pointset_Powerset& y, Widening wf) {
       if (pi.contains(pj)) {
 	PS pi_copy = pi;
 	wf(pi_copy, pj);
-	// FIXME: check whether the preservation of reduction was
+	// FIXME(0.10.1): check whether the preservation of reduction was
 	// actually meant here.
 	new_x.add_non_bottom_disjunct_preserve_reduction(pi_copy);
 	marked[i_index] = true;

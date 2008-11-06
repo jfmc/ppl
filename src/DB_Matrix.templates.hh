@@ -233,7 +233,7 @@ DB_Matrix<T>::ascii_load(std::istream& s) {
   for (dimension_type i = 0; i < nrows;  ++i)
     for (dimension_type j = 0; j < nrows; ++j) {
       Result r = input(x[i][j], s, ROUND_UP);
-      // FIXME: V_CVT_STR_UNK is probably not the only possible error.
+      // FIXME(0.10.1): V_CVT_STR_UNK is probably not the only possible error.
       if (!s || r == V_CVT_STR_UNK)
 	return false;
     }

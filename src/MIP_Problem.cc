@@ -961,7 +961,7 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
       challenger_den = squared_lcm_basis;
       for (dimension_type i = tableau_num_rows; i-- > 0; ) {
 	const Coefficient& tableau_ij = tableau[i][j];
-	// FIXME: the test seems to speed up the GMP computation.
+	// FIXME(0.10.1): the test seems to speed up the GMP computation.
 	if (tableau_ij != 0) {
 	  scalar_value = tableau_ij * norm_factor[i];
 	  add_mul_assign(challenger_den, scalar_value, scalar_value);

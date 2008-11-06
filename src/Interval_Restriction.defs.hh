@@ -618,7 +618,8 @@ diff_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to,
 
 template <typename T, typename Base, typename From>
 inline bool
-neg_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to, const From& x) {
+neg_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to,
+                const From& x) {
   return assign_restriction(to, x);
 }
 
@@ -844,7 +845,8 @@ mul_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to, const From1& x
 
 template <typename T, typename Base, typename From1, typename From2>
 inline bool
-div_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to, const From1& x, const From2& y) {
+div_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to,
+                const From1& x, const From2& y) {
   if (is_singleton(y)) {
     if (is_singleton(x)) {
       // FIXME: to be written

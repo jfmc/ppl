@@ -51,7 +51,7 @@ swap(T&, T&) {
   COMPILE_TIME_CHECK(!Slow_Copy<T>::value, "missing swap specialization");
 }
 
-// FIXME: write a comment for this.
+// FIXME(0.10.1): write a comment for this.
 #define TEMP_INTEGER(id) DIRTY_TEMP0(Coefficient, id)
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -78,7 +78,7 @@ dimension_type
 compute_capacity(dimension_type requested_size,
 		 dimension_type maximum_size);
 
-// FIXME!!!
+// FIXME(0.10.1)!!!
 dimension_type
 compute_capacity(dimension_type requested_size);
 
@@ -199,7 +199,7 @@ struct Recycle_Input {
     std::cerr << *this;							\
   }
 
-// FIXME: The class_prefix has changed from
+// FIXME(0.10.1): The class_prefix has changed from
 //        PPL_OUTPUT_TEMPLATE_DEFINITIONS, to work around `,'.
 //        Perhaps PPL_OUTPUT_TEMPLATE_DEFINITIONS should be changed to
 //        match this.
@@ -219,7 +219,7 @@ struct Recycle_Input {
     std::cerr << *this;							\
   }
 
-// FIXME: Copy and edit of PPL_OUTPUT_2_PARAM_TEMPLATE_DEFINITIONS
+// FIXME(0.10.1): Copy and edit of PPL_OUTPUT_2_PARAM_TEMPLATE_DEFINITIONS
 #define PPL_OUTPUT_3_PARAM_TEMPLATE_DEFINITIONS(type_symbol1,		\
 						type_symbol2,		\
 						type_symbol3,		\

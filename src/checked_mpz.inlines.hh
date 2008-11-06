@@ -370,7 +370,7 @@ div_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y,
   mpz_srcptr n = x.get_mpz_t();
   mpz_srcptr d = y.get_mpz_t();
   if (round_ignore(dir)) {
-    // FIXME: is this correct?
+    // FIXME(0.10.1): is this correct?
     mpz_divexact(to.get_mpz_t(), n, d);
     return V_LGE;
   }

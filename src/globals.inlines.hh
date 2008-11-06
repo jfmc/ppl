@@ -57,7 +57,7 @@ compute_capacity(const dimension_type requested_size,
   //   : maximum_size;
 }
 
-// FIXME!!!
+// FIXME(0.10.1)!!!
 inline dimension_type
 compute_capacity(const dimension_type requested_size) {
   // Speculation factor 2.

@@ -68,7 +68,7 @@ Pointset_Ask_Tell<NNC_Polyhedron>
       nnc_tell(NNC_Polyhedron(i->tell().element().constraints()));
     x.sequence.push_back(Pair(nnc_ask, nnc_tell));
   }
-  // FIXME: the following is a bug!
+  // FIXME(0.10.1): the following is a bug!
   x.normalized = y.normalized;
   assert(x.OK());
 }
@@ -88,7 +88,7 @@ Pointset_Ask_Tell<C_Polyhedron>
     x.sequence.push_back(Pair(c_ask, c_tell));
   }
 
-  // FIXME: the following comment should be rephrased!
+  // FIXME(0.10.1): the following comment should be rephrased!
   // Note: this might be non-reduced even when `y' is known to be
   // omega-reduced, because the constructor of C_Polyhedron, by
   // enforcing topological closure, may have made different elements

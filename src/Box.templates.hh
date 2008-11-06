@@ -470,9 +470,9 @@ Box<ITV>::Box(const Grid& gr, Complexity_Class)
   // Clear the bound flag in `bounded_interval' for all dimensions in
   // which a line or sequence of points extends away from a single
   // value in the dimension.
-  // FIXME: this computation should be provided by the Grid class.
-  // FIXME: remove the declaration making Box a friend of Grid_Generator
-  //        when this is done.
+  // FIXME(0.10.1): this computation should be provided by the Grid class.
+  // FIXME(0.10.1): remove the declaration making Box a friend of Grid_Generator
+  //                when this is done.
   for (Grid_Generator_System::const_iterator gs_i = gr.gen_sys.begin(),
 	 gs_end = gr.gen_sys.end(); gs_i != gs_end; ++gs_i) {
     Grid_Generator& g = const_cast<Grid_Generator&>(*gs_i);
@@ -1547,7 +1547,7 @@ Box<ITV>::difference_assign(const Box& y) {
 template <typename ITV>
 bool
 Box<ITV>::simplify_using_context_assign(const Box& y) {
-  // FIXME: provide a real implementation.
+  // FIXME(0.10.1): provide a real implementation.
   used(y);
   return true;
 }
@@ -3262,7 +3262,7 @@ void
 Box<ITV>::limited_CC76_extrapolation_assign(const Box& y,
                                             const Constraint_System& cs,
                                             unsigned* tp) {
-  // FIXME: should take into account cs.
+  // FIXME(0.10.1): should take into account cs.
   used(cs);
   Box& x = *this;
   x.CC76_widening_assign(y, tp);

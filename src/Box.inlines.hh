@@ -408,14 +408,14 @@ Box<ITV>
     break;
   case Constraint::NONSTRICT_INEQUALITY:
     seq_v.refine_existential((den > 0) ? GREATER_OR_EQUAL : LESS_OR_EQUAL, q);
-    // FIXME: this assertion fails due to a bug in refine.
+    // FIXME(0.10.1): this assertion fails due to a bug in refine.
     assert(seq_v.OK());
     break;
   case Constraint::STRICT_INEQUALITY:
     seq_v.refine_existential((den > 0) ? GREATER_THAN : LESS_THAN, q);
     break;
   }
-  // FIXME: do check the value returned by `refine_existential' and
+  // FIXME(0.10.1): do check the value returned by `refine_existential' and
   // set `empty' and `empty_up_to_date' as appropriate.
   reset_empty_up_to_date();
   assert(OK());

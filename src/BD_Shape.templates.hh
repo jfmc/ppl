@@ -1883,7 +1883,7 @@ BD_Shape<T>::difference_assign(const BD_Shape& y) {
 template <typename T>
 bool
 BD_Shape<T>::simplify_using_context_assign(const BD_Shape& y) {
-  // FIXME: provide a real implementation.
+  // FIXME(0.10.1): provide a real implementation.
   used(y);
   return true;
 }
