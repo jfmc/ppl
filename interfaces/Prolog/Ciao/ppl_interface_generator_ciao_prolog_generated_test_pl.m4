@@ -27,7 +27,7 @@ dnl site: http://www.cs.unipr.it/ppl/ .
 
 m4_include(`ppl_interface_generator_prolog_systems.m4')dnl
 
-m4_define(`m4_extension', `m4_ifelse($4, 0, , `COMMA
+m4_define(`m4_expanded_procedure_schema', `m4_ifelse($4, 0, , `COMMA
 ')  $1/$2')
 
 m4_divert`'dnl

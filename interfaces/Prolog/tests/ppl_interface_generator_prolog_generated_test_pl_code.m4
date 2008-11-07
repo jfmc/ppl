@@ -140,13 +140,13 @@ m4_define(`m4_add_out_class_code', `dnl
 out_@CLASS@(P):-
   ((noisy(N), N < 2) -> true ;
     m4_ifelse(m4_current_group, pointset_powerset,
-      `display_message([nl, @LCLASS@, P, representation,
+      `display_message([nl, @!CLASS@, P, representation,
                        cannot ,be, displayed, nl]),',
               m4_current_group, product,
-      `display_message([nl, @LCLASS@, P, representation,
+      `display_message([nl, @!CLASS@, P, representation,
                        cannot ,be, displayed, nl]),',
-`     ppl_@CLASS@_get_@GET_REPRESENT@s(P, RS),
-      display_message([nl, @GET_REPRESENT@s, are, nl, RS, nl]),')
+`     ppl_@CLASS@_get_@CLASS_REPRESENT@s(P, RS),
+      display_message([nl, @CLASS_REPRESENT@s, are, nl, RS, nl]),')
     fail
   ).
 
@@ -224,8 +224,8 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_2_test :-
                         @BUILD_REPRESENT@s, RS1),
     clean_ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s(RS1, PS1),
     ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@,
-                        @ALT_BUILD_REPRESENT@s, RS1a),
-    clean_ppl_new_@TOPOLOGY@@CLASS@_from_@ALT_BUILD_REPRESENT@s(RS1a, PS1a),
+                        @A_BUILD_REPRESENT@s, RS1a),
+    clean_ppl_new_@TOPOLOGY@@CLASS@_from_@A_BUILD_REPRESENT@s(RS1a, PS1a),
 %%    ppl_@CLASS@_equals_@CLASS@(PS1, PS1a),
     ppl_delete_@CLASS@(PS1),
     ppl_delete_@CLASS@(PS1a)
@@ -317,18 +317,18 @@ ppl_@CLASS@_@DIMENSION@_2_test :-
 
 ')
 
-m4_define(`ppl_@CLASS@_get_@GET_REPRESENT@s_code',
+m4_define(`ppl_@CLASS@_get_@CLASS_REPRESENT@s_code',
 `
-ppl_@CLASS@_get_@GET_REPRESENT@s_2_test :-
+ppl_@CLASS@_get_@CLASS_REPRESENT@s_2_test :-
   (
    choose_test(TEST_DATA, Space_Dim),
    (
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS1, Space_Dim),
-     ppl_@CLASS@_get_@GET_REPRESENT@s(PS, RS),
-     (predicate_exists(ppl_@CLASS@_add_@GET_REPRESENT@s)
+     ppl_@CLASS@_get_@CLASS_REPRESENT@s(PS, RS),
+     (predicate_exists(ppl_@CLASS@_add_@CLASS_REPRESENT@s)
      ->
-         ppl_@CLASS@_add_@GET_REPRESENT@s(PS1, RS)
+         ppl_@CLASS@_add_@CLASS_REPRESENT@s(PS1, RS)
      ;
          true
      ),
@@ -342,18 +342,18 @@ ppl_@CLASS@_get_@GET_REPRESENT@s_2_test :-
 
 ')
 
-m4_define(`ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_code',
+m4_define(`ppl_@CLASS@_get_minimized_@CLASS_REPRESENT@s_code',
 `
-ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_2_test :-
+ppl_@CLASS@_get_minimized_@CLASS_REPRESENT@s_2_test :-
   (
    choose_test(TEST_DATA, Space_Dim),
    (
       ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
       ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS1, Space_Dim),
-      ppl_@CLASS@_get_minimized_@GET_REPRESENT@s(PS, RS),
-      ( predicate_exists(ppl_@CLASS@_add_@GET_REPRESENT@s)
+      ppl_@CLASS@_get_minimized_@CLASS_REPRESENT@s(PS, RS),
+      ( predicate_exists(ppl_@CLASS@_add_@CLASS_REPRESENT@s)
       ->
-        ppl_@CLASS@_add_@GET_REPRESENT@s(PS1, RS)
+        ppl_@CLASS@_add_@CLASS_REPRESENT@s(PS1, RS)
       ;
         true
       ),
@@ -390,7 +390,7 @@ m4_define(`ppl_@CLASS@_@BEGINEND@_iterator_code',
 ppl_@CLASS@_@BEGINEND@_iterator_2_test :-
   (
    choose_test(TEST_DATA, _Space_Dim),
-   ppl_build_test_data(TEST_DATA, t_@CLASSTOPOLOGY@, @CONSTRAINER@s, RS),
+   ppl_build_test_data(TEST_DATA, t_@DISJUNCT_TOPOLOGY@, @CONSTRAINER@s, RS),
    (
      clean_ppl_new_@CLASS@_from_@CONSTRAINER@s(RS, PPS),
      ppl_@CLASS@_@BEGINEND@_iterator(PPS, It_x),
@@ -408,7 +408,7 @@ m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
 ppl_@CLASS@_iterator_equals_iterator_2_test :-
   (
    choose_test(TEST_DATA, _Space_Dim),
-   ppl_build_test_data(TEST_DATA, t_@CLASSTOPOLOGY@, @CONSTRAINER@s, RS),
+   ppl_build_test_data(TEST_DATA, t_@DISJUNCT_TOPOLOGY@, @CONSTRAINER@s, RS),
    (
      clean_ppl_new_@CLASS@_from_@CONSTRAINER@s(RS, PPS),
      ppl_@CLASS@_begin_iterator(PPS, It),
@@ -429,7 +429,7 @@ m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
 ppl_@CLASS@_@INCDEC@_iterator_1_test :-
   (
    choose_test(TEST_DATA, _Space_Dim),
-   ppl_build_test_data(TEST_DATA, t_@CLASSTOPOLOGY@, @CONSTRAINER@s, RS),
+   ppl_build_test_data(TEST_DATA, t_@DISJUNCT_TOPOLOGY@, @CONSTRAINER@s, RS),
    (
      clean_ppl_new_@CLASS@_from_@CONSTRAINER@s(RS, PPS),
      ppl_@CLASS@_begin_iterator(PPS, Itb),
@@ -466,11 +466,11 @@ m4_define(`ppl_new_@CLASS@_iterator_from_iterator_code',
 ppl_new_@CLASS@_iterator_from_iterator_2_test :-
   (
    TEST_DATA = test06, TEST_DATA1 = test07,
-   ppl_build_test_data(TEST_DATA, t_@CLASSTOPOLOGY@, @CONSTRAINER@s, RS),
-   ppl_build_test_data(TEST_DATA1, t_@CLASSTOPOLOGY@, @CONSTRAINER@s, RS1),
+   ppl_build_test_data(TEST_DATA, t_@DISJUNCT_TOPOLOGY@, @CONSTRAINER@s, RS),
+   ppl_build_test_data(TEST_DATA1, t_@DISJUNCT_TOPOLOGY@, @CONSTRAINER@s, RS1),
    (
      clean_ppl_new_@CLASS@_from_@CONSTRAINER@s(RS, PPS),
-     clean_ppl_new_@CLASSTOPOLOGY@@DISJUNCT@_from_@CONSTRAINER@s(RS1, PS),
+     clean_ppl_new_@DISJUNCT_TOPOLOGY@@DISJUNCT@_from_@CONSTRAINER@s(RS1, PS),
      ppl_@CLASS@_add_disjunct(PPS, PS),
      ppl_@CLASS@_begin_iterator(PPS, It_begin),
      ppl_new_@CLASS@_iterator_from_iterator(It_begin, It1),
@@ -492,11 +492,11 @@ m4_define(`ppl_@CLASS@_drop_disjunct_code',
 ppl_@CLASS@_drop_disjunct_2_test :-
   (
    TEST_DATA = test06, TEST_DATA1 = test07,
-   ppl_build_test_data(TEST_DATA, t_@CLASSTOPOLOGY@, @CONSTRAINER@s, RS),
-   ppl_build_test_data(TEST_DATA1, t_@CLASSTOPOLOGY@, @CONSTRAINER@s, RS1),
+   ppl_build_test_data(TEST_DATA, t_@DISJUNCT_TOPOLOGY@, @CONSTRAINER@s, RS),
+   ppl_build_test_data(TEST_DATA1, t_@DISJUNCT_TOPOLOGY@, @CONSTRAINER@s, RS1),
    (
      clean_ppl_new_@CLASS@_from_@CONSTRAINER@s(RS, PPS),
-     clean_ppl_new_@CLASSTOPOLOGY@@DISJUNCT@_from_@CONSTRAINER@s(RS1, PS),
+     clean_ppl_new_@DISJUNCT_TOPOLOGY@@DISJUNCT@_from_@CONSTRAINER@s(RS1, PS),
      ppl_@CLASS@_add_disjunct(PPS, PS),
      ppl_@CLASS@_size(PPS, S),
      S > 1,
@@ -524,11 +524,11 @@ m4_define(`ppl_@CLASS@_drop_disjuncts_code',
 ppl_@CLASS@_drop_disjuncts_3_test :-
   (
    TEST_DATA = test06, TEST_DATA1 = test07,
-   ppl_build_test_data(TEST_DATA, t_@CLASSTOPOLOGY@, @CONSTRAINER@s, RS),
-   ppl_build_test_data(TEST_DATA1, t_@CLASSTOPOLOGY@, @CONSTRAINER@s, RS1),
+   ppl_build_test_data(TEST_DATA, t_@DISJUNCT_TOPOLOGY@, @CONSTRAINER@s, RS),
+   ppl_build_test_data(TEST_DATA1, t_@DISJUNCT_TOPOLOGY@, @CONSTRAINER@s, RS1),
    (
      clean_ppl_new_@CLASS@_from_@CONSTRAINER@s(RS, PPS),
-     clean_ppl_new_@CLASSTOPOLOGY@@DISJUNCT@_from_@CONSTRAINER@s(RS1, PS),
+     clean_ppl_new_@DISJUNCT_TOPOLOGY@@DISJUNCT@_from_@CONSTRAINER@s(RS1, PS),
      ppl_@CLASS@_add_disjunct(PPS, PS),
      ppl_@CLASS@_size(PPS, S),
      ppl_@CLASS@_begin_iterator(PPS, It_begin),
@@ -576,8 +576,8 @@ ppl_@CLASS@_get_disjunct_2_test :-
 ppl_@CLASS@_get_disjunct_2_test1(_, []).
 ppl_@CLASS@_get_disjunct_2_test1(PPS, [Test|Tests]) :-
   (
-   ppl_build_test_data(Test, t_@CLASSTOPOLOGY@, @CONSTRAINER@s, RS),
-   clean_ppl_new_@CLASSTOPOLOGY@@DISJUNCT@_from_@CONSTRAINER@s(RS, PS),
+   ppl_build_test_data(Test, t_@DISJUNCT_TOPOLOGY@, @CONSTRAINER@s, RS),
+   clean_ppl_new_@DISJUNCT_TOPOLOGY@@DISJUNCT@_from_@CONSTRAINER@s(RS, PS),
    ppl_@CLASS@_add_disjunct(PPS, PS),
    ppl_delete_@DISJUNCT@(PS),
    ppl_@CLASS@_get_disjunct_2_test1(PPS, Tests),
@@ -922,25 +922,25 @@ ppl_@CLASS@_@COMPARISON@_@CLASS@_2_test :-
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_code',
+m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@_code',
 `
-:- discontiguous(ppl_@CLASS@_add_@ADD_REPRESENT@_2_test1/3).
+:- discontiguous(ppl_@CLASS@_add_@CLASS_REPRESENT@_2_test1/3).
 
-ppl_@CLASS@_add_@ADD_REPRESENT@_2_test :-
+ppl_@CLASS@_add_@CLASS_REPRESENT@_2_test :-
   (
    member(TEST_DATA, [test00, test02, test03, test04, test05]),
    choose_test(TEST_DATA, Space_Dim),
-   ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS),
-   ppl_initial_test_system(@ADD_REPRESENT@, U_or_E),
+   ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@, @CLASS_REPRESENT@s, RS),
+   ppl_initial_test_system(@CLASS_REPRESENT@, U_or_E),
    ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim, U_or_E, PS),
-   ppl_@CLASS@_add_@ADD_REPRESENT@s(PS, RS),
+   ppl_@CLASS@_add_@CLASS_REPRESENT@s(PS, RS),
    ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim, U_or_E, PS1),
-   (ppl_@CLASS@_add_@ADD_REPRESENT@_2_test1(PS, PS1, RS)
+   (ppl_@CLASS@_add_@CLASS_REPRESENT@_2_test1(PS, PS1, RS)
    ->
      fail ; true)
   ).
 
-ppl_@CLASS@_add_@ADD_REPRESENT@_2_test1(PS, PS1, []) :-
+ppl_@CLASS@_add_@CLASS_REPRESENT@_2_test1(PS, PS1, []) :-
   (
    (predicate_exists(ppl_@CLASS@_equals_@CLASS@)
       ->
@@ -951,35 +951,35 @@ ppl_@CLASS@_add_@ADD_REPRESENT@_2_test1(PS, PS1, []) :-
    ppl_delete_@CLASS@(PS),
    ppl_delete_@CLASS@(PS1)
   ).
-ppl_@CLASS@_add_@ADD_REPRESENT@_2_test1(PS, PS1, [R | RS]) :-
+ppl_@CLASS@_add_@CLASS_REPRESENT@_2_test1(PS, PS1, [R | RS]) :-
   (
-     ppl_@CLASS@_add_@ADD_REPRESENT@(PS1, R),
-     ppl_@CLASS@_add_@ADD_REPRESENT@_2_test1(PS, PS1, RS)
+     ppl_@CLASS@_add_@CLASS_REPRESENT@(PS1, R),
+     ppl_@CLASS@_add_@CLASS_REPRESENT@_2_test1(PS, PS1, RS)
   ).
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code',
+m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@_and_minimize_code',
 `
-:- discontiguous(ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test1/3).
+:- discontiguous(ppl_@CLASS@_add_@CLASS_REPRESENT@_and_minimize_2_test1/3).
 
-ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test :-
+ppl_@CLASS@_add_@CLASS_REPRESENT@_and_minimize_2_test :-
   (
    member(TEST_DATA, [test00, test02, test03, test04, test05]),
    choose_test(TEST_DATA, Space_Dim),
    (
-     ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS),
-     ppl_initial_test_system(@ADD_REPRESENT@, U_or_E),
+     ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@, @CLASS_REPRESENT@s, RS),
+     ppl_initial_test_system(@CLASS_REPRESENT@, U_or_E),
      clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim,
                                                           U_or_E, PS),
-     ppl_@CLASS@_add_@ADD_REPRESENT@s(PS, RS),
+     ppl_@CLASS@_add_@CLASS_REPRESENT@s(PS, RS),
      clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim,
                                                         U_or_E, PS1),
      (predicate_exists(ppl_@CLASS@_is_empty)
      ->
        (\+ ppl_@CLASS@_is_empty(PS)
        ->
-         ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test1(PS, PS1, RS)
+         ppl_@CLASS@_add_@CLASS_REPRESENT@_and_minimize_2_test1(PS, PS1, RS)
        ;
          true
        )
@@ -992,7 +992,7 @@ ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test :-
      fail ; true)
   ).
 
-ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test1(PS, PS1, []) :-
+ppl_@CLASS@_add_@CLASS_REPRESENT@_and_minimize_2_test1(PS, PS1, []) :-
   (
    (predicate_exists(ppl_@CLASS@_equals_@CLASS@)
    ->
@@ -1001,31 +1001,31 @@ ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test1(PS, PS1, []) :-
      true
    )
   ).
-ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test1(PS, PS1, [R | RS]) :-
+ppl_@CLASS@_add_@CLASS_REPRESENT@_and_minimize_2_test1(PS, PS1, [R | RS]) :-
   (
-   ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize(PS1, R),
-   ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test1(PS, PS1, RS)
+   ppl_@CLASS@_add_@CLASS_REPRESENT@_and_minimize(PS1, R),
+   ppl_@CLASS@_add_@CLASS_REPRESENT@_and_minimize_2_test1(PS, PS1, RS)
   ).
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_code',
+m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@s_code',
 `
-ppl_@CLASS@_add_@ADD_REPRESENT@s_2_test :-
+ppl_@CLASS@_add_@CLASS_REPRESENT@s_2_test :-
   (
    member(TEST_DATA1, [test00, test02, test03, test04, test05]),
    member(TEST_DATA2, [test00, test02, test03, test04, test05]),
    choose_2_tests(TEST_DATA1, TEST_DATA2, Space_Dim),
    (
-     ppl_build_test_data(TEST_DATA1, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS),
-     ppl_build_test_data(TEST_DATA2, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS1),
-     ppl_initial_test_system(@ADD_REPRESENT@, U_or_E),
+     ppl_build_test_data(TEST_DATA1, t_@TOPOLOGY@, @CLASS_REPRESENT@s, RS),
+     ppl_build_test_data(TEST_DATA2, t_@TOPOLOGY@, @CLASS_REPRESENT@s, RS1),
+     ppl_initial_test_system(@CLASS_REPRESENT@, U_or_E),
      ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim, U_or_E, PS),
      ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim, U_or_E, PS1),
-     ppl_@CLASS@_add_@ADD_REPRESENT@s(PS, RS),
-     ppl_@CLASS@_add_@ADD_REPRESENT@s(PS, RS1),
-     ppl_@CLASS@_add_@ADD_REPRESENT@s(PS1, RS1),
-     ppl_@CLASS@_add_@ADD_REPRESENT@s(PS1, RS),
+     ppl_@CLASS@_add_@CLASS_REPRESENT@s(PS, RS),
+     ppl_@CLASS@_add_@CLASS_REPRESENT@s(PS, RS1),
+     ppl_@CLASS@_add_@CLASS_REPRESENT@s(PS1, RS1),
+     ppl_@CLASS@_add_@CLASS_REPRESENT@s(PS1, RS),
      (predicate_exists(ppl_@CLASS@_equals_@CLASS@)
      ->
        ppl_@CLASS@_equals_@CLASS@(PS, PS1)
@@ -1040,47 +1040,47 @@ ppl_@CLASS@_add_@ADD_REPRESENT@s_2_test :-
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize_code',
+m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@s_and_minimize_code',
 `
-ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize_2_test :-
+ppl_@CLASS@_add_@CLASS_REPRESENT@s_and_minimize_2_test :-
   (
    member(TEST_DATA1, [test00, test02, test03, test04, test05]),
    member(TEST_DATA2, [test00, test02, test03, test04, test05]),
    choose_2_tests(TEST_DATA1, TEST_DATA2, Dim),
    (
-     ppl_build_test_data(TEST_DATA1, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS),
-     ppl_build_test_data(TEST_DATA2, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS1),
-     ppl_initial_test_system(@ADD_REPRESENT@, U_or_E),
+     ppl_build_test_data(TEST_DATA1, t_@TOPOLOGY@, @CLASS_REPRESENT@s, RS),
+     ppl_build_test_data(TEST_DATA2, t_@TOPOLOGY@, @CLASS_REPRESENT@s, RS1),
+     ppl_initial_test_system(@CLASS_REPRESENT@, U_or_E),
      ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Dim, U_or_E, PS),
      ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Dim, U_or_E, PS1),
      ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Dim, U_or_E, PS_min),
      ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Dim, U_or_E, PS1_min),
-     ppl_@CLASS@_add_@ADD_REPRESENT@s(PS, RS),
-     ppl_@CLASS@_add_@ADD_REPRESENT@s(PS, RS1),
-     ppl_@CLASS@_add_@ADD_REPRESENT@s(PS_min, RS),
+     ppl_@CLASS@_add_@CLASS_REPRESENT@s(PS, RS),
+     ppl_@CLASS@_add_@CLASS_REPRESENT@s(PS, RS1),
+     ppl_@CLASS@_add_@CLASS_REPRESENT@s(PS_min, RS),
      (predicate_exists(ppl_@CLASS@_is_empty)
      ->
        (ppl_@CLASS@_is_empty(PS)
        ->
-         \+ ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize(PS_min, RS1),
-         ppl_@CLASS@_add_@ADD_REPRESENT@s(PS_min, RS1)
+         \+ ppl_@CLASS@_add_@CLASS_REPRESENT@s_and_minimize(PS_min, RS1),
+         ppl_@CLASS@_add_@CLASS_REPRESENT@s(PS_min, RS1)
        ;
-         ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize(PS_min, RS1)
+         ppl_@CLASS@_add_@CLASS_REPRESENT@s_and_minimize(PS_min, RS1)
        )
      ;
        true
      ),
-     ppl_@CLASS@_add_@ADD_REPRESENT@s(PS1, RS1),
-     ppl_@CLASS@_add_@ADD_REPRESENT@s(PS1, RS),
-     ppl_@CLASS@_add_@ADD_REPRESENT@s(PS1_min, RS1),
+     ppl_@CLASS@_add_@CLASS_REPRESENT@s(PS1, RS1),
+     ppl_@CLASS@_add_@CLASS_REPRESENT@s(PS1, RS),
+     ppl_@CLASS@_add_@CLASS_REPRESENT@s(PS1_min, RS1),
      (predicate_exists(ppl_@CLASS@_is_empty)
      ->
        (ppl_@CLASS@_is_empty(PS1)
        ->
-         \+ ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize(PS1_min, RS),
-         ppl_@CLASS@_add_@ADD_REPRESENT@s(PS1_min, RS)
+         \+ ppl_@CLASS@_add_@CLASS_REPRESENT@s_and_minimize(PS1_min, RS),
+         ppl_@CLASS@_add_@CLASS_REPRESENT@s(PS1_min, RS)
        ;
-         ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize(PS1_min, RS)
+         ppl_@CLASS@_add_@CLASS_REPRESENT@s_and_minimize(PS1_min, RS)
        )
      ;
        true
@@ -1110,7 +1110,7 @@ ppl_@CLASS@_add_disjunct_2_test :-
    choose_2_tests(TEST_DATA1, TEST_DATA2, Space_Dim),
    (
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PPS1, Space_Dim),
-     ppl_@CLASSTOPOLOGY@@DISJUNCT@_build_test_object(TEST_DATA2, PS2, Space_Dim),
+     ppl_@DISJUNCT_TOPOLOGY@@DISJUNCT@_build_test_object(TEST_DATA2, PS2, Space_Dim),
      ppl_@CLASS@_add_disjunct(PPS1, PS2),
      ppl_@CLASS@_OK(PPS1),
      ppl_@DISJUNCT@_OK(PS2),
@@ -1424,9 +1424,9 @@ ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_4_test :-
 
 ')
 
-m4_define(`ppl_@CLASS@_BHZ03_@CLASSTOPOLOGY@@DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code',
+m4_define(`ppl_@CLASS@_BHZ03_@DISJUNCT_TOPOLOGY@@DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code',
 `
-ppl_@CLASS@_BHZ03_@CLASSTOPOLOGY@@DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_test :-
+ppl_@CLASS@_BHZ03_@DISJUNCT_TOPOLOGY@@DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_test :-
   (
    choose_2_tests(TEST_DATA1, TEST_DATA2, Space_Dim),
    (
@@ -1435,7 +1435,7 @@ ppl_@CLASS@_BHZ03_@CLASSTOPOLOGY@@DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assi
      ppl_@CLASS@_upper_bound_assign(PS1, PS2),
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1_Copy),
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS2, PS2_Copy),
-     ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign(
+     ppl_@CLASS@_BHZ03_@A_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign(
                                                            PS1, PS2),
      ppl_@CLASS@_wdn_exn_check_code(PS1, PS1_Copy, PS2, PS2_Copy)
    ->

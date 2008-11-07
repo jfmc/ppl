@@ -57,8 +57,8 @@ dnl NOTE: The next two schemas are only for simple domains since
 dnl       we can only "get" a meaningful system (such as a set of
 dnl       constraints) that represents a domain from a simple domain.
 dnl
-ppl_@CLASS@_get_@GET_REPRESENT@s/2 +simple,
-ppl_@CLASS@_get_minimized_@GET_REPRESENT@s/2 +simple,
+ppl_@CLASS@_get_@CLASS_REPRESENT@s/2 +simple,
+ppl_@CLASS@_get_minimized_@CLASS_REPRESENT@s/2 +simple,
 ppl_@CLASS@_@HAS_PROPERTY@/1 +all,
 ppl_@CLASS@_@SIMPLIFY@/1 *nofail +all,
 ppl_@CLASS@_bounds_from_@ABOVEBELOW@/2 +all,
@@ -67,8 +67,8 @@ ppl_@CLASS@_@MAXMIN@_with_point/6 +all,
 ppl_@CLASS@_@COMPARISON@_@CLASS@/2 +all,
 ppl_@CLASS@_equals_@CLASS@/2 +all,
 ppl_@CLASS@_OK/1 +all,
-ppl_@CLASS@_add_@ADD_REPRESENT@/2 *nofail +all,
-ppl_@CLASS@_add_@ADD_REPRESENT@s/2 *nofail +all,
+ppl_@CLASS@_add_@CLASS_REPRESENT@/2 *nofail +all,
+ppl_@CLASS@_add_@CLASS_REPRESENT@s/2 *nofail +all,
 ppl_@CLASS@_refine_with_@REFINE_REPRESENT@/2 *nofail +all,
 ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s/2 *nofail +all,
 ppl_@CLASS@_@BINOP@/2 *nofail +all,
@@ -123,7 +123,7 @@ ppl_@CLASS@_drop_disjunct/2 +pointset_powerset,
 ppl_@CLASS@_drop_disjuncts/3 +pointset_powerset,
 ppl_@CLASS@_linear_@PARTITION@/4 +simple -grid,
 ppl_@CLASS@_approximate_@PARTITION@/5  +grid,
-ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign/2 +pointset_powerset \box,
+ppl_@CLASS@_BHZ03_@A_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign/2 +pointset_powerset \box,
 ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign/3 +pointset_powerset \box,
 dnl
 dnl CHECKME: This is not implemented.

@@ -67,10 +67,8 @@ m4_divert(-1)
 dnl ==================================================================
 dnl Define a test statement for each domain, for m4_divert(1)
 dnl ==================================================================
-m4_pushdef(`m4_one_class_code', `dnl
-m4_replace_all_patterns_in_string($1,
-  m4_run_class_code,
-  m4_pattern_list)`'dnl
+m4_pushdef(`m4_one_class_code', `
+    test1.run_`'m4_interface_class$1`'_test();
 ')
 
 m4_divert`'dnl
@@ -83,10 +81,10 @@ dnl ==================================================================
 dnl Define code for all tests to check all methods, for m4_divert(2)
 dnl ==================================================================
 dnl Prefix extra code for each domain.
-m4_pushdef(`m4_pre_extra_class_code', `dnl
-m4_replace_all_patterns_in_string($1,
-  m4_run_class_test_code,
-  m4_pattern_list)`'dnl
+m4_pushdef(`m4_pre_extra_class_code', `
+    public boolean run_`'m4_interface_class$1`'_test() {
+    try {
+
 ')
 dnl Postfix extra code for each domain.
 m4_pushdef(`m4_post_extra_class_code', `dnl

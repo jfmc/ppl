@@ -28,6 +28,7 @@ dnl site: http://www.cs.unipr.it/ppl/ .
 dnl Include files defining macros that generate the non-fixed part.
 m4_include(`ppl_interface_generator_c_cc_code.m4')
 m4_include(`ppl_interface_generator_c_procedure_generators.m4')
+m4_define(`m4_pattern_extensions', `, A_, B_')
 
 dnl Ensure any schematic procedure macro that is not defined
 dnl in the code file outputs a warning message.

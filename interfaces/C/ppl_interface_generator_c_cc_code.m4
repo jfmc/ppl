@@ -51,9 +51,9 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_code',
 `int
 ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@
 (ppl_@CLASS@_t* pph,
- ppl_const_@ALT_FRIEND@_t ph) try {
-  const @CPPX_FRIEND@& phh
-    = *static_cast<const @CPPX_FRIEND@*>(to_const(ph));
+ ppl_const_@A_FRIEND@_t ph) try {
+  const @B_FRIEND@& phh
+    = *static_cast<const @B_FRIEND@*>(to_const(ph));
   *pph = to_nonconst(new @TOPOLOGY@@CPP_CLASS@(phh));
   return 0;
 }
@@ -65,10 +65,10 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity_code',
 `int
 ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity
 (ppl_@CLASS@_t* pph,
- ppl_const_@ALT_FRIEND@_t ph,
+ ppl_const_@A_FRIEND@_t ph,
  int complexity) try {
-  const @CPPX_FRIEND@& phh
-    = *static_cast<const @CPPX_FRIEND@*>(to_const(ph));
+  const @B_FRIEND@& phh
+    = *static_cast<const @B_FRIEND@*>(to_const(ph));
   switch (complexity) {
   case 0:
     *pph = to_nonconst(new @TOPOLOGY@@CPP_CLASS@(phh, POLYNOMIAL_COMPLEXITY));
@@ -88,9 +88,9 @@ CATCH_ALL
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_code',
 `int
-ppl_new_@TOPOLOGY@@CLASS@_from_@UBUILD_REPRESENT@_System
-(ppl_@CLASS@_t* pph, ppl_const_@UBUILD_REPRESENT@_System_t cs) try {
-  const @UBUILD_REPRESENT@_System& ccs = *to_const(cs);
+ppl_new_@TOPOLOGY@@CLASS@_from_@!BUILD_REPRESENT@_System
+(ppl_@CLASS@_t* pph, ppl_const_@!BUILD_REPRESENT@_System_t cs) try {
+  const @!BUILD_REPRESENT@_System& ccs = *to_const(cs);
   *pph = to_nonconst(new @TOPOLOGY@@CPP_CLASS@(ccs));
   return 0;
 }
@@ -100,9 +100,9 @@ CATCH_ALL
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_recycle_@BUILD_REPRESENT@s_code',
 `int
-ppl_new_@TOPOLOGY@@CLASS@_recycle_@UBUILD_REPRESENT@_System
-(ppl_@CLASS@_t* pph, ppl_@UBUILD_REPRESENT@_System_t cs) try {
-  @UBUILD_REPRESENT@_System& ccs = *to_nonconst(cs);
+ppl_new_@TOPOLOGY@@CLASS@_recycle_@!BUILD_REPRESENT@_System
+(ppl_@CLASS@_t* pph, ppl_@!BUILD_REPRESENT@_System_t cs) try {
+  @!BUILD_REPRESENT@_System& ccs = *to_nonconst(cs);
   *pph = to_nonconst(new @TOPOLOGY@@CPP_CLASS@(ccs@RECYCLE@));
   return 0;
 }
@@ -148,13 +148,13 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_get_@GET_REPRESENT@s_code',
+m4_define(`ppl_@CLASS@_get_@CLASS_REPRESENT@s_code',
 `int
-ppl_@CLASS@_get_@GET_REPRESENT@s
+ppl_@CLASS@_get_@CLASS_REPRESENT@s
 (ppl_const_@CLASS@_t ph,
- ppl_const_@UGET_REPRESENT@_System_t* pcs) try {
+ ppl_const_@!CLASS_REPRESENT@_System_t* pcs) try {
   const @CPP_CLASS@& pph = *to_const(ph);
-  const @UGET_REPRESENT@_System& cs = pph.@GET_REPRESENT@s();
+  const @!CLASS_REPRESENT@_System& cs = pph.@CLASS_REPRESENT@s();
   *pcs = to_const(&cs);
   return 0;
 }
@@ -162,13 +162,13 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_code',
+m4_define(`ppl_@CLASS@_get_minimized_@CLASS_REPRESENT@s_code',
 `int
-ppl_@CLASS@_get_minimized_@GET_REPRESENT@s
+ppl_@CLASS@_get_minimized_@CLASS_REPRESENT@s
 (ppl_const_@CLASS@_t ph,
- ppl_const_@UGET_REPRESENT@_System_t* pcs) try {
+ ppl_const_@!CLASS_REPRESENT@_System_t* pcs) try {
   const @CPP_CLASS@& pph = *to_const(ph);
-  const @UGET_REPRESENT@_System& cs = pph.minimized_@GET_REPRESENT@s();
+  const @!CLASS_REPRESENT@_System& cs = pph.minimized_@CLASS_REPRESENT@s();
   *pcs = to_const(&cs);
   return 0;
 }
@@ -178,11 +178,11 @@ CATCH_ALL
 
 m4_define(`ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_code',
 `int
-ppl_@CLASS@_relation_with_@URELATION_REPRESENT@
+ppl_@CLASS@_relation_with_@!RELATION_REPRESENT@
 (ppl_const_@CLASS@_t ph,
- ppl_const_@URELATION_REPRESENT@_t c) try {
+ ppl_const_@!RELATION_REPRESENT@_t c) try {
   const @CPP_CLASS@& pph = *to_const(ph);
-  const @URELATION_REPRESENT@& cc = *to_const(c);
+  const @!RELATION_REPRESENT@& cc = *to_const(c);
   return pph.relation_with(cc).get_flags();
 }
 CATCH_ALL
@@ -420,14 +420,14 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_code',
+m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@_code',
 `int
-ppl_@CLASS@_add_@ADD_REPRESENT@
+ppl_@CLASS@_add_@CLASS_REPRESENT@
 (ppl_@CLASS@_t ph,
- ppl_const_@UADD_REPRESENT@_t c) try {
+ ppl_const_@!CLASS_REPRESENT@_t c) try {
   @CPP_CLASS@& pph = *to_nonconst(ph);
-  const @UADD_REPRESENT@& cc = *to_const(c);
-  pph.add_@ADD_REPRESENT@(cc);
+  const @!CLASS_REPRESENT@& cc = *to_const(c);
+  pph.add_@CLASS_REPRESENT@(cc);
   return 0;
 }
 CATCH_ALL
@@ -438,9 +438,9 @@ m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@_code',
 `int
 ppl_@CLASS@_refine_with_@REFINE_REPRESENT@
 (ppl_@CLASS@_t ph,
- ppl_const_@UREFINE_REPRESENT@_t c) try {
+ ppl_const_@!REFINE_REPRESENT@_t c) try {
   @CPP_CLASS@& pph = *to_nonconst(ph);
-  const @UREFINE_REPRESENT@& cc = *to_const(c);
+  const @!REFINE_REPRESENT@& cc = *to_const(c);
   pph.refine_with_@REFINE_REPRESENT@(cc);
   return 0;
 }
@@ -448,27 +448,27 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code',
+m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@_and_minimize_code',
 `int
-ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize
+ppl_@CLASS@_add_@CLASS_REPRESENT@_and_minimize
 (ppl_@CLASS@_t ph,
- ppl_const_@UADD_REPRESENT@_t c) try {
+ ppl_const_@!CLASS_REPRESENT@_t c) try {
   @CPP_CLASS@& pph = *to_nonconst(ph);
-  const @UADD_REPRESENT@& cc = *to_const(c);
-  return pph.add_@ADD_REPRESENT@_and_minimize(cc) ? 1 : 0;
+  const @!CLASS_REPRESENT@& cc = *to_const(c);
+  return pph.add_@CLASS_REPRESENT@_and_minimize(cc) ? 1 : 0;
 }
 CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_code',
+m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@s_code',
 `int
-ppl_@CLASS@_add_@ADD_REPRESENT@s
+ppl_@CLASS@_add_@CLASS_REPRESENT@s
 (ppl_@CLASS@_t ph,
- ppl_const_@UADD_REPRESENT@_System_t cs) try {
+ ppl_const_@!CLASS_REPRESENT@_System_t cs) try {
   @CPP_CLASS@& pph = *to_nonconst(ph);
-  const @UADD_REPRESENT@_System& ccs = *to_const(cs);
-  pph.add_@ADD_REPRESENT@s(ccs);
+  const @!CLASS_REPRESENT@_System& ccs = *to_const(cs);
+  pph.add_@CLASS_REPRESENT@s(ccs);
   return 0;
 }
 CATCH_ALL
@@ -479,9 +479,9 @@ m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s_code',
 `int
 ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s
 (ppl_@CLASS@_t ph,
- ppl_const_@UREFINE_REPRESENT@_System_t cs) try {
+ ppl_const_@!REFINE_REPRESENT@_System_t cs) try {
   @CPP_CLASS@& pph = *to_nonconst(ph);
-  const @UREFINE_REPRESENT@_System& ccs = *to_const(cs);
+  const @!REFINE_REPRESENT@_System& ccs = *to_const(cs);
   pph.refine_with_@REFINE_REPRESENT@s(ccs);
   return 0;
 }
@@ -489,27 +489,27 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize_code',
+m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@s_and_minimize_code',
 `int
-ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize
+ppl_@CLASS@_add_@CLASS_REPRESENT@s_and_minimize
 (ppl_@CLASS@_t ph,
- ppl_const_@UADD_REPRESENT@_System_t cs) try {
+ ppl_const_@!CLASS_REPRESENT@_System_t cs) try {
   @CPP_CLASS@& pph = *to_nonconst(ph);
-  const @UADD_REPRESENT@_System& ccs = *to_const(cs);
-  return pph.add_@ADD_REPRESENT@s_and_minimize(ccs) ? 1 : 0;
+  const @!CLASS_REPRESENT@_System& ccs = *to_const(cs);
+  return pph.add_@CLASS_REPRESENT@s_and_minimize(ccs) ? 1 : 0;
 }
 CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_add_recycled_@ADD_REPRESENT@s_code',
+m4_define(`ppl_@CLASS@_add_recycled_@CLASS_REPRESENT@s_code',
 `int
-ppl_@CLASS@_add_recycled_@ADD_REPRESENT@s
+ppl_@CLASS@_add_recycled_@CLASS_REPRESENT@s
 (ppl_@CLASS@_t ph,
- ppl_@UADD_REPRESENT@_System_t cs) try {
+ ppl_@!CLASS_REPRESENT@_System_t cs) try {
   @CPP_CLASS@& pph = *to_nonconst(ph);
-  @UADD_REPRESENT@_System& ccs = *to_nonconst(cs);
-  pph.add_recycled_@ADD_REPRESENT@s(ccs);
+  @!CLASS_REPRESENT@_System& ccs = *to_nonconst(cs);
+  pph.add_recycled_@CLASS_REPRESENT@s(ccs);
   return 0;
 }
 CATCH_ALL
@@ -685,11 +685,11 @@ m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_to
 ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens
 (ppl_@CLASS@_t x,
  ppl_const_@CLASS@_t y,
- ppl_const_@UCONSTRAINER@_System_t cs,
+ ppl_const_@!CONSTRAINER@_System_t cs,
  unsigned* tp) try {
   @CPP_CLASS@& xx = *to_nonconst(x);
   const @CPP_CLASS@& yy = *to_const(y);
-  const @UCONSTRAINER@_System& ccs = *to_const(cs);
+  const @!CONSTRAINER@_System& ccs = *to_const(cs);
   xx.@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(yy, ccs, tp);
   return 0;
 }
@@ -702,7 +702,7 @@ m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_code',
 ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign
 (ppl_@CLASS@_t x,
  ppl_const_@CLASS@_t y,
- ppl_const_@UCONSTRAINER@_System_t cs) try {
+ ppl_const_@!CONSTRAINER@_System_t cs) try {
   return
     ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens
       (x, y, cs, 0);
@@ -753,17 +753,17 @@ CATCH_ALL
 
 ')
 
-  m4_define(`ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code',
+  m4_define(`ppl_@CLASS@_BHZ03_@A_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code',
 `dnl
 int
-ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign
+ppl_@CLASS@_BHZ03_@A_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign
 (ppl_@CLASS@_t x,
  ppl_const_@CLASS@_t y) try {
   @CPP_CLASS@& xx = *to_nonconst(x);
   const @CPP_CLASS@& yy = *to_const(y);
-  xx.BHZ03_widening_assign<@ALT_DISJUNCT_WIDEN@_Certificate>(yy,
+  xx.BHZ03_widening_assign<@A_DISJUNCT_WIDEN@_Certificate>(yy,
        widen_fun_ref(
-         &@CLASSTOPOLOGY@@CPP_DISJUNCT@::@DISJUNCT_WIDEN@_widening_assign));
+         &@DISJUNCT_TOPOLOGY@@A_DISJUNCT@::@DISJUNCT_WIDEN@_widening_assign));
   return 0;
 }
 CATCH_ALL
@@ -779,7 +779,7 @@ ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign
    @CPP_CLASS@& xx = *to_nonconst(x);
    const @CPP_CLASS@& yy = *to_const(y);
    xx.BGP99_extrapolation_assign(yy,
-       widen_fun_ref(&@CLASSTOPOLOGY@@CPP_DISJUNCT@::
+       widen_fun_ref(&@DISJUNCT_TOPOLOGY@@A_DISJUNCT@::
            @DISJUNCT_WIDEN@_widening_assign),
        disjuncts);
    return 0;
@@ -1021,7 +1021,7 @@ ppl_@CLASS@_iterator_@INCDEC@
 (ppl_@CLASS@_iterator_t it)
   try {
     @CPP_CLASS@::iterator& iit = *to_nonconst(it);
-    @CPPX_INCDEC@iit;
+    @B_INCDEC@iit;
     return 0;
 }
 CATCH_ALL
@@ -1031,7 +1031,7 @@ ppl_@CLASS@_const_iterator_@INCDEC@
 (ppl_@CLASS@_const_iterator_t it)
   try {
     @CPP_CLASS@::const_iterator& iit = *to_nonconst(it);
-    @CPPX_INCDEC@iit;
+    @B_INCDEC@iit;
     return 0;
 }
 CATCH_ALL
@@ -1079,8 +1079,8 @@ ppl_@CLASS@_add_disjunct
 (ppl_@CLASS@_t ps,
  ppl_const_@DISJUNCT@_t d) try {
   @CPP_CLASS@& pps = *to_nonconst(ps);
-  const @CLASSTOPOLOGY@@CPP_DISJUNCT@& dd
-     = *static_cast<const @CLASSTOPOLOGY@@CPP_DISJUNCT@*>(to_const(d));
+  const @DISJUNCT_TOPOLOGY@@A_DISJUNCT@& dd
+     = *static_cast<const @DISJUNCT_TOPOLOGY@@A_DISJUNCT@*>(to_const(d));
   pps.add_disjunct(dd);
   return 0;
 }
@@ -1095,7 +1095,7 @@ ppl_@CLASS@_iterator_dereference
 (ppl_const_@CLASS@_iterator_t psit,
  ppl_const_@DISJUNCT@_t* cd) try {
    const @CPP_CLASS@::iterator& cpsit = *to_const(psit);
-   const @CLASSTOPOLOGY@@CPP_DISJUNCT@& d = cpsit->element();
+   const @DISJUNCT_TOPOLOGY@@A_DISJUNCT@& d = cpsit->element();
    *cd = to_const(&d);
    return 0;
 }
@@ -1106,7 +1106,7 @@ ppl_@CLASS@_const_iterator_dereference
 (ppl_const_@CLASS@_const_iterator_t psit,
  ppl_const_@DISJUNCT@_t* cd) try {
    const @CPP_CLASS@::const_iterator& cpsit = *to_const(psit);
-   const @CLASSTOPOLOGY@@CPP_DISJUNCT@& d = cpsit->element();
+   const @DISJUNCT_TOPOLOGY@@A_DISJUNCT@& d = cpsit->element();
    *cd = to_const(&d);
    return 0;
 }
@@ -1137,7 +1137,7 @@ m4_define(`m4_linear_partition_for_polyhedron_domains',
       = static_cast<const C_@CPP_CLASS@&>(*to_const(x));
     const C_@CPP_CLASS@& yy
       = static_cast<const C_@CPP_CLASS@&>(*to_const(y));
-    std::pair<C_@CPP_CLASS@@COMMA@ Pointset_Powerset<NNC_Polyhedron> >
+    std::pair<C_@CPP_CLASS@|COMMA| Pointset_Powerset<NNC_Polyhedron> >
       r = linear_partition(xx, yy);
     *p_inters = to_nonconst(&r.first);
     *p_rest = to_nonconst(&r.second);
@@ -1147,7 +1147,7 @@ m4_define(`m4_linear_partition_for_polyhedron_domains',
       = static_cast<const C_@CPP_CLASS@&>(*to_const(x));
     const C_@CPP_CLASS@& yy
       = static_cast<const C_@CPP_CLASS@&>(*to_const(y));
-    std::pair<C_@CPP_CLASS@@COMMA@ Pointset_Powerset<NNC_Polyhedron> >
+    std::pair<C_@CPP_CLASS@|COMMA| Pointset_Powerset<NNC_Polyhedron> >
       r = linear_partition(xx, yy);
     *p_inters = to_nonconst(&r.first);
     *p_rest = to_nonconst(&r.second);
@@ -1162,7 +1162,7 @@ m4_define(`m4_linear_partition_for_non_polyhedron_domains',
       = static_cast<const @CPP_CLASS@&>(*to_const(x));
     const @CPP_CLASS@& yy
       = static_cast<const @CPP_CLASS@&>(*to_const(y));
-    std::pair<@CPP_CLASS@@COMMA@ Pointset_Powerset<NNC_Polyhedron> >
+    std::pair<@CPP_CLASS@|COMMA| Pointset_Powerset<NNC_Polyhedron> >
       r = linear_partition(xx, yy);
     *p_inters = to_nonconst(&r.first);
     *p_rest = to_nonconst(&r.second);
@@ -1184,7 +1184,7 @@ ppl_@CLASS@_approximate_@PARTITION@
     const @CPP_CLASS@& yy
       = static_cast<const @CPP_CLASS@&>(*to_const(y));
     bool finite;
-    std::pair<@CPP_CLASS@@COMMA@ Pointset_Powerset<Grid> >
+    std::pair<@CPP_CLASS@|COMMA| Pointset_Powerset<Grid> >
       r = approximate_partition(xx, yy, finite);
     *p_inters = to_nonconst(&r.first);
     *p_rest = to_nonconst(&r.second);
