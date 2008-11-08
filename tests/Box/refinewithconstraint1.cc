@@ -143,10 +143,12 @@ test04() {
 } // namespace
 
 BEGIN_MAIN
+// FIXME(0.10.1)
 // Temporarily set to always fail: this is meant to be a test for
 // constraint propagation, rather than syntactical refinement.
 //  DO_TEST_F8(test01);
   DO_TEST_F(test01);
+// FIXME(0.10.1)
 // Temporarily set to always fail: this is meant to be a test for
 // constraint propagation, rather than syntactical refinement.
 //  DO_TEST(test02);
