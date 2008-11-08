@@ -57,15 +57,6 @@ compute_capacity(const dimension_type requested_size,
   //   : maximum_size;
 }
 
-// FIXME(0.10.1)!!!
-inline dimension_type
-compute_capacity(const dimension_type requested_size) {
-  // Speculation factor 2.
-  return 2*(requested_size + 1);
-  // Speculation factor 1.5.
-  // return requested_size + requested_size/2 + 1;
-}
-
 template <typename T>
 inline typename
 Enable_If<Is_Native<T>::value, memory_size_type>::type
