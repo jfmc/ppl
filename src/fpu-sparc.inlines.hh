@@ -23,10 +23,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifdef PPL_HAVE_IEEEFP_H
 #include <ieeefp.h>
 
-#define FPU_TONEAREST ((int) FP_RN)
-#define FPU_UPWARD ((int) FP_RP)
-#define FPU_DOWNWARD ((int) FP_RM)
-#define FPU_TOWARDZERO ((int) FP_RZ)
+#define PPL_FPU_TONEAREST  ((int) FP_RN)
+#define PPL_FPU_UPWARD     ((int) FP_RP)
+#define PPL_FPU_DOWNWARD   ((int) FP_RM)
+#define PPL_FPU_TOWARDZERO ((int) FP_RZ)
 
 namespace Parma_Polyhedra_Library {
 
