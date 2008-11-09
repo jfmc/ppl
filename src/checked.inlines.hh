@@ -192,7 +192,7 @@ PPL_SAFE_CONVERSION(mpq_class, double);
 #undef PPL_SAFE_CONVERSION
 
 template <typename Policy, typename Type>
-struct FUNCTION_CLASS(construct)<Policy, Policy, Type, Type> {
+struct PPL_FUNCTION_CLASS(construct)<Policy, Policy, Type, Type> {
   static inline Result function(Type& to, const Type& from, Rounding_Dir) {
     new (&to) Type(from);
     return V_EQ;
@@ -200,7 +200,7 @@ struct FUNCTION_CLASS(construct)<Policy, Policy, Type, Type> {
 };
 
 template <typename To_Policy, typename From_Policy, typename To, typename From>
-struct FUNCTION_CLASS(construct) {
+struct PPL_FUNCTION_CLASS(construct) {
   static inline Result function(To& to, const From& from, Rounding_Dir dir) {
     new (&to) To();
     return assign<To_Policy, From_Policy>(to, from, dir);
@@ -208,7 +208,7 @@ struct FUNCTION_CLASS(construct) {
 };
 
 template <typename To_Policy, typename To>
-struct FUNCTION_CLASS(construct_special) {
+struct PPL_FUNCTION_CLASS(construct_special) {
   static inline Result function(To& to, Result r, Rounding_Dir dir) {
     new (&to) To();
     return assign_special<To_Policy>(to, r, dir);
