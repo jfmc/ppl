@@ -629,21 +629,21 @@ operator-(const Checked_Number<T, Policy>& x) {
   return r;
 }
 
-#define DEF_ASSIGN_FUN2_1(f, fun) \
+#define PPL_DEF_ASSIGN_FUN2_1(f, fun) \
 template <typename T, typename Policy> \
 inline void \
 f(Checked_Number<T, Policy>& x) { \
   Policy::handle_result(fun(x, x, Policy::ROUND_DEFAULT_FUNCTION));	\
 }
 
-#define DEF_ASSIGN_FUN2_2(f, fun) \
+#define PPL_DEF_ASSIGN_FUN2_2(f, fun) \
 template <typename T, typename Policy> \
 inline void \
 f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y) { \
   Policy::handle_result(fun(x, y, Policy::ROUND_DEFAULT_FUNCTION)); \
 }
 
-#define DEF_ASSIGN_FUN3_3(f, fun) \
+#define PPL_DEF_ASSIGN_FUN3_3(f, fun) \
 template <typename T, typename Policy> \
 inline void \
 f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y, \
@@ -651,7 +651,7 @@ f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y, \
   Policy::handle_result(fun(x, y, z, Policy::ROUND_DEFAULT_FUNCTION)); \
 }
 
-#define DEF_ASSIGN_FUN5_5(f, fun)					\
+#define PPL_DEF_ASSIGN_FUN5_5(f, fun)					\
 template <typename T, typename Policy>					\
 inline void								\
 f(Checked_Number<T, Policy>& x,						\
@@ -661,39 +661,40 @@ f(Checked_Number<T, Policy>& x,						\
   Policy::handle_result(fun(x, s, t, y, z, Policy::ROUND_DEFAULT_FUNCTION)); \
 }
 
-DEF_ASSIGN_FUN2_2(sqrt_assign, sqrt_assign_r)
+PPL_DEF_ASSIGN_FUN2_2(sqrt_assign, sqrt_assign_r)
 
-DEF_ASSIGN_FUN2_1(floor_assign, floor_assign_r)
-DEF_ASSIGN_FUN2_2(floor_assign, floor_assign_r)
+PPL_DEF_ASSIGN_FUN2_1(floor_assign, floor_assign_r)
+PPL_DEF_ASSIGN_FUN2_2(floor_assign, floor_assign_r)
 
-DEF_ASSIGN_FUN2_1(ceil_assign, ceil_assign_r)
-DEF_ASSIGN_FUN2_2(ceil_assign, ceil_assign_r)
+PPL_DEF_ASSIGN_FUN2_1(ceil_assign, ceil_assign_r)
+PPL_DEF_ASSIGN_FUN2_2(ceil_assign, ceil_assign_r)
 
-DEF_ASSIGN_FUN2_1(trunc_assign, trunc_assign_r)
-DEF_ASSIGN_FUN2_2(trunc_assign, trunc_assign_r)
+PPL_DEF_ASSIGN_FUN2_1(trunc_assign, trunc_assign_r)
+PPL_DEF_ASSIGN_FUN2_2(trunc_assign, trunc_assign_r)
 
-DEF_ASSIGN_FUN2_1(neg_assign, neg_assign_r)
-DEF_ASSIGN_FUN2_2(neg_assign, neg_assign_r)
+PPL_DEF_ASSIGN_FUN2_1(neg_assign, neg_assign_r)
+PPL_DEF_ASSIGN_FUN2_2(neg_assign, neg_assign_r)
 
-DEF_ASSIGN_FUN2_1(abs_assign, abs_assign_r)
-DEF_ASSIGN_FUN2_2(abs_assign, abs_assign_r)
+PPL_DEF_ASSIGN_FUN2_1(abs_assign, abs_assign_r)
+PPL_DEF_ASSIGN_FUN2_2(abs_assign, abs_assign_r)
 
-DEF_ASSIGN_FUN3_3(add_mul_assign, add_mul_assign_r)
+PPL_DEF_ASSIGN_FUN3_3(add_mul_assign, add_mul_assign_r)
 
-DEF_ASSIGN_FUN3_3(sub_mul_assign, sub_mul_assign_r)
+PPL_DEF_ASSIGN_FUN3_3(sub_mul_assign, sub_mul_assign_r)
 
-DEF_ASSIGN_FUN3_3(rem_assign, rem_assign_r)
+PPL_DEF_ASSIGN_FUN3_3(rem_assign, rem_assign_r)
 
-DEF_ASSIGN_FUN3_3(gcd_assign, gcd_assign_r)
+PPL_DEF_ASSIGN_FUN3_3(gcd_assign, gcd_assign_r)
 
-DEF_ASSIGN_FUN5_5(gcdext_assign, gcdext_assign_r)
+PPL_DEF_ASSIGN_FUN5_5(gcdext_assign, gcdext_assign_r)
 
-DEF_ASSIGN_FUN3_3(lcm_assign, lcm_assign_r)
+PPL_DEF_ASSIGN_FUN3_3(lcm_assign, lcm_assign_r)
 
-#undef DEF_ASSIGN_FUN2_1
-#undef DEF_ASSIGN_FUN2_2
-#undef DEF_ASSIGN_FUN3_2
-#undef DEF_ASSIGN_FUN3_3
+#undef PPL_DEF_ASSIGN_FUN2_1
+#undef PPL_DEF_ASSIGN_FUN2_2
+#undef PPL_DEF_ASSIGN_FUN3_2
+#undef PPL_DEF_ASSIGN_FUN3_3
+#undef PPL_DEF_ASSIGN_FUN5_5
 
 template <typename T, typename Policy>
 inline void
