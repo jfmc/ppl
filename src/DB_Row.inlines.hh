@@ -23,10 +23,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_DB_Row_inlines_hh
 #define PPL_DB_Row_inlines_hh 1
 
+#include "checked.defs.hh"
 #include <cassert>
+#include <cstddef>
+#include <limits>
 #include <algorithm>
 #include <iostream>
-#include "checked.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -78,7 +80,7 @@ DB_Row_Impl_Handler<T>::Impl::total_memory_in_bytes() const {
 template <typename T>
 inline dimension_type
 DB_Row_Impl_Handler<T>::Impl::max_size() {
-  return size_t(-1)/sizeof(T);
+  return std::numeric_limits<size_t>::max() / sizeof(T);
 }
 
 template <typename T>
