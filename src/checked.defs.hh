@@ -151,7 +151,7 @@ inline ret_type name(qual1 type1& arg1, qual2 type2& arg2,		\
     ::function(arg1, arg2, arg3, arg4, arg5, a1);			\
 }
 
-#define SPECIALIZE_FUN1_0_0(name, func, ret_type, qual, type) \
+#define PPL_SPECIALIZE_FUN1_0_0(name, func, ret_type, qual, type) \
 template <typename Policy> \
 struct FUNCTION_CLASS(name)<Policy, type> { \
   static inline ret_type function(qual type& arg) { \
@@ -159,7 +159,7 @@ struct FUNCTION_CLASS(name)<Policy, type> { \
   } \
 };
 
-#define SPECIALIZE_FUN1_0_1(name, func, ret_type, qual, type, after1) \
+#define PPL_SPECIALIZE_FUN1_0_1(name, func, ret_type, qual, type, after1) \
 template <typename Policy> \
 struct FUNCTION_CLASS(name)<Policy, type> { \
   static inline ret_type function(qual type& arg, after1 a1) { \
@@ -167,7 +167,7 @@ struct FUNCTION_CLASS(name)<Policy, type> { \
   } \
 };
 
-#define SPECIALIZE_FUN1_0_2(name, func, ret_type, qual, type, after1, after2) \
+#define PPL_SPECIALIZE_FUN1_0_2(name, func, ret_type, qual, type, after1, after2) \
 template <typename Policy> \
 struct FUNCTION_CLASS(name)<Policy, type> { \
   static inline ret_type function(qual type& arg, after1 a1, after2 a2) { \
@@ -175,7 +175,7 @@ struct FUNCTION_CLASS(name)<Policy, type> { \
   } \
 };
 
-#define SPECIALIZE_FUN1_0_3(name, func, ret_type, qual, type, after1, after2, after3) \
+#define PPL_SPECIALIZE_FUN1_0_3(name, func, ret_type, qual, type, after1, after2, after3) \
 template <typename Policy> \
 struct FUNCTION_CLASS(name)<Policy, type> { \
   static inline ret_type function(qual type& arg, after1 a1, after2 a2, after3 a3) { \
@@ -183,7 +183,7 @@ struct FUNCTION_CLASS(name)<Policy, type> { \
   } \
 };
 
-#define SPECIALIZE_FUN1_1_1(name, func, ret_type, before1, qual, type, after1) \
+#define PPL_SPECIALIZE_FUN1_1_1(name, func, ret_type, before1, qual, type, after1) \
 template <typename Policy> \
 struct FUNCTION_CLASS(name)<Policy, type> { \
   static inline ret_type function(before1 b1, qual type& arg, after1 a1) { \
@@ -191,7 +191,7 @@ struct FUNCTION_CLASS(name)<Policy, type> { \
   } \
 };
 
-#define SPECIALIZE_FUN1_1_2(name, func, ret_type, before1, qual, type, after1, after2) \
+#define PPL_SPECIALIZE_FUN1_1_2(name, func, ret_type, before1, qual, type, after1, after2) \
 template <typename Policy> \
 struct FUNCTION_CLASS(name)<Policy, type> { \
   static inline ret_type function(before1 b1, qual type& arg, after1 a1, after2 a2) { \
@@ -199,7 +199,7 @@ struct FUNCTION_CLASS(name)<Policy, type> { \
   } \
 };
 
-#define SPECIALIZE_FUN1_2_2(name, func, ret_type, before1, before2, qual, type, after1, after2) \
+#define PPL_SPECIALIZE_FUN1_2_2(name, func, ret_type, before1, before2, qual, type, after1, after2) \
 template <typename Policy> \
 struct FUNCTION_CLASS(name)<Policy, type> { \
   static inline ret_type function(before1 b1, before2 b2, qual type& arg, after1 a1, after2 a2) { \
@@ -207,7 +207,7 @@ struct FUNCTION_CLASS(name)<Policy, type> { \
   } \
 };
 
-#define SPECIALIZE_FUN2_0_0(name, func, ret_type, qual1, type1, qual2, type2) \
+#define PPL_SPECIALIZE_FUN2_0_0(name, func, ret_type, qual1, type1, qual2, type2) \
 template <typename Policy1, typename Policy2>				\
 struct FUNCTION_CLASS(name)<Policy1, Policy2, type1, type2> { \
   static inline ret_type function(qual1 type1& arg1, qual2 type2 &arg2) { \
@@ -215,7 +215,7 @@ struct FUNCTION_CLASS(name)<Policy1, Policy2, type1, type2> { \
   } \
 };
 
-#define SPECIALIZE_FUN2_0_1(name, func, ret_type, qual1, type1, qual2, type2, after1) \
+#define PPL_SPECIALIZE_FUN2_0_1(name, func, ret_type, qual1, type1, qual2, type2, after1) \
 template <typename Policy1, typename Policy2> \
 struct FUNCTION_CLASS(name)<Policy1, Policy2, type1, type2> { \
   static inline ret_type function(qual1 type1& arg1, qual2 type2 &arg2, after1 a1) { \
@@ -223,7 +223,7 @@ struct FUNCTION_CLASS(name)<Policy1, Policy2, type1, type2> { \
   } \
 };
 
-#define SPECIALIZE_FUN2_0_2(name, func, ret_type, qual1, type1, qual2, type2, after1, after2) \
+#define PPL_SPECIALIZE_FUN2_0_2(name, func, ret_type, qual1, type1, qual2, type2, after1, after2) \
 template <typename Policy1, typename Policy2> \
 struct FUNCTION_CLASS(name)<Policy1, Policy2, type1, type2> { \
   static inline ret_type function(qual1 type1& arg1, qual2 type2 &arg2, after1 a1, after2 a2) { \
@@ -231,7 +231,7 @@ struct FUNCTION_CLASS(name)<Policy1, Policy2, type1, type2> { \
   } \
 };
 
-#define SPECIALIZE_FUN3_0_1(name, func, ret_type, qual1, type1, qual2, type2, qual3, type3, after1) \
+#define PPL_SPECIALIZE_FUN3_0_1(name, func, ret_type, qual1, type1, qual2, type2, qual3, type3, after1) \
 template <typename Policy1, typename Policy2, typename Policy3>			\
 struct FUNCTION_CLASS(name) <Policy1, Policy2, Policy3, type1, type2, type3> { \
   static inline Result function(qual1 type1& arg1, qual2 type2 &arg2, qual3 type3 &arg3, after1 a1) { \
@@ -239,7 +239,7 @@ struct FUNCTION_CLASS(name) <Policy1, Policy2, Policy3, type1, type2, type3> { \
   } \
 };
 
-#define SPECIALIZE_FUN5_0_1(name, func, ret_type,			\
+#define PPL_SPECIALIZE_FUN5_0_1(name, func, ret_type,                         \
 			    qual1, type1, qual2, type2, qual3, type3,	\
 			    qual4, type4, qual5, type5, after1)		\
   template <typename Policy1, typename Policy2, typename Policy3,	\
@@ -255,73 +255,73 @@ struct FUNCTION_CLASS(name) <Policy1, Policy2, Policy3, type1, type2, type3> { \
 
 #define nonconst
 
-#define SPECIALIZE_COPY(func, Type) \
-  SPECIALIZE_FUN2_0_0(copy, func, void, nonconst, Type, const, Type)
-#define SPECIALIZE_SGN(func, From) \
-  SPECIALIZE_FUN1_0_0(sgn, func, Result, const, From)
-#define SPECIALIZE_CMP(func, Type1, Type2) \
-  SPECIALIZE_FUN2_0_0(cmp, func, Result, const, Type1, const, Type2)
-#define SPECIALIZE_CLASSIFY(func, Type) \
-  SPECIALIZE_FUN1_0_3(classify, func, Result, const, Type, bool, bool, bool)
-#define SPECIALIZE_IS_NAN(func, Type) \
-  SPECIALIZE_FUN1_0_0(is_nan, func, bool, const, Type)
-#define SPECIALIZE_IS_MINF(func, Type) \
-  SPECIALIZE_FUN1_0_0(is_minf, func, bool, const, Type)
-#define SPECIALIZE_IS_PINF(func, Type) \
-  SPECIALIZE_FUN1_0_0(is_pinf, func, bool, const, Type)
-#define SPECIALIZE_IS_INT(func, Type) \
-  SPECIALIZE_FUN1_0_0(is_int, func, bool, const, Type)
-#define SPECIALIZE_ASSIGN_SPECIAL(func, Type) \
-  SPECIALIZE_FUN1_0_2(assign_special, func, Result, nonconst, Type, Result, Rounding_Dir)
-#define SPECIALIZE_CONSTRUCT_SPECIAL(func, Type) \
-  SPECIALIZE_FUN1_0_2(construct_special, func, Result, nonconst, Type, Result, Rounding_Dir)
-#define SPECIALIZE_CONSTRUCT(func, To, From) \
-  SPECIALIZE_FUN2_0_1(construct, func, Result, nonconst, To, const, From, Rounding_Dir)
-#define SPECIALIZE_ASSIGN(func, To, From) \
-  SPECIALIZE_FUN2_0_1(assign, func, Result, nonconst, To, const, From, Rounding_Dir)
-#define SPECIALIZE_FLOOR(func, To, From) \
-  SPECIALIZE_FUN2_0_1(floor, func, Result, nonconst, To, const, From, Rounding_Dir)
-#define SPECIALIZE_CEIL(func, To, From) \
-  SPECIALIZE_FUN2_0_1(ceil, func, Result, nonconst, To, const, From, Rounding_Dir)
-#define SPECIALIZE_TRUNC(func, To, From) \
-  SPECIALIZE_FUN2_0_1(trunc, func, Result, nonconst, To, const, From, Rounding_Dir)
-#define SPECIALIZE_NEG(func, To, From) \
-  SPECIALIZE_FUN2_0_1(neg, func, Result, nonconst, To, const, From, Rounding_Dir)
-#define SPECIALIZE_ABS(func, To, From) \
-  SPECIALIZE_FUN2_0_1(abs, func, Result, nonconst, To, const, From, Rounding_Dir)
-#define SPECIALIZE_SQRT(func, To, From) \
-  SPECIALIZE_FUN2_0_1(sqrt, func, Result, nonconst, To, const, From, Rounding_Dir)
-#define SPECIALIZE_ADD(func, To, From1, From2) \
-  SPECIALIZE_FUN3_0_1(add, func, Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
-#define SPECIALIZE_SUB(func, To, From1, From2) \
-  SPECIALIZE_FUN3_0_1(sub, func, Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
-#define SPECIALIZE_MUL(func, To, From1, From2) \
-  SPECIALIZE_FUN3_0_1(mul, func, Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
-#define SPECIALIZE_DIV(func, To, From1, From2) \
-  SPECIALIZE_FUN3_0_1(div, func, Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
-#define SPECIALIZE_REM(func, To, From1, From2) \
-  SPECIALIZE_FUN3_0_1(rem, func, Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
-#define SPECIALIZE_IDIV(func, To, From1, From2) \
-  SPECIALIZE_FUN3_0_1(idiv, func, Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
-#define SPECIALIZE_MUL2EXP(func, To, From) \
-  SPECIALIZE_FUN2_0_2(mul2exp, func, Result, nonconst, To, const, From, int, Rounding_Dir)
-#define SPECIALIZE_DIV2EXP(func, To, From) \
-  SPECIALIZE_FUN2_0_2(div2exp, func, Result, nonconst, To, const, From, int, Rounding_Dir)
-#define SPECIALIZE_ADD_MUL(func, To, From1, From2) \
-  SPECIALIZE_FUN3_0_1(add_mul, func, Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
-#define SPECIALIZE_SUB_MUL(func, To, From1, From2) \
-  SPECIALIZE_FUN3_0_1(sub_mul, func, Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
-#define SPECIALIZE_GCD(func, To, From1, From2) \
-  SPECIALIZE_FUN3_0_1(gcd, func, Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
-#define SPECIALIZE_GCDEXT(func, To1, From1, From2, To2, To3)		\
-  SPECIALIZE_FUN5_0_1(gcdext, func, Result, nonconst, To1,		\
+#define PPL_SPECIALIZE_COPY(func, Type) \
+  PPL_SPECIALIZE_FUN2_0_0(copy, func, void, nonconst, Type, const, Type)
+#define PPL_SPECIALIZE_SGN(func, From) \
+  PPL_SPECIALIZE_FUN1_0_0(sgn, func, Result, const, From)
+#define PPL_SPECIALIZE_CMP(func, Type1, Type2) \
+  PPL_SPECIALIZE_FUN2_0_0(cmp, func, Result, const, Type1, const, Type2)
+#define PPL_SPECIALIZE_CLASSIFY(func, Type) \
+  PPL_SPECIALIZE_FUN1_0_3(classify, func, Result, const, Type, bool, bool, bool)
+#define PPL_SPECIALIZE_IS_NAN(func, Type) \
+  PPL_SPECIALIZE_FUN1_0_0(is_nan, func, bool, const, Type)
+#define PPL_SPECIALIZE_IS_MINF(func, Type) \
+  PPL_SPECIALIZE_FUN1_0_0(is_minf, func, bool, const, Type)
+#define PPL_SPECIALIZE_IS_PINF(func, Type) \
+  PPL_SPECIALIZE_FUN1_0_0(is_pinf, func, bool, const, Type)
+#define PPL_SPECIALIZE_IS_INT(func, Type) \
+  PPL_SPECIALIZE_FUN1_0_0(is_int, func, bool, const, Type)
+#define PPL_SPECIALIZE_ASSIGN_SPECIAL(func, Type) \
+  PPL_SPECIALIZE_FUN1_0_2(assign_special, func, Result, nonconst, Type, Result, Rounding_Dir)
+#define PPL_SPECIALIZE_CONSTRUCT_SPECIAL(func, Type) \
+  PPL_SPECIALIZE_FUN1_0_2(construct_special, func, Result, nonconst, Type, Result, Rounding_Dir)
+#define PPL_SPECIALIZE_CONSTRUCT(func, To, From) \
+  PPL_SPECIALIZE_FUN2_0_1(construct, func, Result, nonconst, To, const, From, Rounding_Dir)
+#define PPL_SPECIALIZE_ASSIGN(func, To, From) \
+  PPL_SPECIALIZE_FUN2_0_1(assign, func, Result, nonconst, To, const, From, Rounding_Dir)
+#define PPL_SPECIALIZE_FLOOR(func, To, From) \
+  PPL_SPECIALIZE_FUN2_0_1(floor, func, Result, nonconst, To, const, From, Rounding_Dir)
+#define PPL_SPECIALIZE_CEIL(func, To, From) \
+  PPL_SPECIALIZE_FUN2_0_1(ceil, func, Result, nonconst, To, const, From, Rounding_Dir)
+#define PPL_SPECIALIZE_TRUNC(func, To, From) \
+  PPL_SPECIALIZE_FUN2_0_1(trunc, func, Result, nonconst, To, const, From, Rounding_Dir)
+#define PPL_SPECIALIZE_NEG(func, To, From) \
+  PPL_SPECIALIZE_FUN2_0_1(neg, func, Result, nonconst, To, const, From, Rounding_Dir)
+#define PPL_SPECIALIZE_ABS(func, To, From) \
+  PPL_SPECIALIZE_FUN2_0_1(abs, func, Result, nonconst, To, const, From, Rounding_Dir)
+#define PPL_SPECIALIZE_SQRT(func, To, From) \
+  PPL_SPECIALIZE_FUN2_0_1(sqrt, func, Result, nonconst, To, const, From, Rounding_Dir)
+#define PPL_SPECIALIZE_ADD(func, To, From1, From2) \
+  PPL_SPECIALIZE_FUN3_0_1(add, func, Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+#define PPL_SPECIALIZE_SUB(func, To, From1, From2) \
+  PPL_SPECIALIZE_FUN3_0_1(sub, func, Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+#define PPL_SPECIALIZE_MUL(func, To, From1, From2) \
+  PPL_SPECIALIZE_FUN3_0_1(mul, func, Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+#define PPL_SPECIALIZE_DIV(func, To, From1, From2) \
+  PPL_SPECIALIZE_FUN3_0_1(div, func, Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+#define PPL_SPECIALIZE_REM(func, To, From1, From2) \
+  PPL_SPECIALIZE_FUN3_0_1(rem, func, Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+#define PPL_SPECIALIZE_IDIV(func, To, From1, From2) \
+  PPL_SPECIALIZE_FUN3_0_1(idiv, func, Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+#define PPL_SPECIALIZE_MUL2EXP(func, To, From) \
+  PPL_SPECIALIZE_FUN2_0_2(mul2exp, func, Result, nonconst, To, const, From, int, Rounding_Dir)
+#define PPL_SPECIALIZE_DIV2EXP(func, To, From) \
+  PPL_SPECIALIZE_FUN2_0_2(div2exp, func, Result, nonconst, To, const, From, int, Rounding_Dir)
+#define PPL_SPECIALIZE_ADD_MUL(func, To, From1, From2) \
+  PPL_SPECIALIZE_FUN3_0_1(add_mul, func, Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+#define PPL_SPECIALIZE_SUB_MUL(func, To, From1, From2) \
+  PPL_SPECIALIZE_FUN3_0_1(sub_mul, func, Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+#define PPL_SPECIALIZE_GCD(func, To, From1, From2) \
+  PPL_SPECIALIZE_FUN3_0_1(gcd, func, Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+#define PPL_SPECIALIZE_GCDEXT(func, To1, From1, From2, To2, To3)		\
+  PPL_SPECIALIZE_FUN5_0_1(gcdext, func, Result, nonconst, To1,		\
 		      nonconst, To2, nonconst, To3, const, From1, const, From2, Rounding_Dir)
-#define SPECIALIZE_LCM(func, To, From1, From2) \
-  SPECIALIZE_FUN3_0_1(lcm, func, Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
-#define SPECIALIZE_INPUT(func, Type) \
-  SPECIALIZE_FUN1_0_2(input, func, Result, nonconst, Type, std::istream&, Rounding_Dir)
-#define SPECIALIZE_OUTPUT(func, Type) \
-  SPECIALIZE_FUN1_1_2(output, func, Result, std::ostream&, const, Type, const Numeric_Format&, Rounding_Dir)
+#define PPL_SPECIALIZE_LCM(func, To, From1, From2) \
+  PPL_SPECIALIZE_FUN3_0_1(lcm, func, Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+#define PPL_SPECIALIZE_INPUT(func, Type) \
+  PPL_SPECIALIZE_FUN1_0_2(input, func, Result, nonconst, Type, std::istream&, Rounding_Dir)
+#define PPL_SPECIALIZE_OUTPUT(func, Type) \
+  PPL_SPECIALIZE_FUN1_1_2(output, func, Result, std::ostream&, const, Type, const Numeric_Format&, Rounding_Dir)
 
 
 DECLARE_FUN2_0_0(copy,        void, nonconst, Type1, const, Type2)
