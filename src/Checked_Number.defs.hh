@@ -366,7 +366,7 @@ public:
   //! Classifies *this.
   /*!
     Returns the appropriate Result characterizing:
-    - whether \p *this is NAN,
+    - whether \p *this is NaN,
       if \p nan is <CODE>true</CODE>;
     - whether \p *this is a (positive or negative) infinity,
       if \p inf is <CODE>true</CODE>;

@@ -207,7 +207,7 @@ assign_special_float(T& v, Result r, Rounding_Dir) {
     v = HUGE_VAL;
     break;
   case VC_NAN:
-    v = NAN;
+    v = PPL_NAN;
     return r;
   default:
     break;

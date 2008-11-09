@@ -606,5 +606,6 @@ struct Checked_Number_Transparent_Policy {
 #endif
 
 #undef PPL_FUNCTION_CLASS
+#undef PPL_NAN
 
 #endif // !defined(PPL_checked_defs_hh)

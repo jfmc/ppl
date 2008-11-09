@@ -34,34 +34,34 @@ using namespace Parma_Polyhedra_Library;
 #define PPL_SPECIALIZE_LIMITS_INT(T)					\
 /*! \brief Partial specialization of std::numeric_limits. */		\
 template <typename Policy>						\
-class numeric_limits<Checked_Number<T, Policy> > \
+ class numeric_limits<Checked_Number<T, Policy> >                       \
   : public numeric_limits<T> {						\
  private:								\
-  typedef Checked_Number<T, Policy> Type;	\
+  typedef Checked_Number<T, Policy> Type;                               \
 									\
  public:								\
   static const bool has_infinity = Policy::has_infinity;		\
-  static const bool has_quiet_NaN =  Policy::has_nan;		\
-									\
+  static const bool has_quiet_NaN =  Policy::has_nan;                   \
+                                                                        \
   static Type min() {							\
-    return Checked::Extended_Int<Policy, T>::min; \
+    return Checked::Extended_Int<Policy, T>::min;                       \
   }									\
-									\
+                                                                        \
   static Type max() {							\
-    return Checked::Extended_Int<Policy, T>::max; \
+    return Checked::Extended_Int<Policy, T>::max;                       \
   }									\
 									\
   static Type infinity() {						\
     return								\
       Policy::has_infinity						\
-      ? PLUS_INFINITY				\
+      ? PLUS_INFINITY                                                   \
       : static_cast<Type>(0);						\
   }									\
 									\
   static Type quiet_NaN() {						\
     return								\
-      Policy::has_nan						\
-      ? NOT_A_NUMBER				\
+      Policy::has_nan                                                   \
+      ? NOT_A_NUMBER                                                    \
       : static_cast<Type>(0);						\
   }									\
 };
