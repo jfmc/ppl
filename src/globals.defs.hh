@@ -48,7 +48,7 @@ not_a_dimension();
 template <typename T>
 inline typename Enable_If<Slow_Copy<T>::value, void>::type
 swap(T&, T&) {
-  COMPILE_TIME_CHECK(!Slow_Copy<T>::value, "missing swap specialization");
+  PPL_COMPILE_TIME_CHECK(!Slow_Copy<T>::value, "missing swap specialization");
 }
 
 // FIXME(0.10.1): write a comment for this.

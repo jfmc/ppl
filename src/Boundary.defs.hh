@@ -111,10 +111,10 @@ is_open(Boundary_Type type, const T& x, const Info& info) {
 template <typename T, typename Info>
 inline Result
 set_unbounded(Boundary_Type type, T& x, Info& info) {
-  COMPILE_TIME_CHECK(Info::store_special
-		     || std::numeric_limits<T>::is_bounded
-		     || std::numeric_limits<T>::has_infinity,
-		     "Unbounded is not representable");
+  PPL_COMPILE_TIME_CHECK(Info::store_special
+                         || std::numeric_limits<T>::is_bounded
+                         || std::numeric_limits<T>::has_infinity,
+                         "unbounded is not representable");
   Result r;
   if (Info::store_special)
     r = special_set_boundary_infinity(type, x, info);
@@ -131,9 +131,9 @@ template <typename T, typename Info>
 inline Result
 set_minus_infinity(Boundary_Type type, T& x, Info& info, bool open = false) {
   /*
-  COMPILE_TIME_CHECK(Info::store_special
-		     || std::numeric_limits<T>::has_infinity,
-		     "Minus infinity is not representable");
+  PPL_COMPILE_TIME_CHECK(Info::store_special
+                         || std::numeric_limits<T>::has_infinity,
+                         "minus infinity is not representable");
   */
   if (open)
     assert(type == LOWER);
@@ -156,9 +156,9 @@ template <typename T, typename Info>
 inline Result
 set_plus_infinity(Boundary_Type type, T& x, Info& info, bool open = false) {
   /*
-  COMPILE_TIME_CHECK(Info::store_special
-		     || std::numeric_limits<T>::has_infinity,
-		     "Minus infinity is not representable");
+  PPL_COMPILE_TIME_CHECK(Info::store_special
+                         || std::numeric_limits<T>::has_infinity,
+                         "minus infinity is not representable");
   */
   if (open)
     assert(type == UPPER);

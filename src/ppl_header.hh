@@ -82,6 +82,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #undef PPL_SPECIALIZE_SUB_MUL
 #undef PPL_SPECIALIZE_TRUNC
 
+#undef PPL_COMPILE_TIME_CHECK
+#undef PPL_COMPILE_TIME_CHECK_AUX
+#undef PPL_COMPILE_TIME_CHECK_NAME
+
 #ifdef __STDC_LIMIT_MACROS
 # undef __STDC_LIMIT_MACROS
 #endif

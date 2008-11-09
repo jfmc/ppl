@@ -314,7 +314,8 @@ class Interval_Restriction_Integer_Modulo_Base {
 template <typename T, typename Base>
 class Interval_Restriction_Integer_Modulo : public Interval_Restriction_Integer_Modulo_Base, public Base {
 public:
-  COMPILE_TIME_CHECK(std::numeric_limits<T>::is_exact, "Type for modulo values must be exact.");
+  PPL_COMPILE_TIME_CHECK(std::numeric_limits<T>::is_exact,
+                         "type for modulo values must be exact");
   Interval_Restriction_Integer_Modulo() {
     // FIXME: would we have speed benefits with uninitialized info?
     // (Dirty_Temp)
