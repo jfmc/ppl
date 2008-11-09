@@ -505,7 +505,8 @@ inline
 OR_Matrix<T>::OR_Matrix(const OR_Matrix& y)
   : vec(y.vec),
     space_dim(y.space_dim),
-    vec_capacity(compute_capacity(y.vec.size())) {
+    vec_capacity(compute_capacity(y.vec.size(),
+                                  DB_Row<T>::max_size())) {
 }
 
 template <typename T>
@@ -514,7 +515,8 @@ inline
 OR_Matrix<T>::OR_Matrix(const OR_Matrix<U>& y)
   : vec(),
     space_dim(y.space_dim),
-    vec_capacity(compute_capacity(y.vec.size())) {
+    vec_capacity(compute_capacity(y.vec.size(),
+                                  DB_Row<T>::max_size())) {
   vec.construct_upward_approximation(y.vec, vec_capacity);
   assert(OK());
 }
@@ -524,7 +526,7 @@ inline OR_Matrix<T>&
 OR_Matrix<T>::operator=(const OR_Matrix& y) {
   vec = y.vec;
   space_dim = y.space_dim;
-  vec_capacity = compute_capacity(y.vec.size());
+  vec_capacity = compute_capacity(y.vec.size(), DB_Row<T>::max_size());
   return *this;
 }
 
