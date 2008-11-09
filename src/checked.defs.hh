@@ -43,7 +43,7 @@ namespace Checked {
 
 #define FUNCTION_CLASS(name) name ## _function_struct
 
-#define DECLARE_FUN1_0_0(name, ret_type, qual, type) \
+#define PPL_DECLARE_FUN1_0_0(name, ret_type, qual, type) \
 template <typename Policy, typename type> \
 struct FUNCTION_CLASS(name); \
 template <typename Policy, typename type> \
@@ -51,7 +51,7 @@ inline ret_type name(qual type& arg) { \
   return FUNCTION_CLASS(name)<Policy, type>::function(arg); \
 }
 
-#define DECLARE_FUN1_0_1(name, ret_type, qual, type, after1) \
+#define PPL_DECLARE_FUN1_0_1(name, ret_type, qual, type, after1) \
 template <typename Policy, typename type> \
 struct FUNCTION_CLASS(name); \
 template <typename Policy, typename type> \
@@ -59,7 +59,7 @@ inline ret_type name(qual type& arg, after1 a1) { \
   return FUNCTION_CLASS(name)<Policy, type>::function(arg, a1); \
 }
 
-#define DECLARE_FUN1_0_2(name, ret_type, qual, type, after1, after2) \
+#define PPL_DECLARE_FUN1_0_2(name, ret_type, qual, type, after1, after2) \
 template <typename Policy, typename type> \
 struct FUNCTION_CLASS(name); \
 template <typename Policy, typename type> \
@@ -67,7 +67,7 @@ inline ret_type name(qual type& arg, after1 a1, after2 a2) { \
   return FUNCTION_CLASS(name)<Policy, type>::function(arg, a1, a2); \
 }
 
-#define DECLARE_FUN1_0_3(name, ret_type, qual, type, after1, after2, after3) \
+#define PPL_DECLARE_FUN1_0_3(name, ret_type, qual, type, after1, after2, after3) \
 template <typename Policy, typename type> \
 struct FUNCTION_CLASS(name); \
 template <typename Policy, typename type> \
@@ -75,7 +75,7 @@ inline ret_type name(qual type& arg, after1 a1, after2 a2, after3 a3) { \
   return FUNCTION_CLASS(name)<Policy, type>::function(arg, a1, a2, a3); \
 }
 
-#define DECLARE_FUN1_1_1(name, ret_type, before1, qual, type, after1) \
+#define PPL_DECLARE_FUN1_1_1(name, ret_type, before1, qual, type, after1) \
 template <typename Policy, typename type> \
 struct FUNCTION_CLASS(name); \
 template <typename Policy, typename type> \
@@ -83,7 +83,7 @@ inline ret_type name(before1 b1, qual type& arg, after1 a1) { \
   return FUNCTION_CLASS(name)<Policy, type>::function(b1, arg, a1); \
 }
 
-#define DECLARE_FUN1_1_2(name, ret_type, before1, qual, type, after1, after2) \
+#define PPL_DECLARE_FUN1_1_2(name, ret_type, before1, qual, type, after1, after2) \
 template <typename Policy, typename type> \
 struct FUNCTION_CLASS(name); \
 template <typename Policy, typename type> \
@@ -91,7 +91,7 @@ inline ret_type name(before1 b1, qual type& arg, after1 a1, after2 a2) { \
   return FUNCTION_CLASS(name)<Policy, type>::function(b1, arg, a1, a2); \
 }
 
-#define DECLARE_FUN1_2_2(name, ret_type, before1, before2, qual, type, after1, after2) \
+#define PPL_DECLARE_FUN1_2_2(name, ret_type, before1, before2, qual, type, after1, after2) \
 template <typename Policy, typename type> \
 struct FUNCTION_CLASS(name); \
 template <typename Policy, typename type> \
@@ -99,7 +99,7 @@ inline ret_type name(before1 b1, before2 b2, qual type& arg, after1 a1, after2 a
   return FUNCTION_CLASS(name)<Policy, type>::function(b1, b2, arg, a1, a2); \
 }
 
-#define DECLARE_FUN2_0_0(name, ret_type, qual1, type1, qual2, type2) \
+#define PPL_DECLARE_FUN2_0_0(name, ret_type, qual1, type1, qual2, type2) \
 template <typename Policy1, typename Policy2, typename type1, typename type2>	     \
 struct FUNCTION_CLASS(name); \
 template <typename Policy1, typename Policy2, typename type1, typename type2> \
@@ -107,7 +107,7 @@ inline ret_type name(qual1 type1& arg1, qual2 type2& arg2) { \
   return FUNCTION_CLASS(name)<Policy1, Policy2, type1, type2>::function(arg1, arg2); \
 }
 
-#define DECLARE_FUN2_0_1(name, ret_type, qual1, type1, qual2, type2, after1) \
+#define PPL_DECLARE_FUN2_0_1(name, ret_type, qual1, type1, qual2, type2, after1) \
 template <typename Policy1, typename Policy2, typename type1, typename type2>		\
 struct FUNCTION_CLASS(name); \
 template <typename Policy1, typename Policy2, typename type1, typename type2> \
@@ -115,7 +115,7 @@ inline ret_type name(qual1 type1& arg1, qual2 type2& arg2, after1 a1) { \
   return FUNCTION_CLASS(name)<Policy1, Policy2, type1, type2>::function(arg1, arg2, a1); \
 }
 
-#define DECLARE_FUN2_0_2(name, ret_type, qual1, type1, qual2, type2, after1, after2) \
+#define PPL_DECLARE_FUN2_0_2(name, ret_type, qual1, type1, qual2, type2, after1, after2) \
 template <typename Policy1, typename Policy2, typename type1, typename type2> \
 struct FUNCTION_CLASS(name); \
 template <typename Policy1, typename Policy2, typename type1, typename type2> \
@@ -123,7 +123,7 @@ inline ret_type name(qual1 type1& arg1, qual2 type2& arg2, after1 a1, after2 a2)
   return FUNCTION_CLASS(name)<Policy1, Policy2, type1, type2>::function(arg1, arg2, a1, a2); \
 }
 
-#define DECLARE_FUN3_0_1(name, ret_type, qual1, type1, qual2, type2, qual3, type3, after1) \
+#define PPL_DECLARE_FUN3_0_1(name, ret_type, qual1, type1, qual2, type2, qual3, type3, after1) \
 template <typename Policy1, typename Policy2, typename Policy3, typename type1, typename type2, typename type3> \
 struct FUNCTION_CLASS(name); \
 template <typename Policy1, typename Policy2, typename Policy3, typename type1, typename type2, typename type3> \
@@ -131,7 +131,7 @@ inline ret_type name(qual1 type1& arg1, qual2 type2& arg2, qual3 type3& arg3, af
   return FUNCTION_CLASS(name)<Policy1, Policy2, Policy3, type1, type2, type3>::function(arg1, arg2, arg3, a1); \
 }
 
-#define DECLARE_FUN5_0_1(name, ret_type,				\
+#define PPL_DECLARE_FUN5_0_1(name, ret_type,				\
 			 qual1, type1, qual2, type2, qual3, type3,	\
 			 qual4, type4, qual5, type5,			\
 			 after1)					\
@@ -324,39 +324,52 @@ struct FUNCTION_CLASS(name) <Policy1, Policy2, Policy3, type1, type2, type3> { \
   PPL_SPECIALIZE_FUN1_1_2(output, func, Result, std::ostream&, const, Type, const Numeric_Format&, Rounding_Dir)
 
 
-DECLARE_FUN2_0_0(copy,        void, nonconst, Type1, const, Type2)
-DECLARE_FUN1_0_0(sgn,         Result, const, From)
-DECLARE_FUN2_0_0(cmp,         Result, const, Type1, const, Type2)
-DECLARE_FUN1_0_3(classify,    Result, const, Type, bool, bool, bool)
-DECLARE_FUN1_0_0(is_nan,      bool, const, Type)
-DECLARE_FUN1_0_0(is_minf,     bool, const, Type)
-DECLARE_FUN1_0_0(is_pinf,     bool, const, Type)
-DECLARE_FUN1_0_0(is_int,      bool, const, Type)
-DECLARE_FUN1_0_2(assign_special, Result, nonconst, Type, Result, Rounding_Dir)
-DECLARE_FUN1_0_2(construct_special, Result, nonconst, Type, Result, Rounding_Dir)
-DECLARE_FUN2_0_1(construct,   Result, nonconst, To, const, From, Rounding_Dir)
-DECLARE_FUN2_0_1(assign,      Result, nonconst, To, const, From, Rounding_Dir)
-DECLARE_FUN2_0_1(floor,       Result, nonconst, To, const, From, Rounding_Dir)
-DECLARE_FUN2_0_1(ceil,        Result, nonconst, To, const, From, Rounding_Dir)
-DECLARE_FUN2_0_1(trunc,       Result, nonconst, To, const, From, Rounding_Dir)
-DECLARE_FUN2_0_1(neg,         Result, nonconst, To, const, From, Rounding_Dir)
-DECLARE_FUN2_0_1(abs,         Result, nonconst, To, const, From, Rounding_Dir)
-DECLARE_FUN2_0_1(sqrt,        Result, nonconst, To, const, From, Rounding_Dir)
-DECLARE_FUN3_0_1(add,         Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
-DECLARE_FUN3_0_1(sub,         Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
-DECLARE_FUN3_0_1(mul,         Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
-DECLARE_FUN3_0_1(div,         Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
-DECLARE_FUN3_0_1(rem,         Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
-DECLARE_FUN3_0_1(idiv,        Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
-DECLARE_FUN2_0_2(mul2exp,     Result, nonconst, To, const, From, int, Rounding_Dir)
-DECLARE_FUN2_0_2(div2exp,     Result, nonconst, To, const, From, int, Rounding_Dir)
-DECLARE_FUN3_0_1(add_mul,     Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
-DECLARE_FUN3_0_1(sub_mul,     Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
-DECLARE_FUN3_0_1(gcd,         Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
-DECLARE_FUN5_0_1(gcdext,      Result, nonconst, To1, nonconst, To2, nonconst, To3, const, From1, const, From2, Rounding_Dir)
-DECLARE_FUN3_0_1(lcm,         Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
-DECLARE_FUN1_0_2(input,       Result, nonconst, Type, std::istream&, Rounding_Dir)
-DECLARE_FUN1_1_2(output,      Result, std::ostream&, const, Type, const Numeric_Format&, Rounding_Dir)
+PPL_DECLARE_FUN2_0_0(copy,        void, nonconst, Type1, const, Type2)
+PPL_DECLARE_FUN1_0_0(sgn,         Result, const, From)
+PPL_DECLARE_FUN2_0_0(cmp,         Result, const, Type1, const, Type2)
+PPL_DECLARE_FUN1_0_3(classify,    Result, const, Type, bool, bool, bool)
+PPL_DECLARE_FUN1_0_0(is_nan,      bool, const, Type)
+PPL_DECLARE_FUN1_0_0(is_minf,     bool, const, Type)
+PPL_DECLARE_FUN1_0_0(is_pinf,     bool, const, Type)
+PPL_DECLARE_FUN1_0_0(is_int,      bool, const, Type)
+PPL_DECLARE_FUN1_0_2(assign_special, Result, nonconst, Type, Result, Rounding_Dir)
+PPL_DECLARE_FUN1_0_2(construct_special, Result, nonconst, Type, Result, Rounding_Dir)
+PPL_DECLARE_FUN2_0_1(construct,   Result, nonconst, To, const, From, Rounding_Dir)
+PPL_DECLARE_FUN2_0_1(assign,      Result, nonconst, To, const, From, Rounding_Dir)
+PPL_DECLARE_FUN2_0_1(floor,       Result, nonconst, To, const, From, Rounding_Dir)
+PPL_DECLARE_FUN2_0_1(ceil,        Result, nonconst, To, const, From, Rounding_Dir)
+PPL_DECLARE_FUN2_0_1(trunc,       Result, nonconst, To, const, From, Rounding_Dir)
+PPL_DECLARE_FUN2_0_1(neg,         Result, nonconst, To, const, From, Rounding_Dir)
+PPL_DECLARE_FUN2_0_1(abs,         Result, nonconst, To, const, From, Rounding_Dir)
+PPL_DECLARE_FUN2_0_1(sqrt,        Result, nonconst, To, const, From, Rounding_Dir)
+PPL_DECLARE_FUN3_0_1(add,         Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+PPL_DECLARE_FUN3_0_1(sub,         Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+PPL_DECLARE_FUN3_0_1(mul,         Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+PPL_DECLARE_FUN3_0_1(div,         Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+PPL_DECLARE_FUN3_0_1(rem,         Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+PPL_DECLARE_FUN3_0_1(idiv,        Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+PPL_DECLARE_FUN2_0_2(mul2exp,     Result, nonconst, To, const, From, int, Rounding_Dir)
+PPL_DECLARE_FUN2_0_2(div2exp,     Result, nonconst, To, const, From, int, Rounding_Dir)
+PPL_DECLARE_FUN3_0_1(add_mul,     Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+PPL_DECLARE_FUN3_0_1(sub_mul,     Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+PPL_DECLARE_FUN3_0_1(gcd,         Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+PPL_DECLARE_FUN5_0_1(gcdext,      Result, nonconst, To1, nonconst, To2, nonconst, To3, const, From1, const, From2, Rounding_Dir)
+PPL_DECLARE_FUN3_0_1(lcm,         Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+PPL_DECLARE_FUN1_0_2(input,       Result, nonconst, Type, std::istream&, Rounding_Dir)
+PPL_DECLARE_FUN1_1_2(output,      Result, std::ostream&, const, Type, const Numeric_Format&, Rounding_Dir)
+
+#undef PPL_DECLARE_FUN1_0_0
+#undef PPL_DECLARE_FUN1_0_1
+#undef PPL_DECLARE_FUN1_0_2
+#undef PPL_DECLARE_FUN1_0_3
+#undef PPL_DECLARE_FUN1_1_1
+#undef PPL_DECLARE_FUN1_1_2
+#undef PPL_DECLARE_FUN1_2_2
+#undef PPL_DECLARE_FUN2_0_0
+#undef PPL_DECLARE_FUN2_0_1
+#undef PPL_DECLARE_FUN2_0_2
+#undef PPL_DECLARE_FUN3_0_1
+#undef PPL_DECLARE_FUN5_0_1
 
 template <typename Policy, typename To>
 Result round(To& to, Result r, Rounding_Dir dir);
