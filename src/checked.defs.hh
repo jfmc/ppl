@@ -309,6 +309,11 @@ namespace Checked {
     }									\
 };
 
+// The `nonconst' macro helps readability of the sequel.
+#ifdef nonconst
+#define PPL_SAVED_nonconst nonconst
+#undef nonconst
+#endif
 #define nonconst
 
 #define PPL_SPECIALIZE_COPY(func, Type)                                 \
@@ -593,6 +598,12 @@ struct Checked_Number_Transparent_Policy {
 #include "checked_mpz.inlines.hh"
 #include "checked_mpq.inlines.hh"
 #include "checked_ext.inlines.hh"
+
+#undef nonconst
+#ifdef PPL_SAVED_nonconst
+#define nonconst PPL_SAVED_nonconst
+#undef PPL_SAVED_nonconst
+#endif
 
 #undef PPL_FUNCTION_CLASS
 
