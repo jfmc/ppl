@@ -398,83 +398,83 @@ assign_unsigned_int_unsigned_int(To& to, const From from, Rounding_Dir dir) {
 }
 
 
-#define ASSIGN2_SIGNED_SIGNED(Smaller, Larger) \
+#define PPL_ASSIGN2_SIGNED_SIGNED(Smaller, Larger) \
 PPL_SPECIALIZE_ASSIGN(assign_signed_int_signed_int, Smaller, Larger) \
 PPL_SPECIALIZE_ASSIGN(assign_signed_int_signed_int, Larger, Smaller)
 
-#define ASSIGN2_UNSIGNED_UNSIGNED(Smaller, Larger) \
+#define PPL_ASSIGN2_UNSIGNED_UNSIGNED(Smaller, Larger) \
 PPL_SPECIALIZE_ASSIGN(assign_unsigned_int_unsigned_int, Smaller, Larger) \
 PPL_SPECIALIZE_ASSIGN(assign_unsigned_int_unsigned_int, Larger, Smaller)
 
-#define ASSIGN2_UNSIGNED_SIGNED(Smaller, Larger) \
+#define PPL_ASSIGN2_UNSIGNED_SIGNED(Smaller, Larger) \
 PPL_SPECIALIZE_ASSIGN(assign_unsigned_int_signed_int, Smaller, Larger) \
 PPL_SPECIALIZE_ASSIGN(assign_signed_int_unsigned_int, Larger, Smaller)
 
-#define ASSIGN2_SIGNED_UNSIGNED(Smaller, Larger) \
+#define PPL_ASSIGN2_SIGNED_UNSIGNED(Smaller, Larger) \
 PPL_SPECIALIZE_ASSIGN(assign_signed_int_unsigned_int, Smaller, Larger) \
 PPL_SPECIALIZE_ASSIGN(assign_unsigned_int_signed_int, Larger, Smaller)
 
-#define ASSIGN_SIGNED(Type) \
+#define PPL_ASSIGN_SIGNED(Type) \
 PPL_SPECIALIZE_ASSIGN(assign_signed_int_signed_int, Type, Type)
-#define ASSIGN_UNSIGNED(Type) \
+#define PPL_ASSIGN_UNSIGNED(Type) \
 PPL_SPECIALIZE_ASSIGN(assign_unsigned_int_unsigned_int, Type, Type)
 
-ASSIGN_SIGNED(signed char)
-ASSIGN_SIGNED(signed short)
-ASSIGN_SIGNED(signed int)
-ASSIGN_SIGNED(signed long)
-ASSIGN_SIGNED(signed long long)
-ASSIGN_UNSIGNED(unsigned char)
-ASSIGN_UNSIGNED(unsigned short)
-ASSIGN_UNSIGNED(unsigned int)
-ASSIGN_UNSIGNED(unsigned long)
-ASSIGN_UNSIGNED(unsigned long long)
+PPL_ASSIGN_SIGNED(signed char)
+PPL_ASSIGN_SIGNED(signed short)
+PPL_ASSIGN_SIGNED(signed int)
+PPL_ASSIGN_SIGNED(signed long)
+PPL_ASSIGN_SIGNED(signed long long)
+PPL_ASSIGN_UNSIGNED(unsigned char)
+PPL_ASSIGN_UNSIGNED(unsigned short)
+PPL_ASSIGN_UNSIGNED(unsigned int)
+PPL_ASSIGN_UNSIGNED(unsigned long)
+PPL_ASSIGN_UNSIGNED(unsigned long long)
 
-ASSIGN2_SIGNED_SIGNED(signed char, signed short)
-ASSIGN2_SIGNED_SIGNED(signed char, signed int)
-ASSIGN2_SIGNED_SIGNED(signed char, signed long)
-ASSIGN2_SIGNED_SIGNED(signed char, signed long long)
-ASSIGN2_SIGNED_SIGNED(signed short, signed int)
-ASSIGN2_SIGNED_SIGNED(signed short, signed long)
-ASSIGN2_SIGNED_SIGNED(signed short, signed long long)
-ASSIGN2_SIGNED_SIGNED(signed int, signed long)
-ASSIGN2_SIGNED_SIGNED(signed int, signed long long)
-ASSIGN2_SIGNED_SIGNED(signed long, signed long long)
-ASSIGN2_UNSIGNED_UNSIGNED(unsigned char, unsigned short)
-ASSIGN2_UNSIGNED_UNSIGNED(unsigned char, unsigned int)
-ASSIGN2_UNSIGNED_UNSIGNED(unsigned char, unsigned long)
-ASSIGN2_UNSIGNED_UNSIGNED(unsigned char, unsigned long long)
-ASSIGN2_UNSIGNED_UNSIGNED(unsigned short, unsigned int)
-ASSIGN2_UNSIGNED_UNSIGNED(unsigned short, unsigned long)
-ASSIGN2_UNSIGNED_UNSIGNED(unsigned short, unsigned long long)
-ASSIGN2_UNSIGNED_UNSIGNED(unsigned int, unsigned long)
-ASSIGN2_UNSIGNED_UNSIGNED(unsigned int, unsigned long long)
-ASSIGN2_UNSIGNED_UNSIGNED(unsigned long, unsigned long long)
-ASSIGN2_UNSIGNED_SIGNED(unsigned char, signed short)
-ASSIGN2_UNSIGNED_SIGNED(unsigned char, signed int)
-ASSIGN2_UNSIGNED_SIGNED(unsigned char, signed long)
-ASSIGN2_UNSIGNED_SIGNED(unsigned char, signed long long)
-ASSIGN2_UNSIGNED_SIGNED(unsigned short, signed int)
-ASSIGN2_UNSIGNED_SIGNED(unsigned short, signed long)
-ASSIGN2_UNSIGNED_SIGNED(unsigned short, signed long long)
-ASSIGN2_UNSIGNED_SIGNED(unsigned int, signed long)
-ASSIGN2_UNSIGNED_SIGNED(unsigned int, signed long long)
-ASSIGN2_UNSIGNED_SIGNED(unsigned long, signed long long)
-ASSIGN2_SIGNED_UNSIGNED(signed char, unsigned char)
-ASSIGN2_SIGNED_UNSIGNED(signed char, unsigned short)
-ASSIGN2_SIGNED_UNSIGNED(signed char, unsigned int)
-ASSIGN2_SIGNED_UNSIGNED(signed char, unsigned long)
-ASSIGN2_SIGNED_UNSIGNED(signed char, unsigned long long)
-ASSIGN2_SIGNED_UNSIGNED(signed short, unsigned short)
-ASSIGN2_SIGNED_UNSIGNED(signed short, unsigned int)
-ASSIGN2_SIGNED_UNSIGNED(signed short, unsigned long)
-ASSIGN2_SIGNED_UNSIGNED(signed short, unsigned long long)
-ASSIGN2_SIGNED_UNSIGNED(signed int, unsigned int)
-ASSIGN2_SIGNED_UNSIGNED(signed int, unsigned long)
-ASSIGN2_SIGNED_UNSIGNED(signed int, unsigned long long)
-ASSIGN2_SIGNED_UNSIGNED(signed long, unsigned long)
-ASSIGN2_SIGNED_UNSIGNED(signed long, unsigned long long)
-ASSIGN2_SIGNED_UNSIGNED(signed long long, unsigned long long)
+PPL_ASSIGN2_SIGNED_SIGNED(signed char, signed short)
+PPL_ASSIGN2_SIGNED_SIGNED(signed char, signed int)
+PPL_ASSIGN2_SIGNED_SIGNED(signed char, signed long)
+PPL_ASSIGN2_SIGNED_SIGNED(signed char, signed long long)
+PPL_ASSIGN2_SIGNED_SIGNED(signed short, signed int)
+PPL_ASSIGN2_SIGNED_SIGNED(signed short, signed long)
+PPL_ASSIGN2_SIGNED_SIGNED(signed short, signed long long)
+PPL_ASSIGN2_SIGNED_SIGNED(signed int, signed long)
+PPL_ASSIGN2_SIGNED_SIGNED(signed int, signed long long)
+PPL_ASSIGN2_SIGNED_SIGNED(signed long, signed long long)
+PPL_ASSIGN2_UNSIGNED_UNSIGNED(unsigned char, unsigned short)
+PPL_ASSIGN2_UNSIGNED_UNSIGNED(unsigned char, unsigned int)
+PPL_ASSIGN2_UNSIGNED_UNSIGNED(unsigned char, unsigned long)
+PPL_ASSIGN2_UNSIGNED_UNSIGNED(unsigned char, unsigned long long)
+PPL_ASSIGN2_UNSIGNED_UNSIGNED(unsigned short, unsigned int)
+PPL_ASSIGN2_UNSIGNED_UNSIGNED(unsigned short, unsigned long)
+PPL_ASSIGN2_UNSIGNED_UNSIGNED(unsigned short, unsigned long long)
+PPL_ASSIGN2_UNSIGNED_UNSIGNED(unsigned int, unsigned long)
+PPL_ASSIGN2_UNSIGNED_UNSIGNED(unsigned int, unsigned long long)
+PPL_ASSIGN2_UNSIGNED_UNSIGNED(unsigned long, unsigned long long)
+PPL_ASSIGN2_UNSIGNED_SIGNED(unsigned char, signed short)
+PPL_ASSIGN2_UNSIGNED_SIGNED(unsigned char, signed int)
+PPL_ASSIGN2_UNSIGNED_SIGNED(unsigned char, signed long)
+PPL_ASSIGN2_UNSIGNED_SIGNED(unsigned char, signed long long)
+PPL_ASSIGN2_UNSIGNED_SIGNED(unsigned short, signed int)
+PPL_ASSIGN2_UNSIGNED_SIGNED(unsigned short, signed long)
+PPL_ASSIGN2_UNSIGNED_SIGNED(unsigned short, signed long long)
+PPL_ASSIGN2_UNSIGNED_SIGNED(unsigned int, signed long)
+PPL_ASSIGN2_UNSIGNED_SIGNED(unsigned int, signed long long)
+PPL_ASSIGN2_UNSIGNED_SIGNED(unsigned long, signed long long)
+PPL_ASSIGN2_SIGNED_UNSIGNED(signed char, unsigned char)
+PPL_ASSIGN2_SIGNED_UNSIGNED(signed char, unsigned short)
+PPL_ASSIGN2_SIGNED_UNSIGNED(signed char, unsigned int)
+PPL_ASSIGN2_SIGNED_UNSIGNED(signed char, unsigned long)
+PPL_ASSIGN2_SIGNED_UNSIGNED(signed char, unsigned long long)
+PPL_ASSIGN2_SIGNED_UNSIGNED(signed short, unsigned short)
+PPL_ASSIGN2_SIGNED_UNSIGNED(signed short, unsigned int)
+PPL_ASSIGN2_SIGNED_UNSIGNED(signed short, unsigned long)
+PPL_ASSIGN2_SIGNED_UNSIGNED(signed short, unsigned long long)
+PPL_ASSIGN2_SIGNED_UNSIGNED(signed int, unsigned int)
+PPL_ASSIGN2_SIGNED_UNSIGNED(signed int, unsigned long)
+PPL_ASSIGN2_SIGNED_UNSIGNED(signed int, unsigned long long)
+PPL_ASSIGN2_SIGNED_UNSIGNED(signed long, unsigned long)
+PPL_ASSIGN2_SIGNED_UNSIGNED(signed long, unsigned long long)
+PPL_ASSIGN2_SIGNED_UNSIGNED(signed long long, unsigned long long)
 
 template <typename To_Policy, typename From_Policy, typename To, typename From>
 inline Result
@@ -544,10 +544,12 @@ PPL_SPECIALIZE_ASSIGN(assign_int_float, unsigned int, long double)
 PPL_SPECIALIZE_ASSIGN(assign_int_float, unsigned long, long double)
 PPL_SPECIALIZE_ASSIGN(assign_int_float, unsigned long long, long double)
 
-#undef ASSIGN2_SIGNED_SIGNED
-#undef ASSIGN2_UNSIGNED_UNSIGNED
-#undef ASSIGN2_UNSIGNED_SIGNED
-#undef ASSIGN2_SIGNED_UNSIGNED
+#undef PPL_ASSIGN_SIGNED
+#undef PPL_ASSIGN_UNSIGNED
+#undef PPL_ASSIGN2_SIGNED_SIGNED
+#undef PPL_ASSIGN2_UNSIGNED_UNSIGNED
+#undef PPL_ASSIGN2_UNSIGNED_SIGNED
+#undef PPL_ASSIGN2_SIGNED_UNSIGNED
 
 template <typename To_Policy, typename From_Policy, typename To>
 inline Result
