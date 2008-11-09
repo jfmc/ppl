@@ -141,10 +141,10 @@ Checked_Number<T, Policy>::Checked_Number(const type x) {		\
 		  dir));						\
 }
 
-#define COND_0(...)
-#define COND_1(...) __VA_ARGS__
-#define COND_(if, ...) COND_##if(__VA_ARGS__)
-#define COND(if, ...) COND_(if, __VA_ARGS__)
+#define PPL_COND_0(...)
+#define PPL_COND_1(...) __VA_ARGS__
+#define PPL_COND_(if, ...) PPL_COND_##if(__VA_ARGS__)
+#define PPL_COND(if, ...) PPL_COND_(if, __VA_ARGS__)
 
 DEF_CTOR(signed char)
 DEF_CTOR(signed short)
@@ -156,13 +156,18 @@ DEF_CTOR(unsigned short)
 DEF_CTOR(unsigned int)
 DEF_CTOR(unsigned long)
 DEF_CTOR(unsigned long long)
-COND(PPL_SUPPORTED_FLOAT, DEF_CTOR(float))
-COND(PPL_SUPPORTED_DOUBLE, DEF_CTOR(double))
-COND(PPL_SUPPORTED_LONG_DOUBLE, DEF_CTOR(long double))
+PPL_COND(PPL_SUPPORTED_FLOAT, DEF_CTOR(float))
+PPL_COND(PPL_SUPPORTED_DOUBLE, DEF_CTOR(double))
+PPL_COND(PPL_SUPPORTED_LONG_DOUBLE, DEF_CTOR(long double))
 DEF_CTOR(mpq_class&)
 DEF_CTOR(mpz_class&)
 
 #undef DEF_CTOR
+
+#undef PPL_COND
+#undef PPL_COND_
+#undef PPL_COND_1
+#undef PPL_COND_0
 
 template <typename T, typename Policy>
 inline
