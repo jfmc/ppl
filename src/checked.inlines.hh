@@ -336,12 +336,12 @@ gcdext_exact(To1& to, To2& s, To3& t, const From1& x, const From2& y,
   if (r != V_EQ)
     return r;
 
-  // If COPY_GMP is defined then s is favored when the absolute
+  // If PPL_MATCH_GMP_GCDEXT is defined then s is favored when the absolute
   // values of the given numbers are equal.  For instance if x and y
   // are both 5 then s will be 1 and t will be 0, instead of the other
   // way round.  This is to match the behavior of GMP.
-#define COPY_GMP
-#ifdef COPY_GMP
+#define PPL_MATCH_GMP_GCDEXT 1
+#ifdef PPL_MATCH_GMP_GCDEXT
   if (to == ay)
     goto sign_check;
 #endif
@@ -367,7 +367,7 @@ gcdext_exact(To1& to, To2& s, To3& t, const From1& x, const From2& y,
     }
   }
 
-#ifdef COPY_GMP
+#ifdef PPL_MATCH_GMP_GCDEXT
  sign_check:
 #endif
   if (negative_x) {
@@ -378,6 +378,7 @@ gcdext_exact(To1& to, To2& s, To3& t, const From1& x, const From2& y,
   if (negative_y)
     return neg<To3_Policy, To3_Policy>(t, t, dir);
   return V_EQ;
+#undef PPL_MATCH_GMP_GCDEXT
 }
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
