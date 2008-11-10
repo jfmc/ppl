@@ -376,8 +376,8 @@ PPL::Polyhedron::conversion(Linear_System& source,
   // constraints seen so far, to be used as a displacement when swapping rows.
   dimension_type source_num_redundant = 0;
 
-  TEMP_INTEGER(normalized_sp_i);
-  TEMP_INTEGER(normalized_sp_o);
+  PPL_DIRTY_TEMP_COEFFICIENT(normalized_sp_i);
+  PPL_DIRTY_TEMP_COEFFICIENT(normalized_sp_o);
 
   // Converting the sub-system of `source' having rows with indexes
   // from `start' to the last one (i.e., `source_num_rows' - 1).

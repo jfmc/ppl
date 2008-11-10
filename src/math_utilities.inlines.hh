@@ -33,7 +33,7 @@ inline void
 normalize2(Coefficient_traits::const_reference x,
 	   Coefficient_traits::const_reference y,
 	   Coefficient& nx, Coefficient& ny) {
-  TEMP_INTEGER(gcd);
+  PPL_DIRTY_TEMP_COEFFICIENT(gcd);
   gcd_assign(gcd, x, y);
   exact_div_assign(nx, x, gcd);
   exact_div_assign(ny, y, gcd);

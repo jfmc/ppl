@@ -52,7 +52,7 @@ swap(T&, T&) {
 }
 
 // FIXME(0.10.1): write a comment for this.
-#define TEMP_INTEGER(id) DIRTY_TEMP0(Coefficient, id)
+#define PPL_DIRTY_TEMP_COEFFICIENT(id) DIRTY_TEMP0(Coefficient, id)
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Speculative allocation function.

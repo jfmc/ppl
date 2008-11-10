@@ -244,8 +244,8 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
     *this = BD_Shape<T>(num_dimensions, UNIVERSE);
     // Get all the upper bounds.
     Generator g(point());
-    TEMP_INTEGER(num);
-    TEMP_INTEGER(den);
+    PPL_DIRTY_TEMP_COEFFICIENT(num);
+    PPL_DIRTY_TEMP_COEFFICIENT(den);
     for (dimension_type i = 1; i <= num_dimensions; ++i) {
       Variable x(i-1);
       // Evaluate optimal upper bound for `x <= ub'.
@@ -337,8 +337,8 @@ BD_Shape<T>::minimized_congruences() const {
     // For the time being, we force the dimension with the following line.
     cgs.insert(0*Variable(space_dim-1) == 0);
 
-    TEMP_INTEGER(num);
-    TEMP_INTEGER(den);
+    PPL_DIRTY_TEMP_COEFFICIENT(num);
+    PPL_DIRTY_TEMP_COEFFICIENT(den);
 
     // Compute leader information.
     std::vector<dimension_type> leaders;
@@ -391,7 +391,7 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
   dimension_type num_vars = 0;
   dimension_type i = 0;
   dimension_type j = 0;
-  TEMP_INTEGER(coeff);
+  PPL_DIRTY_TEMP_COEFFICIENT(coeff);
   // Constraints that are not bounded differences are not allowed.
   if (!extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff))
     throw_generic("add_constraint(c)",
@@ -425,7 +425,7 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
 
   if (c.is_equality()) {
     // Also compute the bound for `y', rounding towards plus infinity.
-    TEMP_INTEGER(minus_c_term);
+    PPL_DIRTY_TEMP_COEFFICIENT(minus_c_term);
     neg_assign(minus_c_term, inhomo);
     div_round_up(d, minus_c_term, coeff);
     if (y > d) {
@@ -478,7 +478,7 @@ BD_Shape<T>::refine_no_check(const Constraint& c) {
   dimension_type num_vars = 0;
   dimension_type i = 0;
   dimension_type j = 0;
-  TEMP_INTEGER(coeff);
+  PPL_DIRTY_TEMP_COEFFICIENT(coeff);
   // Constraints that are not bounded differences are ignored.
   if (!extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff))
     return;
@@ -512,7 +512,7 @@ BD_Shape<T>::refine_no_check(const Constraint& c) {
 
   if (c.is_equality()) {
     // Also compute the bound for `y', rounding towards plus infinity.
-    TEMP_INTEGER(minus_c_term);
+    PPL_DIRTY_TEMP_COEFFICIENT(minus_c_term);
     neg_assign(minus_c_term, inhomo);
     div_round_up(d, minus_c_term, coeff);
     if (y > d) {
@@ -1035,7 +1035,7 @@ BD_Shape<T>::bounds(const Linear_Expression& expr,
   dimension_type num_vars = 0;
   dimension_type i = 0;
   dimension_type j = 0;
-  TEMP_INTEGER(coeff);
+  PPL_DIRTY_TEMP_COEFFICIENT(coeff);
   // Check if `c' is a BD constraint.
   if (extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff)) {
     if (num_vars == 0)
@@ -1093,7 +1093,7 @@ BD_Shape<T>::max_min(const Linear_Expression& expr,
   dimension_type num_vars = 0;
   dimension_type i = 0;
   dimension_type j = 0;
-  TEMP_INTEGER(coeff);
+  PPL_DIRTY_TEMP_COEFFICIENT(coeff);
   // Check if `c' is a BD constraint.
   if (!extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff)) {
     Optimization_Mode mode_max_min
@@ -1124,7 +1124,7 @@ BD_Shape<T>::max_min(const Linear_Expression& expr,
       // Compute the maximize/minimize of `expr'.
       DIRTY_TEMP(N, d);
       const Coefficient& b = expr.inhomogeneous_term();
-      TEMP_INTEGER(minus_b);
+      PPL_DIRTY_TEMP_COEFFICIENT(minus_b);
       neg_assign(minus_b, b);
       const Coefficient& sc_b = maximize ? b : minus_b;
       assign_r(d, sc_b, ROUND_UP);
@@ -1136,7 +1136,7 @@ BD_Shape<T>::max_min(const Linear_Expression& expr,
       if (sign_i > 0)
         assign_r(coeff_expr, coeff_i, ROUND_UP);
       else {
-        TEMP_INTEGER(minus_coeff_i);
+        PPL_DIRTY_TEMP_COEFFICIENT(minus_coeff_i);
         neg_assign(minus_coeff_i, coeff_i);
         assign_r(coeff_expr, minus_coeff_i, ROUND_UP);
       }
@@ -1217,7 +1217,7 @@ BD_Shape<T>::relation_with(const Congruence& cg) const {
     dimension_type num_vars = 0;
     dimension_type i = 0;
     dimension_type j = 0;
-    TEMP_INTEGER(coeff);
+    PPL_DIRTY_TEMP_COEFFICIENT(coeff);
     if (extract_bounded_difference(c, cg_space_dim, num_vars,
                                     i, j, coeff))
       return relation_with(c);
@@ -1241,7 +1241,7 @@ BD_Shape<T>::relation_with(const Congruence& cg) const {
   DIRTY_TEMP(Coefficient, min_num);
   DIRTY_TEMP(Coefficient, min_den);
   bool min_included;
-  TEMP_INTEGER(mod);
+  PPL_DIRTY_TEMP_COEFFICIENT(mod);
   mod = cg.modulus();
   Linear_Expression le;
   for (dimension_type i = cg_space_dim; i-- > 0; )
@@ -1251,10 +1251,10 @@ BD_Shape<T>::relation_with(const Congruence& cg) const {
   if (!bounded_below)
     return Poly_Con_Relation::strictly_intersects();
 
-  TEMP_INTEGER(v);
-  TEMP_INTEGER(lower_num);
-  TEMP_INTEGER(lower_den);
-  TEMP_INTEGER(lower);
+  PPL_DIRTY_TEMP_COEFFICIENT(v);
+  PPL_DIRTY_TEMP_COEFFICIENT(lower_num);
+  PPL_DIRTY_TEMP_COEFFICIENT(lower_den);
+  PPL_DIRTY_TEMP_COEFFICIENT(lower);
   assign_r(lower_num, min_num, ROUND_NOT_NEEDED);
   assign_r(lower_den, min_den, ROUND_NOT_NEEDED);
   neg_assign(v, cg.inhomogeneous_term());
@@ -1306,7 +1306,7 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
   dimension_type num_vars = 0;
   dimension_type i = 0;
   dimension_type j = 0;
-  TEMP_INTEGER(coeff);
+  PPL_DIRTY_TEMP_COEFFICIENT(coeff);
   if (!extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff)) {
     // Constraints that are not bounded differences.
     // Use maximize() and minimize() to do much of the work.
@@ -1448,8 +1448,8 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
       // In this case `*this' is disjoint from `c' if
       // `-y > d' (`-y >= d' if c is a strict equality), i.e. if
       // `y < d1' (`y <= d1' if c is a strict equality).
-      TEMP_INTEGER(numer);
-      TEMP_INTEGER(denom);
+      PPL_DIRTY_TEMP_COEFFICIENT(numer);
+      PPL_DIRTY_TEMP_COEFFICIENT(denom);
       numer_denom(y, numer, denom);
       assign_r(q_den, denom, ROUND_NOT_NEEDED);
       assign_r(q_y, numer, ROUND_NOT_NEEDED);
@@ -1465,8 +1465,8 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
   }
 
   // Here `x' is not plus-infinity.
-  TEMP_INTEGER(numer);
-  TEMP_INTEGER(denom);
+  PPL_DIRTY_TEMP_COEFFICIENT(numer);
+  PPL_DIRTY_TEMP_COEFFICIENT(denom);
   numer_denom(x, numer, denom);
   assign_r(q_den, denom, ROUND_NOT_NEEDED);
   assign_r(q_x, numer, ROUND_NOT_NEEDED);
@@ -1541,9 +1541,9 @@ BD_Shape<T>::relation_with(const Generator& g) const {
   // all the constraints in the BDS.
 
   // Allocation of temporaries done once and for all.
-  TEMP_INTEGER(num);
-  TEMP_INTEGER(den);
-  TEMP_INTEGER(product);
+  PPL_DIRTY_TEMP_COEFFICIENT(num);
+  PPL_DIRTY_TEMP_COEFFICIENT(den);
+  PPL_DIRTY_TEMP_COEFFICIENT(product);
   // We find in `*this' all the constraints.
   for (dimension_type i = 0; i <= space_dim; ++i) {
     const Coefficient& g_coeff_y = (i > g_space_dim || i == 0)
@@ -2245,8 +2245,8 @@ BD_Shape<T>::get_limiting_shape(const Constraint_System& cs,
 
   shortest_path_closure_assign();
   bool changed = false;
-  TEMP_INTEGER(coeff);
-  TEMP_INTEGER(minus_c_term);
+  PPL_DIRTY_TEMP_COEFFICIENT(coeff);
+  PPL_DIRTY_TEMP_COEFFICIENT(minus_c_term);
   DIRTY_TEMP(N, d);
   DIRTY_TEMP(N, d1);
   for (Constraint_System::const_iterator cs_i = cs.begin(),
@@ -2760,7 +2760,7 @@ BD_Shape<T>::refine(const Variable var,
   // - If t == 1, then expr == a*w + b, where `w != v' and `a == denominator';
   // - If t == 2, the `expr' is of the general form.
   const DB_Row<N>& dbm_0 = dbm[0];
-  TEMP_INTEGER(minus_den);
+  PPL_DIRTY_TEMP_COEFFICIENT(minus_den);
   neg_assign(minus_den, denominator);
 
   if (t == 0) {
@@ -2823,7 +2823,7 @@ BD_Shape<T>::refine(const Variable var,
   // expr == a_1*x_1 + a_2*x_2 + ... + a_n*x_n + b, where n >= 2, or
   // expr == a*w + b, w != v and a != denominator.
   const bool is_sc = (denominator > 0);
-  TEMP_INTEGER(minus_b);
+  PPL_DIRTY_TEMP_COEFFICIENT(minus_b);
   neg_assign(minus_b, b);
   const Coefficient& sc_b = is_sc ? b : minus_b;
   const Coefficient& minus_sc_b = is_sc ? minus_b : b;
@@ -2845,7 +2845,7 @@ BD_Shape<T>::refine(const Variable var,
 
   // Speculative allocation of temporaries that are used in most
   // of the computational traces starting from this point (also loops).
-  TEMP_INTEGER(minus_sc_i);
+  PPL_DIRTY_TEMP_COEFFICIENT(minus_sc_i);
   DIRTY_TEMP(N, coeff_i);
 
   switch (relsym) {
@@ -3152,7 +3152,7 @@ BD_Shape<T>::affine_image(const Variable var,
   //   equal to `denominator' or `-denominator', since otherwise we have
   //   to fall back on the general form;
   // - If t == 2, the `expr' is of the general form.
-  TEMP_INTEGER(minus_den);
+  PPL_DIRTY_TEMP_COEFFICIENT(minus_den);
   neg_assign(minus_den, denominator);
 
   if (t == 0) {
@@ -3272,7 +3272,7 @@ BD_Shape<T>::affine_image(const Variable var,
   // Note: approximating `-expr' from above and then negating the
   // result is the same as approximating `expr' from below.
   const bool is_sc = (denominator > 0);
-  TEMP_INTEGER(minus_b);
+  PPL_DIRTY_TEMP_COEFFICIENT(minus_b);
   neg_assign(minus_b, b);
   const Coefficient& sc_b = is_sc ? b : minus_b;
   const Coefficient& minus_sc_b = is_sc ? minus_b : b;
@@ -3303,7 +3303,7 @@ BD_Shape<T>::affine_image(const Variable var,
   const DB_Row<N>& dbm_0 = dbm[0];
   // Speculative allocation of temporaries to be used in the following loop.
   DIRTY_TEMP(N, coeff_i);
-  TEMP_INTEGER(minus_sc_i);
+  PPL_DIRTY_TEMP_COEFFICIENT(minus_sc_i);
   // Note: indices above `w' can be disregarded, as they all have
   // a zero coefficient in `sc_expr'.
   for (dimension_type i = w; i > 0; --i) {
@@ -3592,7 +3592,7 @@ BD_Shape<T>
   //   equal to `denominator' or `-denominator', since otherwise we have
   //   to fall back on the general form;
   // - If t == 2, the `ub_expr' is of the general form.
-  TEMP_INTEGER(minus_den);
+  PPL_DIRTY_TEMP_COEFFICIENT(minus_den);
   neg_assign(minus_den, denominator);
 
   if (t == 0) {
@@ -3674,7 +3674,7 @@ BD_Shape<T>
   // Compute upper approximations for `ub_expr' into `pos_sum'
   // taking into account the sign of `denominator'.
   const bool is_sc = (denominator > 0);
-  TEMP_INTEGER(minus_b);
+  PPL_DIRTY_TEMP_COEFFICIENT(minus_b);
   neg_assign(minus_b, b);
   const Coefficient& sc_b = is_sc ? b : minus_b;
   const Coefficient& sc_den = is_sc ? denominator : minus_den;
@@ -3700,7 +3700,7 @@ BD_Shape<T>
   const DB_Row<N>& dbm_0 = dbm[0];
   // Speculative allocation of temporaries to be used in the following loop.
   DIRTY_TEMP(N, coeff_i);
-  TEMP_INTEGER(minus_sc_i);
+  PPL_DIRTY_TEMP_COEFFICIENT(minus_sc_i);
   // Note: indices above `w' can be disregarded, as they all have
   // a zero coefficient in `sc_expr'.
   for (dimension_type i = w; i > 0; --i) {
@@ -3832,7 +3832,7 @@ BD_Shape<T>
   add_space_dimensions_and_embed(1);
   const Linear_Expression lb_inverse
     = lb_expr - (lb_expr_v + denominator)*var;
-  TEMP_INTEGER(lb_inverse_den);
+  PPL_DIRTY_TEMP_COEFFICIENT(lb_inverse_den);
   neg_assign(lb_inverse_den, lb_expr_v);
   affine_image(new_var, lb_inverse, lb_inverse_den);
   shortest_path_closure_assign();
@@ -3920,7 +3920,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
   // - If t == 2, the `expr' is of the general form.
   DB_Row<N>& dbm_0 = dbm[0];
   DB_Row<N>& dbm_v = dbm[v];
-  TEMP_INTEGER(minus_den);
+  PPL_DIRTY_TEMP_COEFFICIENT(minus_den);
   neg_assign(minus_den, denominator);
 
   if (t == 0) {
@@ -4079,7 +4079,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
   // a constraint providing an upper or a lower bound for `v'
   // (depending on `relsym').
   const bool is_sc = (denominator > 0);
-  TEMP_INTEGER(minus_b);
+  PPL_DIRTY_TEMP_COEFFICIENT(minus_b);
   neg_assign(minus_b, b);
   const Coefficient& sc_b = is_sc ? b : minus_b;
   const Coefficient& minus_sc_b = is_sc ? minus_b : b;
@@ -4101,7 +4101,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 
   // Speculative allocation of temporaries to be used in the following loops.
   DIRTY_TEMP(N, coeff_i);
-  TEMP_INTEGER(minus_sc_i);
+  PPL_DIRTY_TEMP_COEFFICIENT(minus_sc_i);
 
   switch (relsym) {
   case LESS_OR_EQUAL:
@@ -4486,7 +4486,7 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
       ? GREATER_OR_EQUAL : LESS_OR_EQUAL;
     const Linear_Expression inverse
       = expr - (expr_v + denominator)*var;
-    TEMP_INTEGER(inverse_den);
+    PPL_DIRTY_TEMP_COEFFICIENT(inverse_den);
     neg_assign(inverse_den, expr_v);
     const Relation_Symbol inverse_relsym
       = (sgn(denominator) == sgn(inverse_den)) ? relsym : reversed_relsym;
@@ -4689,8 +4689,8 @@ BD_Shape<T>::constraints() const {
     // For the time being, we force the dimension with the following line.
     cs.insert(0*Variable(space_dim-1) <= 0);
 
-    TEMP_INTEGER(a);
-    TEMP_INTEGER(b);
+    PPL_DIRTY_TEMP_COEFFICIENT(a);
+    PPL_DIRTY_TEMP_COEFFICIENT(b);
     // Go through all the unary constraints in `dbm'.
     const DB_Row<N>& dbm_0 = dbm[0];
     for (dimension_type j = 1; j <= space_dim; ++j) {
@@ -4762,8 +4762,8 @@ BD_Shape<T>::minimized_constraints() const {
     // For the time being, we force the dimension with the following line.
     cs.insert(0*Variable(space_dim-1) <= 0);
 
-    TEMP_INTEGER(num);
-    TEMP_INTEGER(den);
+    PPL_DIRTY_TEMP_COEFFICIENT(num);
+    PPL_DIRTY_TEMP_COEFFICIENT(den);
 
     // Compute leader information.
     std::vector<dimension_type> leaders;

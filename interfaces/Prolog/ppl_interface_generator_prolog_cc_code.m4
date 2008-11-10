@@ -806,8 +806,8 @@ m4_define(`ppl_@CLASS@_@MAXMIN@_code',
     const @CPP_CLASS@* ph = term_to_handle<@CPP_CLASS@ >(t_ph, where);
     PPL_CHECK(ph);
     const Linear_Expression le = build_linear_expression(t_le_expr, where);
-    TEMP_INTEGER(n);
-    TEMP_INTEGER(d);
+    PPL_DIRTY_TEMP_COEFFICIENT(n);
+    PPL_DIRTY_TEMP_COEFFICIENT(d);
     bool maxmin;
     if (ph->@MAXMIN@(le, n, d, maxmin)) {
       Prolog_term_ref t = Prolog_new_term_ref();
@@ -835,8 +835,8 @@ m4_define(`ppl_@CLASS@_@MAXMIN@_with_point_code',
     const @CPP_CLASS@* ph = term_to_handle<@CPP_CLASS@ >(t_ph, where);
     PPL_CHECK(ph);
     const Linear_Expression le = build_linear_expression(t_le_expr, where);
-    TEMP_INTEGER(n);
-    TEMP_INTEGER(d);
+    PPL_DIRTY_TEMP_COEFFICIENT(n);
+    PPL_DIRTY_TEMP_COEFFICIENT(d);
     bool maxmin;
     Generator g(point());
     if (ph->@MAXMIN@(le, n, d, maxmin, g)) {

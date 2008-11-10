@@ -165,7 +165,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
   // the left-right order of the dimensions, while the congruence
   // system rows have a bottom-up ordering.
   dimension_type dest_num_rows = 0;
-  TEMP_INTEGER(diagonal_lcm);
+  PPL_DIRTY_TEMP_COEFFICIENT(diagonal_lcm);
   diagonal_lcm = 1;
   const dimension_type dims = source.space_dimension() + 1;
   dimension_type source_index = source.num_rows();
@@ -236,7 +236,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
   // `dest'.
   source_index = source.num_rows();
   dest_index = 0;
-  TEMP_INTEGER(multiplier);
+  PPL_DIRTY_TEMP_COEFFICIENT(multiplier);
 
   for (dimension_type dim = dims; dim-- > 0; ) {
     if (dim_kinds[dim] != GEN_VIRTUAL) {
@@ -320,7 +320,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
   // Initialize matrix row number counters and compute the LCM of the
   // diagonal entries of the proper congruences in `source'.
   dimension_type source_num_rows = 0, dest_num_rows = 0;
-  TEMP_INTEGER(diagonal_lcm);
+  PPL_DIRTY_TEMP_COEFFICIENT(diagonal_lcm);
   diagonal_lcm = 1;
   dimension_type dims = source.num_columns() - 1;
   for (dimension_type dim = dims; dim-- > 0; )
@@ -393,7 +393,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
   // `dest'.
   source_index = source_num_rows;
   dest_index = 0;
-  TEMP_INTEGER(reduced_source_dim);
+  PPL_DIRTY_TEMP_COEFFICIENT(reduced_source_dim);
 
   for (dimension_type dim = 0; dim < dims; ++dim) {
     if (dim_kinds[dim] != CON_VIRTUAL) {

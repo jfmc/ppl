@@ -267,7 +267,7 @@ PPL::Linear_Expression::OK() const {
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Linear_Expression& e) {
   const dimension_type num_variables = e.space_dimension();
-  TEMP_INTEGER(ev);
+  PPL_DIRTY_TEMP_COEFFICIENT(ev);
   bool first = true;
   for (dimension_type v = 0; v < num_variables; ++v) {
     ev = e[v+1];
@@ -290,7 +290,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Linear_Expression& e) {
     }
   }
   // Inhomogeneous term.
-  TEMP_INTEGER(it);
+  PPL_DIRTY_TEMP_COEFFICIENT(it);
   it = e[0];
   if (it != 0) {
     if (!first) {

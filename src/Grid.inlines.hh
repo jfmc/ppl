@@ -369,7 +369,7 @@ Grid::minimize(const Linear_Expression& expr,
 
 inline void
 Grid::normalize_divisors(Grid_Generator_System& sys) {
-  TEMP_INTEGER(divisor);
+  PPL_DIRTY_TEMP_COEFFICIENT(divisor);
   divisor = 1;
   normalize_divisors(sys, divisor);
 }

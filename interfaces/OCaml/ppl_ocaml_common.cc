@@ -314,7 +314,7 @@ build_ppl_Constraint(value c) {
 template <typename R>
 CAMLprim value
 get_inhomogeneous_term(const R& r) {
-  TEMP_INTEGER(coeff);
+  PPL_DIRTY_TEMP_COEFFICIENT(coeff);
   neg_assign(coeff, r.inhomogeneous_term());
   value coeff_term = caml_alloc(1,1);
   Field(coeff_term, 0) = build_ocaml_coefficient(coeff);
@@ -328,7 +328,7 @@ CAMLprim value
 get_linear_expression(const R& r) {
   dimension_type space_dimension = r.space_dimension();
   dimension_type varid = 0;
-  TEMP_INTEGER(coeff);
+  PPL_DIRTY_TEMP_COEFFICIENT(coeff);
   while (varid < space_dimension
 	 && (coeff = r.coefficient(Variable(varid))) == 0)
     ++varid;
@@ -341,7 +341,7 @@ get_linear_expression(const R& r) {
   }
   else {
     value term1 = caml_alloc(2,6);
-    TEMP_INTEGER(ppl_coeff);
+    PPL_DIRTY_TEMP_COEFFICIENT(ppl_coeff);
     ppl_coeff = r.coefficient(Variable(varid));
     Field(term1, 0) = build_ocaml_coefficient(ppl_coeff);
     value ml_le_var1 = caml_alloc(1,0);
@@ -942,8 +942,8 @@ CAMLprim value
 ppl_MIP_Problem_optimal_value(value caml_mip) try {
   CAMLparam1(caml_mip);
   MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
-  TEMP_INTEGER(num);
-  TEMP_INTEGER(den);
+  PPL_DIRTY_TEMP_COEFFICIENT(num);
+  PPL_DIRTY_TEMP_COEFFICIENT(den);
   ppl_mip.optimal_value(num, den);
   value caml_return_value = caml_alloc(2,0);
   Field(caml_return_value, 0) = build_ocaml_coefficient(num);
@@ -960,8 +960,8 @@ ppl_MIP_Problem_evaluate_objective_function(value caml_mip,
   CAMLparam2(caml_mip, caml_generator);
   Generator g = build_ppl_Generator(caml_generator);
   MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
-  TEMP_INTEGER(num);
-  TEMP_INTEGER(den);
+  PPL_DIRTY_TEMP_COEFFICIENT(num);
+  PPL_DIRTY_TEMP_COEFFICIENT(den);
   ppl_mip.evaluate_objective_function(g, num, den);
   value caml_return_value = caml_alloc(2,0);
   Field(caml_return_value, 0) = build_ocaml_coefficient(num);
@@ -986,7 +986,7 @@ ppl_MIP_Problem_objective_function
 (value caml_mip) try {
   CAMLparam1(caml_mip);
   MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
-  TEMP_INTEGER(inhomogeneous_term);
+  PPL_DIRTY_TEMP_COEFFICIENT(inhomogeneous_term);
   inhomogeneous_term = ppl_mip.objective_function().inhomogeneous_term();
   value homogeneous_term = get_linear_expression(ppl_mip.objective_function());
   value inhom_term

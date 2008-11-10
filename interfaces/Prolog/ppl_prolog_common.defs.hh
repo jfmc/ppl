@@ -525,7 +525,7 @@ term_to_unsigned(Prolog_term_ref t, const char* where) {
     else
       d = l;
   else {
-    TEMP_INTEGER(v);
+    PPL_DIRTY_TEMP_COEFFICIENT(v);
     Prolog_get_Coefficient(t, v);
     if (v < 0)
       throw not_unsigned_integer(t, where);

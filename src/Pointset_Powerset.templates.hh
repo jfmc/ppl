@@ -953,7 +953,7 @@ Pointset_Powerset<PS>::maximize(const Linear_Expression& expr,
   Coefficient supi_n = 0;
   Coefficient supi_d = 1;
   bool maxi = 0;
-  TEMP_INTEGER(tmp);
+  PPL_DIRTY_TEMP_COEFFICIENT(tmp);
 
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
@@ -1003,7 +1003,7 @@ Pointset_Powerset<PS>::maximize(const Linear_Expression& expr,
   Coefficient supi_d = 1;
   bool maxi = 0;
   Generator gi = point();
-  TEMP_INTEGER(tmp);
+  PPL_DIRTY_TEMP_COEFFICIENT(tmp);
 
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
@@ -1055,7 +1055,7 @@ Pointset_Powerset<PS>::minimize(const Linear_Expression& expr,
   Coefficient infi_n = 0;
   Coefficient infi_d = 1;
   bool mini = 0;
-  TEMP_INTEGER(tmp);
+  PPL_DIRTY_TEMP_COEFFICIENT(tmp);
 
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
@@ -1105,7 +1105,7 @@ Pointset_Powerset<PS>::minimize(const Linear_Expression& expr,
   Coefficient infi_d = 1;
   bool mini = 0;
   Generator gi = point();
-  TEMP_INTEGER(tmp);
+  PPL_DIRTY_TEMP_COEFFICIENT(tmp);
 
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {

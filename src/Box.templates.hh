@@ -845,9 +845,9 @@ Box<ITV>::relation_with(const Congruence& cg) const {
   // Find the value that satisfies the congruence and is
   // nearest to the lower bound such that the point lies on or above it.
 
-  TEMP_INTEGER(lower);
-  TEMP_INTEGER(mod);
-  TEMP_INTEGER(v);
+  PPL_DIRTY_TEMP_COEFFICIENT(lower);
+  PPL_DIRTY_TEMP_COEFFICIENT(mod);
+  PPL_DIRTY_TEMP_COEFFICIENT(v);
   mod = cg.modulus();
   v = cg.inhomogeneous_term() % mod;
   assign_r(lower, r.lower(), ROUND_DOWN);
@@ -2635,7 +2635,7 @@ Box<ITV>
   if (!seq_var.is_universe()) {
     // We want to work with a positive denominator,
     // so the sign and its (unsigned) value are separated.
-    TEMP_INTEGER(pos_denominator);
+    PPL_DIRTY_TEMP_COEFFICIENT(pos_denominator);
     pos_denominator = denominator;
     if (negative_denom)
       neg_assign(pos_denominator, pos_denominator);
@@ -2876,7 +2876,7 @@ Box<ITV>
   if (var_coefficient != 0) {
     Linear_Expression inverse_expr
       = expr - (denominator + var_coefficient) * var;
-    TEMP_INTEGER(inverse_denominator);
+    PPL_DIRTY_TEMP_COEFFICIENT(inverse_denominator);
     neg_assign(inverse_denominator, var_coefficient);
     Relation_Symbol inverse_relsym
       = (sgn(denominator) == sgn(inverse_denominator))
@@ -2908,7 +2908,7 @@ Box<ITV>
   // maximum/minimim value for `var'.
   DIRTY_TEMP(Linear_Expression, revised_expr);
   dimension_type dim = space_dim;
-  TEMP_INTEGER(d);
+  PPL_DIRTY_TEMP_COEFFICIENT(d);
   if (corrected_relsym == LESS_THAN || corrected_relsym == LESS_OR_EQUAL) {
     if (bound_below) {
       for ( ; dim > 0; dim--) {

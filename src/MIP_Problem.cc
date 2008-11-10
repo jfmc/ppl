@@ -921,12 +921,12 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
   const dimension_type tableau_num_rows = tableau.num_rows();
   assert(tableau_num_rows == base.size());
   // The square of the lcm of all the coefficients of variables in base.
-  TEMP_INTEGER(squared_lcm_basis);
+  PPL_DIRTY_TEMP_COEFFICIENT(squared_lcm_basis);
   // The normalization factor for each coefficient in the tableau.
   std::vector<Coefficient> norm_factor(tableau_num_rows);
   {
     // Compute the lcm of all the coefficients of variables in base.
-    TEMP_INTEGER(lcm_basis);
+    PPL_DIRTY_TEMP_COEFFICIENT(lcm_basis);
     lcm_basis = 1;
     for (dimension_type i = tableau_num_rows; i-- > 0; )
       lcm_assign(lcm_basis, lcm_basis, tableau[i][base[i]]);
@@ -940,14 +940,14 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
   }
 
   // Defined here to avoid repeated (de-)allocations.
-  TEMP_INTEGER(challenger_num);
-  TEMP_INTEGER(scalar_value);
-  TEMP_INTEGER(challenger_den);
-  TEMP_INTEGER(challenger_value);
-  TEMP_INTEGER(current_value);
+  PPL_DIRTY_TEMP_COEFFICIENT(challenger_num);
+  PPL_DIRTY_TEMP_COEFFICIENT(scalar_value);
+  PPL_DIRTY_TEMP_COEFFICIENT(challenger_den);
+  PPL_DIRTY_TEMP_COEFFICIENT(challenger_value);
+  PPL_DIRTY_TEMP_COEFFICIENT(current_value);
 
-  TEMP_INTEGER(current_num);
-  TEMP_INTEGER(current_den);
+  PPL_DIRTY_TEMP_COEFFICIENT(current_num);
+  PPL_DIRTY_TEMP_COEFFICIENT(current_den);
   dimension_type entering_index = 0;
   const int cost_sign = sgn(working_cost[working_cost.size() - 1]);
   for (dimension_type j = tableau.num_columns() - 1; j-- > 1; ) {
@@ -1017,8 +1017,8 @@ PPL::MIP_Problem::linear_combine(Row& x,
   // Let g be the GCD between `x[k]' and `y[k]'.
   // For each i the following computes
   //   x[i] = x[i]*y[k]/g - y[i]*x[k]/g.
-  TEMP_INTEGER(normalized_x_k);
-  TEMP_INTEGER(normalized_y_k);
+  PPL_DIRTY_TEMP_COEFFICIENT(normalized_x_k);
+  PPL_DIRTY_TEMP_COEFFICIENT(normalized_y_k);
   normalize2(x[k], y[k], normalized_x_k, normalized_y_k);
   for (dimension_type i = x.size(); i-- > 0; )
     if (i != k) {
@@ -1080,9 +1080,9 @@ PPL::MIP_Problem
     return tableau_num_rows;
 
   // Reaching this point means that a variable will definitely exit the base.
-  TEMP_INTEGER(lcm);
-  TEMP_INTEGER(current_min);
-  TEMP_INTEGER(challenger);
+  PPL_DIRTY_TEMP_COEFFICIENT(lcm);
+  PPL_DIRTY_TEMP_COEFFICIENT(current_min);
+  PPL_DIRTY_TEMP_COEFFICIENT(challenger);
   for (dimension_type i = exiting_base_index + 1; i < tableau_num_rows; ++i) {
     const Row& t_i = tableau[i];
     const Coefficient& t_ie = t_i[entering_var_index];
@@ -1116,11 +1116,11 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
   unsigned long non_increased_times = 0;
   bool textbook_pricing = false;
 
-  TEMP_INTEGER(cost_sgn_coeff);
-  TEMP_INTEGER(current_num);
-  TEMP_INTEGER(current_den);
-  TEMP_INTEGER(challenger);
-  TEMP_INTEGER(current);
+  PPL_DIRTY_TEMP_COEFFICIENT(cost_sgn_coeff);
+  PPL_DIRTY_TEMP_COEFFICIENT(current_num);
+  PPL_DIRTY_TEMP_COEFFICIENT(current_den);
+  PPL_DIRTY_TEMP_COEFFICIENT(challenger);
+  PPL_DIRTY_TEMP_COEFFICIENT(current);
 
   cost_sgn_coeff = working_cost[working_cost.size()-1];
   current_num = working_cost[0];
@@ -1312,10 +1312,10 @@ PPL::MIP_Problem::compute_generator() const {
   std::vector<Coefficient> den(external_space_dim);
   dimension_type row = 0;
 
-  TEMP_INTEGER(lcm);
+  PPL_DIRTY_TEMP_COEFFICIENT(lcm);
   // Speculatively allocate temporaries out of loop.
-  TEMP_INTEGER(split_num);
-  TEMP_INTEGER(split_den);
+  PPL_DIRTY_TEMP_COEFFICIENT(split_num);
+  PPL_DIRTY_TEMP_COEFFICIENT(split_den);
 
   // We start to compute num[] and den[].
   for (dimension_type i = external_space_dim; i-- > 0; ) {
@@ -1541,8 +1541,8 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
   DIRTY_TEMP0(mpq_class, tmp_rational);
 
   Generator p = point();
-  TEMP_INTEGER(tmp_coeff1);
-  TEMP_INTEGER(tmp_coeff2);
+  PPL_DIRTY_TEMP_COEFFICIENT(tmp_coeff1);
+  PPL_DIRTY_TEMP_COEFFICIENT(tmp_coeff2);
 
   if (lp_status == UNBOUNDED_MIP_PROBLEM)
     p = lp.last_generator;
@@ -1564,7 +1564,7 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
   }
 
   bool found_satisfiable_generator = true;
-  TEMP_INTEGER(gcd);
+  PPL_DIRTY_TEMP_COEFFICIENT(gcd);
   const Coefficient& p_divisor = p.divisor();
   dimension_type nonint_dim;
   for (Variables_Set::const_iterator v_begin = i_vars.begin(),
@@ -1593,8 +1593,8 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
       incumbent_solution_point = p;
       have_incumbent_solution = true;
 #if PPL_NOISY_SIMPLEX
-      TEMP_INTEGER(num);
-      TEMP_INTEGER(den);
+      PPL_DIRTY_TEMP_COEFFICIENT(num);
+      PPL_DIRTY_TEMP_COEFFICIENT(den);
       lp.evaluate_objective_function(p, num, den);
       std::cerr << "new value found: " << num << "/" << den << std::endl;
 #endif
@@ -1633,7 +1633,7 @@ PPL::MIP_Problem::choose_branching_variable(const MIP_Problem& mip,
   const Coefficient& last_generator_divisor = last_generator.divisor();
   Variables_Set candidate_variables;
 
-  TEMP_INTEGER(gcd);
+  PPL_DIRTY_TEMP_COEFFICIENT(gcd);
   for (Variables_Set::const_iterator v_it = i_vars.begin(),
 	 v_end = i_vars.end(); v_it != v_end; ++v_it) {
     gcd_assign(gcd,
@@ -1685,8 +1685,8 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp, Generator& p,
     return false;
   DIRTY_TEMP0(mpq_class, tmp_rational);
 
-  TEMP_INTEGER(tmp_coeff1);
-  TEMP_INTEGER(tmp_coeff2);
+  PPL_DIRTY_TEMP_COEFFICIENT(tmp_coeff1);
+  PPL_DIRTY_TEMP_COEFFICIENT(tmp_coeff2);
   p = lp.last_generator;
 
   bool found_satisfiable_generator = true;
@@ -1697,7 +1697,7 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp, Generator& p,
   found_satisfiable_generator
     = choose_branching_variable(lp, i_vars, nonint_dim);
 #else
-  TEMP_INTEGER(gcd);
+  PPL_DIRTY_TEMP_COEFFICIENT(gcd);
   for (Variables_Set::const_iterator v_begin = i_vars.begin(),
 	 v_end = i_vars.end(); v_begin != v_end; ++v_begin) {
     gcd_assign(gcd, p.coefficient(Variable(*v_begin)), p_divisor);
@@ -1801,7 +1801,7 @@ PPL::MIP_Problem::OK() const {
     // Check that every integer declared variable is really integer.
     // in the solution found.
     if (!i_variables.empty()) {
-      TEMP_INTEGER(gcd);
+      PPL_DIRTY_TEMP_COEFFICIENT(gcd);
       for (Variables_Set::const_iterator v_it = i_variables.begin(),
 	     v_end = i_variables.end(); v_it != v_end; ++v_it) {
 	gcd_assign(gcd, last_generator.coefficient(Variable(*v_it)),

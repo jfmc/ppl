@@ -89,7 +89,7 @@ PPL::Row::normalize() {
   // Compute the GCD of all the coefficients.
   const dimension_type sz = size();
   dimension_type i = sz;
-  TEMP_INTEGER(gcd);
+  PPL_DIRTY_TEMP_COEFFICIENT(gcd);
   while (i > 0) {
     const Coefficient& x_i = x[--i];
     if (const int x_i_sign = sgn(x_i)) {

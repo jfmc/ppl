@@ -598,7 +598,7 @@ PPL::Polyhedron::max_min(const Linear_Expression& expr,
   // Whether the current candidate extremum is included or not.
   PPL_UNINITIALIZED(bool, ext_included);
 
-  TEMP_INTEGER(sp);
+  PPL_DIRTY_TEMP_COEFFICIENT(sp);
   for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
     const Generator& gen_sys_i = gen_sys[i];
     Scalar_Products::homogeneous_assign(sp, expr, gen_sys_i);

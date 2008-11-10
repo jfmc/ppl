@@ -187,7 +187,7 @@ PPL::Congruence_System::normalize_moduli() {
   dimension_type row = num_rows();
   if (row > 0) {
     // Calculate the LCM of all the moduli.
-    TEMP_INTEGER(lcm);
+    PPL_DIRTY_TEMP_COEFFICIENT(lcm);
     // Find last proper congruence.
     while (true) {
       lcm = operator[](--row).modulus();
@@ -204,7 +204,7 @@ PPL::Congruence_System::normalize_moduli() {
     }
 
     // Represent every row using the LCM as the modulus.
-    TEMP_INTEGER(factor);
+    PPL_DIRTY_TEMP_COEFFICIENT(factor);
     dimension_type row_size = operator[](0).size();
     for (row = num_rows(); row-- > 0; ) {
       const Coefficient& modulus = operator[](row).modulus();
@@ -278,7 +278,7 @@ satisfies_all_congruences(const Grid_Generator& g) const {
   assert(g.space_dimension() <= space_dimension());
 
   const Congruence_System& cgs = *this;
-  TEMP_INTEGER(sp);
+  PPL_DIRTY_TEMP_COEFFICIENT(sp);
   if (g.is_line())
     for (dimension_type i = cgs.num_rows(); i-- > 0; ) {
       const Congruence& cg = cgs[i];

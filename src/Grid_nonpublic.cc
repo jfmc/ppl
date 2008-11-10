@@ -327,7 +327,7 @@ PPL::Grid::max_min(const Linear_Expression& expr,
     ext_n += expr.inhomogeneous_term();
     ext_d = gen.divisor();
     // Reduce ext_n and ext_d.
-    TEMP_INTEGER(gcd);
+    PPL_DIRTY_TEMP_COEFFICIENT(gcd);
     gcd_assign(gcd, ext_n, ext_d);
     exact_div_assign(ext_n, ext_n, gcd);
     exact_div_assign(ext_d, ext_d, gcd);
@@ -502,7 +502,7 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
   }
 #endif // !defined(NDEBUG)
 
-  TEMP_INTEGER(divisor);
+  PPL_DIRTY_TEMP_COEFFICIENT(divisor);
   divisor = gen_sys_divisor;
   // Adjust sys to include the gen_sys divisor.
   normalize_divisors(sys, divisor);

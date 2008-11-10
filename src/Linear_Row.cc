@@ -108,8 +108,8 @@ PPL::Linear_Row::linear_combine(const Linear_Row& y, const dimension_type k) {
   // Let g be the GCD between `x[k]' and `y[k]'.
   // For each i the following computes
   //   x[i] = x[i]*y[k]/g - y[i]*x[k]/g.
-  TEMP_INTEGER(normalized_x_k);
-  TEMP_INTEGER(normalized_y_k);
+  PPL_DIRTY_TEMP_COEFFICIENT(normalized_x_k);
+  PPL_DIRTY_TEMP_COEFFICIENT(normalized_y_k);
   normalize2(x[k], y[k], normalized_x_k, normalized_y_k);
   for (dimension_type i = size(); i-- > 0; )
     if (i != k) {

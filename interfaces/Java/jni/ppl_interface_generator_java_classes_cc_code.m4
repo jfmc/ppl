@@ -491,8 +491,8 @@ Java_parma_1polyhedra_1library_@1CLASS@_@1MAXMIN@__Lparma_1polyhedra_1library_Li
   try {
     @CPP_CLASS@* this_ptr
       = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this));
-    TEMP_INTEGER(num);
-    TEMP_INTEGER(den);
+    PPL_DIRTY_TEMP_COEFFICIENT(num);
+    PPL_DIRTY_TEMP_COEFFICIENT(den);
     num = build_cxx_coeff(env, j_num);
     den = build_cxx_coeff(env, j_den);
     Linear_Expression le = build_cxx_linear_expression(env, j_le);
@@ -523,8 +523,8 @@ Java_parma_1polyhedra_1library_@1CLASS@_@1MAXMIN@__Lparma_1polyhedra_1library_Li
   try {
     @CPP_CLASS@* this_ptr
       = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this));
-    TEMP_INTEGER(num);
-    TEMP_INTEGER(den);
+    PPL_DIRTY_TEMP_COEFFICIENT(num);
+    PPL_DIRTY_TEMP_COEFFICIENT(den);
     num = build_cxx_coeff(env, j_num);
     den = build_cxx_coeff(env, j_den);
     Linear_Expression le = build_cxx_linear_expression(env, j_le);
@@ -728,7 +728,7 @@ Java_parma_1polyhedra_1library_@1CLASS@_@1AFFIMAGE@
       = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this));
     Variable v = build_cxx_variable(env, j_v);
     Linear_Expression le = build_cxx_linear_expression(env, j_le);
-    TEMP_INTEGER(c);
+    PPL_DIRTY_TEMP_COEFFICIENT(c);
     c = build_cxx_coeff(env, j_c);
     this_ptr->@AFFIMAGE@(v, le, c);
   }
@@ -768,7 +768,7 @@ Java_parma_1polyhedra_1library_@1CLASS@_generalized_1@1AFFIMAGE@__Lparma_1polyhe
     Variable v = build_cxx_variable(env, j_v);
     Relation_Symbol relsym = build_cxx_relsym(env, j_relsym);
     Linear_Expression le = build_cxx_linear_expression(env, j_le);
-    TEMP_INTEGER(c);
+    PPL_DIRTY_TEMP_COEFFICIENT(c);
     c = build_cxx_coeff(env, j_c);
     this_ptr->generalized_@AFFIMAGE@(v, relsym, le, c);
   }
@@ -789,7 +789,7 @@ Java_parma_1polyhedra_1library_@1CLASS@_generalized_1@1AFFIMAGE@_1lhs_1rhs_1with
     Linear_Expression lhs = build_cxx_linear_expression(env, j_lhs);
     Linear_Expression rhs = build_cxx_linear_expression(env, j_rhs);
     Relation_Symbol relsym = build_cxx_relsym(env, j_relsym);
-    TEMP_INTEGER(modulus);
+    PPL_DIRTY_TEMP_COEFFICIENT(modulus);
     modulus = build_cxx_coeff(env, j_modulus);
     this_ptr->generalized_@AFFIMAGE@(lhs, relsym, rhs, modulus);
   }
@@ -810,8 +810,8 @@ Java_parma_1polyhedra_1library_@CLASS@_generalized_1@1AFFIMAGE@_1with_1congruenc
     Variable v = build_cxx_variable(env, j_v);
     Relation_Symbol relsym = build_cxx_relsym(env, j_relsym);
     Linear_Expression le = build_cxx_linear_expression(env, j_le);
-    TEMP_INTEGER(c);
-    TEMP_INTEGER(modulus);
+    PPL_DIRTY_TEMP_COEFFICIENT(c);
+    PPL_DIRTY_TEMP_COEFFICIENT(modulus);
     c = build_cxx_coeff(env, j_c);
     modulus = build_cxx_coeff(env, j_modulus);
     this_ptr->generalized_@AFFIMAGE@(v, relsym, le, c, modulus);
@@ -833,7 +833,7 @@ Java_parma_1polyhedra_1library_@1CLASS@_bounded_1@1AFFIMAGE@
     Variable v = build_cxx_variable(env, j_v);
     Linear_Expression lhs = build_cxx_linear_expression(env, j_lhs);
     Linear_Expression rhs = build_cxx_linear_expression(env, j_rhs);
-    TEMP_INTEGER(c);
+    PPL_DIRTY_TEMP_COEFFICIENT(c);
     c = build_cxx_coeff(env, j_c);
     this_ptr->bounded_@AFFIMAGE@(v, lhs, rhs, c);
   }

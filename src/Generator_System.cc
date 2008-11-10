@@ -800,7 +800,7 @@ PPL::Generator_System
 
   // Compute the numerator of the affine transformation and assign it
   // to the column of `*this' indexed by `v'.
-  TEMP_INTEGER(numerator);
+  PPL_DIRTY_TEMP_COEFFICIENT(numerator);
   for (dimension_type i = n_rows; i-- > 0; ) {
     Generator& row = x[i];
     Scalar_Products::assign(numerator, expr, row);

@@ -312,7 +312,7 @@ PPL::Polyhedron::relation_with(const Congruence& cg) const {
   // The polyhedron is non-empty so that there exists a point.
   // For an arbitrary generator point find the scalar product with
   // the equality.
-  TEMP_INTEGER(point_val);
+  PPL_DIRTY_TEMP_COEFFICIENT(point_val);
 
   for (Generator_System::const_iterator g = gen_sys.begin(),
          gen_sys_end = gen_sys.end(); g != gen_sys_end; ++g) {
@@ -329,10 +329,10 @@ PPL::Polyhedron::relation_with(const Congruence& cg) const {
   // half-spaces to determine its relation with the congruence.
   const Coefficient& modulus = cg.modulus();
 
-  TEMP_INTEGER(div);
+  PPL_DIRTY_TEMP_COEFFICIENT(div);
   div = modulus;
 
-  TEMP_INTEGER(nearest);
+  PPL_DIRTY_TEMP_COEFFICIENT(nearest);
   nearest = (point_val / div) * div;
 
   point_val -= nearest;
@@ -591,10 +591,10 @@ PPL::Polyhedron::contains_integer_point() const {
   MIP_Problem mip(space_dim);
   mip.add_to_integer_space_dimensions(Variables_Set(Variable(0),
 						    Variable(space_dim-1)));
-  TEMP_INTEGER(homogeneous_gcd);
-  TEMP_INTEGER(gcd);
+  PPL_DIRTY_TEMP_COEFFICIENT(homogeneous_gcd);
+  PPL_DIRTY_TEMP_COEFFICIENT(gcd);
   DIRTY_TEMP0(mpq_class, rational_inhomogeneous);
-  TEMP_INTEGER(tightened_inhomogeneous);
+  PPL_DIRTY_TEMP_COEFFICIENT(tightened_inhomogeneous);
   for (Constraint_System::const_iterator cs_i = cs.begin(),
 	 cs_end = cs.end(); cs_i != cs_end; ++cs_i) {
     const Constraint& c = *cs_i;
@@ -3241,7 +3241,7 @@ generalized_affine_preimage(const Variable var,
   if (var_coefficient != 0) {
     Linear_Expression inverse_expr
       = expr - (denominator + var_coefficient) * var;
-    TEMP_INTEGER(inverse_denominator);
+    PPL_DIRTY_TEMP_COEFFICIENT(inverse_denominator);
     neg_assign(inverse_denominator, var_coefficient);
     Relation_Symbol inverse_relsym
       = (sgn(denominator) == sgn(inverse_denominator))

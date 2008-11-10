@@ -32,11 +32,11 @@ Grid::reduce_line_with_line(Grid_Generator& row, Grid_Generator& pivot,
 			    dimension_type column) {
   const Coefficient& pivot_column = pivot[column];
   Coefficient& row_column = row[column];
-  TEMP_INTEGER(reduced_row_col);
+  PPL_DIRTY_TEMP_COEFFICIENT(reduced_row_col);
   // Use reduced_row_col temporarily to hold the gcd.
   gcd_assign(reduced_row_col, pivot_column, row_column);
   // Store the reduced ratio between pivot[column] and row[column].
-  TEMP_INTEGER(reduced_pivot_col);
+  PPL_DIRTY_TEMP_COEFFICIENT(reduced_pivot_col);
   exact_div_assign(reduced_pivot_col, pivot_column, reduced_row_col);
   exact_div_assign(reduced_row_col, row_column, reduced_row_col);
   // Multiply row, then subtract from it a multiple of pivot such that
@@ -62,11 +62,11 @@ Grid::reduce_equality_with_equality(Congruence& row,
 
   const Coefficient& pivot_column = pivot[column];
   Coefficient& row_column = row[column];
-  TEMP_INTEGER(reduced_row_col);
+  PPL_DIRTY_TEMP_COEFFICIENT(reduced_row_col);
   // Use reduced_row_col temporarily to hold the gcd.
   gcd_assign(reduced_row_col, pivot_column, row_column);
   // Store the reduced ratio between pivot[column] and row[column].
-  TEMP_INTEGER(reduced_pivot_col);
+  PPL_DIRTY_TEMP_COEFFICIENT(reduced_pivot_col);
   exact_div_assign(reduced_pivot_col, pivot_column, reduced_row_col);
   exact_div_assign(reduced_row_col, row_column, reduced_row_col);
   // Multiply row, then subtract from it a multiple of pivot such that
@@ -88,15 +88,15 @@ Grid::reduce_pc_with_pc(R& row, R& pivot,
   Coefficient& pivot_column = pivot[column];
   Coefficient& row_column = row[column];
 
-  TEMP_INTEGER(s);
-  TEMP_INTEGER(t);
-  TEMP_INTEGER(reduced_row_col);
+  PPL_DIRTY_TEMP_COEFFICIENT(s);
+  PPL_DIRTY_TEMP_COEFFICIENT(t);
+  PPL_DIRTY_TEMP_COEFFICIENT(reduced_row_col);
   // Use reduced_row_col temporarily to hold the gcd.
   gcdext_assign(reduced_row_col, s, t, pivot_column, row_column);
   // Now pivot[column] * s + row[column] * t == gcd.
 
   // Store the reduced ratio between pivot[column] and row[column].
-  TEMP_INTEGER(reduced_pivot_col);
+  PPL_DIRTY_TEMP_COEFFICIENT(reduced_pivot_col);
   exact_div_assign(reduced_pivot_col, pivot_column, reduced_row_col);
   pivot_column = reduced_row_col /* gcd */;
   exact_div_assign(reduced_row_col, row_column, reduced_row_col);
@@ -109,7 +109,7 @@ Grid::reduce_pc_with_pc(R& row, R& pivot,
   assert(pivot.size() > 0);
   assert(row.size() > 0);
   row_column = 0;
-  TEMP_INTEGER(old_pivot_col);
+  PPL_DIRTY_TEMP_COEFFICIENT(old_pivot_col);
   for (dimension_type col = start; col < end; ++col) {
     Coefficient& pivot_col = pivot[col];
     old_pivot_col = pivot_col;
@@ -143,11 +143,11 @@ Grid::reduce_parameter_with_line(Grid_Generator& row,
     return;
   }
 
-  TEMP_INTEGER(reduced_row_col);
+  PPL_DIRTY_TEMP_COEFFICIENT(reduced_row_col);
   // Use reduced_row_col temporarily to hold the gcd.
   gcd_assign(reduced_row_col, pivot_column, row_column);
   // Store the reduced ratio between pivot[column] and row[column].
-  TEMP_INTEGER(reduced_pivot_col);
+  PPL_DIRTY_TEMP_COEFFICIENT(reduced_pivot_col);
   exact_div_assign(reduced_pivot_col, pivot_column, reduced_row_col);
   exact_div_assign(reduced_row_col, row_column, reduced_row_col);
 
@@ -198,10 +198,10 @@ Grid::reduce_congruence_with_equality(Congruence& row,
     return;
   }
 
-  TEMP_INTEGER(reduced_row_col);
+  PPL_DIRTY_TEMP_COEFFICIENT(reduced_row_col);
   // Use reduced_row_col temporarily to hold the gcd.
   gcd_assign(reduced_row_col, pivot_column, row_column);
-  TEMP_INTEGER(reduced_pivot_col);
+  PPL_DIRTY_TEMP_COEFFICIENT(reduced_pivot_col);
   exact_div_assign(reduced_pivot_col, pivot_column, reduced_row_col);
   exact_div_assign(reduced_row_col, row_column, reduced_row_col);
   // Ensure that `reduced_pivot_col' is positive, so that the modulus

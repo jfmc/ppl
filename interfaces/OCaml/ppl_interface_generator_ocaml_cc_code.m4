@@ -688,8 +688,8 @@ extern "C"
 CAMLprim value
 ppl_@CLASS@_@MAXMIN@(value ph, value caml_le) try {
   CAMLparam2(ph, caml_le);
-  TEMP_INTEGER(num);
-  TEMP_INTEGER(den);
+  PPL_DIRTY_TEMP_COEFFICIENT(num);
+  PPL_DIRTY_TEMP_COEFFICIENT(den);
   bool is_supremum = false;
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
   bool ppl_return_value = pph.@MAXMIN@(build_ppl_Linear_Expression(caml_le),
@@ -711,8 +711,8 @@ extern "C"
 CAMLprim value
 ppl_@CLASS@_@MAXMIN@_with_point(value ph, value caml_le) try {
   CAMLparam2(ph, caml_le);
-  TEMP_INTEGER(num);
-  TEMP_INTEGER(den);
+  PPL_DIRTY_TEMP_COEFFICIENT(num);
+  PPL_DIRTY_TEMP_COEFFICIENT(den);
   bool is_supremum = false;
   Generator g = point();
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
