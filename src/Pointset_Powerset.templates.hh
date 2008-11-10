@@ -946,13 +946,18 @@ Pointset_Powerset<PS>::maximize(const Linear_Expression& expr,
   x.omega_reduce();
   bool first = true;
 
-  Coefficient supt_n = 0;
-  Coefficient supt_d = 1;
+  PPL_DIRTY_TEMP_COEFFICIENT(supt_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(supt_d);
+  supt_n = 0;
+  supt_d = 1;
   bool maxt = 0;
 
-  Coefficient supi_n = 0;
-  Coefficient supi_d = 1;
+  PPL_DIRTY_TEMP_COEFFICIENT(supi_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(supi_d);
+  supi_n = 0;
+  supi_d = 1;
   bool maxi = 0;
+
   PPL_DIRTY_TEMP_COEFFICIENT(tmp);
 
   for (Sequence_const_iterator si = x.sequence.begin(),
@@ -994,15 +999,20 @@ Pointset_Powerset<PS>::maximize(const Linear_Expression& expr,
   x.omega_reduce();
   bool first = true;
 
-  Coefficient supt_n = 0;
-  Coefficient supt_d = 1;
+  PPL_DIRTY_TEMP_COEFFICIENT(supt_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(supt_d);
+  supt_n = 0;
+  supt_d = 1;
   bool maxt = 0;
   Generator gt = point();
 
-  Coefficient supi_n = 0;
-  Coefficient supi_d = 1;
+  PPL_DIRTY_TEMP_COEFFICIENT(supi_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(supi_d);
+  supi_n = 0;
+  supi_d = 1;
   bool maxi = 0;
   Generator gi = point();
+
   PPL_DIRTY_TEMP_COEFFICIENT(tmp);
 
   for (Sequence_const_iterator si = x.sequence.begin(),
@@ -1048,13 +1058,18 @@ Pointset_Powerset<PS>::minimize(const Linear_Expression& expr,
   x.omega_reduce();
   bool first = true;
 
-  Coefficient inft_n = 0;
-  Coefficient inft_d = 1;
+  PPL_DIRTY_TEMP_COEFFICIENT(inft_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(inft_d);
+  inft_n = 0;
+  inft_d = 1;
   bool mint = 0;
 
-  Coefficient infi_n = 0;
-  Coefficient infi_d = 1;
+  PPL_DIRTY_TEMP_COEFFICIENT(infi_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(infi_d);
+  infi_n = 0;
+  infi_d = 1;
   bool mini = 0;
+
   PPL_DIRTY_TEMP_COEFFICIENT(tmp);
 
   for (Sequence_const_iterator si = x.sequence.begin(),
@@ -1096,15 +1111,20 @@ Pointset_Powerset<PS>::minimize(const Linear_Expression& expr,
   x.omega_reduce();
   bool first = true;
 
-  Coefficient inft_n = 0;
-  Coefficient inft_d = 1;
+  PPL_DIRTY_TEMP_COEFFICIENT(inft_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(inft_d);
+  inft_n = 0;
+  inft_d = 1;
   bool mint = 0;
   Generator gt = point();
 
-  Coefficient infi_n = 0;
-  Coefficient infi_d = 1;
+  PPL_DIRTY_TEMP_COEFFICIENT(infi_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(infi_d);
+  infi_n = 0;
+  infi_d = 1;
   bool mini = 0;
   Generator gi = point();
+
   PPL_DIRTY_TEMP_COEFFICIENT(tmp);
 
   for (Sequence_const_iterator si = x.sequence.begin(),

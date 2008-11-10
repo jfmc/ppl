@@ -200,12 +200,14 @@ Partially_Reduced_Product<D1, D2, R>
 	   Coefficient& sup_d,
 	   bool& maximum) const {
   reduce();
+
   if (is_empty())
     return false;
-  Coefficient sup1_n;
-  Coefficient sup1_d;
-  Coefficient sup2_n;
-  Coefficient sup2_d;
+
+  PPL_DIRTY_TEMP_COEFFICIENT(sup1_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(sup1_d);
+  PPL_DIRTY_TEMP_COEFFICIENT(sup2_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(sup2_d);
   bool maximum1;
   bool maximum2;
   bool r1 = d1.maximize(expr, sup1_n, sup1_d, maximum1);
@@ -249,12 +251,14 @@ Partially_Reduced_Product<D1, D2, R>
 	   Coefficient& inf_d,
 	   bool& minimum) const {
   reduce();
+
   if (is_empty())
     return false;
-  Coefficient inf1_n;
-  Coefficient inf1_d;
-  Coefficient inf2_n;
-  Coefficient inf2_d;
+
+  PPL_DIRTY_TEMP_COEFFICIENT(inf1_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(inf1_d);
+  PPL_DIRTY_TEMP_COEFFICIENT(inf2_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(inf2_d);
   bool minimum1;
   bool minimum2;
   bool r1 = d1.minimize(expr, inf1_n, inf1_d, minimum1);
@@ -299,12 +303,14 @@ Partially_Reduced_Product<D1, D2, R>
 	   bool& maximum,
 	   Generator& pnt) const {
   reduce();
+
   if (is_empty())
     return false;
-  Coefficient sup1_n;
-  Coefficient sup1_d;
-  Coefficient sup2_n;
-  Coefficient sup2_d;
+
+  PPL_DIRTY_TEMP_COEFFICIENT(sup1_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(sup1_d);
+  PPL_DIRTY_TEMP_COEFFICIENT(sup2_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(sup2_d);
   bool maximum1;
   bool maximum2;
   Generator pnt1(point());
@@ -355,12 +361,14 @@ Partially_Reduced_Product<D1, D2, R>
 	   bool& minimum,
 	   Generator& pnt) const {
   reduce();
+
   if (is_empty())
     return false;
-  Coefficient inf1_n;
-  Coefficient inf1_d;
-  Coefficient inf2_n;
-  Coefficient inf2_d;
+
+  PPL_DIRTY_TEMP_COEFFICIENT(inf1_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(inf1_d);
+  PPL_DIRTY_TEMP_COEFFICIENT(inf2_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(inf2_d);
   bool minimum1;
   bool minimum2;
   Generator pnt1(point());
