@@ -14,7 +14,9 @@ o  Some packaging issues have been fixed.
 
 o  Robustness improved.
 
-o  ...
+o  New macro PPL_DIRTY_TEMP_COEFFICIENT allows users of the C++ interface
+   to decrease memory allocation overhead and to improve locality whenever
+   they need a temporary variable of type `Coefficient'.
 
 
 Bugfixes
