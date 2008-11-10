@@ -548,9 +548,9 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			    const BD_Shape<T>& y,
 			    const Rounding_Dir dir) {
   typedef Checked_Number<Temp, Extended_Number_Policy> Checked_Temp;
-  DIRTY_TEMP(Checked_Temp, tmp0);
-  DIRTY_TEMP(Checked_Temp, tmp1);
-  DIRTY_TEMP(Checked_Temp, tmp2);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp0);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp1);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp2);
   return rectilinear_distance_assign(r, x, y, dir, tmp0, tmp1, tmp2);
 }
 
@@ -613,9 +613,9 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			  const BD_Shape<T>& y,
 			  const Rounding_Dir dir) {
   typedef Checked_Number<Temp, Extended_Number_Policy> Checked_Temp;
-  DIRTY_TEMP(Checked_Temp, tmp0);
-  DIRTY_TEMP(Checked_Temp, tmp1);
-  DIRTY_TEMP(Checked_Temp, tmp2);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp0);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp1);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp2);
   return euclidean_distance_assign(r, x, y, dir, tmp0, tmp1, tmp2);
 }
 
@@ -678,9 +678,9 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			   const BD_Shape<T>& y,
 			   const Rounding_Dir dir) {
   typedef Checked_Number<Temp, Extended_Number_Policy> Checked_Temp;
-  DIRTY_TEMP(Checked_Temp, tmp0);
-  DIRTY_TEMP(Checked_Temp, tmp1);
-  DIRTY_TEMP(Checked_Temp, tmp2);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp0);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp1);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp2);
   return l_infinity_distance_assign(r, x, y, dir, tmp0, tmp1, tmp2);
 }
 
@@ -718,7 +718,7 @@ BD_Shape<T>::add_dbm_constraint(const dimension_type i,
   // Private method: the caller has to ensure the following.
   assert(i <= space_dimension() && j <= space_dimension() && i != j);
   assert(den != 0);
-  DIRTY_TEMP(N, k);
+  PPL_DIRTY_TEMP(N, k);
   div_round_up(k, num, den);
   add_dbm_constraint(i, j, k);
 }

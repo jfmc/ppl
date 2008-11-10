@@ -507,7 +507,7 @@ inline typename Enable_If<(!Safe_Conversion<T1, T2>::value
 			   && !Safe_Conversion<T2, T1>::value
 			   && (!C_Integer<T1>::value || !C_Integer<T2>::value)), bool>::type
 eq(const T1& x, const T2& y) {
-  DIRTY_TEMP(T1, tmp);
+  PPL_DIRTY_TEMP(T1, tmp);
   Result r = assign_r(tmp, y, static_cast<Rounding_Dir>(ROUND_DIRECT | ROUND_FPU_CHECK_INEXACT));
   // FIXME(0.10.1): Can we do any better?
   // We can do this also without fpu inexact check using
@@ -523,7 +523,7 @@ inline typename Enable_If<(!Safe_Conversion<T1, T2>::value
 			   && !Safe_Conversion<T2, T1>::value
 			   && (!C_Integer<T1>::value || !C_Integer<T2>::value)), bool>::type
 lt(const T1& x, const T2& y) {
-  DIRTY_TEMP(T1, tmp);
+  PPL_DIRTY_TEMP(T1, tmp);
   Result r = assign_r(tmp, y, ROUND_UP);
   switch (r) {
   case V_POS_OVERFLOW:
@@ -544,7 +544,7 @@ Enable_If<(!Safe_Conversion<T1, T2>::value
            && !Safe_Conversion<T2, T1>::value
            && (!C_Integer<T1>::value || !C_Integer<T2>::value)), bool>::type
 le(const T1& x, const T2& y) {
-  DIRTY_TEMP(T1, tmp);
+  PPL_DIRTY_TEMP(T1, tmp);
   Result r
     = assign_r(tmp,
                y,
@@ -603,7 +603,7 @@ cmp_generic(const Type1& x, const Type2& y) {
 template <typename Policy, typename Type>
 inline Result
 input_generic(Type& to, std::istream& is, Rounding_Dir dir) {
-  DIRTY_TEMP0(mpq_class, q);
+  PPL_DIRTY_TEMP0(mpq_class, q);
   Result r = input_mpq(q, is);
   if (is_special(r))
     return assign_special<Policy>(to, r, dir);

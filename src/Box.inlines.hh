@@ -273,7 +273,7 @@ Box<ITV>::get_lower_bound(const dimension_type k, bool& closed,
 
   closed = !seq_k.lower_is_open();
 
-  DIRTY_TEMP0(mpq_class, lr);
+  PPL_DIRTY_TEMP0(mpq_class, lr);
   assign_r(lr, seq_k.lower(), ROUND_NOT_NEEDED);
   n = lr.get_num();
   d = lr.get_den();
@@ -293,7 +293,7 @@ Box<ITV>::get_upper_bound(const dimension_type k, bool& closed,
 
   closed = !seq_k.upper_is_open();
 
-  DIRTY_TEMP0(mpq_class, ur);
+  PPL_DIRTY_TEMP0(mpq_class, ur);
   assign_r(ur, seq_k.upper(), ROUND_NOT_NEEDED);
   n = ur.get_num();
   d = ur.get_den();
@@ -394,7 +394,7 @@ Box<ITV>
   // `rel' is either the relation `==', `>=', or `>'.
   // For the purpose of refining the interval, this is
   // (morally) turned into `Variable(var_id) rel -num/den'.
-  DIRTY_TEMP0(mpq_class, q);
+  PPL_DIRTY_TEMP0(mpq_class, q);
   assign_r(q.get_num(), num, ROUND_NOT_NEEDED);
   assign_r(q.get_den(), den, ROUND_NOT_NEEDED);
   q.canonicalize();
@@ -551,9 +551,9 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			    const Box<ITV>& y,
 			    const Rounding_Dir dir) {
   typedef Checked_Number<Temp, Extended_Number_Policy> Checked_Temp;
-  DIRTY_TEMP(Checked_Temp, tmp0);
-  DIRTY_TEMP(Checked_Temp, tmp1);
-  DIRTY_TEMP(Checked_Temp, tmp2);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp0);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp1);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp2);
   return rectilinear_distance_assign(r, x, y, dir, tmp0, tmp1, tmp2);
 }
 
@@ -592,9 +592,9 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			  const Box<ITV>& y,
 			  const Rounding_Dir dir) {
   typedef Checked_Number<Temp, Extended_Number_Policy> Checked_Temp;
-  DIRTY_TEMP(Checked_Temp, tmp0);
-  DIRTY_TEMP(Checked_Temp, tmp1);
-  DIRTY_TEMP(Checked_Temp, tmp2);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp0);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp1);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp2);
   return euclidean_distance_assign(r, x, y, dir, tmp0, tmp1, tmp2);
 }
 
@@ -633,9 +633,9 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			   const Box<ITV>& y,
 			   const Rounding_Dir dir) {
   typedef Checked_Number<Temp, Extended_Number_Policy> Checked_Temp;
-  DIRTY_TEMP(Checked_Temp, tmp0);
-  DIRTY_TEMP(Checked_Temp, tmp1);
-  DIRTY_TEMP(Checked_Temp, tmp2);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp0);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp1);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp2);
   return l_infinity_distance_assign(r, x, y, dir, tmp0, tmp1, tmp2);
 }
 

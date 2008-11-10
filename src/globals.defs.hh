@@ -58,7 +58,7 @@ swap(T&, T&) {
   Use of this macro to declare temporaries of type Coefficient results
   in decreased memory allocation overhead and in better locality.
 */
-#define PPL_DIRTY_TEMP_COEFFICIENT(id) DIRTY_TEMP0(Coefficient, id)
+#define PPL_DIRTY_TEMP_COEFFICIENT(id) PPL_DIRTY_TEMP0(Coefficient, id)
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Speculative allocation function.

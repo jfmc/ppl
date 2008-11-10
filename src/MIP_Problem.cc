@@ -294,7 +294,7 @@ PPL::MIP_Problem::solve() const{
 	x.i_variables = this_variables_set;
 	return UNFEASIBLE_MIP_PROBLEM;
       }
-      DIRTY_TEMP0(mpq_class, incumbent_solution);
+      PPL_DIRTY_TEMP0(mpq_class, incumbent_solution);
       Generator g = point();
       bool have_incumbent_solution = false;
 
@@ -873,7 +873,7 @@ assign(double& d,
 
 PPL::dimension_type
 PPL::MIP_Problem::steepest_edge_float_entering_index() const {
-  DIRTY_TEMP0(mpq_class, real_coeff);
+  PPL_DIRTY_TEMP0(mpq_class, real_coeff);
   const dimension_type tableau_num_rows = tableau.num_rows();
   assert(tableau_num_rows == base.size());
   double challenger_num = 0.0;
@@ -1538,7 +1538,7 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
   else
     return UNFEASIBLE_MIP_PROBLEM;
 
-  DIRTY_TEMP0(mpq_class, tmp_rational);
+  PPL_DIRTY_TEMP0(mpq_class, tmp_rational);
 
   Generator p = point();
   PPL_DIRTY_TEMP_COEFFICIENT(tmp_coeff1);
@@ -1683,7 +1683,7 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp, Generator& p,
   // Solve the problem as a non MIP one, it must be done internally.
   if (!lp.is_lp_satisfiable())
     return false;
-  DIRTY_TEMP0(mpq_class, tmp_rational);
+  PPL_DIRTY_TEMP0(mpq_class, tmp_rational);
 
   PPL_DIRTY_TEMP_COEFFICIENT(tmp_coeff1);
   PPL_DIRTY_TEMP_COEFFICIENT(tmp_coeff2);

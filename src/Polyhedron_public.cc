@@ -593,7 +593,7 @@ PPL::Polyhedron::contains_integer_point() const {
 						    Variable(space_dim-1)));
   PPL_DIRTY_TEMP_COEFFICIENT(homogeneous_gcd);
   PPL_DIRTY_TEMP_COEFFICIENT(gcd);
-  DIRTY_TEMP0(mpq_class, rational_inhomogeneous);
+  PPL_DIRTY_TEMP0(mpq_class, rational_inhomogeneous);
   PPL_DIRTY_TEMP_COEFFICIENT(tightened_inhomogeneous);
   for (Constraint_System::const_iterator cs_i = cs.begin(),
 	 cs_end = cs.end(); cs_i != cs_end; ++cs_i) {
