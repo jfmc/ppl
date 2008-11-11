@@ -51,21 +51,21 @@ dnl          are all public.)
 dnl          WARNING: some may not be used and may not be fully tested.
 dnl
 dnl ALL_CLASSES (m4_all_code is public)
-dnl   - m4_interface_generator_common_dat.m4 (m4_init_class_definitions)
-dnl   - ONE_CLASS (m4_one_class_code)
-dnl     - FILTER_PROCEDURES (m4_filter_all_procedures)
-dnl       - m4_interface_generator_common_dat.m4 (m4_group_names)
-dnl     - PATTERNS_TO_REPLACEMENTS (m4_replace_all_patterns_in_string)
-dnl       - PATTERNS (m4_pattern_annotation0, ...)
-dnl       - REPLACEMENT_TEXT (m4_annotated_pattern_replacement,
-dnl                           m4_def_replacements_for_extended_patterns,
-dnl                           m4_def_extended_replacements)
-dnl         - PATTERNS (m4_pattern_extension0, ...)
-dnl         - m4_interface_generator_common_dat.m4
-dnl             (m4_class_pattern_replacements)
-dnl     - m4_interface_generator_<interface>_procedure_generator.m4
-dnl         (m4_procedure_list)
-dnl     - EXPAND_PROCEDURES (m4_get_schematic_code)
+dnl |-- m4_interface_generator_common_dat.m4 (m4_init_class_definitions)
+dnl `-- ONE_CLASS (m4_one_class_code)
+dnl     |-- FILTER_PROCEDURES (m4_filter_all_procedures)
+dnl     |   `-- m4_interface_generator_common_dat.m4 (m4_group_names)
+dnl     |-- PATTERNS_TO_REPLACEMENTS (m4_replace_all_patterns_in_string)
+dnl     |-- PATTERNS (m4_pattern_annotation0, ...)
+dnl     |-- REPLACEMENT_TEXT (m4_annotated_pattern_replacement,
+dnl     |   |                 m4_def_replacements_for_extended_patterns,
+dnl     |   |                 m4_def_extended_replacements)
+dnl     |   |-- PATTERNS (m4_pattern_extension0, ...)
+dnl     |   `-- m4_interface_generator_common_dat.m4
+dnl     |         (m4_class_pattern_replacements)
+dnl     |-- m4_interface_generator_<interface>_procedure_generator.m4
+dnl     |    (m4_procedure_list)
+dnl     `-- EXPAND_PROCEDURES (m4_get_schematic_code)
 dnl
 dnl Note that the macro names indicate that they are used by the parent
 dnl macro group.
@@ -332,19 +332,34 @@ dnl Used in macro-group "PATTERNS_TO_REPLACEMENTS"
 dnl
 dnl m4_pattern_annotation`'AIndex
 dnl
-dnl is defined for AIndex values 0-3.
-dnl - ! means that the actual string must be:
+dnl is defined here for AIndex values 0 and 1.
+dnl - 0, which has the empty annotation,
+dnl   means that the actual replacement must be unchanged:
+dnl - 1, which has annotation !,
+dnl   means that the actual replacement must be:
 dnl   - lowercase, if the original has the first character uppercase, and
 dnl   - the first letter of each word ("_" separated) uppercase, otherwise.
-dnl - 1 and 1! means that the actual string must have a 1 after
-dnl   the underscore; only needed for Java.
-dnl
-dnl NOTE: `m4_java' should be defined in
-dnl Java/ppl_interface_generator_java_procedure_generators.m4
 m4_define(`m4_pattern_annotation0', `')
 m4_define(`m4_pattern_annotation1', `!')
-m4_ifdef(`m4_java', `m4_define(`m4_pattern_annotation2', `1')')
-m4_ifdef(`m4_java', `m4_define(`m4_pattern_annotation3', `1!')')
+
+dnl PUBLIC
+dnl m4_java_prefix_one_annotation
+dnl Only used by Java/jni/ppl_interface_generator_java_classes_cc_files.m4
+dnl as the extra annotations are only needed there.
+dnl PRIVATE
+dnl m4_pattern_annotation`'AIndex
+dnl Used in macro-group "PATTERNS_TO_REPLACEMENTS"
+dnl
+dnl m4_pattern_annotation`'AIndex is defined here for AIndex values 2 and 3:
+dnl - 2, which has annotation 1,
+dnl   means that the actual replacement must have a 1 after
+dnl   the underscore;
+dnl - 3, which has annotation 1!,
+dnl   means that the actual replacement must have a 1 after
+dnl   the underscore with the same change of case as for the annotation "!".
+m4_define(`m4_java_prefix_one_annotation',
+`m4_define(`m4_pattern_annotation2', `1')
+m4_define(`m4_pattern_annotation3', `1!')')
 
 dnl =====================================================================
 dnl              *** REPLACEMENT_TEXT ***
@@ -378,8 +393,9 @@ dnl For each possible EIndex value, m4_replace`'EIndex
 dnl is defined for the RIndex replacement.
 dnl
 m4_define(`m4_def_replacements_for_extended_patterns', `dnl
-m4_ifdef(`m4_pattern_extension$2', `m4_define(`m4_replace$2',
-  m4_arg($1, m4_replacements$2))`'dnl
+m4_ifdef(`m4_pattern_extension$2',
+  `m4_define(`m4_replace$2',
+    `m4_arg($1, m4_replacements$2)')`'dnl
 m4_def_replacements_for_extended_patterns($1, m4_incr($2))`'dnl
 ')`'dnl
 ')
@@ -428,9 +444,8 @@ dnl
 m4_define(`m4_def_extended_replacements', `dnl
 m4_ifdef(m4_replacement_extension`'$3, `dnl
 m4_define(`m4_replacements$3',
-  `m4_class_pattern_replacements($1, $2, m4_replacement_extension$3)')')`'dnl
-m4_ifdef(m4_replacement_extension`'$3,
-  `m4_def_extended_replacements($1, $2, m4_incr($3))')`'dnl
+  `m4_class_pattern_replacements($1, $2, m4_replacement_extension$3)`'dnl
+m4_def_extended_replacements($1, $2, m4_incr($3))')')`'dnl
 ')
 
 dnl =====================================================================
@@ -660,12 +675,11 @@ dnl (usually this string is the expanded procedure schema).
 dnl
 m4_define(`m4_annotated_extended_pattern_replacement', `dnl
 m4_ifdef(`m4_pattern_annotation$3',
-  `m4_ifelse(m4_nargs(m4_replacements$3), 0, $1,
-     m4_define(`m4_annotated_extended_pattern',
+  `m4_define(`m4_annotated_extended_pattern',
         m4_pattern_annotation$3`'m4_extended_pattern)`'dnl
 m4_annotated_extended_pattern_replacement(m4_patsubst($1,
   @`'m4_annotated_extended_pattern`'@,
-  m4_annotated_pattern_replacement$3($2)), $2, m4_incr($3)))',
+  m4_annotated_pattern_replacement$3($2)), $2, m4_incr($3))',
   `$1')`'dnl
 ')
 
@@ -707,7 +721,7 @@ dnl
 dnl If there are no replacements for EIndex, stop the replacements.
 dnl
 m4_define(`m4_expand_pattern_by_one_replacement_aux', `dnl
-m4_ifelse(`m4_replacements$2', `', ,
+m4_ifelse(`m4_replacements$2', `', `$1',
    `m4_ifdef(`m4_pattern_extension$2',
    `m4_define(`m4_extended_pattern', m4_pattern_extension$2`'m4_PATTERN)`'dnl
 m4_expand_pattern_by_one_replacement_aux(
@@ -728,7 +742,7 @@ dnl (a delimited form of possibly extended and annotated) m4_PATTERN by the
 dnl arguments of m4_replacements`'RIndex.
 m4_define(`m4_expand_pattern_by_all_replacements', `dnl
 m4_ifelse($2, m4_nargs(m4_replacements0),
-  `m4_expand_pattern_by_one_replacement($1, $2)',
+  m4_expand_pattern_by_one_replacement($1, $2),
   `m4_expand_pattern_by_one_replacement($1, $2)`'dnl
 m4_expand_pattern_by_all_replacements($1, m4_incr($2))')`'dnl
 ')
@@ -747,8 +761,7 @@ m4_define(`m4_replace_one_pattern_in_string', `dnl
 dnl the m4_PATTERN (in uppercase) is the string to be replaced.
 m4_define(`m4_PATTERN', m4_upcase($3))`'dnl
 m4_def_extended_replacements($1, $3, 0)`'dnl
-m4_ifelse(m4_index(`$2', m4_PATTERN`'@), `-1', $2,
-  `m4_expand_pattern_by_all_replacements($2, 1)')`'dnl
+m4_expand_pattern_by_all_replacements($2, 1)`'dnl
 dnl Cleanup temporary definitions.
 m4_undefine(`m4_PATTERN')`'dnl
 ')
@@ -756,20 +769,20 @@ m4_undefine(`m4_PATTERN')`'dnl
 dnl PUBLIC
 dnl Used in macro-group "ONE_CLASS" and by other m4 generator files.
 dnl
-dnl m4_replace_all_patterns_in_string(
-dnl    Class_Number, String, Pattern1, Pattern2, ...)
+dnl m4_replace_all_patterns(Class_Number, String)
 dnl
 dnl A (recursive) macro to replace, inside the second argument String,
-dnl all of the patterns listed from the third argument onwards.
+dnl all of the patterns.
 dnl
 dnl This is public because it is used by some code generators to replace
 dnl patterns used in some additional text provided locally.
-m4_define(`m4_replace_all_patterns_in_string', `dnl
-m4_ifelse($3, `', ``$2'',
-       `m4_regexp(`$2', `@[A-Z]')', `-1',  ``$2'',
-       `m4_replace_all_patterns_in_string($1,
-                                m4_replace_one_pattern_in_string($1, $2, $3),
-                                m4_shift(m4_shift(m4_shift($@))))')`'dnl
+m4_define(`m4_replace_all_patterns', `dnl
+m4_define(`m4_ann_ext_pattern_in_string',
+  `m4_regexp($2, `[.]*@[^@_A-Z]*\([_A-Z]+\)@.*', `\1')')`'dnl
+m4_ifelse(m4_ann_ext_pattern_in_string, `', $2,
+  `m4_replace_all_patterns($1,
+    m4_replace_one_pattern_in_string($1, $2,
+      m4_downcase(m4_patsubst(m4_ann_ext_pattern_in_string, ^[A-E]_, `'))))')
 ')
 
 dnl =====================================================================
@@ -789,12 +802,10 @@ dnl
 dnl Note: one schematic specification will replaced by a single
 dnl matching schematic code item; which is then replaced by several
 dnl instances.
-m4_undefine(`m4_replace_procedure_spec_by_code')
 m4_define(`m4_replace_procedure_spec_by_code', `dnl
 m4_patsubst(`$2', `\(.*\)', `dnl
-m4_replace_all_patterns_in_string($1,
-  m4_get_schematic_code(\1, 1, $1),
-    m4_pattern_list)')`'dnl
+m4_replace_all_patterns($1,
+  m4_get_schematic_code(\1, 1, $1))')`'dnl
 ')
 
 dnl LOCAL

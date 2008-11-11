@@ -40,9 +40,7 @@ m4_define(`m4_current_interface', m4_interface_class`'$1)`'dnl
 m4_include(`ppl_interface_generator_copyright')`'dnl
 */
 
-m4_replace_all_patterns_in_string($1,
-                                  m4_access_class_code,
-                                  class, cpp_class)`'dnl
+m4_replace_all_patterns($1, m4_access_class_code)`'dnl
 m4_undefine(`m4_current_interface')`'dnl
 ')
 

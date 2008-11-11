@@ -263,24 +263,12 @@ m4_popdef(`m4_current_interface')`'dnl
 %               class dependent predicate tests                     %
 %                                                                   %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-m4_replace_all_patterns_in_string($1,
-  m4_add_build_class_code($1),
-  m4_pattern_list)`'dnl
-m4_replace_all_patterns_in_string($1,
-  m4_add_comparison_class_code($1),
-  m4_pattern_list)`'dnl
-m4_replace_all_patterns_in_string($1,
-  m4_add_wdn_exn_class_code($1),
-  m4_pattern_list)`'dnl
-m4_replace_all_patterns_in_string($1,
-  m4_add_cleanup_class_code($1),
-  m4_pattern_list)`'dnl
-m4_replace_all_patterns_in_string($1,
-  m4_add_out_class_code($1),
-  m4_pattern_list)`'dnl
-m4_replace_all_patterns_in_string($1,
-  m4_add_out_extra_class_code($1),
-  m4_pattern_list)`'dnl
+m4_replace_all_patterns($1, m4_add_build_class_code($1))`'dnl
+m4_replace_all_patterns($1, m4_add_comparison_class_code($1))`'dnl
+m4_replace_all_patterns($1, m4_add_wdn_exn_class_code($1))`'dnl
+m4_replace_all_patterns($1, m4_add_cleanup_class_code($1))`'dnl
+m4_replace_all_patterns($1, m4_add_out_class_code($1))`'dnl
+m4_replace_all_patterns($1, m4_add_out_extra_class_code($1))`'dnl
 ')
 
 m4_pushdef(`m4_expanded_procedure_schema', `dnl

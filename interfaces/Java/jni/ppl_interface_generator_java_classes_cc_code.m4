@@ -1,6 +1,6 @@
-dnl  -*- C++ -*-
+m4_dnl  -*- C++ -*-
+m4_define(`dnl', `m4_dnl')
 m4_divert(-1)
-
 This m4 file contains the code for generating ppl_java_<CLASS_NAME>.cc
 
 Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>

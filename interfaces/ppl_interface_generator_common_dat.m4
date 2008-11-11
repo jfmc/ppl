@@ -495,6 +495,7 @@ dnl m4_pattern_list
 dnl
 dnl Returns a list of patterns (in lowercase) used for the generation
 dnl of procedure names and code schemas.
+dnl This is no longer used as a macro but is a list of all patterns.
 m4_define(`m4_pattern_list', `dnl
 class,
 topology,

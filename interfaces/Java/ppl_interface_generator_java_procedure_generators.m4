@@ -25,8 +25,6 @@ dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
-m4_define(`m4_java', `')
-
 dnl Include the language independent macros.
 m4_include(`ppl_interface_generator_common_procedure_generators.m4')
 m4_include(`ppl_interface_generator_common.m4')

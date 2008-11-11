@@ -108,15 +108,9 @@ m4_divert(-1)
 dnl m4_post_extra_class_code(Class, CPP_Class, Class_Kind)
 dnl Postfix extra code for each class.
 m4_define(`m4_post_extra_class_code', `dnl
-m4_replace_all_patterns_in_string($1,
-  m4_class_build_cpp_object1_code,
-  topology, class, build_represent)`'dnl
-m4_replace_all_patterns_in_string($1,
-  m4_class_build_cpp_object2_code,
-  topology, class)`'dnl
-m4_replace_all_patterns_in_string($1,
-  m4_class_build_cpp_object3_code,
-  topology, class, friend)`'dnl
+m4_replace_all_patterns($1, m4_class_build_cpp_object1_code)`'dnl
+m4_replace_all_patterns($1, m4_class_build_cpp_object2_code)`'dnl
+m4_replace_all_patterns($1, m4_class_build_cpp_object3_code)`'dnl
 m4_define(`m4_this_class', `m4_interface_class$1')`'dnl
 m4_define(`m4_this_class_kind', `m4_class_kind$1')
 %<--%<--%<-- m4_this_class`'.java

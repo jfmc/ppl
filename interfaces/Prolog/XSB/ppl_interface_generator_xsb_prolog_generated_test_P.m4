@@ -42,10 +42,9 @@ m4_include(`ppl_interface_generator_copyright')
 m4_divert(-1)
 
 m4_pushdef(`m4_one_class_code', `dnl
-m4_replace_all_patterns_in_string($1,
-                                  `#includeSPACE"../tests/ppl_prolog_generated_test_'`'m4_interface_class$1`'`.pl"
-',
-                                  m4_pattern_list)`'dnl
+m4_replace_all_patterns($1,
+  `#includeSPACE"../tests/ppl_prolog_generated_test_'`'m4_interface_class$1`'`.pl"
+')`'dnl
 ')`'dnl
 dnl
 dnl -----------------------------------------------------------------
