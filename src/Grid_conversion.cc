@@ -300,13 +300,14 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
 
   assert(lower_triangular(dest, dim_kinds));
 
-#ifdef STRONG_REDUCTION
+  // Since we are reducing the system to "strong minimal form",
+  // reduce the coefficients in the congruence system
+  // using "diagonal" values.
   for (dimension_type dim = dims, i = 0; dim-- > 0; )
     if (dim_kinds[dim] != CON_VIRTUAL)
       // Factor the "diagonal" congruence out of the preceding rows.
       reduce_reduced<Congruence_System, Congruence>
 	(dest, dim, i++, 0, dim, dim_kinds, false);
-#endif
 }
 
 void
@@ -450,13 +451,14 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 
   assert(upper_triangular(dest, dim_kinds));
 
-#ifdef STRONG_REDUCTION
+  // Since we are reducing the system to "strong minimal form",
+  // reduce the coordinates in the grid_generator system
+  // using "diagonal" values.
   for (dimension_type dim = 0, i = 0; dim < dims; ++dim)
     if (dim_kinds[dim] != GEN_VIRTUAL)
       // Factor the "diagonal" generator out of the preceding rows.
       reduce_reduced<Grid_Generator_System, Grid_Generator>
 	(dest, dim, i++, dim, dims - 1, dim_kinds);
-#endif
 
   // Ensure that the parameter divisors are the same as the divisor of
   // the point.

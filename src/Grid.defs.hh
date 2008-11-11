@@ -23,8 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Grid_defs_hh
 #define PPL_Grid_defs_hh 1
 
-#define STRONG_REDUCTION 1
-
 #include "Grid.types.hh"
 #include "globals.defs.hh"
 #include "Variable.defs.hh"
@@ -2635,9 +2633,18 @@ private:
 					      dimension_type col,
 					      Congruence_System& sys);
 
-#ifdef STRONG_REDUCTION
   //! Reduce column \p dim in rows preceding \p pivot_index in \p sys.
   /*!
+    Required when converting (or simplifying) a congruence or generator
+    system to "strong minimal form"; informally, strong minimal form means
+    that, not only is the system in minimal form (ie a triangular matrix),
+    but also the absolute values of the coefficients of the proper congruences
+    and parameters are minimal. As a simple example, the set of congruences
+    \f$\{3x \equiv_3 0, 4x + y \equiv_3 1\}\f$,
+    (which is in minimal form) is equivalent to the set
+    \f$\{3x \equiv_3 0, x + y \equiv_3 1\}\f$
+    (which is in strong minimal form).
+
     Only consider from index \p start to index \p end of the row at \p
     pivot_index.  Flag \p generators indicates whether \p sys is a
     congruence or generator system.
@@ -2648,7 +2655,6 @@ private:
 			     dimension_type start, dimension_type end,
 			     const Dimension_Kinds& dim_kinds,
 			     bool generators = true);
-#endif
 
   //! Multiply the elements of \p dest by \p multiplier.
   // A member of Grid for access to Matrix::rows and cgs::operator[].

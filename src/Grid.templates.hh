@@ -529,7 +529,8 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
   assert(OK(true));
 }
 
-#ifdef STRONG_REDUCTION
+// Needed for converting the congruence or grid_generator system
+// to "strong minimal form".
 template <typename M, typename R>
 void
 Grid::reduce_reduced(M& sys,
@@ -583,7 +584,7 @@ Grid::reduce_reduced(M& sys,
 
       // Ensure that after subtracting num_rows_to_subtract * r_dim
       // from row_dim, -pivot_dim_half < row_dim <= pivot_dim_half.
-      // E.g., if pivot[dim] = 9, then after strong reduction
+      // E.g., if pivot[dim] = 9, then after this reduction
       // -5 < row_dim <= 5.
       row_dim_remainder = row_dim % pivot_dim;
       if (row_dim_remainder < 0) {
@@ -604,7 +605,6 @@ Grid::reduce_reduced(M& sys,
     }
   }
 }
-#endif // STRONG_REDUCTION
 
 } // namespace Parma_Polyhedra_Library
 

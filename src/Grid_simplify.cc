@@ -151,18 +151,19 @@ Grid::reduce_parameter_with_line(Grid_Generator& row,
   exact_div_assign(reduced_pivot_col, pivot_column, reduced_row_col);
   exact_div_assign(reduced_row_col, row_column, reduced_row_col);
 
-  // Multiply row such that a multiple of pivot can be subtracted from
-  // it below to render row[column] zero.  This requires multiplying
-  // all other parameters to match.
-#ifdef STRONG_REDUCTION
-  // Ensure that the multiplier is positive, so that the preceding
+
+  // Since we are reducing the system to "strong minimal form",
+  // ensure that the multiplier is positive, so that the preceding
   // diagonals (including the divisor) remain positive.  It's safe to
   // swap the signs as row[column] will still come out 0.
   if (reduced_pivot_col < 0) {
     neg_assign(reduced_pivot_col);
     neg_assign(reduced_row_col);
   }
-#endif
+
+  // Multiply row such that a multiple of pivot can be subtracted from
+  // it below to render row[column] zero.  This requires multiplying
+  // all other parameters to match.
   for (dimension_type index = sys.num_rows(); index-- > 0; ) {
     Grid_Generator& gen = sys[index];
     if (gen.is_parameter_or_point())
@@ -321,15 +322,14 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
 	dim_kinds[dim] = PARAMETER;
       }
 
-#ifdef STRONG_REDUCTION
-      // Ensure a positive follows the leading zeros.
+      // Since we are reducing the system to "strong minimal form",
+      // ensure that a positive value follows the leading zeros.
       if (pivot[dim] < 0)
 	pivot.negate(dim, num_columns - 1);
 
       // Factor this row out of the preceding rows.
       reduce_reduced<Grid_Generator_System, Grid_Generator>
 	(sys, dim, pivot_index, dim, num_columns - 1, dim_kinds);
-#endif
 
       ++pivot_index;
     }
@@ -449,14 +449,14 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
 	dim_kinds[dim] = PROPER_CONGRUENCE;
       }
 
-#ifdef STRONG_REDUCTION
-      // Ensure a positive follows the leading zeros.
+      // Since we are reducing the system to "strong minimal form",
+      // ensure that a positive value follows the leading zeros.
       if (pivot[dim] < 0)
 	pivot.negate(0, dim);
       // Factor this row out of the preceding ones.
       reduce_reduced<Congruence_System, Congruence>
 	(sys, dim, pivot_index, 0, dim, dim_kinds, false);
-#endif
+
       ++pivot_index;
     }
   } // end for (dimension_type dim = num_columns; dim-- > 0; )
@@ -551,20 +551,19 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
       }
     }
     new_last_row[0] = new_last_row[mod_index];
-#ifdef STRONG_REDUCTION
+    // Since we are reducing the system to "strong minimal form",
+    // increment the number of reduced rows.
     ++reduced_num_rows;
-#endif
   }
   else {
     Congruence& last_row = sys[reduced_num_rows - 1];
     last_row[0] = last_row[mod_index];
   }
 
-#ifdef STRONG_REDUCTION
-  // Factor the modified integrality congruence out of the other rows.
+  // Since we are reducing the system to "strong minimal form",
+  // factor the modified integrality congruence out of the other rows;
   reduce_reduced<Congruence_System, Congruence>
     (sys, 0, reduced_num_rows - 1, 0, 0, dim_kinds, false);
-#endif
 
   assert(sys.OK());
   return false;
