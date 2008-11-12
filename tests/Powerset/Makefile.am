@@ -84,7 +84,7 @@ fromoctagonalshape1_SOURCES = fromoctagonalshape1.cc
 
 frompolyhedron1_SOURCES = frompolyhedron1.cc
 
-fromspacedim1_SOURCES = fromspacedim1.cc
+fromspacedimension1_SOURCES = fromspacedimension1.cc
 
 powerset1_SOURCES = powerset1.cc
 
