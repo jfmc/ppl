@@ -50,10 +50,18 @@ $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
 TESTS = \
+frombdshape1 \
+frombox1 \
+fromcongruences1 \
+fromconstraints1 \
+fromgrid1 \
+fromoctagonalshape1 \
+frompolyhedron1 \
+fromspacedimension1 \
 simplifyusingcontext1 \
 powerset1 \
 pointsetpowerset1 pointsetpowerset2 pointsetpowerset3 \
-pointsetpowerset4 pointsetpowerset5 pointsetpowerset6 \
+pointsetpowerset4 pointsetpowerset5 \
 product1
 
 XFAIL_TESTS =
@@ -61,6 +69,22 @@ XFAIL_TESTS =
 #
 # Sources for the tests
 #
+
+frombdshape1_SOURCES = frombdshape1.cc
+
+frombox1_SOURCES = frombox1.cc
+
+fromcongruences1_SOURCES = fromcongruences1.cc
+
+fromconstraints1_SOURCES = fromconstraints1.cc
+
+fromgrid1_SOURCES = fromgrid1.cc
+
+fromoctagonalshape1_SOURCES = fromoctagonalshape1.cc
+
+frompolyhedron1_SOURCES = frompolyhedron1.cc
+
+fromspacedim1_SOURCES = fromspacedim1.cc
 
 powerset1_SOURCES = powerset1.cc
 
@@ -71,7 +95,6 @@ pointsetpowerset2_SOURCES = pointsetpowerset2.cc
 pointsetpowerset3_SOURCES = pointsetpowerset3.cc
 pointsetpowerset4_SOURCES = pointsetpowerset4.cc
 pointsetpowerset5_SOURCES = pointsetpowerset5.cc
-pointsetpowerset6_SOURCES = pointsetpowerset6.cc
 
 product1_SOURCES = product1.cc
 

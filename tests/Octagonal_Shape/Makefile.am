@@ -104,7 +104,6 @@ max_min2 \
 maxspacedim1 \
 membytes1 \
 minconstraints1 \
-pointsetpowerset1 \
 relatwithcons1 \
 relatwithcons2 \
 relatwithcons3 \
@@ -258,8 +257,6 @@ max_min2_SOURCES = max_min2.cc
 membytes1_SOURCES = membytes1.cc
 
 minconstraints1_SOURCES = minconstraints1.cc
-
-pointsetpowerset1_SOURCES = pointsetpowerset1.cc
 
 relatwithcons1_SOURCES = relatwithcons1.cc
 relatwithcons2_SOURCES = relatwithcons2.cc
