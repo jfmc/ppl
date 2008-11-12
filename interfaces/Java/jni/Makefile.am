@@ -62,9 +62,8 @@ if HOST_OS_DARWIN
 
 libppl_java_la_LDFLAGS = \
 $(NO_UNDEFINED_FLAG) \
--module \
 -avoid-version \
-"-shrext .jnilib"
+-shrext .jnilib
 
 else !HOST_OS_DARWIN
 
