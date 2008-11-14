@@ -95,7 +95,6 @@ max_min1 \
 maxspacedim1 \
 membytes1 \
 minconstraints1 \
-pointsetpowerset1 \
 propagateconstraints1 propagateconstraints2 \
 relations1 relations2 relations3 relations4 \
 refinewithconstraint1 refinewithconstraint2 \
@@ -241,8 +240,6 @@ maxspacedim1_SOURCES = maxspacedim1.cc
 membytes1_SOURCES = membytes1.cc
 
 minconstraints1_SOURCES = minconstraints1.cc
-
-pointsetpowerset1_SOURCES = pointsetpowerset1.cc
 
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc

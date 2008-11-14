@@ -1,4 +1,5 @@
-/* Test Pointset_Powerset<Pointset_Powerset<PH> >.
+/* Test Pointset_Powerset<PH>::add_constraint().
+        Pointset_Powerset<PH>::add_constraints().
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -22,27 +23,38 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-typedef NNC_Polyhedron Poly;
-typedef Domain_Product<Poly, Grid>::Constraints_Product CProduct;
-
 namespace {
 
+// Powerset of C polyhedra: add_constraint().
 bool
 test01() {
-  Constraint_System cs = Constraint_System::zero_dim_empty();
-  Pointset_Powerset<CProduct> pscp(cs);
-  return pscp.OK();
+  Variable x(0);
+  Constraint c = (x >= 0);
+  Pointset_Powerset<C_Polyhedron> ps(1, EMPTY);
+  ps.add_disjunct(C_Polyhedron(1));
+  ps.add_constraint(c);
+  Constraint c1 = (x >= 1);
+  bool ok = ps.add_constraint_and_minimize(c1);
+
+  return ok && ps.OK();
 }
 
+// Powerset of C polyhedra: add_constraints().
 bool
 test02() {
-  Variable A(0);
+  Variable x(0);
+  Constraint_System cs;
+  cs.insert(x >= 3);
+  cs.insert(x <= 4);
+  Pointset_Powerset<C_Polyhedron> ps(1, EMPTY);
+  ps.add_disjunct(C_Polyhedron(1));
+  ps.add_constraints(cs);
+  cs.insert(x <= 3);
+  bool ok = ps.add_constraints_and_minimize(cs);
+  cs.insert(x <= 2);
+  ok &= !ps.add_constraints_and_minimize(cs);
 
-  CProduct cp(1);
-  cp.add_constraint(A == 0);
-  Pointset_Powerset<CProduct> pscp(1);
-  pscp.add_disjunct(cp);
-  return pscp.OK();
+  return ok && ps.OK();
 }
 
 } // namespace
@@ -50,23 +62,4 @@ test02() {
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
-/*   DO_TEST(test03); */
-/*   DO_TEST(test04); */
-/*   DO_TEST(test05); */
-/*   DO_TEST(test06); */
-/*   DO_TEST(test07); */
-/*   DO_TEST(test08); */
-/*   DO_TEST(test09); */
-/*   DO_TEST(test10); */
-/*   DO_TEST(test11); */
-/*   DO_TEST(test12); */
-/*   DO_TEST(test13); */
-/*   DO_TEST(test14); */
-/*   DO_TEST(test15); */
-/*   DO_TEST(test16); */
-/*   DO_TEST(test17); */
-/*   DO_TEST(test18); */
-/*   DO_TEST(test19); */
-/*   DO_TEST(test20); */
-/*   DO_TEST(test21); */
 END_MAIN

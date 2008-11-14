@@ -1,5 +1,4 @@
-/* Test Pointset_Powerset<PH>::
-          Pointset_Powerset(dimension_type, Degenerate_Element).
+/* Test Pointset_Powerset<PH>::Pointset_Powerset(Constraint_System).
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -25,49 +24,143 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
+// Construct powerset of polyhedra from a 0 dimension empty constraint system.
 bool
 test01() {
-  Pointset_Powerset<C_Polyhedron> ps(0, EMPTY);
-
-  bool ok = (ps.OK() && ps.is_empty() && ps.space_dimension() == 0);
-
-  return ok;
+  Constraint_System cs = Constraint_System::zero_dim_empty();
+  Pointset_Powerset<C_Polyhedron> ps(cs);
+  return ps.OK() && ps.is_empty() && ps.space_dimension() == 0;
 }
 
+// Construct powerset of polyhedra from a non-empty constraint system.
 bool
 test02() {
-  Pointset_Powerset<C_Polyhedron> ps(0, UNIVERSE);
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+  Constraint_System cs;
 
-  bool ok = (ps.OK() && ps.is_universe() && ps.space_dimension() == 0);
+  cs.insert(x + y > 0);
+  cs.insert(x - 2*y <= 2);
+  cs.insert(z == 2);
+  Pointset_Powerset<NNC_Polyhedron> ps(cs);
 
-  return ok;
+  return ps.OK() && ps.space_dimension() == 3;
 }
 
+// Construct powerset of bd shapes from a 0 dimension empty constraint system.
 bool
 test03() {
-  Pointset_Powerset<C_Polyhedron> ps(4, EMPTY);
-
-  bool ok = (ps.OK() && ps.is_empty() && ps.space_dimension() == 4);
-
-  return ok;
+  Constraint_System cs = Constraint_System::zero_dim_empty();
+  Pointset_Powerset<TBD_Shape> ps(cs);
+  return ps.OK() && ps.is_empty() && ps.space_dimension() == 0;
 }
 
+// Construct powerset of bd shapes from non-empty constraint system.
 bool
 test04() {
-  Pointset_Powerset<C_Polyhedron> ps(4, UNIVERSE);
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+  Constraint_System cs;
 
-  bool ok = (ps.OK() && ps.is_universe() && ps.space_dimension() == 4);
+  cs.insert(x - y <= 2);
+  cs.insert(z == 2);
+  Pointset_Powerset<TBD_Shape> ps(cs);
 
-  return ok;
+  return ps.OK() && ps.space_dimension() == 3;
 }
 
+// Construct powerset of octagonal shapes from a 0 dimension empty constraint system.
 bool
 test05() {
-  Pointset_Powerset<C_Polyhedron> ps(4);
+  Constraint_System cs = Constraint_System::zero_dim_empty();
+  Pointset_Powerset<TOctagonal_Shape> ps(cs);
+  return ps.OK() && ps.is_empty() && ps.space_dimension() == 0;
+}
 
-  bool ok = (ps.OK() && ps.is_universe() && ps.space_dimension() == 4);
+// Construct powerset of octagonal shapes from non-empty constraint system.
+bool
+test06() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+  Constraint_System cs;
 
-  return ok;
+  cs.insert(x + y >= -2);
+  cs.insert(x - y <= 2);
+  cs.insert(z == 2);
+  Pointset_Powerset<TOctagonal_Shape> ps(cs);
+
+  return ps.OK() && ps.space_dimension() == 3;
+}
+
+// Construct powerset of boxes from a 0 dimension empty constraint system.
+bool
+test07() {
+  Constraint_System cs = Constraint_System::zero_dim_empty();
+  Pointset_Powerset<TBox> ps(cs);
+
+  print_constraints(ps, "*** ps ***");
+
+  return ps.OK() && ps.is_empty() && ps.space_dimension() == 0;
+}
+
+// Construct powerset of boxes from a non-empty constraint system.
+bool
+test08() {
+  Variable x(0);
+  Constraint_System cs;
+
+  cs.insert(x >= 0);
+  cs.insert(x <= 2);
+  Pointset_Powerset<TBox> ps(cs);
+
+  return ps.OK() && ps.space_dimension() == 1;
+}
+
+// Construct powerset of grids from a 0 dimension empty constraint system.
+bool
+test09() {
+  Constraint_System cs = Constraint_System::zero_dim_empty();
+  Pointset_Powerset<Grid> ps(cs);
+
+  print_constraints(ps, "*** ps ***");
+
+  return ps.OK() && ps.is_empty() && ps.space_dimension() == 0;
+}
+
+// Construct powerset of grids from non-empty constraint system.
+bool
+test10() {
+  Variable x(0);
+  Constraint_System cs;
+
+  cs.insert(x == 0);
+  Pointset_Powerset<Grid> ps(cs);
+
+  return ps.OK() && ps.space_dimension() == 1;
+}
+
+// Construct powerset of products from a 0-dim inconsistent constraint system.
+  typedef Domain_Product<NNC_Polyhedron, Grid>::Constraints_Product CProduct;
+bool
+test11() {
+  Constraint_System cs = Constraint_System::zero_dim_empty();
+  Pointset_Powerset<CProduct> pscp(cs);
+  return pscp.OK();
+}
+
+// Construct powerset of products from a 1-dim constraint system.
+bool
+test12() {
+  Variable A(0);
+
+  CProduct cp(1);
+  cp.add_constraint(A == 0);
+  Pointset_Powerset<CProduct> pscp(1);
+  pscp.add_disjunct(cp);
+  return pscp.OK();
 }
 
 } // namespace
@@ -78,4 +171,9 @@ BEGIN_MAIN
   DO_TEST(test03);
   DO_TEST(test04);
   DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
+  DO_TEST(test08);
+  DO_TEST(test09);
+  DO_TEST(test10);
 END_MAIN

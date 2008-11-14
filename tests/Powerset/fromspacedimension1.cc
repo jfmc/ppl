@@ -70,6 +70,24 @@ test05() {
   return ok;
 }
 
+// Construct powerset from zero dimension empty constraint system.
+bool
+test06() {
+  Constraint_System cs = Constraint_System::zero_dim_empty();
+  Pointset_Powerset<TBox> ps(cs);
+
+  print_constraints(ps, "*** ps ***");
+
+  return ps.OK();
+}
+
+bool
+test07() {
+  Pointset_Powerset<TBox> pps_box(1, EMPTY);
+  bool ok = (pps_box.space_dimension() == 1);
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -78,4 +96,6 @@ BEGIN_MAIN
   DO_TEST(test03);
   DO_TEST(test04);
   DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
 END_MAIN
