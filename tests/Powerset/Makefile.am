@@ -168,7 +168,7 @@ relationwith1_SOURCES = relationwith1.cc
 
 simplifyusingcontext1_SOURCES = simplifyusingcontext1.cc
 
-size1_SOURCES = size1.c
+size1_SOURCES = size1.cc
 
 spacedims1_SOURCES = spacedims1.cc
 
