@@ -22,6 +22,9 @@ o  New macro PPL_DIRTY_TEMP_COEFFICIENT allows users of the C++ interface
 Bugfixes
 ========
 
+o  Fixed a bug whereby `make check' was failing when the library was
+   configured with the `--disable-watchdog' option.
+
 o  ...
 
 
