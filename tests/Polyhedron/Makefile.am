@@ -654,7 +654,7 @@ XFAIL_TESTS =
 
 check_PROGRAMS = $(TESTS) $(BUGS)
 
-EXTRA_DIST = $(watchdog1_SRCS)
+EXTRA_DIST = $(memory1_SRCS) $(watchdog1_SRCS)
 
 BUGS =
 
