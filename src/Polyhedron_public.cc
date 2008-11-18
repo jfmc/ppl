@@ -574,7 +574,8 @@ PPL::Polyhedron::contains_integer_point() const {
 
   // FIXME: do also exploit info regarding rays and lines, if possible.
   // Is any integer point already available?
-  if (generators_are_up_to_date() && !has_pending_constraints())
+  assert(!has_pending_constraints());
+  if (generators_are_up_to_date())
     for (dimension_type i = gen_sys.num_rows(); i-- > 0; )
       if (gen_sys[i].is_point() && gen_sys[i].divisor() == 1)
 	return true;
@@ -608,8 +609,12 @@ PPL::Polyhedron::contains_integer_point() const {
       for (dimension_type i = space_dim; i-- > 0; )
 	gcd_assign(homogeneous_gcd,
 		   homogeneous_gcd, c.coefficient(Variable(i)));
-      if (homogeneous_gcd == 0)
+      if (homogeneous_gcd == 0) {
+        // NOTE: since tautological constraints are already filtered away
+        // by iterators, here we must an inconsistent constraint.
+        assert(c.is_inconsistent());
         return false;
+      }
       Linear_Expression le;
       for (dimension_type i = space_dim; i-- > 0; )
 	le += (c.coefficient(Variable(i)) / homogeneous_gcd) * Variable(i);
@@ -636,9 +641,13 @@ PPL::Polyhedron::contains_integer_point() const {
 	for (dimension_type i = space_dim; i-- > 0; )
 	  gcd_assign(homogeneous_gcd,
 		     homogeneous_gcd, c.coefficient(Variable(i)));
-        if (homogeneous_gcd == 0)
+        if (homogeneous_gcd == 0) {
+          // NOTE: since tautological constraints are already filtered away
+          // by iterators, here we must an inconsistent constraint.
+          assert(c.is_inconsistent());
           return false;
-	if (homogeneous_gcd == 1)
+        }
+	else if (homogeneous_gcd == 1)
 	  // The normalized inhomogeneous term is integer:
 	  // add the constraint as-is.
 	  mip.add_constraint(c);
