@@ -2341,7 +2341,7 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
       // are not made redundant by `y' are added to `lp' depending on
       // the number of generators of `y' they rule out (the more generators
       // they rule out, the sooner they are added).  Of course, as soon
-      // as `lp' becomes unsatisfiable, we stopp adding.
+      // as `lp' becomes unsatisfiable, we stop adding.
       std::vector<Ruled_Out_Pair>
         ruled_out_vec(x_cs_num_rows - num_redundant_by_y);
       for (dimension_type i = 0, j = 0; i < x_cs_num_rows; ++i) {
