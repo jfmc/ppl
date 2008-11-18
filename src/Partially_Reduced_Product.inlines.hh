@@ -727,30 +727,34 @@ No_Reduction<D1, D2>::~No_Reduction() {
 
 template <typename D1, typename D2>
 inline
-Constraints_Reduction<D1, D2>::Constraints_Reduction() {
+Smash_Reduction<D1, D2>::Smash_Reduction() {
 }
 
 template <typename D1, typename D2>
-void Constraints_Reduction<D1, D2>::product_reduce(D1& d1, D2& d2) {
-  if (d2.is_empty()) {
-    if (!d1.is_empty()) {
-      D1 new_d1(d1.space_dimension(), EMPTY);
-      std::swap(d1, new_d1);
-    }
-  }
-  else if (d1.is_empty()) {
-    D2 new_d2(d2.space_dimension(), EMPTY);
-    std::swap(d2, new_d2);
-  }
-  else {
-    d1.refine_with_constraints(d2.minimized_constraints());
-    d2.refine_with_constraints(d1.minimized_constraints());
-  }
+inline
+Smash_Reduction<D1, D2>::~Smash_Reduction() {
+}
+
+template <typename D1, typename D2>
+inline
+Constraints_Reduction<D1, D2>::Constraints_Reduction() {
 }
 
 template <typename D1, typename D2>
 inline
 Constraints_Reduction<D1, D2>::~Constraints_Reduction() {
+}
+
+template <typename D1, typename D2>
+inline
+Shrink_Using_Congruences_Reduction<D1, D2>
+::Shrink_Using_Congruences_Reduction() {
+}
+
+template <typename D1, typename D2>
+inline
+Shrink_Using_Congruences_Reduction<D1, D2>
+::~Shrink_Using_Congruences_Reduction() {
 }
 
 } // namespace Parma_Polyhedra_Library

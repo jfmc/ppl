@@ -54,7 +54,8 @@ asciidumpload1 \
 directproduct1 directproduct2 directproduct3 directproduct4 \
 directproduct5 directproduct6 \
 partiallyreducedproduct1 partiallyreducedproduct2 partiallyreducedproduct3 \
-partiallyreducedproduct4
+partiallyreducedproduct4 \
+shrinkusingcongruences1
 
 XFAIL_TESTS =
 
@@ -75,6 +76,8 @@ partiallyreducedproduct1_SOURCES = partiallyreducedproduct1.cc
 partiallyreducedproduct2_SOURCES = partiallyreducedproduct2.cc
 partiallyreducedproduct3_SOURCES = partiallyreducedproduct3.cc
 partiallyreducedproduct4_SOURCES = partiallyreducedproduct4.cc
+
+shrinkusingcongruences1_SOURCES = shrinkusingcongruences1.cc
 
 check_PROGRAMS = $(TESTS)
 
