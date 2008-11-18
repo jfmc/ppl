@@ -62,6 +62,7 @@ closure1 \
 collapse1 \
 concatenate1 \
 contains1 \
+containsintegerpoint1 \
 difference1 \
 discrete1 \
 disjoint1 \
@@ -119,6 +120,8 @@ collapse1_SOURCES = collapse1.cc
 concatenate1_SOURCES = concatenate1.cc
 
 contains1_SOURCES = contains1.cc
+
+containsintegerpoint1_SOURCES = containsintegerpoint1.cc
 
 difference1_SOURCES = difference1.cc
 

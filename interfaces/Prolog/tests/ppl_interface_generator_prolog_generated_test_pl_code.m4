@@ -658,7 +658,7 @@ ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_3_test :-
 
 m4_define(`ppl_@CLASS@_@HAS_PROPERTY@_code',
 `
-ppl_@CLASS@_@HAS_PROPERTY@_2_test :-
+ppl_@CLASS@_@HAS_PROPERTY@_1_test :-
   (
    choose_test(TEST_DATA, Space_Dim),
    (
