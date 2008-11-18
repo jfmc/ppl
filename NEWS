@@ -25,6 +25,11 @@ Bugfixes
 o  Fixed a bug whereby `make check' was failing when the library was
    configured with the `--disable-watchdog' option.
 
+o  Fixed a bug in method
+     bool Polyhedron::contains_integer_point() const;
+   whereby, under very specific conditions, an empty polyhedron is
+   incorrectly said to contain an integer point.
+
 o  ...
 
 
