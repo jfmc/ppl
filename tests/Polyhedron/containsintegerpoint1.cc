@@ -117,11 +117,59 @@ test04() {
   return !contains;
 }
 
+bool
+test05() {
+  C_Polyhedron ph(2);
+  ph.add_constraint(Linear_Expression(0) >= 1);
+
+  print_constraints(ph, "*** ph ***");
+
+  bool contains = ph.contains_integer_point();
+
+  nout << "ph.contains_integer_point() == "
+       << (contains ? "true" : "false") << endl;
+
+  return !contains;
+}
+
+bool
+test06() {
+  NNC_Polyhedron ph(2);
+  ph.add_constraint(Linear_Expression(1) > 1);
+
+  print_constraints(ph, "*** ph ***");
+
+  bool contains = ph.contains_integer_point();
+
+  nout << "ph.contains_integer_point() == "
+       << (contains ? "true" : "false") << endl;
+
+  return !contains;
+}
+
+bool
+test07() {
+  NNC_Polyhedron ph(2);
+  ph.add_constraint(Linear_Expression(1) >= 0);
+
+  print_constraints(ph, "*** ph ***");
+
+  bool contains = ph.contains_integer_point();
+
+  nout << "ph.contains_integer_point() == "
+       << (contains ? "true" : "false") << endl;
+
+  return contains;
+}
+
 } // namespace
 
 BEGIN_MAIN
-//   DO_TEST(test01);
-//   DO_TEST(test02);
-//   DO_TEST(test03);
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
   DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
 END_MAIN

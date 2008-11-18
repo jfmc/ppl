@@ -570,7 +570,7 @@ PPL::Polyhedron::contains_integer_point() const {
   // CHECKME: do we really want to call conversion to check for emptiness?
   if (has_pending_constraints() && !process_pending())
     // Empty again.
-    return true;
+    return false;
 
   // FIXME: do also exploit info regarding rays and lines, if possible.
   // Is any integer point already available?
@@ -608,6 +608,8 @@ PPL::Polyhedron::contains_integer_point() const {
       for (dimension_type i = space_dim; i-- > 0; )
 	gcd_assign(homogeneous_gcd,
 		   homogeneous_gcd, c.coefficient(Variable(i)));
+      if (homogeneous_gcd == 0)
+        return false;
       Linear_Expression le;
       for (dimension_type i = space_dim; i-- > 0; )
 	le += (c.coefficient(Variable(i)) / homogeneous_gcd) * Variable(i);
@@ -634,6 +636,8 @@ PPL::Polyhedron::contains_integer_point() const {
 	for (dimension_type i = space_dim; i-- > 0; )
 	  gcd_assign(homogeneous_gcd,
 		     homogeneous_gcd, c.coefficient(Variable(i)));
+        if (homogeneous_gcd == 0)
+          return false;
 	if (homogeneous_gcd == 1)
 	  // The normalized inhomogeneous term is integer:
 	  // add the constraint as-is.
