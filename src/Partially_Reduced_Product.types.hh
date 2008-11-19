@@ -21,9 +21,6 @@ template <typename D1, typename D2>
 class Constraints_Reduction;
 
 template <typename D1, typename D2>
-class Shrink_Using_Congruences_Reduction;
-
-template <typename D1, typename D2>
 class No_Reduction;
 
 template <typename D1, typename D2, typename R>

@@ -745,18 +745,6 @@ inline
 Constraints_Reduction<D1, D2>::~Constraints_Reduction() {
 }
 
-template <typename D1, typename D2>
-inline
-Shrink_Using_Congruences_Reduction<D1, D2>
-::Shrink_Using_Congruences_Reduction() {
-}
-
-template <typename D1, typename D2>
-inline
-Shrink_Using_Congruences_Reduction<D1, D2>
-::~Shrink_Using_Congruences_Reduction() {
-}
-
 } // namespace Parma_Polyhedra_Library
 
 /*! \relates Parma_Polyhedra_Library::Partially_Reduced_Product */

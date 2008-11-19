@@ -157,62 +157,6 @@ public:
 };
 
 /*! \brief
-  This class provides the reduction method for the
-  Congruences_Product domain.
-
-  \ingroup PPL_CXX_interface
-  The reduction classes are used to instantiate the Partially_Reduced_Product
-  domain.
-
-  This class uses the congruences defining each of the components
-  to check, for each of the congruences, if the other component
-  intersects none, one or more than one hyperplane defined by the congruence
-  and adds equalities or emptiness as appropriate; in more detail:
-  Letting the components be d1 and d2, then, for each congruence cg
-  representing d1:
-  - if more than one hyperplane defined by cg intersects
-    d2, then d1 and d2 are unchanged;
-  - if exactly one hyperplane intersects d2, then d1 and d2 are
-    refined with the corresponding equality ;
-  - otherwise, d1 and d2 are set to empty.
-  Unless d1 and d2 are already empty, the process is repeated where the
-  roles of d1 and d2 are reversed.
-
-*/
-template <typename D1, typename D2>
-class Parma_Polyhedra_Library::Shrink_Using_Congruences_Reduction {
-public:
-  //! Default constructor.
-  Shrink_Using_Congruences_Reduction();
-
-  /*! \brief
-    The congruence reduction operator to detect emptiness or any equalities
-    implied by each of the congruences defining one of the components
-    and the bounds of the other component. It is assumed that the
-    components are already constraints reduced.
-
-    The minimized congruence system defining the domain element \p d1
-    is used to check if \p d2 intersects none, one or more than one
-    of the hyperplanes defined by the congruences: if it intersects none,
-    then product is set empty; if it intersects one, then the equality
-    defining this hyperplane is added to both components; otherwise,
-    the product is unchanged.
-    In each case, the donor domain must provide a congruence system
-    in minimal form.
-
-    \param d1
-    A pointset domain element;
-
-    \param d2
-    A pointset domain element;
-  */
-  void product_reduce(D1& d1, D2& d2);
-
-  //! Destructor.
-  ~Shrink_Using_Congruences_Reduction();
-};
-
-/*! \brief
   This class provides the reduction method for the Direct_Product domain.
 
   \ingroup PPL_CXX_interface
@@ -1570,9 +1514,6 @@ public:
 
   typedef Partially_Reduced_Product<D1, D2, Constraints_Reduction<D1, D2> >
   Constraints_Product;
-
-  typedef Partially_Reduced_Product<D1, D2, Shrink_Using_Congruences_Reduction<D1, D2> >
-  Shrink_Using_Congruences_Product;
 };
 
 } // namespace Parma_Polyhedra_Library
