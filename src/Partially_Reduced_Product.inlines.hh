@@ -216,7 +216,6 @@ Partially_Reduced_Product<D1, D2, R>
   y.reduce();
   d1.difference_assign(y.d1);
   d2.difference_assign(y.d2);
-  // FIXME(0.10.1): check this.
   clear_reduced_flag();
 }
 
@@ -322,7 +321,6 @@ Partially_Reduced_Product<D1, D2, R>
                        Coefficient_traits::const_reference denominator) {
   d1.bounded_affine_image(var, lb_expr, ub_expr, denominator);
   d2.bounded_affine_image(var, lb_expr, ub_expr, denominator);
-  // FIXME(0.10.1): check this.
   clear_reduced_flag();
 }
 
@@ -335,7 +333,6 @@ Partially_Reduced_Product<D1, D2, R>
                           Coefficient_traits::const_reference denominator) {
   d1.bounded_affine_preimage(var, lb_expr, ub_expr, denominator);
   d2.bounded_affine_preimage(var, lb_expr, ub_expr, denominator);
-  // FIXME(0.10.1): check this.
   clear_reduced_flag();
 }
 
@@ -346,8 +343,6 @@ Partially_Reduced_Product<D1, D2, R>
   reduce();
   d1.time_elapse_assign(y.d1);
   d2.time_elapse_assign(y.d2);
-  // FIXME(0.10.1): check this.
-  clear_reduced_flag();
 }
 
 template <typename D1, typename D2, typename R>
@@ -528,11 +523,6 @@ inline void
 Partially_Reduced_Product<D1, D2, R>
 ::widening_assign(const Partially_Reduced_Product& y,
                   unsigned* tp) {
-  // FIXME(0.10.1): In general this is _NOT_ a widening since the reduction
-  //        may mean that the sequence does not satisfy the ascending
-  //        chain condition.
-  //        However, for the direct, smash and constraints product
-  //        it may be ok - but this still needs checking.
   reduce();
   y.reduce();
   d1.widening_assign(y.d1, tp);

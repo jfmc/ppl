@@ -1217,8 +1217,8 @@ public:
 
   // TODO: Add a way to call other widenings.
 
-  // CHECKME: This may not be a real widening; it depends on the reduction
-  //          class R and the widening used.
+  // CHECKME: This is a real widening for all the existing reduction
+  // operations. When new reductions are added, this must be rechecked.
 
   /*! \brief
     Assigns to \p *this the result of computing the
