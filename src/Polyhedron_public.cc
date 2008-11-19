@@ -611,7 +611,7 @@ PPL::Polyhedron::contains_integer_point() const {
 		   homogeneous_gcd, c.coefficient(Variable(i)));
       if (homogeneous_gcd == 0) {
         // NOTE: since tautological constraints are already filtered away
-        // by iterators, here we must an inconsistent constraint.
+        // by iterators, here we must have an inconsistent constraint.
         assert(c.is_inconsistent());
         return false;
       }
@@ -643,7 +643,7 @@ PPL::Polyhedron::contains_integer_point() const {
 		     homogeneous_gcd, c.coefficient(Variable(i)));
         if (homogeneous_gcd == 0) {
           // NOTE: since tautological constraints are already filtered away
-          // by iterators, here we must an inconsistent constraint.
+          // by iterators, here we must have an inconsistent constraint.
           assert(c.is_inconsistent());
           return false;
         }
