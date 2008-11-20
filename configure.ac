@@ -959,24 +959,44 @@ AM_CONDITIONAL(BUILD_JAVA_INTERFACE, test "x$JAVA" != xno &&  test "x$ac_cv_java
 # Checks for OCaml.
 if test x${ocaml_interface_enabled} = xyes
 then
+  # Check for the bytecode compiler.
   AC_CHECK_PROG(OCAMLC, ocamlc, ocamlc)
-  ocamlgmp="no"
+  ocamlcgmp="no"
   if test x"$OCAMLC" = xocamlc
   then
      ocamlc_root=`ocamlc -where`
-     # Checks for OCaml GMP.
+     # Checks for (the bytecode version of) OCaml GMP.
      AC_MSG_CHECKING(for OCaml-GMP module gmp.cma)
      if test -f ${ocamlc_root}/gmp/gmp.cma;
      then
          AC_MSG_RESULT(yes)
-	 ocamlgmp="yes"
+	 ocamlcgmp="yes"
      else
          AC_MSG_RESULT(no)
-	 ocamlgmp="no"
+	 ocamlcgmp="no"
+     fi
+  fi
+  # Check for the native compiler.
+  AC_CHECK_PROG(OCAMLOPT, ocamlopt, ocamlopt)
+  ocamloptgmp="no"
+  if test x"$OCAMLOPT" = xocamlopt
+  then
+     ocamlopt_root=`ocamlopt -where`
+     # Checks for (the native version of) OCaml GMP.
+     AC_MSG_CHECKING(for OCaml-GMP module gmp.cmxa)
+     if test -f ${ocamlopt_root}/gmp/gmp.cmxa;
+     then
+         AC_MSG_RESULT(yes)
+	 ocamloptgmp="yes"
+     else
+         AC_MSG_RESULT(no)
+	 ocamloptgmp="no"
      fi
   fi
 fi
-AM_CONDITIONAL(BUILD_OCAML_INTERFACE, test x$OCAMLC = xocamlc && test x$ocamlgmp = xyes)
+AM_CONDITIONAL(HAVE_OCAMLC, test x$ocamlcgmp = xyes)
+AM_CONDITIONAL(HAVE_OCAMLOPT, test x$ocamloptgmp = xyes)
+AM_CONDITIONAL(BUILD_OCAML_INTERFACE, test x$ocamlcgmp = xyes || x$ocamloptgmp = xyes)
 
 # Checks for Ciao Prolog.
 if test x${ciao_prolog_interface_enabled} = xyes
