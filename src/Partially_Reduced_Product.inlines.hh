@@ -341,10 +341,9 @@ inline void
 Partially_Reduced_Product<D1, D2, R>
 ::time_elapse_assign(const Partially_Reduced_Product& y) {
   reduce();
+  y.reduce();
   d1.time_elapse_assign(y.d1);
   d2.time_elapse_assign(y.d2);
-  // FIXME(0.10.1): Check this.
-  clear_reduced_flag();
 }
 
 template <typename D1, typename D2, typename R>
