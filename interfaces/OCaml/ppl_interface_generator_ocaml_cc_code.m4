@@ -550,6 +550,15 @@ ppl_@CLASS@_generalized_@AFFIMAGE@1_with_congruence
 }
 CATCH_ALL
 
+extern "C"
+void
+ppl_@CLASS@_generalized_@AFFIMAGE@1_with_congruence_bytecode
+(value* argv, int /*argn*/) try {
+  return ppl_@CLASS@_generalized_@AFFIMAGE@1_with_congruence
+    (argv[0], argv[1], argv[2], argv[3], argv[4], argv[5]);
+}
+CATCH_ALL
+
 ')
 
 m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence_code',

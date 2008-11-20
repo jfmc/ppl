@@ -280,7 +280,7 @@ m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruence_code',
 external ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruence:
   @!CLASS@ -> int -> relation_symbol
   -> linear_expression -> Z.t -> Z.t -> unit
-  = "ppl_@CLASS@_generalized_@AFFIMAGE@1_with_congruence"
+  = "ppl_@CLASS@_generalized_@AFFIMAGE@1_with_congruence_bytecode" "ppl_@CLASS@_generalized_@AFFIMAGE@1_with_congruence"
 
 ')
 

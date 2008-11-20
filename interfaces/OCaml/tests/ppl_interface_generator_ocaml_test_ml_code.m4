@@ -425,7 +425,7 @@ print_string_if_noisy "testing ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruenc
 let copy01
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@!TOPOLOGY@@!CLASS@01);;
 ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruence
-  copy01 1 Equal_RS v1 (Z.from_int 10);;
+  copy01 1 Equal_RS v1 (Z.from_int 1) (Z.from_int 10);;
 let out = if (ppl_@CLASS@_OK copy01)
   then "success" else "failed"
     in (print_string_if_noisy out);;
