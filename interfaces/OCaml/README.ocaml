@@ -24,7 +24,7 @@ architecture and on the system/distribution conventions.
 The OCaml compilation command for `my_program.ml' should then be
 something like:
 
-$ ocamlc -o my_program.cmo -c -I +gmp -I <PPL-OCaml libdir>/ppl my_program.ml
+$ ocamlc -o my_program.cmo -c -I +gmp -I <PPL-OCaml libdir> my_program.ml
 
 A possible link command is the following (we refer the reader to the
 Objective Caml documentation for a reference to the many available
@@ -33,3 +33,12 @@ linking options):
 $ ocamlc -o my_program -custom -cc g++ -I +gmp -I <PPL-OCaml libdir> \
     -cclib -lppl -cclib -lm -cclib -lgmpxx -cclib -lgmp \
     ppl_ocaml.cma gmp.cma my_program.cmo
+
+If native compilation of OCaml code is supported by the build platform,
+then `my_program.ml' can also be compiled/linked to native code as follows:
+
+$ ocamlopt -o my_program.cmx \
+    -c -I +gmp -I <PPL-OCaml libdir> my_program.ml
+$ ocamlopt -o my_program.opt -cc g++ -I +gmp -I <PPL-OCaml libdir> \
+    -cclib -lppl -cclib -lm -cclib -lgmpxx -cclib -lgmp \
+    ppl_ocaml.cmxa gmp.cmxa my_program.cmx
