@@ -18,6 +18,8 @@ o  New macro PPL_DIRTY_TEMP_COEFFICIENT allows users of the C++ interface
    to decrease memory allocation overhead and to improve locality whenever
    they need a temporary variable of type `Coefficient'.
 
+o  The OCaml interface can now be compiled to native code using ocamlopt.
+
 
 Bugfixes
 ========
@@ -34,6 +36,11 @@ o  Fixed a bug in method
      Partially_Reduced_Product<D1, D2, R>::time_elase_assign(y)
   whereby, if the product y was not already reduced, the operation could
   lose precision.
+
+o  Fixed a bug in the OCaml interface, which was affecting functions
+     ppl_Grid_generalized_affine_image_with_congruence
+   and
+     ppl_Grid_generalized_affine_preimage_with_congruence.
 
 o  ...
 
