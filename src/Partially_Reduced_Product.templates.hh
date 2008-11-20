@@ -199,10 +199,14 @@ Partially_Reduced_Product<D1, D2, R>
 	   Coefficient& sup_n,
 	   Coefficient& sup_d,
 	   bool& maximum) const {
-  reduce();
+  // If one component is already empty, then there is no need to reduce.
+  if (d1.is_empty() || d2.is_empty())
+    return false;
 
+  // The product is_empty() test also reduces the product.
   if (is_empty())
     return false;
+  assert(reduced);
 
   PPL_DIRTY_TEMP_COEFFICIENT(sup1_n);
   PPL_DIRTY_TEMP_COEFFICIENT(sup1_d);
@@ -250,10 +254,14 @@ Partially_Reduced_Product<D1, D2, R>
 	   Coefficient& inf_n,
 	   Coefficient& inf_d,
 	   bool& minimum) const {
-  reduce();
+  // If one component is already empty, then there is no need to reduce.
+  if (d1.is_empty() || d2.is_empty())
+    return false;
 
+  // The product is_empty() test also reduces the product.
   if (is_empty())
     return false;
+  assert(reduced);
 
   PPL_DIRTY_TEMP_COEFFICIENT(inf1_n);
   PPL_DIRTY_TEMP_COEFFICIENT(inf1_d);
@@ -302,10 +310,14 @@ Partially_Reduced_Product<D1, D2, R>
 	   Coefficient& sup_d,
 	   bool& maximum,
 	   Generator& pnt) const {
-  reduce();
+  // If one component is already empty, then there is no need to reduce.
+  if (d1.is_empty() || d2.is_empty())
+    return false;
 
+  // The product is_empty() test also reduces the product.
   if (is_empty())
     return false;
+  assert(reduced);
 
   PPL_DIRTY_TEMP_COEFFICIENT(sup1_n);
   PPL_DIRTY_TEMP_COEFFICIENT(sup1_d);
@@ -360,10 +372,14 @@ Partially_Reduced_Product<D1, D2, R>
 	   Coefficient& inf_d,
 	   bool& minimum,
 	   Generator& pnt) const {
-  reduce();
+  // If one component is already empty, then there is no need to reduce.
+  if (d1.is_empty() || d2.is_empty())
+    return false;
 
+  // The product is_empty() test also reduces the product.
   if (is_empty())
     return false;
+  assert(reduced);
 
   PPL_DIRTY_TEMP_COEFFICIENT(inf1_n);
   PPL_DIRTY_TEMP_COEFFICIENT(inf1_d);
