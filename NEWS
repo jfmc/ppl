@@ -30,6 +30,11 @@ o  Fixed a bug in method
    whereby, under very specific conditions, an empty polyhedron is
    incorrectly said to contain an integer point.
 
+o  Fixed a bug in method
+     Partially_Reduced_Product<D1, D2, R>::time_elase_assign(y)
+  whereby, if the product y was not already reduced, the operation could
+  lose precision.
+
 o  ...
 
 
