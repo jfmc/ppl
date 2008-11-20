@@ -53,12 +53,11 @@ endif HAVE_OCAMLC
 
 if HAVE_OCAMLOPT
 
-PPL_OCAMLOPT_LIBRARY = ppl_ocaml.cmxa
+PPL_OCAMLOPT_LIBRARY = ppl_ocaml.a ppl_ocaml.cmxa
 
 endif HAVE_OCAMLOPT
 
 ocaml_DATA = \
-libppl_ocaml.a \
 ppl_ocaml.cmi \
 ppl_ocaml.mli \
 ppl_ocaml_globals.cmi \
@@ -69,7 +68,7 @@ BUILT_SOURCES = \
 ppl_ocaml_domains.hh \
 ppl_ocaml_domains_cc_files.stamp
 
-noinst_LIBRARIES = libppl_ocaml.a
+pkglib_LIBRARIES = libppl_ocaml.a
 
 libppl_ocaml_a_SOURCES = \
 ppl_ocaml_common.defs.hh \
@@ -189,7 +188,7 @@ ppl_ocaml.cma: ppl_ocaml_globals.cmo ppl_ocaml.cmo libppl_ocaml.a
 		$(OCAMLC_COMPILE_FLAGS) -cclib -lppl_ocaml \
 		$(OCAMLC_LINK_FLAGS)
 
-ppl_ocaml.cmxa: ppl_ocaml_globals.cmx ppl_ocaml.cmx libppl_ocaml.a
+ppl_ocaml.a ppl_ocaml.cmxa: ppl_ocaml_globals.cmx ppl_ocaml.cmx libppl_ocaml.a
 	ocamlopt -o $@ -a ppl_ocaml_globals.cmx ppl_ocaml.cmx \
 		$(OCAMLOPT_COMPILE_FLAGS) -cclib -lppl_ocaml \
 		$(OCAMLOPT_LINK_FLAGS)
@@ -243,6 +242,7 @@ MOSTLYCLEANFILES = \
 @required_instantiations_ocaml_cxx_objects@ \
 ppl_ocaml.cma \
 ppl_ocaml.cmxa \
+ppl_ocaml.a \
 ppl_ocaml.cmi \
 ppl_ocaml.cmo \
 ppl_ocaml.cmx \
