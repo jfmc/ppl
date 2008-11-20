@@ -64,6 +64,13 @@ OCAMLC_ENV = OCAMLRUNPARAM='l=1M'
 OCAMLC_COMPILE_FLAGS = \
 -I +gmp -I .. -ccopt -g
 
+OCAMLC_LINK_FLAGS = \
+-cclib -lmlgmp -cclib -lmpfr \
+`echo " $(extra_libraries) " | $(SED) -e "s/ -R[^ ]*//g" -e "s/ -/ -cclib -/g"`
+
+OCAMLOPT_COMPILE_FLAGS = $(OCAMLC_COMPILE_FLAGS)
+OCAMLOPT_LINK_FLAGS = $(OCAMLC_LINK_FLAGS)
+
 if ENABLE_SHARED
 
 BUILT_PPL = \
@@ -76,16 +83,29 @@ $(top_builddir)/src/.libs/libppl.$(LIBEXT)
 
 endif !ENABLE_SHARED
 
-OCAMLC_LINK_FLAGS = \
--cclib -lmlgmp -cclib -lmpfr \
-`echo " $(extra_libraries) " | $(SED) -e "s/ -R[^ ]*//g" -e "s/ -/ -cclib -/g"`
-
 .ml.cmo:
 	$(OCAMLC_ENV) ocamlc -o $@ -g -c $(OCAMLC_COMPILE_FLAGS) $<
 
-TESTS = \
+.ml.cmx:
+	ocamlopt -o $@ -g -c $(OCAMLOPT_COMPILE_FLAGS) $<
+
+if HAVE_OCAMLC
+
+OCAMLC_TESTS = \
 test1 \
 ppl_ocaml_generated_test
+
+endif HAVE_OCAMLC
+
+if HAVE_OCAMLOPT
+
+OCAMLOPT_TESTS = \
+test1_opt \
+ppl_ocaml_generated_test_opt
+
+endif HAVE_OCAMLOPT
+
+TESTS = $(OCAMLC_TESTS) $(OCAMLOPT_TESTS)
 
 check_PROGRAMS = $(TESTS)
 
@@ -93,9 +113,17 @@ test1_SOURCES = test1.ml
 
 test1$(EXEEXT): test1.cmo ../ppl_ocaml.cma
 	$(OCAMLC_ENV) ocamlc -o $@ \
-		-cc "$(CXX)" -g -custom $(OCAMLC_COMPILE_FLAGS) \
+		-cc "$(CXX)" -g $(OCAMLC_COMPILE_FLAGS) \
 		-cclib $(BUILT_PPL) $(OCAMLC_LINK_FLAGS) \
 		ppl_ocaml.cma $<
+
+test1_opt_SOURCES = test1.ml
+
+test1_opt$(EXEEXT): test1.cmx ../ppl_ocaml.cmxa
+	ocamlopt -o $@ \
+		-cc "$(CXX)" -g $(OCAMLOPT_COMPILE_FLAGS) \
+		-cclib $(BUILT_PPL) $(OCAMLOPT_LINK_FLAGS) \
+		ppl_ocaml.cmxa $<
 
 
 nodist_ppl_ocaml_generated_test_SOURCES = ppl_ocaml_generated_test.ml
@@ -109,15 +137,26 @@ ppl_ocaml_generated_test.ml: $(interface_generator_dependencies)
 ppl_ocaml_generated_test$(EXEEXT): \
 ppl_ocaml_generated_test.cmo ../ppl_ocaml.cma
 	$(OCAMLC_ENV) ocamlc -o $@ \
-		-cc "$(CXX)" -g -custom $(OCAMLC_COMPILE_FLAGS) \
+		-cc "$(CXX)" -g $(OCAMLC_COMPILE_FLAGS) \
 		-cclib $(BUILT_PPL) $(OCAMLC_LINK_FLAGS) \
 		ppl_ocaml.cma $<
+
+ppl_ocaml_generated_test_opt$(EXEEXT): \
+ppl_ocaml_generated_test.cmx ../ppl_ocaml.cmxa
+	ocamlopt -o $@ \
+		-cc "$(CXX)" -g $(OCAMLOPT_COMPILE_FLAGS) \
+		-cclib $(BUILT_PPL) $(OCAMLOPT_LINK_FLAGS) \
+		ppl_ocaml.cmxa $<
 
 CLEANFILES = \
 test1.cmi \
 test1.cmo \
+test1.cmx \
 test1 \
+test1_opt \
 ppl_ocaml_generated_test.ml \
 ppl_ocaml_generated_test.cmi \
 ppl_ocaml_generated_test.cmo \
-ppl_ocaml_generated_test
+ppl_ocaml_generated_test.cmx \
+ppl_ocaml_generated_test \
+ppl_ocaml_generated_test_opt
