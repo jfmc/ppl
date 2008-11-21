@@ -68,6 +68,7 @@ OCAMLC_LINK_FLAGS = \
 -cclib -lmlgmp -cclib -lmpfr \
 `echo " $(extra_libraries) " | $(SED) -e "s/ -R[^ ]*//g" -e "s/ -/ -cclib -/g"`
 
+OCAMLOPT_ENV = $(OCAMLC_ENV)
 OCAMLOPT_COMPILE_FLAGS = $(OCAMLC_COMPILE_FLAGS)
 OCAMLOPT_LINK_FLAGS = $(OCAMLC_LINK_FLAGS)
 
@@ -87,7 +88,7 @@ endif !ENABLE_SHARED
 	$(OCAMLC_ENV) ocamlc -o $@ -c $(OCAMLC_COMPILE_FLAGS) $<
 
 .ml.cmx:
-	ocamlopt -o $@ -c $(OCAMLOPT_COMPILE_FLAGS) $<
+	$(OCAMLOPT_ENV) ocamlopt -o $@ -c $(OCAMLOPT_COMPILE_FLAGS) $<
 
 if HAVE_OCAMLC
 
@@ -120,7 +121,7 @@ test1$(EXEEXT): test1.cmo ../ppl_ocaml.cma
 test1_opt_SOURCES = test1.ml
 
 test1_opt$(EXEEXT): test1.cmx ../ppl_ocaml.cmxa
-	ocamlopt -o $@ \
+	$(OCAMLOPT_ENV) ocamlopt -o $@ \
 		-cc "$(CXX)" $(OCAMLOPT_COMPILE_FLAGS) \
 		-cclib $(BUILT_PPL) $(OCAMLOPT_LINK_FLAGS) \
 		ppl_ocaml.cmxa $<
@@ -143,7 +144,7 @@ ppl_ocaml_generated_test.cmo ../ppl_ocaml.cma
 
 ppl_ocaml_generated_test_opt$(EXEEXT): \
 ppl_ocaml_generated_test.cmx ../ppl_ocaml.cmxa
-	ocamlopt -o $@ \
+	$(OCAMLOPT_ENV) ocamlopt -o $@ \
 		-cc "$(CXX)" $(OCAMLOPT_COMPILE_FLAGS) \
 		-cclib $(BUILT_PPL) $(OCAMLOPT_LINK_FLAGS) \
 		ppl_ocaml.cmxa $<

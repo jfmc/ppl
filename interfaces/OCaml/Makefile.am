@@ -165,6 +165,7 @@ OCAMLC_LINK_FLAGS = \
 
 OCAMLC_ROOT = @ocamlc_root@
 
+OCAMLOPT_ENV = $(OCAMLC_ENV)
 OCAMLOPT_COMPILE_FLAGS = $(OCAMLC_COMPILE_FLAGS)
 OCAMLOPT_LINK_FLAGS = $(OCAMLC_LINK_FLAGS)
 
@@ -189,7 +190,8 @@ ppl_ocaml.cma: ppl_ocaml_globals.cmo ppl_ocaml.cmo libppl_ocaml.a
 		$(OCAMLC_LINK_FLAGS)
 
 ppl_ocaml.a ppl_ocaml.cmxa: ppl_ocaml_globals.cmx ppl_ocaml.cmx libppl_ocaml.a
-	ocamlopt -o $@ -a ppl_ocaml_globals.cmx ppl_ocaml.cmx \
+	$(OCAMLOPT_ENV) ocamlopt -o $@ -a \
+		ppl_ocaml_globals.cmx ppl_ocaml.cmx \
 		$(OCAMLOPT_COMPILE_FLAGS) -cclib -lppl_ocaml \
 		$(OCAMLOPT_LINK_FLAGS)
 
@@ -197,7 +199,8 @@ ppl_ocaml.cmo: ppl_ocaml.ml ppl_ocaml.cmi ppl_ocaml_globals.cmi
 	$(OCAMLC_ENV) ocamlc -o $@ -c $(OCAMLC_COMPILE_FLAGS) ppl_ocaml.ml
 
 ppl_ocaml.cmx: ppl_ocaml.ml ppl_ocaml.cmi ppl_ocaml_globals.cmi
-	ocamlopt -o $@ -c $(OCAMLOPT_COMPILE_FLAGS) ppl_ocaml.ml
+	$(OCAMLOPT_ENV) ocamlopt -o $@ -c $(OCAMLOPT_COMPILE_FLAGS) \
+		ppl_ocaml.ml
 
 ppl_ocaml.cmi: ppl_ocaml.mli
 	$(OCAMLC_ENV) ocamlc -o $@ -c $(OCAMLC_COMPILE_FLAGS) $<
@@ -207,7 +210,7 @@ ppl_ocaml_globals.cmo: ppl_ocaml_globals.ml ppl_ocaml_globals.cmi
 		$(srcdir)/ppl_ocaml_globals.ml
 
 ppl_ocaml_globals.cmx: ppl_ocaml_globals.ml ppl_ocaml_globals.cmi
-	ocamlopt -o $@ -c $(OCAMLOPT_COMPILE_FLAGS) \
+	$(OCAMLOPT_ENV) ocamlopt -o $@ -c $(OCAMLOPT_COMPILE_FLAGS) \
 		$(srcdir)/ppl_ocaml_globals.ml
 
 ppl_ocaml_globals.cmi: ppl_ocaml_globals.mli
