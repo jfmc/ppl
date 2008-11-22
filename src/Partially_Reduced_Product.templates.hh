@@ -33,6 +33,30 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <typename D1, typename D2, typename R>
+template <typename E1, typename E2, typename S>
+inline
+Partially_Reduced_Product<D1, D2, R>
+::Partially_Reduced_Product(const Partially_Reduced_Product<E1, E2, S>& y,
+                            Complexity_Class complexity)
+  : d1((y.space_dimension() > max_space_dimension())
+       ? (throw_space_dimension_overflow
+       ("Partially_Reduced_Product<D1, D2, R>(y)",
+        "the space dimension of y "
+        "exceeds the maximum allowed "
+        "space dimension"), 0)
+       : y.space_dimension()),
+    d2(y.space_dimension()) {
+  Partially_Reduced_Product<D1, D2, R> x1(y.domain1(), complexity);
+  const Partially_Reduced_Product<D1, D2, R> x2(y.domain2(), complexity);
+  x1.intersection_assign(x2);
+  d1.swap(x1.d1);
+  d2.swap(x1.d2);
+  /* Even if y is reduced, the built product may not be reduced as
+     the reduction method may have changed (i.e., S != R). */
+  reduced = false;
+}
+
+template <typename D1, typename D2, typename R>
 Constraint_System
 Partially_Reduced_Product<D1, D2, R>::constraints() const {
   reduce();
