@@ -282,6 +282,9 @@ PPL::Grid::bounds(const Linear_Expression& expr,
       || marked_empty()
       || (!generators_are_up_to_date() && !update_generators()))
     return true;
+  if (!generators_are_minimized() && !minimize())
+    // Minimizing found `this' empty.
+    return true;
 
   // The generators are up to date.
   for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
