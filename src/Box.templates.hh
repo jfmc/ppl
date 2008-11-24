@@ -463,47 +463,21 @@ Box<ITV>::Box(const Grid& gr, Complexity_Class)
 
   assert(!gr.gen_sys.empty());
 
-  // Create a vector to record which dimensions are bounded.
-  std::vector<bool> bounded_interval(space_dim, true);
-
-  const Grid_Generator *first_point = 0;
-  // Clear the bound flag in `bounded_interval' for all dimensions in
-  // which a line or sequence of points extends away from a single
-  // value in the dimension.
-  // FIXME(0.10.1): this computation should be provided by the Grid class.
-  // FIXME(0.10.1): remove the declaration making Box a friend of Grid_Generator
-  //                when this is done.
-  for (Grid_Generator_System::const_iterator gs_i = gr.gen_sys.begin(),
-	 gs_end = gr.gen_sys.end(); gs_i != gs_end; ++gs_i) {
-    Grid_Generator& g = const_cast<Grid_Generator&>(*gs_i);
-    if (g.is_point()) {
-      if (first_point == 0) {
-	first_point = &g;
-	continue;
-      }
-      const Grid_Generator& point = *first_point;
-      // Convert the point `g' to a parameter.
-      for (dimension_type dim = space_dim; dim-- > 0; )
-	g[dim] -= point[dim];
-      g.set_divisor(point.divisor());
-    }
-    for (dimension_type col = space_dim; col > 0; )
-      if (g[col--] != 0)
-	bounded_interval[col] = false;
-  }
-
   // For each dimension that is bounded by the grid, set both bounds
   // of the interval to the value of the associated coefficient in a
   // generator point.
-  assert(first_point != 0);
-  const Grid_Generator& point = *first_point;
   PPL_DIRTY_TEMP0(mpq_class, bound);
-  const Coefficient& divisor = point.divisor();
+  PPL_DIRTY_TEMP(Coefficient, bound_num);
+  PPL_DIRTY_TEMP(Coefficient, bound_den);
   for (dimension_type i = space_dim; i-- > 0; ) {
+    std::cout << space_dim << "; i =" << ",  " << i << ",  " << std::endl;
     ITV& seq_i = seq[i];
-    if (bounded_interval[i]) {
-      assign_r(bound.get_num(), point[i+1], ROUND_NOT_NEEDED);
-      assign_r(bound.get_den(), divisor, ROUND_NOT_NEEDED);
+    Variable var(i);
+    bool max;
+    if (gr.maximize(var, bound_num, bound_den, max)) {
+      std::cout << "; maximize = true, i =" << i << std::endl;
+      assign_r(bound.get_num(), bound_num, ROUND_NOT_NEEDED);
+      assign_r(bound.get_den(), bound_den, ROUND_NOT_NEEDED);
       bound.canonicalize();
       seq_i.assign(bound);
     }
