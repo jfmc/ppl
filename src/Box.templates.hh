@@ -470,12 +470,10 @@ Box<ITV>::Box(const Grid& gr, Complexity_Class)
   PPL_DIRTY_TEMP(Coefficient, bound_num);
   PPL_DIRTY_TEMP(Coefficient, bound_den);
   for (dimension_type i = space_dim; i-- > 0; ) {
-    std::cout << space_dim << "; i =" << ",  " << i << ",  " << std::endl;
     ITV& seq_i = seq[i];
     Variable var(i);
     bool max;
     if (gr.maximize(var, bound_num, bound_den, max)) {
-      std::cout << "; maximize = true, i =" << i << std::endl;
       assign_r(bound.get_num(), bound_num, ROUND_NOT_NEEDED);
       assign_r(bound.get_den(), bound_den, ROUND_NOT_NEEDED);
       bound.canonicalize();
