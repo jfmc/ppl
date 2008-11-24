@@ -419,99 +419,6 @@ test10() {
   return ok;
 }
 
-bool
-test11() {
-  Variable x(0);
-
-  NNC_Polyhedron ph1(1, UNIVERSE);
-  ph1.add_constraint(x > 0);
-  ph1.add_constraint(x <= 1);
-
-  print_constraints(ph1, "*** ph1 ***");
-
-  NNC_Polyhedron ph2(1, UNIVERSE);
-  ph2.add_constraint(x == 0);
-
-  print_constraints(ph2, "*** ph2 ***");
-
-  NNC_Polyhedron known_result(1, UNIVERSE);
-  known_result.add_constraint(x >= 0);
-  known_result.add_constraint(x <= 1);
-
-  bool ok = ph1.upper_bound_assign_if_exact(ph2);
-  ok &= (ph1 == known_result);
-
-  print_constraints(ph1, "*** ph1.upper_bound_assign_if_exact(ph2) ***");
-
-  return ok;
-}
-
-bool
-test12() {
-  Variable x(0);
-  Variable y(1);
-
-  NNC_Polyhedron ph1(2, UNIVERSE);
-  ph1.add_constraint(x > 0);
-  ph1.add_constraint(x <= 2);
-  ph1.add_constraint(y >= 0);
-  ph1.add_constraint(y <= 2);
-
-  print_constraints(ph1, "*** ph1 ***");
-
-  NNC_Polyhedron ph2(2, UNIVERSE);
-  ph2.add_constraint(x >= 0);
-  ph2.add_constraint(x <= 2);
-  ph2.add_constraint(y == 1);
-
-  print_constraints(ph2, "*** ph2 ***");
-
-  NNC_Polyhedron known_result(ph1);
-
-  bool ok = !ph1.upper_bound_assign_if_exact(ph2);
-  ok &= (ph1 == known_result);
-
-  print_constraints(ph1, "*** ph1.upper_bound_assign_if_exact(ph2) ***");
-
-  return ok;
-}
-
-bool
-test13() {
-  Variable x(0);
-  Variable y(1);
-
-  NNC_Polyhedron ph1(2, UNIVERSE);
-  ph1.add_constraint(x >= 0);
-  ph1.add_constraint(x <= 2);
-  ph1.add_constraint(y >= 0);
-  ph1.add_constraint(y <= 2);
-  ph1.add_constraint(x + y > 0);
-  ph1.add_constraint(x + y < 4);
-
-  print_constraints(ph1, "*** ph1 ***");
-
-  NNC_Polyhedron ph2(2, UNIVERSE);
-  ph2.add_constraint(x == y);
-  ph2.add_constraint(x <= 2);
-  ph2.add_constraint(y >= 0);
-
-  print_constraints(ph2, "*** ph2 ***");
-
-  NNC_Polyhedron known_result(2, UNIVERSE);
-  known_result.add_constraint(x >= 0);
-  known_result.add_constraint(x <= 2);
-  known_result.add_constraint(y >= 0);
-  known_result.add_constraint(y <= 2);
-
-  bool ok = ph1.upper_bound_assign_if_exact(ph2);
-  ok &= (ph1 == known_result);
-
-  print_constraints(ph1, "*** ph1.upper_bound_assign_if_exact(ph2) ***");
-
-  return ok;
-}
-
 } // namespace
 
 BEGIN_MAIN
@@ -525,7 +432,4 @@ BEGIN_MAIN
   DO_TEST(test08);
   DO_TEST(test09);
   DO_TEST_F64(test10);
-  DO_TEST(test11);
-  DO_TEST(test12);
-  DO_TEST(test13);
 END_MAIN

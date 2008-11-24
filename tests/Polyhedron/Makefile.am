@@ -116,7 +116,7 @@ onepoint \
 permute \
 polydifference1 polydifference2 \
 polyhull1 polyhull2 \
-polyhullifexact1 \
+polyhullifexact1 polyhullifexact2 \
 randphull1 \
 refinewithconstraint1 \
 refinewithconstraints1 \
@@ -368,6 +368,7 @@ polyhull1_SOURCES = polyhull1.cc
 polyhull2_SOURCES = polyhull2.cc
 
 polyhullifexact1_SOURCES = polyhullifexact1.cc
+polyhullifexact2_SOURCES = polyhullifexact2.cc
 
 randphull1_SOURCES = randphull1.cc
 randphull1_LDADD = $(LDADD) -lm
