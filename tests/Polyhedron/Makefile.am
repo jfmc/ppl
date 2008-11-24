@@ -116,6 +116,7 @@ onepoint \
 permute \
 polydifference1 polydifference2 \
 polyhull1 polyhull2 \
+polyhullifexact1 \
 randphull1 \
 refinewithconstraint1 \
 refinewithconstraints1 \
@@ -193,6 +194,7 @@ nnc_onepoint \
 nnc_permute \
 nnc_polydifference1 \
 nnc_polyhull1 \
+nnc_polyhullifexact1 \
 nnc_randphull1 \
 nnc_relations1 nnc_relations2 \
 nnc_removespacedims1 \
@@ -364,6 +366,8 @@ polydifference2_SOURCES = polydifference2.cc
 
 polyhull1_SOURCES = polyhull1.cc
 polyhull2_SOURCES = polyhull2.cc
+
+polyhullifexact1_SOURCES = polyhullifexact1.cc
 
 randphull1_SOURCES = randphull1.cc
 randphull1_LDADD = $(LDADD) -lm
@@ -588,6 +592,9 @@ nnc_polydifference1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_polyhull1_SOURCES = polyhull1.cc
 nnc_polyhull1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_polyhullifexact1_SOURCES = polyhullifexact1.cc
+nnc_polyhullifexact1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_randphull1_SOURCES = randphull1.cc
 nnc_randphull1_CXXFLAGS = $(DERIVED_CXXFLAGS)
