@@ -69,7 +69,7 @@ Bit_Row::clear_from(const unsigned long k) {
 inline unsigned long
 Bit_Row::count_ones() const {
   assert(vec->_mp_size >= 0);
-  return mpn_popcount(vec->_mp_d, vec->_mp_size);
+  return vec->_mp_size == 0 ? 0 : mpn_popcount(vec->_mp_d, vec->_mp_size);
 }
 
 inline bool
