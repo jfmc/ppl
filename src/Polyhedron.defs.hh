@@ -2612,12 +2612,12 @@ protected:
     Current implementation is based on (a variant of) Algorithm 8.1 in
       A. Bemporad, K. Fukuda, and F. D. Torrisi
       <em>Convexity Recognition of the Union of Polyhedra</em>
-      Technical Report AUT00-13, ETH Zurich, 2000.
+      Technical Report AUT00-13, ETH Zurich, 2000
+    generalized to also work on NNC polyhedra.
 
     \note
-    It is assumed that \p *this and \p y are dimension-compatible
-    and necessarily closed polyhedra; if the assumption does not hold,
-    the behavior is undefined.
+    It is assumed that \p *this and \p y are dimension-compatible;
+    if the assumption does not hold, the behavior is undefined.
   */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   bool BFT00_poly_hull_assign_if_exact(const Polyhedron& y);

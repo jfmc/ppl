@@ -1413,11 +1413,6 @@ bool
 PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
   // Declare a const reference to *this (to avoid accidental modifications).
   const Polyhedron& x = *this;
-
-  // FIXME: temporarily assuming C_Polyhedron.
-  // Find a suitable generalization working for NNC polyhedra too.
-  assert(x.is_necessarily_closed());
-
   // Private method: the caller must ensure the following.
   assert(x.topology() == y.topology());
   assert(x.space_dim == y.space_dim);
@@ -1442,12 +1437,13 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
   // Here both `x' and `y' are known to be non-empty.
 
   // Implementation based on Algorithm 8.1 (page 15) in [BemporadFT00TR],
-  // generalized so as to allow for possibly unbounded polyhedra.
-  // The generalization is obtained as in Algorithm 8.2 (page 19),
-  // which generalizes Algorithm 6.2 (page 13).
-  // We apply a couple of improvements (see steps 2.1, 3.1, 6.1, 7.1)
+  // generalized so as to also allow for NNC and unbounded polyhedra.
+  // The extension to unbounded polyhedra is obtained by mimicking
+  // what done in Algorithm 8.2 (page 19) wrt Algorithm 6.2 (page 13).
+  // We also apply a couple of improvements (see steps 2.1, 3.1, 6.1, 7.1)
   // so as to quickly handle special cases and avoid the splitting
   // of equalities/lines into pairs of inequalities/rays.
+  // The extension to NNC polyhedra seems to be new.
 
   (void) x.minimize();
   (void) y.minimize();
@@ -1495,16 +1491,19 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
 
   // Here we know that `x' is not included in `y', and vice versa.
 
+  // Step 3.1 below is only correct for C_Polyhedron.
+  const bool closed = x.is_necessarily_closed();
+
   // Step 3: constraints of `x' that are satisfied by `y', and vice versa.
   Bit_Row x_cs_red_in_y;
   for (dimension_type i = x_cs.num_rows(); i-- > 0; ) {
     const Constraint& x_cs_i = x_cs[i];
     if (y.relation_with(x_cs_i).implies(Poly_Con_Relation::is_included()))
       x_cs_red_in_y.set(i);
-    else if (x_cs_i.is_equality())
+    else if (closed && x_cs_i.is_equality())
       // Step 3.1: `x' has an equality not satified by `y':
       // union is not convex (recall that `y' does not contain `x').
-      // FIXME: this is false for NNC polyhedra.
+      // NOTE: this is false for NNC polyhedra.
       // Example: x = { A == 0 }, y = { 0 < A <= 1 }.
       return false;
   }
@@ -1513,10 +1512,9 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
     const Constraint& y_cs_i = y_cs[i];
     if (x.relation_with(y_cs_i).implies(Poly_Con_Relation::is_included()))
       y_cs_red_in_x.set(i);
-    else if (y_cs_i.is_equality())
+    else if (closed && y_cs_i.is_equality())
       // Step 3.1: `y' has an equality not satified by `x':
-      // union is not convex (recall that `x' does not contain `y').
-      // FIXME: this is false for NNC polyhedra (see above).
+      // union is not convex (see explanation above).
       return false;
   }
 
