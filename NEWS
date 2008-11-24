@@ -42,6 +42,12 @@ o  Fixed a bug in the OCaml interface, which was affecting functions
    and
      ppl_Grid_generalized_affine_preimage_with_congruence.
 
+o  Fixed a bug in the Grid class that affected the methods
+     Grid::bounds_from_above(), Grid::bounds_from_below(),
+     Grid::maximize() and Grid::minimize();
+   causing all of them to wrongly return true in certain cases where
+   the grid generators were not minimized.
+
 o  ...
 
 
