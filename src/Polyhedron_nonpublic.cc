@@ -1409,6 +1409,210 @@ PPL::Polyhedron::refine_no_check(const Constraint& c) {
   assert(OK());
 }
 
+bool
+PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
+  // Declare a const reference to *this (to avoid accidental modifications).
+  const Polyhedron& x = *this;
+
+  // FIXME: temporarily assuming C_Polyhedron.
+  // Find a suitable generalization working for NNC polyhedra too.
+  assert(x.is_necessarily_closed());
+
+  // Private method: the caller must ensure the following.
+  assert(x.topology() == y.topology());
+  assert(x.space_dim == y.space_dim);
+
+  // The zero-dim case is trivial.
+  if (x.space_dim == 0) {
+    upper_bound_assign(y);
+    return true;
+  }
+  // If `x' or `y' is (known to be) empty, the convex union is exact.
+  if (x.marked_empty()) {
+    *this = y;
+    return true;
+  }
+  else if (y.is_empty())
+    return true;
+  else if (x.is_empty()) {
+    *this = y;
+    return true;
+  }
+
+  // Here both `x' and `y' are known to be non-empty.
+
+  // Implementation based on Algorithm 8.1 (page 15) in [BemporadFT00TR],
+  // generalized so as to allow for possibly unbounded polyhedra.
+  // The generalization is obtained as in Algorithm 8.2 (page 19),
+  // which generalizes Algorithm 6.2 (page 13).
+  // We apply a couple of improvements (see steps 2.1, 3.1, 6.1, 7.1)
+  // so as to quickly handle special cases and avoid the splitting
+  // of equalities/lines into pairs of inequalities/rays.
+
+  (void) x.minimize();
+  (void) y.minimize();
+  const Constraint_System& x_cs = x.con_sys;
+  const Constraint_System& y_cs = y.con_sys;
+  const Generator_System& x_gs = x.gen_sys;
+  const Generator_System& y_gs = y.gen_sys;
+  const dimension_type x_gs_num_rows = x_gs.num_rows();
+  const dimension_type y_gs_num_rows = y_gs.num_rows();
+
+  // Step 1: generators of `x' that are redundant in `y', and vice versa.
+  Bit_Row x_gs_red_in_y;
+  for (dimension_type i = x_gs_num_rows; i-- > 0; )
+    if (y.relation_with(x_gs[i]).implies(Poly_Gen_Relation::subsumes()))
+      x_gs_red_in_y.set(i);
+  Bit_Row y_gs_red_in_x;
+  for (dimension_type i = y_gs_num_rows; i-- > 0; )
+    if (x.relation_with(y_gs[i]).implies(Poly_Gen_Relation::subsumes()))
+      y_gs_red_in_x.set(i);
+
+  // Step 2: if no redundant generator has been identified,
+  // then the union is not convex.
+  // For C polyhedra, this holds because x and y are disjoint.
+  // CHECKME: what about NNC polyhedra?
+  // Example: let
+  //    x = { A == 0, -1 < B < 1 },
+  //    y = { A <= 1, A - B >= 0, A + B >= 0 }.
+  // All the generators of x (resp., y) are non-redundant in y (resp., x),
+  // but x and y are not disjoint (the intersection is the origin).
+  // Anyway, it is still true that x union y is not convex.
+  const dimension_type num_x_gs_red_in_y = x_gs_red_in_y.count_ones();
+  const dimension_type num_y_gs_red_in_x = y_gs_red_in_x.count_ones();
+  if (num_x_gs_red_in_y == 0 && num_y_gs_red_in_x == 0)
+    return false;
+
+  // Step 2.1: while at it, also perform quick inclusion tests.
+  if (num_y_gs_red_in_x == y_gs_num_rows)
+    // `y' is included into `x': union is convex.
+    return true;
+  if (num_x_gs_red_in_y == x_gs_num_rows) {
+    // `x' is included into `y': union is convex.
+    *this = y;
+    return true;
+  }
+
+  // Here we know that `x' is not included in `y', and vice versa.
+
+  // Step 3: constraints of `x' that are satisfied by `y', and vice versa.
+  Bit_Row x_cs_red_in_y;
+  for (dimension_type i = x_cs.num_rows(); i-- > 0; ) {
+    const Constraint& x_cs_i = x_cs[i];
+    if (y.relation_with(x_cs_i).implies(Poly_Con_Relation::is_included()))
+      x_cs_red_in_y.set(i);
+    else if (x_cs_i.is_equality())
+      // Step 3.1: `x' has an equality not satified by `y':
+      // union is not convex (recall that `y' does not contain `x').
+      // FIXME: this is false for NNC polyhedra.
+      // Example: x = { A == 0 }, y = { 0 < A <= 1 }.
+      return false;
+  }
+  Bit_Row y_cs_red_in_x;
+  for (dimension_type i = y_cs.num_rows(); i-- > 0; ) {
+    const Constraint& y_cs_i = y_cs[i];
+    if (x.relation_with(y_cs_i).implies(Poly_Con_Relation::is_included()))
+      y_cs_red_in_x.set(i);
+    else if (y_cs_i.is_equality())
+      // Step 3.1: `y' has an equality not satified by `x':
+      // union is not convex (recall that `x' does not contain `y').
+      // FIXME: this is false for NNC polyhedra (see above).
+      return false;
+  }
+
+  // Loop in steps 5-9: for each pair of non-redundant generators,
+  // compute their "mid-point" and check if it is both in `x' and `y'.
+
+  // Note: reasoning at the polyhedral cone level.
+  // CHECKME, FIXME: Polyhedron is a (deprecated) friend of Generator.
+  // Here below we systematically exploit such a friendship, so as to
+  // freely reinterpret a Generator as a Linear_Row and vice versa.
+  Linear_Row mid_row;
+  const Generator& mid_g = static_cast<const Generator&>(mid_row);
+
+  for (dimension_type i = x_gs_num_rows; i-- > 0; ) {
+    if (x_gs_red_in_y[i])
+      continue;
+    const Linear_Row& x_row = static_cast<const Linear_Row&>(x_gs[i]);
+    const dimension_type row_sz = x_row.size();
+    const bool x_row_is_line = x_row.is_line_or_equality();
+    for (dimension_type j = y_gs_num_rows; j-- > 0; ) {
+      if (y_gs_red_in_x[j])
+        continue;
+      const Linear_Row& y_row = static_cast<const Linear_Row&>(y_gs[j]);
+      const bool y_row_is_line = y_row.is_line_or_equality();
+
+      // Step 6: compute mid_row = x_row + y_row.
+      // NOTE: no need to actually compute the "mid-point",
+      // since any strictly positive combination would do.
+      mid_row = x_row;
+      for (dimension_type k = row_sz; k-- > 0; )
+        mid_row[k] += y_row[k];
+      // A zero ray is not a well formed generator.
+      const bool illegal_ray
+        = (mid_row[0] == 0 && mid_row.all_homogeneous_terms_are_zero());
+      // A zero ray cannot be generated from a line: this holds
+      // because x_row (resp., y_row) is not subsumed by y (resp., x).
+      assert(!(illegal_ray && (x_row_is_line || y_row_is_line)));
+      if (illegal_ray)
+        continue;
+      if (x_row_is_line) {
+        mid_row.normalize();
+        if (y_row_is_line)
+          // mid_row is a line too: sign normalization is needed.
+          mid_row.sign_normalize();
+        else
+          // mid_row is a ray/point.
+          mid_row.set_is_ray_or_point_or_inequality();
+      }
+
+      // Step 7: check if mid_g is in the union of x and y.
+      // NOTE: since here we use method `relation_with',
+      // the test correctly generalizes to the case of NNC polyhedra.
+      if (x.relation_with(mid_g) == Poly_Gen_Relation::nothing()
+          && y.relation_with(mid_g) == Poly_Gen_Relation::nothing())
+        return false;
+
+      // If either x_row or y_row is a line, we should use its
+      // negation to produce another generator to be tested too.
+      // NOTE: exclusive-or is meant.
+      if (!x_row_is_line && y_row_is_line) {
+        // Step 6.1: (re-)compute mid_row = x_row - y_row.
+        mid_row = x_row;
+        for (dimension_type k = row_sz; k-- > 0; )
+          mid_row[k] -= y_row[k];
+        mid_row.normalize();
+        // Step 7.1: check if mid_g is in the union of x and y.
+        if (x.relation_with(mid_g) == Poly_Gen_Relation::nothing()
+            && y.relation_with(mid_g) == Poly_Gen_Relation::nothing())
+          return false;
+      }
+      else if (x_row_is_line && !y_row_is_line) {
+        // Step 6.1: (re-)compute mid_row = - x_row + y_row.
+        mid_row = y_row;
+        for (dimension_type k = row_sz; k-- > 0; )
+          mid_row[k] -= x_row[k];
+        mid_row.normalize();
+        // Step 7.1: check if mid_g is in the union of x and y.
+        if (x.relation_with(mid_g) == Poly_Gen_Relation::nothing()
+            && y.relation_with(mid_g) == Poly_Gen_Relation::nothing())
+          return false;
+      }
+    }
+  }
+
+  // Here we know that the union of x and y is convex.
+  // TODO: exploit knowledge on the cardinality of non-redudnant
+  // constraints/generators to improve the convex-hull computation.
+  // Using generators allows for exploiting incrementality.
+  for (dimension_type j = 0; j < y_gs_num_rows; ++j) {
+    if (!y_gs_red_in_x[j])
+      add_generator(y_gs[j]);
+  }
+  assert(OK());
+  return true;
+}
+
 void
 PPL::Polyhedron::throw_runtime_error(const char* method) const {
   std::ostringstream s;
