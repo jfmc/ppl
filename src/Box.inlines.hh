@@ -190,32 +190,32 @@ Box<ITV>::bounds_from_below(const Linear_Expression& expr) const {
 template <typename ITV>
 inline bool
 Box<ITV>::maximize(const Linear_Expression& expr,
-			Coefficient& sup_n, Coefficient& sup_d,
-			bool& maximum) const {
+                   Coefficient& sup_n, Coefficient& sup_d,
+                   bool& maximum) const {
   return max_min(expr, true, sup_n, sup_d, maximum);
 }
 
 template <typename ITV>
 inline bool
 Box<ITV>::maximize(const Linear_Expression& expr,
-			Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
-			Generator& g) const {
+                   Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
+                   Generator& g) const {
   return max_min(expr, true, sup_n, sup_d, maximum, g);
 }
 
 template <typename ITV>
 inline bool
 Box<ITV>::minimize(const Linear_Expression& expr,
-			Coefficient& inf_n, Coefficient& inf_d,
-			bool& minimum) const {
+                   Coefficient& inf_n, Coefficient& inf_d,
+                   bool& minimum) const {
   return max_min(expr, false, inf_n, inf_d, minimum);
 }
 
 template <typename ITV>
 inline bool
 Box<ITV>::minimize(const Linear_Expression& expr,
-			Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
-			Generator& g) const {
+                   Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
+                   Generator& g) const {
   return max_min(expr, false, inf_n, inf_d, minimum, g);
 }
 
