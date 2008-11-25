@@ -1869,6 +1869,19 @@ private:
   */
   bool is_shortest_path_reduced() const;
 
+  /*! \brief
+    Incrementally computes shortest-path closure, assuming that only
+    constraints affecting variable \p var need to be considered.
+
+    \note
+    It is assumed that \c *this, which was shortest-path closed,
+    has only been modified by adding constraints affecting variable
+    \p var. If this assumption is not satisfied, i.e., if a non-redundant
+    constraint not affecting variable \p var has been added, the behavior
+    is undefined.
+  */
+  void incremental_shortest_path_closure_assign(Variable var) const;
+
   //! Checks if and how \p expr is bounded in \p *this.
   /*!
     Returns <CODE>true</CODE> if and only if \p from_above is
