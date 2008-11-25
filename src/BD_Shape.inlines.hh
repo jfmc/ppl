@@ -757,9 +757,10 @@ BD_Shape<T>::upper_bound_assign_and_minimize(const BD_Shape& y) {
 template <typename T>
 inline bool
 BD_Shape<T>::upper_bound_assign_if_exact(const BD_Shape& y) {
-  // FIXME(0.10.1): this must be properly implemented.
-  used(y);
-  return false;
+  // Dimension-compatibility check.
+  if (space_dimension() != y.space_dimension())
+    throw_dimension_incompatible("upper_bound_assign_if_exact(y)", y);
+  return BFT00_upper_bound_assign_if_exact(y);
 }
 
 template <typename T>

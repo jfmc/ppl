@@ -1968,6 +1968,22 @@ private:
                Coefficient& ext_n, Coefficient& ext_d, bool& included) const;
 
   /*! \brief
+    If the upper bound of \p *this and \p y is exact it is assigned
+    to \p *this and \c true is returned, otherwise \c false is returned.
+
+    Current implementation is based on a variant of Algorithm 4.1 in
+      A. Bemporad, K. Fukuda, and F. D. Torrisi
+      <em>Convexity Recognition of the Union of Polyhedra</em>
+      Technical Report AUT00-13, ETH Zurich, 2000
+    tailored to the special case of BD shapes.
+
+    \note
+    It is assumed that \p *this and \p y are dimension-compatible;
+    if the assumption does not hold, the behavior is undefined.
+  */
+  bool BFT00_upper_bound_assign_if_exact(const BD_Shape& y);
+
+  /*! \brief
     Uses the constraint \p c to refine \p *this.
 
     \param c

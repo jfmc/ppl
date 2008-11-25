@@ -1921,6 +1921,159 @@ BD_Shape<T>::upper_bound_assign(const BD_Shape& y) {
 }
 
 template <typename T>
+bool
+BD_Shape<T>::BFT00_upper_bound_assign_if_exact(const BD_Shape& y) {
+  // Declare a const reference to *this (to avoid accidental modifications).
+  const BD_Shape& x = *this;
+  const dimension_type x_space_dim = x.space_dimension();
+
+  // Private method: the caller must ensure the following.
+  assert(x_space_dim == y.space_dimension());
+
+  // The zero-dim case is trivial.
+  if (x_space_dim == 0) {
+    upper_bound_assign(y);
+    return true;
+  }
+  // If `x' or `y' is (known to be) empty, the upper bound is exact.
+  if (x.marked_empty()) {
+    *this = y;
+    return true;
+  }
+  else if (y.is_empty())
+    return true;
+  else if (x.is_empty()) {
+    *this = y;
+    return true;
+  }
+
+  // Here both `x' and `y' are known to be non-empty.
+  // Implementation based on Algorithm 4.1 (page 6) in [BemporadFT00TR],
+  // tailored to the special case of BD shapes.
+
+  Variable eps(x_space_dim);
+  Linear_Expression zero_expr = 0*eps;
+  Linear_Expression db_expr;
+  PPL_DIRTY_TEMP_COEFFICIENT(num);
+  PPL_DIRTY_TEMP_COEFFICIENT(den);
+
+  // Step 1: compute the constraint system for the envelope env(x,y)
+  // and put into x_cs_removed and y_cs_removed those non-redundant
+  // constraints that are not in the constraint system for env(x,y).
+  // While at it, also add the additional space dimension (eps).
+  Constraint_System env_cs;
+  Constraint_System x_cs_removed;
+  Constraint_System y_cs_removed;
+  x.shortest_path_reduction_assign();
+  y.shortest_path_reduction_assign();
+  for (dimension_type i = x_space_dim + 1; i-- > 0; ) {
+    const Bit_Row& x_red_i = x.redundancy_dbm[i];
+    const Bit_Row& y_red_i = y.redundancy_dbm[i];
+    const DB_Row<N>& x_dbm_i = x.dbm[i];
+    const DB_Row<N>& y_dbm_i = y.dbm[i];
+    for (dimension_type j = x_space_dim + 1; j-- > 0; ) {
+      if (x_red_i[j] && y_red_i[j])
+        continue;
+      if (!x_red_i[j]) {
+        const N& x_dbm_ij = x_dbm_i[j];
+        assert(!is_plus_infinity(x_dbm_ij));
+        numer_denom(x_dbm_ij, num, den);
+        // Build skeleton DB constraint (having the right space dimension).
+        db_expr = zero_expr;
+        if (i > 0)
+          db_expr += Variable(i-1);
+        if (j > 0)
+          db_expr -= Variable(j-1);
+        if (den != 1)
+          db_expr *= den;
+        db_expr += num;
+        if (x_dbm_ij >= y_dbm_i[j])
+          env_cs.insert(db_expr >= 0);
+        else {
+          db_expr += eps;
+          x_cs_removed.insert(db_expr == 0);
+        }
+      }
+      if (!y_red_i[j]) {
+        const N& y_dbm_ij = y_dbm_i[j];
+        const N& x_dbm_ij = x_dbm_i[j];
+        assert(!is_plus_infinity(y_dbm_ij));
+        numer_denom(y_dbm_ij, num, den);
+        // Build skeleton DB constraint (having the right space dimension).
+        db_expr = zero_expr;
+        if (i > 0)
+          db_expr += Variable(i-1);
+        if (j > 0)
+          db_expr -= Variable(j-1);
+        if (den != 1)
+          db_expr *= den;
+        db_expr += num;
+        if (y_dbm_ij >= x_dbm_ij) {
+          // Check if same constraint was added when considering x_dbm_ij.
+          if (!x_red_i[j] && x_dbm_ij == y_dbm_ij)
+            continue;
+          env_cs.insert(db_expr >= 0);
+        }
+        else {
+          db_expr += eps;
+          y_cs_removed.insert(db_expr == 0);
+        }
+      }
+    }
+  }
+
+  if (x_cs_removed.empty())
+    // No constraint of x was removed: y is included in x.
+    return true;
+  if (y_cs_removed.empty()) {
+    // No constraint of y was removed: x is included in y.
+    *this = y;
+    return true;
+  }
+
+  // In preparation to Step 4: build the common part of LP problems,
+  // i.e., the constraints corresponding to env(x,y),
+  // where the additional space dimension (eps) has to be maximised.
+  MIP_Problem env_lp(x_space_dim + 1, env_cs, eps, MAXIMIZATION);
+  // Pre-solve `env_lp' to later exploit incrementality.
+  env_lp.solve();
+  assert(env_lp.solve() != UNFEASIBLE_MIP_PROBLEM);
+
+  // Implementing loop in Steps 3-6.
+  for (Constraint_System::const_iterator i = x_cs_removed.begin(),
+         i_end = x_cs_removed.end(); i != i_end; ++i) {
+    MIP_Problem lp_i(env_lp);
+    lp_i.add_constraint(*i);
+    // Pre-solve to exploit incrementality.
+    if (lp_i.solve() == UNFEASIBLE_MIP_PROBLEM)
+      continue;
+    for (Constraint_System::const_iterator j = y_cs_removed.begin(),
+           j_end = y_cs_removed.end(); j != j_end; ++j) {
+      MIP_Problem lp_ij(lp_i);
+      lp_ij.add_constraint(*j);
+      // Solve and check for a positive optimal value.
+      switch (lp_ij.solve()) {
+      case UNFEASIBLE_MIP_PROBLEM:
+        // CHECKME: is the following actually impossible?
+        throw std::runtime_error("PPL internal error");
+      case UNBOUNDED_MIP_PROBLEM:
+        return false;
+      case OPTIMIZED_MIP_PROBLEM:
+        lp_ij.optimal_value(num, den);
+        if (num > 0)
+          return false;
+        break;
+      }
+    }
+  }
+
+  // The upper bound of x and y is indeed exact.
+  upper_bound_assign(y);
+  assert(OK());
+  return true;
+}
+
+template <typename T>
 void
 BD_Shape<T>::difference_assign(const BD_Shape& y) {
   const dimension_type space_dim = space_dimension();
