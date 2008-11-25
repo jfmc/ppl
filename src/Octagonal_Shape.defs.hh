@@ -1854,14 +1854,16 @@ private:
   //! Applies the strong-coherence step to \c this->matrix.
   void strong_coherence_assign();
 
-  //! Puts in \p *this all implicit constraints and computes the tighter ones.
-  /*!
-    \param var
-    The variable of the altered constraints.
+  /*! \brief
+    Incrementally computes strong closure, assuming that only
+    constraints affecting variable \p var need to be considered.
 
-    The octagon `*this' was transitively closed except for the constraint on
-    variable `var'. This operation costs only \f$O(n^2)\f$.
-
+    \note
+    It is assumed that \c *this, which was strongly closed, has only been
+    modified by adding constraints affecting variable \p var. If this
+    assumption is not satisfied, i.e., if a non-redundant constraint not
+    affecting variable \p var has been added, the behavior is undefined.
+    Worst-case complexity is \f$O(n^2)\f$.
   */
   void incremental_strong_closure_assign(Variable var) const;
 
