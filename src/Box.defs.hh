@@ -932,8 +932,7 @@ public:
     If \c false is returned, then the intersection is empty.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p y are topology-incompatible or
-    dimension-incompatible.
+    Thrown if \p *this and \p y are dimension-incompatible.
   */
   bool simplify_using_context_assign(const Box& y);
 
