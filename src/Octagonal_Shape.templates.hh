@@ -1966,10 +1966,6 @@ Octagonal_Shape<T>
   if (marked_empty() || marked_strongly_closed())
     return;
 
-  // Zero-dimensional octagons are necessarily strongly closed.
-  if (space_dim == 0)
-    return;
-
   Octagonal_Shape& x = const_cast<Octagonal_Shape<T>&>(*this);
 
   typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
