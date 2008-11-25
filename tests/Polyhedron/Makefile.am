@@ -62,7 +62,7 @@ affinepreimage1 \
 affinetrans \
 append1 append2 \
 ascii_dump_load1 ascii_dump_load2 ascii_dump_load3 \
-bgp99extrapolation1 \
+bgp99extrapolation1 bgp99extrapolation2 \
 bhrz03widening1 bhrz03widening2 bhrz03widening3 \
 bhz03widening1 \
 bounded1 \
@@ -243,6 +243,7 @@ ascii_dump_load2_SOURCES = ascii_dump_load2.cc
 ascii_dump_load3_SOURCES = ascii_dump_load3.cc
 
 bgp99extrapolation1_SOURCES = bgp99extrapolation1.cc
+bgp99extrapolation2_SOURCES = bgp99extrapolation2.cc
 
 bhrz03widening1_SOURCES = bhrz03widening1.cc
 bhrz03widening2_SOURCES = bhrz03widening2.cc
