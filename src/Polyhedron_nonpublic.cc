@@ -1474,16 +1474,14 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
   // All the generators of x (resp., y) are non-redundant in y (resp., x),
   // but x and y are not disjoint (the intersection is the origin).
   // Anyway, it is still true that x union y is not convex.
-  const dimension_type num_x_gs_red_in_y = x_gs_red_in_y.count_ones();
-  const dimension_type num_y_gs_red_in_x = y_gs_red_in_x.count_ones();
-  if (num_x_gs_red_in_y == 0 && num_y_gs_red_in_x == 0)
+  if (x_gs_red_in_y.empty() && y_gs_red_in_x.empty())
     return false;
 
   // Step 2.1: while at it, also perform quick inclusion tests.
-  if (num_y_gs_red_in_x == y_gs_num_rows)
+  if (y_gs_red_in_x.count_ones() == y_gs_num_rows)
     // `y' is included into `x': union is convex.
     return true;
-  if (num_x_gs_red_in_y == x_gs_num_rows) {
+  if (x_gs_red_in_y.count_ones() == x_gs_num_rows) {
     // `x' is included into `y': union is convex.
     *this = y;
     return true;
