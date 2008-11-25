@@ -1675,6 +1675,116 @@ BD_Shape<T>::shortest_path_closure_assign() const {
 
 template <typename T>
 void
+BD_Shape<T>::incremental_shortest_path_closure_assign(Variable var) const {
+  // Do something only if necessary.
+  if (marked_empty() || marked_shortest_path_closed())
+    return;
+  const dimension_type num_dimensions = space_dimension();
+  assert(var.id() < num_dimensions);
+
+  // Even though the BDS will not change, its internal representation
+  // is going to be modified by the incremental Floyd-Warshall algorithm.
+  BD_Shape& x = const_cast<BD_Shape&>(*this);
+
+  // Fill the main diagonal with zeros.
+  for (dimension_type h = num_dimensions + 1; h-- > 0; ) {
+    assert(is_plus_infinity(x.dbm[h][h]));
+    assign_r(x.dbm[h][h], 0, ROUND_NOT_NEEDED);
+  }
+
+  // Using the incremental Floyd-Warshall algorithm.
+  PPL_DIRTY_TEMP(N, sum);
+  const dimension_type v = var.id() + 1;
+  DB_Row<N>& x_v = x.dbm[v];
+  // Step 1: Improve all constraints on variable `var'.
+  for (dimension_type k = num_dimensions + 1; k-- > 0; ) {
+    DB_Row<N>& x_k = x.dbm[k];
+    const N& x_v_k = x_v[k];
+    const N& x_k_v = x_k[v];
+    const bool x_v_k_finite = !is_plus_infinity(x_v_k);
+    const bool x_k_v_finite = !is_plus_infinity(x_k_v);
+    // Specialize inner loop based on finiteness info.
+    if (x_v_k_finite) {
+      if (x_k_v_finite) {
+        // Here both x_v_k and x_k_v are finite.
+        for (dimension_type i = num_dimensions + 1; i-- > 0; ) {
+          DB_Row<N>& x_i = x.dbm[i];
+          const N& x_i_k = x_i[k];
+          if (!is_plus_infinity(x_i_k)) {
+            add_assign_r(sum, x_i_k, x_k_v, ROUND_UP);
+            min_assign(x_i[v], sum);
+          }
+          const N& x_k_i = x_k[i];
+          if (!is_plus_infinity(x_k_i)) {
+            add_assign_r(sum, x_v_k, x_k_i, ROUND_UP);
+            min_assign(x_v[i], sum);
+          }
+        }
+      }
+      else {
+        // Here x_v_k is finite, but x_k_v is not.
+        for (dimension_type i = num_dimensions + 1; i-- > 0; ) {
+          const N& x_k_i = x_k[i];
+          if (!is_plus_infinity(x_k_i)) {
+            add_assign_r(sum, x_v_k, x_k_i, ROUND_UP);
+            min_assign(x_v[i], sum);
+          }
+        }
+      }
+    }
+    else if (x_k_v_finite) {
+      // Here x_v_k is infinite, but x_k_v is finite.
+      for (dimension_type i = num_dimensions + 1; i-- > 0; ) {
+        DB_Row<N>& x_i = x.dbm[i];
+        const N& x_i_k = x_i[k];
+        if (!is_plus_infinity(x_i_k)) {
+          add_assign_r(sum, x_i_k, x_k_v, ROUND_UP);
+          min_assign(x_i[v], sum);
+        }
+      }
+    }
+    else
+      // Here both x_v_k and x_k_v are infinite.
+      continue;
+  }
+
+  // Step 2: improve the other bounds by using the precise bounds
+  // for the constraints on `var'.
+  for (dimension_type i = num_dimensions + 1; i-- > 0; ) {
+    DB_Row<N>& x_i = x.dbm[i];
+    const N& x_i_v = x_i[v];
+    if (!is_plus_infinity(x_i_v)) {
+      for (dimension_type j = num_dimensions + 1; j-- > 0; ) {
+        const N& x_v_j = x_v[j];
+        if (!is_plus_infinity(x_v_j)) {
+          add_assign_r(sum, x_i_v, x_v_j, ROUND_UP);
+          min_assign(x_i[j], sum);
+        }
+      }
+    }
+  }
+
+  // Check for emptiness: the BDS is empty if and only if there is a
+  // negative value on the main diagonal of `dbm'.
+  for (dimension_type h = num_dimensions + 1; h-- > 0; ) {
+    N& x_dbm_hh = x.dbm[h][h];
+    if (sgn(x_dbm_hh) < 0) {
+      x.set_empty();
+      return;
+    }
+    else {
+      assert(sgn(x_dbm_hh) == 0);
+      // Restore PLUS_INFINITY on the main diagonal.
+      assign_r(x_dbm_hh, PLUS_INFINITY, ROUND_NOT_NEEDED);
+    }
+  }
+
+  // The BDS is not empty and it is now shortest-path closed.
+  x.set_shortest_path_closed();
+}
+
+template <typename T>
+void
 BD_Shape<T>::shortest_path_reduction_assign() const {
   // Do something only if necessary.
   if (marked_shortest_path_reduced())
