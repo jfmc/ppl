@@ -1465,15 +1465,7 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
       y_gs_red_in_x.set(i);
 
   // Step 2: if no redundant generator has been identified,
-  // then the union is not convex.
-  // For C polyhedra, this holds because x and y are disjoint.
-  // CHECKME: what about NNC polyhedra?
-  // Example: let
-  //    x = { A == 0, -1 < B < 1 },
-  //    y = { A <= 1, A - B >= 0, A + B >= 0 }.
-  // All the generators of x (resp., y) are non-redundant in y (resp., x),
-  // but x and y are not disjoint (the intersection is the origin).
-  // Anyway, it is still true that x union y is not convex.
+  // then the union is not convex. CHECKME: why?
   if (x_gs_red_in_y.empty() && y_gs_red_in_x.empty())
     return false;
 
