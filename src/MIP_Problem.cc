@@ -1486,7 +1486,7 @@ PPL::MIP_Problem::is_lp_satisfiable() const {
   case UNSATISFIABLE:
     return false;
   case SATISFIABLE:
-   // Intentionally fall through.
+    // Intentionally fall through.
   case UNBOUNDED:
     // Intentionally fall through.
   case OPTIMIZED:
@@ -1494,28 +1494,28 @@ PPL::MIP_Problem::is_lp_satisfiable() const {
     return true;
   case PARTIALLY_SATISFIABLE:
     {
-    MIP_Problem& x = const_cast<MIP_Problem&>(*this);
-  // This code tries to handle the case that happens if the tableau is
-  // empty, so it must be initialized.
-  if (tableau.num_columns() == 0) {
-    // Add two columns, the first that handles the inhomogeneous term and
-    // the second that represent the `sign'.
-    x.tableau.add_zero_columns(2);
-    // Sync `mapping' for the inhomogeneous term.
-    x.mapping.push_back(std::make_pair(0, 0));
-    // The internal data structures are ready, so prepare for more
-    // assertion to be checked.
-    x.initialized = true;
-  }
+      MIP_Problem& x = const_cast<MIP_Problem&>(*this);
+      // This code tries to handle the case that happens if the tableau is
+      // empty, so it must be initialized.
+      if (tableau.num_columns() == 0) {
+        // Add two columns, the first that handles the inhomogeneous term and
+        // the second that represent the `sign'.
+        x.tableau.add_zero_columns(2);
+        // Sync `mapping' for the inhomogeneous term.
+        x.mapping.push_back(std::make_pair(0, 0));
+        // The internal data structures are ready, so prepare for more
+        // assertion to be checked.
+        x.initialized = true;
+      }
 
-  // Apply incrementality to the pending constraint system.
-  x.process_pending_constraints();
-  // Update `first_pending_constraint': no more pending.
-  x.first_pending_constraint = input_cs.size();
-  // Update also `internal_space_dim'.
-  x.internal_space_dim = x.external_space_dim;
-  assert(OK());
-  return (status != UNSATISFIABLE);
+      // Apply incrementality to the pending constraint system.
+      x.process_pending_constraints();
+      // Update `first_pending_constraint': no more pending.
+      x.first_pending_constraint = input_cs.size();
+      // Update also `internal_space_dim'.
+      x.internal_space_dim = x.external_space_dim;
+      assert(OK());
+      return (status != UNSATISFIABLE);
     }
   }
   // We should not be here!
