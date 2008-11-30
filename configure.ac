@@ -71,9 +71,6 @@ AC_DEFINE_UNQUOTED(CONFIGURE_OPTIONS, "$ac_configure_args", [This contains the o
 PPL_CONFIGURE_OPTIONS="\"$ac_configure_args\""
 AC_SUBST(CONFIGURE_OPTIONS)
 
-# Installation directories.
-AC_SUBST([docdir], ['${datadir}/doc/ppl'])
-
 # Generate a configuration header file.
 AC_CONFIG_HEADER(config.h)
 
