@@ -45,10 +45,6 @@ AC_SUBST(VERSION)
 # Generate a configuration header file.
 AC_CONFIG_HEADER([config.h])
 
-# Determine the system-dependent aspects of rpath usage and add
-# the --disable-rpath configure option.
-AC_LIB_RPATH
-
 # Generate prefixed defines.
 AX_PREFIX_CONFIG_H
 
@@ -137,6 +133,10 @@ AC_PROG_INSTALL
 
 COMP_FLAGS=""
 OPT_FLAGS=""
+
+# Determine the system-dependent aspects of rpath usage and add
+# the --disable-rpath configure option.
+AC_LIB_RPATH
 
 enableval=yes
 AC_MSG_CHECKING([whether to compile with debug info])
