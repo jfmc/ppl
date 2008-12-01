@@ -117,10 +117,41 @@ test03() {
   return ok;
 }
 
+
+bool
+test04() {
+  Variable x(0);
+  Variable y(1);
+
+  NNC_Polyhedron ph1(2, UNIVERSE);
+  ph1.add_constraint(x - y >= 0);
+  ph1.add_constraint(x + y >= 0);
+  ph1.add_constraint(4*x < 1);
+
+  print_constraints(ph1, "*** ph1 ***");
+
+  NNC_Polyhedron ph2(2, UNIVERSE);
+  ph2.add_constraint(x - y >= 0);
+  ph2.add_constraint(x + y >= 0);
+  ph2.add_constraint(4*x > 1);
+
+  print_constraints(ph2, "*** ph2 ***");
+
+  NNC_Polyhedron known_result(ph1);
+
+  bool ok = !ph1.upper_bound_assign_if_exact(ph2);
+  ok &= (ph1 == known_result);
+
+  print_constraints(ph1, "*** ph1.upper_bound_assign_if_exact(ph2) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
   DO_TEST(test03);
+  DO_TEST(test04);
 END_MAIN
