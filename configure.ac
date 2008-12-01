@@ -993,7 +993,8 @@ then
 fi
 AM_CONDITIONAL(HAVE_OCAMLC, test x$ocamlcgmp = xyes)
 AM_CONDITIONAL(HAVE_OCAMLOPT, test x$ocamloptgmp = xyes)
-AM_CONDITIONAL(BUILD_OCAML_INTERFACE, test x$ocamlcgmp = xyes || x$ocamloptgmp = xyes)
+AM_CONDITIONAL(BUILD_OCAML_INTERFACE, test x$ocamlcgmp = xyes \
+                                      || test x$ocamloptgmp = xyes)
 
 # Checks for Ciao Prolog.
 if test x${ciao_prolog_interface_enabled} = xyes
