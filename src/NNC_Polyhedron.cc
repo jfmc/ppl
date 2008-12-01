@@ -79,12 +79,5 @@ PPL::NNC_Polyhedron::NNC_Polyhedron(const Grid& grid, Complexity_Class)
 
 bool
 PPL::NNC_Polyhedron::poly_hull_assign_if_exact(const NNC_Polyhedron& y) {
-#if 1 // New implementation based on [BemporadFT00TR].
-  // Dimension-compatibility check.
-  if (space_dimension() != y.space_dimension())
-    throw_dimension_incompatible("poly_hull_assign_if_exact(y)", "y", y);
-  return BFT00_poly_hull_assign_if_exact(y);
-#else // Old implementation.
   return PPL::poly_hull_assign_if_exact(*this, y);
-#endif
 }
