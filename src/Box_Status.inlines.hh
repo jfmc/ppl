@@ -198,7 +198,7 @@ template <typename ITV>
 bool
 Box<ITV>::Status::ascii_load(std::istream& s) {
   using namespace Implementation::Boxes;
-  bool positive;
+  PPL_UNINITIALIZED(bool, positive);
 
   if (!get_field(s, Implementation::Boxes::empty_up_to_date, positive))
     return false;

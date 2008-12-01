@@ -231,7 +231,7 @@ template <typename T>
 bool
 BD_Shape<T>::Status::ascii_load(std::istream& s) {
   using namespace Implementation::BD_Shapes;
-  bool positive;
+  PPL_UNINITIALIZED(bool, positive);
 
   if (!get_field(s, zero_dim_univ, positive))
     return false;
