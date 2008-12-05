@@ -2,7 +2,7 @@
 
 Name:           ppl
 Version:        0.10
-Release:        3%{?dist}
+Release:        4%{?dist}
 
 Summary:        The Parma Polyhedra Library: a library of numerical abstractions
 Group:          Development/Libraries
@@ -263,7 +263,6 @@ mv \
 %{_libdir}/libppl_c.so.*
 %{_bindir}/ppl-config
 %{_mandir}/man1/ppl-config.1.gz
-
 %dir %{_libdir}/%{name}
 %dir %{_datadir}/doc/%{name}
 
@@ -373,6 +372,7 @@ mv \
 %doc %{_datadir}/doc/pwl/README
 %doc %{_datadir}/doc/pwl/gpl.*
 %{_libdir}/libpwl.so.*
+%dir %{_datadir}/doc/pwl
 
 %files pwl-devel
 %defattr(-,root,root,-)
@@ -401,13 +401,17 @@ mv \
 rm -rf %{buildroot}
 
 %changelog
-* Thu Nov 4 2008 Roberto Bagnara <bagnara@cs.unipr.it> 0.10-3
+* Fri Dec 05 2008 Roberto Bagnara <bagnara@cs.unipr.it> 0.10-4
+- Added `%%dir %%{_datadir}/doc/pwl' to the `%%files' section
+  of the `ppl-pwl' package.
+
+* Thu Nov 04 2008 Roberto Bagnara <bagnara@cs.unipr.it> 0.10-3
 - Fixed the requirements of the `ppl-java' package.
 
-* Thu Nov 4 2008 Roberto Bagnara <bagnara@cs.unipr.it> 0.10-2
+* Thu Nov 04 2008 Roberto Bagnara <bagnara@cs.unipr.it> 0.10-2
 - Added m4 >= 1.4.8 to build requirements.
 
-* Thu Nov 4 2008 Roberto Bagnara <bagnara@cs.unipr.it> 0.10-1
+* Thu Nov 04 2008 Roberto Bagnara <bagnara@cs.unipr.it> 0.10-1
 - Updated and extended for PPL 0.10.  In particular, the `ppl-config'
   program, being useful also for non-development activities, has been
   brought back to the main package.
@@ -415,17 +419,17 @@ rm -rf %{buildroot}
 * Tue Sep 30 2008 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-25
 - The `swiprolog' package now requires pl >= 5.6.57-2.
 
-* Mon Sep 8 2008 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-24
+* Mon Sep 08 2008 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-24
 - Changed ppl-0.9-swiprolog.patch so as to invoke `plld' with
   the `-v' option.
 
-* Mon Sep 8 2008 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-23
+* Mon Sep 08 2008 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-23
 - Fixed ppl-0.9-swiprolog.patch.
 
-* Mon Sep 8 2008 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-22
+* Mon Sep 08 2008 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-22
 - Implemented a workaround to cope with the new location of SWI-Prolog.h.
 
-* Mon Sep 8 2008 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-21
+* Mon Sep 08 2008 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-21
 - Fixed the SWI-Prolog interface dependencies.
 
 * Mon May 19 2008 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-20
