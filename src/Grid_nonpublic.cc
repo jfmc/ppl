@@ -282,6 +282,9 @@ PPL::Grid::bounds(const Linear_Expression& expr,
       || marked_empty()
       || (!generators_are_up_to_date() && !update_generators()))
     return true;
+  if (!generators_are_minimized() && !minimize())
+    // Minimizing found `this' empty.
+    return true;
 
   // The generators are up to date.
   for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
@@ -327,7 +330,7 @@ PPL::Grid::max_min(const Linear_Expression& expr,
     ext_n += expr.inhomogeneous_term();
     ext_d = gen.divisor();
     // Reduce ext_n and ext_d.
-    TEMP_INTEGER(gcd);
+    PPL_DIRTY_TEMP_COEFFICIENT(gcd);
     gcd_assign(gcd, ext_n, ext_d);
     exact_div_assign(ext_n, ext_n, gcd);
     exact_div_assign(ext_d, ext_d, gcd);
@@ -502,7 +505,7 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
   }
 #endif // !defined(NDEBUG)
 
-  TEMP_INTEGER(divisor);
+  PPL_DIRTY_TEMP_COEFFICIENT(divisor);
   divisor = gen_sys_divisor;
   // Adjust sys to include the gen_sys divisor.
   normalize_divisors(sys, divisor);

@@ -38,18 +38,6 @@ Define here as empty any known schematic method macros for which
 the definition is not yet implemented.
 m4_define(`ppl_delete_@CLASS@_iterator_code', `')
 
-m4_define(`m4_run_class_code',
-`dnl
-    test1.run_@CLASS@_test();
-')
-
-m4_define(`m4_run_class_test_code',
-`dnl
-    public boolean run_@CLASS@_test() {
-    try {
-
-')
-
     m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 `dnl
 {
@@ -230,12 +218,12 @@ m4_define(`ppl_@CLASS@_simplify_using_context_assign_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_get_@GET_REPRESENT@s_code',
+m4_define(`ppl_@CLASS@_get_@CLASS_REPRESENT@s_code',
     `dnl
 {
-    PPL_Test.print_if_noisy("Testing get_@GET_REPRESENT@s: ");
+    PPL_Test.print_if_noisy("Testing get_@CLASS_REPRESENT@s: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
-    @UGET_REPRESENT@_System gd_@GET_REPRESENT@ = gd.@GET_REPRESENT@s();
+    @!CLASS_REPRESENT@_System gd_@CLASS_REPRESENT@ = gd.@CLASS_REPRESENT@s();
     if (gd.OK())
         PPL_Test.println_if_noisy("Success");
     else
@@ -244,12 +232,12 @@ m4_define(`ppl_@CLASS@_get_@GET_REPRESENT@s_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_code',
+m4_define(`ppl_@CLASS@_get_minimized_@CLASS_REPRESENT@s_code',
     `dnl
 {
-    PPL_Test.print_if_noisy("Testing get_minimized_@GET_REPRESENT@s: ");
+    PPL_Test.print_if_noisy("Testing get_minimized_@CLASS_REPRESENT@s: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
-    @UGET_REPRESENT@_System gr = gd.minimized_@GET_REPRESENT@s();
+    @!CLASS_REPRESENT@_System gr = gd.minimized_@CLASS_REPRESENT@s();
     if (gd.OK())
         PPL_Test.println_if_noisy("Success");
     else
@@ -293,7 +281,7 @@ m4_define(`ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_code',
 {
     PPL_Test.print_if_noisy("Testing relation_with_@RELATION_REPRESENT@: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
-    Poly_@UALT_RELATION_REPRESENT@_Relation
+    Poly_@!A_RELATION_REPRESENT@_Relation
         poly_relation = gd.relation_with(@RELATION_REPRESENT@1);
     if (gd.OK())
         PPL_Test.println_if_noisy("Success");
@@ -303,12 +291,12 @@ m4_define(`ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_code',
+m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@_code',
     `dnl
 {
-    PPL_Test.print_if_noisy("Testing add_@ADD_REPRESENT@: ");
+    PPL_Test.print_if_noisy("Testing add_@!CLASS_REPRESENT@: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
-    gd.add_@ADD_REPRESENT@(@ADD_REPRESENT@1);
+    gd.add_@CLASS_REPRESENT@(@CLASS_REPRESENT@1);
     if (gd.OK())
         PPL_Test.println_if_noisy("Success");
     else
@@ -331,12 +319,12 @@ m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@_code',
 
 ')
 
- m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_code',
+ m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@s_code',
     `dnl
 {
-    PPL_Test.print_if_noisy("Testing add_@ADD_REPRESENT@s: ");
+    PPL_Test.print_if_noisy("Testing add_@CLASS_REPRESENT@s: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
-    gd.add_@ADD_REPRESENT@s(@ADD_REPRESENT@s1);
+    gd.add_@CLASS_REPRESENT@s(@CLASS_REPRESENT@s1);
     if (gd.OK())
         PPL_Test.println_if_noisy("Success");
     else
@@ -766,13 +754,13 @@ m4_define(`ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code',
+m4_define(`ppl_@CLASS@_BHZ03_@A_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code',
     `dnl
 {
-    PPL_Test.print_if_noisy("Testing BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign: ");
+    PPL_Test.print_if_noisy("Testing BHZ03_@A_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign: ");
     @TOPOLOGY@@CLASS@ gd1 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     @TOPOLOGY@@CLASS@ gd2 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
-    gd1.BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign(gd2);
+    gd1.BHZ03_@A_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign(gd2);
     if (gd1.OK())
         PPL_Test.println_if_noisy("Success");
     else
@@ -799,7 +787,7 @@ m4_define(`ppl_@CLASS@_@MEMBYTES@_code',
 {
     PPL_Test.print_if_noisy("Testing @MEMBYTES@(): ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
-    PPL_Test.println_if_noisy("@UMEMBYTES@ of gd: ");
+    PPL_Test.println_if_noisy("@MEMBYTES@ of gd: ");
     PPL_Test.println_if_noisy(gd.@MEMBYTES@());
     if (gd.OK())
         PPL_Test.println_if_noisy("Success");
@@ -891,11 +879,11 @@ m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     if ("@INCDEC@" == "increment") {
       @TOPOLOGY@@CLASS@_Iterator it_gd = gd.begin_iterator();
-      it_gd.@ALT_INCDEC@();
+      it_gd.@A_INCDEC@();
     }
     else {
       @TOPOLOGY@@CLASS@_Iterator it_gd = gd.end_iterator();
-      it_gd.@ALT_INCDEC@();
+      it_gd.@A_INCDEC@();
     }
     if (gd.OK())
         PPL_Test.println_if_noisy("Success");
@@ -970,8 +958,8 @@ m4_define(`ppl_@CLASS@_add_disjunct_code',
 {
     PPL_Test.print_if_noisy("Testing add_disjunct: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
-    @CLASSTOPOLOGY@@DISJUNCT@ gd_disjunct
-        = new @CLASSTOPOLOGY@@DISJUNCT@(@CONSTRAINER@s1);
+    @DISJUNCT_TOPOLOGY@@DISJUNCT@ gd_disjunct
+        = new @DISJUNCT_TOPOLOGY@@DISJUNCT@(@CONSTRAINER@s1);
     gd.add_disjunct(gd_disjunct);
     if (gd.OK())
         PPL_Test.println_if_noisy("Success");

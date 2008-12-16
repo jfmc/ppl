@@ -56,11 +56,11 @@ uninstall() {
 m4_divert(-1)
 dnl Include common macros for generating system dependent code.
 dnl
-dnl Redefine m4_extension as useful for SWI-Prolog.
-dnl m4_extension(Predicate_Name, Arity)
+dnl Redefine m4_expanded_procedure_schema as useful for SWI-Prolog.
+dnl m4_expanded_procedure_schema(Predicate_Name, Arity)
 dnl Note: SPACES is just a marker to generated the two spaces of
 dnl indentation following it.
-m4_define(`m4_extension', `dnl
+m4_define(`m4_expanded_procedure_schema', `dnl
 SPACES  PL_EXTENSION_ENTRY($1, $2)
 ')
 

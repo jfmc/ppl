@@ -69,7 +69,7 @@ Bit_Row::clear_from(const unsigned long k) {
 inline unsigned long
 Bit_Row::count_ones() const {
   assert(vec->_mp_size >= 0);
-  return mpn_popcount(vec->_mp_d, vec->_mp_size);
+  return vec->_mp_size == 0 ? 0 : mpn_popcount(vec->_mp_d, vec->_mp_size);
 }
 
 inline bool
@@ -121,7 +121,7 @@ set_intersection(const Bit_Row& x, const Bit_Row& y, Bit_Row& z) {
 /*! \relates Bit_Row */
 inline void
 set_difference(const Bit_Row& x, const Bit_Row& y, Bit_Row& z) {
-  DIRTY_TEMP0(mpz_class, complement_y);
+  PPL_DIRTY_TEMP0(mpz_class, complement_y);
   mpz_com(complement_y.get_mpz_t(), y.vec);
   mpz_and(z.vec, x.vec, complement_y.get_mpz_t());
 }

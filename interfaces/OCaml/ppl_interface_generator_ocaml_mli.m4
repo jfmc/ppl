@@ -32,11 +32,7 @@ m4_include(`ppl_interface_generator_ocaml_procedure_generators.m4')
 m4_divert`'dnl
 m4_include(ppl_ocaml_globals.mli)
 m4_divert(-1)
-m4_pushdef(`m4_one_class_code', `dnl
-m4_replace_all_patterns_in_string($1,
-                                  `type @LCLASS@
-',
-                                  m4_pattern_list)`'dnl
+m4_pushdef(`m4_one_class_code', `type m4_downcase(m4_interface_class$1)
 ')
 
 dnl -----------------------------------------------------------------

@@ -29,8 +29,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <cassert>
 #include <cmath>
 
-#ifndef NAN
-#define NAN (HUGE_VAL - HUGE_VAL)
+#ifdef NAN
+#define PPL_NAN NAN
+#else
+#define PPL_NAN (HUGE_VAL - HUGE_VAL)
 #endif
 
 namespace Parma_Polyhedra_Library {

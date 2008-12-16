@@ -50,7 +50,7 @@ ppl_Prolog_sysdep_deinit() {
 int
 Prolog_get_Coefficient(Prolog_term_ref t, Coefficient& n) {
   assert(Prolog_is_integer(t));
-  DIRTY_TEMP0(mpz_class, tmp);
+  PPL_DIRTY_TEMP0(mpz_class, tmp);
   PL_get_mpz(t, tmp.get_mpz_t());
   n = tmp;
   return 1;
@@ -58,7 +58,7 @@ Prolog_get_Coefficient(Prolog_term_ref t, Coefficient& n) {
 
 int
 Prolog_unify_Coefficient(Prolog_term_ref t, const Coefficient& n) {
-  DIRTY_TEMP0(mpz_class, tmp);
+  PPL_DIRTY_TEMP0(mpz_class, tmp);
   assign_r(tmp, n, ROUND_NOT_NEEDED);
   return PL_unify_mpz(t, tmp.get_mpz_t());
 }

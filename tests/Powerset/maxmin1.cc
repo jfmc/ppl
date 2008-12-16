@@ -1,4 +1,5 @@
-/* Test Pointset_Powerset<PH>.
+/* Test Pointset_Powerset<PH>::maximize().
+        Pointset_Powerset<PH>::minimize().
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -24,67 +25,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
+// Powerset of C polyhedra: maximize().
 bool
 test01() {
-  Pointset_Powerset<C_Polyhedron> ps(0, EMPTY);
-  Linear_Expression LE;
-  bool ok1 = ps.bounds_from_above(LE);
-  bool ok2 = ps.bounds_from_below(LE);
-
-  if (!ok1 || !ok2)
-    return false;
-
-  ps.add_disjunct(C_Polyhedron(0));
-  ok1 = ps.bounds_from_above(LE);
-  ok2 = ps.bounds_from_below(LE);
-
-  return ok1 && ok2;
-}
-
-bool
-test02() {
-  Variable x(0);
-  Constraint_System cs;
-  Pointset_Powerset<NNC_Polyhedron> ps(1, EMPTY);
-  Linear_Expression LE = x;
-
-  cs.clear();
-  cs.insert(x > 0);
-  cs.insert(x <= 1);
-  ps.add_disjunct(NNC_Polyhedron(cs));
-
-  cs.clear();
-  cs.insert(x > 1);
-  ps.add_disjunct(NNC_Polyhedron(cs));
-
-  bool ok1 = !ps.bounds_from_above(LE);
-  bool ok2 = ps.bounds_from_below(LE);
-
-  return ok1 && ok2;
-}
-
-bool
-test03() {
-  Variable x(0);
-  Pointset_Powerset<C_Polyhedron> ps(1, EMPTY);
-  Linear_Expression LE = x;
-
-  bool ok1 = ps.bounds_from_above(LE);
-  bool ok2 = ps.bounds_from_below(LE);
-
-  if (!ok1 || !ok2)
-    return false;
-
-  ps.add_disjunct(C_Polyhedron(1));
-
-  ok1 = !ps.bounds_from_above(LE);
-  ok2 = !ps.bounds_from_below(LE);
-
-  return ok1 && ok2;
-}
-
-bool
-test04() {
   Pointset_Powerset<C_Polyhedron> ps(0, EMPTY);
   Coefficient num;
   Coefficient den;
@@ -119,8 +62,9 @@ test04() {
   return ok1;
 }
 
+// Powerset of NNC polyhedra: maximize().
 bool
-test05() {
+test02() {
   Variable x(0);
   Constraint_System cs;
   Linear_Expression LE = x;
@@ -171,8 +115,9 @@ test05() {
   return ok;
 }
 
+// Powerset of C polyhedra: maximize().
 bool
-test06() {
+test03() {
   Variable x(0);
   Variable y(1);
   Constraint_System cs;
@@ -229,8 +174,9 @@ test06() {
   return ok;
 }
 
+// Powerset of C polyhedra: maximize().
 bool
-test07() {
+test04() {
   Variable x(0);
   Linear_Expression LE = x;
 
@@ -256,8 +202,9 @@ test07() {
   return ok;
 }
 
+// Powerset of C polyhedra: minimize().
 bool
-test08() {
+test05() {
   Linear_Expression LE;
   Coefficient num;
   Coefficient den;
@@ -293,8 +240,9 @@ test08() {
   return ok;
 }
 
+// Powerset of NNC polyhedra: minimize().
 bool
-test09() {
+test06() {
   Variable x(0);
   Constraint_System cs;
   Linear_Expression LE = x;
@@ -346,8 +294,9 @@ test09() {
   return ok;
 }
 
+// Powerset of C polyhedra: minimize().
 bool
-test10() {
+test07() {
   Variable x(0);
   Variable y(1);
   Constraint_System cs;
@@ -404,8 +353,9 @@ test10() {
   return ok;
 }
 
+// Powerset of C polyhedra: minimize().
 bool
-test11() {
+test08() {
   Variable x(0);
   Linear_Expression LE = x;
 
@@ -422,6 +372,7 @@ test11() {
     && g.is_point()
     && g.divisor() == 1;
 
+
   if (!ok)
     return false;
 
@@ -431,256 +382,15 @@ test11() {
   return ok;
 }
 
-bool
-test12() {
-  Variable x(0);
-  Constraint c = (x >= 0);
-  Pointset_Powerset<C_Polyhedron> ps(1, EMPTY);
-  ps.add_disjunct(C_Polyhedron(1));
-  ps.add_constraint(c);
-  Constraint c1 = (x >= 1);
-  bool ok = ps.add_constraint_and_minimize(c1);
-
-  return ok && ps.OK();
-}
-
-bool
-test13() {
-  Variable x(0);
-  Congruence cg = (Linear_Expression(0) %= 0);
-  Pointset_Powerset<C_Polyhedron> ps(1, EMPTY);
-  ps.add_disjunct(C_Polyhedron(1));
-  ps.add_congruence(cg);
-  Congruence cg1 = ((Linear_Expression(25) %= 1) / 2);
-  ps.add_congruence(cg1);
-  bool ok = !ps.is_empty() && ps.OK();
-  return ok;
-}
-
-bool
-test14() {
-  Variable x(0);
-  Constraint_System cs;
-  cs.insert(x >= 3);
-  cs.insert(x <= 4);
-  Pointset_Powerset<C_Polyhedron> ps(1, EMPTY);
-  ps.add_disjunct(C_Polyhedron(1));
-  ps.add_constraints(cs);
-  cs.insert(x <= 3);
-  bool ok = ps.add_constraints_and_minimize(cs);
-  cs.insert(x <= 2);
-  ok &= !ps.add_constraints_and_minimize(cs);
-
-  return ok && ps.OK();
-}
-
-bool
-test15() {
-  Variable x(0);
-  Congruence_System cgs;
-  cgs.insert((x %= 0) / 0);
-  Pointset_Powerset<C_Polyhedron> ps(1, EMPTY);
-  ps.add_disjunct(C_Polyhedron(1));
-  ps.add_congruences(cgs);
-  cgs.insert((x %= 0) / 0);
-  ps.add_congruences(cgs);
-  bool ok = !ps.is_empty();
-  cgs.insert((x %= 0) / 0);
-  cgs.insert((x %= 1) / 0);
-  ps.add_congruences(cgs);
-  ok &= ps.is_empty() && ps.OK();
-
-  return ok;
-}
-
-bool
-test16() {
-  Variable x(0);
-  Pointset_Powerset<C_Polyhedron> c_ps(1, EMPTY);
-  Constraint_System cs;
-
-  cs.insert(x >= 0);
-  cs.insert(x <= 2);
-  c_ps.add_disjunct(C_Polyhedron(cs));
-
-  Pointset_Powerset<C_Polyhedron> c_ps1(1, EMPTY);
-
-  cs.clear();
-  cs.insert(x >= 1);
-  cs.insert(x <= 3);
-  c_ps1.add_disjunct(C_Polyhedron(cs));
-
-  c_ps.intersection_assign(c_ps1);
-
-  cs.clear();
-  cs.insert(x >= 1);
-  cs.insert(x <= 2);
-  Pointset_Powerset<C_Polyhedron> c_ps_expected(1, EMPTY);
-  c_ps_expected.add_disjunct(C_Polyhedron(cs));
-
-  bool ok = c_ps.definitely_entails(c_ps_expected);
-  bool ok1 = c_ps_expected.definitely_entails(c_ps);
-
-  return ok && ok1 && c_ps.OK() && c_ps1.OK();
-}
-
-bool
-test17() {
-  Variable x(0);
-  Pointset_Powerset<C_Polyhedron> c_ps(1, EMPTY);
-  Constraint_System cs;
-
-  cs.insert(x >= 0);
-  cs.insert(x <= 2);
-  c_ps.add_disjunct(C_Polyhedron(cs));
-
-  Pointset_Powerset<C_Polyhedron> c_ps1(1, EMPTY);
-
-  cs.clear();
-  cs.insert(x >= 1);
-  cs.insert(x <= 3);
-  c_ps1.add_disjunct(C_Polyhedron(cs));
-
-  bool ok = c_ps.intersection_assign_and_minimize(c_ps1);
-
-  cs.clear();
-  cs.insert(x >= 1);
-  cs.insert(x <= 2);
-  Pointset_Powerset<C_Polyhedron> c_ps_expected(1, EMPTY);
-  c_ps_expected.add_disjunct(C_Polyhedron(cs));
-
-  bool ok1 = c_ps.definitely_entails(c_ps_expected);
-  bool ok2 = c_ps_expected.definitely_entails(c_ps);
-
-  Pointset_Powerset<C_Polyhedron> c_ps2(1, EMPTY);
-  cs.clear();
-  cs.insert(x == 4);
-  c_ps2.add_disjunct(C_Polyhedron(cs));
-
-  bool ok3 = !c_ps2.intersection_assign_and_minimize(c_ps1);
-
-  return ok && ok1 && ok2 && ok3 && c_ps.OK() && c_ps1.OK() && c_ps2.OK();
-}
-
-bool
-test18() {
-  Pointset_Powerset<C_Polyhedron> ps1(1, EMPTY);
-
-  Pointset_Powerset<C_Polyhedron> ps2(1, EMPTY);
-  bool b = ps1.contains(ps2);
-  bool c = ps2.contains(ps1);
-  bool bs = ps1.strictly_contains(ps2);
-  bool cs = ps2.strictly_contains(ps1);
-
-  ps1.add_disjunct(C_Polyhedron(1));
-  bool b1 = ps1.contains(ps2);
-  bool c1 = !ps2.contains(ps1);
-  bool bs1 = ps1.strictly_contains(ps2);
-  bool cs1 = !ps2.strictly_contains(ps1);
-
-  ps2.add_disjunct(C_Polyhedron(1));
-  bool b2 = ps1.contains(ps2);
-  bool c2 = ps2.contains(ps1);
-  bool bs2 = !ps1.strictly_contains(ps2);
-  bool cs2 = !ps2.strictly_contains(ps1);
-
-  bool ok = b && c && b1 && c1 && b2 && c2;
-  bool oks = bs && cs && bs1 && cs1 && bs2 && cs2;
-
-  return ok && oks;
-}
-
-bool
-test19() {
-  Variable x(0);
-  Pointset_Powerset<C_Polyhedron> c_ps(1, EMPTY);
-  Constraint_System cs;
-
-  cs.insert(x >= 0);
-  cs.insert(x <= 2);
-  c_ps.add_disjunct(C_Polyhedron(cs));
-
-  cs.clear();
-  cs.insert(x >= 1);
-  cs.insert(x <= 4);
-  c_ps.add_disjunct(C_Polyhedron(cs));
-
-  cs.clear();
-  cs.insert(x >= 1);
-  cs.insert(x <= 3);
-  c_ps.add_disjunct(C_Polyhedron(cs));
-
-  Pointset_Powerset<C_Polyhedron> c_ps1(1, EMPTY);
-
-  cs.clear();
-  cs.insert(x >= 1);
-  cs.insert(x <= 3);
-  c_ps1.add_disjunct(C_Polyhedron(cs));
-
-  bool ok = c_ps.contains(c_ps1)
-    && !c_ps1.contains(c_ps)
-    && c_ps.strictly_contains(c_ps1)
-    && !c_ps1.strictly_contains(c_ps);
-
-  cs.clear();
-  cs.insert(x >= 1);
-  cs.insert(x <= 4);
-  c_ps1.add_disjunct(C_Polyhedron(cs));
-
-  bool ok1 = c_ps.contains(c_ps1)
-    && !c_ps1.contains(c_ps)
-    && !c_ps.strictly_contains(c_ps1)
-    && !c_ps1.strictly_contains(c_ps);
-
-  return ok && ok1;
-}
-
-bool
-test20() {
-  Variable x(0);
-  Pointset_Powerset<NNC_Polyhedron> ps(1);
-  Constraint_System cs;
-  cs.clear();
-  cs.insert(x > 5);
-  cs.insert(x > 8);
-  ps.add_constraints(cs);
-
-  ps.topological_closure_assign();
-
-  bool ok = ps.OK();
-
-  Pointset_Powerset<NNC_Polyhedron> known_ps(1);
-  cs.clear();
-  cs.insert(x >= 5);
-  cs.insert(x >= 8);
-  known_ps.add_constraints(cs);
-
-  ok = ok && ps.contains(known_ps);
-
-  return ok;
-}
-
 } // namespace
 
 BEGIN_MAIN
   DO_TEST(test01);
-  DO_TEST(test02);
-  DO_TEST(test03);
+  DO_TEST_F8(test02);
+  DO_TEST_F8(test03);
   DO_TEST(test04);
-  DO_TEST_F8(test05);
+  DO_TEST(test05);
   DO_TEST_F8(test06);
   DO_TEST(test07);
   DO_TEST(test08);
-  DO_TEST_F8(test09);
-  DO_TEST(test10);
-  DO_TEST(test11);
-  DO_TEST(test12);
-  DO_TEST(test13);
-  DO_TEST(test14);
-  DO_TEST(test15);
-  DO_TEST(test16);
-  DO_TEST(test17);
-  DO_TEST(test18);
-  DO_TEST(test19);
-  DO_TEST(test20);
 END_MAIN

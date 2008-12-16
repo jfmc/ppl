@@ -58,14 +58,19 @@ const char banner_string[] =
 "Contributors:\n"
 "Roberto Bagnara, Patricia M. Hill, Enea Zaffanella, Elisa Ricci,\n"
 "Abramo Bagnara, Andrea Cimino, Katy Dobson, Elena Mazzi,\n"
-"Andrea Pescetti, Barbara Quartieri, Alessandro Zaccagnini,\n"
+"Matthew Mundell, Barbara Quartieri, Enric Rodriguez Carbonell,\n"
+"Alessandro Zaccagnini,\n"
 "Irene Bacchi, Danilo Bonardi, Sara Bonini, Giordano Fracasso,\n"
-"Maximiliano Marchesi, David Merchat, Matthew Mundell, Angela Stazzone,\n"
+"Maximiliano Marchesi, David Merchat, Andrea Pescetti, Angela Stazzone,\n"
 "Fabio Trabucchi, Claudio Trento, Tatiana Zolo.\n"
 "\n"
-"Special thanks:\n"
-"Lucia Alessandrini, Marco Comini, Bruno Haible, Bertrand Jeannet\n"
-"Herve' Le Verge, Francesco Logozzo, Costantino Medori, Fred Mesnard.";
+"Special thanks to:\n"
+"Lucia Alessandrini, Frederic Besson, Tevfik Bultan, Manuel Carro,\n"
+"Marco Comini, Goran Frehse, Denis Gopan, Martin Guy, Bruno Haible,\n"
+"Bertrand Jeannet, Herve Le Verge, Francesco Logozzo, Costantino Medori,\n"
+"Fred Mesnard, Ken Mixter, Jose Morales, Sebastian Pop, Thomas Reps,\n"
+"Mooly Sagiv, Sriram Sankaranarayanan, Axel Simon, Fausto Spoto,\n"
+"Basile Starynkevitch, Pedro Vasconcelos, Ralf Wildenhues.";
 
 } // namespace
 

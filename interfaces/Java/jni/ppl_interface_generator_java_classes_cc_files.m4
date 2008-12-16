@@ -29,6 +29,12 @@ dnl Include files defining macros that generate the non-fixed part.
 m4_include(`ppl_interface_generator_java_classes_cc_code.m4')
 m4_include(`ppl_interface_generator_java_procedure_generators.m4')
 
+dnl The macro m4_java_prefix_one_annotation is defined in
+dnl ppl_interfaces_generatos_common.m4 and will expand to the
+dnl extra pattern annotations for "1" and "1!";
+dnl that will insert a "1" after the "_" in the replacements.
+m4_java_prefix_one_annotation
+
 dnl -----------------------------------------------------------------
 dnl Macros needed for the class-dependent code.
 dnl -----------------------------------------------------------------

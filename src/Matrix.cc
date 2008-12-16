@@ -339,7 +339,7 @@ PPL::Matrix::remove_trailing_columns(const dimension_type n) {
 
 void
 PPL::Matrix::permute_columns(const std::vector<dimension_type>& cycles) {
-  TEMP_INTEGER(tmp);
+  PPL_DIRTY_TEMP_COEFFICIENT(tmp);
   const dimension_type n = cycles.size();
   assert(cycles[n - 1] == 0);
   for (dimension_type k = num_rows(); k-- > 0; ) {

@@ -25,6 +25,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "math_utilities.defs.hh"
 #include <cassert>
+#include <cstddef>
+#include <limits>
 #include <algorithm>
 
 namespace Parma_Polyhedra_Library {
@@ -93,7 +95,7 @@ Row_Impl_Handler::Impl::operator delete(void* p, dimension_type) {
 
 inline dimension_type
 Row_Impl_Handler::Impl::max_size() {
-  return size_t(-1)/sizeof(Coefficient);
+  return std::numeric_limits<size_t>::max() / sizeof(Coefficient);
 }
 
 inline dimension_type

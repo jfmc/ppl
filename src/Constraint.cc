@@ -263,7 +263,7 @@ PPL::Constraint::finalize() {
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Constraint& c) {
   const dimension_type num_variables = c.space_dimension();
-  TEMP_INTEGER(cv);
+  PPL_DIRTY_TEMP_COEFFICIENT(cv);
   bool first = true;
   for (dimension_type v = 0; v < num_variables; ++v) {
     cv = c.coefficient(Variable(v));

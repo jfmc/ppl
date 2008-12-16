@@ -36,7 +36,7 @@ m4_define(`tm', ``+term'')
 
 m4_define(`start', 0)
 
-m4_define(`m4_extension',
+m4_define(`m4_expanded_procedure_schema',
   `:- foreign($1`'m4_ifelse(`$2', 0, ,`(m4_term_sequence($2, `tm'))')).
 ')
 

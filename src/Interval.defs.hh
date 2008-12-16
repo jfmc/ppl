@@ -112,10 +112,10 @@ struct Is_Interval : public Is_Same_Or_Derived<Interval_Base, T> {};
 template <typename Boundary, typename Info>
 class Interval : public Interval_Base, private Info {
 private:
-  COMPILE_TIME_CHECK(!Info::store_special
-		     || !std::numeric_limits<Boundary>::has_infinity,
-		     "store_special is meaningless"
-		     " when boundary type may contains infinity");
+  PPL_COMPILE_TIME_CHECK(!Info::store_special
+                         || !std::numeric_limits<Boundary>::has_infinity,
+                         "store_special is meaningless"
+                         " when boundary type may contains infinity");
   Info& w_info() const {
     return const_cast<Interval&>(*this);
   }

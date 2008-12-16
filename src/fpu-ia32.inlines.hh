@@ -33,10 +33,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define FPU_ALL_EXCEPT \
   (FPU_INEXACT | FPU_DIVBYZERO | FPU_UNDERFLOW | FPU_OVERFLOW | FPU_INVALID)
 
-#define FPU_TONEAREST     0
-#define FPU_DOWNWARD      0x400
-#define FPU_UPWARD        0x800
-#define FPU_TOWARDZERO    0xc00
+#define PPL_FPU_TONEAREST     0
+#define PPL_FPU_DOWNWARD      0x400
+#define PPL_FPU_UPWARD        0x800
+#define PPL_FPU_TOWARDZERO    0xc00
 
 #define FPU_ROUNDING_MASK 0xc00
 
@@ -46,8 +46,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_SSE_CONTROL_DEFAULT_BASE 0x1f80
 
 // This MUST be congruent with the definition of ROUND_DIRECT
-#define PPL_FPU_CONTROL_DEFAULT (PPL_FPU_CONTROL_DEFAULT_BASE | FPU_UPWARD)
-#define PPL_SSE_CONTROL_DEFAULT (PPL_SSE_CONTROL_DEFAULT_BASE | (FPU_UPWARD << 3))
+#define PPL_FPU_CONTROL_DEFAULT \
+  (PPL_FPU_CONTROL_DEFAULT_BASE | PPL_FPU_UPWARD)
+#define PPL_SSE_CONTROL_DEFAULT \
+  (PPL_SSE_CONTROL_DEFAULT_BASE | (PPL_FPU_UPWARD << 3))
 
 namespace Parma_Polyhedra_Library {
 

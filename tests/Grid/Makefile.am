@@ -108,7 +108,6 @@ partition1 \
 powersetdifference1 \
 powersetgeometricallycovers1 \
 powersetgeometricallyequals1 \
-pointsetpowerset1 \
 refinewithcongruences1 \
 refinewithconstraints1 \
 relations1 relations2 relations3 \
@@ -254,8 +253,6 @@ partition1_SOURCES = partition1.cc
 powersetdifference1_SOURCES = powersetdifference1.cc
 powersetgeometricallycovers1_SOURCES = powersetgeometricallycovers1.cc
 powersetgeometricallyequals1_SOURCES = powersetgeometricallyequals1.cc
-
-pointsetpowerset1_SOURCES = pointsetpowerset1.cc
 
 refinewithcongruences1_SOURCES = refinewithcongruences1.cc
 refinewithconstraints1_SOURCES = refinewithconstraints1.cc

@@ -23,8 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Grid_defs_hh
 #define PPL_Grid_defs_hh 1
 
-#define STRONG_REDUCTION 1
-
 #include "Grid.types.hh"
 #include "globals.defs.hh"
 #include "Variable.defs.hh"
@@ -95,10 +93,20 @@ bool operator!=(const Grid& x, const Grid& y);
 /*! \ingroup PPL_CXX_interface
   An object of the class Grid represents a rational grid.
 
-  A grid can be specified as either a finite system of congruences
-  or a finite system of generators (see Section \ref
-  sect_rational_grids) and it is always possible to obtain either
-  representation.
+  The domain of grids <EM>optimally supports</EM>:
+    - all (proper and non-proper) congruences;
+    - tautological and inconsistent constraints;
+    - linear equality constraints (i.e., non-proper congruences).
+
+  Depending on the method, using a constraint that is not optimally
+  supported by the domain will either raise an exception or
+  result in a (possibly non-optimal) upward approximation.
+
+  The domain of grids support a concept of double description similar
+  to the one developed for polyhedra: hence, a grid can be specified
+  as either a finite system of congruences or a finite system of
+  generators (see Section \ref sect_rational_grids) and it is always
+  possible to obtain either representation.
   That is, if we know the system of congruences, we can obtain
   from this a system of generators that define the same grid
   and vice versa.
@@ -1111,29 +1119,31 @@ public:
   */
   bool add_recycled_congruences_and_minimize(Congruence_System& cgs);
 
-  //! If the constraint \p c is an equality, it is added to \p *this.
-  /*!
+  /*! \brief
+    Adds to \p *this a congruence equivalent to constraint \p c.
+
     \param c
-    The constraint.
+    The constraint to be added.
 
     \exception std::invalid_argument
-    Thrown if \p c is not an equality constraint
-    or if \p *this and \p c are dimension-incompatible.
+    Thrown if \p *this and \p c are dimension-incompatible
+    or if constraint \p c is not optimally supported by the grid domain.
   */
   void add_constraint(const Constraint& c);
 
   /*! \brief
-    If the constraint \p c is an equality, it is added
-    to \p *this, reducing the result.
-
-    \param c
-    The constraint.
+    Adds to \p *this a congruence equivalent to constraint \p c,
+    also minimizing the result.
 
     \return
     <CODE>false</CODE> if and only if the result is empty.
 
+    \param c
+    The constraint to be added.
+
     \exception std::invalid_argument
-    Thrown if \p *this and \p c are dimension-incompatible.
+    Thrown if \p *this and \p c are dimension-incompatible
+    or if constraint \p c is not optimally supported by the grid domain.
 
     \deprecated
     See \ref A_Note_on_the_Implementation_of_the_Operators.
@@ -1141,30 +1151,32 @@ public:
   bool add_constraint_and_minimize(const Constraint& c);
 
   /*! \brief
-    If all constraints in \p cs are equality constraints,
-    then copies are added to \p *this.
+    Adds to \p *this congruences equivalent to the constraints in \p cs.
 
     \param cs
     The constraints to be added.
 
     \exception std::invalid_argument
-    Thrown if \p cs contains an equality constraint
-    or if \p *this and \p cs are dimension-incompatible.
+    Thrown if \p *this and \p cs are dimension-incompatible
+    or if \p cs contains a constraint whcih is not optimally supported
+    by the grid domain.
   */
   void add_constraints(const Constraint_System& cs);
 
   /*! \brief
-    If all the constraints in \p cs are equality constraints,
-    then copies are added to \p *this, reducing the result.
-
-    \param cs
-    The constraints to be added.
+    Adds to \p *this congruences equivalent to the constraints in \p cs,
+    minimizing the result.
 
     \return
     <CODE>false</CODE> if and only if the result is empty.
 
+    \param cs
+    The constraints to be added.
+
     \exception std::invalid_argument
-    Thrown if \p *this and \p cs are dimension-incompatible.
+    Thrown if \p *this and \p cs are dimension-incompatible
+    or if \p cs contains a constraint whcih is not optimally supported
+    by the grid domain.
 
     \deprecated
     See \ref A_Note_on_the_Implementation_of_the_Operators.
@@ -1172,16 +1184,15 @@ public:
   bool add_constraints_and_minimize(const Constraint_System& cs);
 
   /*! \brief
-    If all the constraints in \p cs are equality constraints,
-    then they are added to \p *this.
+    Adds to \p *this congruences equivalent to the constraints in \p cs.
 
     \param cs
-    The constraint system to be added to \p *this.  The equalities in
-    \p cs may be recycled.
+    The constraints to be added. They may be recycled.
 
     \exception std::invalid_argument
-    Thrown if \p cs contains an equality constraint
-    or if \p *this and \p cs are dimension-incompatible.
+    Thrown if \p *this and \p cs are dimension-incompatible
+    or if \p cs contains a constraint whcih is not optimally supported
+    by the grid domain.
 
     \warning
     The only assumption that can be made about \p cs upon successful
@@ -1190,18 +1201,19 @@ public:
   void add_recycled_constraints(Constraint_System& cs);
 
   /*! \brief
-    If all the constraints in \p cs are equality constraints,
-    then they are added to \p *this, reducing the result.
-
-    \param cs
-    The constraint system to be added to \p *this.  The equalities in
-    \p cs may be recycled.
+    Adds to \p *this congruences equivalent to the constraints in \p cs,
+    minimizing the result.
 
     \return
     <CODE>false</CODE> if and only if the result is empty.
 
+    \param cs
+    The constraints to be added. They may be recycled.
+
     \exception std::invalid_argument
-    Thrown if \p *this and \p cs are dimension-incompatible.
+    Thrown if \p *this and \p cs are dimension-incompatible
+    or if \p cs contains a constraint whcih is not optimally supported
+    by the grid domain.
 
     \warning
     The only assumption that can be made about \p cs upon successful
@@ -2621,9 +2633,18 @@ private:
 					      dimension_type col,
 					      Congruence_System& sys);
 
-#ifdef STRONG_REDUCTION
   //! Reduce column \p dim in rows preceding \p pivot_index in \p sys.
   /*!
+    Required when converting (or simplifying) a congruence or generator
+    system to "strong minimal form"; informally, strong minimal form means
+    that, not only is the system in minimal form (ie a triangular matrix),
+    but also the absolute values of the coefficients of the proper congruences
+    and parameters are minimal. As a simple example, the set of congruences
+    \f$\{3x \equiv_3 0, 4x + y \equiv_3 1\}\f$,
+    (which is in minimal form) is equivalent to the set
+    \f$\{3x \equiv_3 0, x + y \equiv_3 1\}\f$
+    (which is in strong minimal form).
+
     Only consider from index \p start to index \p end of the row at \p
     pivot_index.  Flag \p generators indicates whether \p sys is a
     congruence or generator system.
@@ -2634,7 +2655,6 @@ private:
 			     dimension_type start, dimension_type end,
 			     const Dimension_Kinds& dim_kinds,
 			     bool generators = true);
-#endif
 
   //! Multiply the elements of \p dest by \p multiplier.
   // A member of Grid for access to Matrix::rows and cgs::operator[].

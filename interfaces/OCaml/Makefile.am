@@ -40,22 +40,35 @@ ppl_ocaml_globals.ml
 EXTRA_DIST = \
 $(interface_generator_files) \
 $(ml_source_files) \
-OCaml_interface.dox
+OCaml_interface.dox \
+README.ocaml
 
 ocamldir = $(pkglibdir)
 
+if HAVE_OCAMLC
+
+PPL_OCAMLC_LIBRARY = ppl_ocaml.cma
+
+endif HAVE_OCAMLC
+
+if HAVE_OCAMLOPT
+
+PPL_OCAMLOPT_LIBRARY = ppl_ocaml.a ppl_ocaml.cmxa
+
+endif HAVE_OCAMLOPT
+
 ocaml_DATA = \
-libppl_ocaml.a \
-ppl_ocaml.cma \
 ppl_ocaml.cmi \
 ppl_ocaml.mli \
-ppl_ocaml_globals.cmi
+ppl_ocaml_globals.cmi \
+$(PPL_OCAMLC_LIBRARY) \
+$(PPL_OCAMLOPT_LIBRARY)
 
 BUILT_SOURCES = \
 ppl_ocaml_domains.hh \
 ppl_ocaml_domains_cc_files.stamp
 
-noinst_LIBRARIES = libppl_ocaml.a
+pkglib_LIBRARIES = libppl_ocaml.a
 
 libppl_ocaml_a_SOURCES = \
 ppl_ocaml_common.defs.hh \
@@ -141,6 +154,7 @@ libppl_ocaml_a_LIBADD = \
 libppl_ocaml_a_DEPENDENCIES = \
 @required_instantiations_ocaml_cxx_objects@
 
+
 OCAMLC_ENV = OCAMLRUNPARAM='l=1M'
 
 OCAMLC_COMPILE_FLAGS = \
@@ -150,6 +164,10 @@ OCAMLC_LINK_FLAGS = \
 `echo " $(extra_libraries) " | $(SED) -e "s/ -R[^ ]*//g" -e "s/ -/ -cclib -/g"`
 
 OCAMLC_ROOT = @ocamlc_root@
+
+OCAMLOPT_ENV = $(OCAMLC_ENV)
+OCAMLOPT_COMPILE_FLAGS = $(OCAMLC_COMPILE_FLAGS)
+OCAMLOPT_LINK_FLAGS = $(OCAMLC_LINK_FLAGS)
 
 AM_CPPFLAGS = \
 -I$(OCAMLC_ROOT) \
@@ -171,18 +189,32 @@ ppl_ocaml.cma: ppl_ocaml_globals.cmo ppl_ocaml.cmo libppl_ocaml.a
 		$(OCAMLC_COMPILE_FLAGS) -cclib -lppl_ocaml \
 		$(OCAMLC_LINK_FLAGS)
 
+ppl_ocaml.a ppl_ocaml.cmxa: ppl_ocaml_globals.cmx ppl_ocaml.cmx libppl_ocaml.a
+	$(OCAMLOPT_ENV) ocamlopt -o $@ -a \
+		ppl_ocaml_globals.cmx ppl_ocaml.cmx \
+		$(OCAMLOPT_COMPILE_FLAGS) -cclib -lppl_ocaml \
+		$(OCAMLOPT_LINK_FLAGS)
+
 ppl_ocaml.cmo: ppl_ocaml.ml ppl_ocaml.cmi ppl_ocaml_globals.cmi
-	$(OCAMLC_ENV) ocamlc -o $@ -g -c $(OCAMLC_COMPILE_FLAGS) ppl_ocaml.ml
+	$(OCAMLC_ENV) ocamlc -o $@ -c $(OCAMLC_COMPILE_FLAGS) ppl_ocaml.ml
+
+ppl_ocaml.cmx: ppl_ocaml.ml ppl_ocaml.cmi ppl_ocaml_globals.cmi
+	$(OCAMLOPT_ENV) ocamlopt -o $@ -c $(OCAMLOPT_COMPILE_FLAGS) \
+		ppl_ocaml.ml
 
 ppl_ocaml.cmi: ppl_ocaml.mli
-	$(OCAMLC_ENV) ocamlc -o $@ -g -c $(OCAMLC_COMPILE_FLAGS) $<
+	$(OCAMLC_ENV) ocamlc -o $@ -c $(OCAMLC_COMPILE_FLAGS) $<
 
 ppl_ocaml_globals.cmo: ppl_ocaml_globals.ml ppl_ocaml_globals.cmi
-	$(OCAMLC_ENV) ocamlc -o $@ -g -c $(OCAMLC_COMPILE_FLAGS) \
+	$(OCAMLC_ENV) ocamlc -o $@ -c $(OCAMLC_COMPILE_FLAGS) \
+		$(srcdir)/ppl_ocaml_globals.ml
+
+ppl_ocaml_globals.cmx: ppl_ocaml_globals.ml ppl_ocaml_globals.cmi
+	$(OCAMLOPT_ENV) ocamlopt -o $@ -c $(OCAMLOPT_COMPILE_FLAGS) \
 		$(srcdir)/ppl_ocaml_globals.ml
 
 ppl_ocaml_globals.cmi: ppl_ocaml_globals.mli
-	$(OCAMLC_ENV) ocamlc -o $@ -g -c $(OCAMLC_COMPILE_FLAGS) $<
+	$(OCAMLC_ENV) ocamlc -o $@ -c $(OCAMLC_COMPILE_FLAGS) $<
 
 ppl_ocaml.ml: $(interface_generator_dependencies)
 	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
@@ -212,10 +244,16 @@ ppl_ocaml_domains.hh: $(interface_generator_dependencies)
 MOSTLYCLEANFILES = \
 @required_instantiations_ocaml_cxx_objects@ \
 ppl_ocaml.cma \
+ppl_ocaml.cmxa \
+ppl_ocaml.a \
 ppl_ocaml.cmi \
 ppl_ocaml.cmo \
+ppl_ocaml.cmx \
+ppl_ocaml.o \
 ppl_ocaml_globals.cmi \
-ppl_ocaml_globals.cmo
+ppl_ocaml_globals.cmo \
+ppl_ocaml_globals.cmx \
+ppl_ocaml_globals.o
 
 CLEANFILES = \
 @required_instantiations_ocaml_cxx_sources@ \

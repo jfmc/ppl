@@ -146,7 +146,7 @@ Java_parma_1polyhedra_1library_MIP_1Problem_objective_1function
 
     MIP_Problem* mip
       = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
-    TEMP_INTEGER(inhomogeneous_term);
+    PPL_DIRTY_TEMP_COEFFICIENT(inhomogeneous_term);
     inhomogeneous_term = mip->objective_function().inhomogeneous_term();
     jobject j_coeff_inhomogeneous_term
       = build_java_coeff(env, inhomogeneous_term);
@@ -346,8 +346,8 @@ Java_parma_1polyhedra_1library_MIP_1Problem_evaluate_1objective_1function
     MIP_Problem* mip
       = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
     Generator g = build_cxx_generator(env, j_gen);
-    TEMP_INTEGER(num);
-    TEMP_INTEGER(den);
+    PPL_DIRTY_TEMP_COEFFICIENT(num);
+    PPL_DIRTY_TEMP_COEFFICIENT(den);
     num = build_cxx_coeff(env, j_coeff_num);
     den = build_cxx_coeff(env, j_coeff_den);
     mip->evaluate_objective_function(g, num, den);
@@ -390,8 +390,8 @@ Java_parma_1polyhedra_1library_MIP_1Problem_optimal_1value
 (JNIEnv* env, jobject j_this_mip_problem, jobject j_coeff_num,
  jobject j_coeff_den) {
   try {
-    TEMP_INTEGER(coeff_num);
-    TEMP_INTEGER(coeff_den);
+    PPL_DIRTY_TEMP_COEFFICIENT(coeff_num);
+    PPL_DIRTY_TEMP_COEFFICIENT(coeff_den);
 
     MIP_Problem* mip
       = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));

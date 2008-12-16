@@ -38,7 +38,14 @@ inline
 Partially_Reduced_Product<D1, D2, R>
 ::Partially_Reduced_Product(dimension_type num_dimensions,
 			    const Degenerate_Element kind)
-  : d1(num_dimensions, kind), d2(num_dimensions, kind) {
+  : d1(num_dimensions <= max_space_dimension()
+       ?  num_dimensions
+       : (throw_space_dimension_overflow
+               ("Partially_Reduced_Product<D1, D2, R>(n, k)",
+                "n exceeds the maximum "
+                "allowed space dimension"),
+	       0), kind),
+    d2(num_dimensions, kind) {
   set_reduced_flag();
 }
 
@@ -46,7 +53,14 @@ template <typename D1, typename D2, typename R>
 inline
 Partially_Reduced_Product<D1, D2, R>
 ::Partially_Reduced_Product(const Congruence_System& ccgs)
-  : d1(ccgs), d2(ccgs) {
+  : d1((ccgs.space_dimension() <= max_space_dimension())
+       ?  ccgs
+       : (throw_space_dimension_overflow
+          ("Partially_Reduced_Product<D1, D2, R>(n, k)",
+           "the space dimension of ccgs "
+           "exceeds the maximum allowed "
+           "space dimension"), ccgs)),
+    d2(ccgs) {
   clear_reduced_flag();
 }
 
@@ -54,7 +68,14 @@ template <typename D1, typename D2, typename R>
 inline
 Partially_Reduced_Product<D1, D2, R>
 ::Partially_Reduced_Product(Congruence_System& cgs)
-  : d1(const_cast<const Congruence_System&>(cgs)), d2(cgs) {
+  : d1((cgs.space_dimension() <= max_space_dimension())
+       ? const_cast<const Congruence_System&>(cgs)
+       : (throw_space_dimension_overflow
+          ("Partially_Reduced_Product<D1, D2, R>(n, k)",
+           "the space dimension of cgs "
+           "exceeds the maximum allowed "
+           "space dimension"), cgs)),
+    d2(cgs) {
   clear_reduced_flag();
 }
 
@@ -62,7 +83,14 @@ template <typename D1, typename D2, typename R>
 inline
 Partially_Reduced_Product<D1, D2, R>
 ::Partially_Reduced_Product(const Constraint_System& ccs)
-  : d1(ccs), d2(ccs) {
+  : d1((ccs.space_dimension() <= max_space_dimension())
+       ?  ccs
+       : (throw_space_dimension_overflow
+          ("Partially_Reduced_Product<D1, D2, R>(n, k)",
+           "the space dimension of ccs "
+           "exceeds the maximum allowed "
+           "space dimension"), ccs)),
+    d2(ccs) {
   clear_reduced_flag();
 }
 
@@ -70,7 +98,14 @@ template <typename D1, typename D2, typename R>
 inline
 Partially_Reduced_Product<D1, D2, R>
 ::Partially_Reduced_Product(Constraint_System& cs)
-  : d1(const_cast<const Constraint_System&>(cs)), d2(cs) {
+  : d1((cs.space_dimension() <= max_space_dimension())
+       ? const_cast<const Constraint_System&>(cs)
+       : (throw_space_dimension_overflow
+          ("Partially_Reduced_Product<D1, D2, R>(n, k)",
+           "the space dimension of cs "
+           "exceeds the maximum allowed "
+           "space dimension"), cs)),
+    d2(cs) {
   clear_reduced_flag();
 }
 
@@ -79,7 +114,14 @@ inline
 Partially_Reduced_Product<D1, D2, R>
 ::Partially_Reduced_Product(const C_Polyhedron& ph,
                             Complexity_Class complexity)
-  : d1(ph, complexity), d2(ph, complexity) {
+  : d1((ph.space_dimension() <= max_space_dimension())
+       ? ph
+       : (throw_space_dimension_overflow
+          ("Partially_Reduced_Product<D1, D2, R>(n, k)",
+           "the space dimension of ph "
+           "exceeds the maximum allowed "
+           "space dimension"), ph), complexity),
+   d2(ph, complexity) {
   set_reduced_flag();
 }
 
@@ -88,7 +130,14 @@ inline
 Partially_Reduced_Product<D1, D2, R>
 ::Partially_Reduced_Product(const NNC_Polyhedron& ph,
                             Complexity_Class complexity)
-  : d1(ph, complexity), d2(ph, complexity) {
+ : d1((ph.space_dimension() <= max_space_dimension())
+       ? ph
+       : (throw_space_dimension_overflow
+          ("Partially_Reduced_Product<D1, D2, R>(n, k)",
+           "the space dimension of ph "
+           "exceeds the maximum allowed "
+           "space dimension"), ph), complexity),
+   d2(ph, complexity) {
   set_reduced_flag();
 }
 
@@ -96,7 +145,14 @@ template <typename D1, typename D2, typename R>
 inline
 Partially_Reduced_Product<D1, D2, R>
 ::Partially_Reduced_Product(const Grid& gr, Complexity_Class)
-  : d1(gr), d2(gr) {
+ : d1((gr.space_dimension() <= max_space_dimension())
+       ? gr
+       : (throw_space_dimension_overflow
+          ("Partially_Reduced_Product<D1, D2, R>(n, k)",
+           "the space dimension of gr "
+           "exceeds the maximum allowed "
+           "space dimension"), gr)),
+   d2(gr) {
   set_reduced_flag();
 }
 
@@ -105,7 +161,14 @@ template <typename Interval>
 inline
 Partially_Reduced_Product<D1, D2, R>
 ::Partially_Reduced_Product(const Box<Interval>& box, Complexity_Class)
-  : d1(box), d2(box) {
+ : d1((box.space_dimension() <= max_space_dimension())
+       ? box
+       : (throw_space_dimension_overflow
+          ("Partially_Reduced_Product<D1, D2, R>(n, k)",
+           "the space dimension of box "
+           "exceeds the maximum allowed "
+           "space dimension"), box)),
+   d2(box) {
   set_reduced_flag();
 }
 
@@ -114,7 +177,14 @@ template <typename U>
 inline
 Partially_Reduced_Product<D1, D2, R>
 ::Partially_Reduced_Product(const BD_Shape<U>& bd, Complexity_Class)
-  : d1(bd), d2(bd) {
+ : d1((bd.space_dimension() <= max_space_dimension())
+       ? bd
+       : (throw_space_dimension_overflow
+          ("Partially_Reduced_Product<D1, D2, R>(n, k)",
+           "the space dimension of bd "
+           "exceeds the maximum allowed "
+           "space dimension"), bd)),
+   d2(bd) {
   set_reduced_flag();
 }
 
@@ -123,7 +193,14 @@ template <typename U>
 inline
 Partially_Reduced_Product<D1, D2, R>
 ::Partially_Reduced_Product(const Octagonal_Shape<U>& os, Complexity_Class)
-  : d1(os), d2(os) {
+ : d1((os.space_dimension() <= max_space_dimension())
+       ? os
+       : (throw_space_dimension_overflow
+          ("Partially_Reduced_Product<D1, D2, R>(n, k)",
+           "the space dimension of os "
+           "exceeds the maximum allowed "
+           "space dimension"), os)),
+   d2(os) {
   set_reduced_flag();
 }
 
@@ -134,18 +211,6 @@ Partially_Reduced_Product<D1, D2, R>
                             Complexity_Class)
   : d1(y.d1), d2(y.d2) {
   reduced = y.reduced;
-}
-
-template <typename D1, typename D2, typename R>
-template <typename E1, typename E2, typename S>
-inline
-Partially_Reduced_Product<D1, D2, R>
-::Partially_Reduced_Product(const Partially_Reduced_Product<E1, E2, S>& y,
-                            Complexity_Class complexity)
-  : d1(y.domain1(), complexity), d2(y.domain2(), complexity) {
-  /* Even if y is reduced, the built product may not be reduced as
-     the reduction method may have changed (i.e., S != R). */
-  clear_reduced_flag();
 }
 
 template <typename D1, typename D2, typename R>
@@ -216,7 +281,6 @@ Partially_Reduced_Product<D1, D2, R>
   y.reduce();
   d1.difference_assign(y.d1);
   d2.difference_assign(y.d2);
-  // FIXME: check this.
   clear_reduced_flag();
 }
 
@@ -322,7 +386,6 @@ Partially_Reduced_Product<D1, D2, R>
                        Coefficient_traits::const_reference denominator) {
   d1.bounded_affine_image(var, lb_expr, ub_expr, denominator);
   d2.bounded_affine_image(var, lb_expr, ub_expr, denominator);
-  // FIXME: check this.
   clear_reduced_flag();
 }
 
@@ -335,7 +398,6 @@ Partially_Reduced_Product<D1, D2, R>
                           Coefficient_traits::const_reference denominator) {
   d1.bounded_affine_preimage(var, lb_expr, ub_expr, denominator);
   d2.bounded_affine_preimage(var, lb_expr, ub_expr, denominator);
-  // FIXME: check this.
   clear_reduced_flag();
 }
 
@@ -344,10 +406,9 @@ inline void
 Partially_Reduced_Product<D1, D2, R>
 ::time_elapse_assign(const Partially_Reduced_Product& y) {
   reduce();
+  y.reduce();
   d1.time_elapse_assign(y.d1);
   d2.time_elapse_assign(y.d2);
-  // FIXME: check this.
-  clear_reduced_flag();
 }
 
 template <typename D1, typename D2, typename R>
@@ -528,11 +589,6 @@ inline void
 Partially_Reduced_Product<D1, D2, R>
 ::widening_assign(const Partially_Reduced_Product& y,
                   unsigned* tp) {
-  // FIXME: In general this is _NOT_ a widening since the reduction
-  //        may mean that the sequence does not satisfy the ascending
-  //        chain condition.
-  //        However, for the direct, smash and constraints product
-  //        it may be ok - but this still needs checking.
   reduce();
   y.reduce();
   d1.widening_assign(y.d1, tp);
@@ -657,7 +713,7 @@ Partially_Reduced_Product<D1, D2, R>::set_reduced_flag() const {
   const_cast<Partially_Reduced_Product&>(*this).reduced = true;
 }
 
-// FIXME: Improve this name.
+// FIXME(0.10.1): Improve this name.
 PPL_OUTPUT_3_PARAM_TEMPLATE_DEFINITIONS(D1, D2, R, Partially_Reduced_Product)
 
 template <typename D1, typename D2, typename R>
@@ -707,6 +763,16 @@ IO_Operators::operator<<(std::ostream& s, const Partially_Reduced_Product<D1, D2
 	   << pd.d2;
 }
 
+template <typename D1, typename D2, typename R>
+void
+Partially_Reduced_Product<D1, D2, R>::throw_space_dimension_overflow(const char* method,
+                                                                     const char* reason) {
+  std::ostringstream s;
+  s << "Partially_Reduced_Product<D1, D2, R>::" << method << ":" << std::endl
+    << reason << ".";
+  throw std::length_error(s.str());
+}
+
 } // namespace Parma_Polyhedra_Library
 
 namespace Parma_Polyhedra_Library {
@@ -727,25 +793,17 @@ No_Reduction<D1, D2>::~No_Reduction() {
 
 template <typename D1, typename D2>
 inline
-Constraints_Reduction<D1, D2>::Constraints_Reduction() {
+Smash_Reduction<D1, D2>::Smash_Reduction() {
 }
 
 template <typename D1, typename D2>
-void Constraints_Reduction<D1, D2>::product_reduce(D1& d1, D2& d2) {
-  if (d2.is_empty()) {
-    if (!d1.is_empty()) {
-      D1 new_d1(d1.space_dimension(), EMPTY);
-      std::swap(d1, new_d1);
-    }
-  }
-  else if (d1.is_empty()) {
-    D2 new_d2(d2.space_dimension(), EMPTY);
-    std::swap(d2, new_d2);
-  }
-  else {
-    d1.refine_with_constraints(d2.minimized_constraints());
-    d2.refine_with_constraints(d1.minimized_constraints());
-  }
+inline
+Smash_Reduction<D1, D2>::~Smash_Reduction() {
+}
+
+template <typename D1, typename D2>
+inline
+Constraints_Reduction<D1, D2>::Constraints_Reduction() {
 }
 
 template <typename D1, typename D2>

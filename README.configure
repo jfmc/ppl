@@ -249,6 +249,7 @@ unpredictable places, or because some published versions have bugs
 that prevent the PPL interface to run correctly.  In these cases,
 information is given in a README.* file.  Presently we have:
 
+  README.java,
   README.ocaml,
   README.gprolog,
   README.swiprolog,
@@ -350,7 +351,7 @@ in decreasing order of optimization, `--enable-optimization=mild'
 (a.k.a. -O1 optimization), `--enable-optimization=no' or, equivalently
 `--disable-optimization', and `--enable-optimization=zero'
 (a.k.a. -O0 optimization).  See below for more information on the
-configure option that are useful for debugging purposes.
+configure options that are useful for debugging purposes.
 
 
 7. Configuring for Debugging
@@ -358,7 +359,7 @@ configure option that are useful for debugging purposes.
 
 By default, the PPL is configured with debugging information enabled.
 In case you are absolutely, definitely, positively sure that you will
-not need to engage in debugging session and wish to save some little
+not need to engage in debugging sessions and wish to save some little
 disk space and compilation time/memory you can configure with the
 `--disable-debugging' option.
 
@@ -384,9 +385,9 @@ memory leaks.  At release time, we guarantee that Memcheck does not
 reveal any memory leak for tests using the C++ and the C interfaces.
 We are not able to make a similar guarantee for other interfaces because
 the corresponding language implementations (e.g., OCaml and SWI-Prolog)
-purposedly do not deallocate all memory on exit.
+purposely do not deallocate all memory on exit.
 
-In order to asses the coverage of the PPL test suite, the
+In order to assess the coverage of the PPL test suite, the
 `--enable-coverage' configure option is provided.  This causes instrumented
 code to be used in conjunction with the `gcov' coverage testing tool.
 

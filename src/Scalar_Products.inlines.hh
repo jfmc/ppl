@@ -34,21 +34,21 @@ namespace Parma_Polyhedra_Library {
 
 inline int
 Scalar_Products::sign(const Linear_Row& x, const Linear_Row& y) {
-  TEMP_INTEGER(z);
+  PPL_DIRTY_TEMP_COEFFICIENT(z);
   assign(z, x, y);
   return sgn(z);
 }
 
 inline int
 Scalar_Products::reduced_sign(const Linear_Row& x, const Linear_Row& y) {
-  TEMP_INTEGER(z);
+  PPL_DIRTY_TEMP_COEFFICIENT(z);
   reduced_assign(z, x, y);
   return sgn(z);
 }
 
 inline int
 Scalar_Products::homogeneous_sign(const Linear_Row& x, const Linear_Row& y) {
-  TEMP_INTEGER(z);
+  PPL_DIRTY_TEMP_COEFFICIENT(z);
   homogeneous_assign(z, x, y);
   return sgn(z);
 }
@@ -67,7 +67,7 @@ Scalar_Products::sign(const Generator& g, const Constraint& c) {
 
 inline int
 Scalar_Products::sign(const Constraint& c, const Grid_Generator& g) {
-  TEMP_INTEGER(z);
+  PPL_DIRTY_TEMP_COEFFICIENT(z);
   assign(z, c, g);
   return sgn(z);
 }
@@ -119,7 +119,7 @@ Scalar_Products::homogeneous_sign(const Linear_Expression& e,
 inline int
 Scalar_Products::homogeneous_sign(const Grid_Generator& g,
 				  const Constraint& c) {
-  TEMP_INTEGER(z);
+  PPL_DIRTY_TEMP_COEFFICIENT(z);
   homogeneous_assign(z, g, c);
   return sgn(z);
 }

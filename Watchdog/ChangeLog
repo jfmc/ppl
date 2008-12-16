@@ -1,3 +1,59 @@
+2008-11-03 Monday 09:51  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* INSTALL (1.10): Previous commit reverted.
+
+2008-11-03 Monday 08:56  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* INSTALL (1.9): Same changes as in previous commit for the
+	  top-level ppl INSTALL file.
+
+2008-11-01 Saturday 15:59  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README (1.20): Updated.
+
+2008-11-01 Saturday 12:54  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/: user.doxyconf-html.in (1.6), user.doxyconf-latex.in (1.6):
+	  Do not produce the collaboration graph in the user docs, as this
+	  graph contains implementation info.
+
+2008-10-31 Friday 19:44  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog (1.23): Updated.
+
+2008-10-31 Friday 15:58  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* config.rpath (1.1), configure.ac (1.56), m4/Makefile.am (1.5),
+	  m4/lib-ld.m4 (1.1), m4/lib-link.m4 (1.1): Added the
+	  `--disable-rpath' option to the configuration script.  The
+	  definition of `m4macros' in `Makefile.am' had several omissions:
+	  fixed.
+
+2008-10-29 Wednesday 21:45  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog, Makefile.am, NEWS, README, config.guess, config.sub,
+	  configure.ac, doc/Makefile.am, doc/devref.doxyconf-html.in,
+	  doc/devref.doxyconf-latex.in, doc/user.doxyconf-html.in,
+	  doc/user.doxyconf-latex.in, m4/Makefile.am,
+	  m4/ax_prefix_config_h.m4, src/Doubly_Linked_Object.defs.hh,
+	  src/Doubly_Linked_Object.inlines.hh, src/EList.defs.hh,
+	  src/EList.inlines.hh, src/EList_Iterator.defs.hh,
+	  src/EList_Iterator.inlines.hh, src/Handler.defs.hh,
+	  src/Handler.inlines.hh, src/Makefile.am, src/Pending_Element.cc,
+	  src/Pending_Element.defs.hh, src/Pending_Element.inlines.hh,
+	  src/Pending_List.cc, src/Pending_List.defs.hh,
+	  src/Pending_List.inlines.hh, src/Time.cc, src/Time.defs.hh,
+	  src/Time.inlines.hh, src/Watchdog.cc, src/Watchdog.defs.hh,
+	  src/Watchdog.inlines.hh, src/pwl_header.hh, tests/.cvsignore,
+	  tests/Makefile.am, tests/pwl_test.cc, tests/pwl_test.hh,
+	  tests/simple1.cc, tests/valgrind_suppressions, utils/Makefile.am
+	  (bounded_arithmetic.[2,1,1,1,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2]):
+	  Second merge of the trunk to the bounded_arithmetic branch.
+
+2008-10-27 Monday 18:57  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog (1.22): Updated.
+
 2008-10-26 Sunday 20:51  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* NEWS (1.12): The target release date is November 4, 2008.
@@ -36,14 +92,29 @@
 	* tests/pwl_test.cc (1.3): Do not rely on the definition of
 	  optional macros of <fenv.h>.
 
+2008-10-19 Sunday 14:15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/pwl_test.cc (bounded_arithmetic.1): file pwl_test.cc was
+	  added on branch bounded_arithmetic on 2008-10-29 20:45:22 +0000
+
 2008-10-18 Saturday 21:57  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* tests/pwl_test.hh (1.3): Define the NOISY and VERY_NOISY macros
 	  before they are used.  Unused parameter warning avoided.
 
+2008-10-18 Saturday 21:57  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/pwl_test.hh (bounded_arithmetic.1): file pwl_test.hh was
+	  added on branch bounded_arithmetic on 2008-10-29 20:45:22 +0000
+
 2008-10-18 Saturday 21:55  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* tests/Makefile.am (1.6): Must link with -lm for fetestexcept().
+
+2008-10-18 Saturday 21:55  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Makefile.am (bounded_arithmetic.1): file Makefile.am was
+	  added on branch bounded_arithmetic on 2008-10-29 20:45:22 +0000
 
 2008-10-18 Saturday 20:56  Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -74,6 +145,11 @@
 	  conditionalize the build of the PWL.	The PWL is currently
 	  disabled under Cygwin because of the bug reported in
 	  http://www.cs.unipr.it/pipermail/ppl-devel/2008-October/013156.html.
+
+2008-10-06 Monday 15:27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/simple1.cc (bounded_arithmetic.1): file simple1.cc was
+	  added on branch bounded_arithmetic on 2008-10-29 20:45:22 +0000
 
 2008-10-06 Monday 15:26  Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -109,6 +185,12 @@
 	* tests/: Makefile.am (1.2), valgrind_suppressions (1.1):
 	  Distribute also pwl_test.hh and valgrind_suppressions.
 
+2008-10-05 Sunday 22:05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/valgrind_suppressions (bounded_arithmetic.1): file
+	  valgrind_suppressions was added on branch bounded_arithmetic on
+	  2008-10-29 20:45:22 +0000
+
 2008-10-05 Sunday 22:03  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* doc/devref.doxyconf-html.in (1.4): Updated for Doxygen 1.5.7.1.
@@ -116,6 +198,11 @@
 2008-10-05 Sunday 10:33  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* tests/simple1.cc (1.2): Added some debug output.
+
+2008-10-05 Sunday 09:23  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/.cvsignore (bounded_arithmetic.1): file .cvsignore was
+	  added on branch bounded_arithmetic on 2008-10-29 20:45:22 +0000
 
 2008-10-05 Sunday 09:23  Roberto Bagnara <bagnara@cs.unipr.it>
 

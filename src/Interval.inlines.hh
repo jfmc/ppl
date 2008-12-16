@@ -139,13 +139,13 @@ f_is_empty_lazy(const T& x) {
 
 inline bool
 is_integer(const char*) {
-  // FIXME:
+  // FIXME(0.10.1)
   return false;
 }
 
 inline bool
 is_not_a_number(const char*) {
-  // FIXME:
+  // FIXME(0.10.1)
   return false;
 }
 
@@ -288,7 +288,7 @@ Interval<To_Boundary, To_Info>::assign(const From& x) {
   assert(f_OK(x));
   if (check_empty_arg(x))
     return assign(EMPTY);
-  DIRTY_TEMP(To_Info, to_info);
+  PPL_DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
   if (!assign_restriction(to_info, x))
     return assign(EMPTY);
@@ -337,7 +337,7 @@ Interval<To_Boundary, To_Info>::join_assign(const From1& x, const From2& y) {
     return assign(y);
   if (check_empty_arg(y))
     return assign(x);
-  DIRTY_TEMP(To_Info, to_info);
+  PPL_DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
   if (!join_restriction(to_info, x, y))
     return assign(EMPTY);
@@ -384,7 +384,7 @@ Interval<To_Boundary, To_Info>::intersect_assign(const From1& x,
                                                  const From2& y) {
   assert(f_OK(x));
   assert(f_OK(y));
-  DIRTY_TEMP(To_Info, to_info);
+  PPL_DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
   if (!intersect_restriction(to_info, x, y))
     return assign(EMPTY);
@@ -444,7 +444,7 @@ Interval<To_Boundary, To_Info>::difference_assign(const From1& x,
                                                   const From2& y) {
   assert(f_OK(x));
   assert(f_OK(y));
-  DIRTY_TEMP(To_Info, to_info);
+  PPL_DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
   // FIXME: restrictions
   if (lt(UPPER, f_upper(x), f_info(x), LOWER, f_lower(y), f_info(y)) ||
@@ -663,12 +663,12 @@ Interval<To_Boundary, To_Info>::neg_assign(const From& x) {
   assert(f_OK(x));
   if (check_empty_arg(x))
     return assign(EMPTY);
-  DIRTY_TEMP(To_Info, to_info);
+  PPL_DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
   if (!neg_restriction(to_info, x))
     return assign(EMPTY);
   Result rl, ru;
-  DIRTY_TEMP(To_Boundary, to_lower);
+  PPL_DIRTY_TEMP(To_Boundary, to_lower);
   rl = Boundary_NS::neg_assign(LOWER, to_lower, to_info, UPPER, f_upper(x), f_info(x));
   ru = Boundary_NS::neg_assign(UPPER, upper(), to_info, LOWER, f_lower(x), f_info(x));
   assign_or_swap(lower(), to_lower);
@@ -700,7 +700,7 @@ Interval<To_Boundary, To_Info>::add_assign(const From1& x, const From2& y) {
     return assign(MINUS_INFINITY);
   else if (inf > 0)
     return assign(PLUS_INFINITY);
-  DIRTY_TEMP(To_Info, to_info);
+  PPL_DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
   if (!add_restriction(to_info, x, y))
     return assign(EMPTY);
@@ -739,12 +739,12 @@ Interval<To_Boundary, To_Info>::sub_assign(const From1& x, const From2& y) {
   else if (inf > 0)
     return assign(PLUS_INFINITY);
 
-  DIRTY_TEMP(To_Info, to_info);
+  PPL_DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
   if (!sub_restriction(to_info, x, y))
     return assign(EMPTY);
   Result rl, ru;
-  DIRTY_TEMP(To_Boundary, to_lower);
+  PPL_DIRTY_TEMP(To_Boundary, to_lower);
   rl = Boundary_NS::sub_assign(LOWER, to_lower, to_info,
 			       LOWER, f_lower(x), f_info(x),
 			       UPPER, f_upper(y), f_info(y));
@@ -811,12 +811,12 @@ Interval<To_Boundary, To_Info>::mul_assign(const From1& x, const From2& y) {
     }
   }
 
-  DIRTY_TEMP(To_Info, to_info);
+  PPL_DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
   if (!mul_restriction(to_info, x, y))
     return assign(EMPTY);
   Result rl, ru;
-  DIRTY_TEMP(To_Boundary, to_lower);
+  PPL_DIRTY_TEMP(To_Boundary, to_lower);
 
   if (xls >= 0) {
     if (yls >= 0) {
@@ -896,8 +896,8 @@ Interval<To_Boundary, To_Info>::mul_assign(const From1& x, const From2& y) {
   }
   else {
     // xl < 0 < xu, yl < 0 < yu
-    DIRTY_TEMP(To_Boundary, tmp);
-    DIRTY_TEMP(To_Info, tmp_info);
+    PPL_DIRTY_TEMP(To_Boundary, tmp);
+    PPL_DIRTY_TEMP(To_Info, tmp_info);
     tmp_info.clear();
     Result tmp_r;
     tmp_r = Boundary_NS::mul_assign(LOWER, tmp, tmp_info,
@@ -971,12 +971,12 @@ Interval<To_Boundary, To_Info>::div_assign(const From1& x, const From2& y) {
   int xls = sgn_b(LOWER, f_lower(x), f_info(x));
   int xus = xls > 0 ? 1 : sgn_b(UPPER, f_upper(x), f_info(x));
 
-  DIRTY_TEMP(To_Info, to_info);
+  PPL_DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
   if (!div_restriction(to_info, x, y))
     return assign(EMPTY);
   Result rl, ru;
-  DIRTY_TEMP(To_Boundary, to_lower);
+  PPL_DIRTY_TEMP(To_Boundary, to_lower);
   if (yls >= 0) {
     if (xls >= 0) {
       rl = div_assign_z(LOWER, to_lower, to_info,

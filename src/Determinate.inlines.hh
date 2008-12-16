@@ -178,14 +178,14 @@ Determinate<PS>::meet_assign(const Determinate& y) {
 template <typename PS>
 inline bool
 Determinate<PS>::has_nontrivial_weakening() {
-  // FIXME
+  // FIXME(0.10.1)
   return true;
 }
 
 template <typename PS>
 inline void
 Determinate<PS>::weakening_assign(const Determinate& y) {
-  // FIXME
+  // FIXME(0.10.1)
   element().difference_assign(y.element());
 }
 

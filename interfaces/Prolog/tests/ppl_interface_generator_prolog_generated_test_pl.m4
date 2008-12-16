@@ -40,6 +40,19 @@ dnl ==================================================================
 m4_include(`ppl_interface_generator_prolog_procedure_generators.m4')
 m4_include(`ppl_interface_generator_prolog_generated_test_pl_code.m4')
 
+dnl  The build represent needs alternative replacements.
+dnl
+dnl  The different kinds of alternative objects that can build
+dnl  the same class so that we can check one build against another.
+m4_define(`m4_a_build_represent_replacements',
+          `generator, congruence, constraint')
+m4_define(`m4_Grid_a_build_represent_replacements',
+         `constraint, grid_generator, congruence')
+m4_define(`m4_Pointset_Powerset_a_build_represent_replacements',
+         `constraint, congruence')
+m4_define(`m4_product_a_build_represent_replacements',
+         `constraint, congruence')
+
 dnl ==================================================================
 dnl Useful macros needed to generate the test code.
 dnl ==================================================================
@@ -145,7 +158,7 @@ m4_divert(-1)`'dnl
 m4_include(`ppl_interface_generator_prolog_systems.m4')dnl
 m4_define(`m4_start1', 0)`'dnl
 m4_pushdef(`m4_check_test_usability', keep)`'dnl
-m4_pushdef(`m4_extension', `dnl
+m4_pushdef(`m4_expanded_procedure_schema', `dnl
 m4_ifdef(`$1_code',
          `m4_ifelse(m4_check_test_usability($1, $5), keep,
                     `m4_ifelse(m4_start1, 0,
@@ -177,7 +190,7 @@ dnl Call to macro m4_all_code to generate code
 dnl -----------------------------------------------------------------
 m4_divert`'dnl
 m4_patsubst(m4_all_code, COMMA, `,')`'dnl
-m4_popdef(`m4_extension')`'dnl
+m4_popdef(`m4_expanded_procedure_schema')`'dnl
 m4_popdef(`m4_pre_extra_class_code')`'dnl
 m4_popdef(`m4_post_extra_class_code')`'dnl
 m4_divert(-1)
@@ -190,7 +203,7 @@ dnl -----------------------------------------------------------------
 dnl Extra definitions
 dnl -----------------------------------------------------------------
 
-m4_pushdef(`m4_extension', `dnl
+m4_pushdef(`m4_expanded_procedure_schema', `dnl
 m4_ifdef(`$1_code',
          `m4_ifelse(m4_check_test_usability($1, $5), keep,
 :- dynamic($1_$2_test/0).
@@ -213,7 +226,7 @@ dnl -----------------------------------------------------------------
 m4_divert`'dnl
 m4_all_code`'dnl
 m4_divert(-1)
-m4_popdef(`m4_extension')
+m4_popdef(`m4_expanded_procedure_schema')
 m4_popdef(`m4_pre_extra_class_code')
 
 dnl ==================================================================
@@ -250,27 +263,15 @@ m4_popdef(`m4_current_interface')`'dnl
 %               class dependent predicate tests                     %
 %                                                                   %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-m4_replace_all_patterns_in_string($1,
-  m4_add_build_class_code($1),
-  m4_pattern_list)`'dnl
-m4_replace_all_patterns_in_string($1,
-  m4_add_comparison_class_code($1),
-  m4_pattern_list)`'dnl
-m4_replace_all_patterns_in_string($1,
-  m4_add_wdn_exn_class_code($1),
-  m4_pattern_list)`'dnl
-m4_replace_all_patterns_in_string($1,
-  m4_add_cleanup_class_code($1),
-  m4_pattern_list)`'dnl
-m4_replace_all_patterns_in_string($1,
-  m4_add_out_class_code($1),
-  m4_pattern_list)`'dnl
-m4_replace_all_patterns_in_string($1,
-  m4_add_out_extra_class_code($1),
-  m4_pattern_list)`'dnl
+m4_replace_all_patterns($1, m4_add_build_class_code($1))`'dnl
+m4_replace_all_patterns($1, m4_add_comparison_class_code($1))`'dnl
+m4_replace_all_patterns($1, m4_add_wdn_exn_class_code($1))`'dnl
+m4_replace_all_patterns($1, m4_add_cleanup_class_code($1))`'dnl
+m4_replace_all_patterns($1, m4_add_out_class_code($1))`'dnl
+m4_replace_all_patterns($1, m4_add_out_extra_class_code($1))`'dnl
 ')
 
-m4_pushdef(`m4_extension', `dnl
+m4_pushdef(`m4_expanded_procedure_schema', `dnl
 m4_ifdef(`$1_code',
 `m4_ifelse(m4_check_test_usability($1, $5), keep, `
 m4_indir(`$1_code')`'dnl
@@ -283,7 +284,7 @@ dnl -----------------------------------------------------------------
 m4_divert`'dnl
 m4_all_code`'dnl
 m4_divert(-1)
-m4_popdef(`m4_extension')
+m4_popdef(`m4_expanded_procedure_schema')
 m4_popdef(`m4_pre_extra_class_code')
 
 dnl ==================================================================
@@ -317,7 +318,7 @@ m4_pushdef(`m4_post_extra_class_code', `
 ')
 m4_define(`m4_start1', 0)
 
-m4_pushdef(`m4_extension', `dnl
+m4_pushdef(`m4_expanded_procedure_schema', `dnl
 m4_ifelse(m4_start1, 0,
   `m4_undefine(`m4_start1')', `COMMA
 ')  `$1'dnl
@@ -329,7 +330,7 @@ dnl -----------------------------------------------------------------
 m4_divert`'dnl
 m4_patsubst(m4_all_code, COMMA, `,')`'dnl
 m4_divert(-1)
-m4_popdef(`m4_extension')
+m4_popdef(`m4_expanded_procedure_schema')
 m4_popdef(`m4_pre_extra_class_code')
 m4_popdef(`m4_post_extra_class_code')
 
@@ -345,7 +346,7 @@ m4_pushdef(`m4_current_interface', m4_interface_class`'$1)`'dnl
 %<--%<--%<-- ppl_prolog_generated_test_`'m4_current_interface.pl
 ')
 m4_pushdef(`m4_post_extra_class_code', `')
-m4_pushdef(`m4_extension', `
+m4_pushdef(`m4_expanded_procedure_schema', `
 m4_ifelse(m4_index($1, new), `-1', ,
    clean_$1`'m4_ifelse($2, 0, , `(`'m4_arg_sequence($2))') :-
    ($1`'m4_ifelse($2, 0, , `(`'m4_arg_sequence($2))'),
@@ -357,7 +358,7 @@ m4_ifelse(m4_index($1, new), `-1', ,
 m4_divert`'dnl
 m4_all_code
 m4_divert(-1)
-m4_popdef(`m4_extension')
+m4_popdef(`m4_expanded_procedure_schema')
 m4_popdef(`m4_pre_extra_class_code')
 
 dnl End of file generation.

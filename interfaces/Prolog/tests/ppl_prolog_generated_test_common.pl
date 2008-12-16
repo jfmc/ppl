@@ -233,7 +233,7 @@ ppl_relation_test_data(test01, grid_generator, grid_point(0), []).
 ppl_property_test_data(test01, _, _, is_empty).
 ppl_property_test_data(test01, _, _, is_bounded).
 ppl_property_test_data(test01, _, _, is_topologically_closed).
-ppl_property_test_data_(test01, _, _, is_discrete).
+ppl_property_test_data(test01, _, _, is_discrete).
 
 ppl_bounds_test_data(test01, _, A, _, true) :-
   make_vars(1, [A]).
@@ -260,6 +260,7 @@ ppl_relation_test_data(test02, congruence, (0 =:= 0) / 0, Rel) :-
   ; Rel = [is_included].
 ppl_relation_test_data(test02, grid_generator, grid_point(0), [subsumes]).
 
+ppl_property_test_data(test02, _, _, is_universe).
 ppl_property_test_data(test02, _, _, is_bounded).
 ppl_property_test_data(test02, _, _, is_topologically_closed).
 ppl_property_test_data(test02, _, _, is_discrete).

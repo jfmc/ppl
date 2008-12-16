@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <new>
 #include <cstring>
 #include <cerrno>
+#include <cstdlib>
 
 #ifdef PPL_HAVE_SYS_TYPES_H
 # include <sys/types.h>
@@ -133,24 +134,25 @@ guarded_compute_open_hypercube_generators(dimension_type dimension,
 
 extern "C" void*
 cxx_malloc(size_t size) {
-  return ::operator new(size);
+  void* p = malloc(size);
+  if (p != 0 || size == 0)
+    return p;
+
+  throw std::bad_alloc();
 }
 
 extern "C" void*
-cxx_realloc(void* p, size_t old_size, size_t new_size) {
-  if (new_size <= old_size)
+cxx_realloc(void* q, size_t, size_t new_size) {
+  void* p = realloc(q, new_size);
+  if (p != 0 || new_size == 0)
     return p;
-  else {
-    void* new_p = ::operator new(new_size);
-    memcpy(new_p, p, old_size);
-    ::operator delete(p);
-    return new_p;
-  }
+
+  throw std::bad_alloc();
 }
 
 extern "C" void
 cxx_free(void* p, size_t) {
-  ::operator delete(p);
+  free(p);
 }
 
 #define INIT_MEMORY 3*1024*1024

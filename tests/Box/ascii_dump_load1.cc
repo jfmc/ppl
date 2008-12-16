@@ -242,6 +242,7 @@ test07() {
 } // namespace
 
 BEGIN_MAIN
+// FIXME(0.10.1): finish and uncomment all these tests.
 //   DO_TEST(test01);
 //   DO_TEST(test02);
 //   DO_TEST(test03);

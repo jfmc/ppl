@@ -50,29 +50,133 @@ $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
 TESTS = \
-simplifyusingcontext1 \
+addcongruences1 \
+addconstraints1 \
+affinedimension1 \
+affineimage1 \
+affinepreimage1 \
+bounded1 \
+bounds1 \
+closed1 \
+closure1 \
+collapse1 \
+concatenate1 \
+contains1 \
+containsintegerpoint1 \
+difference1 \
+discrete1 \
+disjoint1 \
+disjunct1 \
+empty1 \
+entails1 \
+equals1 \
+frombdshape1 \
+frombox1 \
+fromcongruences1 \
+fromconstraints1 \
+fromgrid1 \
+fromoctagonalshape1 \
+frompolyhedron1 \
+fromspacedimension1 \
+intersection1 \
+maxmin1 \
+meet1 \
+membytes1 \
 powerset1 \
-pointsetpowerset1 pointsetpowerset2 pointsetpowerset3 \
-pointsetpowerset4 pointsetpowerset5 pointsetpowerset6 \
-product1
+reduce1 \
+refinewith1 \
+relationwith1 \
+simplifyusingcontext1 \
+size1 \
+spacedims1 \
+universe1 \
+upperbound1
 
 XFAIL_TESTS =
 
 #
 # Sources for the tests
 #
+addcongruences1_SOURCES = addcongruences1.cc
+
+addconstraints1_SOURCES = addconstraints1.cc
+
+affinedimension1_SOURCES = affinedimension1.cc
+
+affineimage1_SOURCES = affineimage1.cc
+
+affinepreimage1_SOURCES = affinepreimage1.cc
+
+bounded1_SOURCES = bounded1.cc
+
+bounds1_SOURCES = bounds1.cc
+
+closed1_SOURCES = closed1.cc
+
+closure1_SOURCES = closure1.cc
+
+collapse1_SOURCES = collapse1.cc
+
+concatenate1_SOURCES = concatenate1.cc
+
+contains1_SOURCES = contains1.cc
+
+containsintegerpoint1_SOURCES = containsintegerpoint1.cc
+
+difference1_SOURCES = difference1.cc
+
+discrete1_SOURCES = discrete1.cc
+
+disjoint1_SOURCES = disjoint1.cc
+
+disjunct1_SOURCES = disjunct1.cc
+
+empty1_SOURCES = empty1.cc
+
+entails1_SOURCES = entails1.cc
+
+equals1_SOURCES = equals1.cc
+
+frombdshape1_SOURCES = frombdshape1.cc
+
+frombox1_SOURCES = frombox1.cc
+
+fromcongruences1_SOURCES = fromcongruences1.cc
+
+fromconstraints1_SOURCES = fromconstraints1.cc
+
+fromgrid1_SOURCES = fromgrid1.cc
+
+fromoctagonalshape1_SOURCES = fromoctagonalshape1.cc
+
+frompolyhedron1_SOURCES = frompolyhedron1.cc
+
+fromspacedimension1_SOURCES = fromspacedimension1.cc
+
+intersection1_SOURCES = intersection1.cc
+
+maxmin1_SOURCES = maxmin1.cc
+
+meet1_SOURCES = meet1.cc
+
+membytes1_SOURCES = membytes1.cc
 
 powerset1_SOURCES = powerset1.cc
 
+reduce1_SOURCES = reduce1.cc
+
+refinewith1_SOURCES = refinewith1.cc
+
+relationwith1_SOURCES = relationwith1.cc
+
 simplifyusingcontext1_SOURCES = simplifyusingcontext1.cc
 
-pointsetpowerset1_SOURCES = pointsetpowerset1.cc
-pointsetpowerset2_SOURCES = pointsetpowerset2.cc
-pointsetpowerset3_SOURCES = pointsetpowerset3.cc
-pointsetpowerset4_SOURCES = pointsetpowerset4.cc
-pointsetpowerset5_SOURCES = pointsetpowerset5.cc
-pointsetpowerset6_SOURCES = pointsetpowerset6.cc
+size1_SOURCES = size1.cc
 
-product1_SOURCES = product1.cc
+spacedims1_SOURCES = spacedims1.cc
+
+universe1_SOURCES = universe1.cc
+
+upperbound1_SOURCES = upperbound1.cc
 
 check_PROGRAMS = $(TESTS)

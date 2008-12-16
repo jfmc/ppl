@@ -485,7 +485,7 @@ public:
   */
   bool geometrically_equals(const Pointset_Powerset& y) const;
 
-  /*! brief
+  /*! \brief
     Returns <CODE>true</CODE> if and only if each disjunct
       of \p y is contained in a disjunct of \p *this.
 
@@ -495,7 +495,7 @@ public:
   */
   bool contains(const Pointset_Powerset& y) const;
 
-  /*! brief
+  /*! \brief
     Returns <CODE>true</CODE> if and only if each disjunct
       of \p y is strictly contained in a disjunct of \p *this.
 

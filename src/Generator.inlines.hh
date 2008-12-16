@@ -236,10 +236,10 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
     return true;
   }
 
-  DIRTY_TEMP0(mpq_class, x_coord);
-  DIRTY_TEMP0(mpq_class, y_coord);
-  DIRTY_TEMP0(mpq_class, x_div);
-  DIRTY_TEMP0(mpq_class, y_div);
+  PPL_DIRTY_TEMP0(mpq_class, x_coord);
+  PPL_DIRTY_TEMP0(mpq_class, y_coord);
+  PPL_DIRTY_TEMP0(mpq_class, x_div);
+  PPL_DIRTY_TEMP0(mpq_class, y_div);
   assign_r(x_div, x.divisor(), ROUND_NOT_NEEDED);
   assign_r(y_div, y.divisor(), ROUND_NOT_NEEDED);
 
@@ -291,9 +291,9 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			    const Generator& y,
 			    const Rounding_Dir dir) {
   typedef Checked_Number<Temp, Extended_Number_Policy> Checked_Temp;
-  DIRTY_TEMP(Checked_Temp, tmp0);
-  DIRTY_TEMP(Checked_Temp, tmp1);
-  DIRTY_TEMP(Checked_Temp, tmp2);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp0);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp1);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp2);
   return rectilinear_distance_assign(r, x, y, dir, tmp0, tmp1, tmp2);
 }
 
@@ -329,9 +329,9 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			  const Generator& y,
 			  const Rounding_Dir dir) {
   typedef Checked_Number<Temp, Extended_Number_Policy> Checked_Temp;
-  DIRTY_TEMP(Checked_Temp, tmp0);
-  DIRTY_TEMP(Checked_Temp, tmp1);
-  DIRTY_TEMP(Checked_Temp, tmp2);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp0);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp1);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp2);
   return euclidean_distance_assign(r, x, y, dir, tmp0, tmp1, tmp2);
 }
 
@@ -367,9 +367,9 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			   const Generator& y,
 			   const Rounding_Dir dir) {
   typedef Checked_Number<Temp, Extended_Number_Policy> Checked_Temp;
-  DIRTY_TEMP(Checked_Temp, tmp0);
-  DIRTY_TEMP(Checked_Temp, tmp1);
-  DIRTY_TEMP(Checked_Temp, tmp2);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp0);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp1);
+  PPL_DIRTY_TEMP(Checked_Temp, tmp2);
   return l_infinity_distance_assign(r, x, y, dir, tmp0, tmp1, tmp2);
 }
 

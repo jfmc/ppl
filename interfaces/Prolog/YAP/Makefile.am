@@ -73,6 +73,9 @@ endif NO_UNDEFINED
 
 pkglib_LTLIBRARIES = ppl_yap.la
 
+# There is no point in generating the static version.
+AM_LIBTOOLFLAGS = --tag=disable-static
+
 ppl_yap_la_SOURCES = \
 ppl_prolog_sysdep.hh \
 yap_efli.hh \
@@ -166,11 +169,9 @@ ppl_yap_la_DEPENDENCIES = \
 @required_instantiations_prolog_cxx_objects@
 
 ppl_yap_la_LDFLAGS = \
--no-undefined \
+$(NO_UNDEFINED_FLAG) \
 -module \
 -avoid-version
-
-#$(NO_UNDEFINED_FLAG)
 
 pkglib_DATA = ppl_yap.pl
 

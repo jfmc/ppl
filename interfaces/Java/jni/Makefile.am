@@ -47,13 +47,32 @@ AM_CPPFLAGS = \
 BUILT_SOURCES = \
 ppl_java_implementation_domains.cc.stamp
 
-lib_LTLIBRARIES = libppl_java.la
+pkglib_LTLIBRARIES = libppl_java.la
+
+# There is no point in generating the static version.
+AM_LIBTOOLFLAGS = --tag=disable-static
+
+if NO_UNDEFINED
+
+NO_UNDEFINED_FLAG = -no-undefined
+
+endif NO_UNDEFINED
 
 if HOST_OS_DARWIN
 
-libppl_java_la_LDFLAGS = "-shrext .jnilib"
+libppl_java_la_LDFLAGS = \
+$(NO_UNDEFINED_FLAG) \
+-avoid-version \
+-shrext .jnilib
 
-endif HOST_OS_DARWIN
+else !HOST_OS_DARWIN
+
+libppl_java_la_LDFLAGS = \
+$(NO_UNDEFINED_FLAG) \
+-module \
+-avoid-version
+
+endif !HOST_OS_DARWIN
 
 libppl_java_la_SOURCES = \
 ppl_java_common.defs.hh \

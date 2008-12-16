@@ -33,6 +33,30 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <typename D1, typename D2, typename R>
+template <typename E1, typename E2, typename S>
+inline
+Partially_Reduced_Product<D1, D2, R>
+::Partially_Reduced_Product(const Partially_Reduced_Product<E1, E2, S>& y,
+                            Complexity_Class complexity)
+  : d1((y.space_dimension() > max_space_dimension())
+       ? (throw_space_dimension_overflow
+       ("Partially_Reduced_Product<D1, D2, R>(y)",
+        "the space dimension of y "
+        "exceeds the maximum allowed "
+        "space dimension"), 0)
+       : y.space_dimension()),
+    d2(y.space_dimension()) {
+  Partially_Reduced_Product<D1, D2, R> x1(y.domain1(), complexity);
+  const Partially_Reduced_Product<D1, D2, R> x2(y.domain2(), complexity);
+  x1.intersection_assign(x2);
+  d1.swap(x1.d1);
+  d2.swap(x1.d2);
+  /* Even if y is reduced, the built product may not be reduced as
+     the reduction method may have changed (i.e., S != R). */
+  reduced = false;
+}
+
+template <typename D1, typename D2, typename R>
 Constraint_System
 Partially_Reduced_Product<D1, D2, R>::constraints() const {
   reduce();
@@ -199,13 +223,19 @@ Partially_Reduced_Product<D1, D2, R>
 	   Coefficient& sup_n,
 	   Coefficient& sup_d,
 	   bool& maximum) const {
-  reduce();
+  // If one component is already empty, then there is no need to reduce.
+  if (d1.is_empty() || d2.is_empty())
+    return false;
+
+  // The product is_empty() test also reduces the product.
   if (is_empty())
     return false;
-  Coefficient sup1_n;
-  Coefficient sup1_d;
-  Coefficient sup2_n;
-  Coefficient sup2_d;
+  assert(reduced);
+
+  PPL_DIRTY_TEMP_COEFFICIENT(sup1_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(sup1_d);
+  PPL_DIRTY_TEMP_COEFFICIENT(sup2_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(sup2_d);
   bool maximum1;
   bool maximum2;
   bool r1 = d1.maximize(expr, sup1_n, sup1_d, maximum1);
@@ -248,13 +278,19 @@ Partially_Reduced_Product<D1, D2, R>
 	   Coefficient& inf_n,
 	   Coefficient& inf_d,
 	   bool& minimum) const {
-  reduce();
+  // If one component is already empty, then there is no need to reduce.
+  if (d1.is_empty() || d2.is_empty())
+    return false;
+
+  // The product is_empty() test also reduces the product.
   if (is_empty())
     return false;
-  Coefficient inf1_n;
-  Coefficient inf1_d;
-  Coefficient inf2_n;
-  Coefficient inf2_d;
+  assert(reduced);
+
+  PPL_DIRTY_TEMP_COEFFICIENT(inf1_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(inf1_d);
+  PPL_DIRTY_TEMP_COEFFICIENT(inf2_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(inf2_d);
   bool minimum1;
   bool minimum2;
   bool r1 = d1.minimize(expr, inf1_n, inf1_d, minimum1);
@@ -298,13 +334,19 @@ Partially_Reduced_Product<D1, D2, R>
 	   Coefficient& sup_d,
 	   bool& maximum,
 	   Generator& pnt) const {
-  reduce();
+  // If one component is already empty, then there is no need to reduce.
+  if (d1.is_empty() || d2.is_empty())
+    return false;
+
+  // The product is_empty() test also reduces the product.
   if (is_empty())
     return false;
-  Coefficient sup1_n;
-  Coefficient sup1_d;
-  Coefficient sup2_n;
-  Coefficient sup2_d;
+  assert(reduced);
+
+  PPL_DIRTY_TEMP_COEFFICIENT(sup1_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(sup1_d);
+  PPL_DIRTY_TEMP_COEFFICIENT(sup2_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(sup2_d);
   bool maximum1;
   bool maximum2;
   Generator pnt1(point());
@@ -354,13 +396,19 @@ Partially_Reduced_Product<D1, D2, R>
 	   Coefficient& inf_d,
 	   bool& minimum,
 	   Generator& pnt) const {
-  reduce();
+  // If one component is already empty, then there is no need to reduce.
+  if (d1.is_empty() || d2.is_empty())
+    return false;
+
+  // The product is_empty() test also reduces the product.
   if (is_empty())
     return false;
-  Coefficient inf1_n;
-  Coefficient inf1_d;
-  Coefficient inf2_n;
-  Coefficient inf2_d;
+  assert(reduced);
+
+  PPL_DIRTY_TEMP_COEFFICIENT(inf1_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(inf1_d);
+  PPL_DIRTY_TEMP_COEFFICIENT(inf2_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(inf2_d);
   bool minimum1;
   bool minimum2;
   Generator pnt1(point());
@@ -438,15 +486,6 @@ Partially_Reduced_Product<D1, D2, R>::ascii_load(std::istream& s) {
 	  && d2.ascii_load(s));
 }
 
-} // namespace Parma_Polyhedra_Library
-
-namespace Parma_Polyhedra_Library {
-
-template <typename D1, typename D2>
-inline
-Smash_Reduction<D1, D2>::Smash_Reduction() {
-}
-
 template <typename D1, typename D2>
 void Smash_Reduction<D1, D2>::product_reduce(D1& d1, D2& d2) {
   if (d2.is_empty()) {
@@ -462,8 +501,17 @@ void Smash_Reduction<D1, D2>::product_reduce(D1& d1, D2& d2) {
 }
 
 template <typename D1, typename D2>
-inline
-Smash_Reduction<D1, D2>::~Smash_Reduction() {
+void Constraints_Reduction<D1, D2>::product_reduce(D1& d1, D2& d2) {
+  if (d1.is_empty() || d2.is_empty()) {
+    // If one of the components is empty, do the smash reduction and return.
+    Parma_Polyhedra_Library::Smash_Reduction<D1, D2> sr;
+    sr.product_reduce(d1, d2);
+    return;
+  }
+  else {
+    d1.refine_with_constraints(d2.minimized_constraints());
+    d2.refine_with_constraints(d1.minimized_constraints());
+  }
 }
 
 } // namespace Parma_Polyhedra_Library

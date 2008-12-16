@@ -114,11 +114,11 @@ template <>
 struct Compile_Time_Check<true> {
 };
 
-#define COMPILE_TIME_CHECK_NAME(suffix) compile_time_check_ ## suffix
-#define COMPILE_TIME_CHECK_AUX(e, suffix)				\
+#define PPL_COMPILE_TIME_CHECK_NAME(suffix) compile_time_check_ ## suffix
+#define PPL_COMPILE_TIME_CHECK_AUX(e, suffix)				\
   enum {								\
     /* If e evaluates to false, then the sizeof cannot be compiled. */  \
-    COMPILE_TIME_CHECK_NAME(suffix)					\
+    PPL_COMPILE_TIME_CHECK_NAME(suffix)					\
     = sizeof(Parma_Polyhedra_Library::					\
 	     Compile_Time_Check<static_cast<bool>(e)>)			\
   }
@@ -130,7 +130,7 @@ struct Compile_Time_Check<true> {
   \ingroup PPL_CXX_interface
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-#define COMPILE_TIME_CHECK(e, msg) COMPILE_TIME_CHECK_AUX(e, __LINE__)
+#define PPL_COMPILE_TIME_CHECK(e, msg) PPL_COMPILE_TIME_CHECK_AUX(e, __LINE__)
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief
@@ -240,8 +240,9 @@ struct Is_Same_Or_Derived {
   //! A function obtaining a const reference to a \p Derived object.
   static const Derived& derived_object();
 
-  COMPILE_TIME_CHECK(sizeof(char) != sizeof(double),
-		     "architecture with sizeof(char) == sizeof(double) (!?)");
+  PPL_COMPILE_TIME_CHECK(sizeof(char) != sizeof(double),
+                         "architecture with sizeof(char) == sizeof(double)"
+                         " (!?)");
 
   enum {
     /*!

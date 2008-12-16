@@ -91,6 +91,8 @@ typedef Polyhedron* POLYHEDRON_TYPE;
 #include <gmpxx.h>
 #include <vector>
 #include <set>
+#include <limits>
+#include <cassert>
 #include <cstdarg>
 #include <csignal>
 #include <cerrno>

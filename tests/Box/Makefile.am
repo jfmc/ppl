@@ -95,7 +95,6 @@ max_min1 \
 maxspacedim1 \
 membytes1 \
 minconstraints1 \
-pointsetpowerset1 pointsetpowerset2 \
 propagateconstraints1 propagateconstraints2 \
 relations1 relations2 relations3 relations4 \
 refinewithconstraint1 refinewithconstraint2 \
@@ -242,9 +241,6 @@ membytes1_SOURCES = membytes1.cc
 
 minconstraints1_SOURCES = minconstraints1.cc
 
-pointsetpowerset1_SOURCES = pointsetpowerset1.cc
-pointsetpowerset2_SOURCES = pointsetpowerset2.cc
-
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
 relations3_SOURCES = relations3.cc
@@ -308,3 +304,6 @@ ascii_dump_load1.dat
 
 CLEANFILES = \
 run_tests.stamp
+
+DISTCLEANFILES = \
+dirty_marker

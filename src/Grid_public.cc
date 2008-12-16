@@ -191,7 +191,7 @@ PPL::Grid::Grid(const Polyhedron& ph,
     const Generator_System& gs = ph.generators();
     Grid_Generator_System ggs(space_dim);
     Linear_Expression point_expr;
-    Coefficient point_divisor;
+    PPL_DIRTY_TEMP_COEFFICIENT(point_divisor);
     for (Generator_System::const_iterator g = gs.begin(),
            gs_end = gs.end(); g != gs_end; ++g) {
       if (g->is_point() || g->is_closure_point()) {
@@ -208,12 +208,13 @@ PPL::Grid::Grid(const Polyhedron& ph,
     // If the polyhedron's generator is a (closure) point, the grid line must
     // have the direction given by a line that joins the grid point already
     // inserted and the new point.
-    TEMP_INTEGER(coeff);
+    PPL_DIRTY_TEMP_COEFFICIENT(coeff);
+    PPL_DIRTY_TEMP_COEFFICIENT(g_divisor);
     for (Generator_System::const_iterator g = gs.begin(),
            gs_end = gs.end(); g != gs_end; ++g) {
       Linear_Expression e;
       if (g->is_point() || g->is_closure_point()) {
-        Coefficient g_divisor = g->divisor();
+        g_divisor = g->divisor();
         for (dimension_type i = space_dim; i-- > 0; ) {
           const Variable v(i);
           coeff = point_expr.coefficient(v) * g_divisor;
@@ -393,15 +394,15 @@ PPL::Grid::relation_with(const Congruence& cg) const {
 
   // Scalar product of the congruence and the first point that
   // satisfies the congruence.
-  TEMP_INTEGER(point_sp);
+  PPL_DIRTY_TEMP_COEFFICIENT(point_sp);
   point_sp = 0;
 
   const Coefficient& modulus = cg.modulus();
 
-  TEMP_INTEGER(div);
+  PPL_DIRTY_TEMP_COEFFICIENT(div);
   div = modulus;
 
-  TEMP_INTEGER(sp);
+  PPL_DIRTY_TEMP_COEFFICIENT(sp);
 
   bool known_to_intersect = false;
 
@@ -1672,7 +1673,7 @@ PPL::Grid::difference_assign(const Grid& y) {
 
 bool
 PPL::Grid::simplify_using_context_assign(const Grid& y) {
-  // FIXME: provide a real implementation.
+  // FIXME(0.10.1): provide a real implementation.
   used(y);
   return true;
 }
@@ -1973,7 +1974,7 @@ generalized_affine_preimage(const Variable var,
   if (var_space_dim <= expr_space_dim && var_coefficient != 0) {
     Linear_Expression inverse_expr
       = expr - (denominator + var_coefficient) * var;
-    TEMP_INTEGER(inverse_denominator);
+    PPL_DIRTY_TEMP_COEFFICIENT(inverse_denominator);
     neg_assign(inverse_denominator, var_coefficient);
     if (modulus < 0)
       generalized_affine_image(var, EQUAL, inverse_expr, inverse_denominator,
@@ -2053,7 +2054,7 @@ generalized_affine_image(const Linear_Expression& lhs,
 
   assert(relsym == EQUAL);
 
-  TEMP_INTEGER(tmp_modulus);
+  PPL_DIRTY_TEMP_COEFFICIENT(tmp_modulus);
   tmp_modulus = modulus;
   if (tmp_modulus < 0)
     neg_assign(tmp_modulus);
@@ -2184,7 +2185,7 @@ generalized_affine_preimage(const Linear_Expression& lhs,
 
   assert(relsym == EQUAL);
 
-  TEMP_INTEGER(tmp_modulus);
+  PPL_DIRTY_TEMP_COEFFICIENT(tmp_modulus);
   tmp_modulus = modulus;
   if (tmp_modulus < 0)
     neg_assign(tmp_modulus);

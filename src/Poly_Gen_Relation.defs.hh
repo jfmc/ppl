@@ -111,8 +111,8 @@ private:
 public:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
-    Access the internal flags: this is needed for some foreign
-    language interfaces.
+    Access the internal flags: this is needed for some language
+    interfaces.
   */
 #endif
   flags_t get_flags() const;

@@ -45,7 +45,7 @@ inline Result
 check_result(Result r, Rounding_Dir dir) {
   if (dir == ROUND_NOT_NEEDED && !is_special(r)) {
 #ifdef DEBUG_ROUND_NOT_NEEDED
-    // FIXME: this is wrong. If an overflow happens the Result may be
+    // FIXME(0.10.1): this is wrong. If an overflow happens the Result may be
     // V_LT or V_GT. What's the better way to cope with that?
     assert(r == V_EQ);
 #else
@@ -141,10 +141,10 @@ Checked_Number<T, Policy>::Checked_Number(const type x) {		\
 		  dir));						\
 }
 
-#define COND_0(...)
-#define COND_1(...) __VA_ARGS__
-#define COND_(if, ...) COND_##if(__VA_ARGS__)
-#define COND(if, ...) COND_(if, __VA_ARGS__)
+#define PPL_COND_0(...)
+#define PPL_COND_1(...) __VA_ARGS__
+#define PPL_COND_(if, ...) PPL_COND_##if(__VA_ARGS__)
+#define PPL_COND(if, ...) PPL_COND_(if, __VA_ARGS__)
 
 DEF_CTOR(signed char)
 DEF_CTOR(signed short)
@@ -156,13 +156,18 @@ DEF_CTOR(unsigned short)
 DEF_CTOR(unsigned int)
 DEF_CTOR(unsigned long)
 DEF_CTOR(unsigned long long)
-COND(PPL_SUPPORTED_FLOAT, DEF_CTOR(float))
-COND(PPL_SUPPORTED_DOUBLE, DEF_CTOR(double))
-COND(PPL_SUPPORTED_LONG_DOUBLE, DEF_CTOR(long double))
+PPL_COND(PPL_SUPPORTED_FLOAT, DEF_CTOR(float))
+PPL_COND(PPL_SUPPORTED_DOUBLE, DEF_CTOR(double))
+PPL_COND(PPL_SUPPORTED_LONG_DOUBLE, DEF_CTOR(long double))
 DEF_CTOR(mpq_class&)
 DEF_CTOR(mpz_class&)
 
 #undef DEF_CTOR
+
+#undef PPL_COND
+#undef PPL_COND_
+#undef PPL_COND_1
+#undef PPL_COND_0
 
 template <typename T, typename Policy>
 inline
@@ -629,21 +634,21 @@ operator-(const Checked_Number<T, Policy>& x) {
   return r;
 }
 
-#define DEF_ASSIGN_FUN2_1(f, fun) \
+#define PPL_DEF_ASSIGN_FUN2_1(f, fun) \
 template <typename T, typename Policy> \
 inline void \
 f(Checked_Number<T, Policy>& x) { \
   Policy::handle_result(fun(x, x, Policy::ROUND_DEFAULT_FUNCTION));	\
 }
 
-#define DEF_ASSIGN_FUN2_2(f, fun) \
+#define PPL_DEF_ASSIGN_FUN2_2(f, fun) \
 template <typename T, typename Policy> \
 inline void \
 f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y) { \
   Policy::handle_result(fun(x, y, Policy::ROUND_DEFAULT_FUNCTION)); \
 }
 
-#define DEF_ASSIGN_FUN3_3(f, fun) \
+#define PPL_DEF_ASSIGN_FUN3_3(f, fun) \
 template <typename T, typename Policy> \
 inline void \
 f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y, \
@@ -651,7 +656,7 @@ f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y, \
   Policy::handle_result(fun(x, y, z, Policy::ROUND_DEFAULT_FUNCTION)); \
 }
 
-#define DEF_ASSIGN_FUN5_5(f, fun)					\
+#define PPL_DEF_ASSIGN_FUN5_5(f, fun)					\
 template <typename T, typename Policy>					\
 inline void								\
 f(Checked_Number<T, Policy>& x,						\
@@ -661,39 +666,40 @@ f(Checked_Number<T, Policy>& x,						\
   Policy::handle_result(fun(x, s, t, y, z, Policy::ROUND_DEFAULT_FUNCTION)); \
 }
 
-DEF_ASSIGN_FUN2_2(sqrt_assign, sqrt_assign_r)
+PPL_DEF_ASSIGN_FUN2_2(sqrt_assign, sqrt_assign_r)
 
-DEF_ASSIGN_FUN2_1(floor_assign, floor_assign_r)
-DEF_ASSIGN_FUN2_2(floor_assign, floor_assign_r)
+PPL_DEF_ASSIGN_FUN2_1(floor_assign, floor_assign_r)
+PPL_DEF_ASSIGN_FUN2_2(floor_assign, floor_assign_r)
 
-DEF_ASSIGN_FUN2_1(ceil_assign, ceil_assign_r)
-DEF_ASSIGN_FUN2_2(ceil_assign, ceil_assign_r)
+PPL_DEF_ASSIGN_FUN2_1(ceil_assign, ceil_assign_r)
+PPL_DEF_ASSIGN_FUN2_2(ceil_assign, ceil_assign_r)
 
-DEF_ASSIGN_FUN2_1(trunc_assign, trunc_assign_r)
-DEF_ASSIGN_FUN2_2(trunc_assign, trunc_assign_r)
+PPL_DEF_ASSIGN_FUN2_1(trunc_assign, trunc_assign_r)
+PPL_DEF_ASSIGN_FUN2_2(trunc_assign, trunc_assign_r)
 
-DEF_ASSIGN_FUN2_1(neg_assign, neg_assign_r)
-DEF_ASSIGN_FUN2_2(neg_assign, neg_assign_r)
+PPL_DEF_ASSIGN_FUN2_1(neg_assign, neg_assign_r)
+PPL_DEF_ASSIGN_FUN2_2(neg_assign, neg_assign_r)
 
-DEF_ASSIGN_FUN2_1(abs_assign, abs_assign_r)
-DEF_ASSIGN_FUN2_2(abs_assign, abs_assign_r)
+PPL_DEF_ASSIGN_FUN2_1(abs_assign, abs_assign_r)
+PPL_DEF_ASSIGN_FUN2_2(abs_assign, abs_assign_r)
 
-DEF_ASSIGN_FUN3_3(add_mul_assign, add_mul_assign_r)
+PPL_DEF_ASSIGN_FUN3_3(add_mul_assign, add_mul_assign_r)
 
-DEF_ASSIGN_FUN3_3(sub_mul_assign, sub_mul_assign_r)
+PPL_DEF_ASSIGN_FUN3_3(sub_mul_assign, sub_mul_assign_r)
 
-DEF_ASSIGN_FUN3_3(rem_assign, rem_assign_r)
+PPL_DEF_ASSIGN_FUN3_3(rem_assign, rem_assign_r)
 
-DEF_ASSIGN_FUN3_3(gcd_assign, gcd_assign_r)
+PPL_DEF_ASSIGN_FUN3_3(gcd_assign, gcd_assign_r)
 
-DEF_ASSIGN_FUN5_5(gcdext_assign, gcdext_assign_r)
+PPL_DEF_ASSIGN_FUN5_5(gcdext_assign, gcdext_assign_r)
 
-DEF_ASSIGN_FUN3_3(lcm_assign, lcm_assign_r)
+PPL_DEF_ASSIGN_FUN3_3(lcm_assign, lcm_assign_r)
 
-#undef DEF_ASSIGN_FUN2_1
-#undef DEF_ASSIGN_FUN2_2
-#undef DEF_ASSIGN_FUN3_2
-#undef DEF_ASSIGN_FUN3_3
+#undef PPL_DEF_ASSIGN_FUN2_1
+#undef PPL_DEF_ASSIGN_FUN2_2
+#undef PPL_DEF_ASSIGN_FUN3_2
+#undef PPL_DEF_ASSIGN_FUN3_3
+#undef PPL_DEF_ASSIGN_FUN5_5
 
 template <typename T, typename Policy>
 inline void

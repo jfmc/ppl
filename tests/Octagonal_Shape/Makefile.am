@@ -104,7 +104,6 @@ max_min2 \
 maxspacedim1 \
 membytes1 \
 minconstraints1 \
-pointsetpowerset1 \
 relatwithcons1 \
 relatwithcons2 \
 relatwithcons3 \
@@ -259,8 +258,6 @@ membytes1_SOURCES = membytes1.cc
 
 minconstraints1_SOURCES = minconstraints1.cc
 
-pointsetpowerset1_SOURCES = pointsetpowerset1.cc
-
 relatwithcons1_SOURCES = relatwithcons1.cc
 relatwithcons2_SOURCES = relatwithcons2.cc
 relatwithcons3_SOURCES = relatwithcons3.cc
@@ -285,3 +282,6 @@ ascii_dump_load1.dat
 
 CLEANFILES = \
 run_tests.stamp
+
+DISTCLEANFILES = \
+dirty_marker

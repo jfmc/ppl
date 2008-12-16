@@ -161,6 +161,12 @@ nodist_EXTRA_libppl_swiprolog_la_SOURCES = \
 ../ppl_prolog_Constraints_Product_Grid_C_Polyhedron.cc \
 ../ppl_prolog_Constraints_Product_Grid_NNC_Polyhedron.cc
 
+if NO_UNDEFINED
+
+NO_UNDEFINED_FLAG = -no-undefined
+
+endif NO_UNDEFINED
+
 libppl_swiprolog_la_LIBADD = \
 @required_instantiations_prolog_cxx_objects@ \
 $(top_builddir)/src/libppl.la \
@@ -171,6 +177,7 @@ libppl_swiprolog_la_DEPENDENCIES = \
 @required_instantiations_prolog_cxx_objects@
 
 libppl_swiprolog_la_LDFLAGS = \
+$(NO_UNDEFINED_FLAG) \
 -module \
 -avoid-version
 
@@ -207,19 +214,31 @@ EXTRA_LINK_OPTIONS = $(SWI_PROLOG_LD_OPTIONS)
 
 endif HOST_OS_CYGWIN
 
-# Notice: we are linking statically until we understand whether
-# and if Libtool and plld can interoperate.
+# Note: since `libppl_swiprolog' is a pkglib, we prefer statically
+# linking it into `ppl_pl'.  Otherwise `ppl_pl' would not work unless
+# the user instructs the dynamic linker to look into the pkglib
+# directory.
+if ENABLE_STATIC
+
+LIBPPL_SWIPROLOG_LINK_OPTIONS = .libs/libppl_swiprolog.a
+
+else !ENABLE_STATIC
+
+LIBPPL_SWIPROLOG_LINK_OPTIONS = -L.libs -lppl_swiprolog
+
+endif !ENABLE_STATIC
+
 ppl_pl$(EXEEXT): libppl_swiprolog.la ppl_pl.o
 	plld -pl $(SWI_PROLOG) -cc $(CC) -c++ $(CXX) -ld $(CXX) \
 		-ld-options`echo '' $(AM_CXXFLAGS) $(CXXFLAGS) | tr " " "/"` \
-		-o $@ -L.libs -lppl_swiprolog ppl_pl.o \
+		-o $@ $(LIBPPL_SWIPROLOG_LINK_OPTIONS) ppl_pl.o \
 		-L$(top_builddir)/src/.libs \
 		-lppl $(WATCHDOG_LINK_OPTIONS) @extra_libraries@ $(EXTRA_LINK_OPTIONS)
 
 pl_clpq$(EXEEXT): libppl_swiprolog.la pl_clpq.o pl_clpq.pl ../tests/clpq.pl
 	plld -pl $(SWI_PROLOG) -cc $(CC) -c++ $(CXX) -ld $(CXX) \
 		-ld-options`echo '' $(AM_CXXFLAGS) $(CXXFLAGS) | tr " " "/"` \
-		-o $@ -L.libs -lppl_swiprolog pl_clpq.o \
+		-o $@ $(LIBPPL_SWIPROLOG_LINK_OPTIONS) pl_clpq.o \
                 $(srcdir)/pl_clpq.pl $(srcdir)/../tests/clpq.pl \
 		-L$(top_builddir)/src/.libs \
 		-lppl $(WATCHDOG_LINK_OPTIONS) @extra_libraries@ $(EXTRA_LINK_OPTIONS)
@@ -228,7 +247,7 @@ pl_clpq$(EXEEXT): libppl_swiprolog.la pl_clpq.o pl_clpq.pl ../tests/clpq.pl
 pl_clpq2$(EXEEXT): libppl_swiprolog.la pl_clpq.o pl_clpq.pl ../tests/clpq2.pl
 	plld -pl $(SWI_PROLOG) -cc $(CC) -c++ $(CXX) -ld $(CXX) \
 		-ld-options`echo '' $(AM_CXXFLAGS) $(CXXFLAGS) | tr " " "/"` \
-		-o $@ -L.libs -lppl_swiprolog pl_clpq.o \
+		-o $@ $(LIBPPL_SWIPROLOG_LINK_OPTIONS) pl_clpq.o \
                 $(srcdir)/pl_clpq.pl $(srcdir)/../tests/clpq2.pl \
 		-L$(top_builddir)/src/.libs \
 		-lppl $(WATCHDOG_LINK_OPTIONS) @extra_libraries@ $(EXTRA_LINK_OPTIONS)

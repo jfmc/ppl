@@ -94,7 +94,7 @@ public:
   //! Default constructor.
   Smash_Reduction();
 
-  /*! brief
+  /*! \brief
     The smash reduction operator for propagating emptiness between the
     domain elements \p d1 and \p d2.
 
@@ -128,7 +128,7 @@ public:
   //! Default constructor.
   Constraints_Reduction();
 
-  /*! brief
+  /*! \brief
     The constraints reduction operator for sharing constraints between the
     domains.
 
@@ -156,7 +156,7 @@ public:
   ~Constraints_Reduction();
 };
 
-/*! brief
+/*! \brief
   This class provides the reduction method for the Direct_Product domain.
 
   \ingroup PPL_CXX_interface
@@ -295,7 +295,7 @@ public:
 template <typename D1, typename D2, typename R>
 class Parma_Polyhedra_Library::Partially_Reduced_Product {
 public:
-  /*! brief
+  /*! \brief
     Returns the maximum space dimension this product
     can handle.
   */
@@ -323,9 +323,13 @@ public:
     \param cgs
     The system of congruences to be approximated by the pair.
 
+    \exception std::invalid_argument
+    Thrown if the system of congruences is imcompatible with one of the
+    components.
+
     \exception std::length_error
-    Thrown if \p num_dimensions exceeds the maximum allowed space
-    dimension.
+    Thrown if the space dimension of \p cgs exceeds the maximum allowed
+    space dimension.
   */
   explicit Partially_Reduced_Product(const Congruence_System& cgs);
 
@@ -337,9 +341,13 @@ public:
     The system of congruences to be approximates by the pair.
     Its data-structures may be recycled to build the pair.
 
+    \exception std::invalid_argument
+    Thrown if the system of congruences is imcompatible with one of the
+    components.
+
     \exception std::length_error
-    Thrown if \p num_dimensions exceeds the maximum allowed space
-    dimension.
+    Thrown if the space dimension of \p cgs exceeds the maximum allowed
+    space dimension.
   */
   explicit Partially_Reduced_Product(Congruence_System& cgs);
 
@@ -350,9 +358,13 @@ public:
     \param cs
     The system of constraints to be approximated by the pair.
 
+    \exception std::invalid_argument
+    Thrown if the system of constraints is imcompatible with one of the
+    components.
+
     \exception std::length_error
-    Thrown if \p num_dimensions exceeds the maximum allowed space
-    dimension.
+    Thrown if the space dimension of \p cs exceeds the maximum allowed
+    space dimension.
   */
   explicit Partially_Reduced_Product(const Constraint_System& cs);
 
@@ -362,6 +374,10 @@ public:
 
     \param cs
     The system of constraints to be approximated by the pair.
+
+    \exception std::invalid_argument
+    Thrown if the system of constraints is imcompatible with one of the
+    components.
 
     \exception std::length_error
     Thrown if the space dimension of \p cs exceeds the maximum allowed
@@ -444,8 +460,8 @@ public:
     The complexity is ignored.
 
     \exception std::length_error
-    Thrown if the space dimension of \p box exceeds the maximum
-    allowed space dimension.
+    Thrown if the space dimension of \p box exceeds the maximum allowed
+    space dimension.
   */
   template <typename Interval>
   Partially_Reduced_Product(const Box<Interval>& box,
@@ -463,8 +479,8 @@ public:
     The complexity is ignored.
 
     \exception std::length_error
-    Thrown if the space dimension of \p bd exceeds the maximum
-    allowed space dimension.
+    Thrown if the space dimension of \p bd exceeds the maximum allowed
+    space dimension.
   */
   template <typename U>
   Partially_Reduced_Product(const BD_Shape<U>& bd,
@@ -482,8 +498,8 @@ public:
     The complexity is ignored.
 
     \exception std::length_error
-    Thrown if the space dimension of \p os exceeds the maximum
-    allowed space dimension.
+    Thrown if the space dimension of \p os exceeds the maximum allowed
+    space dimension.
   */
   template <typename U>
   Partially_Reduced_Product(const Octagonal_Shape<U>& os,
@@ -495,7 +511,23 @@ public:
 
   //! Builds a conservative, upward approximation of \p y.
   /*!
-    The complexity argument is ignored.
+    Builds a product containing \p y using algorithms whose
+    complexity does not exceed the one specified by \p complexity.
+    If \p complexity is \p ANY_COMPLEXITY, then the built product is the
+    smallest one containing \p y.
+    The product inherits the space dimension of y.
+
+    \param y
+    The product to be approximated.
+
+    \param complexity
+    The complexity that will not be exceeded.
+
+    \exception std::length_error
+    Thrown if the space dimension of \p y exceeds the maximum allowed
+    space dimension.
+
+    The built product is independent of the order of the components of \p y.
   */
   template <typename E1, typename E2, typename S>
   explicit
@@ -1217,8 +1249,8 @@ public:
 
   // TODO: Add a way to call other widenings.
 
-  // CHECKME: This may not be a real widening; it depends on the reduction
-  //          class R and the widening used.
+  // CHECKME: This is a real widening for all the existing reduction
+  // operations. When new reductions are added, this must be rechecked.
 
   /*! \brief
     Assigns to \p *this the result of computing the
@@ -1491,6 +1523,25 @@ protected:
     to each other and the reduction class.
   */
   bool reduced;
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! \name Exception Throwers
+  //@{
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+protected:
+  void throw_runtime_error(const char* method) const;
+  void throw_invalid_argument(const char* method, const char* reason) const;
+
+
+  // Note: it has to be a static method, because it can be called inside
+  // constructors (before actually constructing the polyhedron object).
+  static void throw_space_dimension_overflow(const char* method,
+					     const char* reason);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //@} // Exception Throwers
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+
 };
 
 namespace Parma_Polyhedra_Library {

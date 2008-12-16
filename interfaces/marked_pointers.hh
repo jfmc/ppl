@@ -1,4 +1,5 @@
-/* Implementation of marked pointers for use in the PPL foreign interfaces.
+/* Implementation of marked pointers for use in some PPL non-templatic
+   language interfaces.
    Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).

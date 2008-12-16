@@ -66,7 +66,6 @@ package parma_polyhedra_library;
   \ingroup PPL_java_interface
 */
 public class C_Polyhedron extends Polyhedron {
-
 %<--%<--%<-- NNC_Polyhedron.java
 /* PPL Java interface: NNC_Polyhedron definition.
 m4_include(`ppl_interface_generator_copyright')`'dnl
@@ -109,22 +108,15 @@ m4_divert(-1)
 dnl m4_post_extra_class_code(Class, CPP_Class, Class_Kind)
 dnl Postfix extra code for each class.
 m4_define(`m4_post_extra_class_code', `dnl
-m4_replace_all_patterns_in_string($1,
-  m4_class_build_cpp_object1_code,
-  m4_pattern_list)`'dnl
-m4_replace_all_patterns_in_string($1,
-  m4_class_build_cpp_object2_code,
-  m4_pattern_list)`'dnl
-m4_replace_all_patterns_in_string($1,
-  m4_class_build_cpp_object3_code,
-  m4_pattern_list)`'dnl
+m4_replace_all_patterns($1, m4_class_build_cpp_object1_code)`'dnl
+m4_replace_all_patterns($1, m4_class_build_cpp_object2_code)`'dnl
+m4_replace_all_patterns($1, m4_class_build_cpp_object3_code)`'dnl
 m4_define(`m4_this_class', `m4_interface_class$1')`'dnl
 m4_define(`m4_this_class_kind', `m4_class_kind$1')
 %<--%<--%<-- m4_this_class`'.java
 }`'dnl
 m4_ifelse(m4_this_class, Polyhedron,
   `
-
 %<--%<--%<-- C_Polyhedron.java
 }
 

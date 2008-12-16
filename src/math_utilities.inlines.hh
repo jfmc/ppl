@@ -33,7 +33,7 @@ inline void
 normalize2(Coefficient_traits::const_reference x,
 	   Coefficient_traits::const_reference y,
 	   Coefficient& nx, Coefficient& ny) {
-  TEMP_INTEGER(gcd);
+  PPL_DIRTY_TEMP_COEFFICIENT(gcd);
   gcd_assign(gcd, x, y);
   exact_div_assign(nx, x, gcd);
   exact_div_assign(ny, y, gcd);
@@ -53,7 +53,7 @@ numer_denom(const Checked_Number<T, Policy>& from,
   assert(!is_not_a_number(from)
 	 && !is_minus_infinity(from)
 	 && !is_plus_infinity(from));
-  DIRTY_TEMP0(mpq_class, q);
+  PPL_DIRTY_TEMP0(mpq_class, q);
   assign_r(q, from, ROUND_NOT_NEEDED);
   num = q.get_num();
   den = q.get_den();
@@ -64,8 +64,8 @@ inline void
 div_round_up(Checked_Number<T, Policy>& to,
 	     Coefficient_traits::const_reference x,
 	     Coefficient_traits::const_reference y) {
-  DIRTY_TEMP0(mpq_class, qx);
-  DIRTY_TEMP0(mpq_class, qy);
+  PPL_DIRTY_TEMP0(mpq_class, qx);
+  PPL_DIRTY_TEMP0(mpq_class, qy);
   // Note: this code assumes that a Coefficient is always convertible
   // to an mpq_class without loss of precision.
   assign_r(qx, x, ROUND_NOT_NEEDED);
@@ -109,7 +109,7 @@ inline bool
 is_canonical(const mpq_class& x) {
   if (x.get_den() <= 0)
     return false;
-  DIRTY_TEMP0(mpq_class, temp);
+  PPL_DIRTY_TEMP0(mpq_class, temp);
   temp = x;
   temp.canonicalize();
   return temp.get_num() == x.get_num();

@@ -1273,23 +1273,23 @@ contained in (or equal to) the polyhedron referred to by the first argument.
    \c C_unsigned_2 is unified with the number of tokens
    remaining at the end of the operation.</EM>
 
-<P><CODE>ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens(+Handle_1, +Handle_2, +Constraint_System, +C_unsigned_1, ?C_unsigned_2)</CODE><BR>
-   <EM>Assigns to the polyhedron \p P_1 referenced by \c Handle_1
-   the H79-widening of \p P_1 with the polyhedron
-   referenced by \c Handle_2 intersected with the constraints in
-   \c Constraint_System that are
-   satisfied by all the points of \p P_1.
-   The widening with tokens delay
-   technique is applied with \c C_unsigned_1 tokens;
-   \c C_unsigned_2 is unified with the number of tokens
-   remaining at the end of the operation.</EM>
-
 <P><CODE>ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens(+Handle_1, +Handle_2, +Constraint_System, +C_unsigned_1, ?C_unsigned_2)</CODE><BR>
    <EM>Assigns to the polyhedron \p P_1 referenced by \c Handle_1
    the BHRZ03-widening of \p P_1 with the polyhedron
    referenced by \c Handle_2 intersected with the constraints in
    \c Constraint_System that are
    satisfied by all the points of \p P_1, further intersected with the smallest box containing \p P_1.
+   The widening with tokens delay
+   technique is applied with \c C_unsigned_1 tokens;
+   \c C_unsigned_2 is unified with the number of tokens
+   remaining at the end of the operation.</EM>
+
+<P><CODE>ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens(+Handle_1, +Handle_2, +Constraint_System, +C_unsigned_1, ?C_unsigned_2)</CODE><BR>
+   <EM>Assigns to the polyhedron \p P_1 referenced by \c Handle_1
+   the H79-widening of \p P_1 with the polyhedron
+   referenced by \c Handle_2 intersected with the constraints in
+   \c Constraint_System that are
+   satisfied by all the points of \p P_1.
    The widening with tokens delay
    technique is applied with \c C_unsigned_1 tokens;
    \c C_unsigned_2 is unified with the number of tokens
@@ -1313,19 +1313,19 @@ contained in (or equal to) the polyhedron referred to by the first argument.
    \c Constraint_System that are
    satisfied by all the points of \p P_1.</EM>
 
-<P><CODE>ppl_Polyhedron_limited_H79_extrapolation_assign(+Handle_1, +Handle_2, +Constraint_System)</CODE><BR>
-   <EM>Assigns to the polyhedron \p P_1 referenced by \c Handle_1
-   the H79-widening of \p P_1 with the polyhedron
-   referenced by \c Handle_2 intersected with the constraints in
-   \c Constraint_System that are
-   satisfied by all the points of \p P_1.</EM>
-
 <P><CODE>ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign(+Handle_1, +Handle_2, +Constraint_System)</CODE><BR>
    <EM>Assigns to the polyhedron \p P_1 referenced by \c Handle_1
    the BHRZ03-widening of \p P_1 with the polyhedron
    referenced by \c Handle_2 intersected with the constraints in
    \c Constraint_System that are
    satisfied by all the points of \p P_1, further intersected with the smallest box containing \p P_1.</EM>
+
+<P><CODE>ppl_Polyhedron_limited_H79_extrapolation_assign(+Handle_1, +Handle_2, +Constraint_System)</CODE><BR>
+   <EM>Assigns to the polyhedron \p P_1 referenced by \c Handle_1
+   the H79-widening of \p P_1 with the polyhedron
+   referenced by \c Handle_2 intersected with the constraints in
+   \c Constraint_System that are
+   satisfied by all the points of \p P_1.</EM>
 
 <P><CODE>ppl_Polyhedron_bounded_H79_extrapolation_assign(+Handle_1, +Handle_2, +Constraint_System)</CODE><BR>
    <EM>Assigns to the polyhedron \p P_1 referenced by \c Handle_1

@@ -46,11 +46,7 @@ let _ = Callback.register_exception "PPL_not_an_unsigned_exception" (Error "any 
 let _ = Callback.register_exception "PPL_unexpected_error" (Error "any string")
 
 m4_divert(-1)
-m4_pushdef(`m4_one_class_code', `dnl
-m4_replace_all_patterns_in_string($1,
-                                  `type @LCLASS@
-',
-                                  m4_pattern_list)`'dnl
+m4_pushdef(`m4_one_class_code', `type m4_downcase(m4_interface_class$1)
 ')
 
 dnl -----------------------------------------------------------------

@@ -64,7 +64,7 @@ For any additional questions you might have, please do not hesitate to
 write to ppl-devel@cs.unipr.it.
 
 Here is the contents of the PPL 0.10 source distribution
-(41 directories, 1404 files):
+(41 directories, 1409 files):
 
 ppl-0.10
 |-- BUGS
@@ -93,6 +93,7 @@ ppl-0.10
 |   |-- compile
 |   |-- config.guess
 |   |-- config.h.in
+|   |-- config.rpath
 |   |-- config.sub
 |   |-- configure
 |   |-- configure.ac
@@ -131,6 +132,8 @@ ppl-0.10
 |   |   |-- Makefile.am
 |   |   |-- Makefile.in
 |   |   |-- ax_prefix_config_h.m4
+|   |   |-- lib-ld.m4
+|   |   |-- lib-link.m4
 |   |   |-- libtool.m4
 |   |   |-- ltoptions.m4
 |   |   |-- ltsugar.m4
@@ -374,9 +377,9 @@ ppl-0.10
 |   |-- Makefile.in
 |   |-- README.doc
 |   |-- definitions.dox
-|   |-- devref-foreign-language-interface.doxyconf
-|   |-- devref-foreign-language-interface.doxyconf.in
-|   |-- devref-foreign-language-interface.tex
+|   |-- devref-language-interface.doxyconf
+|   |-- devref-language-interface.doxyconf.in
+|   |-- devref-language-interface.tex
 |   |-- devref.doxyconf-html
 |   |-- devref.doxyconf-html.in
 |   |-- devref.doxyconf-latex
@@ -397,25 +400,25 @@ ppl-0.10
 |   |-- libppl.3
 |   |-- libppl_c.3
 |   |-- ppl-config.1
-|   |-- ppl-user-0.10pre36-html.tar.gz
-|   |-- ppl-user-0.10pre36.pdf
-|   |-- ppl-user-0.10pre36.ps.gz
-|   |-- ppl-user-c-interface-0.10pre36-html.tar.gz
-|   |-- ppl-user-c-interface-0.10pre36.pdf
-|   |-- ppl-user-c-interface-0.10pre36.ps.gz
-|   |-- ppl-user-java-interface-0.10pre36-html.tar.gz
-|   |-- ppl-user-java-interface-0.10pre36.pdf
-|   |-- ppl-user-java-interface-0.10pre36.ps.gz
-|   |-- ppl-user-ocaml-interface-0.10pre36-html.tar.gz
-|   |-- ppl-user-ocaml-interface-0.10pre36.pdf
-|   |-- ppl-user-ocaml-interface-0.10pre36.ps.gz
-|   |-- ppl-user-prolog-interface-0.10pre36-html.tar.gz
-|   |-- ppl-user-prolog-interface-0.10pre36.pdf
-|   |-- ppl-user-prolog-interface-0.10pre36.ps.gz
+|   |-- ppl-user-0.10-html.tar.gz
+|   |-- ppl-user-0.10.pdf
+|   |-- ppl-user-0.10.ps.gz
+|   |-- ppl-user-c-interface-0.10-html.tar.gz
+|   |-- ppl-user-c-interface-0.10.pdf
+|   |-- ppl-user-c-interface-0.10.ps.gz
+|   |-- ppl-user-java-interface-0.10-html.tar.gz
+|   |-- ppl-user-java-interface-0.10.pdf
+|   |-- ppl-user-java-interface-0.10.ps.gz
+|   |-- ppl-user-ocaml-interface-0.10-html.tar.gz
+|   |-- ppl-user-ocaml-interface-0.10.pdf
+|   |-- ppl-user-ocaml-interface-0.10.ps.gz
+|   |-- ppl-user-prolog-interface-0.10-html.tar.gz
+|   |-- ppl-user-prolog-interface-0.10.pdf
+|   |-- ppl-user-prolog-interface-0.10.ps.gz
 |   |-- ppl.sty
-|   |-- user-foreign-language-interface.doxyconf
-|   |-- user-foreign-language-interface.doxyconf.in
-|   |-- user-foreign-language-interface.tex
+|   |-- user-language-interface.doxyconf
+|   |-- user-language-interface.doxyconf.in
+|   |-- user-language-interface.tex
 |   |-- user.doxyconf-html
 |   |-- user.doxyconf-html.in
 |   |-- user.doxyconf-latex
@@ -450,6 +453,7 @@ ppl-0.10
 |   |-- Java
 |   |   |-- Makefile.am
 |   |   |-- Makefile.in
+|   |   |-- README.java
 |   |   |-- jni
 |   |   |   |-- Makefile.am
 |   |   |   |-- Makefile.in
@@ -525,6 +529,7 @@ ppl-0.10
 |   |   |-- Makefile.am
 |   |   |-- Makefile.in
 |   |   |-- OCaml_interface.dox
+|   |   |-- README.ocaml
 |   |   |-- ppl_interface_generator_ocaml_cc_code.m4
 |   |   |-- ppl_interface_generator_ocaml_cc_files.m4
 |   |   |-- ppl_interface_generator_ocaml_hh_code.m4

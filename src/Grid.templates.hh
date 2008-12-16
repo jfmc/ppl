@@ -57,10 +57,10 @@ Grid::Grid(const Box<Interval>& box,
     // Initialize the space dimension as indicated by the box.
     con_sys.increase_space_dimension(space_dim);
     // Add congruences and generators according to `box'.
-    TEMP_INTEGER(l_n);
-    TEMP_INTEGER(l_d);
-    TEMP_INTEGER(u_n);
-    TEMP_INTEGER(u_d);
+    PPL_DIRTY_TEMP_COEFFICIENT(l_n);
+    PPL_DIRTY_TEMP_COEFFICIENT(l_d);
+    PPL_DIRTY_TEMP_COEFFICIENT(u_n);
+    PPL_DIRTY_TEMP_COEFFICIENT(u_d);
     gen_sys.insert(grid_point(0*Variable(space_dim-1)));
     Grid_Generator& point = gen_sys[0];
     for (dimension_type k = space_dim; k-- > 0; ) {
@@ -117,14 +117,14 @@ Grid::Grid(const Box& box, From_Covering_Box)
 
   space_dim = box.space_dimension();
 
-  TEMP_INTEGER(l_n);
-  TEMP_INTEGER(l_d);
+  PPL_DIRTY_TEMP_COEFFICIENT(l_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(l_d);
 
   // Check that all bounds are closed.  This check must be done before
   // the empty test below, as an open bound might mean an empty box.
   for (dimension_type k = space_dim; k-- > 0; ) {
     bool closed = false;
-    // FIXME: Perhaps introduce box::is_bounded_and_closed.
+    // FIXME(0.10.1): Perhaps introduce Box::is_bounded_and_closed.
     if (box.get_lower_bound(k, closed, l_n, l_d) && !closed)
       throw_invalid_argument("Grid(box, from_covering_box)", "box");
     if (box.get_upper_bound(k, closed, l_n, l_d) && !closed)
@@ -144,9 +144,9 @@ Grid::Grid(const Box& box, From_Covering_Box)
     // Initialize the space dimension as indicated by the box.
     con_sys.increase_space_dimension(space_dim);
     // Add congruences according to `box'.
-    TEMP_INTEGER(u_n);
-    TEMP_INTEGER(u_d);
-    TEMP_INTEGER(d);
+    PPL_DIRTY_TEMP_COEFFICIENT(u_n);
+    PPL_DIRTY_TEMP_COEFFICIENT(u_d);
+    PPL_DIRTY_TEMP_COEFFICIENT(d);
     gen_sys.insert(grid_point(0*Variable(space_dim-1)));
     Grid_Generator& point = gen_sys[0];
     for (dimension_type k = space_dim; k-- > 0; ) {
@@ -263,8 +263,8 @@ Grid::get_covering_box(Box<Interval>& box) const {
   dimension_type num_dims = gen_sys.num_columns() - 2 /* parameter divisor */;
   dimension_type num_rows = gen_sys.num_rows();
 
-  TEMP_INTEGER(gcd);
-  TEMP_INTEGER(bound);
+  PPL_DIRTY_TEMP_COEFFICIENT(gcd);
+  PPL_DIRTY_TEMP_COEFFICIENT(bound);
 
   if (num_rows > 1) {
     Row interval_sizes(num_dims, Row::Flags());
@@ -314,7 +314,7 @@ Grid::get_covering_box(Box<Interval>& box) const {
     // given dimension between any two grid points.
     const Grid_Generator& point = *first_point;
     const Coefficient& divisor = point.divisor();
-    TEMP_INTEGER(lower_bound);
+    PPL_DIRTY_TEMP_COEFFICIENT(lower_bound);
     for (dimension_type dim = num_dims; dim-- > 0; ) {
       if (interval_emptiness[dim])
 	continue;
@@ -529,7 +529,8 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
   assert(OK(true));
 }
 
-#ifdef STRONG_REDUCTION
+// Needed for converting the congruence or grid_generator system
+// to "strong minimal form".
 template <typename M, typename R>
 void
 Grid::reduce_reduced(M& sys,
@@ -546,7 +547,7 @@ Grid::reduce_reduced(M& sys,
   if (pivot_dim == 0)
     return;
 
-  TEMP_INTEGER(pivot_dim_half);
+  PPL_DIRTY_TEMP_COEFFICIENT(pivot_dim_half);
   pivot_dim_half = (pivot_dim + 1) / 2;
   Dimension_Kind row_kind = dim_kinds[dim];
   Dimension_Kind line_or_equality, virtual_kind;
@@ -562,8 +563,8 @@ Grid::reduce_reduced(M& sys,
     jump = 1;
   }
 
-  TEMP_INTEGER(num_rows_to_subtract);
-  TEMP_INTEGER(row_dim_remainder);
+  PPL_DIRTY_TEMP_COEFFICIENT(num_rows_to_subtract);
+  PPL_DIRTY_TEMP_COEFFICIENT(row_dim_remainder);
   for (dimension_type row_index = pivot_index, kinds_index = dim + jump;
        row_index-- > 0;
        kinds_index += jump) {
@@ -583,7 +584,7 @@ Grid::reduce_reduced(M& sys,
 
       // Ensure that after subtracting num_rows_to_subtract * r_dim
       // from row_dim, -pivot_dim_half < row_dim <= pivot_dim_half.
-      // E.g., if pivot[dim] = 9, then after strong reduction
+      // E.g., if pivot[dim] = 9, then after this reduction
       // -5 < row_dim <= 5.
       row_dim_remainder = row_dim % pivot_dim;
       if (row_dim_remainder < 0) {
@@ -604,7 +605,6 @@ Grid::reduce_reduced(M& sys,
     }
   }
 }
-#endif // STRONG_REDUCTION
 
 } // namespace Parma_Polyhedra_Library
 

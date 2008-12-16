@@ -104,12 +104,12 @@ init() {
    ppl_initialize();
 }
 m4_divert`'dnl
-m4_define(`m4_extension', `#undef $1
+m4_define(`m4_expanded_procedure_schema', `#undef $1
 ')dnl
 ppl_prolog_sys_code`'dnl
 m4_undivert(1)
 
-m4_define(`m4_extension', `XSB_ENTRY_$2($1)
+m4_define(`m4_expanded_procedure_schema', `XSB_ENTRY_$2($1)
 ')
 
 m4_divert`'dnl

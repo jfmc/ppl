@@ -23,7 +23,7 @@
 # Process this file with autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library],[0.10pre37],[ppl-devel@cs.unipr.it],[ppl])
+AC_INIT([the Parma Polyhedra Library],[0.10.1pre1],[ppl-devel@cs.unipr.it],[ppl])
 
 # Minimum Autoconf version required.
 AC_PREREQ(2.60)
@@ -70,9 +70,6 @@ AC_SUBST(PPL_VERSION_BETA)
 AC_DEFINE_UNQUOTED(CONFIGURE_OPTIONS, "$ac_configure_args", [This contains the options with which `configure' was invoked.])
 PPL_CONFIGURE_OPTIONS="\"$ac_configure_args\""
 AC_SUBST(CONFIGURE_OPTIONS)
-
-# Installation directories.
-AC_SUBST([docdir], ['${datadir}/doc/ppl'])
 
 # Generate a configuration header file.
 AC_CONFIG_HEADER(config.h)
@@ -959,24 +956,45 @@ AM_CONDITIONAL(BUILD_JAVA_INTERFACE, test "x$JAVA" != xno &&  test "x$ac_cv_java
 # Checks for OCaml.
 if test x${ocaml_interface_enabled} = xyes
 then
+  # Check for the bytecode compiler.
   AC_CHECK_PROG(OCAMLC, ocamlc, ocamlc)
-  ocamlgmp="no"
+  ocamlcgmp="no"
   if test x"$OCAMLC" = xocamlc
   then
      ocamlc_root=`ocamlc -where`
-     # Checks for OCaml GMP.
+     # Checks for (the bytecode version of) OCaml GMP.
      AC_MSG_CHECKING(for OCaml-GMP module gmp.cma)
      if test -f ${ocamlc_root}/gmp/gmp.cma;
      then
          AC_MSG_RESULT(yes)
-	 ocamlgmp="yes"
+	 ocamlcgmp="yes"
      else
          AC_MSG_RESULT(no)
-	 ocamlgmp="no"
+	 ocamlcgmp="no"
+     fi
+  fi
+  # Check for the native compiler.
+  AC_CHECK_PROG(OCAMLOPT, ocamlopt, ocamlopt)
+  ocamloptgmp="no"
+  if test x"$OCAMLOPT" = xocamlopt
+  then
+     ocamlopt_root=`ocamlopt -where`
+     # Checks for (the native version of) OCaml GMP.
+     AC_MSG_CHECKING(for OCaml-GMP module gmp.cmxa)
+     if test -f ${ocamlopt_root}/gmp/gmp.cmxa;
+     then
+         AC_MSG_RESULT(yes)
+	 ocamloptgmp="yes"
+     else
+         AC_MSG_RESULT(no)
+	 ocamloptgmp="no"
      fi
   fi
 fi
-AM_CONDITIONAL(BUILD_OCAML_INTERFACE, test x$OCAMLC = xocamlc && test x$ocamlgmp = xyes)
+AM_CONDITIONAL(HAVE_OCAMLC, test x$ocamlcgmp = xyes)
+AM_CONDITIONAL(HAVE_OCAMLOPT, test x$ocamloptgmp = xyes)
+AM_CONDITIONAL(BUILD_OCAML_INTERFACE, test x$ocamlcgmp = xyes \
+                                      || test x$ocamloptgmp = xyes)
 
 # Checks for Ciao Prolog.
 if test x${ciao_prolog_interface_enabled} = xyes
@@ -1423,8 +1441,8 @@ AC_CONFIG_FILES(Makefile
                 doc/devref.doxyconf-latex
                 doc/user.doxyconf-html
                 doc/devref.doxyconf-html
-                doc/user-foreign-language-interface.doxyconf
-                doc/devref-foreign-language-interface.doxyconf
+                doc/user-language-interface.doxyconf
+                doc/devref-language-interface.doxyconf
                 interfaces/Makefile
                 interfaces/C/Makefile
                 interfaces/C/ppl_c_version.h

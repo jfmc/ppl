@@ -44,7 +44,8 @@ then
 
   dnl Additional version checks could be inserted here, if necessary.
 
-  # In Fedora, SWI-Prolog.h is installed in /usr/include/pl.
+  # In Fedora, SWI-Prolog.h is installed only in /usr/include/pl, which,
+  # IMHO, is a bug (https://bugzilla.redhat.com/show_bug.cgi?id=471071).
   SWI_PROLOG_INCLUDE_OPTIONS="-I${swi_prolog_base}/include -I/usr/include/pl"
   SWI_PROLOG_LD_OPTIONS="-L${swi_prolog_base}/lib/${swi_prolog_arch} ${swi_prolog_lib} ${swi_prolog_libs}"
   ac_save_CPPFLAGS="$CPPFLAGS"

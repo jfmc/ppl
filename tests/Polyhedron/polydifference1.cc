@@ -193,75 +193,6 @@ test06() {
   return ok;
 }
 
-// Creating a rectangle.
-C_Polyhedron
-aux_test07(int lx, int ly, int dx, int dy) {
-  Variable x(0);
-  Variable y(1);
-  C_Polyhedron ph(2, EMPTY);
-  ph.add_generator(point((lx+0*dx)*x + (ly+0*dy)*y));
-  ph.add_generator(point((lx+1*dx)*x + (ly+0*dy)*y));
-  ph.add_generator(point((lx+1*dx)*x + (ly+1*dy)*y));
-  ph.add_generator(point((lx+0*dx)*x + (ly+1*dy)*y));
-  return ph;
-}
-
-bool
-test07() {
-  Pointset_Powerset<C_Polyhedron> cross(2, EMPTY);
-  cross.add_disjunct(aux_test07(0, 3, 9, 3));
-  cross.add_disjunct(aux_test07(3, 0, 3, 9));
-
-  using namespace IO_Operators;
-  nout << "cross = " << cross << endl;
-
-  Pointset_Powerset<C_Polyhedron> squares(2, EMPTY);
-  squares.add_disjunct(aux_test07(1, 4, 1, 1));
-  squares.add_disjunct(aux_test07(4, 4, 1, 1));
-  squares.add_disjunct(aux_test07(7, 4, 1, 1));
-  squares.add_disjunct(aux_test07(4, 1, 1, 1));
-  squares.add_disjunct(aux_test07(4, 7, 1, 1));
-
-  nout << "squares = " << squares << endl;
-
-  Pointset_Powerset<C_Polyhedron> difference = cross;
-  difference.difference_assign(squares);
-
-  nout << "cross - squares = " << difference << endl;
-
-  Pointset_Powerset<C_Polyhedron> intersection = difference;
-  intersection.meet_assign(squares);
-
-  nout << "(cross - squares) inters squares = " << intersection << endl;
-
-  // When using Pointset_Powerset<NNC_Polyhedron>, intersection will be
-  // empty.  When using Pointset_Powerset<C_Polyhedron>,
-  // intersection will consist of objects of affine dimension at most 1.
-  bool ok1 = true;
-  for (Pointset_Powerset<C_Polyhedron>::const_iterator
-	 i = intersection.begin(), in_end = intersection.end();
-       i != in_end; ++i)
-    if (i->element().affine_dimension() > 1) {
-      nout << "intersection contains " << i->element() << "," << endl
-	   << "which is of affine dimension greater than 1" << endl;
-      ok1 = false;
-    }
-
-  Pointset_Powerset<C_Polyhedron> re_union = difference;
-  re_union.upper_bound_assign(squares);
-
-  nout << "(cross - squares) union squares = " << re_union << endl;
-  re_union.pairwise_reduce();
-  nout << "<Above union pairwise reduced>  = " << re_union << endl;
-
-  bool ok2 = re_union.geometrically_equals(cross);
-
-  if (!ok2)
-    nout << "Union does not give back the original!" << endl;
-
-  return ok1 && ok2;
-}
-
 } // namespace
 
 BEGIN_MAIN
@@ -271,5 +202,4 @@ BEGIN_MAIN
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
-  DO_TEST_F8(test07);
 END_MAIN

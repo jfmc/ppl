@@ -1529,8 +1529,8 @@ Note that, in the above context, a call such as
 behavior, since the precondition \f$\cQ \sseq \cP\f$ will be missed
 (unless it happens that \f$\cP = \cQ\f$).
 The same observation holds for all flavors of widenings and extrapolation
-operators that are implemented in the library and for all the foreign
-language interfaces.
+operators that are implemented in the library and for all the language
+interfaces.
 
 
 \subsection Widening_with_Tokens Widening with Tokens
@@ -2325,8 +2325,8 @@ widening \f$\cL_1 \widen \cL_2\f$, the resulting grid will be assigned
 to overwrite the store containing the bigger grid \f$\cL_2\f$.
 The smaller grid \f$\cL_1\f$ is not modified.
 The same observation holds for all flavors of widenings and extrapolation
-operators that are implemented in the library and for all the foreign
-language interfaces.
+operators that are implemented in the library and for all the language
+interfaces.
 
 \subsection Grid_Widening_with_Tokens Widening with Tokens
 

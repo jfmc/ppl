@@ -109,7 +109,7 @@ on the use of the OCaml interface.
   ppl_new_C_Polyhedron_from_space_dimension,
   ppl_new_C_Polyhedron_from_C_Polyhedron,
   ppl_new_C_Polyhedron_from_constraints,
-  ppl_new_C_Polyhedron_from_generators,
+  ppl_new_C_Polyhedron_from_generators.
 \endcode
   These functions will return a new handle for referencing a PPL polyhedron.
 - For a PPL object with space dimension \p k,

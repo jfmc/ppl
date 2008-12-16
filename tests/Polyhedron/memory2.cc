@@ -22,6 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 #include <new>
+#include <cstdlib>
 #include <limits>
 
 // If GMP does not support exceptions the test is pointless.
@@ -73,54 +74,73 @@ cxx_malloc(size_t size) {
     nout << "std::bad_alloc thrown from cxx_malloc()" << endl;
     throw std::bad_alloc();
   }
-  void* p = ::operator new(size);
-  if (!before_main)
-    vnout << "allocated " << size << " @ " << p << endl;
-  ++mallocated;
-  return p;
+
+  void* p = malloc(size);
+  if (p != 0 || size == 0) {
+    if (!before_main)
+      vnout << "allocated " << size << " @ " << p << endl;
+    ++mallocated;
+    return p;
+  }
+
+  nout << "malloc() returned 0: std::bad_alloc thrown from cxx_malloc()"
+       << endl;
+  throw std::bad_alloc();
 }
 
 extern "C" void
 cxx_free(void* p, size_t) {
+  free(p);
   if (!before_main)
     vnout << "freed " << p << endl;
-  ::operator delete(p);
   ++freed;
 }
 
 extern "C" void*
-cxx_realloc(void* p, size_t old_size, size_t new_size) {
-  if (p == 0)
+cxx_realloc(void* q, size_t old_size, size_t new_size) {
+  if (q == 0)
     return cxx_malloc(new_size);
 
   if (new_size == 0) {
-    cxx_free(p, old_size);
+    cxx_free(q, old_size);
     return 0;
   }
 
   if (new_size <= old_size) {
-    if (!before_main)
-      vnout << "reallocated " << old_size << " @ " << p
-            << " down to " << new_size << " @ " << p
-            << endl;
-    return p;
-  }
-  else {
-    if (reallocated >= realloc_threshold) {
+    void* p = realloc(q, new_size);
+    if (p != 0 || new_size == 0) {
       if (!before_main)
-        nout << "std::bad_alloc thrown from cxx_realloc()" << endl;
-      throw std::bad_alloc();
+        vnout << "reallocated " << old_size << " @ " << p
+              << " down to " << new_size << " @ " << p
+              << endl;
+      return p;
     }
-    void* new_p = ::operator new(new_size);
-    memcpy(new_p, p, old_size);
-    ::operator delete(p);
+
+    nout << "malloc() returned 0: std::bad_alloc thrown from cxx_malloc()"
+         << endl;
+    throw std::bad_alloc();
+  }
+
+  assert(new_size > old_size);
+  if (reallocated >= realloc_threshold) {
     if (!before_main)
-      vnout << "reallocated " << old_size << " @ " << p
-            << " up to " << new_size << " @ " << new_p
+      nout << "std::bad_alloc thrown from cxx_realloc()" << endl;
+    throw std::bad_alloc();
+  }
+
+  void* p = realloc(q, new_size);
+  if (p != 0 || new_size == 0) {
+    if (!before_main)
+      vnout << "reallocated " << old_size << " @ " << q
+            << " up to " << new_size << " @ " << p
             << endl;
     ++reallocated;
-    return new_p;
+    return p;
   }
+
+  nout << "malloc() returned 0: std::bad_alloc thrown from cxx_malloc()"
+       << endl;
+  throw std::bad_alloc();
 }
 
 void

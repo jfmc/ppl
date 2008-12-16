@@ -101,13 +101,13 @@ max_min1 max_min2 \
 maxspacedim1 \
 membytes1 \
 minconstraints1 \
-pointsetpowerset1 \
 relations1 relations2 relations3 relations4 \
 removespacedims1 \
 timeelapse1 \
 unconstrain1 \
 universe1 \
 upperbound1 \
+upperboundifexact1 \
 writebdshape1
 
 # This will be overridden by the `run_tests' script.
@@ -259,8 +259,6 @@ membytes1_SOURCES = membytes1.cc
 
 minconstraints1_SOURCES = minconstraints1.cc
 
-pointsetpowerset1_SOURCES = pointsetpowerset1.cc
-
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
 relations3_SOURCES = relations3.cc
@@ -276,10 +274,16 @@ universe1_SOURCES = universe1.cc
 
 upperbound1_SOURCES = upperbound1.cc
 
+upperboundifexact1_SOURCES = upperboundifexact1.cc
+
 writebdshape1_SOURCES = writebdshape1.cc
 
 
 MOSTLYCLEANFILES = \
 ascii_dump_load1.dat
 
-CLEANFILES = run_tests.stamp
+CLEANFILES = \
+run_tests.stamp
+
+DISTCLEANFILES = \
+dirty_marker

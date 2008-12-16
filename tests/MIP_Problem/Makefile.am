@@ -54,7 +54,6 @@ TESTS = \
 ascii_dump_load1 \
 exceptions1 \
 mipproblem1 \
-mipproblem2 \
 mipproblem3
 
 XFAIL_TESTS =
@@ -87,7 +86,10 @@ mipproblem2_LDADD = $(LDADD) $(top_builddir)/Watchdog/src/libpwl.la
 
 endif BUILD_WATCHDOG_LIBRARY
 
-check_PROGRAMS = $(TESTS) $(BUGS)
+check_PROGRAMS = \
+$(TESTS) \
+$(WATCHDOG_TESTS) \
+$(BUGS)
 
 EXTRA_DIST = $(mipproblem2_SRCS)
 

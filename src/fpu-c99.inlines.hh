@@ -25,16 +25,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <stdexcept>
 
 #ifdef FE_TONEAREST
-#define FPU_TONEAREST FE_TONEAREST
+#define PPL_FPU_TONEAREST FE_TONEAREST
 #endif
 #ifdef FE_UPWARD
-#define FPU_UPWARD FE_UPWARD
+#define PPL_FPU_UPWARD FE_UPWARD
 #endif
 #ifdef FE_DOWNWARD
-#define FPU_DOWNWARD FE_DOWNWARD
+#define PPL_FPU_DOWNWARD FE_DOWNWARD
 #endif
 #ifdef FE_TOWARDZERO
-#define FPU_TOWARDZERO FE_TOWARDZERO
+#define PPL_PPL_FPU_TOWARDZERO FE_TOWARDZERO
 #endif
 
 namespace Parma_Polyhedra_Library {
@@ -42,8 +42,8 @@ namespace Parma_Polyhedra_Library {
 inline void
 fpu_initialize_control_functions() {
   int old = fegetround();
-  if (fesetround(FPU_DOWNWARD) != 0
-      || fesetround(FPU_UPWARD) != 0
+  if (fesetround(PPL_FPU_DOWNWARD) != 0
+      || fesetround(PPL_FPU_UPWARD) != 0
       || fesetround(old) != 0)
     throw std::logic_error("PPL configuration error:"
 			   " PPL_CAN_CONTROL_FPU evaluates to true,"

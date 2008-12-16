@@ -86,7 +86,7 @@ PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Grid::Status)
 
 bool
 PPL::Grid::Status::ascii_load(std::istream& s) {
-  bool positive;
+  PPL_UNINITIALIZED(bool, positive);
 
   if (!get_field(s, zero_dim_univ, positive))
     return false;
