@@ -183,7 +183,7 @@ m4_define(`ppl_@CLASS@_unconstrain_space_dimensions_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
     public native void
-      unconstrain_space_dimensions(Variables_Set to_be_constrained);
+      unconstrain_space_dimensions(Variables_Set to_be_unconstrained);
 
 ')
 
