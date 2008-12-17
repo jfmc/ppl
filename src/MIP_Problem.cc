@@ -729,10 +729,10 @@ PPL::MIP_Problem::process_pending_constraints() {
 	// If the constraint is already satisfied, we will not use artificial
 	// variables to compute a feasible base: this to speed up
 	// the algorithm.
-	  if (satisfied_ineqs[i]) {
-	    base[k] = slack_index;
-	    worked_out_row[k] = true;
-	  }
+        if (satisfied_ineqs[i]) {
+          base[k] = slack_index;
+          worked_out_row[k] = true;
+        }
       }
       for (dimension_type j = base_size; j-- > 0; )
 	if (k != j && tableau_k[base[j]] != 0 && base[j] != 0)
