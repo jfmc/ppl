@@ -2146,9 +2146,225 @@ BD_Shape<T>::difference_assign(const BD_Shape& y) {
 template <typename T>
 bool
 BD_Shape<T>::simplify_using_context_assign(const BD_Shape& y) {
-  // FIXME(0.10.1): provide a real implementation.
-  used(y);
-  return true;
+  BD_Shape& x = *this;
+  const dimension_type dim = x.space_dimension();
+  // Dimension-compatibility check.
+  if (dim != y.space_dimension())
+    throw_dimension_incompatible("simplify_using_context_assign(y)", y);
+
+  // Filter away the zero-dimensional case.
+  if (dim == 0) {
+    if (y.marked_empty()) {
+      x.set_zero_dim_univ();
+      return false;
+    }
+    else
+      return !x.marked_empty();
+  }
+
+  // Filter away the case where `x' contains `y'
+  // (this subsumes the case when `y' is empty).
+  y.shortest_path_closure_assign();
+  if (x.contains(y)) {
+    BD_Shape<T> res(dim, UNIVERSE);
+    x.swap(res);
+    return false;
+  }
+
+  // Filter away the case where `x' is empty.
+  x.shortest_path_closure_assign();
+  if (x.marked_empty()) {
+    // Search for a constraint of `y' that is not a tautology.
+    dimension_type i;
+    dimension_type j;
+    // Prefer unary constraints.
+    i = 0;
+    const DB_Row<N>& y_dbm_0 = y.dbm[0];
+    for (j = 1; j <= dim; ++j) {
+      if (!is_plus_infinity(y_dbm_0[j]))
+        // FIXME: if N is a float or bounded intefer type, then
+        // we also need to check that we are actually able to construct
+        // a constraint inconsistent wrt this one.
+        goto found;
+    }
+    j = 0;
+    for (i = 1; i <= dim; ++i) {
+      if (!is_plus_infinity(y.dbm[i][0]))
+        // FIXME: if N is a float or bounded intefer type, then
+        // we also need to check that we are actually able to construct
+        // a constraint inconsistent wrt this one.
+        goto found;
+    }
+    // Then search binary constraints.
+    for (i = 1; i <= dim; ++i) {
+      const DB_Row<N>& y_dbm_i = y.dbm[i];
+      for (j = 1; j <= dim; ++j)
+        if (!is_plus_infinity(y_dbm_i[j]))
+          // FIXME: if N is a float or bounded intefer type, then
+          // we also need to check that we are actually able to construct
+          // a constraint inconsistent wrt this one.
+          goto found;
+    }
+    // Not found: we were not able to build a constraint contradicting
+    // one of the constraints in `y': `x' cannot be enlarged.
+    return false;
+
+  found:
+    // Found: build a new BDS contradicting the constraint found.
+    assert(i <= dim && j <= dim && (i > 0 || j > 0));
+    BD_Shape<T> res(dim, UNIVERSE);
+    PPL_DIRTY_TEMP(N, tmp);
+    assign_r(tmp, 1, ROUND_UP);
+    add_assign_r(tmp, tmp, y.dbm[i][j], ROUND_UP);
+    // CHECKME: round down is really meant.
+    neg_assign_r(res.dbm[j][i], tmp, ROUND_DOWN);
+    assert(!is_plus_infinity(res.dbm[j][i]));
+    x.swap(res);
+    return false;
+  }
+
+  // Here `x' and `y' are not empty and shortest-path closed;
+  // also, `x' does not contain `y'.
+  // Let `target' be the intersection of `x' and `y'.
+  BD_Shape<T> target = x;
+  target.intersection_assign(y);
+  const bool bool_result = !target.is_empty();
+
+  // Compute a reduced dbm for `x' and ...
+  x.shortest_path_reduction_assign();
+  // ... count the non-redundant constraints.
+  dimension_type x_num_nonredundant = (dim+1)*(dim+1);
+  for (dimension_type i = dim + 1; i-- > 0; )
+    x_num_nonredundant -= x.redundancy_dbm[i].count_ones();
+  assert(x_num_nonredundant > 0);
+
+  // Let `yy' be a copy of `y': we will keep adding to `yy'
+  // the non-redundant constraints of `x',
+  // stopping as soon as `yy' becomes equal to `target'.
+  BD_Shape<T> yy = y;
+
+  // The constraints added to `yy' will be recorded in `res' ...
+  BD_Shape<T> res(dim, UNIVERSE);
+  // ... and we will count them too.
+  dimension_type res_num_nonredundant = 0;
+
+  // Compute leader information for `x'.
+  std::vector<dimension_type> x_leaders;
+  x.compute_leaders(x_leaders);
+
+  // First go through the unary equality constraints.
+  const DB_Row<N>& x_dbm_0 = x.dbm[0];
+  DB_Row<N>& yy_dbm_0 = yy.dbm[0];
+  DB_Row<N>& res_dbm_0 = res.dbm[0];
+  for (dimension_type j = 1; j <= dim; ++j) {
+    // Unary equality constraints are encoded in entries dbm_0j and dbm_j0
+    // provided index j has special variable index 0 as its leader.
+    if (x_leaders[j] != 0)
+      continue;
+    assert(!is_plus_infinity(x_dbm_0[j]));
+    if (x_dbm_0[j] < yy_dbm_0[j]) {
+      res_dbm_0[j] = x_dbm_0[j];
+      ++res_num_nonredundant;
+      // Tighten context `yy' using the newly added constraint.
+      yy_dbm_0[j] = x_dbm_0[j];
+      yy.reset_shortest_path_closed();
+    }
+    assert(!is_plus_infinity(x.dbm[j][0]));
+    if (x.dbm[j][0] < yy.dbm[j][0]) {
+      res.dbm[j][0] = x.dbm[j][0];
+      ++res_num_nonredundant;
+      // Tighten context `yy' using the newly added constraint.
+      yy.dbm[j][0] = x.dbm[j][0];
+      yy.reset_shortest_path_closed();
+    }
+    // Restore shortest-path closure, if it was lost.
+    if (!yy.marked_shortest_path_closed()) {
+      Variable var_j(j-1);
+      yy.incremental_shortest_path_closure_assign(var_j);
+      if (target.contains(yy)) {
+        // Target reached: swap `x' and `res' if needed.
+        if (res_num_nonredundant < x_num_nonredundant) {
+          res.reset_shortest_path_closed();
+          x.swap(res);
+        }
+        return bool_result;
+      }
+    }
+  }
+
+  // Go through the binary equality constraints.
+  // Note: no need to consider the case i == 1.
+  for (dimension_type i = 2; i <= dim; ++i) {
+    const dimension_type j = x_leaders[i];
+    if (j == i || j == 0)
+      continue;
+    assert(!is_plus_infinity(x.dbm[i][j]));
+    if (x.dbm[i][j] < yy.dbm[i][j]) {
+      res.dbm[i][j] = x.dbm[i][j];
+      ++res_num_nonredundant;
+      // Tighten context `yy' using the newly added constraint.
+      yy.dbm[i][j] = x.dbm[i][j];
+      yy.reset_shortest_path_closed();
+    }
+    assert(!is_plus_infinity(x.dbm[j][i]));
+    if (x.dbm[j][i] < yy.dbm[j][i]) {
+      res.dbm[j][i] = x.dbm[j][i];
+      ++res_num_nonredundant;
+      // Tighten context `yy' using the newly added constraint.
+      yy.dbm[j][i] = x.dbm[j][i];
+      yy.reset_shortest_path_closed();
+    }
+    // Restore shortest-path closure, if it was lost.
+    if (!yy.marked_shortest_path_closed()) {
+      Variable var_j(j-1);
+      yy.incremental_shortest_path_closure_assign(var_j);
+      if (target.contains(yy)) {
+        // Target reached: swap `x' and `res' if needed.
+        if (res_num_nonredundant < x_num_nonredundant) {
+          res.reset_shortest_path_closed();
+          x.swap(res);
+        }
+        return bool_result;
+      }
+    }
+  }
+
+  // Finally go through the (proper) inequality constraints:
+  // both indices i and j should be leaders.
+  for (dimension_type i = 0; i <= dim; ++i) {
+    if (i != x_leaders[i])
+      continue;
+    const DB_Row<N>& x_dbm_i = x.dbm[i];
+    const Bit_Row& x_redundancy_dbm_i = x.redundancy_dbm[i];
+    DB_Row<N>& yy_dbm_i = yy.dbm[i];
+    DB_Row<N>& res_dbm_i = res.dbm[i];
+    for (dimension_type j = 0; j <= dim; ++j) {
+      if (j != x_leaders[j] || x_redundancy_dbm_i[j])
+        continue;
+      N& yy_dbm_ij = yy_dbm_i[j];
+      const N& x_dbm_ij = x_dbm_i[j];
+      if (x_dbm_ij < yy_dbm_ij) {
+        res_dbm_i[j] = x_dbm_ij;
+        ++res_num_nonredundant;
+        // Tighten context `yy' using the newly added constraint.
+        yy_dbm_ij = x_dbm_ij;
+        yy.reset_shortest_path_closed();
+        assert(i > 0 || j > 0);
+        Variable var((i > 0 ? i : j) - 1);
+        yy.incremental_shortest_path_closure_assign(var);
+        if (target.contains(yy)) {
+          // Target reached: swap `x' and `res' if needed.
+          if (res_num_nonredundant < x_num_nonredundant) {
+            res.reset_shortest_path_closed();
+            x.swap(res);
+          }
+          return bool_result;
+        }
+      }
+    }
+  }
+  // This point should be unreachable.
+  throw std::runtime_error("PPL internal error");
 }
 
 template <typename T>
