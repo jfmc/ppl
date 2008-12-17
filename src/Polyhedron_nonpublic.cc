@@ -1410,10 +1410,120 @@ PPL::Polyhedron::refine_no_check(const Constraint& c) {
 }
 
 bool
+PPL::Polyhedron::BHZ09_poly_hull_assign_if_exact(const Polyhedron& y) {
+  // Declare a const reference to *this (to avoid accidental modifications).
+  const Polyhedron& x = *this;
+
+  // TEMPORARY: can we generalize it to NNC polyhedra?
+  assert(x.is_necessarily_closed());
+
+  // Private method: the caller must ensure the following.
+  assert(x.topology() == y.topology());
+  assert(x.space_dim == y.space_dim);
+
+  // The zero-dim case is trivial.
+  if (x.space_dim == 0) {
+    upper_bound_assign(y);
+    return true;
+  }
+
+  // If `x' or `y' are (known to be) empty, the upper bound is exact.
+  if (x.marked_empty()) {
+    *this = y;
+    return true;
+  }
+  else if (y.is_empty())
+    return true;
+  else if (x.is_empty()) {
+    *this = y;
+    return true;
+  }
+
+  // Here both `x' and `y' are known to be non-empty:
+  // minimization is not really required, but it is probably the best
+  // way of getting constraints, generators and saturation matrices
+  // up-to-date; it also removes redundant constraints/generators.
+  (void) x.minimize();
+  (void) y.minimize();
+  const Constraint_System& x_cs = x.con_sys;
+  const Generator_System& x_gs = x.gen_sys;
+  const Generator_System& y_gs = y.gen_sys;
+  const dimension_type x_gs_num_rows = x_gs.num_rows();
+  const dimension_type y_gs_num_rows = y_gs.num_rows();
+
+  // Step 1: generators of `x' that are redundant in `y', and vice versa.
+  Bit_Row x_gs_red_in_y;
+  dimension_type num_x_gs_red_in_y = 0;
+  for (dimension_type i = x_gs_num_rows; i-- > 0; )
+    if (y.relation_with(x_gs[i]).implies(Poly_Gen_Relation::subsumes())) {
+      x_gs_red_in_y.set(i);
+      ++num_x_gs_red_in_y;
+    }
+  Bit_Row y_gs_red_in_x;
+  dimension_type num_y_gs_red_in_x = 0;
+  for (dimension_type i = y_gs_num_rows; i-- > 0; )
+    if (x.relation_with(y_gs[i]).implies(Poly_Gen_Relation::subsumes())) {
+      y_gs_red_in_x.set(i);
+      ++num_y_gs_red_in_x;
+    }
+
+  // Step 2: filter away special cases.
+
+  // Step 2.1: inclusion tests.
+  if (num_y_gs_red_in_x == y_gs_num_rows)
+    // `y' is included into `x': upper bound `x' is exact.
+    return true;
+  if (num_x_gs_red_in_y == x_gs_num_rows) {
+    // `x' is included into `y': upper bound `y' is exact.
+    *this = y;
+    return true;
+  }
+
+  // Step 2.2: if no generator of `x' is redundant for `y', then
+  // (as by 2.1 there exists a constraint of `x' non-redundant for `y')
+  // the upper bound is not exact; the same if exchanging `x' and `y'.
+  if (num_x_gs_red_in_y == 0 || num_y_gs_red_in_x == 0)
+    return false;
+
+  // Step 3: see if `x' has a non-redundant constraint `c_x' that is not
+  // satisfied by `y' and a non-redundant generator in `y' (see Step 1)
+  // saturating `c_x'. If so, the upper bound is not exact.
+
+  // Make sure the saturation matrix for `x' is up to date.
+  // Any sat matrix would do: we choose `sat_g' because it matches
+  // the two nested loops (constraints on rows and generators on columns).
+  if (!x.sat_g_is_up_to_date())
+    x.update_sat_g();
+  const Bit_Matrix& x_sat = x.sat_g;
+
+  Bit_Row all_ones;
+  all_ones.set_until(x_gs_num_rows);
+  Bit_Row row_union;
+  for (dimension_type i = x_cs.num_rows(); i-- > 0; ) {
+    const bool included
+      = y.relation_with(x_cs[i]).implies(Poly_Con_Relation::is_included());
+    if (!included) {
+      set_union(x_gs_red_in_y, x_sat[i], row_union);
+      if (row_union != all_ones)
+        return false;
+    }
+  }
+
+  // Here we know that the upper bound is exact: compute it.
+  for (dimension_type j = y_gs_num_rows; j-- > 0; )
+    if (!y_gs_red_in_x[j])
+      add_generator(y_gs[j]);
+
+  assert(OK());
+  return true;
+}
+
+bool
 PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
   // Declare a const reference to *this (to avoid accidental modifications).
   const Polyhedron& x = *this;
   // Private method: the caller must ensure the following.
+  assert(x.is_necessarily_closed());
   assert(x.topology() == y.topology());
   assert(x.space_dim == y.space_dim);
 
@@ -1437,13 +1547,12 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
   // Here both `x' and `y' are known to be non-empty.
 
   // Implementation based on Algorithm 8.1 (page 15) in [BemporadFT00TR],
-  // generalized so as to also allow for NNC and unbounded polyhedra.
+  // generalized so as to also allow for unbounded polyhedra.
   // The extension to unbounded polyhedra is obtained by mimicking
   // what done in Algorithm 8.2 (page 19) wrt Algorithm 6.2 (page 13).
   // We also apply a couple of improvements (see steps 2.1, 3.1, 6.1, 7.1)
   // so as to quickly handle special cases and avoid the splitting
   // of equalities/lines into pairs of inequalities/rays.
-  // The extension to NNC polyhedra seems to be new.
 
   (void) x.minimize();
   (void) y.minimize();
@@ -1455,25 +1564,31 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
   const dimension_type y_gs_num_rows = y_gs.num_rows();
 
   // Step 1: generators of `x' that are redundant in `y', and vice versa.
-  Bit_Row x_gs_red_in_y;
+  std::vector<bool> x_gs_red_in_y(x_gs_num_rows, false);
+  dimension_type num_x_gs_red_in_y = 0;
   for (dimension_type i = x_gs_num_rows; i-- > 0; )
-    if (y.relation_with(x_gs[i]).implies(Poly_Gen_Relation::subsumes()))
-      x_gs_red_in_y.set(i);
-  Bit_Row y_gs_red_in_x;
+    if (y.relation_with(x_gs[i]).implies(Poly_Gen_Relation::subsumes())) {
+      x_gs_red_in_y[i] = true;
+      ++num_x_gs_red_in_y;
+    }
+  std::vector<bool> y_gs_red_in_x(y_gs_num_rows, false);
+  dimension_type num_y_gs_red_in_x = 0;
   for (dimension_type i = y_gs_num_rows; i-- > 0; )
-    if (x.relation_with(y_gs[i]).implies(Poly_Gen_Relation::subsumes()))
-      y_gs_red_in_x.set(i);
+    if (x.relation_with(y_gs[i]).implies(Poly_Gen_Relation::subsumes())) {
+      y_gs_red_in_x[i] = true;
+      ++num_y_gs_red_in_x;
+    }
 
   // Step 2: if no redundant generator has been identified,
   // then the union is not convex. CHECKME: why?
-  if (x_gs_red_in_y.empty() && y_gs_red_in_x.empty())
+  if (num_x_gs_red_in_y == 0 && num_y_gs_red_in_x == 0)
     return false;
 
   // Step 2.1: while at it, also perform quick inclusion tests.
-  if (y_gs_red_in_x.count_ones() == y_gs_num_rows)
+  if (num_y_gs_red_in_x == y_gs_num_rows)
     // `y' is included into `x': union is convex.
     return true;
-  if (x_gs_red_in_y.count_ones() == x_gs_num_rows) {
+  if (num_x_gs_red_in_y == x_gs_num_rows) {
     // `x' is included into `y': union is convex.
     *this = y;
     return true;
@@ -1481,28 +1596,27 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
 
   // Here we know that `x' is not included in `y', and vice versa.
 
-  // Step 3.1 below is only correct for C_Polyhedron.
-  const bool closed = x.is_necessarily_closed();
-
   // Step 3: constraints of `x' that are satisfied by `y', and vice versa.
-  Bit_Row x_cs_red_in_y;
-  for (dimension_type i = x_cs.num_rows(); i-- > 0; ) {
+  const dimension_type x_cs_num_rows = x_cs.num_rows();
+  std::vector<bool> x_cs_red_in_y(x_cs_num_rows, false);
+  for (dimension_type i = x_cs_num_rows; i-- > 0; ) {
     const Constraint& x_cs_i = x_cs[i];
     if (y.relation_with(x_cs_i).implies(Poly_Con_Relation::is_included()))
-      x_cs_red_in_y.set(i);
-    else if (closed && x_cs_i.is_equality())
+      x_cs_red_in_y[i] = true;
+    else if (x_cs_i.is_equality())
       // Step 3.1: `x' has an equality not satified by `y':
       // union is not convex (recall that `y' does not contain `x').
-      // NOTE: this is false for NNC polyhedra.
+      // NOTE: this would be false for NNC polyhedra.
       // Example: x = { A == 0 }, y = { 0 < A <= 1 }.
       return false;
   }
-  Bit_Row y_cs_red_in_x;
-  for (dimension_type i = y_cs.num_rows(); i-- > 0; ) {
+  const dimension_type y_cs_num_rows = y_cs.num_rows();
+  std::vector<bool> y_cs_red_in_x(y_cs_num_rows, false);
+  for (dimension_type i = y_cs_num_rows; i-- > 0; ) {
     const Constraint& y_cs_i = y_cs[i];
     if (x.relation_with(y_cs_i).implies(Poly_Con_Relation::is_included()))
-      y_cs_red_in_x.set(i);
-    else if (closed && y_cs_i.is_equality())
+      y_cs_red_in_x[i] = true;
+    else if (y_cs_i.is_equality())
       // Step 3.1: `y' has an equality not satified by `x':
       // union is not convex (see explanation above).
       return false;
@@ -1555,8 +1669,6 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
       }
 
       // Step 7: check if mid_g is in the union of x and y.
-      // NOTE: since here we use method `relation_with',
-      // the test correctly generalizes to the case of NNC polyhedra.
       if (x.relation_with(mid_g) == Poly_Gen_Relation::nothing()
           && y.relation_with(mid_g) == Poly_Gen_Relation::nothing())
         return false;
