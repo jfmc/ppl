@@ -103,6 +103,7 @@ membytes1 \
 minconstraints1 \
 relations1 relations2 relations3 relations4 \
 removespacedims1 \
+simplifyusingcontext1 \
 timeelapse1 \
 unconstrain1 \
 universe1 \
@@ -265,6 +266,8 @@ relations3_SOURCES = relations3.cc
 relations4_SOURCES = relations4.cc
 
 removespacedims1_SOURCES = removespacedims1.cc
+
+simplifyusingcontext1_SOURCES = simplifyusingcontext1.cc
 
 timeelapse1_SOURCES = timeelapse1.cc
 
