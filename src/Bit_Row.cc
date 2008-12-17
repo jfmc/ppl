@@ -214,6 +214,13 @@ PPL::Bit_Row::operator[](const unsigned long k) const {
   return (limb >> (k % GMP_NUMB_BITS)) & 1;
 }
 
+void
+PPL::Bit_Row::set_until(unsigned long k) {
+  // FIXME, TODO: this is an inefficient implementation.
+  while (k-- > 0)
+    mpz_setbit(vec, k);
+}
+
 /*! \relates Parma_Polyhedra_Library::Bit_Row */
 int
 PPL::compare(const Bit_Row& x, const Bit_Row& y) {
