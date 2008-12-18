@@ -52,7 +52,7 @@ site: http://www.cs.unipr.it/ppl/ . */
   } \
   catch (...) { \
     handle_exception(env); \
-  };
+  }
 
 namespace Parma_Polyhedra_Library {
 
