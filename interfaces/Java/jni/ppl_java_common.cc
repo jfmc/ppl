@@ -34,6 +34,7 @@ handle_exception(JNIEnv* env, const std::overflow_error& e) {
     = env->FindClass("parma_polyhedra_library/Overflow_Error_Exception");
   env->ThrowNew(newExcCls, e.what());
 }
+
 void
 handle_exception(JNIEnv* env, const std::invalid_argument& e) {
   jclass newExcCls
