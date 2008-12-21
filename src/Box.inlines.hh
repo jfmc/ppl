@@ -227,13 +227,6 @@ Box<ITV>::strictly_contains(const Box& y) const {
 }
 
 template <typename ITV>
-inline bool
-Box<ITV>::upper_bound_assign_if_exact(const Box&) {
-  // TODO: this must be properly implemented.
-  return false;
-}
-
-template <typename ITV>
 inline void
 Box<ITV>::expand_space_dimension(const Variable var,
                                  const dimension_type m) {

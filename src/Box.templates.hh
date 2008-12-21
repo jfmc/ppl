@@ -1193,6 +1193,48 @@ Box<ITV>::is_disjoint_from(const Box& y) const {
 }
 
 template <typename ITV>
+inline bool
+Box<ITV>::upper_bound_assign_if_exact(const Box& y) {
+  Box& x = *this;
+
+  // Dimension-compatibility check.
+  if (x.space_dimension() != y.space_dimension())
+    x.throw_dimension_incompatible("upper_bound_assign_if_exact(y)", y);
+
+  // The lub of a box with an empty box is equal to the first box.
+  if (y.marked_empty())
+    return true;
+  if (x.marked_empty()) {
+    x = y;
+    return true;
+  }
+
+  for (dimension_type i = x.seq.size(); i-- > 0; ) {
+    const ITV& x_seq_i = x.seq[i];
+    const ITV& y_seq_i = y.seq[i];
+
+    if (!x_seq_i.can_be_exactly_joined_to(y_seq_i))
+      return false;
+
+    if (!y_seq_i.contains(x_seq_i))
+      for (dimension_type j = i; j-- > 0; ) {
+        if (!x.seq[j].contains(y.seq[j]))
+          return false;
+      }
+    else if (!x_seq_i.contains(y_seq_i))
+      for (dimension_type j = i; j-- > 0; ) {
+        if (!y.seq[j].contains(x.seq[j]))
+          return false;
+      }
+  }
+
+  // The upper bound is exact: compute it into *this.
+  for (dimension_type k = x.seq.size(); k-- > 0; )
+    x.seq[k].join_assign(y.seq[k]);
+  return true;
+}
+
+template <typename ITV>
 bool
 Box<ITV>::OK() const {
   if (status.test_empty_up_to_date() && !status.test_empty()) {

@@ -199,6 +199,8 @@ operator==(const T1& x, const T2& y) {
     return check_empty_arg(y);
   else if (check_empty_arg(y))
     return false;
+  // FIXME: the two restrictions should be evaluated in the context of
+  // the specific interval
   return eq_restriction(f_info(x), f_info(y))
     && eq(LOWER, f_lower(x), f_info(x), LOWER, f_lower(y), f_info(y))
     && eq(UPPER, f_upper(x), f_info(x), UPPER, f_upper(y), f_info(y));
@@ -223,6 +225,8 @@ Interval<Boundary, Info>::contains(const T& y) const {
     return true;
   if (check_empty_arg(*this))
     return false;
+  // FIXME: the two restrictions should be evaluated in the context of
+  // the specific interval
   if (!contains_restriction(info(), f_info(y)))
       return false;
   return le(LOWER, lower(), info(), LOWER, f_lower(y), f_info(y))
@@ -239,6 +243,8 @@ Interval<Boundary, Info>::strictly_contains(const T& y) const {
     return !check_empty_arg(*this);
   if (check_empty_arg(*this))
     return false;
+  // FIXME: the two restrictions should be evaluated in the context of
+  // the specific interval
   if (!contains_restriction(info(), f_info(y)))
       return false;
   else if (!eq_restriction(*this, y))
@@ -354,6 +360,36 @@ Interval<To_Boundary, To_Info>::join_assign(const From1& x, const From2& y) {
   assert(OK());
   return combine(rl, ru);
 }
+
+template <typename Boundary, typename Info>
+template <typename Type>
+inline typename Enable_If<Is_Singleton<Type>::value
+                          || Is_Interval<Type>::value, bool>::type
+Interval<Boundary, Info>::can_be_exactly_joined_to(const Type& x) const {
+  // FIXME: the two restrictions should be evaluated in the context of
+  // the specific interval
+  if (!eq_restriction(*this, f_info(x)))
+    return false;
+  PPL_DIRTY_TEMP(Boundary, b);
+  if (!info().get_boundary_property(LOWER, SPECIAL)) {
+    b = lower();
+    if (le(LOWER, b, info(), UPPER, f_upper(x), f_info(x)))
+      return true;
+    if (info().restrict(round_dir_check(LOWER, true), b, V_LT) == V_EQ &&
+	eq(LOWER, b, info(), UPPER, f_upper(x), f_info(x)))
+      return true;
+  }
+  if (!info().get_boundary_property(UPPER, SPECIAL)) {
+    b = upper();
+    if (ge(UPPER, b, info(), LOWER, f_lower(x), f_info(x)))
+      return true;
+    if (info().restrict(round_dir_check(UPPER, true), b, V_GT) == V_EQ &&
+	eq(UPPER, b, info(), LOWER, f_lower(x), f_info(x)))
+      return true;
+  }
+  return false;
+}
+
 
 template <typename To_Boundary, typename To_Info>
 template <typename From>

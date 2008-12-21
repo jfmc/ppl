@@ -106,6 +106,7 @@ topclosed1 \
 unconstrain1 \
 universe1 \
 upperbound1 \
+upperboundifexact1 \
 writebox1
 
 DERIVED_TESTS = \
@@ -267,6 +268,8 @@ unconstrain1_SOURCES = unconstrain1.cc
 universe1_SOURCES = universe1.cc
 
 upperbound1_SOURCES = upperbound1.cc
+
+upperboundifexact1_SOURCES = upperboundifexact1.cc
 
 writebox1_SOURCES = writebox1.cc
 

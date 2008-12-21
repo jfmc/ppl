@@ -132,12 +132,12 @@ private:
       r = V_EQ;
     else {
       if (info().get_boundary_property(LOWER, OPEN)) {
-	r = info().restrict(lower(), V_GT);
+	r = info().restrict(round_dir_check(LOWER, true), lower(), V_GT);
 	if (r != V_GT)
 	  w_info().set_boundary_property(LOWER, OPEN, false);
       }
       else {
-	r = info().restrict(lower(), V_GE);
+	r = info().restrict(round_dir_check(LOWER, true), lower(), V_GE);
 	if (r == V_GT)
 	  w_info().set_boundary_property(LOWER, OPEN);
       }
@@ -152,12 +152,12 @@ private:
       r = V_EQ;
     else {
       if (info().get_boundary_property(UPPER, OPEN)) {
-	r = info().restrict(upper(), V_LT);
+	r = info().restrict(round_dir_check(UPPER, true), upper(), V_LT);
 	if (r != V_LT)
 	  w_info().set_boundary_property(UPPER, OPEN, false);
       }
       else {
-	r = info().restrict(upper(), V_LE);
+	r = info().restrict(round_dir_check(UPPER, true), upper(), V_LE);
 	if (r == V_LT)
 	  w_info().set_boundary_property(UPPER, OPEN);
       }
@@ -347,12 +347,12 @@ public:
 
   Result lower_shrink() {
     assert(OK());
-    return shrink(LOWER, lower(), info());
+    return shrink(LOWER, lower(), info(), false);
   }
 
   Result upper_shrink() {
     assert(OK());
-    return shrink(UPPER, upper(), info());
+    return shrink(UPPER, upper(), info(), false);
   }
 
   bool lower_is_unbounded() const {
@@ -809,6 +809,11 @@ public:
   typename Enable_If<Is_Singleton<From>::value
                      || Is_Interval<From>::value, I_Result>::type
   assign(const From& x);
+
+  template <typename Type>
+  typename Enable_If<Is_Singleton<Type>::value
+                     || Is_Interval<Type>::value, bool>::type
+  can_be_exactly_joined_to(const Type& x) const;
 
   template <typename From>
   typename Enable_If<Is_Singleton<From>::value
