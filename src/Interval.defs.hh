@@ -860,6 +860,26 @@ public:
   difference_assign(const From1& x, const From2& y);
 
   /*! \brief
+    Assigns to \p *this the largest interval contained in the set-theoretic
+    difference of \p *this and \p x.
+  */
+  template <typename From>
+  typename Enable_If<Is_Singleton<From>::value
+                     || Is_Interval<From>::value, I_Result>::type
+  lower_approximation_difference_assign(const From& x);
+
+  /*! \brief
+    Assigns to \p *this a \ref Meet_Preserving_Simplification
+    "meet-preserving simplification" of \p *this with respect to \p y.
+
+    \return
+    \c false if and only if the meet of \p *this and \p y is empty.
+  */
+  template <typename From>
+  typename Enable_If<Is_Interval<From>::value, bool>::type
+  simplify_using_context_assign(const From& y);
+
+  /*! \brief
     Refines \p to according to the existential relation \p rel with \p x.
 
     The \p to interval is restricted to become, upon successful exit,
