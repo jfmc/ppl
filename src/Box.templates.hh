@@ -1209,6 +1209,9 @@ Box<ITV>::upper_bound_assign_if_exact(const Box& y) {
     return true;
   }
 
+  bool x_j_does_not_contain_y_j = false;
+  bool y_j_does_not_contain_x_j = false;
+
   for (dimension_type i = x.seq.size(); i-- > 0; ) {
     const ITV& x_seq_i = x.seq[i];
     const ITV& y_seq_i = y.seq[i];
@@ -1216,16 +1219,20 @@ Box<ITV>::upper_bound_assign_if_exact(const Box& y) {
     if (!x_seq_i.can_be_exactly_joined_to(y_seq_i))
       return false;
 
-    if (!y_seq_i.contains(x_seq_i))
-      for (dimension_type j = i; j-- > 0; ) {
-        if (!x.seq[j].contains(y.seq[j]))
-          return false;
-      }
-    else if (!x_seq_i.contains(y_seq_i))
-      for (dimension_type j = i; j-- > 0; ) {
-        if (!y.seq[j].contains(x.seq[j]))
-          return false;
-      }
+    // Note: the use of `y_i_does_not_contain_x_i' is needed
+    // because we want to temporarily preserve the old value
+    // of `y_j_does_not_contain_x_j'.
+    bool y_i_does_not_contain_x_i = !y_seq_i.contains(x_seq_i);
+    if (y_i_does_not_contain_x_i && x_j_does_not_contain_y_j)
+      return false;
+    if (!x_seq_i.contains(y_seq_i)) {
+      if (y_j_does_not_contain_x_j)
+        return false;
+      else
+        x_j_does_not_contain_y_j = true;
+    }
+    if (y_i_does_not_contain_x_i)
+      y_j_does_not_contain_x_j = true;
   }
 
   // The upper bound is exact: compute it into *this.
