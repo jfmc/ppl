@@ -26,36 +26,36 @@ namespace {
 
 bool
 test01() {
-  TBD_Shape bds_empty(0, EMPTY);
-  TBD_Shape bds_universe(0, UNIVERSE);
+  TBox box_empty(0, EMPTY);
+  TBox box_universe(0, UNIVERSE);
 
   // Testing all combinations for 0-dim polyhedra.
   bool ok = true;
-  TBD_Shape bds;
+  TBox box;
 
   // empty, empty
-  bds = bds_empty;
-  ok &= bds.upper_bound_assign_if_exact(bds_empty);
-  ok &= (bds == bds_empty);
-  print_constraints(bds, "*** empty union empty ***");
+  box = box_empty;
+  ok &= box.upper_bound_assign_if_exact(box_empty);
+  ok &= (box == box_empty);
+  print_constraints(box, "*** empty union empty ***");
 
   // empty, universe
-  bds = bds_empty;
-  ok &= bds.upper_bound_assign_if_exact(bds_universe);
-  ok &= (bds == bds_universe);
-  print_constraints(bds, "*** empty union universe ***");
+  box = box_empty;
+  ok &= box.upper_bound_assign_if_exact(box_universe);
+  ok &= (box == box_universe);
+  print_constraints(box, "*** empty union universe ***");
 
   // universe, empty
-  bds = bds_universe;
-  ok &= bds.upper_bound_assign_if_exact(bds_empty);
-  ok &= (bds == bds_universe);
-  print_constraints(bds, "*** universe union empty ***");
+  box = box_universe;
+  ok &= box.upper_bound_assign_if_exact(box_empty);
+  ok &= (box == box_universe);
+  print_constraints(box, "*** universe union empty ***");
 
   // universe, universe
-  bds = bds_universe;
-  ok &= bds.upper_bound_assign_if_exact(bds_universe);
-  ok &= (bds == bds_universe);
-  print_constraints(bds, "*** universe union universe ***");
+  box = box_universe;
+  ok &= box.upper_bound_assign_if_exact(box_universe);
+  ok &= (box == box_universe);
+  print_constraints(box, "*** universe union universe ***");
 
   return ok;
 }
@@ -65,28 +65,28 @@ test02() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape bds1(2, UNIVERSE);
-  bds1.add_constraint(x >= -2);
-  bds1.add_constraint(x <= -1);
-  bds1.add_constraint(y >= 0);
-  bds1.add_constraint(y <= 2);
+  TBox box1(2, UNIVERSE);
+  box1.add_constraint(x >= -2);
+  box1.add_constraint(x <= -1);
+  box1.add_constraint(y >= 0);
+  box1.add_constraint(y <= 2);
 
-  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(box1, "*** box1 ***");
 
-  TBD_Shape bds2(2, UNIVERSE);
-  bds2.add_constraint(x >= 1);
-  bds2.add_constraint(x <= 2);
-  bds2.add_constraint(y >= 0);
-  bds2.add_constraint(y <= 2);
+  TBox box2(2, UNIVERSE);
+  box2.add_constraint(x >= 1);
+  box2.add_constraint(x <= 2);
+  box2.add_constraint(y >= 0);
+  box2.add_constraint(y <= 2);
 
-  print_constraints(bds2, "*** bds2 ***");
+  print_constraints(box2, "*** box2 ***");
 
-  TBD_Shape known_result(bds1);
+  TBox known_result(box1);
 
-  bool ok = !bds1.upper_bound_assign_if_exact(bds2);
-  ok &= (bds1 == known_result);
+  bool ok = !box1.upper_bound_assign_if_exact(box2);
+  ok &= (box1 == known_result);
 
-  print_constraints(bds1, "*** bds1.upper_bound_assign_if_exact(bds2) ***");
+  print_constraints(box1, "*** box1.upper_bound_assign_if_exact(box2) ***");
 
   return ok;
 }
@@ -96,32 +96,32 @@ test03() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape bds1(2, UNIVERSE);
-  bds1.add_constraint(x >= -2);
-  bds1.add_constraint(x <= 0);
-  bds1.add_constraint(y >= 0);
-  bds1.add_constraint(y <= 2);
+  TBox box1(2, UNIVERSE);
+  box1.add_constraint(x >= -2);
+  box1.add_constraint(x <= 0);
+  box1.add_constraint(y >= 0);
+  box1.add_constraint(y <= 2);
 
-  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(box1, "*** box1 ***");
 
-  TBD_Shape bds2(2, UNIVERSE);
-  bds2.add_constraint(x >= 0);
-  bds2.add_constraint(x <= 2);
-  bds2.add_constraint(y >= 0);
-  bds2.add_constraint(y <= 2);
+  TBox box2(2, UNIVERSE);
+  box2.add_constraint(x >= 0);
+  box2.add_constraint(x <= 2);
+  box2.add_constraint(y >= 0);
+  box2.add_constraint(y <= 2);
 
-  print_constraints(bds2, "*** bds2 ***");
+  print_constraints(box2, "*** box2 ***");
 
-  TBD_Shape known_result(2, UNIVERSE);
+  TBox known_result(2, UNIVERSE);
   known_result.add_constraint(x >= -2);
   known_result.add_constraint(x <= 2);
   known_result.add_constraint(y >= 0);
   known_result.add_constraint(y <= 2);
 
-  bool ok = bds1.upper_bound_assign_if_exact(bds2);
-  ok &= (bds1 == known_result);
+  bool ok = box1.upper_bound_assign_if_exact(box2);
+  ok &= (box1 == known_result);
 
-  print_constraints(bds1, "*** bds1.upper_bound_assign_if_exact(bds2) ***");
+  print_constraints(box1, "*** box1.upper_bound_assign_if_exact(box2) ***");
 
   return ok;
 }
@@ -131,26 +131,26 @@ test04() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape bds1(2, UNIVERSE);
-  bds1.add_constraint(x == 0);
-  bds1.add_constraint(y == 0);
+  TBox box1(2, UNIVERSE);
+  box1.add_constraint(x == 0);
+  box1.add_constraint(y == 0);
 
-  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(box1, "*** box1 ***");
 
-  TBD_Shape bds2(2, UNIVERSE);
-  bds2.add_constraint(x >= 0);
-  bds2.add_constraint(x <= 2);
-  bds2.add_constraint(y >= -2);
-  bds2.add_constraint(y <= 2);
+  TBox box2(2, UNIVERSE);
+  box2.add_constraint(x >= 0);
+  box2.add_constraint(x <= 2);
+  box2.add_constraint(y >= -2);
+  box2.add_constraint(y <= 2);
 
-  print_constraints(bds2, "*** bds2 ***");
+  print_constraints(box2, "*** box2 ***");
 
-  TBD_Shape known_result(bds2);
+  TBox known_result(box2);
 
-  bool ok = bds1.upper_bound_assign_if_exact(bds2);
-  ok &= (bds1 == known_result);
+  bool ok = box1.upper_bound_assign_if_exact(box2);
+  ok &= (box1 == known_result);
 
-  print_constraints(bds1, "*** bds1.upper_bound_assign_if_exact(bds2) ***");
+  print_constraints(box1, "*** box1.upper_bound_assign_if_exact(box2) ***");
 
   return ok;
 }
@@ -160,25 +160,25 @@ test05() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape bds1(2, UNIVERSE);
-  bds1.add_constraint(x >= 0);
-  bds1.add_constraint(y == 0);
+  TBox box1(2, UNIVERSE);
+  box1.add_constraint(x >= 0);
+  box1.add_constraint(y == 0);
 
-  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(box1, "*** box1 ***");
 
-  TBD_Shape bds2(2, UNIVERSE);
-  bds2.add_constraint(x >= 0);
-  bds2.add_constraint(y >= 2);
-  bds2.add_constraint(y <= 4);
+  TBox box2(2, UNIVERSE);
+  box2.add_constraint(x >= 0);
+  box2.add_constraint(y >= 2);
+  box2.add_constraint(y <= 4);
 
-  print_constraints(bds2, "*** bds2 ***");
+  print_constraints(box2, "*** box2 ***");
 
-  TBD_Shape known_result(bds1);
+  TBox known_result(box1);
 
-  bool ok = !bds1.upper_bound_assign_if_exact(bds2);
-  ok &= (bds1 == known_result);
+  bool ok = !box1.upper_bound_assign_if_exact(box2);
+  ok &= (box1 == known_result);
 
-  print_constraints(bds1, "*** bds1.upper_bound_assign_if_exact(bds2) ***");
+  print_constraints(box1, "*** box1.upper_bound_assign_if_exact(box2) ***");
 
   return ok;
 }
@@ -188,22 +188,22 @@ test06() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape bds1(2, UNIVERSE);
-  bds1.add_constraint(x == y);
+  TBox box1(2, UNIVERSE);
+  box1.add_constraint(x == 0);
 
-  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(box1, "*** box1 ***");
 
-  TBD_Shape bds2(2, UNIVERSE);
-  bds2.add_constraint(x == 0);
+  TBox box2(2, UNIVERSE);
+  box2.add_constraint(y == 0);
 
-  print_constraints(bds2, "*** bds2 ***");
+  print_constraints(box2, "*** box2 ***");
 
-  TBD_Shape known_result(bds1);
+  TBox known_result(box1);
 
-  bool ok = !bds1.upper_bound_assign_if_exact(bds2);
-  ok &= (bds1 == known_result);
+  bool ok = !box1.upper_bound_assign_if_exact(box2);
+  ok &= (box1 == known_result);
 
-  print_constraints(bds1, "*** bds1.upper_bound_assign_if_exact(bds2) ***");
+  print_constraints(box1, "*** box1.upper_bound_assign_if_exact(box2) ***");
 
   return ok;
 }
@@ -213,22 +213,22 @@ test07() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape bds1(2, UNIVERSE);
-  bds1.add_constraint(x >= y);
+  TBox box1(2, UNIVERSE);
+  box1.add_constraint(y >= 0);
 
-  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(box1, "*** box1 ***");
 
-  TBD_Shape bds2(2, UNIVERSE);
-  bds2.add_constraint(x >= 0);
+  TBox box2(2, UNIVERSE);
+  box2.add_constraint(y <= 5);
 
-  print_constraints(bds2, "*** bds2 ***");
+  print_constraints(box2, "*** box2 ***");
 
-  TBD_Shape known_result(bds1);
+  TBox known_result(2, UNIVERSE);
 
-  bool ok = !bds1.upper_bound_assign_if_exact(bds2);
-  ok &= (bds1 == known_result);
+  bool ok = box1.upper_bound_assign_if_exact(box2);
+  ok &= (box1 == known_result);
 
-  print_constraints(bds1, "*** bds1.upper_bound_assign_if_exact(bds2) ***");
+  print_constraints(box1, "*** box1.upper_bound_assign_if_exact(box2) ***");
 
   return ok;
 }
@@ -238,22 +238,28 @@ test08() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape bds1(2, UNIVERSE);
-  bds1.add_constraint(x >= y);
+  TBox box1(2, UNIVERSE);
+  box1.add_constraint(x >= 0);
+  box1.add_constraint(x <= 4);
+  box1.add_constraint(y >= 1);
+  box1.add_constraint(y <= 3);
 
-  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(box1, "*** box1 ***");
 
-  TBD_Shape bds2(2, UNIVERSE);
-  bds2.add_constraint(x <= y);
+  TBox box2(2, UNIVERSE);
+  box2.add_constraint(x >= 1);
+  box2.add_constraint(x <= 3);
+  box2.add_constraint(y >= 0);
+  box2.add_constraint(y <= 4);
 
-  print_constraints(bds2, "*** bds2 ***");
+  print_constraints(box2, "*** box2 ***");
 
-  TBD_Shape known_result(2, UNIVERSE);
+  TBox known_result(box1);
 
-  bool ok = bds1.upper_bound_assign_if_exact(bds2);
-  ok &= (bds1 == known_result);
+  bool ok = !box1.upper_bound_assign_if_exact(box2);
+  ok &= (box1 == known_result);
 
-  print_constraints(bds1, "*** bds1.upper_bound_assign_if_exact(bds2) ***");
+  print_constraints(box1, "*** box1.upper_bound_assign_if_exact(box2) ***");
 
   return ok;
 }
