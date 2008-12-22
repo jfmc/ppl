@@ -371,23 +371,17 @@ Interval<Boundary, Info>::can_be_exactly_joined_to(const Type& x) const {
   if (!eq_restriction(*this, f_info(x)))
     return false;
   PPL_DIRTY_TEMP(Boundary, b);
-  if (!info().get_boundary_property(LOWER, SPECIAL)) {
+  if (gt(LOWER, lower(), info(), UPPER, f_upper(x), f_info(x))) {
     b = lower();
-    if (le(LOWER, b, info(), UPPER, f_upper(x), f_info(x)))
-      return true;
-    if (info().restrict(round_dir_check(LOWER, true), b, V_LT) == V_EQ &&
-	eq(LOWER, b, info(), UPPER, f_upper(x), f_info(x)))
-      return true;
+    return info().restrict(round_dir_check(LOWER, true), b, V_LT) == V_EQ &&
+      eq(LOWER, b, info(), UPPER, f_upper(x), f_info(x));
   }
-  if (!info().get_boundary_property(UPPER, SPECIAL)) {
+  else if (lt(UPPER, upper(), info(), LOWER, f_lower(x), f_info(x))) {
     b = upper();
-    if (ge(UPPER, b, info(), LOWER, f_lower(x), f_info(x)))
-      return true;
-    if (info().restrict(round_dir_check(UPPER, true), b, V_GT) == V_EQ &&
-	eq(UPPER, b, info(), LOWER, f_lower(x), f_info(x)))
-      return true;
+    return info().restrict(round_dir_check(UPPER, true), b, V_GT) == V_EQ &&
+      eq(UPPER, b, info(), LOWER, f_lower(x), f_info(x));
   }
-  return false;
+  return true;
 }
 
 
