@@ -247,7 +247,7 @@ Interval<Boundary, Info>::strictly_contains(const T& y) const {
   // the specific interval
   if (!contains_restriction(info(), f_info(y)))
       return false;
-  else if (!eq_restriction(*this, y))
+  else if (!eq_restriction(info(), f_info(y)))
     return le(LOWER, lower(), info(), LOWER, f_lower(y), f_info(y))
       && ge(UPPER, upper(), info(), UPPER, f_upper(y), f_info(y));
   return (lt(LOWER, lower(), info(), LOWER, f_lower(y), f_info(y))
