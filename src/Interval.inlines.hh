@@ -368,7 +368,7 @@ inline typename Enable_If<Is_Singleton<Type>::value
 Interval<Boundary, Info>::can_be_exactly_joined_to(const Type& x) const {
   // FIXME: the two restrictions should be evaluated in the context of
   // the specific interval
-  if (!eq_restriction(*this, f_info(x)))
+  if (!eq_restriction(info(), f_info(x)))
     return false;
   PPL_DIRTY_TEMP(Boundary, b);
   if (gt(LOWER, lower(), info(), UPPER, f_upper(x), f_info(x))) {
