@@ -131,13 +131,14 @@ private:
 	|| info().get_boundary_property(LOWER, SPECIAL))
       r = V_EQ;
     else {
+      Boundary& l = const_cast<Boundary&>(lower());
       if (info().get_boundary_property(LOWER, OPEN)) {
-	r = info().restrict(round_dir_check(LOWER, true), lower(), V_GT);
+	r = info().restrict(round_dir_check(LOWER, true), l, V_GT);
 	if (r != V_GT)
 	  w_info().set_boundary_property(LOWER, OPEN, false);
       }
       else {
-	r = info().restrict(round_dir_check(LOWER, true), lower(), V_GE);
+	r = info().restrict(round_dir_check(LOWER, true), l, V_GE);
 	if (r == V_GT)
 	  w_info().set_boundary_property(LOWER, OPEN);
       }
@@ -151,13 +152,14 @@ private:
 	|| info().get_boundary_property(UPPER, SPECIAL))
       r = V_EQ;
     else {
+      Boundary& u = const_cast<Boundary&>(upper());
       if (info().get_boundary_property(UPPER, OPEN)) {
-	r = info().restrict(round_dir_check(UPPER, true), upper(), V_LT);
+	r = info().restrict(round_dir_check(UPPER, true), u, V_LT);
 	if (r != V_LT)
 	  w_info().set_boundary_property(UPPER, OPEN, false);
       }
       else {
-	r = info().restrict(round_dir_check(UPPER, true), upper(), V_LE);
+	r = info().restrict(round_dir_check(UPPER, true), u, V_LE);
 	if (r == V_LT)
 	  w_info().set_boundary_property(UPPER, OPEN);
       }
