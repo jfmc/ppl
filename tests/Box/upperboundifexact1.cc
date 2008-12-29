@@ -264,6 +264,37 @@ test08() {
   return ok;
 }
 
+bool
+test09() {
+  Variable x(0);
+  Variable y(1);
+
+  TBox box1(2, UNIVERSE);
+  box1.add_constraint(x >= 0);
+  box1.add_constraint(x <= 1);
+  box1.add_constraint(y >= 0);
+  box1.add_constraint(y <= 2);
+
+  print_constraints(box1, "*** box1 ***");
+
+  TBox box2(2, UNIVERSE);
+  box2.add_constraint(x >= 0);
+  box2.add_constraint(x <= 3);
+  box2.add_constraint(y >= 1);
+  box2.add_constraint(y <= 2);
+
+  print_constraints(box2, "*** box2 ***");
+
+  TBox known_result(box1);
+
+  bool ok = !box1.upper_bound_assign_if_exact(box2);
+  ok &= (box1 == known_result);
+
+  print_constraints(box1, "*** box1.upper_bound_assign_if_exact(box2) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -275,4 +306,5 @@ BEGIN_MAIN
   DO_TEST(test06);
   DO_TEST(test07);
   DO_TEST(test08);
+  DO_TEST(test09);
 END_MAIN
