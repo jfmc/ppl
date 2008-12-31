@@ -4,7 +4,7 @@ dnl This m4 file defines the list of procedures
 dnl for the OCaml interface; this includes:
 dnl - the list in the imported file and any OCaml specific procedures.
 
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl

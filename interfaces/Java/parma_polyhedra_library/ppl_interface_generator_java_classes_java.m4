@@ -4,7 +4,7 @@ m4_divert(-1)
 dnl This m4 file generates the files <CLASS_NAME>.java
 dnl using the code in ppl_interface_generator_java_classes_java_code.m4.
 
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl

@@ -1,5 +1,5 @@
 /* Test Box::Box(const Direct_Product<D1, D2>&, Complexity_Class).
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 

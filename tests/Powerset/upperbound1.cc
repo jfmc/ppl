@@ -1,6 +1,6 @@
 /* Test Pointset_Powerset<PH>::upper_bound_assign(),
         Pointset_Powerset<PH>::least_upper_bound_assign().
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 

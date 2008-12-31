@@ -5,7 +5,7 @@ dnl - processing the class list in ppl_interface_instantiations.m4;
 dnl - the control of the procedures to be generated for each class;
 dnl - the replacements for the patterns in the code files.
 
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
