@@ -33,30 +33,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <typename D1, typename D2, typename R>
-template <typename E1, typename E2, typename S>
-inline
-Partially_Reduced_Product<D1, D2, R>
-::Partially_Reduced_Product(const Partially_Reduced_Product<E1, E2, S>& y,
-                            Complexity_Class complexity)
-  : d1((y.space_dimension() > max_space_dimension())
-       ? (throw_space_dimension_overflow
-       ("Partially_Reduced_Product<D1, D2, R>(y)",
-        "the space dimension of y "
-        "exceeds the maximum allowed "
-        "space dimension"), 0)
-       : y.space_dimension()),
-    d2(y.space_dimension()) {
-  Partially_Reduced_Product<D1, D2, R> x1(y.domain1(), complexity);
-  const Partially_Reduced_Product<D1, D2, R> x2(y.domain2(), complexity);
-  x1.intersection_assign(x2);
-  d1.swap(x1.d1);
-  d2.swap(x1.d2);
-  /* Even if y is reduced, the built product may not be reduced as
-     the reduction method may have changed (i.e., S != R). */
-  reduced = false;
-}
-
-template <typename D1, typename D2, typename R>
 Constraint_System
 Partially_Reduced_Product<D1, D2, R>::constraints() const {
   reduce();
@@ -223,14 +199,10 @@ Partially_Reduced_Product<D1, D2, R>
 	   Coefficient& sup_n,
 	   Coefficient& sup_d,
 	   bool& maximum) const {
-  // If one component is already empty, then there is no need to reduce.
-  if (d1.is_empty() || d2.is_empty())
-    return false;
+  reduce();
 
-  // The product is_empty() test also reduces the product.
   if (is_empty())
     return false;
-  assert(reduced);
 
   PPL_DIRTY_TEMP_COEFFICIENT(sup1_n);
   PPL_DIRTY_TEMP_COEFFICIENT(sup1_d);
@@ -278,14 +250,10 @@ Partially_Reduced_Product<D1, D2, R>
 	   Coefficient& inf_n,
 	   Coefficient& inf_d,
 	   bool& minimum) const {
-  // If one component is already empty, then there is no need to reduce.
-  if (d1.is_empty() || d2.is_empty())
-    return false;
+  reduce();
 
-  // The product is_empty() test also reduces the product.
   if (is_empty())
     return false;
-  assert(reduced);
 
   PPL_DIRTY_TEMP_COEFFICIENT(inf1_n);
   PPL_DIRTY_TEMP_COEFFICIENT(inf1_d);
@@ -334,14 +302,10 @@ Partially_Reduced_Product<D1, D2, R>
 	   Coefficient& sup_d,
 	   bool& maximum,
 	   Generator& pnt) const {
-  // If one component is already empty, then there is no need to reduce.
-  if (d1.is_empty() || d2.is_empty())
-    return false;
+  reduce();
 
-  // The product is_empty() test also reduces the product.
   if (is_empty())
     return false;
-  assert(reduced);
 
   PPL_DIRTY_TEMP_COEFFICIENT(sup1_n);
   PPL_DIRTY_TEMP_COEFFICIENT(sup1_d);
@@ -396,14 +360,10 @@ Partially_Reduced_Product<D1, D2, R>
 	   Coefficient& inf_d,
 	   bool& minimum,
 	   Generator& pnt) const {
-  // If one component is already empty, then there is no need to reduce.
-  if (d1.is_empty() || d2.is_empty())
-    return false;
+  reduce();
 
-  // The product is_empty() test also reduces the product.
   if (is_empty())
     return false;
-  assert(reduced);
 
   PPL_DIRTY_TEMP_COEFFICIENT(inf1_n);
   PPL_DIRTY_TEMP_COEFFICIENT(inf1_d);
@@ -511,6 +471,130 @@ void Constraints_Reduction<D1, D2>::product_reduce(D1& d1, D2& d2) {
   else {
     d1.refine_with_constraints(d2.minimized_constraints());
     d2.refine_with_constraints(d1.minimized_constraints());
+  }
+}
+
+/* Auxiliary procedure for the Shrink_Using_Congruences_Reduction() method.
+   If more than one hyperplane defined by congruence cg intersect
+   d2, then d1 and d2 are unchanged; if exactly one intersects d2, then
+   the corresponding equality is added to d1 and d2;
+   otherwise d1 and d2 are set empty. */
+template <typename D1, typename D2>
+bool shrink_using_congruence_no_check(D1& d1, D2& d2, const Congruence& cg) {
+  // It is assumed that cg is a proper congruence.
+  assert(cg.modulus() != 0);
+  // It is assumed that cg is satisfied by all points in d1.
+  assert(d1.relation_with(cg) == Poly_Con_Relation::is_included());
+
+  // Build the linear expression for the congruence cg.
+  Linear_Expression e;
+  for (dimension_type i = cg.space_dimension(); i-- > 0; )
+    e += cg.coefficient(Variable(i)) * Variable(i);
+  e += cg.inhomogeneous_term();
+
+  // Find the maximum and minimum bounds for the domain element d with the
+  // linear expression e.
+  PPL_DIRTY_TEMP_COEFFICIENT(max_num);
+  PPL_DIRTY_TEMP_COEFFICIENT(max_den);
+  bool max_included;
+  PPL_DIRTY_TEMP_COEFFICIENT(min_num);
+  PPL_DIRTY_TEMP_COEFFICIENT(min_den);
+  bool min_included;
+  if (d2.maximize(e, max_num, max_den, max_included)) {
+    if (d2.minimize(e, min_num, min_den, min_included)) {
+      // Adjust values to allow for the denominators max_den and min_den.
+      max_num *= min_den;
+      min_num *= max_den;
+      PPL_DIRTY_TEMP_COEFFICIENT(den);
+      PPL_DIRTY_TEMP_COEFFICIENT(mod);
+      den = max_den * min_den;
+      mod = cg.modulus() * den;
+      // If the difference between the maximum and minimum bounds is more than
+      // twice the modulus, then there will be two neighboring hyperplanes
+      // defined by cg that are intersected by the domain element d;
+      // there is no possible reduction in this case.
+      PPL_DIRTY_TEMP_COEFFICIENT(mod2);
+      mod2 = 2 * mod;
+      if (max_num - min_num < mod2
+          || (max_num - min_num == mod2 && (!max_included || !min_included)))
+        {
+          PPL_DIRTY_TEMP_COEFFICIENT(shrink_amount);
+          PPL_DIRTY_TEMP_COEFFICIENT(max_decreased);
+          PPL_DIRTY_TEMP_COEFFICIENT(min_increased);
+          // Find the amount by which the maximum value may be decreased.
+          shrink_amount = max_num % mod;
+          if (!max_included && shrink_amount == 0)
+            shrink_amount = mod;
+          if (shrink_amount < 0)
+            shrink_amount += mod;
+          max_decreased = max_num - shrink_amount;
+          // Find the amount by which the minimum value may be increased.
+          shrink_amount = min_num % mod;
+          if (!min_included && shrink_amount == 0)
+            shrink_amount = - mod;
+          if (shrink_amount > 0)
+            shrink_amount -= mod;
+          min_increased = min_num - shrink_amount;
+          if (max_decreased == min_increased) {
+            // The domain element d2 intersects exactly one hyperplane
+            // defined by cg, so add the equality to d1 and d2.
+            Constraint new_c(den * e == min_increased);
+            d1.refine_with_constraint(new_c);
+            d2.refine_with_constraint(new_c);
+            return true;
+          }
+          else {
+            if (max_decreased < min_increased) {
+              // In this case, d intersects no hyperplanes defined by cg,
+              // so set d to empty and return false.
+              D1 new_d1(d1.space_dimension(), EMPTY);
+              std::swap(d1, new_d1);
+              D2 new_d2(d2.space_dimension(), EMPTY);
+              std::swap(d2, new_d2);
+              return false;
+            }
+          }
+        }
+    }
+  }
+  return true;
+}
+
+template <typename D1, typename D2>
+void Shrink_Using_Congruences_Reduction<D1, D2>::product_reduce(D1& d1, D2& d2) {
+  if (d1.is_empty() || d2.is_empty()) {
+    // If one of the components is empty, do the smash reduction and return.
+    Parma_Polyhedra_Library::Smash_Reduction<D1, D2> sr;
+    sr.product_reduce(d1, d2);
+    return;
+  }
+  else {
+    // Use the congruences representing d1 to shrink both components.
+    const Congruence_System& cgs1 = d1.minimized_congruences();
+    for (Congruence_System::const_iterator i = cgs1.begin(),
+           cgs_end = cgs1.end(); i != cgs_end; ++i) {
+      const Congruence& cg1 = *i;
+      if (cg1.is_equality())
+        d2.refine_with_congruence(cg1);
+      else
+        if (!Parma_Polyhedra_Library::shrink_using_congruence_no_check(d1, d2,
+                                                                       cg1))
+          // The product is empty.
+          return;
+    }
+    // Use the congruences representing d2 to shrink both components.
+    const Congruence_System& cgs2 = d2.minimized_congruences();
+    for (Congruence_System::const_iterator i = cgs2.begin(),
+           cgs_end = cgs2.end(); i != cgs_end; ++i) {
+      const Congruence& cg2 = *i;
+      if (cg2.is_equality())
+        d1.refine_with_congruence(cg2);
+      else
+        if (!Parma_Polyhedra_Library::shrink_using_congruence_no_check(d2, d1,
+                                                                       cg2))
+          // The product is empty.
+           return;
+    }
   }
 }
 

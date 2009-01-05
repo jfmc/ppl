@@ -541,11 +541,7 @@ test15() {
 
   sp.bounded_affine_image(A, 7-B, B+3);
 
-  SProduct known_sp(3);
-  known_sp.refine_with_constraint(C == -2);
-  known_sp.refine_with_constraint(B == 0);
-  known_sp.refine_with_constraint(A <= 3);
-  known_sp.refine_with_constraint(A + B >= 7);
+  SProduct known_sp(3, EMPTY);
 
   bool ok = (sp == known_sp);
 

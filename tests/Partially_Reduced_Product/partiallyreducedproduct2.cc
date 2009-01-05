@@ -705,7 +705,7 @@ test16() {
   return (cons_ok);
 }
 
-// difference_assign(cp2)
+// difference_assign()
 bool
 test17() {
   Variable A(0);
@@ -743,9 +743,41 @@ test17() {
   return cons_ok;
 }
 
-// time_elapse_assign(y)
+// difference_assign() where difference is not reduced.
 bool
 test18() {
+  Variable A(0);
+  Variable B(1);
+
+  CProduct cp(1);
+  cp.refine_with_constraint(A >= 1);
+  cp.refine_with_congruence((A %= 0) / 2);
+
+  CProduct cp1(cp);
+
+  print_congruences(cp1, "*** cp1 congruences ***");
+  print_constraints(cp1, "*** cp1 constraints ***");
+
+  CProduct cp2(1);
+  cp2.refine_with_constraint(A > 1);
+  cp2.refine_with_congruence((A %= 1) / 2);
+
+  print_congruences(cp2, "*** cp2 congruences ***");
+  print_constraints(cp2, "*** cp2 constraints ***");
+
+  cp1.difference_assign(cp2);
+
+  bool cons_ok = cp1.is_empty();
+
+  print_congruences(cp1, "*** cp1.difference_assign(cp2) congruences ***");
+  print_constraints(cp1, "*** cp1.difference_assign(cp2) constraints ***");
+
+  return cons_ok;
+}
+
+// time_elapse_assign()
+bool
+test19() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -783,9 +815,9 @@ test18() {
   return cons_ok;
 }
 
-// topological_closure_assign
+// topological_closure_assign()
 bool
-test19() {
+test20() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -823,7 +855,7 @@ test19() {
 
 // widening_assign
 bool
-test20() {
+test21() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -872,7 +904,7 @@ test20() {
 // time_elapse_assign(y) where the initial products are not reduced
 // and only one component of the second product is empty.
 bool
-test21() {
+  test22() {
   Variable A(0);
 
   CProduct cp1(1);
@@ -900,7 +932,7 @@ test21() {
 // time_elapse_assign(y) where the initial products are not reduced
 // and the second product has non-intersecting single point components.
 bool
-test22() {
+test23() {
   Variable A(0);
 
 
@@ -952,9 +984,10 @@ BEGIN_MAIN
   DO_TEST(test15);
   DO_TEST(test16);
   DO_TEST(test17);
-  DO_TEST_F8(test18);
-  DO_TEST(test19);
+  DO_TEST(test18);
+  DO_TEST_F8(test19);
   DO_TEST(test20);
   DO_TEST(test21);
   DO_TEST(test22);
+  DO_TEST(test23);
 END_MAIN

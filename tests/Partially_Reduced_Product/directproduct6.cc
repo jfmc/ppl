@@ -631,7 +631,7 @@ test21() {
   src.refine_with_constraints(cs);
   src.refine_with_congruences(cgs);
 
-  NNCPoly_Grid dp(src, POLYNOMIAL_COMPLEXITY);
+  NNCPoly_Grid dp(src);
 
   NNCPoly_Grid dp1(src);
 
@@ -641,22 +641,44 @@ test21() {
 
   bool ok = (dp == known_dp && dp1 == known_dp);
 
+  print_congruences(src, "*** src congruences ***");
+  print_constraints(src, "*** src constraints ***");
   print_congruences(dp, "*** dp congruences ***");
   print_constraints(dp, "*** dp constraints ***");
   print_congruences(dp1, "*** dp1 congruences ***");
   print_constraints(dp1, "*** dp1 constraints ***");
+  print_congruences(known_dp, "*** known_dp congruences ***");
+  print_constraints(known_dp, "*** known_dp constraints ***");
 
   return ok && dp.OK();
 }
 
-// Attempt to construct a product with too many dimensions.
+// max_space_dimension().
 bool
 test22() {
+  dimension_type msd1 = NNC_Polyhedron::max_space_dimension();
+  nout << "NNCPolyhedron max space dimension = "
+       << msd1 << endl;
+  dimension_type msd2 = Grid::max_space_dimension();
+  nout << "Grid max space dimension = "
+       << msd2 << endl;
+  dimension_type msd = NNCPoly_Grid::max_space_dimension();
+  bool ok = (msd <= msd1 && msd <= msd2);
+
+  nout << "NNCPoly_Grid max space dimension = "
+       << msd << endl << endl;
+
+  return ok;
+}
+
+// Attempt to construct a product with too many dimensions.
+bool
+test23() {
   try {
     // This is an invalid use of the constructor of a product:
-    // it is illegal to (try to) build a product with a dimensions
+    // it is illegal to (try to) build a product with a dimension
     // greater than max_space_dimension().
-    NNCPoly_Grid pg(NNCPoly_Grid::max_space_dimension() + 1);
+    NNCPoly_Grid pg(NNCPoly_Grid::max_space_dimension() + 2);
 
     // It is an error if the exception is not thrown.
   }
@@ -697,4 +719,5 @@ BEGIN_MAIN
   DO_TEST(test20);
   DO_TEST(test21);
   DO_TEST(test22);
+  DO_TEST(test23);
 END_MAIN
