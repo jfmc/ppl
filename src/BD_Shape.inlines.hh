@@ -760,7 +760,11 @@ BD_Shape<T>::upper_bound_assign_if_exact(const BD_Shape& y) {
   // Dimension-compatibility check.
   if (space_dimension() != y.space_dimension())
     throw_dimension_incompatible("upper_bound_assign_if_exact(y)", y);
+#if 0
   return BFT00_upper_bound_assign_if_exact(y);
+#else
+  return BHZ09_upper_bound_assign_if_exact(y);
+#endif
 }
 
 template <typename T>

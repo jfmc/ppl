@@ -1983,6 +1983,8 @@ private:
   */
   bool BFT00_upper_bound_assign_if_exact(const BD_Shape& y);
 
+  bool BHZ09_upper_bound_assign_if_exact(const BD_Shape& y);
+
   /*! \brief
     Uses the constraint \p c to refine \p *this.
 

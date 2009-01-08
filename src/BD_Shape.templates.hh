@@ -2074,6 +2074,87 @@ BD_Shape<T>::BFT00_upper_bound_assign_if_exact(const BD_Shape& y) {
 }
 
 template <typename T>
+bool
+BD_Shape<T>::BHZ09_upper_bound_assign_if_exact(const BD_Shape& y) {
+  // Declare a const reference to *this (to avoid accidental modifications).
+  const BD_Shape& x = *this;
+  const dimension_type x_space_dim = x.space_dimension();
+
+  // Private method: the caller must ensure the following.
+  assert(x_space_dim == y.space_dimension());
+
+  // The zero-dim case is trivial.
+  if (x_space_dim == 0) {
+    upper_bound_assign(y);
+    return true;
+  }
+  // If `x' or `y' is (known to be) empty, the upper bound is exact.
+  if (x.marked_empty()) {
+    *this = y;
+    return true;
+  }
+  else if (y.is_empty())
+    return true;
+  else if (x.is_empty()) {
+    *this = y;
+    return true;
+  }
+
+  // Here both `x' and `y' are known to be non-empty.
+  assert(x.marked_shortest_path_closed());
+  assert(y.marked_shortest_path_closed());
+  PPL_DIRTY_TEMP(N, tmp);
+  for (dimension_type i = x_space_dim + 1; i-- > 0; ) {
+    const DB_Row<N>& x_i = x.dbm[i];
+    const DB_Row<N>& y_i = y.dbm[i];
+    for (dimension_type j = x_space_dim + 1; j-- > 0; ) {
+      const N& x_i_j = x_i[j];
+      if (x_i_j < y_i[j]) {
+        for (dimension_type k = x_space_dim + 1; k-- > 0; ) {
+          const DB_Row<N>& x_k = x.dbm[k];
+          const DB_Row<N>& y_k = y.dbm[k];
+          for (dimension_type ell = x_space_dim + 1; ell-- > 0; ) {
+            const N& y_k_ell = y_k[ell];
+            if (y_k_ell < x_k[ell]) {
+              // Here condition 1 of Theorem 7 in BHZ09 holds.
+              if (j != k)
+                // Condition 2 of Theorem 7 in BHZ09 also holds
+                // (the premise of the implication is false):
+                // the upper bound is not exact.
+                return false;
+              else {
+                // FIXME, CHECKME: what about inexact computations?
+                add_assign_r(tmp, x_i_j, y_k_ell, ROUND_UP);
+                if (i == ell) {
+                  // Be careful: if i == ell, then x_i[ell] and y_i[ell] are
+                  // both set (by convention) to +infty in our implementation.
+                  // However, Theorem 7 assumes that these are set to 0.
+                  // So we adapt the test of condition 2.
+                  if (tmp < 0)
+                    // Condition 2 of Theorem 7 in BHZ09 also holds
+                    // (in particular, here `x' and `y' are disjoint):
+                    // hence the upper bound is not exact.
+                    return false;
+                }
+                else if (tmp < x_i[ell] || tmp < y_i[ell]) {
+                  // Condition 2 of Theorem 7 in BHZ09 also holds:
+                  // the upper bound is not exact.
+                  return false;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  // The upper bound of x and y is indeed exact.
+  upper_bound_assign(y);
+  assert(OK());
+  return true;
+}
+
+template <typename T>
 void
 BD_Shape<T>::difference_assign(const BD_Shape& y) {
   const dimension_type space_dim = space_dimension();
@@ -2182,7 +2263,7 @@ BD_Shape<T>::simplify_using_context_assign(const BD_Shape& y) {
     const DB_Row<N>& y_dbm_0 = y.dbm[0];
     for (j = 1; j <= dim; ++j) {
       if (!is_plus_infinity(y_dbm_0[j]))
-        // FIXME: if N is a float or bounded intefer type, then
+        // FIXME: if N is a float or bounded integer type, then
         // we also need to check that we are actually able to construct
         // a constraint inconsistent wrt this one.
         goto found;
@@ -2216,9 +2297,9 @@ BD_Shape<T>::simplify_using_context_assign(const BD_Shape& y) {
     PPL_DIRTY_TEMP(N, tmp);
     assign_r(tmp, 1, ROUND_UP);
     add_assign_r(tmp, tmp, y.dbm[i][j], ROUND_UP);
+    assert(!is_plus_infinity(tmp));
     // CHECKME: round down is really meant.
     neg_assign_r(res.dbm[j][i], tmp, ROUND_DOWN);
-    assert(!is_plus_infinity(res.dbm[j][i]));
     x.swap(res);
     return false;
   }
