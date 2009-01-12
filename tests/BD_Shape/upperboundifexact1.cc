@@ -258,6 +258,49 @@ test08() {
   return ok;
 }
 
+bool
+test09() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+
+  TBD_Shape bds(3, UNIVERSE);
+  bds.add_constraint(x >= 0);
+  bds.add_constraint(x <= 2);
+  bds.add_constraint(y >= 0);
+  bds.add_constraint(y <= 4);
+  bds.add_constraint(z >= 0);
+  bds.add_constraint(z <= 4);
+  bds.add_constraint(x - y <= 2);
+  bds.add_constraint(z - y <= 2);
+
+  TBD_Shape bds1(bds);
+  bds1.add_constraint(z <= 3);
+
+  print_constraints(bds1, "*** bds1 ***");
+
+  TBD_Shape bds2(bds);
+  bds2.add_constraint(x - y <= 1);
+
+  TBD_Shape known_result(bds);
+
+  C_Polyhedron ph1(bds1);
+  C_Polyhedron ph2(bds2);
+
+  bool exact = ph1.upper_bound_assign_if_exact(ph2);
+  nout << "In the c polyhedra domain, upper_bound_assign_if_exact() returns: "
+       << exact << std::endl;
+  print_constraints(ph1, "*** ph1.upper_bound_assign_if_exact(ph2) ***");
+
+  bool ok = bds1.upper_bound_assign_if_exact(bds2);
+
+  ok &= (bds1 == bds);
+
+  print_constraints(bds1, "*** bds1.upper_bound_assign_if_exact(bds2) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -269,4 +312,5 @@ BEGIN_MAIN
   DO_TEST(test06);
   DO_TEST(test07);
   DO_TEST(test08);
+  DO_TEST_F(test09);
 END_MAIN
