@@ -2103,43 +2103,57 @@ BD_Shape<T>::BHZ09_upper_bound_assign_if_exact(const BD_Shape& y) {
   // Here both `x' and `y' are known to be non-empty.
   assert(x.marked_shortest_path_closed());
   assert(y.marked_shortest_path_closed());
-  PPL_DIRTY_TEMP(N, tmp);
+  // Pre-compute the upper bound of `x' and `y'.
+  BD_Shape<T> ub(x);
+  ub.upper_bound_assign(y);
+
+  PPL_DIRTY_TEMP(N, temp_1);
+  PPL_DIRTY_TEMP(N, temp_2);
   for (dimension_type i = x_space_dim + 1; i-- > 0; ) {
     const DB_Row<N>& x_i = x.dbm[i];
     const DB_Row<N>& y_i = y.dbm[i];
+    const DB_Row<N>& ub_i = ub.dbm[i];
     for (dimension_type j = x_space_dim + 1; j-- > 0; ) {
       const N& x_i_j = x_i[j];
       if (x_i_j < y_i[j]) {
         for (dimension_type k = x_space_dim + 1; k-- > 0; ) {
           const DB_Row<N>& x_k = x.dbm[k];
           const DB_Row<N>& y_k = y.dbm[k];
+          const DB_Row<N>& ub_k = ub.dbm[k];
           for (dimension_type ell = x_space_dim + 1; ell-- > 0; ) {
             const N& y_k_ell = y_k[ell];
             if (y_k_ell < x_k[ell]) {
-              // Here condition 1 of Theorem 7 in BHZ09 holds.
-              if (j != k)
-                // Condition 2 of Theorem 7 in BHZ09 also holds
-                // (the premise of the implication is false):
-                // the upper bound is not exact.
-                return false;
-              else {
-                // FIXME, CHECKME: what about inexact computations?
-                add_assign_r(tmp, x_i_j, y_k_ell, ROUND_UP);
-                if (i == ell) {
-                  // Be careful: if i == ell, then x_i[ell] and y_i[ell] are
-                  // both set (by convention) to +infty in our implementation.
-                  // However, Theorem 7 assumes that these are set to 0.
-                  // So we adapt the test of condition 2.
-                  if (tmp < 0)
-                    // Condition 2 of Theorem 7 in BHZ09 also holds
-                    // (in particular, here `x' and `y' are disjoint):
-                    // hence the upper bound is not exact.
+              // Here condition 1 of Theorem 7 in BHZ09 holds;
+              // now check for condition 2.
+              // FIXME, CHECKME: what about inexact computations?
+              add_assign_r(temp_1, x_i_j, y_k_ell, ROUND_UP);
+              // Careful: if i == ell, then x_i[ell] and y_i[ell] are both
+              // (by convention) +infty in our implementation; however,
+              // Theorem 7 assumes that these are set to 0; the same
+              // applies when j == k. So we need to adapt the test.
+              if (i == ell) {
+                // Here ub_i[ell] is meant to be zero.
+                if (j == k) {
+                  // Here also ub_k[j] is meant to be zero.
+                  if (temp_1 < 0)
                     return false;
                 }
-                else if (tmp < x_i[ell] || tmp < y_i[ell]) {
-                  // Condition 2 of Theorem 7 in BHZ09 also holds:
-                  // the upper bound is not exact.
-                  return false;
+                else {
+                  if (temp_1 < ub_k[j])
+                    return false;
+                }
+              }
+              else {
+                if (j == k) {
+                  // Here ub_k[j] is meant to be zero.
+                  if (temp_1 < ub_i[ell])
+                    return false;
+                }
+                else {
+                  // FIXME, CHECKME: what about inexact computations?
+                  add_assign_r(temp_2, ub_i[ell], ub_k[j], ROUND_UP);
+                  if (temp_1 < temp_2)
+                    return false;
                 }
               }
             }
@@ -2149,7 +2163,7 @@ BD_Shape<T>::BHZ09_upper_bound_assign_if_exact(const BD_Shape& y) {
     }
   }
   // The upper bound of x and y is indeed exact.
-  upper_bound_assign(y);
+  swap(ub);
   assert(OK());
   return true;
 }
