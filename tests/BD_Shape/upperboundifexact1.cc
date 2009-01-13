@@ -282,16 +282,6 @@ test09() {
   TBD_Shape bds2(bds);
   bds2.add_constraint(x - y <= 1);
 
-  TBD_Shape known_result(bds);
-
-  C_Polyhedron ph1(bds1);
-  C_Polyhedron ph2(bds2);
-
-  bool exact = ph1.upper_bound_assign_if_exact(ph2);
-  nout << "In the c polyhedra domain, upper_bound_assign_if_exact() returns: "
-       << exact << std::endl;
-  print_constraints(ph1, "*** ph1.upper_bound_assign_if_exact(ph2) ***");
-
   bool ok = bds1.upper_bound_assign_if_exact(bds2);
 
   ok &= (bds1 == bds);
@@ -312,5 +302,5 @@ BEGIN_MAIN
   DO_TEST(test06);
   DO_TEST(test07);
   DO_TEST(test08);
-  DO_TEST_F(test09);
+  DO_TEST(test09);
 END_MAIN
