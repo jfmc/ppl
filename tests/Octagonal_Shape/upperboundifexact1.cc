@@ -315,10 +315,10 @@ test10() {
   TOctagonal_Shape octs(4, UNIVERSE);
   octs.add_constraint(x - y <= 4);
   octs.add_constraint(z - w <= 4);
-  octs.add_constraint(x - w <= 4);
-  octs.add_constraint(z <= 2);
-  octs.add_constraint(z - y <= 0);
-  octs.add_constraint(y + w >= -4);
+  octs.add_constraint(x - w <= 5);
+  octs.add_constraint(z <= 0);
+  octs.add_constraint(z - y <= 1);
+  octs.add_constraint(y + w >= -1);
 
   TOctagonal_Shape octs1(octs);
   octs1.add_constraint(x - y <= 2);
