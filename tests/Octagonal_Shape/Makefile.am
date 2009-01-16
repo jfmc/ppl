@@ -113,6 +113,7 @@ timeelapse1 \
 unconstrain1 \
 universe1 \
 upperbound1 \
+upperboundifexact1 \
 writeoctagon1
 
 
@@ -273,6 +274,8 @@ unconstrain1_SOURCES = unconstrain1.cc
 universe1_SOURCES = universe1.cc
 
 upperbound1_SOURCES = upperbound1.cc
+
+upperboundifexact1_SOURCES = upperboundifexact1.cc
 
 writeoctagon1_SOURCES = writeoctagon1.cc
 
