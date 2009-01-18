@@ -1952,6 +1952,7 @@ private:
                Coefficient& ext_n, Coefficient& ext_d, bool& included,
                Generator& g) const;
 
+  bool BHZ09_upper_bound_assign_if_exact(const Octagonal_Shape& y);
 
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators

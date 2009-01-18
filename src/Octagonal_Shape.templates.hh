@@ -5988,6 +5988,142 @@ Octagonal_Shape<T>::fold_space_dimensions(const Variables_Set& to_be_folded,
   remove_space_dimensions(to_be_folded);
 }
 
+template <typename T>
+bool
+Octagonal_Shape<T>
+::BHZ09_upper_bound_assign_if_exact(const Octagonal_Shape& y) {
+  // Declare a const reference to *this (to avoid accidental modifications).
+  const Octagonal_Shape& x = *this;
+  const dimension_type x_space_dim = x.space_dimension();
+
+  // Private method: the caller must ensure the following.
+  assert(x_space_dim == y.space_dimension());
+
+  // The zero-dim case is trivial.
+  if (x_space_dim == 0) {
+    upper_bound_assign(y);
+    return true;
+  }
+  // If `x' or `y' is (known to be) empty, the upper bound is exact.
+  if (x.marked_empty()) {
+    *this = y;
+    return true;
+  }
+  else if (y.is_empty())
+    return true;
+  else if (x.is_empty()) {
+    *this = y;
+    return true;
+  }
+
+  // Here both `x' and `y' are known to be non-empty.
+  assert(x.marked_strongly_closed());
+  assert(y.marked_strongly_closed());
+  // Pre-compute the upper bound of `x' and `y'.
+  Octagonal_Shape<T> ub(x);
+  ub.upper_bound_assign(y);
+
+  PPL_DIRTY_TEMP(N, lhs);
+  PPL_DIRTY_TEMP(N, lhs_copy);
+  PPL_DIRTY_TEMP(N, rhs);
+  PPL_DIRTY_TEMP(N, temp_zero);
+  assign_r(temp_zero, 0, ROUND_NOT_NEEDED);
+
+  typedef typename OR_Matrix<N>::const_row_iterator Row_Iterator;
+  typedef typename OR_Matrix<N>::const_row_reference_type Row_Reference;
+
+  const dimension_type n_rows = x.matrix.num_rows();
+  const Row_Iterator x_m_begin = x.matrix.row_begin();
+  const Row_Iterator y_m_begin = y.matrix.row_begin();
+  const Row_Iterator ub_m_begin = ub.matrix.row_begin();
+
+  for (dimension_type i = n_rows; i-- > 0; ) {
+    const dimension_type ci = coherent_index(i);
+    const dimension_type row_size_i = OR_Matrix<N>::row_size(i);
+    Row_Reference x_i = *(x_m_begin + i);
+    Row_Reference y_i = *(y_m_begin + i);
+    Row_Reference ub_i = *(ub_m_begin + i);
+    const N& ub_i_ci = ub_i[ci];
+    for (dimension_type j = row_size_i; j-- > 0; ) {
+      const N& x_i_j = x_i[j];
+      // Check condition 1 of Theorem 8.
+      if (x_i_j >= y_i[j])
+        continue;
+      const dimension_type cj = coherent_index(j);
+      const dimension_type row_size_cj = OR_Matrix<N>::row_size(cj);
+      Row_Reference ub_cj = *(ub_m_begin + cj);
+      const N& ub_cj_j = ub_cj[j];
+      for (dimension_type k = 0; k < n_rows; ++k) {
+        const dimension_type ck = coherent_index(k);
+        const dimension_type row_size_k = OR_Matrix<N>::row_size(k);
+        Row_Reference x_k = *(x_m_begin + k);
+        Row_Reference y_k = *(y_m_begin + k);
+        Row_Reference ub_k = *(ub_m_begin + k);
+        const N& ub_k_ck = ub_k[ck];
+        // Be careful: for each index h, the diagonal element m[h][h]
+        // is (by convention) +infty in our implementation; however,
+        // Theorem 8 assumes that it is equal to 0.
+        const N& ub_k_j = (k == j) ? temp_zero
+          : (j < row_size_k ? ub_k[j] : ub_cj[ck]);
+        const N& ub_k_ci = (k == ci) ? temp_zero
+          : (ci < row_size_k ? ub_k[ci] : ub_i[ck]);
+
+        for (dimension_type ell = row_size_k; ell-- > 0; ) {
+          const N& y_k_ell = y_k[ell];
+          // Check condition 2 of Theorem 8.
+          if (y_k_ell >= x_k[ell])
+            continue;
+          const dimension_type cell = coherent_index(ell);
+          Row_Reference ub_cell = *(ub_m_begin + cell);
+          const N& ub_i_ell = (i == ell) ? temp_zero
+            : (ell < row_size_i ? ub_i[ell] : ub_cell[ci]);
+          const N& ub_cj_ell = (cj == ell) ? temp_zero
+            : (ell < row_size_cj ? ub_cj[ell] : ub_cell[j]);
+          // Check for condition 3 of Theorem 8.
+          add_assign_r(lhs, x_i_j, y_k_ell, ROUND_UP);
+          add_assign_r(rhs, ub_i_ell, ub_k_j, ROUND_UP);
+          if (lhs >= rhs)
+            continue;
+          // Check for condition 4 of Theorem 8.
+          add_assign_r(rhs, ub_k_ci, ub_cj_ell, ROUND_UP);
+          if (lhs >= rhs)
+            continue;
+          // Check for condition 5 of Theorem 8.
+          assign_r(lhs_copy, lhs, ROUND_NOT_NEEDED);
+          add_assign_r(lhs, lhs_copy, x_i_j, ROUND_UP);
+          add_assign_r(rhs, ub_i_ell, ub_k_ci, ROUND_UP);
+          add_assign_r(rhs, rhs, ub_cj_j, ROUND_UP);
+          if (lhs >= rhs)
+            continue;
+          // Check for condition 6 of Theorem 8.
+          add_assign_r(rhs, ub_k_j, ub_cj_ell, ROUND_UP);
+          add_assign_r(rhs, rhs, ub_i_ci, ROUND_UP);
+          if (lhs >= rhs)
+            continue;
+          // Check for condition 7 of Theorem 8.
+          add_assign_r(lhs, lhs_copy, y_k_ell, ROUND_UP);
+          add_assign_r(rhs, ub_k_j, ub_k_ci, ROUND_UP);
+          add_assign_r(rhs, rhs, ub_cell[ell], ROUND_UP);
+          if (lhs >= rhs)
+            continue;
+          // Check for condition 8 of Theorem 8.
+          add_assign_r(rhs, ub_i_ell, ub_cj_ell, ROUND_UP);
+          add_assign_r(rhs, rhs, ub_k_ck, ROUND_UP);
+          if (lhs < rhs)
+            // All 8 conditions of Theorem 8 are satisfied:
+            // upper bound is not exact.
+            return false;
+        }
+      }
+    }
+  }
+
+  // The upper bound of x and y is indeed exact.
+  swap(ub);
+  assert(OK());
+  return true;
+}
+
 /*! \relates Parma_Polyhedra_Library::Octagonal_Shape */
 template <typename T>
 std::ostream&
