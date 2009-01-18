@@ -3,6 +3,7 @@ Enhancements for PPL 0.10.1 or later versions
 =============================================
 
 - Fix all the FIXME(0.10.1).
+- Do not enable the Prolog interfaces by default in the release tarballs.
 - Improve the OCaml interface by supporting dynamic loading.
 - Enhance the support for systems not providing support for the IEEE
   inexact flag.
