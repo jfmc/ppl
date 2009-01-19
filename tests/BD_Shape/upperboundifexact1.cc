@@ -291,6 +291,38 @@ test09() {
   return ok;
 }
 
+bool
+test10() {
+  Variable x(0);
+  Variable y(1);
+
+  TBD_Shape bds1(2, UNIVERSE);
+  bds1.add_constraint(x >= 0);
+  bds1.add_constraint(x <= 3);
+  bds1.add_constraint(y >= 0);
+  bds1.add_constraint(y <= 2);
+  bds1.add_constraint(x - y <= 2);
+
+  TBD_Shape bds2(2, UNIVERSE);
+  bds2.add_constraint(x >= 3);
+  bds2.add_constraint(x <= 6);
+  bds2.add_constraint(y >= 0);
+  bds2.add_constraint(y <= 2);
+
+  print_constraints(bds1, "*** bds1 ***");
+  print_constraints(bds2, "*** bds2 ***");
+
+  TBD_Shape known_result(bds1);
+
+  bool ok = !bds1.upper_bound_assign_if_exact(bds2);
+
+  ok &= (bds1 == known_result);
+
+  print_constraints(bds1, "*** bds1.upper_bound_assign_if_exact(bds2) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -303,4 +335,5 @@ BEGIN_MAIN
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
+  DO_TEST(test10);
 END_MAIN
