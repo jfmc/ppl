@@ -1195,7 +1195,7 @@ ppl_set_GMP_memory_allocation_functions(void) {
       || defined(PPL_GLPK_HAS_LIB_SET_PRINT_HOOK))
 
 static int
-glpk_message_interceptor(void* info, char* msg) {
+glpk_message_interceptor(void* info, const char* msg) {
   (void) info;
   (void) msg;
   return 1;
