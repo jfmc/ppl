@@ -301,10 +301,6 @@ test09() {
   return ok;
 }
 
-// This test is intended to show that the upper_bound_if_exact() method
-// needs  to check more conditions than the 3 needed for the BD Shapes'
-// upper_bound_if_exact() method. Note that the polyhedron test shows that
-// the upper bound is an octagon and that it is exact.
 bool
 test10() {
   Variable x(0);
@@ -330,19 +326,45 @@ test10() {
 
   TOctagonal_Shape known_result(octs);
 
-  C_Polyhedron ph1(octs1);
-  C_Polyhedron ph2(octs2);
-
-  bool exact = ph1.upper_bound_assign_if_exact(ph2);
-  nout << "In the c polyhedra domain, upper_bound_assign_if_exact() returns: "
-       << exact << std::endl;
-  print_constraints(ph1, "*** ph1.upper_bound_assign_if_exact(ph2) ***");
-
   bool ok = octs1.upper_bound_assign_if_exact(octs2);
-
   ok &= (octs1 == octs);
 
   print_constraints(octs1, "*** octs1.upper_bound_assign_if_exact(octs2) ***");
+
+  return ok;
+}
+
+bool
+test11() {
+  //  const dimension_type dim = 200;
+  const dimension_type dim = 50;
+  Constraint_System cs;
+  for (dimension_type i = 1; i < dim; ++i) {
+    Variable x(i);
+    cs.insert(x >= 0);
+    cs.insert(x <= 4);
+  }
+
+  Variable x(0);
+
+  TOctagonal_Shape hypercube1(cs);
+  hypercube1.add_constraint(x >= 0);
+  hypercube1.add_constraint(x <= 4);
+
+  TOctagonal_Shape hypercube2(cs);
+  hypercube2.add_constraint(x >= 2);
+  hypercube2.add_constraint(x <= 6);
+
+  TOctagonal_Shape known_result(cs);
+  known_result.add_constraint(x >= 0);
+  known_result.add_constraint(x <= 6);
+
+  bool ok = hypercube1.upper_bound_assign_if_exact(hypercube2);
+
+  ok &= (hypercube1 == known_result);
+
+  print_constraints(hypercube1, "*** hyp1 ***");
+  print_constraints(hypercube2, "*** hyp2 ***");
 
   return ok;
 }
@@ -360,4 +382,5 @@ BEGIN_MAIN
   DO_TEST(test08);
   DO_TEST(test09);
   DO_TEST(test10);
+  DO_TEST(test11);
 END_MAIN
