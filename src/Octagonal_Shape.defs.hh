@@ -1825,6 +1825,15 @@ private:
   */
   void compute_leaders(std::vector<dimension_type>& leaders) const;
 
+  /*! \brief
+    Stores into \p non_redundant information about the matrix entries
+    that are non-redundant (i.e., will occur in strongly reduced matrix).
+
+    It is assumed that the OS is not empty and strongly closed;
+    moreover, argument \p non_redundant is assumed to be empty.
+  */
+  void non_redundant_matrix_entries(std::vector<Bit_Row>& non_redundant) const;
+
   //! Removes the redundant constraints from \c this->matrix.
   void strong_reduction_assign() const;
 
