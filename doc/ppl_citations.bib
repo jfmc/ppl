@@ -1296,6 +1296,37 @@
               widening operator over shape graphs."
 }
 
+@Inproceedings{GulwaniL-AS09,
+  Author = "S. Gulwani and T. Lev-Ami and S. Sagiv",
+  Title = "A Combination Framework for Tracking Partition Sizes",
+  Booktitle = "Proceedings of the 36th ACM SIGPLAN-SIGACT Symposium on
+               Principles of Programming Languages (POPL 2009)",
+  Address = "Savannah, Georgia, USA",
+  Year = 2009,
+  Publisher = "ACM Press",
+  Note = "To appear.",
+  Abstract = "We describe an abstract interpretation based framework
+              for proving relationships between sizes of memory
+              partitions. Instances of this framework can prove
+              traditional properties such as memory safety and program
+              termination but can also establish upper bounds on usage
+              of dynamically allocated memory. Our framework also
+              stands out in its ability to prove properties of
+              programs manipulating both heap and arrays which is
+              considered a difficult task.  Technically, we define an
+              abstract domain that is parameterized by an abstract
+              domain for tracking memory partitions (sets of memory
+              locations) and by a numerical abstract domain for
+              tracking relationships between cardinalities of the
+              partitions. We describe algorithms to construct the
+              transfer functions for the abstract domain in terms of
+              the corresponding transfer functions of the
+              parameterized abstract domains.  A prototype of the
+              framework was implemented and used to prove interesting
+              properties of realistic programs, including programs
+              that could not have been automatically analyzed before."
+}
+
 @Article{HalbwachsMG06,
   Author = "N. Halbwachs and D. Merchat and L. Gonnord",
   Title = "Some Ways To Reduce the Space Dimension in Polyhedra Computations",
