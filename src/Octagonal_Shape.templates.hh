@@ -2185,16 +2185,52 @@ Octagonal_Shape<T>
 template <typename T>
 void
 Octagonal_Shape<T>::strong_reduction_assign() const {
-  // Zero-dimensional Octagonal shapes are necessarily reduced.
+  // Zero-dimensional octagonal shapes are necessarily reduced.
   if (space_dim == 0)
     return;
-
-  // First find the tightest constraints for this octagon.
   strong_closure_assign();
-
   // If `*this' is empty, then there is nothing to reduce.
   if (marked_empty())
     return;
+
+  // Detect non-redundant constraints.
+  std::vector<Bit_Row> non_red;
+  non_redundant_matrix_entries(non_red);
+
+  // Throw away redundant constraints.
+  Octagonal_Shape<T>& x = const_cast<Octagonal_Shape<T>&>(*this);
+#ifndef NDEBUG
+  const Octagonal_Shape x_copy_before(x);
+#endif
+  typename OR_Matrix<N>::element_iterator x_i = x.matrix.element_begin();
+  for (dimension_type i = 0; i < 2 * space_dim; ++i) {
+    const Bit_Row& non_red_i = non_red[i];
+    for (dimension_type j = 0,
+           j_end = OR_Matrix<N>::row_size(i); j < j_end; ++j, ++x_i) {
+      if (!non_red_i[j])
+        assign_r(*x_i, PLUS_INFINITY, ROUND_NOT_NEEDED);
+    }
+  }
+  x.reset_strongly_closed();
+#ifndef NDEBUG
+  const Octagonal_Shape x_copy_after(x);
+  assert(x_copy_before == x_copy_after);
+  assert(x.is_strongly_reduced());
+  assert(x.OK());
+#endif
+}
+
+template <typename T>
+void
+Octagonal_Shape<T>
+::non_redundant_matrix_entries(std::vector<Bit_Row>& nr_rows) const {
+  // Private method: the caller has to ensure the following.
+  assert(space_dim > 0 && !marked_empty() && marked_strongly_closed());
+  assert(nr_rows.empty());
+
+  // Initialize `non_redundant' as if it was an OR_Matrix of booleans
+  // (initially set to false).
+  nr_rows.resize(2*space_dim);
 
   // Step 1: compute zero-equivalence classes.
   // Variables corresponding to indices `i' and `j' are zero-equivalent
@@ -2208,18 +2244,14 @@ Octagonal_Shape<T>::strong_reduction_assign() const {
   compute_leaders(successor, no_sing_leaders, exist_sing_class, sing_leader);
   const dimension_type num_no_sing_leaders = no_sing_leaders.size();
 
-  Octagonal_Shape aux(space_dim);
-  // Step 2: add to auxiliary octagon only non-redundant
-  // constraints and construct a 0-cycle using only
-  // the leaders of the non-singular classes.
+  // Step 2: flag redundant constraints in `redundancy'.
+  // Go through non-singular leaders first.
   for (dimension_type li = 0; li < num_no_sing_leaders; ++li) {
     const dimension_type i = no_sing_leaders[li];
     const dimension_type ci = coherent_index(i);
-    typename OR_Matrix<N>::const_row_reference_type m_i =
-      *(matrix.row_begin()+i);
-    typename OR_Matrix<N>::row_reference_type aux_i =
-      *(aux.matrix.row_begin()+i);
-    if (i%2 == 0) {
+    typename OR_Matrix<N>::const_row_reference_type
+      m_i = *(matrix.row_begin()+i);
+    if (i % 2 == 0) {
       // Each positive equivalence class must have a single 0-cycle
       // connecting all equivalent variables in increasing order.
       // Note: by coherence assumption, the variables in the
@@ -2229,12 +2261,12 @@ Octagonal_Shape<T>::strong_reduction_assign() const {
         dimension_type j = i;
         dimension_type next_j = successor[j];
         while (j != next_j) {
-          aux.matrix[next_j][j] = matrix[next_j][j];
+          nr_rows[next_j].set(j);
           j = next_j;
           next_j = successor[j];
         }
         const dimension_type cj = coherent_index(j);
-        aux.matrix[cj][ci] = matrix[cj][ci];
+        nr_rows[cj].set(ci);
       }
     }
 
@@ -2253,10 +2285,9 @@ Octagonal_Shape<T>::strong_reduction_assign() const {
       if (j != ci) {
         add_assign_r(tmp, m_i_ci, matrix[cj][j], ROUND_UP);
         div2exp_assign_r(tmp, tmp, 1, ROUND_UP);
-        if (m_i_j >= tmp) {
-          to_add = false;
+        if (m_i_j >= tmp)
+          // The constraint is redundant.
           continue;
-        }
       }
       // Control if the constraint is redundant by strong closure, that is
       // if there is a path from i to j (i = i_0, ... , i_n = j), such that
@@ -2290,9 +2321,9 @@ Octagonal_Shape<T>::strong_reduction_assign() const {
         }
       }
 
-      // The constraint is not redundant.
       if (to_add)
-        aux_i[j] = m_i_j;
+        // The constraint is not redundant.
+        nr_rows[i].set(j);
     }
   }
 
@@ -2301,39 +2332,21 @@ Octagonal_Shape<T>::strong_reduction_assign() const {
   // variables.
   // Note: the singular class is not connected with the other classes.
   if (exist_sing_class) {
-    aux.matrix[sing_leader][sing_leader+1]
-      = matrix[sing_leader][sing_leader+1];
+    nr_rows[sing_leader].set(sing_leader+1);
     if (successor[sing_leader+1] != sing_leader+1) {
       dimension_type j = sing_leader;
       dimension_type next_jj = successor[j+1];
       while (next_jj != j+1) {
-        aux.matrix[next_jj][j] = matrix[next_jj][j];
+        nr_rows[next_jj].set(j);
         j = next_jj;
         next_jj = successor[j+1];
       }
-      aux.matrix[j+1][j] = matrix[j+1][j];
+      nr_rows[j+1].set(j);
     }
     else
-      aux.matrix[sing_leader+1][sing_leader]
-        = matrix[sing_leader+1][sing_leader];
+      nr_rows[sing_leader+1].set(sing_leader);
   }
-
-  Octagonal_Shape<T>& x = const_cast<Octagonal_Shape<T>&>(*this);
-  aux.reset_strongly_closed();
-
-#ifndef NDEBUG
-  {
-    // We assume that `aux' is equal to `*this'.
-    const Octagonal_Shape x_copy = *this;
-    const Octagonal_Shape y_copy = aux;
-    assert(x_copy == y_copy);
-  }
-#endif
-
-  std::swap(x, aux);
-  assert(is_strongly_reduced());
 }
-
 
 template <typename T>
 void
@@ -6023,6 +6036,13 @@ Octagonal_Shape<T>
   Octagonal_Shape<T> ub(x);
   ub.upper_bound_assign(y);
 
+  // Compute redundancy information for x and y.
+  // TODO: provide a nicer data structure for redundancy.
+  std::vector<Bit_Row> x_non_red;
+  x.non_redundant_matrix_entries(x_non_red);
+  std::vector<Bit_Row> y_non_red;
+  y.non_redundant_matrix_entries(y_non_red);
+
   PPL_DIRTY_TEMP(N, lhs);
   PPL_DIRTY_TEMP(N, lhs_copy);
   PPL_DIRTY_TEMP(N, rhs);
@@ -6031,13 +6051,13 @@ Octagonal_Shape<T>
 
   typedef typename OR_Matrix<N>::const_row_iterator Row_Iterator;
   typedef typename OR_Matrix<N>::const_row_reference_type Row_Reference;
-
   const dimension_type n_rows = x.matrix.num_rows();
   const Row_Iterator x_m_begin = x.matrix.row_begin();
   const Row_Iterator y_m_begin = y.matrix.row_begin();
   const Row_Iterator ub_m_begin = ub.matrix.row_begin();
 
   for (dimension_type i = n_rows; i-- > 0; ) {
+    const Bit_Row& x_non_red_i = x_non_red[i];
     const dimension_type ci = coherent_index(i);
     const dimension_type row_size_i = OR_Matrix<N>::row_size(i);
     Row_Reference x_i = *(x_m_begin + i);
@@ -6045,8 +6065,11 @@ Octagonal_Shape<T>
     Row_Reference ub_i = *(ub_m_begin + i);
     const N& ub_i_ci = ub_i[ci];
     for (dimension_type j = row_size_i; j-- > 0; ) {
+      // Check redundancy of x_i_j.
+      if (!x_non_red_i[j])
+        continue;
       const N& x_i_j = x_i[j];
-      // Check condition 1 of Theorem 8.
+      // Check 1st condition in BHZ09 theorem.
       if (x_i_j >= y_i[j])
         continue;
       const dimension_type cj = coherent_index(j);
@@ -6054,6 +6077,7 @@ Octagonal_Shape<T>
       Row_Reference ub_cj = *(ub_m_begin + cj);
       const N& ub_cj_j = ub_cj[j];
       for (dimension_type k = 0; k < n_rows; ++k) {
+        const Bit_Row& y_non_red_k = y_non_red[k];
         const dimension_type ck = coherent_index(k);
         const dimension_type row_size_k = OR_Matrix<N>::row_size(k);
         Row_Reference x_k = *(x_m_begin + k);
@@ -6062,15 +6086,18 @@ Octagonal_Shape<T>
         const N& ub_k_ck = ub_k[ck];
         // Be careful: for each index h, the diagonal element m[h][h]
         // is (by convention) +infty in our implementation; however,
-        // Theorem 8 assumes that it is equal to 0.
+        // BHZ09 theorem assumes that it is equal to 0.
         const N& ub_k_j = (k == j) ? temp_zero
           : (j < row_size_k ? ub_k[j] : ub_cj[ck]);
-        const N& ub_k_ci = (k == ci) ? temp_zero
-          : (ci < row_size_k ? ub_k[ci] : ub_i[ck]);
+        const N& ub_i_ck = (i == ck) ? temp_zero
+          : (ck < row_size_i ? ub_i[ck] : ub_k[ci]);
 
         for (dimension_type ell = row_size_k; ell-- > 0; ) {
+          // Check redundancy of y_k_ell.
+          if (!y_non_red_k[ell])
+            continue;
           const N& y_k_ell = y_k[ell];
-          // Check condition 2 of Theorem 8.
+          // Check 2nd condition in BHZ09 theorem.
           if (y_k_ell >= x_k[ell])
             continue;
           const dimension_type cell = coherent_index(ell);
@@ -6079,38 +6106,38 @@ Octagonal_Shape<T>
             : (ell < row_size_i ? ub_i[ell] : ub_cell[ci]);
           const N& ub_cj_ell = (cj == ell) ? temp_zero
             : (ell < row_size_cj ? ub_cj[ell] : ub_cell[j]);
-          // Check for condition 3 of Theorem 8.
+          // Check 3rd condition in BHZ09 theorem.
           add_assign_r(lhs, x_i_j, y_k_ell, ROUND_UP);
           add_assign_r(rhs, ub_i_ell, ub_k_j, ROUND_UP);
           if (lhs >= rhs)
             continue;
-          // Check for condition 4 of Theorem 8.
-          add_assign_r(rhs, ub_k_ci, ub_cj_ell, ROUND_UP);
+          // Check 4th condition in BHZ09 theorem.
+          add_assign_r(rhs, ub_i_ck, ub_cj_ell, ROUND_UP);
           if (lhs >= rhs)
             continue;
-          // Check for condition 5 of Theorem 8.
+          // Check 5th condition in BHZ09 theorem.
           assign_r(lhs_copy, lhs, ROUND_NOT_NEEDED);
           add_assign_r(lhs, lhs_copy, x_i_j, ROUND_UP);
-          add_assign_r(rhs, ub_i_ell, ub_k_ci, ROUND_UP);
+          add_assign_r(rhs, ub_i_ell, ub_i_ck, ROUND_UP);
           add_assign_r(rhs, rhs, ub_cj_j, ROUND_UP);
           if (lhs >= rhs)
             continue;
-          // Check for condition 6 of Theorem 8.
+          // Check 6th condition in BHZ09 theorem.
           add_assign_r(rhs, ub_k_j, ub_cj_ell, ROUND_UP);
           add_assign_r(rhs, rhs, ub_i_ci, ROUND_UP);
           if (lhs >= rhs)
             continue;
-          // Check for condition 7 of Theorem 8.
+          // Check 7th condition of BHZ09 theorem.
           add_assign_r(lhs, lhs_copy, y_k_ell, ROUND_UP);
-          add_assign_r(rhs, ub_k_j, ub_k_ci, ROUND_UP);
-          add_assign_r(rhs, rhs, ub_cell[ell], ROUND_UP);
-          if (lhs >= rhs)
-            continue;
-          // Check for condition 8 of Theorem 8.
           add_assign_r(rhs, ub_i_ell, ub_cj_ell, ROUND_UP);
           add_assign_r(rhs, rhs, ub_k_ck, ROUND_UP);
+          if (lhs >= rhs)
+            continue;
+          // Check 8th (last) condition in BHZ09 theorem.
+          add_assign_r(rhs, ub_k_j, ub_i_ck, ROUND_UP);
+          add_assign_r(rhs, rhs, ub_cell[ell], ROUND_UP);
           if (lhs < rhs)
-            // All 8 conditions of Theorem 8 are satisfied:
+            // All 8 conditions are satisfied:
             // upper bound is not exact.
             return false;
         }
