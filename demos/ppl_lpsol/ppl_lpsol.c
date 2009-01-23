@@ -1206,7 +1206,7 @@ glpk_message_interceptor(void* info, const char* msg) {
 int
 main(int argc, char* argv[]) {
 #if defined(PPL_GLPK_HAS__GLP_LIB_PRINT_HOOK)
-  extern void _glp_lib_print_hook(int (*func)(void *info, char *buf),
+  extern void _glp_lib_print_hook(int (*func)(void *info, const char *buf),
 				  void *info);
 #endif
   program_name = argv[0];
