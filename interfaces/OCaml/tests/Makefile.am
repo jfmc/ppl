@@ -62,7 +62,7 @@ ppl_ocaml_tests_common
 OCAMLC_ENV = OCAMLRUNPARAM='l=1M'
 
 OCAMLC_COMPILE_FLAGS = \
--I +gmp -I .. -ccopt -g
+-I @mlgmp_dir@ -I .. -ccopt -g
 
 OCAMLC_LINK_FLAGS = \
 -cclib -lmlgmp -cclib -lmpfr \

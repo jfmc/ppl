@@ -259,6 +259,11 @@ For the Java interface, the `--with-java=DIR' configure option allows
 to select the Java SDK root directory.  We have tested the Java interface
 with the Java SE Development Kit 6 and OpenJDK 1.6.
 
+For the OCaml interface, the `--with-mlgmp=DIR' configure option allows
+to specify the installation directory of the ML GMP package (which allows
+to use GMP numbers in OCaml programs).  By default, ML GMP is searched
+in the `gmp' subdirectory of the OCaml standard library directory.
+
 The C++ interface provides access to all the numerical abstractions
 provided by the PPL.  The majority of these (we are talking about
 hundreds of different numerical abstractions) are provided by means

@@ -23,7 +23,7 @@
 # Process this file with autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library],[0.10.1pre2],[ppl-devel@cs.unipr.it],[ppl])
+AC_INIT([the Parma Polyhedra Library],[0.10.1pre3],[ppl-devel@cs.unipr.it],[ppl])
 
 # Minimum Autoconf version required.
 AC_PREREQ(2.60)
@@ -885,34 +885,34 @@ AM_CONDITIONAL(BUILD_C_INTERFACE, test x${c_interface_enabled} = xyes && test x"
 
 # Checks for systems for which the interface is enabled.
 
-# Set the optional Java SDK directory.
+# Allow to specify the Java SDK installation directory.
 AC_ARG_WITH(java,
-	AC_HELP_STRING([--with-java=DIR],
-       [use the Java SDK installed in DIR]),
-       [JAVA_HOME=$with_java])
+  AC_HELP_STRING([--with-java=DIR],
+    [use the Java SDK installed in DIR]),
+  java_dir=$with_java)
 
 case "${host_os}" in
 # On Darwin the JDK, if present, is installed in /Library/Java/Home .
 darwin*)
-  if test "x$JAVA_HOME" = x
+  if test "x$java_dir" = x
   then
-    JAVA_HOME="/Library/Java/Home"
+    java_dir="/Library/Java/Home"
   fi
   ;;
 # On Fedora 9 systems the JDK is usually in /usr/lib/jvm/java .
 linux*)
-  if test "x$JAVA_HOME" = x
+  if test "x$java_dir" = x
   then
-    JAVA_HOME="/usr/lib/jvm/java"
+    java_dir="/usr/lib/jvm/java"
   fi
   ;;
 *)
   ;;
 esac
 
-if test "x$JAVA_HOME" != x
+if test "x$java_dir" != x
 then
-  JAVAPREFIX="${JAVA_HOME}/bin"
+  JAVAPREFIX="${java_dir}/bin"
 fi
 
 # Checks for Java.
@@ -951,50 +951,59 @@ fi
 
 # All the Java programs are required to build the Java interface and if
 # the Java interface is enabled.
-AM_CONDITIONAL(BUILD_JAVA_INTERFACE, test "x$JAVA" != xno &&  test "x$ac_cv_javac_supports_enums" != xno && test "x$JAR" != xno && test "x$JAVAH" != xno && test x${java_interface_enabled} = xyes && test x${ac_jlong_can_contain_pointers} = xyes)
+AM_CONDITIONAL(BUILD_JAVA_INTERFACE, test "x$JAVA" != xno && test "x$ac_cv_javac_supports_enums" != xno && test "x$JAR" != xno && test "x$JAVAH" != xno && test x${java_interface_enabled} = xyes && test x${ac_jlong_can_contain_pointers} = xyes)
+
+# Allow to specify the ML GMP installation directory.
+AC_ARG_WITH(mlgmp,
+  AC_HELP_STRING([--with-mlgmp=DIR],
+    [use the ML GMP package installed in DIR]),
+  mlgmp_dir=$with_mlgmp,
+  mlgmp_dir=+gmp)
 
 # Checks for OCaml.
 if test x${ocaml_interface_enabled} = xyes
 then
   # Check for the bytecode compiler.
   AC_CHECK_PROG(OCAMLC, ocamlc, ocamlc)
-  ocamlcgmp="no"
+  ocamlc_gmp="no"
   if test x"$OCAMLC" = xocamlc
   then
      ocamlc_root=`ocamlc -where`
-     # Checks for (the bytecode version of) OCaml GMP.
-     AC_MSG_CHECKING(for OCaml-GMP module gmp.cma)
-     if test -f ${ocamlc_root}/gmp/gmp.cma;
+     # Check for the bytecode version of ML GMP.
+     AC_MSG_CHECKING([for ML GMP bytecode module gmp.cma])
+     if ( test ${mlgmp_dir} = +gmp && test -f ${ocamlc_root}/gmp/gmp.cma ) \
+        || test -f ${mlgmp_dir}/gmp.cma;
      then
          AC_MSG_RESULT(yes)
-	 ocamlcgmp="yes"
+	 ocamlc_gmp="yes"
      else
          AC_MSG_RESULT(no)
-	 ocamlcgmp="no"
+	 ocamlc_gmp="no"
      fi
   fi
   # Check for the native compiler.
   AC_CHECK_PROG(OCAMLOPT, ocamlopt, ocamlopt)
-  ocamloptgmp="no"
+  ocamlopt_gmp="no"
   if test x"$OCAMLOPT" = xocamlopt
   then
      ocamlopt_root=`ocamlopt -where`
-     # Checks for (the native version of) OCaml GMP.
-     AC_MSG_CHECKING(for OCaml-GMP module gmp.cmxa)
-     if test -f ${ocamlopt_root}/gmp/gmp.cmxa;
+     # Check for the native version of ML GMP.
+     AC_MSG_CHECKING([for ML GMP native module gmp.cmxa])
+     if ( test ${mlgmp_dir} = +gmp && test -f ${ocamlopt_root}/gmp/gmp.cmxa ) \
+        || test -f ${mlgmp_dir}/gmp.cmxa;
      then
          AC_MSG_RESULT(yes)
-	 ocamloptgmp="yes"
+	 ocamlopt_gmp="yes"
      else
          AC_MSG_RESULT(no)
-	 ocamloptgmp="no"
+	 ocamlopt_gmp="no"
      fi
   fi
 fi
-AM_CONDITIONAL(HAVE_OCAMLC, test x$ocamlcgmp = xyes)
-AM_CONDITIONAL(HAVE_OCAMLOPT, test x$ocamloptgmp = xyes)
-AM_CONDITIONAL(BUILD_OCAML_INTERFACE, test x$ocamlcgmp = xyes \
-                                      || test x$ocamloptgmp = xyes)
+AM_CONDITIONAL(HAVE_OCAMLC, test x$ocamlc_gmp = xyes)
+AM_CONDITIONAL(HAVE_OCAMLOPT, test x$ocamlopt_gmp = xyes)
+AM_CONDITIONAL(BUILD_OCAML_INTERFACE, test x$ocamlc_gmp = xyes \
+                                      || test x$ocamlopt_gmp = xyes)
 
 # Checks for Ciao Prolog.
 if test x${ciao_prolog_interface_enabled} = xyes
@@ -1414,6 +1423,7 @@ AC_SUBST(required_instantiations_ocaml_cxx_headers)
 AC_SUBST(required_instantiations_ocaml_cxx_sources)
 AC_SUBST(required_instantiations_ocaml_cxx_objects)
 AC_SUBST(ocamlc_root)
+AC_SUBST(mlgmp_dir)
 
 AC_CONFIG_FILES(Makefile
                 ppl.lsm

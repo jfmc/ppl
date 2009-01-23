@@ -20,6 +20,9 @@ o  New macro PPL_DIRTY_TEMP_COEFFICIENT allows users of the C++ interface
 
 o  The OCaml interface can now be compiled to native code using ocamlopt.
 
+o  New configuration option `--with-mlgmp=DIR' allows to specify the
+   installation directory of the ML GMP package.
+
 
 Bugfixes
 ========
