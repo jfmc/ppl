@@ -24,8 +24,9 @@ o  New configuration option `--with-mlgmp=DIR' allows to specify the
    installation directory of the ML GMP package.
 
 o  The configuration script now explicitly checks that a recent enough
-   version of GNU M4 is available (in previous versions this check was
-   not performed and building the library could fail in a mysterious way).
+   version of GNU M4 is available if at least one non-C++ interface is
+   enabled (in previous versions this check was not performed and
+   building the library could fail in a mysterious way).
 
 
 Bugfixes
