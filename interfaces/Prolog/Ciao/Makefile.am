@@ -168,11 +168,11 @@ $(NO_UNDEFINED_FLAG) \
 pkglib_DATA = ppl_ciao.po
 
 ppl_ciao.pl: $(interface_generator_dependencies)
-	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
+	$(M4) --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_ciao_pl.m4 > $@
 
 ciao_prolog_generated_test.pl: $(interface_generator_dependencies)
-	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
+	$(M4) --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_ciao_prolog_generated_test_pl.m4 > $@
 
 ppl_ciao.po: ppl_ciao.pl

@@ -77,7 +77,7 @@ check-local: ppl_java_generated_tests.java
 	$(java_test_environment) Parma_Polyhedra_Library_test1
 
 ppl_java_generated_tests.java: $(interface_generator_dependencies)
-	m4 --prefix-builtin -I../.. \
+	$(M4) --prefix-builtin -I../.. \
 		-I$(srcdir) -I$(srcdir)/.. -I$(srcdir)/../.. \
 		$(srcdir)/ppl_interface_generator_java_test_java.m4 \
 			> $@

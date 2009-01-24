@@ -877,11 +877,21 @@ xall)
   ;;
 esac
 
-# Set an Automake conditional to build or not to build the C interface.
-AM_CONDITIONAL(BUILD_CXX_INTERFACE, test x${cxx_interface_enabled} = xyes && test x"$PERL" != xno)
+# Perl is needed to build the C++ interface.
+if test x${cxx_interface_enabled} = xyes \
+&& test x"$PERL" != xno
+then
+  build_cxx_interface=yes
+fi
+AM_CONDITIONAL(BUILD_CXX_INTERFACE, test x$build_cxx_interface = xyes)
 
-# Set an Automake conditional to build or not to build the C interface.
-AM_CONDITIONAL(BUILD_C_INTERFACE, test x${c_interface_enabled} = xyes && test x"$PERL" != xno)
+# Perl is needed to build the C interface.
+if test x${c_interface_enabled} = xyes \
+&& test x"$PERL" != xno
+then
+  build_c_interface=yes
+fi
+AM_CONDITIONAL(BUILD_C_INTERFACE, test x$build_c_interface = xyes)
 
 # Checks for systems for which the interface is enabled.
 
@@ -949,9 +959,19 @@ then
   CPPFLAGS="$ac_save_CPPFLAGS"
 fi
 
-# All the Java programs are required to build the Java interface and if
-# the Java interface is enabled.
-AM_CONDITIONAL(BUILD_JAVA_INTERFACE, test "x$JAVA" != xno && test "x$ac_cv_javac_supports_enums" != xno && test "x$JAR" != xno && test "x$JAVAH" != xno && test x${java_interface_enabled} = xyes && test x${ac_jlong_can_contain_pointers} = xyes)
+# In order to build the Java interface, it must be enabled and all the
+# Java tools must be available.
+if test x${java_interface_enabled} = xyes \
+&& test "x$JAVA" != xno \
+&& test "x$ac_cv_javac_supports_enums" != xno \
+&& test "x$JAR" != xno \
+&& test "x$JAVAH" != xno \
+&& test x${ac_jlong_can_contain_pointers} = xyes
+then
+  build_java_interface=yes
+fi
+AM_CONDITIONAL(BUILD_JAVA_INTERFACE, test x$build_java_interface = xyes)
+
 
 # Allow to specify the ML GMP installation directory.
 AC_ARG_WITH(mlgmp,
@@ -1002,15 +1022,27 @@ then
 fi
 AM_CONDITIONAL(HAVE_OCAMLC, test x$ocamlc_gmp = xyes)
 AM_CONDITIONAL(HAVE_OCAMLOPT, test x$ocamlopt_gmp = xyes)
-AM_CONDITIONAL(BUILD_OCAML_INTERFACE, test x$ocamlc_gmp = xyes \
-                                      || test x$ocamlopt_gmp = xyes)
+
+if test x${ocaml_interface_enabled} = xyes \
+&& (test x$ocamlc_gmp = xyes || test x$ocamlopt_gmp = xyes)
+then
+  build_ocaml_interface=yes
+fi
+AM_CONDITIONAL(BUILD_OCAML_INTERFACE, test x$build_c_interface = xyes)
 
 # Checks for Ciao Prolog.
 if test x${ciao_prolog_interface_enabled} = xyes
 then
   AC_CHECK_CIAO_PROLOG
 fi
-AM_CONDITIONAL(BUILD_CIAO_PROLOG_INTERFACE, test x$have_ciao_prolog = xyes)
+
+if test x${ciao_prolog_interface_enabled} = xyes \
+&& test x$have_ciao_prolog = xyes
+then
+  build_ciao_prolog_interface=yes
+fi
+AM_CONDITIONAL(BUILD_CIAO_PROLOG_INTERFACE,
+               test x$build_ciao_prolog_interface = xyes)
 
 # Checks for GNU Prolog.
 if test x${gnu_prolog_interface_enabled} = xyes
@@ -1023,30 +1055,59 @@ then
                     GNU_PROLOG="")
   fi
 fi
-AM_CONDITIONAL(BUILD_GNU_PROLOG_INTERFACE, test x$GNU_PROLOG = xgprolog)
+
+if test x${gnu_prolog_interface_enabled} = xyes \
+&& test x$GNU_PROLOG = xgprolog
+then
+  build_gnu_prolog_interface=yes
+fi
+AM_CONDITIONAL(BUILD_GNU_PROLOG_INTERFACE,
+               test x$build_gnu_prolog_interface = xyes)
 
 # Checks for SICStus.
 if test x${sicstus_prolog_interface_enabled} = xyes
 then
   AC_CHECK_SICSTUS_PROLOG
 fi
-AM_CONDITIONAL(BUILD_SICSTUS_PROLOG_INTERFACE, test x$have_sicstus_prolog = xyes)
+
+if test x${sicstus_prolog_interface_enabled} = xyes \
+&& test x$have_sicstus_prolog = xyes
+then
+  build_sicstus_prolog_interface=yes
+fi
+AM_CONDITIONAL(BUILD_SICSTUS_PROLOG_INTERFACE,
+               test x$build_sicstus_prolog_interface = xyes)
 
 # Checks for SWI-Prolog.
-# Under Cygwin, SWI-Prolog does not work with foreign code:
-# see http://www.cs.unipr.it/pipermail/ppl-devel/2006-January/007838.html
-if test x${swi_prolog_interface_enabled} = xyes && test x"${host_os}" != xcygwin
+if test x${swi_prolog_interface_enabled} = xyes
 then
   AC_CHECK_SWI_PROLOG
 fi
-AM_CONDITIONAL(BUILD_SWI_PROLOG_INTERFACE, test x$have_swi_prolog = xyes)
+
+# Under Cygwin, SWI-Prolog does not work with foreign code:
+# see http://www.cs.unipr.it/pipermail/ppl-devel/2006-January/007838.html
+if test x${swi_prolog_interface_enabled} = xyes \
+&& test x$have_swi_prolog = xyes \
+&& test x"${host_os}" != xcygwin
+then
+  build_swi_prolog_interface=yes
+fi
+AM_CONDITIONAL(BUILD_SWI_PROLOG_INTERFACE,
+               test x$build_swi_prolog_interface = xyes)
 
 # Checks for XSB.
 if test x${xsb_prolog_interface_enabled} = xyes
 then
   AC_CHECK_XSB_PROLOG
 fi
-AM_CONDITIONAL(BUILD_XSB_PROLOG_INTERFACE, test x$have_xsb_prolog = xyes)
+
+if test x${xsb_prolog_interface_enabled} = xyes \
+&& test x$have_xsb_prolog = xyes
+then
+  build_xsb_prolog_interface=yes
+fi
+AM_CONDITIONAL(BUILD_XSB_PROLOG_INTERFACE,
+               test x$build_xsb_prolog_interface = xyes)
 
 # Checks for YAP.
 if test x${yap_prolog_interface_enabled} = xyes
@@ -1059,19 +1120,36 @@ then
                     YAP_PROLOG="")
   fi
 fi
-AM_CONDITIONAL(BUILD_YAP_PROLOG_INTERFACE, test x$YAP_PROLOG = xyap)
+
+if test x${yap_prolog_interface_enabled} = xyes \
+test x$YAP_PROLOG = xyap
+then
+  build_yap_prolog_interface=yes
+fi
+AM_CONDITIONAL(BUILD_YAP_PROLOG_INTERFACE,
+               test x$build_yap_prolog_interface = xyes)
 
 # Test if *any* Prolog system has to be built.
-if test x${have_ciao_prolog} = xyes \
-|| test x${GNU_PROLOG} = xgprolog \
-|| test x${have_sicstus_prolog} = xyes \
-|| test x${have_swi_prolog} = xyes \
-|| test x${have_xsb_prolog} = xyes \
-|| test x${YAP_PROLOG} = xyap
+if test x$build_ciao_prolog_interface = xyes \
+|| test x$build_gnu_prolog_interface = xyes \
+|| test x$build_sicstus_prolog_interface = xyes \
+|| test x$build_swi_prolog_interface = xyes \
+|| test x$build_xsb_prolog_interface = xyes \
+|| test x$build_yap_prolog_interface = xyes
 then
-  SOME_PROLOG=yes
+  build_some_prolog_interfaces=yes
 fi
-AM_CONDITIONAL(BUILD_SOME_PROLOG_INTERFACES, test x$SOME_PROLOG = xyes)
+AM_CONDITIONAL(BUILD_SOME_PROLOG_INTERFACES,
+               test x$build_some_prolog_interfaces = xyes)
+
+if test x$build_c_interface = xyes \
+|| test x$build_java_interface = xyes \
+|| test x$build_ocaml_interface = xyes \
+|| test x$build_some_prolog_interfaces = xyes
+then
+  # Look for a recent enough version of GNU M4.
+  AC_PROG_GNU_M4
+fi
 
 # Define the list of instantiations that are enabled by default.
 # Different instantiations are separated by a '@' character.

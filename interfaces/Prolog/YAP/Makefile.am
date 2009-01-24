@@ -52,7 +52,7 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ppl_interface_generator_yap_cc.m4
 
 ppl_yap.cc: $(interface_generator_dependencies)
-	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
+	$(M4) --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_yap_cc.m4 > $@
 
 if ENABLE_SHARED

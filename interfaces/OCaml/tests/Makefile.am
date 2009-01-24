@@ -132,7 +132,7 @@ nodist_ppl_ocaml_generated_test_SOURCES = ppl_ocaml_generated_test.ml
 nodist_ppl_ocaml_generated_test_opt_SOURCES = ppl_ocaml_generated_test.ml
 
 ppl_ocaml_generated_test.ml: $(interface_generator_dependencies)
-	m4 --prefix-builtin -I../.. \
+	$(M4) --prefix-builtin -I../.. \
 		-I$(srcdir) -I$(srcdir)/.. -I$(srcdir)/../.. \
 		$(srcdir)/ppl_interface_generator_ocaml_test_ml.m4 \
 			> $@

@@ -220,15 +220,15 @@ ppl_ocaml_globals.cmi: ppl_ocaml_globals.mli
 	$(OCAMLC_ENV) ocamlc -o $@ -c $(OCAMLC_COMPILE_FLAGS) $<
 
 ppl_ocaml.ml: $(interface_generator_dependencies)
-	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
+	$(M4) --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_ocaml_ml.m4 > $@
 
 ppl_ocaml.mli: $(interface_generator_dependencies)
-	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
+	$(M4) --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_ocaml_mli.m4 > $@
 
 ppl_ocaml_domains_cc_files.stamp: $(interface_generator_dependencies)
-	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
+	$(M4) --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_ocaml_cc_files.m4 \
                 > ppl_ocaml_cc_blob
 	$(top_srcdir)/utils/cm_cleaner.sh < ppl_ocaml_cc_blob
@@ -237,7 +237,7 @@ ppl_ocaml_domains_cc_files.stamp: $(interface_generator_dependencies)
 	echo timestamp >$@
 
 ppl_ocaml_domains.hh: $(interface_generator_dependencies)
-	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
+	$(M4) --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_ocaml_hh_files.m4 \
                 > ppl_ocaml_hh_blob
 	$(top_srcdir)/utils/cm_cleaner.sh < ppl_ocaml_hh_blob

@@ -92,11 +92,11 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 $(interface_generator_files)
 
 ppl_c_domains.h: $(interface_generator_dependencies)
-	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
+	$(M4) --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_c_h.m4 > $@
 
 ppl_c_implementation_domains.cc.stamp: $(interface_generator_dependencies)
-	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
+	$(M4) --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_c_cc_files.m4 \
                 > ppl_c_cc_blob
 	$(top_srcdir)/utils/cm_cleaner.sh < ppl_c_cc_blob
@@ -105,7 +105,7 @@ ppl_c_implementation_domains.cc.stamp: $(interface_generator_dependencies)
 	echo timestamp >$@
 
 ppl_c_implementation_domains.hh: $(interface_generator_dependencies)
-	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
+	$(M4) --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_c_hh_files.m4 \
                 > ppl_c_hh_blob
 	$(top_srcdir)/utils/cm_cleaner.sh < ppl_c_hh_blob

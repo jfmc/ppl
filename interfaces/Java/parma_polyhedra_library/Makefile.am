@@ -138,7 +138,7 @@ java_cxx_headers.stamp: java_classes.stamp
 	echo timestamp >$@
 
 source_generation.stamp: $(interface_generator_dependencies)
-	m4 --prefix-builtin -I../.. \
+	$(M4) --prefix-builtin -I../.. \
 		-I$(srcdir) -I$(srcdir)/.. -I$(srcdir)/../.. \
 		$(srcdir)/ppl_interface_generator_java_classes_java.m4 \
 			> java_blob

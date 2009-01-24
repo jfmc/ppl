@@ -240,6 +240,10 @@ or any space-separated list of interface specifiers chosen among
   xsb_prolog,      the XSB interface;
   yap_prolog,      the YAP interface.
 
+Note that, in order to build any interface different from the C++ one,
+a recent enough version of GNU M4 is required (the configuration script
+searches for one and gives an error if it cannot find it).
+
 The instantiations for the domains for interfaces other than the main
 C++ interface can be customized via the `instantiations' option for
 the PPL `configure' shell script which is described below. Some

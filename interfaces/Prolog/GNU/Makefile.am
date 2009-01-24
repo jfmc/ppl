@@ -161,7 +161,7 @@ $(NO_UNDEFINED_FLAG) \
 -avoid-version
 
 ppl_gprolog.pl: $(interface_generator_dependencies)
-	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
+	$(M4) --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_gprolog_pl.m4 > $@
 
 pkglib_DATA = ppl_gprolog.pl

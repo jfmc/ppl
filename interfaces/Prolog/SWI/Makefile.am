@@ -74,7 +74,7 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ppl_interface_generator_swiprolog_cc.m4
 
 ppl_swiprolog.cc: $(interface_generator_dependencies)
-	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
+	$(M4) --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_swiprolog_cc.m4 > $@
 
 pkglib_LTLIBRARIES = libppl_swiprolog.la

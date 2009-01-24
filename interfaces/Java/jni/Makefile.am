@@ -162,7 +162,7 @@ libppl_java_la_DEPENDENCIES = \
 @required_instantiations_java_cxx_objects@
 
 ppl_java_implementation_domains.cc.stamp: $(interface_generator_dependencies)
-	m4 --prefix-builtin -I../.. \
+	$(M4) --prefix-builtin -I../.. \
 		-I$(srcdir) -I$(srcdir)/.. -I$(srcdir)/../.. \
 		$(srcdir)/ppl_interface_generator_java_classes_cc_files.m4 \
                 > ppl_java_cc_blob
