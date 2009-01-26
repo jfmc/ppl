@@ -35,6 +35,48 @@
               \emph{partial evaluation}."
 }
 
+@Incollection{AlbertAGPZ08,
+  Author = "E. Albert and P. Arenas and S. Genaim
+            and G. Puebla and D. Zanardini",
+  Title = "{COSTA}: Design and Implementation of a Cost and Termination
+           Analyzer for {Java} Bytecode",
+  Booktitle = "Formal Methods for Components and Objects",
+  Editor = "Frank S. {de Boer} and M. M. Bonsangue
+            and S. Graf and W. P. {de Roever}",
+  Publisher = "Springer-Verlag, Berlin",
+  Series = "Lecture Notes in Computer Science",
+  Year = 2008,
+  Volume = 5382,
+  Pages = "113--132",
+  ISBN = "978-3-540-92187-5",
+  Note = "Revised papers presented at the 6th International Symposium on
+          Formal Methods for Components and Objects (FMCO 2007),
+          Amsterdam, The Netherlands, October 24-26, 2007",
+  Abstract = "This paper describes the architecture of COSTA, an
+              abstract interpretation based COST and termination
+              Analyzer for Java bytecode.  The system receives as
+              input a bytecode program, (a choice of) a
+              \emph{resource} of interest and tries to obtain an upper
+              bound of the resource consumption of the program. COSTA
+              provides several non-trivial notions of cost, as the
+              consumption of the heap, the number of bytecode
+              instructions executed and the number of calls to a
+              specific method. Additionally, COSTA tries to prove
+              \emph{termination} of the bytecode program which implies
+              the boundedness of any resource consumption. Having cost
+              and termination together is interesting, as both
+              analyses share most of the machinery to, respectively,
+              infer cost \emph{upper bounds} and to prove that the
+              execution length is always \emph{finite} (i.e., the
+              program terminates). We report on experimental results
+              which show that COSTA can deal with programs of
+              realistic size and complexity, including programs which
+              use Java libraries.  To the best of our knowledge, this
+              system provides for the first time evidence that
+              resource usage analysis can be applied to a realistic
+              object-oriented, bytecode programming language."
+}
+
 @Inproceedings{AlurKRS08,
   Author = "R. Alur and A. Kanade and S. Ramesh and K. Shashidhar",
   Title = "Symbolic Analysis for Improving Simulation Coverage
@@ -1535,7 +1577,7 @@
 @Incollection{KimGR07,
   Author = "D. Kim and G. Gupta and S. V. Rajopadhye",
   Title = "On Control Signals for Multi-Dimensional Time",
-  booktitle = "Languages and Compilers for Parallel Computing",
+  Booktitle = "Languages and Compilers for Parallel Computing",
   Editor = "G. Alm{\'a}si and C. Ca\c{s}caval and P. Wu",
   Publisher = "Springer-Verlag, Berlin",
   Series = "Lecture Notes in Computer Science",
@@ -1630,7 +1672,7 @@
 
 @Inproceedings{PayetS07,
   Author = "E. Payet and F. Spoto",
-  Title = " Magic-Sets Transformation for the Analysis of Java Bytecode",
+  Title = " Magic-Sets Transformation for the Analysis of {Java} Bytecode",
   Booktitle = "Static Analysis:
                Proceedings of the 14th International Symposium",
   Address = "Kongens Lyngby, Denmark",
