@@ -1028,7 +1028,7 @@ if test x${ocaml_interface_enabled} = xyes \
 then
   build_ocaml_interface=yes
 fi
-AM_CONDITIONAL(BUILD_OCAML_INTERFACE, test x$build_c_interface = xyes)
+AM_CONDITIONAL(BUILD_OCAML_INTERFACE, test x$build_ocaml_interface = xyes)
 
 # Checks for Ciao Prolog.
 if test x${ciao_prolog_interface_enabled} = xyes
