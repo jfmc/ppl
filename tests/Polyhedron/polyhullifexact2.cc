@@ -117,7 +117,6 @@ test03() {
   return ok;
 }
 
-
 bool
 test04() {
   Variable x(0);
@@ -147,6 +146,163 @@ test04() {
   return ok;
 }
 
+bool
+test05() {
+  Variable x(0);
+  Variable y(1);
+
+  NNC_Polyhedron ph1(2, UNIVERSE);
+  ph1.add_constraint(x > 0);
+  ph1.add_constraint(y > 0);
+  ph1.add_constraint(x < 2);
+  ph1.add_constraint(y < 2);
+
+  print_constraints(ph1, "*** ph1 ***");
+
+  NNC_Polyhedron ph2(2, UNIVERSE);
+  ph2.add_constraint(x == 2);
+  ph2.add_constraint(y == 1);
+
+  print_constraints(ph2, "*** ph2 ***");
+
+  NNC_Polyhedron known_result(ph1);
+
+  bool ok = !ph1.upper_bound_assign_if_exact(ph2);
+  ok &= (ph1 == known_result);
+
+  print_constraints(ph1, "*** ph1.upper_bound_assign_if_exact(ph2) ***");
+
+  return ok;
+}
+
+bool
+test06() {
+  Variable x(0);
+  Variable y(1);
+
+  NNC_Polyhedron ph1(2, UNIVERSE);
+  ph1.add_constraint(x > 0);
+  ph1.add_constraint(y > 0);
+  ph1.add_constraint(x < 2);
+  ph1.add_constraint(y < 2);
+
+  print_constraints(ph1, "*** ph1 ***");
+
+  NNC_Polyhedron ph2(2, UNIVERSE);
+  ph2.add_constraint(x == 2);
+  ph2.add_constraint(y > 0);
+  ph2.add_constraint(y < 2);
+
+  print_constraints(ph2, "*** ph2 ***");
+
+  NNC_Polyhedron known_result(2, UNIVERSE);
+  known_result.add_constraint(x > 0);
+  known_result.add_constraint(y > 0);
+  known_result.add_constraint(x <= 2);
+  known_result.add_constraint(y < 2);
+
+  bool ok = ph1.upper_bound_assign_if_exact(ph2);
+  ok &= (ph1 == known_result);
+
+  print_constraints(ph1, "*** ph1.upper_bound_assign_if_exact(ph2) ***");
+
+  return ok;
+}
+
+bool
+test07() {
+  Variable x(0);
+  Variable y(1);
+
+  NNC_Polyhedron ph1(2, UNIVERSE);
+  ph1.add_constraint(x >= 0);
+  ph1.add_constraint(x < 2);
+
+  print_constraints(ph1, "*** ph1 ***");
+
+  NNC_Polyhedron ph2(2, UNIVERSE);
+  ph2.add_constraint(x == 2);
+  ph2.add_constraint(y == 0);
+
+  print_constraints(ph2, "*** ph2 ***");
+
+  NNC_Polyhedron known_result(ph1);
+
+  bool ok = !ph1.upper_bound_assign_if_exact(ph2);
+  ok &= (ph1 == known_result);
+
+  print_constraints(ph1, "*** ph1.upper_bound_assign_if_exact(ph2) ***");
+
+  return ok;
+}
+
+bool
+test08() {
+  Variable x(0);
+  Variable y(1);
+
+  NNC_Polyhedron ph1(2, UNIVERSE);
+  ph1.add_constraint(x >= 0);
+  ph1.add_constraint(x < 1);
+  ph1.add_constraint(y >= 0);
+  ph1.add_constraint(y <= 2);
+
+  print_constraints(ph1, "*** ph1 ***");
+
+  NNC_Polyhedron ph2(2, UNIVERSE);
+  ph2.add_constraint(x > 1);
+  ph2.add_constraint(x <= 2);
+  ph2.add_constraint(y >= 0);
+  ph2.add_constraint(y <= 2);
+
+  print_constraints(ph2, "*** ph2 ***");
+
+  NNC_Polyhedron known_result(ph1);
+
+  bool ok = !ph1.upper_bound_assign_if_exact(ph2);
+  ok &= (ph1 == known_result);
+
+  print_constraints(ph1, "*** ph1.upper_bound_assign_if_exact(ph2) ***");
+
+  return ok;
+}
+
+bool
+test09() {
+  Variable x(0);
+  Variable y(1);
+
+  NNC_Polyhedron ph1(2, EMPTY);
+  ph1.add_generator(point(0*x + 0*y));
+  ph1.add_generator(point(0*x + 1*y));
+  ph1.add_generator(closure_point(2*x + 2*y));
+  ph1.add_generator(closure_point(3*x + 0*y));
+
+  print_constraints(ph1, "*** ph1 ***");
+
+  NNC_Polyhedron ph2(2, EMPTY);
+  ph2.add_generator(point(4*x + 0*y));
+  ph2.add_generator(point(4*x + 1*y));
+  ph2.add_generator(closure_point(2*x + 2*y));
+  ph2.add_generator(closure_point(1*x + 0*y));
+
+  print_constraints(ph2, "*** ph2 ***");
+
+  NNC_Polyhedron known_result(ph1);
+  known_result.add_generator(point(0*x + 0*y));
+  known_result.add_generator(point(0*x + 1*y));
+  known_result.add_generator(point(4*x + 0*y));
+  known_result.add_generator(point(4*x + 1*y));
+  known_result.add_generator(closure_point(2*x + 2*y));
+
+  bool ok = ph1.upper_bound_assign_if_exact(ph2);
+  ok &= (ph1 == known_result);
+
+  print_constraints(ph1, "*** ph1.upper_bound_assign_if_exact(ph2) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -154,4 +310,9 @@ BEGIN_MAIN
   DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
+  DO_TEST(test08);
+  DO_TEST(test09);
 END_MAIN
