@@ -983,6 +983,45 @@
               convex hull representation of polyhedra."
 }
 
+@InProceedings{BjorndalenA05,
+  Author = "J. M. Bj{\o}rndalen and O. Anshus",
+  Title = "Lessons Learned in Benchmarking
+           --- {Floating} Point Benchmarks: Can You Trust Them?",
+  Booktitle = "Proceedings of the \emph{Norsk informatikkonferanse 2005}
+              (NIK 2005)",
+  Address = "Bergen, Norway",
+  Publisher = "Tapir Akademisk Forlag",
+  ISBN = "82-519-2081-7",
+  Year = 2005,
+  Pages = "89--100",
+  Abstract = "Benchmarks are important tools for understanding the
+              implication of design choices for systems, and for
+              studying increasingly complex hardware architectures and
+              software systems.  One of the assumptions for
+              benchmarking within systems research seems to be that
+              the execution time of floating point operations do not
+              change much with different input values. We report on a
+              problem where a textbook benchmark showed significant
+              variation in execution time depending on the input
+              values, and how a small fraction of \emph{denormalized}
+              floating point values (a representation automatically
+              used by the CPU to represent values close to zero) in
+              the benchmark could lead to the wrong conclusions about
+              the relative efficiency of PowerPC and Intel P4
+              machines. Furthermore, a parallel version of the same
+              benchmark is demonstrated to incorrectly indicate
+              scalability problems in the application or communication
+              subsystem.  There is significant overhead in handling
+              these exceptions on-chip on modern Intel hardware, even
+              if the program can continue uninterrupted. We have
+              observed that the execution time of benchmarks can
+              increase by up to two orders of magnitude. In one
+              benchmark, 3.88\% denormalized numbers in a matrix
+              slowed down the benchmark by a factor 3.83.  We suggest
+              some remedies and guidelines for avoiding the problem.",
+  URL = "http://www.cs.uit.no/~johnm/publications/pdf/bjorndalen2005lessons.pdf"
+}
+
 @InCollection{BlanchetCCFMMMR02,
   Author = "B. Blanchet and P. Cousot and R. Cousot and J. Feret
             and L. Mauborgne and A. Min\'e and D. Monniaux
