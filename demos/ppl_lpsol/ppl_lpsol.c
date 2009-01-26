@@ -1188,11 +1188,12 @@ ppl_set_GMP_memory_allocation_functions(void) {
 }
 #endif
 
-#if defined(NDEBUG) && \
-  !(defined(PPL_GLPK_HAS_GLP_TERM_OUT) && defined(GLP_OFF))     \
-  && (defined(PPL_GLPK_HAS_GLP_TERM_HOOK) \
-      || defined(PPL_GLPK_HAS__GLP_LIB_PRINT_HOOK) \
-      || defined(PPL_GLPK_HAS_LIB_SET_PRINT_HOOK))
+#if defined(NDEBUG)
+
+#if !(defined(PPL_GLPK_HAS_GLP_TERM_OUT) && defined(GLP_OFF))
+
+#if defined(PPL_GLPK_HAS_GLP_TERM_HOOK) \
+  || defined(PPL_GLPK_HAS__GLP_LIB_PRINT_HOOK)
 
 static int
 glpk_message_interceptor(void* info, const char* msg) {
@@ -1201,7 +1202,22 @@ glpk_message_interceptor(void* info, const char* msg) {
   return 1;
 }
 
-#endif
+#elif defined(PPL_GLPK_HAS_LIB_SET_PRINT_HOOK)
+
+static int
+glpk_message_interceptor(void* info, char* msg) {
+  (void) info;
+  (void) msg;
+  return 1;
+}
+
+#endif /* !(defined(PPL_GLPK_HAS_GLP_TERM_HOOK)
+            || defined(PPL_GLPK_HAS__GLP_LIB_PRINT_HOOK))
+          && defined(PPL_GLPK_HAS_LIB_SET_PRINT_HOOK) */
+
+#endif /* !(defined(PPL_GLPK_HAS_GLP_TERM_OUT) && defined(GLP_OFF)) */
+
+#endif /* defined(NDEBUG) */
 
 int
 main(int argc, char* argv[]) {
