@@ -419,6 +419,34 @@ test10() {
   return ok;
 }
 
+bool
+test11() {
+  const dimension_type dim = 5;
+  Constraint_System cs;
+  for (dimension_type i = 1; i < dim; ++i) {
+    Variable x(i);
+    cs.insert(x >= 0);
+    cs.insert(x <= 4);
+  }
+
+  Variable x(0);
+
+  C_Polyhedron hypercube1(cs);
+  hypercube1.add_constraint(x >= 0);
+  hypercube1.add_constraint(x <= 4);
+
+  C_Polyhedron hypercube2(cs);
+  hypercube2.add_constraint(x >= 2);
+  hypercube2.add_constraint(x <= 6);
+
+  bool ok = hypercube1.upper_bound_assign_if_exact(hypercube2);
+
+  print_generators(hypercube1, "*** hyp1 ***");
+  print_generators(hypercube2, "*** hyp2 ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -432,4 +460,5 @@ BEGIN_MAIN
   DO_TEST(test08);
   DO_TEST_F8(test09);
   DO_TEST_F64(test10);
+  DO_TEST(test11);
 END_MAIN
