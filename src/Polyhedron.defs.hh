@@ -2623,6 +2623,8 @@ protected:
   bool BFT00_poly_hull_assign_if_exact(const Polyhedron& y);
 
   bool BHZ09_poly_hull_assign_if_exact(const Polyhedron& y);
+  bool BHZ09_C_poly_hull_assign_if_exact(const Polyhedron& y);
+  bool BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! \name Exception Throwers
