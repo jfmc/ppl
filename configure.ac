@@ -23,7 +23,7 @@
 # Process this file with autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library],[0.10.1pre4],[ppl-devel@cs.unipr.it],[ppl])
+AC_INIT([the Parma Polyhedra Library],[0.10.1pre5],[ppl-devel@cs.unipr.it],[ppl])
 
 # Minimum Autoconf version required.
 AC_PREREQ(2.60)
@@ -99,6 +99,14 @@ AH_TOP([
 ])
 
 AH_BOTTOM([
+/* Partially work around a bug of AX_PREFIX_CONFIG_H whereby WORDS_BIGENDIAN
+   is not prefixed.  The workaround is partial, because AX_PREFIX_CONFIG_H
+   comments out the #undef.  */
+#ifdef WORDS_BIGENDIAN
+# define PPL_WORDS_BIGENDIAN
+# undef WORDS_BIGENDIAN
+#endif
+
 #ifdef PPL_NDEBUG
 # define NDEBUG PPL_NDEBUG
 #endif
