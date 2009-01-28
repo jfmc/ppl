@@ -1568,8 +1568,76 @@ Box<ITV>::difference_assign(const Box& y) {
 template <typename ITV>
 bool
 Box<ITV>::simplify_using_context_assign(const Box& y) {
-  // FIXME(0.10.1): provide a real implementation.
-  used(y);
+  Box& x = *this;
+  const dimension_type num_dims = x.space_dimension();
+  // Dimension-compatibility check.
+  if (num_dims != y.space_dimension())
+    x.throw_dimension_incompatible("simplify_using_context_assign(y)", y);
+
+  // Filter away the zero-dimensional case.
+  if (num_dims == 0) {
+    if (y.marked_empty()) {
+      x.set_nonempty();
+      return false;
+    }
+    else
+      return !x.marked_empty();
+  }
+
+  // Filter away the case when `y' is empty.
+  if (y.is_empty()) {
+    for (dimension_type i = num_dims; i-- > 0; )
+      x.seq[i].assign(UNIVERSE);
+    x.set_nonempty();
+    return false;
+  }
+
+  if (x.is_empty()) {
+    // Find in `y' a non-universe interval, if any.
+    for (dimension_type i = 0; i < num_dims; ++i) {
+      if (y.seq[i].is_universe())
+        x.seq[i].assign(UNIVERSE);
+      else {
+        // Set x.seq[i] so as to contradict y.seq[i], if possible.
+        ITV& seq_i = x.seq[i];
+        seq_i.empty_intersection_assign(y.seq[i]);
+        if (seq_i.is_empty()) {
+          // We were not able to assign to `seq_i' a non-empty interval:
+          // reset `seq_i' to the universe interval and keep searching.
+          seq_i.assign(UNIVERSE);
+          continue;
+        }
+        // We assigned to `seq_i' a non-empty interval:
+        // set the other intervals to universe and return.
+        for (++i; i < num_dims; ++i)
+          x.seq[i].assign(UNIVERSE);
+        x.set_nonempty();
+        assert(x.OK());
+        return false;
+      }
+    }
+    // All intervals in `y' are universe or could not be contradicted:
+    // simplification can leave the empty box `x' as is.
+    assert(x.OK() && x.is_empty());
+    return false;
+  }
+
+  // Loop index `i' is intentionally going upwards.
+  dimension_type i = 0;
+  for ( ; i < num_dims; ++i) {
+    if (!x.seq[i].simplify_using_context_assign(y.seq[i])) {
+      assert(!x.seq[i].is_empty());
+      // The intersection of `x' and `y' is empty due to the i-th interval:
+      // reset other intervals to UNIVERSE.
+      for (dimension_type j = num_dims; j-- > i; )
+        x.seq[j].assign(UNIVERSE);
+      for (dimension_type j = i; j-- > 0; )
+        x.seq[j].assign(UNIVERSE);
+      assert(x.OK());
+      return false;
+    }
+  }
+  assert(x.OK());
   return true;
 }
 
