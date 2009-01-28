@@ -535,7 +535,8 @@ public:
   }
 
   template <typename From>
-  typename Enable_If<Is_Special<From>::value, I_Result>::type assign(const From&) {
+  typename Enable_If<Is_Special<From>::value, I_Result>::type
+  assign(const From&) {
     info().clear();
     info().set_interval_property(CARDINALITY_0, true);
     info().set_interval_property(CARDINALITY_1, true);
@@ -792,11 +793,13 @@ public:
   }
 
   template <typename T>
-  typename Enable_If<Is_Singleton<T>::value || Is_Interval<T>::value, bool>::type
+  typename Enable_If<Is_Singleton<T>::value
+                     || Is_Interval<T>::value, bool>::type
   contains(const T& y) const;
 
   template <typename T>
-  typename Enable_If<Is_Singleton<T>::value || Is_Interval<T>::value, bool>::type
+  typename Enable_If<Is_Singleton<T>::value
+                     || Is_Interval<T>::value, bool>::type
   strictly_contains(const T& y) const;
 
   template <typename T>
@@ -882,6 +885,18 @@ public:
   simplify_using_context_assign(const From& y);
 
   /*! \brief
+    Assigns to \p *this an interval having empty intersection with \p y.
+    The assigned interval should be as large as possible.
+
+    \note
+    Depending on interval restrictions, there could be many
+    maximal intervals all inconsistent with respect to \p y.
+  */
+  template <typename From>
+  typename Enable_If<Is_Interval<From>::value, void>::type
+  empty_intersection_assign(const From& y);
+
+  /*! \brief
     Refines \p to according to the existential relation \p rel with \p x.
 
     The \p to interval is restricted to become, upon successful exit,
@@ -897,7 +912,8 @@ public:
     ???
   */
   template <typename From>
-  typename Enable_If<Is_Singleton<From>::value || Is_Interval<From>::value, I_Result>::type
+  typename Enable_If<Is_Singleton<From>::value
+                     || Is_Interval<From>::value, I_Result>::type
   refine_existential(Relation_Symbol rel, const From& x);
 
   /*! \brief
@@ -916,11 +932,13 @@ public:
     ???
   */
   template <typename From>
-  typename Enable_If<Is_Singleton<From>::value || Is_Interval<From>::value, I_Result>::type
+  typename Enable_If<Is_Singleton<From>::value
+                     || Is_Interval<From>::value, I_Result>::type
   refine_universal(Relation_Symbol rel, const From& x);
 
   template <typename From>
-  typename Enable_If<Is_Singleton<From>::value || Is_Interval<From>::value, I_Result>::type
+  typename Enable_If<Is_Singleton<From>::value
+                     || Is_Interval<From>::value, I_Result>::type
   neg_assign(const From& x);
 
   template <typename From1, typename From2>
