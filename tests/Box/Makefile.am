@@ -101,6 +101,7 @@ refinewithconstraint1 refinewithconstraint2 \
 refinewithconstraints1 \
 refinewithcongruences1 \
 removespacedims1 \
+simplifyusingcontext1 \
 timeelapse1 \
 topclosed1 \
 unconstrain1 \
@@ -258,6 +259,8 @@ refinewithconstraints1_SOURCES = refinewithconstraints1.cc
 refinewithcongruences1_SOURCES = refinewithcongruences1.cc
 
 removespacedims1_SOURCES = removespacedims1.cc
+
+simplifyusingcontext1_SOURCES = simplifyusingcontext1.cc
 
 timeelapse1_SOURCES = timeelapse1.cc
 
