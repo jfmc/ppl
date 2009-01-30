@@ -189,7 +189,7 @@ ppl_ocaml.cma: ppl_ocaml_globals.cmo ppl_ocaml.cmo libppl_ocaml.a
 		$(OCAMLC_COMPILE_FLAGS) -cclib -lppl_ocaml \
 		$(OCAMLC_LINK_FLAGS)
 
-ppl_ocaml.cmxa ppl_ocaml.a: \
+ppl_ocaml.cmxa: \
 	ppl_ocaml_globals.cmx ppl_ocaml_globals.o \
 	ppl_ocaml.cmx ppl_ocaml.o libppl_ocaml.a
 	$(OCAMLOPT_ENV) ocamlopt -o $@ -a \
@@ -197,12 +197,24 @@ ppl_ocaml.cmxa ppl_ocaml.a: \
 		$(OCAMLOPT_COMPILE_FLAGS) -cclib -lppl_ocaml \
 		$(OCAMLOPT_LINK_FLAGS)
 
+ppl_ocaml.a: ppl_ocaml.cmxa
+	@if test -f $@; then :; else \
+	    rm -f ppl_ocaml.cmxa; \
+	    $(MAKE) $(AM_MAKEFLAGS) ppl_ocaml.cmxa; \
+	fi
+
 ppl_ocaml.cmo: ppl_ocaml.ml ppl_ocaml.cmi ppl_ocaml_globals.cmi
 	$(OCAMLC_ENV) ocamlc -o $@ -c $(OCAMLC_COMPILE_FLAGS) ppl_ocaml.ml
 
-ppl_ocaml.cmx ppl_ocaml.o: ppl_ocaml.ml ppl_ocaml.cmi ppl_ocaml_globals.cmi
+ppl_ocaml.cmx: ppl_ocaml.ml ppl_ocaml.cmi ppl_ocaml_globals.cmi
 	$(OCAMLOPT_ENV) ocamlopt -o $@ -c $(OCAMLOPT_COMPILE_FLAGS) \
 		ppl_ocaml.ml
+
+ppl_ocaml.o: ppl_ocaml.cmx
+	@if test -f $@; then :; else \
+	    rm -f ppl_ocaml.cmx; \
+	    $(MAKE) $(AM_MAKEFLAGS) ppl_ocaml.cmx; \
+	fi
 
 ppl_ocaml.cmi: ppl_ocaml.mli
 	$(OCAMLC_ENV) ocamlc -o $@ -c $(OCAMLC_COMPILE_FLAGS) $<
@@ -211,10 +223,16 @@ ppl_ocaml_globals.cmo: ppl_ocaml_globals.ml ppl_ocaml_globals.cmi
 	$(OCAMLC_ENV) ocamlc -o $@ -c $(OCAMLC_COMPILE_FLAGS) \
 		$(srcdir)/ppl_ocaml_globals.ml
 
-ppl_ocaml_globals.cmx ppl_ocaml_globals.o: \
+ppl_ocaml_globals.cmx: \
 	ppl_ocaml_globals.ml ppl_ocaml_globals.cmi
 	$(OCAMLOPT_ENV) ocamlopt -o $@ -c $(OCAMLOPT_COMPILE_FLAGS) \
 		$(srcdir)/ppl_ocaml_globals.ml
+
+ppl_ocaml_globals.o: ppl_ocaml_globals.cmx
+	@if test -f $@; then :; else \
+	    rm -f ppl_ocaml_globals.cmx; \
+	    $(MAKE) $(AM_MAKEFLAGS) ppl_ocaml_globals.cmx; \
+	fi
 
 ppl_ocaml_globals.cmi: ppl_ocaml_globals.mli
 	$(OCAMLC_ENV) ocamlc -o $@ -c $(OCAMLC_COMPILE_FLAGS) $<
