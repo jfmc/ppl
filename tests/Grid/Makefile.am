@@ -112,6 +112,7 @@ refinewithcongruences1 \
 refinewithconstraints1 \
 relations1 relations2 relations3 \
 removespacedims1 removespacedims2 \
+simplifyusingcontext1 \
 timeelapse1 \
 topclosed1 \
 topclosure1 \
@@ -263,6 +264,8 @@ relations3_SOURCES = relations3.cc
 
 removespacedims1_SOURCES = removespacedims1.cc
 removespacedims2_SOURCES = removespacedims2.cc
+
+simplifyusingcontext1_SOURCES = simplifyusingcontext1.cc
 
 timeelapse1_SOURCES = timeelapse1.cc
 
