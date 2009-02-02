@@ -309,26 +309,6 @@ test08() {
 
 bool
 test09() {
-  C_Polyhedron ph1(0, EMPTY);
-  C_Polyhedron ph2;
-
-  print_constraints(ph1, "*** ph1 ***");
-  print_constraints(ph2, "*** ph2 ***");
-
-  C_Polyhedron known_result = ph1;
-
-  ph1.simplify_using_context_assign(ph2);
-
-  bool ok = (ph1 == known_result);
-
-  print_constraints(ph1,
-            "*** after ph1.simplify_using_context_assign(ph2) ***");
-
-  return ok;
-}
-
-bool
-test10() {
   Variable A(0);
 
   C_Polyhedron ph1(1);
@@ -352,7 +332,7 @@ test10() {
 }
 
 bool
-test11() {
+test10() {
   Variable i(0);
   Variable j(1);
   Variable k(2);
@@ -384,6 +364,26 @@ test11() {
 }
 
 bool
+test11() {
+  C_Polyhedron ph1(0, EMPTY);
+  C_Polyhedron ph2;
+
+  print_constraints(ph1, "*** ph1 ***");
+  print_constraints(ph2, "*** ph2 ***");
+
+  C_Polyhedron known_result = ph1;
+
+  ph1.simplify_using_context_assign(ph2);
+
+  bool ok = (ph1 == known_result);
+
+  print_constraints(ph1,
+            "*** after ph1.simplify_using_context_assign(ph2) ***");
+
+  return ok;
+}
+
+bool
 test12() {
 
   C_Polyhedron ph1(0, EMPTY);
@@ -397,6 +397,69 @@ test12() {
   C_Polyhedron known_result(0, UNIVERSE);
 
   bool ok = !ph1.simplify_using_context_assign(ph2);
+  ok &= (ph1 == known_result);
+
+  print_constraints(ph1,
+                   "*** ph1.simplify_using_context_assign(ph2) ***");
+  return ok;
+}
+
+bool
+test13() {
+
+  C_Polyhedron ph1(0, EMPTY);
+
+  print_constraints(ph1, "*** ph1 ***");
+
+  C_Polyhedron ph2(0, UNIVERSE);
+
+  print_constraints(ph2, "*** ph2 ***");
+
+  C_Polyhedron known_result(0, EMPTY);
+
+  bool ok = !ph1.simplify_using_context_assign(ph2);
+  ok &= (ph1 == known_result);
+
+  print_constraints(ph1,
+                   "*** ph1.simplify_using_context_assign(ph2) ***");
+  return ok;
+}
+
+bool
+test14() {
+
+  C_Polyhedron ph1(0, UNIVERSE);
+
+  print_constraints(ph1, "*** ph1 ***");
+
+  C_Polyhedron ph2(0, EMPTY);
+
+  print_constraints(ph2, "*** ph2 ***");
+
+  C_Polyhedron known_result(0, UNIVERSE);
+
+  bool ok = !ph1.simplify_using_context_assign(ph2);
+  ok &= (ph1 == known_result);
+
+  print_constraints(ph1,
+                   "*** ph1.simplify_using_context_assign(ph2) ***");
+  return ok;
+}
+
+bool
+test15() {
+
+  C_Polyhedron ph1(0, UNIVERSE);
+
+  print_constraints(ph1, "*** ph1 ***");
+
+  C_Polyhedron ph2(0, UNIVERSE);
+
+  print_constraints(ph2, "*** ph2 ***");
+
+  C_Polyhedron known_result(0, UNIVERSE);
+
+  bool ok = ph1.simplify_using_context_assign(ph2);
   ok &= (ph1 == known_result);
 
   print_constraints(ph1,
@@ -419,4 +482,7 @@ BEGIN_MAIN
   DO_TEST(test10);
   DO_TEST(test11);
   DO_TEST(test12);
+  DO_TEST(test13);
+  DO_TEST(test14);
+  DO_TEST(test15);
 END_MAIN
