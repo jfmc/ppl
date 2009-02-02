@@ -442,6 +442,27 @@ test16() {
 
   print_congruences(gr1, "*** gr1 ***");
 
+  Grid gr2(0, EMPTY);
+
+  print_congruences(gr2, "*** gr2 ***");
+
+  Grid known_result(0);
+
+  bool ok = !gr1.simplify_using_context_assign(gr2);
+  ok &= (gr1 == known_result);
+
+  print_congruences(gr1,
+                    "*** gr1.simplify_using_context_assign(gr2) ***");
+  return ok;
+}
+
+bool
+test17() {
+
+  Grid gr1(0);
+
+  print_congruences(gr1, "*** gr1 ***");
+
   Grid gr2(0);
 
   print_congruences(gr2, "*** gr2 ***");
@@ -475,4 +496,5 @@ BEGIN_MAIN
   DO_TEST(test14);
   DO_TEST(test15);
   DO_TEST(test16);
+  DO_TEST(test17);
 END_MAIN

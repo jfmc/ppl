@@ -1697,8 +1697,7 @@ PPL::Grid::simplify_using_context_assign(const Grid& y) {
   // Filter away the zero-dimensional case.
   if (x.space_dim == 0) {
     if (y.is_empty()) {
-      Grid gr(0, UNIVERSE);
-      swap(gr);
+      set_zero_dim_univ();
       assert(OK());
       return false;
     }
