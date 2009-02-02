@@ -1334,7 +1334,7 @@ PPL::Polyhedron::add_generator(const Generator& g) {
       if (g.type() != Generator::POINT)
 	throw_invalid_generator("add_generator(g)", "g");
       else
-	status.set_zero_dim_univ();
+	set_zero_dim_univ();
     }
     assert(OK());
     return;
@@ -1588,7 +1588,7 @@ PPL::Polyhedron::add_recycled_generators(Generator_System& gs) {
   if (space_dim == 0) {
     if (marked_empty() && !gs.has_points())
       throw_invalid_generators("add_recycled_generators(gs)", "gs");
-    status.set_zero_dim_univ();
+    set_zero_dim_univ();
     assert(OK(true));
     return;
   }
@@ -1691,7 +1691,7 @@ PPL::Polyhedron::add_recycled_generators_and_minimize(Generator_System& gs) {
     if (marked_empty() && !gs.has_points())
       throw_invalid_generators("add_recycled_generators_and_minimize(gs)",
 			       "gs");
-    status.set_zero_dim_univ();
+    set_zero_dim_univ();
     assert(OK(true));
     return true;
   }
@@ -2240,7 +2240,7 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
   // Filter away the zero-dimensional case.
   if (x.space_dim == 0) {
     if (y.is_empty()) {
-      x.status.set_zero_dim_univ();
+      x.set_zero_dim_univ();
       return false;
     }
     else
