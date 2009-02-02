@@ -383,6 +383,27 @@ test11() {
   return ok;
 }
 
+bool
+test12() {
+
+  C_Polyhedron ph1(0, EMPTY);
+
+  print_constraints(ph1, "*** ph1 ***");
+
+  C_Polyhedron ph2(0, EMPTY);
+
+  print_constraints(ph2, "*** ph2 ***");
+
+  C_Polyhedron known_result(0, UNIVERSE);
+
+  bool ok = !ph1.simplify_using_context_assign(ph2);
+  ok &= (ph1 == known_result);
+
+  print_constraints(ph1,
+                   "*** ph1.simplify_using_context_assign(ph2) ***");
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -397,4 +418,5 @@ BEGIN_MAIN
   DO_TEST(test09);
   DO_TEST(test10);
   DO_TEST(test11);
+  DO_TEST(test12);
 END_MAIN
