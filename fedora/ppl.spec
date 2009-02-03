@@ -2,7 +2,7 @@
 
 Name:           ppl
 Version:        0.10
-Release:        4%{?dist}
+Release:        5%{?dist}
 
 Summary:        The Parma Polyhedra Library: a library of numerical abstractions
 Group:          Development/Libraries
@@ -207,6 +207,12 @@ CPPFLAGS="-I%{_includedir}/glpk"
 CPPFLAGS="$CPPFLAGS -I%{_libdir}/gprolog-`gprolog --version 2>&1 | head -1 | sed -e "s/.* \([^ ]*\)$/\1/g"`/include"
 %endif
 CPPFLAGS="$CPPFLAGS -I%{_includedir}/Yap"
+%ifarch ppc
+CPPFLAGS="$CPPFLAGS -UWORDS_BIGENDIAN -DPPL_WORDS_BIGENDIAN=1"
+%endif
+%ifarch ppc64
+CPPFLAGS="$CPPFLAGS -UWORDS_BIGENDIAN -DPPL_WORDS_BIGENDIAN=1"
+%endif
 %configure --enable-shared --disable-rpath --enable-interfaces="c++ c gnu_prolog swi_prolog yap_prolog java" CPPFLAGS="$CPPFLAGS"
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
@@ -401,6 +407,9 @@ mv \
 rm -rf %{buildroot}
 
 %changelog
+* Tue Feb 03 2009 Roberto Bagnara <bagnara@cs.unipr.it> 0.10-5
+- Work around the bug affecting PPL 0.10 on big-endian architectures.
+
 * Fri Dec 05 2008 Roberto Bagnara <bagnara@cs.unipr.it> 0.10-4
 - Added `%%dir %%{_datadir}/doc/pwl' to the `%%files' section
   of the `ppl-pwl' package.
