@@ -67,6 +67,12 @@ struct float_ieee754_single {
   void build(bool negative, mpz_t mantissa, int exponent);
 };
 
+#ifdef WORDS_BIGENDIAN
+#ifndef PPL_WORDS_BIGENDIAN
+#define PPL_WORDS_BIGENDIAN
+#endif
+#endif
+
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \ingroup PPL_CXX_interface */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
