@@ -20,6 +20,9 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+#ifndef PPL_checked_inlines_hh
+#define PPL_checked_inlines_hh 1
+
 #include "globals.types.hh"
 #include "meta_programming.hh"
 #include "C_Integer.hh"
@@ -616,3 +619,5 @@ input_generic(Type& to, std::istream& is, Rounding_Dir dir) {
 } // namespace Checked
 
 } // namespace Parma_Polyhedra_Library
+
+#endif // !defined(PPL_checked_inlines_hh)
