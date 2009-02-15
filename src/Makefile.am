@@ -72,7 +72,8 @@ COPYING.cc \
 CREDITS.cc
 
 nodist_ppl_config_SOURCES = \
-ppl-config.cc
+ppl-config.cc \
+ppl.hh
 
 ppl_config_LDADD = \
 libppl.la
@@ -423,11 +424,11 @@ endif !BUILD_CXX_INTERFACE
 nodist_noinst_HEADERS = ppl_include_files.hh
 
 ppl_include_files.hh: $(INCLUDE_FILES) Makefile
-	rm -f $@
-	for file in $(INCLUDE_FILES); \
+	for file in $(INCLUDE_FILES) ; \
 	do \
-	  printf "#include \"%s\"\n" $$file >>$@; \
-	done
+	  i="#include \"$$file\"" ; \
+	  $(FGREP) -q "$$i" $(patsubst %,$(top_srcdir)/src/%,$(INCLUDE_FILES)) || echo "$$i" ; \
+	done > $@
 
 EXTRA_DIST = ppl_header.hh ppl-config.cc.in version.hh.in
 
