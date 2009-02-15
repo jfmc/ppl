@@ -1580,5 +1580,6 @@ void swap(Parma_Polyhedra_Library::Partially_Reduced_Product<D1, D2, R>& x,
 } // namespace std
 
 #include "Partially_Reduced_Product.inlines.hh"
+#include "Partially_Reduced_Product.templates.hh"
 
 #endif // !defined(PPL_Partially_Reduced_Product_defs_hh)
