@@ -1131,7 +1131,7 @@ then
 fi
 
 if test x${yap_prolog_interface_enabled} = xyes \
-test x$YAP_PROLOG = xyap
+&& test x$YAP_PROLOG = xyap
 then
   build_yap_prolog_interface=yes
 fi
