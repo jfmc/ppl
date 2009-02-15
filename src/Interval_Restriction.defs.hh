@@ -26,6 +26,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "meta_programming.hh"
 #include "Slow_Copy.hh"
 #include "assign_or_swap.hh"
+#include "Result.defs.hh"
+#include "Rounding_Dir.defs.hh"
+#include "Checked_Number.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 

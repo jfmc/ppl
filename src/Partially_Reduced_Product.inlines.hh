@@ -23,7 +23,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Partially_Reduced_Product_inlines_hh
 #define PPL_Partially_Reduced_Product_inlines_hh 1
 
-#include "compiler.hh"
+#include "Constraint_System.defs.hh"
+#include "Congruence_System.defs.hh"
+#include "C_Polyhedron.defs.hh"
+#include "NNC_Polyhedron.defs.hh"
+#include "Grid.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 

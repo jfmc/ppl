@@ -23,6 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Powerset_templates_hh
 #define PPL_Powerset_templates_hh 1
 
+#include "globals.defs.hh"
 #include <algorithm>
 #include <cassert>
 #include <iostream>

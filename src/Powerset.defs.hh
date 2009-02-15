@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Powerset_defs_hh
 
 #include "Powerset.types.hh"
+#include "globals.types.hh"
 #include "iterator_to_const.defs.hh"
 #include <iosfwd>
 #include <iterator>

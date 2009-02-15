@@ -23,6 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_checked_float_inlines_hh
 #define PPL_checked_float_inlines_hh 1
 
+#include "compiler.hh"
 #ifndef __alpha
 #include <cmath>
 #endif

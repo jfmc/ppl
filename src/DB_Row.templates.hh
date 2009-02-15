@@ -23,6 +23,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_DB_Row_templates_hh
 #define PPL_DB_Row_templates_hh 1
 
+#include "globals.defs.hh"
+
 namespace Parma_Polyhedra_Library {
 
 template <typename T>

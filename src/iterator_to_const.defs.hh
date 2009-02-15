@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "iterator_to_const.types.hh"
 #include "Powerset.types.hh"
 //#include "Ask_Tell.types.hh"
+#include <iterator>
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! An iterator on a sequence of read-only objects.

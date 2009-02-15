@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Ask_Tell.types.hh"
 #include "iterator_to_const.defs.hh"
+#include "globals.types.hh"
 #include <iosfwd>
 #include <list>
 
