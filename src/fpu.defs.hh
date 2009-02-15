@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_fpu_defs_hh 1
 
 #include "fpu.types.hh"
+#include "compiler.hh"
 
 namespace Parma_Polyhedra_Library {
 

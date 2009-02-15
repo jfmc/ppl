@@ -23,7 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_fpu_ia32_inlines_hh
 #define PPL_fpu_ia32_inlines_hh 1
 
-#include "compiler.hh"
 #include <csetjmp>
 #include <csignal>
 
