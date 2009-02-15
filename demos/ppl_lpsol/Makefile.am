@@ -169,8 +169,8 @@ modglob.mps
 if HOST_OS_CYGWIN
 
 DIFF_COMMAND = \
-grep "^Optimum value: " $(srcdir)/$(EXPECTED) >expected_optima \
-&& grep "^Optimum value: " obtained >obtained_optima \
+$(EGREP) "^Optimum value: " $(srcdir)/$(EXPECTED) >expected_optima \
+&& $(EGREP) "^Optimum value: " obtained >obtained_optima \
 && diff -u expected_optima obtained_optima
 
 else !HOST_OS_CYGWIN
@@ -178,8 +178,8 @@ else !HOST_OS_CYGWIN
 if HOST_OS_DARWIN
 
 DIFF_COMMAND = \
-grep "^Optimum value: " $(srcdir)/$(EXPECTED) >expected_optima \
-&& grep "^Optimum value: " obtained >obtained_optima \
+$(EGREP) "^Optimum value: " $(srcdir)/$(EXPECTED) >expected_optima \
+&& $(EGREP) "^Optimum value: " obtained >obtained_optima \
 && diff -u expected_optima obtained_optima
 
 else !HOST_OS_DARWIN
@@ -187,9 +187,9 @@ else !HOST_OS_DARWIN
 if HOST_OS_SOLARIS
 
 DIFF_COMMAND = \
-grep "^Optimum value: " $(srcdir)/$(EXPECTED) \
+$(EGREP) "^Optimum value: " $(srcdir)/$(EXPECTED) \
 | $(SED) -e "s/^Optimum value: \(-*[0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\.]\)[0-9]*$/Optimum value: \1/g" >expected_optima \
-&& grep "^Optimum value: " obtained \
+&& $(EGREP) "^Optimum value: " obtained \
 | $(SED) -e "s/^Optimum value: \(-*[0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\\.][0-9\.][0-9\.]\)[0-9]*$/Optimum value: \1/g" >obtained_optima \
 && diff -u expected_optima obtained_optima
 
@@ -220,9 +220,9 @@ check-local: ppl_lpsol
 	-for path in $(srcdir)/examples/*.mps; \
 	do \
 	  file=`basename $$path`; \
-	  grep $$file lp_problems >/dev/null 2>&1 && continue; \
-	  grep $$file do_not_check_problems >/dev/null 2>&1 && continue; \
-	  grep $$file tough_examples >/dev/null 2>&1 && continue; \
+	  $(FGREP) $$file lp_problems >/dev/null 2>&1 && continue; \
+	  $(FGREP) $$file do_not_check_problems >/dev/null 2>&1 && continue; \
+	  $(FGREP) $$file tough_examples >/dev/null 2>&1 && continue; \
 	  $(ECHO_SIMPLEX) "-n $$m $$file" >>obtained; \
 	  $(SIMPLEX) -n $$path >/dev/null; \
 	done
@@ -230,9 +230,9 @@ check-local: ppl_lpsol
 	-for path in $(srcdir)/examples/*.mps; \
 	do \
 	  file=`basename $$path`; \
-	  grep $$file lp_problems >/dev/null 2>&1 && continue; \
-	  grep $$file do_not_check_problems >/dev/null 2>&1 && continue; \
-	  grep $$file tough_examples >/dev/null 2>&1 && continue; \
+	  $(FGREP) $$file lp_problems >/dev/null 2>&1 && continue; \
+	  $(FGREP) $$file do_not_check_problems >/dev/null 2>&1 && continue; \
+	  $(FGREP) $$file tough_examples >/dev/null 2>&1 && continue; \
 	  for m in -m -M; \
 	  do \
 	    $(ECHO_SIMPLEX) "$$m $$file" >>obtained; \
@@ -244,10 +244,10 @@ check-local: ppl_lpsol
 	-for path in $(srcdir)/examples/*.mps; \
 	do \
 	 file=`basename $$path`; \
-	 grep $$file do_not_check_problems >/dev/null 2>&1 && continue; \
-	 grep $$file tough_examples >/dev/null 2>&1 && continue; \
-	 verbosity='';\
-	 grep $$file do_not_output_location >/dev/null 2>&1 && verbosity='-v 2'; \
+	 $(FGREP) $$file do_not_check_problems >/dev/null 2>&1 && continue; \
+	 $(FGREP) $$file tough_examples >/dev/null 2>&1 && continue; \
+	 verbosity=''; \
+	 $(FGREP) $$file do_not_output_location >/dev/null 2>&1 && verbosity='-v 2'; \
 	 for m in -m -M; \
 	 do \
 	    $(ECHO_SIMPLEX) "-r $$m $$file" >>obtained; \
@@ -258,8 +258,8 @@ check-local: ppl_lpsol
 	-for path in $(srcdir)/examples/*.mps; \
 	do \
 	  file=`basename $$path`; \
-	  grep $$file do_not_check_problems >/dev/null 2>&1 && continue; \
-	  grep $$file tough_examples >/dev/null 2>&1 && continue; \
+	  $(FGREP) $$file do_not_check_problems >/dev/null 2>&1 && continue; \
+	  $(FGREP) $$file tough_examples >/dev/null 2>&1 && continue; \
 	  echo "*** ppl_lpsol -e -r $$m -oobtained $$file" >>obtained; \
 	  ./ppl_lpsol -e -r $(CHECK_OPTION) $$m -oobtained $$path >/dev/null; \
 	done
