@@ -43,7 +43,8 @@ used(const T&) {
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
-inline void cc_flush(const T& x) {
+inline void
+cc_flush(const T& x) {
 #if defined(__GNUC__) || defined(__INTEL_COMPILER)
   __asm__ __volatile__ ("" : "+m" (const_cast<T&>(x)));
 #else
