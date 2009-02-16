@@ -36,6 +36,7 @@ endif !VALGRIND_TESTS_ENABLED
 TESTS_ENVIRONMENT = $(CHECKER)
 
 AM_CPPFLAGS = \
+-I$(top_srcdir)/src \
 -I$(top_builddir)/src \
 -I$(top_srcdir)/utils \
 -I$(top_srcdir)/tests \

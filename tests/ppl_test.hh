@@ -23,7 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_ppl_test_hh
 #define PPL_ppl_test_hh 1
 
-#include "ppl.hh"
+#include "ppl_header.hh"
 #include "Partial_Function.defs.hh"
 #include "Random_Number_Generator.defs.hh"
 #include <stdexcept>
