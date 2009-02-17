@@ -383,7 +383,7 @@ PPL::MIP_Problem::merge_split_variables(dimension_type var_index,
     // In the following case the negative side of the split variable is
     // in base: this means that the constraint will be nonfeasible.
     if (base[i] == mapping[var_index].second) {
-      // CHECKME: I do not know if is possible that the positive and
+      // CHECKME: we do not know if is possible that the positive and
       // the negative part of a split variable can be together in
       // base: it seems that this case is not possible. The algorithm
       // requires that condition.
@@ -961,11 +961,12 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
       challenger_den = squared_lcm_basis;
       for (dimension_type i = tableau_num_rows; i-- > 0; ) {
 	const Coefficient& tableau_ij = tableau[i][j];
-	// FIXME(0.10.1): the test seems to speed up the GMP computation.
+	// The test against 0 gives rise to a consistent speed up: see
+        // http://www.cs.unipr.it/pipermail/ppl-devel/2009-February/014000.html
 	if (tableau_ij != 0) {
 	  scalar_value = tableau_ij * norm_factor[i];
 	  add_mul_assign(challenger_den, scalar_value, scalar_value);
-	}
+        }
       }
       // Initialization during the first loop.
       if (entering_index == 0) {
@@ -1024,13 +1025,11 @@ PPL::MIP_Problem::linear_combine(Row& x,
     if (i != k) {
       Coefficient& x_i = x[i];
       x_i *= normalized_y_k;
-#if 1 // CHECKME: the test seems to speed up the GMP computation.
+      // The test against 0 gives rise to a consistent speed up: see
+      // http://www.cs.unipr.it/pipermail/ppl-devel/2009-February/014000.html
       const Coefficient& y_i = y[i];
       if (y_i != 0)
 	sub_mul_assign(x_i, y_i, normalized_x_k);
-#else
-      sub_mul_assign(x_i, y[i], normalized_x_k);
-#endif // 1
     }
   x[k] = 0;
   x.normalize();
