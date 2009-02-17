@@ -427,7 +427,7 @@ ppl_include_files.hh: $(INCLUDE_FILES) Makefile
 	for file in $(INCLUDE_FILES) ; \
 	do \
 	  i="#include \"$$file\"" ; \
-	  $(FGREP) -q "$$i" $(patsubst %,$(top_srcdir)/src/%,$(INCLUDE_FILES)) || echo "$$i" ; \
+	  ( cd $(top_srcdir)/src ; $(FGREP) -q "$$i" $(INCLUDE_FILES) ) || echo "$$i" ; \
 	done > $@
 
 EXTRA_DIST = ppl_header.hh ppl-config.cc.in version.hh.in
