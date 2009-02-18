@@ -1,0 +1,15 @@
+--- ppl-0.10/src/Float.defs.hh	2008-10-03 15:23:03.000000000 +0200
++++ ppl-0.10-patched/src/Float.defs.hh	2009-02-04 07:59:06.000000000 +0100
+@@ -65,6 +65,12 @@
+   void build(bool negative, mpz_t mantissa, int exponent);
+ };
+ 
++#ifdef WORDS_BIGENDIAN
++#ifndef PPL_WORDS_BIGENDIAN
++#define PPL_WORDS_BIGENDIAN
++#endif
++#endif
++
+ #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+ /*! \ingroup PPL_CXX_interface */
+ #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
