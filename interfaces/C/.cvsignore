@@ -10,3 +10,6 @@ ppl_c.h
 ppl_c_version.h
 ppl_c_[A-Z]*.cc
 ppl_c_[A-Z]*.hh
+ppl_c_domains.h
+ppl_c_implementation_domains.cc.stamp
+ppl_c_implementation_domains.hh

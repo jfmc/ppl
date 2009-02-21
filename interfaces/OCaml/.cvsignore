@@ -17,3 +17,8 @@ ppl_ocaml_types.cmi
 ppl_ocaml_types.cmo
 ppl_ocaml_[A-Z]*.cc
 ppl_ocaml_[A-Z]*.hh
+ppl_ocaml.cmx
+ppl_ocaml.cmxa
+ppl_ocaml_domains.hh
+ppl_ocaml_domains_cc_files.stamp
+ppl_ocaml_globals.cmx
