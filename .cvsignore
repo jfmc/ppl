@@ -1,6 +1,12 @@
 *.bz2
 *.gz
 *.zip
+*.o
+*.a
+*.lo
+*.loT
+.deps
+.libs
 Makefile
 Makefile.in
 _configs.sed
