@@ -6,3 +6,4 @@
 Makefile
 Makefile.in
 ppl_java_classes.cc
+ppl_java_[A-Z]*.cc

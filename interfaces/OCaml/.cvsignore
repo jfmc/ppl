@@ -15,3 +15,5 @@ ppl_ocaml_globals.cmi
 ppl_ocaml_globals.cmo
 ppl_ocaml_types.cmi
 ppl_ocaml_types.cmo
+ppl_ocaml_[A-Z]*.cc
+ppl_ocaml_[A-Z]*.hh

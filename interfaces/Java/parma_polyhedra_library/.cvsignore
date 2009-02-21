@@ -1,5 +1,11 @@
 *.class
 *.stamp
+BD_Shape_double.java
+BD_Shape_mpq_class.java
+BD_Shape_mpz_class.java
+Constraints_Product_C_Polyhedron_Grid.java
+Double_Box.java
+Rational_Box.java
 C_Polyhedron.java
 Grid.java
 Makefile
@@ -13,4 +19,4 @@ Pointset_Powerset_C_Polyhedron_Iterator.java
 Pointset_Powerset_NNC_Polyhedron.java
 Pointset_Powerset_NNC_Polyhedron_Iterator.java
 Polyhedron.java
-ppl_java_*.h
+parma_polyhedra_library_*.h

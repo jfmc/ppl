@@ -1,4 +1,5 @@
 *.aux
+*.doxyconf
 *.doxyconf-html
 *.doxyconf-latex
 *.log
