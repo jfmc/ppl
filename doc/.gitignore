@@ -1,0 +1,11 @@
+*.doxyconf
+*.doxyconf-html
+*.doxyconf-latex
+*.pdf
+*.pdf-dir
+*.ps
+*.ps-dir
+*.ps.gz
+*.tar.gz
+ppl-*-html
+user.latex-dir

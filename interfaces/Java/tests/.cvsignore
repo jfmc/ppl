@@ -1,5 +1,0 @@
-*.class
-*.stamp
-Makefile
-Makefile.in
-ppl_java_generated_tests.java

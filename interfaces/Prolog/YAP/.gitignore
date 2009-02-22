@@ -1,0 +1,9 @@
+*.clpq
+*.la
+check_script
+check_script2
+check_script3
+obtained
+obtained2
+obtained3
+ppl_yap.cc
