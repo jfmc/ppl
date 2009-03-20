@@ -1,10 +1,12 @@
+#ppl-*.*
+*.a
 *.bz2
 *.gz
-*.zip
-*.o
-*.a
 *.lo
 *.loT
+*.o
+*.zip
+*~
 .deps
 .libs
 Makefile
@@ -22,10 +24,9 @@ configure
 conftest
 conftest.c
 libtool
-#ppl-*.*
+ppl-config.h
 ppl.lsm
 ppl.spec
 stamp-h
 stamp-h.in
 stamp-h1
-ppl-config.h
