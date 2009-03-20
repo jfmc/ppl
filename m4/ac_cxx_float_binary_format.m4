@@ -27,7 +27,6 @@ ac_save_LIBS="$LIBS"
 AC_LANG_PUSH(C++)
 
 AC_MSG_CHECKING([the binary format of C++ floats])
-ac_cxx_float_binary_format=unknown
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <limits>
 #ifdef HAVE_STDINT_H
@@ -80,7 +79,9 @@ main() {
 ]])],
   AC_DEFINE(CXX_FLOAT_BINARY_FORMAT, PPL_FLOAT_IEEE754_SINGLE,
     [The binary format of C++ floats, if supported; undefined otherwise.])
-  ac_cxx_float_binary_format="IEEE754 Single Precision")
+  ac_cxx_float_binary_format="IEEE754 Single Precision",
+  ac_cxx_float_binary_format=unknown,
+  ac_cxx_float_binary_format=unknown)
 
 AC_MSG_RESULT($ac_cxx_float_binary_format)
 

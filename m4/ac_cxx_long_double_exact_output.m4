@@ -29,7 +29,6 @@ ac_save_LIBS="$LIBS"
 AC_LANG_PUSH(C++)
 
 AC_MSG_CHECKING([whether C++ provides exact output for long doubles])
-ac_cxx_long_double_exact_output=unknown
 
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <limits>
@@ -240,6 +239,8 @@ main() {
 ]])],
   AC_MSG_RESULT(yes)
   ac_cxx_long_double_exact_output=1,
+  AC_MSG_RESULT(no)
+  ac_cxx_long_double_exact_output=0,
   AC_MSG_RESULT(no)
   ac_cxx_long_double_exact_output=0)
 

@@ -29,7 +29,7 @@ ac_save_LIBS="$LIBS"
 AC_LANG_PUSH(C++)
 
 AC_MSG_CHECKING([the binary format of C++ doubles])
-ac_cxx_double_binary_format=unknown
+
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <limits>
 #ifdef HAVE_STDINT_H
@@ -91,7 +91,9 @@ main() {
 ]])],
   AC_DEFINE(CXX_DOUBLE_BINARY_FORMAT, PPL_FLOAT_IEEE754_DOUBLE,
     [The unique code of the binary format of C++ doubles, if supported; undefined otherwise.])
-  ac_cxx_double_binary_format="IEEE754 Double Precision")
+  ac_cxx_double_binary_format="IEEE754 Double Precision",
+  ac_cxx_double_binary_format=unknown,
+  ac_cxx_double_binary_format=unknown)
 
 AC_MSG_RESULT($ac_cxx_double_binary_format)
 

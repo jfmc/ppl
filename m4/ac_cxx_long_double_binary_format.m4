@@ -27,7 +27,6 @@ ac_save_LIBS="$LIBS"
 AC_LANG_PUSH(C++)
 
 AC_MSG_CHECKING([the binary format of C++ long doubles])
-ac_cxx_long_double_binary_format=unknown
 
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <limits>
@@ -90,7 +89,9 @@ main() {
 ]])],
   AC_DEFINE(CXX_LONG_DOUBLE_BINARY_FORMAT, PPL_FLOAT_INTEL_DOUBLE_EXTENDED,
   [The unique code of the binary format of C++ long doubles, if supported; undefined otherwise.])
-  ac_cxx_long_double_binary_format="Intel Double-Extended")
+  ac_cxx_long_double_binary_format="Intel Double-Extended",
+  ac_cxx_long_double_binary_format=unknown,
+  ac_cxx_long_double_binary_format=unknown)
 
 if test x"$ac_cxx_long_double_binary_format" = x"unknown"
 then
@@ -168,7 +169,9 @@ main() {
 ]])],
   AC_DEFINE(CXX_LONG_DOUBLE_BINARY_FORMAT, PPL_FLOAT_IEEE754_QUAD,
   [The unique code of the binary format of C++ long doubles, if supported; undefined otherwise.])
-  ac_cxx_long_double_binary_format="IEEE754 Quad Precision")
+  ac_cxx_long_double_binary_format="IEEE754 Quad Precision",
+  ac_cxx_long_double_binary_format=unknown,
+  ac_cxx_long_double_binary_format=unknown)
 fi
 
 if test x"$ac_cxx_long_double_binary_format" = x"unknown"
@@ -234,7 +237,9 @@ main() {
 ]])],
   AC_DEFINE(CXX_LONG_DOUBLE_BINARY_FORMAT, PPL_FLOAT_INTEL_DOUBLE_EXTENDED,
     [The unique code of the binary format of C++ long doubles, if supported; undefined otherwise.])
-  ac_cxx_long_double_binary_format="Intel Double-Extended")
+  ac_cxx_long_double_binary_format="Intel Double-Extended",
+  ac_cxx_long_double_binary_format=unknown,
+  ac_cxx_long_double_binary_format=unknown)
 fi
 
 if test x"$ac_cxx_long_double_binary_format" = x"unknown"
@@ -300,7 +305,9 @@ main() {
 ]])],
   AC_DEFINE(CXX_LONG_DOUBLE_BINARY_FORMAT, PPL_FLOAT_IEEE754_DOUBLE,
     [The unique code of the binary format of C++ long doubles, if supported; undefined otherwise.])
-  ac_cxx_long_double_binary_format="IEEE754 Double Precision")
+  ac_cxx_long_double_binary_format="IEEE754 Double Precision",
+  ac_cxx_long_double_binary_format=unknown,
+  ac_cxx_long_double_binary_format=unknown)
 fi
 
 AC_MSG_RESULT($ac_cxx_long_double_binary_format)

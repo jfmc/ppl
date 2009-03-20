@@ -114,6 +114,8 @@ main() {
   AC_MSG_RESULT(yes)
   ac_cv_can_control_fpu=1,
   AC_MSG_RESULT(no)
+  ac_cv_can_control_fpu=0,
+  AC_MSG_RESULT(no)
   ac_cv_can_control_fpu=0
 )
 AM_CONDITIONAL(CAN_CONTROL_FPU, test $ac_cv_can_control_fpu = 1)
