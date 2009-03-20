@@ -26,7 +26,7 @@
 AC_INIT([the Parma Watchdog Library],[0.5],[bagnara@cs.unipr.it],[pwl])
 
 # Minimum Autoconf version required.
-AC_PREREQ(2.60)
+AC_PREREQ(2.63)
 
 # Make sure the sources are there.
 AC_CONFIG_SRCDIR(src/Watchdog.cc)
@@ -60,15 +60,13 @@ AH_BOTTOM([
 # C compiler.
 
 AC_ARG_WITH(cc,
-  AC_HELP_STRING([--with-cc=XXX],
-    [use XXX as the C compiler]),
+  AS_HELP_STRING([--with-cc=XXX], [use XXX as the C compiler]),
   CC=$with_cc)
 
 # C++ compiler.
 
 AC_ARG_WITH(cxx,
-  AC_HELP_STRING([--with-cxx=XXX],
-    [use XXX as the C++ compiler]),
+  AS_HELP_STRING([--with-cxx=XXX], [use XXX as the C++ compiler]),
   CXX=$with_cxx)
 
 # Checks for programs.
@@ -314,8 +312,8 @@ AC_C_CONST
 enableval=no
 AC_MSG_CHECKING([whether tests should be run under Valgrind])
 AC_ARG_ENABLE(valgrind-tests,
-  AC_HELP_STRING([--enable-valgrind-tests],
-    [run library tests under Valgrind]))
+  AS_HELP_STRING([--enable-valgrind-tests],
+                 [run library tests under Valgrind]))
 case "${enableval}" in
 yes)
   AC_CHECK_PROG(VALGRIND, valgrind, valgrind)

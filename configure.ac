@@ -26,7 +26,7 @@
 AC_INIT([the Parma Polyhedra Library],[0.10.1pre6],[ppl-devel@cs.unipr.it],[ppl])
 
 # Minimum Autoconf version required.
-AC_PREREQ(2.60)
+AC_PREREQ(2.63)
 
 # Make sure the sources are there.
 AC_CONFIG_SRCDIR(src/Polyhedron_public.cc)
@@ -133,15 +133,13 @@ AH_BOTTOM([
 # C compiler.
 
 AC_ARG_WITH(cc,
-  AC_HELP_STRING([--with-cc=XXX],
-    [use XXX as the C compiler]),
+  AS_HELP_STRING([--with-cc=XXX], [use XXX as the C compiler]),
   CC=$with_cc)
 
 # C++ compiler.
 
 AC_ARG_WITH(cxx,
-  AC_HELP_STRING([--with-cxx=XXX],
-    [use XXX as the C++ compiler]),
+  AS_HELP_STRING([--with-cxx=XXX], [use XXX as the C++ compiler]),
   CXX=$with_cxx)
 
 # Checks for programs.
@@ -212,8 +210,7 @@ OPT_FLAGS=""
 enableval=yes
 AC_MSG_CHECKING([whether to compile with debug info])
 AC_ARG_ENABLE(debugging,
-  AC_HELP_STRING([--enable-debugging],
-    [compile with debugging information]))
+  AS_HELP_STRING([--enable-debugging], [compile with debugging information]))
 case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
@@ -231,8 +228,7 @@ AM_CONDITIONAL(DEBUGGING_ENABLED, test x"$enableval" = xyes)
 enableval=no
 AC_MSG_CHECKING([whether to compile for profiling])
 AC_ARG_ENABLE(profiling,
-  AC_HELP_STRING([--enable-profiling],
-    [compile for profiling]))
+  AS_HELP_STRING([--enable-profiling], [compile for profiling]))
 case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
@@ -250,8 +246,7 @@ esac
 enableval=no
 AC_MSG_CHECKING([whether to compile for test coverage])
 AC_ARG_ENABLE(coverage,
-  AC_HELP_STRING([--enable-coverage],
-    [compile for test coverage]))
+  AS_HELP_STRING([--enable-coverage], [compile for test coverage]))
 case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
@@ -269,8 +264,7 @@ esac
 enableval=no
 AC_MSG_CHECKING([whether to enable checking of run-time assertions])
 AC_ARG_ENABLE(assertions,
-  AC_HELP_STRING([--enable-assertions],
-    [check run-time assertions]))
+  AS_HELP_STRING([--enable-assertions], [check run-time assertions]))
 case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
@@ -287,8 +281,8 @@ enable_assertions=${enableval}
 enableval=no
 AC_MSG_CHECKING([whether to enable even more run-time assertions])
 AC_ARG_ENABLE(more-assertions,
-  AC_HELP_STRING([--enable-more-assertions],
-    [break the ABI to check even more run-time assertions]))
+  AS_HELP_STRING([--enable-more-assertions],
+                 [break the ABI to check even more run-time assertions]))
 case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
@@ -323,8 +317,8 @@ arch=no
 enableval=standard
 AC_MSG_CHECKING([whether to enable optimizations])
 AC_ARG_ENABLE(optimization,
-  AC_HELP_STRING([--enable-optimization@<:@=LEVEL@:>@],
-    [enable compiler optimizations]))
+  AS_HELP_STRING([--enable-optimization@<:@=LEVEL@:>@],
+                 [enable compiler optimizations]))
 case "${enableval}" in
 sspeed)
   AC_MSG_RESULT(sspeed)
@@ -364,8 +358,8 @@ esac
 enableval=$arch
 AC_MSG_CHECKING([for which architecture to optimize])
 AC_ARG_ENABLE(arch,
-  AC_HELP_STRING([--enable-arch@<:@=ARCH@:>@],
-    [optimize for architecture ARCH]))
+  AS_HELP_STRING([--enable-arch@<:@=ARCH@:>@],
+                 [optimize for architecture ARCH]))
 case "${enableval}" in
 yes)
   m=`uname -m`
@@ -393,8 +387,8 @@ fpmath_may_use_387=yes
 fpmath_may_use_sse=yes
 AC_MSG_CHECKING([whether to select specific floating point arithmetics])
 AC_ARG_ENABLE(fpmath,
-  AC_HELP_STRING([--enable-fpmath=INSTRUCTION_SET],
-    [select floating point arithmetics]))
+  AS_HELP_STRING([--enable-fpmath=INSTRUCTION_SET],
+                 [select floating point arithmetics]))
 case "${enableval}" in
 sse)
   AC_MSG_RESULT(sse)
@@ -461,8 +455,8 @@ fi
 enableval=no
 AC_MSG_CHECKING([whether to use precompiled headers])
 AC_ARG_ENABLE(pch,
-  AC_HELP_STRING([--enable-pch],
-    [use precompiled headers, if available]))
+  AS_HELP_STRING([--enable-pch],
+                 [use precompiled headers, if available]))
 case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
@@ -532,8 +526,8 @@ AM_CONDITIONAL(NO_UNDEFINED, test x$no_undefined = xyes)
 enableval=mpz
 AC_MSG_CHECKING([the type of integral values to use as coefficients])
 AC_ARG_ENABLE(coefficients,
-  AC_HELP_STRING([--enable-coefficients=TYPE],
-    [select the type of the coefficients]))
+  AS_HELP_STRING([--enable-coefficients=TYPE],
+                 [select the type of the coefficients]))
 case "${enableval}" in
 native-int8)
   AC_MSG_RESULT([native 8 bits integers])
@@ -625,13 +619,13 @@ fi
 # Allow additions to C and C++ compilation flags.
 
 AC_ARG_WITH(cflags,
-  AC_HELP_STRING([--with-cflags=XXX],
-    [add XXX to the options for the C compiler]),
+  AS_HELP_STRING([--with-cflags=XXX],
+                 [add XXX to the options for the C compiler]),
   CFLAGS="$CFLAGS $with_cflags")
 
 AC_ARG_WITH(cxxflags,
-  AC_HELP_STRING([--with-cxxflags=XXX],
-    [add XXX to the options for the C++ compiler]),
+  AS_HELP_STRING([--with-cxxflags=XXX],
+                 [add XXX to the options for the C++ compiler]),
   CXXFLAGS="$CXXFLAGS $with_cxxflags")
 
 # Check for Perl.
@@ -758,8 +752,8 @@ extra_libraries="${extra_libraries}${extra_libraries:+ }${gmp_library_option}"
 enableval=yes
 AC_MSG_CHECKING([whether to build the Parma Watchdog Library])
 AC_ARG_ENABLE(watchdog,
-  AC_HELP_STRING([--enable-watchdog],
-    [build also the Parma Watchdog Library]))
+  AS_HELP_STRING([--enable-watchdog],
+                 [build also the Parma Watchdog Library]))
 case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
@@ -784,8 +778,7 @@ AC_CONFIG_SUBDIRS(Watchdog)
 enableval=yes
 AC_MSG_CHECKING([whether to build the ppl_lcdd program])
 AC_ARG_ENABLE(ppl_lcdd,
-  AC_HELP_STRING([--enable-ppl_lcdd],
-    [build the ppl_lcdd program]))
+  AS_HELP_STRING([--enable-ppl_lcdd], [build the ppl_lcdd program]))
 case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
@@ -803,8 +796,7 @@ AM_CONDITIONAL(BUILD_PPL_LCDD, test x"$build_ppl_lcdd" = xyes)
 enableval=yes
 AC_MSG_CHECKING([whether to build the ppl_lpsol program])
 AC_ARG_ENABLE(ppl_lpsol,
-  AC_HELP_STRING([--enable-ppl_lpsol],
-    [build the ppl_lpsol program]))
+  AS_HELP_STRING([--enable-ppl_lpsol], [build the ppl_lpsol program]))
 case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
@@ -831,8 +823,8 @@ default_interfaces="cxx c ciao_prolog gnu_prolog sicstus_prolog swi_prolog xsb_p
 enableval=not_specified
 AC_MSG_CHECKING([which interfaces are enabled])
 AC_ARG_ENABLE(interfaces,
-  AC_HELP_STRING([--enable-interfaces=INTERFACES],
-    [enable some or all the library interfaces]))
+  AS_HELP_STRING([--enable-interfaces=INTERFACES],
+                 [enable some or all the library interfaces]))
 case x"${enableval}" in
 xyes | x)
   AC_MSG_ERROR([--enable-interfaces needs at least one argument chosen among ${available_interfaces}, none and all])
@@ -906,8 +898,7 @@ AM_CONDITIONAL(BUILD_C_INTERFACE, test x$build_c_interface = xyes)
 
 # Allow to specify the Java SDK installation directory.
 AC_ARG_WITH(java,
-  AC_HELP_STRING([--with-java=DIR],
-    [use the Java SDK installed in DIR]),
+  AS_HELP_STRING([--with-java=DIR], [use the Java SDK installed in DIR]),
   java_dir=$with_java)
 
 case "${host_os}" in
@@ -984,8 +975,8 @@ AM_CONDITIONAL(BUILD_JAVA_INTERFACE, test x$build_java_interface = xyes)
 
 # Allow to specify the ML GMP installation directory.
 AC_ARG_WITH(mlgmp,
-  AC_HELP_STRING([--with-mlgmp=DIR],
-    [use the ML GMP package installed in DIR]),
+  AS_HELP_STRING([--with-mlgmp=DIR],
+                 [use the ML GMP package installed in DIR]),
   mlgmp_dir=$with_mlgmp,
   mlgmp_dir=+gmp)
 
@@ -1240,8 +1231,8 @@ available_instantiations=${ai}
 enableval=not_specified
 AC_MSG_CHECKING([which instantiations are enabled])
 AC_ARG_ENABLE(instantiations,
-  AC_HELP_STRING([--enable-instantiations=INSTANTIATIONS],
-    [enable instantiations for the non-C++ interfaces]))
+  AS_HELP_STRING([--enable-instantiations=INSTANTIATIONS],
+                 [enable instantiations for the non-C++ interfaces]))
 case x"${enableval}" in
 xyes | x)
   ai_one_per_line=`echo "${available_instantiations}" | sed -e 's/ *@ */\n/g' -e 's/ *\([[A-Z]]\)/\1/g'`
@@ -1322,8 +1313,8 @@ esac
 enableval=no
 AC_MSG_CHECKING([whether tests should be run under Valgrind])
 AC_ARG_ENABLE(valgrind-tests,
-  AC_HELP_STRING([--enable-valgrind-tests],
-    [run library tests under Valgrind]))
+  AS_HELP_STRING([--enable-valgrind-tests],
+                 [run library tests under Valgrind]))
 case "${enableval}" in
 yes)
   AC_CHECK_PROG(VALGRIND, valgrind, valgrind)
@@ -1348,8 +1339,8 @@ AM_CONDITIONAL(VALGRIND_TESTS_ENABLED, test x"$enable_valgrind_tests" = xyes)
 enableval=thorough
 AC_MSG_CHECKING([whether `make check' does a thorough or quick check])
 AC_ARG_ENABLE(check,
-  AC_HELP_STRING([--enable-check=KIND],
-    [select thorough or quick `make check']))
+  AS_HELP_STRING([--enable-check=KIND],
+                 [select thorough or quick `make check']))
 case "${enableval}" in
 thorough)
   AC_MSG_RESULT(thorough)
