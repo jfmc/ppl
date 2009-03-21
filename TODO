@@ -8,6 +8,17 @@ Enhancements for PPL 0.10.1 or later versions
   or not, with failure or not), the latter `make check' can succeed
   without testing anything.
 - Do not enable the Prolog interfaces by default in the release tarballs.
+- Explain the `--enable-ppl_lcdd' and `--enable-ppl_lpsol' in
+  README.configure.
+- Check the configuration dependent documentation for Prolog,
+
+
+Enhancements for PPL 0.11 or later versions
+===========================================
+
+- Intervals are best instantiated with checked numbers with
+  particular policies: review all the interfaced boxes,
+  augment the testsuite, and update the documentation.
 - Improve the OCaml interface by supporting dynamic loading.
 - Enhance the support for systems not providing support for the IEEE
   inexact flag.
@@ -15,17 +26,6 @@ Enhancements for PPL 0.10.1 or later versions
   of the simplex solver.
 - Complete the implementation of the --enable-check configure option.
   Explain it in README.configure.
-- Explain the `--enable-ppl_lcdd' and `--enable-ppl_lpsol' in
-  README.configure.
-- Intervals are best instantiated with checked numbers with
-  particular policies: review all the interfaced boxes,
-  augment the testsuite, and update the documentation.
-- Check the configuration dependent documentation for Prolog,
-
-
-Enhancements for PPL 0.11 or later versions
-===========================================
-
 - Make the library thread-safe.
 - Find a way to let the GMP and checked-int versions of the PPL coexist
   so as to allow using them in the same application.
