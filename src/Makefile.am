@@ -318,7 +318,9 @@ Partially_Reduced_Product.defs.hh \
 Partially_Reduced_Product.inlines.hh \
 Partially_Reduced_Product.templates.hh \
 max_space_dimension.hh \
-algorithms.hh
+algorithms.hh \
+pretty_print.hh \
+pretty_print.inlines.hh
 #Any_Pointset.types.hh \
 #Any_Pointset.defs.hh \
 #Any_Pointset.inlines.hh \
@@ -396,7 +398,8 @@ mp_std_bits.cc \
 version.cc \
 $(INCLUDE_FILES) \
 $(NESTED_INCLUDE_FILES) \
-swapping_sort.icc
+swapping_sort.icc \
+pretty_print.cc
 #Pointset_Ask_Tell.cc
 
 if NO_UNDEFINED
