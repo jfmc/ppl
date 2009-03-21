@@ -33,6 +33,10 @@ namespace Parma_Polyhedra_Library {
 namespace IO_Operators {
 
 inline
+Write_Function::~Write_Function() {
+}
+
+inline
 Write_To_Stream::Write_To_Stream(std::ostream& str)
   : os(str) {
 }

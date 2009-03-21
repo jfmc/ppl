@@ -48,6 +48,8 @@ public:
     The number of characters to be taken from \p buf.
   */
   virtual size_t write(const char* buf, size_t size) = 0;
+
+  virtual ~Write_Function();
 };
 
 //! Helper function for the wrapping of lines.
