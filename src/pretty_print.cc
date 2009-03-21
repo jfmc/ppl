@@ -184,6 +184,62 @@ size_t wrap(Write_Function& wfunc,
   return written;
 }
 
+void
+wrap(std::string& dst, const std::string& src_string,
+     unsigned indent_depth,
+     unsigned preferred_first_line_length,
+     unsigned preferred_line_length) {
+  dst.clear();
+  const char *src = src_string.c_str();
+  for (int line = 0; ; ++line) {
+    int linelen = (line == 0
+                   ? preferred_first_line_length
+                   : preferred_line_length);
+    int last_comma = -1;
+    int last_space = -1;
+    int split_pos = -1;
+    int i;
+    for (i = 0; i <= linelen; ++i) {
+      if (src[i] == '\0' || src[i] == '\n') {
+	split_pos = i;
+	break;
+      }
+      if (src[i] == ',' && i < linelen)
+	last_comma = i;
+      if (isspace(src[i]) && (i == 0 || !isspace(src[i-1])))
+	last_space = i;
+    }
+    if (split_pos < 0) {
+      if (last_comma >= 0)
+	split_pos = last_comma + 1;
+      else if (last_space >= 0)
+	split_pos = last_space;
+      else {
+	for ( ; src[i]; ++i) {
+	  if (src[i] == ',') {
+	    ++i;
+	    break;
+	  }
+	  if (isspace(src[i]))
+	    break;
+	}
+	split_pos = i;
+      }
+    }
+    if (split_pos > 0 && line > 0 && indent_depth > 0)
+	dst.append(indent_depth, ' ');
+    dst.append(src, split_pos);
+    src += split_pos;
+    if (isspace(*src))
+      ++src;
+    while (*src == ' ')
+      ++src;
+    if (*src == '\0')
+      break;
+    dst.push_back('\n');
+  }
+}
+
 } // namespace IO_Operators
 
 } // namespace Parma_Polyhedra_Library

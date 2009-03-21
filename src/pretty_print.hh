@@ -138,6 +138,29 @@ c_pretty_print(const T& o, write_function wfunc, void* data,
                unsigned preferred_first_line_length,
                unsigned preferred_line_length);
 
+//! Helper function for the wrapping of lines.
+/*!
+  \param dst
+  The destination string.
+
+  \param src
+  The source string holding the lines to wrap.
+
+  \param indent_depth
+  The indentation depth.
+
+  \param preferred_first_line_length
+  The preferred length for the first line of text.
+
+  \param preferred_line_length
+  The preferred length for all the lines but the first one.
+*/
+void
+wrap(std::string& dst, const std::string& src_string,
+     unsigned indent_depth,
+     unsigned preferred_first_line_length,
+     unsigned preferred_line_length);
+
 } // namespace IO_Operators
 
 } // namespace Parma_Polyhedra_Library
