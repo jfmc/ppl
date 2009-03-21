@@ -1991,6 +1991,18 @@ ppl_io_fprint_variable(FILE* stream, ppl_dimension_type var) try {
 }
 CATCH_ALL
 
+int
+ppl_io_asprint_variable(char** strp, ppl_dimension_type var) try {
+  const char* b = c_variable_output_function(var);
+  if (b == 0)
+    return PPL_STDIO_ERROR;
+  *strp = strdup(b);
+  if (*strp == 0)
+    return PPL_ERROR_OUT_OF_MEMORY;
+  return 0;
+}
+CATCH_ALL
+
 /* No ascii dump for Coefficient. */
 DEFINE_PRINT_FUNCTIONS(Coefficient)
 

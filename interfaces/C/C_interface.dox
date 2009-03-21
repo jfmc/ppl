@@ -1084,6 +1084,13 @@ ppl_io_print_Polyhedron(ppl_const_Polyhedron_t x);
 int
 ppl_io_fprint_Polyhedron(FILE* stream, ppl_const_Polyhedron_t x);
 
+/*! \relates ppl_Polyhedron_tag \brief
+  Prints \p x to a malloc-allocated string, a pointer to which
+  is returned via \p strp.
+*/
+int
+ppl_io_asprint_Polyhedron(char** strp, ppl_const_Polyhedron_t x);
+
 /*! \relates ppl_Polyhedron_tag
   \brief Dumps an ascii representation of \p x on \p stream.
 */

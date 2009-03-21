@@ -354,13 +354,24 @@ ppl_max_space_dimension PPL_PROTO((ppl_dimension_type* m));
 int
 ppl_not_a_dimension PPL_PROTO((ppl_dimension_type* m));
 
-/*! \brief Pretty-prints \p var to <CODE>stdout</CODE>. */
+/*! \brief
+  Pretty-prints \p var to <CODE>stdout</CODE>.
+*/
 int
 ppl_io_print_variable PPL_PROTO((ppl_dimension_type var));
 
-/*! \brief Pretty-prints \p var to the given output \p stream. */
+/*! \brief
+  Pretty-prints \p var to the given output \p stream.
+*/
 int
 ppl_io_fprint_variable PPL_PROTO((FILE* stream, ppl_dimension_type var));
+
+/*! \relates ppl_Polyhedron_tag \brief
+  Pretty-prints \p var to a malloc-allocated string, a pointer to which
+  is returned via \p strp.
+*/
+int
+ppl_io_asprint_variable PPL_PROTO((char** strp, ppl_dimension_type var));
 
 /*! \brief
   The type of output functions used for printing variables.
@@ -562,7 +573,10 @@ int                                                                     \
 ppl_io_print_##Type PPL_PROTO((ppl_const_##Type##_t x));                \
 /*! \relates ppl_##Type##_tag */                                        \
 int                                                                     \
-ppl_io_fprint_##Type PPL_PROTO((FILE* stream, ppl_const_##Type##_t x));
+ppl_io_fprint_##Type PPL_PROTO((FILE* stream, ppl_const_##Type##_t x)); \
+/*! \relates ppl_##Type##_tag */                                        \
+int                                                                     \
+ppl_io_asprint_##Type PPL_PROTO((char** strp, ppl_const_##Type##_t x));
 
 #define PPL_DECLARE_ASCII_DUMP_LOAD_FUNCTIONS(Type) \
 /*! \relates ppl_##Type##_tag */                    \
@@ -584,7 +598,10 @@ int                                                                     \
 ppl_io_print_##Type PPL_PROTO((ppl_const_##Type##_t x));                \
 /*! \relates ppl_##Type##_tag \brief Prints \p x to the given output \p stream. */ \
 int                                                                     \
-ppl_io_fprint_##Type PPL_PROTO((FILE* stream, ppl_const_##Type##_t x));
+ppl_io_fprint_##Type PPL_PROTO((FILE* stream, ppl_const_##Type##_t x)); \
+/*! \relates ppl_##Type##_tag \brief Pretty-prints \p x to a malloc-allocated string, a pointer to which is returned via \p strp. */ \
+int                                                                     \
+ppl_io_asprint_##Type PPL_PROTO((char** strp, ppl_const_##Type##_t x));
 
 
 #define PPL_DECLARE_AND_DOCUMENT_ASCII_DUMP_LOAD_FUNCTIONS(Type) \

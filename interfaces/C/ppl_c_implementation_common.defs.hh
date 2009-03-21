@@ -164,6 +164,20 @@ catch (...) {						     \
       return PPL_STDIO_ERROR;                                           \
     return 0;                                                           \
   }                                                                     \
+  CATCH_ALL                                                             \
+                                                                        \
+  int                                                                   \
+  ppl_io_asprint_##Type(char** strp, ppl_const_##Type##_t x) try {      \
+    using namespace IO_Operators;                                       \
+    std::ostringstream os;                                              \
+    os << *to_const(x);                                                 \
+    if (!os)                                                            \
+      return PPL_STDIO_ERROR;                                           \
+    *strp = strdup(os.str().c_str());                                   \
+    if (*strp == 0)                                                     \
+      return PPL_ERROR_OUT_OF_MEMORY;                                   \
+    return 0;                                                           \
+  }                                                                     \
   CATCH_ALL
 
 #define DEFINE_ASCII_DUMP_FUNCTIONS(Type)                               \
