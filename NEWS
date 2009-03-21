@@ -35,7 +35,7 @@ o  The C interface now provides functions of the form
      int ppl_io_asprint_Polyhedron(char** strp, P x)
 
    where `P' is any opaque pointer to a const PPL object. These functions
-   prints `x' to a malloc-allocated string, a pointer to which is returned
+   print `x' to a malloc-allocated string, a pointer to which is returned
    via `strp'.
 
 
