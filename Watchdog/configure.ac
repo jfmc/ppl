@@ -26,7 +26,7 @@
 AC_INIT([the Parma Watchdog Library],[0.5],[bagnara@cs.unipr.it],[pwl])
 
 # Minimum Autoconf version required.
-AC_PREREQ(2.63)
+AC_PREREQ(2.61)
 
 # Make sure the sources are there.
 AC_CONFIG_SRCDIR(src/Watchdog.cc)

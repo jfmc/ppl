@@ -26,7 +26,7 @@
 AC_INIT([the Parma Polyhedra Library],[0.10.1pre7],[ppl-devel@cs.unipr.it],[ppl])
 
 # Minimum Autoconf version required.
-AC_PREREQ(2.63)
+AC_PREREQ(2.61)
 
 # Make sure the sources are there.
 AC_CONFIG_SRCDIR(src/Polyhedron_public.cc)
