@@ -123,6 +123,7 @@ Checked_Number.types.hh \
 $(COEFFICIENT_TYPES_INCLUDE_FILES) \
 Coefficient.types.hh \
 stdiobuf.types.hh \
+c_streambuf.types.hh \
 globals.types.hh \
 iterator_to_const.types.hh \
 distances.types.hh \
@@ -194,6 +195,8 @@ Coefficient.defs.hh \
 Coefficient.inlines.hh \
 stdiobuf.defs.hh \
 stdiobuf.inlines.hh \
+c_streambuf.defs.hh \
+c_streambuf.inlines.hh \
 globals.defs.hh \
 globals.inlines.hh \
 math_utilities.defs.hh \
@@ -393,6 +396,7 @@ simplify.cc \
 Grid_conversion.cc \
 Grid_simplify.cc \
 stdiobuf.cc \
+c_streambuf.cc \
 globals.cc \
 mp_std_bits.cc \
 version.cc \
