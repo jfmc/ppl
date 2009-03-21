@@ -1034,6 +1034,41 @@ CATCH_ALL
 
 extern "C"
 CAMLprim value
+ppl_MIP_Problem_ascii_dump(value caml_mip) try {
+  CAMLparam1(caml_mip);
+  MIP_Problem& mip = *p_MIP_Problem_val(caml_mip);
+  std::ostringstream s;
+  mip.ascii_dump(s);
+  CAMLreturn(caml_copy_string(s.str().c_str()));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_MIP_Problem_pretty_print(value caml_mip,
+                             value indent_depth,
+                             value preferred_first_line_length,
+                             value preferred_line_length) try {
+  CAMLparam4(caml_mip, indent_depth, preferred_first_line_length,
+             preferred_line_length);
+  MIP_Problem& mip = *p_MIP_Problem_val(caml_mip);
+  int cpp_indent_depth = Int_val(indent_depth);
+  check_int_is_unsigned(cpp_indent_depth);
+  int cpp_preferred_first_line_length = Int_val(preferred_first_line_length);
+  check_int_is_unsigned(cpp_preferred_first_line_length);
+  int cpp_preferred_line_length = Int_val(preferred_line_length);
+  check_int_is_unsigned(cpp_preferred_line_length);
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+  std::ostringstream s;
+  Write_To_Stream wfunc(s);
+  pretty_print(mip, wfunc, cpp_indent_depth,
+               cpp_preferred_first_line_length, cpp_preferred_line_length);
+  CAMLreturn(caml_copy_string(s.str().c_str()));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
 ppl_version_major(value unit) try {
   CAMLparam1(unit);
   CAMLreturn(Val_long(version_major()));

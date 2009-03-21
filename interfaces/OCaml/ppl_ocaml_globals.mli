@@ -193,3 +193,9 @@ val ppl_MIP_Problem_get_control_parameter:
 
 val ppl_MIP_Problem_swap:
   mip_problem -> mip_problem -> unit
+
+val ppl_MIP_Problem_ascii_dump:
+  mip_problem -> string
+
+val ppl_MIP_Problem_pretty_print:
+  mip_problem -> int -> int -> int -> string

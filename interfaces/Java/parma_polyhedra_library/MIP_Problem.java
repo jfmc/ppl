@@ -23,6 +23,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 package parma_polyhedra_library;
 
+import java.io.Writer;
+import java.io.IOException;
+
 //! A Mixed Integer (linear) Programming problem.
 /*! \ingroup PPL_Java_interface
   An object of this class encodes a mixed integer (linear) programming problem.
@@ -141,8 +144,27 @@ public class MIP_Problem extends PPL_Object {
     //! Returns the optimization mode.
     public native Optimization_Mode optimization_mode();
 
+    //! Returns an ascii formatted internal representation of \p this.
+    public native String ascii_dump();
+
     //! Returns a string representation of \p this.
     public native String toString();
+
+    private native String pretty_print(long indent_depth,
+                                       long preferred_first_line_length,
+                                       long preferred_line_length);
+
+    //! Pretty prints \p this using \p writer.
+    public void pretty_print(Writer writer,
+                             long indent_depth,
+                             long preferred_first_line_length,
+                             long preferred_line_length)
+        throws IOException {
+        String s = pretty_print(indent_depth,
+                                preferred_first_line_length,
+                                preferred_line_length);
+        writer.write(s);
+    }
 
     /*! \brief
       Returns the total size in bytes of the memory occupied by the

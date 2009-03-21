@@ -77,7 +77,9 @@ ppl_MIP_Problem_feasible_point/2,
 ppl_MIP_Problem_optimizing_point/2,
 ppl_MIP_Problem_optimal_value/3,
 ppl_MIP_Problem_evaluate_objective_function/4,
-ppl_MIP_Problem_OK/1`'dnl
+ppl_MIP_Problem_OK/1
+ppl_MIP_Problem_ascii_dump/1
+ppl_MIP_Problem_pretty_print_to_atom/5`'dnl
 ')
 
 m4_define(`m4_procedure_list', `m4_echo_unquoted(`m4_common_procedure_list',

@@ -90,6 +90,7 @@ ppl_@CLASS@_expand_space_dimension/3 *nofail +all,
 ppl_@CLASS@_fold_space_dimensions/3  +all,
 ppl_@CLASS@_map_space_dimensions/2 +all,
 ppl_@CLASS@_ascii_dump/1 +all,
+ppl_@CLASS@_pretty_print_to_atom/5 +all,
 ppl_@CLASS@_@MEMBYTES@/2 +all,
 dnl
 dnl NOTE: The next few schemas provide special widenings and

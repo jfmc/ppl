@@ -549,7 +549,27 @@ m4_define(`ppl_@CLASS@_constrains_code',
 m4_define(`ppl_@CLASS@_ascii_dump_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
-  public native String ascii_dump();
+    public native String ascii_dump();
+
+')
+
+m4_define(`ppl_@CLASS@_pretty_print_to_atom_code',
+`dnl
+%<--%<--%<-- @CLASS@.java
+    private native String pretty_print(long indent_depth,
+                                       long preferred_first_line_length,
+                                       long preferred_line_length);
+
+    public void pretty_print(Writer writer,
+                             long indent_depth,
+                             long preferred_first_line_length,
+                             long preferred_line_length)
+                throws IOException {
+        String s = pretty_print(indent_depth,
+                                preferred_first_line_length,
+                                preferred_line_length);
+        writer.write(s);
+    }
 
 ')
 

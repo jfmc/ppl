@@ -329,7 +329,7 @@ val ppl_@CLASS@_OK:
 ')
 
 m4_define(`ppl_@CLASS@_@MEMBYTES@_code',
- `dnl
+`dnl
 val ppl_@CLASS@_@MEMBYTES@:
   @!CLASS@  -> int
 
@@ -357,72 +357,71 @@ val ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity:
 
 ')
 
+m4_define(`ppl_@CLASS@_@UB_EXACT@_code',
+`dnl
+val ppl_@CLASS@_@UB_EXACT@:
+  @!CLASS@ -> @!CLASS@ -> bool
 
- m4_define(`ppl_@CLASS@_@UB_EXACT@_code',
- `dnl
- val ppl_@CLASS@_@UB_EXACT@:
-   @!CLASS@ -> @!CLASS@ -> bool
+')
 
- ')
-
- m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_code',
- `dnl
+m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_code',
+`dnl
 val ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign:
   @!CLASS@  -> @!CLASS@ -> unit
 
- ')
+')
 
- m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens_code',
- `dnl
+m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens_code',
+`dnl
 val ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens:
   @!CLASS@  -> @!CLASS@ -> int -> int
 
- ')
+')
 
- m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign_code',
- `dnl
+m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign_code',
+`dnl
 val ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign:
   @!CLASS@  -> @!CLASS@ -> unit
 
- ')
+')
 
- m4_define(`ppl_@CLASS@_@BEGINEND@_iterator_code',
- `dnl
+m4_define(`ppl_@CLASS@_@BEGINEND@_iterator_code',
+`dnl
 val ppl_@CLASS@_@BEGINEND@_iterator:
   @!CLASS@  -> @!CLASS@_iterator
 
 ')
 
 m4_define(`ppl_@CLASS@_get_disjunct_code',
- `dnl
+`dnl
 val ppl_@CLASS@_get_disjunct:
   @!CLASS@_iterator  ->  @!DISJUNCT@
 
 ')
 
 m4_define(`ppl_@CLASS@_add_disjunct_code',
- `dnl
+`dnl
 val ppl_@CLASS@_add_disjunct:
   @!CLASS@  ->  @!DISJUNCT@ -> unit
 
 ')
 
 m4_define(`ppl_@CLASS@_drop_disjunct_code',
- `dnl
+`dnl
 val ppl_@CLASS@_drop_disjunct:
   @!CLASS@  ->  @!CLASS@_iterator -> unit
 
 ')
 
 m4_define(`ppl_@CLASS@_drop_disjuncts_code',
- `dnl
+`dnl
 val ppl_@CLASS@_drop_disjuncts:
   @!CLASS@  ->  @!CLASS@_iterator -> @!CLASS@_iterator -> unit
 
 ')
 
 m4_define(`ppl_new_@CLASS@_iterator_from_iterator_code',
- `dnl
+`dnl
 type @!CLASS@_iterator
 
 val ppl_new_@CLASS@_iterator_from_iterator:
@@ -431,7 +430,7 @@ val ppl_new_@CLASS@_iterator_from_iterator:
 ')
 
 m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
- `dnl
+`dnl
 
 val ppl_@CLASS@_iterator_equals_iterator:
   @!CLASS@_iterator ->  @!CLASS@_iterator -> bool
@@ -439,12 +438,11 @@ val ppl_@CLASS@_iterator_equals_iterator:
 ')
 
 m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
- `dnl
+`dnl
 val ppl_@CLASS@_@INCDEC@_iterator:
   @!CLASS@_iterator -> unit
 
 ')
-
 
 m4_define(`ppl_@CLASS@_BHZ03_@A_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code',
 `dnl
@@ -468,17 +466,25 @@ val ppl_@CLASS@_ascii_dump:
 
 ')
 
+m4_define(`ppl_@CLASS@_pretty_print_to_atom_code',
+`dnl
+
+val ppl_@CLASS@_pretty_print:
+  @!CLASS@ -> int -> int -> int -> string
+
+')
+
 m4_define(`ppl_@CLASS@_linear_@PARTITION@_code',
 `dnl
 val ppl_@CLASS@_linear_@PARTITION@:
- @!CLASS@ -> @!CLASS@ -> @!CLASS@ * pointset_powerset_nnc_polyhedron
+  @!CLASS@ -> @!CLASS@ -> @!CLASS@ * pointset_powerset_nnc_polyhedron
 
 ')
 
 m4_define(`ppl_@CLASS@_approximate_@PARTITION@_code',
 `dnl
 val ppl_@CLASS@_approximate_@PARTITION@:
- @!CLASS@ -> @!CLASS@ ->
-   @!CLASS@ * pointset_powerset_grid * bool
+  @!CLASS@ -> @!CLASS@ ->
+    @!CLASS@ * pointset_powerset_grid * bool
 
 ')

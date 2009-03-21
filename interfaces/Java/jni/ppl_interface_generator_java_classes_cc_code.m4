@@ -1156,6 +1156,37 @@ Java_parma_1polyhedra_1library_@1CLASS@_ascii_1dump
 
 ')
 
+m4_define(`ppl_@CLASS@_pretty_print_to_atom_code',
+`dnl
+JNIEXPORT jstring JNICALL
+Java_parma_1polyhedra_1library_@1CLASS@_pretty_1print
+(JNIEnv* env, jobject j_this, jlong indent_depth,
+ jlong preferred_first_line_length, jlong preferred_line_length) {
+  try {
+    @CPP_CLASS@* this_ptr
+      = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this));
+    dimension_type cpp_indent_depth
+      = jtype_to_unsigned<dimension_type>(indent_depth);
+    dimension_type cpp_preferred_first_line_length
+      = jtype_to_unsigned<dimension_type>(preferred_first_line_length);
+    dimension_type cpp_preferred_line_length
+      = jtype_to_unsigned<dimension_type>(preferred_line_length);
+
+    using namespace Parma_Polyhedra_Library::IO_Operators;
+    std::ostringstream s;
+    Write_To_Stream wfunc(s);
+    pretty_print(*this_ptr, wfunc,
+                 cpp_indent_depth,
+                 cpp_preferred_first_line_length,
+                 cpp_preferred_line_length);
+    return env->NewStringUTF(s.str().c_str());
+  }
+  CATCH_ALL;
+  return 0;
+}
+
+')
+
 m4_define(`ppl_@CLASS@_linear_@PARTITION@_code',
 `dnl
 JNIEXPORT jobject JNICALL

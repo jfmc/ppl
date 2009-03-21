@@ -514,11 +514,20 @@ external ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign:
 
 ')
 
-m4_define(`ppl_@CLASS@_ascii_dump_code', `
+m4_define(`ppl_@CLASS@_ascii_dump_code',
+`dnl
 external ppl_@CLASS@_ascii_dump:
   @!CLASS@ -> string = "ppl_@CLASS@_ascii_dump"
 
-' )
+')
+
+m4_define(`ppl_@CLASS@_pretty_print_to_atom_code',
+`dnl
+external ppl_@CLASS@_pretty_print:
+  @!CLASS@ -> int -> int -> int -> string
+  = "ppl_@CLASS@_pretty_print"
+
+')
 
 m4_define(`ppl_@CLASS@_linear_@PARTITION@_code',
 `dnl

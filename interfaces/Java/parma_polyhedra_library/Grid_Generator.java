@@ -24,6 +24,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 package parma_polyhedra_library;
 
 
+import java.io.Writer;
+import java.io.IOException;
+
 //! A grid line, parameter or grid point.
 /*! \ingroup PPL_Java_interface
   An object of the class Grid_Generator is one of the following:
@@ -31,7 +34,6 @@ package parma_polyhedra_library;
   - a parameter;
   - a grid_point.
 */
-
 public class Grid_Generator {
 
     //! The linear expression.
@@ -90,7 +92,26 @@ public class Grid_Generator {
 	return new Grid_Generator(e, c, Grid_Generator_Type.POINT);
     }
 
+    //! Returns an ascii formatted internal representation of \p this.
+    public native String ascii_dump();
+
     //! Returns a string representation of \p this.
     public native String toString();
+
+    private native String pretty_print(long indent_depth,
+                                       long preferred_first_line_length,
+                                       long preferred_line_length);
+
+    //! Pretty prints \p this using \p writer.
+    public void pretty_print(Writer writer,
+                             long indent_depth,
+                             long preferred_first_line_length,
+                             long preferred_line_length)
+        throws IOException {
+        String s = pretty_print(indent_depth,
+                                preferred_first_line_length,
+                                preferred_line_length);
+        writer.write(s);
+    }
 }
 

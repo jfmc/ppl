@@ -47,6 +47,9 @@ m4_include(`ppl_interface_generator_copyright')`'dnl
 
 package parma_polyhedra_library;
 
+import java.io.Writer;
+import java.io.IOException;
+
 /*! \brief
   Java class interfacing C++ m4_this_cplusplus_class
   \ingroup PPL_java_interface
