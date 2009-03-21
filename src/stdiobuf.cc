@@ -41,7 +41,7 @@ stdiobuf::underflow() {
 std::streamsize
 stdiobuf::xsgetn(char_type* s, std::streamsize n) {
   std::streamsize r = fread(s, 1, n, fp);
-  if (s > 0)
+  if (r > 0)
     ungetc_buf = traits_type::to_int_type(s[r - 1]);
   else
     ungetc_buf = traits_type::eof();
