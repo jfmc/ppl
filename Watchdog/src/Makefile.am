@@ -118,7 +118,7 @@ pwl_include_files.hh: $(INCLUDE_FILES) Makefile
 
 if HAVE_PERL
 
-pwl.hh:	$(top_builddir)/config.h pwl_header.hh pwl_include_files.hh $(top_builddir)/utils/build_header
+pwl.hh:	$(top_builddir)/pwl-config.h pwl_header.hh pwl_include_files.hh $(top_builddir)/utils/build_header
 	$(top_builddir)/utils/build_header \
 		-I $(top_builddir) -I $(top_builddir)/src \
 		$(top_srcdir)/src/pwl_header.hh >$@

@@ -119,7 +119,7 @@ main() {
   ac_cv_can_control_fpu=0
 )
 AM_CONDITIONAL(CAN_CONTROL_FPU, test $ac_cv_can_control_fpu = 1)
-AC_DEFINE_UNQUOTED(CAN_CONTROL_FPU, $ac_cv_can_control_fpu,
+AC_DEFINE_UNQUOTED(PPL_CAN_CONTROL_FPU, $ac_cv_can_control_fpu,
     [Not zero if the FPU can be controlled.])
 AC_LANG_POP(C++)
 LIBS="$ac_save_LIBS"

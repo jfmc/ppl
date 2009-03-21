@@ -16,8 +16,6 @@ aclocal.m4
 autom4te.cache
 confdefs.h
 config.cache
-config.h
-config.h.in
 config.log
 config.status
 configure
@@ -25,6 +23,7 @@ conftest
 conftest.c
 libtool
 ppl-config.h
+ppl-config.h.in
 ppl.lsm
 ppl.spec
 stamp-h

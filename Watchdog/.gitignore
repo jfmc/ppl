@@ -1,1 +1,3 @@
 *.la
+pwl-config.h
+pwl-config.h.in

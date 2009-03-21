@@ -85,7 +85,7 @@ then
 else
   value=0
 fi
-AC_DEFINE_UNQUOTED(CXX_SUPPORTS_FLEXIBLE_ARRAYS, $value,
+AC_DEFINE_UNQUOTED(PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS, $value,
   [Not zero if the C++ compiler supports flexible arrays.])
 
 AC_LANG_POP(C++)

@@ -150,7 +150,7 @@ then
 else
   value=0
 fi
-AC_DEFINE_UNQUOTED(GMP_SUPPORTS_EXCEPTIONS, $value,
+AC_DEFINE_UNQUOTED(PPL_GMP_SUPPORTS_EXCEPTIONS, $value,
   [Not zero if GMP has been compiled with support for exceptions.])
 
 fi

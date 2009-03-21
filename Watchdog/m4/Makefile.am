@@ -26,7 +26,6 @@ m4data_DATA =
 
 # M4 macro files for internal use.
 m4macros = \
-ax_prefix_config_h.m4 \
 lib-ld.m4 \
 lib-link.m4 \
 libtool.m4 \

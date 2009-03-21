@@ -67,15 +67,12 @@ AC_SUBST(PPL_VERSION_MINOR)
 AC_SUBST(PPL_VERSION_REVISION)
 AC_SUBST(PPL_VERSION_BETA)
 
-AC_DEFINE_UNQUOTED(CONFIGURE_OPTIONS, "$ac_configure_args", [This contains the options with which `configure' was invoked.])
+AC_DEFINE_UNQUOTED(PPL_CONFIGURE_OPTIONS, "$ac_configure_args", [This contains the options with which `configure' was invoked.])
 PPL_CONFIGURE_OPTIONS="\"$ac_configure_args\""
 AC_SUBST(CONFIGURE_OPTIONS)
 
 # Generate a configuration header file.
-AC_CONFIG_HEADER(config.h)
-
-# Generate prefixed defines.
-AX_PREFIX_CONFIG_H
+AC_CONFIG_HEADER([ppl-config.h])
 
 ISODATE=`date +%Y-%m-%d`
 AC_SUBST(ISODATE)
@@ -99,11 +96,328 @@ AH_TOP([
 ])
 
 AH_BOTTOM([
-/* Partially work around a bug of AX_PREFIX_CONFIG_H whereby WORDS_BIGENDIAN
-   is not prefixed.  The workaround is partial, because AX_PREFIX_CONFIG_H
-   comments out the #undef.  */
+#ifdef HAVE_DECL_FFS
+# define PPL_HAVE_DECL_FFS HAVE_DECL_FFS
+# undef HAVE_DECL_FFS
+#endif
+
+#ifdef HAVE_DECL_FMA
+# define PPL_HAVE_DECL_FMA HAVE_DECL_FMA
+# undef HAVE_DECL_FMA
+#endif
+
+#ifdef HAVE_DECL_FMAF
+# define PPL_HAVE_DECL_FMAF HAVE_DECL_FMAF
+# undef HAVE_DECL_FMAF
+#endif
+
+#ifdef HAVE_DECL_FMAL
+# define PPL_HAVE_DECL_FMAL HAVE_DECL_FMAL
+# undef HAVE_DECL_FMAL
+#endif
+
+#ifdef HAVE_DECL_GETENV
+# define PPL_HAVE_DECL_GETENV HAVE_DECL_GETENV
+# undef HAVE_DECL_GETENV
+#endif
+
+#ifdef HAVE_DECL_GETRUSAGE
+# define PPL_HAVE_DECL_GETRUSAGE HAVE_DECL_GETRUSAGE
+# undef HAVE_DECL_GETRUSAGE
+#endif
+
+#ifdef HAVE_DECL_RINTF
+# define PPL_HAVE_DECL_RINTF HAVE_DECL_RINTF
+# undef HAVE_DECL_RINTF
+#endif
+
+#ifdef HAVE_DECL_RINTL
+# define PPL_HAVE_DECL_RINTL HAVE_DECL_RINTL
+# undef HAVE_DECL_RINTL
+#endif
+
+#ifdef HAVE_DECL_RLIMIT_AS
+# define PPL_HAVE_DECL_RLIMIT_AS HAVE_DECL_RLIMIT_AS
+# undef HAVE_DECL_RLIMIT_AS
+#endif
+
+#ifdef HAVE_DECL_RLIMIT_DATA
+# define PPL_HAVE_DECL_RLIMIT_DATA HAVE_DECL_RLIMIT_DATA
+# undef HAVE_DECL_RLIMIT_DATA
+#endif
+
+#ifdef HAVE_DECL_RLIMIT_RSS
+# define PPL_HAVE_DECL_RLIMIT_RSS HAVE_DECL_RLIMIT_RSS
+# undef HAVE_DECL_RLIMIT_RSS
+#endif
+
+#ifdef HAVE_DECL_RLIMIT_VMEM
+# define PPL_HAVE_DECL_RLIMIT_VMEM HAVE_DECL_RLIMIT_VMEM
+# undef HAVE_DECL_RLIMIT_VMEM
+#endif
+
+#ifdef HAVE_DECL_STRTOD
+# define PPL_HAVE_DECL_STRTOD HAVE_DECL_STRTOD
+# undef HAVE_DECL_STRTOD
+#endif
+
+#ifdef HAVE_DECL_STRTOF
+# define PPL_HAVE_DECL_STRTOF HAVE_DECL_STRTOF
+# undef HAVE_DECL_STRTOF
+#endif
+
+#ifdef HAVE_DECL_STRTOLD
+# define PPL_HAVE_DECL_STRTOLD HAVE_DECL_STRTOLD
+# undef HAVE_DECL_STRTOLD
+#endif
+
+#ifdef HAVE_DECL_STRTOLL
+# define PPL_HAVE_DECL_STRTOLL HAVE_DECL_STRTOLL
+# undef HAVE_DECL_STRTOLL
+#endif
+
+#ifdef HAVE_DECL_STRTOULL
+# define PPL_HAVE_DECL_STRTOULL HAVE_DECL_STRTOULL
+# undef HAVE_DECL_STRTOULL
+#endif
+
+#ifdef HAVE_DLFCN_H
+# define PPL_HAVE_DLFCN_H HAVE_DLFCN_H
+# undef HAVE_DLFCN_H
+#endif
+
+#ifdef HAVE_FENV_H
+# define PPL_HAVE_FENV_H HAVE_FENV_H
+# undef HAVE_FENV_H
+#endif
+
+#ifdef HAVE_GETOPT_H
+# define PPL_HAVE_GETOPT_H HAVE_GETOPT_H
+# undef HAVE_GETOPT_H
+#endif
+
+#ifdef HAVE_GLPK_GLPK_H
+# define PPL_HAVE_GLPK_GLPK_H HAVE_GLPK_GLPK_H
+# undef HAVE_GLPK_GLPK_H
+#endif
+
+#ifdef HAVE_GLPK_H
+# define PPL_HAVE_GLPK_H HAVE_GLPK_H
+# undef HAVE_GLPK_H
+#endif
+
+#ifdef HAVE_IEEEFP_H
+# define PPL_HAVE_IEEEFP_H HAVE_IEEEFP_H
+# undef HAVE_IEEEFP_H
+#endif
+
+#ifdef HAVE_INTTYPES_H
+# define PPL_HAVE_INTTYPES_H HAVE_INTTYPES_H
+# undef HAVE_INTTYPES_H
+#endif
+
+#ifdef HAVE_INT_FAST16_T
+# define PPL_HAVE_INT_FAST16_T HAVE_INT_FAST16_T
+# undef HAVE_INT_FAST16_T
+#endif
+
+#ifdef HAVE_INT_FAST32_T
+# define PPL_HAVE_INT_FAST32_T HAVE_INT_FAST32_T
+# undef HAVE_INT_FAST32_T
+#endif
+
+#ifdef HAVE_INT_FAST64_T
+# define PPL_HAVE_INT_FAST64_T HAVE_INT_FAST64_T
+# undef HAVE_INT_FAST64_T
+#endif
+
+#ifdef HAVE_MEMORY_H
+# define PPL_HAVE_MEMORY_H HAVE_MEMORY_H
+# undef HAVE_MEMORY_H
+#endif
+
+#ifdef HAVE_SIGNAL_H
+# define PPL_HAVE_SIGNAL_H HAVE_SIGNAL_H
+# undef HAVE_SIGNAL_H
+#endif
+
+#ifdef HAVE_STDINT_H
+# define PPL_HAVE_STDINT_H HAVE_STDINT_H
+# undef HAVE_STDINT_H
+#endif
+
+#ifdef HAVE_STDLIB_H
+# define PPL_HAVE_STDLIB_H HAVE_STDLIB_H
+# undef HAVE_STDLIB_H
+#endif
+
+#ifdef HAVE_STRINGS_H
+# define PPL_HAVE_STRINGS_H HAVE_STRINGS_H
+# undef HAVE_STRINGS_H
+#endif
+
+#ifdef HAVE_STRING_H
+# define PPL_HAVE_STRING_H HAVE_STRING_H
+# undef HAVE_STRING_H
+#endif
+
+#ifdef HAVE_SYS_RESOURCE_H
+# define PPL_HAVE_SYS_RESOURCE_H HAVE_SYS_RESOURCE_H
+# undef HAVE_SYS_RESOURCE_H
+#endif
+
+#ifdef HAVE_SYS_STAT_H
+# define PPL_HAVE_SYS_STAT_H HAVE_SYS_STAT_H
+# undef HAVE_SYS_STAT_H
+#endif
+
+#ifdef HAVE_SYS_TIME_H
+# define PPL_HAVE_SYS_TIME_H HAVE_SYS_TIME_H
+# undef HAVE_SYS_TIME_H
+#endif
+
+#ifdef HAVE_SYS_TYPES_H
+# define PPL_HAVE_SYS_TYPES_H HAVE_SYS_TYPES_H
+# undef HAVE_SYS_TYPES_H
+#endif
+
+#ifdef HAVE_TIMEVAL
+# define PPL_HAVE_TIMEVAL HAVE_TIMEVAL
+# undef HAVE_TIMEVAL
+#endif
+
+#ifdef HAVE_TYPEOF
+# define PPL_HAVE_TYPEOF HAVE_TYPEOF
+# undef HAVE_TYPEOF
+#endif
+
+#ifdef HAVE_UINT_FAST16_T
+# define PPL_HAVE_UINT_FAST16_T HAVE_UINT_FAST16_T
+# undef HAVE_UINT_FAST16_T
+#endif
+
+#ifdef HAVE_UINT_FAST32_T
+# define PPL_HAVE_UINT_FAST32_T HAVE_UINT_FAST32_T
+# undef HAVE_UINT_FAST32_T
+#endif
+
+#ifdef HAVE_UINT_FAST64_T
+# define PPL_HAVE_UINT_FAST64_T HAVE_UINT_FAST64_T
+# undef HAVE_UINT_FAST64_T
+#endif
+
+#ifdef HAVE_UNISTD_H
+# define PPL_HAVE_UNISTD_H HAVE_UNISTD_H
+# undef HAVE_UNISTD_H
+#endif
+
+#ifdef HAVE___MPZ_STRUCT__MP_ALLOC
+# define PPL_HAVE___MPZ_STRUCT__MP_ALLOC HAVE___MPZ_STRUCT__MP_ALLOC
+# undef HAVE___MPZ_STRUCT__MP_ALLOC
+#endif
+
+#ifdef HAVE___MPZ_STRUCT__MP_D
+# define PPL_HAVE___MPZ_STRUCT__MP_D HAVE___MPZ_STRUCT__MP_D
+# undef HAVE___MPZ_STRUCT__MP_D
+#endif
+
+#ifdef HAVE___MPZ_STRUCT__MP_SIZE
+# define PPL_HAVE___MPZ_STRUCT__MP_SIZE HAVE___MPZ_STRUCT__MP_SIZE
+# undef HAVE___MPZ_STRUCT__MP_SIZE
+#endif
+
+#ifdef PACKAGE_BUGREPORT
+# define PPL_PACKAGE_BUGREPORT PACKAGE_BUGREPORT
+# undef PACKAGE_BUGREPORT
+#endif
+
+#ifdef PACKAGE_NAME
+# define PPL_PACKAGE_NAME PACKAGE_NAME
+# undef PACKAGE_NAME
+#endif
+
+#ifdef PACKAGE_STRING
+# define PPL_PACKAGE_STRING PACKAGE_STRING
+# undef PACKAGE_STRING
+#endif
+
+#ifdef PACKAGE_TARNAME
+# define PPL_PACKAGE_TARNAME PACKAGE_TARNAME
+# undef PACKAGE_TARNAME
+#endif
+
+#ifdef PACKAGE_VERSION
+# define PPL_PACKAGE_VERSION PACKAGE_VERSION
+# undef PACKAGE_VERSION
+#endif
+
+#ifdef SIZEOF_CHAR
+# define PPL_SIZEOF_CHAR SIZEOF_CHAR
+# undef SIZEOF_CHAR
+#endif
+
+#ifdef SIZEOF_DOUBLE
+# define PPL_SIZEOF_DOUBLE SIZEOF_DOUBLE
+# undef SIZEOF_DOUBLE
+#endif
+
+#ifdef SIZEOF_FLOAT
+# define PPL_SIZEOF_FLOAT SIZEOF_FLOAT
+# undef SIZEOF_FLOAT
+#endif
+
+#ifdef SIZEOF_FP
+# define PPL_SIZEOF_FP SIZEOF_FP
+# undef SIZEOF_FP
+#endif
+
+#ifdef SIZEOF_INT
+# define PPL_SIZEOF_INT SIZEOF_INT
+# undef SIZEOF_INT
+#endif
+
+#ifdef SIZEOF_INTP
+# define PPL_SIZEOF_INTP SIZEOF_INTP
+# undef SIZEOF_INTP
+#endif
+
+#ifdef SIZEOF_LONG
+# define PPL_SIZEOF_LONG SIZEOF_LONG
+# undef SIZEOF_LONG
+#endif
+
+#ifdef SIZEOF_LONG_DOUBLE
+# define PPL_SIZEOF_LONG_DOUBLE SIZEOF_LONG_DOUBLE
+# undef SIZEOF_LONG_DOUBLE
+#endif
+
+#ifdef SIZEOF_LONG_LONG
+# define PPL_SIZEOF_LONG_LONG SIZEOF_LONG_LONG
+# undef SIZEOF_LONG_LONG
+#endif
+
+#ifdef SIZEOF_MP_LIMB_T
+# define PPL_SIZEOF_MP_LIMB_T SIZEOF_MP_LIMB_T
+# undef SIZEOF_MP_LIMB_T
+#endif
+
+#ifdef SIZEOF_SHORT
+# define PPL_SIZEOF_SHORT SIZEOF_SHORT
+# undef SIZEOF_SHORT
+#endif
+
+#ifdef SIZEOF_SIZE_T
+# define PPL_SIZEOF_SIZE_T SIZEOF_SIZE_T
+# undef SIZEOF_SIZE_T
+#endif
+
+#ifdef STDC_HEADERS
+# define PPL_STDC_HEADERS STDC_HEADERS
+# undef STDC_HEADERS
+#endif
+
 #ifdef WORDS_BIGENDIAN
-# define PPL_WORDS_BIGENDIAN
+# define PPL_WORDS_BIGENDIAN WORDS_BIGENDIAN
 # undef WORDS_BIGENDIAN
 #endif
 
@@ -299,14 +613,14 @@ enable_more_assertions=${enableval}
 if test x"$enable_more_assertions" = xyes
 then
   enable_assertions=yes
-  AC_DEFINE(ABI_BREAKING_EXTRA_DEBUG, 1, [ABI-breaking extra assertions are enabled when this is defined.])
+  AC_DEFINE(PPL_ABI_BREAKING_EXTRA_DEBUG, 1, [ABI-breaking extra assertions are enabled when this is defined.])
   AC_DEFINE(_GLIBCXX_DEBUG, 1, [When defined and libstdc++ is used, it is used in debug mode.])
   AC_DEFINE(_GLIBCXX_DEBUG_PEDANTIC, 1, [When defined and libstdc++ is used, it is used in pedantic debug mode.])
 fi
 
 if test x"$enable_assertions" = xno
 then
-  AC_DEFINE(NDEBUG, 1, [Assertions are disabled when this is defined.])
+  AC_DEFINE(PPL_NDEBUG, 1, [Assertions are disabled when this is defined.])
   debug_flag="-DNDEBUG=1"
 fi
 
@@ -432,12 +746,12 @@ esac
 
 if test x"$fpmath_may_use_387" = xyes
 then
-  AC_DEFINE(FPMATH_MAY_USE_387, 1, [Defined if floating point arithmetics may use the 387 unit.])
+  AC_DEFINE(PPL_FPMATH_MAY_USE_387, 1, [Defined if floating point arithmetics may use the 387 unit.])
 fi
 
 if test x"$fpmath_may_use_sse" = xyes
 then
-  AC_DEFINE(FPMATH_MAY_USE_SSE, 1, [Defined if floating point arithmetics may use the SSE instruction set.])
+  AC_DEFINE(PPL_FPMATH_MAY_USE_SSE, 1, [Defined if floating point arithmetics may use the SSE instruction set.])
 fi
 
 # Disable all transformations and optimizations that assume default
@@ -600,20 +914,20 @@ AM_CONDITIONAL(USE_INT64, test x"$coefficient_bits" = x64)
 if test x"$coefficient_kind" = xnative
 then
   coefficient_type="Parma_Polyhedra_Library::Checked_Number<int${coefficient_bits}_t, Checked_Number_Transparent_Policy>"
-  AC_DEFINE_UNQUOTED(COEFFICIENT_TYPE, $coefficient_type, [The integral type used to represent coefficients.])
-  AC_DEFINE_UNQUOTED(COEFFICIENT_BITS, $coefficient_bits, [The number of bits of coefficients; 0 if unbounded.])
-  AC_DEFINE(NATIVE_INTEGERS, 1, [Defined if the integral type to be used for coefficients is a native one.])
+  AC_DEFINE_UNQUOTED(PPL_COEFFICIENT_TYPE, $coefficient_type, [The integral type used to represent coefficients.])
+  AC_DEFINE_UNQUOTED(PPL_COEFFICIENT_BITS, $coefficient_bits, [The number of bits of coefficients; 0 if unbounded.])
+  AC_DEFINE(PPL_NATIVE_INTEGERS, 1, [Defined if the integral type to be used for coefficients is a native one.])
 elif test x"$coefficient_kind" = xchecked
 then
   coefficient_type="Parma_Polyhedra_Library::Checked_Number<int${coefficient_bits}_t>"
-  AC_DEFINE_UNQUOTED(COEFFICIENT_TYPE, $coefficient_type)
-  AC_DEFINE_UNQUOTED(COEFFICIENT_BITS, $coefficient_bits)
-  AC_DEFINE(CHECKED_INTEGERS, 1, [Defined if the integral type to be used for coefficients is a checked one.])
+  AC_DEFINE_UNQUOTED(PPL_COEFFICIENT_TYPE, $coefficient_type)
+  AC_DEFINE_UNQUOTED(PPL_COEFFICIENT_BITS, $coefficient_bits)
+  AC_DEFINE(PPL_CHECKED_INTEGERS, 1, [Defined if the integral type to be used for coefficients is a checked one.])
 elif test x"$coefficient_kind" = xunbounded
 then
-  AC_DEFINE(COEFFICIENT_TYPE, mpz_class)
-  AC_DEFINE(COEFFICIENT_BITS, 0)
-  AC_DEFINE(GMP_INTEGERS, 1, [Defined if the integral type to be used for coefficients is GMP's one.])
+  AC_DEFINE(PPL_COEFFICIENT_TYPE, mpz_class)
+  AC_DEFINE(PPL_COEFFICIENT_BITS, 0)
+  AC_DEFINE(PPL_GMP_INTEGERS, 1, [Defined if the integral type to be used for coefficients is GMP's one.])
 fi
 
 # Allow additions to C and C++ compilation flags.
@@ -769,7 +1083,7 @@ build_watchdog_library=$enableval
 AM_CONDITIONAL(BUILD_WATCHDOG_LIBRARY, test x"$build_watchdog_library" = xyes)
 if test x"$build_watchdog_library" = xyes
 then
-  AC_DEFINE(WATCHDOG_LIBRARY_ENABLED, 1, [Defined if the Parma Watchdog Library is enabled.])
+  AC_DEFINE(PPL_WATCHDOG_LIBRARY_ENABLED, 1, [Defined if the Parma Watchdog Library is enabled.])
 fi
 
 # Enabled or not, the Watchdog subdirectory must be configured.
@@ -1376,7 +1690,7 @@ then
   ac_save_LIBS="$LIBS"
   LIBS="$LIBS -lglpk"
   AC_CHECK_DECL(lib_set_print_hook,
-                AC_DEFINE(GLPK_HAS_LIB_SET_PRINT_HOOK,
+                AC_DEFINE(PPL_GLPK_HAS_LIB_SET_PRINT_HOOK,
                           1,
                           [Defined if GLPK provides lib_set_print_hook().]),
                 ,
@@ -1388,11 +1702,11 @@ then
 #endif
                 ])
   AC_CHECK_FUNC(_glp_lib_print_hook,
-                AC_DEFINE(GLPK_HAS__GLP_LIB_PRINT_HOOK,
+                AC_DEFINE(PPL_GLPK_HAS__GLP_LIB_PRINT_HOOK,
                           1,
                           [Defined if GLPK provides _glp_lib_print_hook().]))
   AC_CHECK_DECL(glp_term_out,
-                AC_DEFINE(GLPK_HAS_GLP_TERM_OUT,
+                AC_DEFINE(PPL_GLPK_HAS_GLP_TERM_OUT,
                           1,
                           [Defined if GLPK provides glp_term_out().]),
                 ,
@@ -1404,7 +1718,7 @@ then
 #endif
                 ])
   AC_CHECK_DECL(glp_term_hook,
-                AC_DEFINE(GLPK_HAS_GLP_TERM_HOOK,
+                AC_DEFINE(PPL_GLPK_HAS_GLP_TERM_HOOK,
                           1,
                           [Defined if GLPK provides glp_term_hook().]),
                 ,

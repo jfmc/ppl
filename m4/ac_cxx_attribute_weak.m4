@@ -49,7 +49,7 @@ then
 else
   value=0
 fi
-AC_DEFINE_UNQUOTED(CXX_SUPPORTS_ATTRIBUTE_WEAK, $value,
+AC_DEFINE_UNQUOTED(PPL_CXX_SUPPORTS_ATTRIBUTE_WEAK, $value,
   [Not zero if the C++ compiler supports __attribute__ ((weak)).])
 
 AC_LANG_POP(C++)

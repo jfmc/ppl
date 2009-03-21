@@ -43,15 +43,117 @@ AM_INIT_AUTOMAKE([foreign no-define dist-bzip2 dist-zip 1.7.3])
 AC_SUBST(VERSION)
 
 # Generate a configuration header file.
-AC_CONFIG_HEADER([config.h])
-
-# Generate prefixed defines.
-AX_PREFIX_CONFIG_H
+AC_CONFIG_HEADER([pwl-config.h])
 
 ISODATE=`date +%Y-%m-%d`
 AC_SUBST(ISODATE)
 
 AH_BOTTOM([
+#ifdef HAVE_DECL_GETENV
+# define PWL_HAVE_DECL_GETENV HAVE_DECL_GETENV
+# undef HAVE_DECL_GETENV
+#endif
+
+#ifdef HAVE_DLFCN_H
+# define PWL_HAVE_DLFCN_H HAVE_DLFCN_H
+# undef HAVE_DLFCN_H
+#endif
+
+#ifdef HAVE_FENV_H
+# define PWL_HAVE_FENV_H HAVE_FENV_H
+# undef HAVE_FENV_H
+#endif
+
+#ifdef HAVE_INTTYPES_H
+# define PWL_HAVE_INTTYPES_H HAVE_INTTYPES_H
+# undef HAVE_INTTYPES_H
+#endif
+
+#ifdef HAVE_MEMORY_H
+# define PWL_HAVE_MEMORY_H HAVE_MEMORY_H
+# undef HAVE_MEMORY_H
+#endif
+
+#ifdef HAVE_SETITIMER_H
+# define PWL_HAVE_SETITIMER_H HAVE_SETITIMER_H
+# undef HAVE_SETITIMER_H
+#endif
+
+#ifdef HAVE_STDINT_H
+# define PWL_HAVE_STDINT_H HAVE_STDINT_H
+# undef HAVE_STDINT_H
+#endif
+
+#ifdef HAVE_STDLIB_H
+# define PWL_HAVE_STDLIB_H HAVE_STDLIB_H
+# undef HAVE_STDLIB_H
+#endif
+
+#ifdef HAVE_STRINGS_H
+# define PWL_HAVE_STRINGS_H HAVE_STRINGS_H
+# undef HAVE_STRINGS_H
+#endif
+
+#ifdef HAVE_STRING_H
+# define PWL_HAVE_STRING_H HAVE_STRING_H
+# undef HAVE_STRING_H
+#endif
+
+#ifdef HAVE_SYS_STAT_H
+# define PWL_HAVE_SYS_STAT_H HAVE_SYS_STAT_H
+# undef HAVE_SYS_STAT_H
+#endif
+
+#ifdef HAVE_SYS_TIME_H
+# define PWL_HAVE_SYS_TIME_H HAVE_SYS_TIME_H
+# undef HAVE_SYS_TIME_H
+#endif
+
+#ifdef HAVE_SYS_TYPES_H
+# define PWL_HAVE_SYS_TYPES_H HAVE_SYS_TYPES_H
+# undef HAVE_SYS_TYPES_H
+#endif
+
+#ifdef HAVE_UNISTD_H
+# define PWL_HAVE_UNISTD_H HAVE_UNISTD_H
+# undef HAVE_UNISTD_H
+#endif
+
+#ifdef PACKAGE_BUGREPORT
+# define PWL_PACKAGE_BUGREPORT PACKAGE_BUGREPORT
+# undef PACKAGE_BUGREPORT
+#endif
+
+#ifdef PACKAGE_NAME
+# define PWL_PACKAGE_NAME PACKAGE_NAME
+# undef PACKAGE_NAME
+#endif
+
+#ifdef PACKAGE_STRING
+# define PWL_PACKAGE_STRING PACKAGE_STRING
+# undef PACKAGE_STRING
+#endif
+
+#ifdef PACKAGE_TARNAME
+# define PWL_PACKAGE_TARNAME PACKAGE_TARNAME
+# undef PACKAGE_TARNAME
+#endif
+
+#ifdef PACKAGE_VERSION
+# define PWL_PACKAGE_VERSION PACKAGE_VERSION
+# undef PACKAGE_VERSION
+#endif
+
+#ifdef STDC_HEADERS
+# define PWL_STDC_HEADERS STDC_HEADERS
+# undef STDC_HEADERS
+#endif
+
+#ifdef TIME_WITH_SYS_TIME_H
+# define PWL_TIME_WITH_SYS_TIME_H TIME_WITH_SYS_TIME_H
+# undef TIME_WITH_SYS_TIME_H
+#endif
+
 #ifdef PWL_NDEBUG
 # define NDEBUG PWL_NDEBUG
 #endif

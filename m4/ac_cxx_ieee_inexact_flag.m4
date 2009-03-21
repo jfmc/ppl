@@ -123,7 +123,7 @@ then
 else
   value=0
 fi
-AC_DEFINE_UNQUOTED(CXX_SUPPORTS_IEEE_INEXACT_FLAG, $value,
+AC_DEFINE_UNQUOTED(PPL_CXX_SUPPORTS_IEEE_INEXACT_FLAG, $value,
   [Not zero if the the IEEE inexact flag is supported in C++.])
 
 AC_LANG_POP(C++)

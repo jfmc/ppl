@@ -14,6 +14,8 @@ o  Some packaging issues have been fixed.
 
 o  Robustness improved.
 
+o  Added support for cross compilation.
+
 o  New macro PPL_DIRTY_TEMP_COEFFICIENT allows users of the C++ interface
    to decrease memory allocation overhead and to improve locality whenever
    they need a temporary variable of type `Coefficient'.
@@ -36,27 +38,37 @@ o  Fixed a bug whereby `make check' was failing when the library was
    configured with the `--disable-watchdog' option.
 
 o  Fixed a bug in method
+
      bool Polyhedron::contains_integer_point() const;
+
    whereby, under very specific conditions, an empty polyhedron is
    incorrectly said to contain an integer point.
 
 o  Fixed a bug in method
+
      Partially_Reduced_Product<D1, D2, R>::time_elase_assign(y)
+
   whereby, if the product y was not already reduced, the operation could
   lose precision.
 
 o  Fixed a bug in the OCaml interface, which was affecting functions
+
      ppl_Grid_generalized_affine_image_with_congruence
+
    and
+
      ppl_Grid_generalized_affine_preimage_with_congruence.
 
 o  Fixed a bug in the Grid class that affected the methods
+
      Grid::bounds_from_above(), Grid::bounds_from_below(),
      Grid::maximize() and Grid::minimize();
+
    causing all of them to wrongly return true in certain cases where
    the grid generators were not minimized.
 
-o  ...
+o  Fixed a bug whereby big-endian architectures were not properly
+   recognized by the configuration script.
 
 
 --------------------------------------------------------------------------

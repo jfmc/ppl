@@ -244,7 +244,7 @@ main() {
   AC_MSG_RESULT(no)
   ac_cxx_long_double_exact_output=0)
 
-AC_DEFINE_UNQUOTED(CXX_LONG_DOUBLE_EXACT_OUTPUT, $ac_cxx_long_double_exact_output,
+AC_DEFINE_UNQUOTED(PPL_CXX_LONG_DOUBLE_EXACT_OUTPUT, $ac_cxx_long_double_exact_output,
   [Not zero if C++ supports exact output for long doubles.])
 
 AC_LANG_POP(C++)

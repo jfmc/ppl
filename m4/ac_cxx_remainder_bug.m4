@@ -60,7 +60,7 @@ then
 else
   value=0
 fi
-AC_DEFINE_UNQUOTED(CXX_HAS_REMAINDER_BUG, $value,
+AC_DEFINE_UNQUOTED(PPL_CXX_HAS_REMAINDER_BUG, $value,
   [Not zero if the C++ compiler has the remainder bug.])
 
 AC_LANG_POP(C++)

@@ -98,7 +98,7 @@ public:
   }
 };
 
-#if SUPPORTED_FLOAT
+#if PPL_SUPPORTED_FLOAT
 class Float_Box {
 public:
   static bool valid_instantiation() {
@@ -111,9 +111,9 @@ public:
     return true;
   }
 };
-#endif // SUPPORTED_FLOAT
+#endif // PPL_SUPPORTED_FLOAT
 
-#if SUPPORTED_DOUBLE
+#if PPL_SUPPORTED_DOUBLE
 class Double_Box {
 public:
   static bool valid_instantiation() {
@@ -126,9 +126,9 @@ public:
     return true;
   }
 };
-#endif // SUPPORTED_DOUBLE
+#endif // PPL_SUPPORTED_DOUBLE
 
-#if SUPPORTED_LONG_DOUBLE
+#if PPL_SUPPORTED_LONG_DOUBLE
 class Long_Double_Box {
 public:
   static bool valid_instantiation() {
@@ -141,7 +141,7 @@ public:
     return true;
   }
 };
-#endif // SUPPORTED_LONG_DOUBLE
+#endif // PPL_SUPPORTED_LONG_DOUBLE
 
 class Int8_Box {
 public:
@@ -289,29 +289,29 @@ valid_BD_Shape_argument<long long>() {
   return true;
 }
 
-#if SUPPORTED_FLOAT
+#if PPL_SUPPORTED_FLOAT
 template <>
 bool
 valid_BD_Shape_argument<float>() {
   return true;
 }
-#endif // SUPPORTED_FLOAT
+#endif // PPL_SUPPORTED_FLOAT
 
-#if SUPPORTED_DOUBLE
+#if PPL_SUPPORTED_DOUBLE
 template <>
 bool
 valid_BD_Shape_argument<double>() {
   return true;
 }
-#endif // SUPPORTED_DOUBLE
+#endif // PPL_SUPPORTED_DOUBLE
 
-#if SUPPORTED_LONG_DOUBLE
+#if PPL_SUPPORTED_LONG_DOUBLE
 template <>
 bool
 valid_BD_Shape_argument<long double>() {
   return true;
 }
-#endif // SUPPORTED_LONG_DOUBLE
+#endif // PPL_SUPPORTED_LONG_DOUBLE
 
 template <>
 bool

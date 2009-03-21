@@ -107,7 +107,7 @@ then
 else
   value=0
 fi
-AC_DEFINE_UNQUOTED(CXX_SUPPORTS_LIMITING_MEMORY, $value,
+AC_DEFINE_UNQUOTED(PPL_CXX_SUPPORTS_LIMITING_MEMORY, $value,
   [Not zero if it is possible to limit memory using setrlimit().])
 
 AC_LANG_POP(C++)

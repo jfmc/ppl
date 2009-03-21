@@ -87,7 +87,7 @@ main() {
 
 #endif // SIZEOF_LONG_DOUBLE != 12
 ]])],
-  AC_DEFINE(CXX_LONG_DOUBLE_BINARY_FORMAT, PPL_FLOAT_INTEL_DOUBLE_EXTENDED,
+  AC_DEFINE(PPL_CXX_LONG_DOUBLE_BINARY_FORMAT, PPL_FLOAT_INTEL_DOUBLE_EXTENDED,
   [The unique code of the binary format of C++ long doubles, if supported; undefined otherwise.])
   ac_cxx_long_double_binary_format="Intel Double-Extended",
   ac_cxx_long_double_binary_format=unknown,
@@ -167,7 +167,7 @@ main() {
 
 #endif // SIZEOF_LONG_DOUBLE != 16
 ]])],
-  AC_DEFINE(CXX_LONG_DOUBLE_BINARY_FORMAT, PPL_FLOAT_IEEE754_QUAD,
+  AC_DEFINE(PPL_CXX_LONG_DOUBLE_BINARY_FORMAT, PPL_FLOAT_IEEE754_QUAD,
   [The unique code of the binary format of C++ long doubles, if supported; undefined otherwise.])
   ac_cxx_long_double_binary_format="IEEE754 Quad Precision",
   ac_cxx_long_double_binary_format=unknown,
@@ -235,7 +235,7 @@ main() {
 
 #endif // SIZEOF_LONG_DOUBLE != 16
 ]])],
-  AC_DEFINE(CXX_LONG_DOUBLE_BINARY_FORMAT, PPL_FLOAT_INTEL_DOUBLE_EXTENDED,
+  AC_DEFINE(PPL_CXX_LONG_DOUBLE_BINARY_FORMAT, PPL_FLOAT_INTEL_DOUBLE_EXTENDED,
     [The unique code of the binary format of C++ long doubles, if supported; undefined otherwise.])
   ac_cxx_long_double_binary_format="Intel Double-Extended",
   ac_cxx_long_double_binary_format=unknown,
@@ -303,7 +303,7 @@ main() {
 
 #endif // SIZEOF_LONG_DOUBLE != 8
 ]])],
-  AC_DEFINE(CXX_LONG_DOUBLE_BINARY_FORMAT, PPL_FLOAT_IEEE754_DOUBLE,
+  AC_DEFINE(PPL_CXX_LONG_DOUBLE_BINARY_FORMAT, PPL_FLOAT_IEEE754_DOUBLE,
     [The unique code of the binary format of C++ long doubles, if supported; undefined otherwise.])
   ac_cxx_long_double_binary_format="IEEE754 Double Precision",
   ac_cxx_long_double_binary_format=unknown,
@@ -321,7 +321,7 @@ else
   ac_supported_long_double=1
 fi
 AM_CONDITIONAL(SUPPORTED_LONG_DOUBLE, test $ac_supported_long_double = 1)
-AC_DEFINE_UNQUOTED(SUPPORTED_LONG_DOUBLE, $ac_supported_long_double,
+AC_DEFINE_UNQUOTED(PPL_SUPPORTED_LONG_DOUBLE, $ac_supported_long_double,
   [Not zero if long doubles are supported.])
 
 AC_LANG_POP(C++)

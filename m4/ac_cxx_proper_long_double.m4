@@ -54,7 +54,7 @@ then
 else
   value=0
 fi
-AC_DEFINE_UNQUOTED(CXX_PROVIDES_PROPER_LONG_DOUBLE, $value,
+AC_DEFINE_UNQUOTED(PPL_CXX_PROVIDES_PROPER_LONG_DOUBLE, $value,
   [Not zero if the C++ compiler provides long double numbers that have bigger range or precision than double.])
 
 AC_LANG_POP(C++)
