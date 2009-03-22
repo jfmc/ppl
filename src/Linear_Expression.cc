@@ -119,6 +119,23 @@ PPL::operator+(Coefficient_traits::const_reference n,
   return r;
 }
 
+/*! \relates Linear_Expression */
+PPL::Linear_Expression
+PPL::operator+(const Variable v, const Variable w) {
+  const dimension_type v_space_dim = v.space_dimension();
+  const dimension_type w_space_dim = w.space_dimension();
+  const dimension_type space_dim = std::max(v_space_dim, w_space_dim);
+  if (space_dim > Linear_Expression::max_space_dimension())
+    throw std::length_error("Linear_Expression "
+                            "PPL::operator+(v, w):\n"
+                            "v or w exceed the maximum allowed "
+                            "space dimension.");
+  Linear_Expression r(space_dim+1, true);
+  ++r[v_space_dim];
+  ++r[w_space_dim];
+  return r;
+}
+
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression
 PPL::operator-(const Linear_Expression& e) {

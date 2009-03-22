@@ -47,14 +47,14 @@ Linear_Expression::Linear_Expression(dimension_type sz, bool)
 inline
 Linear_Expression::Linear_Expression(const Variable v)
   : Linear_Row(v.space_dimension() <= max_space_dimension()
-	       ? v.id() + 2
+	       ? v.space_dimension() + 1
 	       : (throw std::length_error("PPL::Linear_Expression::"
 					  "Linear_Expression(v):\n"
 					  "v exceeds the maximum allowed "
 					  "space dimension."),
-		  v.id() + 2)
+		  v.space_dimension() + 1)
 	       , Linear_Row::Flags()) {
-  (*this)[v.id() + 1] = 1;
+  ++((*this)[v.space_dimension()]);
 }
 
 inline
@@ -70,8 +70,8 @@ Linear_Expression::Linear_Expression(const Variable v, const Variable w)
                             "space dimension.");
   construct(space_dim+1, Linear_Row::Flags());
   if (v_space_dim != w_space_dim) {
-    (*this)[v_space_dim] = 1;
-    (*this)[w_space_dim] = -1;
+    ++((*this)[v_space_dim]);
+    --((*this)[w_space_dim]);
   }
 }
 
@@ -139,13 +139,6 @@ operator+(const Linear_Expression& e) {
 inline Linear_Expression
 operator+(const Linear_Expression& e, Coefficient_traits::const_reference n) {
   return n + e;
-}
-
-/*! \relates Linear_Expression */
-inline Linear_Expression
-operator+(const Variable v, const Variable w) {
-  // FIXME(0.10.1): provide a better implementation.
-  return Linear_Expression(v) + Linear_Expression(w);
 }
 
 /*! \relates Linear_Expression */

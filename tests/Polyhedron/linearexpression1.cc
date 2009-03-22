@@ -52,26 +52,39 @@ test01() {
 
 bool
 test02() {
-  Variable A(0);
-  Variable B(15);
+  Variable A(15);
+  Variable B(0);
 
   Linear_Expression e1 = A;
   Linear_Expression e2 = B;
 
-  Linear_Expression known_result = e1 + e2;
+  Linear_Expression known_result1 = e1 + e2;
 
-  bool ok = EQUIVALENT(A + B, known_result)
-    && EQUIVALENT(B + A, known_result)
-    && EQUIVALENT(Linear_Expression(A) + B, known_result)
-    && EQUIVALENT(B + Linear_Expression(A), known_result)
-    && EQUIVALENT(A + Linear_Expression(B), known_result)
-    && EQUIVALENT(Linear_Expression(B) + A, known_result)
-    && EQUIVALENT(Linear_Expression(B) + Linear_Expression(A), known_result);
+  bool ok1 = EQUIVALENT(A + B, known_result1)
+    && EQUIVALENT(B + A, known_result1)
+    && EQUIVALENT(Linear_Expression(A) + B, known_result1)
+    && EQUIVALENT(B + Linear_Expression(A), known_result1)
+    && EQUIVALENT(A + Linear_Expression(B), known_result1)
+    && EQUIVALENT(Linear_Expression(B) + A, known_result1)
+    && EQUIVALENT(Linear_Expression(B) + Linear_Expression(A), known_result1);
 
-  nout << "*** known_result ***" << endl
-       << known_result << endl;
+  nout << "*** known_result1 ***" << endl
+       << known_result1 << endl;
 
-  return ok;
+  Linear_Expression known_result2 = e1 + e1;
+
+  bool ok2 = EQUIVALENT(A + A, known_result2)
+    && EQUIVALENT(A + A, known_result2)
+    && EQUIVALENT(Linear_Expression(A) + A, known_result2)
+    && EQUIVALENT(A + Linear_Expression(A), known_result2)
+    && EQUIVALENT(A + Linear_Expression(A), known_result2)
+    && EQUIVALENT(Linear_Expression(A) + A, known_result2)
+    && EQUIVALENT(Linear_Expression(A) + Linear_Expression(A), known_result2);
+
+  nout << "*** known_result2 ***" << endl
+       << known_result2 << endl;
+
+  return ok1 && ok2;
 }
 
 } // namespace
