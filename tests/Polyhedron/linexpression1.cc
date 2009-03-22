@@ -24,6 +24,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
+using namespace Parma_Polyhedra_Library::IO_Operators;
+
+#define EQUIVALENT(le1, le2) (((le1) == 0) == ((le2) == 0))
+
 // Test operator-=(Linear_Expression& e1, const Linear_Expression& e2):
 // in this case the dimension of e2 is strictly greater than
 // the dimension of e1.
@@ -36,15 +40,36 @@ test01() {
   Linear_Expression e2 = B;
   e1 -= e2;
 
-  C_Polyhedron ph(2);
-  ph.add_constraint(e1 >= 0);
+  Linear_Expression known_result = A - B;
 
-  C_Polyhedron known_result(2);
-  known_result.add_constraint(A - B >= 0);
+  bool ok = EQUIVALENT(e1, known_result);
 
-  bool ok = (ph == known_result);
+  nout << "*** known_result ***" << endl
+       << known_result << endl;
 
-  print_constraints(ph, "*** ph ***");
+  return ok;
+}
+
+bool
+test02() {
+  Variable A(0);
+  Variable B(15);
+
+  Linear_Expression e1 = A;
+  Linear_Expression e2 = B;
+
+  Linear_Expression known_result = e1 + e2;
+
+  bool ok = EQUIVALENT(A + B, known_result)
+    && EQUIVALENT(B + A, known_result)
+    && EQUIVALENT(Linear_Expression(A) + B, known_result)
+    && EQUIVALENT(B + Linear_Expression(A), known_result)
+    && EQUIVALENT(A + Linear_Expression(B), known_result)
+    && EQUIVALENT(Linear_Expression(B) + A, known_result)
+    && EQUIVALENT(Linear_Expression(B) + Linear_Expression(A), known_result);
+
+  nout << "*** known_result ***" << endl
+       << known_result << endl;
 
   return ok;
 }
@@ -53,4 +78,5 @@ test01() {
 
 BEGIN_MAIN
   DO_TEST(test01);
+  DO_TEST(test02);
 END_MAIN
