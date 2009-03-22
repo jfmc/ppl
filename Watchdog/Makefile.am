@@ -36,9 +36,23 @@ pwl-config.h
 pwl-config.h: config.h $(srcdir)/pwl-config.sed
 	$(SED) -f $(srcdir)/pwl-config.sed $< >$@
 
+pwl-config.h.in: config.h.in $(srcdir)/pwl-config.sed
+	$(SED) -f $(srcdir)/pwl-config.sed $< >$@
+
 endif BUILD_WATCHDOG_LIBRARY
 
+# Kludge: we need to force building `pwl-config.h' on `make dist',
+# hence we list it in `EXTRA_DIST';  but we do not want to distribute
+# it, hence we erase it in `dist-hook'.
+dist-hook:
+	rm -f $(distdir)/pwl-config.h
+
+# Kludge: we need to force building `pwl-config.h' on `make dist',
+# hence we list it in `EXTRA_DIST';  but we do not want to distribute
+# it, hence we erase it in `dist-hook'.
 EXTRA_DIST = \
+pwl-config.h \
+pwl-config.h.in \
 pwl-config.sed \
 BUGS \
 CREDITS

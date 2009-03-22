@@ -37,11 +37,18 @@ instchk.hh
 ppl-config.h: config.h $(srcdir)/ppl-config.sed
 	$(SED) -f $(srcdir)/ppl-config.sed $< >$@
 
+ppl-config.h.in: config.h.in $(srcdir)/ppl-config.sed
+	$(SED) -f $(srcdir)/ppl-config.sed $< >$@
+
 DISTCHECK_CONFIGURE_FLAGS = \
 --enable-shared --enable-watchdog
 
+# Kludge: we need to force building `ppl-config.h' on `make dist',
+# hence we list it in `EXTRA_DIST';  but we do not want to distribute
+# it, hence we erase it in `dist-hook'.
 dist-hook:
-	$(SED) -e "s/^enableval=thorough$$/enableval=quick/g" \
+	rm -f $(distdir)/ppl-config.h \
+	&& $(SED) -e "s/^enableval=thorough$$/enableval=quick/g" \
 		<$(distdir)/configure.ac >$(distdir)/configure.ac.new \
 	&& touch $(distdir)/configure.ac.new -r $(distdir)/configure.ac \
 	&& mv -f $(distdir)/configure.ac.new $(distdir)/configure.ac
@@ -51,7 +58,12 @@ dist-hook:
 	&& mv -f $(distdir)/configure.new $(distdir)/configure \
 	&& chmod +x $(distdir)/configure
 
+# Kludge: we need to force building `ppl-config.h' on `make dist',
+# hence we list it in `EXTRA_DIST';  but we do not want to distribute
+# it, hence we erase it in `dist-hook'.
 EXTRA_DIST = \
+ppl-config.h \
+ppl-config.h.in \
 ppl-config.sed \
 ppl.lsm.in \
 BUGS \
@@ -63,4 +75,4 @@ DISTCLEANFILES = \
 ppl-config.h
 
 distcleancheck_listfiles = \
-	find -type f -exec sh -c 'test -f $(srcdir)/{} || echo {}' ';'
+  find -type f -exec sh -c 'test -f $(srcdir)/{} || echo {}' ';'
