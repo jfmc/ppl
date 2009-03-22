@@ -165,11 +165,11 @@ m4_define(`ppl_@CLASS@_drop_disjunct_code',
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_drop_1disjunct
 (JNIEnv* env, jobject j_this, jobject j_it) try {
-  @TOPOLOGY@@CPP_CLASS@::iterator* itr_ptr
-    = reinterpret_cast<@TOPOLOGY@@CPP_CLASS@::iterator*>(get_ptr(env, j_it));
   @TOPOLOGY@@CPP_CLASS@* this_ptr
     = reinterpret_cast<@TOPOLOGY@@CPP_CLASS@*>(get_ptr(env, j_this));
-  this_ptr->drop_disjunct(*itr_ptr);
+  @TOPOLOGY@@CPP_CLASS@::iterator& itr
+    = *(reinterpret_cast<@TOPOLOGY@@CPP_CLASS@::iterator*>(get_ptr(env, j_it)));
+  itr = this_ptr->drop_disjunct(itr);
 }
 CATCH_ALL
 

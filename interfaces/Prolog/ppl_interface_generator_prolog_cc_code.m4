@@ -403,7 +403,7 @@ m4_define(`ppl_@CLASS@_drop_disjunct_code',
     PPL_CHECK(it);
 
     @CPP_CLASS@::iterator& i = *it;
-    pps->drop_disjunct(i);
+    i = pps->drop_disjunct(i);
 
     return PROLOG_SUCCESS;
   }

@@ -788,9 +788,21 @@ print_string_if_noisy "\n";;
 m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
 `
 print_string_if_noisy "testing ppl_@CLASS@_@INCDEC@_iterator: " ;;
-let it = ppl_@CLASS@_begin_iterator @!CLASS@01;;
-ppl_@CLASS@_@INCDEC@_iterator it;;
-let out = if (ppl_@CLASS@_OK @!CLASS@01)
+let itb = ppl_@CLASS@_begin_iterator @!CLASS@01;;
+let it_begin = ppl_@CLASS@_begin_iterator @!CLASS@01;;
+let ite = ppl_@CLASS@_end_iterator @!CLASS@01;;
+let it_end = ppl_@CLASS@_end_iterator @!CLASS@01;;
+let size = ppl_@CLASS@_size @!CLASS@01 in
+if (size > 0)
+  then (
+    ppl_@CLASS@_increment_iterator itb;
+    ppl_@CLASS@_decrement_iterator itb;
+    ppl_@CLASS@_decrement_iterator ite;
+    ppl_@CLASS@_increment_iterator ite;
+  );;
+let out = if ((ppl_@CLASS@_OK @!CLASS@01)
+              & (ppl_@CLASS@_iterator_equals_iterator itb it_begin)
+              & (ppl_@CLASS@_iterator_equals_iterator ite it_end))
   then "success" else "failed"
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;

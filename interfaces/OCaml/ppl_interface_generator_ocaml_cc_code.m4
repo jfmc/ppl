@@ -957,7 +957,7 @@ ppl_@CLASS@_drop_disjunct(value t_pps, value caml_item_to_drop) try {
   CAMLparam2(t_pps, caml_item_to_drop);
   @CPP_CLASS@& pps = *p_@CLASS@_val(t_pps);
   @CPP_CLASS@::iterator& itr = *p_@CLASS@_iterator_val(caml_item_to_drop);
-  pps.drop_disjunct(itr);
+  itr = pps.drop_disjunct(itr);
   CAMLreturn0;
 }
 CATCH_ALL
