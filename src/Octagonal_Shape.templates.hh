@@ -1631,10 +1631,8 @@ Octagonal_Shape<T>::relation_with(const Generator& g) const {
         ? Coefficient_zero()
         : g.coefficient(y);
 
-      // FIXME(0.10.1)! Find better names.
-      const bool is_binary_equality = is_additive_inverse(m_ii_jj, m_i_j);
-      const bool is_a_binary_equality = is_additive_inverse(m_i_jj, m_ii_j);
-      if (is_binary_equality) {
+      const bool difference_is_equality = is_additive_inverse(m_ii_jj, m_i_j);
+      if (difference_is_equality) {
         // The constraint has form ax - ay = b.
         // The scalar product has the form
         // 'den * coeff_x - den * coeff_y - num * g.divisor()'.
@@ -1698,7 +1696,8 @@ Octagonal_Shape<T>::relation_with(const Generator& g) const {
         }
       }
 
-      if (is_a_binary_equality) {
+      const bool sum_is_equality = is_additive_inverse(m_i_jj, m_ii_j);
+      if (sum_is_equality) {
         // The constraint has form ax + ay = b.
         // The scalar product has the form
         // 'den * coeff_x + den * coeff_y - num * g.divisor()'.
