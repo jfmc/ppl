@@ -45,37 +45,6 @@ Linear_Expression::Linear_Expression(dimension_type sz, bool)
 }
 
 inline
-Linear_Expression::Linear_Expression(const Variable v)
-  : Linear_Row(v.space_dimension() <= max_space_dimension()
-	       ? v.space_dimension() + 1
-	       : (throw std::length_error("PPL::Linear_Expression::"
-					  "Linear_Expression(v):\n"
-					  "v exceeds the maximum allowed "
-					  "space dimension."),
-		  v.space_dimension() + 1)
-	       , Linear_Row::Flags()) {
-  ++((*this)[v.space_dimension()]);
-}
-
-inline
-Linear_Expression::Linear_Expression(const Variable v, const Variable w)
-  : Linear_Row() {
-  const dimension_type v_space_dim = v.space_dimension();
-  const dimension_type w_space_dim = w.space_dimension();
-  const dimension_type space_dim = std::max(v_space_dim, w_space_dim);
-  if (space_dim > max_space_dimension())
-    throw std::length_error("PPL::Linear_Expression::"
-                            "Linear_Expression(v, w):\n"
-                            "v or w exceed the maximum allowed "
-                            "space dimension.");
-  construct(space_dim+1, Linear_Row::Flags());
-  if (v_space_dim != w_space_dim) {
-    ++((*this)[v_space_dim]);
-    --((*this)[w_space_dim]);
-  }
-}
-
-inline
 Linear_Expression::Linear_Expression(const Linear_Expression& e)
   : Linear_Row(e) {
 }
@@ -143,20 +112,6 @@ operator+(const Linear_Expression& e, Coefficient_traits::const_reference n) {
 
 /*! \relates Linear_Expression */
 inline Linear_Expression
-operator+(const Variable v, const Linear_Expression& e) {
-  const dimension_type v_space_dim = v.space_dimension();
-  if (v_space_dim > Linear_Expression::max_space_dimension())
-    throw std::length_error("PPL::operator+(v, e):\n"
-                            "v exceeds the maximum allowed "
-                            "space dimension.");
-  const dimension_type space_dim = std::max(v_space_dim, e.space_dimension());
-  Linear_Expression result(e, space_dim+1);
-  ++result[v_space_dim];
-  return result;
-}
-
-/*! \relates Linear_Expression */
-inline Linear_Expression
 operator+(const Linear_Expression& e, const Variable v) {
   return v + e;
 }
@@ -171,20 +126,6 @@ operator-(const Linear_Expression& e, Coefficient_traits::const_reference n) {
 inline Linear_Expression
 operator-(const Variable v, const Variable w) {
   return Linear_Expression(v, w);
-}
-
-/*! \relates Linear_Expression */
-inline Linear_Expression
-operator-(const Linear_Expression& e, const Variable v) {
-  const dimension_type v_space_dim = v.space_dimension();
-  if (v_space_dim > Linear_Expression::max_space_dimension())
-    throw std::length_error("PPL::operator-(e, v):\n"
-                            "v exceeds the maximum allowed "
-                            "space dimension.");
-  const dimension_type space_dim = std::max(v_space_dim, e.space_dimension());
-  Linear_Expression result(e, space_dim+1);
-  --result[v_space_dim];
-  return result;
 }
 
 /*! \relates Linear_Expression */
