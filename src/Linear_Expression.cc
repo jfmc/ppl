@@ -180,13 +180,30 @@ PPL::operator-(const Linear_Expression& e1, const Linear_Expression& e2) {
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression
+PPL::operator-(const Variable v, const Linear_Expression& e) {
+  const dimension_type v_space_dim = v.space_dimension();
+  if (v_space_dim > Linear_Expression::max_space_dimension())
+    throw std::length_error("Linear_Expression "
+                            "PPL::operator-(v, e):\n"
+                            "v exceeds the maximum allowed "
+                            "space dimension.");
+  const dimension_type e_space_dim = e.space_dimension();
+  const dimension_type space_dim = std::max(v_space_dim, e_space_dim);
+  Linear_Expression result(space_dim+1, false);
+  ++result[v_space_dim];
+  for (dimension_type i = e_space_dim+1; i-- > 0; )
+    result[i] -= e[i];
+  return result;
+}
+
+/*! \relates Parma_Polyhedra_Library::Linear_Expression */
+PPL::Linear_Expression
 PPL::operator-(Coefficient_traits::const_reference n,
 	       const Linear_Expression& e) {
   Linear_Expression r(e);
   for (dimension_type i = e.size(); i-- > 0; )
     neg_assign(r[i]);
   r[0] += n;
-
   return r;
 }
 
@@ -222,7 +239,8 @@ PPL::Linear_Expression&
 PPL::operator+=(Linear_Expression& e, const Variable v) {
   const dimension_type v_space_dim = v.space_dimension();
   if (v_space_dim > Linear_Expression::max_space_dimension())
-    throw std::length_error("PPL::operator+=(e, v):\n"
+    throw std::length_error("Linear_Expression& "
+                            "PPL::operator+=(e, v):\n"
 			    "v exceeds the maximum allowed space dimension.");
   const dimension_type e_size = e.size();
   if (e_size <= v_space_dim) {
@@ -255,7 +273,8 @@ PPL::Linear_Expression&
 PPL::operator-=(Linear_Expression& e, const Variable v) {
   const dimension_type v_space_dim = v.space_dimension();
   if (v_space_dim > Linear_Expression::max_space_dimension())
-    throw std::length_error("PPL::operator-=(e, v):\n"
+    throw std::length_error("Linear_Expression& "
+                            "PPL::operator-=(e, v):\n"
 			    "v exceeds the maximum allowed space dimension.");
   const dimension_type e_size = e.size();
   if (e_size <= v_space_dim) {
