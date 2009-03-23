@@ -55,7 +55,7 @@ cxxoutput
 # Sources for the tests
 #
 
-cxxoutput_SOURCES = cxxoutput.c print_to_buffer.h print_to_buffer.cc
+cxxoutput_SOURCES = cxxoutput.c print_to_buffer.h print_to_buffer.c
 
 #watchdog1_SRCS = watchdog1.cc
 
