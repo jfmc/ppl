@@ -33,9 +33,9 @@ site: http://www.cs.unipr.it/ppl/ . */
   `preferred_first_line_length' and `preferred_line_length',
   respectively.
 */
-#define DECLARE_PRINT_TO_BUFFER(Name, Type)                             \
+#define DECLARE_PRINT_TO_BUFFER(Name)					\
 char*                                                                   \
-print_##Name##_to_buffer(##Type p,                                      \
+print_ppl_##Name##_t_to_buffer(ppl_const_##Name##_t p,			\
                          unsigned indent_depth,                         \
                          unsigned preferred_first_line_length,          \
                          unsigned preferred_line_length);

@@ -46,33 +46,33 @@ enum ppl_io_format_line_type {
 #define PPL_IO_FORMAT_WRAP_POINTS 2
 
 struct ppl_io_format_settings {
-  // Char conversion table
+  /* Char conversion table */
   const char *tr_in;
   const char *tr_out;
-  // String for detect end of paragraph
+  /* String for detect end of paragraph */
   const char *paragraph_end;
-  // Lines can be wrapped on any of this characters
-  // If none from wrap_at[n] is found then wrap_at[n+1] is used.
+  /* Lines can be wrapped on any of this characters */
+  /* If none from wrap_at[n] is found then wrap_at[n+1] is used. */
   struct {
     const char *before;
     const char *after;
   } wrap_points[PPL_IO_FORMAT_WRAP_POINTS];
-  // Any of these characters are stripped at and after wrap point
+  /* Any of these characters are stripped at and after wrap point */
   const char *strip_wrap;
-  // This string is put at beginning of paragraph
+  /* This string is put at beginning of paragraph */
   const char *top;
-  // This string is put at end of paragraph
+  /* This string is put at end of paragraph */
   const char *bottom;
   struct {
-    // Length of line
+    /* Length of line */
     unsigned int length;
-    // Left margin string
+    /* Left margin string */
     const char *left;
-    // Right margin string
+    /* Right margin string */
     const char *right;
-    // 0 left, 8 center, 16 right
+    /* 0 left, 8 center, 16 right */
     unsigned int alignment;
-    // This char is used to fill line length
+    /* This char is used to fill line length */
     char fill_char;
   } lines[PPL_IO_FORMAT_LINE_END];
 };
@@ -90,8 +90,8 @@ void ppl_io_ostream_buffer_clear(struct ppl_io_ostream* stream);
 
 int ppl_io_write_endl(struct ppl_io_ostream* s);
 
-// FIXME:
-// Add ios_base methods: flags, setf, unsetf, width, precision (others?)
+/* FIXME: */
+/* Add ios_base methods: flags, setf, unsetf, width, precision (others?) */
 
 #define DECLARE_WRITE_VAL(name, type) int ppl_io_write_##name(struct ppl_io_ostream* s, const type o)
 #define DECLARE_WRITE_REF(name, type) int ppl_io_write_##name(struct ppl_io_ostream* s, const type* o)
@@ -105,8 +105,10 @@ DECLARE_WRITE_VAL(int, int);
 DECLARE_WRITE_VAL(unsigned_int, unsigned int);
 DECLARE_WRITE_VAL(long, long);
 DECLARE_WRITE_VAL(unsigned_long, unsigned long);
+/*
 DECLARE_WRITE_VAL(long_long, long long);
 DECLARE_WRITE_VAL(unsigned_long_long, unsigned long long);
+*/
 DECLARE_WRITE_VAL(float, float);
 DECLARE_WRITE_VAL(double, double);
 DECLARE_WRITE_VAL(long_double, long double);
