@@ -79,6 +79,11 @@ size_t ppl_io_ostream_buffer_get(struct ppl_io_ostream* s, const char **buf) {
   return ss->str().size();
 }
 
+void ppl_io_ostream_buffer_clear(struct ppl_io_ostream* s) {
+  std::ostringstream* ss = static_cast<std::ostringstream*>(s->stream);
+  ss->str("");
+}
+
 struct ppl_io_ostream* ppl_io_ostream_buffer_new() {
   return new ppl_io_ostream(new std::ostringstream());
 }
