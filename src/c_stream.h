@@ -66,6 +66,17 @@ int ppl_io_write_endl(struct ppl_io_ostream* s);
 #define DECLARE_WRITE_REF(name, type) int ppl_io_write_##name(struct ppl_io_ostream* s, const type* o)
 
 DECLARE_WRITE_VAL(char, char);
+DECLARE_WRITE_VAL(signed_char, signed char);
+DECLARE_WRITE_VAL(unsigned_char, unsigned char);
+DECLARE_WRITE_VAL(short, short);
+DECLARE_WRITE_VAL(unsigned_short, unsigned short);
 DECLARE_WRITE_VAL(int, int);
+DECLARE_WRITE_VAL(unsigned_int, unsigned int);
+DECLARE_WRITE_VAL(long, long);
+DECLARE_WRITE_VAL(unsigned_long, unsigned long);
+DECLARE_WRITE_VAL(long_long, long long);
+DECLARE_WRITE_VAL(unsigned_long_long, unsigned long long);
+DECLARE_WRITE_VAL(float, float);
 DECLARE_WRITE_VAL(double, double);
+DECLARE_WRITE_VAL(long_double, long double);
 DECLARE_WRITE_VAL(string, char*);

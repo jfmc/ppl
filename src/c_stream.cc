@@ -92,10 +92,21 @@ int ppl_io_write_endl(struct ppl_io_ostream* s) {
   return *s->stream ? 0 : -1;			       \
 }
 
-DEFINE_WRITE_VAL(char, char)
-DEFINE_WRITE_VAL(int, int)
-DEFINE_WRITE_VAL(double, double)
-DEFINE_WRITE_VAL(string, char*)
+DEFINE_WRITE_VAL(char, char);
+DEFINE_WRITE_VAL(signed_char, signed char);
+DEFINE_WRITE_VAL(unsigned_char, unsigned char);
+DEFINE_WRITE_VAL(short, short);
+DEFINE_WRITE_VAL(unsigned_short, unsigned short);
+DEFINE_WRITE_VAL(int, int);
+DEFINE_WRITE_VAL(unsigned_int, unsigned int);
+DEFINE_WRITE_VAL(long, long);
+DEFINE_WRITE_VAL(unsigned_long, unsigned long);
+DEFINE_WRITE_VAL(long_long, long long);
+DEFINE_WRITE_VAL(unsigned_long_long, unsigned long long);
+DEFINE_WRITE_VAL(float, float);
+DEFINE_WRITE_VAL(double, double);
+DEFINE_WRITE_VAL(long_double, long double);
+DEFINE_WRITE_VAL(string, char*);
 
 }
 
