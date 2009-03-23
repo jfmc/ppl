@@ -66,7 +66,6 @@ OR_Matrix<T>::Pseudo_Row<U>::Pseudo_Row()
   , size_(0)
 #endif
 {
-  // FIXME(0.10.1): is zeroing necessary/wanted?
 }
 
 template <typename T>
@@ -238,7 +237,7 @@ OR_Matrix<T>::any_row_iterator<U>::operator--(int) {
 template <typename T>
 template <typename U>
 inline typename OR_Matrix<T>::template any_row_iterator<U>&
-OR_Matrix<T>::any_row_iterator<U>::operator+=(difference_type m) {
+OR_Matrix<T>::any_row_iterator<U>::operator+=(const difference_type m) {
   difference_type increment = m + m*m/2 + m*e;
   if (e%2 == 0 && m%2 == 1)
     ++increment;
