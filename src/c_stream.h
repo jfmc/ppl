@@ -60,7 +60,7 @@ struct ppl_io_ostream* ppl_io_ostream_format_new(struct ppl_io_ostream* stream, 
 void ppl_io_ostream_format_replace_settings(struct ppl_io_ostream* stream, struct ppl_io_format_settings* settings);
 
 void ppl_io_ostream_delete(struct ppl_io_ostream* stream);
-size_t ppl_io_ostream_buffer_get(struct ppl_io_ostream* stream, const char** buf);
+size_t ppl_io_ostream_buffer_get(struct ppl_io_ostream* stream, char** buf);
 void ppl_io_ostream_buffer_clear(struct ppl_io_ostream* stream);
 
 int ppl_io_write_endl(struct ppl_io_ostream* s);

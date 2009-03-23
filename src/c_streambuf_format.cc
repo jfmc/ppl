@@ -124,6 +124,7 @@ int c_streambuf_format::cb_flush() {
   if (n > 0) {
     if (!output_line(str.c_str(), n, first ? PPL_IO_FORMAT_LINE_UNTERMINATED_FIRST : PPL_IO_FORMAT_LINE_UNTERMINATED_NEXT))
       return -1;
+    str.clear();
   }
   return 0;
 }
@@ -142,7 +143,8 @@ bool c_streambuf_format::output_line(const char *s, unsigned int n, ppl_io_forma
   default:
     break;
   }
-  stream << settings->lines[type].left;
+  if (settings->lines[type].left)
+    stream << settings->lines[type].left;
   if (settings->lines[type].fill_char && n < settings->lines[type].length) {
     unsigned int left = 0;
     unsigned int right = 0;
@@ -158,7 +160,8 @@ bool c_streambuf_format::output_line(const char *s, unsigned int n, ppl_io_forma
   }
   else
     stream.write(s, n);
-  stream << settings->lines[type].right;
+  if (settings->lines[type].right)
+    stream << settings->lines[type].right;
   switch (type) {
   case PPL_IO_FORMAT_LINE_FIRSTLAST:
   case PPL_IO_FORMAT_LINE_LAST:

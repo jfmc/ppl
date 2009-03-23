@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <cstring>
 #include <iostream>
 #include <sstream>
 #include "stdiobuf.defs.hh"
@@ -33,18 +34,18 @@ ppl_io_format_settings ppl_io_format_default_settings = {
   0,           // bottom
   {
     // length, left, right, alignment, fill_char
-    { 80, "", "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // FIRST
-    { 80, "", "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // FIRSTLAST
-    { 80, "", "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // NEXT
-    { 80, "", "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // LAST
-    { 80, "", "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // FORCED_FIRST
-    { 80, "", "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // FORCED_NEXT
-    { 80, "", "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // LONGER_FIRST
-    { 80, "", "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // LONGER_FIRSTLAST
-    { 80, "", "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // LONGER_NEXT
-    { 80, "", "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // LONGER_LAST
-    { 80, "", "",   PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // UNTERMINATED_FIRST
-    { 80, "", "",   PPL_IO_FORMAT_ALIGN_LEFT, 0 }  // UNTERMINATED_NEXT
+    { 80, 0, "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // FIRST
+    { 80, 0, "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // FIRSTLAST
+    { 80, 0, "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // NEXT
+    { 80, 0, "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // LAST
+    { 80, 0, "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // FORCED_FIRST
+    { 80, 0, "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // FORCED_NEXT
+    { 80, 0, "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // LONGER_FIRST
+    { 80, 0, "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // LONGER_FIRSTLAST
+    { 80, 0, "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // LONGER_NEXT
+    { 80, 0, "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // LONGER_LAST
+    { 80, 0, 0,    PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // UNTERMINATED_FIRST
+    { 80, 0, 0,    PPL_IO_FORMAT_ALIGN_LEFT, 0 }  // UNTERMINATED_NEXT
   }
 };
 
@@ -78,10 +79,11 @@ void ppl_io_ostream_format_replace_settings(ppl_io_ostream* stream, ppl_io_forma
   static_cast<c_streambuf_format*>(stream->sbuf)->replace_settings(settings);
 }
 
-size_t ppl_io_ostream_buffer_get(struct ppl_io_ostream* s, const char **buf) {
+size_t ppl_io_ostream_buffer_get(struct ppl_io_ostream* s, char **buf) {
   std::ostringstream* ss = static_cast<std::ostringstream*>(s->stream);
-  *buf = ss->str().c_str();
-  return ss->str().size();
+  std::string str = ss->str();
+  *buf = strdup(str.c_str());
+  return str.size();
 }
 
 void ppl_io_ostream_buffer_clear(struct ppl_io_ostream* s) {
