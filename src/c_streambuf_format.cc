@@ -89,7 +89,7 @@ size_t c_streambuf_format::cb_write(const char *buf, size_t size) {
       }
       continue;
     }
-    type = first ? PPL_IO_FORMAT_LINE_FORCED_FIRST : PPL_IO_FORMAT_LINE_FORCED_NEXT;
+    type = first ? PPL_IO_FORMAT_LINE_CHOPPED_FIRST : PPL_IO_FORMAT_LINE_CHOPPED_NEXT;
     unsigned int limit = len;
     unsigned int max_len = settings->lines[type].length;
     if (max_len > 0 && limit > max_len + 1)
@@ -133,7 +133,7 @@ bool c_streambuf_format::output_line(const char *s, unsigned int n, ppl_io_forma
   switch (type) {
   case PPL_IO_FORMAT_LINE_FIRST:
   case PPL_IO_FORMAT_LINE_FIRSTLAST:
-  case PPL_IO_FORMAT_LINE_FORCED_FIRST:
+  case PPL_IO_FORMAT_LINE_CHOPPED_FIRST:
   case PPL_IO_FORMAT_LINE_LONGER_FIRST:
   case PPL_IO_FORMAT_LINE_LONGER_FIRSTLAST:
   case PPL_IO_FORMAT_LINE_UNTERMINATED_FIRST:
