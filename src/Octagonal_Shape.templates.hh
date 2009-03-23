@@ -423,7 +423,7 @@ Octagonal_Shape<T>::add_constraint(const Constraint& c) {
 
   if (c.is_equality()) {
     // Select the cell to be modified for the ">=" part of constraint.
-    if (i%2 == 0)
+    if (i % 2 == 0)
       ++i_iter;
     else
       --i_iter;
@@ -519,7 +519,7 @@ Octagonal_Shape<T>::refine_no_check(const Constraint& c) {
 
   if (c.is_equality()) {
     // Select the cell to be modified for the ">=" part of constraint.
-    if (i%2 == 0)
+    if (i % 2 == 0)
       ++i_iter;
     else
       --i_iter;
@@ -1403,7 +1403,7 @@ Octagonal_Shape<T>::relation_with(const Constraint& c) const {
 
   // Select the cell to be checked for the ">=" part of constraint.
   // Select the right row of the cell.
-  if (i%2 == 0)
+  if (i % 2 == 0)
     ++i_iter;
   else
     --i_iter;
@@ -1995,14 +1995,14 @@ Octagonal_Shape<T>
     const dimension_type ck = coherent_index(k);
     const dimension_type rs_k = k_iter.row_size();
     Row_Reference x_k = *k_iter;
-    Row_Reference x_ck = (k%2) ? *(k_iter-1) : *(k_iter+1);
+    Row_Reference x_ck = (k % 2 != 0) ? *(k_iter-1) : *(k_iter+1);
 
     for (Row_Iterator i_iter = m_begin; i_iter != m_end; ++i_iter) {
       const dimension_type i = i_iter.index();
       const dimension_type ci = coherent_index(i);
       const dimension_type rs_i = i_iter.row_size();
       Row_Reference x_i = *i_iter;
-      Row_Reference x_ci = (i%2) ? *(i_iter-1) : *(i_iter+1);
+      Row_Reference x_ci = (i % 2 != 0) ? *(i_iter-1) : *(i_iter+1);
 
       const N& x_i_k = (k < rs_i) ? x_i[k] : x_ck[ci];
       if (!is_plus_infinity(x_i_k)) {
@@ -2110,8 +2110,8 @@ Octagonal_Shape<T>
   for (dimension_type i = successor_size; i-- > 0; )  {
     typename OR_Matrix<N>::const_row_iterator i_iter = matrix.row_begin()+i;
     typename OR_Matrix<N>::const_row_reference_type m_i = *i_iter;
-    typename OR_Matrix<N>::const_row_reference_type m_ci = (i%2) ?
-          *(i_iter-1) : *(i_iter+1);
+    typename OR_Matrix<N>::const_row_reference_type m_ci
+      = (i % 2 != 0) ? *(i_iter-1) : *(i_iter+1);
     for (dimension_type j = 0; j < i; ++j) {
     //for (dimension_type j = i; j-- > 0; ) {
       dimension_type cj = coherent_index(j);
@@ -2142,8 +2142,8 @@ Octagonal_Shape<T>
        i_iter != matrix_row_end; ++i_iter) {
     typename OR_Matrix<N>::const_row_reference_type m_i = *i_iter;
     dimension_type i = i_iter.index();
-    typename OR_Matrix<N>::const_row_reference_type m_ci =
-      (i%2) ? *(i_iter-1) : *(i_iter+1);
+    typename OR_Matrix<N>::const_row_reference_type m_ci
+      = (i % 2 != 0) ? *(i_iter-1) : *(i_iter+1);
     for (dimension_type j = 0; j < i; ++j) {
       dimension_type cj = coherent_index(j);
       if (is_additive_inverse(m_ci[cj], m_i[j]))
@@ -2269,7 +2269,7 @@ Octagonal_Shape<T>
       }
     }
 
-    dimension_type rs_li = (li%2) ? li :li+1;
+    dimension_type rs_li = (li % 2 != 0) ? li :li+1;
     // Check if the constraint is redundant.
     PPL_DIRTY_TEMP(N, tmp);
     for (dimension_type lj = 0 ; lj <= rs_li; ++lj) {
@@ -2826,7 +2826,7 @@ Octagonal_Shape<T>
         }
         else {
           // Select the right row of the cell.
-          if (i%2 == 0) {
+          if (i % 2 == 0) {
             ++i_iter;
             ++lo_iter;
           }
@@ -5899,7 +5899,7 @@ Octagonal_Shape<T>::expand_space_dimension(Variable var, dimension_type m) {
     }
     for (dimension_type j = n_var+2; j < old_num_rows; ++j) {
       Row_Iterator j_iter = m_begin + j;
-      Row_Reference m_cj = (j%2) ? *(j_iter-1) : *(j_iter+1);
+      Row_Reference m_cj = (j % 2 != 0) ? *(j_iter-1) : *(j_iter+1);
       m_i[j] = m_cj[n_var+1];
       m_ci[j] = m_cj[n_var];
     }
@@ -5972,7 +5972,7 @@ Octagonal_Shape<T>::fold_space_dimensions(const Variables_Set& to_be_folded,
       const dimension_type cj = coherent_index(j);
       Row_Iterator j_iter = m_begin + j;
       Row_Reference m_j = *j_iter;
-      Row_Reference m_cj = (j%2) ? *(j_iter-1) : *(j_iter+1);
+      Row_Reference m_cj = (j % 2 != 0) ? *(j_iter-1) : *(j_iter+1);
       if (n_var == min_id) {
         max_assign(m_cj[n_var+1], m_tbf[j]);
         max_assign(m_cj[n_var], m_ctbf[j]);
@@ -5989,7 +5989,7 @@ Octagonal_Shape<T>::fold_space_dimensions(const Variables_Set& to_be_folded,
     for (dimension_type j = max_id+2; j < n_rows; ++j) {
       Row_Iterator j_iter = m_begin + j;
       Row_Reference m_j = *j_iter;
-      Row_Reference m_cj = (j%2) ? *(j_iter-1) : *(j_iter+1);
+      Row_Reference m_cj = (j % 2 != 0) ? *(j_iter-1) : *(j_iter+1);
       max_assign(m_cj[n_var+1], m_cj[tbf_var+1]);
       max_assign(m_cj[n_var], m_cj[tbf_var]);
       max_assign(m_j[n_var], m_j[tbf_var]);

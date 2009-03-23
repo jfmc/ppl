@@ -40,7 +40,7 @@ namespace Parma_Polyhedra_Library {
 /*! \relates Octagonal_Shape */
 inline dimension_type
 coherent_index(const dimension_type i) {
-  return (i%2) ? i-1 : i+1;
+  return (i % 2 != 0) ? i-1 : i+1;
 }
 
 template <typename T>

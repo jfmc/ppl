@@ -188,7 +188,7 @@ inline typename OR_Matrix<T>::template any_row_iterator<U>&
 OR_Matrix<T>::any_row_iterator<U>::operator++() {
   ++e;
   dimension_type increment = e;
-  if (e % 2) {
+  if (e % 2 != 0) {
     ++increment;
 #if PPL_OR_MATRIX_EXTRA_DEBUG
     value.size_ += 2;
@@ -214,7 +214,7 @@ inline typename OR_Matrix<T>::template any_row_iterator<U>&
 OR_Matrix<T>::any_row_iterator<U>::operator--() {
   dimension_type decrement = e + 1;
   --e;
-  if (e % 2) {
+  if (e % 2 != 0) {
     ++decrement;
 #if PPL_OR_MATRIX_EXTRA_DEBUG
     value.size_ -= 2;
