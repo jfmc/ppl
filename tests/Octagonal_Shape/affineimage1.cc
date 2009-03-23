@@ -437,6 +437,31 @@ test16() {
   return ok;
 }
 
+bool
+test17() {
+  Variable x(0);
+  Variable y(1);
+
+  TOctagonal_Shape oct1(2);
+  oct1.add_constraint(x >= 0);
+  oct1.add_constraint(x <= 2);
+  oct1.add_constraint(y >= 0);
+  oct1.add_constraint(y <= 2);
+
+  print_constraints(oct1.minimized_constraints(), "*** oct1 ***");
+
+  TOctagonal_Shape oct2(oct1);
+  print_constraints(oct2.minimized_constraints(), "*** oct1 ***");
+
+  oct2.affine_image(x, x + 1);
+  print_constraints(oct2.minimized_constraints(), "*** oct1 ***");
+
+  oct2.affine_image(y, y + 6);
+  print_constraints(oct2.minimized_constraints(), "*** oct2 ***");
+
+  return !oct2.is_empty();
+}
+
 } // namespace
 
 BEGIN_MAIN
