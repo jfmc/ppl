@@ -239,7 +239,7 @@ template <typename U>
 inline typename OR_Matrix<T>::template any_row_iterator<U>&
 OR_Matrix<T>::any_row_iterator<U>::operator+=(const difference_type m) {
   difference_type increment = m + m*m/2 + m*e;
-  if (e%2 == 0 && m%2 == 1)
+  if (e % 2 == 0 && m % 2 != 0)
     ++increment;
   e += m;
   i += increment;
