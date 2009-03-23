@@ -185,11 +185,11 @@ size_t wrap(Write_Function& wfunc,
 }
 
 void
-wrap(std::string& dst, const std::string& src_string,
+wrap(std::string& dst_string, const std::string& src_string,
      unsigned indent_depth,
      unsigned preferred_first_line_length,
      unsigned preferred_line_length) {
-  dst.clear();
+  dst_string.clear();
   const char *src = src_string.c_str();
   for (int line = 0; ; ++line) {
     int linelen = (line == 0
@@ -227,8 +227,8 @@ wrap(std::string& dst, const std::string& src_string,
       }
     }
     if (split_pos > 0 && line > 0 && indent_depth > 0)
-	dst.append(indent_depth, ' ');
-    dst.append(src, split_pos);
+	dst_string.append(indent_depth, ' ');
+    dst_string.append(src, split_pos);
     src += split_pos;
     if (isspace(*src))
       ++src;
@@ -236,7 +236,7 @@ wrap(std::string& dst, const std::string& src_string,
       ++src;
     if (*src == '\0')
       break;
-    dst.push_back('\n');
+    dst_string.push_back('\n');
   }
 }
 
