@@ -49,13 +49,16 @@ libppl_c_tests.a \
 @extra_libraries@
 
 NORMAL_TESTS = \
-cxxoutput
+formatted_output
 
 #
 # Sources for the tests
 #
 
-cxxoutput_SOURCES = cxxoutput.c print_to_buffer.h print_to_buffer.c
+formatted_output_SOURCES = \
+formatted_output.c \
+print_to_buffer.h \
+print_to_buffer.c
 
 #watchdog1_SRCS = watchdog1.cc
 
