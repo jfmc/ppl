@@ -31,9 +31,6 @@ print_ppl_##Name##_t_to_buffer(ppl_const_##Name##_t p,			\
                          unsigned indent_depth,                         \
                          unsigned pfll,                                 \
                          unsigned pll) {                                \
-  char in[indent_depth + 1];			\
-  memset(in, ' ', indent_depth);		\
-  in[indent_depth] = '\0';			\
   struct ppl_io_format_settings settings = {	\
     0,            /* tr_in */                   \
     0,            /* tr_out */                  \
@@ -46,26 +43,42 @@ print_ppl_##Name##_t_to_buffer(ppl_const_##Name##_t p,			\
     0,           /* top */                      \
     0,           /* bottom */                   \
     {                                           \
-      /* length, left, right, alignment, fill_char */                         \
-      { pfll, "", "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* FIRST */              \
-      { pfll, "", "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* FIRSTLAST */          \
-      { pll, in, "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* NEXT */               \
-      { pll, in, "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* LAST */               \
-      { 0,  "", "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* CHOPPED_FIRST */      \
-      { 0,  "", "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* CHOPPED_NEXT */       \
-      { pfll, "", "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* LONGER_FIRST */       \
-      { pfll, "", "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* LONGER_FIRSTLAST */   \
-      { pll, in, "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* LONGER_NEXT */        \
-      { pll, in, "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* LONGER_LAST */        \
-      { pfll, "", "",   PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* UNTERMINATED_FIRST */ \
-      { pll, in, "",   PPL_IO_FORMAT_ALIGN_LEFT, 0 }  /* UNTERMINATED_NEXT */  \
-    }									      \
+      /* length, left, left_n, left_c, right_n, right_c right, alignment, fill_char */ \
+      { 0, 0, ' ', 0, 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* FIRST */ \
+      { 0, 0, ' ', 0, 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* FIRSTLAST */ \
+      { 0,  0, ' ', 0, 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* NEXT */ \
+      { 0,  0, ' ', 0, 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* LAST */ \
+      { 0,    0, ' ', 0, 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* CHOPPED_FIRST */ \
+      { 0,    0, ' ', 0, 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* CHOPPED_NEXT */ \
+      { 0, 0, ' ', 0, 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* LONGER_FIRST */ \
+      { 0, 0, ' ', 0, 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* LONGER_FIRSTLAST */ \
+      { 0,  0, ' ', 0, 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* LONGER_NEXT */	\
+      { 0,  0, ' ', 0, 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* LONGER_LAST */	\
+      { 0, 0, ' ', 0, 0, ' ', "",   PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* UNTERMINATED_FIRST */ \
+      { 0,  0, ' ', 0, 0, ' ', "",   PPL_IO_FORMAT_ALIGN_LEFT, 0 }  /* UNTERMINATED_NEXT */ \
+    }									\
   };									\
-  struct ppl_io_ostream* target = ppl_io_ostream_buffer_new();		\
-  struct ppl_io_ostream* stream = ppl_io_ostream_format_new(target, &settings); \
-  ppl_io_write_##NAME(stream, object);					\
-  ppl_io_ostream_delete(stream);					\
+  struct ppl_io_ostream *target, *stream;				\
   char *buf;								\
+  settings.lines[PPL_IO_FORMAT_LINE_FIRST].length = pfll;		\
+  settings.lines[PPL_IO_FORMAT_LINE_FIRSTLAST].length = pfll;		\
+  settings.lines[PPL_IO_FORMAT_LINE_LONGER_FIRST].length = pfll;	\
+  settings.lines[PPL_IO_FORMAT_LINE_LONGER_FIRSTLAST].length = pfll;	\
+  settings.lines[PPL_IO_FORMAT_LINE_UNTERMINATED_FIRST].length = pfll;	\
+  settings.lines[PPL_IO_FORMAT_LINE_NEXT].length = pll;			\
+  settings.lines[PPL_IO_FORMAT_LINE_LAST].length = pll;			\
+  settings.lines[PPL_IO_FORMAT_LINE_LONGER_NEXT].length = pll;		\
+  settings.lines[PPL_IO_FORMAT_LINE_LONGER_LAST].length = pll;		\
+  settings.lines[PPL_IO_FORMAT_LINE_UNTERMINATED_NEXT].length = pll;	\
+  settings.lines[PPL_IO_FORMAT_LINE_NEXT].left_n = indent_depth;	\
+  settings.lines[PPL_IO_FORMAT_LINE_LAST].left_n = indent_depth;	\
+  settings.lines[PPL_IO_FORMAT_LINE_LONGER_NEXT].left_n = indent_depth;	\
+  settings.lines[PPL_IO_FORMAT_LINE_LONGER_LAST].left_n = indent_depth;	\
+  settings.lines[PPL_IO_FORMAT_LINE_UNTERMINATED_NEXT].left_n = indent_depth; \
+  target = ppl_io_ostream_buffer_new();					\
+  stream = ppl_io_ostream_format_new(target, &settings);		\
+  ppl_io_write_##Name(stream, p);					\
+  ppl_io_ostream_delete(stream);					\
   ppl_io_ostream_buffer_get(target, &buf);				\
   ppl_io_ostream_delete(target);					\
   return buf;								\

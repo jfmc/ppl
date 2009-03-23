@@ -68,6 +68,14 @@ struct ppl_io_format_settings {
     unsigned int length;
     /* Left margin string */
     const char *left;
+    /* Left margin repeated char count */
+    unsigned int left_n;
+    /* Left margin repeated char */
+    char left_c;
+    /* Right margin repeated char count */
+    unsigned int right_n;
+    /* Right margin repeated char */
+    unsigned int right_c;
     /* Right margin string */
     const char *right;
     /* 0 left, 8 center, 16 right */

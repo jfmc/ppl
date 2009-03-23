@@ -145,6 +145,9 @@ bool c_streambuf_format::output_line(const char *s, unsigned int n, ppl_io_forma
   }
   if (settings->lines[type].left)
     stream << settings->lines[type].left;
+  unsigned int i;
+  for (i = 0; i < settings->lines[type].left_n; ++i)
+    stream.put(settings->lines[type].left_c);
   if (settings->lines[type].fill_char && n < settings->lines[type].length) {
     unsigned int left = 0;
     unsigned int right = 0;
@@ -160,6 +163,8 @@ bool c_streambuf_format::output_line(const char *s, unsigned int n, ppl_io_forma
   }
   else
     stream.write(s, n);
+  for (i = 0; i < settings->lines[type].right_n; ++i)
+    stream.put(settings->lines[type].right_c);
   if (settings->lines[type].right)
     stream << settings->lines[type].right;
   switch (type) {
