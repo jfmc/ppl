@@ -7,8 +7,10 @@ enum ppl_io_format_line_type {
   PPL_IO_FORMAT_LINE_LAST,
   PPL_IO_FORMAT_LINE_FORCED_FIRST,
   PPL_IO_FORMAT_LINE_FORCED_NEXT,
-  PPL_IO_FORMAT_LINE_UNWRAPPED_FIRSTLAST,
-  PPL_IO_FORMAT_LINE_UNWRAPPED_NEXT,
+  PPL_IO_FORMAT_LINE_LONGER_FIRST,
+  PPL_IO_FORMAT_LINE_LONGER_FIRSTLAST,
+  PPL_IO_FORMAT_LINE_LONGER_NEXT,
+  PPL_IO_FORMAT_LINE_LONGER_LAST,
   PPL_IO_FORMAT_LINE_UNTERMINATED_FIRST,
   PPL_IO_FORMAT_LINE_UNTERMINATED_NEXT,
   PPL_IO_FORMAT_LINE_END
@@ -16,7 +18,7 @@ enum ppl_io_format_line_type {
 #define PPL_IO_FORMAT_ALIGN_LEFT 0
 #define PPL_IO_FORMAT_ALIGN_CENTER 8
 #define PPL_IO_FORMAT_ALIGN_RIGHT 16
-#define PPL_IO_FORMAT_WRAP_CHARS_SIZE 2
+#define PPL_IO_FORMAT_WRAP_POINTS 2
 
 struct ppl_io_format_settings {
   // Char conversion table
@@ -26,7 +28,10 @@ struct ppl_io_format_settings {
   const char *paragraph_end;
   // Lines can be wrapped on any of this characters
   // If none from wrap_at[n] is found then wrap_at[n+1] is used.
-  const char *wrap_chars[PPL_IO_FORMAT_WRAP_CHARS_SIZE];
+  struct {
+    const char *before;
+    const char *after;
+  } wrap_points[PPL_IO_FORMAT_WRAP_POINTS];
   // Any of these characters are stripped at and after wrap point
   const char *strip_wrap;
   // This string is put at beginning of paragraph

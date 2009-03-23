@@ -31,7 +31,7 @@ class Parma_Polyhedra_Library::c_streambuf
 public:
   //! Constructor.
   c_streambuf();
-  ~c_streambuf();
+  virtual ~c_streambuf();
 
 protected:
   /*! \brief

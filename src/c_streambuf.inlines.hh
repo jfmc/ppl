@@ -32,7 +32,6 @@ c_streambuf::c_streambuf()
 
 inline
 c_streambuf::~c_streambuf() {
-  cb_flush();
 }
 
 } // namespace Parma_Polyhedra_Library

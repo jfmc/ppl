@@ -24,10 +24,13 @@ ppl_io_format_settings ppl_io_format_default_settings = {
   0,            // tr_in
   0,            // tr_out
   "\n",         // paragraph_end
-  { ",", " " }, // wrap_chars
+  {             // wrap points
+    { 0, "," }, // before, after
+    { " ", 0 }  // before, aftet
+  },
   " ",          // strip_wrap
-  "",           // top
-  "",           // bottom
+  0,           // top
+  0,           // bottom
   {
     // length, left, right, alignment, fill_char
     { 80, "", "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // FIRST
@@ -36,10 +39,12 @@ ppl_io_format_settings ppl_io_format_default_settings = {
     { 80, "", "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // LAST
     { 80, "", "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // FORCED_FIRST
     { 80, "", "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // FORCED_NEXT
-    { 80, "", "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // UNWRAPPED_FIRSTLAST
-    { 80, "", "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // UNWRAPPED_NEXT
-    { 80, "", "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // UNTERMINATED_FIRST
-    { 80, "", "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }  // UNTERMINATED_NEXT
+    { 80, "", "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // LONGER_FIRST
+    { 80, "", "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // LONGER_FIRSTLAST
+    { 80, "", "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // LONGER_NEXT
+    { 80, "", "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // LONGER_LAST
+    { 80, "", "",   PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // UNTERMINATED_FIRST
+    { 80, "", "",   PPL_IO_FORMAT_ALIGN_LEFT, 0 }  // UNTERMINATED_NEXT
   }
 };
 

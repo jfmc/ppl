@@ -3,6 +3,38 @@
 
 namespace Parma_Polyhedra_Library {
 
+c_streambuf_format::~c_streambuf_format() {
+  cb_flush();
+}
+
+int c_streambuf_format::wrap_point_before(const char *buf, int pos, int limit) {
+  for (unsigned int i = 0; i < PPL_IO_FORMAT_WRAP_POINTS; ++i) {
+    for (int p = pos - 1; p >= limit; --p){
+      if (settings->wrap_points[i].before
+	  && strchr(settings->wrap_points[i].before, buf[p]))
+	return p;
+      if (settings->wrap_points[i].after
+	  && strchr(settings->wrap_points[i].after, buf[p]))
+	return p + 1;
+    }
+  }
+  return -1;
+}
+
+int c_streambuf_format::wrap_point_after(const char *buf, int pos, int limit) {
+  for (int p = pos; p < limit; p++) {
+    for (unsigned int i = 0; i < PPL_IO_FORMAT_WRAP_POINTS; ++i) {
+      if (settings->wrap_points[i].before
+	  && strchr(settings->wrap_points[i].before, buf[p]))
+	return p;
+      if (settings->wrap_points[i].after
+	  && strchr(settings->wrap_points[i].after, buf[p]))
+	return p + 1;
+    }
+  }
+  return -1;
+}
+
 size_t c_streambuf_format::cb_write(const char *buf, size_t size) {
   if (!settings)
     return stream.write(buf, size) ? size : 0;
@@ -26,64 +58,61 @@ size_t c_streambuf_format::cb_write(const char *buf, size_t size) {
   while (1) {
     ppl_io_format_line_type type;
     char *parend = strstr(rest, settings->paragraph_end);
-    unsigned int n;
+    unsigned int parend_pos;
     if (parend) {
-      n = parend - rest;
-      if (n <= settings->lines[PPL_IO_FORMAT_LINE_LAST].length) {
+      parend_pos = parend - rest;
+      if (parend_pos <= settings->lines[PPL_IO_FORMAT_LINE_LAST].length) {
 	type = first ? PPL_IO_FORMAT_LINE_FIRSTLAST : PPL_IO_FORMAT_LINE_LAST;
       endpar:
-	if (!output_line(rest, n, type))
+	if (!output_line(rest, parend_pos, type))
 	  return 0;
 	unsigned int l = strlen(settings->paragraph_end);
 	rest = parend + l;
-	len -= n + l;
+	len -= parend_pos + l;
 	continue;
       }
     }
-    unsigned int line_length = settings->lines[first ? PPL_IO_FORMAT_LINE_FIRST : PPL_IO_FORMAT_LINE_NEXT].length;
+    type = first ? PPL_IO_FORMAT_LINE_FIRST : PPL_IO_FORMAT_LINE_NEXT;
+    unsigned int line_length = settings->lines[type].length;
     if (len < line_length)
       break;
-    unsigned int i;
-    const char* wrap;
-    for (i = 0; i < PPL_IO_FORMAT_WRAP_CHARS_SIZE; ++i) {
-      wrap = rest + line_length;
-      while (--wrap >= rest) {
-	if (strchr(settings->wrap_chars[i], *wrap))
-	  break;
+    int w = wrap_point_before(rest, line_length, 0);
+    if (w > 0) {
+    wrap:
+      if (!output_line(rest, w, type))
+	return 0;
+      rest += w;
+      len -= w;
+      while (len > 0 && strchr(settings->strip_wrap, *rest)) {
+	++rest;
+	--len;
       }
-      if (wrap >= rest)
-	break;
-    }
-    if (i < PPL_IO_FORMAT_WRAP_CHARS_SIZE) {
-      if (!strchr(settings->strip_wrap, *wrap))
-	++wrap;
-      n = wrap - rest;
-      if (n > 0) {
-	if (!output_line(rest, n, first ? PPL_IO_FORMAT_LINE_FIRST : PPL_IO_FORMAT_LINE_NEXT))
-	  return 0;
-	rest = wrap;
-	len -= n;
-	while (len > 0 && strchr(settings->strip_wrap, *rest)) {
-	  ++rest;
-	  --len;
-	}
-	continue;
-      }
+      continue;
     }
     type = first ? PPL_IO_FORMAT_LINE_FORCED_FIRST : PPL_IO_FORMAT_LINE_FORCED_NEXT;
-    n = settings->lines[type].length;
-    if (len >= n) {
-      if (!output_line(rest, n, type))
-	return 0;
-      rest += n;
-      len -= n;
+    unsigned int limit = len;
+    unsigned int max_len = settings->lines[type].length;
+    if (max_len > 0 && limit > max_len + 1)
+      limit = max_len + 1;
+    if (parend && limit > parend_pos)
+      limit = parend_pos;
+    w = wrap_point_after(rest, line_length, limit);
+    if (w >= 0 &&
+	(!parend || (unsigned) w < parend_pos) &&
+	(!max_len || (unsigned) w <= max_len)) {
+      type = first ? PPL_IO_FORMAT_LINE_LONGER_FIRST : PPL_IO_FORMAT_LINE_LONGER_NEXT;
+      goto wrap;
     }
-    else {
-      if (parend) {
-	type = first ? PPL_IO_FORMAT_LINE_UNWRAPPED_FIRSTLAST : PPL_IO_FORMAT_LINE_UNWRAPPED_NEXT;
-	goto endpar;
-      }
-      break;
+    if (parend && (max_len == 0 || parend_pos <= max_len)) {
+      type = first ? PPL_IO_FORMAT_LINE_LONGER_FIRSTLAST : PPL_IO_FORMAT_LINE_LONGER_LAST;
+      goto endpar;
+    }
+    if (max_len > 0) {
+      if (!output_line(rest, max_len, type))
+	return 0;
+      rest += max_len;
+      len -= max_len;
+      continue;
     }
   }
   str.assign(rest, len);
@@ -104,9 +133,11 @@ bool c_streambuf_format::output_line(const char *s, unsigned int n, ppl_io_forma
   case PPL_IO_FORMAT_LINE_FIRST:
   case PPL_IO_FORMAT_LINE_FIRSTLAST:
   case PPL_IO_FORMAT_LINE_FORCED_FIRST:
-  case PPL_IO_FORMAT_LINE_UNWRAPPED_FIRSTLAST:
+  case PPL_IO_FORMAT_LINE_LONGER_FIRST:
+  case PPL_IO_FORMAT_LINE_LONGER_FIRSTLAST:
   case PPL_IO_FORMAT_LINE_UNTERMINATED_FIRST:
-    stream << settings->top;
+    if (settings->top)
+      stream << settings->top;
     break;
   default:
     break;
@@ -131,8 +162,10 @@ bool c_streambuf_format::output_line(const char *s, unsigned int n, ppl_io_forma
   switch (type) {
   case PPL_IO_FORMAT_LINE_FIRSTLAST:
   case PPL_IO_FORMAT_LINE_LAST:
-  case PPL_IO_FORMAT_LINE_UNWRAPPED_FIRSTLAST:
-    stream << settings->bottom;
+  case PPL_IO_FORMAT_LINE_LONGER_FIRSTLAST:
+  case PPL_IO_FORMAT_LINE_LONGER_LAST:
+    if (settings->bottom)
+      stream << settings->bottom;
     first = true;
     break;
   default:
