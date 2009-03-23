@@ -2441,8 +2441,7 @@ Octagonal_Shape<T>::difference_assign(const Octagonal_Shape& y) {
 
 template <typename T>
 bool
-Octagonal_Shape<T>
-::simplify_using_context_assign(const Octagonal_Shape& y) {
+Octagonal_Shape<T>::simplify_using_context_assign(const Octagonal_Shape& y) {
   // FIXME(0.10.1): provide a real implementation.
   used(y);
   return true;
