@@ -124,6 +124,8 @@ $(COEFFICIENT_TYPES_INCLUDE_FILES) \
 Coefficient.types.hh \
 stdiobuf.types.hh \
 c_streambuf.types.hh \
+c_streambuf_format.types.hh \
+c_stream.h \
 globals.types.hh \
 iterator_to_const.types.hh \
 distances.types.hh \
@@ -197,6 +199,8 @@ stdiobuf.defs.hh \
 stdiobuf.inlines.hh \
 c_streambuf.defs.hh \
 c_streambuf.inlines.hh \
+c_streambuf_format.defs.hh \
+c_streambuf_format.inlines.hh \
 globals.defs.hh \
 globals.inlines.hh \
 math_utilities.defs.hh \
@@ -396,7 +400,9 @@ simplify.cc \
 Grid_conversion.cc \
 Grid_simplify.cc \
 stdiobuf.cc \
+c_stream.cc \
 c_streambuf.cc \
+c_streambuf_format.cc \
 globals.cc \
 mp_std_bits.cc \
 version.cc \

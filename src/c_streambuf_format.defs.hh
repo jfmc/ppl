@@ -1,4 +1,4 @@
-/* c_streambuf class implementation: inline functions.
+/* c_streambuf_format class declaration.
    Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -20,21 +20,35 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_c_streambuf_inlines_hh
-#define PPL_c_streambuf_inlines_hh 1
+#ifndef PPL_c_streambuf_format_defs_hh
+#define PPL_c_streambuf_format_defs_hh 1
+
+#include <iostream>
+#include "c_streambuf_format.types.hh"
+#include "c_streambuf.defs.hh"
+
+extern "C" {
+#include "c_stream.h"
+}
 
 namespace Parma_Polyhedra_Library {
 
-inline
-c_streambuf::c_streambuf()
-  : ungetc_buf(traits_type::eof()) {
-}
-
-inline
-c_streambuf::~c_streambuf() {
-  cb_flush();
-}
+class c_streambuf_format : public c_streambuf {
+public:
+  c_streambuf_format(std::ostream& stream, ppl_io_format_settings *settings);
+  void replace_settings(ppl_io_format_settings *settings);
+private:
+  std::ostream& stream;
+  ppl_io_format_settings *settings;
+  std::string str;
+  bool first;
+  bool output_line(const char *s, unsigned int n, ppl_io_format_line_type type);
+  size_t cb_write(const char *buf, size_t size);
+  int cb_flush();
+};
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(PPL_c_streambuf_inlines_hh)
+#include "c_streambuf_format.inlines.hh"
+
+#endif // !defined(PPL_c_streambuf_format_defs_hh)

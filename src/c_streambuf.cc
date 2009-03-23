@@ -38,10 +38,10 @@ c_streambuf::underflow() {
   const int_type eof = traits_type::eof();
   if (traits_type::eq_int_type(nextc_buf, eof)) {
     char buf;
-    if (read(data, &buf, 1) != 1)
-      nextc_buf = eof;
-    else
+    if (cb_read(&buf, 1) == 1)
       nextc_buf = buf;
+    else
+      nextc_buf = eof;
   }
   return nextc_buf;
 }
@@ -58,7 +58,7 @@ c_streambuf::xsgetn(char_type* s, std::streamsize n) {
     s[0] = nextc_buf;
     a = 1;
   }
-  std::streamsize r = read(data, s + a, n - a) + a;
+  std::streamsize r = cb_read(s + a, n - a) + a;
   if (r > 0)
     ungetc_buf = traits_type::to_int_type(s[r - 1]);
   else
@@ -76,7 +76,7 @@ c_streambuf::pbackfail(int_type c) {
 
 std::streamsize
 c_streambuf::xsputn(const char_type* s, std::streamsize n) {
-  return write(data, s, n);
+  return cb_write(s, n);
 }
 
 c_streambuf::int_type
@@ -86,16 +86,16 @@ c_streambuf::overflow(int_type c) {
     return sync() ? eof : traits_type::not_eof(c);
   else {
     char buf = c;
-    if (write(data, &buf, 1) != 1)
-      return eof;
-    else
+    if (cb_write(&buf, 1) == 1)
       return c;
+    else
+      return eof;
   }
 }
 
 int
 c_streambuf::sync() {
-  return 0;
+  return cb_sync();
 }
 
 } // namespace Parma_Polyhedra_Library

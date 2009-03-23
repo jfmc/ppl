@@ -26,14 +26,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "c_streambuf.types.hh"
 #include <streambuf>
 
-typedef size_t (*read_function)(void* data, void *buf, size_t size);
-typedef size_t (*write_function)(void* data, const void *buf, size_t size);
-
 class Parma_Polyhedra_Library::c_streambuf
   : public std::basic_streambuf<char, std::char_traits<char> > {
 public:
   //! Constructor.
-  c_streambuf(read_function read, write_function write, void *data);
+  c_streambuf();
+  ~c_streambuf();
 
 protected:
   /*! \brief
@@ -100,20 +98,24 @@ private:
   //! Integer type of the streambuf.
   typedef traits_type::int_type int_type;
 
-  //! The read callback
-  read_function read;
-
-  //! The write callback
-  write_function write;
-
-  //! The callback data
-  void *data;
-
   //! Buffer for the last character read.
   int_type ungetc_buf;
 
   //! Buffer for next character
   int_type nextc_buf;
+
+  virtual size_t cb_read(char *, size_t) {
+    return 0;
+  }
+  virtual size_t cb_write(const char *, size_t) {
+    return 0;
+  }
+  virtual int cb_sync() {
+    return 0;
+  }
+  virtual int cb_flush() {
+    return 0;
+  }
 };
 
 #include "c_streambuf.inlines.hh"
