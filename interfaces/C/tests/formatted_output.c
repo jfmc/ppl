@@ -29,6 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 int
 main() {
+#if 0
   int i;
   mpz_t z;
   ppl_Coefficient_t coeff;
@@ -57,5 +58,6 @@ main() {
       printf("    %s\n", p);
   }
   ppl_delete_Constraint_System(cs);
+#endif
   return 0;
 }

@@ -84,6 +84,7 @@ print_ppl_##Name##_t_to_buffer(ppl_const_##Name##_t p,			\
   return buf;								\
 }
 
+#if 0
 DEFINE_PRINT_TO_BUFFER(Coefficient)
 
 DEFINE_PRINT_TO_BUFFER(Linear_Expression)
@@ -105,3 +106,4 @@ DEFINE_PRINT_TO_BUFFER(Grid_Generator)
 DEFINE_PRINT_TO_BUFFER(Grid_Generator_System)
 
 DEFINE_PRINT_TO_BUFFER(MIP_Problem)
+#endif
