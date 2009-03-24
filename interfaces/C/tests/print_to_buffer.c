@@ -1,4 +1,4 @@
-/* Declarations of print_ppl_*_t_to_buffer() functions.
+/* Declarations of print_ppl_*_to_buffer() functions.
    Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -25,13 +25,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <malloc.h>
 #include <string.h>
 
-#define DEFINE_PRINT_TO_BUFFER(Name)                                    \
+#define DEFINE_PRINT_TO_BUFFER(Type)                                    \
 char*                                                                   \
-print_ppl_##Name##_t_to_buffer(ppl_const_##Name##_t p,			\
+print_ppl_##Type##_to_buffer(ppl_const_##Type##_t p,                    \
                          unsigned indent_depth,                         \
                          unsigned pfll,                                 \
                          unsigned pll) {                                \
-  struct ppl_io_format_settings settings = {	\
+  struct ppl_io_format_settings settings = {    \
     0,            /* tr_in */                   \
     0,            /* tr_out */                  \
     "\n",         /* paragraph_end */           \
@@ -52,36 +52,36 @@ print_ppl_##Name##_t_to_buffer(ppl_const_##Name##_t p,			\
       { 0,    0, ' ', 0, 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* CHOPPED_NEXT */ \
       { 0, 0, ' ', 0, 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* LONGER_FIRST */ \
       { 0, 0, ' ', 0, 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* LONGER_FIRSTLAST */ \
-      { 0,  0, ' ', 0, 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* LONGER_NEXT */	\
-      { 0,  0, ' ', 0, 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* LONGER_LAST */	\
+      { 0,  0, ' ', 0, 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* LONGER_NEXT */   \
+      { 0,  0, ' ', 0, 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* LONGER_LAST */   \
       { 0, 0, ' ', 0, 0, ' ', "",   PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* UNTERMINATED_FIRST */ \
       { 0,  0, ' ', 0, 0, ' ', "",   PPL_IO_FORMAT_ALIGN_LEFT, 0 }  /* UNTERMINATED_NEXT */ \
-    }									\
-  };									\
-  struct ppl_io_ostream *target, *stream;				\
-  char *buf;								\
-  settings.lines[PPL_IO_FORMAT_LINE_FIRST].length = pfll;		\
-  settings.lines[PPL_IO_FORMAT_LINE_FIRSTLAST].length = pfll;		\
-  settings.lines[PPL_IO_FORMAT_LINE_LONGER_FIRST].length = pfll;	\
-  settings.lines[PPL_IO_FORMAT_LINE_LONGER_FIRSTLAST].length = pfll;	\
-  settings.lines[PPL_IO_FORMAT_LINE_UNTERMINATED_FIRST].length = pfll;	\
-  settings.lines[PPL_IO_FORMAT_LINE_NEXT].length = pll;			\
-  settings.lines[PPL_IO_FORMAT_LINE_LAST].length = pll;			\
-  settings.lines[PPL_IO_FORMAT_LINE_LONGER_NEXT].length = pll;		\
-  settings.lines[PPL_IO_FORMAT_LINE_LONGER_LAST].length = pll;		\
-  settings.lines[PPL_IO_FORMAT_LINE_UNTERMINATED_NEXT].length = pll;	\
-  settings.lines[PPL_IO_FORMAT_LINE_NEXT].left_n = indent_depth;	\
-  settings.lines[PPL_IO_FORMAT_LINE_LAST].left_n = indent_depth;	\
-  settings.lines[PPL_IO_FORMAT_LINE_LONGER_NEXT].left_n = indent_depth;	\
-  settings.lines[PPL_IO_FORMAT_LINE_LONGER_LAST].left_n = indent_depth;	\
+    }                                                                   \
+  };                                                                    \
+  struct ppl_io_ostream *target, *stream;                               \
+  char *buf;                                                            \
+  settings.lines[PPL_IO_FORMAT_LINE_FIRST].length = pfll;               \
+  settings.lines[PPL_IO_FORMAT_LINE_FIRSTLAST].length = pfll;           \
+  settings.lines[PPL_IO_FORMAT_LINE_LONGER_FIRST].length = pfll;        \
+  settings.lines[PPL_IO_FORMAT_LINE_LONGER_FIRSTLAST].length = pfll;    \
+  settings.lines[PPL_IO_FORMAT_LINE_UNTERMINATED_FIRST].length = pfll;  \
+  settings.lines[PPL_IO_FORMAT_LINE_NEXT].length = pll;                 \
+  settings.lines[PPL_IO_FORMAT_LINE_LAST].length = pll;                 \
+  settings.lines[PPL_IO_FORMAT_LINE_LONGER_NEXT].length = pll;          \
+  settings.lines[PPL_IO_FORMAT_LINE_LONGER_LAST].length = pll;          \
+  settings.lines[PPL_IO_FORMAT_LINE_UNTERMINATED_NEXT].length = pll;    \
+  settings.lines[PPL_IO_FORMAT_LINE_NEXT].left_n = indent_depth;        \
+  settings.lines[PPL_IO_FORMAT_LINE_LAST].left_n = indent_depth;        \
+  settings.lines[PPL_IO_FORMAT_LINE_LONGER_NEXT].left_n = indent_depth; \
+  settings.lines[PPL_IO_FORMAT_LINE_LONGER_LAST].left_n = indent_depth; \
   settings.lines[PPL_IO_FORMAT_LINE_UNTERMINATED_NEXT].left_n = indent_depth; \
-  target = ppl_io_ostream_buffer_new();					\
-  stream = ppl_io_ostream_format_new(target, &settings);		\
-  ppl_io_write_##Name(stream, p);					\
-  ppl_io_ostream_delete(stream);					\
-  ppl_io_ostream_buffer_get(target, &buf);				\
-  ppl_io_ostream_delete(target);					\
-  return buf;								\
+  target = ppl_io_ostream_buffer_new();                                 \
+  stream = ppl_io_ostream_format_new(target, &settings);                \
+  ppl_io_write_##Type(stream, p);                                       \
+  ppl_io_ostream_delete(stream);                                        \
+  ppl_io_ostream_buffer_get(target, &buf);                              \
+  ppl_io_ostream_delete(target);                                        \
+  return buf;                                                           \
 }
 
 #if 0

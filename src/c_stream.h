@@ -101,8 +101,11 @@ int ppl_io_write_endl(struct ppl_io_ostream* s);
 /* FIXME: */
 /* Add ios_base methods: flags, setf, unsetf, width, precision (others?) */
 
-#define DECLARE_WRITE_VAL(name, type) int ppl_io_write_##name(struct ppl_io_ostream* s, const type o)
-#define DECLARE_WRITE_REF(name, type) int ppl_io_write_##name(struct ppl_io_ostream* s, const type* o)
+#define DECLARE_WRITE_VAL(name, type)                                   \
+  int ppl_io_write_##name(struct ppl_io_ostream* s, const type o)
+
+#define DECLARE_WRITE_REF(name, type)                                   \
+  int ppl_io_write_##name(struct ppl_io_ostream* s, const type* o)
 
 DECLARE_WRITE_VAL(char, char);
 DECLARE_WRITE_VAL(signed_char, signed char);

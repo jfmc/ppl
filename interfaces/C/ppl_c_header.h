@@ -2465,4 +2465,16 @@ PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(MIP_Problem)
 
 #include "c_stream.h"
 
+DECLARE_WRITE_VAL(Coefficient, ppl_const_Coefficient_t);
+DECLARE_WRITE_VAL(Linear_Expression, ppl_const_Linear_Expression_t);
+DECLARE_WRITE_VAL(Constraint, ppl_const_Constraint_t);
+DECLARE_WRITE_VAL(Constraint_System, ppl_const_Constraint_System_t);
+DECLARE_WRITE_VAL(Generator, ppl_const_Generator_t);
+DECLARE_WRITE_VAL(Generator_System, ppl_const_Generator_System_t);
+DECLARE_WRITE_VAL(Congruence, ppl_const_Congruence_t);
+DECLARE_WRITE_VAL(Congruence_System, ppl_const_Congruence_System_t);
+DECLARE_WRITE_VAL(Grid_Generator, ppl_const_Grid_Generator_t);
+DECLARE_WRITE_VAL(Grid_Generator_System, ppl_const_Grid_Generator_System_t);
+DECLARE_WRITE_VAL(MIP_Problem, ppl_const_MIP_Problem_t);
+
 #endif /* !defined(PPL_ppl_c_h) */

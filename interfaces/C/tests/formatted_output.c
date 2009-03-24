@@ -53,7 +53,7 @@ main() {
   p = print_ppl_Constraint_System_t_to_buffer(cs, 4, 64, 64);
   if (check_noisy()) {
     if (p == 0)
-      printf("print_ppl_Constraint_System_t_to_buffer() returned NULL!\n");
+      printf("print_ppl_Constraint_System_to_buffer() returned NULL!\n");
     else
       printf("    %s\n", p);
   }
