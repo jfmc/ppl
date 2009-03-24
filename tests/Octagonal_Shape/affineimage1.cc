@@ -448,18 +448,49 @@ test17() {
   oct1.add_constraint(y >= 0);
   oct1.add_constraint(y <= 2);
 
-  print_constraints(oct1.minimized_constraints(), "*** oct1 ***");
+  print_constraints(oct1, "*** oct1 ***");
 
-  TOctagonal_Shape oct2(oct1);
-  print_constraints(oct2.minimized_constraints(), "*** oct1 ***");
+  oct1.affine_image(y, y + 6);
 
-  oct2.affine_image(x, x + 1);
-  print_constraints(oct2.minimized_constraints(), "*** oct1 ***");
+  TOctagonal_Shape known_result(2);
+  known_result.add_constraint(x >= 0);
+  known_result.add_constraint(x <= 2);
+  known_result.add_constraint(y >= 6);
+  known_result.add_constraint(y <= 8);
 
-  oct2.affine_image(y, y + 6);
-  print_constraints(oct2.minimized_constraints(), "*** oct2 ***");
+  bool ok = (oct1 == known_result);
 
-  return !oct2.is_empty();
+  print_constraints(oct1, "*** oct1.affine_image(y, y + 6) ***");
+
+  return ok;
+}
+
+bool
+test18() {
+  Variable x(0);
+  Variable y(1);
+
+  TOctagonal_Shape oct1(2);
+  oct1.add_constraint(x >= 0);
+  oct1.add_constraint(x <= 2);
+  oct1.add_constraint(y >= 0);
+  oct1.add_constraint(y <= 2);
+
+  print_constraints(oct1, "*** oct1 ***");
+
+  oct1.affine_image(y, -y + 6);
+
+  TOctagonal_Shape known_result(2);
+  known_result.add_constraint(x >= 0);
+  known_result.add_constraint(x <= 2);
+  known_result.add_constraint(y >= 4);
+  known_result.add_constraint(y <= 6);
+
+  bool ok = (oct1 == known_result);
+
+  print_constraints(oct1, "*** oct1.affine_image(y, -y + 6) ***");
+
+  return ok;
 }
 
 } // namespace
@@ -481,4 +512,6 @@ BEGIN_MAIN
   DO_TEST(test14);
   DO_TEST(test15);
   DO_TEST(test16);
+  DO_TEST(test17);
+  DO_TEST(test18);
 END_MAIN
