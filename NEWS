@@ -82,6 +82,9 @@ o  Fixed a bug in the Java/OCaml/Prolog interfaces, whereby
    the method/function/predicate for dropping a disjunct from a
    Pointset_Powerset object were returning an invalid iterator.
 
+o  Fixed a bug in method Octagonal_Shape<T>::affine_image(var, expr)
+   whereby a wrong result was computed under specific conditions.
+
 
 --------------------------------------------------------------------------
 NEWS for version 0.10  (released on November 4, 2008)
