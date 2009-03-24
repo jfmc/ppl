@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "print_to_buffer.h"
 #include <stdio.h>
 
-#define DIMENSION 1000
+#define DIMENSION 100
 
 int
 main() {
@@ -42,7 +42,6 @@ main() {
   ppl_assign_Coefficient_from_mpz_t(coeff, z);
   ppl_new_Constraint_System(&cs);
   for (i = 0; i < DIMENSION; ++i) {
-    printf("%d\n", i);
     ppl_new_Linear_Expression_with_dimension(&le, DIMENSION);
     ppl_Linear_Expression_add_to_coefficient(le, i, coeff);
     ppl_new_Constraint(&c, le, PPL_CONSTRAINT_TYPE_GREATER_OR_EQUAL);
