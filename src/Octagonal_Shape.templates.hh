@@ -4042,11 +4042,17 @@ Octagonal_Shape<T>::affine_image(const Variable var,
             const Row_Iterator m_begin = matrix.row_begin();
             const Row_Iterator m_end = matrix.row_end();
             Row_Iterator m_iter = m_begin + n_var;
-            N& m_v_cv = (*m_iter)[n_var+1];
+            Row_Reference m_v = *m_iter;
             ++m_iter;
-            N& m_cv_v = (*m_iter)[n_var];
+            Row_Reference m_cv = *m_iter;
             ++m_iter;
-            // NOTE: delay update of m_v_cv and m_cv_v.
+            // NOTE: delay update of unary constraints on `var'.
+            for (dimension_type j = n_var; j-- > 0; ) {
+              N& m_v_j = m_v[j];
+              add_assign_r(m_v_j, m_v_j, minus_d, ROUND_UP);
+              N& m_cv_j = m_cv[j];
+              add_assign_r(m_cv_j, m_cv_j, d, ROUND_UP);
+            }
             for ( ; m_iter != m_end; ++m_iter) {
               Row_Reference m_i = *m_iter;
               N& m_i_v = m_i[n_var];
@@ -4054,10 +4060,12 @@ Octagonal_Shape<T>::affine_image(const Variable var,
               N& m_i_cv = m_i[n_var+1];
               add_assign_r(m_i_cv, m_i_cv, minus_d, ROUND_UP);
             }
-            // Now update m_v_cv and m_cv_v.
+            // Now update unary constraints on var.
             mul2exp_assign_r(d, d, 1, ROUND_IGNORE);
+            N& m_cv_v = m_cv[n_var];
             add_assign_r(m_cv_v, m_cv_v, d, ROUND_UP);
             mul2exp_assign_r(minus_d, minus_d, 1, ROUND_IGNORE);
+            N& m_v_cv = m_v[n_var+1];
             add_assign_r(m_v_cv, m_v_cv, minus_d, ROUND_UP);
            }
           reset_strongly_closed();
@@ -4076,23 +4084,14 @@ Octagonal_Shape<T>::affine_image(const Variable var,
           // Strong closure is not preserved.
           reset_strongly_closed();
           if (b != 0) {
-            // Translate all the constraints on `var' adding or
-            // subtracting the value `b/denominator'.
+            // Translate the unary constraints on `var',
+            // adding or subtracting the value `b/denominator'.
             PPL_DIRTY_TEMP(N, d);
             div_round_up(d, b, denominator);
-            PPL_DIRTY_TEMP(N, minus_d);
-            div_round_up(minus_d, b, minus_den);
-            ++m_iter;
-            for (const Row_Iterator m_end
-                   = matrix.row_end(); m_iter != m_end; ++m_iter) {
-              Row_Reference m_i = *m_iter;
-              N& m_i_v = m_i[n_var];
-              add_assign_r(m_i_v, m_i_v, d, ROUND_UP);
-              N& m_i_cv = m_i[n_var+1];
-              add_assign_r(m_i_cv, m_i_cv, minus_d, ROUND_UP);
-            }
             mul2exp_assign_r(d, d, 1, ROUND_IGNORE);
             add_assign_r(m_cv_v, m_cv_v, d, ROUND_UP);
+            PPL_DIRTY_TEMP(N, minus_d);
+            div_round_up(minus_d, b, minus_den);
             mul2exp_assign_r(minus_d, minus_d, 1, ROUND_IGNORE);
             add_assign_r(m_v_cv, m_v_cv, minus_d, ROUND_UP);
           }
