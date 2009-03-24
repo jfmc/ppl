@@ -1,4 +1,4 @@
-/* Declarations for the formmatted output facility.
+/* Declarations for the formatted output facility settings.
    Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -20,12 +20,10 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_c_stream_h
-#define PPL_c_stream_h 1
+#ifndef PPL_c_streambuf_format_settings_h
+#define PPL_c_streambuf_format_settings_h 1
 
-#include <stdio.h>
-
-enum ppl_io_format_line_type {
+enum c_streambuf_format_line_type {
   PPL_IO_FORMAT_LINE_FIRST = 0,
   PPL_IO_FORMAT_LINE_FIRSTLAST,
   PPL_IO_FORMAT_LINE_NEXT,
@@ -45,7 +43,7 @@ enum ppl_io_format_line_type {
 #define PPL_IO_FORMAT_ALIGN_RIGHT 16
 #define PPL_IO_FORMAT_WRAP_POINTS 2
 
-struct ppl_io_format_settings {
+struct c_streambuf_format_settings {
   /* Char conversion table */
   const char *tr_in;
   const char *tr_out;
@@ -85,44 +83,4 @@ struct ppl_io_format_settings {
   } lines[PPL_IO_FORMAT_LINE_END];
 };
 
-extern struct ppl_io_format_settings ppl_io_format_default_settings;
-
-struct ppl_io_ostream* ppl_io_ostream_stdio_new(FILE* fp);
-struct ppl_io_ostream* ppl_io_ostream_buffer_new();
-struct ppl_io_ostream* ppl_io_ostream_format_new(struct ppl_io_ostream* stream, struct ppl_io_format_settings* settings);
-void ppl_io_ostream_format_replace_settings(struct ppl_io_ostream* stream, struct ppl_io_format_settings* settings);
-
-void ppl_io_ostream_delete(struct ppl_io_ostream* stream);
-size_t ppl_io_ostream_buffer_get(struct ppl_io_ostream* stream, char** buf);
-void ppl_io_ostream_buffer_clear(struct ppl_io_ostream* stream);
-
-int ppl_io_write_endl(struct ppl_io_ostream* s);
-
-/* FIXME: */
-/* Add ios_base methods: flags, setf, unsetf, width, precision (others?) */
-
-#define DECLARE_WRITE_VAL(name, type)                                   \
-  int ppl_io_write_##name(struct ppl_io_ostream* s, const type o)
-
-#define DECLARE_WRITE_REF(name, type)                                   \
-  int ppl_io_write_##name(struct ppl_io_ostream* s, const type* o)
-
-DECLARE_WRITE_VAL(char, char);
-DECLARE_WRITE_VAL(signed_char, signed char);
-DECLARE_WRITE_VAL(unsigned_char, unsigned char);
-DECLARE_WRITE_VAL(short, short);
-DECLARE_WRITE_VAL(unsigned_short, unsigned short);
-DECLARE_WRITE_VAL(int, int);
-DECLARE_WRITE_VAL(unsigned_int, unsigned int);
-DECLARE_WRITE_VAL(long, long);
-DECLARE_WRITE_VAL(unsigned_long, unsigned long);
-/*
-DECLARE_WRITE_VAL(long_long, long long);
-DECLARE_WRITE_VAL(unsigned_long_long, unsigned long long);
-*/
-DECLARE_WRITE_VAL(float, float);
-DECLARE_WRITE_VAL(double, double);
-DECLARE_WRITE_VAL(long_double, long double);
-DECLARE_WRITE_VAL(string, char*);
-
-#endif /* !defined(PPL_c_stream_h) */
+#endif /* !defined(PPL_c_streambuf_format_settings_h) */

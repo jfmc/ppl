@@ -1,4 +1,4 @@
-/* c_streambuf_format class implementation: inline functions.
+/* c_stream class implementation: inline functions
    Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -20,21 +20,23 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_c_streambuf_format_inlines_hh
-#define PPL_c_streambuf_format_inlines_hh 1
-
-namespace Parma_Polyhedra_Library {
+#ifndef PPL_c_stream_inlines_hh
+#define PPL_c_stream_inlines_hh 1
 
 inline
-c_streambuf_format::c_streambuf_format(std::ostream& stream, c_streambuf_format_settings* settings)
-  : stream(stream), settings(settings), first(true) {
+ppl_io_ostream::ppl_io_ostream(streambuf* sbuf)
+  : sbuf(sbuf), stream(new std::iostream(sbuf)) {
 }
 
 inline
-void c_streambuf_format::replace_settings(c_streambuf_format_settings* s) {
-  settings = s;
+ppl_io_ostream::ppl_io_ostream(std::ostream* stream)
+  : sbuf(0), stream(stream) {
 }
 
-} // namespace Parma_Polyhedra_Library
+inline
+ppl_io_ostream::~ppl_io_ostream() {
+  delete stream;
+  delete sbuf;
+}
 
-#endif // !defined(PPL_c_streambuf_format_inlines_hh)
+#endif // !defined(PPL_c_stream_inlines_hh)

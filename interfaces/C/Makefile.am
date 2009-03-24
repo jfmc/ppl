@@ -73,7 +73,7 @@ LIBPPL_C_LT_CURRENT =  2
 LIBPPL_C_LT_REVISION = 0
 LIBPPL_C_LT_AGE =      0
 
-ppl_c.h: ppl_c_header.h ppl_c_version.h ppl_c_domains.h $(top_srcdir)/src/c_stream.h Makefile $(top_builddir)/utils/build_header
+ppl_c.h: ppl_c_header.h ppl_c_version.h ppl_c_domains.h Makefile $(top_builddir)/utils/build_header
 	$(top_builddir)/utils/build_header \
 		-I $(top_builddir)/interfaces/C -I $(top_srcdir)/src \
 		$(top_srcdir)/interfaces/C/ppl_c_header.h >$@
@@ -123,7 +123,10 @@ lib_LTLIBRARIES = libppl_c.la
 libppl_c_la_SOURCES = \
 ppl_c_implementation_common.defs.hh \
 ppl_c_implementation_common.inlines.hh \
-ppl_c_implementation_common.cc
+ppl_c_implementation_common.cc \
+ppl_c_stream.hh \
+ppl_c_stream.inlines.hh \
+ppl_c_stream.cc
 
 nodist_libppl_c_la_SOURCES =
 

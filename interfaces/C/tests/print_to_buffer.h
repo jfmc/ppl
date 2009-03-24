@@ -35,10 +35,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 */
 #define DECLARE_PRINT_TO_BUFFER(Type)					\
 char*                                                                   \
-print_ppl_##Type##_t_to_buffer(ppl_const_##Type##_t p,			\
-                         unsigned indent_depth,                         \
-                         unsigned preferred_first_line_length,          \
-                         unsigned preferred_line_length);
+print_ppl_##Type##_to_buffer(ppl_const_##Type##_t p,			\
+			     unsigned indent_depth,			\
+			     unsigned preferred_first_line_length,	\
+			     unsigned preferred_line_length);
 
 #ifdef __cplusplus
 extern "C" {

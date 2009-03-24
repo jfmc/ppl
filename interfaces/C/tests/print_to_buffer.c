@@ -27,11 +27,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #define DEFINE_PRINT_TO_BUFFER(Type)                                    \
 char*                                                                   \
-print_ppl_##Type##_to_buffer(ppl_const_##Type##_t p,                    \
+ print_ppl_##Type##_to_buffer(ppl_const_##Type##_t p,			\
                          unsigned indent_depth,                         \
                          unsigned pfll,                                 \
                          unsigned pll) {                                \
-  struct ppl_io_format_settings settings = {    \
+  ppl_io_format_settings_t settings = {					\
     0,            /* tr_in */                   \
     0,            /* tr_out */                  \
     "\n",         /* paragraph_end */           \
@@ -44,21 +44,21 @@ print_ppl_##Type##_to_buffer(ppl_const_##Type##_t p,                    \
     0,           /* bottom */                   \
     {                                           \
       /* length, left, left_n, left_c, right_n, right_c right, alignment, fill_char */ \
-      { 0, 0, ' ', 0, 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* FIRST */ \
-      { 0, 0, ' ', 0, 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* FIRSTLAST */ \
-      { 0,  0, ' ', 0, 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* NEXT */ \
-      { 0,  0, ' ', 0, 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* LAST */ \
-      { 0,    0, ' ', 0, 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* CHOPPED_FIRST */ \
-      { 0,    0, ' ', 0, 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* CHOPPED_NEXT */ \
-      { 0, 0, ' ', 0, 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* LONGER_FIRST */ \
-      { 0, 0, ' ', 0, 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* LONGER_FIRSTLAST */ \
-      { 0,  0, ' ', 0, 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* LONGER_NEXT */   \
-      { 0,  0, ' ', 0, 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* LONGER_LAST */   \
-      { 0, 0, ' ', 0, 0, ' ', "",   PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* UNTERMINATED_FIRST */ \
-      { 0,  0, ' ', 0, 0, ' ', "",   PPL_IO_FORMAT_ALIGN_LEFT, 0 }  /* UNTERMINATED_NEXT */ \
+      { 0,  0, 0, ' ', 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* FIRST */ \
+      { 0,  0, 0, ' ', 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* FIRSTLAST */ \
+      { 0,  0, 0, ' ', 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* NEXT */ \
+      { 0,  0, 0, ' ', 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* LAST */ \
+      { 0,  0, 0, ' ', 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* CHOPPED_FIRST */ \
+      { 0,  0, 0, ' ', 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* CHOPPED_NEXT */ \
+      { 0,  0, 0, ' ', 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* LONGER_FIRST */ \
+      { 0,  0, 0, ' ', 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* LONGER_FIRSTLAST */ \
+      { 0,  0, 0, ' ', 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* LONGER_NEXT */   \
+      { 0,  0, 0, ' ', 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* LONGER_LAST */   \
+      { 0,  0, 0, ' ', 0, ' ', "",   PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* UNTERMINATED_FIRST */ \
+      { 0,  0, 0, ' ', 0, ' ', "",   PPL_IO_FORMAT_ALIGN_LEFT, 0 }  /* UNTERMINATED_NEXT */ \
     }                                                                   \
   };                                                                    \
-  struct ppl_io_ostream *target, *stream;                               \
+  ppl_io_ostream_t target, stream;					\
   char *buf;                                                            \
   settings.lines[PPL_IO_FORMAT_LINE_FIRST].length = pfll;               \
   settings.lines[PPL_IO_FORMAT_LINE_FIRSTLAST].length = pfll;           \
@@ -77,14 +77,13 @@ print_ppl_##Type##_to_buffer(ppl_const_##Type##_t p,                    \
   settings.lines[PPL_IO_FORMAT_LINE_UNTERMINATED_NEXT].left_n = indent_depth; \
   target = ppl_io_ostream_buffer_new();                                 \
   stream = ppl_io_ostream_format_new(target, &settings);                \
-  ppl_io_write_##Type(stream, p);                                       \
+  ppl_io_write_##Type(stream, p);					\
   ppl_io_ostream_delete(stream);                                        \
   ppl_io_ostream_buffer_get(target, &buf);                              \
   ppl_io_ostream_delete(target);                                        \
   return buf;                                                           \
 }
 
-#if 0
 DEFINE_PRINT_TO_BUFFER(Coefficient)
 
 DEFINE_PRINT_TO_BUFFER(Linear_Expression)
@@ -106,4 +105,3 @@ DEFINE_PRINT_TO_BUFFER(Grid_Generator)
 DEFINE_PRINT_TO_BUFFER(Grid_Generator_System)
 
 DEFINE_PRINT_TO_BUFFER(MIP_Problem)
-#endif

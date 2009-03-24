@@ -25,27 +25,25 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <iostream>
 #include "c_streambuf_format.types.hh"
+#include "c_streambuf_format_settings.h"
 #include "c_streambuf.defs.hh"
-
-extern "C" {
-#include "c_stream.h"
-}
 
 namespace Parma_Polyhedra_Library {
 
 class c_streambuf_format : public c_streambuf {
 public:
-  c_streambuf_format(std::ostream& stream, ppl_io_format_settings *settings);
+  c_streambuf_format(std::ostream& stream,
+		     c_streambuf_format_settings *settings);
   ~c_streambuf_format();
-  void replace_settings(ppl_io_format_settings *settings);
+  void replace_settings(c_streambuf_format_settings *settings);
 private:
   std::ostream& stream;
-  ppl_io_format_settings *settings;
+  c_streambuf_format_settings *settings;
   std::string str;
   bool first;
   int wrap_point_before(const char *buf, int pos, int limit);
   int wrap_point_after(const char *buf, int pos, int limit);
-  bool output_line(const char *s, unsigned int n, ppl_io_format_line_type type);
+  bool output_line(const char *s, unsigned int n, c_streambuf_format_line_type type);
   size_t cb_write(const char *buf, size_t size);
   int cb_flush();
 };

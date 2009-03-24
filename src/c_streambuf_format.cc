@@ -56,7 +56,7 @@ size_t c_streambuf_format::cb_write(const char *buf, size_t size) {
   const char *rest = str.c_str();
   unsigned int len = str.size();
   while (1) {
-    ppl_io_format_line_type type;
+    c_streambuf_format_line_type type;
     char *parend = strstr(rest, settings->paragraph_end);
     unsigned int parend_pos;
     if (parend) {
@@ -129,7 +129,7 @@ int c_streambuf_format::cb_flush() {
   return 0;
 }
 
-bool c_streambuf_format::output_line(const char *s, unsigned int n, ppl_io_format_line_type type) {
+bool c_streambuf_format::output_line(const char *s, unsigned int n, c_streambuf_format_line_type type) {
   switch (type) {
   case PPL_IO_FORMAT_LINE_FIRST:
   case PPL_IO_FORMAT_LINE_FIRSTLAST:

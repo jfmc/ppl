@@ -136,6 +136,7 @@ Programming Kit): this is used to read linear programs in MPS format.
 #include <stdio.h>
 #include <gmp.h>
 #include <stddef.h>
+#include "ppl_c_stream.h"
 
 /*
   PPL_PROTO is a macro used to wrap function prototypes, so that
@@ -576,7 +577,10 @@ int                                                                     \
 ppl_io_fprint_##Type PPL_PROTO((FILE* stream, ppl_const_##Type##_t x)); \
 /*! \relates ppl_##Type##_tag */                                        \
 int                                                                     \
-ppl_io_asprint_##Type PPL_PROTO((char** strp, ppl_const_##Type##_t x));
+ppl_io_asprint_##Type PPL_PROTO((char** strp, ppl_const_##Type##_t x)); \
+/*! \relates ppl_##Type##_tag */                                        \
+int                                                                     \
+ppl_io_write_##Type PPL_PROTO((ppl_io_ostream_t s, ppl_const_##Type##_t x));
 
 #define PPL_DECLARE_ASCII_DUMP_LOAD_FUNCTIONS(Type) \
 /*! \relates ppl_##Type##_tag */                    \
@@ -599,9 +603,12 @@ ppl_io_print_##Type PPL_PROTO((ppl_const_##Type##_t x));                \
 /*! \relates ppl_##Type##_tag \brief Prints \p x to the given output \p stream. */ \
 int                                                                     \
 ppl_io_fprint_##Type PPL_PROTO((FILE* stream, ppl_const_##Type##_t x)); \
-/*! \relates ppl_##Type##_tag \brief Pretty-prints \p x to a malloc-allocated string, a pointer to which is returned via \p strp. */ \
+/*! \relates ppl_##Type##_tag \brief Prints \p x to a malloc-allocated string, a pointer to which is returned via \p strp. */ \
 int                                                                     \
-ppl_io_asprint_##Type PPL_PROTO((char** strp, ppl_const_##Type##_t x));
+ppl_io_asprint_##Type PPL_PROTO((char** strp, ppl_const_##Type##_t x)); \
+/*! \relates ppl_##Type##_tag \brief Print \p x to stream \p s */                                        \
+int                                                                     \
+ppl_io_write_##Type PPL_PROTO((ppl_io_ostream_t s, ppl_const_##Type##_t x));
 
 
 #define PPL_DECLARE_AND_DOCUMENT_ASCII_DUMP_LOAD_FUNCTIONS(Type) \
@@ -2462,19 +2469,5 @@ PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS(MIP_Problem)
 #undef PPL_DECLARE_AND_DOCUMENT_PRINT_FUNCTIONS
 #undef PPL_DECLARE_AND_DOCUMENT_ASCII_DUMP_LOAD_FUNCTIONS
 #undef PPL_DECLARE_AND_DOCUMENT_IO_FUNCTIONS
-
-#include "c_stream.h"
-
-DECLARE_WRITE_VAL(Coefficient, ppl_const_Coefficient_t);
-DECLARE_WRITE_VAL(Linear_Expression, ppl_const_Linear_Expression_t);
-DECLARE_WRITE_VAL(Constraint, ppl_const_Constraint_t);
-DECLARE_WRITE_VAL(Constraint_System, ppl_const_Constraint_System_t);
-DECLARE_WRITE_VAL(Generator, ppl_const_Generator_t);
-DECLARE_WRITE_VAL(Generator_System, ppl_const_Generator_System_t);
-DECLARE_WRITE_VAL(Congruence, ppl_const_Congruence_t);
-DECLARE_WRITE_VAL(Congruence_System, ppl_const_Congruence_System_t);
-DECLARE_WRITE_VAL(Grid_Generator, ppl_const_Grid_Generator_t);
-DECLARE_WRITE_VAL(Grid_Generator_System, ppl_const_Grid_Generator_System_t);
-DECLARE_WRITE_VAL(MIP_Problem, ppl_const_MIP_Problem_t);
 
 #endif /* !defined(PPL_ppl_c_h) */

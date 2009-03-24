@@ -29,7 +29,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 int
 main() {
-#if 0
   int i;
   mpz_t z;
   ppl_Coefficient_t coeff;
@@ -50,7 +49,7 @@ main() {
     ppl_delete_Constraint(c);
     ppl_delete_Linear_Expression(le);
   }
-  p = print_ppl_Constraint_System_t_to_buffer(cs, 4, 64, 64);
+  p = print_ppl_Constraint_System_to_buffer(cs, 4, 64, 64);
   if (check_noisy()) {
     if (p == 0)
       printf("print_ppl_Constraint_System_to_buffer() returned NULL!\n");
@@ -58,6 +57,5 @@ main() {
       printf("    %s\n", p);
   }
   ppl_delete_Constraint_System(cs);
-#endif
   return 0;
 }
