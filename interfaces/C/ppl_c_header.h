@@ -606,7 +606,7 @@ ppl_io_fprint_##Type PPL_PROTO((FILE* stream, ppl_const_##Type##_t x)); \
 /*! \relates ppl_##Type##_tag \brief Prints \p x to a malloc-allocated string, a pointer to which is returned via \p strp. */ \
 int                                                                     \
 ppl_io_asprint_##Type PPL_PROTO((char** strp, ppl_const_##Type##_t x)); \
- /*! \relates ppl_##Type##_tag \brief Print \p x to stream \p s */	\
+ /*! \relates ppl_##Type##_tag \brief Print \p x to stream \p s. */	\
 int                                                                     \
 ppl_io_write_##Type PPL_PROTO((ppl_io_ostream_t s, ppl_const_##Type##_t x));
 
