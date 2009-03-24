@@ -124,9 +124,10 @@ libppl_c_la_SOURCES = \
 ppl_c_implementation_common.defs.hh \
 ppl_c_implementation_common.inlines.hh \
 ppl_c_implementation_common.cc \
-ppl_c_stream.hh \
+ppl_c_stream.defs.hh \
 ppl_c_stream.inlines.hh \
-ppl_c_stream.cc
+ppl_c_stream.cc \
+ppl_c_stream.h
 
 nodist_libppl_c_la_SOURCES =
 
