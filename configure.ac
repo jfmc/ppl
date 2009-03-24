@@ -943,7 +943,7 @@ then
   ac_jlong_can_contain_pointers=no
   AC_MSG_RESULT(no),
   ac_jlong_can_contain_pointers=no
-  AC_MSG_RESULT(no))
+  AC_MSG_RESULT([assuming it cannot]))
   AC_LANG_POP(C++)
   CPPFLAGS="$ac_save_CPPFLAGS"
 fi

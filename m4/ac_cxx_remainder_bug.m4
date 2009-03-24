@@ -51,7 +51,7 @@ int main(int argc, char** argv) {
   ac_cv_cxx_has_remainder_bug=no,
   AC_MSG_RESULT(yes)
   ac_cv_cxx_has_remainder_bug=yes,
-  AC_MSG_RESULT(yes)
+  AC_MSG_RESULT([assuming yes])
   ac_cv_cxx_has_remainder_bug=yes)
 
 if test x"$ac_cv_cxx_has_remainder_bug" = xyes

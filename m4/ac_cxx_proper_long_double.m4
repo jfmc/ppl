@@ -45,7 +45,7 @@ int main() {
   ac_cxx_provides_proper_long_double=yes,
   AC_MSG_RESULT(no)
   ac_cxx_provides_proper_long_double=no,
-  AC_MSG_RESULT(no)
+  AC_MSG_RESULT([assuming not])
   ac_cxx_provides_proper_long_double=no)
 
 if test x"$ac_cxx_provides_proper_long_double" = xyes

@@ -26,7 +26,7 @@ ac_save_LIBS="$LIBS"
 LIBS="$LIBS -lm"
 AC_LANG_PUSH(C++)
 AC_CHECK_HEADERS([fenv.h ieeefp.h])
-AC_MSG_CHECKING([for the possibility to control the FPU])
+AC_MSG_CHECKING([if it is possible to control the FPU])
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #if i386
 
@@ -115,7 +115,7 @@ main() {
   ac_cv_can_control_fpu=1,
   AC_MSG_RESULT(no)
   ac_cv_can_control_fpu=0,
-  AC_MSG_RESULT(no)
+  AC_MSG_RESULT([assuming not])
   ac_cv_can_control_fpu=0
 )
 AM_CONDITIONAL(CAN_CONTROL_FPU, test $ac_cv_can_control_fpu = 1)

@@ -76,8 +76,55 @@ main() {
   ac_cxx_supports_flexible_arrays=yes,
   AC_MSG_RESULT(no)
   ac_cxx_supports_flexible_arrays=no,
-  AC_MSG_RESULT(no)
-  ac_cxx_supports_flexible_arrays=no)
+  AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+#include <new>
+#include <cstddef>
+
+class A {
+private:
+  int i;
+  bool b;
+
+public:
+  A()
+    : i(0), b(false) {
+  }
+};
+
+class B {
+private:
+  int capacity;
+  A vec[];
+
+public:
+  void* operator new(size_t fixed_size, int c) {
+    return ::operator new(fixed_size + c*sizeof(B));
+  }
+
+  void operator delete(void* p) {
+    ::operator delete(p);
+  }
+
+  void operator delete(void* p, int) {
+    ::operator delete(p);
+  }
+
+  B(int s)
+    : capacity(s) {
+  }
+};
+
+int
+main() {
+  B* p = new (100) B(100);
+  delete p;
+  return 0;
+}
+]])],
+    AC_MSG_RESULT(yes)
+    ac_cxx_supports_flexible_arrays=yes,
+    AC_MSG_RESULT(no)
+    ac_cxx_supports_flexible_arrays=no))
 
 if test x"$ac_cxx_supports_flexible_arrays" = xyes
 then

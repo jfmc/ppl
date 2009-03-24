@@ -98,7 +98,7 @@ main() try {
   ac_cxx_supports_limiting_memory=yes,
   AC_MSG_RESULT(no)
   ac_cxx_supports_limiting_memory=no,
-  AC_MSG_RESULT(no)
+  AC_MSG_RESULT([assuming not])
   ac_cxx_supports_limiting_memory=no)
 
 if test x"$ac_cxx_supports_limiting_memory" = xyes

@@ -118,7 +118,7 @@ main() {
   ac_cxx_float_exact_output=1,
   AC_MSG_RESULT(no)
   ac_cxx_float_exact_output=0,
-  AC_MSG_RESULT(no)
+  AC_MSG_RESULT([assuming not])
   ac_cxx_float_exact_output=0)
 
 AC_DEFINE_UNQUOTED(PPL_CXX_FLOAT_EXACT_OUTPUT, $ac_cxx_float_exact_output,

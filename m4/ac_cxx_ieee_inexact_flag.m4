@@ -114,7 +114,7 @@ int main() {
   ac_cxx_supports_ieee_inexact_flag=yes,
   AC_MSG_RESULT(no)
   ac_cxx_supports_ieee_inexact_flag=no,
-  AC_MSG_RESULT(no)
+  AC_MSG_RESULT([assuming not])
   ac_cxx_supports_ieee_inexact_flag=no)
 
 if test x"$ac_cxx_supports_ieee_inexact_flag" = xyes
