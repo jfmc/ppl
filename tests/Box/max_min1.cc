@@ -749,7 +749,10 @@ BEGIN_MAIN
   DO_TEST(test09);
   DO_TEST(test10);
   DO_TEST(test11);
+#ifndef __alpha__
+  // Exception handling is broken in GCC on the Alpha.
   DO_TEST(test12);
+#endif
   DO_TEST(test13);
   DO_TEST(test14);
   DO_TEST(test15);
