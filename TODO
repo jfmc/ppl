@@ -7,7 +7,6 @@ Enhancements for PPL 0.10.1 or later versions
   in a directory where another `make check' was performed (completely
   or not, with failure or not), the latter `make check' can succeed
   without testing anything.
-- Do not enable the Prolog interfaces by default in the release tarballs.
 
 
 Enhancements for PPL 0.11 or later versions

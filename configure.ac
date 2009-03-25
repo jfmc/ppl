@@ -800,14 +800,13 @@ esac
 build_ppl_lpsol=$enableval
 AM_CONDITIONAL(BUILD_PPL_LPSOL, test x"$build_ppl_lpsol" = xyes)
 
-# This is the list of available interfaces: lowercase and blank-separated.
-available_interfaces="cxx c ciao_prolog gnu_prolog sicstus_prolog swi_prolog xsb_prolog yap_prolog ocaml java"
+# Define lists of available interfaces: lowercase and blank-separated.
+non_prolog_interfaces="cxx c ocaml java"
+prolog_interfaces="ciao_prolog gnu_prolog sicstus_prolog swi_prolog xsb_prolog yap_prolog"
+available_interfaces="${nonprolog_interfaces} ${prolog_interfaces}"
 
 # This is the list of interfaces that are enabled by default.
-#default_interfaces="cxx c swi_prolog"
-#default_interfaces=${available_interfaces}
-default_interfaces="cxx c ciao_prolog gnu_prolog sicstus_prolog swi_prolog xsb_prolog ocaml java"
-#default_interfaces="cxx c ciao_prolog gnu_prolog sicstus_prolog swi_prolog xsb_prolog yap_prolog ocaml java"
+default_interfaces=${available_interfaces}
 
 enableval=not_specified
 AC_MSG_CHECKING([which interfaces are enabled])

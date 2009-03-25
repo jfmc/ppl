@@ -49,10 +49,12 @@ DISTCHECK_CONFIGURE_FLAGS = \
 dist-hook:
 	rm -f $(distdir)/ppl-config.h \
 	&& $(SED) -e "s/^enableval=thorough$$/enableval=quick/g" \
+	          -e "s/^default_interfaces=\$${available_interfaces}$$/default_interfaces=\$${non_prolog_interfaces}/g" \
 		<$(distdir)/configure.ac >$(distdir)/configure.ac.new \
 	&& touch $(distdir)/configure.ac.new -r $(distdir)/configure.ac \
 	&& mv -f $(distdir)/configure.ac.new $(distdir)/configure.ac
 	$(SED) -e "s/^enableval=thorough$$/enableval=quick/g" \
+	          -e "s/^default_interfaces=\$${available_interfaces}$$/default_interfaces=\$${non_prolog_interfaces}/g" \
 		<$(distdir)/configure >$(distdir)/configure.new \
 	&& touch $(distdir)/configure.new -r $(distdir)/configure \
 	&& mv -f $(distdir)/configure.new $(distdir)/configure \
