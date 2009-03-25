@@ -27,7 +27,7 @@ namespace Parma_Polyhedra_Library {
 
 inline
 c_streambuf_format::c_streambuf_format(std::ostream& stream, c_streambuf_format_settings* settings)
-  : stream(stream), settings(settings), first(true) {
+  : stream(stream), settings(settings), first(true), column(0) {
 }
 
 inline

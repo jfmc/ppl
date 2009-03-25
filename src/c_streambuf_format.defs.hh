@@ -41,9 +41,16 @@ private:
   c_streambuf_format_settings *settings;
   std::string str;
   bool first;
+  unsigned int column;
+  int available_length(c_streambuf_format_line_type type);
+  int total_length(c_streambuf_format_line_type type, size_t n);
+  void output_rep(const c_streambuf_format_settings::line::rep& rep);
   int wrap_point_before(const char *buf, int pos, int limit);
   int wrap_point_after(const char *buf, int pos, int limit);
-  bool output_line(const char *s, unsigned int n, c_streambuf_format_line_type type);
+  void add_char_untabify(char c);
+  bool output_line(c_streambuf_format_line_type type, const char *s, unsigned int n);
+  bool output_line1(c_streambuf_format_line_type type, const char *s, unsigned int n);
+  bool output_line2(c_streambuf_format_line_type type, const char *s, unsigned int n);
   size_t cb_write(const char *buf, size_t size);
   int cb_flush();
 };

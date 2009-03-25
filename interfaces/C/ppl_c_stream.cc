@@ -5,30 +5,32 @@
 #include "ppl_c_stream.defs.hh"
 
 c_streambuf_format_settings ppl_io_format_default_settings = {
-  0,            // tr_in
-  0,            // tr_out
-  "\n",         // paragraph_end
-  {             // wrap points
-    { 0, "," }, // before, after
-    { " ", 0 }  // before, aftet
+  0,            /* tr_in */
+  0,            /* tr_out */
+  8,            /* tab_width */
+  "\n",         /* paragraph_end */
+  {             /* wrap points */
+    { 0, "," }, /* before, after */
+    { " ", 0 }  /* before, aftet */
   },
-  " ",          // strip_wrap
-  0,           // top
-  0,           // bottom
+  " ",          /* strip_wrap */
+  {0, 0},       /* top */
+  {0, 0},       /* bottom */
   {
-    // length, left, left_n, left_c, right_n, right_c, right, alignment, fill_char
-    { 80, 0, 0, 0, 0, 0, "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // FIRST
-    { 80, 0, 0, 0, 0, 0, "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // FIRSTLAST
-    { 80, 0, 0, 0, 0, 0, "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // NEXT
-    { 80, 0, 0, 0, 0, 0, "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // LAST
-    { 80, 0, 0, 0, 0, 0, "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // CHOPPED_FIRST
-    { 80, 0, 0, 0, 0, 0, "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // CHOPPED_NEXT
-    { 80, 0, 0, 0, 0, 0, "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // LONGER_FIRST
-    { 80, 0, 0, 0, 0, 0, "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // LONGER_FIRSTLAST
-    { 80, 0, 0, 0, 0, 0, "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // LONGER_NEXT
-    { 80, 0, 0, 0, 0, 0, "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // LONGER_LAST
-    { 80, 0, 0, 0, 0, 0, 0,    PPL_IO_FORMAT_ALIGN_LEFT, 0 }, // UNTERMINATED_FIRST
-    { 80, 0, 0, 0, 0, 0, 0,    PPL_IO_FORMAT_ALIGN_LEFT, 0 }  // UNTERMINATED_NEXT
+    /* begin, length, left, alignment, fill_char, right, end */
+    {0, 80, {0, 0  }, 0, 0, {0, 0}, "\n"}, /* EXTERN */
+    {0, 80, {0, " "}, 0, 0, {0, 0}, 0   }, /* FIRST */
+    {0, 80, {0, " "}, 0, 0, {0, 0}, 0   }, /* FIRSTLAST */
+    {0, 80, {0, " "}, 0, 0, {0, 0}, 0   }, /* NEXT */
+    {0, 80, {0, " "}, 0, 0, {0, 0}, 0   }, /* LAST */
+    {0, 80, {0, " "}, 0, 0, {0, 0}, 0   }, /* LONGER_FIRST */
+    {0, 80, {0, " "}, 0, 0, {0, 0}, 0   }, /* LONGER_FIRSTLAST */
+    {0, 80, {0, " "}, 0, 0, {0, 0}, 0   }, /* LONGER_NEXT */
+    {0, 80, {0, " "}, 0, 0, {0, 0}, 0   }, /* LONGER_LAST */
+    {0, 0, {0, " "}, 0, 0, {0, 0}, 0   }, /* CHOPPED_FIRST */
+    {0, 0, {0, " "}, 0, 0, {0, 0}, 0   }, /* CHOPPED_NEXT */
+    {0, 80, {0, " "}, 0, 0, {0, 0}, 0   }, /* UNTERMINATED_FIRST */
+    {0, 80, {0, " "}, 0, 0, {0, 0}, 0   }, /* UNTERMINATED_NEXT */
   }
 };
 

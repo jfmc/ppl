@@ -34,28 +34,30 @@ char*                                                                   \
   ppl_io_format_settings_t settings = {					\
     0,            /* tr_in */                   \
     0,            /* tr_out */                  \
+    8,            /* tab_width */		\
     "\n",         /* paragraph_end */           \
     {             /* wrap points */             \
       { 0, "," }, /* before, after */           \
       { " ", 0 }  /* before, aftet */           \
     },                                          \
     " ",          /* strip_wrap */              \
-    0,           /* top */                      \
-    0,           /* bottom */                   \
+    {0, 0},       /* top */			\
+    {0, 0},       /* bottom */			\
     {                                           \
-      /* length, left, left_n, left_c, right_n, right_c right, alignment, fill_char */ \
-      { 0,  0, 0, ' ', 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* FIRST */ \
-      { 0,  0, 0, ' ', 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* FIRSTLAST */ \
-      { 0,  0, 0, ' ', 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* NEXT */ \
-      { 0,  0, 0, ' ', 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* LAST */ \
-      { 0,  0, 0, ' ', 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* CHOPPED_FIRST */ \
-      { 0,  0, 0, ' ', 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* CHOPPED_NEXT */ \
-      { 0,  0, 0, ' ', 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* LONGER_FIRST */ \
-      { 0,  0, 0, ' ', 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* LONGER_FIRSTLAST */ \
-      { 0,  0, 0, ' ', 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* LONGER_NEXT */   \
-      { 0,  0, 0, ' ', 0, ' ', "\n", PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* LONGER_LAST */   \
-      { 0,  0, 0, ' ', 0, ' ', "",   PPL_IO_FORMAT_ALIGN_LEFT, 0 }, /* UNTERMINATED_FIRST */ \
-      { 0,  0, 0, ' ', 0, ' ', "",   PPL_IO_FORMAT_ALIGN_LEFT, 0 }  /* UNTERMINATED_NEXT */ \
+      /* begin, length, left, alignment, fill_char, right, end */ \
+      {0, 0, {0, 0  }, 0, 0, {0, 0}, "\n"}, /* EXTERN */ \
+      {0, 0, {0, " "}, 0, 0, {0, 0}, 0   }, /* FIRST */ \
+      {0, 0, {0, " "}, 0, 0, {0, 0}, 0   }, /* FIRSTLAST */ \
+      {0, 0, {0, " "}, 0, 0, {0, 0}, 0   }, /* NEXT */ \
+      {0, 0, {0, " "}, 0, 0, {0, 0}, 0   }, /* LAST */ \
+      {0, 0, {0, " "}, 0, 0, {0, 0}, 0   }, /* LONGER_FIRST */ \
+      {0, 0, {0, " "}, 0, 0, {0, 0}, 0   }, /* LONGER_FIRSTLAST */ \
+      {0, 0, {0, " "}, 0, 0, {0, 0}, 0   }, /* LONGER_NEXT */ \
+      {0, 0, {0, " "}, 0, 0, {0, 0}, 0   }, /* LONGER_LAST */ \
+      {0, 0, {0, " "}, 0, 0, {0, 0}, 0   }, /* CHOPPED_FIRST */ \
+      {0, 0, {0, " "}, 0, 0, {0, 0}, 0   }, /* CHOPPED_NEXT */ \
+      {0, 0, {0, " "}, 0, 0, {0, 0}, 0   }, /* UNTERMINATED_FIRST */ \
+      {0, 0, {0, " "}, 0, 0, {0, 0}, 0   }, /* UNTERMINATED_NEXT */	\
     }                                                                   \
   };                                                                    \
   ppl_io_ostream_t target, stream;					\
@@ -70,11 +72,11 @@ char*                                                                   \
   settings.lines[PPL_IO_FORMAT_LINE_LONGER_NEXT].length = pll;          \
   settings.lines[PPL_IO_FORMAT_LINE_LONGER_LAST].length = pll;          \
   settings.lines[PPL_IO_FORMAT_LINE_UNTERMINATED_NEXT].length = pll;    \
-  settings.lines[PPL_IO_FORMAT_LINE_NEXT].left_n = indent_depth;        \
-  settings.lines[PPL_IO_FORMAT_LINE_LAST].left_n = indent_depth;        \
-  settings.lines[PPL_IO_FORMAT_LINE_LONGER_NEXT].left_n = indent_depth; \
-  settings.lines[PPL_IO_FORMAT_LINE_LONGER_LAST].left_n = indent_depth; \
-  settings.lines[PPL_IO_FORMAT_LINE_UNTERMINATED_NEXT].left_n = indent_depth; \
+  settings.lines[PPL_IO_FORMAT_LINE_NEXT].left.count = indent_depth;        \
+  settings.lines[PPL_IO_FORMAT_LINE_LAST].left.count = indent_depth;        \
+  settings.lines[PPL_IO_FORMAT_LINE_LONGER_NEXT].left.count = indent_depth; \
+  settings.lines[PPL_IO_FORMAT_LINE_LONGER_LAST].left.count = indent_depth; \
+  settings.lines[PPL_IO_FORMAT_LINE_UNTERMINATED_NEXT].left.count = indent_depth; \
   target = ppl_io_ostream_buffer_new();                                 \
   stream = ppl_io_ostream_format_new(target, &settings);                \
   ppl_io_write_##Type(stream, p);					\
