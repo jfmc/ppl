@@ -251,6 +251,14 @@ print_string_if_noisy "\n";;
 let polyhedron1 = ppl_new_C_Polyhedron_from_constraints(constraints1);;
 let polyhedron2 = ppl_new_C_Polyhedron_from_generators(generators1);;
 let result =  ppl_Polyhedron_bounds_from_above polyhedron1 e2;;
+let p = Ppl_ocaml.ppl_new_C_Polyhedron_from_constraints [];;
+let u = Ppl_ocaml.ppl_Polyhedron_add_constraints p [];;
+let out = if (u == ())
+  then "ppl_Polyhedron_add_constraints returns unit"
+  else "ppl_Polyhedron_add_constraints does not return unit"
+    in (print_string_if_noisy out);;
+print_string_if_noisy "\n";;
+
 ppl_Polyhedron_add_constraint polyhedron1 constraint1;;
 ppl_Polyhedron_add_generator polyhedron1 generator1;;
 let b = ppl_Polyhedron_is_disjoint_from_Polyhedron

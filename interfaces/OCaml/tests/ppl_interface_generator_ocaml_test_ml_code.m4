@@ -129,9 +129,9 @@ let copy01
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@!TOPOLOGY@@!CLASS@01);;
 let copy02
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@!TOPOLOGY@@!CLASS@01);;
-ppl_@CLASS@_swap copy01 copy02;;
+let u = ppl_@CLASS@_swap copy01 copy02;;
 let out
-  = if (ppl_@CLASS@_OK copy01 & ppl_@CLASS@_OK copy02)
+  = if (u = () & ppl_@CLASS@_OK copy01 & ppl_@CLASS@_OK copy02)
   then "success" else "failed"
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
@@ -194,8 +194,8 @@ m4_define(`ppl_@CLASS@_@SIMPLIFY@_code',
 print_string_if_noisy "testing ppl_@CLASS@_@SIMPLIFY@: ";;
 let copy01
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@!TOPOLOGY@@!CLASS@01);;
-ppl_@CLASS@_@SIMPLIFY@ copy01;;
-let out = if (ppl_@CLASS@_OK copy01)
+let u = ppl_@CLASS@_@SIMPLIFY@ copy01;;
+let out = if (u = () & ppl_@CLASS@_OK copy01)
   then "success" else "failed"
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
@@ -291,8 +291,8 @@ m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@_code',
 print_string_if_noisy "testing ppl_@CLASS@_add_@CLASS_REPRESENT@: " ;;
 let copy01
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@!TOPOLOGY@@!CLASS@01);;
-ppl_@CLASS@_add_@CLASS_REPRESENT@ copy01 @CLASS_REPRESENT@1;;
-let out = if (ppl_@CLASS@_OK copy01)
+let u = ppl_@CLASS@_add_@CLASS_REPRESENT@ copy01 @CLASS_REPRESENT@1;;
+let out = if (u = () & ppl_@CLASS@_OK copy01)
   then "success" else "failed"
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
@@ -303,8 +303,8 @@ m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@s_code',
 print_string_if_noisy "testing ppl_@CLASS@_add_@CLASS_REPRESENT@s: " ;;
 let copy01
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@!TOPOLOGY@@!CLASS@01);;
-ppl_@CLASS@_add_@CLASS_REPRESENT@s copy01 @CLASS_REPRESENT@s1;;
-let out = if (ppl_@CLASS@_OK copy01)
+let u = ppl_@CLASS@_add_@CLASS_REPRESENT@s copy01 @CLASS_REPRESENT@s1;;
+let out = if (u = () & ppl_@CLASS@_OK copy01)
   then "success" else "failed"
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
@@ -316,9 +316,9 @@ print_string_if_noisy
   "testing ppl_@CLASS@_refine_with_@REFINE_REPRESENT@: " ;;
 let copy01
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@!TOPOLOGY@@!CLASS@01);;
-ppl_@CLASS@_refine_with_@REFINE_REPRESENT@
+let u = ppl_@CLASS@_refine_with_@REFINE_REPRESENT@
   copy01 @REFINE_REPRESENT@01;;
-let out = if (ppl_@CLASS@_OK copy01)
+let out = if (u = () & ppl_@CLASS@_OK copy01)
   then "success" else "failed"
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
@@ -330,9 +330,9 @@ print_string_if_noisy
   "testing ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s: " ;;
 let copy01
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@!TOPOLOGY@@!CLASS@01);;
-ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s
+let u = ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s
   copy01 @REFINE_REPRESENT@s01;;
-let out = if (ppl_@CLASS@_OK copy01)
+let out = if (u = () & ppl_@CLASS@_OK copy01)
   then "success" else "failed"
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
@@ -345,9 +345,9 @@ let copy01
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@!TOPOLOGY@@!CLASS@01);;
 let copy02
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@!TOPOLOGY@@!CLASS@01);;
-ppl_@CLASS@_@BINOP@ copy01 copy02;;
+let u = ppl_@CLASS@_@BINOP@ copy01 copy02;;
 let out
-  = if (ppl_@CLASS@_OK copy01 & ppl_@CLASS@_OK copy02)
+  = if (u = () & ppl_@CLASS@_OK copy01 & ppl_@CLASS@_OK copy02)
   then "success" else "failed"
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
@@ -373,8 +373,8 @@ m4_define(`ppl_@CLASS@_@AFFIMAGE@_code',
 print_string_if_noisy "testing ppl_@CLASS@_@AFFIMAGE@: ";;
 let copy01
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@!TOPOLOGY@@!CLASS@01);;
-ppl_@CLASS@_@AFFIMAGE@ copy01 1 ((Z.of_int 2) */ v2) (Z.from_int 2);;
-let out = if (ppl_@CLASS@_OK copy01)
+let u = ppl_@CLASS@_@AFFIMAGE@ copy01 1 ((Z.of_int 2) */ v2) (Z.from_int 2);;
+let out = if (u = () & ppl_@CLASS@_OK copy01)
   then "success" else "failed"
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
@@ -385,9 +385,9 @@ m4_define(`ppl_@CLASS@_bounded_@AFFIMAGE@_code',
 print_string_if_noisy "testing ppl_@CLASS@_bounded_@AFFIMAGE@: ";;
 let copy01
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@!TOPOLOGY@@!CLASS@01);;
-ppl_@CLASS@_bounded_@AFFIMAGE@ copy01 1
+let u = ppl_@CLASS@_bounded_@AFFIMAGE@ copy01 1
   ((Z.of_int 2) */ v2) v2 (Z.from_int 10);;
-let out = if (ppl_@CLASS@_OK copy01)
+let out = if (u = () & ppl_@CLASS@_OK copy01)
   then "success" else "failed"
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
@@ -398,9 +398,9 @@ m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_code',
 print_string_if_noisy "testing ppl_@CLASS@_generalized_@AFFIMAGE@: ";;
 let copy01
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@!TOPOLOGY@@!CLASS@01);;
-ppl_@CLASS@_generalized_@AFFIMAGE@
+let u = ppl_@CLASS@_generalized_@AFFIMAGE@
   copy01 1 Equal_RS v1 (Z.from_int 10);;
-let out = if (ppl_@CLASS@_OK copy01)
+let out = if (u = () & ppl_@CLASS@_OK copy01)
   then "success" else "failed"
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
@@ -411,9 +411,9 @@ m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_code',
 print_string_if_noisy "testing ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs: ";;
 let copy01
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@!TOPOLOGY@@!CLASS@01);;
-ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs
+let u = ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs
   copy01 ((Z.of_int 1) */ v0) Equal_RS (linear_expression_of_int 7);;
-let out = if (ppl_@CLASS@_OK copy01)
+let out = if (u = () & ppl_@CLASS@_OK copy01)
   then "success" else "failed"
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
@@ -424,9 +424,9 @@ m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruence_code',
 print_string_if_noisy "testing ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruence: ";;
 let copy01
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@!TOPOLOGY@@!CLASS@01);;
-ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruence
+let u = ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruence
   copy01 1 Equal_RS v1 (Z.from_int 1) (Z.from_int 10);;
-let out = if (ppl_@CLASS@_OK copy01)
+let out = if (u = () & ppl_@CLASS@_OK copy01)
   then "success" else "failed"
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
@@ -437,9 +437,9 @@ m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence_code',
 print_string_if_noisy "testing ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence: ";;
 let copy01
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@!TOPOLOGY@@!CLASS@01);;
-ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence
-  copy01 ((Z.of_int 1) */ v0) Equal_RS (linear_expression_of_int 7);;
-let out = if (ppl_@CLASS@_OK copy01)
+let u = ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence
+  copy01 ((Z.of_int 1) */ v0) Equal_RS (linear_expression_of_int 7) (Z.from_int 1);;
+let out = if (u = () & ppl_@CLASS@_OK copy01)
   then "success" else "failed"
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
@@ -450,8 +450,8 @@ m4_define(`ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@_code',
 print_string_if_noisy "testing ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@: ";;
 let copy01
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@!TOPOLOGY@@!CLASS@01);;
-ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@ copy01 2;;
-let out = if (ppl_@CLASS@_OK copy01)
+let u = ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@ copy01 2;;
+let out = if (u = () & ppl_@CLASS@_OK copy01)
   then "success" else "failed"
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
@@ -463,8 +463,8 @@ print_string_if_noisy "testing ppl_@CLASS@_remove_space_dimensions: ";;
 let copy01
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@!TOPOLOGY@@!CLASS@01);;
 let dimensions_to_remove = [2;0];;
-ppl_@CLASS@_remove_space_dimensions copy01 dimensions_to_remove;;
-let out = if (ppl_@CLASS@_OK copy01)
+let u = ppl_@CLASS@_remove_space_dimensions copy01 dimensions_to_remove;;
+let out = if (u = () & ppl_@CLASS@_OK copy01)
   then "success" else "failed"
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
@@ -475,8 +475,8 @@ m4_define(`ppl_@CLASS@_remove_higher_space_dimensions_code',
 print_string_if_noisy "testing ppl_@CLASS@_remove_higher_space_dimensions: ";;
 let copy01
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@!TOPOLOGY@@!CLASS@01);;
-ppl_@CLASS@_remove_higher_space_dimensions copy01 1;;
-let out = if (ppl_@CLASS@_OK copy01)
+let u = ppl_@CLASS@_remove_higher_space_dimensions copy01 1;;
+let out = if (u = () & ppl_@CLASS@_OK copy01)
   then "success" else "failed"
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
@@ -487,8 +487,8 @@ m4_define(`ppl_@CLASS@_expand_space_dimension_code',
 print_string_if_noisy "testing ppl_@CLASS@_expand_space_dimension: ";;
 let copy01
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@!TOPOLOGY@@!CLASS@01);;
-ppl_@CLASS@_expand_space_dimension copy01 1 1;;
-let out = if (ppl_@CLASS@_OK copy01)
+let u = ppl_@CLASS@_expand_space_dimension copy01 1 1;;
+let out = if (u = () & ppl_@CLASS@_OK copy01)
   then "success" else "failed"
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
@@ -500,8 +500,8 @@ print_string_if_noisy "testing ppl_@CLASS@_fold_space_dimensions: ";;
 let copy01
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@!TOPOLOGY@@!CLASS@01);;
 let dimensions_to_fold = [1];;
-ppl_@CLASS@_fold_space_dimensions copy01 dimensions_to_fold 0;;
-let out = if (ppl_@CLASS@_OK copy01)
+let u = ppl_@CLASS@_fold_space_dimensions copy01 dimensions_to_fold 0;;
+let out = if (u = () & ppl_@CLASS@_OK copy01)
   then "success" else "failed"
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
@@ -513,8 +513,8 @@ print_string_if_noisy "testing ppl_@CLASS@_map_space_dimensions: ";;
 let copy01
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@!TOPOLOGY@@!CLASS@01);;
 let dimensions_to_map = [(0,1);(1,2);(2,0);];;
-ppl_@CLASS@_map_space_dimensions copy01 dimensions_to_map;;
-let out = if (ppl_@CLASS@_OK copy01)
+let u = ppl_@CLASS@_map_space_dimensions copy01 dimensions_to_map;;
+let out = if (u = () & ppl_@CLASS@_OK copy01)
   then "success" else "failed"
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
@@ -539,8 +539,8 @@ m4_define(`ppl_@CLASS@_unconstrain_space_dimension_code',
 print_string_if_noisy "testing ppl_@CLASS@_unconstrain_space_dimension: ";;
 let copy01
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@!TOPOLOGY@@!CLASS@01);;
-ppl_@CLASS@_unconstrain_space_dimension copy01 1;;
-let out = if (ppl_@CLASS@_OK copy01)
+let u = ppl_@CLASS@_unconstrain_space_dimension copy01 1;;
+let out = if (u = () & ppl_@CLASS@_OK copy01)
   then "success" else "failed"
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
@@ -552,9 +552,9 @@ print_string_if_noisy "testing ppl_@CLASS@_unconstrain_space_dimensions: ";;
 let copy01
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@!TOPOLOGY@@!CLASS@01);;
 let dimensions_to_unconstrain = [1];;
-ppl_@CLASS@_unconstrain_space_dimensions
+let u = ppl_@CLASS@_unconstrain_space_dimensions
   copy01 dimensions_to_unconstrain;;
-let out = if (ppl_@CLASS@_OK copy01)
+let out = if (u = () & ppl_@CLASS@_OK copy01)
   then "success" else "failed"
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
@@ -581,8 +581,8 @@ let copy01
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@!TOPOLOGY@@!CLASS@01);;
 let copy03
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@!TOPOLOGY@@!CLASS@03);;
-ppl_@CLASS@_@WIDEN@_widening_assign copy01 copy03 ;;
-let out = if (ppl_@CLASS@_OK copy01)
+let u = ppl_@CLASS@_@WIDEN@_widening_assign copy01 copy03 ;;
+let out = if (u = () & ppl_@CLASS@_OK copy01)
   then "success" else "failed"
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
@@ -613,8 +613,8 @@ let copy01
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@!TOPOLOGY@@!CLASS@01);;
 let copy03
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@!TOPOLOGY@@!CLASS@03);;
-ppl_@CLASS@_widening_assign copy01 copy03 ;;
-let out = if (ppl_@CLASS@_OK copy01)
+let u = ppl_@CLASS@_widening_assign copy01 copy03 ;;
+let out = if (u = () & ppl_@CLASS@_OK copy01)
   then "success" else "failed"
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
@@ -646,9 +646,9 @@ let copy01
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@!TOPOLOGY@@!CLASS@01);;
 let copy03
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@!TOPOLOGY@@!CLASS@03);;
-ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign
+let u = ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign
   copy01 copy03 @CONSTRAINER@s04;;
-let out = if (ppl_@CLASS@_OK copy01)
+let out = if (u = () & ppl_@CLASS@_OK copy01)
   then "success" else "failed"
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
@@ -681,8 +681,8 @@ let copy01
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@!TOPOLOGY@@!CLASS@01);;
 let copy03
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@!TOPOLOGY@@!CLASS@03);;
-ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign copy01 copy03 ;;
-let out = if (ppl_@CLASS@_OK copy01)
+let u = ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign copy01 copy03 ;;
+let out = if (u = () & ppl_@CLASS@_OK copy01)
   then "success" else "failed"
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
@@ -715,8 +715,8 @@ let copy01
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@!TOPOLOGY@@!CLASS@01);;
 let copy03
   = ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(@!TOPOLOGY@@!CLASS@03);;
-ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign copy03 copy01 ;;
-let out = if (ppl_@CLASS@_OK copy01)
+let u = ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign copy03 copy01 ;;
+let out = if (u = () & ppl_@CLASS@_OK copy01)
   then "success" else "failed"
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
@@ -730,8 +730,8 @@ let copy01
   = ppl_new_@CLASS@_from_@CLASS@(@!TOPOLOGY@@!CLASS@01);;
 let copy03
   = ppl_new_@CLASS@_from_@CLASS@(@!CLASS@03);;
-ppl_@CLASS@_BHZ03_@A_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign copy01 copy03 ;;
-let out = if (ppl_@CLASS@_OK copy01)
+let u = ppl_@CLASS@_BHZ03_@A_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign copy01 copy03 ;;
+let out = if (u = () & ppl_@CLASS@_OK copy01)
   then "success" else "failed"
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
@@ -744,8 +744,8 @@ let copy01
   = ppl_new_@CLASS@_from_@CLASS@(@!CLASS@01);;
 let copy03
   = ppl_new_@CLASS@_from_@CLASS@(@!CLASS@03);;
-ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign copy01 copy03 2;;
-let out = if (ppl_@CLASS@_OK copy01)
+let u = ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign copy01 copy03 2;;
+let out = if (u = () & ppl_@CLASS@_OK copy01)
   then "success" else "failed"
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
@@ -801,9 +801,9 @@ if (size > 0)
     ppl_@CLASS@_increment_iterator ite;
   );;
 let out = if ((ppl_@CLASS@_OK @!CLASS@01)
-              & (ppl_@CLASS@_iterator_equals_iterator itb it_begin)
-              & (ppl_@CLASS@_iterator_equals_iterator ite it_end))
-  then "success" else "failed"
+               & (ppl_@CLASS@_iterator_equals_iterator itb it_begin)
+               & (ppl_@CLASS@_iterator_equals_iterator ite it_end))
+   then "success" else "failed"
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
 ')
@@ -825,8 +825,8 @@ print_string_if_noisy "testing ppl_@CLASS@_drop_disjunct: " ;;
 let copy01
   = ppl_new_@CLASS@_from_@CLASS@(@!CLASS@01);;
 let it = ppl_@CLASS@_begin_iterator copy01;;
-ppl_@CLASS@_drop_disjunct copy01 it;;
-let out = if (ppl_@CLASS@_OK copy01)
+let u = ppl_@CLASS@_drop_disjunct copy01 it;;
+let out = if (u = () & ppl_@CLASS@_OK copy01)
   then "success" else "failed"
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;
@@ -839,8 +839,8 @@ let copy01
   = ppl_new_@CLASS@_from_@CLASS@(@!CLASS@01);;
 let it1 = ppl_@CLASS@_begin_iterator copy01;;
 let it2 = ppl_@CLASS@_begin_iterator copy01;;
-ppl_@CLASS@_drop_disjuncts copy01 it1 it2;;
-let out = if (ppl_@CLASS@_OK copy01)
+let u = ppl_@CLASS@_drop_disjuncts copy01 it1 it2;;
+let out = if (u = () & ppl_@CLASS@_OK copy01)
   then "success" else "failed"
     in (print_string_if_noisy out);;
 print_string_if_noisy "\n";;

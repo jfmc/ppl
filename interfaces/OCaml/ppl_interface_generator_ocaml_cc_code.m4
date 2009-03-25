@@ -135,12 +135,12 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_@SIMPLIFY@_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_@SIMPLIFY@(value ph) try {
   CAMLparam1(ph);
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
   pph.@SIMPLIFY@();
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -163,13 +163,13 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_add_@CLASS_REPRESENT@(value ph, value c) try {
   CAMLparam2(ph, c);
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
   @!CLASS_REPRESENT@ pc = build_ppl_@!CLASS_REPRESENT@(c);
   pph.add_@CLASS_REPRESENT@(pc);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -178,13 +178,13 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@s_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_add_@CLASS_REPRESENT@s(value ph, value cs) try {
   CAMLparam2(ph, cs);
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
   @!CLASS_REPRESENT@_System pcs = build_ppl_@!CLASS_REPRESENT@_System(cs);
   pph.add_@CLASS_REPRESENT@s(pcs);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -193,13 +193,13 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_refine_with_@REFINE_REPRESENT@(value ph, value c) try {
   CAMLparam2(ph, c);
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
   @!REFINE_REPRESENT@ pc = build_ppl_@!REFINE_REPRESENT@(c);
   pph.refine_with_@REFINE_REPRESENT@(pc);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -208,13 +208,13 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s(value ph, value cs) try {
   CAMLparam2(ph, cs);
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
   @!REFINE_REPRESENT@_System pcs = build_ppl_@!REFINE_REPRESENT@_System(cs);
   pph.refine_with_@REFINE_REPRESENT@s(pcs);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -251,13 +251,13 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_@BINOP@_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_@BINOP@(value ph1, value ph2) try {
   CAMLparam2(ph1, ph2);
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
   @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
   pph1.@BINOP@(pph2);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -280,7 +280,7 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@
 (value ph, value d) try {
   CAMLparam2(ph, d);
@@ -288,7 +288,7 @@ ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@
   check_int_is_unsigned(dd);
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
   pph.add_space_dimensions_and_embed(dd);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -297,12 +297,12 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_remove_space_dimensions_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_remove_space_dimensions(value ph, value caml_vset) try {
   CAMLparam2(ph, caml_vset);
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
   pph.remove_space_dimensions(build_ppl_Variables_Set(caml_vset));
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -311,14 +311,14 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_remove_higher_space_dimensions_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_remove_higher_space_dimensions(value ph, value d) try {
   CAMLparam2(ph, d);
   int dd = Int_val(d);
   check_int_is_unsigned(dd);
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
   pph.remove_higher_space_dimensions(dd);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -327,7 +327,7 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_fold_space_dimensions_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_fold_space_dimensions
 (value ph, value caml_vset, value caml_dim) try {
   CAMLparam1(ph);
@@ -335,7 +335,7 @@ ppl_@CLASS@_fold_space_dimensions
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
   Variables_Set ppl_vset;
   if (Int_val(caml_vset) == 0)
-    CAMLreturn0;
+    CAMLreturn(Val_unit);
   while (true) {
     ppl_vset.insert(Int_val(Field(caml_vset, 0)));
     if (Int_val(Field(caml_vset, 1)) == 0)
@@ -343,7 +343,7 @@ ppl_@CLASS@_fold_space_dimensions
     caml_vset = Field(caml_vset, 1);
   }
   pph.fold_space_dimensions(ppl_vset, Variable(ppl_dim));
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -352,7 +352,7 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_map_space_dimensions_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_map_space_dimensions(value ph, value caml_mapped_dims) try {
   CAMLparam2(ph, caml_mapped_dims);
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
@@ -365,7 +365,7 @@ ppl_@CLASS@_map_space_dimensions(value ph, value caml_mapped_dims) try {
     caml_mapped_dims = Field(caml_mapped_dims, 1);
   }
   pph.map_space_dimensions(pfunc);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -375,7 +375,7 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_expand_space_dimension_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_expand_space_dimension(value ph,
 						     value var_index,
 						     value m) try {
@@ -384,7 +384,7 @@ ppl_@CLASS@_expand_space_dimension(value ph,
   check_int_is_unsigned(c_m);
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
   pph.expand_space_dimension(build_ppl_Variable(var_index), c_m);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -433,12 +433,12 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_unconstrain_space_dimension_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_unconstrain_space_dimension(value ph, value var) try {
   CAMLparam2(ph, var);
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
   pph.unconstrain(build_ppl_Variable(var));
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -447,12 +447,12 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_unconstrain_space_dimensions_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_unconstrain_space_dimensions(value ph, value caml_vset) try {
   CAMLparam2(ph, caml_vset);
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
   pph.unconstrain(build_ppl_Variables_Set(caml_vset));
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -461,7 +461,7 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_bounded_@AFFIMAGE@_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_bounded_@AFFIMAGE@(value ph, value var, value lb_expr,
 				    value ub_expr, value coeff) try {
   CAMLparam5(ph, var, lb_expr, ub_expr, coeff);
@@ -470,7 +470,7 @@ ppl_@CLASS@_bounded_@AFFIMAGE@(value ph, value var, value lb_expr,
 			   build_ppl_Linear_Expression(lb_expr),
  			   build_ppl_Linear_Expression(ub_expr),
  			   build_ppl_Coefficient(coeff));
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -479,7 +479,7 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_@AFFIMAGE@_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_@AFFIMAGE@
 (value ph, value var, value expr, value coeff) try {
   CAMLparam4(ph, var, expr, coeff);
@@ -488,7 +488,7 @@ ppl_@CLASS@_@AFFIMAGE@
   pph.@AFFIMAGE@(build_ppl_Variable(var),
 		   build_ppl_Linear_Expression(expr),
 		   build_ppl_Coefficient(coeff));
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -497,7 +497,7 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_generalized_@AFFIMAGE@1
 (value ph, value le1, value rel_sym, value le2) try {
   CAMLparam4(ph, le1, rel_sym, le2);
@@ -506,7 +506,7 @@ ppl_@CLASS@_generalized_@AFFIMAGE@1
   pph.generalized_@AFFIMAGE@(build_ppl_Linear_Expression(le1),
 			       build_ppl_relsym(rel_sym),
 			       build_ppl_Linear_Expression(le2));
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -515,7 +515,7 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_generalized_@AFFIMAGE@2
 (value ph, value int_val, value rel_sym, value le, value caml_coeff) try {
   CAMLparam5(ph, int_val, rel_sym, le, caml_coeff);
@@ -524,7 +524,7 @@ ppl_@CLASS@_generalized_@AFFIMAGE@2
 			       build_ppl_relsym(rel_sym),
 			       build_ppl_Linear_Expression(le),
 			       build_ppl_Coefficient(caml_coeff));
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -533,7 +533,7 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruence_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_generalized_@AFFIMAGE@1_with_congruence
 (value ph, value int_val, value rel_sym, value le,
  value caml_coeff, value caml_modulus) try {
@@ -546,12 +546,12 @@ ppl_@CLASS@_generalized_@AFFIMAGE@1_with_congruence
 			       build_ppl_Linear_Expression(le),
 			       build_ppl_Coefficient(caml_coeff),
 			       build_ppl_Coefficient(caml_modulus));
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_generalized_@AFFIMAGE@1_with_congruence_bytecode
 (value* argv, int /*argn*/) try {
   return ppl_@CLASS@_generalized_@AFFIMAGE@1_with_congruence
@@ -564,7 +564,7 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_generalized_@AFFIMAGE@1_lhs_rhs_with_congruence
 (value ph, value le1, value rel_sym, value le2, value caml_modulus) try {
   CAMLparam5(ph, le1, rel_sym, le2, caml_modulus);
@@ -574,7 +574,7 @@ ppl_@CLASS@_generalized_@AFFIMAGE@1_lhs_rhs_with_congruence
 			     build_ppl_relsym(rel_sym),
 			     build_ppl_Linear_Expression(le2),
 			     build_ppl_Coefficient(caml_modulus));
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -583,13 +583,13 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_@WIDEN@_widening_assign(value ph1, value ph2) try {
   CAMLparam2(ph1, ph2);
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
   @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
   pph1.@WIDEN@_widening_assign(pph2);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -618,13 +618,13 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_widening_assign_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_widening_assign(value ph1, value ph2) try {
   CAMLparam2(ph1, ph2);
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
   @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
   pph1.widening_assign(pph2);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -676,7 +676,7 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(value ph1,
 						   value ph2,
 						   value caml_cs) try {
@@ -685,7 +685,7 @@ ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(value ph1,
   @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
   @!CONSTRAINER@_System ppl_cs = build_ppl_@!CONSTRAINER@_System(caml_cs);
   pph1.@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(pph2, ppl_cs);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -768,13 +768,13 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_swap_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_swap(value ph1, value ph2) try {
   CAMLparam2(ph1, ph2);
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
   @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
   pph1.swap(pph2);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -852,14 +852,14 @@ m4_define(`m4_ub_exact_for_non_polyhedron_domains',
 m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign
 (value ph1, value ph2) try {
   CAMLparam2(ph1, ph2);
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
   @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
   pph1.@EXTRAPOLATION@_extrapolation_assign(pph2);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -889,14 +889,14 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign(value ph1,
                                                        value ph2) try {
   CAMLparam2(ph1, ph2);
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
   const @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
   pph1.@EXTRAPOLATION@_narrowing_assign(pph2);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -935,7 +935,7 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_add_disjunct_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_add_disjunct(value t_pps, value caml_item_to_add) try {
   CAMLparam2(t_pps, caml_item_to_add);
   @CPP_CLASS@& pps = *p_@CLASS@_val(t_pps);
@@ -943,7 +943,7 @@ ppl_@CLASS@_add_disjunct(value t_pps, value caml_item_to_add) try {
     = *(reinterpret_cast<@DISJUNCT_TOPOLOGY@@A_DISJUNCT@*>
           (p_@DISJUNCT@_val(caml_item_to_add)));
   pps.add_disjunct(item);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -952,13 +952,13 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_drop_disjunct_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_drop_disjunct(value t_pps, value caml_item_to_drop) try {
   CAMLparam2(t_pps, caml_item_to_drop);
   @CPP_CLASS@& pps = *p_@CLASS@_val(t_pps);
   @CPP_CLASS@::iterator& itr = *p_@CLASS@_iterator_val(caml_item_to_drop);
   itr = pps.drop_disjunct(itr);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -967,7 +967,7 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_drop_disjuncts_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_drop_disjuncts
 (value t_pps, value caml_item1_to_drop, value caml_item2_to_drop) try {
   CAMLparam3(t_pps, caml_item1_to_drop, caml_item2_to_drop);
@@ -975,7 +975,7 @@ ppl_@CLASS@_drop_disjuncts
   @CPP_CLASS@::iterator& itr1 = *p_@CLASS@_iterator_val(caml_item1_to_drop);
   @CPP_CLASS@::iterator& itr2 = *p_@CLASS@_iterator_val(caml_item2_to_drop);
   pps.drop_disjuncts(itr1, itr2);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -1026,12 +1026,12 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_@INCDEC@_iterator(value caml_itr) try {
   CAMLparam1(caml_itr);
   @CPP_CLASS@::iterator& itr = *p_@CLASS@_iterator_val(caml_itr);
   m4_@INCDEC@_cpp_name()itr;
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -1061,7 +1061,7 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_BHZ03_@A_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_BHZ03_@A_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign
 (value ph1, value ph2) try {
   CAMLparam2(ph1, ph2);
@@ -1070,7 +1070,7 @@ ppl_@CLASS@_BHZ03_@A_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign
   pph1.BHZ03_widening_assign<@A_DISJUNCT_WIDEN@_Certificate>
     (pph2,
      widen_fun_ref(&@DISJUNCT_TOPOLOGY@@A_DISJUNCT@::@DISJUNCT_WIDEN@_widening_assign));;
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -1079,7 +1079,7 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign_code',
 `dnl
 extern "C"
-void
+CAMLprim value
 ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign
 (value ph1, value ph2, value integer) try {
   CAMLparam2(ph1, ph2);
@@ -1090,7 +1090,7 @@ ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign
   pph1.BGP99_extrapolation_assign
     (pph2,
      widen_fun_ref(&@DISJUNCT_TOPOLOGY@@A_DISJUNCT@::@DISJUNCT_WIDEN@_widening_assign), cpp_int);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 

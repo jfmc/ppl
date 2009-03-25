@@ -778,57 +778,57 @@ ppl_MIP_Problem_constraints(value caml_mip) try {
 CATCH_ALL
 
 extern "C"
-void
+CAMLprim value
 ppl_MIP_Problem_add_space_dimensions_and_embed(value caml_mip, value dim) try {
   CAMLparam2(caml_mip, dim);
   dimension_type ppl_dim = Int_val(dim);
   MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
   ppl_mip.add_space_dimensions_and_embed(ppl_dim);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
 extern "C"
-void
+CAMLprim value
 ppl_MIP_Problem_add_to_integer_space_dimensions(value caml_mip,
 						value caml_ivars) try {
   CAMLparam2(caml_mip, caml_ivars);
   MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
   ppl_mip.add_to_integer_space_dimensions(build_ppl_Variables_Set(caml_ivars));
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
 extern "C"
-void
+CAMLprim value
 ppl_MIP_Problem_add_constraint(value caml_mip,
 			       value caml_constraint) try {
   CAMLparam2(caml_mip, caml_constraint);
   MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
   ppl_mip.add_constraint(build_ppl_Constraint(caml_constraint));
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
 extern "C"
-void
+CAMLprim value
 ppl_MIP_Problem_add_constraints(value caml_mip,
 			       value caml_constraints) try {
   CAMLparam2(caml_mip, caml_constraints);
   MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
   ppl_mip.add_constraints(build_ppl_Constraint_System(caml_constraints));
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
 extern "C"
-void
+CAMLprim value
 ppl_MIP_Problem_set_objective_function(value caml_mip,
 				       value caml_cost) try {
   CAMLparam2(caml_mip, caml_cost);
   MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
   ppl_mip.set_objective_function(build_ppl_Linear_Expression(caml_cost));
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -882,7 +882,7 @@ ppl_MIP_Problem_optimization_mode(value caml_mip) try {
 CATCH_ALL
 
 extern "C"
-void
+CAMLprim value
 ppl_MIP_Problem_set_control_parameter(value caml_mip,
                                       value caml_cp_value) try {
   CAMLparam2(caml_mip, caml_cp_value);
@@ -890,7 +890,7 @@ ppl_MIP_Problem_set_control_parameter(value caml_mip,
   MIP_Problem::Control_Parameter_Value ppl_cp_value
     = build_ppl_control_parameter_value(caml_cp_value);
   ppl_mip.set_control_parameter(ppl_cp_value);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
  }
 CATCH_ALL
 
@@ -1001,34 +1001,34 @@ ppl_MIP_Problem_objective_function
 CATCH_ALL
 
 extern "C"
-void
+CAMLprim value
 ppl_MIP_Problem_clear(value caml_mip) try {
   CAMLparam1(caml_mip);
   MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
   ppl_mip.clear();
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
 extern "C"
-void
+CAMLprim value
 ppl_MIP_Problem_set_optimization_mode(value caml_mip, value caml_opt_mode) try{
   CAMLparam2(caml_mip, caml_opt_mode);
   Optimization_Mode ppl_opt_mode= build_ppl_opt_mode(caml_opt_mode);
   MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
   ppl_mip.set_optimization_mode(ppl_opt_mode);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
 extern "C"
-void
+CAMLprim value
 ppl_MIP_Problem_swap(value caml_mip1, value caml_mip2) try{
   CAMLparam2(caml_mip1, caml_mip2);
   MIP_Problem& ppl_mip1 = *p_MIP_Problem_val(caml_mip1);
   MIP_Problem& ppl_mip2 = *p_MIP_Problem_val(caml_mip2);
   ppl_mip1.swap(ppl_mip2);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -1116,20 +1116,20 @@ ppl_banner(value unit) try {
 CATCH_ALL
 
 extern "C"
-void
+CAMLprim value
 ppl_set_rounding_for_PPL(value unit) try {
   CAMLparam1(unit);
   set_rounding_for_PPL();
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
 
 extern "C"
-void
+CAMLprim value
 ppl_restore_pre_PPL_rounding(value unit) try {
   CAMLparam1(unit);
   restore_pre_PPL_rounding();
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
