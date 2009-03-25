@@ -240,7 +240,7 @@ test08() {
   TBD_Shape bds1(1);
   TBD_Shape bds2(1);
 
-  bds2.add_constraint( A == 0);
+  bds2.add_constraint(A == 0);
 
   print_constraints(bds1, "*** bds1 ***");
   print_constraints(bds2, "*** bds2 ***");

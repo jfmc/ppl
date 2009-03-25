@@ -314,7 +314,7 @@ test09() {
   C_Polyhedron ph1(1);
   C_Polyhedron ph2(1);
 
-  ph2.add_constraint( A == 0);
+  ph2.add_constraint(A == 0);
 
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");

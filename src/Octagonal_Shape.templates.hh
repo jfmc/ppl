@@ -2442,9 +2442,250 @@ Octagonal_Shape<T>::difference_assign(const Octagonal_Shape& y) {
 template <typename T>
 bool
 Octagonal_Shape<T>::simplify_using_context_assign(const Octagonal_Shape& y) {
-  // FIXME(0.10.1): provide a real implementation.
-  used(y);
-  return true;
+  Octagonal_Shape& x = *this;
+  const dimension_type dim = x.space_dimension();
+  // Dimension-compatibility check.
+  if (dim != y.space_dimension())
+    throw_dimension_incompatible("simplify_using_context_assign(y)", y);
+
+  // Filter away the zero-dimensional case.
+  if (dim == 0) {
+    if (y.marked_empty()) {
+      x.set_zero_dim_univ();
+      return false;
+    }
+    else
+      return !x.marked_empty();
+  }
+
+  // Filter away the case where `x' contains `y'
+  // (this subsumes the case when `y' is empty).
+  if (x.contains(y)) {
+    Octagonal_Shape<T> res(dim, UNIVERSE);
+    x.swap(res);
+    return false;
+  }
+
+  typedef typename OR_Matrix<N>::row_iterator Row_Iter;
+  typedef typename OR_Matrix<N>::const_row_iterator Row_CIter;
+  typedef typename OR_Matrix<N>::element_iterator Elem_Iter;
+  typedef typename OR_Matrix<N>::const_element_iterator Elem_CIter;
+
+  // Filter away the case where `x' is empty.
+  x.strong_closure_assign();
+  if (x.marked_empty()) {
+    // Search for a constraint of `y' that is not a tautology.
+    dimension_type i;
+    dimension_type j;
+    // Prefer unary constraints.
+    for (i = 0; i < 2*dim; i += 2) {
+      // FIXME: if N is a float or bounded integer type, then
+      // we also need to check that we are actually able to construct
+      // a constraint inconsistent wrt this one.
+      // Use something like !is_maximal()?
+      if (!is_plus_infinity(y.matrix_at(i, i+1))) {
+        j = i+1;
+        goto found;
+      }
+      // Use something like !is_maximal()?
+      if (!is_plus_infinity(y.matrix_at(i+1, i))) {
+        j = i;
+        ++i;
+        goto found;
+      }
+    }
+    // Then search binary constraints.
+    // TODO: use better iteration scheme.
+    for (i = 2; i < 2*dim; ++i)
+      for (j = 0; j < i; ++j) {
+        // Use something like !is_maximal()?
+        if (!is_plus_infinity(y.matrix_at(i, j)))
+          goto found;
+      }
+
+    // Not found: we were not able to build a constraint contradicting
+    // one of the constraints in `y': `x' cannot be enlarged.
+    return false;
+
+  found:
+    // Found: build a new OS contradicting the constraint found.
+    assert(i < dim && j < dim && i != j);
+    Octagonal_Shape<T> res(dim, UNIVERSE);
+    // FIXME: compute a proper contradicting constraint.
+    PPL_DIRTY_TEMP(N, tmp);
+    assign_r(tmp, 1, ROUND_UP);
+    add_assign_r(tmp, tmp, y.matrix_at(i, j), ROUND_UP);
+    // CHECKME: round down is really meant.
+    neg_assign_r(res.matrix_at(j, i), tmp, ROUND_DOWN);
+    assert(!is_plus_infinity(res.matrix_at(j, i)));
+    x.swap(res);
+    return false;
+  }
+
+  // Here `x' and `y' are not empty and strongly closed;
+  // also, `x' does not contain `y'.
+  // Let `target' be the intersection of `x' and `y'.
+  Octagonal_Shape<T> target = x;
+  target.intersection_assign(y);
+  const bool bool_result = !target.is_empty();
+
+  // Compute redundancy information for x and ...
+  // TODO: provide a nicer data structure for redundancy.
+  std::vector<Bit_Row> x_nonred;
+  x.non_redundant_matrix_entries(x_nonred);
+  // ... count the non-redundant constraints.
+  dimension_type x_num_nonred = 0;
+  for (size_t i = x_nonred.size(); i-- > 0 ; )
+    x_num_nonred += x_nonred[i].count_ones();
+  assert(x_num_nonred > 0);
+
+  // Let `yy' be a copy of `y': we will keep adding to `yy'
+  // the non-redundant constraints of `x',
+  // stopping as soon as `yy' becomes equal to `target'.
+  Octagonal_Shape<T> yy = y;
+
+  // The constraints added to `yy' will be recorded in `res' ...
+  Octagonal_Shape<T> res(dim, UNIVERSE);
+  // ... and we will count them too.
+  dimension_type res_num_nonred = 0;
+
+  // Compute leader information for `x'.
+  std::vector<dimension_type> x_leaders;
+  x.compute_leaders(x_leaders);
+
+  // First go through the unary equality constraints.
+  // Find the leader of the singular equivalence class (it is even!).
+  dimension_type sing_leader;
+  for (sing_leader = 0; sing_leader < 2*dim; sing_leader += 2) {
+    if (sing_leader == x_leaders[sing_leader]) {
+      const N& x_s_ss = x.matrix_at(sing_leader, sing_leader+1);
+      const N& x_ss_s = x.matrix_at(sing_leader+1, sing_leader);
+      if (is_additive_inverse(x_s_ss, x_ss_s))
+        // Singular leader found.
+        break;
+    }
+  }
+
+  // Unary equalities have `sing_leader' as a leader.
+  for (dimension_type i = sing_leader; i < 2*dim; i += 2) {
+    if (x_leaders[i] != sing_leader)
+      continue;
+    // Found a unary equality constraint:
+    // see if any of the two inequalities have to be added.
+    const N& x_i_ii = x.matrix_at(i, i+1);
+    N& yy_i_ii = yy.matrix_at(i, i+1);
+    if (x_i_ii < yy_i_ii) {
+      // The \leq inequality is not implied by context.
+      res.matrix_at(i, i+1) = x_i_ii;
+      ++res_num_nonred;
+      // Tighten context `yy' using the newly added constraint.
+      yy_i_ii = x_i_ii;
+      yy.reset_strongly_closed();
+    }
+    const N& x_ii_i = x.matrix_at(i+1, i);
+    N& yy_ii_i = yy.matrix_at(i+1, i);
+    if (x_ii_i < yy_ii_i) {
+      // The \geq inequality is not implied by context.
+      res.matrix_at(i+1, i) = x_ii_i;
+      ++res_num_nonred;
+      // Tighten context `yy' using the newly added constraint.
+      yy_ii_i = x_ii_i;
+      yy.reset_strongly_closed();
+    }
+    // Restore strong closure, if it was lost.
+    if (!yy.marked_strongly_closed()) {
+      Variable var_i(i/2);
+      yy.incremental_strong_closure_assign(var_i);
+      if (target.contains(yy)) {
+        // Target reached: swap `x' and `res' if needed.
+        if (res_num_nonred < x_num_nonred) {
+          res.reset_strongly_closed();
+          x.swap(res);
+        }
+        return bool_result;
+      }
+    }
+  }
+
+  // Go through the binary equality constraints.
+  for (dimension_type i = 0; i < 2*dim; ++i) {
+    const dimension_type j = x_leaders[i];
+    if (j == i || j == sing_leader)
+      continue;
+    const N& x_i_j = x.matrix_at(i, j);
+    assert(!is_plus_infinity(x_i_j));
+    N& yy_i_j = yy.matrix_at(i, j);
+    if (x_i_j < yy_i_j) {
+      res.matrix_at(i, j) = x_i_j;
+      ++res_num_nonred;
+      // Tighten context `yy' using the newly added constraint.
+      yy_i_j = x_i_j;
+      yy.reset_strongly_closed();
+    }
+    const N& x_j_i = x.matrix_at(j, i);
+    N& yy_j_i = yy.matrix_at(j, i);
+    assert(!is_plus_infinity(x_j_i));
+    if (x_j_i < yy_j_i) {
+      res.matrix_at(j, i) = x_j_i;
+      ++res_num_nonred;
+      // Tighten context `yy' using the newly added constraint.
+      yy_j_i = x_j_i;
+      yy.reset_strongly_closed();
+    }
+    // Restore strong closure, if it was lost.
+    if (!yy.marked_strongly_closed()) {
+      Variable var_j(j/2);
+      yy.incremental_strong_closure_assign(var_j);
+      if (target.contains(yy)) {
+        // Target reached: swap `x' and `res' if needed.
+        if (res_num_nonred < x_num_nonred) {
+          res.reset_strongly_closed();
+          x.swap(res);
+        }
+        return bool_result;
+      }
+    }
+  }
+
+  // Finally go through the (proper) inequality constraints:
+  // both indices i and j should be leaders.
+  // FIXME: improve iteration scheme (are we doing twice the work?)
+  for (dimension_type i = 0; i < 2*dim; ++i) {
+    if (i != x_leaders[i])
+      continue;
+    const Bit_Row& x_nonred_i = x_nonred[i];
+    for (dimension_type j = 0; j < 2*dim; ++j) {
+      if (j != x_leaders[j])
+        continue;
+      if (i >= j) {
+        if (!x_nonred_i[j])
+          continue;
+      }
+      else if (!x_nonred[j][i])
+        continue;
+      N& yy_i_j = yy.matrix_at(i, j);
+      const N& x_i_j = x.matrix_at(i, j);
+      if (x_i_j < yy_i_j) {
+        res.matrix_at(i, j) = x_i_j;
+        ++res_num_nonred;
+        // Tighten context `yy' using the newly added constraint.
+        yy_i_j = x_i_j;
+        yy.reset_strongly_closed();
+        Variable var(i/2);
+        yy.incremental_strong_closure_assign(var);
+        if (target.contains(yy)) {
+          // Target reached: swap `x' and `res' if needed.
+          if (res_num_nonred < x_num_nonred) {
+            res.reset_strongly_closed();
+            x.swap(res);
+          }
+          return bool_result;
+        }
+      }
+    }
+  }
+  // This point should be unreachable.
+  throw std::runtime_error("PPL internal error");
 }
 
 template <typename T>

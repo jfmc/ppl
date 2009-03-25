@@ -109,6 +109,7 @@ relatwithcons2 \
 relatwithcons3 \
 relatwithgen1 \
 removespacedims1 \
+simplifyusingcontext1 \
 timeelapse1 \
 unconstrain1 \
 universe1 \
@@ -266,6 +267,8 @@ relatwithcons3_SOURCES = relatwithcons3.cc
 relatwithgen1_SOURCES = relatwithgen1.cc
 
 removespacedims1_SOURCES = removespacedims1.cc
+
+simplifyusingcontext1_SOURCES = simplifyusingcontext1.cc
 
 timeelapse1_SOURCES = timeelapse1.cc
 
