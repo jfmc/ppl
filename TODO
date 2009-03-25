@@ -8,7 +8,6 @@ Enhancements for PPL 0.10.1 or later versions
   or not, with failure or not), the latter `make check' can succeed
   without testing anything.
 - Do not enable the Prolog interfaces by default in the release tarballs.
-- Check the configuration dependent documentation for Prolog,
 
 
 Enhancements for PPL 0.11 or later versions
