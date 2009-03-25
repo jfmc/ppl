@@ -803,7 +803,7 @@ AM_CONDITIONAL(BUILD_PPL_LPSOL, test x"$build_ppl_lpsol" = xyes)
 # Define lists of available interfaces: lowercase and blank-separated.
 non_prolog_interfaces="cxx c ocaml java"
 prolog_interfaces="ciao_prolog gnu_prolog sicstus_prolog swi_prolog xsb_prolog yap_prolog"
-available_interfaces="${nonprolog_interfaces} ${prolog_interfaces}"
+available_interfaces="${non_prolog_interfaces} ${prolog_interfaces}"
 
 # This is the list of interfaces that are enabled by default.
 default_interfaces=${available_interfaces}
