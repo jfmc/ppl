@@ -69,7 +69,8 @@ ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(value d, value caml_de) try {
   int dd = Int_val(d);
   check_int_is_unsigned(dd);
   Degenerate_Element ppl_de = build_ppl_Degenerate_Element(caml_de);
-  CAMLreturn(val_p_@CLASS@(*new @TOPOLOGY@@CPP_CLASS@(dd, ppl_de)));
+  @TOPOLOGY@@CPP_CLASS@& ppl_value = *new @TOPOLOGY@@CPP_CLASS@(dd, ppl_de);
+  CAMLreturn(unregistered_value_p_@CLASS@(ppl_value));
 }
 CATCH_ALL
 
@@ -82,7 +83,8 @@ CAMLprim value
 ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s(value cl) try {
   CAMLparam1(cl);
   @!BUILD_REPRESENT@_System cs = build_ppl_@!BUILD_REPRESENT@_System(cl);
-  CAMLreturn(val_p_@CLASS@(*new @TOPOLOGY@@CPP_CLASS@(cs)));
+  @TOPOLOGY@@CPP_CLASS@& ppl_value = *new @TOPOLOGY@@CPP_CLASS@(cs);
+  CAMLreturn(unregistered_value_p_@CLASS@(ppl_value));
 }
 CATCH_ALL
 
@@ -697,17 +699,18 @@ extern "C"
 CAMLprim value
 ppl_@CLASS@_@MAXMIN@(value ph, value caml_le) try {
   CAMLparam2(ph, caml_le);
+  CAMLlocal1(caml_return_value);
   PPL_DIRTY_TEMP_COEFFICIENT(num);
   PPL_DIRTY_TEMP_COEFFICIENT(den);
   bool is_supremum = false;
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
   bool ppl_return_value = pph.@MAXMIN@(build_ppl_Linear_Expression(caml_le),
 				      num, den, is_supremum);
-  value caml_return_value = caml_alloc(4, 0);
-  Field(caml_return_value, 0) = Val_bool(ppl_return_value);
-  Field(caml_return_value, 1) = build_ocaml_coefficient(num);
-  Field(caml_return_value, 2) = build_ocaml_coefficient(den);
-  Field(caml_return_value, 3) = Val_bool(is_supremum);
+  caml_return_value = caml_alloc(4, 0);
+  Store_field(caml_return_value, 0, Val_bool(ppl_return_value));
+  Store_field(caml_return_value, 1, build_ocaml_coefficient(num));
+  Store_field(caml_return_value, 2, build_ocaml_coefficient(den));
+  Store_field(caml_return_value, 3, Val_bool(is_supremum));
   CAMLreturn(caml_return_value);
 }
 CATCH_ALL
@@ -720,6 +723,7 @@ extern "C"
 CAMLprim value
 ppl_@CLASS@_@MAXMIN@_with_point(value ph, value caml_le) try {
   CAMLparam2(ph, caml_le);
+  CAMLlocal1(caml_return_value);
   PPL_DIRTY_TEMP_COEFFICIENT(num);
   PPL_DIRTY_TEMP_COEFFICIENT(den);
   bool is_supremum = false;
@@ -727,12 +731,12 @@ ppl_@CLASS@_@MAXMIN@_with_point(value ph, value caml_le) try {
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
   bool ppl_return_value = pph.@MAXMIN@(build_ppl_Linear_Expression(caml_le),
 				      num, den, is_supremum, g);
-  value caml_return_value = caml_alloc(5, 0);
-  Field(caml_return_value, 0) = Val_bool(ppl_return_value);
-  Field(caml_return_value, 1) = build_ocaml_coefficient(num);
-  Field(caml_return_value, 2) = build_ocaml_coefficient(den);
-  Field(caml_return_value, 3) = Val_bool(is_supremum);
-  Field(caml_return_value, 4) = build_ocaml_generator(g);
+  caml_return_value = caml_alloc(5, 0);
+  Store_field(caml_return_value, 0, Val_bool(ppl_return_value));
+  Store_field(caml_return_value, 1, build_ocaml_coefficient(num));
+  Store_field(caml_return_value, 2, build_ocaml_coefficient(den));
+  Store_field(caml_return_value, 3, Val_bool(is_supremum));
+  Store_field(caml_return_value, 4, build_ocaml_generator(g));
   CAMLreturn(caml_return_value);
 }
 CATCH_ALL
@@ -787,7 +791,9 @@ CAMLprim value
 ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@(value ph) try {
   CAMLparam1(ph);
   @B_FRIEND@& pph = *(reinterpret_cast<@B_FRIEND@*>( p_@A_FRIEND@_val(ph)));
-  CAMLreturn(val_p_@CLASS@(*(reinterpret_cast<@CPP_CLASS@*>(new @TOPOLOGY@@CPP_CLASS@(pph)))));
+  @CPP_CLASS@& ppl_value
+    = *(reinterpret_cast<@CPP_CLASS@*>(new @TOPOLOGY@@CPP_CLASS@(pph)));
+  CAMLreturn(unregistered_value_p_@CLASS@(ppl_value));
 }
 CATCH_ALL
 
@@ -801,7 +807,9 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity(value ph, value caml_cc)
   CAMLparam1(ph);
   @B_FRIEND@& pph = *(reinterpret_cast<@B_FRIEND@*>( p_@A_FRIEND@_val(ph)));
   Complexity_Class ppl_cc = build_ppl_Complexity_Class(caml_cc);
-  CAMLreturn(val_p_@CLASS@(*(reinterpret_cast<@CPP_CLASS@*>(new @TOPOLOGY@@CPP_CLASS@(pph, ppl_cc)))));
+  @CPP_CLASS@& ppl_value
+    = *(reinterpret_cast<@CPP_CLASS@*>(new @TOPOLOGY@@CPP_CLASS@(pph, ppl_cc)));
+  CAMLreturn(unregistered_value_p_@CLASS@(ppl_value));
 }
 CATCH_ALL
 
@@ -909,7 +917,9 @@ CAMLprim value
 ppl_@CLASS@_@BEGINEND@_iterator(value t_pps) try {
   CAMLparam1(t_pps);
   @CPP_CLASS@& pps = *p_@CLASS@_val(t_pps);
-  CAMLreturn(val_p_@CLASS@_iterator(*new @CPP_CLASS@::iterator(pps.@BEGINEND@())));
+  @CPP_CLASS@::iterator& ppl_value
+    = *new @CPP_CLASS@::iterator(pps.@BEGINEND@());
+  CAMLreturn(unregistered_value_p_@CLASS@_iterator(ppl_value));
 }
 CATCH_ALL
 
@@ -922,11 +932,12 @@ extern "C"
 CAMLprim value
 ppl_@CLASS@_get_disjunct(value caml_it) try {
   CAMLparam1(caml_it);
+  CAMLlocal1(caml_return_value);
   @CPP_CLASS@::iterator& cpp_it  = *p_@CLASS@_iterator_val(caml_it);
   @DISJUNCT_TOPOLOGY@@A_DISJUNCT@ disjunct = cpp_it->element();
-  value value_to_return = val_p_@DISJUNCT@(disjunct);
-  actual_p_@DISJUNCT@_val(value_to_return) = mark(&disjunct);
-  CAMLreturn(value_to_return);
+  caml_return_value = unregistered_value_p_@DISJUNCT@(disjunct);
+  actual_p_@DISJUNCT@_val(caml_return_value) = mark(&disjunct);
+  CAMLreturn(caml_return_value);
 }
 CATCH_ALL
 
@@ -1004,11 +1015,11 @@ struct custom_operations @CLASS@_iterator_custom_operations = {
 };
 
 inline value
-val_p_@CLASS@_iterator(const @CPP_CLASS@::iterator& ph) {
+unregistered_value_p_@CLASS@_iterator(const @CPP_CLASS@::iterator& ph) {
   value v = caml_alloc_custom(&@CLASS@_iterator_custom_operations,
-			      sizeof(@CPP_CLASS@::iterator*), 0, 1);
+                              sizeof(@CPP_CLASS@::iterator*), 0, 1);
   p_@CLASS@_iterator_val(v) = const_cast<@CPP_CLASS@::iterator*>(&ph);
-  return(v);
+  return v;
 }
 
 extern "C"
@@ -1017,7 +1028,9 @@ ppl_new_@CLASS@_iterator_from_iterator(value y) try {
   CAMLparam1(y);
   @CPP_CLASS@::iterator& yy
     = *(reinterpret_cast<@CPP_CLASS@::iterator*>( p_@CLASS@_iterator_val(y)));
-  CAMLreturn(val_p_@CLASS@_iterator(*(reinterpret_cast<@CPP_CLASS@::iterator*>(new @CPP_CLASS@::iterator(yy)))));
+  @CPP_CLASS@::iterator& ppl_value
+    = *(reinterpret_cast<@CPP_CLASS@::iterator*>(new @CPP_CLASS@::iterator(yy)));
+  CAMLreturn(unregistered_value_p_@CLASS@_iterator(ppl_value));
 }
 CATCH_ALL
 
@@ -1144,14 +1157,17 @@ extern "C"
 CAMLprim value
 ppl_@CLASS@_linear_@PARTITION@(value ph1, value ph2) try {
   CAMLparam2(ph1, ph2);
+  CAMLlocal1(caml_return_value);
   @CPP_CLASS@* rfh;
   Pointset_Powerset<NNC_Polyhedron>* rsh;
 `m4_ifelse(m4_current_interface, `Polyhedron',
            `m4_linear_partition_for_polyhedron_domains',
            `m4_linear_partition_for_non_polyhedron_domains')'dnl
-  value caml_return_value = caml_alloc(2, 0);
-  Field(caml_return_value, 0) = val_p_@CLASS@(*rfh);
-  Field(caml_return_value, 1) = val_p_Pointset_Powerset_NNC_Polyhedron(*rsh);
+  caml_return_value = caml_alloc(2, 0);
+  Store_field(caml_return_value, 0,
+              unregistered_value_p_@CLASS@(*rfh));
+  Store_field(caml_return_value, 1,
+              unregistered_value_p_Pointset_Powerset_NNC_Polyhedron(*rsh));
   CAMLreturn(caml_return_value);
 }
 CATCH_ALL
@@ -1206,6 +1222,7 @@ extern "C"
 CAMLprim value
 ppl_@CLASS@_approximate_@PARTITION@(value ph1, value ph2) try {
   CAMLparam2(ph1, ph2);
+  CAMLlocal1(caml_return_value);
   @CPP_CLASS@& pph1
     = reinterpret_cast<@CPP_CLASS@&>(*p_@CPP_CLASS@_val(ph1));
   @CPP_CLASS@& pph2
@@ -1217,10 +1234,12 @@ ppl_@CLASS@_approximate_@PARTITION@(value ph1, value ph2) try {
   Pointset_Powerset<Grid>* rsh = new Pointset_Powerset<Grid>(0, EMPTY);
   rfh->swap(r.first);
   rsh->swap(r.second);
-  value caml_return_value = caml_alloc(3, 0);
-  Field(caml_return_value, 0) = val_p_@CLASS@(*rfh);
-  Field(caml_return_value, 1) = val_p_Pointset_Powerset_Grid(*rsh);
-  Field(caml_return_value, 2) = Val_bool(is_finite);
+  caml_return_value = caml_alloc(3, 0);
+  Store_field(caml_return_value, 0,
+              unregistered_value_p_@CLASS@(*rfh));
+  Store_field(caml_return_value, 1,
+              unregistered_value_p_Pointset_Powerset_Grid(*rsh));
+  Store_field(caml_return_value, 2, Val_bool(is_finite));
   CAMLreturn(caml_return_value);
 }
 CATCH_ALL
