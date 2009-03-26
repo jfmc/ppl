@@ -43,6 +43,7 @@ uncaught_exception_handler() {
   exit(1);
 }
 
+#ifdef HAVE_SIGINFO_T
 void
 fpe_handler(int sig, siginfo_t* sip, void*) {
   if (sig != SIGFPE) {
@@ -112,6 +113,7 @@ fpe_handler(int sig, siginfo_t* sip, void*) {
   }
   exit(1);
 }
+#endif // defined(HAVE_SIGINFO_T)
 
 } // namespace
 
@@ -119,6 +121,7 @@ namespace Parma_Watchdog_Library {
 
 namespace Test {
 
+#ifdef HAVE_SIGINFO_T
 void
 set_handlers() {
   struct sigaction action;
@@ -130,6 +133,7 @@ set_handlers() {
 	      << std::endl;
     abort();
   }
+#endif // defined(HAVE_SIGINFO_T)
 
   std::set_unexpected(unexpected_exception_handler);
   std::set_terminate(uncaught_exception_handler);
