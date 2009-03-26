@@ -85,6 +85,19 @@ o  Fixed a bug in the Java/OCaml/Prolog interfaces, whereby
 o  Fixed a bug in method Octagonal_Shape<T>::affine_image(var, expr)
    whereby a wrong result was computed under specific conditions.
 
+o  Fixed a bug in the OCaml interface, whereby functions of form
+
+     ppl_..._widening_assign_with_tokens
+
+   and
+
+     ppl_..._extrapolation_assign_with_tokens
+
+   could return a wrong number of tokens.
+
+o  Fixed a bug in the OCaml interface, whereby functions that returned
+   an OCaml 'unit' type were returning the wrong value.
+
 
 --------------------------------------------------------------------------
 NEWS for version 0.10  (released on November 4, 2008)
