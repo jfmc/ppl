@@ -115,8 +115,25 @@ main() {
   ac_cv_can_control_fpu=1,
   AC_MSG_RESULT(no)
   ac_cv_can_control_fpu=0,
-  AC_MSG_RESULT([assuming not])
-  ac_cv_can_control_fpu=0
+  AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+#if i386 || (sparc && defined(HAVE_IEEEFP_H))
+
+int
+main() {
+  return 0;
+}
+
+#else
+
+  choke me
+
+#endif
+  ]])],
+    AC_MSG_RESULT(yes)
+    ac_cv_can_control_fpu=1,
+    AC_MSG_RESULT(no)
+    ac_cv_can_control_fpu=0
+  )
 )
 AM_CONDITIONAL(CAN_CONTROL_FPU, test $ac_cv_can_control_fpu = 1)
 AC_DEFINE_UNQUOTED(PPL_CAN_CONTROL_FPU, $ac_cv_can_control_fpu,
