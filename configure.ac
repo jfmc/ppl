@@ -1434,6 +1434,9 @@ AC_CHECK_DECLS([getrusage],
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_CHECK_TYPES([timeval])
+AC_CHECK_TYPES([siginfo_t], [], [], [[
+#include <signal.h>
+]])
 
 # Check whether the IEEE inexact flag is supported and available to
 # C++ programs.

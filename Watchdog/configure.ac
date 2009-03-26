@@ -355,8 +355,14 @@ then
   # Checks for header files.
   AC_HEADER_TIME
   AC_CHECK_HEADERS([fenv.h sys/time.h])
+
   # Checks for the availability of C library functions in C++.
   AC_CHECK_DECLS([getenv], , , [#include <cstdlib>])
+
+  # Checks for typedefs, structures, and compiler characteristics.
+  AC_CHECK_TYPES([siginfo_t], [], [], [[
+#include <signal.h>
+  ]])
 
   # Checks for library fuctions.
   # The following invocations of AC_LANG_PUSH(C) and AC_LANG_POP(C)
