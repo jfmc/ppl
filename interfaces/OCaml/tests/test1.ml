@@ -203,7 +203,6 @@ let e3 =
   -/
   (linear_expression_of_int 7)
 ;;
-
 print_linear_expression e3; print_string_if_noisy "\n" ;;
 
 (* Probably the most convenient thing for the user will be to use the
@@ -248,6 +247,16 @@ for i = 6 downto 0 do
 done;;
 print_string_if_noisy "\n";;
 
+let c1 = (a  >=/ linear_expression_of_int 0);;
+let c2 = (a  <=/ linear_expression_of_int 2);;
+let c2a = (a  <=/ linear_expression_of_int 3);;
+let c3 = (b  >=/ linear_expression_of_int 0);;
+let c4 = (b  <=/ linear_expression_of_int 2);;
+let cs1 = [c1; c2; c3; c4];;
+let cs2 = [c1; c2a; c3; c4];;
+let poly1 = ppl_new_C_Polyhedron_from_constraints(cs1);;
+let poly2 = ppl_new_C_Polyhedron_from_constraints(cs2);;
+
 let polyhedron1 = ppl_new_C_Polyhedron_from_constraints(constraints1);;
 let polyhedron2 = ppl_new_C_Polyhedron_from_generators(generators1);;
 let result =  ppl_Polyhedron_bounds_from_above polyhedron1 e2;;
@@ -267,17 +276,32 @@ ppl_Polyhedron_concatenate_assign polyhedron1 polyhedron2;;
 let congruences = ppl_Polyhedron_get_congruences polyhedron1 in
 List.iter print_congruence congruences;;
 print_string_if_noisy "\n";;
+
+print_string_if_noisy "\nTesting affine transformations \n";;
 ppl_Polyhedron_bounded_affine_preimage polyhedron1 1 e1 e2 (Z.from_int 10);;
 ppl_Polyhedron_bounded_affine_preimage polyhedron1 1 e1 e2 (Z.from_int 10);;
 ppl_Polyhedron_affine_image polyhedron1 1 e1 (Z.from_int 10);;
-let a = ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens
+
+print_string_if_noisy "\nTesting widenings and extrapolations \n";;
+let tokens_l_BHRZ03 =
+  ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens
   polyhedron1 polyhedron1 constraints1 10;;
-let b = ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens
+let tokens_b_BHRZ03 =
+  ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens
   polyhedron1 polyhedron1 constraints1 10;;
-let b = ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens
+let tokens_b_H79 = ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens
   polyhedron1 polyhedron1 constraints1 10;;
- ppl_Polyhedron_H79_widening_assign polyhedron1 ;;
-print_int_if_noisy b;;
+let tokens_H79 = ppl_Polyhedron_H79_widening_assign_with_tokens poly2 poly1 2;;
+ppl_Polyhedron_H79_widening_assign polyhedron1 polyhedron1 ;;
+print_string_if_noisy "tokens b_H79 = ";;
+print_int_if_noisy tokens_b_H79;;
+print_string_if_noisy "\n";;
+print_string_if_noisy "tokens b_BHRZ03 = ";;
+print_int_if_noisy tokens_b_BHRZ03;;
+print_string_if_noisy "\n";;
+print_string_if_noisy "tokens H79 = ";;
+print_int_if_noisy tokens_H79;;
+print_string_if_noisy "\n";;
 
 let b = ppl_Polyhedron_OK polyhedron1;;
 ppl_Polyhedron_generalized_affine_preimage_lhs_rhs

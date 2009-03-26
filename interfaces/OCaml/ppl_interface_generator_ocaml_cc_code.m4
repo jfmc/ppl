@@ -605,11 +605,11 @@ ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens
   CAMLparam3(ph1, ph2, integer);
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
   @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
-  int cpp_int = Val_int(integer);
+  int cpp_int = Int_val(integer);
   check_int_is_unsigned(cpp_int);
   unsigned int unsigned_value = cpp_int;
   pph1.@WIDEN@_widening_assign(pph2, &unsigned_value);
-  CAMLreturn(Int_val(unsigned_value));
+  CAMLreturn(Val_int(unsigned_value));
 }
 CATCH_ALL
 
@@ -640,11 +640,11 @@ ppl_@CLASS@_widening_assign_with_tokens(value ph1, value ph2,
   CAMLparam3(ph1, ph2, integer);
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
   @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
-  int cpp_int = Val_int(integer);
+  int cpp_int = Int_val(integer);
   check_int_is_unsigned(cpp_int);
   unsigned int unsigned_value = cpp_int;
   pph1.widening_assign(pph2, &unsigned_value);
-  CAMLreturn(Int_val(unsigned_value));
+  CAMLreturn(Val_int(unsigned_value));
 }
 CATCH_ALL
 
@@ -662,12 +662,12 @@ ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens(value 
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
   @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
   @!CONSTRAINER@_System ppl_cs = build_ppl_@!CONSTRAINER@_System(caml_cs);
-  int cpp_int = Val_int(integer);
+  int cpp_int = Int_val(integer);
   check_int_is_unsigned(cpp_int);
   unsigned int unsigned_value = cpp_int;
   pph1.@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(pph2, ppl_cs,
 							 &unsigned_value);
-  CAMLreturn(Int_val(unsigned_value));
+  CAMLreturn(Val_int(unsigned_value));
 }
 CATCH_ALL
 
