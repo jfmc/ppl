@@ -116,12 +116,12 @@ TEST_CPPFLAGS=-DBD_SHAPE_INSTANCE=mpq_class
 
 dist_check_SCRIPTS = run_tests
 
-TESTS = run_tests.stamp
+TESTS = tests
 
-run_tests.stamp: run_tests
+.PHONY: tests
+
+tests: run_tests
 	+$(srcdir)/run_tests
-	echo "true" >run_tests.stamp
-	chmod +x run_tests.stamp
 
 XFAIL_TESTS =
 
@@ -284,9 +284,6 @@ writebdshape1_SOURCES = writebdshape1.cc
 
 MOSTLYCLEANFILES = \
 ascii_dump_load1.dat
-
-CLEANFILES = \
-run_tests.stamp
 
 DISTCLEANFILES = \
 dirty_marker

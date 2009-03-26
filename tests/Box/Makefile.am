@@ -120,12 +120,12 @@ TEST_CPPFLAGS=-DBOX_INSTANCE=rt_r_oc
 
 dist_check_SCRIPTS = run_tests
 
-TESTS = run_tests.stamp
+TESTS = tests
 
-run_tests.stamp: run_tests
+.PHONY: tests
+
+tests: run_tests
 	+$(srcdir)/run_tests
-	echo "true" >run_tests.stamp
-	chmod +x run_tests.stamp
 
 XFAIL_TESTS =
 
@@ -307,9 +307,6 @@ EXTRA_DIST = $(refinewithconstraints2_SRCS)
 
 MOSTLYCLEANFILES = \
 ascii_dump_load1.dat
-
-CLEANFILES = \
-run_tests.stamp
 
 DISTCLEANFILES = \
 dirty_marker
