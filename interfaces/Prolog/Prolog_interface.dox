@@ -444,7 +444,7 @@ that are included with all instantiations of the Prolog interfaces.
   previously been called.</EM>
 
 
-<P><CODE> ppl_restore_rounding_for_PPL </CODE><BR>
+<P><CODE> ppl_restore_pre_PPL_rounding </CODE><BR>
 
    <EM>Sets the FPU rounding mode as it was before initialization of the PPL.
   After calling this function it is absolutely necessary to call

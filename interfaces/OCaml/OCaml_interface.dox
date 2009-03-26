@@ -174,18 +174,20 @@ included with all instantiations of the OCaml interfaces.
   warranty whatsoever, the C++ compiler used to build the library,
   where to report bugs and where to look for further information.
 
-<H2><CODE> ppl_Coefficient_is_bounded</CODE></H2>
-  Returns true if and only if the Coefficients in the C++ interface
+<H2><CODE> ppl_Coefficient_is_bounded </CODE></H2>
+  Returns true if and only if the coefficients in the C++ interface
   are bounded.
 
-<H2><CODE> ppl_Coefficient_max</CODE></H2>
-  Returns the maximum coefficient the C++ interface can handle.
+<H2><CODE> ppl_Coefficient_max </CODE></H2>
+  If the coefficients are bounded, returns the maximum coefficient
+  the C++ interface can handle.
 
-<H2><CODE> ppl_Coefficient_min</CODE></H2>
-  Returns the minimum coefficient the C++ interface can handle.
+<H2><CODE> ppl_Coefficient_min </CODE></H2>
+  If the coefficients are bounded, returns the minimum coefficient
+  the C++ interface can handle.
 
-<H2><CODE> ppl_max_space_dimension</CODE></H2>
-  Returns the maximum space dimension this library can handle.
+<H2><CODE> ppl_max_space_dimension </CODE></H2>
+  Returns the maximum space dimension the C++ interface can handle.
 
 <H2><CODE> ppl_set_timeout_exception_atom name </CODE></H2>
    Sets the term to be thrown by timeout exceptions
@@ -205,10 +207,24 @@ included with all instantiations of the OCaml interfaces.
 <H2><CODE> ppl_reset_timeout </CODE></H2>
    Resets the timeout time so that the computation is not interrupted.
 
+<H2><CODE> ppl_set_rounding_for_PPL </CODE></H2>
+   Sets the FPU rounding mode so that the PPL abstractions based on
+   floating point numbers work correctly.
+   This is performed automatically at initialization-time.  Calling
+   this function is needed only if <CODE>restore_pre_PPL_rounding()</CODE>
+   has previously been called.
+
+<H2><CODE> ppl_restore_pre_PPL_rounding </CODE></H2>
+   Sets the FPU rounding mode as it was before initialization of the PPL.
+   After calling this function it is absolutely necessary to call
+   <CODE>set_rounding_for_PPL()</CODE> before using any PPL abstractions
+   based on floating point numbers.
+   This is performed automatically at finalization-time.
+
 <BR>
 
 \anchor OCaml_mip_functions
-<H3> MIP Functions </H3>
+<H1> MIP Functions </H1>
 Here we describe some functions available for PPL objects
 defining mixed integer (linear) programming problems.
 
@@ -220,12 +236,22 @@ defining mixed integer (linear) programming problems.
    objective function \f$0\f$ and optimization mode <CODE>max</CODE>.
 
 <H2><CODE>
-  ppl_new_MIP_Problem constraint_system lin_expr optimization_mode
+  ppl_new_MIP_Problem dimension constraint_system lin_expr optimization_mode
 </CODE></H2>
-   Return a handle to an MIP Problem \f$\mathrm{MIP}\f$ with the
-   feasible region represented by <CODE>constraint_system</CODE>,
-   objective function <CODE>lin_expr</CODE> and optimization mode
-   <CODE>optimization_mode</CODE>.
+   Return a handle to an MIP Problem \f$\mathrm{MIP}\f$ having space
+   dimension <CODE>dimension</CODE>, a feasible region represented by
+   <CODE>constraint_system</CODE>, objective function <CODE>lin_expr</CODE>
+   and optimization mode <CODE>optimization_mode</CODE>.
+
+<H2><CODE>
+  ppl_MIP_Problem_get_control_parameter handle param_name
+</CODE></H2>
+   Returns the value of the control parameter named <CODE>param_name</CODE>.
+
+<H2><CODE>
+  ppl_MIP_Problem_set_control_parameter handle param_value
+</CODE></H2>
+   Sets control parameter value <CODE>param_value</CODE>.
 
 <H2><CODE>
   ppl_MIP_Problem_swap handle_1 handle_2
@@ -363,10 +389,27 @@ defining mixed integer (linear) programming problems.
    satisfies all its implementation invariants and false,
    otherwise.  Useful for debugging purposes.
 
+<H2><CODE>
+  ppl_MIP_Problem_ascii_dump handle
+</CODE></H2>
+   Returns a string containing an ASCII dump of the internal representation
+   of the MIP_Problem referenced by <CODE>handle</CODE>. Useful for
+   debugging purposes.
+
+<H2><CODE>
+  ppl_MIP_Problem_pretty_print handle indent_depth
+    preferred_first_line_length preferred_line_length
+</CODE></H2>
+   Returns a string containing the pretty printing of the MIP_Problem
+   referenced by <CODE>handle</CODE>; the integer parameters
+   <CODE>indent_depth</CODE>, <CODE>preferred_first_line_length</CODE>
+   and <CODE>preferred_line_length</CODE> allow some control to the
+   wrapping style.
+
 <BR>
 
 \anchor main_OCaml_C_polyhedron_functions
-<H3> C_Polyhedron Functions </H3>
+<H1> C_Polyhedron Functions </H1>
 Here we describe the main functions available for PPL objects
 defining convex and closed polyhedra. A list of the available
 PPL functions for convex polyhedra for the OCaml interface is given in
@@ -911,6 +954,23 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    Section \extref{Mapping_the_Dimensions_of_the_Vector_Space,
    Mapping the Dimensions of the Vector Space}
    of the main PPL user manual.
+
+<H2><CODE>
+  ppl_Polyhedron_ascii_dump handle
+</CODE></H2>
+   Returns a string containing an ASCII dump of the internal representation
+   of the polyhedron referenced by <CODE>handle</CODE>. Useful for
+   debugging purposes.
+
+<H2><CODE>
+  ppl_Polyhedron_pretty_print handle indent_depth
+    preferred_first_line_length preferred_line_length
+</CODE></H2>
+   Returns a string containing the pretty printing of the polyhedron
+   referenced by <CODE>handle</CODE>; the integer parameters
+   <CODE>indent_depth</CODE>, <CODE>preferred_first_line_length</CODE>
+   and <CODE>preferred_line_length</CODE> allow some control to the
+   wrapping style.
 
 
 \anchor OCamldoc_Documentation

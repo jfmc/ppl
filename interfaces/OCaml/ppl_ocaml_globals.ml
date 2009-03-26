@@ -117,6 +117,18 @@ unit -> string = "ppl_version"
 external ppl_banner:
 unit -> string = "ppl_banner"
 
+external ppl_Coefficient_is_bounded:
+unit -> bool = "ppl_Coefficient_is_bounded"
+
+external ppl_Coefficient_max:
+unit -> Z.t = "ppl_Coefficient_max"
+
+external ppl_Coefficient_min:
+unit -> Z.t = "ppl_Coefficient_min"
+
+external ppl_max_space_dimension:
+unit -> int = "ppl_max_space_dimension"
+
 external ppl_set_rounding_for_PPL:
 unit -> unit = "ppl_set_rounding_for_PPL"
 
@@ -127,12 +139,15 @@ external ppl_new_MIP_Problem_from_space_dimension:
   int -> mip_problem = "ppl_new_MIP_Problem_from_space_dimension"
 
 external ppl_new_MIP_Problem:
-      int -> constraint_system -> linear_expression
-	-> optimization_mode -> mip_problem
-	  = "ppl_new_MIP_Problem"
+  int -> constraint_system -> linear_expression
+    -> optimization_mode -> mip_problem
+      = "ppl_new_MIP_Problem"
 
 external ppl_MIP_Problem_space_dimension:
   mip_problem -> int = "ppl_MIP_Problem_space_dimension"
+
+external ppl_MIP_Problem_integer_space_dimensions:
+  mip_problem -> int list = "ppl_MIP_Problem_integer_space_dimensions"
 
 external ppl_MIP_Problem_constraints:
   mip_problem -> constraint_system = "ppl_MIP_Problem_constraints"

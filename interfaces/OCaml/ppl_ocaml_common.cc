@@ -790,6 +790,28 @@ CATCH_ALL
 
 extern "C"
 CAMLprim value
+ppl_MIP_Problem_integer_space_dimensions(value caml_mip) try {
+  CAMLparam1(caml_mip);
+  CAMLlocal2(result, new_tail);
+  MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
+  const Variables_Set& ppl_ivars = ppl_mip.integer_space_dimensions();
+  result = Val_int(0);
+  for (Variables_Set::const_reverse_iterator i = ppl_ivars.rbegin(),
+         i_end = ppl_ivars.rend(); i != i_end; ++i) {
+    new_tail = caml_alloc_tuple(2);
+    dimension_type d = *i;
+    if (d > INT_MAX)
+      abort();
+    Store_field(new_tail, 0, Val_int(d));
+    Store_field(new_tail, 1, result);
+    result = new_tail;
+  }
+  CAMLreturn(result);
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
 ppl_MIP_Problem_constraints(value caml_mip) try {
   CAMLparam1(caml_mip);
   const MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
@@ -1136,6 +1158,52 @@ CAMLprim value
 ppl_banner(value unit) try {
   CAMLparam1(unit);
   CAMLreturn(caml_copy_string(banner()));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_Coefficient_is_bounded(value unit) try {
+  CAMLparam1(unit);
+  CAMLreturn(std::numeric_limits<Coefficient>::is_bounded
+             ? Val_true : Val_false);
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_Coefficient_min(value unit) try {
+  CAMLparam1(unit);
+  if (std::numeric_limits<Coefficient>::is_bounded) {
+    const Coefficient& min = std::numeric_limits<Coefficient>::min();
+    CAMLreturn(build_ocaml_coefficient(min));
+  }
+  else
+    CAMLreturn(Val_unit);
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_Coefficient_max(value unit) try {
+  CAMLparam1(unit);
+  if (std::numeric_limits<Coefficient>::is_bounded) {
+    const Coefficient& max = std::numeric_limits<Coefficient>::max();
+    CAMLreturn(build_ocaml_coefficient(max));
+  }
+  else
+    CAMLreturn(Val_unit);
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_max_space_dimension(value unit) try {
+  CAMLparam1(unit);
+  dimension_type d = max_space_dimension();
+  if (d > INT_MAX)
+    abort();
+  CAMLreturn(Val_int(d));
 }
 CATCH_ALL
 

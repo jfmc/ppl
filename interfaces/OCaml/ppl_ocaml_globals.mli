@@ -116,23 +116,38 @@ val ppl_version:
 val ppl_banner:
   unit -> string
 
+val ppl_Coefficient_is_bounded:
+  unit -> bool
+
+val ppl_Coefficient_max:
+  unit -> Z.t
+
+val ppl_Coefficient_min:
+  unit -> Z.t
+
+val ppl_max_space_dimension:
+  unit -> int
+
 val ppl_set_rounding_for_PPL:
-unit -> unit
+  unit -> unit
 
 val ppl_restore_pre_PPL_rounding:
-unit -> unit
+  unit -> unit
 
 type mip_problem
 
 val ppl_new_MIP_Problem_from_space_dimension:
-int -> mip_problem
+  int -> mip_problem
 
 val ppl_new_MIP_Problem:
-      int -> constraint_system -> linear_expression
-	-> optimization_mode -> mip_problem
+  int -> constraint_system -> linear_expression
+    -> optimization_mode -> mip_problem
 
 val ppl_MIP_Problem_space_dimension:
   mip_problem -> int
+
+val ppl_MIP_Problem_integer_space_dimensions:
+  mip_problem -> int list
 
 val ppl_MIP_Problem_constraints:
   mip_problem -> constraint_system
