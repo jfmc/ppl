@@ -1,3 +1,56 @@
+2008-12-31 Wednesday 23:34  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Makefile.am (1.37), README (1.21), configure.ac (1.58),
+	  doc/Makefile.am (1.9), doc/README.doc (1.4), doc/devref.tex
+	  (1.6), doc/pwl.sty (1.4), doc/user.tex (1.6), m4/Makefile.am
+	  (1.6), src/Doubly_Linked_Object.defs.hh (1.7),
+	  src/Doubly_Linked_Object.inlines.hh (1.7),
+	  src/Doubly_Linked_Object.types.hh (1.5), src/EList.defs.hh (1.9),
+	  src/EList.inlines.hh (1.7), src/EList.types.hh (1.5),
+	  src/EList_Iterator.defs.hh (1.7), src/EList_Iterator.inlines.hh
+	  (1.7), src/EList_Iterator.types.hh (1.5), src/Handler.defs.hh
+	  (1.8), src/Handler.inlines.hh (1.7), src/Handler.types.hh (1.5),
+	  src/Makefile.am (1.19), src/Pending_Element.cc (1.8),
+	  src/Pending_Element.defs.hh (1.8), src/Pending_Element.inlines.hh
+	  (1.7), src/Pending_Element.types.hh (1.5), src/Pending_List.cc
+	  (1.8), src/Pending_List.defs.hh (1.8),
+	  src/Pending_List.inlines.hh (1.7), src/Pending_List.types.hh
+	  (1.5), src/Time.cc (1.8), src/Time.defs.hh (1.8),
+	  src/Time.inlines.hh (1.7), src/Time.types.hh (1.5),
+	  src/Watchdog.cc (1.10), src/Watchdog.defs.hh (1.10),
+	  src/Watchdog.inlines.hh (1.7), src/Watchdog.types.hh (1.5),
+	  src/pwl_header.hh (1.8), tests/Makefile.am (1.7),
+	  tests/pwl_test.cc (1.4), tests/pwl_test.hh (1.4),
+	  tests/simple1.cc (1.4), utils/Makefile.am (1.13),
+	  utils/build_header.in (1.7): Copyright years extended.
+
+2008-12-16 Tuesday 07:57  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog, README, config.rpath, configure.ac, doc/Makefile.am,
+	  doc/user.doxyconf-html.in, doc/user.doxyconf-latex.in,
+	  m4/Makefile.am, m4/lib-ld.m4, m4/lib-link.m4
+	  (bounded_arithmetic.[3,2,2,3,3,3,3,2,2,2]): Third merge of the
+	  trunk to the bounded_arithmetic branch.
+
+2008-11-30 Sunday 21:13  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.57): Postpone the AC_LIB_RPATH test.
+
+2008-11-05 Wednesday 19:17  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/Makefile.am (1.8): Doxygen configuration files are generated
+	  by the configure script, so that they don't have to be listed in
+	  EXTRA_DIST.  (Thanks to Michael Tautschnig for pointing this
+	  out.)
+
+2008-11-04 Tuesday 10:33  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog (ppl-0_10-branch.1): Mark ChangeLog.
+
+2008-11-04 Tuesday 09:30  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog (1.24): Updated.
+
 2008-11-03 Monday 09:51  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* INSTALL (1.10): Previous commit reverted.

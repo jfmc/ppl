@@ -1,3 +1,2365 @@
+2008-12-31 Wednesday 23:34  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Makefile.am (1.51), README (1.57), README.configure (1.43),
+	  configure.ac (1.413), instchk.hh (1.19), Watchdog/Makefile.am
+	  (1.37), Watchdog/README (1.21), Watchdog/configure.ac (1.58),
+	  Watchdog/doc/Makefile.am (1.9), Watchdog/doc/README.doc (1.4),
+	  Watchdog/doc/devref.tex (1.6), Watchdog/doc/pwl.sty (1.4),
+	  Watchdog/doc/user.tex (1.6), Watchdog/m4/Makefile.am (1.6),
+	  Watchdog/src/Doubly_Linked_Object.defs.hh (1.7),
+	  Watchdog/src/Doubly_Linked_Object.inlines.hh (1.7),
+	  Watchdog/src/Doubly_Linked_Object.types.hh (1.5),
+	  Watchdog/src/EList.defs.hh (1.9), Watchdog/src/EList.inlines.hh
+	  (1.7), Watchdog/src/EList.types.hh (1.5),
+	  Watchdog/src/EList_Iterator.defs.hh (1.7),
+	  Watchdog/src/EList_Iterator.inlines.hh (1.7),
+	  Watchdog/src/EList_Iterator.types.hh (1.5),
+	  Watchdog/src/Handler.defs.hh (1.8),
+	  Watchdog/src/Handler.inlines.hh (1.7),
+	  Watchdog/src/Handler.types.hh (1.5), Watchdog/src/Makefile.am
+	  (1.19), Watchdog/src/Pending_Element.cc (1.8),
+	  Watchdog/src/Pending_Element.defs.hh (1.8),
+	  Watchdog/src/Pending_Element.inlines.hh (1.7),
+	  Watchdog/src/Pending_Element.types.hh (1.5),
+	  Watchdog/src/Pending_List.cc (1.8),
+	  Watchdog/src/Pending_List.defs.hh (1.8),
+	  Watchdog/src/Pending_List.inlines.hh (1.7),
+	  Watchdog/src/Pending_List.types.hh (1.5), Watchdog/src/Time.cc
+	  (1.8), Watchdog/src/Time.defs.hh (1.8),
+	  Watchdog/src/Time.inlines.hh (1.7), Watchdog/src/Time.types.hh
+	  (1.5), Watchdog/src/Watchdog.cc (1.10),
+	  Watchdog/src/Watchdog.defs.hh (1.10),
+	  Watchdog/src/Watchdog.inlines.hh (1.7),
+	  Watchdog/src/Watchdog.types.hh (1.5), Watchdog/src/pwl_header.hh
+	  (1.8), Watchdog/tests/Makefile.am (1.7),
+	  Watchdog/tests/pwl_test.cc (1.4), Watchdog/tests/pwl_test.hh
+	  (1.4), Watchdog/tests/simple1.cc (1.4),
+	  Watchdog/utils/Makefile.am (1.13), Watchdog/utils/build_header.in
+	  (1.7), debian/libppl-pwl.copyright.in (1.7),
+	  debian/libppl.copyright.in (1.7), demos/Makefile.am (1.15),
+	  demos/ppl_lcdd/Makefile.am (1.31), demos/ppl_lcdd/ppl_lcdd.1
+	  (1.8), demos/ppl_lcdd/ppl_lcdd.cc (1.65),
+	  demos/ppl_lcdd/ppl_lcdd_extra_man_text (1.4),
+	  demos/ppl_lcdd/examples/Makefile.am (1.11),
+	  demos/ppl_lpsol/Makefile.am (1.50), demos/ppl_lpsol/ppl_lpsol.1
+	  (1.9), demos/ppl_lpsol/ppl_lpsol.c (1.92),
+	  demos/ppl_lpsol/ppl_lpsol_extra_man_text (1.5),
+	  demos/ppl_lpsol/examples/Makefile.am (1.12),
+	  devtools/bump_copyright_years (1.2), doc/Makefile.am (1.101),
+	  doc/README.doc (1.19), doc/definitions.dox (1.227),
+	  doc/devref-language-interface.tex (1.2), doc/devref.tex (1.28),
+	  doc/libppl.3 (1.15), doc/libppl_c.3 (1.5), doc/ppl-config.1
+	  (1.15), doc/ppl-config_extra_man_text (1.6), doc/ppl.sty (1.30),
+	  doc/user-language-interface.tex (1.2), doc/user.tex (1.29),
+	  fedora/ppl.hh (1.2), fedora/ppl_c.h (1.2), fedora/pwl.hh (1.2),
+	  interfaces/Makefile.am (1.37), interfaces/interfaced_boxes.hh
+	  (1.6), interfaces/marked_pointers.hh (1.4),
+	  interfaces/ppl_interface_generator_common.m4 (1.36),
+	  interfaces/ppl_interface_generator_common_dat.m4 (1.94),
+	  interfaces/ppl_interface_generator_common_procedure_generators.m4
+	  (1.46), interfaces/ppl_interface_generator_copyright (1.8),
+	  interfaces/C/C_interface.dox (1.16), interfaces/C/Makefile.am
+	  (1.63), interfaces/C/ppl_c_header.h (1.9),
+	  interfaces/C/ppl_c_implementation_common.cc (1.5),
+	  interfaces/C/ppl_c_implementation_common.defs.hh (1.8),
+	  interfaces/C/ppl_c_implementation_common.inlines.hh (1.5),
+	  interfaces/C/ppl_c_version.h.in (1.10),
+	  interfaces/C/ppl_interface_generator_c_cc_code.m4 (1.56),
+	  interfaces/C/ppl_interface_generator_c_cc_files.m4 (1.15),
+	  interfaces/C/ppl_interface_generator_c_h.m4 (1.27),
+	  interfaces/C/ppl_interface_generator_c_h_code.m4 (1.49),
+	  interfaces/C/ppl_interface_generator_c_hh_files.m4 (1.11),
+	  interfaces/C/ppl_interface_generator_c_procedure_generators.m4
+	  (1.15), interfaces/C/tests/Makefile.am (1.7),
+	  interfaces/C/tests/cxxoutput.c (1.7),
+	  interfaces/C/tests/ppl_c_test.cc (1.2),
+	  interfaces/C/tests/ppl_c_test.h (1.3),
+	  interfaces/C/tests/print_to_buffer.cc (1.6),
+	  interfaces/C/tests/print_to_buffer.h (1.6),
+	  interfaces/Java/Makefile.am (1.26),
+	  interfaces/Java/ppl_interface_generator_java_procedure_generators.m4
+	  (1.13), interfaces/Java/jni/Makefile.am (1.35),
+	  interfaces/Java/jni/ppl_interface_generator_java_classes_cc_code.m4
+	  (1.34),
+	  interfaces/Java/jni/ppl_interface_generator_java_classes_cc_files.m4
+	  (1.9), interfaces/Java/jni/ppl_java_common.cc (1.55),
+	  interfaces/Java/jni/ppl_java_common.defs.hh (1.8),
+	  interfaces/Java/jni/ppl_java_common.inlines.hh (1.6),
+	  interfaces/Java/jni/ppl_java_globals.cc (1.27),
+	  interfaces/Java/parma_polyhedra_library/By_Reference.java (1.4),
+	  interfaces/Java/parma_polyhedra_library/Coefficient.java (1.4),
+	  interfaces/Java/parma_polyhedra_library/Complexity_Class.java
+	  (1.2), interfaces/Java/parma_polyhedra_library/Congruence.java
+	  (1.3),
+	  interfaces/Java/parma_polyhedra_library/Congruence_System.java
+	  (1.4), interfaces/Java/parma_polyhedra_library/Constraint.java
+	  (1.4),
+	  interfaces/Java/parma_polyhedra_library/Constraint_System.java
+	  (1.4),
+	  interfaces/Java/parma_polyhedra_library/Control_Parameter_Name.java
+	  (1.3),
+	  interfaces/Java/parma_polyhedra_library/Control_Parameter_Value.java
+	  (1.3),
+	  interfaces/Java/parma_polyhedra_library/Degenerate_Element.java
+	  (1.4),
+	  interfaces/Java/parma_polyhedra_library/Domain_Error_Exception.java
+	  (1.4),
+	  interfaces/Java/parma_polyhedra_library/Fake_Class_for_Doxygen.java
+	  (1.5), interfaces/Java/parma_polyhedra_library/Generator.java
+	  (1.4),
+	  interfaces/Java/parma_polyhedra_library/Generator_System.java
+	  (1.3),
+	  interfaces/Java/parma_polyhedra_library/Generator_Type.java
+	  (1.4),
+	  interfaces/Java/parma_polyhedra_library/Grid_Generator.java
+	  (1.4),
+	  interfaces/Java/parma_polyhedra_library/Grid_Generator_System.java
+	  (1.4),
+	  interfaces/Java/parma_polyhedra_library/Grid_Generator_Type.java
+	  (1.4),
+	  interfaces/Java/parma_polyhedra_library/Invalid_Argument_Exception.java
+	  (1.4),
+	  interfaces/Java/parma_polyhedra_library/Length_Error_Exception.java
+	  (1.4),
+	  interfaces/Java/parma_polyhedra_library/Linear_Expression.java
+	  (1.4),
+	  interfaces/Java/parma_polyhedra_library/Linear_Expression_Coefficient.java
+	  (1.4),
+	  interfaces/Java/parma_polyhedra_library/Linear_Expression_Difference.java
+	  (1.4),
+	  interfaces/Java/parma_polyhedra_library/Linear_Expression_Sum.java
+	  (1.5),
+	  interfaces/Java/parma_polyhedra_library/Linear_Expression_Times.java
+	  (1.4),
+	  interfaces/Java/parma_polyhedra_library/Linear_Expression_Unary_Minus.java
+	  (1.4),
+	  interfaces/Java/parma_polyhedra_library/Linear_Expression_Variable.java
+	  (1.4),
+	  interfaces/Java/parma_polyhedra_library/Logic_Error_Exception.java
+	  (1.4), interfaces/Java/parma_polyhedra_library/MIP_Problem.java
+	  (1.6),
+	  interfaces/Java/parma_polyhedra_library/MIP_Problem_Status.java
+	  (1.3), interfaces/Java/parma_polyhedra_library/Makefile.am
+	  (1.12),
+	  interfaces/Java/parma_polyhedra_library/Optimization_Mode.java
+	  (1.4),
+	  interfaces/Java/parma_polyhedra_library/Overflow_Error_Exception.java
+	  (1.4), interfaces/Java/parma_polyhedra_library/PPL_Object.java
+	  (1.6), interfaces/Java/parma_polyhedra_library/Pair.java (1.4),
+	  interfaces/Java/parma_polyhedra_library/Parma_Polyhedra_Library.java
+	  (1.5),
+	  interfaces/Java/parma_polyhedra_library/Partial_Function.java
+	  (1.4),
+	  interfaces/Java/parma_polyhedra_library/Poly_Con_Relation.java
+	  (1.4),
+	  interfaces/Java/parma_polyhedra_library/Poly_Gen_Relation.java
+	  (1.4),
+	  interfaces/Java/parma_polyhedra_library/Relation_Symbol.java
+	  (1.4), interfaces/Java/parma_polyhedra_library/Variable.java
+	  (1.4), interfaces/Java/parma_polyhedra_library/Variables_Set.java
+	  (1.3),
+	  interfaces/Java/parma_polyhedra_library/ppl_interface_generator_java_classes_java.m4
+	  (1.8),
+	  interfaces/Java/parma_polyhedra_library/ppl_interface_generator_java_classes_java_code.m4
+	  (1.18), interfaces/Java/tests/C_Polyhedron_test1.java (1.18),
+	  interfaces/Java/tests/MIP_Problem_test1.java (1.4),
+	  interfaces/Java/tests/Makefile.am (1.27),
+	  interfaces/Java/tests/NNC_Polyhedron_test1.java (1.5),
+	  interfaces/Java/tests/PPL_Test.java (1.2),
+	  interfaces/Java/tests/Parma_Polyhedra_Library_test1.java (1.3),
+	  interfaces/Java/tests/Test_Executor.java (1.4),
+	  interfaces/Java/tests/Test_Partial_Function.java (1.6),
+	  interfaces/Java/tests/ppl_interface_generator_java_test_java.m4
+	  (1.22),
+	  interfaces/Java/tests/ppl_interface_generator_java_test_java_code.m4
+	  (1.52), interfaces/Java/tests/ppl_java_tests_common (1.19),
+	  interfaces/OCaml/Makefile.am (1.66),
+	  interfaces/OCaml/OCaml_interface.dox (1.8),
+	  interfaces/OCaml/ppl_interface_generator_ocaml_cc_code.m4 (1.63),
+	  interfaces/OCaml/ppl_interface_generator_ocaml_cc_files.m4 (1.5),
+	  interfaces/OCaml/ppl_interface_generator_ocaml_hh_code.m4 (1.5),
+	  interfaces/OCaml/ppl_interface_generator_ocaml_hh_files.m4 (1.5),
+	  interfaces/OCaml/ppl_interface_generator_ocaml_ml.m4 (1.21),
+	  interfaces/OCaml/ppl_interface_generator_ocaml_ml_code.m4 (1.53),
+	  interfaces/OCaml/ppl_interface_generator_ocaml_mli.m4 (1.25),
+	  interfaces/OCaml/ppl_interface_generator_ocaml_mli_code.m4
+	  (1.43),
+	  interfaces/OCaml/ppl_interface_generator_ocaml_procedure_generators.m4
+	  (1.7), interfaces/OCaml/ppl_ocaml_common.cc (1.8),
+	  interfaces/OCaml/ppl_ocaml_common.defs.hh (1.3),
+	  interfaces/OCaml/ppl_ocaml_common.inlines.hh (1.2),
+	  interfaces/OCaml/ppl_ocaml_globals.ml (1.15),
+	  interfaces/OCaml/ppl_ocaml_globals.mli (1.2),
+	  interfaces/OCaml/tests/Makefile.am (1.28),
+	  interfaces/OCaml/tests/ppl_interface_generator_ocaml_test_ml.m4
+	  (1.5),
+	  interfaces/OCaml/tests/ppl_interface_generator_ocaml_test_ml_code.m4
+	  (1.22), interfaces/OCaml/tests/ppl_ocaml_tests_common (1.7),
+	  interfaces/OCaml/tests/test1.ml (1.17),
+	  interfaces/Prolog/Makefile.am (1.69),
+	  interfaces/Prolog/Prolog_interface.dox (1.182),
+	  interfaces/Prolog/ppl_interface_generator_prolog_cc_code.m4
+	  (1.22),
+	  interfaces/Prolog/ppl_interface_generator_prolog_cc_files.m4
+	  (1.12), interfaces/Prolog/ppl_interface_generator_prolog_dox.m4
+	  (1.13),
+	  interfaces/Prolog/ppl_interface_generator_prolog_dox_code.m4
+	  (1.15),
+	  interfaces/Prolog/ppl_interface_generator_prolog_hh_code.m4
+	  (1.16),
+	  interfaces/Prolog/ppl_interface_generator_prolog_hh_files.m4
+	  (1.11),
+	  interfaces/Prolog/ppl_interface_generator_prolog_procedure_generators.m4
+	  (1.8),
+	  interfaces/Prolog/ppl_interface_generator_prolog_systems.m4
+	  (1.15), interfaces/Prolog/ppl_prolog_common.cc (1.14),
+	  interfaces/Prolog/ppl_prolog_common.defs.hh (1.12),
+	  interfaces/Prolog/ppl_prolog_common.inlines.hh (1.3),
+	  interfaces/Prolog/Ciao/Makefile.am (1.89),
+	  interfaces/Prolog/Ciao/ciao_cfli.hh (1.8),
+	  interfaces/Prolog/Ciao/ciao_clpq.pl (1.21),
+	  interfaces/Prolog/Ciao/ciao_clpq2.pl (1.17),
+	  interfaces/Prolog/Ciao/ciao_efli.cc (1.7),
+	  interfaces/Prolog/Ciao/ciao_efli.hh (1.4),
+	  interfaces/Prolog/Ciao/ciao_pl_check.pl (1.31),
+	  interfaces/Prolog/Ciao/ppl_interface_generator_ciao_pl.m4 (1.11),
+	  interfaces/Prolog/Ciao/ppl_interface_generator_ciao_prolog_generated_test_pl.m4
+	  (1.4), interfaces/Prolog/Ciao/ppl_prolog_sysdep.hh (1.3),
+	  interfaces/Prolog/GNU/Makefile.am (1.88),
+	  interfaces/Prolog/GNU/gnu_pl_check.pl (1.13),
+	  interfaces/Prolog/GNU/gnu_prolog_generated_test.pl (1.2),
+	  interfaces/Prolog/GNU/gp_clpq.pl (1.14),
+	  interfaces/Prolog/GNU/gprolog_cfli.hh (1.12),
+	  interfaces/Prolog/GNU/gprolog_efli.cc (1.5),
+	  interfaces/Prolog/GNU/gprolog_efli.hh (1.3),
+	  interfaces/Prolog/GNU/ppl_interface_generator_gprolog_pl.m4
+	  (1.10), interfaces/Prolog/GNU/ppl_prolog_sysdep.hh (1.3),
+	  interfaces/Prolog/SICStus/Makefile.am (1.102),
+	  interfaces/Prolog/SICStus/ppl_interface_generator_sicstus_sd_cc.m4
+	  (1.16), interfaces/Prolog/SICStus/ppl_prolog_sysdep.hh (1.3),
+	  interfaces/Prolog/SICStus/ppl_sicstus.pl (1.30),
+	  interfaces/Prolog/SICStus/sicstus_cfli.cc (1.10),
+	  interfaces/Prolog/SICStus/sicstus_cfli.h (1.12),
+	  interfaces/Prolog/SICStus/sicstus_cfli.ic (1.21),
+	  interfaces/Prolog/SICStus/sicstus_efli.cc (1.5),
+	  interfaces/Prolog/SICStus/sicstus_efli.hh (1.3),
+	  interfaces/Prolog/SICStus/sp_clpq.pl (1.21),
+	  interfaces/Prolog/SICStus/sp_pl_check.pl (1.15),
+	  interfaces/Prolog/SICStus/sp_prolog_generated_test.pl (1.2),
+	  interfaces/Prolog/SWI/Makefile.am (1.106),
+	  interfaces/Prolog/SWI/pl_clpq.cc (1.15),
+	  interfaces/Prolog/SWI/pl_clpq.pl (1.13),
+	  interfaces/Prolog/SWI/ppl_interface_generator_swiprolog_cc.m4
+	  (1.21), interfaces/Prolog/SWI/ppl_pl.cc (1.15),
+	  interfaces/Prolog/SWI/ppl_prolog_sysdep.hh (1.4),
+	  interfaces/Prolog/SWI/ppl_swiprolog.pl (1.10),
+	  interfaces/Prolog/SWI/swi_cfli.hh (1.11),
+	  interfaces/Prolog/SWI/swi_efli.cc (1.6),
+	  interfaces/Prolog/SWI/swi_efli.hh (1.6),
+	  interfaces/Prolog/SWI/swi_pl_check.pl (1.13),
+	  interfaces/Prolog/SWI/swi_prolog_generated_test.pl (1.5),
+	  interfaces/Prolog/XSB/Makefile.am (1.82),
+	  interfaces/Prolog/XSB/ppl_interface_generator_xsb_H.m4 (1.12),
+	  interfaces/Prolog/XSB/ppl_interface_generator_xsb_cc.m4 (1.18),
+	  interfaces/Prolog/XSB/ppl_interface_generator_xsb_hh.m4 (1.3),
+	  interfaces/Prolog/XSB/ppl_interface_generator_xsb_prolog_generated_test_P.m4
+	  (1.5), interfaces/Prolog/XSB/ppl_prolog_sysdep.hh (1.4),
+	  interfaces/Prolog/XSB/xsb_cfli.hh (1.7),
+	  interfaces/Prolog/XSB/xsb_clpq.P (1.20),
+	  interfaces/Prolog/XSB/xsb_clpq2.P (1.18),
+	  interfaces/Prolog/XSB/xsb_efli.cc (1.6),
+	  interfaces/Prolog/XSB/xsb_efli.hh (1.3),
+	  interfaces/Prolog/XSB/xsb_pl_check.P (1.36),
+	  interfaces/Prolog/YAP/Makefile.am (1.72),
+	  interfaces/Prolog/YAP/ppl_interface_generator_yap_cc.m4 (1.13),
+	  interfaces/Prolog/YAP/ppl_prolog_sysdep.hh (1.3),
+	  interfaces/Prolog/YAP/ppl_yap.pl (1.14),
+	  interfaces/Prolog/YAP/yap_cfli.hh (1.7),
+	  interfaces/Prolog/YAP/yap_clpq.pl (1.15),
+	  interfaces/Prolog/YAP/yap_clpq2.pl (1.11),
+	  interfaces/Prolog/YAP/yap_efli.cc (1.3),
+	  interfaces/Prolog/YAP/yap_efli.hh (1.3),
+	  interfaces/Prolog/YAP/yap_pl_check.pl (1.15),
+	  interfaces/Prolog/YAP/yap_prolog_generated_test.pl (1.2),
+	  interfaces/Prolog/tests/Makefile.am (1.35),
+	  interfaces/Prolog/tests/clpq.pl (1.12),
+	  interfaces/Prolog/tests/clpq2.pl (1.14),
+	  interfaces/Prolog/tests/expected_clpq2_int16 (1.6),
+	  interfaces/Prolog/tests/expected_clpq2_int16_a (1.6),
+	  interfaces/Prolog/tests/expected_clpq2_int32 (1.5),
+	  interfaces/Prolog/tests/expected_clpq2_int32_a (1.7),
+	  interfaces/Prolog/tests/expected_clpq2_int64 (1.5),
+	  interfaces/Prolog/tests/expected_clpq2_int64_a (1.5),
+	  interfaces/Prolog/tests/expected_clpq2_int8 (1.8),
+	  interfaces/Prolog/tests/expected_clpq2_int8_a (1.8),
+	  interfaces/Prolog/tests/expected_clpq2_mpz (1.5),
+	  interfaces/Prolog/tests/expected_clpq2_mpz_a (1.5),
+	  interfaces/Prolog/tests/expected_clpq_int16 (1.7),
+	  interfaces/Prolog/tests/expected_clpq_int16_a (1.7),
+	  interfaces/Prolog/tests/expected_clpq_int32 (1.5),
+	  interfaces/Prolog/tests/expected_clpq_int32_a (1.5),
+	  interfaces/Prolog/tests/expected_clpq_int64 (1.5),
+	  interfaces/Prolog/tests/expected_clpq_int64_a (1.5),
+	  interfaces/Prolog/tests/expected_clpq_int8 (1.5),
+	  interfaces/Prolog/tests/expected_clpq_int8_a (1.5),
+	  interfaces/Prolog/tests/expected_clpq_mpz (1.5),
+	  interfaces/Prolog/tests/expected_clpq_mpz_a (1.5),
+	  interfaces/Prolog/tests/pl_check.pl (1.70),
+	  interfaces/Prolog/tests/ppl_interface_generator_prolog_generated_test_pl.m4
+	  (1.5),
+	  interfaces/Prolog/tests/ppl_interface_generator_prolog_generated_test_pl_code.m4
+	  (1.12),
+	  interfaces/Prolog/tests/ppl_prolog_generated_test_common.pl
+	  (1.3), m4/Makefile.am (1.31), m4/ac_check_ciao.m4 (1.5),
+	  m4/ac_check_fpu_control.m4 (1.16), m4/ac_check_gmp.m4 (1.33),
+	  m4/ac_check_sicstus_prolog.m4 (1.9), m4/ac_check_swi_prolog.m4
+	  (1.19), m4/ac_check_xsb_prolog.m4 (1.6),
+	  m4/ac_cxx_attribute_weak.m4 (1.11),
+	  m4/ac_cxx_double_binary_format.m4 (1.18),
+	  m4/ac_cxx_double_exact_output.m4 (1.11),
+	  m4/ac_cxx_flexible_arrays.m4 (1.17),
+	  m4/ac_cxx_float_binary_format.m4 (1.15),
+	  m4/ac_cxx_float_exact_output.m4 (1.9),
+	  m4/ac_cxx_ieee_inexact_flag.m4 (1.6), m4/ac_cxx_limit_memory.m4
+	  (1.3), m4/ac_cxx_long_double_binary_format.m4 (1.22),
+	  m4/ac_cxx_long_double_exact_output.m4 (1.16),
+	  m4/ac_cxx_proper_long_double.m4 (1.6), m4/ac_cxx_remainder_bug.m4
+	  (1.7), m4/ac_prog_jar.m4 (1.4), m4/ac_prog_java.m4 (1.7),
+	  m4/ac_prog_javac.m4 (1.8), m4/ac_prog_javah.m4 (1.10),
+	  m4/ac_text_md5sum.m4 (1.5), m4/ppl.m4 (1.12), m4/ppl_c.m4 (1.5),
+	  src/Any_Pointset.defs.hh (1.21), src/Any_Pointset.inlines.hh
+	  (1.5), src/Any_Pointset.types.hh (1.4), src/Ask_Tell.defs.hh
+	  (1.20), src/Ask_Tell.inlines.hh (1.19), src/Ask_Tell.templates.hh
+	  (1.11), src/Ask_Tell.types.hh (1.8), src/BDS_Status.idefs.hh
+	  (1.25), src/BDS_Status.inlines.hh (1.21), src/BD_Shape.cc (1.10),
+	  src/BD_Shape.defs.hh (1.138), src/BD_Shape.inlines.hh (1.173),
+	  src/BD_Shape.templates.hh (1.129), src/BD_Shape.types.hh (1.8),
+	  src/BHRZ03_Certificate.cc (1.15), src/BHRZ03_Certificate.defs.hh
+	  (1.20), src/BHRZ03_Certificate.inlines.hh (1.11),
+	  src/BHRZ03_Certificate.types.hh (1.7), src/Bit_Matrix.cc (1.7),
+	  src/Bit_Matrix.defs.hh (1.6), src/Bit_Matrix.inlines.hh (1.5),
+	  src/Bit_Matrix.types.hh (1.4), src/Bit_Row.cc (1.8),
+	  src/Bit_Row.defs.hh (1.12), src/Bit_Row.inlines.hh (1.11),
+	  src/Bit_Row.types.hh (1.4), src/Boundary.defs.hh (1.17),
+	  src/Box.cc (1.11), src/Box.defs.hh (1.68), src/Box.inlines.hh
+	  (1.44), src/Box.templates.hh (1.140), src/Box.types.hh (1.5),
+	  src/Box_Status.idefs.hh (1.4), src/Box_Status.inlines.hh (1.5),
+	  src/C_Integer.hh (1.8), src/C_Polyhedron.cc (1.29),
+	  src/C_Polyhedron.defs.hh (1.60), src/C_Polyhedron.inlines.hh
+	  (1.44), src/C_Polyhedron.types.hh (1.13), src/Checked_Number.cc
+	  (1.15), src/Checked_Number.defs.hh (1.103),
+	  src/Checked_Number.inlines.hh (1.87),
+	  src/Checked_Number.templates.hh (1.3),
+	  src/Checked_Number.types.hh (1.12), src/Coefficient.cc (1.10),
+	  src/Coefficient.defs.hh (1.12), src/Coefficient.inlines.hh
+	  (1.11), src/Coefficient.types.hh (1.17),
+	  src/Coefficient_traits_template.hh (1.10), src/Congruence.cc
+	  (1.23), src/Congruence.defs.hh (1.27), src/Congruence.inlines.hh
+	  (1.21), src/Congruence.types.hh (1.5), src/Congruence_System.cc
+	  (1.32), src/Congruence_System.defs.hh (1.28),
+	  src/Congruence_System.inlines.hh (1.13),
+	  src/Congruence_System.types.hh (1.5), src/Constraint.cc (1.72),
+	  src/Constraint.defs.hh (1.132), src/Constraint.inlines.hh (1.73),
+	  src/Constraint.types.hh (1.13), src/Constraint_System.cc (1.31),
+	  src/Constraint_System.defs.hh (1.42),
+	  src/Constraint_System.inlines.hh (1.14),
+	  src/Constraint_System.types.hh (1.7), src/DB_Matrix.defs.hh
+	  (1.31), src/DB_Matrix.inlines.hh (1.35),
+	  src/DB_Matrix.templates.hh (1.11), src/DB_Matrix.types.hh (1.8),
+	  src/DB_Row.defs.hh (1.27), src/DB_Row.inlines.hh (1.26),
+	  src/DB_Row.templates.hh (1.9), src/DB_Row.types.hh (1.10),
+	  src/Determinate.defs.hh (1.69), src/Determinate.inlines.hh
+	  (1.60), src/Determinate.types.hh (1.12), src/Float.cc (1.9),
+	  src/Float.defs.hh (1.34), src/Float.inlines.hh (1.36),
+	  src/GMP_Integer.defs.hh (1.30), src/GMP_Integer.inlines.hh
+	  (1.25), src/GMP_Integer.types.hh (1.18), src/Generator.cc (1.79),
+	  src/Generator.defs.hh (1.128), src/Generator.inlines.hh (1.66),
+	  src/Generator.types.hh (1.13), src/Generator_System.cc (1.29),
+	  src/Generator_System.defs.hh (1.30),
+	  src/Generator_System.inlines.hh (1.13),
+	  src/Generator_System.types.hh (1.7), src/Grid.defs.hh (1.87),
+	  src/Grid.inlines.hh (1.31), src/Grid.templates.hh (1.41),
+	  src/Grid.types.hh (1.5), src/Grid_Certificate.cc (1.12),
+	  src/Grid_Certificate.defs.hh (1.8),
+	  src/Grid_Certificate.inlines.hh (1.6),
+	  src/Grid_Certificate.types.hh (1.5), src/Grid_Generator.cc
+	  (1.25), src/Grid_Generator.defs.hh (1.37),
+	  src/Grid_Generator.inlines.hh (1.17), src/Grid_Generator.types.hh
+	  (1.5), src/Grid_Generator_System.cc (1.23),
+	  src/Grid_Generator_System.defs.hh (1.31),
+	  src/Grid_Generator_System.inlines.hh (1.19),
+	  src/Grid_Generator_System.types.hh (1.5), src/Grid_Status.cc
+	  (1.11), src/Grid_Status.idefs.hh (1.10),
+	  src/Grid_Status.inlines.hh (1.6), src/Grid_chdims.cc (1.27),
+	  src/Grid_conversion.cc (1.26), src/Grid_nonpublic.cc (1.41),
+	  src/Grid_public.cc (1.91), src/Grid_simplify.cc (1.42),
+	  src/Grid_widenings.cc (1.20), src/H79_Certificate.cc (1.14),
+	  src/H79_Certificate.defs.hh (1.18),
+	  src/H79_Certificate.inlines.hh (1.12),
+	  src/H79_Certificate.types.hh (1.7), src/Has_Assign_Or_Swap.hh
+	  (1.4), src/Init.cc (1.39), src/Init.defs.hh (1.23),
+	  src/Init.inlines.hh (1.10), src/Init.types.hh (1.12),
+	  src/Interval.defs.hh (1.65), src/Interval.inlines.hh (1.49),
+	  src/Interval.templates.hh (1.5), src/Interval.types.hh (1.15),
+	  src/Interval_Info.defs.hh (1.12), src/Interval_Info.inlines.hh
+	  (1.10), src/Interval_Info.types.hh (1.5),
+	  src/Interval_Restriction.defs.hh (1.17), src/Linear_Expression.cc
+	  (1.22), src/Linear_Expression.defs.hh (1.41),
+	  src/Linear_Expression.inlines.hh (1.16),
+	  src/Linear_Expression.types.hh (1.7), src/Linear_Row.cc (1.27),
+	  src/Linear_Row.defs.hh (1.27), src/Linear_Row.inlines.hh (1.15),
+	  src/Linear_Row.types.hh (1.7), src/Linear_System.cc (1.52),
+	  src/Linear_System.defs.hh (1.34), src/Linear_System.inlines.hh
+	  (1.26), src/Linear_System.types.hh (1.7), src/MIP_Problem.cc
+	  (1.80), src/MIP_Problem.defs.hh (1.41),
+	  src/MIP_Problem.inlines.hh (1.20), src/MIP_Problem.templates.hh
+	  (1.15), src/MIP_Problem.types.hh (1.4), src/Makefile.am (1.192),
+	  src/Matrix.cc (1.100), src/Matrix.defs.hh (1.86),
+	  src/Matrix.inlines.hh (1.55), src/Matrix.types.hh (1.13),
+	  src/NNC_Polyhedron.cc (1.30), src/NNC_Polyhedron.defs.hh (1.62),
+	  src/NNC_Polyhedron.inlines.hh (1.45), src/NNC_Polyhedron.types.hh
+	  (1.13), src/Numeric_Format.defs.hh (1.9), src/OR_Matrix.defs.hh
+	  (1.20), src/OR_Matrix.inlines.hh (1.15),
+	  src/OR_Matrix.templates.hh (1.10), src/OR_Matrix.types.hh (1.5),
+	  src/Octagonal_Shape.cc (1.9), src/Octagonal_Shape.defs.hh (1.64),
+	  src/Octagonal_Shape.inlines.hh (1.43),
+	  src/Octagonal_Shape.templates.hh (1.100),
+	  src/Octagonal_Shape.types.hh (1.5), src/Og_Status.idefs.hh
+	  (1.12), src/Og_Status.inlines.hh (1.8),
+	  src/Partially_Reduced_Product.defs.hh (1.40),
+	  src/Partially_Reduced_Product.inlines.hh (1.38),
+	  src/Partially_Reduced_Product.templates.hh (1.17),
+	  src/Partially_Reduced_Product.types.hh (1.6), src/Ph_Status.cc
+	  (1.17), src/Ph_Status.idefs.hh (1.24), src/Ph_Status.inlines.hh
+	  (1.11), src/Pointset_Ask_Tell.cc (1.9),
+	  src/Pointset_Ask_Tell.defs.hh (1.19),
+	  src/Pointset_Ask_Tell.inlines.hh (1.8),
+	  src/Pointset_Ask_Tell.templates.hh (1.16),
+	  src/Pointset_Ask_Tell.types.hh (1.5), src/Pointset_Powerset.cc
+	  (1.26), src/Pointset_Powerset.defs.hh (1.57),
+	  src/Pointset_Powerset.inlines.hh (1.18),
+	  src/Pointset_Powerset.templates.hh (1.46),
+	  src/Pointset_Powerset.types.hh (1.4), src/Poly_Con_Relation.cc
+	  (1.18), src/Poly_Con_Relation.defs.hh (1.38),
+	  src/Poly_Con_Relation.inlines.hh (1.18),
+	  src/Poly_Con_Relation.types.hh (1.12), src/Poly_Gen_Relation.cc
+	  (1.18), src/Poly_Gen_Relation.defs.hh (1.36),
+	  src/Poly_Gen_Relation.inlines.hh (1.18),
+	  src/Poly_Gen_Relation.types.hh (1.12), src/Polyhedron.defs.hh
+	  (1.361), src/Polyhedron.inlines.hh (1.152),
+	  src/Polyhedron.templates.hh (1.23), src/Polyhedron.types.hh
+	  (1.19), src/Polyhedron_chdims.cc (1.51),
+	  src/Polyhedron_nonpublic.cc (1.94), src/Polyhedron_public.cc
+	  (1.150), src/Polyhedron_widenings.cc (1.70), src/Powerset.defs.hh
+	  (1.33), src/Powerset.inlines.hh (1.23), src/Powerset.templates.hh
+	  (1.7), src/Powerset.types.hh (1.8), src/Ptr_Iterator.defs.hh
+	  (1.15), src/Ptr_Iterator.inlines.hh (1.10),
+	  src/Ptr_Iterator.types.hh (1.8), src/Rational_Box.hh (1.9),
+	  src/Rational_Interval.hh (1.2), src/Result.defs.hh (1.21),
+	  src/Result.inlines.hh (1.13), src/Rounding_Dir.defs.hh (1.15),
+	  src/Rounding_Dir.inlines.hh (1.11), src/Row.cc (1.107),
+	  src/Row.defs.hh (1.114), src/Row.inlines.hh (1.70),
+	  src/Row.types.hh (1.14), src/Scalar_Products.cc (1.12),
+	  src/Scalar_Products.defs.hh (1.12),
+	  src/Scalar_Products.inlines.hh (1.9),
+	  src/Scalar_Products.types.hh (1.6), src/Slow_Copy.hh (1.4),
+	  src/Temp.defs.hh (1.9), src/Temp.inlines.hh (1.7),
+	  src/Temp.templates.hh (1.4), src/Topology.hh (1.16),
+	  src/Variable.cc (1.26), src/Variable.defs.hh (1.56),
+	  src/Variable.inlines.hh (1.27), src/Variable.types.hh (1.13),
+	  src/Variables_Set.cc (1.8), src/Variables_Set.defs.hh (1.10),
+	  src/Variables_Set.inlines.hh (1.7), src/Variables_Set.types.hh
+	  (1.4), src/Widening_Function.defs.hh (1.20),
+	  src/Widening_Function.inlines.hh (1.17),
+	  src/Widening_Function.types.hh (1.8), src/algorithms.hh (1.51),
+	  src/assign_or_swap.hh (1.3), src/checked.cc (1.26),
+	  src/checked.defs.hh (1.52), src/checked.inlines.hh (1.53),
+	  src/checked_ext.defs.hh (1.16), src/checked_ext.inlines.hh
+	  (1.43), src/checked_float.inlines.hh (1.100),
+	  src/checked_int.inlines.hh (1.74), src/checked_mpq.inlines.hh
+	  (1.49), src/checked_mpz.inlines.hh (1.61),
+	  src/checked_numeric_limits.hh (1.24), src/compiler.hh (1.17),
+	  src/conversion.cc (1.89), src/distances.defs.hh (1.6),
+	  src/distances.inlines.hh (1.7), src/distances.types.hh (1.5),
+	  src/fpu-c99.inlines.hh (1.23), src/fpu-ia32.cc (1.4),
+	  src/fpu-ia32.inlines.hh (1.23), src/fpu-none.inlines.hh (1.11),
+	  src/fpu-sparc.inlines.hh (1.13), src/fpu.defs.hh (1.22),
+	  src/fpu.types.hh (1.7), src/globals.cc (1.34),
+	  src/globals.defs.hh (1.63), src/globals.inlines.hh (1.26),
+	  src/globals.types.hh (1.13), src/initializer.hh (1.17),
+	  src/iterator_to_const.defs.hh (1.9),
+	  src/iterator_to_const.inlines.hh (1.6),
+	  src/iterator_to_const.types.hh (1.4), src/math_utilities.defs.hh
+	  (1.2), src/math_utilities.inlines.hh (1.5),
+	  src/max_space_dimension.hh (1.15), src/meta_programming.hh
+	  (1.13), src/minimize.cc (1.51), src/mp_std_bits.cc (1.7),
+	  src/mp_std_bits.defs.hh (1.7), src/mp_std_bits.inlines.hh (1.6),
+	  src/namespaces.hh (1.18), src/ppl-config.cc.in (1.26),
+	  src/ppl_header.hh (1.14), src/simplify.cc (1.56), src/stdiobuf.cc
+	  (1.3), src/stdiobuf.defs.hh (1.4), src/stdiobuf.inlines.hh (1.3),
+	  src/stdiobuf.types.hh (1.2), src/swapping_sort.icc (1.15),
+	  src/version.cc (1.16), src/version.hh.in (1.18),
+	  tests/Makefile.am (1.275), tests/Partial_Function.cc (1.9),
+	  tests/Partial_Function.defs.hh (1.7),
+	  tests/Partial_Function.inlines.hh (1.6),
+	  tests/Partial_Function.types.hh (1.5), tests/README (1.5),
+	  tests/Random_Number_Generator.defs.hh (1.7),
+	  tests/Random_Number_Generator.inlines.hh (1.13),
+	  tests/Random_Number_Generator.types.hh (1.5), tests/files.cc
+	  (1.13), tests/files.hh (1.13), tests/ppl_test.cc (1.20),
+	  tests/ppl_test.hh (1.80), tests/Ask_Tell/Makefile.am (1.8),
+	  tests/Ask_Tell/append1.cc (1.9), tests/BD_Shape/Makefile.am
+	  (1.86), tests/BD_Shape/addconstraints1.cc (1.23),
+	  tests/BD_Shape/addspacedims1.cc (1.20),
+	  tests/BD_Shape/affinedimension1.cc (1.15),
+	  tests/BD_Shape/affineimage1.cc (1.24),
+	  tests/BD_Shape/affineimage2.cc (1.17),
+	  tests/BD_Shape/affinepreimage1.cc (1.26),
+	  tests/BD_Shape/ascii_dump_load1.cc (1.19),
+	  tests/BD_Shape/bgp99extrapolation1.cc (1.12),
+	  tests/BD_Shape/bhmz05widening1.cc (1.20),
+	  tests/BD_Shape/bhz03widening1.cc (1.12),
+	  tests/BD_Shape/bounded1.cc (1.6),
+	  tests/BD_Shape/boundedaffineimage1.cc (1.8),
+	  tests/BD_Shape/boundedaffinepreimage1.cc (1.8),
+	  tests/BD_Shape/bounds1.cc (1.6),
+	  tests/BD_Shape/cc76extrapolation1.cc (1.25),
+	  tests/BD_Shape/cc76narrowing1.cc (1.22),
+	  tests/BD_Shape/closure1.cc (1.31), tests/BD_Shape/concatenate1.cc
+	  (1.18), tests/BD_Shape/congruences1.cc (1.6),
+	  tests/BD_Shape/constrains1.cc (1.2),
+	  tests/BD_Shape/constraints1.cc (1.26),
+	  tests/BD_Shape/contains1.cc (1.18),
+	  tests/BD_Shape/containsintegerpoint1.cc (1.8),
+	  tests/BD_Shape/difference1.cc (1.2), tests/BD_Shape/discrete1.cc
+	  (1.6), tests/BD_Shape/disjoint1.cc (1.9),
+	  tests/BD_Shape/empty1.cc (1.14), tests/BD_Shape/equality1.cc
+	  (1.19), tests/BD_Shape/expandspacedim1.cc (1.8),
+	  tests/BD_Shape/foldspacedims1.cc (1.10),
+	  tests/BD_Shape/frombdshape1.cc (1.5), tests/BD_Shape/frombox1.cc
+	  (1.4), tests/BD_Shape/fromgensys1.cc (1.19),
+	  tests/BD_Shape/fromgrid1.cc (1.6),
+	  tests/BD_Shape/fromoctagonalshape1.cc (1.5),
+	  tests/BD_Shape/frompolyhedron1.cc (1.8),
+	  tests/BD_Shape/fromspacedim1.cc (1.5),
+	  tests/BD_Shape/generalizedaffineimage1.cc (1.23),
+	  tests/BD_Shape/generalizedaffineimage2.cc (1.26),
+	  tests/BD_Shape/generalizedaffinepreimage1.cc (1.20),
+	  tests/BD_Shape/generalizedaffinepreimage2.cc (1.21),
+	  tests/BD_Shape/generalizedaffinepreimage3.cc (1.11),
+	  tests/BD_Shape/geomcovers1.cc (1.13),
+	  tests/BD_Shape/h79widening1.cc (1.17),
+	  tests/BD_Shape/intersection1.cc (1.22),
+	  tests/BD_Shape/limitedbhmz05extrapolation1.cc (1.20),
+	  tests/BD_Shape/limitedcc76extrapolation1.cc (1.21),
+	  tests/BD_Shape/limitedh79extrapolation1.cc (1.18),
+	  tests/BD_Shape/mapspacedims1.cc (1.20),
+	  tests/BD_Shape/max_min1.cc (1.6), tests/BD_Shape/max_min2.cc
+	  (1.13), tests/BD_Shape/maxspacedim1.cc (1.7),
+	  tests/BD_Shape/membytes1.cc (1.9),
+	  tests/BD_Shape/minconstraints1.cc (1.16),
+	  tests/BD_Shape/relations1.cc (1.21), tests/BD_Shape/relations2.cc
+	  (1.26), tests/BD_Shape/relations3.cc (1.32),
+	  tests/BD_Shape/relations4.cc (1.14),
+	  tests/BD_Shape/removespacedims1.cc (1.25),
+	  tests/BD_Shape/run_tests (1.21),
+	  tests/BD_Shape/simplifyusingcontext1.cc (1.2),
+	  tests/BD_Shape/timeelapse1.cc (1.27),
+	  tests/BD_Shape/unconstrain1.cc (1.2), tests/BD_Shape/universe1.cc
+	  (1.18), tests/BD_Shape/upperbound1.cc (1.3),
+	  tests/BD_Shape/upperboundifexact1.cc (1.2),
+	  tests/BD_Shape/writebdshape1.cc (1.14), tests/Box/Makefile.am
+	  (1.80), tests/Box/addconstraints1.cc (1.15),
+	  tests/Box/addspacedims1.cc (1.10), tests/Box/affinedimension1.cc
+	  (1.8), tests/Box/affineimage1.cc (1.12),
+	  tests/Box/affinepreimage1.cc (1.9), tests/Box/ascii_dump_load1.cc
+	  (1.12), tests/Box/bgp99extrapolation1.cc (1.7),
+	  tests/Box/bhz03widening1.cc (1.6), tests/Box/bounded1.cc (1.6),
+	  tests/Box/boundedaffineimage1.cc (1.17),
+	  tests/Box/boundedaffinepreimage1.cc (1.10),
+	  tests/Box/cc76narrowing1.cc (1.9), tests/Box/cc76widening.cc
+	  (1.9), tests/Box/concatenate1.cc (1.10),
+	  tests/Box/congruences1.cc (1.6), tests/Box/constrains1.cc (1.2),
+	  tests/Box/constraints1.cc (1.13), tests/Box/contains1.cc (1.8),
+	  tests/Box/containsintegerpoint1.cc (1.8),
+	  tests/Box/difference1.cc (1.9), tests/Box/discrete1.cc (1.8),
+	  tests/Box/disjoint1.cc (1.8), tests/Box/empty1.cc (1.8),
+	  tests/Box/equality1.cc (1.7), tests/Box/expandspacedim1.cc
+	  (1.11), tests/Box/foldspacedims1.cc (1.11),
+	  tests/Box/frombdshape1.cc (1.5), tests/Box/frombox1.cc (1.8),
+	  tests/Box/fromgensys1.cc (1.7), tests/Box/fromgrid1.cc (1.9),
+	  tests/Box/frompartiallyreducedproduct1.cc (1.4),
+	  tests/Box/frompolyhedron1.cc (1.14), tests/Box/frompolyhedron2.cc
+	  (1.11), tests/Box/fromspacedim1.cc (1.4),
+	  tests/Box/generalizedaffineimage1.cc (1.18),
+	  tests/Box/generalizedaffineimage2.cc (1.7),
+	  tests/Box/generalizedaffinepreimage1.cc (1.17),
+	  tests/Box/geomcovers1.cc (1.7), tests/Box/intersection1.cc
+	  (1.12), tests/Box/interval1.cc (1.11), tests/Box/mapspacedims1.cc
+	  (1.9), tests/Box/max_min1.cc (1.10), tests/Box/maxspacedim1.cc
+	  (1.7), tests/Box/membytes1.cc (1.9), tests/Box/minconstraints1.cc
+	  (1.8), tests/Box/propagateconstraints1.cc (1.2),
+	  tests/Box/propagateconstraints2.cc (1.13),
+	  tests/Box/refinewithcongruences1.cc (1.4),
+	  tests/Box/refinewithconstraint1.cc (1.5),
+	  tests/Box/refinewithconstraint2.cc (1.2),
+	  tests/Box/refinewithconstraints1.cc (1.7),
+	  tests/Box/refinewithconstraints2.cc (1.4),
+	  tests/Box/relations1.cc (1.8), tests/Box/relations2.cc (1.7),
+	  tests/Box/relations3.cc (1.6), tests/Box/relations4.cc (1.4),
+	  tests/Box/removespacedims1.cc (1.12), tests/Box/run_tests (1.5),
+	  tests/Box/timeelapse1.cc (1.11), tests/Box/topclosed1.cc (1.5),
+	  tests/Box/unconstrain1.cc (1.3), tests/Box/universe1.cc (1.7),
+	  tests/Box/upperbound1.cc (1.2), tests/Box/upperboundifexact1.cc
+	  (1.4), tests/Box/writebox1.cc (1.7), tests/Grid/Makefile.am
+	  (1.75), tests/Grid/addcongruence1.cc (1.16),
+	  tests/Grid/addcongruences1.cc (1.19),
+	  tests/Grid/addconstraint1.cc (1.19),
+	  tests/Grid/addconstraints1.cc (1.21), tests/Grid/addgenerator1.cc
+	  (1.18), tests/Grid/addgenerators1.cc (1.19),
+	  tests/Grid/addspacedims1.cc (1.18), tests/Grid/affinedim1.cc
+	  (1.15), tests/Grid/affineimage1.cc (1.16),
+	  tests/Grid/affineimage2.cc (1.16), tests/Grid/affinepreimage1.cc
+	  (1.17), tests/Grid/affinepreimage2.cc (1.11),
+	  tests/Grid/approximatepartition1.cc (1.6),
+	  tests/Grid/asciidumpload1.cc (1.17), tests/Grid/asciidumpload2.cc
+	  (1.9), tests/Grid/asciidumpload3.cc (1.7),
+	  tests/Grid/asciidumpload4.cc (1.7), tests/Grid/asciidumpload5.cc
+	  (1.5), tests/Grid/asciidumpload6.cc (1.5),
+	  tests/Grid/bhz03widening1.cc (1.15), tests/Grid/bounded1.cc
+	  (1.17), tests/Grid/boundedaffineimage1.cc (1.6),
+	  tests/Grid/boundedaffinepreimage1.cc (1.6),
+	  tests/Grid/boundingbox1.cc (1.21), tests/Grid/bounds1.cc (1.19),
+	  tests/Grid/certificate1.cc (1.17), tests/Grid/concatenate1.cc
+	  (1.16), tests/Grid/congruence1.cc (1.21),
+	  tests/Grid/congruences1.cc (1.15), tests/Grid/congruences2.cc
+	  (1.8), tests/Grid/constraints1.cc (1.3), tests/Grid/contains1.cc
+	  (1.14), tests/Grid/containsintegerpoint1.cc (1.7),
+	  tests/Grid/coveringbox1.cc (1.19), tests/Grid/coveringbox2.cc
+	  (1.16), tests/Grid/discrete1.cc (1.11), tests/Grid/disjoint1.cc
+	  (1.15), tests/Grid/equals1.cc (1.16),
+	  tests/Grid/expandspacedim1.cc (1.15),
+	  tests/Grid/foldspacedims1.cc (1.15), tests/Grid/frombdshape1.cc
+	  (1.5), tests/Grid/frombox1.cc (1.2), tests/Grid/fromgrid1.cc
+	  (1.2), tests/Grid/fromoctagonalshape1.cc (1.5),
+	  tests/Grid/frompolyhedron1.cc (1.3),
+	  tests/Grid/generalizedaffineimage1.cc (1.17),
+	  tests/Grid/generalizedaffineimage2.cc (1.16),
+	  tests/Grid/generalizedaffineimage3.cc (1.8),
+	  tests/Grid/generalizedaffinepreimage1.cc (1.19),
+	  tests/Grid/generalizedaffinepreimage2.cc (1.19),
+	  tests/Grid/generalizedaffinepreimage3.cc (1.8),
+	  tests/Grid/generator1.cc (1.23), tests/Grid/generators1.cc
+	  (1.16), tests/Grid/generators2.cc (1.5), tests/Grid/grid1.cc
+	  (1.23), tests/Grid/grid2.cc (1.18), tests/Grid/grid3.cc (1.30),
+	  tests/Grid/griddifference1.cc (1.16), tests/Grid/intersection1.cc
+	  (1.14), tests/Grid/isempty1.cc (1.10), tests/Grid/isuniverse1.cc
+	  (1.12), tests/Grid/limitedextrapolation1.cc (1.16),
+	  tests/Grid/limitedextrapolation2.cc (1.10),
+	  tests/Grid/limitedextrapolation3.cc (1.9),
+	  tests/Grid/mapspacedims1.cc (1.13), tests/Grid/maxmin1.cc (1.17),
+	  tests/Grid/membytes1.cc (1.14), tests/Grid/mincongruences1.cc
+	  (1.14), tests/Grid/mingenerators1.cc (1.13),
+	  tests/Grid/outputoperator1.cc (1.12),
+	  tests/Grid/outputoperator2.cc (1.5),
+	  tests/Grid/outputoperator3.cc (1.5), tests/Grid/partition1.cc
+	  (1.10), tests/Grid/powersetdifference1.cc (1.8),
+	  tests/Grid/powersetgeometricallycovers1.cc (1.6),
+	  tests/Grid/powersetgeometricallyequals1.cc (1.5),
+	  tests/Grid/refinewithcongruences1.cc (1.3),
+	  tests/Grid/refinewithconstraints1.cc (1.3),
+	  tests/Grid/relations1.cc (1.18), tests/Grid/relations2.cc (1.20),
+	  tests/Grid/relations3.cc (1.11), tests/Grid/removespacedims1.cc
+	  (1.17), tests/Grid/removespacedims2.cc (1.18),
+	  tests/Grid/timeelapse1.cc (1.14), tests/Grid/topclosed1.cc
+	  (1.15), tests/Grid/topclosure1.cc (1.10),
+	  tests/Grid/unconstrain1.cc (1.2), tests/Grid/upperbound1.cc
+	  (1.2), tests/Grid/upperbound2.cc (1.2), tests/Grid/widening1.cc
+	  (1.19), tests/Grid/widening2.cc (1.13), tests/Grid/widening3.cc
+	  (1.9), tests/Grid/writecongruencesystem.cc (1.10),
+	  tests/MIP_Problem/Makefile.am (1.14),
+	  tests/MIP_Problem/ascii_dump_load1.cc (1.6),
+	  tests/MIP_Problem/exceptions1.cc (1.6),
+	  tests/MIP_Problem/mipproblem1.cc (1.14),
+	  tests/MIP_Problem/mipproblem2.cc (1.13),
+	  tests/MIP_Problem/mipproblem3.cc (1.8),
+	  tests/Octagonal_Shape/Makefile.am (1.38),
+	  tests/Octagonal_Shape/addspacedims1.cc (1.6),
+	  tests/Octagonal_Shape/affinedimension1.cc (1.7),
+	  tests/Octagonal_Shape/affineimage1.cc (1.6),
+	  tests/Octagonal_Shape/affineimage2.cc (1.5),
+	  tests/Octagonal_Shape/affinepreimage1.cc (1.9),
+	  tests/Octagonal_Shape/affinepreimage2.cc (1.6),
+	  tests/Octagonal_Shape/ascii_dump_load1.cc (1.5),
+	  tests/Octagonal_Shape/bhmz05widening1.cc (1.6),
+	  tests/Octagonal_Shape/bhz03widening1.cc (1.5),
+	  tests/Octagonal_Shape/bounded1.cc (1.5),
+	  tests/Octagonal_Shape/boundedaffineimage1.cc (1.13),
+	  tests/Octagonal_Shape/boundedaffinepreimage1.cc (1.7),
+	  tests/Octagonal_Shape/bounds1.cc (1.6),
+	  tests/Octagonal_Shape/cc76extrapolation1.cc (1.8),
+	  tests/Octagonal_Shape/cc76narrowing1.cc (1.6),
+	  tests/Octagonal_Shape/chinainit.cc (1.5),
+	  tests/Octagonal_Shape/concatenate1.cc (1.5),
+	  tests/Octagonal_Shape/congruences1.cc (1.7),
+	  tests/Octagonal_Shape/constrains1.cc (1.2),
+	  tests/Octagonal_Shape/constraints1.cc (1.8),
+	  tests/Octagonal_Shape/contains1.cc (1.6),
+	  tests/Octagonal_Shape/containsintegerpoint1.cc (1.9),
+	  tests/Octagonal_Shape/difference1.cc (1.2),
+	  tests/Octagonal_Shape/discrete1.cc (1.6),
+	  tests/Octagonal_Shape/disjoint1.cc (1.9),
+	  tests/Octagonal_Shape/empty1.cc (1.5),
+	  tests/Octagonal_Shape/expandspacedim1.cc (1.8),
+	  tests/Octagonal_Shape/foldspacedims1.cc (1.7),
+	  tests/Octagonal_Shape/frombdshape1.cc (1.3),
+	  tests/Octagonal_Shape/frombox1.cc (1.2),
+	  tests/Octagonal_Shape/fromgensys1.cc (1.5),
+	  tests/Octagonal_Shape/fromgrid1.cc (1.4),
+	  tests/Octagonal_Shape/fromoctagonalshape1.cc (1.3),
+	  tests/Octagonal_Shape/frompolyhedron1.cc (1.7),
+	  tests/Octagonal_Shape/fromspacedim1.cc (1.4),
+	  tests/Octagonal_Shape/generalizedaffineimage1.cc (1.7),
+	  tests/Octagonal_Shape/generalizedaffineimage2.cc (1.7),
+	  tests/Octagonal_Shape/generalizedaffineimage3.cc (1.12),
+	  tests/Octagonal_Shape/generalizedaffineimage4.cc (1.7),
+	  tests/Octagonal_Shape/generalizedaffineimage5.cc (1.7),
+	  tests/Octagonal_Shape/generalizedaffinepreimage1.cc (1.8),
+	  tests/Octagonal_Shape/generalizedaffinepreimage2.cc (1.12),
+	  tests/Octagonal_Shape/generalizedaffinepreimage3.cc (1.8),
+	  tests/Octagonal_Shape/generalizedaffinepreimage4.cc (1.7),
+	  tests/Octagonal_Shape/intersection1.cc (1.7),
+	  tests/Octagonal_Shape/limitedbhmz05extrapolation1.cc (1.9),
+	  tests/Octagonal_Shape/limitedcc76extrapolation1.cc (1.9),
+	  tests/Octagonal_Shape/mapspacedims1.cc (1.7),
+	  tests/Octagonal_Shape/max_min1.cc (1.7),
+	  tests/Octagonal_Shape/max_min2.cc (1.8),
+	  tests/Octagonal_Shape/maxspacedim1.cc (1.7),
+	  tests/Octagonal_Shape/membytes1.cc (1.9),
+	  tests/Octagonal_Shape/minconstraints1.cc (1.7),
+	  tests/Octagonal_Shape/relatwithcons1.cc (1.6),
+	  tests/Octagonal_Shape/relatwithcons2.cc (1.11),
+	  tests/Octagonal_Shape/relatwithcons3.cc (1.4),
+	  tests/Octagonal_Shape/relatwithgen1.cc (1.11),
+	  tests/Octagonal_Shape/removespacedims1.cc (1.6),
+	  tests/Octagonal_Shape/run_tests (1.5),
+	  tests/Octagonal_Shape/timeelapse1.cc (1.7),
+	  tests/Octagonal_Shape/unconstrain1.cc (1.2),
+	  tests/Octagonal_Shape/universe1.cc (1.5),
+	  tests/Octagonal_Shape/upperbound1.cc (1.2),
+	  tests/Octagonal_Shape/writeoctagon1.cc (1.7),
+	  tests/Partially_Reduced_Product/Makefile.am (1.9),
+	  tests/Partially_Reduced_Product/asciidumpload1.cc (1.4),
+	  tests/Partially_Reduced_Product/directproduct1.cc (1.5),
+	  tests/Partially_Reduced_Product/directproduct2.cc (1.4),
+	  tests/Partially_Reduced_Product/directproduct3.cc (1.5),
+	  tests/Partially_Reduced_Product/directproduct4.cc (1.3),
+	  tests/Partially_Reduced_Product/directproduct5.cc (1.3),
+	  tests/Partially_Reduced_Product/directproduct6.cc (1.5),
+	  tests/Partially_Reduced_Product/partiallyreducedproduct1.cc
+	  (1.6),
+	  tests/Partially_Reduced_Product/partiallyreducedproduct2.cc
+	  (1.5),
+	  tests/Partially_Reduced_Product/partiallyreducedproduct3.cc
+	  (1.3),
+	  tests/Partially_Reduced_Product/partiallyreducedproduct4.cc
+	  (1.3), tests/Polyhedron/Makefile.am (1.135),
+	  tests/Polyhedron/addcongruence1.cc (1.12),
+	  tests/Polyhedron/addcongruences1.cc (1.15),
+	  tests/Polyhedron/addconstraint1.cc (1.13),
+	  tests/Polyhedron/addconstraints1.cc (1.14),
+	  tests/Polyhedron/addconstraints2.cc (1.13),
+	  tests/Polyhedron/addgenerator1.cc (1.14),
+	  tests/Polyhedron/addgenerator2.cc (1.14),
+	  tests/Polyhedron/addgenerators1.cc (1.15),
+	  tests/Polyhedron/addgenerators2.cc (1.14),
+	  tests/Polyhedron/addspacedims1.cc (1.14),
+	  tests/Polyhedron/addspacedims2.cc (1.14),
+	  tests/Polyhedron/affineimage1.cc (1.14),
+	  tests/Polyhedron/affineimage2.cc (1.15),
+	  tests/Polyhedron/affinepreimage1.cc (1.13),
+	  tests/Polyhedron/affinetrans.cc (1.13),
+	  tests/Polyhedron/append1.cc (1.16), tests/Polyhedron/append2.cc
+	  (1.15), tests/Polyhedron/ascii_dump_load1.cc (1.12),
+	  tests/Polyhedron/ascii_dump_load2.cc (1.12),
+	  tests/Polyhedron/ascii_dump_load3.cc (1.13),
+	  tests/Polyhedron/bgp99extrapolation1.cc (1.16),
+	  tests/Polyhedron/bgp99extrapolation2.cc (1.10),
+	  tests/Polyhedron/bhrz03widening1.cc (1.14),
+	  tests/Polyhedron/bhrz03widening2.cc (1.13),
+	  tests/Polyhedron/bhrz03widening3.cc (1.18),
+	  tests/Polyhedron/bhz03widening1.cc (1.16),
+	  tests/Polyhedron/bounded1.cc (1.13),
+	  tests/Polyhedron/boundedaffineimage1.cc (1.17),
+	  tests/Polyhedron/boundedaffinepreimage1.cc (1.11),
+	  tests/Polyhedron/boundedbhrz03extrapolation1.cc (1.14),
+	  tests/Polyhedron/boundedh79extrapolation1.cc (1.14),
+	  tests/Polyhedron/bounds1.cc (1.13),
+	  tests/Polyhedron/cnncconversion1.cc (1.7),
+	  tests/Polyhedron/concatenate1.cc (1.13),
+	  tests/Polyhedron/congruences1.cc (1.16),
+	  tests/Polyhedron/constrains1.cc (1.3),
+	  tests/Polyhedron/constraints1.cc (1.13),
+	  tests/Polyhedron/contains1.cc (1.12),
+	  tests/Polyhedron/contains2.cc (1.12),
+	  tests/Polyhedron/containsintegerpoint1.cc (1.6),
+	  tests/Polyhedron/disjoint1.cc (1.12),
+	  tests/Polyhedron/disjoint2.cc (1.14),
+	  tests/Polyhedron/dualhypercubes.cc (1.18),
+	  tests/Polyhedron/empty1.cc (1.13), tests/Polyhedron/equals1.cc
+	  (1.12), tests/Polyhedron/exceptions1.cc (1.19),
+	  tests/Polyhedron/exceptions2.cc (1.16),
+	  tests/Polyhedron/exceptions3.cc (1.13),
+	  tests/Polyhedron/expandspacedim1.cc (1.15),
+	  tests/Polyhedron/expandspacedim2.cc (1.15),
+	  tests/Polyhedron/foldspacedims1.cc (1.17),
+	  tests/Polyhedron/foldspacedims2.cc (1.18),
+	  tests/Polyhedron/frombdshape1.cc (1.3),
+	  tests/Polyhedron/frombox1.cc (1.6), tests/Polyhedron/frombox2.cc
+	  (1.6), tests/Polyhedron/fromgrid1.cc (1.3),
+	  tests/Polyhedron/fromoctagonalshape1.cc (1.3),
+	  tests/Polyhedron/generalizedaffineimage1.cc (1.15),
+	  tests/Polyhedron/generalizedaffineimage2.cc (1.15),
+	  tests/Polyhedron/generalizedaffinepreimage1.cc (1.12),
+	  tests/Polyhedron/generalizedaffinepreimage2.cc (1.11),
+	  tests/Polyhedron/generators1.cc (1.13),
+	  tests/Polyhedron/geomcovers1.cc (1.16),
+	  tests/Polyhedron/h79widening1.cc (1.14),
+	  tests/Polyhedron/h79widening2.cc (1.13),
+	  tests/Polyhedron/hybrid.cc (1.10),
+	  tests/Polyhedron/intersection1.cc (1.17),
+	  tests/Polyhedron/limitedbhrz03extrapolation1.cc (1.12),
+	  tests/Polyhedron/limitedh79extrapolation1.cc (1.13),
+	  tests/Polyhedron/linearpartition1.cc (1.17),
+	  tests/Polyhedron/linearsystem1.cc (1.12),
+	  tests/Polyhedron/linexpression1.cc (1.12),
+	  tests/Polyhedron/mapspacedims1.cc (1.17),
+	  tests/Polyhedron/matrix1.cc (1.12), tests/Polyhedron/max_min1.cc
+	  (1.14), tests/Polyhedron/maxspacedim1.cc (1.20),
+	  tests/Polyhedron/mc91.cc (1.17), tests/Polyhedron/membytes1.cc
+	  (1.18), tests/Polyhedron/memory1.cc (1.21),
+	  tests/Polyhedron/memory2.cc (1.20),
+	  tests/Polyhedron/minconstraints1.cc (1.12),
+	  tests/Polyhedron/minconstraints2.cc (1.14),
+	  tests/Polyhedron/mingenerators1.cc (1.12),
+	  tests/Polyhedron/mingenerators2.cc (1.13),
+	  tests/Polyhedron/nncminimize1.cc (1.11),
+	  tests/Polyhedron/nncminimize2.cc (1.9),
+	  tests/Polyhedron/numberinput1.cc (1.34),
+	  tests/Polyhedron/onepoint.cc (1.13), tests/Polyhedron/permute.cc
+	  (1.13), tests/Polyhedron/polydifference1.cc (1.16),
+	  tests/Polyhedron/polydifference2.cc (1.15),
+	  tests/Polyhedron/polyhull1.cc (1.16),
+	  tests/Polyhedron/polyhull2.cc (1.16),
+	  tests/Polyhedron/polyhullifexact1.cc (1.5),
+	  tests/Polyhedron/polyhullifexact2.cc (1.3),
+	  tests/Polyhedron/randphull1.cc (1.17),
+	  tests/Polyhedron/refinewithcongruence1.cc (1.2),
+	  tests/Polyhedron/refinewithcongruences1.cc (1.3),
+	  tests/Polyhedron/refinewithconstraint1.cc (1.2),
+	  tests/Polyhedron/refinewithconstraints1.cc (1.2),
+	  tests/Polyhedron/relations1.cc (1.13),
+	  tests/Polyhedron/relations2.cc (1.14),
+	  tests/Polyhedron/relations3.cc (1.13),
+	  tests/Polyhedron/removespacedims1.cc (1.13),
+	  tests/Polyhedron/removespacedims2.cc (1.13),
+	  tests/Polyhedron/simplifyusingcontext1.cc (1.4),
+	  tests/Polyhedron/smm1.cc (1.12), tests/Polyhedron/timeelapse1.cc
+	  (1.14), tests/Polyhedron/timeelapse2.cc (1.14),
+	  tests/Polyhedron/topclosed1.cc (1.13),
+	  tests/Polyhedron/topclosure1.cc (1.13),
+	  tests/Polyhedron/unconstrain1.cc (1.2),
+	  tests/Polyhedron/universe1.cc (1.13),
+	  tests/Polyhedron/universe2.cc (1.13),
+	  tests/Polyhedron/variablesset1.cc (1.13),
+	  tests/Polyhedron/watchdog1.cc (1.12),
+	  tests/Polyhedron/writeconsys1.cc (1.13),
+	  tests/Polyhedron/writegensys1.cc (1.13),
+	  tests/Polyhedron/writepolyhedron1.cc (1.13),
+	  tests/Polyhedron/writepolyhedron2.cc (1.13),
+	  tests/Polyhedron/writerelation1.cc (1.15),
+	  tests/Polyhedron/writevariable1.cc (1.10),
+	  tests/Powerset/Makefile.am (1.13),
+	  tests/Powerset/addcongruences1.cc (1.2),
+	  tests/Powerset/addconstraints1.cc (1.2),
+	  tests/Powerset/affinedimension1.cc (1.2),
+	  tests/Powerset/affineimage1.cc (1.2),
+	  tests/Powerset/affinepreimage1.cc (1.2),
+	  tests/Powerset/bounded1.cc (1.2), tests/Powerset/bounds1.cc
+	  (1.2), tests/Powerset/closed1.cc (1.2),
+	  tests/Powerset/closure1.cc (1.2), tests/Powerset/collapse1.cc
+	  (1.2), tests/Powerset/concatenate1.cc (1.2),
+	  tests/Powerset/contains1.cc (1.2),
+	  tests/Powerset/containsintegerpoint1.cc (1.2),
+	  tests/Powerset/difference1.cc (1.3), tests/Powerset/discrete1.cc
+	  (1.2), tests/Powerset/disjoint1.cc (1.2),
+	  tests/Powerset/disjunct1.cc (1.2), tests/Powerset/empty1.cc
+	  (1.2), tests/Powerset/entails1.cc (1.2),
+	  tests/Powerset/equals1.cc (1.2), tests/Powerset/frombdshape1.cc
+	  (1.2), tests/Powerset/frombox1.cc (1.2),
+	  tests/Powerset/fromcongruences1.cc (1.2),
+	  tests/Powerset/fromconstraints1.cc (1.3),
+	  tests/Powerset/fromgrid1.cc (1.2),
+	  tests/Powerset/fromoctagonalshape1.cc (1.2),
+	  tests/Powerset/frompolyhedron1.cc (1.2),
+	  tests/Powerset/fromspacedimension1.cc (1.3),
+	  tests/Powerset/intersection1.cc (1.2), tests/Powerset/maxmin1.cc
+	  (1.2), tests/Powerset/meet1.cc (1.2), tests/Powerset/membytes1.cc
+	  (1.2), tests/Powerset/powerset1.cc (1.2),
+	  tests/Powerset/reduce1.cc (1.2), tests/Powerset/refinewith1.cc
+	  (1.2), tests/Powerset/relationwith1.cc (1.2),
+	  tests/Powerset/simplifyusingcontext1.cc (1.8),
+	  tests/Powerset/size1.cc (1.2), tests/Powerset/spacedims1.cc
+	  (1.2), tests/Powerset/universe1.cc (1.2),
+	  tests/Powerset/upperbound1.cc (1.2), utils/Makefile.am (1.20),
+	  utils/build_header.in (1.8), utils/cm_cleaner.sh (1.6),
+	  utils/cm_splitter.sh (1.6), utils/text2cxxarray.in (1.6),
+	  utils/timings.cc (1.14), utils/timings.hh (1.8): Copyright years
+	  extended.
+
+2008-12-29 Monday 14:36  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Box/upperboundifexact1.cc (1.3): New test added.
+
+2008-12-23 Tuesday 19:30  Abramo Bagnara
+
+	* src/Interval.inlines.hh (1.48): Fixed typo.
+
+2008-12-23 Tuesday 12:22  Abramo Bagnara
+
+	* src/Interval.inlines.hh (1.47): Fixed typo.
+
+2008-12-23 Tuesday 11:41  Abramo Bagnara
+
+	* src/Interval.defs.hh (1.64): Added missing const_cast.
+
+2008-12-22 Monday 12:14  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Interval.defs.hh (1.63): Added declarations for methods
+	  lower_approximation_difference_assign() and
+	  simplify_using_context_assign().
+
+2008-12-22 Monday 10:55  Abramo Bagnara
+
+	* src/Interval.inlines.hh (1.46): Simplified (and hopefully fixed)
+	  can_be_exactly_joined logics.
+
+2008-12-22 Monday 10:36  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Box.templates.hh (1.139): Method
+	  upper_bound_assign_if_exact() corrected and its efficiency
+	  improved.
+
+2008-12-22 Monday 10:31  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Box/upperboundifexact1.cc (1.2): Adapted to test the method
+	  on the Box domain.
+
+2008-12-21 Sunday 16:04  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Boundary.defs.hh (1.16), src/Box.inlines.hh (1.43),
+	  src/Box.templates.hh (1.138), src/Interval.defs.hh (1.62),
+	  src/Interval.inlines.hh (1.45), src/Interval_Restriction.defs.hh
+	  (1.16), tests/Box/Makefile.am (1.79),
+	  tests/Box/upperboundifexact1.cc (1.1): New implementation of
+	  method Box::upper_bound_assign_if_exact(const Box&).
+
+2008-12-18 Thursday 11:39  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.412): Version number bumped.
+
+2008-12-18 Thursday 09:55  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	*
+	  interfaces/Java/jni/ppl_interface_generator_java_classes_cc_code.m4
+	  (1.33): Added several missing try { ... } CATCH_ALL blocks. Now
+	  all interfaced functions should be able to translate any C++
+	  exception into a Java exception.
+
+2008-12-18 Thursday 09:53  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/Java/jni/ppl_java_common.defs.hh (1.7): The CATCH_ALL
+	  macro should not end with a semicolon.
+
+2008-12-18 Thursday 09:52  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/Java/jni/ppl_java_common.cc (1.54): Added a newline
+	  for readability.
+
+2008-12-17 Wednesday 18:10  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	*
+	  interfaces/Java/parma_polyhedra_library/ppl_interface_generator_java_classes_java_code.m4
+	  (1.17): Corrected a typo in the naming of a parameter.
+
+2008-12-17 Wednesday 17:21  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/BD_Shape/: Makefile.am (1.85), simplifyusingcontext1.cc
+	  (1.1): Added test for method
+	  BD_Shape<T>::simplify_using_context_assign().
+
+2008-12-17 Wednesday 17:20  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/BD_Shape.templates.hh (1.128): Drafted an implementation for
+	  simplify_using_context_assign().
+
+2008-12-17 Wednesday 13:01  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Polyhedron_nonpublic.cc (1.93): Method
+	  BFT00_poly_hull_assign_if_exact() is only correct for closed
+	  polyhedra: added an assertion and adapted comments.  Added draft
+	  implementation for new method BHZ09_poly_hull_assign_if_exact().
+
+2008-12-17 Wednesday 12:54  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/MIP_Problem.cc (1.79): Indentation fixed.
+
+2008-12-17 Wednesday 12:53  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Polyhedron.defs.hh (1.360): Corrected the specification of
+	  method BFT00__poly_hull_assign_if_exact: the method is only
+	  correct for closed polyhedra.  Added declaration for another
+	  (protected) method that will be based on an alternative algorithm
+	  (named BHZ09_poly_hull_assign_if_exact).
+
+2008-12-17 Wednesday 12:49  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Bit_Row.cc (1.7): Added a naive, inefficient implementation
+	  for method set_until.
+
+2008-12-16 Tuesday 07:57  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* CREDITS, ChangeLog, NEWS, README, README.arm, README.configure,
+	  STANDARDS, TODO, configure.ac, Watchdog/ChangeLog,
+	  Watchdog/README, Watchdog/config.rpath, Watchdog/configure.ac,
+	  Watchdog/doc/Makefile.am, Watchdog/doc/user.doxyconf-html.in,
+	  Watchdog/doc/user.doxyconf-latex.in, Watchdog/m4/Makefile.am,
+	  Watchdog/m4/lib-ld.m4, Watchdog/m4/lib-link.m4,
+	  demos/ppl_lcdd/ppl_lcdd.1, demos/ppl_lcdd/ppl_lcdd.cc,
+	  demos/ppl_lpsol/ppl_lpsol.1, demos/ppl_lpsol/ppl_lpsol.c,
+	  devtools/print_nonascii_lines, doc/Makefile.am,
+	  doc/definitions.dox,
+	  doc/devref-foreign-language-interface.doxyconf.in,
+	  doc/devref-foreign-language-interface.tex,
+	  doc/devref-language-interface.doxyconf.in,
+	  doc/devref-language-interface.tex, doc/libppl.3, doc/libppl_c.3,
+	  doc/ppl-config.1, doc/ppl.sty,
+	  doc/user-foreign-language-interface.doxyconf.in,
+	  doc/user-foreign-language-interface.tex,
+	  doc/user-language-interface.doxyconf.in,
+	  doc/user-language-interface.tex, doc/user.doxyconf-html.in,
+	  doc/user.doxyconf-latex.in, fedora/ppl.spec,
+	  interfaces/interfaced_boxes.hh, interfaces/marked_pointers.hh,
+	  interfaces/ppl_interface_generator_common.m4,
+	  interfaces/ppl_interface_generator_common_dat.m4,
+	  interfaces/ppl_interface_generator_common_procedure_generators.m4,
+	  interfaces/C/ppl_interface_generator_c_cc_code.m4,
+	  interfaces/C/ppl_interface_generator_c_cc_files.m4,
+	  interfaces/C/ppl_interface_generator_c_h_code.m4,
+	  interfaces/C/ppl_interface_generator_c_hh_files.m4,
+	  interfaces/C/ppl_interface_generator_c_procedure_generators.m4,
+	  interfaces/Java/Makefile.am, interfaces/Java/README.java,
+	  interfaces/Java/jni/Makefile.am,
+	  interfaces/Java/jni/ppl_interface_generator_java_classes_cc_code.m4,
+	  interfaces/Java/jni/ppl_interface_generator_java_classes_cc_files.m4,
+	  interfaces/Java/jni/ppl_java_common.cc,
+	  interfaces/Java/jni/ppl_java_common.inlines.hh,
+	  interfaces/Java/jni/ppl_java_globals.cc,
+	  interfaces/Java/parma_polyhedra_library/ppl_interface_generator_java_classes_java.m4,
+	  interfaces/Java/parma_polyhedra_library/ppl_interface_generator_java_classes_java_code.m4,
+	  interfaces/Java/tests/ppl_interface_generator_java_test_java.m4,
+	  interfaces/Java/tests/ppl_interface_generator_java_test_java_code.m4,
+	  interfaces/OCaml/Makefile.am,
+	  interfaces/OCaml/OCaml_interface.dox,
+	  interfaces/OCaml/README.ocaml,
+	  interfaces/OCaml/ppl_interface_generator_ocaml_cc_code.m4,
+	  interfaces/OCaml/ppl_interface_generator_ocaml_cc_files.m4,
+	  interfaces/OCaml/ppl_interface_generator_ocaml_hh_files.m4,
+	  interfaces/OCaml/ppl_interface_generator_ocaml_ml.m4,
+	  interfaces/OCaml/ppl_interface_generator_ocaml_ml_code.m4,
+	  interfaces/OCaml/ppl_interface_generator_ocaml_mli.m4,
+	  interfaces/OCaml/ppl_interface_generator_ocaml_mli_code.m4,
+	  interfaces/OCaml/ppl_ocaml_common.cc,
+	  interfaces/OCaml/tests/Makefile.am,
+	  interfaces/OCaml/tests/ppl_interface_generator_ocaml_test_ml.m4,
+	  interfaces/OCaml/tests/ppl_interface_generator_ocaml_test_ml_code.m4,
+	  interfaces/OCaml/tests/test1.ml,
+	  interfaces/Prolog/Prolog_interface.dox,
+	  interfaces/Prolog/ppl_interface_generator_prolog_cc_code.m4,
+	  interfaces/Prolog/ppl_interface_generator_prolog_cc_files.m4,
+	  interfaces/Prolog/ppl_interface_generator_prolog_dox.m4,
+	  interfaces/Prolog/ppl_interface_generator_prolog_dox_code.m4,
+	  interfaces/Prolog/ppl_interface_generator_prolog_hh_code.m4,
+	  interfaces/Prolog/ppl_interface_generator_prolog_hh_files.m4,
+	  interfaces/Prolog/ppl_interface_generator_prolog_procedure_generators.m4,
+	  interfaces/Prolog/ppl_prolog_common.cc,
+	  interfaces/Prolog/ppl_prolog_common.defs.hh,
+	  interfaces/Prolog/Ciao/Makefile.am,
+	  interfaces/Prolog/Ciao/ppl_interface_generator_ciao_pl.m4,
+	  interfaces/Prolog/Ciao/ppl_interface_generator_ciao_prolog_generated_test_pl.m4,
+	  interfaces/Prolog/GNU/Makefile.am,
+	  interfaces/Prolog/GNU/README.gprolog,
+	  interfaces/Prolog/GNU/ppl_interface_generator_gprolog_pl.m4,
+	  interfaces/Prolog/SICStus/Makefile.am,
+	  interfaces/Prolog/SICStus/ppl_interface_generator_sicstus_sd_cc.m4,
+	  interfaces/Prolog/SWI/Makefile.am,
+	  interfaces/Prolog/SWI/README.swiprolog,
+	  interfaces/Prolog/SWI/ppl_interface_generator_swiprolog_cc.m4,
+	  interfaces/Prolog/SWI/swi_efli.cc,
+	  interfaces/Prolog/XSB/Makefile.am,
+	  interfaces/Prolog/XSB/ppl_interface_generator_xsb_H.m4,
+	  interfaces/Prolog/XSB/ppl_interface_generator_xsb_cc.m4,
+	  interfaces/Prolog/XSB/ppl_interface_generator_xsb_hh.m4,
+	  interfaces/Prolog/XSB/ppl_interface_generator_xsb_prolog_generated_test_P.m4,
+	  interfaces/Prolog/YAP/Makefile.am,
+	  interfaces/Prolog/YAP/ppl_interface_generator_yap_cc.m4,
+	  interfaces/Prolog/tests/ppl_interface_generator_prolog_generated_test_pl.m4,
+	  interfaces/Prolog/tests/ppl_interface_generator_prolog_generated_test_pl_code.m4,
+	  interfaces/Prolog/tests/ppl_prolog_generated_test_common.pl,
+	  m4/ac_check_swi_prolog.m4, src/BDS_Status.inlines.hh,
+	  src/BD_Shape.defs.hh, src/BD_Shape.inlines.hh,
+	  src/BD_Shape.templates.hh, src/Bit_Row.inlines.hh,
+	  src/Boundary.defs.hh, src/Box.defs.hh, src/Box.inlines.hh,
+	  src/Box.templates.hh, src/Box_Status.inlines.hh,
+	  src/C_Polyhedron.cc, src/Checked_Number.defs.hh,
+	  src/Checked_Number.inlines.hh, src/Congruence.cc,
+	  src/Congruence_System.cc, src/Constraint.cc,
+	  src/DB_Matrix.templates.hh, src/DB_Row.inlines.hh,
+	  src/Determinate.inlines.hh, src/Float.defs.hh, src/Generator.cc,
+	  src/Generator.inlines.hh, src/Generator_System.cc,
+	  src/Grid.defs.hh, src/Grid.inlines.hh, src/Grid.templates.hh,
+	  src/Grid_Generator.cc, src/Grid_Generator.defs.hh,
+	  src/Grid_Generator_System.cc, src/Grid_Status.cc,
+	  src/Grid_conversion.cc, src/Grid_nonpublic.cc,
+	  src/Grid_public.cc, src/Grid_simplify.cc, src/Init.cc,
+	  src/Interval.defs.hh, src/Interval.inlines.hh,
+	  src/Interval_Restriction.defs.hh, src/Linear_Expression.cc,
+	  src/Linear_Expression.inlines.hh, src/Linear_Row.cc,
+	  src/MIP_Problem.cc, src/Makefile.am, src/Matrix.cc,
+	  src/OR_Matrix.inlines.hh, src/OR_Matrix.templates.hh,
+	  src/Octagonal_Shape.defs.hh, src/Octagonal_Shape.inlines.hh,
+	  src/Octagonal_Shape.templates.hh, src/Og_Status.inlines.hh,
+	  src/Partially_Reduced_Product.defs.hh,
+	  src/Partially_Reduced_Product.inlines.hh,
+	  src/Partially_Reduced_Product.templates.hh, src/Ph_Status.cc,
+	  src/Pointset_Ask_Tell.templates.hh, src/Pointset_Powerset.cc,
+	  src/Pointset_Powerset.defs.hh,
+	  src/Pointset_Powerset.templates.hh,
+	  src/Poly_Con_Relation.defs.hh, src/Poly_Gen_Relation.defs.hh,
+	  src/Polyhedron.defs.hh, src/Polyhedron.templates.hh,
+	  src/Polyhedron_nonpublic.cc, src/Polyhedron_public.cc,
+	  src/Polyhedron_widenings.cc, src/Rounding_Dir.inlines.hh,
+	  src/Row.cc, src/Row.inlines.hh, src/Scalar_Products.cc,
+	  src/Scalar_Products.inlines.hh, src/Temp.inlines.hh,
+	  src/checked.defs.hh, src/checked.inlines.hh,
+	  src/checked_float.inlines.hh, src/checked_int.inlines.hh,
+	  src/checked_mpq.inlines.hh, src/checked_mpz.inlines.hh,
+	  src/checked_numeric_limits.hh, src/conversion.cc,
+	  src/fpu-c99.inlines.hh, src/fpu-ia32.inlines.hh,
+	  src/fpu-sparc.inlines.hh, src/globals.defs.hh,
+	  src/globals.inlines.hh, src/math_utilities.inlines.hh,
+	  src/meta_programming.hh, src/namespaces.hh, src/ppl_header.hh,
+	  src/simplify.cc, src/version.cc, tests/BD_Shape/Makefile.am,
+	  tests/BD_Shape/pointsetpowerset1.cc,
+	  tests/BD_Shape/upperboundifexact1.cc, tests/Box/Makefile.am,
+	  tests/Box/ascii_dump_load1.cc, tests/Box/empty1.cc,
+	  tests/Box/fromgrid1.cc, tests/Box/pointsetpowerset1.cc,
+	  tests/Box/pointsetpowerset2.cc,
+	  tests/Box/refinewithconstraint1.cc, tests/Grid/Makefile.am,
+	  tests/Grid/bounds1.cc, tests/Grid/maxmin1.cc,
+	  tests/Grid/partition1.cc, tests/Grid/pointsetpowerset1.cc,
+	  tests/MIP_Problem/Makefile.am, tests/Octagonal_Shape/Makefile.am,
+	  tests/Octagonal_Shape/pointsetpowerset1.cc,
+	  tests/Partially_Reduced_Product/directproduct6.cc,
+	  tests/Partially_Reduced_Product/partiallyreducedproduct2.cc,
+	  tests/Polyhedron/Makefile.am,
+	  tests/Polyhedron/bgp99extrapolation1.cc,
+	  tests/Polyhedron/bgp99extrapolation2.cc,
+	  tests/Polyhedron/containsintegerpoint1.cc,
+	  tests/Polyhedron/memory1.cc, tests/Polyhedron/memory2.cc,
+	  tests/Polyhedron/polydifference1.cc,
+	  tests/Polyhedron/polyhullifexact1.cc,
+	  tests/Polyhedron/polyhullifexact2.cc,
+	  tests/Polyhedron/simplifyusingcontext1.cc,
+	  tests/Powerset/Makefile.am, tests/Powerset/addcongruences1.cc,
+	  tests/Powerset/addconstraints1.cc,
+	  tests/Powerset/affinedimension1.cc,
+	  tests/Powerset/affineimage1.cc,
+	  tests/Powerset/affinepreimage1.cc, tests/Powerset/bounded1.cc,
+	  tests/Powerset/bounds1.cc, tests/Powerset/closed1.cc,
+	  tests/Powerset/closure1.cc, tests/Powerset/collapse1.cc,
+	  tests/Powerset/concatenate1.cc, tests/Powerset/contains1.cc,
+	  tests/Powerset/containsintegerpoint1.cc,
+	  tests/Powerset/difference1.cc, tests/Powerset/discrete1.cc,
+	  tests/Powerset/disjoint1.cc, tests/Powerset/disjunct1.cc,
+	  tests/Powerset/empty1.cc, tests/Powerset/entails1.cc,
+	  tests/Powerset/equals1.cc, tests/Powerset/frombdshape1.cc,
+	  tests/Powerset/frombox1.cc, tests/Powerset/fromcongruences1.cc,
+	  tests/Powerset/fromconstraints1.cc, tests/Powerset/fromgrid1.cc,
+	  tests/Powerset/fromoctagonalshape1.cc,
+	  tests/Powerset/frompolyhedron1.cc,
+	  tests/Powerset/fromspacedimension1.cc,
+	  tests/Powerset/intersection1.cc, tests/Powerset/maxmin1.cc,
+	  tests/Powerset/meet1.cc, tests/Powerset/membytes1.cc,
+	  tests/Powerset/pointsetpowerset1.cc,
+	  tests/Powerset/pointsetpowerset2.cc,
+	  tests/Powerset/pointsetpowerset3.cc,
+	  tests/Powerset/pointsetpowerset4.cc,
+	  tests/Powerset/pointsetpowerset5.cc,
+	  tests/Powerset/pointsetpowerset6.cc, tests/Powerset/product1.cc,
+	  tests/Powerset/reduce1.cc, tests/Powerset/refinewith1.cc,
+	  tests/Powerset/relationwith1.cc, tests/Powerset/size1.cc,
+	  tests/Powerset/spacedims1.cc, tests/Powerset/universe1.cc,
+	  tests/Powerset/upperbound1.cc
+	  (bounded_arithmetic.[2,3,3,2,3,2,2,3,3,3,2,2,3,3,3,3,2,2,2,3,2,3,3,2,3,3,3,3,2,2,4,3,3,1,3,3,2,2,3,3,2,1,4,2,3,3,3,3,3,3,2,3,2,3,3,3,3,3,3,3,3,2,3,3,4,2,3,3,3,2,3,3,3,3,4,4,4,4,3,4,4,4,4,4,4,3,4,4,3,2,3,3,2,1,3,2,3,2,2,4,3,2,2,3,3,3,2,3,3,3,2,1,3,3,3,2,2,3,3,3,1,1,3,3,2,3,1,2,1,1,3,1,1,2,3,2,2,1,2,1,1,1,3,3,2,3,3,3,2,1,2,1,3,3,1,2,2,3,2,3,1,3,2,2,1,1,3,3,3,1,1,4,2,3,4,3,2,1,1,1,1,1,2,2,3,3,2,3,1,2,3,2,2,2,1,1,1,2,2,2,2,3,2,2,3,2,1,2,2,2,2,3,2,2,2,2,2,3,1,3,3,4,1,2,1,2,2,2,2,2,3,4,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,4,4,3,3,3,3,3,2,2,2,2,2,2,2]):
+	  Third merge of the trunk to the bounded_arithmetic branch.
+
+2008-12-13 Saturday 11:28  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* demos/ppl_lcdd/ppl_lcdd.cc (1.64): Added missing inclusions.
+
+2008-12-05 Friday 07:52  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* fedora/ppl.spec (1.29): Added `%dir %{_datadir}/doc/pwl' to the
+	  `%files' section of the `ppl-pwl' package.
+
+2008-12-01 Monday 18:06  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: BDS_Status.inlines.hh (1.20), Box_Status.inlines.hh (1.4),
+	  Grid_Status.cc (1.10), Og_Status.inlines.hh (1.7), Ph_Status.cc
+	  (1.16): Dealt with several false-alarm warnings about possibly
+	  uninitialized variables.
+
+2008-12-01 Monday 17:29  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.411): Fixed the definition of
+	  BUILD_OCAML_INTERFACE.
+
+2008-12-01 Monday 11:25  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/NNC_Polyhedron.cc (1.29): Restored old implementation of
+	  method poly_hull_assign_if_exact(), as the algorithm in BFT00TR
+	  does not generalizes as is to the NNC case.
+
+2008-12-01 Monday 11:02  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Polyhedron/polyhullifexact2.cc (1.2): Added another test,
+	  showing that the algorithm in BFT00 can not be extented as is to
+	  NNC polyhedra.
+
+2008-12-01 Monday 11:02  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Polyhedron/polyhullifexact2.cc (bounded_arithmetic.1): file
+	  polyhullifexact2.cc was added on branch bounded_arithmetic on
+	  2008-12-16 06:57:36 +0000
+
+2008-11-30 Sunday 21:13  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/configure.ac (1.57): Postpone the AC_LIB_RPATH test.
+
+2008-11-30 Sunday 08:48  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.410): Removed "AC_SUBST([docdir],
+	  ['${datadir}/doc/ppl'])": given that we require Autoconf 2.60 or
+	  later version, this was redundant.  Moreover, it did not allow to
+	  use the `--docdir' configure option.	(Thanks to Mike Frysinger.)
+
+2008-11-27 Thursday 18:02  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/MIP_Problem.cc (1.78): Indentation fixed.
+
+2008-11-26 Wednesday 18:19  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Polyhedron_nonpublic.cc (1.92): Wrong comment deleted.
+
+2008-11-26 Wednesday 18:12  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Scalar_Products.cc (1.11): Indentation fixed.
+
+2008-11-25 Tuesday 20:57  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Polyhedron/: Makefile.am (1.134), bgp99extrapolation1.cc
+	  (1.15), bgp99extrapolation2.cc (1.9): Test file
+	  bgp99extrapolation1.cc splitted in two: old test02 goes in file
+	  bgp99extrapoaltion2.cc and is now specialized to C and NNC cases,
+	  so as to allow a finer control of the expected overflows.
+
+2008-11-25 Tuesday 20:57  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Polyhedron/bgp99extrapolation2.cc (bounded_arithmetic.1):
+	  file bgp99extrapolation2.cc was added on branch
+	  bounded_arithmetic on 2008-12-16 06:57:36 +0000
+
+2008-11-25 Tuesday 20:36  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Polyhedron/polyhullifexact1.cc (1.4): test09() triggers an
+	  overflow when using on 8-bit checked integers.
+
+2008-11-25 Tuesday 20:36  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Polyhedron/polyhullifexact1.cc (bounded_arithmetic.1): file
+	  polyhullifexact1.cc was added on branch bounded_arithmetic on
+	  2008-12-16 06:57:36 +0000
+
+2008-11-25 Tuesday 15:38  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: BD_Shape.defs.hh (1.137), BD_Shape.inlines.hh (1.172),
+	  BD_Shape.templates.hh (1.127): Drafted an implementation of
+	  method BD_Shape::upper_bound_assign_if_exact(), based on
+	  Algorithm 4.1 in BemporadFT00TR (tailored to BD shapes).
+
+2008-11-25 Tuesday 15:36  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/BD_Shape/: Makefile.am (1.84), upperboundifexact1.cc (1.1):
+	  Added a few tests for BD_Shape::upper_bound_assign_if_exact().
+
+2008-11-25 Tuesday 15:36  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/BD_Shape/upperboundifexact1.cc (bounded_arithmetic.1): file
+	  upperboundifexact1.cc was added on branch bounded_arithmetic on
+	  2008-12-16 06:57:34 +0000
+
+2008-11-25 Tuesday 09:17  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Polyhedron_nonpublic.cc (1.91): Prefer Bit_Row::empty() to
+	  Bit_Row::count_ones() when testing for emptiness.
+
+2008-11-25 Tuesday 09:15  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Box.defs.hh (1.67): Fixed comment for
+	  Box::simplify_using_context_assign().
+
+2008-11-25 Tuesday 09:14  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Box.inlines.hh (1.42): Indentation fixed.
+
+2008-11-25 Tuesday 09:13  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/BD_Shape.templates.hh (1.126): Drafted implementation for
+	  incremental_shortest_path_closure_assign().
+
+2008-11-25 Tuesday 09:12  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Octagonal_Shape.templates.hh (1.99): Useless test for
+	  zero-dim removed from incremental_strong_closure_assign().
+
+2008-11-25 Tuesday 09:08  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Octagonal_Shape.defs.hh (1.63): Improved the documentation of
+	  the incremental strong closure private method.
+
+2008-11-25 Tuesday 09:06  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/BD_Shape.defs.hh (1.136): Declared a private method for
+	  incremental shortest-path closure.
+
+2008-11-25 Tuesday 08:30  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Powerset/difference1.cc (1.2): test03() no longer overflows
+	  on 8-bit checked integer coefficients.
+
+2008-11-25 Tuesday 08:30  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Powerset/difference1.cc (bounded_arithmetic.1): file
+	  difference1.cc was added on branch bounded_arithmetic on
+	  2008-12-16 06:57:37 +0000
+
+2008-11-24 Monday 21:27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Bit_Row.inlines.hh (1.10): Fixed Bit_Row::count_ones().
+
+2008-11-24 Monday 18:12  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Polyhedron/: Makefile.am (1.133), polyhullifexact1.cc
+	  (1.3), polyhullifexact2.cc (1.1): Tests that are specific for
+	  NNC_Polyhedron placed in a separate file, for which we do not
+	  produce the derived nnc test.
+
+2008-11-24 Monday 18:01  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Polyhedron/polyhullifexact1.cc (1.2): Added a few tests
+	  that are specific for the NNC_Polyhedron case.
+
+2008-11-24 Monday 18:00  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/NNC_Polyhedron.cc (1.28): Method
+	  NNC_Polyhedron::poly_hull_assign_if_exact() is now implemented
+	  using Polyhedron::BFT00_poly_hull_assign_if_exact().
+
+2008-11-24 Monday 17:59  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Polyhedron.defs.hh (1.359), Polyhedron_nonpublic.cc (1.90):
+	  Implementation of BFT00_poly_hull_assign_if_exact() generalized
+	  so as to correctly deal with the case of NNC polyhedra.
+
+2008-11-24 Monday 15:34  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/Box.templates.hh (1.137): Unwanted code removed.
+
+2008-11-24 Monday 12:07  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/C_Polyhedron.cc (1.28): Method
+	  C_Polyhedron::poly_hull_assign_if_exact() is now implemented
+	  using Polyhedron::BFT00_poly_hull_assign_if_exact().
+
+2008-11-24 Monday 12:05  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Polyhedron.defs.hh (1.358), Polyhedron_nonpublic.cc (1.89):
+	  Added protected method BFT00_poly_hull_assign_if_exact(),
+	  implementing (a variant of) an algorithm for the recognition of
+	  convex unions originally proposed by Bemporad, Fukuda and Torrisi
+	  in 2000.
+
+2008-11-24 Monday 11:41  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Polyhedron/: Makefile.am (1.132), polyhullifexact1.cc
+	  (1.1): Added tests for method poly_hull_assign_if_exact().
+
+2008-11-24 Monday 10:23  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/Box.templates.hh (1.136), src/Grid_Generator.defs.hh (1.36),
+	  tests/Box/fromgrid1.cc (1.8): The implementation of the Box from
+	  Grid constructor has been modified to use Grid::maximize() to
+	  check if a dimension is bounded and no longer needs
+	  Grid_Generator to declare the Box class as a friend.	The
+	  FIXME(0.10.1) wrt this has been removed.
+
+2008-11-24 Monday 09:37  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* NEWS (1.281): Report bug fix corrected in previous commit.
+
+2008-11-24 Monday 09:36  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/Grid_nonpublic.cc (1.40): Corrected private method bounds()
+	  whereby it did not correctly deal with the case when the grid
+	  generators were up-to-date but not minimized. This corrects the
+	  bugs shown in the previous commit.
+
+2008-11-24 Monday 09:34  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/Grid/: bounds1.cc (1.18), maxmin1.cc (1.16): Tests added
+	  that show a bug in bounds_from_above(), bounds_from_below(),
+	  maximize(), and minimize() in the Grids class.
+
+2008-11-22 Saturday 13:13  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/Partially_Reduced_Product.defs.hh (1.39),
+	  src/Partially_Reduced_Product.inlines.hh (1.37),
+	  src/Partially_Reduced_Product.templates.hh (1.16),
+	  tests/Partially_Reduced_Product/directproduct6.cc (1.4): When
+	  building from another product with different component domains
+	  and/or reduction operator, allow for any component domains and in
+	  any order.
+
+	  When building a product always check the space dimensions are no
+	  more than max_space_dimensions().
+
+	  Correct some comments in the Partially_Reduced_Product.defs.hh.
+
+	  A few tests added to test these code changes.
+
+2008-11-22 Saturday 10:48  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Polyhedron/simplifyusingcontext1.cc (1.3): Removed some
+	  commented out, useless code (it was the result of cut&paste from
+	  another test). Added known result for test01 and check against
+	  it.  Renumbered tests.
+
+2008-11-21 Friday 22:51  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/OCaml/tests/Makefile.am (1.27): Also set
+	  nodist_ppl_ocaml_generated_test_opt_SOURCES.
+
+2008-11-21 Friday 10:22  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/OCaml/: Makefile.am (1.65), tests/Makefile.am (1.26):
+	  Let the stack size limit for native compilation be as generous as
+	  that for bytecode compilation.
+
+2008-11-20 Thursday 22:35  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* NEWS (1.280), TODO (1.295): The OCaml interface now supports
+	  compilation to native code.  Also mentioned in the NEWS the
+	  correction of an OCaml interface bug.
+
+2008-11-20 Thursday 22:28  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/OCaml/README.ocaml (1.7): Added a few lines explaining
+	  how to use the OCaml interface with the native compiler ocamlopt.
+
+2008-11-20 Thursday 22:24  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/OCaml/Makefile.am (1.64): List libppl_ocaml.a in
+	  variable pkglib_LIBRARIES (removing it from variables
+	  noinst_LIBRARIES and ocaml_DATA).  When building the native OCaml
+	  interface, do generate, install and clean the library file
+	  ppl_ocaml.a.
+
+2008-11-20 Thursday 21:02  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/OCaml/: Makefile.am (1.63), tests/Makefile.am (1.25):
+	  Avoid using OCaml (bytecode/native) compiler option -g.  Do also
+	  clean *.o files generated by ocamlopt.
+
+2008-11-20 Thursday 17:22  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: BD_Shape.inlines.hh (1.171), Octagonal_Shape.inlines.hh
+	  (1.42): Two bogus TODOs changed into (urgent) FIXMEs.
+
+2008-11-20 Thursday 14:02  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/OCaml/tests/Makefile.am (1.24): Build and run the
+	  bytecode/native OCaml tests depending on the availability of the
+	  bytecode/native OCaml compilers.
+
+2008-11-20 Thursday 14:00  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/OCaml/Makefile.am (1.62): Build the bytecode/native
+	  OCaml interfaces depending on the availability of the
+	  bytecode/native OCaml compilers (and corresponding mlgmp
+	  libraries).
+
+2008-11-20 Thursday 13:57  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/OCaml/: ppl_interface_generator_ocaml_cc_code.m4
+	  (1.62), ppl_interface_generator_ocaml_ml_code.m4 (1.52),
+	  tests/ppl_interface_generator_ocaml_test_ml_code.m4 (1.21):
+	  Corrected a bug in the code for the OCaml function
+	  ppl_Grid_generalized_affine_(pre)image_with_congruence; also
+	  corrected corresponding test.
+
+2008-11-20 Thursday 13:53  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* configure.ac (1.409): Check whether or not the OCaml native
+	  compiler ocamlopt is available.
+
+2008-11-20 Thursday 13:24  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/Partially_Reduced_Product.templates.hh (1.15): Avoid reducing
+	  the product where it is not essential.
+
+2008-11-20 Thursday 08:53  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* NEWS (1.279): Added a note concerning the correction of a bug in
+	  the Partially_Reduced_Product<>::time_elapse_assign().
+
+2008-11-20 Thursday 08:40  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/Partially_Reduced_Product.inlines.hh (1.36),
+	  tests/Partially_Reduced_Product/partiallyreducedproduct2.cc
+	  (1.4): In the time_elapse, both components must be reduced before
+	  doing the operation. The clear_reduced_flag() after the operation
+	  removed and the tagged FIXME removed.
+
+	  Test added showing an example that is only correct if the second
+	  component is also reduced.
+
+2008-11-19 Wednesday 22:19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO (1.294): Added several new items.
+
+2008-11-19 Wednesday 21:58  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/Partially_Reduced_Product.inlines.hh (1.35): Restored the
+	  clear_reduced_flag() for the time_elapse_assign.  FIXME also
+	  restored as this still needs checking.
+
+2008-11-19 Wednesday 20:28  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Polyhedron_public.cc (1.149): Added missing verb in comment.
+
+2008-11-19 Wednesday 10:46  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/: Partially_Reduced_Product.defs.hh (1.38),
+	  Partially_Reduced_Product.inlines.hh (1.34): Several tagged
+	  FIXME's removed.  CHECKME Comment for the widening operation
+	  modified to confirm that this _is_ a widening for the products as
+	  provided here.
+
+2008-11-19 Wednesday 08:26  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/Partially_Reduced_Product/shrinkusingcongruences1.cc
+	  (products.1): file shrinkusingcongruences1.cc was added on branch
+	  products on 2009-01-05 13:54:39 +0000
+
+2008-11-19 Wednesday 08:26  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/Partially_Reduced_Product.defs.hh (1.37),
+	  src/Partially_Reduced_Product.inlines.hh (1.33),
+	  src/Partially_Reduced_Product.templates.hh (1.14),
+	  src/Partially_Reduced_Product.types.hh (1.5),
+	  tests/Partially_Reduced_Product/Makefile.am (1.8),
+	  tests/Partially_Reduced_Product/shrinkusingcongruences1.cc (1.2):
+	  Removed previously added reduction method.
+
+2008-11-18 Tuesday 15:53  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/Partially_Reduced_Product.defs.hh (1.36),
+	  src/Partially_Reduced_Product.inlines.hh (1.32),
+	  src/Partially_Reduced_Product.templates.hh (1.13),
+	  src/Partially_Reduced_Product.types.hh (1.4),
+	  tests/Partially_Reduced_Product/Makefile.am (1.7),
+	  tests/Partially_Reduced_Product/shrinkusingcongruences1.cc (1.1):
+	  Added a reduction method Shrink_Using_Congruences_Reduction<> and
+	  the product Shrink_Using_Congruences_Product<> that assumes this
+	  reduction.
+
+2008-11-18 Tuesday 14:27  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* NEWS (1.278): Mention bug fix for
+	  Polyhedron::contains_integer_point().
+
+2008-11-18 Tuesday 14:25  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Polyhedron_public.cc (1.148): Added a couple of comments
+	  regarding the recently corrected bug in contains_integer_point().
+
+2008-11-18 Tuesday 13:49  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Powerset/containsintegerpoint1.cc (bounded_arithmetic.1):
+	  file containsintegerpoint1.cc was added on branch
+	  bounded_arithmetic on 2008-12-16 06:57:37 +0000
+
+2008-11-18 Tuesday 13:49  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	*
+	  interfaces/Prolog/tests/ppl_interface_generator_prolog_generated_test_pl_code.m4
+	  (1.11),
+	  interfaces/Prolog/tests/ppl_prolog_generated_test_common.pl
+	  (1.2), tests/Powerset/Makefile.am (1.12),
+	  tests/Powerset/containsintegerpoint1.cc (1.1): Corrected some m4
+	  code that resulted in wrongly named test predicates.	Corrected
+	  expected answers for tests that checked properties such as
+	  "is_empty()".  Added tests for the contains_integer_point() for
+	  the Pointset_Powerset domain.
+
+2008-11-18 Tuesday 13:47  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/Polyhedron/containsintegerpoint1.cc (1.5),
+	  src/Polyhedron_public.cc (1.147): Several bugs in code for
+	  contains_integer_point() fixed.  Added new tests that showed the
+	  bugs.  Uncommented some tests.
+
+2008-11-18 Tuesday 08:40  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Polyhedron_public.cc (1.146): Corrected typo in comment.
+
+2008-11-17 Monday 17:57  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.277): Recorded the fix solving the `make check' problem
+	  when the `--disable-watchdog' configure option is used.
+
+2008-11-17 Monday 17:43  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Polyhedron/Makefile.am (1.131): The sources for test
+	  memory1 should be distributed unconditionally (i.e., even when
+	  valgrind tests are disabled).
+
+2008-11-17 Monday 17:41  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/MIP_Problem/Makefile.am (1.13): Test mipproblem2 should be
+	  built iff the watchdog library is enabled.
+
+2008-11-16 Sunday 21:57  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/Powerset/Makefile.am (1.11): Typo fixed.
+
+2008-11-14 Friday 12:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Powerset/addcongruences1.cc (bounded_arithmetic.1): file
+	  addcongruences1.cc was added on branch bounded_arithmetic on
+	  2008-12-16 06:57:37 +0000
+
+2008-11-14 Friday 12:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Powerset/addconstraints1.cc (bounded_arithmetic.1): file
+	  addconstraints1.cc was added on branch bounded_arithmetic on
+	  2008-12-16 06:57:37 +0000
+
+2008-11-14 Friday 12:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Powerset/affinedimension1.cc (bounded_arithmetic.1): file
+	  affinedimension1.cc was added on branch bounded_arithmetic on
+	  2008-12-16 06:57:37 +0000
+
+2008-11-14 Friday 12:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Powerset/affineimage1.cc (bounded_arithmetic.1): file
+	  affineimage1.cc was added on branch bounded_arithmetic on
+	  2008-12-16 06:57:37 +0000
+
+2008-11-14 Friday 12:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Powerset/affinepreimage1.cc (bounded_arithmetic.1): file
+	  affinepreimage1.cc was added on branch bounded_arithmetic on
+	  2008-12-16 06:57:37 +0000
+
+2008-11-14 Friday 12:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Powerset/bounded1.cc (bounded_arithmetic.1): file
+	  bounded1.cc was added on branch bounded_arithmetic on 2008-12-16
+	  06:57:37 +0000
+
+2008-11-14 Friday 12:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Powerset/bounds1.cc (bounded_arithmetic.1): file bounds1.cc
+	  was added on branch bounded_arithmetic on 2008-12-16 06:57:37
+	  +0000
+
+2008-11-14 Friday 12:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Powerset/closed1.cc (bounded_arithmetic.1): file closed1.cc
+	  was added on branch bounded_arithmetic on 2008-12-16 06:57:37
+	  +0000
+
+2008-11-14 Friday 12:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Powerset/closure1.cc (bounded_arithmetic.1): file
+	  closure1.cc was added on branch bounded_arithmetic on 2008-12-16
+	  06:57:37 +0000
+
+2008-11-14 Friday 12:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Powerset/collapse1.cc (bounded_arithmetic.1): file
+	  collapse1.cc was added on branch bounded_arithmetic on 2008-12-16
+	  06:57:37 +0000
+
+2008-11-14 Friday 12:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Powerset/concatenate1.cc (bounded_arithmetic.1): file
+	  concatenate1.cc was added on branch bounded_arithmetic on
+	  2008-12-16 06:57:37 +0000
+
+2008-11-14 Friday 12:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Powerset/contains1.cc (bounded_arithmetic.1): file
+	  contains1.cc was added on branch bounded_arithmetic on 2008-12-16
+	  06:57:37 +0000
+
+2008-11-14 Friday 12:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Powerset/discrete1.cc (bounded_arithmetic.1): file
+	  discrete1.cc was added on branch bounded_arithmetic on 2008-12-16
+	  06:57:37 +0000
+
+2008-11-14 Friday 12:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Powerset/disjoint1.cc (bounded_arithmetic.1): file
+	  disjoint1.cc was added on branch bounded_arithmetic on 2008-12-16
+	  06:57:37 +0000
+
+2008-11-14 Friday 12:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Powerset/disjunct1.cc (bounded_arithmetic.1): file
+	  disjunct1.cc was added on branch bounded_arithmetic on 2008-12-16
+	  06:57:37 +0000
+
+2008-11-14 Friday 12:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Powerset/empty1.cc (bounded_arithmetic.1): file empty1.cc
+	  was added on branch bounded_arithmetic on 2008-12-16 06:57:37
+	  +0000
+
+2008-11-14 Friday 12:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Powerset/entails1.cc (bounded_arithmetic.1): file
+	  entails1.cc was added on branch bounded_arithmetic on 2008-12-16
+	  06:57:37 +0000
+
+2008-11-14 Friday 12:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Powerset/equals1.cc (bounded_arithmetic.1): file equals1.cc
+	  was added on branch bounded_arithmetic on 2008-12-16 06:57:37
+	  +0000
+
+2008-11-14 Friday 12:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Powerset/fromconstraints1.cc (bounded_arithmetic.1): file
+	  fromconstraints1.cc was added on branch bounded_arithmetic on
+	  2008-12-16 06:57:37 +0000
+
+2008-11-14 Friday 12:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Powerset/fromspacedimension1.cc (bounded_arithmetic.1):
+	  file fromspacedimension1.cc was added on branch
+	  bounded_arithmetic on 2008-12-16 06:57:37 +0000
+
+2008-11-14 Friday 12:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Powerset/intersection1.cc (bounded_arithmetic.1): file
+	  intersection1.cc was added on branch bounded_arithmetic on
+	  2008-12-16 06:57:37 +0000
+
+2008-11-14 Friday 12:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Powerset/maxmin1.cc (bounded_arithmetic.1): file maxmin1.cc
+	  was added on branch bounded_arithmetic on 2008-12-16 06:57:37
+	  +0000
+
+2008-11-14 Friday 12:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Powerset/meet1.cc (bounded_arithmetic.1): file meet1.cc was
+	  added on branch bounded_arithmetic on 2008-12-16 06:57:37 +0000
+
+2008-11-14 Friday 12:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Powerset/membytes1.cc (bounded_arithmetic.1): file
+	  membytes1.cc was added on branch bounded_arithmetic on 2008-12-16
+	  06:57:37 +0000
+
+2008-11-14 Friday 12:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Powerset/reduce1.cc (bounded_arithmetic.1): file reduce1.cc
+	  was added on branch bounded_arithmetic on 2008-12-16 06:57:37
+	  +0000
+
+2008-11-14 Friday 12:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Powerset/refinewith1.cc (bounded_arithmetic.1): file
+	  refinewith1.cc was added on branch bounded_arithmetic on
+	  2008-12-16 06:57:37 +0000
+
+2008-11-14 Friday 12:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Powerset/relationwith1.cc (bounded_arithmetic.1): file
+	  relationwith1.cc was added on branch bounded_arithmetic on
+	  2008-12-16 06:57:37 +0000
+
+2008-11-14 Friday 12:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Powerset/size1.cc (bounded_arithmetic.1): file size1.cc was
+	  added on branch bounded_arithmetic on 2008-12-16 06:57:37 +0000
+
+2008-11-14 Friday 12:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Powerset/spacedims1.cc (bounded_arithmetic.1): file
+	  spacedims1.cc was added on branch bounded_arithmetic on
+	  2008-12-16 06:57:37 +0000
+
+2008-11-14 Friday 12:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Powerset/universe1.cc (bounded_arithmetic.1): file
+	  universe1.cc was added on branch bounded_arithmetic on 2008-12-16
+	  06:57:37 +0000
+
+2008-11-14 Friday 12:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Powerset/upperbound1.cc (bounded_arithmetic.1): file
+	  upperbound1.cc was added on branch bounded_arithmetic on
+	  2008-12-16 06:57:37 +0000
+
+2008-11-14 Friday 12:16  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/: Box/Makefile.am (1.78), Box/pointsetpowerset1.cc (1.9),
+	  Polyhedron/polydifference1.cc (1.15), Powerset/Makefile.am
+	  (1.10), Powerset/addcongruences1.cc (1.1),
+	  Powerset/addconstraints1.cc (1.1), Powerset/affinedimension1.cc
+	  (1.1), Powerset/affineimage1.cc (1.1),
+	  Powerset/affinepreimage1.cc (1.1), Powerset/bounded1.cc (1.1),
+	  Powerset/bounds1.cc (1.1), Powerset/closed1.cc (1.1),
+	  Powerset/closure1.cc (1.1), Powerset/collapse1.cc (1.1),
+	  Powerset/concatenate1.cc (1.1), Powerset/contains1.cc (1.1),
+	  Powerset/difference1.cc (1.1), Powerset/discrete1.cc (1.1),
+	  Powerset/disjoint1.cc (1.1), Powerset/disjunct1.cc (1.1),
+	  Powerset/empty1.cc (1.1), Powerset/entails1.cc (1.1),
+	  Powerset/equals1.cc (1.1), Powerset/fromconstraints1.cc (1.2),
+	  Powerset/fromspacedimension1.cc (1.2), Powerset/intersection1.cc
+	  (1.1), Powerset/maxmin1.cc (1.1), Powerset/meet1.cc (1.1),
+	  Powerset/membytes1.cc (1.1), Powerset/pointsetpowerset1.cc (1.3),
+	  Powerset/pointsetpowerset2.cc (1.3),
+	  Powerset/pointsetpowerset3.cc (1.3),
+	  Powerset/pointsetpowerset4.cc (1.3),
+	  Powerset/pointsetpowerset5.cc (1.3), Powerset/product1.cc (1.2),
+	  Powerset/reduce1.cc (1.1), Powerset/refinewith1.cc (1.1),
+	  Powerset/relationwith1.cc (1.1), Powerset/size1.cc (1.1),
+	  Powerset/spacedims1.cc (1.1), Powerset/universe1.cc (1.1),
+	  Powerset/upperbound1.cc (1.1): Completed a reorganization of the
+	  tests for the Powerset domains.
+
+2008-11-12 Wednesday 20:39  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Java/jni/Makefile.am (1.34): On Darwin, avoid the
+	  `-module' Libtool flag for building the `libppl_java' library.
+
+2008-11-12 Wednesday 17:57  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Powerset/Makefile.am (1.9): Wrong file names fixed.
+
+2008-11-12 Wednesday 10:05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Powerset/frombdshape1.cc (bounded_arithmetic.1): file
+	  frombdshape1.cc was added on branch bounded_arithmetic on
+	  2008-12-16 06:57:37 +0000
+
+2008-11-12 Wednesday 10:05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Powerset/frombox1.cc (bounded_arithmetic.1): file
+	  frombox1.cc was added on branch bounded_arithmetic on 2008-12-16
+	  06:57:37 +0000
+
+2008-11-12 Wednesday 10:05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Powerset/fromcongruences1.cc (bounded_arithmetic.1): file
+	  fromcongruences1.cc was added on branch bounded_arithmetic on
+	  2008-12-16 06:57:37 +0000
+
+2008-11-12 Wednesday 10:05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Powerset/fromgrid1.cc (bounded_arithmetic.1): file
+	  fromgrid1.cc was added on branch bounded_arithmetic on 2008-12-16
+	  06:57:37 +0000
+
+2008-11-12 Wednesday 10:05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Powerset/fromoctagonalshape1.cc (bounded_arithmetic.1):
+	  file fromoctagonalshape1.cc was added on branch
+	  bounded_arithmetic on 2008-12-16 06:57:37 +0000
+
+2008-11-12 Wednesday 10:05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Powerset/frompolyhedron1.cc (bounded_arithmetic.1): file
+	  frompolyhedron1.cc was added on branch bounded_arithmetic on
+	  2008-12-16 06:57:37 +0000
+
+2008-11-12 Wednesday 10:05  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/: BD_Shape/Makefile.am (1.83),
+	  BD_Shape/pointsetpowerset1.cc (1.6), Box/Makefile.am (1.77),
+	  Box/pointsetpowerset2.cc (1.4), Grid/Makefile.am (1.74),
+	  Grid/pointsetpowerset1.cc (1.5), Octagonal_Shape/Makefile.am
+	  (1.37), Octagonal_Shape/pointsetpowerset1.cc (1.5),
+	  Powerset/Makefile.am (1.8), Powerset/frombdshape1.cc (1.1),
+	  Powerset/frombox1.cc (1.1), Powerset/fromcongruences1.cc (1.1),
+	  Powerset/fromconstraints1.cc (1.1), Powerset/fromgrid1.cc (1.1),
+	  Powerset/fromoctagonalshape1.cc (1.1),
+	  Powerset/frompolyhedron1.cc (1.1),
+	  Powerset/fromspacedimension1.cc (1.1),
+	  Powerset/pointsetpowerset6.cc (1.2): Started reorganising the
+	  tests for the powerset domains and moving all tests on the
+	  powersets into the Powerset directory
+
+2008-11-11 Tuesday 18:04  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/ac_check_swi_prolog.m4 (1.18): Added a reference to a bug
+	  report against Fedora's `pl' package.
+
+2008-11-11 Tuesday 09:40  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/: Grid.defs.hh (1.86), Grid.templates.hh (1.40),
+	  Grid_conversion.cc (1.25), Grid_simplify.cc (1.41): Removed the
+	  STRONG_REDUCTION macro and added comments where the code
+	  implements the extra reduction needed for the strong minimal
+	  form.
+
+2008-11-11 Tuesday 07:47  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/: ppl_interface_generator_common.m4 (1.35),
+	  ppl_interface_generator_common_dat.m4 (1.93),
+	  Java/ppl_interface_generator_java_procedure_generators.m4 (1.12),
+	  Java/jni/ppl_interface_generator_java_classes_cc_code.m4 (1.32),
+	  Java/jni/ppl_interface_generator_java_classes_cc_files.m4 (1.8),
+	  Java/parma_polyhedra_library/ppl_interface_generator_java_classes_java.m4
+	  (1.7), OCaml/ppl_interface_generator_ocaml_hh_files.m4 (1.4),
+	  OCaml/tests/ppl_interface_generator_ocaml_test_ml.m4 (1.4),
+	  Prolog/XSB/ppl_interface_generator_xsb_prolog_generated_test_P.m4
+	  (1.4),
+	  Prolog/tests/ppl_interface_generator_prolog_generated_test_pl.m4
+	  (1.4): Improved handling of the patterns with a consequential
+	  improvement to the speed of the m4 processing of the interface
+	  files.
+
+2008-11-10 Monday 21:02  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/SWI/swi_efli.cc (1.5), src/BD_Shape.inlines.hh
+	  (1.170), src/BD_Shape.templates.hh (1.125),
+	  src/Bit_Row.inlines.hh (1.9), src/Box.inlines.hh (1.41),
+	  src/Box.templates.hh (1.135), src/Generator.inlines.hh (1.65),
+	  src/Grid_public.cc (1.90), src/Interval.inlines.hh (1.44),
+	  src/Interval_Restriction.defs.hh (1.15), src/MIP_Problem.cc
+	  (1.77), src/Octagonal_Shape.inlines.hh (1.41),
+	  src/Octagonal_Shape.templates.hh (1.98),
+	  src/Polyhedron_nonpublic.cc (1.88), src/Polyhedron_public.cc
+	  (1.145), src/Temp.inlines.hh (1.6), src/checked.inlines.hh
+	  (1.52), src/checked_int.inlines.hh (1.73),
+	  src/checked_mpz.inlines.hh (1.60), src/conversion.cc (1.88),
+	  src/globals.defs.hh (1.62), src/math_utilities.inlines.hh (1.4):
+	  DIRTY_TEMP* macros renamed with the "PPL_" prefix.  A couple of
+	  other improvements related to the proper use of Coefficient
+	  objects.
+
+2008-11-10 Monday 19:56  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Partially_Reduced_Product.templates.hh (1.12): Use
+	  PPL_DIRTY_TEMP_COEFFICIENT whenever possible.
+
+2008-11-10 Monday 19:53  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Pointset_Powerset.templates.hh (1.45): Use
+	  PPL_DIRTY_TEMP_COEFFICIENT whenever possible.
+
+2008-11-10 Monday 19:21  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/ppl_interface_generator_common_procedure_generators.m4
+	  (1.45): Corrected typo in a comment.
+
+2008-11-10 Monday 19:21  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/OCaml/OCaml_interface.dox (1.7): Small correction.
+
+2008-11-10 Monday 18:26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.276), src/globals.defs.hh (1.61): Macro
+	  PPL_DIRTY_TEMP_COEFFICIENT properly commented.  Notice that this
+	  is now part of the C++ interface, hence its introduction is
+	  mentioned in the NEWS file.
+
+2008-11-10 Monday 08:47  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	*
+	  interfaces/Java/jni/ppl_interface_generator_java_classes_cc_code.m4
+	  (1.31), interfaces/Java/jni/ppl_java_common.cc (1.53),
+	  interfaces/Java/jni/ppl_java_common.inlines.hh (1.5),
+	  interfaces/Java/jni/ppl_java_globals.cc (1.26),
+	  interfaces/OCaml/ppl_interface_generator_ocaml_cc_code.m4 (1.61),
+	  interfaces/OCaml/ppl_ocaml_common.cc (1.7),
+	  interfaces/Prolog/ppl_interface_generator_prolog_cc_code.m4
+	  (1.21), interfaces/Prolog/ppl_prolog_common.cc (1.13),
+	  interfaces/Prolog/ppl_prolog_common.defs.hh (1.11),
+	  src/BD_Shape.templates.hh (1.124), src/Box.templates.hh (1.134),
+	  src/Congruence.cc (1.22), src/Congruence_System.cc (1.31),
+	  src/Constraint.cc (1.71), src/Generator.cc (1.78),
+	  src/Generator_System.cc (1.28), src/Grid.inlines.hh (1.30),
+	  src/Grid.templates.hh (1.39), src/Grid_Generator.cc (1.24),
+	  src/Grid_Generator_System.cc (1.22), src/Grid_conversion.cc
+	  (1.24), src/Grid_nonpublic.cc (1.39), src/Grid_public.cc (1.89),
+	  src/Grid_simplify.cc (1.40), src/Linear_Expression.cc (1.21),
+	  src/Linear_Row.cc (1.26), src/MIP_Problem.cc (1.76),
+	  src/Matrix.cc (1.99), src/Octagonal_Shape.templates.hh (1.97),
+	  src/Pointset_Powerset.cc (1.25),
+	  src/Pointset_Powerset.templates.hh (1.44),
+	  src/Polyhedron.templates.hh (1.22), src/Polyhedron_nonpublic.cc
+	  (1.87), src/Polyhedron_public.cc (1.144),
+	  src/Polyhedron_widenings.cc (1.69), src/Row.cc (1.106),
+	  src/Scalar_Products.inlines.hh (1.8), src/conversion.cc (1.87),
+	  src/globals.defs.hh (1.60), src/math_utilities.inlines.hh (1.3),
+	  tests/Grid/partition1.cc (1.9): Macro TEMP_INTEGER renamed
+	  PPL_DIRTY_TEMP_COEFFICIENT.
+
+2008-11-10 Monday 07:04  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/checked.inlines.hh (1.51): Macro COPY_GMP renamed
+	  PPL_MATCH_GMP_GCDEXT and undefined after use.
+
+2008-11-09 Sunday 21:17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Checked_Number.inlines.hh (1.86): COND* macros renamed with
+	  the "PPL_" prefix and undefined after their use.
+
+2008-11-09 Sunday 21:11  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Checked_Number.defs.hh (1.102), Float.defs.hh (1.33),
+	  checked.defs.hh (1.51), checked_float.inlines.hh (1.99),
+	  checked_numeric_limits.hh (1.23): NAN macro renamed with the
+	  "PPL_" prefix and undefined after its use.
+
+2008-11-09 Sunday 20:49  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Boundary.defs.hh (1.15), Interval.defs.hh (1.61),
+	  Interval_Restriction.defs.hh (1.14), globals.defs.hh (1.59),
+	  meta_programming.hh (1.12), ppl_header.hh (1.13):
+	  COMPILE_TIME_CHECK* macros renamed with the "PPL_" prefix and
+	  undefined at the end of the library's C++ interface header file.
+
+2008-11-09 Sunday 19:52  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/checked.defs.hh (1.50): The `nonconst' macro is now defined
+	  and undefined in a completely safe way.
+
+2008-11-09 Sunday 18:37  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Rounding_Dir.inlines.hh (1.10), fpu-c99.inlines.hh (1.22),
+	  fpu-ia32.inlines.hh (1.22), fpu-sparc.inlines.hh (1.12): Macros
+	  FPU_DOWNWARD, FPU_TONEAREST, FPU_TOWARDZERO and FPU_UPWARD
+	  renamed with the "PPL_" prefix and undefined after their use.
+
+2008-11-09 Sunday 14:39  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/checked_int.inlines.hh (1.72): ASSIGN* macros renamed with
+	  the "PPL_" prefix and undefined after their use.
+
+2008-11-09 Sunday 14:27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: checked.defs.hh (1.49), checked.inlines.hh (1.50):
+	  FUNCTION_CLASS macro renamed with the "PPL_" prefix and undefined
+	  after its use.  Long source lines avoided.
+
+2008-11-09 Sunday 12:52  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/checked.defs.hh (1.48): DEF_FUN* macros renamed with the
+	  "PPL_" prefix and undefined after their use.
+
+2008-11-09 Sunday 12:43  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Checked_Number.inlines.hh (1.85): DEF_ASSIGN_* macros renamed
+	  with the "PPL_" prefix and undefined after their use.
+
+2008-11-09 Sunday 12:39  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: checked.defs.hh (1.47), checked_float.inlines.hh (1.98),
+	  checked_int.inlines.hh (1.71), checked_mpq.inlines.hh (1.48),
+	  checked_mpz.inlines.hh (1.59), ppl_header.hh (1.12): SPECIALIZE_*
+	  macros renamed with the "PPL_" prefix and undefined at the end of
+	  the library's C++ interface header file.
+
+2008-11-09 Sunday 11:26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/checked.inlines.hh (1.49): Macro `safe_conversion' renamed
+	  `PPL_SAFE_CONVERSION' and #undef'ined after its use.
+
+2008-11-09 Sunday 11:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.275): Robustness has been improved.
+
+2008-11-09 Sunday 09:15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: DB_Row.inlines.hh (1.25), Row.inlines.hh (1.69): Use
+	  std::numeric_limits<size_t>::max() instead of size_t(-1).
+
+2008-11-09 Sunday 09:05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/simplify.cc (1.55): Took into account that no checks for
+	  possible overflows are made in the implementation of new
+	  expressions.
+
+2008-11-09 Sunday 08:32  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/OR_Matrix.inlines.hh (1.14): No longer use
+	  compute_capacity(dimension_type requested_size).
+
+2008-11-08 Saturday 21:57  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: globals.defs.hh (1.58), globals.inlines.hh (1.25),
+	  simplify.cc (1.54): No longer use compute_capacity(dimension_type
+	  requested_size), now removed.
+
+2008-11-08 Saturday 20:54  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Box/: ascii_dump_load1.cc (1.11), empty1.cc (1.7),
+	  refinewithconstraint1.cc (1.4): More FIXMEs tagged with
+	  "(0.10.1)".
+
+2008-11-07 Friday 16:04  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* TODO (1.293), interfaces/ppl_interface_generator_common.m4
+	  (1.34), interfaces/ppl_interface_generator_common_dat.m4 (1.92),
+	  interfaces/ppl_interface_generator_common_procedure_generators.m4
+	  (1.44), interfaces/C/ppl_interface_generator_c_cc_code.m4 (1.55),
+	  interfaces/C/ppl_interface_generator_c_cc_files.m4 (1.14),
+	  interfaces/C/ppl_interface_generator_c_h_code.m4 (1.48),
+	  interfaces/C/ppl_interface_generator_c_hh_files.m4 (1.10),
+	  interfaces/C/ppl_interface_generator_c_procedure_generators.m4
+	  (1.14),
+	  interfaces/Java/ppl_interface_generator_java_procedure_generators.m4
+	  (1.11),
+	  interfaces/Java/jni/ppl_interface_generator_java_classes_cc_code.m4
+	  (1.30),
+	  interfaces/Java/parma_polyhedra_library/ppl_interface_generator_java_classes_java.m4
+	  (1.6),
+	  interfaces/Java/parma_polyhedra_library/ppl_interface_generator_java_classes_java_code.m4
+	  (1.16),
+	  interfaces/Java/tests/ppl_interface_generator_java_test_java.m4
+	  (1.21),
+	  interfaces/Java/tests/ppl_interface_generator_java_test_java_code.m4
+	  (1.51), interfaces/OCaml/ppl_interface_generator_ocaml_cc_code.m4
+	  (1.60),
+	  interfaces/OCaml/ppl_interface_generator_ocaml_cc_files.m4 (1.4),
+	  interfaces/OCaml/ppl_interface_generator_ocaml_hh_files.m4 (1.3),
+	  interfaces/OCaml/ppl_interface_generator_ocaml_ml.m4 (1.20),
+	  interfaces/OCaml/ppl_interface_generator_ocaml_ml_code.m4 (1.51),
+	  interfaces/OCaml/ppl_interface_generator_ocaml_mli.m4 (1.24),
+	  interfaces/OCaml/ppl_interface_generator_ocaml_mli_code.m4
+	  (1.42),
+	  interfaces/OCaml/tests/ppl_interface_generator_ocaml_test_ml_code.m4
+	  (1.20), interfaces/Prolog/Prolog_interface.dox (1.181),
+	  interfaces/Prolog/ppl_interface_generator_prolog_cc_code.m4
+	  (1.20),
+	  interfaces/Prolog/ppl_interface_generator_prolog_cc_files.m4
+	  (1.11), interfaces/Prolog/ppl_interface_generator_prolog_dox.m4
+	  (1.12),
+	  interfaces/Prolog/ppl_interface_generator_prolog_dox_code.m4
+	  (1.14),
+	  interfaces/Prolog/ppl_interface_generator_prolog_hh_code.m4
+	  (1.15),
+	  interfaces/Prolog/ppl_interface_generator_prolog_hh_files.m4
+	  (1.10),
+	  interfaces/Prolog/ppl_interface_generator_prolog_procedure_generators.m4
+	  (1.7), interfaces/Prolog/Ciao/ppl_interface_generator_ciao_pl.m4
+	  (1.10),
+	  interfaces/Prolog/Ciao/ppl_interface_generator_ciao_prolog_generated_test_pl.m4
+	  (1.3),
+	  interfaces/Prolog/GNU/ppl_interface_generator_gprolog_pl.m4
+	  (1.9),
+	  interfaces/Prolog/SICStus/ppl_interface_generator_sicstus_sd_cc.m4
+	  (1.15),
+	  interfaces/Prolog/SWI/ppl_interface_generator_swiprolog_cc.m4
+	  (1.20), interfaces/Prolog/XSB/ppl_interface_generator_xsb_H.m4
+	  (1.11), interfaces/Prolog/XSB/ppl_interface_generator_xsb_cc.m4
+	  (1.17), interfaces/Prolog/XSB/ppl_interface_generator_xsb_hh.m4
+	  (1.2),
+	  interfaces/Prolog/XSB/ppl_interface_generator_xsb_prolog_generated_test_P.m4
+	  (1.3), interfaces/Prolog/YAP/ppl_interface_generator_yap_cc.m4
+	  (1.12),
+	  interfaces/Prolog/tests/ppl_interface_generator_prolog_generated_test_pl.m4
+	  (1.3),
+	  interfaces/Prolog/tests/ppl_interface_generator_prolog_generated_test_pl_code.m4
+	  (1.10): The core ppl_interface_generator_common.m4 file has been
+	  completely reorganised, macros improved and comments revised and
+	  added.  Note that alternative patterns and replacements now have
+	  a simple _a_ or _b_ extension instead of _alt_ or _cppx_.  To
+	  change the case of a word, use "!" instead of "L" or "U" before
+	  the pattern.
+
+	  The macros in the core file are organised into groups and a
+	  comment summarises the call structure between the groups.  Each
+	  macro is labelled to indicate if it is used locally, just in this
+	  file but by a macro in another group, or if it is public and may
+	  be used by other code generating m4 files.  Suggestions for
+	  further improving the macro descriptions are welcome.
+
+	  The complementary file  ppl_interface_generator_common.m4_dat
+	  file that contains the common data and some macros for generating
+	  the basic class names, the patterns and their replacements is
+	  improved and some redundant things removed.  Commenting is not
+	  improved but much of the structure here is simpler and existing
+	  comments provide a lot of information already.
+
+	  The changes to these files has meant that changes to all the m4
+	  files in the interfaces directory was required.
+
+	  These changes seem to make the m4 generation slightly more
+	  efficient - but the improvement appears to be less that 10% and
+	  disappointing.
+
+2008-11-06 Thursday 08:43  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO (1.292), src/BD_Shape.templates.hh (1.123),
+	  src/Box.inlines.hh (1.40), src/Box.templates.hh (1.133),
+	  src/Checked_Number.inlines.hh (1.84), src/DB_Matrix.templates.hh
+	  (1.10), src/Determinate.inlines.hh (1.59), src/Grid.templates.hh
+	  (1.38), src/Grid_Generator.defs.hh (1.35), src/Grid_public.cc
+	  (1.88), src/Init.cc (1.38), src/Interval.inlines.hh (1.43),
+	  src/Interval_Restriction.defs.hh (1.13),
+	  src/Linear_Expression.inlines.hh (1.15), src/MIP_Problem.cc
+	  (1.75), src/OR_Matrix.inlines.hh (1.13),
+	  src/OR_Matrix.templates.hh (1.9),
+	  src/Octagonal_Shape.templates.hh (1.96),
+	  src/Partially_Reduced_Product.inlines.hh (1.31),
+	  src/Pointset_Ask_Tell.templates.hh (1.15),
+	  src/Pointset_Powerset.templates.hh (1.43), src/checked.inlines.hh
+	  (1.48), src/checked_mpz.inlines.hh (1.58), src/globals.defs.hh
+	  (1.57), src/globals.inlines.hh (1.24): Tagged the FIXMEs that
+	  should be fixed before the PPL 0.10.1 release.
+
+2008-11-06 Thursday 08:21  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO (1.291), doc/libppl.3 (1.14), tests/Polyhedron/memory2.cc
+	  (1.19): Use malloc(), realloc() and free() instead of operator
+	  new() and operator delete() to implement the replacement GMP
+	  allocation functions.
+
+2008-11-05 Wednesday 22:14  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Polyhedron/memory1.cc (1.20): Use malloc(), realloc() and
+	  free() instead of operator new() and operator delete() to
+	  implement the replacement GMP allocation functions.
+
+2008-11-05 Wednesday 21:26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO (1.290), demos/ppl_lcdd/ppl_lcdd.1 (1.7),
+	  demos/ppl_lpsol/ppl_lpsol.1 (1.8), demos/ppl_lpsol/ppl_lpsol.c
+	  (1.91), doc/libppl.3 (1.13), doc/libppl_c.3 (1.4),
+	  doc/ppl-config.1 (1.14): Made `ppl_lpsol --help' and `ppl_lcdd
+	  --help' consistent.  Man pages updated.
+
+2008-11-05 Wednesday 19:53  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.274): Added a section for 0.10.1.
+
+2008-11-05 Wednesday 19:51  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.408): Version number bumped.
+
+2008-11-05 Wednesday 19:23  Abramo Bagnara
+
+	* devtools/print_nonascii_lines (1.3): Added \007 e \015.
+
+2008-11-05 Wednesday 19:23  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* devtools/print_nonascii_lines (bounded_arithmetic.1): file
+	  print_nonascii_lines was added on branch bounded_arithmetic on
+	  2008-12-16 06:57:19 +0000
+
+2008-11-05 Wednesday 19:23  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.273), STANDARDS (1.42): Stick to ASCII.
+
+2008-11-05 Wednesday 19:22  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/: BD_Shape/Makefile.am (1.82), Box/Makefile.am (1.76),
+	  Octagonal_Shape/Makefile.am (1.36): Add dirty_marker to
+	  DISTCLEANFILES.  (Thanks to Michael Tautschnig for poiting this
+	  out.)
+
+2008-11-05 Wednesday 19:18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* devtools/print_nonascii_lines (1.2): Print also the line number.
+
+2008-11-05 Wednesday 19:17  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* Watchdog/doc/Makefile.am (1.8), doc/Makefile.am (1.100): Doxygen
+	  configuration files are generated by the configure script, so
+	  that they don't have to be listed in EXTRA_DIST.  (Thanks to
+	  Michael Tautschnig for pointing this out.)
+
+2008-11-05 Wednesday 19:15  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Makefile.am (1.191): Source file ppl-config.cc is generated
+	  by the configure script, hence it should not be distributed: list
+	  it in nodist_ppl_config_SOURCES.  (Thanks to Michael Tautschnig
+	  for pointing out this problem.)
+
+2008-11-04 Tuesday 18:18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* fedora/ppl.spec (1.28): Fixed the requirements of the `ppl-java'
+	  package.
+
+2008-11-04 Tuesday 15:21  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* devtools/print_nonascii_lines (1.1): One-liner to print lines
+	  containing non-ASCII characters.
+
+2008-11-04 Tuesday 14:43  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* fedora/ppl.spec (1.27): Changelog updated.  Added m4 >= 1.4.8 to
+	  build requirements.
+
+2008-11-04 Tuesday 10:35  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (ppl-0_10-branch.1): Update version.
+
+2008-11-04 Tuesday 10:33  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/ChangeLog, ChangeLog (ppl-0_10-branch.[1,1]): Mark
+	  ChangeLog.
+
+2008-11-04 Tuesday 10:27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO (ppl-0_10-branch.1), TODO (1.289): Use ASCII only.
+
+2008-11-04 Tuesday 09:30  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog (1.34), Watchdog/ChangeLog (1.24): Updated.
+
 2008-11-03 Monday 21:17  Patricia M. Hill <hill@comp.leeds.ac.uk>
 
 	* CREDITS (1.41): Similar changes to those in credits.raw.
