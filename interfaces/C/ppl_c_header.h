@@ -398,10 +398,10 @@ ppl_io_set_variable_output_function(ppl_io_variable_output_function_type* p);
 int
 ppl_io_get_variable_output_function(ppl_io_variable_output_function_type** pp);
 
-/*! \brief Helper function for the wrapping of lines from C.
+/*! \brief Utility function for the wrapping of lines of text.
 
   \param src
-  The source string holding the lines to wrap.
+  The source string holding the text to wrap.
 
   \param indent_depth
   The indentation depth.
@@ -413,7 +413,7 @@ ppl_io_get_variable_output_function(ppl_io_variable_output_function_type** pp);
   The preferred length for all the lines but the first one.
 
   \return
-  The wrapped string in a mallocated buffer.
+  The wrapped string in a malloc-allocated buffer.
 */
 char*
 ppl_io_wrap_string(const char* src,

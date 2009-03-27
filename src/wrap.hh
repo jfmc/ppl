@@ -29,7 +29,7 @@ namespace Parma_Polyhedra_Library {
 
 namespace IO_Operators {
 
-//! Helper function for the wrapping of lines.
+//! Utility function for the wrapping of lines of text.
 /*!
   \param src_string
   The source string holding the lines to wrap.
@@ -51,7 +51,6 @@ wrap_string(const std::string& src_string,
 	    unsigned indent_depth,
 	    unsigned preferred_first_line_length,
 	    unsigned preferred_line_length);
-
 
 } // namespace IO_Operators
 
