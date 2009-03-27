@@ -400,7 +400,7 @@ ppl_io_get_variable_output_function(ppl_io_variable_output_function_type** pp);
 
 /*! \brief Helper function for the wrapping of lines from C.
 
-  \param src_string
+  \param src
   The source string holding the lines to wrap.
 
   \param indent_depth
