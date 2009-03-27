@@ -211,7 +211,7 @@ PPL::Linear_Row::ascii_load(std::istream& s) {
   for (dimension_type col = 0; col < new_size; ++col)
     if (!(s >> x[col]))
       return false;
-  if (!(s >> str) || (str.compare("f") != 0))
+  if (!(s >> str) || str != "f")
     return false;
   return flags().ascii_load(s);
 }

@@ -161,7 +161,7 @@ PPL::Bit_Matrix::ascii_load(std::istream& s) {
   std::string str;
   if (!(s >> nrows))
     return false;
-  if (!(s >> str))
+  if (!(s >> str) || str != "x")
     return false;
   if (!(s >> ncols))
     return false;

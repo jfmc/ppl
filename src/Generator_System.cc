@@ -886,7 +886,7 @@ PPL::Generator_System::ascii_load(std::istream& s) {
   dimension_type ncols;
   if (!(s >> nrows))
     return false;
-  if (!(s >> str))
+  if (!(s >> str) || str != "x")
     return false;
   if (!(s >> ncols))
       return false;
@@ -912,8 +912,10 @@ PPL::Generator_System::ascii_load(std::istream& s) {
       return false;
     if (str == "L")
       x[i].set_is_line();
-    else
+    else if (str == "R" || str == "P" || str == "C")
       x[i].set_is_ray_or_point();
+    else
+      return false;
 
     // Checking for equality of actual and declared types.
     switch (x[i].type()) {

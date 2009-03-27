@@ -518,7 +518,7 @@ PPL::Constraint_System::ascii_load(std::istream& s) {
   dimension_type ncols;
   if (!(s >> nrows))
     return false;
-  if (!(s >> str))
+  if (!(s >> str) || str != "x")
     return false;
   if (!(s >> ncols))
       return false;
@@ -544,7 +544,7 @@ PPL::Constraint_System::ascii_load(std::istream& s) {
       return false;
     if (str == "=")
       x[i].set_is_equality();
-    else
+    else if (str == ">=" || str == ">")
       x[i].set_is_inequality();
 
     // Checking for equality of actual and declared types.

@@ -408,7 +408,7 @@ PPL::Congruence_System::ascii_load(std::istream& s) {
   dimension_type num_columns;
   if (!(s >> num_rows))
     return false;
-  if (!(s >> str))
+  if (!(s >> str) || str != "x")
     return false;
   if (!(s >> num_columns))
     return false;

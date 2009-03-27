@@ -218,7 +218,7 @@ PPL::Grid_Generator_System::ascii_load(std::istream& s) {
   if (!(s >> num_rows))
     return false;
   std::string str;
-  if (!(s >> str))
+  if (!(s >> str) || str != "x")
     return false;
   if (!(s >> num_columns))
       return false;
