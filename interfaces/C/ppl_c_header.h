@@ -398,6 +398,29 @@ ppl_io_set_variable_output_function(ppl_io_variable_output_function_type* p);
 int
 ppl_io_get_variable_output_function(ppl_io_variable_output_function_type** pp);
 
+/*! \brief Helper function for the wrapping of lines from C.
+
+  \param src_string
+  The source string holding the lines to wrap.
+
+  \param indent_depth
+  The indentation depth.
+
+  \param preferred_first_line_length
+  The preferred length for the first line of text.
+
+  \param preferred_line_length
+  The preferred length for all the lines but the first one.
+
+  \return
+  The wrapped string in a mallocated buffer.
+*/
+char*
+ppl_io_wrap_string(const char* src,
+		   unsigned indent_depth,
+		   unsigned preferred_first_line_length,
+		   unsigned preferred_line_length);
+
 /*@}*/ /* Datatypes */
 
 #undef PPL_TYPE_DECLARATION
@@ -577,29 +600,6 @@ ppl_io_fprint_##Type PPL_PROTO((FILE* stream, ppl_const_##Type##_t x)); \
 /*! \relates ppl_##Type##_tag */                                        \
 int                                                                     \
 ppl_io_asprint_##Type PPL_PROTO((char** strp, ppl_const_##Type##_t x));
-
-/*! Helper function for the wrapping of lines from C.
-
-  \param src_string
-  The source string holding the lines to wrap.
-
-  \param indent_depth
-  The indentation depth.
-
-  \param preferred_first_line_length
-  The preferred length for the first line of text.
-
-  \param preferred_line_length
-  The preferred length for all the lines but the first one.
-
-  \return
-  The wrapped string in a mallocated buffer.
-*/
-char*
-ppl_io_wrap_string(const char* src,
-		   unsigned indent_depth,
-		   unsigned preferred_first_line_length,
-		   unsigned preferred_line_length);
 
 #define PPL_DECLARE_ASCII_DUMP_LOAD_FUNCTIONS(Type) \
 /*! \relates ppl_##Type##_tag */                    \
