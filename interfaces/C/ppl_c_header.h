@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 /*!
   \defgroup PPL_C_interface C Language Interface
-  \brief
+
   The Parma Polyhedra Library comes equipped with an interface
   for the C language.
 */
@@ -366,7 +366,7 @@ ppl_io_print_variable PPL_PROTO((ppl_dimension_type var));
 int
 ppl_io_fprint_variable PPL_PROTO((FILE* stream, ppl_dimension_type var));
 
-/*! \relates ppl_Polyhedron_tag \brief
+/*! \brief
   Pretty-prints \p var to a malloc-allocated string, a pointer to which
   is returned via \p strp.
 */
