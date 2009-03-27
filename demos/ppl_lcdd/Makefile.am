@@ -104,7 +104,7 @@ mit71-61.ine \
 mit90-86.ine \
 $(TOUGH_EXAMPLES_IF_ASSERTIONS_ENABLED)
 
-check-local: ppl_lcdd
+check-local: ppl_lcdd$(EXEEXT)
 	echo $(TOUGH_EXAMPLES) >tough_examples
 	echo $(ECHO_N) "$(ECHO_C)" >obtained
 	LANG=C; \
@@ -113,10 +113,11 @@ check-local: ppl_lcdd
 	  file=`basename $$path`; \
 	  $(FGREP) $$file tough_examples >/dev/null 2>&1 && continue; \
 	  echo $(ECHO_N) $$file " $(ECHO_C)" >>obtained; \
-	  echo ppl_lcdd $$path; \
-	  ./ppl_lcdd $$path | $(TEXT_MD5SUM) >>obtained; \
+	  echo ppl_lcdd$(EXEEXT) $$path; \
+	  ./ppl_lcdd$(EXEEXT) $$path | tr -d '\015' | $(TEXT_MD5SUM) \
+            >>obtained; \
 	done
-	diff -u $(srcdir)/$(EXPECTED) obtained
+	diff obtained $(srcdir)/$(EXPECTED)
 
 MOSTLYCLEANFILES = \
 tough_examples \

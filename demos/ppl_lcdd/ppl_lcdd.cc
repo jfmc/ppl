@@ -124,6 +124,11 @@ typedef Polyhedron* POLYHEDRON_TYPE;
 # include <sys/resource.h>
 #endif
 
+#if defined(PPL_HAVE_SYS_RESOURCE_H) \
+  && (defined(SA_ONESHOT) || defined(SA_RESETHAND))
+#define PPL_LCDD_SUPPORTS_LIMIT_ON_CPU_TIME
+#endif
+
 namespace {
 
 #ifdef PPL_HAVE_GETOPT_H
@@ -148,7 +153,9 @@ static const char* usage_string
 "and generates a V-representation (resp., an H-representation) of\n"
 "the same polyhedron.\n\n"
 "Options:\n"
+#ifdef PPL_LCDD_SUPPORTS_LIMIT_ON_CPU_TIME
 "  -CSECS, --max-cpu=SECS  limits CPU usage to SECS seconds\n"
+#endif
 "  -RMB, --max-memory=MB   limits memory usage to MB megabytes\n"
 "  -h, --help              prints this help text to stdout\n"
 "  -oPATH, --output=PATH   appends output to PATH\n"
@@ -173,7 +180,12 @@ static const char* usage_string
 
 const char* program_name = 0;
 
+#ifdef PPL_LCDD_SUPPORTS_LIMIT_ON_CPU_TIME
+
 unsigned long max_seconds_of_cpu_time = 0;
+
+#endif
+
 unsigned long max_bytes_of_virtual_memory = 0;
 bool print_timings = false;
 bool verbose = false;
@@ -269,6 +281,8 @@ warning(const char* format, ...) {
   va_end(ap);
 }
 
+#ifdef PPL_LCDD_SUPPORTS_LIMIT_ON_CPU_TIME
+
 extern "C" typedef void (*sig_handler_type)(int);
 
 void
@@ -284,7 +298,7 @@ set_alarm_on_cpu_time(const unsigned seconds, sig_handler_type handler) {
 #elif defined(SA_RESETHAND)
   s.sa_flags = SA_RESETHAND;
 #else
-  #error "Either SA_ONESHOT or SA_RESETHAND must be defined."
+#error "Either SA_ONESHOT or SA_RESETHAND must be defined."
 #endif
 
   if (sigaction(SIGXCPU, &s, 0) != 0)
@@ -300,6 +314,8 @@ set_alarm_on_cpu_time(const unsigned seconds, sig_handler_type handler) {
       fatal("setrlimit failed: %s", strerror(errno));
   }
 }
+
+#endif // PPL_LCDD_SUPPORTS_LIMIT_ON_CPU_TIME
 
 #if PPL_HAVE_DECL_RLIMIT_AS
 void
@@ -367,6 +383,8 @@ process_options(int argc, char* argv[]) {
       exit(0);
       break;
 
+#ifdef PPL_LCDD_SUPPORTS_LIMIT_ON_CPU_TIME
+
     case 'C':
       l = strtol(optarg, &endptr, 10);
       if (*endptr || l < 0)
@@ -374,6 +392,8 @@ process_options(int argc, char* argv[]) {
       else
 	max_seconds_of_cpu_time = l;
       break;
+
+#endif
 
     case 'R':
       l = strtol(optarg, &endptr, 10);
@@ -1143,8 +1163,12 @@ main(int argc, char* argv[]) try {
   // Process command line options.
   process_options(argc, argv);
 
+#ifdef PPL_LCDD_SUPPORTS_LIMIT_ON_CPU_TIME
+
   if (max_seconds_of_cpu_time > 0)
     set_alarm_on_cpu_time(max_seconds_of_cpu_time, timeout);
+
+#endif
 
   if (max_bytes_of_virtual_memory > 0)
     limit_virtual_memory(max_bytes_of_virtual_memory);
