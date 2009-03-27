@@ -101,16 +101,14 @@ main() TRY {
   do {
     ++dimension;
     nout << "Trying dimension " << dimension << endl;
-  }
-  while (timed_compute_open_hypercube_generators(dimension, INIT_TIME));
+  } while (timed_compute_open_hypercube_generators(dimension, INIT_TIME));
 
   // Now find an upper bound to the time necessary to compute it.
   int upper_bound = INIT_TIME;
   do {
     upper_bound *= 2;
     nout << "Trying upper bound " << upper_bound << endl;
-  }
-  while (!timed_compute_open_hypercube_generators(dimension, upper_bound));
+  } while (!timed_compute_open_hypercube_generators(dimension, upper_bound));
 
   // Search the "exact" time.
   int lower_bound = upper_bound/2;

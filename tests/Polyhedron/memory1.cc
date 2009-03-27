@@ -181,16 +181,14 @@ main() TRY {
   do {
     ++dimension;
     nout << "Trying dimension " << dimension << endl;
-  }
-  while (guarded_compute_open_hypercube_generators(dimension, INIT_MEMORY));
+  } while (guarded_compute_open_hypercube_generators(dimension, INIT_MEMORY));
 
   // Now find an upper bound to the memory necessary to compute it.
   unsigned long upper_bound = INIT_MEMORY;
   do {
     upper_bound *= 2;
     nout << "Trying upper bound " << upper_bound << endl;
-  }
-  while (!guarded_compute_open_hypercube_generators(dimension, upper_bound));
+  } while (!guarded_compute_open_hypercube_generators(dimension, upper_bound));
 
   // Search the "exact" amount of memory.
   int lower_bound = upper_bound/2;
