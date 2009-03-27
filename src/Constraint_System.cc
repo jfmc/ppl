@@ -546,6 +546,8 @@ PPL::Constraint_System::ascii_load(std::istream& s) {
       x[i].set_is_equality();
     else if (str == ">=" || str == ">")
       x[i].set_is_inequality();
+    else
+      return false;
 
     // Checking for equality of actual and declared types.
     switch (x[i].type()) {
