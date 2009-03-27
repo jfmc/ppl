@@ -1,0 +1,433 @@
+Temporary: will be replaced by a file obtained from git.
+========================================================
+
+2009-02-21 Saturday 14:58  Abramo Bagnara
+
+	* interfaces/C/.cvsignore (1.6), interfaces/Java/jni/.cvsignore
+	  (1.6), interfaces/OCaml/.cvsignore (1.7),
+	  interfaces/OCaml/tests/.cvsignore (1.3),
+	  interfaces/Prolog/.cvsignore (1.6),
+	  interfaces/Prolog/SWI/.cvsignore (1.10),
+	  interfaces/Prolog/tests/.cvsignore (1.5), tests/Grid/.cvsignore
+	  (1.4), tests/Partially_Reduced_Product/.cvsignore (1.3),
+	  tests/Polyhedron/.cvsignore (1.8), tests/Powerset/.cvsignore
+	  (1.3): Added missing files.
+
+2009-02-21 Saturday 14:54  Abramo Bagnara
+
+	* interfaces/Prolog/tests/.cvsignore (1.4): Added other patterns.
+
+2009-02-21 Saturday 14:50  Abramo Bagnara
+
+	* interfaces/: OCaml/.cvsignore (1.6), Prolog/.cvsignore (1.5),
+	  C/.cvsignore (1.5), Java/jni/.cvsignore (1.5): Added other
+	  patterns.
+
+2009-02-21 Saturday 14:45  Abramo Bagnara
+
+	* .cvsignore (1.12), doc/.cvsignore (1.4),
+	  interfaces/Java/parma_polyhedra_library/.cvsignore (1.2): Added
+	  other patterns.
+
+2009-02-21 Saturday 11:47  Abramo Bagnara
+
+	* .cvsignore (1.11): Added common ignored patterns.
+
+2009-02-21 Saturday 11:30  Abramo Bagnara
+
+	* .cvsignore (1.10), interfaces/Prolog/.cvsignore (1.4): Commented
+	  out dangerous entries.
+
+2009-02-18 Wednesday 23:30  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* fedora/: ppl-0.10-configure.patch (1.1), ppl.spec (1.32): Install
+	  the documentation according to the Fedora packaging conventions.
+
+2009-02-18 Wednesday 23:28  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* fedora/ppl-0.10-bigendian.patch (1.1): Put under CVS control.
+
+2009-02-18 Wednesday 20:42  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* fedora/ppl.spec (1.31): Implemented a better workaround for the
+	  bug affecting PPL 0.10 on big-endian architectures.
+
+	  There are no GNU Prolog packages available on s390 and s390:
+	  disable the GNU Prolog interface also on those platforms (besides
+	  ppc64).
+
+2009-02-17 Tuesday 07:19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Makefile.am (1.194): Avoid using GNU Make extensions.
+
+2009-02-17 Tuesday 07:19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/MIP_Problem.cc (1.81): Two FIXMEs resolved.
+
+2009-02-16 Monday 22:57  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/: ppl_test.hh (1.81), MIP_Problem/Makefile.am (1.15),
+	  Polyhedron/Makefile.am (1.136): Include "ppl_header.hh" instead
+	  of "ppl.hh": this greatly facilitates debugging of test programs.
+
+2009-02-15 Sunday 15:52  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Makefile.am (1.193): In ppl_include_files.hh only list the
+	  include files that are not included by any other include file.
+
+2009-02-15 Sunday 15:14  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Ask_Tell.defs.hh (1.21), DB_Row.templates.hh (1.10),
+	  GMP_Integer.inlines.hh (1.26), Interval_Restriction.defs.hh
+	  (1.18), Partially_Reduced_Product.defs.hh (1.42),
+	  Partially_Reduced_Product.inlines.hh (1.39), Powerset.defs.hh
+	  (1.34), Powerset.templates.hh (1.8), checked_float.inlines.hh
+	  (1.101), iterator_to_const.defs.hh (1.10): Added missing
+	  inclusions.
+
+2009-02-15 Sunday 14:32  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: fpu-ia32.inlines.hh (1.25), fpu.defs.hh (1.23): Include
+	  "compiler.hh" in fpu.defs.hh, not in fpu-ia32.inlines.hh.  As a
+	  general rule, do not include general-purpose include files in
+	  files that are only conditionally included.
+
+2009-02-15 Sunday 14:28  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.420): Added missing control operator.
+
+2009-02-15 Sunday 14:13  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/compiler.hh (1.18): Indentation fixed.
+
+2009-02-15 Sunday 14:11  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Partially_Reduced_Product.defs.hh (1.41): Include
+	  "Partially_Reduced_Product.templates.hh".
+
+2009-02-15 Sunday 11:40  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.419), demos/ppl_lcdd/Makefile.am (1.32),
+	  demos/ppl_lpsol/Makefile.am (1.51): Check for the availability of
+	  `fgrep' or its Posix replacement `grep -F'.  Always use $(FGREP)
+	  or $(EGREP) in makefiles.
+
+2009-02-15 Sunday 08:54  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: checked.inlines.hh (1.54), checked_ext.inlines.hh (1.44),
+	  fpu-c99.inlines.hh (1.24), fpu-ia32.inlines.hh (1.24),
+	  fpu-none.inlines.hh (1.12), fpu-sparc.inlines.hh (1.14): Added
+	  guards against multiple inclusion.
+
+2009-02-04 Wednesday 08:47  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Float.defs.hh (1.35): Work around the bug affecting the
+	  library on big-endian architectures.
+
+2009-02-03 Tuesday 20:34  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* fedora/ppl.spec (1.30): Work around the bug affecting PPL 0.10 on
+	  big-endian architectures.
+
+2009-02-02 Monday 09:28  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/Grid_public.cc (1.93), tests/Grid/simplifyusingcontext1.cc
+	  (1.2): Improved the code for handling 0-dim empty polyhedra for
+	  Grid::simplify_using_context_assign().  Added a further test for
+	  the 0-dim polyhedra.
+
+2009-02-02 Monday 09:27  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Polyhedron_public.cc (1.151): Corrected a bug in methods
+	  add(_recycled)_generator(s) and simplify_using_context_assign
+	  whereby an assertion could have failed under very specific
+	  conditions (zero-dim empty polyhedron with a computed
+	  inconsistent constraint system becoming a zero-dim universe
+	  polyhedron).
+
+2009-02-02 Monday 09:24  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Polyhedron/: addgenerator1.cc (1.15), addgenerators1.cc
+	  (1.16): New tests show an assertion failure when adding the
+	  vector space origin to an empty zero-dim space polyhedron,
+	  thereby turning it into a zero-dim universe polyhedron. The
+	  assertion only fails if the inconsistent constraint system of the
+	  empty polyhedron was previously generated.
+
+2009-02-02 Monday 09:01  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/Polyhedron/simplifyusingcontext1.cc (1.7): Added three
+	  further tests to cover all 0-dim cases.  Reordered tests so that
+	  all the 0-dim tests are consecutive (11-15).
+
+2009-02-02 Monday 08:39  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/Polyhedron/simplifyusingcontext1.cc (1.6): Added test that
+	  has an assertion failure for 0-dim empty polyhedra.
+
+2009-02-01 Sunday 22:14  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/Grid/: Makefile.am (1.76), simplifyusingcontext1.cc (1.1):
+	  Tests for simplify_using_context_assign() for Grids.
+
+2009-02-01 Sunday 22:09  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/Grid_public.cc (1.92): Added code for
+	  simplify_using_context_assign() for Grids.  Some other bugs in
+	  the comments fixed.
+
+2009-01-30 Friday 12:24  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/OCaml/Makefile.am (1.70): The parallel build problem
+	  should now be solved.
+
+2009-01-28 Wednesday 14:00  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Box/: Makefile.am (1.81), simplifyusingcontext1.cc (1.1):
+	  Added test file for method Box::simplify_using_cntext_assign().
+	  Tests test01() and test02() marked as failing, since they depend
+	  on method Interval::empty_intersection_assign(), currently
+	  provided with a dummy implementation.
+
+2009-01-28 Wednesday 13:56  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Box.templates.hh (1.141): Drafted an implementation for
+	  Box::simplify_using_context_assign().
+
+2009-01-28 Wednesday 13:56  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Interval.templates.hh (1.7): Added dummy implementation for
+	  method empty_intersection_assign(); corrected partial
+	  implementation of method simplify_using_context_assign().
+
+2009-01-28 Wednesday 10:11  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Interval.defs.hh (1.66): Added specification for new Interval
+	  method   template <typename From>   typename
+	  Enable_If<Is_Interval<From>::value, void>::type
+	  empty_intersection_assign(const From& y); to be used in the
+	  implementation of Box::simplify_using_context_assign.
+
+2009-01-27 Tuesday 21:25  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.418): Partially work around a bug of
+	  AX_PREFIX_CONFIG_H whereby WORDS_BIGENDIAN is not prefixed.
+	  Version number bumped.
+
+2009-01-27 Tuesday 14:54  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Interval.templates.hh (1.6): Drafted a partial implementation
+	  for simplify_using_context_assign(); it assumes that the interval
+	  is toplogically closed and with no restrictions.
+
+2009-01-27 Tuesday 12:46  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO (1.297): Added one urgent item.
+
+2009-01-26 Monday 16:12  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Polyhedron/simplifyusingcontext1.cc (1.5): Test 01
+	  overflows when using 8bit coefficients and assertions are turned
+	  on.
+
+2009-01-26 Monday 12:26  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: C_Polyhedron.cc (1.30), NNC_Polyhedron.cc (1.31): Switch to
+	  new implementation of poly_hull_assign_if_exact(), based on the
+	  results stated in BagnaraHZ09.
+
+2009-01-26 Monday 11:56  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.417): Version number bumped.
+
+2009-01-26 Monday 11:55  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* demos/ppl_lpsol/ppl_lpsol.c (1.95): Support more versions of
+	  GLPK.
+
+2009-01-26 Monday 11:25  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.416): Fixed copy-and-paste mistake.
+
+2009-01-26 Monday 10:42  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Polyhedron/polyhullifexact2.cc (1.4): Added tests
+	  corresponding to examples in BHZ09.
+
+2009-01-26 Monday 10:42  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Polyhedron/polyhullifexact1.cc (1.6): Added a new test.
+
+2009-01-26 Monday 10:39  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Polyhedron_nonpublic.cc (1.95): Added implementation of the
+	  BHZ09 exact upper bound test for NNC polyhedra; Factored out
+	  those parts that are common to the C polyhedron case.
+
+2009-01-26 Monday 10:36  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Polyhedron.defs.hh (1.362): Added declarations for two
+	  non-public methods (one for the C and another for the NNC case)
+	  implementing exact upper bound tests using BHZ09.
+
+2009-01-24 Saturday 17:22  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.284): Wording improved.
+
+2009-01-24 Saturday 15:09  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.283), README.configure (1.45), configure.ac (1.415),
+	  interfaces/C/Makefile.am (1.64), interfaces/Java/jni/Makefile.am
+	  (1.36), interfaces/Java/parma_polyhedra_library/Makefile.am
+	  (1.13), interfaces/Java/tests/Makefile.am (1.28),
+	  interfaces/OCaml/Makefile.am (1.69),
+	  interfaces/OCaml/tests/Makefile.am (1.30),
+	  interfaces/Prolog/Makefile.am (1.70),
+	  interfaces/Prolog/Ciao/Makefile.am (1.90),
+	  interfaces/Prolog/GNU/Makefile.am (1.89),
+	  interfaces/Prolog/SICStus/Makefile.am (1.103),
+	  interfaces/Prolog/SWI/Makefile.am (1.107),
+	  interfaces/Prolog/XSB/Makefile.am (1.83),
+	  interfaces/Prolog/YAP/Makefile.am (1.73),
+	  interfaces/Prolog/tests/Makefile.am (1.36), m4/m4.m4 (1.1): The
+	  configuration script now explicitly checks that a recent enough
+	  version of GNU M4 is available if at least one non-C++ interface
+	  is enabled (in previous versions this check was not performed and
+	  building the library could fail in a mysterious way).  That
+	  version is then used in all makefiles.  (Thanks to Tobias
+	  Grosser.) Improved configure.ac in various places.
+
+2009-01-23 Friday 22:13  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.282), README.configure (1.44), configure.ac (1.414),
+	  interfaces/OCaml/Makefile.am (1.68),
+	  interfaces/OCaml/tests/Makefile.am (1.29): New configuration
+	  option `--with-mlgmp=DIR' allows to specify the installation
+	  directory of the ML GMP package.
+
+2009-01-23 Friday 13:30  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* demos/ppl_lpsol/ppl_lpsol.c (1.94): Added missing const
+	  qualifier.
+
+2009-01-21 Wednesday 09:36  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/OCaml/Makefile.am (1.67): Corrected so as to behave
+	  correctly when using parallel builds: the build of <file>.cmx
+	  also generates <file>.o, which is a dependency for the generation
+	  of *.a.
+
+2009-01-20 Tuesday 18:56  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* demos/ppl_lpsol/ppl_lpsol.c (1.93): Fixed
+	  glpk_message_interceptor() (thanks to Kenneth MacKenzie).
+
+2009-01-20 Tuesday 18:27  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Octagonal_Shape/upperboundifexact1.cc (1.4): Added test on
+	  (higher dimensional) hypercubes.
+
+2009-01-20 Tuesday 18:21  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Octagonal_Shape.templates.hh (1.102): The code fo rthe
+	  detection of non-redundant octagonal constraints factored out of
+	  the strong reduction assign method into the new private method
+	  non_redundant_matrix_entries(), so that it can be reused in other
+	  contexts. In particular, now we also use it in the implementation
+	  of upper_bound_assign_if_exact().
+
+2009-01-20 Tuesday 18:14  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Octagonal_Shape.defs.hh (1.66): Declared a new (private)
+	  method that is meant to identify the non-redundant octagonal
+	  constraints without actually computing a strongly reduced matrix.
+
+2009-01-20 Tuesday 10:00  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/BD_Shape/upperboundifexact1.cc (1.6): Added a test on
+	  hypercubes.
+
+2009-01-20 Tuesday 09:59  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/BD_Shape.templates.hh (1.132): Method
+	  BHZ09_upper_bound_assign_if_exact() improved by exploiting
+	  shortest path reduction so as to avoid checks on redundant
+	  constraints.
+
+2009-01-19 Monday 14:40  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/BD_Shape/upperboundifexact1.cc (1.5): Added another test.
+
+2009-01-18 Sunday 14:18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO (1.296): Added one important item for next release.
+
+2009-01-18 Sunday 12:55  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Octagonal_Shape/upperboundifexact1.cc (1.3): Tests 1, 3, 4,
+	  9 and 10 now succeeds.
+
+2009-01-18 Sunday 12:54  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Octagonal_Shape.defs.hh (1.65), Octagonal_Shape.inlines.hh
+	  (1.44), Octagonal_Shape.templates.hh (1.101): Drafted an
+	  implementation of Octagonal_Shape::upper_bound_assign_if_exact()
+	  based on the corresponding theorem in BagnaraHZ09.
+
+2009-01-16 Friday 12:04  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/Octagonal_Shape/upperboundifexact1.cc (1.2): test10()
+	  revised.
+
+2009-01-16 Friday 11:42  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/Octagonal_Shape/: Makefile.am (1.39), upperboundifexact1.cc
+	  (1.1): Added a test file for the upper_bound_if_exact() method -
+	  copied (with obvious edits) from the BD_Shape test directory.
+
+	  As the current implementation just returns false, tests that
+	  would be expected to succeed have the "_F" tag.
+
+	  An additional test10 is an example showing that more conditions
+	  are needed for octagonal shapes compared to the bd shapes.
+
+2009-01-13 Tuesday 09:52  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/BD_Shape/upperboundifexact1.cc (1.4): Test test09 no longer
+	  fails.
+
+2009-01-13 Tuesday 09:49  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/BD_Shape.templates.hh (1.131): Corrected implementation of
+	  BHZ09_upper_bound_assign_if_exact().
+
+2009-01-12 Monday 09:50  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/BD_Shape/upperboundifexact1.cc (1.3): Added a test showing
+	  a bug in the new algorithm.
+
+2009-01-08 Thursday 15:47  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: BD_Shape.defs.hh (1.139), BD_Shape.inlines.hh (1.174),
+	  BD_Shape.templates.hh (1.130): Drafted an implementation for
+	  BHZ09_upper_bound_assign_if_exact(); the public method
+	  upper_bound_assign_if_exact() is now based on this new (private)
+	  method.
+
+2009-01-05 Monday 14:54  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/Partially_Reduced_Product.defs.hh,
+	  src/Partially_Reduced_Product.inlines.hh,
+	  src/Partially_Reduced_Product.templates.hh,
+	  src/Partially_Reduced_Product.types.hh,
+	  tests/Partially_Reduced_Product/Makefile.am,
+	  tests/Partially_Reduced_Product/directproduct6.cc,
+	  tests/Partially_Reduced_Product/partiallyreducedproduct2.cc,
+	  tests/Partially_Reduced_Product/partiallyreducedproduct3.cc,
+	  tests/Partially_Reduced_Product/shrinkusingcongruences1.cc
+	  (products.[1,1,1,1,1,1,1,1,2]):
+	  Added a reduction method Shrink_Using_Congruences_Reduction<> and
+	  the product Shrink_Using_Congruences_Product<> that assumes this
+	  reduction.
+
+	  Several "FIXME"s dealt with.
