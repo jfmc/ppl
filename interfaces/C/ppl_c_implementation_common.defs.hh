@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #define PPL_NO_AUTOMATIC_INITIALIZATION
 #include "ppl.hh"
-#include "ppl_c_stream.defs.hh"
 #include "ppl_c.h"
 #include <stdexcept>
 
@@ -177,17 +176,6 @@ catch (...) {						     \
     *strp = strdup(os.str().c_str());                                   \
     if (*strp == 0)                                                     \
       return PPL_ERROR_OUT_OF_MEMORY;                                   \
-    return 0;                                                           \
-  }                                                                     \
-  CATCH_ALL								\
-                                                                        \
-  int                                                                   \
-  ppl_io_write_##Type(struct ppl_io_ostream* s,				\
-		      ppl_const_##Type##_t x) try {			\
-    using namespace IO_Operators;                                       \
-    (*s->stream) << *to_const(x);					\
-    if (!(*s->stream))							\
-      return PPL_STDIO_ERROR;                                           \
     return 0;                                                           \
   }                                                                     \
   CATCH_ALL

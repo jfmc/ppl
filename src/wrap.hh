@@ -1,4 +1,4 @@
-/* c_stream class declaration.
+/* Declaration of string wrapping function.
    Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -20,20 +20,41 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_c_stream_defs_hh
-#define PPL_c_stream_defs_hh 1
+#ifndef PPL_wrap_hh
+#define PPL_wrap_hh 1
 
-#include <iostream>
+#include "globals.defs.hh"
 
-struct ppl_io_ostream {
-  typedef std::basic_streambuf<char, std::char_traits<char> > streambuf;
-  ppl_io_ostream(streambuf* sbuf);
-  ppl_io_ostream(std::ostream* stream);
-  ~ppl_io_ostream();
-  streambuf* sbuf;
-  std::ostream* stream;
-};
+namespace Parma_Polyhedra_Library {
 
-#include "ppl_c_stream.inlines.hh"
+namespace IO_Operators {
 
-#endif // !defined(PPL_c_stream_defs_hh)
+//! Helper function for the wrapping of lines.
+/*!
+  \param src_string
+  The source string holding the lines to wrap.
+
+  \param indent_depth
+  The indentation depth.
+
+  \param preferred_first_line_length
+  The preferred length for the first line of text.
+
+  \param preferred_line_length
+  The preferred length for all the lines but the first one.
+
+  \return
+  The wrapped string.
+*/
+std::string
+wrap_string(const std::string& src_string,
+	    unsigned indent_depth,
+	    unsigned preferred_first_line_length,
+	    unsigned preferred_line_length);
+
+
+} // namespace IO_Operators
+
+} // namespace Parma_Polyhedra_Library
+
+#endif // !defined(PPL_wrap_hh)

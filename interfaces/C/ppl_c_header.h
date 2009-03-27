@@ -136,7 +136,6 @@ Programming Kit): this is used to read linear programs in MPS format.
 #include <stdio.h>
 #include <gmp.h>
 #include <stddef.h>
-#include "ppl_c_stream.h"
 
 /*
   PPL_PROTO is a macro used to wrap function prototypes, so that
@@ -577,10 +576,30 @@ int                                                                     \
 ppl_io_fprint_##Type PPL_PROTO((FILE* stream, ppl_const_##Type##_t x)); \
 /*! \relates ppl_##Type##_tag */                                        \
 int                                                                     \
-ppl_io_asprint_##Type PPL_PROTO((char** strp, ppl_const_##Type##_t x)); \
-/*! \relates ppl_##Type##_tag */                                        \
-int                                                                     \
-ppl_io_write_##Type PPL_PROTO((ppl_io_ostream_t s, ppl_const_##Type##_t x));
+ppl_io_asprint_##Type PPL_PROTO((char** strp, ppl_const_##Type##_t x));
+
+/*! Helper function for the wrapping of lines from C.
+
+  \param src_string
+  The source string holding the lines to wrap.
+
+  \param indent_depth
+  The indentation depth.
+
+  \param preferred_first_line_length
+  The preferred length for the first line of text.
+
+  \param preferred_line_length
+  The preferred length for all the lines but the first one.
+
+  \return
+  The wrapped string in a mallocated buffer.
+*/
+char*
+ppl_io_wrap_string(const char* src,
+		   unsigned indent_depth,
+		   unsigned preferred_first_line_length,
+		   unsigned preferred_line_length);
 
 #define PPL_DECLARE_ASCII_DUMP_LOAD_FUNCTIONS(Type) \
 /*! \relates ppl_##Type##_tag */                    \
@@ -605,10 +624,7 @@ int                                                                     \
 ppl_io_fprint_##Type PPL_PROTO((FILE* stream, ppl_const_##Type##_t x)); \
 /*! \relates ppl_##Type##_tag \brief Prints \p x to a malloc-allocated string, a pointer to which is returned via \p strp. */ \
 int                                                                     \
-ppl_io_asprint_##Type PPL_PROTO((char** strp, ppl_const_##Type##_t x)); \
- /*! \relates ppl_##Type##_tag \brief Print \p x to stream \p s. */	\
-int                                                                     \
-ppl_io_write_##Type PPL_PROTO((ppl_io_ostream_t s, ppl_const_##Type##_t x));
+ppl_io_asprint_##Type PPL_PROTO((char** strp, ppl_const_##Type##_t x));
 
 
 #define PPL_DECLARE_AND_DOCUMENT_ASCII_DUMP_LOAD_FUNCTIONS(Type) \

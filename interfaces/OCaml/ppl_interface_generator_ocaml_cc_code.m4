@@ -1125,33 +1125,6 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_pretty_print_to_atom_code',
-`dnl
-extern "C"
-CAMLprim value
-ppl_@CLASS@_pretty_print(value ph1, value indent_depth,
-                         value preferred_first_line_length,
-                         value preferred_line_length) try {
-  CAMLparam4(ph1, indent_depth, preferred_first_line_length,
-             preferred_line_length);
-  @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
-  int cpp_indent_depth = Int_val(indent_depth);
-  check_int_is_unsigned(cpp_indent_depth);
-  int cpp_preferred_first_line_length = Int_val(preferred_first_line_length);
-  check_int_is_unsigned(cpp_preferred_first_line_length);
-  int cpp_preferred_line_length = Int_val(preferred_line_length);
-  check_int_is_unsigned(cpp_preferred_line_length);
-  using namespace Parma_Polyhedra_Library::IO_Operators;
-  std::ostringstream s;
-  Write_To_Stream wfunc(s);
-  pretty_print(pph1, wfunc, cpp_indent_depth,
-               cpp_preferred_first_line_length, cpp_preferred_line_length);
-  CAMLreturn(caml_copy_string(s.str().c_str()));
-}
-CATCH_ALL
-
-')
-
 m4_define(`ppl_@CLASS@_linear_@PARTITION@_code', `
 extern "C"
 CAMLprim value

@@ -1760,37 +1760,6 @@ m4_define(`ppl_@CLASS@_ascii_dump_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_pretty_print_to_atom_code',
-  `extern "C" Prolog_foreign_return_type
-  ppl_@CLASS@_pretty_print_to_atom
-  (Prolog_term_ref t_ph,
-   Prolog_term_ref t_indent_depth,
-   Prolog_term_ref t_preferred_first_line_length,
-   Prolog_term_ref t_preferred_line_length,
-   Prolog_term_ref t_atom) {
-  static const char* where = "ppl_@CLASS@_pretty_print_to_atom/5";
-  try {
-    const @CPP_CLASS@* ph = term_to_handle<@CPP_CLASS@ >(t_ph, where);
-    PPL_CHECK(ph);
-    unsigned indent_depth
-      = term_to_unsigned<unsigned>(t_indent_depth, where);
-    unsigned preferred_first_line_length
-      = term_to_unsigned<unsigned>(t_preferred_first_line_length, where);
-    unsigned preferred_line_length
-      = term_to_unsigned<unsigned>(t_preferred_line_length, where);
-    using namespace Parma_Polyhedra_Library::IO_Operators;
-    std::ostringstream s;
-    Write_To_Stream wfunc(s);
-    pretty_print(*ph, wfunc, indent_depth,
-                 preferred_first_line_length, preferred_line_length);
-    Prolog_put_atom_chars(t_atom, s.str().c_str());
-    return PROLOG_SUCCESS;
-  }
-  CATCH_ALL;
-}
-
-')
-
 m4_define(`ppl_@CLASS@_@MEMBYTES@_code',
   `extern "C" Prolog_foreign_return_type
   ppl_@CLASS@_@MEMBYTES@(Prolog_term_ref t_pps,

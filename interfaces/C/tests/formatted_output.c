@@ -38,6 +38,7 @@ main() {
   char* p;
 
   mpz_init_set_si(z, 1);
+  ppl_initialize();
   ppl_new_Coefficient(&coeff);
   ppl_assign_Coefficient_from_mpz_t(coeff, z);
   ppl_new_Constraint_System(&cs);
@@ -57,5 +58,6 @@ main() {
       printf("    %s\n", p);
   }
   ppl_delete_Constraint_System(cs);
+  ppl_finalize();
   return 0;
 }

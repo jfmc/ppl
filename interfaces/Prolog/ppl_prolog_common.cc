@@ -2176,33 +2176,3 @@ ppl_MIP_Problem_ascii_dump(Prolog_term_ref t_mip) {
   }
   CATCH_ALL;
 }
-
-extern "C" Prolog_foreign_return_type
-ppl_MIP_Problem_pretty_print_to_atom
-(Prolog_term_ref t_mip,
- Prolog_term_ref t_indent_depth,
- Prolog_term_ref t_preferred_first_line_length,
- Prolog_term_ref t_preferred_line_length,
- Prolog_term_ref t_atom) {
-  static const char* where = "ppl_MIP_Problem_pretty_print_to_atom/5";
-  try {
-    const MIP_Problem* mip = term_to_handle<MIP_Problem>(t_mip, where);
-    PPL_CHECK(mip);
-    unsigned indent_depth
-      = term_to_unsigned<unsigned>(t_indent_depth, where);
-    unsigned preferred_first_line_length
-      = term_to_unsigned<unsigned>(t_preferred_first_line_length, where);
-    unsigned preferred_line_length
-      = term_to_unsigned<unsigned>(t_preferred_line_length, where);
-    using namespace Parma_Polyhedra_Library::IO_Operators;
-    std::ostringstream s;
-    Write_To_Stream wfunc(s);
-    pretty_print(*mip, wfunc, indent_depth,
-                 preferred_first_line_length, preferred_line_length);
-    Prolog_term_ref t = Prolog_new_term_ref();
-    Prolog_put_atom_chars(t, s.str().c_str());
-    Prolog_unify(t_atom, t);
-    return PROLOG_SUCCESS;
-  }
-  CATCH_ALL;
-}

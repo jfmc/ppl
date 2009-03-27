@@ -508,32 +508,6 @@ Java_parma_1polyhedra_1library_MIP_1Problem_ascii_1dump
 }
 
 JNIEXPORT jstring JNICALL
-Java_parma_1polyhedra_1library_MIP_1Problem_pretty_1print
-(JNIEnv* env, jobject j_this, jlong indent_depth,
- jlong preferred_first_line_length, jlong preferred_line_length) {
-  try {
-    MIP_Problem* this_ptr
-      = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this));
-    dimension_type cpp_indent_depth
-      = jtype_to_unsigned<dimension_type>(indent_depth);
-    dimension_type cpp_preferred_first_line_length
-      = jtype_to_unsigned<dimension_type>(preferred_first_line_length);
-    dimension_type cpp_preferred_line_length
-      = jtype_to_unsigned<dimension_type>(preferred_line_length);
-    using namespace Parma_Polyhedra_Library::IO_Operators;
-    std::ostringstream s;
-    Write_To_Stream wfunc(s);
-    pretty_print(*this_ptr, wfunc,
-                 cpp_indent_depth,
-                 cpp_preferred_first_line_length,
-                 cpp_preferred_line_length);
-    return env->NewStringUTF(s.str().c_str());
-  }
-  CATCH_ALL;
-  return 0;
-}
-
-JNIEXPORT jstring JNICALL
 Java_parma_1polyhedra_1library_Linear_1Expression_toString
 (JNIEnv* env, jobject j_this) {
   using namespace Parma_Polyhedra_Library::IO_Operators;
@@ -550,31 +524,6 @@ Java_parma_1polyhedra_1library_Linear_1Expression_ascii_1dump
     std::ostringstream s;
     Linear_Expression le = build_cxx_linear_expression(env, j_this);
     le.ascii_dump(s);
-    return env->NewStringUTF(s.str().c_str());
-  }
-  CATCH_ALL;
-  return 0;
-}
-
-JNIEXPORT jstring JNICALL
-Java_parma_1polyhedra_1library_Linear_1Expression_pretty_1print
-(JNIEnv* env, jobject j_this, jlong indent_depth,
- jlong preferred_first_line_length, jlong preferred_line_length) {
-  try {
-    Linear_Expression cpp_le = build_cxx_linear_expression(env, j_this);
-    dimension_type cpp_indent_depth
-      = jtype_to_unsigned<dimension_type>(indent_depth);
-    dimension_type cpp_preferred_first_line_length
-      = jtype_to_unsigned<dimension_type>(preferred_first_line_length);
-    dimension_type cpp_preferred_line_length
-      = jtype_to_unsigned<dimension_type>(preferred_line_length);
-    using namespace Parma_Polyhedra_Library::IO_Operators;
-    std::ostringstream s;
-    Write_To_Stream wfunc(s);
-    pretty_print(cpp_le, wfunc,
-                 cpp_indent_depth,
-                 cpp_preferred_first_line_length,
-                 cpp_preferred_line_length);
     return env->NewStringUTF(s.str().c_str());
   }
   CATCH_ALL;
@@ -605,31 +554,6 @@ Java_parma_1polyhedra_1library_Generator_ascii_1dump
 }
 
 JNIEXPORT jstring JNICALL
-Java_parma_1polyhedra_1library_Generator_pretty_1print
-(JNIEnv* env, jobject j_this, jlong indent_depth,
- jlong preferred_first_line_length, jlong preferred_line_length) {
-  try {
-    Generator cpp_g = build_cxx_generator(env, j_this);
-    dimension_type cpp_indent_depth
-      = jtype_to_unsigned<dimension_type>(indent_depth);
-    dimension_type cpp_preferred_first_line_length
-      = jtype_to_unsigned<dimension_type>(preferred_first_line_length);
-    dimension_type cpp_preferred_line_length
-      = jtype_to_unsigned<dimension_type>(preferred_line_length);
-    using namespace Parma_Polyhedra_Library::IO_Operators;
-    std::ostringstream s;
-    Write_To_Stream wfunc(s);
-    pretty_print(cpp_g, wfunc,
-                 cpp_indent_depth,
-                 cpp_preferred_first_line_length,
-                 cpp_preferred_line_length);
-    return env->NewStringUTF(s.str().c_str());
-  }
-  CATCH_ALL;
-  return 0;
-}
-
-JNIEXPORT jstring JNICALL
 Java_parma_1polyhedra_1library_Constraint_toString
 (JNIEnv* env, jobject c) {
   using namespace Parma_Polyhedra_Library::IO_Operators;
@@ -646,31 +570,6 @@ Java_parma_1polyhedra_1library_Constraint_ascii_1dump
     std::ostringstream s;
     Constraint c = build_cxx_constraint(env, j_this);
     c.ascii_dump(s);
-    return env->NewStringUTF(s.str().c_str());
-  }
-  CATCH_ALL;
-  return 0;
-}
-
-JNIEXPORT jstring JNICALL
-Java_parma_1polyhedra_1library_Constraint_pretty_1print
-(JNIEnv* env, jobject j_this, jlong indent_depth,
- jlong preferred_first_line_length, jlong preferred_line_length) {
-  try {
-    Constraint cpp_c = build_cxx_constraint(env, j_this);
-    dimension_type cpp_indent_depth
-      = jtype_to_unsigned<dimension_type>(indent_depth);
-    dimension_type cpp_preferred_first_line_length
-      = jtype_to_unsigned<dimension_type>(preferred_first_line_length);
-    dimension_type cpp_preferred_line_length
-      = jtype_to_unsigned<dimension_type>(preferred_line_length);
-    using namespace Parma_Polyhedra_Library::IO_Operators;
-    std::ostringstream s;
-    Write_To_Stream wfunc(s);
-    pretty_print(cpp_c, wfunc,
-                 cpp_indent_depth,
-                 cpp_preferred_first_line_length,
-                 cpp_preferred_line_length);
     return env->NewStringUTF(s.str().c_str());
   }
   CATCH_ALL;
@@ -701,31 +600,6 @@ Java_parma_1polyhedra_1library_Grid_1Generator_ascii_1dump
 }
 
 JNIEXPORT jstring JNICALL
-Java_parma_1polyhedra_1library_Grid_1Generator_pretty_1print
-(JNIEnv* env, jobject j_this, jlong indent_depth,
- jlong preferred_first_line_length, jlong preferred_line_length) {
-  try {
-    Grid_Generator cpp_g = build_cxx_grid_generator(env, j_this);
-    dimension_type cpp_indent_depth
-      = jtype_to_unsigned<dimension_type>(indent_depth);
-    dimension_type cpp_preferred_first_line_length
-      = jtype_to_unsigned<dimension_type>(preferred_first_line_length);
-    dimension_type cpp_preferred_line_length
-      = jtype_to_unsigned<dimension_type>(preferred_line_length);
-    using namespace Parma_Polyhedra_Library::IO_Operators;
-    std::ostringstream s;
-    Write_To_Stream wfunc(s);
-    pretty_print(cpp_g, wfunc,
-                 cpp_indent_depth,
-                 cpp_preferred_first_line_length,
-                 cpp_preferred_line_length);
-    return env->NewStringUTF(s.str().c_str());
-  }
-  CATCH_ALL;
-  return 0;
-}
-
-JNIEXPORT jstring JNICALL
 Java_parma_1polyhedra_1library_Congruence_toString
 (JNIEnv* env, jobject g) {
   using namespace Parma_Polyhedra_Library::IO_Operators;
@@ -742,31 +616,6 @@ Java_parma_1polyhedra_1library_Congruence_ascii_1dump
     std::ostringstream s;
     Congruence c = build_cxx_congruence(env, j_this);
     c.ascii_dump(s);
-    return env->NewStringUTF(s.str().c_str());
-  }
-  CATCH_ALL;
-  return 0;
-}
-
-JNIEXPORT jstring JNICALL
-Java_parma_1polyhedra_1library_Congruence_pretty_1print
-(JNIEnv* env, jobject j_this, jlong indent_depth,
- jlong preferred_first_line_length, jlong preferred_line_length) {
-  try {
-    Congruence cpp_c = build_cxx_congruence(env, j_this);
-    dimension_type cpp_indent_depth
-      = jtype_to_unsigned<dimension_type>(indent_depth);
-    dimension_type cpp_preferred_first_line_length
-      = jtype_to_unsigned<dimension_type>(preferred_first_line_length);
-    dimension_type cpp_preferred_line_length
-      = jtype_to_unsigned<dimension_type>(preferred_line_length);
-    using namespace Parma_Polyhedra_Library::IO_Operators;
-    std::ostringstream s;
-    Write_To_Stream wfunc(s);
-    pretty_print(cpp_c, wfunc,
-                 cpp_indent_depth,
-                 cpp_preferred_first_line_length,
-                 cpp_preferred_line_length);
     return env->NewStringUTF(s.str().c_str());
   }
   CATCH_ALL;
@@ -797,31 +646,6 @@ Java_parma_1polyhedra_1library_Grid_1Generator_1System_ascii_1dump
 }
 
 JNIEXPORT jstring JNICALL
-Java_parma_1polyhedra_1library_Grid_1Generator_1System_pretty_1print
-(JNIEnv* env, jobject j_this, jlong indent_depth,
- jlong preferred_first_line_length, jlong preferred_line_length) {
-  try {
-    Grid_Generator_System cpp_gs = build_cxx_grid_generator_system(env, j_this);
-    dimension_type cpp_indent_depth
-      = jtype_to_unsigned<dimension_type>(indent_depth);
-    dimension_type cpp_preferred_first_line_length
-      = jtype_to_unsigned<dimension_type>(preferred_first_line_length);
-    dimension_type cpp_preferred_line_length
-      = jtype_to_unsigned<dimension_type>(preferred_line_length);
-    using namespace Parma_Polyhedra_Library::IO_Operators;
-    std::ostringstream s;
-    Write_To_Stream wfunc(s);
-    pretty_print(cpp_gs, wfunc,
-                 cpp_indent_depth,
-                 cpp_preferred_first_line_length,
-                 cpp_preferred_line_length);
-    return env->NewStringUTF(s.str().c_str());
-  }
-  CATCH_ALL;
-  return 0;
-}
-
-JNIEXPORT jstring JNICALL
 Java_parma_1polyhedra_1library_Generator_1System_toString
 (JNIEnv* env, jobject gs) {
   using namespace Parma_Polyhedra_Library::IO_Operators;
@@ -838,31 +662,6 @@ Java_parma_1polyhedra_1library_Generator_1System_ascii_1dump
     std::ostringstream s;
     Generator_System gs = build_cxx_generator_system(env, j_this);
     gs.ascii_dump(s);
-    return env->NewStringUTF(s.str().c_str());
-  }
-  CATCH_ALL;
-  return 0;
-}
-
-JNIEXPORT jstring JNICALL
-Java_parma_1polyhedra_1library_Generator_1System_pretty_1print
-(JNIEnv* env, jobject j_this, jlong indent_depth,
- jlong preferred_first_line_length, jlong preferred_line_length) {
-  try {
-    Generator_System cpp_gs = build_cxx_generator_system(env, j_this);
-    dimension_type cpp_indent_depth
-      = jtype_to_unsigned<dimension_type>(indent_depth);
-    dimension_type cpp_preferred_first_line_length
-      = jtype_to_unsigned<dimension_type>(preferred_first_line_length);
-    dimension_type cpp_preferred_line_length
-      = jtype_to_unsigned<dimension_type>(preferred_line_length);
-    using namespace Parma_Polyhedra_Library::IO_Operators;
-    std::ostringstream s;
-    Write_To_Stream wfunc(s);
-    pretty_print(cpp_gs, wfunc,
-                 cpp_indent_depth,
-                 cpp_preferred_first_line_length,
-                 cpp_preferred_line_length);
     return env->NewStringUTF(s.str().c_str());
   }
   CATCH_ALL;
@@ -894,31 +693,6 @@ Java_parma_1polyhedra_1library_Constraint_1System_ascii_1dump
 }
 
 JNIEXPORT jstring JNICALL
-Java_parma_1polyhedra_1library_Constraint_1System_pretty_1print
-(JNIEnv* env, jobject j_this, jlong indent_depth,
- jlong preferred_first_line_length, jlong preferred_line_length) {
-  try {
-    Constraint_System cpp_cs = build_cxx_constraint_system(env, j_this);
-    dimension_type cpp_indent_depth
-      = jtype_to_unsigned<dimension_type>(indent_depth);
-    dimension_type cpp_preferred_first_line_length
-      = jtype_to_unsigned<dimension_type>(preferred_first_line_length);
-    dimension_type cpp_preferred_line_length
-      = jtype_to_unsigned<dimension_type>(preferred_line_length);
-    using namespace Parma_Polyhedra_Library::IO_Operators;
-    std::ostringstream s;
-    Write_To_Stream wfunc(s);
-    pretty_print(cpp_cs, wfunc,
-                 cpp_indent_depth,
-                 cpp_preferred_first_line_length,
-                 cpp_preferred_line_length);
-    return env->NewStringUTF(s.str().c_str());
-  }
-  CATCH_ALL;
-  return 0;
-}
-
-JNIEXPORT jstring JNICALL
 Java_parma_1polyhedra_1library_Congruence_1System_toString
 (JNIEnv* env, jobject cgs) {
   using namespace Parma_Polyhedra_Library::IO_Operators;
@@ -935,31 +709,6 @@ Java_parma_1polyhedra_1library_Congruence_1System_ascii_1dump
     std::ostringstream s;
     Congruence_System cs = build_cxx_congruence_system(env, j_this);
     cs.ascii_dump(s);
-    return env->NewStringUTF(s.str().c_str());
-  }
-  CATCH_ALL;
-  return 0;
-}
-
-JNIEXPORT jstring JNICALL
-Java_parma_1polyhedra_1library_Congruence_1System_pretty_1print
-(JNIEnv* env, jobject j_this, jlong indent_depth,
- jlong preferred_first_line_length, jlong preferred_line_length) {
-  try {
-    Congruence_System cpp_cs = build_cxx_congruence_system(env, j_this);
-    dimension_type cpp_indent_depth
-      = jtype_to_unsigned<dimension_type>(indent_depth);
-    dimension_type cpp_preferred_first_line_length
-      = jtype_to_unsigned<dimension_type>(preferred_first_line_length);
-    dimension_type cpp_preferred_line_length
-      = jtype_to_unsigned<dimension_type>(preferred_line_length);
-    using namespace Parma_Polyhedra_Library::IO_Operators;
-    std::ostringstream s;
-    Write_To_Stream wfunc(s);
-    pretty_print(cpp_cs, wfunc,
-                 cpp_indent_depth,
-                 cpp_preferred_first_line_length,
-                 cpp_preferred_line_length);
     return env->NewStringUTF(s.str().c_str());
   }
   CATCH_ALL;

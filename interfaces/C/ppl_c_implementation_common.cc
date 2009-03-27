@@ -23,7 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 /* Interface for Coefficient. */
 
 #include "ppl_c_implementation_common.defs.hh"
-#include "ppl_c_stream.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -2026,6 +2025,17 @@ DEFINE_OUTPUT_FUNCTIONS(Grid_Generator)
 DEFINE_OUTPUT_FUNCTIONS(Grid_Generator_System)
 
 DEFINE_OUTPUT_FUNCTIONS(MIP_Problem)
+
+char*
+ppl_io_wrap_string(const char* src,
+		   unsigned indent_depth,
+		   unsigned preferred_first_line_length,
+		   unsigned preferred_line_length) {
+  using namespace IO_Operators;
+  return strdup(wrap_string(src, indent_depth,
+			    preferred_first_line_length,
+			    preferred_line_length).c_str());
+}
 
 int
 ppl_io_set_variable_output_function(ppl_io_variable_output_function_type* p)

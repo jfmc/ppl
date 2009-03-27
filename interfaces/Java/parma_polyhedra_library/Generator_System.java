@@ -42,20 +42,4 @@ public class Generator_System extends java.util.Vector<Generator> {
 
     //! Returns a string representation of \p this.
     public native String toString();
-
-    private native String pretty_print(long indent_depth,
-                                       long preferred_first_line_length,
-                                       long preferred_line_length);
-
-    //! Pretty prints \p this using \p writer.
-    public void pretty_print(Writer writer,
-                             long indent_depth,
-                             long preferred_first_line_length,
-                             long preferred_line_length)
-        throws IOException {
-        String s = pretty_print(indent_depth,
-                                preferred_first_line_length,
-                                preferred_line_length);
-        writer.write(s);
-    }
 }

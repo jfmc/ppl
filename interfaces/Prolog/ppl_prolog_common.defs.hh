@@ -795,14 +795,6 @@ ppl_MIP_Problem_OK(Prolog_term_ref t_mip);
 extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_ascii_dump(Prolog_term_ref t_mip);
 
-extern "C" Prolog_foreign_return_type
-ppl_MIP_Problem_pretty_print_to_atom(Prolog_term_ref t_mip,
-                                     Prolog_term_ref t_indent_depth,
-                                     Prolog_term_ref
-                                     t_preferred_first_line_length,
-                                     Prolog_term_ref t_preferred_line_length,
-                                     Prolog_term_ref t_atom);
-
 using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::Interfaces::Prolog;
 

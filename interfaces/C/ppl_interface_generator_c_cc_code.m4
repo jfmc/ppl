@@ -30,7 +30,6 @@ dnl No code is needed for these procedure schemas in the C interface.
 
 m4_define(`ppl_@CLASS@_swap_code', `')
 m4_define(`ppl_@CLASS@_ascii_dump_code', `')
-m4_define(`ppl_@CLASS@_pretty_print_to_atom_code', `')
 
 dnl There is no code at present for these procedures in the C interface.
 dnl Remove the macro if its definition is added.

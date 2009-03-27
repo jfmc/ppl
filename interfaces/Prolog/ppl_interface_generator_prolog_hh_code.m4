@@ -525,17 +525,6 @@ m4_define(`ppl_@CLASS@_ascii_dump_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_pretty_print_to_atom_code',
-  `extern "C" Prolog_foreign_return_type
-  ppl_@CLASS@_pretty_print_to_atom
-  (Prolog_term_ref t_ph,
-   Prolog_term_ref t_indent_depth,
-   Prolog_term_ref t_preferred_first_line_length,
-   Prolog_term_ref t_preferred_line_length,
-   Prolog_term_ref t_atom);
-
-')
-
 m4_define(`ppl_@CLASS@_@MEMBYTES@_code',
   `extern "C" Prolog_foreign_return_type
   ppl_@CLASS@_@MEMBYTES@(Prolog_term_ref t_pps,

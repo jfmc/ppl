@@ -124,7 +124,6 @@ $(COEFFICIENT_TYPES_INCLUDE_FILES) \
 Coefficient.types.hh \
 stdiobuf.types.hh \
 c_streambuf.types.hh \
-c_streambuf_format.types.hh \
 globals.types.hh \
 iterator_to_const.types.hh \
 distances.types.hh \
@@ -198,9 +197,6 @@ stdiobuf.defs.hh \
 stdiobuf.inlines.hh \
 c_streambuf.defs.hh \
 c_streambuf.inlines.hh \
-c_streambuf_format.defs.hh \
-c_streambuf_format.inlines.hh \
-c_streambuf_format_settings.h \
 globals.defs.hh \
 globals.inlines.hh \
 math_utilities.defs.hh \
@@ -326,8 +322,7 @@ Partially_Reduced_Product.inlines.hh \
 Partially_Reduced_Product.templates.hh \
 max_space_dimension.hh \
 algorithms.hh \
-pretty_print.hh \
-pretty_print.inlines.hh
+wrap.hh
 #Any_Pointset.types.hh \
 #Any_Pointset.defs.hh \
 #Any_Pointset.inlines.hh \
@@ -401,14 +396,13 @@ Grid_conversion.cc \
 Grid_simplify.cc \
 stdiobuf.cc \
 c_streambuf.cc \
-c_streambuf_format.cc \
 globals.cc \
 mp_std_bits.cc \
 version.cc \
 $(INCLUDE_FILES) \
 $(NESTED_INCLUDE_FILES) \
 swapping_sort.icc \
-pretty_print.cc
+wrap.cc
 #Pointset_Ask_Tell.cc
 
 if NO_UNDEFINED

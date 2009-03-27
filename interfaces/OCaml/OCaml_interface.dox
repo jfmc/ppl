@@ -396,16 +396,6 @@ defining mixed integer (linear) programming problems.
    of the MIP_Problem referenced by <CODE>handle</CODE>. Useful for
    debugging purposes.
 
-<H2><CODE>
-  ppl_MIP_Problem_pretty_print handle indent_depth
-    preferred_first_line_length preferred_line_length
-</CODE></H2>
-   Returns a string containing the pretty printing of the MIP_Problem
-   referenced by <CODE>handle</CODE>; the integer parameters
-   <CODE>indent_depth</CODE>, <CODE>preferred_first_line_length</CODE>
-   and <CODE>preferred_line_length</CODE> allow some control to the
-   wrapping style.
-
 <BR>
 
 \anchor main_OCaml_C_polyhedron_functions
@@ -961,16 +951,6 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    Returns a string containing an ASCII dump of the internal representation
    of the polyhedron referenced by <CODE>handle</CODE>. Useful for
    debugging purposes.
-
-<H2><CODE>
-  ppl_Polyhedron_pretty_print handle indent_depth
-    preferred_first_line_length preferred_line_length
-</CODE></H2>
-   Returns a string containing the pretty printing of the polyhedron
-   referenced by <CODE>handle</CODE>; the integer parameters
-   <CODE>indent_depth</CODE>, <CODE>preferred_first_line_length</CODE>
-   and <CODE>preferred_line_length</CODE> allow some control to the
-   wrapping style.
 
 
 \anchor OCamldoc_Documentation

@@ -231,7 +231,3 @@ external ppl_MIP_Problem_swap:
 external ppl_MIP_Problem_ascii_dump:
   mip_problem -> string
       = "ppl_MIP_Problem_ascii_dump"
-
-external ppl_MIP_Problem_pretty_print:
-  mip_problem -> int -> int -> int -> string
-      = "ppl_MIP_Problem_pretty_print"
