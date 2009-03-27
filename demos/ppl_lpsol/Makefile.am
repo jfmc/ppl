@@ -206,12 +206,12 @@ endif !HOST_OS_CYGWIN
 # NOTE: use exact steepest-edge pricing (-p1) instead float-based one.
 # This has an efficiency penalty, but it guarantees deterministic
 # results across different architectures.
-SIMPLEX = ./ppl_lpsol -s -p1 $(CHECK_OPTION) -oobtained
-SIMPLEX_NOCHECK = ./ppl_lpsol -s -p1 -oobtained
+SIMPLEX = ./ppl_lpsol$(EXEEXT) -s -p1 $(CHECK_OPTION) -oobtained
+SIMPLEX_NOCHECK = ./ppl_lpsol$(EXEEXT) -s -p1 -oobtained
 ECHO_SIMPLEX = echo "***" $(SIMPLEX)
 ECHO_SIMPLEX_NOCHECK = echo "***" $(SIMPLEX_NOCHECK)
 
-check-local: ppl_lpsol
+check-local: ppl_lpsol$(EXEEXT)
 	echo $(ECHO_N) "$(ECHO_C)" >obtained
 	echo $(LP_PROBLEMS) >lp_problems
 	echo $(DO_NOT_CHECK_PROBLEMS) >do_not_check_problems
@@ -261,7 +261,7 @@ check-local: ppl_lpsol
 	  $(FGREP) $$file do_not_check_problems >/dev/null 2>&1 && continue; \
 	  $(FGREP) $$file tough_examples >/dev/null 2>&1 && continue; \
 	  echo "*** ppl_lpsol -e -r $$m -oobtained $$file" >>obtained; \
-	  ./ppl_lpsol -e -r $(CHECK_OPTION) $$m -oobtained $$path >/dev/null; \
+	  ./ppl_lpsol$(EXEEXT) -e -r $(CHECK_OPTION) $$m -oobtained $$path >/dev/null; \
 	done
 	$(ECHO_SIMPLEX) "-r -m mas74.mps" >>obtained
 	-$(SIMPLEX) -r -m $(srcdir)/examples/mas74.mps >/dev/null

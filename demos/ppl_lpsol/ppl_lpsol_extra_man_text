@@ -19,6 +19,10 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 The latest version of the Parma Polyhedra Library and all the documentation
 is available at \fBhttp://www.cs.unipr.it/ppl/\fR .
 
+[NOTES]
+The options \fB\-CSECS\fR (\fB\-\-max\-cpu\fR=\fISECS\fR) and
+\fB\-t\fR (\fB\-\-timings\fR) are not available on some platforms.
+
 [SEE ALSO]
 .BR ppl-config(1)
 .sp
