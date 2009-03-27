@@ -50,3 +50,4 @@ do
   $MAKE check TESTS="$check_PROGRAMS" TESTS_ENVIRONMENT="$CHECKER" TEST_CPPFLAGS="-DBD_SHAPE_INSTANCE=$instance" XFAIL_TESTS=$xfail_tests || exit 1
   $MAKE clean && rm dirty_marker
 done
+exit 0
