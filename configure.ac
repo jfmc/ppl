@@ -692,8 +692,20 @@ AC_CXX_HAS_REMAINDER_BUG
 # Check whether the C++ compiler supports __attribute__ ((weak)).
 AC_CXX_SUPPORTS_ATTRIBUTE_WEAK
 
+# Checks for header files.
+AC_CHECK_HEADERS([fenv.h ieeefp.h getopt.h signal.h string.h strings.h sys/resource.h sys/time.h sys/types.h unistd.h])
+
 # Checks for the availability of C library functions in C++.
-AC_CHECK_DECLS([ffs], , , [#include <strings.h>])
+AC_CHECK_DECLS([ffs],
+               ,
+               ,
+               [
+#if defined(HAVE_STRINGS_H)
+# include <strings.h>
+#elif defined(HAVE_STRING_H)
+# include <string.h>
+#endif
+               ])
 AC_CHECK_DECLS([getenv,strtof,strtod,strtold,strtoll,strtoull], , , [#include <cstdlib>])
 AC_CHECK_DECLS([fma,fmaf,fmal,rintf,rintl], , , [#include <cmath>])
 
@@ -1424,9 +1436,6 @@ then
 fi
 AC_LANG_POP(C)
 
-# Checks for header files.
-AC_CHECK_HEADERS([fenv.h ieeefp.h getopt.h signal.h sys/resource.h sys/time.h sys/types.h unistd.h])
-
 # Checks for header declarations.
 AC_CHECK_DECLS([RLIMIT_DATA, RLIMIT_RSS, RLIMIT_VMEM, RLIMIT_AS],
                ,
@@ -1435,7 +1444,7 @@ AC_CHECK_DECLS([RLIMIT_DATA, RLIMIT_RSS, RLIMIT_VMEM, RLIMIT_AS],
 #ifdef HAVE_SYS_RESOURCE_H
 # include <sys/resource.h>
 #endif
-])
+               ])
 
 AC_CHECK_DECLS([getrusage],
                ,
