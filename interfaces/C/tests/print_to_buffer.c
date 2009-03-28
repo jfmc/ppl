@@ -1,4 +1,4 @@
-/* Declarations of print_ppl_*_to_buffer() functions.
+/* Definitions of print_ppl_*_to_buffer() functions.
    Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -22,7 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_c.h"
 #include "print_to_buffer.h"
-#include <malloc.h>
+#include <stdlib.h>
 #include <string.h>
 
 #define DEFINE_PRINT_TO_BUFFER(Type)                                    \
