@@ -137,18 +137,6 @@ f_is_empty_lazy(const T& x) {
 
 } // namespace Interval_NS
 
-inline bool
-is_integer(const char*) {
-  // FIXME(0.10.1)
-  return false;
-}
-
-inline bool
-is_not_a_number(const char*) {
-  // FIXME(0.10.1)
-  return false;
-}
-
 template <typename T>
 inline typename Enable_If<Is_Singleton<T>::value || Is_Interval<T>::value, bool>::type
 is_singleton_integer(const T& x) {
