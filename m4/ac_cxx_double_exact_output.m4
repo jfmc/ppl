@@ -88,7 +88,7 @@ convert(uint32_t msp, uint32_t lsp) {
   return u.value;
 }
 
-#if CXX_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_DOUBLE
+#if PPL_CXX_DOUBLE_BINARY_FORMAT == PPL_FLOAT_IEEE754_DOUBLE
 
 int
 main() {
@@ -105,14 +105,14 @@ main() {
     return 1;
 }
 
-#else // CXX_DOUBLE_EXACT_OUTPUT != FLOAT_IEEE754_DOUBLE
+#else // PPL_CXX_DOUBLE_BINARY_FORMAT != PPL_FLOAT_IEEE754_DOUBLE
 
 int
 main() {
   return 1;
 }
 
-#endif // CXX_DOUBLE_EXACT_OUTPUT != FLOAT_IEEE754_DOUBLE
+#endif // PPL_CXX_DOUBLE_BINARY_FORMAT != PPL_FLOAT_IEEE754_DOUBLE
 
 #else // SIZEOF_DOUBLE != 8
 

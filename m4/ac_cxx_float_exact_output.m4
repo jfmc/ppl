@@ -79,7 +79,7 @@ convert(uint32_t x) {
   return u.value;
 }
 
-#if CXX_FLOAT_BINARY_FORMAT == PPL_FLOAT_IEEE754_SINGLE
+#if PPL_CXX_FLOAT_BINARY_FORMAT == PPL_FLOAT_IEEE754_SINGLE
 
 int
 main() {
@@ -96,14 +96,14 @@ main() {
     return 1;
 }
 
-#else // CXX_FLOAT_BINARY_FORMAT != FLOAT_IEEE754_SINGLE
+#else // PPL_CXX_FLOAT_BINARY_FORMAT != FLOAT_IEEE754_SINGLE
 
 int
 main() {
   return 1;
 }
 
-#endif // CXX_FLOAT_BINARY_FORMAT != FLOAT_IEEE754_SINGLE
+#endif // PPL_CXX_FLOAT_BINARY_FORMAT != FLOAT_IEEE754_SINGLE
 
 #else // SIZEOF_FLOAT != 4
 
