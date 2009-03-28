@@ -41,7 +41,21 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #ifdef PPL_HAVE_GETOPT_H
 # include <getopt.h>
+
+/* Try to accommodate non-GNU implementations of `getopt()'. */
+#if !defined(no_argument)
+#define no_argument NO_ARG
 #endif
+
+#if !defined(required_argument)
+#define required_argument REQUIRED_ARG
+#endif
+
+#if !defined(optional_argument)
+#define optional_argument OPTIONAL_ARG
+#endif
+
+#endif /* defined(PPL_HAVE_GETOPT_H) */
 
 #ifdef PPL_HAVE_UNISTD_H
 /* Include this for `getopt()': especially important if we do not have
