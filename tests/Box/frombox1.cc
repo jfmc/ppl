@@ -78,8 +78,9 @@ test04() {
 
 bool
 test05() {
+  const int DIM = 10;
   typedef Checked_Number<mpq_class> Q;
-  Rational_Box src(10, UNIVERSE);
+  Rational_Box src(DIM, UNIVERSE);
   Q k;
   Q a;
   k = 2;
@@ -96,7 +97,7 @@ test05() {
   Q s;
   Q m;
   Q d;
-  for (int n = 1; n <= 10; ++n) {
+  for (int n = 1; n <= DIM; ++n) {
     s = y;
     s *= s;
     s *= s;
