@@ -12,6 +12,8 @@ Enhancements for PPL 0.10.1 or later versions
 Enhancements for PPL 0.11 or later versions
 ===========================================
 
+- Rename set_rational_sqrt_precision_parameter to
+  set_irrational_precision and make it available on all interfaces.
 - Intervals are best instantiated with checked numbers with
   particular policies: review all the interfaced boxes,
   augment the testsuite, and update the documentation.
