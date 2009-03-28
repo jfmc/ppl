@@ -371,10 +371,10 @@ div_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y,
   mpz_srcptr d = y.get_mpz_t();
   if (round_ignore(dir)) {
 #if 0
-  // FIXME: we need to reconsider Rounding_Dir argument to clarify if
-  // client code intention is to have approximate result without any interest
-  // in knowing the direction of rounding or to grant to called function
-  // that result will be exact.
+    // FIXME: we need to reconsider Rounding_Dir argument to clarify if
+    // client code intention is to have approximate result without any interest
+    // in knowing the direction of rounding or to grant to called function
+    // that result will be exact.
     mpz_divexact(to.get_mpz_t(), n, d);
     return V_LGE;
 #else
