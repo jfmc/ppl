@@ -465,6 +465,7 @@ CXXFLAGS="$COMP_FLAGS $OPT_FLAGS $CXXFLAGS"
 
 # System-dependent adjustments.
 cygwin=no
+mingw=no
 darwin=no
 solaris=no
 x86_64=no
@@ -496,6 +497,9 @@ cygwin)
 darwin*)
   darwin=yes
   ;;
+mingw*)
+  mingw=yes
+  ;;
 solaris*)
   solaris=yes
   ;;
@@ -505,6 +509,7 @@ esac
 
 AM_CONDITIONAL(HOST_OS_CYGWIN, test x$cygwin = xyes)
 AM_CONDITIONAL(HOST_OS_DARWIN, test x$darwin = xyes)
+AM_CONDITIONAL(HOST_OS_MINGW, test x$mingw = xyes)
 AM_CONDITIONAL(HOST_OS_SOLARIS, test x$solaris = xyes)
 
 AM_CONDITIONAL(HOST_CPU_X86_64, test x$x86_64 = xyes)
