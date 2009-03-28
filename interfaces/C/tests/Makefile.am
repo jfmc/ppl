@@ -33,7 +33,16 @@ AM_CPPFLAGS = \
 
 if GCC
 
+if HOST_OS_MINGW
+
+# MinGW's <stdlib.h> cannot be compiled in c89 mode.
+AM_CFLAGS = -pedantic -std=gnu89 -Werror
+
+else !HOST_OS_MINGW
+
 AM_CFLAGS = -pedantic -std=c89 -Werror
+
+endif !HOST_OS_MINGW
 
 endif GCC
 
@@ -42,10 +51,13 @@ check_LIBRARIES = libppl_c_tests.a
 libppl_c_tests_a_SOURCES = \
 ppl_c_test.cc
 
+# Dummy C++ source to cause C++ linking.
+nodist_EXTRA_libppl_c_tests_a_SOURCES = \
+dummy.cc
+
 LDADD = \
-$(top_builddir)/src/libppl.la \
-$(top_builddir)/interfaces/C/libppl_c.la \
 libppl_c_tests.a \
+$(top_builddir)/interfaces/C/libppl_c.la \
 @extra_libraries@
 
 NORMAL_TESTS = \
