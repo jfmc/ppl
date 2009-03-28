@@ -743,23 +743,35 @@ fi
 extra_includes="${extra_includes}${extra_includes:+ }${gmp_includes_option}"
 extra_libraries="${extra_libraries}${extra_libraries:+ }${gmp_library_option}"
 
-enableval=yes
+# setitimer() is a strong requisite for the PWL.
+AC_CHECK_FUNCS([setitimer], [have_setitimer=yes], [have_setitimer=no])
+
+enableval=default
 AC_MSG_CHECKING([whether to build the Parma Watchdog Library])
 AC_ARG_ENABLE(watchdog,
   AS_HELP_STRING([--enable-watchdog],
                  [build also the Parma Watchdog Library]))
 case "${enableval}" in
 yes)
-  AC_MSG_RESULT(yes)
+  if test x"$have_setitimer" = xyes
+  then
+    build_watchdog_library=yes
+  else
+    AC_MSG_ERROR([CANNOT BUILD THE WATCHDOG LIBRARY
+*** THE SYSTEM DOES NOT PROVIDE THE SETITIMER FUNCTION.])
+  fi
+  ;;
+default)
+  build_watchdog_library=$have_setitimer
   ;;
 no)
-  AC_MSG_RESULT(no)
+  build_watchdog_library=no
   ;;
 *)
   AC_MSG_ERROR([bad value ${enableval} for --enable-watchdog, needs yes or no])
   ;;
 esac
-build_watchdog_library=$enableval
+AC_MSG_RESULT($build_watchdog_library)
 AM_CONDITIONAL(BUILD_WATCHDOG_LIBRARY, test x"$build_watchdog_library" = xyes)
 if test x"$build_watchdog_library" = xyes
 then

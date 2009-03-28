@@ -332,22 +332,35 @@ no)
 esac
 AM_CONDITIONAL(VALGRIND_TESTS_ENABLED, test x"$enable_valgrind_tests" = xyes)
 
-enableval=yes
+# setitimer() is a strong requisite for the PWL.
+AC_CHECK_FUNCS([setitimer], [have_setitimer=yes], [have_setitimer=no])
+
+enableval=default
 AC_MSG_CHECKING([whether to build the Parma Watchdog Library])
 AC_ARG_ENABLE(watchdog,
-[  --enable-watchdog       build also the Parma Watchdog Library])
+  AS_HELP_STRING([--enable-watchdog],
+                 [build also the Parma Watchdog Library]))
 case "${enableval}" in
 yes)
-  AC_MSG_RESULT(yes)
+  if test x"$have_setitimer" = xyes
+  then
+    build_watchdog_library=yes
+  else
+    AC_MSG_ERROR([CANNOT BUILD THE WATCHDOG LIBRARY
+*** THE SYSTEM DOES NOT PROVIDE THE SETITIMER FUNCTION.])
+  fi
+  ;;
+default)
+  build_watchdog_library=$have_setitimer
   ;;
 no)
-  AC_MSG_RESULT(no)
+  build_watchdog_library=no
   ;;
 *)
-  AC_MSG_ERROR([bad value ${enableval} --enable-watchdog, needs yes or no])
+  AC_MSG_ERROR([bad value ${enableval} for --enable-watchdog, needs yes or no])
   ;;
 esac
-build_watchdog_library=$enableval
+AC_MSG_RESULT($build_watchdog_library)
 AM_CONDITIONAL(BUILD_WATCHDOG_LIBRARY, test x"$build_watchdog_library" = xyes)
 
 if test x"$build_watchdog_library" = xyes
@@ -363,17 +376,6 @@ then
   AC_CHECK_TYPES([siginfo_t], [], [], [[
 #include <signal.h>
   ]])
-
-  # Checks for library fuctions.
-  # The following invocations of AC_LANG_PUSH(C) and AC_LANG_POP(C)
-  # are to work around a bug in AC_CHECK_FUNCS.  For more information,
-  # http://www.cs.unipr.it/pipermail/ppl-devel/2002-November/002929.html
-  AC_LANG_PUSH(C)
-  AC_CHECK_FUNCS([setitimer],
-                 [],
-                 AC_MSG_ERROR([CANNOT BUILD THE WATCHDOG LIBRARY
-*** THE SYSTEM DOES NOT PROVIDE THE SETITIMER FUNCTION.]))
-  AC_LANG_POP(C)
 fi
 
 # Libtool.
