@@ -379,7 +379,7 @@ div_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y,
     return V_LGE;
 #else
     mpz_cdiv_q(to.get_mpz_t(), n, d);
-    return mpz_divisible_p(n, d) ? V_EQ : V_LT;
+    return V_LE;
 #endif
   }
   if (round_down(dir)) {
