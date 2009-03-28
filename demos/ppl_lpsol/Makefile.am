@@ -195,7 +195,18 @@ $(EGREP) "^Optimum value: " $(srcdir)/$(EXPECTED) \
 
 else !HOST_OS_SOLARIS
 
+if HOST_OS_MINGW
+
+DIFF_COMMAND = \
+tr -d '\015' <obtained \
+| sed -e "s/ppl_lpsol.exe/ppl_lpsol/g" -e "s/1e+012/1e+12/g" \
+| diff $(srcdir)/$(EXPECTED) -
+
+else !HOST_OS_MINGW
+
 DIFF_COMMAND = diff -u $(srcdir)/$(EXPECTED) obtained
+
+endif !HOST_OS_MINGW
 
 endif !HOST_OS_SOLARIS
 
