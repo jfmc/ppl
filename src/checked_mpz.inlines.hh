@@ -370,9 +370,17 @@ div_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y,
   mpz_srcptr n = x.get_mpz_t();
   mpz_srcptr d = y.get_mpz_t();
   if (round_ignore(dir)) {
-    // FIXME(0.10.1): is this correct?
+#if 0
+  // FIXME: we need to reconsider Rounding_Dir argument to clarify if
+  // client code intention is to have approximate result without any interest
+  // in knowing the direction of rounding or to grant to called function
+  // that result will be exact.
     mpz_divexact(to.get_mpz_t(), n, d);
     return V_LGE;
+#else
+    mpz_cdiv_q(to.get_mpz_t(), n, d);
+    return mpz_divisible_p(n, d) ? V_EQ : V_LT;
+#endif
   }
   if (round_down(dir)) {
     mpz_fdiv_q(to.get_mpz_t(), n, d);
