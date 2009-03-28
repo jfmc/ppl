@@ -155,18 +155,6 @@ is_singleton_integer(const T& x) {
   return is_singleton(x) && is_integer(f_lower(x));
 }
 
-template <typename T1, typename T2>
-inline bool
-same_object(const T1&, const T2&) {
-  return false;
-}
-
-template <typename T>
-inline bool
-same_object(const T& x, const T& y) {
-  return &x == &y;
-}
-
 template <typename T>
 inline typename Enable_If<Is_Singleton<T>::value || Is_Interval<T>::value, bool>::type
 check_empty_arg(const T& x) {
