@@ -116,6 +116,12 @@ val ppl_version:
 val ppl_banner:
   unit -> string
 
+val ppl_io_wrap_string:
+  string -> int -> int -> int -> string
+
+val ppl_max_space_dimension:
+  unit -> int
+
 val ppl_Coefficient_is_bounded:
   unit -> bool
 
@@ -124,9 +130,6 @@ val ppl_Coefficient_max:
 
 val ppl_Coefficient_min:
   unit -> Z.t
-
-val ppl_max_space_dimension:
-  unit -> int
 
 val ppl_set_rounding_for_PPL:
   unit -> unit

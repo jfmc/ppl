@@ -1127,6 +1127,29 @@ CATCH_ALL
 
 extern "C"
 CAMLprim value
+ppl_io_wrap_string(value src,
+                   value indent_depth,
+                   value preferred_first_line_length,
+                   value preferred_line_length) try {
+  CAMLparam4(src, indent_depth, preferred_first_line_length,
+             preferred_line_length);
+  unsigned cpp_indent_depth
+    = value_to_unsigned_native<unsigned>(indent_depth);
+  unsigned cpp_preferred_first_line_length
+    = value_to_unsigned_native<unsigned>(preferred_first_line_length);
+  unsigned cpp_preferred_line_length
+    = value_to_unsigned_native<unsigned>(preferred_line_length);
+  using IO_Operators::wrap_string;
+  CAMLreturn(caml_copy_string(wrap_string(String_val(src),
+                                          cpp_indent_depth,
+                                          cpp_preferred_first_line_length,
+                                          cpp_preferred_line_length
+                                          ).c_str()));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
 ppl_Coefficient_is_bounded(value unit) try {
   CAMLparam1(unit);
   CAMLreturn(std::numeric_limits<Coefficient>::is_bounded

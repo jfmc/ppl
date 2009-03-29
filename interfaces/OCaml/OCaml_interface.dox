@@ -22,7 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 /*!
   \defgroup PPL_OCaml_interface OCaml Language Interface
-  \brief
+
   The Parma Polyhedra Library comes equipped with an interface for the
   OCaml language.
 */
@@ -174,6 +174,9 @@ included with all instantiations of the OCaml interfaces.
   warranty whatsoever, the C++ compiler used to build the library,
   where to report bugs and where to look for further information.
 
+<H2><CODE> ppl_max_space_dimension </CODE></H2>
+  Returns the maximum space dimension the C++ interface can handle.
+
 <H2><CODE> ppl_Coefficient_is_bounded </CODE></H2>
   Returns true if and only if the coefficients in the C++ interface
   are bounded.
@@ -186,22 +189,19 @@ included with all instantiations of the OCaml interfaces.
   If the coefficients are bounded, returns the minimum coefficient
   the C++ interface can handle.
 
-<H2><CODE> ppl_max_space_dimension </CODE></H2>
-  Returns the maximum space dimension the C++ interface can handle.
-
-<H2><CODE> ppl_set_timeout_exception_atom name </CODE></H2>
-   Sets the term to be thrown by timeout exceptions
-   to <CODE>name</CODE>.
-   The default value is <CODE>time_out</CODE>.
-
-<H2><CODE> ppl_timeout_exception_atom</CODE></H2>
-   Returns the name to be thrown by timeout exceptions
+<H2><CODE> ppl_io_wrap_string </CODE></H2>
+  Utility function for the wrapping of lines of text.
+  The function wraps the lines of text stored in its first string argument
+  according to the next three integer arguments, which are interpreted as
+  the indentation depth, the preferred length for the first line and the
+  preferred length for all the other lines, respecively; it returns a
+  string containing the wrapped text.
 
 <H2><CODE> ppl_set_timeout c_unsigned </CODE></H2>
    Computations taking exponential time will be interrupted
    some time after <CODE>c_unsigned</CODE> ms after that call.
-   If the computation is interrupted that way, the current timeout
-   exception atom will be thrown.
+   If the computation is interrupted that way, a timeout exception
+   will be thrown.
    <CODE>c_unsigned</CODE> must be strictly greater than zero.
 
 <H2><CODE> ppl_reset_timeout </CODE></H2>
