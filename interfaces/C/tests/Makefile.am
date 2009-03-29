@@ -72,6 +72,11 @@ formatted_output.c \
 print_to_buffer.h \
 print_to_buffer.c
 
+# Dummy C++ source to cause C++ linking.
+# FIXME: why isn't enough to do this for libppl_c_tests.a?
+nodist_EXTRA_formatted_output_SOURCES = \
+dummy.cc
+
 #watchdog1_SRCS = watchdog1.cc
 
 noinst_HEADERS = \
