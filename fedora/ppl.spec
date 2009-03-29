@@ -2,7 +2,7 @@
 
 Name:           ppl
 Version:        0.10
-Release:        10%{?dist}
+Release:        11%{?dist}
 
 Summary:        The Parma Polyhedra Library: a library of numerical abstractions
 Group:          Development/Libraries
@@ -253,12 +253,11 @@ mv \
 %doc %{_datadir}/doc/%{name}-%{version}/BUGS
 %doc %{_datadir}/doc/%{name}-%{version}/COPYING
 %doc %{_datadir}/doc/%{name}-%{version}/CREDITS
-%doc %{_datadir}/doc/%{name}-%{version}/ChangeLog
 %doc %{_datadir}/doc/%{name}-%{version}/NEWS
 %doc %{_datadir}/doc/%{name}-%{version}/README
 %doc %{_datadir}/doc/%{name}-%{version}/README.configure
 %doc %{_datadir}/doc/%{name}-%{version}/TODO
-%doc %{_datadir}/doc/%{name}-%{version}/gpl.*
+%doc %{_datadir}/doc/%{name}-%{version}/gpl.txt
 %{_libdir}/libppl.so.*
 %{_libdir}/libppl_c.so.*
 %{_bindir}/ppl-config
@@ -345,8 +344,11 @@ mv \
 
 %files docs
 %defattr(-,root,root,-)
+%doc %{_datadir}/doc/%{name}-%{version}/ChangeLog*
 %doc %{_datadir}/doc/%{name}-%{version}/README.doc
 %doc %{_datadir}/doc/%{name}-%{version}/fdl.*
+%doc %{_datadir}/doc/%{name}-%{version}/gpl.pdf
+%doc %{_datadir}/doc/%{name}-%{version}/gpl.ps.gz
 %doc %{_datadir}/doc/%{name}-%{version}/ppl-user-%{version}-html/
 %doc %{_datadir}/doc/%{name}-%{version}/ppl-user-c-interface-%{version}-html/
 #%doc %{_datadir}/doc/%{name}-%{version}/ppl-user-ocaml-interface-%{version}-html/
@@ -367,10 +369,9 @@ mv \
 %doc %{_datadir}/doc/%{name}-%{version}/pwl/BUGS
 %doc %{_datadir}/doc/%{name}-%{version}/pwl/COPYING
 %doc %{_datadir}/doc/%{name}-%{version}/pwl/CREDITS
-%doc %{_datadir}/doc/%{name}-%{version}/pwl/ChangeLog
 %doc %{_datadir}/doc/%{name}-%{version}/pwl/NEWS
 %doc %{_datadir}/doc/%{name}-%{version}/pwl/README
-%doc %{_datadir}/doc/%{name}-%{version}/pwl/gpl.*
+%doc %{_datadir}/doc/%{name}-%{version}/pwl/gpl.txt
 %{_libdir}/libpwl.so.*
 %dir %{_datadir}/doc/%{name}-%{version}/pwl
 
@@ -386,8 +387,11 @@ mv \
 
 %files pwl-docs
 %defattr(-,root,root,-)
+%doc %{_datadir}/doc/%{name}-%{version}/pwl/ChangeLog*
 %doc %{_datadir}/doc/%{name}-%{version}/pwl/README.doc
 %doc %{_datadir}/doc/%{name}-%{version}/pwl/fdl.*
+%doc %{_datadir}/doc/%{name}-%{version}/pwl/gpl.ps.gz
+%doc %{_datadir}/doc/%{name}-%{version}/pwl/gpl.pdf
 %doc %{_datadir}/doc/%{name}-%{version}/pwl/pwl-user-0.5-html/
 %doc %{_datadir}/doc/%{name}-%{version}/pwl/pwl-user-0.5.pdf
 %doc %{_datadir}/doc/%{name}-%{version}/pwl/pwl-user-0.5.ps.gz
@@ -401,6 +405,10 @@ mv \
 rm -rf %{buildroot}
 
 %changelog
+* Sun Mar 29 2009 Roberto Bagnara <bagnara@cs.unipr.it> 0.10-11
+- Moved changelogs and PostScript and PDF versions of the GPL to the
+  `docs' subpackages. This saves considerable space on the live media.
+
 * Tue Mar 24 2009 Roberto Bagnara <bagnara@cs.unipr.it> 0.10-10
 - There are no GNU Prolog packages available on ia64: disable the GNU Prolog
   interface also on those platforms (besides ppc64, s390 and s390x).
