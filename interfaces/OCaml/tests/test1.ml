@@ -374,6 +374,14 @@ print_string_if_noisy "\n";;
 print_string_if_noisy "Banner is: ";
 print_string_if_noisy(b);;
 print_string_if_noisy "\n";;
+print_string_if_noisy "PPL Coefficient integer datatype is " ;;
+if (ppl_Coefficient_is_bounded())
+then print_string_if_noisy "bounded\n"
+else print_string_if_noisy "unbounded\n" ;;
+print_string_if_noisy "Maximum space dimension is: ";
+let i = ppl_max_space_dimension()
+in print_int_if_noisy i;;
+print_string_if_noisy "\n";;
 (* Pointset_Powersed_Grid is not enabled by default, the following code is *)
 (* commented *)
 (* let pps = ppl_new_Pointset_Powerset_Grid_from_space_dimension 3;; *)

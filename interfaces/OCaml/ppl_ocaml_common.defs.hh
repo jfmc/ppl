@@ -47,7 +47,17 @@ namespace Interfaces {
 
 namespace OCaml {
 
-void check_int_is_unsigned(int i);
+template <typename U_Int>
+U_Int value_to_unsigned_native(value v);
+
+value
+ppl_dimension_to_value(dimension_type dim);
+
+dimension_type
+value_to_ppl_dimension(value dim);
+
+Variable
+build_ppl_Variable(value var);
 
 Degenerate_Element
 build_ppl_Degenerate_Element(value de);

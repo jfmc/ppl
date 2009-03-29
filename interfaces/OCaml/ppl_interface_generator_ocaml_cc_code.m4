@@ -66,8 +66,7 @@ extern "C"
 CAMLprim value
 ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(value d, value caml_de) try {
   CAMLparam2(d, caml_de);
-  int dd = Int_val(d);
-  check_int_is_unsigned(dd);
+  dimension_type dd = value_to_ppl_dimension(d);
   Degenerate_Element ppl_de = build_ppl_Degenerate_Element(caml_de);
   @TOPOLOGY@@CPP_CLASS@& ppl_value = *new @TOPOLOGY@@CPP_CLASS@(dd, ppl_de);
   CAMLreturn(unregistered_value_p_@CLASS@(ppl_value));
@@ -113,9 +112,7 @@ ppl_@CLASS@_@DIMENSION@(value ph) try {
   CAMLparam1(ph);
   const @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
   dimension_type d = pph.@DIMENSION@();
-  if (d > INT_MAX)
-    abort();
-  CAMLreturn(Val_int(d));
+  CAMLreturn(ppl_dimension_to_value(d));
 }
 CATCH_ALL
 
@@ -286,8 +283,7 @@ CAMLprim value
 ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@
 (value ph, value d) try {
   CAMLparam2(ph, d);
-  int dd = Int_val(d);
-  check_int_is_unsigned(dd);
+  dimension_type dd = value_to_ppl_dimension(d);
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
   pph.add_space_dimensions_and_embed(dd);
   CAMLreturn(Val_unit);
@@ -316,8 +312,7 @@ extern "C"
 CAMLprim value
 ppl_@CLASS@_remove_higher_space_dimensions(value ph, value d) try {
   CAMLparam2(ph, d);
-  int dd = Int_val(d);
-  check_int_is_unsigned(dd);
+  dimension_type dd = value_to_ppl_dimension(d);
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
   pph.remove_higher_space_dimensions(dd);
   CAMLreturn(Val_unit);
@@ -357,13 +352,14 @@ extern "C"
 CAMLprim value
 ppl_@CLASS@_map_space_dimensions(value ph, value caml_mapped_dims) try {
   CAMLparam2(ph, caml_mapped_dims);
+  CAMLlocal1(head);
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
   Partial_Function pfunc;
-  while (caml_mapped_dims != Val_int(0)) {
-    int domain_value = Int_val(Field(Field(caml_mapped_dims, 0),0));
-    int codomain_value = Int_val(Field(Field(caml_mapped_dims, 0),1));
-    pfunc.insert(domain_value,
-		 codomain_value);
+  while (caml_mapped_dims != Val_emptylist) {
+    head = Field(caml_mapped_dims, 0);
+    dimension_type domain_dim = value_to_ppl_dimension(Field(head, 0));
+    dimension_type codomain_dim = value_to_ppl_dimension(Field(head, 1));
+    pfunc.insert(domain_dim, codomain_dim);
     caml_mapped_dims = Field(caml_mapped_dims, 1);
   }
   pph.map_space_dimensions(pfunc);
@@ -378,14 +374,13 @@ m4_define(`ppl_@CLASS@_expand_space_dimension_code',
 `dnl
 extern "C"
 CAMLprim value
-ppl_@CLASS@_expand_space_dimension(value ph,
-						     value var_index,
-						     value m) try {
+ppl_@CLASS@_expand_space_dimension
+(value ph, value var_index, value m) try {
   CAMLparam3(ph, var_index, m);
-  int c_m = Int_val(m);
-  check_int_is_unsigned(c_m);
+  Variable var = build_ppl_Variable(var_index);
+  dimension_type c_m = value_to_ppl_dimension(m);
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
-  pph.expand_space_dimension(build_ppl_Variable(var_index), c_m);
+  pph.expand_space_dimension(var, c_m);
   CAMLreturn(Val_unit);
 }
 CATCH_ALL
@@ -603,15 +598,13 @@ m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_code',
 extern "C"
 CAMLprim value
 ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens
-(value ph1, value ph2, value integer) try {
-  CAMLparam3(ph1, ph2, integer);
+(value ph1, value ph2, value tokens) try {
+  CAMLparam3(ph1, ph2, tokens);
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
   @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
-  int cpp_int = Int_val(integer);
-  check_int_is_unsigned(cpp_int);
-  unsigned int unsigned_value = cpp_int;
-  pph1.@WIDEN@_widening_assign(pph2, &unsigned_value);
-  CAMLreturn(Val_int(unsigned_value));
+  unsigned u_tokens = value_to_unsigned_native<unsigned>(tokens);
+  pph1.@WIDEN@_widening_assign(pph2, &u_tokens);
+  CAMLreturn(Val_long(u_tokens));
 }
 CATCH_ALL
 
@@ -637,16 +630,14 @@ m4_define(`ppl_@CLASS@_widening_assign_with_tokens_code',
 `dnl
 extern "C"
 CAMLprim value
-ppl_@CLASS@_widening_assign_with_tokens(value ph1, value ph2,
-					value integer) try {
-  CAMLparam3(ph1, ph2, integer);
+ppl_@CLASS@_widening_assign_with_tokens
+(value ph1, value ph2, value tokens) try {
+  CAMLparam3(ph1, ph2, tokens);
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
   @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
-  int cpp_int = Int_val(integer);
-  check_int_is_unsigned(cpp_int);
-  unsigned int unsigned_value = cpp_int;
-  pph1.widening_assign(pph2, &unsigned_value);
-  CAMLreturn(Val_int(unsigned_value));
+  unsigned u_tokens = value_to_unsigned_native<unsigned>(tokens);
+  pph1.widening_assign(pph2, &u_tokens);
+  CAMLreturn(Val_long(u_tokens));
 }
 CATCH_ALL
 
@@ -656,20 +647,16 @@ m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_to
 `dnl
 extern "C"
 CAMLprim value
-ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens(value ph1,
-						   value ph2,
-						   value caml_cs,
-						   value integer) try {
-  CAMLparam4(ph1, ph2, caml_cs, integer);
+ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens
+(value ph1, value ph2, value caml_cs, value tokens) try {
+  CAMLparam4(ph1, ph2, caml_cs, tokens);
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
   @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
   @!CONSTRAINER@_System ppl_cs = build_ppl_@!CONSTRAINER@_System(caml_cs);
-  int cpp_int = Int_val(integer);
-  check_int_is_unsigned(cpp_int);
-  unsigned int unsigned_value = cpp_int;
+  unsigned u_tokens = value_to_unsigned_native<unsigned>(tokens);
   pph1.@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(pph2, ppl_cs,
-							 &unsigned_value);
-  CAMLreturn(Val_int(unsigned_value));
+							 &u_tokens);
+  CAMLreturn(Val_long(u_tokens));
 }
 CATCH_ALL
 
@@ -763,7 +750,7 @@ CAMLprim value
 ppl_@CLASS@_@MEMBYTES@(value ph) try {
   CAMLparam1(ph);
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
-  CAMLreturn(Val_int(pph.@MEMBYTES@()));
+  CAMLreturn(Val_long(pph.@MEMBYTES@()));
 }
 CATCH_ALL
 
@@ -878,17 +865,14 @@ m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens_code',
 `dnl
 extern "C"
 CAMLprim value
-ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens(
-                                                     value ph1, value ph2,
-						     value integer) try {
-  CAMLparam3(ph1, ph2, integer);
+ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens
+(value ph1, value ph2, value tokens) try {
+  CAMLparam3(ph1, ph2, tokens);
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
   @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
-  int cpp_int = Val_int(integer);
-  check_int_is_unsigned(cpp_int);
-  unsigned int unsigned_value = cpp_int;
-  pph1.@EXTRAPOLATION@_extrapolation_assign(pph2, &unsigned_value);
-  CAMLreturn(Val_int(unsigned_value));
+  unsigned u_tokens = value_to_unsigned_native<unsigned>(tokens);
+  pph1.@EXTRAPOLATION@_extrapolation_assign(pph2, &u_tokens);
+  CAMLreturn(Val_long(u_tokens));
 }
 CATCH_ALL
 
@@ -1094,15 +1078,16 @@ m4_define(`ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign_code',
 extern "C"
 CAMLprim value
 ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign
-(value ph1, value ph2, value integer) try {
+(value ph1, value ph2, value max_disj) try {
   CAMLparam2(ph1, ph2);
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
   @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
-  int cpp_int = Val_int(integer);
-  check_int_is_unsigned(cpp_int);
+  unsigned cpp_max_disj
+    = value_to_unsigned_native<unsigned>(max_disj);
   pph1.BGP99_extrapolation_assign
     (pph2,
-     widen_fun_ref(&@DISJUNCT_TOPOLOGY@@A_DISJUNCT@::@DISJUNCT_WIDEN@_widening_assign), cpp_int);
+     widen_fun_ref(&@DISJUNCT_TOPOLOGY@@A_DISJUNCT@::@DISJUNCT_WIDEN@_widening_assign),
+     cpp_max_disj);
   CAMLreturn(Val_unit);
 }
 CATCH_ALL
@@ -1124,6 +1109,7 @@ ppl_@CLASS@_ascii_dump(value ph1) try {
 CATCH_ALL
 
 ')
+
 
 m4_define(`ppl_@CLASS@_linear_@PARTITION@_code', `
 extern "C"
