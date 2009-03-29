@@ -42,15 +42,15 @@ namespace PPL = Parma_Polyhedra_Library;
 #include <getopt.h>
 
 // Try to accommodate non-GNU implementations of `getopt()'.
-#if !defined(no_argument)
+#if !defined(no_argument) && defined(NO_ARG)
 #define no_argument NO_ARG
 #endif
 
-#if !defined(required_argument)
+#if !defined(required_argument) && defined(REQUIRED_ARG)
 #define required_argument REQUIRED_ARG
 #endif
 
-#if !defined(optional_argument)
+#if !defined(optional_argument) && defined(OPTIONAL_ARG)
 #define optional_argument OPTIONAL_ARG
 #endif
 
