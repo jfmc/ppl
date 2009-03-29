@@ -485,6 +485,8 @@ test19() {
 } // namespace
 
 BEGIN_MAIN
+#ifndef __alpha__
+  // Exception handling is broken in GCC on the Alpha.
   DO_TEST(test01);
   DO_TEST(test02);
   DO_TEST(test03);
@@ -504,4 +506,5 @@ BEGIN_MAIN
   DO_TEST(test17);
   DO_TEST(test18);
   DO_TEST(test19);
+#endif
 END_MAIN
