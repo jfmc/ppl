@@ -219,6 +219,47 @@ let congruence1 = (e2, e2 , (Z.from_int 1));;
 let congruences1 = [e3, e2 , (Z.from_int 20)];;
 let grid_generator1 = Grid_Point (e3, (Z.from_int 1));;
 
+(* Testing timeouts *)
+let lower = Coefficient(Gmp.Z.of_int 0)
+in let upper = Coefficient(Gmp.Z.of_int 1)
+in let rec hypercube_cs dim =
+  begin
+    if dim < 0 then []
+    else
+      Greater_Or_Equal(Variable dim, lower)
+        :: Less_Or_Equal(Variable dim, upper)
+          :: hypercube_cs (dim-1)
+  end
+in let rec compute_timeout_hypercube dim_in dim_out =
+  if dim_in < dim_out then
+    let ph = ppl_new_C_Polyhedron_from_constraints (hypercube_cs dim_in)
+    in begin
+(* FIXME.
+         try
+           let () = ppl_Polyhedron_get_minimized_constraints ph;
+           ppl_delete_Polyhedron ph
+         with x ->
+           raise x;
+*)
+         compute_timeout_hypercube (dim_in + 1) dim_out
+       end
+in begin
+  try
+    ppl_set_timeout 100;
+    compute_timeout_hypercube 0 2;
+    ppl_reset_timeout;
+    print_string_if_noisy "ppl_reset_timeout test succeeded\n";
+  with x ->
+    print_string_if_noisy "ppl_reset_timeout test seems to be failed!\n";
+  try
+    ppl_set_timeout 100;
+    compute_timeout_hypercube 0 100;
+    ppl_reset_timeout;
+    print_string_if_noisy "ppl_set_timeout test seems to be failed!\n";
+  with x ->
+    print_string_if_noisy "ppl_set_timeout test succeded\n";
+  end;;
+
 let mip1 =  ppl_new_MIP_Problem 10 constraints1 e3 Maximization;;
 let objective_func = ppl_MIP_Problem_objective_function mip1;;
 print_string_if_noisy "\n";;

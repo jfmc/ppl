@@ -74,13 +74,19 @@ OCAMLOPT_LINK_FLAGS = $(OCAMLC_LINK_FLAGS)
 
 if ENABLE_SHARED
 
-BUILT_PPL = \
-$(top_builddir)/src/.libs/libppl$(SHREXT)
+BUILT_PPL_FLAGS = -cclib $(top_builddir)/src/.libs/libppl$(SHREXT)
+
+if BUILD_WATCHDOG_LIBRARY
+BUILT_PWL_FLAGS = -cclib $(top_builddir)/Watchdog/src/.libs/libpwl$(SHREXT)
+endif BUILD_WATCHDOG_LIBRARY
 
 else !ENABLE_SHARED
 
-BUILT_PPL = \
-$(top_builddir)/src/.libs/libppl.$(LIBEXT)
+BUILT_PPL_FLAGS = -cclib $(top_builddir)/src/.libs/libppl.$(LIBEXT)
+
+if BUILD_WATCHDOG_LIBRARY
+BUILT_PWL_FLAGS = -cclib $(top_builddir)/Watchdog/src/.libs/libpwl.$(LIBEXT)
+endif BUILD_WATCHDOG_LIBRARY
 
 endif !ENABLE_SHARED
 
@@ -115,7 +121,7 @@ test1_SOURCES = test1.ml
 test1$(EXEEXT): test1.cmo ../ppl_ocaml.cma
 	$(OCAMLC_ENV) ocamlc -o $@ \
 		-cc "$(CXX)" $(OCAMLC_COMPILE_FLAGS) \
-		-cclib $(BUILT_PPL) $(OCAMLC_LINK_FLAGS) \
+		$(BUILT_PPL_FLAGS) $(BUILT_PWL_FLAGS) $(OCAMLC_LINK_FLAGS) \
 		ppl_ocaml.cma $<
 
 test1_opt_SOURCES = test1.ml
@@ -123,7 +129,7 @@ test1_opt_SOURCES = test1.ml
 test1_opt$(EXEEXT): test1.cmx ../ppl_ocaml.cmxa
 	$(OCAMLOPT_ENV) ocamlopt -o $@ \
 		-cc "$(CXX)" $(OCAMLOPT_COMPILE_FLAGS) \
-		-cclib $(BUILT_PPL) $(OCAMLOPT_LINK_FLAGS) \
+		$(BUILT_PPL_FLAGS) $(BUILT_PWL_FLAGS) $(OCAMLC_LINK_FLAGS) \
 		ppl_ocaml.cmxa $<
 
 
@@ -141,14 +147,14 @@ ppl_ocaml_generated_test$(EXEEXT): \
 ppl_ocaml_generated_test.cmo ../ppl_ocaml.cma
 	$(OCAMLC_ENV) ocamlc -o $@ \
 		-cc "$(CXX)" $(OCAMLC_COMPILE_FLAGS) \
-		-cclib $(BUILT_PPL) $(OCAMLC_LINK_FLAGS) \
+		$(BUILT_PPL_FLAGS) $(BUILT_PWL_FLAGS) $(OCAMLC_LINK_FLAGS) \
 		ppl_ocaml.cma $<
 
 ppl_ocaml_generated_test_opt$(EXEEXT): \
 ppl_ocaml_generated_test.cmx ../ppl_ocaml.cmxa
 	$(OCAMLOPT_ENV) ocamlopt -o $@ \
 		-cc "$(CXX)" $(OCAMLOPT_COMPILE_FLAGS) \
-		-cclib $(BUILT_PPL) $(OCAMLOPT_LINK_FLAGS) \
+		$(BUILT_PPL_FLAGS) $(BUILT_PWL_FLAGS) $(OCAMLC_LINK_FLAGS) \
 		ppl_ocaml.cmxa $<
 
 MOSTLYCLEANFILES = \
