@@ -34,8 +34,7 @@ CHECKER =
 endif !VALGRIND_TESTS_ENABLED
 
 TESTS_ENVIRONMENT = \
-	$(LIBTOOL) --mode=execute \
-		 -dlopen ../../../src/libppl.la $(WATCHDOG_DLOPEN) $(CHECKER)
+	$(LIBTOOL) --mode=execute $(PPL_DLOPEN) $(PWL_DLOPEN) $(CHECKER)
 
 interface_generator_files = \
 ppl_interface_generator_ocaml_test_ml.m4 \
@@ -89,6 +88,12 @@ BUILT_PWL_FLAGS = -cclib $(top_builddir)/Watchdog/src/.libs/libpwl.$(LIBEXT)
 endif BUILD_WATCHDOG_LIBRARY
 
 endif !ENABLE_SHARED
+
+PPL_DLOPEN = -dlopen ../../../src/libppl.la
+
+if BUILD_WATCHDOG_LIBRARY
+PWL_DLOPEN = -dlopen ../../../Watchdog/src/libpwl.la
+endif BUILD_WATCHDOG_LIBRARY
 
 .ml.cmo:
 	$(OCAMLC_ENV) ocamlc -o $@ -c $(OCAMLC_COMPILE_FLAGS) $<

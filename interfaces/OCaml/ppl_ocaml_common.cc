@@ -83,25 +83,17 @@ class PFunc {
 
 Parma_Watchdog_Library::Watchdog* p_timeout_object = 0;
 
+#endif // PPL_WATCHDOG_LIBRARY_ENABLED
+
 void
 reset_timeout() {
+#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
   if (p_timeout_object) {
     delete p_timeout_object;
     p_timeout_object = 0;
     abandon_expensive_computations = 0;
   }
-}
-
 #endif // PPL_WATCHDOG_LIBRARY_ENABLED
-
-void
-handle_timeout_exception() {
-#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
-  assert(p_timeout_object);
-  reset_timeout();
-#endif
-  caml_raise_with_string(*caml_named_value("PPL_timeout_exception"),
-                         "timeout expired");
 }
 
 namespace {

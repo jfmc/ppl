@@ -170,7 +170,7 @@ public:
   }
 };
 
-void handle_timeout_exception();
+void reset_timeout();
 
 } // namespace OCaml
 
@@ -181,28 +181,30 @@ void handle_timeout_exception();
 #define CATCH_ALL							\
 catch(std::bad_alloc&) {						\
   caml_raise_out_of_memory();						\
- }									\
- catch(std::invalid_argument& e) {					\
-   caml_invalid_argument(const_cast<char*>(e.what()));			\
- }									\
- catch(std::overflow_error& e) {					\
-   caml_raise_with_string(*caml_named_value("PPL_arithmetic_overflow"), \
-                          (const_cast<char*>(e.what())));		\
- }									\
- catch(std::runtime_error& e) {                                         \
-   caml_raise_with_string(*caml_named_value("PPL_internal_error"),	\
-                          (const_cast<char*>(e.what())));		\
- }									\
- catch(timeout_exception&) {                                            \
-   handle_timeout_exception();                                          \
- }									\
- catch(std::exception& e) {						\
-   caml_raise_with_string(*caml_named_value("PPL_unknown_standard_exception"), \
-                          (const_cast<char*>(e.what())));		\
- }									\
- catch(...) {								\
-   caml_raise_constant(*caml_named_value("PPL_unexpected_error"));	\
- }
+}									\
+catch(std::invalid_argument& e) {					\
+  caml_invalid_argument(const_cast<char*>(e.what()));			\
+}									\
+catch(std::overflow_error& e) {					        \
+  caml_raise_with_string(*caml_named_value("PPL_arithmetic_overflow"),  \
+                         (const_cast<char*>(e.what())));		\
+}									\
+catch(std::runtime_error& e) {                                          \
+  caml_raise_with_string(*caml_named_value("PPL_internal_error"),	\
+                         (const_cast<char*>(e.what())));		\
+}									\
+catch(std::exception& e) {						\
+  caml_raise_with_string(*caml_named_value("PPL_unknown_standard_exception"), \
+                         (const_cast<char*>(e.what())));		\
+}									\
+catch(timeout_exception&) {                                             \
+  reset_timeout();                                                      \
+  caml_raise_with_string(*caml_named_value("PPL_timeout_exception"),    \
+                         "timeout expired");                            \
+}                                                                       \
+catch(...) {								\
+  caml_raise_constant(*caml_named_value("PPL_unexpected_error"));	\
+}
 
 #include "ppl_ocaml_common.inlines.hh"
 
