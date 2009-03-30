@@ -234,7 +234,7 @@ static {
         ok = (ov_ph.equals(expected_ov_ph));
 
         PPL_Test.println_if_noisy("Testing toString(): ");
-        PPL_Test.println_if_noisy(IO.wrap_string(mip1.toString(), 4, 64, 60));
+        PPL_Test.println_if_noisy(mip1.toString());
         PPL_Test.println_if_noisy();
 
         PPL_Test.print_if_noisy("Testing max_space_dimension(): ");

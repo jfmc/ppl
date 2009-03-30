@@ -41,7 +41,6 @@ parma_polyhedra_library.Generator \
 parma_polyhedra_library.Generator_System \
 parma_polyhedra_library.Grid_Generator \
 parma_polyhedra_library.Grid_Generator_System \
-parma_polyhedra_library.IO \
 parma_polyhedra_library.Linear_Expression \
 parma_polyhedra_library.MIP_Problem \
 parma_polyhedra_library.Parma_Polyhedra_Library
@@ -55,7 +54,6 @@ parma_polyhedra_library_Generator.h \
 parma_polyhedra_library_Generator_System.h \
 parma_polyhedra_library_Grid_Generator.h \
 parma_polyhedra_library_Grid_Generator_System.h \
-parma_polyhedra_library_IO.h \
 parma_polyhedra_library_Linear_Expression.h \
 parma_polyhedra_library_MIP_Problem.h \
 parma_polyhedra_library_Parma_Polyhedra_Library.h
@@ -80,7 +78,6 @@ $(srcdir)/Grid_Generator.java \
 $(srcdir)/Grid_Generator_System.java \
 $(srcdir)/Grid_Generator_Type.java \
 $(srcdir)/Invalid_Argument_Exception.java \
-$(srcdir)/IO.java \
 $(srcdir)/Length_Error_Exception.java \
 $(srcdir)/Linear_Expression.java \
 $(srcdir)/Linear_Expression_Coefficient.java \
@@ -179,7 +176,6 @@ Grid_Generator.class \
 Grid_Generator_System.class \
 Grid_Generator_Type.class \
 Invalid_Argument_Exception.class \
-IO.class \
 Length_Error_Exception.class \
 Linear_Expression.class \
 Linear_Expression_Coefficient.class \
