@@ -20,10 +20,10 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-# Process this file with autoconf to produce a configure script.
+# Process this file with Autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library],[0.10.1pre9],[ppl-devel@cs.unipr.it],[ppl])
+AC_INIT([the Parma Polyhedra Library],[0.10.1pre10],[ppl-devel@cs.unipr.it],[ppl])
 
 # Minimum Autoconf version required.
 AC_PREREQ(2.61)

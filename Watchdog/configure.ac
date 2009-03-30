@@ -20,7 +20,7 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ . */
 
-# Process this file with autoconf to produce a configure script.
+# Process this file with Autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
 AC_INIT([the Parma Watchdog Library],[0.5],[bagnara@cs.unipr.it],[pwl])
