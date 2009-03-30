@@ -116,7 +116,11 @@ TEST_CPPFLAGS=-DBD_SHAPE_INSTANCE=mpq_class
 
 dist_check_SCRIPTS = run_tests
 
-TESTS = $(srcdir)/run_tests
+TESTS = tests
+
+.PHONY: tests
+tests:
+	+$(srcdir)/run_tests
 
 XFAIL_TESTS =
 
