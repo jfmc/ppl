@@ -1135,11 +1135,11 @@ ppl_io_wrap_string(value src,
   CAMLparam4(src, indent_depth, preferred_first_line_length,
              preferred_line_length);
   unsigned cpp_indent_depth
-    = value_to_unsigned_native<unsigned>(indent_depth);
+    = value_to_unsigned<unsigned>(indent_depth);
   unsigned cpp_preferred_first_line_length
-    = value_to_unsigned_native<unsigned>(preferred_first_line_length);
+    = value_to_unsigned<unsigned>(preferred_first_line_length);
   unsigned cpp_preferred_line_length
-    = value_to_unsigned_native<unsigned>(preferred_line_length);
+    = value_to_unsigned<unsigned>(preferred_line_length);
   using IO_Operators::wrap_string;
   CAMLreturn(caml_copy_string(wrap_string(String_val(src),
                                           cpp_indent_depth,
@@ -1222,7 +1222,7 @@ ppl_set_timeout(value time) try {
 #else
   // In case a timeout was already set.
   reset_timeout();
-  unsigned cpp_time = value_to_unsigned_native<unsigned>(time);
+  unsigned cpp_time = value_to_unsigned<unsigned>(time);
   static timeout_exception e;
   using Parma_Watchdog_Library::Watchdog;
   p_timeout_object = new Watchdog(cpp_time, abandon_expensive_computations, e);

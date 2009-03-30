@@ -602,7 +602,7 @@ ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens
   CAMLparam3(ph1, ph2, tokens);
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
   @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
-  unsigned u_tokens = value_to_unsigned_native<unsigned>(tokens);
+  unsigned u_tokens = value_to_unsigned<unsigned>(tokens);
   pph1.@WIDEN@_widening_assign(pph2, &u_tokens);
   CAMLreturn(Val_long(u_tokens));
 }
@@ -635,7 +635,7 @@ ppl_@CLASS@_widening_assign_with_tokens
   CAMLparam3(ph1, ph2, tokens);
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
   @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
-  unsigned u_tokens = value_to_unsigned_native<unsigned>(tokens);
+  unsigned u_tokens = value_to_unsigned<unsigned>(tokens);
   pph1.widening_assign(pph2, &u_tokens);
   CAMLreturn(Val_long(u_tokens));
 }
@@ -653,7 +653,7 @@ ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
   @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
   @!CONSTRAINER@_System ppl_cs = build_ppl_@!CONSTRAINER@_System(caml_cs);
-  unsigned u_tokens = value_to_unsigned_native<unsigned>(tokens);
+  unsigned u_tokens = value_to_unsigned<unsigned>(tokens);
   pph1.@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(pph2, ppl_cs,
 							 &u_tokens);
   CAMLreturn(Val_long(u_tokens));
@@ -870,7 +870,7 @@ ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens
   CAMLparam3(ph1, ph2, tokens);
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
   @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
-  unsigned u_tokens = value_to_unsigned_native<unsigned>(tokens);
+  unsigned u_tokens = value_to_unsigned<unsigned>(tokens);
   pph1.@EXTRAPOLATION@_extrapolation_assign(pph2, &u_tokens);
   CAMLreturn(Val_long(u_tokens));
 }
@@ -1083,7 +1083,7 @@ ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
   @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
   unsigned cpp_max_disj
-    = value_to_unsigned_native<unsigned>(max_disj);
+    = value_to_unsigned<unsigned>(max_disj);
   pph1.BGP99_extrapolation_assign
     (pph2,
      widen_fun_ref(&@DISJUNCT_TOPOLOGY@@A_DISJUNCT@::@DISJUNCT_WIDEN@_widening_assign),

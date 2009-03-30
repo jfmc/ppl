@@ -51,7 +51,7 @@ namespace Interfaces {
 namespace OCaml {
 
 template <typename U_Int>
-U_Int value_to_unsigned_native(value v);
+U_Int value_to_unsigned(value v);
 
 value
 ppl_dimension_to_value(dimension_type dim);

@@ -31,7 +31,7 @@ namespace OCaml {
 
 template <typename U_Int>
 U_Int
-value_to_unsigned_native(value v) {
+value_to_unsigned(value v) {
   // FIXME: check the following at compile time.
   assert(std::numeric_limits<U_Int>::is_integer
          && !std::numeric_limits<U_Int>::is_signed);
@@ -57,7 +57,7 @@ value_to_unsigned_native(value v) {
 
 inline dimension_type
 value_to_ppl_dimension(value v) {
-  return value_to_unsigned_native<dimension_type>(v);
+  return value_to_unsigned<dimension_type>(v);
 }
 
 inline value
