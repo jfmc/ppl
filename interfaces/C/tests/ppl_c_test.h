@@ -23,6 +23,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_ppl_c_test_h
 #define PPL_ppl_c_test_h 1
 
+#include "ppl_c.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
