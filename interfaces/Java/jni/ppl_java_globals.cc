@@ -32,6 +32,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "parma_polyhedra_library_Generator_System.h"
 #include "parma_polyhedra_library_Grid_Generator.h"
 #include "parma_polyhedra_library_Grid_Generator_System.h"
+#include "parma_polyhedra_library_IO.h"
 
 using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::Interfaces::Java;
