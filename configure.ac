@@ -96,7 +96,7 @@ AH_TOP([
 ])
 
 AH_BOTTOM([
-#ifdef PPL_NDEBUG
+#if defined(PPL_NDEBUG) && !defined(NDEBUG)
 # define NDEBUG PPL_NDEBUG
 #endif
 
