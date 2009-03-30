@@ -22,7 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 /*!
   \defgroup PPL_Java_interface Java Language Interface
-  \brief
+
   The Parma Polyhedra Library comes equipped with an interface for the
   Java language.
 */

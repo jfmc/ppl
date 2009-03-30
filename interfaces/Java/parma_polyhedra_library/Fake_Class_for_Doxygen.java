@@ -1134,7 +1134,7 @@ public class C_Polyhedron extends Polyhedron {
 
     //@} // Constructors Behaving as Conversion Operators
 
-    //! \name Other Methods.
+    //! \name Other Methods
     //@{
 
     /*! \brief
@@ -1185,7 +1185,7 @@ public class C_Polyhedron extends Polyhedron {
 */
 public class Pointset_Powerset_C_Polyhedron extends PPL_Object {
 
-    /*! \name Ad Hoc Functions for Pointset_Powerset domains */
+    //! \name Ad Hoc Functions for Pointset_Powerset domains
     /*@{*/
 
     /*! \brief
@@ -1247,7 +1247,7 @@ public class Pointset_Powerset_C_Polyhedron extends PPL_Object {
     */
     public native void pairwise_reduce();
 
-    /*@}*/ /* \name Ad Hoc Functions for Pointset_Powerset domains */
+    /*@}*/ /* Ad Hoc Functions for Pointset_Powerset domains */
 
 } // class Pointset_Powerset_C_Polyhedron
 
