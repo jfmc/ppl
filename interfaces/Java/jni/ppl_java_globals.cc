@@ -721,8 +721,8 @@ Java_parma_1polyhedra_1library_IO_wrap_1string
  jint preferred_first_line_length, jint preferred_line_length) {
   try {
     unsigned ind = jtype_to_unsigned<unsigned int>(indent_depth);
-    usngined pfll = jtype_to_unsigned<unsigned int>(preferred_first_line_length);
-    usngined pll = jtype_to_unsigned<unsigned int>(preferred_line_length);
+    unsigned pfll = jtype_to_unsigned<unsigned int>(preferred_first_line_length);
+    unsigned pll = jtype_to_unsigned<unsigned int>(preferred_line_length);
     const char* chars = env->GetStringUTFChars(str, 0);
     if (!chars)
       return 0;
