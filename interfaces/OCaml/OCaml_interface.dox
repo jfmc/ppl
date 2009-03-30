@@ -133,11 +133,11 @@ on the use of the OCaml interface.
   intended version(s) of the library are ever used.
   Functions
 \code
-  ppl_version_major/1,
-  ppl_version_minor/1,
-  ppl_version_revision/1,
-  ppl_version_beta/1,
-  ppl_version/1,
+  ppl_version_major,
+  ppl_version_minor,
+  ppl_version_revision,
+  ppl_version_beta,
+  ppl_version,
   ppl_banner.
 \endcode
   allow run-time checking of information about the version being used.
@@ -149,27 +149,27 @@ Below is a short description of many of the interface functions.
 For full definitions of terminology used here, see the main PPL user manual.
 
 \anchor di_functions
-<H3> Domain Independent Functions </H3>
+<H1> Domain Independent Functions </H1>
 
 First we describe some domain independent functions
 included with all instantiations of the OCaml interfaces.
 
-<H2><CODE> ppl_version_major</CODE></H2>
+<H2><CODE> ppl_version_major </CODE></H2>
   Returns the major number of the PPL version.
 
-<H2><CODE> ppl_version_minor</CODE></H2>
+<H2><CODE> ppl_version_minor </CODE></H2>
   Returns the minor number of the PPL version.
 
-<H2><CODE> ppl_version_revision</CODE></H2>
+<H2><CODE> ppl_version_revision </CODE></H2>
   Returns the revision number of the PPL version.
 
-<H2><CODE> ppl_version_beta</CODE></H2>
+<H2><CODE> ppl_version_beta </CODE></H2>
   Returns the beta number of the PPL version.
 
-<H2><CODE> ppl_version</CODE></H2>
+<H2><CODE> ppl_version </CODE></H2>
   Returns the PPL version.
 
-<H2><CODE> ppl_banner</CODE></H2>
+<H2><CODE> ppl_banner </CODE></H2>
   Returns information about the PPL version, the licensing, the lack of any
   warranty whatsoever, the C++ compiler used to build the library,
   where to report bugs and where to look for further information.
@@ -189,7 +189,8 @@ included with all instantiations of the OCaml interfaces.
   If the coefficients are bounded, returns the minimum coefficient
   the C++ interface can handle.
 
-<H2><CODE> ppl_io_wrap_string </CODE></H2>
+<H2><CODE> ppl_io_wrap_string source_string indent_depth
+             preferred_first_line_length preferred_line_length </CODE></H2>
   Utility function for the wrapping of lines of text.
   The function wraps the lines of text stored in its first string argument
   according to the next three integer arguments, which are interpreted as
@@ -197,27 +198,29 @@ included with all instantiations of the OCaml interfaces.
   preferred length for all the other lines, respecively; it returns a
   string containing the wrapped text.
 
-<H2><CODE> ppl_set_timeout c_unsigned </CODE></H2>
-   Computations taking exponential time will be interrupted
-   some time after <CODE>c_unsigned</CODE> ms after that call.
+<H2><CODE> ppl_set_timeout hsecs </CODE></H2>
+   Computations taking exponential time will be interrupted some time
+   after <CODE>hsecs</CODE> hundreths of seconds after that call.
    If the computation is interrupted that way, a timeout exception
    will be thrown.
-   <CODE>c_unsigned</CODE> must be strictly greater than zero.
+   An exception is immediately thrown if <CODE>hsecs</CODE> is not strictly
+   greater than zero, or if the PPL Watchdog library is not enabled.
 
 <H2><CODE> ppl_reset_timeout </CODE></H2>
    Resets the timeout time so that the computation is not interrupted.
+   An exception is thrown if the PPL Watchdog library is not enabled.
 
 <H2><CODE> ppl_set_rounding_for_PPL </CODE></H2>
    Sets the FPU rounding mode so that the PPL abstractions based on
    floating point numbers work correctly.
    This is performed automatically at initialization-time.  Calling
-   this function is needed only if <CODE>restore_pre_PPL_rounding()</CODE>
+   this function is needed only if <CODE>restore_pre_PPL_rounding</CODE>
    has previously been called.
 
 <H2><CODE> ppl_restore_pre_PPL_rounding </CODE></H2>
    Sets the FPU rounding mode as it was before initialization of the PPL.
    After calling this function it is absolutely necessary to call
-   <CODE>set_rounding_for_PPL()</CODE> before using any PPL abstractions
+   <CODE>set_rounding_for_PPL</CODE> before using any PPL abstractions
    based on floating point numbers.
    This is performed automatically at finalization-time.
 
@@ -401,9 +404,7 @@ defining mixed integer (linear) programming problems.
 \anchor main_OCaml_C_polyhedron_functions
 <H1> C_Polyhedron Functions </H1>
 Here we describe the main functions available for PPL objects
-defining convex and closed polyhedra. A list of the available
-PPL functions for convex polyhedra for the OCaml interface is given in
-Section \ref OCamldoc_Documentation "OCamldoc Documentation".
+defining convex and closed polyhedra.
 
 <H2><CODE>
   ppl_new_C_Polyhedron_from_space_dimension space_dimension universe_or_empty
@@ -954,16 +955,29 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
 
 
 \anchor OCamldoc_Documentation
-\latexonly
-\input ocamldoc.tex
-\endlatexonly
-\htmlonly
 <H1>OCamldoc Documentation</H1>
 
+\htmlonly
 For a list of the PPL functions available to the generated domains
 for the OCaml interface, see the
 <A HREF="ocamldoc/index.html">OCamldoc-generated documentation</a>.
+<P>
 \endhtmlonly
+
+<strong>NOTE:</strong>
+the complete documentation for module <code>Ppl_ocaml</code>, including
+all the types and functions that were enabled at configuration time, is
+only available in the <em>configuration dependent</em> OCamldoc
+documentation.
+The configuration independent OCamldoc documentation only contains
+those types and functions that are always enabled, which are grouped
+into module <code>Ppl_ocaml_globals</code>.
+Also note that module <code>Ppl_ocaml</code> automatically includes
+module <code>Ppl_ocaml_globals</code>.
+
+\latexonly
+\input ocamldoc.tex
+\endlatexonly
 
 \anchor OI_Compilation
 <H1>Compilation and Installation</H1>
