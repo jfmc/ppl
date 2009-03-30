@@ -199,8 +199,7 @@ catch(std::exception& e) {						\
 }									\
 catch(timeout_exception&) {                                             \
   reset_timeout();                                                      \
-  caml_raise_with_string(*caml_named_value("PPL_timeout_exception"),    \
-                         "timeout expired");                            \
+  caml_raise_constant(*caml_named_value("PPL_timeout_exception"));      \
 }                                                                       \
 catch(...) {								\
   caml_raise_constant(*caml_named_value("PPL_unexpected_error"));	\

@@ -219,7 +219,7 @@ let congruence1 = (e2, e2 , (Z.from_int 1));;
 let congruences1 = [e3, e2 , (Z.from_int 20)];;
 let grid_generator1 = Grid_Point (e3, (Z.from_int 1));;
 
-let mip1 =  ppl_new_MIP_Problem 10 constraints1 e3 Maximization;;
+let mip1 = ppl_new_MIP_Problem 10 constraints1 e3 Maximization;;
 let objective_func = ppl_MIP_Problem_objective_function mip1;;
 print_string_if_noisy "\n";;
 print_linear_expression objective_func;;
@@ -383,6 +383,15 @@ let i = ppl_max_space_dimension()
 in print_int_if_noisy i;;
 print_string_if_noisy "\n";;
 
+(* Testing exceptions *)
+try
+  let _ = ppl_new_MIP_Problem_from_space_dimension (-10)
+  in print_string_if_noisy "Exception test failed"
+with Invalid_argument what ->
+  print_string_if_noisy "Exception test succeeded; caught exception is:\n";
+  print_string_if_noisy what;
+  print_string_if_noisy "\n";;
+
 (* Testing timeouts *)
 let lower = Coefficient(Gmp.Z.of_int 0)
 and upper = Coefficient(Gmp.Z.of_int 1)
@@ -412,22 +421,30 @@ in (
       compute_timeout_hypercube 0 2;
       ppl_reset_timeout ();
       print_string_if_noisy "ppl_reset_timeout test succeeded.\n"
-    with x ->
-      print_string_if_noisy "ppl_reset_timeout test seems to be failed!\n"
-  end
-(* DEBUGGING
-  ;
+    with
+    | PPL_timeout_exception ->
+      print_string_if_noisy "ppl_reset_timeout test seems to be failed:\n";
+      print_string_if_noisy "Unexpected PPL timeout exception caught.\n"
+    | _ ->
+      print_string_if_noisy "ppl_reset_timeout test seems to be failed.";
+      (* FIXME: print the contents of the exception. *)
+      print_string_if_noisy "\n"
+  end;
   begin
     try
-      print_string "\nStarting ppl_set_timeout test:\n";
+      print_string_if_noisy "\nStarting ppl_set_timeout test:\n";
       ppl_set_timeout 100;
       compute_timeout_hypercube 0 100;
       ppl_reset_timeout ();
-      print_string "ppl_set_timeout test seems to be failed!\n"
-    with x ->
-      print_string "ppl_set_timeout test succeded\n"
+      print_string_if_noisy "ppl_set_timeout test seems to be failed!\n"
+    with
+    | PPL_timeout_exception ->
+      print_string_if_noisy "ppl_set_timeout test succeded\n";
+      print_string_if_noisy "Expected PPL timeout exception caught.\n"
+    | _ ->
+      print_string_if_noisy "ppl_set_timeout test failed:\n";
+      print_string_if_noisy "generic exception caught.\n"
   end
-DEBUGGING *)
 );;
 
 (* Pointset_Powersed_Grid is not enabled by default, the following code is *)

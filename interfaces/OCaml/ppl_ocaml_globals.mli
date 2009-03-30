@@ -22,6 +22,12 @@ site: http://www.cs.unipr.it/ppl/ . *)
 
 open Gmp
 
+exception PPL_arithmetic_overflow of string
+exception PPL_timeout_exception
+exception PPL_internal_error of string
+exception PPL_unknown_standard_exception of string
+exception PPL_unexpected_error of string
+
 type degenerate_element =
     Universe
   | Empty

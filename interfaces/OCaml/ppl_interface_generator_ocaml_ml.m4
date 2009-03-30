@@ -37,14 +37,6 @@ m4_include(`ppl_interface_generator_copyright')`'dnl
 open Gmp
 include Ppl_ocaml_globals
 
-exception Error of string
-let _ = Callback.register_exception "PPL_arithmetic_overflow" (Error "any string")
-let _ = Callback.register_exception "PPL_internal_error" (Error "any string")
-let _ = Callback.register_exception "PPL_unknown_standard_exception" (Error "any string")
-let _ = Callback.register_exception "PPL_not_an_unsigned_exception" (Error "any string")
-let _ = Callback.register_exception "PPL_timeout_error" (Error "any string")
-let _ = Callback.register_exception "PPL_unexpected_error" (Error "any string")
-
 m4_divert(-1)
 m4_pushdef(`m4_one_class_code', `type m4_downcase(m4_interface_class$1)
 ')

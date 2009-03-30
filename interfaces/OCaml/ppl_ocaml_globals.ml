@@ -22,6 +22,26 @@ site: http://www.cs.unipr.it/ppl/ . *)
 
 open Gmp
 
+exception PPL_arithmetic_overflow of string
+let _ = Callback.register_exception "PPL_arithmetic_overflow"
+          (PPL_arithmetic_overflow "any string")
+
+exception PPL_timeout_exception
+let _ = Callback.register_exception "PPL_timeout_exception"
+          (PPL_timeout_exception)
+
+exception PPL_internal_error of string
+let _ = Callback.register_exception "PPL_internal_error"
+          (PPL_internal_error "any string")
+
+exception PPL_unknown_standard_exception of string
+let _ = Callback.register_exception "PPL_unknown_standard_exception"
+          (PPL_unknown_standard_exception "any string")
+
+exception PPL_unexpected_error of string
+let _ = Callback.register_exception "PPL_unexpected_error"
+          (PPL_unexpected_error "any string")
+
 type degenerate_element =
     Universe
   | Empty
