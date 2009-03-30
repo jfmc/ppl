@@ -8,6 +8,8 @@ Enhancements for PPL 0.10.1 or later versions
 Enhancements for PPL 0.11 or later versions
 ===========================================
 
+- Reconsider the datatype for the units parameter in the Watchdog
+  constructors: should we prefer an unsigned?
 - Rename set_rational_sqrt_precision_parameter to
   set_irrational_precision and make it available on all interfaces.
 - Intervals are best instantiated with checked numbers with

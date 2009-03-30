@@ -41,11 +41,9 @@ extern "C" void PWL_handle_timeout(int signum);
 //! A watchdog timer.
 class Watchdog {
 public:
-  // TODO: reconsider whether `units' should be an unsigned.
   template <typename Flag_Base, typename Flag>
   Watchdog(int units, const Flag_Base* volatile& holder, Flag& flag);
 
-  // TODO: reconsider whether `units' should be an unsigned.
   Watchdog(int units, void (*function)());
   ~Watchdog();
 
