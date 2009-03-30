@@ -62,7 +62,7 @@ dnl The Preamble.
 dnl =================================================================
 /*!
   \defgroup PPL_Prolog_interface Prolog Language Interface
-  \brief
+
   The Parma Polyhedra Library comes equipped with an interface
   for the Prolog language.
 */
