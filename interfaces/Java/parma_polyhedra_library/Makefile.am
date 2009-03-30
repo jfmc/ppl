@@ -78,6 +78,7 @@ $(srcdir)/Grid_Generator.java \
 $(srcdir)/Grid_Generator_System.java \
 $(srcdir)/Grid_Generator_Type.java \
 $(srcdir)/Invalid_Argument_Exception.java \
+$(srcdir)/IO.java \
 $(srcdir)/Length_Error_Exception.java \
 $(srcdir)/Linear_Expression.java \
 $(srcdir)/Linear_Expression_Coefficient.java \
@@ -176,6 +177,7 @@ Grid_Generator.class \
 Grid_Generator_System.class \
 Grid_Generator_Type.class \
 Invalid_Argument_Exception.class \
+IO.class \
 Length_Error_Exception.class \
 Linear_Expression.class \
 Linear_Expression_Coefficient.class \
