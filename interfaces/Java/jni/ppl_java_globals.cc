@@ -729,7 +729,7 @@ Java_parma_1polyhedra_1library_IO_wrap_1string
     using namespace Parma_Polyhedra_Library::IO_Operators;
     std::string s = wrap_string(chars, ind, pfll, pll);
     env->ReleaseStringUTFChars(str, chars);
-    return env->NewStringUTF(s.c_str();
+    return env->NewStringUTF(s.c_str());
   }
   CATCH_ALL;
   return 0;
