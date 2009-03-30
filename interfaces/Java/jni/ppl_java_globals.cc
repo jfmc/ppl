@@ -32,6 +32,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "parma_polyhedra_library_Generator_System.h"
 #include "parma_polyhedra_library_Grid_Generator.h"
 #include "parma_polyhedra_library_Grid_Generator_System.h"
+#include "parma_polyhedra_library_IO.h"
 
 using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::Interfaces::Java;
@@ -710,6 +711,26 @@ Java_parma_1polyhedra_1library_Congruence_1System_ascii_1dump
     Congruence_System cs = build_cxx_congruence_system(env, j_this);
     cs.ascii_dump(s);
     return env->NewStringUTF(s.str().c_str());
+  }
+  CATCH_ALL;
+  return 0;
+}
+
+JNIEXPORT jstring JNICALL
+Java_parma_1polyhedra_1library_IO_wrap_1string
+(JNIEnv* env, jclass, jstring str, jint indent_depth,
+ jint preferred_first_line_length, jint preferred_line_length) {
+  try {
+    unsigned ind = jtype_to_unsigned<unsigned int>(indent_depth);
+    unsigned pfll = jtype_to_unsigned<unsigned int>(preferred_first_line_length);
+    unsigned pll = jtype_to_unsigned<unsigned int>(preferred_line_length);
+    const char* chars = env->GetStringUTFChars(str, 0);
+    if (!chars)
+      return 0;
+    using namespace Parma_Polyhedra_Library::IO_Operators;
+    std::string s = wrap_string(chars, ind, pfll, pll);
+    env->ReleaseStringUTFChars(str, chars);
+    return env->NewStringUTF(s.c_str());
   }
   CATCH_ALL;
   return 0;
