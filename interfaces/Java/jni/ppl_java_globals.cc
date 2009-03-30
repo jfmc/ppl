@@ -714,3 +714,23 @@ Java_parma_1polyhedra_1library_Congruence_1System_ascii_1dump
   CATCH_ALL;
   return 0;
 }
+
+JNIEXPORT jstring JNICALL
+Java_parma_1polyhedra_1library_IO_wrap_1string
+(JNIEnv* env, jstring str, jint indent_depth,
+ jint preferred_first_line_length, jint preferred_line_length) {
+  try {
+    unsigned ind = jtype_to_unsigned<unsigned int>(indent_depth);
+    usngined pfll = jtype_to_unsigned<unsigned int>(preferred_first_line_length);
+    usngined pll = jtype_to_unsigned<unsigned int>(preferred_line_length);
+    const char* chars = env->GetStringUTFChars(str, 0);
+    if (!chars)
+      return 0;
+    using namespace Parma_Polyhedra_Library::IO_Operators;
+    std::string s = wrap_string(chars, ind, pfll, pll);
+    env->ReleaseStringUTFChars(str, chars);
+    return env->NewStringUTF(s.c_str();
+  }
+  CATCH_ALL;
+  return 0;
+}
