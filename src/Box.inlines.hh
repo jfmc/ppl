@@ -401,7 +401,6 @@ Box<ITV>
     break;
   case Constraint::NONSTRICT_INEQUALITY:
     seq_v.refine_existential((den > 0) ? GREATER_OR_EQUAL : LESS_OR_EQUAL, q);
-    // FIXME(0.10.1): this assertion fails due to a bug in refine.
     assert(seq_v.OK());
     break;
   case Constraint::STRICT_INEQUALITY:
