@@ -8,6 +8,10 @@ Enhancements for PPL 0.10.1 or later versions
 Enhancements for PPL 0.11 or later versions
 ===========================================
 
+- When the PPL has been configured with
+  CPPFLAGS="-DPPL_ARM_CAN_CONTROL_FPU=1" make sure the library initialization
+  procedure checks that the FPU can indeed be controlled, failing if
+  that is not the case.
 - Consider switching to MLGMPIDL for the OCaml interface
   (see https://bugzilla.redhat.com/show_bug.cgi?id=491712).
 - Reconsider the datatype for the units parameter in the Watchdog
