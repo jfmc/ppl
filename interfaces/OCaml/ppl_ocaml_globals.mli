@@ -137,6 +137,12 @@ val ppl_set_rounding_for_PPL:
 val ppl_restore_pre_PPL_rounding:
   unit -> unit
 
+val ppl_set_timeout:
+  int -> unit
+
+val ppl_reset_timeout:
+  unit -> unit
+
 type mip_problem
 
 val ppl_new_MIP_Problem_from_space_dimension:

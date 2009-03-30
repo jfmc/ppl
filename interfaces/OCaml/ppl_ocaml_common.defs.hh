@@ -24,6 +24,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_ppl_ocaml_common_defs_hh 1
 
 #include "ppl.hh"
+#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
+#include "pwl.hh"
+#endif
 #include "interfaced_boxes.hh"
 #include "marked_pointers.hh"
 
@@ -155,6 +158,20 @@ private:
   std::vector<dimension_type> vec;
 };
 
+class timeout_exception : public Parma_Polyhedra_Library::Throwable {
+public:
+  void throw_me() const {
+    throw *this;
+  }
+  int priority() const {
+    return 0;
+  }
+  timeout_exception() {
+  }
+};
+
+void handle_timeout_exception();
+
 } // namespace OCaml
 
 } // namespace Interfaces
@@ -175,6 +192,9 @@ catch(std::bad_alloc&) {						\
  catch(std::runtime_error& e) {                                         \
    caml_raise_with_string(*caml_named_value("PPL_internal_error"),	\
                           (const_cast<char*>(e.what())));		\
+ }									\
+ catch(timeout_exception&) {                                            \
+   handle_timeout_exception();                                          \
  }									\
  catch(std::exception& e) {						\
    caml_raise_with_string(*caml_named_value("PPL_unknown_standard_exception"), \

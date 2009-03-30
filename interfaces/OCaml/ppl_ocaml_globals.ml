@@ -138,6 +138,12 @@ unit -> unit = "ppl_set_rounding_for_PPL"
 external ppl_restore_pre_PPL_rounding:
 unit -> unit = "ppl_restore_pre_PPL_rounding"
 
+external ppl_set_timeout:
+int -> unit = "ppl_set_timeout"
+
+external ppl_reset_timeout:
+unit -> unit = "ppl_reset_timeout"
+
 external ppl_new_MIP_Problem_from_space_dimension:
   int -> mip_problem = "ppl_new_MIP_Problem_from_space_dimension"
 

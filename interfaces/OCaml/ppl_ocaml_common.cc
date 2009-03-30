@@ -21,7 +21,6 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_ocaml_common.defs.hh"
-//#include <stdexcept>
 
 namespace Parma_Polyhedra_Library {
 
@@ -79,29 +78,31 @@ class PFunc {
   }
 };
 
-#define CATCH_ALL							\
-  catch(std::bad_alloc&) {						\
-    caml_raise_out_of_memory();						\
-  }									\
-  catch(std::invalid_argument& e) {					\
-    caml_invalid_argument(const_cast<char*>(e.what()));			\
-  }									\
-  catch(std::overflow_error& e) {					\
-    caml_raise_with_string(*caml_named_value("PPL_arithmetic_overflow"), \
-			   (const_cast<char*>(e.what())));		\
-  }									\
-  catch(std::runtime_error& e) {					\
-    caml_raise_with_string(*caml_named_value("PPL_internal_error"),	\
-			   (const_cast<char*>(e.what())));		\
-  }									\
-  catch(std::exception& e) {						\
-    caml_raise_with_string(*caml_named_value("PPL_unknown_standard_exception"), \
-			   (const_cast<char*>(e.what())));		\
-  }									\
-  catch(...) {								\
-    caml_raise_constant(*caml_named_value("PPL_unexpected_error"));	\
-  }
 
+#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
+
+Parma_Watchdog_Library::Watchdog* p_timeout_object = 0;
+
+void
+reset_timeout() {
+  if (p_timeout_object) {
+    delete p_timeout_object;
+    p_timeout_object = 0;
+    abandon_expensive_computations = 0;
+  }
+}
+
+#endif // PPL_WATCHDOG_LIBRARY_ENABLED
+
+void
+handle_timeout_exception() {
+#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
+  assert(p_timeout_object);
+  reset_timeout();
+#endif
+  caml_raise_with_string(*caml_named_value("PPL_timeout_exception"),
+                         "timeout expired");
+}
 
 namespace {
 
@@ -1201,12 +1202,45 @@ ppl_set_rounding_for_PPL(value unit) try {
 }
 CATCH_ALL
 
-
 extern "C"
 CAMLprim value
 ppl_restore_pre_PPL_rounding(value unit) try {
   CAMLparam1(unit);
   restore_pre_PPL_rounding();
   CAMLreturn(Val_unit);
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_set_timeout(value time) try {
+  CAMLparam1(time);
+#ifndef PPL_WATCHDOG_LIBRARY_ENABLED
+  const char* what = "PPL OCaml interface usage error:\n"
+    "ppl_set_timeout: the PPL Watchdog library is not enabled.";
+  throw std::runtime_error(what);
+#else
+  // In case a timeout was already set.
+  reset_timeout();
+  unsigned cpp_time = value_to_unsigned_native<unsigned>(time);
+  static timeout_exception e;
+  using Parma_Watchdog_Library::Watchdog;
+  p_timeout_object = new Watchdog(cpp_time, abandon_expensive_computations, e);
+  CAMLreturn(Val_unit);
+#endif // PPL_WATCHDOG_LIBRARY_ENABLED
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_reset_timeout(value unit) try {
+  CAMLparam1(unit);
+#ifndef PPL_WATCHDOG_LIBRARY_ENABLED
+  throw std::runtime_error("PPL OCaml interface error:\n"
+                           "the PPL Watchdog library is not enabled.");
+#else
+  reset_timeout();
+  CAMLreturn(Val_unit);
+#endif // PPL_WATCHDOG_LIBRARY_ENABLED
 }
 CATCH_ALL
