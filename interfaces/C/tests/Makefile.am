@@ -27,7 +27,6 @@ TESTS_ENVIRONMENT = $(CHECKER)
 
 AM_CPPFLAGS = \
 -I$(top_builddir)/interfaces/C \
--I$(top_builddir)/src \
 @extra_includes@ \
 @debug_flag@
 
@@ -54,6 +53,10 @@ ppl_c_test.cc
 # Dummy C++ source to cause C++ linking.
 nodist_EXTRA_libppl_c_tests_a_SOURCES = \
 dummy.cc
+
+libppl_c_tests_a_CPPFLAGS = \
+-I$(top_builddir)/interfaces/C \
+@extra_includes@
 
 LDADD = \
 libppl_c_tests.a \
