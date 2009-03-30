@@ -8,6 +8,8 @@ Enhancements for PPL 0.10.1 or later versions
 Enhancements for PPL 0.11 or later versions
 ===========================================
 
+- Consider switching to MLGMPIDL for the OCaml interface
+  (see https://bugzilla.redhat.com/show_bug.cgi?id=491712).
 - Reconsider the datatype for the units parameter in the Watchdog
   constructors: should we prefer an unsigned?
 - Rename set_rational_sqrt_precision_parameter to
