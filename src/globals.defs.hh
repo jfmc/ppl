@@ -201,10 +201,6 @@ struct Recycle_Input {
     std::cerr << *this;							\
   }
 
-// FIXME(0.10.1): The class_prefix has changed from
-//        PPL_OUTPUT_TEMPLATE_DEFINITIONS, to work around `,'.
-//        Perhaps PPL_OUTPUT_TEMPLATE_DEFINITIONS should be changed to
-//        match this.
 #define PPL_OUTPUT_2_PARAM_TEMPLATE_DEFINITIONS(type_symbol1,		\
 						type_symbol2,		\
 						class_prefix)		\
@@ -221,7 +217,6 @@ struct Recycle_Input {
     std::cerr << *this;							\
   }
 
-// FIXME(0.10.1): Copy and edit of PPL_OUTPUT_2_PARAM_TEMPLATE_DEFINITIONS
 #define PPL_OUTPUT_3_PARAM_TEMPLATE_DEFINITIONS(type_symbol1,		\
 						type_symbol2,		\
 						type_symbol3,		\

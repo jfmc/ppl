@@ -717,7 +717,6 @@ Partially_Reduced_Product<D1, D2, R>::set_reduced_flag() const {
   const_cast<Partially_Reduced_Product&>(*this).reduced = true;
 }
 
-// FIXME(0.10.1): Improve this name.
 PPL_OUTPUT_3_PARAM_TEMPLATE_DEFINITIONS(D1, D2, R, Partially_Reduced_Product)
 
 template <typename D1, typename D2, typename R>
