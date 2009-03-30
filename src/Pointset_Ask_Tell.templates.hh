@@ -68,7 +68,7 @@ Pointset_Ask_Tell<NNC_Polyhedron>
       nnc_tell(NNC_Polyhedron(i->tell().element().constraints()));
     x.sequence.push_back(Pair(nnc_ask, nnc_tell));
   }
-  // FIXME(0.10.1): the following is a bug!
+  // FIXME: the following is a bug!
   x.normalized = y.normalized;
   assert(x.OK());
 }
