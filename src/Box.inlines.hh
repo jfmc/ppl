@@ -407,8 +407,9 @@ Box<ITV>
     seq_v.refine_existential((den > 0) ? GREATER_THAN : LESS_THAN, q);
     break;
   }
-  // FIXME(0.10.1): do check the value returned by `refine_existential' and
+  // FIXME: do check the value returned by `refine_existential' and
   // set `empty' and `empty_up_to_date' as appropriate.
+  // This has to be done after reimplementation of intervals.
   reset_empty_up_to_date();
   assert(OK());
 }
