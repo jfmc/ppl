@@ -8,6 +8,8 @@ Enhancements for PPL 0.10.1 or later versions
 Enhancements for PPL 0.11 or later versions
 ===========================================
 
+- Get rid of ugly assign functions defined in anonymous namespace of
+  MIP_Problem.cc replacing it with a more general purpose approach.
 - When the PPL has been configured with
   CPPFLAGS="-DPPL_ARM_CAN_CONTROL_FPU=1" make sure the library initialization
   procedure checks that the FPU can indeed be controlled, failing if

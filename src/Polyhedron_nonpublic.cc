@@ -650,7 +650,13 @@ PPL::Polyhedron::max_min(const Linear_Expression& expr,
   // The polyhedron is bounded in the right direction and we have
   // computed the extremum: write the result into the caller's structures.
   assert(!first_candidate);
-  // FIXME(0.10.1): avoid these temporaries, if possible.
+  // FIXME: avoid these temporaries, if possible.
+  // This can be done adding an `assign' function working on native
+  // and checked or an operator= that have on one side a checked and
+  // on the other a native or checked.
+  // The reason why now we can't use operator= is the fact that we
+  // still can have Coefficient defined to mpz_class (and not
+  // Checked_Number<mpz_class>).
   ext_n = Coefficient(extremum.get_num());
   ext_d = Coefficient(extremum.get_den());
   included = ext_included;
