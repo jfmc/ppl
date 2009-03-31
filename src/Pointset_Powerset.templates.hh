@@ -1199,8 +1199,6 @@ Pointset_Powerset<PS>::pairwise_reduce() {
 	const PS& pj = sj->element();
 	if (pi.upper_bound_assign_if_exact(pj)) {
 	  marked[si_index] = marked[sj_index] = true;
-	  // FIXME(0.10.1): check whether the preservation of reduction was
-	  // actually meant here.
 	  new_x.add_non_bottom_disjunct_preserve_reduction(pi);
 	  ++deleted;
 	  goto next;
@@ -1255,8 +1253,6 @@ BGP99_heuristics_assign(const Pointset_Powerset& y, Widening wf) {
       if (pi.contains(pj)) {
 	PS pi_copy = pi;
 	wf(pi_copy, pj);
-	// FIXME(0.10.1): check whether the preservation of reduction was
-	// actually meant here.
 	new_x.add_non_bottom_disjunct_preserve_reduction(pi_copy);
 	marked[i_index] = true;
       }
