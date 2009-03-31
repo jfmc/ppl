@@ -232,9 +232,8 @@ DB_Matrix<T>::ascii_load(std::istream& s) {
   DB_Matrix& x = *this;
   for (dimension_type i = 0; i < nrows;  ++i)
     for (dimension_type j = 0; j < nrows; ++j) {
-      Result r = input(x[i][j], s, ROUND_UP);
-      // FIXME(0.10.1): V_CVT_STR_UNK is probably not the only possible error.
-      if (!s || r == V_CVT_STR_UNK)
+      Result r = input(x[i][j], s, ROUND_CHECK);
+      if (r != V_EQ || is_minus_infinity(x[i][j]))
 	return false;
     }
 
