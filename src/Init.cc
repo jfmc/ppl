@@ -86,7 +86,8 @@ PPL::Init::Init() {
     old_rounding_direction = fpu_get_rounding_direction();
     fpu_set_rounding_direction(round_fpu_dir(ROUND_DIRECT));
 #endif
-    // FIXME(0.10.1): choose a better default
+    // The default is choosen to have a precision greater than most
+    // precise IEC559 floating point (112 bits of mantissa).
     set_rational_sqrt_precision_parameter(128);
   }
 }
