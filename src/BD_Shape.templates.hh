@@ -5643,15 +5643,15 @@ BD_Shape<T>::OK() const {
   // MINUS_INFINITY cannot occur at all.
   for (dimension_type i = dbm.num_rows(); i-- > 0; )
     for (dimension_type j = dbm.num_rows(); j-- > 0; )
-    if (is_minus_infinity(dbm[i][j])) {
+      if (is_minus_infinity(dbm[i][j])) {
 #ifndef NDEBUG
-      using namespace Parma_Polyhedra_Library::IO_Operators;
-      std::cerr << "BD_Shape::dbm[" << i << "][" << j << "] = "
-                << dbm[i][j] << "!"
-                << std::endl;
+        using namespace Parma_Polyhedra_Library::IO_Operators;
+        std::cerr << "BD_Shape::dbm[" << i << "][" << j << "] = "
+                  << dbm[i][j] << "!"
+                  << std::endl;
 #endif
-      return false;
-    }
+        return false;
+      }
 
   // On the main diagonal only PLUS_INFINITY can occur.
   for (dimension_type i = dbm.num_rows(); i-- > 0; )
