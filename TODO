@@ -5,17 +5,21 @@ Enhancements for PPL 0.10.1 or later versions
 - Fix all the FIXME(0.10.1).
 
 
-Enhancements for PPL 0.11 or later versions
-===========================================
+Enhancements for PPL 0.11
+=========================
 
+- Add the domain of circular linear progressions.
+- Finish the domain of intervals.
+- Supplement the "preemption" methods of the library allowing for
+  deterministic mechanisms (e.g., decrementing a counter and throwing
+  when it reaches zero).  This will probably require changing the
+  current interface based on `abandon_expensive_computations'.
 - Get rid of ugly assign functions defined in anonymous namespace of
-  MIP_Problem.cc replacing it with a more general purpose approach.
+  MIP_Problem.cc replacing it with a more general-purpose approach.
 - When the PPL has been configured with
   CPPFLAGS="-DPPL_ARM_CAN_CONTROL_FPU=1" make sure the library initialization
   procedure checks that the FPU can indeed be controlled, failing if
   that is not the case.
-- Consider switching to MLGMPIDL for the OCaml interface
-  (see https://bugzilla.redhat.com/show_bug.cgi?id=491712).
 - Reconsider the datatype for the units parameter in the Watchdog
   constructors: should we prefer an unsigned?
 - Rename set_rational_sqrt_precision_parameter to
@@ -23,6 +27,22 @@ Enhancements for PPL 0.11 or later versions
 - Intervals are best instantiated with checked numbers with
   particular policies: review all the interfaced boxes,
   augment the testsuite, and update the documentation.
+- DO_TEST_F should not cause the output "failed tests" to appear,
+  but "tests unexpectedly succeeded".
+- Reduce the number of FIXMEs to no more than 20.
+- Switch to the latest versions of Autoconf and Automake (in beta test
+  at the time of writing): they provide features we have been looking
+  for for years.
+- Use the OCaml-Autoconf macros: https://forge.ocamlcore.org/frs/?group_id=69
+  (see also
+  http://rwmj.wordpress.com/2009/03/31/using-autoconf-for-ocaml-projects/).
+
+
+Enhancements for PPL 0.11 or later versions
+===========================================
+
+- Consider switching to MLGMPIDL for the OCaml interface
+  (see https://bugzilla.redhat.com/show_bug.cgi?id=491712).
 - Improve the OCaml interface by supporting dynamic loading.
 - Enhance the support for systems not providing support for the IEEE
   inexact flag.
@@ -33,10 +53,6 @@ Enhancements for PPL 0.11 or later versions
 - Make the library thread-safe.
 - Find a way to let the GMP and checked-int versions of the PPL coexist
   so as to allow using them in the same application.
-- Supplement the "preemption" methods of the library allowing for
-  deterministic mechanisms (e.g., decrementing a counter and throwing
-  when it reaches zero).  This will probably require changing the
-  current interface based on `abandon_expensive_computations'.
 - Provide methods computing approximations of the integer convex hull
   of semantic domains for the case where we are only interested in integral
   solutions (as is the case, e.g., in many program analyses).  Then
@@ -76,8 +92,6 @@ Enhancements for PPL 0.11 or later versions
     or we are otherwise 100% sure that the changed argument and the
     argument that is read afterward are not aliases (in the latter
     case an assert(&to != &z) shall be added.
-- DO_TEST_F should not cause the output "failed tests" to appear,
-  but "tests unexpectedly succeeded".
 - Improve the handling of the --enable-instantiations configure
   option so that "closure by subdomain" is automatically implemented
   (e.g., if Pointset_Powerset(X) is specified, X should be automatically
@@ -89,8 +103,6 @@ Enhancements for PPL 0.11 or later versions
 - Consider whether or not our interface for method time_elapse_assign()
   is the one needed by users: in particular, see if it should take as
   an argument a generator system, instead of an abstract element.
-- Finish the domain of intervals.
-- Reduce the number of FIXMEs to no more than 20.
 - Provide a generic implementation for the `widening with tokens'.
 - In the OK() methods, instead of having all those #ifndef NDEBUG,
   it is probably worthwhile to use a suitable defined `barf' stream
