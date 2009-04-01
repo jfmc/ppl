@@ -2,10 +2,10 @@ Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 See below for the copying conditions.
 
 
-Parma Polyhedra Library (Release 0.10)
-=====================================
+Parma Polyhedra Library (Release 0.10.1)
+========================================
 
-This is the release 0.10 of the Parma Polyhedra Library:
+This is the release 0.10.1 of the Parma Polyhedra Library:
 a C++ library for (not necessarily closed) convex polyhedra
 and other numerical abstractions.
 

@@ -52,10 +52,11 @@
 #	    0.8			    5:0:0
 #	    0.9			    6:0:0
 #	    0.10		    7:0:0
+#	    0.10.1		    8:0:1
 
-LIBPPL_LT_CURRENT =  7
+LIBPPL_LT_CURRENT =  8
 LIBPPL_LT_REVISION = 0
-LIBPPL_LT_AGE =      0
+LIBPPL_LT_AGE =      1
 
 AM_CPPFLAGS = \
 -I$(top_builddir) \
