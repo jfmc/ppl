@@ -3389,7 +3389,7 @@ Box<ITV>::limited_CC76_extrapolation_assign(const Box& y,
   if (space_dim != y.space_dimension())
     throw_dimension_incompatible("limited_CC76_extrapolation_assign(y, cs)",
                                  y);
-  // `cs' must be dimension-compatible with the two octagons.
+  // `cs' must be dimension-compatible with the two boxes.
   const dimension_type cs_space_dim = cs.space_dimension();
   if (space_dim < cs_space_dim)
     throw_constraint_incompatible("limited_CC76_extrapolation_assign(y, cs)");
