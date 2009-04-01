@@ -131,6 +131,10 @@ OR_Matrix<T>::any_row_iterator<U>
     e(n_rows)
     // Field `i' is intentionally not initialized here.
 {
+#if PPL_OR_MATRIX_EXTRA_DEBUG
+  // Turn `value' into a valid object.
+  value.size_ = OR_Matrix::row_size(e);
+#endif
 }
 
 template <typename T>
@@ -188,12 +192,13 @@ inline typename OR_Matrix<T>::template any_row_iterator<U>&
 OR_Matrix<T>::any_row_iterator<U>::operator++() {
   ++e;
   dimension_type increment = e;
-  if (e % 2 != 0) {
+  if (e % 2 != 0)
     ++increment;
 #if PPL_OR_MATRIX_EXTRA_DEBUG
+  else {
     value.size_ += 2;
-#endif
   }
+#endif
   i += increment;
   value.first += increment;
   return *this;
@@ -245,8 +250,7 @@ OR_Matrix<T>::any_row_iterator<U>::operator+=(const difference_type m) {
   i += increment;
   value.first += increment;
 #if PPL_OR_MATRIX_EXTRA_DEBUG
-  // FIXME(0.10.1)!!!
-  value.size_ = OR_Matrix::row_size(e);
+  value.size_ += (m - m % 2);
 #endif
   return *this;
 }

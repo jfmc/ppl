@@ -125,7 +125,7 @@ private:
     //! Subscript operator.
     U& operator[](dimension_type k) const;
 
-    //! Default constructor: creates a past-the-end object.
+    //! Default constructor: creates an invalid object that has to be assigned.
     Pseudo_Row();
 
     //! Assignment operator.
