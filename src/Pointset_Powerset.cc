@@ -307,6 +307,21 @@ PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
 
 template <>
 template <>
+PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
+::Pointset_Powerset(const Pointset_Powerset<Grid>& y,
+                    Complexity_Class)
+  : Base(), space_dim(y.space_dimension()) {
+  Pointset_Powerset& x = *this;
+  for (Pointset_Powerset<Grid>::const_iterator i = y.begin(),
+	 y_end = y.end(); i != y_end; ++i)
+    x.sequence.push_back(Determinate<NNC_Polyhedron>
+			 (NNC_Polyhedron(i->element())));
+  x.reduced = false;
+  assert(x.OK());
+}
+
+template <>
+template <>
 PPL::Pointset_Powerset<PPL::C_Polyhedron>
 ::Pointset_Powerset(const Pointset_Powerset<NNC_Polyhedron>& y,
                     Complexity_Class)

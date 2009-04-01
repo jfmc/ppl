@@ -1400,6 +1400,12 @@ Pointset_Powerset<NNC_Polyhedron>
 
 template <>
 template <>
+Pointset_Powerset<NNC_Polyhedron>
+::Pointset_Powerset(const Pointset_Powerset<Grid>& y,
+                    Complexity_Class);
+
+template <>
+template <>
 Pointset_Powerset<C_Polyhedron>
 ::Pointset_Powerset(const Pointset_Powerset<NNC_Polyhedron>& y,
                     Complexity_Class);

@@ -65,8 +65,18 @@ Pointset_Powerset<NNC_Polyhedron>
 	 y_end = y.end(); i != y_end; ++i)
     x.sequence.push_back(Determinate<NNC_Polyhedron>
 			 (NNC_Polyhedron(i->element(), complexity)));
-  // FIXME(0.10.1): the following is a bug!
+
+  // FIXME: If the domain elements can be represented _exactly_ as NNC
+  // polyhedra, then having x.reduced = y.reduced is correct. This is
+  // the case if the domains are both linear and convex which holds
+  // for all the currently supported instantiations except for
+  // Grids; for this reason the Grid specialization has a
+  // separate implementation.  For any non-linear or non-convex
+  // domains (e.g., a domain of Intervals with restrictions or a
+  // domain of circles) that may be supported in the future, the
+  // assignment x.reduced = y.reduced will be a bug.
   x.reduced = y.reduced;
+
   assert(x.OK());
 }
 

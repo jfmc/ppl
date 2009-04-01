@@ -372,6 +372,46 @@ test15() {
   return ok;
 }
 
+// Constructs the powerset of NNC polyhedra from a powerset of grids
+// where set of grids is omega reduced but the constructed set
+// of NNC polyhedra is not omega reduced.
+bool
+test16() {
+  Variable x(0);
+  Variable y(1);
+
+  Grid grid1(2);
+  grid1.add_congruence((x %= 0) / 2);
+  grid1.add_congruence((y %= 0) / 2);
+  Grid grid2(2);
+  grid2.add_congruence((x %= 1) / 2);
+  grid2.add_congruence((y %= 1) / 0);
+
+  Pointset_Powerset<Grid> pps_gr(grid1);
+  pps_gr.add_disjunct(grid2);
+
+  // At this stage, pps_gr is omega reduced but pps_gr.reduced flag will
+  // be set to false.
+  // So we add this test to set the omega reduction pps_gr.reduced
+  // flag to true.
+  bool top_closed = pps_gr.is_topologically_closed();
+
+  Pointset_Powerset<NNC_Polyhedron> pps(pps_gr);
+
+  // pps is not omega reduced.
+  bool ok = (pps.size() == 2);
+
+  Pointset_Powerset<NNC_Polyhedron> known_pps(2);
+
+  ok = ok && (pps == known_pps) && pps.OK();
+
+  Pointset_Powerset<NNC_Polyhedron>::const_iterator i = pps.begin();
+  NNC_Polyhedron phi = i->element();
+  print_constraints(phi, "*** phi ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -390,4 +430,5 @@ BEGIN_MAIN
   DO_TEST(test13);
   DO_TEST(test14);
   DO_TEST(test15);
+  DO_TEST(test16);
 END_MAIN
