@@ -90,6 +90,7 @@ generalizedaffinepreimage1 \
 geomcovers1 \
 intersection1 \
 interval1 \
+limitedcc76extrapolation1 \
 mapspacedims1 \
 max_min1 \
 maxspacedim1 \
@@ -233,6 +234,8 @@ geomcovers1_SOURCES = geomcovers1.cc
 intersection1_SOURCES = intersection1.cc
 
 interval1_SOURCES = interval1.cc
+
+limitedcc76extrapolation1_SOURCES = limitedcc76extrapolation1.cc
 
 mapspacedims1_SOURCES = mapspacedims1.cc
 

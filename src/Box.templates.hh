@@ -3348,13 +3348,82 @@ Box<ITV>::CC76_widening_assign(const Box& y, unsigned* tp) {
 
 template <typename ITV>
 void
+Box<ITV>::get_limiting_box(const Constraint_System& cs,
+                           Box& limiting_box) const {
+  const dimension_type space_dim = space_dimension();
+  const dimension_type cs_space_dim = cs.space_dimension();
+  // Private method: the caller has to ensure the following.
+  assert(cs_space_dim <= space_dim);
+
+  for (Constraint_System::const_iterator cs_i = cs.begin(),
+         cs_end = cs.end(); cs_i != cs_end; ++cs_i) {
+    const Constraint& c = *cs_i;
+    dimension_type c_num_vars = 0;
+    dimension_type c_only_var = 0;
+    // Constraints that are not interval constraints are ignored.
+    if (!extract_interval_constraint(c, cs_space_dim, c_num_vars, c_only_var))
+      continue;
+    // Trivial constraints are ignored.
+    if (c_num_vars != 0) {
+      // c is a non-trivial interval constraint.
+      // add interval constraint to limiting box
+      const Coefficient& n = c.inhomogeneous_term();
+      const Coefficient& d = c.coefficient(Variable(c_only_var));
+      if (interval_relation(seq[c_only_var], c.type(), n, d)
+          == Poly_Con_Relation::is_included())
+        limiting_box.add_interval_constraint_no_check(c_only_var, c.type(),
+                                                      n, d);
+    }
+  }
+}
+
+template <typename ITV>
+void
 Box<ITV>::limited_CC76_extrapolation_assign(const Box& y,
                                             const Constraint_System& cs,
                                             unsigned* tp) {
-  // FIXME(0.10.1): should take into account cs.
-  used(cs);
   Box& x = *this;
+  const dimension_type space_dim = x.space_dimension();
+
+  // Dimension-compatibility check.
+  if (space_dim != y.space_dimension())
+    throw_dimension_incompatible("limited_CC76_extrapolation_assign(y, cs)",
+                                 y);
+  // `cs' must be dimension-compatible with the two octagons.
+  const dimension_type cs_space_dim = cs.space_dimension();
+  if (space_dim < cs_space_dim)
+    throw_constraint_incompatible("limited_CC76_extrapolation_assign(y, cs)");
+
+  // The limited CC76-extrapolation between two boxes in a
+  // zero-dimensional space is also a zero-dimensional box
+  if (space_dim == 0)
+    return;
+
+#ifndef NDEBUG
+  {
+    // We assume that `y' is contained in or equal to `*this'.
+    const Box x_copy = *this;
+    const Box y_copy = y;
+    assert(x_copy.contains(y_copy));
+  }
+#endif
+
+  // If `*this' is empty, since `*this' contains `y', `y' is empty too.
+  if (marked_empty())
+    return;
+  // If `y' is empty, we return.
+  if (y.marked_empty())
+    return;
+
+  // Build a limiting box using all the constraints in cs
+  // that are satisfied by *this.
+  Box limiting_box(space_dim, UNIVERSE);
+  get_limiting_box(cs, limiting_box);
+
   x.CC76_widening_assign(y, tp);
+
+  // Intersect the widened box with the limiting box.
+  intersection_assign(limiting_box);
 }
 
 template <typename ITV>

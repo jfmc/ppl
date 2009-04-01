@@ -1936,6 +1936,13 @@ private:
 	       bool maximize,
 	       Coefficient& ext_n, Coefficient& ext_d, bool& included) const;
 
+  /*! \brief
+    Adds to \p limiting_box the interval constraints in \p cs
+    that are satisfied by \p *this.
+  */
+  void get_limiting_box(const Constraint_System& cs,
+                        Box& limiting_box) const;
+
   //! \name Exception Throwers
   //@{
   void throw_dimension_incompatible(const char* method,
