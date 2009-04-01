@@ -43,7 +43,7 @@ OR_Matrix<T>::row_first_element_index(const dimension_type k) {
 template <typename T>
 inline dimension_type
 OR_Matrix<T>::row_size(const dimension_type k) {
-  return (k+2) & ~dimension_type(1);
+  return k + 2 - k%2;
 }
 
 #if PPL_OR_MATRIX_EXTRA_DEBUG
@@ -250,7 +250,7 @@ OR_Matrix<T>::any_row_iterator<U>::operator+=(const difference_type m) {
   i += increment;
   value.first += increment;
 #if PPL_OR_MATRIX_EXTRA_DEBUG
-  value.size_ += (m - m % 2);
+  value.size_ += (m - m%2);
 #endif
   return *this;
 }
@@ -337,7 +337,7 @@ template <typename T>
 template <typename U>
 inline dimension_type
 OR_Matrix<T>::any_row_iterator<U>::row_size() const {
-  return (e+2) & ~dimension_type(1);
+  return OR_Matrix::row_size(e);
 }
 
 template <typename T>
@@ -421,11 +421,10 @@ isqrt(unsigned long x) {
 template <typename T>
 inline dimension_type
 OR_Matrix<T>::max_num_rows() {
-  // Compute the maximum number of rows that
-  // are contained in a DB_Row that allocates
-  // a pseudo-triangular matrix.
+  // Compute the maximum number of rows that are contained in a DB_Row
+  // that allocates a pseudo-triangular matrix.
   dimension_type k = isqrt(2*DB_Row<T>::max_size() + 1);
-  return (k-1) & ~dimension_type(1);
+  return (k - 1) - (k - 1)%2;
 }
 
 template <typename T>
