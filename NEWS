@@ -38,6 +38,11 @@ o  The C interface now provides functions of the form
    print `x' to a malloc-allocated string, a pointer to which is returned
    via `strp'.
 
+o  The OCaml interface now supports timeout computation facilities through
+   functions ppl_set_timeout and ppl_reset_timeout. Moreover, new functions
+   ppl_Coefficient_is_bounded, ppl_Coefficient_min, ppl_Coefficient_max
+   and ppl_max_space_dimension have been added.
+
 
 Bugfixes
 ========
@@ -97,6 +102,8 @@ o  Fixed a bug in the OCaml interface, whereby functions of form
 
 o  Fixed a bug in the OCaml interface, whereby functions that returned
    an OCaml 'unit' type were returning the wrong value.
+
+o  Fixed several garbage collection related bugs in the OCaml interface.
 
 
 --------------------------------------------------------------------------
