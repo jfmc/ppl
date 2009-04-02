@@ -134,7 +134,7 @@ test1_opt_SOURCES = test1.ml
 test1_opt$(EXEEXT): test1.cmx ../ppl_ocaml.cmxa
 	$(OCAMLOPT_ENV) ocamlopt -o $@ \
 		-cc "$(CXX)" $(OCAMLOPT_COMPILE_FLAGS) \
-		$(BUILT_PPL_FLAGS) $(BUILT_PWL_FLAGS) $(OCAMLC_LINK_FLAGS) \
+		$(BUILT_PPL_FLAGS) $(BUILT_PWL_FLAGS) $(OCAMLOPT_LINK_FLAGS) \
 		ppl_ocaml.cmxa $<
 
 
@@ -159,7 +159,7 @@ ppl_ocaml_generated_test_opt$(EXEEXT): \
 ppl_ocaml_generated_test.cmx ../ppl_ocaml.cmxa
 	$(OCAMLOPT_ENV) ocamlopt -o $@ \
 		-cc "$(CXX)" $(OCAMLOPT_COMPILE_FLAGS) \
-		$(BUILT_PPL_FLAGS) $(BUILT_PWL_FLAGS) $(OCAMLC_LINK_FLAGS) \
+		$(BUILT_PPL_FLAGS) $(BUILT_PWL_FLAGS) $(OCAMLOPT_LINK_FLAGS) \
 		ppl_ocaml.cmxa $<
 
 MOSTLYCLEANFILES = \

@@ -1041,10 +1041,10 @@ $(srcdir)/../interfaces/OCaml/ppl_ocaml_common.inlines.hh \
 $(srcdir)/gpl.dox $(srcdir)/fdl.dox
 
 OCAMLDOC_HTML_OPTIONS = \
--I +gmp -I $(top_builddir)/interfaces/OCaml -html
+-I @mlgmp_dir@ -I $(top_builddir)/interfaces/OCaml -html
 
 OCAMLDOC_LATEX_OPTIONS = \
--I +gmp -I $(top_builddir)/interfaces/OCaml \
+-I @mlgmp_dir@ -I $(top_builddir)/interfaces/OCaml \
 -latex -noheader -notrailer -notoc
 
 user-ocaml-interface.latex-dir: \
