@@ -257,9 +257,10 @@ pl_check_test: gnu_pl_check.pl ../tests/pl_check.pl $(EXPECTED_PCHK)
 		./ppl_gprolog <script_pchk
 	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
 
-clpq_test: gp_clpq ../tests/script_clpq $(EXPECTED_CLPQ)
-	LANG=C; \
-	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
+$(CLPQ_TESTS):
+	cp -f $(srcdir)/../tests/$@ .
+
+clpq_test: gp_clpq ../tests/script_clpq $(EXPECTED_CLPQ) $(CLPQ_TESTS)
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		$(WATCHDOG_DLOPEN) \
@@ -267,9 +268,7 @@ clpq_test: gp_clpq ../tests/script_clpq $(EXPECTED_CLPQ)
 		./gp_clpq <$(SCRIPT_CLPQ) >obtained_clpq
 	diff -u --ignore-all-space $(EXPECTED_CLPQ) obtained_clpq
 
-clpq2_test: gp_clpq2 ../tests/script_clpq2 $(EXPECTED_CLPQ2)
-	LANG=C; \
-	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
+clpq2_test: gp_clpq2 ../tests/script_clpq2 $(EXPECTED_CLPQ2) $(CLPQ_TESTS)
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		$(WATCHDOG_DLOPEN) \
