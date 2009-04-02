@@ -23,7 +23,6 @@ dnl site: http://www.cs.unipr.it/ppl/ .
 AC_DEFUN([AC_CXX_DOUBLE_BINARY_FORMAT],
 [
 AC_REQUIRE([AC_C_BIGENDIAN])
-AC_REQUIRE([AC_CHECK_FPU_CONTROL])
 ac_save_CPPFLAGS="$CPPFLAGS"
 ac_save_LIBS="$LIBS"
 AC_LANG_PUSH(C++)
