@@ -1939,6 +1939,8 @@ Box<ITV>::refine_no_check(const Constraint& c) {
   dimension_type c_num_vars = 0;
   dimension_type c_only_var = 0;
   // Non-interval constraints are ignored.
+  // FIXME: instead of ignoring, safely use propagate_no_check()
+  // (i.e., ensuring that no termination problem can arise).
   if (!extract_interval_constraint(c, c_space_dim, c_num_vars, c_only_var))
     return;
 
@@ -1947,7 +1949,7 @@ Box<ITV>::refine_no_check(const Constraint& c) {
     // Dealing with a trivial constraint.
     if (n < 0
         || (c.is_equality() && n != 0)
-	|| (c.is_strict_inequality() && n == 0))
+        || (c.is_strict_inequality() && n == 0))
       set_empty();
     return;
   }
