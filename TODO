@@ -2,7 +2,7 @@
 Enhancements for PPL 0.10.1 or later versions
 =============================================
 
-- Fix all the FIXME(0.10.1).
+- Update the NEWS file.
 
 
 Enhancements for PPL 0.11
@@ -36,6 +36,9 @@ Enhancements for PPL 0.11
 - Use the OCaml-Autoconf macros: https://forge.ocamlcore.org/frs/?group_id=69
   (see also
   http://rwmj.wordpress.com/2009/03/31/using-autoconf-for-ocaml-projects/).
+- Fix the methods Box<ITV>::refine_with_constraint/s so that they perform
+  a safe (i.e., always terminating) propagation instead of ignoring the
+  non-interval constraints.
 
 
 Enhancements for PPL 0.11 or later versions
