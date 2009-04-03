@@ -204,13 +204,15 @@ test06() {
 
   print_constraints(box1, "*** box1(cs) ***");
 
-  box1.difference_assign(box1);
+  TBox box1_copy(box1);
 
-  print_constraints(box1, "*** box1.difference_assign(box1) ***");
+  box1.difference_assign(box1_copy);
 
-  box1.concatenate_assign(box1);
+  print_constraints(box1, "*** box1.difference_assign(box1_copy) ***");
 
-  print_constraints(box1, "*** box1.concatenate_assign(box1) ***");
+  box1.concatenate_assign(box1_copy);
+
+  print_constraints(box1, "*** box1.concatenate_assign(box1_copy) ***");
 
   nout << "box1.space_dimension() = " << box1.space_dimension() << endl;
 
