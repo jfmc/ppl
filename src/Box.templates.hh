@@ -505,12 +505,9 @@ Box<ITV>::add_space_dimensions_and_embed(const dimension_type m) {
   // Adding no dimensions is a no-op.
   if (m == 0)
     return;
-
   // To embed an n-dimension space box in a (n+m)-dimension space,
   // we just add `m' new universe elements to the sequence.
-  seq.insert(seq.end(), m, ITV());
-  for (dimension_type sz = seq.size(), i = sz - m; i < sz; ++i)
-    seq[i].assign(UNIVERSE);
+  seq.insert(seq.end(), m, ITV(UNIVERSE));
   assert(OK());
 }
 
@@ -520,12 +517,8 @@ Box<ITV>::add_space_dimensions_and_project(const dimension_type m) {
   // Adding no dimensions is a no-op.
   if (m == 0)
     return;
-
-  // A add `m' new zero elements to the sequence.
-  seq.insert(seq.end(), m, ITV());
-  for (dimension_type sz = seq.size(), i = sz - m; i < sz; ++i)
-    seq[i].assign(0);
-
+  // Add `m' new zero elements to the sequence.
+  seq.insert(seq.end(), m, ITV(0));
   assert(OK());
 }
 
@@ -1491,7 +1484,7 @@ Box<ITV>::concatenate_assign(const Box& y) {
   // If `x' is marked empty, then it is sufficient to adjust
   // the dimension of the vector space.
   if (x.marked_empty()) {
-    x.seq.insert(x.seq.end(), y_space_dim, ITV());
+    x.seq.insert(x.seq.end(), y_space_dim, ITV(EMPTY));
     assert(x.OK());
     return;
   }
