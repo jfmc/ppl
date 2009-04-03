@@ -3352,10 +3352,9 @@ template <typename ITV>
 void
 Box<ITV>::get_limiting_box(const Constraint_System& cs,
                            Box& limiting_box) const {
-  const dimension_type space_dim = space_dimension();
   const dimension_type cs_space_dim = cs.space_dimension();
   // Private method: the caller has to ensure the following.
-  assert(cs_space_dim <= space_dim);
+  assert(cs_space_dim <= space_dimension());
 
   for (Constraint_System::const_iterator cs_i = cs.begin(),
          cs_end = cs.end(); cs_i != cs_end; ++cs_i) {
