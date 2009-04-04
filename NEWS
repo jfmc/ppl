@@ -4,44 +4,53 @@ Parma Polyhedra Library NEWS -- history of user-visible changes
 
 
 --------------------------------------------------------------------------
-NEWS for version 0.10.1  (released date to be decided)
+NEWS for version 0.10.1  (released on April 14, 2009)
 --------------------------------------------------------------------------
 
 New and Changed Features
 ========================
 
-o  Some packaging issues have been fixed.
-
-o  Robustness improved.
-
 o  Added support for cross compilation.
-
-o  New macro PPL_DIRTY_TEMP_COEFFICIENT allows users of the C++ interface
-   to decrease memory allocation overhead and to improve locality whenever
-   they need a temporary variable of type `Coefficient'.
-
-o  The OCaml interface can now be compiled to native code using ocamlopt.
-
-o  New configuration option `--with-mlgmp=DIR' allows to specify the
-   installation directory of the ML GMP package.
 
 o  The configuration script now explicitly checks that a recent enough
    version of GNU M4 is available if at least one non-C++ interface is
    enabled (in previous versions this check was not performed and
    building the library could fail in a mysterious way).
 
+o  Robustness improved.
+
+o  Some packaging issues have been fixed.
+
+o  New macro PPL_DIRTY_TEMP_COEFFICIENT allows users of the C++
+   interface to decrease memory allocation overhead and to improve
+   locality whenever they need a temporary variable of type
+   `Coefficient'.
+
+o  The C++, C, Java and OCaml interfaces now provide utility functions
+   to format the textual representations of constraints, congruences
+   and so on.  This makes it easy to code debugging prints with line
+   indentation and wrapping.
+
 o  The C interface now provides functions of the form
 
      int ppl_io_asprint_Polyhedron(char** strp, P x)
 
-   where `P' is any opaque pointer to a const PPL object. These functions
-   print `x' to a malloc-allocated string, a pointer to which is returned
-   via `strp'.
+   where `P' is any opaque pointer to a const PPL object. These
+   functions print `x' to a malloc-allocated string, a pointer to
+   which is returned via `strp'.
 
-o  The OCaml interface now supports timeout computation facilities through
-   functions ppl_set_timeout and ppl_reset_timeout. Moreover, new functions
-   ppl_Coefficient_is_bounded, ppl_Coefficient_min, ppl_Coefficient_max
-   and ppl_max_space_dimension have been added.
+o  The OCaml interface can now be compiled to native code using ocamlopt.
+
+o  New configuration option `--with-mlgmp=DIR' allows to specify the
+   installation directory of the ML GMP package.
+
+o  The OCaml interface now supports timeout computation facilities
+   through functions ppl_set_timeout and ppl_reset_timeout.  Moreover,
+   new functions ppl_Coefficient_is_bounded, ppl_Coefficient_min,
+   ppl_Coefficient_max and ppl_max_space_dimension have been added.
+
+o  The Prolog interfaces are no longer enabled by default in the
+   release tarballs (they are enabled by default in the Git versions).
 
 
 Bugfixes
