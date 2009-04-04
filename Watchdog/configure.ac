@@ -23,7 +23,7 @@
 # Process this file with Autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Watchdog Library],[0.5],[bagnara@cs.unipr.it],[pwl])
+AC_INIT([the Parma Watchdog Library],[0.7],[bagnara@cs.unipr.it],[pwl])
 
 # Minimum Autoconf version required.
 AC_PREREQ(2.61)
