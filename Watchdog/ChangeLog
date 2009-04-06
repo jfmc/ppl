@@ -1,3 +1,35 @@
+2009-04-04  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/NEWS, Watchdog/README, Watchdog/configure.ac,
+	Watchdog/src/Makefile.am: Updated for PWL 0.7.
+
+2009-03-30  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/configure.ac, configure.ac: Version number bumped.  The
+	name of the program is Autoconf.
+
+2009-03-30  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* TODO, Watchdog/src/Watchdog.defs.hh: Moved TODO items to their
+	place.
+
+2009-03-30  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* Watchdog/src/Watchdog.defs.hh,
+	interfaces/OCaml/ppl_ocaml_common.cc,
+	interfaces/OCaml/ppl_ocaml_common.defs.hh,
+	interfaces/OCaml/ppl_ocaml_globals.ml,
+	interfaces/OCaml/ppl_ocaml_globals.mli,
+	interfaces/Prolog/ppl_prolog_common.cc: Added timeout functions to
+	the OCaml interface.  Also removed duplicate CATCH_ALL macro
+	definitions in the Prolog and OCaml interfaces.
+
+2009-03-28  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog, ChangeLog-2001-2008, ChangeLog_2001-2008,
+	Watchdog/ChangeLog, Watchdog/ChangeLog-2001-2008,
+	Watchdog/ChangeLog_2001-2008: Change logs updated.
+
 2009-03-28  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* Watchdog/configure.ac, configure.ac: Improved the semantics of the
