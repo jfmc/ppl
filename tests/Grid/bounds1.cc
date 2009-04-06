@@ -1,5 +1,5 @@
 /* Test Grid::bounds_from_above() and Grid::bounds_from_below().
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -422,6 +422,22 @@ test13() {
   return false;
 }
 
+// The generator system is up-to-date but not minimized.
+bool
+test14() {
+  Variable A(0);
+
+  Grid gr(1, EMPTY);
+  gr.add_grid_generator(grid_point(A));
+  gr.add_grid_generator(grid_point(A, 2));
+  print_generators(gr, "*** gr generators before ***");
+
+  bool ok = !gr.bounds_from_above(A) && !gr.bounds_from_below(A);
+  print_generators(gr, "*** gr generators after ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -438,4 +454,5 @@ BEGIN_MAIN
   DO_TEST(test11);
   DO_TEST(test12);
   DO_TEST(test13);
+  DO_TEST(test14);
 END_MAIN

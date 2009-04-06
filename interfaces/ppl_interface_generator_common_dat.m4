@@ -5,7 +5,7 @@ dnl - processing the class list in ppl_interface_instantiations.m4;
 dnl - the control of the procedures to be generated for each class;
 dnl - the replacements for the patterns in the code files.
 
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -54,7 +54,6 @@ dnl generated for any one file.
 m4_define(`m4_init_class_definitions', `dnl
 m4_init_interface_classes(m4_interface_classes_names)`'dnl
 m4_init_cplusplus_classes(m4_cplusplus_classes_names)`'dnl
-m4_define(`m4_class_definitions_initialized', `true')`'dnl
 ')
 dnl ---------------------------------------------------------------------
 dnl =====  any extra macros needed for both interfaces and          =====
@@ -118,7 +117,7 @@ dnl m4_init_cplusplus_classes(Class_List)
 dnl
 dnl Parses the "@"-separated list of class names Class_List
 dnl to be used in the C++ code implementing the interface procedures.
-dnl Note that first the "," is replaced by "COMMA" using the macro
+dnl Note that first the "," is replaced by |COMMA| using the macro
 dnl m4_subst_comma because the ',' in the product class is wrongly
 dnl parsed by m4.
 dnl First all the macros m4_cplusplus_class`'Class_Counter
@@ -140,7 +139,7 @@ dnl provided by the configuration.
 dnl As the product classes have their arguments ","-separated,
 dnl the "," separates the list into macro arguments.
 dnl This macro iterates through these macro arguments, replacing the
-dnl "," by "COMMA" so that the C++ names are handled as intended.
+dnl "," by |COMMA| so that the C++ names are handled as intended.
 m4_define(`m4_subst_comma',
 `m4_ifelse($#, 0, , $#, 1, $1,
   `$1`'COMMA`'m4_subst_comma(m4_shift($@))')')
@@ -152,13 +151,13 @@ dnl Class_List    - is a tail part of the input list of cplusplus
 dnl                 class names.
 dnl The macro calls m4_init_cplusplus_names to define the
 dnl cplusplus names (which calls this macro recursively).
-dnl The COMMA pattern is revised to @COMMA@ as soon as a class name
+dnl The COMMA pattern is revised to |COMMA| as soon as a class name
 dnl has been separated from the @-separated list of classes.
 m4_define(`m4_init_cplusplus_classes_aux', `dnl
 m4_ifelse($2, `',  `',
   m4_regexp(`$2', `\([^@]+\)@?\(.*\)',
     `m4_init_cplusplus_names(`$1',
-      m4_patsubst(\1, COMMA, @COMMA@), `\2')'))`'dnl
+      m4_patsubst(\1, COMMA, |COMMA|), `\2')'))`'dnl
 ')
 
 dnl m4_init_cplusplus_names(Class_Counter, Class, Class_List)
@@ -220,11 +219,11 @@ dnl and "2nd" component:
 dnl Thus for Direct_Product<Grid,BD_Shape<long> > with Class_Counter = 5
 dnl and interface names Product_BD_Shape_long
 dnl with Grid and BD_Shape_long for the components:
-dnl m4_cplusplus_class5 = Direct_Product<Grid@COMMA@BD_Shape<long> >
+dnl m4_cplusplus_class5 = Direct_Product<Grid|COMMA|BD_Shape<long> >
 dnl m4_interface_class5 = Direct_Product_Grid_BD_Shape_long
 dnl m4_class_kind5 = Direct_Product
 dnl m4_class_group5 = product
-dnl m4_class_body5 = Grid@COMMA@BD_Shape<long>
+dnl m4_class_body5 = Grid|COMMA|BD_Shape<long>
 dnl m4_class_body_1st5 = Grid
 dnl m4_cplusplus_class_body_1st5 = Grid
 dnl m4_interface_class_body_1st5 = Grid
@@ -369,9 +368,9 @@ dnl                 determines the precise component it refers to.
 dnl
 m4_define(`m4_parse_body_for_product', `dnl
 m4_define(`m4_$2_body_1st$1',
-  `m4_regexp(m4_$2_body$1, `\([^@]*\).*', `\1')')`'dnl
+  `m4_regexp(m4_$2_body$1, `\([^|]*\).*', `\1')')`'dnl
 m4_define(`m4_$2_body_2nd$1',
-  `m4_regexp(m4_$2_body$1, `\([^@]*\)@COMMA@\(.*\)', `\2')')`'dnl
+  `m4_regexp(m4_$2_body$1, `\([^@]*\)|COMMA|\(.*\)', `\2')')`'dnl
 m4_define(`m4_interface_$2_body_1st$1',
   m4_interface_class`'m4_get_class_counter(m4_$2_body_1st$1))`'dnl
 m4_define(`m4_cplusplus_$2_body_1st$1', m4_$2_body_1st$1)`'dnl
@@ -496,48 +495,43 @@ dnl m4_pattern_list
 dnl
 dnl Returns a list of patterns (in lowercase) used for the generation
 dnl of procedure names and code schemas.
+dnl This is no longer used as a macro but is a list of all patterns.
 m4_define(`m4_pattern_list', `dnl
 class,
-cpp_class,
-cppdef_class,
-friend,
-intopology,
 topology,
-classtopology,
-cpp_disjunct,
-disjunct,
+friend,
 build_represent,
-get_represent,
-refine_represent,
-relation_represent,
-add_represent,
-superclass,
-recycle,
 dimension,
-generator,
-partition,
-point,
-constrainer,
+relation_represent,
+class_represent,
 has_property,
 simplify,
 abovebelow,
 maxmin,
-embedproject,
-affimage,
 comparison,
+refine_represent,
 binop,
 binminop,
 ub_exact,
-disjunct_extrapolation,
-disjunct_widen,
-widenexpn,
+affimage,
+embedproject,
+membytes,
 widen,
-extrapolation,
-narrow,
 limitedbounded,
-incdec,
+widenexpn,
+extrapolation,
 beginend,
-membytes')
+incdec,
+partition,
+disjunct_widen,
+recycle,
+cpp_class,
+generator,
+point,
+constrainer,
+disjunct,
+disjunct_topology,
+disjunct_extrapolation')
 
 dnl ---------------------------------------------------------------------
 dnl Define the replacement macros for all patterns
@@ -547,7 +541,7 @@ dnl m4_class_pattern_replacement(Class_Counter, Pattern, Replacement_Id)
 dnl
 dnl Class_Counter:  counter of class for which we want the replacements.
 dnl Pattern:        pattern to be replaced (lower-case);
-dnl Replacement_Id: Can be the empty string, `_alt' or `_cppx'
+dnl Replacement_Id: Can be the empty string, `a_' or `b_'
 dnl                 depending on the required group of replacements.
 dnl
 dnl To find any sequence of replacements the macro
@@ -555,12 +549,13 @@ dnl "m4_replace_one_pattern_in_string"
 dnl defined in "m4_interface_generators_common.m4"
 dnl calls this macro.
 dnl
-m4_define(`m4_class_pattern_replacement', `dnl
-  m4_ifdef(m4_`'m4_class_kind$1`'_$2$3_replacement,
-    m4_`'m4_class_kind$1`'_$2$3_replacement($1),
-    `m4_ifdef(m4_`'m4_class_group$1`'_$2$3_replacement,
-       m4_`'m4_class_group$1`'_$2$3_replacement($1),
-       `m4_$2$3_replacement($1)')')`'dnl
+m4_define(`m4_class_pattern_replacements', `dnl
+  m4_ifdef(m4_`'m4_class_kind$1`'_$3$2_replacements,
+    m4_`'m4_class_kind$1`'_$3$2_replacements($1),
+    `m4_ifdef(m4_`'m4_class_group$1`'_$3$2_replacements,
+       m4_`'m4_class_group$1`'_$3$2_replacements($1),
+       `m4_ifdef(`m4_$3$2_replacements',
+          `m4_$3$2_replacements($1)')')')`'dnl
 ')
 
 dnl =====================================================================
@@ -573,24 +568,25 @@ dnl The class being generated
 dnl ---------------------------------------------------------------------
 
 dnl The interface class name.
-m4_define(`m4_class_replacement', m4_interface_class`'$1)
+m4_define(`m4_class_replacements', m4_interface_class`'$1)
 
 dnl The cplusplus name.
-m4_define(`m4_cpp_class_replacement', m4_cplusplus_class`'$1)
+m4_define(`m4_cpp_class_replacements', m4_cplusplus_class`'$1)
 
 dnl The product full cplusplus name.
-m4_define(`m4_product_cpp_class_replacement',
-     Domain_Product<`'m4_cplusplus_class_body_1st$1@COMMA@`'m4_cplusplus_class_body_2nd$1 >::`'m4_class_kind$1)
+m4_define(`m4_product_cpp_class_replacements',
+     Domain_Product<`'m4_class_body_1st$1|COMMA|`'m4_class_body_2nd$1 >::`'m4_class_kind$1)
 
 dnl The defined cplusplus name (the default is as before).
-m4_define(`m4_cppdef_class_replacement', m4_cplusplus_class`'$1)
+dnl This is only used in the C interface.
+m4_define(`m4_cppdef_class_replacements', m4_cplusplus_class`'$1)
 
 dnl The defined product cplusplus name.
-m4_define(`m4_product_cppdef_class_replacement',
+m4_define(`m4_product_cppdef_class_replacements',
 m4_interface_class`'$1)
 
 dnl The defined box cplusplus name.
-m4_define(`m4_box_cppdef_class_replacement',
+m4_define(`m4_box_cppdef_class_replacements',
 m4_interface_class`'$1)
 
 dnl ---------------------------------------------------------------------
@@ -602,21 +598,21 @@ dnl ---------------------------------------------------------------------
 dnl The friend class name.
 dnl There is the interface name as default friend,
 dnl the interface name but where "Polyhedron" does not include
-dnl the topology (alt_friend), and the C++ name (cppx_friend).
+dnl the topology (a_friend), and the C++ name (b_friend).
 dnl
 dnl To allow for other classes to be friends,
 dnl we cannot just take a predefined list of friends as some
 dnl may not be instantiated and available.
-m4_define(`m4_friend_replacement', `m4_all_friends(interface)')
+m4_define(`m4_friend_replacements', `m4_all_friends(interface)')
 
-m4_define(`m4_friend_alt_replacement', `dnl
+m4_define(`m4_a_friend_replacements', `dnl
 m4_all_friends(interface, no_topology)`'dnl
 ')
 
-m4_define(`m4_friend_cppx_replacement',`m4_all_friends(cplusplus)')
+m4_define(`m4_b_friend_replacements',`m4_all_friends(cplusplus)')
 
 m4_define(`m4_all_friends', `dnl
-m4_patsubst(m4_all_friends_aux($1, $2), `@COMMA@', `, ')`'dnl
+m4_patsubst(m4_all_friends_aux($1, $2), `|COMMA|', `, ')`'dnl
 ')
 m4_define(`m4_all_friends_aux', `dnl
 m4_forloop(m4_ind, 1, m4_num_classes, `dnl
@@ -625,14 +621,14 @@ m4_echo_unquoted(m4_class_group`'m4_ind), product, , `dnl
 m4_define(`m4_friend_class', m4_`'$1`'_class`'m4_ind)`'dnl
 m4_ifelse(m4_friend_class, Polyhedron,
           `m4_ifelse($2, `',
-          `m4_one_friend(C_`'m4_friend_class@COMMA@NNC_`'m4_friend_class)',
-          `m4_one_friend(m4_friend_class@COMMA@m4_friend_class)')',
+          `m4_one_friend(C_`'m4_friend_class|COMMA|NNC_`'m4_friend_class)',
+          `m4_one_friend(m4_friend_class|COMMA|m4_friend_class)')',
           `m4_one_friend(m4_friend_class)')`'dnl
 m4_undefine(`m4_friend_class')')')`'dnl
 ')
 
 m4_define(`m4_one_friend', `dnl
-m4_ifelse(m4_ind, 1, `$1', @COMMA@`'$1)`'dnl
+m4_ifelse(m4_ind, 1, `$1', |COMMA|`'$1)`'dnl
 ')
 
 dnl For Pointset_Powerset class kind, if the body is C_Polyhedron
@@ -640,19 +636,19 @@ dnl or NNC_Polyhedron, and Polyhedron is generated, then C_Polyhedron
 dnl (if the body is C_Polyhedron) or NNC_Polyhedron
 dnl (if the body is NNC_Polyhedron) is a friend.
 dnl
-m4_define(`m4_Pointset_Powerset_friend_replacement', `dnl
+m4_define(`m4_Pointset_Powerset_friend_replacements', `dnl
 dnl
 m4_interface_class$1,
 m4_get_class_topology(m4_cplusplus_class_body$1)`'dnl
 m4_interface_class_body$1`'dnl
 ')
 
-m4_define(`m4_Pointset_Powerset_friend_alt_replacement', `dnl
+m4_define(`m4_Pointset_Powerset_a_friend_replacements', `dnl
 dnl
 m4_interface_class$1, m4_interface_class_body$1`'dnl
 ')
 
-m4_define(`m4_Pointset_Powerset_friend_cppx_replacement', `dnl
+m4_define(`m4_Pointset_Powerset_b_friend_replacements', `dnl
 dnl
 m4_cplusplus_class$1, m4_cplusplus_class_body$1`'dnl
 ')
@@ -660,17 +656,17 @@ m4_cplusplus_class$1, m4_cplusplus_class_body$1`'dnl
 dnl For product class kinds, C_Polyhedron, NNC_Polyhedron, BD_Shape,
 dnl Octagonal_Shape and other products are all friends.
 dnl
-m4_define(`m4_product_friend_replacement',
+m4_define(`m4_product_friend_replacements',
   `m4_all_friends(interface), m4_interface_class$1`'dnl
 ')
 
-m4_define(`m4_product_friend_alt_replacement',
+m4_define(`m4_product_a_friend_replacements',
   `m4_all_friends(interface, no_topology), m4_interface_class$1`'dnl
 ')
 
-m4_define(`m4_product_friend_cppx_replacement',
+m4_define(`m4_product_b_friend_replacements',
   `m4_all_friends(cplusplus),
-     Domain_Product<`'m4_cplusplus_class_body_1st$1`'@COMMA@`'m4_cplusplus_class_body_2nd$1`' >::`'m4_class_kind$1')
+     Domain_Product<`'m4_cplusplus_class_body_1st$1`'|COMMA|`'m4_cplusplus_class_body_2nd$1`' >::`'m4_class_kind$1')
 )
 
 dnl ---------------------------------------------------------------------
@@ -679,291 +675,199 @@ dnl This is C_ or NNC_ if the class is Polyhedron and `' otherwise
 dnl ---------------------------------------------------------------------
 
 dnl The topology of the domain element. The default is the empty string.
-m4_define(`m4_topology_replacement', `')
-m4_define(`m4_Polyhedron_topology_replacement', `C_, NNC_')
-
-dnl The topology used to copy from another element of the domain
-m4_define(`m4_intopology_replacement', `')
-m4_define(`m4_Polyhedron_intopology_replacement', `C_, NNC_')
+m4_define(`m4_topology_replacements', `')
+m4_define(`m4_Polyhedron_topology_replacements', `C_, NNC_')
 
 dnl ---------------------------------------------------------------------
 dnl pattern == widen
 dnl ---------------------------------------------------------------------
 dnl The widening operators.
-m4_define(`m4_widen_replacement', `')
-m4_define(`m4_Polyhedron_widen_replacement', `BHRZ03, H79')
-m4_define(`m4_Grid_widen_replacement', `congruence, generator')
-m4_define(`m4_BD_Shape_widen_replacement', `BHMZ05, H79')
-m4_define(`m4_Octagonal_Shape_widen_replacement', `BHMZ05')
-m4_define(`m4_box_widen_replacement', `CC76')
-m4_define(`m4_Pointset_Powerset_widen_replacement', `BHZ03')
-dnl The alt_replacement defines the certificates for the widenings
-m4_define(`m4_Polyhedron_widen_alt_replacement', `BHRZ03, H79')
-m4_define(`m4_BD_Shape_widen_alt_replacement', `H79, H79')
-m4_define(`m4_Octagonal_Shape_widen_alt_replacement', `H79')
-m4_define(`m4_Grid_widen_alt_replacement', `Grid, Grid')
+m4_define(`m4_widen_replacements', `')
+m4_define(`m4_Polyhedron_widen_replacements', `BHRZ03, H79')
+m4_define(`m4_Grid_widen_replacements', `congruence, generator')
+m4_define(`m4_BD_Shape_widen_replacements', `BHMZ05, H79')
+m4_define(`m4_Octagonal_Shape_widen_replacements', `BHMZ05')
+m4_define(`m4_box_widen_replacements', `CC76')
+m4_define(`m4_Pointset_Powerset_widen_replacements', `BHZ03')
+dnl The a replacement defines the certificates for the widenings
+m4_define(`m4_Polyhedron_a_widen_replacements', `BHRZ03, H79')
+m4_define(`m4_BD_Shape_a_widen_replacements', `H79, H79')
+m4_define(`m4_Octagonal_Shape_a_widen_replacements', `H79')
+m4_define(`m4_Grid_a_widen_replacements', `Grid, Grid')
 dnl FIXME: This is not in the C++ box domain and will fail if used.
-m4_define(`m4_box_widen_alt_replacement', `CC76')
+m4_define(`m4_box_a_widen_replacements', `CC76')
 
 dnl ---------------------------------------------------------------------
 dnl pattern == extrapolation
 dnl ---------------------------------------------------------------------
-m4_define(`m4_extrapolation_replacement', `NONE')
-m4_define(`m4_BD_Shape_extrapolation_replacement',
+m4_define(`m4_extrapolation_replacements', `NONE')
+m4_define(`m4_BD_Shape_extrapolation_replacements',
   `CC76')
-m4_define(`m4_Octagonal_Shape_extrapolation_replacement',
+m4_define(`m4_Octagonal_Shape_extrapolation_replacements',
    `CC76')
 
 dnl ---------------------------------------------------------------------
 dnl pattern == widenexp
 dnl The limited/bounded extrapolation operators.
 dnl ---------------------------------------------------------------------
-m4_define(`m4_widenexpn_replacement', `m4_widen_replacement')
-m4_define(`m4_Polyhedron_widenexpn_replacement',
-  `m4_Polyhedron_widen_replacement')
-m4_define(`m4_Grid_widenexpn_replacement', `m4_Grid_widen_replacement')
-m4_define(`m4_BD_Shape_widenexpn_replacement',
-  `m4_BD_Shape_widen_replacement,
-   m4_BD_Shape_extrapolation_replacement')
-m4_define(`m4_Octagonal_Shape_widenexpn_replacement',
-   `m4_Octagonal_Shape_widen_replacement,
-    m4_Octagonal_Shape_extrapolation_replacement')
-m4_define(`m4_box_widenexpn_replacement', `m4_box_widen_replacement')
-m4_define(`m4_Pointset_Powerset_widenexpn_replacement',
-  `m4_Pointset_Powerset_widen_replacement')
+m4_define(`m4_widenexpn_replacements', `m4_widen_replacements')
+m4_define(`m4_Polyhedron_widenexpn_replacements',
+  `m4_Polyhedron_widen_replacements')
+m4_define(`m4_Grid_widenexpn_replacements', `m4_Grid_widen_replacements')
+m4_define(`m4_BD_Shape_widenexpn_replacements',
+  `m4_BD_Shape_widen_replacements,
+   m4_BD_Shape_extrapolation_replacements')
+m4_define(`m4_Octagonal_Shape_widenexpn_replacements',
+   `m4_Octagonal_Shape_widen_replacements,
+    m4_Octagonal_Shape_extrapolation_replacements')
+m4_define(`m4_box_widenexpn_replacements', `m4_box_widen_replacements')
+m4_define(`m4_Pointset_Powerset_widenexpn_replacements',
+  `m4_Pointset_Powerset_widen_replacements')
 
 dnl ---------------------------------------------------------------------
 dnl pattern == narrow
 dnl ---------------------------------------------------------------------
-m4_define(`m4_narrow_replacement', `CC76')
+m4_define(`m4_narrow_replacements', `CC76')
 
 dnl ---------------------------------------------------------------------
 dnl pattern == limitedbounded
 dnl limited/bounded are qualifiers for widening and extrapolation
 dnl operations.
 dnl ---------------------------------------------------------------------
-m4_define(`m4_limitedbounded_replacement', `limited')
-m4_define(`m4_Polyhedron_limitedbounded_replacement', `limited, bounded')
+m4_define(`m4_limitedbounded_replacements', `limited')
+m4_define(`m4_Polyhedron_limitedbounded_replacements', `limited, bounded')
 
 dnl ---------------------------------------------------------------------
 dnl pattern == dimension
 dnl ---------------------------------------------------------------------
-m4_define(`m4_dimension_replacement', `space_dimension, affine_dimension')
+m4_define(`m4_dimension_replacements', `space_dimension, affine_dimension')
 
 dnl ---------------------------------------------------------------------
 dnl pattern == generator
 dnl The different kinds of objects use to generate a class.
 dnl ---------------------------------------------------------------------
-m4_define(`m4_generator_replacement', `generator')
-m4_define(`m4_Grid_generator_replacement', `grid_generator')
+m4_define(`m4_generator_replacements', `generator')
+m4_define(`m4_Grid_generator_replacements', `grid_generator')
 
 dnl  The different kinds of points.
-m4_define(`m4_point_replacement', `point')
-m4_define(`m4_Grid_point_replacement', `grid_point')
+m4_define(`m4_point_replacements', `point')
+m4_define(`m4_Grid_point_replacements', `grid_point')
 
 dnl  The constrainer objects used to describe a class.
-m4_define(`m4_constrainer_replacement', `constraint')
-m4_define(`m4_Grid_constrainer_replacement', `congruence')
-m4_define(`m4_Pointset_Powerset_constrainer_replacement',
-  `m4_class_pattern_replacement(m4_class_body_counter$1,
+m4_define(`m4_constrainer_replacements', `constraint')
+m4_define(`m4_Grid_constrainer_replacements', `congruence')
+m4_define(`m4_Pointset_Powerset_constrainer_replacements',
+  `m4_class_pattern_replacements(m4_class_body_counter$1,
                                 constrainer, `')')
 
 dnl ---------------------------------------------------------------------
-dnl pattern == cpp_disjunct or disjunct
+dnl pattern == disjunct
 dnl The different kinds of objects that are elements of a Pointset_Powerset.
 dnl ---------------------------------------------------------------------
 
 dnl If the interface disjunct name is C_Polyhedron or NNC_Polyhedron
 dnl the topology is removed.
-m4_define(`m4_cpp_disjunct_replacement', `')
-m4_define(`m4_cpp_disjunct_replacement',
-  `m4_remove_topology(m4_cplusplus_class_body$1)')
-
-dnl If the cpp disjunct name is C_Polyhedron or NNC_Polyhedron
-dnl the topology is removed.
-m4_define(`m4_disjunct_replacement', `')
-m4_define(`m4_Pointset_Powerset_disjunct_replacement',
+m4_define(`m4_disjunct_replacements', `')
+m4_define(`m4_Pointset_Powerset_disjunct_replacements',
   `m4_remove_topology(m4_interface_class_body$1)')
 
+dnl If the cplusplus disjunct name is C_Polyhedron or NNC_Polyhedron
+dnl the topology is removed.
+m4_define(`m4_a_disjunct_replacements',
+  `m4_remove_topology(m4_cplusplus_class_body$1)')
+
+
+dnl ---------------------------------------------------------------------
+dnl pattern == disjunct_topology
+dnl The topology of the disjunct of the current class
+dnl If the class is not Pointset_Powerset, it is `'.
+dnl ---------------------------------------------------------------------
 dnl The disjunct topology replacement.
-m4_define(`m4_classtopology_replacement',
+m4_define(`m4_disjunct_topology_replacements',
   `m4_get_class_topology(m4_cplusplus_class_body$1)')
 
 dnl ---------------------------------------------------------------------
 dnl pattern == disjunct_widen
 dnl ---------------------------------------------------------------------
 
-m4_define(`m4_disjunct_widen_replacement',
-  `m4_echo_unquoted(m4_`'m4_remove_topology(m4_class_body_kind$1)`'_widen_replacement)')
+m4_define(`m4_disjunct_widen_replacements',
+  `m4_echo_unquoted(m4_`'m4_remove_topology(m4_class_body_kind$1)`'_widen_replacements)')
 
-m4_define(`m4_disjunct_widen_alt_replacement',
-  `m4_echo_unquoted(m4_`'m4_remove_topology(m4_class_body_kind$1)`'_widen_alt_replacement)')
+m4_define(`m4_a_disjunct_widen_replacements',
+  `m4_echo_unquoted(m4_`'m4_remove_topology(m4_class_body_kind$1)`'_a_widen_replacements)')
 
 dnl ---------------------------------------------------------------------
 dnl pattern == disjunct_extrapolation
 dnl ---------------------------------------------------------------------
 
-m4_define(`m4_disjunct_extrapolation_replacement',
-  `m4_echo_unquoted(m4_`'m4_remove_topology(m4_class_body_kind$1)`'_extrapolation_replacement)')
+m4_define(`m4_disjunct_extrapolation_replacements',
+  `m4_echo_unquoted(m4_`'m4_remove_topology(m4_class_body_kind$1)`'_extrapolation_replacements)')
 
-m4_define(`m4_disjunct_extrapolation_alt_replacement',
-  `m4_echo_unquoted(m4_`'m4_remove_topology(m4_class_body_kind$1)`'_extrapolation_alt_replacement)')
+m4_define(`m4_a_disjunct_extrapolation_replacements',
+  `m4_echo_unquoted(m4_`'m4_remove_topology(m4_class_body_kind$1)`'_a_extrapolation_replacements)')
 
-
-dnl ---------------------------------------------------------------------
-dnl pattern == build_represent
-dnl  The different kinds of objects that can build a class.
-dnl ---------------------------------------------------------------------
-
-m4_define(`m4_build_represent_replacement',
-         `constraint, congruence, generator')
-m4_define(`m4_Grid_build_represent_replacement',
-         `constraint, grid_generator, congruence')
-m4_define(`m4_Pointset_Powerset_build_represent_replacement',
-         `constraint, congruence')
-m4_define(`m4_product_build_represent_replacement',
-         `constraint, congruence')
-
-dnl  The different kinds of alternative objects that can build
-dnl  the same class.
-dnl  At the moment, this is just used for the test data generator.
-m4_define(`m4_build_represent_alt_replacement',
-          `generator, congruence, constraint')
-m4_define(`m4_Grid_build_represent_alt_replacement',
-         `constraint, congruence, grid_generator')
-m4_define(`m4_Pointset_Powerset_build_represent_alt_replacement',
-         `constraint, congruence')
-m4_define(`m4_product_build_represent_alt_replacement',
-         `constraint, congruence')
 
 dnl ---------------------------------------------------------------------
 dnl pattern == relation_represent
 dnl  The different kinds of objects that can have a relation with a class.
 dnl ---------------------------------------------------------------------
 
-m4_define(`m4_relation_represent_replacement',
+m4_define(`m4_relation_represent_replacements',
 	`constraint, generator, congruence')
-m4_define(`m4_Grid_relation_represent_replacement',
-         `m4_relation_represent_replacement, grid_generator')
-
-m4_define(`m4_Pointset_Powerset_relation_represent_replacement', `dnl
-m4_define(`m4_1st_sequence',
-  `m4_relation_represent_replacement')`'dnl
-m4_define(`m4_2nd_sequence',
-  `m4_class_pattern_replacement(m4_class_body_counter$1,
-                                relation_represent, `')')`'dnl
-m4_define(`m4_num_of_sequences', 2)`'dnl
-m4_seq_intersection`'dnl
-m4_undefine(`m4_1st_sequence')`'dnl
-m4_undefine(`m4_2nd_sequence')`'dnl
-m4_undefine(`m4_num_of_sequences')`'dnl
-')
-
-m4_define(`m4_product_relation_represent_replacement', `dnl
-m4_define(`m4_1st_sequence',
-  `constraint, generator, congruence')`'dnl
-m4_define(`m4_2nd_sequence',
-  `m4_class_pattern_replacement(m4_class_body_1st_counter$1,
-    relation_represent, `')')`'dnl
-m4_define(`m4_3rd_sequence',
-  `m4_class_pattern_replacement(m4_class_body_2nd_counter$1,
-    relation_represent, `')')`'dnl
-m4_define(`m4_num_of_sequences', 3)`'dnl
-m4_seq_intersection`'dnl
-m4_undefine(`m4_1st_sequence')`'dnl
-m4_undefine(`m4_2nd_sequence')`'dnl
-m4_undefine(`m4_3rd_sequence')`'dnl
-m4_undefine(`m4_num_of_sequences')`'dnl
-')
+m4_define(`m4_Grid_relation_represent_replacements',
+         `m4_relation_represent_replacements, grid_generator')
 
 dnl The type of these relations with a class.
-m4_define(`m4_relation_represent_alt_replacement', `con, gen, con')
-m4_define(`m4_Grid_relation_represent_alt_replacement',
-         `con, gen, con, gen')
-
-m4_define(`m4_Pointset_Powerset_relation_represent_alt_replacement', `dnl
-m4_define(`m4_1st_sequence',
-  `m4_relation_represent_alt_replacement')`'dnl
-m4_define(`m4_2nd_sequence',
-  `m4_class_pattern_replacement(m4_class_body_counter$1,
-                                relation_represent, `_alt')')`'dnl
-m4_define(`m4_num_of_sequences', 2)`'dnl
-m4_seq_intersection`'dnl
-m4_undefine(`m4_1st_sequence')`'dnl
-m4_undefine(`m4_2nd_sequence')`'dnl
-m4_undefine(`m4_num_of_sequences')`'dnl
-')
-
-m4_define(`m4_product_relation_represent_alt_replacement', `dnl
-m4_define(`m4_1st_sequence',
-  `con, gen, con')`'dnl
-m4_define(`m4_2nd_sequence',
-  `m4_class_pattern_replacement(m4_class_body_1st_counter$1,
-    relation_represent, `_alt')')`'dnl
-m4_define(`m4_3rd_sequence',
-  `m4_class_pattern_replacement(m4_class_body_2nd_counter$1,
-    relation_represent, `_alt')')`'dnl
-m4_define(`m4_num_of_sequences', 3)`'dnl
-m4_seq_intersection`'dnl
-m4_undefine(`m4_1st_sequence')`'dnl
-m4_undefine(`m4_2nd_sequence')`'dnl
-m4_undefine(`m4_3rd_sequence')`'dnl
-m4_undefine(`m4_num_of_sequences')`'dnl
-')
+m4_define(`m4_a_relation_represent_replacements', `con, gen, con')
+m4_define(`m4_Grid_a_relation_represent_replacements',
+    `con, gen, con, gen')
 
 dnl ---------------------------------------------------------------------
-dnl pattern == add_represent
-dnl The different kinds of objects that can be added to a class.
+dnl pattern == build_represent
+dnl  The different kinds of objects that can build a class.
 dnl ---------------------------------------------------------------------
 
-m4_define(`m4_add_represent_replacement', `constraint, congruence')
-m4_define(`m4_Polyhedron_add_represent_replacement',
-         `m4_add_represent_replacement, generator')
-m4_define(`m4_Grid_add_represent_replacement',
-         `m4_add_represent_replacement, grid_generator')
-
-dnl ---------------------------------------------------------------------
-dnl pattern == get_represent
-dnl The different kinds of objects that can be obtained from a
-dnl class description.
-dnl ---------------------------------------------------------------------
-
-m4_define(`m4_get_represent_replacement', `constraint, congruence')
-m4_define(`m4_Polyhedron_get_represent_replacement',
+m4_define(`m4_build_represent_replacements',
          `constraint, congruence, generator')
-m4_define(`m4_Grid_get_represent_replacement',
+m4_define(`m4_Grid_build_represent_replacements',
          `constraint, congruence, grid_generator')
+m4_define(`m4_Pointset_Powerset_build_represent_replacements',
+         `constraint, congruence')
+m4_define(`m4_product_build_represent_replacements',
+         `constraint, congruence')
 
 dnl ---------------------------------------------------------------------
-dnl pattern == recycle_represent
-dnl The recycling argument which is only needed for the Polyhedron
-dnl or Grid class.
+dnl pattern == class_represent
+dnl The different kinds of geometric descriptors that can be added to
+dnl a class or we can get from a class.
+dnl Note that a class can be built from generators when the add and get
+dnl can only use constraints or congruences (eg BD_Shape).
 dnl ---------------------------------------------------------------------
 
-m4_define(`m4_recycle_replacement', `')
-m4_define(`m4_Polyhedron_recycle_replacement',
-         `@COMMA@ Recycle_Input()')
-m4_define(`m4_Grid_recycle_replacement',
-         `@COMMA@ Recycle_Input()')
+m4_define(`m4_class_represent_replacements', `constraint, congruence')
+m4_define(`m4_Polyhedron_class_represent_replacements',
+         `m4_class_represent_replacements, generator')
+m4_define(`m4_Grid_class_represent_replacements',
+         `m4_class_represent_replacements, grid_generator')
 
 dnl ---------------------------------------------------------------------
 dnl pattern == refine_represent
 dnl The different kinds of objects that can refine a class.
 dnl ---------------------------------------------------------------------
 
-m4_define(`m4_refine_represent_replacement', `constraint, congruence')
+m4_define(`m4_refine_represent_replacements', `constraint, congruence')
 
 dnl ---------------------------------------------------------------------
-dnl pattern == superclass
-dnl The "superclass" is the most general class for the disjunct kind.
-dnl For grids it is Grid and for all the other simple classes,
-dnl it is NNC_Polyhedron. The default is NONE.
+dnl pattern == recycle_represent
+dnl The recycling argument which is only needed for the Polyhedron
+dnl or Grid class in the C interface.
 dnl ---------------------------------------------------------------------
 
-m4_define(`m4_superclass_replacement', `NONE')
-m4_define(`m4_Pointset_Powerset_superclass_replacement',
-          `m4_ifelse(m4_echo_unquoted(m4_class_body_kind$1),
-          `Grid', `Grid', `NNC_Polyhedron')')
+m4_define(`m4_recycle_replacements', `')
+m4_define(`m4_Polyhedron_recycle_replacements',
+         `|COMMA| Recycle_Input()')
+m4_define(`m4_Grid_recycle_replacements',
+         `|COMMA| Recycle_Input()')
 
 dnl ---------------------------------------------------------------------
 dnl pattern == partition
@@ -973,14 +877,14 @@ dnl no code is generated, otherwise it is replaced by partition.
 dnl This is used for the linear_partition and approximate_partition only.
 dnl ---------------------------------------------------------------------
 
-m4_define(`m4_partition_replacement',
+m4_define(`m4_partition_replacements',
   `m4_ifelse(m4_get_interface_name_counter(`Pointset_Powerset_NNC_Polyhedron'),
              `', NONE, ``partition'')')
-m4_define(`m4_Grid_partition_replacement',
+m4_define(`m4_Grid_partition_replacements',
   `m4_ifelse(m4_get_interface_name_counter(`Pointset_Powerset_Grid'),
              `', NONE, ``partition'')')
-m4_define(`m4_Pointset_Powerset_partition_replacement', `NONE')
-m4_define(`m4_Product_partition_replacement', `NONE')
+m4_define(`m4_Pointset_Powerset_partition_replacements', `NONE')
+m4_define(`m4_Product_partition_replacements', `NONE')
 
 dnl ---------------------------------------------------------------------
 dnl pattern == has_property
@@ -989,12 +893,12 @@ dnl The check "contains_integer_point" is not available for the
 dnl product domains.
 dnl ---------------------------------------------------------------------
 
-m4_define(`m4_has_property_replacement', `is_empty, is_universe,
+m4_define(`m4_has_property_replacements', `is_empty, is_universe,
             is_bounded, contains_integer_point, is_topologically_closed,
             is_discrete')
 
 dnl For products, contains_integer_point is not yet implemented.
-m4_define(`m4_product_has_property_replacement', `dnl
+m4_define(`m4_product_has_property_replacements', `dnl
   is_empty, is_universe, is_bounded, is_topologically_closed, is_discrete')
 
 dnl ---------------------------------------------------------------------
@@ -1002,28 +906,19 @@ dnl pattern == simplify
 dnl This just groups two methods that modify a domain element.
 dnl ---------------------------------------------------------------------
 
-m4_define(`m4_simplify_replacement', `topological_closure_assign')
-m4_define(`m4_Pointset_Powerset_simplify_replacement', `dnl
-pairwise_reduce, omega_reduce,
-m4_define(`m4_1st_sequence',
-  `m4_simplify_replacement')`'dnl
-m4_define(`m4_2nd_sequence',
-  `m4_class_pattern_replacement(m4_class_body_counter$1,
-                                simplify, `')')`'dnl
-m4_define(`m4_num_of_sequences', 2)`'dnl
-m4_seq_intersection`'dnl
-m4_undefine(`m4_1st_sequence')`'dnl
-m4_undefine(`m4_2nd_sequence')`'dnl
-m4_undefine(`m4_num_of_sequences')`'dnl
+m4_define(`m4_simplify_replacements', `topological_closure_assign')
+m4_define(`m4_Pointset_Powerset_simplify_replacements', `dnl
+m4_simplify_replacements, pairwise_reduce, omega_reduce`'dnl
 ')
-m4_define(`m4_product_simplify_replacement', `dnl
+
+m4_define(`m4_product_simplify_replacements', `dnl
 m4_define(`m4_1st_sequence',
-  `m4_simplify_replacement')`'dnl
+  `m4_simplify_replacements')`'dnl
 m4_define(`m4_2nd_sequence',
-  `m4_class_pattern_replacement(m4_class_body_1st_counter$1,
+  `m4_class_pattern_replacements(m4_class_body_1st_counter$1,
     simplify, `')')`'dnl
 m4_define(`m4_3rd_sequence',
-  `m4_class_pattern_replacement(m4_class_body_2nd_counter$1,
+  `m4_class_pattern_replacements(m4_class_body_2nd_counter$1,
     simplify, `')')`'dnl
 m4_define(`m4_num_of_sequences', 3)`'dnl
 m4_seq_intersection`'dnl
@@ -1038,61 +933,61 @@ dnl pattern -- above/below
 dnl Used for the bounds_from_above and bounds_from_below methods.
 dnl ---------------------------------------------------------------------
 
-m4_define(`m4_abovebelow_replacement', `above, below')
+m4_define(`m4_abovebelow_replacements', `above, below')
 
 dnl ---------------------------------------------------------------------
 dnl pattern == maxmin
 dnl Maximize or Minimize
 dnl ---------------------------------------------------------------------
 
-m4_define(`m4_maxmin_replacement', `maximize, minimize')
+m4_define(`m4_maxmin_replacements', `maximize, minimize')
 
 dnl  Embed or project
-m4_define(`m4_embedproject_replacement', `and_embed, and_project')
+m4_define(`m4_embedproject_replacements', `and_embed, and_project')
 
 dnl  Affine_image or affine_preimage
-m4_define(`m4_affimage_replacement', `affine_image, affine_preimage')
+m4_define(`m4_affimage_replacements', `affine_image, affine_preimage')
 
 dnl  One object can be contained, strictly contained or disjoint in the other.
-m4_define(`m4_comparison_replacement',
+m4_define(`m4_comparison_replacements',
          `contains, strictly_contains, is_disjoint_from')
-m4_define(`m4_Pointset_Powerset_comparison_replacement',
-         `m4_comparison_replacement,
+m4_define(`m4_Pointset_Powerset_comparison_replacements',
+         `m4_comparison_replacements,
           geometrically_covers, geometrically_equals')
 
 dnl  The different kinds of binary operators.
-m4_define(`m4_binop_replacement',
+m4_define(`m4_binop_replacements',
          `intersection_assign, upper_bound_assign, difference_assign,
           concatenate_assign, time_elapse_assign')
-m4_define(`m4_Polyhedron_binop_replacement',
-         `m4_binop_replacement, poly_hull_assign, poly_difference_assign')
+m4_define(`m4_Polyhedron_binop_replacements',
+         `m4_binop_replacements, poly_hull_assign, poly_difference_assign')
 
 dnl  The different kinds of "and_minimize" binary operators.
-m4_define(`m4_binminop_replacement', `')
-m4_define(`m4_Polyhedron_binminop_replacement',
+m4_define(`m4_binminop_replacements', `')
+m4_define(`m4_Polyhedron_binminop_replacements',
          `intersection_assign_and_minimize,
           poly_hull_assign_and_minimize')
 
 dnl  The different kinds of "upper_bound_if_exact" binary operators.
-m4_define(`m4_ub_exact_replacement', `upper_bound_assign_if_exact')
-m4_define(`m4_Polyhedron_ub_exact_replacement',
-         `m4_ub_exact_replacement, poly_hull_assign_if_exact')
+m4_define(`m4_ub_exact_replacements', `upper_bound_assign_if_exact')
+m4_define(`m4_Polyhedron_ub_exact_replacements',
+         `m4_ub_exact_replacements, poly_hull_assign_if_exact')
 
 dnl  The iterators for the Powerset domains can increment or decrement
-m4_define(`m4_incdec_replacement', `increment, decrement')
-
-dnl  The C++ replacements for the increment/decrement operators.
-m4_define(`m4_incdec_cppx_replacement', `++, --')
+m4_define(`m4_incdec_replacements', `increment, decrement')
 
 dnl  The Java replacements for the increment/decrement operators.
-m4_define(`m4_incdec_alt_replacement', `next, prev')
+m4_define(`m4_a_incdec_replacements', `next, prev')
+
+dnl  The C++ replacements for the increment/decrement operators.
+m4_define(`m4_b_incdec_replacements', `++, --')
 
 dnl  The iterators for the Powerset domains have a begin and end iterator
-m4_define(`m4_beginend_replacement', `begin, end')
+m4_define(`m4_beginend_replacements', `begin, end')
 
 dnl  The total and external memory query methods for all the domains
 dnl  and the size query to the pointset powerset domain.
-m4_define(`m4_membytes_replacement',
+m4_define(`m4_membytes_replacements',
    `external_memory_in_bytes, total_memory_in_bytes')
-m4_define(`m4_Pointset_Powerset_membytes_replacement',
-   `m4_membytes_replacement, size')
+m4_define(`m4_Pointset_Powerset_membytes_replacements',
+   `m4_membytes_replacements, size')

@@ -1,5 +1,5 @@
 /* Grid Generator Java class declaration and implementation.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -24,6 +24,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 package parma_polyhedra_library;
 
 
+import java.io.Writer;
+import java.io.IOException;
+
 //! A grid line, parameter or grid point.
 /*! \ingroup PPL_Java_interface
   An object of the class Grid_Generator is one of the following:
@@ -31,7 +34,6 @@ package parma_polyhedra_library;
   - a parameter;
   - a grid_point.
 */
-
 public class Grid_Generator {
 
     //! The linear expression.
@@ -89,6 +91,9 @@ public class Grid_Generator {
 					    Coefficient c) {
 	return new Grid_Generator(e, c, Grid_Generator_Type.POINT);
     }
+
+    //! Returns an ascii formatted internal representation of \p this.
+    public native String ascii_dump();
 
     //! Returns a string representation of \p this.
     public native String toString();

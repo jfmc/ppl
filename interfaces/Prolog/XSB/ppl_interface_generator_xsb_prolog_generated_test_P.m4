@@ -4,7 +4,7 @@ m4_divert(-1)
 dnl This m4 file defines macros needed for generating
 dnl the XSB dependent code for xsb_prolog_generated_test.pl.
 
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -42,10 +42,9 @@ m4_include(`ppl_interface_generator_copyright')
 m4_divert(-1)
 
 m4_pushdef(`m4_one_class_code', `dnl
-m4_replace_all_patterns_in_string($1,
-                                  `#includeSPACE"../tests/ppl_prolog_generated_test_@CLASS@.pl"
-',
-                                  m4_pattern_list)`'dnl
+m4_replace_all_patterns($1,
+  `#includeSPACE"../tests/ppl_prolog_generated_test_'`'m4_interface_class$1`'`.pl"
+')`'dnl
 ')`'dnl
 dnl
 dnl -----------------------------------------------------------------
@@ -78,7 +77,7 @@ main :-
 
 :- main.
 m4_divert`'dnl
-m4_define(`m4_extension', `m4_ifelse($4, 0, , `COMMA
+m4_define(`m4_expanded_procedure_schema', `m4_ifelse($4, 0, , `COMMA
 ')	  $1/$2')dnl
 m4_patsubst(ppl_prolog_sys_code, COMMA, `,')`'dnl
 m4_undivert(1)

@@ -4,7 +4,7 @@ m4_divert(-1)
 dnl This m4 file generates the files <CLASS_NAME>.java
 dnl using the code in ppl_interface_generator_java_classes_java_code.m4.
 
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -47,6 +47,9 @@ m4_include(`ppl_interface_generator_copyright')`'dnl
 
 package parma_polyhedra_library;
 
+import java.io.Writer;
+import java.io.IOException;
+
 /*! \brief
   Java class interfacing C++ m4_this_cplusplus_class
   \ingroup PPL_java_interface
@@ -66,7 +69,6 @@ package parma_polyhedra_library;
   \ingroup PPL_java_interface
 */
 public class C_Polyhedron extends Polyhedron {
-
 %<--%<--%<-- NNC_Polyhedron.java
 /* PPL Java interface: NNC_Polyhedron definition.
 m4_include(`ppl_interface_generator_copyright')`'dnl
@@ -109,22 +111,15 @@ m4_divert(-1)
 dnl m4_post_extra_class_code(Class, CPP_Class, Class_Kind)
 dnl Postfix extra code for each class.
 m4_define(`m4_post_extra_class_code', `dnl
-m4_replace_all_patterns_in_string($1,
-  m4_class_build_cpp_object1_code,
-  m4_pattern_list)`'dnl
-m4_replace_all_patterns_in_string($1,
-  m4_class_build_cpp_object2_code,
-  m4_pattern_list)`'dnl
-m4_replace_all_patterns_in_string($1,
-  m4_class_build_cpp_object3_code,
-  m4_pattern_list)`'dnl
+m4_replace_all_patterns($1, m4_class_build_cpp_object1_code)`'dnl
+m4_replace_all_patterns($1, m4_class_build_cpp_object2_code)`'dnl
+m4_replace_all_patterns($1, m4_class_build_cpp_object3_code)`'dnl
 m4_define(`m4_this_class', `m4_interface_class$1')`'dnl
 m4_define(`m4_this_class_kind', `m4_class_kind$1')
 %<--%<--%<-- m4_this_class`'.java
 }`'dnl
 m4_ifelse(m4_this_class, Polyhedron,
   `
-
 %<--%<--%<-- C_Polyhedron.java
 }
 

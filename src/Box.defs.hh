@@ -1,5 +1,5 @@
 /* Box class declaration.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -932,8 +932,7 @@ public:
     If \c false is returned, then the intersection is empty.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p y are topology-incompatible or
-    dimension-incompatible.
+    Thrown if \p *this and \p y are dimension-incompatible.
   */
   bool simplify_using_context_assign(const Box& y);
 
@@ -1936,6 +1935,13 @@ private:
   bool max_min(const Linear_Expression& expr,
 	       bool maximize,
 	       Coefficient& ext_n, Coefficient& ext_d, bool& included) const;
+
+  /*! \brief
+    Adds to \p limiting_box the interval constraints in \p cs
+    that are satisfied by \p *this.
+  */
+  void get_limiting_box(const Constraint_System& cs,
+                        Box& limiting_box) const;
 
   //! \name Exception Throwers
   //@{

@@ -1,5 +1,5 @@
 /* Congruence_System class implementation (non-inline functions).
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -187,7 +187,7 @@ PPL::Congruence_System::normalize_moduli() {
   dimension_type row = num_rows();
   if (row > 0) {
     // Calculate the LCM of all the moduli.
-    TEMP_INTEGER(lcm);
+    PPL_DIRTY_TEMP_COEFFICIENT(lcm);
     // Find last proper congruence.
     while (true) {
       lcm = operator[](--row).modulus();
@@ -204,7 +204,7 @@ PPL::Congruence_System::normalize_moduli() {
     }
 
     // Represent every row using the LCM as the modulus.
-    TEMP_INTEGER(factor);
+    PPL_DIRTY_TEMP_COEFFICIENT(factor);
     dimension_type row_size = operator[](0).size();
     for (row = num_rows(); row-- > 0; ) {
       const Coefficient& modulus = operator[](row).modulus();
@@ -278,7 +278,7 @@ satisfies_all_congruences(const Grid_Generator& g) const {
   assert(g.space_dimension() <= space_dimension());
 
   const Congruence_System& cgs = *this;
-  TEMP_INTEGER(sp);
+  PPL_DIRTY_TEMP_COEFFICIENT(sp);
   if (g.is_line())
     for (dimension_type i = cgs.num_rows(); i-- > 0; ) {
       const Congruence& cg = cgs[i];
@@ -408,7 +408,7 @@ PPL::Congruence_System::ascii_load(std::istream& s) {
   dimension_type num_columns;
   if (!(s >> num_rows))
     return false;
-  if (!(s >> str))
+  if (!(s >> str) || str != "x")
     return false;
   if (!(s >> num_columns))
     return false;

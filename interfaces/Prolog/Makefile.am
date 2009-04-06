@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -88,7 +88,7 @@ ppl_prolog_sysindep_dox
 
 Prolog_configured_interface.dox: \
 $(interface_generator_dox_dependencies) Makefile
-	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
+	$(M4) --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_prolog_dox.m4 \
                 > Prolog_configured_interface.dox
 
@@ -111,7 +111,7 @@ ppl_interface_generator_prolog_cc_files.m4 \
 ppl_interface_generator_prolog_cc_code.m4
 
 ppl_prolog_domains.hh: $(interface_generator_dependencies)
-	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
+	$(M4) --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_prolog_hh_files.m4 \
                 > ppl_prolog_hh_blob
 	$(top_srcdir)/utils/cm_cleaner.sh < ppl_prolog_hh_blob
@@ -119,7 +119,7 @@ ppl_prolog_domains.hh: $(interface_generator_dependencies)
 	rm -f ppl_prolog_hh_blob
 
 ppl_prolog_domains.cc.stamp: $(interface_generator_dependencies)
-	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
+	$(M4) --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_prolog_cc_files.m4 \
                 > ppl_prolog_cc_blob
 	$(top_srcdir)/utils/cm_cleaner.sh < ppl_prolog_cc_blob

@@ -1,5 +1,5 @@
 /* Octagonal_Shape<T>::Status class implementation: inline functions.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -196,7 +196,7 @@ template <typename T>
 inline bool
 Octagonal_Shape<T>::Status::ascii_load(std::istream& s) {
   using namespace Implementation::Octagonal_Shapes;
-  bool positive;
+  PPL_UNINITIALIZED(bool, positive);
 
   if (!get_field(s, zero_dim_univ, positive))
     return false;

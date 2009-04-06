@@ -1,5 +1,5 @@
 /* Pointset_Powerset class implementation: non-inline functions.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -159,11 +159,11 @@ approximate_partition_aux(const PPL::Congruence& c,
   const Coefficient& c_inhomogeneous_term = c.inhomogeneous_term();
   Linear_Expression le(c);
   le -= c_inhomogeneous_term;
-  TEMP_INTEGER(n);
+  PPL_DIRTY_TEMP_COEFFICIENT(n);
   rem_assign(n, c_inhomogeneous_term, c_modulus);
   if (n < 0)
     n += c_modulus;
-  TEMP_INTEGER(i);
+  PPL_DIRTY_TEMP_COEFFICIENT(i);
   for (i = c_modulus; i-- > 0; )
     if (i != n) {
       Grid qqq(qq_copy);
@@ -302,6 +302,21 @@ PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
     x.sequence.push_back(Determinate<NNC_Polyhedron>
 			 (NNC_Polyhedron(i->element())));
   x.reduced = y.reduced;
+  assert(x.OK());
+}
+
+template <>
+template <>
+PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
+::Pointset_Powerset(const Pointset_Powerset<Grid>& y,
+                    Complexity_Class)
+  : Base(), space_dim(y.space_dimension()) {
+  Pointset_Powerset& x = *this;
+  for (Pointset_Powerset<Grid>::const_iterator i = y.begin(),
+	 y_end = y.end(); i != y_end; ++i)
+    x.sequence.push_back(Determinate<NNC_Polyhedron>
+			 (NNC_Polyhedron(i->element())));
+  x.reduced = false;
   assert(x.OK());
 }
 

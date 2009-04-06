@@ -1,5 +1,5 @@
 dnl A function to check for the existence and usability of GMP.
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -51,7 +51,7 @@ AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <iostream>
 
 #if __GNU_MP_VERSION < 4 || (__GNU_MP_VERSION == 4 && __GNU_MP_VERSION_MINOR < 1) || (__GNU_MP_VERSION == 4 && __GNU_MP_VERSION_MINOR == 1 && __GNU_MP_VERSION_PATCHLEVEL < 3)
-#error "GMP version 4.1.3 or higher is required"
+#GMP version 4.1.3 or higher is required
 #endif
 
 int
@@ -95,8 +95,22 @@ main() {
   ac_cv_have_gmp=yes,
   AC_MSG_RESULT(no)
   ac_cv_have_gmp=no,
-  AC_MSG_RESULT(no)
-  ac_cv_have_gmp=no)
+  AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+#include <gmpxx.h>
+
+#if __GNU_MP_VERSION < 4 || (__GNU_MP_VERSION == 4 && __GNU_MP_VERSION_MINOR < 1) || (__GNU_MP_VERSION == 4 && __GNU_MP_VERSION_MINOR == 1 && __GNU_MP_VERSION_PATCHLEVEL < 3)
+#GMP version 4.1.3 or higher is required
+#endif
+
+int
+main() {
+  return 0;
+}
+]])],
+    AC_MSG_RESULT(yes)
+    ac_cv_have_gmp=yes,
+    AC_MSG_RESULT(no)
+    ac_cv_have_gmp=no))
 
 have_gmp=${ac_cv_have_gmp}
 
@@ -140,7 +154,7 @@ int main() {
   ac_cv_gmp_supports_exceptions=yes,
   AC_MSG_RESULT(no)
   ac_cv_gmp_supports_exceptions=no,
-  AC_MSG_RESULT(no)
+  AC_MSG_RESULT([assuming not])
   ac_cv_gmp_supports_exceptions=no)
 
 gmp_supports_exceptions=${ac_cv_gmp_supports_exceptions}
@@ -150,7 +164,7 @@ then
 else
   value=0
 fi
-AC_DEFINE_UNQUOTED(GMP_SUPPORTS_EXCEPTIONS, $value,
+AC_DEFINE_UNQUOTED(PPL_GMP_SUPPORTS_EXCEPTIONS, $value,
   [Not zero if GMP has been compiled with support for exceptions.])
 
 fi

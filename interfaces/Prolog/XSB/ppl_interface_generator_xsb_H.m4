@@ -3,7 +3,7 @@ m4_divert(-1)
 
 dnl This m4 file generates the file ppl_xsb.H.
 
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -36,7 +36,7 @@ m4_divert(1)
 
 :- ldoption('-L../../../src/.libs -lppl -L../../../Watchdog/.libs -lpwl -lgmp -lgmpxx').
 
-m4_define(`m4_extension', `m4_ifelse($4, 0, `  $1/$2', `COMMA
+m4_define(`m4_expanded_procedure_schema', `m4_ifelse($4, 0, `  $1/$2', `COMMA
   $1/$2')')
 m4_divert(-1)
 

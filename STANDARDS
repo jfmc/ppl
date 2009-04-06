@@ -259,7 +259,7 @@ How to clean what
 Cleaning in this context means removing files from the build directory.
 In order to clean files, they must be listed in one of three variables:
 MOSTLYCLEANFILES, CLEANFILES and DISTCLEANFILES.  The rules (believed to
-have been first formulated by François Pinard) are:
+have been first formulated by Francois Pinard) are:
 
   - If `make' built the file, and it is commonly something that one would
     want to rebuild (such as an object file), then list the file in

@@ -1,5 +1,5 @@
 /* Linear_Expression class declaration.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -408,6 +408,10 @@ private:
   operator+(Coefficient_traits::const_reference n, const Linear_Expression& e);
   friend Linear_Expression
   operator+(const Linear_Expression& e, Coefficient_traits::const_reference n);
+  friend Linear_Expression
+  operator+(Variable v, const Linear_Expression& e);
+  friend Linear_Expression
+  operator+(Variable v, Variable w);
 
   friend Linear_Expression
   operator-(const Linear_Expression& e);
@@ -420,6 +424,10 @@ private:
   operator-(Coefficient_traits::const_reference n, const Linear_Expression& e);
   friend Linear_Expression
   operator-(const Linear_Expression& e, Coefficient_traits::const_reference n);
+  friend Linear_Expression
+  operator-(Variable v, const Linear_Expression& e);
+  friend Linear_Expression
+  operator-(const Linear_Expression& e, Variable v);
 
   friend Linear_Expression
   operator*(Coefficient_traits::const_reference n, const Linear_Expression& e);

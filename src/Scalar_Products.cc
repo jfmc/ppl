@@ -1,5 +1,5 @@
 /* Scalar_Products class implementation (non-inline functions).
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -125,7 +125,7 @@ PPL::Scalar_Products::homogeneous_assign(Coefficient& z,
   // dimension-compatible.
   assert(x.size() <= y.size());
   z = 0;
-    // Note the pre-decrement of `i': last iteration should be for `i == 1'.
+  // Note the pre-decrement of `i': last iteration should be for `i == 1'.
   for (dimension_type i = x.size(); --i > 0; )
     // The following line optimizes the computation of z += x[i] * y[i].
     add_mul_assign(z, x[i], y[i]);

@@ -1,6 +1,6 @@
 m4_define(`dnl', `m4_dnl')`'dnl
 m4_divert(-1)
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -44,9 +44,7 @@ print_string_if_noisy "\n";;
 print_string_if_noisy "m4_current_interface";;
 print_string_if_noisy "\n";;
 m4_undefine(`m4_current_interface')`'dnl
-m4_replace_all_patterns_in_string($1,
-  m4_add_init_class_code($1),
-  m4_pattern_list)`'dnl
+m4_replace_all_patterns($1, m4_add_init_class_code($1))`'dnl
 ')
 
 dnl ==================================================================

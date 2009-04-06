@@ -1,6 +1,6 @@
 /* Polyhedron class implementation
    (non-inline widening-related member functions).
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -594,7 +594,7 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
 
   // Candidate rays are kept in a temporary generator system.
   Generator_System candidate_rays;
-  TEMP_INTEGER(tmp);
+  PPL_DIRTY_TEMP_COEFFICIENT(tmp);
   for (dimension_type i = x_gen_sys_num_rows; i-- > 0; ) {
     const Generator& x_g = x.gen_sys[i];
     // We choose a ray of `x' that does not belong to `y'.

@@ -1,6 +1,6 @@
 /* Test Box::maximize(const Linear_Expression&, ...)
    and Box::minimize(const Linear_Expression&, ...).
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -749,7 +749,10 @@ BEGIN_MAIN
   DO_TEST(test09);
   DO_TEST(test10);
   DO_TEST(test11);
+#ifndef __alpha__
+  // Exception handling is broken in GCC on the Alpha.
   DO_TEST(test12);
+#endif
   DO_TEST(test13);
   DO_TEST(test14);
   DO_TEST(test15);

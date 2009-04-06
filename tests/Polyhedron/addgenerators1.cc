@@ -1,5 +1,5 @@
 /* Test Polyhedron::add_generators().
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -319,6 +319,24 @@ test11() {
   return ok;
 }
 
+bool
+test12() {
+  C_Polyhedron ph(0, EMPTY);
+  print_constraints(ph, "*** ph ***");
+
+  Generator_System gs(point());
+  print_generators(gs, "*** gs ***");
+
+  C_Polyhedron known_result(0, UNIVERSE);
+
+  ph.add_generators(gs);
+
+  bool ok = (ph == known_result);
+  print_constraints(ph, "*** ph.add_generators(gs) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -333,4 +351,5 @@ BEGIN_MAIN
   DO_TEST(test09);
   DO_TEST(test10);
   DO_TEST(test11);
+  DO_TEST(test12);
 END_MAIN

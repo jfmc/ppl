@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -52,7 +52,6 @@ ac_prog_java.m4 \
 ac_prog_javac.m4 \
 ac_prog_javah.m4 \
 ac_text_md5sum.m4 \
-ax_prefix_config_h.m4 \
 lib-ld.m4 \
 lib-link.m4 \
 lib-prefix.m4 \

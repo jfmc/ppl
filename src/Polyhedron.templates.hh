@@ -1,5 +1,5 @@
 /* Polyhedron class implementation: non-inline template functions.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -58,10 +58,10 @@ Polyhedron::Polyhedron(Topology topol,
   // this constraint will be removed at the end.
   con_sys.insert(Variable(space_dim - 1) >= 0);
 
-  TEMP_INTEGER(l_n);
-  TEMP_INTEGER(l_d);
-  TEMP_INTEGER(u_n);
-  TEMP_INTEGER(u_d);
+  PPL_DIRTY_TEMP_COEFFICIENT(l_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(l_d);
+  PPL_DIRTY_TEMP_COEFFICIENT(u_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(u_d);
 
   if (topol == NECESSARILY_CLOSED) {
     for (dimension_type k = space_dim; k-- > 0; ) {

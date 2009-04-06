@@ -1,5 +1,5 @@
 /* Test Grid::congruences().
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -522,9 +522,11 @@ test17() {
 }
 #endif
 
-typedef Domain_Product<TBox, Grid>::Direct_Product Box_Product;
+typedef Domain_Product<TBox, Grid>::Direct_Product TBox_Grid;
+typedef Domain_Product<Grid, TBox>::Direct_Product Grid_TBox;
+typedef Domain_Product<NNC_Polyhedron, Grid>::Direct_Product NNCPoly_Grid;
 
-// Box_Product(nnc_polyhedron, POLYNOMIAL_COMPLEXITY).
+// TBox_Grid(nnc_polyhedron, POLYNOMIAL_COMPLEXITY).
 bool
 test18() {
   Variable x(0);
@@ -535,17 +537,17 @@ test18() {
   ph.refine_with_constraint(x <= 4);
   ph.refine_with_constraint(y <= 4);
 
-  Box_Product pdp(ph, POLYNOMIAL_COMPLEXITY);
+  TBox_Grid pdp(ph, POLYNOMIAL_COMPLEXITY);
 
-  Box_Product ndp(ph);
+  TBox_Grid ndp(ph);
 
-  Box_Product known_ndp(2);
+  TBox_Grid known_ndp(2);
   known_ndp.refine_with_constraint(3*x >= -2);
   known_ndp.refine_with_constraint(x <= 4);
   known_ndp.refine_with_constraint(y >= -10);
   known_ndp.refine_with_constraint(y <= 4);
 
-  Box_Product known_pdp(2);
+  TBox_Grid known_pdp(2);
   known_pdp.refine_with_constraint(x <= 4);
   known_pdp.refine_with_constraint(y <= 4);
 
@@ -560,21 +562,21 @@ test18() {
   return ok;
 }
 
-// Product(Product).
+// Copy constructor.
 bool
 test19() {
   Variable A(0);
 
   const Constraint_System cs(A >= 0);
 
-  Product src(1);
+  NNCPoly_Grid src(1);
   src.refine_with_constraints(cs);
 
-  Product dp(src, POLYNOMIAL_COMPLEXITY);
+  NNCPoly_Grid dp(src, POLYNOMIAL_COMPLEXITY);
 
-  Product dp1(src);
+  NNCPoly_Grid dp1(src);
 
-  Product known_dp(1);
+  NNCPoly_Grid known_dp(1);
   known_dp.refine_with_constraint(A >= 0);
 
   bool ok = (dp == known_dp && dp1 == known_dp);
@@ -587,22 +589,25 @@ test19() {
   return ok && dp.OK();
 }
 
-// Product(Box_Product).
+// Constructing an NNCPoly_Grid from a TBox_Grid.
 bool
 test20() {
   Variable A(0);
 
   const Constraint_System cs(A >= 0);
+  const Congruence_System cgs(A %= 0);
 
-  Box_Product src(1);
+  TBox_Grid src(1);
   src.refine_with_constraints(cs);
+  src.refine_with_congruences(cgs);
 
-  Product dp(src, POLYNOMIAL_COMPLEXITY);
+  NNCPoly_Grid dp(src, POLYNOMIAL_COMPLEXITY);
 
-  Product dp1(src);
+  NNCPoly_Grid dp1(src);
 
-  Product known_dp(1);
+  NNCPoly_Grid known_dp(1);
   known_dp.refine_with_constraint(A >= 0);
+  known_dp.refine_with_congruence(A %= 0);
 
   bool ok = (dp == known_dp && dp1 == known_dp);
 
@@ -612,6 +617,57 @@ test20() {
   print_constraints(dp1, "*** dp1 constraints ***");
 
   return ok && dp.OK();
+}
+
+// Constructing an NNCPoly_Grid from a Grid_TBox.
+bool
+test21() {
+  Variable A(0);
+
+  const Constraint_System cs(A >= 0);
+  const Congruence_System cgs(A %= 0);
+
+  Grid_TBox src(1);
+  src.refine_with_constraints(cs);
+  src.refine_with_congruences(cgs);
+
+  NNCPoly_Grid dp(src, POLYNOMIAL_COMPLEXITY);
+
+  NNCPoly_Grid dp1(src);
+
+  NNCPoly_Grid known_dp(1);
+  known_dp.refine_with_constraint(A >= 0);
+  known_dp.refine_with_congruence(A %= 0);
+
+  bool ok = (dp == known_dp && dp1 == known_dp);
+
+  print_congruences(dp, "*** dp congruences ***");
+  print_constraints(dp, "*** dp constraints ***");
+  print_congruences(dp1, "*** dp1 congruences ***");
+  print_constraints(dp1, "*** dp1 constraints ***");
+
+  return ok && dp.OK();
+}
+
+// Attempt to construct a product with too many dimensions.
+bool
+test22() {
+  try {
+    // This is an invalid use of the constructor of a product:
+    // it is illegal to (try to) build a product with a dimensions
+    // greater than max_space_dimension().
+    NNCPoly_Grid pg(NNCPoly_Grid::max_space_dimension() + 1);
+
+    // It is an error if the exception is not thrown.
+  }
+  catch (std::length_error& e) {
+    nout << "length_error: " << e.what() << endl << endl;
+    return true;
+  }
+  catch (...) {
+    // It is an error if the wrong exception is thrown.
+  }
+  return false;
 }
 
 } // namespace
@@ -639,4 +695,6 @@ BEGIN_MAIN
   DO_TEST(test18);
   DO_TEST(test19);
   DO_TEST(test20);
+  DO_TEST(test21);
+  DO_TEST(test22);
 END_MAIN

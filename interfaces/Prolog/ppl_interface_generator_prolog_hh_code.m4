@@ -5,7 +5,7 @@ dnl This m4 file contains the program code for generating the
 dnl files ppl_prolog_DOMAIN.hh for each interface domain DOMAIN
 dnl in ppl_interface instantiations.m4.
 
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -82,16 +82,16 @@ m4_define(`ppl_@CLASS@_@DIMENSION@_code',
   ppl_@CLASS@_@DIMENSION@(Prolog_term_ref t_ph, Prolog_term_ref t_sd);
 ')
 
-m4_define(`ppl_@CLASS@_get_@GET_REPRESENT@s_code',
+m4_define(`ppl_@CLASS@_get_@CLASS_REPRESENT@s_code',
   `extern "C" Prolog_foreign_return_type
-  ppl_@CLASS@_get_@GET_REPRESENT@s(Prolog_term_ref t_ph,
+  ppl_@CLASS@_get_@CLASS_REPRESENT@s(Prolog_term_ref t_ph,
 				   Prolog_term_ref t_glist);
 
 ')
 
-m4_define(`ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_code',
+m4_define(`ppl_@CLASS@_get_minimized_@CLASS_REPRESENT@s_code',
   `extern "C" Prolog_foreign_return_type
-  ppl_@CLASS@_get_minimized_@GET_REPRESENT@s(Prolog_term_ref t_ph,
+  ppl_@CLASS@_get_minimized_@CLASS_REPRESENT@s(Prolog_term_ref t_ph,
 					     Prolog_term_ref t_glist);
 
 ')
@@ -252,9 +252,9 @@ m4_define(`ppl_@CLASS@_OK_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_code',
+m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@_code',
   `extern "C" Prolog_foreign_return_type
-  ppl_@CLASS@_add_@ADD_REPRESENT@(Prolog_term_ref t_ph, Prolog_term_ref t_c);
+  ppl_@CLASS@_add_@CLASS_REPRESENT@(Prolog_term_ref t_ph, Prolog_term_ref t_c);
 
 ')
 
@@ -264,16 +264,16 @@ m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code',
+m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@_and_minimize_code',
   `extern "C" Prolog_foreign_return_type
-  ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize(Prolog_term_ref t_ph,
+  ppl_@CLASS@_add_@CLASS_REPRESENT@_and_minimize(Prolog_term_ref t_ph,
 					       Prolog_term_ref t_c);
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_code',
+m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@s_code',
   `extern "C" Prolog_foreign_return_type
-  ppl_@CLASS@_add_@ADD_REPRESENT@s(Prolog_term_ref t_ph,
+  ppl_@CLASS@_add_@CLASS_REPRESENT@s(Prolog_term_ref t_ph,
 				   Prolog_term_ref t_clist);
 
 ')
@@ -285,9 +285,9 @@ m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize_code',
+m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@s_and_minimize_code',
   `extern "C" Prolog_foreign_return_type
-  ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize(Prolog_term_ref t_ph,
+  ppl_@CLASS@_add_@CLASS_REPRESENT@s_and_minimize(Prolog_term_ref t_ph,
 						Prolog_term_ref t_clist);
 
 ')
@@ -427,18 +427,18 @@ m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign_code',
 
 dnl FIXME: This code is redundant as there is no options for tokens
 dnl        in the current C++ code.
-m4_define(`ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_with_tokens_code',
+m4_define(`ppl_@CLASS@_BHZ03_@A_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_with_tokens_code',
   `extern "C" Prolog_foreign_return_type
-  ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_with_tokens(
+  ppl_@CLASS@_BHZ03_@A_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_with_tokens(
 										      Prolog_term_ref t_lhs, Prolog_term_ref t_rhs,
 										      Prolog_term_ref t_ti, Prolog_term_ref t_to);
 
 ')
 
-m4_define(`ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code',
+m4_define(`ppl_@CLASS@_BHZ03_@A_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code',
   `extern "C" Prolog_foreign_return_type
 
-  ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign(
+  ppl_@CLASS@_BHZ03_@A_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign(
 									  Prolog_term_ref t_lhs, Prolog_term_ref t_rhs);
 
 ')

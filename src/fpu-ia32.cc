@@ -1,5 +1,5 @@
 /* IA-32 floating point unit non-inline related functions.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -21,7 +21,10 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include <ppl-config.h>
-#if defined(PPL_FPMATH_MAY_USE_SSE) && defined(__i386__) && (defined(__GNUC__) || defined(__INTEL_COMPILER))
+
+#if PPL_CAN_CONTROL_FPU && defined(PPL_FPMATH_MAY_USE_SSE) \
+  && defined(__i386__) \
+  && (defined(__GNUC__) || defined(__INTEL_COMPILER))
 
 #include "fpu.defs.hh"
 #include <csetjmp>
@@ -64,4 +67,4 @@ detect_sse_unit() {
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // defined(PPL_FPMATH_MAY_USE_SSE) && defined(__i386__) && (defined(__GNUC__) || defined(__INTEL_COMPILER))
+#endif // PPL_CAN_CONTROL_FPU && defined(PPL_FPMATH_MAY_USE_SSE) && defined(__i386__) && (defined(__GNUC__) || defined(__INTEL_COMPILER))

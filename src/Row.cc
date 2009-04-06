@@ -1,5 +1,5 @@
 /* Row class implementation (non-inline functions).
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -89,7 +89,7 @@ PPL::Row::normalize() {
   // Compute the GCD of all the coefficients.
   const dimension_type sz = size();
   dimension_type i = sz;
-  TEMP_INTEGER(gcd);
+  PPL_DIRTY_TEMP_COEFFICIENT(gcd);
   while (i > 0) {
     const Coefficient& x_i = x[--i];
     if (const int x_i_sign = sgn(x_i)) {
@@ -149,7 +149,7 @@ bool
 PPL::Row::Flags::ascii_load(std::istream& s) {
   std::string str;
   std::streamsize sz = s.width(2);
-  if (!(s >> str) || (str.compare("0x") != 0))
+  if (!(s >> str) || str != "0x")
     return false;
   s.width(sz);
   std::istream::fmtflags f = s.setf(std::istream::hex);
@@ -193,7 +193,7 @@ PPL::Row::ascii_load(std::istream& s) {
   for (dimension_type col = 0; col < new_size; ++col)
     if (!(s >> x[col]))
       return false;
-  if (!(s >> str) || (str.compare("f") != 0))
+  if (!(s >> str) || str != "f")
     return false;
   return flags().ascii_load(s);
 }

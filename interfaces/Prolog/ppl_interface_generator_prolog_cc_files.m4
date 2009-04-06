@@ -6,7 +6,7 @@ dnl and files ppl_prolog_DOMAIN.cc, for each interface domain DOMAIN
 dnl in ppl_interface instantiations.m4 using the code in
 dnl ppl_interface_generator_prolog_cc_code.m4.
 
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -33,7 +33,8 @@ m4_include(`ppl_interface_generator_prolog_procedure_generators.m4')
 
 dnl Ensure any schematic procedure macro that is not defined
 dnl in the code file outputs a warning message.
-m4_define(`m4_default_code', `m4_dumpdef($1`'_code)')
+m4_define(`m4_procedure_schema_debug', `m4_dumpdef($1`'_code)')
+
 dnl m4_pre_extra_class_code(Class_Counter)
 dnl Prefix extra code for each class.
 m4_define(`m4_pre_extra_class_code', `dnl

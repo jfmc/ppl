@@ -1,5 +1,5 @@
 /* C_Polyhedron class implementation (non-inline functions).
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -81,6 +81,19 @@ PPL::C_Polyhedron::C_Polyhedron(const Grid& grid, Complexity_Class)
 }
 
 bool
-PPL::C_Polyhedron::poly_hull_assign_if_exact(const C_Polyhedron& q) {
-  return PPL::poly_hull_assign_if_exact(*this, q);
+PPL::C_Polyhedron::poly_hull_assign_if_exact(const C_Polyhedron& y) {
+  // Dimension-compatibility check.
+  if (space_dimension() != y.space_dimension())
+    throw_dimension_incompatible("poly_hull_assign_if_exact(y)", "y", y);
+#define USE_BHZ09 0
+#define USE_BFT00 1
+#if USE_BHZ09 // [BagnaraHZ09]
+  return BHZ09_poly_hull_assign_if_exact(y);
+#elif USE_BFT00 // [BemporadFT00TR].
+  return BFT00_poly_hull_assign_if_exact(y);
+#else // Old implementation.
+  return PPL::poly_hull_assign_if_exact(*this, y);
+#endif
+#undef USE_BHZ09
+#undef USE_BFT00
 }

@@ -1,5 +1,5 @@
 /* Test Box::refine_with_constraint(const Constraint&).
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -143,10 +143,12 @@ test04() {
 } // namespace
 
 BEGIN_MAIN
+// FIXME: see corresponding fixme in Box<ITV>::refine_no_check(c).
 // Temporarily set to always fail: this is meant to be a test for
 // constraint propagation, rather than syntactical refinement.
 //  DO_TEST_F8(test01);
   DO_TEST_F(test01);
+// FIXME: see corresponding fixme in Box<ITV>::refine_no_check(c).
 // Temporarily set to always fail: this is meant to be a test for
 // constraint propagation, rather than syntactical refinement.
 //  DO_TEST(test02);

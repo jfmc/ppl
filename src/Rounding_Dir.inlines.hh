@@ -1,5 +1,5 @@
 /* Inline functions operating on enum Rounding_Dir values.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -63,18 +63,25 @@ round_fpu_check_inexact(Rounding_Dir dir) {
 }
 
 #if PPL_CAN_CONTROL_FPU
+
 inline fpu_rounding_direction_type
 round_fpu_dir(Rounding_Dir dir) {
   switch (round_dir(dir)) {
   case ROUND_UP:
-    return static_cast<fpu_rounding_direction_type>(FPU_UPWARD);
+    return static_cast<fpu_rounding_direction_type>(PPL_FPU_UPWARD);
   case ROUND_DOWN:
-    return static_cast<fpu_rounding_direction_type>(FPU_DOWNWARD);
+    return static_cast<fpu_rounding_direction_type>(PPL_FPU_DOWNWARD);
   default:
-    assert(0);
-    return static_cast<fpu_rounding_direction_type>(FPU_UPWARD);
+    assert(false);
+    return static_cast<fpu_rounding_direction_type>(PPL_FPU_UPWARD);
   }
 }
+
+#undef PPL_FPU_DOWNWARD
+#undef PPL_FPU_TONEAREST
+#undef PPL_FPU_TOWARDZERO
+#undef PPL_FPU_UPWARD
+
 #endif
 
 /*! \relates Parma_Polyhedra_Library::Rounding_Dir */

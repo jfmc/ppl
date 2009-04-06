@@ -1,5 +1,5 @@
 /* IA-32 floating point unit inline related functions.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -20,7 +20,9 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include "compiler.hh"
+#ifndef PPL_fpu_ia32_inlines_hh
+#define PPL_fpu_ia32_inlines_hh 1
+
 #include <csetjmp>
 #include <csignal>
 
@@ -33,10 +35,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define FPU_ALL_EXCEPT \
   (FPU_INEXACT | FPU_DIVBYZERO | FPU_UNDERFLOW | FPU_OVERFLOW | FPU_INVALID)
 
-#define FPU_TONEAREST     0
-#define FPU_DOWNWARD      0x400
-#define FPU_UPWARD        0x800
-#define FPU_TOWARDZERO    0xc00
+#define PPL_FPU_TONEAREST     0
+#define PPL_FPU_DOWNWARD      0x400
+#define PPL_FPU_UPWARD        0x800
+#define PPL_FPU_TOWARDZERO    0xc00
 
 #define FPU_ROUNDING_MASK 0xc00
 
@@ -46,8 +48,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_SSE_CONTROL_DEFAULT_BASE 0x1f80
 
 // This MUST be congruent with the definition of ROUND_DIRECT
-#define PPL_FPU_CONTROL_DEFAULT (PPL_FPU_CONTROL_DEFAULT_BASE | FPU_UPWARD)
-#define PPL_SSE_CONTROL_DEFAULT (PPL_SSE_CONTROL_DEFAULT_BASE | (FPU_UPWARD << 3))
+#define PPL_FPU_CONTROL_DEFAULT \
+  (PPL_FPU_CONTROL_DEFAULT_BASE | PPL_FPU_UPWARD)
+#define PPL_SSE_CONTROL_DEFAULT \
+  (PPL_SSE_CONTROL_DEFAULT_BASE | (PPL_FPU_UPWARD << 3))
 
 namespace Parma_Polyhedra_Library {
 
@@ -101,7 +105,7 @@ fpu_clear_exceptions() {
   __asm__ __volatile__ ("fnclex" : /* No outputs.  */ : : "memory");
 }
 
-#if PPL_FPMATH_MAY_USE_SSE
+#ifdef PPL_FPMATH_MAY_USE_SSE
 inline void
 sse_set_control(unsigned int cw) {
   __asm__ __volatile__ ("ldmxcsr %0" : : "m" (*&cw) : "memory");
@@ -117,7 +121,7 @@ sse_get_control() {
 
 inline void
 fpu_initialize_control_functions() {
-#if PPL_FPMATH_MAY_USE_SSE
+#ifdef PPL_FPMATH_MAY_USE_SSE
   extern void detect_sse_unit();
   detect_sse_unit();
 #endif
@@ -130,10 +134,10 @@ fpu_get_rounding_direction() {
 
 inline void
 fpu_set_rounding_direction(fpu_rounding_direction_type dir) {
-#if PPL_FPMATH_MAY_USE_387
+#ifdef PPL_FPMATH_MAY_USE_387
   fpu_set_control(PPL_FPU_CONTROL_DEFAULT_BASE | dir);
 #endif
-#if PPL_FPMATH_MAY_USE_SSE
+#ifdef PPL_FPMATH_MAY_USE_SSE
   extern bool have_sse_unit;
   if (have_sse_unit)
     sse_set_control(PPL_SSE_CONTROL_DEFAULT_BASE | (dir << 3));
@@ -142,10 +146,10 @@ fpu_set_rounding_direction(fpu_rounding_direction_type dir) {
 
 inline fpu_rounding_control_word_type
 fpu_save_rounding_direction(fpu_rounding_direction_type dir) {
-#if PPL_FPMATH_MAY_USE_387
+#ifdef PPL_FPMATH_MAY_USE_387
   fpu_set_control(PPL_FPU_CONTROL_DEFAULT_BASE | dir);
 #endif
-#if PPL_FPMATH_MAY_USE_SSE
+#ifdef PPL_FPMATH_MAY_USE_SSE
   extern bool have_sse_unit;
   if (have_sse_unit)
     sse_set_control(PPL_SSE_CONTROL_DEFAULT_BASE | (dir << 3));
@@ -155,10 +159,10 @@ fpu_save_rounding_direction(fpu_rounding_direction_type dir) {
 
 inline void
 fpu_reset_inexact() {
-#if PPL_FPMATH_MAY_USE_387
+#ifdef PPL_FPMATH_MAY_USE_387
   fpu_clear_exceptions();
 #endif
-#if PPL_FPMATH_MAY_USE_SSE
+#ifdef PPL_FPMATH_MAY_USE_SSE
   // NOTE: on entry to this function the current rounding mode
   // has to be the default one.
   extern bool have_sse_unit;
@@ -169,10 +173,10 @@ fpu_reset_inexact() {
 
 inline void
 fpu_restore_rounding_direction(fpu_rounding_control_word_type) {
-#if PPL_FPMATH_MAY_USE_387
+#ifdef PPL_FPMATH_MAY_USE_387
   fpu_set_control(PPL_FPU_CONTROL_DEFAULT);
 #endif
-#if PPL_FPMATH_MAY_USE_SSE
+#ifdef PPL_FPMATH_MAY_USE_SSE
   extern bool have_sse_unit;
   if (have_sse_unit)
     sse_set_control(PPL_SSE_CONTROL_DEFAULT);
@@ -181,11 +185,11 @@ fpu_restore_rounding_direction(fpu_rounding_control_word_type) {
 
 inline int
 fpu_check_inexact() {
-#if PPL_FPMATH_MAY_USE_387
+#ifdef PPL_FPMATH_MAY_USE_387
   if (fpu_get_status() & FPU_INEXACT)
     return 1;
 #endif
-#if PPL_FPMATH_MAY_USE_SSE
+#ifdef PPL_FPMATH_MAY_USE_SSE
   extern bool have_sse_unit;
   if (have_sse_unit && (sse_get_control() & SSE_INEXACT))
     return 1;
@@ -194,3 +198,5 @@ fpu_check_inexact() {
 }
 
 } // namespace Parma_Polyhedra_Library
+
+#endif // !defined(PPL_fpu_ia32_inlines_hh)

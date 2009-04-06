@@ -1,5 +1,5 @@
 dnl A function to check for the possibility to control the FPU.
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -26,7 +26,7 @@ ac_save_LIBS="$LIBS"
 LIBS="$LIBS -lm"
 AC_LANG_PUSH(C++)
 AC_CHECK_HEADERS([fenv.h ieeefp.h])
-AC_MSG_CHECKING([for the possibility to control the FPU])
+AC_MSG_CHECKING([if it is possible to control the FPU])
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #if i386
 
@@ -114,10 +114,29 @@ main() {
   AC_MSG_RESULT(yes)
   ac_cv_can_control_fpu=1,
   AC_MSG_RESULT(no)
-  ac_cv_can_control_fpu=0
+  ac_cv_can_control_fpu=0,
+  AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+#if i386 || (sparc && defined(HAVE_IEEEFP_H))
+
+int
+main() {
+  return 0;
+}
+
+#else
+
+  choke me
+
+#endif
+  ]])],
+    AC_MSG_RESULT(yes)
+    ac_cv_can_control_fpu=1,
+    AC_MSG_RESULT(no)
+    ac_cv_can_control_fpu=0
+  )
 )
 AM_CONDITIONAL(CAN_CONTROL_FPU, test $ac_cv_can_control_fpu = 1)
-AC_DEFINE_UNQUOTED(CAN_CONTROL_FPU, $ac_cv_can_control_fpu,
+AC_DEFINE_UNQUOTED(PPL_CAN_CONTROL_FPU, $ac_cv_can_control_fpu,
     [Not zero if the FPU can be controlled.])
 AC_LANG_POP(C++)
 LIBS="$ac_save_LIBS"

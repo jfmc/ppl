@@ -1,5 +1,5 @@
 /* Test the allocation error recovery facility of the library.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <new>
 #include <cstring>
 #include <cerrno>
+#include <cstdlib>
 
 #ifdef PPL_HAVE_SYS_TYPES_H
 # include <sys/types.h>
@@ -133,24 +134,25 @@ guarded_compute_open_hypercube_generators(dimension_type dimension,
 
 extern "C" void*
 cxx_malloc(size_t size) {
-  return ::operator new(size);
+  void* p = malloc(size);
+  if (p != 0 || size == 0)
+    return p;
+
+  throw std::bad_alloc();
 }
 
 extern "C" void*
-cxx_realloc(void* p, size_t old_size, size_t new_size) {
-  if (new_size <= old_size)
+cxx_realloc(void* q, size_t, size_t new_size) {
+  void* p = realloc(q, new_size);
+  if (p != 0 || new_size == 0)
     return p;
-  else {
-    void* new_p = ::operator new(new_size);
-    memcpy(new_p, p, old_size);
-    ::operator delete(p);
-    return new_p;
-  }
+
+  throw std::bad_alloc();
 }
 
 extern "C" void
 cxx_free(void* p, size_t) {
-  ::operator delete(p);
+  free(p);
 }
 
 #define INIT_MEMORY 3*1024*1024
@@ -179,16 +181,14 @@ main() TRY {
   do {
     ++dimension;
     nout << "Trying dimension " << dimension << endl;
-  }
-  while (guarded_compute_open_hypercube_generators(dimension, INIT_MEMORY));
+  } while (guarded_compute_open_hypercube_generators(dimension, INIT_MEMORY));
 
   // Now find an upper bound to the memory necessary to compute it.
   unsigned long upper_bound = INIT_MEMORY;
   do {
     upper_bound *= 2;
     nout << "Trying upper bound " << upper_bound << endl;
-  }
-  while (!guarded_compute_open_hypercube_generators(dimension, upper_bound));
+  } while (!guarded_compute_open_hypercube_generators(dimension, upper_bound));
 
   // Search the "exact" amount of memory.
   int lower_bound = upper_bound/2;

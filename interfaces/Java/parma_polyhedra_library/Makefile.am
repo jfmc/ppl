@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -41,6 +41,7 @@ parma_polyhedra_library.Generator \
 parma_polyhedra_library.Generator_System \
 parma_polyhedra_library.Grid_Generator \
 parma_polyhedra_library.Grid_Generator_System \
+parma_polyhedra_library.IO \
 parma_polyhedra_library.Linear_Expression \
 parma_polyhedra_library.MIP_Problem \
 parma_polyhedra_library.Parma_Polyhedra_Library
@@ -54,6 +55,7 @@ parma_polyhedra_library_Generator.h \
 parma_polyhedra_library_Generator_System.h \
 parma_polyhedra_library_Grid_Generator.h \
 parma_polyhedra_library_Grid_Generator_System.h \
+parma_polyhedra_library_IO.h \
 parma_polyhedra_library_Linear_Expression.h \
 parma_polyhedra_library_MIP_Problem.h \
 parma_polyhedra_library_Parma_Polyhedra_Library.h
@@ -78,6 +80,7 @@ $(srcdir)/Grid_Generator.java \
 $(srcdir)/Grid_Generator_System.java \
 $(srcdir)/Grid_Generator_Type.java \
 $(srcdir)/Invalid_Argument_Exception.java \
+$(srcdir)/IO.java \
 $(srcdir)/Length_Error_Exception.java \
 $(srcdir)/Linear_Expression.java \
 $(srcdir)/Linear_Expression_Coefficient.java \
@@ -138,7 +141,7 @@ java_cxx_headers.stamp: java_classes.stamp
 	echo timestamp >$@
 
 source_generation.stamp: $(interface_generator_dependencies)
-	m4 --prefix-builtin -I../.. \
+	$(M4) --prefix-builtin -I../.. \
 		-I$(srcdir) -I$(srcdir)/.. -I$(srcdir)/../.. \
 		$(srcdir)/ppl_interface_generator_java_classes_java.m4 \
 			> java_blob
@@ -176,6 +179,7 @@ Grid_Generator.class \
 Grid_Generator_System.class \
 Grid_Generator_Type.class \
 Invalid_Argument_Exception.class \
+IO.class \
 Length_Error_Exception.class \
 Linear_Expression.class \
 Linear_Expression_Coefficient.class \

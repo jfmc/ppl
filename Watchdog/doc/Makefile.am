@@ -1,5 +1,5 @@
 # Automake source file for the Parma Watchdog Library.
-# Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Watchdog Library (PWL).
 #
@@ -263,10 +263,6 @@ $(DEVREF_CORE_HTML_DIR): devref.doxyconf-html $(DEVREF_CORE_STUFF)
 EXTRA_DIST= \
 $(DIST_DOCS) \
 $(DOX_FILES) \
-user.doxyconf-latex \
-devref.doxyconf-latex \
-user.doxyconf-html \
-devref.doxyconf-html \
 user.tex \
 devref.tex \
 gpl.tex \

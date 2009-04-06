@@ -1,5 +1,5 @@
 /* C++ compiler related stuff.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -43,7 +43,8 @@ used(const T&) {
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
-inline void cc_flush(const T& x) {
+inline void
+cc_flush(const T& x) {
 #if defined(__GNUC__) || defined(__INTEL_COMPILER)
   __asm__ __volatile__ ("" : "+m" (const_cast<T&>(x)));
 #else

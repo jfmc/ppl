@@ -6,7 +6,7 @@ dnl and files ppl_ocaml_DOMAIN.hh, for each interface domain DOMAIN
 dnl in ppl_interface instantiations.m4 using the code in
 dnl ppl_interface_generator_ocaml_hh_code.m4.
 
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -40,9 +40,7 @@ m4_define(`m4_current_interface', m4_interface_class`'$1)`'dnl
 m4_include(`ppl_interface_generator_copyright')`'dnl
 */
 
-m4_replace_all_patterns_in_string($1,
-                                  m4_access_class_code,
-                                  m4_pattern_list)`'dnl
+m4_replace_all_patterns($1, m4_access_class_code)`'dnl
 m4_undefine(`m4_current_interface')`'dnl
 ')
 

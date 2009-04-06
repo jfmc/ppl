@@ -1,5 +1,5 @@
 /* Domain-independent part of the OCaml interface: non-inline functions.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -21,7 +21,6 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_ocaml_common.defs.hh"
-//#include <stdexcept>
 
 namespace Parma_Polyhedra_Library {
 
@@ -79,70 +78,61 @@ class PFunc {
   }
 };
 
-#define CATCH_ALL							\
-  catch(std::bad_alloc&) {						\
-    caml_raise_out_of_memory();						\
-  }									\
-  catch(std::invalid_argument& e) {					\
-    caml_invalid_argument(const_cast<char*>(e.what()));			\
-  }									\
-  catch(std::overflow_error& e) {					\
-    caml_raise_with_string(*caml_named_value("PPL_arithmetic_overflow"), \
-			   (const_cast<char*>(e.what())));		\
-  }									\
-  catch(std::runtime_error& e) {					\
-    caml_raise_with_string(*caml_named_value("PPL_internal_error"),	\
-			   (const_cast<char*>(e.what())));		\
-  }									\
-  catch(std::exception& e) {						\
-    caml_raise_with_string(*caml_named_value("PPL_unknown_standard_exception"), \
-			   (const_cast<char*>(e.what())));		\
-  }									\
-  catch(...) {								\
-    caml_raise_constant(*caml_named_value("PPL_unexpected_error"));	\
-  }
 
-static inline mpz_t* mpz_val(value val) {
-  return ((mpz_t*) (Data_custom_val(val)));
+#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
+
+Parma_Watchdog_Library::Watchdog* p_timeout_object = 0;
+
+#endif // PPL_WATCHDOG_LIBRARY_ENABLED
+
+void
+reset_timeout() {
+#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
+  if (p_timeout_object) {
+    delete p_timeout_object;
+    p_timeout_object = 0;
+    abandon_expensive_computations = 0;
+  }
+#endif // PPL_WATCHDOG_LIBRARY_ENABLED
+}
+
+namespace {
+
+inline mpz_ptr
+mpz_ptr_val(value val) {
+  return static_cast<mpz_ptr>(Data_custom_val(val));
+}
+
+inline mpz_class&
+mpz_class_val(value val) {
+  return reinterpret_cast<mpz_class&>(*mpz_ptr_val(val));
 }
 
 // Function for the management of mpz_t integers.
 extern "C" struct custom_operations _mlgmp_custom_z;
 
-static inline value alloc_mpz(void) {
-
-  return caml_alloc_custom(&_mlgmp_custom_z, sizeof(mpz_t), 0, 1);
+inline value
+unregistered_value_p_zero_mpz(void) {
+  value zero_mpz = caml_alloc_custom(&_mlgmp_custom_z, sizeof(mpz_t), 0, 1);
+  mpz_init(mpz_ptr_val(zero_mpz));
+  return zero_mpz;
 }
 
-Variable
-build_ppl_Variable(value caml_var) {
-  long ppl_var_index = Int_val(caml_var);
-  check_int_is_unsigned(ppl_var_index);
-  return Variable(ppl_var_index);
-}
-
-// FIXME: this same function is used also in the C interface.
-// It should be placed in some common header file in the interfaces
-// directory.
-//! Reinterpret an mpz_t as mpz_class.
-inline mpz_class&
-reinterpret_mpz_class(mpz_t n) {
-  return reinterpret_cast<mpz_class&>(*n);
-}
+} // anonymous namespace
 
 value
 build_ocaml_coefficient(const Coefficient& ppl_coeff) {
-  value ml_coeff = alloc_mpz();
-  mpz_init(*mpz_val(ml_coeff));
-  assign_r(reinterpret_mpz_class(*mpz_val(ml_coeff)), ppl_coeff,
- 	   ROUND_NOT_NEEDED);
-  return ml_coeff;
+  CAMLparam0();
+  CAMLlocal1(ml_coeff);
+  ml_coeff = unregistered_value_p_zero_mpz();
+  assign_r(mpz_class_val(ml_coeff), ppl_coeff, ROUND_NOT_NEEDED);
+  CAMLreturn(ml_coeff);
 }
 
 Coefficient
 build_ppl_Coefficient(value coeff) {
-   mpz_class z((__mpz_struct*) Data_custom_val(coeff));
-   return Coefficient(z);
+  mpz_class z(mpz_ptr_val(coeff));
+  return Coefficient(z);
 }
 
 Linear_Expression
@@ -150,10 +140,10 @@ build_ppl_Linear_Expression(value e) {
   switch (Tag_val(e)) {
   case 0:
     // Variable
-    return Variable(Long_val(Field(e, 0)));
+    return build_ppl_Variable(Field(e, 0));
   case 1: {
     // Coefficient
-    mpz_class z((__mpz_struct*) Data_custom_val(Field(e, 0)));
+    mpz_class z(mpz_ptr_val(Field(e, 0)));
     return Linear_Expression(Coefficient(z));
   }
   case 2:
@@ -172,16 +162,18 @@ build_ppl_Linear_Expression(value e) {
       - build_ppl_Linear_Expression(Field(e, 1));
   case 6: {
     // Times
-    mpz_class z((__mpz_struct*) Data_custom_val(Field(e, 0)));
+    mpz_class z(mpz_ptr_val(Field(e, 0)));
     return Coefficient(z) * build_ppl_Linear_Expression(Field(e, 1));
   }
   default:
-    caml_invalid_argument("Error building PPL::Linear_Expression");
+    throw std::invalid_argument("PPL OCaml interface invalid_argument\n:"
+                                "error building PPL::Linear_Expression");
   }
 }
 
 Relation_Symbol
 build_ppl_relsym(value caml_relsym) {
+  assert(Is_long(caml_relsym));
   switch (Int_val(caml_relsym)) {
   case 0:
     return LESS_THAN;
@@ -193,14 +185,16 @@ build_ppl_relsym(value caml_relsym) {
     return GREATER_OR_EQUAL;
   case 4:
     return GREATER_THAN;
- default:
-   // We should not be here!
-   throw std::runtime_error("PPL OCaml interface internal error");
+  default:
+    // We should not be here!
+    throw std::runtime_error("PPL OCaml interface internal error\n:"
+                             "build_ppl_relsym(rel)");
   }
 }
 
 Optimization_Mode
 build_ppl_opt_mode(value caml_opt_mode) {
+  assert(Is_long(caml_opt_mode));
   switch (Int_val(caml_opt_mode)) {
   case 0:
     return MINIMIZATION;
@@ -208,56 +202,59 @@ build_ppl_opt_mode(value caml_opt_mode) {
     return MAXIMIZATION;
   default:
     // We should not be here!
-    throw std::runtime_error("PPL OCaml interface internal error");
+    throw std::runtime_error("PPL OCaml interface internal error\n:"
+                             "build_ppl_opt_mode(opt)");
   }
 }
 
 Degenerate_Element
 build_ppl_Degenerate_Element(value de) {
+  assert(Is_long(de));
   switch (Int_val(de)) {
-  case 0: {
+  case 0:
     return UNIVERSE;
-  }
-  case 1: {
+  case 1:
     return EMPTY;
-  }
- default:
-  // We should not be here!
-  throw std::runtime_error("PPL OCaml interface internal error");
+  default:
+    // We should not be here!
+    throw std::runtime_error("PPL OCaml interface internal error:\n"
+                             "build_ppl_Degenerate_Element(de)");
   }
 }
 
 Complexity_Class
 build_ppl_Complexity_Class(value cc) {
+  assert(Is_long(cc));
   switch (Int_val(cc)) {
-  case 0: {
+  case 0:
     return POLYNOMIAL_COMPLEXITY;
-  }
-  case 1: {
+  case 1:
     return SIMPLEX_COMPLEXITY;
-  }
-  case 2: {
+  case 2:
     return ANY_COMPLEXITY;
-  }
- default:
-  // We should not be here!
-  throw std::runtime_error("PPL OCaml interface internal error");
+  default:
+    // We should not be here!
+    throw std::runtime_error("PPL OCaml interface internal error:\n"
+                             "build_ppl_Complexity_Class(cc)");
   }
 }
 
- MIP_Problem::Control_Parameter_Name
+MIP_Problem::Control_Parameter_Name
 build_ppl_control_parameter_name(value caml_cp_name) {
+  assert(Is_long(caml_cp_name));
   switch (Int_val(caml_cp_name)) {
   case 0:
     return  MIP_Problem::PRICING;
   default:
     // We should not be here!
-    throw std::runtime_error("PPL OCaml interface internal error");
+    throw std::runtime_error("PPL OCaml interface internal error:\n"
+                             "build_ppl_control_parameter_name(cpn)");
   }
 }
 
- MIP_Problem::Control_Parameter_Value
+MIP_Problem::Control_Parameter_Value
 build_ppl_control_parameter_value(value caml_cp_value) {
+  assert(Is_long(caml_cp_value));
   switch (Int_val(caml_cp_value)) {
   case 0:
     return MIP_Problem::PRICING_STEEPEST_EDGE_FLOAT;
@@ -267,19 +264,16 @@ build_ppl_control_parameter_value(value caml_cp_value) {
     return MIP_Problem::PRICING_TEXTBOOK;
   default:
     // We should not be here!
-    throw std::runtime_error("PPL OCaml interface internal error");
+    throw std::runtime_error("PPL OCaml interface internal error:\n"
+                             "build_ppl_control_parameter_value(cpv)");
   }
 }
 
 Variables_Set
 build_ppl_Variables_Set(value caml_vset) {
   Variables_Set ppl_vset;
-  if (Int_val(caml_vset) == 0)
-    return ppl_vset;
-  while (true) {
-    ppl_vset.insert(Int_val(Field(caml_vset, 0)));
-    if (Int_val(Field(caml_vset, 1)) == 0)
-      break;
+  while (caml_vset != Val_emptylist) {
+    ppl_vset.insert(value_to_ppl_dimension(Field(caml_vset, 0)));
     caml_vset = Field(caml_vset, 1);
   }
   return ppl_vset;
@@ -306,7 +300,8 @@ build_ppl_Constraint(value c) {
     // Greater_Or_Equal
     return build_ppl_Linear_Expression(e1) >= build_ppl_Linear_Expression(e2);
   default:
-    caml_invalid_argument("Error building PPL::Constraint");
+    throw std::invalid_argument("PPL OCaml interface invalid argument:\n"
+                                "error building PPL::Constraint");
   }
 }
 
@@ -314,11 +309,13 @@ build_ppl_Constraint(value c) {
 template <typename R>
 CAMLprim value
 get_inhomogeneous_term(const R& r) {
-  TEMP_INTEGER(coeff);
+  CAMLparam0();
+  CAMLlocal1(coeff_term);
+  PPL_DIRTY_TEMP_COEFFICIENT(coeff);
   neg_assign(coeff, r.inhomogeneous_term());
-  value coeff_term = caml_alloc(1,1);
-  Field(coeff_term, 0) = build_ocaml_coefficient(coeff);
-  return coeff_term;
+  coeff_term = caml_alloc(1,1);
+  Store_field(coeff_term, 0, build_ocaml_coefficient(coeff));
+  CAMLreturn(coeff_term);
 }
 
 // Takes from constraints, generators... the embedded linear
@@ -326,45 +323,46 @@ get_inhomogeneous_term(const R& r) {
 template <typename R>
 CAMLprim value
 get_linear_expression(const R& r) {
+  CAMLparam0();
+  CAMLlocal2(zero_term, zero_mpz);
+  CAMLlocal5(sum, term1, ml_le_var1, term2, ml_le_var2);
   dimension_type space_dimension = r.space_dimension();
   dimension_type varid = 0;
-  TEMP_INTEGER(coeff);
+  PPL_DIRTY_TEMP_COEFFICIENT(coeff);
   while (varid < space_dimension
 	 && (coeff = r.coefficient(Variable(varid))) == 0)
     ++varid;
   if (varid >= space_dimension) {
-    value zero_term = caml_alloc(1,1);
-    value zero_mpz = alloc_mpz();
-    mpz_init_set_ui(*mpz_val(zero_mpz), 0);
-    Field(zero_term, 0) = zero_mpz;
-    return zero_term;
+    zero_mpz = unregistered_value_p_zero_mpz();
+    zero_term = caml_alloc(1,1);
+    Store_field(zero_term, 0, zero_mpz);
+    CAMLreturn(zero_term);
   }
   else {
-    value term1 = caml_alloc(2,6);
-    TEMP_INTEGER(ppl_coeff);
+    ml_le_var1 = caml_alloc(1,0);
+    Store_field(ml_le_var1, 0, ppl_dimension_to_value(varid));
+    term1 = caml_alloc(2,6);
+    PPL_DIRTY_TEMP_COEFFICIENT(ppl_coeff);
     ppl_coeff = r.coefficient(Variable(varid));
-    Field(term1, 0) = build_ocaml_coefficient(ppl_coeff);
-    value ml_le_var1 = caml_alloc(1,0);
-    Field(ml_le_var1, 0) = Val_int(varid);
-    Field(term1, 1) = ml_le_var1;
+    Store_field(term1, 0, build_ocaml_coefficient(ppl_coeff));
+    Store_field(term1, 1, ml_le_var1);
     while (true) {
       ++varid;
-      value sum;
       while (varid < space_dimension
 	     && (coeff = r.coefficient(Variable(varid))) == 0)
 	++varid;
       if (varid >= space_dimension)
-	return term1;
+	CAMLreturn(term1);
       else {
-	sum = caml_alloc(2,4);
-	value term2 = caml_alloc(2,6);
+	ml_le_var2 = caml_alloc(1,0);
+	Store_field(ml_le_var2, 0, ppl_dimension_to_value(varid));
+	term2 = caml_alloc(2,6);
 	ppl_coeff = r.coefficient(Variable(varid));
-	Field(term2, 0) = build_ocaml_coefficient(ppl_coeff);
-	value ml_le_var2 = caml_alloc(1,0);
-	Field(ml_le_var2, 0) = Val_int(varid);
-	Field(term2, 1) = ml_le_var2;
-	Field(sum, 0) = term1;
-	Field(sum, 1) = term2;
+	Store_field(term2, 0, build_ocaml_coefficient(ppl_coeff));
+	Store_field(term2, 1, ml_le_var2);
+	sum = caml_alloc(2,4);
+	Store_field(sum, 0, term1);
+	Store_field(sum, 1, term2);
 	term1 = sum;
       }
     }
@@ -373,224 +371,238 @@ get_linear_expression(const R& r) {
 
 value
 build_ocaml_generator(const Generator& ppl_generator) {
+  CAMLparam0();
+  CAMLlocal1(caml_generator);
   switch (ppl_generator.type()) {
   case Generator::LINE: {
     // Store the linear expression. (1,0) stands for
     // allocate one block (the linear expression) with Tag 0 (a line here).
-    value caml_generator = caml_alloc(1,0);
-    Field(caml_generator, 0) = get_linear_expression(ppl_generator);
-    return caml_generator;
+    caml_generator = caml_alloc(1,0);
+    Store_field(caml_generator, 0, get_linear_expression(ppl_generator));
+    CAMLreturn(caml_generator);
   }
   case Generator::RAY: {
-    value caml_generator = caml_alloc(1,1);
-    Field(caml_generator, 0) = get_linear_expression(ppl_generator);
-    return caml_generator;
+    caml_generator = caml_alloc(1,1);
+    Store_field(caml_generator, 0, get_linear_expression(ppl_generator));
+    CAMLreturn(caml_generator);
   }
   case Generator::POINT: {
     // Allocates two blocks (the linear expression and the divisor)
     // of tag 2 (Point).
-    value caml_generator = caml_alloc(2,2);
-    Field(caml_generator, 0) = get_linear_expression(ppl_generator);
+    caml_generator = caml_alloc(2,2);
+    Store_field(caml_generator, 0, get_linear_expression(ppl_generator));
     const Coefficient& divisor = ppl_generator.divisor();
-    Field(caml_generator, 1) = build_ocaml_coefficient(divisor);
-    return caml_generator;
+    Store_field(caml_generator, 1, build_ocaml_coefficient(divisor));
+    CAMLreturn(caml_generator);
   }
   case Generator::CLOSURE_POINT:  {
-    value caml_generator = caml_alloc(2,3);
-    Field(caml_generator, 0) = get_linear_expression(ppl_generator);
+    caml_generator = caml_alloc(2,3);
+    Store_field(caml_generator, 0, get_linear_expression(ppl_generator));
     const Coefficient& divisor = ppl_generator.divisor();
-    Field(caml_generator, 1) =  build_ocaml_coefficient(divisor);
-    return caml_generator;
+    Store_field(caml_generator, 1, build_ocaml_coefficient(divisor));
+    CAMLreturn(caml_generator);
   }
   default:
-    throw std::runtime_error("PPL OCaml interface internal error");
+    throw std::runtime_error("PPL OCaml interface internal error:\n"
+                             "build_ocaml_generator(g)");
   }
 }
 
 value
 build_ocaml_grid_generator(const Grid_Generator& ppl_grid_generator) {
+  CAMLparam0();
+  CAMLlocal1(caml_generator);
   switch (ppl_grid_generator.type()) {
   case Grid_Generator::LINE: {
     // Store the linear expression. (1,0) stands for
     // allocate one block (the linear expression) with Tag 0 (a line here).
-    value caml_generator = caml_alloc(1,0);
-    Field(caml_generator, 0) = get_linear_expression(ppl_grid_generator);
-    return caml_generator;
+    caml_generator = caml_alloc(1,0);
+    Store_field(caml_generator, 0, get_linear_expression(ppl_grid_generator));
+    CAMLreturn(caml_generator);
   }
   case Grid_Generator::PARAMETER: {
-    value caml_generator = caml_alloc(2,1);
-    Field(caml_generator, 0) = get_linear_expression(ppl_grid_generator);
+    caml_generator = caml_alloc(2,1);
+    Store_field(caml_generator, 0, get_linear_expression(ppl_grid_generator));
     const Coefficient& divisor = ppl_grid_generator.divisor();
-    Field(caml_generator, 1) = build_ocaml_coefficient(divisor);
-    return caml_generator;
+    Store_field(caml_generator, 1, build_ocaml_coefficient(divisor));
+    CAMLreturn(caml_generator);
   }
   case Grid_Generator::POINT: {
     // Allocates two blocks (the linear expression and the divisor)
     // of tag 2 (Point).
-    value caml_generator = caml_alloc(2,2);
-    Field(caml_generator, 0) = get_linear_expression(ppl_grid_generator);
+    caml_generator = caml_alloc(2,2);
+    Store_field(caml_generator, 0, get_linear_expression(ppl_grid_generator));
     const Coefficient& divisor = ppl_grid_generator.divisor();
-    Field(caml_generator, 1) = build_ocaml_coefficient(divisor);
-    return caml_generator;
+    Store_field(caml_generator, 1, build_ocaml_coefficient(divisor));
+    CAMLreturn(caml_generator);
   }
-
   default:
-    throw std::runtime_error("PPL OCaml interface internal error");
+    throw std::runtime_error("PPL OCaml interface internal error:\n"
+                             "build_ocaml_grid_generator(g)");
   }
 }
 
 value
 build_ocaml_constraint(const Constraint& ppl_constraint) {
+  CAMLparam0();
+  CAMLlocal1(caml_constraint);
   switch (ppl_constraint.type()) {
   case Constraint::EQUALITY: {
-    value caml_constraint = caml_alloc(2,2);
-    Field(caml_constraint, 0) = get_linear_expression(ppl_constraint);
-    Field(caml_constraint, 1) = get_inhomogeneous_term(ppl_constraint);
-    return caml_constraint;
+    caml_constraint = caml_alloc(2,2);
+    Store_field(caml_constraint, 0, get_linear_expression(ppl_constraint));
+    Store_field(caml_constraint, 1, get_inhomogeneous_term(ppl_constraint));
+    CAMLreturn(caml_constraint);
   }
   case Constraint::STRICT_INEQUALITY: {
-    value caml_constraint = caml_alloc(2,3);
-    Field(caml_constraint, 0) = get_linear_expression(ppl_constraint);
-    Field(caml_constraint, 1) = get_inhomogeneous_term(ppl_constraint);
-    return caml_constraint;
+    caml_constraint = caml_alloc(2,3);
+    Store_field(caml_constraint, 0, get_linear_expression(ppl_constraint));
+    Store_field(caml_constraint, 1, get_inhomogeneous_term(ppl_constraint));
+    CAMLreturn(caml_constraint);
   }
   case Constraint::NONSTRICT_INEQUALITY: {
-    value caml_constraint = caml_alloc(2,4);
-    Field(caml_constraint, 0) = get_linear_expression(ppl_constraint);
-    Field(caml_constraint, 1) = get_inhomogeneous_term(ppl_constraint);
-    return caml_constraint;
+    caml_constraint = caml_alloc(2,4);
+    Store_field(caml_constraint, 0, get_linear_expression(ppl_constraint));
+    Store_field(caml_constraint, 1, get_inhomogeneous_term(ppl_constraint));
+    CAMLreturn(caml_constraint);
   }
   default:
-    throw std::runtime_error("PPL OCaml interface internal error");
+    throw std::runtime_error("PPL OCaml interface internal error:\n"
+                             "build_ocaml_constraint(c)");
   }
 }
 
 value
 build_ocaml_congruence(const Congruence& ppl_congruence) {
-    value caml_congruence = caml_alloc(3,0);
-    Field(caml_congruence, 0) = get_linear_expression(ppl_congruence);
-    Field(caml_congruence, 1) = get_inhomogeneous_term(ppl_congruence);
-    const Coefficient& modulus = ppl_congruence.modulus();
-    Field(caml_congruence, 2) = build_ocaml_coefficient(modulus);
-    return caml_congruence;
+  CAMLparam0();
+  CAMLlocal1(caml_congruence);
+  caml_congruence = caml_alloc(3,0);
+  Store_field(caml_congruence, 0, get_linear_expression(ppl_congruence));
+  Store_field(caml_congruence, 1, get_inhomogeneous_term(ppl_congruence));
+  const Coefficient& modulus = ppl_congruence.modulus();
+  Store_field(caml_congruence, 2, build_ocaml_coefficient(modulus));
+  CAMLreturn(caml_congruence);
 }
 
 value
 build_ocaml_congruence_system(const Congruence_System& ppl_cgs) {
-  // This code builds a list of constraints starting from bottom to
-  // top. A list on OCaml must be built like a sequence of Cons and Tail.
-  // The first element is the Nil list (the Val_int(0)).
-  value result = Val_int(0);
+  CAMLparam0();
+  CAMLlocal2(result, new_tail);
+  result = Val_emptylist;
   for (Congruence_System::const_iterator v_begin = ppl_cgs.begin(),
   	 v_end = ppl_cgs.end(); v_begin != v_end; ++v_begin) {
-    value new_tail = caml_alloc_tuple(2);
-    Field(new_tail, 0) = build_ocaml_congruence(*v_begin);
-    Field(new_tail, 1) = result;
+    new_tail = caml_alloc_tuple(2);
+    Store_field(new_tail, 0, build_ocaml_congruence(*v_begin));
+    Store_field(new_tail, 1, result);
     result = new_tail;
   }
-  return result;
+  CAMLreturn(result);
 }
 
 value
 build_ocaml_constraint_system(const Constraint_System& ppl_cs) {
-  // This code builds a list of constraints starting from bottom to
-  // top. A list on OCaml must be built like a sequence of Cons and Tail.
-  // The first element is the Nil list (the Val_int(0)).
-  value result = Val_int(0);
+  CAMLparam0();
+  CAMLlocal2(result, new_tail);
+  result = Val_emptylist;
   for (Constraint_System::const_iterator v_begin = ppl_cs.begin(),
   	 v_end = ppl_cs.end(); v_begin != v_end; ++v_begin) {
-    value new_tail = caml_alloc_tuple(2);
-    Field(new_tail, 0) = build_ocaml_constraint(*v_begin);
-    Field(new_tail, 1) = result;
+    new_tail = caml_alloc_tuple(2);
+    Store_field(new_tail, 0, build_ocaml_constraint(*v_begin));
+    Store_field(new_tail, 1, result);
     result = new_tail;
   }
-  return result;
+  CAMLreturn(result);
 }
 
 value
 build_ocaml_generator_system(const Generator_System& ppl_gs) {
-  value result = Val_int(0);
+  CAMLparam0();
+  CAMLlocal2(result, new_tail);
+  result = Val_emptylist;
   for (Generator_System::const_iterator v_begin = ppl_gs.begin(),
   	 v_end = ppl_gs.end(); v_begin != v_end; ++v_begin) {
-    value new_tail = caml_alloc_tuple(2);
-    Field(new_tail, 0) = build_ocaml_generator(*v_begin);
-    Field(new_tail, 1) = result;
+    new_tail = caml_alloc_tuple(2);
+    Store_field(new_tail, 0, build_ocaml_generator(*v_begin));
+    Store_field(new_tail, 1, result);
     result = new_tail;
   }
-  return result;
+  CAMLreturn(result);
 }
 
 value
 build_ocaml_grid_generator_system(const Grid_Generator_System& ppl_ggs) {
-  value result = Val_int(0);
+  CAMLparam0();
+  CAMLlocal2(result, new_tail);
+  result = Val_emptylist;
   for (Grid_Generator_System::const_iterator v_begin = ppl_ggs.begin(),
   	 v_end = ppl_ggs.end(); v_begin != v_end; ++v_begin) {
-    value new_tail = caml_alloc_tuple(2);
-    Field(new_tail, 0) = build_ocaml_grid_generator(*v_begin);
-    Field(new_tail, 1) = result;
+    new_tail = caml_alloc_tuple(2);
+    Store_field(new_tail, 0, build_ocaml_grid_generator(*v_begin));
+    Store_field(new_tail, 1, result);
     result = new_tail;
   }
-  return result;
+  CAMLreturn(result);
 }
 
 value
 build_ocaml_poly_con_relation(Poly_Con_Relation& r) {
-  value result = Val_int(0);
-  value cons;
+  CAMLparam0();
+  CAMLlocal2(result, cons);
+  result = Val_emptylist;
   while (r != Poly_Con_Relation::nothing()) {
     if (r.implies(Poly_Con_Relation::is_disjoint())) {
       cons = caml_alloc_tuple(2);
-      Field(cons, 0) = Val_int(0);
-      Field(cons, 1) = result;
+      Store_field(cons, 0, Val_int(0));
+      Store_field(cons, 1, result);
       result = cons;
       r = r - Poly_Con_Relation::is_disjoint();
     }
     else if (r.implies(Poly_Con_Relation::strictly_intersects())) {
       cons = caml_alloc_tuple(2);
-      Field(cons, 0) = Val_int(1);
-      Field(cons, 1) = result;
+      Store_field(cons, 0, Val_int(1));
+      Store_field(cons, 1, result);
       result = cons;
       r = r - Poly_Con_Relation::strictly_intersects();
     }
     else if (r.implies(Poly_Con_Relation::is_included())) {
       cons = caml_alloc_tuple(2);
-      Field(cons, 0) = Val_int(2);
-      Field(cons, 1) = result;
+      Store_field(cons, 0, Val_int(2));
+      Store_field(cons, 1, result);
       result = cons;
       r = r - Poly_Con_Relation::is_included();
     }
     else if (r.implies(Poly_Con_Relation::saturates())) {
       cons = caml_alloc_tuple(2);
-      Field(cons, 0) = Val_int(3);
-      Field(cons, 1) = result;
+      Store_field(cons, 0, Val_int(3));
+      Store_field(cons, 1, result);
       result = cons;
       r = r - Poly_Con_Relation::saturates();
     }
   }
-  return result;
+  CAMLreturn(result);
 }
 
 value
 build_ocaml_poly_gen_relation(Poly_Gen_Relation& r) {
-  value result = Val_int(0);
-  value cons;
+  CAMLparam0();
+  CAMLlocal2(result, cons);
+  result = Val_emptylist;
   while (r != Poly_Gen_Relation::nothing()) {
     if (r.implies(Poly_Gen_Relation::subsumes())) {
       cons = caml_alloc_tuple(2);
-      Field(cons, 0) = Val_int(0);
-      Field(cons, 1) = result;
+      Store_field(cons, 0, Val_int(0));
+      Store_field(cons, 1, result);
       result = cons;
       r = r - Poly_Gen_Relation::subsumes();
     }
   }
-  return result;
+  CAMLreturn(result);
 }
 
 Congruence
 build_ppl_Congruence(value c) {
   value e1 = Field(c, 0);
   value e2 = Field(c, 1);
-  mpz_class z((__mpz_struct*) Data_custom_val(Field(c, 2)));
+  mpz_class z(mpz_ptr_val(Field(c, 2)));
   Linear_Expression lhs = build_ppl_Linear_Expression(e1);
   Linear_Expression rhs = build_ppl_Linear_Expression(e2);
   return ((lhs %= rhs) / z);
@@ -607,18 +619,19 @@ build_ppl_Generator(value g) {
     return Generator::ray(build_ppl_Linear_Expression(Field(g, 0)));
   case 2: {
     // Point
-    mpz_class z((__mpz_struct*) Data_custom_val(Field(g, 1)));
+    mpz_class z(mpz_ptr_val(Field(g, 1)));
     return Generator::point(build_ppl_Linear_Expression(Field(g, 0)),
 			    Coefficient(z));
   }
   case 3: {
     // Closure_point
-    mpz_class z((__mpz_struct*) Data_custom_val(Field(g, 1)));
+    mpz_class z(mpz_ptr_val(Field(g, 1)));
     return Generator::closure_point(build_ppl_Linear_Expression(Field(g, 0)),
 				    Coefficient(z));
   }
   default:
-    caml_invalid_argument("Error building PPL::Constraint");
+    throw std::invalid_argument("PPL OCaml interface invalid argument:\n"
+                                "error building PPL::Generator");
   }
 }
 
@@ -630,26 +643,27 @@ build_ppl_Grid_Generator(value gg) {
      return grid_line(build_ppl_Linear_Expression(Field(gg, 0)));
    case 1: {
      // Parameter
-     mpz_class z((__mpz_struct*) Data_custom_val(Field(gg, 1)));
+     mpz_class z(mpz_ptr_val(Field(gg, 1)));
      return parameter(build_ppl_Linear_Expression(Field(gg, 0)),
 		      Coefficient(z));
    }
    case 2: {
      // Point
-     mpz_class z((__mpz_struct*) Data_custom_val(Field(gg, 1)));
+     mpz_class z(mpz_ptr_val(Field(gg, 1)));
      return grid_point(build_ppl_Linear_Expression(Field(gg, 0)),
 		       Coefficient(z));
    }
   default:
     // We should not be here!
-    throw std::runtime_error("PPL OCaml interface internal error");
+    throw std::invalid_argument("PPL OCaml interface invalid argument:\n"
+                                "error building PPL::Grid_Generator");
   }
 }
 
 Constraint_System
 build_ppl_Constraint_System(value cl) {
   Constraint_System cs;
-  while (cl != Val_int(0)) {
+  while (cl != Val_emptylist) {
     cs.insert(build_ppl_Constraint(Field(cl, 0)));
     cl = Field(cl, 1);
   }
@@ -659,7 +673,7 @@ build_ppl_Constraint_System(value cl) {
 Generator_System
 build_ppl_Generator_System(value gl) {
   Generator_System gs;
-  while (gl != Val_int(0)) {
+  while (gl != Val_emptylist) {
     gs.insert(build_ppl_Generator(Field(gl, 0)));
     gl = Field(gl, 1);
   }
@@ -669,7 +683,7 @@ build_ppl_Generator_System(value gl) {
 Congruence_System
 build_ppl_Congruence_System(value cgl) {
   Congruence_System cgs;
-  while (cgl != Val_int(0)) {
+  while (cgl != Val_emptylist) {
     cgs.insert(build_ppl_Congruence(Field(cgl, 0)));
     cgl = Field(cgl, 1);
   }
@@ -679,7 +693,7 @@ build_ppl_Congruence_System(value cgl) {
 Grid_Generator_System
 build_ppl_Grid_Generator_System(value caml_ggs) {
   Grid_Generator_System ggs;
-  while (caml_ggs != Val_int(0)) {
+  while (caml_ggs != Val_emptylist) {
     ggs.insert(build_ppl_Grid_Generator(Field(caml_ggs, 0)));
     caml_ggs = Field(caml_ggs, 1);
   }
@@ -707,11 +721,11 @@ static struct custom_operations MIP_Problem_custom_operations = {
 };
 
 inline value
-val_p_MIP_Problem(const MIP_Problem& ph) {
+unregistered_value_p_MIP_Problem(const MIP_Problem& ph) {
   value v = caml_alloc_custom(&MIP_Problem_custom_operations,
-			      sizeof(MIP_Problem*), 0, 1);
+                              sizeof(MIP_Problem*), 0, 1);
   p_MIP_Problem_val(v) = const_cast<MIP_Problem*>(&ph);
-  return(v);
+  return v;
 }
 
 } // namespace OCaml
@@ -727,10 +741,9 @@ extern "C"
 CAMLprim value
 ppl_new_MIP_Problem_from_space_dimension(value d) try {
   CAMLparam1(d);
-  int dd = Int_val(d);
-  if (dd < 0)
-    abort();
-  CAMLreturn(val_p_MIP_Problem(*new MIP_Problem(dd)));
+  dimension_type dd = value_to_ppl_dimension(d);
+  MIP_Problem& ppl_mip = *new MIP_Problem(dd);
+  CAMLreturn(unregistered_value_p_MIP_Problem(ppl_mip));
 }
 CATCH_ALL
 
@@ -739,14 +752,12 @@ CAMLprim value
 ppl_new_MIP_Problem(value d, value caml_cs, value caml_cost,
 		    value caml_opt_mode) try {
   CAMLparam4(d, caml_cs, caml_cost, caml_opt_mode);
-  int dd = Int_val(d);
-  if (dd < 0)
-    abort();
+  dimension_type dd = value_to_ppl_dimension(d);
   Constraint_System ppl_cs = build_ppl_Constraint_System(caml_cs);
   Linear_Expression ppl_cost = build_ppl_Linear_Expression(caml_cost);
   Optimization_Mode ppl_opt_mode = build_ppl_opt_mode(caml_opt_mode);
-  CAMLreturn(val_p_MIP_Problem(*new MIP_Problem(dd, ppl_cs, ppl_cost,
-						ppl_opt_mode)));
+  MIP_Problem& ppl_mip = *new MIP_Problem(dd, ppl_cs, ppl_cost,	ppl_opt_mode);
+  CAMLreturn(unregistered_value_p_MIP_Problem(ppl_mip));
 }
 CATCH_ALL
 
@@ -757,9 +768,26 @@ ppl_MIP_Problem_space_dimension(value ph) try {
   CAMLparam1(ph);
   const MIP_Problem& pph = *p_MIP_Problem_val(ph);
   dimension_type d = pph.space_dimension();
-  if (d > INT_MAX)
-    abort();
-  CAMLreturn(Val_int(d));
+  CAMLreturn(ppl_dimension_to_value(d));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_MIP_Problem_integer_space_dimensions(value caml_mip) try {
+  CAMLparam1(caml_mip);
+  CAMLlocal2(result, new_tail);
+  MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
+  const Variables_Set& ppl_ivars = ppl_mip.integer_space_dimensions();
+  result = Val_emptylist;
+  for (Variables_Set::const_reverse_iterator i = ppl_ivars.rbegin(),
+         i_end = ppl_ivars.rend(); i != i_end; ++i) {
+    new_tail = caml_alloc_tuple(2);
+    Store_field(new_tail, 0, ppl_dimension_to_value(*i));
+    Store_field(new_tail, 1, result);
+    result = new_tail;
+  }
+  CAMLreturn(result);
 }
 CATCH_ALL
 
@@ -778,57 +806,57 @@ ppl_MIP_Problem_constraints(value caml_mip) try {
 CATCH_ALL
 
 extern "C"
-void
+CAMLprim value
 ppl_MIP_Problem_add_space_dimensions_and_embed(value caml_mip, value dim) try {
   CAMLparam2(caml_mip, dim);
-  dimension_type ppl_dim = Int_val(dim);
+  dimension_type ppl_dim = value_to_ppl_dimension(dim);
   MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
   ppl_mip.add_space_dimensions_and_embed(ppl_dim);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
 extern "C"
-void
+CAMLprim value
 ppl_MIP_Problem_add_to_integer_space_dimensions(value caml_mip,
 						value caml_ivars) try {
   CAMLparam2(caml_mip, caml_ivars);
   MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
   ppl_mip.add_to_integer_space_dimensions(build_ppl_Variables_Set(caml_ivars));
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
 extern "C"
-void
+CAMLprim value
 ppl_MIP_Problem_add_constraint(value caml_mip,
 			       value caml_constraint) try {
   CAMLparam2(caml_mip, caml_constraint);
   MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
   ppl_mip.add_constraint(build_ppl_Constraint(caml_constraint));
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
 extern "C"
-void
+CAMLprim value
 ppl_MIP_Problem_add_constraints(value caml_mip,
-			       value caml_constraints) try {
+                                value caml_constraints) try {
   CAMLparam2(caml_mip, caml_constraints);
   MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
   ppl_mip.add_constraints(build_ppl_Constraint_System(caml_constraints));
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
 extern "C"
-void
+CAMLprim value
 ppl_MIP_Problem_set_objective_function(value caml_mip,
 				       value caml_cost) try {
   CAMLparam2(caml_mip, caml_cost);
   MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
   ppl_mip.set_objective_function(build_ppl_Linear_Expression(caml_cost));
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
@@ -882,7 +910,7 @@ ppl_MIP_Problem_optimization_mode(value caml_mip) try {
 CATCH_ALL
 
 extern "C"
-void
+CAMLprim value
 ppl_MIP_Problem_set_control_parameter(value caml_mip,
                                       value caml_cp_value) try {
   CAMLparam2(caml_mip, caml_cp_value);
@@ -890,7 +918,7 @@ ppl_MIP_Problem_set_control_parameter(value caml_mip,
   MIP_Problem::Control_Parameter_Value ppl_cp_value
     = build_ppl_control_parameter_value(caml_cp_value);
   ppl_mip.set_control_parameter(ppl_cp_value);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
  }
 CATCH_ALL
 
@@ -941,15 +969,15 @@ extern "C"
 CAMLprim value
 ppl_MIP_Problem_optimal_value(value caml_mip) try {
   CAMLparam1(caml_mip);
+  CAMLlocal1(caml_return_value);
   MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
-  TEMP_INTEGER(num);
-  TEMP_INTEGER(den);
+  PPL_DIRTY_TEMP_COEFFICIENT(num);
+  PPL_DIRTY_TEMP_COEFFICIENT(den);
   ppl_mip.optimal_value(num, den);
-  value caml_return_value = caml_alloc(2,0);
-  Field(caml_return_value, 0) = build_ocaml_coefficient(num);
-  Field(caml_return_value, 1) = build_ocaml_coefficient(den);
+  caml_return_value = caml_alloc(2,0);
+  Store_field(caml_return_value, 0, build_ocaml_coefficient(num));
+  Store_field(caml_return_value, 1, build_ocaml_coefficient(den));
   CAMLreturn(caml_return_value);
-
 }
 CATCH_ALL
 
@@ -958,16 +986,16 @@ CAMLprim value
 ppl_MIP_Problem_evaluate_objective_function(value caml_mip,
 					    value caml_generator) try {
   CAMLparam2(caml_mip, caml_generator);
+  CAMLlocal1(caml_return_value);
   Generator g = build_ppl_Generator(caml_generator);
   MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
-  TEMP_INTEGER(num);
-  TEMP_INTEGER(den);
+  PPL_DIRTY_TEMP_COEFFICIENT(num);
+  PPL_DIRTY_TEMP_COEFFICIENT(den);
   ppl_mip.evaluate_objective_function(g, num, den);
-  value caml_return_value = caml_alloc(2,0);
-  Field(caml_return_value, 0) = build_ocaml_coefficient(num);
-  Field(caml_return_value, 1) = build_ocaml_coefficient(den);
+  caml_return_value = caml_alloc(2,0);
+  Store_field(caml_return_value, 0, build_ocaml_coefficient(num));
+  Store_field(caml_return_value, 1, build_ocaml_coefficient(den));
   CAMLreturn(caml_return_value);
-
 }
 CATCH_ALL
 
@@ -982,53 +1010,63 @@ CATCH_ALL
 
 extern "C"
 CAMLprim value
-ppl_MIP_Problem_objective_function
-(value caml_mip) try {
+ppl_MIP_Problem_objective_function(value caml_mip) try {
   CAMLparam1(caml_mip);
-  MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
-  TEMP_INTEGER(inhomogeneous_term);
-  inhomogeneous_term = ppl_mip.objective_function().inhomogeneous_term();
-  value homogeneous_term = get_linear_expression(ppl_mip.objective_function());
-  value inhom_term
-    = build_ocaml_coefficient(ppl_mip.objective_function().inhomogeneous_term());
-  value sum = caml_alloc(2,4);
-  value coeff = caml_alloc(1,1);
-  Field(coeff, 0) = inhom_term;
-  Field(sum, 0) = homogeneous_term;
-  Field(sum, 1) = coeff;
+  CAMLlocal4(homogeneous_term, inhomogeneous_term, sum, coeff);
+  const MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
+  const Linear_Expression& ppl_obj_func = ppl_mip.objective_function();
+  homogeneous_term = get_linear_expression(ppl_obj_func);
+  inhomogeneous_term
+    = build_ocaml_coefficient(ppl_obj_func.inhomogeneous_term());
+  coeff = caml_alloc(1,1);
+  Store_field(coeff, 0, inhomogeneous_term);
+  sum = caml_alloc(2,4);
+  Store_field(sum, 0, homogeneous_term);
+  Store_field(sum, 1, coeff);
   CAMLreturn(sum);
 }
 CATCH_ALL
 
 extern "C"
-void
+CAMLprim value
 ppl_MIP_Problem_clear(value caml_mip) try {
   CAMLparam1(caml_mip);
   MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
   ppl_mip.clear();
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
 extern "C"
-void
+CAMLprim value
 ppl_MIP_Problem_set_optimization_mode(value caml_mip, value caml_opt_mode) try{
   CAMLparam2(caml_mip, caml_opt_mode);
   Optimization_Mode ppl_opt_mode= build_ppl_opt_mode(caml_opt_mode);
   MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
   ppl_mip.set_optimization_mode(ppl_opt_mode);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 CATCH_ALL
 
 extern "C"
-void
+CAMLprim value
 ppl_MIP_Problem_swap(value caml_mip1, value caml_mip2) try{
   CAMLparam2(caml_mip1, caml_mip2);
   MIP_Problem& ppl_mip1 = *p_MIP_Problem_val(caml_mip1);
   MIP_Problem& ppl_mip2 = *p_MIP_Problem_val(caml_mip2);
   ppl_mip1.swap(ppl_mip2);
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_MIP_Problem_ascii_dump(value caml_mip) try {
+  CAMLparam1(caml_mip);
+  MIP_Problem& mip = *p_MIP_Problem_val(caml_mip);
+  std::ostringstream s;
+  mip.ascii_dump(s);
+  CAMLreturn(caml_copy_string(s.str().c_str()));
 }
 CATCH_ALL
 
@@ -1081,20 +1119,120 @@ ppl_banner(value unit) try {
 CATCH_ALL
 
 extern "C"
-void
-ppl_set_rounding_for_PPL(value unit) try {
-  CAMLparam1(unit);
-  set_rounding_for_PPL();
-  CAMLreturn0;
+CAMLprim value
+ppl_io_wrap_string(value src,
+                   value indent_depth,
+                   value preferred_first_line_length,
+                   value preferred_line_length) try {
+  CAMLparam4(src, indent_depth, preferred_first_line_length,
+             preferred_line_length);
+  unsigned cpp_indent_depth
+    = value_to_unsigned<unsigned>(indent_depth);
+  unsigned cpp_preferred_first_line_length
+    = value_to_unsigned<unsigned>(preferred_first_line_length);
+  unsigned cpp_preferred_line_length
+    = value_to_unsigned<unsigned>(preferred_line_length);
+  using IO_Operators::wrap_string;
+  CAMLreturn(caml_copy_string(wrap_string(String_val(src),
+                                          cpp_indent_depth,
+                                          cpp_preferred_first_line_length,
+                                          cpp_preferred_line_length
+                                          ).c_str()));
 }
 CATCH_ALL
 
+extern "C"
+CAMLprim value
+ppl_Coefficient_is_bounded(value unit) try {
+  CAMLparam1(unit);
+  CAMLreturn(std::numeric_limits<Coefficient>::is_bounded
+             ? Val_true : Val_false);
+}
+CATCH_ALL
 
 extern "C"
-void
+CAMLprim value
+ppl_Coefficient_min(value unit) try {
+  CAMLparam1(unit);
+  if (std::numeric_limits<Coefficient>::is_bounded) {
+    const Coefficient& min = std::numeric_limits<Coefficient>::min();
+    CAMLreturn(build_ocaml_coefficient(min));
+  }
+  else
+    CAMLreturn(Val_unit);
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_Coefficient_max(value unit) try {
+  CAMLparam1(unit);
+  if (std::numeric_limits<Coefficient>::is_bounded) {
+    const Coefficient& max = std::numeric_limits<Coefficient>::max();
+    CAMLreturn(build_ocaml_coefficient(max));
+  }
+  else
+    CAMLreturn(Val_unit);
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_max_space_dimension(value unit) try {
+  CAMLparam1(unit);
+  dimension_type d = max_space_dimension();
+  CAMLreturn(ppl_dimension_to_value(d));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_set_rounding_for_PPL(value unit) try {
+  CAMLparam1(unit);
+  set_rounding_for_PPL();
+  CAMLreturn(Val_unit);
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
 ppl_restore_pre_PPL_rounding(value unit) try {
   CAMLparam1(unit);
   restore_pre_PPL_rounding();
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_set_timeout(value time) try {
+  CAMLparam1(time);
+#ifndef PPL_WATCHDOG_LIBRARY_ENABLED
+  const char* what = "PPL OCaml interface usage error:\n"
+    "ppl_set_timeout: the PPL Watchdog library is not enabled.";
+  throw std::runtime_error(what);
+#else
+  // In case a timeout was already set.
+  reset_timeout();
+  unsigned cpp_time = value_to_unsigned<unsigned>(time);
+  static timeout_exception e;
+  using Parma_Watchdog_Library::Watchdog;
+  p_timeout_object = new Watchdog(cpp_time, abandon_expensive_computations, e);
+  CAMLreturn(Val_unit);
+#endif // PPL_WATCHDOG_LIBRARY_ENABLED
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_reset_timeout(value unit) try {
+  CAMLparam1(unit);
+#ifndef PPL_WATCHDOG_LIBRARY_ENABLED
+  throw std::runtime_error("PPL OCaml interface error:\n"
+                           "the PPL Watchdog library is not enabled.");
+#else
+  reset_timeout();
+  CAMLreturn(Val_unit);
+#endif // PPL_WATCHDOG_LIBRARY_ENABLED
 }
 CATCH_ALL

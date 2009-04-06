@@ -4,6 +4,118 @@ Parma Polyhedra Library NEWS -- history of user-visible changes
 
 
 --------------------------------------------------------------------------
+NEWS for version 0.10.1  (released on April 14, 2009)
+--------------------------------------------------------------------------
+
+New and Changed Features
+========================
+
+o  Added support for cross compilation.
+
+o  The configuration script now explicitly checks that a recent enough
+   version of GNU M4 is available if at least one non-C++ interface is
+   enabled (in previous versions this check was not performed and
+   building the library could fail in a mysterious way).
+
+o  Robustness improved.
+
+o  Some packaging issues have been fixed.
+
+o  New macro PPL_DIRTY_TEMP_COEFFICIENT allows users of the C++
+   interface to decrease memory allocation overhead and to improve
+   locality whenever they need a temporary variable of type
+   `Coefficient'.
+
+o  The C++, C, Java and OCaml interfaces now provide utility functions
+   to format the textual representations of constraints, congruences
+   and so on.  This makes it easy to code debugging prints with line
+   indentation and wrapping.
+
+o  The C interface now provides functions of the form
+
+     int ppl_io_asprint_Polyhedron(char** strp, P x)
+
+   where `P' is any opaque pointer to a const PPL object. These
+   functions print `x' to a malloc-allocated string, a pointer to
+   which is returned via `strp'.
+
+o  The OCaml interface can now be compiled to native code using ocamlopt.
+
+o  New configuration option `--with-mlgmp=DIR' allows to specify the
+   installation directory of the ML GMP package.
+
+o  The OCaml interface now supports timeout computation facilities
+   through functions ppl_set_timeout and ppl_reset_timeout.  Moreover,
+   new functions ppl_Coefficient_is_bounded, ppl_Coefficient_min,
+   ppl_Coefficient_max and ppl_max_space_dimension have been added.
+
+o  The Prolog interfaces are no longer enabled by default in the
+   release tarballs (they are enabled by default in the Git versions).
+
+
+Bugfixes
+========
+
+o  Fixed a bug whereby `make check' was failing when the library was
+   configured with the `--disable-watchdog' option.
+
+o  Fixed a bug in method
+
+     bool Polyhedron::contains_integer_point() const;
+
+   whereby, under very specific conditions, an empty polyhedron is
+   incorrectly said to contain an integer point.
+
+o  Fixed a bug in method
+
+     Partially_Reduced_Product<D1, D2, R>::time_elase_assign(y)
+
+  whereby, if the product y was not already reduced, the operation could
+  lose precision.
+
+o  Fixed a bug in the OCaml interface, which was affecting functions
+
+     ppl_Grid_generalized_affine_image_with_congruence
+
+   and
+
+     ppl_Grid_generalized_affine_preimage_with_congruence.
+
+o  Fixed a bug in the Grid class that affected the methods
+
+     Grid::bounds_from_above(), Grid::bounds_from_below(),
+     Grid::maximize() and Grid::minimize();
+
+   causing all of them to wrongly return true in certain cases where
+   the grid generators were not minimized.
+
+o  Fixed a bug whereby big-endian architectures were not properly
+   recognized by the configuration script.
+
+o  Fixed a bug in the Java/OCaml/Prolog interfaces, whereby
+   the method/function/predicate for dropping a disjunct from a
+   Pointset_Powerset object were returning an invalid iterator.
+
+o  Fixed a bug in method Octagonal_Shape<T>::affine_image(var, expr)
+   whereby a wrong result was computed under specific conditions.
+
+o  Fixed a bug in the OCaml interface, whereby functions of form
+
+     ppl_..._widening_assign_with_tokens
+
+   and
+
+     ppl_..._extrapolation_assign_with_tokens
+
+   could return a wrong number of tokens.
+
+o  Fixed a bug in the OCaml interface, whereby functions that returned
+   an OCaml 'unit' type were returning the wrong value.
+
+o  Fixed several garbage collection related bugs in the OCaml interface.
+
+
+--------------------------------------------------------------------------
 NEWS for version 0.10  (released on November 4, 2008)
 --------------------------------------------------------------------------
 
@@ -1388,10 +1500,10 @@ o  The methods Polyhedron::widening_assign() and
    of the widenings introduced in
 
      N. Halbwachs.
-     Détermination Automatique de Relations Linéaires
-     Vérifiées par les Variables d'un Programme.
-     Thèse de 3ème cicle d'informatique,
-     Université scientifique et médicale de Grenoble,
+     Determination Automatique de Relations Lineaires
+     Verifiees par les Variables d'un Programme.
+     These de 3eme cicle d'informatique,
+     Universite scientifique et medicale de Grenoble,
      Grenoble, France, March 1979.
 
    and described in

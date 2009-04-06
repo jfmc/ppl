@@ -1,5 +1,5 @@
 /* Test Pointset_Powerset<Grid>.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -38,9 +38,9 @@ partition_aux(const Congruence& c,
   const Coefficient& c_inhomogeneous_term = c.inhomogeneous_term();
   Linear_Expression le(c);
   le -= c_inhomogeneous_term;
-  TEMP_INTEGER(n);
+  PPL_DIRTY_TEMP_COEFFICIENT(n);
   rem_assign(n, c_inhomogeneous_term, c_modulus);
-  TEMP_INTEGER(i);
+  PPL_DIRTY_TEMP_COEFFICIENT(i);
   for (i = c_modulus; i-- > 0; )
     if (i != n) {
       Grid qqq(qq);

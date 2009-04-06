@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Run the BD_Shape tests.
-# Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -50,3 +50,4 @@ do
   $MAKE check TESTS="$check_PROGRAMS" TESTS_ENVIRONMENT="$CHECKER" TEST_CPPFLAGS="-DBD_SHAPE_INSTANCE=$instance" XFAIL_TESTS=$xfail_tests || exit 1
   $MAKE clean && rm dirty_marker
 done
+exit 0

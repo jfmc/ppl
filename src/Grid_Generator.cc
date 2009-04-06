@@ -1,5 +1,5 @@
 /* Grid_Generator class implementation (non-inline functions).
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -252,7 +252,7 @@ PPL::Grid_Generator::scale_to_divisor(Coefficient_traits::const_reference d) {
       throw std::invalid_argument("PPL::Grid_Generator::scale_to_divisor(d):\n"
 				  "d == 0.");
 
-    TEMP_INTEGER(factor);
+    PPL_DIRTY_TEMP_COEFFICIENT(factor);
     exact_div_assign(factor, d, divisor());
     set_divisor(d);
     assert(factor > 0);
@@ -311,7 +311,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Grid_Generator& g) {
     break;
   }
 
-  TEMP_INTEGER(gv);
+  PPL_DIRTY_TEMP_COEFFICIENT(gv);
   bool first = true;
   for (dimension_type v = 0; v < num_variables; ++v) {
     gv = g[v+1];

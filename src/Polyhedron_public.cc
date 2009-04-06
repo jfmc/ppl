@@ -1,5 +1,5 @@
 /* Polyhedron class implementation (non-inline public functions).
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -312,7 +312,7 @@ PPL::Polyhedron::relation_with(const Congruence& cg) const {
   // The polyhedron is non-empty so that there exists a point.
   // For an arbitrary generator point find the scalar product with
   // the equality.
-  TEMP_INTEGER(point_val);
+  PPL_DIRTY_TEMP_COEFFICIENT(point_val);
 
   for (Generator_System::const_iterator g = gen_sys.begin(),
          gen_sys_end = gen_sys.end(); g != gen_sys_end; ++g) {
@@ -329,10 +329,10 @@ PPL::Polyhedron::relation_with(const Congruence& cg) const {
   // half-spaces to determine its relation with the congruence.
   const Coefficient& modulus = cg.modulus();
 
-  TEMP_INTEGER(div);
+  PPL_DIRTY_TEMP_COEFFICIENT(div);
   div = modulus;
 
-  TEMP_INTEGER(nearest);
+  PPL_DIRTY_TEMP_COEFFICIENT(nearest);
   nearest = (point_val / div) * div;
 
   point_val -= nearest;
@@ -570,11 +570,12 @@ PPL::Polyhedron::contains_integer_point() const {
   // CHECKME: do we really want to call conversion to check for emptiness?
   if (has_pending_constraints() && !process_pending())
     // Empty again.
-    return true;
+    return false;
 
   // FIXME: do also exploit info regarding rays and lines, if possible.
   // Is any integer point already available?
-  if (generators_are_up_to_date() && !has_pending_constraints())
+  assert(!has_pending_constraints());
+  if (generators_are_up_to_date())
     for (dimension_type i = gen_sys.num_rows(); i-- > 0; )
       if (gen_sys[i].is_point() && gen_sys[i].divisor() == 1)
 	return true;
@@ -591,10 +592,10 @@ PPL::Polyhedron::contains_integer_point() const {
   MIP_Problem mip(space_dim);
   mip.add_to_integer_space_dimensions(Variables_Set(Variable(0),
 						    Variable(space_dim-1)));
-  TEMP_INTEGER(homogeneous_gcd);
-  TEMP_INTEGER(gcd);
-  DIRTY_TEMP0(mpq_class, rational_inhomogeneous);
-  TEMP_INTEGER(tightened_inhomogeneous);
+  PPL_DIRTY_TEMP_COEFFICIENT(homogeneous_gcd);
+  PPL_DIRTY_TEMP_COEFFICIENT(gcd);
+  PPL_DIRTY_TEMP0(mpq_class, rational_inhomogeneous);
+  PPL_DIRTY_TEMP_COEFFICIENT(tightened_inhomogeneous);
   for (Constraint_System::const_iterator cs_i = cs.begin(),
 	 cs_end = cs.end(); cs_i != cs_end; ++cs_i) {
     const Constraint& c = *cs_i;
@@ -608,6 +609,12 @@ PPL::Polyhedron::contains_integer_point() const {
       for (dimension_type i = space_dim; i-- > 0; )
 	gcd_assign(homogeneous_gcd,
 		   homogeneous_gcd, c.coefficient(Variable(i)));
+      if (homogeneous_gcd == 0) {
+        // NOTE: since tautological constraints are already filtered away
+        // by iterators, here we must have an inconsistent constraint.
+        assert(c.is_inconsistent());
+        return false;
+      }
       Linear_Expression le;
       for (dimension_type i = space_dim; i-- > 0; )
 	le += (c.coefficient(Variable(i)) / homogeneous_gcd) * Variable(i);
@@ -634,7 +641,13 @@ PPL::Polyhedron::contains_integer_point() const {
 	for (dimension_type i = space_dim; i-- > 0; )
 	  gcd_assign(homogeneous_gcd,
 		     homogeneous_gcd, c.coefficient(Variable(i)));
-	if (homogeneous_gcd == 1)
+        if (homogeneous_gcd == 0) {
+          // NOTE: since tautological constraints are already filtered away
+          // by iterators, here we must have an inconsistent constraint.
+          assert(c.is_inconsistent());
+          return false;
+        }
+	else if (homogeneous_gcd == 1)
 	  // The normalized inhomogeneous term is integer:
 	  // add the constraint as-is.
 	  mip.add_constraint(c);
@@ -1321,7 +1334,7 @@ PPL::Polyhedron::add_generator(const Generator& g) {
       if (g.type() != Generator::POINT)
 	throw_invalid_generator("add_generator(g)", "g");
       else
-	status.set_zero_dim_univ();
+	set_zero_dim_univ();
     }
     assert(OK());
     return;
@@ -1575,7 +1588,7 @@ PPL::Polyhedron::add_recycled_generators(Generator_System& gs) {
   if (space_dim == 0) {
     if (marked_empty() && !gs.has_points())
       throw_invalid_generators("add_recycled_generators(gs)", "gs");
-    status.set_zero_dim_univ();
+    set_zero_dim_univ();
     assert(OK(true));
     return;
   }
@@ -1678,7 +1691,7 @@ PPL::Polyhedron::add_recycled_generators_and_minimize(Generator_System& gs) {
     if (marked_empty() && !gs.has_points())
       throw_invalid_generators("add_recycled_generators_and_minimize(gs)",
 			       "gs");
-    status.set_zero_dim_univ();
+    set_zero_dim_univ();
     assert(OK(true));
     return true;
   }
@@ -2227,7 +2240,7 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
   // Filter away the zero-dimensional case.
   if (x.space_dim == 0) {
     if (y.is_empty()) {
-      x.status.set_zero_dim_univ();
+      x.set_zero_dim_univ();
       return false;
     }
     else
@@ -2341,7 +2354,7 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
       // are not made redundant by `y' are added to `lp' depending on
       // the number of generators of `y' they rule out (the more generators
       // they rule out, the sooner they are added).  Of course, as soon
-      // as `lp' becomes unsatisfiable, we stopp adding.
+      // as `lp' becomes unsatisfiable, we stop adding.
       std::vector<Ruled_Out_Pair>
         ruled_out_vec(x_cs_num_rows - num_redundant_by_y);
       for (dimension_type i = 0, j = 0; i < x_cs_num_rows; ++i) {
@@ -3241,7 +3254,7 @@ generalized_affine_preimage(const Variable var,
   if (var_coefficient != 0) {
     Linear_Expression inverse_expr
       = expr - (denominator + var_coefficient) * var;
-    TEMP_INTEGER(inverse_denominator);
+    PPL_DIRTY_TEMP_COEFFICIENT(inverse_denominator);
     neg_assign(inverse_denominator, var_coefficient);
     Relation_Symbol inverse_relsym
       = (sgn(denominator) == sgn(inverse_denominator))

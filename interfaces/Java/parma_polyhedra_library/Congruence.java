@@ -1,5 +1,5 @@
 /* Congruence Java class declaration and implementation.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -21,6 +21,9 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 package parma_polyhedra_library;
+
+import java.io.Writer;
+import java.io.IOException;
 
 //! A linear congruence.
 /*! \ingroup PPL_Java_interface
@@ -56,6 +59,9 @@ public class Congruence {
 	lhs = e1.clone();
 	rhs = e2.clone();
     }
+
+    //! Returns an ascii formatted internal representation of \p this.
+    public native String ascii_dump();
 
     //! Returns a string representation of \p this.
     public native String toString();

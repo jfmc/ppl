@@ -1,5 +1,5 @@
 /* Bit_Row class implementation (non-inline functions).
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -212,6 +212,13 @@ PPL::Bit_Row::operator[](const unsigned long k) const {
 
   mp_limb_t limb = *(vec->_mp_d + i);
   return (limb >> (k % GMP_NUMB_BITS)) & 1;
+}
+
+void
+PPL::Bit_Row::set_until(unsigned long k) {
+  // FIXME, TODO: this is an inefficient implementation.
+  while (k-- > 0)
+    mpz_setbit(vec, k);
 }
 
 /*! \relates Parma_Polyhedra_Library::Bit_Row */

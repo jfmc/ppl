@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -108,11 +108,11 @@ partition1 \
 powersetdifference1 \
 powersetgeometricallycovers1 \
 powersetgeometricallyequals1 \
-pointsetpowerset1 \
 refinewithcongruences1 \
 refinewithconstraints1 \
 relations1 relations2 relations3 \
 removespacedims1 removespacedims2 \
+simplifyusingcontext1 \
 timeelapse1 \
 topclosed1 \
 topclosure1 \
@@ -255,8 +255,6 @@ powersetdifference1_SOURCES = powersetdifference1.cc
 powersetgeometricallycovers1_SOURCES = powersetgeometricallycovers1.cc
 powersetgeometricallyequals1_SOURCES = powersetgeometricallyequals1.cc
 
-pointsetpowerset1_SOURCES = pointsetpowerset1.cc
-
 refinewithcongruences1_SOURCES = refinewithcongruences1.cc
 refinewithconstraints1_SOURCES = refinewithconstraints1.cc
 
@@ -266,6 +264,8 @@ relations3_SOURCES = relations3.cc
 
 removespacedims1_SOURCES = removespacedims1.cc
 removespacedims2_SOURCES = removespacedims2.cc
+
+simplifyusingcontext1_SOURCES = simplifyusingcontext1.cc
 
 timeelapse1_SOURCES = timeelapse1.cc
 

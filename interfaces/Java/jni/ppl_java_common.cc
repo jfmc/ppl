@@ -1,5 +1,5 @@
 /* PPL Java interface common routines implementation.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -34,6 +34,7 @@ handle_exception(JNIEnv* env, const std::overflow_error& e) {
     = env->FindClass("parma_polyhedra_library/Overflow_Error_Exception");
   env->ThrowNew(newExcCls, e.what());
 }
+
 void
 handle_exception(JNIEnv* env, const std::invalid_argument& e) {
   jclass newExcCls
@@ -141,7 +142,7 @@ build_cxx_congruence(JNIEnv* env, const jobject& j_congruence) {
                       "modulus",
                       "Lparma_polyhedra_library/Coefficient;");
   jobject j_modulus = env->GetObjectField(j_congruence, modulus_field_id);
-  TEMP_INTEGER(ppl_modulus);
+  PPL_DIRTY_TEMP_COEFFICIENT(ppl_modulus);
   ppl_modulus = build_cxx_coeff(env, j_modulus);
   jfieldID lhs_field_id
     = env->GetFieldID(congruence_class,
@@ -479,7 +480,7 @@ build_cxx_coeff(JNIEnv* env, const jobject& j_coeff) {
 					    "()Ljava/lang/String;");
   jstring bi_string = (jstring) env->CallObjectMethod(bi, bi_to_string);
   const char *nativeString = env->GetStringUTFChars(bi_string, 0);
-  TEMP_INTEGER(ppl_coeff);
+  PPL_DIRTY_TEMP_COEFFICIENT(ppl_coeff);
   ppl_coeff = Coefficient(nativeString);
   env->ReleaseStringUTFChars(bi_string, nativeString);
   return ppl_coeff;

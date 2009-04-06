@@ -1,5 +1,5 @@
 /* Pointset_Powerset class implementation: non-inline template functions.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -65,8 +65,18 @@ Pointset_Powerset<NNC_Polyhedron>
 	 y_end = y.end(); i != y_end; ++i)
     x.sequence.push_back(Determinate<NNC_Polyhedron>
 			 (NNC_Polyhedron(i->element(), complexity)));
-  // FIXME: the following is a bug!
+
+  // FIXME: If the domain elements can be represented _exactly_ as NNC
+  // polyhedra, then having x.reduced = y.reduced is correct. This is
+  // the case if the domains are both linear and convex which holds
+  // for all the currently supported instantiations except for
+  // Grids; for this reason the Grid specialization has a
+  // separate implementation.  For any non-linear or non-convex
+  // domains (e.g., a domain of Intervals with restrictions or a
+  // domain of circles) that may be supported in the future, the
+  // assignment x.reduced = y.reduced will be a bug.
   x.reduced = y.reduced;
+
   assert(x.OK());
 }
 
@@ -946,14 +956,19 @@ Pointset_Powerset<PS>::maximize(const Linear_Expression& expr,
   x.omega_reduce();
   bool first = true;
 
-  Coefficient supt_n = 0;
-  Coefficient supt_d = 1;
+  PPL_DIRTY_TEMP_COEFFICIENT(supt_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(supt_d);
+  supt_n = 0;
+  supt_d = 1;
   bool maxt = 0;
 
-  Coefficient supi_n = 0;
-  Coefficient supi_d = 1;
+  PPL_DIRTY_TEMP_COEFFICIENT(supi_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(supi_d);
+  supi_n = 0;
+  supi_d = 1;
   bool maxi = 0;
-  TEMP_INTEGER(tmp);
+
+  PPL_DIRTY_TEMP_COEFFICIENT(tmp);
 
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
@@ -994,16 +1009,21 @@ Pointset_Powerset<PS>::maximize(const Linear_Expression& expr,
   x.omega_reduce();
   bool first = true;
 
-  Coefficient supt_n = 0;
-  Coefficient supt_d = 1;
+  PPL_DIRTY_TEMP_COEFFICIENT(supt_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(supt_d);
+  supt_n = 0;
+  supt_d = 1;
   bool maxt = 0;
   Generator gt = point();
 
-  Coefficient supi_n = 0;
-  Coefficient supi_d = 1;
+  PPL_DIRTY_TEMP_COEFFICIENT(supi_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(supi_d);
+  supi_n = 0;
+  supi_d = 1;
   bool maxi = 0;
   Generator gi = point();
-  TEMP_INTEGER(tmp);
+
+  PPL_DIRTY_TEMP_COEFFICIENT(tmp);
 
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
@@ -1048,14 +1068,19 @@ Pointset_Powerset<PS>::minimize(const Linear_Expression& expr,
   x.omega_reduce();
   bool first = true;
 
-  Coefficient inft_n = 0;
-  Coefficient inft_d = 1;
+  PPL_DIRTY_TEMP_COEFFICIENT(inft_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(inft_d);
+  inft_n = 0;
+  inft_d = 1;
   bool mint = 0;
 
-  Coefficient infi_n = 0;
-  Coefficient infi_d = 1;
+  PPL_DIRTY_TEMP_COEFFICIENT(infi_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(infi_d);
+  infi_n = 0;
+  infi_d = 1;
   bool mini = 0;
-  TEMP_INTEGER(tmp);
+
+  PPL_DIRTY_TEMP_COEFFICIENT(tmp);
 
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
@@ -1096,16 +1121,21 @@ Pointset_Powerset<PS>::minimize(const Linear_Expression& expr,
   x.omega_reduce();
   bool first = true;
 
-  Coefficient inft_n = 0;
-  Coefficient inft_d = 1;
+  PPL_DIRTY_TEMP_COEFFICIENT(inft_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(inft_d);
+  inft_n = 0;
+  inft_d = 1;
   bool mint = 0;
   Generator gt = point();
 
-  Coefficient infi_n = 0;
-  Coefficient infi_d = 1;
+  PPL_DIRTY_TEMP_COEFFICIENT(infi_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(infi_d);
+  infi_n = 0;
+  infi_d = 1;
   bool mini = 0;
   Generator gi = point();
-  TEMP_INTEGER(tmp);
+
+  PPL_DIRTY_TEMP_COEFFICIENT(tmp);
 
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
@@ -1179,8 +1209,6 @@ Pointset_Powerset<PS>::pairwise_reduce() {
 	const PS& pj = sj->element();
 	if (pi.upper_bound_assign_if_exact(pj)) {
 	  marked[si_index] = marked[sj_index] = true;
-	  // FIXME: check whether the preservation of reduction was
-	  // actually meant here.
 	  new_x.add_non_bottom_disjunct_preserve_reduction(pi);
 	  ++deleted;
 	  goto next;
@@ -1235,8 +1263,6 @@ BGP99_heuristics_assign(const Pointset_Powerset& y, Widening wf) {
       if (pi.contains(pj)) {
 	PS pi_copy = pi;
 	wf(pi_copy, pj);
-	// FIXME: check whether the preservation of reduction was
-	// actually meant here.
 	new_x.add_non_bottom_disjunct_preserve_reduction(pi_copy);
 	marked[i_index] = true;
       }

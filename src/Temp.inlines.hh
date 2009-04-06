@@ -1,5 +1,5 @@
 /* Temp_* classes implementation: inline functions.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -101,13 +101,13 @@ Temp_From_Local_Variable<T>::obtain_holder() {
 
 } // namespace Parma_Polyhedra_Library
 
-#define DIRTY_TEMP(T, id)						\
+#define PPL_DIRTY_TEMP(T, id)						\
   typename Parma_Polyhedra_Library::Dirty_Temp<T>::holder_type holder ## id = \
     Parma_Polyhedra_Library::Dirty_Temp<T>::obtain_holder();		\
   typename Parma_Polyhedra_Library::Dirty_Temp<T>::type id =		\
     holder ## id.item()
 
-#define DIRTY_TEMP0(T, id)						\
+#define PPL_DIRTY_TEMP0(T, id)						\
   Parma_Polyhedra_Library::Dirty_Temp<T>::holder_type holder ## id =	\
     Parma_Polyhedra_Library::Dirty_Temp<T>::obtain_holder();		\
   Parma_Polyhedra_Library::Dirty_Temp<T>::type id = holder ## id.item()

@@ -4,7 +4,7 @@ m4_divert(-1)
 dnl This m4 file generates the file ppl_ocaml.mli
 dnl using the code in ppl_interface_generator_ocaml_mli_code.m4.
 
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -32,11 +32,7 @@ m4_include(`ppl_interface_generator_ocaml_procedure_generators.m4')
 m4_divert`'dnl
 m4_include(ppl_ocaml_globals.mli)
 m4_divert(-1)
-m4_pushdef(`m4_one_class_code', `dnl
-m4_replace_all_patterns_in_string($1,
-                                  `type @LCLASS@
-',
-                                  m4_pattern_list)`'dnl
+m4_pushdef(`m4_one_class_code', `type m4_downcase(m4_interface_class$1)
 ')
 
 dnl -----------------------------------------------------------------

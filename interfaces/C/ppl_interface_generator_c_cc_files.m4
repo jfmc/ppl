@@ -4,7 +4,7 @@ m4_divert(-1)
 dnl This m4 file generates the file ppl_c_cc
 dnl using the code in ppl_interface_generator_c_cc_code.m4.
 
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -28,6 +28,7 @@ dnl site: http://www.cs.unipr.it/ppl/ .
 dnl Include files defining macros that generate the non-fixed part.
 m4_include(`ppl_interface_generator_c_cc_code.m4')
 m4_include(`ppl_interface_generator_c_procedure_generators.m4')
+m4_define(`m4_pattern_extensions', `, A_, B_')
 
 dnl Ensure any schematic procedure macro that is not defined
 dnl in the code file outputs a warning message.

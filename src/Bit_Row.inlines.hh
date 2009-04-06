@@ -1,5 +1,5 @@
 /* Bit_Row class implementation: inline functions.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -25,8 +25,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "globals.defs.hh"
 #include <cassert>
+
 // For the declaration of ffs(3).
-#include <strings.h>
+#if defined(PPL_HAVE_STRINGS_H)
+# include <strings.h>
+#elif defined(PPL_HAVE_STRING_H)
+# include <string.h>
+#endif
 
 namespace Parma_Polyhedra_Library {
 
@@ -69,7 +74,7 @@ Bit_Row::clear_from(const unsigned long k) {
 inline unsigned long
 Bit_Row::count_ones() const {
   assert(vec->_mp_size >= 0);
-  return mpn_popcount(vec->_mp_d, vec->_mp_size);
+  return vec->_mp_size == 0 ? 0 : mpn_popcount(vec->_mp_d, vec->_mp_size);
 }
 
 inline bool
@@ -121,7 +126,7 @@ set_intersection(const Bit_Row& x, const Bit_Row& y, Bit_Row& z) {
 /*! \relates Bit_Row */
 inline void
 set_difference(const Bit_Row& x, const Bit_Row& y, Bit_Row& z) {
-  DIRTY_TEMP0(mpz_class, complement_y);
+  PPL_DIRTY_TEMP0(mpz_class, complement_y);
   mpz_com(complement_y.get_mpz_t(), y.vec);
   mpz_and(z.vec, x.vec, complement_y.get_mpz_t());
 }

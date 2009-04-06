@@ -1,5 +1,5 @@
-/* Declarations of print_ppl_*_t_to_buffer() functions.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Declarations of print_ppl_*_to_buffer() functions.
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -33,11 +33,12 @@ site: http://www.cs.unipr.it/ppl/ . */
   `preferred_first_line_length' and `preferred_line_length',
   respectively.
 */
-#define DECLARE_PRINT_TO_BUFFER(Type)                                   \
-char* print_ppl_##Type##_t_to_buffer(ppl_##Type##_t p,                  \
-                                     unsigned indent_depth,             \
-                                     unsigned preferred_first_line_length, \
-                                     unsigned preferred_line_length);
+#define DECLARE_PRINT_TO_BUFFER(Type)					\
+char*                                                                   \
+print_ppl_##Type##_to_buffer(ppl_const_##Type##_t p,			\
+			     unsigned indent_depth,			\
+			     unsigned preferred_first_line_length,	\
+			     unsigned preferred_line_length);
 
 #ifdef __cplusplus
 extern "C" {

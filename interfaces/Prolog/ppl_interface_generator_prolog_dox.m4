@@ -4,7 +4,7 @@ m4_divert(-1)
 dnl This m4 file generates the file Prolog_configured_interface.dox
 dnl and Prolog_interface.dox
 
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -32,14 +32,6 @@ dnl Include the needed m4 files.
 dnl -----------------------------------------------------------------
 m4_include(`ppl_interface_generator_prolog_procedure_generators.m4')
 m4_include(`ppl_interface_generator_prolog_dox_code.m4')
-
-dnl Redefine m4_extension to allow for endings for the code which
-dnl were defined to have a default value "_code" to change according to the
-dnl category of predicates.
-m4_define(`m4_extension',
-  `m4_ifdef($1_`'m4_procedure_schema_ext,
-            `m4_indir($1_`'m4_procedure_schema_ext)', `')
-')
 
 dnl Check if this build is configuration independent
 dnl - if so, we are building the configuration independent Prolog manual.
@@ -70,7 +62,7 @@ dnl The Preamble.
 dnl =================================================================
 /*!
   \defgroup PPL_Prolog_interface Prolog Language Interface
-  \brief
+
   The Parma Polyhedra Library comes equipped with an interface
   for the Prolog language.
 */
@@ -141,7 +133,7 @@ dnl Initialize the class definitions
 dnl as we do not use m4_all_code to generate the documentation,
 dnl this must be done here.
 dnl -----------------------------------------------------------------
-m4_init_class_definitions
+m4_initialize_all
 
 dnl -----------------------------------------------------------------
 dnl For the documentation, the predicates for a single class are
@@ -154,10 +146,10 @@ dnl Define documentation for one subcategory.
 dnl This requires that m4_ext is defined.
 dnl -----------------------------------------------------------------
 m4_define(`m4_one_subcategory', `dnl
-m4_define(`m4_procedure_schema_ext', m4_ext`'_doc)`'dnl
+m4_define(`m4_procedure_schema_extension', m4_ext`'_doc)`'dnl
 m4_echo_unquoted(m4_subcategory_`'m4_ext)
 m4_ifdef(m4_interface_class`'$1,
-`m4_patsubst(m4_one_class_code($1), @COMMA@, `,')`'dnl
+`m4_patsubst(m4_one_class_code($1), |COMMA|, `,')`'dnl
 ')`'dnl
 ')
 
@@ -211,11 +203,10 @@ dnl -----------------------------------------------------------------
 dnl Documentation for one simple class.
 dnl -----------------------------------------------------------------
 m4_define(`m4_one_simple_class_code', `dnl
-m4_define(`m4_current_ppl_domain', m4_interface_class`'$1)`'dnl
-\anchor m4_current_ppl_domain`'_predicates
-<H1>Predicates for the m4_current_topology m4_current_ppl_domain Domain</H1>
+\anchor m4_this_interface_class`'_predicates
+<H1>Predicates for the m4_this_topology m4_this_interface_class Domain</H1>
   Here we provide a short description for each of the predicates
-  available for the domain of m4_current_topology m4_current_ppl_objects.
+  available for the domain of m4_this_topology m4_this_ppl_objects.
 m4_ifdef(`m4_prolog_ci_documentation',
   `Note that predicates for other domains will follow a similar pattern.')
 
@@ -269,7 +260,6 @@ dnl pointset powerset domains but allows for other ad hoc predicates
 dnl for other domains to be added later.
 dnl -----------------------------------------------------------------
 m4_define(`m4_ci_pps_class_code', `dnl
-m4_define(`m4_current_ppl_domain', m4_interface_class`'$1)`'dnl
 \anchor other_domains
 <H1>Ad hoc Predicates for Other Domains</H1>
 dnl The pointset powerset domains.
@@ -288,28 +278,28 @@ m4_finalize_category_pps`'dnl
 
 m4_divert`'dnl
 m4_ifdef(`m4_prolog_ci_documentation', `dnl
-m4_define(`m4_current_ppl_domain', Polyhedron)`'dnl
-m4_pushdef(`m4_class_alt_replacement', `polyhedron')`'dnl
-m4_pushdef(`m4_Polyhedron_topology_replacement', `C_')`'dnl
-m4_pushdef(`m4_Polyhedron_topology_alt_replacement', `C ')`'dnl
-m4_pushdef(`m4_current_ppl_one_object', `polyhedron')`'dnl
-m4_pushdef(`m4_current_ppl_objects', `polyhedra')`'dnl
-m4_pushdef(`m4_current_ppl_group', `polyhedra')`'dnl
-m4_pushdef(`m4_current_topology', `C')`'dnl
-m4_pushdef(`m4_Polyhedron_friend_replacement',
+m4_define(`m4_this_interface_class', Polyhedron)`'dnl
+m4_pushdef(`m4_a_class_replacements', `polyhedron')`'dnl
+m4_pushdef(`m4_Polyhedron_topology_replacements', `C_')`'dnl
+m4_pushdef(`m4_Polyhedron_a_topology_replacements', `C ')`'dnl
+m4_pushdef(`m4_this_ppl_one_object', `polyhedron')`'dnl
+m4_pushdef(`m4_this_ppl_objects', `polyhedra')`'dnl
+m4_pushdef(`m4_this_ppl_group', `polyhedra')`'dnl
+m4_pushdef(`m4_this_topology', `C')`'dnl
+m4_pushdef(`m4_Polyhedron_friend_replacements',
   `C_Polyhedron, NNC_Polyhedron')`'dnl
-m4_pushdef(`m4_Polyhedron_friend_alt_replacement',
+m4_pushdef(`m4_Polyhedron_a_friend_replacements',
    `C polyhedron, NNC polyhedron')`'dnl
-m4_patsubst(`m4_one_simple_class_code(1)', @COMMA@, `,')`'dnl
-m4_popdef(`m4_Polyhedron_topology_replacement')`'dnl
-m4_popdef(`m4_Polyhedron_topology_alt_replacement')`'dnl
-m4_popdef(`m4_current_ppl_objects')`'dnl
-m4_popdef(`m4_current_topology')`'dnl
-m4_pushdef(`m4_Pointset_Powerset_comparison_replacement',
+m4_patsubst(`m4_one_simple_class_code(1)', |COMMA|, `,')`'dnl
+m4_popdef(`m4_Polyhedron_topology_replacements')`'dnl
+m4_popdef(`m4_Polyhedron_a_topology_replacements')`'dnl
+m4_popdef(`m4_this_ppl_objects')`'dnl
+m4_popdef(`m4_this_topology')`'dnl
+m4_pushdef(`m4_Pointset_Powerset_comparison_replacements',
          `geometrically_covers, geometrically_equals')`'dnl
-m4_pushdef(`m4_Pointset_Powerset_comparison_alt_replacement',
+m4_pushdef(`m4_Pointset_Powerset_a_comparison_replacements',
          `geometrically covers, geometrically equals')`'dnl
-m4_patsubst(`m4_ci_pps_class_code(2)', @COMMA@, `,')`'dnl
+m4_patsubst(`m4_ci_pps_class_code(2)', |COMMA|, `,')`'dnl
 ')`'dnl
 m4_divert(-1)
 
@@ -329,35 +319,35 @@ dnl for the current class. If not finish.
 m4_ifdef(m4_interface_class`'$1, `dnl
 dnl
 dnl First some temporary definitions.
-m4_define(`m4_current_ppl_domain', m4_interface_class`'$1)`'dnl
-m4_pushdef(`m4_class_alt_replacement', `dnl
-m4_PPL_domain2text(m4_current_ppl_domain)')
-m4_pushdef(`m4_current_topology', `')`'dnl
-m4_pushdef(`m4_current_ppl_group', m4_class_group`'$1)`'dnl
-m4_pushdef(`m4_current_ppl_kind', m4_class_kind`'$1)`'dnl
-m4_pushdef(`m4_current_ppl_disjunct_kind', m4_class_body_kind`'$1)`'dnl
+m4_define(`m4_this_interface_class', m4_interface_class`'$1)`'dnl
+m4_pushdef(`m4_a_class_replacement', `dnl
+m4_PPL_domain2text(m4_this_interface_class)')
+m4_pushdef(`m4_this_topology', `')`'dnl
+m4_pushdef(`m4_this_ppl_group', m4_class_group`'$1)`'dnl
+m4_pushdef(`m4_this_ppl_kind', m4_class_kind`'$1)`'dnl
+m4_pushdef(`m4_this_ppl_disjunct_kind', m4_class_body_kind`'$1)`'dnl
 m4_define(`m4_disjunct_topology', `dnl
 m4_upcase(m4_get_class_topology(m4_cplusplus_class_body$1))')`'dnl
-m4_pushdef(`m4_current_ppl_one_object', `dnl
-m4_PPL_domain2text(m4_current_ppl_kind)')
-m4_pushdef(`m4_current_ppl_objects', `dnl
-m4_ifelse(m4_current_ppl_group, box,
-   m4_plural(m4_PPL_domain2text(m4_current_ppl_domain)),
-          m4_current_ppl_group, pointset_powerset,
-   pointset powersets of m4_plural(m4_PPL_domain2text(m4_disjunct_topology m4_current_ppl_disjunct_kind)),
-  m4_plural(m4_PPL_domain2text(m4_current_ppl_kind)))')`'dnl
+m4_pushdef(`m4_this_ppl_one_object', `dnl
+m4_PPL_domain2text(m4_this_ppl_kind)')
+m4_pushdef(`m4_this_ppl_objects', `dnl
+m4_ifelse(m4_this_ppl_group, box,
+   m4_plural(m4_PPL_domain2text(m4_this_interface_class)),
+          m4_this_ppl_group, pointset_powerset,
+   pointset powersets of m4_plural(m4_PPL_domain2text(m4_disjunct_topology m4_this_ppl_disjunct_kind)),
+  m4_plural(m4_PPL_domain2text(m4_this_ppl_kind)))')`'dnl
 dnl
 dnl Generate documentation for current class.
 m4_one_simple_class_code($1)`'dnl
-m4_ifelse(m4_current_ppl_group,
+m4_ifelse(m4_this_ppl_group,
   pointset_powerset, `m4_iter_pps_categories($1)')`'dnl
 dnl
 dnl Remove temporary definition.
-m4_popdef(`m4_current_ppl_objects')`'dnl
-m4_popdef(`m4_current_topology')`'dnl
-m4_popdef(`m4_current_ppl_group')`'dnl
-m4_popdef(`m4_current_ppl_kind')`'dnl
-m4_popdef(`m4_current_ppl_disjunct_kind')`'dnl
+m4_popdef(`m4_this_ppl_objects')`'dnl
+m4_popdef(`m4_this_topology')`'dnl
+m4_popdef(`m4_this_ppl_group')`'dnl
+m4_popdef(`m4_this_ppl_kind')`'dnl
+m4_popdef(`m4_this_ppl_disjunct_kind')`'dnl
 m4_popdef(`m4_disjunct_topology')`'dnl
 dnl
 dnl Increment class counter and repeat.
@@ -369,7 +359,7 @@ dnl Generate all documentation for all the classes
 dnl -----------------------------------------------------------------
 m4_divert`'dnl
 m4_ifdef(`m4_prolog_ci_documentation', `',
-  `m4_patsubst(`m4_all_classes_doc(1)', @COMMA@, `,')`'dnl
+  `m4_patsubst(`m4_all_classes_doc(1)', |COMMA|, `,')`'dnl
 ')`'dnl
 m4_divert(-1)
 

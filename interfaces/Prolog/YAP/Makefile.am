@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -52,7 +52,7 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ppl_interface_generator_yap_cc.m4
 
 ppl_yap.cc: $(interface_generator_dependencies)
-	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
+	$(M4) --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_yap_cc.m4 > $@
 
 if ENABLE_SHARED
@@ -217,9 +217,10 @@ pl_check_test: yap_pl_check.pl ppl_yap.pl ../tests/pl_check.pl $(EXPECTED_PCHK)
 			<script_pchk >obtained_pchk
 	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
 
-clpq_test: yap_clpq.pl ppl_yap.pl ../tests/clpq.pl ../tests/script_clpq $(EXPECTED_CLPQ)
-	LANG=C; \
-	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
+$(CLPQ_TESTS):
+	cp -f $(srcdir)/../tests/$@ .
+
+clpq_test: yap_clpq.pl ppl_yap.pl ../tests/clpq.pl ../tests/script_clpq $(EXPECTED_CLPQ) $(CLPQ_TESTS)
 	echo "main." >script_clpq
 	cat $(srcdir)/../tests/script_clpq >>script_clpq
 	$(LIBTOOL) --mode=execute \
@@ -230,9 +231,7 @@ clpq_test: yap_clpq.pl ppl_yap.pl ../tests/clpq.pl ../tests/script_clpq $(EXPECT
 			<script_clpq >obtained_clpq
 	diff -u --ignore-all-space $(EXPECTED_CLPQ) obtained_clpq
 
-clpq2_test: yap_clpq2.pl ppl_yap.pl ../tests/clpq2.pl ../tests/script_clpq2 $(EXPECTED_CLPQ2)
-	LANG=C; \
-	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
+clpq2_test: yap_clpq2.pl ppl_yap.pl ../tests/clpq2.pl ../tests/script_clpq2 $(EXPECTED_CLPQ2) $(CLPQ_TESTS)
 	echo "main." >script_clpq2
 	cat $(srcdir)/../tests/script_clpq2 >>script_clpq2
 	$(LIBTOOL) --mode=execute \

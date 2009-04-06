@@ -1,5 +1,5 @@
 /* Pointset_Powerset class declaration.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -1396,6 +1396,12 @@ template <>
 template <>
 Pointset_Powerset<NNC_Polyhedron>
 ::Pointset_Powerset(const Pointset_Powerset<C_Polyhedron>& y,
+                    Complexity_Class);
+
+template <>
+template <>
+Pointset_Powerset<NNC_Polyhedron>
+::Pointset_Powerset(const Pointset_Powerset<Grid>& y,
                     Complexity_Class);
 
 template <>

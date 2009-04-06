@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -36,6 +36,7 @@ endif !VALGRIND_TESTS_ENABLED
 TESTS_ENVIRONMENT = $(CHECKER)
 
 AM_CPPFLAGS = \
+-I$(top_srcdir)/src \
 -I$(top_builddir)/src \
 -I$(top_srcdir)/utils \
 -I$(top_srcdir)/tests \
@@ -62,7 +63,7 @@ affinepreimage1 \
 affinetrans \
 append1 append2 \
 ascii_dump_load1 ascii_dump_load2 ascii_dump_load3 \
-bgp99extrapolation1 \
+bgp99extrapolation1 bgp99extrapolation2 \
 bhrz03widening1 bhrz03widening2 bhrz03widening3 \
 bhz03widening1 \
 bounded1 \
@@ -99,7 +100,7 @@ simplifyusingcontext1 \
 limitedbhrz03extrapolation1 \
 limitedh79extrapolation1 \
 linearpartition1 \
-linexpression1 \
+linearexpression1 \
 linearsystem1 \
 mapspacedims1 \
 matrix1 \
@@ -116,6 +117,7 @@ onepoint \
 permute \
 polydifference1 polydifference2 \
 polyhull1 polyhull2 \
+polyhullifexact1 polyhullifexact2 \
 randphull1 \
 refinewithconstraint1 \
 refinewithconstraints1 \
@@ -193,6 +195,7 @@ nnc_onepoint \
 nnc_permute \
 nnc_polydifference1 \
 nnc_polyhull1 \
+nnc_polyhullifexact1 \
 nnc_randphull1 \
 nnc_relations1 nnc_relations2 \
 nnc_removespacedims1 \
@@ -241,6 +244,7 @@ ascii_dump_load2_SOURCES = ascii_dump_load2.cc
 ascii_dump_load3_SOURCES = ascii_dump_load3.cc
 
 bgp99extrapolation1_SOURCES = bgp99extrapolation1.cc
+bgp99extrapolation2_SOURCES = bgp99extrapolation2.cc
 
 bhrz03widening1_SOURCES = bhrz03widening1.cc
 bhrz03widening2_SOURCES = bhrz03widening2.cc
@@ -326,7 +330,7 @@ limitedh79extrapolation1_SOURCES = limitedh79extrapolation1.cc
 
 linearpartition1_SOURCES = linearpartition1.cc
 
-linexpression1_SOURCES = linexpression1.cc
+linearexpression1_SOURCES = linearexpression1.cc
 
 linearsystem1_SOURCES = linearsystem1.cc
 
@@ -364,6 +368,9 @@ polydifference2_SOURCES = polydifference2.cc
 
 polyhull1_SOURCES = polyhull1.cc
 polyhull2_SOURCES = polyhull2.cc
+
+polyhullifexact1_SOURCES = polyhullifexact1.cc
+polyhullifexact2_SOURCES = polyhullifexact2.cc
 
 randphull1_SOURCES = randphull1.cc
 randphull1_LDADD = $(LDADD) -lm
@@ -589,6 +596,9 @@ nnc_polydifference1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_polyhull1_SOURCES = polyhull1.cc
 nnc_polyhull1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
+nnc_polyhullifexact1_SOURCES = polyhullifexact1.cc
+nnc_polyhullifexact1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
 nnc_randphull1_SOURCES = randphull1.cc
 nnc_randphull1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_randphull1_LDADD = $(LDADD) -lm
@@ -654,7 +664,7 @@ XFAIL_TESTS =
 
 check_PROGRAMS = $(TESTS) $(BUGS)
 
-EXTRA_DIST = $(watchdog1_SRCS)
+EXTRA_DIST = $(memory1_SRCS) $(watchdog1_SRCS)
 
 BUGS =
 

@@ -3,7 +3,7 @@ m4_divert(-1)
 
 This m4 file contains the program code for generating ppl_ocaml.mli
 
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -35,91 +35,91 @@ the definition is not yet implemented.
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 `dnl
 val ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension:
-  int -> degenerate_element -> @LCLASS@
+  int -> degenerate_element -> @!CLASS@
 
 ')
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_code',
 `dnl
 val ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s:
-  @BUILD_REPRESENT@_system -> @LCLASS@
+  @BUILD_REPRESENT@_system -> @!CLASS@
 
 ')
 
 m4_define(`ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_code',
 `dnl
 val ppl_@CLASS@_relation_with_@RELATION_REPRESENT@:
-  @LCLASS@ -> linear_@RELATION_REPRESENT@
-  -> poly_@ALT_RELATION_REPRESENT@_relation list
+  @!CLASS@ -> linear_@RELATION_REPRESENT@
+  -> poly_@A_RELATION_REPRESENT@_relation list
 
 ')
 
 m4_define(`ppl_@CLASS@_@DIMENSION@_code',
 `dnl
 val ppl_@CLASS@_@DIMENSION@:
-  @LCLASS@ -> int
+  @!CLASS@ -> int
 ')
 
 m4_define(`ppl_@CLASS@_@HAS_PROPERTY@_code',
 `dnl
 val ppl_@CLASS@_@HAS_PROPERTY@:
-  @LCLASS@ -> bool
+  @!CLASS@ -> bool
 
 ')
 
 m4_define(`ppl_@CLASS@_@SIMPLIFY@_code',
 `dnl
 val ppl_@CLASS@_@SIMPLIFY@:
-  @LCLASS@ -> unit
+  @!CLASS@ -> unit
 
 ')
 
 m4_define(`ppl_@CLASS@_bounds_from_@ABOVEBELOW@_code',
 `dnl
 val ppl_@CLASS@_bounds_from_@ABOVEBELOW@:
-  @LCLASS@ -> linear_expression -> bool
+  @!CLASS@ -> linear_expression -> bool
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_code',
+m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@_code',
 `dnl
-val ppl_@CLASS@_add_@ADD_REPRESENT@:
-  @LCLASS@ -> linear_@ADD_REPRESENT@ -> unit
+val ppl_@CLASS@_add_@CLASS_REPRESENT@:
+  @!CLASS@ -> linear_@CLASS_REPRESENT@ -> unit
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_code',
+m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@s_code',
 `dnl
-val ppl_@CLASS@_add_@ADD_REPRESENT@s:
-  @LCLASS@ -> @ADD_REPRESENT@_system -> unit
+val ppl_@CLASS@_add_@CLASS_REPRESENT@s:
+  @!CLASS@ -> @CLASS_REPRESENT@_system -> unit
 
 ')
 
 m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@_code',
 `dnl
 val ppl_@CLASS@_refine_with_@REFINE_REPRESENT@:
-  @LCLASS@ -> linear_@REFINE_REPRESENT@ -> unit
+  @!CLASS@ -> linear_@REFINE_REPRESENT@ -> unit
 
 ')
 
 m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s_code',
 `dnl
 val ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s:
-  @LCLASS@ -> @REFINE_REPRESENT@_system -> unit
+  @!CLASS@ -> @REFINE_REPRESENT@_system -> unit
 
 ')
 
 m4_define(`ppl_@CLASS@_@COMPARISON@_@CLASS@_code',
 `dnl
 val ppl_@CLASS@_@COMPARISON@_@CLASS@:
-  @LCLASS@ -> @LCLASS@ -> bool
+  @!CLASS@ -> @!CLASS@ -> bool
 
 ')
 
 m4_define(`ppl_@CLASS@_equals_@CLASS@_code',
 `dnl
 val ppl_@CLASS@_equals_@CLASS@:
-  @LCLASS@ -> @LCLASS@ -> bool
+  @!CLASS@ -> @!CLASS@ -> bool
 
 ')
 
@@ -127,96 +127,96 @@ val ppl_@CLASS@_equals_@CLASS@:
 m4_define(`ppl_@CLASS@_@BINOP@_code',
 `dnl
 val ppl_@CLASS@_@BINOP@:
-   @LCLASS@ -> @LCLASS@ -> unit
+   @!CLASS@ -> @!CLASS@ -> unit
 
 ')
 
 m4_define(`ppl_@CLASS@_simplify_using_context_assign_code',
 `dnl
 val ppl_@CLASS@_simplify_using_context_assign:
-  @LCLASS@ -> @LCLASS@ -> bool
+  @!CLASS@ -> @!CLASS@ -> bool
 
 ')
 
 m4_define(`ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@_code',
 `dnl
 val ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@:
-  @LCLASS@ -> int -> unit
+  @!CLASS@ -> int -> unit
 
 ')
 
 m4_define(`ppl_@CLASS@_remove_space_dimensions_code',
 `dnl
 val ppl_@CLASS@_remove_space_dimensions:
-  @LCLASS@ -> int list -> unit
+  @!CLASS@ -> int list -> unit
 
 ')
 
 m4_define(`ppl_@CLASS@_remove_higher_space_dimensions_code',
 `dnl
 val ppl_@CLASS@_remove_higher_space_dimensions:
-  @LCLASS@ -> int -> unit
+  @!CLASS@ -> int -> unit
 
 ')
 
 m4_define(`ppl_@CLASS@_fold_space_dimensions_code',
 `dnl
 val ppl_@CLASS@_fold_space_dimensions:
-  @LCLASS@ -> int list -> int -> unit
+  @!CLASS@ -> int list -> int -> unit
 
 ')
 
 m4_define(`ppl_@CLASS@_map_space_dimensions_code',
 `dnl
 val ppl_@CLASS@_map_space_dimensions:
-  @LCLASS@ -> (int*int) list -> unit
+  @!CLASS@ -> (int*int) list -> unit
 ')
 
 m4_define(`ppl_@CLASS@_expand_space_dimension_code',
 `dnl
 val ppl_@CLASS@_expand_space_dimension:
-  @LCLASS@ -> int -> int -> unit
+  @!CLASS@ -> int -> int -> unit
 ')
 
-m4_define(`ppl_@CLASS@_get_@GET_REPRESENT@s_code',
+m4_define(`ppl_@CLASS@_get_@CLASS_REPRESENT@s_code',
 `dnl
-val ppl_@CLASS@_get_@GET_REPRESENT@s:
-  @LCLASS@ -> @GET_REPRESENT@_system
+val ppl_@CLASS@_get_@CLASS_REPRESENT@s:
+  @!CLASS@ -> @CLASS_REPRESENT@_system
 
 ')
 
-m4_define(`ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_code',
+m4_define(`ppl_@CLASS@_get_minimized_@CLASS_REPRESENT@s_code',
 `dnl
-val ppl_@CLASS@_get_minimized_@GET_REPRESENT@s:
-  @LCLASS@ -> @GET_REPRESENT@_system
+val ppl_@CLASS@_get_minimized_@CLASS_REPRESENT@s:
+  @!CLASS@ -> @CLASS_REPRESENT@_system
 
 ')
 
 m4_define(`ppl_@CLASS@_constrains_code',
 `dnl
 val ppl_@CLASS@_constrains:
-  @LCLASS@ -> int -> bool
+  @!CLASS@ -> int -> bool
 
 ')
 
 m4_define(`ppl_@CLASS@_unconstrain_space_dimension_code',
 `dnl
 val ppl_@CLASS@_unconstrain_space_dimension:
-  @LCLASS@ -> int -> unit
+  @!CLASS@ -> int -> unit
 
 ')
 
 m4_define(`ppl_@CLASS@_unconstrain_space_dimensions_code',
 `dnl
 val ppl_@CLASS@_unconstrain_space_dimensions:
-  @LCLASS@ -> int list -> unit
+  @!CLASS@ -> int list -> unit
 
 ')
 
 m4_define(`ppl_@CLASS@_bounded_@AFFIMAGE@_code',
 `dnl
 val ppl_@CLASS@_bounded_@AFFIMAGE@:
-  @LCLASS@ -> int
+  @!CLASS@ -> int
   -> linear_expression -> linear_expression
   -> Z.t -> unit
 ')
@@ -224,14 +224,14 @@ val ppl_@CLASS@_bounded_@AFFIMAGE@:
 m4_define(`ppl_@CLASS@_@AFFIMAGE@_code',
 `dnl
 val ppl_@CLASS@_@AFFIMAGE@:
-  @LCLASS@ -> int -> linear_expression -> Z.t -> unit
+  @!CLASS@ -> int -> linear_expression -> Z.t -> unit
 
 ')
 
 m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_code',
 `dnl
 val ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs:
-  @LCLASS@ -> linear_expression
+  @!CLASS@ -> linear_expression
   -> relation_symbol -> linear_expression
   -> unit
 
@@ -240,7 +240,7 @@ val ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs:
 m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_code',
 `dnl
 val ppl_@CLASS@_generalized_@AFFIMAGE@:
-  @LCLASS@ -> int -> relation_symbol -> linear_expression
+  @!CLASS@ -> int -> relation_symbol -> linear_expression
   -> Z.t -> unit
 
 ')
@@ -248,7 +248,7 @@ val ppl_@CLASS@_generalized_@AFFIMAGE@:
 m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruence_code',
 `dnl
 val ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruence:
-  @LCLASS@ -> int -> relation_symbol -> linear_expression
+  @!CLASS@ -> int -> relation_symbol -> linear_expression
   -> Z.t -> Z.t -> unit
 
 ')
@@ -256,7 +256,7 @@ val ppl_@CLASS@_generalized_@AFFIMAGE@_with_congruence:
 m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence_code',
 `dnl
 val ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence:
-  @LCLASS@ -> linear_expression
+  @!CLASS@ -> linear_expression
   -> relation_symbol -> linear_expression -> Z.t
   -> unit
 
@@ -265,35 +265,35 @@ val ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_with_congruence:
 m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_code',
 `dnl
 val ppl_@CLASS@_@WIDEN@_widening_assign:
-  @LCLASS@ -> @LCLASS@ -> unit
+  @!CLASS@ -> @!CLASS@ -> unit
 
 ')
 
 m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_code',
 `dnl
 val ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens:
-  @LCLASS@ -> @LCLASS@ -> int -> int
+  @!CLASS@ -> @!CLASS@ -> int -> int
 
 ')
 
 m4_define(`ppl_@CLASS@_widening_assign_code',
 `dnl
 val ppl_@CLASS@_widening_assign:
-  @LCLASS@ -> @LCLASS@ -> unit
+  @!CLASS@ -> @!CLASS@ -> unit
 
 ')
 
 m4_define(`ppl_@CLASS@_widening_assign_with_tokens_code',
 `dnl
 val ppl_@CLASS@_widening_assign_with_tokens:
-  @LCLASS@ -> @LCLASS@ -> int -> int
+  @!CLASS@ -> @!CLASS@ -> int -> int
 
 ')
 
 m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens_code',
 `dnl
 val ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens:
-  @LCLASS@ -> @LCLASS@
+  @!CLASS@ -> @!CLASS@
   -> @CONSTRAINER@_system -> int -> int
 
 ')
@@ -301,7 +301,7 @@ val ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens:
 m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_code',
 `dnl
 val ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign:
-  @LCLASS@ -> @LCLASS@
+  @!CLASS@ -> @!CLASS@
   -> @CONSTRAINER@_system -> unit
 
 ')
@@ -309,7 +309,7 @@ val ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign:
 m4_define(`ppl_@CLASS@_@MAXMIN@_code',
 `dnl
 val ppl_@CLASS@_@MAXMIN@:
-  @LCLASS@ -> linear_expression
+  @!CLASS@ -> linear_expression
   -> bool * Z.t * Z.t * bool
 
 ')
@@ -317,7 +317,7 @@ val ppl_@CLASS@_@MAXMIN@:
 m4_define(`ppl_@CLASS@_@MAXMIN@_with_point_code',
 `dnl
 val ppl_@CLASS@_@MAXMIN@_with_point:
-  @LCLASS@ -> linear_expression
+  @!CLASS@ -> linear_expression
   -> bool * Z.t * Z.t * bool * linear_generator
 
 ')
@@ -325,13 +325,13 @@ val ppl_@CLASS@_@MAXMIN@_with_point:
 m4_define(`ppl_@CLASS@_OK_code',
 `dnl
 val ppl_@CLASS@_OK:
-  @LCLASS@ -> bool
+  @!CLASS@ -> bool
 ')
 
 m4_define(`ppl_@CLASS@_@MEMBYTES@_code',
- `dnl
+`dnl
 val ppl_@CLASS@_@MEMBYTES@:
-  @LCLASS@  -> int
+  @!CLASS@  -> int
 
 ')
 
@@ -339,124 +339,122 @@ val ppl_@CLASS@_@MEMBYTES@:
 m4_define(`ppl_@CLASS@_swap_code',
 `dnl
 val ppl_@CLASS@_swap:
-  @LCLASS@ -> @LCLASS@ -> unit
+  @!CLASS@ -> @!CLASS@ -> unit
 
 ')
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_code',
 `dnl
 val ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@:
-  @LALT_FRIEND@ -> @LCLASS@
+  @!A_FRIEND@ -> @!CLASS@
 
 ')
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity_code',
 `dnl
 val ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity:
-  @LALT_FRIEND@ -> complexity_class -> @LCLASS@
+  @!A_FRIEND@ -> complexity_class -> @!CLASS@
 
 ')
 
+m4_define(`ppl_@CLASS@_@UB_EXACT@_code',
+`dnl
+val ppl_@CLASS@_@UB_EXACT@:
+  @!CLASS@ -> @!CLASS@ -> bool
 
- m4_define(`ppl_@CLASS@_@UB_EXACT@_code',
- `dnl
- val ppl_@CLASS@_@UB_EXACT@:
-   @LCLASS@ -> @LCLASS@ -> bool
+')
 
- ')
-
- m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_code',
- `dnl
+m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_code',
+`dnl
 val ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign:
-  @LCLASS@  -> @LCLASS@ -> unit
+  @!CLASS@  -> @!CLASS@ -> unit
 
- ')
+')
 
- m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens_code',
- `dnl
+m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens_code',
+`dnl
 val ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens:
-  @LCLASS@  -> @LCLASS@ -> int -> int
+  @!CLASS@  -> @!CLASS@ -> int -> int
 
- ')
+')
 
- m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign_code',
- `dnl
+m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign_code',
+`dnl
 val ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign:
-  @LCLASS@  -> @LCLASS@ -> unit
+  @!CLASS@  -> @!CLASS@ -> unit
 
- ')
+')
 
- m4_define(`ppl_@CLASS@_@BEGINEND@_iterator_code',
- `dnl
+m4_define(`ppl_@CLASS@_@BEGINEND@_iterator_code',
+`dnl
 val ppl_@CLASS@_@BEGINEND@_iterator:
-  @LCLASS@  -> @LCLASS@_iterator
+  @!CLASS@  -> @!CLASS@_iterator
 
 ')
 
 m4_define(`ppl_@CLASS@_get_disjunct_code',
- `dnl
+`dnl
 val ppl_@CLASS@_get_disjunct:
-  @LCLASS@_iterator  ->  @LDISJUNCT@
+  @!CLASS@_iterator  ->  @!DISJUNCT@
 
 ')
 
 m4_define(`ppl_@CLASS@_add_disjunct_code',
- `dnl
+`dnl
 val ppl_@CLASS@_add_disjunct:
-  @LCLASS@  ->  @LDISJUNCT@ -> unit
+  @!CLASS@  ->  @!DISJUNCT@ -> unit
 
 ')
 
 m4_define(`ppl_@CLASS@_drop_disjunct_code',
- `dnl
+`dnl
 val ppl_@CLASS@_drop_disjunct:
-  @LCLASS@  ->  @LCLASS@_iterator -> unit
+  @!CLASS@  ->  @!CLASS@_iterator -> unit
 
 ')
 
 m4_define(`ppl_@CLASS@_drop_disjuncts_code',
- `dnl
+`dnl
 val ppl_@CLASS@_drop_disjuncts:
-  @LCLASS@  ->  @LCLASS@_iterator -> @LCLASS@_iterator -> unit
+  @!CLASS@  ->  @!CLASS@_iterator -> @!CLASS@_iterator -> unit
 
 ')
 
 m4_define(`ppl_new_@CLASS@_iterator_from_iterator_code',
- `dnl
-type @LCLASS@_iterator
+`dnl
+type @!CLASS@_iterator
 
 val ppl_new_@CLASS@_iterator_from_iterator:
-  @LCLASS@_iterator ->  @LCLASS@_iterator
+  @!CLASS@_iterator ->  @!CLASS@_iterator
 
 ')
 
 m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
- `dnl
+`dnl
 
 val ppl_@CLASS@_iterator_equals_iterator:
-  @LCLASS@_iterator ->  @LCLASS@_iterator -> bool
+  @!CLASS@_iterator ->  @!CLASS@_iterator -> bool
 
 ')
 
 m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
- `dnl
+`dnl
 val ppl_@CLASS@_@INCDEC@_iterator:
-  @LCLASS@_iterator -> unit
+  @!CLASS@_iterator -> unit
 
 ')
 
-
-m4_define(`ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code',
+m4_define(`ppl_@CLASS@_BHZ03_@A_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code',
 `dnl
-val ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign:
-  @LCLASS@ -> @LCLASS@ -> unit
+val ppl_@CLASS@_BHZ03_@A_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign:
+  @!CLASS@ -> @!CLASS@ -> unit
 
 ')
 
 m4_define(`ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign_code',
 `dnl
 val ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign:
-  @LCLASS@ -> @LCLASS@ -> int -> unit
+  @!CLASS@ -> @!CLASS@ -> int -> unit
 
 ')
 
@@ -464,21 +462,21 @@ m4_define(`ppl_@CLASS@_ascii_dump_code',
 `dnl
 
 val ppl_@CLASS@_ascii_dump:
-  @LCLASS@ -> string
+  @!CLASS@ -> string
 
 ')
 
 m4_define(`ppl_@CLASS@_linear_@PARTITION@_code',
 `dnl
 val ppl_@CLASS@_linear_@PARTITION@:
- @LCLASS@ -> @LCLASS@ -> @LCLASS@ * pointset_powerset_nnc_polyhedron
+  @!CLASS@ -> @!CLASS@ -> @!CLASS@ * pointset_powerset_nnc_polyhedron
 
 ')
 
 m4_define(`ppl_@CLASS@_approximate_@PARTITION@_code',
 `dnl
 val ppl_@CLASS@_approximate_@PARTITION@:
- @LCLASS@ -> @LCLASS@ ->
-   @LCLASS@ * pointset_powerset_grid * bool
+  @!CLASS@ -> @!CLASS@ ->
+    @!CLASS@ * pointset_powerset_grid * bool
 
 ')

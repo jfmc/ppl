@@ -1,5 +1,5 @@
 /* Pointset_Ask_Tell class implementation: non-inline template functions.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -88,11 +88,9 @@ Pointset_Ask_Tell<C_Polyhedron>
     x.sequence.push_back(Pair(c_ask, c_tell));
   }
 
-  // FIXME: the following comment should be rephrased!
-  // Note: this might be non-reduced even when `y' is known to be
-  // omega-reduced, because the constructor of C_Polyhedron, by
-  // enforcing topological closure, may have made different elements
-  // comparable.
+  // Note: in general, normalization of `y' does not propagate to `x',
+  // because the approximation potentially introduced by the conversion
+  // may have made uncomparable elements in `y' to become comparable in `x'.
   x.normalized = false;
   assert(x.OK());
 }

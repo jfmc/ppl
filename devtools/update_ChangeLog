@@ -1,2 +1,2 @@
 #!/bin/sh
-cvs2cl.pl --branches --revisions --usermap ~/ppl/CVSROOT/users --day-of-week
+git2cl >ChangeLog.new

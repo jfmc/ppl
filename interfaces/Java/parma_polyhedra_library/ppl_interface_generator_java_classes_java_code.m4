@@ -3,7 +3,7 @@ m4_divert(-1)
 
 This m4 file contains the code for generating files <CLASS_NAME>.java
 
-Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -39,7 +39,7 @@ the definition is not yet implemented.
 m4_define(`m4_class_build_cpp_object1_code',
 `dnl
 %<--%<--%<-- @TOPOLOGY@@CLASS@.java
-    private native void build_cpp_object(@UBUILD_REPRESENT@_System cs);
+    private native void build_cpp_object(@!BUILD_REPRESENT@_System cs);
 
 ')
 
@@ -96,7 +96,7 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity_code',
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_code',
 `dnl
 %<--%<--%<-- @TOPOLOGY@@CLASS@.java
-    public @TOPOLOGY@@CLASS@(@UBUILD_REPRESENT@_System cs) {
+    public @TOPOLOGY@@CLASS@(@!BUILD_REPRESENT@_System cs) {
 	build_cpp_object(cs);
     }
 
@@ -137,24 +137,24 @@ m4_define(`ppl_@CLASS@_@DIMENSION@_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_get_@GET_REPRESENT@s_code',
+m4_define(`ppl_@CLASS@_get_@CLASS_REPRESENT@s_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
-    public native @UGET_REPRESENT@_System @GET_REPRESENT@s();
+    public native @!CLASS_REPRESENT@_System @CLASS_REPRESENT@s();
 
 ')
 
-m4_define(`ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_code',
+m4_define(`ppl_@CLASS@_get_minimized_@CLASS_REPRESENT@s_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
-    public native @UGET_REPRESENT@_System minimized_@GET_REPRESENT@s();
+    public native @!CLASS_REPRESENT@_System minimized_@CLASS_REPRESENT@s();
 
 ')
 
 m4_define(`ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
-    public native Poly_@UALT_RELATION_REPRESENT@_Relation relation_with(@URELATION_REPRESENT@ c);
+    public native Poly_@!A_RELATION_REPRESENT@_Relation relation_with(@!RELATION_REPRESENT@ c);
 
 ')
 
@@ -183,7 +183,7 @@ m4_define(`ppl_@CLASS@_unconstrain_space_dimensions_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
     public native void
-      unconstrain_space_dimensions(Variables_Set to_be_constrained);
+      unconstrain_space_dimensions(Variables_Set to_be_unconstrained);
 
 ')
 
@@ -249,31 +249,31 @@ m4_define(`ppl_@CLASS@_OK_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_code',
+m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
-    public native void add_@ADD_REPRESENT@(@UADD_REPRESENT@ c);
+    public native void add_@CLASS_REPRESENT@(@!CLASS_REPRESENT@ c);
 
 ')
 
 m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
-    public native void refine_with_@REFINE_REPRESENT@(@UREFINE_REPRESENT@ c);
+    public native void refine_with_@REFINE_REPRESENT@(@!REFINE_REPRESENT@ c);
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_code',
+m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@s_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
-    public native void add_@ADD_REPRESENT@s(@UADD_REPRESENT@_System c);
+    public native void add_@CLASS_REPRESENT@s(@!CLASS_REPRESENT@_System c);
 
 ')
 
 m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
-    public native void refine_with_@REFINE_REPRESENT@s(@UREFINE_REPRESENT@_System c);
+    public native void refine_with_@REFINE_REPRESENT@s(@!REFINE_REPRESENT@_System c);
 
 ')
 
@@ -389,7 +389,7 @@ m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_code',
 %<--%<--%<-- @CLASS@.java
     public native
 	void @LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(@CLASS@ y,
-						 @UCONSTRAINER@_System cs,
+						 @!CONSTRAINER@_System cs,
 						 By_Reference<Integer> tp);
 
 ')
@@ -403,11 +403,11 @@ m4_define(`ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code',
+m4_define(`ppl_@CLASS@_BHZ03_@A_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
     public native void
-    BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign(@CLASS@ y);
+    BHZ03_@A_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign(@CLASS@ y);
 
 ')
 
@@ -493,7 +493,7 @@ m4_define(`ppl_delete_@CLASS@_iterator_code',
 m4_define(`ppl_@CLASS@_get_disjunct_code',
 `dnl
 %<--%<--%<-- @CLASS@_Iterator.java
-  public native @CLASSTOPOLOGY@@DISJUNCT@ get_disjunct();
+  public native @DISJUNCT_TOPOLOGY@@DISJUNCT@ get_disjunct();
 
 ')
 
@@ -514,7 +514,7 @@ m4_define(`ppl_@CLASS@_drop_disjuncts_code',
 m4_define(`ppl_@CLASS@_add_disjunct_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
-  public native void add_disjunct(@CLASSTOPOLOGY@@DISJUNCT@ j_disj);
+  public native void add_disjunct(@DISJUNCT_TOPOLOGY@@DISJUNCT@ j_disj);
 
 ')
 
@@ -528,7 +528,7 @@ m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
 m4_define(`ppl_@CLASS@_@INCDEC@_iterator_code',
 `dnl
 %<--%<--%<-- @CLASS@_Iterator.java
-  public native void @ALT_INCDEC@();
+  public native void @A_INCDEC@();
 
 ')
 
@@ -549,7 +549,7 @@ m4_define(`ppl_@CLASS@_constrains_code',
 m4_define(`ppl_@CLASS@_ascii_dump_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
-  public native String ascii_dump();
+    public native String ascii_dump();
 
 ')
 
@@ -558,7 +558,7 @@ m4_define(`ppl_@CLASS@_linear_@PARTITION@_code',
 %<--%<--%<-- @TOPOLOGY@@CLASS@.java
 
   public static native
-    Pair <@TOPOLOGY@@CLASS@@COMMA@ Pointset_Powerset_NNC_Polyhedron >
+    Pair <@TOPOLOGY@@CLASS@|COMMA| Pointset_Powerset_NNC_Polyhedron >
       linear_@PARTITION@(@TOPOLOGY@@CLASS@ p, @TOPOLOGY@@CLASS@ q);
 ')
 
@@ -566,7 +566,7 @@ m4_define(`ppl_@CLASS@_approximate_@PARTITION@_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
 
-  public static native Pair <@CLASS@@COMMA@ Pointset_Powerset_Grid >
+  public static native Pair <@CLASS@|COMMA| Pointset_Powerset_Grid >
       approximate_@PARTITION@(@CLASS@ p,
                             @CLASS@ q,
                             By_Reference<Boolean> finite);

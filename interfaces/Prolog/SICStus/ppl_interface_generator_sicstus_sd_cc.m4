@@ -3,7 +3,7 @@ m4_divert(-1)
 
 dnl This m4 file generates the file ppl_sicstus_sd.cc.
 
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -168,9 +168,9 @@ ppl_sicstus_deinit(int /* when */) {
 dnl
 m4_divert`'dnl
 dnl
-dnl Redefine m4_extension to generate SICStus stubs.
-dnl m4_extension(Predicate_Name, Arity)
-m4_define(`m4_extension', `dnl
+dnl Redefine m4_expanded_procedure_schema to generate SICStus stubs.
+dnl m4_expanded_procedure_schema(Predicate_Name, Arity)
+m4_define(`m4_expanded_procedure_schema', `dnl
 SP_STUB_$2($1)
 ')dnl
 dnl Generate stubs.
@@ -180,7 +180,7 @@ m4_divert(-1)
 
 dnl Redefine m4_extension to generate SICStus user predicates.
 dnl m4_extension(Predicate_Name, Arity)
-m4_define(`m4_extension', `dnl
+m4_define(`m4_expanded_procedure_schema', `dnl
   SP_DEFINE_C_PREDICATE($1, $2);
 ')
 

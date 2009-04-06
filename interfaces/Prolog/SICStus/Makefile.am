@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -59,7 +59,7 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ppl_interface_generator_sicstus_sd_cc.m4
 
 ppl_sicstus_sd.cc: $(interface_generator_dependencies)
-	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
+	$(M4) --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_sicstus_sd_cc.m4 > $@
 
 bin_PROGRAMS = ppl_sicstus
@@ -272,11 +272,12 @@ pl_check_test: ppl_sicstus ppl_sicstus.pl sp_pl_check.pl ../tests/pl_check.pl $(
 	fi
 	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
 
+$(CLPQ_TESTS):
+	cp -f $(srcdir)/../tests/$@ .
+
 # FIXME: the last prerequisite is to get around a bug of `spld': see
 # http://www.cs.unipr.it/pipermail/ppl-devel/2006-January/007610.html
-clpq_test: ppl_sicstus ppl_sicstus.pl sp_clpq.pl ../tests/clpq.pl ../tests/script_clpq $(EXPECTED_CLPQ) | pl_check_test
-	LANG=C; \
-	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
+clpq_test: ppl_sicstus ppl_sicstus.pl sp_clpq.pl ../tests/clpq.pl ../tests/script_clpq $(EXPECTED_CLPQ) $(CLPQ_TESTS) | pl_check_test
 	$(LIBTOOL) --mode=execute \
 	  -dlopen ../../../src/libppl.la \
 	  $(WATCHDOG_DLOPEN) \
@@ -287,9 +288,7 @@ clpq_test: ppl_sicstus ppl_sicstus.pl sp_clpq.pl ../tests/clpq.pl ../tests/scrip
 
 # FIXME: the last prerequisite is to get around a bug of `spld': see
 # http://www.cs.unipr.it/pipermail/ppl-devel/2006-January/007610.html
-clpq2_test: ppl_sicstus ppl_sicstus.pl sp_clpq.pl ../tests/clpq2.pl ../tests/script_clpq2 $(EXPECTED_CLPQ2) | clpq_test
-	LANG=C; \
-	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
+clpq2_test: ppl_sicstus ppl_sicstus.pl sp_clpq.pl ../tests/clpq2.pl ../tests/script_clpq2 $(EXPECTED_CLPQ2) $(CLPQ_TESTS) | clpq_test
 	$(LIBTOOL) --mode=execute \
           -dlopen ../../../src/libppl.la \
 	  $(WATCHDOG_DLOPEN) \

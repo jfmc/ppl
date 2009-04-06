@@ -2,7 +2,7 @@ m4_define(`dnl', `m4_dnl')`'dnl
 m4_divert(-1)
 
 dnl This m4 file generates the file ppl_xsb.cc.
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -31,7 +31,7 @@ m4_include(`ppl_interface_generator_copyright')dnl
 */
 
 m4_divert`'dnl
-m4_define(`m4_extension', `#define $1 xsb_stub_$1
+m4_define(`m4_expanded_procedure_schema', `#define $1 xsb_stub_$1
 ')dnl
 ppl_prolog_sys_code`'dnl
 dnl

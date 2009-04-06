@@ -1,6 +1,6 @@
 dnl Used by ppl_interfaces_generator_ocaml_hh_files.m4
 dnl for generating the access code for the OCaml interface.
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -48,12 +48,12 @@ custom_@CLASS@_finalize(value v) {
 }
 
 inline value
-val_p_@CLASS@(const @CPP_CLASS@& ph) {
+unregistered_value_p_@CLASS@(const @CPP_CLASS@& ph) {
   extern struct custom_operations @CLASS@_custom_operations;
   value v = caml_alloc_custom(&@CLASS@_custom_operations,
 			      sizeof(@CPP_CLASS@*), 0, 1);
   actual_p_@CLASS@_val(v) = const_cast<@CPP_CLASS@*>(&ph);
-  return(v);
+  return v;
 }
 
 } // namespace OCaml

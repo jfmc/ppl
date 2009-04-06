@@ -1,8 +1,0 @@
-.deps
-Makefile
-Makefile.in
-Prolog_interface.dox
-ppl_prolog_[A-Z]*.cc
-ppl_prolog_[A-Z]*.hh
-ppl_prolog_domains.cc
-ppl_prolog_domains.hh

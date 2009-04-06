@@ -1,5 +1,5 @@
 /* Test Partially_Reduced_Product<>.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -869,6 +869,69 @@ test20() {
   return cons_ok;
 }
 
+// time_elapse_assign(y) where the initial products are not reduced
+// and only one component of the second product is empty.
+bool
+test21() {
+  Variable A(0);
+
+  CProduct cp1(1);
+  cp1.refine_with_constraint(A == A);
+
+  CProduct cp2(1);
+  cp2.refine_with_constraint(A >= 1);
+  cp2.refine_with_constraint(A <= 0);
+
+  cp1.time_elapse_assign(cp2);
+
+  CProduct known_cp(1, EMPTY);
+
+  bool cons_ok = cp1.OK() && (cp1 == known_cp);
+
+  print_congruences(cp1, "*** cp1.time_elapse_assign(cp2) congruences ***");
+  print_constraints(cp1, "*** cp1.time_elapse_assign(cp2) constraints ***");
+
+  print_congruences(cp2, "*** cp2 congruences ***");
+  print_constraints(cp2, "*** cp2 constraints ***");
+
+  return cons_ok;
+}
+
+// time_elapse_assign(y) where the initial products are not reduced
+// and the second product has non-intersecting single point components.
+bool
+test22() {
+  Variable A(0);
+
+
+  CProduct cp1(1);
+
+  print_congruences(cp1, "*** cp1 congruences ***");
+  print_constraints(cp1, "*** cp1 constraints ***");
+
+  Grid gr(1);
+  gr.refine_with_congruence((A %= 0)/ 2);
+
+  CProduct cp2(gr);
+
+  cp2.refine_with_constraint(A >= 1);
+  cp2.refine_with_constraint(A <= 1);
+
+  cp1.time_elapse_assign(cp2);
+
+  CProduct known_cp(1, EMPTY);
+
+  bool cons_ok = cp1.OK() && (cp1 == known_cp);
+
+  print_congruences(cp1, "*** cp1.time_elapse_assign(cp2) congruences ***");
+  print_constraints(cp1, "*** cp1.time_elapse_assign(cp2) constraints ***");
+
+  print_congruences(cp2, "*** cp2 congruences ***");
+  print_constraints(cp2, "*** cp2 constraints ***");
+
+  return cons_ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -892,4 +955,6 @@ BEGIN_MAIN
   DO_TEST_F8(test18);
   DO_TEST(test19);
   DO_TEST(test20);
+  DO_TEST(test21);
+  DO_TEST(test22);
 END_MAIN

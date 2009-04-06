@@ -1,5 +1,5 @@
 /* PPL Java interface: domain-independent functions.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -32,6 +32,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "parma_polyhedra_library_Generator_System.h"
 #include "parma_polyhedra_library_Grid_Generator.h"
 #include "parma_polyhedra_library_Grid_Generator_System.h"
+#include "parma_polyhedra_library_IO.h"
 
 using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::Interfaces::Java;
@@ -146,7 +147,7 @@ Java_parma_1polyhedra_1library_MIP_1Problem_objective_1function
 
     MIP_Problem* mip
       = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
-    TEMP_INTEGER(inhomogeneous_term);
+    PPL_DIRTY_TEMP_COEFFICIENT(inhomogeneous_term);
     inhomogeneous_term = mip->objective_function().inhomogeneous_term();
     jobject j_coeff_inhomogeneous_term
       = build_java_coeff(env, inhomogeneous_term);
@@ -346,8 +347,8 @@ Java_parma_1polyhedra_1library_MIP_1Problem_evaluate_1objective_1function
     MIP_Problem* mip
       = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
     Generator g = build_cxx_generator(env, j_gen);
-    TEMP_INTEGER(num);
-    TEMP_INTEGER(den);
+    PPL_DIRTY_TEMP_COEFFICIENT(num);
+    PPL_DIRTY_TEMP_COEFFICIENT(den);
     num = build_cxx_coeff(env, j_coeff_num);
     den = build_cxx_coeff(env, j_coeff_den);
     mip->evaluate_objective_function(g, num, den);
@@ -390,8 +391,8 @@ Java_parma_1polyhedra_1library_MIP_1Problem_optimal_1value
 (JNIEnv* env, jobject j_this_mip_problem, jobject j_coeff_num,
  jobject j_coeff_den) {
   try {
-    TEMP_INTEGER(coeff_num);
-    TEMP_INTEGER(coeff_den);
+    PPL_DIRTY_TEMP_COEFFICIENT(coeff_num);
+    PPL_DIRTY_TEMP_COEFFICIENT(coeff_den);
 
     MIP_Problem* mip
       = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
@@ -470,27 +471,64 @@ Java_parma_1polyhedra_1library_MIP_1Problem_finalize
     delete mip;
 }
 
+JNIEXPORT jlong JNICALL
+Java_parma_1polyhedra_1library_MIP_1Problem_total_1memory_1in_1bytes
+(JNIEnv* env , jobject j_this_mip_problem) {
+  try {
+    MIP_Problem* mip
+      = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
+    return mip->total_memory_in_bytes();
+  }
+  CATCH_ALL;
+  return 0;
+}
+
 JNIEXPORT jstring JNICALL
 Java_parma_1polyhedra_1library_MIP_1Problem_toString
-(JNIEnv* env, jobject j_this_mip_problem) {
+(JNIEnv* env, jobject j_this) {
+  MIP_Problem* this_ptr
+    = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this));
   using namespace Parma_Polyhedra_Library::IO_Operators;
   std::ostringstream s;
-  MIP_Problem* mip
-    = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
-  s << *mip;
-  std::string str = s.str();
-  return env->NewStringUTF(str.c_str());
+  s << *this_ptr;
+  return env->NewStringUTF(s.str().c_str());
+}
+
+JNIEXPORT jstring JNICALL
+Java_parma_1polyhedra_1library_MIP_1Problem_ascii_1dump
+(JNIEnv* env, jobject j_this) {
+  try {
+    MIP_Problem* this_ptr
+      = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this));
+    std::ostringstream s;
+    this_ptr->ascii_dump(s);
+    return env->NewStringUTF(s.str().c_str());
+  }
+  CATCH_ALL;
+  return 0;
 }
 
 JNIEXPORT jstring JNICALL
 Java_parma_1polyhedra_1library_Linear_1Expression_toString
-(JNIEnv* env, jobject le) {
+(JNIEnv* env, jobject j_this) {
   using namespace Parma_Polyhedra_Library::IO_Operators;
+  Linear_Expression ppl_le = build_cxx_linear_expression(env, j_this);
   std::ostringstream s;
-  Linear_Expression ppl_le = build_cxx_linear_expression(env, le);
   s << ppl_le;
-  std::string str = s.str();
-  return env->NewStringUTF(str.c_str());
+  return env->NewStringUTF(s.str().c_str());
+}
+
+JNIEXPORT jstring JNICALL
+Java_parma_1polyhedra_1library_Linear_1Expression_ascii_1dump
+(JNIEnv* env, jobject j_this) {
+  try {
+    std::ostringstream s;
+    Linear_Expression le = build_cxx_linear_expression(env, j_this);
+    le.ascii_dump(s);
+    return env->NewStringUTF(s.str().c_str());
+  }
+  CATCH_ALL;
+  return 0;
 }
 
 JNIEXPORT jstring JNICALL
@@ -500,8 +538,20 @@ Java_parma_1polyhedra_1library_Generator_toString
   std::ostringstream s;
   Generator ppl_g = build_cxx_generator(env, g);
   s << ppl_g;
-  std::string str = s.str();
-  return env->NewStringUTF(str.c_str());
+  return env->NewStringUTF(s.str().c_str());
+}
+
+JNIEXPORT jstring JNICALL
+Java_parma_1polyhedra_1library_Generator_ascii_1dump
+(JNIEnv* env, jobject j_this) {
+  try {
+    std::ostringstream s;
+    Generator g = build_cxx_generator(env, j_this);
+    g.ascii_dump(s);
+    return env->NewStringUTF(s.str().c_str());
+  }
+  CATCH_ALL;
+  return 0;
 }
 
 JNIEXPORT jstring JNICALL
@@ -511,8 +561,20 @@ Java_parma_1polyhedra_1library_Constraint_toString
   std::ostringstream s;
   Constraint ppl_c = build_cxx_constraint(env, c);
   s << ppl_c;
-  std::string str = s.str();
-  return env->NewStringUTF(str.c_str());
+  return env->NewStringUTF(s.str().c_str());
+}
+
+JNIEXPORT jstring JNICALL
+Java_parma_1polyhedra_1library_Constraint_ascii_1dump
+(JNIEnv* env, jobject j_this) {
+  try {
+    std::ostringstream s;
+    Constraint c = build_cxx_constraint(env, j_this);
+    c.ascii_dump(s);
+    return env->NewStringUTF(s.str().c_str());
+  }
+  CATCH_ALL;
+  return 0;
 }
 
 JNIEXPORT jstring JNICALL
@@ -522,8 +584,20 @@ Java_parma_1polyhedra_1library_Grid_1Generator_toString
   std::ostringstream s;
   Grid_Generator ppl_g = build_cxx_grid_generator(env, g);
   s << ppl_g;
-  std::string str = s.str();
-  return env->NewStringUTF(str.c_str());
+  return env->NewStringUTF(s.str().c_str());
+}
+
+JNIEXPORT jstring JNICALL
+Java_parma_1polyhedra_1library_Grid_1Generator_ascii_1dump
+(JNIEnv* env, jobject j_this) {
+  try {
+    std::ostringstream s;
+    Grid_Generator g = build_cxx_grid_generator(env, j_this);
+    g.ascii_dump(s);
+    return env->NewStringUTF(s.str().c_str());
+  }
+  CATCH_ALL;
+  return 0;
 }
 
 JNIEXPORT jstring JNICALL
@@ -533,8 +607,20 @@ Java_parma_1polyhedra_1library_Congruence_toString
   std::ostringstream s;
   Congruence ppl_g = build_cxx_congruence(env, g);
   s << ppl_g;
-  std::string str = s.str();
-  return env->NewStringUTF(str.c_str());
+  return env->NewStringUTF(s.str().c_str());
+}
+
+JNIEXPORT jstring JNICALL
+Java_parma_1polyhedra_1library_Congruence_ascii_1dump
+(JNIEnv* env, jobject j_this) {
+  try {
+    std::ostringstream s;
+    Congruence c = build_cxx_congruence(env, j_this);
+    c.ascii_dump(s);
+    return env->NewStringUTF(s.str().c_str());
+  }
+  CATCH_ALL;
+  return 0;
 }
 
 JNIEXPORT jstring JNICALL
@@ -544,8 +630,20 @@ Java_parma_1polyhedra_1library_Grid_1Generator_1System_toString
   std::ostringstream s;
   Grid_Generator_System ppl_ggs = build_cxx_grid_generator_system(env, ggs);
   s << ppl_ggs;
-  std::string str = s.str();
-  return env->NewStringUTF(str.c_str());
+  return env->NewStringUTF(s.str().c_str());
+}
+
+JNIEXPORT jstring JNICALL
+Java_parma_1polyhedra_1library_Grid_1Generator_1System_ascii_1dump
+(JNIEnv* env, jobject j_this) {
+  try {
+    std::ostringstream s;
+    Grid_Generator_System gs = build_cxx_grid_generator_system(env, j_this);
+    gs.ascii_dump(s);
+    return env->NewStringUTF(s.str().c_str());
+  }
+  CATCH_ALL;
+  return 0;
 }
 
 JNIEXPORT jstring JNICALL
@@ -555,8 +653,20 @@ Java_parma_1polyhedra_1library_Generator_1System_toString
   std::ostringstream s;
   Generator_System ppl_gs = build_cxx_generator_system(env, gs);
   s << ppl_gs;
-  std::string str = s.str();
-  return env->NewStringUTF(str.c_str());
+  return env->NewStringUTF(s.str().c_str());
+}
+
+JNIEXPORT jstring JNICALL
+Java_parma_1polyhedra_1library_Generator_1System_ascii_1dump
+(JNIEnv* env, jobject j_this) {
+  try {
+    std::ostringstream s;
+    Generator_System gs = build_cxx_generator_system(env, j_this);
+    gs.ascii_dump(s);
+    return env->NewStringUTF(s.str().c_str());
+  }
+  CATCH_ALL;
+  return 0;
 }
 
 JNIEXPORT jstring JNICALL
@@ -566,8 +676,21 @@ Java_parma_1polyhedra_1library_Constraint_1System_toString
   std::ostringstream s;
   Constraint_System ppl_cs = build_cxx_constraint_system(env, cs);
   s << ppl_cs;
-  std::string str = s.str();
-  return env->NewStringUTF(str.c_str());
+  return env->NewStringUTF(s.str().c_str());
+}
+
+
+JNIEXPORT jstring JNICALL
+Java_parma_1polyhedra_1library_Constraint_1System_ascii_1dump
+(JNIEnv* env, jobject j_this) {
+  try {
+    std::ostringstream s;
+    Constraint_System cs = build_cxx_constraint_system(env, j_this);
+    cs.ascii_dump(s);
+    return env->NewStringUTF(s.str().c_str());
+  }
+  CATCH_ALL;
+  return 0;
 }
 
 JNIEXPORT jstring JNICALL
@@ -577,17 +700,37 @@ Java_parma_1polyhedra_1library_Congruence_1System_toString
   std::ostringstream s;
   Congruence_System ppl_cgs = build_cxx_congruence_system(env, cgs);
   s << ppl_cgs;
-  std::string str = s.str();
-  return env->NewStringUTF(str.c_str());
+  return env->NewStringUTF(s.str().c_str());
 }
 
-JNIEXPORT jlong JNICALL
-Java_parma_1polyhedra_1library_MIP_1Problem_total_1memory_1in_1bytes
-(JNIEnv* env , jobject j_this_mip_problem) {
+JNIEXPORT jstring JNICALL
+Java_parma_1polyhedra_1library_Congruence_1System_ascii_1dump
+(JNIEnv* env, jobject j_this) {
   try {
-    MIP_Problem* mip
-      = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
-    return mip->total_memory_in_bytes();
+    std::ostringstream s;
+    Congruence_System cs = build_cxx_congruence_system(env, j_this);
+    cs.ascii_dump(s);
+    return env->NewStringUTF(s.str().c_str());
+  }
+  CATCH_ALL;
+  return 0;
+}
+
+JNIEXPORT jstring JNICALL
+Java_parma_1polyhedra_1library_IO_wrap_1string
+(JNIEnv* env, jclass, jstring str, jint indent_depth,
+ jint preferred_first_line_length, jint preferred_line_length) {
+  try {
+    unsigned ind = jtype_to_unsigned<unsigned int>(indent_depth);
+    unsigned pfll = jtype_to_unsigned<unsigned int>(preferred_first_line_length);
+    unsigned pll = jtype_to_unsigned<unsigned int>(preferred_line_length);
+    const char* chars = env->GetStringUTFChars(str, 0);
+    if (!chars)
+      return 0;
+    using namespace Parma_Polyhedra_Library::IO_Operators;
+    std::string s = wrap_string(chars, ind, pfll, pll);
+    env->ReleaseStringUTFChars(str, chars);
+    return env->NewStringUTF(s.c_str());
   }
   CATCH_ALL;
   return 0;

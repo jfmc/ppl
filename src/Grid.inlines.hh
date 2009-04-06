@@ -1,5 +1,5 @@
 /* Grid class implementation: inline functions.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -369,7 +369,7 @@ Grid::minimize(const Linear_Expression& expr,
 
 inline void
 Grid::normalize_divisors(Grid_Generator_System& sys) {
-  TEMP_INTEGER(divisor);
+  PPL_DIRTY_TEMP_COEFFICIENT(divisor);
   divisor = 1;
   normalize_divisors(sys, divisor);
 }

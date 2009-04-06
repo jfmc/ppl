@@ -1,5 +1,5 @@
 /* Implementation of global objects: inline functions.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -55,15 +55,6 @@ compute_capacity(const dimension_type requested_size,
   // return (maximum_size - requested_size > requested_size/2)
   //   ? requested_size + requested_size/2 + 1
   //   : maximum_size;
-}
-
-// FIXME!!!
-inline dimension_type
-compute_capacity(const dimension_type requested_size) {
-  // Speculation factor 2.
-  return 2*(requested_size + 1);
-  // Speculation factor 1.5.
-  // return requested_size + requested_size/2 + 1;
 }
 
 template <typename T>

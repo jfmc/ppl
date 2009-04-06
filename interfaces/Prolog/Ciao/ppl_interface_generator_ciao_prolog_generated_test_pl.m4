@@ -4,7 +4,7 @@ m4_divert(-1)
 dnl This m4 file defines macros needed for generating
 dnl the Ciao dependent code for ciao_prolog_generated_test.pl.
 
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -27,7 +27,7 @@ dnl site: http://www.cs.unipr.it/ppl/ .
 
 m4_include(`ppl_interface_generator_prolog_systems.m4')dnl
 
-m4_define(`m4_extension', `m4_ifelse($4, 0, , `COMMA
+m4_define(`m4_expanded_procedure_schema', `m4_ifelse($4, 0, , `COMMA
 ')  $1/$2')
 
 m4_divert`'dnl

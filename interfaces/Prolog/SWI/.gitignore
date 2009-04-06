@@ -1,0 +1,12 @@
+*.clpq
+*.la
+script_pchk
+obtained_clpq
+obtained_clpq2
+obtained_pchk
+pl_clpq
+pl_clpq2
+ppl_pl
+ppl_swiprolog.cc
+obtained_pgt
+script_pgt

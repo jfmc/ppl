@@ -1,5 +1,5 @@
 dnl A function to detect whether C++ provides exact output for floats.
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -28,7 +28,6 @@ ac_save_LIBS="$LIBS"
 AC_LANG_PUSH(C++)
 
 AC_MSG_CHECKING([whether C++ provides exact output for floats])
-ac_cxx_float_exact_output=unknown
 
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <limits>
@@ -80,7 +79,7 @@ convert(uint32_t x) {
   return u.value;
 }
 
-#if CXX_FLOAT_BINARY_FORMAT == PPL_FLOAT_IEEE754_SINGLE
+#if PPL_CXX_FLOAT_BINARY_FORMAT == PPL_FLOAT_IEEE754_SINGLE
 
 int
 main() {
@@ -97,14 +96,14 @@ main() {
     return 1;
 }
 
-#else // CXX_FLOAT_BINARY_FORMAT != FLOAT_IEEE754_SINGLE
+#else // PPL_CXX_FLOAT_BINARY_FORMAT != FLOAT_IEEE754_SINGLE
 
 int
 main() {
   return 1;
 }
 
-#endif // CXX_FLOAT_BINARY_FORMAT != FLOAT_IEEE754_SINGLE
+#endif // PPL_CXX_FLOAT_BINARY_FORMAT != FLOAT_IEEE754_SINGLE
 
 #else // SIZEOF_FLOAT != 4
 
@@ -118,9 +117,11 @@ main() {
   AC_MSG_RESULT(yes)
   ac_cxx_float_exact_output=1,
   AC_MSG_RESULT(no)
+  ac_cxx_float_exact_output=0,
+  AC_MSG_RESULT([assuming not])
   ac_cxx_float_exact_output=0)
 
-AC_DEFINE_UNQUOTED(CXX_FLOAT_EXACT_OUTPUT, $ac_cxx_float_exact_output,
+AC_DEFINE_UNQUOTED(PPL_CXX_FLOAT_EXACT_OUTPUT, $ac_cxx_float_exact_output,
   [Not zero if C++ supports exact output for floats.])
 
 AC_LANG_POP(C++)

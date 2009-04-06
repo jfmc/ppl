@@ -1,5 +1,5 @@
 /* Polyhedron class implementation: conversion().
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -376,8 +376,8 @@ PPL::Polyhedron::conversion(Linear_System& source,
   // constraints seen so far, to be used as a displacement when swapping rows.
   dimension_type source_num_redundant = 0;
 
-  TEMP_INTEGER(normalized_sp_i);
-  TEMP_INTEGER(normalized_sp_o);
+  PPL_DIRTY_TEMP_COEFFICIENT(normalized_sp_i);
+  PPL_DIRTY_TEMP_COEFFICIENT(normalized_sp_o);
 
   // Converting the sub-system of `source' having rows with indexes
   // from `start' to the last one (i.e., `source_num_rows' - 1).
@@ -400,7 +400,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
     // constraint `source_k' and the generator `dest[i]'.  This
     // product is 0 if and only if the generator saturates the
     // constraint.
-    DIRTY_TEMP0(std::vector<Coefficient>, scalar_prod);
+    PPL_DIRTY_TEMP0(std::vector<Coefficient>, scalar_prod);
     const int needed_space = dest_num_rows - scalar_prod.size();
     if (needed_space > 0)
       scalar_prod.insert(scalar_prod.end(), needed_space, Coefficient_zero());

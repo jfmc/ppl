@@ -4,7 +4,7 @@ m4_divert(-1)
 dnl This m4 file generates the file ppl_c_h
 dnl using the code in ppl_interface_generator_c_h_code.m4.
 
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -38,9 +38,14 @@ m4_divert(-1)
 
 m4_define(`m4_declaration_code', `dnl
 m4_ifelse(m4_class_group$1, product,
-            `typedef @CPP_CLASS@ @CPPDEF_CLASS@;')
-
-DECLARE_CONVERSIONS(m4_interface_class`'$1, @CPPDEF_CLASS@)
+            typedef Domain_Product<`'m4_class_body_1st$1|COMMA|`'m4_class_body_2nd$1 >::`'m4_class_kind$1 m4_interface_class`'$1;
+)
+m4_ifelse(m4_class_group$1, box,
+   DECLARE_CONVERSIONS(m4_interface_class`'$1, m4_interface_class`'$1),
+   m4_class_group$1, product,
+   DECLARE_CONVERSIONS(m4_interface_class`'$1, m4_interface_class`'$1),
+   DECLARE_CONVERSIONS(m4_interface_class`'$1, m4_cplusplus_class`'$1)`'dnl
+)`'dnl
 ')
 
 m4_pushdef(`m4_one_class_code', `dnl
@@ -58,9 +63,7 @@ namespace Interfaces {
 
 namespace C {
 
-m4_replace_all_patterns_in_string($1,
-                                  `m4_declaration_code($1)',
-                                  m4_pattern_list)
+m4_declaration_code($1)
 
 } // namespace C
 

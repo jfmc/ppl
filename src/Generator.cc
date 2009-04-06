@@ -1,5 +1,5 @@
 /* Generator class implementation (non-inline functions).
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -216,7 +216,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Generator& g) {
     break;
   }
 
-  TEMP_INTEGER(gv);
+  PPL_DIRTY_TEMP_COEFFICIENT(gv);
   bool first = true;
   for (dimension_type v = 0; v < num_variables; ++v) {
     gv = g[v+1];
@@ -289,19 +289,19 @@ PPL::Generator::is_matching_closure_point(const Generator& p) const {
   else {
     // Divisors are different: divide them by their GCD
     // to simplify the following computation.
-    TEMP_INTEGER(gcd);
+    PPL_DIRTY_TEMP_COEFFICIENT(gcd);
     gcd_assign(gcd, cp[0], p[0]);
     const bool rel_prime = (gcd == 1);
-    TEMP_INTEGER(cp_0_scaled);
-    TEMP_INTEGER(p_0_scaled);
+    PPL_DIRTY_TEMP_COEFFICIENT(cp_0_scaled);
+    PPL_DIRTY_TEMP_COEFFICIENT(p_0_scaled);
     if (!rel_prime) {
       exact_div_assign(cp_0_scaled, cp[0], gcd);
       exact_div_assign(p_0_scaled, p[0], gcd);
     }
     const Coefficient& cp_div = rel_prime ? cp[0] : cp_0_scaled;
     const Coefficient& p_div = rel_prime ? p[0] : p_0_scaled;
-    TEMP_INTEGER(prod1);
-    TEMP_INTEGER(prod2);
+    PPL_DIRTY_TEMP_COEFFICIENT(prod1);
+    PPL_DIRTY_TEMP_COEFFICIENT(prod2);
     for (dimension_type i = cp.size() - 2; i > 0; --i) {
       prod1 = cp[i] * p_div;
       prod2 = p[i] * cp_div;

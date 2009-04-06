@@ -1,5 +1,5 @@
 /* Polyhedron class declaration.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -2603,6 +2603,28 @@ private:
   friend class Parma_Polyhedra_Library::BHRZ03_Certificate;
   friend class Parma_Polyhedra_Library::H79_Certificate;
 
+protected:
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  /*! \brief
+    If the poly-hull of \p *this and \p y is exact it is assigned
+    to \p *this and \c true is returned, otherwise \c false is returned.
+
+    Current implementation is based on (a variant of) Algorithm 8.1 in
+      A. Bemporad, K. Fukuda, and F. D. Torrisi
+      <em>Convexity Recognition of the Union of Polyhedra</em>
+      Technical Report AUT00-13, ETH Zurich, 2000
+
+    \note
+    It is assumed that \p *this and \p y are topologically closed
+    and dimension-compatible;
+    if the assumption does not hold, the behavior is undefined.
+  */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+  bool BFT00_poly_hull_assign_if_exact(const Polyhedron& y);
+
+  bool BHZ09_poly_hull_assign_if_exact(const Polyhedron& y);
+  bool BHZ09_C_poly_hull_assign_if_exact(const Polyhedron& y);
+  bool BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! \name Exception Throwers

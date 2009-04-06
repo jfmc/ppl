@@ -1,5 +1,5 @@
 /* Declarations for the Interval class and its constituents.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -112,10 +112,10 @@ struct Is_Interval : public Is_Same_Or_Derived<Interval_Base, T> {};
 template <typename Boundary, typename Info>
 class Interval : public Interval_Base, private Info {
 private:
-  COMPILE_TIME_CHECK(!Info::store_special
-		     || !std::numeric_limits<Boundary>::has_infinity,
-		     "store_special is meaningless"
-		     " when boundary type may contains infinity");
+  PPL_COMPILE_TIME_CHECK(!Info::store_special
+                         || !std::numeric_limits<Boundary>::has_infinity,
+                         "store_special is meaningless"
+                         " when boundary type may contains infinity");
   Info& w_info() const {
     return const_cast<Interval&>(*this);
   }
@@ -131,13 +131,14 @@ private:
 	|| info().get_boundary_property(LOWER, SPECIAL))
       r = V_EQ;
     else {
+      Boundary& l = const_cast<Boundary&>(lower());
       if (info().get_boundary_property(LOWER, OPEN)) {
-	r = info().restrict(lower(), V_GT);
+	r = info().restrict(round_dir_check(LOWER, true), l, V_GT);
 	if (r != V_GT)
 	  w_info().set_boundary_property(LOWER, OPEN, false);
       }
       else {
-	r = info().restrict(lower(), V_GE);
+	r = info().restrict(round_dir_check(LOWER, true), l, V_GE);
 	if (r == V_GT)
 	  w_info().set_boundary_property(LOWER, OPEN);
       }
@@ -151,13 +152,14 @@ private:
 	|| info().get_boundary_property(UPPER, SPECIAL))
       r = V_EQ;
     else {
+      Boundary& u = const_cast<Boundary&>(upper());
       if (info().get_boundary_property(UPPER, OPEN)) {
-	r = info().restrict(upper(), V_LT);
+	r = info().restrict(round_dir_check(UPPER, true), u, V_LT);
 	if (r != V_LT)
 	  w_info().set_boundary_property(UPPER, OPEN, false);
       }
       else {
-	r = info().restrict(upper(), V_LE);
+	r = info().restrict(round_dir_check(UPPER, true), u, V_LE);
 	if (r == V_LT)
 	  w_info().set_boundary_property(UPPER, OPEN);
       }
@@ -347,12 +349,12 @@ public:
 
   Result lower_shrink() {
     assert(OK());
-    return shrink(LOWER, lower(), info());
+    return shrink(LOWER, lower(), info(), false);
   }
 
   Result upper_shrink() {
     assert(OK());
-    return shrink(UPPER, upper(), info());
+    return shrink(UPPER, upper(), info(), false);
   }
 
   bool lower_is_unbounded() const {
@@ -533,7 +535,8 @@ public:
   }
 
   template <typename From>
-  typename Enable_If<Is_Special<From>::value, I_Result>::type assign(const From&) {
+  typename Enable_If<Is_Special<From>::value, I_Result>::type
+  assign(const From&) {
     info().clear();
     info().set_interval_property(CARDINALITY_0, true);
     info().set_interval_property(CARDINALITY_1, true);
@@ -790,11 +793,13 @@ public:
   }
 
   template <typename T>
-  typename Enable_If<Is_Singleton<T>::value || Is_Interval<T>::value, bool>::type
+  typename Enable_If<Is_Singleton<T>::value
+                     || Is_Interval<T>::value, bool>::type
   contains(const T& y) const;
 
   template <typename T>
-  typename Enable_If<Is_Singleton<T>::value || Is_Interval<T>::value, bool>::type
+  typename Enable_If<Is_Singleton<T>::value
+                     || Is_Interval<T>::value, bool>::type
   strictly_contains(const T& y) const;
 
   template <typename T>
@@ -809,6 +814,11 @@ public:
   typename Enable_If<Is_Singleton<From>::value
                      || Is_Interval<From>::value, I_Result>::type
   assign(const From& x);
+
+  template <typename Type>
+  typename Enable_If<Is_Singleton<Type>::value
+                     || Is_Interval<Type>::value, bool>::type
+  can_be_exactly_joined_to(const Type& x) const;
 
   template <typename From>
   typename Enable_If<Is_Singleton<From>::value
@@ -855,6 +865,38 @@ public:
   difference_assign(const From1& x, const From2& y);
 
   /*! \brief
+    Assigns to \p *this the largest interval contained in the set-theoretic
+    difference of \p *this and \p x.
+  */
+  template <typename From>
+  typename Enable_If<Is_Singleton<From>::value
+                     || Is_Interval<From>::value, I_Result>::type
+  lower_approximation_difference_assign(const From& x);
+
+  /*! \brief
+    Assigns to \p *this a \ref Meet_Preserving_Simplification
+    "meet-preserving simplification" of \p *this with respect to \p y.
+
+    \return
+    \c false if and only if the meet of \p *this and \p y is empty.
+  */
+  template <typename From>
+  typename Enable_If<Is_Interval<From>::value, bool>::type
+  simplify_using_context_assign(const From& y);
+
+  /*! \brief
+    Assigns to \p *this an interval having empty intersection with \p y.
+    The assigned interval should be as large as possible.
+
+    \note
+    Depending on interval restrictions, there could be many
+    maximal intervals all inconsistent with respect to \p y.
+  */
+  template <typename From>
+  typename Enable_If<Is_Interval<From>::value, void>::type
+  empty_intersection_assign(const From& y);
+
+  /*! \brief
     Refines \p to according to the existential relation \p rel with \p x.
 
     The \p to interval is restricted to become, upon successful exit,
@@ -870,7 +912,8 @@ public:
     ???
   */
   template <typename From>
-  typename Enable_If<Is_Singleton<From>::value || Is_Interval<From>::value, I_Result>::type
+  typename Enable_If<Is_Singleton<From>::value
+                     || Is_Interval<From>::value, I_Result>::type
   refine_existential(Relation_Symbol rel, const From& x);
 
   /*! \brief
@@ -889,11 +932,13 @@ public:
     ???
   */
   template <typename From>
-  typename Enable_If<Is_Singleton<From>::value || Is_Interval<From>::value, I_Result>::type
+  typename Enable_If<Is_Singleton<From>::value
+                     || Is_Interval<From>::value, I_Result>::type
   refine_universal(Relation_Symbol rel, const From& x);
 
   template <typename From>
-  typename Enable_If<Is_Singleton<From>::value || Is_Interval<From>::value, I_Result>::type
+  typename Enable_If<Is_Singleton<From>::value
+                     || Is_Interval<From>::value, I_Result>::type
   neg_assign(const From& x);
 
   template <typename From1, typename From2>

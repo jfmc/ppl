@@ -1,12 +1,12 @@
-m4_define(`dnl', `m4_dnl')`'dnl
 m4_divert(-1)
+m4_define(`dnl', `m4_dnl')
 
 dnl This m4 file is used to generate ppl_prolog_domains.hh
 dnl and files ppl_prolog_DOMAIN.hh, for each interface domain DOMAIN
 dnl in ppl_interface instantiations.m4 using the code in
 dnl ppl_interface_generator_prolog_hh_code.m4.
 
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -28,8 +28,8 @@ dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
 dnl Include files defining macros that generate the non-fixed part.
-m4_include(`ppl_interface_generator_prolog_hh_code.m4')
-m4_include(`ppl_interface_generator_prolog_procedure_generators.m4')
+m4_include(ppl_interface_generator_prolog_hh_code.m4)
+m4_include(ppl_interface_generator_prolog_procedure_generators.m4)
 
 m4_divert`'dnl
 %<--%<--%<-- ppl_prolog_domains.hh
@@ -40,7 +40,7 @@ m4_divert(-1)
 
 dnl Ensure any schematic procedure macro that is not defined
 dnl in the code file outputs a warning message.
-m4_define(`m4_default_code', `m4_dumpdef($1`'_code)')
+m4_define(`m4_procedure_schema_debug', `m4_dumpdef($1`'_code)')
 dnl m4_pre_extra_class_code(Class_Counter)
 dnl Prefix extra code for each class.
 m4_define(`m4_pre_extra_class_code', `dnl

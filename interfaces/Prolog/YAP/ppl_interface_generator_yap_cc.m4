@@ -2,7 +2,7 @@ m4_define(`dnl', `m4_dnl')`'dnl
 m4_divert(-1)
 
 dnl This m4 file generates the file ppl_yap.cc.
-dnl Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -115,18 +115,18 @@ m4_divert(2)dnl
 dnl
 m4_divert`'dnl
 dnl
-dnl Redefine m4_extension to generate YAP stubs.
-dnl m4_extension(Predicate_Name, Arity)
-m4_define(`m4_extension', `dnl
+dnl Redefine m4_expanded_procedure_schema to generate YAP stubs.
+dnl m4_expanded_procedure_schema(Predicate_Name, Arity)
+m4_define(`m4_expanded_procedure_schema', `dnl
 YAP_STUB_$2($1)
 ')`'dnl
 dnl Generate stubs.
 ppl_prolog_sys_code`'dnl
 m4_undivert(1)
 
-dnl Redefine m4_extension to generate YAP user predicates.
-dnl m4_extension(Predicate_Name, Arity)
-m4_define(`m4_extension', `dnl
+dnl Redefine m4_expanded_procedure_schema to generate YAP user predicates.
+dnl m4_expanded_procedure_schema(Predicate_Name, Arity)
+m4_define(`m4_expanded_procedure_schema', `dnl
   YAP_USER_C_PREDICATE($1, $2);
 ')
 

@@ -1,5 +1,5 @@
 /* BD_Shape class declaration.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -1869,6 +1869,19 @@ private:
   */
   bool is_shortest_path_reduced() const;
 
+  /*! \brief
+    Incrementally computes shortest-path closure, assuming that only
+    constraints affecting variable \p var need to be considered.
+
+    \note
+    It is assumed that \c *this, which was shortest-path closed,
+    has only been modified by adding constraints affecting variable
+    \p var. If this assumption is not satisfied, i.e., if a non-redundant
+    constraint not affecting variable \p var has been added, the behavior
+    is undefined.
+  */
+  void incremental_shortest_path_closure_assign(Variable var) const;
+
   //! Checks if and how \p expr is bounded in \p *this.
   /*!
     Returns <CODE>true</CODE> if and only if \p from_above is
@@ -1953,6 +1966,24 @@ private:
   bool max_min(const Linear_Expression& expr,
                bool maximize,
                Coefficient& ext_n, Coefficient& ext_d, bool& included) const;
+
+  /*! \brief
+    If the upper bound of \p *this and \p y is exact it is assigned
+    to \p *this and \c true is returned, otherwise \c false is returned.
+
+    Current implementation is based on a variant of Algorithm 4.1 in
+      A. Bemporad, K. Fukuda, and F. D. Torrisi
+      <em>Convexity Recognition of the Union of Polyhedra</em>
+      Technical Report AUT00-13, ETH Zurich, 2000
+    tailored to the special case of BD shapes.
+
+    \note
+    It is assumed that \p *this and \p y are dimension-compatible;
+    if the assumption does not hold, the behavior is undefined.
+  */
+  bool BFT00_upper_bound_assign_if_exact(const BD_Shape& y);
+
+  bool BHZ09_upper_bound_assign_if_exact(const BD_Shape& y);
 
   /*! \brief
     Uses the constraint \p c to refine \p *this.

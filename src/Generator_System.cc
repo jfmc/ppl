@@ -1,5 +1,5 @@
 /* Generator_System class implementation (non-inline functions).
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -800,7 +800,7 @@ PPL::Generator_System
 
   // Compute the numerator of the affine transformation and assign it
   // to the column of `*this' indexed by `v'.
-  TEMP_INTEGER(numerator);
+  PPL_DIRTY_TEMP_COEFFICIENT(numerator);
   for (dimension_type i = n_rows; i-- > 0; ) {
     Generator& row = x[i];
     Scalar_Products::assign(numerator, expr, row);
@@ -886,7 +886,7 @@ PPL::Generator_System::ascii_load(std::istream& s) {
   dimension_type ncols;
   if (!(s >> nrows))
     return false;
-  if (!(s >> str))
+  if (!(s >> str) || str != "x")
     return false;
   if (!(s >> ncols))
       return false;
@@ -912,8 +912,10 @@ PPL::Generator_System::ascii_load(std::istream& s) {
       return false;
     if (str == "L")
       x[i].set_is_line();
-    else
+    else if (str == "R" || str == "P" || str == "C")
       x[i].set_is_ray_or_point();
+    else
+      return false;
 
     // Checking for equality of actual and declared types.
     switch (x[i].type()) {

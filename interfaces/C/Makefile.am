@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -75,7 +75,7 @@ LIBPPL_C_LT_AGE =      0
 
 ppl_c.h: ppl_c_header.h ppl_c_version.h ppl_c_domains.h Makefile $(top_builddir)/utils/build_header
 	$(top_builddir)/utils/build_header \
-		-I $(top_builddir)/interfaces/C \
+		-I $(top_builddir)/interfaces/C -I $(top_srcdir)/src \
 		$(top_srcdir)/interfaces/C/ppl_c_header.h >$@
 
 BUILT_SOURCES = \
@@ -92,11 +92,11 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 $(interface_generator_files)
 
 ppl_c_domains.h: $(interface_generator_dependencies)
-	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
+	$(M4) --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_c_h.m4 > $@
 
 ppl_c_implementation_domains.cc.stamp: $(interface_generator_dependencies)
-	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
+	$(M4) --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_c_cc_files.m4 \
                 > ppl_c_cc_blob
 	$(top_srcdir)/utils/cm_cleaner.sh < ppl_c_cc_blob
@@ -105,7 +105,7 @@ ppl_c_implementation_domains.cc.stamp: $(interface_generator_dependencies)
 	echo timestamp >$@
 
 ppl_c_implementation_domains.hh: $(interface_generator_dependencies)
-	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
+	$(M4) --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_c_hh_files.m4 \
                 > ppl_c_hh_blob
 	$(top_srcdir)/utils/cm_cleaner.sh < ppl_c_hh_blob

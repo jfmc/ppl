@@ -1,5 +1,5 @@
 /* MIP_Problem Java class declaration and implementation.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,6 +22,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 
 package parma_polyhedra_library;
+
+import java.io.Writer;
+import java.io.IOException;
 
 //! A Mixed Integer (linear) Programming problem.
 /*! \ingroup PPL_Java_interface
@@ -52,7 +55,7 @@ package parma_polyhedra_library;
 */
 public class MIP_Problem extends PPL_Object {
 
-    /*! \name Constructors and Destructor */
+    //! \name Constructors and Destructor
     /*@{*/
 
     //! Builds a trivial MIP problem.
@@ -117,7 +120,7 @@ public class MIP_Problem extends PPL_Object {
 
     /*@}*/ /* Constructors and Destructor */
 
-    /*! \name Functions that Do Not Modify the MIP_Problem */
+    //! \name Functions that Do Not Modify the MIP_Problem
     /*@{*/
 
     //! Returns the maximum space dimension an MIP_Problem can handle.
@@ -141,6 +144,9 @@ public class MIP_Problem extends PPL_Object {
     //! Returns the optimization mode.
     public native Optimization_Mode optimization_mode();
 
+    //! Returns an ascii formatted internal representation of \p this.
+    public native String ascii_dump();
+
     //! Returns a string representation of \p this.
     public native String toString();
 
@@ -153,9 +159,9 @@ public class MIP_Problem extends PPL_Object {
     //! Checks if all the invariants are satisfied.
     public native boolean OK();
 
-    /*@}*/ /* \name Functions that Do Not Modify the MIP_Problem */
+    /*@}*/ /* Functions that Do Not Modify the MIP_Problem */
 
-    /*! \name Functions that May Modify the MIP_Problem */
+    //! \name Functions that May Modify the MIP_Problem
     /*@{*/
 
     //! Resets \p this to be equal to the trivial MIP problem.
@@ -220,9 +226,9 @@ public class MIP_Problem extends PPL_Object {
     //! Sets the optimization mode to \p mode.
     public native void set_optimization_mode(Optimization_Mode mode);
 
-    /*@}*/ /* \name Functions that May Modify the MIP_Problem */
+    /*@}*/ /* Functions that May Modify the MIP_Problem */
 
-    /*! \name Computing the Solution of the MIP_Problem */
+    //! \name Computing the Solution of the MIP_Problem
     /*@{*/
 
     //! Checks satisfiability of \p *this.
@@ -286,9 +292,9 @@ public class MIP_Problem extends PPL_Object {
     */
     public native void optimal_value(Coefficient num, Coefficient den);
 
-    /*@}*/ /* \name Computing the Solution of the MIP_Problem */
+    /*@}*/ /* Computing the Solution of the MIP_Problem */
 
-    /*! \name Querying/Setting Control Parameters */
+    //! \name Querying/Setting Control Parameters
     /*@{*/
 
     /*! \brief
@@ -302,7 +308,7 @@ public class MIP_Problem extends PPL_Object {
     */
     public native void set_control_parameter(Control_Parameter_Value value);
 
-    /*@}*/ /* \name Querying/Setting Control Parameters */
+    /*@}*/ /* Querying/Setting Control Parameters */
 
     //! Builds the underlying C++ object.
     private native void build_cpp_object(long dim);

@@ -1,5 +1,5 @@
 /* Init class implementation (non-inline functions and static variables).
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -86,8 +86,9 @@ PPL::Init::Init() {
     old_rounding_direction = fpu_get_rounding_direction();
     fpu_set_rounding_direction(round_fpu_dir(ROUND_DIRECT));
 #endif
-    // FIXME: is 3200 a magic number?
-    set_rational_sqrt_precision_parameter(3200);
+    // The default is choosen to have a precision greater than most
+    // precise IEC559 floating point (112 bits of mantissa).
+    set_rational_sqrt_precision_parameter(128);
   }
 }
 

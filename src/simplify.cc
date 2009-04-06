@@ -1,5 +1,5 @@
 /* Polyhedron class implementation: simplify().
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -26,6 +26,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_System.defs.hh"
 #include "Bit_Matrix.defs.hh"
 #include "Polyhedron.defs.hh"
+#include <cstddef>
+#include <limits>
 
 namespace PPL = Parma_Polyhedra_Library;
 
@@ -99,7 +101,9 @@ PPL::Polyhedron::simplify(Linear_System& sys, Bit_Matrix& sat) {
     delete [] simplify_num_saturators_p;
     simplify_num_saturators_p = 0;
     simplify_num_saturators_size = 0;
-    size_t new_size = compute_capacity(num_rows);
+    const size_t max_size
+      = std::numeric_limits<size_t>::max() / sizeof(dimension_type);
+    const size_t new_size = compute_capacity(num_rows, max_size);
     simplify_num_saturators_p = new dimension_type[new_size];
     simplify_num_saturators_size = new_size;
   }

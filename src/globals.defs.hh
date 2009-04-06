@@ -1,5 +1,5 @@
 /* Declarations of global objects.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -48,11 +48,17 @@ not_a_dimension();
 template <typename T>
 inline typename Enable_If<Slow_Copy<T>::value, void>::type
 swap(T&, T&) {
-  COMPILE_TIME_CHECK(!Slow_Copy<T>::value, "missing swap specialization");
+  PPL_COMPILE_TIME_CHECK(!Slow_Copy<T>::value, "missing swap specialization");
 }
 
-// FIXME: write a comment for this.
-#define TEMP_INTEGER(id) DIRTY_TEMP0(Coefficient, id)
+/*! \brief
+  Declare a local variable named \p id, of type Coefficient, and containing
+  an unknown initial value.
+
+  Use of this macro to declare temporaries of type Coefficient results
+  in decreased memory allocation overhead and in better locality.
+*/
+#define PPL_DIRTY_TEMP_COEFFICIENT(id) PPL_DIRTY_TEMP0(Coefficient, id)
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Speculative allocation function.
@@ -77,10 +83,6 @@ swap(T&, T&) {
 dimension_type
 compute_capacity(dimension_type requested_size,
 		 dimension_type maximum_size);
-
-// FIXME!!!
-dimension_type
-compute_capacity(dimension_type requested_size);
 
 //! User objects the PPL can throw.
 /*! \ingroup PPL_CXX_interface
@@ -199,10 +201,6 @@ struct Recycle_Input {
     std::cerr << *this;							\
   }
 
-// FIXME: The class_prefix has changed from
-//        PPL_OUTPUT_TEMPLATE_DEFINITIONS, to work around `,'.
-//        Perhaps PPL_OUTPUT_TEMPLATE_DEFINITIONS should be changed to
-//        match this.
 #define PPL_OUTPUT_2_PARAM_TEMPLATE_DEFINITIONS(type_symbol1,		\
 						type_symbol2,		\
 						class_prefix)		\
@@ -219,7 +217,6 @@ struct Recycle_Input {
     std::cerr << *this;							\
   }
 
-// FIXME: Copy and edit of PPL_OUTPUT_2_PARAM_TEMPLATE_DEFINITIONS
 #define PPL_OUTPUT_3_PARAM_TEMPLATE_DEFINITIONS(type_symbol1,		\
 						type_symbol2,		\
 						type_symbol3,		\

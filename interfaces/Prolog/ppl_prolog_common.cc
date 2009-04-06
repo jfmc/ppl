@@ -1,5 +1,5 @@
 /* Common part of the Prolog interfaces: variables and non-inline functions.
-   Copyright (C) 2001-2008 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -622,72 +622,6 @@ handle_exception(const timeout_exception&) {
   Prolog_raise_exception(et);
 }
 
-#define CATCH_ALL \
-  catch (const Prolog_unsigned_out_of_range& e) { \
-    handle_exception(e); \
-  } \
-  catch (const not_unsigned_integer& e) { \
-    handle_exception(e); \
-  } \
-  catch (const non_linear& e) { \
-    handle_exception(e); \
-  } \
-  catch (const not_a_variable& e) { \
-    handle_exception(e); \
-  } \
-  catch (const not_an_integer& e) { \
-    handle_exception(e); \
-  } \
-  catch (const ppl_handle_mismatch& e) { \
-    handle_exception(e); \
-  } \
-  catch (const not_an_optimization_mode& e) {	\
-    handle_exception(e); \
-  } \
-  catch (const not_a_complexity_class& e) { \
-    handle_exception(e); \
-  } \
-  catch (const not_a_control_parameter_name& e) { \
-    handle_exception(e); \
-  } \
-  catch (const not_a_control_parameter_value& e) { \
-    handle_exception(e); \
-  } \
-  catch (const not_universe_or_empty& e) { \
-    handle_exception(e); \
-  } \
-  catch (const not_a_relation& e) { \
-    handle_exception(e); \
-  } \
-  catch (const not_a_nil_terminated_list& e) { \
-    handle_exception(e); \
-  } \
-  catch (const PPL_integer_out_of_range& e) { \
-    handle_exception(e); \
-  } \
-  catch (const unknown_interface_error& e) { \
-    handle_exception(e); \
-  } \
-  catch (const timeout_exception& e) { \
-    handle_exception(e); \
-  } \
-  catch(const std::overflow_error& e) { \
-    handle_exception(e); \
-  } \
-  catch(const std::length_error& e) { \
-    handle_exception(e); \
-  } \
-  catch (const std::bad_alloc& e) { \
-    handle_exception(e); \
-  } \
-  catch (const std::exception& e) { \
-    handle_exception(e); \
-  } \
-  catch (...) { \
-    handle_exception(); \
-  } \
-  return PROLOG_FAILURE
-
 Prolog_term_ref
 variable_term(dimension_type varid) {
   Prolog_term_ref v = Prolog_new_term_ref();
@@ -710,7 +644,7 @@ term_to_universe_or_empty(Prolog_term_ref t, const char* where) {
 
 Coefficient
 integer_term_to_Coefficient(Prolog_term_ref t) {
-  TEMP_INTEGER(n);
+  PPL_DIRTY_TEMP_COEFFICIENT(n);
   assert(Prolog_is_integer(t));
   if (!Prolog_get_Coefficient(t, n))
     abort();
@@ -1017,7 +951,7 @@ template <typename R>
 Prolog_term_ref
 get_homogeneous_expression(const R& r) {
   Prolog_term_ref so_far = Prolog_new_term_ref();
-  TEMP_INTEGER(coefficient);
+  PPL_DIRTY_TEMP_COEFFICIENT(coefficient);
   dimension_type varid = 0;
   dimension_type space_dimension = r.space_dimension();
   while (varid < space_dimension
@@ -1377,8 +1311,8 @@ term_to_relation_symbol(Prolog_term_ref t_r, const char* where) {
 Prolog_term_ref
 rational_term(const Rational_Box::interval_type::boundary_type& q) {
   Prolog_term_ref t = Prolog_new_term_ref();
-  TEMP_INTEGER(numerator);
-  TEMP_INTEGER(denominator);
+  PPL_DIRTY_TEMP_COEFFICIENT(numerator);
+  PPL_DIRTY_TEMP_COEFFICIENT(denominator);
   numerator = q.get_num();
   denominator = q.get_den();
   if (denominator == 1)
@@ -1653,7 +1587,7 @@ extern "C" Prolog_foreign_return_type
 ppl_Coefficient_min(Prolog_term_ref t_min) {
   try {
     if (std::numeric_limits<Coefficient>::is_bounded) {
-      TEMP_INTEGER(min);
+      PPL_DIRTY_TEMP_COEFFICIENT(min);
       min = std::numeric_limits<Coefficient>::min();
       if (Prolog_has_unbounded_integers
 	  || (min >= Prolog_min_integer && min <= Prolog_min_integer))
@@ -1668,7 +1602,7 @@ extern "C" Prolog_foreign_return_type
 ppl_Coefficient_max(Prolog_term_ref t_max) {
   try {
     if (std::numeric_limits<Coefficient>::is_bounded) {
-      TEMP_INTEGER(max);
+      PPL_DIRTY_TEMP_COEFFICIENT(max);
       max = std::numeric_limits<Coefficient>::max();
       if (Prolog_has_unbounded_integers
 	  || (max >= Prolog_min_integer && max <= Prolog_min_integer))
@@ -2124,8 +2058,8 @@ ppl_MIP_Problem_optimal_value(Prolog_term_ref t_mip,
   try {
     const MIP_Problem* mip = term_to_handle<MIP_Problem>(t_mip, where);
     PPL_CHECK(mip);
-    TEMP_INTEGER(n);
-    TEMP_INTEGER(d);
+    PPL_DIRTY_TEMP_COEFFICIENT(n);
+    PPL_DIRTY_TEMP_COEFFICIENT(d);
     mip->optimal_value(n, d);
     if (Prolog_unify_Coefficient(t_n, n)
 	&& Prolog_unify_Coefficient(t_d, d))
@@ -2143,8 +2077,8 @@ ppl_MIP_Problem_evaluate_objective_function(Prolog_term_ref t_mip,
   try {
     const MIP_Problem* mip = term_to_handle<MIP_Problem>(t_mip, where);
     PPL_CHECK(mip);
-    TEMP_INTEGER(n);
-    TEMP_INTEGER(d);
+    PPL_DIRTY_TEMP_COEFFICIENT(n);
+    PPL_DIRTY_TEMP_COEFFICIENT(d);
     mip->evaluate_objective_function(build_generator(t_g, where), n, d);
     if (Prolog_unify_Coefficient(t_n, n)
 	&& Prolog_unify_Coefficient(t_d, d))
@@ -2161,6 +2095,18 @@ ppl_MIP_Problem_OK(Prolog_term_ref t_mip) {
     PPL_CHECK(mip);
     if (mip->OK())
       return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_MIP_Problem_ascii_dump(Prolog_term_ref t_mip) {
+  static const char* where = "ppl_MIP_Problem_ascii_dump/1";
+  try {
+    const MIP_Problem* mip = term_to_handle<MIP_Problem>(t_mip, where);
+    PPL_CHECK(mip);
+    mip->ascii_dump(std::cout);
+    return PROLOG_SUCCESS;
   }
   CATCH_ALL;
 }
