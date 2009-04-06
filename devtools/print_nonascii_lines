@@ -1,2 +1,3 @@
 #!/bin/sh
-LANG=C grep -n "[^	 -~]" "$@"
+export LC_ALL=C
+grep -n "[^	 -~]" "$@"

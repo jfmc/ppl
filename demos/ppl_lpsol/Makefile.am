@@ -226,7 +226,7 @@ check-local: ppl_lpsol$(EXEEXT)
 	echo $(ECHO_N) "$(ECHO_C)" >obtained
 	echo $(LP_PROBLEMS) >lp_problems
 	echo $(DO_NOT_CHECK_PROBLEMS) >do_not_check_problems
-	LANG=C; \
+	export LC_ALL=C; \
 	echo $(TOUGH_EXAMPLES_FOR_BB_SATISFIABILITY) >tough_examples
 	-for path in $(srcdir)/examples/*.mps; \
 	do \

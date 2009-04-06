@@ -107,7 +107,7 @@ $(TOUGH_EXAMPLES_IF_ASSERTIONS_ENABLED)
 check-local: ppl_lcdd$(EXEEXT)
 	echo $(TOUGH_EXAMPLES) >tough_examples
 	echo $(ECHO_N) "$(ECHO_C)" >obtained
-	LANG=C; LC_COLLATE=C; \
+	export LC_ALL=C; \
 	for path in $(srcdir)/examples/*.ext $(srcdir)/examples/*.ine; \
 	do \
 	  file=`basename $$path`; \
