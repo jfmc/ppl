@@ -1209,7 +1209,7 @@
   Series = "Lecture Notes in Computer Science",
   Volume = 4634,
   ISBN = "978-3-540-74060-5",
-  Pages = "349-365",
+  Pages = "349--365",
   Year = 2007,
   Abstract = "In static analysis, the semantics of the program is
               expressed as a set of equations. The equations are
@@ -1262,255 +1262,6 @@
               the prototype to several examples, including the
               verification of correctness of an insertion-sort
               procedure."
-}
-
-@Inproceedings{HenriksenG06,
-  Author = "K. S. Henriksen and J. P. Gallagher",
-  Title = "Abstract Interpretation of {PIC} Programs
-           through Logic Programming",
-  Booktitle = "Proceedings of the 6th IEEE International Workshop
-               on Source Code Analysis and Manipulation",
-  Address = "Sheraton Society Hill, Philadelphia, PA, USA",
-  Publisher = "IEEE Computer Society Press",
-  Pages = "184--196",
-  Year = 2006,
-  Abstract = "A logic based general approach to abstract
-              interpretation of low-level machine programs is
-              reported. It is based on modelling the behavior of the
-              machine as a logic program.  General purpose program
-              analysis and transformation of logic programs, such as
-              partial evaluation and convex hull analysis, are applied
-              to the logic based model of the machine.
-
-              A small PIC microcontroller is used as a case study. An
-              emulator for this microcontroller is written in Prolog,
-              and standard programming transformations and analysis
-              techniques are used to specialise this emulator with
-              respect to a given PIC program. The specialised emulator
-              can now be further analysed to gain insight into the
-              given program for the PIC microcontroller.
-
-              The method describes a general framework for applying
-              abstractions, illustrated here by linear constraints and
-              convex hull analysis, to logic programs. Using these
-              techniques on the specialised PIC emulator, it is
-              possible to obtain constraints on and linear relations
-              between data registers, enabling detection of for
-              instance overflows, branch conditions and so on."
-}
-
-@PhdThesis{Henriksen07th,
-  Author = "K. S. Henriksen",
-  Title = "A Logic Programming Based Approach to Applying
-           Abstract Interpretation to Embedded Software",
-  School = "Computer Science, Roskilde University",
-  Month = oct,
-  Address = "Roskilde, Denmark",
-  Year = 2007,
-  Note = "Published as Computer Science Research Report \#117",
-  Abstract = "Abstract interpretation is a general framework for
-              static program analysis. In recent years this framework
-              has been used outside academia for verification of
-              embedded and real-time systems. Airbus and the European
-              Space Agency are examples of organisations that have
-              successfully adapted this analysis framework
-              for verification of critical components.
-              Logic programming is a programming paradigm with a sound
-              mathematical foundation. One of its characteristics is
-              the separation of logic (the meaning of a program) and
-              control (how it is executed); hence logic programming,
-              and in particular its extension with constraints, is a
-              language comparatively well suited for program analysis.
-              In this thesis logic programming is used to analyse
-              software developed for embedded systems. The particular
-              embedded system is modeled as an emulator written as a
-              constraint logic program. The emulator is specialised
-              with respect to some object program in order to obtain
-              a constraint logic program isomorphic to this object
-              program. Applying abstract interpretation based
-              analysers to the specialised emulator will provide
-              analysis results that can directly be related back
-              to the object program due to the isomorphism maintained
-              between the object program and the specialised emulator.
-              Two abstract interpretation based analysers for logic
-              programs have been developed.  The first is a convex
-              polyhedron analyser for constraint logic programs
-              implementing a set of widening techniques for improved
-              precision of the analysis.  The second analyser is a type
-              analysis tool for logic programs that automatically
-              derives a pre-interpretation from a regular type definition.
-              Additionallly, a framework for using a restricted form of
-              logic programming, namely Datalog, to express and check
-              program properties is described.  At the end of the thesis
-              it is shown how instrumenting the semantics of the emulator
-              can be used to obtain, for instance, a fully automatic
-              Worst Case Execution Time analysis by applying the convex
-              polyhedron analyser to the instrumented and specialised
-              emulator.  The tools developed in this thesis have all
-              been made available online for demonstration."
-}
-
-@Inproceedings{HymansU04,
-  Author = "C. Hymans and E. Upton",
-  Title = "Static Analysis of Gated Data Dependence Graphs",
-  Booktitle = "Static Analysis:
-               Proceedings of the 11th International Symposium",
-  Address = "Verona, Italy",
-  Editor = "R. Giacobazzi",
-  Publisher = "Springer-Verlag, Berlin",
-  Series = "Lecture Notes in Computer Science",
-  Volume = 3148,
-  Year = 2004,
-  Pages = "197--211",
-  Abstract = "Several authors have advocated the use of the gated data
-              dependence graph as a compiler intermediate
-              representation. If this representation is to gain
-              acceptance, it is important to show that we may
-              construct static analyses which operate directly on
-              it. In this paper we present the first example of such
-              an analysis, developed using the methodology of abstract
-              interpretation.  The analysis is shown to be sound with
-              respect to a concrete semantics for the representation.
-              Experimental results are presented which indicate that
-              the analysis performs well in comparison to conventional
-              techniques."
-}
-
-@Inproceedings{KruegelKMRV05,
-  Author = "C. Kruegel and E. Kirda and D. Mutz and W. Robertson and G. Vigna",
-  Title = "Automating Mimicry Attacks Using Static Binary Analysis",
-  Booktitle = "Proceedings of Security~'05,
-               the 14th USENIX Security Symposium",
-  Address = "Baltimore, MD, USA",
-  Year = 2005,
-  Pages = "161-176",
-  Abstract = "Intrusion detection systems that monitor sequences of
-              system calls have recently become more sophisticated in
-              defining legitimate application behavior. In particular,
-              additional information, such as the value of the program
-              counter and the configuration of the program's call
-              stack at each system call, has been used to achieve
-              better characterization of program behavior. While there
-              is common agreement that this additional information
-              complicates the task for the attacker, it is less clear
-              to which extent an intruder is constrained.
-              In this paper, we present a novel technique to evade the
-              extended detection features of state-of-the-art
-              intrusion detection systems and reduce the task of the
-              intruder to a traditional mimicry attack. Given a
-              legitimate sequence of system calls, our technique
-              allows the attacker to execute each system call in the
-              correct execution context by obtaining and relinquishing
-              the control of the application's execution flow through
-              manipulation of code pointers.
-              We have developed a static analysis tool for Intel x86
-              binaries that uses symbolic execution to automatically
-              identify instructions that can be used to redirect
-              control flow and to compute the necessary modifications
-              to the environment of the process. We used our tool to
-              successfully exploit three vulnerable programs and evade
-              detection by existing state-of-the-art system call
-              monitors. In addition, we analyzed three real-world
-              applications to verify the general applicability of our
-              techniques."
-}
-
-@Inproceedings{LagoonMS03,
-  Author = "V. Lagoon and F. Mesnard and P. J. Stuckey",
-  Title = "Termination Analysis with Types Is More Accurate",
-  Booktitle = "Logic Programming: Proceedings of the
-               19th International Conference (ICLP 2003)",
-  Address = "Mumbai, India",
-  Publisher = "Springer-Verlag, Berlin",
-  Series = "Lecture Notes in Computer Science",
-  Volume = 2916,
-  Year = 2003,
-  Pages = "254--268",
-  Abstract = "In this paper we show how we can use size and groundness
-              analyses lifted to regular and (polymorphic)
-              Hindley/Milner typed programs to determine more accurate
-              termination of (type correct) programs. Type information
-              for programs may be either inferred automatically or
-              declared by the programmer. The analysis of the typed
-              logic programs is able to completely reuse a framework
-              for termination analysis of untyped logic programs by
-              using abstract compilation of the type abstraction. We
-              show that our typed termination analysis is uniformly
-              more accurate than untyped termination analysis for
-              regularly typed programs, and demonstrate how it is able
-              to prove termination of programs which the untyped
-              analysis can not."
-}
-
-@Inproceedings{MakhloufK06,
-  Author = "I. B. Makhlouf and S. Kowalewski",
-  Title = "An Evaluation of Two Recent Reachability Analysis Tools
-           for Hybrid Systems",
-  Booktitle = "Proceedings of the 2nd IFAC Conference on Analysis
-               and Design of Hybrid Systems",
-  Address = "Alghero, Italy",
-  Editor = "C. Cassandras and A. Giua and C. Seatzu and J. Zaytoon",
-  Publisher = "Elsevier Science B.V.",
-  Year = 2006,
-  Abstract = "The hybrid systems community is still struggling to
-              provide practically applicable verification
-              tools. Recently, two new tools, PHAVer and Hsolver, were
-              introduced which promise to be a further step in this
-              direction. We evaluate and compare both tools with the
-              help of several benchmark examples. The results show
-              that both have their strengths and weaknesses, and that
-              there still is no all-purpose reachability analysis tool
-              for hybrid systems."
-}
-
-@Inproceedings{ManevichSRF04,
-  Author = "R. Manevich and M. Sagiv and G. Ramalingam and J. Field",
-  Title = "Partially Disjunctive Heap Abstraction",
-  Booktitle = "Static Analysis:
-               Proceedings of the 11th International Symposium",
-  Address = "Verona, Italy",
-  Editor = "R. Giacobazzi",
-  Publisher = "Springer-Verlag, Berlin",
-  Series = "Lecture Notes in Computer Science",
-  Volume = 3148,
-  Year = 2004,
-  Pages = "265--279",
-  Abstract = "One of the continuing challenges in abstract
-              interpretation is the creation of abstractions that
-              yield analyses that are both tractable and precise
-              enough to prove interesting properties about real-world
-              programs. One source of difficulty is the need to handle
-              programs with different behaviors along different
-              execution paths. Disjunctive (powerset) abstractions
-              capture such distinctions in a natural way. However, in
-              general, powerset abstractions increase the space and
-              time by an exponential factor. Thus, powerset
-              abstractions are generally perceived as being very
-              costly. In this paper we partially address this
-              challenge by presenting and empirically evaluating a new
-              heap abstraction. The new heap abstraction works by
-              merging shape descriptors according to a partial
-              isomorphism similarity criteria, resulting in a
-              partially disjunctive abstraction. We implemented this
-              abstraction in TVLA --- a generic system for
-              implementing program analyses. We conducted an empirical
-              evaluation of the new abstraction and compared it with
-              the powerset heap abstraction. The experiments show that
-              analyses based on the partially disjunctive abstraction
-              are as precise as the ones based on the fully
-              disjunctive abstraction. In terms of performance,
-              analyses based on the partially disjunctive abstraction
-              are often superior to analyses based on the fully
-              disjunctive heap abstraction. The empirical results show
-              considerable speedups, up to 2 orders of magnitude,
-              enabling previously non-terminating analyses, such as
-              verification of the Deutsch-Schorr-Waite marking
-              algorithm, to terminate with no negative effect on the
-              overall precision. Indeed, experience indicates that the
-              partially disjunctive shape abstraction improves
-              performance across all TVLA analyses uniformly, and in
-              many cases is essential for making precise shape
-              analysis feasible."
 }
 
 @Inproceedings{GulavaniR06,
@@ -1626,7 +1377,7 @@
   Series = "Lecture Notes in Computer Science",
   Volume = 2694,
   Year = 2003,
-  Pages = "355-365",
+  Pages = "355--365",
   Abstract = "Linear Relation Analysis [CH78] suffers from the cost of
               operations on convex polyhedra, which can be exponential
               with the number of involved variables. In order to
@@ -1636,6 +1387,118 @@
               other. Classical operations are adapted to work on such
               factored polyhedra. Our implementation shows encouraging
               experimental results."
+}
+
+@Inproceedings{HenriksenG06,
+  Author = "K. S. Henriksen and J. P. Gallagher",
+  Title = "Abstract Interpretation of {PIC} Programs
+           through Logic Programming",
+  Booktitle = "Proceedings of the 6th IEEE International Workshop
+               on Source Code Analysis and Manipulation",
+  Address = "Sheraton Society Hill, Philadelphia, PA, USA",
+  Publisher = "IEEE Computer Society Press",
+  Pages = "184--196",
+  Year = 2006,
+  Abstract = "A logic based general approach to abstract
+              interpretation of low-level machine programs is
+              reported. It is based on modelling the behavior of the
+              machine as a logic program.  General purpose program
+              analysis and transformation of logic programs, such as
+              partial evaluation and convex hull analysis, are applied
+              to the logic based model of the machine.
+
+              A small PIC microcontroller is used as a case study. An
+              emulator for this microcontroller is written in Prolog,
+              and standard programming transformations and analysis
+              techniques are used to specialise this emulator with
+              respect to a given PIC program. The specialised emulator
+              can now be further analysed to gain insight into the
+              given program for the PIC microcontroller.
+
+              The method describes a general framework for applying
+              abstractions, illustrated here by linear constraints and
+              convex hull analysis, to logic programs. Using these
+              techniques on the specialised PIC emulator, it is
+              possible to obtain constraints on and linear relations
+              between data registers, enabling detection of for
+              instance overflows, branch conditions and so on."
+}
+
+@PhdThesis{Henriksen07th,
+  Author = "K. S. Henriksen",
+  Title = "A Logic Programming Based Approach to Applying
+           Abstract Interpretation to Embedded Software",
+  School = "Computer Science, Roskilde University",
+  Month = oct,
+  Address = "Roskilde, Denmark",
+  Year = 2007,
+  Note = "Published as Computer Science Research Report \#117",
+  Abstract = "Abstract interpretation is a general framework for
+              static program analysis. In recent years this framework
+              has been used outside academia for verification of
+              embedded and real-time systems. Airbus and the European
+              Space Agency are examples of organisations that have
+              successfully adapted this analysis framework
+              for verification of critical components.
+              Logic programming is a programming paradigm with a sound
+              mathematical foundation. One of its characteristics is
+              the separation of logic (the meaning of a program) and
+              control (how it is executed); hence logic programming,
+              and in particular its extension with constraints, is a
+              language comparatively well suited for program analysis.
+              In this thesis logic programming is used to analyse
+              software developed for embedded systems. The particular
+              embedded system is modeled as an emulator written as a
+              constraint logic program. The emulator is specialised
+              with respect to some object program in order to obtain
+              a constraint logic program isomorphic to this object
+              program. Applying abstract interpretation based
+              analysers to the specialised emulator will provide
+              analysis results that can directly be related back
+              to the object program due to the isomorphism maintained
+              between the object program and the specialised emulator.
+              Two abstract interpretation based analysers for logic
+              programs have been developed.  The first is a convex
+              polyhedron analyser for constraint logic programs
+              implementing a set of widening techniques for improved
+              precision of the analysis.  The second analyser is a type
+              analysis tool for logic programs that automatically
+              derives a pre-interpretation from a regular type definition.
+              Additionallly, a framework for using a restricted form of
+              logic programming, namely Datalog, to express and check
+              program properties is described.  At the end of the thesis
+              it is shown how instrumenting the semantics of the emulator
+              can be used to obtain, for instance, a fully automatic
+              Worst Case Execution Time analysis by applying the convex
+              polyhedron analyser to the instrumented and specialised
+              emulator.  The tools developed in this thesis have all
+              been made available online for demonstration."
+}
+
+@Inproceedings{HymansU04,
+  Author = "C. Hymans and E. Upton",
+  Title = "Static Analysis of Gated Data Dependence Graphs",
+  Booktitle = "Static Analysis:
+               Proceedings of the 11th International Symposium",
+  Address = "Verona, Italy",
+  Editor = "R. Giacobazzi",
+  Publisher = "Springer-Verlag, Berlin",
+  Series = "Lecture Notes in Computer Science",
+  Volume = 3148,
+  Year = 2004,
+  Pages = "197--211",
+  Abstract = "Several authors have advocated the use of the gated data
+              dependence graph as a compiler intermediate
+              representation. If this representation is to gain
+              acceptance, it is important to show that we may
+              construct static analyses which operate directly on
+              it. In this paper we present the first example of such
+              an analysis, developed using the methodology of abstract
+              interpretation.  The analysis is shown to be sound with
+              respect to a concrete semantics for the representation.
+              Experimental results are presented which indicate that
+              the analysis performs well in comparison to conventional
+              techniques."
 }
 
 @Incollection{KimGR07,
@@ -1671,6 +1534,72 @@
               these control signals."
 }
 
+@Inproceedings{KruegelKMRV05,
+  Author = "C. Kruegel and E. Kirda and D. Mutz and W. Robertson and G. Vigna",
+  Title = "Automating Mimicry Attacks Using Static Binary Analysis",
+  Booktitle = "Proceedings of Security~'05,
+               the 14th USENIX Security Symposium",
+  Address = "Baltimore, MD, USA",
+  Year = 2005,
+  Pages = "161--176",
+  Abstract = "Intrusion detection systems that monitor sequences of
+              system calls have recently become more sophisticated in
+              defining legitimate application behavior. In particular,
+              additional information, such as the value of the program
+              counter and the configuration of the program's call
+              stack at each system call, has been used to achieve
+              better characterization of program behavior. While there
+              is common agreement that this additional information
+              complicates the task for the attacker, it is less clear
+              to which extent an intruder is constrained.
+              In this paper, we present a novel technique to evade the
+              extended detection features of state-of-the-art
+              intrusion detection systems and reduce the task of the
+              intruder to a traditional mimicry attack. Given a
+              legitimate sequence of system calls, our technique
+              allows the attacker to execute each system call in the
+              correct execution context by obtaining and relinquishing
+              the control of the application's execution flow through
+              manipulation of code pointers.
+              We have developed a static analysis tool for Intel x86
+              binaries that uses symbolic execution to automatically
+              identify instructions that can be used to redirect
+              control flow and to compute the necessary modifications
+              to the environment of the process. We used our tool to
+              successfully exploit three vulnerable programs and evade
+              detection by existing state-of-the-art system call
+              monitors. In addition, we analyzed three real-world
+              applications to verify the general applicability of our
+              techniques."
+}
+
+@Inproceedings{LagoonMS03,
+  Author = "V. Lagoon and F. Mesnard and P. J. Stuckey",
+  Title = "Termination Analysis with Types Is More Accurate",
+  Booktitle = "Logic Programming: Proceedings of the
+               19th International Conference (ICLP 2003)",
+  Address = "Mumbai, India",
+  Publisher = "Springer-Verlag, Berlin",
+  Series = "Lecture Notes in Computer Science",
+  Volume = 2916,
+  Year = 2003,
+  Pages = "254--268",
+  Abstract = "In this paper we show how we can use size and groundness
+              analyses lifted to regular and (polymorphic)
+              Hindley/Milner typed programs to determine more accurate
+              termination of (type correct) programs. Type information
+              for programs may be either inferred automatically or
+              declared by the programmer. The analysis of the typed
+              logic programs is able to completely reuse a framework
+              for termination analysis of untyped logic programs by
+              using abstract compilation of the type abstraction. We
+              show that our typed termination analysis is uniformly
+              more accurate than untyped termination analysis for
+              regularly typed programs, and demonstrate how it is able
+              to prove termination of programs which the untyped
+              analysis can not."
+}
+
 @Inproceedings{LavironL09,
   Author = "V. Laviron and F. Logozzo",
   Title = "SubPolyhedra: A (More) Scalable Approach to Infer Linear
@@ -1704,6 +1633,77 @@
               Polyhedra."
 }
 
+@Inproceedings{MakhloufK06,
+  Author = "I. B. Makhlouf and S. Kowalewski",
+  Title = "An Evaluation of Two Recent Reachability Analysis Tools
+           for Hybrid Systems",
+  Booktitle = "Proceedings of the 2nd IFAC Conference on Analysis
+               and Design of Hybrid Systems",
+  Address = "Alghero, Italy",
+  Editor = "C. Cassandras and A. Giua and C. Seatzu and J. Zaytoon",
+  Publisher = "Elsevier Science B.V.",
+  Year = 2006,
+  Abstract = "The hybrid systems community is still struggling to
+              provide practically applicable verification
+              tools. Recently, two new tools, PHAVer and Hsolver, were
+              introduced which promise to be a further step in this
+              direction. We evaluate and compare both tools with the
+              help of several benchmark examples. The results show
+              that both have their strengths and weaknesses, and that
+              there still is no all-purpose reachability analysis tool
+              for hybrid systems."
+}
+
+@Inproceedings{ManevichSRF04,
+  Author = "R. Manevich and M. Sagiv and G. Ramalingam and J. Field",
+  Title = "Partially Disjunctive Heap Abstraction",
+  Booktitle = "Static Analysis:
+               Proceedings of the 11th International Symposium",
+  Address = "Verona, Italy",
+  Editor = "R. Giacobazzi",
+  Publisher = "Springer-Verlag, Berlin",
+  Series = "Lecture Notes in Computer Science",
+  Volume = 3148,
+  Year = 2004,
+  Pages = "265--279",
+  Abstract = "One of the continuing challenges in abstract
+              interpretation is the creation of abstractions that
+              yield analyses that are both tractable and precise
+              enough to prove interesting properties about real-world
+              programs. One source of difficulty is the need to handle
+              programs with different behaviors along different
+              execution paths. Disjunctive (powerset) abstractions
+              capture such distinctions in a natural way. However, in
+              general, powerset abstractions increase the space and
+              time by an exponential factor. Thus, powerset
+              abstractions are generally perceived as being very
+              costly. In this paper we partially address this
+              challenge by presenting and empirically evaluating a new
+              heap abstraction. The new heap abstraction works by
+              merging shape descriptors according to a partial
+              isomorphism similarity criteria, resulting in a
+              partially disjunctive abstraction. We implemented this
+              abstraction in TVLA --- a generic system for
+              implementing program analyses. We conducted an empirical
+              evaluation of the new abstraction and compared it with
+              the powerset heap abstraction. The experiments show that
+              analyses based on the partially disjunctive abstraction
+              are as precise as the ones based on the fully
+              disjunctive abstraction. In terms of performance,
+              analyses based on the partially disjunctive abstraction
+              are often superior to analyses based on the fully
+              disjunctive heap abstraction. The empirical results show
+              considerable speedups, up to 2 orders of magnitude,
+              enabling previously non-terminating analyses, such as
+              verification of the Deutsch-Schorr-Waite marking
+              algorithm, to terminate with no negative effect on the
+              overall precision. Indeed, experience indicates that the
+              partially disjunctive shape abstraction improves
+              performance across all TVLA analyses uniformly, and in
+              many cases is essential for making precise shape
+              analysis feasible."
+}
+
 @Article{MesnardB05TPLP,
   Author = "F. Mesnard and R. Bagnara",
   Title = "{cTI}: A Constraint-Based Termination Inference Tool
@@ -1734,6 +1734,47 @@
               respectable size and complexity."
 }
 
+@Inproceedings{MoserKK07,
+  Author = "A. Moser and C. Kr{\"u}gel and E. Kirda",
+  Title = "Exploring Multiple Execution Paths for Malware Analysis",
+  Booktitle = "Proceedings of the 2007 IEEE Symposium on Security and Privacy
+               (S{\&}P 2007)",
+  Address = "Oakland, California, USA",
+  Publisher = "IEEE Computer Society Press",
+  Pages = "231--245",
+  Year = 2007,
+  Abstract = "Malicious code (or malware) is defined as software that
+              fulfills the deliberately harmful intent of an
+              attacker. Malware analysis is the process of determining
+              the behavior and purpose of a given malware sample (such
+              as a virus, worm, or Trojan horse). This process is a
+              necessary step to be able to develop effective detection
+              techniques and removal tools. Currently, malware
+              analysis is mostly a manual process that is tedious and
+              time-intensive. To mitigate this problem, a number of
+              analysis tools have been proposed that automatically
+              extract the behavior of an unknown program by executing
+              it in a restricted environment and recording the
+              operating system calls that are invoked.  The problem of
+              dynamic analysis tools is that only a single program
+              execution is observed. Unfortunately, however, it is
+              possible that certain malicious actions are only
+              triggered under specific circumstances (e.g., on a
+              particular day, when a certain file is present, or when
+              a certain command is received). In this paper, we
+              propose a system that allows us to explore multiple
+              execution paths and identify malicious actions that are
+              executed only when certain conditions are met. This
+              enables us to automatically extract a more complete view
+              of the program under analysis and identify under which
+              circumstances suspicious actions are carried out. Our
+              experimental results demonstrate that many malware
+              samples show different behavior depending on input read
+              from the environment. Thus, by exploring multiple
+              execution paths, we can obtain a more complete picture
+              of their actions."
+}
+
 @Inproceedings{PayetS07,
   Author = "E. Payet and F. Spoto",
   Title = " Magic-Sets Transformation for the Analysis of {Java} Bytecode",
@@ -1745,7 +1786,7 @@
   Series = "Lecture Notes in Computer Science",
   Volume = 4634,
   ISBN = "978-3-540-74060-5",
-  Pages = "452-467",
+  Pages = "452--467",
   Year = 2007,
   Abstract = "Denotational static analysis of Java bytecode has a nice
               and clean compositional definition and an efficient
@@ -1861,7 +1902,7 @@
   Series = "Lecture Notes in Computer Science",
   Volume = 4634,
   ISBN = "978-3-540-74060-5",
-  Pages = "366-383",
+  Pages = "366--383",
   Year = 2007,
   Abstract = "Interval analysis seeks static lower and upper bounds on
               the values of program variables. These bounds are
