@@ -273,19 +273,24 @@ Organizations (and People Therein):
 
 We are grateful for the following contributions:
 
-- The Computing Center of the University of Parma [46] allowed us to test
-  the portability of the library on a variety of platforms.  Fausto
-  Pagani was especially helpful in this respect.
+- AMD Developer Central [46] has donated a bi-quad core machine with
+  the latest AMD Opteron 2384 "Shanghai" processors and 16GB of RAM.
+  This machine now hosts all the PPL data and services.  Many thanks
+  to Christophe Harle and Sebastian Pop.
 
-- The GCC Compile Farm Project [47] managed by FSF France provided access
-  to a number of machines that allowed us to test and improve the
-  portability of the library.  Special thanks go to Laurent Guerby
+- The Computing Center of the University of Parma [47] allowed us to
+  test the portability of the library on a variety of platforms.
+  Fausto Pagani was especially helpful in this respect.
+
+- The GCC Compile Farm Project [48] managed by FSF France provided
+  access to a number of machines that allowed us to test and improve
+  the portability of the library.  Special thanks go to Laurent Guerby
   for his kind assistance.
 
-- The test cluster provided by Hewlett Packard and  hosted by ESIEE [48]
+- The test cluster provided by Hewlett Packard and  hosted by ESIEE [49]
   allowed us to complete the porting of the PPL to the IA64 and PA-RISC
-  architectures.  Many thanks to Thibaut Varene [49] and the PA-RISC
-  Linux community [50] for their kind assistance.
+  architectures.  Many thanks to Thibaut Varene [50] and the PA-RISC
+  Linux community [51] for their kind assistance.
 
 
 Some of our research work has been partly supported by the following
@@ -295,31 +300,31 @@ projects and organizations:
   ``Pure and Applied Mathematics'';
 
 - MURST project ``Automatic Program Certification by Abstract
-  Interpretation'' [51];
+  Interpretation'' [52];
 
 - MURST project ``Abstract Interpretation, Type Systems and Control-Flow
   Analysis'';
 
 - MURST project ``Automatic Aggregate- and Number-Reasoning for Computing:
   from Decision Algorithms to Constraint Programming with Multisets, Sets,
-  and Maps'' [52];
+  and Maps'' [53];
 
-- MURST project ``Constraint Based Verification of Reactive Systems'' [53];
+- MURST project ``Constraint Based Verification of Reactive Systems'' [54];
 
 - MURST project ``AIDA - Abstract Interpretation: Design and
-  Applications'' [54];
+  Applications'' [55];
 
 - Royal Society Joint project 2004/R1-EU (UK-Italy)
   ``Automatic Detection of Unstable Numerical Computations'';
 
 - EPSRC (UK) project EP/C520726/1
-  ``Numerical Domains for Software Analysis'' [55];
+  ``Numerical Domains for Software Analysis'' [56];
 
 - Royal Society International Outgoing Short Visit 2007/R4
-  ``Finding and Verifying the Absence of Bugs in Imperative Programs'' [56];
+  ``Finding and Verifying the Absence of Bugs in Imperative Programs'' [57];
 
 - EPSRC (UK) project EP/G025177/1
-  ``Geometric Abstractions for Scalable Program Analyzers'' [56].
+  ``Geometric Abstractions for Scalable Program Analyzers'' [57].
 
 --------
 
@@ -347,6 +352,7 @@ projects and organizations:
 [22] http://www.cs.unipr.it/ppl/Documentation/chernikova.c
 [23] http://www.cs.unipr.it/ppl/Documentation/bibliography#LeVerge92
 [24] http://research.microsoft.com/~logozzo/
+[25] http://homepages.inf.ed.ac.uk/kwxm/
 [26] http://www.math.unipr.it/~medori/
 [27] http://www.univ-reunion.fr/~fred/
 [28] http://www.cs.unipr.it/cTI/
@@ -367,14 +373,15 @@ projects and organizations:
 [43] http://www.ncc.up.pt/~pbv/cgi/cost.cgi
 [44] http://www.ncc.up.pt/~pbv/research/ppl/ghc.html
 [45] http://wissrech.ins.uni-bonn.de/people/wildenhues.html
-[46] http://www.siti.unipr.it/
-[47] http://gcc.gnu.org/wiki/CompileFarm
-[48] http://www.esiee.fr/
-[49] http://www.parisc-linux.org/~varenet/
-[50] http://www.parisc-linux.org/
-[51] http://theory.sci.univr.it/p40/
-[52] http://www.cs.unipr.it/Projects/COFIN01
-[53] http://www.disi.unige.it/person/DelzannoG/cover/
-[54] http://www.cs.unipr.it/Projects/AIDA/
-[55] http://www.comp.leeds.ac.uk/hill/chiara/WWW/linda.html
-[56] http://www.comp.leeds.ac.uk/hill/chiara/WWW/projects.html
+[46] http://developer.amd.com/
+[47] http://www.siti.unipr.it/
+[48] http://gcc.gnu.org/wiki/CompileFarm
+[49] http://www.esiee.fr/
+[50] http://www.parisc-linux.org/~varenet/
+[51] http://www.parisc-linux.org/
+[52] http://theory.sci.univr.it/p40/
+[53] http://www.cs.unipr.it/Projects/COFIN01
+[54] http://www.disi.unige.it/person/DelzannoG/cover/
+[55] http://www.cs.unipr.it/Projects/AIDA/
+[56] http://www.comp.leeds.ac.uk/hill/chiara/WWW/linda.html
+[57] http://www.comp.leeds.ac.uk/hill/chiara/WWW/projects.html
