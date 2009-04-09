@@ -195,16 +195,19 @@ People:
   Francesco Logozzo     [24] (formerly at Ecole Polytechnique) helped us
                         straighten out some portability issues on Cygwin.
 
-  Costantino Medori     [25] (University of Parma) helped us on some
+  Kenneth MacKenzie     [25] provided very good bug reports that allowed
+                        us to fix several problems in the OCaml interface.
+
+  Costantino Medori     [26] (University of Parma) helped us on some
                         mathematical aspects of the development.
 
-  Fred Mesnard          [26] (University of La Reunion), the main author
-                        of cTI [27], has worked with us on one of the
+  Fred Mesnard          [27] (University of La Reunion), the main author
+                        of cTI [28], has worked with us on one of the
                         first applications of the PPL: the "cTI"
                         data-flow analyzer, which performs a linear
                         size relation analysis using a domain of
                         convex polyhedra.  The China data-flow
-                        analyzer [28] uses the Parma Polyhedra Library
+                        analyzer [29] uses the Parma Polyhedra Library
                         to perform the same analysis.  We have been
                         running China against an old version of cTI
                         that did not use the PPL, using it to
@@ -216,51 +219,51 @@ People:
   Ken Mixter            (then at Carnegie Mellon University) provided
                         useful feedback while working on an
                         experimental version of the Action Language
-                        Verifier [29] based on the PPL.
+                        Verifier [30] based on the PPL.
 
-  Sebastian Pop         [30] (now at AMD).  During his work on interfacing
-                        CLooG [31] with the PPL, Sebastian provided
+  Sebastian Pop         [31] (now at AMD).  During his work on interfacing
+                        CLooG [32] with the PPL, Sebastian provided
                         valuable feedback, particularly on the C
                         interface to the PPL.  He also suggested the
                         addition of new functionality such as the
                         "simplify using context" operation.
 
-  Thomas Reps           [32] (University of Wisconsin-Madison), on several
+  Thomas Reps           [33] (University of Wisconsin-Madison), on several
                         occasions we have had interesting discussions
                         with him both on the PPL and on the more
                         general topics of static analysis and
                         numerical abstractions.
 
-  Mooly Sagiv           [33] (Tel-Aviv University) stimulated the development
+  Mooly Sagiv           [34] (Tel-Aviv University) stimulated the development
                         of the PPL by providing, in particular,
                         interesting challenges related to precision
                         and scalability.
 
-  Sriram Sankaranarayanan [34] (NEC Laboratories America, formerly at
+  Sriram Sankaranarayanan [35] (NEC Laboratories America, formerly at
                         Stanford University) provided very useful feedback
-                        while developing StInG [35] and LPInv [36].
+                        while developing StInG [36] and LPInv [37].
 
-  Axel Simon            [37] (ENS, formerly at the University of Kent
+  Axel Simon            [38] (ENS, formerly at the University of Kent
                         at Canterbury) wrote some PPL 0.9
-                        bindings [43] for the Glasgow Haskell Compiler.
+                        bindings [44] for the Glasgow Haskell Compiler.
 
-  Fausto Spoto          [38] (University of Verona) did useful beta testing
+  Fausto Spoto          [39] (University of Verona) did useful beta testing
                         for the Java interface.  He also suggested the
                         addition of the <EM>hash code</EM> operations.
 
-  Basile Starynkevitch  [39] (CEA LIST/DTSI/SOL). Basile is the author
-                        of MELT [40] and suggested several improvements
+  Basile Starynkevitch  [40] (CEA LIST/DTSI/SOL). Basile is the author
+                        of MELT [41] and suggested several improvements
                         to the PPL.
 
 
-  Pedro Vasconcelos     [41] (formerly at the University of St Andrews, UK)
+  Pedro Vasconcelos     [42] (formerly at the University of St Andrews, UK)
                         provided useful feedback while developing his
-                        size and cost analyzer for Core Hume [42].
+                        size and cost analyzer for Core Hume [43].
                         Pedro also solved a problem of Axel Simon's
                         PPL 0.9 bindings for the GHC and makes them
-                        publicly available [43].
+                        publicly available [44].
 
-  Ralf Wildenhues       [44] (University of Bonn) helped us with
+  Ralf Wildenhues       [45] (University of Bonn) helped us with
                         several issues concerning the proper use of
                         the Autotools.
 
@@ -270,19 +273,19 @@ Organizations (and People Therein):
 
 We are grateful for the following contributions:
 
-- The Computing Center of the University of Parma [45] allowed us to test
+- The Computing Center of the University of Parma [46] allowed us to test
   the portability of the library on a variety of platforms.  Fausto
   Pagani was especially helpful in this respect.
 
-- The GCC Compile Farm Project [46] managed by FSF France provided access
+- The GCC Compile Farm Project [47] managed by FSF France provided access
   to a number of machines that allowed us to test and improve the
   portability of the library.  Special thanks go to Laurent Guerby
   for his kind assistance.
 
-- The test cluster provided by Hewlett Packard and  hosted by ESIEE [47]
+- The test cluster provided by Hewlett Packard and  hosted by ESIEE [48]
   allowed us to complete the porting of the PPL to the IA64 and PA-RISC
-  architectures.  Many thanks to Thibaut Varene [48] and the PA-RISC
-  Linux community [49] for their kind assistance.
+  architectures.  Many thanks to Thibaut Varene [49] and the PA-RISC
+  Linux community [50] for their kind assistance.
 
 
 Some of our research work has been partly supported by the following
@@ -292,31 +295,31 @@ projects and organizations:
   ``Pure and Applied Mathematics'';
 
 - MURST project ``Automatic Program Certification by Abstract
-  Interpretation'' [50];
+  Interpretation'' [51];
 
 - MURST project ``Abstract Interpretation, Type Systems and Control-Flow
   Analysis'';
 
 - MURST project ``Automatic Aggregate- and Number-Reasoning for Computing:
   from Decision Algorithms to Constraint Programming with Multisets, Sets,
-  and Maps'' [51];
+  and Maps'' [52];
 
-- MURST project ``Constraint Based Verification of Reactive Systems'' [52];
+- MURST project ``Constraint Based Verification of Reactive Systems'' [53];
 
 - MURST project ``AIDA - Abstract Interpretation: Design and
-  Applications'' [53];
+  Applications'' [54];
 
 - Royal Society Joint project 2004/R1-EU (UK-Italy)
   ``Automatic Detection of Unstable Numerical Computations'';
 
 - EPSRC (UK) project EP/C520726/1
-  ``Numerical Domains for Software Analysis'' [54];
+  ``Numerical Domains for Software Analysis'' [55];
 
 - Royal Society International Outgoing Short Visit 2007/R4
-  ``Finding and Verifying the Absence of Bugs in Imperative Programs'' [55];
+  ``Finding and Verifying the Absence of Bugs in Imperative Programs'' [56];
 
 - EPSRC (UK) project EP/G025177/1
-  ``Geometric Abstractions for Scalable Program Analyzers'' [55].
+  ``Geometric Abstractions for Scalable Program Analyzers'' [56].
 
 --------
 
@@ -344,34 +347,34 @@ projects and organizations:
 [22] http://www.cs.unipr.it/ppl/Documentation/chernikova.c
 [23] http://www.cs.unipr.it/ppl/Documentation/bibliography#LeVerge92
 [24] http://research.microsoft.com/~logozzo/
-[25] http://www.math.unipr.it/~medori/
-[26] http://www.univ-reunion.fr/~fred/
-[27] http://www.cs.unipr.it/cTI/
-[28] http://www.cs.unipr.it/China/
-[29] http://www.cs.ucsb.edu/~bultan/composite/
-[30] http://www-rocq.inria.fr/~pop/
-[31] http://www.cloog.org/
-[32] http://www.cs.wisc.edu/~reps/
-[33] http://www.math.tau.ac.il/~msagiv/
-[34] http://www.nec-labs.com/~srirams/
-[35] http://theory.stanford.edu/~srirams/Software/sting.html
-[36] http://theory.stanford.edu/~srirams/Software/lpinv.html
-[37] http://www.di.ens.fr/~simona/
-[38] http://profs.sci.univr.it/~spoto/
-[39] http://www.starynkevitch.net/Basile/index_en.html
-[40] http://gcc.gnu.org/wiki/MiddleEndLispTranslator
-[41] http://www.ncc.up.pt/~pbv/
-[42] http://www.ncc.up.pt/~pbv/cgi/cost.cgi
-[43] http://www.ncc.up.pt/~pbv/research/ppl/ghc.html
-[44] http://wissrech.ins.uni-bonn.de/people/wildenhues.html
-[45] http://www.siti.unipr.it/
-[46] http://gcc.gnu.org/wiki/CompileFarm
-[47] http://www.esiee.fr/
-[48] http://www.parisc-linux.org/~varenet/
-[49] http://www.parisc-linux.org/
-[50] http://theory.sci.univr.it/p40/
-[51] http://www.cs.unipr.it/Projects/COFIN01
-[52] http://www.disi.unige.it/person/DelzannoG/cover/
-[53] http://www.cs.unipr.it/Projects/AIDA/
-[54] http://www.comp.leeds.ac.uk/hill/chiara/WWW/linda.html
-[55] http://www.comp.leeds.ac.uk/hill/chiara/WWW/projects.html
+[26] http://www.math.unipr.it/~medori/
+[27] http://www.univ-reunion.fr/~fred/
+[28] http://www.cs.unipr.it/cTI/
+[29] http://www.cs.unipr.it/China/
+[30] http://www.cs.ucsb.edu/~bultan/composite/
+[31] http://www-rocq.inria.fr/~pop/
+[32] http://www.cloog.org/
+[33] http://www.cs.wisc.edu/~reps/
+[34] http://www.math.tau.ac.il/~msagiv/
+[35] http://www.nec-labs.com/~srirams/
+[36] http://theory.stanford.edu/~srirams/Software/sting.html
+[37] http://theory.stanford.edu/~srirams/Software/lpinv.html
+[38] http://www.di.ens.fr/~simona/
+[39] http://profs.sci.univr.it/~spoto/
+[40] http://www.starynkevitch.net/Basile/index_en.html
+[41] http://gcc.gnu.org/wiki/MiddleEndLispTranslator
+[42] http://www.ncc.up.pt/~pbv/
+[43] http://www.ncc.up.pt/~pbv/cgi/cost.cgi
+[44] http://www.ncc.up.pt/~pbv/research/ppl/ghc.html
+[45] http://wissrech.ins.uni-bonn.de/people/wildenhues.html
+[46] http://www.siti.unipr.it/
+[47] http://gcc.gnu.org/wiki/CompileFarm
+[48] http://www.esiee.fr/
+[49] http://www.parisc-linux.org/~varenet/
+[50] http://www.parisc-linux.org/
+[51] http://theory.sci.univr.it/p40/
+[52] http://www.cs.unipr.it/Projects/COFIN01
+[53] http://www.disi.unige.it/person/DelzannoG/cover/
+[54] http://www.cs.unipr.it/Projects/AIDA/
+[55] http://www.comp.leeds.ac.uk/hill/chiara/WWW/linda.html
+[56] http://www.comp.leeds.ac.uk/hill/chiara/WWW/projects.html
