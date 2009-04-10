@@ -1,3 +1,54 @@
+2009-04-10  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/checked_float.inlines.hh: Only use fmaf(), fma() and fmal() if
+	they are fast.
+
+2009-04-10  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac: Version number bumped.
+
+2009-04-10  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/checked_float.inlines.hh: Do not use fma(), fmaf() and fmal()
+	on FreeBSD.  fma() does not respect rounding, fmaf() and fmal() may
+	have the same problem.
+
+2009-04-09  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* CREDITS: Mentioned the AIDA 2007 project.
+
+2009-04-09  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* CREDITS: Acknowledge the contribution of HiPEAC.
+
+2009-04-09  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* CREDITS: Acknowledge the contribution of INRIA.
+
+2009-04-09  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* CREDITS: Acknowledge the contribution of AMD.  Fixed mistaked of
+	previous commit.
+
+2009-04-09  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* CREDITS: Acknowledge the contribution of Kenneth MacKenzie.
+
+2009-04-07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Octagonal_Shape/unconstrain1.cc: Disabled test07() on the
+	Alpha.
+
+2009-04-06  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog, Watchdog/ChangeLog: Updated.
+
+2009-04-06  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* devtools/cvs2cl.pl, devtools/git2cl, devtools/update_ChangeLog: 
+	Machinery to generate ChangeLog adapted to Git.  This is still
+	highly unsatisfactory, as it requires manual intervention.
+
 2009-04-06  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* configure.ac: Version number bumped.
