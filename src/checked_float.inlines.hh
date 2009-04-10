@@ -34,7 +34,8 @@ namespace Checked {
 
 inline float
 fma(float x, float y, float z) {
-#if PPL_HAVE_DECL_FMAF && !defined(__alpha)
+#if PPL_HAVE_DECL_FMAF && defined(FP_FAST_FMAF) \
+  && !defined(__alpha) && !defined(__FreeBSD__)
   return ::fmaf(x, y, z);
 #else
   return x*y + z;
@@ -43,7 +44,8 @@ fma(float x, float y, float z) {
 
 inline double
 fma(double x, double y, double z) {
-#if PPL_HAVE_DECL_FMA && !defined(__alpha)
+#if PPL_HAVE_DECL_FMA && defined(FP_FAST_FMA) \
+  && !defined(__alpha) && !defined(__FreeBSD__)
   return ::fma(x, y, z);
 #else
   return x*y + z;
@@ -52,7 +54,8 @@ fma(double x, double y, double z) {
 
 inline long double
 fma(long double x, long double y, long double z) {
-#if PPL_HAVE_DECL_FMAL && !defined(__alpha)
+#if PPL_HAVE_DECL_FMAL && defined(FP_FAST_FMAL) \
+  && !defined(__alpha) && !defined(__FreeBSD__)
   return ::fmal(x, y, z);
 #else
   return x*y + z;
