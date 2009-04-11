@@ -1,5 +1,6 @@
 *.clpq
 *.la
+*.so
 *.xwam
 clpq.pl
 clpq2.pl

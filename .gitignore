@@ -26,6 +26,7 @@ conftest
 conftest.c
 libtool
 ppl-config.h
+ppl-config.h.in
 ppl.lsm
 ppl.spec
 stamp-h
