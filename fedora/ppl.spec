@@ -1,8 +1,8 @@
 #%define opt %(test -x %{_bindir}/ocamlopt && echo 1 || echo 0)
 
 Name:           ppl
-Version:        0.10
-Release:        11%{?dist}
+Version:        0.10.1
+Release:        1%{?dist}
 
 Summary:        The Parma Polyhedra Library: a library of numerical abstractions
 Group:          Development/Libraries
@@ -12,8 +12,8 @@ Source0:        ftp://ftp.cs.unipr.it/pub/ppl/releases/%{version}/%{name}-%{vers
 Source1:        ppl.hh
 Source2:        ppl_c.h
 Source3:        pwl.hh
-Patch0:         ppl-0.10-bigendian.patch
-Patch1:         ppl-0.10-configure.patch
+Patch0:         ppl-0.10.1-Makefile.patch
+#Patch1:
 #Icon:
 #Requires:
 Requires(post): /sbin/ldconfig
@@ -199,7 +199,7 @@ Install this package if you want to program with the PWL.
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
+#%patch1 -p1
 
 %build
 CPPFLAGS="-I%{_includedir}/glpk"
@@ -392,9 +392,9 @@ mv \
 %doc %{_datadir}/doc/%{name}-%{version}/pwl/fdl.*
 %doc %{_datadir}/doc/%{name}-%{version}/pwl/gpl.ps.gz
 %doc %{_datadir}/doc/%{name}-%{version}/pwl/gpl.pdf
-%doc %{_datadir}/doc/%{name}-%{version}/pwl/pwl-user-0.5-html/
-%doc %{_datadir}/doc/%{name}-%{version}/pwl/pwl-user-0.5.pdf
-%doc %{_datadir}/doc/%{name}-%{version}/pwl/pwl-user-0.5.ps.gz
+%doc %{_datadir}/doc/%{name}-%{version}/pwl/pwl-user-0.7-html/
+%doc %{_datadir}/doc/%{name}-%{version}/pwl/pwl-user-0.7.pdf
+%doc %{_datadir}/doc/%{name}-%{version}/pwl/pwl-user-0.7.ps.gz
 
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
@@ -405,6 +405,9 @@ mv \
 rm -rf %{buildroot}
 
 %changelog
+* Tue Apr 14 2009 Roberto Bagnara <bagnara@cs.unipr.it> 0.10.1-1
+- Updated for PPL 0.10.1.
+
 * Sun Mar 29 2009 Roberto Bagnara <bagnara@cs.unipr.it> 0.10-11
 - Moved changelogs and PostScript and PDF versions of the GPL to the
   `docs' subpackages. This saves considerable space on the live media.
