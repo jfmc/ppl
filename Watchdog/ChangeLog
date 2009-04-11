@@ -1,3 +1,7 @@
+2009-04-06  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog, Watchdog/ChangeLog: Updated.
+
 2009-04-04  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* Watchdog/NEWS, Watchdog/README, Watchdog/configure.ac,

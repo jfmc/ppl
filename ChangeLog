@@ -1,3 +1,11 @@
+2009-04-11  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/XSB/Makefile.am: Fixed reference to CLPQ_TESTS.
+
+2009-04-10  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog: Updated.
+
 2009-04-10  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* src/checked_float.inlines.hh: Only use fmaf(), fma() and fmal() if

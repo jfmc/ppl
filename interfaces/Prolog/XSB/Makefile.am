@@ -231,7 +231,7 @@ endif !ASSERTIONS_ENABLED
 $(CLPQ_TESTS):
 	cp -f $(srcdir)/../tests/$@ .
 
-check-local: libppl_xsb.la xsb_clpq.P ../tests/clpq.pl ../tests/script_clpq xsb_clpq2.P ../tests/clpq2.pl ../tests/script_clpq2 pl_check_test ppl_prolog_generated_test (CLPQ_TESTS)
+check-local: libppl_xsb.la xsb_clpq.P ../tests/clpq.pl ../tests/script_clpq xsb_clpq2.P ../tests/clpq2.pl ../tests/script_clpq2 pl_check_test ppl_prolog_generated_test $(CLPQ_TESTS)
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  cp -f $(srcdir)/xsb_clpq.P . ; \
 	fi
