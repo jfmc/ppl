@@ -1,10 +1,13 @@
+*.aux
 *.doxyconf-html
 *.doxyconf-latex
+*.latex-dir
+*.log
 *.pdf
 *.pdf-dir
 *.ps
 *.ps-dir
 *.ps.gz
+*.tag
 *.tar.gz
 pwl-*-html
-user.latex-dir
