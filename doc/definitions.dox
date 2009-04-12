@@ -1642,7 +1642,7 @@ Given two sequences of intervals defining two \f$n\f$-dimensional boxes, the
 <EM>CC76-widening</EM> applies, for each corresponding interval and bound, the
 interval constraint widening defined in \ref CC76 "[CC76]".
 For extra precision, this incorporates the widening with thresholds
-as defined in \ref BCCFMMMR02 "[BCCFMMMR02]" with
+as defined in \ref BCCetal02 "[BCCetal02]" with
 \f$\{-2, -1, 0, 1, 2\}\f$ as the set of default threshold values.
 
 \section Weakly_Relational_Shapes Weakly-Relational Shapes
@@ -2750,6 +2750,19 @@ C.&nbsp;Ancourt.
 </DD>
 
 
+<DT>[BA05]</DT>
+<DD>
+\anchor BA05
+J.&nbsp;M. Bjorndalen and O.&nbsp;Anshus.
+ Lessons learned in benchmarking - Floating point benchmarks: Can
+  you trust them?
+ In <em>Proceedings of the <em>Norsk informatikkonferanse 2005</em>
+  (NIK 2005)</em>, pages 89-100, Bergen, Norway, 2005. Tapir Akademisk Forlag.
+
+
+</DD>
+
+
 <DT>[Bag97]</DT>
 <DD>
 \anchor Bag97
@@ -2774,7 +2787,23 @@ R.&nbsp;Bagnara.
 </DD>
 
 
-<DT>[BDHetal05]</DT>
+<DT>[BCC<sup>+</sup>02]</DT>
+<DD>
+\anchor BCCetal02
+B.&nbsp;Blanchet, P.&nbsp;Cousot, R.&nbsp;Cousot, J.&nbsp;Feret, L.&nbsp;Mauborgne, A.&nbsp;Min&eacute;,
+  D.&nbsp;Monniaux, and X.&nbsp;Rival.
+ Design and implementation of a special-purpose static program
+  analyzer for safety-critical real-time embedded software.
+ In T.&nbsp;AE. Mogensen, D.&nbsp;A. Schmidt, and I.&nbsp;Hal Sudborough,
+  editors, <em>The Essence of Computation, Complexity, Analysis,
+  Transformation. Essays Dedicated to Neil D. Jones [on occasion of his 60th
+  birthday]</em>, volume 2566 of <em>Lecture Notes in Computer Science</em>, pages
+  85-108. Springer-Verlag, Berlin, 2002.
+
+</DD>
+
+
+<DT>[BDH<sup>+</sup>05]</DT>
 <DD>
 \anchor BDHetal05
 R.&nbsp;Bagnara, K.&nbsp;Dobson, P.&nbsp;M. Hill, M.&nbsp;Mundell, and E.&nbsp;Zaffanella.
@@ -2787,7 +2816,7 @@ R.&nbsp;Bagnara, K.&nbsp;Dobson, P.&nbsp;M. Hill, M.&nbsp;Mundell, and E.&nbsp;Z
 </DD>
 
 
-<DT>[BDHetal06]</DT>
+<DT>[BDH<sup>+</sup>06]</DT>
 <DD>
 \anchor BDHetal06
 R.&nbsp;Bagnara, K.&nbsp;Dobson, P.&nbsp;M. Hill, M.&nbsp;Mundell, and E.&nbsp;Zaffanella.
@@ -2799,7 +2828,7 @@ R.&nbsp;Bagnara, K.&nbsp;Dobson, P.&nbsp;M. Hill, M.&nbsp;Mundell, and E.&nbsp;Z
 </DD>
 
 
-<DT>[BDHetal07]</DT>
+<DT>[BDH<sup>+</sup>07]</DT>
 <DD>
 \anchor BDHetal07
 R.&nbsp;Bagnara, K.&nbsp;Dobson, P.&nbsp;M. Hill, M.&nbsp;Mundell, and E.&nbsp;Zaffanella.
@@ -2809,6 +2838,29 @@ R.&nbsp;Bagnara, K.&nbsp;Dobson, P.&nbsp;M. Hill, M.&nbsp;Mundell, and E.&nbsp;Z
   Notes in Computer Science</em>, pages 219-235, Venice, Italy, 2007.
   Springer-Verlag, Berlin.
 
+
+</DD>
+
+
+<DT>[BFT00]</DT>
+<DD>
+\anchor BFT00
+A.&nbsp;Bemporad, K.&nbsp;Fukuda, and F.&nbsp;D. Torrisi.
+ Convexity recognition of the union of polyhedra.
+ Report AUT00-13, Automatic Control Laboratory, ETHZ, Zurich,
+  Switzerland, 2000.
+
+
+</DD>
+
+
+<DT>[BFT01]</DT>
+<DD>
+\anchor BFT01
+A.&nbsp;Bemporad, K.&nbsp;Fukuda, and F.&nbsp;D. Torrisi.
+ Convexity recognition of the union of polyhedra.
+ <em>Computational Geometry: Theory and Applications</em>,
+  18(3):141-154, 2001.
 
 </DD>
 
@@ -3089,6 +3141,43 @@ R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
 </DD>
 
 
+<DT>[BHZ09a]</DT>
+<DD>
+\anchor BHZ09a
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
+ Applications of polyhedral computations to the analysis and
+  verification of hardware and software systems.
+ <em>Theoretical Computer Science</em>, 2009.
+ To appear.
+
+
+</DD>
+
+
+<DT>[BHZ09b]</DT>
+<DD>
+\anchor BHZ09b
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
+ Exact join detection for convex polyhedra and other numerical
+  abstractions.
+ Report <tt>arXiv:cs.CG/0904.1783</tt>, 2009.
+ Available from <a href="http://arxiv.org/">http://arxiv.org/</a>.
+
+
+</DD>
+
+
+<DT>[BHZ09c]</DT>
+<DD>
+\anchor BHZ09c
+R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
+ Weakly-relational shapes for numeric abstractions: Improved
+  algorithms and proofs of correctness.
+ Submitted for publication, 2009.
+
+</DD>
+
+
 <DT>[BJT99]</DT>
 <DD>
 \anchor BJT99
@@ -3156,23 +3245,6 @@ R.&nbsp;Bagnara, E.&nbsp;Ricci, E.&nbsp;Zaffanella, and P.&nbsp;M. Hill.
 
 </DD>
 
-
-<DT>[BRZH02c]</DT>
-<DD>
-\anchor BCCFMMMR02
-B.&nbsp;Blanchet, P.&nbsp;Cousot, R.&nbsp;Cousot, J.&nbsp;Feret,
-  L.&nbsp;Mauborgne, A.&nbsp;Min&eacute;, D.&nbsp;Monniaux
-  and X.&nbsp;Rival.
- Design and Implementation of a Special-Purpose Static Program
-  Analyzer for Safety-Critical Real-Time Embedded Software.
-  In T.&nbsp;&nbsp;Mogensen, D.&nbsp;A.&nbsp;Schmidt
-     and I.&nbsp;Hal&nbsp;Sudborough, editors,
-  <em>The Essence of Computation, Complexity, Analysis,
-   Transformation.  Essays Dedicated to Neil D. Jones [on
-   occasion of his 60th birthday]</em>, volume 2566 of <em>Lecture
-  Notes in Computer Science</em>, pages 85-108, 2002.
-
-</DD>
 
 <DT>[CC76]</DT>
 <DD>
@@ -3300,7 +3372,7 @@ K.&nbsp;Fukuda.
 </DD>
 
 
-<DT>[GDDetal04]</DT>
+<DT>[GDD<sup>+</sup>04]</DT>
 <DD>
 \anchor GDDetal04
 D.&nbsp;Gopan, F.&nbsp;DiMaio, N.&nbsp;Dor, T.&nbsp;W. Reps, and M.&nbsp;Sagiv.
@@ -3517,7 +3589,7 @@ J.&nbsp;Jaffar, M.&nbsp;J. Maher, P.&nbsp;J. Stuckey, and R.&nbsp;H.&nbsp;C. Yap
 </DD>
 
 
-<DT>[KBBetal06]</DT>
+<DT>[KBB<sup>+</sup>06]</DT>
 <DD>
 \anchor KBBetal06
 L.&nbsp;Khachiyan, E.&nbsp;Boros, K.&nbsp;Borys, K.&nbsp;Elbassioni, and V.&nbsp;Gurvich.
@@ -3538,9 +3610,9 @@ H.&nbsp;W. Kuhn.
 </DD>
 
 
-<DT>[Le 92]</DT>
+<DT>[LeV92]</DT>
 <DD>
-\anchor Le 92
+\anchor LeV92
 H.&nbsp;Le Verge.
  A note on Chernikova's algorithm.
  <em>Publication interne</em> 635, IRISA, Campus de Beaulieu, Rennes,
@@ -3779,6 +3851,17 @@ P.&nbsp;Quinton, S.&nbsp;Rajopadhye, and T.&nbsp;Risset.
 P.&nbsp;Quinton, S.&nbsp;Rajopadhye, and T.&nbsp;Risset.
  On manipulating Z-polyhedra using a canonic representation.
  <em>Parallel Processing Letters</em>, 7(2):181-194, 1997.
+
+</DD>
+
+
+<DT>[QRW00]</DT>
+<DD>
+\anchor QRW00
+F.&nbsp;Quiller&eacute;, S.&nbsp;V. Rajopadhye, and D.&nbsp;Wilde.
+ Generation of efficient nested loops from polyhedra.
+ <em>International Journal of Parallel Programming</em>, 28(5):469-498,
+  2000.
 
 </DD>
 
