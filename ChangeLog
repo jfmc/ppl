@@ -1,3 +1,33 @@
+2009-04-12  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* devtools/generate_dox_biblio.sed, doc/definitions.dox: 
+	Bibliography updated.  The generated bibliography required manual
+	intervention in a few places, also because of a couple of Doxygen
+	bugs and limitations
+	(see http://bugzilla.gnome.org/show_bug.cgi?id=578739 and
+	http://bugzilla.gnome.org/show_bug.cgi?id=578740).
+
+2009-04-11  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/tests/.gitignore, interfaces/Prolog/XSB/.gitignore,
+	interfaces/Prolog/YAP/.gitignore: Added missing patterns.  Removed
+	obsolete ones.
+
+2009-04-11  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* .gitignore, Watchdog/doc/.gitignore, doc/.gitignore,
+	interfaces/Prolog/XSB/.gitignore: Added missing patterns.
+
+2009-04-11  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* fedora/ppl-0.10-bigendian.patch, fedora/ppl-0.10-configure.patch,
+	fedora/ppl-0.10.1-Makefile.patch, fedora/ppl.spec: Updated for PPL
+	0.10.1.
+
+2009-04-11  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog, Watchdog/ChangeLog: Updated.
+
 2009-04-11  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* interfaces/Prolog/XSB/Makefile.am: Fixed reference to CLPQ_TESTS.
