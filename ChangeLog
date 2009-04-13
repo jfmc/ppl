@@ -1,3 +1,12 @@
+2009-04-13  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Octagonal_Shape/affineimage1.cc: Disabled test10() on the
+	Alpha.
+
+2009-04-12  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog: Updated.
+
 2009-04-12  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* devtools/generate_dox_biblio.sed, doc/definitions.dox: 
