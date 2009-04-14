@@ -592,20 +592,6 @@ public:
   */
   void refine_with_constraint(const Constraint& c);
 
-  //! Intersects \p *this with the constraint \p c, minimizing the result.
-  /*!
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p c are topology-incompatible or
-    dimension-incompatible.
-
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool add_constraint_and_minimize(const Constraint& c);
-
   //! Intersects \p *this with the constraints in \p cs.
   /*!
     \param cs
@@ -628,25 +614,6 @@ public:
   */
   void refine_with_constraints(const Constraint_System& cs);
 
-  /*! \brief
-    Intersects \p *this with the constraints in \p cs,
-    minimizing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param cs
-    The constraints to intersect with.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cs are topology-incompatible or
-    dimension-incompatible.
-
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool add_constraints_and_minimize(const Constraint_System& cs);
-
   //! Intersects \p *this with congruence \p c.
   /*!
     \exception std::invalid_argument
@@ -665,20 +632,6 @@ public:
     Thrown if \p *this and \p cg are dimension-incompatible.
   */
   void refine_with_congruence(const Congruence& cg);
-
-  //! Intersects \p *this with the congruence \p c, minimizing the result.
-  /*!
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p c are topology-incompatible or
-    dimension-incompatible.
-
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool add_congruence_and_minimize(const Congruence& c);
 
   //! Intersects \p *this with the congruences in \p cgs.
   /*!
@@ -701,25 +654,6 @@ public:
     Thrown if \p *this and \p cgs are dimension-incompatible.
   */
   void refine_with_congruences(const Congruence_System& cgs);
-
-  /*! \brief
-    Intersects \p *this with the congruences in \p cs,
-    minimizing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param cs
-    The congruences to intersect with.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cs are topology-incompatible or
-    dimension-incompatible.
-
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool add_congruences_and_minimize(const Congruence_System& cs);
 
   /*! \brief
     Computes the \ref Cylindrification "cylindrification" of \p *this with
@@ -756,20 +690,6 @@ public:
     with each disjunct in \p y and collecting all these intersections.
   */
   void intersection_assign(const Pointset_Powerset& y);
-
-  //! Assigns to \p *this the intersection of \p *this and \p y.
-  /*!
-    The result is obtained by intersecting each disjunct in \p *this
-    with each disjunct in \p y, minimizing the result
-    and collecting all these intersections.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \deprecated
-    See \ref A_Note_on_the_Implementation_of_the_Operators.
-  */
-  bool intersection_assign_and_minimize(const Pointset_Powerset& y);
 
   /*! \brief
     Assigns to \p *this an (a smallest)

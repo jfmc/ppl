@@ -264,13 +264,6 @@ m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@_and_minimize_code',
-  `extern "C" Prolog_foreign_return_type
-  ppl_@CLASS@_add_@CLASS_REPRESENT@_and_minimize(Prolog_term_ref t_ph,
-					       Prolog_term_ref t_c);
-
-')
-
 m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@s_code',
   `extern "C" Prolog_foreign_return_type
   ppl_@CLASS@_add_@CLASS_REPRESENT@s(Prolog_term_ref t_ph,
@@ -285,23 +278,9 @@ m4_define(`ppl_@CLASS@_refine_with_@REFINE_REPRESENT@s_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@s_and_minimize_code',
-  `extern "C" Prolog_foreign_return_type
-  ppl_@CLASS@_add_@CLASS_REPRESENT@s_and_minimize(Prolog_term_ref t_ph,
-						Prolog_term_ref t_clist);
-
-')
-
 m4_define(`ppl_@CLASS@_@BINOP@_code',
   `extern "C" Prolog_foreign_return_type
   ppl_@CLASS@_@BINOP@
-  (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs);
-
-')
-
-m4_define(`ppl_@CLASS@_@BINMINOP@_code',
-  `extern "C" Prolog_foreign_return_type
-  ppl_@CLASS@_@BINMINOP@
   (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs);
 
 ')

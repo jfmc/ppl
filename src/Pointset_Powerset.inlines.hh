@@ -213,14 +213,6 @@ Pointset_Powerset<PS>::intersection_assign(const Pointset_Powerset& y) {
 }
 
 template <typename PS>
-inline bool
-Pointset_Powerset<PS>
-::intersection_assign_and_minimize(const Pointset_Powerset& y) {
-  intersection_assign(y);
-  return !is_empty();
-}
-
-template <typename PS>
 inline void
 Pointset_Powerset<PS>::time_elapse_assign(const Pointset_Powerset& y) {
   Pointset_Powerset& x = *this;

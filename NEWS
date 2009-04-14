@@ -4,6 +4,21 @@ Parma Polyhedra Library NEWS -- history of user-visible changes
 
 
 --------------------------------------------------------------------------
+NEWS for version 0.11  (released date to be decided)
+--------------------------------------------------------------------------
+
+New and Changed Features
+========================
+
+Deprecated and removed methods
+------------------------------
+
+o  All methods having a name ending in `_and_minimize' (e.g.,
+   add_constraints_and_minimize, poly_hull_assign_and_minimize, ...)
+   have been removed (they were deprecated in version 0.10).
+
+
+--------------------------------------------------------------------------
 NEWS for version 0.10.1  (released on April 14, 2009)
 --------------------------------------------------------------------------
 

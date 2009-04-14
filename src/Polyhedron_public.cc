@@ -1308,12 +1308,6 @@ PPL::Polyhedron::add_congruence(const Congruence& cg) {
   refine_no_check(c);
 }
 
-bool
-PPL::Polyhedron::add_constraint_and_minimize(const Constraint& c) {
-  Constraint_System cs(c);
-  return add_recycled_constraints_and_minimize(cs);
-}
-
 void
 PPL::Polyhedron::add_generator(const Generator& g) {
   // Topology-compatibility check.
@@ -1449,13 +1443,6 @@ PPL::Polyhedron::add_generator(const Generator& g) {
   assert(OK());
 }
 
-bool
-PPL::Polyhedron::add_generator_and_minimize(const Generator& g) {
-  // TODO: this is just an executable specification.
-  Generator_System gs(g);
-  return add_recycled_generators_and_minimize(gs);
-}
-
 void
 PPL::Polyhedron::add_recycled_constraints(Constraint_System& cs) {
   // Topology compatibility check.
@@ -1556,18 +1543,6 @@ PPL::Polyhedron::add_constraints(const Constraint_System& cs) {
   add_recycled_constraints(cs_copy);
 }
 
-bool
-PPL::Polyhedron::add_recycled_constraints_and_minimize(Constraint_System& cs) {
-  add_recycled_constraints(cs);
-  return minimize();
-}
-
-bool
-PPL::Polyhedron::add_constraints_and_minimize(const Constraint_System& cs) {
-  Constraint_System cs_copy = cs;
-  return add_recycled_constraints_and_minimize(cs_copy);
-}
-
 void
 PPL::Polyhedron::add_recycled_generators(Generator_System& gs) {
   // Topology compatibility check.
@@ -1666,87 +1641,6 @@ PPL::Polyhedron::add_generators(const Generator_System& gs) {
   // TODO: this is just an executable specification.
   Generator_System gs_copy = gs;
   add_recycled_generators(gs_copy);
-}
-
-bool
-PPL::Polyhedron::add_recycled_generators_and_minimize(Generator_System& gs) {
-  // Topology compatibility check.
-  if (is_necessarily_closed() && gs.has_closure_points())
-    throw_topology_incompatible("add_recycled_generators_and_minimize(gs)",
-				"gs", gs);
-  // Dimension-compatibility check:
-  // the dimension of `gs' can not be greater than space_dim.
-  const dimension_type gs_space_dim = gs.space_dimension();
-  if (space_dim < gs_space_dim)
-    throw_dimension_incompatible("add_recycled_generators_and_minimize(gs)",
-				 "gs", gs);
-
-  // Adding no generators is equivalent to just requiring minimization.
-  if (gs.has_no_rows())
-    return minimize();
-
-  // Adding valid generators to a zero-dimensional polyhedron
-  // transform it in the zero-dimensional universe polyhedron.
-  if (space_dim == 0) {
-    if (marked_empty() && !gs.has_points())
-      throw_invalid_generators("add_recycled_generators_and_minimize(gs)",
-			       "gs");
-    set_zero_dim_univ();
-    assert(OK(true));
-    return true;
-  }
-
-  // Adjust `gs' to the right topology.
-  // NOTE: we already checked for topology compatibility;
-  // also, we do NOT adjust dimensions now, so that we will
-  // spend less time to sort rows.
-  gs.adjust_topology_and_space_dimension(topology(), gs_space_dim);
-
-  // For NNC polyhedra, each point must be matched by
-  // the corresponding closure point.
-  if (!is_necessarily_closed())
-    gs.add_corresponding_closure_points();
-
-  // `gs' has to be fully sorted, thus it cannot have pending rows.
-  if (gs.num_pending_rows() > 0) {
-    gs.unset_pending_rows();
-    gs.sort_rows();
-  }
-  else if (!gs.is_sorted())
-    gs.sort_rows();
-
-  // Now adjusting dimensions (topology already adjusted).
-  // NOTE: sortedness is preserved.
-  gs.adjust_topology_and_space_dimension(topology(), space_dim);
-
-  if (minimize()) {
-    obtain_sorted_generators_with_sat_g();
-    // This call to `add_and_minimize()' cannot return `false'.
-    add_and_minimize(false, gen_sys, con_sys, sat_g, gs);
-    clear_sat_c_up_to_date();
-  }
-  else {
-    // The polyhedron was empty: check if `gs' contains a point.
-    if (!gs.has_points())
-      throw_invalid_generators("add_recycled_generators_and_minimize(gs)",
-			       "gs");
-    // `gs' has a point: the polyhedron is no longer empty
-    // and generators are up-to-date.
-    std::swap(gen_sys, gs);
-    clear_empty();
-    set_generators_up_to_date();
-    // This call to `minimize()' cannot return `false'.
-    minimize();
-  }
-  assert(OK(true));
-  return true;
-}
-
-bool
-PPL::Polyhedron::add_generators_and_minimize(const Generator_System& gs) {
-  // TODO: this is just an executable specification.
-  Generator_System gs_copy = gs;
-  return add_recycled_generators_and_minimize(gs_copy);
 }
 
 void
@@ -2064,76 +1958,6 @@ PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
     x.clear_constraints_minimized();
   }
   assert(x.OK() && y.OK());
-}
-
-bool
-PPL::Polyhedron::intersection_assign_and_minimize(const Polyhedron& y) {
-  Polyhedron& x = *this;
-  // Topology compatibility check.
-  if (x.topology() != y.topology())
-    throw_topology_incompatible("intersection_assign_and_minimize(y)",
-				"y", y);
-  // Dimension-compatibility check.
-  if (x.space_dim != y.space_dim)
-    throw_dimension_incompatible("intersection_assign_and_minimize(y)",
-				 "y", y);
-
-  // If one of the two polyhedra is empty, the intersection is empty.
-  if (x.marked_empty())
-    return false;
-  if (y.marked_empty()) {
-    x.set_empty();
-    return false;
-  }
-
-  // If both polyhedra are zero-dimensional,
-  // then at this point they are necessarily non-empty,
-  // so that their intersection is non-empty too.
-  if (x.space_dim == 0)
-    return true;
-
-  // `x' must be minimized and have sorted constraints.
-  // `minimize()' will process any pending constraints or generators.
-  if (!x.minimize())
-    // We have just discovered that `x' is empty.
-    return false;
-  x.obtain_sorted_constraints_with_sat_c();
-
-  // `y' must have updated, possibly pending constraints.
-  if (y.has_pending_generators())
-    y.process_pending_generators();
-  else if (!y.constraints_are_up_to_date())
-    y.update_constraints();
-
-  bool empty;
-  if (y.con_sys.num_pending_rows() > 0) {
-    // Integrate `y.con_sys' as pending constraints of `x',
-    // sort them in place and then call `add_and_minimize()'.
-    x.con_sys.add_pending_rows(y.con_sys);
-    x.con_sys.sort_pending_and_remove_duplicates();
-    if (x.con_sys.num_pending_rows() == 0) {
-      // All pending constraints were duplicates.
-      x.clear_pending_constraints();
-      assert(OK(true));
-      return true;
-    }
-    empty = add_and_minimize(true, x.con_sys, x.gen_sys, x.sat_c);
-  }
-  else {
-    y.obtain_sorted_constraints();
-    empty = add_and_minimize(true, x.con_sys, x.gen_sys, x.sat_c, y.con_sys);
-  }
-
-  if (empty)
-    x.set_empty();
-  else {
-    // On exit of the function `intersection_assign_and_minimize()'
-    // the polyhedron is up-to-date and `sat_c' is meaningful.
-    x.set_sat_c_up_to_date();
-    x.clear_sat_g_up_to_date();
-  }
-  assert(x.OK(!empty));
-  return !empty;
 }
 
 namespace {
@@ -2639,70 +2463,6 @@ PPL::Polyhedron::poly_hull_assign(const Polyhedron& y) {
   }
   // At this point both `x' and `y' are not empty.
   assert(x.OK(true) && y.OK(true));
-}
-
-bool
-PPL::Polyhedron::poly_hull_assign_and_minimize(const Polyhedron& y) {
-  Polyhedron& x = *this;
-  // Topology compatibility check.
-  if (x.topology() != y.topology())
-    throw_topology_incompatible("poly_hull_assign_and_minimize(y)", "y", y);
-  // Dimension-compatibility check.
-  if (x.space_dim != y.space_dim)
-    throw_dimension_incompatible("poly_hull_assign_and_minimize(y)", "y", y);
-
-  // The poly-hull of a polyhedron `p' with an empty polyhedron is `p'.
-  if (y.marked_empty())
-    return minimize();
-  if (x.marked_empty()) {
-    x = y;
-    return minimize();
-  }
-
-  // If both polyhedra are zero-dimensional,
-  // then at this point they are necessarily universe polyhedra,
-  // so that their poly-hull is the universe polyhedron too.
-  if (x.space_dim == 0)
-    return true;
-
-  // `x' must have minimized constraints and generators.
-  // `minimize()' will process any pending constraints or generators.
-  if (!x.minimize()) {
-    // We have just discovered that `x' is empty.
-    x = y;
-    return minimize();
-  }
-  // x must have `sat_g' up-to-date and sorted generators.
-  x.obtain_sorted_generators_with_sat_g();
-
-  // `y' must have updated, possibly pending generators.
-  if ((y.has_pending_constraints() && !y.process_pending_constraints())
-      || (!y.generators_are_up_to_date() && !y.update_generators()))
-    // We have just discovered that `y' is empty
-    // (and we know that `x' is not empty).
-    return true;
-
-  if (y.gen_sys.num_pending_rows() > 0) {
-    // Integrate `y.gen_sys' as pending generators of `x',
-    // sort them in place and then call `add_and_minimize()'.
-    x.gen_sys.add_pending_rows(y.gen_sys);
-    x.gen_sys.sort_pending_and_remove_duplicates();
-    if (x.gen_sys.num_pending_rows() == 0) {
-      // All pending generators were duplicates.
-      x.clear_pending_generators();
-      assert(OK(true) && y.OK());
-      return true;
-    }
-    add_and_minimize(false, x.gen_sys, x.con_sys, x.sat_g);
-  }
-  else {
-    y.obtain_sorted_generators();
-    add_and_minimize(false, x.gen_sys, x.con_sys, x.sat_g, y.gen_sys);
-  }
-  x.clear_sat_c_up_to_date();
-
-  assert(x.OK(true) && y.OK());
-  return true;
 }
 
 void

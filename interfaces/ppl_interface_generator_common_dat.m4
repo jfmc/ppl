@@ -511,7 +511,6 @@ maxmin,
 comparison,
 refine_represent,
 binop,
-binminop,
 ub_exact,
 affimage,
 embedproject,
@@ -961,12 +960,6 @@ m4_define(`m4_binop_replacements',
           concatenate_assign, time_elapse_assign')
 m4_define(`m4_Polyhedron_binop_replacements',
          `m4_binop_replacements, poly_hull_assign, poly_difference_assign')
-
-dnl  The different kinds of "and_minimize" binary operators.
-m4_define(`m4_binminop_replacements', `')
-m4_define(`m4_Polyhedron_binminop_replacements',
-         `intersection_assign_and_minimize,
-          poly_hull_assign_and_minimize')
 
 dnl  The different kinds of "upper_bound_if_exact" binary operators.
 m4_define(`m4_ub_exact_replacements', `upper_bound_assign_if_exact')

@@ -153,22 +153,6 @@ BD_Shape<T>::congruences() const {
 }
 
 template <typename T>
-inline bool
-BD_Shape<T>::add_constraint_and_minimize(const Constraint& c) {
-  add_constraint(c);
-  shortest_path_closure_assign();
-  return !marked_empty();
-}
-
-template <typename T>
-inline bool
-BD_Shape<T>::add_congruence_and_minimize(const Congruence& cg) {
-  add_congruence(cg);
-  shortest_path_closure_assign();
-  return !marked_empty();
-}
-
-template <typename T>
 inline void
 BD_Shape<T>::add_constraints(const Constraint_System& cs) {
   for (Constraint_System::const_iterator i = cs.begin(),
@@ -177,23 +161,9 @@ BD_Shape<T>::add_constraints(const Constraint_System& cs) {
 }
 
 template <typename T>
-inline bool
-BD_Shape<T>::add_constraints_and_minimize(const Constraint_System& cs) {
-  add_constraints(cs);
-  shortest_path_closure_assign();
-  return !marked_empty();
-}
-
-template <typename T>
 inline void
 BD_Shape<T>::add_recycled_constraints(Constraint_System& cs) {
   add_constraints(cs);
-}
-
-template <typename T>
-inline bool
-BD_Shape<T>::add_recycled_constraints_and_minimize(Constraint_System& cs) {
-  return add_constraints_and_minimize(cs);
 }
 
 template <typename T>
@@ -205,22 +175,9 @@ BD_Shape<T>::add_congruences(const Congruence_System& cgs) {
 }
 
 template <typename T>
-inline bool
-BD_Shape<T>::add_congruences_and_minimize(const Congruence_System& cgs) {
-  add_congruences(cgs);
-  return !is_empty();
-}
-
-template <typename T>
 inline void
 BD_Shape<T>::add_recycled_congruences(Congruence_System& cgs) {
   add_congruences(cgs);
-}
-
-template <typename T>
-inline bool
-BD_Shape<T>::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
-  return add_congruences_and_minimize(cgs);
 }
 
 template <typename T>
@@ -747,15 +704,6 @@ BD_Shape<T>::strictly_contains(const BD_Shape& y) const {
 
 template <typename T>
 inline bool
-BD_Shape<T>::upper_bound_assign_and_minimize(const BD_Shape& y) {
-  upper_bound_assign(y);
-  assert(marked_empty()
-	 || space_dimension() == 0 || marked_shortest_path_closed());
-  return !marked_empty();
-}
-
-template <typename T>
-inline bool
 BD_Shape<T>::upper_bound_assign_if_exact(const BD_Shape& y) {
   // Dimension-compatibility check.
   if (space_dimension() != y.space_dimension())
@@ -798,14 +746,6 @@ BD_Shape<T>::remove_higher_space_dimensions(const dimension_type new_dim) {
   if (new_dim == 0 && !marked_empty())
     set_zero_dim_univ();
   assert(OK());
-}
-
-template <typename T>
-inline bool
-BD_Shape<T>::intersection_assign_and_minimize(const BD_Shape& y) {
-  intersection_assign(y);
-  shortest_path_closure_assign();
-  return !marked_empty();
 }
 
 template <typename T>

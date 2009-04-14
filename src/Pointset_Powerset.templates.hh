@@ -146,22 +146,6 @@ Pointset_Powerset<PS>::add_constraint(const Constraint& c) {
 }
 
 template <typename PS>
-bool
-Pointset_Powerset<PS>::add_constraint_and_minimize(const Constraint& c) {
-  Pointset_Powerset& x = *this;
-  for (Sequence_iterator si = x.sequence.begin(),
-	 s_end = x.sequence.end(); si != s_end; )
-    if (!si->element().add_constraint_and_minimize(c))
-      si = x.sequence.erase(si);
-    else {
-      x.reduced = false;
-      ++si;
-    }
-  assert(x.OK());
-  return !x.empty();
-}
-
-template <typename PS>
 void
 Pointset_Powerset<PS>::refine_with_constraint(const Constraint& c) {
   Pointset_Powerset& x = *this;
@@ -181,23 +165,6 @@ Pointset_Powerset<PS>::add_constraints(const Constraint_System& cs) {
     si->element().add_constraints(cs);
   x.reduced = false;
   assert(x.OK());
-}
-
-template <typename PS>
-bool
-Pointset_Powerset<PS>::
-add_constraints_and_minimize(const Constraint_System& cs) {
-  Pointset_Powerset& x = *this;
-  for (Sequence_iterator si = x.sequence.begin(),
-	 s_end = x.sequence.end(); si != s_end; )
-    if (!si->element().add_constraints_and_minimize(cs))
-      si = x.sequence.erase(si);
-    else {
-      x.reduced = false;
-      ++si;
-    }
-  assert(x.OK());
-  return !x.empty();
 }
 
 template <typename PS>
@@ -234,22 +201,6 @@ Pointset_Powerset<PS>::refine_with_congruence(const Congruence& cg) {
 }
 
 template <typename PS>
-bool
-Pointset_Powerset<PS>::add_congruence_and_minimize(const Congruence& c) {
-  Pointset_Powerset& x = *this;
-  for (Sequence_iterator si = x.sequence.begin(),
-	 s_end = x.sequence.end(); si != s_end; )
-    if (!si->element().add_congruence_and_minimize(c))
-      si = x.sequence.erase(si);
-    else {
-      x.reduced = false;
-      ++si;
-    }
-  assert(x.OK());
-  return !x.empty();
-}
-
-template <typename PS>
 void
 Pointset_Powerset<PS>::add_congruences(const Congruence_System& cs) {
   Pointset_Powerset& x = *this;
@@ -269,23 +220,6 @@ Pointset_Powerset<PS>::refine_with_congruences(const Congruence_System& cgs) {
     si->element().refine_with_congruences(cgs);
   x.reduced = false;
   assert(x.OK());
-}
-
-template <typename PS>
-bool
-Pointset_Powerset<PS>::
-add_congruences_and_minimize(const Congruence_System& cs) {
-  Pointset_Powerset& x = *this;
-  for (Sequence_iterator si = x.sequence.begin(),
-	 s_end = x.sequence.end(); si != s_end; )
-    if (!si->element().add_congruences_and_minimize(cs))
-      si = x.sequence.erase(si);
-    else {
-      x.reduced = false;
-      ++si;
-    }
-  assert(x.OK());
-  return !x.empty();
 }
 
 template <typename PS>
