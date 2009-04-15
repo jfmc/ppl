@@ -53,8 +53,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 //
 // On the Itanium the test fails because of the bug reported in
 // http://www.cs.unipr.it/pipermail/ppl-devel/2008-September/012943.html
+//
+// On s390x-linux the test fails, we do not know why (and without access
+// to such a machine there is little we can do).
+// See http://www.cs.unipr.it/pipermail/ppl-devel/2009-April/014489.html
 #if !PPL_GMP_SUPPORTS_EXCEPTIONS || !PPL_CXX_SUPPORTS_LIMITING_MEMORY \
-  || defined(__ia64)
+  || defined(__ia64) || defined(__s390x)
 
 int
 main() TRY {

@@ -14,6 +14,9 @@ o  Correctly detect GMP 4.3.0.
 
 o  Fixed the C interface library version information.
 
+o  Test program tests/Polyhedron/memory1 disabled on the zSeries s390x
+   platform.
+
 o  Makefiles fixed so as to avoid failure of `make -n check'.
 
 
