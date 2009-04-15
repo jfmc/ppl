@@ -2,10 +2,10 @@ Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 See below for the copying conditions.
 
 
-Parma Polyhedra Library (Release 0.10.1)
+Parma Polyhedra Library (Release 0.10.2)
 ========================================
 
-This is the release 0.10.1 of the Parma Polyhedra Library:
+This is the release 0.10.2 of the Parma Polyhedra Library:
 a C++ library for (not necessarily closed) convex polyhedra
 and other numerical abstractions.
 
@@ -66,7 +66,7 @@ write to ppl-devel@cs.unipr.it.
 Here is the contents of the PPL 0.10 source distribution
 (41 directories, 1446 files):
 
-ppl-0.10.1
+ppl-0.10.2
 |-- BUGS
 |-- COPYING
 |-- CREDITS
@@ -394,21 +394,21 @@ ppl-0.10.1
 |   |-- libppl.3
 |   |-- libppl_c.3
 |   |-- ppl-config.1
-|   |-- ppl-user-0.10.1-html.tar.gz
-|   |-- ppl-user-0.10.1.pdf
-|   |-- ppl-user-0.10.1.ps.gz
-|   |-- ppl-user-c-interface-0.10.1-html.tar.gz
-|   |-- ppl-user-c-interface-0.10.1.pdf
-|   |-- ppl-user-c-interface-0.10.1.ps.gz
-|   |-- ppl-user-java-interface-0.10.1-html.tar.gz
-|   |-- ppl-user-java-interface-0.10.1.pdf
-|   |-- ppl-user-java-interface-0.10.1.ps.gz
-|   |-- ppl-user-ocaml-interface-0.10.1-html.tar.gz
-|   |-- ppl-user-ocaml-interface-0.10.1.pdf
-|   |-- ppl-user-ocaml-interface-0.10.1.ps.gz
-|   |-- ppl-user-prolog-interface-0.10.1-html.tar.gz
-|   |-- ppl-user-prolog-interface-0.10.1.pdf
-|   |-- ppl-user-prolog-interface-0.10.1.ps.gz
+|   |-- ppl-user-0.10.2-html.tar.gz
+|   |-- ppl-user-0.10.2.pdf
+|   |-- ppl-user-0.10.2.ps.gz
+|   |-- ppl-user-c-interface-0.10.2-html.tar.gz
+|   |-- ppl-user-c-interface-0.10.2.pdf
+|   |-- ppl-user-c-interface-0.10.2.ps.gz
+|   |-- ppl-user-java-interface-0.10.2-html.tar.gz
+|   |-- ppl-user-java-interface-0.10.2.pdf
+|   |-- ppl-user-java-interface-0.10.2.ps.gz
+|   |-- ppl-user-ocaml-interface-0.10.2-html.tar.gz
+|   |-- ppl-user-ocaml-interface-0.10.2.pdf
+|   |-- ppl-user-ocaml-interface-0.10.2.ps.gz
+|   |-- ppl-user-prolog-interface-0.10.2-html.tar.gz
+|   |-- ppl-user-prolog-interface-0.10.2.pdf
+|   |-- ppl-user-prolog-interface-0.10.2.ps.gz
 |   |-- ppl.sty
 |   |-- user-language-interface.doxyconf.in
 |   |-- user-language-interface.tex
