@@ -60,7 +60,12 @@ main() {
   {
     std::ostringstream s(header_version);
     s << __GNU_MP_VERSION << "." << __GNU_MP_VERSION_MINOR;
-    if (__GNU_MP_VERSION_PATCHLEVEL != 0)
+    // Starting from GMP version 4.3.0, the gmp_version variable
+    // always contains three parts.  In previous versions the
+    // patchlevel was omitted if it was 0.
+    if (__GNU_MP_VERSION_PATCHLEVEL != 0
+        || __GNU_MP_VERSION > 4
+        || (__GNU_MP_VERSION == 4 && __GNU_MP_VERSION_MINOR >= 3))
       s << "." << __GNU_MP_VERSION_PATCHLEVEL;
     header_version = s.str();
   }
