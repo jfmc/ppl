@@ -68,10 +68,12 @@ C_interface.dox
 #	    0.8			    1:0:1
 #	    0.9			    1:0:1
 #	    0.10		    2:0:0
+#	    0.10.1		    2:0:0 (was not updated by mistake)
+#	    0.10.2		    3:0:1
 
-LIBPPL_C_LT_CURRENT =  2
+LIBPPL_C_LT_CURRENT =  3
 LIBPPL_C_LT_REVISION = 0
-LIBPPL_C_LT_AGE =      0
+LIBPPL_C_LT_AGE =      1
 
 ppl_c.h: ppl_c_header.h ppl_c_version.h ppl_c_domains.h Makefile $(top_builddir)/utils/build_header
 	$(top_builddir)/utils/build_header \

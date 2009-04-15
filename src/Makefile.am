@@ -53,6 +53,7 @@
 #	    0.9			    6:0:0
 #	    0.10		    7:0:0
 #	    0.10.1		    8:0:1
+#	    0.10.2		    8:0:1
 
 LIBPPL_LT_CURRENT =  8
 LIBPPL_LT_REVISION = 0
