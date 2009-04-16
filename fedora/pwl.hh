@@ -38,6 +38,12 @@ site: http://www.cs.unipr.it/Software/ . */
 #include "pwl-s390x.hh"
 #elif defined(__s390__)
 #include "pwl-s390.hh"
+#elif defined(__sh__)
+#include "pwl-sh.hh"
+#elif defined(__sparc__) && defined(__arch64__)
+#include "pwl-sparc64.hh"
+#elif defined(__sparc__)
+#include "pwl-sparc.hh"
 #else
 #error "This architecture is not supported by the currently installed ppl-pwl-devel packages."
 #endif

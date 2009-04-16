@@ -38,6 +38,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ppl-s390x.hh"
 #elif defined(__s390__)
 #include "ppl-s390.hh"
+#elif defined(__sh__)
+#include "ppl-sh.hh"
+#elif defined(__sparc__) && defined(__arch64__)
+#include "ppl-sparc64.hh"
+#elif defined(__sparc__)
+#include "ppl-sparc.hh"
 #else
 #error "This architecture is not supported by the currently installed ppl-devel packages."
 #endif
