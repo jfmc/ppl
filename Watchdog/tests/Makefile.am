@@ -67,3 +67,6 @@ XFAIL_TESTS =
 simple1_SOURCES = simple1.cc
 
 check_PROGRAMS = $(TESTS)
+
+../src/libpwl.la:
+	$(MAKE) $(AM_MAKEFLAGS) -C ../src libpwl.la

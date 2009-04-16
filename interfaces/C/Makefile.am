@@ -239,3 +239,13 @@ ppl_c_implementation_domains.cc.stamp
 
 DISTCLEANFILES = \
 ppl_c_version.h
+
+$(top_builddir)/interfaces/ppl_interface_instantiations.m4:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/interfaces ppl_interface_instantiations.m4
+
+$(top_builddir)/utils/build_header:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/utils build_header
+
+# A selection of these files, which depends on the configure options,
+# is built by the `ppl_c_implementation_domains.cc.stamp' target.
+$(nodist_EXTRA_libppl_c_la_SOURCES):

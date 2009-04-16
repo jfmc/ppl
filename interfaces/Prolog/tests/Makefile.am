@@ -81,3 +81,6 @@ CLEANFILES = \
 @required_instantiations_prolog_generated_test_sources@ \
 ppl_prolog_generated_test.stamp \
 ppl_prolog_generated_test_main.pl
+
+$(top_builddir)/interfaces/ppl_interface_instantiations.m4:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/interfaces ppl_interface_instantiations.m4

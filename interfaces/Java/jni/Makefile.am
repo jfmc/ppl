@@ -174,3 +174,10 @@ ppl_java_implementation_domains.cc.stamp: $(interface_generator_dependencies)
 CLEANFILES = \
 @required_instantiations_java_cxx_sources@ \
 ppl_java_implementation_domains.cc.stamp
+
+$(top_builddir)/interfaces/ppl_interface_instantiations.m4:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/interfaces ppl_interface_instantiations.m4
+
+# A selection of these files, which depends on the configure options,
+# is built by the `ppl_java_implementation_domains.cc.stamp' target.
+$(nodist_EXTRA_libppl_java_la_SOURCES):

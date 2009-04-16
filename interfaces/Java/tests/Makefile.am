@@ -84,3 +84,6 @@ ppl_java_generated_tests.java: $(interface_generator_dependencies)
 
 CLEANFILES = \
 ppl_java_generated_tests.java
+
+$(top_builddir)/interfaces/ppl_interface_instantiations.m4:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/interfaces ppl_interface_instantiations.m4

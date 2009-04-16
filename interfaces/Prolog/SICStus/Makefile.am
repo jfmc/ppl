@@ -322,3 +322,26 @@ MOSTLYCLEANFILES = \
 ppl_sicstus.s.o ppl_sicstus.so \
 $(CLPQ_TESTS) \
 obtained_clpq obtained_clpq2 obtained_pchk obtained_pgt
+
+$(top_builddir)/interfaces/ppl_interface_instantiations.m4:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/interfaces ppl_interface_instantiations.m4
+
+# A selection of these files, which depends on the configure options,
+# is built by the `ppl_prolog_domains.cc.stamp' in parent's directory
+# makefile.
+$(nodist_EXTRA_libppl_sicstus_la_SOURCES):
+../tests/ppl_prolog_generated_test_main.pl:
+
+# FIXME: check whether the dependencies from `libppl.la' in this Makefile.am
+# are actually required.
+$(top_builddir)/src/libppl.la:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/src libppl.la
+
+if BUILD_WATCHDOG_LIBRARY
+
+# FIXME: check whether the dependencies from `libpwl.la' in this Makefile.am
+# are actually required.
+$(top_builddir)/Watchdog/src/libpwl.la:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/Watchdog/src libpwl.la
+
+endif BUILD_WATCHDOG_LIBRARY

@@ -314,3 +314,16 @@ MOSTLYCLEANFILES = \
 ciao_clpq ciao_clpq2 ciao_pl_check ciao_prolog_generated_test \
 obtained_clpq obtained_clpq2 obtained_pchk obtained_pgt \
 $(CLPQ_TESTS)
+
+$(top_builddir)/interfaces/ppl_interface_instantiations.m4:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/interfaces ppl_interface_instantiations.m4
+
+# A selection of these files, which depends on the configure options,
+# is built by the `ppl_prolog_domains.cc.stamp' in parent's directory
+# makefile.
+$(nodist_EXTRA_libppl_ciao_la_SOURCES):
+../tests/ppl_prolog_generated_test_main.pl:
+
+# FIXME: the dependencies from .libs/libppl_ciao.so in this Makefile.am
+# are probably all wrong.
+.libs/libppl_ciao.so: libppl_ciao.la

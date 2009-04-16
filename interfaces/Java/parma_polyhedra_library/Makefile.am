@@ -202,3 +202,6 @@ Poly_Gen_Relation.class \
 Relation_Symbol.class \
 Variable.class \
 Variables_Set.class
+
+$(top_builddir)/interfaces/ppl_interface_instantiations.m4:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/interfaces ppl_interface_instantiations.m4

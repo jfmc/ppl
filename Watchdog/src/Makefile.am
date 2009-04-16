@@ -142,3 +142,9 @@ dist-hook:
 	mv -f $(distdir)/pwl.hh $(distdir)/pwl.hh.dist
 
 CLEANFILES = $(BUILT_SOURCES)
+
+$(top_builddir)/utils/build_header:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/utils build_header
+
+$(top_builddir)/pwl-config.h:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir) pwl-config.h
