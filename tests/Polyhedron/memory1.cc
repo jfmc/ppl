@@ -58,7 +58,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 // to such a machine there is little we can do).
 // See http://www.cs.unipr.it/pipermail/ppl-devel/2009-April/014489.html
 #if !PPL_GMP_SUPPORTS_EXCEPTIONS || !PPL_CXX_SUPPORTS_LIMITING_MEMORY \
-  || defined(__ia64) || defined(__s390x)
+  || defined(__ia64) || defined(__s390x__)
 
 int
 main() TRY {
