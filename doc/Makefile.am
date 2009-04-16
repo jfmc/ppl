@@ -1632,3 +1632,6 @@ mostlyclean-local:
 CLEANFILES = \
 $(USER_CORE_HTML_DIR).tag \
 $(DEVREF_CORE_HTML_DIR).tag
+
+../src/ppl_include_files.hh:
+	$(MAKE) $(AM_MAKEFLAGS) -C ../src ppl_include_files.hh
