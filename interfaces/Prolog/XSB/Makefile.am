@@ -310,3 +310,12 @@ ppl_xsb.xwam ppl_xsb.so \
 xsb_efli.lo xsb_efli.o \
 xsb_clpq.xwam xsb_clpq2.xwam xsb_pl_check.xwam xsb_prolog_generated_test.xwam \
 $(CLPQ_TESTS) obtained_clpq obtained_clpq2 obtained_pchk obtained_pgt
+
+$(top_builddir)/interfaces/ppl_interface_instantiations.m4:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/interfaces ppl_interface_instantiations.m4
+
+# A selection of these files, which depends on the configure options,
+# is built by the `ppl_prolog_domains.cc.stamp' in parent's directory
+# makefile.
+$(nodist_EXTRA_libppl_xsb_la_SOURCES):
+../tests/ppl_prolog_generated_test_main.pl:

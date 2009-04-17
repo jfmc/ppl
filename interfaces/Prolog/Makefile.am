@@ -133,3 +133,6 @@ CLEANFILES = \
 ppl_prolog_domains.cc.stamp \
 ppl_prolog_domains.hh \
 Prolog_configured_interface.dox
+
+$(top_builddir)/interfaces/ppl_interface_instantiations.m4:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/interfaces ppl_interface_instantiations.m4

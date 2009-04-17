@@ -177,3 +177,13 @@ ppl_ocaml_generated_test \
 ppl_ocaml_generated_test_opt
 
 CLEANFILES = ppl_ocaml_generated_test.ml
+
+../ppl_ocaml.cma:
+	$(MAKE) $(AM_MAKEFLAGS) -C .. ppl_ocaml.cma
+
+../ppl_ocaml.cmxa:
+	$(MAKE) $(AM_MAKEFLAGS) -C .. ppl_ocaml.cmxa
+
+$(top_builddir)/interfaces/ppl_interface_instantiations.m4:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/interfaces ppl_interface_instantiations.m4
+

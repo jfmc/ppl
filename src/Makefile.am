@@ -53,6 +53,7 @@
 #	    0.9			    6:0:0
 #	    0.10		    7:0:0
 #	    0.10.1		    8:0:1
+#	    0.10.2		    8:0:1
 
 LIBPPL_LT_CURRENT =  8
 LIBPPL_LT_REVISION = 0
@@ -501,3 +502,12 @@ dist-hook:
 	mv -f $(distdir)/CREDITS.cc $(distdir)/CREDITS.cc.dist
 
 CLEANFILES = $(BUILT_SOURCES)
+
+$(top_builddir)/utils/build_header:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/utils build_header
+
+$(top_builddir)/utils/text2cxxarray:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/utils text2cxxarray
+
+$(top_builddir)/ppl-config.h:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir) ppl-config.h

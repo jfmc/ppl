@@ -68,10 +68,12 @@ C_interface.dox
 #	    0.8			    1:0:1
 #	    0.9			    1:0:1
 #	    0.10		    2:0:0
+#	    0.10.1		    2:0:0 (was not updated by mistake)
+#	    0.10.2		    3:0:1
 
-LIBPPL_C_LT_CURRENT =  2
+LIBPPL_C_LT_CURRENT =  3
 LIBPPL_C_LT_REVISION = 0
-LIBPPL_C_LT_AGE =      0
+LIBPPL_C_LT_AGE =      1
 
 ppl_c.h: ppl_c_header.h ppl_c_version.h ppl_c_domains.h Makefile $(top_builddir)/utils/build_header
 	$(top_builddir)/utils/build_header \
@@ -237,3 +239,13 @@ ppl_c_implementation_domains.cc.stamp
 
 DISTCLEANFILES = \
 ppl_c_version.h
+
+$(top_builddir)/interfaces/ppl_interface_instantiations.m4:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/interfaces ppl_interface_instantiations.m4
+
+$(top_builddir)/utils/build_header:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/utils build_header
+
+# A selection of these files, which depends on the configure options,
+# is built by the `ppl_c_implementation_domains.cc.stamp' target.
+$(nodist_EXTRA_libppl_c_la_SOURCES):

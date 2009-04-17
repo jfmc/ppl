@@ -162,7 +162,7 @@ struct option long_options[] = {
 #endif
 
 static const char* usage_string
-= "Usage: %s [OPTION]... [FILE]...\n"
+= "Usage: %s [OPTION]... [FILE]\n"
 "Reads an H-representation (resp., a V-representation) of a polyhedron\n"
 "and generates a V-representation (resp., an H-representation) of\n"
 "the same polyhedron.\n\n"

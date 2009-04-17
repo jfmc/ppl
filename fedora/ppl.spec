@@ -1,7 +1,7 @@
 #%define opt %(test -x %{_bindir}/ocamlopt && echo 1 || echo 0)
 
 Name:           ppl
-Version:        0.10.1
+Version:        0.10.2
 Release:        1%{?dist}
 
 Summary:        The Parma Polyhedra Library: a library of numerical abstractions
@@ -12,7 +12,7 @@ Source0:        ftp://ftp.cs.unipr.it/pub/ppl/releases/%{version}/%{name}-%{vers
 Source1:        ppl.hh
 Source2:        ppl_c.h
 Source3:        pwl.hh
-Patch0:         ppl-0.10.1-Makefile.patch
+Patch0:         ppl-0.10.2-Makefile.patch
 #Patch1:
 #Icon:
 #Requires:
@@ -226,13 +226,17 @@ rm -f %{buildroot}%{_libdir}/*.la %{buildroot}%{_libdir}/%{name}/*.la
 # the architecture for which the compiler is compiling.
 
 # Since our header files only depend on the sizeof things, we smash
-# ix86 onto i386 and arm* onto arm.
+# ix86 onto i386 and arm* onto arm.  For the SuperH RISC engine family,
+# we smash sh3 and sh4 onto sh.
 normalized_arch=%{_arch}
 %ifarch %{ix86}
 normalized_arch=i386
 %endif
 %ifarch %{arm}
 normalized_arch=arm
+%endif
+%ifarch sh3 sh4
+normalized_arch=sh
 %endif
 
 mv %{buildroot}/%{_includedir}/ppl.hh %{buildroot}/%{_includedir}/ppl-${normalized_arch}.hh
@@ -405,6 +409,9 @@ mv \
 rm -rf %{buildroot}
 
 %changelog
+* Sat Apr 18 2009 Roberto Bagnara <bagnara@cs.unipr.it> 0.10.2-1
+- Updated for PPL 0.10.2.
+
 * Tue Apr 14 2009 Roberto Bagnara <bagnara@cs.unipr.it> 0.10.1-1
 - Updated for PPL 0.10.1.
 

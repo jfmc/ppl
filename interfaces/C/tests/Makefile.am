@@ -111,3 +111,6 @@ check_PROGRAMS = $(TESTS) $(BUGS)
 EXTRA_DIST = $(watchdog1_SRCS)
 
 BUGS =
+
+$(top_builddir)/interfaces/C/libppl_c.la:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/interfaces/C libppl_c.la
