@@ -202,7 +202,7 @@ test08() {
 
   C_Polyhedron ph(2, EMPTY);
   ph.add_generator(point());
-  ph.add_generator_and_minimize(ray(A));
+  ph.add_generator(ray(A));
   ph.add_generator(ray(B));
 
   print_generators(ph, "*** ph ***");

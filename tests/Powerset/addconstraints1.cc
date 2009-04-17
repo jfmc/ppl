@@ -35,7 +35,7 @@ test01() {
   ps.add_constraint(c);
   Constraint c1 = (x >= 1);
   ps.add_constraint(c1);
-  bool ok = !ps.empty();
+  bool ok = !ps.is_empty();
 
   return ok && ps.OK();
 }
@@ -48,22 +48,14 @@ test02() {
   cs.insert(x >= 3);
   cs.insert(x <= 4);
   Pointset_Powerset<C_Polyhedron> ps(1, EMPTY);
-  print_constraints(ps, "ps");
   ps.add_disjunct(C_Polyhedron(1));
-  //print_constraints(ps, "ps.add_disjunct");
   ps.add_constraints(cs);
-  print_constraints(ps, "ps.add_constraints");
   cs.insert(x <= 3);
   ps.add_constraints(cs);
-  print_constraints(ps, "ps.add_constraints");
-  bool ok = !ps.empty();
+  bool ok = !ps.is_empty();
   cs.insert(x <= 2);
-  print_constraints(cs, "cs");
   ps.add_constraints(cs);
-#if 0
-  print_constraints(ps, "ps.add_constraints");
-#endif
-  ok &= ps.empty();
+  ok &= ps.is_empty();
 
   return ok && ps.OK();
 }

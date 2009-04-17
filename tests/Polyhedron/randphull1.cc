@@ -61,7 +61,8 @@ test01() {
     const Coefficient cx = mpz_class(rg.get_z_range(maxc));
     const Coefficient cy = mpz_class(rg.get_z_range(maxc));
     const Coefficient cz = mpz_class(rg.get_z_range(maxc));
-    if (!ph.add_generator_and_minimize(point(cx*x + cy*y + cz*z)))
+    ph.add_generator(point(cx*x + cy*y + cz*z));
+    if (ph.is_empty())
       return false;
     nout << test01_namespace::count_points(ph) << endl;
   }

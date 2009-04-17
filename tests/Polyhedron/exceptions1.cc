@@ -302,7 +302,7 @@ test11() {
     // This is an invalid use of function
     // C_Polyhedron::intersection_assign_and_minimize(ph2): it is illegal
     // to apply this function to two polyhedra of different dimensions.
-    ph1.intersection_assign_and_minimize(ph2);
+    ph1.intersection_assign(ph2);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
@@ -322,7 +322,7 @@ test12() {
   try {
     // This is an invalid use of the function
     // C_Polyhedron::intersection_assign(ph2): it is illegal to apply
-    // this function to two polyhedron of different dimensions.
+    // this function to two polyhedra of different dimensions.
     ph1.intersection_assign(ph2);
   }
   catch (std::invalid_argument& e) {
@@ -347,7 +347,7 @@ test13() {
     // with the polyhedron.
     Generator_System gs;
     gs.insert(point(w));
-    ph.add_generators_and_minimize(gs);
+    ph.add_generators(gs);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
@@ -386,12 +386,12 @@ test15() {
 
   try {
     // This is an invalid use of the function
-    // C_Polyhedron::add_constraints_and_minimize(cs): it is illegal to
+    // C_Polyhedron::add_constraints(cs): it is illegal to
     // add a system of constraints that is not dimensional incompatible
     // with the polyhedron.
     Constraint_System cs;
     cs.insert(x - y >= 0);
-    ph.add_constraints_and_minimize(cs);
+    ph.add_constraints(cs);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
@@ -744,13 +744,13 @@ test29() {
 
   try {
     // This is an invalid use of the function
-    // C_Polyhedron::add_generators_and_minimize(gs): it is illegal
+    // C_Polyhedron::add_generators(gs): it is illegal
     // to apply this function with a system of generators with no
     // points to an empty polyhedron.
     Generator_System gs;
     gs.insert(line(x));
     gs.insert(line(y));
-    ph.add_generators_and_minimize(gs);
+    ph.add_generators(gs);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
@@ -894,10 +894,10 @@ test35() {
 
   try {
     // This is an invalid used of the function
-    // `add_generators_and_minimize(gs)': it is illegal to
+    // `add_generators(gs)': it is illegal to
     // add a system of generators that does not contain points
     // to an empty polyhedron.
-    ph.add_generators_and_minimize(gs);
+    ph.add_generators(gs);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
