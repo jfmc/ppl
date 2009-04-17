@@ -56,7 +56,7 @@ test01() {
   return ok && ok1 && c_ps.OK() && c_ps1.OK();
 }
 
-// Powerset of C polyhedra: intersection_assign_and_minimize().
+// Powerset of C polyhedra: intersection_assign().
 bool
 test02() {
   Variable x(0);

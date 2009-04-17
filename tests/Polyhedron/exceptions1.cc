@@ -299,8 +299,8 @@ test11() {
   C_Polyhedron ph2(3);
 
   try {
-    // This is an invalid use of function
-    // C_Polyhedron::intersection_assign_and_minimize(ph2): it is illegal
+    // This is an invalid use of method
+    // C_Polyhedron::intersection_assign(ph2): it is illegal
     // to apply this function to two polyhedra of different dimensions.
     ph1.intersection_assign(ph2);
   }
@@ -342,7 +342,7 @@ test13() {
 
   try {
     // This is an invalid use of the function
-    // C_Polyhedron::add_generators_and_minimize(gs): it is illegal
+    // C_Polyhedron::add_generators(gs): it is illegal
     // to add a system of generator that is not dimension-compatible
     // with the polyhedron.
     Generator_System gs;

@@ -132,7 +132,7 @@ test05() {
 
   try {
     // This is an incorrect use of the function
-    // add_constraints_and_minimize(cs): it is illegal to add a system of
+    // add_constraints(cs): it is illegal to add a system of
     // constraints that contains strict inequalities to a closed polyhedron.
     ph.add_constraints(cs);
   }
@@ -211,7 +211,7 @@ test08() {
 
   try {
     // This is an incorrect use of the function
-    // add_generators_and_minimize(gs): it is illegal to add a
+    // add_generators(gs): it is illegal to add a
     // system of generators that contains closure-points to a closed
     // polyhedron.
     ph.add_generators(gs);
@@ -293,7 +293,7 @@ test11() {
 
   try {
     // This is an invalid use of the function
-    // `intersection_assign_and_minimize': it is illegal to apply
+    // `intersection_assign': it is illegal to apply
     // to a closed polyhedron and a non-closed polyhedron.
     ph1.intersection_assign(ph2);
   }
@@ -664,7 +664,7 @@ test24() {
 
   try {
     // This is an invalid used of the function
-    // `add_generators_and_minimize(gs)': it is illegal to
+    // `add_generators(gs)': it is illegal to
     // add a system of generators that does not contain points
     // to an empty zero-dimensional polyhedron.
     ph.add_generators(gs);
