@@ -4,6 +4,23 @@ Parma Polyhedra Library NEWS -- history of user-visible changes
 
 
 --------------------------------------------------------------------------
+NEWS for version 0.10.2  (released on April 18, 2009)
+--------------------------------------------------------------------------
+
+Bugfixes
+========
+
+o  Correctly detect GMP 4.3.0.
+
+o  Fixed the C interface library version information.
+
+o  Test program tests/Polyhedron/memory1 disabled on the zSeries s390x
+   platform.
+
+o  Makefiles fixed so as to avoid failure of `make -n check'.
+
+
+--------------------------------------------------------------------------
 NEWS for version 0.10.1  (released on April 14, 2009)
 --------------------------------------------------------------------------
 

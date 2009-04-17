@@ -88,6 +88,7 @@ pwl_header.hh
 #	    0.5			0.9		    3:0:0
 #	    0.6			0.10		    4:0:0
 #	    0.7			0.10.1		    4:0:0
+#	    0.7			0.10.2		    4:0:0
 
 LIBPWL_LT_CURRENT =  4
 LIBPWL_LT_REVISION = 0
@@ -141,3 +142,9 @@ dist-hook:
 	mv -f $(distdir)/pwl.hh $(distdir)/pwl.hh.dist
 
 CLEANFILES = $(BUILT_SOURCES)
+
+$(top_builddir)/utils/build_header:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/utils build_header
+
+$(top_builddir)/pwl-config.h:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir) pwl-config.h

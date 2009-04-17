@@ -1,6 +1,93 @@
-2009-04-14  Release Manager
+2009-04-16  Roberto Bagnara <bagnara@cs.unipr.it>
 
-	* PPL 0.10.1 Released.
+	* fedora/ppl-0.10.1-Makefile.patch,
+	fedora/ppl-0.10.2-Makefile.patch, fedora/ppl.hh, fedora/ppl.spec,
+	fedora/ppl_c.h, fedora/pwl.hh: Updated for PPL 0.10.2.
+
+2009-04-16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/libppl.3, doc/libppl_c.3: Version numbers fixed.
+
+2009-04-16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* demos/ppl_lcdd/ppl_lcdd.1, demos/ppl_lpsol/ppl_lpsol.1,
+	doc/libppl.3, doc/libppl_c.3, doc/ppl-config.1,
+	doc/ppl-config_extra_man_text: Updated for PPL 0.10.2.
+
+2009-04-16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/doc/Makefile.am, doc/Makefile.am: Added targets to have
+	`make -n dist' work as expected.
+
+2009-04-16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* demos/ppl_lcdd/ppl_lcdd.cc: Usage string fixed: ppl_lcdd accepts
+	at most one input file.
+
+2009-04-16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/src/Makefile.am, Watchdog/tests/Makefile.am,
+	demos/ppl_lcdd/Makefile.am, demos/ppl_lpsol/Makefile.am,
+	interfaces/C/Makefile.am, interfaces/C/tests/Makefile.am,
+	interfaces/Java/Makefile.am, interfaces/Java/jni/Makefile.am,
+	interfaces/Java/parma_polyhedra_library/Makefile.am,
+	interfaces/Java/tests/Makefile.am, interfaces/OCaml/Makefile.am,
+	interfaces/OCaml/tests/Makefile.am,
+	interfaces/Prolog/Ciao/Makefile.am,
+	interfaces/Prolog/GNU/Makefile.am, interfaces/Prolog/Makefile.am,
+	interfaces/Prolog/SICStus/Makefile.am,
+	interfaces/Prolog/SWI/Makefile.am,
+	interfaces/Prolog/XSB/Makefile.am,
+	interfaces/Prolog/YAP/Makefile.am,
+	interfaces/Prolog/tests/Makefile.am, src/Makefile.am,
+	tests/BD_Shape/Makefile.am, tests/Box/Makefile.am,
+	tests/Grid/Makefile.am, tests/MIP_Problem/Makefile.am,
+	tests/Octagonal_Shape/Makefile.am,
+	tests/Partially_Reduced_Product/Makefile.am,
+	tests/Polyhedron/Makefile.am, tests/Powerset/Makefile.am: Added
+	rules so that `make -n' and `make -n check' work.
+
+2009-04-16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/definitions.dox: Updated BHZ09b.
+
+2009-04-15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS, tests/Polyhedron/memory1.cc: Test program
+	tests/Polyhedron/memory1 disabled on the zSeries s390x platform.
+
+2009-04-15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS, README, TODO, configure.ac: Updated for PPL 0.10.2.
+
+2009-04-15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/src/Makefile.am, interfaces/C/Makefile.am,
+	src/Makefile.am: Libtool -version-info updated for PPL 0.10.2.
+
+2009-04-15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/ac_check_gmp.m4: Accommodate version 4.3.0 of GMP.  Starting from GMP version 4.3.0 (released a few hours after PPL
+	0.10.1), the gmp_version variable always contains three parts.  In
+	previous versions the patchlevel was omitted if it was 0.  This
+	change broke our GMP detection procedure.
+
+2009-04-14  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/README.doc: Improved.
+
+2009-04-14  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/README.doc: Updated to refer to git and to mention possible
+	names of TeX config files.
+
+2009-04-14  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* PPL 0.10.1 released.
+
+2009-04-13  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog: Updated.
 
 2009-04-13  Roberto Bagnara <bagnara@cs.unipr.it>
 

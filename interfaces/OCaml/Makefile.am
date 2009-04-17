@@ -292,3 +292,10 @@ ppl_ocaml_domains.hh \
 ppl_ocaml.ml \
 ppl_ocaml.mli \
 ppl_ocaml_domains_cc_files.stamp
+
+$(top_builddir)/interfaces/ppl_interface_instantiations.m4:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/interfaces ppl_interface_instantiations.m4
+
+# A selection of these files, which depends on the configure options,
+# is built by the `ppl_ocaml_domains_cc_files.stamp' target.
+$(nodist_EXTRA_libppl_ocaml_a_SOURCES):

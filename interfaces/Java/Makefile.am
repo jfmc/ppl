@@ -40,3 +40,6 @@ ppl_java.jar: parma_polyhedra_library/java_classes.stamp
 	$(JAR) cf ppl_java.jar parma_polyhedra_library/*.class
 
 CLEANFILES = ppl_java.jar
+
+parma_polyhedra_library/java_classes.stamp:
+	$(MAKE) $(AM_MAKEFLAGS) -C parma_polyhedra_library java_classes.stamp

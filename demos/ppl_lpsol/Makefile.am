@@ -305,3 +305,6 @@ lp_problems \
 obtained \
 obtained_optima \
 tough_examples
+
+$(top_builddir)/interfaces/C/libppl_c.la:
+	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/interfaces/C libppl_c.la

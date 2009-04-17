@@ -1,6 +1,48 @@
-2009-04-14  Release Manager
+2009-04-16  Roberto Bagnara <bagnara@cs.unipr.it>
 
-	* PPL 0.10.1 Released.
+	* Watchdog/doc/Makefile.am, doc/Makefile.am: Added targets to have
+	`make -n dist' work as expected.
+
+2009-04-16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/src/Makefile.am, Watchdog/tests/Makefile.am,
+	demos/ppl_lcdd/Makefile.am, demos/ppl_lpsol/Makefile.am,
+	interfaces/C/Makefile.am, interfaces/C/tests/Makefile.am,
+	interfaces/Java/Makefile.am, interfaces/Java/jni/Makefile.am,
+	interfaces/Java/parma_polyhedra_library/Makefile.am,
+	interfaces/Java/tests/Makefile.am, interfaces/OCaml/Makefile.am,
+	interfaces/OCaml/tests/Makefile.am,
+	interfaces/Prolog/Ciao/Makefile.am,
+	interfaces/Prolog/GNU/Makefile.am, interfaces/Prolog/Makefile.am,
+	interfaces/Prolog/SICStus/Makefile.am,
+	interfaces/Prolog/SWI/Makefile.am,
+	interfaces/Prolog/XSB/Makefile.am,
+	interfaces/Prolog/YAP/Makefile.am,
+	interfaces/Prolog/tests/Makefile.am, src/Makefile.am,
+	tests/BD_Shape/Makefile.am, tests/Box/Makefile.am,
+	tests/Grid/Makefile.am, tests/MIP_Problem/Makefile.am,
+	tests/Octagonal_Shape/Makefile.am,
+	tests/Partially_Reduced_Product/Makefile.am,
+	tests/Polyhedron/Makefile.am, tests/Powerset/Makefile.am: Added
+	rules so that `make -n' and `make -n check' work.
+
+2009-04-15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/src/Makefile.am, interfaces/C/Makefile.am,
+	src/Makefile.am: Libtool -version-info updated for PPL 0.10.2.
+
+2009-04-14  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* PPL 0.10.1 released.
+
+2009-04-11  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* .gitignore, Watchdog/doc/.gitignore, doc/.gitignore,
+	interfaces/Prolog/XSB/.gitignore: Added missing patterns.
+
+2009-04-11  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog, Watchdog/ChangeLog: Updated.
 
 2009-04-06  Roberto Bagnara <bagnara@cs.unipr.it>
 

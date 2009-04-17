@@ -56,7 +56,7 @@ The Documentation You May Build Yourself
 ========================================
 
 When all else fails (which is the case, for example, when you are
-using a CVS version [1]) then you may build the documentation by
+using a Git version [1]) then you may build the documentation by
 yourself. In order to do that, you should have a recent version of
 Doxygen [2] and, if you want to build the HTML documentation, a recent
 version of Graphviz [3].  When you have all the tools installed and
@@ -97,30 +97,36 @@ For example, the command
 
 will build both kinds of manuals in a PDF format.  Alternatively, the
 command `make world' will build all the available documentation in all
-of the above formats.  It is possible that, while compiling some
-PostScript or PDF documentation, LaTeX dies with a "TeX capacity
-exceeded" error message.  The error should contain the indication of
-the TeX buffer whose capacity has been exceeded, e.g.:
+of the above formats.
+
+It is possible that, while compiling some PostScript or PDF
+documentation, TeX dies with a "TeX capacity exceeded" error
+message.  The error should contain the indication of the TeX buffer
+whose capacity has been exceeded, e.g.:
 
   ! TeX capacity exceeded, sorry [save size=5000].
 
-You than need to edit the file that defines the buffer sizes
-(texmf.cnf on teTeX, 20sizes.cnf on TeX Live) increasing the value of
-the corresponding buffer.  Continuing our example, we can double
-save_size by editing texmf.cfg so that the relevant line becomes
+You then need to edit the TeX configuration file that defines the
+buffer sizes so as to increase the value of the relevant buffer.
+Note: the actual name and location of the configuration file will vary
+depending on the available TeX distribution: possible names include
+texmf.cnf, texmf.cfg and 20sizes.cnf.  Continuing our example, we can
+double save_size by editing the configuration file so that the
+relevant line becomes
 
   save_size = 10000        % for saving values outside current group
 
 Any change to such configuration files should be followed by running
-the command
+a command like
 
   texconfig init
 
-for the change to become effective.
+for the change to become effective (on some systems the `texconfig-sys'
+command should be used to configure TeX system-wide).
 
 --------
 
-[1] http://www.cs.unipr.it/ppl/Download/cvs
+[1] http://www.cs.unipr.it/ppl/Download/Git
 [2] http://www.doxygen.org/
 [3] http://www.research.att.com/sw/tools/graphviz/
 
