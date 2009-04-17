@@ -150,8 +150,10 @@ select_clause(Atom, Head, Body) :-
 % The constraints are solved by adding them into the polyhedron.
 solve_constraints(Constraints, Polyhedron) :-
     listize_constraints(Constraints, Constraints_List),
-    % Fails if `Polyhedron' becomes empty.
-    ppl_Polyhedron_add_constraints_and_minimize(Polyhedron, Constraints_List).
+    ppl_Polyhedron_add_constraints(Polyhedron, Constraints_List),
+    % Fail if `Polyhedron' became empty.
+    \+ ppl_Polyhedron_is_empty(Polyhedron).
+
 
 listize_constraints(C, LC) :-
     listize_constraints(C, [], LC).

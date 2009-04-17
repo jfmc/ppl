@@ -124,8 +124,10 @@ solve(_, { Constraints }, [Poly|Polys], [Poly|Polys]) :-
   % and check we do have constraints.
   constraints2list(Constraints, Constraints_List),
 
-  % Fails if `Poly' becomes empty.
-  ppl_Polyhedron_add_constraints_and_minimize(Poly, Constraints_List).
+  ppl_Polyhedron_add_constraints(Poly, Constraints_List),
+
+  % Fail if `Poly' became empty.
+  \+ ppl_Polyhedron_is_empty(Poly).
 
 % Built-ins may be added here.
 
@@ -167,7 +169,8 @@ solve(Topology, Atom, [Poly|Polys], Polys_Out) :-
   ppl_Polyhedron_add_space_dimensions_and_embed(Poly_Copy, Added_Dims),
 
   % First solve the parameter passing equations.
-  ppl_Polyhedron_add_constraints_and_minimize(Poly_Copy, Binding_Constraints),
+  ppl_Polyhedron_add_constraints(Poly_Copy, Binding_Constraints),
+  \+ ppl_Polyhedron_is_empty(Poly_Copy),
   % Then solve the body.
   solve(Topology, Body, [Poly_Copy, Poly|Polys], Polys_Soln_Out),
 
