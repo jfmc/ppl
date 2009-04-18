@@ -106,6 +106,7 @@ Summary:        The YAP Prolog interface of the Parma Polyhedra Library
 Group:          Development/Libraries
 BuildRequires:  yap-devel >= 5.1.1
 Requires:       %{name} = %{version}-%{release}, %{name}-pwl = %{version}-%{release}, yap >= 5.1.1
+Obsoletes:      ppl-yap-static
 %description yap
 This package adds YAP Prolog support to the Parma Polyhedra Library (PPL).
 Install this package if you want to use the library in YAP Prolog programs.
