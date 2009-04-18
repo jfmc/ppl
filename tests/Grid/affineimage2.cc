@@ -307,7 +307,7 @@ test11() {
   Grid gr(2, EMPTY);
 
   for(int j = 0; j < 4; j++) {
-    gr.add_grid_generators_and_minimize(ggs);
+    gr.add_grid_generators(ggs);
 
     for(int i = 0; i < j; i++) {
       gr.affine_image(A, 3*A);
@@ -320,7 +320,7 @@ test11() {
     gr1.upper_bound_assign(gr);
   }
 
-  gr.add_grid_generators_and_minimize(ggs);
+  gr.add_grid_generators(ggs);
 
   bool ok = (gr == gr1);
 
@@ -352,7 +352,7 @@ test12() {
   Grid gr(2, EMPTY);
 
   for(int j = 0; j < 3; j++) {
-    gr.add_grid_generators_and_minimize(ggs);
+    gr.add_grid_generators(ggs);
 
     for(int i = 0; i < j; i++) {
       gr.affine_image(A, *tem1*A);
@@ -365,7 +365,7 @@ test12() {
     gr1.upper_bound_assign(gr);
   }
 
-  gr.add_grid_generators_and_minimize(ggs);
+  gr.add_grid_generators(ggs);
 
   delete tem1; delete tem2; delete tem3;
 

@@ -206,47 +206,9 @@ test08() {
   return false;
 }
 
-// add_constraint_and_minimize -- space dimension exception
-bool
-test09() {
-  Variable B(1);
-
-  Grid gr(1);
-
-  try {
-    gr.add_constraint_and_minimize(B == 0);
-  }
-  catch (const std::invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
-    return true;
-  }
-  catch (...) {
-  }
-  return false;
-}
-
-// add_constraint_and_minimize -- space dimension exception
-bool
-test10() {
-  Variable B(1);
-
-  Grid gr(1);
-
-  try {
-    gr.add_constraint(B >= 0);
-  }
-  catch (const std::invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
-    return true;
-  }
-  catch (...) {
-  }
-  return false;
-}
-
 // add_constraints(1 == 0) to an empty 0-dimensional grid
 bool
-test11() {
+test09() {
 
   Grid gr(0, EMPTY);
 
@@ -275,6 +237,4 @@ BEGIN_MAIN
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
-  DO_TEST(test10);
-  DO_TEST(test11);
 END_MAIN

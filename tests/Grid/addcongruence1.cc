@@ -27,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-// Test add_congruence_and_minimize.
+// Add to the universe grid.
 bool
 test01() {
   Variable A(0);
@@ -41,15 +41,13 @@ test01() {
 
   print_congruences(gr, "*** gr.add_congruence((A + B %= 0) / 6) ***");
 
-  gr.add_congruence_and_minimize((A + B %= 0) / 3);
-
   Grid known_gr(2);
   known_gr.add_congruence((A + B %= 0) / 6);
 
   bool ok = (gr == known_gr) ;
 
   print_congruences(gr,
-		    "*** gr.add_congruence_and_minimize((A + B %= 0) / 3) ***");
+		    "*** gr.add_congruence((A + B %= 0) / 3) ***");
 
   return ok;
 }
@@ -100,33 +98,9 @@ test03() {
   return ok;
 }
 
-// Add a congruence and minimize with less dimensions than the grid.
-bool
-test04() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
-  Grid gr(3);
-  gr.add_congruence((B %= 0) / 7);
-  gr.add_congruence_and_minimize((A %= 0) / 7);
-
-  Grid known_gr(3, EMPTY);
-  known_gr.add_grid_generator(grid_point());
-  known_gr.add_grid_generator(parameter(7*A));
-  known_gr.add_grid_generator(parameter(7*B));
-  known_gr.add_grid_generator(grid_line(C));
-
-  bool ok = (gr == known_gr);
-
-  print_congruences(gr, "***  gr.add_congruence((A %= 0) / 7) ***");
-
-  return ok;
-}
-
 // Space dimension exception.
 static bool
-test05() {
+test04() {
   Variable A(0);
   Variable C(2);
 
@@ -151,5 +125,4 @@ BEGIN_MAIN
   DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
-  DO_TEST(test05);
 END_MAIN
