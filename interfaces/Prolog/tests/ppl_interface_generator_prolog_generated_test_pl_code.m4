@@ -959,56 +959,6 @@ ppl_@CLASS@_add_@CLASS_REPRESENT@_2_test1(PS, PS1, [R | RS]) :-
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@_and_minimize_code',
-`
-:- discontiguous(ppl_@CLASS@_add_@CLASS_REPRESENT@_and_minimize_2_test1/3).
-
-ppl_@CLASS@_add_@CLASS_REPRESENT@_and_minimize_2_test :-
-  (
-   member(TEST_DATA, [test00, test02, test03, test04, test05]),
-   choose_test(TEST_DATA, Space_Dim),
-   (
-     ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@, @CLASS_REPRESENT@s, RS),
-     ppl_initial_test_system(@CLASS_REPRESENT@, U_or_E),
-     clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim,
-                                                          U_or_E, PS),
-     ppl_@CLASS@_add_@CLASS_REPRESENT@s(PS, RS),
-     clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim,
-                                                        U_or_E, PS1),
-     (predicate_exists(ppl_@CLASS@_is_empty)
-     ->
-       (\+ ppl_@CLASS@_is_empty(PS)
-       ->
-         ppl_@CLASS@_add_@CLASS_REPRESENT@_and_minimize_2_test1(PS, PS1, RS)
-       ;
-         true
-       )
-     ;
-       true
-     ),
-     ppl_delete_@CLASS@(PS),
-     ppl_delete_@CLASS@(PS1)
-   ->
-     fail ; true)
-  ).
-
-ppl_@CLASS@_add_@CLASS_REPRESENT@_and_minimize_2_test1(PS, PS1, []) :-
-  (
-   (predicate_exists(ppl_@CLASS@_equals_@CLASS@)
-   ->
-     ppl_@CLASS@_equals_@CLASS@(PS, PS1)
-   ;
-     true
-   )
-  ).
-ppl_@CLASS@_add_@CLASS_REPRESENT@_and_minimize_2_test1(PS, PS1, [R | RS]) :-
-  (
-   ppl_@CLASS@_add_@CLASS_REPRESENT@_and_minimize(PS1, R),
-   ppl_@CLASS@_add_@CLASS_REPRESENT@_and_minimize_2_test1(PS, PS1, RS)
-  ).
-
-')
-
 m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@s_code',
 `
 ppl_@CLASS@_add_@CLASS_REPRESENT@s_2_test :-
@@ -1034,69 +984,6 @@ ppl_@CLASS@_add_@CLASS_REPRESENT@s_2_test :-
      ),
      ppl_delete_@CLASS@(PS),
      ppl_delete_@CLASS@(PS1)
-   ->
-     fail ; true)
-  ).
-
-')
-
-m4_define(`ppl_@CLASS@_add_@CLASS_REPRESENT@s_and_minimize_code',
-`
-ppl_@CLASS@_add_@CLASS_REPRESENT@s_and_minimize_2_test :-
-  (
-   member(TEST_DATA1, [test00, test02, test03, test04, test05]),
-   member(TEST_DATA2, [test00, test02, test03, test04, test05]),
-   choose_2_tests(TEST_DATA1, TEST_DATA2, Dim),
-   (
-     ppl_build_test_data(TEST_DATA1, t_@TOPOLOGY@, @CLASS_REPRESENT@s, RS),
-     ppl_build_test_data(TEST_DATA2, t_@TOPOLOGY@, @CLASS_REPRESENT@s, RS1),
-     ppl_initial_test_system(@CLASS_REPRESENT@, U_or_E),
-     ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Dim, U_or_E, PS),
-     ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Dim, U_or_E, PS1),
-     ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Dim, U_or_E, PS_min),
-     ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Dim, U_or_E, PS1_min),
-     ppl_@CLASS@_add_@CLASS_REPRESENT@s(PS, RS),
-     ppl_@CLASS@_add_@CLASS_REPRESENT@s(PS, RS1),
-     ppl_@CLASS@_add_@CLASS_REPRESENT@s(PS_min, RS),
-     (predicate_exists(ppl_@CLASS@_is_empty)
-     ->
-       (ppl_@CLASS@_is_empty(PS)
-       ->
-         \+ ppl_@CLASS@_add_@CLASS_REPRESENT@s_and_minimize(PS_min, RS1),
-         ppl_@CLASS@_add_@CLASS_REPRESENT@s(PS_min, RS1)
-       ;
-         ppl_@CLASS@_add_@CLASS_REPRESENT@s_and_minimize(PS_min, RS1)
-       )
-     ;
-       true
-     ),
-     ppl_@CLASS@_add_@CLASS_REPRESENT@s(PS1, RS1),
-     ppl_@CLASS@_add_@CLASS_REPRESENT@s(PS1, RS),
-     ppl_@CLASS@_add_@CLASS_REPRESENT@s(PS1_min, RS1),
-     (predicate_exists(ppl_@CLASS@_is_empty)
-     ->
-       (ppl_@CLASS@_is_empty(PS1)
-       ->
-         \+ ppl_@CLASS@_add_@CLASS_REPRESENT@s_and_minimize(PS1_min, RS),
-         ppl_@CLASS@_add_@CLASS_REPRESENT@s(PS1_min, RS)
-       ;
-         ppl_@CLASS@_add_@CLASS_REPRESENT@s_and_minimize(PS1_min, RS)
-       )
-     ;
-       true
-     ),
-     (predicate_exists(ppl_@CLASS@_equals_@CLASS@)
-     ->
-       ppl_@CLASS@_equals_@CLASS@(PS_min, PS1_min),
-       ppl_@CLASS@_equals_@CLASS@(PS, PS1_min),
-       ppl_@CLASS@_equals_@CLASS@(PS1, PS1_min)
-     ;
-       true
-     ),
-     ppl_delete_@CLASS@(PS),
-     ppl_delete_@CLASS@(PS_min),
-     ppl_delete_@CLASS@(PS1),
-     ppl_delete_@CLASS@(PS1_min)
    ->
      fail ; true)
   ).

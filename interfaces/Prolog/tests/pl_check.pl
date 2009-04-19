@@ -171,22 +171,16 @@ run_one(polyhedron_dimension) :-
 
 run_one(basic_operators) :-
    inters_assign,
-   inters_assign_min,
    polyhull_assign,
-   polyhull_assign_min,
    polydiff_assign,
    time_elapse,
    top_close_assign.
 
 run_one(add_to_system) :-
    add_con,
-   add_con_min,
    add_gen,
-   add_gen_min,
    add_cons,
-   add_cons_min,
-   add_gens,
-   add_gens_min.
+   add_gens.
 
 run_one(revise_dimensions) :-
    project,
@@ -610,39 +604,6 @@ inters_assign(T) :-
   ppl_delete_Polyhedron(P1a),
   ppl_delete_Polyhedron(P1b).
 
-% Tests ppl_Polyhedron_intersection_assign_and_minimize/2.
-inters_assign_min :-
-  inters_assign_min(c), inters_assign_min(nnc).
-
-inters_assign_min(T) :-
-  make_vars(2, [A, B]),
-  clean_ppl_new_Polyhedron_from_generators(T,
-                                     [point(0), point(B),
-                                      point(A), point(A, 2)],
-                                     P1),
-  clean_ppl_new_Polyhedron_from_generators(T,
-                                     [point(0), point(A), point(A + B)],
-                                     P2),
-  ppl_Polyhedron_intersection_assign_and_minimize(P1, P2),
-  clean_ppl_new_Polyhedron_from_generators(T,
-                                     [point(A + B, 2),
-                                      point(A), point(0)],
-                                     P1a),
-  clean_ppl_new_Polyhedron_from_constraints(T,
-                                      [A - B >= 0, B >= 0,
-                                       A + B =< 1],
-                                      P1b),
-  ppl_Polyhedron_equals_Polyhedron(P1, P1a),
-  ppl_Polyhedron_equals_Polyhedron(P1, P1b),
-  clean_ppl_new_Polyhedron_from_constraints(T, [A =< -1, B =< -1], P3),
-  \+ppl_Polyhedron_intersection_assign_and_minimize(P1, P3),
-  !,
-  ppl_delete_Polyhedron(P1),
-  ppl_delete_Polyhedron(P2),
-  ppl_delete_Polyhedron(P3),
-  ppl_delete_Polyhedron(P1a),
-  ppl_delete_Polyhedron(P1b).
-
 % Tests ppl_Polyhedron_concatenate_assign/2.
 conc_assign :-
   conc_assign(c), conc_assign(nnc).
@@ -676,32 +637,6 @@ polyhull_assign(T) :-
                                       point(A + B), point(A, 2)],
                                      P2),
   ppl_Polyhedron_poly_hull_assign(P1, P2),
-  clean_ppl_new_Polyhedron_from_generators(T,
-      [point(1*A+1*B), point(1*A, 2), point(1*A), point(1*B), point(0)], P1a),
-  clean_ppl_new_Polyhedron_from_constraints(T,
-      [1*A>=0, 1*B>=0, -1*B>= -1, -1*A>= -1], P1b),
-  ppl_Polyhedron_equals_Polyhedron(P1, P1a),
-  ppl_Polyhedron_equals_Polyhedron(P1, P1b),
-  !,
-  ppl_delete_Polyhedron(P1),
-  ppl_delete_Polyhedron(P2),
-  ppl_delete_Polyhedron(P1a),
-  ppl_delete_Polyhedron(P1b).
-
-% Tests ppl_Polyhedron_poly_hull_assign_and_minimize/2.
-polyhull_assign_min :-
-  polyhull_assign_min(c), polyhull_assign_min(nnc).
-
-polyhull_assign_min(T) :-
-  make_vars(2, [A, B]),
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 2, empty, P1),
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 2, empty, P2),
-  \+ ppl_Polyhedron_poly_hull_assign_and_minimize(P1, P2),
-  ppl_Polyhedron_add_generators(P1, [point(0), point(B),
-                                     point(A), point(A, 2)]),
-  ppl_Polyhedron_add_generators(P2, [point(0), point(A),
-                                     point(A + B), point(A, 2)]),
-  ppl_Polyhedron_poly_hull_assign_and_minimize(P1, P2),
   clean_ppl_new_Polyhedron_from_generators(T,
       [point(1*A+1*B), point(1*A, 2), point(1*A), point(1*B), point(0)], P1a),
   clean_ppl_new_Polyhedron_from_constraints(T,
@@ -840,23 +775,6 @@ add_con(T) :-
   ppl_delete_Polyhedron(Pb),
   ppl_delete_Polyhedron(Pc).
 
-% Tests ppl_Polyhedron_add_constraint_and_minimize/2.
-add_con_min :-
-  add_con_min(c), add_con_min(nnc).
-
-add_con_min(T) :-
-  make_vars(2, [A, B]),
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 2, universe, P),
-  ppl_Polyhedron_add_constraint_and_minimize(P, A - B >= 1),
-  clean_ppl_new_Polyhedron_from_constraints(T,
-                                      [A - B >= 1],
-                                      P1),
-  ppl_Polyhedron_equals_Polyhedron(P, P1),
-  \+ ppl_Polyhedron_add_constraint_and_minimize(P, A - B =< 0),
-  !,
-  ppl_delete_Polyhedron(P),
-  ppl_delete_Polyhedron(P1).
-
 % Tests ppl_Polyhedron_add_generator/2.
 add_gen :-
   add_gen(c), add_gen(nnc).
@@ -868,25 +786,6 @@ add_gen(T) :-
   clean_ppl_new_Polyhedron_from_generators(T,
                                      [point(A + B), point(0),
                                       line(A), line(B)], P1),
-  ppl_Polyhedron_equals_Polyhedron(P, P1),
-  !,
-  ppl_delete_Polyhedron(P),
-  ppl_delete_Polyhedron(P1).
-
-% Tests ppl_Polyhedron_add_generator_and_minimize/2.
-add_gen_min :-
-  add_gen_min(c), add_gen_min(nnc).
-
-add_gen_min(T) :-
-  make_vars(2, [A, B]),
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 2, empty, P),
-  ppl_Polyhedron_add_generator(P, point(A + B)),
-  ppl_Polyhedron_add_generator(P, point(0)),
-  ppl_Polyhedron_add_generator_and_minimize(P, point(2*A + 2*B, 1)),
-  ppl_Polyhedron_get_generators(P,[_G1,_G2]),
-  clean_ppl_new_Polyhedron_from_generators(T,
-                                     [point(2*A + 2*B), point(0)],
-                                     P1),
   ppl_Polyhedron_equals_Polyhedron(P, P1),
   !,
   ppl_delete_Polyhedron(P),
@@ -909,22 +808,6 @@ add_cons(T, CS, CS1) :-
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(P1).
 
-% Tests ppl_Polyhedron_add_constraints_and_minimize/2.
-add_cons_min :-
-  make_vars(2, [A, B]),
-  add_cons_min(c, [A >= 1, B >= 0], [A + B =< 0]),
-  add_cons_min(nnc, [A > 1, B >= 0], [A < 0]).
-
-add_cons_min(T, CS, CS1) :-
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 2, universe, P),
-  ppl_Polyhedron_add_constraints_and_minimize(P, CS),
-  clean_ppl_new_Polyhedron_from_constraints(T, CS, P1),
-  ppl_Polyhedron_equals_Polyhedron(P, P1),
-  \+ppl_Polyhedron_add_constraints_and_minimize(P, CS1),
-  !,
-  ppl_delete_Polyhedron(P),
-  ppl_delete_Polyhedron(P1).
-
 % Tests ppl_Polyhedron_add_generators/2.
 add_gens :-
   make_vars(3, [A, B, C]),
@@ -936,23 +819,6 @@ add_gens :-
 add_gens(T, GS) :-
   clean_ppl_new_Polyhedron_from_space_dimension(T, 3, empty, P),
   ppl_Polyhedron_add_generators(P, GS),
-  clean_ppl_new_Polyhedron_from_generators(T, GS, P1),
-  ppl_Polyhedron_equals_Polyhedron(P, P1),
-  !,
-  ppl_delete_Polyhedron(P),
-  ppl_delete_Polyhedron(P1).
-
-% Tests ppl_Polyhedron_add_generators_and_minimize/2.
-add_gens_min :-
-  make_vars(3, [A, B, C]),
-  add_gens_min(c, [point(A + B + C), ray(A), ray(2*A), point(A + B + C)]),
-  add_gens_min(nnc, [point(A + B + C), ray(A), ray(2*A),
-                     closure_point(A + B + C)]).
-
-add_gens_min(T, GS) :-
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 3, empty, P),
-  \+  ppl_Polyhedron_add_generators_and_minimize(P, []),
-  ppl_Polyhedron_add_generators_and_minimize(P, GS),
   clean_ppl_new_Polyhedron_from_generators(T, GS, P1),
   ppl_Polyhedron_equals_Polyhedron(P, P1),
   !,
@@ -2067,7 +1933,6 @@ time_out :-
 time_out :-
   time_out(c), time_out(nnc).
 
-% Avoid use of add_and_minimize predicate as that is deprecated.
 add_constraints_and_get_minimized_constraints(P, CS) :-
     ppl_Polyhedron_add_constraints(P, CS),
     ppl_Polyhedron_get_minimized_constraints(P, _).
@@ -2838,7 +2703,7 @@ exception_cplusplus(3, [A, B, _]) :-
   clean_ppl_new_Polyhedron_from_space_dimension(c, 0, universe, P1),
   clean_ppl_new_Polyhedron_from_generators(c,
                [point(A + B)], P2),
-  must_catch(ppl_Polyhedron_poly_hull_assign_and_minimize(P1, P2),
+  must_catch(ppl_Polyhedron_poly_hull_assign(P1, P2),
              cpp_error),
   !,
   ppl_delete_Polyhedron(P1),
@@ -3316,9 +3181,7 @@ group_predicates(polyhedron_dimension,
 
 group_predicates(basic_operators,
   [ppl_Polyhedron_intersection_assign/2,
-   ppl_Polyhedron_intersection_assign_and_minimize/2,
    ppl_Polyhedron_poly_hull_assign/2,
-   ppl_Polyhedron_poly_hull_assign_and_minimize/2,
    ppl_Polyhedron_poly_difference_assign/2,
    ppl_Polyhedron_time_elapse_assign/2,
    ppl_Polyhedron_topological_closure_assign/1
@@ -3326,13 +3189,9 @@ group_predicates(basic_operators,
 
 group_predicates(add_to_system,
   [ppl_Polyhedron_add_constraint/2,
-   ppl_Polyhedron_add_constraint_and_minimize/2,
    ppl_Polyhedron_add_generator/2,
-   ppl_Polyhedron_add_generator_and_minimize/2,
    ppl_Polyhedron_add_constraints/2,
-   ppl_Polyhedron_add_constraints_and_minimize/2,
-   ppl_Polyhedron_add_generators/2,
-   ppl_Polyhedron_add_generators_and_minimize/2
+   ppl_Polyhedron_add_generators/2
   ]).
 
 group_predicates(revise_dimensions,
