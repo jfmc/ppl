@@ -2074,10 +2074,16 @@ BD_Shape<T>::BFT00_upper_bound_assign_if_exact(const BD_Shape& y) {
 }
 
 template <typename T>
+template <bool integer_upper_bound>
 bool
 BD_Shape<T>::BHZ09_upper_bound_assign_if_exact(const BD_Shape& y) {
-  // FIXME, CHECKME: what about inexact computations?
+  PPL_COMPILE_TIME_CHECK(not (integer_upper_bound
+                              && std::numeric_limits<T>::is_integer),
+                         "BD_Shape<T>::BHZ09_upper_bound_assign_if_exact(y):"
+                         " instantiating for integer upper bound,"
+                         " but T in not an integer datatype.");
 
+  // FIXME, CHECKME: what about inexact computations?
   // Declare a const reference to *this (to avoid accidental modifications).
   const BD_Shape& x = *this;
   const dimension_type x_space_dim = x.space_dimension();
@@ -2115,6 +2121,9 @@ BD_Shape<T>::BHZ09_upper_bound_assign_if_exact(const BD_Shape& y) {
   PPL_DIRTY_TEMP(N, rhs);
   PPL_DIRTY_TEMP(N, temp_zero);
   assign_r(temp_zero, 0, ROUND_NOT_NEEDED);
+  PPL_DIRTY_TEMP(N, temp_one);
+  if (integer_upper_bound)
+    assign_r(temp_one, 1, ROUND_NOT_NEEDED);
 
   for (dimension_type i = x_space_dim + 1; i-- > 0; ) {
     const DB_Row<N>& x_i = x.dbm[i];
@@ -2148,6 +2157,12 @@ BD_Shape<T>::BHZ09_upper_bound_assign_if_exact(const BD_Shape& y) {
               add_assign_r(lhs, x_i_j, y_k_ell, ROUND_UP);
               const N& ub_i_ell = (i == ell) ? temp_zero : ub_i[ell];
               add_assign_r(rhs, ub_i_ell, ub_k_j, ROUND_UP);
+              if (integer_upper_bound) {
+                // Note: adding 1 rather than 2 (as in Theorem 5.3)
+                // so as to later test for < rather than <=.
+                add_assign_r(lhs, lhs, temp_one, ROUND_NOT_NEEDED);
+              }
+              // Testing for < in both the rational and integer case.
               if (lhs < rhs)
                 return false;
             }

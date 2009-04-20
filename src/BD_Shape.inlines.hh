@@ -31,6 +31,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
 #include "Temp.defs.hh"
+#include "meta_programming.hh"
 #include <cassert>
 #include <vector>
 #include <iostream>
@@ -757,14 +758,26 @@ BD_Shape<T>::upper_bound_assign_and_minimize(const BD_Shape& y) {
 template <typename T>
 inline bool
 BD_Shape<T>::upper_bound_assign_if_exact(const BD_Shape& y) {
-  // Dimension-compatibility check.
   if (space_dimension() != y.space_dimension())
     throw_dimension_incompatible("upper_bound_assign_if_exact(y)", y);
 #if 0
   return BFT00_upper_bound_assign_if_exact(y);
 #else
-  return BHZ09_upper_bound_assign_if_exact(y);
+  const bool integer_upper_bound = false;
+  return BHZ09_upper_bound_assign_if_exact<integer_upper_bound>(y);
 #endif
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::integer_upper_bound_assign_if_exact(const BD_Shape& y) {
+  PPL_COMPILE_TIME_CHECK(std::numeric_limits<T>::is_integer,
+                         "BD_Shape<T>::integer_upper_bound_assign_if_exact(y):"
+                         " T in not an integer datatype.");
+  if (space_dimension() != y.space_dimension())
+    throw_dimension_incompatible("integer_upper_bound_assign_if_exact(y)", y);
+  const bool integer_upper_bound = true;
+  return BHZ09_upper_bound_assign_if_exact<integer_upper_bound>(y);
 }
 
 template <typename T>

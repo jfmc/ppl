@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator_System.inlines.hh"
 #include "Congruence_System.defs.hh"
 #include "Congruence_System.inlines.hh"
+#include "meta_programming.hh"
 #include <cassert>
 #include <vector>
 #include <deque>
@@ -1950,6 +1951,39 @@ Octagonal_Shape<T>::tight_coherence_would_make_empty() const {
       return true;
   }
   return false;
+}
+
+template <typename T>
+void
+Octagonal_Shape<T>::tight_closure_assign() {
+  PPL_COMPILE_TIME_CHECK(std::numeric_limits<T>::is_integer,
+                         "Octagonal_Shape<T>::tight_closure_assign():"
+                         " T in not an integer datatype.");
+  // FIXME: this is just an executable specification.
+  // (The following call could be replaced by shortest-path closure.)
+  strong_closure_assign();
+  if (marked_empty())
+    return;
+  if (tight_coherence_would_make_empty())
+    set_empty();
+  else {
+    // Tighten the unary constraints.
+    PPL_DIRTY_TEMP(N, temp_one);
+    assign_r(temp_one, 1, ROUND_NOT_NEEDED);
+    const dimension_type space_dim = space_dimension();
+    for (dimension_type i = 0; i < 2*space_dim; i += 2) {
+      const dimension_type ci = i+1;
+      N& mat_i_ci = matrix[i][ci];
+      if (!is_plus_infinity(mat_i_ci) && !is_even(mat_i_ci))
+        sub_assign_r(mat_i_ci, mat_i_ci, temp_one, ROUND_NOT_NEEDED);
+      N& mat_ci_i = matrix[ci][i];
+      if (!is_plus_infinity(mat_ci_i) && !is_even(mat_ci_i))
+        sub_assign_r(mat_ci_i, mat_ci_i, temp_one, ROUND_NOT_NEEDED);
+    }
+    // Propagate tightened unary constraints.
+    strong_coherence_assign();
+  }
+  assert(OK());
 }
 
 template <typename T>
@@ -6241,14 +6275,15 @@ Octagonal_Shape<T>::fold_space_dimensions(const Variables_Set& to_be_folded,
 
 template <typename T>
 bool
-Octagonal_Shape<T>
-::BHZ09_upper_bound_assign_if_exact(const Octagonal_Shape& y) {
+Octagonal_Shape<T>::upper_bound_assign_if_exact(const Octagonal_Shape& y) {
+  // FIXME, CHECKME: what about inexact computations?
+
   // Declare a const reference to *this (to avoid accidental modifications).
   const Octagonal_Shape& x = *this;
   const dimension_type x_space_dim = x.space_dimension();
 
-  // Private method: the caller must ensure the following.
-  assert(x_space_dim == y.space_dimension());
+  if (x_space_dim != y.space_dimension())
+    throw_dimension_incompatible("upper_bound_assign_if_exact(y)", y);
 
   // The zero-dim case is trivial.
   if (x_space_dim == 0) {
@@ -6377,6 +6412,187 @@ Octagonal_Shape<T>
           if (lhs < rhs)
             // All 8 conditions are satisfied:
             // upper bound is not exact.
+            return false;
+        }
+      }
+    }
+  }
+
+  // The upper bound of x and y is indeed exact.
+  swap(ub);
+  assert(OK());
+  return true;
+}
+
+template <typename T>
+bool
+Octagonal_Shape<T>
+::integer_upper_bound_assign_if_exact(const Octagonal_Shape& y) {
+  PPL_COMPILE_TIME_CHECK(std::numeric_limits<T>::is_integer,
+                         "Octagonal_Shape<T>::"
+                         "integer_upper_bound_assign_if_exact(y):"
+                         " T in not an integer datatype.");
+  // Declare a const reference to *this (to avoid accidental modifications).
+  const Octagonal_Shape& x = *this;
+  const dimension_type x_space_dim = x.space_dimension();
+
+  if (x_space_dim != y.space_dimension())
+    throw_dimension_incompatible("integer_upper_bound_assign_if_exact(y)", y);
+
+  // The zero-dim case is trivial.
+  if (x_space_dim == 0) {
+    upper_bound_assign(y);
+    return true;
+  }
+
+  // If `x' or `y' is (known to) contain no integral point,
+  // then the integer upper bound can be computed exactly by tight closure.
+  if (x.marked_empty()) {
+    *this = y;
+    tight_closure_assign();
+    return true;
+  }
+  else if (y.marked_empty()) {
+    tight_closure_assign();
+    return true;
+  }
+  else if (x.is_empty() || x.tight_coherence_would_make_empty()) {
+    *this = y;
+    tight_closure_assign();
+    return true;
+  }
+  else if (y.is_empty() || y.tight_coherence_would_make_empty()) {
+    tight_closure_assign();
+    return true;
+  }
+
+  // Here both `x' and `y' are known to be non-empty (and Z-consistent).
+  assert(x.marked_strongly_closed());
+  assert(y.marked_strongly_closed());
+  // Pre-compute the integer upper bound of `x' and `y':
+  // have to take copies, since tight closure might modify the rational shape.
+  Octagonal_Shape<T> tx(x);
+  tx.tight_closure_assign();
+  Octagonal_Shape<T> ty(y);
+  ty.tight_closure_assign();
+  Octagonal_Shape<T> ub(tx);
+  ub.upper_bound_assign(ty);
+
+  // Compute redundancy information for tx and ty.
+  // TODO: provide a nicer data structure for redundancy.
+  // NOTE: there is no need to identify all redundancies, since this is
+  // an optimization; hence we reuse the strong-reduction helper methods.
+  std::vector<Bit_Row> tx_non_red;
+  tx.non_redundant_matrix_entries(tx_non_red);
+  std::vector<Bit_Row> ty_non_red;
+  ty.non_redundant_matrix_entries(ty_non_red);
+
+  PPL_DIRTY_TEMP(N, lhs_i_j);
+  PPL_DIRTY_TEMP(N, lhs_k_ell);
+  PPL_DIRTY_TEMP(N, lhs);
+  PPL_DIRTY_TEMP(N, lhs_copy);
+  PPL_DIRTY_TEMP(N, rhs);
+  PPL_DIRTY_TEMP(N, temp_zero);
+  assign_r(temp_zero, 0, ROUND_NOT_NEEDED);
+  PPL_DIRTY_TEMP(N, temp_one);
+  assign_r(temp_one, 1, ROUND_NOT_NEEDED);
+  PPL_DIRTY_TEMP(N, temp_two);
+  assign_r(temp_two, 2, ROUND_NOT_NEEDED);
+
+  typedef typename OR_Matrix<N>::const_row_iterator Row_Iterator;
+  typedef typename OR_Matrix<N>::const_row_reference_type Row_Reference;
+  const dimension_type n_rows = tx.matrix.num_rows();
+  const Row_Iterator tx_m_begin = tx.matrix.row_begin();
+  const Row_Iterator ty_m_begin = ty.matrix.row_begin();
+  const Row_Iterator ub_m_begin = ub.matrix.row_begin();
+
+  for (dimension_type i = n_rows; i-- > 0; ) {
+    const Bit_Row& tx_non_red_i = tx_non_red[i];
+    const dimension_type ci = coherent_index(i);
+    const dimension_type row_size_i = OR_Matrix<N>::row_size(i);
+    Row_Reference tx_i = *(tx_m_begin + i);
+    Row_Reference ty_i = *(ty_m_begin + i);
+    Row_Reference ub_i = *(ub_m_begin + i);
+    const N& ub_i_ci = ub_i[ci];
+    for (dimension_type j = row_size_i; j-- > 0; ) {
+      // Check redundancy of tx_i_j.
+      if (!tx_non_red_i[j])
+        continue;
+      const N& tx_i_j = tx_i[j];
+      const dimension_type cj = coherent_index(j);
+      const N& eps_i_j = (i == cj) ? temp_two : temp_one;
+      // Check condition 1a in BHZ09 Theorem 6.8.
+      add_assign_r(lhs_i_j, tx_i_j, eps_i_j, ROUND_NOT_NEEDED);
+      if (lhs_i_j > ty_i[j])
+        continue;
+      const dimension_type row_size_cj = OR_Matrix<N>::row_size(cj);
+      Row_Reference ub_cj = *(ub_m_begin + cj);
+      const N& ub_cj_j = ub_cj[j];
+      for (dimension_type k = 0; k < n_rows; ++k) {
+        const Bit_Row& ty_non_red_k = ty_non_red[k];
+        const dimension_type ck = coherent_index(k);
+        const dimension_type row_size_k = OR_Matrix<N>::row_size(k);
+        Row_Reference tx_k = *(tx_m_begin + k);
+        Row_Reference ty_k = *(ty_m_begin + k);
+        Row_Reference ub_k = *(ub_m_begin + k);
+        const N& ub_k_ck = ub_k[ck];
+        // Be careful: for each index h, the diagonal element m[h][h]
+        // is (by convention) +infty in our implementation; however,
+        // BHZ09 theorem assumes that it is equal to 0.
+        const N& ub_k_j = (k == j) ? temp_zero
+          : (j < row_size_k ? ub_k[j] : ub_cj[ck]);
+        const N& ub_i_ck = (i == ck) ? temp_zero
+          : (ck < row_size_i ? ub_i[ck] : ub_k[ci]);
+
+        for (dimension_type ell = row_size_k; ell-- > 0; ) {
+          // Check redundancy of y_k_ell.
+          if (!ty_non_red_k[ell])
+            continue;
+          const N& ty_k_ell = ty_k[ell];
+          const dimension_type cell = coherent_index(ell);
+          const N& eps_k_ell = (k == cell) ? temp_two : temp_one;
+          // Check condition 1b in BHZ09 Theorem 6.8.
+          add_assign_r(lhs_k_ell, ty_k_ell, eps_k_ell, ROUND_NOT_NEEDED);
+          if (lhs_k_ell > tx_k[ell])
+            continue;
+          Row_Reference ub_cell = *(ub_m_begin + cell);
+          const N& ub_i_ell = (i == ell) ? temp_zero
+            : (ell < row_size_i ? ub_i[ell] : ub_cell[ci]);
+          const N& ub_cj_ell = (cj == ell) ? temp_zero
+            : (ell < row_size_cj ? ub_cj[ell] : ub_cell[j]);
+          // Check condition 2a in BHZ09 Theorem 6.8.
+          add_assign_r(lhs, lhs_i_j, lhs_k_ell, ROUND_NOT_NEEDED);
+          add_assign_r(rhs, ub_i_ell, ub_k_j, ROUND_NOT_NEEDED);
+          if (lhs > rhs)
+            continue;
+          // Check condition 2b in BHZ09 Theorem 6.8.
+          add_assign_r(rhs, ub_i_ck, ub_cj_ell, ROUND_NOT_NEEDED);
+          if (lhs > rhs)
+            continue;
+          // Check condition 3a in BHZ09 Theorem 6.8.
+          assign_r(lhs_copy, lhs, ROUND_NOT_NEEDED);
+          add_assign_r(lhs, lhs, lhs_i_j, ROUND_NOT_NEEDED);
+          add_assign_r(rhs, ub_i_ell, ub_i_ck, ROUND_NOT_NEEDED);
+          add_assign_r(rhs, rhs, ub_cj_j, ROUND_NOT_NEEDED);
+          if (lhs > rhs)
+            continue;
+          // Check condition 3b in BHZ09 Theorem 6.8.
+          add_assign_r(rhs, ub_k_j, ub_cj_ell, ROUND_NOT_NEEDED);
+          add_assign_r(rhs, rhs, ub_i_ci, ROUND_NOT_NEEDED);
+          if (lhs > rhs)
+            continue;
+          // Check condition 4a in BHZ09 Theorem 6.8.
+          add_assign_r(lhs, lhs_copy, lhs_k_ell, ROUND_NOT_NEEDED);
+          add_assign_r(rhs, ub_i_ell, ub_cj_ell, ROUND_NOT_NEEDED);
+          add_assign_r(rhs, rhs, ub_k_ck, ROUND_NOT_NEEDED);
+          if (lhs > rhs)
+            continue;
+          // Check condition 4b in BHZ09 Theorem 6.8.
+          add_assign_r(rhs, ub_k_j, ub_i_ck, ROUND_NOT_NEEDED);
+          add_assign_r(rhs, rhs, ub_cell[ell], ROUND_NOT_NEEDED);
+          if (lhs <= rhs)
+            // All 8 conditions are satisfied:
+            // integer upper bound is not exact.
             return false;
         }
       }

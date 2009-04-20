@@ -92,6 +92,7 @@ generalizedaffinepreimage1 generalizedaffinepreimage2 \
 generalizedaffinepreimage3 \
 geomcovers1 \
 h79widening1 \
+integerupperboundifexact1 \
 intersection1 \
 limitedbhmz05extrapolation1 \
 limitedcc76extrapolation1 \
@@ -241,6 +242,8 @@ generalizedaffinepreimage3_SOURCES = generalizedaffinepreimage3.cc
 geomcovers1_SOURCES = geomcovers1.cc
 
 h79widening1_SOURCES = h79widening1.cc
+
+integerupperboundifexact1_SOURCES = integerupperboundifexact1.cc
 
 intersection1_SOURCES = intersection1.cc
 

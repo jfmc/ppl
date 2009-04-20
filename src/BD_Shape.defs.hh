@@ -1158,6 +1158,22 @@ public:
   bool upper_bound_assign_if_exact(const BD_Shape& y);
 
   /*! \brief
+    If the \e integer upper bound of \p *this and \p y is exact,
+    it is assigned to \p *this and <CODE>true</CODE> is returned;
+    otherwise <CODE>false</CODE> is returned.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
+
+    \note
+    The integer upper bound of two rational BDS is the smallest rational
+    BDS containing all the integral points of the two arguments.
+    This method requires that the coefficient type parameter \c T is
+    an integral type.
+  */
+  bool integer_upper_bound_assign_if_exact(const BD_Shape& y);
+
+  /*! \brief
     Assigns to \p *this the smallest BD shape containing
     the set difference of \p *this and \p y.
 
@@ -1983,6 +1999,23 @@ private:
   */
   bool BFT00_upper_bound_assign_if_exact(const BD_Shape& y);
 
+  /*! \brief
+    If the upper bound of \p *this and \p y is exact it is assigned
+    to \p *this and \c true is returned, otherwise \c false is returned.
+
+    Implementation for the rational (resp., integer) case is based on
+    Theorem 5.2 (resp. Theorem 5.3) of \ref BHZ09b "[BHZ09b]".
+    The Boolean template parameter \c integer_upper_bound allows for
+    choosing between the rational and integer upper bound algorithms.
+
+    \note
+    It is assumed that \p *this and \p y are dimension-compatible;
+    if the assumption does not hold, the behavior is undefined.
+
+    \note
+    The integer case is only enabled if T is an integer datatype.
+  */
+  template <bool integer_upper_bound>
   bool BHZ09_upper_bound_assign_if_exact(const BD_Shape& y);
 
   /*! \brief

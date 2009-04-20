@@ -1035,8 +1035,33 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
+
+    Implementation is based on Theorem 6.3 of \ref BHZ09b "[BHZ09b]".
   */
   bool upper_bound_assign_if_exact(const Octagonal_Shape& y);
+
+  /*! \brief
+    If the \e integer upper bound of \p *this and \p y is exact,
+    it is assigned to \p *this and <CODE>true</CODE> is returned;
+    otherwise <CODE>false</CODE> is returned.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
+
+    \note
+    This operator is only available when the class template parameter
+    \c T is bound to an integer datatype.
+
+    \note
+    The integer upper bound of two rational BDS is the smallest
+    rational BDS containing all the integral points in the two arguments.
+    In general, the result is \e not an upper bound for the two input
+    arguments, as it may cut away non-integral portions of the two
+    rational shapes.
+
+    Implementation is based on Theorem 6.8 of \ref BHZ09b "[BHZ09b]".
+  */
+  bool integer_upper_bound_assign_if_exact(const Octagonal_Shape& y);
 
   /*! \brief
     Assigns to \p *this the smallest octagon containing
@@ -1863,6 +1888,16 @@ private:
   //! Applies the strong-coherence step to \c this->matrix.
   void strong_coherence_assign();
 
+  //! Assigns to \c this->matrix its tight closure.
+  /*!
+    \note
+    This is \e not marked as a <code>const</code> method,
+    as it may modify the rational-valued geometric shape by cutting away
+    non-integral points. The method is only available if the template
+    parameter \c T is bound to an integer datatype.
+  */
+  void tight_closure_assign();
+
   /*! \brief
     Incrementally computes strong closure, assuming that only
     constraints affecting variable \p var need to be considered.
@@ -1960,8 +1995,6 @@ private:
                bool maximize,
                Coefficient& ext_n, Coefficient& ext_d, bool& included,
                Generator& g) const;
-
-  bool BHZ09_upper_bound_assign_if_exact(const Octagonal_Shape& y);
 
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators

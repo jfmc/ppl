@@ -586,12 +586,6 @@ Octagonal_Shape<T>::strictly_contains(const Octagonal_Shape& y) const {
   return x.contains(y) && !y.contains(x);
 }
 
-template <typename T>
-inline bool
-Octagonal_Shape<T>::upper_bound_assign_if_exact(const Octagonal_Shape& y) {
-  return BHZ09_upper_bound_assign_if_exact(y);
-}
-
 /*! \relates Octagonal_Shape */
 template <typename Temp, typename To, typename T>
 inline bool
