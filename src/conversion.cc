@@ -676,8 +676,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
 	      // Being the union of `sat[i]' and `sat[j]',
 	      // `new_satrow' corresponds to a ray that saturates all the
 	      // constraints saturated by both `dest[i]' and `dest[j]'.
-	      Bit_Row new_satrow(sat[i]);
-	      set_union(new_satrow, sat[j], new_satrow);
+	      Bit_Row new_satrow(sat[i], sat[j]);
 
 	      // Compute the number of common saturators.
 	      // NOTE: this number has to be less than `k' because

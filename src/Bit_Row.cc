@@ -28,8 +28,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-#define PPL_BITS_PER_GMP_LIMB (PPL_SIZEOF_MP_LIMB_T*CHAR_BIT)
-
 #if !PPL_HAVE_DECL_FFS || PPL_SIZEOF_MP_LIMB_T != PPL_SIZEOF_INT
 unsigned int
 PPL::Bit_Row::first_one(mp_limb_t w) {

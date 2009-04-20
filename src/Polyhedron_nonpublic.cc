@@ -1122,15 +1122,9 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
       throw std::runtime_error("PPL internal error: "
 			       "strongly_minimize_constraints.");
     }
-  Bit_Row sat_lines_and_rays;
-  set_union(sat_all_but_points, sat_all_but_closure_points,
-	    sat_lines_and_rays);
-  Bit_Row sat_lines_and_closure_points;
-  set_union(sat_all_but_rays, sat_all_but_points,
-	    sat_lines_and_closure_points);
-  Bit_Row sat_lines;
-  set_union(sat_lines_and_rays, sat_lines_and_closure_points,
-	    sat_lines);
+  Bit_Row sat_lines_and_rays(sat_all_but_points, sat_all_but_closure_points);
+  Bit_Row sat_lines_and_closure_points(sat_all_but_rays, sat_all_but_points);
+  Bit_Row sat_lines(sat_lines_and_rays, sat_lines_and_closure_points);
 
   // These flags are maintained to later decide if we have to add the
   // eps_leq_one constraint and whether or not the constraint system
@@ -1304,8 +1298,7 @@ PPL::Polyhedron::strongly_minimize_generators() const {
     if (gs[i].is_point()) {
       // Compute the Bit_Row corresponding to the candidate point
       // when strict inequality constraints are ignored.
-      Bit_Row sat_gi;
-      set_union(sat[i], sat_all_but_strict_ineq, sat_gi);
+      Bit_Row sat_gi(sat[i], sat_all_but_strict_ineq);
       // Check if the candidate point is actually eps-redundant:
       // namely, if there exists another point that saturates
       // all the non-strict inequalities saturated by the candidate.
