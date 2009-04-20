@@ -52,11 +52,13 @@ Bit_Row::Bit_Row(const Bit_Row& y, const Bit_Row& z) {
   const mp_size_t y_size = y.vec->_mp_size;
   const mp_size_t z_size = z.vec->_mp_size;
   if (y_size < z_size) {
-    mpz_init2(vec, z_size*PPL_BITS_PER_GMP_LIMB);
+    assert(z_size <= ULONG_MAX / PPL_BITS_PER_GMP_LIB);
+    mpz_init2(vec, z_size * PPL_BITS_PER_GMP_LIMB);
     union_helper(y, z);
   }
   else {
-    mpz_init2(vec, y_size*PPL_BITS_PER_GMP_LIMB);
+    assert(y_size <= ULONG_MAX / PPL_BITS_PER_GMP_LIB);
+    mpz_init2(vec, y_size * PPL_BITS_PER_GMP_LIMB);
     union_helper(z, y);
   }
 }
@@ -133,11 +135,13 @@ set_union(const Bit_Row& x, const Bit_Row& y, Bit_Row& z) {
   const mp_size_t x_size = x.vec->_mp_size;
   const mp_size_t y_size = y.vec->_mp_size;
   if (x_size < y_size) {
-    mpz_realloc2(z.vec, y_size*PPL_BITS_PER_GMP_LIMB);
+    assert(y_size <= ULONG_MAX / PPL_BITS_PER_GMP_LIB);
+    mpz_realloc2(z.vec, y_size * PPL_BITS_PER_GMP_LIMB);
     z.union_helper(x, y);
   }
   else {
-    mpz_realloc2(z.vec, x_size*PPL_BITS_PER_GMP_LIMB);
+    assert(x_size <= ULONG_MAX / PPL_BITS_PER_GMP_LIB);
+    mpz_realloc2(z.vec, x_size * PPL_BITS_PER_GMP_LIMB);
     z.union_helper(y, x);
   }
 }
