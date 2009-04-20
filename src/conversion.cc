@@ -721,10 +721,10 @@ PPL::Polyhedron::conversion(Linear_System& source,
 		    // Make room for one more row.
 		    dest.add_pending_row(Linear_Row::Flags(dest.topology(),
 							   Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
-		    sat.add_row(new_satrow);
+		    sat.add_recycled_row(new_satrow);
 		  }
 		  else
-		    sat[dest_num_rows] = new_satrow;
+                    sat[dest_num_rows].swap(new_satrow);
 
 		  Linear_Row& new_row = dest[dest_num_rows];
 		  // The following fragment optimizes the computation of
