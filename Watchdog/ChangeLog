@@ -1,3 +1,7 @@
+2009-04-18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* PPL 0.10.2 released.
+
 2009-04-16  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* Watchdog/doc/Makefile.am, doc/Makefile.am: Added targets to have
@@ -30,6 +34,10 @@
 
 	* Watchdog/src/Makefile.am, interfaces/C/Makefile.am,
 	src/Makefile.am: Libtool -version-info updated for PPL 0.10.2.
+
+2009-04-14  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* PPL 0.10.1 released.
 
 2009-04-11  Roberto Bagnara <bagnara@cs.unipr.it>
 
