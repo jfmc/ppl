@@ -376,3 +376,29 @@ PPL::Bit_Row::OK() const {
     && vec_alloc >= vec_size
     && (vec_size == 0 || mpz_getlimbn(vec, vec_size-1) != 0);
 }
+
+void
+PPL::Bit_Row::union_helper(const Bit_Row& y, const Bit_Row& z) {
+  mp_size_t y_size = y.vec->_mp_size;
+  mp_size_t z_size = z.vec->_mp_size;
+  assert(y_size <= z.size);
+  assert(vec->_mp_alloc >= z.size);
+  vec->_mp_size = z_size;
+  mp_srcptr yp = y.vec->_mp_d;
+  mp_srcptr zp = z.vec->_mp_d;
+  mp_ptr p = vec->_mp_d;
+  z_size -= y_size;
+  while (y_size > 0) {
+    *p = *yp | * zp;
+    ++yp;
+    ++zp;
+    ++p;
+    --y_size;
+  }
+  while (z_size > 0) {
+    *p = *zp;
+    ++zp;
+    ++p;
+    --z_size;
+  }
+}

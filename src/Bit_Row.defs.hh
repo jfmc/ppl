@@ -116,6 +116,12 @@ public:
   //! Copy-constructor.
   Bit_Row(const Bit_Row& y);
 
+  //! Set-union constructor.
+  /*!
+    Constructs an object containing the set-union of \p y and \p z.
+  */
+  Bit_Row(const Bit_Row& y, const Bit_Row& z);
+
   //! Destructor.
   ~Bit_Row();
 
@@ -190,6 +196,13 @@ public:
 private:
   //! Bit-vector representing the row.
   mpz_t vec;
+
+  //! Assigns to \p *this the union of \p y and \p z.
+  /*!
+    The size of \p y must be be less than or equal to the size of \p z.
+    Upon entry, \p vec must have allocated enough space to contain the result.
+  */
+  void union_helper(const Bit_Row& x, const Bit_Row& y);
 
   //! Assuming \p w is nonzero, returns the index of the first set bit in \p w.
   static unsigned int first_one(mp_limb_t w);
