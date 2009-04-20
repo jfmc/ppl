@@ -282,33 +282,34 @@ PPL::subset_or_equal(const Bit_Row& x, const Bit_Row& y,
   mp_srcptr xp = x.vec->_mp_d;
   mp_srcptr yp = y.vec->_mp_d;
   strict_subset = (x_size < y_size);
-  if (strict_subset)
-    goto strict_subset_loop;
-
-  while (x_size > 0) {
-    const mp_limb_t xl = *xp;
-    const mp_limb_t yl = *yp;
-    if (xl & ~yl)
-      return false;
-    ++xp;
-    ++yp;
-    --x_size;
-    if (xl != yl) {
-      strict_subset = true;
-      goto strict_subset_loop;
+  mp_limb_t xl;
+  mp_limb_t yl;
+  if (strict_subset) {
+    while (x_size > 0) {
+      xl = *xp;
+      yl = *yp;
+      if (xl & ~yl)
+	return false;
+    strict_subset_next:
+      ++xp;
+      ++yp;
+      --x_size;
     }
   }
-  return true;
-
- strict_subset_loop:
-  while (x_size > 0) {
-    const mp_limb_t xl = *xp;
-    const mp_limb_t yl = *yp;
-    if (xl & ~yl)
-      return false;
-    ++xp;
-    ++yp;
-    --x_size;
+  else {
+    while (x_size > 0) {
+      xl = *xp;
+      yl = *yp;
+      if (xl != yl) {
+	if (xl & ~yl)
+	  return false;
+	strict_subset = true;
+	goto strict_subset_next;
+      }
+      ++xp;
+      ++yp;
+      --x_size;
+    }
   }
   return true;
 }
