@@ -168,7 +168,8 @@ test07() {
 
   Congruence_System cgs = bds1.congruences();
   TBD_Shape bds2(cgs.space_dimension(), EMPTY);
-  bool b = bds2.add_congruences_and_minimize(cgs);
+  bds2.add_congruences(cgs);
+  bool b = !bds2.is_empty();
 
   bool ok = !b && check_result(bds2, known_result);
 

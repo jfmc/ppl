@@ -163,7 +163,7 @@ test06() {
   Variable B(1);
 
   C_Polyhedron ph(2);
-  ph.add_constraint_and_minimize(A >= 0);
+  ph.add_constraint(A >= 0);
 
   bool ok = true;
 

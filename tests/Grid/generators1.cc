@@ -178,7 +178,7 @@ test08() {
 
   // Empty the grid.  The idea is to check that `gs' still refers to a
   // generator system that matches the grid.
-  gr1.add_congruence_and_minimize(Congruence::zero_dim_false());
+  gr1.add_congruence(Congruence::zero_dim_false());
 
   Grid known_gr = gr1;
 

@@ -254,7 +254,7 @@ test08() {
 
   BD_Shape<mpq_class> known_result(bds2);
 
-  bds1.intersection_assign_and_minimize(bds2);
+  bds1.intersection_assign(bds2);
 
   bool ok = check_result(bds1, known_result);
 
@@ -275,9 +275,9 @@ test09() {
 
   try {
     // This is an invalid use of method
-    // BD_Shape::intersection_assign_and_minimize(bds2): it is illegal
+    // BD_Shape::intersection_assign(bds2): it is illegal
     // to apply this method to two polyhedra of different dimensions.
-    bds1.intersection_assign_and_minimize(bds2);
+    bds1.intersection_assign(bds2);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;

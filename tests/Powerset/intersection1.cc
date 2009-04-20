@@ -56,7 +56,7 @@ test01() {
   return ok && ok1 && c_ps.OK() && c_ps1.OK();
 }
 
-// Powerset of C polyhedra: intersection_assign_and_minimize().
+// Powerset of C polyhedra: intersection_assign().
 bool
 test02() {
   Variable x(0);
@@ -74,7 +74,8 @@ test02() {
   cs.insert(x <= 3);
   c_ps1.add_disjunct(C_Polyhedron(cs));
 
-  bool ok = c_ps.intersection_assign_and_minimize(c_ps1);
+  c_ps.intersection_assign(c_ps1);
+  bool ok = !c_ps.empty();
 
   cs.clear();
   cs.insert(x >= 1);
@@ -90,7 +91,8 @@ test02() {
   cs.insert(x == 4);
   c_ps2.add_disjunct(C_Polyhedron(cs));
 
-  bool ok3 = !c_ps2.intersection_assign_and_minimize(c_ps1);
+  c_ps2.intersection_assign(c_ps1);
+  bool ok3 = c_ps2.empty();
 
   return ok && ok1 && ok2 && ok3 && c_ps.OK() && c_ps1.OK() && c_ps2.OK();
 }

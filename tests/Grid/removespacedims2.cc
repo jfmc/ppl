@@ -125,7 +125,7 @@ test05() {
   Grid gr(3, EMPTY);
   gr.add_grid_generator(grid_point());
   gr.add_grid_generator(grid_point(A));
-  gr.add_grid_generator_and_minimize(grid_point(B));
+  gr.add_grid_generator(grid_point(B));
   gr.add_grid_generator(grid_line(C));
   print_generators(gr, "*** gr ***");
 
@@ -150,7 +150,7 @@ test06() {
   Grid gr(3, EMPTY);
   gr.add_grid_generator(grid_point());
   gr.add_grid_generator(grid_point(A));
-  gr.add_grid_generator_and_minimize(grid_point(B));
+  gr.add_grid_generator(grid_point(B));
   gr.add_grid_generator(grid_line(C));
   print_generators(gr, "*** gr ***");
 

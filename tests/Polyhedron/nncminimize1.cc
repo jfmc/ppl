@@ -50,7 +50,7 @@ test01() {
   cs.insert(x - y < 6);
   cs.insert(x - y > -6);
 
-  ph.add_constraints_and_minimize(cs);
+  ph.add_constraints(cs);
 
   nout << "After vertices removal:" << endl;
   print_constraints(ph.constraints(), "*** ph constraints ***");
@@ -107,7 +107,7 @@ test02() {
   cs.insert(x - y < 1);
   cs.insert(x - y > -1);
 
-  ph.add_constraints_and_minimize(cs);
+  ph.add_constraints(cs);
 
   nout << "After vertices removal:" << endl;
   print_constraints(ph.constraints(), "*** ph constraints ***");
@@ -168,7 +168,7 @@ test03() {
   cs.insert(x - y < 1);
   cs.insert(x - y > -1);
 
-  ph.add_constraints_and_minimize(cs);
+  ph.add_constraints(cs);
 
   nout << "After vertices removal:" << endl;
   print_constraints(ph.constraints(), "*** ph constraints ***");

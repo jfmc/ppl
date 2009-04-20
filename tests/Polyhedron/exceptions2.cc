@@ -36,7 +36,7 @@ test01() {
   try {
     // This is an invalid use of the constructor of a polyhedron:
     // it is illegal to build a closed polyhedron starting from
-    // a system of constraints that contains strict-inequalities.
+    // a system of constraints that contains strict inequalities.
     C_Polyhedron ph(cs);
   }
   catch (std::invalid_argument& e) {
@@ -85,7 +85,7 @@ test03() {
 
   try {
     // This is an invalid use of the function add_constraint(c): it is
-    // illegal to insert a strict-inequality into a system of
+    // illegal to insert a strict inequality into a system of
     // constraints of a closed polyhedron.
     ph.add_constraint(x - y > 0);
   }
@@ -132,9 +132,9 @@ test05() {
 
   try {
     // This is an incorrect use of the function
-    // add_constraints_and_minimize(cs): it is illegal to add a system of
-    // constraints that contains strict-inequalities to a closed polyhedron.
-    ph.add_constraints_and_minimize(cs);
+    // add_constraints(cs): it is illegal to add a system of
+    // constraints that contains strict inequalities to a closed polyhedron.
+    ph.add_constraints(cs);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
@@ -158,7 +158,7 @@ test06() {
   try {
     // This is an invalid use of the function add_constraints(cs):
     // it is illegal to add a system of constraints that contains
-    // strict-inequalities to a closed polyhedron.
+    // strict inequalities to a closed polyhedron.
     ph.add_constraints(cs);
   }
   catch (std::invalid_argument& e) {
@@ -211,10 +211,10 @@ test08() {
 
   try {
     // This is an incorrect use of the function
-    // add_generators_and_minimize(gs): it is illegal to add a
+    // add_generators(gs): it is illegal to add a
     // system of generators that contains closure-points to a closed
     // polyhedron.
-    ph.add_generators_and_minimize(gs);
+    ph.add_generators(gs);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
@@ -293,9 +293,9 @@ test11() {
 
   try {
     // This is an invalid use of the function
-    // `intersection_assign_and_minimize': it is illegal to apply
+    // `intersection_assign': it is illegal to apply
     // to a closed polyhedron and a non-closed polyhedron.
-    ph1.intersection_assign_and_minimize(ph2);
+    ph1.intersection_assign(ph2);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
@@ -664,10 +664,10 @@ test24() {
 
   try {
     // This is an invalid used of the function
-    // `add_generators_and_minimize(gs)': it is illegal to
+    // `add_generators(gs)': it is illegal to
     // add a system of generators that does not contain points
     // to an empty zero-dimensional polyhedron.
-    ph.add_generators_and_minimize(gs);
+    ph.add_generators(gs);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;

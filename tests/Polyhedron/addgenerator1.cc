@@ -38,7 +38,7 @@ test01() {
 
   print_generators(ph, "*** ph ***");
 
-  ph.add_generator_and_minimize(ray(A));
+  ph.add_generator(ray(A));
 
   Generator_System known_gs;
   known_gs.insert(point());
@@ -48,8 +48,7 @@ test01() {
 
   bool ok = (ph == known_result);
 
-  print_generators(ph,
-		    "*** after ph.add_generator_and_minimize(ray(A)) ***");
+  print_generators(ph, "*** after ph.add_generator(ray(A)) ***");
 
   return ok;
 }

@@ -1,4 +1,4 @@
-/* Test BD_Shape::add_constraints_and_minimize().
+/* Test BD_Shape::add_constraints().
    Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -34,9 +34,9 @@ test01() {
   cs.insert(B == 5);
 
   TBD_Shape bds(2);
-  bds.add_constraints_and_minimize(cs);
+  bds.add_constraints(cs);
 
-  print_constraints(bds, "*** bds.add_constraints_and_minimize(cs) ***");
+  print_constraints(bds, "*** bds.add_constraints(cs) ***");
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(A >= 0);
@@ -106,12 +106,12 @@ test04() {
 
   try {
     // This is an invalid use of the method
-    // BD_Shape::add_constraints_and_minimize(cs): it is illegal to
+    // BD_Shape::add_constraints(cs): it is illegal to
     // add a system of constraints that is not dimensional incompatible
     // with the polyhedron.
     Constraint_System cs;
     cs.insert(x - y >= 0);
-    bds.add_constraints_and_minimize(cs);
+    bds.add_constraints(cs);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;

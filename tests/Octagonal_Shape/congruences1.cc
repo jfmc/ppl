@@ -135,56 +135,8 @@ test05() {
   return ok;
 }
 
-// CHECKME: is this a duplicate of test03? (was testing *_and_minimize)
 bool
 test06() {
-  Variable x(0);
-  Variable y(1);
-  Variable z(2);
-
-  TOctagonal_Shape oct1(3);
-  oct1.add_congruence((x %= 1) / 0);
-  bool b1 = !oct1.is_empty();
-
-  print_constraints(oct1, "*** oct1 ***");
-
-  Octagonal_Shape<mpq_class> known_result(oct1);
-
-  Congruence_System cgs = oct1.congruences();
-  TOctagonal_Shape oct2(3);
-  oct2.add_congruences(cgs);
-  bool b2 = !oct2.is_empty();
-
-  bool ok = b1 && b2 && (Octagonal_Shape<mpq_class>(oct2) == known_result);
-
-  print_constraints(oct2, "*** oct2 ***");
-
-  return ok;
-}
-
-// CHECKME: is this a duplicate of test02? (was testing *_and_minimize)
-bool
-test07() {
-  TOctagonal_Shape oct1(0, EMPTY);
-
-  print_constraints(oct1, "*** oct1 ***");
-
-  Octagonal_Shape<mpq_class> known_result(oct1);
-
-  Congruence_System cgs = oct1.congruences();
-  TOctagonal_Shape oct2(cgs.space_dimension(), EMPTY);
-  oct2.add_congruences(cgs);
-  bool b = !oct2.is_empty();
-
-  bool ok = !b && (Octagonal_Shape<mpq_class>(oct2) == known_result);
-
-  print_congruences(cgs, "*** cgs ***");
-
-  return ok;
-}
-
-bool
-test08() {
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -210,7 +162,7 @@ test08() {
 }
 
 bool
-test09() {
+test07() {
   Variable x(0);
   Variable y(1);
 
@@ -243,7 +195,5 @@ BEGIN_MAIN
   DO_TEST(test05);
   DO_TEST(test06);
   DO_TEST(test07);
-  DO_TEST(test08);
-  DO_TEST(test09);
 END_MAIN
 

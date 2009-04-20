@@ -1119,12 +1119,6 @@ PPL::Grid::OK(bool check_not_empty) const {
   return false;
 }
 
-bool
-PPL::Grid::add_congruence_and_minimize(const Congruence& cg) {
-  Congruence_System cgs(cg);
-  return add_recycled_congruences_and_minimize(cgs);
-}
-
 void
 PPL::Grid::add_constraints(const Constraint_System& cs) {
   // The dimension of `cs' must be at most `space_dim'.
@@ -1185,12 +1179,6 @@ PPL::Grid::add_grid_generator(const Grid_Generator& g) {
   assert(OK());
 }
 
-bool
-PPL::Grid::add_grid_generator_and_minimize(const Grid_Generator& g) {
-  Grid_Generator_System gs(g);
-  return add_recycled_grid_generators_and_minimize(gs);
-}
-
 void
 PPL::Grid::add_recycled_congruences(Congruence_System& cgs) {
   // Dimension-compatibility check.
@@ -1229,51 +1217,6 @@ PPL::Grid::add_recycled_congruences(Congruence_System& cgs) {
   // Note: the congruence system may have become unsatisfiable, thus
   // we do not check for satisfiability.
   assert(OK());
-}
-
-bool
-PPL::Grid::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
-  // Dimension-compatibility check.
-  const dimension_type cgs_space_dim = cgs.space_dimension();
-  if (space_dim < cgs_space_dim)
-    throw_dimension_incompatible("add_recycled_congruences_and_minimize(cgs)",
-				 "cgs", cgs);
-
-  // Adding no congruences: just minimize.
-  if (cgs.has_no_rows())
-    return minimize();
-
-  // Dealing with zero-dimensional space grids first.
-  if (space_dim == 0) {
-    // In a 0-dimensional space the congruences are trivial (e.g., 0
-    // == 0 or 1 %= 0) or false (e.g., 1 == 0).  In a system of
-    // congruences `begin()' and `end()' are equal if and only if the
-    // system contains only trivial congruences.
-    if (cgs.begin() == cgs.end())
-      return true;
-    // There is a congruence, it must be false, the grid is empty.
-    if (status.test_zero_dim_univ())
-      set_empty();
-    return false;
-  }
-
-  if (marked_empty())
-    return false;
-
-  if (!congruences_are_up_to_date())
-    update_congruences();
-
-  con_sys.recycling_insert(cgs);
-
-  clear_congruences_minimized();
-
-#ifndef NDEBUG
-  bool ret = update_generators();
-  assert(OK());
-  return ret;
-#else
-  return update_generators();
-#endif
 }
 
 void
@@ -1340,68 +1283,6 @@ PPL::Grid::add_grid_generators(const Grid_Generator_System& gs) {
   // TODO: this is just an executable specification.
   Grid_Generator_System gs_copy = gs;
   add_recycled_grid_generators(gs_copy);
-}
-
-bool
-PPL::Grid
-::add_recycled_grid_generators_and_minimize(Grid_Generator_System& gs) {
-  // Dimension-compatibility check: the dimension of `gs' must be less
-  // than or equal to that of space_dim.
-  const dimension_type gs_space_dim = gs.space_dimension();
-  if (space_dim < gs_space_dim)
-    throw_dimension_incompatible("add_recycled_generators_and_minimize(gs)",
-				 "gs", gs);
-
-  // Adding no generators is equivalent to just requiring reduction.
-  if (gs.has_no_rows())
-    return minimize();
-
-  // Adding valid generators to a zero-dimensional grid produces the
-  // zero-dimensional universe grid.
-  if (space_dim == 0) {
-    if (marked_empty())
-      set_zero_dim_univ();
-    else
-      assert(gs.has_points());
-    assert(OK(true));
-    return true;
-  }
-
-  // Adjust `gs' to the right dimension.
-  gs.insert(parameter(0*Variable(space_dim-1)));
-
-  if (!marked_empty()) {
-    // The grid contains at least one point.
-
-    if (!generators_are_up_to_date())
-      update_generators();
-    normalize_divisors(gs, gen_sys);
-
-    for (dimension_type row = 0,
-	   gs_num_rows = gs.num_rows(); row < gs_num_rows; ++row)
-      gen_sys.recycling_insert(gs[row]);
-  }
-  else {
-    // The grid is empty: check if `gs' contains a point.
-    if (!gs.has_points())
-      throw_invalid_generators("add_recycled_generators_and_minimize(gs)",
-			       "gs");
-    std::swap(gen_sys, gs);
-    normalize_divisors(gen_sys);
-    clear_empty();
-  }
-  clear_generators_minimized();
-  update_congruences();
-
-  assert(OK(true));
-  return true;
-}
-
-bool
-PPL::Grid::add_grid_generators_and_minimize(const Grid_Generator_System& gs) {
-  // TODO: this is just an executable specification.
-  Grid_Generator_System gs_copy = gs;
-  return add_recycled_grid_generators_and_minimize(gs_copy);
 }
 
 void
@@ -1516,12 +1397,6 @@ PPL::Grid::intersection_assign(const Grid& y) {
   assert(x.OK() && y.OK());
 }
 
-bool
-PPL::Grid::intersection_assign_and_minimize(const Grid& y) {
-  intersection_assign(y);
-  return minimize();
-}
-
 void
 PPL::Grid::upper_bound_assign(const Grid& y) {
   Grid& x = *this;
@@ -1563,12 +1438,6 @@ PPL::Grid::upper_bound_assign(const Grid& y) {
 
   // At this point both `x' and `y' are not empty.
   assert(x.OK(true) && y.OK(true));
-}
-
-bool
-PPL::Grid::upper_bound_assign_and_minimize(const Grid& y) {
-  upper_bound_assign(y);
-  return minimize();
 }
 
 bool

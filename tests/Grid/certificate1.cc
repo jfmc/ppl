@@ -201,7 +201,7 @@ test07() {
 
   Grid gr2(3, EMPTY);
   gr2.add_grid_generator(grid_point(3*B + A + C));
-  gr2.add_grid_generator_and_minimize(grid_point(3*B + A));
+  gr2.add_grid_generator(grid_point(3*B + A));
 
   // Ensure up to date congruences and minimized generators.
   gr2.affine_image(A, 1*A);

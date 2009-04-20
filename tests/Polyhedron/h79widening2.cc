@@ -38,7 +38,7 @@ test01() {
   ph4.add_constraint(4*A <= 3);
 
   NNC_Polyhedron ph = ph4;
-  ph.intersection_assign_and_minimize(ph1);
+  ph.intersection_assign(ph1);
   // At this point, ph and ph4 are two different representations
   // of the same NNC polyhedron.
 

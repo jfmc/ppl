@@ -138,7 +138,7 @@ test04() {
   Variable B(1);
 
   Grid gr_gs_min(2, EMPTY);
-  gr_gs_min.add_grid_generator_and_minimize(grid_point(3*A + 2*B, 3));
+  gr_gs_min.add_grid_generator(grid_point(3*A + 2*B, 3));
   print_generators(gr_gs_min, "*** gr_gs_min ***");
 
   Grid gr_gs_needs_min(2, EMPTY);
@@ -179,7 +179,7 @@ test05() {
 
   Grid gr_gs_min(2, EMPTY);
   gr_gs_min.add_grid_generator(grid_point());
-  gr_gs_min.add_grid_generator_and_minimize(grid_line(B));
+  gr_gs_min.add_grid_generator(grid_line(B));
   print_generators(gr_gs_min, "*** gr_gs_min ***");
 
   Grid gr_gs_needs_min(2, EMPTY);
@@ -211,7 +211,7 @@ test06() {
 
   Grid gr_gs_min(2, EMPTY);
   gr_gs_min.add_grid_generator(grid_point());
-  gr_gs_min.add_grid_generator_and_minimize(grid_line(2*A + B));
+  gr_gs_min.add_grid_generator(grid_line(2*A + B));
   print_generators(gr_gs_min, "*** gr_gs_min ***");
 
   Grid gr_gs_needs_min(2, EMPTY);
@@ -243,7 +243,7 @@ test07() {
 
   Grid gr_gs_min(2, EMPTY);
   gr_gs_min.add_grid_generator(grid_point());
-  gr_gs_min.add_grid_generator_and_minimize(grid_line(A + 2*B));
+  gr_gs_min.add_grid_generator(grid_line(A + 2*B));
   print_generators(gr_gs_min, "*** gr_gs_min ***");
 
   Grid gr_gs_needs_min(2, EMPTY);
@@ -284,7 +284,7 @@ test08() {
 
   Grid gr_gs_min(2, EMPTY);
   gr_gs_min.add_grid_generator(grid_point());
-  gr_gs_min.add_grid_generator_and_minimize(grid_point(A + 2*B));
+  gr_gs_min.add_grid_generator(grid_point(A + 2*B));
   print_generators(gr_gs_min, "*** gr_gs_min ***");
 
   Grid gr_gs_needs_min(2, EMPTY);
@@ -327,7 +327,7 @@ test09() {
   Grid gr_gs_min(2, EMPTY);
   gr_gs_min.add_grid_generator(grid_point());
   gr_gs_min.add_grid_generator(grid_line(A));
-  gr_gs_min.add_grid_generator_and_minimize(grid_line(B));
+  gr_gs_min.add_grid_generator(grid_line(B));
   print_generators(gr_gs_min, "*** gr_gs_min ***");
 
   Grid gr_gs_needs_min(2, EMPTY);
@@ -362,7 +362,7 @@ test10() {
   Grid gr_gs_min(3, EMPTY);
   gr_gs_min.add_grid_generator(grid_point());
   gr_gs_min.add_grid_generator(grid_line(A));
-  gr_gs_min.add_grid_generator_and_minimize(grid_point(B + C));
+  gr_gs_min.add_grid_generator(grid_point(B + C));
   print_generators(gr_gs_min, "*** gr_gs_min ***");
 
   Grid gr_gs_needs_min(3, EMPTY);
@@ -398,7 +398,7 @@ test11() {
   Grid gr_gs_min(3, EMPTY);
   gr_gs_min.add_grid_generator(grid_point(A));
   gr_gs_min.add_grid_generator(grid_line(3*B + C));
-  gr_gs_min.add_grid_generator_and_minimize(grid_line(A - 2*B));
+  gr_gs_min.add_grid_generator(grid_line(A - 2*B));
   print_generators(gr_gs_min, "*** gr_gs_min ***");
 
   Grid gr_gs_needs_min(3, EMPTY);
@@ -445,7 +445,7 @@ test12() {
   Variable F(5);
 
   Grid gr_gs_min(6, EMPTY);
-  gr_gs_min.add_grid_generator_and_minimize(grid_point(7*A - 11*B + 19*F));
+  gr_gs_min.add_grid_generator(grid_point(7*A - 11*B + 19*F));
   print_generators(gr_gs_min, "*** gr_gs_min ***");
 
   Grid gr_gs_needs_min(6, EMPTY);

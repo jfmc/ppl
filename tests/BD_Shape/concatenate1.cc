@@ -134,7 +134,7 @@ test04() {
   TBD_Shape bds1(3);
   bds1.add_constraint(A >= 0);
   bds1.add_constraint(B >= 0);
-  bds1.add_constraint_and_minimize(C >= 0);
+  bds1.add_constraint(C >= 0);
 
   TBD_Shape bds2(2);
   bds2.add_constraint(A >= 0);
@@ -142,7 +142,7 @@ test04() {
   bds2.add_constraint(B >= 0);
   bds2.add_constraint(B <= 2);
   bds2.add_constraint(A - B <= 0);
-  bds2.add_constraint_and_minimize(B - A <= 1);
+  bds2.add_constraint(B - A <= 1);
 
   print_constraints(bds1, "*** bds1 ***");
   print_constraints(bds2, "*** bds2 ***");

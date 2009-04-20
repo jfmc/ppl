@@ -168,7 +168,7 @@ test06() {
   print_constraints(ph1, "*** ph1 ***");
   print_congruences(cgs, "*** cgs ***");
 
-  ph1.add_congruences_and_minimize(cgs);
+  ph1.add_congruences(cgs);
 
   C_Polyhedron known_result(cgs);
 
@@ -224,7 +224,7 @@ test08() {
   print_constraints(ph1, "*** ph1 ***");
   print_congruences(cgs, "*** cgs ***");
 
-  ph1.add_recycled_congruences_and_minimize(cgs);
+  ph1.add_recycled_congruences(cgs);
 
   C_Polyhedron known_result(cgs_copy);
 
