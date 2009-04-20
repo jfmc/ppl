@@ -28,75 +28,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-#if !PPL_HAVE_DECL_FFS || PPL_SIZEOF_MP_LIMB_T != PPL_SIZEOF_INT
-unsigned int
-PPL::Bit_Row::first_one(mp_limb_t w) {
-  unsigned int r = 0;
-  w = w & -w;
-#if PPL_SIZEOF_MP_LIMB_T == 8
-  if ((w & 0xffffffff) == 0) {
-    w >>= 32;
-    r += 32;
-  }
-#elif PPL_SIZEOF_MP_LIMB_T != 4
-#error "Size of mp_limb_t not supported by Bit_Row::first_one(mp_limb_t w)."
-#endif
-  if ((w & 0xffff) == 0) {
-    w >>= 16;
-    r += 16;
-  }
-  if ((w & 0xff) == 0) {
-    w >>= 8;
-    r += 8;
-  }
-  if (w & 0xf0)
-    r += 4;
-  if (w & 0xcc)
-    r += 2;
-  if (w & 0xaa)
-    r += 1;
-  return r;
-}
-#endif // !PPL_HAVE_DECL_FFS || PPL_SIZEOF_MP_LIMB_T != PPL_SIZEOF_INT
-
-unsigned int
-PPL::Bit_Row::last_one(mp_limb_t w) {
-  unsigned int r = 0;
-#if PPL_SIZEOF_MP_LIMB_T == 8
-  if (w &
-#if PPL_SIZEOF_LONG == 8
-      0xffffffff00000000
-#else
-      0xffffffff00000000LL
-#endif
-      ) {
-    w >>= 32;
-    r += 32;
-  }
-#elif PPL_SIZEOF_MP_LIMB_T != 4
-#error "Size of mp_limb_t not supported by Bit_Row::last_one(mp_limb_t w)."
-#endif
-  if (w & 0xffff0000) {
-    w >>= 16;
-    r += 16;
-  }
-  if (w & 0xff00) {
-    w >>= 8;
-    r += 8;
-  }
-  if (w & 0xf0) {
-    w >>= 4;
-    r += 4;
-  }
-  if (w & 0xc) {
-    w >>= 2;
-    r += 2;
-  }
-  if (w & 0x2)
-    r += 1;
-  return r;
-}
-
 unsigned long
 PPL::Bit_Row::first() const {
   const mp_size_t vec_size = vec->_mp_size;
@@ -106,7 +37,7 @@ PPL::Bit_Row::first() const {
   for (; li < vec_size; ++li, ++p) {
     const mp_limb_t limb = *p;
     if (limb != 0)
-      return li*PPL_BITS_PER_GMP_LIMB + first_one(limb);
+      return li*PPL_BITS_PER_GMP_LIMB + Implementation::first_one(limb);
   }
   return ULONG_MAX;
 }
@@ -136,7 +67,7 @@ PPL::Bit_Row::next(unsigned long position) const {
 
   while (true) {
     if (limb != 0)
-      return li*PPL_BITS_PER_GMP_LIMB + first_one(limb);
+      return li*PPL_BITS_PER_GMP_LIMB + Implementation::first_one(limb);
     ++li;
     if (li == vec_size)
       break;
@@ -156,7 +87,7 @@ PPL::Bit_Row::last() const {
   const mp_srcptr p = vec->_mp_d + li;
   const mp_limb_t limb = *p;
   assert(limb != 0);
-  return li*PPL_BITS_PER_GMP_LIMB + last_one(limb);
+  return li*PPL_BITS_PER_GMP_LIMB + Implementation::last_one(limb);
 }
 
 unsigned long
@@ -189,7 +120,7 @@ PPL::Bit_Row::prev(unsigned long position) const {
 
   while (true) {
     if (limb != 0)
-      return li*PPL_BITS_PER_GMP_LIMB + last_one(limb);
+      return li*PPL_BITS_PER_GMP_LIMB + Implementation::last_one(limb);
     if (li == 0)
       break;
     --li;

@@ -91,8 +91,9 @@ Bit_Row::clear_from(const unsigned long k) {
 
 inline unsigned long
 Bit_Row::count_ones() const {
-  assert(vec->_mp_size >= 0);
-  return vec->_mp_size == 0 ? 0 : mpn_popcount(vec->_mp_d, vec->_mp_size);
+  mp_size_t x_size = vec->_mp_size;
+  assert(x_size >= 0);
+  return x_size == 0 ? 0 : mpn_popcount(vec->_mp_d, x_size);
 }
 
 inline bool
@@ -119,15 +120,6 @@ inline memory_size_type
 Bit_Row::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
 }
-
-#if PPL_HAVE_DECL_FFS && PPL_SIZEOF_MP_LIMB_T == PPL_SIZEOF_INT
-
-inline unsigned int
-Bit_Row::first_one(mp_limb_t w) {
-  return ffs(w)-1;
-}
-
-#endif
 
 /*! \relates Bit_Row */
 inline void
@@ -159,6 +151,164 @@ set_difference(const Bit_Row& x, const Bit_Row& y, Bit_Row& z) {
   mpz_com(complement_y.get_mpz_t(), y.vec);
   mpz_and(z.vec, x.vec, complement_y.get_mpz_t());
 }
+
+namespace Implementation {
+
+#if defined(__GNUC__)
+
+/*! \brief
+  Assuming \p u is nonzero, returns the index of the first set bit in \p u.
+*/
+inline unsigned int
+first_one(unsigned int u) {
+  assert(u != 0);
+  return __builtin_ctz(u);
+}
+
+/*! \brief
+  Assuming \p ul is nonzero, returns the index of the first set bit in
+  \p ul.
+*/
+inline unsigned int
+first_one(unsigned long ul) {
+  assert(ul != 0);
+  return __builtin_ctzl(ul);
+}
+
+/*! \brief
+  Assuming \p ull is nonzero, returns the index of the first set bit in
+  \p ull.
+*/
+inline unsigned int
+first_one(unsigned long long ull) {
+  assert(ull != 0);
+  return __builtin_ctzll(ull);
+}
+
+#elif PPL_HAVE_DECL_FFS && PPL_SIZEOF_MP_LIMB_T == PPL_SIZEOF_INT
+
+/*! \brief
+  Assuming \p w is nonzero, returns the index of the first set bit in \p w.
+*/
+inline unsigned int
+first_one(mp_limb_t w) {
+  return ffs(w)-1;
+}
+
+#else
+
+/*! \brief
+  Assuming \p w is nonzero, returns the index of the first set bit in \p w.
+*/
+inline unsigned int
+first_one(mp_limb_t w) {
+  unsigned int r = 0;
+  w = w & -w;
+#if PPL_SIZEOF_MP_LIMB_T == 8
+  if ((w & 0xffffffff) == 0) {
+    w >>= 32;
+    r += 32;
+  }
+#elif PPL_SIZEOF_MP_LIMB_T != 4
+#error "size of mp_limb_t not supported by first_one(mp_limb_t w)."
+#endif
+  if ((w & 0xffff) == 0) {
+    w >>= 16;
+    r += 16;
+  }
+  if ((w & 0xff) == 0) {
+    w >>= 8;
+    r += 8;
+  }
+  if (w & 0xf0)
+    r += 4;
+  if (w & 0xcc)
+    r += 2;
+  if (w & 0xaa)
+    r += 1;
+  return r;
+}
+#endif // !defined(__GNUC__)
+       // && (!PPL_HAVE_DECL_FFS || PPL_SIZEOF_MP_LIMB_T != PPL_SIZEOF_INT)
+
+#if defined(__GNUC__)
+
+/*! \brief
+  Assuming \p u is nonzero, returns the index of the last set bit in \p u.
+*/
+inline unsigned int
+last_one(unsigned int u) {
+  assert(u != 0);
+  return sizeof(unsigned int)*CHAR_BIT - 1 - __builtin_clz(u);
+}
+
+/*! \brief
+  Assuming \p ul is nonzero, returns the index of the last set bit in
+  \p ul.
+*/
+inline unsigned int
+last_one(unsigned long ul) {
+  assert(ul != 0);
+  return sizeof(unsigned long)*CHAR_BIT - 1 - __builtin_clzl(ul);
+}
+
+/*! \brief
+  Assuming \p ull is nonzero, returns the index of the last set bit in
+  \p ull.
+*/
+inline unsigned int
+last_one(unsigned long long ull) {
+  assert(ull != 0);
+  return sizeof(unsigned long long)*CHAR_BIT - 1 - __builtin_clzll(ull);
+}
+
+#else // !defined(__GNUC__)
+
+/*! \brief
+  Assuming \p w is nonzero, returns the index of the last set bit in \p w.
+*/
+inline unsigned int
+last_one(mp_limb_t w) {
+  assert(w != 0);
+  unsigned int r = 0;
+#if PPL_SIZEOF_MP_LIMB_T == 8
+  if (w &
+#if PPL_SIZEOF_LONG == 8
+      0xffffffff00000000
+#else
+      0xffffffff00000000LL
+#endif
+      ) {
+    w >>= 32;
+    r += 32;
+  }
+#elif PPL_SIZEOF_MP_LIMB_T != 4
+#error "size of mp_limb_t not supported by last_one(mp_limb_t w)."
+#endif
+  if (w & 0xffff0000) {
+    w >>= 16;
+    r += 16;
+  }
+  if (w & 0xff00) {
+    w >>= 8;
+    r += 8;
+  }
+  if (w & 0xf0) {
+    w >>= 4;
+    r += 4;
+  }
+  if (w & 0xc) {
+    w >>= 2;
+    r += 2;
+  }
+  if (w & 0x2)
+    r += 1;
+  return r;
+}
+
+#endif // !defined(__GNUC__)
+
+} // namespace Implementation
 
 } // namespace Parma_Polyhedra_Library
 

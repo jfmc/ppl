@@ -203,12 +203,6 @@ private:
     Upon entry, \p vec must have allocated enough space to contain the result.
   */
   void union_helper(const Bit_Row& x, const Bit_Row& y);
-
-  //! Assuming \p w is nonzero, returns the index of the first set bit in \p w.
-  static unsigned int first_one(mp_limb_t w);
-
-  //! Assuming \p w is nonzero, returns the index of the last set bit in \p w.
-  static unsigned int last_one(mp_limb_t w);
 };
 
 namespace std {
