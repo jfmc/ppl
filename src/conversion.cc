@@ -670,15 +670,16 @@ PPL::Polyhedron::conversion(Linear_System& source,
 	      // If there exist another generator that saturates
 	      // all the constraints saturated by both `dest[i]' and
 	      // `dest[j]', then they are NOT adjacent.
-	      Bit_Row new_satrow;
 	      assert(sat[i].last() == ULONG_MAX || sat[i].last() < k);
 	      assert(sat[j].last() == ULONG_MAX || sat[j].last() < k);
+
 	      // Being the union of `sat[i]' and `sat[j]',
 	      // `new_satrow' corresponds to a ray that saturates all the
 	      // constraints saturated by both `dest[i]' and `dest[j]'.
-	      set_union(sat[i], sat[j], new_satrow);
+	      Bit_Row new_satrow(sat[i]);
+	      set_union(new_satrow, sat[j], new_satrow);
 
-	      // Computing the number of common saturators.
+	      // Compute the number of common saturators.
 	      // NOTE: this number has to be less than `k' because
 	      // we are treating the `k'-th constraint.
 	      const dimension_type
@@ -724,6 +725,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
 		  }
 		  else
 		    sat[dest_num_rows] = new_satrow;
+
 		  Linear_Row& new_row = dest[dest_num_rows];
 		  // The following fragment optimizes the computation of
 		  //
