@@ -10,6 +10,12 @@ NEWS for version 0.11  (released date to be decided)
 New and Changed Features
 ========================
 
+o  Implementation of general (NNC) polyhedra speeded up.
+
+
+New and Changed Features
+========================
+
 Deprecated and removed methods
 ------------------------------
 
