@@ -59,7 +59,7 @@ long double nl1 = -13, pl1 = 13, l2 = 17;
 long double nl[2], pl[2];
 
 int
-check() {
+ppl_check_function() {
   int r = 0;
   if (nf[0] == nf[1] || pf[0] == pf[1] || -nf[0] != pf[1] || -nf[1] != pf[0])
     r |= 1;
@@ -70,10 +70,16 @@ check() {
   return r;
 }
 
-int (*fun)() = check;
+int
+ppl_setround_function(int rounding_mode) {
+  return fesetround(rounding_mode);
+}
+
+int (* volatile ppl_check_function_p)() = ppl_check_function;
+int (* volatile ppl_setround_function_p)(int) = ppl_setround_function;
 
 int main() {
-  if (fesetround(FE_DOWNWARD) != 0)
+  if ((*ppl_setround_function_p)(FE_DOWNWARD) != 0)
     return 255;
 
   nf[0] = nf1 / f2;
@@ -83,7 +89,7 @@ int main() {
   pd[0] = pd1 / d2;
   pl[0] = pl1 / l2;
 
-  if (fesetround(FE_UPWARD) != 0)
+  if ((*ppl_setround_function_p)(FE_UPWARD) != 0)
     return 255;
 
   nf[1] = nf1 / f2;
@@ -93,7 +99,7 @@ int main() {
   pd[1] = pd1 / d2;
   pl[1] = pl1 / l2;
 
-  return (*fun)();
+  return (*ppl_check_function_p)();
 }
 
 # endif
