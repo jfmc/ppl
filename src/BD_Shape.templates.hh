@@ -2077,8 +2077,8 @@ template <typename T>
 template <bool integer_upper_bound>
 bool
 BD_Shape<T>::BHZ09_upper_bound_assign_if_exact(const BD_Shape& y) {
-  PPL_COMPILE_TIME_CHECK(not (integer_upper_bound
-                              && std::numeric_limits<T>::is_integer),
+  PPL_COMPILE_TIME_CHECK(!integer_upper_bound
+                         || std::numeric_limits<T>::is_integer,
                          "BD_Shape<T>::BHZ09_upper_bound_assign_if_exact(y):"
                          " instantiating for integer upper bound,"
                          " but T in not an integer datatype.");
