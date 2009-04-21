@@ -310,8 +310,8 @@ void
 PPL::Bit_Row::union_helper(const Bit_Row& y, const Bit_Row& z) {
   mp_size_t y_size = y.vec->_mp_size;
   mp_size_t z_size = z.vec->_mp_size;
-  assert(y_size <= z.size);
-  assert(vec->_mp_alloc >= z.size);
+  assert(y_size <= z_size);
+  assert(vec->_mp_alloc >= z_size);
   vec->_mp_size = z_size;
   mp_srcptr yp = y.vec->_mp_d;
   mp_srcptr zp = z.vec->_mp_d;
