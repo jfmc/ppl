@@ -3460,6 +3460,16 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
 }
 
 void
+PPL::Polyhedron::wrap_assign(const Variables_Set& vars,
+                             Bounded_Integer_Type_Width w,
+                             Bounded_Integer_Type_Signedness s,
+                             Bounded_Integer_Type_Overflow o,
+                             bool wrap_individually,
+                             unsigned k_threshold) {
+  // FIXME: to be written.
+}
+
+void
 PPL::Polyhedron::topological_closure_assign() {
   // Necessarily closed polyhedra are trivially closed.
   if (is_necessarily_closed())
