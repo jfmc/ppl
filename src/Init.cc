@@ -38,6 +38,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Congruence_System.defs.hh"
 #include "Grid_Generator_System.defs.hh"
 #include "Polyhedron.defs.hh"
+#include <stdexcept>
 
 namespace PPL = Parma_Polyhedra_Library;
 
@@ -56,6 +57,81 @@ ppl_set_GMP_memory_allocation_functions(void) {
 #else
   ;
 #endif
+
+#if PPL_CAN_CONTROL_FPU \
+  && defined(PPL_ARM_CAN_CONTROL_FPU) && PPL_ARM_CAN_CONTROL_FPU
+
+namespace {
+
+     float  nf1 =  -3, pf1 = 3,  f2 =  5;
+     double nd1 =  -7, pd1 = 7,  d2 = 11;
+long double nl1 = -13, pl1 = 13, l2 = 17;
+
+      float nf[2], pf[2];
+     double nd[2], pd[2];
+long double nl[2], pl[2];
+
+int
+ppl_check_function() {
+  int r = 0;
+  if (nf[0] == nf[1] || pf[0] == pf[1] || -nf[0] != pf[1] || -nf[1] != pf[0])
+    r |= 1;
+  if (nd[0] == nd[1] || pd[0] == pd[1] || -nd[0] != pd[1] || -nd[1] != pd[0])
+    r |= 2;
+  if (nl[0] == nl[1] || pl[0] == pl[1] || -nl[0] != pl[1] || -nl[1] != pl[0])
+    r |= 4;
+  return r;
+}
+
+int
+ppl_setround_function(int rounding_mode) {
+  return fesetround(rounding_mode);
+}
+
+} // namespace
+
+namespace Parma_Polyhedra_Library {
+
+namespace Implementation {
+
+int (* volatile ppl_check_function_p)() = ppl_check_function;
+int (* volatile ppl_setround_function_p)(int) = ppl_setround_function;
+
+} // Implementation
+
+} // Parma_Polyhedra_Library
+
+namespace {
+
+int
+ppl_test_rounding() {
+  if ((*ppl_setround_function_p)(FE_DOWNWARD) != 0)
+    return 255;
+
+  nf[0] = nf1 / f2;
+  nd[0] = nd1 / d2;
+  nl[0] = nl1 / l2;
+  pf[0] = pf1 / f2;
+  pd[0] = pd1 / d2;
+  pl[0] = pl1 / l2;
+
+  if ((*ppl_setround_function_p)(FE_UPWARD) != 0)
+    return 255;
+
+  nf[1] = nf1 / f2;
+  nd[1] = nd1 / d2;
+  nl[1] = nl1 / l2;
+  pf[1] = pf1 / f2;
+  pd[1] = pd1 / d2;
+  pl[1] = pl1 / l2;
+
+  return (*ppl_check_function_p)();
+}
+
+} // namespace
+
+#endif // PPL_CAN_CONTROL_FPU 
+       // && defined(PPL_ARM_CAN_CONTROL_FPU) && PPL_ARM_CAN_CONTROL_FPU
 
 PPL::Init::Init() {
   // Only when the first Init object is constructed...
@@ -80,12 +156,23 @@ PPL::Init::Init() {
     Congruence_System::initialize();
     Grid_Generator_System::initialize();
     Polyhedron::initialize();
+
 #if PPL_CAN_CONTROL_FPU
+
     // ... and the FPU rounding direction is set.
     fpu_initialize_control_functions();
     old_rounding_direction = fpu_get_rounding_direction();
     fpu_set_rounding_direction(round_fpu_dir(ROUND_DIRECT));
-#endif
+
+#if defined(PPL_ARM_CAN_CONTROL_FPU) && PPL_ARM_CAN_CONTROL_FPU
+    if (ppl_test_rounding() != 0)
+      throw std::logic_error("PPL configuration error:"
+                             " PPL_ARM_CAN_CONTROL_FPU evaluates to true,"
+                             " but rounding does not work.");
+#endif // defined(PPL_ARM_CAN_CONTROL_FPU) && PPL_ARM_CAN_CONTROL_FPU
+
+#endif // PPL_CAN_CONTROL_FPU
+
     // The default is choosen to have a precision greater than most
     // precise IEC559 floating point (112 bits of mantissa).
     set_rational_sqrt_precision_parameter(128);
