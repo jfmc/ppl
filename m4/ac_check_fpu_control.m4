@@ -78,7 +78,8 @@ ppl_setround_function(int rounding_mode) {
 int (* volatile ppl_check_function_p)() = ppl_check_function;
 int (* volatile ppl_setround_function_p)(int) = ppl_setround_function;
 
-int main() {
+int
+main() {
   if ((*ppl_setround_function_p)(FE_DOWNWARD) != 0)
     return 255;
 
