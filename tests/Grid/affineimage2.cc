@@ -392,6 +392,6 @@ BEGIN_MAIN
   DO_TEST(test08);
   DO_TEST(test09);
   DO_TEST_F16A(test10);
-  DO_TEST_F16(test11);
+  DO_TEST_F32(test11);
   DO_TEST_F64(test12);
 END_MAIN
