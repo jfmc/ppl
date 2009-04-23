@@ -868,7 +868,7 @@ Java_parma_1polyhedra_1library_@1CLASS@_@1WIDEN@_1widening_1assign
     = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this));
   @CPP_CLASS@* y_ptr
     = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_y));
-  if (is_null(env, j_by_ref_int))
+  if (j_by_ref_int == NULL)
     this_ptr->@WIDEN@_widening_assign(*y_ptr);
   else {
     jobject j_integer = get_by_reference(env, j_by_ref_int);
@@ -892,7 +892,7 @@ Java_parma_1polyhedra_1library_@1CLASS@_widening_1assign
     = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this));
   @CPP_CLASS@* y_ptr
     = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_y));
-  if (is_null(env, j_by_ref_int))
+  if (j_by_ref_int == NULL)
     this_ptr->widening_assign(*y_ptr);
   else {
     jobject j_integer = get_by_reference(env, j_by_ref_int);
@@ -916,7 +916,7 @@ Java_parma_1polyhedra_1library_@1CLASS@_@1EXTRAPOLATION@_1extrapolation_1assign
     = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this));
   @CPP_CLASS@* y_ptr
     = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_y));
-  if (is_null(env, j_by_ref_int))
+  if (j_by_ref_int == NULL)
     this_ptr->@EXTRAPOLATION@_extrapolation_assign(*y_ptr);
   else {
     jobject j_integer = get_by_reference(env, j_by_ref_int);
@@ -957,7 +957,7 @@ Java_parma_1polyhedra_1library_@1CLASS@_@1LIMITEDBOUNDED@_1@1WIDENEXPN@_1extrapo
   @CPP_CLASS@* y_ptr
     = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_y));
   @!CONSTRAINER@_System cs = build_cxx_@CONSTRAINER@_system(env, j_cs);
-  if (is_null(env, j_by_ref_int))
+  if (j_by_ref_int == NULL)
     this_ptr->@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(*y_ptr, cs);
   else {
     jobject j_integer = get_by_reference(env, j_by_ref_int);

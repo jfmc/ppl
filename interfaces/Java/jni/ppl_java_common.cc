@@ -1173,22 +1173,6 @@ get_pair_element(JNIEnv* env, int arg, jobject j_pair) {
   }
 }
 
-jboolean
-is_null(JNIEnv* env, jobject obj) {
-  jclass by_reference_class
-    = env->FindClass("parma_polyhedra_library/By_Reference");
-  CHECK_RESULT_ASSERT(env, by_reference_class);
-  jmethodID j_reference_is_null_id
-    = env->GetStaticMethodID(by_reference_class,
-                             "is_null",
-                             "(Ljava/lang/Object;)Z");
-  CHECK_RESULT_ASSERT(env, j_reference_is_null_id);
-  jboolean ret = env->CallStaticBooleanMethod(by_reference_class,
-					      j_reference_is_null_id, obj);
-  CHECK_EXCEPTION_ASSERT(env); // CHECK ME: an exception is better here?
-  return ret;
-}
-
 jobject
 build_java_constraint(JNIEnv* env, const Constraint& c) {
   jclass j_constraint_class

@@ -43,10 +43,4 @@ public class By_Reference<T> {
 	return obj;
     }
 
-    // FIXME: this must be moved in another place.
-    static boolean is_null(java.lang.Object obj) {
-        if (obj == null)
-              return true;
-        return false;
-    }
 }

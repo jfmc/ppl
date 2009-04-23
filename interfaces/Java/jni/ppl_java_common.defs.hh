@@ -444,10 +444,6 @@ set_pair_element(JNIEnv* env, jobject& pair_to_be_set,
 jobject
 get_pair_element(JNIEnv* env, int arg, jobject pair);
 
-//! Returns \c true if and only if \p obj is a null Java reference.
-jboolean
-is_null(JNIEnv* env, jobject obj);
-
 //! Returns a pointer to the C++ object wrapped by \p ppl_object.
 void*
 get_ptr(JNIEnv* env, jobject ppl_object);
