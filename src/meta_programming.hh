@@ -39,7 +39,7 @@ namespace Parma_Polyhedra_Library {
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 #define const_bool_nodef(name, value)		\
-  enum { name = (value) }
+  enum anonymous_enum_ ## name { name = (value) }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief
@@ -53,7 +53,7 @@ namespace Parma_Polyhedra_Library {
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 #define const_int_nodef(name, value) \
-  enum { name = (value) }
+  enum anonymous_enum_ ## name { name = (value) }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief
@@ -116,7 +116,7 @@ struct Compile_Time_Check<true> {
 
 #define PPL_COMPILE_TIME_CHECK_NAME(suffix) compile_time_check_ ## suffix
 #define PPL_COMPILE_TIME_CHECK_AUX(e, suffix)				\
-  enum {								\
+  enum anonymous_enum_compile_time_check_ ## suffix {			\
     /* If e evaluates to false, then the sizeof cannot be compiled. */  \
     PPL_COMPILE_TIME_CHECK_NAME(suffix)					\
     = sizeof(Parma_Polyhedra_Library::					\
@@ -141,7 +141,7 @@ struct Compile_Time_Check<true> {
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <bool b>
 struct Bool {
-  enum {
+  enum anonymous_enum {
     value = b
   };
 };
@@ -244,7 +244,7 @@ struct Is_Same_Or_Derived {
                          "architecture with sizeof(char) == sizeof(double)"
                          " (!?)");
 
-  enum {
+  enum anonymous_enum {
     /*!
       Assuming <CODE>sizeof(char) != sizeof(double)</CODE>, the C++
       overload resolution mechanism guarantees that \p value evaluates
