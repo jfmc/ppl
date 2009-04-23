@@ -390,13 +390,6 @@ set_generator(JNIEnv* env, jobject& to_be_set, jobject gen);
 
 /*! \brief
   Sets Java reference \p to_be_set
-  to the parma_polyhedra_library::Grid_Generator object \p g_gen.
-*/
-void
-set_grid_generator(JNIEnv* env, jobject& to_be_set, jobject g_gen);
-
-/*! \brief
-  Sets Java reference \p to_be_set
   to the parma_polyhedra_library::Coefficient object \p c.
 */
 void

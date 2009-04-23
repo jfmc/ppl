@@ -37,8 +37,8 @@ import javax.management.RuntimeErrorException;
   - a closure point.
 */
 public class Generator {
-    //! The denominator used if the generator is a point or a clousure point.
-    private Coefficient den;
+    //! The divisor (valid if the generator is a point or a closure point).
+    private Coefficient div;
 
     //! The generator type.
     private Generator_Type gt;
@@ -47,8 +47,8 @@ public class Generator {
     private Linear_Expression le;
 
     /*! \brief
-      Builds a generator of type \p g_type, stealing the coefficients from
-      \p e.
+      Builds a generator of type \p g_type,
+      stealing the coefficients from \p e.
     */
     private Generator(Linear_Expression e, Generator_Type g_type) {
 	le = e.clone();
@@ -61,16 +61,16 @@ public class Generator {
       Thrown if \p d is zero.
     */
     public static Generator closure_point(Linear_Expression e,
-					   Coefficient c) {
-        if (c.getBigInteger().equals(java.math.BigInteger.ZERO)) {
+                                          Coefficient d) {
+        if (d.getBigInteger().equals(java.math.BigInteger.ZERO)) {
             Error cause = new Error("parma_polyhedra_library.Generator::"
-                                    + "Generator(le, c):\n"
+                                    + "Generator(e, d):\n"
 				    + "the divisor can not be zero.");
             throw new RuntimeErrorException(cause);
         }
 
         Generator g = new Generator(e, Generator_Type.CLOSURE_POINT);
-        g.den = c;
+        g.div = d;
         return g;
     }
 
@@ -80,8 +80,8 @@ public class Generator {
       Thrown if the homogeneous part of \p e represents the origin of
       the vector space.
     */
-    public static Generator line(Linear_Expression le) {
-        return new Generator(le, Generator_Type.LINE);
+    public static Generator line(Linear_Expression e) {
+        return new Generator(e, Generator_Type.LINE);
     }
 
     //! Returns the point at \p e / \p d.
@@ -89,16 +89,16 @@ public class Generator {
       \exception RuntimeErrorException
       Thrown if \p d is zero.
     */
-    public static Generator point(Linear_Expression le, Coefficient d) {
+    public static Generator point(Linear_Expression e, Coefficient d) {
         if (d.getBigInteger().equals(java.math.BigInteger.ZERO)) {
 	    Error cause = new Error("parma_polyhedra_library.Generator::"
-                                    + "Generator(le, d):\n"
+                                    + "Generator(e, d):\n"
 				    + "the divisor can not be zero.");
             throw new RuntimeErrorException(cause);
         }
 
-        Generator g = new Generator(le, Generator_Type.POINT);
-        g.den = d;
+        Generator g = new Generator(e, Generator_Type.POINT);
+        g.div = d;
         return g;
     }
 
@@ -108,8 +108,8 @@ public class Generator {
       Thrown if the homogeneous part of \p e represents the origin of
       the vector space.
     */
-    public static Generator ray(Linear_Expression le) {
-        return new Generator(le, Generator_Type.RAY);
+    public static Generator ray(Linear_Expression e) {
+        return new Generator(e, Generator_Type.RAY);
     }
 
     //! If \p this is either a point or a closure point, returns its divisor.
@@ -120,7 +120,7 @@ public class Generator {
     public Coefficient divisor() {
         if (this.gt == Generator_Type.POINT
 	    || this.gt == Generator_Type.CLOSURE_POINT)
-	    return den;
+	    return div;
 	Error cause = new Error("parma_polyhedra_library.Generator::divisor:\n"
 				+ "this is neither a point"
 				+ " nor a closure point.");
@@ -131,6 +131,7 @@ public class Generator {
     private void set(Generator g) {
         this.le = g.le;
         this.gt = g.gt;
+        this.div = g.div;
     }
 
     //! Returns an ascii formatted internal representation of \p this.

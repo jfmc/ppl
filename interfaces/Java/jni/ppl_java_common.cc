@@ -779,7 +779,7 @@ build_cxx_generator(JNIEnv* env, jobject j_generator) {
   CHECK_RESULT_ASSERT(env, j_le_field);
   jobject j_le = env->GetObjectField(j_generator, j_le_field);
   jfieldID j_coeff_field
-    = env->GetFieldID(generator_class, "den",
+    = env->GetFieldID(generator_class, "div",
                       "Lparma_polyhedra_library/Coefficient;");
   CHECK_RESULT_ASSERT(env, j_coeff_field);
   jobject j_coeff = env->GetObjectField(j_generator, j_coeff_field);
@@ -1058,19 +1058,6 @@ set_generator(JNIEnv* env, jobject& to_be_set, jobject gen) {
   jmethodID j_coeff_set_id
     = env->GetMethodID(j_generator_class, "set",
                        "(Lparma_polyhedra_library/Generator;)V");
-  CHECK_RESULT_ASSERT(env, j_coeff_set_id);
-  env->CallVoidMethod(to_be_set, j_coeff_set_id, gen);
-  CHECK_EXCEPTION_ASSERT(env); // CHECK ME: an exception is better here?
-}
-
-void
-set_grid_generator(JNIEnv* env, jobject& to_be_set, jobject gen) {
-  jclass j_generator_class
-    = env->FindClass("parma_polyhedra_library/Grid_Generator");
-  CHECK_RESULT_ASSERT(env, j_generator_class);
-  jmethodID j_coeff_set_id
-    = env->GetMethodID(j_generator_class, "set",
-                       "(Lparma_polyhedra_library/Grid_Generator;)V");
   CHECK_RESULT_ASSERT(env, j_coeff_set_id);
   env->CallVoidMethod(to_be_set, j_coeff_set_id, gen);
   CHECK_EXCEPTION_ASSERT(env); // CHECK ME: an exception is better here?
