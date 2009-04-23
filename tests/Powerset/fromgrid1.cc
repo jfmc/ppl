@@ -394,7 +394,7 @@ test16() {
   // be set to false.
   // So we add this test to set the omega reduction pps_gr.reduced
   // flag to true.
-  bool top_closed = pps_gr.is_topologically_closed();
+  pps_gr.is_topologically_closed();
 
   Pointset_Powerset<NNC_Polyhedron> pps(pps_gr);
 
